@@ -1,5 +1,4819 @@
 [
   {
+    "id": "AEONGLASS_BOSS",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.9,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 60.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "AEONGLASS",
+          "sourceScene": "scenes/creature_visuals/aeonglass.tscn",
+          "bounds": {
+            "left": -220.0,
+            "top": -522.0,
+            "right": 208.0,
+            "bottom": 5.0,
+            "width": 428.0,
+            "height": 527.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "visualScale": {
+            "x": 0.2,
+            "y": 0.2
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "AXEBOTS_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "front",
+        "sourcePosition": {
+          "x": 1505.0,
+          "y": 715.0
+        },
+        "x": 0.7838541666666666,
+        "y": 0.6620370370370371
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "AXEBOT",
+          "sourceScene": "scenes/creature_visuals/axebot.tscn",
+          "bounds": {
+            "left": -167.0,
+            "top": -388.0,
+            "right": 167.0,
+            "bottom": 0.0,
+            "width": 334.0,
+            "height": 388.0
+          },
+          "visualPosition": {
+            "x": 5.0,
+            "y": -44.0
+          },
+          "visualScale": {
+            "x": 0.13,
+            "y": 0.13
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "BATTLEWORN_DUMMY_EVENT_V1_ENCOUNTER",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "BATTLE_FRIEND_V1",
+          "sourceScene": "scenes/creature_visuals/battle_friend_v1.tscn",
+          "bounds": {
+            "left": -216.0,
+            "top": -349.0,
+            "right": 196.0,
+            "bottom": 0.0,
+            "width": 412.0,
+            "height": 349.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -21.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "BATTLEWORN_DUMMY_EVENT_V2_ENCOUNTER",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "BATTLE_FRIEND_V2",
+          "sourceScene": "scenes/creature_visuals/battle_friend_v2.tscn",
+          "bounds": {
+            "left": -216.0,
+            "top": -349.0,
+            "right": 196.0,
+            "bottom": 0.0,
+            "width": 412.0,
+            "height": 349.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -21.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "BATTLEWORN_DUMMY_EVENT_V3_ENCOUNTER",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "BATTLE_FRIEND_V3",
+          "sourceScene": "scenes/creature_visuals/battle_friend_v3.tscn",
+          "bounds": {
+            "left": -216.0,
+            "top": -349.0,
+            "right": 196.0,
+            "bottom": 0.0,
+            "width": 412.0,
+            "height": 349.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -21.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "BOWLBUGS_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "first",
+        "sourcePosition": {
+          "x": 1099.0,
+          "y": 673.0
+        },
+        "x": 0.5723958333333333,
+        "y": 0.6231481481481481
+      },
+      {
+        "slotName": "middle",
+        "sourcePosition": {
+          "x": 1368.0,
+          "y": 712.0
+        },
+        "x": 0.7125,
+        "y": 0.6592592592592592
+      },
+      {
+        "slotName": "last",
+        "sourcePosition": {
+          "x": 1666.0,
+          "y": 675.0
+        },
+        "x": 0.8677083333333333,
+        "y": 0.625
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "BOWLBUG_ROCK",
+          "sourceScene": "scenes/creature_visuals/bowlbug_rock.tscn",
+          "bounds": {
+            "left": -100.0,
+            "top": -150.0,
+            "right": 100.0,
+            "bottom": 0.0,
+            "width": 200.0,
+            "height": 150.0
+          },
+          "visualPosition": {
+            "x": 16.0,
+            "y": -20.0
+          },
+          "visualScale": {
+            "x": 0.275,
+            "y": 0.275
+          }
+        },
+        {
+          "monsterId": "BOWLBUG_EGG",
+          "sourceScene": "scenes/creature_visuals/bowlbug_egg.tscn",
+          "bounds": {
+            "left": -100.0,
+            "top": -150.0,
+            "right": 100.0,
+            "bottom": 0.0,
+            "width": 200.0,
+            "height": 150.0
+          },
+          "visualPosition": {
+            "x": 16.0,
+            "y": -20.0
+          },
+          "visualScale": {
+            "x": 0.275,
+            "y": 0.275
+          }
+        },
+        {
+          "monsterId": "BOWLBUG_SILK",
+          "sourceScene": "scenes/creature_visuals/bowlbug_silk.tscn",
+          "bounds": {
+            "left": -100.0,
+            "top": -150.0,
+            "right": 100.0,
+            "bottom": 0.0,
+            "width": 200.0,
+            "height": 150.0
+          },
+          "visualPosition": {
+            "x": 16.0,
+            "y": -20.0
+          },
+          "visualScale": {
+            "x": 0.275,
+            "y": 0.275
+          }
+        },
+        {
+          "monsterId": "BOWLBUG_NECTAR",
+          "sourceScene": "scenes/creature_visuals/bowlbug_nectar.tscn",
+          "bounds": {
+            "left": -93.0,
+            "top": -150.0,
+            "right": 93.0,
+            "bottom": 0.0,
+            "width": 186.0,
+            "height": 150.0
+          },
+          "visualPosition": {
+            "x": 18.0,
+            "y": -22.0
+          },
+          "visualScale": {
+            "x": 0.275,
+            "y": 0.275
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "BOWLBUGS_WEAK",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "odd",
+        "sourcePosition": {
+          "x": 1225.0,
+          "y": 686.0
+        },
+        "x": 0.6380208333333334,
+        "y": 0.6351851851851852
+      },
+      {
+        "slotName": "even",
+        "sourcePosition": {
+          "x": 1540.0,
+          "y": 713.0
+        },
+        "x": 0.8020833333333334,
+        "y": 0.6601851851851852
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "BOWLBUG_ROCK",
+          "sourceScene": "scenes/creature_visuals/bowlbug_rock.tscn",
+          "bounds": {
+            "left": -100.0,
+            "top": -150.0,
+            "right": 100.0,
+            "bottom": 0.0,
+            "width": 200.0,
+            "height": 150.0
+          },
+          "visualPosition": {
+            "x": 16.0,
+            "y": -20.0
+          },
+          "visualScale": {
+            "x": 0.275,
+            "y": 0.275
+          }
+        },
+        {
+          "monsterId": "BOWLBUG_EGG",
+          "sourceScene": "scenes/creature_visuals/bowlbug_egg.tscn",
+          "bounds": {
+            "left": -100.0,
+            "top": -150.0,
+            "right": 100.0,
+            "bottom": 0.0,
+            "width": 200.0,
+            "height": 150.0
+          },
+          "visualPosition": {
+            "x": 16.0,
+            "y": -20.0
+          },
+          "visualScale": {
+            "x": 0.275,
+            "y": 0.275
+          }
+        },
+        {
+          "monsterId": "BOWLBUG_NECTAR",
+          "sourceScene": "scenes/creature_visuals/bowlbug_nectar.tscn",
+          "bounds": {
+            "left": -93.0,
+            "top": -150.0,
+            "right": 93.0,
+            "bottom": 0.0,
+            "width": 186.0,
+            "height": 150.0
+          },
+          "visualPosition": {
+            "x": 18.0,
+            "y": -22.0
+          },
+          "visualScale": {
+            "x": 0.275,
+            "y": 0.275
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "BYGONE_EFFIGY_ELITE",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.88,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 50.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "BYGONE_EFFIGY",
+          "sourceScene": "scenes/creature_visuals/bygone_effigy.tscn",
+          "bounds": {
+            "left": -180.0,
+            "top": -600.0,
+            "right": 180.0,
+            "bottom": 0.0,
+            "width": 360.0,
+            "height": 600.0
+          },
+          "visualPosition": {
+            "x": -12.0,
+            "y": -21.0
+          },
+          "visualScale": {
+            "x": 0.32,
+            "y": 0.32
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "BYRDONIS_ELITE",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "BYRDONIS",
+          "sourceScene": "scenes/creature_visuals/byrdonis.tscn",
+          "bounds": {
+            "left": -321.0,
+            "top": -461.0,
+            "right": 319.0,
+            "bottom": 0.0,
+            "width": 640.0,
+            "height": 461.0
+          },
+          "visualPosition": {
+            "x": -26.0,
+            "y": -48.0
+          },
+          "visualScale": {
+            "x": 0.313509,
+            "y": 0.313509
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "CEREMONIAL_BEAST_BOSS",
+    "backgroundUrl": "/images/sts2/encounter-scenes/ceremonial-beast-boss-a.webp",
+    "sourceScene": "scenes/backgrounds/ceremonial_beast_boss/ceremonial_beast_boss_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/ceremonial_beast_boss/layers/ceremonial_beast_boss_bg_00_a.tscn",
+      "scenes/backgrounds/ceremonial_beast_boss/layers/ceremonial_beast_boss_bg_01_a.tscn",
+      "scenes/backgrounds/ceremonial_beast_boss/layers/ceremonial_beast_boss_bg_02_a.tscn",
+      "scenes/backgrounds/ceremonial_beast_boss/layers/ceremonial_beast_boss_bg_03_a.tscn",
+      "scenes/backgrounds/ceremonial_beast_boss/layers/ceremonial_beast_boss_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.9,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 50.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "CEREMONIAL_BEAST",
+          "sourceScene": "scenes/creature_visuals/ceremonial_beast.tscn",
+          "bounds": {
+            "left": -298.0,
+            "top": -560.0,
+            "right": 246.0,
+            "bottom": 0.0,
+            "width": 544.0,
+            "height": 560.0
+          },
+          "visualPosition": {
+            "x": 30.0,
+            "y": -19.0
+          },
+          "visualScale": {
+            "x": 0.434394,
+            "y": 0.434394
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "CHOMPERS_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "CHOMPER",
+          "sourceScene": "scenes/creature_visuals/chomper.tscn",
+          "bounds": {
+            "left": -126.0,
+            "top": -133.0,
+            "right": 126.0,
+            "bottom": 0.0,
+            "width": 252.0,
+            "height": 133.0
+          },
+          "visualPosition": {
+            "x": 9.0,
+            "y": -21.0
+          },
+          "visualScale": {
+            "x": 0.255959,
+            "y": 0.255959
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "CONSTRUCT_MENAGERIE_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "PUNCH_CONSTRUCT",
+          "sourceScene": "scenes/creature_visuals/punch_construct.tscn",
+          "bounds": {
+            "left": -136.0,
+            "top": -306.0,
+            "right": 136.0,
+            "bottom": 0.0,
+            "width": 272.0,
+            "height": 306.0
+          },
+          "visualPosition": {
+            "x": 6.0,
+            "y": -25.0
+          },
+          "visualScale": {
+            "x": 0.32,
+            "y": 0.32
+          }
+        },
+        {
+          "monsterId": "CUBEX_CONSTRUCT",
+          "sourceScene": "scenes/creature_visuals/cubex_construct.tscn",
+          "bounds": {
+            "left": -92.0,
+            "top": -294.0,
+            "right": 88.0,
+            "bottom": 0.0,
+            "width": 180.0,
+            "height": 294.0
+          },
+          "visualPosition": {
+            "x": -24.0,
+            "y": -19.0
+          },
+          "visualScale": {
+            "x": 0.33,
+            "y": 0.33
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "CORPSE_SLUGS_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "CORPSE_SLUG",
+          "sourceScene": "scenes/creature_visuals/corpse_slug.tscn",
+          "bounds": {
+            "left": -116.0,
+            "top": -164.0,
+            "right": 116.0,
+            "bottom": 0.0,
+            "width": 232.0,
+            "height": 164.0
+          },
+          "visualPosition": {
+            "x": -6.0,
+            "y": -27.0
+          },
+          "visualScale": {
+            "x": 0.23,
+            "y": 0.23
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "CORPSE_SLUGS_WEAK",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "CORPSE_SLUG",
+          "sourceScene": "scenes/creature_visuals/corpse_slug.tscn",
+          "bounds": {
+            "left": -116.0,
+            "top": -164.0,
+            "right": 116.0,
+            "bottom": 0.0,
+            "width": 232.0,
+            "height": 164.0
+          },
+          "visualPosition": {
+            "x": -6.0,
+            "y": -27.0
+          },
+          "visualScale": {
+            "x": 0.23,
+            "y": 0.23
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "CUBEX_CONSTRUCT_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "CUBEX_CONSTRUCT",
+          "sourceScene": "scenes/creature_visuals/cubex_construct.tscn",
+          "bounds": {
+            "left": -92.0,
+            "top": -294.0,
+            "right": 88.0,
+            "bottom": 0.0,
+            "width": 180.0,
+            "height": 294.0
+          },
+          "visualPosition": {
+            "x": -24.0,
+            "y": -19.0
+          },
+          "visualScale": {
+            "x": 0.33,
+            "y": 0.33
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "CULTISTS_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "CALCIFIED_CULTIST",
+          "sourceScene": "scenes/creature_visuals/calcified_cultist.tscn",
+          "bounds": {
+            "left": -130.0,
+            "top": -295.0,
+            "right": 120.0,
+            "bottom": 0.0,
+            "width": 250.0,
+            "height": 295.0
+          },
+          "visualPosition": {
+            "x": 16.0,
+            "y": -23.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        },
+        {
+          "monsterId": "DAMP_CULTIST",
+          "sourceScene": "scenes/creature_visuals/damp_cultist.tscn",
+          "bounds": {
+            "left": -130.0,
+            "top": -305.0,
+            "right": 120.0,
+            "bottom": 0.0,
+            "width": 250.0,
+            "height": 305.0
+          },
+          "visualPosition": {
+            "x": 17.0,
+            "y": -25.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "DECIMILLIPEDE_ELITE",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "segment1",
+        "sourcePosition": {
+          "x": 1103.0,
+          "y": 740.0
+        },
+        "x": 0.5744791666666667,
+        "y": 0.6851851851851852
+      },
+      {
+        "slotName": "segment2",
+        "sourcePosition": {
+          "x": 1451.0,
+          "y": 740.0
+        },
+        "x": 0.7557291666666667,
+        "y": 0.6851851851851852
+      },
+      {
+        "slotName": "segment3",
+        "sourcePosition": {
+          "x": 1797.0,
+          "y": 740.0
+        },
+        "x": 0.9359375,
+        "y": 0.6851851851851852
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.87,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 50.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "DECIMILLIPEDE_SEGMENT",
+          "sourceScene": "scenes/creature_visuals/decimillipede_segment_front.tscn",
+          "bounds": {
+            "left": -189.0,
+            "top": -299.0,
+            "right": 168.0,
+            "bottom": 0.0,
+            "width": 357.0,
+            "height": 299.0
+          },
+          "visualPosition": {
+            "x": 318.0,
+            "y": -19.0
+          },
+          "visualScale": {
+            "x": -0.45,
+            "y": 0.45
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "DENSE_VEGETATION_EVENT_ENCOUNTER",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "wriggler1",
+        "sourcePosition": {
+          "x": 1078.0,
+          "y": 682.0
+        },
+        "x": 0.5614583333333333,
+        "y": 0.6314814814814815
+      },
+      {
+        "slotName": "wriggler2",
+        "sourcePosition": {
+          "x": 1315.0,
+          "y": 706.0
+        },
+        "x": 0.6848958333333334,
+        "y": 0.6537037037037037
+      },
+      {
+        "slotName": "wriggler3",
+        "sourcePosition": {
+          "x": 1556.0,
+          "y": 714.0
+        },
+        "x": 0.8104166666666667,
+        "y": 0.6611111111111111
+      },
+      {
+        "slotName": "wriggler4",
+        "sourcePosition": {
+          "x": 1781.0,
+          "y": 690.0
+        },
+        "x": 0.9276041666666667,
+        "y": 0.6388888888888888
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "WRIGGLER",
+          "sourceScene": "scenes/creature_visuals/wriggler.tscn",
+          "bounds": {
+            "left": -90.0,
+            "top": -148.0,
+            "right": 90.0,
+            "bottom": 0.0,
+            "width": 180.0,
+            "height": 148.0
+          },
+          "visualPosition": {
+            "x": 1.0,
+            "y": -14.0
+          },
+          "visualScale": {
+            "x": 0.214161,
+            "y": 0.214161
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "DEVOTED_SCULPTOR_WEAK",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "DEVOTED_SCULPTOR",
+          "sourceScene": "scenes/creature_visuals/devoted_sculptor.tscn",
+          "bounds": {
+            "left": -145.0,
+            "top": -406.0,
+            "right": 145.0,
+            "bottom": 0.0,
+            "width": 290.0,
+            "height": 406.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -22.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "DOORMAKER_BOSS",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": []
+    }
+  },
+  {
+    "id": "ENTOMANCER_ELITE",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "ENTOMANCER",
+          "sourceScene": "scenes/creature_visuals/entomancer.tscn",
+          "bounds": {
+            "left": -212.0,
+            "top": -333.0,
+            "right": 219.0,
+            "bottom": 0.0,
+            "width": 431.0,
+            "height": 333.0
+          },
+          "visualPosition": {
+            "x": 3.0,
+            "y": -19.0
+          },
+          "visualScale": {
+            "x": 0.3,
+            "y": 0.3
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "EXOSKELETONS_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "first",
+        "sourcePosition": {
+          "x": 1105.0,
+          "y": 705.0
+        },
+        "x": 0.5755208333333334,
+        "y": 0.6527777777777778
+      },
+      {
+        "slotName": "second",
+        "sourcePosition": {
+          "x": 1312.0,
+          "y": 737.0
+        },
+        "x": 0.6833333333333333,
+        "y": 0.6824074074074075
+      },
+      {
+        "slotName": "third",
+        "sourcePosition": {
+          "x": 1519.0,
+          "y": 724.0
+        },
+        "x": 0.7911458333333333,
+        "y": 0.6703703703703704
+      },
+      {
+        "slotName": "fourth",
+        "sourcePosition": {
+          "x": 1716.0,
+          "y": 699.0
+        },
+        "x": 0.89375,
+        "y": 0.6472222222222223
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "EXOSKELETON",
+          "sourceScene": "scenes/creature_visuals/exoskeleton.tscn",
+          "bounds": {
+            "left": -86.0,
+            "top": -168.0,
+            "right": 86.0,
+            "bottom": 0.0,
+            "width": 172.0,
+            "height": 168.0
+          },
+          "visualPosition": {
+            "x": 15.0,
+            "y": -18.0
+          },
+          "visualScale": {
+            "x": 0.12,
+            "y": 0.12
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "EXOSKELETONS_WEAK",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "first",
+        "sourcePosition": {
+          "x": 1165.0,
+          "y": 691.0
+        },
+        "x": 0.6067708333333334,
+        "y": 0.6398148148148148
+      },
+      {
+        "slotName": "second",
+        "sourcePosition": {
+          "x": 1401.0,
+          "y": 756.0
+        },
+        "x": 0.7296875,
+        "y": 0.7
+      },
+      {
+        "slotName": "third",
+        "sourcePosition": {
+          "x": 1643.0,
+          "y": 712.0
+        },
+        "x": 0.8557291666666667,
+        "y": 0.6592592592592592
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "EXOSKELETON",
+          "sourceScene": "scenes/creature_visuals/exoskeleton.tscn",
+          "bounds": {
+            "left": -86.0,
+            "top": -168.0,
+            "right": 86.0,
+            "bottom": 0.0,
+            "width": 172.0,
+            "height": 168.0
+          },
+          "visualPosition": {
+            "x": 15.0,
+            "y": -18.0
+          },
+          "visualScale": {
+            "x": 0.12,
+            "y": 0.12
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "FABRICATOR_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "bot1",
+        "sourcePosition": {
+          "x": 1085.0,
+          "y": 575.0
+        },
+        "x": 0.5651041666666666,
+        "y": 0.5324074074074074
+      },
+      {
+        "slotName": "fabricator",
+        "sourcePosition": {
+          "x": 1483.0,
+          "y": 713.0
+        },
+        "x": 0.7723958333333333,
+        "y": 0.6601851851851852
+      },
+      {
+        "slotName": "bot2",
+        "sourcePosition": {
+          "x": 1285.0,
+          "y": 261.0
+        },
+        "x": 0.6692708333333334,
+        "y": 0.24166666666666667
+      },
+      {
+        "slotName": "bot3",
+        "sourcePosition": {
+          "x": 1645.0,
+          "y": 256.0
+        },
+        "x": 0.8567708333333334,
+        "y": 0.23703703703703705
+      },
+      {
+        "slotName": "bot4",
+        "sourcePosition": {
+          "x": 1875.0,
+          "y": 581.0
+        },
+        "x": 0.9765625,
+        "y": 0.537962962962963
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.85,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 60.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "FABRICATOR",
+          "sourceScene": "scenes/creature_visuals/fabricator.tscn",
+          "bounds": {
+            "left": -225.0,
+            "top": -331.0,
+            "right": 225.0,
+            "bottom": 0.0,
+            "width": 450.0,
+            "height": 331.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -46.0
+          },
+          "visualScale": {
+            "x": 0.13,
+            "y": 0.13
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "FAKE_MERCHANT_EVENT_ENCOUNTER",
+    "backgroundUrl": "/images/sts2/encounter-scenes/fake-merchant-event-encounter-a.webp",
+    "sourceScene": "scenes/backgrounds/fake_merchant_event_encounter/fake_merchant_event_encounter_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/fake_merchant_event_encounter/layers/fake_merchant_event_encounter_bg_00_a.tscn",
+      "scenes/backgrounds/fake_merchant_event_encounter/layers/fake_merchant_event_encounter_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "merchant",
+        "sourcePosition": {
+          "x": 1200.0,
+          "y": 700.0
+        },
+        "x": 0.625,
+        "y": 0.6481481481481481
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "FAKE_MERCHANT_MONSTER",
+          "sourceScene": "scenes/creature_visuals/fake_merchant_monster.tscn",
+          "bounds": {
+            "left": -115.0,
+            "top": -350.0,
+            "right": 115.0,
+            "bottom": 0.0,
+            "width": 230.0,
+            "height": 350.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -11.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "FLYCONID_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "LEAF_SLIME_M",
+          "sourceScene": "scenes/creature_visuals/leaf_slime_m.tscn",
+          "bounds": {
+            "left": -100.0,
+            "top": -143.0,
+            "right": 100.0,
+            "bottom": 0.0,
+            "width": 200.0,
+            "height": 143.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -24.0
+          },
+          "visualScale": {
+            "x": 0.45,
+            "y": 0.45
+          }
+        },
+        {
+          "monsterId": "FLYCONID",
+          "sourceScene": "scenes/creature_visuals/flyconid.tscn",
+          "bounds": {
+            "left": -114.0,
+            "top": -309.0,
+            "right": 114.0,
+            "bottom": 0.0,
+            "width": 228.0,
+            "height": 309.0
+          },
+          "visualPosition": {
+            "x": -9.0,
+            "y": 19.0
+          },
+          "visualScale": {
+            "x": 0.4,
+            "y": 0.4
+          }
+        },
+        {
+          "monsterId": "TWIG_SLIME_M",
+          "sourceScene": "scenes/creature_visuals/twig_slime_m.tscn",
+          "bounds": {
+            "left": -106.0,
+            "top": -166.0,
+            "right": 106.0,
+            "bottom": 0.0,
+            "width": 212.0,
+            "height": 166.0
+          },
+          "visualPosition": {
+            "x": -6.0,
+            "y": -10.0
+          },
+          "visualScale": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "FOGMOG_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "illusion",
+        "sourcePosition": {
+          "x": 1225.0,
+          "y": 686.0
+        },
+        "x": 0.6380208333333334,
+        "y": 0.6351851851851852
+      },
+      {
+        "slotName": "fogmog",
+        "sourcePosition": {
+          "x": 1538.0,
+          "y": 713.0
+        },
+        "x": 0.8010416666666667,
+        "y": 0.6601851851851852
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "FOGMOG",
+          "sourceScene": "scenes/creature_visuals/fogmog.tscn",
+          "bounds": {
+            "left": -122.0,
+            "top": -235.0,
+            "right": 123.0,
+            "bottom": 0.0,
+            "width": 245.0,
+            "height": 235.0
+          },
+          "visualPosition": {
+            "x": 16.0,
+            "y": -20.0
+          },
+          "visualScale": {
+            "x": 0.35,
+            "y": 0.35
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "FOSSIL_STALKER_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "FOSSIL_STALKER",
+          "sourceScene": "scenes/creature_visuals/fossil_stalker.tscn",
+          "bounds": {
+            "left": -137.0,
+            "top": -224.0,
+            "right": 137.0,
+            "bottom": 0.0,
+            "width": 274.0,
+            "height": 224.0
+          },
+          "visualPosition": {
+            "x": 11.0,
+            "y": -47.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "FROG_KNIGHT_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "FROG_KNIGHT",
+          "sourceScene": "scenes/creature_visuals/frog_knight.tscn",
+          "bounds": {
+            "left": -159.0,
+            "top": -280.0,
+            "right": 159.0,
+            "bottom": -1.0,
+            "width": 318.0,
+            "height": 279.0
+          },
+          "visualPosition": {
+            "x": 14.0,
+            "y": -36.0
+          },
+          "visualScale": {
+            "x": 0.15,
+            "y": 0.15
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "FUZZY_WURM_CRAWLER_WEAK",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "FUZZY_WURM_CRAWLER",
+          "sourceScene": "scenes/creature_visuals/fuzzy_wurm_crawler.tscn",
+          "bounds": {
+            "left": -136.0,
+            "top": -166.0,
+            "right": 136.0,
+            "bottom": 0.0,
+            "width": 272.0,
+            "height": 166.0
+          },
+          "visualPosition": {
+            "x": 2.0,
+            "y": -26.000002
+          },
+          "visualScale": {
+            "x": 0.35,
+            "y": 0.35
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "GLOBE_HEAD_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "GLOBE_HEAD",
+          "sourceScene": "scenes/creature_visuals/globe_head.tscn",
+          "bounds": {
+            "left": -111.0,
+            "top": -314.0,
+            "right": 111.0,
+            "bottom": 0.0,
+            "width": 222.0,
+            "height": 314.0
+          },
+          "visualPosition": {
+            "x": 30.0,
+            "y": -27.0
+          },
+          "visualScale": {
+            "x": 0.15,
+            "y": 0.15
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "GREMLIN_MERC_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "merc",
+        "sourcePosition": {
+          "x": 1298.0,
+          "y": 694.0
+        },
+        "x": 0.6760416666666667,
+        "y": 0.6425925925925926
+      },
+      {
+        "slotName": "sneaky",
+        "sourcePosition": {
+          "x": 1298.0,
+          "y": 695.0
+        },
+        "x": 0.6760416666666667,
+        "y": 0.6435185185185185
+      },
+      {
+        "slotName": "fat",
+        "sourcePosition": {
+          "x": 1563.0,
+          "y": 659.0
+        },
+        "x": 0.8140625,
+        "y": 0.6101851851851852
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "GREMLIN_MERC",
+          "sourceScene": "scenes/creature_visuals/gremlin_merc.tscn",
+          "bounds": {
+            "left": -140.0,
+            "top": -302.0,
+            "right": 140.0,
+            "bottom": 0.0,
+            "width": 280.0,
+            "height": 302.0
+          },
+          "visualPosition": {
+            "x": 3.0,
+            "y": -13.0
+          },
+          "visualScale": {
+            "x": 0.32,
+            "y": 0.32
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "HAUNTED_SHIP_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "HAUNTED_SHIP",
+          "sourceScene": "scenes/creature_visuals/haunted_ship.tscn",
+          "bounds": {
+            "left": -320.0,
+            "top": -454.0,
+            "right": 320.0,
+            "bottom": 0.0,
+            "width": 640.0,
+            "height": 454.0
+          },
+          "visualPosition": {
+            "x": 42.0,
+            "y": -21.0
+          },
+          "visualScale": {
+            "x": 0.3,
+            "y": 0.3
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "HUNTER_KILLER_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "HUNTER_KILLER",
+          "sourceScene": "scenes/creature_visuals/hunter_killer.tscn",
+          "bounds": {
+            "left": -267.0,
+            "top": -278.0,
+            "right": 267.0,
+            "bottom": 0.0,
+            "width": 534.0,
+            "height": 278.0
+          },
+          "visualPosition": {
+            "x": 40.999996,
+            "y": -35.0
+          },
+          "visualScale": {
+            "x": 0.275,
+            "y": 0.275
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "INFESTED_PRISMS_ELITE",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "INFESTED_PRISM",
+          "sourceScene": "scenes/creature_visuals/infested_prism.tscn",
+          "bounds": {
+            "left": -124.0,
+            "top": -358.0,
+            "right": 115.0,
+            "bottom": 0.0,
+            "width": 239.0,
+            "height": 358.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "visualScale": {
+            "x": 0.35,
+            "y": 0.35
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "INKLETS_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "INKLET",
+          "sourceScene": "scenes/creature_visuals/inklet.tscn",
+          "bounds": {
+            "left": -69.0,
+            "top": -187.0,
+            "right": 71.0,
+            "bottom": 0.0,
+            "width": 140.0,
+            "height": 187.0
+          },
+          "visualPosition": {
+            "x": 10.0,
+            "y": -12.000001
+          },
+          "visualScale": {
+            "x": 0.337954,
+            "y": 0.337954
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "KAISER_CRAB_BOSS",
+    "backgroundUrl": "/images/sts2/encounter-scenes/kaiser-crab-boss-a.webp",
+    "sourceScene": "scenes/backgrounds/kaiser_crab_boss/kaiser_crab_boss_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/kaiser_crab_boss/layers/kaiser_crab_boss_bg_00_a.tscn",
+      "scenes/backgrounds/kaiser_crab_boss/layers/kaiser_crab_boss_bg_01_a.tscn",
+      "scenes/backgrounds/kaiser_crab_boss/layers/kaiser_crab_boss_bg_02_a.tscn",
+      "scenes/backgrounds/kaiser_crab_boss/layers/kaiser_crab_boss_bg_03_a.tscn",
+      "scenes/backgrounds/kaiser_crab_boss/layers/kaiser_crab_boss_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "crusher",
+        "sourcePosition": {
+          "x": 136.0,
+          "y": 736.0
+        },
+        "x": 0.07083333333333333,
+        "y": 0.6814814814814815
+      },
+      {
+        "slotName": "rocket",
+        "sourcePosition": {
+          "x": 1856.0,
+          "y": 712.0
+        },
+        "x": 0.9666666666666667,
+        "y": 0.6592592592592592
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.75,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 35.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "CRUSHER",
+          "sourceScene": "scenes/creature_visuals/crusher.tscn",
+          "bounds": {
+            "left": -220.0,
+            "top": -390.0,
+            "right": 237.0,
+            "bottom": -24.0,
+            "width": 457.0,
+            "height": 366.0
+          },
+          "visualPosition": {
+            "x": -5.0,
+            "y": -200.0
+          },
+          "visualScale": {
+            "x": 1.5,
+            "y": 1.5
+          }
+        },
+        {
+          "monsterId": "ROCKET",
+          "sourceScene": "scenes/creature_visuals/rocket.tscn",
+          "bounds": {
+            "left": -205.0,
+            "top": -331.0,
+            "right": 226.0,
+            "bottom": 0.0,
+            "width": 431.0,
+            "height": 331.0
+          },
+          "visualPosition": {
+            "x": -5.0,
+            "y": -200.0
+          },
+          "visualScale": {
+            "x": -1.5,
+            "y": 1.5
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "KNIGHTS_ELITE",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "first",
+        "sourcePosition": {
+          "x": 1027.0,
+          "y": 697.0
+        },
+        "x": 0.5348958333333333,
+        "y": 0.6453703703703704
+      },
+      {
+        "slotName": "second",
+        "sourcePosition": {
+          "x": 1432.0,
+          "y": 754.0
+        },
+        "x": 0.7458333333333333,
+        "y": 0.6981481481481482
+      },
+      {
+        "slotName": "third",
+        "sourcePosition": {
+          "x": 1830.0,
+          "y": 722.0
+        },
+        "x": 0.953125,
+        "y": 0.6685185185185185
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.87,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 50.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "FLAIL_KNIGHT",
+          "sourceScene": "scenes/creature_visuals/flail_knight.tscn",
+          "bounds": {
+            "left": -209.0,
+            "top": -372.0,
+            "right": 195.0,
+            "bottom": 0.0,
+            "width": 404.0,
+            "height": 372.0
+          },
+          "visualPosition": {
+            "x": 2.0,
+            "y": -16.0
+          },
+          "visualScale": {
+            "x": 0.14,
+            "y": 0.14
+          }
+        },
+        {
+          "monsterId": "SPECTRAL_KNIGHT",
+          "sourceScene": "scenes/creature_visuals/spectral_knight.tscn",
+          "bounds": {
+            "left": -143.0,
+            "top": -314.0,
+            "right": 221.0,
+            "bottom": 16.0,
+            "width": 364.0,
+            "height": 330.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -10.0
+          },
+          "visualScale": {
+            "x": 0.22,
+            "y": 0.22
+          }
+        },
+        {
+          "monsterId": "MAGI_KNIGHT",
+          "sourceScene": "scenes/creature_visuals/magi_knight.tscn",
+          "bounds": {
+            "left": -110.0,
+            "top": -327.0,
+            "right": 110.0,
+            "bottom": 0.0,
+            "width": 220.0,
+            "height": 327.0
+          },
+          "visualPosition": {
+            "x": -20.0,
+            "y": -22.0
+          },
+          "visualScale": {
+            "x": 0.142567,
+            "y": 0.142567
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "KNOWLEDGE_DEMON_BOSS",
+    "backgroundUrl": "/images/sts2/encounter-scenes/knowledge-demon-boss-a.webp",
+    "sourceScene": "scenes/backgrounds/knowledge_demon_boss/knowledge_demon_boss_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/knowledge_demon_boss/layers/knowledge_demon_boss_bg_00_a.tscn",
+      "scenes/backgrounds/knowledge_demon_boss/layers/knowledge_demon_boss_bg_01_a.tscn",
+      "scenes/backgrounds/knowledge_demon_boss/layers/knowledge_demon_boss_bg_02_a.tscn",
+      "scenes/backgrounds/knowledge_demon_boss/layers/knowledge_demon_boss_bg_03_a.tscn",
+      "scenes/backgrounds/knowledge_demon_boss/layers/knowledge_demon_boss_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.85,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 70.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "KNOWLEDGE_DEMON",
+          "sourceScene": "scenes/creature_visuals/knowledge_demon.tscn",
+          "bounds": {
+            "left": -280.0,
+            "top": -642.0,
+            "right": 280.0,
+            "bottom": 0.0,
+            "width": 560.0,
+            "height": 642.0
+          },
+          "visualPosition": {
+            "x": 8.0,
+            "y": -39.0
+          },
+          "visualScale": {
+            "x": 0.28,
+            "y": 0.28
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "LAGAVULIN_MATRIARCH_BOSS",
+    "backgroundUrl": "/images/sts2/encounter-scenes/lagavulin-matriarch-boss-a.webp",
+    "sourceScene": "scenes/backgrounds/lagavulin_matriarch_boss/lagavulin_matriarch_boss_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/lagavulin_matriarch_boss/layers/lagavulin_matriarch_boss_bg_00_a.tscn",
+      "scenes/backgrounds/lagavulin_matriarch_boss/layers/lagavulin_matriarch_boss_bg_01_a.tscn",
+      "scenes/backgrounds/lagavulin_matriarch_boss/layers/lagavulin_matriarch_boss_bg_02_a.tscn",
+      "scenes/backgrounds/lagavulin_matriarch_boss/layers/lagavulin_matriarch_boss_bg_03_a.tscn",
+      "scenes/backgrounds/lagavulin_matriarch_boss/layers/lagavulin_matriarch_boss_bg_04_a.tscn",
+      "scenes/backgrounds/lagavulin_matriarch_boss/layers/lagavulin_matriarch_boss_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.9,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "LAGAVULIN_MATRIARCH",
+          "sourceScene": "scenes/creature_visuals/lagavulin_matriarch.tscn",
+          "bounds": {
+            "left": -404.0,
+            "top": -526.0,
+            "right": 369.0,
+            "bottom": 0.0,
+            "width": 773.0,
+            "height": 526.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -37.0
+          },
+          "visualScale": {
+            "x": 0.3,
+            "y": 0.3
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "LIVING_FOG_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "bomb1",
+        "sourcePosition": {
+          "x": 1085.0,
+          "y": 575.0
+        },
+        "x": 0.5651041666666666,
+        "y": 0.5324074074074074
+      },
+      {
+        "slotName": "bomb2",
+        "sourcePosition": {
+          "x": 1262.0,
+          "y": 361.0
+        },
+        "x": 0.6572916666666667,
+        "y": 0.33425925925925926
+      },
+      {
+        "slotName": "bomb3",
+        "sourcePosition": {
+          "x": 1491.0,
+          "y": 285.0
+        },
+        "x": 0.7765625,
+        "y": 0.2638888888888889
+      },
+      {
+        "slotName": "bomb4",
+        "sourcePosition": {
+          "x": 1723.0,
+          "y": 372.0
+        },
+        "x": 0.8973958333333333,
+        "y": 0.34444444444444444
+      },
+      {
+        "slotName": "livingFog",
+        "sourcePosition": {
+          "x": 1481.0,
+          "y": 729.0
+        },
+        "x": 0.7713541666666667,
+        "y": 0.675
+      },
+      {
+        "slotName": "bomb5",
+        "sourcePosition": {
+          "x": 1875.0,
+          "y": 581.0
+        },
+        "x": 0.9765625,
+        "y": 0.537962962962963
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.9,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "LIVING_FOG",
+          "sourceScene": "scenes/creature_visuals/living_fog.tscn",
+          "bounds": {
+            "left": -148.0,
+            "top": -300.0,
+            "right": 154.0,
+            "bottom": 0.0,
+            "width": 302.0,
+            "height": 300.0
+          },
+          "visualPosition": {
+            "x": -1.0,
+            "y": 1.0
+          },
+          "visualScale": {
+            "x": 0.6,
+            "y": 0.6
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "LOUSE_PROGENITOR_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "LOUSE_PROGENITOR",
+          "sourceScene": "scenes/creature_visuals/louse_progenitor.tscn",
+          "bounds": {
+            "left": -284.0,
+            "top": -367.0,
+            "right": 284.0,
+            "bottom": 0.0,
+            "width": 568.0,
+            "height": 367.0
+          },
+          "visualPosition": {
+            "x": 31.0,
+            "y": -34.0
+          },
+          "visualScale": {
+            "x": 0.194175,
+            "y": 0.194175
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "MAWLER_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "MAWLER",
+          "sourceScene": "scenes/creature_visuals/mawler.tscn",
+          "bounds": {
+            "left": -255.0,
+            "top": -327.0,
+            "right": 255.0,
+            "bottom": 0.0,
+            "width": 510.0,
+            "height": 327.0
+          },
+          "visualPosition": {
+            "x": 2.0,
+            "y": -26.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "MECHA_KNIGHT_ELITE",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.9,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 50.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "MECHA_KNIGHT",
+          "sourceScene": "scenes/creature_visuals/mecha_knight.tscn",
+          "bounds": {
+            "left": -330.0,
+            "top": -502.0,
+            "right": 330.0,
+            "bottom": 0.0,
+            "width": 660.0,
+            "height": 502.0
+          },
+          "visualPosition": {
+            "x": 29.0,
+            "y": -46.0
+          },
+          "visualScale": {
+            "x": 0.15,
+            "y": 0.15
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "MYSTERIOUS_KNIGHT_EVENT_ENCOUNTER",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "MYSTERIOUS_KNIGHT",
+          "sourceScene": "scenes/creature_visuals/mysterious_knight.tscn",
+          "bounds": {
+            "left": -246.0,
+            "top": -437.0,
+            "right": 246.0,
+            "bottom": 0.0,
+            "width": 492.0,
+            "height": 437.0
+          },
+          "visualPosition": {
+            "x": 5.9999995,
+            "y": -21.000004
+          },
+          "visualScale": {
+            "x": 0.17,
+            "y": 0.17
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "MYTES_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "first",
+        "sourcePosition": {
+          "x": 1245.0,
+          "y": 711.0
+        },
+        "x": 0.6484375,
+        "y": 0.6583333333333333
+      },
+      {
+        "slotName": "second",
+        "sourcePosition": {
+          "x": 1736.0,
+          "y": 737.0
+        },
+        "x": 0.9041666666666667,
+        "y": 0.6824074074074075
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.9,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 50.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "MYTE",
+          "sourceScene": "scenes/creature_visuals/myte.tscn",
+          "bounds": {
+            "left": -154.0,
+            "top": -254.0,
+            "right": 154.0,
+            "bottom": 0.0,
+            "width": 308.0,
+            "height": 254.0
+          },
+          "visualPosition": {
+            "x": -12.0,
+            "y": -32.0
+          },
+          "visualScale": {
+            "x": 0.24,
+            "y": 0.24
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "NIBBITS_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "front",
+        "sourcePosition": {
+          "x": 1225.0,
+          "y": 686.0
+        },
+        "x": 0.6380208333333334,
+        "y": 0.6351851851851852
+      },
+      {
+        "slotName": "back",
+        "sourcePosition": {
+          "x": 1538.0,
+          "y": 713.0
+        },
+        "x": 0.8010416666666667,
+        "y": 0.6601851851851852
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "NIBBIT",
+          "sourceScene": "scenes/creature_visuals/nibbit.tscn",
+          "bounds": {
+            "left": -135.0,
+            "top": -146.0,
+            "right": 135.0,
+            "bottom": 0.0,
+            "width": 270.0,
+            "height": 146.0
+          },
+          "visualPosition": {
+            "x": -16.0,
+            "y": -17.0
+          },
+          "visualScale": {
+            "x": 0.28,
+            "y": 0.28
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "NIBBITS_WEAK",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "NIBBIT",
+          "sourceScene": "scenes/creature_visuals/nibbit.tscn",
+          "bounds": {
+            "left": -135.0,
+            "top": -146.0,
+            "right": 135.0,
+            "bottom": 0.0,
+            "width": 270.0,
+            "height": 146.0
+          },
+          "visualPosition": {
+            "x": -16.0,
+            "y": -17.0
+          },
+          "visualScale": {
+            "x": 0.28,
+            "y": 0.28
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "OVERGROWTH_CRAWLERS",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "SHRINKER_BEETLE",
+          "sourceScene": "scenes/creature_visuals/shrinker_beetle.tscn",
+          "bounds": {
+            "left": -120.0,
+            "top": -161.0,
+            "right": 120.0,
+            "bottom": 0.0,
+            "width": 240.0,
+            "height": 161.0
+          },
+          "visualPosition": {
+            "x": 8.0,
+            "y": -19.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        },
+        {
+          "monsterId": "FUZZY_WURM_CRAWLER",
+          "sourceScene": "scenes/creature_visuals/fuzzy_wurm_crawler.tscn",
+          "bounds": {
+            "left": -136.0,
+            "top": -166.0,
+            "right": 136.0,
+            "bottom": 0.0,
+            "width": 272.0,
+            "height": 166.0
+          },
+          "visualPosition": {
+            "x": 2.0,
+            "y": -26.000002
+          },
+          "visualScale": {
+            "x": 0.35,
+            "y": 0.35
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "OVICOPTER_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "egg1",
+        "sourcePosition": {
+          "x": 961.0,
+          "y": 678.0
+        },
+        "x": 0.5005208333333333,
+        "y": 0.6277777777777778
+      },
+      {
+        "slotName": "egg2",
+        "sourcePosition": {
+          "x": 1140.0,
+          "y": 697.0
+        },
+        "x": 0.59375,
+        "y": 0.6453703703703704
+      },
+      {
+        "slotName": "egg3",
+        "sourcePosition": {
+          "x": 1323.0,
+          "y": 654.0
+        },
+        "x": 0.6890625,
+        "y": 0.6055555555555555
+      },
+      {
+        "slotName": "egg4",
+        "sourcePosition": {
+          "x": 1498.0,
+          "y": 705.0
+        },
+        "x": 0.7802083333333333,
+        "y": 0.6527777777777778
+      },
+      {
+        "slotName": "egg5",
+        "sourcePosition": {
+          "x": 1651.0,
+          "y": 665.0
+        },
+        "x": 0.8598958333333333,
+        "y": 0.6157407407407407
+      },
+      {
+        "slotName": "ovicopter",
+        "sourcePosition": {
+          "x": 1971.0,
+          "y": 699.0
+        },
+        "x": 1.0265625,
+        "y": 0.6472222222222223
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.8,
+      "cameraOffset": {
+        "x": -100.0,
+        "y": 50.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "OVICOPTER",
+          "sourceScene": "scenes/creature_visuals/ovicopter.tscn",
+          "bounds": {
+            "left": -192.0,
+            "top": -476.0,
+            "right": 211.0,
+            "bottom": 0.0,
+            "width": 403.0,
+            "height": 476.0
+          },
+          "visualPosition": {
+            "x": -18.0,
+            "y": -13.0
+          },
+          "visualScale": {
+            "x": 0.3,
+            "y": 0.3
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "OWL_MAGISTRATE_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "OWL_MAGISTRATE",
+          "sourceScene": "scenes/creature_visuals/owl_magistrate.tscn",
+          "bounds": {
+            "left": -260.0,
+            "top": -368.0,
+            "right": 244.0,
+            "bottom": 0.0,
+            "width": 504.0,
+            "height": 368.0
+          },
+          "visualPosition": {
+            "x": 12.0,
+            "y": -49.0
+          },
+          "visualScale": {
+            "x": 0.13,
+            "y": 0.13
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "PHANTASMAL_GARDENERS_ELITE",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "first",
+        "sourcePosition": {
+          "x": 1025.0,
+          "y": 705.0
+        },
+        "x": 0.5338541666666666,
+        "y": 0.6527777777777778
+      },
+      {
+        "slotName": "second",
+        "sourcePosition": {
+          "x": 1300.0,
+          "y": 737.0
+        },
+        "x": 0.6770833333333334,
+        "y": 0.6824074074074075
+      },
+      {
+        "slotName": "third",
+        "sourcePosition": {
+          "x": 1600.0,
+          "y": 724.0
+        },
+        "x": 0.8333333333333334,
+        "y": 0.6703703703703704
+      },
+      {
+        "slotName": "fourth",
+        "sourcePosition": {
+          "x": 1900.0,
+          "y": 724.0
+        },
+        "x": 0.9895833333333334,
+        "y": 0.6703703703703704
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.85,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 40.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "PHANTASMAL_GARDENER",
+          "sourceScene": "scenes/creature_visuals/phantasmal_gardener.tscn",
+          "bounds": {
+            "left": -104.0,
+            "top": -380.0,
+            "right": 104.0,
+            "bottom": 0.0,
+            "width": 208.0,
+            "height": 380.0
+          },
+          "visualPosition": {
+            "x": -2.0,
+            "y": -12.0
+          },
+          "visualScale": {
+            "x": 0.3,
+            "y": 0.3
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "PHROG_PARASITE_ELITE",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "phrog",
+        "sourcePosition": {
+          "x": 1366.0,
+          "y": 694.0
+        },
+        "x": 0.7114583333333333,
+        "y": 0.6425925925925926
+      },
+      {
+        "slotName": "wriggler1",
+        "sourcePosition": {
+          "x": 1049.0,
+          "y": 684.0
+        },
+        "x": 0.5463541666666667,
+        "y": 0.6333333333333333
+      },
+      {
+        "slotName": "wriggler2",
+        "sourcePosition": {
+          "x": 1270.0,
+          "y": 705.0
+        },
+        "x": 0.6614583333333334,
+        "y": 0.6527777777777778
+      },
+      {
+        "slotName": "wriggler3",
+        "sourcePosition": {
+          "x": 1511.0,
+          "y": 713.0
+        },
+        "x": 0.7869791666666667,
+        "y": 0.6601851851851852
+      },
+      {
+        "slotName": "wriggler4",
+        "sourcePosition": {
+          "x": 1736.0,
+          "y": 689.0
+        },
+        "x": 0.9041666666666667,
+        "y": 0.637962962962963
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.95,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "PHROG_PARASITE",
+          "sourceScene": "scenes/creature_visuals/phrog_parasite.tscn",
+          "bounds": {
+            "left": -252.0,
+            "top": -480.0,
+            "right": 252.0,
+            "bottom": 0.0,
+            "width": 504.0,
+            "height": 480.0
+          },
+          "visualPosition": {
+            "x": 2.0,
+            "y": -31.000004
+          },
+          "visualScale": {
+            "x": 0.314,
+            "y": 0.314
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "PUNCH_CONSTRUCT_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "PUNCH_CONSTRUCT",
+          "sourceScene": "scenes/creature_visuals/punch_construct.tscn",
+          "bounds": {
+            "left": -136.0,
+            "top": -306.0,
+            "right": 136.0,
+            "bottom": 0.0,
+            "width": 272.0,
+            "height": 306.0
+          },
+          "visualPosition": {
+            "x": 6.0,
+            "y": -25.0
+          },
+          "visualScale": {
+            "x": 0.32,
+            "y": 0.32
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "PUNCH_OFF_EVENT_ENCOUNTER",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "PUNCH_CONSTRUCT",
+          "sourceScene": "scenes/creature_visuals/punch_construct.tscn",
+          "bounds": {
+            "left": -136.0,
+            "top": -306.0,
+            "right": 136.0,
+            "bottom": 0.0,
+            "width": 272.0,
+            "height": 306.0
+          },
+          "visualPosition": {
+            "x": 6.0,
+            "y": -25.0
+          },
+          "visualScale": {
+            "x": 0.32,
+            "y": 0.32
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "QUEEN_BOSS",
+    "backgroundUrl": "/images/sts2/encounter-scenes/queen-boss-a.webp",
+    "sourceScene": "scenes/backgrounds/queen_boss/queen_boss_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/queen_boss/layers/queen_boss_bg_00_a.tscn",
+      "scenes/backgrounds/queen_boss/layers/queen_boss_bg_01_a.tscn",
+      "scenes/backgrounds/queen_boss/layers/queen_boss_bg_02_a.tscn",
+      "scenes/backgrounds/queen_boss/layers/queen_boss_bg_03_a.tscn",
+      "scenes/backgrounds/queen_boss/layers/queen_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "queen",
+      "lightTextureUrl": "/images/sts2/encounter-scenes/queen-light.webp"
+    },
+    "backgroundSpineAsset": {
+      "id": "QUEEN_BOSS_CAGES",
+      "source": "scenes/backgrounds/queen_boss/false_queen_cages",
+      "renderStatus": "spine",
+      "renderTags": [
+        "encounter-background"
+      ],
+      "atlasUrl": "/spine/sts2/encounter-backgrounds/false_queen_cages/false_queen_cages.atlas",
+      "binaryUrl": "/spine/sts2/encounter-backgrounds/false_queen_cages/false_queen_cages.skel",
+      "textureUrls": [
+        "/spine/sts2/encounter-backgrounds/false_queen_cages/false_queen_cages.png"
+      ],
+      "skin": null,
+      "skins": [
+        "default"
+      ],
+      "viewport": {
+        "x": -1.000244140625,
+        "y": -2881.00048828125,
+        "width": 6146.0009765625,
+        "height": 2894.234375,
+        "padLeft": "0%",
+        "padRight": "0%",
+        "padTop": "0%",
+        "padBottom": "0%"
+      },
+      "animations": [
+        "animation"
+      ],
+      "bestiaryAnimations": [],
+      "idleAnimation": "animation",
+      "moveAnimations": {},
+      "moveEffects": {}
+    },
+    "monsterSlots": [
+      {
+        "slotName": "amalgam",
+        "sourcePosition": {
+          "x": 1207.0,
+          "y": 709.0
+        },
+        "x": 0.6286458333333333,
+        "y": 0.6564814814814814
+      },
+      {
+        "slotName": "queen",
+        "sourcePosition": {
+          "x": 1606.0,
+          "y": 695.0
+        },
+        "x": 0.8364583333333333,
+        "y": 0.6435185185185185
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.9,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 60.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "TORCH_HEAD_AMALGAM",
+          "sourceScene": "scenes/creature_visuals/torch_head_amalgam.tscn",
+          "bounds": {
+            "left": -175.0,
+            "top": -316.0,
+            "right": 175.0,
+            "bottom": 0.0,
+            "width": 350.0,
+            "height": 316.0
+          },
+          "visualPosition": {
+            "x": 22.0,
+            "y": -18.0
+          },
+          "visualScale": {
+            "x": 0.15,
+            "y": 0.15
+          }
+        },
+        {
+          "monsterId": "QUEEN",
+          "sourceScene": "scenes/creature_visuals/queen.tscn",
+          "bounds": {
+            "left": -158.0,
+            "top": -497.0,
+            "right": 158.0,
+            "bottom": 0.0,
+            "width": 316.0,
+            "height": 497.0
+          },
+          "visualPosition": {
+            "x": 11.999996,
+            "y": -26.0
+          },
+          "visualScale": {
+            "x": 0.14,
+            "y": 0.14
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "RUBY_RAIDERS_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "AXE_RUBY_RAIDER",
+          "sourceScene": "scenes/creature_visuals/axe_ruby_raider.tscn",
+          "bounds": {
+            "left": -122.0,
+            "top": -230.0,
+            "right": 122.0,
+            "bottom": 0.0,
+            "width": 244.0,
+            "height": 230.0
+          },
+          "visualPosition": {
+            "x": 22.0,
+            "y": -22.0
+          },
+          "visualScale": {
+            "x": 0.22,
+            "y": 0.22
+          }
+        },
+        {
+          "monsterId": "ASSASSIN_RUBY_RAIDER",
+          "sourceScene": "scenes/creature_visuals/assassin_ruby_raider.tscn",
+          "bounds": {
+            "left": -122.0,
+            "top": -287.0,
+            "right": 122.0,
+            "bottom": 1.0,
+            "width": 244.0,
+            "height": 288.0
+          },
+          "visualPosition": {
+            "x": 8.0,
+            "y": -16.0
+          },
+          "visualScale": {
+            "x": 0.244807,
+            "y": 0.244807
+          }
+        },
+        {
+          "monsterId": "BRUTE_RUBY_RAIDER",
+          "sourceScene": "scenes/creature_visuals/brute_ruby_raider.tscn",
+          "bounds": {
+            "left": -114.0,
+            "top": -351.0,
+            "right": 114.0,
+            "bottom": 0.0,
+            "width": 228.0,
+            "height": 351.0
+          },
+          "visualPosition": {
+            "x": 2.38419e-07,
+            "y": -22.0
+          },
+          "visualScale": {
+            "x": 0.22,
+            "y": 0.22
+          }
+        },
+        {
+          "monsterId": "CROSSBOW_RUBY_RAIDER",
+          "sourceScene": "scenes/creature_visuals/crossbow_ruby_raider.tscn",
+          "bounds": {
+            "left": -114.0,
+            "top": -292.0,
+            "right": 114.0,
+            "bottom": 0.0,
+            "width": 228.0,
+            "height": 292.0
+          },
+          "visualPosition": {
+            "x": 23.0,
+            "y": -23.0
+          },
+          "visualScale": {
+            "x": 0.21,
+            "y": 0.21
+          }
+        },
+        {
+          "monsterId": "TRACKER_RUBY_RAIDER",
+          "sourceScene": "scenes/creature_visuals/tracker_ruby_raider.tscn",
+          "bounds": {
+            "left": -144.0,
+            "top": -236.0,
+            "right": 159.0,
+            "bottom": 0.0,
+            "width": 303.0,
+            "height": 236.0
+          },
+          "visualPosition": {
+            "x": 42.5129,
+            "y": -46.2764
+          },
+          "visualScale": {
+            "x": 0.2,
+            "y": 0.2
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "SCROLLS_OF_BITING_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "SCROLL_OF_BITING",
+          "sourceScene": "scenes/creature_visuals/scroll_of_biting.tscn",
+          "bounds": {
+            "left": -87.0,
+            "top": -166.0,
+            "right": 96.0,
+            "bottom": 0.0,
+            "width": 183.0,
+            "height": 166.0
+          },
+          "visualPosition": {
+            "x": 17.0,
+            "y": -29.0
+          },
+          "visualScale": {
+            "x": 0.27,
+            "y": 0.27
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "SCROLLS_OF_BITING_WEAK",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "SCROLL_OF_BITING",
+          "sourceScene": "scenes/creature_visuals/scroll_of_biting.tscn",
+          "bounds": {
+            "left": -87.0,
+            "top": -166.0,
+            "right": 96.0,
+            "bottom": 0.0,
+            "width": 183.0,
+            "height": 166.0
+          },
+          "visualPosition": {
+            "x": 17.0,
+            "y": -29.0
+          },
+          "visualScale": {
+            "x": 0.27,
+            "y": 0.27
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "SEAPUNK_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "CALCIFIED_CULTIST",
+          "sourceScene": "scenes/creature_visuals/calcified_cultist.tscn",
+          "bounds": {
+            "left": -130.0,
+            "top": -295.0,
+            "right": 120.0,
+            "bottom": 0.0,
+            "width": 250.0,
+            "height": 295.0
+          },
+          "visualPosition": {
+            "x": 16.0,
+            "y": -23.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        },
+        {
+          "monsterId": "SEAPUNK",
+          "sourceScene": "scenes/creature_visuals/seapunk.tscn",
+          "bounds": {
+            "left": -100.0,
+            "top": -212.0,
+            "right": 100.0,
+            "bottom": 0.0,
+            "width": 200.0,
+            "height": 212.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -20.0
+          },
+          "visualScale": {
+            "x": 0.255959,
+            "y": 0.255959
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "SEAPUNK_WEAK",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "SEAPUNK",
+          "sourceScene": "scenes/creature_visuals/seapunk.tscn",
+          "bounds": {
+            "left": -100.0,
+            "top": -212.0,
+            "right": 100.0,
+            "bottom": 0.0,
+            "width": 200.0,
+            "height": 212.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -20.0
+          },
+          "visualScale": {
+            "x": 0.255959,
+            "y": 0.255959
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "SEWER_CLAM_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "SEWER_CLAM",
+          "sourceScene": "scenes/creature_visuals/sewer_clam.tscn",
+          "bounds": {
+            "left": -185.0,
+            "top": -337.0,
+            "right": 178.0,
+            "bottom": 0.0,
+            "width": 363.0,
+            "height": 337.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -29.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "SHRINKER_BEETLE_WEAK",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "SHRINKER_BEETLE",
+          "sourceScene": "scenes/creature_visuals/shrinker_beetle.tscn",
+          "bounds": {
+            "left": -120.0,
+            "top": -161.0,
+            "right": 120.0,
+            "bottom": 0.0,
+            "width": 240.0,
+            "height": 161.0
+          },
+          "visualPosition": {
+            "x": 8.0,
+            "y": -19.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "SKULKING_COLONY_ELITE",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "SKULKING_COLONY",
+          "sourceScene": "scenes/creature_visuals/skulking_colony.tscn",
+          "bounds": {
+            "left": -167.0,
+            "top": -437.0,
+            "right": 168.0,
+            "bottom": 0.0,
+            "width": 335.0,
+            "height": 437.0
+          },
+          "visualPosition": {
+            "x": -3.0,
+            "y": -23.0
+          },
+          "visualScale": {
+            "x": 0.34,
+            "y": 0.34
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "SLIMED_BERSERKER_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "SLIMED_BERSERKER",
+          "sourceScene": "scenes/creature_visuals/slimed_berserker.tscn",
+          "bounds": {
+            "left": -320.0,
+            "top": -360.0,
+            "right": 320.0,
+            "bottom": 0.0,
+            "width": 640.0,
+            "height": 360.0
+          },
+          "visualPosition": {
+            "x": -21.08997,
+            "y": -43.0
+          },
+          "visualScale": {
+            "x": 0.15,
+            "y": 0.15
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "SLIMES_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.9,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 50.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "TWIG_SLIME_M",
+          "sourceScene": "scenes/creature_visuals/twig_slime_m.tscn",
+          "bounds": {
+            "left": -106.0,
+            "top": -166.0,
+            "right": 106.0,
+            "bottom": 0.0,
+            "width": 212.0,
+            "height": 166.0
+          },
+          "visualPosition": {
+            "x": -6.0,
+            "y": -10.0
+          },
+          "visualScale": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "monsterId": "LEAF_SLIME_M",
+          "sourceScene": "scenes/creature_visuals/leaf_slime_m.tscn",
+          "bounds": {
+            "left": -100.0,
+            "top": -143.0,
+            "right": 100.0,
+            "bottom": 0.0,
+            "width": 200.0,
+            "height": 143.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -24.0
+          },
+          "visualScale": {
+            "x": 0.45,
+            "y": 0.45
+          }
+        },
+        {
+          "monsterId": "LEAF_SLIME_S",
+          "sourceScene": "scenes/creature_visuals/leaf_slime_s.tscn",
+          "bounds": {
+            "left": -77.0,
+            "top": -102.0,
+            "right": 77.0,
+            "bottom": 0.0,
+            "width": 154.0,
+            "height": 102.0
+          },
+          "visualPosition": {
+            "x": -4.7683716e-07,
+            "y": -22.0
+          },
+          "visualScale": {
+            "x": 0.273444,
+            "y": 0.273444
+          }
+        },
+        {
+          "monsterId": "TWIG_SLIME_S",
+          "sourceScene": "scenes/creature_visuals/twig_slime_s.tscn",
+          "bounds": {
+            "left": -70.0,
+            "top": -106.0,
+            "right": 70.0,
+            "bottom": 0.0,
+            "width": 140.0,
+            "height": 106.0
+          },
+          "visualPosition": {
+            "x": 1.0,
+            "y": -23.999998
+          },
+          "visualScale": {
+            "x": 0.275,
+            "y": 0.275
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "SLIMES_WEAK",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "LEAF_SLIME_S",
+          "sourceScene": "scenes/creature_visuals/leaf_slime_s.tscn",
+          "bounds": {
+            "left": -77.0,
+            "top": -102.0,
+            "right": 77.0,
+            "bottom": 0.0,
+            "width": 154.0,
+            "height": 102.0
+          },
+          "visualPosition": {
+            "x": -4.7683716e-07,
+            "y": -22.0
+          },
+          "visualScale": {
+            "x": 0.273444,
+            "y": 0.273444
+          }
+        },
+        {
+          "monsterId": "LEAF_SLIME_M",
+          "sourceScene": "scenes/creature_visuals/leaf_slime_m.tscn",
+          "bounds": {
+            "left": -100.0,
+            "top": -143.0,
+            "right": 100.0,
+            "bottom": 0.0,
+            "width": 200.0,
+            "height": 143.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -24.0
+          },
+          "visualScale": {
+            "x": 0.45,
+            "y": 0.45
+          }
+        },
+        {
+          "monsterId": "TWIG_SLIME_S",
+          "sourceScene": "scenes/creature_visuals/twig_slime_s.tscn",
+          "bounds": {
+            "left": -70.0,
+            "top": -106.0,
+            "right": 70.0,
+            "bottom": 0.0,
+            "width": 140.0,
+            "height": 106.0
+          },
+          "visualPosition": {
+            "x": 1.0,
+            "y": -23.999998
+          },
+          "visualScale": {
+            "x": 0.275,
+            "y": 0.275
+          }
+        },
+        {
+          "monsterId": "TWIG_SLIME_M",
+          "sourceScene": "scenes/creature_visuals/twig_slime_m.tscn",
+          "bounds": {
+            "left": -106.0,
+            "top": -166.0,
+            "right": 106.0,
+            "bottom": 0.0,
+            "width": 212.0,
+            "height": 166.0
+          },
+          "visualPosition": {
+            "x": -6.0,
+            "y": -10.0
+          },
+          "visualScale": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        }
+      ]
+    }
+  },
+  {
     "id": "SLITHERING_STRANGLER_NORMAL",
     "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
     "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
@@ -45,6 +4859,26 @@
           },
           "visualPosition": {
             "x": 10.0,
+            "y": -23.0
+          },
+          "visualScale": {
+            "x": 0.3,
+            "y": 0.3
+          }
+        },
+        {
+          "monsterId": "SLITHERING_STRANGLER",
+          "sourceScene": "scenes/creature_visuals/slithering_strangler.tscn",
+          "bounds": {
+            "left": -99.0,
+            "top": -220.0,
+            "right": 99.0,
+            "bottom": 0.0,
+            "width": 198.0,
+            "height": 220.0
+          },
+          "visualPosition": {
+            "x": 15.0,
             "y": -23.0
           },
           "visualScale": {
@@ -131,21 +4965,180 @@
             "x": 0.275,
             "y": 0.275
           }
-        },
+        }
+      ]
+    }
+  },
+  {
+    "id": "SLUDGE_SPINNER_WEAK",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
         {
-          "monsterId": "SLITHERING_STRANGLER",
-          "sourceScene": "scenes/creature_visuals/slithering_strangler.tscn",
+          "monsterId": "SLUDGE_SPINNER",
+          "sourceScene": "scenes/creature_visuals/sludge_spinner.tscn",
           "bounds": {
-            "left": -99.0,
-            "top": -220.0,
-            "right": 99.0,
+            "left": -96.0,
+            "top": -246.0,
+            "right": 96.0,
             "bottom": 0.0,
-            "width": 198.0,
-            "height": 220.0
+            "width": 192.0,
+            "height": 246.0
           },
           "visualPosition": {
-            "x": 15.0,
-            "y": -23.0
+            "x": 0.0,
+            "y": -8.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "SLUMBERING_BEETLE_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "first",
+        "sourcePosition": {
+          "x": 957.0,
+          "y": 692.0
+        },
+        "x": 0.4984375,
+        "y": 0.6407407407407407
+      },
+      {
+        "slotName": "second",
+        "sourcePosition": {
+          "x": 1180.0,
+          "y": 741.0
+        },
+        "x": 0.6145833333333334,
+        "y": 0.6861111111111111
+      },
+      {
+        "slotName": "third",
+        "sourcePosition": {
+          "x": 1708.0,
+          "y": 717.0
+        },
+        "x": 0.8895833333333333,
+        "y": 0.6638888888888889
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.85,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 50.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "BOWLBUG_ROCK",
+          "sourceScene": "scenes/creature_visuals/bowlbug_rock.tscn",
+          "bounds": {
+            "left": -100.0,
+            "top": -150.0,
+            "right": 100.0,
+            "bottom": 0.0,
+            "width": 200.0,
+            "height": 150.0
+          },
+          "visualPosition": {
+            "x": 16.0,
+            "y": -20.0
+          },
+          "visualScale": {
+            "x": 0.275,
+            "y": 0.275
+          }
+        },
+        {
+          "monsterId": "BOWLBUG_SILK",
+          "sourceScene": "scenes/creature_visuals/bowlbug_silk.tscn",
+          "bounds": {
+            "left": -100.0,
+            "top": -150.0,
+            "right": 100.0,
+            "bottom": 0.0,
+            "width": 200.0,
+            "height": 150.0
+          },
+          "visualPosition": {
+            "x": 16.0,
+            "y": -20.0
+          },
+          "visualScale": {
+            "x": 0.275,
+            "y": 0.275
+          }
+        },
+        {
+          "monsterId": "SLUMBERING_BEETLE",
+          "sourceScene": "scenes/creature_visuals/slumbering_beetle.tscn",
+          "bounds": {
+            "left": -406.0,
+            "top": -368.0,
+            "right": 354.0,
+            "bottom": 0.0,
+            "width": 760.0,
+            "height": 368.0
+          },
+          "visualPosition": {
+            "x": 54.0,
+            "y": -24.0
           },
           "visualScale": {
             "x": 0.3,
@@ -156,74 +5149,264 @@
     }
   },
   {
-    "id": "QUEEN_BOSS",
-    "backgroundUrl": "/images/sts2/encounter-scenes/queen-boss-a.webp",
-    "sourceScene": "scenes/backgrounds/queen_boss/queen_boss_background.tscn",
+    "id": "SNAPPING_JAXFRUIT_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
     "sourceLayers": [
-      "scenes/backgrounds/queen_boss/layers/queen_boss_bg_00_a.tscn",
-      "scenes/backgrounds/queen_boss/layers/queen_boss_bg_01_a.tscn",
-      "scenes/backgrounds/queen_boss/layers/queen_boss_bg_02_a.tscn",
-      "scenes/backgrounds/queen_boss/layers/queen_boss_bg_03_a.tscn",
-      "scenes/backgrounds/queen_boss/layers/queen_fg_a.tscn"
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
     ],
     "ambientVfx": {
-      "kind": "queen",
-      "lightTextureUrl": "/images/sts2/encounter-scenes/queen-light.webp"
+      "kind": "fireflies"
     },
-    "backgroundSpineAsset": {
-      "id": "QUEEN_BOSS_CAGES",
-      "source": "scenes/backgrounds/queen_boss/false_queen_cages",
-      "renderStatus": "spine",
-      "renderTags": [
-        "encounter-background"
-      ],
-      "atlasUrl": "/spine/sts2/encounter-backgrounds/false_queen_cages/false_queen_cages.atlas",
-      "binaryUrl": "/spine/sts2/encounter-backgrounds/false_queen_cages/false_queen_cages.skel",
-      "textureUrls": [
-        "/spine/sts2/encounter-backgrounds/false_queen_cages/false_queen_cages.png"
-      ],
-      "skin": null,
-      "skins": [
-        "default"
-      ],
-      "viewport": {
-        "x": -1.000244140625,
-        "y": -2881.00048828125,
-        "width": 6146.0009765625,
-        "height": 2894.234375,
-        "padLeft": "0%",
-        "padRight": "0%",
-        "padTop": "0%",
-        "padBottom": "0%"
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
       },
-      "animations": [
-        "animation"
-      ],
-      "bestiaryAnimations": [],
-      "idleAnimation": "animation",
-      "moveAnimations": {},
-      "moveEffects": {}
-    },
-    "monsterSlots": [
-      {
-        "monsterId": "TORCH_HEAD_AMALGAM",
-        "sourcePosition": {
-          "x": 1207,
-          "y": 709
-        },
-        "x": 0.6286458333333333,
-        "y": 0.6564814814814814
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
       },
-      {
-        "monsterId": "QUEEN",
-        "sourcePosition": {
-          "x": 1606,
-          "y": 695
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "SNAPPING_JAXFRUIT",
+          "sourceScene": "scenes/creature_visuals/snapping_jaxfruit.tscn",
+          "bounds": {
+            "left": -115.0,
+            "top": -254.0,
+            "right": 115.0,
+            "bottom": 0.0,
+            "width": 230.0,
+            "height": 254.0
+          },
+          "visualPosition": {
+            "x": 10.0,
+            "y": -23.0
+          },
+          "visualScale": {
+            "x": 0.3,
+            "y": 0.3
+          }
         },
-        "x": 0.8364583333333333,
-        "y": 0.6435185185185185
-      }
+        {
+          "monsterId": "FLYCONID",
+          "sourceScene": "scenes/creature_visuals/flyconid.tscn",
+          "bounds": {
+            "left": -114.0,
+            "top": -309.0,
+            "right": 114.0,
+            "bottom": 0.0,
+            "width": 228.0,
+            "height": 309.0
+          },
+          "visualPosition": {
+            "x": -9.0,
+            "y": 19.0
+          },
+          "visualScale": {
+            "x": 0.4,
+            "y": 0.4
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "SOUL_FYSH_BOSS",
+    "backgroundUrl": "/images/sts2/encounter-scenes/soul-fysh-boss-a.webp",
+    "sourceScene": "scenes/backgrounds/soul_fysh_boss/soul_fysh_boss_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/soul_fysh_boss/layers/soul_fysh_boss_bg_00_a.tscn",
+      "scenes/backgrounds/soul_fysh_boss/layers/soul_fysh_boss_bg_01_a.tscn",
+      "scenes/backgrounds/soul_fysh_boss/layers/soul_fysh_boss_bg_02_a.tscn",
+      "scenes/backgrounds/soul_fysh_boss/layers/soul_fysh_boss_bg_03_a.tscn",
+      "scenes/backgrounds/soul_fysh_boss/layers/soul_fysh_boss_bg_04_a.tscn",
+      "scenes/backgrounds/soul_fysh_boss/layers/soul_fysh_boss_fg_a.tscn"
     ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "SOUL_FYSH",
+          "sourceScene": "scenes/creature_visuals/soul_fysh.tscn",
+          "bounds": {
+            "left": -242.0,
+            "top": -436.0,
+            "right": 242.0,
+            "bottom": 0.0,
+            "width": 484.0,
+            "height": 436.0
+          },
+          "visualPosition": {
+            "x": 8.0,
+            "y": 0.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "SOUL_NEXUS_ELITE",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "SOUL_NEXUS",
+          "sourceScene": "scenes/creature_visuals/soul_nexus.tscn",
+          "bounds": {
+            "left": -180.0,
+            "top": -419.0,
+            "right": 204.0,
+            "bottom": 0.0,
+            "width": 384.0,
+            "height": 419.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -31.0
+          },
+          "visualScale": {
+            "x": 0.3,
+            "y": 0.3
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "SPINY_TOAD_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "SPINY_TOAD",
+          "sourceScene": "scenes/creature_visuals/spiny_toad.tscn",
+          "bounds": {
+            "left": -280.0,
+            "top": -414.0,
+            "right": 280.0,
+            "bottom": 0.0,
+            "width": 560.0,
+            "height": 414.0
+          },
+          "visualPosition": {
+            "x": -13.0,
+            "y": -44.0
+          },
+          "visualScale": {
+            "x": 0.275,
+            "y": 0.275
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TERROR_EEL_ELITE",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
     "combatLayout": {
       "coordinateSize": {
         "width": 1920,
@@ -232,7 +5415,250 @@
       "cameraScaling": 0.9,
       "cameraOffset": {
         "x": 0.0,
-        "y": 60.0
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "TERROR_EEL",
+          "sourceScene": "scenes/creature_visuals/terror_eel.tscn",
+          "bounds": {
+            "left": -356.0,
+            "top": -357.0,
+            "right": 356.0,
+            "bottom": 0.0,
+            "width": 712.0,
+            "height": 357.0
+          },
+          "visualPosition": {
+            "x": 0.99999994,
+            "y": 5.0
+          },
+          "visualScale": {
+            "x": 0.2,
+            "y": 0.2
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TEST_SUBJECT_BOSS",
+    "backgroundUrl": "/images/sts2/encounter-scenes/test-subject-boss-a.webp",
+    "sourceScene": "scenes/backgrounds/test_subject_boss/test_subject_boss_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/test_subject_boss/layers/test_subject_boss_bg_00_a.tscn",
+      "scenes/backgrounds/test_subject_boss/layers/test_subject_boss_bg_01_a.tscn",
+      "scenes/backgrounds/test_subject_boss/layers/test_subject_boss_bg_02_a.tscn",
+      "scenes/backgrounds/test_subject_boss/layers/test_subject_boss_bg_03_a.tscn",
+      "scenes/backgrounds/test_subject_boss/layers/test_subject_boss_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "TEST_SUBJECT",
+          "sourceScene": "scenes/creature_visuals/test_subject.tscn",
+          "bounds": {
+            "left": -253.0,
+            "top": -292.0,
+            "right": 221.0,
+            "bottom": 0.0,
+            "width": 474.0,
+            "height": 292.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "visualScale": {
+            "x": 0.9,
+            "y": 0.9
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "THE_ARCHITECT_EVENT_ENCOUNTER",
+    "backgroundUrl": "/images/sts2/encounter-scenes/the-architect-event-encounter-a.webp",
+    "sourceScene": "scenes/backgrounds/the_architect_event_encounter/the_architect_event_encounter_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/the_architect_event_encounter/layers/the_architect_event_encounter_bg_00_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "ARCHITECT",
+          "sourceScene": "scenes/creature_visuals/architect.tscn",
+          "bounds": {
+            "left": -300.0,
+            "top": -629.0,
+            "right": 167.0,
+            "bottom": 0.0,
+            "width": 467.0,
+            "height": 629.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "visualScale": {
+            "x": 0.35,
+            "y": 0.35
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "THE_INSATIABLE_BOSS",
+    "backgroundUrl": "/images/sts2/encounter-scenes/the-insatiable-boss-a.webp",
+    "sourceScene": "scenes/backgrounds/the_insatiable_boss/the_insatiable_boss_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/the_insatiable_boss/layers/the_insatiable_boss_bg_00_a.tscn",
+      "scenes/backgrounds/the_insatiable_boss/layers/the_insatiable_boss_bg_01_a.tscn",
+      "scenes/backgrounds/the_insatiable_boss/layers/the_insatiable_boss_bg_02_a.tscn",
+      "scenes/backgrounds/the_insatiable_boss/layers/the_insatiable_boss_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.9,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "THE_INSATIABLE",
+          "sourceScene": "scenes/creature_visuals/the_insatiable.tscn",
+          "bounds": {
+            "left": -234.0,
+            "top": -472.0,
+            "right": 234.0,
+            "bottom": 0.0,
+            "width": 468.0,
+            "height": 472.0
+          },
+          "visualPosition": {
+            "x": 77.0002,
+            "y": -25.9999
+          },
+          "visualScale": {
+            "x": 0.35,
+            "y": 0.35
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "THE_KIN_BOSS",
+    "backgroundUrl": "/images/sts2/encounter-scenes/the-kin-boss-a.webp",
+    "sourceScene": "scenes/backgrounds/the_kin_boss/the_kin_boss_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/the_kin_boss/layers/the_kin_boss_bg_00_a.tscn",
+      "scenes/backgrounds/the_kin_boss/layers/the_kin_boss_bg_01_a.tscn",
+      "scenes/backgrounds/the_kin_boss/layers/the_kin_boss_bg_02_a.tscn",
+      "scenes/backgrounds/the_kin_boss/layers/the_kin_boss_bg_03_a.tscn",
+      "scenes/backgrounds/the_kin_boss/layers/the_kin_boss_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "slot1",
+        "sourcePosition": {
+          "x": 1100.0,
+          "y": 711.0
+        },
+        "x": 0.5729166666666666,
+        "y": 0.6583333333333333
+      },
+      {
+        "slotName": "slot2",
+        "sourcePosition": {
+          "x": 1497.0,
+          "y": 736.0
+        },
+        "x": 0.7796875,
+        "y": 0.6814814814814815
+      },
+      {
+        "slotName": "leaderSlot",
+        "sourcePosition": {
+          "x": 1905.0,
+          "y": 686.0
+        },
+        "x": 0.9921875,
+        "y": 0.6351851851851852
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.85,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 50.0
       },
       "usesFixedSlots": true,
       "enemyRegionWidth": 960,
@@ -241,19 +5667,484 @@
       "enemyBaselineY": 740,
       "monsters": [
         {
-          "monsterId": "TORCH_HEAD_AMALGAM",
-          "sourceScene": "scenes/creature_visuals/torch_head_amalgam.tscn",
+          "monsterId": "KIN_FOLLOWER",
+          "sourceScene": "scenes/creature_visuals/kin_follower.tscn",
           "bounds": {
-            "left": -175.0,
-            "top": -316.0,
-            "right": 175.0,
+            "left": -167.0,
+            "top": -200.0,
+            "right": 130.0,
             "bottom": 0.0,
-            "width": 350.0,
-            "height": 316.0
+            "width": 297.0,
+            "height": 200.0
+          },
+          "visualPosition": {
+            "x": 7.0,
+            "y": -12.0
+          },
+          "visualScale": {
+            "x": 0.29,
+            "y": 0.29
+          }
+        },
+        {
+          "monsterId": "KIN_PRIEST",
+          "sourceScene": "scenes/creature_visuals/kin_priest.tscn",
+          "bounds": {
+            "left": -180.0,
+            "top": -275.0,
+            "right": 180.0,
+            "bottom": 0.0,
+            "width": 360.0,
+            "height": 275.0
+          },
+          "visualPosition": {
+            "x": 6.0,
+            "y": -22.0
+          },
+          "visualScale": {
+            "x": 0.3,
+            "y": 0.3
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "THE_LOST_AND_FORGOTTEN_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "THE_LOST",
+          "sourceScene": "scenes/creature_visuals/the_lost.tscn",
+          "bounds": {
+            "left": -75.0,
+            "top": -322.0,
+            "right": 100.0,
+            "bottom": 0.0,
+            "width": 175.0,
+            "height": 322.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -12.0
+          },
+          "visualScale": {
+            "x": 0.3,
+            "y": 0.3
+          }
+        },
+        {
+          "monsterId": "THE_FORGOTTEN",
+          "sourceScene": "scenes/creature_visuals/the_forgotten.tscn",
+          "bounds": {
+            "left": -119.0,
+            "top": -342.0,
+            "right": 131.0,
+            "bottom": 0.0,
+            "width": 250.0,
+            "height": 342.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -12.0
+          },
+          "visualScale": {
+            "x": 0.3,
+            "y": 0.3
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "THE_OBSCURA_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "illusion",
+        "sourcePosition": {
+          "x": 1225.0,
+          "y": 686.0
+        },
+        "x": 0.6380208333333334,
+        "y": 0.6351851851851852
+      },
+      {
+        "slotName": "obscura",
+        "sourcePosition": {
+          "x": 1602.0,
+          "y": 713.0
+        },
+        "x": 0.834375,
+        "y": 0.6601851851851852
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "THE_OBSCURA",
+          "sourceScene": "scenes/creature_visuals/the_obscura.tscn",
+          "bounds": {
+            "left": -169.0,
+            "top": -218.0,
+            "right": 164.0,
+            "bottom": 0.0,
+            "width": 333.0,
+            "height": 218.0
+          },
+          "visualPosition": {
+            "x": 23.0,
+            "y": -18.0
+          },
+          "visualScale": {
+            "x": 0.27,
+            "y": 0.27
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "THIEVING_HOPPER_WEAK",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "THIEVING_HOPPER",
+          "sourceScene": "scenes/creature_visuals/thieving_hopper.tscn",
+          "bounds": {
+            "left": -137.0,
+            "top": -268.0,
+            "right": 137.0,
+            "bottom": 0.0,
+            "width": 274.0,
+            "height": 268.0
           },
           "visualPosition": {
             "x": 22.0,
             "y": -18.0
+          },
+          "visualScale": {
+            "x": 0.25,
+            "y": 0.25
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TOADPOLES_WEAK",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "TOADPOLE",
+          "sourceScene": "scenes/creature_visuals/toadpole.tscn",
+          "bounds": {
+            "left": -150.0,
+            "top": -160.0,
+            "right": 150.0,
+            "bottom": 0.0,
+            "width": 300.0,
+            "height": 160.0
+          },
+          "visualPosition": {
+            "x": 7.9999995,
+            "y": -10.000002
+          },
+          "visualScale": {
+            "x": 0.4,
+            "y": 0.4
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TUNNELER_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "CHOMPER",
+          "sourceScene": "scenes/creature_visuals/chomper.tscn",
+          "bounds": {
+            "left": -126.0,
+            "top": -133.0,
+            "right": 126.0,
+            "bottom": 0.0,
+            "width": 252.0,
+            "height": 133.0
+          },
+          "visualPosition": {
+            "x": 9.0,
+            "y": -21.0
+          },
+          "visualScale": {
+            "x": 0.255959,
+            "y": 0.255959
+          }
+        },
+        {
+          "monsterId": "TUNNELER",
+          "sourceScene": "scenes/creature_visuals/tunneler.tscn",
+          "bounds": {
+            "left": -128.0,
+            "top": -201.0,
+            "right": 128.0,
+            "bottom": 0.0,
+            "width": 256.0,
+            "height": 201.0
+          },
+          "visualPosition": {
+            "x": 3.0,
+            "y": -26.0
+          },
+          "visualScale": {
+            "x": 0.14838,
+            "y": 0.14838
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TUNNELER_WEAK",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
+    "sourceScene": "scenes/backgrounds/hive/hive_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/hive/layers/hive_bg_00_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_01_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_02_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_bg_03_a.tscn",
+      "scenes/backgrounds/hive/layers/hive_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "TUNNELER",
+          "sourceScene": "scenes/creature_visuals/tunneler.tscn",
+          "bounds": {
+            "left": -128.0,
+            "top": -201.0,
+            "right": 128.0,
+            "bottom": 0.0,
+            "width": 256.0,
+            "height": 201.0
+          },
+          "visualPosition": {
+            "x": 3.0,
+            "y": -26.0
+          },
+          "visualScale": {
+            "x": 0.14838,
+            "y": 0.14838
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TURRET_OPERATOR_WEAK",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
+    "sourceScene": "scenes/backgrounds/glory/glory_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/glory/layers/glory_bg_00_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_01_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_02_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_bg_03_a.tscn",
+      "scenes/backgrounds/glory/layers/glory_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "LIVING_SHIELD",
+          "sourceScene": "scenes/creature_visuals/living_shield.tscn",
+          "bounds": {
+            "left": -176.0,
+            "top": -400.0,
+            "right": 180.0,
+            "bottom": 0.0,
+            "width": 356.0,
+            "height": 400.0
+          },
+          "visualPosition": {
+            "x": -3.0,
+            "y": -28.0
           },
           "visualScale": {
             "x": 0.15,
@@ -261,23 +6152,286 @@
           }
         },
         {
-          "monsterId": "QUEEN",
-          "sourceScene": "scenes/creature_visuals/queen.tscn",
+          "monsterId": "TURRET_OPERATOR",
+          "sourceScene": "scenes/creature_visuals/turret_operator.tscn",
           "bounds": {
-            "left": -158.0,
-            "top": -497.0,
-            "right": 158.0,
+            "left": -140.0,
+            "top": -220.0,
+            "right": 140.0,
             "bottom": 0.0,
-            "width": 316.0,
-            "height": 497.0
+            "width": 280.0,
+            "height": 220.0
           },
           "visualPosition": {
-            "x": 11.999996,
+            "x": 6.0,
+            "y": -18.0
+          },
+          "visualScale": {
+            "x": 0.15,
+            "y": 0.15
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "TWO_TAILED_RATS_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
+    "sourceScene": "scenes/backgrounds/underdocks/underdocks_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_00_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_01_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_02_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_03_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_bg_04_a.tscn",
+      "scenes/backgrounds/underdocks/layers/underdocks_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [
+      {
+        "slotName": "first",
+        "sourcePosition": {
+          "x": 1025.0,
+          "y": 705.0
+        },
+        "x": 0.5338541666666666,
+        "y": 0.6527777777777778
+      },
+      {
+        "slotName": "second",
+        "sourcePosition": {
+          "x": 1252.0,
+          "y": 749.0
+        },
+        "x": 0.6520833333333333,
+        "y": 0.6935185185185185
+      },
+      {
+        "slotName": "third",
+        "sourcePosition": {
+          "x": 1471.0,
+          "y": 680.0
+        },
+        "x": 0.7661458333333333,
+        "y": 0.6296296296296297
+      },
+      {
+        "slotName": "fourth",
+        "sourcePosition": {
+          "x": 1709.0,
+          "y": 753.0
+        },
+        "x": 0.8901041666666667,
+        "y": 0.6972222222222222
+      },
+      {
+        "slotName": "fifth",
+        "sourcePosition": {
+          "x": 1920.0,
+          "y": 664.0
+        },
+        "x": 1.0,
+        "y": 0.6148148148148148
+      }
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.85,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 25.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "TWO_TAILED_RAT",
+          "sourceScene": "scenes/creature_visuals/two_tailed_rat.tscn",
+          "bounds": {
+            "left": -100.0,
+            "top": -214.0,
+            "right": 100.0,
+            "bottom": 0.0,
+            "width": 200.0,
+            "height": 214.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -28.0
+          },
+          "visualScale": {
+            "x": 0.33,
+            "y": 0.33
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "VANTOM_BOSS",
+    "backgroundUrl": "/images/sts2/encounter-scenes/vantom-boss-a.webp",
+    "sourceScene": "scenes/backgrounds/vantom_boss/vantom_boss_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/vantom_boss/layers/vantom_boss_bg_00_a.tscn",
+      "scenes/backgrounds/vantom_boss/layers/vantom_boss_bg_01_a.tscn",
+      "scenes/backgrounds/vantom_boss/layers/vantom_boss_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.9,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 50.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "VANTOM",
+          "sourceScene": "scenes/creature_visuals/vantom.tscn",
+          "bounds": {
+            "left": -202.0,
+            "top": -440.0,
+            "right": 202.0,
+            "bottom": 1.0,
+            "width": 404.0,
+            "height": 441.0
+          },
+          "visualPosition": {
+            "x": 0.0,
             "y": -26.0
           },
           "visualScale": {
-            "x": 0.14,
-            "y": 0.14
+            "x": 0.25,
+            "y": 0.25
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "VINE_SHAMBLER_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "VINE_SHAMBLER",
+          "sourceScene": "scenes/creature_visuals/vine_shambler.tscn",
+          "bounds": {
+            "left": -212.0,
+            "top": -325.0,
+            "right": 212.0,
+            "bottom": 0.0,
+            "width": 424.0,
+            "height": 325.0
+          },
+          "visualPosition": {
+            "x": -8.0,
+            "y": -26.0
+          },
+          "visualScale": {
+            "x": 0.3,
+            "y": 0.3
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "WATERFALL_GIANT_BOSS",
+    "backgroundUrl": "/images/sts2/encounter-scenes/waterfall-giant-boss-a.webp",
+    "sourceScene": "scenes/backgrounds/waterfall_giant_boss/waterfall_giant_boss_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/waterfall_giant_boss/layers/waterfall_giant_boss_bg_00_a.tscn",
+      "scenes/backgrounds/waterfall_giant_boss/layers/waterfall_giant_boss_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "none"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.9,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "WATERFALL_GIANT",
+          "sourceScene": "scenes/creature_visuals/waterfall_giant.tscn",
+          "bounds": {
+            "left": -275.0,
+            "top": -504.0,
+            "right": 335.0,
+            "bottom": 0.0,
+            "width": 610.0,
+            "height": 504.0
+          },
+          "visualPosition": {
+            "x": 64.0,
+            "y": -34.0
+          },
+          "visualScale": {
+            "x": 0.225,
+            "y": 0.225
           }
         }
       ]
