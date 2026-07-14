@@ -13,18 +13,26 @@ partial. Fix the extractor or retain a partial-data notice.
 
 ## Visual grammar
 
-- Render the entry with `public/images/sts2/ui/settings_tiny_right_arrow.png`.
-  It is an entry marker, not an action state.
+- Render the entry as localized service text only: `시작` in Korean and
+  `Initial` in English. It is an entry marker, not an action state, and must
+  not use a game icon or button asset.
 - Render action states with the existing `hover_tip.png` tooltip frame and show
   official Korean above official English.
-- Render phases as transparent, border-only containers around action states.
-- Use the same gold for an edge and its arrowhead.
+- Reuse the Intent Graph mod palette exactly: gold `#EFC851` for normal edges
+  and labels, red `#FF4545` for conditional and phase-transition edges, cyan
+  `#29EBC0` for group and phase borders, and translucent dark blue
+  `rgba(26, 36, 56, 0.55)` for group and phase backgrounds.
+- Use the same color for every edge and its arrowhead.
 - Use cubic curves. Avoid right-angle paths and paths hidden behind nodes.
 - Omit `100%`. Put `50%` or other branch probabilities on the edge.
 - Start all probability branches from the same visible source point when the
   underlying choice happens at one state.
-- Put short conditions such as `Y` and `N` on cross-phase edges. Keep condition
-  nodes out of the graph.
+- Put localized mode names such as `제작 가능` / `제작 불가` or
+  `Can Fabricate` / `Cannot Fabricate` on cross-phase edges. Never abbreviate
+  conditions as `Y` or `N`, and keep condition nodes out of the graph.
+- Explain the exact game condition in a hover tooltip on the edge label. Derive
+  the explanation from the decompiled predicate or lifecycle callback rather
+  than guessing from the visible mode name.
 - Attach self-loops to adjacent ports on the same node side. Keep the loop close
   to the node; do not span the full node width.
 
