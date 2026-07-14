@@ -2730,7 +2730,6 @@ function buildPatternStartEntryNode(
   return {
     id: "__START__",
     label,
-    tooltip: transition.conditionTooltip ?? null,
     x,
     y,
     width: 54,
