@@ -208,8 +208,8 @@ for (const sample of CASES) {
     await expect(diagram.locator('marker[id$="-arrow-conditional"] path')).toHaveAttribute("fill", "#ff4545");
     await expectNoNodeOverlap(diagram.locator('[data-pattern-node="true"]'));
     for (const moveName of sample.moveNames) {
-      await expect(diagram.getByText(moveName.ko, { exact: true })).toBeVisible();
-      await expect(diagram.getByText(moveName.en, { exact: true })).toBeVisible();
+      await expect(diagram.getByText(moveName.ko, { exact: true })).toHaveCount(1);
+      await expect(diagram.getByText(moveName.en, { exact: true })).toHaveCount(1);
     }
     if (sample.id === "SOUL_NEXUS") {
       const transitions = await edges.evaluateAll((elements) => elements.map((element) => ({
