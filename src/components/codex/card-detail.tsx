@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
@@ -76,6 +76,7 @@ import {
 } from "@/lib/sts2-affliction-rules";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
+import { ScrollableBoundedCarousel } from "./bounded-carousel";
 
 const ENCHANT_TIP_VARIANT: Record<string, HoverTipVariant> = {
   CORRUPTED: "debuff",
@@ -467,93 +468,6 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
       }) ?? hoveredAffliction.description
     : null;
 
-  // 캐러셀: 좌/우 스크롤 가능 여부에 따라 게임 노란 화살표 노출
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-  useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const update = () => {
-      setCanScrollLeft(el.scrollLeft > 4);
-      setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-    };
-    update();
-    el.addEventListener("scroll", update, { passive: true });
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => {
-      el.removeEventListener("scroll", update);
-      ro.disconnect();
-    };
-  }, [eligibleEnchantments.length]);
-
-  const scrollBy = (dir: -1 | 1) => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    el.scrollBy({ left: dir * el.clientWidth * 0.7, behavior: "smooth" });
-  };
-
-  const handleEnchantWheel = (event: React.WheelEvent<HTMLDivElement>) => {
-    const el = event.currentTarget;
-    if (el.scrollWidth <= el.clientWidth) return;
-
-    const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY)
-      ? event.deltaX
-      : event.deltaY;
-    if (delta === 0) return;
-
-    const atStart = el.scrollLeft <= 1;
-    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
-    if ((delta < 0 && atStart) || (delta > 0 && atEnd)) return;
-
-    event.preventDefault();
-    el.scrollLeft += delta;
-  };
-
-  const afflictionScrollerRef = useRef<HTMLDivElement>(null);
-  const [canScrollAfflictionLeft, setCanScrollAfflictionLeft] = useState(false);
-  const [canScrollAfflictionRight, setCanScrollAfflictionRight] = useState(false);
-  useEffect(() => {
-    const el = afflictionScrollerRef.current;
-    if (!el) return;
-    const update = () => {
-      setCanScrollAfflictionLeft(el.scrollLeft > 4);
-      setCanScrollAfflictionRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-    };
-    update();
-    el.addEventListener("scroll", update, { passive: true });
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => {
-      el.removeEventListener("scroll", update);
-      ro.disconnect();
-    };
-  }, [eligibleAfflictions.length]);
-
-  const scrollAfflictionsBy = (dir: -1 | 1) => {
-    const el = afflictionScrollerRef.current;
-    if (!el) return;
-    el.scrollBy({ left: dir * el.clientWidth * 0.7, behavior: "smooth" });
-  };
-
-  const handleAfflictionWheel = (event: React.WheelEvent<HTMLDivElement>) => {
-    const el = event.currentTarget;
-    if (el.scrollWidth <= el.clientWidth) return;
-
-    const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY)
-      ? event.deltaX
-      : event.deltaY;
-    if (delta === 0) return;
-
-    const atStart = el.scrollLeft <= 1;
-    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
-    if ((delta < 0 && atStart) || (delta > 0 && atEnd)) return;
-
-    event.preventDefault();
-    el.scrollLeft += delta;
-  };
-
   const poolLabel = getCardPoolLabel(previewCard, serviceText);
   const poolColor = getCardPoolColor(previewCard);
   const costLabel = getCardCostLabel(previewCard, showUpgrade, serviceLocale);
@@ -790,47 +704,11 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                 </div>
               </div>
 
-              {/* 화살표는 캐러셀 바깥(좌우 32px 마진 영역)에 배치. 캐러셀 자체는 mx-10. */}
-              <div className="relative">
-                {canScrollLeft && (
-                  <button
-                    type="button"
-                    aria-label={serviceText.cardsView.enchantments.previous}
-                    onClick={() => scrollBy(-1)}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center hover:scale-110 transition-transform drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
-                  >
-                    <Image
-                      src="/images/sts2/ui/settings_tiny_left_arrow.png"
-                      alt=""
-                      width={32}
-                      height={32}
-                      className="object-contain"
-                    />
-                  </button>
-                )}
-                {canScrollRight && (
-                  <button
-                    type="button"
-                    aria-label={serviceText.cardsView.enchantments.next}
-                    onClick={() => scrollBy(1)}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center hover:scale-110 transition-transform drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
-                  >
-                    <Image
-                      src="/images/sts2/ui/settings_tiny_right_arrow.png"
-                      alt=""
-                      width={32}
-                      height={32}
-                      className="object-contain"
-                    />
-                  </button>
-                )}
-
-                <div
-                  ref={scrollerRef}
-                  data-testid="enchant-carousel"
-                  onWheel={handleEnchantWheel}
-                  className="mx-7 flex gap-2 overflow-x-auto scroll-smooth py-1 sm:mx-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                >
+              <ScrollableBoundedCarousel
+                previousLabel={serviceText.cardsView.enchantments.previous}
+                nextLabel={serviceText.cardsView.enchantments.next}
+                dataTestId="enchant-carousel"
+              >
                   {eligibleEnchantments.map((e) => {
                     const active = activeEnchantId === e.id;
                     return (
@@ -886,8 +764,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                       </button>
                     );
                   })}
-                </div>
-              </div>
+              </ScrollableBoundedCarousel>
             </div>
           )}
 
@@ -911,46 +788,11 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                 )}
               </div>
 
-              <div className="relative">
-                {canScrollAfflictionLeft && (
-                  <button
-                    type="button"
-                    aria-label={serviceText.cardsView.afflictions.previous}
-                    onClick={() => scrollAfflictionsBy(-1)}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center hover:scale-110 transition-transform drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
-                  >
-                    <Image
-                      src="/images/sts2/ui/settings_tiny_left_arrow.png"
-                      alt=""
-                      width={32}
-                      height={32}
-                      className="object-contain"
-                    />
-                  </button>
-                )}
-                {canScrollAfflictionRight && (
-                  <button
-                    type="button"
-                    aria-label={serviceText.cardsView.afflictions.next}
-                    onClick={() => scrollAfflictionsBy(1)}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center hover:scale-110 transition-transform drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
-                  >
-                    <Image
-                      src="/images/sts2/ui/settings_tiny_right_arrow.png"
-                      alt=""
-                      width={32}
-                      height={32}
-                      className="object-contain"
-                    />
-                  </button>
-                )}
-
-                <div
-                  ref={afflictionScrollerRef}
-                  data-testid="affliction-carousel"
-                  onWheel={handleAfflictionWheel}
-                  className="mx-7 flex gap-2 overflow-x-auto scroll-smooth py-1 sm:mx-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                >
+              <ScrollableBoundedCarousel
+                previousLabel={serviceText.cardsView.afflictions.previous}
+                nextLabel={serviceText.cardsView.afflictions.next}
+                dataTestId="affliction-carousel"
+              >
                   {eligibleAfflictions.map((a) => {
                     const active = activeAfflictionId === a.id;
                     return (
@@ -999,8 +841,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                       </button>
                     );
                   })}
-                </div>
-              </div>
+              </ScrollableBoundedCarousel>
             </div>
           )}
         </section>
