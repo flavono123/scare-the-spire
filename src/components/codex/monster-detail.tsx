@@ -157,6 +157,7 @@ interface PatternDiagramEntryNode {
   width: number;
   height: number;
   kind: "start" | "end";
+  assetUrl?: string;
 }
 
 interface PatternDiagramEdge {
@@ -1031,19 +1032,27 @@ function PatternStateTransitionDiagram({
         {diagram.entryNodes.map((entry) => (
           <div
             key={entry.id}
-            className="pointer-events-none absolute z-10 flex items-center justify-center rounded-full border font-game-title text-[10px] font-black tracking-[0.08em]"
+            className={`pointer-events-none absolute z-10 flex items-center justify-center font-game-title text-[10px] font-black tracking-[0.08em] ${entry.assetUrl ? "" : "rounded-full border"}`}
             style={{
               left: entry.x,
               top: entry.y,
               width: entry.width,
               height: entry.height,
-              borderColor: entry.kind === "start" ? "rgba(96, 165, 250, 0.72)" : "rgba(161, 161, 170, 0.58)",
-              backgroundColor: entry.kind === "start" ? "rgba(30, 64, 175, 0.22)" : "rgba(39, 39, 42, 0.42)",
+              borderColor: entry.assetUrl ? undefined : entry.kind === "start" ? "rgba(96, 165, 250, 0.72)" : "rgba(161, 161, 170, 0.58)",
+              backgroundColor: entry.assetUrl ? undefined : entry.kind === "start" ? "rgba(30, 64, 175, 0.22)" : "rgba(39, 39, 42, 0.42)",
               color: entry.kind === "start" ? BESTIARY_START_COLOR : "#a1a1aa",
             }}
             data-pattern-entry={entry.kind}
           >
-            {entry.label}
+            {entry.assetUrl ? (
+              <Image
+                src={entry.assetUrl}
+                alt={entry.label}
+                width={entry.width}
+                height={entry.height}
+                className="h-full w-full object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.55)]"
+              />
+            ) : entry.label}
           </div>
         ))}
 
@@ -1735,6 +1744,7 @@ const DIAGRAM_DRAG_GUTTER = 96;
 const DIAGRAM_ARROW_COLOR = "#efc851";
 const DIAGRAM_CONDITIONAL_COLOR = "#ff4545";
 const BESTIARY_START_COLOR = "#60a5fa";
+const DIAGRAM_START_ASSET = "/images/sts2/ui/settings_tiny_right_arrow.png";
 const STRUCTURED_DIAGRAM_NODE_WIDTH = 164;
 const STRUCTURED_DIAGRAM_NODE_HEIGHT = 118;
 const MONSTER_DETAIL_VIEWPORT_PADDING = {
@@ -2087,10 +2097,10 @@ function buildStructuredSamplePatternDiagramModel(
     return buildTerminalPatternDiagramModel(monster, states, serviceLocale);
   }
   if (monster.id === "AEONGLASS") {
-    return buildFixedLoopPatternDiagramModel(monster, states);
+    return buildFixedLoopPatternDiagramModel(monster, states, serviceLocale);
   }
   if (monster.id === "SOUL_NEXUS") {
-    return buildRandomClusterPatternDiagramModel(monster, states);
+    return buildRandomClusterPatternDiagramModel(monster, states, serviceLocale);
   }
   if (monster.id === "FABRICATOR") {
     return buildConditionalClusterPatternDiagramModel(monster, states, serviceLocale);
@@ -2108,20 +2118,22 @@ function buildTerminalPatternDiagramModel(
   if (!initialState) return null;
 
   const node = buildStructuredPatternNode(initialState.id, 140, 86, true);
-  const end = buildPatternEntryNode("__END__", getIntentFsmText(serviceLocale).end, 404, 129, "end");
   const nodeMidY = node.y + node.height / 2;
+  const text = getIntentFsmText(serviceLocale);
+  const start = buildPatternStartEntryNode(text.start, 22, nodeMidY - 21);
+  const end = buildPatternEntryNode("__END__", text.end, 404, 129, "end");
 
   return {
     width: 520,
     height: 290,
-    entryNodes: [end],
+    entryNodes: [start, end],
     nodes: [node],
     edges: [
       buildStructuredPatternEdge({
         key: "terminal-start",
         from: "__START__",
         to: node.id,
-        path: `M 32 ${nodeMidY} C 68 ${nodeMidY} 104 ${nodeMidY} ${node.x} ${nodeMidY}`,
+        path: `M ${start.x + start.width} ${nodeMidY} C 80 ${nodeMidY} 108 ${nodeMidY} ${node.x} ${nodeMidY}`,
         color: DIAGRAM_ARROW_COLOR,
       }),
       buildStructuredPatternEdge({
@@ -2141,6 +2153,7 @@ function buildTerminalPatternDiagramModel(
 function buildFixedLoopPatternDiagramModel(
   monster: CodexMonster,
   states: MonsterMoveGraphState[],
+  serviceLocale: ServiceLocale,
 ): PatternDiagramModel | null {
   const moveById = new Map(states.filter((state) => state.kind === "move").map((state) => [state.id, state]));
   const initialId = monster.moveGraph?.initial;
@@ -2163,12 +2176,13 @@ function buildFixedLoopPatternDiagramModel(
   const initialNode = nodeById.get(initialId);
   if (!initialNode) return null;
   const initialMidY = initialNode.y + initialNode.height / 2;
+  const start = buildPatternStartEntryNode(getIntentFsmText(serviceLocale).start, 18, initialMidY - 21);
   const edges: PatternDiagramEdge[] = [
     buildStructuredPatternEdge({
       key: "fixed-loop-start",
       from: "__START__",
       to: initialId,
-      path: `M 24 ${initialMidY} C 38 ${initialMidY} 52 ${initialMidY} ${initialNode.x} ${initialMidY}`,
+      path: `M ${start.x + start.width} ${initialMidY} C 64 ${initialMidY} 66 ${initialMidY} ${initialNode.x} ${initialMidY}`,
       color: DIAGRAM_ARROW_COLOR,
     }),
   ];
@@ -2209,7 +2223,7 @@ function buildFixedLoopPatternDiagramModel(
   return {
     width: nodes[nodes.length - 1].x + STRUCTURED_DIAGRAM_NODE_WIDTH + 70,
     height: 300,
-    entryNodes: [],
+    entryNodes: [start],
     nodes,
     edges,
     phaseBoxes: [],
@@ -2221,6 +2235,7 @@ function buildFixedLoopPatternDiagramModel(
 function buildRandomClusterPatternDiagramModel(
   monster: CodexMonster,
   states: MonsterMoveGraphState[],
+  serviceLocale: ServiceLocale,
 ): PatternDiagramModel | null {
   const randomState = states.find((state) => state.kind === "random");
   if (!randomState || randomState.branches.length === 0) return null;
@@ -2251,18 +2266,19 @@ function buildRandomClusterPatternDiagramModel(
   const topSourceY = topNode.y + topNode.height / 2;
   const bottomSourceX = bottomNode.x + bottomNode.width;
   const bottomSourceY = bottomNode.y + bottomNode.height / 2;
+  const start = buildPatternStartEntryNode(getIntentFsmText(serviceLocale).start, 18, initialSourceY - 21);
 
   return {
     width: 790,
     height: 450,
-    entryNodes: [],
+    entryNodes: [start],
     nodes,
     edges: [
       buildStructuredPatternEdge({
         key: "random-start",
         from: "__START__",
         to: initialNode.id,
-        path: `M 28 ${initialSourceY} C 42 ${initialSourceY} 56 ${initialSourceY} ${initialNode.x} ${initialSourceY}`,
+        path: `M ${start.x + start.width} ${initialSourceY} C 64 ${initialSourceY} 66 ${initialSourceY} ${initialNode.x} ${initialSourceY}`,
         color: DIAGRAM_ARROW_COLOR,
       }),
       buildStructuredPatternEdge({
@@ -2512,6 +2528,23 @@ function buildPatternEntryNode(
   kind: "start" | "end",
 ): PatternDiagramEntryNode {
   return { id, label, x, y, width: 66, height: 32, kind };
+}
+
+function buildPatternStartEntryNode(
+  label: string,
+  x: number,
+  y: number,
+): PatternDiagramEntryNode {
+  return {
+    id: "__START__",
+    label,
+    x,
+    y,
+    width: 42,
+    height: 42,
+    kind: "start",
+    assetUrl: DIAGRAM_START_ASSET,
+  };
 }
 
 function buildStructuredPatternEdge({
