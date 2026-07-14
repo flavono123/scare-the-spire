@@ -15,6 +15,7 @@ const CASES = [
     edgeCount: 2,
     edgeLabelCount: 0,
     chanceLabelCount: 0,
+    conditionalEdgeCount: 0,
     phaseCount: 0,
     phaseConnectorCount: 0,
     hasEnd: true,
@@ -33,6 +34,7 @@ const CASES = [
     edgeCount: 4,
     edgeLabelCount: 0,
     chanceLabelCount: 0,
+    conditionalEdgeCount: 0,
     phaseCount: 0,
     phaseConnectorCount: 0,
     hasEnd: false,
@@ -51,6 +53,7 @@ const CASES = [
     edgeCount: 7,
     edgeLabelCount: 6,
     chanceLabelCount: 0,
+    conditionalEdgeCount: 0,
     phaseCount: 0,
     phaseConnectorCount: 0,
     hasEnd: false,
@@ -69,6 +72,7 @@ const CASES = [
     edgeCount: 9,
     edgeLabelCount: 2,
     chanceLabelCount: 6,
+    conditionalEdgeCount: 2,
     phaseCount: 2,
     phaseConnectorCount: 0,
     hasEnd: false,
@@ -90,8 +94,49 @@ const CASES = [
     edgeCount: 7,
     edgeLabelCount: 0,
     chanceLabelCount: 0,
+    conditionalEdgeCount: 0,
     phaseCount: 3,
     phaseConnectorCount: 2,
+    hasEnd: false,
+  },
+  {
+    id: "CORPSE_SLUG",
+    slug: "corpse_slug",
+    monsterNameKo: "시체 민달팽이",
+    monsterNameEn: "Corpse Slug",
+    moveNames: [
+      { ko: "휘둘러 치기", en: "Whip Slap" },
+      { ko: "안기기", en: "Glomp" },
+      { ko: "들러붙기", en: "Goop" },
+    ],
+    nodeCount: 3,
+    edgeCount: 6,
+    edgeLabelCount: 3,
+    chanceLabelCount: 0,
+    conditionalEdgeCount: 3,
+    phaseCount: 0,
+    phaseConnectorCount: 0,
+    hasEnd: false,
+  },
+  {
+    id: "DECIMILLIPEDE_SEGMENT",
+    slug: "decimillipede_segment",
+    monsterNameKo: "만각지네",
+    monsterNameEn: "Decimillipede",
+    moveNames: [
+      { ko: "몸부림", en: "Writhe" },
+      { ko: "수축", en: "Constrict" },
+      { ko: "커지기", en: "Bulk" },
+      { ko: "죽음", en: "Dead" },
+      { ko: "재연결", en: "Reattach" },
+    ],
+    nodeCount: 5,
+    edgeCount: 13,
+    edgeLabelCount: 9,
+    chanceLabelCount: 0,
+    conditionalEdgeCount: 6,
+    phaseCount: 0,
+    phaseConnectorCount: 0,
     hasEnd: false,
   },
 ] as const;
@@ -150,11 +195,17 @@ for (const sample of CASES) {
       markerEnd: element.getAttribute("marker-end"),
       path: element.getAttribute("d"),
     })));
-    expect(edgeStyles.every((style) => style.stroke === "#efc851")).toBe(true);
-    expect(edgeStyles.every((style) => style.markerEnd?.includes("arrow-normal"))).toBe(true);
+    expect(edgeStyles.every((style) => style.stroke === "#efc851" || style.stroke === "#ff4545")).toBe(true);
+    expect(edgeStyles.filter((style) => style.stroke === "#ff4545")).toHaveLength(sample.conditionalEdgeCount);
+    expect(edgeStyles.every((style) => (
+      style.stroke === "#ff4545"
+        ? style.markerEnd?.includes("arrow-conditional")
+        : style.markerEnd?.includes("arrow-normal")
+    ))).toBe(true);
     expect(edgeStyles.every((style) => style.path?.includes(" C "))).toBe(true);
     expect(edgeStyles.every((style) => !/[HV]/.test(style.path ?? ""))).toBe(true);
     await expect(diagram.locator('marker[id$="-arrow-normal"] path')).toHaveAttribute("fill", "#efc851");
+    await expect(diagram.locator('marker[id$="-arrow-conditional"] path')).toHaveAttribute("fill", "#ff4545");
     await expectNoNodeOverlap(diagram.locator('[data-pattern-node="true"]'));
     for (const moveName of sample.moveNames) {
       await expect(diagram.getByText(moveName.ko, { exact: true })).toBeVisible();
@@ -180,11 +231,13 @@ for (const sample of CASES) {
       expect(transitions.filter((edge) => edge.from === "__START__")).toHaveLength(2);
       expect(transitions.filter((edge) => edge.from === edge.to)).toHaveLength(3);
       expect(transitions.filter((edge) => edge.from?.startsWith("__PHASE_") && edge.to?.startsWith("__PHASE_"))).toHaveLength(2);
-      await expect(diagram.getByText("제작 가능(Y)", { exact: true })).toHaveCount(1);
+      await expect(diagram.locator('[data-pattern-edge-label]', { hasText: "제작 가능" })).toHaveCount(1);
       await expect(diagram.getByText("50%", { exact: true })).toHaveCount(6);
-      await expect(diagram.getByText("불가(N)", { exact: true })).toHaveCount(1);
+      await expect(diagram.locator('[data-pattern-edge-label]', { hasText: "제작 불가" })).toHaveCount(1);
       await expect(diagram.getByText("제작 가능?", { exact: true })).toHaveCount(0);
       await expect(diagram.getByText("무작위", { exact: true })).toHaveCount(0);
+      await expect(diagram.locator('[data-pattern-edge-label][title*="살아 있는 적이 4명 미만"]')).toHaveCount(1);
+      await expect(diagram.locator('[data-pattern-edge-label][title*="살아 있는 적이 4명 이상"]')).toHaveCount(1);
 
       const phaseRects = await diagram.locator("[data-pattern-phase]").evaluateAll((elements) => elements.map((element) => {
         const rect = element.getBoundingClientRect();
@@ -196,6 +249,18 @@ for (const sample of CASES) {
       expect(cannotPhase).toBeDefined();
       expect(canPhase!.top).toBeLessThan(cannotPhase!.top);
       expect(Math.abs(canPhase!.centerX - cannotPhase!.centerX)).toBeLessThanOrEqual(1);
+    }
+    if (sample.id === "CORPSE_SLUG" || sample.id === "DECIMILLIPEDE_SEGMENT") {
+      const startTransitions = await edges.evaluateAll((elements) => elements
+        .filter((element) => element.getAttribute("data-pattern-edge-from") === "__START__")
+        .map((element) => ({
+          from: element.getAttribute("data-pattern-edge-from"),
+          path: element.getAttribute("d"),
+        })));
+      expectEveryBranchToShareItsOrigin(startTransitions);
+      await expect(diagram.getByText("시작 순서 1", { exact: true })).toHaveCount(1);
+      await expect(diagram.getByText("시작 순서 2", { exact: true })).toHaveCount(1);
+      await expect(diagram.getByText("시작 순서 3", { exact: true })).toHaveCount(1);
     }
     if (sample.id === "TEST_SUBJECT") {
       const phaseRects = await diagram.locator("[data-pattern-phase]").evaluateAll((elements) => elements.map((element) => {
