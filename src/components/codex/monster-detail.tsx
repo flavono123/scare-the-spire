@@ -183,6 +183,7 @@ interface PatternDiagramPhaseBox {
   y: number;
   width: number;
   height: number;
+  color?: string;
 }
 
 interface PatternDiagramChoiceBox {
@@ -212,6 +213,9 @@ interface PatternDiagramDragState {
 interface PatternDiagramPhaseConnector {
   key: string;
   path: string;
+  label?: string | null;
+  labelX?: number;
+  labelY?: number;
 }
 
 interface PatternDiagramModel {
@@ -918,11 +922,14 @@ function PatternStateTransitionDiagram({
               top: box.y,
               width: box.width,
               height: box.height,
-              border: "1px solid rgba(41, 235, 192, 0.32)",
+              border: `1px solid ${hexToRgba(box.color ?? DIAGRAM_PHASE_COLOR, 0.52)}`,
               backgroundColor: "rgba(7, 9, 20, 0.18)",
             }}
           >
-            <span className="absolute left-3 top-2 font-game-title text-[11px] font-bold text-[#29ebc0]">
+            <span
+              className="absolute left-3 top-2 font-game-title text-[11px] font-bold"
+              style={{ color: box.color ?? DIAGRAM_PHASE_COLOR }}
+            >
               {box.label}
             </span>
           </div>
@@ -974,11 +981,12 @@ function PatternStateTransitionDiagram({
               key={connector.key}
               d={connector.path}
               fill="none"
-              stroke={DIAGRAM_CONDITIONAL_COLOR}
-              strokeWidth="4"
-              strokeLinecap="square"
-              strokeLinejoin="miter"
-              markerEnd={`url(#${markerPrefix}-arrow-conditional)`}
+              stroke={DIAGRAM_ARROW_COLOR}
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              markerEnd={`url(#${markerPrefix}-arrow-normal)`}
+              data-pattern-phase-connector={connector.key}
             />
           ))}
           {diagram.edges.map((edge) => (
@@ -1026,6 +1034,21 @@ function PatternStateTransitionDiagram({
             data-pattern-edge-chance-label={edge.key}
           >
             {edge.chanceLabel}
+          </span>
+        ))}
+        {diagram.phaseConnectors.map((connector) => connector.label && (
+          <span
+            key={`${connector.key}-label`}
+            className="pointer-events-none absolute z-20 whitespace-nowrap rounded bg-[#070914]/90 px-1.5 py-0.5 text-[10px] font-bold"
+            style={{
+              left: connector.labelX,
+              top: connector.labelY,
+              color: DIAGRAM_ARROW_COLOR,
+              transform: "translate(-50%, -50%)",
+            }}
+            data-pattern-phase-connector-label={connector.key}
+          >
+            {connector.label}
           </span>
         ))}
 
@@ -1745,6 +1768,7 @@ const DIAGRAM_ARROW_COLOR = "#efc851";
 const DIAGRAM_CONDITIONAL_COLOR = "#ff4545";
 const BESTIARY_START_COLOR = "#60a5fa";
 const DIAGRAM_START_ASSET = "/images/sts2/ui/settings_tiny_right_arrow.png";
+const DIAGRAM_PHASE_COLOR = "#29ebc0";
 const STRUCTURED_DIAGRAM_NODE_WIDTH = 164;
 const STRUCTURED_DIAGRAM_NODE_HEIGHT = 118;
 const MONSTER_DETAIL_VIEWPORT_PADDING = {
