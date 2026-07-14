@@ -4,66 +4,119 @@ import { getRelatedEncounterIdsForMonster } from "../src/lib/codex-references";
 import { expandEncounterFormations } from "../src/lib/encounter-compositions";
 
 async function main() {
-const encounters = await getCodexEncounters({ gameLocale: "kor" });
-const strangler = encounters.find((encounter) => encounter.id === "SLITHERING_STRANGLER_NORMAL");
-assert.ok(strangler, "Strangler and Friend encounter must exist");
-assert.equal(strangler.compositions?.length, 3, "DLL enum branches must remain distinct");
-assert.equal(strangler.scene?.combatLayout.coordinateSize.width, 1920);
-assert.equal(
-  strangler.scene?.combatLayout.monsters.find((monster) => monster.monsterId === "SLITHERING_STRANGLER")?.bounds.height,
-  220,
-);
+  const encounters = await getCodexEncounters({ gameLocale: "kor" });
+  assert.equal(encounters.length, 92);
+  assert.equal(encounters.filter((encounter) => encounter.compositions?.length).length, 89);
 
-const formations = expandEncounterFormations(strangler);
-const actualFormations = formations.map((formation) => ({
-  ids: formation.monsters.map((monster) => monster.id).join("+"),
-  probability: formation.probability,
-}));
-assert.deepEqual(actualFormations, [
-  { ids: "SNAPPING_JAXFRUIT+SLITHERING_STRANGLER", probability: 1 / 3 },
-  { ids: "LEAF_SLIME_M+SLITHERING_STRANGLER", probability: 1 / 6 },
-  { ids: "TWIG_SLIME_M+SLITHERING_STRANGLER", probability: 1 / 6 },
-  { ids: "LEAF_SLIME_S+LEAF_SLIME_S+SLITHERING_STRANGLER", probability: 1 / 12 },
-  { ids: "LEAF_SLIME_S+TWIG_SLIME_S+SLITHERING_STRANGLER", probability: 1 / 12 },
-  { ids: "TWIG_SLIME_S+LEAF_SLIME_S+SLITHERING_STRANGLER", probability: 1 / 12 },
-  { ids: "TWIG_SLIME_S+TWIG_SLIME_S+SLITHERING_STRANGLER", probability: 1 / 12 },
-]);
-assert.ok(
-  Math.abs(formations.reduce((sum, formation) => sum + formation.probability, 0) - 1) < 1e-12,
-  "formation probabilities must sum to 100%",
-);
-assert.ok(
-  getRelatedEncounterIdsForMonster("TWIG_SLIME_S", encounters).includes(strangler.id),
-  "a composition candidate must reverse-reference its encounter",
-);
+  const scenes = encounters.flatMap((encounter) => encounter.scene ? [encounter.scene] : []);
+  assert.equal(scenes.length, 90, "only the two empty localization-only encounters lack scenes");
+  assert.equal(new Set(scenes.map((scene) => scene.backgroundUrl)).size, 17);
 
-const queen = encounters.find((encounter) => encounter.id === "QUEEN_BOSS");
-assert.ok(queen?.scene, "Queen boss must load its custom scene");
-assert.equal(queen.scene.ambientVfx.kind, "queen");
-assert.equal(queen.scene.backgroundSpineAsset?.idleAnimation, "animation");
-assert.equal(queen.scene.combatLayout.cameraScaling, 0.9);
-assert.deepEqual(queen.scene.combatLayout.cameraOffset, { x: 0, y: 60 });
-assert.deepEqual(
-  queen.scene.monsterSlots.map((slot) => [slot.monsterId, slot.sourcePosition.x, slot.sourcePosition.y]),
-  [
-    ["TORCH_HEAD_AMALGAM", 1207, 709],
-    ["QUEEN", 1606, 695],
-  ],
-);
+  for (const encounter of encounters.filter((candidate) => candidate.compositions?.length)) {
+    const formations = expandEncounterFormations(encounter);
+    assert.ok(formations.length > 0, `${encounter.id} must expand at least one formation`);
+    assert.ok(
+      Math.abs(formations.reduce((sum, formation) => sum + formation.probability, 0) - 1) < 1e-12,
+      `${encounter.id} formation probabilities must sum to 100%`,
+    );
+    if (encounter.scene?.combatLayout.usesFixedSlots) {
+      const sceneSlotNames = new Set(encounter.scene.monsterSlots.map((slot) => slot.slotName));
+      for (const formation of formations) {
+        for (const monster of formation.monsters) {
+          assert.ok(monster.slotName, `${encounter.id}:${monster.id} must retain its scene slot`);
+          assert.ok(
+            sceneSlotNames.has(monster.slotName),
+            `${encounter.id}:${monster.slotName} must exist in its PCK encounter scene`,
+          );
+        }
+      }
+    }
+  }
 
-const monsters = await getCodexMonsters({ gameLocale: "kor" });
-const monsterById = new Map(monsters.map((monster) => [monster.id, monster]));
-for (const monsterId of [
-  ...new Set(formations.flatMap((formation) => formation.monsters.map((monster) => monster.id))),
-  "TORCH_HEAD_AMALGAM",
-  "QUEEN",
-]) {
-  const monster = monsterById.get(monsterId);
-  assert.ok(monster?.spineAsset, `${monsterId} must render through an idle Spine asset`);
-  assert.ok(monster.spineAsset.idleAnimation, `${monsterId} must have an idle animation`);
+  assert.equal(formationCount(encounters, "BOWLBUGS_NORMAL"), 6);
+  assert.equal(formationCount(encounters, "RUBY_RAIDERS_NORMAL"), 60);
+  assert.equal(formationCount(encounters, "SLIMES_WEAK"), 4);
+
+  const strangler = getEncounter(encounters, "SLITHERING_STRANGLER_NORMAL");
+  assert.equal(strangler.compositions?.length, 3, "DLL enum branches must remain distinct");
+  assert.equal(strangler.scene?.combatLayout.coordinateSize.width, 1920);
+  assert.equal(
+    strangler.scene?.combatLayout.monsters.find(
+      (monster) => monster.monsterId === "SLITHERING_STRANGLER",
+    )?.bounds.height,
+    220,
+  );
+
+  const stranglerFormations = expandEncounterFormations(strangler);
+  assert.deepEqual(
+    stranglerFormations.map((formation) => ({
+      ids: formation.monsters.map((monster) => monster.id).join("+"),
+      probability: formation.probability,
+    })),
+    [
+      { ids: "SNAPPING_JAXFRUIT+SLITHERING_STRANGLER", probability: 1 / 3 },
+      { ids: "LEAF_SLIME_M+SLITHERING_STRANGLER", probability: 1 / 6 },
+      { ids: "TWIG_SLIME_M+SLITHERING_STRANGLER", probability: 1 / 6 },
+      { ids: "LEAF_SLIME_S+LEAF_SLIME_S+SLITHERING_STRANGLER", probability: 1 / 12 },
+      { ids: "LEAF_SLIME_S+TWIG_SLIME_S+SLITHERING_STRANGLER", probability: 1 / 12 },
+      { ids: "TWIG_SLIME_S+LEAF_SLIME_S+SLITHERING_STRANGLER", probability: 1 / 12 },
+      { ids: "TWIG_SLIME_S+TWIG_SLIME_S+SLITHERING_STRANGLER", probability: 1 / 12 },
+    ],
+  );
+  assert.ok(
+    getRelatedEncounterIdsForMonster("TWIG_SLIME_S", encounters).includes(strangler.id),
+    "a composition candidate must reverse-reference its encounter",
+  );
+
+  const queen = getEncounter(encounters, "QUEEN_BOSS");
+  assert.ok(queen.scene, "Queen boss must load its custom scene");
+  assert.equal(queen.scene.ambientVfx.kind, "queen");
+  assert.equal(queen.scene.backgroundSpineAsset?.idleAnimation, "animation");
+  assert.equal(queen.scene.combatLayout.cameraScaling, 0.9);
+  assert.deepEqual(queen.scene.combatLayout.cameraOffset, { x: 0, y: 60 });
+  assert.deepEqual(
+    queen.scene.monsterSlots.map((slot) => [slot.slotName, slot.sourcePosition.x, slot.sourcePosition.y]),
+    [
+      ["amalgam", 1207, 709],
+      ["queen", 1606, 695],
+    ],
+  );
+
+  const fabricator = getEncounter(encounters, "FABRICATOR_NORMAL");
+  assert.equal(expandEncounterFormations(fabricator)[0]?.monsters[0]?.slotName, "fabricator");
+  assert.ok(fabricator.scene?.monsterSlots.some((slot) => slot.slotName === "fabricator"));
+
+  const monsters = await getCodexMonsters({ gameLocale: "kor" });
+  const monsterById = new Map(monsters.map((monster) => [monster.id, monster]));
+  for (const monsterId of [
+    ...new Set(
+      stranglerFormations.flatMap((formation) => formation.monsters.map((monster) => monster.id)),
+    ),
+    "TORCH_HEAD_AMALGAM",
+    "QUEEN",
+  ]) {
+    const monster = monsterById.get(monsterId);
+    assert.ok(monster?.spineAsset, `${monsterId} must render through an idle Spine asset`);
+    assert.ok(monster.spineAsset.idleAnimation, `${monsterId} must have an idle animation`);
+  }
+
+  console.log("Encounter composition and scene assertions passed.");
 }
 
-console.log("Encounter composition and scene assertions passed.");
+function getEncounter(
+  encounters: Awaited<ReturnType<typeof getCodexEncounters>>,
+  id: string,
+) {
+  const encounter = encounters.find((candidate) => candidate.id === id);
+  assert.ok(encounter, `${id} must exist`);
+  return encounter;
+}
+
+function formationCount(
+  encounters: Awaited<ReturnType<typeof getCodexEncounters>>,
+  id: string,
+): number {
+  return expandEncounterFormations(getEncounter(encounters, id)).length;
 }
 
 void main();
