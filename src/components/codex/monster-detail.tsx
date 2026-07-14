@@ -7,6 +7,12 @@ import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import {
+  classifyMonsterIntentFsm,
+  getMonsterIntentConditionDescriptor,
+  type MonsterIntentFsmKind,
+  type MonsterIntentPhaseModel,
+} from "@/lib/monster-intent-fsm";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { getBestiaryDisplayMonsterType } from "@/lib/bestiary-monster-policy";
@@ -114,12 +120,10 @@ interface AttackRepeatInfo {
   isMulti: boolean;
 }
 
-type PatternKind = "linear" | "fixed" | "random" | "conditional" | "mixed" | "unknown";
+type PatternKind = MonsterIntentFsmKind;
 
-interface PatternPhase {
-  id: string;
+interface PatternPhase extends MonsterIntentPhaseModel {
   label: string;
-  moveIds: string[];
 }
 
 interface PatternSummary {
@@ -157,7 +161,6 @@ interface PatternDiagramEntryNode {
   width: number;
   height: number;
   kind: "start" | "end";
-  assetUrl?: string;
 }
 
 interface PatternDiagramEdge {
@@ -166,9 +169,10 @@ interface PatternDiagramEdge {
   to: string;
   path: string;
   color: string;
-  marker: "normal" | "conditional" | "start";
+  marker: "normal" | "conditional";
   isLoop: boolean;
   label: string | null;
+  tooltip?: string | null;
   labelX: number;
   labelY: number;
   chanceLabel?: string | null;
@@ -214,6 +218,7 @@ interface PatternDiagramPhaseConnector {
   key: string;
   path: string;
   label?: string | null;
+  tooltip?: string | null;
   labelX?: number;
   labelY?: number;
 }
@@ -898,14 +903,14 @@ function PatternStateTransitionDiagram({
               top: box.y,
               width: box.width,
               height: box.height,
-              border: `1px solid ${box.kind === "conditional" ? "rgba(255, 69, 69, 0.42)" : "rgba(239, 200, 81, 0.34)"}`,
-              backgroundColor: "rgba(7, 9, 20, 0.22)",
+              border: `2px solid ${DIAGRAM_PHASE_COLOR}`,
+              backgroundColor: DIAGRAM_GROUP_BACKGROUND,
             }}
           >
             {box.label && (
               <span
                 className="absolute left-3 top-2 max-w-[calc(100%-1.5rem)] truncate font-game-title text-[11px] font-bold"
-                style={{ color: box.kind === "conditional" ? DIAGRAM_CONDITIONAL_COLOR : DIAGRAM_ARROW_COLOR }}
+                style={{ color: DIAGRAM_PHASE_COLOR }}
                 title={box.label}
               >
                 {box.label}
@@ -923,8 +928,8 @@ function PatternStateTransitionDiagram({
               top: box.y,
               width: box.width,
               height: box.height,
-              border: `1px solid ${hexToRgba(box.color ?? DIAGRAM_PHASE_COLOR, 0.52)}`,
-              backgroundColor: "rgba(7, 9, 20, 0.18)",
+              border: `2px solid ${box.color ?? DIAGRAM_PHASE_COLOR}`,
+              backgroundColor: DIAGRAM_GROUP_BACKGROUND,
             }}
           >
             <span
@@ -965,28 +970,17 @@ function PatternStateTransitionDiagram({
             >
               <path d="M 0 0 L 10 5 L 0 10 Z" fill={DIAGRAM_CONDITIONAL_COLOR} />
             </marker>
-            <marker
-              id={`${markerPrefix}-arrow-start`}
-              markerWidth="10"
-              markerHeight="10"
-              refX="9"
-              refY="5"
-              orient="auto"
-              markerUnits="userSpaceOnUse"
-            >
-              <path d="M 0 0 L 10 5 L 0 10 Z" fill={BESTIARY_START_COLOR} />
-            </marker>
           </defs>
           {diagram.phaseConnectors.map((connector) => (
             <path
               key={connector.key}
               d={connector.path}
               fill="none"
-              stroke={DIAGRAM_ARROW_COLOR}
+              stroke={DIAGRAM_CONDITIONAL_COLOR}
               strokeWidth="3"
               strokeLinecap="round"
               strokeLinejoin="round"
-              markerEnd={`url(#${markerPrefix}-arrow-normal)`}
+              markerEnd={`url(#${markerPrefix}-arrow-conditional)`}
               data-pattern-phase-connector={connector.key}
             />
           ))}
@@ -1009,14 +1003,16 @@ function PatternStateTransitionDiagram({
         {diagram.edges.map((edge) => edge.label && (
           <span
             key={`${edge.key}-label`}
-            className="pointer-events-none absolute z-20 whitespace-nowrap rounded bg-[#070914]/90 px-1.5 py-0.5 text-[10px] font-bold tabular-nums"
+            className="pointer-events-auto absolute z-20 whitespace-nowrap rounded bg-[#070914]/90 px-1.5 py-0.5 text-[10px] font-bold tabular-nums"
             style={{
               left: edge.labelX,
               top: edge.labelY,
               color: edge.color,
               transform: "translate(-50%, -50%)",
             }}
-            title={edge.label}
+            title={edge.tooltip ?? edge.label}
+            aria-label={edge.tooltip ?? edge.label}
+            tabIndex={edge.tooltip ? 0 : undefined}
             data-pattern-edge-label={edge.key}
           >
             {edge.label}
@@ -1040,14 +1036,17 @@ function PatternStateTransitionDiagram({
         {diagram.phaseConnectors.map((connector) => connector.label && (
           <span
             key={`${connector.key}-label`}
-            className="pointer-events-none absolute z-20 whitespace-nowrap rounded bg-[#070914]/90 px-1.5 py-0.5 text-[10px] font-bold"
+            className="pointer-events-auto absolute z-20 whitespace-nowrap rounded bg-[#070914]/90 px-1.5 py-0.5 text-[10px] font-bold"
             style={{
               left: connector.labelX,
               top: connector.labelY,
-              color: DIAGRAM_ARROW_COLOR,
+              color: DIAGRAM_CONDITIONAL_COLOR,
               transform: "translate(-50%, -50%)",
             }}
             data-pattern-phase-connector-label={connector.key}
+            title={connector.tooltip ?? connector.label}
+            aria-label={connector.tooltip ?? connector.label}
+            tabIndex={connector.tooltip ? 0 : undefined}
           >
             {connector.label}
           </span>
@@ -1056,27 +1055,17 @@ function PatternStateTransitionDiagram({
         {diagram.entryNodes.map((entry) => (
           <div
             key={entry.id}
-            className={`pointer-events-none absolute z-10 flex items-center justify-center font-game-title text-[10px] font-black tracking-[0.08em] ${entry.assetUrl ? "" : "rounded-full border"}`}
+            className="pointer-events-none absolute z-10 flex items-center justify-center whitespace-nowrap font-game-title text-[11px] font-black tracking-[0.08em]"
             style={{
               left: entry.x,
               top: entry.y,
               width: entry.width,
               height: entry.height,
-              borderColor: entry.assetUrl ? undefined : entry.kind === "start" ? "rgba(96, 165, 250, 0.72)" : "rgba(161, 161, 170, 0.58)",
-              backgroundColor: entry.assetUrl ? undefined : entry.kind === "start" ? "rgba(30, 64, 175, 0.22)" : "rgba(39, 39, 42, 0.42)",
-              color: entry.kind === "start" ? BESTIARY_START_COLOR : "#a1a1aa",
+              color: entry.kind === "start" ? DIAGRAM_ARROW_COLOR : "#a1a1aa",
             }}
             data-pattern-entry={entry.kind}
           >
-            {entry.assetUrl ? (
-              <Image
-                src={entry.assetUrl}
-                alt={entry.label}
-                width={entry.width}
-                height={entry.height}
-                className="h-full w-full object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.55)]"
-              />
-            ) : entry.label}
+            {entry.label}
           </div>
         ))}
 
@@ -1767,9 +1756,8 @@ const DIAGRAM_VIEWPORT_TOP_GUTTER = 18;
 const DIAGRAM_DRAG_GUTTER = 96;
 const DIAGRAM_ARROW_COLOR = "#efc851";
 const DIAGRAM_CONDITIONAL_COLOR = "#ff4545";
-const BESTIARY_START_COLOR = "#60a5fa";
-const DIAGRAM_START_ASSET = "/images/sts2/ui/settings_tiny_right_arrow.png";
 const DIAGRAM_PHASE_COLOR = "#29ebc0";
+const DIAGRAM_GROUP_BACKGROUND = "rgba(26, 36, 56, 0.55)";
 const STRUCTURED_DIAGRAM_NODE_WIDTH = 164;
 const STRUCTURED_DIAGRAM_NODE_HEIGHT = 118;
 const MONSTER_DETAIL_VIEWPORT_PADDING = {
@@ -2578,8 +2566,10 @@ function buildConditionalClusterPatternDiagramModel(
   const leftChance = chanceByMoveId.get(leftNode.id) ?? "50%";
   const rightChance = chanceByMoveId.get(rightNode.id) ?? "50%";
   const text = getIntentFsmText(serviceLocale);
-  const canPhaseLabel = serviceLocale === "ko" ? `${text.canFabricate}(Y)` : `${text.canFabricate} (Y)`;
-  const cannotPhaseLabel = serviceLocale === "ko" ? `${text.cannotFabricate}(N)` : `${text.cannotFabricate} (N)`;
+  const canFabricate = getMonsterIntentConditionDescriptor("CanFabricate", serviceLocale);
+  const cannotFabricate = getMonsterIntentConditionDescriptor("!CanFabricate", serviceLocale);
+  const canPhaseLabel = canFabricate?.label ?? text.canFabricate;
+  const cannotPhaseLabel = cannotFabricate?.label ?? text.cannotFabricate;
   const start = buildPatternStartEntryNode(text.start, 389, 22);
   const startX = start.x + start.width / 2;
   const startY = start.y + start.height;
@@ -2668,8 +2658,10 @@ function buildConditionalClusterPatternDiagramModel(
         from: "__PHASE_CAN__",
         to: "__PHASE_CANNOT__",
         path: "M 132 384 C 92 420 176 508 276 540",
-        color: DIAGRAM_ARROW_COLOR,
-        label: "N",
+        color: DIAGRAM_CONDITIONAL_COLOR,
+        marker: "conditional",
+        label: cannotPhaseLabel,
+        tooltip: cannotFabricate?.tooltip ?? null,
         labelX: 138,
         labelY: 458,
       }),
@@ -2678,15 +2670,17 @@ function buildConditionalClusterPatternDiagramModel(
         from: "__PHASE_CANNOT__",
         to: "__PHASE_CAN__",
         path: "M 544 568 C 692 538 780 454 700 384",
-        color: DIAGRAM_ARROW_COLOR,
-        label: "Y",
+        color: DIAGRAM_CONDITIONAL_COLOR,
+        marker: "conditional",
+        label: canPhaseLabel,
+        tooltip: canFabricate?.tooltip ?? null,
         labelX: 704,
         labelY: 478,
       }),
     ],
     phaseBoxes: [
-      { id: "can", label: canPhaseLabel, x: 46, y: 100, width: 728, height: 284, color: DIAGRAM_ARROW_COLOR },
-      { id: "cannot", label: cannotPhaseLabel, x: 276, y: 472, width: 268, height: 180, color: DIAGRAM_ARROW_COLOR },
+      { id: "can", label: canPhaseLabel, x: 46, y: 100, width: 728, height: 284 },
+      { id: "cannot", label: cannotPhaseLabel, x: 276, y: 472, width: 268, height: 180 },
     ],
     choiceBoxes: [],
     phaseConnectors: [],
@@ -2732,10 +2726,9 @@ function buildPatternStartEntryNode(
     label,
     x,
     y,
-    width: 42,
-    height: 42,
+    width: 54,
+    height: 22,
     kind: "start",
-    assetUrl: DIAGRAM_START_ASSET,
   };
 }
 
@@ -2748,6 +2741,7 @@ function buildStructuredPatternEdge({
   marker = "normal",
   isLoop = false,
   label = null,
+  tooltip = null,
   labelX = 0,
   labelY = 0,
   chanceLabel = null,
@@ -2762,6 +2756,7 @@ function buildStructuredPatternEdge({
   marker?: PatternDiagramEdge["marker"];
   isLoop?: boolean;
   label?: string | null;
+  tooltip?: string | null;
   labelX?: number;
   labelY?: number;
   chanceLabel?: string | null;
@@ -2777,6 +2772,7 @@ function buildStructuredPatternEdge({
     marker,
     isLoop,
     label,
+    tooltip,
     labelX,
     labelY,
     chanceLabel,
@@ -3274,9 +3270,9 @@ function buildDiagramEdge(
   const to = nodeById.get(transition.to);
   if (!from || !to) return null;
 
-  const kind = transition.kind === "conditional" ? "conditional" : transition.kind === "start" ? "start" : "fixed";
-  const color = kind === "conditional" ? DIAGRAM_CONDITIONAL_COLOR : kind === "start" ? BESTIARY_START_COLOR : DIAGRAM_ARROW_COLOR;
-  const marker = kind === "conditional" ? "conditional" : kind === "start" ? "start" : "normal";
+  const kind = transition.kind === "conditional" ? "conditional" : "fixed";
+  const color = kind === "conditional" ? DIAGRAM_CONDITIONAL_COLOR : DIAGRAM_ARROW_COLOR;
+  const marker = kind === "conditional" ? "conditional" : "normal";
   const laneOffset = laneIndex * 16 + (index % 2) * 4;
   const label = getDiagramEdgeLabel(transition);
   const isLoop = from.id === to.id || to.x <= from.x;
@@ -3450,112 +3446,17 @@ function buildMonsterActionMoves(monster: CodexMonster): MonsterMove[] {
 }
 
 function buildPatternSummary(monster: CodexMonster): PatternSummary {
-  const transitions = getDisplayPatternTransitions(monster);
-  const structuredStates = monster.moveGraph?.states ?? [];
-  if (transitions.length === 0 && structuredStates.length === 0) {
-    return { kind: "unknown", hasPhases: false, phases: [] };
-  }
-  if (monster.id === "DECIMILLIPEDE_SEGMENT") {
-    return { kind: "mixed", hasPhases: false, phases: [] };
-  }
-
-  const kinds = new Set(transitions.map((transition) => transition.kind ?? inferTransitionKind(transition)));
-  const hasRandom = kinds.has("random") || structuredStates.some((state) => state.kind === "random");
-  const hasConditional = kinds.has("conditional") || structuredStates.some((state) => state.kind === "conditional");
-  const isLinear = structuredStates.length > 0
-    && !hasRandom
-    && !hasConditional
-    && structuredStates.every((state) => state.kind !== "move" || state.next == null);
-  const kind: PatternKind = isLinear
-    ? "linear"
-    : hasRandom && hasConditional
-    ? "mixed"
-    : hasConditional ? "conditional"
-      : hasRandom ? "random"
-        : "fixed";
-  const phases = buildPatternPhases(monster);
+  const fsm = classifyMonsterIntentFsm(monster.moveGraph);
+  const phases = fsm.phases.map((phase, index) => ({
+    ...phase,
+    label: `${index + 1}`,
+  }));
 
   return {
-    kind,
+    kind: fsm.kind,
     hasPhases: phases.length > 1,
     phases,
   };
-}
-
-function buildPatternPhases(monster: CodexMonster): PatternPhase[] {
-  const transitions = getDisplayPatternTransitions(monster);
-  const nodes = new Set<string>();
-  const outgoing = new Map<string, string[]>();
-
-  for (const transition of transitions) {
-    if (transition.from !== "__START__") nodes.add(transition.from);
-    nodes.add(transition.to);
-    if (transition.from !== "__START__") {
-      outgoing.set(transition.from, [...(outgoing.get(transition.from) ?? []), transition.to]);
-    }
-  }
-
-  const components = getStronglyConnectedComponents(Array.from(nodes), outgoing);
-  const recurrent = components.filter((component) => {
-    if (component.length > 1) return true;
-    const [node] = component;
-    return (outgoing.get(node) ?? []).includes(node);
-  });
-
-  if (recurrent.length <= 1) return [];
-
-  const order = getReachableOrder(monster.moveGraph?.initial ?? transitions[0]?.to ?? null, outgoing);
-  return recurrent
-    .sort((a, b) => componentOrder(a, order) - componentOrder(b, order))
-    .map((component, index) => ({
-      id: component.join("|"),
-      label: `${index + 1}`,
-      moveIds: component.sort((a, b) => (order.get(a) ?? Number.MAX_SAFE_INTEGER) - (order.get(b) ?? Number.MAX_SAFE_INTEGER)),
-    }));
-}
-
-function getStronglyConnectedComponents(nodes: string[], outgoing: Map<string, string[]>): string[][] {
-  const indexByNode = new Map<string, number>();
-  const lowLinkByNode = new Map<string, number>();
-  const stack: string[] = [];
-  const onStack = new Set<string>();
-  const components: string[][] = [];
-  let index = 0;
-
-  const visit = (node: string) => {
-    indexByNode.set(node, index);
-    lowLinkByNode.set(node, index);
-    index += 1;
-    stack.push(node);
-    onStack.add(node);
-
-    for (const next of outgoing.get(node) ?? []) {
-      if (!indexByNode.has(next)) {
-        visit(next);
-        lowLinkByNode.set(node, Math.min(lowLinkByNode.get(node) ?? 0, lowLinkByNode.get(next) ?? 0));
-      } else if (onStack.has(next)) {
-        lowLinkByNode.set(node, Math.min(lowLinkByNode.get(node) ?? 0, indexByNode.get(next) ?? 0));
-      }
-    }
-
-    if (lowLinkByNode.get(node) !== indexByNode.get(node)) return;
-
-    const component: string[] = [];
-    let current: string | undefined;
-    do {
-      current = stack.pop();
-      if (!current) break;
-      onStack.delete(current);
-      component.push(current);
-    } while (current !== node);
-    components.push(component);
-  };
-
-  nodes.forEach((node) => {
-    if (!indexByNode.has(node)) visit(node);
-  });
-
-  return components;
 }
 
 function getReachableOrder(start: string | null, outgoing: Map<string, string[]>): Map<string, number> {
@@ -3573,10 +3474,6 @@ function getReachableOrder(start: string | null, outgoing: Map<string, string[]>
   return order;
 }
 
-function componentOrder(component: string[], order: Map<string, number>): number {
-  return Math.min(...component.map((node) => order.get(node) ?? Number.MAX_SAFE_INTEGER));
-}
-
 function inferTransitionKind(transition: MonsterMoveTransition): MonsterMoveTransitionKind {
   if (transition.condition) return "conditional";
   if (transition.chance != null && transition.chance < 100) return "random";
@@ -3584,13 +3481,16 @@ function inferTransitionKind(transition: MonsterMoveTransition): MonsterMoveTran
 }
 
 function getPatternKindLabel(kind: PatternKind, serviceLocale: ServiceLocale): string {
-  const intentFsm = getIntentFsmText(serviceLocale);
   const labels: Record<PatternKind, { ko: string; en: string }> = {
-    linear: { ko: intentFsm.nonRepeatingKind, en: intentFsm.nonRepeatingKind },
-    fixed: { ko: "고정 반복", en: "Fixed" },
-    random: { ko: "무작위", en: "Random" },
-    conditional: { ko: "조건부", en: "Conditional" },
-    mixed: { ko: intentFsm.conditionalRandomKind, en: intentFsm.conditionalRandomKind },
+    terminal: { ko: "종료형", en: "Terminal" },
+    "one-way": { ko: "단방향 진행", en: "One-way sequence" },
+    "fixed-loop": { ko: "고정 반복", en: "Fixed loop" },
+    "random-loop": { ko: "무작위 반복", en: "Random loop" },
+    "conditional-loop": { ko: "조건 반복", en: "Conditional loop" },
+    "conditional-random-loop": { ko: "조건·무작위 반복", en: "Conditional random loop" },
+    "reversible-phases": { ko: "가역 조건 페이즈", en: "Reversible conditional phases" },
+    "progressive-phases": { ko: "순차 페이즈", en: "Progressive phases" },
+    partial: { ko: "부분 확인", en: "Partially verified" },
     unknown: { ko: "미확인", en: "Unknown" },
   };
   return serviceLocale === "ko" ? labels[kind].ko : labels[kind].en;
