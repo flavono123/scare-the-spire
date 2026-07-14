@@ -2377,7 +2377,7 @@ function buildProgressivePhasePatternDiagramModel(
   phases: PatternPhase[],
   serviceLocale: ServiceLocale,
 ): PatternDiagramModel | null {
-  if (phases.length < 2) return null;
+  if (phases.length < 2 || classifyMonsterIntentFsm(monster.moveGraph).phaseLayout !== "horizontal") return null;
 
   const text = getIntentFsmText(serviceLocale);
   const phaseByMoveId = new Map<string, string>();
