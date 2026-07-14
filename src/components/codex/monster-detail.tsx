@@ -1118,9 +1118,6 @@ function PatternMoveStateNode({
   const attackMetric = moveSummary ? getMoveAttackMetric(moveSummary, monsterAscensionLevel) : damageEntry ? buildAttackMetric(damageEntry, null, monsterAscensionLevel) : null;
   const standaloneIntents = moveSummary ? getStandaloneMoveIntentItems(moveSummary, monsterAscensionLevel) : [];
   const hasApplications = Boolean(move && (move.powerApplications.length > 0 || move.cardApplications.length > 0));
-  const hasPrimaryContent = Boolean(attackMetric || blockEntry || hasApplications || standaloneIntents.length > 0);
-  const showStateName = Boolean(move && !attackMetric && !blockEntry && !hasApplications);
-  const showStructuredStateName = node.width === STRUCTURED_DIAGRAM_NODE_WIDTH && node.height === STRUCTURED_DIAGRAM_NODE_HEIGHT;
   const title = move ? `${move.name}${move.nameEn !== move.name ? ` / ${move.nameEn}` : ""}` : getMoveName(monster, node.id);
 
   return (
@@ -1203,12 +1200,12 @@ function PatternMoveStateNode({
             />
           </span>
         )}
-        {move && (showStructuredStateName || showStateName || !hasPrimaryContent) && (
+        {move && (
           <span className="font-game-title max-w-full truncate text-[11px] font-bold leading-tight text-gray-100">
             {move.name}
           </span>
         )}
-        {move && showStructuredStateName && move.nameEn !== move.name && (
+        {move && move.nameEn !== move.name && (
           <span className="font-game-text max-w-full truncate text-[9px] leading-tight text-gray-400">
             {move.nameEn}
           </span>
