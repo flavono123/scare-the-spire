@@ -4,7 +4,10 @@ import { type ReactNode, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
+import { RichText } from "@/components/rich-text";
+import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
+import { formatEncounterLossText } from "@/lib/encounter-compositions";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
@@ -14,12 +17,12 @@ import { getBestiaryDisplayMonsterType } from "@/lib/bestiary-monster-policy";
 import { serviceMessages } from "@/messages/service";
 import {
   CodexEncounter,
+  CodexCharacter,
   CodexMonster,
   ENCOUNTER_ROOM_TYPE_CONFIG,
   MONSTER_TYPE_CONFIG,
 } from "@/lib/codex-types";
 import { getRelatedMonsterIdsForEncounter } from "@/lib/codex-references";
-import { DescriptionText } from "./codex-description";
 import { DecimillipedeSpineStage } from "./decimillipede-spine-stage";
 import { EncounterSceneStage } from "./encounter-scene-stage";
 import { EntityReferenceLinks, type CodexReferenceTarget } from "./entity-reference-links";
@@ -66,6 +69,7 @@ interface EncounterDetailProps {
   gameUi: CodexGameUiLabels;
   backToListTitle: string;
   encounter: CodexEncounter;
+  characters: CodexCharacter[];
   monsters: CodexMonster[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
@@ -77,6 +81,7 @@ export function EncounterDetail({
   gameUi,
   backToListTitle,
   encounter,
+  characters,
   monsters,
   patches,
   changes,
@@ -97,6 +102,13 @@ export function EncounterDetail({
         noPatchHistory: "No structured changes",
       };
   const roomConfig = ENCOUNTER_ROOM_TYPE_CONFIG[encounter.roomType];
+  const profile = useStoredUserProfile();
+  const selectedCharacter = useMemo(
+    () => characters.find((character) => character.id === profile.characterId)
+      ?? characters[0]
+      ?? null,
+    [characters, profile.characterId],
+  );
   const monsterById = useMemo(
     () => new Map(monsters.map((monster) => [monster.id, monster])),
     [monsters],
@@ -107,6 +119,9 @@ export function EncounterDetail({
   );
   const [commentCount, setCommentCount] = useState(0);
   const representativeImageUrl = getRepresentativeEncounterImageUrl(encounter.imageUrl);
+  const renderedLossText = encounter.lossText && selectedCharacter
+    ? formatEncounterLossText(encounter.lossText, selectedCharacter.name, encounter.name)
+    : encounter.lossText;
   const relatedMonsterTargets: CodexReferenceTarget[] = getRelatedMonsterIdsForEncounter(encounter).flatMap((monsterId) => {
     const monsterRef = uniqueMonsters.find((candidate) => candidate.id === monsterId);
     if (!monsterRef) return [];
@@ -160,6 +175,7 @@ export function EncounterDetail({
           {encounter.scene && (
             <EncounterSceneStage
               encounter={encounter}
+              character={selectedCharacter}
               monsters={monsters}
               serviceLocale={serviceLocale}
             />
@@ -294,10 +310,10 @@ export function EncounterDetail({
             targets={relatedMonsterTargets}
           />
 
-          {encounter.lossText && (
+          {renderedLossText && (
             <InfoRailSection title={encounterText.lossText}>
               <div className="font-game-text text-sm italic leading-relaxed text-gray-400">
-                <DescriptionText description={encounter.lossText} />
+                <RichText text={renderedLossText} />
               </div>
             </InfoRailSection>
           )}

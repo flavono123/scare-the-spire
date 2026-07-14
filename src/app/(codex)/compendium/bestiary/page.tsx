@@ -4,6 +4,7 @@ import {
   getCodexAfflictions,
   getCodexEncounters,
   getCodexCards,
+  getCodexCharacters,
   getCodexMonsters,
   getCodexPowers,
 } from "@/lib/codex-data";
@@ -33,8 +34,9 @@ export async function renderCompendiumBestiaryPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  const [monsters, encounters, afflictions, cards, powers, patches, changes, versionDiffs, meta, gameUi] = await Promise.all([
+  const [monsters, characters, encounters, afflictions, cards, powers, patches, changes, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexMonsters({ gameLocale }),
+    getCodexCharacters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
     getCodexAfflictions({ gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
@@ -53,6 +55,7 @@ export async function renderCompendiumBestiaryPage(
         serviceLocale={serviceLocale}
         gameUi={gameUi}
         monsters={monsters}
+        characters={characters}
         encounters={encounters}
         afflictions={afflictions}
         cards={cards}

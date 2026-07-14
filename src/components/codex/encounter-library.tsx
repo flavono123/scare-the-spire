@@ -17,6 +17,7 @@ import {
 } from "@/lib/codex-service";
 import {
   CodexEncounter,
+  CodexCharacter,
   CodexMonster,
   EncounterRoomType,
   ENCOUNTER_ROOM_TYPE_CONFIG,
@@ -53,6 +54,7 @@ interface EncounterLibraryProps {
   serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
   encounters: CodexEncounter[];
+  characters: CodexCharacter[];
   monsters: CodexMonster[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
@@ -69,6 +71,7 @@ export function EncounterLibrary({
   serviceLocale,
   gameUi,
   encounters,
+  characters,
   monsters,
   patches,
   changes,
@@ -457,6 +460,7 @@ export function EncounterLibrary({
               gameUi={gameUi}
               backToListTitle={serviceText.encountersView.backToList}
               encounter={selectedEncounter}
+              characters={characters}
               monsters={versionedMonsters}
               patches={patches}
               changes={changes}

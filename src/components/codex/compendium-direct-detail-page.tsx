@@ -540,6 +540,7 @@ export function CompendiumDirectDetailPage({
           gameUi={gameUi}
           backToListTitle={serviceText.encountersView.backToList}
           encounter={encounter}
+          characters={resources.characters}
           monsters={resources.monsters}
           patches={patches}
           changes={changes}

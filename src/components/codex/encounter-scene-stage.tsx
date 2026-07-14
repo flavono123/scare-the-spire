@@ -10,6 +10,7 @@ import {
 } from "@/lib/encounter-compositions";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import type {
+  CodexCharacter,
   CodexEncounter,
   CodexMonster,
   EncounterSceneCombatLayout,
@@ -20,9 +21,11 @@ import { serviceMessages } from "@/messages/service";
 import { FakeMerchantEncounterSpineLayer } from "./fake-merchant-spine-stage";
 import { MonsterSpineStage } from "./monster-spine-stage";
 import { BoundedCarouselFrame } from "./bounded-carousel";
+import { CharacterSpineStage } from "./character-spine-stage";
 
 interface EncounterSceneStageProps {
   encounter: CodexEncounter;
+  character: CodexCharacter | null;
   monsters: CodexMonster[];
   serviceLocale: ServiceLocale;
 }
@@ -49,6 +52,7 @@ const QUEEN_LIGHTS = [
 
 export function EncounterSceneStage({
   encounter,
+  character,
   monsters,
   serviceLocale,
 }: EncounterSceneStageProps) {
@@ -140,6 +144,28 @@ export function EncounterSceneStage({
               viewportTransitionTime={0}
             />
           </div>
+        )}
+
+        {character && (
+          <Link
+            href={localizeHref("/profile", serviceLocale)}
+            aria-label={character.name}
+            title={character.name}
+            className="group absolute z-20 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+            style={positionPlayerFromGameLayout(scene.combatLayout)}
+            data-encounter-character
+          >
+            <CharacterSpineStage
+              character={character}
+              selectedMoveId="IDLE"
+              imagePriority
+              className="absolute inset-0 transition-transform duration-200 group-hover:scale-[1.03]"
+              fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.75)]"
+            />
+            <span className="absolute bottom-0 left-1/2 z-40 -translate-x-1/2 translate-y-1/2 whitespace-nowrap rounded-full border border-white/15 bg-black/75 px-2 py-0.5 font-game-title text-[9px] font-bold text-gray-100 opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 sm:text-[11px]">
+              {character.name}
+            </span>
+          </Link>
         )}
 
         {positionedMonsters.map(({ monster, style }, index) => (
@@ -443,5 +469,27 @@ function applyGameCamera(
   return {
     x: centerX + (position.x - centerX) * combatLayout.cameraScaling + combatLayout.cameraOffset.x,
     y: centerY + (position.y - centerY) * combatLayout.cameraScaling + combatLayout.cameraOffset.y,
+  };
+}
+
+function positionPlayerFromGameLayout(
+  combatLayout: EncounterSceneCombatLayout,
+): CSSProperties {
+  const coordinateWidth = combatLayout.coordinateSize.width;
+  const coordinateHeight = combatLayout.coordinateSize.height;
+  const sourcePosition = {
+    x: coordinateWidth * 0.5 - combatLayout.enemyRegionWidth * 0.5 / combatLayout.cameraScaling,
+    y: combatLayout.enemyBaselineY,
+  };
+  const position = applyGameCamera(sourcePosition, combatLayout);
+  const width = 240 * combatLayout.cameraScaling;
+  const height = 340 * combatLayout.cameraScaling;
+
+  return {
+    left: `${(position.x / coordinateWidth) * 100}%`,
+    top: `${(position.y / coordinateHeight) * 100}%`,
+    width: `${(width / coordinateWidth) * 100}%`,
+    height: `${(height / coordinateHeight) * 100}%`,
+    transform: "translate(-50%, -100%)",
   };
 }

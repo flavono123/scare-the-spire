@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexMonsters, getCodexEncounters } from "@/lib/codex-data";
+import { getCodexCharacters, getCodexMonsters, getCodexEncounters } from "@/lib/codex-data";
 import { getSTS2Changes, getSTS2Patches } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
@@ -59,8 +59,9 @@ export default async function EncounterDetailPage({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const [encounters, monsters, patches, changes, gameUi] = await Promise.all([
+  const [encounters, characters, monsters, patches, changes, gameUi] = await Promise.all([
     getCodexEncounters({ gameLocale }),
+    getCodexCharacters({ gameLocale }),
     getCodexMonsters({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
@@ -76,6 +77,7 @@ export default async function EncounterDetailPage({
         gameUi={gameUi}
         backToListTitle={serviceText.encountersView.backToList}
         encounter={encounter}
+        characters={characters}
         monsters={monsters}
         patches={patches}
         changes={changes}

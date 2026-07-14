@@ -88,3 +88,13 @@ export function formatEncounterProbability(probability: number, locale: string):
     maximumFractionDigits: 1,
   }).format(probability);
 }
+
+export function formatEncounterLossText(
+  lossText: string,
+  characterName: string,
+  encounterName: string,
+): string {
+  return lossText
+    .replaceAll("{character}", characterName)
+    .replaceAll("{encounter}", encounterName);
+}
