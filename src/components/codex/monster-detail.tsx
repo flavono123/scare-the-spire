@@ -2377,6 +2377,7 @@ function buildProgressivePhasePatternDiagramModel(
 ): PatternDiagramModel | null {
   if (phases.length < 2) return null;
 
+  const text = getIntentFsmText(serviceLocale);
   const stateById = new Map(states.map((state) => [state.id, state]));
   const phaseByMoveId = new Map<string, string>();
   phases.forEach((phase) => phase.moveIds.forEach((moveId) => phaseByMoveId.set(moveId, phase.id)));
@@ -2423,7 +2424,7 @@ function buildProgressivePhasePatternDiagramModel(
     });
     return {
       id: phase.id,
-      label: serviceLocale === "ko" ? `페이즈 ${phase.label}` : `Phase ${phase.label}`,
+      label: `${text.phase} ${phase.label}`,
       x,
       y,
       width: boxWidth,
@@ -2482,7 +2483,7 @@ function buildProgressivePhasePatternDiagramModel(
   const initialNode = nodeById.get(initialId);
   if (!initialNode) return null;
   const start = buildPatternStartEntryNode(
-    getIntentFsmText(serviceLocale).start,
+    text.start,
     20,
     initialNode.y + initialNode.height / 2 - 21,
   );
@@ -2499,7 +2500,7 @@ function buildProgressivePhasePatternDiagramModel(
   const bridgeMoveName = serviceLocale === "ko"
     ? bridgeMove?.name ?? bridgeState.id
     : bridgeMove?.nameEn ?? bridgeMove?.name ?? bridgeState.id;
-  const connectorLabel = serviceLocale === "ko" ? `체력 0 → ${bridgeMoveName}` : `0 HP → ${bridgeMoveName}`;
+  const connectorLabel = `${text.zeroHp} → ${bridgeMoveName}`;
   const phaseConnectors = phaseBoxes.flatMap((box, index) => {
     const next = phaseBoxes[index + 1];
     if (!next) return [];
@@ -2555,7 +2556,7 @@ function buildConditionalClusterPatternDiagramModel(
   const rightChance = chanceByMoveId.get(rightNode.id) ?? "50%";
   const text = getIntentFsmText(serviceLocale);
   const canPhaseLabel = serviceLocale === "ko" ? `${text.canFabricate}(Y)` : `${text.canFabricate} (Y)`;
-  const cannotPhaseLabel = serviceLocale === "ko" ? "불가(N)" : "Cannot fabricate (N)";
+  const cannotPhaseLabel = serviceLocale === "ko" ? `${text.cannotFabricate}(N)` : `${text.cannotFabricate} (N)`;
   const start = buildPatternStartEntryNode(text.start, 389, 22);
   const startX = start.x + start.width / 2;
   const startY = start.y + start.height;
