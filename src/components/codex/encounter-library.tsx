@@ -27,6 +27,7 @@ import {
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import { expandEncounterFormations } from "@/lib/encounter-compositions";
 import { versionCodexEntities } from "@/lib/codex-versioning";
+import { pickRandomMonsterPreviewMoveId } from "@/lib/monster-spine-preview";
 import { SearchBar } from "./search-bar";
 import {
   FilterSection,
@@ -41,6 +42,7 @@ import {
 } from "./codex-filter-drawer";
 import { EncounterDetail } from "./encounter-detail";
 import { VersionSelector } from "./version-selector";
+import { MonsterSpineStage } from "./monster-spine-stage";
 
 // Room type display order and styling
 const ROOM_TYPE_ORDER: EncounterRoomType[] = ["Monster", "Elite", "Boss"];
@@ -414,8 +416,6 @@ function EncounterTile({
   onClick: () => void;
 }) {
   const roomConfig = ENCOUNTER_ROOM_TYPE_CONFIG[encounter.roomType];
-  const representativeImageUrl = encounter.scene?.backgroundUrl
-    ?? getRepresentativeEncounterImageUrl(encounter.imageUrl);
   const formationCount = encounter.compositions
     ? expandEncounterFormations(encounter).length
     : null;
@@ -432,39 +432,22 @@ function EncounterTile({
         encounter.deprecated ? "opacity-50 grayscale saturate-0" : ""
       }`}
     >
-      {representativeImageUrl ? (
-        <div className="flex h-10 w-16 shrink-0 items-center justify-center overflow-hidden rounded-md border border-white/10 bg-white/[0.03]">
-          <Image
-            src={representativeImageUrl}
-            alt={encounter.name}
-            width={96}
-            height={48}
-            loading="lazy"
-            className="h-full w-full object-contain"
+      <div className="flex shrink-0 items-center -space-x-1">
+        {uniqueMonsters.slice(0, 4).map((monsterRef) => (
+          <EncounterMonsterThumbnail
+            key={monsterRef.id}
+            monster={monsterById.get(monsterRef.id)}
+            name={monsterRef.name}
           />
-        </div>
-      ) : (
-        <div className="flex -space-x-2 shrink-0">
-          {uniqueMonsters.slice(0, 4).map((mRef) => {
-            const monster = monsterById.get(mRef.id);
-            const imgUrl = monster?.imageUrl ?? monster?.bossImageUrl;
-            return imgUrl ? (
-              <div key={mRef.id} className="w-8 h-8 rounded-full overflow-hidden bg-white/5 border-2 border-[#1a1a2e]">
-                <Image src={imgUrl} alt={mRef.name} width={32} height={32} loading="lazy" className="w-8 h-8 object-contain" />
-              </div>
-            ) : (
-              <div key={mRef.id} className="w-8 h-8 rounded-full bg-white/10 border-2 border-[#1a1a2e] flex items-center justify-center">
-                <span className="text-[9px] text-gray-500">{mRef.name[0]}</span>
-              </div>
-            );
-          })}
-          {uniqueMonsters.length > 4 && (
-            <div className="w-8 h-8 rounded-full bg-white/10 border-2 border-[#1a1a2e] flex items-center justify-center">
-              <span className="text-[9px] text-gray-500">+{uniqueMonsters.length - 4}</span>
-            </div>
-          )}
-        </div>
-      )}
+        ))}
+        {uniqueMonsters.length > 4 && (
+          <div className="flex h-9 w-7 items-center justify-center">
+            <span className="font-game-text text-[9px] text-gray-500">
+              +{uniqueMonsters.length - 4}
+            </span>
+          </div>
+        )}
+      </div>
 
       {/* Name + meta */}
       <div className="flex-1 min-w-0">
@@ -504,11 +487,52 @@ function EncounterTile({
   );
 }
 
-function getRepresentativeEncounterImageUrl(imageUrl: string | null): string | null {
-  if (!imageUrl) return null;
-  return imageUrl.includes("/encounters-render/") || imageUrl.includes("/monsters-render/")
-    ? imageUrl
-    : null;
+function EncounterMonsterThumbnail({
+  monster,
+  name,
+}: {
+  monster: CodexMonster | undefined;
+  name: string;
+}) {
+  const [hoverMoveId, setHoverMoveId] = useState<string | null | undefined>(undefined);
+  const imageUrl = monster?.imageUrl ?? monster?.bossImageUrl ?? null;
+  const hovering = hoverMoveId !== undefined;
+
+  return (
+    <div
+      className="relative flex h-9 w-9 items-center justify-center overflow-hidden"
+      title={name}
+      onMouseEnter={() => setHoverMoveId(monster ? pickRandomMonsterPreviewMoveId(monster) : null)}
+      onMouseLeave={() => setHoverMoveId(undefined)}
+    >
+      {imageUrl && (
+        <Image
+          src={imageUrl}
+          alt={name}
+          width={36}
+          height={36}
+          loading="lazy"
+          className={`h-9 w-9 object-contain drop-shadow-[0_7px_8px_rgba(0,0,0,0.6)] transition-opacity ${
+            hovering && monster?.spineAsset ? "opacity-0" : "opacity-100"
+          }`}
+        />
+      )}
+      {hovering && monster?.spineAsset && (
+        <MonsterSpineStage
+          asset={monster.spineAsset}
+          fallbackImageUrl={imageUrl}
+          monsterName={monster.name}
+          selectedMoveId={hoverMoveId}
+          imagePriority={false}
+          showLoadingLabel={false}
+          className="absolute inset-0"
+        />
+      )}
+      {!imageUrl && !monster?.spineAsset && (
+        <span className="font-game-title text-[10px] text-gray-500">{name.slice(0, 1)}</span>
+      )}
+    </div>
+  );
 }
 
 function getActLabel(
