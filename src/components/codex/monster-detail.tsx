@@ -1014,6 +1014,7 @@ function PatternStateTransitionDiagram({
               transform: "translate(-50%, -50%)",
             }}
             title={edge.label}
+            data-pattern-edge-label={edge.key}
           >
             {edge.label}
           </span>

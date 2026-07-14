@@ -5,10 +5,62 @@ const BASE = process.env.BASE_URL ?? "http://127.0.0.1:3000";
 test.use({ locale: "ko-KR" });
 
 const CASES = [
-  { id: "GAS_BOMB", slug: "gas_bomb", nodeCount: 1, edgeCount: 2, hasEnd: true },
-  { id: "AEONGLASS", slug: "aeonglass", nodeCount: 3, edgeCount: 4, hasEnd: false },
-  { id: "SOUL_NEXUS", slug: "soul_nexus", nodeCount: 3, edgeCount: 2, hasEnd: false },
-  { id: "FABRICATOR", slug: "fabricator", nodeCount: 3, edgeCount: 2, hasEnd: false },
+  {
+    id: "GAS_BOMB",
+    slug: "gas_bomb",
+    monsterNameKo: "가스 폭탄",
+    monsterNameEn: "Gas Bomb",
+    moveNames: [{ ko: "폭발", en: "Explode" }],
+    nodeCount: 1,
+    branchNodeCount: 0,
+    edgeCount: 2,
+    hasEnd: true,
+  },
+  {
+    id: "AEONGLASS",
+    slug: "aeonglass",
+    monsterNameKo: "영겁의 모래시계",
+    monsterNameEn: "Aeonglass",
+    moveNames: [
+      { ko: "감쇠", en: "Ebb" },
+      { ko: "눈 레이저", en: "Eye Lasers" },
+      { ko: "강도 증가", en: "Increasing Intensity" },
+    ],
+    nodeCount: 3,
+    branchNodeCount: 0,
+    edgeCount: 4,
+    hasEnd: false,
+  },
+  {
+    id: "SOUL_NEXUS",
+    slug: "soul_nexus",
+    monsterNameKo: "영혼 결합체",
+    monsterNameEn: "Soul Nexus",
+    moveNames: [
+      { ko: "영혼 연소", en: "Soul Burn" },
+      { ko: "대재앙", en: "Maelstrom" },
+      { ko: "생명 흡수", en: "Drain Life" },
+    ],
+    nodeCount: 3,
+    branchNodeCount: 0,
+    edgeCount: 7,
+    hasEnd: false,
+  },
+  {
+    id: "FABRICATOR",
+    slug: "fabricator",
+    monsterNameKo: "조립 전문가",
+    monsterNameEn: "Fabricator",
+    moveNames: [
+      { ko: "조립", en: "Fabricate" },
+      { ko: "조립 타격", en: "Fabricating Strike" },
+      { ko: "해체", en: "Disintegrate" },
+    ],
+    nodeCount: 3,
+    branchNodeCount: 2,
+    edgeCount: 8,
+    hasEnd: false,
+  },
 ] as const;
 
 const MOBILE_PRESETS = [
@@ -45,13 +97,21 @@ for (const sample of CASES) {
 
     const diagram = page.locator(`[data-monster-pattern-diagram="${sample.id}"]`);
     await expect(diagram).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: sample.monsterNameKo })).toBeVisible();
+    await expect(page.getByText(sample.monsterNameEn, { exact: true }).first()).toBeVisible();
     await expect(diagram.locator('[data-pattern-entry="start"]')).toBeVisible();
     await expect(diagram.locator('[data-pattern-entry="end"]')).toHaveCount(sample.hasEnd ? 1 : 0);
 
     const nodes = diagram.locator('[data-pattern-node="true"]');
     await expect(nodes).toHaveCount(sample.nodeCount);
-    await expect(diagram.locator("svg path")).toHaveCount(sample.edgeCount);
-    await expectNoNodeOverlap(nodes);
+    await expect(diagram.locator("[data-pattern-branch-node]")).toHaveCount(sample.branchNodeCount);
+    await expect(diagram.locator("svg > path")).toHaveCount(sample.edgeCount);
+    await expect(diagram.locator("[data-pattern-edge-label]")).toHaveCount(sample.edgeCount);
+    await expectNoNodeOverlap(diagram.locator('[data-pattern-node="true"], [data-pattern-branch-node]'));
+    for (const moveName of sample.moveNames) {
+      await expect(diagram.getByText(moveName.ko, { exact: true })).toBeVisible();
+      await expect(diagram.getByText(moveName.en, { exact: true })).toBeVisible();
+    }
 
     await diagram.screenshot({ path: `test-results/monster-intent-fsm-${sample.slug}.png` });
   });
