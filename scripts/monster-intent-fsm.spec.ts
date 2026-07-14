@@ -105,12 +105,28 @@ for (const sample of CASES) {
     const nodes = diagram.locator('[data-pattern-node="true"]');
     await expect(nodes).toHaveCount(sample.nodeCount);
     await expect(diagram.locator("[data-pattern-branch-node]")).toHaveCount(sample.branchNodeCount);
-    await expect(diagram.locator("svg > path")).toHaveCount(sample.edgeCount);
+    const edges = diagram.locator("svg > path[data-pattern-edge-from]");
+    await expect(edges).toHaveCount(sample.edgeCount);
     await expect(diagram.locator("[data-pattern-edge-label]")).toHaveCount(sample.edgeCount);
+    const edgeStyles = await edges.evaluateAll((elements) => elements.map((element) => ({
+      stroke: element.getAttribute("stroke"),
+      markerEnd: element.getAttribute("marker-end"),
+    })));
+    expect(edgeStyles.every((style) => style.stroke === "#efc851")).toBe(true);
+    expect(edgeStyles.every((style) => style.markerEnd?.includes("arrow-normal"))).toBe(true);
+    await expect(diagram.locator('marker[id$="-arrow-normal"] path')).toHaveAttribute("fill", "#efc851");
     await expectNoNodeOverlap(diagram.locator('[data-pattern-node="true"], [data-pattern-branch-node]'));
     for (const moveName of sample.moveNames) {
       await expect(diagram.getByText(moveName.ko, { exact: true })).toBeVisible();
       await expect(diagram.getByText(moveName.en, { exact: true })).toBeVisible();
+    }
+    if (sample.id === "SOUL_NEXUS") {
+      const transitionPairs = await edges.evaluateAll((elements) => elements.map((element) => ({
+        from: element.getAttribute("data-pattern-edge-from"),
+        to: element.getAttribute("data-pattern-edge-to"),
+      })));
+      expect(transitionPairs.filter((edge) => edge.from !== "__START__").every((edge) => edge.from !== edge.to)).toBe(true);
+      await expect(diagram.getByText("50%", { exact: true })).toHaveCount(6);
     }
 
     await diagram.screenshot({ path: `test-results/monster-intent-fsm-${sample.slug}.png` });

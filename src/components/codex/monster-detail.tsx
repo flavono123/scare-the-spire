@@ -999,6 +999,8 @@ function PatternStateTransitionDiagram({
               strokeLinecap="square"
               strokeLinejoin="miter"
               markerEnd={`url(#${markerPrefix}-arrow-${edge.marker})`}
+              data-pattern-edge-from={edge.from}
+              data-pattern-edge-to={edge.to}
             />
           ))}
         </svg>
