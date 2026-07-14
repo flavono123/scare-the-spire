@@ -43,9 +43,11 @@ import {
 import { EncounterDetail } from "./encounter-detail";
 import { VersionSelector } from "./version-selector";
 import { MonsterSpineStage } from "./monster-spine-stage";
+import { GameCheckboxToggle } from "./game-checkbox";
 
 // Room type display order and styling
 const ROOM_TYPE_ORDER: EncounterRoomType[] = ["Monster", "Elite", "Boss"];
+const MAX_INDIVIDUAL_FORMATION_COUNT_FILTERS = 8;
 
 interface EncounterLibraryProps {
   serviceLocale: ServiceLocale;
@@ -82,6 +84,7 @@ export function EncounterLibrary({
   const urlEncounterId = useHydrationSafeSearchParam("encounter");
   const [selectedRoomTypes, setSelectedRoomTypes] = useState<Set<EncounterRoomType>>(new Set());
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
+  const [selectedFormationCounts, setSelectedFormationCounts] = useState<Set<number>>(new Set());
   const [showWeakOnly, setShowWeakOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [internalSelectedVersion, setInternalSelectedVersion] = useState(currentVersion ?? "");
@@ -113,6 +116,24 @@ export function EncounterLibrary({
     () => new Map(versionedMonsters.map((m) => [m.id, m])),
     [versionedMonsters],
   );
+  const formationCountByEncounterId = useMemo(
+    () => new Map(versionedEncounters.map((encounter) => [
+      encounter.id,
+      getEncounterFormationCount(encounter),
+    ])),
+    [versionedEncounters],
+  );
+  const formationCountOptions = useMemo(() => {
+    const encounterCounts = new Map<number, number>();
+    for (const count of formationCountByEncounterId.values()) {
+      if (count < 1) continue;
+      encounterCounts.set(count, (encounterCounts.get(count) ?? 0) + 1);
+    }
+    return Array.from(encounterCounts, ([formationCount, encounterCount]) => ({
+      formationCount,
+      encounterCount,
+    })).sort((a, b) => a.formationCount - b.formationCount);
+  }, [formationCountByEncounterId]);
   const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
   // Detail modal
@@ -178,6 +199,11 @@ export function EncounterLibrary({
     if (selectedActs.size > 0) {
       result = result.filter((e) => selectedActs.has(e.act ?? "none"));
     }
+    if (selectedFormationCounts.size > 0) {
+      result = result.filter((encounter) => selectedFormationCounts.has(
+        formationCountByEncounterId.get(encounter.id) ?? 0,
+      ));
+    }
     if (showWeakOnly) {
       result = result.filter((e) => e.isWeak);
     }
@@ -196,7 +222,15 @@ export function EncounterLibrary({
     }
 
     return result;
-  }, [versionedEncounters, selectedRoomTypes, selectedActs, showWeakOnly, searchText]);
+  }, [
+    versionedEncounters,
+    selectedRoomTypes,
+    selectedActs,
+    selectedFormationCounts,
+    formationCountByEncounterId,
+    showWeakOnly,
+    searchText,
+  ]);
 
   const topBarTrailing = trailing || (versions && currentVersion) ? (
     <div className="flex shrink-0 items-center gap-2">
@@ -315,6 +349,39 @@ export function EncounterLibrary({
 
         <div className="border-t border-white/10" />
 
+        {formationCountOptions.length > 0 &&
+          formationCountOptions.length <= MAX_INDIVIDUAL_FORMATION_COUNT_FILTERS && (
+          <>
+            <FilterSection label={serviceText.encountersView.formationCountFilter}>
+              <div className="flex flex-col gap-0.5">
+                {formationCountOptions.map(({ formationCount, encounterCount }) => (
+                  <GameCheckboxToggle
+                    key={formationCount}
+                    checked={selectedFormationCounts.has(formationCount)}
+                    onCheckedChange={() => setSelectedFormationCounts((previous) => {
+                      const next = new Set(previous);
+                      if (next.has(formationCount)) next.delete(formationCount);
+                      else next.add(formationCount);
+                      return next;
+                    })}
+                    label={(
+                      <span className="flex items-baseline gap-1.5">
+                        <span>{formationCount}</span>
+                        <span className="font-game-text text-xs text-[#d1b667]">({encounterCount})</span>
+                      </span>
+                    )}
+                    size="sm"
+                    className="w-full"
+                    labelClassName="text-sm"
+                  />
+                ))}
+              </div>
+            </FilterSection>
+
+            <div className="border-t border-white/10" />
+          </>
+        )}
+
         {/* Weak toggle */}
         <button
           onClick={() => setShowWeakOnly((v) => !v)}
@@ -362,6 +429,7 @@ export function EncounterLibrary({
                     monsterById={monsterById}
                     messages={serviceText}
                     gameUi={gameUi}
+                    formationCount={formationCountByEncounterId.get(enc.id) ?? 0}
                     onClick={() => selectEncounter(enc)}
                   />
                 ))}
@@ -407,18 +475,17 @@ function EncounterTile({
   monsterById,
   messages,
   gameUi,
+  formationCount,
   onClick,
 }: {
   encounter: CodexEncounter;
   monsterById: Map<string, CodexMonster>;
   messages: CodexServiceMessages;
   gameUi: CodexGameUiLabels;
+  formationCount: number;
   onClick: () => void;
 }) {
   const roomConfig = ENCOUNTER_ROOM_TYPE_CONFIG[encounter.roomType];
-  const formationCount = encounter.compositions
-    ? expandEncounterFormations(encounter).length
-    : null;
 
   // Deduplicate monster display (some encounters list same monster multiple times)
   const uniqueMonsters = Array.from(
@@ -473,18 +540,18 @@ function EncounterTile({
 
       {/* Monster names */}
       <div className="hidden sm:flex flex-wrap gap-1 shrink-0 max-w-48">
-        {formationCount != null ? (
+        {formationCount > 1 && (
           <span className="rounded bg-amber-500/10 px-1.5 py-0.5 font-game-text text-[10px] text-amber-200">
             {messages.encountersView.formationCount.replace("{count}", String(formationCount))}
           </span>
-        ) : (
-          uniqueMonsters.map((m) => (
-            <span key={m.id} className="font-game-text text-[10px] text-gray-400 bg-white/5 px-1.5 py-0.5 rounded">{m.name}</span>
-          ))
         )}
       </div>
     </button>
   );
+}
+
+function getEncounterFormationCount(encounter: CodexEncounter): number {
+  return expandEncounterFormations(encounter).length;
 }
 
 function EncounterMonsterThumbnail({
