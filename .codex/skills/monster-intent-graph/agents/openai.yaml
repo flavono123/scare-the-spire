@@ -1,0 +1,4 @@
+interface:
+  display_name: "Monster Intent Graph"
+  short_description: "STS2 몬스터 의도 FSM을 추출·목업·구현"
+  default_prompt: "Use $monster-intent-graph to verify and implement an STS2 monster intent FSM from extracted game data."
