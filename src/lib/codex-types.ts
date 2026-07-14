@@ -1064,7 +1064,8 @@ export interface EncounterComposition {
 }
 
 export type EncounterSceneAmbientVfx =
-  | { kind: "none" | "fireflies" }
+  | { kind: "none" }
+  | { kind: "fireflies" }
   | { kind: "queen"; lightTextureUrl: string };
 
 export interface EncounterSceneMonsterSlot {
