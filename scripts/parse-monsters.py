@@ -69,7 +69,6 @@ _INTENT_START_RE = re.compile(r"new\s+(?P<kind>\w+Intent)\s*\(")
 _MOVE_VAR_RE = re.compile(r"MoveState\s+(?P<var>\w+)\s*=.*?new\s+MoveState\(\s*\"(?P<id>\w+)\"", re.DOTALL)
 _RANDOM_BRANCH_VAR_RE = re.compile(r"RandomBranchState\s+(?P<var>\w+)\s*=.*?new\s+RandomBranchState\(\s*\"(?P<id>\w+)\"", re.DOTALL)
 _CONDITIONAL_BRANCH_VAR_RE = re.compile(r"ConditionalBranchState\s+(?P<var>\w+)\s*=.*?new\s+ConditionalBranchState\(\s*\"(?P<id>\w+)\"", re.DOTALL)
-_INITIAL_STATE_RE = re.compile(r"return\s+new\s+MonsterMoveStateMachine\(\s*list\s*,\s*(?P<var>\w+)\s*\)")
 _FOLLOWUP_RE = re.compile(r"(?P<from>\w+)\.FollowUpState\s*=\s*(?P<target>\w+)")
 _INLINE_MOVE_FOLLOWUP_RE = re.compile(r"MoveState\s+(?P<target>\w+)\s*=[^;\n]*\((?P<from>\w+)\.FollowUpState\s*=\s*new\s+MoveState")
 _ADD_BRANCH_RE = re.compile(r"(?P<branch>\w+)\.AddBranch\((?P<args>[^;]+)\);")
@@ -386,6 +385,94 @@ def parse_random_branch_args(args: list[str]) -> dict:
     }
 
 
+def parse_initial_state_variants(text: str, state_vars: dict[str, str]) -> list[tuple[str, str | None]]:
+    """Resolve every runtime-selectable initial state from the returned machine."""
+    body = method_body(text, "GenerateMoveStateMachine") or text
+    return_matches = list(re.finditer(r"\breturn\s+(?P<expression>.*?);", body, re.DOTALL))
+    if not return_matches:
+        return []
+    return parse_initial_state_expression(return_matches[-1].group("expression"), body, state_vars)
+
+
+def parse_initial_state_expression(
+    expression: str,
+    body: str,
+    state_vars: dict[str, str],
+) -> list[tuple[str, str | None]]:
+    expression = expression.strip()
+
+    constructor = re.search(r"new\s+MonsterMoveStateMachine\s*\(", expression)
+    if constructor and expression[:constructor.start()].strip() in {"", "("}:
+        open_paren = expression.find("(", constructor.start())
+        close_paren = _balanced_span(expression, open_paren)
+        if close_paren >= 0:
+            args = split_top_level_args(expression[open_paren + 1 : close_paren])
+            if len(args) >= 2:
+                return parse_initial_state_expression(args[-1], body, state_vars)
+
+    switch_match = re.search(r"(?P<subject>.*?)\s+switch\s*\{(?P<arms>.*)\}\s*$", expression, re.DOTALL)
+    if switch_match:
+        subject = switch_match.group("subject").strip().strip("()")
+        arms = [
+            (match.group("label").strip(), match.group("value").strip())
+            for match in re.finditer(
+                r"^\s*(?P<label>[^=,]+?)\s*=>\s*(?P<value>.*?)\s*,?\s*$",
+                switch_match.group("arms"),
+                re.MULTILINE,
+            )
+        ]
+        explicit_labels = [label for label, _ in arms if label != "_"]
+        variants: list[tuple[str, str | None]] = []
+        for label, value in arms:
+            nested = parse_initial_state_expression(value, body, state_vars)
+            condition = switch_case_condition(subject, label, explicit_labels)
+            variants.extend((state_var, condition) for state_var, _ in nested)
+        if variants:
+            return variants
+
+    identifier = re.fullmatch(r"\(?\s*(?:\(\w+\)\s*)?(?P<var>\w+)\s*\)?", expression)
+    if identifier:
+        state_var = identifier.group("var")
+        if state_var in state_vars:
+            return [(state_var, None)]
+        declaration = re.search(
+            rf"\b(?:MoveState|MonsterState)\s+{re.escape(state_var)}\s*=\s*(?P<value>.*?);",
+            body,
+            re.DOTALL,
+        )
+        if declaration:
+            return parse_initial_state_expression(declaration.group("value"), body, state_vars)
+
+    question = expression.find("?")
+    if question >= 0:
+        condition = expression[:question].strip().lstrip("(").strip()
+        candidates = [
+            token
+            for token in re.findall(r"\b\w+\b", expression[question + 1 :])
+            if token in state_vars
+        ]
+        if len(candidates) >= 2:
+            false_condition = f"!{condition}" if re.fullmatch(r"\w+", condition) else f"!({condition})"
+            return [(candidates[0], simplify_condition(condition)), (candidates[1], false_condition)]
+
+    candidates = [token for token in re.findall(r"\b\w+\b", expression) if token in state_vars]
+    return [(candidates[0], None)] if candidates else []
+
+
+def switch_case_condition(subject: str, label: str, explicit_labels: list[str]) -> str:
+    if label != "_":
+        return f"{subject} == {label}"
+    modulo = re.search(r"%\s*(?P<count>\d+)$", subject)
+    numeric_labels = {int(value) for value in explicit_labels if value.isdigit()}
+    if modulo:
+        missing = set(range(int(modulo.group("count")))) - numeric_labels
+        if len(missing) == 1:
+            return f"{subject} == {missing.pop()}"
+    if explicit_labels:
+        return " && ".join(f"{subject} != {value}" for value in explicit_labels)
+    return f"otherwise({subject})"
+
+
 def parse_move_graph(text: str) -> dict | None:
     move_vars = {
         m.group("var"): strip_move_suffix(m.group("id"))
@@ -406,9 +493,9 @@ def parse_move_graph(text: str) -> dict | None:
         m.group("var"): m.group("id")
         for m in _CONDITIONAL_BRANCH_VAR_RE.finditer(text)
     }
-    initial_matches = list(_INITIAL_STATE_RE.finditer(text))
-    initial_var = initial_matches[-1].group("var") if initial_matches else None
     state_vars = {**move_vars, **branch_vars, **conditional_branch_vars}
+    initial_variants = parse_initial_state_variants(text, state_vars)
+    initial_var = initial_variants[0][0] if initial_variants else None
     initial = state_vars.get(initial_var) if initial_var else None
 
     followups: dict[str, str] = {}
@@ -605,8 +692,13 @@ def parse_move_graph(text: str) -> dict | None:
         if target_var:
             resolve_transitions(from_id, from_var, target_var)
 
-    if initial_var and initial_var not in move_vars:
-        resolve_transitions("__START__", None, initial_var)
+    if initial_variants and (
+        len(initial_variants) > 1
+        or initial_variants[0][1] is not None
+        or initial_variants[0][0] not in move_vars
+    ):
+        for variant_var, condition in initial_variants:
+            resolve_transitions("__START__", None, variant_var, condition=condition)
 
     if not states:
         return None

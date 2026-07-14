@@ -135,6 +135,79 @@ class ParseMonsterMoveGraphTests(unittest.TestCase):
                 },
             ])
 
+    def test_extracts_conditional_initial_states(self) -> None:
+        graph = parse_monsters.parse_move_graph("""
+            MoveState clamp = new MoveState("CLAMP_MOVE", ClampMove);
+            MoveState screech = new MoveState("SCREECH_MOVE", ScreechMove);
+            clamp.FollowUpState = screech;
+            screech.FollowUpState = clamp;
+            MoveState initialState = (_screamFirst ? screech : clamp);
+            return new MonsterMoveStateMachine(list, initialState);
+        """)
+
+        self.assertEqual(graph["initial"], "SCREECH")
+        self.assertEqual([edge for edge in graph["transitions"] if edge["from"] == "__START__"], [
+            {
+                "from": "__START__",
+                "to": "SCREECH",
+                "chance": None,
+                "kind": "conditional",
+                "condition": "_screamFirst",
+            },
+            {
+                "from": "__START__",
+                "to": "CLAMP",
+                "chance": None,
+                "kind": "conditional",
+                "condition": "!_screamFirst",
+            },
+        ])
+
+    def test_extracts_switch_initial_states(self) -> None:
+        graph = parse_monsters.parse_move_graph("""
+            MoveState first = new MoveState("FIRST_MOVE", FirstMove);
+            MoveState second = new MoveState("SECOND_MOVE", SecondMove);
+            MoveState third = new MoveState("THIRD_MOVE", ThirdMove);
+            return new MonsterMoveStateMachine(list, (StarterMoveIdx % 3) switch
+            {
+                0 => first,
+                1 => second,
+                _ => third,
+            });
+        """)
+
+        self.assertEqual(graph["initial"], "FIRST")
+        self.assertEqual(
+            [(edge["to"], edge["condition"]) for edge in graph["transitions"]],
+            [
+                ("FIRST", "StarterMoveIdx % 3 == 0"),
+                ("SECOND", "StarterMoveIdx % 3 == 1"),
+                ("THIRD", "StarterMoveIdx % 3 == 2"),
+            ],
+        )
+
+    def test_extracts_switch_returning_multiple_machines(self) -> None:
+        graph = parse_monsters.parse_move_graph("""
+            MoveState first = new MoveState("FIRST_MOVE", FirstMove);
+            MoveState second = new MoveState("SECOND_MOVE", SecondMove);
+            MoveState third = new MoveState("THIRD_MOVE", ThirdMove);
+            return (StarterMoveIdx % 3) switch
+            {
+                0 => new MonsterMoveStateMachine(list, first),
+                1 => new MonsterMoveStateMachine(list, second),
+                _ => new MonsterMoveStateMachine(list, third),
+            };
+        """)
+
+        self.assertEqual(
+            [(edge["to"], edge["condition"]) for edge in graph["transitions"]],
+            [
+                ("FIRST", "StarterMoveIdx % 3 == 0"),
+                ("SECOND", "StarterMoveIdx % 3 == 1"),
+                ("THIRD", "StarterMoveIdx % 3 == 2"),
+            ],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
