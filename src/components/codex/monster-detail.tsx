@@ -191,6 +191,17 @@ interface PatternDiagramChoiceBox {
   kind?: "random" | "conditional";
 }
 
+interface PatternDiagramBranchNode {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  label: string;
+  labelEn: string;
+  kind: "random" | "conditional";
+}
+
 interface PatternDiagramPan {
   x: number;
   y: number;
@@ -218,6 +229,7 @@ interface PatternDiagramModel {
   edges: PatternDiagramEdge[];
   phaseBoxes: PatternDiagramPhaseBox[];
   choiceBoxes: PatternDiagramChoiceBox[];
+  branchNodes?: PatternDiagramBranchNode[];
   phaseConnectors: PatternDiagramPhaseConnector[];
 }
 
@@ -931,15 +943,6 @@ function PatternStateTransitionDiagram({
           aria-hidden="true"
         >
           <defs>
-            <filter
-              id={`${markerPrefix}-arrow-conditional-tint`}
-              colorInterpolationFilters="sRGB"
-            >
-              <feColorMatrix
-                type="matrix"
-                values="0 0 0 0 1 0 0 0 0 0.2706 0 0 0 0 0.2706 0 0 0 1 0"
-              />
-            </filter>
             <marker
               id={`${markerPrefix}-arrow-normal`}
               markerWidth="10"
@@ -949,14 +952,7 @@ function PatternStateTransitionDiagram({
               orient="auto"
               markerUnits="userSpaceOnUse"
             >
-              <image
-                href={DIAGRAM_ARROW_ICON}
-                x="0"
-                y="0"
-                width="10"
-                height="10"
-                preserveAspectRatio="xMidYMid meet"
-              />
+              <path d="M 0 0 L 10 5 L 0 10 Z" fill={DIAGRAM_ARROW_COLOR} />
             </marker>
             <marker
               id={`${markerPrefix}-arrow-conditional`}
@@ -967,15 +963,7 @@ function PatternStateTransitionDiagram({
               orient="auto"
               markerUnits="userSpaceOnUse"
             >
-              <image
-                href={DIAGRAM_ARROW_ICON}
-                x="0"
-                y="0"
-                width="10"
-                height="10"
-                preserveAspectRatio="xMidYMid meet"
-                filter={`url(#${markerPrefix}-arrow-conditional-tint)`}
-              />
+              <path d="M 0 0 L 10 5 L 0 10 Z" fill={DIAGRAM_CONDITIONAL_COLOR} />
             </marker>
             <marker
               id={`${markerPrefix}-arrow-start`}
@@ -986,7 +974,7 @@ function PatternStateTransitionDiagram({
               orient="auto"
               markerUnits="userSpaceOnUse"
             >
-              <image href={DIAGRAM_ARROW_ICON} x="0" y="0" width="10" height="10" preserveAspectRatio="xMidYMid meet" />
+              <path d="M 0 0 L 10 5 L 0 10 Z" fill={BESTIARY_START_COLOR} />
             </marker>
           </defs>
           {diagram.phaseConnectors.map((connector) => (
@@ -1050,6 +1038,26 @@ function PatternStateTransitionDiagram({
           </div>
         ))}
 
+        {diagram.branchNodes?.map((node) => (
+          <div
+            key={node.id}
+            className="pointer-events-none absolute z-10 flex flex-col items-center justify-center rounded-full border border-dashed bg-[#10131d]/95 px-2 text-center shadow-[0_0_16px_rgba(0,0,0,0.34)]"
+            style={{
+              left: node.x,
+              top: node.y,
+              width: node.width,
+              height: node.height,
+              borderColor: "rgba(239, 200, 81, 0.78)",
+            }}
+            data-pattern-branch-node={node.kind}
+          >
+            <span className="font-game-title text-[10px] font-bold text-[#efc851]">{node.label}</span>
+            {node.labelEn !== node.label && (
+              <span className="font-game-text text-[8px] text-gray-400">{node.labelEn}</span>
+            )}
+          </div>
+        ))}
+
         {diagram.nodes.map((node) => (
           <PatternMoveStateNode
             key={node.id}
@@ -1099,6 +1107,7 @@ function PatternMoveStateNode({
   const hasApplications = Boolean(move && (move.powerApplications.length > 0 || move.cardApplications.length > 0));
   const hasPrimaryContent = Boolean(attackMetric || blockEntry || hasApplications || standaloneIntents.length > 0);
   const showStateName = Boolean(move && !attackMetric && !blockEntry && !hasApplications);
+  const showStructuredStateName = STRUCTURED_FSM_SAMPLE_IDS.has(monster.id);
   const title = move ? `${move.name}${move.nameEn !== move.name ? ` / ${move.nameEn}` : ""}` : getMoveName(monster, node.id);
 
   return (
@@ -1181,9 +1190,14 @@ function PatternMoveStateNode({
             />
           </span>
         )}
-        {move && (showStateName || !hasPrimaryContent) && (
-          <span className="font-game-title max-w-full truncate text-xs font-bold text-gray-100">
+        {move && (showStructuredStateName || showStateName || !hasPrimaryContent) && (
+          <span className="font-game-title max-w-full truncate text-[11px] font-bold leading-tight text-gray-100">
             {move.name}
+          </span>
+        )}
+        {move && showStructuredStateName && move.nameEn !== move.name && (
+          <span className="font-game-text max-w-full truncate text-[9px] leading-tight text-gray-400">
+            {move.nameEn}
           </span>
         )}
       </span>
@@ -1732,7 +1746,8 @@ const DIAGRAM_DRAG_GUTTER = 96;
 const DIAGRAM_ARROW_COLOR = "#efc851";
 const DIAGRAM_CONDITIONAL_COLOR = "#ff4545";
 const BESTIARY_START_COLOR = "#60a5fa";
-const DIAGRAM_ARROW_ICON = "/images/sts2/ui/settings_tiny_right_arrow.png";
+const STRUCTURED_DIAGRAM_NODE_WIDTH = 164;
+const STRUCTURED_DIAGRAM_NODE_HEIGHT = 118;
 const MONSTER_DETAIL_VIEWPORT_PADDING = {
   padLeft: "8%",
   padRight: "8%",
@@ -2104,13 +2119,14 @@ function buildTerminalPatternDiagramModel(
   if (!initialState) return null;
   const text = getIntentFsmText(serviceLocale);
 
-  const node = buildStructuredPatternNode(initialState.id, 156, 92, true);
-  const start = buildPatternEntryNode("__START__", text.start, 26, 124, "start");
-  const end = buildPatternEntryNode("__END__", text.end, 374, 124, "end");
+  const node = buildStructuredPatternNode(initialState.id, 160, 86, true);
+  const start = buildPatternEntryNode("__START__", text.start, 24, 129, "start");
+  const end = buildPatternEntryNode("__END__", text.end, 418, 129, "end");
+  const chanceLabel = formatChancePercent(100);
 
   return {
-    width: 470,
-    height: 260,
+    width: 520,
+    height: 290,
     entryNodes: [start, end],
     nodes: [node],
     edges: [
@@ -2119,15 +2135,20 @@ function buildTerminalPatternDiagramModel(
         from: start.id,
         to: node.id,
         path: `M ${start.x + start.width} ${start.y + start.height / 2} H ${node.x}`,
-        color: BESTIARY_START_COLOR,
-        marker: "start",
+        color: DIAGRAM_ARROW_COLOR,
+        label: chanceLabel,
+        labelX: (start.x + start.width + node.x) / 2,
+        labelY: start.y + start.height / 2 - 12,
       }),
       buildStructuredPatternEdge({
         key: "terminal-end",
         from: node.id,
         to: end.id,
         path: `M ${node.x + node.width} ${node.y + node.height / 2} H ${end.x}`,
-        color: "#a1a1aa",
+        color: DIAGRAM_ARROW_COLOR,
+        label: chanceLabel,
+        labelX: (node.x + node.width + end.x) / 2,
+        labelY: end.y + end.height / 2 - 12,
       }),
     ],
     phaseBoxes: [],
@@ -2159,17 +2180,20 @@ function buildFixedLoopPatternDiagramModel(
   if (orderedIds.length === 0) return null;
 
   const nodeY = 100;
-  const nodes = orderedIds.map((id, index) => buildStructuredPatternNode(id, 148 + index * 196, nodeY, id === initialId));
+  const nodes = orderedIds.map((id, index) => buildStructuredPatternNode(id, 150 + index * 220, nodeY, id === initialId));
   const nodeById = new Map(nodes.map((node) => [node.id, node]));
-  const start = buildPatternEntryNode("__START__", text.start, 24, 132, "start");
+  const start = buildPatternEntryNode("__START__", text.start, 24, 143, "start");
+  const chanceLabel = formatChancePercent(100);
   const edges: PatternDiagramEdge[] = [
     buildStructuredPatternEdge({
       key: "fixed-loop-start",
       from: start.id,
       to: initialId,
       path: `M ${start.x + start.width} ${start.y + start.height / 2} H ${nodeById.get(initialId)!.x}`,
-      color: BESTIARY_START_COLOR,
-      marker: "start",
+      color: DIAGRAM_ARROW_COLOR,
+      label: chanceLabel,
+      labelX: (start.x + start.width + nodeById.get(initialId)!.x) / 2,
+      labelY: start.y + start.height / 2 - 12,
     }),
   ];
 
@@ -2185,6 +2209,9 @@ function buildFixedLoopPatternDiagramModel(
         to: to.id,
         path: `M ${from.x + from.width} ${from.y + from.height / 2} H ${to.x}`,
         color: DIAGRAM_ARROW_COLOR,
+        label: chanceLabel,
+        labelX: (from.x + from.width + to.x) / 2,
+        labelY: from.y + from.height / 2 - 12,
       }));
       return;
     }
@@ -2197,12 +2224,15 @@ function buildFixedLoopPatternDiagramModel(
       path: `M ${from.x + from.width / 2} ${from.y} V ${returnY} H ${to.x + to.width / 2} V ${to.y}`,
       color: DIAGRAM_ARROW_COLOR,
       isLoop: true,
+      label: chanceLabel,
+      labelX: (from.x + from.width / 2 + to.x + to.width / 2) / 2,
+      labelY: returnY + 12,
     }));
   });
 
   return {
-    width: nodes[nodes.length - 1].x + DIAGRAM_CELL_WIDTH + 64,
-    height: 270,
+    width: nodes[nodes.length - 1].x + STRUCTURED_DIAGRAM_NODE_WIDTH + 64,
+    height: 300,
     entryNodes: [start],
     nodes,
     edges,
@@ -2219,32 +2249,34 @@ function buildRandomClusterPatternDiagramModel(
 ): PatternDiagramModel | null {
   const randomState = states.find((state) => state.kind === "random");
   if (!randomState || randomState.branches.length === 0) return null;
+  if (randomState.branches.length !== 3) return null;
   const text = getIntentFsmText(serviceLocale);
-
-  const boxX = 140;
-  const boxY = 58;
-  const nodeY = 126;
-  const nodes = randomState.branches.map((branch, index) => (
-    buildStructuredPatternNode(
-      branch.to,
-      boxX + 20 + index * 180,
-      nodeY,
-      branch.to === monster.moveGraph?.initial,
-      formatRandomBranchAnnotation(branch, serviceLocale),
-    )
+  const initialId = monster.moveGraph?.initial;
+  const initialBranch = randomState.branches.find((branch) => branch.to === initialId);
+  if (!initialBranch) return null;
+  const orderedBranches = [
+    initialBranch,
+    ...randomState.branches.filter((branch) => branch.to !== initialId),
+  ];
+  const positions = [
+    { x: 150, y: 142 },
+    { x: 470, y: 48 },
+    { x: 470, y: 250 },
+  ];
+  const nodes = orderedBranches.map((branch, index) => buildStructuredPatternNode(
+    branch.to,
+    positions[index].x,
+    positions[index].y,
+    branch.to === initialId,
   ));
-  const boxWidth = 40 + nodes.length * DIAGRAM_CELL_WIDTH + Math.max(0, nodes.length - 1) * 32;
-  const boxHeight = 184;
-  const boxRight = boxX + boxWidth;
-  const start = buildPatternEntryNode("__START__", text.start, 24, 158, "start");
-  const initialNode = nodes.find((node) => node.id === monster.moveGraph?.initial) ?? nodes[0];
-  const loopY = boxY - 28;
-  const effectiveChance = getEqualCannotRepeatNextChance(randomState.branches);
-  const boxLabel = `${text.random} · ${text.excludesPrevious}${effectiveChance == null ? "" : ` · ${formatIntentFsmTemplate(text.nextEach, { chance: formatChancePercent(effectiveChance) })}`}`;
+  const [initialNode, topNode, bottomNode] = nodes;
+  const start = buildPatternEntryNode("__START__", text.start, 24, 185, "start");
+  const fixedChanceLabel = formatChancePercent(100);
+  const branchChanceLabel = formatChancePercent(getEqualCannotRepeatNextChance(randomState.branches) ?? 50);
 
   return {
-    width: boxRight + 78,
-    height: 310,
+    width: 760,
+    height: 450,
     entryNodes: [start],
     nodes,
     edges: [
@@ -2253,31 +2285,77 @@ function buildRandomClusterPatternDiagramModel(
         from: start.id,
         to: initialNode.id,
         path: `M ${start.x + start.width} ${start.y + start.height / 2} H ${initialNode.x}`,
-        color: BESTIARY_START_COLOR,
-        marker: "start",
+        color: DIAGRAM_ARROW_COLOR,
+        label: fixedChanceLabel,
+        labelX: 120,
+        labelY: 188,
       }),
       buildStructuredPatternEdge({
-        key: "random-reroll",
-        from: randomState.id,
-        to: randomState.id,
-        path: `M ${boxRight} ${boxY + boxHeight * 0.62} H ${boxRight + 36} V ${loopY} H ${boxX + boxWidth * 0.68} V ${boxY}`,
+        key: `${initialNode.id}-${topNode.id}`,
+        from: initialNode.id,
+        to: topNode.id,
+        path: `M ${initialNode.x + initialNode.width} ${initialNode.y + 30} H 390 V ${topNode.y + topNode.height / 2} H ${topNode.x}`,
+        color: DIAGRAM_ARROW_COLOR,
+        label: branchChanceLabel,
+        labelX: 390,
+        labelY: 92,
+      }),
+      buildStructuredPatternEdge({
+        key: `${topNode.id}-${initialNode.id}`,
+        from: topNode.id,
+        to: initialNode.id,
+        path: `M ${topNode.x} ${topNode.y + 30} H 410 V 24 H ${initialNode.x + initialNode.width / 2} V ${initialNode.y}`,
         color: DIAGRAM_ARROW_COLOR,
         isLoop: true,
-        label: text.reroll,
-        labelX: (boxRight + 36 + boxX + boxWidth * 0.68) / 2,
-        labelY: loopY + 12,
+        label: branchChanceLabel,
+        labelX: 330,
+        labelY: 24,
+      }),
+      buildStructuredPatternEdge({
+        key: `${initialNode.id}-${bottomNode.id}`,
+        from: initialNode.id,
+        to: bottomNode.id,
+        path: `M ${initialNode.x + initialNode.width} ${initialNode.y + initialNode.height - 30} H 390 V ${bottomNode.y + bottomNode.height / 2} H ${bottomNode.x}`,
+        color: DIAGRAM_ARROW_COLOR,
+        label: branchChanceLabel,
+        labelX: 390,
+        labelY: 324,
+      }),
+      buildStructuredPatternEdge({
+        key: `${bottomNode.id}-${initialNode.id}`,
+        from: bottomNode.id,
+        to: initialNode.id,
+        path: `M ${bottomNode.x} ${bottomNode.y + bottomNode.height - 30} H 410 V 408 H ${initialNode.x + initialNode.width / 2} V ${initialNode.y + initialNode.height}`,
+        color: DIAGRAM_ARROW_COLOR,
+        isLoop: true,
+        label: branchChanceLabel,
+        labelX: 330,
+        labelY: 408,
+      }),
+      buildStructuredPatternEdge({
+        key: `${topNode.id}-${bottomNode.id}`,
+        from: topNode.id,
+        to: bottomNode.id,
+        path: `M ${topNode.x + topNode.width / 2} ${topNode.y + topNode.height} V ${bottomNode.y}`,
+        color: DIAGRAM_ARROW_COLOR,
+        label: branchChanceLabel,
+        labelX: topNode.x + topNode.width / 2 + 18,
+        labelY: 208,
+      }),
+      buildStructuredPatternEdge({
+        key: `${bottomNode.id}-${topNode.id}`,
+        from: bottomNode.id,
+        to: topNode.id,
+        path: `M ${bottomNode.x + bottomNode.width} ${bottomNode.y + 29} H 700 V ${topNode.y + topNode.height / 2} H ${topNode.x + topNode.width}`,
+        color: DIAGRAM_ARROW_COLOR,
+        isLoop: true,
+        label: branchChanceLabel,
+        labelX: 700,
+        labelY: 195,
       }),
     ],
     phaseBoxes: [],
-    choiceBoxes: [{
-      id: randomState.id,
-      x: boxX,
-      y: boxY,
-      width: boxWidth,
-      height: boxHeight,
-      label: boxLabel,
-      kind: "random",
-    }],
+    choiceBoxes: [],
     phaseConnectors: [],
   };
 }
@@ -2295,91 +2373,138 @@ function buildConditionalClusterPatternDiagramModel(
   const randomState = randomConditionBranch ? stateById.get(randomConditionBranch.to) : null;
   if (!randomState || randomState.kind !== "random") return null;
   const text = getIntentFsmText(serviceLocale);
+  const textEn = getIntentFsmText("en");
   const directBranches = conditionalState.branches.filter((branch) => stateById.get(branch.to)?.kind === "move");
 
-  const outerX = 140;
-  const outerY = 54;
-  const outerWidth = 624;
-  const outerHeight = 250;
-  const randomBoxX = 170;
-  const randomBoxY = 102;
-  const randomBoxWidth = 374;
-  const randomBoxHeight = 158;
-  const nodeY = 142;
-  const randomNodes = randomState.branches.map((branch, index) => (
-    buildStructuredPatternNode(
-      branch.to,
-      randomBoxX + 18 + index * 178,
-      nodeY,
-      false,
-      formatRandomBranchAnnotation(branch, serviceLocale),
-    )
+  if (randomState.branches.length !== 2 || directBranches.length !== 1) return null;
+  const randomNodes = randomState.branches.map((branch, index) => buildStructuredPatternNode(
+    branch.to,
+    530,
+    index === 0 ? 25 : 185,
+    false,
   ));
-  const directNodes = directBranches.map((branch, index) => (
-    buildStructuredPatternNode(
-      branch.to,
-      584,
-      nodeY + index * (DIAGRAM_CELL_HEIGHT + 22),
-      false,
-      formatConditionalBranchLabel(branch.condition, serviceLocale),
-    )
-  ));
-  const nodes = [...randomNodes, ...directNodes];
-  const start = buildPatternEntryNode("__START__", text.start, 24, 163, "start");
-  const outerRight = outerX + outerWidth;
-  const loopY = outerY - 28;
-  const randomConditionLabel = formatConditionalBranchLabel(randomConditionBranch?.condition ?? null, serviceLocale);
-  const randomChance = randomState.branches[0]?.baseChance;
-  const randomLabel = `${randomConditionLabel} · ${text.random}${randomChance == null ? "" : ` · ${formatChancePercent(randomChance)}`}`;
+  const directNode = buildStructuredPatternNode(directBranches[0].to, 330, 360, false);
+  const nodes = [...randomNodes, directNode];
+  const [fabricateNode, strikeNode] = randomNodes;
+  const start = buildPatternEntryNode("__START__", text.start, 24, 216, "start");
+  const conditionalNode: PatternDiagramBranchNode = {
+    id: conditionalState.id,
+    x: 140,
+    y: 202,
+    width: 128,
+    height: 60,
+    label: `${text.canFabricate}?`,
+    labelEn: `${textEn.canFabricate}?`,
+    kind: "conditional",
+  };
+  const randomNode: PatternDiagramBranchNode = {
+    id: randomState.id,
+    x: 330,
+    y: 82,
+    width: 112,
+    height: 60,
+    label: text.random,
+    labelEn: textEn.random,
+    kind: "random",
+  };
+  const fixedChanceLabel = formatChancePercent(100);
+  const randomChanceLabel = formatChancePercent(randomState.branches[0].baseChance ?? 50);
+  const canFabricateLabel = `${text.canFabricate} · ${fixedChanceLabel}`;
+  const cannotFabricateLabel = `${text.cannotFabricate} · ${fixedChanceLabel}`;
 
   return {
-    width: outerRight + 82,
-    height: 344,
+    width: 770,
+    height: 520,
     entryNodes: [start],
     nodes,
     edges: [
       buildStructuredPatternEdge({
         key: "conditional-start",
         from: start.id,
-        to: conditionalState.id,
-        path: `M ${start.x + start.width} ${start.y + start.height / 2} H ${outerX}`,
-        color: BESTIARY_START_COLOR,
-        marker: "start",
+        to: conditionalNode.id,
+        path: `M ${start.x + start.width} ${start.y + start.height / 2} H ${conditionalNode.x}`,
+        color: DIAGRAM_ARROW_COLOR,
+        label: fixedChanceLabel,
+        labelX: 115,
+        labelY: 220,
       }),
       buildStructuredPatternEdge({
-        key: "conditional-reevaluate",
-        from: conditionalState.id,
-        to: conditionalState.id,
-        path: `M ${outerRight} ${outerY + outerHeight * 0.62} H ${outerRight + 38} V ${loopY} H ${outerX + outerWidth * 0.7} V ${outerY}`,
-        color: DIAGRAM_CONDITIONAL_COLOR,
-        marker: "conditional",
+        key: `${fabricateNode.id}-${conditionalNode.id}`,
+        from: fabricateNode.id,
+        to: conditionalNode.id,
+        path: `M ${fabricateNode.x + fabricateNode.width / 2} ${fabricateNode.y} V 12 H ${conditionalNode.x + conditionalNode.width / 2} V ${conditionalNode.y}`,
+        color: DIAGRAM_ARROW_COLOR,
         isLoop: true,
-        label: text.reevaluate,
-        labelX: (outerRight + 38 + outerX + outerWidth * 0.7) / 2,
-        labelY: loopY + 12,
+        label: fixedChanceLabel,
+        labelX: 408,
+        labelY: 12,
+      }),
+      buildStructuredPatternEdge({
+        key: `${strikeNode.id}-${conditionalNode.id}`,
+        from: strikeNode.id,
+        to: conditionalNode.id,
+        path: `M ${strikeNode.x + strikeNode.width / 2} ${strikeNode.y + strikeNode.height} V 328 H ${conditionalNode.x + conditionalNode.width / 2} V ${conditionalNode.y + conditionalNode.height}`,
+        color: DIAGRAM_ARROW_COLOR,
+        isLoop: true,
+        label: fixedChanceLabel,
+        labelX: 408,
+        labelY: 328,
+      }),
+      buildStructuredPatternEdge({
+        key: `${directNode.id}-${conditionalNode.id}`,
+        from: directNode.id,
+        to: conditionalNode.id,
+        path: `M ${directNode.x} ${directNode.y + directNode.height - 30} H 110 V ${conditionalNode.y + 45} H ${conditionalNode.x}`,
+        color: DIAGRAM_ARROW_COLOR,
+        isLoop: true,
+        label: fixedChanceLabel,
+        labelX: 110,
+        labelY: 340,
+      }),
+      buildStructuredPatternEdge({
+        key: `${conditionalNode.id}-${randomNode.id}`,
+        from: conditionalNode.id,
+        to: randomNode.id,
+        path: `M ${conditionalNode.x + conditionalNode.width} ${conditionalNode.y + 15} H 300 V ${randomNode.y + randomNode.height / 2} H ${randomNode.x}`,
+        color: DIAGRAM_ARROW_COLOR,
+        label: canFabricateLabel,
+        labelX: 300,
+        labelY: 166,
+      }),
+      buildStructuredPatternEdge({
+        key: `${conditionalNode.id}-${directNode.id}`,
+        from: conditionalNode.id,
+        to: directNode.id,
+        path: `M ${conditionalNode.x + 98} ${conditionalNode.y + conditionalNode.height} V ${directNode.y + directNode.height / 2} H ${directNode.x}`,
+        color: DIAGRAM_ARROW_COLOR,
+        label: cannotFabricateLabel,
+        labelX: 280,
+        labelY: 345,
+      }),
+      buildStructuredPatternEdge({
+        key: `${randomNode.id}-${fabricateNode.id}`,
+        from: randomNode.id,
+        to: fabricateNode.id,
+        path: `M ${randomNode.x + randomNode.width} ${randomNode.y + 20} H 480 V ${fabricateNode.y + fabricateNode.height / 2} H ${fabricateNode.x}`,
+        color: DIAGRAM_ARROW_COLOR,
+        label: randomChanceLabel,
+        labelX: 484,
+        labelY: 68,
+      }),
+      buildStructuredPatternEdge({
+        key: `${randomNode.id}-${strikeNode.id}`,
+        from: randomNode.id,
+        to: strikeNode.id,
+        path: `M ${randomNode.x + randomNode.width} ${randomNode.y + 40} H 480 V ${strikeNode.y + strikeNode.height / 2} H ${strikeNode.x}`,
+        color: DIAGRAM_ARROW_COLOR,
+        label: randomChanceLabel,
+        labelX: 484,
+        labelY: 228,
       }),
     ],
     phaseBoxes: [],
-    choiceBoxes: [
-      {
-        id: conditionalState.id,
-        x: outerX,
-        y: outerY,
-        width: outerWidth,
-        height: outerHeight,
-        label: text.conditionalReevaluation,
-        kind: "conditional",
-      },
-      {
-        id: randomState.id,
-        x: randomBoxX,
-        y: randomBoxY,
-        width: randomBoxWidth,
-        height: randomBoxHeight,
-        label: randomLabel,
-        kind: "random",
-      },
-    ],
+    choiceBoxes: [],
+    branchNodes: [conditionalNode, randomNode],
     phaseConnectors: [],
   };
 }
@@ -2395,8 +2520,8 @@ function buildStructuredPatternNode(
     id,
     x,
     y,
-    width: DIAGRAM_CELL_WIDTH,
-    height: DIAGRAM_CELL_HEIGHT,
+    width: STRUCTURED_DIAGRAM_NODE_WIDTH,
+    height: STRUCTURED_DIAGRAM_NODE_HEIGHT,
     isInitial,
     phaseId: null,
     annotation,
@@ -2439,22 +2564,6 @@ function buildStructuredPatternEdge({
   return { key, from, to, path, color, marker, isLoop, label, labelX, labelY };
 }
 
-function formatRandomBranchAnnotation(branch: MonsterMoveGraphRandomBranch, serviceLocale: ServiceLocale): string {
-  const text = getIntentFsmText(serviceLocale);
-  const chance = branch.baseChance == null ? "?" : formatChancePercent(branch.baseChance);
-  const repeatLabel = (() => {
-    if (branch.repeat === "cannot_repeat") return formatIntentFsmTemplate(text.consecutiveLimit, { limit: "1" });
-    if (branch.repeat === "max_consecutive") {
-      const limit = branch.maxRepeats ?? "?";
-      return formatIntentFsmTemplate(text.consecutiveLimit, { limit: String(limit) });
-    }
-    if (branch.repeat === "once") return text.oncePerCombat;
-    if (branch.cooldown > 0) return formatIntentFsmTemplate(text.cooldown, { turns: String(branch.cooldown) });
-    return text.canRepeat;
-  })();
-  return `${formatIntentFsmTemplate(text.baseChance, { chance })} · ${repeatLabel}`;
-}
-
 function getEqualCannotRepeatNextChance(branches: MonsterMoveGraphRandomBranch[]): number | null {
   if (branches.length < 2 || branches.some((branch) => branch.repeat !== "cannot_repeat" || branch.weight == null)) return null;
   const firstWeight = branches[0].weight;
@@ -2462,22 +2571,8 @@ function getEqualCannotRepeatNextChance(branches: MonsterMoveGraphRandomBranch[]
   return Math.round((1000 / (branches.length - 1))) / 10;
 }
 
-function formatConditionalBranchLabel(condition: string | null, serviceLocale: ServiceLocale): string {
-  const text = getIntentFsmText(serviceLocale);
-  if (condition === "CanFabricate") return text.canFabricate;
-  if (condition === "!CanFabricate") return text.cannotFabricate;
-  return condition ?? text.condition;
-}
-
 function getIntentFsmText(serviceLocale: ServiceLocale) {
   return serviceMessages[serviceLocale].codex.monstersView.intentFsm;
-}
-
-function formatIntentFsmTemplate(template: string, values: Record<string, string>): string {
-  return Object.entries(values).reduce(
-    (result, [key, value]) => result.replace(`{${key}}`, value),
-    template,
-  );
 }
 
 function buildPatternDiagramModel(
