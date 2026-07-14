@@ -2186,7 +2186,7 @@ function buildFixedLoopPatternDiagramModel(
     orderedIds.push(currentId);
     currentId = state.next;
   }
-  if (orderedIds.length === 0) return null;
+  if (orderedIds.length === 0 || currentId == null) return null;
 
   const nodeY = 105;
   const nodes = orderedIds.map((id, index) => buildStructuredPatternNode(id, 70 + index * 230, nodeY, id === initialId));
@@ -2385,10 +2385,11 @@ function buildProgressivePhasePatternDiagramModel(
   if (!initialId || !phaseByMoveId.has(initialId)) return null;
 
   const bridgeState = states.find((state) => {
-    if (state.kind !== "move" || phaseByMoveId.has(state.id) || !state.next) return false;
-    const next = stateById.get(state.next);
-    if (!next || next.kind !== "conditional") return false;
-    const targetPhases = new Set(next.branches.map((branch) => phaseByMoveId.get(branch.to)).filter(Boolean));
+    if (state.kind !== "move" || phaseByMoveId.has(state.id)) return false;
+    const conditionalTargets = monster.moveGraph?.transitions
+      .filter((transition) => transition.from === state.id && transition.kind === "conditional")
+      .map((transition) => transition.to) ?? [];
+    const targetPhases = new Set(conditionalTargets.map((targetId) => phaseByMoveId.get(targetId)).filter(Boolean));
     return targetPhases.size >= 2;
   });
   if (!bridgeState || bridgeState.kind !== "move") return null;
