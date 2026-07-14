@@ -17767,7 +17767,7 @@
     ],
     "move_graph": {
       "initial": "BITE",
-      "confidence": "partial",
+      "confidence": "static",
       "transitions": [
         {
           "from": "BITE",
@@ -17818,6 +17818,57 @@
           "chance": null,
           "kind": "conditional",
           "condition": "Respawns >= 2"
+        }
+      ],
+      "states": [
+        {
+          "id": "RESPAWN",
+          "kind": "move",
+          "next": "REVIVE_BRANCH"
+        },
+        {
+          "id": "BITE",
+          "kind": "move",
+          "next": "SKULL_BASH"
+        },
+        {
+          "id": "SKULL_BASH",
+          "kind": "move",
+          "next": "BITE"
+        },
+        {
+          "id": "MULTI_CLAW",
+          "kind": "move",
+          "next": "MULTI_CLAW"
+        },
+        {
+          "id": "PHASE3_LACERATE",
+          "kind": "move",
+          "next": "BIG_POUNCE"
+        },
+        {
+          "id": "BIG_POUNCE",
+          "kind": "move",
+          "next": "BURNING_GROWL"
+        },
+        {
+          "id": "BURNING_GROWL",
+          "kind": "move",
+          "next": "PHASE3_LACERATE"
+        },
+        {
+          "id": "REVIVE_BRANCH",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "MULTI_CLAW",
+              "condition": "Respawns < 2"
+            },
+            {
+              "to": "PHASE3_LACERATE",
+              "condition": "Respawns >= 2"
+            }
+          ]
         }
       ]
     },
