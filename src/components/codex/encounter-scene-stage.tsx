@@ -12,6 +12,8 @@ import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import type {
   CodexEncounter,
   CodexMonster,
+  EncounterSceneCombatLayout,
+  EncounterSceneCombatMonsterLayout,
   EncounterSceneMonsterSlot,
 } from "@/lib/codex-types";
 import { serviceMessages } from "@/messages/service";
@@ -71,12 +73,11 @@ export function EncounterSceneStage({
       return monster ? [monster] : [];
     }),
     scene.monsterSlots,
+    scene.combatLayout,
   );
   const locale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const chance = formatEncounterProbability(formation.probability, locale);
-  const formationLabel = labels.formationIndicator
-    .replace("{current}", String(formationIndex + 1))
-    .replace("{total}", String(formations.length));
+  const formationLabel = formation.monsters.map((monster) => monster.name).join(" + ");
   const chanceLabel = labels.appearanceChance.replace("{chance}", chance);
 
   const moveFormation = (offset: number) => {
@@ -88,7 +89,7 @@ export function EncounterSceneStage({
 
   return (
     <div className="w-full" data-encounter-scene>
-      <div className="relative aspect-[32/15] w-full overflow-hidden rounded-xl border border-white/10 bg-black shadow-2xl">
+      <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-white/10 bg-black shadow-2xl">
         <Image
           src={scene.backgroundUrl}
           alt=""
@@ -123,7 +124,7 @@ export function EncounterSceneStage({
               serviceLocale,
             )}
             aria-label={monster.name}
-            className="group absolute z-20 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+            className="group absolute z-20 block after:absolute after:-inset-2 after:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
             style={style}
           >
             <MonsterSpineStage
@@ -136,6 +137,7 @@ export function EncounterSceneStage({
               imagePriority={index < 2}
               showLoadingLabel={false}
               viewportTransitionTime={0}
+              viewportPadding={{ padLeft: "0%", padRight: "0%", padTop: "0%", padBottom: "0%" }}
             />
             <span className="absolute bottom-0 left-1/2 z-40 -translate-x-1/2 translate-y-1/2 whitespace-nowrap rounded-full border border-white/15 bg-black/75 px-2 py-0.5 font-game-title text-[9px] font-bold text-gray-100 opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 sm:text-[11px]">
               {monster.name}
@@ -159,7 +161,7 @@ export function EncounterSceneStage({
           )}
           <div className="min-w-0 px-1 text-center font-game-text leading-tight">
             <div className="truncate text-[10px] font-bold text-gray-100 sm:text-xs">
-              {formations.length > 1 ? formationLabel : formation.monsters.map((monster) => monster.name).join(" + ")}
+              {formationLabel}
             </div>
             <div className="text-[9px] text-amber-200/90 sm:text-[10px]">{chanceLabel}</div>
           </div>
@@ -223,35 +225,83 @@ function EncounterAmbientVfx({ encounter }: { encounter: CodexEncounter }) {
 function positionFormationMonsters(
   monsters: CodexMonster[],
   fixedSlots: EncounterSceneMonsterSlot[],
+  combatLayout: EncounterSceneCombatLayout,
 ): PositionedMonster[] {
   const fixedSlotById = new Map(fixedSlots.map((slot) => [slot.monsterId, slot]));
-  const autoPositions = getAutoMonsterPositions(monsters.length);
+  const combatLayoutById = new Map(
+    combatLayout.monsters.map((monsterLayout) => [monsterLayout.monsterId, monsterLayout]),
+  );
+  const autoPositions = positionEnemiesFromGameBounds(monsters, combatLayoutById, combatLayout);
+  const coordinateWidth = combatLayout.coordinateSize.width;
+  const coordinateHeight = combatLayout.coordinateSize.height;
 
   return monsters.map((monster, index) => {
     const fixedSlot = fixedSlotById.get(monster.id);
-    const position = fixedSlot
-      ? { x: fixedSlot.x * 100, y: fixedSlot.y * 100 }
-      : autoPositions[index] ?? autoPositions.at(-1) ?? { x: 75, y: 73 };
-    const isQueen = monster.id === "QUEEN";
-    const isTorchHead = monster.id === "TORCH_HEAD_AMALGAM";
-    const width = isQueen ? 31 : isTorchHead ? 27 : monsters.length >= 3 ? 23 : 29;
-    const height = isQueen ? 62 : isTorchHead ? 57 : monsters.length >= 3 ? 57 : 63;
+    const monsterLayout = combatLayoutById.get(monster.id);
+    const sourcePosition = fixedSlot?.sourcePosition
+      ?? autoPositions[index]
+      ?? { x: coordinateWidth * 0.75, y: combatLayout.enemyBaselineY };
+    const position = applyGameCamera(sourcePosition, combatLayout);
+    const width = (monsterLayout?.bounds.width ?? 200) * combatLayout.cameraScaling;
+    const height = (monsterLayout?.bounds.height ?? 220) * combatLayout.cameraScaling;
 
     return {
       monster,
       style: {
-        left: `${position.x}%`,
-        top: `${position.y}%`,
-        width: `${width}%`,
-        height: `${height}%`,
+        left: `${(position.x / coordinateWidth) * 100}%`,
+        top: `${(position.y / coordinateHeight) * 100}%`,
+        width: `${(width / coordinateWidth) * 100}%`,
+        height: `${(height / coordinateHeight) * 100}%`,
         transform: "translate(-50%, -100%)",
       },
     };
   });
 }
 
-function getAutoMonsterPositions(count: number): Array<{ x: number; y: number }> {
-  if (count <= 1) return [{ x: 76, y: 73 }];
-  if (count === 2) return [{ x: 64, y: 73 }, { x: 84, y: 73 }];
-  return [{ x: 57, y: 73 }, { x: 73, y: 73 }, { x: 88, y: 73 }];
+function positionEnemiesFromGameBounds(
+  monsters: CodexMonster[],
+  layoutById: Map<string, EncounterSceneCombatMonsterLayout>,
+  combatLayout: EncounterSceneCombatLayout,
+): Array<{ x: number; y: number }> {
+  if (combatLayout.usesFixedSlots) return [];
+  const widths = monsters.map((monster) => layoutById.get(monster.id)?.bounds.width ?? 200);
+  const availableWidth = combatLayout.enemyRegionWidth / combatLayout.cameraScaling;
+  const creatureWidth = widths.reduce((sum, width) => sum + width, 0);
+  let gap = combatLayout.enemyGap;
+  let totalWidth = creatureWidth + Math.max(0, monsters.length - 1) * gap;
+  let start = Math.max((availableWidth - totalWidth) * 0.5, combatLayout.enemyMinStart);
+  let stagger = 0;
+
+  if (start + totalWidth > availableWidth && monsters.length > 1) {
+    gap = Math.max(
+      (availableWidth - combatLayout.enemyMinStart - creatureWidth) / (monsters.length - 1),
+      5,
+    );
+    totalWidth = creatureWidth + (monsters.length - 1) * gap;
+    start = (availableWidth - totalWidth) * 0.5;
+    if (gap < 30) stagger = 60 + (40 - 60) * ((gap - 5) / 25);
+  }
+
+  const positions: Array<{ x: number; y: number }> = [];
+  let cursor = start;
+  for (let index = 0; index < monsters.length; index += 1) {
+    positions.push({
+      x: combatLayout.coordinateSize.width * 0.5 + cursor + widths[index] * 0.5,
+      y: combatLayout.enemyBaselineY - (index % 2 === 1 ? stagger : 0),
+    });
+    cursor += widths[index] + gap;
+  }
+  return positions;
+}
+
+function applyGameCamera(
+  position: { x: number; y: number },
+  combatLayout: EncounterSceneCombatLayout,
+): { x: number; y: number } {
+  const centerX = combatLayout.coordinateSize.width * 0.5;
+  const centerY = combatLayout.coordinateSize.height * 0.5;
+  return {
+    x: centerX + (position.x - centerX) * combatLayout.cameraScaling + combatLayout.cameraOffset.x,
+    y: centerY + (position.y - centerY) * combatLayout.cameraScaling + combatLayout.cameraOffset.y,
+  };
 }
