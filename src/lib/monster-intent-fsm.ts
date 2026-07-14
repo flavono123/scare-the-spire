@@ -3,7 +3,6 @@ import type {
   MonsterMoveGraph,
   MonsterMoveGraphConditionalState,
   MonsterMoveGraphMoveState,
-  MonsterMoveGraphRandomState,
   MonsterMoveTransition,
 } from "@/lib/codex-types";
 
@@ -98,6 +97,32 @@ export function getMonsterIntentConditionDescriptor(
   const exact = CONDITION_TEXT[condition];
   if (exact) return ko ? exact.ko : exact.en;
 
+  const conjunction = condition.match(/^\((.*)\) && \((.*)\)$/);
+  if (conjunction) {
+    const left = getMonsterIntentConditionDescriptor(conjunction[1], serviceLocale);
+    const right = getMonsterIntentConditionDescriptor(conjunction[2], serviceLocale);
+    if (left && right) {
+      return {
+        label: `${left.label} · ${right.label}`,
+        tooltip: `${left.tooltip} ${right.tooltip}`,
+      };
+    }
+  }
+
+  const starterIndex = condition.match(/^(?:StarterMoveIdx|StarterMoveIndex) % \d+ == (\d+)$/);
+  if (starterIndex) {
+    const order = Number(starterIndex[1]) + 1;
+    return ko
+      ? {
+          label: `시작 순서 ${order}`,
+          tooltip: `전투 구성에서 시작 행동 인덱스가 ${order}번째 행동으로 지정된 경우입니다.`,
+        }
+      : {
+          label: `Start order ${order}`,
+          tooltip: `Used when the encounter setup selects the ${ordinal(order)} move as the initial action.`,
+        };
+  }
+
   const slot = condition.match(/^base\.Creature\.SlotName == "(first|second|third|fourth|wriggler[1-4])"$/);
   if (slot) {
     const slotLabel = SLOT_LABELS[slot[1]];
@@ -109,6 +134,15 @@ export function getMonsterIntentConditionDescriptor(
   return ko
     ? { label: "조건 충족", tooltip: `게임 조건: ${condition}` }
     : { label: "Condition met", tooltip: `Game condition: ${condition}` };
+}
+
+function ordinal(value: number): string {
+  const remainder = value % 100;
+  if (remainder >= 11 && remainder <= 13) return `${value}th`;
+  if (value % 10 === 1) return `${value}st`;
+  if (value % 10 === 2) return `${value}nd`;
+  if (value % 10 === 3) return `${value}rd`;
+  return `${value}th`;
 }
 
 function buildActionGraph(graph: MonsterMoveGraph): ActionGraph {
@@ -381,6 +415,54 @@ const CONDITION_TEXT: Record<string, {
   ko: MonsterIntentConditionDescriptor;
   en: MonsterIntentConditionDescriptor;
 }> = {
+  _screamFirst: {
+    ko: { label: "비명으로 시작", tooltip: "전투 구성에서 깨무는 자가 비명을 먼저 사용하도록 지정된 경우입니다." },
+    en: { label: "Screech first", tooltip: "Used when the encounter setup makes the Chomper open with Screech." },
+  },
+  "!_screamFirst": {
+    ko: { label: "죔쇠로 시작", tooltip: "전투 구성에서 깨무는 자가 죔쇠를 먼저 사용하도록 지정된 경우입니다." },
+    en: { label: "Clamp first", tooltip: "Used when the encounter setup makes the Chomper open with Clamp." },
+  },
+  _middleInklet: {
+    ko: { label: "가운데 먹물둥이", tooltip: "가운데에 배치된 먹물둥이는 회오리바람으로 시작합니다." },
+    en: { label: "Middle Inklet", tooltip: "The Inklet placed in the middle opens with Whirlwind." },
+  },
+  "!_middleInklet": {
+    ko: { label: "바깥 먹물둥이", tooltip: "가운데가 아닌 먹물둥이는 잽으로 시작합니다." },
+    en: { label: "Outer Inklet", tooltip: "An Inklet outside the middle position opens with Jab." },
+  },
+  StartsWithDance: {
+    ko: { label: "힘의 춤으로 시작", tooltip: "전투 구성에서 추종자가 힘의 춤으로 시작하도록 지정된 경우입니다." },
+    en: { label: "Power Dance first", tooltip: "Used when the encounter setup makes the Kin Follower open with Power Dance." },
+  },
+  "!StartsWithDance": {
+    ko: { label: "빠른 베기로 시작", tooltip: "전투 구성에서 추종자가 빠른 베기로 시작하도록 지정된 경우입니다." },
+    en: { label: "Quick Slash first", tooltip: "Used when the encounter setup makes the Kin Follower open with Quick Slash." },
+  },
+  StartsWithFastPunch: {
+    ko: { label: "빠른 주먹으로 시작", tooltip: "전투 구성에서 주먹 구조체가 빠른 주먹으로 시작하도록 지정된 경우입니다." },
+    en: { label: "Fast Punch first", tooltip: "Used when the encounter setup makes the Punch Construct open with Fast Punch." },
+  },
+  "!StartsWithFastPunch": {
+    ko: { label: "준비로 시작", tooltip: "전투 구성에서 주먹 구조체가 준비로 시작하도록 지정된 경우입니다." },
+    en: { label: "Ready first", tooltip: "Used when the encounter setup makes the Punch Construct open with Ready." },
+  },
+  StartStunned: {
+    ko: { label: "기절 상태로 등장", tooltip: "소환되어 등장한 꿈틀벌레가 첫 턴에 기절 상태를 거치는 경우입니다." },
+    en: { label: "Spawn stunned", tooltip: "Used when a summoned Wriggler enters combat stunned for its first turn." },
+  },
+  "!StartStunned": {
+    ko: { label: "일반 상태로 등장", tooltip: "꿈틀벌레가 기절 상태를 거치지 않고 위치별 첫 행동을 선택하는 경우입니다." },
+    en: { label: "Spawn active", tooltip: "Used when a Wriggler skips the stunned turn and chooses its slot-based opener." },
+  },
+  "StarterMoveIndex == -1": {
+    ko: { label: "무작위 시작", tooltip: "전투 구성에서 시작 행동을 지정하지 않아 무작위 분기에서 첫 행동을 선택합니다." },
+    en: { label: "Random start", tooltip: "The first action is selected from the random branch when the encounter does not specify a starting move." },
+  },
+  "!(StarterMoveIndex == -1)": {
+    ko: { label: "지정된 시작", tooltip: "전투 구성에서 시작 행동 인덱스를 지정한 경우입니다." },
+    en: { label: "Preset start", tooltip: "Used when the encounter specifies a starting move index." },
+  },
   CanFabricate: {
     ko: {
       label: "제작 가능",
