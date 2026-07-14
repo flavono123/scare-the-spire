@@ -2472,6 +2472,7 @@ interface RawEncounterComposition {
   id: string;
   weight: number;
   slots: string[][];
+  slot_names?: Array<string | null>;
 }
 
 interface RawEncounter {
@@ -2534,6 +2535,7 @@ function mapEncounter(
     id: composition.id,
     weight: composition.weight,
     slots: composition.slots.map((slot) => slot.map(monsterRef)),
+    slotNames: composition.slot_names ?? composition.slots.map(() => null),
   })) ?? null;
 
   // Check for boss encounter image

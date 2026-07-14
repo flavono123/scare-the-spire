@@ -1060,6 +1060,7 @@ export interface EncounterComposition {
   id: string;
   weight: number;
   slots: EncounterMonsterRef[][];
+  slotNames: Array<string | null>;
 }
 
 export type EncounterSceneAmbientVfx =

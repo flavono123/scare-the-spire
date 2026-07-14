@@ -7,23 +7,30 @@ import type {
 export interface EncounterFormation {
   id: string;
   compositionId: string;
-  monsters: EncounterMonsterRef[];
+  monsters: EncounterFormationMonsterRef[];
   probability: number;
+}
+
+export interface EncounterFormationMonsterRef extends EncounterMonsterRef {
+  slotName: string | null;
 }
 
 function expandCompositionSlots(
   composition: EncounterComposition,
-): Array<{ choiceIds: number[]; monsters: EncounterMonsterRef[] }> {
-  let formations: Array<{ choiceIds: number[]; monsters: EncounterMonsterRef[] }> = [
+): Array<{ choiceIds: number[]; monsters: EncounterFormationMonsterRef[] }> {
+  let formations: Array<{ choiceIds: number[]; monsters: EncounterFormationMonsterRef[] }> = [
     { choiceIds: [], monsters: [] },
   ];
 
-  for (const slot of composition.slots) {
+  for (const [slotIndex, slot] of composition.slots.entries()) {
     if (slot.length === 0) return [];
     formations = formations.flatMap((formation) =>
       slot.map((monster, choiceIndex) => ({
         choiceIds: [...formation.choiceIds, choiceIndex],
-        monsters: [...formation.monsters, monster],
+        monsters: [
+          ...formation.monsters,
+          { ...monster, slotName: composition.slotNames[slotIndex] ?? null },
+        ],
       })),
     );
   }
@@ -40,7 +47,7 @@ export function expandEncounterFormations(encounter: CodexEncounter): EncounterF
       ? [{
           id: `${encounter.id}:default`,
           compositionId: "default",
-          monsters: encounter.monsters,
+          monsters: encounter.monsters.map((monster) => ({ ...monster, slotName: null })),
           probability: 1,
         }]
       : [];
