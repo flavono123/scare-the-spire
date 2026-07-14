@@ -5291,7 +5291,7 @@
           "from": "SKITTER",
           "to": "MANDIBLES",
           "chance": 100.0,
-          "kind": "random"
+          "kind": "fixed"
         },
         {
           "from": "MANDIBLES",
@@ -5331,6 +5331,20 @@
           "chance": null,
           "kind": "conditional",
           "condition": "base.Creature.SlotName == \"third\""
+        },
+        {
+          "from": "__START__",
+          "to": "SKITTER",
+          "chance": 50.0,
+          "kind": "conditional",
+          "condition": "base.Creature.SlotName == \"fourth\""
+        },
+        {
+          "from": "__START__",
+          "to": "MANDIBLES",
+          "chance": 50.0,
+          "kind": "conditional",
+          "condition": "base.Creature.SlotName == \"fourth\""
         }
       ],
       "states": [
@@ -5640,10 +5654,38 @@
       "transitions": [
         {
           "from": "FABRICATE",
+          "to": "FABRICATE",
+          "chance": 50.0,
+          "kind": "conditional",
+          "condition": "CanFabricate"
+        },
+        {
+          "from": "FABRICATE",
+          "to": "FABRICATING_STRIKE",
+          "chance": 50.0,
+          "kind": "conditional",
+          "condition": "CanFabricate"
+        },
+        {
+          "from": "FABRICATE",
           "to": "DISINTEGRATE",
           "chance": null,
           "kind": "conditional",
           "condition": "!CanFabricate"
+        },
+        {
+          "from": "FABRICATING_STRIKE",
+          "to": "FABRICATE",
+          "chance": 50.0,
+          "kind": "conditional",
+          "condition": "CanFabricate"
+        },
+        {
+          "from": "FABRICATING_STRIKE",
+          "to": "FABRICATING_STRIKE",
+          "chance": 50.0,
+          "kind": "conditional",
+          "condition": "CanFabricate"
         },
         {
           "from": "FABRICATING_STRIKE",
@@ -5654,10 +5696,38 @@
         },
         {
           "from": "DISINTEGRATE",
+          "to": "FABRICATE",
+          "chance": 50.0,
+          "kind": "conditional",
+          "condition": "CanFabricate"
+        },
+        {
+          "from": "DISINTEGRATE",
+          "to": "FABRICATING_STRIKE",
+          "chance": 50.0,
+          "kind": "conditional",
+          "condition": "CanFabricate"
+        },
+        {
+          "from": "DISINTEGRATE",
           "to": "DISINTEGRATE",
           "chance": null,
           "kind": "conditional",
           "condition": "!CanFabricate"
+        },
+        {
+          "from": "__START__",
+          "to": "FABRICATE",
+          "chance": 50.0,
+          "kind": "conditional",
+          "condition": "CanFabricate"
+        },
+        {
+          "from": "__START__",
+          "to": "FABRICATING_STRIKE",
+          "chance": 50.0,
+          "kind": "conditional",
+          "condition": "CanFabricate"
         },
         {
           "from": "__START__",
@@ -9100,7 +9170,7 @@
           "from": "BITE",
           "to": "PUNCTURE",
           "chance": 100.0,
-          "kind": "random"
+          "kind": "fixed"
         },
         {
           "from": "PUNCTURE",
@@ -9642,13 +9712,13 @@
           "from": "WHIRLWIND",
           "to": "PIERCING_GAZE",
           "chance": 100.0,
-          "kind": "random"
+          "kind": "fixed"
         },
         {
           "from": "PIERCING_GAZE",
           "to": "WHIRLWIND",
           "chance": 100.0,
-          "kind": "random"
+          "kind": "fixed"
         }
       ],
       "states": [
@@ -11249,13 +11319,13 @@
           "from": "TACKLE",
           "to": "GOOP",
           "chance": 100.0,
-          "kind": "random"
+          "kind": "fixed"
         },
         {
           "from": "GOOP",
           "to": "TACKLE",
           "chance": 100.0,
-          "kind": "random"
+          "kind": "fixed"
         },
         {
           "from": "__START__",
@@ -18849,7 +18919,7 @@
           "from": "SOUL_FLAME",
           "to": "SOUL_SLASH",
           "chance": 100.0,
-          "kind": "random"
+          "kind": "fixed"
         }
       ],
       "states": [
@@ -23657,7 +23727,7 @@
           "from": "STICKY_SHOT",
           "to": "POKEY_POUNCE",
           "chance": 100.0,
-          "kind": "random"
+          "kind": "fixed"
         }
       ],
       "states": [
