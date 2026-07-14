@@ -50,6 +50,11 @@ Place containers left to right in combat order. Draw phase connectors only to
 the right. Never add a return connector unless the game source can restore an
 earlier phase.
 
+Order actions inside each container from that phase's actual entry target,
+then follow the in-phase transition cycle. Do not expose Tarjan/SCC discovery
+order in the UI; disconnected later phases often have no useful global
+reachability order until lifecycle transitions are included.
+
 Test Subject evidence:
 
 - Phase 1 alternates Bite and Skull Bash.
