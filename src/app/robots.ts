@@ -7,8 +7,8 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        // Keep core pages crawlable, but block high-cardinality/heavy sections.
-        disallow: ["/codex", "/chemical-x", "/this-or-that", "/dev"],
+        // Keep duplicate legacy routes and internal development pages out of search.
+        disallow: ["/codex", "/dev"],
       },
     ],
     host: SITE_ORIGIN,
