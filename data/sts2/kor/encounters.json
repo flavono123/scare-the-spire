@@ -48,6 +48,9 @@
           [
             "AXEBOT"
           ]
+        ],
+        "slot_names": [
+          "front"
         ]
       }
     ]
@@ -172,6 +175,11 @@
           [
             "BOWLBUG_SILK"
           ]
+        ],
+        "slot_names": [
+          "first",
+          "middle",
+          "last"
         ]
       },
       {
@@ -187,6 +195,11 @@
           [
             "BOWLBUG_NECTAR"
           ]
+        ],
+        "slot_names": [
+          "first",
+          "middle",
+          "last"
         ]
       },
       {
@@ -202,6 +215,11 @@
           [
             "BOWLBUG_EGG"
           ]
+        ],
+        "slot_names": [
+          "first",
+          "middle",
+          "last"
         ]
       },
       {
@@ -217,6 +235,11 @@
           [
             "BOWLBUG_NECTAR"
           ]
+        ],
+        "slot_names": [
+          "first",
+          "middle",
+          "last"
         ]
       },
       {
@@ -232,6 +255,11 @@
           [
             "BOWLBUG_EGG"
           ]
+        ],
+        "slot_names": [
+          "first",
+          "middle",
+          "last"
         ]
       },
       {
@@ -247,6 +275,11 @@
           [
             "BOWLBUG_SILK"
           ]
+        ],
+        "slot_names": [
+          "first",
+          "middle",
+          "last"
         ]
       }
     ]
@@ -286,6 +319,10 @@
           [
             "BOWLBUG_EGG"
           ]
+        ],
+        "slot_names": [
+          "odd",
+          "even"
         ]
       },
       {
@@ -298,6 +335,10 @@
           [
             "BOWLBUG_NECTAR"
           ]
+        ],
+        "slot_names": [
+          "odd",
+          "even"
         ]
       }
     ]
@@ -607,6 +648,11 @@
           [
             "DECIMILLIPEDE_SEGMENT_BACK"
           ]
+        ],
+        "slot_names": [
+          "segment1",
+          "segment2",
+          "segment3"
         ]
       }
     ]
@@ -642,6 +688,12 @@
           [
             "WRIGGLER"
           ]
+        ],
+        "slot_names": [
+          "wriggler1",
+          "wriggler2",
+          "wriggler3",
+          "wriggler4"
         ]
       }
     ]
@@ -748,6 +800,12 @@
           [
             "EXOSKELETON"
           ]
+        ],
+        "slot_names": [
+          "first",
+          "second",
+          "third",
+          "fourth"
         ]
       }
     ]
@@ -782,6 +840,11 @@
           [
             "EXOSKELETON"
           ]
+        ],
+        "slot_names": [
+          "first",
+          "second",
+          "third"
         ]
       }
     ]
@@ -808,6 +871,9 @@
           [
             "FABRICATOR"
           ]
+        ],
+        "slot_names": [
+          "fabricator"
         ]
       }
     ]
@@ -834,6 +900,9 @@
           [
             "FAKE_MERCHANT_MONSTER"
           ]
+        ],
+        "slot_names": [
+          "merchant"
         ]
       }
     ]
@@ -926,6 +995,9 @@
           [
             "FOGMOG"
           ]
+        ],
+        "slot_names": [
+          "fogmog"
         ]
       }
     ]
@@ -1066,6 +1138,9 @@
           [
             "GREMLIN_MERC"
           ]
+        ],
+        "slot_names": [
+          "merc"
         ]
       }
     ]
@@ -1209,6 +1284,10 @@
           [
             "ROCKET"
           ]
+        ],
+        "slot_names": [
+          "crusher",
+          "rocket"
         ]
       }
     ]
@@ -1251,6 +1330,11 @@
           [
             "MAGI_KNIGHT"
           ]
+        ],
+        "slot_names": [
+          "first",
+          "second",
+          "third"
         ]
       }
     ]
@@ -1333,6 +1417,9 @@
           [
             "LIVING_FOG"
           ]
+        ],
+        "slot_names": [
+          "livingFog"
         ]
       }
     ]
@@ -1466,6 +1553,10 @@
           [
             "MYTE"
           ]
+        ],
+        "slot_names": [
+          "first",
+          "second"
         ]
       }
     ]
@@ -1495,6 +1586,10 @@
           [
             "NIBBIT"
           ]
+        ],
+        "slot_names": [
+          "front",
+          "back"
         ]
       }
     ]
@@ -1599,6 +1694,9 @@
           [
             "OVICOPTER"
           ]
+        ],
+        "slot_names": [
+          "ovicopter"
         ]
       }
     ]
@@ -1660,6 +1758,12 @@
           [
             "PHANTASMAL_GARDENER"
           ]
+        ],
+        "slot_names": [
+          "first",
+          "second",
+          "third",
+          "fourth"
         ]
       }
     ]
@@ -1690,6 +1794,9 @@
           [
             "PHROG_PARASITE"
           ]
+        ],
+        "slot_names": [
+          "phrog"
         ]
       }
     ]
@@ -1778,6 +1885,10 @@
           [
             "QUEEN"
           ]
+        ],
+        "slot_names": [
+          "amalgam",
+          "queen"
         ]
       }
     ]
@@ -3259,6 +3370,11 @@
           [
             "SLUMBERING_BEETLE"
           ]
+        ],
+        "slot_names": [
+          "first",
+          "second",
+          "third"
         ]
       }
     ]
@@ -3513,6 +3629,11 @@
           [
             "KIN_PRIEST"
           ]
+        ],
+        "slot_names": [
+          "slot1",
+          "slot2",
+          "leaderSlot"
         ]
       }
     ]
@@ -3576,6 +3697,9 @@
           [
             "THE_OBSCURA"
           ]
+        ],
+        "slot_names": [
+          "obscura"
         ]
       }
     ]
@@ -3762,6 +3886,11 @@
           [
             "TWO_TAILED_RAT"
           ]
+        ],
+        "slot_names": [
+          "third",
+          "fourth",
+          "fifth"
         ]
       }
     ]
