@@ -19,6 +19,7 @@ import type {
 import { serviceMessages } from "@/messages/service";
 import { FakeMerchantEncounterSpineLayer } from "./fake-merchant-spine-stage";
 import { MonsterSpineStage } from "./monster-spine-stage";
+import { BoundedCarouselFrame } from "./bounded-carousel";
 
 interface EncounterSceneStageProps {
   encounter: CodexEncounter;
@@ -60,14 +61,21 @@ export function EncounterSceneStage({
     encounterId: encounter.id,
     index: 0,
   });
+  const [formationMenuState, setFormationMenuState] = useState({
+    encounterId: encounter.id,
+    open: false,
+  });
   const scene = encounter.scene;
   const labels = serviceMessages[serviceLocale].codex.encountersView;
 
   if (!scene || formations.length === 0) return null;
   const formationIndex = formationSelection.encounterId === encounter.id
-    ? formationSelection.index % formations.length
+    ? Math.min(formationSelection.index, formations.length - 1)
     : 0;
-  const formation = formations[formationIndex % formations.length];
+  const formationMenuOpen = formationMenuState.encounterId === encounter.id
+    ? formationMenuState.open
+    : false;
+  const formation = formations[formationIndex];
   const positionedMonsters = positionFormationMonsters(
     formation.monsters.flatMap((ref) => {
       const monster = monsterById.get(ref.id);
@@ -78,15 +86,21 @@ export function EncounterSceneStage({
   );
   const locale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const chance = formatEncounterProbability(formation.probability, locale);
-  const formationLabel = formation.monsters.map((monster) => monster.name).join(" + ");
+  const formationLabel = getFormationLabel(formation);
   const chanceLabel = labels.appearanceChance.replace("{chance}", chance);
   const usesFakeMerchantBackground = encounter.id === "FAKE_MERCHANT_EVENT_ENCOUNTER";
 
   const moveFormation = (offset: number) => {
     setFormationSelection({
       encounterId: encounter.id,
-      index: (formationIndex + offset + formations.length) % formations.length,
+      index: Math.max(0, Math.min(formationIndex + offset, formations.length - 1)),
     });
+    setFormationMenuState({ encounterId: encounter.id, open: false });
+  };
+
+  const selectFormation = (index: number) => {
+    setFormationSelection({ encounterId: encounter.id, index });
+    setFormationMenuState({ encounterId: encounter.id, open: false });
   };
 
   return (
@@ -167,38 +181,142 @@ export function EncounterSceneStage({
         )}
 
         <div
-          className="absolute bottom-2 left-1/2 z-40 flex max-w-[calc(100%-1rem)] -translate-x-1/2 items-center gap-1.5 rounded-lg border border-white/10 bg-black/70 p-1.5 shadow-lg backdrop-blur-sm sm:bottom-3"
+          className="absolute bottom-2 left-1/2 z-40 w-[min(42rem,calc(100%-1rem))] -translate-x-1/2 sm:bottom-3"
           data-encounter-formation-controls
         >
-          {formations.length > 1 && (
-            <button
-              type="button"
-              onClick={() => moveFormation(-1)}
-              aria-label={labels.previousFormation}
-              className="flex h-7 w-7 items-center justify-center rounded text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
+          <div className="relative rounded-lg border border-white/10 bg-black/75 p-1.5 shadow-lg backdrop-blur-sm">
+            {formationMenuOpen && (
+              <div
+                id={`encounter-formation-menu-${encounter.id}`}
+                role="listbox"
+                aria-label={labels.selectFormation}
+                className="absolute inset-x-0 bottom-full mb-2 max-h-40 overflow-y-auto overscroll-contain rounded-lg border border-amber-300/25 bg-[#090b13]/95 p-1.5 shadow-2xl [scrollbar-color:rgba(251,191,36,0.45)_transparent] sm:max-h-56"
+                data-encounter-formation-menu
+              >
+                <div className="sticky top-0 z-10 mb-1 flex items-center justify-between rounded bg-[#090b13]/95 px-2 py-1 font-game-title text-[10px] font-bold text-amber-200 sm:text-xs">
+                  <span>{labels.selectFormation}</span>
+                  <span className="text-gray-500">{formationIndex + 1} / {formations.length}</span>
+                </div>
+                {formations.map((candidate, index) => {
+                  const candidateChance = labels.appearanceChance.replace(
+                    "{chance}",
+                    formatEncounterProbability(candidate.probability, locale),
+                  );
+                  const selected = index === formationIndex;
+                  return (
+                    <button
+                      key={candidate.id}
+                      type="button"
+                      role="option"
+                      aria-selected={selected}
+                      onClick={() => selectFormation(index)}
+                      className={`flex w-full items-center gap-2 rounded px-2 py-1.5 text-left font-game-text transition-colors ${
+                        selected
+                          ? "bg-amber-300/15 text-amber-100"
+                          : "text-gray-300 hover:bg-white/10 hover:text-white"
+                      }`}
+                    >
+                      <span className="w-7 shrink-0 text-right text-[9px] text-gray-500 sm:text-[10px]">
+                        {index + 1}
+                      </span>
+                      <span className="min-w-0 flex-1 truncate text-[10px] font-bold sm:text-xs">
+                        {getFormationLabel(candidate)}
+                      </span>
+                      <span className="shrink-0 text-[8px] text-amber-200/75 sm:text-[9px]">
+                        {candidateChance}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <BoundedCarouselFrame
+              canMovePrevious={formationIndex > 0}
+              canMoveNext={formationIndex < formations.length - 1}
+              onPrevious={() => moveFormation(-1)}
+              onNext={() => moveFormation(1)}
+              previousLabel={labels.previousFormation}
+              nextLabel={labels.nextFormation}
             >
-              ‹
-            </button>
-          )}
-          <div className="min-w-0 px-1 text-center font-game-text leading-tight">
-            <div className="truncate text-[10px] font-bold text-gray-100 sm:text-xs">
-              {formationLabel}
-            </div>
-            <div className="text-[9px] text-amber-200/90 sm:text-[10px]">{chanceLabel}</div>
+              <div className="grid min-w-0 grid-cols-[minmax(0,0.24fr)_minmax(0,1fr)_minmax(0,0.24fr)] items-stretch gap-1 overflow-hidden">
+                {formationIndex > 0 ? (
+                  <FormationNeighborButton
+                    label={getFormationLabel(formations[formationIndex - 1])}
+                    side="previous"
+                    onClick={() => selectFormation(formationIndex - 1)}
+                  />
+                ) : <span />}
+
+                {formations.length > 1 ? (
+                  <button
+                    type="button"
+                    aria-expanded={formationMenuOpen}
+                    aria-controls={`encounter-formation-menu-${encounter.id}`}
+                    aria-label={formationMenuOpen ? labels.closeFormationMenu : labels.openFormationMenu}
+                    onClick={() => setFormationMenuState({
+                      encounterId: encounter.id,
+                      open: !formationMenuOpen,
+                    })}
+                    className="min-w-0 rounded-md px-1.5 py-0.5 text-center font-game-text leading-tight transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+                  >
+                    <span className="block truncate text-[10px] font-bold text-gray-100 sm:text-xs">
+                      {formationLabel}
+                    </span>
+                    <span className="block text-[8px] text-amber-200/90 sm:text-[10px]">
+                      {chanceLabel} · {formationIndex + 1}/{formations.length}
+                    </span>
+                  </button>
+                ) : (
+                  <div className="min-w-0 px-1.5 py-0.5 text-center font-game-text leading-tight">
+                    <div className="truncate text-[10px] font-bold text-gray-100 sm:text-xs">
+                      {formationLabel}
+                    </div>
+                    <div className="text-[8px] text-amber-200/90 sm:text-[10px]">{chanceLabel}</div>
+                  </div>
+                )}
+
+                {formationIndex < formations.length - 1 ? (
+                  <FormationNeighborButton
+                    label={getFormationLabel(formations[formationIndex + 1])}
+                    side="next"
+                    onClick={() => selectFormation(formationIndex + 1)}
+                  />
+                ) : <span />}
+              </div>
+            </BoundedCarouselFrame>
           </div>
-          {formations.length > 1 && (
-            <button
-              type="button"
-              onClick={() => moveFormation(1)}
-              aria-label={labels.nextFormation}
-              className="flex h-7 w-7 items-center justify-center rounded text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
-            >
-              ›
-            </button>
-          )}
         </div>
       </div>
     </div>
+  );
+}
+
+function getFormationLabel(formation: ReturnType<typeof expandEncounterFormations>[number]): string {
+  return formation.monsters.map((monster) => monster.name).join(" + ");
+}
+
+function FormationNeighborButton({
+  label,
+  side,
+  onClick,
+}: {
+  label: string;
+  side: "previous" | "next";
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`min-w-0 overflow-hidden rounded py-1 font-game-text text-[8px] text-gray-500 opacity-70 transition-colors hover:bg-white/10 hover:text-gray-200 hover:opacity-100 sm:text-[9px] ${
+        side === "previous" ? "text-right" : "text-left"
+      }`}
+      aria-hidden
+      tabIndex={-1}
+    >
+      <span className="block truncate">{label}</span>
+    </button>
   );
 }
 
