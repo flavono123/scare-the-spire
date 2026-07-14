@@ -108,6 +108,7 @@ export function EncounterSceneStage({
         {usesFakeMerchantBackground && (
           <FakeMerchantEncounterSpineLayer
             layer="bottom"
+            fallbackImageUrl="/images/sts2/events/fake_merchant.webp"
             className="z-10"
           />
         )}
@@ -140,7 +141,9 @@ export function EncounterSceneStage({
           >
             <MonsterSpineStage
               asset={monster.spineAsset}
-              fallbackImageUrl={monster.imageUrl ?? monster.bossImageUrl}
+              fallbackImageUrl={usesFakeMerchantBackground
+                ? null
+                : monster.imageUrl ?? monster.bossImageUrl}
               monsterName={monster.name}
               selectedMoveId={null}
               className="absolute inset-0 transition-transform duration-200 group-hover:scale-[1.03]"

@@ -88,14 +88,25 @@ export function FakeMerchantSpineStage({ fallbackImageUrl }: { fallbackImageUrl:
 
 export function FakeMerchantEncounterSpineLayer({
   layer,
+  fallbackImageUrl = null,
   className = "",
 }: {
   layer: Extract<FakeMerchantLayerId, "bottom" | "cutter">;
+  fallbackImageUrl?: string | null;
   className?: string;
 }) {
   return (
     <FakeMerchantSpineCanvas
       layerIds={ENCOUNTER_LAYER_IDS[layer]}
+      fallback={fallbackImageUrl ? (
+        <Image
+          src={fallbackImageUrl}
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 704px, 100vw"
+          className="object-cover"
+        />
+      ) : null}
       className={className}
       dataAttribute={`data-fake-merchant-encounter-${layer}`}
     />
