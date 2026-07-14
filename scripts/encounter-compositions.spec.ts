@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
-import { getCodexEncounters, getCodexMonsters } from "../src/lib/codex-data";
+import { getCodexCharacters, getCodexEncounters, getCodexMonsters } from "../src/lib/codex-data";
 import { getRelatedEncounterIdsForMonster } from "../src/lib/codex-references";
-import { expandEncounterFormations } from "../src/lib/encounter-compositions";
+import {
+  expandEncounterFormations,
+  formatEncounterLossText,
+} from "../src/lib/encounter-compositions";
 
 async function main() {
   const encounters = await getCodexEncounters({ gameLocale: "kor" });
@@ -36,6 +39,22 @@ async function main() {
   assert.equal(formationCount(encounters, "BOWLBUGS_NORMAL"), 6);
   assert.equal(formationCount(encounters, "RUBY_RAIDERS_NORMAL"), 60);
   assert.equal(formationCount(encounters, "SLIMES_WEAK"), 4);
+  assert.deepEqual(
+    encounterCountsByFormationCount(encounters),
+    [[1, 83], [2, 3], [4, 1], [6, 1], [7, 1], [60, 1]],
+  );
+
+  const formattedLossText = formatEncounterLossText(
+    "{character}는 [gold][b]{encounter}[/b][/gold]의 분노를 마주했습니다.",
+    "네크로바인더",
+    "루비 추적자",
+  );
+  assert.equal(
+    formattedLossText,
+    "네크로바인더는 [gold][b]루비 추적자[/b][/gold]의 분노를 마주했습니다.",
+  );
+  assert.ok(!formattedLossText.includes("{character}"));
+  assert.ok(!formattedLossText.includes("{encounter}"));
 
   const strangler = getEncounter(encounters, "SLITHERING_STRANGLER_NORMAL");
   assert.equal(strangler.compositions?.length, 3, "DLL enum branches must remain distinct");
@@ -102,7 +121,26 @@ async function main() {
     assert.ok(monster.spineAsset.idleAnimation, `${monsterId} must have an idle animation`);
   }
 
+  const characters = await getCodexCharacters({ gameLocale: "kor" });
+  assert.equal(characters.length, 5);
+  for (const character of characters) {
+    assert.ok(character.spineAsset, `${character.id} must render through a Spine asset`);
+    assert.ok(character.spineAsset.idleAnimation, `${character.id} must have an idle animation`);
+  }
+
   console.log("Encounter composition and scene assertions passed.");
+}
+
+function encounterCountsByFormationCount(
+  encounters: Awaited<ReturnType<typeof getCodexEncounters>>,
+): Array<[number, number]> {
+  const counts = new Map<number, number>();
+  for (const encounter of encounters) {
+    const count = expandEncounterFormations(encounter).length;
+    if (count < 1) continue;
+    counts.set(count, (counts.get(count) ?? 0) + 1);
+  }
+  return Array.from(counts.entries()).sort((a, b) => a[0] - b[0]);
 }
 
 function getEncounter(
