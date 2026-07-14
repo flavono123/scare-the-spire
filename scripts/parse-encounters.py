@@ -53,6 +53,11 @@ _TUPLE_VALUE_RE = re.compile(
     r"\(\s*(?P<value>(?:ModelDb\.Monster<\w+>\(\)|"
     r"base\.Rng\.NextItem\(\w+\)|[a-z]\w*)(?:\.ToMutable\(\))?)\s*,"
 )
+_TUPLE_PAIR_RE = re.compile(
+    r"\(\s*(?P<value>(?:ModelDb\.Monster<\w+>\(\)|"
+    r"base\.Rng\.NextItem\(\w+\)|[a-z]\w*)(?:\.ToMutable\(\))?)\s*,\s*"
+    r"(?P<slot>null|\"[^\"]*\"|(?:Slots|_\w+)\[[^\]]+\])\s*\)"
+)
 _DIRECT_VARIABLE_RE = re.compile(
     r"\b(?P<name>[a-z]\w*)\s*=\s*(?:\([^;=]+\))?"
     r"ModelDb\.Monster<(?P<class>\w+)>\(\)\.ToMutable\(\)\s*;"
@@ -135,6 +140,55 @@ def span_tuple_values(text: str) -> list[str]:
     return values
 
 
+def tuple_pairs(text: str) -> list[tuple[str, str]]:
+    return [
+        (match.group("value"), match.group("slot"))
+        for match in _TUPLE_PAIR_RE.finditer(text)
+    ]
+
+
+def span_tuple_pairs(text: str) -> list[tuple[str, str]]:
+    pairs: list[tuple[str, str]] = []
+    for assignment in _SPAN_ASSIGNMENT_RE.finditer(text):
+        nested_pairs = tuple_pairs(assignment.group("value"))
+        if nested_pairs:
+            pairs.append(nested_pairs[0])
+    return pairs
+
+
+def parse_string_arrays(text: str) -> dict[str, list[str]]:
+    arrays: dict[str, list[str]] = {}
+    for match in re.finditer(
+        r"string\[\]\s+(?P<name>\w+)\s*=\s*new\s+string\[\d+\]\s*"
+        r"\{(?P<body>.*?)\};",
+        text,
+        re.DOTALL,
+    ):
+        arrays[match.group("name")] = re.findall(r'"([^"]*)"', match.group("body"))
+    slots_match = re.search(
+        r"IReadOnlyList<string>\s+Slots\s*=>.*?new\s+string\[\d+\]\s*"
+        r"\{(?P<body>.*?)\};",
+        text,
+        re.DOTALL,
+    )
+    if slots_match is not None:
+        arrays["Slots"] = re.findall(r'"([^"]*)"', slots_match.group("body"))
+    return arrays
+
+
+def resolve_slot_name(value: str, arrays: dict[str, list[str]]) -> str | None:
+    if value == "null":
+        return None
+    if value.startswith('"') and value.endswith('"'):
+        return value[1:-1]
+    match = re.fullmatch(r"(?P<name>\w+)\[(?P<index>\d+)\]", value)
+    if match is None:
+        return None
+    options = arrays.get(match.group("name"), [])
+    index = int(match.group("index"))
+    return options[index] if index < len(options) else None
+
+
 def direct_variable_monsters(body: str) -> dict[str, str]:
     return {
         match.group("name"): match.group("class")
@@ -165,6 +219,7 @@ def weighted_compositions(
     outcomes: list[tuple[list[str], Fraction]],
     *,
     fixed_id: str = "FIXED",
+    slot_names: list[str | None] | None = None,
 ) -> list[dict] | None:
     if not outcomes:
         return None
@@ -183,7 +238,7 @@ def weighted_compositions(
     normalized_weights = [weight // divisor for weight in raw_weights]
     multiple = len(combined) > 1
 
-    return [
+    compositions = [
         {
             "id": f"OPTION_{index:02d}" if multiple else fixed_id,
             "weight": normalized_weights[index - 1],
@@ -191,6 +246,10 @@ def weighted_compositions(
         }
         for index, monsters in enumerate(combined, start=1)
     ]
+    if slot_names is not None and any(slot_name is not None for slot_name in slot_names):
+        for composition in compositions:
+            composition["slot_names"] = slot_names
+    return compositions
 
 
 def parse_constrained_random_compositions(text: str, body: str) -> list[dict] | None:
@@ -221,7 +280,8 @@ def parse_constrained_random_compositions(text: str, body: str) -> list[dict] | 
         return None
 
     loop_start = body.find(loop.group(0))
-    prefix_values = span_tuple_values(body[:loop_start])
+    prefix_pairs = span_tuple_pairs(body[:loop_start])
+    prefix_values = [value for value, _slot in prefix_pairs]
     variables = direct_variable_monsters(body)
     prefix: list[str] = []
     for value in prefix_values:
@@ -243,7 +303,13 @@ def parse_constrained_random_compositions(text: str, body: str) -> list[dict] | 
             visit(sequence + [monster], next_counts, probability / len(valid))
 
     visit([], {}, Fraction(1))
-    return weighted_compositions(outcomes)
+    string_arrays = parse_string_arrays(text)
+    slot_names = [resolve_slot_name(slot, string_arrays) for _value, slot in prefix_pairs]
+    if dictionary_slots := string_arrays.get("_slotNames"):
+        slot_names.extend(dictionary_slots[len(slot_names) : len(prefix) + int(loop.group("count"))])
+    else:
+        slot_names.extend([None] * int(loop.group("count")))
+    return weighted_compositions(outcomes, slot_names=slot_names)
 
 
 def parse_without_replacement_compositions(
@@ -265,14 +331,16 @@ def parse_without_replacement_compositions(
     if len(choice_variables) < 2:
         return None
 
-    values = [
-        match.group("value")
+    pairs = [
+        (match.group("value"), match.group("slot"))
         for match in re.finditer(
             r"\.Add\(\s*\(\s*(?P<value>(?:base\.Rng\.NextItem\(\w+\)|[a-z]\w*)"
-            r"(?:\.ToMutable\(\))?)\s*,",
+            r"(?:\.ToMutable\(\))?)\s*,\s*(?P<slot>null|\"[^\"]*\"|"
+            r"(?:Slots|_\w+)\[[^\]]+\])\s*\)",
             body,
         )
     ]
+    values = [value for value, _slot in pairs]
     if not values:
         return None
 
@@ -293,7 +361,9 @@ def parse_without_replacement_compositions(
         combinations = list(product(*slot_options))
         probability = Fraction(1, math.perm(len(source), len(choice_variables)) * len(combinations))
         outcomes.extend((list(monsters), probability) for monsters in combinations)
-    return weighted_compositions(outcomes)
+    string_arrays = parse_string_arrays(text)
+    slot_names = [resolve_slot_name(slot, string_arrays) for _value, slot in pairs]
+    return weighted_compositions(outcomes, slot_names=slot_names)
 
 
 def parse_boolean_compositions(text: str, body: str) -> list[dict] | None:
@@ -314,7 +384,8 @@ def parse_boolean_compositions(text: str, body: str) -> list[dict] | None:
         return None
 
     return_start = body.rfind("return ")
-    values = tuple_values(body[return_start:]) if return_start >= 0 else []
+    pairs = tuple_pairs(body[return_start:]) if return_start >= 0 else []
+    values = [value for value, _slot in pairs]
     arrays = parse_monster_arrays(text)
     outcomes: list[tuple[list[str], Fraction]] = []
     for truthy in (True, False):
@@ -327,14 +398,17 @@ def parse_boolean_compositions(text: str, body: str) -> list[dict] | None:
                 return None
             monsters.append(options[0])
         outcomes.append((monsters, Fraction(1, 2)))
-    return weighted_compositions(outcomes)
+    string_arrays = parse_string_arrays(text)
+    slot_names = [resolve_slot_name(slot, string_arrays) for _value, slot in pairs]
+    return weighted_compositions(outcomes, slot_names=slot_names)
 
 
 def parse_return_compositions(text: str, body: str) -> list[dict] | None:
     return_start = body.rfind("return ")
     if return_start < 0:
         return None
-    values = tuple_values(body[return_start:])
+    pairs = tuple_pairs(body[return_start:])
+    values = [value for value, _slot in pairs]
     if not values:
         return None
 
@@ -348,21 +422,28 @@ def parse_return_compositions(text: str, body: str) -> list[dict] | None:
         slot_options.append(options)
     combinations = list(product(*slot_options))
     probability = Fraction(1, len(combinations))
-    return weighted_compositions([(list(monsters), probability) for monsters in combinations])
+    string_arrays = parse_string_arrays(text)
+    slot_names = [resolve_slot_name(slot, string_arrays) for _value, slot in pairs]
+    return weighted_compositions(
+        [(list(monsters), probability) for monsters in combinations],
+        slot_names=slot_names,
+    )
 
 
 def parse_list_composition(text: str, body: str) -> list[dict] | None:
     arrays = parse_monster_arrays(text)
     variables = direct_variable_monsters(body)
-    values = span_tuple_values(body)
-    values.extend(
-        match.group("value")
+    pairs = span_tuple_pairs(body)
+    pairs.extend(
+        (match.group("value"), match.group("slot"))
         for match in re.finditer(
             r"\.Add\(\s*\(\s*(?P<value>(?:ModelDb\.Monster<\w+>\(\)|[a-z]\w*)"
-            r"(?:\.ToMutable\(\))?)\s*,",
+            r"(?:\.ToMutable\(\))?)\s*,\s*(?P<slot>null|\"[^\"]*\"|"
+            r"(?:Slots|_\w+)\[[^\]]+\])\s*\)",
             body,
         )
     )
+    values = [value for value, _slot in pairs]
     if not values:
         return None
 
@@ -372,7 +453,9 @@ def parse_list_composition(text: str, body: str) -> list[dict] | None:
         if options is None or len(options) != 1:
             return None
         monsters.append(options[0])
-    return weighted_compositions([(monsters, Fraction(1))])
+    string_arrays = parse_string_arrays(text)
+    slot_names = [resolve_slot_name(slot, string_arrays) for _value, slot in pairs]
+    return weighted_compositions([(monsters, Fraction(1))], slot_names=slot_names)
 
 
 def parse_foreach_slot_composition(text: str, body: str) -> list[dict] | None:
@@ -383,7 +466,10 @@ def parse_foreach_slot_composition(text: str, body: str) -> list[dict] | None:
     if monster_match is None or slot_count is None:
         return None
     monsters = [monster_match.group("class")] * int(slot_count.group("count"))
-    return weighted_compositions([(monsters, Fraction(1))])
+    return weighted_compositions(
+        [(monsters, Fraction(1))],
+        slot_names=parse_string_arrays(text).get("Slots"),
+    )
 
 
 def parse_encounter_compositions(text: str) -> list[dict] | None:
