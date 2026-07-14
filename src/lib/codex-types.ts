@@ -1064,11 +1064,11 @@ export interface EncounterComposition {
 }
 
 export type EncounterSceneAmbientVfx =
-  | { kind: "fireflies" }
+  | { kind: "none" | "fireflies" }
   | { kind: "queen"; lightTextureUrl: string };
 
 export interface EncounterSceneMonsterSlot {
-  monsterId: string;
+  slotName: string;
   sourcePosition: { x: number; y: number };
   x: number;
   y: number;

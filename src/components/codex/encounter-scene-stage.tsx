@@ -70,7 +70,7 @@ export function EncounterSceneStage({
   const positionedMonsters = positionFormationMonsters(
     formation.monsters.flatMap((ref) => {
       const monster = monsterById.get(ref.id);
-      return monster ? [monster] : [];
+      return monster ? [{ monster, slotName: ref.slotName }] : [];
     }),
     scene.monsterSlots,
     scene.combatLayout,
@@ -146,7 +146,7 @@ export function EncounterSceneStage({
         ))}
 
         <div
-          className="absolute bottom-2 left-2 z-40 flex max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-lg border border-white/10 bg-black/70 p-1.5 shadow-lg backdrop-blur-sm sm:bottom-3 sm:left-3"
+          className="absolute bottom-2 left-1/2 z-40 flex max-w-[calc(100%-1rem)] -translate-x-1/2 items-center gap-1.5 rounded-lg border border-white/10 bg-black/70 p-1.5 shadow-lg backdrop-blur-sm sm:bottom-3"
           data-encounter-formation-controls
         >
           {formations.length > 1 && (
@@ -183,7 +183,7 @@ export function EncounterSceneStage({
 
 function EncounterAmbientVfx({ encounter }: { encounter: CodexEncounter }) {
   const ambientVfx = encounter.scene?.ambientVfx;
-  if (!ambientVfx) return null;
+  if (!ambientVfx || ambientVfx.kind === "none") return null;
 
   if (ambientVfx.kind === "fireflies") {
     return (
@@ -223,20 +223,21 @@ function EncounterAmbientVfx({ encounter }: { encounter: CodexEncounter }) {
 }
 
 function positionFormationMonsters(
-  monsters: CodexMonster[],
+  placements: Array<{ monster: CodexMonster; slotName: string | null }>,
   fixedSlots: EncounterSceneMonsterSlot[],
   combatLayout: EncounterSceneCombatLayout,
 ): PositionedMonster[] {
-  const fixedSlotById = new Map(fixedSlots.map((slot) => [slot.monsterId, slot]));
+  const fixedSlotByName = new Map(fixedSlots.map((slot) => [slot.slotName, slot]));
   const combatLayoutById = new Map(
     combatLayout.monsters.map((monsterLayout) => [monsterLayout.monsterId, monsterLayout]),
   );
+  const monsters = placements.map(({ monster }) => monster);
   const autoPositions = positionEnemiesFromGameBounds(monsters, combatLayoutById, combatLayout);
   const coordinateWidth = combatLayout.coordinateSize.width;
   const coordinateHeight = combatLayout.coordinateSize.height;
 
-  return monsters.map((monster, index) => {
-    const fixedSlot = fixedSlotById.get(monster.id);
+  return placements.map(({ monster, slotName }, index) => {
+    const fixedSlot = slotName ? fixedSlotByName.get(slotName) : undefined;
     const monsterLayout = combatLayoutById.get(monster.id);
     const sourcePosition = fixedSlot?.sourcePosition
       ?? autoPositions[index]
