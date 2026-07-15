@@ -415,7 +415,20 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
   return Object.fromEntries(entries) as Record<GameLocale, BorrowedGameCopyPayload>;
 }
 
+async function generateCommentEntitiesOnly() {
+  const commentEntities = await loadAllEntities();
+  await Promise.all([
+    writeJson({ path: "generated/comment-entities-sts2.json", data: commentEntities }),
+    writeJson({ path: "comment-entities/sts2", data: commentEntities }),
+  ]);
+}
+
 async function main() {
+  if (process.argv.includes("--comment-entities-only")) {
+    await generateCommentEntitiesOnly();
+    return;
+  }
+
   const [
     searchIndex,
     commentEntities,

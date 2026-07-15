@@ -4,8 +4,8 @@
   "packageManager": "pnpm@10.21.0",
   "private": true,
   "scripts": {
-    "dev": "node scripts/dev-patch-proxy.mjs",
-    "dev:next": "next dev",
+    "dev": "node scripts/ensure-comment-entities.mjs && node scripts/dev-patch-proxy.mjs",
+    "dev:next": "node scripts/ensure-comment-entities.mjs && next dev",
     "dev:mobile": "node scripts/mobile-qa.mjs",
     "qa:mobile": "node scripts/mobile-qa.mjs",
     "static:data": "tsx scripts/generate-static-api-data.ts",
