@@ -226,6 +226,7 @@ const CASES = [
     chanceLabelCount: 0,
     conditionalEdgeCount: 6,
     phaseCount: 0,
+    choiceCount: 1,
     phaseConnectorCount: 0,
     hasEnd: false,
   },
@@ -651,6 +652,8 @@ async function expectContainerObjectClearance(
         const length = path.getTotalLength();
         const rawStart = path.getPointAtLength(0);
         let before = new DOMPoint(rawStart.x, rawStart.y).matrixTransform(matrix);
+        let activeParallelSide: "vertical" | "horizontal" | null = null;
+        let parallelRunLength = 0;
 
         for (let sample = 1; sample <= 240; sample += 1) {
           const rawPoint = path.getPointAtLength((length * sample) / 240);
@@ -663,13 +666,20 @@ async function expectContainerObjectClearance(
           const nearHorizontalSide = midX > box.left && midX < box.right;
           const verticalGap = midX < box.left ? box.left - midX : midX > box.right ? midX - box.right : 0;
           const horizontalGap = midY < box.top ? box.top - midY : midY > box.bottom ? midY - box.bottom : 0;
-
-          if (nearVerticalSide && verticalGap > 0 && verticalGap < expected.parallelEdge && deltaY > deltaX * 1.5) {
-            failures.push(`${path.dataset.patternEdgeFrom}->${path.dataset.patternEdgeTo} parallel to vertical border at ${verticalGap}`);
-            break;
+          const segmentLength = Math.hypot(deltaX, deltaY);
+          const parallelSide = nearVerticalSide && verticalGap > 0 && verticalGap < expected.parallelEdge && deltaY > deltaX * 1.5
+            ? "vertical"
+            : nearHorizontalSide && horizontalGap > 0 && horizontalGap < expected.parallelEdge && deltaX > deltaY * 1.5
+              ? "horizontal"
+              : null;
+          if (parallelSide && parallelSide === activeParallelSide) {
+            parallelRunLength += segmentLength;
+          } else {
+            activeParallelSide = parallelSide;
+            parallelRunLength = parallelSide ? segmentLength : 0;
           }
-          if (nearHorizontalSide && horizontalGap > 0 && horizontalGap < expected.parallelEdge && deltaX > deltaY * 1.5) {
-            failures.push(`${path.dataset.patternEdgeFrom}->${path.dataset.patternEdgeTo} parallel to horizontal border at ${horizontalGap}`);
+          if (parallelRunLength >= expected.parallelEdge) {
+            failures.push(`${path.dataset.patternEdgeFrom}->${path.dataset.patternEdgeTo} tracks the ${parallelSide} border`);
             break;
           }
           before = point;
