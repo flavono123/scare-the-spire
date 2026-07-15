@@ -1,6 +1,7 @@
 "use client";
 
 import { type ReactNode, useEffect, useMemo, useState } from "react";
+import Image from "@/components/ui/static-image";
 import { AncientDetail } from "@/components/codex/ancient-detail";
 import { CardDetail } from "@/components/codex/card-detail";
 import { CharacterDetail } from "@/components/codex/character-detail";
@@ -21,6 +22,7 @@ import {
   type CompendiumDetailPayload,
   type CompendiumDetailResourceType,
 } from "@/lib/compendium-detail-payload";
+import type { CompendiumDetailSeoSummary } from "@/lib/compendium-detail-metadata";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { PotionPool, RelicPool } from "@/lib/codex-types";
 
@@ -28,7 +30,16 @@ type CompendiumDirectDetailPageProps = {
   resourceType: CompendiumDetailResourceType;
   id: string;
   payloadPath?: string;
+  initialSummary?: CompendiumDetailSeoSummary | null;
 };
+
+const DETAIL_TYPES_WITH_VISIBLE_H1 = new Set<CompendiumDetailResourceType>([
+  "ancients",
+  "encounters",
+  "epochs",
+  "events",
+  "monsters",
+]);
 
 const payloadPromises = new Map<string, Promise<CompendiumDetailPayload>>();
 
@@ -234,11 +245,49 @@ function buildEntityInfo(payload: CompendiumDetailPayload): EntityInfo[] {
   ];
 }
 
-function LoadingState({ label }: { label: string }) {
+function LoadingState({
+  label,
+  summary,
+}: {
+  label: string;
+  summary?: CompendiumDetailSeoSummary | null;
+}) {
+  if (!summary) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <main className="mx-auto flex min-h-screen max-w-6xl items-center justify-center p-6 font-game-text text-sm text-gray-300">
+          {label}
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <main className="mx-auto flex min-h-screen max-w-6xl items-center justify-center p-6 font-game-text text-sm text-gray-300">
-        {label}
+      <main className="mx-auto flex min-h-screen max-w-3xl items-center justify-center p-6">
+        <article className="flex w-full flex-col items-center gap-4 text-center">
+          {summary.imageUrl && (
+            <Image
+              src={summary.imageUrl}
+              alt={summary.title}
+              width={160}
+              height={160}
+              loading="eager"
+              className="max-h-40 max-w-40 object-contain drop-shadow-lg"
+            />
+          )}
+          <h1 className="font-game-title text-3xl font-bold text-gray-100 sm:text-4xl">
+            {summary.title}
+          </h1>
+          {summary.description && (
+            <p className="max-w-2xl font-game-text text-sm leading-relaxed text-gray-300 sm:text-base">
+              {summary.description}
+            </p>
+          )}
+          <p className="font-service text-xs text-gray-500" aria-live="polite">
+            {label}
+          </p>
+        </article>
       </main>
     </div>
   );
@@ -248,6 +297,7 @@ export function CompendiumDirectDetailPage({
   resourceType,
   id,
   payloadPath = COMPENDIUM_DETAIL_PAYLOAD_PATH,
+  initialSummary,
 }: CompendiumDirectDetailPageProps) {
   const [payload, setPayload] = useState<CompendiumDetailPayload | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -273,11 +323,11 @@ export function CompendiumDirectDetailPage({
   );
 
   if (error) {
-    return <LoadingState label="상세 정보를 불러오지 못했습니다." />;
+    return <LoadingState label="상세 정보를 불러오지 못했습니다." summary={initialSummary} />;
   }
 
   if (!payload) {
-    return <LoadingState label="상세 정보를 불러오는 중입니다." />;
+    return <LoadingState label="상세 정보를 불러오는 중입니다." summary={initialSummary} />;
   }
 
   const { serviceLocale, gameUi, history, resources } = payload;
@@ -571,11 +621,14 @@ export function CompendiumDirectDetailPage({
   }
 
   if (!detail) {
-    return <LoadingState label="상세 정보를 찾을 수 없습니다." />;
+    return <LoadingState label="상세 정보를 찾을 수 없습니다." summary={initialSummary} />;
   }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {initialSummary && !DETAIL_TYPES_WITH_VISIBLE_H1.has(resourceType) && (
+        <h1 className="sr-only">{initialSummary.title}</h1>
+      )}
       {detail}
     </div>
   );

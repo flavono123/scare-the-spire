@@ -1,4 +1,4 @@
-import { CompendiumDirectDetailPage } from "@/components/codex/compendium-direct-detail-page";
+import { CompendiumDirectDetailRoute as CompendiumDirectDetailPage } from "@/components/codex/compendium-direct-detail-route";
 import { generateEnchantmentStaticParams } from "@/lib/codex-static-params";
 import { generateCompendiumEnchantmentMetadata } from "@/lib/compendium-detail-metadata";
 

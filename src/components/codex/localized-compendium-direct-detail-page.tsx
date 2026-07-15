@@ -1,4 +1,4 @@
-import { CompendiumDirectDetailPage } from "@/components/codex/compendium-direct-detail-page";
+import { CompendiumDirectDetailRoute } from "@/components/codex/compendium-direct-detail-route";
 import {
   COMPENDIUM_DETAIL_PAYLOAD_PATH_BY_SERVICE_LOCALE,
   type CompendiumDetailResourceType,
@@ -19,10 +19,12 @@ export function LocalizedCompendiumDirectDetailPage({
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
 
   return (
-    <CompendiumDirectDetailPage
+    <CompendiumDirectDetailRoute
       resourceType={resourceType}
       id={id}
       payloadPath={COMPENDIUM_DETAIL_PAYLOAD_PATH_BY_SERVICE_LOCALE[serviceLocale]}
+      gameLocale={gameLocale}
+      serviceLocale={serviceLocale}
     />
   );
 }

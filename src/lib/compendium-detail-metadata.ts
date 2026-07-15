@@ -34,6 +34,7 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
+import type { CompendiumDetailResourceType } from "@/lib/compendium-detail-payload";
 
 type CompendiumMetadataLocale = {
   gameLocale?: GameLocale;
@@ -245,4 +246,68 @@ export async function generateCompendiumEpochMetadata(
   const epoch = findCodexResourceByRouteId(epochs, id);
   if (!epoch) return {};
   return getCodexResourceOgMetadata(serviceLocale, gameUi.epochsTitle, epoch);
+}
+
+export type CompendiumDetailSeoSummary = {
+  title: string;
+  description: string;
+  imageUrl: string | null;
+};
+
+type CompendiumMetadataGenerator = (
+  id: string,
+  locale?: CompendiumMetadataLocale,
+) => Promise<Metadata>;
+
+const COMPENDIUM_METADATA_GENERATORS: Record<
+  CompendiumDetailResourceType,
+  CompendiumMetadataGenerator
+> = {
+  ancients: generateCompendiumAncientMetadata,
+  cards: generateCompendiumCardMetadata,
+  characters: generateCompendiumCharacterMetadata,
+  enchantments: generateCompendiumEnchantmentMetadata,
+  encounters: generateCompendiumEncounterMetadata,
+  epochs: generateCompendiumEpochMetadata,
+  events: generateCompendiumEventMetadata,
+  keywords: generateCompendiumKeywordMetadata,
+  monsters: generateCompendiumMonsterMetadata,
+  potions: generateCompendiumPotionMetadata,
+  powers: generateCompendiumPowerMetadata,
+  relics: generateCompendiumRelicMetadata,
+};
+
+function metadataString(value: unknown): string | null {
+  if (typeof value === "string") return value;
+  if (value instanceof URL) return value.toString();
+  return null;
+}
+
+function firstMetadataImageUrl(value: unknown): string | null {
+  const first = Array.isArray(value) ? value[0] : value;
+  const directUrl = metadataString(first);
+  if (directUrl) return directUrl;
+
+  if (first && typeof first === "object" && "url" in first) {
+    return metadataString(first.url);
+  }
+
+  return null;
+}
+
+export async function generateCompendiumDetailSeoSummary(
+  resourceType: CompendiumDetailResourceType,
+  id: string,
+  locale?: CompendiumMetadataLocale,
+): Promise<CompendiumDetailSeoSummary | null> {
+  const metadata = await COMPENDIUM_METADATA_GENERATORS[resourceType](id, locale);
+  const openGraph = metadata.openGraph as Record<string, unknown> | null | undefined;
+  const title = metadataString(openGraph?.title);
+  if (!title) return null;
+
+  return {
+    title,
+    description: typeof metadata.description === "string" ? metadata.description : "",
+    imageUrl: firstMetadataImageUrl(openGraph?.images),
+  };
 }

@@ -1,4 +1,4 @@
-import { CompendiumDirectDetailPage } from "@/components/codex/compendium-direct-detail-page";
+import { CompendiumDirectDetailRoute as CompendiumDirectDetailPage } from "@/components/codex/compendium-direct-detail-route";
 import { generatePotionStaticParams } from "@/lib/codex-static-params";
 import { generateCompendiumPotionMetadata } from "@/lib/compendium-detail-metadata";
 

@@ -1,4 +1,4 @@
-import { CompendiumDirectDetailPage } from "@/components/codex/compendium-direct-detail-page";
+import { CompendiumDirectDetailRoute as CompendiumDirectDetailPage } from "@/components/codex/compendium-direct-detail-route";
 import { generateKeywordStaticParams } from "@/lib/codex-static-params";
 import { generateCompendiumKeywordMetadata } from "@/lib/compendium-detail-metadata";
 
