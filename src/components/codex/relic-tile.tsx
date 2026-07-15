@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import Link from "next/link";
 import Image from "@/components/ui/static-image";
-import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import { CodexRelic, characterOutlineFilter, type RelicPool } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
 import { GameHoverTip } from "./hover-tip";
@@ -42,8 +44,7 @@ const TOOLTIP_WIDTH = 320;
 const TOOLTIP_HEIGHT = 220;
 
 export function RelicTile({ serviceLocale = "ko", relic, showBeta = false, onClick }: RelicTileProps) {
-  void serviceLocale;
-  const tileRef = useRef<HTMLDivElement>(null);
+  const tileRef = useRef<HTMLAnchorElement>(null);
   const tileVariant = pickStableVariant(relic);
   const tileImageUrl = showBeta && relic.betaImageUrl
     ? relic.betaImageUrl
@@ -69,15 +70,20 @@ export function RelicTile({ serviceLocale = "ko", relic, showBeta = false, onCli
   }, []);
 
   return (
-    <div
+    <Link
       ref={tileRef}
+      href={localizeHref(buildCompendiumResourceDetailHref("relic", relic.id), serviceLocale)}
       className="relative group"
       onMouseEnter={() => {
         updatePlacement();
         setHovered(true);
       }}
       onMouseLeave={() => setHovered(false)}
-      onClick={() => onClick?.(tileVariant ?? undefined)}
+      onClick={(event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+        event.preventDefault();
+        onClick?.(tileVariant ?? undefined);
+      }}
     >
       <div
         className={`w-14 h-14 sm:w-16 sm:h-16 rounded-lg border-2 p-1 transition-all cursor-pointer${lifecycleClassName} ${
@@ -117,6 +123,6 @@ export function RelicTile({ serviceLocale = "ko", relic, showBeta = false, onCli
           </GameHoverTip>
         </div>
       )}
-    </div>
+    </Link>
   );
 }

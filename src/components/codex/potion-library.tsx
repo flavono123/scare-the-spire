@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { DescriptionText } from "./codex-description";
 import { PotionDetail } from "./potion-detail";
@@ -10,7 +11,8 @@ import {
   pushCodexHistoryState,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
-import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
@@ -456,6 +458,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
                 {section.potions.map((potion) => (
                   <PotionTile
                     key={potion.id}
+                    serviceLocale={serviceLocale}
                     potion={potion}
                     onClick={() => selectPotion(potion)}
                   />
@@ -500,9 +503,11 @@ const TOOLTIP_HEIGHT = 220;
 
 // Individual potion icon tile
 function PotionTile({
+  serviceLocale,
   potion,
   onClick,
 }: {
+  serviceLocale: ServiceLocale;
   potion: CodexPotion;
   onClick?: () => void;
 }) {
@@ -536,14 +541,19 @@ function PotionTile({
       }}
       onMouseLeave={() => setHovered(false)}
     >
-      <button
+      <Link
+        href={localizeHref(buildCompendiumResourceDetailHref("potion", potion.id), serviceLocale)}
         data-potion-tile={potion.id}
         className={`flex h-14 w-14 items-center justify-center rounded-lg border-2 p-1 transition-all sm:h-16 sm:w-16${lifecycleClassName} ${
           hovered
             ? "z-10 scale-110 border-yellow-500/60 bg-yellow-500/10"
             : "border-transparent bg-white/5 hover:bg-white/10"
         }`}
-        onClick={onClick}
+        onClick={(event) => {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+          event.preventDefault();
+          onClick?.();
+        }}
       >
         <Image
           src={potion.imageUrl}
@@ -556,7 +566,7 @@ function PotionTile({
             filter: characterOutlineFilter(potion.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
           }}
         />
-      </button>
+      </Link>
 
       {hovered && (
         <div

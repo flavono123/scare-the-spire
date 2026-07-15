@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import {
   addCodexUrlChangeListener,
   pushCodexHistoryState,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
-import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
@@ -428,6 +430,7 @@ export function EncounterLibrary({
                 {section.encounters.map((enc) => (
                   <EncounterTile
                     key={enc.id}
+                    serviceLocale={serviceLocale}
                     encounter={enc}
                     monsterById={monsterById}
                     messages={serviceText}
@@ -475,6 +478,7 @@ export function EncounterLibrary({
 
 // Encounter tile in list
 function EncounterTile({
+  serviceLocale,
   encounter,
   monsterById,
   messages,
@@ -482,6 +486,7 @@ function EncounterTile({
   formationCount,
   onClick,
 }: {
+  serviceLocale: ServiceLocale;
   encounter: CodexEncounter;
   monsterById: Map<string, CodexMonster>;
   messages: CodexServiceMessages;
@@ -497,8 +502,13 @@ function EncounterTile({
   );
 
   return (
-    <button
-      onClick={onClick}
+    <Link
+      href={localizeHref(buildCompendiumResourceDetailHref("encounter", encounter.id), serviceLocale)}
+      onClick={(event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+        event.preventDefault();
+        onClick();
+      }}
       className={`group flex items-center gap-3 rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2.5 text-left transition-all hover:border-yellow-500/40 hover:bg-white/10 ${
         encounter.deprecated ? "opacity-50 grayscale saturate-0" : ""
       }`}
@@ -550,7 +560,7 @@ function EncounterTile({
           </span>
         )}
       </div>
-    </button>
+    </Link>
   );
 }
 

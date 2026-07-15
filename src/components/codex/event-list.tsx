@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import {
   addCodexUrlChangeListener,
   pushCodexHistoryState,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
-import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
@@ -117,11 +119,13 @@ function ActBadges({
 
 // --- Collapsed thumbnail item ---
 function EventThumbnail({
+  serviceLocale,
   event,
   onClick,
   messages,
   gameUi,
 }: {
+  serviceLocale: ServiceLocale;
   event: CodexEvent;
   onClick: () => void;
   messages: CodexServiceMessages;
@@ -129,8 +133,13 @@ function EventThumbnail({
 }) {
   const lifecycleClassName = event.deprecated ? " opacity-50 grayscale saturate-0" : "";
   return (
-    <button
-      onClick={onClick}
+    <Link
+      href={localizeHref(buildCompendiumResourceDetailHref("event", event.id), serviceLocale)}
+      onClick={(clickEvent) => {
+        if (clickEvent.metaKey || clickEvent.ctrlKey || clickEvent.shiftKey || clickEvent.altKey || clickEvent.button !== 0) return;
+        clickEvent.preventDefault();
+        onClick();
+      }}
       className={`group relative h-[72px] w-full cursor-pointer overflow-hidden rounded-lg border border-zinc-700/40 bg-zinc-900/80 text-left shadow-sm shadow-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-500/40 hover:bg-white/[0.04] hover:shadow-lg hover:shadow-black/30${lifecycleClassName}`}
     >
       {event.imageUrl ? (
@@ -166,7 +175,7 @@ function EventThumbnail({
           <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z" />
         </svg>
       </div>
-    </button>
+    </Link>
   );
 }
 
@@ -428,6 +437,7 @@ export function EventList({
                         style={{ animationDelay: `${Math.min(index * 12, 180)}ms` }}
                       >
                         <EventThumbnail
+                          serviceLocale={serviceLocale}
                           event={event}
                           messages={serviceText}
                           gameUi={gameUi}

@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import type { ServiceLocale } from "@/lib/i18n";
+import Link from "next/link";
+import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
@@ -826,22 +828,31 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
                   className="animate-card-enter"
                   style={{ animationDelay: `${Math.min(i * 12, 250)}ms` }}
                 >
-                  <CardTile
-                    card={card}
-                    serviceLocale={serviceLocale}
-                    showUpgrade={showUpgrades}
-                    showBeta={activeShowBeta}
-                    size="grid"
-                    engagementStats={showEngagementStats
-                      ? {
-                          commentCount: engagementCounts.comments[threadKey] ?? 0,
-                          likeCount: engagementCounts.likes[threadKey] ?? 0,
-                          loading: engagementCounts.loading,
-                          unavailable: engagementCounts.unavailable,
-                        }
-                      : null}
-                    onClick={() => openSelectedCard(card)}
-                  />
+                  <Link
+                    href={localizeHref(buildCompendiumResourceDetailHref("card", card.id), serviceLocale)}
+                    className="block"
+                    onClick={(event) => {
+                      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+                      event.preventDefault();
+                      openSelectedCard(card);
+                    }}
+                  >
+                    <CardTile
+                      card={card}
+                      serviceLocale={serviceLocale}
+                      showUpgrade={showUpgrades}
+                      showBeta={activeShowBeta}
+                      size="grid"
+                      engagementStats={showEngagementStats
+                        ? {
+                            commentCount: engagementCounts.comments[threadKey] ?? 0,
+                            likeCount: engagementCounts.likes[threadKey] ?? 0,
+                            loading: engagementCounts.loading,
+                            unavailable: engagementCounts.unavailable,
+                          }
+                        : null}
+                    />
+                  </Link>
                 </div>
               );
             })}

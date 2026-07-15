@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { MonsterDetail } from "./monster-detail";
-import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { serviceMessages } from "@/messages/service";
@@ -457,6 +459,7 @@ export function MonsterLibrary({
                   return (
                     <MonsterTile
                       key={monster.id}
+                      serviceLocale={serviceLocale}
                       monster={monster}
                       displayType={getDisplayMonsterType(monster)}
                       threadKey={threadKey}
@@ -514,6 +517,7 @@ export function MonsterLibrary({
 
 // Monster tile - text-based since most monsters lack images
 function MonsterTile({
+  serviceLocale,
   monster,
   displayType,
   threadKey,
@@ -526,6 +530,7 @@ function MonsterTile({
   ensureUser,
   onClick,
 }: {
+  serviceLocale: ServiceLocale;
   monster: CodexMonster;
   displayType: MonsterType;
   threadKey: string;
@@ -551,9 +556,14 @@ function MonsterTile({
       onMouseEnter={() => setHoverMoveId(pickRandomMonsterPreviewMoveId(monster))}
       onMouseLeave={() => setHoverMoveId(undefined)}
     >
-      <button
+      <Link
+        href={localizeHref(buildCompendiumResourceDetailHref("monster", monster.id), serviceLocale)}
         className="flex min-w-0 flex-1 items-center gap-3 text-left"
-        onClick={onClick}
+        onClick={(event) => {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+          event.preventDefault();
+          onClick?.();
+        }}
       >
         {/* Thumbnail: Spine render or boss token */}
         {(imageSrc || monster.spineAsset) ? (
@@ -607,7 +617,7 @@ function MonsterTile({
             />
           </div>
         </div>
-      </button>
+      </Link>
 
       <LikeButton
         storyId={threadKey}

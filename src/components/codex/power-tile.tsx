@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useRef, useCallback, memo } from "react";
+import Link from "next/link";
 import Image from "@/components/ui/static-image";
-import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { CodexPower } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
@@ -44,9 +46,9 @@ function getPowerHoverTipVariant(power: CodexPower): HoverTipVariant {
   return "default";
 }
 
-export const PowerTile = memo(function PowerTile({ power, showBeta = false, onClick }: PowerTileProps) {
+export const PowerTile = memo(function PowerTile({ serviceLocale = "ko", power, showBeta = false, onClick }: PowerTileProps) {
   const [hovered, setHovered] = useState(false);
-  const tileRef = useRef<HTMLDivElement>(null);
+  const tileRef = useRef<HTMLAnchorElement>(null);
   const [placement, setPlacement] = useState<TooltipPlacement>({
     horizontal: "right",
     vertical: "top",
@@ -70,15 +72,20 @@ export const PowerTile = memo(function PowerTile({ power, showBeta = false, onCl
   }, []);
 
   return (
-    <div
+    <Link
       ref={tileRef}
+      href={localizeHref(buildCompendiumResourceDetailHref("power", power.id), serviceLocale)}
       className="relative group"
       onMouseEnter={() => {
         updatePlacement();
         setHovered(true);
       }}
       onMouseLeave={() => setHovered(false)}
-      onClick={onClick}
+      onClick={(event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+        event.preventDefault();
+        onClick?.();
+      }}
     >
       <div
         className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 p-1 transition-all cursor-pointer${lifecycleClassName} ${
@@ -119,6 +126,6 @@ export const PowerTile = memo(function PowerTile({ power, showBeta = false, onCl
           </GameHoverTip>
         </div>
       )}
-    </div>
+    </Link>
   );
 });

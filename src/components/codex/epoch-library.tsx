@@ -5,7 +5,7 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
-import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
+import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
@@ -537,7 +537,7 @@ function EpochThumbnail({
 
   return (
     <Link
-      href={localizeHref(buildCompendiumResourceHref("epoch", epoch.id), serviceLocale)}
+      href={localizeHref(buildCompendiumResourceDetailHref("epoch", epoch.id), serviceLocale)}
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
         event.preventDefault();

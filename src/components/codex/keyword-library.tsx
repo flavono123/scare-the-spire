@@ -1,12 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import {
   addCodexUrlChangeListener,
   pushCodexHistoryState,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
-import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
@@ -55,17 +57,23 @@ const KEYWORD_SOURCE_CONFIG: Record<CodexKeyword["source"], { color: string; lab
 };
 
 function KeywordTile({
+  serviceLocale,
   keyword,
   onClick,
 }: {
+  serviceLocale: ServiceLocale;
   keyword: CodexKeyword;
   onClick: () => void;
 }) {
   return (
-    <button
-      type="button"
+    <Link
+      href={localizeHref(buildCompendiumResourceDetailHref("keyword", keyword.id), serviceLocale)}
       className="group block h-full min-h-36 w-full text-left outline-none transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5"
-      onClick={onClick}
+      onClick={(event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+        event.preventDefault();
+        onClick();
+      }}
     >
       <GameHoverTip
         title={keyword.name}
@@ -74,7 +82,7 @@ function KeywordTile({
       >
         <DescriptionText description={keyword.description} className="block text-left line-clamp-3" />
       </GameHoverTip>
-    </button>
+    </Link>
   );
 }
 
@@ -239,6 +247,7 @@ export function KeywordLibrary({
                   {groupKeywords.map((keyword) => (
                     <KeywordTile
                       key={keyword.id}
+                      serviceLocale={serviceLocale}
                       keyword={keyword}
                       onClick={() => selectKeyword(keyword.id)}
                     />

@@ -27,7 +27,7 @@ import {
 } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
-import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
+import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
   CodexLibraryShell,
@@ -422,7 +422,7 @@ function CharacterRow({
   return (
     <Link
       ref={setRowRef}
-      href={localizeHref(buildCompendiumResourceHref("character", character.id), serviceLocale)}
+      href={localizeHref(buildCompendiumResourceDetailHref("character", character.id), serviceLocale)}
       role="listitem"
       aria-current={active ? "true" : undefined}
       onMouseEnter={() => setActiveCharacterId(character.id)}
