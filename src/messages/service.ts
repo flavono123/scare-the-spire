@@ -224,7 +224,7 @@ export const serviceMessages = {
       afflictions: "고난",
       monsters: "몬스터",
       events: "이벤트",
-      encounters: "인카운터",
+      encounters: "전투",
       ancients: "고대의 존재",
       epochs: "연대기",
       index: "전체 보기",
