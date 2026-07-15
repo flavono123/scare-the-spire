@@ -357,6 +357,7 @@ for (const sample of CASES) {
       await expectContainerObjectClearance(diagram, { node: 23, label: 10, parallelEdge: 20 });
       await expectNoOverlap(diagram.locator("[data-pattern-edge-label]"));
       await expectNoEdgeToCrossUnrelatedNodes(diagram);
+      await expectRoutedObjectsInsideCanvas(diagram);
     }
     if (sample.id === "FABRICATOR") {
       const transitions = await edges.evaluateAll((elements) => elements.map((element) => ({
@@ -712,6 +713,45 @@ async function expectNoOverlap(elements: Locator) {
         }
       }
     }
+    return failures;
+  });
+
+  expect(violations).toEqual([]);
+}
+
+async function expectRoutedObjectsInsideCanvas(diagram: Locator) {
+  const violations = await diagram.evaluate((root) => {
+    const svg = root.querySelector<SVGSVGElement>("svg");
+    const canvas = root.firstElementChild;
+    if (!svg || !(canvas instanceof HTMLElement)) return ["missing canvas"];
+    const viewBox = svg.viewBox.baseVal;
+    const canvasRect = canvas.getBoundingClientRect();
+    const failures: string[] = [];
+
+    for (const path of root.querySelectorAll<SVGGraphicsElement>("svg > path[data-pattern-edge-from]")) {
+      const box = path.getBBox();
+      if (
+        box.x < viewBox.x - 1 ||
+        box.y < viewBox.y - 1 ||
+        box.x + box.width > viewBox.x + viewBox.width + 1 ||
+        box.y + box.height > viewBox.y + viewBox.height + 1
+      ) {
+        failures.push(`${path.dataset.patternEdgeFrom}->${path.dataset.patternEdgeTo} outside SVG`);
+      }
+    }
+
+    for (const label of root.querySelectorAll<HTMLElement>("[data-pattern-edge-label], [data-pattern-edge-chance-label]")) {
+      const box = label.getBoundingClientRect();
+      if (
+        box.left < canvasRect.left - 1 ||
+        box.top < canvasRect.top - 1 ||
+        box.right > canvasRect.right + 1 ||
+        box.bottom > canvasRect.bottom + 1
+      ) {
+        failures.push(`${label.textContent?.trim()} outside canvas`);
+      }
+    }
+
     return failures;
   });
 
