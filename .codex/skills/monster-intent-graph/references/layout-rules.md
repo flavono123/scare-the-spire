@@ -18,6 +18,10 @@ partial. Fix the extractor or retain a partial-data notice.
   not use a game icon or button asset.
 - Render action states with the existing `hover_tip.png` tooltip frame and show
   official Korean above official English.
+- Resolve attack and block values from each extracted `intent_details` key
+  before any legacy move-ID heuristic. Show the matching in-game intent asset
+  and effective number in the action state; a valid attack must not degrade to
+  a text-only node because its move ID differs from its damage key.
 - Reuse the Intent Graph mod palette exactly: gold `#EFC851` for normal edges
   and labels, red `#FF4545` for conditional and phase-transition edges, cyan
   `#29EBC0` for group and phase borders, and translucent dark blue
@@ -101,6 +105,9 @@ runtime dependency.
 - Phase direction matches reachability: vertical reversible, horizontal
   progressive.
 - No edge crosses a node or obscures Korean/English text.
+- Branches from the same state share one origin, and every non-self arrow enters
+  with an unambiguous left-to-right final tangent when the layout permits it.
+- Every extracted attack or block intent renders its game asset and value.
 - Self-loops remain compact at desktop and mobile scales.
 - Edge labels do not overlap arrowheads, nodes, or other labels.
 - Desktop and all repository mobile presets keep the graph pannable and

@@ -16,7 +16,8 @@ graph, phase classifier, or route.
 
 1. Inspect `data/sts2/{kor,eng}/monsters.json` and the matching decompiled
    `MegaCrit.Sts2.Core.Models.Monsters/*.cs` source. Confirm the initial state,
-   follow-ups, random repeat rules, conditions, and lifecycle callbacks.
+   follow-ups, random repeat rules, conditions, lifecycle callbacks, and each
+   intent's extracted damage or block key.
 2. Fix extraction before presentation when the extracted graph disagrees with
    source. Never hand-correct a probability or transition for visual
    convenience.
@@ -29,7 +30,8 @@ graph, phase classifier, or route.
 6. Reproduce the accepted geometry in the TypeScript renderer with cubic SVG
    paths. Keep arrowhead and edge colors identical and omit `100%` labels.
 7. Add representative Playwright assertions for topology, direction, start
-   visibility, labels, overlap, and mobile containment.
+   visibility, intent tokens, labels, shared branch origins, edge/node
+   crossings, final arrow direction, and mobile containment.
 
 ## Classification
 
