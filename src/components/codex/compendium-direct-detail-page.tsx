@@ -625,11 +625,11 @@ export function CompendiumDirectDetailPage({
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <main className="min-h-screen bg-background text-foreground">
       {initialSummary && !DETAIL_TYPES_WITH_VISIBLE_H1.has(resourceType) && (
         <h1 className="sr-only">{initialSummary.title}</h1>
       )}
       {detail}
-    </div>
+    </main>
   );
 }
