@@ -521,16 +521,16 @@ const CONDITION_TEXT: Record<string, {
     en: { label: "No living allies", tooltip: "True when no other living allies remain." },
   },
   "((Nibbit)base.Creature.Monster).IsAlone": {
-    ko: { label: "혼자 남음", tooltip: "깨작이가 전투에서 혼자 남았을 때입니다." },
-    en: { label: "Alone", tooltip: "True when the Nibbit is alone in combat." },
+    ko: { label: "혼자일 때", tooltip: "전투 시작 시 깨작이가 혼자 배치된 경우 박치기로 시작합니다." },
+    en: { label: "Starts alone", tooltip: "A Nibbit that starts combat alone opens with Butt." },
   },
   "!((Nibbit)base.Creature.Monster).IsFront": {
-    ko: { label: "후방", tooltip: "깨작이가 전열이 아닐 때입니다." },
-    en: { label: "Not in front", tooltip: "True when the Nibbit is not in the front position." },
+    ko: { label: "후방", tooltip: "깨작이가 둘인 전투에서 후방에 배치된 개체는 쉭쉭대기로 시작합니다." },
+    en: { label: "Back position", tooltip: "In a two-Nibbit combat, the Nibbit in back opens with Hiss." },
   },
   "((Nibbit)base.Creature.Monster).IsFront": {
-    ko: { label: "전방", tooltip: "깨작이가 전열에 있을 때입니다." },
-    en: { label: "In front", tooltip: "True when the Nibbit is in the front position." },
+    ko: { label: "전방", tooltip: "깨작이가 둘인 전투에서 전방에 배치된 개체는 Slice로 시작합니다." },
+    en: { label: "Front position", tooltip: "In a two-Nibbit combat, the Nibbit in front opens with Slice." },
   },
   CanLay: {
     ko: { label: "산란 가능", tooltip: "산란 조건을 만족해 알을 낳을 수 있을 때입니다." },

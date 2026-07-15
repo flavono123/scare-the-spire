@@ -952,25 +952,25 @@ function PatternStateTransitionDiagram({
           <defs>
             <marker
               id={`${markerPrefix}-arrow-normal`}
-              markerWidth="10"
-              markerHeight="10"
-              refX="9"
-              refY="5"
+              markerWidth="8"
+              markerHeight="8"
+              refX="7.5"
+              refY="4"
               orient="auto"
               markerUnits="userSpaceOnUse"
             >
-              <path d="M 0 0 L 10 5 L 0 10 Z" fill={DIAGRAM_ARROW_COLOR} />
+              <path d="M 0 0 L 8 4 L 0 8 Z" fill={DIAGRAM_ARROW_COLOR} />
             </marker>
             <marker
               id={`${markerPrefix}-arrow-conditional`}
-              markerWidth="10"
-              markerHeight="10"
-              refX="9"
-              refY="5"
+              markerWidth="8"
+              markerHeight="8"
+              refX="7.5"
+              refY="4"
               orient="auto"
               markerUnits="userSpaceOnUse"
             >
-              <path d="M 0 0 L 10 5 L 0 10 Z" fill={DIAGRAM_CONDITIONAL_COLOR} />
+              <path d="M 0 0 L 8 4 L 0 8 Z" fill={DIAGRAM_CONDITIONAL_COLOR} />
             </marker>
           </defs>
           {diagram.phaseConnectors.map((connector) => (
@@ -992,7 +992,7 @@ function PatternStateTransitionDiagram({
               d={edge.path}
               fill="none"
               stroke={edge.color}
-              strokeWidth={edge.isLoop ? "3" : "4"}
+              strokeWidth="3"
               strokeLinecap="round"
               strokeLinejoin="round"
               markerEnd={`url(#${markerPrefix}-arrow-${edge.marker})`}
@@ -1113,7 +1113,9 @@ function PatternMoveStateNode({
 }) {
   const [monsterAscensionLevel] = useMonsterAscensionLevel();
   const move = getMonsterMove(monster, node.id);
-  const damageEntry = moveSummary?.damageEntry ?? (monster.damageValues ? findDamageForMove(node.id, monster.damageValues) : null);
+  const damageEntry = moveSummary?.damageEntry ?? (monster.damageValues
+    ? findDamageForMove(node.id, monster.damageValues, getMoveDamageKey(move))
+    : null);
   const blockEntry = moveSummary?.blockEntry ?? (monster.blockValues ? findBlockForMove(node.id, monster.blockValues) : null);
   const attackMetric = moveSummary ? getMoveAttackMetric(moveSummary, monsterAscensionLevel) : damageEntry ? buildAttackMetric(damageEntry, null, monsterAscensionLevel) : null;
   const standaloneIntents = moveSummary ? getStandaloneMoveIntentItems(moveSummary, monsterAscensionLevel) : [];
@@ -1135,6 +1137,7 @@ function PatternMoveStateNode({
       title={title}
       aria-label={title}
       data-pattern-node="true"
+      data-pattern-node-id={node.id}
       onMouseEnter={() => onPreviewMoveIntent(node.id)}
       onMouseLeave={() => onPreviewMoveIntent(null)}
       onFocus={() => onPreviewMoveIntent(node.id)}
@@ -2209,6 +2212,7 @@ function buildFixedLoopPatternDiagramModel(
     const from = nodeById.get(id);
     const to = state?.next ? nodeById.get(state.next) : null;
     if (!from || !to) return;
+    if (from.id === to.id) return;
     if (to.x > from.x) {
       const startX = from.x + from.width;
       const startY = from.y + from.height / 2;
@@ -2225,13 +2229,17 @@ function buildFixedLoopPatternDiagramModel(
       return;
     }
 
-    const startX = from.x + from.width / 2;
-    const endX = to.x + to.width / 2;
+    const startX = from.x + from.width;
+    const startY = from.y + from.height / 2;
+    const endX = to.x;
+    const endY = to.y + to.height * 0.72;
+    const approachX = endX - 22;
+    const laneY = Math.max(from.y + from.height, to.y + to.height) + 36;
     edges.push(buildStructuredPatternEdge({
       key: `${id}-${to.id}-return`,
       from: id,
       to: to.id,
-      path: `M ${startX} ${from.y} C ${startX} 20 ${endX} 20 ${endX} ${to.y}`,
+      path: `M ${startX} ${startY} C ${startX + 32} ${startY} ${startX + 32} ${laneY} ${startX + 18} ${laneY} C ${(startX + approachX) / 2} ${laneY} ${approachX} ${laneY} ${approachX} ${laneY} C ${approachX} ${(laneY + endY) / 2} ${approachX} ${endY} ${approachX} ${endY} C ${approachX + 7} ${endY} ${endX - 7} ${endY} ${endX} ${endY}`,
       color: DIAGRAM_ARROW_COLOR,
       isLoop: true,
     }));
@@ -2843,7 +2851,9 @@ function buildPatternDiagramModel(
 
   const nodes: PatternDiagramNode[] = [];
   const phaseBoxes: PatternDiagramPhaseBox[] = [];
-  let cursorY = DIAGRAM_PAD;
+  const distinctStartTargetCount = new Set(startRows.map((row) => row.to)).size;
+  const entryLaneGutter = Math.max(0, distinctStartTargetCount - 1) * 24;
+  let cursorY = DIAGRAM_PAD + entryLaneGutter;
   let maxRight = DIAGRAM_PAD + DIAGRAM_ENTRY_OFFSET + DIAGRAM_CELL_WIDTH;
 
   groups.forEach((group) => {
@@ -3314,7 +3324,7 @@ function buildDiagramEdges(
 ): PatternDiagramEdge[] {
   const laneByRoute = new Map<string, number>();
 
-  return transitions.flatMap((transition, index) => {
+  return transitions.flatMap((transition) => {
     const from = nodeById.get(transition.from);
     const to = nodeById.get(transition.to);
     if (!from || !to) return [];
@@ -3322,7 +3332,7 @@ function buildDiagramEdges(
     const routeKey = getDiagramEdgeRouteKey(from, to);
     const laneIndex = laneByRoute.get(routeKey) ?? 0;
     laneByRoute.set(routeKey, laneIndex + 1);
-    const edge = buildDiagramEdge(transition, nodeById, index, laneIndex);
+    const edge = buildDiagramEdge(transition, nodeById, laneIndex);
     return edge ? [edge] : [];
   });
 }
@@ -3345,7 +3355,6 @@ function getDiagramEdgeRouteKey(from: PatternDiagramNode, to: PatternDiagramNode
 function buildDiagramEdge(
   transition: TransitionTableRow,
   nodeById: Map<string, PatternDiagramNode>,
-  index: number,
   laneIndex = 0,
 ): PatternDiagramEdge | null {
   const from = nodeById.get(transition.from);
@@ -3355,7 +3364,7 @@ function buildDiagramEdge(
   const kind = transition.kind === "conditional" ? "conditional" : "fixed";
   const color = kind === "conditional" ? DIAGRAM_CONDITIONAL_COLOR : DIAGRAM_ARROW_COLOR;
   const marker = kind === "conditional" ? "conditional" : "normal";
-  const laneOffset = laneIndex * 16 + (index % 2) * 4;
+  const laneOffset = laneIndex * 16;
   const label = getDiagramEdgeLabel(transition);
   const chanceLabel = transition.condition && transition.chance != null && transition.chance !== 100
     ? formatChancePercent(transition.chance)
@@ -3367,9 +3376,9 @@ function buildDiagramEdge(
 
   if (from.id === to.id) {
     const startX = from.x + from.width;
-    const startY = from.y + from.height * 0.38;
+    const startY = from.y + from.height / 2;
     const endX = from.x + from.width;
-    const endY = from.y + from.height * 0.68;
+    const endY = from.y + from.height * 0.72;
     const loopX = startX + 42 + laneOffset;
     path = `M ${startX} ${startY} C ${loopX} ${startY - 34} ${loopX} ${endY + 34} ${endX} ${endY}`;
     labelX = loopX + 2;
@@ -3384,14 +3393,20 @@ function buildDiagramEdge(
     labelX = (startX + endX) / 2;
     labelY = (startY + endY) / 2;
   } else if (to.x + to.width < from.x + from.width / 2) {
-    const startX = from.x + from.width / 2;
-    const startY = from.y;
-    const endX = to.x + to.width / 2;
-    const endY = to.y;
-    const loopY = Math.min(from.y, to.y) - 32 - laneOffset * 0.55;
-    path = `M ${startX} ${startY} C ${startX} ${loopY} ${endX} ${loopY} ${endX} ${endY}`;
-    labelX = (startX + endX) / 2;
-    labelY = loopY - 8;
+    const startX = from.x + from.width;
+    const startY = from.y + from.height / 2;
+    const endX = to.x;
+    const endY = to.y + to.height * 0.72;
+    const approachX = endX - 22;
+    const routeMinX = Math.min(to.x, from.x);
+    const routeMaxX = Math.max(to.x + to.width, from.x + from.width);
+    const obstacleBottom = Math.max(...Array.from(nodeById.values())
+      .filter((node) => node.x < routeMaxX && node.x + node.width > routeMinX)
+      .map((node) => node.y + node.height));
+    const laneY = obstacleBottom + 30 + laneOffset;
+    path = `M ${startX} ${startY} C ${startX + 32} ${startY} ${startX + 32} ${laneY} ${startX + 18} ${laneY} C ${(startX + approachX) / 2} ${laneY} ${approachX} ${laneY} ${approachX} ${laneY} C ${approachX} ${(laneY + endY) / 2} ${approachX} ${endY} ${approachX} ${endY} C ${approachX + 7} ${endY} ${endX - 7} ${endY} ${endX} ${endY}`;
+    labelX = (startX + approachX) / 2;
+    labelY = laneY + 10;
   } else {
     const startX = from.x + from.width;
     const startY = from.y + from.height / 2;
@@ -3428,27 +3443,50 @@ function buildDiagramStartEdges(
 ): PatternDiagramEdge[] {
   const originX = start.x + start.width;
   const originY = start.y + start.height / 2;
+  const rankedRows = [...rows].sort((left, right) => (
+    (nodeById.get(left.to)?.x ?? Number.MAX_SAFE_INTEGER)
+    - (nodeById.get(right.to)?.x ?? Number.MAX_SAFE_INTEGER)
+  ));
+  const rankByKey = new Map(rankedRows.map((row, rank) => [row.key, rank]));
+  const minNodeY = Math.min(...Array.from(nodeById.values()).map((node) => node.y));
   return rows.flatMap((row, index) => {
     const target = nodeById.get(row.to);
     if (!target) return [];
+    const rank = rankByKey.get(row.key) ?? index;
     const endX = target.x;
-    const endY = target.y + target.height / 2;
-    const horizontal = Math.max(34, (endX - originX) * 0.42);
-    const spread = (index - (rows.length - 1) / 2) * 30;
+    const endY = target.y + target.height * (rank === 0 ? 0.5 : 0.28);
     const conditional = Boolean(row.condition);
     const label = getDiagramEdgeLabel(row);
+    let path: string;
+    let labelX: number;
+    let labelY: number;
+
+    if (rank === 0) {
+      const horizontal = Math.max(24, (endX - originX) * 0.38);
+      path = `M ${originX} ${originY} C ${originX + horizontal} ${originY} ${endX - horizontal} ${endY} ${endX} ${endY}`;
+      labelX = (originX + endX) / 2;
+      labelY = (originY + endY) / 2 - 14;
+    } else {
+      const laneY = minNodeY - 22 - (rank - 1) * 24;
+      const approachX = endX - 18;
+      const laneStartX = Math.min(originX + 56, approachX - 20);
+      path = `M ${originX} ${originY} C ${originX + 28} ${originY} ${originX + 28} ${laneY} ${laneStartX} ${laneY} C ${(laneStartX + approachX) / 2} ${laneY} ${approachX} ${laneY} ${approachX} ${laneY} C ${approachX} ${(laneY + endY) / 2} ${approachX} ${endY} ${approachX} ${endY} C ${approachX + 6} ${endY} ${endX - 6} ${endY} ${endX} ${endY}`;
+      labelX = (laneStartX + approachX) / 2;
+      labelY = laneY - 10;
+    }
+
     return [{
       key: `entry-${row.key}-${index}`,
       from: "__START__",
       to: row.to,
-      path: `M ${originX} ${originY} C ${originX + horizontal} ${originY + spread} ${endX - horizontal} ${endY + spread} ${endX} ${endY}`,
+      path,
       color: conditional ? DIAGRAM_CONDITIONAL_COLOR : DIAGRAM_ARROW_COLOR,
       marker: conditional ? "conditional" : "normal",
       isLoop: false,
       label,
       tooltip: row.conditionTooltip ?? null,
-      labelX: (originX + endX) / 2,
-      labelY: (originY + endY) / 2 + spread * 0.7,
+      labelX,
+      labelY,
     }];
   });
 }
@@ -3671,7 +3709,7 @@ function buildMoveSummaries(monster: CodexMonster, moves: MonsterMove[]): MoveSu
 
   return moves.map((move) => {
     const baseDamageEntry = monster.damageValues
-      ? findDamageForMove(move.id, monster.damageValues)
+      ? findDamageForMove(move.id, monster.damageValues, getMoveDamageKey(move))
       : null;
     const baseBlockEntry = monster.blockValues
       ? findBlockForMove(move.id, monster.blockValues)
@@ -3864,7 +3902,7 @@ function buildTransitionTableRows(monster: CodexMonster, serviceLocale: ServiceL
       to: transition.to,
       chance: transition.chance,
       isStart: transition.from === "__START__",
-      kind: transition.from === "__START__" ? "start" : transition.kind ?? inferTransitionKind(transition),
+      kind: transition.kind ?? (transition.from === "__START__" ? "start" : inferTransitionKind(transition)),
       condition: transition.condition ?? null,
       conditionLabel: condition?.label ?? null,
       conditionTooltip: condition?.tooltip ?? null,
@@ -3884,8 +3922,18 @@ function getMoveName(monster: CodexMonster, moveId: string): string {
   return move?.name ?? moveId.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-// Fuzzy match move ID to damage key
-function findDamageForMove(moveId: string, damageValues: Record<string, { normal: number | null; ascension: number | null }>): { normal: number | null; ascension: number | null } | null {
+function getMoveDamageKey(move: MonsterMove | null): string | null {
+  return move ? getMoveIntentDetails(move).find((intent) => intent.damageKey)?.damageKey ?? null : null;
+}
+
+// Prefer the extracted intent key, then fall back to matching legacy records by move ID.
+function findDamageForMove(
+  moveId: string,
+  damageValues: Record<string, { normal: number | null; ascension: number | null }>,
+  damageKey: string | null = null,
+): { normal: number | null; ascension: number | null } | null {
+  if (damageKey && damageValues[damageKey]) return damageValues[damageKey];
+
   // Try exact match first (case-insensitive)
   const moveIdLower = moveId.toLowerCase().replace(/_/g, "");
   for (const [key, val] of Object.entries(damageValues)) {
