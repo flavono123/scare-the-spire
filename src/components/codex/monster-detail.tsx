@@ -3423,7 +3423,7 @@ function buildDiagramEdge(
       .map((node) => node.y + node.height));
     const outerRightX = routeMaxX + DIAGRAM_OUTER_ROUTE_GAP + laneOffset;
     const laneY = obstacleBottom + DIAGRAM_OUTER_ROUTE_GAP + laneOffset;
-    path = `M ${startX} ${startY} C ${outerRightX} ${startY} ${outerRightX} ${laneY} ${outerRightX} ${laneY} C ${(outerRightX + approachX) / 2} ${laneY} ${approachX} ${laneY} ${approachX} ${laneY} C ${approachX} ${(laneY + endY) / 2} ${approachX} ${endY} ${approachX} ${endY} C ${approachX + 12} ${endY} ${endX - 12} ${endY} ${endX} ${endY}`;
+    path = `M ${startX} ${startY} C ${startX + 16} ${startY} ${outerRightX - 12} ${startY} ${outerRightX} ${startY} C ${outerRightX} ${(startY + laneY) / 2} ${outerRightX} ${laneY} ${outerRightX} ${laneY} C ${(outerRightX + approachX) / 2} ${laneY} ${approachX} ${laneY} ${approachX} ${laneY} C ${approachX} ${(laneY + endY) / 2} ${approachX} ${endY} ${approachX} ${endY} C ${approachX + 12} ${endY} ${endX - 12} ${endY} ${endX} ${endY}`;
     labelX = (outerRightX + approachX) / 2;
     labelY = laneY + 12;
   } else {
@@ -3432,7 +3432,7 @@ function buildDiagramEdge(
     const endX = to.x + to.width;
     const endY = to.y + to.height / 2;
     const channelX = Math.max(startX, endX) + DIAGRAM_OUTER_ROUTE_GAP + laneOffset;
-    path = `M ${startX} ${startY} C ${channelX} ${startY} ${channelX} ${endY} ${endX} ${endY}`;
+    path = `M ${startX} ${startY} C ${startX + 16} ${startY} ${channelX - 12} ${startY} ${channelX} ${startY} C ${channelX} ${(startY + endY) / 2} ${channelX} ${endY} ${channelX} ${endY} C ${channelX - 12} ${endY} ${endX + 16} ${endY} ${endX} ${endY}`;
     labelX = channelX + 4;
     labelY = (startY + endY) / 2;
   }
