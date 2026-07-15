@@ -110,6 +110,26 @@ const CASES = [
     hasEnd: false,
   },
   {
+    id: "FLYCONID",
+    slug: "flyconid",
+    monsterNameKo: "날개버섯",
+    monsterNameEn: "Flyconid",
+    moveNames: [
+      { ko: "쇠약 포자", en: "Frail Spores" },
+      { ko: "취약 포자", en: "Vulnerable Spores" },
+      { ko: "후려치기", en: "Smash" },
+    ],
+    nodeCount: 3,
+    edgeCount: 8,
+    edgeLabelCount: 8,
+    chanceLabelCount: 0,
+    conditionalEdgeCount: 0,
+    phaseCount: 0,
+    choiceCount: 1,
+    phaseConnectorCount: 0,
+    hasEnd: false,
+  },
+  {
     id: "SOUL_NEXUS",
     slug: "soul_nexus",
     monsterNameKo: "영혼 결합체",
@@ -250,6 +270,7 @@ for (const sample of CASES) {
     await expect(diagram.locator('[data-pattern-entry="start"]')).toHaveCount(1);
     await expect(diagram.locator('[data-pattern-entry="end"]')).toHaveCount(sample.hasEnd ? 1 : 0);
     await expect(diagram.locator("[data-pattern-phase]")).toHaveCount(sample.phaseCount);
+    await expect(diagram.locator("[data-pattern-choice]")).toHaveCount("choiceCount" in sample ? sample.choiceCount : 0);
     await expect(diagram.locator("[data-pattern-phase-connector]")).toHaveCount(sample.phaseConnectorCount);
 
     const nodes = diagram.locator('[data-pattern-node="true"]');
@@ -324,6 +345,17 @@ for (const sample of CASES) {
     }
     if (sample.id === "LEAF_SLIME_S") {
       await expect(diagram.getByText("50%", { exact: true })).toHaveCount(2);
+    }
+    if (sample.id === "FLYCONID") {
+      const transitions = await edges.evaluateAll((elements) => elements.map((element) => ({
+        from: element.getAttribute("data-pattern-edge-from"),
+        path: element.getAttribute("d"),
+      })));
+      expectEveryBranchToShareItsOrigin(transitions);
+      await expectMinimumOrthogonalNodeSpacing(nodes, { horizontal: 80, vertical: 48 });
+      await expectContainerObjectClearance(diagram, { node: 23, label: 10, parallelEdge: 20 });
+      await expectNoOverlap(diagram.locator("[data-pattern-edge-label]"));
+      await expectNoEdgeToCrossUnrelatedNodes(diagram);
     }
     if (sample.id === "FABRICATOR") {
       const transitions = await edges.evaluateAll((elements) => elements.map((element) => ({
@@ -528,4 +560,150 @@ async function expectNoEdgeToCrossUnrelatedNodes(diagram: Locator) {
   });
 
   expect(crossings).toEqual([]);
+}
+
+async function expectMinimumOrthogonalNodeSpacing(
+  nodes: Locator,
+  minimum: { horizontal: number; vertical: number },
+) {
+  const violations = await nodes.evaluateAll((elements, expected) => {
+    const boxes = elements.map((element) => {
+      const rect = element.getBoundingClientRect();
+      return {
+        id: (element as HTMLElement).dataset.patternNodeId,
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        bottom: rect.bottom,
+      };
+    });
+    const failures: string[] = [];
+
+    for (let leftIndex = 0; leftIndex < boxes.length; leftIndex += 1) {
+      for (let rightIndex = leftIndex + 1; rightIndex < boxes.length; rightIndex += 1) {
+        const left = boxes[leftIndex];
+        const right = boxes[rightIndex];
+        const horizontalOverlap = Math.min(left.right, right.right) - Math.max(left.left, right.left);
+        const verticalOverlap = Math.min(left.bottom, right.bottom) - Math.max(left.top, right.top);
+        const horizontalGap = Math.max(left.left, right.left) - Math.min(left.right, right.right);
+        const verticalGap = Math.max(left.top, right.top) - Math.min(left.bottom, right.bottom);
+
+        if (verticalOverlap > 0 && horizontalGap < expected.horizontal - 1) {
+          failures.push(`${left.id}/${right.id} horizontal gap ${horizontalGap}`);
+        }
+        if (horizontalOverlap > 0 && verticalGap < expected.vertical - 1) {
+          failures.push(`${left.id}/${right.id} vertical gap ${verticalGap}`);
+        }
+      }
+    }
+
+    return failures;
+  }, minimum);
+
+  expect(violations).toEqual([]);
+}
+
+async function expectContainerObjectClearance(
+  diagram: Locator,
+  minimum: { node: number; label: number; parallelEdge: number },
+) {
+  const violations = await diagram.evaluate((root, expected) => {
+    const containers = Array.from(root.querySelectorAll<HTMLElement>("[data-pattern-container]"));
+    const nodes = Array.from(root.querySelectorAll<HTMLElement>("[data-pattern-node-id]"));
+    const labels = Array.from(root.querySelectorAll<HTMLElement>("[data-pattern-edge-label]"));
+    const paths = Array.from(root.querySelectorAll<SVGPathElement>("svg > path[data-pattern-edge-from]"));
+    const failures: string[] = [];
+
+    for (const container of containers) {
+      const box = container.getBoundingClientRect();
+      for (const node of nodes) {
+        const rect = node.getBoundingClientRect();
+        const inside = rect.left >= box.left && rect.right <= box.right && rect.top >= box.top && rect.bottom <= box.bottom;
+        if (!inside) continue;
+        const clearance = Math.min(
+          rect.left - box.left,
+          box.right - rect.right,
+          rect.top - box.top,
+          box.bottom - rect.bottom,
+        );
+        if (clearance < expected.node) {
+          failures.push(`${container.dataset.patternContainer}/${node.dataset.patternNodeId} node clearance ${clearance}`);
+        }
+      }
+
+      for (const label of labels) {
+        const rect = label.getBoundingClientRect();
+        const inside = rect.left >= box.left && rect.right <= box.right && rect.top >= box.top && rect.bottom <= box.bottom;
+        const clearance = inside
+          ? Math.min(rect.left - box.left, box.right - rect.right, rect.top - box.top, box.bottom - rect.bottom)
+          : Math.hypot(
+              Math.max(box.left - rect.right, rect.left - box.right, 0),
+              Math.max(box.top - rect.bottom, rect.top - box.bottom, 0),
+            );
+        if (clearance < expected.label) {
+          failures.push(`${container.dataset.patternContainer}/${label.textContent?.trim()} label clearance ${clearance}`);
+        }
+      }
+
+      for (const path of paths) {
+        const matrix = path.getScreenCTM();
+        if (!matrix) continue;
+        const length = path.getTotalLength();
+        const rawStart = path.getPointAtLength(0);
+        let before = new DOMPoint(rawStart.x, rawStart.y).matrixTransform(matrix);
+
+        for (let sample = 1; sample <= 240; sample += 1) {
+          const rawPoint = path.getPointAtLength((length * sample) / 240);
+          const point = new DOMPoint(rawPoint.x, rawPoint.y).matrixTransform(matrix);
+          const midX = (before.x + point.x) / 2;
+          const midY = (before.y + point.y) / 2;
+          const deltaX = Math.abs(point.x - before.x);
+          const deltaY = Math.abs(point.y - before.y);
+          const nearVerticalSide = midY > box.top && midY < box.bottom;
+          const nearHorizontalSide = midX > box.left && midX < box.right;
+          const verticalGap = midX < box.left ? box.left - midX : midX > box.right ? midX - box.right : 0;
+          const horizontalGap = midY < box.top ? box.top - midY : midY > box.bottom ? midY - box.bottom : 0;
+
+          if (nearVerticalSide && verticalGap > 0 && verticalGap < expected.parallelEdge && deltaY > deltaX * 1.5) {
+            failures.push(`${path.dataset.patternEdgeFrom}->${path.dataset.patternEdgeTo} parallel to vertical border at ${verticalGap}`);
+            break;
+          }
+          if (nearHorizontalSide && horizontalGap > 0 && horizontalGap < expected.parallelEdge && deltaX > deltaY * 1.5) {
+            failures.push(`${path.dataset.patternEdgeFrom}->${path.dataset.patternEdgeTo} parallel to horizontal border at ${horizontalGap}`);
+            break;
+          }
+          before = point;
+        }
+      }
+    }
+
+    return failures;
+  }, minimum);
+
+  expect(violations).toEqual([]);
+}
+
+async function expectNoOverlap(elements: Locator) {
+  const violations = await elements.evaluateAll((items) => {
+    const boxes = items.map((item) => {
+      const rect = item.getBoundingClientRect();
+      return { text: item.textContent?.trim(), left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
+    });
+    const failures: string[] = [];
+    for (let leftIndex = 0; leftIndex < boxes.length; leftIndex += 1) {
+      for (let rightIndex = leftIndex + 1; rightIndex < boxes.length; rightIndex += 1) {
+        const left = boxes[leftIndex];
+        const right = boxes[rightIndex];
+        if (
+          Math.min(left.right, right.right) - Math.max(left.left, right.left) > 0 &&
+          Math.min(left.bottom, right.bottom) - Math.max(left.top, right.top) > 0
+        ) {
+          failures.push(`${left.text}/${right.text}`);
+        }
+      }
+    }
+    return failures;
+  });
+
+  expect(violations).toEqual([]);
 }
