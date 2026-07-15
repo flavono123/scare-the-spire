@@ -180,6 +180,8 @@ interface PatternDiagramEdge {
   chanceLabel?: string | null;
   chanceLabelX?: number;
   chanceLabelY?: number;
+  maxX?: number;
+  maxY?: number;
 }
 
 interface PatternDiagramPhaseBox {
@@ -2985,10 +2987,22 @@ function buildPatternDiagramModel(
   ];
   const choiceBoxes = buildChoiceBoxes(transitions, nodeById);
   const phaseConnectors = buildPhaseConnectors(phaseBoxes);
+  const routedRight = Math.max(
+    maxRight,
+    ...edges.map((edge) => (edge.maxX ?? 0) + DIAGRAM_PAD),
+    ...edges.map((edge) => (edge.labelX ?? 0) + 40),
+    ...edges.map((edge) => (edge.chanceLabelX ?? 0) + 40),
+  );
+  const routedBottom = Math.max(
+    cursorY + DIAGRAM_PAD - DIAGRAM_ROW_GAP,
+    ...edges.map((edge) => (edge.maxY ?? 0) + DIAGRAM_PAD),
+    ...edges.map((edge) => (edge.labelY ?? 0) + 30),
+    ...edges.map((edge) => (edge.chanceLabelY ?? 0) + 30),
+  );
 
   return {
-    width: Math.max(360, maxRight),
-    height: Math.max(180, cursorY + DIAGRAM_PAD - DIAGRAM_ROW_GAP),
+    width: Math.max(360, routedRight),
+    height: Math.max(180, routedBottom),
     entryNodes: displayedStartRows.length > 0 ? [start] : [],
     nodes,
     edges,
@@ -3391,6 +3405,8 @@ function buildDiagramEdge(
   let path: string;
   let labelX: number;
   let labelY: number;
+  let maxX = Math.max(from.x + from.width, to.x + to.width);
+  let maxY = Math.max(from.y + from.height, to.y + to.height);
 
   if (from.id === to.id) {
     const startX = from.x + from.width;
@@ -3401,6 +3417,8 @@ function buildDiagramEdge(
     path = `M ${startX} ${startY} C ${loopX} ${startY - 34} ${loopX} ${endY + 34} ${endX} ${endY}`;
     labelX = loopX + 6;
     labelY = from.y + from.height / 2;
+    maxX = loopX;
+    maxY = Math.max(maxY, endY + 34);
   } else if (to.x > from.x + from.width / 2) {
     const startX = from.x + from.width;
     const startY = from.y + from.height / 2;
@@ -3426,6 +3444,8 @@ function buildDiagramEdge(
     path = `M ${startX} ${startY} C ${startX + 16} ${startY} ${outerRightX - 12} ${startY} ${outerRightX} ${startY} C ${outerRightX} ${(startY + laneY) / 2} ${outerRightX} ${laneY} ${outerRightX} ${laneY} C ${(outerRightX + approachX) / 2} ${laneY} ${approachX} ${laneY} ${approachX} ${laneY} C ${approachX} ${(laneY + endY) / 2} ${approachX} ${endY} ${approachX} ${endY} C ${approachX + 12} ${endY} ${endX - 12} ${endY} ${endX} ${endY}`;
     labelX = (outerRightX + approachX) / 2;
     labelY = laneY + 12;
+    maxX = outerRightX;
+    maxY = laneY;
   } else {
     const startX = from.x + from.width;
     const startY = from.y + from.height / 2;
@@ -3435,6 +3455,7 @@ function buildDiagramEdge(
     path = `M ${startX} ${startY} C ${startX + 16} ${startY} ${channelX - 12} ${startY} ${channelX} ${startY} C ${channelX} ${(startY + endY) / 2} ${channelX} ${endY} ${channelX} ${endY} C ${channelX - 12} ${endY} ${endX + 16} ${endY} ${endX} ${endY}`;
     labelX = channelX + 4;
     labelY = (startY + endY) / 2;
+    maxX = channelX;
   }
 
   return {
@@ -3452,6 +3473,8 @@ function buildDiagramEdge(
     chanceLabel,
     chanceLabelX: chanceLabel ? labelX : undefined,
     chanceLabelY: chanceLabel ? labelY + 18 : undefined,
+    maxX,
+    maxY,
   };
 }
 
@@ -3479,6 +3502,8 @@ function buildDiagramStartEdges(
     let path: string;
     let labelX: number;
     let labelY: number;
+    let maxX = Math.max(originX, endX);
+    let maxY = Math.max(originY, endY);
 
     if (rank === 0) {
       const horizontal = Math.max(24, (endX - originX) * 0.38);
@@ -3492,6 +3517,8 @@ function buildDiagramStartEdges(
       path = `M ${originX} ${originY} C ${originX + 28} ${originY} ${originX + 28} ${laneY} ${laneStartX} ${laneY} C ${(laneStartX + approachX) / 2} ${laneY} ${approachX} ${laneY} ${approachX} ${laneY} C ${approachX} ${(laneY + endY) / 2} ${approachX} ${endY} ${approachX} ${endY} C ${approachX + 6} ${endY} ${endX - 6} ${endY} ${endX} ${endY}`;
       labelX = (laneStartX + approachX) / 2;
       labelY = laneY - 10;
+      maxX = Math.max(maxX, laneStartX, approachX);
+      maxY = Math.max(maxY, laneY);
     }
 
     return [{
@@ -3506,6 +3533,8 @@ function buildDiagramStartEdges(
       tooltip: row.conditionTooltip ?? null,
       labelX,
       labelY,
+      maxX,
+      maxY,
     }];
   });
 }
