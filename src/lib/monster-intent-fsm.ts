@@ -8,7 +8,6 @@ import type {
 
 export type MonsterIntentFsmKind =
   | "terminal"
-  | "one-way"
   | "fixed-loop"
   | "random-loop"
   | "conditional-loop"
@@ -73,9 +72,6 @@ export function classifyMonsterIntentFsm(graph: MonsterMoveGraph | null): Monste
 
   const hasRandom = graph.states.some((state) => state.kind === "random");
   const hasConditional = graph.states.some((state) => state.kind === "conditional");
-  if (!hasRecurrentComponent(actionGraph)) {
-    return { kind: "one-way", phaseLayout: "none", phases: [] };
-  }
   if (hasRandom && hasConditional) {
     return { kind: "conditional-random-loop", phaseLayout: "none", phases: [] };
   }
@@ -327,13 +323,6 @@ function orderPhaseMoves(
     .filter((moveId) => !seen.has(moveId))
     .sort((left, right) => (stateOrder.get(left) ?? 0) - (stateOrder.get(right) ?? 0));
   return [...ordered, ...remaining];
-}
-
-function hasRecurrentComponent(actionGraph: ActionGraph): boolean {
-  return getStronglyConnectedComponents(actionGraph.moveIds, actionGraph.outgoing).some((component) => (
-    component.length > 1
-    || (actionGraph.outgoing.get(component[0]) ?? []).some((transition) => transition.to === component[0])
-  ));
 }
 
 function getStronglyConnectedComponents(

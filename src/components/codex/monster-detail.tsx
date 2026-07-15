@@ -3601,7 +3601,6 @@ function inferTransitionKind(transition: MonsterMoveTransition): MonsterMoveTran
 function getPatternKindLabel(kind: PatternKind, serviceLocale: ServiceLocale): string {
   const labels: Record<PatternKind, { ko: string; en: string }> = {
     terminal: { ko: "종료형", en: "Terminal" },
-    "one-way": { ko: "단방향 진행", en: "One-way sequence" },
     "fixed-loop": { ko: "고정 반복", en: "Fixed loop" },
     "random-loop": { ko: "무작위 반복", en: "Random loop" },
     "conditional-loop": { ko: "조건 반복", en: "Conditional loop" },

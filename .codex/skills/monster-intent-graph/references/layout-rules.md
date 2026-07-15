@@ -35,6 +35,13 @@ partial. Fix the extractor or retain a partial-data notice.
   than guessing from the visible mode name.
 - Attach self-loops to adjacent ports on the same node side. Keep the loop close
   to the node; do not span the full node width.
+- Omit the redundant self-loop edge when a fixed cycle contains one action.
+  The visible entry and fixed-cycle label already communicate the repetition.
+- Route every non-self edge outside unrelated node rectangles. Approach the
+  target from its left port with a left-to-right final tangent whenever the
+  layout permits it, including return arcs.
+- Route multiple entry branches from one shared source through separate outer
+  lanes. Never let a farther entry edge pass behind an earlier action node.
 
 ## Phase direction
 

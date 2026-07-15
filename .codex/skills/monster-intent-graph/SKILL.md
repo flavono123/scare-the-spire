@@ -33,8 +33,10 @@ graph, phase classifier, or route.
 
 ## Classification
 
-- **No phase container**: terminal, one-way sequence, fixed cycle, or random
-  cluster without a lifecycle or combat-mode boundary.
+- **No phase container**: terminal, fixed cycle, or random cluster without a
+  lifecycle or combat-mode boundary. Do not expose an independent one-way
+  category. Audit a complete non-recurrent chain as terminal or progressive;
+  treat a deterministic recurring action as a fixed cycle.
 - **Reversible conditional phases**: combat can move between phase containers
   in both directions after reevaluating a condition. Stack phase containers
   vertically and show both directed phase transitions. Fabricator's

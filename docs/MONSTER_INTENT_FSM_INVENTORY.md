@@ -7,7 +7,6 @@ This inventory is classified from all 121 entries in `data/sts2/{kor,eng}/monste
 | FSM kind | Korean label | Count |
 | --- | --- | ---: |
 | `terminal` | 종료형 | 1 |
-| `one-way` | 단방향 | 0 |
 | `fixed-loop` | 고정 루프 | 72 |
 | `random-loop` | 무작위 루프 | 18 |
 | `conditional-loop` | 조건 루프 | 9 |
@@ -20,10 +19,6 @@ This inventory is classified from all 121 entries in `data/sts2/{kor,eng}/monste
 ## 종료형 / Terminal (1)
 
 - 가스 폭탄 / Gas Bomb (`GAS_BOMB`)
-
-## 단방향 / One-way (0)
-
-- 현재 추출 데이터에는 독립적인 단방향 FSM이 없다. 되돌아갈 수 없는 다단계 진행은 아래 단방향 페이즈로 분류한다.
 
 ## 고정 루프 / Fixed loop (72)
 
