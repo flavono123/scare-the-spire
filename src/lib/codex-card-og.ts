@@ -44,7 +44,7 @@ export function getCodexCardOgMetadata(
   },
 ): Metadata {
   const metadata = getCodexMetadata(serviceLocale, `${card.name} — ${cardLibraryTitle}`);
-  const description = cardOgDescription(card.description);
+  const description = cardOgDescription(card.description) || metadata.description;
   const rawImageUrl = opts?.useBetaArt && card.betaImageUrl
     ? card.betaImageUrl
     : card.imageUrl ?? card.betaImageUrl ?? DEFAULT_PAGE_OG_IMAGE.url;

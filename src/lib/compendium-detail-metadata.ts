@@ -31,10 +31,12 @@ import { getCodexServiceMessages } from "@/lib/codex-service";
 import {
   DEFAULT_GAME_LOCALE_BY_SERVICE,
   DEFAULT_SERVICE_LOCALE,
+  localizeHrefWithGameLocale,
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
 import type { CompendiumDetailResourceType } from "@/lib/compendium-detail-payload";
+import { absoluteSiteUrl } from "@/lib/site-origin";
 
 type CompendiumMetadataLocale = {
   gameLocale?: GameLocale;
@@ -45,6 +47,33 @@ function resolveMetadataLocale(locale: CompendiumMetadataLocale = {}) {
   const serviceLocale = locale.serviceLocale ?? DEFAULT_SERVICE_LOCALE;
   const gameLocale = locale.gameLocale ?? DEFAULT_GAME_LOCALE_BY_SERVICE[serviceLocale];
   return { gameLocale, serviceLocale };
+}
+
+function withCompendiumDetailCanonical(
+  metadata: Metadata,
+  resourceType: CompendiumDetailResourceType,
+  id: string,
+  locale: Required<CompendiumMetadataLocale>,
+): Metadata {
+  const detailPath = `/compendium/${resourceType}/${encodeURIComponent(id.toLowerCase())}`;
+  const canonicalUrl = absoluteSiteUrl(localizeHrefWithGameLocale(
+    detailPath,
+    locale.serviceLocale,
+    locale.gameLocale,
+  ));
+
+  return {
+    ...metadata,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    ...(metadata.openGraph ? {
+      openGraph: {
+        ...metadata.openGraph,
+        url: canonicalUrl,
+      },
+    } : {}),
+  };
 }
 
 export async function generateCompendiumCardMetadata(
@@ -58,7 +87,12 @@ export async function generateCompendiumCardMetadata(
   ]);
   const card = findCardByCodexRouteId(cards, id);
   if (!card) return {};
-  return getCodexCardOgMetadata(serviceLocale, gameUi.cardLibraryTitle, card);
+  return withCompendiumDetailCanonical(
+    getCodexCardOgMetadata(serviceLocale, gameUi.cardLibraryTitle, card),
+    "cards",
+    id,
+    { gameLocale, serviceLocale },
+  );
 }
 
 export async function generateCompendiumCharacterMetadata(
@@ -72,16 +106,21 @@ export async function generateCompendiumCharacterMetadata(
   ]);
   const character = findCodexResourceByRouteId(characters, id);
   if (!character) return {};
-  return getCodexResourceOgMetadata(serviceLocale, gameUi.charactersTitle, {
-    name: character.name,
-    description: character.description,
-    imageUrl: firstCodexImageUrl(
-      character.combatImageUrl,
-      character.selectImageUrl,
-      character.imageUrl,
-      character.iconUrl,
-    ),
-  });
+  return withCompendiumDetailCanonical(
+    getCodexResourceOgMetadata(serviceLocale, gameUi.charactersTitle, {
+      name: character.name,
+      description: character.description,
+      imageUrl: firstCodexImageUrl(
+        character.combatImageUrl,
+        character.selectImageUrl,
+        character.imageUrl,
+        character.iconUrl,
+      ),
+    }),
+    "characters",
+    id,
+    { gameLocale, serviceLocale },
+  );
 }
 
 export async function generateCompendiumRelicMetadata(
@@ -95,16 +134,21 @@ export async function generateCompendiumRelicMetadata(
   ]);
   const relic = findCodexResourceByRouteId(relics, id);
   if (!relic) return {};
-  return getCodexResourceOgMetadata(serviceLocale, gameUi.relicCollectionTitle, {
-    name: relic.name,
-    description: relic.description,
-    imageUrl: firstCodexImageUrl(
-      relic.imageUrl,
-      ...(relic.variantImageUrls ? Object.values(relic.variantImageUrls) : []),
-      ...(relic.iconVariants ? relic.iconVariants.map((variant) => variant.imageUrl) : []),
-      relic.betaImageUrl,
-    ),
-  });
+  return withCompendiumDetailCanonical(
+    getCodexResourceOgMetadata(serviceLocale, gameUi.relicCollectionTitle, {
+      name: relic.name,
+      description: relic.description,
+      imageUrl: firstCodexImageUrl(
+        relic.imageUrl,
+        ...(relic.variantImageUrls ? Object.values(relic.variantImageUrls) : []),
+        ...(relic.iconVariants ? relic.iconVariants.map((variant) => variant.imageUrl) : []),
+        relic.betaImageUrl,
+      ),
+    }),
+    "relics",
+    id,
+    { gameLocale, serviceLocale },
+  );
 }
 
 export async function generateCompendiumPotionMetadata(
@@ -118,7 +162,12 @@ export async function generateCompendiumPotionMetadata(
   ]);
   const potion = findCodexResourceByRouteId(potions, id);
   if (!potion) return {};
-  return getCodexResourceOgMetadata(serviceLocale, gameUi.potionLabTitle, potion);
+  return withCompendiumDetailCanonical(
+    getCodexResourceOgMetadata(serviceLocale, gameUi.potionLabTitle, potion),
+    "potions",
+    id,
+    { gameLocale, serviceLocale },
+  );
 }
 
 export async function generateCompendiumPowerMetadata(
@@ -132,7 +181,12 @@ export async function generateCompendiumPowerMetadata(
   ]);
   const power = findCodexResourceByRouteId(powers, id);
   if (!power) return {};
-  return getCodexResourceOgMetadata(serviceLocale, gameUi.nav.powers, power);
+  return withCompendiumDetailCanonical(
+    getCodexResourceOgMetadata(serviceLocale, gameUi.nav.powers, power),
+    "powers",
+    id,
+    { gameLocale, serviceLocale },
+  );
 }
 
 export async function generateCompendiumEnchantmentMetadata(
@@ -148,7 +202,12 @@ export async function generateCompendiumEnchantmentMetadata(
   const resource = findCodexResourceByRouteId(enchantments, id)
     ?? findCodexResourceByRouteId(afflictions, id);
   if (!resource) return {};
-  return getCodexResourceOgMetadata(serviceLocale, serviceText.enchantmentsView.title, resource);
+  return withCompendiumDetailCanonical(
+    getCodexResourceOgMetadata(serviceLocale, serviceText.enchantmentsView.title, resource),
+    "enchantments",
+    id,
+    { gameLocale, serviceLocale },
+  );
 }
 
 export async function generateCompendiumAncientMetadata(
@@ -162,7 +221,12 @@ export async function generateCompendiumAncientMetadata(
   ]);
   const ancient = findCodexResourceByRouteId(ancients, id);
   if (!ancient) return {};
-  return getCodexResourceOgMetadata(serviceLocale, gameUi.ancientsTitle, ancient);
+  return withCompendiumDetailCanonical(
+    getCodexResourceOgMetadata(serviceLocale, gameUi.ancientsTitle, ancient),
+    "ancients",
+    id,
+    { gameLocale, serviceLocale },
+  );
 }
 
 export async function generateCompendiumEventMetadata(
@@ -176,7 +240,12 @@ export async function generateCompendiumEventMetadata(
   ]);
   const event = findCodexResourceByRouteId(events, id);
   if (!event) return {};
-  return getCodexResourceOgMetadata(serviceLocale, gameUi.eventsTitle, event);
+  return withCompendiumDetailCanonical(
+    getCodexResourceOgMetadata(serviceLocale, gameUi.eventsTitle, event),
+    "events",
+    id,
+    { gameLocale, serviceLocale },
+  );
 }
 
 export async function generateCompendiumKeywordMetadata(
@@ -190,7 +259,12 @@ export async function generateCompendiumKeywordMetadata(
   ]);
   const keyword = findCodexResourceByRouteId(keywords, id);
   if (!keyword) return {};
-  return getCodexResourceOgMetadata(serviceLocale, gameUi.nav.keywords, keyword);
+  return withCompendiumDetailCanonical(
+    getCodexResourceOgMetadata(serviceLocale, gameUi.nav.keywords, keyword),
+    "keywords",
+    id,
+    { gameLocale, serviceLocale },
+  );
 }
 
 export async function generateCompendiumMonsterMetadata(
@@ -208,10 +282,15 @@ export async function generateCompendiumMonsterMetadata(
     isPublicBestiaryMonster(candidate.id)
   ));
   if (!monster) return {};
-  return getCodexResourceOgMetadata(
-    serviceLocale,
-    gameUi.bestiaryTitle,
-    getCodexMonsterOgResource(monster, gameUi),
+  return withCompendiumDetailCanonical(
+    getCodexResourceOgMetadata(
+      serviceLocale,
+      gameUi.bestiaryTitle,
+      getCodexMonsterOgResource(monster, gameUi),
+    ),
+    "monsters",
+    id,
+    { gameLocale, serviceLocale },
   );
 }
 
@@ -227,10 +306,15 @@ export async function generateCompendiumEncounterMetadata(
   ]);
   const encounter = findCodexResourceByRouteId(encounters, id);
   if (!encounter) return {};
-  return getCodexResourceOgMetadata(
-    serviceLocale,
-    serviceText.encountersView.title,
-    getCodexEncounterOgResource(encounter, monsters, gameLocale),
+  return withCompendiumDetailCanonical(
+    getCodexResourceOgMetadata(
+      serviceLocale,
+      serviceText.encountersView.title,
+      getCodexEncounterOgResource(encounter, monsters, gameLocale),
+    ),
+    "encounters",
+    id,
+    { gameLocale, serviceLocale },
   );
 }
 
@@ -245,7 +329,12 @@ export async function generateCompendiumEpochMetadata(
   ]);
   const epoch = findCodexResourceByRouteId(epochs, id);
   if (!epoch) return {};
-  return getCodexResourceOgMetadata(serviceLocale, gameUi.epochsTitle, epoch);
+  return withCompendiumDetailCanonical(
+    getCodexResourceOgMetadata(serviceLocale, gameUi.epochsTitle, epoch),
+    "epochs",
+    id,
+    { gameLocale, serviceLocale },
+  );
 }
 
 export type CompendiumDetailSeoSummary = {
