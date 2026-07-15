@@ -40,6 +40,76 @@ const CASES = [
     hasEnd: false,
   },
   {
+    id: "TWIG_SLIME_S",
+    slug: "twig_slime_s",
+    monsterNameKo: "가지 슬라임 (소)",
+    monsterNameEn: "Twig Slime (S)",
+    moveNames: [{ ko: "태클", en: "Tackle" }],
+    nodeCount: 1,
+    edgeCount: 1,
+    edgeLabelCount: 0,
+    chanceLabelCount: 0,
+    conditionalEdgeCount: 0,
+    phaseCount: 0,
+    phaseConnectorCount: 0,
+    hasEnd: false,
+  },
+  {
+    id: "TWIG_SLIME_M",
+    slug: "twig_slime_m",
+    monsterNameKo: "가지 슬라임 (중)",
+    monsterNameEn: "Twig Slime (M)",
+    moveNames: [
+      { ko: "끈적 발사", en: "Sticky Shot" },
+      { ko: "덮쳐 찌르기", en: "Pokey Pounce" },
+    ],
+    nodeCount: 2,
+    edgeCount: 4,
+    edgeLabelCount: 2,
+    chanceLabelCount: 0,
+    conditionalEdgeCount: 0,
+    phaseCount: 0,
+    phaseConnectorCount: 0,
+    hasEnd: false,
+  },
+  {
+    id: "NIBBIT",
+    slug: "nibbit",
+    monsterNameKo: "깨작이",
+    monsterNameEn: "Nibbit",
+    moveNames: [
+      { ko: "박치기", en: "Butt" },
+      { ko: "Slice", en: "Slice" },
+      { ko: "쉭쉭대기", en: "Hiss" },
+    ],
+    nodeCount: 3,
+    edgeCount: 6,
+    edgeLabelCount: 3,
+    chanceLabelCount: 0,
+    conditionalEdgeCount: 3,
+    phaseCount: 0,
+    phaseConnectorCount: 0,
+    hasEnd: false,
+  },
+  {
+    id: "LEAF_SLIME_S",
+    slug: "leaf_slime_s",
+    monsterNameKo: "나뭇잎 슬라임 (소)",
+    monsterNameEn: "Leaf Slime (S)",
+    moveNames: [
+      { ko: "태클", en: "Tackle" },
+      { ko: "끈적이", en: "Goop" },
+    ],
+    nodeCount: 2,
+    edgeCount: 4,
+    edgeLabelCount: 2,
+    chanceLabelCount: 0,
+    conditionalEdgeCount: 0,
+    phaseCount: 0,
+    phaseConnectorCount: 0,
+    hasEnd: false,
+  },
+  {
     id: "SOUL_NEXUS",
     slug: "soul_nexus",
     monsterNameKo: "영혼 결합체",
@@ -221,6 +291,40 @@ for (const sample of CASES) {
       expectEveryBranchToShareItsOrigin(transitions.filter((edge) => edge.from !== "__START__"));
       await expect(diagram.getByText("50%", { exact: true })).toHaveCount(6);
     }
+    if (sample.id === "TWIG_SLIME_S") {
+      const transitions = await edges.evaluateAll((elements) => elements.map((element) => ({
+        from: element.getAttribute("data-pattern-edge-from"),
+        to: element.getAttribute("data-pattern-edge-to"),
+      })));
+      expect(transitions).toEqual([{ from: "__START__", to: "TACKLE" }]);
+    }
+    if (sample.id === "TWIG_SLIME_M" || sample.id === "NIBBIT" || sample.id === "LEAF_SLIME_S") {
+      const transitions = await edges.evaluateAll((elements) => elements.map((element) => ({
+        from: element.getAttribute("data-pattern-edge-from"),
+        to: element.getAttribute("data-pattern-edge-to"),
+        path: element.getAttribute("d"),
+      })));
+      expectEveryBranchToShareItsOrigin(transitions);
+      await expectEveryNonSelfEdgeToFinishLeftToRight(edges);
+      await expectNoEdgeToCrossUnrelatedNodes(diagram);
+    }
+    if (sample.id === "TWIG_SLIME_M") {
+      const pounce = diagram.getByRole("button", { name: "덮쳐 찌르기 / Pokey Pounce" });
+      await expect(pounce.locator("img")).toHaveCount(1);
+      await expect(pounce.getByText("11", { exact: true })).toBeVisible();
+      await expect(diagram.getByText("50%", { exact: true })).toHaveCount(2);
+    }
+    if (sample.id === "NIBBIT") {
+      await expect(diagram.locator('[data-pattern-edge-label]', { hasText: "혼자일 때" })).toHaveCount(1);
+      await expect(diagram.locator('[data-pattern-edge-label]', { hasText: "전방" })).toHaveCount(1);
+      await expect(diagram.locator('[data-pattern-edge-label]', { hasText: "후방" })).toHaveCount(1);
+      await expect(diagram.locator('[data-pattern-edge-label][title*="혼자 배치된 경우 박치기"]')).toHaveCount(1);
+      await expect(diagram.locator('[data-pattern-edge-label][title*="전방에 배치된 개체는 Slice"]')).toHaveCount(1);
+      await expect(diagram.locator('[data-pattern-edge-label][title*="후방에 배치된 개체는 쉭쉭대기"]')).toHaveCount(1);
+    }
+    if (sample.id === "LEAF_SLIME_S") {
+      await expect(diagram.getByText("50%", { exact: true })).toHaveCount(2);
+    }
     if (sample.id === "FABRICATOR") {
       const transitions = await edges.evaluateAll((elements) => elements.map((element) => ({
         from: element.getAttribute("data-pattern-edge-from"),
@@ -372,4 +476,56 @@ function expectEveryBranchToShareItsOrigin(
   });
 
   originsBySource.forEach((origins) => expect(origins.size).toBe(1));
+}
+
+async function expectEveryNonSelfEdgeToFinishLeftToRight(edges: Locator) {
+  const tangents = await edges.evaluateAll((elements) => elements.flatMap((element) => {
+    if (!(element instanceof SVGPathElement)) return [];
+    if (element.dataset.patternEdgeFrom === element.dataset.patternEdgeTo) return [];
+    const length = element.getTotalLength();
+    const before = element.getPointAtLength(Math.max(0, length - 5));
+    const end = element.getPointAtLength(length);
+    return [{ deltaX: end.x - before.x }];
+  }));
+
+  expect(tangents.length).toBeGreaterThan(0);
+  expect(tangents.every(({ deltaX }) => deltaX > 0)).toBe(true);
+}
+
+async function expectNoEdgeToCrossUnrelatedNodes(diagram: Locator) {
+  const crossings = await diagram.evaluate((element) => {
+    const nodes = Array.from(element.querySelectorAll<HTMLElement>("[data-pattern-node-id]")).map((node) => ({
+      id: node.dataset.patternNodeId,
+      rect: node.getBoundingClientRect(),
+    }));
+
+    return Array.from(element.querySelectorAll<SVGPathElement>("svg > path[data-pattern-edge-from]")).flatMap((path) => {
+      const matrix = path.getScreenCTM();
+      if (!matrix) return [];
+      const from = path.dataset.patternEdgeFrom;
+      const to = path.dataset.patternEdgeTo;
+      const length = path.getTotalLength();
+      const crossed = new Set<string>();
+
+      for (let sample = 1; sample < 80; sample += 1) {
+        const point = path.getPointAtLength((length * sample) / 80);
+        const screenPoint = new DOMPoint(point.x, point.y).matrixTransform(matrix);
+        for (const node of nodes) {
+          if (!node.id || node.id === from || node.id === to) continue;
+          if (
+            screenPoint.x > node.rect.left + 2 &&
+            screenPoint.x < node.rect.right - 2 &&
+            screenPoint.y > node.rect.top + 2 &&
+            screenPoint.y < node.rect.bottom - 2
+          ) {
+            crossed.add(node.id);
+          }
+        }
+      }
+
+      return Array.from(crossed, (nodeId) => `${from}->${to} crosses ${nodeId}`);
+    });
+  });
+
+  expect(crossings).toEqual([]);
 }
