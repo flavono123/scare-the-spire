@@ -1764,7 +1764,8 @@ const DIAGRAM_CONTAINER_TOP_PADDING = 42;
 const DIAGRAM_CONTAINER_BOTTOM_PADDING = 28;
 const DIAGRAM_EDGE_CONTAINER_CLEARANCE = 24;
 const DIAGRAM_OUTER_ROUTE_GAP = DIAGRAM_CONTAINER_NODE_PADDING + DIAGRAM_EDGE_CONTAINER_CLEARANCE;
-const DIAGRAM_EDGE_LANE_GAP = 24;
+const DIAGRAM_EDGE_LANE_GAP = 40;
+const DIAGRAM_EDGE_APPROACH_LANE_GAP = 14;
 const DIAGRAM_VIEWPORT_MIN_HEIGHT = 270;
 const DIAGRAM_VIEWPORT_HEIGHT_EXTRA = 42;
 const DIAGRAM_VIEWPORT_TOP_GUTTER = 18;
@@ -3362,6 +3363,10 @@ function getDiagramEdgeRouteKey(from: PatternDiagramNode, to: PatternDiagramNode
       ? "back"
       : "same-column";
 
+  if (direction === "back" || direction === "same-column") {
+    return `${direction}:${Math.min(fromColumn, toColumn)}-${Math.max(fromColumn, toColumn)}`;
+  }
+
   return `${direction}:${Math.min(fromColumn, toColumn)}-${Math.max(fromColumn, toColumn)}:${Math.min(fromRow, toRow)}-${Math.max(fromRow, toRow)}`;
 }
 
@@ -3410,7 +3415,7 @@ function buildDiagramEdge(
     const startY = from.y + from.height / 2;
     const endX = to.x;
     const endY = to.y + to.height * 0.72;
-    const approachX = endX - DIAGRAM_OUTER_ROUTE_GAP;
+    const approachX = endX - DIAGRAM_OUTER_ROUTE_GAP - laneIndex * DIAGRAM_EDGE_APPROACH_LANE_GAP;
     const routeMinX = Math.min(to.x, from.x);
     const routeMaxX = Math.max(to.x + to.width, from.x + from.width);
     const obstacleBottom = Math.max(...Array.from(nodeById.values())
