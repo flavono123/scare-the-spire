@@ -140,7 +140,7 @@ function EventThumbnail({
         clickEvent.preventDefault();
         onClick();
       }}
-      className={`group relative h-[72px] w-full cursor-pointer overflow-hidden rounded-lg border border-zinc-700/40 bg-zinc-900/80 text-left shadow-sm shadow-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-500/40 hover:bg-white/[0.04] hover:shadow-lg hover:shadow-black/30${lifecycleClassName}`}
+      className={`group relative block h-[72px] w-full cursor-pointer overflow-hidden rounded-lg border border-zinc-700/40 bg-zinc-900/80 text-left shadow-sm shadow-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-500/40 hover:bg-white/[0.04] hover:shadow-lg hover:shadow-black/30${lifecycleClassName}`}
     >
       {event.imageUrl ? (
         <div className="absolute inset-0">
