@@ -26,7 +26,8 @@ Patch release work is speed-first:
 1. If the expected patch window arrives but Steam has not published anything,
    use `.codex/skills/slseoun-patch-watch/SKILL.md` to publish the static
    `준비 시간` stage, or the optional `지연` stage after the expected Friday KST
-   window slips.
+   window slips. Keep the same trigger session running and poll the Steam store
+   news page as described in Steam Watch Polling below.
 2. As soon as Steam publishes the patch, publish the real `작업 도구` shell
    first:
    create/update the `data/sts2-patches.json` entry with `status: "building"`,
@@ -36,7 +37,33 @@ Patch release work is speed-first:
    useful first published version is preferred over trying to make every Korean
    nuance, tooltip, and expression perfect in one turn.
 4. When rich notes and required data sync are ready, remove `status` or set it
-   to `"ready"`, commit, push, and run the matching patch Worker checks.
+   to `"ready"`, commit, push, and run the matching patch Worker checks. After
+   the first-draft deployment is live, give the user its public patch URL and
+   explicitly wait for review before treating follow-up corrections as done.
+
+## Steam Watch Polling
+
+After `준비 시간` is published, continue in the session that was started by the
+same trigger. Poll the canonical Steam store news page until the intended new
+patch appears:
+
+```text
+https://store.steampowered.com/news/app/2868840
+```
+
+- Poll at a restrained interval, such as once per minute. Do not terminate the
+  watch merely because one request has no new announcement.
+- Identify the intended patch by its newly appearing title/version and compare
+  it with the announcements that existed when polling began.
+- If the expected window slips while polling, optionally publish the `지연`
+  stage through `$slseoun-patch-watch`, then keep polling in the same session.
+- Follow the actual link exposed by the new store-page announcement. It should
+  have the established form
+  `https://store.steampowered.com/news/app/2868840/view/{id}`; preserve that
+  discovered URL as `steamUrl` instead of synthesizing one from an API `gid`.
+- As soon as the announcement appears, stop polling, switch to Shell-First
+  Mode, publish and push the `작업 도구` WIP shell, then begin the full rich
+  patch-note workflow without waiting for that deployment to finish.
 
 ## Steam Fetch
 
@@ -165,6 +192,10 @@ Rules:
 9. Run `.codex/skills/sts2-compendium-patch-sync/SKILL.md` when the patch touched any Compendium resource, monster behavior, asset, localization, or deprecated/removed resource. Treat this as the post-patch guardrail before the patch becomes ready.
 10. Commit each meaningful file group independently and push publishable milestones
     quickly.
+11. For the first complete draft, set the patch to ready, commit, push, and
+    verify that the public patch page deployed successfully. Send the public
+    patch URL to the user and request review; apply subsequent corrections as
+    separate speculative commits.
 
 ## Compendium Versioning Contract
 
