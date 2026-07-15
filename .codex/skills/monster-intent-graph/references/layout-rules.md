@@ -46,6 +46,19 @@ partial. Fix the extractor or retain a partial-data notice.
   layout permits it, including return arcs.
 - Route multiple entry branches from one shared source through separate outer
   lanes. Never let a farther entry edge pass behind an earlier action node.
+- Treat spacing as part of the graph grammar, not a per-monster adjustment.
+  For the generic renderer, keep action nodes at least 80 px apart horizontally
+  and 48 px vertically when their rectangles share the other axis. Keep action
+  nodes at least 24 px inside a group or phase border.
+- Keep an external edge lane at least 24 px from a parallel group or phase
+  border. Cross a border only on the way to or from a contained state, with a
+  predominantly perpendicular tangent; never track along the border.
+- Give shared outer corridors separate lanes. Use at least 40 px between lanes
+  when both carry probability or condition labels, and keep distinct approach
+  lanes until the final target segment instead of merging paths early.
+- Keep edge-label rectangles clear of container borders and other labels. Use
+  10 px as the minimum rendered border clearance and do not stack duplicate
+  probability labels at the same coordinates.
 
 ## Phase direction
 
@@ -105,6 +118,9 @@ runtime dependency.
 - Phase direction matches reachability: vertical reversible, horizontal
   progressive.
 - No edge crosses a node or obscures Korean/English text.
+- Node, container, edge-lane, and label clearances meet the common spacing
+  tokens; inspect rendered rectangles and sampled SVG paths rather than judging
+  only the TypeScript coordinates.
 - Branches from the same state share one origin, and every non-self arrow enters
   with an unambiguous left-to-right final tangent when the layout permits it.
 - Every extracted attack or block intent renders its game asset and value.
