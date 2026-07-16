@@ -22,6 +22,13 @@
       placeholder: "댓글을 입력하세요",
       submit: "작성",
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
+      storyTitle: "이 변경으로 이야기 쓰기",
+      storyPlaceholder: "이 변경에서 떠오른 이야기를 남겨보세요",
+      storyNickname: "닉네임",
+      storySubmit: "작성",
+      storySubmitting: "...",
+      storyClose: "닫기",
+      storyUnavailable: "이야기를 저장하지 못했습니다",
     },
     en: {
       loading: "Loading...",
@@ -33,6 +40,13 @@
       placeholder: "Write a comment",
       submit: "Post",
       unavailableTitle: "No responses from database",
+      storyTitle: "Write story from this change",
+      storyPlaceholder: "Share the story this change brought to mind",
+      storyNickname: "Nickname",
+      storySubmit: "Write",
+      storySubmitting: "...",
+      storyClose: "Close",
+      storyUnavailable: "Could not save the story",
     },
   };
 
@@ -261,6 +275,139 @@
     } catch {
       return defaultNickname;
     }
+  }
+
+  function patchLineLabel(action) {
+    const line = action.closest("[data-patch-line-id]");
+    if (!line) return action.dataset.patchLineId ?? "";
+    const clone = line.cloneNode(true);
+    clone.querySelectorAll("[data-patch-line-story-action]").forEach((node) => node.remove());
+    return clone.textContent.replace(/\s+/g, " ").trim();
+  }
+
+  function patchLineRefs(action) {
+    try {
+      const parsed = JSON.parse(action.dataset.patchLineRefs ?? "[]");
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function openStoryComposer(action, config) {
+    const text = copy();
+    const patchLineId = action.dataset.patchLineId;
+    const patchId = action.dataset.patchId;
+    if (!patchLineId || !patchId) return;
+
+    document.querySelector("[data-static-story-composer]")?.remove();
+    const overlay = document.createElement("div");
+    overlay.dataset.staticStoryComposer = "";
+    overlay.className = "fixed inset-0 z-[70] flex items-center justify-center bg-black/70 px-3 py-6 backdrop-blur-sm";
+    overlay.innerHTML = `
+      <form data-static-story-form class="flex max-h-[90vh] w-full max-w-lg flex-col rounded-lg border border-border bg-background shadow-2xl" role="dialog" aria-modal="true" aria-label="${escapeHtml(text.storyTitle)}">
+        <div class="flex items-center justify-between border-b border-border/60 px-4 py-3">
+          <h2 class="text-sm font-semibold">${escapeHtml(text.storyTitle)}</h2>
+          <button type="button" data-static-story-close class="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground" title="${escapeHtml(text.storyClose)}" aria-label="${escapeHtml(text.storyClose)}">×</button>
+        </div>
+        <div class="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4">
+          <textarea data-static-story-sentence maxlength="120" rows="3" required minlength="2" placeholder="${escapeHtml(text.storyPlaceholder)}" class="min-h-24 w-full resize-none rounded-md border border-border/70 bg-background/60 px-3 py-2 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-yellow-500/40"></textarea>
+          <div class="flex items-center gap-2">
+            <input data-static-story-nickname type="text" maxlength="20" required value="${escapeHtml(readStoredNickname(text.defaultNickname))}" placeholder="${escapeHtml(text.storyNickname)}" class="h-8 min-w-0 flex-1 rounded-md border border-border/60 bg-background/50 px-2.5 text-xs text-muted-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-yellow-500/40" />
+            <span data-static-story-count class="shrink-0 text-[11px] tabular-nums text-muted-foreground">0/120</span>
+          </div>
+          <div class="rounded-md border border-yellow-500/20 bg-yellow-500/[0.035] px-3 py-2.5">
+            <span class="block text-[11px] font-medium text-yellow-500">${escapeHtml(patchId)}</span>
+            <span class="mt-1 block text-xs leading-relaxed text-foreground">${escapeHtml(patchLineLabel(action))}</span>
+          </div>
+          <p data-static-story-error class="hidden text-[11px] text-amber-300"></p>
+        </div>
+        <div class="flex items-center justify-end border-t border-border/60 px-4 py-3">
+          <button data-static-story-submit type="submit" class="inline-flex h-9 items-center gap-2 rounded-md border border-[#fb923c]/35 bg-[#fb923c]/10 px-3 text-xs font-medium text-[#fb923c] transition-colors hover:bg-[#fb923c]/16 hover:text-[#fed7aa] disabled:opacity-30">${escapeHtml(text.storySubmit)}</button>
+        </div>
+      </form>
+    `;
+
+    const close = () => {
+      window.removeEventListener("keydown", onKeyDown);
+      overlay.remove();
+    };
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay || event.target.closest("[data-static-story-close]")) close();
+    });
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") close();
+    };
+    window.addEventListener("keydown", onKeyDown);
+
+    const sentenceInput = overlay.querySelector("[data-static-story-sentence]");
+    const count = overlay.querySelector("[data-static-story-count]");
+    sentenceInput.addEventListener("input", () => {
+      count.textContent = `${sentenceInput.value.length}/120`;
+    });
+
+    overlay.querySelector("[data-static-story-form]").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const nicknameInput = overlay.querySelector("[data-static-story-nickname]");
+      const submit = overlay.querySelector("[data-static-story-submit]");
+      const error = overlay.querySelector("[data-static-story-error]");
+      const sentence = sentenceInput.value.trim();
+      const nickname = nicknameInput.value.trim().slice(0, 20);
+      if (sentence.length < 2 || !nickname || submit.disabled) return;
+
+      submit.disabled = true;
+      submit.textContent = text.storySubmitting;
+      error.classList.add("hidden");
+      try {
+        if (!config) throw new Error("Missing database config");
+        const session = await ensureSession(config);
+        const refs = patchLineRefs(action);
+        const primaryRef = refs[0];
+        const linkedEntities = refs.slice(1).map((ref) => ({
+          entityType: ref.type,
+          entityId: ref.id,
+          label: ref.label,
+        }));
+        await restRequest(config, "community_stories?select=*", {
+          method: "POST",
+          token: session.access_token,
+          headers: { Prefer: "return=representation" },
+          body: {
+            user_id: sessionUserId(session),
+            nickname,
+            sentence,
+            game: "sts2",
+            entity_type: primaryRef?.type ?? null,
+            entity_id: primaryRef?.id ?? null,
+            patch_line_id: patchLineId,
+            source: patchId,
+            tags: [],
+            linked_entities: linkedEntities,
+            env: config.supabaseEnv ?? "production",
+          },
+        });
+        close();
+      } catch {
+        error.textContent = text.storyUnavailable;
+        error.classList.remove("hidden");
+        submit.disabled = false;
+        submit.textContent = text.storySubmit;
+      }
+    });
+
+    document.body.appendChild(overlay);
+    sentenceInput.focus();
+  }
+
+  function mountStoryActions(config) {
+    if (!document.querySelector("[data-patch-line-story-action]")) return;
+    document.addEventListener("click", (event) => {
+      const action = event.target.closest("[data-patch-line-story-action]");
+      if (!action) return;
+      event.preventDefault();
+      event.stopPropagation();
+      openStoryComposer(action, config);
+    });
   }
 
   function commentContent(comment) {
@@ -492,10 +639,12 @@
       if (event.key === null || event.key === PROFILE_KEY) syncProfileCharacterIcon();
     });
 
+    const config = readConfig();
+    mountStoryActions(config);
+
     const roots = Array.from(document.querySelectorAll("[data-patch-comment-root]"));
     if (roots.length === 0) return;
 
-    const config = readConfig();
     if (!config) {
       roots.forEach(renderUnavailable);
       return;
