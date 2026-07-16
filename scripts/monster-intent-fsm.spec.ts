@@ -358,6 +358,85 @@ for (const sample of CASES) {
       await expectNoOverlap(diagram.locator("[data-pattern-edge-label]"));
       await expectNoEdgeToCrossUnrelatedNodes(diagram);
       await expectRoutedObjectsInsideCanvas(diagram);
+
+      await expect(diagram).toHaveAttribute("data-pattern-edge-interactions", "enabled");
+      const flowEdges = diagram.locator("[data-pattern-edge-flow]");
+      await expect(flowEdges).toHaveCount(sample.edgeCount);
+      const flowStyles = await flowEdges.evaluateAll((elements) => elements.map((element) => {
+        const style = getComputedStyle(element);
+        const animation = element.getAnimations()[0];
+        const keyframes = animation?.effect instanceof KeyframeEffect
+          ? animation.effect.getKeyframes()
+          : [];
+        return {
+          animationName: style.animationName,
+          dashArray: style.strokeDasharray,
+          finalDashOffset: keyframes.at(-1)?.strokeDashoffset ?? null,
+          playState: animation?.playState ?? null,
+        };
+      }));
+      expect(flowStyles.every((style) => style.animationName === "intent-graph-edge-flow")).toBe(true);
+      expect(flowStyles.every((style) => style.dashArray !== "none")).toBe(true);
+      expect(flowStyles.every((style) => String(style.finalDashOffset).startsWith("-26"))).toBe(true);
+      expect(flowStyles.every((style) => style.playState === "running")).toBe(true);
+
+      const focusedFrom = "FRAIL_SPORES";
+      const focusedTo = "SMASH";
+      const focusedHitTarget = diagram.locator(
+        `[data-pattern-edge-hit-from="${focusedFrom}"][data-pattern-edge-hit-to="${focusedTo}"]`,
+      );
+      await expect(focusedHitTarget).toHaveCount(1);
+      await focusedHitTarget.scrollIntoViewIfNeeded();
+      const hoverPoint = await focusedHitTarget.evaluate((element) => {
+        const path = element as SVGPathElement;
+        const point = path.getPointAtLength(path.getTotalLength() * 0.25);
+        const matrix = path.getScreenCTM();
+        if (!matrix) throw new Error("Intent edge has no screen transform");
+        return {
+          x: matrix.a * point.x + matrix.c * point.y + matrix.e,
+          y: matrix.b * point.x + matrix.d * point.y + matrix.f,
+        };
+      });
+      await page.mouse.move(hoverPoint.x, hoverPoint.y);
+
+      const focusedOverlay = diagram.locator(
+        `[data-pattern-edge-focus-from="${focusedFrom}"][data-pattern-edge-focus-to="${focusedTo}"]`,
+      );
+      await expect(focusedOverlay).toBeVisible();
+      const focusedKey = await focusedOverlay.getAttribute("data-pattern-edge-focus");
+      expect(focusedKey).not.toBeNull();
+      await expect(diagram.locator(`[data-pattern-edge-key="${focusedKey}"]`)).toHaveAttribute("data-pattern-edge-active", "true");
+      await expect(diagram.locator(`[data-pattern-edge-label="${focusedKey}"]`)).toHaveAttribute("data-pattern-edge-label-active", "true");
+      await expect(diagram.locator(`[data-pattern-node-id="${focusedFrom}"]`)).toHaveAttribute("data-pattern-node-focus", "source");
+      await expect(diagram.locator(`[data-pattern-node-id="${focusedTo}"]`)).toHaveAttribute("data-pattern-node-focus", "target");
+      await expect(diagram.locator('[data-pattern-node-id="VULNERABLE_SPORES"]')).toHaveAttribute("data-pattern-node-focus", "dimmed");
+
+      const layerOrder = await diagram.evaluate((element) => ({
+        base: Number(getComputedStyle(element.querySelector("svg.z\\-\\[5\\]")!).zIndex),
+        focus: Number(getComputedStyle(element.querySelector("[data-pattern-edge-focus-layer]")!).zIndex),
+        regularNode: Number(getComputedStyle(element.querySelector('[data-pattern-node-id="VULNERABLE_SPORES"]')!).zIndex),
+      }));
+      expect(layerOrder.focus).toBeGreaterThan(layerOrder.base);
+      expect(layerOrder.focus).toBeGreaterThan(layerOrder.regularNode);
+
+      const unrelatedEdgeOpacity = await diagram.locator(
+        `svg > path[data-pattern-edge-key]:not([data-pattern-edge-key="${focusedKey}"])`,
+      ).first().evaluate((element) => Number(getComputedStyle(element).opacity));
+      expect(unrelatedEdgeOpacity).toBeLessThanOrEqual(0.1);
+
+      const focusedLabel = diagram.locator(`[data-pattern-edge-label="${focusedKey}"]`);
+      await focusedLabel.focus();
+      await expect(focusedOverlay).toBeVisible();
+
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      const reducedMotionStyles = await flowEdges.evaluateAll((elements) => elements.map((element) => ({
+        animationName: getComputedStyle(element).animationName,
+        animationCount: element.getAnimations().length,
+        dashArray: getComputedStyle(element).strokeDasharray,
+      })));
+      expect(reducedMotionStyles.every((style) => style.animationName === "none")).toBe(true);
+      expect(reducedMotionStyles.every((style) => style.animationCount === 0)).toBe(true);
+      expect(reducedMotionStyles.every((style) => style.dashArray !== "none")).toBe(true);
     }
     if (sample.id === "FABRICATOR") {
       const transitions = await edges.evaluateAll((elements) => elements.map((element) => ({

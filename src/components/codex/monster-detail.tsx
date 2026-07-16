@@ -1042,6 +1042,8 @@ function PatternStateTransitionDiagram({
                 markerEnd={`url(#${markerPrefix}-arrow-${edge.marker})`}
                 opacity={isDimmed ? 0.1 : 1}
                 data-pattern-edge-flow={edge.key}
+                data-pattern-edge-flow-from={edge.from}
+                data-pattern-edge-flow-to={edge.to}
               />
             );
           })}
@@ -1066,6 +1068,8 @@ function PatternStateTransitionDiagram({
                 strokeLinejoin="round"
                 style={{ pointerEvents: "stroke" }}
                 data-pattern-edge-hit-target={edge.key}
+                data-pattern-edge-hit-from={edge.from}
+                data-pattern-edge-hit-to={edge.to}
                 onPointerEnter={() => setFocusedEdgeKey(edge.key)}
                 onPointerLeave={() => setFocusedEdgeKey((current) => current === edge.key ? null : current)}
               />
@@ -1115,6 +1119,8 @@ function PatternStateTransitionDiagram({
               markerEnd={`url(#${markerPrefix}-focus-arrow-${focusedEdge.marker})`}
               style={{ filter: `drop-shadow(0 0 5px ${focusedEdge.color})` }}
               data-pattern-edge-focus={focusedEdge.key}
+              data-pattern-edge-focus-from={focusedEdge.from}
+              data-pattern-edge-focus-to={focusedEdge.to}
             />
           </svg>
         )}
