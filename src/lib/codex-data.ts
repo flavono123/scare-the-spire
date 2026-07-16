@@ -130,6 +130,10 @@ const CARD_VAR_FALLBACKS: Record<string, Record<string, number>> = {
   DOMINATE: { VulnerablePower: 1 },
 };
 
+const CARD_RUNTIME_DESCRIPTION_VARS: Record<string, readonly string[]> = {
+  TIMES_UP: ["CalculatedDamage"],
+};
+
 const CARD_UPGRADE_FALLBACKS: Record<string, Record<string, string | number>> = {
   DOMINATE: { vulnerablepower: "+1" },
 };
@@ -149,6 +153,18 @@ const CARD_SPECIAL_UPGRADES: Record<string, NonNullable<CodexCard["specialUpgrad
 
 function withCardVarFallbacks(id: string, vars: RawCard["vars"]): Record<string, number> {
   return { ...(CARD_VAR_FALLBACKS[id] ?? {}), ...(vars ?? {}) };
+}
+
+function withoutRuntimeDescriptionVars(
+  id: string,
+  vars: Record<string, number>,
+): Record<string, number> {
+  const runtimeVars = CARD_RUNTIME_DESCRIPTION_VARS[id];
+  if (!runtimeVars) return vars;
+
+  const staticVars = { ...vars };
+  for (const runtimeVar of runtimeVars) delete staticVars[runtimeVar];
+  return staticVars;
 }
 
 function withCardUpgradeFallbacks(
@@ -563,16 +579,18 @@ function mapCard(
   gameLocale: GameLocale,
 ): CodexCard {
   const vars = withCardVarFallbacks(kor.id, kor.vars);
+  const descriptionVars = withoutRuntimeDescriptionVars(kor.id, vars);
   const raw = gameText(gameCards, `${kor.id}.description`, kor.description_raw);
   const varsEn = eng.vars ? withCardVarFallbacks(eng.id, eng.vars) : vars;
+  const descriptionVarsEn = withoutRuntimeDescriptionVars(eng.id, varsEn);
   const rawEn = eng.description_raw ?? eng.description;
   const upgrade = withCardUpgradeFallbacks(kor.id, kor.upgrade);
   return {
     id: kor.id,
     name: gameTitleText(gameCards, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
-    description: bakeDescription(raw, vars),
-    descriptionEn: bakeDescription(rawEn, varsEn),
+    description: bakeDescription(raw, descriptionVars),
+    descriptionEn: bakeDescription(rawEn, descriptionVarsEn),
     descriptionRaw: raw,
     descriptionRawEn: rawEn,
     vars,
