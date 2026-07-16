@@ -31,6 +31,9 @@ partial. Fix the extractor or retain a partial-data notice.
 - Omit `100%`. Put `50%` or other branch probabilities on the edge.
 - Start all probability branches from the same visible source point when the
   underlying choice happens at one state.
+- Keep every entry edge at least 60 rendered px long from the localized entry
+  marker to its first action or choice. The arrowhead must not consume the
+  whole visible segment; preserve enough line for the direction dash to read.
 - Put localized mode names such as `제작 가능` / `제작 불가` or
   `Can Fabricate` / `Cannot Fabricate` on cross-phase edges. Never abbreviate
   conditions as `Y` or `N`, and keep condition nodes out of the graph.
