@@ -220,6 +220,8 @@ interface PatternDiagramDragState {
 
 interface PatternDiagramPhaseConnector {
   key: string;
+  fromPhaseId: string;
+  toPhaseId: string;
   path: string;
   label?: string | null;
   tooltip?: string | null;
@@ -827,7 +829,19 @@ function PatternStateTransitionDiagram({
   const [pan, setPan] = useState<PatternDiagramPan>({ x: 0, y: DIAGRAM_VIEWPORT_TOP_GUTTER });
   const [isDragging, setIsDragging] = useState(false);
   const [focusedEdgeKey, setFocusedEdgeKey] = useState<string | null>(null);
+  const [focusedPhaseConnectorKey, setFocusedPhaseConnectorKey] = useState<string | null>(null);
   const focusedEdge = diagram?.edges.find((edge) => edge.key === focusedEdgeKey) ?? null;
+  const focusedPhaseConnector = diagram?.phaseConnectors.find((connector) => connector.key === focusedPhaseConnectorKey) ?? null;
+  const hasFocusedTransition = Boolean(focusedEdge || focusedPhaseConnector);
+  const focusedTransitionColor = focusedEdge?.color ?? (focusedPhaseConnector ? DIAGRAM_CONDITIONAL_COLOR : null);
+  const focusedEdgePhaseIds = new Set(
+    focusedEdge && diagram
+      ? diagram.nodes
+          .filter((node) => node.id === focusedEdge.from || node.id === focusedEdge.to)
+          .map((node) => node.phaseId)
+          .filter((phaseId): phaseId is string => Boolean(phaseId))
+      : [],
+  );
 
   const clampPan = useCallback((next: PatternDiagramPan): PatternDiagramPan => {
     const viewport = viewportRef.current;
@@ -894,7 +908,10 @@ function PatternStateTransitionDiagram({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerEnd}
       onPointerCancel={handlePointerEnd}
-      onPointerLeave={() => setFocusedEdgeKey(null)}
+      onPointerLeave={() => {
+        setFocusedEdgeKey(null);
+        setFocusedPhaseConnectorKey(null);
+      }}
     >
       <div
         className="relative"
@@ -917,7 +934,7 @@ function PatternStateTransitionDiagram({
               height: box.height,
               border: `2px solid ${DIAGRAM_PHASE_COLOR}`,
               backgroundColor: DIAGRAM_GROUP_BACKGROUND,
-              opacity: focusedEdge ? 0.32 : 1,
+              opacity: hasFocusedTransition ? 0.32 : 1,
               transition: "opacity 160ms ease",
             }}
           >
@@ -932,31 +949,47 @@ function PatternStateTransitionDiagram({
             )}
           </div>
         ))}
-        {diagram.phaseBoxes.map((box) => (
-          <div
-            key={box.id}
-            className="pointer-events-none absolute z-0"
-            data-pattern-container="phase"
-            data-pattern-phase={box.id}
-            style={{
-              left: box.x,
-              top: box.y,
-              width: box.width,
-              height: box.height,
-              border: `2px solid ${box.color ?? DIAGRAM_PHASE_COLOR}`,
-              backgroundColor: DIAGRAM_GROUP_BACKGROUND,
-              opacity: focusedEdge ? 0.32 : 1,
-              transition: "opacity 160ms ease",
-            }}
-          >
-            <span
-              className="absolute left-3 top-2 font-game-title text-[11px] font-bold"
-              style={{ color: box.color ?? DIAGRAM_PHASE_COLOR }}
+        {diagram.phaseBoxes.map((box) => {
+          const focusState: PatternDiagramNodeFocus = focusedPhaseConnector
+            ? box.id === focusedPhaseConnector.fromPhaseId
+              ? "source"
+              : box.id === focusedPhaseConnector.toPhaseId
+                ? "target"
+                : "dimmed"
+            : focusedEdge
+              ? focusedEdgePhaseIds.has(box.id) ? "source" : "dimmed"
+              : "idle";
+          const isConnected = focusState === "source" || focusState === "target";
+          return (
+            <div
+              key={box.id}
+              className="pointer-events-none absolute z-0"
+              data-pattern-container="phase"
+              data-pattern-phase={box.id}
+              data-pattern-phase-focus={focusState}
+              style={{
+                left: box.x,
+                top: box.y,
+                width: box.width,
+                height: box.height,
+                border: `2px solid ${box.color ?? DIAGRAM_PHASE_COLOR}`,
+                backgroundColor: DIAGRAM_GROUP_BACKGROUND,
+                opacity: focusState === "dimmed" ? 0.22 : 1,
+                filter: isConnected && focusedTransitionColor
+                  ? `drop-shadow(0 0 6px ${focusedTransitionColor}) brightness(1.08)`
+                  : undefined,
+                transition: "opacity 160ms ease, filter 160ms ease",
+              }}
             >
-              {box.label}
-            </span>
-          </div>
-        ))}
+              <span
+                className="absolute left-3 top-2 font-game-title text-[11px] font-bold"
+                style={{ color: box.color ?? DIAGRAM_PHASE_COLOR }}
+              >
+                {box.label}
+              </span>
+            </div>
+          );
+        })}
         <svg
           className="pointer-events-none absolute inset-0 z-[5]"
           width={diagram.width}
@@ -988,23 +1021,28 @@ function PatternStateTransitionDiagram({
               <path d="M 0 0 L 8 4 L 0 8 Z" fill={DIAGRAM_CONDITIONAL_COLOR} />
             </marker>
           </defs>
-          {diagram.phaseConnectors.map((connector) => (
-            <path
-              key={connector.key}
-              d={connector.path}
-              fill="none"
-              stroke={DIAGRAM_CONDITIONAL_COLOR}
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              markerEnd={`url(#${markerPrefix}-arrow-conditional)`}
-              data-pattern-phase-connector={connector.key}
-              opacity={focusedEdge ? 0.12 : 1}
-            />
-          ))}
+          {diagram.phaseConnectors.map((connector) => {
+            const isFocused = focusedPhaseConnector?.key === connector.key;
+            const isDimmed = Boolean(hasFocusedTransition && !isFocused);
+            return (
+              <path
+                key={connector.key}
+                d={connector.path}
+                fill="none"
+                stroke={DIAGRAM_CONDITIONAL_COLOR}
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                markerEnd={`url(#${markerPrefix}-arrow-conditional)`}
+                data-pattern-phase-connector={connector.key}
+                data-pattern-phase-connector-active={isFocused ? "true" : undefined}
+                opacity={isDimmed ? 0.1 : 0.34}
+              />
+            );
+          })}
           {diagram.edges.map((edge) => {
             const isFocused = focusedEdge?.key === edge.key;
-            const isDimmed = Boolean(focusedEdge && !isFocused);
+            const isDimmed = Boolean(hasFocusedTransition && !isFocused);
             return (
               <path
                 key={edge.key}
@@ -1023,9 +1061,30 @@ function PatternStateTransitionDiagram({
               />
             );
           })}
+          {diagram.phaseConnectors.map((connector) => {
+            const isFocused = focusedPhaseConnector?.key === connector.key;
+            const isDimmed = Boolean(hasFocusedTransition && !isFocused);
+            return (
+              <path
+                key={`${connector.key}-flow`}
+                className="intent-graph-edge-flow"
+                d={connector.path}
+                fill="none"
+                stroke={DIAGRAM_CONDITIONAL_COLOR}
+                strokeWidth={isFocused ? 3.5 : 2.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                markerEnd={`url(#${markerPrefix}-arrow-conditional)`}
+                opacity={isDimmed ? 0.1 : 1}
+                data-pattern-phase-connector-flow={connector.key}
+                data-pattern-phase-connector-flow-from={connector.fromPhaseId}
+                data-pattern-phase-connector-flow-to={connector.toPhaseId}
+              />
+            );
+          })}
           {diagram.edges.map((edge) => {
             const isFocused = focusedEdge?.key === edge.key;
-            const isDimmed = Boolean(focusedEdge && !isFocused);
+            const isDimmed = Boolean(hasFocusedTransition && !isFocused);
             return (
               <path
                 key={`${edge.key}-flow`}
@@ -1053,6 +1112,26 @@ function PatternStateTransitionDiagram({
           viewBox={`0 0 ${diagram.width} ${diagram.height}`}
           aria-hidden="true"
         >
+          {diagram.phaseConnectors.map((connector) => (
+            <path
+              key={`${connector.key}-hit-target`}
+              d={connector.path}
+              fill="none"
+              stroke="transparent"
+              strokeWidth="18"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ pointerEvents: "stroke" }}
+              data-pattern-phase-connector-hit-target={connector.key}
+              data-pattern-phase-connector-hit-from={connector.fromPhaseId}
+              data-pattern-phase-connector-hit-to={connector.toPhaseId}
+              onPointerEnter={() => {
+                setFocusedEdgeKey(null);
+                setFocusedPhaseConnectorKey(connector.key);
+              }}
+              onPointerLeave={() => setFocusedPhaseConnectorKey((current) => current === connector.key ? null : current)}
+            />
+          ))}
           {diagram.edges.map((edge) => (
             <path
               key={`${edge.key}-hit-target`}
@@ -1066,7 +1145,10 @@ function PatternStateTransitionDiagram({
               data-pattern-edge-hit-target={edge.key}
               data-pattern-edge-hit-from={edge.from}
               data-pattern-edge-hit-to={edge.to}
-              onPointerEnter={() => setFocusedEdgeKey(edge.key)}
+              onPointerEnter={() => {
+                setFocusedPhaseConnectorKey(null);
+                setFocusedEdgeKey(edge.key);
+              }}
               onPointerLeave={() => setFocusedEdgeKey((current) => current === edge.key ? null : current)}
             />
           ))}
@@ -1120,6 +1202,54 @@ function PatternStateTransitionDiagram({
           </svg>
         )}
 
+        {focusedPhaseConnector && (
+          <svg
+            className="pointer-events-none absolute inset-0 z-[15] overflow-visible"
+            width={diagram.width}
+            height={diagram.height}
+            viewBox={`0 0 ${diagram.width} ${diagram.height}`}
+            aria-hidden="true"
+            data-pattern-phase-connector-focus-layer="true"
+          >
+            <defs>
+              <marker
+                id={`${markerPrefix}-focus-arrow-phase`}
+                markerWidth="9"
+                markerHeight="9"
+                refX="8.5"
+                refY="4.5"
+                orient="auto"
+                markerUnits="userSpaceOnUse"
+              >
+                <path d="M 0 0 L 9 4.5 L 0 9 Z" fill={DIAGRAM_CONDITIONAL_COLOR} />
+              </marker>
+            </defs>
+            <path
+              d={focusedPhaseConnector.path}
+              fill="none"
+              stroke="#070914"
+              strokeWidth="9"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity="0.9"
+            />
+            <path
+              className="intent-graph-edge-flow intent-graph-edge-flow--focused"
+              d={focusedPhaseConnector.path}
+              fill="none"
+              stroke={DIAGRAM_CONDITIONAL_COLOR}
+              strokeWidth="4.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              markerEnd={`url(#${markerPrefix}-focus-arrow-phase)`}
+              style={{ filter: `drop-shadow(0 0 5px ${DIAGRAM_CONDITIONAL_COLOR})` }}
+              data-pattern-phase-connector-focus={focusedPhaseConnector.key}
+              data-pattern-phase-connector-focus-from={focusedPhaseConnector.fromPhaseId}
+              data-pattern-phase-connector-focus-to={focusedPhaseConnector.toPhaseId}
+            />
+          </svg>
+        )}
+
         {diagram.edges.map((edge) => edge.label && (
           <span
             key={`${edge.key}-label`}
@@ -1129,7 +1259,7 @@ function PatternStateTransitionDiagram({
               top: edge.labelY,
               color: edge.color,
               transform: "translate(-50%, -50%)",
-              opacity: focusedEdge && focusedEdge.key !== edge.key ? 0.18 : 1,
+              opacity: hasFocusedTransition && focusedEdge?.key !== edge.key ? 0.18 : 1,
               zIndex: focusedEdge?.key === edge.key ? 25 : 20,
               transition: "opacity 160ms ease",
             }}
@@ -1138,7 +1268,10 @@ function PatternStateTransitionDiagram({
             tabIndex={0}
             data-pattern-edge-label={edge.key}
             data-pattern-edge-label-active={focusedEdge?.key === edge.key ? "true" : undefined}
-            onPointerEnter={() => setFocusedEdgeKey(edge.key)}
+            onPointerEnter={() => {
+              setFocusedPhaseConnectorKey(null);
+              setFocusedEdgeKey(edge.key);
+            }}
             onPointerLeave={() => setFocusedEdgeKey((current) => current === edge.key ? null : current)}
             onFocus={() => setFocusedEdgeKey(edge.key)}
             onBlur={() => setFocusedEdgeKey((current) => current === edge.key ? null : current)}
@@ -1155,7 +1288,7 @@ function PatternStateTransitionDiagram({
               top: edge.chanceLabelY,
               color: edge.color,
               transform: "translate(-50%, -50%)",
-              opacity: focusedEdge && focusedEdge.key !== edge.key ? 0.18 : 1,
+              opacity: hasFocusedTransition && focusedEdge?.key !== edge.key ? 0.18 : 1,
               transition: "opacity 160ms ease",
             }}
             data-pattern-edge-chance-label={edge.key}
@@ -1172,11 +1305,25 @@ function PatternStateTransitionDiagram({
               top: connector.labelY,
               color: DIAGRAM_CONDITIONAL_COLOR,
               transform: "translate(-50%, -50%)",
+              opacity: hasFocusedTransition && focusedPhaseConnector?.key !== connector.key ? 0.18 : 1,
+              zIndex: focusedPhaseConnector?.key === connector.key ? 25 : 20,
+              transition: "opacity 160ms ease",
             }}
             data-pattern-phase-connector-label={connector.key}
+            data-pattern-phase-connector-label-active={focusedPhaseConnector?.key === connector.key ? "true" : undefined}
             title={connector.tooltip ?? connector.label}
             aria-label={connector.tooltip ?? connector.label}
-            tabIndex={connector.tooltip ? 0 : undefined}
+            tabIndex={0}
+            onPointerEnter={() => {
+              setFocusedEdgeKey(null);
+              setFocusedPhaseConnectorKey(connector.key);
+            }}
+            onPointerLeave={() => setFocusedPhaseConnectorKey((current) => current === connector.key ? null : current)}
+            onFocus={() => {
+              setFocusedEdgeKey(null);
+              setFocusedPhaseConnectorKey(connector.key);
+            }}
+            onBlur={() => setFocusedPhaseConnectorKey((current) => current === connector.key ? null : current)}
           >
             {connector.label}
           </span>
@@ -1192,13 +1339,13 @@ function PatternStateTransitionDiagram({
               width: entry.width,
               height: entry.height,
               color: entry.kind === "start" ? DIAGRAM_ARROW_COLOR : "#a1a1aa",
-              opacity: focusedEdge && focusedEdge.from !== "__START__" ? 0.22 : 1,
+              opacity: hasFocusedTransition && focusedEdge?.from !== "__START__" ? 0.22 : 1,
               filter: focusedEdge?.from === "__START__" ? `drop-shadow(0 0 5px ${focusedEdge.color})` : undefined,
               zIndex: focusedEdge?.from === "__START__" ? 16 : 10,
               transition: "opacity 160ms ease, filter 160ms ease",
             }}
             data-pattern-entry={entry.kind}
-            data-pattern-entry-focus={focusedEdge?.from === "__START__" ? "source" : focusedEdge ? "dimmed" : "idle"}
+            data-pattern-entry-focus={focusedEdge?.from === "__START__" ? "source" : hasFocusedTransition ? "dimmed" : "idle"}
           >
             {entry.label}
           </div>
@@ -1222,8 +1369,14 @@ function PatternStateTransitionDiagram({
                 : node.id === focusedEdge.to
                   ? "target"
                   : "dimmed"
+              : focusedPhaseConnector
+                ? node.phaseId === focusedPhaseConnector.fromPhaseId
+                  ? "source"
+                  : node.phaseId === focusedPhaseConnector.toPhaseId
+                    ? "target"
+                    : "dimmed"
               : "idle"}
-            focusColor={focusedEdge?.color ?? null}
+            focusColor={focusedTransitionColor}
           />
         ))}
       </div>
@@ -2703,6 +2856,8 @@ function buildProgressivePhasePatternDiagramModel(
     const curve = (endX - startX) * 0.42;
     return [{
       key: `${box.id}-${next.id}`,
+      fromPhaseId: box.id,
+      toPhaseId: next.id,
       path: `M ${startX} ${y} C ${startX + curve} ${y} ${endX - curve} ${y} ${endX} ${y}`,
       label: connectorLabel,
       tooltip: condition?.tooltip ?? connectorLabel,
@@ -3699,7 +3854,12 @@ function buildPhaseConnectors(phaseBoxes: PatternDiagramPhaseBox[]): PatternDiag
     const toY = next.y;
     const curve = Math.max(28, (toY - fromY) * 0.45);
     const path = `M ${fromX} ${fromY} C ${fromX} ${fromY + curve} ${toX} ${toY - curve} ${toX} ${toY}`;
-    return [{ key: `${box.id}-${next.id}`, path }];
+    return [{
+      key: `${box.id}-${next.id}`,
+      fromPhaseId: box.id,
+      toPhaseId: next.id,
+      path,
+    }];
   });
 }
 
