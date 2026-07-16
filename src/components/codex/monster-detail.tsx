@@ -827,10 +827,7 @@ function PatternStateTransitionDiagram({
   const [pan, setPan] = useState<PatternDiagramPan>({ x: 0, y: DIAGRAM_VIEWPORT_TOP_GUTTER });
   const [isDragging, setIsDragging] = useState(false);
   const [focusedEdgeKey, setFocusedEdgeKey] = useState<string | null>(null);
-  const enableEdgeFlowPrototype = monster.id === "FLYCONID";
-  const focusedEdge = enableEdgeFlowPrototype
-    ? diagram?.edges.find((edge) => edge.key === focusedEdgeKey) ?? null
-    : null;
+  const focusedEdge = diagram?.edges.find((edge) => edge.key === focusedEdgeKey) ?? null;
 
   const clampPan = useCallback((next: PatternDiagramPan): PatternDiagramPan => {
     const viewport = viewportRef.current;
@@ -892,7 +889,7 @@ function PatternStateTransitionDiagram({
       className={`relative max-w-full touch-none overflow-hidden rounded-md border border-white/10 bg-black/15 select-none ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
       style={{ height: viewportHeight }}
       data-monster-pattern-diagram={monster.id}
-      data-pattern-edge-interactions={enableEdgeFlowPrototype ? "enabled" : undefined}
+      data-pattern-edge-interactions="enabled"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerEnd}
@@ -1018,7 +1015,7 @@ function PatternStateTransitionDiagram({
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 markerEnd={`url(#${markerPrefix}-arrow-${edge.marker})`}
-                opacity={enableEdgeFlowPrototype ? (isDimmed ? 0.1 : 0.34) : 1}
+                opacity={isDimmed ? 0.1 : 0.34}
                 data-pattern-edge-from={edge.from}
                 data-pattern-edge-to={edge.to}
                 data-pattern-edge-key={edge.key}
@@ -1026,7 +1023,7 @@ function PatternStateTransitionDiagram({
               />
             );
           })}
-          {enableEdgeFlowPrototype && diagram.edges.map((edge) => {
+          {diagram.edges.map((edge) => {
             const isFocused = focusedEdge?.key === edge.key;
             const isDimmed = Boolean(focusedEdge && !isFocused);
             return (
@@ -1049,33 +1046,31 @@ function PatternStateTransitionDiagram({
           })}
         </svg>
 
-        {enableEdgeFlowPrototype && (
-          <svg
-            className="pointer-events-none absolute inset-0 z-[9] overflow-visible"
-            width={diagram.width}
-            height={diagram.height}
-            viewBox={`0 0 ${diagram.width} ${diagram.height}`}
-            aria-hidden="true"
-          >
-            {diagram.edges.map((edge) => (
-              <path
-                key={`${edge.key}-hit-target`}
-                d={edge.path}
-                fill="none"
-                stroke="transparent"
-                strokeWidth="18"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                style={{ pointerEvents: "stroke" }}
-                data-pattern-edge-hit-target={edge.key}
-                data-pattern-edge-hit-from={edge.from}
-                data-pattern-edge-hit-to={edge.to}
-                onPointerEnter={() => setFocusedEdgeKey(edge.key)}
-                onPointerLeave={() => setFocusedEdgeKey((current) => current === edge.key ? null : current)}
-              />
-            ))}
-          </svg>
-        )}
+        <svg
+          className="pointer-events-none absolute inset-0 z-[9] overflow-visible"
+          width={diagram.width}
+          height={diagram.height}
+          viewBox={`0 0 ${diagram.width} ${diagram.height}`}
+          aria-hidden="true"
+        >
+          {diagram.edges.map((edge) => (
+            <path
+              key={`${edge.key}-hit-target`}
+              d={edge.path}
+              fill="none"
+              stroke="transparent"
+              strokeWidth="18"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ pointerEvents: "stroke" }}
+              data-pattern-edge-hit-target={edge.key}
+              data-pattern-edge-hit-from={edge.from}
+              data-pattern-edge-hit-to={edge.to}
+              onPointerEnter={() => setFocusedEdgeKey(edge.key)}
+              onPointerLeave={() => setFocusedEdgeKey((current) => current === edge.key ? null : current)}
+            />
+          ))}
+        </svg>
 
         {focusedEdge && (
           <svg
@@ -1140,13 +1135,13 @@ function PatternStateTransitionDiagram({
             }}
             title={edge.tooltip ?? edge.label}
             aria-label={edge.tooltip ?? edge.label}
-            tabIndex={enableEdgeFlowPrototype || edge.tooltip ? 0 : undefined}
+            tabIndex={0}
             data-pattern-edge-label={edge.key}
             data-pattern-edge-label-active={focusedEdge?.key === edge.key ? "true" : undefined}
-            onPointerEnter={enableEdgeFlowPrototype ? () => setFocusedEdgeKey(edge.key) : undefined}
-            onPointerLeave={enableEdgeFlowPrototype ? () => setFocusedEdgeKey((current) => current === edge.key ? null : current) : undefined}
-            onFocus={enableEdgeFlowPrototype ? () => setFocusedEdgeKey(edge.key) : undefined}
-            onBlur={enableEdgeFlowPrototype ? () => setFocusedEdgeKey((current) => current === edge.key ? null : current) : undefined}
+            onPointerEnter={() => setFocusedEdgeKey(edge.key)}
+            onPointerLeave={() => setFocusedEdgeKey((current) => current === edge.key ? null : current)}
+            onFocus={() => setFocusedEdgeKey(edge.key)}
+            onBlur={() => setFocusedEdgeKey((current) => current === edge.key ? null : current)}
           >
             {edge.label}
           </span>
