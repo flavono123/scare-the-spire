@@ -8,7 +8,7 @@ import {
   pushCodexHistoryState,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
@@ -54,6 +54,7 @@ const MAX_INDIVIDUAL_FORMATION_COUNT_FILTERS = 8;
 
 interface EncounterLibraryProps {
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   gameUi: CodexGameUiLabels;
   encounters: CodexEncounter[];
   characters: CodexCharacter[];
@@ -71,6 +72,7 @@ interface EncounterLibraryProps {
 
 export function EncounterLibrary({
   serviceLocale,
+  gameLocale,
   gameUi,
   encounters,
   characters,
@@ -431,6 +433,7 @@ export function EncounterLibrary({
                   <EncounterTile
                     key={enc.id}
                     serviceLocale={serviceLocale}
+                    gameLocale={gameLocale}
                     encounter={enc}
                     monsterById={monsterById}
                     messages={serviceText}
@@ -479,6 +482,7 @@ export function EncounterLibrary({
 // Encounter tile in list
 function EncounterTile({
   serviceLocale,
+  gameLocale,
   encounter,
   monsterById,
   messages,
@@ -487,6 +491,7 @@ function EncounterTile({
   onClick,
 }: {
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   encounter: CodexEncounter;
   monsterById: Map<string, CodexMonster>;
   messages: CodexServiceMessages;
@@ -534,7 +539,9 @@ function EncounterTile({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
           <span className="font-game-title text-sm font-medium text-gray-100 truncate">{encounter.name}</span>
-          <span className="font-game-text text-[10px] text-gray-500 truncate">{encounter.nameEn}</span>
+          {gameLocale === "kor" && encounter.nameEn !== encounter.name && (
+            <span className="font-game-text text-[10px] text-gray-500 truncate">{encounter.nameEn}</span>
+          )}
         </div>
         <div className="flex items-center gap-2 mt-0.5">
           <span

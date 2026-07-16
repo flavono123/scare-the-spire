@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import type { ServiceLocale } from "@/lib/i18n";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { serviceMessages } from "@/messages/service";
 import type {
@@ -22,6 +22,7 @@ type BestiaryView = "monsters" | "encounters";
 
 interface BestiaryLibraryProps {
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   gameUi: CodexGameUiLabels;
   monsters: CodexMonster[];
   characters: CodexCharacter[];
@@ -38,6 +39,7 @@ interface BestiaryLibraryProps {
 
 export function BestiaryLibrary({
   serviceLocale,
+  gameLocale,
   gameUi,
   monsters,
   characters,
@@ -105,6 +107,7 @@ export function BestiaryLibrary({
     return (
       <EncounterLibrary
         serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
         gameUi={gameUi}
         title={gameUi.bestiaryTitle}
         encounters={encounters}
@@ -125,6 +128,7 @@ export function BestiaryLibrary({
   return (
     <MonsterLibrary
       serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
       gameUi={gameUi}
       title={gameUi.bestiaryTitle}
       monsters={monsters}

@@ -53,6 +53,7 @@ export async function renderCompendiumBestiaryPage(
     <Suspense>
       <BestiaryLibrary
         serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
         gameUi={gameUi}
         monsters={monsters}
         characters={characters}

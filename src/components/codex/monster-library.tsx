@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { MonsterDetail } from "./monster-detail";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
@@ -74,6 +74,7 @@ const BESTIARY_ACT_COLOR = "#60a5fa";
 
 interface MonsterLibraryProps {
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   gameUi: CodexGameUiLabels;
   title: string;
   monsters: CodexMonster[];
@@ -93,6 +94,7 @@ interface MonsterLibraryProps {
 
 export function MonsterLibrary({
   serviceLocale,
+  gameLocale,
   gameUi,
   title,
   monsters,
@@ -460,6 +462,7 @@ export function MonsterLibrary({
                     <MonsterTile
                       key={monster.id}
                       serviceLocale={serviceLocale}
+                      gameLocale={gameLocale}
                       monster={monster}
                       displayType={getDisplayMonsterType(monster)}
                       threadKey={threadKey}
@@ -518,6 +521,7 @@ export function MonsterLibrary({
 // Monster tile - text-based since most monsters lack images
 function MonsterTile({
   serviceLocale,
+  gameLocale,
   monster,
   displayType,
   threadKey,
@@ -531,6 +535,7 @@ function MonsterTile({
   onClick,
 }: {
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   monster: CodexMonster;
   displayType: MonsterType;
   threadKey: string;
@@ -608,7 +613,9 @@ function MonsterTile({
         <div className="flex-1 min-w-0">
           <div className="flex min-w-0 items-center gap-1.5">
             <span className="font-game-title min-w-0 truncate text-sm font-medium" style={{ color: typeConfig.color }}>{monster.name}</span>
-            <span className="font-game-text min-w-0 truncate text-[10px] text-gray-500">{monster.nameEn}</span>
+            {gameLocale === "kor" && monster.nameEn !== monster.name && (
+              <span className="font-game-text min-w-0 truncate text-[10px] text-gray-500">{monster.nameEn}</span>
+            )}
             <EngagementSummary
               commentCount={commentCount}
               loading={engagementLoading}
