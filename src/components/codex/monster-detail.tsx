@@ -2081,6 +2081,7 @@ const DIAGRAM_PHASE_COLOR = "#29ebc0";
 const DIAGRAM_GROUP_BACKGROUND = "rgba(26, 36, 56, 0.55)";
 const STRUCTURED_DIAGRAM_NODE_WIDTH = 164;
 const STRUCTURED_DIAGRAM_NODE_HEIGHT = 118;
+const STRUCTURED_DIAGRAM_FIRST_NODE_X = 140;
 const MONSTER_DETAIL_VIEWPORT_PADDING = {
   padLeft: "8%",
   padRight: "8%",
@@ -2467,7 +2468,7 @@ function buildTerminalPatternDiagramModel(
         key: "terminal-start",
         from: "__START__",
         to: node.id,
-        path: `M ${start.x + start.width} ${nodeMidY} C 80 ${nodeMidY} 108 ${nodeMidY} ${node.x} ${nodeMidY}`,
+        path: buildStructuredStartEdgePath(start, node),
         color: DIAGRAM_ARROW_COLOR,
       }),
       buildStructuredPatternEdge({
@@ -2506,7 +2507,12 @@ function buildFixedLoopPatternDiagramModel(
   if (orderedIds.length === 0 || currentId == null) return null;
 
   const nodeY = 105;
-  const nodes = orderedIds.map((id, index) => buildStructuredPatternNode(id, 70 + index * 230, nodeY, id === initialId));
+  const nodes = orderedIds.map((id, index) => buildStructuredPatternNode(
+    id,
+    STRUCTURED_DIAGRAM_FIRST_NODE_X + index * 230,
+    nodeY,
+    id === initialId,
+  ));
   const nodeById = new Map(nodes.map((node) => [node.id, node]));
   const initialNode = nodeById.get(initialId);
   if (!initialNode) return null;
@@ -2517,7 +2523,7 @@ function buildFixedLoopPatternDiagramModel(
       key: "fixed-loop-start",
       from: "__START__",
       to: initialId,
-      path: `M ${start.x + start.width} ${initialMidY} C 64 ${initialMidY} 66 ${initialMidY} ${initialNode.x} ${initialMidY}`,
+      path: buildStructuredStartEdgePath(start, initialNode),
       color: DIAGRAM_ARROW_COLOR,
     }),
   ];
@@ -2588,10 +2594,12 @@ function buildRandomClusterPatternDiagramModel(
     initialBranch,
     ...randomState.branches.filter((branch) => branch.to !== initialId),
   ];
+  const horizontalOffset = STRUCTURED_DIAGRAM_FIRST_NODE_X - 70;
+  const shiftedX = (x: number) => x + horizontalOffset;
   const positions = [
-    { x: 70, y: 166 },
-    { x: 430, y: 50 },
-    { x: 430, y: 282 },
+    { x: STRUCTURED_DIAGRAM_FIRST_NODE_X, y: 166 },
+    { x: shiftedX(430), y: 50 },
+    { x: shiftedX(430), y: 282 },
   ];
   const nodes = orderedBranches.map((branch, index) => buildStructuredPatternNode(
     branch.to,
@@ -2610,7 +2618,7 @@ function buildRandomClusterPatternDiagramModel(
   const start = buildPatternStartEntryNode(getIntentFsmText(serviceLocale).start, 18, initialSourceY - 21);
 
   return {
-    width: 790,
+    width: shiftedX(790),
     height: 450,
     entryNodes: [start],
     nodes,
@@ -2619,70 +2627,70 @@ function buildRandomClusterPatternDiagramModel(
         key: "random-start",
         from: "__START__",
         to: initialNode.id,
-        path: `M ${start.x + start.width} ${initialSourceY} C 64 ${initialSourceY} 66 ${initialSourceY} ${initialNode.x} ${initialSourceY}`,
+        path: buildStructuredStartEdgePath(start, initialNode),
         color: DIAGRAM_ARROW_COLOR,
       }),
       buildStructuredPatternEdge({
         key: `${initialNode.id}-${topNode.id}`,
         from: initialNode.id,
         to: topNode.id,
-        path: `M ${initialSourceX} ${initialSourceY} C 302 ${initialSourceY} 352 ${topSourceY} ${topNode.x} ${topSourceY}`,
+        path: `M ${initialSourceX} ${initialSourceY} C ${shiftedX(302)} ${initialSourceY} ${shiftedX(352)} ${topSourceY} ${topNode.x} ${topSourceY}`,
         color: DIAGRAM_ARROW_COLOR,
         label: branchChanceLabel,
-        labelX: 332,
+        labelX: shiftedX(332),
         labelY: 150,
       }),
       buildStructuredPatternEdge({
         key: `${topNode.id}-${initialNode.id}`,
         from: topNode.id,
         to: initialNode.id,
-        path: `M ${topSourceX} ${topSourceY} C ${topSourceX} 12 252 12 ${initialNode.x + initialNode.width / 2} ${initialNode.y}`,
+        path: `M ${topSourceX} ${topSourceY} C ${topSourceX} 12 ${shiftedX(252)} 12 ${initialNode.x + initialNode.width / 2} ${initialNode.y}`,
         color: DIAGRAM_ARROW_COLOR,
         isLoop: true,
         label: branchChanceLabel,
-        labelX: 340,
+        labelX: shiftedX(340),
         labelY: 28,
       }),
       buildStructuredPatternEdge({
         key: `${initialNode.id}-${bottomNode.id}`,
         from: initialNode.id,
         to: bottomNode.id,
-        path: `M ${initialSourceX} ${initialSourceY} C 302 ${initialSourceY} 352 ${bottomSourceY} ${bottomNode.x} ${bottomSourceY}`,
+        path: `M ${initialSourceX} ${initialSourceY} C ${shiftedX(302)} ${initialSourceY} ${shiftedX(352)} ${bottomSourceY} ${bottomNode.x} ${bottomSourceY}`,
         color: DIAGRAM_ARROW_COLOR,
         label: branchChanceLabel,
-        labelX: 332,
+        labelX: shiftedX(332),
         labelY: 300,
       }),
       buildStructuredPatternEdge({
         key: `${bottomNode.id}-${initialNode.id}`,
         from: bottomNode.id,
         to: initialNode.id,
-        path: `M ${bottomSourceX} ${bottomSourceY} C ${bottomSourceX} 438 252 438 ${initialNode.x + initialNode.width / 2} ${initialNode.y + initialNode.height}`,
+        path: `M ${bottomSourceX} ${bottomSourceY} C ${bottomSourceX} 438 ${shiftedX(252)} 438 ${initialNode.x + initialNode.width / 2} ${initialNode.y + initialNode.height}`,
         color: DIAGRAM_ARROW_COLOR,
         isLoop: true,
         label: branchChanceLabel,
-        labelX: 330,
+        labelX: shiftedX(330),
         labelY: 422,
       }),
       buildStructuredPatternEdge({
         key: `${topNode.id}-${bottomNode.id}`,
         from: topNode.id,
         to: bottomNode.id,
-        path: `M ${topSourceX} ${topSourceY} C 704 ${topSourceY} 704 ${bottomSourceY} ${bottomNode.x + bottomNode.width} ${bottomSourceY}`,
+        path: `M ${topSourceX} ${topSourceY} C ${shiftedX(704)} ${topSourceY} ${shiftedX(704)} ${bottomSourceY} ${bottomNode.x + bottomNode.width} ${bottomSourceY}`,
         color: DIAGRAM_ARROW_COLOR,
         label: branchChanceLabel,
-        labelX: 690,
+        labelX: shiftedX(690),
         labelY: 205,
       }),
       buildStructuredPatternEdge({
         key: `${bottomNode.id}-${topNode.id}`,
         from: bottomNode.id,
         to: topNode.id,
-        path: `M ${bottomSourceX} ${bottomSourceY} C 748 ${bottomSourceY} 748 ${topSourceY} ${topNode.x + topNode.width} ${topSourceY}`,
+        path: `M ${bottomSourceX} ${bottomSourceY} C ${shiftedX(748)} ${bottomSourceY} ${shiftedX(748)} ${topSourceY} ${topNode.x + topNode.width} ${topSourceY}`,
         color: DIAGRAM_ARROW_COLOR,
         isLoop: true,
         label: branchChanceLabel,
-        labelX: 744,
+        labelX: shiftedX(744),
         labelY: 245,
       }),
     ],
@@ -2830,12 +2838,11 @@ function buildProgressivePhasePatternDiagramModel(
     14,
     initialNode.y + initialNode.height / 2 - 11,
   );
-  const initialMidY = initialNode.y + initialNode.height / 2;
   edges.unshift(buildStructuredPatternEdge({
     key: `start-${initialId}`,
     from: "__START__",
     to: initialId,
-    path: `M ${start.x + start.width} ${initialMidY} C 74 ${initialMidY} 80 ${initialMidY} ${initialNode.x} ${initialMidY}`,
+    path: buildStructuredStartEdgePath(start, initialNode),
     color: DIAGRAM_ARROW_COLOR,
   }));
 
@@ -3069,6 +3076,18 @@ function buildPatternStartEntryNode(
     height: 22,
     kind: "start",
   };
+}
+
+function buildStructuredStartEdgePath(
+  start: PatternDiagramEntryNode,
+  target: PatternDiagramNode,
+): string {
+  const startX = start.x + start.width;
+  const startY = start.y + start.height / 2;
+  const endX = target.x;
+  const endY = target.y + target.height / 2;
+  const curve = Math.max(18, (endX - startX) * 0.38);
+  return `M ${startX} ${startY} C ${startX + curve} ${startY} ${endX - curve} ${endY} ${endX} ${endY}`;
 }
 
 function buildStructuredPatternEdge({

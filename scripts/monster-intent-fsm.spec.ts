@@ -337,6 +337,13 @@ for (const sample of CASES) {
     ))).toBe(true);
     expect(edgeStyles.every((style) => style.path?.includes(" C "))).toBe(true);
     expect(edgeStyles.every((style) => !/[HV]/.test(style.path ?? ""))).toBe(true);
+    const startEdgeLengths = await edges.evaluateAll((elements) => elements.flatMap((element) => (
+      element.getAttribute("data-pattern-edge-from") === "__START__"
+        ? [(element as SVGPathElement).getTotalLength()]
+        : []
+    )));
+    expect(startEdgeLengths.length).toBeGreaterThan(0);
+    expect(startEdgeLengths.every((length) => length >= 60)).toBe(true);
     await expect(diagram.locator('marker[id$="-arrow-normal"] path')).toHaveAttribute("fill", "#efc851");
     await expect(diagram.locator('marker[id$="-arrow-conditional"] path')).toHaveAttribute("fill", "#ff4545");
     await expectNoNodeOverlap(diagram.locator('[data-pattern-node="true"]'));
