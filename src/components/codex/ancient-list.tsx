@@ -8,7 +8,7 @@ import {
   pushCodexHistoryState,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
-import type { ServiceLocale } from "@/lib/i18n";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -73,6 +73,7 @@ function ActBadge({
 
 interface AncientListProps {
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   gameUi: CodexGameUiLabels;
   ancients: CodexAncient[];
   cards?: CodexCard[];
@@ -87,6 +88,7 @@ interface AncientListProps {
 
 export function AncientList({
   serviceLocale,
+  gameLocale,
   gameUi,
   ancients,
   cards = [],
@@ -311,6 +313,7 @@ export function AncientList({
                         ancient={ancient}
                         relicCount={ancient.relicIds.length}
                         serviceLocale={serviceLocale}
+                        gameLocale={gameLocale}
                         messages={serviceText}
                         gameUi={gameUi}
                         onSelect={selectAncient}
@@ -356,6 +359,7 @@ function AncientCard({
   ancient,
   relicCount,
   serviceLocale,
+  gameLocale,
   messages,
   gameUi,
   onSelect,
@@ -363,6 +367,7 @@ function AncientCard({
   ancient: CodexAncient;
   relicCount: number;
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   messages: CodexServiceMessages;
   gameUi: CodexGameUiLabels;
   onSelect: (ancient: CodexAncient) => void;
@@ -394,7 +399,9 @@ function AncientCard({
         <h2 className="font-game-title text-lg text-blue-300 group-hover:text-blue-200 transition-colors">
           {ancient.name}
         </h2>
-        <p className="font-game-text text-[11px] text-blue-400/50 mt-0.5">{ancient.nameEn}</p>
+        {gameLocale === "kor" && ancient.nameEn !== ancient.name && (
+          <p className="font-game-text mt-0.5 text-[11px] text-blue-400/50">{ancient.nameEn}</p>
+        )}
         <p className="text-xs text-zinc-400 mt-1 italic">{ancient.epithet}</p>
         <div className="flex items-center gap-2 mt-2">
           <ActBadge act={ancient.act} messages={messages} gameUi={gameUi} />

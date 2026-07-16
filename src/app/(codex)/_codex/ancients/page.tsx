@@ -64,6 +64,7 @@ export default async function CodexAncientsPage({
     <Suspense>
       <AncientList
         serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
         gameUi={gameUi}
         ancients={ancients}
         cards={cards}

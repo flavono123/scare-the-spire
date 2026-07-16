@@ -8,7 +8,7 @@ import {
   pushCodexHistoryState,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -120,12 +120,14 @@ function ActBadges({
 // --- Collapsed thumbnail item ---
 function EventThumbnail({
   serviceLocale,
+  gameLocale,
   event,
   onClick,
   messages,
   gameUi,
 }: {
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   event: CodexEvent;
   onClick: () => void;
   messages: CodexServiceMessages;
@@ -162,9 +164,11 @@ function EventThumbnail({
           <h3 className="font-game-title text-sm font-semibold text-zinc-100 truncate group-hover:text-yellow-200 transition-colors">
             {event.name}
           </h3>
-          <span className="font-game-text text-[10px] text-zinc-500 group-hover:text-zinc-400">
-            {event.nameEn}
-          </span>
+          {gameLocale === "kor" && event.nameEn !== event.name && (
+            <span className="font-game-text text-[10px] text-zinc-500 group-hover:text-zinc-400">
+              {event.nameEn}
+            </span>
+          )}
         </div>
         <ActBadges event={event} messages={messages} gameUi={gameUi} />
         <svg
@@ -182,6 +186,7 @@ function EventThumbnail({
 // --- Main EventList component ---
 interface EventListProps {
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   gameUi: CodexGameUiLabels;
   title: string;
   cards?: CodexCard[];
@@ -200,6 +205,7 @@ interface EventListProps {
 
 export function EventList({
   serviceLocale,
+  gameLocale,
   gameUi,
   title,
   cards,
@@ -438,6 +444,7 @@ export function EventList({
                       >
                         <EventThumbnail
                           serviceLocale={serviceLocale}
+                          gameLocale={gameLocale}
                           event={event}
                           messages={serviceText}
                           gameUi={gameUi}

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
-import type { ServiceLocale } from "@/lib/i18n";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -86,6 +86,7 @@ const AFFILIATION_ICONS: Partial<Record<EpochAffiliation, string>> = {
 
 interface EpochLibraryProps {
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   gameUi: CodexGameUiLabels;
   epochs: CodexEpoch[];
   cards?: CodexCard[];
@@ -106,6 +107,7 @@ function isBetaArtParamEnabled(value: string | null): boolean {
 
 export function EpochLibrary({
   serviceLocale,
+  gameLocale,
   gameUi,
   epochs,
   cards = [],
@@ -468,6 +470,7 @@ export function EpochLibrary({
                         <EpochThumbnail
                           epoch={epoch}
                           serviceLocale={serviceLocale}
+                          gameLocale={gameLocale}
                           messages={serviceText}
                           showBeta={activeShowBeta}
                           onSelect={selectEpoch}
@@ -518,12 +521,14 @@ export function EpochLibrary({
 function EpochThumbnail({
   epoch,
   serviceLocale,
+  gameLocale,
   messages,
   showBeta,
   onSelect,
 }: {
   epoch: CodexEpoch;
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   messages: CodexServiceMessages;
   showBeta: boolean;
   onSelect: (epoch: CodexEpoch) => void;
@@ -567,9 +572,11 @@ function EpochThumbnail({
           <h3 className="truncate font-game-title text-lg font-semibold text-zinc-100 transition-colors group-hover:text-yellow-200">
             {epoch.name}
           </h3>
-          <span className="font-game-text text-[11px] text-zinc-500 group-hover:text-zinc-400">
-            {epoch.nameEn}
-          </span>
+          {gameLocale === "kor" && epoch.nameEn !== epoch.name && (
+            <span className="font-game-text text-[11px] text-zinc-500 group-hover:text-zinc-400">
+              {epoch.nameEn}
+            </span>
+          )}
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
           <Badge value={eraLabel} color="#60a5fa" />

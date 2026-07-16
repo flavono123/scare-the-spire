@@ -75,6 +75,7 @@ export default async function CodexEventsPage({
     <Suspense>
       <EventList
         serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
         gameUi={gameUi}
         title={gameUi.eventsTitle}
         cards={cards}
