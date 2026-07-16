@@ -70,7 +70,6 @@ export default async function CodexEncountersPage({
     <Suspense>
       <EncounterLibrary
         serviceLocale={serviceLocale}
-        gameLocale={gameLocale}
         gameUi={gameUi}
         encounters={encounters}
         characters={characters}

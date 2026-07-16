@@ -78,7 +78,6 @@ export default async function CodexEpochsPage({
     <Suspense>
       <EpochLibrary
         serviceLocale={serviceLocale}
-        gameLocale={gameLocale}
         gameUi={gameUi}
         epochs={epochs}
         cards={cards}
