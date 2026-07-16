@@ -1444,6 +1444,7 @@ function PatternMoveStateNode({
       aria-label={title}
       data-pattern-node="true"
       data-pattern-node-id={node.id}
+      data-pattern-node-phase={node.phaseId ?? undefined}
       data-pattern-node-focus={focusState}
       onMouseEnter={() => onPreviewMoveIntent(node.id)}
       onMouseLeave={() => onPreviewMoveIntent(null)}

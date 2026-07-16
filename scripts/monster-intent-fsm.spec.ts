@@ -1,4 +1,4 @@
-import { expect, test, type Locator } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const BASE = process.env.BASE_URL ?? "http://127.0.0.1:3000";
 
@@ -259,6 +259,21 @@ async function expectNoNodeOverlap(nodes: Locator) {
   }
 }
 
+async function hoverSvgPath(page: Page, pathLocator: Locator, fraction = 0.25) {
+  await pathLocator.scrollIntoViewIfNeeded();
+  const hoverPoint = await pathLocator.evaluate((element, pathFraction) => {
+    const path = element as SVGPathElement;
+    const point = path.getPointAtLength(path.getTotalLength() * pathFraction);
+    const matrix = path.getScreenCTM();
+    if (!matrix) throw new Error("Intent edge has no screen transform");
+    return {
+      x: matrix.a * point.x + matrix.c * point.y + matrix.e,
+      y: matrix.b * point.x + matrix.d * point.y + matrix.f,
+    };
+  }, fraction);
+  await page.mouse.move(hoverPoint.x, hoverPoint.y);
+}
+
 for (const sample of CASES) {
   test(`monster intent FSM — ${sample.id}`, async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
@@ -279,6 +294,32 @@ for (const sample of CASES) {
     await expect(diagram.locator("[data-pattern-branch-node]")).toHaveCount(0);
     const edges = diagram.locator("svg > path[data-pattern-edge-from]");
     await expect(edges).toHaveCount(sample.edgeCount);
+    await expect(diagram).toHaveAttribute("data-pattern-edge-interactions", "enabled");
+    const flowEdges = diagram.locator("[data-pattern-edge-flow]");
+    const phaseFlowEdges = diagram.locator("[data-pattern-phase-connector-flow]");
+    const allFlowEdges = diagram.locator("[data-pattern-edge-flow], [data-pattern-phase-connector-flow]");
+    await expect(flowEdges).toHaveCount(sample.edgeCount);
+    await expect(phaseFlowEdges).toHaveCount(sample.phaseConnectorCount);
+    await expect(diagram.locator("[data-pattern-edge-hit-target]")).toHaveCount(sample.edgeCount);
+    await expect(diagram.locator("[data-pattern-phase-connector-hit-target]")).toHaveCount(sample.phaseConnectorCount);
+    const flowStyles = await allFlowEdges.evaluateAll((elements) => elements.map((element) => {
+      const style = getComputedStyle(element);
+      const animation = element.getAnimations()[0];
+      const keyframes = animation?.effect instanceof KeyframeEffect
+        ? animation.effect.getKeyframes()
+        : [];
+      return {
+        animationName: style.animationName,
+        dashArray: style.strokeDasharray,
+        finalDashOffset: keyframes.at(-1)?.strokeDashoffset ?? null,
+        playState: animation?.playState ?? null,
+      };
+    }));
+    expect(flowStyles).toHaveLength(sample.edgeCount + sample.phaseConnectorCount);
+    expect(flowStyles.every((style) => style.animationName === "intent-graph-edge-flow")).toBe(true);
+    expect(flowStyles.every((style) => style.dashArray !== "none")).toBe(true);
+    expect(flowStyles.every((style) => String(style.finalDashOffset).startsWith("-26"))).toBe(true);
+    expect(flowStyles.every((style) => style.playState === "running")).toBe(true);
     await expect(diagram.locator("[data-pattern-edge-label]")).toHaveCount(sample.edgeLabelCount);
     await expect(diagram.locator("[data-pattern-edge-chance-label]")).toHaveCount(sample.chanceLabelCount);
     await expect(diagram.getByText("100%", { exact: true })).toHaveCount(0);
@@ -359,45 +400,13 @@ for (const sample of CASES) {
       await expectNoEdgeToCrossUnrelatedNodes(diagram);
       await expectRoutedObjectsInsideCanvas(diagram);
 
-      await expect(diagram).toHaveAttribute("data-pattern-edge-interactions", "enabled");
-      const flowEdges = diagram.locator("[data-pattern-edge-flow]");
-      await expect(flowEdges).toHaveCount(sample.edgeCount);
-      const flowStyles = await flowEdges.evaluateAll((elements) => elements.map((element) => {
-        const style = getComputedStyle(element);
-        const animation = element.getAnimations()[0];
-        const keyframes = animation?.effect instanceof KeyframeEffect
-          ? animation.effect.getKeyframes()
-          : [];
-        return {
-          animationName: style.animationName,
-          dashArray: style.strokeDasharray,
-          finalDashOffset: keyframes.at(-1)?.strokeDashoffset ?? null,
-          playState: animation?.playState ?? null,
-        };
-      }));
-      expect(flowStyles.every((style) => style.animationName === "intent-graph-edge-flow")).toBe(true);
-      expect(flowStyles.every((style) => style.dashArray !== "none")).toBe(true);
-      expect(flowStyles.every((style) => String(style.finalDashOffset).startsWith("-26"))).toBe(true);
-      expect(flowStyles.every((style) => style.playState === "running")).toBe(true);
-
       const focusedFrom = "FRAIL_SPORES";
       const focusedTo = "SMASH";
       const focusedHitTarget = diagram.locator(
         `[data-pattern-edge-hit-from="${focusedFrom}"][data-pattern-edge-hit-to="${focusedTo}"]`,
       );
       await expect(focusedHitTarget).toHaveCount(1);
-      await focusedHitTarget.scrollIntoViewIfNeeded();
-      const hoverPoint = await focusedHitTarget.evaluate((element) => {
-        const path = element as SVGPathElement;
-        const point = path.getPointAtLength(path.getTotalLength() * 0.25);
-        const matrix = path.getScreenCTM();
-        if (!matrix) throw new Error("Intent edge has no screen transform");
-        return {
-          x: matrix.a * point.x + matrix.c * point.y + matrix.e,
-          y: matrix.b * point.x + matrix.d * point.y + matrix.f,
-        };
-      });
-      await page.mouse.move(hoverPoint.x, hoverPoint.y);
+      await hoverSvgPath(page, focusedHitTarget);
 
       const focusedOverlay = diagram.locator(
         `[data-pattern-edge-focus-from="${focusedFrom}"][data-pattern-edge-focus-to="${focusedTo}"]`,
@@ -504,6 +513,45 @@ for (const sample of CASES) {
       ));
       expect(phaseConnectorPaths.every((path) => path?.includes(" C "))).toBe(true);
       expect(phaseConnectorPaths.every((path) => !/[HV]/.test(path ?? ""))).toBe(true);
+
+      const firstPhaseHitTarget = diagram.locator("[data-pattern-phase-connector-hit-target]").first();
+      const phaseFrom = await firstPhaseHitTarget.getAttribute("data-pattern-phase-connector-hit-from");
+      const phaseTo = await firstPhaseHitTarget.getAttribute("data-pattern-phase-connector-hit-to");
+      expect(phaseFrom).not.toBeNull();
+      expect(phaseTo).not.toBeNull();
+      await hoverSvgPath(page, firstPhaseHitTarget, 0.3);
+
+      const focusedPhaseOverlay = diagram.locator(
+        `[data-pattern-phase-connector-focus-from="${phaseFrom}"][data-pattern-phase-connector-focus-to="${phaseTo}"]`,
+      );
+      await expect(focusedPhaseOverlay).toHaveCount(1);
+      await expect(diagram.locator("[data-pattern-phase-connector-focus-layer]")).toBeVisible();
+      const focusedPhaseKey = await focusedPhaseOverlay.getAttribute("data-pattern-phase-connector-focus");
+      expect(focusedPhaseKey).not.toBeNull();
+      await expect(diagram.locator(`[data-pattern-phase-connector="${focusedPhaseKey}"]`)).toHaveAttribute(
+        "data-pattern-phase-connector-active",
+        "true",
+      );
+      await expect(diagram.locator(`[data-pattern-phase="${phaseFrom}"]`)).toHaveAttribute("data-pattern-phase-focus", "source");
+      await expect(diagram.locator(`[data-pattern-phase="${phaseTo}"]`)).toHaveAttribute("data-pattern-phase-focus", "target");
+      await expect(diagram.locator(`[data-pattern-node-phase="${phaseFrom}"]`).first()).toHaveAttribute("data-pattern-node-focus", "source");
+      await expect(diagram.locator(`[data-pattern-node-phase="${phaseTo}"]`).first()).toHaveAttribute("data-pattern-node-focus", "target");
+      await expect(diagram.locator('[data-pattern-phase-focus="dimmed"]')).toHaveCount(1);
+
+      const phaseLabel = diagram.locator(`[data-pattern-phase-connector-label="${focusedPhaseKey}"]`);
+      await expect(phaseLabel).toHaveAttribute("data-pattern-phase-connector-label-active", "true");
+      await phaseLabel.focus();
+      await expect(diagram.locator("[data-pattern-phase-connector-focus-layer]")).toBeVisible();
+
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      const reducedPhaseMotionStyles = await phaseFlowEdges.evaluateAll((elements) => elements.map((element) => ({
+        animationName: getComputedStyle(element).animationName,
+        animationCount: element.getAnimations().length,
+        dashArray: getComputedStyle(element).strokeDasharray,
+      })));
+      expect(reducedPhaseMotionStyles.every((style) => style.animationName === "none")).toBe(true);
+      expect(reducedPhaseMotionStyles.every((style) => style.animationCount === 0)).toBe(true);
+      expect(reducedPhaseMotionStyles.every((style) => style.dashArray !== "none")).toBe(true);
     }
 
     await diagram.screenshot({ path: `test-results/monster-intent-fsm-${sample.slug}.png` });
