@@ -472,5 +472,27 @@
       { "type": "card", "id": "WITHER" },
       { "type": "potion", "id": "REGEN_POTION" }
     ]
+  },
+  {
+    "id": "prep-time-2026-07-17",
+    "version": "prep-time-2026-07-17",
+    "versionLabel": "Prep Time",
+    "versionLabelKo": "준비 시간",
+    "date": "2026-07-17",
+    "title": "Today's patch is waiting to be revealed ...",
+    "titleKo": "오늘의 패치가 드러나기를 기다리고 있습니다 ...",
+    "type": "beta",
+    "status": "watching",
+    "watchStage": "prep_time",
+    "steamUrl": null,
+    "summary": "Today's patch is waiting to be revealed ...",
+    "summaryKo": "오늘의 패치가 드러나기를 기다리고 있습니다 ...",
+    "hasBalanceChanges": false,
+    "art": {
+      "type": "card",
+      "id": "PREP_TIME",
+      "alt": "Prep Time card art",
+      "altKo": "준비 시간 카드 아트"
+    }
   }
 ]
