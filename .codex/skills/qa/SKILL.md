@@ -17,11 +17,13 @@ Run the smallest QA set that credibly covers the implementation scope. Treat `do
 4. Run focused static checks:
    - `pnpm lint` when TypeScript, React, CSS, scripts, config, or data transforms changed.
    - `pnpm build` when routing, app layout, server/client boundaries, data loading, generated data, metadata, or deployment behavior changed.
-   - Cloudflare/OpenNext checks when `wrangler.jsonc`, `open-next.config.ts`, Workers scripts, runtime env behavior, static asset headers, server/client data loading, or deployment target behavior changed. Load `.codex/skills/cf-guardrails/SKILL.md` first, then:
+   - Cloudflare/OpenNext checks when `wrangler.jsonc`, `open-next.config.ts`, Workers scripts, runtime env behavior, static asset headers, server/client data loading, deployment target behavior, sitemap coverage, canonical URLs, internal links, prefetching, or crawlable route coverage changed. Load `.codex/skills/cf-guardrails/SKILL.md` first, then:
+     - `pnpm cf:assets` after the OpenNext build to verify Korean/English Compendium detail HTML/RSC coverage, Worker path mapping, static asset count, and individual asset size.
      - `pnpm cf:preview` for local Workers runtime smoke.
      - `pnpm exec wrangler deploy --dry-run --outdir /tmp/sts-worker-dry-run` after an OpenNext build to confirm final Worker bundle size and bindings.
      - Apply `$cf-guardrails` to review Free-plan runtime risk, request-time work, bundle size, subrequests, and `exceededResources`/503 failure modes.
      - Smoke representative static, SSG, and dynamic routes plus cache headers for `_next/static`, `/images`, `/spine`, `/generated`, `/api/search-index`, and `/comment-entities/sts2`.
+     - For Compendium details, smoke both document and RSC requests in Korean and English and require `x-cf-static-page: compendium` so an OpenNext fallback cannot pass as a static-route success.
    - Domain validators such as `pnpm codex:validate` or `pnpm codex:validate-references` when Codex entity data, versions, references, hover links, or rich patch content changed.
 5. Run feature-specific tests or Playwright specs that directly cover the changed area. Prefer existing scripts in `scripts/*.spec.ts` over inventing new checks.
 6. Delegate to the linked QA skills below when their trigger conditions match.
@@ -59,7 +61,7 @@ Load the sub-skill body only when needed, then follow its reporting rules in add
 - Animation/rendering changes: run `pnpm i18n:validate`, targeted static checks, `animation-playback-qa`, and mobile QA if the render surface must work on mobile.
 - History Course replay changes: run `pnpm i18n:validate`, `pnpm lint`, targeted TypeScript checks, `history-course-qa`, targeted `scripts/history-course-*.spec.ts` when UI or reward rendering changed, and mobile QA when `/history-course` layout, topbar, map, or tooltip behavior changed.
 - Script, parser, or extraction changes: run `pnpm i18n:validate`, a representative script command or dry run, and validators for generated outputs affected by the script.
-- Cloudflare Workers migration/runtime changes: load `$cf-guardrails`, then run `pnpm i18n:validate`, `pnpm lint`, `pnpm build`, `pnpm cf:preview`, Wrangler dry-run upload size check, guardrail risk review, and route/cache smoke against the local Workers preview URL. Include dev-tool parity smoke when `NEXT_PUBLIC_ENABLE_DEV_TOOLS=1` is expected for local preview, and verify that production deploy scripts do not enable dev tools by default.
+- Cloudflare Workers migration/runtime or SEO crawl-surface changes: load `$cf-guardrails`, then run `pnpm i18n:validate`, `pnpm lint`, `pnpm build`, `pnpm cf:assets`, `pnpm cf:preview`, Wrangler dry-run upload size check, guardrail risk review, and route/cache smoke against the local Workers preview URL. Include dev-tool parity smoke when `NEXT_PUBLIC_ENABLE_DEV_TOOLS=1` is expected for local preview, and verify that production deploy scripts do not enable dev tools by default.
 - Patch Worker deployment changes: load `$cf-guardrails`, run `pnpm patch:build`, `pnpm patch:test`, `pnpm cf:patch:preview` when practical, and verify the patch Worker remains asset-first with no request-time patch markdown rendering or Compendium data querying.
 
 ## Adding Sub-QA Skills
