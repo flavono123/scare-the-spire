@@ -74,6 +74,7 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   "케미컬엑스": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
   "역사 강의서": { href: "/history-course", icon: "/images/sts2/relics/history_course.webp" },
   "이거 아님 저거?": { href: "/this-or-that", icon: "/images/sts2/relics/choices_paradox.webp" },
+  "프로필": { href: "/profile", icon: "/images/sts2/characters/character_icon_random_character_outline.webp" },
   "댓글": { href: null, icon: "/images/sts2/relics/storybook.webp" },
   "개발/운영": { href: null, icon: "/images/sts2/relics/toolbox.webp" },
 };
@@ -88,9 +89,10 @@ const SERVICE_REFERENCE_LINKS: Record<string, string> = {
   "이거 아님 저거?": "/this-or-that",
   "케미컬X": "/chemical-x",
   "케미컬엑스": "/chemical-x",
+  "프로필": "/profile",
 };
 
-const SERVICE_REFERENCE_RE = /(이거 아님 저거\?|역사 강의서|슬서운 이야기|패치노트|패치 노트|케미컬X|케미컬엑스|백과사전|섀소식)/g;
+const SERVICE_REFERENCE_RE = /(이거 아님 저거\?|역사 강의서|슬서운 이야기|패치노트|패치 노트|케미컬X|케미컬엑스|백과사전|섀소식|프로필)/g;
 const STORY_COMPOSER_ACTION_TOKEN = "[새 이야기 쓰기 버튼 노출/링크]";
 const INLINE_ACTION_RE = new RegExp(`${STORY_COMPOSER_ACTION_TOKEN.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}|${SERVICE_REFERENCE_RE.source}`, "g");
 
