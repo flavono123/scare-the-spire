@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Fragment, type ReactNode } from "react";
 import { CommentSection } from "@/components/comment-section";
+import { ByrdispatchProfileIcon } from "@/components/byrdispatch-profile-icon";
 import { ByrdispatchStoryComposerButton } from "@/components/byrdispatch-story-composer-button";
 import { PatchNoteRenderer, type EntityInfo } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
@@ -201,11 +202,15 @@ function ServiceHeading({
       : "text-cyan-200";
   const content = (
     <>
-      <TokenIcon
-        src={section.isNotice ? BYRDISPATCH_NOTICE_ICON : service?.icon ?? BYRDISPATCH_ICON}
-        label={section.title}
-        className={isChild ? "h-5 w-5" : "h-6 w-6"}
-      />
+      {normalizeServiceTitle(section.title) === "프로필" ? (
+        <ByrdispatchProfileIcon className={isChild ? "h-5 w-5" : "h-6 w-6"} />
+      ) : (
+        <TokenIcon
+          src={section.isNotice ? BYRDISPATCH_NOTICE_ICON : service?.icon ?? BYRDISPATCH_ICON}
+          label={section.title}
+          className={isChild ? "h-5 w-5" : "h-6 w-6"}
+        />
+      )}
       {canLink && service?.href ? (
         <Link
           href={localizeHrefWithGameLocale(service.href, serviceLocale, gameLocale)}
@@ -290,13 +295,17 @@ function ByrdispatchRichText({
         href={localizeHrefWithGameLocale(href, serviceLocale, gameLocale)}
         className="inline-flex items-center gap-1 align-[-0.2em] font-semibold text-cyan-200 transition-colors hover:text-cyan-100"
       >
-        <Image
-          src={service.icon}
-          alt=""
-          width={16}
-          height={16}
-          className="inline-block h-4 w-4 shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]"
-        />
+        {label === "프로필" ? (
+          <ByrdispatchProfileIcon className="inline-block h-4 w-4 shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]" />
+        ) : (
+          <Image
+            src={service.icon}
+            alt=""
+            width={16}
+            height={16}
+            className="inline-block h-4 w-4 shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]"
+          />
+        )}
         <span>{match[0]}</span>
       </Link>
     ) : match[0]);
