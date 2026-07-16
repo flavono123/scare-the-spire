@@ -60,6 +60,33 @@ partial. Fix the extractor or retain a partial-data notice.
   10 px as the minimum rendered border clearance and do not stack duplicate
   probability labels at the same coordinates.
 
+## Motion and edge focus
+
+- Show direction with an animated SVG dash offset that moves from the source
+  toward the target. Keep the solid base edge faint so the moving dashes remain
+  legible without changing the Intent Graph mod color.
+- Animate with CSS, not React state or `requestAnimationFrame`. A detail page
+  renders one graph, so confirm the maximum transition count in extracted data
+  and keep the number of simultaneous animations bounded by that count.
+- Respect `prefers-reduced-motion: reduce`. Retain a static dashed edge and its
+  arrowhead, but remove all dash-offset animation.
+- Give each edge a transparent, approximately 18 px hover stroke below action
+  nodes and labels. Provide the same focus behavior from its keyboard-focusable
+  probability or condition label.
+- On hover or focus, redraw the selected edge in a dedicated layer above
+  unrelated nodes and base edges but below labels. Add a dark under-stroke,
+  preserve the edge and arrowhead color, and highlight both source and target
+  nodes with that same color.
+- Dim unrelated edges, labels, containers, entries, and nodes with opacity and
+  saturation. Avoid background blur: it adds paint cost and makes game text
+  harder to read.
+- Keep source and target nodes above the focused edge so their tooltip frames
+  remain intact. Never let the interaction stroke block node clicks or label
+  focus.
+- Prototype motion and focus on one dense representative graph before enabling
+  them globally. Verify pointer hover, keyboard focus, reduced motion, passive
+  playback frames, and every repository mobile preset before rollout.
+
 ## Phase direction
 
 ### Reversible conditional phases
