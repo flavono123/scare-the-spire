@@ -306,11 +306,12 @@ export function EncounterSceneStage({
           />
         )}
 
-        <div
-          className="absolute bottom-2 left-1/2 z-40 w-[min(42rem,calc(100%-1rem))] -translate-x-1/2 sm:bottom-3"
-          data-encounter-formation-controls
-        >
-          <div className="relative rounded-lg border border-white/10 bg-black/75 p-1.5 shadow-lg backdrop-blur-sm">
+        {formations.length > 1 && (
+          <div
+            className="absolute bottom-2 left-1/2 z-40 w-[min(42rem,calc(100%-1rem))] -translate-x-1/2 sm:bottom-3"
+            data-encounter-formation-controls
+          >
+            <div className="relative rounded-lg border border-white/10 bg-black/75 p-1.5 shadow-lg backdrop-blur-sm">
             {formationMenuOpen && (
               <div
                 id={`encounter-formation-menu-${encounter.id}`}
@@ -411,8 +412,9 @@ export function EncounterSceneStage({
                 ) : <span />}
               </div>
             </BoundedCarouselFrame>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
