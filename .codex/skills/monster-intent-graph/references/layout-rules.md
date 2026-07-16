@@ -83,9 +83,15 @@ partial. Fix the extractor or retain a partial-data notice.
 - Keep source and target nodes above the focused edge so their tooltip frames
   remain intact. Never let the interaction stroke block node clicks or label
   focus.
+- Treat progressive phase connectors as interactive edges. Animate them in the
+  conditional red, and highlight their source and target phase containers plus
+  the action nodes contained in those phases.
 - Prototype motion and focus on one dense representative graph before enabling
   them globally. Verify pointer hover, keyboard focus, reduced motion, passive
   playback frames, and every repository mobile preset before rollout.
+- Use passive frame differences only to confirm that a continuous animation is
+  changing over time. Verify direction separately from the path's source and
+  target order, the signed dash-offset keyframe, and visual inspection.
 
 ## Phase direction
 
