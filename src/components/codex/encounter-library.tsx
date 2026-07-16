@@ -550,12 +550,6 @@ function EncounterTile({
           >
             {gameUi.encounterRoomTypes[encounter.roomType]}
           </span>
-          {encounter.isWeak && (
-            <span className="text-[10px] text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded">{messages.encountersView.weakEncounter}</span>
-          )}
-          {encounter.tags?.map((tag) => (
-            <span key={tag} className="text-[10px] text-gray-500 bg-white/5 px-1.5 py-0.5 rounded">{tag}</span>
-          ))}
         </div>
       </div>
 
