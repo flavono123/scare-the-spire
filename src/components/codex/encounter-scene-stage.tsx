@@ -59,6 +59,16 @@ const KAISER_CRAB_ENCOUNTER_VIEWPORT: MonsterSpineViewport = {
   padBottom: "0%",
 };
 
+// Source: decimillipede_elite.tscn slots after the encounter's 0.87 camera
+// scaling and +50 Y offset. The wrapper compensates for the multi-part
+// renderer's internal viewport so the visible body lands at X 48-96%, Y 47-71%.
+const DECIMILLIPEDE_ENCOUNTER_FRAME: CSSProperties = {
+  left: "45.8%",
+  top: "30%",
+  width: "51.2%",
+  height: "49%",
+};
+
 const FIREFLIES = [
   [17, 18, 0.2], [25, 34, 1.1], [34, 15, 2.2], [43, 27, 0.7],
   [51, 39, 1.8], [58, 17, 2.8], [67, 31, 0.4], [75, 22, 1.4],
@@ -182,20 +192,26 @@ export function EncounterSceneStage({
 
         {decimillipedeMonster && (
           <>
-            <DecimillipedeSpineStage
-              fallbackImageUrl={encounter.imageUrl}
-              monsterName={encounter.name}
-              selectedMoveId={null}
-              mode="encounter"
-              className="pointer-events-none absolute inset-0 z-20"
-              fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.75)]"
-              imagePriority
-              showLoadingLabel={false}
-            />
+            <div
+              className="pointer-events-none absolute z-20"
+              style={DECIMILLIPEDE_ENCOUNTER_FRAME}
+              data-decimillipede-encounter-frame
+            >
+              <DecimillipedeSpineStage
+                fallbackImageUrl={encounter.imageUrl}
+                monsterName={encounter.name}
+                selectedMoveId={null}
+                mode="encounter"
+                className="absolute inset-0"
+                fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.75)]"
+                imagePriority
+                showLoadingLabel={false}
+              />
+            </div>
             <EncounterMonsterHotspot
               monster={decimillipedeMonster}
               serviceLocale={serviceLocale}
-              style={{ left: "48%", top: "24%", width: "50%", height: "52%" }}
+              style={{ left: "44%", top: "40%", width: "55%", height: "38%" }}
             />
           </>
         )}
