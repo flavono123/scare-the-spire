@@ -45,6 +45,8 @@ JSON output can be retained for later inspection:
 pnpm cf:errors -- --format json | tee cloudflare-errors.ndjson
 ```
 
+JSON tail output includes client IP addresses and request headers. Treat saved files as sensitive and redact them before sharing.
+
 Do not add `--ip self` when reproducing on a phone. `self` is the computer running Wrangler, not the phone's network address.
 
 ## Cloudflare dashboard workflow
