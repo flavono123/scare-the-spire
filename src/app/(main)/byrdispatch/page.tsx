@@ -47,6 +47,7 @@ const STATUS_TOKEN_ASSETS: Record<ByrdispatchStatus, { src: string }> = {
   new: { src: "/images/sts2/relics/new_leaf.webp" },
   wip: { src: "/images/sts2/powers/hammer_time_power.webp" },
   bug: { src: "/images/sts2/powers/infested_power.webp" },
+  reportThanks: { src: "/images/sts2/relics/wongo_customer_appreciation_badge.webp" },
 };
 
 type ByrdispatchStatusLabels = Readonly<Record<ByrdispatchStatus, string>>;

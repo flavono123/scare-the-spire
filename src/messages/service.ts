@@ -22,6 +22,7 @@ export const serviceMessages = {
         new: "새로운 기능",
         wip: "아직 개발 중",
         bug: "버그 수정",
+        reportThanks: "제보 감사",
       },
     },
     games: {
@@ -607,6 +608,7 @@ export const serviceMessages = {
         new: "New feature",
         wip: "Still in development",
         bug: "Bug fix",
+        reportThanks: "Thanks for the report",
       },
     },
     games: {
