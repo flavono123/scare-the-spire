@@ -1228,6 +1228,7 @@ function PatternStateTransitionDiagram({
                   ? "target"
                   : "dimmed"
               : "idle"}
+            focusColor={focusedEdge?.color ?? null}
           />
         ))}
       </div>
@@ -1246,6 +1247,7 @@ function PatternMoveStateNode({
   cardById,
   shouldSuppressDiagramClick,
   focusState,
+  focusColor,
 }: {
   node: PatternDiagramNode;
   monster: CodexMonster;
@@ -1257,6 +1259,7 @@ function PatternMoveStateNode({
   cardById: Map<string, CodexCard>;
   shouldSuppressDiagramClick: () => boolean;
   focusState: PatternDiagramNodeFocus;
+  focusColor: string | null;
 }) {
   const [monsterAscensionLevel] = useMonsterAscensionLevel();
   const move = getMonsterMove(monster, node.id);
@@ -1282,7 +1285,7 @@ function PatternMoveStateNode({
         height: node.height,
         opacity: focusState === "dimmed" ? 0.22 : 1,
         filter: focusState === "source" || focusState === "target"
-          ? `drop-shadow(0 0 7px ${DIAGRAM_ARROW_COLOR}) brightness(1.12)`
+          ? `drop-shadow(0 0 7px ${focusColor ?? DIAGRAM_ARROW_COLOR}) brightness(1.12)`
           : focusState === "dimmed"
             ? "saturate(0.35) brightness(0.55)"
             : undefined,
