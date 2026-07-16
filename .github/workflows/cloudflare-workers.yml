@@ -64,6 +64,9 @@ jobs:
               case "$file" in
                 AGENTS.md|docs/*|.codex/skills/*)
                   ;;
+                .github/workflows/cloudflare-workers.yml)
+                  main_changed=true
+                  ;;
                 data/sts2-patch-notes/*|data/sts2-patches.json|data/sts2-patch-local-resources.json|src/components/patch-note-renderer.tsx|src/components/patches/*|src/app/\(main\)/patches/*|src/app/\[gameLocale\]/patches/*|src/lib/sts2-patch-*.ts|scripts/build-patch-worker.tsx|scripts/dev-patch-proxy.mjs|workers/patch-worker.ts|wrangler.patch.jsonc)
                   patch_changed=true
                   ;;
@@ -177,6 +180,12 @@ jobs:
 
       - run: pnpm patch:test
         if: steps.changes.outputs.patch == 'true' || steps.changes.outputs.patch_after_main == 'true'
+
+      - name: Free runner disk space for the static build
+        if: steps.changes.outputs.main == 'true'
+        run: |
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/.ghcup
+          df -h /
 
       - name: Build main Worker for Cloudflare
         if: steps.changes.outputs.main == 'true'
