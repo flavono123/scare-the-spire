@@ -20,6 +20,7 @@ type ExecutionContextLike = {
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import openNextWorker from "../.open-next/worker.js";
+import { staticCompendiumAssetPath } from "./static-page-routing";
 
 function isPatchWorkerPath(pathname: string): boolean {
   return (
@@ -45,22 +46,6 @@ const GAME_LOCALE_PATH_SEGMENTS = new Set([
   "pl",
   "th",
   "tr",
-]);
-
-const STATIC_COMPENDIUM_SEGMENTS = new Set([
-  "ancients",
-  "bestiary",
-  "cards",
-  "characters",
-  "enchantments",
-  "encounters",
-  "epochs",
-  "events",
-  "keywords",
-  "monsters",
-  "potions",
-  "powers",
-  "relics",
 ]);
 
 function isRscRequest(request: Request, url: URL): boolean {
@@ -140,20 +125,6 @@ function staticHomeAssetPath(pathname: string, request: Request, url: URL): stri
     : `/_cf_static_pages/${maybeLocalePath}.${extension}`;
 }
 
-function staticCompendiumAssetPath(pathname: string, request: Request, url: URL): string | null {
-  const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
-  const parts = normalizedPathname.split("/").filter(Boolean);
-  const compendiumIndex = parts.indexOf("compendium");
-  if (compendiumIndex < 0 || compendiumIndex + 2 !== parts.length) return null;
-  if (compendiumIndex > 1) return null;
-
-  const segment = parts[compendiumIndex + 1];
-  if (!STATIC_COMPENDIUM_SEGMENTS.has(segment)) return null;
-
-  const extension = isRscRequest(request, url) ? "rsc" : "html";
-  return `/_cf_static_pages/${parts.join("/")}.${extension}`;
-}
-
 async function fetchStaticPageAsset(
   request: Request,
   env: Env,
@@ -200,7 +171,8 @@ async function maybeServeStaticHomePage(request: Request, env: Env, url: URL): P
 }
 
 async function maybeServeStaticCompendiumPage(request: Request, env: Env, url: URL): Promise<Response | null> {
-  const assetPath = staticCompendiumAssetPath(url.pathname, request, url);
+  const extension = isRscRequest(request, url) ? "rsc" : "html";
+  const assetPath = staticCompendiumAssetPath(url.pathname, extension);
   return assetPath ? fetchStaticPageAsset(request, env, assetPath, "compendium") : null;
 }
 

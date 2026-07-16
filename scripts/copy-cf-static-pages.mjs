@@ -58,7 +58,13 @@ function staticPageRelativePath(file) {
 
   const compendiumIndex = parts.indexOf("compendium");
   if (compendiumIndex < 0 || compendiumIndex > 1) return null;
-  if (!compendiumSegments.has(parsed.name)) return null;
+
+  const isIndex = parts.length === compendiumIndex + 1 && compendiumSegments.has(parsed.name);
+  const isServiceLocaleDetail =
+    parts.length === compendiumIndex + 2
+    && compendiumSegments.has(parts[compendiumIndex + 1])
+    && (compendiumIndex === 0 || parts[0] === "en");
+  if (!isIndex && !isServiceLocaleDetail) return null;
 
   return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
 }
