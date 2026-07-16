@@ -31,8 +31,9 @@ Turn rough service-update notes into canonical 섀소식 / byrdispatch markdown.
    - Write notice URLs as markdown links so users can click through.
    - Do not add `(서비스)` markers. Refer to services by their visible service name in plain text; the renderer styles recognized service names as aqua links with a leading token asset.
    - When a service mention has a qualifier, keep the qualifier plain and let only the service name style, e.g. `슬더스2 패치노트` styles only `패치노트`.
-   - Preserve status markers such as `(new)`, `(개발 중)`, and `(버그)` when the user provides them; the renderer turns them into token badges.
+   - Preserve status markers such as `(new)`, `(개발 중)`, `(버그)`, and `(제보 감사)` when the user provides them; the renderer turns them into token badges.
    - Treat `(버그)` as the Infested power token badge in rendered output.
+   - Treat `(제보 감사)` as the Wongo Customer Appreciation Badge relic token with the `제보 감사` tooltip in rendered output.
    - Ask only if the target date or intended meaning is genuinely ambiguous.
 6. Add rich references only when verifiable in this repo.
    - Use patch-note BBCode syntax such as `[gold:card]광기[/gold]` or `[gold:relic]역사 강의서[/gold]`.

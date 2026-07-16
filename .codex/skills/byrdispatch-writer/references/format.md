@@ -30,7 +30,7 @@ Rules:
 - Use `## 서비스명` for top-level services.
 - Use `### 하위 서비스명` for child services inside a top-level service.
 - A top-level service H2 may have no bullets when it only groups child service H3 sections; keep the H2 visible.
-- Append `(new)`, `(개발 중)`, or `(버그)` to headings or bullets only when that status is true.
+- Append `(new)`, `(개발 중)`, `(버그)`, or `(제보 감사)` to headings or bullets only when that status is true.
 - Bullets are one line each.
 - Preserve one nested bullet level (`  -`) when the user provides child examples/details or explicitly asks for nested bullets.
 - No intro paragraph.
@@ -60,7 +60,8 @@ Codex writes plain markdown with status markers; the app renderer owns visual st
 - `(new)`: render a New Leaf relic token after the heading or bullet.
 - `(개발 중)`: render a Hammer Time power token after the heading or bullet.
 - `(버그)`: render an Infested power token after the heading or bullet.
-- Status tokens expose hover tooltips: `새로운 기능`, `아직 개발 중`, `버그 수정`.
+- `(제보 감사)`: render a Wongo Customer Appreciation Badge relic token after the heading or bullet.
+- Status tokens expose hover tooltips: `새로운 기능`, `아직 개발 중`, `버그 수정`, `제보 감사`.
 
 Token/icon asset anchors:
 
@@ -68,6 +69,7 @@ Token/icon asset anchors:
 - New service/status: `public/images/sts2/relics/new_leaf.webp`
 - In progress: `public/images/sts2/powers/hammer_time_power.webp`
 - Bug fix: `public/images/sts2/powers/infested_power.webp`
+- Community report thanks: `public/images/sts2/relics/wongo_customer_appreciation_badge.webp`
 - Compendium top-level service: use the STS2 desktop/app icon from the top navbar.
 - Compendium child services: use the icon token assets already used by the compendium dropdown.
 
@@ -118,6 +120,7 @@ Use `기타` only when no section fits.
 - 새 서비스/하위 서비스는 제목 뒤에 (new)
 - 진행 중 변경은 제목이나 bullet 뒤에 (개발 중)
 - 버그 수정은 제목이나 bullet 뒤에 (버그)
+- 제보에 감사하는 변경은 제목이나 bullet 뒤에 (제보 감사)
 - bullet은 한 줄
 - 필요한 게임/서비스 항목은 기존 rich patch 문법으로 링크/툴팁 처리
 - 서비스 본문 참조는 `패치노트`, `케미컬X`처럼 서비스명을 그대로 쓰고 `(서비스)`를 붙이지 않음
