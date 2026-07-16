@@ -2,6 +2,8 @@ import { expect, test } from "@playwright/test";
 
 const BASE = process.env.BASE_URL ?? "http://127.0.0.1:3000";
 
+test.use({ locale: "ko-KR" });
+
 const CASES = [
   { path: "/compendium/bestiary", localizedName: "잉클릿", englishName: "Inklet" },
   { path: "/compendium/bestiary?view=encounters", localizedName: "루비 습격자", englishName: "Ruby Raiders" },
