@@ -47,12 +47,14 @@ function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
 
 function PatchLineStoryAction({
   count,
+  patchLine,
   serviceLocale,
   storiesUnavailable,
   onOpen,
   onWrite,
 }: {
   count: number;
+  patchLine: STS2PatchLine;
   serviceLocale?: ServiceLocale;
   storiesUnavailable: boolean;
   onOpen: () => void;
@@ -71,6 +73,9 @@ function PatchLineStoryAction({
         else onWrite();
       }}
       data-patch-line-story-action
+      data-patch-line-id={patchLine.id}
+      data-patch-id={patchLine.patch}
+      data-patch-line-refs={JSON.stringify(patchLine.entityRefs)}
       className={`inline-flex h-5 items-center gap-1 rounded border px-1 align-baseline text-[10px] leading-none tabular-nums transition-colors focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#fb923c]/50 ${
         count > 0
           ? "border-[#fb923c]/16 bg-[#fb923c]/[0.045] text-[#fed7aa]/65 opacity-85 hover:border-[#fb923c]/32 hover:bg-[#fb923c]/[0.08] hover:text-[#fed7aa] hover:opacity-100"
@@ -262,6 +267,7 @@ export function PatchNoteWithStoryActions({
         patchLine.id,
         <PatchLineStoryAction
           count={count}
+          patchLine={patchLine}
           serviceLocale={rendererProps.serviceLocale}
           storiesUnavailable={communityStories.unavailable}
           onOpen={() => setActivePatchLineId(patchLine.id)}
