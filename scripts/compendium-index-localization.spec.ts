@@ -3,6 +3,8 @@ import { expect, test } from "@playwright/test";
 const BASE = process.env.BASE_URL ?? "http://127.0.0.1:3000";
 
 const CASES = [
+  { path: "/zh/compendium/bestiary", localizedName: "墨宝", englishName: "Inklet" },
+  { path: "/zh/compendium/bestiary?view=encounters", localizedName: "红宝石劫掠者", englishName: "Ruby Raiders" },
   { path: "/zh/compendium/ancients", localizedName: "达弗", englishName: "Darv" },
   { path: "/zh/compendium/events", localizedName: "深渊浴场", englishName: "Abyssal Baths" },
   { path: "/zh/compendium/epochs", localizedName: "先子星", englishName: "Preon" },
