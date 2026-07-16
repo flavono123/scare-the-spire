@@ -16,6 +16,7 @@ import type {
   EncounterSceneCombatLayout,
   EncounterSceneCombatMonsterLayout,
   EncounterSceneMonsterSlot,
+  MonsterSpineViewport,
 } from "@/lib/codex-types";
 import { serviceMessages } from "@/messages/service";
 import { FakeMerchantEncounterSpineLayer } from "./fake-merchant-spine-stage";
@@ -33,7 +34,15 @@ interface EncounterSceneStageProps {
 interface PositionedMonster {
   monster: CodexMonster;
   style: CSSProperties;
+  viewportOverride: MonsterSpineViewport | null;
 }
+
+const GAME_BOUNDS_VIEWPORT_MONSTERS = new Set([
+  "AEONGLASS",
+  "SOUL_NEXUS",
+  "THE_INSATIABLE",
+  "VANTOM",
+]);
 
 const FIREFLIES = [
   [17, 18, 0.2], [25, 34, 1.1], [34, 15, 2.2], [43, 27, 0.7],
@@ -168,7 +177,7 @@ export function EncounterSceneStage({
           </Link>
         )}
 
-        {positionedMonsters.map(({ monster, style }, index) => (
+        {positionedMonsters.map(({ monster, style, viewportOverride }, index) => (
           <Link
             key={`${formation.id}:${index}:${monster.id}`}
             href={localizeHref(
@@ -191,6 +200,7 @@ export function EncounterSceneStage({
               imagePriority={index < 2}
               showLoadingLabel={false}
               viewportTransitionTime={0}
+              viewportOverride={viewportOverride}
               viewportPadding={{ padLeft: "0%", padRight: "0%", padTop: "0%", padBottom: "0%" }}
             />
             <span className="absolute bottom-0 left-1/2 z-40 -translate-x-1/2 translate-y-1/2 whitespace-nowrap rounded-full border border-white/15 bg-black/75 px-2 py-0.5 font-game-title text-[9px] font-bold text-gray-100 opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 sm:text-[11px]">
@@ -413,6 +423,9 @@ function positionFormationMonsters(
 
     return {
       monster,
+      viewportOverride: monsterLayout && GAME_BOUNDS_VIEWPORT_MONSTERS.has(monster.id)
+        ? viewportFromGameCreatureLayout(monsterLayout)
+        : null,
       style: {
         left: `${(position.x / coordinateWidth) * 100}%`,
         top: `${(position.y / coordinateHeight) * 100}%`,
@@ -422,6 +435,33 @@ function positionFormationMonsters(
       },
     };
   });
+}
+
+function viewportFromGameCreatureLayout(
+  layout: EncounterSceneCombatMonsterLayout,
+): MonsterSpineViewport | null {
+  const scaleX = Math.abs(layout.visualScale.x);
+  const scaleY = Math.abs(layout.visualScale.y);
+  if (scaleX === 0 || scaleY === 0) return null;
+
+  // Godot's creature Bounds use Y-down screen coordinates while Spine uses
+  // Y-up world coordinates. Undo the Visuals node transform so the browser
+  // clips the same offscreen bones that the combat scene clips.
+  const x = layout.visualScale.x > 0
+    ? (layout.bounds.left - layout.visualPosition.x) / scaleX
+    : (layout.visualPosition.x - layout.bounds.right) / scaleX;
+  const y = (layout.visualPosition.y - layout.bounds.bottom) / scaleY;
+
+  return {
+    x,
+    y,
+    width: layout.bounds.width / scaleX,
+    height: layout.bounds.height / scaleY,
+    padLeft: "0%",
+    padRight: "0%",
+    padTop: "0%",
+    padBottom: "0%",
+  };
 }
 
 function positionEnemiesFromGameBounds(

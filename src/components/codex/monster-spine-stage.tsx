@@ -9,7 +9,13 @@ import {
   type SpinePlayerConfig,
   type SpineSkinCtor,
 } from "@/lib/spine-player-runtime";
-import type { MonsterPhobiaModeScene, MonsterSpineAsset, MonsterSpineEffectAsset, MonsterSpineTrackAnimation } from "@/lib/codex-types";
+import type {
+  MonsterPhobiaModeScene,
+  MonsterSpineAsset,
+  MonsterSpineEffectAsset,
+  MonsterSpineTrackAnimation,
+  MonsterSpineViewport,
+} from "@/lib/codex-types";
 import { MonsterPhobiaSceneStage } from "./monster-phobia-scene-stage";
 
 interface MonsterSpineStageProps {
@@ -29,6 +35,7 @@ interface MonsterSpineStageProps {
   showLoadingLabel?: boolean;
   viewportTransitionTime?: number;
   viewportPadding?: SpineViewportPadding;
+  viewportOverride?: MonsterSpineViewport | null;
   fallbackImageClassName?: string;
   fallbackImageStyle?: CSSProperties;
   loopSelectedMove?: boolean;
@@ -81,6 +88,7 @@ function MonsterSpineStageComponent({
   showLoadingLabel = true,
   viewportTransitionTime,
   viewportPadding,
+  viewportOverride = null,
   fallbackImageClassName,
   fallbackImageStyle,
   loopSelectedMove = false,
@@ -109,6 +117,38 @@ function MonsterSpineStageComponent({
     () => asset && selectedMoveId ? asset.moveAnimationTracks?.[selectedMoveId] ?? null : null,
     [asset, selectedMoveId],
   );
+  const hasViewportOverride = viewportOverride !== null;
+  const viewportOverrideX = viewportOverride?.x;
+  const viewportOverrideY = viewportOverride?.y;
+  const viewportOverrideWidth = viewportOverride?.width;
+  const viewportOverrideHeight = viewportOverride?.height;
+  const viewportOverridePadLeft = viewportOverride?.padLeft;
+  const viewportOverridePadRight = viewportOverride?.padRight;
+  const viewportOverridePadTop = viewportOverride?.padTop;
+  const viewportOverridePadBottom = viewportOverride?.padBottom;
+  const stableViewportOverride = useMemo(
+    () => hasViewportOverride ? {
+      x: viewportOverrideX,
+      y: viewportOverrideY,
+      width: viewportOverrideWidth,
+      height: viewportOverrideHeight,
+      padLeft: viewportOverridePadLeft,
+      padRight: viewportOverridePadRight,
+      padTop: viewportOverridePadTop,
+      padBottom: viewportOverridePadBottom,
+    } : null,
+    [
+      hasViewportOverride,
+      viewportOverrideHeight,
+      viewportOverridePadBottom,
+      viewportOverridePadLeft,
+      viewportOverridePadRight,
+      viewportOverridePadTop,
+      viewportOverrideWidth,
+      viewportOverrideX,
+      viewportOverrideY,
+    ],
+  );
 
   useEffect(() => {
     if (!asset || !containerRef.current) return;
@@ -120,7 +160,12 @@ function MonsterSpineStageComponent({
     void loadSpinePlayerRuntime()
       .then(({ SpinePlayer: SpinePlayerCtor, Skin: SpineSkinCtor, Physics }) => {
         if (disposed || !containerRef.current) return;
-        const viewport = getMonsterViewport(asset, viewportTransitionTime, viewportPadding);
+        const viewport = getMonsterViewport(
+          asset,
+          viewportTransitionTime,
+          viewportPadding,
+          stableViewportOverride,
+        );
 
         player = new SpinePlayerCtor(parent, {
           binaryUrl: asset.binaryUrl,
@@ -168,7 +213,7 @@ function MonsterSpineStageComponent({
       releaseSpinePlayer(player);
       parent.replaceChildren();
     };
-  }, [asset, compositeSkinNames, monsterName, onVisualBoundsChange, singleSkin, viewportPadding, viewportTransitionTime]);
+  }, [asset, compositeSkinNames, monsterName, onVisualBoundsChange, singleSkin, stableViewportOverride, viewportPadding, viewportTransitionTime]);
 
   useEffect(() => {
     if (!asset || loadState !== "ready" || !playerRef.current || !selectedAnimation) return;
@@ -458,14 +503,16 @@ function getMonsterViewport(
   asset: MonsterSpineAsset,
   transitionTime = 0.12,
   viewportPadding?: SpineViewportPadding,
+  viewportOverride?: MonsterSpineViewport | null,
 ): SpinePlayerConfig["viewport"] {
-  if (asset.viewport) {
+  const viewport = viewportOverride ?? asset.viewport;
+  if (viewport) {
     return {
       padLeft: "4%",
       padRight: "4%",
       padTop: "4%",
       padBottom: "4%",
-      ...asset.viewport,
+      ...viewport,
       ...viewportPadding,
       transitionTime,
     };
