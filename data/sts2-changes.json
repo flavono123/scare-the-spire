@@ -8222,20 +8222,11 @@
         "field": "descriptionRaw",
         "before": "내 턴 동안 카드를 [blue]{CardThreshold}[/blue]장 이하로 사용했다면, 적으로부터 받는 피해량이 절반이 됩니다.",
         "after": "매 전투 시작 시 [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다. 그 다음 턴 시작 시 [gold]방어도[/gold]가 사라지지 않습니다."
-      },
-      {
-        "field": "vars",
-        "before": {
-          "CardThreshold": 2
-        },
-        "after": {
-          "Block": 20
-        }
       }
     ],
     "date": "2026-07-17",
     "summary": "Diamond Diadem now starts combat with 20 Block that persists through the next turn.",
-    "summaryKo": "다이아몬드 관이 전투 시작 시 다음 턴까지 유지되는 방어도 20을 얻도록 개편되었습니다."
+    "summaryKo": "다이아몬드 왕관이 전투 시작 시 다음 턴까지 유지되는 방어도 20을 얻도록 개편되었습니다."
   },
   {
     "id": "distinguished-cape-v0-109-0-field-diff",
@@ -8265,22 +8256,11 @@
         "field": "descriptionRaw",
         "before": "획득 시, 최대 체력을 [blue]9[/blue] 잃습니다. [gold]덱[/gold]에 [gold]영체화[/gold]를 [blue]{Cards}[/blue]장 추가합니다.",
         "after": "획득 시, [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]{Curses}[/blue]장, [gold]영체화[/gold]를 [blue]{Cards}[/blue]장 추가합니다."
-      },
-      {
-        "field": "vars",
-        "before": {
-          "HpLoss": 9,
-          "Cards": 3
-        },
-        "after": {
-          "Curses": 2,
-          "Cards": 3
-        }
       }
     ],
     "date": "2026-07-17",
     "summary": "Distinguished Cape now adds 2 random Curses instead of losing 9 Max HP; it still adds 3 Apparitions.",
-    "summaryKo": "고상한 망토가 최대 체력 9 감소 대신 무작위 저주 2장을 추가하며, 영체화 3장은 유지됩니다."
+    "summaryKo": "기품 있는 망토가 최대 체력 9 감소 대신 무작위 저주 2장을 추가하며, 영체화 3장은 유지됩니다."
   },
   {
     "id": "fiddle-v0-109-0-field-diff",
@@ -8305,16 +8285,11 @@
         "field": "description",
         "before": "매 턴 시작 시, 카드를 추가로 [blue]2[/blue]장 뽑습니다. 내 턴 동안 카드를 뽑을 수 없습니다.",
         "after": "매 턴 시작 시, 카드를 추가로 [blue]3[/blue]장 뽑습니다. 내 턴 동안 카드를 뽑을 수 없습니다."
-      },
-      {
-        "field": "vars.Cards",
-        "before": 2,
-        "after": 3
       }
     ],
     "date": "2026-07-17",
     "summary": "Fiddle's extra card draw increased from 2 to 3.",
-    "summaryKo": "피들의 추가 카드 드로우가 2장에서 3장으로 증가했습니다."
+    "summaryKo": "바이올린의 추가 카드 드로우가 2장에서 3장으로 증가했습니다."
   },
   {
     "id": "history-course-v0-109-0-field-diff",
@@ -8378,22 +8353,11 @@
         "field": "descriptionRaw",
         "before": "획득 시, [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]{Curses}[/blue]장, [purple]염원[/purple]을 [blue]{Wishes}[/blue]장 추가합니다.",
         "after": "획득 시, 최대 체력을 [blue]9[/blue] 잃습니다. [gold]덱[/gold]에 [purple]염원[/purple]을 [blue]{Wishes}[/blue]장 추가합니다."
-      },
-      {
-        "field": "vars",
-        "before": {
-          "Curses": 2,
-          "Wishes": 3
-        },
-        "after": {
-          "HpLoss": 9,
-          "Wishes": 3
-        }
       }
     ],
     "date": "2026-07-17",
     "summary": "Sere Talon now loses 9 Max HP instead of adding 2 random Curses; it still adds 3 Wishes.",
-    "summaryKo": "마른 발톱이 무작위 저주 2장 대신 최대 체력 9를 잃으며, 염원 3장은 유지됩니다."
+    "summaryKo": "말라비틀어진 발톱이 무작위 저주 2장 대신 최대 체력 9를 잃으며, 염원 3장은 유지됩니다."
   },
   {
     "id": "toy-box-v0-109-0-field-diff",
@@ -8418,15 +8382,899 @@
         "field": "description",
         "before": "획득 시, [gold]밀랍 유물[/gold]을 [blue]4[/blue]개 얻습니다. [blue]3[/blue]번의 전투마다 가장 왼쪽에 있는 [gold]밀랍 유물[/gold]이 녹아서 사라집니다.",
         "after": "획득 시, [gold]밀랍 유물[/gold]을 [blue]5[/blue]개 얻습니다. [blue]3[/blue]번의 전투마다 가장 왼쪽에 있는 [gold]밀랍 유물[/gold]이 녹아서 사라집니다."
-      },
-      {
-        "field": "vars.Relics",
-        "before": 4,
-        "after": 5
       }
     ],
     "date": "2026-07-17",
     "summary": "Toy Box relics gained increased from 4 to 5.",
     "summaryKo": "장난감 상자로 얻는 밀랍 유물이 4개에서 5개로 증가했습니다."
+  },
+  {
+    "id": "meat-cleaver-v0-109-0-nerf",
+    "entityType": "relic",
+    "entityId": "MEAT_CLEAVER",
+    "patch": "v0.109.0",
+    "date": "2026-07-17",
+    "character": null,
+    "summary": "Meat Cleaver Cook HP gain decreased from 9 to 5.",
+    "summaryKo": "고기 써는 칼의 요리 체력 증가량이 9에서 5로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "9 HP",
+        "beforeKo": "체력 9",
+        "after": "5 HP",
+        "afterKo": "체력 5",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "sand-castle-v0-109-0-pool-change",
+    "entityType": "relic",
+    "entityId": "SAND_CASTLE",
+    "patch": "v0.109.0",
+    "date": "2026-07-17",
+    "character": null,
+    "summary": "Sand Castle moved from Ancient blessing Pool 1 to Pool 2.",
+    "summaryKo": "모래성이 고대의 존재 축복 1번 풀에서 2번 풀로 이동했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Pool 1",
+        "beforeKo": "1번 풀",
+        "after": "Pool 2",
+        "afterKo": "2번 풀",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "darv-v0-109-0-pool-change",
+    "entityType": "ancient",
+    "entityId": "DARV",
+    "patch": "v0.109.0",
+    "date": "2026-07-17",
+    "character": null,
+    "summary": "Darv's blessing pools were diversified, with Energy relics appearing more often.",
+    "summaryKo": "다브의 축복 풀이 다양해지고 에너지 유물이 더 자주 등장하도록 변경되었습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Previous blessing pools",
+        "beforeKo": "기존 축복 풀",
+        "after": "More variety; more Energy relics",
+        "afterKo": "다양성 증가; 에너지 유물 등장 빈도 증가",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "aeonglass-v0-109-0-nerf",
+    "entityType": "monster",
+    "entityId": "AEONGLASS",
+    "patch": "v0.109.0",
+    "date": "2026-07-17",
+    "character": null,
+    "summary": "Aeonglass Ebb damage decreased from 26(32) to 22(26).",
+    "summaryKo": "영겁의 모래시계의 감쇠 피해량이 26(32)에서 22(26)으로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "26(32) damage",
+        "beforeKo": "피해 26(32)",
+        "after": "22(26) damage",
+        "afterKo": "피해 22(26)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "damageValues",
+        "before": {
+          "Ebb": {
+            "normal": 26,
+            "ascension": 32
+          },
+          "EyeLasers": {
+            "normal": 11,
+            "ascension": 12
+          }
+        },
+        "after": {
+          "Ebb": {
+            "normal": 22,
+            "ascension": 26
+          },
+          "EyeLasers": {
+            "normal": 11,
+            "ascension": 12
+          }
+        }
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
+  },
+  {
+    "id": "torch-head-amalgam-v0-109-0-buff",
+    "entityType": "monster",
+    "entityId": "TORCH_HEAD_AMALGAM",
+    "patch": "v0.109.0",
+    "date": "2026-07-17",
+    "character": null,
+    "summary": "Torch Head Amalgam now opens with Strong Tackle for 26(32) damage instead of 18(22).",
+    "summaryKo": "횃불머리 융합체가 첫 턴에 18(22) 대신 26(32) 피해를 주는 강력 태클을 사용합니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Turn 1: Tackle, 18(22)",
+        "beforeKo": "1턴: 태클, 18(22)",
+        "after": "Turn 1: Strong Tackle, 26(32)",
+        "afterKo": "1턴: 강력 태클, 26(32)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "TACKLE",
+            "name": "태클",
+            "nameEn": "Tackle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Tackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "TACKLE_2",
+            "name": "태클",
+            "nameEn": "Tackle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Tackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BEAM",
+            "name": "광선",
+            "nameEn": "Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "SoulBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "TACKLE_3",
+            "name": "태클",
+            "nameEn": "Tackle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "WeakTackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "TACKLE_4",
+            "name": "태클",
+            "nameEn": "Tackle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "WeakTackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "STRONG_TACKLE",
+            "name": "강력 태클",
+            "nameEn": "Strong Tackle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "StrongTackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "TACKLE_2",
+            "name": "Tackle 2",
+            "nameEn": "Tackle 2",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Tackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BEAM",
+            "name": "광선",
+            "nameEn": "Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "SoulBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "TACKLE_3",
+            "name": "Tackle 3",
+            "nameEn": "Tackle 3",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "WeakTackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "TACKLE_4",
+            "name": "Tackle 4",
+            "nameEn": "Tackle 4",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "WeakTackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "TACKLE",
+            "name": "태클",
+            "nameEn": "Tackle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Tackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "TACKLE_2",
+            "name": "태클",
+            "nameEn": "Tackle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Tackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BEAM",
+            "name": "광선",
+            "nameEn": "Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "SoulBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "TACKLE_3",
+            "name": "태클",
+            "nameEn": "Tackle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "WeakTackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "TACKLE_4",
+            "name": "태클",
+            "nameEn": "Tackle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "WeakTackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "STRONG_TACKLE",
+            "name": "강력 태클",
+            "nameEn": "Strong Tackle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "StrongTackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "TACKLE_2",
+            "name": "Tackle 2",
+            "nameEn": "Tackle 2",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Tackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BEAM",
+            "name": "광선",
+            "nameEn": "Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "SoulBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "TACKLE_3",
+            "name": "Tackle 3",
+            "nameEn": "Tackle 3",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "WeakTackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "TACKLE_4",
+            "name": "Tackle 4",
+            "nameEn": "Tackle 4",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "WeakTackle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "moveGraph",
+        "before": {
+          "initial": "TACKLE",
+          "confidence": "static",
+          "transitions": [
+            {
+              "from": "TACKLE",
+              "to": "TACKLE_2",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "TACKLE_2",
+              "to": "BEAM",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "BEAM",
+              "to": "TACKLE_3",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "TACKLE_3",
+              "to": "TACKLE_4",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "TACKLE_4",
+              "to": "BEAM",
+              "chance": 100,
+              "kind": "fixed"
+            }
+          ],
+          "states": [
+            {
+              "id": "TACKLE",
+              "kind": "move",
+              "next": "TACKLE_2"
+            },
+            {
+              "id": "TACKLE_2",
+              "kind": "move",
+              "next": "BEAM"
+            },
+            {
+              "id": "BEAM",
+              "kind": "move",
+              "next": "TACKLE_3"
+            },
+            {
+              "id": "TACKLE_3",
+              "kind": "move",
+              "next": "TACKLE_4"
+            },
+            {
+              "id": "TACKLE_4",
+              "kind": "move",
+              "next": "BEAM"
+            }
+          ]
+        },
+        "after": {
+          "initial": "STRONG_TACKLE",
+          "confidence": "static",
+          "transitions": [
+            {
+              "from": "STRONG_TACKLE",
+              "to": "TACKLE_2",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "TACKLE_2",
+              "to": "BEAM",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "BEAM",
+              "to": "TACKLE_3",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "TACKLE_3",
+              "to": "TACKLE_4",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "TACKLE_4",
+              "to": "BEAM",
+              "chance": 100,
+              "kind": "fixed"
+            }
+          ],
+          "states": [
+            {
+              "id": "STRONG_TACKLE",
+              "kind": "move",
+              "next": "TACKLE_2"
+            },
+            {
+              "id": "TACKLE_2",
+              "kind": "move",
+              "next": "BEAM"
+            },
+            {
+              "id": "BEAM",
+              "kind": "move",
+              "next": "TACKLE_3"
+            },
+            {
+              "id": "TACKLE_3",
+              "kind": "move",
+              "next": "TACKLE_4"
+            },
+            {
+              "id": "TACKLE_4",
+              "kind": "move",
+              "next": "BEAM"
+            }
+          ]
+        }
+      },
+      {
+        "field": "damageValues",
+        "before": {
+          "Tackle": {
+            "normal": 18,
+            "ascension": 22
+          },
+          "SoulBeam": {
+            "normal": 8,
+            "ascension": 8
+          },
+          "WeakTackle": {
+            "normal": 14,
+            "ascension": 16
+          }
+        },
+        "after": {
+          "StrongTackle": {
+            "normal": 26,
+            "ascension": 32
+          },
+          "Tackle": {
+            "normal": 18,
+            "ascension": 22
+          },
+          "SoulBeam": {
+            "normal": 8,
+            "ascension": 8
+          },
+          "WeakTackle": {
+            "normal": 14,
+            "ascension": 16
+          }
+        }
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
   }
 ]
