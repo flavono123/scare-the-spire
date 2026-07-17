@@ -141,15 +141,20 @@ test.describe("Unified topbar search", () => {
   });
 
   test("works on static patch Worker pages with Korean choseong", async ({ page }) => {
-    await openCompendium(page, "/patches");
+    await setKoreanServiceLocale(page);
+    await page.setViewportSize({ width: 360, height: 800 });
+    await page.goto(`${BASE}/patches`, { waitUntil: "networkidle" });
 
     const header = page.locator("header");
-    await header.getByRole("button", { name: "통합 검색" }).click();
+    const trigger = header.getByRole("button", { name: "통합 검색" });
+    await expect(trigger).toBeVisible();
+    await trigger.click();
     await page.locator('input[placeholder="통합 검색"]').fill("ㅇㅇㅋㄹㄷ");
 
     await expect(
       page.locator('[data-patch-global-search-results] a[href="/compendium/characters?character=ironclad"]').first(),
     ).toBeVisible();
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });
 
   test("opens direct epoch search results", async ({ page }) => {
