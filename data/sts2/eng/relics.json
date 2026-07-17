@@ -850,6 +850,17 @@
     "vars": {}
   },
   {
+    "id": "DOWSING_ROD",
+    "name": "Dowsing Rod",
+    "description": "Upon pickup, add [blue]1[/blue] [gold]Dowsing[/gold] to your [gold]Deck[/gold].",
+    "description_raw": "Upon pickup, add [blue]1[/blue] [gold]Dowsing[/gold] to your [gold]Deck[/gold].",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Ancient Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/dowsing_rod.png",
+    "vars": {}
+  },
+  {
     "id": "DRIFTWOOD",
     "name": "Driftwood",
     "description": "You may reroll each card reward once.",
@@ -2025,6 +2036,17 @@
       "Relics": 2,
       "Curses": 1
     }
+  },
+  {
+    "id": "NEOWS_SACRIFICE",
+    "name": "Neow's Sacrifice",
+    "description": "Upon pickup, procure [blue]1[/blue] [gold]Ambergris[/gold] and add [blue]1[/blue] [red]Guilty[/red] to your [gold]Deck[/gold].",
+    "description_raw": "Upon pickup, procure [blue]1[/blue] [gold]Ambergris[/gold] and add [blue]1[/blue] [red]Guilty[/red] to your [gold]Deck[/gold].",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Ancient Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/neows_sacrifice.png",
+    "vars": {}
   },
   {
     "id": "NEOWS_TALISMAN",

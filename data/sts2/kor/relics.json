@@ -850,6 +850,17 @@
     "vars": {}
   },
   {
+    "id": "DOWSING_ROD",
+    "name": "다우징 로드",
+    "description": "획득 시, [gold]덱[/gold]에 [gold]다우징[/gold]을 [blue]1[/blue]장 추가합니다.",
+    "description_raw": "획득 시, [gold]덱[/gold]에 [gold]다우징[/gold]을 [blue]1[/blue]장 추가합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "고대 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/dowsing_rod.png",
+    "vars": {}
+  },
+  {
     "id": "DRIFTWOOD",
     "name": "유목",
     "description": "매 카드 보상을 1번 다시 뽑을 수 있습니다.",
@@ -2025,6 +2036,17 @@
       "Relics": 2,
       "Curses": 1
     }
+  },
+  {
+    "id": "NEOWS_SACRIFICE",
+    "name": "니오우의 희생",
+    "description": "획득 시, [gold]용연향[/gold]을 [blue]1[/blue]개 생성하고 [gold]덱[/gold]에 [red]죄책감[/red]을 [blue]1[/blue]장 추가합니다.",
+    "description_raw": "획득 시, [gold]용연향[/gold]을 [blue]1[/blue]개 생성하고 [gold]덱[/gold]에 [red]죄책감[/red]을 [blue]1[/blue]장 추가합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "고대 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/neows_sacrifice.png",
+    "vars": {}
   },
   {
     "id": "NEOWS_TALISMAN",
