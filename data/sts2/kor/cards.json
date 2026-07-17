@@ -13452,7 +13452,7 @@
     "upgrade": {
       "cards": "+1"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/plot.png",
     "beta_image_url": "/static/images/cards/beta/plot.png"
   },
   {
@@ -18626,7 +18626,7 @@
     "upgrade": {
       "increase": "+5"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/the_ball.png",
     "beta_image_url": "/static/images/cards/beta/the_ball.png"
   },
   {

@@ -9276,5 +9276,27 @@
     "visualDiff": {
       "type": "monster-pattern"
     }
+  },
+  {
+    "id": "plot-v0-109-0-official-art",
+    "entityType": "card",
+    "entityId": "PLOT",
+    "patch": "v0.109.0",
+    "date": "2026-07-17",
+    "character": "regent",
+    "summary": "Plot received its official portrait art.",
+    "summaryKo": "구상에 정식 초상화 일러스트가 추가되었습니다.",
+    "diffs": [
+      {
+        "attribute": "art",
+        "displayName": "Portrait Art",
+        "displayNameKo": "초상화 일러스트",
+        "before": "Beta portrait",
+        "beforeKo": "베타 초상화",
+        "after": "Official portrait",
+        "afterKo": "정식 초상화",
+        "diffType": "text"
+      }
+    ]
   }
 ]
