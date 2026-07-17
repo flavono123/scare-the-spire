@@ -4,6 +4,7 @@ import path from "path";
 import React, { type ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { loadEnvConfig } from "@next/env";
+import { build as buildClientBundle, stop as stopClientBundler } from "esbuild";
 import {
   PatchDetailPage,
   generatePatchDetailStaticParams,
@@ -55,6 +56,10 @@ const patchCommentsClientPath = path.join(
 const patchStaticSpineClientPath = path.join(
   process.cwd(),
   "src/components/patches/patch-static-spine-client.js",
+);
+const patchGlobalSearchClientPath = path.join(
+  process.cwd(),
+  "src/components/patches/patch-global-search-client.ts",
 );
 const spinePlayerClientPath = path.join(
   process.cwd(),
@@ -305,9 +310,13 @@ function StaticPatchHeader({
         </div>
 
         <div className="flex min-w-0 flex-1 items-center justify-end gap-0.5 sm:gap-1">
-          <div
-            className="hidden h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-2.5 text-left text-sm text-muted-foreground sm:flex sm:max-w-[18rem] lg:max-w-[22rem]"
-            aria-hidden="true"
+          <button
+            type="button"
+            data-patch-global-search-trigger
+            aria-controls="patch-global-search-overlay"
+            aria-expanded="false"
+            aria-label={searchCopy}
+            className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-2.5 text-left text-sm text-muted-foreground transition-colors hover:border-yellow-500/40 hover:bg-white/[0.07] sm:max-w-[18rem] lg:max-w-[22rem]"
           >
             <svg className="h-4 w-4 shrink-0 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8" />
@@ -317,7 +326,7 @@ function StaticPatchHeader({
             <kbd className="hidden shrink-0 rounded border border-white/10 bg-black/20 px-1.5 py-0.5 font-mono text-[10px] text-gray-500 sm:inline">
               ⌘K
             </kbd>
-          </div>
+          </button>
 
           <div className="hidden xl:block">
             <StaticLanguageDropdown
@@ -362,6 +371,56 @@ function StaticPatchHeader({
   );
 }
 
+function StaticGlobalSearchOverlay({ serviceLocale }: { serviceLocale: ServiceLocale }) {
+  const copy = serviceLocale === "ko"
+    ? { placeholder: "통합 검색", dialogLabel: "통합 검색" }
+    : { placeholder: "Unified search", dialogLabel: "Unified search" };
+
+  return (
+    <div
+      id="patch-global-search-overlay"
+      data-patch-global-search-overlay
+      role="dialog"
+      aria-modal="true"
+      aria-label={copy.dialogLabel}
+      className="fixed inset-0 z-[1000] px-3 pt-16 sm:pt-24"
+      hidden
+    >
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
+      <div
+        data-patch-global-search-panel
+        className="relative z-10 mx-auto w-full max-w-xl overflow-hidden rounded-lg border border-white/10 bg-[#111827] shadow-2xl"
+      >
+        <div className="flex items-center gap-2 border-b border-white/10 px-3 py-2">
+          <svg className="h-4 w-4 shrink-0 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input
+            data-patch-global-search-input
+            aria-label={copy.placeholder}
+            placeholder={copy.placeholder}
+            className="h-10 min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground"
+            inputMode="search"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+          />
+        </div>
+        <div
+          data-patch-global-search-results
+          aria-live="polite"
+          className="max-h-[min(28rem,calc(100dvh-9rem))] overflow-y-auto p-1.5"
+        >
+          <div className="px-3 py-8 text-center text-sm text-muted-foreground">
+            {serviceLocale === "ko" ? "검색어를 입력하세요" : "Type to search"}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function routeOutputPath(pathname: string): string {
   const stripped = pathname.replace(/^\/+|\/+$/g, "");
   const normalized = stripped || "index";
@@ -382,6 +441,7 @@ function renderShell(route: StaticPatchRoute): string {
         gameLocale={route.gameLocale}
         pathname={route.pathname}
       />
+      <StaticGlobalSearchOverlay serviceLocale={route.serviceLocale} />
       <main>{route.element}</main>
       <script
         dangerouslySetInnerHTML={{
@@ -421,7 +481,7 @@ function renderShell(route: StaticPatchRoute): string {
             supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
             supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
             supabaseEnv: process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production",
-          })}</script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-comments.js" defer></script>`,
+          })}</script><script src="/_patches/patch-global-search.js" defer></script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-comments.js" defer></script>`,
         }}
       />
     </html>,
@@ -439,6 +499,17 @@ async function writePatchClientAssets() {
     await fs.mkdir(path.dirname(destinationPath), { recursive: true });
     await fs.copyFile(sourcePath, destinationPath);
   }
+
+  await buildClientBundle({
+    entryPoints: [patchGlobalSearchClientPath],
+    outfile: path.join(outDir, "_patches/patch-global-search.js"),
+    bundle: true,
+    minify: true,
+    platform: "browser",
+    format: "iife",
+    target: ["es2022"],
+  });
+  stopClientBundler();
 }
 
 async function writeRoute(route: StaticPatchRoute) {
