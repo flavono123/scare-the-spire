@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { GameLocale } from "@/lib/i18n";
+import { STS2_IMAGE_CACHE_BUSTER } from "@/lib/sts2-image-cache";
 
 type EntityLoadState = {
   gameLocale: GameLocale;
@@ -17,7 +18,8 @@ function loadThisOrThatStaticEntities(gameLocale: GameLocale): Promise<EntityInf
   const cached = entityPromises.get(gameLocale);
   if (cached) return cached;
 
-  const promise = fetch(`/generated/this-or-that-resources-${gameLocale}.json`, { cache: "force-cache" })
+  const resourceUrl = `/generated/this-or-that-resources-${gameLocale}.json?v=${STS2_IMAGE_CACHE_BUSTER}`;
+  const promise = fetch(resourceUrl, { cache: "no-cache" })
     .then((response) => {
       if (!response.ok) {
         throw new Error(`Failed to load this-or-that resources: ${response.status}`);
