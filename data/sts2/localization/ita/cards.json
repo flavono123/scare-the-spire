@@ -1,4 +1,5 @@
 {
+  "ABUNDANCE.title": "Abundance",
   "ABRASIVE.description": "Ottieni {DexterityPower:diff()} di [gold]Destrezza[/gold].\nOttieni {ThornsPower:diff()} di [gold]Spinascudo[/gold].",
   "ABRASIVE.title": "Irritazione",
   "ACCELERANT.description": "[gold]Veleno[/gold] si attiva {Accelerant:diff()} {Accelerant:plural:volta|volte} in più.",
@@ -338,6 +339,7 @@
   "DOUBLE_ENERGY.title": "Energia Doppia",
   "DOUBT.description": "Al termine del tuo turno, se questa carta si trova nella tua [gold]mano[/gold], ottieni {WeakPower:diff()} di [gold]Debolezza[/gold]",
   "DOUBT.title": "Dubbio",
+  "DOWSING.title": "Dowsing",
   "DRAIN_POWER.description": "Infliggi {Damage:diff()} di danno.\n[gold]Potenzi[/gold] {Cards:diff()} {Cards:plural:carta casuale|carte casuali} nella tua [gold]pila degli scarti[/gold].",
   "DRAIN_POWER.title": "Prosciugamento Vitale",
   "DRAMATIC_ENTRANCE.description": "Infliggi {Damage:diff()} di danno a TUTTI i nemici.",
