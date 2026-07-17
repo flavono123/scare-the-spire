@@ -1120,27 +1120,70 @@
       {
         "field": "moves",
         "before": [
-          { "id": "WHAT_IS_IT", "name": "What Is It", "nameEn": "What Is It" },
-          { "id": "BEAM", "name": "Beam", "nameEn": "Beam" },
-          { "id": "GET_BACK_IN", "name": "Get Back In", "nameEn": "Get Back In" }
+          {
+            "id": "WHAT_IS_IT",
+            "name": "What Is It",
+            "nameEn": "What Is It"
+          },
+          {
+            "id": "BEAM",
+            "name": "Beam",
+            "nameEn": "Beam"
+          },
+          {
+            "id": "GET_BACK_IN",
+            "name": "Get Back In",
+            "nameEn": "Get Back In"
+          }
         ],
         "after": [
-          { "id": "DRAMATIC_OPEN", "name": "극적인 개방", "nameEn": "Dramatic Open" },
-          { "id": "HUNGER", "name": "굶주림", "nameEn": "Hunger" },
-          { "id": "SCRUTINY", "name": "감시", "nameEn": "Scrutiny" },
-          { "id": "GRASP", "name": "움켜쥐기", "nameEn": "Grasp" }
+          {
+            "id": "DRAMATIC_OPEN",
+            "name": "극적인 개방",
+            "nameEn": "Dramatic Open"
+          },
+          {
+            "id": "HUNGER",
+            "name": "굶주림",
+            "nameEn": "Hunger"
+          },
+          {
+            "id": "SCRUTINY",
+            "name": "감시",
+            "nameEn": "Scrutiny"
+          },
+          {
+            "id": "GRASP",
+            "name": "움켜쥐기",
+            "nameEn": "Grasp"
+          }
         ]
       },
       {
         "field": "damageValues",
         "before": {
-          "LaserBeam": { "normal": 31, "ascension": 34 },
-          "GetBackInMove": { "normal": 40, "ascension": 45 }
+          "LaserBeam": {
+            "normal": 31,
+            "ascension": 34
+          },
+          "GetBackInMove": {
+            "normal": 40,
+            "ascension": 45
+          }
         },
         "after": {
-          "Hunger": { "normal": 30, "ascension": 35 },
-          "Scrutiny": { "normal": 24, "ascension": 26 },
-          "Grasp": { "normal": 10, "ascension": 11 }
+          "Hunger": {
+            "normal": 30,
+            "ascension": 35
+          },
+          "Scrutiny": {
+            "normal": 24,
+            "ascension": 26
+          },
+          "Grasp": {
+            "normal": 10,
+            "ascension": 11
+          }
         }
       }
     ],
@@ -1170,7 +1213,11 @@
       }
     ],
     "fieldDiffs": [
-      { "field": "deprecatedInPatch", "before": null, "after": "v0.105.0" }
+      {
+        "field": "deprecatedInPatch",
+        "before": null,
+        "after": "v0.105.0"
+      }
     ],
     "relatedEntities": [
       {
@@ -1546,37 +1593,87 @@
       }
     ],
     "fieldDiffs": [
-      { "field": "minHp", "before": 40, "after": 70 },
-      { "field": "maxHp", "before": 44, "after": 78 },
-      { "field": "minHpAscension", "before": 42, "after": 76 },
-      { "field": "maxHpAscension", "before": 46, "after": 86 },
+      {
+        "field": "minHp",
+        "before": 40,
+        "after": 70
+      },
+      {
+        "field": "maxHp",
+        "before": 44,
+        "after": 78
+      },
+      {
+        "field": "minHpAscension",
+        "before": 42,
+        "after": 76
+      },
+      {
+        "field": "maxHpAscension",
+        "before": 46,
+        "after": 86
+      },
       {
         "field": "damageValues",
         "before": {
-          "OneTwo": { "normal": 5, "ascension": 6 },
-          "HammerUppercut": { "normal": 8, "ascension": 10 }
+          "OneTwo": {
+            "normal": 5,
+            "ascension": 6
+          },
+          "HammerUppercut": {
+            "normal": 8,
+            "ascension": 10
+          }
         },
         "after": {
-          "OneTwo": { "normal": 9, "ascension": 10 },
-          "HammerUppercut": { "normal": 12, "ascension": 14 }
+          "OneTwo": {
+            "normal": 9,
+            "ascension": 10
+          },
+          "HammerUppercut": {
+            "normal": 12,
+            "ascension": 14
+          }
         }
       },
       {
         "field": "blockValues",
         "before": {
-          "BootUp": { "normal": 10, "ascension": null }
+          "BootUp": {
+            "normal": 10,
+            "ascension": null
+          }
         },
         "after": {
-          "BootUp": { "normal": 10, "ascension": 15 }
+          "BootUp": {
+            "normal": 10,
+            "ascension": 15
+          }
         }
       },
       {
         "field": "moves",
         "before": [
-          { "id": "BOOT_UP", "name": "시동", "nameEn": "Boot Up" },
-          { "id": "ONE_TWO", "name": "좌우 연타", "nameEn": "The One-Two" },
-          { "id": "SHARPEN", "name": "도끼 갈기", "nameEn": "Sharpen" },
-          { "id": "HAMMER_UPPERCUT", "name": "망치 올려치기", "nameEn": "Hammer Uppercut" }
+          {
+            "id": "BOOT_UP",
+            "name": "시동",
+            "nameEn": "Boot Up"
+          },
+          {
+            "id": "ONE_TWO",
+            "name": "좌우 연타",
+            "nameEn": "The One-Two"
+          },
+          {
+            "id": "SHARPEN",
+            "name": "도끼 갈기",
+            "nameEn": "Sharpen"
+          },
+          {
+            "id": "HAMMER_UPPERCUT",
+            "name": "망치 올려치기",
+            "nameEn": "Hammer Uppercut"
+          }
         ],
         "after": [
           {
@@ -1584,10 +1681,33 @@
             "name": "시동",
             "nameEn": "Boot Up",
             "kind": "move",
-            "actionTypes": ["defense", "buff"],
-            "intents": ["DefendIntent", "BuffIntent"],
-            "intentDetails": [{ "type": "DefendIntent" }, { "type": "BuffIntent" }],
-            "powerApplications": [{ "powerId": "STRENGTH", "powerName": "힘", "powerNameEn": "Strength", "powerType": "Buff", "target": "self", "amount": null, "imageUrl": "/images/sts2/powers/strength_power.webp" }],
+            "actionTypes": [
+              "defense",
+              "buff"
+            ],
+            "intents": [
+              "DefendIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DefendIntent"
+              },
+              {
+                "type": "BuffIntent"
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
             "cardApplications": []
           },
           {
@@ -1595,9 +1715,22 @@
             "name": "좌우 연타",
             "nameEn": "The One-Two",
             "kind": "move",
-            "actionTypes": ["attack"],
-            "intents": ["MultiAttackIntent"],
-            "intentDetails": [{ "type": "MultiAttackIntent", "damageKey": "OneTwo", "repeat": { "normal": 2, "ascension": null } }],
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "OneTwo",
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                }
+              }
+            ],
             "powerApplications": [],
             "cardApplications": []
           },
@@ -1606,12 +1739,52 @@
             "name": "망치 올려치기",
             "nameEn": "Hammer Uppercut",
             "kind": "move",
-            "actionTypes": ["attack", "debuff"],
-            "intents": ["SingleAttackIntent", "DebuffIntent"],
-            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "HammerUppercut", "repeat": { "normal": 1, "ascension": null } }, { "type": "DebuffIntent" }],
+            "actionTypes": [
+              "attack",
+              "debuff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "HammerUppercut",
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                }
+              },
+              {
+                "type": "DebuffIntent"
+              }
+            ],
             "powerApplications": [
-              { "powerId": "WEAK", "powerName": "약화", "powerNameEn": "Weak", "powerType": "Debuff", "target": "player", "amount": { "normal": 2, "ascension": null }, "imageUrl": "/images/sts2/powers/weak_power.webp" },
-              { "powerId": "FRAIL", "powerName": "손상", "powerNameEn": "Frail", "powerType": "Debuff", "target": "player", "amount": { "normal": 2, "ascension": null }, "imageUrl": "/images/sts2/powers/frail_power.webp" }
+              {
+                "powerId": "WEAK",
+                "powerName": "약화",
+                "powerNameEn": "Weak",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/weak_power.webp"
+              },
+              {
+                "powerId": "FRAIL",
+                "powerName": "손상",
+                "powerNameEn": "Frail",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/frail_power.webp"
+              }
             ],
             "cardApplications": []
           }
@@ -1620,10 +1793,26 @@
       {
         "field": "bestiaryMoves",
         "before": [
-          { "id": "BOOT_UP", "name": "시동", "nameEn": "Boot Up" },
-          { "id": "ONE_TWO", "name": "좌우 연타", "nameEn": "The One-Two" },
-          { "id": "SHARPEN", "name": "도끼 갈기", "nameEn": "Sharpen" },
-          { "id": "HAMMER_UPPERCUT", "name": "망치 올려치기", "nameEn": "Hammer Uppercut" }
+          {
+            "id": "BOOT_UP",
+            "name": "시동",
+            "nameEn": "Boot Up"
+          },
+          {
+            "id": "ONE_TWO",
+            "name": "좌우 연타",
+            "nameEn": "The One-Two"
+          },
+          {
+            "id": "SHARPEN",
+            "name": "도끼 갈기",
+            "nameEn": "Sharpen"
+          },
+          {
+            "id": "HAMMER_UPPERCUT",
+            "name": "망치 올려치기",
+            "nameEn": "Hammer Uppercut"
+          }
         ],
         "after": [
           {
@@ -1631,10 +1820,33 @@
             "name": "시동",
             "nameEn": "Boot Up",
             "kind": "move",
-            "actionTypes": ["defense", "buff"],
-            "intents": ["DefendIntent", "BuffIntent"],
-            "intentDetails": [{ "type": "DefendIntent" }, { "type": "BuffIntent" }],
-            "powerApplications": [{ "powerId": "STRENGTH", "powerName": "힘", "powerNameEn": "Strength", "powerType": "Buff", "target": "self", "amount": null, "imageUrl": "/images/sts2/powers/strength_power.webp" }],
+            "actionTypes": [
+              "defense",
+              "buff"
+            ],
+            "intents": [
+              "DefendIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DefendIntent"
+              },
+              {
+                "type": "BuffIntent"
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
             "cardApplications": []
           },
           {
@@ -1642,9 +1854,22 @@
             "name": "좌우 연타",
             "nameEn": "The One-Two",
             "kind": "move",
-            "actionTypes": ["attack"],
-            "intents": ["MultiAttackIntent"],
-            "intentDetails": [{ "type": "MultiAttackIntent", "damageKey": "OneTwo", "repeat": { "normal": 2, "ascension": null } }],
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "OneTwo",
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                }
+              }
+            ],
             "powerApplications": [],
             "cardApplications": []
           },
@@ -1653,12 +1878,52 @@
             "name": "망치 올려치기",
             "nameEn": "Hammer Uppercut",
             "kind": "move",
-            "actionTypes": ["attack", "debuff"],
-            "intents": ["SingleAttackIntent", "DebuffIntent"],
-            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "HammerUppercut", "repeat": { "normal": 1, "ascension": null } }, { "type": "DebuffIntent" }],
+            "actionTypes": [
+              "attack",
+              "debuff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "HammerUppercut",
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                }
+              },
+              {
+                "type": "DebuffIntent"
+              }
+            ],
             "powerApplications": [
-              { "powerId": "WEAK", "powerName": "약화", "powerNameEn": "Weak", "powerType": "Debuff", "target": "player", "amount": { "normal": 2, "ascension": null }, "imageUrl": "/images/sts2/powers/weak_power.webp" },
-              { "powerId": "FRAIL", "powerName": "손상", "powerNameEn": "Frail", "powerType": "Debuff", "target": "player", "amount": { "normal": 2, "ascension": null }, "imageUrl": "/images/sts2/powers/frail_power.webp" }
+              {
+                "powerId": "WEAK",
+                "powerName": "약화",
+                "powerNameEn": "Weak",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/weak_power.webp"
+              },
+              {
+                "powerId": "FRAIL",
+                "powerName": "손상",
+                "powerNameEn": "Frail",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/frail_power.webp"
+              }
             ],
             "cardApplications": []
           }
@@ -1668,7 +1933,18 @@
         "field": "initialPowerApplications",
         "before": [],
         "after": [
-          { "powerId": "STOCK", "powerName": "재고", "powerNameEn": "Stock", "powerType": "Buff", "target": "self", "amount": { "normal": 2, "ascension": null }, "imageUrl": "/images/sts2/powers/stock_power.webp" }
+          {
+            "powerId": "STOCK",
+            "powerName": "재고",
+            "powerNameEn": "Stock",
+            "powerType": "Buff",
+            "target": "self",
+            "amount": {
+              "normal": 2,
+              "ascension": null
+            },
+            "imageUrl": "/images/sts2/powers/stock_power.webp"
+          }
         ]
       }
     ],
@@ -2405,28 +2681,63 @@
       }
     ],
     "fieldDiffs": [
-      { "field": "minHp", "before": 200, "after": 161 },
-      { "field": "minHpAscension", "before": 215, "after": 171 },
+      {
+        "field": "minHp",
+        "before": 200,
+        "after": 161
+      },
+      {
+        "field": "minHpAscension",
+        "before": 215,
+        "after": 171
+      },
       {
         "field": "damageValues",
         "before": {
-          "Jab": { "normal": 22, "ascension": 24 },
-          "Radiate": { "normal": 16, "ascension": 18 },
-          "Whirlwind": { "normal": 9, "ascension": 10 }
+          "Jab": {
+            "normal": 22,
+            "ascension": 24
+          },
+          "Radiate": {
+            "normal": 16,
+            "ascension": 18
+          },
+          "Whirlwind": {
+            "normal": 9,
+            "ascension": 10
+          }
         },
         "after": {
-          "Jab": { "normal": 15, "ascension": 17 },
-          "Radiate": { "normal": 11, "ascension": 13 },
-          "Whirlwind": { "normal": 5, "ascension": 6 },
-          "Pulsate": { "normal": 8, "ascension": 10 }
+          "Jab": {
+            "normal": 15,
+            "ascension": 17
+          },
+          "Radiate": {
+            "normal": 11,
+            "ascension": 13
+          },
+          "Whirlwind": {
+            "normal": 5,
+            "ascension": 6
+          },
+          "Pulsate": {
+            "normal": 8,
+            "ascension": 10
+          }
         }
       },
       {
         "field": "blockValues",
         "before": null,
         "after": {
-          "Radiate": { "normal": 11, "ascension": 13 },
-          "Pulsate": { "normal": 20, "ascension": 22 }
+          "Radiate": {
+            "normal": 11,
+            "ascension": 13
+          },
+          "Pulsate": {
+            "normal": 20,
+            "ascension": 22
+          }
         }
       },
       {
@@ -2438,9 +2749,24 @@
             "nameEn": "Jab",
             "kind": "move",
             "animationId": "attack",
-            "actionTypes": ["attack"],
-            "intents": ["SingleAttackIntent"],
-            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "Jab", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null }],
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Jab",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
             "powerApplications": [],
             "cardApplications": []
           },
@@ -2450,9 +2776,24 @@
             "nameEn": "Radiate",
             "kind": "move",
             "animationId": "attack_block",
-            "actionTypes": ["attack"],
-            "intents": ["SingleAttackIntent"],
-            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "Radiate", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null }],
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Radiate",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
             "powerApplications": [],
             "cardApplications": []
           },
@@ -2462,9 +2803,24 @@
             "nameEn": "Whirlwind",
             "kind": "move",
             "animationId": "attack_double",
-            "actionTypes": ["attack"],
-            "intents": ["MultiAttackIntent"],
-            "intentDetails": [{ "type": "MultiAttackIntent", "damageKey": "Whirlwind", "blockKey": null, "repeat": { "normal": 3, "ascension": null }, "repeatExpression": null }],
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Whirlwind",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
             "powerApplications": [],
             "cardApplications": []
           },
@@ -2487,9 +2843,24 @@
             "name": "찌르기",
             "nameEn": "Jab",
             "kind": "move",
-            "actionTypes": ["attack"],
-            "intents": ["SingleAttackIntent"],
-            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "Jab", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null }],
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Jab",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
             "powerApplications": [],
             "cardApplications": []
           },
@@ -2498,11 +2869,32 @@
             "name": "방출",
             "nameEn": "Radiate",
             "kind": "move",
-            "actionTypes": ["attack", "defense"],
-            "intents": ["SingleAttackIntent", "DefendIntent"],
+            "actionTypes": [
+              "attack",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DefendIntent"
+            ],
             "intentDetails": [
-              { "type": "SingleAttackIntent", "damageKey": "Radiate", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null },
-              { "type": "DefendIntent", "damageKey": null, "blockKey": null, "repeat": null, "repeatExpression": null }
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Radiate",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
             ],
             "powerApplications": [],
             "cardApplications": []
@@ -2512,9 +2904,24 @@
             "name": "소용돌이",
             "nameEn": "Whirlwind",
             "kind": "move",
-            "actionTypes": ["attack"],
-            "intents": ["MultiAttackIntent"],
-            "intentDetails": [{ "type": "MultiAttackIntent", "damageKey": "Whirlwind", "blockKey": null, "repeat": { "normal": 3, "ascension": null }, "repeatExpression": null }],
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Whirlwind",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
             "powerApplications": [],
             "cardApplications": []
           },
@@ -2523,15 +2930,55 @@
             "name": "맥박",
             "nameEn": "Pulsate",
             "kind": "move",
-            "actionTypes": ["attack", "buff", "defense"],
-            "intents": ["SingleAttackIntent", "BuffIntent", "DefendIntent"],
+            "actionTypes": [
+              "attack",
+              "buff",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "BuffIntent",
+              "DefendIntent"
+            ],
             "intentDetails": [
-              { "type": "SingleAttackIntent", "damageKey": "Pulsate", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null },
-              { "type": "BuffIntent", "damageKey": null, "blockKey": null, "repeat": null, "repeatExpression": null },
-              { "type": "DefendIntent", "damageKey": null, "blockKey": null, "repeat": null, "repeatExpression": null }
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Pulsate",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
             ],
             "powerApplications": [
-              { "powerId": "VITAL_SPARK", "powerName": "생명의 불꽃", "powerNameEn": "Vital Spark", "powerType": "Buff", "target": "self", "amount": { "normal": 2, "ascension": 3 }, "imageUrl": "/images/sts2/powers/vital_spark_power.webp" }
+              {
+                "powerId": "VITAL_SPARK",
+                "powerName": "생명의 불꽃",
+                "powerNameEn": "Vital Spark",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/vital_spark_power.webp"
+              }
             ],
             "cardApplications": []
           }
@@ -2546,9 +2993,24 @@
             "nameEn": "Jab",
             "kind": "move",
             "animationId": "attack",
-            "actionTypes": ["attack"],
-            "intents": ["SingleAttackIntent"],
-            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "Jab", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null }],
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Jab",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
             "powerApplications": [],
             "cardApplications": []
           },
@@ -2558,9 +3020,24 @@
             "nameEn": "Radiate",
             "kind": "move",
             "animationId": "attack_block",
-            "actionTypes": ["attack"],
-            "intents": ["SingleAttackIntent"],
-            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "Radiate", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null }],
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Radiate",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
             "powerApplications": [],
             "cardApplications": []
           },
@@ -2570,9 +3047,24 @@
             "nameEn": "Whirlwind",
             "kind": "move",
             "animationId": "attack_double",
-            "actionTypes": ["attack"],
-            "intents": ["MultiAttackIntent"],
-            "intentDetails": [{ "type": "MultiAttackIntent", "damageKey": "Whirlwind", "blockKey": null, "repeat": { "normal": 3, "ascension": null }, "repeatExpression": null }],
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Whirlwind",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
             "powerApplications": [],
             "cardApplications": []
           },
@@ -2588,8 +3080,30 @@
             "powerApplications": [],
             "cardApplications": []
           },
-          { "id": "hurt", "name": "피격", "nameEn": "Hurt", "kind": "animation", "animationId": "hurt", "actionTypes": [], "intents": [], "intentDetails": [], "powerApplications": [], "cardApplications": [] },
-          { "id": "die", "name": "죽음", "nameEn": "Die", "kind": "animation", "animationId": "die", "actionTypes": [], "intents": [], "intentDetails": [], "powerApplications": [], "cardApplications": [] }
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
         ],
         "after": [
           {
@@ -2597,9 +3111,24 @@
             "name": "찌르기",
             "nameEn": "Jab",
             "kind": "move",
-            "actionTypes": ["attack"],
-            "intents": ["SingleAttackIntent"],
-            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "Jab", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null }],
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Jab",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
             "powerApplications": [],
             "cardApplications": []
           },
@@ -2608,11 +3137,32 @@
             "name": "방출",
             "nameEn": "Radiate",
             "kind": "move",
-            "actionTypes": ["attack", "defense"],
-            "intents": ["SingleAttackIntent", "DefendIntent"],
+            "actionTypes": [
+              "attack",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DefendIntent"
+            ],
             "intentDetails": [
-              { "type": "SingleAttackIntent", "damageKey": "Radiate", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null },
-              { "type": "DefendIntent", "damageKey": null, "blockKey": null, "repeat": null, "repeatExpression": null }
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Radiate",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
             ],
             "powerApplications": [],
             "cardApplications": []
@@ -2622,9 +3172,24 @@
             "name": "소용돌이",
             "nameEn": "Whirlwind",
             "kind": "move",
-            "actionTypes": ["attack"],
-            "intents": ["MultiAttackIntent"],
-            "intentDetails": [{ "type": "MultiAttackIntent", "damageKey": "Whirlwind", "blockKey": null, "repeat": { "normal": 3, "ascension": null }, "repeatExpression": null }],
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Whirlwind",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
             "powerApplications": [],
             "cardApplications": []
           },
@@ -2633,27 +3198,100 @@
             "name": "맥박",
             "nameEn": "Pulsate",
             "kind": "move",
-            "actionTypes": ["attack", "buff", "defense"],
-            "intents": ["SingleAttackIntent", "BuffIntent", "DefendIntent"],
+            "actionTypes": [
+              "attack",
+              "buff",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "BuffIntent",
+              "DefendIntent"
+            ],
             "intentDetails": [
-              { "type": "SingleAttackIntent", "damageKey": "Pulsate", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null },
-              { "type": "BuffIntent", "damageKey": null, "blockKey": null, "repeat": null, "repeatExpression": null },
-              { "type": "DefendIntent", "damageKey": null, "blockKey": null, "repeat": null, "repeatExpression": null }
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Pulsate",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
             ],
             "powerApplications": [
-              { "powerId": "VITAL_SPARK", "powerName": "생명의 불꽃", "powerNameEn": "Vital Spark", "powerType": "Buff", "target": "self", "amount": { "normal": 2, "ascension": 3 }, "imageUrl": "/images/sts2/powers/vital_spark_power.webp" }
+              {
+                "powerId": "VITAL_SPARK",
+                "powerName": "생명의 불꽃",
+                "powerNameEn": "Vital Spark",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/vital_spark_power.webp"
+              }
             ],
             "cardApplications": []
           },
-          { "id": "hurt", "name": "피격", "nameEn": "Hurt", "kind": "animation", "animationId": "hurt", "actionTypes": [], "intents": [], "intentDetails": [], "powerApplications": [], "cardApplications": [] },
-          { "id": "die", "name": "죽음", "nameEn": "Die", "kind": "animation", "animationId": "die", "actionTypes": [], "intents": [], "intentDetails": [], "powerApplications": [], "cardApplications": [] }
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
         ]
       },
       {
         "field": "initialPowerApplications",
         "before": [],
         "after": [
-          { "powerId": "VITAL_SPARK", "powerName": "생명의 불꽃", "powerNameEn": "Vital Spark", "powerType": "Buff", "target": "self", "amount": { "normal": 2, "ascension": 3 }, "imageUrl": "/images/sts2/powers/vital_spark_power.webp" }
+          {
+            "powerId": "VITAL_SPARK",
+            "powerName": "생명의 불꽃",
+            "powerNameEn": "Vital Spark",
+            "powerType": "Buff",
+            "target": "self",
+            "amount": {
+              "normal": 2,
+              "ascension": 3
+            },
+            "imageUrl": "/images/sts2/powers/vital_spark_power.webp"
+          }
         ]
       }
     ],
@@ -6692,6 +7330,683 @@
             "ascension": 16
           }
         }
+      }
+    ]
+  },
+  {
+    "id": "accelerant-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "ACCELERANT",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "희귀",
+        "after": "고급"
+      }
+    ]
+  },
+  {
+    "id": "blade-symphony-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "BLADE_SYMPHONY",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 1,
+        "after": 2
+      },
+      {
+        "field": "upgrade.cards",
+        "before": "+1"
+      },
+      {
+        "field": "upgrade.cost",
+        "after": 1
+      }
+    ]
+  },
+  {
+    "id": "bloodletting-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "BLOODLETTING",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "일반",
+        "after": "고급"
+      }
+    ]
+  },
+  {
+    "id": "collision-course-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "COLLISION_COURSE",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 11 줍니다.\n[gold]잔해[/gold]를 1장\n[gold]손[/gold]으로 가져옵니다.",
+        "after": "피해를 10 줍니다.\n[gold]잔해[/gold]를 1장\n[gold]손[/gold]으로 가져옵니다."
+      },
+      {
+        "field": "damage",
+        "before": 9,
+        "after": 10
+      },
+      {
+        "field": "vars.Damage",
+        "before": 11,
+        "after": 10
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+3",
+        "after": "+4"
+      }
+    ]
+  },
+  {
+    "id": "cruelty-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "CRUELTY",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "희귀",
+        "after": "고급"
+      }
+    ]
+  },
+  {
+    "id": "demon-form-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "DEMON_FORM",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "내 턴 시작 시,\n[gold]힘[/gold]을 2 얻습니다.",
+        "after": "내 턴 시작 시,\n[gold]힘[/gold]을 3 얻습니다."
+      },
+      {
+        "field": "vars.StrengthPower",
+        "before": 2,
+        "after": 3
+      },
+      {
+        "field": "vars.Strength",
+        "before": 2,
+        "after": 3
+      }
+    ]
+  },
+  {
+    "id": "dominate-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "DOMINATE",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "고급",
+        "after": "희귀"
+      },
+      {
+        "field": "description",
+        "before": "[gold]취약[/gold]을 X 부여합니다.\n대상 적이 보유한 [gold]취약[/gold]마다\n[gold]힘[/gold]을 1 얻습니다.",
+        "after": "[gold]취약[/gold]을 1 부여합니다.\n대상 적이 보유한 [gold]취약[/gold]마다\n[gold]힘[/gold]을 1 얻습니다."
+      },
+      {
+        "field": "vars.VulnerablePower",
+        "after": 1
+      },
+      {
+        "field": "vars.Vulnerable",
+        "after": 1
+      },
+      {
+        "field": "upgrade.remove_exhaust",
+        "before": 1
+      },
+      {
+        "field": "upgrade.vulnerablepower",
+        "after": "+1"
+      }
+    ]
+  },
+  {
+    "id": "eidolon-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "EIDOLON",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]손[/gold]에 있는 모든 카드를\n[gold]소멸[/gold]시킵니다.\n이를 통해 카드를 9장\n[gold]소멸[/gold]시켰다면,\n[gold]불가침[/gold]을 1 얻습니다.",
+        "after": "[gold]소멸된 카드 더미[/gold]에 있는\n모든 [gold]휘발성[/gold] 카드를\n사용합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]손[/gold]에 있는 모든 카드를\n[gold]소멸[/gold]시킵니다.\n이를 통해 카드를 9장\n[gold]소멸[/gold]시켰다면,\n[gold]불가침[/gold]을 1 얻습니다.",
+        "after": "[gold]소멸된 카드 더미[/gold]에 있는\n모든 [gold]휘발성[/gold] 카드를\n사용합니다."
+      },
+      {
+        "field": "vars.intangibleThreshold",
+        "before": 9
+      },
+      {
+        "field": "keywords",
+        "before": [],
+        "after": [
+          "소멸"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "expect-a-fight-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "EXPECT_A_FIGHT",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]손[/gold]에 있는 공격 카드 1장당\n[energy:1]를 얻습니다.\n이번 턴에 추가로\n[energy:1]를 얻을 수 없습니다.",
+        "after": "[gold]손[/gold]에 있는 공격 카드 1장당\n[energy:1]를 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]손[/gold]에 있는 공격 카드 1장당\n{energyPrefix:energyIcons(1)}를 얻습니다.\n이번 턴에 추가로\n{energyPrefix:energyIcons(1)}를 얻을 수 없습니다.{InCombat:\n({CalculatedEnergy:energyIcons()}를 얻습니다.)|}",
+        "after": "[gold]손[/gold]에 있는 공격 카드 1장당\n{energyPrefix:energyIcons(1)}를 얻습니다.{InCombat:\n({CalculatedEnergy:energyIcons()}를 얻습니다.)|}"
+      }
+    ]
+  },
+  {
+    "id": "expertise-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "EXPERTISE",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]손[/gold]에 있는 카드가 6장이\n될 때까지 카드를 뽑습니다.",
+        "after": "카드를 2장 뽑습니다.\n그 카드가 이번 턴에\n[gold]보존[/gold]을 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]손[/gold]에 있는 카드가 {Cards:diff()}장이\n될 때까지 카드를 뽑습니다.",
+        "after": "카드를 {Cards:diff()}장 뽑습니다.\n그 카드가 이번 턴에\n[gold]보존[/gold]을 얻습니다."
+      },
+      {
+        "field": "vars.Cards",
+        "before": 6,
+        "after": 2
+      }
+    ]
+  },
+  {
+    "id": "giant-rock-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "GIANT_ROCK",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 16 줍니다.",
+        "after": "피해를 20 줍니다."
+      },
+      {
+        "field": "damage",
+        "before": 16,
+        "after": 20
+      },
+      {
+        "field": "vars.Damage",
+        "before": 16,
+        "after": 20
+      }
+    ]
+  },
+  {
+    "id": "hyperbeam-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "HYPERBEAM",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "모든 적에게\n피해를 28 줍니다.\n[gold]밀집[/gold]을 3 잃습니다.",
+        "after": "모든 적에게\n피해를 30 줍니다.\n[gold]밀집[/gold]을 3 잃습니다."
+      },
+      {
+        "field": "damage",
+        "before": 28,
+        "after": 30
+      },
+      {
+        "field": "vars.Damage",
+        "before": 28,
+        "after": 30
+      }
+    ]
+  },
+  {
+    "id": "midnight-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "MIDNIGHT",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 99 줍니다.\n이번 전투 동안 [gold]소멸[/gold]한\n모두의 카드 1장당\n비용이 1  감소합니다.",
+        "after": "피해를 60 줍니다.\n이번 전투 동안 [gold]소멸[/gold]한\n모두의 카드 1장당\n비용이 1 [energy:1] 감소합니다."
+      },
+      {
+        "field": "damage",
+        "before": 99,
+        "after": 60
+      },
+      {
+        "field": "vars.Damage",
+        "before": 99,
+        "after": 60
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+21",
+        "after": "+12"
+      }
+    ]
+  },
+  {
+    "id": "mirage-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "MIRAGE",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 1,
+        "after": 0
+      },
+      {
+        "field": "description",
+        "before": "모든 적에게 부여된\n[gold]중독[/gold]과 동일한 만큼의\n[gold]방어도[/gold]를 얻습니다.",
+        "after": "다음 턴에, [energy:1]를 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "모든 적에게 부여된\n[gold]중독[/gold]과 동일한 만큼의\n[gold]방어도[/gold]를 얻습니다.{InCombat:\n([gold]방어도[/gold]를 {CalculatedBlock:diff()} 얻습니다)|}",
+        "after": "다음 턴에, {Energy:energyIcons()}를 얻습니다."
+      },
+      {
+        "field": "vars.CalculationBase",
+        "before": 0
+      },
+      {
+        "field": "vars.CalculationExtra",
+        "before": 1
+      },
+      {
+        "field": "vars.Energy",
+        "after": 1
+      },
+      {
+        "field": "keywords",
+        "before": [
+          "소멸"
+        ],
+        "after": []
+      },
+      {
+        "field": "upgrade.cost",
+        "before": 0
+      },
+      {
+        "field": "upgrade.energy",
+        "after": "+1"
+      }
+    ]
+  },
+  {
+    "id": "outbreak-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "OUTBREAK",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]중독[/gold]을 부여할 때마다, 모든 적에게\n피해를 3 줍니다.",
+        "after": "[gold]중독[/gold]을 부여할 때마다,\n모든 적에게\n피해를 4 줍니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]중독[/gold]을 부여할 때마다, 모든 적에게\n피해를 {OutbreakPower:diff()} 줍니다.",
+        "after": "[gold]중독[/gold]을 부여할 때마다,\n모든 적에게\n피해를 {OutbreakPower:diff()} 줍니다."
+      },
+      {
+        "field": "vars.OutbreakPower",
+        "before": 3,
+        "after": 4
+      },
+      {
+        "field": "vars.Outbreak",
+        "before": 3,
+        "after": 4
+      }
+    ]
+  },
+  {
+    "id": "pillar-of-creation-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "PILLAR_OF_CREATION",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "카드를 생성할 때마다,\n[gold]방어도[/gold]를 3 얻습니다.",
+        "after": "매 턴마다 카드를 처음으로\n생성할 때마다,\n[gold]방어도[/gold]를 5 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "카드를 생성할 때마다,\n[gold]방어도[/gold]를 {Block:diff()} 얻습니다.",
+        "after": "매 턴마다 카드를 처음으로\n생성할 때마다,\n[gold]방어도[/gold]를 {Block:diff()} 얻습니다."
+      },
+      {
+        "field": "block",
+        "before": 3,
+        "after": 5
+      },
+      {
+        "field": "vars.Block",
+        "before": 3,
+        "after": 5
+      },
+      {
+        "field": "upgrade.block",
+        "before": "+1",
+        "after": "+2"
+      }
+    ]
+  },
+  {
+    "id": "sunder-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "SUNDER",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 24 줍니다.\n이 카드로 적을 처치 시, [energy:3]을 얻습니다.",
+        "after": "피해를 26 줍니다.\n이 카드로 적을 처치 시, [energy:3]을 얻습니다."
+      },
+      {
+        "field": "damage",
+        "before": 24,
+        "after": 26
+      },
+      {
+        "field": "vars.Damage",
+        "before": 24,
+        "after": 26
+      }
+    ]
+  },
+  {
+    "id": "taunt-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "TAUNT",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "고급",
+        "after": "일반"
+      },
+      {
+        "field": "description",
+        "before": "[gold]방어도[/gold]를 7 얻습니다.\n[gold]취약[/gold]을 1 부여합니다.",
+        "after": "[gold]방어도[/gold]를 6 얻습니다.\n[gold]취약[/gold]을 1 부여합니다."
+      },
+      {
+        "field": "block",
+        "before": 7,
+        "after": 6
+      },
+      {
+        "field": "vars.Block",
+        "before": 7,
+        "after": 6
+      }
+    ]
+  },
+  {
+    "id": "the-ball-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "THE_BALL",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 10 줍니다.\n이번 전투 동안 이 카드의\n피해량이 15 증가하고\n무작위 아군에게\n이 카드를 줍니다.",
+        "after": "피해를 10 줍니다.\n이번 전투 동안 이 카드의\n피해량이 10 증가하고\n무작위 아군에게\n이 카드를 줍니다."
+      },
+      {
+        "field": "vars.Increase",
+        "before": 15,
+        "after": 10
+      },
+      {
+        "field": "upgrade.increase",
+        "before": "+10",
+        "after": "+5"
+      }
+    ]
+  },
+  {
+    "id": "trash-to-treasure-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "TRASH_TO_TREASURE",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "upgrade.add_innate",
+        "before": 1
+      },
+      {
+        "field": "upgrade.cost",
+        "after": 0
+      }
+    ]
+  },
+  {
+    "id": "well-laid-plans-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "WELL_LAID_PLANS",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "고급",
+        "after": "희귀"
+      },
+      {
+        "field": "description",
+        "before": "내 턴 종료 시, 카드를\n최대 1장까지 [gold]보존[/gold]합니다.",
+        "after": "내 턴 종료 시, 더 이상 [gold]손[/gold]에 있는 카드를 버리지 않습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "내 턴 종료 시, 카드를\n최대 {RetainAmount:diff()}장까지 [gold]보존[/gold]합니다.",
+        "after": "내 턴 종료 시, 더 이상 [gold]손[/gold]에 있는 카드를 버리지 않습니다."
+      },
+      {
+        "field": "vars.RetainAmount",
+        "before": 1
+      },
+      {
+        "field": "upgrade.retainamount",
+        "before": "+1"
+      },
+      {
+        "field": "upgrade.cost",
+        "after": 0
+      }
+    ]
+  },
+  {
+    "id": "diamond-diadem-v0-109-0-field-diff",
+    "entityType": "relic",
+    "entityId": "DIAMOND_DIADEM",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "내 턴 동안 카드를 [blue]2[/blue]장 이하로 사용했다면, 적으로부터 받는 피해량이 절반이 됩니다.",
+        "after": "매 전투 시작 시 [gold]방어도[/gold]를 [blue]20[/blue] 얻습니다. 그 다음 턴 시작 시 [gold]방어도[/gold]가 사라지지 않습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "내 턴 동안 카드를 [blue]{CardThreshold}[/blue]장 이하로 사용했다면, 적으로부터 받는 피해량이 절반이 됩니다.",
+        "after": "매 전투 시작 시 [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다. 그 다음 턴 시작 시 [gold]방어도[/gold]가 사라지지 않습니다."
+      }
+    ]
+  },
+  {
+    "id": "distinguished-cape-v0-109-0-field-diff",
+    "entityType": "relic",
+    "entityId": "DISTINGUISHED_CAPE",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "획득 시, 최대 체력을 [blue]9[/blue] 잃습니다. [gold]덱[/gold]에 [gold]영체화[/gold]를 [blue]3[/blue]장 추가합니다.",
+        "after": "획득 시, [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]2[/blue]장, [gold]영체화[/gold]를 [blue]3[/blue]장 추가합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "획득 시, 최대 체력을 [blue]9[/blue] 잃습니다. [gold]덱[/gold]에 [gold]영체화[/gold]를 [blue]{Cards}[/blue]장 추가합니다.",
+        "after": "획득 시, [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]{Curses}[/blue]장, [gold]영체화[/gold]를 [blue]{Cards}[/blue]장 추가합니다."
+      }
+    ]
+  },
+  {
+    "id": "fiddle-v0-109-0-field-diff",
+    "entityType": "relic",
+    "entityId": "FIDDLE",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "매 턴 시작 시, 카드를 추가로 [blue]2[/blue]장 뽑습니다. 내 턴 동안 카드를 뽑을 수 없습니다.",
+        "after": "매 턴 시작 시, 카드를 추가로 [blue]3[/blue]장 뽑습니다. 내 턴 동안 카드를 뽑을 수 없습니다."
+      }
+    ]
+  },
+  {
+    "id": "history-course-v0-109-0-field-diff",
+    "entityType": "relic",
+    "entityId": "HISTORY_COURSE",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "내 턴 시작 시, 가장 최근에 사용한 공격이나 스킬 카드의 복사본을 사용합니다.",
+        "after": "내 턴 시작 시, 가장 최근에 사용한 공격 카드의 복사본을 사용합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "내 턴 시작 시, 가장 최근에 사용한 공격이나 스킬 카드의 복사본을 사용합니다.",
+        "after": "내 턴 시작 시, 가장 최근에 사용한 공격 카드의 복사본을 사용합니다."
+      }
+    ]
+  },
+  {
+    "id": "sere-talon-v0-109-0-field-diff",
+    "entityType": "relic",
+    "entityId": "SERE_TALON",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "획득 시, [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]2[/blue]장, [purple]염원[/purple]을 [blue]3[/blue]장 추가합니다.",
+        "after": "획득 시, 최대 체력을 [blue]9[/blue] 잃습니다. [gold]덱[/gold]에 [purple]염원[/purple]을 [blue]3[/blue]장 추가합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "획득 시, [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]{Curses}[/blue]장, [purple]염원[/purple]을 [blue]{Wishes}[/blue]장 추가합니다.",
+        "after": "획득 시, 최대 체력을 [blue]9[/blue] 잃습니다. [gold]덱[/gold]에 [purple]염원[/purple]을 [blue]{Wishes}[/blue]장 추가합니다."
+      }
+    ]
+  },
+  {
+    "id": "toy-box-v0-109-0-field-diff",
+    "entityType": "relic",
+    "entityId": "TOY_BOX",
+    "patch": "v0.109.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "획득 시, [gold]밀랍 유물[/gold]을 [blue]4[/blue]개 얻습니다. [blue]3[/blue]번의 전투마다 가장 왼쪽에 있는 [gold]밀랍 유물[/gold]이 녹아서 사라집니다.",
+        "after": "획득 시, [gold]밀랍 유물[/gold]을 [blue]5[/blue]개 얻습니다. [blue]3[/blue]번의 전투마다 가장 왼쪽에 있는 [gold]밀랍 유물[/gold]이 녹아서 사라집니다."
       }
     ]
   }
