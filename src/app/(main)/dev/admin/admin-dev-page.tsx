@@ -2,19 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { PostBlock } from "@/lib/chemical-types";
 import { devToolsEnabled } from "@/lib/dev-tools";
-import {
-  getCodexAfflictions,
-  getCodexAncients,
-  getCodexCards,
-  getCodexEnchantments,
-  getCodexEncounters,
-  getCodexEpochs,
-  getCodexEvents,
-  getCodexMonsters,
-  getCodexPotions,
-  getCodexPowers,
-  getCodexRelics,
-} from "@/lib/codex-data";
 import { supabase, supabaseEnabled } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import { getSiteOrigin } from "@/lib/site-origin";
@@ -24,7 +11,6 @@ export const revalidate = 0;
 
 const ROW_LIMIT = 50;
 const STATS_SAMPLE_LIMIT = 1000;
-const COMMENT_ANALYSIS_LIMIT = 2000;
 const ADMIN_DATA_ENV = "production";
 const PRODUCTION_SITE_ORIGIN = getSiteOrigin();
 
@@ -98,7 +84,6 @@ interface SupabaseResult<T> {
 
 interface AdminSnapshot {
   comments: QueryState<CommentRow[]>;
-  commentAnalysisRows: QueryState<CommentRow[]>;
   chemicalPosts: QueryState<ChemicalPostRow[]>;
   runs: QueryState<RunRow[]>;
   likes: QueryState<LikeRow[]>;
@@ -119,56 +104,6 @@ const CODEX_PATHS: Record<string, string> = {
   power: "powers",
   relic: "relics",
 };
-
-const CODEX_TYPE_LABELS: Record<string, string> = {
-  ancient: "고대의 존재",
-  affliction: "고난",
-  card: "카드",
-  encounter: "전투",
-  enchantment: "강화",
-  epoch: "연대기",
-  event: "이벤트",
-  monster: "몬스터",
-  potion: "포션",
-  power: "파워",
-  relic: "유물",
-};
-
-const COMMENT_INTENT_RULES = [
-  {
-    key: "correction",
-    label: "오류/정정",
-    terms: ["오류", "버그", "잘못", "틀림", "아님", "수정", "누락", "없어야", "있어야", "오타", "표기", "번역", "안됨", "깨짐", "이상", "피드백"],
-  },
-  {
-    key: "question",
-    label: "질문",
-    terms: ["?", "왜", "어떻게", "무슨", "뭐", "인가", "궁금", "알려", "확인"],
-  },
-  {
-    key: "balance",
-    label: "밸런스/평가",
-    terms: ["사기", "구림", "좋", "나쁨", "강함", "약함", "너프", "버프", "밸런스", "op", "쓸만", "별로"],
-  },
-  {
-    key: "strategy",
-    label: "공략/시너지",
-    terms: ["덱", "빌드", "콤보", "시너지", "전략", "운영", "픽", "집으면", "승천", "런", "연계"],
-  },
-  {
-    key: "reaction",
-    label: "감상/농담",
-    terms: ["ㅋㅋ", "ㅎㅎ", "웃", "재밌", "무섭", "슬서운", "미친", "대박", "귀엽", "멋"],
-  },
-] as const;
-
-const MANAGED_SUPABASE_CONTENT = [
-  { name: "댓글", table: "comments", scope: "env 분리", admin: "최신순 목록" },
-  { name: "케미컬 X", table: "chemical_posts", scope: "env 분리", admin: "최신순 목록" },
-  { name: "공유 런", table: "runs", scope: "env 분리", admin: "최신순 목록" },
-  { name: "좋아요", table: "likes", scope: "env 분리", admin: "통계" },
-  { name: "댓글 좋아요", table: "comment_likes", scope: "env 컬럼 없음", admin: "통계" },
-] as const;
 
 async function readSupabase<T>(
   operation: string,
@@ -198,26 +133,6 @@ async function readComments(): Promise<QueryState<CommentRow[]>> {
   );
 }
 
-async function readCommentsForAnalysis(): Promise<QueryState<CommentRow[]>> {
-  const result = await readSupabase<CommentRow[]>(
-    "admin.comments.analysis",
-    supabase
-      .from("comments")
-      .select("id, story_id, user_id, nickname, content, content_blocks, env, created_at", { count: "exact" })
-      .eq("env", ADMIN_DATA_ENV)
-      .order("created_at", { ascending: false })
-      .limit(COMMENT_ANALYSIS_LIMIT),
-    [],
-  );
-
-  return {
-    ...result,
-    note: (result.count ?? 0) > result.data.length
-      ? `최근 ${result.data.length.toLocaleString("ko-KR")}개 기준입니다.`
-      : "전체 댓글 기준입니다.",
-  };
-}
-
 async function readCommentLikes(): Promise<QueryState<CommentLikeRow[]>> {
   return readSupabase<CommentLikeRow[]>(
     "admin.comment_likes",
@@ -234,7 +149,6 @@ async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
 
   const [
     comments,
-    commentAnalysisRows,
     chemicalPosts,
     runs,
     likes,
@@ -242,7 +156,6 @@ async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
     engagementCounts,
   ] = await Promise.all([
     readComments(),
-    readCommentsForAnalysis(),
     readSupabase<ChemicalPostRow[]>(
       "admin.chemical_posts",
       supabase
@@ -283,7 +196,6 @@ async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
 
   return {
     comments,
-    commentAnalysisRows,
     chemicalPosts,
     runs,
     likes,
@@ -322,249 +234,6 @@ function blockText(blocks: PostBlock[] | null | undefined): string {
     if (block.type === "entity") return block.displayText;
     return block.text;
   }).join("");
-}
-
-function commentText(comment: CommentRow): string {
-  return (blockText(comment.content_blocks) || comment.content).replace(/\s+/g, " ").trim();
-}
-
-function parseStoryTarget(storyId: string): { type: string; id: string; isCodex: boolean } {
-  if (storyId.startsWith("sts2-patch:")) {
-    return {
-      type: "patch",
-      id: storyId.slice("sts2-patch:".length),
-      isCodex: false,
-    };
-  }
-
-  const match = /^sts2-codex:([^:]+):(.+)$/.exec(storyId);
-  if (!match) {
-    return { type: "other", id: storyId, isCodex: false };
-  }
-
-  return { type: match[1], id: match[2], isCodex: true };
-}
-
-function classifyComment(text: string): string[] {
-  const lower = text.toLowerCase();
-  const labels = COMMENT_INTENT_RULES
-    .filter((rule) => rule.terms.some((term) => lower.includes(term.toLowerCase())))
-    .map((rule) => rule.label);
-  return labels.length > 0 ? labels : ["기타"];
-}
-
-interface AdminEntityLabel {
-  name: string;
-  nameEn?: string;
-}
-
-type AdminEntityLookup = Map<string, AdminEntityLabel>;
-
-function entityLookupKey(type: string, id: string): string {
-  return `${type}:${id}`;
-}
-
-function addEntitiesToLookup(
-  lookup: AdminEntityLookup,
-  type: string,
-  rows: { id: string; name: string; nameEn?: string }[],
-) {
-  for (const row of rows) {
-    lookup.set(entityLookupKey(type, row.id), {
-      name: row.name,
-      nameEn: row.nameEn,
-    });
-  }
-}
-
-async function buildAdminEntityLookup(): Promise<AdminEntityLookup> {
-  const [
-    cards,
-    relics,
-    potions,
-    powers,
-    enchantments,
-    afflictions,
-    events,
-    ancients,
-    epochs,
-    monsters,
-    encounters,
-  ] = await Promise.all([
-    getCodexCards(),
-    getCodexRelics(),
-    getCodexPotions(),
-    getCodexPowers(),
-    getCodexEnchantments(),
-    getCodexAfflictions(),
-    getCodexEvents(),
-    getCodexAncients(),
-    getCodexEpochs(),
-    getCodexMonsters(),
-    getCodexEncounters(),
-  ]);
-
-  const lookup: AdminEntityLookup = new Map();
-  addEntitiesToLookup(lookup, "card", cards);
-  addEntitiesToLookup(lookup, "relic", relics);
-  addEntitiesToLookup(lookup, "potion", potions);
-  addEntitiesToLookup(lookup, "power", powers);
-  addEntitiesToLookup(lookup, "enchantment", enchantments);
-  addEntitiesToLookup(lookup, "affliction", afflictions);
-  addEntitiesToLookup(lookup, "event", events.map((event) => ({
-    id: event.id,
-    name: event.name,
-    nameEn: event.nameEn,
-  })));
-  addEntitiesToLookup(lookup, "ancient", ancients);
-  addEntitiesToLookup(lookup, "epoch", epochs);
-  addEntitiesToLookup(lookup, "monster", monsters);
-  addEntitiesToLookup(lookup, "encounter", encounters);
-  return lookup;
-}
-
-function typeLabel(type: string): string {
-  if (type === "patch") return "패치";
-  if (type === "other") return "기타";
-  return CODEX_TYPE_LABELS[type] ?? type;
-}
-
-function displayTargetName(type: string, id: string, lookup: AdminEntityLookup): string {
-  const label = lookup.get(entityLookupKey(type, id));
-  if (!label) return id;
-  return label.nameEn && label.nameEn !== label.name ? `${label.name} / ${label.nameEn}` : label.name;
-}
-
-interface AnalyzedComment {
-  row: CommentRow;
-  targetType: string;
-  targetId: string;
-  targetName: string;
-  text: string;
-  tags: string[];
-  likeCount: number;
-}
-
-interface TypeAnalysis {
-  type: string;
-  label: string;
-  count: number;
-  targetCount: number;
-}
-
-interface TargetAnalysis {
-  storyId: string;
-  type: string;
-  label: string;
-  id: string;
-  name: string;
-  count: number;
-  likeCount: number;
-  latestAt: string;
-  tags: string[];
-  samples: string[];
-}
-
-interface IntentAnalysis {
-  label: string;
-  count: number;
-}
-
-interface CommentAnalysis {
-  total: number;
-  sampled: number;
-  note?: string;
-  byType: TypeAnalysis[];
-  topTargets: TargetAnalysis[];
-  byIntent: IntentAnalysis[];
-  topLikedComments: AnalyzedComment[];
-}
-
-function analyzeComments(
-  comments: QueryState<CommentRow[]>,
-  commentLikes: QueryState<CommentLikeRow[]>,
-  lookup: AdminEntityLookup,
-): CommentAnalysis {
-  const likeCounts = new Map<string, number>();
-  for (const row of commentLikes.data) {
-    likeCounts.set(row.comment_id, (likeCounts.get(row.comment_id) ?? 0) + 1);
-  }
-
-  const analyzed: AnalyzedComment[] = comments.data.map((row) => {
-    const target = parseStoryTarget(row.story_id);
-    const text = commentText(row);
-    return {
-      row,
-      targetType: target.type,
-      targetId: target.id,
-      targetName: displayTargetName(target.type, target.id, lookup),
-      text,
-      tags: classifyComment(text),
-      likeCount: likeCounts.get(row.id) ?? 0,
-    };
-  });
-
-  const byTypeMap = new Map<string, { count: number; targets: Set<string> }>();
-  const targetMap = new Map<string, TargetAnalysis>();
-  const intentMap = new Map<string, number>();
-
-  for (const item of analyzed) {
-    const typeStat = byTypeMap.get(item.targetType) ?? { count: 0, targets: new Set<string>() };
-    typeStat.count += 1;
-    typeStat.targets.add(item.row.story_id);
-    byTypeMap.set(item.targetType, typeStat);
-
-    const targetStat = targetMap.get(item.row.story_id) ?? {
-      storyId: item.row.story_id,
-      type: item.targetType,
-      label: typeLabel(item.targetType),
-      id: item.targetId,
-      name: item.targetName,
-      count: 0,
-      likeCount: 0,
-      latestAt: item.row.created_at,
-      tags: [],
-      samples: [],
-    };
-    targetStat.count += 1;
-    targetStat.likeCount += item.likeCount;
-    if (new Date(item.row.created_at) > new Date(targetStat.latestAt)) {
-      targetStat.latestAt = item.row.created_at;
-    }
-    targetStat.tags = Array.from(new Set([...targetStat.tags, ...item.tags]));
-    if (targetStat.samples.length < 2 && item.text) {
-      targetStat.samples.push(truncate(item.text, 88));
-    }
-    targetMap.set(item.row.story_id, targetStat);
-
-    for (const tag of item.tags) {
-      intentMap.set(tag, (intentMap.get(tag) ?? 0) + 1);
-    }
-  }
-
-  return {
-    total: comments.count ?? comments.data.length,
-    sampled: comments.data.length,
-    note: comments.note,
-    byType: Array.from(byTypeMap.entries())
-      .map(([type, stat]) => ({
-        type,
-        label: typeLabel(type),
-        count: stat.count,
-        targetCount: stat.targets.size,
-      }))
-      .sort((a, b) => b.count - a.count),
-    topTargets: Array.from(targetMap.values())
-      .sort((a, b) => b.count - a.count || b.likeCount - a.likeCount)
-      .slice(0, 12),
-    byIntent: Array.from(intentMap.entries())
-      .map(([label, count]) => ({ label, count }))
-      .sort((a, b) => b.count - a.count),
-    topLikedComments: analyzed
-      .filter((item) => item.likeCount > 0)
-      .sort((a, b) => b.likeCount - a.likeCount)
-      .slice(0, 8),
-  };
 }
 
 function hrefForStoryId(storyId: string): string | null {
@@ -630,33 +299,6 @@ function StatTile({
   );
 }
 
-function RatioBar({ value, max }: { value: number; max: number }) {
-  const width = max > 0 ? Math.max(4, Math.round((value / max) * 100)) : 0;
-  return (
-    <div className="h-1.5 w-full rounded-full bg-white/10">
-      <div
-        className="h-1.5 rounded-full bg-yellow-400/80"
-        style={{ width: `${width}%` }}
-      />
-    </div>
-  );
-}
-
-function TagList({ tags }: { tags: string[] }) {
-  return (
-    <div className="flex flex-wrap gap-1">
-      {tags.map((tag) => (
-        <span
-          key={tag}
-          className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-[10px] text-muted-foreground"
-        >
-          {tag}
-        </span>
-      ))}
-    </div>
-  );
-}
-
 function Section({
   title,
   count,
@@ -705,10 +347,6 @@ export default async function SupabaseAdminPage() {
   }
 
   const snapshot = await loadAdminSnapshot();
-  const entityLookup = snapshot ? await buildAdminEntityLookup() : new Map<string, AdminEntityLabel>();
-  const commentAnalysis = snapshot
-    ? analyzeComments(snapshot.commentAnalysisRows, snapshot.commentLikes, entityLookup)
-    : null;
   const topStories = topLikedStories(snapshot?.engagementCounts.data ?? []);
   const uniqueLikeUsers = new Set(snapshot?.likes.data.map((row) => row.user_id) ?? []).size;
   const uniqueCommentLikeUsers = new Set(snapshot?.commentLikes.data.map((row) => row.user_id) ?? []).size;
