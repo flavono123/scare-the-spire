@@ -1,5 +1,17 @@
 [
   {
+    "id": "AMBERGRIS",
+    "name": "용연향",
+    "description": "최대 체력의 [green]50%[/green]를 회복합니다. 전투 중에 사용했다면, 추가 턴을 진행합니다.",
+    "description_raw": "최대 체력의 [green]{HealPercent}%[/green]를 회복합니다. 전투 중에 사용했다면, 추가 턴을 진행합니다.",
+    "rarity": "이벤트",
+    "pool": "event",
+    "image_url": "/static/images/potions/ambergris.png",
+    "vars": {
+      "HealPercent": 50
+    }
+  },
+  {
     "id": "ASHWATER",
     "name": "잿물",
     "description": "[gold]손[/gold]에 있는 카드를 원하는 만큼 [gold]소멸[/gold]시킵니다.",

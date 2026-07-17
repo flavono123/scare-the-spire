@@ -1,5 +1,17 @@
 [
   {
+    "id": "AMBERGRIS",
+    "name": "Ambergris",
+    "description": "Heal for [green]50%[/green] of your Max HP. If used in combat, take an extra turn.",
+    "description_raw": "Heal for [green]{HealPercent}%[/green] of your Max HP. If used in combat, take an extra turn.",
+    "rarity": "Event",
+    "pool": "event",
+    "image_url": "/static/images/potions/ambergris.png",
+    "vars": {
+      "HealPercent": 50
+    }
+  },
+  {
     "id": "ASHWATER",
     "name": "Ashwater",
     "description": "[gold]Exhaust[/gold] any number of cards in your [gold]Hand[/gold].",
