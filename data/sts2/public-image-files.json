@@ -163,6 +163,7 @@
   ],
   "cards": [
     "abrasive.webp",
+    "abundance.webp",
     "accelerant.webp",
     "accuracy.webp",
     "acrobatics.webp",
@@ -334,6 +335,7 @@
     "dominate.webp",
     "double_energy.webp",
     "doubt.webp",
+    "dowsing.webp",
     "drain_power.webp",
     "dramatic_entrance.webp",
     "dredge.webp",
@@ -561,6 +563,7 @@
     "pillage.webp",
     "pillar_of_creation.webp",
     "pinpoint.webp",
+    "plot.webp",
     "poisoned_stab.webp",
     "poke.webp",
     "pommel_strike.webp",
@@ -718,6 +721,7 @@
     "tempest.webp",
     "terraforming.webp",
     "tesla_coil.webp",
+    "the_ball.webp",
     "the_bomb.webp",
     "the_gambit.webp",
     "the_hunt.webp",
@@ -1044,6 +1048,7 @@
     "transfigure.webp",
     "trash_to_treasure.webp",
     "turbo.webp",
+    "tutor.webp",
     "tyranny.webp",
     "ultimate_defend.webp",
     "ultimate_strike.webp",
@@ -1145,9 +1150,24 @@
     "vigorous.webp"
   ],
   "encounter-scenes": [
+    "ceremonial-beast-boss-a.webp",
+    "fake-merchant-event-encounter-a.webp",
+    "glory-a.webp",
+    "hive-a.webp",
+    "kaiser-crab-boss-a.webp",
+    "knowledge-demon-boss-a.webp",
+    "lagavulin-matriarch-boss-a.webp",
     "overgrowth-a.webp",
     "queen-boss-a.webp",
-    "queen-light.webp"
+    "queen-light.webp",
+    "soul-fysh-boss-a.webp",
+    "test-subject-boss-a.webp",
+    "the-architect-event-encounter-a.webp",
+    "the-insatiable-boss-a.webp",
+    "the-kin-boss-a.webp",
+    "underdocks-a.webp",
+    "vantom-boss-a.webp",
+    "waterfall-giant-boss-a.webp"
   ],
   "encounters-render": [
     "decimillipede_elite.webp"
@@ -1293,6 +1313,100 @@
   "event-vfx/morphic_grove": [
     "morphic_grove_foreground.webp"
   ],
+  "event-vfx/runtime/animations/vfx/vfx_sandy_impact": [
+    "vfx_ash_dust.webp"
+  ],
+  "event-vfx/runtime/images/events": [
+    "dense_vegetation_foreground.webp",
+    "mirror_mask3.webp"
+  ],
+  "event-vfx/runtime/images/packed/vfx/event": [
+    "bedlam_beacon_foreground.webp",
+    "byrdonis_feathers.webp",
+    "byrdonis_nest_shine.webp",
+    "doll_room_foreground.webp",
+    "doll_room_whisper_bubble_l.webp",
+    "doll_room_whisper_bubble_r.webp",
+    "doll_room_whispers.webp",
+    "infested_automaton_flies.webp",
+    "potion_courier_x.webp",
+    "self_help_book_shine.webp",
+    "tablet_of_truth_rock.webp",
+    "the_future_of_potions_foreground.webp",
+    "the_future_of_potions_glow.webp",
+    "trial_light_beam.webp",
+    "trial_merchant.webp",
+    "trial_noble.webp",
+    "trial_nondescript.webp",
+    "trial_stand_light.webp",
+    "trial_top_layer.webp"
+  ],
+  "event-vfx/runtime/images/packed/vfx/event/dense_vegetation": [
+    "vfx_dense_vegetation_bug_00.webp",
+    "vfx_dense_vegetation_bug_02.webp",
+    "vfx_dense_vegetation_bug_03.webp",
+    "vfx_dense_vegetation_bug_04.webp",
+    "vfx_dense_vegetation_bug_05.webp"
+  ],
+  "event-vfx/runtime/images/packed/vfx/event/morphic_grove": [
+    "morphic_grove_foreground.webp"
+  ],
+  "event-vfx/runtime/images/packed/vfx/event/symbiote": [
+    "eye_01.webp",
+    "eye_02.webp",
+    "eye_03.webp",
+    "symbiote_eye_blink_01.webp",
+    "symbiote_eye_blink_02.webp",
+    "symbiote_eye_blink_03.webp",
+    "symbiote_eye_blink_06.webp",
+    "symbiote_eye_blink_09.webp",
+    "symbiote_eye_blink_13.webp",
+    "symbiote_eye.webp",
+    "symbiote_highlight.webp"
+  ],
+  "event-vfx/runtime/images/packed/vfx/event/tea_master": [
+    "tea_master_0.webp",
+    "tea_master_01.webp",
+    "tea_master_02.webp",
+    "tea_master_03.webp",
+    "tea_master_04.webp",
+    "tea_master_05.webp",
+    "tea_master_06.webp",
+    "tea_master_07.webp",
+    "tea_master_08.webp",
+    "tea_master_09.webp"
+  ],
+  "event-vfx/runtime/images/packed/vfx/generic": [
+    "dark_overlay_events.webp",
+    "leaf.webp",
+    "light_line.webp",
+    "round_glow.webp",
+    "sparkle_2.webp",
+    "sparkle.webp",
+    "square_speck.webp",
+    "twinkle_star.webp"
+  ],
+  "event-vfx/runtime/images/vfx": [
+    "dense_vegetation_particles.webp",
+    "short_grain_rice_particle.webp"
+  ],
+  "event-vfx/runtime/images/vfx/shared_use": [
+    "ash_particle.webp",
+    "blur_diamond_vfx.webp"
+  ],
+  "event-vfx/runtime/images/vfx/vfx_blood_wall": [
+    "tear_drop.webp"
+  ],
+  "event-vfx/runtime/images/vfx/vfx_ghostly_power_up": [
+    "inner_ring.webp"
+  ],
+  "event-vfx/runtime/images/vfx/vfx_heal_osty": [
+    "falloff_asset.webp",
+    "spirit_asset.webp"
+  ],
+  "event-vfx/runtime/images/vfx/vfx_molten_fist": [
+    "ground_spark.webp"
+  ],
   "event-vfx/symbiote": [
     "eye_01.webp",
     "eye_02.webp",
@@ -1335,6 +1449,7 @@
     "doors_of_light_and_dark.webp",
     "drowning_beacon.webp",
     "endless_conveyor.webp",
+    "fake_merchant.webp",
     "field_of_man_sized_holes.webp",
     "grave_of_the_forgotten.webp",
     "hungry_for_mushrooms.webp",
@@ -1840,6 +1955,7 @@
     "rng-prng-streams.png"
   ],
   "potions": [
+    "ambergris.webp",
     "ashwater.webp",
     "attack_potion.webp",
     "beetle_juice.webp",
@@ -1910,6 +2026,7 @@
     "adaptable_power.webp",
     "afterimage_power.webp",
     "aggression_power.webp",
+    "ambergris_power.webp",
     "anticipate_power.webp",
     "arsenal_power.webp",
     "artifact_power.webp",
@@ -1929,6 +2046,7 @@
     "buffer_power.webp",
     "burrowed_power.webp",
     "burst_power.webp",
+    "cacophony_power.webp",
     "calamity_power.webp",
     "calcify_power.webp",
     "call_of_the_void_power.webp",
@@ -1936,6 +2054,7 @@
     "child_of_the_stars_power.webp",
     "clarity_power.webp",
     "colossus_power.webp",
+    "concoct_power.webp",
     "confused_power.webp",
     "conqueror_power.webp",
     "constrict_power.webp",
@@ -1981,6 +2100,7 @@
     "entropy_power.webp",
     "envenom_power.webp",
     "escape_artist_power.webp",
+    "fade_power.webp",
     "fan_of_knives_power.webp",
     "fasten_power.webp",
     "feeding_frenzy_power.webp",
@@ -2018,10 +2138,12 @@
     "hello_world_power.webp",
     "hellraiser_power.webp",
     "hex_power.webp",
+    "hibernate_power.webp",
     "high_voltage_power.webp",
     "hotfix_power.webp",
     "illusion_power.webp",
     "imbalanced_power.webp",
+    "imitation_learning_power.webp",
     "improvement_power.webp",
     "inferno_power.webp",
     "infested_power.webp",
@@ -2058,6 +2180,7 @@
     "nostalgia_power.webp",
     "noxious_fumes_power.webp",
     "oblivion_power.webp",
+    "one_for_all_power.webp",
     "one_two_punch_power.webp",
     "orbit_power.webp",
     "outbreak_power.webp",
@@ -2119,6 +2242,7 @@
     "smokestack_power.webp",
     "sneaky_power.webp",
     "soar_power.webp",
+    "soulbound_power.webp",
     "spectrum_shift_plus_power.webp",
     "spectrum_shift_power.webp",
     "speed_potion_power.webp",
@@ -2175,6 +2299,7 @@
   ],
   "powers-beta": [
     "smoggy_power.webp",
+    "underworld_power.webp",
     "unmovable_power.webp"
   ],
   "powers/animated": [
@@ -2247,6 +2372,7 @@
     "divine_destiny.webp",
     "divine_right.webp",
     "dollys_mirror.webp",
+    "dowsing_rod.webp",
     "dragon_fruit.webp",
     "dream_catcher.webp",
     "driftwood.webp",
@@ -2354,6 +2480,7 @@
     "mystic_lighter.webp",
     "neows_bones.webp",
     "neows_lament.webp",
+    "neows_sacrifice.webp",
     "neows_talisman.webp",
     "neows_torment.webp",
     "new_leaf.webp",
