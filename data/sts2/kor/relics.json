@@ -752,15 +752,14 @@
   {
     "id": "DIAMOND_DIADEM",
     "name": "다이아몬드 왕관",
-    "description": "내 턴 동안 카드를 [blue]2[/blue]장 이하로 사용했다면, 적으로부터 받는 피해량이 절반이 됩니다.",
-    "description_raw": "내 턴 동안 카드를 [blue]{CardThreshold}[/blue]장 이하로 사용했다면, 적으로부터 받는 피해량이 절반이 됩니다.",
+    "description": "매 전투 시작 시 [gold]방어도[/gold]를 [blue]20[/blue] 얻습니다. 그 다음 턴 시작 시 [gold]방어도[/gold]가 사라지지 않습니다.",
+    "description_raw": "매 전투 시작 시 [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다. 그 다음 턴 시작 시 [gold]방어도[/gold]가 사라지지 않습니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
     "image_url": "/static/images/relics/diamond_diadem.png",
     "vars": {
-      "Block": 20,
-      "CardThreshold": 2
+      "Block": 20
     }
   },
   {
@@ -777,8 +776,8 @@
   {
     "id": "DISTINGUISHED_CAPE",
     "name": "기품 있는 망토",
-    "description": "획득 시, 최대 체력을 [blue]9[/blue] 잃습니다. [gold]덱[/gold]에 [gold]영체화[/gold]를 [blue]3[/blue]장 추가합니다.",
-    "description_raw": "획득 시, 최대 체력을 [blue]9[/blue] 잃습니다. [gold]덱[/gold]에 [gold]영체화[/gold]를 [blue]{Cards}[/blue]장 추가합니다.",
+    "description": "획득 시, [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]2[/blue]장, [gold]영체화[/gold]를 [blue]3[/blue]장 추가합니다.",
+    "description_raw": "획득 시, [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]{Curses}[/blue]장, [gold]영체화[/gold]를 [blue]{Cards}[/blue]장 추가합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
@@ -1113,7 +1112,7 @@
   {
     "id": "FIDDLE",
     "name": "바이올린",
-    "description": "매 턴 시작 시, 카드를 추가로 [blue]2[/blue]장 뽑습니다. 내 턴 동안 카드를 뽑을 수 없습니다.",
+    "description": "매 턴 시작 시, 카드를 추가로 [blue]3[/blue]장 뽑습니다. 내 턴 동안 카드를 뽑을 수 없습니다.",
     "description_raw": "매 턴 시작 시, 카드를 추가로 [blue]{Cards}[/blue]장 뽑습니다. 내 턴 동안 카드를 뽑을 수 없습니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
@@ -1427,8 +1426,8 @@
   {
     "id": "HISTORY_COURSE",
     "name": "역사 강의서",
-    "description": "내 턴 시작 시, 가장 최근에 사용한 공격이나 스킬 카드의 복사본을 사용합니다.",
-    "description_raw": "내 턴 시작 시, 가장 최근에 사용한 공격이나 스킬 카드의 복사본을 사용합니다.",
+    "description": "내 턴 시작 시, 가장 최근에 사용한 공격 카드의 복사본을 사용합니다.",
+    "description_raw": "내 턴 시작 시, 가장 최근에 사용한 공격 카드의 복사본을 사용합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
@@ -2985,16 +2984,15 @@
   {
     "id": "SERE_TALON",
     "name": "말라비틀어진 발톱",
-    "description": "획득 시, [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]2[/blue]장, [purple]염원[/purple]을 [blue]3[/blue]장 추가합니다.",
-    "description_raw": "획득 시, [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]{Curses}[/blue]장, [purple]염원[/purple]을 [blue]{Wishes}[/blue]장 추가합니다.",
+    "description": "획득 시, 최대 체력을 [blue]9[/blue] 잃습니다. [gold]덱[/gold]에 [purple]염원[/purple]을 [blue]3[/blue]장 추가합니다.",
+    "description_raw": "획득 시, 최대 체력을 [blue]9[/blue] 잃습니다. [gold]덱[/gold]에 [purple]염원[/purple]을 [blue]{Wishes}[/blue]장 추가합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
     "image_url": "/static/images/relics/sere_talon.png",
     "vars": {
       "HpLoss": 9,
-      "Wishes": 3,
-      "Curses": 2
+      "Wishes": 3
     }
   },
   {
@@ -3442,7 +3440,7 @@
   {
     "id": "TOY_BOX",
     "name": "장난감 상자",
-    "description": "획득 시, [gold]밀랍 유물[/gold]을 [blue]4[/blue]개 얻습니다. [blue]3[/blue]번의 전투마다 가장 왼쪽에 있는 [gold]밀랍 유물[/gold]이 녹아서 사라집니다.",
+    "description": "획득 시, [gold]밀랍 유물[/gold]을 [blue]5[/blue]개 얻습니다. [blue]3[/blue]번의 전투마다 가장 왼쪽에 있는 [gold]밀랍 유물[/gold]이 녹아서 사라집니다.",
     "description_raw": "획득 시, [gold]밀랍 유물[/gold]을 [blue]{Relics}[/blue]개 얻습니다. [blue]{Combats}[/blue]번의 전투마다 가장 왼쪽에 있는 [gold]밀랍 유물[/gold]이 녹아서 사라집니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
