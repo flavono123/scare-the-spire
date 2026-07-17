@@ -311,6 +311,12 @@ def main() -> int:
     )
     parser.add_argument("--out-root", default="public/spine/sts2", help="Output root under the repo")
     parser.add_argument("--force", action="store_true", help="Clear selected output folders before extraction")
+    parser.add_argument(
+        "--id",
+        dest="actor_ids",
+        action="append",
+        help="Extract only this output actor folder ID (repeatable)",
+    )
     args = parser.parse_args()
 
     if ctex.Image is None:
@@ -319,13 +325,21 @@ def main() -> int:
     kinds = tuple(args.kind or DEFAULT_KINDS)
     out_root = (REPO_ROOT / args.out_root).resolve()
 
-    if args.force:
-        for kind in kinds:
-            shutil.rmtree(out_root / kind, ignore_errors=True)
-
     with PCKReader(args.pck) as reader:
         for kind in kinds:
             actors = discover_actor_imports(reader, kind)
+            if args.actor_ids:
+                actors = [
+                    actor
+                    for actor in actors
+                    if output_folder_for(actor, kind, out_root).name in args.actor_ids
+                ]
+            if args.force:
+                if args.actor_ids:
+                    for actor in actors:
+                        shutil.rmtree(output_folder_for(actor, kind, out_root), ignore_errors=True)
+                else:
+                    shutil.rmtree(out_root / kind, ignore_errors=True)
             for actor in actors:
                 extract_actor(reader, actor, kind, out_root)
             print(f"extracted {len(actors)} {kind} Spine actors to {out_root / kind}")
