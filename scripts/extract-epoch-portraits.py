@@ -32,6 +32,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--beta-output", default=str(BETA_OUT_DIR), help="Beta/placeholder output directory")
     parser.add_argument("--dry-run", action="store_true", help="List outputs without writing files")
     parser.add_argument("--force", action="store_true", help="Overwrite existing files")
+    parser.add_argument(
+        "--id",
+        dest="epoch_ids",
+        action="append",
+        help="Extract only this epoch portrait ID (repeatable, without .webp)",
+    )
     return parser.parse_args()
 
 
@@ -49,6 +55,9 @@ def main() -> None:
             is_beta = name.startswith("placeholder/")
             if name.startswith("placeholder/"):
                 name = name.removeprefix("placeholder/")
+            if args.epoch_ids and name not in args.epoch_ids:
+                skipped += 1
+                continue
             output_root_for_import = beta_output_root if is_beta else output_root
             label = "beta" if is_beta else "official"
             output_path = output_root_for_import / f"{name}.webp"
