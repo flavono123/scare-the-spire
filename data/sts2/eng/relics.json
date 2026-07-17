@@ -759,6 +759,7 @@
     "pool": "shared",
     "image_url": "/static/images/relics/diamond_diadem.png",
     "vars": {
+      "Block": 20,
       "CardThreshold": 2
     }
   },
@@ -783,7 +784,7 @@
     "pool": "shared",
     "image_url": "/static/images/relics/distinguished_cape.png",
     "vars": {
-      "HpLoss": 9,
+      "Curses": 2,
       "Cards": 3
     }
   },
@@ -1108,7 +1109,7 @@
     "pool": "shared",
     "image_url": "/static/images/relics/fiddle.png",
     "vars": {
-      "Cards": 2
+      "Cards": 3
     }
   },
   {
@@ -2969,8 +2970,9 @@
     "pool": "shared",
     "image_url": "/static/images/relics/sere_talon.png",
     "vars": {
-      "Curses": 2,
-      "Wishes": 3
+      "HpLoss": 9,
+      "Wishes": 3,
+      "Curses": 2
     }
   },
   {
@@ -3425,7 +3427,7 @@
     "pool": "shared",
     "image_url": "/static/images/relics/toy_box.png",
     "vars": {
-      "Relics": 4,
+      "Relics": 5,
       "Combats": 3
     }
   },
