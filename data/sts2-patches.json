@@ -481,14 +481,26 @@
     "titleKo": "베타 패치 노트 - v0.109.0",
     "type": "beta",
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/711155348639056490",
-    "summary": "Rich patch notes are being prepared.",
-    "summaryKo": "슬서운변경을 만드는 중입니다.",
+    "summary": "Two new Neow relics, Ambergris, major card reworks, enemy tuning, new Epoch art, and multiplayer fixes.",
+    "summaryKo": "니오우 신규 유물 2종과 용연향, 주요 카드 개편, 적 조정, 새 역사 삽화, 멀티플레이 수정을 담았습니다.",
     "hasBalanceChanges": true,
     "art": {
-      "type": "card",
-      "id": "TOOLS_OF_THE_TRADE",
-      "alt": "Tools of the Trade card art",
-      "altKo": "능숙한 도구 카드 아트"
-    }
+      "type": "epoch",
+      "id": "NECROBINDER6_EPOCH",
+      "alt": "Annihilation epoch art",
+      "altKo": "역사: 전멸"
+    },
+    "featuredEntities": [
+      { "type": "relic", "id": "DOWSING_ROD" },
+      { "type": "relic", "id": "NEOWS_SACRIFICE" },
+      { "type": "potion", "id": "AMBERGRIS" },
+      { "type": "card", "id": "DOWSING" },
+      { "type": "card", "id": "ABUNDANCE" },
+      { "type": "monster", "id": "AEONGLASS" },
+      { "type": "monster", "id": "TORCH_HEAD_AMALGAM" },
+      { "type": "card", "id": "MIRAGE" },
+      { "type": "card", "id": "WELL_LAID_PLANS" },
+      { "type": "card", "id": "MIDNIGHT" }
+    ]
   }
 ]
