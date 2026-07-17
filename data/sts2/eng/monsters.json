@@ -226,8 +226,8 @@
     },
     "damage_values": {
       "Ebb": {
-        "normal": 26,
-        "ascension": 32
+        "normal": 22,
+        "ascension": 26
       },
       "EyeLasers": {
         "normal": 11,
@@ -22680,8 +22680,8 @@
     "max_hp_ascension": null,
     "moves": [
       {
-        "id": "TACKLE",
-        "name": "Tackle",
+        "id": "STRONG_TACKLE",
+        "name": "Strong Tackle",
         "action_types": [
           "attack"
         ],
@@ -22691,7 +22691,7 @@
         "intent_details": [
           {
             "type": "SingleAttackIntent",
-            "damage_key": "Tackle",
+            "damage_key": "StrongTackle",
             "repeat": {
               "normal": 1,
               "ascension": null
@@ -22703,7 +22703,7 @@
       },
       {
         "id": "TACKLE_2",
-        "name": "Tackle",
+        "name": "Tackle 2",
         "action_types": [
           "attack"
         ],
@@ -22747,7 +22747,7 @@
       },
       {
         "id": "TACKLE_3",
-        "name": "Tackle",
+        "name": "Tackle 3",
         "action_types": [
           "attack"
         ],
@@ -22769,7 +22769,7 @@
       },
       {
         "id": "TACKLE_4",
-        "name": "Tackle",
+        "name": "Tackle 4",
         "action_types": [
           "attack"
         ],
@@ -22792,8 +22792,8 @@
     ],
     "bestiary_moves": [
       {
-        "id": "TACKLE",
-        "name": "Tackle",
+        "id": "STRONG_TACKLE",
+        "name": "Strong Tackle",
         "action_types": [
           "attack"
         ],
@@ -22803,7 +22803,7 @@
         "intent_details": [
           {
             "type": "SingleAttackIntent",
-            "damage_key": "Tackle",
+            "damage_key": "StrongTackle",
             "repeat": {
               "normal": 1,
               "ascension": null
@@ -22815,7 +22815,7 @@
       },
       {
         "id": "TACKLE_2",
-        "name": "Tackle",
+        "name": "Tackle 2",
         "action_types": [
           "attack"
         ],
@@ -22859,7 +22859,7 @@
       },
       {
         "id": "TACKLE_3",
-        "name": "Tackle",
+        "name": "Tackle 3",
         "action_types": [
           "attack"
         ],
@@ -22881,7 +22881,7 @@
       },
       {
         "id": "TACKLE_4",
-        "name": "Tackle",
+        "name": "Tackle 4",
         "action_types": [
           "attack"
         ],
@@ -22903,11 +22903,11 @@
       }
     ],
     "move_graph": {
-      "initial": "TACKLE",
+      "initial": "STRONG_TACKLE",
       "confidence": "static",
       "transitions": [
         {
-          "from": "TACKLE",
+          "from": "STRONG_TACKLE",
           "to": "TACKLE_2",
           "chance": 100.0,
           "kind": "fixed"
@@ -22939,7 +22939,7 @@
       ],
       "states": [
         {
-          "id": "TACKLE",
+          "id": "STRONG_TACKLE",
           "kind": "move",
           "next": "TACKLE_2"
         },
@@ -22966,6 +22966,10 @@
       ]
     },
     "damage_values": {
+      "StrongTackle": {
+        "normal": 26,
+        "ascension": 32
+      },
       "Tackle": {
         "normal": 18,
         "ascension": 22
