@@ -3,6 +3,7 @@ import path from "node:path";
 
 import {
   staticCompendiumAssetPath,
+  staticServicePageAssetPath,
   type StaticPageExtension,
 } from "../workers/static-page-routing";
 
@@ -31,6 +32,25 @@ const serviceLocales = [
   { label: "ko", pathPrefix: "", sourceParts: ["compendium"] },
   { label: "en", pathPrefix: "/en", sourceParts: ["en", "compendium"] },
 ] as const;
+
+const gameLocalePathPrefixes = [
+  "",
+  "en",
+  "zh",
+  "ja",
+  "de",
+  "fr",
+  "it",
+  "es",
+  "es-419",
+  "pt",
+  "ru",
+  "pl",
+  "th",
+  "tr",
+] as const;
+
+const staticServicePageSegments = ["chemical-x", "history-course"] as const;
 
 function walkFiles(dir: string, files: string[] = []): string[] {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -108,6 +128,42 @@ function checkServiceLocaleDetails(): Record<string, number> {
   return routeCounts;
 }
 
+function checkStaticServicePages(): number {
+  let count = 0;
+
+  for (const pathPrefix of gameLocalePathPrefixes) {
+    for (const pageSegment of staticServicePageSegments) {
+      const routePath = `/${pathPrefix ? `${pathPrefix}/` : ""}${pageSegment}`;
+      for (const extension of ["html", "rsc"] satisfies StaticPageExtension[]) {
+        const assetPath = staticServicePageAssetPath(routePath, extension);
+        assert(assetPath, `Static routing rejected service page ${routePath}.${extension}`);
+
+        const outputPath = path.join(assetsRoot, assetPath.slice(1));
+        assert(
+          statSync(outputPath, { throwIfNoEntry: false })?.isFile(),
+          `Missing copied static service page: ${outputPath}`,
+        );
+        count += 1;
+      }
+    }
+  }
+
+  assert(
+    staticServicePageAssetPath("/ko/chemical-x", "html") === null,
+    "Unsupported /ko service locale prefix must not map to a static page.",
+  );
+  assert(
+    staticServicePageAssetPath("/chemical-x/post-id", "html") === null,
+    "Dynamic Chemical X detail routes must stay outside the static index set.",
+  );
+  assert(
+    staticServicePageAssetPath("/history-course/run-id", "rsc") === null,
+    "Dynamic History Course detail routes must stay outside the static index set.",
+  );
+
+  return count;
+}
+
 function checkCloudflareAssetLimits(): { count: number; largestBytes: number; largestPath: string } {
   const files = walkFiles(assetsRoot);
   assert(
@@ -133,9 +189,11 @@ function checkCloudflareAssetLimits(): { count: number; largestBytes: number; la
 }
 
 const routeCounts = checkServiceLocaleDetails();
+const staticServicePageCount = checkStaticServicePages();
 const assetStats = checkCloudflareAssetLimits();
 
 console.log(`Cloudflare static detail routes: ko=${routeCounts.ko}, en=${routeCounts.en}`);
+console.log(`Cloudflare static service page assets: ${staticServicePageCount}`);
 console.log(`Cloudflare static assets: ${assetStats.count}/${maxAssetFiles}`);
 console.log(
   `Largest Cloudflare static asset: ${(assetStats.largestBytes / 1024 / 1024).toFixed(2)} MiB (${assetStats.largestPath})`,

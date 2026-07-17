@@ -33,6 +33,10 @@ const compendiumSegments = new Set([
   "powers",
   "relics",
 ]);
+const staticServicePageSegments = new Set([
+  "chemical-x",
+  "history-course",
+]);
 
 function walk(dir, files = []) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -54,6 +58,15 @@ function staticPageRelativePath(file) {
   const parts = parsed.dir.split(path.sep).filter(Boolean);
   if (parts.length === 0 && (parsed.name === "index" || gameLocalePathSegments.has(parsed.name))) {
     return `${parsed.name}${parsed.ext}`;
+  }
+
+  const isDefaultLocaleServicePage = parts.length === 0 && staticServicePageSegments.has(parsed.name);
+  const isGameLocaleServicePage =
+    parts.length === 1
+    && gameLocalePathSegments.has(parts[0])
+    && staticServicePageSegments.has(parsed.name);
+  if (isDefaultLocaleServicePage || isGameLocaleServicePage) {
+    return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
   }
 
   const compendiumIndex = parts.indexOf("compendium");

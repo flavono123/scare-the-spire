@@ -1,4 +1,4 @@
-const STATIC_COMPENDIUM_INDEX_PREFIXES = new Set([
+const STATIC_GAME_LOCALE_PREFIXES = new Set([
   "en",
   "zh",
   "ja",
@@ -12,6 +12,11 @@ const STATIC_COMPENDIUM_INDEX_PREFIXES = new Set([
   "pl",
   "th",
   "tr",
+]);
+
+const STATIC_SERVICE_PAGE_SEGMENTS = new Set([
+  "chemical-x",
+  "history-course",
 ]);
 
 const STATIC_COMPENDIUM_SEGMENTS = new Set([
@@ -32,6 +37,22 @@ const STATIC_COMPENDIUM_SEGMENTS = new Set([
 
 export type StaticPageExtension = "html" | "rsc";
 
+export function staticServicePageAssetPath(
+  pathname: string,
+  extension: StaticPageExtension,
+): string | null {
+  const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
+  const parts = normalizedPathname.split("/").filter(Boolean);
+  const pageSegment = parts.at(-1);
+  if (!pageSegment || !STATIC_SERVICE_PAGE_SEGMENTS.has(pageSegment)) return null;
+
+  const isDefaultLocalePage = parts.length === 1;
+  const isGameLocalePage = parts.length === 2 && STATIC_GAME_LOCALE_PREFIXES.has(parts[0]);
+  if (!isDefaultLocalePage && !isGameLocalePage) return null;
+
+  return `/_cf_static_pages/${parts.join("/")}.${extension}`;
+}
+
 export function staticCompendiumAssetPath(
   pathname: string,
   extension: StaticPageExtension,
@@ -40,7 +61,7 @@ export function staticCompendiumAssetPath(
   const parts = normalizedPathname.split("/").filter(Boolean);
   const compendiumIndex = parts.indexOf("compendium");
   if (compendiumIndex < 0 || compendiumIndex > 1) return null;
-  if (compendiumIndex === 1 && !STATIC_COMPENDIUM_INDEX_PREFIXES.has(parts[0])) return null;
+  if (compendiumIndex === 1 && !STATIC_GAME_LOCALE_PREFIXES.has(parts[0])) return null;
 
   const segment = parts[compendiumIndex + 1];
   if (!STATIC_COMPENDIUM_SEGMENTS.has(segment)) return null;
