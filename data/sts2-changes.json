@@ -7881,7 +7881,7 @@
         "before": [
           "소멸"
         ],
-        "after": []
+        "after": null
       },
       {
         "field": "upgrade.cost",
