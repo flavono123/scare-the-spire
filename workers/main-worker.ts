@@ -20,7 +20,10 @@ type ExecutionContextLike = {
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import openNextWorker from "../.open-next/worker.js";
-import { staticCompendiumAssetPath } from "./static-page-routing";
+import {
+  staticCompendiumAssetPath,
+  staticServicePageAssetPath,
+} from "./static-page-routing";
 
 function isPatchWorkerPath(pathname: string): boolean {
   return (
@@ -176,6 +179,12 @@ async function maybeServeStaticCompendiumPage(request: Request, env: Env, url: U
   return assetPath ? fetchStaticPageAsset(request, env, assetPath, "compendium") : null;
 }
 
+async function maybeServeStaticServicePage(request: Request, env: Env, url: URL): Promise<Response | null> {
+  const extension = isRscRequest(request, url) ? "rsc" : "html";
+  const assetPath = staticServicePageAssetPath(url.pathname, extension);
+  return assetPath ? fetchStaticPageAsset(request, env, assetPath, "service") : null;
+}
+
 const mainWorker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
     const url = new URL(request.url);
@@ -188,6 +197,9 @@ const mainWorker = {
 
     const staticHomeResponse = await maybeServeStaticHomePage(request, env, url);
     if (staticHomeResponse) return staticHomeResponse;
+
+    const staticServiceResponse = await maybeServeStaticServicePage(request, env, url);
+    if (staticServiceResponse) return staticServiceResponse;
 
     const staticCompendiumResponse = await maybeServeStaticCompendiumPage(request, env, url);
     if (staticCompendiumResponse) return staticCompendiumResponse;
