@@ -47,6 +47,15 @@ test.describe("Codex sidebar search", () => {
     await expect(page.getByText("타격", { exact: true }).first()).toBeVisible();
   });
 
+  test("matches Korean card titles by choseong", async ({ page }) => {
+    await openCompendium(page, "/compendium/cards");
+    const search = await sidebarSearch(page);
+
+    await search.fill("ㅌㄱ");
+
+    await expect(page.getByText("타격", { exact: true }).first()).toBeVisible();
+  });
+
   test("matches card body text as well as card titles", async ({ page }) => {
     await openCompendium(page, "/compendium/cards");
     const search = await sidebarSearch(page);
@@ -120,6 +129,29 @@ test.describe("Unified topbar search", () => {
     await expect(page.locator('div.fixed.inset-0 a[href="/compendium/cards?card=beacon_of_hope"]').first()).toBeVisible();
   });
 
+  test("matches Korean resource titles by choseong", async ({ page }) => {
+    await openCompendium(page, "/compendium/cards");
+
+    await page.locator("header").getByRole("button", { name: "통합 검색" }).click();
+    await page.locator('input[placeholder="통합 검색"]').fill("ㅇㅇㅋㄹㄷ");
+
+    await expect(
+      page.locator('div.fixed.inset-0 a[href="/compendium/characters?character=ironclad"]').first(),
+    ).toBeVisible();
+  });
+
+  test("works on static patch Worker pages with Korean choseong", async ({ page }) => {
+    await openCompendium(page, "/patches");
+
+    const header = page.locator("header");
+    await header.getByRole("button", { name: "통합 검색" }).click();
+    await page.locator('input[placeholder="통합 검색"]').fill("ㅇㅇㅋㄹㄷ");
+
+    await expect(
+      page.locator('[data-patch-global-search-results] a[href="/compendium/characters?character=ironclad"]').first(),
+    ).toBeVisible();
+  });
+
   test("opens direct epoch search results", async ({ page }) => {
     await openCompendium(page, "/compendium/epochs");
 
@@ -168,5 +200,16 @@ test.describe("Unified topbar search", () => {
 
     await expect(page.getByRole("dialog", { name: "불만" })).toBeVisible();
     await expect(search).toHaveCount(0);
+  });
+});
+
+test.describe("This or That resource search", () => {
+  test("matches Compendium resources by Korean choseong", async ({ page }) => {
+    await openCompendium(page, "/this-or-that");
+
+    await page.getByRole("button", { name: "작성", exact: true }).click();
+    await page.getByPlaceholder("컴펜디움 리소스 검색").first().fill("ㄴㅋㄹㅂㅇㄷ");
+
+    await expect(page.getByRole("button", { name: /네크로바인더/ })).toBeVisible();
   });
 });

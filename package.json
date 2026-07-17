@@ -29,6 +29,7 @@
     "patch:dev": "pnpm cf:patch:preview",
     "patch:html": "tsx scripts/build-patch-worker.tsx",
     "patch:test": "tsx scripts/check-patch-pending-links.tsx",
+    "search:test": "tsx scripts/check-search-regressions.ts",
     "start": "next start",
     "lint": "eslint",
     "test:visual": "playwright test scripts/visual-check.spec.ts",
