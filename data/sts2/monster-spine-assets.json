@@ -17,6 +17,7 @@
     "animations": [
       "attack_double",
       "attack_heavy",
+      "attack_heavy1",
       "die",
       "hurt",
       "idle_loop",
@@ -7142,8 +7143,10 @@
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
-      "TACKLE": [
-        "tackle",
+      "STRONG_TACKLE": [
+        "strong_tackle",
+        "strongtackle",
+        "strong-tackle",
         "attack",
         "buff",
         "debuff",
