@@ -10273,7 +10273,7 @@
     "searchText": "v0.106.0:line-034-text-hqrglh v0.106.0 0.106.0 컨텐츠 & 밸런스 적 행동 패턴 조정. adjusted moveset."
   },
   {
-    "id": "v0.106.0:line-035-power-withering-presence",
+    "id": "v0.106.0:line-035-card-wither-power-withering-presence",
     "patch": "v0.106.0",
     "version": "0.106.0",
     "date": "2026-05-22",
@@ -10281,18 +10281,23 @@
       "컨텐츠 & 밸런스",
       "적"
     ],
-    "markdownKo": "[gold:card]침체[/gold] 상태이상과 [gold:power]시들어가는 존재[/gold] 파워 리워크.",
+    "markdownKo": "[gold:card]시듦[/gold] 상태이상과 [gold:power]시들어가는 존재[/gold] 파워 리워크.",
     "markdownEn": "Reworked Wither status and Withering Presence power.",
-    "textKo": "침체 상태이상과 시들어가는 존재 파워 리워크.",
+    "textKo": "시듦 상태이상과 시들어가는 존재 파워 리워크.",
     "textEn": "Reworked Wither status and Withering Presence power.",
     "entityRefs": [
+      {
+        "type": "card",
+        "id": "WITHER",
+        "label": "시듦"
+      },
       {
         "type": "power",
         "id": "WITHERING_PRESENCE",
         "label": "시들어가는 존재"
       }
     ],
-    "searchText": "v0.106.0:line-035-power-withering-presence v0.106.0 0.106.0 컨텐츠 & 밸런스 적 침체 상태이상과 시들어가는 존재 파워 리워크. reworked wither status and withering presence power. power withering_presence 시들어가는 존재 시들어가는 존재 withering presence"
+    "searchText": "v0.106.0:line-035-card-wither-power-withering-presence v0.106.0 0.106.0 컨텐츠 & 밸런스 적 시듦 상태이상과 시들어가는 존재 파워 리워크. reworked wither status and withering presence power. card wither 시듦 시듦 wither power withering_presence 시들어가는 존재 시들어가는 존재 withering presence"
   },
   {
     "id": "v0.106.0:line-036-monster-haunted-ship",
@@ -12283,7 +12288,7 @@
     "searchText": "v0.106.1:line-001-text-1gwk1bl v0.106.1 0.106.1 텍스트 여러 언어의 번역이 갱신되었습니다. updated translations for various languages."
   },
   {
-    "id": "v0.106.1:line-002-text-dssc8x",
+    "id": "v0.106.1:line-002-card-wither",
     "patch": "v0.106.1",
     "version": "0.106.1",
     "date": "2026-05-23",
@@ -12291,15 +12296,21 @@
       "버그 수정",
       "적"
     ],
-    "markdownKo": "플레이어가 더 이상 [gold:card]침체[/gold] 상태이상 카드를 강화할 수 없습니다.",
+    "markdownKo": "플레이어가 더 이상 [gold:card]시듦[/gold] 상태이상 카드를 강화할 수 없습니다.",
     "markdownEn": "The player can no longer upgrade [gold:card]Wither[/gold] status cards.",
-    "textKo": "플레이어가 더 이상 침체 상태이상 카드를 강화할 수 없습니다.",
+    "textKo": "플레이어가 더 이상 시듦 상태이상 카드를 강화할 수 없습니다.",
     "textEn": "The player can no longer upgrade Wither status cards.",
-    "entityRefs": [],
-    "searchText": "v0.106.1:line-002-text-dssc8x v0.106.1 0.106.1 버그 수정 적 플레이어가 더 이상 침체 상태이상 카드를 강화할 수 없습니다. the player can no longer upgrade wither status cards."
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "WITHER",
+        "label": "시듦"
+      }
+    ],
+    "searchText": "v0.106.1:line-002-card-wither v0.106.1 0.106.1 버그 수정 적 플레이어가 더 이상 시듦 상태이상 카드를 강화할 수 없습니다. the player can no longer upgrade wither status cards. card wither 시듦 시듦 wither"
   },
   {
-    "id": "v0.106.1:line-003-relic-runic-pyramid",
+    "id": "v0.106.1:line-003-card-wither-relic-runic-pyramid",
     "patch": "v0.106.1",
     "version": "0.106.1",
     "date": "2026-05-23",
@@ -12307,18 +12318,23 @@
       "버그 수정",
       "적"
     ],
-    "markdownKo": "[gold:card]침체[/gold] 상태이상 카드는 [gold:relic]룬 피라미드[/gold] 유물 같은 효과로 [gold]보존[/gold]을 얻어도 더 이상 손에 남아 있지 않습니다.",
+    "markdownKo": "[gold:card]시듦[/gold] 상태이상 카드는 [gold:relic]룬 피라미드[/gold] 유물 같은 효과로 [gold]보존[/gold]을 얻어도 더 이상 손에 남아 있지 않습니다.",
     "markdownEn": "[gold:card]Wither[/gold] status cards will no longer stick around in hand if they have [gold]Retain[/gold] from something like the [gold:relic]Runic Pyramid[/gold] relic.",
-    "textKo": "침체 상태이상 카드는 룬 피라미드 유물 같은 효과로 보존을 얻어도 더 이상 손에 남아 있지 않습니다.",
+    "textKo": "시듦 상태이상 카드는 룬 피라미드 유물 같은 효과로 보존을 얻어도 더 이상 손에 남아 있지 않습니다.",
     "textEn": "Wither status cards will no longer stick around in hand if they have Retain from something like the Runic Pyramid relic.",
     "entityRefs": [
+      {
+        "type": "card",
+        "id": "WITHER",
+        "label": "시듦"
+      },
       {
         "type": "relic",
         "id": "RUNIC_PYRAMID",
         "label": "룬 피라미드"
       }
     ],
-    "searchText": "v0.106.1:line-003-relic-runic-pyramid v0.106.1 0.106.1 버그 수정 적 침체 상태이상 카드는 룬 피라미드 유물 같은 효과로 보존을 얻어도 더 이상 손에 남아 있지 않습니다. wither status cards will no longer stick around in hand if they have retain from something like the runic pyramid relic. relic runic_pyramid 룬 피라미드 룬 피라미드 runic pyramid"
+    "searchText": "v0.106.1:line-003-card-wither-relic-runic-pyramid v0.106.1 0.106.1 버그 수정 적 시듦 상태이상 카드는 룬 피라미드 유물 같은 효과로 보존을 얻어도 더 이상 손에 남아 있지 않습니다. wither status cards will no longer stick around in hand if they have retain from something like the runic pyramid relic. card wither 시듦 시듦 wither relic runic_pyramid 룬 피라미드 룬 피라미드 runic pyramid"
   },
   {
     "id": "build-23478716:line-001-text-ty7l3w",
@@ -13903,7 +13919,7 @@
     "searchText": "v0.107.0:line-016-relic-paels-flesh v0.107.0 0.107.0 사용자 인터페이스 및 경험 고대의 존재 예를 들어 파엘의 살점이 발동하기 전 최대 에너지가 3이었다면, 발동 후 에너지 카운터는 4/3 대신 4/4로 표시됩니다. for example, if you have 3 max energy before pael's flesh triggers, your energy counter will show 4/4 instead of 4/3 after pael's flesh triggers. relic paels_flesh 파엘의 살점 파엘의 살점 pael's flesh"
   },
   {
-    "id": "v0.107.0:line-017-monster-aeonglass",
+    "id": "v0.107.0:line-017-card-wither-monster-aeonglass",
     "patch": "v0.107.0",
     "version": "0.107.0",
     "date": "2026-06-04",
@@ -13911,18 +13927,23 @@
       "사용자 인터페이스 및 경험",
       "적"
     ],
-    "markdownKo": "[gold:card]침체[/gold] 상태이상 카드 미리보기의 강화 단계가 이제 [gold:monster]영겁의 모래시계[/gold]가 실제로 가진 강화 단계와 일치합니다.",
+    "markdownKo": "[gold:card]시듦[/gold] 상태이상 카드 미리보기의 강화 단계가 이제 [gold:monster]영겁의 모래시계[/gold]가 실제로 가진 강화 단계와 일치합니다.",
     "markdownEn": "The [gold:card]Wither[/gold] status card preview upgrade level now matches the upgrade level that [gold:monster]Aeonglass[/gold] is actually on.",
-    "textKo": "침체 상태이상 카드 미리보기의 강화 단계가 이제 영겁의 모래시계가 실제로 가진 강화 단계와 일치합니다.",
+    "textKo": "시듦 상태이상 카드 미리보기의 강화 단계가 이제 영겁의 모래시계가 실제로 가진 강화 단계와 일치합니다.",
     "textEn": "The Wither status card preview upgrade level now matches the upgrade level that Aeonglass is actually on.",
     "entityRefs": [
+      {
+        "type": "card",
+        "id": "WITHER",
+        "label": "시듦"
+      },
       {
         "type": "monster",
         "id": "AEONGLASS",
         "label": "영겁의 모래시계"
       }
     ],
-    "searchText": "v0.107.0:line-017-monster-aeonglass v0.107.0 0.107.0 사용자 인터페이스 및 경험 적 침체 상태이상 카드 미리보기의 강화 단계가 이제 영겁의 모래시계가 실제로 가진 강화 단계와 일치합니다. the wither status card preview upgrade level now matches the upgrade level that aeonglass is actually on. monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass"
+    "searchText": "v0.107.0:line-017-card-wither-monster-aeonglass v0.107.0 0.107.0 사용자 인터페이스 및 경험 적 시듦 상태이상 카드 미리보기의 강화 단계가 이제 영겁의 모래시계가 실제로 가진 강화 단계와 일치합니다. the wither status card preview upgrade level now matches the upgrade level that aeonglass is actually on. card wither 시듦 시듦 wither monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass"
   },
   {
     "id": "v0.107.0:line-018-card-sacrifice-power-dexterity",
@@ -14263,7 +14284,7 @@
     "searchText": "v0.107.0:line-034-ancient-nonupeipe-relic-diamond-diadem v0.107.0 0.107.0 버그 수정 고대의 존재 노누파이페의 다이아몬드 왕관 유물이 턴 시작 시 지옥검무 파워가 카드를 사용한 뒤 카운트를 초기화하던 문제를 수정했습니다. fixed nonupeipe's diamond diadem relic resetting its count after hellraiser power plays cards at the start of the turn. ancient nonupeipe 노누파이페 노누파이페 nonupeipe relic diamond_diadem 다이아몬드 왕관 다이아몬드 왕관 diamond diadem card hellraiser 지옥검무 지옥검무 hellraiser"
   },
   {
-    "id": "v0.107.0:line-035-monster-aeonglass",
+    "id": "v0.107.0:line-035-monster-aeonglass-card-wither",
     "patch": "v0.107.0",
     "version": "0.107.0",
     "date": "2026-06-04",
@@ -14271,18 +14292,23 @@
       "버그 수정",
       "적"
     ],
-    "markdownKo": "[gold:monster]영겁의 모래시계[/gold]의 [gold:card]침체[/gold] 상태이상 카드가 턴 종료 시 손을 버리기 전에 잠깐 손으로 돌아오던 문제를 수정했습니다.",
+    "markdownKo": "[gold:monster]영겁의 모래시계[/gold]의 [gold:card]시듦[/gold] 상태이상 카드가 턴 종료 시 손을 버리기 전에 잠깐 손으로 돌아오던 문제를 수정했습니다.",
     "markdownEn": "[gold:monster]Aeonglass[/gold]'s [gold:card]Wither[/gold] status card no longer briefly returns to your hand before you discard your hand at the end of your turn.",
-    "textKo": "영겁의 모래시계의 침체 상태이상 카드가 턴 종료 시 손을 버리기 전에 잠깐 손으로 돌아오던 문제를 수정했습니다.",
+    "textKo": "영겁의 모래시계의 시듦 상태이상 카드가 턴 종료 시 손을 버리기 전에 잠깐 손으로 돌아오던 문제를 수정했습니다.",
     "textEn": "Aeonglass's Wither status card no longer briefly returns to your hand before you discard your hand at the end of your turn.",
     "entityRefs": [
       {
         "type": "monster",
         "id": "AEONGLASS",
         "label": "영겁의 모래시계"
+      },
+      {
+        "type": "card",
+        "id": "WITHER",
+        "label": "시듦"
       }
     ],
-    "searchText": "v0.107.0:line-035-monster-aeonglass v0.107.0 0.107.0 버그 수정 적 영겁의 모래시계의 침체 상태이상 카드가 턴 종료 시 손을 버리기 전에 잠깐 손으로 돌아오던 문제를 수정했습니다. aeonglass's wither status card no longer briefly returns to your hand before you discard your hand at the end of your turn. monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass"
+    "searchText": "v0.107.0:line-035-monster-aeonglass-card-wither v0.107.0 0.107.0 버그 수정 적 영겁의 모래시계의 시듦 상태이상 카드가 턴 종료 시 손을 버리기 전에 잠깐 손으로 돌아오던 문제를 수정했습니다. aeonglass's wither status card no longer briefly returns to your hand before you discard your hand at the end of your turn. monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass card wither 시듦 시듦 wither"
   },
   {
     "id": "v0.107.0:line-036-card-armaments-card-drain-power",
@@ -14293,9 +14319,9 @@
       "버그 수정",
       "적"
     ],
-    "markdownKo": "[gold:card]전투장비[/gold] 또는 [i][gold:card]기력 흡수[/gold][/i] 카드로 [gold:card]침체[/gold] 상태이상 카드를 더 이상 강화할 수 없습니다.",
+    "markdownKo": "[gold:card]전투장비[/gold] 또는 [i][gold:card]기력 흡수[/gold][/i] 카드로 [gold:card]시듦[/gold] 상태이상 카드를 더 이상 강화할 수 없습니다.",
     "markdownEn": "Can no longer upgrade [gold:card]Wither[/gold] status card with [gold:card]Armaments[/gold] or [gold]Drain Life[/gold] cards.",
-    "textKo": "전투장비 또는 기력 흡수 카드로 침체 상태이상 카드를 더 이상 강화할 수 없습니다.",
+    "textKo": "전투장비 또는 기력 흡수 카드로 시듦 상태이상 카드를 더 이상 강화할 수 없습니다.",
     "textEn": "Can no longer upgrade Wither status card with Armaments or Drain Life cards.",
     "entityRefs": [
       {
@@ -14307,9 +14333,14 @@
         "type": "card",
         "id": "DRAIN_POWER",
         "label": "기력 흡수"
+      },
+      {
+        "type": "card",
+        "id": "WITHER",
+        "label": "시듦"
       }
     ],
-    "searchText": "v0.107.0:line-036-card-armaments-card-drain-power v0.107.0 0.107.0 버그 수정 적 전투장비 또는 기력 흡수 카드로 침체 상태이상 카드를 더 이상 강화할 수 없습니다. can no longer upgrade wither status card with armaments or drain life cards. card armaments 전투장비 전투장비 armaments card drain_power 기력 흡수 기력 흡수 drain power"
+    "searchText": "v0.107.0:line-036-card-armaments-card-drain-power v0.107.0 0.107.0 버그 수정 적 전투장비 또는 기력 흡수 카드로 시듦 상태이상 카드를 더 이상 강화할 수 없습니다. can no longer upgrade wither status card with armaments or drain life cards. card armaments 전투장비 전투장비 armaments card drain_power 기력 흡수 기력 흡수 drain power card wither 시듦 시듦 wither"
   },
   {
     "id": "v0.107.0:line-037-monster-spectral-knight",
@@ -15179,9 +15210,9 @@
       "콘텐츠 & 밸런스",
       "적"
     ],
-    "markdownKo": "3막 보스 [gold:monster]문을 만드는 자[/gold]를 완전히 새로운 보스인 [gold:monster]영겁의 모래시계[/gold]로 교체했습니다. 기술 구성과 [gold:card]침체[/gold] / [gold:power]시들어가는 존재[/gold] 메커니즘은 베타 기간 동안 다듬어졌습니다.",
+    "markdownKo": "3막 보스 [gold:monster]문을 만드는 자[/gold]를 완전히 새로운 보스인 [gold:monster]영겁의 모래시계[/gold]로 교체했습니다. 기술 구성과 [gold:card]시듦[/gold] / [gold:power]시들어가는 존재[/gold] 메커니즘은 베타 기간 동안 다듬어졌습니다.",
     "markdownEn": "Added three more [gold]Badges[/gold]:",
-    "textKo": "3막 보스 문을 만드는 자를 완전히 새로운 보스인 영겁의 모래시계로 교체했습니다. 기술 구성과 침체 / 시들어가는 존재 메커니즘은 베타 기간 동안 다듬어졌습니다.",
+    "textKo": "3막 보스 문을 만드는 자를 완전히 새로운 보스인 영겁의 모래시계로 교체했습니다. 기술 구성과 시듦 / 시들어가는 존재 메커니즘은 베타 기간 동안 다듬어졌습니다.",
     "textEn": "Added three more Badges:",
     "entityRefs": [
       {
@@ -15195,12 +15226,17 @@
         "label": "영겁의 모래시계"
       },
       {
+        "type": "card",
+        "id": "WITHER",
+        "label": "시듦"
+      },
+      {
         "type": "power",
         "id": "WITHERING_PRESENCE",
         "label": "시들어가는 존재"
       }
     ],
-    "searchText": "v0.107.1:line-019-monster-doormaker-monster-aeonglass v0.107.1 0.107.1 콘텐츠 & 밸런스 적 3막 보스 문을 만드는 자를 완전히 새로운 보스인 영겁의 모래시계로 교체했습니다. 기술 구성과 침체 / 시들어가는 존재 메커니즘은 베타 기간 동안 다듬어졌습니다. added three more badges: monster doormaker 문을 만드는 자 문을 만드는 자 doormaker monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass power withering_presence 시들어가는 존재 시들어가는 존재 withering presence"
+    "searchText": "v0.107.1:line-019-monster-doormaker-monster-aeonglass v0.107.1 0.107.1 콘텐츠 & 밸런스 적 3막 보스 문을 만드는 자를 완전히 새로운 보스인 영겁의 모래시계로 교체했습니다. 기술 구성과 시듦 / 시들어가는 존재 메커니즘은 베타 기간 동안 다듬어졌습니다. added three more badges: monster doormaker 문을 만드는 자 문을 만드는 자 doormaker monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass card wither 시듦 시듦 wither power withering_presence 시들어가는 존재 시들어가는 존재 withering presence"
   },
   {
     "id": "v0.107.1:line-020-monster-infested-prism",
@@ -21718,18 +21754,18 @@
       "콘텐츠 & 밸런스",
       "멀티플레이"
     ],
-    "markdownKo": "[gold:card]Constellation[/gold]: 고급 스킬, 비용 0. \"다른 플레이어가 카드를 1장 뽑고, [energy:1]를 얻고, 방어도를 9(12) 얻습니다.\"",
+    "markdownKo": "[gold:card]별자리[/gold]: 고급 스킬, 비용 0. \"다른 플레이어가 카드를 1장 뽑고, [energy:1]를 얻고, 방어도를 9(12) 얻습니다.\"",
     "markdownEn": "[gold:card]Constellation[/gold]: Uncommon Skill, cost 0. \"Another player draws 1 card, gains [energy:1], and gains 9(12) Block.\"",
-    "textKo": "Constellation: 고급 스킬, 비용 0. \"다른 플레이어가 카드를 1장 뽑고, 를 얻고, 방어도를 9(12) 얻습니다.\"",
+    "textKo": "별자리: 고급 스킬, 비용 0. \"다른 플레이어가 카드를 1장 뽑고, 를 얻고, 방어도를 9(12) 얻습니다.\"",
     "textEn": "Constellation: Uncommon Skill, cost 0. \"Another player draws 1 card, gains , and gains 9(12) Block.\"",
     "entityRefs": [
       {
         "type": "card",
         "id": "CONSTELLATION",
-        "label": "Constellation"
+        "label": "별자리"
       }
     ],
-    "searchText": "v0.108.0:line-043-card-constellation v0.108.0 0.108.0 콘텐츠 & 밸런스 멀티플레이 constellation: 고급 스킬, 비용 0. \"다른 플레이어가 카드를 1장 뽑고, 를 얻고, 방어도를 9(12) 얻습니다.\" constellation: uncommon skill, cost 0. \"another player draws 1 card, gains , and gains 9(12) block.\" card constellation constellation 별자리 constellation"
+    "searchText": "v0.108.0:line-043-card-constellation v0.108.0 0.108.0 콘텐츠 & 밸런스 멀티플레이 별자리: 고급 스킬, 비용 0. \"다른 플레이어가 카드를 1장 뽑고, 를 얻고, 방어도를 9(12) 얻습니다.\" constellation: uncommon skill, cost 0. \"another player draws 1 card, gains , and gains 9(12) block.\" card constellation 별자리 별자리 constellation"
   },
   {
     "id": "v0.108.0:line-044-text-1rqqaft",
@@ -21778,18 +21814,18 @@
       "콘텐츠 & 밸런스",
       "멀티플레이"
     ],
-    "markdownKo": "[gold:card]Soulbound[/gold]: 고급 파워, 비용 1. \"(선천성.) 아군을 선택합니다. 내가 영혼을 만들 때마다 대상의 뽑을 카드 더미에 영혼을 추가합니다.\"",
+    "markdownKo": "[gold:card]영혼 결속[/gold]: 고급 파워, 비용 1. \"(선천성.) 아군을 선택합니다. 내가 영혼을 만들 때마다 대상의 뽑을 카드 더미에 영혼을 추가합니다.\"",
     "markdownEn": "[gold:card]Soulbound[/gold]: Uncommon Power, cost 1. \"(Innate.) Choose an ally. Whenever you create a Soul, add a Soul to their Draw Pile.\"",
-    "textKo": "Soulbound: 고급 파워, 비용 1. \"(선천성.) 아군을 선택합니다. 내가 영혼을 만들 때마다 대상의 뽑을 카드 더미에 영혼을 추가합니다.\"",
+    "textKo": "영혼 결속: 고급 파워, 비용 1. \"(선천성.) 아군을 선택합니다. 내가 영혼을 만들 때마다 대상의 뽑을 카드 더미에 영혼을 추가합니다.\"",
     "textEn": "Soulbound: Uncommon Power, cost 1. \"(Innate.) Choose an ally. Whenever you create a Soul, add a Soul to their Draw Pile.\"",
     "entityRefs": [
       {
         "type": "card",
         "id": "SOULBOUND",
-        "label": "Soulbound"
+        "label": "영혼 결속"
       }
     ],
-    "searchText": "v0.108.0:line-046-card-soulbound v0.108.0 0.108.0 콘텐츠 & 밸런스 멀티플레이 soulbound: 고급 파워, 비용 1. \"(선천성.) 아군을 선택합니다. 내가 영혼을 만들 때마다 대상의 뽑을 카드 더미에 영혼을 추가합니다.\" soulbound: uncommon power, cost 1. \"(innate.) choose an ally. whenever you create a soul, add a soul to their draw pile.\" card soulbound soulbound 영혼 결속 soulbound"
+    "searchText": "v0.108.0:line-046-card-soulbound v0.108.0 0.108.0 콘텐츠 & 밸런스 멀티플레이 영혼 결속: 고급 파워, 비용 1. \"(선천성.) 아군을 선택합니다. 내가 영혼을 만들 때마다 대상의 뽑을 카드 더미에 영혼을 추가합니다.\" soulbound: uncommon power, cost 1. \"(innate.) choose an ally. whenever you create a soul, add a soul to their draw pile.\" card soulbound 영혼 결속 영혼 결속 soulbound"
   },
   {
     "id": "v0.108.0:line-047-card-cacophony",
@@ -21800,18 +21836,18 @@
       "콘텐츠 & 밸런스",
       "멀티플레이"
     ],
-    "markdownKo": "[gold:card]Cacophony[/gold]: 희귀 파워, 비용 2. \"모든 플레이어가 카드를 33장 뽑을 때마다 무작위 적에게 피해를 66(99) 줍니다.\"",
+    "markdownKo": "[gold:card]불협화음[/gold]: 희귀 파워, 비용 2. \"모든 플레이어가 카드를 33장 뽑을 때마다 무작위 적에게 피해를 66(99) 줍니다.\"",
     "markdownEn": "[gold:card]Cacophony[/gold]: Rare Power, cost 2. \"Every 33 cards drawn by ALL players, deal 66(99) damage to a random enemy.\"",
-    "textKo": "Cacophony: 희귀 파워, 비용 2. \"모든 플레이어가 카드를 33장 뽑을 때마다 무작위 적에게 피해를 66(99) 줍니다.\"",
+    "textKo": "불협화음: 희귀 파워, 비용 2. \"모든 플레이어가 카드를 33장 뽑을 때마다 무작위 적에게 피해를 66(99) 줍니다.\"",
     "textEn": "Cacophony: Rare Power, cost 2. \"Every 33 cards drawn by ALL players, deal 66(99) damage to a random enemy.\"",
     "entityRefs": [
       {
         "type": "card",
         "id": "CACOPHONY",
-        "label": "Cacophony"
+        "label": "불협화음"
       }
     ],
-    "searchText": "v0.108.0:line-047-card-cacophony v0.108.0 0.108.0 콘텐츠 & 밸런스 멀티플레이 cacophony: 희귀 파워, 비용 2. \"모든 플레이어가 카드를 33장 뽑을 때마다 무작위 적에게 피해를 66(99) 줍니다.\" cacophony: rare power, cost 2. \"every 33 cards drawn by all players, deal 66(99) damage to a random enemy.\" card cacophony cacophony 불협화음 cacophony"
+    "searchText": "v0.108.0:line-047-card-cacophony v0.108.0 0.108.0 콘텐츠 & 밸런스 멀티플레이 불협화음: 희귀 파워, 비용 2. \"모든 플레이어가 카드를 33장 뽑을 때마다 무작위 적에게 피해를 66(99) 줍니다.\" cacophony: rare power, cost 2. \"every 33 cards drawn by all players, deal 66(99) damage to a random enemy.\" card cacophony 불협화음 불협화음 cacophony"
   },
   {
     "id": "v0.108.0:line-048-card-legion-of-bone",
@@ -22248,19 +22284,25 @@
     "searchText": "v0.108.0:line-070-text-cfhb2y v0.108.0 0.108.0 사용자 인터페이스 및 사용 경험 멀티플레이 버전 불일치 오류가 더 많은 정보를 포함합니다. version mismatch errors now contain more information."
   },
   {
-    "id": "v0.108.0:line-071-text-1u2ztkz",
+    "id": "v0.108.0:line-071-card-wither",
     "patch": "v0.108.0",
     "version": "0.108.0",
     "date": "2026-07-03",
     "section": [
       "아트"
     ],
-    "markdownKo": "[gold:card]침체[/gold] 상태 카드에 초상화 일러스트를 추가했습니다.",
+    "markdownKo": "[gold:card]시듦[/gold] 상태 카드에 초상화 일러스트를 추가했습니다.",
     "markdownEn": "Added portrait art for the [gold:card]Wither[/gold] status card.",
-    "textKo": "침체 상태 카드에 초상화 일러스트를 추가했습니다.",
+    "textKo": "시듦 상태 카드에 초상화 일러스트를 추가했습니다.",
     "textEn": "Added portrait art for the Wither status card.",
-    "entityRefs": [],
-    "searchText": "v0.108.0:line-071-text-1u2ztkz v0.108.0 0.108.0 아트 침체 상태 카드에 초상화 일러스트를 추가했습니다. added portrait art for the wither status card."
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "WITHER",
+        "label": "시듦"
+      }
+    ],
+    "searchText": "v0.108.0:line-071-card-wither v0.108.0 0.108.0 아트 시듦 상태 카드에 초상화 일러스트를 추가했습니다. added portrait art for the wither status card. card wither 시듦 시듦 wither"
   },
   {
     "id": "v0.108.0:line-072-monster-aeonglass",
@@ -25664,9 +25706,9 @@
       "문구",
       "번역"
     ],
-    "markdownKo": "개편된 [gold:card]괜찮은 전략[/gold], [gold:card]연료[/gold], [gold:card]발병[/gold], [gold:relic]말라비틀어진 발톱[/gold], [gold:card]Cacophony[/gold]의 오래된 번역을 제거했습니다.",
+    "markdownKo": "개편된 [gold:card]괜찮은 전략[/gold], [gold:card]연료[/gold], [gold:card]발병[/gold], [gold:relic]말라비틀어진 발톱[/gold], [gold:card]불협화음[/gold]의 오래된 번역을 제거했습니다.",
     "markdownEn": "Removed stale translations for redesigned [gold:card]Well-Laid Plans[/gold], [gold:card]Fuel[/gold], [gold:card]Outbreak[/gold], [gold:relic]Sere Talon[/gold], and [gold:card]Cacophony[/gold].",
-    "textKo": "개편된 괜찮은 전략, 연료, 발병, 말라비틀어진 발톱, Cacophony의 오래된 번역을 제거했습니다.",
+    "textKo": "개편된 괜찮은 전략, 연료, 발병, 말라비틀어진 발톱, 불협화음의 오래된 번역을 제거했습니다.",
     "textEn": "Removed stale translations for redesigned Well-Laid Plans, Fuel, Outbreak, Sere Talon, and Cacophony.",
     "entityRefs": [
       {
@@ -25692,10 +25734,10 @@
       {
         "type": "card",
         "id": "CACOPHONY",
-        "label": "Cacophony"
+        "label": "불협화음"
       }
     ],
-    "searchText": "v0.109.0:line-063-card-well-laid-plans-card-fuel v0.109.0 0.109.0 문구 번역 개편된 괜찮은 전략, 연료, 발병, 말라비틀어진 발톱, cacophony의 오래된 번역을 제거했습니다. removed stale translations for redesigned well-laid plans, fuel, outbreak, sere talon, and cacophony. card well_laid_plans 괜찮은 전략 괜찮은 전략 well-laid plans card fuel 연료 연료 fuel card outbreak 발병 발병 outbreak relic sere_talon 말라비틀어진 발톱 말라비틀어진 발톱 sere talon card cacophony cacophony 불협화음 cacophony"
+    "searchText": "v0.109.0:line-063-card-well-laid-plans-card-fuel v0.109.0 0.109.0 문구 번역 개편된 괜찮은 전략, 연료, 발병, 말라비틀어진 발톱, 불협화음의 오래된 번역을 제거했습니다. removed stale translations for redesigned well-laid plans, fuel, outbreak, sere talon, and cacophony. card well_laid_plans 괜찮은 전략 괜찮은 전략 well-laid plans card fuel 연료 연료 fuel card outbreak 발병 발병 outbreak relic sere_talon 말라비틀어진 발톱 말라비틀어진 발톱 sere talon card cacophony 불협화음 불협화음 cacophony"
   },
   {
     "id": "v0.109.0:line-064-text-1js90zp",
@@ -25885,18 +25927,18 @@
       "버그 수정",
       "네크로바인더"
     ],
-    "markdownKo": "[gold:card]Soulbound[/gold]가 이제 영혼을 뽑을 카드 더미 맨 아래에 놓는 대신 더미에 섞어 넣습니다.",
+    "markdownKo": "[gold:card]영혼 결속[/gold]이 이제 영혼을 뽑을 카드 더미 맨 아래에 놓는 대신 더미에 섞어 넣습니다.",
     "markdownEn": "[gold:card]Soulbound[/gold] now shuffles Souls into the Draw Pile instead of putting them on the bottom.",
-    "textKo": "Soulbound가 이제 영혼을 뽑을 카드 더미 맨 아래에 놓는 대신 더미에 섞어 넣습니다.",
+    "textKo": "영혼 결속이 이제 영혼을 뽑을 카드 더미 맨 아래에 놓는 대신 더미에 섞어 넣습니다.",
     "textEn": "Soulbound now shuffles Souls into the Draw Pile instead of putting them on the bottom.",
     "entityRefs": [
       {
         "type": "card",
         "id": "SOULBOUND",
-        "label": "Soulbound"
+        "label": "영혼 결속"
       }
     ],
-    "searchText": "v0.109.0:line-073-card-soulbound v0.109.0 0.109.0 버그 수정 네크로바인더 soulbound가 이제 영혼을 뽑을 카드 더미 맨 아래에 놓는 대신 더미에 섞어 넣습니다. soulbound now shuffles souls into the draw pile instead of putting them on the bottom. card soulbound soulbound 영혼 결속 soulbound"
+    "searchText": "v0.109.0:line-073-card-soulbound v0.109.0 0.109.0 버그 수정 네크로바인더 영혼 결속이 이제 영혼을 뽑을 카드 더미 맨 아래에 놓는 대신 더미에 섞어 넣습니다. soulbound now shuffles souls into the draw pile instead of putting them on the bottom. card soulbound 영혼 결속 영혼 결속 soulbound"
   },
   {
     "id": "v0.109.0:line-074-card-one-for-all",
