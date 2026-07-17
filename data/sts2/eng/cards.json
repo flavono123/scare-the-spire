@@ -85,7 +85,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Power",
-    "rarity": "Rare",
+    "rarity": "Uncommon",
     "target": "Self",
     "color": "silent",
     "damage": null,
@@ -1598,7 +1598,7 @@
     "name": "Blade Symphony",
     "description": "Add 2 [gold]Shivs[/gold] to ALL player's [gold]Hands[/gold].",
     "description_raw": "Add {Cards:diff()} [gold]{Cards:plural:Shiv|Shivs}[/gold] to ALL player's [gold]Hands[/gold].",
-    "cost": 1,
+    "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -1622,7 +1622,7 @@
       "Cards": 2
     },
     "upgrade": {
-      "cards": "+1"
+      "cost": 1
     },
     "image_url": null,
     "beta_image_url": "/static/images/cards/beta/blade_symphony.png"
@@ -1742,7 +1742,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Skill",
-    "rarity": "Common",
+    "rarity": "Uncommon",
     "target": "Self",
     "color": "ironclad",
     "damage": null,
@@ -3522,7 +3522,7 @@
   {
     "id": "COLLISION_COURSE",
     "name": "Collision Course",
-    "description": "Deal 9 damage.\nAdd a [gold]Debris[/gold] into your [gold]Hand[/gold].",
+    "description": "Deal 10 damage.\nAdd a [gold]Debris[/gold] into your [gold]Hand[/gold].",
     "description_raw": "Deal {Damage:diff()} damage.\nAdd a [gold]Debris[/gold] into your [gold]Hand[/gold].",
     "cost": 0,
     "is_x_cost": null,
@@ -3532,7 +3532,7 @@
     "rarity": "Common",
     "target": "AnyEnemy",
     "color": "regent",
-    "damage": 9,
+    "damage": 10,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -3545,10 +3545,10 @@
       "DEBRIS"
     ],
     "vars": {
-      "Damage": 9
+      "Damage": 10
     },
     "upgrade": {
-      "damage": "+3"
+      "damage": "+4"
     },
     "image_url": "/static/images/cards/collision_course.png",
     "beta_image_url": "/static/images/cards/beta/collision_course.png"
@@ -4299,7 +4299,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Power",
-    "rarity": "Rare",
+    "rarity": "Uncommon",
     "target": "Self",
     "color": "ironclad",
     "damage": null,
@@ -5361,7 +5361,7 @@
   {
     "id": "DEMON_FORM",
     "name": "Demon Form",
-    "description": "At the start of your turn, gain 2 [gold]Strength[/gold].",
+    "description": "At the start of your turn, gain 3 [gold]Strength[/gold].",
     "description_raw": "At the start of your turn, gain {StrengthPower:diff()} [gold]Strength[/gold].",
     "cost": 3,
     "is_x_cost": null,
@@ -5377,7 +5377,7 @@
     "powers_applied": [
       {
         "power": "Strength",
-        "amount": 2
+        "amount": 3
       }
     ],
     "cards_draw": null,
@@ -5387,8 +5387,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "StrengthPower": 2,
-      "Strength": 2
+      "StrengthPower": 3,
+      "Strength": 3
     },
     "upgrade": {
       "strengthpower": "+1"
@@ -5708,14 +5708,14 @@
   {
     "id": "DOMINATE",
     "name": "Dominate",
-    "description": "Apply X [gold]Vulnerable[/gold].\nGain 1 [gold]Strength[/gold] for each [gold]Vulnerable[/gold] on the enemy.",
+    "description": "Apply 1 [gold]Vulnerable[/gold].\nGain 1 [gold]Strength[/gold] for each [gold]Vulnerable[/gold] on the enemy.",
     "description_raw": "Apply {VulnerablePower:diff()} [gold]Vulnerable[/gold].\nGain {StrengthPerVulnerable:diff()} [gold]Strength[/gold] for each [gold]Vulnerable[/gold] on the enemy.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Skill",
-    "rarity": "Uncommon",
+    "rarity": "Rare",
     "target": "AnyEnemy",
     "color": "ironclad",
     "damage": null,
@@ -5731,10 +5731,12 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
+      "VulnerablePower": 1,
+      "Vulnerable": 1,
       "StrengthPerVulnerable": 1
     },
     "upgrade": {
-      "remove_exhaust": 1
+      "vulnerablepower": "+1"
     },
     "image_url": "/static/images/cards/dominate.png",
     "beta_image_url": null
@@ -6149,8 +6151,8 @@
   {
     "id": "EIDOLON",
     "name": "Eidolon",
-    "description": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\nIf 9 cards were [gold]Exhausted[/gold] this way, gain 1 [gold]Intangible[/gold].",
-    "description_raw": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\nIf 9 cards were [gold]Exhausted[/gold] this way, gain 1 [gold]Intangible[/gold].",
+    "description": "Play ALL [gold]Ethereal[/gold] cards in your [gold]Exhaust Pile[/gold].",
+    "description_raw": "Play ALL [gold]Ethereal[/gold] cards in your [gold]Exhaust Pile[/gold].",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -6166,12 +6168,12 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [
+      "Exhaust"
+    ],
     "tags": null,
     "spawns_cards": null,
-    "vars": {
-      "intangibleThreshold": 9
-    },
+    "vars": null,
     "upgrade": {
       "cost": 1
     },
@@ -6616,8 +6618,8 @@
   {
     "id": "EXPECT_A_FIGHT",
     "name": "Expect a Fight",
-    "description": "Gain [energy:1] for each Attack in your [gold]Hand[/gold].\nYou cannot gain\nadditional [energy:1] this turn.",
-    "description_raw": "Gain {energyPrefix:energyIcons(1)} for each Attack in your [gold]Hand[/gold].\nYou cannot gain\nadditional {energyPrefix:energyIcons(1)} this turn.{InCombat:\n(Gain {CalculatedEnergy:energyIcons()})|}",
+    "description": "Gain [energy:1] for each Attack in your [gold]Hand[/gold].",
+    "description_raw": "Gain {energyPrefix:energyIcons(1)} for each Attack in your [gold]Hand[/gold].{InCombat:\n(Gain {CalculatedEnergy:energyIcons()})|}",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -6650,8 +6652,8 @@
   {
     "id": "EXPERTISE",
     "name": "Expertise",
-    "description": "Draw cards until you have 6 in your [gold]Hand[/gold].",
-    "description_raw": "Draw cards until you have {Cards:diff()} in your [gold]Hand[/gold].",
+    "description": "Draw 2 cards.\nThey gain [gold]Retain[/gold] this turn.",
+    "description_raw": "Draw {Cards:diff()} cards.\nThey gain [gold]Retain[/gold] this turn.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -6664,14 +6666,14 @@
     "block": null,
     "hit_count": null,
     "powers_applied": null,
-    "cards_draw": 6,
+    "cards_draw": 2,
     "energy_gain": null,
     "hp_loss": null,
     "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Cards": 6
+      "Cards": 2
     },
     "upgrade": {
       "cards": "+1"
@@ -8199,7 +8201,7 @@
   {
     "id": "GIANT_ROCK",
     "name": "Giant Rock",
-    "description": "Deal 16 damage.",
+    "description": "Deal 20 damage.",
     "description_raw": "Deal {Damage:diff()} damage.",
     "cost": 1,
     "is_x_cost": null,
@@ -8209,7 +8211,7 @@
     "rarity": "Token",
     "target": "AnyEnemy",
     "color": "token",
-    "damage": 16,
+    "damage": 20,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -8220,7 +8222,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 16
+      "Damage": 20
     },
     "upgrade": {
       "damage": "+4"
@@ -9662,7 +9664,7 @@
   {
     "id": "HYPERBEAM",
     "name": "Hyperbeam",
-    "description": "Deal 28 damage to ALL enemies.\nLose 3 [gold]Focus[/gold].",
+    "description": "Deal 30 damage to ALL enemies.\nLose 3 [gold]Focus[/gold].",
     "description_raw": "Deal {Damage:diff()} damage to ALL enemies.\nLose {FocusPower:diff()} [gold]Focus[/gold].",
     "cost": 2,
     "is_x_cost": null,
@@ -9672,7 +9674,7 @@
     "rarity": "Rare",
     "target": "AllEnemies",
     "color": "defect",
-    "damage": 28,
+    "damage": 30,
     "block": null,
     "hit_count": null,
     "powers_applied": [
@@ -9688,7 +9690,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 28,
+      "Damage": 30,
       "FocusPower": 3,
       "Focus": 3
     },
@@ -11520,7 +11522,7 @@
   {
     "id": "MIDNIGHT",
     "name": "Midnight",
-    "description": "Deal 99 damage.\nCosts 1 less  for each card [gold]Exhausted[/gold] this combat by ANYONE.",
+    "description": "Deal 60 damage.\nCosts 1 less [energy:1] for each card [gold]Exhausted[/gold] this combat by ANYONE.",
     "description_raw": "Deal {Damage:diff()} damage.\nCosts 1 less {energyPrefix:energyIcons(1)} for each card [gold]Exhausted[/gold] this combat by ANYONE.",
     "cost": 12,
     "is_x_cost": null,
@@ -11530,7 +11532,7 @@
     "rarity": "Rare",
     "target": "AnyEnemy",
     "color": "ironclad",
-    "damage": 99,
+    "damage": 60,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -11541,10 +11543,10 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 99
+      "Damage": 60
     },
     "upgrade": {
-      "damage": "+21"
+      "damage": "+12"
     },
     "image_url": null,
     "beta_image_url": "/static/images/cards/beta/midnight.png"
@@ -11769,9 +11771,9 @@
   {
     "id": "MIRAGE",
     "name": "Mirage",
-    "description": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.",
-    "description_raw": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.{InCombat:\n(Gain {CalculatedBlock:diff()} [gold]Block[/gold])|}",
-    "cost": 1,
+    "description": "Next turn, gain [energy:1].",
+    "description_raw": "Next turn, gain {Energy:energyIcons()}.",
+    "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -11786,17 +11788,14 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": [
-      "Exhaust"
-    ],
+    "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CalculationBase": 0,
-      "CalculationExtra": 1
+      "Energy": 1
     },
     "upgrade": {
-      "cost": 0
+      "energy": "+1"
     },
     "image_url": "/static/images/cards/mirage.png",
     "beta_image_url": null
@@ -12699,7 +12698,7 @@
   {
     "id": "OUTBREAK",
     "name": "Outbreak",
-    "description": "Whenever you apply [gold]Poison[/gold], deal 3 damage to ALL enemies.",
+    "description": "Whenever you apply [gold]Poison[/gold], deal 4 damage to ALL enemies.",
     "description_raw": "Whenever you apply [gold]Poison[/gold], deal {OutbreakPower:diff()} damage to ALL enemies.",
     "cost": 1,
     "is_x_cost": null,
@@ -12725,8 +12724,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "OutbreakPower": 3,
-      "Outbreak": 3
+      "OutbreakPower": 4,
+      "Outbreak": 4
     },
     "upgrade": {
       "outbreakpower": "+1"
@@ -13360,8 +13359,8 @@
   {
     "id": "PILLAR_OF_CREATION",
     "name": "Pillar of Creation",
-    "description": "Whenever you create a card, gain 3 [gold]Block[/gold].",
-    "description_raw": "Whenever you create a card, gain {Block:diff()} [gold]Block[/gold].",
+    "description": "The first time you create a card each turn, gain 5 [gold]Block[/gold].",
+    "description_raw": "The first time you create a card each turn, gain {Block:diff()} [gold]Block[/gold].",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -13371,7 +13370,7 @@
     "target": "Self",
     "color": "regent",
     "damage": null,
-    "block": 3,
+    "block": 5,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
@@ -13381,10 +13380,10 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 3
+      "Block": 5
     },
     "upgrade": {
-      "block": "+1"
+      "block": "+2"
     },
     "image_url": "/static/images/cards/pillar_of_creation.png",
     "beta_image_url": "/static/images/cards/beta/pillar_of_creation.png"
@@ -17935,7 +17934,7 @@
   {
     "id": "SUNDER",
     "name": "Sunder",
-    "description": "Deal 24 damage.\nIf this kills an enemy, gain [energy:3].",
+    "description": "Deal 26 damage.\nIf this kills an enemy, gain [energy:3].",
     "description_raw": "Deal {Damage:diff()} damage.\nIf this kills an enemy, gain {Energy:energyIcons()}.",
     "cost": 3,
     "is_x_cost": null,
@@ -17945,7 +17944,7 @@
     "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "defect",
-    "damage": 24,
+    "damage": 26,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -17956,7 +17955,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 24,
+      "Damage": 26,
       "Energy": 3
     },
     "upgrade": {
@@ -18421,18 +18420,18 @@
   {
     "id": "TAUNT",
     "name": "Taunt",
-    "description": "Gain 7 [gold]Block[/gold].\nApply 1 [gold]Vulnerable[/gold].",
+    "description": "Gain 6 [gold]Block[/gold].\nApply 1 [gold]Vulnerable[/gold].",
     "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nApply {VulnerablePower:diff()} [gold]Vulnerable[/gold].",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Skill",
-    "rarity": "Uncommon",
+    "rarity": "Common",
     "target": "AnyEnemy",
     "color": "ironclad",
     "damage": null,
-    "block": 7,
+    "block": 6,
     "hit_count": null,
     "powers_applied": [
       {
@@ -18447,7 +18446,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 7,
+      "Block": 6,
       "VulnerablePower": 1,
       "Vulnerable": 1
     },
@@ -18594,7 +18593,7 @@
   {
     "id": "THE_BALL",
     "name": "The Ball",
-    "description": "Deal 10 damage.\nIncrease this card's damage by 15 this combat and give it to a random ally.",
+    "description": "Deal 10 damage.\nIncrease this card's damage by 10 this combat and give it to a random ally.",
     "description_raw": "Deal {Damage:diff()} damage.\nIncrease this card's damage by {Increase:diff()} this combat and give it to a random ally.",
     "cost": 1,
     "is_x_cost": null,
@@ -18616,10 +18615,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 10,
-      "Increase": 15
+      "Increase": 10
     },
     "upgrade": {
-      "increase": "+10"
+      "increase": "+5"
     },
     "image_url": null,
     "beta_image_url": "/static/images/cards/beta/the_ball.png"
@@ -19219,7 +19218,7 @@
     "spawns_cards": null,
     "vars": null,
     "upgrade": {
-      "add_innate": 1
+      "cost": 0
     },
     "image_url": "/static/images/cards/trash_to_treasure.png",
     "beta_image_url": "/static/images/cards/beta/trash_to_treasure.png"
@@ -20035,14 +20034,14 @@
   {
     "id": "WELL_LAID_PLANS",
     "name": "Well-Laid Plans",
-    "description": "At the end of your turn, [gold]Retain[/gold] up to 1 card.",
-    "description_raw": "At the end of your turn, [gold]Retain[/gold] up to {RetainAmount:diff()} {RetainAmount:plural:card|cards}.",
+    "description": "At the end of your turn, you no longer discard your [gold]Hand[/gold].",
+    "description_raw": "At the end of your turn, you no longer discard your [gold]Hand[/gold].",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Power",
-    "rarity": "Uncommon",
+    "rarity": "Rare",
     "target": "Self",
     "color": "silent",
     "damage": null,
@@ -20055,11 +20054,9 @@
     "keywords": null,
     "tags": null,
     "spawns_cards": null,
-    "vars": {
-      "RetainAmount": 1
-    },
+    "vars": null,
     "upgrade": {
-      "retainamount": "+1"
+      "cost": 0
     },
     "image_url": "/static/images/cards/well_laid_plans.png",
     "beta_image_url": null
