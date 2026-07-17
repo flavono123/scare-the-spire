@@ -25,12 +25,13 @@ data/sts2-patch-notes/*.md
 - [DEPRECATED.md](./architecture/DEPRECATED.md) — 삭제된 카드/유물, 표현 방식
 - [PATCH_WORKER_DEPLOY_CONTRACT.md](./PATCH_WORKER_DEPLOY_CONTRACT.md) — patch-first 배포 계약
 - [CLOUDFLARE_CUSTOM_DOMAIN_ROUTING.md](./CLOUDFLARE_CUSTOM_DOMAIN_ROUTING.md) — 추후 커스텀 도메인 route dispatch 목표
+- [OPENNEXT_EXIT_PLAN.md](./OPENNEXT_EXIT_PLAN.md) — 정적 shell 전환과 OpenNext 런타임 제거 계획
 
 ## Worker 구조
 
 - `workers/main-worker.ts`: OpenNext Worker wrapper. `/`, locale home,
-  일부 Compendium index HTML/RSC는 `_cf_static_pages` asset으로 먼저
-  서빙하고, 나머지만 OpenNext fallback으로 넘긴다.
+  서비스 인덱스, 일부 Compendium HTML/RSC는 `_cf_static_pages` asset으로
+  먼저 서빙하고, 나머지만 OpenNext fallback으로 넘긴다.
 - `workers/patch-worker.ts`: `pnpm patch:build` 결과물을 서빙하는
   asset-first Worker. 런타임에서 patch markdown을 렌더링하지 않는다.
 - 현재 `/patches*`와 `/_patches*`는 main Worker의 `PATCH_WORKER`
