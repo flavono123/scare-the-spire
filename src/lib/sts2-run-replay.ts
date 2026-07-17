@@ -12,8 +12,10 @@ const INT_MIN = -2147483648;
 const MATCH_CAP = 256;
 const MAP_COLUMNS = 7;
 const MEGA_RANDOM_MIN_BUILD = "v0.107.1";
+const UINT64_SEED_MIN_BUILD = "v0.109.0";
+const UINT64_MASK = BigInt("18446744073709551615");
 
-type RngAlgorithm = "legacy-dotnet" | "mega-random";
+type RngProfile = "legacy-dotnet-32" | "mega-random-32" | "mega-random-64";
 
 interface ReplayRandom {
   nextInt(maxExclusive: number): number;
@@ -302,7 +304,6 @@ class DotNetRandom implements ReplayRandom {
 
 class MegaRandom implements ReplayRandom {
   private static readonly UINT64_BITS = BigInt(64);
-  private static readonly UINT64_MASK = BigInt("18446744073709551615");
   private static readonly SPLITMIX_INCREMENT = BigInt("11400714819323198485");
   private static readonly SPLITMIX_MUL_1 = BigInt("13787848793156543929");
   private static readonly SPLITMIX_MUL_2 = BigInt("10723151780598845931");
@@ -316,8 +317,8 @@ class MegaRandom implements ReplayRandom {
   private s2 = BigInt(0);
   private s3 = BigInt(0);
 
-  constructor(seed: number) {
-    this.reinitialise(BigInt(seed >>> 0));
+  constructor(seed: bigint) {
+    this.reinitialise(seed & UINT64_MASK);
   }
 
   nextInt(maxExclusive: number): number {
@@ -351,7 +352,7 @@ class MegaRandom implements ReplayRandom {
     let value = nextState;
     value = MegaRandom.mul64(value ^ (value >> BigInt(30)), MegaRandom.SPLITMIX_MUL_1);
     value = MegaRandom.mul64(value ^ (value >> BigInt(27)), MegaRandom.SPLITMIX_MUL_2);
-    return [nextState, (value ^ (value >> BigInt(31))) & MegaRandom.UINT64_MASK];
+    return [nextState, (value ^ (value >> BigInt(31))) & UINT64_MASK];
   }
 
   private nextULongInner(): bigint {
@@ -364,13 +365,13 @@ class MegaRandom implements ReplayRandom {
       MegaRandom.rotateLeft64(MegaRandom.mul64(s1, MegaRandom.FIVE), 7),
       MegaRandom.NINE,
     );
-    const t = (s1 << MegaRandom.SEVENTEEN) & MegaRandom.UINT64_MASK;
+    const t = (s1 << MegaRandom.SEVENTEEN) & UINT64_MASK;
 
-    s2 = (s2 ^ s0) & MegaRandom.UINT64_MASK;
-    s3 = (s3 ^ s1) & MegaRandom.UINT64_MASK;
-    s1 = (s1 ^ s2) & MegaRandom.UINT64_MASK;
-    s0 = (s0 ^ s3) & MegaRandom.UINT64_MASK;
-    s2 = (s2 ^ t) & MegaRandom.UINT64_MASK;
+    s2 = (s2 ^ s0) & UINT64_MASK;
+    s3 = (s3 ^ s1) & UINT64_MASK;
+    s1 = (s1 ^ s2) & UINT64_MASK;
+    s0 = (s0 ^ s3) & UINT64_MASK;
+    s2 = (s2 ^ t) & UINT64_MASK;
     s3 = MegaRandom.rotateLeft64(s3, 45);
 
     this.s0 = s0;
@@ -385,32 +386,41 @@ class MegaRandom implements ReplayRandom {
   }
 
   private static add64(a: bigint, b: bigint): bigint {
-    return (a + b) & MegaRandom.UINT64_MASK;
+    return (a + b) & UINT64_MASK;
   }
 
   private static mul64(a: bigint, b: bigint): bigint {
-    return (a * b) & MegaRandom.UINT64_MASK;
+    return (a * b) & UINT64_MASK;
   }
 
   private static rotateLeft64(value: bigint, shift: number): bigint {
     const amount = BigInt(shift);
     return (
-      ((value << amount) & MegaRandom.UINT64_MASK) |
+      ((value << amount) & UINT64_MASK) |
       (value >> (MegaRandom.UINT64_BITS - amount))
-    ) & MegaRandom.UINT64_MASK;
+    ) & UINT64_MASK;
   }
 }
 
 class StsRng {
-  readonly seed: number;
+  readonly seed: bigint;
   private readonly random: ReplayRandom;
 
-  constructor(seed: number, name?: string, algorithm: RngAlgorithm = "legacy-dotnet") {
-    this.seed = name ? addUint32(seed, toUint32(getDeterministicHashCode(name))) : seed >>> 0;
+  constructor(seed: bigint, name?: string, profile: RngProfile = "legacy-dotnet-32") {
+    if (profile === "mega-random-64") {
+      this.seed = name ? addUint64(seed, getDeterministicHashCode64(name)) : seed;
+    } else {
+      const seed32 = Number(seed);
+      this.seed = BigInt(
+        name
+          ? addUint32(seed32, toUint32(getDeterministicHashCodeOld(name)))
+          : seed32 >>> 0,
+      );
+    }
     this.random =
-      algorithm === "mega-random"
-        ? new MegaRandom(this.seed)
-        : new DotNetRandom(toInt32(this.seed));
+      profile === "legacy-dotnet-32"
+        ? new DotNetRandom(toInt32(Number(this.seed)))
+        : new MegaRandom(this.seed);
   }
 
   nextInt(maxExclusive = INT_MAX): number {
@@ -1327,8 +1337,17 @@ function bossPoolForAct(actId: string, pool: ActEncounterPool, buildId: string):
   return isBuildAtLeast(buildId, AEONGLASS_MIN_BUILD) ? pool.bosses : LEGACY_GLORY_BOSSES;
 }
 
-function rngAlgorithmForBuild(buildId: string): RngAlgorithm {
-  return isBuildAtLeast(buildId, MEGA_RANDOM_MIN_BUILD) ? "mega-random" : "legacy-dotnet";
+function rngProfileForBuild(buildId: string): RngProfile {
+  if (isBuildAtLeast(buildId, UINT64_SEED_MIN_BUILD)) return "mega-random-64";
+  return isBuildAtLeast(buildId, MEGA_RANDOM_MIN_BUILD)
+    ? "mega-random-32"
+    : "legacy-dotnet-32";
+}
+
+function numericSeedForBuild(seed: string, buildId: string): bigint {
+  return isBuildAtLeast(buildId, UINT64_SEED_MIN_BUILD)
+    ? getDeterministicHashCode64(seed)
+    : BigInt(toUint32(getDeterministicHashCodeOld(seed)));
 }
 
 // Relic rarity sequences for `RunManager.InitializeNewRun` Populate calls.
@@ -1506,9 +1525,9 @@ export function simulateActsUpFront(
   characterIds: readonly string[],
   buildId = "unknown",
 ): ActsSimulationResult {
-  const numericSeed = toUint32(getDeterministicHashCode(seed));
-  const rngAlgorithm = rngAlgorithmForBuild(buildId);
-  const upFront = new StsRng(numericSeed, "up_front", rngAlgorithm);
+  const numericSeed = numericSeedForBuild(seed, buildId);
+  const rngProfile = rngProfileForBuild(buildId);
+  const upFront = new StsRng(numericSeed, "up_front", rngProfile);
 
   // === RunManager.InitializeNewRun ===
   // 1. SharedRelicGrabBag.Populate(unlocked shared relics, upFront)
@@ -1767,32 +1786,32 @@ function buildGeneratedMap(
   actEndFloor: number,
 ): GeneratedActMap {
   const config = ACT_CONFIGS[actId];
-  const seed = toUint32(getDeterministicHashCode(run.seed));
-  const rngAlgorithm = rngAlgorithmForBuild(run.build_id);
+  const seed = numericSeedForBuild(run.seed, run.build_id);
+  const rngProfile = rngProfileForBuild(run.build_id);
   const hasSecondBoss = actIndex === run.acts.length - 1 && run.ascension >= 10;
   const isMultiplayer = run.players.length > 1;
   const variant = chooseActMapVariant(run, actStartFloor, actEndFloor);
 
   if (variant === "golden_path") {
     // Golden Path uses no RNG; pass a dummy one. Seed is deterministic regardless.
-    const rng = new StsRng(seed, `act_${actIndex + 1}_golden_path`, rngAlgorithm);
+    const rng = new StsRng(seed, `act_${actIndex + 1}_golden_path`, rngProfile);
     const counts = config.getCounts(rng, run.ascension);
     return new GeneratedActMap(rng, config, counts, false, hasSecondBoss, "golden_path", isMultiplayer);
   }
 
   if (variant === "spoils") {
-    const rng = new StsRng(seed, "spoils_map", rngAlgorithm);
+    const rng = new StsRng(seed, "spoils_map", rngProfile);
     const counts = config.getCounts(rng, run.ascension);
     return new GeneratedActMap(rng, config, counts, false, hasSecondBoss, "spoils", isMultiplayer);
   }
 
-  const baseRng = new StsRng(seed, `act_${actIndex + 1}_map`, rngAlgorithm);
+  const baseRng = new StsRng(seed, `act_${actIndex + 1}_map`, rngProfile);
   const baseCounts = config.getCounts(baseRng, run.ascension);
   let map = new GeneratedActMap(baseRng, config, baseCounts, false, hasSecondBoss, "standard", isMultiplayer);
 
   if (modifierIds.has("BIG_GAME_HUNTER")) {
     const eliteCount = map.getAllMapPoints().filter((point) => point.type === "elite").length;
-    const overrideRng = new StsRng(seed, `act_${actIndex + 1}_map`, rngAlgorithm);
+    const overrideRng = new StsRng(seed, `act_${actIndex + 1}_map`, rngProfile);
     const overrideCounts: MapPointTypeCounts = {
       numElites: Math.round(eliteCount * 2.5),
       numShops: baseCounts.numShops,
@@ -2935,6 +2954,10 @@ function addUint32(a: number, b: number): number {
   return (a + b) >>> 0;
 }
 
+function addUint64(a: bigint, b: bigint): bigint {
+  return (a + b) & UINT64_MASK;
+}
+
 function toUint32(value: number): number {
   return value >>> 0;
 }
@@ -2943,7 +2966,7 @@ function toInt32(value: number): number {
   return value | 0;
 }
 
-function getDeterministicHashCode(str: string): number {
+function getDeterministicHashCodeOld(str: string): number {
   let left = 352654597;
   let right = 352654597;
 
@@ -2956,4 +2979,104 @@ function getDeterministicHashCode(str: string): number {
   }
 
   return (left + Math.imul(right, 1566083941)) | 0;
+}
+
+// Mirrors `StringHelper.GetDeterministicHashCode` in v0.109.0+: xxHash64
+// over the UTF-8 bytes with a zero seed. All arithmetic wraps as C# `ulong`.
+function getDeterministicHashCode64(str: string): bigint {
+  const prime1 = BigInt("11400714785074694791");
+  const prime2 = BigInt("14029467366897019727");
+  const prime3 = BigInt("1609587929392839161");
+  const prime4 = BigInt("9650029242287828579");
+  const prime5 = BigInt("2870177450012600261");
+  const bytes = new TextEncoder().encode(str);
+  let offset = 0;
+  let hash: bigint;
+
+  const round = (accumulator: bigint, value: bigint): bigint => {
+    const mixed = addUint64(accumulator, multiplyUint64(value, prime2));
+    return multiplyUint64(rotateLeftUint64(mixed, 31), prime1);
+  };
+  const mergeRound = (accumulator: bigint, value: bigint): bigint =>
+    addUint64(multiplyUint64(accumulator ^ round(BigInt(0), value), prime1), prime4);
+
+  if (bytes.length >= 32) {
+    let v1 = addUint64(prime1, prime2);
+    let v2 = prime2;
+    let v3 = BigInt(0);
+    let v4 = addUint64(BigInt(0), -prime1);
+    const limit = bytes.length - 32;
+    do {
+      v1 = round(v1, readUint64LittleEndian(bytes, offset));
+      offset += 8;
+      v2 = round(v2, readUint64LittleEndian(bytes, offset));
+      offset += 8;
+      v3 = round(v3, readUint64LittleEndian(bytes, offset));
+      offset += 8;
+      v4 = round(v4, readUint64LittleEndian(bytes, offset));
+      offset += 8;
+    } while (offset <= limit);
+    hash = addUint64(
+      addUint64(rotateLeftUint64(v1, 1), rotateLeftUint64(v2, 7)),
+      addUint64(rotateLeftUint64(v3, 12), rotateLeftUint64(v4, 18)),
+    );
+    hash = mergeRound(hash, v1);
+    hash = mergeRound(hash, v2);
+    hash = mergeRound(hash, v3);
+    hash = mergeRound(hash, v4);
+  } else {
+    hash = prime5;
+  }
+
+  hash = addUint64(hash, BigInt(bytes.length));
+  while (offset + 8 <= bytes.length) {
+    hash ^= round(BigInt(0), readUint64LittleEndian(bytes, offset));
+    hash = addUint64(multiplyUint64(rotateLeftUint64(hash, 27), prime1), prime4);
+    offset += 8;
+  }
+  if (offset + 4 <= bytes.length) {
+    hash ^= multiplyUint64(BigInt(readUint32LittleEndian(bytes, offset)), prime1);
+    hash = addUint64(multiplyUint64(rotateLeftUint64(hash, 23), prime2), prime3);
+    offset += 4;
+  }
+  while (offset < bytes.length) {
+    hash ^= multiplyUint64(BigInt(bytes[offset] ?? 0), prime5);
+    hash = multiplyUint64(rotateLeftUint64(hash, 11), prime1);
+    offset += 1;
+  }
+
+  hash ^= hash >> BigInt(33);
+  hash = multiplyUint64(hash, prime2);
+  hash ^= hash >> BigInt(29);
+  hash = multiplyUint64(hash, prime3);
+  hash ^= hash >> BigInt(32);
+  return hash & UINT64_MASK;
+}
+
+function multiplyUint64(a: bigint, b: bigint): bigint {
+  return (a * b) & UINT64_MASK;
+}
+
+function rotateLeftUint64(value: bigint, shift: number): bigint {
+  const amount = BigInt(shift);
+  return (
+    ((value << amount) & UINT64_MASK) |
+    (value >> (BigInt(64) - amount))
+  ) & UINT64_MASK;
+}
+
+function readUint32LittleEndian(bytes: Uint8Array, offset: number): number {
+  return (
+    (bytes[offset] ?? 0) |
+    ((bytes[offset + 1] ?? 0) << 8) |
+    ((bytes[offset + 2] ?? 0) << 16) |
+    ((bytes[offset + 3] ?? 0) << 24)
+  ) >>> 0;
+}
+
+function readUint64LittleEndian(bytes: Uint8Array, offset: number): bigint {
+  return (
+    BigInt(readUint32LittleEndian(bytes, offset)) |
+    (BigInt(readUint32LittleEndian(bytes, offset + 4)) << BigInt(32))
+  );
 }
