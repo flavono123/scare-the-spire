@@ -29,7 +29,6 @@ import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   globalSearchItemScore,
   globalSearchResultKey,
-  globalSearchTypeLabels,
   globalSearchTypeOrder,
   globalSearchTypeStyles,
   type GlobalSearchIndexItem,
@@ -533,10 +532,8 @@ function GlobalSearch({
   const pendingPollTimerRef = useRef<number | null>(null);
   const pendingCloseTimerRef = useRef<number | null>(null);
   const pendingFallbackTimerRef = useRef<number | null>(null);
-  const copy = serviceLocale === "ko"
-    ? { placeholder: "통합 검색", empty: "검색어를 입력하세요", noResults: "검색 결과 없음" }
-    : { placeholder: "Unified search", empty: "Type to search", noResults: "No results" };
-  const labels = globalSearchTypeLabels[serviceLocale];
+  const copy = serviceMessages[serviceLocale].globalSearch;
+  const labels = copy.labels;
   const portalRoot = typeof document === "undefined" ? null : document.body;
 
   const loadIndex = useCallback(async () => {

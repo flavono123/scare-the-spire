@@ -1,61 +1,5 @@
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
 
-export const globalSearchTypeLabels = {
-  ko: {
-    character: "캐릭터",
-    card: "카드",
-    keyword: "키워드",
-    relic: "유물",
-    potion: "포션",
-    power: "파워",
-    enchantment: "마법부여",
-    affliction: "고난",
-    event: "이벤트",
-    monster: "몬스터",
-    monsterMove: "패턴",
-    encounter: "전투",
-    ancient: "고대의 존재",
-    epoch: "연대기",
-    patch: "패치 노트",
-    story: "슬서운 이야기",
-    historyCourse: "역사 강의서",
-    thisOrThat: "이거 아님 저거?",
-  },
-  en: {
-    character: "Character",
-    card: "Card",
-    keyword: "Keyword",
-    relic: "Relic",
-    potion: "Potion",
-    power: "Power",
-    enchantment: "Enchantment",
-    affliction: "Affliction",
-    event: "Event",
-    monster: "Monster",
-    monsterMove: "Move",
-    encounter: "Encounter",
-    ancient: "Ancient",
-    epoch: "Epoch",
-    patch: "Patch Note",
-    story: "Story",
-    historyCourse: "History Course",
-    thisOrThat: "This or That?",
-  },
-} as const;
-
-export type GlobalSearchType = keyof typeof globalSearchTypeLabels.ko;
-
-export type GlobalSearchIndexItem = {
-  id: string;
-  type: GlobalSearchType;
-  title: string;
-  titleEn: string;
-  description: string;
-  descriptionEn: string;
-  imageUrl: string | null;
-  href: string;
-};
-
 export const globalSearchTypeOrder = [
   "patch",
   "story",
@@ -75,7 +19,20 @@ export const globalSearchTypeOrder = [
   "monsterMove",
   "historyCourse",
   "thisOrThat",
-] as const satisfies readonly GlobalSearchType[];
+] as const;
+
+export type GlobalSearchType = (typeof globalSearchTypeOrder)[number];
+
+export type GlobalSearchIndexItem = {
+  id: string;
+  type: GlobalSearchType;
+  title: string;
+  titleEn: string;
+  description: string;
+  descriptionEn: string;
+  imageUrl: string | null;
+  href: string;
+};
 
 export const globalSearchTypeStyles: Record<GlobalSearchType, {
   icon: string;

@@ -1,6 +1,5 @@
 import {
   globalSearchItemScore,
-  globalSearchTypeLabels,
   globalSearchTypeOrder,
   globalSearchTypeStyles,
   type GlobalSearchIndexItem,
@@ -23,24 +22,27 @@ const html = document.documentElement;
 const serviceLocale: ServiceLocale = html.dataset.serviceLocale === "en" ? "en" : "ko";
 const rawGameLocale = html.dataset.gameLocale ?? "kor";
 const gameLocale: GameLocale = isGameLocale(rawGameLocale) ? rawGameLocale : "kor";
-const labels = globalSearchTypeLabels[serviceLocale];
-const copy = serviceLocale === "ko"
-  ? {
-      empty: "검색어를 입력하세요",
-      loading: "검색 데이터를 불러오는 중",
-      noResults: "검색 결과 없음",
-    }
-  : {
-      empty: "Type to search",
-      loading: "Loading search data",
-      noResults: "No results",
-    };
 
 const trigger = document.querySelector<HTMLButtonElement>("[data-patch-global-search-trigger]");
 const overlay = document.querySelector<HTMLElement>("[data-patch-global-search-overlay]");
 const panel = document.querySelector<HTMLElement>("[data-patch-global-search-panel]");
 const input = document.querySelector<HTMLInputElement>("[data-patch-global-search-input]");
 const resultsRoot = document.querySelector<HTMLElement>("[data-patch-global-search-results]");
+const fallbackLabels = Object.fromEntries(
+  globalSearchTypeOrder.map((type) => [type, type]),
+) as Record<GlobalSearchType, string>;
+const labels = (() => {
+  try {
+    return JSON.parse(overlay?.dataset.typeLabels ?? "") as Record<GlobalSearchType, string>;
+  } catch {
+    return fallbackLabels;
+  }
+})();
+const copy = {
+  empty: overlay?.dataset.emptyMessage ?? "",
+  loading: overlay?.dataset.loadingMessage ?? "",
+  noResults: overlay?.dataset.noResultsMessage ?? "",
+};
 
 let items: GlobalSearchIndexItem[] = [];
 let loadState: LoadState = "idle";

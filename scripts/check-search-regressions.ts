@@ -4,9 +4,9 @@ import { matchEntities } from "@/lib/chemical-utils";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import {
   globalSearchItemScore,
-  globalSearchTypeLabels,
   type GlobalSearchIndexItem,
 } from "@/lib/global-search";
+import { serviceMessages } from "@/messages/service";
 
 assert.equal(fuzzyMatchCodexText("타격", "ㅌㄱ"), true);
 assert.equal(fuzzyMatchCodexText("아이언클래드", "ㅇㅇㅋㄹㄷ"), true);
@@ -20,6 +20,7 @@ const entities: EntityInfo[] = [
     nameEn: "The Ironclad",
     imageUrl: null,
     href: "/compendium/characters?character=ironclad",
+    color: "ironclad",
   },
   {
     id: "NECROBINDER",
@@ -28,6 +29,7 @@ const entities: EntityInfo[] = [
     nameEn: "The Necrobinder",
     imageUrl: null,
     href: "/compendium/characters?character=necrobinder",
+    color: "necrobinder",
   },
 ];
 
@@ -48,7 +50,7 @@ const globalSearchItem: GlobalSearchIndexItem = {
 };
 
 assert.notEqual(
-  globalSearchItemScore(globalSearchItem, "ㅇㅇㅋㄹㄷ", globalSearchTypeLabels.ko),
+  globalSearchItemScore(globalSearchItem, "ㅇㅇㅋㄹㄷ", serviceMessages.ko.globalSearch.labels),
   null,
 );
 

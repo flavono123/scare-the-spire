@@ -270,7 +270,7 @@ function StaticPatchHeader({
   const messages = serviceMessages[serviceLocale];
   const patchHref = localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale);
   const profileHref = localizeHrefWithGameLocale("/profile", serviceLocale, gameLocale);
-  const searchCopy = serviceLocale === "ko" ? "통합 검색" : "Unified search";
+  const searchCopy = messages.globalSearch.placeholder;
   const toyBoxLabel = serviceLocale === "ko" ? "장난감 상자" : "Toy Box";
   const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale });
   const sts2Items = localizeCodexNavItems(sts2NavItems, serviceLocale, gameLocale, { useGameLabels: true });
@@ -372,17 +372,19 @@ function StaticPatchHeader({
 }
 
 function StaticGlobalSearchOverlay({ serviceLocale }: { serviceLocale: ServiceLocale }) {
-  const copy = serviceLocale === "ko"
-    ? { placeholder: "통합 검색", dialogLabel: "통합 검색" }
-    : { placeholder: "Unified search", dialogLabel: "Unified search" };
+  const copy = serviceMessages[serviceLocale].globalSearch;
 
   return (
     <div
       id="patch-global-search-overlay"
       data-patch-global-search-overlay
+      data-empty-message={copy.empty}
+      data-loading-message={copy.loading}
+      data-no-results-message={copy.noResults}
+      data-type-labels={JSON.stringify(copy.labels)}
       role="dialog"
       aria-modal="true"
-      aria-label={copy.dialogLabel}
+      aria-label={copy.placeholder}
       className="fixed inset-0 z-[1000] px-3 pt-16 sm:pt-24"
       hidden
     >
@@ -413,7 +415,7 @@ function StaticGlobalSearchOverlay({ serviceLocale }: { serviceLocale: ServiceLo
           className="max-h-[min(28rem,calc(100dvh-9rem))] overflow-y-auto p-1.5"
         >
           <div className="px-3 py-8 text-center text-sm text-muted-foreground">
-            {serviceLocale === "ko" ? "검색어를 입력하세요" : "Type to search"}
+            {copy.empty}
           </div>
         </div>
       </div>
