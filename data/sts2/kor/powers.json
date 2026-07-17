@@ -55,6 +55,17 @@
     "vars": {}
   },
   {
+    "id": "AMBERGRIS",
+    "name": "용연향",
+    "description": "이번 턴 후에 추가 턴을 진행합니다.",
+    "description_raw": "이번 턴 후에 추가 턴을 진행합니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/ambergris_power.png",
+    "vars": {}
+  },
+  {
     "id": "ANTICIPATE",
     "name": "AnticipatePower",
     "description": "",

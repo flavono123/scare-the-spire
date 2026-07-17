@@ -55,6 +55,17 @@
     "vars": {}
   },
   {
+    "id": "AMBERGRIS",
+    "name": "Ambergris",
+    "description": "Take an extra turn after this one.",
+    "description_raw": "Take an extra turn after this one.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/ambergris_power.png",
+    "vars": {}
+  },
+  {
     "id": "ANTICIPATE",
     "name": "AnticipatePower",
     "description": "",
