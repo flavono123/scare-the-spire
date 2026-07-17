@@ -5,6 +5,7 @@ Sources:
 - `images/relics/*.png.import` -> `public/images/sts2/relics/*.webp`
 - `images/relics/beta/*.png.import` -> `public/images/sts2/relics-beta/*.webp`
 - `images/relics/*_beta.png.import` -> `public/images/sts2/relics-beta/*.webp`
+- `images/potions/large/*.png.import` -> `public/images/sts2/potions/*.webp`
 - `images/powers/*.png.import` -> `public/images/sts2/powers/*.webp`
 - `images/powers/beta/*.png.import` -> `public/images/sts2/powers-beta/*.webp`
 - `images/powers/*_beta.png.import` -> `public/images/sts2/powers-beta/*.webp`
@@ -36,8 +37,11 @@ except ImportError:  # pragma: no cover
 
 OUT_ROOT = ROOT / "public/images/sts2"
 DATA_ROOT = ROOT / "data/sts2/kor"
-IMPORT_RE = re.compile(r"^images/(?P<kind>relics|powers)/(?:(?P<beta>beta)/)?(?P<name>[^/]+)\.png\.import$")
-STATIC_IMAGE_RE = re.compile(r"^/static/images/(?P<kind>relics|powers)/(?P<name>[^/]+)\.png$")
+IMPORT_RE = re.compile(
+    r"^images/(?P<kind>relics|potions|powers)/"
+    r"(?:large/)?(?:(?P<beta>beta)/)?(?P<name>[^/]+)\.png\.import$"
+)
+STATIC_IMAGE_RE = re.compile(r"^/static/images/(?P<kind>relics|potions|powers)/(?P<name>[^/]+)\.png$")
 
 
 @dataclass(frozen=True)
@@ -54,7 +58,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--pck", default=default_pck_path(), help="Path to Slay the Spire 2.pck")
     parser.add_argument(
         "--kind",
-        choices=("all", "relics", "powers"),
+        choices=("all", "relics", "potions", "powers"),
         default="all",
         help="Asset kind to extract",
     )
@@ -197,9 +201,11 @@ def extract_targets(reader: PCKReader, targets: list[Target], force: bool, dry_r
 
 def prune_stale(output_root: Path, targets: list[Target], kind_filter: str, dry_run: bool) -> int:
     expected = {target.output_path for target in targets}
-    dirs = ["relics", "relics-beta", "powers", "powers-beta"]
+    dirs = ["relics", "relics-beta", "potions", "powers", "powers-beta"]
     if kind_filter == "relics":
         dirs = ["relics", "relics-beta"]
+    elif kind_filter == "potions":
+        dirs = ["potions"]
     elif kind_filter == "powers":
         dirs = ["powers", "powers-beta"]
 
@@ -226,6 +232,8 @@ def audit_data_refs(targets: list[Target], kind_filter: str) -> int:
     files: list[tuple[str, Path]] = []
     if kind_filter in ("all", "relics"):
         files.append(("relics", DATA_ROOT / "relics.json"))
+    if kind_filter in ("all", "potions"):
+        files.append(("potions", DATA_ROOT / "potions.json"))
     if kind_filter in ("all", "powers"):
         files.append(("powers", DATA_ROOT / "powers.json"))
 
