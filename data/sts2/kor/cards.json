@@ -2734,7 +2734,7 @@
   },
   {
     "id": "CACOPHONY",
-    "name": "Cacophony",
+    "name": "불협화음",
     "description": "Every 33 cards drawn by ALL players, deal 66 damage to a random enemy.",
     "description_raw": "Every {Cards:diff()} cards drawn by ALL players, deal {Damage:diff()} damage to a random enemy.",
     "cost": 2,
@@ -3805,7 +3805,7 @@
   },
   {
     "id": "CONSTELLATION",
-    "name": "Constellation",
+    "name": "별자리",
     "description": "Another player draws 1 card, gains 1, and gains 9 [gold]Block[/gold].",
     "description_raw": "Another player draws {Cards:diff()} {Cards:plural:card|cards}, gains {Energy:energyIcons()}, and gains {Block:diff()} [gold]Block[/gold].",
     "cost": 0,
@@ -16810,7 +16810,7 @@
   },
   {
     "id": "SOULBOUND",
-    "name": "Soulbound",
+    "name": "영혼 결속",
     "description": "Choose an ally.\nWhenever you create a [gold]Soul[/gold], add a [gold]Soul[/gold] to their [gold]Draw Pile[/gold].",
     "description_raw": "Choose an ally.\nWhenever you create a [gold]Soul[/gold], add a [gold]Soul[/gold] to their [gold]Draw Pile[/gold].",
     "cost": 1,
@@ -20235,7 +20235,7 @@
   },
   {
     "id": "WITHER",
-    "name": "침체",
+    "name": "시듦",
     "description": "내 턴 종료 시\n이 카드가 [gold]손[/gold]에 있다면,\n피해를 3 받습니다.",
     "description_raw": "내 턴 종료 시\n이 카드가 [gold]손[/gold]에 있다면,\n피해를 {Damage:diff()} 받습니다.",
     "cost": -1,
