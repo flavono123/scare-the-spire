@@ -1,5 +1,35 @@
 [
   {
+    "id": "ABUNDANCE",
+    "name": "풍요",
+    "description": "무작위 [gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다.",
+    "description_raw": "무작위 {IfUpgraded:show:강화된 |}[gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고대의 존재",
+    "target": "Self",
+    "color": "event",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": null,
+    "image_url": "/static/images/cards/abundance.png",
+    "beta_image_url": null
+  },
+  {
     "id": "ABRASIVE",
     "name": "연마",
     "description": "[gold]민첩[/gold]을 1 얻습니다.\n[gold]가시[/gold]를 4 얻습니다.",
@@ -5778,6 +5808,40 @@
     },
     "upgrade": null,
     "image_url": "/static/images/cards/doubt.png",
+    "beta_image_url": null
+  },
+  {
+    "id": "DOWSING",
+    "name": "다우징",
+    "description": "[gold]?[/gold] 방에 5번 더 진입한 후에, [gold]풍요[/gold]로 변화합니다.",
+    "description_raw": "[gold]?[/gold] 방에 {Rooms:diff()}번 더 진입한 후에, [gold]풍요[/gold]로 변화합니다.",
+    "cost": -1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "퀘스트",
+    "rarity": "퀘스트",
+    "target": "None",
+    "color": "quest",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "사용불가"
+    ],
+    "tags": null,
+    "spawns_cards": [
+      "ABUNDANCE"
+    ],
+    "vars": {
+      "Rooms": 5
+    },
+    "upgrade": null,
+    "image_url": "/static/images/cards/dowsing.png",
     "beta_image_url": null
   },
   {

@@ -1,5 +1,35 @@
 [
   {
+    "id": "ABUNDANCE",
+    "name": "Abundance",
+    "description": "Choose 1 of 3 [gold]Powers[/gold] to add into your [gold]Hand[/gold]. It's free to play this turn.",
+    "description_raw": "Choose 1 of 3 {IfUpgraded:show:upgraded |}[gold]Powers[/gold] to add into your [gold]Hand[/gold]. It's free to play this turn.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Ancient",
+    "target": "Self",
+    "color": "event",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": null,
+    "image_url": "/static/images/cards/abundance.png",
+    "beta_image_url": null
+  },
+  {
     "id": "ABRASIVE",
     "name": "Abrasive",
     "description": "Gain 1 [gold]Dexterity[/gold].\nGain 4 [gold]Thorns[/gold].",
@@ -5777,6 +5807,40 @@
     },
     "upgrade": null,
     "image_url": "/static/images/cards/doubt.png",
+    "beta_image_url": null
+  },
+  {
+    "id": "DOWSING",
+    "name": "Dowsing",
+    "description": "After entering 5 more [gold]?[/gold] rooms, transforms into an [gold]Abundance[/gold].",
+    "description_raw": "After entering {Rooms:diff()} more [gold]?[/gold] {Rooms:plural:room|rooms}, transforms into an [gold]Abundance[/gold].",
+    "cost": -1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Quest",
+    "rarity": "Quest",
+    "target": "None",
+    "color": "quest",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Unplayable"
+    ],
+    "tags": null,
+    "spawns_cards": [
+      "ABUNDANCE"
+    ],
+    "vars": {
+      "Rooms": 5
+    },
+    "upgrade": null,
+    "image_url": "/static/images/cards/dowsing.png",
     "beta_image_url": null
   },
   {
