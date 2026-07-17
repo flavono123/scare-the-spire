@@ -7338,23 +7338,48 @@
     "entityType": "card",
     "entityId": "ACCELERANT",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "silent",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Rare",
+        "beforeKo": "희귀",
+        "after": "Uncommon",
+        "afterKo": "고급",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "rarity",
         "before": "희귀",
         "after": "고급"
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Accelerant rarity decreased from Rare to Uncommon.",
+    "summaryKo": "촉진제의 등급이 희귀에서 고급으로 변경되었습니다."
   },
   {
     "id": "blade-symphony-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "BLADE_SYMPHONY",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "silent",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Cost 1; upgrade creates 3 Shivs",
+        "beforeKo": "비용 1; 강화 시 단도 3장",
+        "after": "Cost 2(1); creates 2 Shivs",
+        "afterKo": "비용 2(1); 단도 2장",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "cost",
@@ -7369,30 +7394,58 @@
         "field": "upgrade.cost",
         "after": 1
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Blade Symphony cost increased from 1 to 2(1), and its upgrade no longer creates an extra Shiv.",
+    "summaryKo": "칼날 교향곡의 비용이 1에서 2(1)로 증가하고, 강화 시 단도 수가 증가하지 않게 되었습니다."
   },
   {
     "id": "bloodletting-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "BLOODLETTING",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "ironclad",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Common",
+        "beforeKo": "일반",
+        "after": "Uncommon",
+        "afterKo": "고급",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "rarity",
         "before": "일반",
         "after": "고급"
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Bloodletting rarity increased from Common to Uncommon.",
+    "summaryKo": "사혈의 등급이 일반에서 고급으로 변경되었습니다."
   },
   {
     "id": "collision-course-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "COLLISION_COURSE",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "regent",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "11(15) damage",
+        "beforeKo": "피해 11(15)",
+        "after": "10(14) damage",
+        "afterKo": "피해 10(14)",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7401,7 +7454,7 @@
       },
       {
         "field": "damage",
-        "before": 9,
+        "before": 11,
         "after": 10
       },
       {
@@ -7411,33 +7464,61 @@
       },
       {
         "field": "upgrade.damage",
-        "before": "+3",
+        "before": "+4",
         "after": "+4"
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Collision Course damage decreased from 11(15) to 10(14).",
+    "summaryKo": "불가피한 충돌의 피해량이 11(15)에서 10(14)로 감소했습니다."
   },
   {
     "id": "cruelty-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "CRUELTY",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "ironclad",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Rare",
+        "beforeKo": "희귀",
+        "after": "Uncommon",
+        "afterKo": "고급",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "rarity",
         "before": "희귀",
         "after": "고급"
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Cruelty rarity decreased from Rare to Uncommon.",
+    "summaryKo": "악랄함의 등급이 희귀에서 고급으로 변경되었습니다."
   },
   {
     "id": "demon-form-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "DEMON_FORM",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "ironclad",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "2(3) Strength",
+        "beforeKo": "힘 2(3)",
+        "after": "3(4) Strength",
+        "afterKo": "힘 3(4)",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7454,15 +7535,29 @@
         "before": 2,
         "after": 3
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Demon Form Strength gain increased from 2(3) to 3(4).",
+    "summaryKo": "악마의 형상의 힘 획득량이 2(3)에서 3(4)로 증가했습니다."
   },
   {
     "id": "dominate-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "DOMINATE",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "ironclad",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Uncommon; X Vulnerable",
+        "beforeKo": "고급; 취약 X",
+        "after": "Rare; 1(2) Vulnerable",
+        "afterKo": "희귀; 취약 1(2)",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "rarity",
@@ -7490,15 +7585,29 @@
         "field": "upgrade.vulnerablepower",
         "after": "+1"
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Dominate rarity increased from Uncommon to Rare and its effect now applies 1(2) Vulnerable.",
+    "summaryKo": "제압의 등급이 고급에서 희귀로 변경되고, 취약을 1(2) 부여하도록 개편되었습니다."
   },
   {
     "id": "eidolon-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "EIDOLON",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "necrobinder",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Exhaust your Hand; 9 cards grant 1 Intangible",
+        "beforeKo": "손을 소멸; 9장 소멸 시 불가침 1",
+        "after": "Play all Ethereal cards in the Exhaust Pile; Exhaust",
+        "afterKo": "소멸된 카드 더미의 모든 휘발성 카드 사용; 소멸",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7521,15 +7630,29 @@
           "소멸"
         ]
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Eidolon now plays all Ethereal cards in the Exhaust Pile, then Exhausts.",
+    "summaryKo": "허상이 소멸된 카드 더미의 모든 휘발성 카드를 사용한 뒤 소멸하도록 개편되었습니다."
   },
   {
     "id": "expect-a-fight-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "EXPECT_A_FIGHT",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "ironclad",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Cannot gain additional Energy this turn",
+        "beforeKo": "이번 턴 추가 에너지 획득 불가",
+        "after": "Restriction removed",
+        "afterKo": "제한 제거",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7541,15 +7664,29 @@
         "before": "[gold]손[/gold]에 있는 공격 카드 1장당\n{energyPrefix:energyIcons(1)}를 얻습니다.\n이번 턴에 추가로\n{energyPrefix:energyIcons(1)}를 얻을 수 없습니다.{InCombat:\n({CalculatedEnergy:energyIcons()}를 얻습니다.)|}",
         "after": "[gold]손[/gold]에 있는 공격 카드 1장당\n{energyPrefix:energyIcons(1)}를 얻습니다.{InCombat:\n({CalculatedEnergy:energyIcons()}를 얻습니다.)|}"
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Expect a Fight no longer prevents additional Energy gain during the turn.",
+    "summaryKo": "싸움 준비의 이번 턴 추가 에너지 획득 제한이 제거되었습니다."
   },
   {
     "id": "expertise-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "EXPERTISE",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "silent",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Draw until the Hand has 6(7) cards",
+        "beforeKo": "손이 6(7)장이 될 때까지 뽑기",
+        "after": "Draw 2(3); those cards gain Retain this turn",
+        "afterKo": "2(3)장 뽑기; 이번 턴 보존 부여",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7566,15 +7703,29 @@
         "before": 6,
         "after": 2
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Expertise now draws 2(3) cards and gives them Retain for the turn.",
+    "summaryKo": "전문성이 카드 2(3)장을 뽑고 이번 턴 동안 보존을 부여하도록 개편되었습니다."
   },
   {
     "id": "giant-rock-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "GIANT_ROCK",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "ironclad",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "16(20) damage",
+        "beforeKo": "피해 16(20)",
+        "after": "20(24) damage",
+        "afterKo": "피해 20(24)",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7591,15 +7742,29 @@
         "before": 16,
         "after": 20
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Giant Rock damage increased from 16(20) to 20(24).",
+    "summaryKo": "거대한 바위의 피해량이 16(20)에서 20(24)로 증가했습니다."
   },
   {
     "id": "hyperbeam-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "HYPERBEAM",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "defect",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "28(36) damage",
+        "beforeKo": "피해 28(36)",
+        "after": "30(38) damage",
+        "afterKo": "피해 30(38)",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7616,15 +7781,29 @@
         "before": 28,
         "after": 30
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Hyperbeam damage increased from 28(36) to 30(38).",
+    "summaryKo": "파괴광선의 피해량이 28(36)에서 30(38)로 증가했습니다."
   },
   {
     "id": "midnight-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "MIDNIGHT",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "ironclad",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "99(120) damage",
+        "beforeKo": "피해 99(120)",
+        "after": "60(72) damage",
+        "afterKo": "피해 60(72)",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7646,15 +7825,29 @@
         "before": "+21",
         "after": "+12"
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Midnight damage decreased from 99(120) to 60(72).",
+    "summaryKo": "심야의 피해량이 99(120)에서 60(72)로 감소했습니다."
   },
   {
     "id": "mirage-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "MIRAGE",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "silent",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Cost 1(0); gain Block equal to all enemy Poison; Exhaust",
+        "beforeKo": "비용 1(0); 모든 적의 중독만큼 방어도; 소멸",
+        "after": "Cost 0; next turn gain 1(2) Energy",
+        "afterKo": "비용 0; 다음 턴 에너지 1(2)",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "cost",
@@ -7698,15 +7891,29 @@
         "field": "upgrade.energy",
         "after": "+1"
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Mirage now costs 0 and grants 1(2) Energy next turn instead of Block, without Exhaust.",
+    "summaryKo": "신기루가 비용 0으로 바뀌고, 방어도 대신 다음 턴 에너지 1(2)를 얻으며 소멸하지 않도록 개편되었습니다."
   },
   {
     "id": "outbreak-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "OUTBREAK",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "silent",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "3(4) damage",
+        "beforeKo": "피해 3(4)",
+        "after": "4(5) damage",
+        "afterKo": "피해 4(5)",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7728,15 +7935,29 @@
         "before": 3,
         "after": 4
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Outbreak damage increased from 3(4) to 4(5).",
+    "summaryKo": "발병의 피해량이 3(4)에서 4(5)로 증가했습니다."
   },
   {
     "id": "pillar-of-creation-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "PILLAR_OF_CREATION",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "regent",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Whenever you create a card, gain 3 Block",
+        "beforeKo": "카드를 생성할 때마다 방어도 3",
+        "after": "First created card each turn grants 5(7) Block",
+        "afterKo": "매 턴 처음 생성한 카드가 방어도 5(7) 부여",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7763,15 +7984,29 @@
         "before": "+1",
         "after": "+2"
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Pillar of Creation now triggers only on the first created card each turn and grants 5(7) Block.",
+    "summaryKo": "창조의 기둥이 매 턴 처음 생성한 카드에만 발동하고 방어도 5(7)를 얻도록 개편되었습니다."
   },
   {
     "id": "sunder-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "SUNDER",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "defect",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "24(32) damage",
+        "beforeKo": "피해 24(32)",
+        "after": "26(34) damage",
+        "afterKo": "피해 26(34)",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7788,15 +8023,29 @@
         "before": 24,
         "after": 26
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Sunder damage increased from 24(32) to 26(34).",
+    "summaryKo": "찢기의 피해량이 24(32)에서 26(34)로 증가했습니다."
   },
   {
     "id": "taunt-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "TAUNT",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "ironclad",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Uncommon; 7(8) Block",
+        "beforeKo": "고급; 방어도 7(8)",
+        "after": "Common; 6(8) Block",
+        "afterKo": "일반; 방어도 6(8)",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "rarity",
@@ -7818,7 +8067,10 @@
         "before": 7,
         "after": 6
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Taunt Block decreased from 7(8) to 6(8), and rarity decreased from Uncommon to Common.",
+    "summaryKo": "도발의 방어도가 7(8)에서 6(8)로 감소하고 등급이 고급에서 일반으로 변경되었습니다."
   },
   {
     "id": "the-ball-v0-109-0-field-diff",
@@ -7826,7 +8078,18 @@
     "entityId": "THE_BALL",
     "patch": "v0.109.0",
     "character": null,
-    "diffs": [],
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "+15(25) damage",
+        "beforeKo": "피해 +15(25)",
+        "after": "+10(15) damage",
+        "afterKo": "피해 +10(15)",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7843,15 +8106,29 @@
         "before": "+10",
         "after": "+5"
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "The Ball's combat scaling decreased from +15(25) to +10(15).",
+    "summaryKo": "공의 전투 중 증가 피해량이 +15(25)에서 +10(15)로 감소했습니다."
   },
   {
     "id": "trash-to-treasure-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "TRASH_TO_TREASURE",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "defect",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Upgrade grants Innate",
+        "beforeKo": "강화 시 선천성",
+        "after": "Upgrade reduces cost by 1",
+        "afterKo": "강화 시 비용 1 감소",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "upgrade.add_innate",
@@ -7861,15 +8138,29 @@
         "field": "upgrade.cost",
         "after": 0
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Trash to Treasure's upgrade now reduces cost by 1 instead of granting Innate.",
+    "summaryKo": "고철을 보물로의 강화 효과가 선천성 획득에서 비용 1 감소로 변경되었습니다."
   },
   {
     "id": "well-laid-plans-v0-109-0-field-diff",
     "entityType": "card",
     "entityId": "WELL_LAID_PLANS",
     "patch": "v0.109.0",
-    "character": null,
-    "diffs": [],
+    "character": "silent",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Uncommon; Retain up to 1(2) cards",
+        "beforeKo": "고급; 최대 1(2)장 보존",
+        "after": "Rare; do not discard the Hand; costs 1(0)",
+        "afterKo": "희귀; 손을 버리지 않음; 비용 1(0)",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "rarity",
@@ -7898,7 +8189,10 @@
         "field": "upgrade.cost",
         "after": 0
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Well-Laid Plans is now Rare and prevents discarding the Hand at end of turn; its upgrade reduces cost to 0.",
+    "summaryKo": "괜찮은 전략이 희귀로 바뀌고 턴 종료 시 손을 버리지 않으며, 강화 시 비용이 0이 되도록 개편되었습니다."
   },
   {
     "id": "diamond-diadem-v0-109-0-field-diff",
@@ -7906,7 +8200,18 @@
     "entityId": "DIAMOND_DIADEM",
     "patch": "v0.109.0",
     "character": null,
-    "diffs": [],
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Take half damage after playing 2 or fewer cards",
+        "beforeKo": "카드 2장 이하 사용 시 받는 피해 절반",
+        "after": "Start combat with 20 Block; keep it next turn",
+        "afterKo": "방어도 20으로 전투 시작; 다음 턴까지 유지",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7917,8 +8222,20 @@
         "field": "descriptionRaw",
         "before": "내 턴 동안 카드를 [blue]{CardThreshold}[/blue]장 이하로 사용했다면, 적으로부터 받는 피해량이 절반이 됩니다.",
         "after": "매 전투 시작 시 [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다. 그 다음 턴 시작 시 [gold]방어도[/gold]가 사라지지 않습니다."
+      },
+      {
+        "field": "vars",
+        "before": {
+          "CardThreshold": 2
+        },
+        "after": {
+          "Block": 20
+        }
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Diamond Diadem now starts combat with 20 Block that persists through the next turn.",
+    "summaryKo": "다이아몬드 관이 전투 시작 시 다음 턴까지 유지되는 방어도 20을 얻도록 개편되었습니다."
   },
   {
     "id": "distinguished-cape-v0-109-0-field-diff",
@@ -7926,7 +8243,18 @@
     "entityId": "DISTINGUISHED_CAPE",
     "patch": "v0.109.0",
     "character": null,
-    "diffs": [],
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Lose 9 Max HP; add 3 Apparitions",
+        "beforeKo": "최대 체력 9 감소; 영체화 3장",
+        "after": "Add 2 random Curses and 3 Apparitions",
+        "afterKo": "무작위 저주 2장과 영체화 3장",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7937,8 +8265,22 @@
         "field": "descriptionRaw",
         "before": "획득 시, 최대 체력을 [blue]9[/blue] 잃습니다. [gold]덱[/gold]에 [gold]영체화[/gold]를 [blue]{Cards}[/blue]장 추가합니다.",
         "after": "획득 시, [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]{Curses}[/blue]장, [gold]영체화[/gold]를 [blue]{Cards}[/blue]장 추가합니다."
+      },
+      {
+        "field": "vars",
+        "before": {
+          "HpLoss": 9,
+          "Cards": 3
+        },
+        "after": {
+          "Curses": 2,
+          "Cards": 3
+        }
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Distinguished Cape now adds 2 random Curses instead of losing 9 Max HP; it still adds 3 Apparitions.",
+    "summaryKo": "고상한 망토가 최대 체력 9 감소 대신 무작위 저주 2장을 추가하며, 영체화 3장은 유지됩니다."
   },
   {
     "id": "fiddle-v0-109-0-field-diff",
@@ -7946,14 +8288,33 @@
     "entityId": "FIDDLE",
     "patch": "v0.109.0",
     "character": null,
-    "diffs": [],
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Draw 2 extra cards",
+        "beforeKo": "추가로 2장 뽑기",
+        "after": "Draw 3 extra cards",
+        "afterKo": "추가로 3장 뽑기",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
         "before": "매 턴 시작 시, 카드를 추가로 [blue]2[/blue]장 뽑습니다. 내 턴 동안 카드를 뽑을 수 없습니다.",
         "after": "매 턴 시작 시, 카드를 추가로 [blue]3[/blue]장 뽑습니다. 내 턴 동안 카드를 뽑을 수 없습니다."
+      },
+      {
+        "field": "vars.Cards",
+        "before": 2,
+        "after": 3
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Fiddle's extra card draw increased from 2 to 3.",
+    "summaryKo": "피들의 추가 카드 드로우가 2장에서 3장으로 증가했습니다."
   },
   {
     "id": "history-course-v0-109-0-field-diff",
@@ -7961,7 +8322,18 @@
     "entityId": "HISTORY_COURSE",
     "patch": "v0.109.0",
     "character": null,
-    "diffs": [],
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Repeat the last Attack or Skill",
+        "beforeKo": "최근 공격 또는 스킬 반복",
+        "after": "Repeat the last Attack",
+        "afterKo": "최근 공격만 반복",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7973,7 +8345,10 @@
         "before": "내 턴 시작 시, 가장 최근에 사용한 공격이나 스킬 카드의 복사본을 사용합니다.",
         "after": "내 턴 시작 시, 가장 최근에 사용한 공격 카드의 복사본을 사용합니다."
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "History Course now repeats only Attacks and no longer repeats Skills.",
+    "summaryKo": "역사 수업이 스킬을 제외하고 공격 카드만 반복하도록 변경되었습니다."
   },
   {
     "id": "sere-talon-v0-109-0-field-diff",
@@ -7981,7 +8356,18 @@
     "entityId": "SERE_TALON",
     "patch": "v0.109.0",
     "character": null,
-    "diffs": [],
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Add 2 random Curses and 3 Wishes",
+        "beforeKo": "무작위 저주 2장과 염원 3장",
+        "after": "Lose 9 Max HP; add 3 Wishes",
+        "afterKo": "최대 체력 9 감소; 염원 3장",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -7992,8 +8378,22 @@
         "field": "descriptionRaw",
         "before": "획득 시, [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]{Curses}[/blue]장, [purple]염원[/purple]을 [blue]{Wishes}[/blue]장 추가합니다.",
         "after": "획득 시, 최대 체력을 [blue]9[/blue] 잃습니다. [gold]덱[/gold]에 [purple]염원[/purple]을 [blue]{Wishes}[/blue]장 추가합니다."
+      },
+      {
+        "field": "vars",
+        "before": {
+          "Curses": 2,
+          "Wishes": 3
+        },
+        "after": {
+          "HpLoss": 9,
+          "Wishes": 3
+        }
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Sere Talon now loses 9 Max HP instead of adding 2 random Curses; it still adds 3 Wishes.",
+    "summaryKo": "마른 발톱이 무작위 저주 2장 대신 최대 체력 9를 잃으며, 염원 3장은 유지됩니다."
   },
   {
     "id": "toy-box-v0-109-0-field-diff",
@@ -8001,13 +8401,32 @@
     "entityId": "TOY_BOX",
     "patch": "v0.109.0",
     "character": null,
-    "diffs": [],
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Gain 4 wax relics",
+        "beforeKo": "밀랍 유물 4개",
+        "after": "Gain 5 wax relics",
+        "afterKo": "밀랍 유물 5개",
+        "diffType": "text"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
         "before": "획득 시, [gold]밀랍 유물[/gold]을 [blue]4[/blue]개 얻습니다. [blue]3[/blue]번의 전투마다 가장 왼쪽에 있는 [gold]밀랍 유물[/gold]이 녹아서 사라집니다.",
         "after": "획득 시, [gold]밀랍 유물[/gold]을 [blue]5[/blue]개 얻습니다. [blue]3[/blue]번의 전투마다 가장 왼쪽에 있는 [gold]밀랍 유물[/gold]이 녹아서 사라집니다."
+      },
+      {
+        "field": "vars.Relics",
+        "before": 4,
+        "after": 5
       }
-    ]
+    ],
+    "date": "2026-07-17",
+    "summary": "Toy Box relics gained increased from 4 to 5.",
+    "summaryKo": "장난감 상자로 얻는 밀랍 유물이 4개에서 5개로 증가했습니다."
   }
 ]
