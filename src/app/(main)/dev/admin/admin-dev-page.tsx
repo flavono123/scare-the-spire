@@ -35,6 +35,32 @@ interface ChemicalPostRow {
   created_at: string;
 }
 
+interface CommunityStoryRow {
+  id: string;
+  user_id: string | null;
+  nickname: string;
+  sentence: string;
+  game: string;
+  entity_type: string | null;
+  entity_id: string | null;
+  source: string | null;
+  env: string;
+  created_at: string;
+}
+
+interface ThisOrThatPostRow {
+  id: string;
+  user_id: string;
+  nickname: string;
+  left_type: string;
+  left_id: string;
+  right_type: string;
+  right_id: string;
+  reason: string;
+  env: string;
+  created_at: string;
+}
+
 interface RunRow {
   id: string;
   seed: string;
@@ -84,6 +110,8 @@ interface SupabaseResult<T> {
 
 interface AdminSnapshot {
   comments: QueryState<CommentRow[]>;
+  communityStories: QueryState<CommunityStoryRow[]>;
+  thisOrThatPosts: QueryState<ThisOrThatPostRow[]>;
   chemicalPosts: QueryState<ChemicalPostRow[]>;
   runs: QueryState<RunRow[]>;
   likes: QueryState<LikeRow[]>;
@@ -149,6 +177,8 @@ async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
 
   const [
     comments,
+    communityStories,
+    thisOrThatPosts,
     chemicalPosts,
     runs,
     likes,
@@ -156,6 +186,27 @@ async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
     engagementCounts,
   ] = await Promise.all([
     readComments(),
+    readSupabase<CommunityStoryRow[]>(
+      "admin.community_stories",
+      supabase
+        .from("community_stories")
+        .select("id, user_id, nickname, sentence, game, entity_type, entity_id, source, env, created_at", { count: "exact" })
+        .eq("env", ADMIN_DATA_ENV)
+        .is("static_story_id", null)
+        .order("created_at", { ascending: false })
+        .limit(ROW_LIMIT),
+      [],
+    ),
+    readSupabase<ThisOrThatPostRow[]>(
+      "admin.this_or_that_posts",
+      supabase
+        .from("this_or_that_posts")
+        .select("id, user_id, nickname, left_type, left_id, right_type, right_id, reason, env, created_at", { count: "exact" })
+        .eq("env", ADMIN_DATA_ENV)
+        .order("created_at", { ascending: false })
+        .limit(ROW_LIMIT),
+      [],
+    ),
     readSupabase<ChemicalPostRow[]>(
       "admin.chemical_posts",
       supabase
@@ -196,6 +247,8 @@ async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
 
   return {
     comments,
+    communityStories,
+    thisOrThatPosts,
     chemicalPosts,
     runs,
     likes,
@@ -423,7 +476,14 @@ export default async function SupabaseAdminPage() {
             )}
           </section>
 
-          <Section title="댓글" count={countLabel(snapshot.comments)} error={snapshot.comments.error}>
+          <div className="mt-10 border-t border-border/70 pt-6">
+            <h2 className="text-xl font-semibold text-yellow-400">서비스별 최신 작성글</h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              production 환경의 작성글을 서비스마다 최신 {ROW_LIMIT}개까지 표시합니다.
+            </p>
+          </div>
+
+          <Section title="최신 댓글" count={countLabel(snapshot.comments)} error={snapshot.comments.error}>
             <div className="overflow-x-auto rounded-md border border-border">
               <table className="w-full min-w-[900px] text-left text-sm">
                 <thead className="bg-muted/40 text-xs text-muted-foreground">
@@ -457,7 +517,95 @@ export default async function SupabaseAdminPage() {
             </div>
           </Section>
 
-          <Section title="케미컬 X" count={countLabel(snapshot.chemicalPosts)} error={snapshot.chemicalPosts.error}>
+          <Section title="슬서운 이야기" count={countLabel(snapshot.communityStories)} error={snapshot.communityStories.error}>
+            <div className="overflow-x-auto rounded-md border border-border">
+              <table className="w-full min-w-[980px] text-left text-sm">
+                <thead className="bg-muted/40 text-xs text-muted-foreground">
+                  <tr>
+                    <th className="px-3 py-2">작성일</th>
+                    <th className="px-3 py-2">env</th>
+                    <th className="px-3 py-2">닉네임</th>
+                    <th className="px-3 py-2">문장</th>
+                    <th className="px-3 py-2">대상</th>
+                    <th className="px-3 py-2">source</th>
+                    <th className="px-3 py-2">story</th>
+                    <th className="px-3 py-2">user_id</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {snapshot.communityStories.data.map((story) => (
+                    <tr key={story.id} className="border-t border-border/70 align-top">
+                      <td className="whitespace-nowrap px-3 py-2 text-xs text-muted-foreground">{formatDate(story.created_at)}</td>
+                      <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{story.env}</code></td>
+                      <td className="px-3 py-2 text-yellow-200">{story.nickname}</td>
+                      <td className="px-3 py-2">{truncate(story.sentence)}</td>
+                      <td className="px-3 py-2">
+                        <code className="text-[11px] text-muted-foreground">
+                          {story.entity_type && story.entity_id ? `${story.entity_type}:${story.entity_id}` : story.game}
+                        </code>
+                      </td>
+                      <td className="px-3 py-2"><code className="text-[11px] text-muted-foreground">{story.source ?? "-"}</code></td>
+                      <td className="px-3 py-2">
+                        <Link href={productionHref(`/#community:${story.id}`)} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
+                          {story.id.slice(0, 8)}
+                        </Link>
+                      </td>
+                      <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{story.user_id ?? "-"}</code></td>
+                    </tr>
+                  ))}
+                  {snapshot.communityStories.data.length === 0 && (
+                    <tr>
+                      <td className="px-3 py-6 text-center text-sm text-muted-foreground" colSpan={8}>작성된 이야기가 없습니다.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Section>
+
+          <Section title="이거 아님 저거?" count={countLabel(snapshot.thisOrThatPosts)} error={snapshot.thisOrThatPosts.error}>
+            <div className="overflow-x-auto rounded-md border border-border">
+              <table className="w-full min-w-[980px] text-left text-sm">
+                <thead className="bg-muted/40 text-xs text-muted-foreground">
+                  <tr>
+                    <th className="px-3 py-2">작성일</th>
+                    <th className="px-3 py-2">env</th>
+                    <th className="px-3 py-2">닉네임</th>
+                    <th className="px-3 py-2">이거</th>
+                    <th className="px-3 py-2">저거</th>
+                    <th className="px-3 py-2">이유</th>
+                    <th className="px-3 py-2">post</th>
+                    <th className="px-3 py-2">user_id</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {snapshot.thisOrThatPosts.data.map((post) => (
+                    <tr key={post.id} className="border-t border-border/70 align-top">
+                      <td className="whitespace-nowrap px-3 py-2 text-xs text-muted-foreground">{formatDate(post.created_at)}</td>
+                      <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{post.env}</code></td>
+                      <td className="px-3 py-2 text-orange-200">{post.nickname}</td>
+                      <td className="px-3 py-2"><code className="text-[11px] text-muted-foreground">{post.left_type}:{post.left_id}</code></td>
+                      <td className="px-3 py-2"><code className="text-[11px] text-muted-foreground">{post.right_type}:{post.right_id}</code></td>
+                      <td className="px-3 py-2">{truncate(post.reason, 100)}</td>
+                      <td className="px-3 py-2">
+                        <Link href={productionHref(`/this-or-that/${post.id}`)} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
+                          {post.id.slice(0, 8)}
+                        </Link>
+                      </td>
+                      <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{post.user_id}</code></td>
+                    </tr>
+                  ))}
+                  {snapshot.thisOrThatPosts.data.length === 0 && (
+                    <tr>
+                      <td className="px-3 py-6 text-center text-sm text-muted-foreground" colSpan={8}>이거저거 없음</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Section>
+
+          <Section title="케미컬X" count={countLabel(snapshot.chemicalPosts)} error={snapshot.chemicalPosts.error}>
             <div className="overflow-x-auto rounded-md border border-border">
               <table className="w-full min-w-[820px] text-left text-sm">
                 <thead className="bg-muted/40 text-xs text-muted-foreground">
