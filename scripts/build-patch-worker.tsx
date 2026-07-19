@@ -4,7 +4,7 @@ import path from "path";
 import React, { type ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { loadEnvConfig } from "@next/env";
-import { build as buildClientBundle, stop as stopClientBundler } from "esbuild";
+import { build as buildClientBundle, stop as stopClientBundler, type Plugin } from "esbuild";
 import {
   PatchDetailPage,
   generatePatchDetailStaticParams,
@@ -69,6 +69,61 @@ const spinePlayerClientPath = path.join(
   process.cwd(),
   "node_modules/@esotericsoftware/spine-player/dist/iife/spine-player.min.js",
 );
+
+const patchClientNextShims: Plugin = {
+  name: "patch-client-next-shims",
+  setup(build) {
+    build.onResolve({ filter: /^next\/(?:dynamic|link|navigation)$/ }, (args) => ({
+      path: args.path,
+      namespace: "patch-next-shim",
+    }));
+    build.onLoad({ filter: /.*/, namespace: "patch-next-shim" }, (args) => {
+      if (args.path === "next/dynamic") {
+        return {
+          loader: "tsx",
+          resolveDir: process.cwd(),
+          contents: `
+            import React from "react";
+            export default function dynamic(loader, options = {}) {
+              const LazyComponent = React.lazy(async () => {
+                const component = await loader();
+                return { default: component.default ?? component };
+              });
+              return function DynamicComponent(props) {
+                const fallback = options.loading ? React.createElement(options.loading) : null;
+                return React.createElement(
+                  React.Suspense,
+                  { fallback },
+                  React.createElement(LazyComponent, props),
+                );
+              };
+            }
+          `,
+        };
+      }
+
+      if (args.path === "next/link") {
+        return {
+          loader: "tsx",
+          resolveDir: process.cwd(),
+          contents: `
+            import React from "react";
+            const Link = React.forwardRef(function Link({ href, children, ...props }, ref) {
+              const resolvedHref = typeof href === "string" ? href : href?.pathname ?? "#";
+              return React.createElement("a", { ...props, ref, href: resolvedHref }, children);
+            });
+            export default Link;
+          `,
+        };
+      }
+
+      return {
+        loader: "js",
+        contents: `export function usePathname() { return window.location.pathname; }`,
+      };
+    });
+  },
+};
 
 function escapeInlineJson(value: unknown): string {
   return JSON.stringify(value).replace(/</g, "\\u003c");
@@ -514,6 +569,7 @@ async function writePatchClientAssets() {
     platform: "browser",
     format: "iife",
     target: ["es2022"],
+    plugins: [patchClientNextShims],
     define: {
       "process.env.NODE_ENV": JSON.stringify("production"),
       "process.env.NEXT_PUBLIC_SUPABASE_URL": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""),
