@@ -88,6 +88,9 @@ async function main() {
     "/images/sts2/characters/character_icon_necrobinder.webp",
     "/images/sts2/characters/character_icon_regent.webp",
     "/images/sts2/characters/character_icon_silent.webp",
+    "/images/sts2/icons/star_icon.webp",
+    "/images/sts2/powers/battleworn_dummy_time_limit_power.webp",
+    "/images/relics/runic-dodecahedron.webp",
   ]);
 
   for (const filePath of sourceFiles) {
