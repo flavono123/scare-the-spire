@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
@@ -82,6 +82,8 @@ export function useProfileActivity(
   const [loadingMore, setLoadingMore] = useState(false);
   const [statsUnavailable, setStatsUnavailable] = useState(!supabaseEnabled);
   const [itemsUnavailable, setItemsUnavailable] = useState(!supabaseEnabled);
+  const queryKeyRef = useRef("");
+  queryKeyRef.current = `${userId ?? "guest"}:${filter}:${sort}`;
 
   useEffect(() => {
     if (!supabaseEnabled || !userId) {
@@ -172,6 +174,7 @@ export function useProfileActivity(
 
   const loadMore = useCallback(async () => {
     if (!supabaseEnabled || !userId || loadingMore || items.length >= totalCount) return;
+    const queryKey = queryKeyRef.current;
     setLoadingMore(true);
 
     try {
@@ -186,13 +189,14 @@ export function useProfileActivity(
         }),
       );
       if (error) throw error;
+      if (queryKeyRef.current !== queryKey) return;
 
       const rows = (data ?? []) as ProfileActivityRow[];
       setItems((current) => [...current, ...rows.map(normalizeItem)]);
       if (rows[0]) setTotalCount(Number(rows[0].total_count));
       setItemsUnavailable(false);
     } catch {
-      setItemsUnavailable(true);
+      if (queryKeyRef.current === queryKey) setItemsUnavailable(true);
     } finally {
       setLoadingMore(false);
     }
