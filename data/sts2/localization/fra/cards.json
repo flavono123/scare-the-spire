@@ -1145,6 +1145,7 @@
   "TRUE_GRIT.title": "Virilité",
   "TURBO.description": "Gagnez {Energy:energyIcons()}.\nAjoutez un [gold]Néant[/gold] à votre [gold]Défausse[/gold].",
   "TURBO.title": "TURBO",
+  "TUTOR.title": "Tutor",
   "TWIN_STRIKE.description": "Infligez {Damage:diff()} dégâts 2 fois.",
   "TWIN_STRIKE.title": "Frappe jumelée",
   "TYRANNY.description": "Au début de votre tour, piochez 1 carte et [gold]Épuisez[/gold] 1 carte de votre [gold]Main[/gold].",

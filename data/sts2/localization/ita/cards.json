@@ -1176,6 +1176,7 @@
   "TRUE_GRIT.title": "Osso Duro",
   "TURBO.description": "Ottieni {Energy:energyIcons()}.\nAggiungi una carta [gold]Vuoto[/gold] alla tua [gold]pila degli scarti[/gold].",
   "TURBO.title": "TURBO",
+  "TUTOR.title": "Tutor",
   "TWIN_STRIKE.description": "Infliggi {Damage:diff()} di danno due volte.",
   "TWIN_STRIKE.title": "Colpo Gemello",
   "TYRANNY.description": "All'inizio del tuo turno, peschi 1 carta ed [gold]esaurisci[/gold] 1 carta dalla tua [gold]mano[/gold].",
