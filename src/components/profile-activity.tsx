@@ -49,7 +49,7 @@ export interface ProfileActivityCopy {
 
 const CATEGORY_ICON: Record<ProfileActivityCategory, string> = {
   stories: "/images/sts2/relics/bone_tea.webp",
-  chemical_x: "/images/sts2/relics/chemical_x.webp",
+  chemical_x: "/images/sts2/badges/ccccombo.webp",
   this_or_that: "/images/sts2/relics/choices_paradox.webp",
   comments: "/images/sts2/relics/storybook.webp",
 };

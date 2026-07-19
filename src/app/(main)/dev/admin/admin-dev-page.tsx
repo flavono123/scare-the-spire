@@ -605,7 +605,7 @@ export default async function SupabaseAdminPage() {
             </div>
           </Section>
 
-          <Section title="케미컬X" count={countLabel(snapshot.chemicalPosts)} error={snapshot.chemicalPosts.error}>
+          <Section title="코오오옴보" count={countLabel(snapshot.chemicalPosts)} error={snapshot.chemicalPosts.error}>
             <div className="overflow-x-auto rounded-md border border-border">
               <table className="w-full min-w-[820px] text-left text-sm">
                 <thead className="bg-muted/40 text-xs text-muted-foreground">
