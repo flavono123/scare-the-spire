@@ -79,43 +79,36 @@ export function useCommentEntities(
   const enabled = options.enabled ?? true;
   const hasInitialEntities = !!initialEntities?.length;
   const [fallbackEntities, setFallbackEntities] = useState<EntityInfo[] | null>(() => cachedEntities);
-  const [loading, setLoading] = useState(() => enabled && !hasInitialEntities && !cachedEntities);
+  const [loadFinished, setLoadFinished] = useState(() => Boolean(cachedEntities));
   const entities = useMemo(
     () => mergeCommentEntities(initialEntities ?? [], fallbackEntities ?? []),
     [fallbackEntities, initialEntities],
   );
 
   useEffect(() => {
-    if (!enabled) {
-      setLoading(false);
-      return;
-    }
-    if (cachedEntities) {
-      setFallbackEntities(cachedEntities);
-      setLoading(false);
-      return;
-    }
+    if (!enabled || fallbackEntities || loadFinished) return;
 
     let cancelled = false;
-    setLoading(!hasInitialEntities);
     fetchSts2CommentEntities()
       .then((data) => {
         if (cancelled) return;
         setFallbackEntities(data);
-        setLoading(false);
       })
       .catch(() => {
         if (cancelled) return;
-        setLoading(false);
+      })
+      .finally(() => {
+        if (cancelled) return;
+        setLoadFinished(true);
       });
 
     return () => {
       cancelled = true;
     };
-  }, [enabled, hasInitialEntities]);
+  }, [enabled, fallbackEntities, loadFinished]);
 
   return {
     entities,
-    loading: hasInitialEntities ? false : loading,
+    loading: enabled && !hasInitialEntities && !fallbackEntities && !loadFinished,
   };
 }
