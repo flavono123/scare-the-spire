@@ -24409,8 +24409,8 @@
       "콘텐츠 & 밸런스",
       "고대의 존재"
     ],
-    "markdownKo": "새로운 [gold:ancient]니오우[/gold] 유물 [gold:relic]다우징 로드[/gold]가 추가되었습니다: \"획득 시, 덱에 다우징을 1장 추가합니다.\"",
-    "markdownEn": "Added new [gold:ancient]Neow[/gold] relic, [gold:relic]Dowsing Rod[/gold]: \"Upon pickup, add 1 Dowsing to your Deck.\"",
+    "markdownKo": "새로운 [gold:ancient]니오우[/gold] 유물 [gold:relic]다우징 로드[/gold]가 추가되었습니다: \"획득 시, 덱에 [gold:card]다우징[/gold]을 1장 추가합니다.\"",
+    "markdownEn": "Added new [gold:ancient]Neow[/gold] relic, [gold:relic]Dowsing Rod[/gold]: \"Upon pickup, add 1 [gold:card]Dowsing[/gold] to your Deck.\"",
     "textKo": "새로운 니오우 유물 다우징 로드가 추가되었습니다: \"획득 시, 덱에 다우징을 1장 추가합니다.\"",
     "textEn": "Added new Neow relic, Dowsing Rod: \"Upon pickup, add 1 Dowsing to your Deck.\"",
     "entityRefs": [
@@ -24423,12 +24423,17 @@
         "type": "relic",
         "id": "DOWSING_ROD",
         "label": "다우징 로드"
+      },
+      {
+        "type": "card",
+        "id": "DOWSING",
+        "label": "다우징"
       }
     ],
-    "searchText": "v0.109.0:line-001-ancient-neow-relic-dowsing-rod v0.109.0 0.109.0 콘텐츠 & 밸런스 고대의 존재 새로운 니오우 유물 다우징 로드가 추가되었습니다: \"획득 시, 덱에 다우징을 1장 추가합니다.\" added new neow relic, dowsing rod: \"upon pickup, add 1 dowsing to your deck.\" ancient neow 니오우 니오우 neow relic dowsing_rod 다우징 로드 다우징 로드 dowsing rod"
+    "searchText": "v0.109.0:line-001-ancient-neow-relic-dowsing-rod v0.109.0 0.109.0 콘텐츠 & 밸런스 고대의 존재 새로운 니오우 유물 다우징 로드가 추가되었습니다: \"획득 시, 덱에 다우징을 1장 추가합니다.\" added new neow relic, dowsing rod: \"upon pickup, add 1 dowsing to your deck.\" ancient neow 니오우 니오우 neow relic dowsing_rod 다우징 로드 다우징 로드 dowsing rod card dowsing 다우징 다우징 dowsing"
   },
   {
-    "id": "v0.109.0:line-002-card-dowsing",
+    "id": "v0.109.0:line-002-card-dowsing-card-abundance",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -24436,8 +24441,8 @@
       "콘텐츠 & 밸런스",
       "고대의 존재"
     ],
-    "markdownKo": "[gold:card]다우징[/gold] — 퀘스트, 비용 0: \"? 방에 5번 더 진입한 후에, 풍요로 변화합니다.\"",
-    "markdownEn": "[gold:card]Dowsing[/gold] — Quest, cost 0: \"After entering 5 more ? rooms, transform this into Abundance.\"",
+    "markdownKo": "[gold:card]다우징[/gold] — 퀘스트, 비용 0: \"? 방에 5번 더 진입한 후에, [gold:card]풍요[/gold]로 변화합니다.\"",
+    "markdownEn": "[gold:card]Dowsing[/gold] — Quest, cost 0: \"After entering 5 more ? rooms, transform this into [gold:card]Abundance[/gold].\"",
     "textKo": "다우징 — 퀘스트, 비용 0: \"? 방에 5번 더 진입한 후에, 풍요로 변화합니다.\"",
     "textEn": "Dowsing — Quest, cost 0: \"After entering 5 more ? rooms, transform this into Abundance.\"",
     "entityRefs": [
@@ -24445,9 +24450,14 @@
         "type": "card",
         "id": "DOWSING",
         "label": "다우징"
+      },
+      {
+        "type": "card",
+        "id": "ABUNDANCE",
+        "label": "풍요"
       }
     ],
-    "searchText": "v0.109.0:line-002-card-dowsing v0.109.0 0.109.0 콘텐츠 & 밸런스 고대의 존재 다우징 — 퀘스트, 비용 0: \"? 방에 5번 더 진입한 후에, 풍요로 변화합니다.\" dowsing — quest, cost 0: \"after entering 5 more ? rooms, transform this into abundance.\" card dowsing 다우징 다우징 dowsing"
+    "searchText": "v0.109.0:line-002-card-dowsing-card-abundance v0.109.0 0.109.0 콘텐츠 & 밸런스 고대의 존재 다우징 — 퀘스트, 비용 0: \"? 방에 5번 더 진입한 후에, 풍요로 변화합니다.\" dowsing — quest, cost 0: \"after entering 5 more ? rooms, transform this into abundance.\" card dowsing 다우징 다우징 dowsing card abundance 풍요 풍요 abundance"
   },
   {
     "id": "v0.109.0:line-003-card-abundance",
@@ -24480,8 +24490,8 @@
       "콘텐츠 & 밸런스",
       "고대의 존재"
     ],
-    "markdownKo": "새로운 [gold:ancient]니오우[/gold] 유물 [gold:relic]니오우의 희생[/gold]이 추가되었습니다: \"획득 시, 용연향을 1개 생성하고 덱에 죄책감을 1장 추가합니다.\"",
-    "markdownEn": "Added new [gold:ancient]Neow[/gold] relic, [gold:relic]Neow's Sacrifice[/gold]: \"Upon pickup, procure 1 Ambergris and add 1 Guilty to your Deck.\"",
+    "markdownKo": "새로운 [gold:ancient]니오우[/gold] 유물 [gold:relic]니오우의 희생[/gold]이 추가되었습니다: \"획득 시, [gold:potion]용연향[/gold]을 1개 생성하고 덱에 [gold:card]죄책감[/gold]을 1장 추가합니다.\"",
+    "markdownEn": "Added new [gold:ancient]Neow[/gold] relic, [gold:relic]Neow's Sacrifice[/gold]: \"Upon pickup, procure 1 [gold:potion]Ambergris[/gold] and add 1 [gold:card]Guilty[/gold] to your Deck.\"",
     "textKo": "새로운 니오우 유물 니오우의 희생이 추가되었습니다: \"획득 시, 용연향을 1개 생성하고 덱에 죄책감을 1장 추가합니다.\"",
     "textEn": "Added new Neow relic, Neow's Sacrifice: \"Upon pickup, procure 1 Ambergris and add 1 Guilty to your Deck.\"",
     "entityRefs": [
@@ -24494,9 +24504,19 @@
         "type": "relic",
         "id": "NEOWS_SACRIFICE",
         "label": "니오우의 희생"
+      },
+      {
+        "type": "potion",
+        "id": "AMBERGRIS",
+        "label": "용연향"
+      },
+      {
+        "type": "card",
+        "id": "GUILTY",
+        "label": "죄책감"
       }
     ],
-    "searchText": "v0.109.0:line-004-ancient-neow-relic-neows-sacrifice v0.109.0 0.109.0 콘텐츠 & 밸런스 고대의 존재 새로운 니오우 유물 니오우의 희생이 추가되었습니다: \"획득 시, 용연향을 1개 생성하고 덱에 죄책감을 1장 추가합니다.\" added new neow relic, neow's sacrifice: \"upon pickup, procure 1 ambergris and add 1 guilty to your deck.\" ancient neow 니오우 니오우 neow relic neows_sacrifice 니오우의 희생 니오우의 희생 neow's sacrifice"
+    "searchText": "v0.109.0:line-004-ancient-neow-relic-neows-sacrifice v0.109.0 0.109.0 콘텐츠 & 밸런스 고대의 존재 새로운 니오우 유물 니오우의 희생이 추가되었습니다: \"획득 시, 용연향을 1개 생성하고 덱에 죄책감을 1장 추가합니다.\" added new neow relic, neow's sacrifice: \"upon pickup, procure 1 ambergris and add 1 guilty to your deck.\" ancient neow 니오우 니오우 neow relic neows_sacrifice 니오우의 희생 니오우의 희생 neow's sacrifice potion ambergris 용연향 용연향 ambergris card guilty 죄책감 죄책감 guilty"
   },
   {
     "id": "v0.109.0:line-005-potion-ambergris",
@@ -24844,7 +24864,7 @@
     "searchText": "v0.109.0:line-019-card-taunt v0.109.0 0.109.0 콘텐츠 & 밸런스 아이언클래드 도발이 변경되었습니다: changed taunt: card taunt 도발 도발 taunt"
   },
   {
-    "id": "v0.109.0:line-020-text-q961f",
+    "id": "v0.109.0:line-020-text-ug42ky",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -24852,12 +24872,12 @@
       "콘텐츠 & 밸런스",
       "아이언클래드"
     ],
-    "markdownKo": "방어도 획득량이 7(8) -> 6(8)로 감소했습니다.",
-    "markdownEn": "Block gain decreased from 7(8) -> 6(8).",
-    "textKo": "방어도 획득량이 7(8) -> 6(8)로 감소했습니다.",
-    "textEn": "Block gain decreased from 7(8) -> 6(8).",
+    "markdownKo": "방어도 획득량이 7(8) -> 6(7)로 감소했습니다.",
+    "markdownEn": "Block gain decreased from 7(8) -> 6(7).",
+    "textKo": "방어도 획득량이 7(8) -> 6(7)로 감소했습니다.",
+    "textEn": "Block gain decreased from 7(8) -> 6(7).",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-020-text-q961f v0.109.0 0.109.0 콘텐츠 & 밸런스 아이언클래드 방어도 획득량이 7(8) -> 6(8)로 감소했습니다. block gain decreased from 7(8) -> 6(8)."
+    "searchText": "v0.109.0:line-020-text-ug42ky v0.109.0 0.109.0 콘텐츠 & 밸런스 아이언클래드 방어도 획득량이 7(8) -> 6(7)로 감소했습니다. block gain decreased from 7(8) -> 6(7)."
   },
   {
     "id": "v0.109.0:line-021-text-irc1gh",
@@ -24942,7 +24962,7 @@
     "searchText": "v0.109.0:line-024-card-dominate v0.109.0 0.109.0 콘텐츠 & 밸런스 아이언클래드 제압 등급이 고급 -> 희귀로 증가했습니다. dominate rarity increased from uncommon -> rare. card dominate 제압 제압 dominate"
   },
   {
-    "id": "v0.109.0:line-025-card-mirage",
+    "id": "v0.109.0:line-025-card-mirage-power-poison",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -24950,8 +24970,8 @@
       "콘텐츠 & 밸런스",
       "사일런트"
     ],
-    "markdownKo": "[gold:card]신기루[/gold]가 개편되었습니다: 고급 스킬, 비용 1(0), \"모든 적에게 부여된 중독과 동일한 만큼의 방어도를 얻습니다. 소멸.\" -> 고급 스킬, 비용 0, \"다음 턴에 에너지를 1(2) 얻습니다.\"",
-    "markdownEn": "Reworked [gold:card]Mirage[/gold]: Uncommon Skill, cost 1(0), \"Gain Block equal to Poison on ALL enemies. Exhaust.\" -> Uncommon Skill, cost 0, \"Next turn, gain 1(2) Energy.\"",
+    "markdownKo": "[gold:card]신기루[/gold]가 개편되었습니다: 고급 스킬, 비용 1(0), \"모든 적에게 부여된 [gold:power]중독[/gold]과 동일한 만큼의 방어도를 얻습니다. 소멸.\" -> 고급 스킬, 비용 0, \"다음 턴에 에너지를 1(2) 얻습니다.\"",
+    "markdownEn": "Reworked [gold:card]Mirage[/gold]: Uncommon Skill, cost 1(0), \"Gain Block equal to [gold:power]Poison[/gold] on ALL enemies. Exhaust.\" -> Uncommon Skill, cost 0, \"Next turn, gain 1(2) Energy.\"",
     "textKo": "신기루가 개편되었습니다: 고급 스킬, 비용 1(0), \"모든 적에게 부여된 중독과 동일한 만큼의 방어도를 얻습니다. 소멸.\" -> 고급 스킬, 비용 0, \"다음 턴에 에너지를 1(2) 얻습니다.\"",
     "textEn": "Reworked Mirage: Uncommon Skill, cost 1(0), \"Gain Block equal to Poison on ALL enemies. Exhaust.\" -> Uncommon Skill, cost 0, \"Next turn, gain 1(2) Energy.\"",
     "entityRefs": [
@@ -24959,9 +24979,14 @@
         "type": "card",
         "id": "MIRAGE",
         "label": "신기루"
+      },
+      {
+        "type": "power",
+        "id": "POISON",
+        "label": "중독"
       }
     ],
-    "searchText": "v0.109.0:line-025-card-mirage v0.109.0 0.109.0 콘텐츠 & 밸런스 사일런트 신기루가 개편되었습니다: 고급 스킬, 비용 1(0), \"모든 적에게 부여된 중독과 동일한 만큼의 방어도를 얻습니다. 소멸.\" -> 고급 스킬, 비용 0, \"다음 턴에 에너지를 1(2) 얻습니다.\" reworked mirage: uncommon skill, cost 1(0), \"gain block equal to poison on all enemies. exhaust.\" -> uncommon skill, cost 0, \"next turn, gain 1(2) energy.\" card mirage 신기루 신기루 mirage"
+    "searchText": "v0.109.0:line-025-card-mirage-power-poison v0.109.0 0.109.0 콘텐츠 & 밸런스 사일런트 신기루가 개편되었습니다: 고급 스킬, 비용 1(0), \"모든 적에게 부여된 중독과 동일한 만큼의 방어도를 얻습니다. 소멸.\" -> 고급 스킬, 비용 0, \"다음 턴에 에너지를 1(2) 얻습니다.\" reworked mirage: uncommon skill, cost 1(0), \"gain block equal to poison on all enemies. exhaust.\" -> uncommon skill, cost 0, \"next turn, gain 1(2) energy.\" card mirage 신기루 신기루 mirage power poison 중독 중독 poison"
   },
   {
     "id": "v0.109.0:line-026-card-well-laid-plans",
@@ -25128,7 +25153,7 @@
     "searchText": "v0.109.0:line-033-card-collision-course v0.109.0 0.109.0 콘텐츠 & 밸런스 리젠트 불가피한 충돌 (너프): 피해량이 11(15) -> 10(14)로 감소했습니다. collision course (nerf): damage decreased from 11(15) -> 10(14). card collision_course 불가피한 충돌 불가피한 충돌 collision course"
   },
   {
-    "id": "v0.109.0:line-034-card-eidolon",
+    "id": "v0.109.0:line-034-card-eidolon-power-intangible",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25136,8 +25161,8 @@
       "콘텐츠 & 밸런스",
       "네크로바인더"
     ],
-    "markdownKo": "[gold:card]허상[/gold]이 개편되었습니다: \"손에 있는 모든 카드를 소멸시킵니다. 이를 통해 카드를 9장 소멸시켰다면, 불가침을 1 얻습니다.\" -> \"소멸된 카드 더미에 있는 모든 휘발성 카드를 사용합니다. 소멸.\"",
-    "markdownEn": "Reworked [gold:card]Eidolon[/gold]: \"Exhaust your Hand. If 9 cards were Exhausted this way, gain 1 Intangible.\" -> \"Play ALL Ethereal cards in your Exhaust Pile. Exhaust.\"",
+    "markdownKo": "[gold:card]허상[/gold]이 개편되었습니다: \"손에 있는 모든 카드를 소멸시킵니다. 이를 통해 카드를 9장 소멸시켰다면, [gold:power]불가침[/gold]을 1 얻습니다.\" -> \"소멸된 카드 더미에 있는 모든 휘발성 카드를 사용합니다. 소멸.\"",
+    "markdownEn": "Reworked [gold:card]Eidolon[/gold]: \"Exhaust your Hand. If 9 cards were Exhausted this way, gain 1 [gold:power]Intangible[/gold].\" -> \"Play ALL Ethereal cards in your Exhaust Pile. Exhaust.\"",
     "textKo": "허상이 개편되었습니다: \"손에 있는 모든 카드를 소멸시킵니다. 이를 통해 카드를 9장 소멸시켰다면, 불가침을 1 얻습니다.\" -> \"소멸된 카드 더미에 있는 모든 휘발성 카드를 사용합니다. 소멸.\"",
     "textEn": "Reworked Eidolon: \"Exhaust your Hand. If 9 cards were Exhausted this way, gain 1 Intangible.\" -> \"Play ALL Ethereal cards in your Exhaust Pile. Exhaust.\"",
     "entityRefs": [
@@ -25145,9 +25170,14 @@
         "type": "card",
         "id": "EIDOLON",
         "label": "허상"
+      },
+      {
+        "type": "power",
+        "id": "INTANGIBLE",
+        "label": "불가침"
       }
     ],
-    "searchText": "v0.109.0:line-034-card-eidolon v0.109.0 0.109.0 콘텐츠 & 밸런스 네크로바인더 허상이 개편되었습니다: \"손에 있는 모든 카드를 소멸시킵니다. 이를 통해 카드를 9장 소멸시켰다면, 불가침을 1 얻습니다.\" -> \"소멸된 카드 더미에 있는 모든 휘발성 카드를 사용합니다. 소멸.\" reworked eidolon: \"exhaust your hand. if 9 cards were exhausted this way, gain 1 intangible.\" -> \"play all ethereal cards in your exhaust pile. exhaust.\" card eidolon 허상 허상 eidolon"
+    "searchText": "v0.109.0:line-034-card-eidolon-power-intangible v0.109.0 0.109.0 콘텐츠 & 밸런스 네크로바인더 허상이 개편되었습니다: \"손에 있는 모든 카드를 소멸시킵니다. 이를 통해 카드를 9장 소멸시켰다면, 불가침을 1 얻습니다.\" -> \"소멸된 카드 더미에 있는 모든 휘발성 카드를 사용합니다. 소멸.\" reworked eidolon: \"exhaust your hand. if 9 cards were exhausted this way, gain 1 intangible.\" -> \"play all ethereal cards in your exhaust pile. exhaust.\" card eidolon 허상 허상 eidolon power intangible 불가침 불가침 intangible"
   },
   {
     "id": "v0.109.0:line-035-card-hyperbeam",
@@ -25216,7 +25246,29 @@
     "searchText": "v0.109.0:line-037-card-trash-to-treasure v0.109.0 0.109.0 콘텐츠 & 밸런스 디펙트 고철을 보물로의 강화 효과가 선천성 획득 -> 비용 1 감소로 변경되었습니다. changed trash to treasure: upgrade changed from gaining innate -> lowering its cost by 1. card trash_to_treasure 고철을 보물로 고철을 보물로 trash to treasure"
   },
   {
-    "id": "v0.109.0:line-038-card-midnight",
+    "id": "v0.109.0:line-038-card-tutor",
+    "patch": "v0.109.0",
+    "version": "0.109.0",
+    "date": "2026-07-17",
+    "section": [
+      "콘텐츠 & 밸런스",
+      "멀티플레이"
+    ],
+    "markdownKo": "새로운 리젠트 카드 [gold:card]강사[/gold]가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 [gold]뽑을 카드 더미[/gold]에서 카드 1장을 선택해 [gold]손[/gold]으로 가져옵니다.\"",
+    "markdownEn": "Added new Regent card, [gold:card]Tutor[/gold]: Rare Skill, cost 1(0), \"Another player chooses a card in their [gold]Draw Pile[/gold] to add into their [gold]Hand[/gold].\"",
+    "textKo": "새로운 리젠트 카드 강사가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 뽑을 카드 더미에서 카드 1장을 선택해 손으로 가져옵니다.\"",
+    "textEn": "Added new Regent card, Tutor: Rare Skill, cost 1(0), \"Another player chooses a card in their Draw Pile to add into their Hand.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "TUTOR",
+        "label": "강사"
+      }
+    ],
+    "searchText": "v0.109.0:line-038-card-tutor v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 새로운 리젠트 카드 강사가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 뽑을 카드 더미에서 카드 1장을 선택해 손으로 가져옵니다.\" added new regent card, tutor: rare skill, cost 1(0), \"another player chooses a card in their draw pile to add into their hand.\" card tutor 강사 강사 tutor"
+  },
+  {
+    "id": "v0.109.0:line-039-card-midnight",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25235,10 +25287,10 @@
         "label": "심야"
       }
     ],
-    "searchText": "v0.109.0:line-038-card-midnight v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 심야 (너프): 피해량이 99(120) -> 60(72)로 감소했습니다. midnight (nerf): damage decreased from 99(120) -> 60(72). card midnight 심야 심야 midnight"
+    "searchText": "v0.109.0:line-039-card-midnight v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 심야 (너프): 피해량이 99(120) -> 60(72)로 감소했습니다. midnight (nerf): damage decreased from 99(120) -> 60(72). card midnight 심야 심야 midnight"
   },
   {
-    "id": "v0.109.0:line-039-card-the-ball",
+    "id": "v0.109.0:line-040-card-the-ball",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25257,10 +25309,10 @@
         "label": "공"
       }
     ],
-    "searchText": "v0.109.0:line-039-card-the-ball v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 공 (너프): 증가 피해량이 +15(25) -> +10(15)로 감소했습니다. the ball (nerf): scaling decreased from +15(25) -> +10(15). card the_ball 공 공 the ball"
+    "searchText": "v0.109.0:line-040-card-the-ball v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 공 (너프): 증가 피해량이 +15(25) -> +10(15)로 감소했습니다. the ball (nerf): scaling decreased from +15(25) -> +10(15). card the_ball 공 공 the ball"
   },
   {
-    "id": "v0.109.0:line-040-card-blade-symphony",
+    "id": "v0.109.0:line-041-card-blade-symphony",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25279,10 +25331,10 @@
         "label": "칼날 교향곡"
       }
     ],
-    "searchText": "v0.109.0:line-040-card-blade-symphony v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 칼날 교향곡 (너프): blade symphony (nerf): card blade_symphony 칼날 교향곡 칼날 교향곡 blade symphony"
+    "searchText": "v0.109.0:line-041-card-blade-symphony v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 칼날 교향곡 (너프): blade symphony (nerf): card blade_symphony 칼날 교향곡 칼날 교향곡 blade symphony"
   },
   {
-    "id": "v0.109.0:line-041-text-8j4l35",
+    "id": "v0.109.0:line-042-text-8j4l35",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25295,10 +25347,10 @@
     "textKo": "비용이 1 -> 2(1)로 증가했습니다.",
     "textEn": "Cost increased from 1 -> 2(1).",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-041-text-8j4l35 v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 비용이 1 -> 2(1)로 증가했습니다. cost increased from 1 -> 2(1)."
+    "searchText": "v0.109.0:line-042-text-8j4l35 v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 비용이 1 -> 2(1)로 증가했습니다. cost increased from 1 -> 2(1)."
   },
   {
-    "id": "v0.109.0:line-042-text-1uwbn13",
+    "id": "v0.109.0:line-043-card-shiv",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25306,15 +25358,21 @@
       "콘텐츠 & 밸런스",
       "멀티플레이"
     ],
-    "markdownKo": "강화해도 단도 수가 증가하지 않습니다.",
-    "markdownEn": "Upgrade no longer increases Shiv count.",
+    "markdownKo": "강화해도 [gold:card]단도[/gold] 수가 증가하지 않습니다.",
+    "markdownEn": "Upgrade no longer increases [gold:card]Shiv[/gold] count.",
     "textKo": "강화해도 단도 수가 증가하지 않습니다.",
     "textEn": "Upgrade no longer increases Shiv count.",
-    "entityRefs": [],
-    "searchText": "v0.109.0:line-042-text-1uwbn13 v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 강화해도 단도 수가 증가하지 않습니다. upgrade no longer increases shiv count."
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SHIV",
+        "label": "단도"
+      }
+    ],
+    "searchText": "v0.109.0:line-043-card-shiv v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 강화해도 단도 수가 증가하지 않습니다. upgrade no longer increases shiv count. card shiv 단도 단도 shiv"
   },
   {
-    "id": "v0.109.0:line-043-text-31h9a4",
+    "id": "v0.109.0:line-044-text-31h9a4",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25327,10 +25385,10 @@
     "textKo": "시드가 이제 12자리이며, 내부 시드의 크기도 커졌습니다.",
     "textEn": "Seeds are now 12 characters long, and the internal seed is larger.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-043-text-31h9a4 v0.109.0 0.109.0 사용자 경험 & 인터페이스 일반 시드가 이제 12자리이며, 내부 시드의 크기도 커졌습니다. seeds are now 12 characters long, and the internal seed is larger."
+    "searchText": "v0.109.0:line-044-text-31h9a4 v0.109.0 0.109.0 사용자 경험 & 인터페이스 일반 시드가 이제 12자리이며, 내부 시드의 크기도 커졌습니다. seeds are now 12 characters long, and the internal seed is larger."
   },
   {
-    "id": "v0.109.0:line-044-text-1cx6xpl",
+    "id": "v0.109.0:line-045-text-1cx6xpl",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25343,10 +25401,10 @@
     "textKo": "게임 커서의 희미한 흰색 외곽선을 제거했습니다.",
     "textEn": "Removed the faint white outline from the game cursor.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-044-text-1cx6xpl v0.109.0 0.109.0 사용자 경험 & 인터페이스 일반 게임 커서의 희미한 흰색 외곽선을 제거했습니다. removed the faint white outline from the game cursor."
+    "searchText": "v0.109.0:line-045-text-1cx6xpl v0.109.0 0.109.0 사용자 경험 & 인터페이스 일반 게임 커서의 희미한 흰색 외곽선을 제거했습니다. removed the faint white outline from the game cursor."
   },
   {
-    "id": "v0.109.0:line-045-text-9r2psk",
+    "id": "v0.109.0:line-046-text-9r2psk",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25359,10 +25417,10 @@
     "textKo": "이제 거의 모든 포션을 다른 플레이어에게 사용할 수 있습니다.",
     "textEn": "You can now play nearly any potion on another player.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-045-text-9r2psk v0.109.0 0.109.0 사용자 경험 & 인터페이스 멀티플레이 이제 거의 모든 포션을 다른 플레이어에게 사용할 수 있습니다. you can now play nearly any potion on another player."
+    "searchText": "v0.109.0:line-046-text-9r2psk v0.109.0 0.109.0 사용자 경험 & 인터페이스 멀티플레이 이제 거의 모든 포션을 다른 플레이어에게 사용할 수 있습니다. you can now play nearly any potion on another player."
   },
   {
-    "id": "v0.109.0:line-046-text-6kywlb",
+    "id": "v0.109.0:line-047-text-6kywlb",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25375,10 +25433,10 @@
     "textKo": "지도에 그린 잉크 원이 모든 플레이어에게 동일하게 표시됩니다.",
     "textEn": "Map ink circles are now the same for all players.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-046-text-6kywlb v0.109.0 0.109.0 사용자 경험 & 인터페이스 멀티플레이 지도에 그린 잉크 원이 모든 플레이어에게 동일하게 표시됩니다. map ink circles are now the same for all players."
+    "searchText": "v0.109.0:line-047-text-6kywlb v0.109.0 0.109.0 사용자 경험 & 인터페이스 멀티플레이 지도에 그린 잉크 원이 모든 플레이어에게 동일하게 표시됩니다. map ink circles are now the same for all players."
   },
   {
-    "id": "v0.109.0:line-047-text-fpikpv",
+    "id": "v0.109.0:line-048-text-fpikpv",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25391,10 +25449,10 @@
     "textKo": "다음 역사에 삽화를 추가했습니다:",
     "textEn": "Added Epoch art for:",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-047-text-fpikpv v0.109.0 0.109.0 아트 일반 다음 역사에 삽화를 추가했습니다: added epoch art for:"
+    "searchText": "v0.109.0:line-048-text-fpikpv v0.109.0 0.109.0 아트 일반 다음 역사에 삽화를 추가했습니다: added epoch art for:"
   },
   {
-    "id": "v0.109.0:line-048-epoch-necrobinder6-epoch",
+    "id": "v0.109.0:line-049-epoch-necrobinder6-epoch",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25413,10 +25471,10 @@
         "label": "전멸"
       }
     ],
-    "searchText": "v0.109.0:line-048-epoch-necrobinder6-epoch v0.109.0 0.109.0 아트 일반 전멸 annihilation epoch necrobinder6_epoch 전멸 전멸 annihilation"
+    "searchText": "v0.109.0:line-049-epoch-necrobinder6-epoch v0.109.0 0.109.0 아트 일반 전멸 annihilation epoch necrobinder6_epoch 전멸 전멸 annihilation"
   },
   {
-    "id": "v0.109.0:line-049-epoch-necrobinder7-epoch",
+    "id": "v0.109.0:line-050-epoch-necrobinder7-epoch",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25435,10 +25493,10 @@
         "label": "죽이기 위해"
       }
     ],
-    "searchText": "v0.109.0:line-049-epoch-necrobinder7-epoch v0.109.0 0.109.0 아트 일반 죽이기 위해 to kill epoch necrobinder7_epoch 죽이기 위해 죽이기 위해 to kill"
+    "searchText": "v0.109.0:line-050-epoch-necrobinder7-epoch v0.109.0 0.109.0 아트 일반 죽이기 위해 to kill epoch necrobinder7_epoch 죽이기 위해 죽이기 위해 to kill"
   },
   {
-    "id": "v0.109.0:line-050-epoch-necrobinder3-epoch",
+    "id": "v0.109.0:line-051-epoch-necrobinder3-epoch",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25457,10 +25515,10 @@
         "label": "허무"
       }
     ],
-    "searchText": "v0.109.0:line-050-epoch-necrobinder3-epoch v0.109.0 0.109.0 아트 일반 허무 futility epoch necrobinder3_epoch 허무 허무 futility"
+    "searchText": "v0.109.0:line-051-epoch-necrobinder3-epoch v0.109.0 0.109.0 아트 일반 허무 futility epoch necrobinder3_epoch 허무 허무 futility"
   },
   {
-    "id": "v0.109.0:line-051-relic-dowsing-rod-relic-neows-sacrifice",
+    "id": "v0.109.0:line-052-relic-dowsing-rod-relic-neows-sacrifice",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25484,10 +25542,10 @@
         "label": "니오우의 희생"
       }
     ],
-    "searchText": "v0.109.0:line-051-relic-dowsing-rod-relic-neows-sacrifice v0.109.0 0.109.0 아트 고대의 존재 다우징 로드와 니오우의 희생 유물 아트를 추가했습니다. added assets for dowsing rod and neow's sacrifice. relic dowsing_rod 다우징 로드 다우징 로드 dowsing rod relic neows_sacrifice 니오우의 희생 니오우의 희생 neow's sacrifice"
+    "searchText": "v0.109.0:line-052-relic-dowsing-rod-relic-neows-sacrifice v0.109.0 0.109.0 아트 고대의 존재 다우징 로드와 니오우의 희생 유물 아트를 추가했습니다. added assets for dowsing rod and neow's sacrifice. relic dowsing_rod 다우징 로드 다우징 로드 dowsing rod relic neows_sacrifice 니오우의 희생 니오우의 희생 neow's sacrifice"
   },
   {
-    "id": "v0.109.0:line-052-potion-ambergris",
+    "id": "v0.109.0:line-053-potion-ambergris",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25506,10 +25564,10 @@
         "label": "용연향"
       }
     ],
-    "searchText": "v0.109.0:line-052-potion-ambergris v0.109.0 0.109.0 아트 고대의 존재 용연향 포션 아트를 추가했습니다. added an asset for ambergris. potion ambergris 용연향 용연향 ambergris"
+    "searchText": "v0.109.0:line-053-potion-ambergris v0.109.0 0.109.0 아트 고대의 존재 용연향 포션 아트를 추가했습니다. added an asset for ambergris. potion ambergris 용연향 용연향 ambergris"
   },
   {
-    "id": "v0.109.0:line-053-card-dowsing-card-abundance",
+    "id": "v0.109.0:line-054-card-dowsing-card-abundance",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25533,10 +25591,10 @@
         "label": "풍요"
       }
     ],
-    "searchText": "v0.109.0:line-053-card-dowsing-card-abundance v0.109.0 0.109.0 아트 고대의 존재 다우징과 풍요 카드의 베타 초상화를 추가했습니다. added beta portrait art for dowsing and abundance. card dowsing 다우징 다우징 dowsing card abundance 풍요 풍요 abundance"
+    "searchText": "v0.109.0:line-054-card-dowsing-card-abundance v0.109.0 0.109.0 아트 고대의 존재 다우징과 풍요 카드의 베타 초상화를 추가했습니다. added beta portrait art for dowsing and abundance. card dowsing 다우징 다우징 dowsing card abundance 풍요 풍요 abundance"
   },
   {
-    "id": "v0.109.0:line-054-monster-aeonglass",
+    "id": "v0.109.0:line-055-monster-aeonglass",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25555,10 +25613,10 @@
         "label": "영겁의 모래시계"
       }
     ],
-    "searchText": "v0.109.0:line-054-monster-aeonglass v0.109.0 0.109.0 아트 적 영겁의 모래시계의 2회 공격과 강공격 애니메이션을 서로 바꾸고, 2회 공격 vfx를 개선했습니다. swapped aeonglass's double and heavy attack animations and improved its double-attack vfx. monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass"
+    "searchText": "v0.109.0:line-055-monster-aeonglass v0.109.0 0.109.0 아트 적 영겁의 모래시계의 2회 공격과 강공격 애니메이션을 서로 바꾸고, 2회 공격 vfx를 개선했습니다. swapped aeonglass's double and heavy attack animations and improved its double-attack vfx. monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass"
   },
   {
-    "id": "v0.109.0:line-055-text-1em0sxk",
+    "id": "v0.109.0:line-056-text-1em0sxk",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25571,10 +25629,10 @@
     "textKo": "다음 카드에 초상화 아트를 추가했습니다:",
     "textEn": "Added portrait art for:",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-055-text-1em0sxk v0.109.0 0.109.0 아트 멀티플레이 다음 카드에 초상화 아트를 추가했습니다: added portrait art for:"
+    "searchText": "v0.109.0:line-056-text-1em0sxk v0.109.0 0.109.0 아트 멀티플레이 다음 카드에 초상화 아트를 추가했습니다: added portrait art for:"
   },
   {
-    "id": "v0.109.0:line-056-card-the-ball",
+    "id": "v0.109.0:line-057-card-the-ball",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25593,10 +25651,10 @@
         "label": "공"
       }
     ],
-    "searchText": "v0.109.0:line-056-card-the-ball v0.109.0 0.109.0 아트 멀티플레이 공 the ball card the_ball 공 공 the ball"
+    "searchText": "v0.109.0:line-057-card-the-ball v0.109.0 0.109.0 아트 멀티플레이 공 the ball card the_ball 공 공 the ball"
   },
   {
-    "id": "v0.109.0:line-057-card-plot",
+    "id": "v0.109.0:line-058-card-plot",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25615,10 +25673,10 @@
         "label": "구상"
       }
     ],
-    "searchText": "v0.109.0:line-057-card-plot v0.109.0 0.109.0 아트 멀티플레이 구상 plot card plot 구상 구상 plot"
+    "searchText": "v0.109.0:line-058-card-plot v0.109.0 0.109.0 아트 멀티플레이 구상 plot card plot 구상 구상 plot"
   },
   {
-    "id": "v0.109.0:line-058-text-defhrs",
+    "id": "v0.109.0:line-059-text-defhrs",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25631,10 +25689,10 @@
     "textKo": "\"참가 실패\" 텍스트 VFX를 만들었습니다.",
     "textEn": "Created \"Failed to join\" text VFX.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-058-text-defhrs v0.109.0 0.109.0 아트 멀티플레이 \"참가 실패\" 텍스트 vfx를 만들었습니다. created \"failed to join\" text vfx."
+    "searchText": "v0.109.0:line-059-text-defhrs v0.109.0 0.109.0 아트 멀티플레이 \"참가 실패\" 텍스트 vfx를 만들었습니다. created \"failed to join\" text vfx."
   },
   {
-    "id": "v0.109.0:line-059-text-15ndx60",
+    "id": "v0.109.0:line-060-text-15ndx60",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25647,10 +25705,10 @@
     "textKo": "영어 대체 문구를 사용하는 번체 중국어(zht)를 선택 가능한 언어로 추가했습니다.",
     "textEn": "Added Traditional Chinese (zht) as a selectable language with English fallback.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-059-text-15ndx60 v0.109.0 0.109.0 문구 번역 영어 대체 문구를 사용하는 번체 중국어(zht)를 선택 가능한 언어로 추가했습니다. added traditional chinese (zht) as a selectable language with english fallback."
+    "searchText": "v0.109.0:line-060-text-15ndx60 v0.109.0 0.109.0 문구 번역 영어 대체 문구를 사용하는 번체 중국어(zht)를 선택 가능한 언어로 추가했습니다. added traditional chinese (zht) as a selectable language with english fallback."
   },
   {
-    "id": "v0.109.0:line-060-text-obqm3s",
+    "id": "v0.109.0:line-061-text-obqm3s",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25663,10 +25721,10 @@
     "textKo": "번체 중국어 글꼴 Source Han Serif TC와 Noto Sans Mono CJK TC를 추가했습니다.",
     "textEn": "Added Traditional Chinese fonts: Source Han Serif TC and Noto Sans Mono CJK TC.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-060-text-obqm3s v0.109.0 0.109.0 문구 번역 번체 중국어 글꼴 source han serif tc와 noto sans mono cjk tc를 추가했습니다. added traditional chinese fonts: source han serif tc and noto sans mono cjk tc."
+    "searchText": "v0.109.0:line-061-text-obqm3s v0.109.0 0.109.0 문구 번역 번체 중국어 글꼴 source han serif tc와 noto sans mono cjk tc를 추가했습니다. added traditional chinese fonts: source han serif tc and noto sans mono cjk tc."
   },
   {
-    "id": "v0.109.0:line-061-text-c3gob5",
+    "id": "v0.109.0:line-062-text-c3gob5",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25679,10 +25737,10 @@
     "textKo": "여러 언어의 번역을 업데이트했습니다.",
     "textEn": "Updated translations for various languages.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-061-text-c3gob5 v0.109.0 0.109.0 문구 번역 여러 언어의 번역을 업데이트했습니다. updated translations for various languages."
+    "searchText": "v0.109.0:line-062-text-c3gob5 v0.109.0 0.109.0 문구 번역 여러 언어의 번역을 업데이트했습니다. updated translations for various languages."
   },
   {
-    "id": "v0.109.0:line-062-text-1rlovl",
+    "id": "v0.109.0:line-063-text-1rlovl",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25695,10 +25753,10 @@
     "textKo": "프랑스어, 이탈리아어, 러시아어, 태국어 번역 오류를 수정했습니다.",
     "textEn": "Fixed translation errors for French, Italian, Russian, and Thai.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-062-text-1rlovl v0.109.0 0.109.0 문구 번역 프랑스어, 이탈리아어, 러시아어, 태국어 번역 오류를 수정했습니다. fixed translation errors for french, italian, russian, and thai."
+    "searchText": "v0.109.0:line-063-text-1rlovl v0.109.0 0.109.0 문구 번역 프랑스어, 이탈리아어, 러시아어, 태국어 번역 오류를 수정했습니다. fixed translation errors for french, italian, russian, and thai."
   },
   {
-    "id": "v0.109.0:line-063-card-well-laid-plans-card-fuel",
+    "id": "v0.109.0:line-064-card-well-laid-plans-card-fuel",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25737,10 +25795,10 @@
         "label": "불협화음"
       }
     ],
-    "searchText": "v0.109.0:line-063-card-well-laid-plans-card-fuel v0.109.0 0.109.0 문구 번역 개편된 괜찮은 전략, 연료, 발병, 말라비틀어진 발톱, 불협화음의 오래된 번역을 제거했습니다. removed stale translations for redesigned well-laid plans, fuel, outbreak, sere talon, and cacophony. card well_laid_plans 괜찮은 전략 괜찮은 전략 well-laid plans card fuel 연료 연료 fuel card outbreak 발병 발병 outbreak relic sere_talon 말라비틀어진 발톱 말라비틀어진 발톱 sere talon card cacophony 불협화음 불협화음 cacophony"
+    "searchText": "v0.109.0:line-064-card-well-laid-plans-card-fuel v0.109.0 0.109.0 문구 번역 개편된 괜찮은 전략, 연료, 발병, 말라비틀어진 발톱, 불협화음의 오래된 번역을 제거했습니다. removed stale translations for redesigned well-laid plans, fuel, outbreak, sere talon, and cacophony. card well_laid_plans 괜찮은 전략 괜찮은 전략 well-laid plans card fuel 연료 연료 fuel card outbreak 발병 발병 outbreak relic sere_talon 말라비틀어진 발톱 말라비틀어진 발톱 sere talon card cacophony 불협화음 불협화음 cacophony"
   },
   {
-    "id": "v0.109.0:line-064-text-1js90zp",
+    "id": "v0.109.0:line-065-text-1js90zp",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25753,10 +25811,10 @@
     "textKo": "게임을 재시작한 뒤 그래픽 옵션의 수직 동기화 설정이 올바른 켜짐/꺼짐 상태를 표시합니다.",
     "textEn": "The VSync setting in Graphics options now shows the correct On/Off state after restarting.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-064-text-1js90zp v0.109.0 0.109.0 버그 수정 일반 게임을 재시작한 뒤 그래픽 옵션의 수직 동기화 설정이 올바른 켜짐/꺼짐 상태를 표시합니다. the vsync setting in graphics options now shows the correct on/off state after restarting."
+    "searchText": "v0.109.0:line-065-text-1js90zp v0.109.0 0.109.0 버그 수정 일반 게임을 재시작한 뒤 그래픽 옵션의 수직 동기화 설정이 올바른 켜짐/꺼짐 상태를 표시합니다. the vsync setting in graphics options now shows the correct on/off state after restarting."
   },
   {
-    "id": "v0.109.0:line-065-text-1y406z4",
+    "id": "v0.109.0:line-066-text-1y406z4",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25769,10 +25827,10 @@
     "textKo": "\"파워가 사라집니다\" 알림이 더 이상 마우스 입력을 막지 않습니다.",
     "textEn": "\"Power wears off\" notifications no longer block mouse input.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-065-text-1y406z4 v0.109.0 0.109.0 버그 수정 일반 \"파워가 사라집니다\" 알림이 더 이상 마우스 입력을 막지 않습니다. \"power wears off\" notifications no longer block mouse input."
+    "searchText": "v0.109.0:line-066-text-1y406z4 v0.109.0 0.109.0 버그 수정 일반 \"파워가 사라집니다\" 알림이 더 이상 마우스 입력을 막지 않습니다. \"power wears off\" notifications no longer block mouse input."
   },
   {
-    "id": "v0.109.0:line-066-text-1f3btr8",
+    "id": "v0.109.0:line-067-text-1f3btr8",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25785,10 +25843,10 @@
     "textKo": "전투 시작 시 임시 구체 숫자가 잠깐 표시되던 문제를 수정했습니다.",
     "textEn": "Placeholder Orb numbers no longer briefly appear at the start of combat.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-066-text-1f3btr8 v0.109.0 0.109.0 버그 수정 일반 전투 시작 시 임시 구체 숫자가 잠깐 표시되던 문제를 수정했습니다. placeholder orb numbers no longer briefly appear at the start of combat."
+    "searchText": "v0.109.0:line-067-text-1f3btr8 v0.109.0 0.109.0 버그 수정 일반 전투 시작 시 임시 구체 숫자가 잠깐 표시되던 문제를 수정했습니다. placeholder orb numbers no longer briefly appear at the start of combat."
   },
   {
-    "id": "v0.109.0:line-067-text-43qbjq",
+    "id": "v0.109.0:line-068-text-43qbjq",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25801,10 +25859,10 @@
     "textKo": "낮은 FPS에서 스크롤 메뉴가 올바르게 맞춰집니다.",
     "textEn": "Scrolling menus now snap correctly at low FPS.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-067-text-43qbjq v0.109.0 0.109.0 버그 수정 일반 낮은 fps에서 스크롤 메뉴가 올바르게 맞춰집니다. scrolling menus now snap correctly at low fps."
+    "searchText": "v0.109.0:line-068-text-43qbjq v0.109.0 0.109.0 버그 수정 일반 낮은 fps에서 스크롤 메뉴가 올바르게 맞춰집니다. scrolling menus now snap correctly at low fps."
   },
   {
-    "id": "v0.109.0:line-068-relic-tanxs-whistle",
+    "id": "v0.109.0:line-069-relic-tanxs-whistle",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25823,10 +25881,10 @@
         "label": "탄스의 호각"
       }
     ],
-    "searchText": "v0.109.0:line-068-relic-tanxs-whistle v0.109.0 0.109.0 버그 수정 고대의 존재 탄스의 호각 카드 미리보기와 툴팁에 마우스를 올리면 좌측 상단으로 붙던 문제를 수정했습니다. fixed tanx's whistle card preview and tooltip snapping to the top-left corner when hovered. relic tanxs_whistle 탄스의 호각 탄스의 호각 tanx's whistle"
+    "searchText": "v0.109.0:line-069-relic-tanxs-whistle v0.109.0 0.109.0 버그 수정 고대의 존재 탄스의 호각 카드 미리보기와 툴팁에 마우스를 올리면 좌측 상단으로 붙던 문제를 수정했습니다. fixed tanx's whistle card preview and tooltip snapping to the top-left corner when hovered. relic tanxs_whistle 탄스의 호각 탄스의 호각 tanx's whistle"
   },
   {
-    "id": "v0.109.0:line-069-encounter-kaiser-crab-boss",
+    "id": "v0.109.0:line-070-encounter-kaiser-crab-boss",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25834,7 +25892,7 @@
       "버그 수정",
       "적"
     ],
-    "markdownKo": "전투 시작 시 골골이와 [gold:encounter]황제 게[/gold]가 등장할 때 발생하던 어색한 지연을 수정했습니다.",
+    "markdownKo": "전투 시작 시 [gold]골골이[/gold]와 [gold:encounter]황제 게[/gold]가 등장할 때 발생하던 어색한 지연을 수정했습니다.",
     "markdownEn": "Fixed an awkward delay when [gold]Osty[/gold] and [gold:encounter]Kaiser Crab[/gold] spawned at the start of combat.",
     "textKo": "전투 시작 시 골골이와 황제 게가 등장할 때 발생하던 어색한 지연을 수정했습니다.",
     "textEn": "Fixed an awkward delay when Osty and Kaiser Crab spawned at the start of combat.",
@@ -25845,10 +25903,10 @@
         "label": "황제 게"
       }
     ],
-    "searchText": "v0.109.0:line-069-encounter-kaiser-crab-boss v0.109.0 0.109.0 버그 수정 적 전투 시작 시 골골이와 황제 게가 등장할 때 발생하던 어색한 지연을 수정했습니다. fixed an awkward delay when osty and kaiser crab spawned at the start of combat. encounter kaiser_crab_boss 황제 게 황제 게 kaiser crab"
+    "searchText": "v0.109.0:line-070-encounter-kaiser-crab-boss v0.109.0 0.109.0 버그 수정 적 전투 시작 시 골골이와 황제 게가 등장할 때 발생하던 어색한 지연을 수정했습니다. fixed an awkward delay when osty and kaiser crab spawned at the start of combat. encounter kaiser_crab_boss 황제 게 황제 게 kaiser crab"
   },
   {
-    "id": "v0.109.0:line-070-monster-fabricator",
+    "id": "v0.109.0:line-071-monster-fabricator",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25867,10 +25925,10 @@
         "label": "조립 전문가"
       }
     ],
-    "searchText": "v0.109.0:line-070-monster-fabricator v0.109.0 0.109.0 버그 수정 적 조립 전문가의 애니메이션이 올바르게 재생되지 않던 문제를 수정했습니다. fixed fabricator animations that were not playing correctly. monster fabricator 조립 전문가 조립 전문가 fabricator"
+    "searchText": "v0.109.0:line-071-monster-fabricator v0.109.0 0.109.0 버그 수정 적 조립 전문가의 애니메이션이 올바르게 재생되지 않던 문제를 수정했습니다. fixed fabricator animations that were not playing correctly. monster fabricator 조립 전문가 조립 전문가 fabricator"
   },
   {
-    "id": "v0.109.0:line-071-monster-fat-gremlin",
+    "id": "v0.109.0:line-072-monster-fat-gremlin",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25889,10 +25947,10 @@
         "label": "뚱뚱한 그렘린"
       }
     ],
-    "searchText": "v0.109.0:line-071-monster-fat-gremlin v0.109.0 0.109.0 버그 수정 적 뚱뚱한 그렘린이 골드 주머니를 들고 있어야 할 때도 주머니 없이 등장할 수 있던 문제를 수정했습니다. fixed fat gremlin sometimes spawning without a bag of money when it should have one. monster fat_gremlin 뚱뚱한 그렘린 뚱뚱한 그렘린 fat gremlin"
+    "searchText": "v0.109.0:line-072-monster-fat-gremlin v0.109.0 0.109.0 버그 수정 적 뚱뚱한 그렘린이 골드 주머니를 들고 있어야 할 때도 주머니 없이 등장할 수 있던 문제를 수정했습니다. fixed fat gremlin sometimes spawning without a bag of money when it should have one. monster fat_gremlin 뚱뚱한 그렘린 뚱뚱한 그렘린 fat gremlin"
   },
   {
-    "id": "v0.109.0:line-072-card-expose-relic-hand-drill",
+    "id": "v0.109.0:line-073-card-expose-relic-hand-drill",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25916,10 +25974,10 @@
         "label": "핸드 드릴"
       }
     ],
-    "searchText": "v0.109.0:line-072-card-expose-relic-hand-drill v0.109.0 0.109.0 버그 수정 사일런트 들춰내기가 이제 핸드 드릴을 올바르게 발동합니다. expose now properly triggers hand drill. card expose 들춰내기 들춰내기 expose relic hand_drill 핸드 드릴 핸드 드릴 hand drill"
+    "searchText": "v0.109.0:line-073-card-expose-relic-hand-drill v0.109.0 0.109.0 버그 수정 사일런트 들춰내기가 이제 핸드 드릴을 올바르게 발동합니다. expose now properly triggers hand drill. card expose 들춰내기 들춰내기 expose relic hand_drill 핸드 드릴 핸드 드릴 hand drill"
   },
   {
-    "id": "v0.109.0:line-073-card-soulbound",
+    "id": "v0.109.0:line-074-card-soulbound-card-soul",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25927,21 +25985,26 @@
       "버그 수정",
       "네크로바인더"
     ],
-    "markdownKo": "[gold:card]영혼 결속[/gold]이 이제 영혼을 뽑을 카드 더미 맨 아래에 놓는 대신 더미에 섞어 넣습니다.",
-    "markdownEn": "[gold:card]Soulbound[/gold] now shuffles Souls into the Draw Pile instead of putting them on the bottom.",
-    "textKo": "영혼 결속이 이제 영혼을 뽑을 카드 더미 맨 아래에 놓는 대신 더미에 섞어 넣습니다.",
-    "textEn": "Soulbound now shuffles Souls into the Draw Pile instead of putting them on the bottom.",
+    "markdownKo": "[gold:card]영혼 결속[/gold]이 이제 [gold:card]영혼[/gold] 카드를 뽑을 카드 더미 맨 아래에 놓는 대신 더미에 섞어 넣습니다.",
+    "markdownEn": "[gold:card]Soulbound[/gold] now shuffles [gold:card]Soul[/gold] cards into the Draw Pile instead of putting them on the bottom.",
+    "textKo": "영혼 결속이 이제 영혼 카드를 뽑을 카드 더미 맨 아래에 놓는 대신 더미에 섞어 넣습니다.",
+    "textEn": "Soulbound now shuffles Soul cards into the Draw Pile instead of putting them on the bottom.",
     "entityRefs": [
       {
         "type": "card",
         "id": "SOULBOUND",
         "label": "영혼 결속"
+      },
+      {
+        "type": "card",
+        "id": "SOUL",
+        "label": "영혼"
       }
     ],
-    "searchText": "v0.109.0:line-073-card-soulbound v0.109.0 0.109.0 버그 수정 네크로바인더 영혼 결속이 이제 영혼을 뽑을 카드 더미 맨 아래에 놓는 대신 더미에 섞어 넣습니다. soulbound now shuffles souls into the draw pile instead of putting them on the bottom. card soulbound 영혼 결속 영혼 결속 soulbound"
+    "searchText": "v0.109.0:line-074-card-soulbound-card-soul v0.109.0 0.109.0 버그 수정 네크로바인더 영혼 결속이 이제 영혼 카드를 뽑을 카드 더미 맨 아래에 놓는 대신 더미에 섞어 넣습니다. soulbound now shuffles soul cards into the draw pile instead of putting them on the bottom. card soulbound 영혼 결속 영혼 결속 soulbound card soul 영혼 영혼 soul"
   },
   {
-    "id": "v0.109.0:line-074-card-one-for-all",
+    "id": "v0.109.0:line-075-card-one-for-all",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25960,10 +26023,10 @@
         "label": "모두를 위한 하나"
       }
     ],
-    "searchText": "v0.109.0:line-074-card-one-for-all v0.109.0 0.109.0 버그 수정 멀티플레이 모두를 위한 하나가 더 이상 x 비용 카드의 증가 피해를 미리 표시하지 않습니다. one for all no longer previews increased damage on x-cost cards. card one_for_all 모두를 위한 하나 모두를 위한 하나 one for all"
+    "searchText": "v0.109.0:line-075-card-one-for-all v0.109.0 0.109.0 버그 수정 멀티플레이 모두를 위한 하나가 더 이상 x 비용 카드의 증가 피해를 미리 표시하지 않습니다. one for all no longer previews increased damage on x-cost cards. card one_for_all 모두를 위한 하나 모두를 위한 하나 one for all"
   },
   {
-    "id": "v0.109.0:line-075-card-unmovable-card-demonic-shield",
+    "id": "v0.109.0:line-076-card-unmovable-card-demonic-shield",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25987,10 +26050,10 @@
         "label": "악마의 방패"
       }
     ],
-    "searchText": "v0.109.0:line-075-card-unmovable-card-demonic-shield v0.109.0 0.109.0 버그 수정 멀티플레이 요지부동이 첫 번째 방어도 카드가 아니었을 때, 악마의 방패로 다른 플레이어가 방어도를 두 배로 얻던 문제를 수정했습니다. fixed unmovable causing other players to receive double block from demonic shield when it was not the first block card played. card unmovable 요지부동 요지부동 unmovable card demonic_shield 악마의 방패 악마의 방패 demonic shield"
+    "searchText": "v0.109.0:line-076-card-unmovable-card-demonic-shield v0.109.0 0.109.0 버그 수정 멀티플레이 요지부동이 첫 번째 방어도 카드가 아니었을 때, 악마의 방패로 다른 플레이어가 방어도를 두 배로 얻던 문제를 수정했습니다. fixed unmovable causing other players to receive double block from demonic shield when it was not the first block card played. card unmovable 요지부동 요지부동 unmovable card demonic_shield 악마의 방패 악마의 방패 demonic shield"
   },
   {
-    "id": "v0.109.0:line-076-card-imitation-learning-enchantment-swift",
+    "id": "v0.109.0:line-077-card-imitation-learning-enchantment-swift",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -26014,10 +26077,10 @@
         "label": "신속"
       }
     ],
-    "searchText": "v0.109.0:line-076-card-imitation-learning-enchantment-swift v0.109.0 0.109.0 버그 수정 멀티플레이 모방 학습이 이제 카드 사용 후가 아니라 사용 전에 복제하여, 신속 같은 인챈트가 복제하는 플레이어에게 적용됩니다. imitation learning now clones cards before they are played instead of after, allowing enchantments such as swift to apply to the cloning player. card imitation_learning 모방 학습 모방 학습 imitation learning enchantment swift 신속 신속 swift"
+    "searchText": "v0.109.0:line-077-card-imitation-learning-enchantment-swift v0.109.0 0.109.0 버그 수정 멀티플레이 모방 학습이 이제 카드 사용 후가 아니라 사용 전에 복제하여, 신속 같은 인챈트가 복제하는 플레이어에게 적용됩니다. imitation learning now clones cards before they are played instead of after, allowing enchantments such as swift to apply to the cloning player. card imitation_learning 모방 학습 모방 학습 imitation learning enchantment swift 신속 신속 swift"
   },
   {
-    "id": "v0.109.0:line-077-card-underworld",
+    "id": "v0.109.0:line-078-card-underworld-power-doom",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -26025,8 +26088,8 @@
       "버그 수정",
       "멀티플레이"
     ],
-    "markdownKo": "[gold:card]지하세계[/gold]가 더 이상 적의 공격 피해로 플레이어에게 종말을 부여하지 않습니다.",
-    "markdownEn": "[gold:card]Underworld[/gold] no longer causes [gold]Doom[/gold] to be applied to players when enemies deal attack damage.",
+    "markdownKo": "[gold:card]지하세계[/gold]가 더 이상 적의 공격 피해로 플레이어에게 [gold:power]종말[/gold]을 부여하지 않습니다.",
+    "markdownEn": "[gold:card]Underworld[/gold] no longer causes [gold:power]Doom[/gold] to be applied to players when enemies deal attack damage.",
     "textKo": "지하세계가 더 이상 적의 공격 피해로 플레이어에게 종말을 부여하지 않습니다.",
     "textEn": "Underworld no longer causes Doom to be applied to players when enemies deal attack damage.",
     "entityRefs": [
@@ -26034,12 +26097,17 @@
         "type": "card",
         "id": "UNDERWORLD",
         "label": "지하세계"
+      },
+      {
+        "type": "power",
+        "id": "DOOM",
+        "label": "종말"
       }
     ],
-    "searchText": "v0.109.0:line-077-card-underworld v0.109.0 0.109.0 버그 수정 멀티플레이 지하세계가 더 이상 적의 공격 피해로 플레이어에게 종말을 부여하지 않습니다. underworld no longer causes doom to be applied to players when enemies deal attack damage. card underworld 지하세계 지하세계 underworld"
+    "searchText": "v0.109.0:line-078-card-underworld-power-doom v0.109.0 0.109.0 버그 수정 멀티플레이 지하세계가 더 이상 적의 공격 피해로 플레이어에게 종말을 부여하지 않습니다. underworld no longer causes doom to be applied to players when enemies deal attack damage. card underworld 지하세계 지하세계 underworld power doom 종말 종말 doom"
   },
   {
-    "id": "v0.109.0:line-078-relic-history-course-card-the-ball",
+    "id": "v0.109.0:line-079-relic-history-course-card-the-ball",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -26047,8 +26115,8 @@
       "버그 수정",
       "멀티플레이"
     ],
-    "markdownKo": "다른 플레이어가 [gold:relic]역사 강의서[/gold]를 보유한 상태에서 [gold:card]공[/gold]을 사용하면 역사 강의서가 다음 턴에 공의 복사본을 잘못 사용할 수 있던 문제를 수정했습니다.",
-    "markdownEn": "Fixed [gold:card]The Ball[/gold] interacting with [gold:relic]History Course[/gold] so that History Course could incorrectly play a copy of The Ball on the next turn.",
+    "markdownKo": "다른 플레이어가 [gold:relic]역사 강의서[/gold]를 보유한 상태에서 [gold:card]공[/gold]을 사용하면 [gold:relic]역사 강의서[/gold]가 다음 턴에 [gold:card]공[/gold]의 복사본을 잘못 사용할 수 있던 문제를 수정했습니다.",
+    "markdownEn": "Fixed [gold:card]The Ball[/gold] interacting with [gold:relic]History Course[/gold] so that [gold:relic]History Course[/gold] could incorrectly play a copy of [gold:card]The Ball[/gold] on the next turn.",
     "textKo": "다른 플레이어가 역사 강의서를 보유한 상태에서 공을 사용하면 역사 강의서가 다음 턴에 공의 복사본을 잘못 사용할 수 있던 문제를 수정했습니다.",
     "textEn": "Fixed The Ball interacting with History Course so that History Course could incorrectly play a copy of The Ball on the next turn.",
     "entityRefs": [
@@ -26063,10 +26131,10 @@
         "label": "공"
       }
     ],
-    "searchText": "v0.109.0:line-078-relic-history-course-card-the-ball v0.109.0 0.109.0 버그 수정 멀티플레이 다른 플레이어가 역사 강의서를 보유한 상태에서 공을 사용하면 역사 강의서가 다음 턴에 공의 복사본을 잘못 사용할 수 있던 문제를 수정했습니다. fixed the ball interacting with history course so that history course could incorrectly play a copy of the ball on the next turn. relic history_course 역사 강의서 역사 강의서 history course card the_ball 공 공 the ball"
+    "searchText": "v0.109.0:line-079-relic-history-course-card-the-ball v0.109.0 0.109.0 버그 수정 멀티플레이 다른 플레이어가 역사 강의서를 보유한 상태에서 공을 사용하면 역사 강의서가 다음 턴에 공의 복사본을 잘못 사용할 수 있던 문제를 수정했습니다. fixed the ball interacting with history course so that history course could incorrectly play a copy of the ball on the next turn. relic history_course 역사 강의서 역사 강의서 history course card the_ball 공 공 the ball"
   },
   {
-    "id": "v0.109.0:line-079-card-the-ball",
+    "id": "v0.109.0:line-080-card-the-ball",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -26085,10 +26153,10 @@
         "label": "공"
       }
     ],
-    "searchText": "v0.109.0:line-079-card-the-ball v0.109.0 0.109.0 버그 수정 멀티플레이 공으로 전투를 끝낼 때 발생할 수 있던 비동기화를 수정했습니다. fixed a divergence that sometimes occurred when ending combat with the ball. card the_ball 공 공 the ball"
+    "searchText": "v0.109.0:line-080-card-the-ball v0.109.0 0.109.0 버그 수정 멀티플레이 공으로 전투를 끝낼 때 발생할 수 있던 비동기화를 수정했습니다. fixed a divergence that sometimes occurred when ending combat with the ball. card the_ball 공 공 the ball"
   },
   {
-    "id": "v0.109.0:line-080-card-hibernate",
+    "id": "v0.109.0:line-081-card-hibernate",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -26107,10 +26175,10 @@
         "label": "동면"
       }
     ],
-    "searchText": "v0.109.0:line-080-card-hibernate v0.109.0 0.109.0 버그 수정 멀티플레이 동면이 더 이상 죽은 플레이어에게 방어도를 주지 않습니다. hibernate no longer gives block to dead players. card hibernate 동면 동면 hibernate"
+    "searchText": "v0.109.0:line-081-card-hibernate v0.109.0 0.109.0 버그 수정 멀티플레이 동면이 더 이상 죽은 플레이어에게 방어도를 주지 않습니다. hibernate no longer gives block to dead players. card hibernate 동면 동면 hibernate"
   },
   {
-    "id": "v0.109.0:line-081-card-hibernate",
+    "id": "v0.109.0:line-082-card-hibernate",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -26129,10 +26197,10 @@
         "label": "동면"
       }
     ],
-    "searchText": "v0.109.0:line-081-card-hibernate v0.109.0 0.109.0 버그 수정 멀티플레이 동면이 이제 파워 아이콘에 중첩 수를 올바르게 표시합니다. hibernate now correctly displays stacks in its power icon. card hibernate 동면 동면 hibernate"
+    "searchText": "v0.109.0:line-082-card-hibernate v0.109.0 0.109.0 버그 수정 멀티플레이 동면이 이제 파워 아이콘에 중첩 수를 올바르게 표시합니다. hibernate now correctly displays stacks in its power icon. card hibernate 동면 동면 hibernate"
   },
   {
-    "id": "v0.109.0:line-082-card-huddle-up",
+    "id": "v0.109.0:line-083-card-huddle-up",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -26151,10 +26219,10 @@
         "label": "똘똘 뭉치기"
       }
     ],
-    "searchText": "v0.109.0:line-082-card-huddle-up v0.109.0 0.109.0 버그 수정 멀티플레이 똘똘 뭉치기가 다른 플레이어에게 선택지를 띄워도, 카드를 사용한 플레이어가 카드 사용을 막히지 않습니다. if huddle up triggers a choice for another player, the playing player is no longer blocked from playing cards. card huddle_up 똘똘 뭉치기 똘똘 뭉치기 huddle up"
+    "searchText": "v0.109.0:line-083-card-huddle-up v0.109.0 0.109.0 버그 수정 멀티플레이 똘똘 뭉치기가 다른 플레이어에게 선택지를 띄워도, 카드를 사용한 플레이어가 카드 사용을 막히지 않습니다. if huddle up triggers a choice for another player, the playing player is no longer blocked from playing cards. card huddle_up 똘똘 뭉치기 똘똘 뭉치기 huddle up"
   },
   {
-    "id": "v0.109.0:line-083-card-the-ball",
+    "id": "v0.109.0:line-084-card-the-ball",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -26173,10 +26241,10 @@
         "label": "공"
       }
     ],
-    "searchText": "v0.109.0:line-083-card-the-ball v0.109.0 0.109.0 버그 수정 멀티플레이 공이 이제 받는 플레이어가 아니라 사용한 플레이어의 유물을 발동합니다. the ball now triggers the playing player's relics, not the receiving player's. card the_ball 공 공 the ball"
+    "searchText": "v0.109.0:line-084-card-the-ball v0.109.0 0.109.0 버그 수정 멀티플레이 공이 이제 받는 플레이어가 아니라 사용한 플레이어의 유물을 발동합니다. the ball now triggers the playing player's relics, not the receiving player's. card the_ball 공 공 the ball"
   },
   {
-    "id": "v0.109.0:line-084-text-v71vxj",
+    "id": "v0.109.0:line-085-power-thorns",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -26184,15 +26252,21 @@
       "버그 수정",
       "멀티플레이"
     ],
-    "markdownKo": "플레이어가 자신의 카드 효과 처리 중 가시 등으로 사망하면 카드 효과가 깨지던 문제를 수정했습니다.",
-    "markdownEn": "Fixed card effects breaking when a player dies while their own card is still resolving, such as from Thorns.",
+    "markdownKo": "플레이어가 자신의 카드 효과 처리 중 [gold:power]가시[/gold] 등으로 사망하면 카드 효과가 깨지던 문제를 수정했습니다.",
+    "markdownEn": "Fixed card effects breaking when a player dies while their own card is still resolving, such as from [gold:power]Thorns[/gold].",
     "textKo": "플레이어가 자신의 카드 효과 처리 중 가시 등으로 사망하면 카드 효과가 깨지던 문제를 수정했습니다.",
     "textEn": "Fixed card effects breaking when a player dies while their own card is still resolving, such as from Thorns.",
-    "entityRefs": [],
-    "searchText": "v0.109.0:line-084-text-v71vxj v0.109.0 0.109.0 버그 수정 멀티플레이 플레이어가 자신의 카드 효과 처리 중 가시 등으로 사망하면 카드 효과가 깨지던 문제를 수정했습니다. fixed card effects breaking when a player dies while their own card is still resolving, such as from thorns."
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "THORNS",
+        "label": "가시"
+      }
+    ],
+    "searchText": "v0.109.0:line-085-power-thorns v0.109.0 0.109.0 버그 수정 멀티플레이 플레이어가 자신의 카드 효과 처리 중 가시 등으로 사망하면 카드 효과가 깨지던 문제를 수정했습니다. fixed card effects breaking when a player dies while their own card is still resolving, such as from thorns. power thorns 가시 가시 thorns"
   },
   {
-    "id": "v0.109.0:line-085-text-1oo9bqr",
+    "id": "v0.109.0:line-086-text-1oo9bqr",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -26205,10 +26279,10 @@
     "textKo": "한 플레이어가 전투에 진입하는 데 오래 걸릴 때 발생하던 비동기화를 수정했습니다.",
     "textEn": "Fixed a divergence that occurred if one player took a long time to enter combat.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-085-text-1oo9bqr v0.109.0 0.109.0 버그 수정 멀티플레이 한 플레이어가 전투에 진입하는 데 오래 걸릴 때 발생하던 비동기화를 수정했습니다. fixed a divergence that occurred if one player took a long time to enter combat."
+    "searchText": "v0.109.0:line-086-text-1oo9bqr v0.109.0 0.109.0 버그 수정 멀티플레이 한 플레이어가 전투에 진입하는 데 오래 걸릴 때 발생하던 비동기화를 수정했습니다. fixed a divergence that occurred if one player took a long time to enter combat."
   },
   {
-    "id": "v0.109.0:line-086-text-edz1zw",
+    "id": "v0.109.0:line-087-text-edz1zw",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -26221,10 +26295,10 @@
     "textKo": "플레이어 아이콘이 지도 잉크 원 위에 표시됩니다.",
     "textEn": "Player icons are now rendered above the ink circle on the map.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-086-text-edz1zw v0.109.0 0.109.0 버그 수정 멀티플레이 플레이어 아이콘이 지도 잉크 원 위에 표시됩니다. player icons are now rendered above the ink circle on the map."
+    "searchText": "v0.109.0:line-087-text-edz1zw v0.109.0 0.109.0 버그 수정 멀티플레이 플레이어 아이콘이 지도 잉크 원 위에 표시됩니다. player icons are now rendered above the ink circle on the map."
   },
   {
-    "id": "v0.109.0:line-087-text-64v6dq",
+    "id": "v0.109.0:line-088-text-64v6dq",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -26237,10 +26311,10 @@
     "textKo": "역사가 사용 중단 처리되면 해당 플레이어가 멀티플레이 게임에 참가할 수 없던 문제를 수정했습니다.",
     "textEn": "Resolved an issue where deprecating Epochs prevented that player from joining multiplayer games.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-087-text-64v6dq v0.109.0 0.109.0 버그 수정 멀티플레이 역사가 사용 중단 처리되면 해당 플레이어가 멀티플레이 게임에 참가할 수 없던 문제를 수정했습니다. resolved an issue where deprecating epochs prevented that player from joining multiplayer games."
+    "searchText": "v0.109.0:line-088-text-64v6dq v0.109.0 0.109.0 버그 수정 멀티플레이 역사가 사용 중단 처리되면 해당 플레이어가 멀티플레이 게임에 참가할 수 없던 문제를 수정했습니다. resolved an issue where deprecating epochs prevented that player from joining multiplayer games."
   },
   {
-    "id": "v0.109.0:line-088-text-17etw4j",
+    "id": "v0.109.0:line-089-text-17etw4j",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -26252,10 +26326,10 @@
     "textKo": "SavedPropertySerializationCache를 ModelIdSerializationCache에 통합했습니다. 이제 저장 속성도 해시에 포함됩니다.",
     "textEn": "Merged SavedPropertySerializationCache into ModelIdSerializationCache. Saved properties are now included in its hash.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-088-text-17etw4j v0.109.0 0.109.0 모딩 savedpropertyserializationcache를 modelidserializationcache에 통합했습니다. 이제 저장 속성도 해시에 포함됩니다. merged savedpropertyserializationcache into modelidserializationcache. saved properties are now included in its hash."
+    "searchText": "v0.109.0:line-089-text-17etw4j v0.109.0 0.109.0 모딩 savedpropertyserializationcache를 modelidserializationcache에 통합했습니다. 이제 저장 속성도 해시에 포함됩니다. merged savedpropertyserializationcache into modelidserializationcache. saved properties are now included in its hash."
   },
   {
-    "id": "v0.109.0:line-089-text-cec17z",
+    "id": "v0.109.0:line-090-text-cec17z",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -26267,6 +26341,6 @@
     "textKo": "게임플레이에 영향을 주지 않는 모드의 모델이 이제 해시에서 올바르게 제외됩니다.",
     "textEn": "Models from non-gameplay-affecting mods are now properly excluded from the hash.",
     "entityRefs": [],
-    "searchText": "v0.109.0:line-089-text-cec17z v0.109.0 0.109.0 모딩 게임플레이에 영향을 주지 않는 모드의 모델이 이제 해시에서 올바르게 제외됩니다. models from non-gameplay-affecting mods are now properly excluded from the hash."
+    "searchText": "v0.109.0:line-090-text-cec17z v0.109.0 0.109.0 모딩 게임플레이에 영향을 주지 않는 모드의 모델이 이제 해시에서 올바르게 제외됩니다. models from non-gameplay-affecting mods are now properly excluded from the hash."
   }
 ]
