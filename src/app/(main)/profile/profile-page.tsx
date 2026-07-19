@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AncientNodeRender } from "@/components/codex/ancient-node-render";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
+import { ProfileActivity, type ProfileActivityCopy } from "@/components/profile-activity";
 import Image from "@/components/ui/static-image";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import type { MonsterSpineAsset } from "@/lib/codex-types";
@@ -70,6 +71,7 @@ export interface ProfilePageCopy {
     previous: string;
     next: string;
   };
+  activity: ProfileActivityCopy;
 }
 
 const DEFAULTS = {
@@ -158,122 +160,126 @@ export default function ProfilePage({
   return (
     <main
       data-profile-page
-      className="mx-auto flex h-[calc(100svh-3.25rem)] w-full max-w-7xl flex-col gap-3 overflow-hidden px-3 py-2 sm:px-4"
+      className="mx-auto w-full max-w-7xl px-3 sm:px-4"
     >
-      <header className="flex h-10 shrink-0 items-center justify-between gap-3 border-b border-white/10 pb-2">
-        <div className="flex min-w-0 items-center gap-2">
-          <Image
-            src={character?.iconUrl ?? "/images/sts2/characters/character_icon_necrobinder.webp"}
-            alt=""
-            width={28}
-            height={28}
-            className="h-7 w-7 object-contain"
-          />
-          <input
-            type="text"
-            aria-label={copy.nicknamePlaceholder}
-            value={draftProfile.nickname}
-            placeholder={copy.nicknamePlaceholder}
-            maxLength={20}
-            onChange={(event) => {
-              const nickname = event.target.value;
-              setDraftProfile((current) => ({ ...current, nickname }));
-            }}
-            onBlur={persistNickname}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                event.currentTarget.blur();
+      <div className="flex h-[calc(100svh-3.25rem)] flex-col gap-3 overflow-hidden py-2">
+        <header className="flex h-10 shrink-0 items-center justify-between gap-3 border-b border-white/10 pb-2">
+          <div className="flex min-w-0 items-center gap-2">
+            <Image
+              src={character?.iconUrl ?? "/images/sts2/characters/character_icon_necrobinder.webp"}
+              alt=""
+              width={28}
+              height={28}
+              className="h-7 w-7 object-contain"
+            />
+            <input
+              type="text"
+              aria-label={copy.nicknamePlaceholder}
+              value={draftProfile.nickname}
+              placeholder={copy.nicknamePlaceholder}
+              maxLength={20}
+              onChange={(event) => {
+                const nickname = event.target.value;
+                setDraftProfile((current) => ({ ...current, nickname }));
+              }}
+              onBlur={persistNickname}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.currentTarget.blur();
+                }
+              }}
+              className="min-w-0 bg-transparent text-lg font-bold text-zinc-100 outline-none placeholder:text-zinc-600 focus:text-amber-100"
+            />
+          </div>
+          {copy.devBadge && (
+            <span className="shrink-0 rounded border border-amber-300/30 bg-amber-400/10 px-2 py-0.5 text-[11px] font-semibold text-amber-100">
+              {copy.devBadge}
+            </span>
+          )}
+        </header>
+
+        <section
+          data-profile-layout
+          className="grid min-h-0 flex-1 grid-rows-[auto_minmax(0,1fr)] gap-3 md:grid-cols-[minmax(18rem,30%)_minmax(0,70%)] md:grid-rows-1 md:gap-4"
+        >
+          <div data-profile-controls className="flex min-h-0 flex-col gap-1.5 self-start pt-1">
+            <ProfileRow
+              label={copy.selectors.character}
+              carousel={
+                <ChoiceCarousel
+                  choiceType="character"
+                  items={characters}
+                  selectedId={character?.id}
+                  labels={copy.carousel}
+                  onSelect={(id) => {
+                    const nextCharacter = findChoice(characters, id);
+                    persistProfile((current) => ({
+                      ...current,
+                      characterId: id,
+                      nickname: pickCharacterNickname(nextCharacter, nicknameLocale, copy.fallbackNickname),
+                    }));
+                    setCharacterAction("ATTACK");
+                  }}
+                />
               }
+            />
+
+            <ProfileRow
+              label={copy.selectors.pet}
+              carousel={
+                <ChoiceCarousel
+                  choiceType="pet"
+                  items={pets}
+                  selectedId={pet?.id}
+                  labels={copy.carousel}
+                  onSelect={(id) => {
+                    const nextPet = findChoice(pets, id);
+                    persistProfile((current) => ({
+                      ...current,
+                      petId: id,
+                      petSkinId: nextPet?.skinOptions[0]?.id ?? null,
+                    }));
+                    setPetAction("ATTACK");
+                  }}
+                />
+              }
+            />
+
+            <ProfileRow
+              label={copy.selectors.ancient}
+              carousel={
+                <ChoiceCarousel
+                  choiceType="ancient"
+                  items={ancients}
+                  selectedId={ancient?.id}
+                  labels={copy.carousel}
+                  onSelect={(id) => persistProfile((current) => ({ ...current, ancientId: id }))}
+                />
+              }
+            />
+          </div>
+
+          <DuoRender
+            character={character}
+            pet={pet}
+            ancient={ancient}
+            selectedPetSkins={selectedPetSkins}
+            selectedPetSkinId={selectedPetSkinId}
+            characterAction={characterAction.action}
+            characterActionNonce={characterAction.nonce}
+            petAction={petAction.action}
+            petActionNonce={petAction.nonce}
+            copy={copy}
+            onPetSkinSelect={(skinId) => {
+              if (!pet) return;
+              persistProfile((current) => ({ ...current, petSkinId: skinId }));
+              setPetAction("ATTACK");
             }}
-            className="min-w-0 bg-transparent text-lg font-bold text-zinc-100 outline-none placeholder:text-zinc-600 focus:text-amber-100"
           />
-        </div>
-        {copy.devBadge && (
-          <span className="shrink-0 rounded border border-amber-300/30 bg-amber-400/10 px-2 py-0.5 text-[11px] font-semibold text-amber-100">
-            {copy.devBadge}
-          </span>
-        )}
-      </header>
+        </section>
+      </div>
 
-      <section
-        data-profile-layout
-        className="grid min-h-0 flex-1 grid-rows-[auto_minmax(0,1fr)] gap-3 md:grid-cols-[minmax(18rem,30%)_minmax(0,70%)] md:grid-rows-1 md:gap-4"
-      >
-        <div data-profile-controls className="flex min-h-0 flex-col gap-1.5 self-start pt-1">
-          <ProfileRow
-            label={copy.selectors.character}
-            carousel={
-              <ChoiceCarousel
-                choiceType="character"
-                items={characters}
-                selectedId={character?.id}
-                labels={copy.carousel}
-                onSelect={(id) => {
-                  const nextCharacter = findChoice(characters, id);
-                  persistProfile((current) => ({
-                    ...current,
-                    characterId: id,
-                    nickname: pickCharacterNickname(nextCharacter, nicknameLocale, copy.fallbackNickname),
-                  }));
-                  setCharacterAction("ATTACK");
-                }}
-              />
-            }
-          />
-
-          <ProfileRow
-            label={copy.selectors.pet}
-            carousel={
-              <ChoiceCarousel
-                choiceType="pet"
-                items={pets}
-                selectedId={pet?.id}
-                labels={copy.carousel}
-                onSelect={(id) => {
-                  const nextPet = findChoice(pets, id);
-                  persistProfile((current) => ({
-                    ...current,
-                    petId: id,
-                    petSkinId: nextPet?.skinOptions[0]?.id ?? null,
-                  }));
-                  setPetAction("ATTACK");
-                }}
-              />
-            }
-          />
-
-          <ProfileRow
-            label={copy.selectors.ancient}
-            carousel={
-              <ChoiceCarousel
-                choiceType="ancient"
-                items={ancients}
-                selectedId={ancient?.id}
-                labels={copy.carousel}
-                onSelect={(id) => persistProfile((current) => ({ ...current, ancientId: id }))}
-              />
-            }
-          />
-        </div>
-
-        <DuoRender
-          character={character}
-          pet={pet}
-          ancient={ancient}
-          selectedPetSkins={selectedPetSkins}
-          selectedPetSkinId={selectedPetSkinId}
-          characterAction={characterAction.action}
-          characterActionNonce={characterAction.nonce}
-          petAction={petAction.action}
-          petActionNonce={petAction.nonce}
-          copy={copy}
-          onPetSkinSelect={(skinId) => {
-            if (!pet) return;
-            persistProfile((current) => ({ ...current, petSkinId: skinId }));
-            setPetAction("ATTACK");
-          }}
-        />
-      </section>
+      <ProfileActivity copy={copy.activity} serviceLocale={nicknameLocale} />
     </main>
   );
 }
