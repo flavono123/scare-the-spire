@@ -8041,8 +8041,8 @@
         "displayNameKo": "변경",
         "before": "Uncommon; 7(8) Block",
         "beforeKo": "고급; 방어도 7(8)",
-        "after": "Common; 6(8) Block",
-        "afterKo": "일반; 방어도 6(8)",
+      "after": "Common; 6(7) Block",
+      "afterKo": "일반; 방어도 6(7)",
         "diffType": "text"
       }
     ],
@@ -8069,8 +8069,8 @@
       }
     ],
     "date": "2026-07-17",
-    "summary": "Taunt Block decreased from 7(8) to 6(8), and rarity decreased from Uncommon to Common.",
-    "summaryKo": "도발의 방어도가 7(8)에서 6(8)로 감소하고 등급이 고급에서 일반으로 변경되었습니다."
+    "summary": "Taunt Block decreased from 7(8) to 6(7), and rarity decreased from Uncommon to Common.",
+    "summaryKo": "도발의 방어도가 7(8)에서 6(7)로 감소하고 등급이 고급에서 일반으로 변경되었습니다."
   },
   {
     "id": "the-ball-v0-109-0-field-diff",
