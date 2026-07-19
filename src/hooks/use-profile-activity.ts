@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { PostBlock } from "@/lib/chemical-types";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
@@ -19,6 +20,7 @@ export interface ProfileActivityItem {
   activityId: string;
   category: ProfileActivityCategory;
   content: string;
+  contentBlocks: PostBlock[] | null;
   targetKey: string;
   createdAt: string;
   likeCount: number;
@@ -35,6 +37,7 @@ interface ProfileActivityRow {
   activity_id: string;
   category: ProfileActivityCategory;
   content: string;
+  content_blocks: PostBlock[] | null;
   target_key: string;
   created_at: string;
   like_count: number | string;
@@ -63,6 +66,7 @@ function normalizeItem(row: ProfileActivityRow): ProfileActivityItem {
     activityId: row.activity_id,
     category: row.category,
     content: row.content,
+    contentBlocks: row.content_blocks,
     targetKey: row.target_key,
     createdAt: row.created_at,
     likeCount: Number(row.like_count),
