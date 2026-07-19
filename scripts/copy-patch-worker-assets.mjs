@@ -81,6 +81,7 @@ async function main() {
     "/favicon.ico",
     "/apple-icon.png",
     "/site.webmanifest",
+    "/generated/comment-entities-sts2.json",
     "/generated/search-index.json",
     "/images/sts2/characters/character_icon_defect.webp",
     "/images/sts2/characters/character_icon_ironclad.webp",
