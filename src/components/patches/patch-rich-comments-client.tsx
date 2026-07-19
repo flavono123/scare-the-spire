@@ -12,7 +12,24 @@ function mountRichPatchComments() {
     if (!threadKey || "richCommentMounted" in root.dataset) continue;
 
     root.dataset.richCommentMounted = "";
-    createRoot(root).render(React.createElement(CommentSection, { threadKey }));
+    const render = () => {
+      createRoot(root).render(React.createElement(CommentSection, { threadKey }));
+    };
+
+    if (typeof IntersectionObserver === "undefined") {
+      window.setTimeout(render, 0);
+      continue;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        observer.disconnect();
+        render();
+      },
+      { rootMargin: "320px 0px" },
+    );
+    observer.observe(root);
   }
 }
 
