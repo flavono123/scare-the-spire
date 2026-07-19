@@ -60,7 +60,8 @@ export function ChemicalXEditor({
           placeholder={placeholder}
           draftKey="sts-chemicalx-draft"
           submitLabel={copy.submit}
-          submitIconSrc="/images/relics/inserter.webp"
+          maxChars={null}
+          submitIconSrc="/images/sts2/badges/ccccombo.webp"
           showKeywordTip
           keywordTip={copy.keywordTip}
         />
