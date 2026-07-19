@@ -128,6 +128,8 @@ export const serviceMessages = {
       defaultNickname: "익명의 조합가",
       submit: "조합 공유",
       composerHint: "@로 카드·유물·포션을 불러 조합을 만든 뒤, 왜 좋은지 또는 왜 쓰레기인지 적어 보세요.",
+      resourceCountLabel: "{count}개의 조합 리소스",
+      moreResourcesLabel: "{count}개 더 있음",
       keywordTip: {
         label: "키워드 만들기 예)",
         text: "크크루빙봉",
@@ -767,6 +769,8 @@ export const serviceMessages = {
       defaultNickname: "Anonymous combiner",
       submit: "Share combo",
       composerHint: "Mention cards, relics, and potions with @, then tell us why the combo rules or why it is trash.",
+      resourceCountLabel: "{count} combo resources",
+      moreResourcesLabel: "{count} more resources",
       keywordTip: {
         label: "Keyword example:",
         text: "bing bong",
