@@ -8041,8 +8041,8 @@
         "displayNameKo": "변경",
         "before": "Uncommon; 7(8) Block",
         "beforeKo": "고급; 방어도 7(8)",
-      "after": "Common; 6(7) Block",
-      "afterKo": "일반; 방어도 6(7)",
+        "after": "Common; 6(7) Block",
+        "afterKo": "일반; 방어도 6(7)",
         "diffType": "text"
       }
     ],
