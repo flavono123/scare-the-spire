@@ -72,21 +72,32 @@ async function fetchSts2CommentEntities(): Promise<EntityInfo[]> {
   return pendingEntities;
 }
 
-export function useCommentEntities(initialEntities?: EntityInfo[]) {
+export function useCommentEntities(
+  initialEntities?: EntityInfo[],
+  options: { enabled?: boolean } = {},
+) {
+  const enabled = options.enabled ?? true;
   const hasInitialEntities = !!initialEntities?.length;
   const [fallbackEntities, setFallbackEntities] = useState<EntityInfo[] | null>(() => cachedEntities);
-  const [loading, setLoading] = useState(() => !hasInitialEntities && !cachedEntities);
+  const [loading, setLoading] = useState(() => enabled && !hasInitialEntities && !cachedEntities);
   const entities = useMemo(
     () => mergeCommentEntities(initialEntities ?? [], fallbackEntities ?? []),
     [fallbackEntities, initialEntities],
   );
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
     if (cachedEntities) {
+      setFallbackEntities(cachedEntities);
+      setLoading(false);
       return;
     }
 
     let cancelled = false;
+    setLoading(!hasInitialEntities);
     fetchSts2CommentEntities()
       .then((data) => {
         if (cancelled) return;
@@ -101,7 +112,7 @@ export function useCommentEntities(initialEntities?: EntityInfo[]) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [enabled, hasInitialEntities]);
 
   return {
     entities,

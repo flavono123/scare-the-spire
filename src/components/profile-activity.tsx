@@ -128,10 +128,10 @@ export function ProfileActivity({
   gameLocale: GameLocale;
 }) {
   const { userId, ready, unavailable: authUnavailable } = useAuth();
-  const { entities } = useCommentEntities();
   const [filter, setFilter] = useState<ProfileActivityFilter>("all");
   const [sort, setSort] = useState<ProfileActivitySort>("latest");
   const activity = useProfileActivity(userId, filter, sort);
+  const { entities } = useCommentEntities(undefined, { enabled: activity.items.length > 0 });
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
   const richContentIndexes = useMemo(() => buildRichContentIndexes(entities), [entities]);
   const dateFormatter = useMemo(
