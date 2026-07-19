@@ -19336,6 +19336,37 @@
     "beta_image_url": "/static/images/cards/beta/turbo.png"
   },
   {
+    "id": "TUTOR",
+    "name": "강사",
+    "description": "다른 플레이어가\n[gold]뽑을 카드 더미[/gold]에서\n카드를 1장 선택해\n[gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "다른 플레이어가\n[gold]뽑을 카드 더미[/gold]에서\n카드를 1장 선택해\n[gold]손[/gold]으로 가져옵니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "희귀",
+    "target": "AnyAlly",
+    "color": "regent",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": {
+      "cost": 0
+    },
+    "introducedInPatch": "v0.109.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/tutor.png"
+  },
+  {
     "id": "TWIN_STRIKE",
     "name": "이중 타격",
     "description": "피해를 5만큼 2번 줍니다.",

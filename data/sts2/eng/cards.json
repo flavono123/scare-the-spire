@@ -19328,6 +19328,37 @@
     "beta_image_url": "/static/images/cards/beta/turbo.png"
   },
   {
+    "id": "TUTOR",
+    "name": "Tutor",
+    "description": "Another player chooses a card in their [gold]Draw Pile[/gold] to add into their [gold]Hand[/gold].",
+    "description_raw": "Another player chooses a card in their [gold]Draw Pile[/gold] to add into their [gold]Hand[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Rare",
+    "target": "AnyAlly",
+    "color": "regent",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": {
+      "cost": 0
+    },
+    "introducedInPatch": "v0.109.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/tutor.png"
+  },
+  {
     "id": "TWIN_STRIKE",
     "name": "Twin Strike",
     "description": "Deal 5 damage twice.",
