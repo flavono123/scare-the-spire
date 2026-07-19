@@ -652,6 +652,7 @@ async function localizedPatchRoutes(version?: string) {
 
 async function main() {
   await writePatchClientAssets();
+  if (process.argv.includes("--clients-only")) return;
 
   const versions = await generatePatchDetailStaticParams();
   const routes: StaticPatchRoute[] = [
