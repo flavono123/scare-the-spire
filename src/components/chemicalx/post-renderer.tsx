@@ -8,14 +8,23 @@ import {
   buildEntityKeywordIndex,
   resolveEntityKeyword,
 } from "@/lib/chemical-utils";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 
 interface PostRendererProps {
   blocks: PostBlock[];
   entityMap: Map<string, EntityInfo>;
   forceShowTooltips?: boolean;
+  serviceLocale?: ServiceLocale;
+  gameLocale?: GameLocale;
 }
 
-export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRendererProps) {
+export function PostRenderer({
+  blocks,
+  entityMap,
+  forceShowTooltips,
+  serviceLocale,
+  gameLocale,
+}: PostRendererProps) {
   const keywordEntityIndex = useMemo(
     () => buildEntityKeywordIndex(Array.from(entityMap.values())),
     [entityMap],
@@ -75,7 +84,7 @@ export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRende
             const entity = resolveKeywordBlockEntity(block);
             if (entity) {
               return (
-                <EntityPreview key={i} entity={entity}>
+                <EntityPreview key={i} entity={entity} serviceLocale={serviceLocale} gameLocale={gameLocale}>
                   {block.text}
                 </EntityPreview>
               );
@@ -88,7 +97,7 @@ export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRende
 
           if (entity) {
             return (
-              <EntityPreview key={i} entity={entity}>
+              <EntityPreview key={i} entity={entity} serviceLocale={serviceLocale} gameLocale={gameLocale}>
                 {block.displayText}
               </EntityPreview>
             );
@@ -106,7 +115,14 @@ export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRende
       {forceShowTooltips && (expandedEntities.length > 0 || expandedKeywords.length > 0) && (
         <div className="flex flex-wrap gap-2 mt-3">
           {expandedEntities.map((entity) => (
-            <EntityPreview key={`${entity.type}:${entity.id}`} entity={entity} forceShow forcePosition="below">
+            <EntityPreview
+              key={`${entity.type}:${entity.id}`}
+              entity={entity}
+              forceShow
+              forcePosition="below"
+              serviceLocale={serviceLocale}
+              gameLocale={gameLocale}
+            >
               {entity.nameKo}
             </EntityPreview>
           ))}
