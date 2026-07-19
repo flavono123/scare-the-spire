@@ -50,6 +50,10 @@ export function ChemicalXEditor({
           />
         </div>
 
+        <p className="border-b border-border px-3 py-2 text-xs leading-relaxed text-zinc-500">
+          {copy.composerHint}
+        </p>
+
         <RichContentEditor
           entities={entities}
           onSubmit={handleSubmit}
