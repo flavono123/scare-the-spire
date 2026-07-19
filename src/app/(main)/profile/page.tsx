@@ -133,6 +133,7 @@ export async function renderProfilePage(
       ancients={ancients.map(mapAncient)}
       copy={copy}
       nicknameLocale={serviceLocale}
+      gameLocale={gameLocale}
     />
   );
 }

@@ -7,6 +7,7 @@ import { ProfileActivity, type ProfileActivityCopy } from "@/components/profile-
 import Image from "@/components/ui/static-image";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import type { MonsterSpineAsset } from "@/lib/codex-types";
+import type { GameLocale } from "@/lib/i18n";
 import { normalizeUserProfile, type UserProfile } from "@/lib/user-profile";
 import { cn } from "@/lib/utils";
 
@@ -107,12 +108,14 @@ export default function ProfilePage({
   ancients,
   copy,
   nicknameLocale = "ko",
+  gameLocale,
 }: {
   characters: CharacterChoice[];
   pets: PetChoice[];
   ancients: AncientChoice[];
   copy: ProfilePageCopy;
   nicknameLocale?: ProfileNicknameLocale;
+  gameLocale: GameLocale;
 }) {
   const fallbackProfile = useMemo(
     () => normalizeUserProfile({
@@ -162,7 +165,10 @@ export default function ProfilePage({
       data-profile-page
       className="mx-auto w-full max-w-7xl px-3 sm:px-4"
     >
-      <div className="flex h-[calc(100svh-3.25rem)] flex-col gap-3 overflow-hidden py-2">
+      <div
+        data-profile-hero
+        className="flex h-[calc(100svh-3.25rem)] flex-col gap-3 overflow-hidden py-2 md:h-[18rem] lg:h-[20rem] xl:h-[21rem]"
+      >
         <header className="flex h-10 shrink-0 items-center justify-between gap-3 border-b border-white/10 pb-2">
           <div className="flex min-w-0 items-center gap-2">
             <Image
@@ -279,7 +285,7 @@ export default function ProfilePage({
         </section>
       </div>
 
-      <ProfileActivity copy={copy.activity} serviceLocale={nicknameLocale} />
+      <ProfileActivity copy={copy.activity} serviceLocale={nicknameLocale} gameLocale={gameLocale} />
     </main>
   );
 }
@@ -477,13 +483,13 @@ function DuoRender({
     >
       <div className="relative min-h-0 flex-1">
         {ancient && (
-          <div className="pointer-events-none absolute left-1/2 top-2 z-[1] aspect-[2560/1200] w-[92%] max-w-[26rem] -translate-x-1/2 overflow-hidden md:top-0 md:w-[68%] md:max-w-[42rem]">
+          <div className="pointer-events-none absolute left-1/2 top-2 z-[1] aspect-[2560/1200] w-[92%] max-w-[26rem] -translate-x-1/2 overflow-hidden md:top-0 md:w-[54%] md:max-w-[30rem]">
             <div className="absolute inset-0 flex items-center justify-center">
-              <AncientNodeRender ancientId={ancient.id} className="h-[92%] md:h-[82%]" />
+              <AncientNodeRender ancientId={ancient.id} className="h-[92%] md:h-[74%]" />
             </div>
           </div>
         )}
-        <div className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-full w-[46rem] max-w-none origin-bottom -translate-x-[46%] scale-[0.6] md:left-0 md:w-[68rem] md:origin-bottom-left md:translate-x-0 md:scale-[0.8]">
+        <div className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-full w-[46rem] max-w-none origin-bottom -translate-x-[46%] scale-[0.6] md:left-[4%] md:w-[64rem] md:origin-bottom-left md:translate-x-0 md:scale-[0.62] lg:scale-[0.66]">
           <MonsterSpineStage
             key={`duo-${character?.id ?? "none"}`}
             asset={character?.spineAsset ?? null}
