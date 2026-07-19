@@ -30,10 +30,10 @@ export const PATCH_NOTES_PAGE_OG_IMAGE: PageOgImage = {
 };
 
 export const CHEMICAL_X_PAGE_OG_IMAGE: PageOgImage = {
-  url: "/images/sts2/cards/eradicate.webp",
-  width: 1000,
-  height: 760,
-  alt: "케미컬X — 척결 Eradicate",
+  url: "/images/sts2/events/amalgamator.webp",
+  width: 3440,
+  height: 1616,
+  alt: "코오오옴보 — 융합자 Amalgamator",
 };
 
 export const HISTORY_COURSE_PAGE_OG_IMAGE: PageOgImage = {
@@ -53,12 +53,12 @@ export const THIS_OR_THAT_PAGE_OG_IMAGE: PageOgImage = {
 export const PAGE_OG_IMAGE_RULES = [
   {
     pattern: "/chemical-x",
-    label: "케미컬X",
+    label: "코오오옴보",
     image: CHEMICAL_X_PAGE_OG_IMAGE,
   },
   {
     pattern: "/chemical-x/*",
-    label: "케미컬X 상세",
+    label: "코오오옴보 상세",
     image: CHEMICAL_X_PAGE_OG_IMAGE,
   },
   {

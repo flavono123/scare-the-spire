@@ -153,7 +153,7 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
         <div className="relative flex items-center justify-between mt-4 pt-3 border-t border-white/5">
           <div className="flex items-center gap-1.5">
             <Image
-              src="/images/sts2/relics/chemical_x.webp"
+              src="/images/sts2/badges/ccccombo.webp"
               alt=""
               width={14}
               height={14}
