@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight, Heart, LoaderCircle } from "lucide-react";
+import { ChevronRight, LoaderCircle } from "lucide-react";
 import { useMemo, useState } from "react";
+import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import Image from "@/components/ui/static-image";
 import { useAuth } from "@/hooks/use-auth";
+import { useCommentEntities } from "@/hooks/use-comment-entities";
 import {
   PROFILE_ACTIVITY_CATEGORIES,
   type ProfileActivityCategory,
@@ -14,7 +16,8 @@ import {
   type ProfileActivitySort,
   useProfileActivity,
 } from "@/hooks/use-profile-activity";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
+import { buildRichContentIndexes, resolveRichContentBlocks } from "@/lib/rich-content-blocks";
 import { cn } from "@/lib/utils";
 
 export interface ProfileActivityCopy {
@@ -45,11 +48,13 @@ export interface ProfileActivityCopy {
 }
 
 const CATEGORY_ICON: Record<ProfileActivityCategory, string> = {
-  stories: "/images/sts2/relics/pen_nib.webp",
+  stories: "/images/sts2/relics/bone_tea.webp",
   chemical_x: "/images/sts2/relics/chemical_x.webp",
   this_or_that: "/images/sts2/relics/choices_paradox.webp",
   comments: "/images/sts2/relics/storybook.webp",
 };
+
+const LIKE_ICON = "/images/sts2/ui/emote/thumb_up.png";
 
 const CODEX_PATHS: Record<string, string> = {
   affliction: "enchantments",
@@ -100,26 +105,35 @@ function commentTargetHref(targetKey: string): string {
   return `/#${targetKey}`;
 }
 
-function activityHref(item: ProfileActivityItem, serviceLocale: ServiceLocale): string {
+function activityHref(
+  item: ProfileActivityItem,
+  serviceLocale: ServiceLocale,
+  gameLocale: GameLocale,
+): string {
   let href: string;
   if (item.category === "stories") href = `/#${item.targetKey}`;
   else if (item.category === "chemical_x") href = `/chemical-x/${item.targetKey}`;
   else if (item.category === "this_or_that") href = `/this-or-that/${item.targetKey}`;
   else href = commentTargetHref(item.targetKey);
-  return localizeHref(href, serviceLocale);
+  return localizeHrefWithGameLocale(href, serviceLocale, gameLocale);
 }
 
 export function ProfileActivity({
   copy,
   serviceLocale,
+  gameLocale,
 }: {
   copy: ProfileActivityCopy;
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
 }) {
   const { userId, ready, unavailable: authUnavailable } = useAuth();
+  const { entities } = useCommentEntities();
   const [filter, setFilter] = useState<ProfileActivityFilter>("all");
   const [sort, setSort] = useState<ProfileActivitySort>("latest");
   const activity = useProfileActivity(userId, filter, sort);
+  const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
+  const richContentIndexes = useMemo(() => buildRichContentIndexes(entities), [entities]);
   const dateFormatter = useMemo(
     () => new Intl.DateTimeFormat(serviceLocale === "ko" ? "ko-KR" : "en-US", {
       year: "numeric",
@@ -166,7 +180,7 @@ export function ProfileActivity({
           />
           <div className="flex min-h-24 flex-col justify-between rounded-lg border border-amber-300/15 bg-amber-400/[0.035] px-3 py-3">
             <div className="flex items-center gap-2 text-xs font-semibold text-zinc-400">
-              <Heart size={17} className="text-amber-300" aria-hidden />
+              <Image src={LIKE_ICON} alt="" width={20} height={20} aria-hidden className="h-5 w-5 object-contain" />
               <span>{copy.totalLikes}</span>
             </div>
             <strong className="text-2xl font-bold tabular-nums text-amber-100">
@@ -226,12 +240,9 @@ export function ProfileActivity({
         <>
           <div className="divide-y divide-white/[0.07]">
             {activity.items.map((item) => (
-              <Link
+              <article
                 key={`${item.category}:${item.activityId}`}
-                href={activityHref(item, serviceLocale)}
-                prefetch={false}
-                aria-label={copy.open}
-                className="group grid grid-cols-[2.25rem_minmax(0,1fr)_auto] items-center gap-3 py-3.5 transition-colors hover:bg-white/[0.025] sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:px-2"
+                className="group grid grid-cols-[2.25rem_minmax(0,1fr)_auto] items-start gap-3 py-3.5 transition-colors hover:bg-white/[0.025] sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:px-2"
               >
                 <Image
                   src={CATEGORY_ICON[item.category]}
@@ -248,18 +259,30 @@ export function ProfileActivity({
                     </span>
                     <time dateTime={item.createdAt}>{dateFormatter.format(new Date(item.createdAt))}</time>
                   </div>
-                  <p className="line-clamp-2 text-sm leading-relaxed text-zinc-200 group-hover:text-amber-50">
-                    {item.content}
-                  </p>
+                  <div className="break-words text-sm leading-relaxed text-zinc-200 group-hover:text-amber-50">
+                    <PostRenderer
+                      blocks={resolveRichContentBlocks(item.content, item.contentBlocks, richContentIndexes)}
+                      entityMap={entityMap}
+                      serviceLocale={serviceLocale}
+                      gameLocale={gameLocale}
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 pl-1 text-zinc-500">
+                <div className="flex items-center gap-2 pl-1 pt-5 text-zinc-500">
                   <span className="inline-flex items-center gap-1 text-xs tabular-nums" title={formatTemplate(copy.likes, { count: item.likeCount })}>
-                    <Heart size={13} aria-hidden />
+                    <Image src={LIKE_ICON} alt="" width={16} height={16} aria-hidden className="h-4 w-4 object-contain opacity-80" />
                     {item.likeCount}
                   </span>
-                  <ChevronRight size={16} className="transition-transform group-hover:translate-x-0.5" aria-hidden />
+                  <Link
+                    href={activityHref(item, serviceLocale, gameLocale)}
+                    prefetch={false}
+                    aria-label={copy.open}
+                    className="rounded-sm p-0.5 transition-colors hover:text-amber-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-amber-300"
+                  >
+                    <ChevronRight size={16} className="transition-transform group-hover:translate-x-0.5" aria-hidden />
+                  </Link>
                 </div>
-              </Link>
+              </article>
             ))}
           </div>
 
