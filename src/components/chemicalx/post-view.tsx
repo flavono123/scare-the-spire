@@ -14,6 +14,7 @@ import { PostRenderer, buildEntityMap } from "./post-renderer";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 import { getSiteDisplayOrigin } from "@/lib/site-origin";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
+import { ComboResourceStack } from "./combo-resource-stack";
 
 interface PostViewProps {
   postId: string;
@@ -132,6 +133,15 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
           <span className="text-xs text-gray-500">
             {new Date(post.created_at).toLocaleDateString(dateLocale)}
           </span>
+        </div>
+
+        <div className="relative">
+          <ComboResourceStack
+            blocks={post.content}
+            entityMap={entityMap}
+            variant="detail"
+            serviceLocale={serviceLocale}
+          />
         </div>
 
         {/* Post text — adaptive size */}

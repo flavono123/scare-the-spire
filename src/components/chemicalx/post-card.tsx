@@ -8,6 +8,7 @@ import { Trash2, ExternalLink } from "lucide-react";
 import { localizeHref } from "@/lib/i18n";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
+import { ComboResourceStack } from "./combo-resource-stack";
 
 interface PostCardProps {
   post: ChemicalPost;
@@ -75,6 +76,13 @@ export function PostCard({ post, entityMap, forceShowTooltips, isOwner, onDelete
           )}
         </div>
       </div>
+
+      <ComboResourceStack
+        blocks={post.content}
+        entityMap={entityMap}
+        variant="index"
+        serviceLocale={serviceLocale}
+      />
 
       {/* Content */}
       <div className="text-sm leading-relaxed">
