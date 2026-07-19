@@ -80,12 +80,14 @@ export function useProfileActivity(
   const [statsLoading, setStatsLoading] = useState(false);
   const [itemsLoading, setItemsLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [unavailable, setUnavailable] = useState(!supabaseEnabled);
+  const [statsUnavailable, setStatsUnavailable] = useState(!supabaseEnabled);
+  const [itemsUnavailable, setItemsUnavailable] = useState(!supabaseEnabled);
 
   useEffect(() => {
     if (!supabaseEnabled || !userId) {
       setStats(emptyStats());
       setStatsLoading(false);
+      setStatsUnavailable(!supabaseEnabled);
       return;
     }
 
@@ -109,10 +111,10 @@ export function useProfileActivity(
           };
         }
         setStats(nextStats);
-        setUnavailable(false);
+        setStatsUnavailable(false);
       })
       .catch(() => {
-        if (!cancelled) setUnavailable(true);
+        if (!cancelled) setStatsUnavailable(true);
       })
       .finally(() => {
         if (!cancelled) setStatsLoading(false);
@@ -128,6 +130,7 @@ export function useProfileActivity(
       setItems([]);
       setTotalCount(0);
       setItemsLoading(false);
+      setItemsUnavailable(!supabaseEnabled);
       return;
     }
 
@@ -153,10 +156,10 @@ export function useProfileActivity(
         const rows = (data ?? []) as ProfileActivityRow[];
         setItems(rows.map(normalizeItem));
         setTotalCount(rows[0] ? Number(rows[0].total_count) : 0);
-        setUnavailable(false);
+        setItemsUnavailable(false);
       })
       .catch(() => {
-        if (!cancelled) setUnavailable(true);
+        if (!cancelled) setItemsUnavailable(true);
       })
       .finally(() => {
         if (!cancelled) setItemsLoading(false);
@@ -187,9 +190,9 @@ export function useProfileActivity(
       const rows = (data ?? []) as ProfileActivityRow[];
       setItems((current) => [...current, ...rows.map(normalizeItem)]);
       if (rows[0]) setTotalCount(Number(rows[0].total_count));
-      setUnavailable(false);
+      setItemsUnavailable(false);
     } catch {
-      setUnavailable(true);
+      setItemsUnavailable(true);
     } finally {
       setLoadingMore(false);
     }
@@ -213,7 +216,7 @@ export function useProfileActivity(
     totalCount,
     loading: statsLoading || itemsLoading,
     loadingMore,
-    unavailable,
+    unavailable: statsUnavailable || itemsUnavailable,
     loadMore,
   };
 }
