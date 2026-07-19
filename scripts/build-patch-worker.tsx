@@ -53,6 +53,10 @@ const patchCommentsClientPath = path.join(
   process.cwd(),
   "src/components/patches/patch-comments-client.js",
 );
+const patchRichCommentsClientPath = path.join(
+  process.cwd(),
+  "src/components/patches/patch-rich-comments-client.tsx",
+);
 const patchStaticSpineClientPath = path.join(
   process.cwd(),
   "src/components/patches/patch-static-spine-client.js",
@@ -483,7 +487,7 @@ function renderShell(route: StaticPatchRoute): string {
             supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
             supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
             supabaseEnv: process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production",
-          })}</script><script src="/_patches/patch-global-search.js" defer></script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-comments.js" defer></script>`,
+          })}</script><script src="/_patches/patch-global-search.js" defer></script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-rich-comments.js" defer></script><script src="/_patches/patch-comments.js" defer></script>`,
         }}
       />
     </html>,
@@ -501,6 +505,22 @@ async function writePatchClientAssets() {
     await fs.mkdir(path.dirname(destinationPath), { recursive: true });
     await fs.copyFile(sourcePath, destinationPath);
   }
+
+  await buildClientBundle({
+    entryPoints: [patchRichCommentsClientPath],
+    outfile: path.join(outDir, "_patches/patch-rich-comments.js"),
+    bundle: true,
+    minify: true,
+    platform: "browser",
+    format: "iife",
+    target: ["es2022"],
+    define: {
+      "process.env.NODE_ENV": JSON.stringify("production"),
+      "process.env.NEXT_PUBLIC_SUPABASE_URL": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""),
+      "process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""),
+      "process.env.NEXT_PUBLIC_SUPABASE_ENV": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production"),
+    },
+  });
 
   await buildClientBundle({
     entryPoints: [patchGlobalSearchClientPath],
