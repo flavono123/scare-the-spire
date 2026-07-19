@@ -73,7 +73,7 @@ const spinePlayerClientPath = path.join(
 const patchClientNextShims: Plugin = {
   name: "patch-client-next-shims",
   setup(build) {
-    build.onResolve({ filter: /^next\/(?:dynamic|link|navigation)$/ }, (args) => ({
+    build.onResolve({ filter: /^next\/(?:dynamic|image|link|navigation)$/ }, (args) => ({
       path: args.path,
       namespace: "patch-next-shim",
     }));
@@ -113,6 +113,46 @@ const patchClientNextShims: Plugin = {
               return React.createElement("a", { ...props, ref, href: resolvedHref }, children);
             });
             export default Link;
+          `,
+        };
+      }
+
+      if (args.path === "next/image") {
+        return {
+          loader: "tsx",
+          resolveDir: process.cwd(),
+          contents: `
+            import React from "react";
+            const Image = React.forwardRef(function Image({
+              src,
+              alt = "",
+              fill = false,
+              priority,
+              quality,
+              unoptimized,
+              placeholder,
+              blurDataURL,
+              style,
+              ...props
+            }, ref) {
+              void quality;
+              void unoptimized;
+              void placeholder;
+              void blurDataURL;
+              const resolvedSrc = typeof src === "string" ? src : src?.src ?? "";
+              const resolvedStyle = fill
+                ? { position: "absolute", inset: 0, width: "100%", height: "100%", ...style }
+                : style;
+              return React.createElement("img", {
+                ...props,
+                ref,
+                alt,
+                loading: priority ? "eager" : props.loading,
+                src: resolvedSrc,
+                style: resolvedStyle,
+              });
+            });
+            export default Image;
           `,
         };
       }
