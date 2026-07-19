@@ -642,7 +642,8 @@
     const config = readConfig();
     mountStoryActions(config);
 
-    const roots = Array.from(document.querySelectorAll("[data-patch-comment-root]"));
+    const roots = Array.from(document.querySelectorAll("[data-patch-comment-root]"))
+      .filter((root) => !("richCommentMounted" in root.dataset));
     if (roots.length === 0) return;
 
     if (!config) {
