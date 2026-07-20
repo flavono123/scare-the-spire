@@ -585,32 +585,33 @@ export function RichContentEditor({
       return;
     }
 
-    const mentionNode = editor.schema.nodes["entity-mention"];
-    if (!mentionNode) return;
-
     lastEntityInsertRequestIdRef.current = entityInsertRequest.requestId;
     const { entity } = entityInsertRequest;
-    const { $from } = editor.state.selection;
-    const textBefore = $from.parent.textBetween(
-      Math.max(0, $from.parentOffset - 1),
-      $from.parentOffset,
-      undefined,
-      "\uFFFC",
-    );
-    const needsLeadingSpace = textBefore.length > 0 && !/\s/.test(textBefore);
+    window.setTimeout(() => {
+      if (editor.isDestroyed || !editor.schema.nodes["entity-mention"]) return;
 
-    editor.chain().focus().insertContent([
-      ...(needsLeadingSpace ? [{ type: "text", text: " " }] : []),
-      {
-        type: "entity-mention",
-        attrs: {
-          id: entity.id,
-          label: entity.nameKo,
-          entityType: entity.type,
+      const { $from } = editor.state.selection;
+      const textBefore = $from.parent.textBetween(
+        Math.max(0, $from.parentOffset - 1),
+        $from.parentOffset,
+        undefined,
+        "\uFFFC",
+      );
+      const needsLeadingSpace = textBefore.length > 0 && !/\s/.test(textBefore);
+
+      editor.chain().focus().insertContent([
+        ...(needsLeadingSpace ? [{ type: "text", text: " " }] : []),
+        {
+          type: "entity-mention",
+          attrs: {
+            id: entity.id,
+            label: entity.nameKo,
+            entityType: entity.type,
+          },
         },
-      },
-      { type: "text", text: " " },
-    ]).run();
+        { type: "text", text: " " },
+      ]).run();
+    }, 0);
   }, [editor, entityInsertRequest]);
 
   const handleSubmit = useCallback(async () => {
