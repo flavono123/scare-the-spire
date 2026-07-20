@@ -280,6 +280,13 @@ function entityKey(entity: Pick<EntityInfo, "type" | "id">): string {
   return `${entity.type}:${entity.id}`;
 }
 
+function entitySearchImageUrl(entity: EntityInfo): string | null {
+  if (entity.cardData) {
+    return entity.cardData.imageUrl ?? entity.cardData.betaImageUrl;
+  }
+  return entity.imageUrl;
+}
+
 export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
   const [entities, englishEntities] = await Promise.all([
     loadAllEntities({ gameLocale: "kor" }),
@@ -299,7 +306,7 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
         titleEn: entity.nameEn,
         description: entitySearchText(entity),
         descriptionEn: englishEntity ? entitySearchText(englishEntity) : entitySearchText(entity),
-        imageUrl: entity.imageUrl,
+        imageUrl: entitySearchImageUrl(entity),
         href,
       }];
     });
