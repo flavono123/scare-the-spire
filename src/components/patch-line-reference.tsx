@@ -49,6 +49,7 @@ export function PatchLineReferenceBlock({
   serviceLocale,
   patches,
   entities,
+  artOverride,
   compact = false,
   clickable = true,
   className,
@@ -58,6 +59,7 @@ export function PatchLineReferenceBlock({
   serviceLocale: ServiceLocale;
   patches?: STS2Patch[];
   entities?: EntityInfo[];
+  artOverride?: ResolvedPatchArt;
   compact?: boolean;
   clickable?: boolean;
   className?: string;
@@ -65,10 +67,11 @@ export function PatchLineReferenceBlock({
 }) {
   const patch = findPatch(patches, patchLine);
   const art = useMemo(() => {
+    if (artOverride) return artOverride;
     if (!patch) return FALLBACK_PATCH_ART;
     const entitiesByKey = new Map((entities ?? []).map((entity) => [`${entity.type}:${entity.id}`, entity]));
     return resolvePatchArt(patch, entitiesByKey, serviceLocale);
-  }, [entities, patch, serviceLocale]);
+  }, [artOverride, entities, patch, serviceLocale]);
   const versionLabel = patch ? getPatchVersionLabel(patch, serviceLocale) : patchLine.patch;
   const title = patch ? (serviceLocale === "ko" ? patch.titleKo : patch.title) : null;
   const href = clickable ? localizeHref(patchLineHref(patchLine), serviceLocale) : null;

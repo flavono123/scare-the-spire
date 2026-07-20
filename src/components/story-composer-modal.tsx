@@ -12,6 +12,7 @@ import { StoryWriteIcon } from "@/components/story-token-icon";
 import { supabaseEnabled } from "@/lib/supabase";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { patchLineDisplayText } from "@/lib/patch-line-display";
+import type { ResolvedPatchArt } from "@/lib/sts2-patch-art";
 
 const STORY_DRAFT_MAX_LENGTH = 120;
 
@@ -82,6 +83,7 @@ export function StoryComposerModal({
   patchLines,
   patches,
   entities,
+  patchArt,
   initialPatchLineId,
   onAdd,
   onClose,
@@ -94,6 +96,7 @@ export function StoryComposerModal({
   patchLines: STS2PatchLine[];
   patches?: STS2Patch[];
   entities?: EntityInfo[];
+  patchArt?: ResolvedPatchArt;
   initialPatchLineId?: string;
   onAdd: (sentence: string, nickname: string, patchLine: STS2PatchLine, activeUserId?: string) => Promise<void>;
   onClose: () => void;
@@ -228,6 +231,7 @@ export function StoryComposerModal({
                 serviceLocale={serviceLocale}
                 patches={patches}
                 entities={entities}
+                artOverride={patchArt}
                 compact
                 trailingAction={(
                   <button

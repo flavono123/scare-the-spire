@@ -117,6 +117,10 @@ function PatchArtHero({ art }: { art: ResolvedPatchArt }) {
 const NOTES_DIR = path.join(process.cwd(), "data/sts2-patch-notes");
 const PATCH_OG_DESCRIPTION_MAX_LENGTH = 200;
 
+function escapeInlineJson(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
+}
+
 function truncateOgDescription(text: string, maxLength = PATCH_OG_DESCRIPTION_MAX_LENGTH): string {
   if (text.length <= maxLength) return text;
   return `${text.slice(0, maxLength - 1).trimEnd()}…`;
@@ -1122,6 +1126,22 @@ export async function PatchDetailPage({
           threadKey={buildPatchCommentThreadKey(patch.version)}
         />
       </section>
+
+      {staticHoverPreviews && (
+        <script
+          id="sts-patch-story-config"
+          type="application/json"
+          dangerouslySetInnerHTML={{
+            __html: escapeInlineJson({
+              serviceLocale,
+              storyPlaceholder,
+              patchLines,
+              patches: [patch],
+              patchArt,
+            }),
+          }}
+        />
+      )}
 
       {/* Patch navigation */}
       <div className="mt-8 flex items-center justify-between border-t border-border pt-4">
