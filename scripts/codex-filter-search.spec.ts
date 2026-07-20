@@ -140,6 +140,17 @@ test.describe("Unified topbar search", () => {
     ).toBeVisible();
   });
 
+  test("matches mixed Korean choseong and shows beta-only card art", async ({ page }) => {
+    await openCompendium(page, "/compendium/cards");
+
+    await page.locator("header").getByRole("button", { name: "통합 검색" }).click();
+    await page.locator('input[placeholder="통합 검색"]').fill("강ㅅ");
+
+    const result = page.locator('div.fixed.inset-0 a[href="/compendium/cards?card=tutor"]').first();
+    await expect(result).toBeVisible();
+    await expect(result.locator("img")).toHaveAttribute("src", /cards-beta(?:%2F|\/)tutor\.webp/);
+  });
+
   test("works on static patch Worker pages with Korean choseong", async ({ page }) => {
     await setKoreanServiceLocale(page);
     await page.setViewportSize({ width: 360, height: 800 });
