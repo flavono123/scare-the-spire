@@ -195,7 +195,7 @@ export interface RichContentEditorProps {
   draftKey: string;
   submitLabel: string;
   minChars?: number;
-  maxChars?: number | null;
+  maxChars?: number;
   submitIconSrc?: string;
   showKeywordTip?: boolean;
   keywordTip?: {
@@ -308,7 +308,7 @@ export function RichContentEditor({
         hardBreak: false,
       }),
       Placeholder.configure({ placeholder }),
-      CharacterCount.configure(maxChars == null ? {} : { limit: maxChars }),
+      CharacterCount.configure({ limit: maxChars }),
       CustomKeyword,
       EntityMention.configure({
         HTMLAttributes: {
@@ -575,7 +575,7 @@ export function RichContentEditor({
     const blocks = tiptapToBlocks(editor.getJSON());
     const text = blocksToPlainText(blocks);
 
-    if (text.length < minChars || (maxChars != null && text.length > maxChars)) return;
+    if (text.length < minChars || text.length > maxChars) return;
 
     setSubmitting(true);
 
@@ -593,11 +593,11 @@ export function RichContentEditor({
 
   submitRef.current = handleSubmit;
 
-  const isValid = charCount >= minChars && (maxChars == null || charCount <= maxChars);
+  const isValid = charCount >= minChars && charCount <= maxChars;
   const charCountColor = useMemo(() => {
     if (charCount === 0) return "text-gray-500";
-    if (charCount < minChars || (maxChars != null && charCount > maxChars)) return "text-red-400";
-    if (maxChars != null && charCount >= maxChars - 5) return "text-yellow-400";
+    if (charCount < minChars || charCount > maxChars) return "text-red-400";
+    if (charCount >= maxChars - 5) return "text-yellow-400";
     return "text-gray-400";
   }, [charCount, maxChars, minChars]);
 
@@ -611,7 +611,7 @@ export function RichContentEditor({
 
       <div className="flex items-center gap-3 px-3 py-2 border-t border-border">
         <span className={`text-xs font-mono shrink-0 ${charCountColor}`}>
-          {charCount}{maxChars == null ? "" : `/${maxChars}`}
+          {charCount}/{maxChars}
         </span>
         {showKeywordTip && keywordTip && (
           <span className="hidden sm:block text-[11px] text-gray-500 truncate flex-1 min-w-0 opacity-70">
