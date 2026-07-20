@@ -117,7 +117,7 @@ export function getToyBoxNavItems({
       {
         href: "/chemical-x",
         label: messages.nav.chemicalX,
-        icon: "/images/sts2/badges/ccccombo.webp",
+        icon: "/images/sts2/relics/chemical_x.webp",
       },
       {
         href: "/history-course",
