@@ -12,6 +12,7 @@ import { StoryStatIcon, StoryWriteIcon } from "@/components/story-token-icon";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
 import type { ServiceLocale } from "@/lib/i18n";
+import { patchLineDisplayText } from "@/lib/patch-line-display";
 import type { STS2Patch, STS2PatchLine, Story } from "@/lib/types";
 import { serviceMessages } from "@/messages/service";
 
@@ -75,6 +76,7 @@ function PatchLineStoryAction({
       data-patch-line-story-action
       data-patch-line-id={patchLine.id}
       data-patch-id={patchLine.patch}
+      data-patch-line-label={patchLineDisplayText(patchLine, serviceLocale ?? "ko")}
       data-patch-line-refs={JSON.stringify(patchLine.entityRefs)}
       className={`inline-flex h-5 items-center gap-1 rounded border px-1 align-baseline text-[10px] leading-none tabular-nums transition-colors focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#fb923c]/50 ${
         count > 0

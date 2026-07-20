@@ -278,6 +278,8 @@
   }
 
   function patchLineLabel(action) {
+    const label = action.dataset.patchLineLabel?.trim();
+    if (label) return label;
     const line = action.parentElement?.closest("[data-patch-line-id]");
     if (!line) return action.dataset.patchLineId ?? "";
     const clone = line.cloneNode(true);
