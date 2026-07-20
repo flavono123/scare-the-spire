@@ -172,7 +172,7 @@ export function ProfileActivity({
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
           <StatButton
             active={filter === "all"}
-            icon="/images/sts2/relics/storybook.webp"
+            icon="/images/sts2/relics/pen_nib.webp"
             label={copy.totalPosts}
             value={activity.totals.postCount}
             detail={formatTemplate(copy.categoryLikes, { count: activity.totals.likeCount })}
