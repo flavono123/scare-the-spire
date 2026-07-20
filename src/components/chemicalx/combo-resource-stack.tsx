@@ -8,7 +8,6 @@ import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer
 import type { PostBlock } from "@/lib/chemical-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
-import { serviceMessages } from "@/messages/service";
 
 type ComboResourceStackVariant = "index" | "detail";
 
@@ -68,11 +67,9 @@ function useCoarsePointer(): boolean {
 function ComboResourceAsset({
   entity,
   variant,
-  serviceLocale,
 }: {
   entity: EntityInfo;
   variant: ComboResourceStackVariant;
-  serviceLocale: ServiceLocale;
 }) {
   const isIndex = variant === "index";
 
@@ -93,7 +90,7 @@ function ComboResourceAsset({
     return (
       <CardTile
         card={entity.cardData}
-        serviceLocale={serviceLocale}
+        serviceLocale="ko"
         showUpgrade={false}
         showBeta={false}
         width={96}
@@ -140,8 +137,6 @@ export function ComboResourceStack({
     [blocks, entityMap],
   );
   const isCoarsePointer = useCoarsePointer();
-  const resolvedServiceLocale = serviceLocale ?? "ko";
-  const copy = serviceMessages[resolvedServiceLocale].chemicalX;
   const resources = variant === "index" ? allResources.slice(0, 4) : allResources;
 
   if (resources.length === 0) return null;
@@ -163,7 +158,7 @@ export function ComboResourceStack({
     >
       <div
         role="list"
-        aria-label={copy.resourceCountLabel.replace("{count}", String(allResources.length))}
+        aria-label={`${allResources.length}개의 조합 리소스`}
         className="group/stack relative"
         style={{ width: stackWidth, height: itemHeight }}
       >
@@ -200,14 +195,8 @@ export function ComboResourceStack({
                     isIndex ? "h-16 w-16 p-1.5" : "h-[142px] w-28 p-2",
                   )}
                 >
-                  <ComboResourceAsset
-                    entity={entity}
-                    variant={variant}
-                    serviceLocale={resolvedServiceLocale}
-                  />
-                  <span className="sr-only">
-                    {resolvedServiceLocale === "en" ? entity.nameEn : entity.nameKo}
-                  </span>
+                  <ComboResourceAsset entity={entity} variant={variant} />
+                  <span className="sr-only">{entity.nameKo}</span>
                 </span>
               </EntityPreview>
             </span>
@@ -218,7 +207,7 @@ export function ComboResourceStack({
           <span
             className="absolute bottom-0 z-[60] rounded-full border border-yellow-400/25 bg-zinc-950/90 px-1.5 py-0.5 text-[10px] font-semibold text-yellow-200 shadow-lg"
             style={{ left: collapsedStep * (resources.length - 1) + itemWidth - 16 }}
-            aria-label={copy.moreResourcesLabel.replace("{count}", String(hiddenCount))}
+            aria-label={`${hiddenCount}개 더 있음`}
           >
             +{hiddenCount}
           </span>
