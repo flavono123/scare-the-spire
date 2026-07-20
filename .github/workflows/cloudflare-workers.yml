@@ -66,6 +66,7 @@ jobs:
                   ;;
                 .github/workflows/cloudflare-workers.yml)
                   main_changed=true
+                  patch_changed=true
                   ;;
                 data/sts2-patch-notes/*|data/sts2-patches.json|data/sts2-patch-local-resources.json|src/components/patch-note-renderer.tsx|src/components/patches/*|src/app/\(main\)/patches/*|src/app/\[gameLocale\]/patches/*|src/lib/sts2-patch-*.ts|scripts/build-patch-worker.tsx|scripts/dev-patch-proxy.mjs|workers/patch-worker.ts|wrangler.patch.jsonc)
                   patch_changed=true
@@ -197,7 +198,20 @@ jobs:
 
       - name: Deploy patch Worker before main
         if: steps.changes.outputs.patch == 'true'
-        run: pnpm cf:patch:deploy
+        run: |
+          for attempt in 1 2 3; do
+            echo "patch Worker deploy attempt ${attempt}/3"
+            if pnpm cf:patch:deploy; then
+              exit 0
+            fi
+
+            if [[ "$attempt" -eq 3 ]]; then
+              echo "patch Worker deploy failed after ${attempt} attempts"
+              exit 1
+            fi
+
+            sleep $((attempt * 15))
+          done
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PATCH_COMPENDIUM_MANIFEST_SOURCE: live
@@ -286,7 +300,20 @@ jobs:
 
       - name: Redeploy patch Worker after main
         if: steps.changes.outputs.main == 'true' && steps.changes.outputs.patch_after_main == 'true'
-        run: pnpm cf:patch:deploy
+        run: |
+          for attempt in 1 2 3; do
+            echo "patch Worker redeploy attempt ${attempt}/3"
+            if pnpm cf:patch:deploy; then
+              exit 0
+            fi
+
+            if [[ "$attempt" -eq 3 ]]; then
+              echo "patch Worker redeploy failed after ${attempt} attempts"
+              exit 1
+            fi
+
+            sleep $((attempt * 15))
+          done
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PATCH_COMPENDIUM_MANIFEST_SOURCE: live
