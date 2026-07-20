@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef, useMemo } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import Image from "@/components/ui/static-image";
 import { useEditor, EditorContent, ReactRenderer } from "@tiptap/react";
 import type { Editor } from "@tiptap/react";
@@ -204,6 +204,10 @@ export interface RichContentEditorProps {
     keyword: string;
     result: string;
   };
+  entityInsertRequest?: {
+    requestId: number;
+    entity: EntityInfo;
+  } | null;
 }
 
 export function RichContentEditor({
@@ -217,6 +221,7 @@ export function RichContentEditor({
   submitIconSrc,
   showKeywordTip = false,
   keywordTip,
+  entityInsertRequest,
 }: RichContentEditorProps) {
   const [submitting, setSubmitting] = useState(false);
   const [charCount, setCharCount] = useState(() => {
@@ -234,6 +239,7 @@ export function RichContentEditor({
   const composeTimeoutRef = useRef<number | null>(null);
   const submitRef = useRef<() => void>(() => {});
   const suggestionOpenRef = useRef(false);
+  const lastEntityInsertRequestIdRef = useRef<number | null>(null);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
   const keywordEntityIndex = useMemo(() => buildEntityKeywordIndex(entities), [entities]);
   const keywordDescriptionMap = useMemo(() => {
@@ -569,6 +575,43 @@ export function RichContentEditor({
       },
     },
   }, [draftKey, entities, maxChars, placeholder]);
+
+  useEffect(() => {
+    if (
+      !editor
+      || !entityInsertRequest
+      || lastEntityInsertRequestIdRef.current === entityInsertRequest.requestId
+    ) {
+      return;
+    }
+
+    const mentionNode = editor.schema.nodes["entity-mention"];
+    if (!mentionNode) return;
+
+    lastEntityInsertRequestIdRef.current = entityInsertRequest.requestId;
+    const { entity } = entityInsertRequest;
+    const { $from } = editor.state.selection;
+    const textBefore = $from.parent.textBetween(
+      Math.max(0, $from.parentOffset - 1),
+      $from.parentOffset,
+      undefined,
+      "\uFFFC",
+    );
+    const needsLeadingSpace = textBefore.length > 0 && !/\s/.test(textBefore);
+
+    editor.chain().focus().insertContent([
+      ...(needsLeadingSpace ? [{ type: "text", text: " " }] : []),
+      {
+        type: "entity-mention",
+        attrs: {
+          id: entity.id,
+          label: entity.nameKo,
+          entityType: entity.type,
+        },
+      },
+      { type: "text", text: " " },
+    ]).run();
+  }, [editor, entityInsertRequest]);
 
   const handleSubmit = useCallback(async () => {
     if (!editor || submitting) return;
