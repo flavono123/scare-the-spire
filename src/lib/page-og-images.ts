@@ -36,6 +36,13 @@ export const CHEMICAL_X_PAGE_OG_IMAGE: PageOgImage = {
   alt: "케미컬X — 척결 Eradicate",
 };
 
+export const COMBO_PAGE_OG_IMAGE: PageOgImage = {
+  url: "/images/sts2/events/amalgamator.webp",
+  width: 3440,
+  height: 1616,
+  alt: "코오오옴보 — 융합자 Amalgamator",
+};
+
 export const HISTORY_COURSE_PAGE_OG_IMAGE: PageOgImage = {
   url: "/images/sts2/cards/spoils_map.webp",
   width: 1000,
@@ -60,6 +67,16 @@ export const PAGE_OG_IMAGE_RULES = [
     pattern: "/chemical-x/*",
     label: "케미컬X 상세",
     image: CHEMICAL_X_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/combo",
+    label: "코오오옴보",
+    image: COMBO_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/combo/*",
+    label: "코오오옴보 상세",
+    image: COMBO_PAGE_OG_IMAGE,
   },
   {
     pattern: "/history-course",

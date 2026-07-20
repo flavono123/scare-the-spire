@@ -10,6 +10,8 @@ type ServiceMetadataCopy = {
   patchesDescription: string;
   chemicalXTitle: string;
   chemicalXDescription: string;
+  comboTitle: string;
+  comboDescription: string;
 };
 
 type ServiceOgImage = PageOgImage | {
@@ -26,6 +28,8 @@ const SERVICE_METADATA_COPY: Record<ServiceLocale, ServiceMetadataCopy> = {
     patchesDescription: "슬레이 더 스파이어 2 패치 노트 고봉밥 버전",
     chemicalXTitle: "케미컬 X(구 트윕터)",
     chemicalXDescription: "슬레이 더 스파이어 2 고봉밥 트윕",
+    comboTitle: "코오오옴보",
+    comboDescription: "카드, 유물, 포션 등 슬레이 더 스파이어 2 컴펜디움 리소스 조합을 공유합니다.",
   },
   en: {
     siteDescription: "Slay the Spire 2 patch notes, Compendium, and community.",
@@ -33,6 +37,8 @@ const SERVICE_METADATA_COPY: Record<ServiceLocale, ServiceMetadataCopy> = {
     patchesDescription: "Full rich Slay the Spire 2 patch notes.",
     chemicalXTitle: "Chemical X (formerly Twipter)",
     chemicalXDescription: "Full Slay the Spire 2 twips.",
+    comboTitle: "C-c-c-Combo",
+    comboDescription: "Share combinations of Slay the Spire 2 Compendium resources, including cards, relics, and potions.",
   },
 };
 
