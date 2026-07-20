@@ -610,9 +610,11 @@ export function RichContentEditor({
       </div>
 
       <div className="flex items-center gap-3 px-3 py-2 border-t border-border">
-        <span className={`text-xs font-mono shrink-0 ${charCountColor}`}>
-          {charCount}{maxChars == null ? "" : `/${maxChars}`}
-        </span>
+        {maxChars != null && (
+          <span className={`text-xs font-mono shrink-0 ${charCountColor}`}>
+            {charCount}/{maxChars}
+          </span>
+        )}
         {showKeywordTip && keywordTip && (
           <span className="hidden sm:block text-[11px] text-gray-500 truncate flex-1 min-w-0 opacity-70">
             {keywordTip.label} {keywordTip.text}
