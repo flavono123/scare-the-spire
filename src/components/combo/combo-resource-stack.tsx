@@ -50,6 +50,7 @@ function ComboResourceAsset({
   serviceLocale: ServiceLocale;
 }) {
   const isIndex = variant === "index";
+  const fallbackName = serviceLocale === "en" ? entity.nameEn : entity.nameKo;
 
   if (entity.type === "card" && entity.cardData) {
     if (isIndex) {
@@ -98,7 +99,7 @@ function ComboResourceAsset({
       "flex items-center justify-center rounded-full border border-yellow-400/25 bg-yellow-500/10 font-game-title font-bold text-yellow-200",
       isIndex ? "h-11 w-11 text-lg" : "h-20 w-20 text-2xl",
     )}>
-      {entity.nameKo.slice(0, 1)}
+      {fallbackName.slice(0, 1)}
     </span>
   );
 }
