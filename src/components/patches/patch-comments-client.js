@@ -278,7 +278,7 @@
   }
 
   function patchLineLabel(action) {
-    const line = action.closest("[data-patch-line-id]");
+    const line = action.parentElement?.closest("[data-patch-line-id]");
     if (!line) return action.dataset.patchLineId ?? "";
     const clone = line.cloneNode(true);
     clone.querySelectorAll("[data-patch-line-story-action]").forEach((node) => node.remove());
