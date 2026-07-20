@@ -8,6 +8,7 @@ import type { PostBlock } from "@/lib/chemical-types";
 import { extractComboResourceRefs } from "@/lib/combo-types";
 import type { ServiceLocale } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
+import { ComboResourcePicker } from "./combo-resource-picker";
 
 const RichContentEditor = dynamic<RichContentEditorProps>(
   () => import("@/components/rich-content-editor").then((module) => module.RichContentEditor),
@@ -29,7 +30,20 @@ export function ComboEditor({
 }: ComboEditorProps) {
   const copy = serviceMessages[serviceLocale].combo;
   const nicknameInputRef = useRef<HTMLInputElement>(null);
+  const entityInsertRequestIdRef = useRef(0);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [entityInsertRequest, setEntityInsertRequest] = useState<{
+    requestId: number;
+    entity: EntityInfo;
+  } | null>(null);
+
+  const handleResourceSelect = useCallback((entity: EntityInfo) => {
+    entityInsertRequestIdRef.current += 1;
+    setEntityInsertRequest({
+      requestId: entityInsertRequestIdRef.current,
+      entity,
+    });
+  }, []);
 
   const handleSubmit = useCallback(async (blocks: PostBlock[]) => {
     if (extractComboResourceRefs(blocks).length < 2) {
@@ -59,9 +73,16 @@ export function ComboEditor({
           />
         </div>
 
-        <p className="border-b border-border px-3 py-2 text-xs leading-relaxed text-zinc-500">
-          {copy.composerHint}
-        </p>
+        <div className="flex items-center gap-2 border-b border-border px-3 py-2">
+          <ComboResourcePicker
+            entities={entities}
+            serviceLocale={serviceLocale}
+            onSelect={handleResourceSelect}
+          />
+          <p className="min-w-0 text-xs leading-relaxed text-zinc-500">
+            {copy.composerHint}
+          </p>
+        </div>
 
         <RichContentEditor
           entities={entities}
@@ -71,6 +92,7 @@ export function ComboEditor({
           submitLabel={copy.submit}
           maxChars={null}
           submitIconSrc="/images/sts2/badges/ccccombo.webp"
+          entityInsertRequest={entityInsertRequest}
         />
       </div>
 
