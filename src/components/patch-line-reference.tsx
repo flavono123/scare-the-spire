@@ -51,6 +51,7 @@ export function PatchLineReferenceBlock({
   entities,
   artOverride,
   compact = false,
+  emphasized = false,
   clickable = true,
   className,
   trailingAction,
@@ -61,6 +62,7 @@ export function PatchLineReferenceBlock({
   entities?: EntityInfo[];
   artOverride?: ResolvedPatchArt;
   compact?: boolean;
+  emphasized?: boolean;
   clickable?: boolean;
   className?: string;
   trailingAction?: ReactNode;
@@ -77,18 +79,31 @@ export function PatchLineReferenceBlock({
   const href = clickable ? localizeHref(patchLineHref(patchLine), serviceLocale) : null;
   const header = (
     <div className="flex min-w-0 items-start gap-2.5">
-      <PatchArtThumbnail art={art} className={compact ? "h-9 w-12" : undefined} />
+      <PatchArtThumbnail
+        art={art}
+        className={cn(
+          compact ? "h-9 w-12" : undefined,
+          emphasized && "ring-1 ring-yellow-400/35 shadow-[0_0_14px_rgba(234,179,8,0.16)]",
+        )}
+      />
       <div className="min-w-0">
-        <p className={cn("font-medium text-yellow-500/90", compact ? "text-xs" : "text-sm")}>
+        <p className={cn(
+          "font-medium",
+          emphasized ? "text-yellow-300" : "text-yellow-500/90",
+          compact ? "text-xs" : "text-sm",
+        )}>
           <span>{versionLabel}</span>
           {title && (
-            <span className="ml-1.5 text-muted-foreground">
+            <span className={cn("ml-1.5", emphasized ? "text-foreground/80" : "text-muted-foreground")}>
               {title}
             </span>
           )}
         </p>
         {patchLine.section.length > 0 && (
-          <p className="mt-0.5 text-[11px] text-muted-foreground/75">
+          <p className={cn(
+            "mt-0.5 text-[11px]",
+            emphasized ? "text-muted-foreground" : "text-muted-foreground/75",
+          )}>
             {patchLine.section.join(" / ")}
           </p>
         )}
@@ -96,8 +111,10 @@ export function PatchLineReferenceBlock({
     </div>
   );
   const lineClassName = cn(
-    "block rounded px-2 py-1.5 text-left leading-relaxed text-muted-foreground",
-    "transition-colors hover:bg-white/[0.035] hover:text-foreground",
+    "block rounded px-2 py-1.5 text-left leading-relaxed transition-colors",
+    emphasized
+      ? "bg-black/15 text-foreground hover:bg-black/25"
+      : "text-muted-foreground hover:bg-white/[0.035] hover:text-foreground",
     "focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-500/30",
     compact ? "text-xs" : "text-sm",
   );
@@ -108,12 +125,20 @@ export function PatchLineReferenceBlock({
   );
   const rootClassName = cn(
     "relative space-y-1.5",
+    emphasized && [
+      "rounded-lg border border-yellow-500/45 bg-gradient-to-br from-yellow-500/[0.13] via-yellow-500/[0.055] to-transparent p-3",
+      "shadow-[0_0_0_1px_rgba(234,179,8,0.06),0_12px_28px_rgba(0,0,0,0.28),0_0_24px_rgba(234,179,8,0.08)]",
+    ],
     trailingAction && "pr-8",
     className,
   );
 
   return (
-    <div className={rootClassName}>
+    <div
+      className={rootClassName}
+      data-patch-line-reference-block
+      data-emphasized={emphasized || undefined}
+    >
       {header}
       {href ? (
         <Link

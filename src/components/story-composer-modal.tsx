@@ -13,6 +13,7 @@ import { supabaseEnabled } from "@/lib/supabase";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { patchLineDisplayText } from "@/lib/patch-line-display";
 import type { ResolvedPatchArt } from "@/lib/sts2-patch-art";
+import { cn } from "@/lib/utils";
 
 const STORY_DRAFT_MAX_LENGTH = 120;
 
@@ -233,6 +234,7 @@ export function StoryComposerModal({
                 entities={entities}
                 artOverride={patchArt}
                 compact
+                emphasized
                 trailingAction={(
                   <button
                     type="button"
@@ -249,21 +251,39 @@ export function StoryComposerModal({
               <p className="text-[11px] text-muted-foreground">{copy.patchLineRequired}</p>
             )}
 
-            <div className="max-h-64 overflow-y-auto rounded-md border border-border/60 bg-card/20">
+            <div
+              className={cn(
+                "overflow-y-auto rounded-md border transition-[max-height,opacity,border-color,background-color] duration-200",
+                selectedPatchLine
+                  ? "max-h-40 border-border/35 bg-card/10 opacity-65 hover:opacity-90 focus-within:opacity-100"
+                  : "max-h-64 border-border/60 bg-card/20 opacity-100",
+              )}
+              data-patch-line-choice-list
+              data-reference-selected={selectedPatchLine ? "true" : "false"}
+            >
               {filteredPatchLines.map((patchLine) => (
                 <button
                   key={patchLine.id}
                   type="button"
                   onClick={() => setSelectedPatchLine(patchLine)}
-                  className={`block w-full border-b border-border/40 px-3 py-2 text-left last:border-b-0 transition-colors hover:bg-white/5 ${
-                    selectedPatchLine?.id === patchLine.id ? "bg-white/10" : ""
-                  }`}
+                  className={cn(
+                    "block w-full border-b text-left last:border-b-0 transition-[background-color,opacity,padding] hover:bg-white/5 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-yellow-500/30",
+                    selectedPatchLine
+                      ? "border-border/25 px-3 py-1.5 opacity-75"
+                      : "border-border/40 px-3 py-2 opacity-100",
+                  )}
                 >
-                  <span className="mb-1 flex items-center gap-2 text-[11px] text-muted-foreground">
+                  <span className={cn(
+                    "mb-1 flex items-center gap-2 text-[11px]",
+                    selectedPatchLine ? "text-muted-foreground/65" : "text-muted-foreground",
+                  )}>
                     <span className="font-medium text-yellow-500">{patchLine.patch}</span>
                     {patchLine.section.length > 0 && <span>{patchLine.section.join(" / ")}</span>}
                   </span>
-                  <span className="block text-xs leading-relaxed text-foreground">
+                  <span className={cn(
+                    "block text-xs leading-relaxed",
+                    selectedPatchLine ? "text-muted-foreground/80" : "text-foreground",
+                  )}>
                     <PatchLineReferenceText patchLine={patchLine} serviceLocale={serviceLocale} />
                   </span>
                 </button>
