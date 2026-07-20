@@ -51,7 +51,7 @@ const CATEGORY_ICON: Record<ProfileActivityCategory, string> = {
   stories: "/images/sts2/relics/bone_tea.webp",
   chemical_x: "/images/sts2/relics/chemical_x.webp",
   this_or_that: "/images/sts2/relics/choices_paradox.webp",
-  comments: "/images/sts2/relics/storybook.webp",
+  comments: "/images/sts2/relics/pen_nib.webp",
 };
 
 const LIKE_ICON = "/images/sts2/ui/emote/thumb_up.png";
