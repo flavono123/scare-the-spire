@@ -115,11 +115,6 @@ export function getToyBoxNavItems({
   return localizePlainNavItems(
     [
       {
-        href: "/combo",
-        label: messages.nav.combo,
-        icon: "/images/sts2/badges/ccccombo.webp",
-      },
-      {
         href: "/chemical-x",
         label: messages.nav.chemicalX,
         icon: "/images/sts2/relics/chemical_x.webp",
@@ -134,7 +129,16 @@ export function getToyBoxNavItems({
         label: messages.nav.thisOrThat,
         icon: "/images/sts2/relics/choices_paradox.webp",
       },
-      ...(showDevMenu ? devNavItems : []),
+      ...(showDevMenu
+        ? [
+            {
+              href: "/combo",
+              label: messages.nav.combo,
+              icon: "/images/sts2/badges/ccccombo.webp",
+            },
+            ...devNavItems,
+          ]
+        : []),
     ],
     serviceLocale,
     gameLocale,
