@@ -1135,6 +1135,7 @@ export async function PatchDetailPage({
             __html: escapeInlineJson({
               serviceLocale,
               storyPlaceholder,
+              patchId,
               patchLines,
               patches: [patch],
               patchArt,

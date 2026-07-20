@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { CommentSection } from "@/components/comment-section";
+import { patchLineStoryCopy } from "@/components/patches/patch-note-with-story-actions";
 import { StoryComposerModal } from "@/components/story-composer-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
@@ -15,6 +16,7 @@ const PATCH_STORY_CONFIG_ID = "sts-patch-story-config";
 interface PatchStoryConfig {
   serviceLocale: ServiceLocale;
   storyPlaceholder: string;
+  patchId: string;
   patchLines: STS2PatchLine[];
   patches: STS2Patch[];
   patchArt: ResolvedPatchArt;
@@ -29,6 +31,7 @@ function readPatchStoryConfig(): PatchStoryConfig | null {
     if (
       (parsed.serviceLocale !== "ko" && parsed.serviceLocale !== "en")
       || typeof parsed.storyPlaceholder !== "string"
+      || typeof parsed.patchId !== "string"
       || !Array.isArray(parsed.patchLines)
       || !Array.isArray(parsed.patches)
       || !parsed.patchArt
@@ -37,6 +40,36 @@ function readPatchStoryConfig(): PatchStoryConfig | null {
   } catch {
     return null;
   }
+}
+
+function PatchStoryCountSync({ config }: { config: PatchStoryConfig }) {
+  const communityStories = useCommunityStories(null, { source: config.patchId, limit: 200 });
+
+  useEffect(() => {
+    const counts = new Map<string, number>();
+    for (const story of communityStories.stories) {
+      if (!story.community || !story.patchLineId) continue;
+      counts.set(story.patchLineId, (counts.get(story.patchLineId) ?? 0) + 1);
+    }
+
+    const copy = patchLineStoryCopy(config.serviceLocale);
+    document.querySelectorAll<HTMLElement>("[data-patch-line-story-action]").forEach((action) => {
+      const patchLineId = action.dataset.patchLineId;
+      if (!patchLineId) return;
+
+      const staticCount = Number.parseInt(action.dataset.staticStoryCount ?? "0", 10);
+      const total = (Number.isFinite(staticCount) ? staticCount : 0) + (counts.get(patchLineId) ?? 0);
+      const count = action.querySelector<HTMLElement>("[data-patch-line-story-count]");
+      if (count) count.textContent = String(total);
+
+      const actionLabel = total > 0 || communityStories.unavailable ? copy.open : copy.openEmpty;
+      action.dataset.storyCountPositive = String(total > 0);
+      action.title = actionLabel;
+      action.setAttribute("aria-label", `${actionLabel}. ${copy.countLabel(total)}`);
+    });
+  }, [communityStories.stories, communityStories.unavailable, config.serviceLocale]);
+
+  return null;
 }
 
 function PatchStoryComposer({
@@ -71,6 +104,11 @@ function PatchStoryComposer({
 function mountRichPatchStoryComposer() {
   const config = readPatchStoryConfig();
   if (!config) return;
+
+  const countHost = document.createElement("div");
+  countHost.dataset.patchStoryCountRoot = "";
+  document.body.appendChild(countHost);
+  createRoot(countHost).render(<PatchStoryCountSync config={config} />);
 
   let activeRoot: Root | null = null;
   let activeHost: HTMLElement | null = null;

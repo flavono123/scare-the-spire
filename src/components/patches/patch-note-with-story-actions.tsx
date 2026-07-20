@@ -18,7 +18,7 @@ import { serviceMessages } from "@/messages/service";
 
 type PatchNoteRendererProps = ComponentProps<typeof PatchNoteRenderer>;
 
-function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
+export function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
   if (serviceLocale === "ko") {
     return {
       title: "이 변경의 이야기",
@@ -48,6 +48,7 @@ function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
 
 function PatchLineStoryAction({
   count,
+  staticCount,
   patchLine,
   serviceLocale,
   storiesUnavailable,
@@ -55,6 +56,7 @@ function PatchLineStoryAction({
   onWrite,
 }: {
   count: number;
+  staticCount: number;
   patchLine: STS2PatchLine;
   serviceLocale?: ServiceLocale;
   storiesUnavailable: boolean;
@@ -78,16 +80,14 @@ function PatchLineStoryAction({
       data-patch-id={patchLine.patch}
       data-patch-line-label={patchLineDisplayText(patchLine, serviceLocale ?? "ko")}
       data-patch-line-refs={JSON.stringify(patchLine.entityRefs)}
-      className={`inline-flex h-5 items-center gap-1 rounded border px-1 align-baseline text-[10px] leading-none tabular-nums transition-colors focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#fb923c]/50 ${
-        count > 0
-          ? "border-[#fb923c]/16 bg-[#fb923c]/[0.045] text-[#fed7aa]/65 opacity-85 hover:border-[#fb923c]/32 hover:bg-[#fb923c]/[0.08] hover:text-[#fed7aa] hover:opacity-100"
-          : "border-[#fb923c]/14 bg-[#fb923c]/[0.035] text-[#fed7aa]/55 opacity-80 hover:border-[#fb923c]/28 hover:bg-[#fb923c]/[0.075] hover:text-[#fed7aa]/90 hover:opacity-100"
-      }`}
+      data-static-story-count={staticCount}
+      data-story-count-positive={count > 0}
+      className="group inline-flex h-5 items-center gap-1 rounded border border-[#fb923c]/14 bg-[#fb923c]/[0.035] px-1 align-baseline text-[10px] leading-none text-[#fed7aa]/55 opacity-80 tabular-nums transition-colors hover:border-[#fb923c]/28 hover:bg-[#fb923c]/[0.075] hover:text-[#fed7aa]/90 hover:opacity-100 focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#fb923c]/50 data-[story-count-positive=true]:border-[#fb923c]/16 data-[story-count-positive=true]:bg-[#fb923c]/[0.045] data-[story-count-positive=true]:text-[#fed7aa]/65 data-[story-count-positive=true]:opacity-85 data-[story-count-positive=true]:hover:border-[#fb923c]/32 data-[story-count-positive=true]:hover:bg-[#fb923c]/[0.08] data-[story-count-positive=true]:hover:text-[#fed7aa] data-[story-count-positive=true]:hover:opacity-100"
       title={actionLabel}
       aria-label={`${actionLabel}. ${copy.countLabel(count)}`}
     >
-      <StoryStatIcon size={14} className={count > 0 ? "opacity-75" : "opacity-60"} />
-      <span>{count}</span>
+      <StoryStatIcon size={14} className="opacity-60 group-data-[story-count-positive=true]:opacity-75" />
+      <span data-patch-line-story-count>{count}</span>
     </button>
   );
 }
@@ -264,11 +264,13 @@ export function PatchNoteWithStoryActions({
   const patchLineActions = useMemo(() => {
     const actions = new Map<string, ReactNode>();
     for (const patchLine of patchLines) {
-      const count = (staticStoryCounts.get(patchLine.id) ?? 0) + (communityStoryCounts.get(patchLine.id) ?? 0);
+      const staticCount = staticStoryCounts.get(patchLine.id) ?? 0;
+      const count = staticCount + (communityStoryCounts.get(patchLine.id) ?? 0);
       actions.set(
         patchLine.id,
         <PatchLineStoryAction
           count={count}
+          staticCount={staticCount}
           patchLine={patchLine}
           serviceLocale={rendererProps.serviceLocale}
           storiesUnavailable={communityStories.unavailable}
