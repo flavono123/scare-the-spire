@@ -56,28 +56,17 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-xl border border-yellow-500/15 px-4 py-4 shadow-[0_12px_34px_rgba(0,0,0,0.28)]">
+      <div className="flex items-center gap-3">
         <Image
-          src="/images/sts2/events/amalgamator.webp"
-          alt=""
-          fill
-          sizes="(max-width: 672px) 100vw, 640px"
-          className="object-cover object-center opacity-35"
-          aria-hidden
+          src="/images/sts2/relics/chemical_x.webp"
+          alt={copy.title}
+          width={32}
+          height={32}
+          className="object-contain"
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#080810]/95 via-[#0b0b16]/75 to-[#160d08]/55" />
-        <div className="relative flex items-center gap-3">
-          <Image
-            src="/images/sts2/badges/ccccombo.webp"
-            alt={copy.title}
-            width={48}
-            height={48}
-            className="object-contain drop-shadow-[0_0_14px_rgba(250,204,21,0.28)]"
-          />
-          <div>
-            <h1 className="font-service text-xl font-bold text-yellow-400">{copy.title}</h1>
-            <span className="text-xs text-zinc-400">{copy.legacyName}</span>
-          </div>
+        <div>
+          <h1 className="font-service text-xl font-bold text-yellow-400">{copy.title}</h1>
+          <span className="text-xs text-gray-500">{copy.legacyName}</span>
         </div>
       </div>
 
