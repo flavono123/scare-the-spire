@@ -204,7 +204,20 @@ jobs:
 
       - name: Deploy to Cloudflare Workers
         if: steps.changes.outputs.main == 'true'
-        run: pnpm cf:deploy:built
+        run: |
+          for attempt in 1 2 3; do
+            echo "main Worker deploy attempt ${attempt}/3"
+            if pnpm cf:deploy:built; then
+              exit 0
+            fi
+
+            if [[ "$attempt" -eq 3 ]]; then
+              echo "main Worker deploy failed after ${attempt} attempts"
+              exit 1
+            fi
+
+            sleep $((attempt * 15))
+          done
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
