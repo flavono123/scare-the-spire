@@ -11,6 +11,7 @@ import { serviceMessages } from "@/messages/service";
 assert.equal(fuzzyMatchCodexText("타격", "ㅌㄱ"), true);
 assert.equal(fuzzyMatchCodexText("아이언클래드", "ㅇㅇㅋㄹㄷ"), true);
 assert.equal(fuzzyMatchCodexText("네크로바인더", "ㄴㅋㄹㅂㅇㄷ"), true);
+assert.equal(fuzzyMatchCodexText("강사", "강ㅅ"), true);
 
 const entities: EntityInfo[] = [
   {
@@ -51,6 +52,22 @@ const globalSearchItem: GlobalSearchIndexItem = {
 
 assert.notEqual(
   globalSearchItemScore(globalSearchItem, "ㅇㅇㅋㄹㄷ", serviceMessages.ko.globalSearch.labels),
+  null,
+);
+
+assert.notEqual(
+  globalSearchItemScore(
+    {
+      ...globalSearchItem,
+      id: "TUTOR",
+      type: "card",
+      title: "강사",
+      titleEn: "Tutor",
+      href: "/compendium/cards?card=tutor",
+    },
+    "강ㅅ",
+    serviceMessages.ko.globalSearch.labels,
+  ),
   null,
 );
 
