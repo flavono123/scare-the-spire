@@ -1137,6 +1137,7 @@ export async function PatchDetailPage({
               storyPlaceholder,
               patchId,
               patchLines,
+              staticStories: staticPatchLineStories,
               patches: [patch],
               patchArt,
             }),

@@ -107,7 +107,7 @@ function storyPublishedTime(story: Story) {
   return Number.isFinite(time) ? time : 0;
 }
 
-function sortPatchLineStories(stories: Story[]) {
+export function sortPatchLineStories(stories: Story[]) {
   return [...stories].sort((a, b) => {
     const timeDiff = storyPublishedTime(b) - storyPublishedTime(a);
     if (timeDiff !== 0) return timeDiff;
@@ -115,12 +115,13 @@ function sortPatchLineStories(stories: Story[]) {
   });
 }
 
-function PatchLineStoriesPanel({
+export function PatchLineStoriesPanel({
   patchLine,
   stories,
   serviceLocale,
   patches,
   entities,
+  communityLoading = false,
   communityUnavailable,
   onClose,
   onWrite,
@@ -130,6 +131,7 @@ function PatchLineStoriesPanel({
   serviceLocale: ServiceLocale;
   patches?: STS2Patch[];
   entities?: PatchNoteRendererProps["entities"];
+  communityLoading?: boolean;
   communityUnavailable: boolean;
   onClose: () => void;
   onWrite: () => void;
@@ -183,6 +185,10 @@ function PatchLineStoriesPanel({
               className="mt-3"
               title={serviceMessages[serviceLocale].comments.unavailableTitle}
             />
+          ) : communityLoading ? (
+            <p className="mt-3 rounded-md border border-dashed border-border/70 px-3 py-5 text-center text-xs text-muted-foreground">
+              {serviceMessages[serviceLocale].stories.reference.loading}
+            </p>
           ) : (
             <div className="mt-3 space-y-2">
               {stories.length > 0 ? stories.map((story) => (
@@ -296,6 +302,7 @@ export function PatchNoteWithStoryActions({
           serviceLocale={rendererProps.serviceLocale ?? "ko"}
           patches={rendererProps.patches}
           entities={rendererProps.entities ?? rendererProps.cards}
+          communityLoading={communityStories.loading}
           communityUnavailable={communityStories.unavailable}
           onClose={() => setActivePatchLineId(null)}
           onWrite={() => {
