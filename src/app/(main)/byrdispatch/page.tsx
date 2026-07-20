@@ -73,6 +73,7 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   이벤트: { href: "/compendium/events", icon: "/images/sts2/nav/question_mark.png" },
   "고대의 존재": { href: "/compendium/ancients", icon: "/images/sts2/nav/stats_ancients.png" },
   연대기: { href: "/compendium/epochs", icon: "/images/sts2/relics/planisphere.webp" },
+  "코오오옴보": { href: "/combo", icon: "/images/sts2/badges/ccccombo.webp" },
   "케미컬X": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
   "케미컬엑스": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
   "역사 강의서": { href: "/history-course", icon: "/images/sts2/relics/history_course.webp" },
@@ -90,12 +91,13 @@ const SERVICE_REFERENCE_LINKS: Record<string, string> = {
   백과사전: "/compendium",
   "역사 강의서": "/history-course",
   "이거 아님 저거?": "/this-or-that",
+  "코오오옴보": "/combo",
   "케미컬X": "/chemical-x",
   "케미컬엑스": "/chemical-x",
   "프로필": "/profile",
 };
 
-const SERVICE_REFERENCE_RE = /(이거 아님 저거\?|역사 강의서|슬서운 이야기|패치노트|패치 노트|케미컬X|케미컬엑스|백과사전|섀소식|프로필)/g;
+const SERVICE_REFERENCE_RE = /(이거 아님 저거\?|역사 강의서|슬서운 이야기|패치노트|패치 노트|코오오옴보|케미컬X|케미컬엑스|백과사전|섀소식|프로필)/g;
 const STORY_COMPOSER_ACTION_TOKEN = "[새 이야기 쓰기 버튼 노출/링크]";
 const INLINE_ACTION_RE = new RegExp(`${STORY_COMPOSER_ACTION_TOKEN.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}|${SERVICE_REFERENCE_RE.source}`, "g");
 

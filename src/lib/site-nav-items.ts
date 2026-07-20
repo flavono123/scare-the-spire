@@ -115,6 +115,11 @@ export function getToyBoxNavItems({
   return localizePlainNavItems(
     [
       {
+        href: "/combo",
+        label: messages.nav.combo,
+        icon: "/images/sts2/badges/ccccombo.webp",
+      },
+      {
         href: "/chemical-x",
         label: messages.nav.chemicalX,
         icon: "/images/sts2/relics/chemical_x.webp",
