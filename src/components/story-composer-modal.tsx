@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Search, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AlertCircle, CheckCircle2, Search, X } from "lucide-react";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { STS2Patch, STS2PatchLine } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -14,10 +14,12 @@ import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { patchLineDisplayText } from "@/lib/patch-line-display";
 import type { ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import { cn } from "@/lib/utils";
+import { serviceMessages } from "@/messages/service";
 
 const STORY_DRAFT_MAX_LENGTH = 120;
 
 function storyComposerCopy(serviceLocale: ServiceLocale) {
+  const composerMessages = serviceMessages[serviceLocale].stories.composer;
   if (serviceLocale === "ko") {
     return {
       write: "작성",
@@ -29,7 +31,8 @@ function storyComposerCopy(serviceLocale: ServiceLocale) {
       patchLineSearchPlaceholder: "카드, 몬스터, 패치 내용 검색",
       patchLineRequired: "참조할 패치 내용을 한 줄 선택하세요",
       storageDisabled: "데이터베이스 설정이 없어 작성할 수 없습니다",
-      writeUnavailable: "이야기를 저장하지 못했습니다",
+      writeSucceeded: composerMessages.success,
+      writeUnavailable: composerMessages.failure,
     };
   }
 
@@ -43,7 +46,8 @@ function storyComposerCopy(serviceLocale: ServiceLocale) {
     patchLineSearchPlaceholder: "Search cards, monsters, or patch text",
     patchLineRequired: "Select one patch note line to reference",
     storageDisabled: "Database is not configured",
-    writeUnavailable: "Could not save the story",
+    writeSucceeded: composerMessages.success,
+    writeUnavailable: composerMessages.failure,
   };
 }
 
@@ -117,7 +121,11 @@ export function StoryComposerModal({
   const [patchLineQuery, setPatchLineQuery] = useState("");
   const [selectedPatchLine, setSelectedPatchLine] = useState<STS2PatchLine | null>(initialPatchLine);
   const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitFeedback, setSubmitFeedback] = useState<{
+    tone: "success" | "error";
+    message: string;
+  } | null>(null);
+  const closeTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     setNickname(profile.nickname);
@@ -135,31 +143,35 @@ export function StoryComposerModal({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [onClose]);
 
+  useEffect(() => () => {
+    if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
+  }, []);
+
   const filteredPatchLines = useMemo(
     () => filterPatchLines(patchLines, patchLineQuery, serviceLocale),
     [patchLineQuery, patchLines, serviceLocale],
   );
   const trimmedSentence = sentence.trim();
-  const disabled = !authReady || !supabaseEnabled || submitting || trimmedSentence.length < 2 || !nickname.trim() || !selectedPatchLine;
+  const submitted = submitFeedback?.tone === "success";
+  const disabled = !authReady || !supabaseEnabled || submitting || submitted || trimmedSentence.length < 2 || !nickname.trim() || !selectedPatchLine;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (disabled) return;
 
-    setSubmitError(null);
+    setSubmitFeedback(null);
     setSubmitting(true);
     try {
       const activeUserId = userId ?? await ensureUser();
       if (!activeUserId || !selectedPatchLine) {
-        setSubmitError(copy.writeUnavailable);
+        setSubmitFeedback({ tone: "error", message: copy.writeUnavailable });
         return;
       }
       await onAdd(trimmedSentence, nickname, selectedPatchLine, activeUserId);
-      setSentence("");
-      setSelectedPatchLine(null);
-      onClose();
+      setSubmitFeedback({ tone: "success", message: copy.writeSucceeded });
+      closeTimerRef.current = window.setTimeout(onClose, 1_800);
     } catch {
-      setSubmitError(copy.writeUnavailable);
+      setSubmitFeedback({ tone: "error", message: copy.writeUnavailable });
     } finally {
       setSubmitting(false);
     }
@@ -292,20 +304,51 @@ export function StoryComposerModal({
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-2 border-t border-border/60 px-4 py-3">
-          {(!supabaseEnabled || submitError) && (
-            <span className="mr-auto text-[11px] text-amber-300">
-              {!supabaseEnabled ? copy.storageDisabled : submitError}
-            </span>
+        <div className="border-t border-border/60 px-4 py-3">
+          {(!supabaseEnabled || submitFeedback) && (
+            <div
+              className={cn(
+                "mb-3 flex items-center gap-2 rounded-md border px-3 py-2 text-xs font-medium",
+                !supabaseEnabled
+                  ? "border-amber-400/30 bg-amber-400/10 text-amber-200"
+                  : submitFeedback?.tone === "success"
+                    ? "border-emerald-400/35 bg-emerald-400/10 text-emerald-200"
+                    : "border-red-400/35 bg-red-400/10 text-red-200",
+              )}
+              role={!supabaseEnabled || submitFeedback?.tone === "error" ? "alert" : "status"}
+              aria-live={submitFeedback?.tone === "success" ? "polite" : "assertive"}
+              data-story-submit-feedback
+              data-tone={!supabaseEnabled ? "error" : submitFeedback?.tone}
+            >
+              {submitFeedback?.tone === "success" ? (
+                <CheckCircle2 size={15} aria-hidden />
+              ) : (
+                <AlertCircle size={15} aria-hidden />
+              )}
+              <span>{!supabaseEnabled ? copy.storageDisabled : submitFeedback?.message}</span>
+            </div>
           )}
-          <button
-            type="submit"
-            disabled={disabled}
-            className="inline-flex h-9 items-center gap-2 rounded-md border border-[#fb923c]/35 bg-[#fb923c]/10 px-3 text-xs font-medium text-[#fb923c] transition-colors hover:bg-[#fb923c]/16 hover:text-[#fed7aa] disabled:opacity-30"
-          >
-            {submitting ? <EngagementSpinner size={14} /> : <StoryWriteIcon size={16} />}
-            {submitting ? copy.writing : copy.write}
-          </button>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={disabled}
+              className={cn(
+                "inline-flex h-9 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors disabled:cursor-not-allowed",
+                submitted
+                  ? "border-emerald-400/35 bg-emerald-400/10 text-emerald-200 disabled:opacity-100"
+                  : "border-[#fb923c]/35 bg-[#fb923c]/10 text-[#fb923c] hover:bg-[#fb923c]/16 hover:text-[#fed7aa] disabled:opacity-30",
+              )}
+            >
+              {submitted ? (
+                <CheckCircle2 size={16} aria-hidden />
+              ) : submitting ? (
+                <EngagementSpinner size={14} />
+              ) : (
+                <StoryWriteIcon size={16} />
+              )}
+              {submitted ? copy.writeSucceeded : submitting ? copy.writing : copy.write}
+            </button>
+          </div>
         </div>
       </form>
     </div>

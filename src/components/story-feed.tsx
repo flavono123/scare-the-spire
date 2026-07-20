@@ -400,8 +400,37 @@ function patchHrefFromId(patch: string | undefined): string | null {
   return `/patches/${patch.replace(/^v/, "")}`;
 }
 
+function samePatchId(left: string | undefined, right: string | undefined) {
+  if (!left || !right) return false;
+  return left.replace(/^v/, "") === right.replace(/^v/, "");
+}
+
+function resolveStoryPatchLine(
+  story: Story,
+  patchLineMap: Map<string, STS2PatchLine>,
+): STS2PatchLine | undefined {
+  if (!story.patchLineId) return undefined;
+  const exact = patchLineMap.get(story.patchLineId);
+  if (exact) return exact;
+
+  const ordinalPrefix = story.patchLineId.match(/^(.*?:line-\d+-)/)?.[1];
+  if (ordinalPrefix) {
+    for (const line of patchLineMap.values()) {
+      if (line.id.startsWith(ordinalPrefix)) return line;
+    }
+  }
+
+  if (!story.source || !story.entityType || !story.entityId) return undefined;
+  const entityCandidates = Array.from(patchLineMap.values()).filter((line) =>
+    samePatchId(line.patch, story.source)
+    && line.entityRefs.some((ref) => ref.type === story.entityType && ref.id === story.entityId),
+  );
+  return entityCandidates.length === 1 ? entityCandidates[0] : undefined;
+}
+
 function STS2PatchLineBlock({
   patchLine,
+  patchLineLoading,
   change,
   story,
   patch,
@@ -410,6 +439,7 @@ function STS2PatchLineBlock({
   entities,
 }: {
   patchLine?: STS2PatchLine;
+  patchLineLoading: boolean;
   change?: STS2Change;
   story: Story;
   patch?: STS2Patch;
@@ -419,12 +449,15 @@ function STS2PatchLineBlock({
 }) {
   if (patchLine) {
     return (
-      <PatchLineReferenceBlock
-        patchLine={patchLine}
-        serviceLocale={serviceLocale}
-        patches={patches}
-        entities={entities}
-      />
+      <div data-story-reference-state="resolved">
+        <PatchLineReferenceBlock
+          patchLine={patchLine}
+          serviceLocale={serviceLocale}
+          patches={patches}
+          entities={entities}
+          emphasized
+        />
+      </div>
     );
   }
 
@@ -432,9 +465,27 @@ function STS2PatchLineBlock({
   const href = patchHrefFromId(patchId);
   const patchLabel = patchId;
   const fallbackSummary = serviceLocale === "ko" ? change?.summaryKo ?? change?.summary : change?.summary ?? change?.summaryKo;
+  const referenceCopy = serviceMessages[serviceLocale].stories.reference;
+
+  if (story.patchLineId && patchLineLoading) {
+    return (
+      <div
+        className="flex items-center gap-2 rounded-lg border border-yellow-500/30 bg-yellow-500/[0.06] px-4 py-3 text-xs text-yellow-100/80"
+        role="status"
+        aria-live="polite"
+        data-story-reference-state="loading"
+      >
+        <EngagementSpinner size={14} />
+        <span>{referenceCopy.loading}</span>
+      </div>
+    );
+  }
 
   return (
-    <div className="rounded-lg border border-border bg-card/30 p-4">
+    <div
+      className="rounded-lg border border-yellow-500/30 bg-yellow-500/[0.05] p-4"
+      data-story-reference-state="unavailable"
+    >
       <div className="mb-2 flex items-center gap-2">
         {href && patchLabel ? (
           <Link href={localizeHref(href, serviceLocale)} className="text-sm font-medium text-yellow-500 hover:text-yellow-400">
@@ -447,9 +498,9 @@ function STS2PatchLineBlock({
           <span className="text-xs text-muted-foreground">{change?.date ?? patch?.date}</span>
         )}
       </div>
-      {fallbackSummary && (
-        <p className="text-sm leading-relaxed text-muted-foreground">{fallbackSummary}</p>
-      )}
+      <p className="text-sm leading-relaxed text-muted-foreground">
+        {fallbackSummary ?? referenceCopy.unavailable}
+      </p>
     </div>
   );
 }
@@ -497,6 +548,7 @@ function StoryExpanded({
   sts2ChangeMap,
   sts2PatchMap,
   patchLineMap,
+  patchLinesLoading,
   sts2Patches,
   sts2Entities,
 }: {
@@ -511,6 +563,7 @@ function StoryExpanded({
   sts2ChangeMap: Map<string, STS2Change>;
   sts2PatchMap: Map<string, STS2Patch>;
   patchLineMap: Map<string, STS2PatchLine>;
+  patchLinesLoading: boolean;
   sts2Patches: STS2Patch[];
   sts2Entities: EntityInfo[];
 }) {
@@ -520,7 +573,7 @@ function StoryExpanded({
   if (isSTS2) {
     const entity = hasEntity ? sts2EntityMap.get(`${story.entityType}:${story.entityId}`) : undefined;
     const change = story.changeId ? sts2ChangeMap.get(story.changeId) : undefined;
-    const patchLine = story.patchLineId ? patchLineMap.get(story.patchLineId) : undefined;
+    const patchLine = resolveStoryPatchLine(story, patchLineMap);
     const patchId = patchLine?.patch ?? change?.patch ?? story.source;
     const patch = patchId ? sts2PatchMap.get(patchId) : undefined;
     const primaryLabel = story.tags?.includes("삭제") ? "삭제됨" : undefined;
@@ -531,6 +584,7 @@ function StoryExpanded({
         {(patchLine || change || story.source) && (
           <STS2PatchLineBlock
             patchLine={patchLine}
+            patchLineLoading={patchLinesLoading}
             change={change}
             story={story}
             patch={patch}
@@ -739,6 +793,7 @@ function StoryDetailModal({
   sts2ChangeMap,
   sts2PatchMap,
   patchLineMap,
+  patchLinesLoading,
   sts2Patches,
   sts2Entities,
   userId,
@@ -763,6 +818,7 @@ function StoryDetailModal({
   sts2ChangeMap: Map<string, STS2Change>;
   sts2PatchMap: Map<string, STS2Patch>;
   patchLineMap: Map<string, STS2PatchLine>;
+  patchLinesLoading: boolean;
   sts2Patches: STS2Patch[];
   sts2Entities: EntityInfo[];
   userId: string | null;
@@ -855,6 +911,7 @@ function StoryDetailModal({
             sts2ChangeMap={sts2ChangeMap}
             sts2PatchMap={sts2PatchMap}
             patchLineMap={patchLineMap}
+            patchLinesLoading={patchLinesLoading}
             sts2Patches={sts2Patches}
             sts2Entities={sts2Entities}
           />
@@ -1006,9 +1063,10 @@ export function StoryFeed({
     return Array.from(byId.values());
   }, [communityStories.stories, stories]);
   const hasMissingPatchLine = useMemo(
-    () => allStories.some((story) => story.patchLineId && !patchLineMap.has(story.patchLineId)),
+    () => allStories.some((story) => story.patchLineId && !resolveStoryPatchLine(story, patchLineMap)),
     [allStories, patchLineMap],
   );
+  const patchLinesLoading = hasMissingPatchLine && loadedPatchLines === null;
 
   useEffect(() => {
     if (loadedPatchLines || (!composerOpen && !hasMissingPatchLine)) return;
@@ -1090,6 +1148,7 @@ export function StoryFeed({
           sts2ChangeMap={sts2ChangeMap}
           sts2PatchMap={sts2PatchMap}
           patchLineMap={patchLineMap}
+          patchLinesLoading={patchLinesLoading}
           sts2Patches={sts2Patches}
           sts2Entities={sts2Entities}
           userId={userId}

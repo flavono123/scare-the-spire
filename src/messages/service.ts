@@ -123,6 +123,16 @@ export const serviceMessages = {
       submit: "작성",
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
     },
+    stories: {
+      reference: {
+        loading: "참조한 변경 항목을 불러오는 중...",
+        unavailable: "참조한 변경 항목을 찾지 못했습니다",
+      },
+      composer: {
+        success: "이야기를 작성했습니다",
+        failure: "이야기를 저장하지 못했습니다",
+      },
+    },
     chemicalX: {
       title: "케미컬X",
       legacyName: "(구 투입터)",
@@ -785,6 +795,16 @@ export const serviceMessages = {
       placeholder: "Write a comment",
       submit: "Post",
       unavailableTitle: "No responses from database",
+    },
+    stories: {
+      reference: {
+        loading: "Loading the referenced patch change...",
+        unavailable: "Referenced patch change not found",
+      },
+      composer: {
+        success: "Story published",
+        failure: "Could not save the story",
+      },
     },
     chemicalX: {
       title: "Chemical X",
