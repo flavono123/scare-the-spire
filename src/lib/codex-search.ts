@@ -75,9 +75,16 @@ export function fuzzyMatchCodexText(text: string, query: string): boolean {
     return true;
   }
 
+  const hasMixedChoseong = /[ㄱ-ㅎ]/.test(lq) && !/^[ㄱ-ㅎ]+$/.test(lq);
   let qi = 0;
   for (let i = 0; i < lt.length && qi < lq.length; i++) {
-    if (lt[i] === lq[qi]) qi++;
+    const queryCharacter = lq[qi];
+    if (
+      lt[i] === queryCharacter ||
+      (hasMixedChoseong && /^[ㄱ-ㅎ]$/.test(queryCharacter) && getChoseong(lt[i]) === queryCharacter)
+    ) {
+      qi++;
+    }
   }
   return qi === lq.length;
 }
