@@ -73,15 +73,12 @@ export function ComboEditor({
           />
         </div>
 
-        <div className="flex items-center gap-2 border-b border-border px-3 py-2">
+        <div className="border-b border-border px-3 py-2">
           <ComboResourcePicker
             entities={entities}
             serviceLocale={serviceLocale}
             onSelect={handleResourceSelect}
           />
-          <p className="min-w-0 text-xs leading-relaxed text-zinc-500">
-            {copy.composerHint}
-          </p>
         </div>
 
         <RichContentEditor

@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Plus, Search, X } from "lucide-react";
+import { Check, Plus, Search, X } from "lucide-react";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import { matchEntities } from "@/lib/chemical-utils";
@@ -69,8 +69,10 @@ export function ComboResourcePicker({
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [activeType, setActiveType] = useState<EntityType | null>(null);
+  const [recentlyAdded, setRecentlyAdded] = useState<EntityInfo | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const feedbackTimeoutRef = useRef<number | null>(null);
 
   const availableTypes = useMemo(() => {
     const types = new Set(entities.map((entity) => entity.type));
@@ -113,25 +115,59 @@ export function ComboResourcePicker({
     };
   }, [open]);
 
+  useEffect(() => () => {
+    if (feedbackTimeoutRef.current != null) {
+      window.clearTimeout(feedbackTimeoutRef.current);
+    }
+  }, []);
+
   const selectEntity = (entity: EntityInfo) => {
     onSelect(entity);
+    setRecentlyAdded(entity);
+    if (feedbackTimeoutRef.current != null) {
+      window.clearTimeout(feedbackTimeoutRef.current);
+    }
+    feedbackTimeoutRef.current = window.setTimeout(() => {
+      setRecentlyAdded(null);
+      feedbackTimeoutRef.current = null;
+    }, 1600);
     setQuery("");
     window.requestAnimationFrame(() => searchInputRef.current?.focus());
   };
 
   return (
-    <div ref={rootRef} className="relative shrink-0" data-combo-resource-picker>
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls="combo-resource-picker-panel"
-        data-combo-picker-trigger
-        onClick={() => setOpen((current) => !current)}
-        className="flex items-center gap-1.5 rounded-md border border-yellow-400/25 bg-yellow-500/10 px-2.5 py-1.5 text-xs font-semibold text-yellow-200 transition-colors hover:border-yellow-300/45 hover:bg-yellow-500/15"
-      >
-        <Plus className="h-3.5 w-3.5" aria-hidden="true" />
-        {copy.addResource}
-      </button>
+    <div ref={rootRef} className="min-w-0 flex-1" data-combo-resource-picker>
+      <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls="combo-resource-picker-panel"
+          data-combo-picker-trigger
+          onClick={() => setOpen((current) => !current)}
+          className="flex shrink-0 items-center gap-1.5 rounded-md border border-yellow-400/25 bg-yellow-500/10 px-2.5 py-1.5 text-xs font-semibold text-yellow-200 transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-yellow-300/45 hover:bg-yellow-500/15 active:translate-y-0 motion-reduce:transform-none"
+        >
+          <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+          {copy.addResource}
+        </button>
+        <p className="min-w-0 flex-1 text-xs leading-relaxed text-zinc-500">
+          {copy.composerHint}
+        </p>
+        <span
+          aria-live="polite"
+          className="inline-flex min-h-5 shrink-0 items-center gap-1 text-[11px] font-semibold text-yellow-200"
+        >
+          {recentlyAdded && (
+            <span
+              key={`${recentlyAdded.type}:${recentlyAdded.id}`}
+              className="inline-flex items-center gap-1 motion-safe:animate-pulse"
+              data-combo-picker-feedback
+            >
+              <Check className="h-3.5 w-3.5" aria-hidden="true" />
+              {copy.resourceAdded.replace("{name}", recentlyAdded.nameKo)}
+            </span>
+          )}
+        </span>
+      </div>
 
       {open && (
         <div
@@ -139,7 +175,7 @@ export function ComboResourcePicker({
           role="dialog"
           aria-label={copy.resourcePickerLabel}
           data-combo-picker-panel
-          className="absolute left-0 top-full z-[80] mt-2 flex max-h-[min(30rem,70vh)] w-[min(36rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-xl border border-yellow-500/25 bg-[#090913]/98 shadow-[0_18px_60px_rgba(0,0,0,0.72)] backdrop-blur"
+          className="mt-2 flex max-h-72 w-full flex-col overflow-hidden rounded-xl border border-yellow-500/25 bg-[#090913]/98 shadow-[0_14px_36px_rgba(0,0,0,0.48)]"
         >
           <div className="flex items-center gap-2 border-b border-white/10 p-2.5">
             <Search className="h-4 w-4 shrink-0 text-yellow-300/70" aria-hidden="true" />
@@ -215,7 +251,12 @@ export function ComboResourcePicker({
                     role="listitem"
                     data-combo-picker-result
                     onClick={() => selectEntity(entity)}
-                    className="flex min-w-0 items-center gap-2 rounded-lg border border-transparent px-2 py-1.5 text-left transition-colors hover:border-yellow-500/20 hover:bg-yellow-500/10 focus-visible:border-yellow-400/40 focus-visible:bg-yellow-500/10 focus-visible:outline-none"
+                    className={cn(
+                      "flex min-w-0 items-center gap-2 rounded-lg border px-2 py-1.5 text-left transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-yellow-500/20 hover:bg-yellow-500/10 focus-visible:border-yellow-400/40 focus-visible:bg-yellow-500/10 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none",
+                      recentlyAdded?.id === entity.id && recentlyAdded.type === entity.type
+                        ? "border-yellow-300/45 bg-yellow-500/15"
+                        : "border-transparent",
+                    )}
                   >
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-black/25">
                       {entity.imageUrl ? (
@@ -243,7 +284,11 @@ export function ComboResourcePicker({
                       )}
                     </span>
                     <span className="shrink-0 text-[9px] text-zinc-600">
-                      {typeLabels[entity.type] ?? entity.type}
+                      {recentlyAdded?.id === entity.id && recentlyAdded.type === entity.type ? (
+                        <Check className="h-4 w-4 text-yellow-300" aria-hidden="true" />
+                      ) : (
+                        typeLabels[entity.type] ?? entity.type
+                      )}
                     </span>
                   </button>
                 ))}
