@@ -100,7 +100,6 @@ export function ComboPostCard({
       <ComboResourceStack
         resources={post.resources}
         entityMap={entityMap}
-        variant="index"
         serviceLocale={serviceLocale}
         gameLocale={gameLocale}
       />

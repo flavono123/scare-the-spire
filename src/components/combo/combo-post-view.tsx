@@ -16,7 +16,7 @@ import {
 import { getSiteDisplayOrigin } from "@/lib/site-origin";
 import { serviceMessages } from "@/messages/service";
 import { buildComboEntityMap, ComboPostRenderer } from "./combo-post-renderer";
-import { ComboResourceStack } from "./combo-resource-stack";
+import { ComboResourceGallery } from "./combo-resource-gallery";
 
 interface ComboPostViewProps {
   postId: string;
@@ -103,19 +103,18 @@ export function ComboPostView({ postId, gameLocale }: ComboPostViewProps) {
           </span>
         </div>
 
-        <div className="relative">
-          <ComboResourceStack
-            resources={post.resources}
+        <div className={`relative py-4 font-bold leading-relaxed text-[#f0e6d2] ${getTextClass(post.content_text.length)}`}>
+          <ComboPostRenderer
+            blocks={post.content}
             entityMap={entityMap}
-            variant="detail"
             serviceLocale={serviceLocale}
             gameLocale={gameLocale}
           />
         </div>
 
-        <div className={`relative py-3 font-bold leading-relaxed text-[#f0e6d2] ${getTextClass(post.content_text.length)}`}>
-          <ComboPostRenderer
-            blocks={post.content}
+        <div className="relative mt-2">
+          <ComboResourceGallery
+            resources={post.resources}
             entityMap={entityMap}
             serviceLocale={serviceLocale}
             gameLocale={gameLocale}
