@@ -5,6 +5,10 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
+        userAgent: "Amazonbot",
+        disallow: "/",
+      },
+      {
         userAgent: "*",
         allow: "/",
         // Keep duplicate legacy routes and internal development pages out of search.
