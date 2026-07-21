@@ -69,6 +69,9 @@ const spinePlayerClientPath = path.join(
   process.cwd(),
   "node_modules/@esotericsoftware/spine-player/dist/iife/spine-player.min.js",
 );
+const cloudflareWebAnalyticsToken =
+  process.env.NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN ||
+  "a505206e64e843ba88936f23d296cd3b";
 
 const patchClientNextShims: Plugin = {
   name: "patch-client-next-shims",
@@ -551,6 +554,13 @@ function renderShell(route: StaticPatchRoute): string {
       />
     </>,
   );
+  const cloudflareWebAnalytics = renderToStaticMarkup(
+    <script
+      type="module"
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon={JSON.stringify({ token: cloudflareWebAnalyticsToken })}
+    />,
+  );
 
   return `<!doctype html>${renderToStaticMarkup(
     <html
@@ -582,7 +592,7 @@ function renderShell(route: StaticPatchRoute): string {
             supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
             supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
             supabaseEnv: process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production",
-          })}</script><script src="/_patches/patch-global-search.js" defer></script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-rich-comments.js" defer></script><script src="/_patches/patch-comments.js" defer></script>`,
+          })}</script><script src="/_patches/patch-global-search.js" defer></script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-rich-comments.js" defer></script><script src="/_patches/patch-comments.js" defer></script>${cloudflareWebAnalytics}`,
         }}
       />
     </html>,
