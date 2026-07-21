@@ -9,6 +9,14 @@ export default function robots(): MetadataRoute.Robots {
         disallow: "/",
       },
       {
+        userAgent: "GPTBot",
+        disallow: "/",
+      },
+      {
+        userAgent: "meta-externalagent",
+        disallow: "/",
+      },
+      {
         userAgent: "*",
         allow: "/",
         // Keep duplicate legacy routes and internal development pages out of search.
