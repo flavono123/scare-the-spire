@@ -96,8 +96,10 @@ function ComboResourceAsset({
 
   return (
     <span className={cn(
-      "flex items-center justify-center rounded-full border border-yellow-400/25 bg-yellow-500/10 font-game-title font-bold text-yellow-200",
-      isIndex ? "h-11 w-11 text-lg" : "h-20 w-20 text-2xl",
+      "flex items-center justify-center font-game-title font-bold text-yellow-200",
+      isIndex
+        ? "h-11 w-11 text-lg drop-shadow-[0_3px_5px_rgba(0,0,0,0.8)]"
+        : "h-20 w-20 rounded-full border border-yellow-400/25 bg-yellow-500/10 text-2xl",
     )}>
       {fallbackName.slice(0, 1)}
     </span>
@@ -124,10 +126,10 @@ export function ComboResourceStack({
   if (entities.length === 0) return null;
 
   const isIndex = variant === "index";
-  const itemWidth = isIndex ? 64 : 112;
-  const itemHeight = isIndex ? 68 : 150;
+  const itemWidth = isIndex ? 62 : 112;
+  const itemHeight = isIndex ? 66 : 150;
   const collapsedStep = isIndex ? 12 : 20;
-  const expandedStep = isIndex ? 70 : 120;
+  const expandedStep = isIndex ? 64 : 120;
   const stackWidth = itemWidth + expandedStep * (entities.length - 1);
   const hiddenCount = allEntities.length - entities.length;
 
@@ -169,13 +171,19 @@ export function ComboResourceStack({
                 entity={entity}
                 serviceLocale={serviceLocale}
                 gameLocale={gameLocale}
-                linkClassName="block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-yellow-300/80"
+                linkClassName={cn(
+                  "block outline-none focus-visible:ring-2 focus-visible:ring-yellow-300/80",
+                  isIndex ? "rounded-sm" : "rounded-xl",
+                )}
               >
                 <span
                   className={cn(
-                    "relative isolate flex shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-zinc-800/95 via-zinc-950/95 to-amber-950/35 shadow-[0_8px_20px_rgba(0,0,0,0.48)] ring-1 ring-transparent transition-[border-color,box-shadow,filter] duration-200",
-                    "after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:bg-[linear-gradient(120deg,transparent_18%,rgba(255,255,255,0.24)_48%,transparent_74%)] after:opacity-0 after:mix-blend-screen after:transition-opacity after:duration-200 group-hover/item:border-yellow-200/45 group-hover/item:ring-yellow-400/25 group-hover/item:shadow-[0_12px_28px_rgba(0,0,0,0.58),0_0_20px_rgba(250,204,21,0.14)] group-hover/item:after:opacity-100 group-focus-within/item:border-yellow-200/45 group-focus-within/item:ring-yellow-400/25 group-focus-within/item:after:opacity-100",
-                    isIndex ? "h-16 w-16 p-1.5" : "h-[142px] w-28 p-2",
+                    isIndex
+                      ? "relative flex h-16 w-[62px] shrink-0 origin-center items-center justify-center transition-[transform,filter] duration-150 group-hover/item:scale-110 group-hover/item:brightness-125 group-focus-within/item:scale-110 group-focus-within/item:brightness-125 motion-reduce:transform-none"
+                      : [
+                          "relative isolate flex h-[142px] w-28 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-zinc-800/95 via-zinc-950/95 to-amber-950/35 p-2 shadow-[0_8px_20px_rgba(0,0,0,0.48)] ring-1 ring-transparent transition-[border-color,box-shadow,filter] duration-200",
+                          "after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:bg-[linear-gradient(120deg,transparent_18%,rgba(255,255,255,0.24)_48%,transparent_74%)] after:opacity-0 after:mix-blend-screen after:transition-opacity after:duration-200 group-hover/item:border-yellow-200/45 group-hover/item:ring-yellow-400/25 group-hover/item:shadow-[0_12px_28px_rgba(0,0,0,0.58),0_0_20px_rgba(250,204,21,0.14)] group-hover/item:after:opacity-100 group-focus-within/item:border-yellow-200/45 group-focus-within/item:ring-yellow-400/25 group-focus-within/item:after:opacity-100",
+                        ],
                   )}
                 >
                   <ComboResourceAsset
