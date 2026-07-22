@@ -9,7 +9,7 @@ import { StoryComposerModal } from "@/components/story-composer-modal";
 import { StoryStatIcon } from "@/components/story-token-icon";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
-import type { ServiceLocale } from "@/lib/i18n";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
   findResourcePatchIndexResource,
   resourcePatchLines,
@@ -17,35 +17,37 @@ import {
   type ResourcePatchIndexResource,
 } from "@/lib/resource-patch-index";
 import type { STS2PatchLine, Story, StoryEntityType } from "@/lib/types";
+import { serviceMessages } from "@/messages/service";
 
 const PRIMARY_RESOURCE_COUNT = 5;
-
-const COPY = {
-  ko: {
-    search: "카드, 유물, 몬스터 이름 검색",
-    noResults: "일치하는 변경 기록이 없습니다",
-    changes: (count: number) => `변경항목 ${count}개`,
-    more: "더 보기",
-    less: "접기",
-    story: (count: number) => count > 0 ? `이 변경의 이야기 ${count}개` : "이 변경으로 이야기 쓰기",
-  },
-  en: {
-    search: "Search cards, relics, or monsters",
-    noResults: "No matching change history",
-    changes: (count: number) => `${count} changes`,
-    more: "Show more",
-    less: "Show less",
-    story: (count: number) => count > 0 ? `${count} stories for this change` : "Write a story from this change",
-  },
-} as const;
 
 function normalizeQuery(value: string): string {
   return value.normalize("NFKC").toLocaleLowerCase().replace(/\s+/g, "").trim();
 }
 
+function resourceGroupLabel(type: StoryEntityType, serviceLocale: ServiceLocale): string {
+  const copy = serviceMessages[serviceLocale].codex;
+  switch (type) {
+    case "character": return copy.characters;
+    case "card": return copy.cards;
+    case "relic": return copy.relics;
+    case "potion": return copy.potions;
+    case "power": return copy.powers;
+    case "enchantment": return copy.enchantments;
+    case "affliction": return copy.afflictions;
+    case "event": return copy.events;
+    case "monster": return copy.monsters;
+    case "encounter": return copy.encounters;
+    case "ancient": return copy.ancients;
+    case "epoch": return copy.epochs;
+  }
+}
+
 function resourceMatches(resource: ResourcePatchIndexResource, query: string): boolean {
   if (!query) return true;
-  return normalizeQuery(`${resource.nameKo} ${resource.nameEn} ${resource.id}`).includes(query);
+  return normalizeQuery(
+    `${resource.nameKo} ${resource.nameEn} ${Object.values(resource.names ?? {}).join(" ")} ${resource.id}`,
+  ).includes(query);
 }
 
 function resourceKey(resource: Pick<ResourcePatchIndexResource, "type" | "id">): string {
@@ -72,14 +74,17 @@ function ResourceToken({
   resource,
   selected,
   serviceLocale,
+  gameLocale,
   onSelect,
 }: {
   resource: ResourcePatchIndexResource;
   selected: boolean;
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   onSelect: () => void;
 }) {
-  const label = serviceLocale === "ko" ? resource.nameKo : resource.nameEn;
+  const label = resource.names?.[gameLocale]
+    ?? (serviceLocale === "ko" ? resource.nameKo : resource.nameEn);
   return (
     <button
       type="button"
@@ -126,7 +131,10 @@ function StoryAction({
   onOpen: () => void;
   onWrite: () => void;
 }) {
-  const label = COPY[serviceLocale].story(count);
+  const copy = serviceMessages[serviceLocale].patchChanges;
+  const label = count > 0
+    ? copy.storyCount.replace("{count}", String(count))
+    : copy.storyWrite;
   return (
     <button
       type="button"
@@ -144,13 +152,15 @@ function StoryAction({
 export function ResourcePatchIndexExplorer({
   data,
   serviceLocale,
+  gameLocale,
   storyPlaceholder,
 }: {
   data: ResourcePatchIndexData;
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   storyPlaceholder: string;
 }) {
-  const copy = COPY[serviceLocale];
+  const copy = serviceMessages[serviceLocale].patchChanges;
   const [query, setQuery] = useState("");
   const [selectedKey, setSelectedKey] = useState(() => resourceKey(findInitialResource(data)));
   const [expandedGroups, setExpandedGroups] = useState<Set<StoryEntityType>>(() => new Set());
@@ -221,7 +231,8 @@ export function ResourcePatchIndexExplorer({
       />
     );
   };
-  const selectedLabel = serviceLocale === "ko" ? selectedResource.nameKo : selectedResource.nameEn;
+  const selectedLabel = selectedResource.names?.[gameLocale]
+    ?? (serviceLocale === "ko" ? selectedResource.nameKo : selectedResource.nameEn);
 
   return (
     <>
@@ -231,7 +242,7 @@ export function ResourcePatchIndexExplorer({
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder={copy.search}
+          placeholder={copy.searchPlaceholder}
           className="h-10 w-full rounded-md border border-white/10 bg-white/[0.035] pl-9 pr-3 font-game-text text-sm text-foreground outline-none transition-colors placeholder:text-gray-600 focus:border-yellow-500/35"
         />
       </label>
@@ -248,7 +259,7 @@ export function ResourcePatchIndexExplorer({
           return (
             <section key={group.type} className="grid min-w-0 gap-1 py-1.5 md:grid-cols-[7rem_minmax(0,1fr)] md:items-start">
               <h2 className="px-1.5 pt-2 font-game-title text-xs text-gray-500">
-                {serviceLocale === "ko" ? group.labelKo : group.labelEn}
+                {resourceGroupLabel(group.type, serviceLocale)}
               </h2>
               <div className="flex min-w-0 flex-wrap items-center gap-x-1 gap-y-0.5">
                 {visible.map((resource) => (
@@ -257,6 +268,7 @@ export function ResourcePatchIndexExplorer({
                     resource={resource}
                     selected={resourceKey(resource) === resourceKey(selectedResource)}
                     serviceLocale={serviceLocale}
+                    gameLocale={gameLocale}
                     onSelect={() => selectResource(resource)}
                   />
                 ))}
@@ -298,7 +310,9 @@ export function ResourcePatchIndexExplorer({
           )}
           <div className="min-w-0">
             <h2 className="truncate font-game-title text-xl font-semibold spire-gold">{selectedLabel}</h2>
-            <p className="font-game-text text-xs text-gray-500">{copy.changes(selectedResource.changeCount)}</p>
+            <p className="font-game-text text-xs text-gray-500">
+              {copy.changeCount.replace("{count}", String(selectedResource.changeCount))}
+            </p>
           </div>
         </div>
         {selectedLines.length > 0 ? (

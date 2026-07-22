@@ -5,6 +5,7 @@ import type {
   Story,
   StoryEntityType,
 } from "@/lib/types";
+import type { GameLocale } from "@/lib/i18n";
 
 export const RESOURCE_PATCH_INDEX_ASSET = "/generated/sts2-resource-patch-index.json";
 
@@ -23,29 +24,12 @@ export const RESOURCE_PATCH_GROUP_ORDER: StoryEntityType[] = [
   "epoch",
 ];
 
-export const RESOURCE_PATCH_GROUP_LABELS: Record<StoryEntityType, {
-  ko: string;
-  en: string;
-}> = {
-  character: { ko: "캐릭터", en: "Characters" },
-  card: { ko: "카드", en: "Cards" },
-  relic: { ko: "유물", en: "Relics" },
-  potion: { ko: "포션", en: "Potions" },
-  power: { ko: "파워", en: "Powers" },
-  enchantment: { ko: "인챈트", en: "Enchantments" },
-  affliction: { ko: "고통", en: "Afflictions" },
-  event: { ko: "이벤트", en: "Events" },
-  monster: { ko: "몬스터", en: "Monsters" },
-  encounter: { ko: "인카운터", en: "Encounters" },
-  ancient: { ko: "고대의 존재", en: "Ancients" },
-  epoch: { ko: "역사", en: "Epochs" },
-};
-
 export interface ResourcePatchIndexResource {
   type: StoryEntityType;
   id: string;
   nameKo: string;
   nameEn: string;
+  names?: Partial<Record<GameLocale, string>>;
   imageUrl: string | null;
   color: string;
   lineIds: string[];
@@ -56,8 +40,6 @@ export interface ResourcePatchIndexResource {
 
 export interface ResourcePatchIndexGroup {
   type: StoryEntityType;
-  labelKo: string;
-  labelEn: string;
   resources: ResourcePatchIndexResource[];
 }
 
@@ -209,8 +191,7 @@ export function buildResourcePatchIndex({
         if (versionDiff !== 0) return versionDiff;
         return left.nameKo.localeCompare(right.nameKo, "ko");
       });
-    const labels = RESOURCE_PATCH_GROUP_LABELS[type];
-    return { type, labelKo: labels.ko, labelEn: labels.en, resources };
+    return { type, resources };
   }).filter((group) => group.type === "character" || group.resources.length > 0);
 
   const includedLineIds = new Set(groups.flatMap((group) =>
@@ -224,6 +205,33 @@ export function buildResourcePatchIndex({
   const staticStories = stories.filter((story) => story.patchLineId && includedLineIds.has(story.patchLineId));
 
   return { groups, lines, patches, staticStories };
+}
+
+export function addResourcePatchIndexLocalizedNames(
+  data: ResourcePatchIndexData,
+  entitiesByLocale: ReadonlyMap<GameLocale, EntityInfo[]>,
+): ResourcePatchIndexData {
+  const namesByKey = new Map<string, Partial<Record<GameLocale, string>>>();
+  for (const [gameLocale, entities] of entitiesByLocale) {
+    for (const entity of entities) {
+      if (!isResourceType(entity.type)) continue;
+      const key = resourceKey(entity.type, entity.id);
+      const names = namesByKey.get(key) ?? {};
+      names[gameLocale] = entity.nameKo || entity.nameEn;
+      namesByKey.set(key, names);
+    }
+  }
+
+  return {
+    ...data,
+    groups: data.groups.map((group) => ({
+      ...group,
+      resources: group.resources.map((resource) => ({
+        ...resource,
+        names: namesByKey.get(resourceKey(resource.type, resource.id)),
+      })),
+    })),
+  };
 }
 
 export function findResourcePatchIndexResource(

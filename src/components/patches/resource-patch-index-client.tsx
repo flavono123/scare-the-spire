@@ -1,6 +1,6 @@
 import { hydrateRoot } from "react-dom/client";
 import { ResourcePatchIndexExplorer } from "@/components/patches/resource-patch-index-explorer";
-import type { ServiceLocale } from "@/lib/i18n";
+import { isGameLocale, type ServiceLocale } from "@/lib/i18n";
 import type { ResourcePatchIndexData } from "@/lib/resource-patch-index";
 
 async function mount() {
@@ -9,6 +9,9 @@ async function mount() {
 
   const asset = root.dataset.resourcePatchIndexAsset;
   const serviceLocale = root.dataset.serviceLocale === "en" ? "en" : "ko";
+  const gameLocale = isGameLocale(root.dataset.gameLocale)
+    ? root.dataset.gameLocale
+    : serviceLocale === "ko" ? "kor" : "eng";
   const storyPlaceholder = root.dataset.storyPlaceholder ?? "";
   if (!asset) return;
 
@@ -21,6 +24,7 @@ async function mount() {
     <ResourcePatchIndexExplorer
       data={data}
       serviceLocale={serviceLocale satisfies ServiceLocale}
+      gameLocale={gameLocale}
       storyPlaceholder={storyPlaceholder}
     />,
   );

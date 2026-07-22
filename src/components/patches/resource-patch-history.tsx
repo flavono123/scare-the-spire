@@ -14,6 +14,7 @@ import {
 } from "@/lib/resource-patch-index";
 import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
 import type { STS2Patch, STS2PatchLine, StoryEntityType } from "@/lib/types";
+import { serviceMessages } from "@/messages/service";
 
 let resourcePatchIndexPromise: Promise<ResourcePatchIndexData> | null = null;
 
@@ -59,7 +60,7 @@ export function PatchMetaReferenceLink({
   const version = patch ? getPatchVersionLabel(patch, serviceLocale) : patchLine.patch;
   const title = patch
     ? serviceLocale === "ko" ? patch.titleKo : patch.title
-    : serviceLocale === "ko" ? "패치 노트" : "Patch notes";
+    : serviceMessages[serviceLocale].patchChanges.tabs.notes;
   const summary = patch
     ? serviceLocale === "ko" ? patch.summaryKo : patch.summary
     : null;

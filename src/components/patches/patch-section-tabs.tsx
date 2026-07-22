@@ -5,11 +5,7 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
-
-const COPY = {
-  ko: { notes: "패치 노트", changes: "변경 기록" },
-  en: { notes: "Patch Notes", changes: "Change History" },
-} as const;
+import { serviceMessages } from "@/messages/service";
 
 export function PatchSectionTabs({
   active,
@@ -20,7 +16,7 @@ export function PatchSectionTabs({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
-  const copy = COPY[serviceLocale];
+  const copy = serviceMessages[serviceLocale].patchChanges.tabs;
   const items = [
     {
       id: "notes" as const,

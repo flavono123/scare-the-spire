@@ -133,6 +133,21 @@ export const serviceMessages = {
         failure: "이야기를 저장하지 못했습니다",
       },
     },
+    patchChanges: {
+      title: "변경 기록",
+      metadataDescription: "카드, 유물, 캐릭터별 슬레이 더 스파이어 2 패치 변경 기록",
+      tabs: {
+        notes: "패치 노트",
+        changes: "변경 기록",
+      },
+      searchPlaceholder: "카드, 유물, 몬스터 이름 검색",
+      noResults: "일치하는 변경 기록이 없습니다",
+      changeCount: "변경항목 {count}개",
+      more: "더 보기",
+      less: "접기",
+      storyCount: "이 변경의 이야기 {count}개",
+      storyWrite: "이 변경으로 이야기 쓰기",
+    },
     chemicalX: {
       title: "케미컬X",
       legacyName: "(구 투입터)",
@@ -811,6 +826,21 @@ export const serviceMessages = {
         success: "Story published",
         failure: "Could not save the story",
       },
+    },
+    patchChanges: {
+      title: "Change History",
+      metadataDescription: "Slay the Spire 2 patch changes by card, relic, character, and more.",
+      tabs: {
+        notes: "Patch Notes",
+        changes: "Change History",
+      },
+      searchPlaceholder: "Search cards, relics, or monsters",
+      noResults: "No matching change history",
+      changeCount: "{count} changes",
+      more: "Show more",
+      less: "Show less",
+      storyCount: "{count} stories for this change",
+      storyWrite: "Write a story from this change",
     },
     chemicalX: {
       title: "Chemical X",
