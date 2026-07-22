@@ -23,11 +23,15 @@
 | 정적 Compendium | 3,312 | `/compendium`, `/compendium/cards/abrasive`, `/zh/compendium/cards` |
 | 정적 STS1 legacy | 603 | `/cards/bash`, `/relics/anchor`, `/potions/fairy-potion` |
 | patch Worker binding | 336 | `/patches/0.100.0`, `/en/patches/changes` |
-| 아직 분류가 필요한 prerender route | 15 | dev 9, metadata 4, framework error 2 |
+| 정적 metadata | 4 | `/robots.txt`, `/sitemap.xml`, `/favicon.ico`, `/apple-icon.png` |
+| 아직 OpenNext가 필요한 prerender route | 11 | dev 9, framework error 2 |
 
 정적 route 수는 build manifest의 결과이며 HTML/RSC asset 수는 일반적으로 두
-배다. 2026-07-22 `pnpm cf:build`에서 `_cf_static_pages` 8,026개, 전체 asset
-12,667/20,000개, 최대 asset 10.82 MiB로 검증했다.
+배다. 2026-07-22 `pnpm cf:build`에서 `_cf_static_pages` 8,026개를 복사했다.
+OpenNext cache가 완전히 채워진 뒤 `pnpm cf:assets`는 filesystem asset
+17,040/20,000개와 최대 asset 22.39 MiB를 확인했다. Wrangler dry run은 upload
+asset 17,429개를 열거했다. 두 수치 모두 현재 한도 안이지만 각각 약 14.8%,
+12.9%만 남으므로 asset 수도 blocking guardrail로 유지한다.
 
 같은 artifact의 `pnpm cf:size`는 Worker gzip 3180.87 KiB로 Free 한도 3072
 KiB를 108.87 KiB 초과했다. 정적 asset 수와 별개로 OpenNext runtime import가
@@ -154,13 +158,12 @@ OpenNext artifact에 남을 수 있다. `cf:preview`는
 
 판정: **runtime 불필요. asset delivery 확인 후 삭제.**
 
-Next build는 sitemap/robots body와 icon route output을 생성한다. 현재 OpenNext
-artifact에는 `favicon.ico`와 `apple-icon.png`가 정확한 공개 경로에 있어
-Cloudflare asset이 직접 제공한다. 반면 `robots.txt`와 `sitemap.xml`은 asset
-directory에 없으므로 아직 OpenNext route가 응답한다. 두 body를 asset
-collector가 정확한 공개 경로로 복사한 뒤 fallback을 제거한다.
+Next build는 sitemap/robots body와 icon route output을 생성한다. OpenNext
+artifact가 이미 `favicon.ico`와 `apple-icon.png`를 정확한 공개 경로에 둔다.
+Asset collector는 `robots.txt.body`와 `sitemap.xml.body`를 각각 `robots.txt`,
+`sitemap.xml`로 복사한다. 네 경로 모두 Cloudflare asset이 직접 제공할 수 있다.
 
-상태: **icon 2개는 runtime 불필요. robots/sitemap 2개는 정적 복사 필요.**
+상태: **네 경로 모두 코드 반영 및 asset 검증 통과. local response smoke 대기.**
 
 ### 7. Framework error와 미등록 URL
 
@@ -203,7 +206,7 @@ collector가 정확한 공개 경로로 복사한 뒤 fallback을 제거한다.
 
 1. 정적으로 생성된 공개 page를 직접 asset으로 제공한다. **진행 중**
 2. patch route의 binding-missing OpenNext 우회를 제거한다. **진행 중**
-3. metadata route를 정확한 static asset으로 고정한다.
+3. metadata route를 정확한 static asset으로 고정한다. **완료**
 4. 사용자 콘텐츠 dynamic-ID shell을 만든다.
 5. game-only locale Compendium detail shell을 만든다.
 6. dev-only route/API를 production artifact에서 분리한다.
