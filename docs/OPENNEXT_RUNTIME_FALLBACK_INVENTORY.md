@@ -154,11 +154,13 @@ OpenNext artifact에 남을 수 있다. `cf:preview`는
 
 판정: **runtime 불필요. asset delivery 확인 후 삭제.**
 
-Next build는 sitemap/robots body와 icon route output을 생성한다. OpenNext가 이를
-Cloudflare asset directory의 정확한 공개 경로에 두는지 preview에서 확인하고,
-누락된 파일만 asset collector가 복사한다.
+Next build는 sitemap/robots body와 icon route output을 생성한다. 현재 OpenNext
+artifact에는 `favicon.ico`와 `apple-icon.png`가 정확한 공개 경로에 있어
+Cloudflare asset이 직접 제공한다. 반면 `robots.txt`와 `sitemap.xml`은 asset
+directory에 없으므로 아직 OpenNext route가 응답한다. 두 body를 asset
+collector가 정확한 공개 경로로 복사한 뒤 fallback을 제거한다.
 
-상태: **실제 OpenNext artifact와 response header 확인 대기.**
+상태: **icon 2개는 runtime 불필요. robots/sitemap 2개는 정적 복사 필요.**
 
 ### 7. Framework error와 미등록 URL
 
