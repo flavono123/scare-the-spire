@@ -81,6 +81,22 @@ spread한 뒤 React dependency 비교용 `[options, deps]` tuple로 `options`를
 wrapper와 같은 값을 유지하므로 구조상 의미 변화는 없으며, Phase 4 browser
 QA에서 Popper focus, keyboard, tab 동작을 확인한다.
 
+### Phase 3 Webpack 기본값 전환
+
+- build script 전환 commit: `f804f49c5a3ab8117dcaee2b0a171544f67fb7d1`
+- `package.json`의 `build`가 `next build --webpack`을 사용하도록 변경했다.
+- 별도 bundler 인자나 수동 패키징 없이 표준 `pnpm cf:build`가 Webpack
+  Next.js build, trace 후처리, OpenNext bundle, 정적 페이지 복사와 asset
+  검사를 모두 성공했다.
+- handler: raw 13,586,709 B, gzip-9 1,765,875 B, metafile input 485개
+- filesystem asset 12,767개, Wrangler upload asset 13,190개, 최대 asset
+  10.82 MiB, copied static page asset 8,026개
+- Wrangler upload: raw 14,908.30 KiB, gzip 1,823.68 KiB. Free 3 MiB 한도까지
+  1,248.32 KiB 여유가 있어 `pnpm cf:size`가 성공했다.
+- build 전후 `.env.local`과 dirty 입력 SHA-256은 Phase 1 기록과 동일했다.
+- Wrangler의 `options` 중복 key warning 6건은 Phase 2와 같은
+  `@floating-ui/react-dom` source pattern에서 발생했다. 새 warning은 없었다.
+
 ## Phase 1-4 실행 계약
 
 이 문서를 지정해 Phase 4까지 진행하라는 작업은 별도 기획 없이 아래 범위를
