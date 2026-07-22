@@ -28,7 +28,7 @@ export function getResourcePatchIndexMetadata(serviceLocale: ServiceLocale): Met
 }
 
 async function getResourcePatchIndexData(): Promise<ResourcePatchIndexData> {
-  const filePath = path.join(process.cwd(), "public", RESOURCE_PATCH_INDEX_ASSET.replace(/^\//, ""));
+  const filePath = path.join(process.cwd(), "public/generated/sts2-resource-patch-index.json");
   return JSON.parse(await fs.readFile(filePath, "utf-8")) as ResourcePatchIndexData;
 }
 
