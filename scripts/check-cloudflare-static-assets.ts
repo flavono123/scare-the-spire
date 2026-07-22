@@ -60,6 +60,7 @@ const staticServicePageSegments = [
   "this-or-that",
 ] as const;
 const staticLegacyPageSegments = ["cards", "potions", "relics"] as const;
+const staticMetadataAssets = ["robots.txt", "sitemap.xml"] as const;
 
 function walkFiles(dir: string, files: string[] = []): string[] {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -247,6 +248,18 @@ function checkStaticLegacyPages(): number {
   return count;
 }
 
+function checkStaticMetadataAssets(): number {
+  for (const assetName of staticMetadataAssets) {
+    const outputPath = path.join(assetsRoot, assetName);
+    assert(
+      statSync(outputPath, { throwIfNoEntry: false })?.isFile(),
+      `Missing copied static metadata asset: ${outputPath}`,
+    );
+  }
+
+  return staticMetadataAssets.length;
+}
+
 function checkCloudflareAssetLimits(): { count: number; largestBytes: number; largestPath: string } {
   const files = walkFiles(assetsRoot);
   assert(
@@ -275,12 +288,14 @@ const routeCounts = checkServiceLocaleDetails();
 const staticServicePageCount = checkStaticServicePages();
 const staticCompendiumRootCount = checkStaticCompendiumRoots();
 const staticLegacyPageCount = checkStaticLegacyPages();
+const staticMetadataAssetCount = checkStaticMetadataAssets();
 const assetStats = checkCloudflareAssetLimits();
 
 console.log(`Cloudflare static detail routes: ko=${routeCounts.ko}, en=${routeCounts.en}`);
 console.log(`Cloudflare static service page assets: ${staticServicePageCount}`);
 console.log(`Cloudflare static Compendium root assets: ${staticCompendiumRootCount}`);
 console.log(`Cloudflare static legacy page assets: ${staticLegacyPageCount}`);
+console.log(`Cloudflare static metadata assets: ${staticMetadataAssetCount}`);
 console.log(`Cloudflare static assets: ${assetStats.count}/${maxAssetFiles}`);
 console.log(
   `Largest Cloudflare static asset: ${(assetStats.largestBytes / 1024 / 1024).toFixed(2)} MiB (${assetStats.largestPath})`,
