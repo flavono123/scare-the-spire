@@ -124,7 +124,7 @@ test("History Course invalid detail returns to its index with client navigation"
   expect(response?.status()).toBe(200);
   await expect(page.getByRole("heading", { level: 1 })).toContainText(/올바르지|invalid/i);
 
-  await page.getByRole("link", { name: /돌아가기|Back to History Course/i }).click();
+  await page.locator('a[href="/history-course"]').click();
   await expect(page).toHaveURL(absolute("/history-course"));
   await expect(page.locator("#history-course-run-search")).toBeVisible();
 });
@@ -220,7 +220,7 @@ test("Combo mobile index keeps its primary interaction in the viewport", async (
   expect(box?.height ?? 0).toBeGreaterThanOrEqual(36);
   expect(box?.width ?? 0).toBeGreaterThanOrEqual(36);
   await search.click();
-  const searchInput = page.getByRole("textbox", { name: /검색|search/i });
+  const searchInput = page.getByRole("textbox", { name: /통합 검색|Unified search/i });
   await expect(searchInput).toBeVisible();
   await expect(searchInput).toBeFocused();
   await page.keyboard.press("Escape");
