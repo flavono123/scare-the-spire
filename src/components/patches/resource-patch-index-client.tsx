@@ -9,8 +9,9 @@ async function mount() {
 
   const asset = root.dataset.resourcePatchIndexAsset;
   const serviceLocale = root.dataset.serviceLocale === "en" ? "en" : "ko";
-  const gameLocale = isGameLocale(root.dataset.gameLocale)
-    ? root.dataset.gameLocale
+  const gameLocaleValue = root.dataset.gameLocale;
+  const gameLocale = gameLocaleValue && isGameLocale(gameLocaleValue)
+    ? gameLocaleValue
     : serviceLocale === "ko" ? "kor" : "eng";
   const storyPlaceholder = root.dataset.storyPlaceholder ?? "";
   if (!asset) return;
