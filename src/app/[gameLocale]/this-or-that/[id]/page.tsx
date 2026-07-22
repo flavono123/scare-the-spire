@@ -1,7 +1,7 @@
 import {
   generateThisOrThatPostMetadata,
   renderThisOrThatPostPage,
-} from "@/app/this-or-that/[id]/page";
+} from "@/app/this-or-that/[id]/page-content";
 import { getLocalePairFromParams, type LocaleRouteParams } from "@/lib/locale-routing";
 
 type Props = {
