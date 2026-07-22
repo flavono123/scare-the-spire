@@ -1,4 +1,7 @@
-import { generateProfileMetadata, renderProfilePage } from "@/app/(main)/profile/page";
+import {
+  generateProfileMetadata,
+  renderProfilePage,
+} from "@/app/(main)/profile/page-content";
 import { getLocalePairFromParams, type LocaleRouteParams } from "@/lib/locale-routing";
 
 type Props = {
