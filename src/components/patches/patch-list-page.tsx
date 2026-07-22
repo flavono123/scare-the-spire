@@ -19,6 +19,7 @@ import { resolvePatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType, STS2Patch } from "@/lib/types";
 import { getPatchStageGameCopy } from "@/lib/borrowed-game-copy";
 import { PatchArtPreview } from "@/components/patches/patch-art";
+import { PatchSectionTabs } from "@/components/patches/patch-section-tabs";
 
 const PATCH_COPY: Record<ServiceLocale, {
   title: string;
@@ -157,6 +158,11 @@ export async function PatchListPage({
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
       <h1 className="text-2xl font-bold">{copy.title}</h1>
+      <PatchSectionTabs
+        active="notes"
+        serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
+      />
 
       <div className="mt-6 space-y-3">
         {sorted.map((patch, index) => {
