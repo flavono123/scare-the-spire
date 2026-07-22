@@ -1,6 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
+import { getSiteOrigin } from "../src/lib/site-origin";
 
 const BASE_URL = (process.env.CF_PHASE4_ORIGIN ?? process.env.BASE_URL ?? "http://127.0.0.1:8787").replace(/\/$/, "");
+const CANONICAL_ORIGIN = (process.env.CF_PHASE4_CANONICAL_ORIGIN ?? getSiteOrigin()).replace(/\/$/, "");
 const MISSING_UUID = "00000000-0000-4000-8000-000000000000";
 const LOCAL_RUN_ID = "1phase4localrun";
 const LOCAL_RUN_RAW = JSON.stringify({
@@ -43,6 +45,10 @@ const LOCAL_RUN_RAW = JSON.stringify({
 
 function absolute(path: string) {
   return `${BASE_URL}${path}`;
+}
+
+function canonical(path: string) {
+  return `${CANONICAL_ORIGIN}${path}`;
 }
 
 async function blockSupabase(page: Page) {
@@ -88,7 +94,7 @@ test("redirect and canonical metadata match the public locale URL", async ({ req
   ]) {
     const response = await page.goto(absolute(path), { waitUntil: "domcontentloaded" });
     expect(response?.status()).toBe(200);
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", absolute(path));
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", canonical(path));
   }
 });
 
