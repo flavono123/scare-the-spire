@@ -181,8 +181,9 @@ export const serviceMessages = {
     combo: {
       title: "코오오옴보",
       defaultNickname: "익명의 조합가",
-      placeholder: "이 조합이 왜 좋은지, 또는 왜 쓰레기인지 적어 보세요",
-      composerHint: "리소스를 고르거나 이름을 입력해 2개 이상 불러오세요.",
+      composerHint: "리소스를 고르거나 {keyword}를 입력해 2개 이상 불러오세요.",
+      composerHintKeyword: "키워드",
+      composerHintKeywordDescription: "단어 뒤에 {키워드}를 붙이면 해당 키워드의 설명을 불러옵니다.",
       addResource: "리소스 추가",
       resourcePickerLabel: "조합 리소스 고르기",
       resourceSearchPlaceholder: "카드, 유물, 포션 등 검색",
@@ -875,8 +876,9 @@ export const serviceMessages = {
     combo: {
       title: "C-c-c-Combo",
       defaultNickname: "Anonymous combiner",
-      placeholder: "Tell us why this combo rules, or why it is trash",
-      composerHint: "Pick resources or type their names to add at least two.",
+      composerHint: "Pick resources or enter {keyword} to load at least two.",
+      composerHintKeyword: "keywords",
+      composerHintKeywordDescription: "Add {keyword} after a word to load that keyword's description.",
       addResource: "Add resource",
       resourcePickerLabel: "Choose combo resources",
       resourceSearchPlaceholder: "Search cards, relics, potions, and more",

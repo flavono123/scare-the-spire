@@ -61,6 +61,7 @@ interface PatchStageGameCopy {
 
 interface BorrowedGameCopyPayload {
   chemicalXPlaceholder: string;
+  comboPlaceholder: string;
   historyCourseLanding: HistoryCourseLandingGameCopy;
   patchStage: PatchStageGameCopy;
   thisOrThat: ThisOrThatGameCopy;
@@ -390,12 +391,23 @@ async function buildThisOrThatGameCopy(gameLocale: GameLocale): Promise<ThisOrTh
 async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, BorrowedGameCopyPayload>> {
   const entries = await Promise.all(
     GAME_LOCALES.map(async (gameLocale) => {
-      const [chemicalXPlaceholder, historyCourseLanding, patchStage, thisOrThat] = await Promise.all([
+      const [
+        chemicalXPlaceholder,
+        comboPlaceholder,
+        historyCourseLanding,
+        patchStage,
+        thisOrThat,
+      ] = await Promise.all([
         readGameTextWithEnglishFallback(
           gameLocale,
           "events",
           "TEA_MASTER.pages.TEA_OF_DISCOURTESY.description",
         ).then((description) => stripGameMarkup(lastNonEmptyLine(description))),
+        readGameTextWithEnglishFallback(
+          gameLocale,
+          "events",
+          "AMALGAMATOR.pages.INITIAL.description",
+        ).then(lastNonEmptyLine),
         buildHistoryCourseLandingGameCopy(gameLocale),
         buildPatchStageGameCopy(gameLocale),
         buildThisOrThatGameCopy(gameLocale),
@@ -404,6 +416,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         gameLocale,
         {
           chemicalXPlaceholder,
+          comboPlaceholder,
           historyCourseLanding,
           patchStage,
           thisOrThat,

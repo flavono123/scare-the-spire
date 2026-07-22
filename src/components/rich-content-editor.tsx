@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import Image from "@/components/ui/static-image";
+import { RichText } from "@/components/rich-text";
 import { useEditor, EditorContent, ReactRenderer } from "@tiptap/react";
 import type { Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -192,6 +193,7 @@ export interface RichContentEditorProps {
   entities: EntityInfo[];
   onSubmit: (blocks: PostBlock[]) => Promise<void>;
   placeholder: string;
+  richPlaceholder?: string;
   draftKey: string;
   submitLabel: string;
   minChars?: number;
@@ -214,6 +216,7 @@ export function RichContentEditor({
   entities,
   onSubmit,
   placeholder,
+  richPlaceholder,
   draftKey,
   submitLabel,
   minChars = 2,
@@ -313,7 +316,7 @@ export function RichContentEditor({
         horizontalRule: false,
         hardBreak: false,
       }),
-      Placeholder.configure({ placeholder }),
+      Placeholder.configure({ placeholder: richPlaceholder ? "" : placeholder }),
       CharacterCount.configure(maxChars == null ? {} : { limit: maxChars }),
       CustomKeyword,
       EntityMention.configure({
@@ -549,7 +552,8 @@ export function RichContentEditor({
     },
     editorProps: {
       attributes: {
-        class: "min-h-[2.5rem] px-3 py-2 text-sm text-gray-200 outline-none",
+        class: `${richPlaceholder ? "min-h-[3.75rem]" : "min-h-[2.5rem]"} px-3 py-2 text-sm text-gray-200 outline-none`,
+        "aria-placeholder": richPlaceholder ? cleanTooltipText(richPlaceholder) : placeholder,
       },
       handleDOMEvents: {
         compositionend: () => {
@@ -574,7 +578,7 @@ export function RichContentEditor({
         return false;
       },
     },
-  }, [draftKey, entities, maxChars, placeholder]);
+  }, [draftKey, entities, maxChars, placeholder, richPlaceholder]);
 
   useEffect(() => {
     if (
@@ -648,8 +652,16 @@ export function RichContentEditor({
   return (
     <div className="border border-border rounded-lg bg-card/30 overflow-visible">
       <div className="overflow-visible relative">
+        {richPlaceholder && charCount === 0 && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-3 top-2 font-game-text text-sm leading-5 text-gray-600"
+          >
+            <RichText text={richPlaceholder} />
+          </div>
+        )}
         <EntityMapProvider value={entityMap}>
-          <EditorContent editor={editor} />
+          <EditorContent editor={editor} className="relative z-10" />
         </EntityMapProvider>
       </div>
 

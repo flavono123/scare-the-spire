@@ -94,6 +94,7 @@ export function ComboResourcePicker({
     [normalizedQuery, scopedEntities],
   );
   const hasMoreBrowseResults = !normalizedQuery && scopedEntities.length > results.length;
+  const [hintBeforeKeyword, hintAfterKeyword] = copy.composerHint.split("{keyword}");
 
   useEffect(() => {
     if (!open) return;
@@ -150,7 +151,25 @@ export function ComboResourcePicker({
           {copy.addResource}
         </button>
         <p className="col-span-2 row-start-2 min-w-0 text-xs leading-relaxed text-zinc-500 sm:col-span-1 sm:col-start-2 sm:row-start-1">
-          {copy.composerHint}
+          {hintBeforeKeyword}
+          <span className="group/keyword relative inline">
+            <span
+              tabIndex={0}
+              className="cursor-help font-semibold spire-gold opacity-70 outline-none transition-opacity hover:opacity-100 focus-visible:opacity-100"
+              data-variant="ghost"
+            >
+              {copy.composerHintKeyword}
+            </span>
+            <span className="pointer-events-none absolute left-1/2 top-full z-[100] mt-1 hidden w-48 -translate-x-1/2 rounded border border-yellow-500/30 bg-[#0a0a1a] px-2.5 py-2 text-left shadow-xl group-hover/keyword:block group-focus-within/keyword:block">
+              <span className="block text-xs font-bold text-yellow-400">
+                {copy.composerHintKeyword}
+              </span>
+              <span className="mt-0.5 block text-[11px] font-normal leading-relaxed text-gray-300">
+                {copy.composerHintKeywordDescription}
+              </span>
+            </span>
+          </span>
+          {hintAfterKeyword}
         </p>
         <span
           aria-live="polite"

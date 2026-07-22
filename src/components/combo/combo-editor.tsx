@@ -17,6 +17,7 @@ const RichContentEditor = dynamic<RichContentEditorProps>(
 
 interface ComboEditorProps {
   entities: EntityInfo[];
+  placeholder: string;
   profileNickname: string;
   serviceLocale: ServiceLocale;
   onSubmit: (blocks: PostBlock[], nickname: string) => Promise<void>;
@@ -24,6 +25,7 @@ interface ComboEditorProps {
 
 export function ComboEditor({
   entities,
+  placeholder,
   profileNickname,
   serviceLocale,
   onSubmit,
@@ -84,7 +86,8 @@ export function ComboEditor({
         <RichContentEditor
           entities={entities}
           onSubmit={handleSubmit}
-          placeholder={copy.placeholder}
+          placeholder={placeholder}
+          richPlaceholder={placeholder}
           draftKey="sts-combo-draft"
           submitLabel={copy.submit}
           maxChars={null}

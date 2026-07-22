@@ -1,6 +1,7 @@
 {
   "kor": {
     "chemicalXPlaceholder": "오, 이 차는 무례한 사람들에게 내어지는 차입니다...",
+    "comboPlaceholder": "“[aqua]승천하는 영혼[/aqua]을 지닌 자가 내 공방에 찾아온 건가? 좋아, [jitter]결합이다[/jitter]!”",
     "historyCourseLanding": {
       "title": "역사 강의서",
       "runHistoryLabel": "도전 이력",
@@ -24,6 +25,7 @@
   },
   "eng": {
     "chemicalXPlaceholder": "Oh, this tea is for the discourteous...",
+    "comboPlaceholder": "“One with an [aqua]Ascending Spirit[/aqua] has found my workshop? Let's get [jitter]COMBINING[/jitter]!”",
     "historyCourseLanding": {
       "title": "History Course",
       "runHistoryLabel": "Run History",
@@ -47,6 +49,7 @@
   },
   "zhs": {
     "chemicalXPlaceholder": "啊，这是专门给无礼之人准备的茶……",
+    "comboPlaceholder": "“一个拥有[aqua]进阶之魂[/aqua]的人竟然找到了我的工坊？那就让我们开始[jitter]融合[/jitter]吧！”",
     "historyCourseLanding": {
       "title": "历史课",
       "runHistoryLabel": "历史记录",
@@ -70,6 +73,7 @@
   },
   "jpn": {
     "chemicalXPlaceholder": "なるほど、これは無作法者に振る舞われるお茶らしい……。",
+    "comboPlaceholder": "「[aqua]高みへと昇る[/aqua]志を持つ者よ、我が工房を見つけおったか。 さあ、[jitter]融合[/jitter]の時間だ！」",
     "historyCourseLanding": {
       "title": "歴史学教程",
       "runHistoryLabel": "プレイ履歴",
@@ -93,6 +97,7 @@
   },
   "deu": {
     "chemicalXPlaceholder": "Oh, dieser Tee ist für die Unhöflichen...",
+    "comboPlaceholder": "„Jemand mit [aqua]Aufstiegsgeist[/aqua] hat meine Werkstatt gefunden? Fangen wir an, zu [jitter]KOMBINIEREN[/jitter]!“",
     "historyCourseLanding": {
       "title": "Geschichtskurs",
       "runHistoryLabel": "Run-Historie",
@@ -116,6 +121,7 @@
   },
   "fra": {
     "chemicalXPlaceholder": "Ah, c’est le thé des malpolis...",
+    "comboPlaceholder": "« Un être doté d’un [aqua]Esprit Ascendant[/aqua] a trouvé mon atelier ? Le moment est venu de réaliser quelque [jitter]ALLIAGE[/jitter] ! »",
     "historyCourseLanding": {
       "title": "Manuel d'Histoire",
       "runHistoryLabel": "Historique",
@@ -139,6 +145,7 @@
   },
   "ita": {
     "chemicalXPlaceholder": "Oh, questo tè è per chi non conosce le buone maniere...",
+    "comboPlaceholder": "\"Un essere con uno [aqua]spirito ascendente[/aqua] ha trovato la mia bottega, eh? È il momento di [jitter]COMBINARE[/jitter]!\"",
     "historyCourseLanding": {
       "title": "Corso di Storia",
       "runHistoryLabel": "Storico partite",
@@ -162,6 +169,7 @@
   },
   "spa": {
     "chemicalXPlaceholder": "Ah, el té de la descortesía...",
+    "comboPlaceholder": "—¿Alguien con un [aqua]Espíritu Ascendiente[/aqua] ha encontrado mi taller? ¡Es hora de [jitter]COMBINAR[/jitter]!",
     "historyCourseLanding": {
       "title": "Libro de historia",
       "runHistoryLabel": "Historial",
@@ -185,6 +193,7 @@
   },
   "esp": {
     "chemicalXPlaceholder": "Oh, este té es para quienes no tienen cortesía.",
+    "comboPlaceholder": "—¿Alguien con un [aqua]espíritu ascendente[/aqua] encontró mi taller? ¡A [jitter]COMBINAR[/jitter]!",
     "historyCourseLanding": {
       "title": "Clase de historia",
       "runHistoryLabel": "Historial de partidas",
@@ -208,6 +217,7 @@
   },
   "ptb": {
     "chemicalXPlaceholder": "Oh, este chá é pela descortesia...",
+    "comboPlaceholder": "“Alguém com um [aqua]Espírito de Ascensão[/aqua] encontrou a minha oficina? Hora da [jitter]COMBINAÇÃO[/jitter]!”",
     "historyCourseLanding": {
       "title": "Estudos de História",
       "runHistoryLabel": "Histórico de Partidas",
@@ -231,6 +241,7 @@
   },
   "rus": {
     "chemicalXPlaceholder": "Оказывается, это чай для грубиянов…",
+    "comboPlaceholder": "«Неужто ко мне в мастерскую пожаловали [aqua]гости[/aqua]?! [jitter]Смеситель[/jitter] к вашим услугам!»",
     "historyCourseLanding": {
       "title": "Лекция по истории",
       "runHistoryLabel": "История вылазок",
@@ -254,6 +265,7 @@
   },
   "pol": {
     "chemicalXPlaceholder": "Oj, to herbata dla nieuprzejmych...",
+    "comboPlaceholder": "„[aqua]Wyniesiony[/aqua] odnalazł mój warsztat? Czas na [jitter]SPAWANIE[/jitter]!”",
     "historyCourseLanding": {
       "title": "Podręcznik do historii",
       "runHistoryLabel": "Historia wypraw",
@@ -277,6 +289,7 @@
   },
   "tha": {
     "chemicalXPlaceholder": "โอ้ ชานี้สำหรับผู้ที่ไร้มารยาท...",
+    "comboPlaceholder": "“ผู้ซึ่งมี[aqua]วิญญาณผู้บรรลุ[/aqua]หาห้องทำงานของฉันเจออย่างนั้นเหรอ? เริ่มการ[jitter]ประสาน[/jitter]กันเลย!”",
     "historyCourseLanding": {
       "title": "หลักสูตรประวัติศาสตร์",
       "runHistoryLabel": "ประวัติการเดินทาง",
@@ -300,6 +313,7 @@
   },
   "tur": {
     "chemicalXPlaceholder": "Ah... bu çay, nezaketsizler içindir...",
+    "comboPlaceholder": "“[aqua]Yükselen Ruh[/aqua]’a sahip biri atölyemi mi buldu? Hadi [jitter]KAYNAŞTIRALIM[/jitter]!”",
     "historyCourseLanding": {
       "title": "Tarih Dersi",
       "runHistoryLabel": "Oyun Geçmişi",

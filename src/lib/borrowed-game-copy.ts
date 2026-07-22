@@ -28,6 +28,7 @@ export interface PatchStageGameCopy {
 
 interface BorrowedGameCopyPayload {
   chemicalXPlaceholder: string;
+  comboPlaceholder: string;
   historyCourseLanding: HistoryCourseLandingGameCopy;
   patchStage: PatchStageGameCopy;
   thisOrThat: ThisOrThatGameCopy;
@@ -43,6 +44,12 @@ export async function getChemicalXPlaceholder(
   gameLocale: GameLocale,
 ): Promise<string> {
   return getBorrowedGameCopy(gameLocale).chemicalXPlaceholder;
+}
+
+export async function getComboPlaceholder(
+  gameLocale: GameLocale,
+): Promise<string> {
+  return getBorrowedGameCopy(gameLocale).comboPlaceholder;
 }
 
 export async function getPatchStageGameCopy(

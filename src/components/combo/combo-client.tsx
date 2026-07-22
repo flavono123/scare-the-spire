@@ -20,9 +20,10 @@ import { ComboPostCard } from "./combo-post-card";
 interface ComboClientProps {
   entities: EntityInfo[];
   gameLocale: GameLocale;
+  placeholder: string;
 }
 
-export function ComboClient({ entities, gameLocale }: ComboClientProps) {
+export function ComboClient({ entities, gameLocale, placeholder }: ComboClientProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].combo;
   const { userId, ready, ensureUser } = useAuth();
@@ -43,31 +44,21 @@ export function ComboClient({ entities, gameLocale }: ComboClientProps) {
 
   return (
     <div data-combo-page="index" className="space-y-6">
-      <div className="relative overflow-hidden rounded-xl border border-yellow-500/15 px-4 py-4 shadow-[0_12px_34px_rgba(0,0,0,0.28)]">
+      <header className="flex items-center gap-3">
         <Image
-          src="/images/sts2/events/amalgamator.webp"
-          alt=""
-          fill
-          sizes="(max-width: 672px) 100vw, 640px"
-          className="object-cover object-center opacity-35"
-          aria-hidden
+          src="/images/sts2/badges/ccccombo.webp"
+          alt={copy.title}
+          width={48}
+          height={48}
+          className="object-contain drop-shadow-[0_0_14px_rgba(250,204,21,0.28)]"
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#080810]/95 via-[#0b0b16]/75 to-[#160d08]/55" />
-        <div className="relative flex items-center gap-3">
-          <Image
-            src="/images/sts2/badges/ccccombo.webp"
-            alt={copy.title}
-            width={48}
-            height={48}
-            className="object-contain drop-shadow-[0_0_14px_rgba(250,204,21,0.28)]"
-          />
-          <h1 className="font-service text-xl font-bold text-yellow-400">{copy.title}</h1>
-        </div>
-      </div>
+        <h1 className="font-service text-xl font-bold text-yellow-400">{copy.title}</h1>
+      </header>
 
       {ready && !unavailable && (
         <ComboEditor
           entities={entities}
+          placeholder={placeholder}
           profileNickname={profile.nickname}
           serviceLocale={serviceLocale}
           onSubmit={handleSubmit}
