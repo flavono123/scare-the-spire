@@ -216,6 +216,15 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PATCH_COMPENDIUM_MANIFEST_SOURCE: live
 
+      - name: Smoke patch Worker immediately after deploy
+        if: steps.changes.outputs.patch == 'true'
+        run: >-
+          pnpm cf:smoke --
+          --origin "$NEXT_PUBLIC_SITE_ORIGIN"
+          --scope patch
+          --attempts 30
+          --retry-delay-ms 5000
+
       - name: Deploy to Cloudflare Workers
         if: steps.changes.outputs.main == 'true'
         run: |
@@ -237,66 +246,12 @@ jobs:
 
       - name: Smoke deployed Cloudflare Worker
         if: steps.changes.outputs.main == 'true'
-        run: |
-          origin="${NEXT_PUBLIC_SITE_ORIGIN%/}"
-
-          smoke() {
-            path="$1"
-            url="${origin}${path}"
-
-            for attempt in $(seq 1 30); do
-              status="$(curl --silent --show-error --output /dev/null --write-out "%{http_code}" "$url" || true)"
-              echo "smoke ${url}: HTTP ${status} (attempt ${attempt}/30)"
-              case "$status" in
-                2*|3*) return 0 ;;
-              esac
-              sleep 5
-            done
-
-            echo "smoke failed for ${url}"
-            return 1
-          }
-
-          smoke_static_detail() {
-            path="$1"
-            url="${origin}${path}"
-
-            for mode in html rsc; do
-              headers="$(mktemp)"
-              for attempt in $(seq 1 30); do
-                if [[ "$mode" == "rsc" ]]; then
-                  status="$(curl --silent --show-error --dump-header "$headers" --header "RSC: 1" --output /dev/null --write-out "%{http_code}" "${url}?_rsc=ci" || true)"
-                  expected_content_type="text/x-component"
-                else
-                  status="$(curl --silent --show-error --dump-header "$headers" --header "Accept: text/html" --output /dev/null --write-out "%{http_code}" "$url" || true)"
-                  expected_content_type="text/html"
-                fi
-
-                static_page="$(tr -d '\r' < "$headers" | awk -F ': *' 'tolower($1) == "x-cf-static-page" { print tolower($2) }' | tail -1)"
-                content_type="$(tr -d '\r' < "$headers" | awk -F ': *' 'tolower($1) == "content-type" { print tolower($2) }' | tail -1)"
-                echo "static smoke ${url} (${mode}): HTTP ${status}, x-cf-static-page=${static_page:-missing}, content-type=${content_type:-missing} (attempt ${attempt}/30)"
-
-                if [[ "$status" == 2* && "$static_page" == "compendium" && "$content_type" == *"$expected_content_type"* ]]; then
-                  rm -f "$headers"
-                  break
-                fi
-
-                if [[ "$attempt" == "30" ]]; then
-                  rm -f "$headers"
-                  echo "static detail smoke failed for ${url} (${mode})"
-                  return 1
-                fi
-                sleep 5
-              done
-            done
-          }
-
-          smoke "/"
-          smoke "/compendium/cards"
-          smoke_static_detail "/compendium/powers/painful_stabs"
-          smoke_static_detail "/en/compendium/powers/painful_stabs"
-          smoke "/generated/search-index.json"
-          smoke "/generated/compendium-resource-manifest.json"
+        run: >-
+          pnpm cf:smoke --
+          --origin "$NEXT_PUBLIC_SITE_ORIGIN"
+          --scope main
+          --attempts 30
+          --retry-delay-ms 5000
 
       - name: Redeploy patch Worker after main
         if: steps.changes.outputs.main == 'true' && steps.changes.outputs.patch_after_main == 'true'
@@ -319,29 +274,10 @@ jobs:
           PATCH_COMPENDIUM_MANIFEST_SOURCE: live
 
       - name: Smoke deployed patch Worker routes
-        if: steps.changes.outputs.patch == 'true' || steps.changes.outputs.patch_after_main == 'true'
-        run: |
-          origin="${NEXT_PUBLIC_SITE_ORIGIN%/}"
-          latest="$(node -e 'const patches = require("./data/sts2-patches.json"); patches.sort((a, b) => b.date.localeCompare(a.date)); process.stdout.write(patches[0].version)')"
-
-          smoke() {
-            path="$1"
-            url="${origin}${path}"
-
-            for attempt in $(seq 1 30); do
-              status="$(curl --silent --show-error --output /dev/null --write-out "%{http_code}" "$url" || true)"
-              echo "smoke ${url}: HTTP ${status} (attempt ${attempt}/30)"
-              case "$status" in
-                2*|3*) return 0 ;;
-              esac
-              sleep 5
-            done
-
-            echo "smoke failed for ${url}"
-            return 1
-          }
-
-          smoke "/patches"
-          smoke "/patches/${latest}"
-          smoke "/en/patches/${latest}"
-          smoke "/_patches/patch.css"
+        if: steps.changes.outputs.patch_after_main == 'true'
+        run: >-
+          pnpm cf:smoke --
+          --origin "$NEXT_PUBLIC_SITE_ORIGIN"
+          --scope patch
+          --attempts 30
+          --retry-delay-ms 5000
