@@ -34,8 +34,17 @@ const compendiumSegments = new Set([
   "relics",
 ]);
 const staticServicePageSegments = new Set([
+  "byrdispatch",
   "chemical-x",
+  "combo",
   "history-course",
+  "profile",
+  "this-or-that",
+]);
+const staticLegacyPageSegments = new Set([
+  "cards",
+  "potions",
+  "relics",
 ]);
 
 function walk(dir, files = []) {
@@ -66,6 +75,21 @@ function staticPageRelativePath(file) {
     && gameLocalePathSegments.has(parts[0])
     && staticServicePageSegments.has(parsed.name);
   if (isDefaultLocaleServicePage || isGameLocaleServicePage) {
+    return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
+  }
+
+  const isLegacyIndex = parts.length === 0 && staticLegacyPageSegments.has(parsed.name);
+  const isLegacyDetail = parts.length === 1 && staticLegacyPageSegments.has(parts[0]);
+  if (isLegacyIndex || isLegacyDetail) {
+    return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
+  }
+
+  const isDefaultCompendiumRoot = parts.length === 0 && parsed.name === "compendium";
+  const isGameLocaleCompendiumRoot =
+    parts.length === 1
+    && gameLocalePathSegments.has(parts[0])
+    && parsed.name === "compendium";
+  if (isDefaultCompendiumRoot || isGameLocaleCompendiumRoot) {
     return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
   }
 
