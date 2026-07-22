@@ -109,7 +109,7 @@ function mainCases() {
     ...page("/compendium/cards", "compendium"),
     ...page("/compendium/powers/painful_stabs", "compendium"),
     ...page("/en/compendium/powers/painful_stabs", "compendium"),
-    ...page("/zh/compendium/powers/painful_stabs"),
+    ...page("/zh/compendium/powers?power=painful_stabs", "compendium"),
     ...page("/chemical-x", "service"),
     ...page("/history-course", "service"),
     ...page("/this-or-that", "service"),
