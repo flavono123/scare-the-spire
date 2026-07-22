@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useMemo, type CSSProperties } from "react";
 import Image from "@/components/ui/static-image";
 import { TinyCardIcon } from "@/components/history-course/card-action-icon";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
@@ -21,20 +21,6 @@ type ComboStackStyle = CSSProperties & {
   "--combo-expanded-x": string;
   "--combo-z": number;
 };
-
-function useCoarsePointer(): boolean {
-  const [isCoarsePointer, setIsCoarsePointer] = useState(false);
-
-  useEffect(() => {
-    const query = window.matchMedia("(hover: none), (pointer: coarse)");
-    const update = () => setIsCoarsePointer(query.matches);
-    update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, []);
-
-  return isCoarsePointer;
-}
 
 function ComboResourceAsset({
   entity,
@@ -92,7 +78,6 @@ export function ComboResourceStack({
       .filter((entity): entity is EntityInfo => Boolean(entity)),
     [entityMap, resources],
   );
-  const isCoarsePointer = useCoarsePointer();
   const entities = allEntities.slice(0, 4);
   const copy = serviceMessages[serviceLocale].combo;
 
@@ -127,9 +112,7 @@ export function ComboResourceStack({
               role="listitem"
               className={cn(
                 "group/item absolute left-0 top-0 z-[var(--combo-z)] block transition-transform duration-300 ease-out motion-reduce:transition-none",
-                isCoarsePointer
-                  ? "translate-x-[var(--combo-expanded-x)] -translate-y-1"
-                  : "translate-x-[var(--combo-collapsed-x)] group-hover/stack:translate-x-[var(--combo-expanded-x)] group-hover/stack:-translate-y-1 group-focus-within/stack:translate-x-[var(--combo-expanded-x)] group-focus-within/stack:-translate-y-1",
+                "translate-x-[var(--combo-collapsed-x)] group-hover/stack:translate-x-[var(--combo-expanded-x)] group-hover/stack:-translate-y-1 group-focus-within/stack:translate-x-[var(--combo-expanded-x)] group-focus-within/stack:-translate-y-1",
                 "hover:!-translate-y-3 hover:!z-50 focus-within:!-translate-y-3 focus-within:!z-50",
               )}
               style={style}
