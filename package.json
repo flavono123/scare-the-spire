@@ -9,7 +9,7 @@
     "dev:mobile": "node scripts/mobile-qa.mjs",
     "qa:mobile": "node scripts/mobile-qa.mjs",
     "static:data": "tsx scripts/generate-static-api-data.ts && tsx scripts/generate-resource-patch-index.ts",
-    "build": "pnpm static:data && next build && tsx scripts/prune-dev-route-traces.ts && tsx scripts/check-vercel-function-traces.ts",
+    "build": "pnpm static:data && next build --webpack && tsx scripts/prune-dev-route-traces.ts && tsx scripts/check-vercel-function-traces.ts",
     "cf:build": "pnpm static:data && opennextjs-cloudflare build && node scripts/copy-cf-static-pages.mjs && pnpm cf:assets",
     "cf:assets": "tsx scripts/check-cloudflare-static-assets.ts",
     "cf:size": "node scripts/check-cloudflare-worker-size.mjs",
