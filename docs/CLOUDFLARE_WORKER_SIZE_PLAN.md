@@ -14,6 +14,34 @@ OpenNext를 제거한다.
 이 문서는 단기적인 번들 여유 확보 계획이다. 최종 목표 아키텍처와 정적
 라우팅 전환은 OpenNext exit 문서를 따른다.
 
+## 2026-07-22 실행 기록
+
+### Phase 1 기준선
+
+- source HEAD: `fbdc4a4b64d2e1f2213dd64b7d9cb9b49c410f66`
+- dirty 입력: `public/generated/sts2-patch-lines.json` 1,231,698 B,
+  SHA-256 `0fe6142cc5fd8c3086d0c0216111df2ba5f6a5e5342a26b0729dfcce7c91e6f0`
+- build 환경: Node 25.8.0, pnpm 10.21.0, Next.js 16.2.6,
+  `@opennextjs/cloudflare` 1.19.11, Wrangler 4.100.0, macOS arm64
+- `.env.local` SHA-256:
+  `bcd19f28ed1d74a9c5e16c46f8bb5bcf20ed37861507b2ca6fc76331c2f6e9d8`.
+  공개 build 입력은 `NEXT_PUBLIC_SUPABASE_URL`,
+  `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SUPABASE_ENV`이며 원문 값은
+  기록하지 않았다.
+- 기본 Turbopack `pnpm cf:build` 성공. build 전후 dirty 입력과 환경 파일의
+  SHA-256은 동일했다.
+- handler: raw 15,448,643 B, gzip-9 3,133,393 B, metafile input 833개
+- filesystem asset: 12,669개, 최대 10.82 MiB
+  (`fonts/GyeonggiCheonnyeonBatangBold.ttf`)
+- Wrangler upload asset: 12,983개
+- Wrangler upload: raw 16,635.14 KiB, gzip 3,180.71 KiB. Free 3 MiB 한도를
+  108.71 KiB 초과해 예상대로 `pnpm cf:size`가 실패했다.
+
+Phase 2의 제어된 A/B는 helper 이동이 끝난 한 source snapshot에서 같은
+`.env.local`, generated data bytes, 고정 `NEXT_BUILD_ID`, OpenNext standalone
+환경을 사용해 다시 측정한다. 이 Phase 1 값은 현재 초과 상태의 재현
+기준선이며 A/B 완료 판정값은 아니다.
+
 ## Phase 1-4 실행 계약
 
 이 문서를 지정해 Phase 4까지 진행하라는 작업은 별도 기획 없이 아래 범위를
