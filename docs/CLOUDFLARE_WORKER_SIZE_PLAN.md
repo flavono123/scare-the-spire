@@ -2,12 +2,13 @@
 
 ## Status
 
-2026-07-22 최신 검증 artifact의 메인 Worker gzip 업로드 크기는 3180.87
-KiB로, Cloudflare Workers Free의 3 MiB(3072 KiB) 한도를 108.87 KiB
-초과한다. 앞선 3006.95 KiB 측정과 1821.46 KiB Webpack 실험은 서로 다른
-코드 snapshot에서 얻은 역사적 기준이므로 현재 완료 판정값으로 사용하지
-않는다. 기능을 삭제하지 않고 우선 Next.js 빌드를 Turbopack에서 Webpack으로
-전환해 중복된 서버 청크를 줄이고, 이후
+2026-07-22 Phase 1-4의 local 구현과 기능 보존 QA를 완료했다. 최신 검증
+artifact의 메인 Worker gzip 업로드 크기는 1,823.88 KiB로, Cloudflare Workers
+Free의 3 MiB(3,072 KiB) 한도까지 1,248.12 KiB 여유가 있다. 같은 작업의
+Phase 1 Turbopack 기준선은 3,180.71 KiB로 한도를 108.71 KiB 초과했다.
+
+production push/deploy와 Phase 4.1은 실행하지 않았다. 이후 구조 변경은 별도
+요청을 받아
 [OpenNext Runtime Exit Plan](./OPENNEXT_EXIT_PLAN.md)에 따라 요청 경로에서
 OpenNext를 제거한다.
 
@@ -96,6 +97,49 @@ QA에서 Popper focus, keyboard, tab 동작을 확인한다.
 - build 전후 `.env.local`과 dirty 입력 SHA-256은 Phase 1 기록과 동일했다.
 - Wrangler의 `options` 중복 key warning 6건은 Phase 2와 같은
   `@floating-ui/react-dom` source pattern에서 발생했다. 새 warning은 없었다.
+
+### Phase 4 기능 보존 QA
+
+- main artifact build source commit은
+  `d4808f8a367aee196611dafd9084ab3908306479`, 최종 QA harness commit은
+  `b48e7c9139ec4e55dbd1481e5b60dc695e49bc26`이다. 그 사이 변경은
+  `scripts/cloudflare-*`의 검증 보강뿐이며 main Worker 입력에는 포함되지
+  않는다.
+- `pnpm i18n:validate`는 game localization 644개와 borrowed phrase fixture
+  5개를 검증했고, `pnpm lint`와 `pnpm patch:test`가 성공했다.
+- production-shaped main/patch Worker와 service binding에서 route smoke 53개가
+  모두 성공했다. 한국어·영어·중국어 home/index/detail의 document/RSC,
+  Chemical X·Combo·History Course·This or That의 유효 상세와 invalid nested
+  404 document/RSC, 정적 검색/Compendium data, patch index/상세/변경 이력과
+  patch asset을 포함한다.
+- Playwright 8개가 모두 성공했다. locale ownership, redirect와 public
+  canonical, 동적 상세 direct refresh, client navigation, 공통 Supabase
+  unavailable UI, IndexedDB-only History Course run, 모바일 overflow와 36 px
+  hit target, 두 검색 UI의 focus·Tab·Shift+Tab·Escape 상태를 확인했다.
+- local preview request origin과 public canonical origin을 분리하도록 QA
+  assertion을 고쳤고, prefixless 한국어 기대값과 브라우저 자동 locale 감지의
+  경쟁을 없애기 위해 Phase 4 browser locale을 `ko-KR`로 고정했다.
+- 마지막 `pnpm cf:size`는 raw 14,908.30 KiB, gzip 1,823.88 KiB로 성공했다.
+  handler는 raw 13,586,762 B, gzip-9 1,765,970 B, metafile input 485개다.
+  filesystem asset은 12,767개, Wrangler upload asset은 13,190개, copied static
+  page asset은 8,026개이며 최대 asset은 11,346,484 B(10.82 MiB)
+  `fonts/GyeonggiCheonnyeonBatangBold.ttf`다.
+- build/QA 뒤에도 unrelated dirty 입력
+  `public/generated/sts2-patch-lines.json`은 1,231,698 B, SHA-256
+  `0fe6142cc5fd8c3086d0c0216111df2ba5f6a5e5342a26b0729dfcce7c91e6f0`,
+  `.env.local`은 SHA-256
+  `bcd19f28ed1d74a9c5e16c46f8bb5bcf20ed37861507b2ca6fc76331c2f6e9d8`로
+  유지됐다.
+
+남은 메시지는 기능 실패로 판정하지 않았다. Wrangler minify의 `options` 중복
+key warning 6건은 그대로이며 위 focus/keyboard/Tab QA가 통과했다. Wrangler
+4.100.0과 4.113.0의 local `dev`는 전체 12,767개 asset scan에서 macOS
+`spawn EBADF`로 종료됐다. build, asset 검사와 dry-run size는 전체 asset으로
+성공했으므로 같은 Worker와 service binding을 전체 non-static asset 및 QA
+route의 static page를 담은 임시 `--assets` mirror로 기동하고 `pnpm cf:phase4
+-- --origin http://127.0.0.1:8787`을 실행했다. 예상된 invalid nested 404 동안
+Miniflare의 read-only incremental-cache 메시지가 나타났지만 document/RSC
+응답은 모두 정확히 404였고 전체 QA가 통과했다.
 
 ## Phase 1-4 실행 계약
 
