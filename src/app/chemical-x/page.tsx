@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { ChemicalXClient } from "@/components/chemicalx/chemicalx-client";
+import { ServiceBackground } from "@/components/service-background";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { CHEMICAL_X_PAGE_OG_IMAGE } from "@/lib/page-og-images";
@@ -36,8 +37,14 @@ export async function renderChemicalXPage(
   ]);
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-6">
-      <ChemicalXClient entities={entities} placeholder={placeholder} />
+    <div className="relative isolate min-h-[calc(100svh-3rem)]">
+      <ServiceBackground
+        src="/images/sts2/cards/eradicate.webp"
+        imageClassName="object-center"
+      />
+      <div className="mx-auto max-w-2xl px-4 py-6">
+        <ChemicalXClient entities={entities} placeholder={placeholder} />
+      </div>
     </div>
   );
 }
