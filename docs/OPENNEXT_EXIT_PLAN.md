@@ -1,5 +1,8 @@
 # OpenNext Runtime Exit Plan
 
+Related short-term bundle work:
+[Cloudflare Worker Bundle Size Reduction Plan](./CLOUDFLARE_WORKER_SIZE_PLAN.md).
+
 ## Status
 
 The service began as a Vercel-targeted Next.js application. OpenNext was added
