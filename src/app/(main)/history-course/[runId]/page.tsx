@@ -1,19 +1,12 @@
 import type { Metadata } from "next";
-import { DeferredRunDetailLoader } from "@/components/history-course/deferred-run-detail-loader";
-import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
-import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
-import { withPageOgImage } from "@/lib/page-og-images";
-import { serviceMessages } from "@/messages/service";
+import {
+  generateHistoryCourseRunMetadata,
+  renderHistoryCourseRunPage,
+} from "./page-content";
 
-export async function generateHistoryCourseRunMetadata(
-  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
-): Promise<Metadata> {
-  const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  return withPageOgImage({
-    title: `${serviceMessages[serviceLocale].nav.historyCourse} — ${serviceMessages[serviceLocale].historyCourse.runTitleSuffix}`,
-    description: serviceMessages[serviceLocale].historyCourse.runDescription,
-  }, "/history-course/[runId]");
-}
+type Props = {
+  params: Promise<{ runId: string }>;
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   return generateHistoryCourseRunMetadata();
@@ -23,17 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
 // The loader resolves runId from IndexedDB on the client.
 export const dynamic = "force-dynamic";
 
-export async function renderHistoryCourseRunPage(
-  runId: string,
-) {
-  return <DeferredRunDetailLoader runId={runId} />;
-}
-
-export default async function HistoryCourseRunPage({
-  params,
-}: {
-  params: Promise<{ runId: string }>;
-}) {
+export default async function HistoryCourseRunPage({ params }: Props) {
   const { runId } = await params;
   return renderHistoryCourseRunPage(runId);
 }
