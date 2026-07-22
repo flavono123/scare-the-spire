@@ -14,7 +14,7 @@
 ## Current Boundary
 
 현재 `.next/prerender-manifest.json`에는 4,364개의 prerendered route가 있다.
-이번 정적 분기 확장 후 예상 delivery는 다음과 같다.
+이번 정적 분기 확장 후 확인한 delivery는 다음과 같다.
 
 | Delivery | Route 수 | 대표 |
 | --- | ---: | --- |
@@ -26,7 +26,12 @@
 | 아직 분류가 필요한 prerender route | 15 | dev 9, metadata 4, framework error 2 |
 
 정적 route 수는 build manifest의 결과이며 HTML/RSC asset 수는 일반적으로 두
-배다. 최종 수치는 `pnpm cf:build`와 `pnpm cf:assets`에서 검증한다.
+배다. 2026-07-22 `pnpm cf:build`에서 `_cf_static_pages` 8,026개, 전체 asset
+12,667/20,000개, 최대 asset 10.82 MiB로 검증했다.
+
+같은 artifact의 `pnpm cf:size`는 Worker gzip 3180.87 KiB로 Free 한도 3072
+KiB를 108.87 KiB 초과했다. 정적 asset 수와 별개로 OpenNext runtime import가
+여전히 남아 있기 때문이며, 이 결과는 production 배포 차단 상태다.
 
 ## Fallback Types and Decisions
 
@@ -46,7 +51,7 @@
 - main Worker가 bounded path matcher로 asset을 직접 반환한다.
 - `x-cf-static-page`로 `service`, `compendium`, `legacy`를 구분한다.
 
-상태: **코드 반영, build/preview 검증 대기.**
+상태: **코드 반영, build/asset 검증 통과. local route smoke 대기.**
 
 ### 2. 무한한 사용자 콘텐츠 ID 상세
 
@@ -112,7 +117,8 @@ Patch route의 production owner는 정적 `scare-the-spire-patches` Worker다. b
 처리: binding이 없으면 `503`, `Retry-After: 60`, `Cache-Control: no-store`로
 명시적으로 실패한다.
 
-상태: **코드 반영, preview에서 binding smoke 대기.**
+상태: **코드 반영. Wrangler가 binding `local [connected]`까지 확인했지만 local
+runtime 시작 전 Miniflare `spawn EBADF`로 종료되어 route smoke 대기.**
 
 ### 5. 개발 전용 page와 API
 
