@@ -22,6 +22,7 @@ type ExecutionContextLike = {
 import openNextWorker from "../.open-next/worker.js";
 import {
   staticCompendiumAssetPath,
+  staticLegacyPageAssetPath,
   staticServicePageAssetPath,
 } from "./static-page-routing";
 
@@ -185,14 +186,29 @@ async function maybeServeStaticServicePage(request: Request, env: Env, url: URL)
   return assetPath ? fetchStaticPageAsset(request, env, assetPath, "service") : null;
 }
 
+async function maybeServeStaticLegacyPage(request: Request, env: Env, url: URL): Promise<Response | null> {
+  const extension = isRscRequest(request, url) ? "rsc" : "html";
+  const assetPath = staticLegacyPageAssetPath(url.pathname, extension);
+  return assetPath ? fetchStaticPageAsset(request, env, assetPath, "legacy") : null;
+}
+
 const mainWorker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
     const url = new URL(request.url);
     const localeRedirect = maybeRedirectRootToPreferredLocale(request, url);
     if (localeRedirect) return localeRedirect;
 
-    if (env.PATCH_WORKER && isPatchWorkerPath(url.pathname)) {
-      return env.PATCH_WORKER.fetch(request);
+    if (isPatchWorkerPath(url.pathname)) {
+      if (env.PATCH_WORKER) return env.PATCH_WORKER.fetch(request);
+
+      return new Response("Patch service unavailable", {
+        status: 503,
+        headers: {
+          "Cache-Control": "no-store",
+          "Content-Type": "text/plain; charset=utf-8",
+          "Retry-After": "60",
+        },
+      });
     }
 
     const staticHomeResponse = await maybeServeStaticHomePage(request, env, url);
@@ -200,6 +216,9 @@ const mainWorker = {
 
     const staticServiceResponse = await maybeServeStaticServicePage(request, env, url);
     if (staticServiceResponse) return staticServiceResponse;
+
+    const staticLegacyResponse = await maybeServeStaticLegacyPage(request, env, url);
+    if (staticLegacyResponse) return staticLegacyResponse;
 
     const staticCompendiumResponse = await maybeServeStaticCompendiumPage(request, env, url);
     if (staticCompendiumResponse) return staticCompendiumResponse;
