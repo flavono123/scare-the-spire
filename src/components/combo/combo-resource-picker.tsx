@@ -137,7 +137,7 @@ export function ComboResourcePicker({
 
   return (
     <div ref={rootRef} className="min-w-0 flex-1" data-combo-resource-picker>
-      <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
+      <div className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2 gap-y-1.5 sm:grid-cols-[auto_minmax(0,1fr)_auto]">
         <button
           type="button"
           aria-expanded={open}
@@ -149,21 +149,23 @@ export function ComboResourcePicker({
           <Plus className="h-3.5 w-3.5" aria-hidden="true" />
           {copy.addResource}
         </button>
-        <p className="min-w-0 flex-1 text-xs leading-relaxed text-zinc-500">
+        <p className="col-span-2 row-start-2 min-w-0 text-xs leading-relaxed text-zinc-500 sm:col-span-1 sm:col-start-2 sm:row-start-1">
           {copy.composerHint}
         </p>
         <span
           aria-live="polite"
-          className="inline-flex min-h-5 shrink-0 items-center gap-1 text-[11px] font-semibold text-yellow-200"
+          className="col-start-2 row-start-1 inline-flex min-h-5 min-w-0 items-center justify-self-end text-[11px] font-semibold text-yellow-200 sm:col-start-3"
         >
           {recentlyAdded && (
             <span
               key={`${recentlyAdded.type}:${recentlyAdded.id}`}
-              className="inline-flex items-center gap-1 motion-safe:animate-pulse"
+              className="inline-flex min-w-0 items-center gap-1 motion-safe:animate-pulse"
               data-combo-picker-feedback
             >
-              <Check className="h-3.5 w-3.5" aria-hidden="true" />
-              {copy.resourceAdded.replace("{name}", recentlyAdded.nameKo)}
+              <Check className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              <span className="truncate">
+                {copy.resourceAdded.replace("{name}", recentlyAdded.nameKo)}
+              </span>
             </span>
           )}
         </span>
