@@ -1,7 +1,7 @@
 import {
   generateChemicalXPostMetadata,
   renderChemicalXPostPage,
-} from "@/app/chemical-x/[id]/page";
+} from "@/app/chemical-x/[id]/page-content";
 import { getLocalePairFromParams, type LocaleRouteParams } from "@/lib/locale-routing";
 
 type Props = {
