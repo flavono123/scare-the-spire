@@ -2,7 +2,12 @@ import { mkdirSync, readdirSync, copyFileSync, rmSync, statSync } from "node:fs"
 import path from "node:path";
 
 const appDir = path.join(".next", "server", "app");
-const outDir = path.join(".open-next", "assets", "_cf_static_pages");
+const assetsDir = path.join(".open-next", "assets");
+const outDir = path.join(assetsDir, "_cf_static_pages");
+const staticMetadataFiles = [
+  { source: "robots.txt.body", target: "robots.txt" },
+  { source: "sitemap.xml.body", target: "sitemap.xml" },
+];
 const gameLocalePathSegments = new Set([
   "en",
   "zh",
@@ -128,3 +133,13 @@ if (count === 0) {
 }
 
 console.log(`Copied ${count} Cloudflare static page asset(s) to ${outDir}`);
+
+for (const metadataFile of staticMetadataFiles) {
+  const source = path.join(appDir, metadataFile.source);
+  if (!statSync(source, { throwIfNoEntry: false })?.isFile()) {
+    throw new Error(`Missing generated metadata body: ${source}`);
+  }
+  copyFileSync(source, path.join(assetsDir, metadataFile.target));
+}
+
+console.log(`Copied ${staticMetadataFiles.length} Cloudflare static metadata asset(s) to ${assetsDir}`);
