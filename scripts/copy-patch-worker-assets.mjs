@@ -83,6 +83,7 @@ async function main() {
     "/site.webmanifest",
     "/generated/comment-entities-sts2.json",
     "/generated/search-index.json",
+    "/generated/sts2-resource-patch-index.json",
     "/images/sts2/characters/character_icon_defect.webp",
     "/images/sts2/characters/character_icon_ironclad.webp",
     "/images/sts2/characters/character_icon_necrobinder.webp",
