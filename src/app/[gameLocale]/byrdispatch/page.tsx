@@ -1,7 +1,7 @@
 import {
   generateByrdispatchMetadata,
   renderByrdispatchPage,
-} from "@/app/(main)/byrdispatch/page";
+} from "@/app/(main)/byrdispatch/page-content";
 import { getLocalePairFromParams, type LocaleRouteParams } from "@/lib/locale-routing";
 
 type Props = {
