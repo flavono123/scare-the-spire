@@ -104,8 +104,8 @@ function LargeResourceAsset({
   }
 
   if (entity.type === "character") {
-    const imageUrl = entity.characterData?.selectImageUrl
-      ?? entity.characterData?.combatImageUrl
+    const imageUrl = entity.characterData?.combatImageUrl
+      ?? entity.characterData?.selectImageUrl
       ?? entity.imageUrl;
     if (imageUrl) {
       return (
