@@ -2,6 +2,9 @@
 
 import { readFileSync } from "node:fs";
 
+const MISSING_UUID = "00000000-0000-4000-8000-000000000000";
+const HISTORY_RUN_ID = "1phase4smoketest";
+
 function usage() {
   console.log(`Usage: pnpm cf:smoke -- --origin <url> [options]
 
@@ -91,6 +94,13 @@ function page(path, owner, bodyIncludes) {
   ];
 }
 
+function missingPage(path) {
+  return page(path).map((testCase) => ({
+    ...testCase,
+    statuses: [404],
+  }));
+}
+
 function mainCases() {
   return [
     ...page("/", "home"),
@@ -99,31 +109,21 @@ function mainCases() {
     ...page("/compendium/cards", "compendium"),
     ...page("/compendium/powers/painful_stabs", "compendium"),
     ...page("/en/compendium/powers/painful_stabs", "compendium"),
+    ...page("/zh/compendium/powers/painful_stabs"),
     ...page("/chemical-x", "service"),
     ...page("/history-course", "service"),
     ...page("/this-or-that", "service"),
     ...page("/combo", "service", "data-combo-page=\"index\""),
     ...page("/en/combo", "service"),
     ...page("/zh/combo", "service"),
-    {
-      name: "Combo dynamic detail direct refresh",
-      path: "/combo/00000000-0000-4000-8000-000000000000",
-      headers: { Accept: "text/html" },
-      contentType: "text/html",
-    },
-    {
-      name: "History Course dynamic detail direct refresh",
-      path: "/history-course/1phase4smoketest",
-      headers: { Accept: "text/html" },
-      contentType: "text/html",
-    },
-    {
-      name: "Invalid nested service path fails closed",
-      path: "/combo/00000000-0000-4000-8000-000000000000/extra",
-      headers: { Accept: "text/html" },
-      statuses: [404],
-      contentType: "text/html",
-    },
+    ...page(`/chemical-x/${MISSING_UUID}`),
+    ...page(`/combo/${MISSING_UUID}`),
+    ...page(`/this-or-that/${MISSING_UUID}`),
+    ...page(`/history-course/${HISTORY_RUN_ID}`),
+    ...missingPage(`/chemical-x/${MISSING_UUID}/extra`),
+    ...missingPage(`/combo/${MISSING_UUID}/extra`),
+    ...missingPage(`/this-or-that/${MISSING_UUID}/extra`),
+    ...missingPage(`/history-course/${HISTORY_RUN_ID}/extra`),
     {
       name: "Search index asset",
       path: "/generated/search-index.json",
