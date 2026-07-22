@@ -202,8 +202,13 @@ test("patch change history works on mobile and keeps keyboard search state", asy
 
   await trigger.click();
   const overlay = page.locator("[data-patch-global-search-overlay]");
+  const searchInput = page.locator("[data-patch-global-search-input]");
   await expect(overlay).toBeVisible();
-  await expect(page.locator("[data-patch-global-search-input]")).toBeFocused();
+  await expect(searchInput).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(searchInput).not.toBeFocused();
+  await page.keyboard.press("Shift+Tab");
+  await expect(searchInput).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(overlay).toBeHidden();
   await expect(trigger).toBeFocused();
@@ -224,6 +229,10 @@ test("Combo mobile index keeps its primary interaction in the viewport", async (
   await search.click();
   const searchInput = page.getByRole("textbox", { name: /통합 검색|Unified search/i });
   await expect(searchInput).toBeVisible();
+  await expect(searchInput).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(searchInput).not.toBeFocused();
+  await page.keyboard.press("Shift+Tab");
   await expect(searchInput).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(searchInput).toBeHidden();
