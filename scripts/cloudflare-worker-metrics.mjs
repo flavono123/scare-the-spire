@@ -16,6 +16,7 @@ function usage() {
 Options:
   --hours <number>          Lookback window in hours (default: 24, max: 720)
   --worker <main|patch|all> Worker to inspect (default: all)
+  --hourly                  Rank KST hours and two-hour windows by request volume
   --json                    Print the raw query result as JSON
   --help                    Show this help
 
@@ -25,7 +26,7 @@ Authentication:
 }
 
 function parseArgs(argv) {
-  const options = { hours: 24, worker: "all", json: false };
+  const options = { hours: 24, worker: "all", hourly: false, json: false };
 
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
@@ -36,6 +37,10 @@ function parseArgs(argv) {
     }
     if (argument === "--json") {
       options.json = true;
+      continue;
+    }
+    if (argument === "--hourly") {
+      options.hourly = true;
       continue;
     }
     if (argument === "--hours") {
@@ -196,13 +201,36 @@ async function loadMetrics(authentication, options) {
       }
     }
   `;
+  const hourlyQuery = `
+    query WorkerHourlyTraffic($accountTag: string, $from: string, $to: string) {
+      viewer {
+        accounts(filter: { accountTag: $accountTag }) {
+          workersInvocationsAdaptive(
+            limit: 5000
+            orderBy: [datetimeHour_ASC]
+            filter: {
+              scriptName_in: [${namesFilter}]
+              datetime_geq: $from
+              datetime_leq: $to
+            }
+          ) {
+            dimensions { datetimeHour scriptName }
+            sum { requests }
+          }
+        }
+      }
+    }
+  `;
 
-  const [aggregate, timeline] = await Promise.all([
+  const [aggregate, timeline, hourly] = await Promise.all([
     queryGraphql(authentication.token, aggregateQuery, variables),
     queryGraphql(authentication.token, timelineQuery, variables),
+    options.hourly
+      ? queryGraphql(authentication.token, hourlyQuery, variables)
+      : Promise.resolve([]),
   ]);
 
-  return { aggregate, timeline, timeframe: { from, to }, authSource: authentication.source };
+  return { aggregate, timeline, hourly, timeframe: { from, to }, authSource: authentication.source };
 }
 
 function formatDuration(microseconds) {
@@ -219,6 +247,80 @@ function formatTimestamp(timestamp) {
     minute: "2-digit",
     timeZoneName: "short",
   }).format(new Date(timestamp));
+}
+
+function kstHour(timestamp) {
+  return Number(
+    new Intl.DateTimeFormat("en-US", {
+      hour: "2-digit",
+      hour12: false,
+      timeZone: "Asia/Seoul",
+    }).format(new Date(timestamp)),
+  ) % 24;
+}
+
+function formatHour(hour) {
+  return `${String(hour).padStart(2, "0")}:00`;
+}
+
+function summarizeHourlyTraffic(result) {
+  const start = new Date(result.timeframe.from);
+  start.setUTCMinutes(0, 0, 0);
+  if (start < new Date(result.timeframe.from)) {
+    start.setUTCHours(start.getUTCHours() + 1);
+  }
+  const end = new Date(result.timeframe.to);
+  end.setUTCMinutes(0, 0, 0);
+
+  const requestByUtcHour = new Map();
+  for (const row of result.hourly) {
+    const key = new Date(row.dimensions.datetimeHour).toISOString();
+    requestByUtcHour.set(key, (requestByUtcHour.get(key) ?? 0) + row.sum.requests);
+  }
+
+  const totals = Array.from({ length: 24 }, () => ({ requests: 0, samples: 0 }));
+  for (let cursor = start; cursor < end; cursor = new Date(cursor.getTime() + 60 * 60 * 1000)) {
+    const hour = kstHour(cursor);
+    totals[hour].requests += requestByUtcHour.get(cursor.toISOString()) ?? 0;
+    totals[hour].samples += 1;
+  }
+
+  const hours = totals.map((total, hour) => ({
+    hour,
+    average: total.samples > 0 ? total.requests / total.samples : 0,
+    requests: total.requests,
+    samples: total.samples,
+  }));
+  const windows = hours.map((current, hour) => {
+    const next = hours[(hour + 1) % 24];
+    return {
+      hour,
+      average: (current.average + next.average) / 2,
+    };
+  });
+
+  hours.sort((left, right) => left.average - right.average || left.hour - right.hour);
+  windows.sort((left, right) => left.average - right.average || left.hour - right.hour);
+  return { hours, windows };
+}
+
+function printHourlyTraffic(result) {
+  const summary = summarizeHourlyTraffic(result);
+  console.log("\nQuiet traffic windows (Asia/Seoul, full hours only)");
+  for (const window of summary.windows.slice(0, 5)) {
+    console.log(
+      `  ${formatHour(window.hour)}-${formatHour((window.hour + 2) % 24)}  ` +
+        `avg=${window.average.toFixed(1)} requests/hour`,
+    );
+  }
+
+  console.log("\nLowest individual hours (Asia/Seoul)");
+  for (const hour of summary.hours.slice(0, 8)) {
+    console.log(
+      `  ${formatHour(hour.hour)}-${formatHour((hour.hour + 1) % 24)}  ` +
+        `avg=${hour.average.toFixed(1)} requests/hour (${hour.samples} samples)`,
+    );
+  }
 }
 
 function printMetrics(result, options) {
@@ -254,14 +356,18 @@ function printMetrics(result, options) {
   console.log("\nError timeline (one row per minute)");
   if (errorRows.length === 0) {
     console.log("  no Worker invocation errors");
-    return;
+  } else {
+    for (const row of errorRows) {
+      console.log(
+        `  ${formatTimestamp(row.dimensions.datetimeMinute)}  ${row.dimensions.scriptName}  ` +
+          `${row.dimensions.status}  requests=${row.sum.requests} errors=${row.sum.errors} ` +
+          `cpu-p99=${formatDuration(row.quantiles.cpuTimeP99)}`,
+      );
+    }
   }
-  for (const row of errorRows) {
-    console.log(
-      `  ${formatTimestamp(row.dimensions.datetimeMinute)}  ${row.dimensions.scriptName}  ` +
-        `${row.dimensions.status}  requests=${row.sum.requests} errors=${row.sum.errors} ` +
-        `cpu-p99=${formatDuration(row.quantiles.cpuTimeP99)}`,
-    );
+
+  if (options.hourly) {
+    printHourlyTraffic(result);
   }
 }
 
