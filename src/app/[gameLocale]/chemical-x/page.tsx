@@ -1,7 +1,7 @@
 import {
   generateChemicalXMetadata,
   renderChemicalXPage,
-} from "@/app/chemical-x/page";
+} from "@/app/chemical-x/page-content";
 import { getLocalePairFromParams, type LocaleRouteParams } from "@/lib/locale-routing";
 
 type Props = {
