@@ -1,7 +1,7 @@
 import {
   generateComboMetadata,
   renderComboPage,
-} from "@/app/combo/page";
+} from "@/app/combo/page-content";
 import { getLocalePairFromParams, type LocaleRouteParams } from "@/lib/locale-routing";
 
 type Props = {
