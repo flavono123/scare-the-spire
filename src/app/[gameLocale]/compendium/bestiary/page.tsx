@@ -1,7 +1,7 @@
 import {
   generateCompendiumBestiaryMetadata,
   renderCompendiumBestiaryPage,
-} from "@/app/(codex)/compendium/bestiary/page";
+} from "@/app/(codex)/compendium/bestiary/page-content";
 import { getLocalePairFromParams, type LocaleRouteParams } from "@/lib/locale-routing";
 
 export const dynamic = "force-static";
