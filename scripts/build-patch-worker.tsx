@@ -1,7 +1,8 @@
-/* eslint-disable @next/next/no-css-tags, @next/next/no-head-element, @next/next/no-img-element */
+/* eslint-disable @next/next/no-css-tags, @next/next/no-head-element, @next/next/no-img-element, @next/next/no-sync-scripts */
 import fs from "fs/promises";
 import path from "path";
 import React, { type ReactNode } from "react";
+import type { Metadata } from "next";
 import { renderToStaticMarkup } from "react-dom/server";
 import { loadEnvConfig } from "@next/env";
 import { build as buildClientBundle, stop as stopClientBundler, type Plugin } from "esbuild";
@@ -14,6 +15,10 @@ import {
   PatchListPage,
   getPatchListMetadata,
 } from "@/components/patches/patch-list-page";
+import {
+  getResourcePatchIndexMetadata,
+  ResourcePatchIndexPage,
+} from "@/components/patches/resource-patch-index-page";
 import {
   GAME_LOCALE_PATH_SEGMENTS,
   GAME_LOCALE_NATIVE_LABELS,
@@ -43,7 +48,8 @@ type StaticPatchRoute = {
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   element: ReactNode;
-  metadata: Awaited<ReturnType<typeof getPatchDetailMetadata>> | ReturnType<typeof getPatchListMetadata>;
+  metadata: Metadata;
+  clientScripts?: string[];
 };
 
 loadEnvConfig(process.cwd());
@@ -64,6 +70,10 @@ const patchStaticSpineClientPath = path.join(
 const patchGlobalSearchClientPath = path.join(
   process.cwd(),
   "src/components/patches/patch-global-search-client.ts",
+);
+const resourcePatchIndexClientPath = path.join(
+  process.cwd(),
+  "src/components/patches/resource-patch-index-client.tsx",
 );
 const spinePlayerClientPath = path.join(
   process.cwd(),
@@ -538,6 +548,9 @@ function renderShell(route: StaticPatchRoute): string {
   const image = metadataImage(route.metadata);
   const canonicalUrl = `${siteOrigin}${route.pathname}`;
   const lang = route.serviceLocale === "ko" ? "ko" : "en";
+  const routeClientScripts = (route.clientScripts ?? [])
+    .map((src) => `<script src="${src}" defer></script>`)
+    .join("");
   const app = renderToStaticMarkup(
     <>
       <StaticPatchHeader
@@ -592,7 +605,7 @@ function renderShell(route: StaticPatchRoute): string {
             supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
             supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
             supabaseEnv: process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production",
-          })}</script><script src="/_patches/patch-global-search.js" defer></script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-rich-comments.js" defer></script><script src="/_patches/patch-comments.js" defer></script>${cloudflareWebAnalytics}`,
+          })}</script><script src="/_patches/patch-global-search.js" defer></script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-rich-comments.js" defer></script><script src="/_patches/patch-comments.js" defer></script>${routeClientScripts}${cloudflareWebAnalytics}`,
         }}
       />
     </html>,
@@ -636,6 +649,23 @@ async function writePatchClientAssets() {
     platform: "browser",
     format: "iife",
     target: ["es2022"],
+  });
+
+  await buildClientBundle({
+    entryPoints: [resourcePatchIndexClientPath],
+    outfile: path.join(outDir, "_patches/resource-patch-index.js"),
+    bundle: true,
+    minify: true,
+    platform: "browser",
+    format: "iife",
+    target: ["es2022"],
+    plugins: [patchClientNextShims],
+    define: {
+      "process.env.NODE_ENV": JSON.stringify("production"),
+      "process.env.NEXT_PUBLIC_SUPABASE_URL": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""),
+      "process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""),
+      "process.env.NEXT_PUBLIC_SUPABASE_ENV": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production"),
+    },
   });
   stopClientBundler();
 }
@@ -683,6 +713,27 @@ async function main() {
         serviceLocale: route.serviceLocale,
         gameLocale: route.gameLocale,
       }),
+    });
+  }
+
+  routes.push({
+    pathname: "/patches/changes",
+    serviceLocale: "ko",
+    gameLocale: "kor",
+    metadata: getResourcePatchIndexMetadata("ko"),
+    element: await ResourcePatchIndexPage({ serviceLocale: "ko", gameLocale: "kor" }),
+    clientScripts: ["/_patches/resource-patch-index.js"],
+  });
+
+  for (const route of await localizedPatchRoutes("changes")) {
+    routes.push({
+      ...route,
+      metadata: getResourcePatchIndexMetadata(route.serviceLocale),
+      element: await ResourcePatchIndexPage({
+        serviceLocale: route.serviceLocale,
+        gameLocale: route.gameLocale,
+      }),
+      clientScripts: ["/_patches/resource-patch-index.js"],
     });
   }
 
