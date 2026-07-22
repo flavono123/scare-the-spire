@@ -1,7 +1,7 @@
 import {
   generateHistoryCourseMetadata,
   renderHistoryCourseIndexPage,
-} from "@/app/(main)/history-course/page";
+} from "@/app/(main)/history-course/page-content";
 import { getLocalePairFromParams, type LocaleRouteParams } from "@/lib/locale-routing";
 
 type Props = {
