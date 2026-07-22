@@ -43,6 +43,8 @@ const LOCAL_RUN_RAW = JSON.stringify({
   ],
 });
 
+test.use({ locale: "ko-KR" });
+
 function absolute(path: string) {
   return `${BASE_URL}${path}`;
 }
