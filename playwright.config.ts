@@ -16,6 +16,7 @@ export default defineConfig({
     "codex-filter-search.spec.ts",
     "compendium-index-localization.spec.ts",
     "mobile-ux.spec.ts",
+    "cloudflare-phase4.spec.ts",
   ],
   timeout: 30_000,
   use: {
