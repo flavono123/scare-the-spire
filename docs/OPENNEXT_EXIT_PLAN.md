@@ -1,7 +1,9 @@
 # OpenNext Runtime Exit Plan
 
-Related short-term bundle work:
-[Cloudflare Worker Bundle Size Reduction Plan](./CLOUDFLARE_WORKER_SIZE_PLAN.md).
+Related work:
+
+- [Cloudflare Worker Bundle Size Reduction Plan](./CLOUDFLARE_WORKER_SIZE_PLAN.md)
+- [OpenNext Runtime Fallback Inventory](./OPENNEXT_RUNTIME_FALLBACK_INVENTORY.md)
 
 ## Status
 
