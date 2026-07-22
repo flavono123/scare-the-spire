@@ -3,6 +3,7 @@ import path from "node:path";
 
 import {
   staticCompendiumAssetPath,
+  staticLegacyPageAssetPath,
   staticServicePageAssetPath,
   type StaticPageExtension,
 } from "../workers/static-page-routing";
@@ -50,7 +51,15 @@ const gameLocalePathPrefixes = [
   "tr",
 ] as const;
 
-const staticServicePageSegments = ["chemical-x", "history-course"] as const;
+const staticServicePageSegments = [
+  "byrdispatch",
+  "chemical-x",
+  "combo",
+  "history-course",
+  "profile",
+  "this-or-that",
+] as const;
+const staticLegacyPageSegments = ["cards", "potions", "relics"] as const;
 
 function walkFiles(dir: string, files: string[] = []): string[] {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -164,6 +173,80 @@ function checkStaticServicePages(): number {
   return count;
 }
 
+function checkStaticCompendiumRoots(): number {
+  let count = 0;
+
+  for (const pathPrefix of gameLocalePathPrefixes) {
+    const routePath = `/${pathPrefix ? `${pathPrefix}/` : ""}compendium`;
+    for (const extension of ["html", "rsc"] satisfies StaticPageExtension[]) {
+      const assetPath = staticCompendiumAssetPath(routePath, extension);
+      assert(assetPath, `Static routing rejected Compendium root ${routePath}.${extension}`);
+
+      const outputPath = path.join(assetsRoot, assetPath.slice(1));
+      assert(
+        statSync(outputPath, { throwIfNoEntry: false })?.isFile(),
+        `Missing copied Compendium root: ${outputPath}`,
+      );
+      count += 1;
+    }
+  }
+
+  return count;
+}
+
+function checkStaticLegacyPages(): number {
+  let count = 0;
+
+  for (const segment of staticLegacyPageSegments) {
+    const routeExtensions = new Map<string, Set<StaticPageExtension>>();
+    const sourceFiles = [
+      path.join(nextAppRoot, `${segment}.html`),
+      path.join(nextAppRoot, `${segment}.rsc`),
+      ...readdirSync(path.join(nextAppRoot, segment), { withFileTypes: true })
+        .filter((entry) => entry.isFile())
+        .map((entry) => path.join(nextAppRoot, segment, entry.name)),
+    ];
+
+    for (const sourceFile of sourceFiles) {
+      const extension = path.extname(sourceFile).slice(1);
+      if (extension !== "html" && extension !== "rsc") continue;
+
+      const id = path.basename(sourceFile, `.${extension}`);
+      const routePath = id === segment ? `/${segment}` : `/${segment}/${id}`;
+      const extensions = routeExtensions.get(routePath) ?? new Set<StaticPageExtension>();
+      extensions.add(extension);
+      routeExtensions.set(routePath, extensions);
+
+      const assetPath = staticLegacyPageAssetPath(routePath, extension);
+      assert(assetPath, `Static routing rejected legacy page ${routePath}.${extension}`);
+      const outputPath = path.join(assetsRoot, assetPath.slice(1));
+      assert(
+        statSync(outputPath, { throwIfNoEntry: false })?.isFile(),
+        `Missing copied legacy page: ${outputPath}`,
+      );
+    }
+
+    for (const [routePath, extensions] of routeExtensions) {
+      assert(extensions.has("html"), `Missing generated HTML for ${routePath}`);
+      assert(extensions.has("rsc"), `Missing generated RSC for ${routePath}`);
+    }
+
+    assert(routeExtensions.size > 0, `No legacy ${segment} routes were found.`);
+    count += routeExtensions.size * 2;
+  }
+
+  assert(
+    staticLegacyPageAssetPath("/en/cards/bash", "html") === null,
+    "Legacy routes must not accept a game-locale prefix.",
+  );
+  assert(
+    staticLegacyPageAssetPath("/cards/bash/extra", "rsc") === null,
+    "Legacy routes must fail closed for nested paths.",
+  );
+
+  return count;
+}
+
 function checkCloudflareAssetLimits(): { count: number; largestBytes: number; largestPath: string } {
   const files = walkFiles(assetsRoot);
   assert(
@@ -190,10 +273,14 @@ function checkCloudflareAssetLimits(): { count: number; largestBytes: number; la
 
 const routeCounts = checkServiceLocaleDetails();
 const staticServicePageCount = checkStaticServicePages();
+const staticCompendiumRootCount = checkStaticCompendiumRoots();
+const staticLegacyPageCount = checkStaticLegacyPages();
 const assetStats = checkCloudflareAssetLimits();
 
 console.log(`Cloudflare static detail routes: ko=${routeCounts.ko}, en=${routeCounts.en}`);
 console.log(`Cloudflare static service page assets: ${staticServicePageCount}`);
+console.log(`Cloudflare static Compendium root assets: ${staticCompendiumRootCount}`);
+console.log(`Cloudflare static legacy page assets: ${staticLegacyPageCount}`);
 console.log(`Cloudflare static assets: ${assetStats.count}/${maxAssetFiles}`);
 console.log(
   `Largest Cloudflare static asset: ${(assetStats.largestBytes / 1024 / 1024).toFixed(2)} MiB (${assetStats.largestPath})`,
