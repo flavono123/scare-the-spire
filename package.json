@@ -22,6 +22,7 @@
     "cf:patch:preview": "pnpm patch:build && wrangler dev --config wrangler.patch.jsonc --local",
     "cf:metrics": "node scripts/cloudflare-worker-metrics.mjs",
     "cf:errors": "node scripts/cloudflare-tail-errors.mjs",
+    "cf:smoke": "node scripts/cloudflare-route-smoke.mjs",
     "cf:typegen": "wrangler types",
     "patch:build": "rm -rf .patch-worker && mkdir -p .patch-worker/assets/_patches && pnpm sts2:resource-changes && pnpm patch:css && pnpm patch:html && pnpm patch:assets",
     "patch:css": "tailwindcss -i src/app/globals.css -o .patch-worker/assets/_patches/patch.css --minify",
