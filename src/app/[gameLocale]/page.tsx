@@ -1,4 +1,4 @@
-import { renderHome } from "@/app/(main)/page";
+import { renderHome } from "@/app/(main)/page-content";
 import { getLocalePairFromParams, type LocaleRouteParams } from "@/lib/locale-routing";
 
 export default async function LocalizedHome({
