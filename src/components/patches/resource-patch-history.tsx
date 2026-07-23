@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { GameHoverTip } from "@/components/codex/hover-tip";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
   buildEntityLookup,
   PatchNoteInlineText,
 } from "@/components/patch-note-renderer";
+import { PatchArtThumbnail } from "@/components/patches/patch-art";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { patchLineMarkdownForService } from "@/lib/patch-line-display";
@@ -18,10 +20,17 @@ import {
   type ResourcePatchIndexData,
 } from "@/lib/resource-patch-index";
 import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
+import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { STS2Patch, STS2PatchLine, StoryEntityType } from "@/lib/types";
 import { serviceMessages } from "@/messages/service";
 
 let resourcePatchIndexPromise: Promise<ResourcePatchIndexData> | null = null;
+
+const FALLBACK_PATCH_ART: ResolvedPatchArt = {
+  imageUrl: "/images/sts2/nav/patch_notes_icon.png",
+  alt: "Patch notes",
+  objectPosition: "center",
+};
 
 export function loadResourcePatchIndex(): Promise<ResourcePatchIndexData> {
   if (!resourcePatchIndexPromise) {
@@ -56,19 +65,22 @@ export function PatchMetaReferenceLink({
   patchLine,
   patches,
   serviceLocale,
+  entitiesByKey,
 }: {
   patchLine: STS2PatchLine;
   patches: readonly STS2Patch[];
   serviceLocale: ServiceLocale;
+  entitiesByKey: Map<string, EntityInfo>;
 }) {
   const patch = findPatch(patches, patchLine);
   const version = patch ? getPatchVersionLabel(patch, serviceLocale) : patchLine.patch;
-  const title = patch
-    ? serviceLocale === "ko" ? patch.titleKo : patch.title
-    : serviceMessages[serviceLocale].patchChanges.tabs.notes;
-  const summary = patch
-    ? serviceLocale === "ko" ? patch.summaryKo : patch.summary
+  const originalTitle = patch?.title ?? serviceMessages[serviceLocale].patchChanges.tabs.notes;
+  const patchType = patch
+    ? serviceMessages[serviceLocale].patchChanges.types[patch.type]
     : null;
+  const art = patch
+    ? resolvePatchArt(patch, entitiesByKey, serviceLocale)
+    : FALLBACK_PATCH_ART;
 
   return (
     <span className="group/patch-meta relative inline-flex shrink-0">
@@ -80,15 +92,24 @@ export function PatchMetaReferenceLink({
         {dateLabel(patchLine.date, serviceLocale)} {version}
       </Link>
       <span className="pointer-events-none absolute bottom-full right-0 z-50 hidden pb-2 group-hover/patch-meta:block group-focus-within/patch-meta:block">
-        <GameHoverTip
-          title={version}
-          icon="/images/sts2/nav/patch_notes_icon.png"
-          style={{ width: 280, maxWidth: "min(280px, calc(100vw - 24px))" }}
-        >
-          <span className="block text-sm text-yellow-200">{patchLine.date}</span>
-          <span className="mt-1 block">{title}</span>
-          {summary && <span className="mt-1.5 block text-[13px] text-[#d6cdbf]">{summary}</span>}
-        </GameHoverTip>
+        <span className="flex w-max max-w-[calc(100vw-1.5rem)] items-start gap-2.5">
+          <PatchArtThumbnail
+            art={art}
+            className="h-12 w-[6.875rem] border-white/10 shadow-lg"
+          />
+          <GameHoverTip
+            title={version}
+            style={{ width: 230, maxWidth: "min(230px, calc(100vw - 140px))" }}
+          >
+            <span className="block text-[13px] leading-snug text-[#fff6e2]">
+              {originalTitle}
+            </span>
+            <span className="mt-1.5 block whitespace-nowrap text-[12px] text-[#c9bdac]">
+              {dateLabel(patchLine.date, serviceLocale)}
+              {patchType && ` · ${patchType}`}
+            </span>
+          </GameHoverTip>
+        </span>
       </span>
     </span>
   );
@@ -109,6 +130,10 @@ export function ResourcePatchChangeList({
 }) {
   const { entities } = useCommentEntities();
   const entityLookup = useMemo(() => buildEntityLookup(entities), [entities]);
+  const entitiesByKey = useMemo(
+    () => new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity])),
+    [entities],
+  );
 
   return (
     <ul className="space-y-1">
@@ -132,6 +157,7 @@ export function ResourcePatchChangeList({
                 patchLine={line}
                 patches={patches}
                 serviceLocale={serviceLocale}
+                entitiesByKey={entitiesByKey}
               />
               {trailingAction?.(line)}
             </span>
