@@ -1,5 +1,6 @@
 import type { EntityType } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
+import { isYouTubeVideoId } from "@/lib/youtube-reference";
 
 export interface ComboResourceRef {
   type: EntityType;
@@ -42,4 +43,19 @@ export function extractComboResourceRefs(blocks: PostBlock[]): ComboResourceRef[
   }
 
   return resources;
+}
+
+export function countComboYouTubeReferences(blocks: PostBlock[]): number {
+  return blocks.filter((block) => block.type === "youtube").length;
+}
+
+export function extractComboYouTubeReference(
+  blocks: PostBlock[],
+): Extract<PostBlock, { type: "youtube" }> | null {
+  const block = blocks.find((candidate) => (
+    candidate.type === "youtube"
+    && isYouTubeVideoId(candidate.videoId)
+    && candidate.title.trim().length > 0
+  ));
+  return block?.type === "youtube" ? block : null;
 }

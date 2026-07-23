@@ -24,7 +24,14 @@ export interface KeywordBlock {
   entityType?: EntityType;
 }
 
-export type PostBlock = TextBlock | EntityBlock | KeywordBlock;
+/** A normalized YouTube video reference resolved while composing a Combo post */
+export interface YouTubeBlock {
+  type: "youtube";
+  videoId: string;
+  title: string;
+}
+
+export type PostBlock = TextBlock | EntityBlock | KeywordBlock | YouTubeBlock;
 
 export interface ChemicalPost {
   id: string;

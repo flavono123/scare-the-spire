@@ -2,6 +2,7 @@ import type { JSONContent } from "@tiptap/react";
 import { getChoseong } from "es-hangul";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
+import { isYouTubeVideoId } from "@/lib/youtube-reference";
 
 const ENTITY_TYPE_FALLBACK_PRIORITY: readonly EntityType[] = [
   "card",
@@ -60,6 +61,16 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
           entityId: entityId || undefined,
           entityType: (entityType || undefined) as EntityType | undefined,
         });
+      } else if (node.type === "youtube-reference") {
+        const videoId = node.attrs?.videoId ?? "";
+        const title = node.attrs?.title?.trim() ?? "";
+        if (isYouTubeVideoId(videoId) && title) {
+          blocks.push({
+            type: "youtube",
+            videoId,
+            title,
+          });
+        }
       }
     }
   }
@@ -74,6 +85,7 @@ export function blocksToPlainText(blocks: PostBlock[]): string {
     .map((b) => {
       if (b.type === "text") return b.text;
       if (b.type === "keyword") return b.text;
+      if (b.type === "youtube") return b.title;
       return b.displayText;
     })
     .join("");
@@ -92,6 +104,7 @@ export function blocksToStorageText(blocks: PostBlock[]): string {
     .map((b) => {
       if (b.type === "text") return b.text;
       if (b.type === "entity") return b.displayText;
+      if (b.type === "youtube") return b.title;
 
       const text = b.text;
       const keyword = b.keyword?.trim();
