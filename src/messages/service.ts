@@ -134,11 +134,11 @@ export const serviceMessages = {
       },
     },
     patchChanges: {
-      title: "변경 기록",
+      title: "슬서운 변경",
       metadataDescription: "카드, 유물, 캐릭터별 슬레이 더 스파이어 2 패치 변경 기록",
       tabs: {
         notes: "패치 노트",
-        changes: "변경 기록",
+        changes: "슬서운 변경",
       },
       searchPlaceholder: "카드, 유물, 몬스터 이름 검색",
       noResults: "일치하는 변경 기록이 없습니다",
@@ -836,11 +836,11 @@ export const serviceMessages = {
       },
     },
     patchChanges: {
-      title: "Change History",
+      title: "Slseoun Changes",
       metadataDescription: "Slay the Spire 2 patch changes by card, relic, character, and more.",
       tabs: {
         notes: "Patch Notes",
-        changes: "Change History",
+        changes: "Slseoun Changes",
       },
       searchPlaceholder: "Search cards, relics, or monsters",
       noResults: "No matching change history",
