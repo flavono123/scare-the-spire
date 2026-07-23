@@ -74,9 +74,9 @@ export function PatchMetaReferenceLink({
 }) {
   const patch = findPatch(patches, patchLine);
   const version = patch ? getPatchVersionLabel(patch, serviceLocale) : patchLine.patch;
-  const originalTitle = patch?.title ?? serviceMessages[serviceLocale].patchChanges.tabs.notes;
+  const copy = serviceMessages[serviceLocale].patchChanges;
   const patchType = patch
-    ? serviceMessages[serviceLocale].patchChanges.types[patch.type]
+    ? copy.types[patch.type]
     : null;
   const art = patch
     ? resolvePatchArt(patch, entitiesByKey, serviceLocale)
@@ -95,18 +95,18 @@ export function PatchMetaReferenceLink({
         <span className="flex w-max max-w-[calc(100vw-1.5rem)] items-start gap-2.5">
           <PatchArtThumbnail
             art={art}
-            className="h-12 w-[6.875rem] border-white/10 shadow-lg"
+            className="hidden h-12 w-[6.875rem] border-white/10 shadow-lg sm:block"
           />
           <GameHoverTip
             title={version}
-            style={{ width: 230, maxWidth: "min(230px, calc(100vw - 140px))" }}
+            style={{ width: 290, maxWidth: "calc(100vw - 24px)" }}
           >
-            <span className="block text-[13px] leading-snug text-[#fff6e2]">
-              {originalTitle}
-            </span>
-            <span className="mt-1.5 block whitespace-nowrap text-[12px] text-[#c9bdac]">
+            <span className="block whitespace-nowrap text-[#fff6e2]">
               {dateLabel(patchLine.date, serviceLocale)}
               {patchType && ` · ${patchType}`}
+              <span className="ml-1.5 font-semibold spire-gold">
+                {copy.goToPatch}
+              </span>
             </span>
           </GameHoverTip>
         </span>

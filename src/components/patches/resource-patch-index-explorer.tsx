@@ -318,6 +318,7 @@ export function ResourcePatchIndexExplorer({
 }) {
   const copy = serviceMessages[serviceLocale].patchChanges;
   const [query, setQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
   const [selectedKey, setSelectedKey] = useState(() => resourceKey(findInitialResource(data)));
   const [expandedGroups, setExpandedGroups] = useState<Set<StoryEntityType>>(() => new Set());
   const [allGroupsExpanded, setAllGroupsExpanded] = useState(false);
@@ -351,6 +352,7 @@ export function ResourcePatchIndexExplorer({
     [data, selectedResource],
   );
   const normalizedQuery = normalizeQuery(query);
+  const searchMode = searchFocused || Boolean(normalizedQuery);
   const matchingGroups = useMemo(() => data.groups.flatMap((group) => {
     const resources = group.resources.filter((resource) => resourceMatches(resource, normalizedQuery));
     return resources.length > 0 ? [{ group, resources }] : [];
@@ -418,70 +420,77 @@ export function ResourcePatchIndexExplorer({
 
   return (
     <>
-      <label className="relative mt-4 block max-w-md">
-        <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
-        <input
-          type="search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={copy.searchPlaceholder}
-          className="h-9 w-full rounded-md border border-white/10 bg-white/[0.035] pl-9 pr-3 font-game-text text-sm text-foreground outline-none transition-colors placeholder:text-gray-600 focus:border-yellow-500/35"
-        />
-      </label>
-
-      <div className="mt-3 space-y-1">
-        {visibleGroups.map(({ group, resources }) => (
-          <ResourceGroupRow
-            key={group.type}
-            group={group}
-            resources={resources}
-            selectedResource={selectedResource}
-            expanded={expandedGroups.has(group.type)}
-            searching={Boolean(normalizedQuery)}
-            serviceLocale={serviceLocale}
-            gameLocale={gameLocale}
-            moreLabel={copy.more}
-            lessLabel={copy.less}
-            onToggle={() => toggleResourceGroup(group.type)}
-            onSelect={selectResource}
+      <div className="mt-4 rounded-xl border border-transparent p-2 transition-[background-color,border-color,box-shadow] duration-150 focus-within:border-yellow-400/20 focus-within:bg-yellow-500/[0.025] focus-within:shadow-[0_0_24px_rgba(234,179,8,0.06)]">
+        <label className="relative block max-w-md">
+          <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+          <input
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
+            placeholder={copy.searchPlaceholder}
+            className="h-9 w-full rounded-md border border-white/10 bg-white/[0.035] pl-9 pr-3 font-game-text text-sm text-foreground outline-none transition-[background-color,border-color,box-shadow] placeholder:text-gray-600 focus:border-yellow-400/45 focus:bg-black/20 focus:shadow-[0_0_16px_rgba(234,179,8,0.08)]"
           />
-        ))}
-        {canToggleAllGroups && (
-          <div className="grid min-w-0 grid-cols-[2rem_minmax(0,1fr)] gap-x-1.5 py-0.5">
-            <div className="flex h-8 items-center justify-center">
-              <button
-                type="button"
-                onClick={(event) => {
-                  if (event.detail > 0) event.currentTarget.blur();
-                  setAllGroupsTooltipSuppressed(true);
-                  setAllGroupsExpanded((current) => !current);
-                }}
-                onPointerLeave={(event) => {
-                  if (document.activeElement !== event.currentTarget) {
-                    setAllGroupsTooltipSuppressed(false);
-                  }
-                }}
-                onFocus={() => setAllGroupsTooltipSuppressed(false)}
-                onBlur={() => setAllGroupsTooltipSuppressed(false)}
-                aria-expanded={allGroupsExpanded}
-                aria-label={allGroupsExpanded ? copy.less : copy.more}
-                className="group/index-token relative inline-flex h-7 w-7 items-center justify-center rounded-md bg-sky-950/20 text-sky-300/55 ring-1 ring-inset ring-sky-200/10 transition-colors hover:bg-sky-400/[0.07] hover:text-sky-200"
-              >
-                {allGroupsExpanded ? <Shrink size={15} /> : <EllipsisVertical size={17} />}
-                <IndexTokenTooltip
-                  title={allGroupsExpanded ? copy.less : copy.more}
-                  suppressed={allGroupsTooltipSuppressed}
-                />
-              </button>
+        </label>
+
+        <div className={`mt-3 space-y-1 ${searchMode ? "h-[12.25rem] overflow-y-auto overscroll-contain pr-1" : ""}`}>
+          {visibleGroups.map(({ group, resources }) => (
+            <ResourceGroupRow
+              key={group.type}
+              group={group}
+              resources={resources}
+              selectedResource={selectedResource}
+              expanded={expandedGroups.has(group.type)}
+              searching={Boolean(normalizedQuery)}
+              serviceLocale={serviceLocale}
+              gameLocale={gameLocale}
+              moreLabel={copy.more}
+              lessLabel={copy.less}
+              onToggle={() => toggleResourceGroup(group.type)}
+              onSelect={selectResource}
+            />
+          ))}
+          {canToggleAllGroups && (
+            <div className="grid min-w-0 grid-cols-[2rem_minmax(0,1fr)] gap-x-1.5 py-0.5">
+              <div className="flex h-8 items-center justify-center">
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    if (event.detail > 0) event.currentTarget.blur();
+                    setAllGroupsTooltipSuppressed(true);
+                    setAllGroupsExpanded((current) => !current);
+                  }}
+                  onPointerLeave={(event) => {
+                    if (document.activeElement !== event.currentTarget) {
+                      setAllGroupsTooltipSuppressed(false);
+                    }
+                  }}
+                  onFocus={() => setAllGroupsTooltipSuppressed(false)}
+                  onBlur={() => setAllGroupsTooltipSuppressed(false)}
+                  aria-expanded={allGroupsExpanded}
+                  aria-label={allGroupsExpanded ? copy.less : copy.more}
+                  className="group/index-token relative inline-flex h-7 w-7 items-center justify-center rounded-md bg-sky-950/20 text-sky-300/55 ring-1 ring-inset ring-sky-200/10 transition-colors hover:bg-sky-400/[0.07] hover:text-sky-200"
+                >
+                  {allGroupsExpanded ? <Shrink size={15} /> : <EllipsisVertical size={17} />}
+                  <IndexTokenTooltip
+                    title={allGroupsExpanded ? copy.less : copy.more}
+                    suppressed={allGroupsTooltipSuppressed}
+                  />
+                </button>
+              </div>
             </div>
-          </div>
-        )}
-        {normalizedQuery && matchingGroups.length === 0 && (
-          <p className="px-2 py-6 text-center font-game-text text-sm text-gray-500">{copy.noResults}</p>
-        )}
+          )}
+          {normalizedQuery && matchingGroups.length === 0 && (
+            <p className="px-2 py-6 text-center font-game-text text-sm text-gray-500">{copy.noResults}</p>
+          )}
+        </div>
       </div>
 
-      <section className="mt-7" aria-live="polite">
+      <section
+        className={`mt-7 transition-[filter,opacity] duration-150 ${searchFocused ? "pointer-events-none opacity-25 blur-[2px]" : ""}`}
+        aria-live="polite"
+      >
         <div className="mb-3 flex min-w-0 items-center gap-3">
           {selectedResource.imageUrl && (
             <Image
