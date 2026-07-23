@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, Play, Youtube } from "lucide-react";
+import { Play } from "lucide-react";
 import Image from "@/components/ui/static-image";
 import type { YouTubeBlock } from "@/lib/chemical-types";
 import {
@@ -37,10 +37,6 @@ export function ComboYouTubeThumbnail({
         className="aspect-video h-auto w-full object-cover"
       />
       <span className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
-      <span className="absolute left-1.5 top-1.5 inline-flex items-center gap-1 rounded bg-black/70 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white/90">
-        <Youtube aria-hidden className="h-3 w-3 text-red-400" />
-        YouTube
-      </span>
       <span className="absolute inset-0 flex items-center justify-center">
         <span className="flex h-7 w-9 items-center justify-center rounded-lg bg-red-600/90 text-white shadow-lg transition-transform group-hover/youtube:scale-110 motion-reduce:transform-none">
           <Play aria-hidden className="h-3.5 w-3.5 fill-current" />
@@ -53,8 +49,6 @@ export function ComboYouTubeThumbnail({
 export function ComboYouTubeEmbed({
   reference,
 }: ComboYouTubeReferenceProps) {
-  const href = youtubeWatchUrl(reference.videoId);
-
   return (
     <section
       className="overflow-hidden rounded-xl bg-black/55 shadow-xl shadow-black/20 ring-1 ring-cyan-300/15"
@@ -71,16 +65,6 @@ export function ComboYouTubeEmbed({
           className="h-full min-h-[200px] w-full border-0"
         />
       </div>
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-2 border-t border-white/10 px-3 py-2.5 text-sm font-semibold spire-aqua transition-colors hover:text-cyan-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-cyan-300"
-      >
-        <Youtube aria-hidden className="h-4 w-4 shrink-0 text-red-400" />
-        <span className="min-w-0 flex-1 truncate">{reference.title}</span>
-        <ExternalLink aria-hidden className="h-3.5 w-3.5 shrink-0 opacity-60" />
-      </a>
     </section>
   );
 }
