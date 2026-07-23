@@ -9,6 +9,10 @@ import {
   resolveEntityKeyword,
 } from "@/lib/chemical-utils";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
+import {
+  isYouTubeVideoId,
+  youtubeWatchUrl,
+} from "@/lib/youtube-reference";
 
 interface PostRendererProps {
   blocks: PostBlock[];
@@ -90,6 +94,21 @@ export function PostRenderer({
               );
             }
             return <KeywordSpan key={i} text={block.text} keyword={block.keyword} description={block.description} />;
+          }
+
+          if (block.type === "youtube") {
+            if (!isYouTubeVideoId(block.videoId) || !block.title.trim()) return null;
+            return (
+              <a
+                key={i}
+                href={youtubeWatchUrl(block.videoId)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold spire-aqua"
+              >
+                {block.title}
+              </a>
+            );
           }
 
           const key = `${block.entityType}:${block.entityId}`;

@@ -285,6 +285,7 @@ function blockText(blocks: PostBlock[] | null | undefined): string {
   return blocks.map((block) => {
     if (block.type === "text") return block.text;
     if (block.type === "entity") return block.displayText;
+    if (block.type === "youtube") return block.title;
     return block.text;
   }).join("");
 }

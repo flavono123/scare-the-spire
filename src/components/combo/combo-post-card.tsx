@@ -4,7 +4,10 @@ import { useCallback, type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import type { ComboPost } from "@/lib/combo-types";
+import {
+  extractComboYouTubeReference,
+  type ComboPost,
+} from "@/lib/combo-types";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -13,6 +16,7 @@ import {
 import { serviceMessages } from "@/messages/service";
 import { ComboPostRenderer } from "./combo-post-renderer";
 import { ComboResourceStack } from "./combo-resource-stack";
+import { ComboYouTubeThumbnail } from "./combo-youtube-reference";
 
 interface ComboPostCardProps {
   post: ComboPost;
@@ -54,6 +58,7 @@ export function ComboPostCard({
   const copy = serviceMessages[serviceLocale].combo;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const router = useRouter();
+  const youtubeReference = extractComboYouTubeReference(post.content);
   const href = localizeHrefWithGameLocale(`/c-c-c-combo/${post.id}`, serviceLocale, gameLocale);
   const openPost = useCallback(() => {
     router.push(href);
@@ -97,12 +102,19 @@ export function ComboPostCard({
         </div>
       </div>
 
-      <ComboResourceStack
-        resources={post.resources}
-        entityMap={entityMap}
-        serviceLocale={serviceLocale}
-        gameLocale={gameLocale}
-      />
+      <div className="flex min-w-0 items-center gap-3">
+        <div className="min-w-0 flex-1">
+          <ComboResourceStack
+            resources={post.resources}
+            entityMap={entityMap}
+            serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
+          />
+        </div>
+        {youtubeReference && (
+          <ComboYouTubeThumbnail reference={youtubeReference} />
+        )}
+      </div>
 
       <div className="text-sm leading-relaxed">
         <ComboPostRenderer

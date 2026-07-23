@@ -15,8 +15,10 @@ import {
 } from "@/lib/i18n";
 import { getSiteDisplayOrigin } from "@/lib/site-origin";
 import { serviceMessages } from "@/messages/service";
+import { extractComboYouTubeReference } from "@/lib/combo-types";
 import { buildComboEntityMap, ComboPostRenderer } from "./combo-post-renderer";
 import { ComboResourceGallery } from "./combo-resource-gallery";
+import { ComboYouTubeEmbed } from "./combo-youtube-reference";
 
 interface ComboPostViewProps {
   postId: string;
@@ -67,6 +69,8 @@ export function ComboPostView({ postId, gameLocale }: ComboPostViewProps) {
     );
   }
 
+  const youtubeReference = extractComboYouTubeReference(post.content);
+
   return (
     <div data-combo-page="detail" className="space-y-4">
       <div className="flex items-center justify-between">
@@ -111,6 +115,12 @@ export function ComboPostView({ postId, gameLocale }: ComboPostViewProps) {
             gameLocale={gameLocale}
           />
         </div>
+
+        {youtubeReference && (
+          <div className="relative mb-5">
+            <ComboYouTubeEmbed reference={youtubeReference} />
+          </div>
+        )}
 
         <div className="relative mt-2">
           <ComboResourceGallery

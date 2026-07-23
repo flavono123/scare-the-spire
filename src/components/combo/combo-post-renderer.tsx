@@ -8,6 +8,10 @@ import {
   resolveEntityKeyword,
 } from "@/lib/chemical-utils";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
+import {
+  isYouTubeVideoId,
+  youtubeWatchUrl,
+} from "@/lib/youtube-reference";
 
 interface ComboPostRendererProps {
   blocks: PostBlock[];
@@ -65,6 +69,21 @@ export function ComboPostRenderer({
               keyword={block.keyword}
               description={block.description}
             />
+          );
+        }
+
+        if (block.type === "youtube") {
+          if (!isYouTubeVideoId(block.videoId) || !block.title.trim()) return null;
+          return (
+            <a
+              key={index}
+              href={youtubeWatchUrl(block.videoId)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold spire-aqua underline decoration-cyan-300/30 underline-offset-2 transition-colors hover:text-cyan-200 hover:decoration-cyan-200"
+            >
+              {block.title}
+            </a>
           );
         }
 
