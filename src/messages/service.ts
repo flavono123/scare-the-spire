@@ -840,11 +840,11 @@ export const serviceMessages = {
       },
     },
     patchChanges: {
-      title: "Scare the Changes",
+      title: "scare-the-changes",
       metadataDescription: "Slay the Spire 2 patch changes by card, relic, character, and more.",
       tabs: {
         notes: "Patch Notes",
-        changes: "Scare the Changes",
+        changes: "scare-the-changes",
       },
       searchPlaceholder: "Search cards, relics, or monsters",
       noResults: "No matching change history",
