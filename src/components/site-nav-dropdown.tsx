@@ -24,8 +24,9 @@ export function SiteNavDropdown({
   const isToyBox = variant === "toyBox";
 
   useEffect(() => {
-    const details = ref.current;
-    if (!details) return;
+    const currentDetails = ref.current;
+    if (!currentDetails) return;
+    const details: HTMLDetailsElement = currentDetails;
 
     function handleToggle() {
       if (!details.open) return;
