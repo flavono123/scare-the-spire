@@ -1,4 +1,5 @@
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
+import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -105,13 +106,12 @@ export function legacySts1NavItems<T extends { href: string; labelKey: CodexLabe
 export function getToyBoxNavItems({
   serviceLocale,
   gameLocale,
-  showDevMenu = false,
 }: {
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
-  showDevMenu?: boolean;
 }): NavDropdownItem[] {
   const messages = serviceMessages[serviceLocale];
+  const showDevMenu = devToolsEnabled();
   return localizePlainNavItems(
     [
       {

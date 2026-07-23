@@ -15,6 +15,7 @@ function runInitialPatchBuild() {
     stdio: "inherit",
     env: {
       ...process.env,
+      NEXT_PUBLIC_ENABLE_DEV_TOOLS: "1",
       STS_PATCH_CHANGES_DEV: "1",
     },
   });

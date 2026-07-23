@@ -25,7 +25,6 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { detectGameLocaleFromNavigator } from "@/lib/locale-detection";
-import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   globalSearchItemScore,
   globalSearchResultKey,
@@ -833,9 +832,8 @@ export function SiteNavbar() {
     : pathGameLocale;
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const messages = serviceMessages[serviceLocale];
-  const showDevMenu = devToolsEnabled();
   const profile = useStoredUserProfile();
-  const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale, showDevMenu });
+  const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale });
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
