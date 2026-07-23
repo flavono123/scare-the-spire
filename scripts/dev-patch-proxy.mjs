@@ -32,7 +32,13 @@ function startMainDev() {
   });
 }
 
+function isResourcePatchHistoryRoute(pathname) {
+  return /^\/(?:[^/]+\/)?patches\/changes\/?$/.test(pathname);
+}
+
 function isPatchRoute(pathname) {
+  if (isResourcePatchHistoryRoute(pathname)) return false;
+
   return (
     pathname === "/patches" ||
     pathname.startsWith("/patches/") ||
