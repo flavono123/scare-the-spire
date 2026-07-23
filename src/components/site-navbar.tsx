@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useMemo, useCallback, type MouseEvent as R
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
+import { SiteNavDropdown } from "@/components/site-nav-dropdown";
 import Image from "@/components/ui/static-image";
 import {
   DEFAULT_GAME_LOCALE_BY_SERVICE,
@@ -44,7 +45,6 @@ import {
   serviceLanguageNavLocales,
   sts1NavItems,
   sts2NavItems,
-  type NavDropdownItem,
 } from "@/lib/site-nav-items";
 
 type PendingSearchResult = {
@@ -219,98 +219,6 @@ function NavIconLink({
               {label}
             </span>
           </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// --- Dropdown component ---
-
-function GameDropdown({
-  icon,
-  alt,
-  items,
-  align = "right",
-  variant = "default",
-}: {
-  icon: string;
-  alt: string;
-  items: NavDropdownItem[];
-  align?: "left" | "right";
-  variant?: "default" | "toyBox";
-}) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const isToyBox = variant === "toyBox";
-
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-0.5 rounded-md px-1 py-1 hover:bg-white/5 transition-colors sm:gap-1 sm:px-1.5"
-        title={alt}
-      >
-        <Image
-          src={icon}
-          alt={alt}
-          width={28}
-          height={28}
-          className={`h-6 w-6 rounded-sm transition-all sm:h-7 sm:w-7 ${open ? "brightness-125" : "brightness-90 hover:brightness-110"}`}
-        />
-        <svg
-          className={`hidden h-3 w-3 text-muted-foreground transition-transform sm:block ${open ? "rotate-180" : ""}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-      {open && (
-        <div
-          className={`absolute top-full mt-1 rounded-md border border-border bg-background shadow-lg py-1 z-50 ${
-            isToyBox ? "min-w-[190px]" : "min-w-[140px]"
-          } ${
-            align === "right" ? "right-0" : "left-0"
-          }`}
-        >
-          {isToyBox && (
-            <div className="border-b border-border/60 px-3 pb-2 pt-1.5 font-service text-xs font-semibold text-zinc-300">
-              {alt}
-            </div>
-          )}
-          {items.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              prefetch={false}
-              onClick={() => setOpen(false)}
-              className={`flex items-center gap-2.5 px-3 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground ${
-                isToyBox ? "py-2 font-service" : "py-1.5"
-              }`}
-            >
-              <Image
-                src={item.icon}
-                alt=""
-                width={isToyBox ? 24 : 18}
-                height={isToyBox ? 24 : 18}
-                className={`${isToyBox ? "h-6 w-6" : ""} shrink-0 object-contain`}
-              />
-              <span className="min-w-0 truncate">{item.label}</span>
-            </Link>
-          ))}
         </div>
       )}
     </div>
@@ -863,7 +771,7 @@ export function SiteNavbar() {
             iconSize={22}
           />
 
-          <GameDropdown
+          <SiteNavDropdown
             icon="/images/sts2/relics/toy_box.webp"
             alt={serviceLocale === "ko" ? "장난감 상자" : "Toy Box"}
             items={toyBoxItems}
@@ -877,13 +785,13 @@ export function SiteNavbar() {
           <div className="hidden xl:block">
             <LanguageDropdown value={gameLocale} label={messages.languageSelect} />
           </div>
-          <GameDropdown
+          <SiteNavDropdown
             icon="/images/sts2/icons/app_icon.png"
             alt={messages.games.sts2Codex}
             items={localizeCodexNavItems(sts2NavItems, serviceLocale, gameLocale, { useGameLabels: true })}
             align="right"
           />
-          <GameDropdown
+          <SiteNavDropdown
             icon="/images/sts1_app_icon.png"
             alt={messages.games.sts1}
             items={legacySts1NavItems(sts1NavItems, serviceLocale)}

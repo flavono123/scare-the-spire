@@ -19,6 +19,7 @@ import {
   getResourcePatchIndexMetadata,
   ResourcePatchIndexPage,
 } from "@/components/patches/resource-patch-index-page";
+import { SiteNavDropdown } from "@/components/site-nav-dropdown";
 import {
   GAME_LOCALE_PATH_SEGMENTS,
   GAME_LOCALE_NATIVE_LABELS,
@@ -40,7 +41,6 @@ import {
   serviceLanguageNavLocales,
   sts1NavItems,
   sts2NavItems,
-  type NavDropdownItem,
 } from "@/lib/site-nav-items";
 
 type StaticPatchRoute = {
@@ -246,62 +246,6 @@ function StaticNavIconLink({
   );
 }
 
-function StaticGameDropdown({
-  icon,
-  alt,
-  items,
-  align = "right",
-}: {
-  icon: string;
-  alt: string;
-  items: NavDropdownItem[];
-  align?: "left" | "right";
-}) {
-  return (
-    <details data-static-nav-dropdown className="patch-static-dropdown relative group">
-      <summary
-        className="flex cursor-pointer items-center gap-0.5 rounded-md px-1 py-1 transition-colors hover:bg-white/5 sm:gap-1 sm:px-1.5"
-        title={alt}
-        aria-label={alt}
-      >
-        <img
-          src={icon}
-          alt={alt}
-          width={28}
-          height={28}
-          className="h-6 w-6 rounded-sm object-contain brightness-90 transition-all group-open:brightness-125 hover:brightness-110 sm:h-7 sm:w-7"
-        />
-        <svg
-          className="hidden h-3 w-3 text-muted-foreground transition-transform group-open:rotate-180 sm:block"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-          aria-hidden="true"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
-      </summary>
-      <div
-        className={`absolute top-full z-50 mt-1 min-w-[140px] rounded-md border border-border bg-background py-1 shadow-lg ${
-          align === "right" ? "right-0" : "left-0"
-        }`}
-      >
-        {items.map((item) => (
-          <a
-            key={item.href}
-            href={item.href}
-            className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
-          >
-            <img src={item.icon} alt="" width={18} height={18} className="shrink-0 object-contain" />
-            <span className="whitespace-nowrap">{item.label}</span>
-          </a>
-        ))}
-      </div>
-    </details>
-  );
-}
-
 function StaticLanguageDropdown({
   pathname,
   value,
@@ -414,11 +358,12 @@ function StaticPatchHeader({
             active
           />
 
-          <StaticGameDropdown
+          <SiteNavDropdown
             icon="/images/sts2/relics/toy_box.webp"
             alt={toyBoxLabel}
             items={toyBoxItems}
             align="left"
+            variant="toyBox"
           />
         </div>
 
@@ -448,13 +393,13 @@ function StaticPatchHeader({
               label={messages.languageSelect}
             />
           </div>
-          <StaticGameDropdown
+          <SiteNavDropdown
             icon="/images/sts2/icons/app_icon.png"
             alt={messages.games.sts2Codex}
             items={sts2Items}
             align="right"
           />
-          <StaticGameDropdown
+          <SiteNavDropdown
             icon="/images/sts1_app_icon.png"
             alt={messages.games.sts1}
             items={sts1Items}
