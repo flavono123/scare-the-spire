@@ -21,13 +21,14 @@ const result = spawnSync(
     "deploy",
     "--config",
     "wrangler.jsonc",
+    "--env=",
     "--dry-run",
     "--outdir",
     outDir,
   ],
   {
     encoding: "utf8",
-    env: process.env,
+    env: { ...process.env, WRANGLER_WRITE_LOGS: process.env.WRANGLER_WRITE_LOGS ?? "0" },
   },
 );
 
