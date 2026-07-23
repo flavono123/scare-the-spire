@@ -3,7 +3,6 @@
 import Image from "@/components/ui/static-image";
 import { CircleHelp, Ellipsis, Search, Shrink } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { GameHoverTip } from "@/components/codex/hover-tip";
 import {
   PatchLineStoriesPanel,
   PatchLineStoryAction,
@@ -98,22 +97,14 @@ function countStoriesByPatchLine(stories: { patchLineId?: string }[]): Map<strin
 
 function IndexTokenTooltip({
   title,
-  icon,
-  children,
 }: {
   title: string;
-  icon: string;
-  children?: ReactNode;
 }) {
   return (
-    <span className="pointer-events-none absolute left-1/2 top-full z-50 hidden -translate-x-1/2 pt-2 group-hover/index-token:block group-focus-within/index-token:block">
-      <GameHoverTip
-        title={title}
-        icon={icon}
-        style={{ minWidth: 160, maxWidth: "min(240px, calc(100vw - 24px))" }}
-      >
-        {children}
-      </GameHoverTip>
+    <span className="pointer-events-none absolute bottom-full left-1/2 z-50 hidden -translate-x-1/2 pb-1 group-hover/index-token:block group-focus-within/index-token:block">
+      <span className="block w-max max-w-[calc(100vw-1rem)] whitespace-nowrap rounded-sm border border-white/10 bg-zinc-950/95 px-1.5 py-0.5 font-game-text text-[11px] leading-none text-zinc-200 shadow-lg">
+        {title}
+      </span>
     </span>
   );
 }
@@ -145,7 +136,7 @@ function ResourceGroupToken({
         height={22}
         className={`h-[22px] w-[22px] object-contain ${active ? "opacity-100" : "opacity-60"}`}
       />
-      <IndexTokenTooltip title={label} icon={icon} />
+      <IndexTokenTooltip title={label} />
     </span>
   );
 }
@@ -170,7 +161,7 @@ function ResourceToken({
       type="button"
       onClick={onSelect}
       aria-pressed={selected}
-      aria-label={`${label} · ${resource.changeCount}`}
+      aria-label={label}
       className={`group/index-token relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all ${
         selected
           ? "bg-yellow-500/10 ring-1 ring-inset ring-yellow-300/35 shadow-[0_0_14px_rgba(234,179,8,0.12)]"
@@ -190,16 +181,7 @@ function ResourceToken({
       ) : (
         <CircleHelp size={17} className="text-zinc-600" />
       )}
-      <IndexTokenTooltip title={label} icon={resource.imageUrl ?? RESOURCE_GROUP_ICON[resource.type]}>
-        <span className="block text-sm text-[#d6cdbf]">
-          {resourceGroupLabel(resource.type, serviceLocale)}
-          <span className="mx-1.5 text-white/35">·</span>
-          {serviceMessages[serviceLocale].patchChanges.changeCount.replace(
-            "{count}",
-            String(resource.changeCount),
-          )}
-        </span>
-      </IndexTokenTooltip>
+      <IndexTokenTooltip title={label} />
     </button>
   );
 }
@@ -304,7 +286,7 @@ export function ResourcePatchIndexExplorer({
         />
       </label>
 
-      <div className="mt-3 flex min-w-0 flex-wrap items-start gap-x-3 gap-y-2">
+      <div className="mt-3 space-y-1">
         {data.groups.map((group) => {
           const filtered = group.resources.filter((resource) => resourceMatches(resource, normalizedQuery));
           if (normalizedQuery && filtered.length === 0) return null;
@@ -317,14 +299,15 @@ export function ResourcePatchIndexExplorer({
             <section
               key={group.type}
               aria-label={resourceGroupLabel(group.type, serviceLocale)}
-              className="inline-flex min-w-0 flex-wrap items-center gap-0.5 rounded-lg bg-white/[0.018] p-0.5"
+              className="grid min-w-0 grid-cols-[2rem_minmax(0,1fr)] items-start gap-x-1.5 rounded-lg bg-white/[0.012] py-0.5"
             >
-              <ResourceGroupToken
-                type={group.type}
-                active={selectedResource.type === group.type}
-                serviceLocale={serviceLocale}
-              />
-              <span aria-hidden className="mx-0.5 h-5 w-px shrink-0 bg-white/[0.08]" />
+              <div className="flex h-8 items-center justify-center">
+                <ResourceGroupToken
+                  type={group.type}
+                  active={selectedResource.type === group.type}
+                  serviceLocale={serviceLocale}
+                />
+              </div>
               <div className="flex min-w-0 flex-wrap items-center gap-0.5">
                 {visible.map((resource) => (
                   <ResourceToken
@@ -349,10 +332,7 @@ export function ResourcePatchIndexExplorer({
                     className="group/index-token relative inline-flex h-8 w-8 items-center justify-center rounded-full text-sky-300/55 transition-colors hover:bg-sky-400/[0.07] hover:text-sky-200"
                   >
                     {expanded ? <Shrink size={16} /> : <Ellipsis size={17} />}
-                    <IndexTokenTooltip
-                      title={expanded ? copy.less : copy.more}
-                      icon={RESOURCE_GROUP_ICON[group.type]}
-                    />
+                    <IndexTokenTooltip title={expanded ? copy.less : copy.more} />
                   </button>
                 )}
               </div>
