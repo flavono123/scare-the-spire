@@ -626,7 +626,6 @@ export function RichContentEditor({
             if (!currentEditor || currentEditor.isDestroyed || currentEditor.view !== view) return;
 
             let referencePosition: number | null = null;
-            let referenceAttributes: Record<string, unknown> | null = null;
             view.state.doc.descendants((node, position) => {
               if (
                 referencePosition == null
@@ -634,18 +633,17 @@ export function RichContentEditor({
                 && node.attrs.videoId === videoId
               ) {
                 referencePosition = position;
-                referenceAttributes = node.attrs;
               }
             });
-            if (referencePosition == null || referenceAttributes == null) return;
+            if (referencePosition == null) return;
 
             view.dispatch(view.state.tr.setNodeMarkup(
               referencePosition,
               undefined,
               {
-                ...referenceAttributes,
                 videoId: reference.videoId,
                 title: reference.title,
+                pendingLabel: youtubePaste.pending,
               },
             ));
             setYoutubeFeedback({
