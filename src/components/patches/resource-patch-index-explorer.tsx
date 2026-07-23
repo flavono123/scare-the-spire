@@ -102,9 +102,13 @@ function countStoriesByPatchLine(stories: { patchLineId?: string }[]): Map<strin
 
 function IndexTokenTooltip({
   title,
+  suppressed = false,
 }: {
   title: string;
+  suppressed?: boolean;
 }) {
+  if (suppressed) return null;
+
   return (
     <span className="pointer-events-none absolute bottom-full left-1/2 z-50 hidden -translate-x-1/2 pb-1 group-hover/index-token:block group-focus-within/index-token:block">
       <GameHoverTip
@@ -220,6 +224,7 @@ function ResourceGroupRow({
 }) {
   const rowRef = useRef<HTMLDivElement>(null);
   const [tokenCapacity, setTokenCapacity] = useState(FALLBACK_RESOURCE_TOKEN_CAPACITY);
+  const [toggleTooltipSuppressed, setToggleTooltipSuppressed] = useState(false);
 
   useEffect(() => {
     const row = rowRef.current;
@@ -271,13 +276,27 @@ function ResourceGroupRow({
         {hasOverflow && (
           <button
             type="button"
-            onClick={onToggle}
+            onClick={(event) => {
+              if (event.detail > 0) event.currentTarget.blur();
+              setToggleTooltipSuppressed(true);
+              onToggle();
+            }}
+            onPointerLeave={(event) => {
+              if (document.activeElement !== event.currentTarget) {
+                setToggleTooltipSuppressed(false);
+              }
+            }}
+            onFocus={() => setToggleTooltipSuppressed(false)}
+            onBlur={() => setToggleTooltipSuppressed(false)}
             aria-expanded={expanded}
             aria-label={expanded ? lessLabel : moreLabel}
             className="group/index-token relative inline-flex h-8 w-8 items-center justify-center rounded-full text-sky-300/55 transition-colors hover:bg-sky-400/[0.07] hover:text-sky-200"
           >
             {expanded ? <Shrink size={16} /> : <Ellipsis size={17} />}
-            <IndexTokenTooltip title={expanded ? lessLabel : moreLabel} />
+            <IndexTokenTooltip
+              title={expanded ? lessLabel : moreLabel}
+              suppressed={toggleTooltipSuppressed}
+            />
           </button>
         )}
       </div>
@@ -301,6 +320,7 @@ export function ResourcePatchIndexExplorer({
   const [selectedKey, setSelectedKey] = useState(() => resourceKey(findInitialResource(data)));
   const [expandedGroups, setExpandedGroups] = useState<Set<StoryEntityType>>(() => new Set());
   const [allGroupsExpanded, setAllGroupsExpanded] = useState(false);
+  const [allGroupsTooltipSuppressed, setAllGroupsTooltipSuppressed] = useState(false);
   const [activePatchLineId, setActivePatchLineId] = useState<string | null>(null);
   const [composerPatchLineId, setComposerPatchLineId] = useState<string | null>(null);
   const { userId, ready: authReady, ensureUser } = useAuth();
@@ -430,13 +450,27 @@ export function ResourcePatchIndexExplorer({
             <div className="flex h-8 items-center justify-center">
               <button
                 type="button"
-                onClick={() => setAllGroupsExpanded((current) => !current)}
+                onClick={(event) => {
+                  if (event.detail > 0) event.currentTarget.blur();
+                  setAllGroupsTooltipSuppressed(true);
+                  setAllGroupsExpanded((current) => !current);
+                }}
+                onPointerLeave={(event) => {
+                  if (document.activeElement !== event.currentTarget) {
+                    setAllGroupsTooltipSuppressed(false);
+                  }
+                }}
+                onFocus={() => setAllGroupsTooltipSuppressed(false)}
+                onBlur={() => setAllGroupsTooltipSuppressed(false)}
                 aria-expanded={allGroupsExpanded}
                 aria-label={allGroupsExpanded ? copy.less : copy.more}
                 className="group/index-token relative inline-flex h-7 w-7 items-center justify-center rounded-md bg-sky-950/20 text-sky-300/55 ring-1 ring-inset ring-sky-200/10 transition-colors hover:bg-sky-400/[0.07] hover:text-sky-200"
               >
                 {allGroupsExpanded ? <Shrink size={15} /> : <EllipsisVertical size={17} />}
-                <IndexTokenTooltip title={allGroupsExpanded ? copy.less : copy.more} />
+                <IndexTokenTooltip
+                  title={allGroupsExpanded ? copy.less : copy.more}
+                  suppressed={allGroupsTooltipSuppressed}
+                />
               </button>
             </div>
           </div>
