@@ -23,7 +23,6 @@ const PUBLIC_INDEX_PATHS = [
   "/byrdispatch",
   "/cards",
   "/chemical-x",
-  "/combo",
   "/history-course",
   "/patches",
   "/potions",

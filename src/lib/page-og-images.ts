@@ -69,12 +69,12 @@ export const PAGE_OG_IMAGE_RULES = [
     image: CHEMICAL_X_PAGE_OG_IMAGE,
   },
   {
-    pattern: "/combo",
+    pattern: "/c-c-c-combo",
     label: "코오오옴보",
     image: COMBO_PAGE_OG_IMAGE,
   },
   {
-    pattern: "/combo/*",
+    pattern: "/c-c-c-combo/*",
     label: "코오오옴보 상세",
     image: COMBO_PAGE_OG_IMAGE,
   },

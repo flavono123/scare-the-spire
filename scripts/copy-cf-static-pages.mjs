@@ -41,7 +41,7 @@ const compendiumSegments = new Set([
 const staticServicePageSegments = new Set([
   "byrdispatch",
   "chemical-x",
-  "combo",
+  "c-c-c-combo",
   "history-course",
   "profile",
   "this-or-that",

@@ -132,7 +132,7 @@ export function getToyBoxNavItems({
       ...(showDevMenu
         ? [
             {
-              href: "/combo",
+              href: "/c-c-c-combo",
               label: messages.nav.combo,
               icon: "/images/sts2/badges/ccccombo.webp",
             },

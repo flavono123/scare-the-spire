@@ -19,7 +19,7 @@
 | Delivery | Route 수 | 대표 |
 | --- | ---: | --- |
 | 정적 home | 14 | `/`, `/en`, `/zh` |
-| 정적 서비스 index | 84 | `/chemical-x`, `/en/combo`, `/zh/profile` |
+| 정적 서비스 index | 84 | `/chemical-x`, `/en/c-c-c-combo`, `/zh/profile` |
 | 정적 Compendium | 3,312 | `/compendium`, `/compendium/cards/abrasive`, `/zh/compendium/cards` |
 | 정적 STS1 legacy | 603 | `/cards/bash`, `/relics/anchor`, `/potions/fairy-potion` |
 | patch Worker binding | 336 | `/patches/0.100.0`, `/en/patches/changes` |
@@ -44,7 +44,7 @@ KiB를 108.87 KiB 초과했다. 정적 asset 수와 별개로 OpenNext runtime i
 대표:
 
 - STS1 legacy: `/cards`, `/cards/bash`, `/relics/anchor`, `/potions/fairy-potion`
-- 서비스 index: `/combo`, `/this-or-that`, `/profile`, `/byrdispatch`와 locale variant
+- 서비스 index: `/c-c-c-combo`, `/this-or-that`, `/profile`, `/byrdispatch`와 locale variant
 - Compendium root: `/compendium`, `/en/compendium`, `/zh/compendium`
 
 판정: **OpenNext runtime 불필요. 즉시 삭제 가능.**
@@ -62,7 +62,7 @@ KiB를 108.87 KiB 초과했다. 정적 asset 수와 별개로 OpenNext runtime i
 대표:
 
 - `/chemical-x/{postId}`
-- `/combo/{postId}`
+- `/c-c-c-combo/{postId}`
 - `/this-or-that/{postId}`
 - `/history-course/{runId}`
 - 위 route의 `/en`, `/zh` 등 game-locale variant

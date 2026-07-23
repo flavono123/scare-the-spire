@@ -67,9 +67,9 @@ test("locale matrix keeps static route ownership and service language", async ({
     { path: "/", owner: "home" },
     { path: "/en", owner: "home" },
     { path: "/zh", owner: "home" },
-    { path: "/combo", owner: "service", title: "코오오옴보" },
-    { path: "/en/combo", owner: "service", title: "C-c-c-Combo" },
-    { path: "/zh/combo", owner: "service", title: "C-c-c-Combo" },
+    { path: "/c-c-c-combo", owner: "service", title: "코오오옴보" },
+    { path: "/en/c-c-c-combo", owner: "service", title: "C-c-c-Combo" },
+    { path: "/zh/c-c-c-combo", owner: "service", title: "C-c-c-Combo" },
   ];
 
   for (const route of routes) {
@@ -103,7 +103,7 @@ test("redirect and canonical metadata match the public locale URL", async ({ req
 test("dynamic service routes refresh directly and invalid nesting fails closed", async ({ request }) => {
   const validShapes = [
     `/chemical-x/${MISSING_UUID}`,
-    `/combo/${MISSING_UUID}`,
+    `/c-c-c-combo/${MISSING_UUID}`,
     `/this-or-that/${MISSING_UUID}`,
     "/history-course/1phase4missingrun",
   ];
@@ -133,7 +133,7 @@ test("History Course invalid detail returns to its index with client navigation"
 
 test("Supabase failure uses the shared unavailable state", async ({ page }) => {
   await blockSupabase(page);
-  await page.goto(absolute(`/combo/${MISSING_UUID}`), { waitUntil: "domcontentloaded" });
+  await page.goto(absolute(`/c-c-c-combo/${MISSING_UUID}`), { waitUntil: "domcontentloaded" });
 
   await expect(
     page.locator('img[src*="battleworn_dummy_time_limit_power.webp"]'),
@@ -190,7 +190,7 @@ test("History Course loads an IndexedDB-only run while Supabase is unavailable",
 test("Combo mobile index keeps its primary interaction in the viewport", async ({ page }) => {
   await blockSupabase(page);
   await page.setViewportSize({ width: 390, height: 844 });
-  const response = await page.goto(absolute("/combo"), { waitUntil: "domcontentloaded" });
+  const response = await page.goto(absolute("/c-c-c-combo"), { waitUntil: "domcontentloaded" });
   expect(response?.status()).toBe(200);
   await expect(page.locator('[data-combo-page="index"]')).toBeVisible();
   await expectNoHorizontalOverflow(page);

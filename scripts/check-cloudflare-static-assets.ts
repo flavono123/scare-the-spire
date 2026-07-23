@@ -54,7 +54,7 @@ const gameLocalePathPrefixes = [
 const staticServicePageSegments = [
   "byrdispatch",
   "chemical-x",
-  "combo",
+  "c-c-c-combo",
   "history-course",
   "profile",
   "this-or-that",

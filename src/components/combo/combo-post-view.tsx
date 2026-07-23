@@ -58,7 +58,7 @@ export function ComboPostView({ postId, gameLocale }: ComboPostViewProps) {
       <div className="py-12 text-center">
         <p className="mb-4 text-sm text-gray-500">{copy.notFound}</p>
         <Link
-          href={localizeHrefWithGameLocale("/combo", serviceLocale, gameLocale)}
+          href={localizeHrefWithGameLocale("/c-c-c-combo", serviceLocale, gameLocale)}
           className="text-sm text-yellow-400 hover:underline"
         >
           {copy.backToIndex}
@@ -71,7 +71,7 @@ export function ComboPostView({ postId, gameLocale }: ComboPostViewProps) {
     <div data-combo-page="detail" className="space-y-4">
       <div className="flex items-center justify-between">
         <Link
-          href={localizeHrefWithGameLocale("/combo", serviceLocale, gameLocale)}
+          href={localizeHrefWithGameLocale("/c-c-c-combo", serviceLocale, gameLocale)}
           className="inline-flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-yellow-400"
         >
           <ArrowLeft size={16} />
@@ -135,7 +135,7 @@ export function ComboPostView({ postId, gameLocale }: ComboPostViewProps) {
             </span>
           </div>
           <span className="text-[11px] tracking-wide text-gray-600/60">
-            {siteDisplayOrigin}/combo/{postId.slice(0, 8)}
+            {siteDisplayOrigin}/c-c-c-combo/{postId.slice(0, 8)}
           </span>
         </div>
       </article>

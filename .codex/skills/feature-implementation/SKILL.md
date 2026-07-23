@@ -36,7 +36,7 @@ resources, rich patch notes, mobile layout, animation, or QA.
   profile, History Course, and Compendium Bestiary routes. Keep `page.tsx`
   limited to Next.js-supported route exports and required route config; have
   base and `[gameLocale]` route entries import the shared module.
-- Preserve Combo's locale URLs and metadata. Read `/combo/[id]` records from
+- Preserve Combo's locale URLs and metadata. Read `/c-c-c-combo/[id]` records from
   Supabase in the browser; do not add request-time Worker Supabase reads, full
   Compendium joins, or large JSON parsing for them.
 - Keep `/patches*` and `/_patches*` owned by the separate static patch Worker.

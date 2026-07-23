@@ -54,7 +54,7 @@ export function ComboPostCard({
   const copy = serviceMessages[serviceLocale].combo;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const router = useRouter();
-  const href = localizeHrefWithGameLocale(`/combo/${post.id}`, serviceLocale, gameLocale);
+  const href = localizeHrefWithGameLocale(`/c-c-c-combo/${post.id}`, serviceLocale, gameLocale);
   const openPost = useCallback(() => {
     router.push(href);
   }, [href, router]);
