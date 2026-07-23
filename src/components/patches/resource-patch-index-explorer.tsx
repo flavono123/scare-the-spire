@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "@/components/ui/static-image";
-import { Search } from "lucide-react";
+import { CircleHelp, Ellipsis, Search, Shrink } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { GameHoverTip } from "@/components/codex/hover-tip";
 import { PatchLineStoriesPanel, sortPatchLineStories } from "@/components/patches/patch-note-with-story-actions";
 import { ResourcePatchChangeList } from "@/components/patches/resource-patch-history";
 import { StoryComposerModal } from "@/components/story-composer-modal";
@@ -16,6 +17,7 @@ import {
   type ResourcePatchIndexData,
   type ResourcePatchIndexResource,
 } from "@/lib/resource-patch-index";
+import { sts2NavItems } from "@/lib/site-nav-items";
 import type { STS2PatchLine, Story, StoryEntityType } from "@/lib/types";
 import { serviceMessages } from "@/messages/service";
 
@@ -42,6 +44,27 @@ function resourceGroupLabel(type: StoryEntityType, serviceLocale: ServiceLocale)
     case "epoch": return copy.epochs;
   }
 }
+
+function navIcon(labelKey: (typeof sts2NavItems)[number]["labelKey"]): string {
+  const item = sts2NavItems.find((candidate) => candidate.labelKey === labelKey);
+  if (!item) throw new Error(`Missing Compendium navigation icon: ${labelKey}`);
+  return item.icon;
+}
+
+const RESOURCE_GROUP_ICON: Record<StoryEntityType, string> = {
+  character: navIcon("characters"),
+  card: navIcon("cards"),
+  relic: navIcon("relics"),
+  potion: navIcon("potions"),
+  power: navIcon("powers"),
+  enchantment: navIcon("enchantments"),
+  affliction: navIcon("enchantments"),
+  event: navIcon("events"),
+  monster: navIcon("monsters"),
+  encounter: navIcon("monsters"),
+  ancient: navIcon("ancients"),
+  epoch: navIcon("epochs"),
+};
 
 function resourceMatches(resource: ResourcePatchIndexResource, query: string): boolean {
   if (!query) return true;
@@ -70,6 +93,60 @@ function countStoriesByPatchLine(stories: { patchLineId?: string }[]): Map<strin
   return counts;
 }
 
+function IndexTokenTooltip({
+  title,
+  icon,
+  children,
+}: {
+  title: string;
+  icon: string;
+  children?: ReactNode;
+}) {
+  return (
+    <span className="pointer-events-none absolute left-1/2 top-full z-50 hidden -translate-x-1/2 pt-2 group-hover/index-token:block group-focus-within/index-token:block">
+      <GameHoverTip
+        title={title}
+        icon={icon}
+        style={{ minWidth: 160, maxWidth: "min(240px, calc(100vw - 24px))" }}
+      >
+        {children}
+      </GameHoverTip>
+    </span>
+  );
+}
+
+function ResourceGroupToken({
+  type,
+  active,
+  serviceLocale,
+}: {
+  type: StoryEntityType;
+  active: boolean;
+  serviceLocale: ServiceLocale;
+}) {
+  const label = resourceGroupLabel(type, serviceLocale);
+  const icon = RESOURCE_GROUP_ICON[type];
+  return (
+    <span
+      className={`group/index-token relative inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md ring-1 ring-inset transition-colors ${
+        active
+          ? "bg-sky-400/10 ring-sky-300/30"
+          : "bg-sky-950/25 ring-sky-200/10"
+      }`}
+      aria-label={label}
+    >
+      <Image
+        src={icon}
+        alt=""
+        width={22}
+        height={22}
+        className={`h-[22px] w-[22px] object-contain ${active ? "opacity-100" : "opacity-60"}`}
+      />
+      <IndexTokenTooltip title={label} icon={icon} />
+    </span>
+  );
+}
+
 function ResourceToken({
   resource,
   selected,
@@ -90,11 +167,11 @@ function ResourceToken({
       type="button"
       onClick={onSelect}
       aria-pressed={selected}
-      title={`${label} · ${resource.changeCount}`}
-      className={`group/resource inline-flex h-9 min-w-0 items-center gap-1.5 rounded px-1.5 text-left transition-all ${
+      aria-label={`${label} · ${resource.changeCount}`}
+      className={`group/index-token relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all ${
         selected
-          ? "bg-yellow-500/[0.09] text-yellow-200 shadow-[0_0_14px_rgba(234,179,8,0.08)]"
-          : "text-gray-400 hover:bg-white/[0.035] hover:text-gray-200"
+          ? "bg-yellow-500/10 ring-1 ring-inset ring-yellow-300/35 shadow-[0_0_14px_rgba(234,179,8,0.12)]"
+          : "hover:bg-white/[0.055]"
       }`}
     >
       {resource.imageUrl ? (
@@ -103,15 +180,23 @@ function ResourceToken({
           alt=""
           width={28}
           height={28}
-          className={`h-7 w-7 shrink-0 object-contain transition-transform group-hover/resource:scale-110 ${
+          className={`h-7 w-7 object-contain transition-transform group-hover/index-token:scale-110 ${
             selected ? "drop-shadow-[0_0_5px_rgba(234,179,8,0.35)]" : ""
           }`}
         />
       ) : (
-        <span className="h-2 w-2 shrink-0 rounded-full bg-zinc-600" />
+        <CircleHelp size={17} className="text-zinc-600" />
       )}
-      <span className="max-w-28 truncate font-game-text text-xs">{label}</span>
-      <span className="text-[10px] tabular-nums text-gray-600">{resource.changeCount}</span>
+      <IndexTokenTooltip title={label} icon={resource.imageUrl ?? RESOURCE_GROUP_ICON[resource.type]}>
+        <span className="block text-sm text-[#d6cdbf]">
+          {resourceGroupLabel(resource.type, serviceLocale)}
+          <span className="mx-1.5 text-white/35">·</span>
+          {serviceMessages[serviceLocale].patchChanges.changeCount.replace(
+            "{count}",
+            String(resource.changeCount),
+          )}
+        </span>
+      </IndexTokenTooltip>
     </button>
   );
 }
@@ -236,18 +321,18 @@ export function ResourcePatchIndexExplorer({
 
   return (
     <>
-      <label className="relative mt-5 block max-w-xl">
+      <label className="relative mt-4 block max-w-md">
         <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
         <input
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder={copy.searchPlaceholder}
-          className="h-10 w-full rounded-md border border-white/10 bg-white/[0.035] pl-9 pr-3 font-game-text text-sm text-foreground outline-none transition-colors placeholder:text-gray-600 focus:border-yellow-500/35"
+          className="h-9 w-full rounded-md border border-white/10 bg-white/[0.035] pl-9 pr-3 font-game-text text-sm text-foreground outline-none transition-colors placeholder:text-gray-600 focus:border-yellow-500/35"
         />
       </label>
 
-      <div className="mt-5 space-y-1 border-y border-white/[0.08] py-2">
+      <div className="mt-3 flex min-w-0 flex-wrap items-start gap-x-3 gap-y-2">
         {data.groups.map((group) => {
           const filtered = group.resources.filter((resource) => resourceMatches(resource, normalizedQuery));
           if (normalizedQuery && filtered.length === 0) return null;
@@ -257,11 +342,18 @@ export function ResourcePatchIndexExplorer({
             : filtered.slice(0, PRIMARY_RESOURCE_COUNT);
           const canExpand = !normalizedQuery && group.type !== "character" && filtered.length > PRIMARY_RESOURCE_COUNT;
           return (
-            <section key={group.type} className="grid min-w-0 gap-1 py-1.5 md:grid-cols-[7rem_minmax(0,1fr)] md:items-start">
-              <h2 className="px-1.5 pt-2 font-game-title text-xs text-gray-500">
-                {resourceGroupLabel(group.type, serviceLocale)}
-              </h2>
-              <div className="flex min-w-0 flex-wrap items-center gap-x-1 gap-y-0.5">
+            <section
+              key={group.type}
+              aria-label={resourceGroupLabel(group.type, serviceLocale)}
+              className="inline-flex min-w-0 flex-wrap items-center gap-0.5 rounded-lg bg-white/[0.018] p-0.5"
+            >
+              <ResourceGroupToken
+                type={group.type}
+                active={selectedResource.type === group.type}
+                serviceLocale={serviceLocale}
+              />
+              <span aria-hidden className="mx-0.5 h-5 w-px shrink-0 bg-white/[0.08]" />
+              <div className="flex min-w-0 flex-wrap items-center gap-0.5">
                 {visible.map((resource) => (
                   <ResourceToken
                     key={resourceKey(resource)}
@@ -281,9 +373,14 @@ export function ResourcePatchIndexExplorer({
                       else next.add(group.type);
                       return next;
                     })}
-                    className="h-8 px-2 font-game-title text-xs spire-blue transition-colors hover:text-blue-300"
+                    aria-label={expanded ? copy.less : copy.more}
+                    className="group/index-token relative inline-flex h-8 w-8 items-center justify-center rounded-full text-sky-300/55 transition-colors hover:bg-sky-400/[0.07] hover:text-sky-200"
                   >
-                    {expanded ? copy.less : `… ${copy.more}`}
+                    {expanded ? <Shrink size={16} /> : <Ellipsis size={17} />}
+                    <IndexTokenTooltip
+                      title={expanded ? copy.less : copy.more}
+                      icon={RESOURCE_GROUP_ICON[group.type]}
+                    />
                   </button>
                 )}
               </div>
