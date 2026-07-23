@@ -61,6 +61,12 @@ function resourceKey(type: StoryEntityType, id: string): string {
   return `${type}:${id}`;
 }
 
+function resourceImageUrl(entity: EntityInfo): string | null {
+  if (entity.imageUrl) return entity.imageUrl;
+  if (entity.type === "card") return entity.cardData?.betaImageUrl ?? null;
+  return null;
+}
+
 function normalizeText(value: string): string {
   return value
     .normalize("NFKC")
@@ -173,7 +179,7 @@ export function buildResourcePatchIndex({
           id: entity.id,
           nameKo: entity.nameKo,
           nameEn: entity.nameEn,
-          imageUrl: entity.imageUrl,
+          imageUrl: resourceImageUrl(entity),
           color: entity.color,
           lineIds,
           changeCount: lineIds.length,

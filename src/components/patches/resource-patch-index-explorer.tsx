@@ -173,11 +173,7 @@ function ResourceToken({
       onClick={onSelect}
       aria-pressed={selected}
       aria-label={label}
-      className={`group/index-token relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all ${
-        selected
-          ? "bg-yellow-500/10 ring-1 ring-inset ring-yellow-300/35 shadow-[0_0_14px_rgba(234,179,8,0.12)]"
-          : "hover:bg-white/[0.055]"
-      }`}
+      className="group/index-token relative inline-flex h-8 w-8 shrink-0 items-center justify-center outline-none"
     >
       {resource.imageUrl ? (
         <Image
@@ -185,12 +181,17 @@ function ResourceToken({
           alt=""
           width={28}
           height={28}
-          className={`h-7 w-7 object-contain transition-transform group-hover/index-token:scale-110 ${
-            selected ? "drop-shadow-[0_0_5px_rgba(234,179,8,0.35)]" : ""
+          className={`h-7 w-7 object-contain transition-[transform,filter] duration-150 group-hover/index-token:scale-110 group-hover/index-token:brightness-125 group-hover/index-token:drop-shadow-[0_0_5px_rgba(234,179,8,0.35)] group-focus-visible/index-token:scale-110 group-focus-visible/index-token:brightness-125 group-focus-visible/index-token:drop-shadow-[0_0_5px_rgba(234,179,8,0.35)] ${
+            selected
+              ? "scale-110 brightness-125 drop-shadow-[0_0_5px_rgba(234,179,8,0.35)]"
+              : ""
           }`}
         />
       ) : (
-        <CircleHelp size={17} className="text-zinc-600" />
+        <CircleHelp
+          size={17}
+          className="text-zinc-600 transition-[transform,filter,color] duration-150 group-hover/index-token:scale-110 group-hover/index-token:text-zinc-300 group-hover/index-token:drop-shadow-[0_0_5px_rgba(234,179,8,0.35)] group-focus-visible/index-token:scale-110 group-focus-visible/index-token:text-zinc-300"
+        />
       )}
       <IndexTokenTooltip title={label} />
     </button>
