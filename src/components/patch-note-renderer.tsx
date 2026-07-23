@@ -1444,6 +1444,25 @@ function enrichLine(
   return renderBBNodes(nodes, lookup, key, context);
 }
 
+export function PatchNoteInlineText({
+  markdown,
+  lookup,
+  serviceLocale,
+  gameLocale,
+}: {
+  markdown: string;
+  lookup: EntityLookup;
+  serviceLocale?: ServiceLocale;
+  gameLocale?: GameLocale;
+}) {
+  const context = useMemo<RenderContext>(
+    () => ({ serviceLocale, gameLocale }),
+    [gameLocale, serviceLocale],
+  );
+
+  return <>{enrichLine(withPatchChangeEffects(markdown), lookup, "patch-inline", context)}</>;
+}
+
 // --- Markdown line rendering ---
 
 function renderLine(

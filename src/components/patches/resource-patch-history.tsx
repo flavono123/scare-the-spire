@@ -3,8 +3,13 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { GameHoverTip } from "@/components/codex/hover-tip";
-import { PatchLineReferenceText } from "@/components/patch-line-reference";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import {
+  buildEntityLookup,
+  PatchNoteInlineText,
+} from "@/components/patch-note-renderer";
+import { useCommentEntities } from "@/hooks/use-comment-entities";
+import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
+import { patchLineMarkdownForService } from "@/lib/patch-line-display";
 import { patchLineHref } from "@/lib/patch-line-links";
 import {
   findResourcePatchIndexResource,
@@ -93,13 +98,18 @@ export function ResourcePatchChangeList({
   lines,
   patches,
   serviceLocale,
+  gameLocale,
   trailingAction,
 }: {
   lines: STS2PatchLine[];
   patches: readonly STS2Patch[];
   serviceLocale: ServiceLocale;
+  gameLocale?: GameLocale;
   trailingAction?: (line: STS2PatchLine) => ReactNode;
 }) {
+  const { entities } = useCommentEntities();
+  const entityLookup = useMemo(() => buildEntityLookup(entities), [entities]);
+
   return (
     <ul className="space-y-1">
       {lines.map((line) => (
@@ -109,13 +119,14 @@ export function ResourcePatchChangeList({
           className="group/change ml-4 list-outside list-disc py-1 text-sm text-muted-foreground"
         >
           <div className="flex min-w-0 flex-col gap-1.5 sm:flex-row sm:items-start sm:gap-3">
-            <Link
-              href={localizeHref(patchLineHref(line), serviceLocale)}
-              prefetch={false}
-              className="min-w-0 flex-1 font-game-text text-sm leading-relaxed text-gray-300 transition-colors hover:text-white focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-500/40"
-            >
-              <PatchLineReferenceText patchLine={line} serviceLocale={serviceLocale} />
-            </Link>
+            <span className="min-w-0 flex-1 font-game-text text-sm leading-relaxed text-gray-300">
+              <PatchNoteInlineText
+                markdown={patchLineMarkdownForService(line, serviceLocale)}
+                lookup={entityLookup}
+                serviceLocale={serviceLocale}
+                gameLocale={gameLocale}
+              />
+            </span>
             <span className="flex shrink-0 items-center justify-end gap-2 self-end sm:self-start">
               <PatchMetaReferenceLink
                 patchLine={line}

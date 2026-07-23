@@ -469,6 +469,7 @@ export function ResourcePatchIndexExplorer({
             lines={selectedLines}
             patches={data.patches}
             serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
             trailingAction={storyAction}
           />
         ) : (
