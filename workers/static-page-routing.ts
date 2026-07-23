@@ -17,7 +17,7 @@ const STATIC_GAME_LOCALE_PREFIXES = new Set([
 const STATIC_SERVICE_PAGE_SEGMENTS = new Set([
   "byrdispatch",
   "chemical-x",
-  "combo",
+  "c-c-c-combo",
   "history-course",
   "profile",
   "this-or-that",
