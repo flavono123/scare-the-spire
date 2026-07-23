@@ -4,10 +4,13 @@ import Image from "@/components/ui/static-image";
 import { CircleHelp, Ellipsis, Search, Shrink } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { GameHoverTip } from "@/components/codex/hover-tip";
-import { PatchLineStoriesPanel, sortPatchLineStories } from "@/components/patches/patch-note-with-story-actions";
+import {
+  PatchLineStoriesPanel,
+  PatchLineStoryAction,
+  sortPatchLineStories,
+} from "@/components/patches/patch-note-with-story-actions";
 import { ResourcePatchChangeList } from "@/components/patches/resource-patch-history";
 import { StoryComposerModal } from "@/components/story-composer-modal";
-import { StoryStatIcon } from "@/components/story-token-icon";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
@@ -201,39 +204,6 @@ function ResourceToken({
   );
 }
 
-function StoryAction({
-  count,
-  line,
-  unavailable,
-  serviceLocale,
-  onOpen,
-  onWrite,
-}: {
-  count: number;
-  line: STS2PatchLine;
-  unavailable: boolean;
-  serviceLocale: ServiceLocale;
-  onOpen: () => void;
-  onWrite: () => void;
-}) {
-  const copy = serviceMessages[serviceLocale].patchChanges;
-  const label = count > 0
-    ? copy.storyCount.replace("{count}", String(count))
-    : copy.storyWrite;
-  return (
-    <button
-      type="button"
-      onClick={() => count > 0 || unavailable ? onOpen() : onWrite()}
-      className="inline-flex items-center gap-0.5 text-[11px] tabular-nums text-[#fb923c]/65 transition-colors hover:text-[#fed7aa] focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#fb923c]/50"
-      title={label}
-      aria-label={`${label}: ${line.id}`}
-    >
-      <StoryStatIcon size={15} className="opacity-75" />
-      <span>{count}</span>
-    </button>
-  );
-}
-
 export function ResourcePatchIndexExplorer({
   data,
   serviceLocale,
@@ -304,13 +274,15 @@ export function ResourcePatchIndexExplorer({
   };
 
   const storyAction = (line: STS2PatchLine): ReactNode => {
-    const count = (staticStoryCounts.get(line.id) ?? 0) + (communityStoryCounts.get(line.id) ?? 0);
+    const staticCount = staticStoryCounts.get(line.id) ?? 0;
+    const count = staticCount + (communityStoryCounts.get(line.id) ?? 0);
     return (
-      <StoryAction
+      <PatchLineStoryAction
         count={count}
-        line={line}
-        unavailable={communityStories.unavailable}
+        staticCount={staticCount}
+        patchLine={line}
         serviceLocale={serviceLocale}
+        storiesUnavailable={communityStories.unavailable}
         onOpen={() => setActivePatchLineId(line.id)}
         onWrite={() => setComposerPatchLineId(line.id)}
       />
@@ -420,7 +392,7 @@ export function ResourcePatchIndexExplorer({
             trailingAction={storyAction}
           />
         ) : (
-          <p className="border-y border-white/[0.08] py-8 text-center font-game-text text-sm text-gray-500">
+          <p className="py-8 text-center font-game-text text-sm text-gray-500">
             {copy.noResults}
           </p>
         )}

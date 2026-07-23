@@ -46,7 +46,7 @@ export function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
   };
 }
 
-function PatchLineStoryAction({
+export function PatchLineStoryAction({
   count,
   staticCount,
   patchLine,

@@ -70,7 +70,7 @@ export function PatchMetaReferenceLink({
       <Link
         href={localizeHref(patchLineHref(patchLine), serviceLocale)}
         prefetch={false}
-        className="game-inspect-cursor whitespace-nowrap font-game-title text-[11px] font-semibold spire-blue underline decoration-blue-400/25 underline-offset-2 transition-colors hover:text-blue-300 focus-visible:outline focus-visible:outline-1 focus-visible:outline-blue-400/50"
+        className="game-inspect-cursor whitespace-nowrap font-game-text text-sm leading-relaxed spire-gold transition-colors hover:text-yellow-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/50"
       >
         {dateLabel(patchLine.date, serviceLocale)} {version}
       </Link>
@@ -80,7 +80,7 @@ export function PatchMetaReferenceLink({
           icon="/images/sts2/nav/patch_notes_icon.png"
           style={{ width: 280, maxWidth: "min(280px, calc(100vw - 24px))" }}
         >
-          <span className="block text-sm text-blue-200">{patchLine.date}</span>
+          <span className="block text-sm text-yellow-200">{patchLine.date}</span>
           <span className="mt-1 block">{title}</span>
           {summary && <span className="mt-1.5 block text-[13px] text-[#d6cdbf]">{summary}</span>}
         </GameHoverTip>
@@ -101,12 +101,12 @@ export function ResourcePatchChangeList({
   trailingAction?: (line: STS2PatchLine) => ReactNode;
 }) {
   return (
-    <div className="divide-y divide-white/[0.07] border-y border-white/[0.08]">
+    <ul className="space-y-1">
       {lines.map((line) => (
-        <article
+        <li
           key={line.id}
           data-resource-patch-line={line.id}
-          className="group/change py-2.5"
+          className="group/change ml-4 list-outside list-disc py-1 text-sm text-muted-foreground"
         >
           <div className="flex min-w-0 flex-col gap-1.5 sm:flex-row sm:items-start sm:gap-3">
             <Link
@@ -125,9 +125,9 @@ export function ResourcePatchChangeList({
               {trailingAction?.(line)}
             </span>
           </div>
-        </article>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 
