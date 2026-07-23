@@ -13,6 +13,10 @@ function runInitialPatchBuild() {
   const result = spawnSync("pnpm", ["patch:build"], {
     cwd: root,
     stdio: "inherit",
+    env: {
+      ...process.env,
+      STS_PATCH_CHANGES_DEV: "1",
+    },
   });
   if (result.status !== 0) process.exit(result.status ?? 1);
 }

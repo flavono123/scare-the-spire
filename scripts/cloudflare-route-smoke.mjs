@@ -162,18 +162,16 @@ function patchCases() {
       bodyIncludes: "data-service-locale=\"en\"",
     },
     {
-      name: "Resource change history",
+      name: "Resource change history stays private",
       path: "/patches/changes",
       headers: { Accept: "text/html" },
-      contentType: "text/html",
-      bodyIncludes: "data-resource-patch-line",
+      statuses: [404],
     },
     {
-      name: "English resource change history",
+      name: "English resource change history stays private",
       path: "/en/patches/changes",
       headers: { Accept: "text/html" },
-      contentType: "text/html",
-      bodyIncludes: "data-resource-patch-line",
+      statuses: [404],
     },
     {
       name: "Latest Korean patch",

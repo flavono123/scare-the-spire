@@ -186,33 +186,6 @@ test("History Course loads an IndexedDB-only run while Supabase is unavailable",
   await expect(page.getByText(/런을 찾을 수|Run not found/i)).toHaveCount(0);
 });
 
-test("patch change history works on mobile and keeps keyboard search state", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  const response = await page.goto(absolute("/patches/changes"), {
-    waitUntil: "domcontentloaded",
-  });
-  expect(response?.status()).toBe(200);
-  await expect(page.locator("[data-resource-patch-line]").first()).toBeVisible();
-  await expectNoHorizontalOverflow(page);
-
-  const trigger = page.locator("[data-patch-global-search-trigger]");
-  const box = await trigger.boundingBox();
-  expect(box?.height ?? 0).toBeGreaterThanOrEqual(36);
-  expect(box?.width ?? 0).toBeGreaterThanOrEqual(36);
-
-  await trigger.click();
-  const overlay = page.locator("[data-patch-global-search-overlay]");
-  const searchInput = page.locator("[data-patch-global-search-input]");
-  await expect(overlay).toBeVisible();
-  await expect(searchInput).toBeFocused();
-  await page.keyboard.press("Tab");
-  await expect(searchInput).not.toBeFocused();
-  await page.keyboard.press("Shift+Tab");
-  await expect(searchInput).toBeFocused();
-  await page.keyboard.press("Escape");
-  await expect(overlay).toBeHidden();
-  await expect(trigger).toBeFocused();
-});
 
 test("Combo mobile index keeps its primary interaction in the viewport", async ({ page }) => {
   await blockSupabase(page);

@@ -8,6 +8,7 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
+import { devToolsEnabled } from "@/lib/dev-tools";
 import { PATCH_NOTES_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import {
   RESOURCE_PATCH_INDEX_ASSET,
@@ -35,9 +36,11 @@ async function getResourcePatchIndexData(): Promise<ResourcePatchIndexData> {
 export async function ResourcePatchIndexPage({
   serviceLocale,
   gameLocale,
+  showSectionTabs = devToolsEnabled(),
 }: {
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
+  showSectionTabs?: boolean;
 }) {
   const [data, storyPlaceholder] = await Promise.all([
     getResourcePatchIndexData(),
@@ -61,6 +64,7 @@ export async function ResourcePatchIndexPage({
         active="changes"
         serviceLocale={serviceLocale}
         gameLocale={gameLocale}
+        enabled={showSectionTabs}
       />
       <div
         id="sts-resource-patch-index-root"

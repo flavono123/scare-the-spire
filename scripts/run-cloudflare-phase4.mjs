@@ -186,7 +186,7 @@ async function waitForRemoteStack(origin, timeoutMs = REMOTE_READY_TIMEOUT_MS) {
           headers: { Accept: "text/html", "Cache-Control": "no-cache" },
           signal: AbortSignal.timeout(10_000),
         }),
-        fetch(`${origin}/patches/changes`, {
+        fetch(`${origin}/patches`, {
           headers: { Accept: "text/html", "Cache-Control": "no-cache" },
           signal: AbortSignal.timeout(10_000),
         }),
@@ -295,7 +295,7 @@ async function main() {
     await waitForWorker(
       "main-to-patch service binding",
       mainWorker,
-      `${LOCAL_MAIN_ORIGIN}/patches/changes`,
+      `${LOCAL_MAIN_ORIGIN}/patches`,
     );
 
     runSuites(LOCAL_MAIN_ORIGIN);
