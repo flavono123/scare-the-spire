@@ -1,11 +1,14 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { RichContentEditorProps } from "@/components/rich-content-editor";
 import type { PostBlock } from "@/lib/chemical-types";
-import { extractComboResourceRefs } from "@/lib/combo-types";
+import {
+  countComboYouTubeReferences,
+  extractComboResourceRefs,
+} from "@/lib/combo-types";
 import type { ServiceLocale } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
 import { ComboResourcePicker } from "./combo-resource-picker";
@@ -38,6 +41,17 @@ export function ComboEditor({
     requestId: number;
     entity: EntityInfo;
   } | null>(null);
+  const youtubePaste = useMemo(() => ({
+    pending: copy.youtubePending,
+    added: copy.youtubeAdded,
+    duplicate: copy.youtubeLimit,
+    unavailable: copy.youtubeUnavailable,
+  }), [
+    copy.youtubeAdded,
+    copy.youtubeLimit,
+    copy.youtubePending,
+    copy.youtubeUnavailable,
+  ]);
 
   const handleResourceSelect = useCallback((entity: EntityInfo) => {
     entityInsertRequestIdRef.current += 1;
@@ -52,13 +66,23 @@ export function ComboEditor({
       setValidationError(copy.minimumResources);
       throw new Error("combo requires at least two resources");
     }
+    if (countComboYouTubeReferences(blocks) > 1) {
+      setValidationError(copy.youtubeLimit);
+      throw new Error("combo allows one YouTube reference");
+    }
 
     setValidationError(null);
     const nickname = nicknameInputRef.current?.value.trim()
       || profileNickname
       || copy.defaultNickname;
     await onSubmit(blocks, nickname);
-  }, [copy.defaultNickname, copy.minimumResources, onSubmit, profileNickname]);
+  }, [
+    copy.defaultNickname,
+    copy.minimumResources,
+    copy.youtubeLimit,
+    onSubmit,
+    profileNickname,
+  ]);
 
   return (
     <div className="space-y-2">
@@ -93,6 +117,7 @@ export function ComboEditor({
           maxChars={null}
           submitIconSrc="/images/sts2/badges/ccccombo.webp"
           entityInsertRequest={entityInsertRequest}
+          youtubePaste={youtubePaste}
         />
       </div>
 

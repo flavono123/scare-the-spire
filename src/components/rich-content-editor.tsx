@@ -16,6 +16,7 @@ import { CustomKeyword } from "@/components/chemicalx/custom-keyword";
 import { MentionList, type MentionListRef } from "@/components/chemicalx/mention-list";
 import { EntityMapProvider } from "@/components/chemicalx/entity-context";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
+import { YouTubeReferenceNode } from "@/components/combo/youtube-reference-node";
 import {
   buildEntityKeywordIndex,
   blocksToPlainText,
@@ -27,6 +28,10 @@ import {
 } from "@/lib/chemical-utils";
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
 import type { PostBlock } from "@/lib/chemical-types";
+import {
+  parseYouTubeVideoId,
+  resolveYouTubeReference,
+} from "@/lib/youtube-reference";
 
 // Inner body must start AND end with non-whitespace — typing `{ foo }` (with
 // padding spaces) keeps the keyword in a pending, plain-text state so the
@@ -210,6 +215,12 @@ export interface RichContentEditorProps {
     requestId: number;
     entity: EntityInfo;
   } | null;
+  youtubePaste?: {
+    pending: string;
+    added: string;
+    duplicate: string;
+    unavailable: string;
+  };
 }
 
 export function RichContentEditor({
@@ -225,8 +236,14 @@ export function RichContentEditor({
   showKeywordTip = false,
   keywordTip,
   entityInsertRequest,
+  youtubePaste,
 }: RichContentEditorProps) {
   const [submitting, setSubmitting] = useState(false);
+  const [youtubeResolving, setYoutubeResolving] = useState(false);
+  const [youtubeFeedback, setYoutubeFeedback] = useState<{
+    tone: "aqua" | "error";
+    message: string;
+  } | null>(null);
   const [charCount, setCharCount] = useState(() => {
     const draft = getSavedDraft(draftKey);
     if (draft) {
@@ -319,6 +336,7 @@ export function RichContentEditor({
       Placeholder.configure({ placeholder: richPlaceholder ? "" : placeholder }),
       CharacterCount.configure(maxChars == null ? {} : { limit: maxChars }),
       CustomKeyword,
+      ...(youtubePaste ? [YouTubeReferenceNode] : []),
       EntityMention.configure({
         HTMLAttributes: {
           class: "spire-gold font-semibold",
@@ -567,6 +585,104 @@ export function RichContentEditor({
           return false;
         },
       },
+      handlePaste: (view, event) => {
+        if (!youtubePaste) return false;
+
+        const pastedText = event.clipboardData?.getData("text/plain").trim() ?? "";
+        const videoId = parseYouTubeVideoId(pastedText);
+        if (!videoId) return false;
+
+        event.preventDefault();
+
+        let alreadyReferenced = false;
+        view.state.doc.descendants((node) => {
+          if (node.type.name === "youtube-reference") {
+            alreadyReferenced = true;
+          }
+        });
+        if (alreadyReferenced) {
+          setYoutubeFeedback({ tone: "error", message: youtubePaste.duplicate });
+          return true;
+        }
+
+        const referenceNode = view.state.schema.nodes["youtube-reference"];
+        if (!referenceNode) return true;
+
+        const insertTransaction = view.state.tr
+          .replaceSelectionWith(referenceNode.create({
+            videoId,
+            title: "",
+            pendingLabel: youtubePaste.pending,
+          }))
+          .insertText(" ")
+          .scrollIntoView();
+        view.dispatch(insertTransaction);
+        setYoutubeResolving(true);
+        setYoutubeFeedback({ tone: "aqua", message: youtubePaste.pending });
+
+        void resolveYouTubeReference(pastedText)
+          .then((reference) => {
+            const currentEditor = editorRef.current;
+            if (!currentEditor || currentEditor.isDestroyed || currentEditor.view !== view) return;
+
+            let referencePosition: number | null = null;
+            let referenceAttributes: Record<string, unknown> | null = null;
+            view.state.doc.descendants((node, position) => {
+              if (
+                referencePosition == null
+                && node.type.name === "youtube-reference"
+                && node.attrs.videoId === videoId
+              ) {
+                referencePosition = position;
+                referenceAttributes = node.attrs;
+              }
+            });
+            if (referencePosition == null || referenceAttributes == null) return;
+
+            view.dispatch(view.state.tr.setNodeMarkup(
+              referencePosition,
+              undefined,
+              {
+                ...referenceAttributes,
+                videoId: reference.videoId,
+                title: reference.title,
+              },
+            ));
+            setYoutubeFeedback({
+              tone: "aqua",
+              message: youtubePaste.added.replace("{title}", reference.title),
+            });
+          })
+          .catch(() => {
+            const currentEditor = editorRef.current;
+            if (!currentEditor || currentEditor.isDestroyed || currentEditor.view !== view) return;
+
+            let referencePosition: number | null = null;
+            let referenceSize = 0;
+            view.state.doc.descendants((node, position) => {
+              if (
+                referencePosition == null
+                && node.type.name === "youtube-reference"
+                && node.attrs.videoId === videoId
+              ) {
+                referencePosition = position;
+                referenceSize = node.nodeSize;
+              }
+            });
+            if (referencePosition != null) {
+              view.dispatch(view.state.tr.delete(
+                referencePosition,
+                referencePosition + referenceSize,
+              ));
+            }
+            setYoutubeFeedback({ tone: "error", message: youtubePaste.unavailable });
+          })
+          .finally(() => {
+            setYoutubeResolving(false);
+          });
+
+        return true;
+      },
       handleKeyDown: (_view, event) => {
         if (event.key === "Enter" && !event.shiftKey) {
           if (suggestionOpenRef.current) {
@@ -578,7 +694,7 @@ export function RichContentEditor({
         return false;
       },
     },
-  }, [draftKey, entities, maxChars, placeholder, richPlaceholder]);
+  }, [draftKey, entities, maxChars, placeholder, richPlaceholder, youtubePaste]);
 
   useEffect(() => {
     if (
@@ -631,6 +747,7 @@ export function RichContentEditor({
       await onSubmit(blocks);
       editor.commands.clearContent();
       setCharCount(0);
+      setYoutubeFeedback(null);
       clearDraft(draftKey);
     } catch {
       // Keep the draft intact when the backing store is unavailable.
@@ -641,7 +758,11 @@ export function RichContentEditor({
 
   submitRef.current = handleSubmit;
 
-  const isValid = charCount >= minChars && (maxChars == null || charCount <= maxChars);
+  const isValid = (
+    !youtubeResolving
+    && charCount >= minChars
+    && (maxChars == null || charCount <= maxChars)
+  );
   const charCountColor = useMemo(() => {
     if (charCount === 0) return "text-gray-500";
     if (charCount < minChars || (maxChars != null && charCount > maxChars)) return "text-red-400";
@@ -664,6 +785,18 @@ export function RichContentEditor({
           <EditorContent editor={editor} className="relative z-10" />
         </EntityMapProvider>
       </div>
+
+      {youtubeFeedback && (
+        <p
+          className={`border-t border-border px-3 py-1.5 text-[11px] ${
+            youtubeFeedback.tone === "aqua" ? "spire-aqua" : "text-red-300"
+          }`}
+          role={youtubeFeedback.tone === "error" ? "alert" : "status"}
+          aria-live="polite"
+        >
+          {youtubeFeedback.message}
+        </p>
+      )}
 
       <div className="flex items-center gap-3 px-3 py-2 border-t border-border">
         {maxChars != null && (

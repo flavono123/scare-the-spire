@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { PostBlock } from "@/lib/chemical-types";
 import {
+  countComboYouTubeReferences,
   extractComboResourceRefs,
   type ComboPost,
 } from "@/lib/combo-types";
@@ -122,6 +123,7 @@ export function useComboPosts(userId: string | null): UseComboPostsReturn {
         || trimmedNickname.length < 1
         || trimmedNickname.length > 20
         || resources.length < 2
+        || countComboYouTubeReferences(blocks) > 1
       ) {
         return null;
       }
