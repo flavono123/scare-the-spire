@@ -10,6 +10,12 @@
     "html_handling": "drop-trailing-slash",
     "not_found_handling": "none"
   },
+  "env": {
+    "phase4": {
+      "workers_dev": true,
+      "preview_urls": true
+    }
+  },
   "observability": {
     "enabled": true
   }

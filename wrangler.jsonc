@@ -15,6 +15,18 @@
       "service": "scare-the-spire-patches"
     }
   ],
+  "env": {
+    "phase4": {
+      "workers_dev": true,
+      "preview_urls": true,
+      "services": [
+        {
+          "binding": "PATCH_WORKER",
+          "service": "scare-the-spire-patches-phase4"
+        }
+      ]
+    }
+  },
   "observability": {
     "enabled": true
   }
