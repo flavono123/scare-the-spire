@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "@/components/ui/static-image";
-import { CircleHelp, Ellipsis, Search, Shrink } from "lucide-react";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { CircleHelp, Ellipsis, EllipsisVertical, Search, Shrink } from "lucide-react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { GameHoverTip } from "@/components/codex/hover-tip";
 import {
   PatchLineStoriesPanel,
   PatchLineStoryAction,
@@ -17,13 +18,17 @@ import {
   findResourcePatchIndexResource,
   resourcePatchLines,
   type ResourcePatchIndexData,
+  type ResourcePatchIndexGroup,
   type ResourcePatchIndexResource,
 } from "@/lib/resource-patch-index";
 import { sts2NavItems } from "@/lib/site-nav-items";
 import type { STS2PatchLine, Story, StoryEntityType } from "@/lib/types";
 import { serviceMessages } from "@/messages/service";
 
-const PRIMARY_RESOURCE_COUNT = 5;
+const DEFAULT_VISIBLE_GROUP_COUNT = 4;
+const FALLBACK_RESOURCE_TOKEN_CAPACITY = 6;
+const RESOURCE_TOKEN_SIZE = 32;
+const RESOURCE_TOKEN_GAP = 2;
 
 function normalizeQuery(value: string): string {
   return value.normalize("NFKC").toLocaleLowerCase().replace(/\s+/g, "").trim();
@@ -63,7 +68,7 @@ const RESOURCE_GROUP_ICON: Record<StoryEntityType, string> = {
   affliction: navIcon("enchantments"),
   event: navIcon("events"),
   monster: navIcon("monsters"),
-  encounter: navIcon("monsters"),
+  encounter: "/images/sts2/map/icons/map_monster.png",
   ancient: navIcon("ancients"),
   epoch: navIcon("epochs"),
 };
@@ -102,9 +107,11 @@ function IndexTokenTooltip({
 }) {
   return (
     <span className="pointer-events-none absolute bottom-full left-1/2 z-50 hidden -translate-x-1/2 pb-1 group-hover/index-token:block group-focus-within/index-token:block">
-      <span className="block w-max max-w-[calc(100vw-1rem)] whitespace-nowrap rounded-sm border border-white/10 bg-zinc-950/95 px-1.5 py-0.5 font-game-text text-[11px] leading-none text-zinc-200 shadow-lg">
-        {title}
-      </span>
+      <GameHoverTip
+        title={title}
+        compact
+        style={{ width: "max-content", maxWidth: "calc(100vw - 16px)" }}
+      />
     </span>
   );
 }
@@ -186,6 +193,98 @@ function ResourceToken({
   );
 }
 
+function ResourceGroupRow({
+  group,
+  resources,
+  selectedResource,
+  expanded,
+  searching,
+  serviceLocale,
+  gameLocale,
+  moreLabel,
+  lessLabel,
+  onToggle,
+  onSelect,
+}: {
+  group: ResourcePatchIndexGroup;
+  resources: ResourcePatchIndexResource[];
+  selectedResource: ResourcePatchIndexResource;
+  expanded: boolean;
+  searching: boolean;
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
+  moreLabel: string;
+  lessLabel: string;
+  onToggle: () => void;
+  onSelect: (resource: ResourcePatchIndexResource) => void;
+}) {
+  const rowRef = useRef<HTMLDivElement>(null);
+  const [tokenCapacity, setTokenCapacity] = useState(FALLBACK_RESOURCE_TOKEN_CAPACITY);
+
+  useEffect(() => {
+    const row = rowRef.current;
+    if (!row) return;
+
+    const updateCapacity = () => {
+      const width = row.getBoundingClientRect().width;
+      const nextCapacity = Math.max(
+        1,
+        Math.floor((width + RESOURCE_TOKEN_GAP) / (RESOURCE_TOKEN_SIZE + RESOURCE_TOKEN_GAP)),
+      );
+      setTokenCapacity((current) => current === nextCapacity ? current : nextCapacity);
+    };
+
+    updateCapacity();
+    const observer = new ResizeObserver(updateCapacity);
+    observer.observe(row);
+    return () => observer.disconnect();
+  }, []);
+
+  const hasOverflow = !searching && resources.length > tokenCapacity;
+  const visibleResources = searching || expanded || !hasOverflow
+    ? resources
+    : resources.slice(0, Math.max(1, tokenCapacity - 1));
+
+  return (
+    <section
+      aria-label={resourceGroupLabel(group.type, serviceLocale)}
+      className="grid min-w-0 grid-cols-[2rem_minmax(0,1fr)] items-start gap-x-1.5 rounded-lg bg-white/[0.012] py-0.5"
+    >
+      <div className="flex h-8 items-center justify-center">
+        <ResourceGroupToken
+          type={group.type}
+          active={selectedResource.type === group.type}
+          serviceLocale={serviceLocale}
+        />
+      </div>
+      <div ref={rowRef} className="flex min-w-0 flex-wrap items-center gap-0.5">
+        {visibleResources.map((resource) => (
+          <ResourceToken
+            key={resourceKey(resource)}
+            resource={resource}
+            selected={resourceKey(resource) === resourceKey(selectedResource)}
+            serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
+            onSelect={() => onSelect(resource)}
+          />
+        ))}
+        {hasOverflow && (
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-expanded={expanded}
+            aria-label={expanded ? lessLabel : moreLabel}
+            className="group/index-token relative inline-flex h-8 w-8 items-center justify-center rounded-full text-sky-300/55 transition-colors hover:bg-sky-400/[0.07] hover:text-sky-200"
+          >
+            {expanded ? <Shrink size={16} /> : <Ellipsis size={17} />}
+            <IndexTokenTooltip title={expanded ? lessLabel : moreLabel} />
+          </button>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export function ResourcePatchIndexExplorer({
   data,
   serviceLocale,
@@ -201,6 +300,7 @@ export function ResourcePatchIndexExplorer({
   const [query, setQuery] = useState("");
   const [selectedKey, setSelectedKey] = useState(() => resourceKey(findInitialResource(data)));
   const [expandedGroups, setExpandedGroups] = useState<Set<StoryEntityType>>(() => new Set());
+  const [allGroupsExpanded, setAllGroupsExpanded] = useState(false);
   const [activePatchLineId, setActivePatchLineId] = useState<string | null>(null);
   const [composerPatchLineId, setComposerPatchLineId] = useState<string | null>(null);
   const { userId, ready: authReady, ensureUser } = useAuth();
@@ -230,6 +330,14 @@ export function ResourcePatchIndexExplorer({
     [data, selectedResource],
   );
   const normalizedQuery = normalizeQuery(query);
+  const matchingGroups = useMemo(() => data.groups.flatMap((group) => {
+    const resources = group.resources.filter((resource) => resourceMatches(resource, normalizedQuery));
+    return resources.length > 0 ? [{ group, resources }] : [];
+  }), [data.groups, normalizedQuery]);
+  const visibleGroups = normalizedQuery || allGroupsExpanded
+    ? matchingGroups
+    : matchingGroups.slice(0, DEFAULT_VISIBLE_GROUP_COUNT);
+  const canToggleAllGroups = !normalizedQuery && matchingGroups.length > DEFAULT_VISIBLE_GROUP_COUNT;
   const staticStoryCounts = useMemo(
     () => countStoriesByPatchLine(data.staticStories),
     [data.staticStories],
@@ -247,12 +355,26 @@ export function ResourcePatchIndexExplorer({
     return sortPatchLineStories(matches);
   }, [activePatchLine, communityStories.stories, data.staticStories]);
 
+  useEffect(() => {
+    const selectedGroupIndex = data.groups.findIndex((group) => group.type === selectedResource.type);
+    if (selectedGroupIndex >= DEFAULT_VISIBLE_GROUP_COUNT) setAllGroupsExpanded(true);
+  }, [data.groups, selectedResource.type]);
+
   const selectResource = (resource: ResourcePatchIndexResource) => {
     setSelectedKey(resourceKey(resource));
     const url = new URL(window.location.href);
     url.searchParams.set("type", resource.type);
     url.searchParams.set("id", resource.id);
     window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+  };
+
+  const toggleResourceGroup = (type: StoryEntityType) => {
+    setExpandedGroups((current) => {
+      const next = new Set(current);
+      if (next.has(type)) next.delete(type);
+      else next.add(type);
+      return next;
+    });
   };
 
   const storyAction = (line: STS2PatchLine): ReactNode => {
@@ -287,61 +409,39 @@ export function ResourcePatchIndexExplorer({
       </label>
 
       <div className="mt-3 space-y-1">
-        {data.groups.map((group) => {
-          const filtered = group.resources.filter((resource) => resourceMatches(resource, normalizedQuery));
-          if (normalizedQuery && filtered.length === 0) return null;
-          const expanded = expandedGroups.has(group.type);
-          const visible = normalizedQuery || expanded || group.type === "character"
-            ? filtered
-            : filtered.slice(0, PRIMARY_RESOURCE_COUNT);
-          const canExpand = !normalizedQuery && group.type !== "character" && filtered.length > PRIMARY_RESOURCE_COUNT;
-          return (
-            <section
-              key={group.type}
-              aria-label={resourceGroupLabel(group.type, serviceLocale)}
-              className="grid min-w-0 grid-cols-[2rem_minmax(0,1fr)] items-start gap-x-1.5 rounded-lg bg-white/[0.012] py-0.5"
-            >
-              <div className="flex h-8 items-center justify-center">
-                <ResourceGroupToken
-                  type={group.type}
-                  active={selectedResource.type === group.type}
-                  serviceLocale={serviceLocale}
-                />
-              </div>
-              <div className="flex min-w-0 flex-wrap items-center gap-0.5">
-                {visible.map((resource) => (
-                  <ResourceToken
-                    key={resourceKey(resource)}
-                    resource={resource}
-                    selected={resourceKey(resource) === resourceKey(selectedResource)}
-                    serviceLocale={serviceLocale}
-                    gameLocale={gameLocale}
-                    onSelect={() => selectResource(resource)}
-                  />
-                ))}
-                {canExpand && (
-                  <button
-                    type="button"
-                    onClick={() => setExpandedGroups((current) => {
-                      const next = new Set(current);
-                      if (next.has(group.type)) next.delete(group.type);
-                      else next.add(group.type);
-                      return next;
-                    })}
-                    aria-label={expanded ? copy.less : copy.more}
-                    className="group/index-token relative inline-flex h-8 w-8 items-center justify-center rounded-full text-sky-300/55 transition-colors hover:bg-sky-400/[0.07] hover:text-sky-200"
-                  >
-                    {expanded ? <Shrink size={16} /> : <Ellipsis size={17} />}
-                    <IndexTokenTooltip title={expanded ? copy.less : copy.more} />
-                  </button>
-                )}
-              </div>
-            </section>
-          );
-        })}
-        {normalizedQuery && data.groups.every((group) =>
-          group.resources.every((resource) => !resourceMatches(resource, normalizedQuery)),
-        ) && (
+        {visibleGroups.map(({ group, resources }) => (
+          <ResourceGroupRow
+            key={group.type}
+            group={group}
+            resources={resources}
+            selectedResource={selectedResource}
+            expanded={expandedGroups.has(group.type)}
+            searching={Boolean(normalizedQuery)}
+            serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
+            moreLabel={copy.more}
+            lessLabel={copy.less}
+            onToggle={() => toggleResourceGroup(group.type)}
+            onSelect={selectResource}
+          />
+        ))}
+        {canToggleAllGroups && (
+          <div className="grid min-w-0 grid-cols-[2rem_minmax(0,1fr)] gap-x-1.5 py-0.5">
+            <div className="flex h-8 items-center justify-center">
+              <button
+                type="button"
+                onClick={() => setAllGroupsExpanded((current) => !current)}
+                aria-expanded={allGroupsExpanded}
+                aria-label={allGroupsExpanded ? copy.less : copy.more}
+                className="group/index-token relative inline-flex h-7 w-7 items-center justify-center rounded-md bg-sky-950/20 text-sky-300/55 ring-1 ring-inset ring-sky-200/10 transition-colors hover:bg-sky-400/[0.07] hover:text-sky-200"
+              >
+                {allGroupsExpanded ? <Shrink size={15} /> : <EllipsisVertical size={17} />}
+                <IndexTokenTooltip title={allGroupsExpanded ? copy.less : copy.more} />
+              </button>
+            </div>
+          </div>
+        )}
+        {normalizedQuery && matchingGroups.length === 0 && (
           <p className="px-2 py-6 text-center font-game-text text-sm text-gray-500">{copy.noResults}</p>
         )}
       </div>

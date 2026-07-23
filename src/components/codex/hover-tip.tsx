@@ -38,6 +38,7 @@ interface HoverTipProps {
   variant?: HoverTipVariant;
   icon?: string | null;
   art?: HoverTipArt;
+  compact?: boolean;
   children?: ReactNode;
   className?: string;
   style?: React.CSSProperties;
@@ -62,18 +63,19 @@ export function GameHoverTip({
   variant = "default",
   icon,
   art,
+  compact = false,
   children,
   className = "",
   style,
 }: HoverTipProps) {
-  const bt = Math.round(SLICE.top * SCALE);
-  const br = Math.round(SLICE.right * SCALE);
-  const bb = Math.round(SLICE.bottom * SCALE);
-  const bl = Math.round(SLICE.left * SCALE);
+  const bt = compact ? 10 : Math.round(SLICE.top * SCALE);
+  const br = compact ? 12 : Math.round(SLICE.right * SCALE);
+  const bb = compact ? 8 : Math.round(SLICE.bottom * SCALE);
+  const bl = compact ? 12 : Math.round(SLICE.left * SCALE);
 
   // 게임 hover_tip: title 22px, description 22px — 동일 사이즈.
   // 카드 본문 폰트(380px 카드 × 7cqi = 26.6px)와 비슷한 크기.
-  const fontSize = 16;
+  const fontSize = compact ? 12 : 16;
   const selectedArt = selectedHoverTipArt(art);
 
   return (
@@ -99,7 +101,7 @@ export function GameHoverTip({
     >
       <span style={{ display: "block" }}>
         <span
-          className="flex items-center gap-2"
+          className={`flex items-center ${compact ? "gap-1" : "gap-2"}`}
           style={{
             fontFamily: "var(--font-game-text)",
             fontSize,
@@ -107,7 +109,8 @@ export function GameHoverTip({
             color: "#EFC851",
             textShadow: "2px 2px 0 rgba(0,0,0,0.45)",
             textAlign: "left",
-            marginBottom: 4,
+            marginBottom: children || selectedArt ? compact ? 2 : 4 : 0,
+            whiteSpace: compact ? "nowrap" : undefined,
           }}
         >
           <span>{title}</span>
