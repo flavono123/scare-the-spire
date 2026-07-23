@@ -5,10 +5,15 @@ import { X } from "lucide-react";
 import {
   PatchNoteRenderer,
 } from "@/components/patch-note-renderer";
+import { GameHoverTip } from "@/components/codex/hover-tip";
 import { PatchLineReferenceBlock } from "@/components/patch-line-reference";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { StoryComposerModal } from "@/components/story-composer-modal";
-import { StoryStatIcon, StoryWriteIcon } from "@/components/story-token-icon";
+import {
+  STORY_WRITE_ICON_SRC,
+  StoryStatIcon,
+  StoryWriteIcon,
+} from "@/components/story-token-icon";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -29,6 +34,10 @@ export function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
       empty: "아직 이 변경으로 쓴 이야기가 없습니다",
       staticStory: "슬서운 이야기",
       communityStory: "작성됨",
+      emptyPrompt: "이야기?!",
+      populatedPrompt: "더 많은 이야기!",
+      writeFirst: "첫 슬서운 이야기 쓰기",
+      viewCount: (count: number) => `슬서운 이야기 ${count}개 보기`,
       countLabel: (count: number) => `이 변경의 이야기 ${count}개`,
     };
   }
@@ -42,6 +51,10 @@ export function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
     empty: "No stories have been written from this change yet",
     staticStory: "Slseoun story",
     communityStory: "Posted",
+    emptyPrompt: "Stories?!",
+    populatedPrompt: "More stories!",
+    writeFirst: "Write the first Slseoun story",
+    viewCount: (count: number) => `View ${count} Slseoun stories`,
     countLabel: (count: number) => `${count} stories for this change`,
   };
 }
@@ -65,30 +78,50 @@ export function PatchLineStoryAction({
 }) {
   const copy = patchLineStoryCopy(serviceLocale);
   const actionLabel = count > 0 || storiesUnavailable ? copy.open : copy.openEmpty;
+  const tooltipTitle = count > 0 ? copy.populatedPrompt : copy.emptyPrompt;
+  const tooltipDescription = storiesUnavailable
+    ? copy.open
+    : count > 0
+      ? copy.viewCount(count)
+      : copy.writeFirst;
 
   return (
-    <button
-      type="button"
-      onClick={(event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        if (count > 0 || storiesUnavailable) onOpen();
-        else onWrite();
-      }}
-      data-patch-line-story-action
-      data-patch-line-id={patchLine.id}
-      data-patch-id={patchLine.patch}
-      data-patch-line-label={patchLineDisplayText(patchLine, serviceLocale ?? "ko")}
-      data-patch-line-refs={JSON.stringify(patchLine.entityRefs)}
-      data-static-story-count={staticCount}
-      data-story-count-positive={count > 0}
-      className="group inline-flex h-5 items-center gap-1 rounded border border-[#fb923c]/14 bg-[#fb923c]/[0.035] px-1 align-baseline text-[10px] leading-none text-[#fed7aa]/55 opacity-80 tabular-nums transition-colors hover:border-[#fb923c]/28 hover:bg-[#fb923c]/[0.075] hover:text-[#fed7aa]/90 hover:opacity-100 focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#fb923c]/50 data-[story-count-positive=true]:border-[#fb923c]/16 data-[story-count-positive=true]:bg-[#fb923c]/[0.045] data-[story-count-positive=true]:text-[#fed7aa]/65 data-[story-count-positive=true]:opacity-85 data-[story-count-positive=true]:hover:border-[#fb923c]/32 data-[story-count-positive=true]:hover:bg-[#fb923c]/[0.08] data-[story-count-positive=true]:hover:text-[#fed7aa] data-[story-count-positive=true]:hover:opacity-100"
-      title={actionLabel}
-      aria-label={`${actionLabel}. ${copy.countLabel(count)}`}
-    >
-      <StoryStatIcon size={14} className="opacity-60 group-data-[story-count-positive=true]:opacity-75" />
-      <span data-patch-line-story-count>{count}</span>
-    </button>
+    <span className="group/story-action relative inline-flex">
+      <button
+        type="button"
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          if (count > 0 || storiesUnavailable) onOpen();
+          else onWrite();
+        }}
+        data-patch-line-story-action
+        data-patch-line-id={patchLine.id}
+        data-patch-id={patchLine.patch}
+        data-patch-line-label={patchLineDisplayText(patchLine, serviceLocale ?? "ko")}
+        data-patch-line-refs={JSON.stringify(patchLine.entityRefs)}
+        data-static-story-count={staticCount}
+        data-story-count-positive={count > 0}
+        className="group inline-flex h-5 items-center gap-1 rounded border border-[#fb923c]/14 bg-[#fb923c]/[0.035] px-1 align-baseline text-[10px] leading-none text-[#fed7aa]/55 opacity-80 tabular-nums transition-colors hover:border-[#fb923c]/28 hover:bg-[#fb923c]/[0.075] hover:text-[#fed7aa]/90 hover:opacity-100 focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#fb923c]/50 data-[story-count-positive=true]:border-[#fb923c]/16 data-[story-count-positive=true]:bg-[#fb923c]/[0.045] data-[story-count-positive=true]:text-[#fed7aa]/65 data-[story-count-positive=true]:opacity-85 data-[story-count-positive=true]:hover:border-[#fb923c]/32 data-[story-count-positive=true]:hover:bg-[#fb923c]/[0.08] data-[story-count-positive=true]:hover:text-[#fed7aa] data-[story-count-positive=true]:hover:opacity-100"
+        aria-label={`${actionLabel}. ${copy.countLabel(count)}`}
+      >
+        <StoryStatIcon size={14} className="opacity-60 group-data-[story-count-positive=true]:opacity-75" />
+        <span data-patch-line-story-count>{count}</span>
+      </button>
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute bottom-full right-0 z-50 hidden pb-1.5 group-hover/story-action:block group-focus-within/story-action:block"
+      >
+        <GameHoverTip
+          title={tooltipTitle}
+          icon={STORY_WRITE_ICON_SRC}
+          compact
+          style={{ width: "max-content", maxWidth: "calc(100vw - 24px)" }}
+        >
+          <span className="block whitespace-nowrap">{tooltipDescription}</span>
+        </GameHoverTip>
+      </span>
+    </span>
   );
 }
 
