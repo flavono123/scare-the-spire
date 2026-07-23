@@ -27,6 +27,27 @@ resources, rich patch notes, mobile layout, animation, or QA.
    Historical Supabase SQL through migration 014 was applied manually; new
    schema changes after 014 must use CLI migrations under `supabase/migrations/`.
 
+## Current Architecture Invariants
+
+- Preserve `package.json`'s `next build --webpack` default. Do not revert it to
+  bare `next build` during feature work.
+- Keep shared render and metadata helpers in the adjacent `page-content.tsx`
+  modules introduced for Chemical X, Combo, This or That, home, Byrdispatch,
+  profile, History Course, and Compendium Bestiary routes. Keep `page.tsx`
+  limited to Next.js-supported route exports and required route config; have
+  base and `[gameLocale]` route entries import the shared module.
+- Preserve Combo's locale URLs and metadata. Read `/combo/[id]` records from
+  Supabase in the browser; do not add request-time Worker Supabase reads, full
+  Compendium joins, or large JSON parsing for them.
+- Keep `/patches*` and `/_patches*` owned by the separate static patch Worker.
+  Generate patch HTML, CSS, JavaScript, and resource indexes ahead of time
+  instead of moving patch work into the main OpenNext request path.
+- Keep pending Compendium references hover-only when the deployed resource
+  manifest does not contain the target; do not turn them into links that 404.
+- Treat OpenNext as still present in the main Worker fallback. Do not implement
+  static detail shells, Worker rewrites, or fallback removal as incidental
+  feature work; those belong to the separate OpenNext exit plan.
+
 ## Game-First Product Rules
 
 - If the feature has an in-game reference, mirror the game concept as closely
