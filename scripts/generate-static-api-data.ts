@@ -251,6 +251,10 @@ function lastNonEmptyLine(text: string): string {
   return lines.at(-1) ?? "";
 }
 
+function stripAquaMarkup(text: string): string {
+  return text.replace(/\[\/?aqua\]/gi, "");
+}
+
 function extractDialogueLine(text: string): string {
   const lines = text
     .split(/\n+/)
@@ -407,7 +411,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
           gameLocale,
           "events",
           "AMALGAMATOR.pages.INITIAL.description",
-        ).then(lastNonEmptyLine),
+        ).then((description) => stripAquaMarkup(lastNonEmptyLine(description))),
         buildHistoryCourseLandingGameCopy(gameLocale),
         buildPatchStageGameCopy(gameLocale),
         buildThisOrThatGameCopy(gameLocale),
