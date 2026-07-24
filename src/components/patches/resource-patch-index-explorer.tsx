@@ -566,7 +566,11 @@ export function ResourcePatchIndexExplorer({
       const id = params.get("id");
       if (!type || !id) return;
       const resource = findResourcePatchIndexResource(data, type, id);
-      if (resource) setSelectedKey(resourceKey(resource));
+      if (resource) {
+        setSelectedKey(resourceKey(resource));
+        const selectedGroupIndex = data.groups.findIndex((group) => group.type === resource.type);
+        if (selectedGroupIndex >= DEFAULT_VISIBLE_GROUP_COUNT) setAllGroupsExpanded(true);
+      }
     });
     return () => window.cancelAnimationFrame(frame);
   }, [data]);
@@ -630,13 +634,10 @@ export function ResourcePatchIndexExplorer({
     return sortPatchLineStories(matches);
   }, [activePatchLine, communityStories.stories, data.staticStories]);
 
-  useEffect(() => {
-    const selectedGroupIndex = data.groups.findIndex((group) => group.type === selectedResource.type);
-    if (selectedGroupIndex >= DEFAULT_VISIBLE_GROUP_COUNT) setAllGroupsExpanded(true);
-  }, [data.groups, selectedResource.type]);
-
   const selectResource = (resource: ResourcePatchIndexResource) => {
     setSelectedKey(resourceKey(resource));
+    const selectedGroupIndex = data.groups.findIndex((group) => group.type === resource.type);
+    if (selectedGroupIndex >= DEFAULT_VISIBLE_GROUP_COUNT) setAllGroupsExpanded(true);
     const url = new URL(window.location.href);
     url.searchParams.set("type", resource.type);
     url.searchParams.set("id", resource.id);
