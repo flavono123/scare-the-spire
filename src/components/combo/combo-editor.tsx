@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { Link2 } from "lucide-react";
+import { Youtube } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { RichContentEditorProps } from "@/components/rich-content-editor";
 import type { PostBlock } from "@/lib/chemical-types";
@@ -42,6 +42,7 @@ export function ComboEditor({
     requestId: number;
     entity: EntityInfo;
   } | null>(null);
+  const [youtubeGuideBeforeLink, youtubeGuideAfterLink] = copy.youtubeGuide.split("{youtubeLink}");
   const youtubePaste = useMemo(() => ({
     pending: copy.youtubePending,
     added: copy.youtubeAdded,
@@ -112,8 +113,20 @@ export function ComboEditor({
           className="flex items-start gap-1.5 border-b border-border/70 px-3 py-1.5 text-[11px] leading-relaxed text-zinc-500"
           data-combo-youtube-guide
         >
-          <Link2 className="mt-0.5 h-3 w-3 shrink-0 text-zinc-600" aria-hidden="true" />
-          <p>{copy.youtubeGuide}</p>
+          <Youtube
+            className="mt-0.5 h-3.5 w-3.5 shrink-0 spire-aqua opacity-70"
+            aria-hidden="true"
+          />
+          <p>
+            {youtubeGuideBeforeLink}
+            <span
+              className="font-semibold spire-aqua opacity-70"
+              data-variant="ghost"
+            >
+              {copy.youtubeGuideLink}
+            </span>
+            {youtubeGuideAfterLink}
+          </p>
         </div>
 
         <RichContentEditor
