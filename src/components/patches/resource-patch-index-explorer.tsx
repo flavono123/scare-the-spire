@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import {
   ArrowDown,
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { GameHoverTip } from "@/components/codex/hover-tip";
+import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import {
   PatchLineStoriesPanel,
   PatchLineStoryAction,
@@ -21,8 +23,14 @@ import {
 import { ResourcePatchChangeList } from "@/components/patches/resource-patch-history";
 import { StoryComposerModal } from "@/components/story-composer-modal";
 import { useAuth } from "@/hooks/use-auth";
+import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useCommunityStories } from "@/hooks/use-community-stories";
-import type { GameLocale, ServiceLocale } from "@/lib/i18n";
+import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
+import {
+  localizeHrefWithGameLocale,
+  type GameLocale,
+  type ServiceLocale,
+} from "@/lib/i18n";
 import {
   findResourcePatchIndexResource,
   resourcePatchLines,
@@ -148,6 +156,34 @@ function resourceMatches(resource: ResourcePatchIndexResource, query: string): b
 
 function resourceKey(resource: Pick<ResourcePatchIndexResource, "type" | "id">): string {
   return `${resource.type}:${resource.id}`;
+}
+
+function selectedResourceEntity(
+  resource: ResourcePatchIndexResource,
+  entities: readonly EntityInfo[],
+): { entity: EntityInfo; available: boolean } {
+  const normalizedId = resource.id.toLocaleLowerCase();
+  const match = entities.find((candidate) =>
+    candidate.type === resource.type
+    && (candidate.compendiumResourceId ?? candidate.id).toLocaleLowerCase() === normalizedId,
+  );
+  if (match) {
+    return {
+      entity: match,
+      available: match.availability !== "pending-compendium",
+    };
+  }
+  return {
+    entity: {
+      id: resource.id,
+      nameKo: resource.nameKo,
+      nameEn: resource.nameEn,
+      imageUrl: resource.imageUrl,
+      color: resource.color,
+      type: resource.type,
+    },
+    available: false,
+  };
 }
 
 function findInitialResource(data: ResourcePatchIndexData): ResourcePatchIndexResource {
@@ -371,6 +407,64 @@ function ResourceGroupRow({
   );
 }
 
+function SelectedResourcePreview({
+  resource,
+  entity,
+  available,
+  label,
+  changeCountLabel,
+  openLabel,
+  serviceLocale,
+  gameLocale,
+}: {
+  resource: ResourcePatchIndexResource;
+  entity: EntityInfo;
+  available: boolean;
+  label: string;
+  changeCountLabel: string;
+  openLabel: string;
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
+}) {
+  const preview = (
+    <EntityPreview
+      entity={entity}
+      forceShow
+      serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
+    >
+      {label}
+    </EntityPreview>
+  );
+  const href = available
+    ? localizeHrefWithGameLocale(
+        buildCompendiumResourceHref(resource.type, resource.id),
+        serviceLocale,
+        gameLocale,
+      )
+    : null;
+
+  return (
+    <div className="flex min-w-0 flex-col items-center lg:items-start">
+      {href ? (
+        <Link
+          href={href}
+          prefetch={false}
+          aria-label={openLabel.replace("{name}", label)}
+          className="game-inspect-cursor inline-block max-w-full rounded-md outline-none transition-[filter,transform] hover:brightness-110 focus-visible:ring-1 focus-visible:ring-yellow-400/60"
+        >
+          {preview}
+        </Link>
+      ) : (
+        <span className="inline-block max-w-full">{preview}</span>
+      )}
+      <p className="mt-2 font-game-text text-xs text-gray-500">
+        {changeCountLabel}
+      </p>
+    </div>
+  );
+}
+
 export function ResourcePatchIndexExplorer({
   data,
   serviceLocale,
@@ -396,6 +490,7 @@ export function ResourcePatchIndexExplorer({
   const [activePatchLineId, setActivePatchLineId] = useState<string | null>(null);
   const [composerPatchLineId, setComposerPatchLineId] = useState<string | null>(null);
   const { userId, ready: authReady, ensureUser } = useAuth();
+  const { entities: previewEntities } = useCommentEntities();
   const communityStories = useCommunityStories(userId, { limit: 1_000 });
 
   useEffect(() => {
@@ -520,6 +615,10 @@ export function ResourcePatchIndexExplorer({
   };
   const selectedLabel = selectedResource.names?.[gameLocale]
     ?? (serviceLocale === "ko" ? selectedResource.nameKo : selectedResource.nameEn);
+  const selectedPreview = useMemo(
+    () => selectedResourceEntity(selectedResource, previewEntities),
+    [previewEntities, selectedResource],
+  );
 
   return (
     <>
@@ -594,58 +693,57 @@ export function ResourcePatchIndexExplorer({
         className={`mt-7 transition-[filter,opacity] duration-150 ${searchFocused ? "pointer-events-none opacity-25 blur-[2px]" : ""}`}
         aria-live="polite"
       >
-        <div className="mb-3 flex min-w-0 items-center gap-3">
-          {selectedResource.imageUrl && (
-            <Image
-              src={selectedResource.imageUrl}
-              alt=""
-              width={44}
-              height={44}
-              className="h-11 w-11 shrink-0 object-contain drop-shadow-[0_0_8px_rgba(234,179,8,0.18)]"
-            />
-          )}
+        <div className="grid min-w-0 gap-x-8 gap-y-6 lg:grid-cols-[minmax(18rem,23rem)_minmax(0,1fr)] lg:items-start">
           <div className="min-w-0">
-            <h2 className="truncate font-game-title text-xl font-semibold spire-gold">{selectedLabel}</h2>
-            <p className="font-game-text text-xs text-gray-500">
-              {copy.changeCount.replace("{count}", String(selectedResource.changeCount))}
-            </p>
+            <SelectedResourcePreview
+              resource={selectedResource}
+              entity={selectedPreview.entity}
+              available={selectedPreview.available}
+              label={selectedLabel}
+              changeCountLabel={copy.changeCount.replace("{count}", String(selectedResource.changeCount))}
+              openLabel={copy.openResource}
+              serviceLocale={serviceLocale}
+              gameLocale={gameLocale}
+            />
+          </div>
+          <div className="min-w-0">
+            {selectedLines.length > 0 ? (
+              <ResourcePatchChangeList
+                lines={sortedSelectedLines}
+                patches={data.patches}
+                serviceLocale={serviceLocale}
+                gameLocale={gameLocale}
+                trailingAction={storyAction}
+                columnHeaders={{
+                  patch: (
+                    <SortColumnButton
+                      label={copy.sort.patch}
+                      active={changeSort.key === "patch"}
+                      direction={changeSort.direction}
+                      ascendingLabel={copy.sort.ascending}
+                      descendingLabel={copy.sort.descending}
+                      onClick={() => toggleChangeSort("patch")}
+                    />
+                  ),
+                  trailing: (
+                    <SortColumnButton
+                      label={copy.sort.stories}
+                      active={changeSort.key === "stories"}
+                      direction={changeSort.direction}
+                      ascendingLabel={copy.sort.ascending}
+                      descendingLabel={copy.sort.descending}
+                      onClick={() => toggleChangeSort("stories")}
+                    />
+                  ),
+                }}
+              />
+            ) : (
+              <p className="py-8 text-center font-game-text text-sm text-gray-500">
+                {copy.noResults}
+              </p>
+            )}
           </div>
         </div>
-        {selectedLines.length > 0 ? (
-          <ResourcePatchChangeList
-            lines={sortedSelectedLines}
-            patches={data.patches}
-            serviceLocale={serviceLocale}
-            gameLocale={gameLocale}
-            trailingAction={storyAction}
-            columnHeaders={{
-              patch: (
-                <SortColumnButton
-                  label={copy.sort.patch}
-                  active={changeSort.key === "patch"}
-                  direction={changeSort.direction}
-                  ascendingLabel={copy.sort.ascending}
-                  descendingLabel={copy.sort.descending}
-                  onClick={() => toggleChangeSort("patch")}
-                />
-              ),
-              trailing: (
-                <SortColumnButton
-                  label={copy.sort.stories}
-                  active={changeSort.key === "stories"}
-                  direction={changeSort.direction}
-                  ascendingLabel={copy.sort.ascending}
-                  descendingLabel={copy.sort.descending}
-                  onClick={() => toggleChangeSort("stories")}
-                />
-              ),
-            }}
-          />
-        ) : (
-          <p className="py-8 text-center font-game-text text-sm text-gray-500">
-            {copy.noResults}
-          </p>
-        )}
       </section>
 
       {activePatchLine && (

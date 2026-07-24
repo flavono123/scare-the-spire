@@ -143,6 +143,7 @@ export const serviceMessages = {
       searchPlaceholder: "카드, 유물, 몬스터 이름 검색",
       noResults: "일치하는 변경 기록이 없습니다",
       changeCount: "변경항목 {count}개",
+      openResource: "{name} 상세 보기",
       more: "더 보기",
       less: "접기",
       sort: {
@@ -855,6 +856,7 @@ export const serviceMessages = {
       searchPlaceholder: "Search cards, relics, or monsters",
       noResults: "No matching change history",
       changeCount: "{count} changes",
+      openResource: "Open {name} details",
       more: "Show more",
       less: "Show less",
       sort: {
