@@ -1,7 +1,16 @@
 "use client";
 
 import Image from "@/components/ui/static-image";
-import { CircleHelp, Ellipsis, EllipsisVertical, Search, Shrink } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronsUpDown,
+  CircleHelp,
+  Ellipsis,
+  EllipsisVertical,
+  Search,
+  Shrink,
+} from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { GameHoverTip } from "@/components/codex/hover-tip";
 import {
@@ -30,8 +39,65 @@ const FALLBACK_RESOURCE_TOKEN_CAPACITY = 6;
 const RESOURCE_TOKEN_SIZE = 32;
 const RESOURCE_TOKEN_GAP = 2;
 
+type ChangeSortKey = "patch" | "stories";
+type ChangeSortDirection = "asc" | "desc";
+
 function normalizeQuery(value: string): string {
   return value.normalize("NFKC").toLocaleLowerCase().replace(/\s+/g, "").trim();
+}
+
+function comparePatchVersions(left: string, right: string): number {
+  const leftParts = left.replace(/^v/, "").split(".").map((part) => Number.parseInt(part, 10) || 0);
+  const rightParts = right.replace(/^v/, "").split(".").map((part) => Number.parseInt(part, 10) || 0);
+  const length = Math.max(leftParts.length, rightParts.length);
+  for (let index = 0; index < length; index += 1) {
+    const difference = (leftParts[index] ?? 0) - (rightParts[index] ?? 0);
+    if (difference !== 0) return difference;
+  }
+  return 0;
+}
+
+function comparePatchLineChronology(left: STS2PatchLine, right: STS2PatchLine): number {
+  const dateDifference = left.date.localeCompare(right.date);
+  if (dateDifference !== 0) return dateDifference;
+  return comparePatchVersions(left.patch, right.patch);
+}
+
+function SortColumnButton({
+  label,
+  active,
+  direction,
+  ascendingLabel,
+  descendingLabel,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  direction: ChangeSortDirection;
+  ascendingLabel: string;
+  descendingLabel: string;
+  onClick: () => void;
+}) {
+  const nextDirection = active ? direction : "desc";
+  const directionLabel = nextDirection === "asc" ? ascendingLabel : descendingLabel;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      aria-label={`${label} ${directionLabel}`}
+      className={`inline-flex h-6 items-center gap-1 whitespace-nowrap font-game-text text-[11px] transition-colors ${
+        active ? "text-yellow-300/90" : "text-gray-600 hover:text-gray-400"
+      }`}
+    >
+      <span>{label}</span>
+      {active
+        ? direction === "asc"
+          ? <ArrowUp size={12} aria-hidden="true" />
+          : <ArrowDown size={12} aria-hidden="true" />
+        : <ChevronsUpDown size={12} aria-hidden="true" />}
+    </button>
+  );
 }
 
 function resourceGroupLabel(type: StoryEntityType, serviceLocale: ServiceLocale): string {
@@ -323,6 +389,10 @@ export function ResourcePatchIndexExplorer({
   const [expandedGroups, setExpandedGroups] = useState<Set<StoryEntityType>>(() => new Set());
   const [allGroupsExpanded, setAllGroupsExpanded] = useState(false);
   const [allGroupsTooltipSuppressed, setAllGroupsTooltipSuppressed] = useState(false);
+  const [changeSort, setChangeSort] = useState<{
+    key: ChangeSortKey;
+    direction: ChangeSortDirection;
+  }>({ key: "patch", direction: "desc" });
   const [activePatchLineId, setActivePatchLineId] = useState<string | null>(null);
   const [composerPatchLineId, setComposerPatchLineId] = useState<string | null>(null);
   const { userId, ready: authReady, ensureUser } = useAuth();
@@ -369,6 +439,27 @@ export function ResourcePatchIndexExplorer({
     () => countStoriesByPatchLine(communityStories.stories),
     [communityStories.stories],
   );
+  const sortedSelectedLines = useMemo(() => {
+    const direction = changeSort.direction === "asc" ? 1 : -1;
+    return [...selectedLines].sort((left, right) => {
+      if (changeSort.key === "patch") {
+        return comparePatchLineChronology(left, right) * direction;
+      }
+      const leftCount = (staticStoryCounts.get(left.id) ?? 0)
+        + (communityStoryCounts.get(left.id) ?? 0);
+      const rightCount = (staticStoryCounts.get(right.id) ?? 0)
+        + (communityStoryCounts.get(right.id) ?? 0);
+      const countDifference = leftCount - rightCount;
+      if (countDifference !== 0) return countDifference * direction;
+      return comparePatchLineChronology(right, left);
+    });
+  }, [
+    changeSort.direction,
+    changeSort.key,
+    communityStoryCounts,
+    selectedLines,
+    staticStoryCounts,
+  ]);
   const activePatchLine = activePatchLineId ? data.lines[activePatchLineId] ?? null : null;
   const composerPatchLine = composerPatchLineId ? data.lines[composerPatchLineId] ?? null : null;
   const activeStories = useMemo(() => {
@@ -398,6 +489,18 @@ export function ResourcePatchIndexExplorer({
       else next.add(type);
       return next;
     });
+  };
+
+  const toggleChangeSort = (key: ChangeSortKey) => {
+    setChangeSort((current) => current.key === key
+      ? {
+          key,
+          direction: current.direction === "asc" ? "desc" : "asc",
+        }
+      : {
+          key,
+          direction: "desc",
+        });
   };
 
   const storyAction = (line: STS2PatchLine): ReactNode => {
@@ -510,11 +613,33 @@ export function ResourcePatchIndexExplorer({
         </div>
         {selectedLines.length > 0 ? (
           <ResourcePatchChangeList
-            lines={selectedLines}
+            lines={sortedSelectedLines}
             patches={data.patches}
             serviceLocale={serviceLocale}
             gameLocale={gameLocale}
             trailingAction={storyAction}
+            columnHeaders={{
+              patch: (
+                <SortColumnButton
+                  label={copy.sort.patch}
+                  active={changeSort.key === "patch"}
+                  direction={changeSort.direction}
+                  ascendingLabel={copy.sort.ascending}
+                  descendingLabel={copy.sort.descending}
+                  onClick={() => toggleChangeSort("patch")}
+                />
+              ),
+              trailing: (
+                <SortColumnButton
+                  label={copy.sort.stories}
+                  active={changeSort.key === "stories"}
+                  direction={changeSort.direction}
+                  ascendingLabel={copy.sort.ascending}
+                  descendingLabel={copy.sort.descending}
+                  onClick={() => toggleChangeSort("stories")}
+                />
+              ),
+            }}
           />
         ) : (
           <p className="py-8 text-center font-game-text text-sm text-gray-500">
@@ -545,7 +670,7 @@ export function ResourcePatchIndexExplorer({
           userId={userId}
           authReady={authReady}
           ensureUser={ensureUser}
-          patchLines={selectedLines}
+          patchLines={sortedSelectedLines}
           patches={data.patches}
           initialPatchLineId={composerPatchLine.id}
           onAdd={communityStories.add}

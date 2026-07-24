@@ -121,12 +121,17 @@ export function ResourcePatchChangeList({
   serviceLocale,
   gameLocale,
   trailingAction,
+  columnHeaders,
 }: {
   lines: STS2PatchLine[];
   patches: readonly STS2Patch[];
   serviceLocale: ServiceLocale;
   gameLocale?: GameLocale;
   trailingAction?: (line: STS2PatchLine) => ReactNode;
+  columnHeaders?: {
+    patch: ReactNode;
+    trailing: ReactNode;
+  };
 }) {
   const { entities } = useCommentEntities();
   const entityLookup = useMemo(() => buildEntityLookup(entities), [entities]);
@@ -134,37 +139,58 @@ export function ResourcePatchChangeList({
     () => new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity])),
     [entities],
   );
+  const hasTrailingColumn = Boolean(trailingAction || columnHeaders?.trailing);
+  const desktopGridClass = hasTrailingColumn
+    ? "sm:grid-cols-[minmax(0,1fr)_10.5rem_3.5rem]"
+    : "sm:grid-cols-[minmax(0,1fr)_10.5rem]";
 
   return (
-    <ul className="space-y-1">
-      {lines.map((line) => (
-        <li
-          key={line.id}
-          data-resource-patch-line={line.id}
-          className="group/change ml-4 list-outside list-disc py-1 text-sm text-muted-foreground"
-        >
-          <div className="flex min-w-0 flex-col gap-1.5 sm:flex-row sm:items-start sm:gap-3">
-            <span className="min-w-0 flex-1 font-game-text text-sm leading-relaxed text-gray-300">
-              <PatchNoteInlineText
-                markdown={patchLineMarkdownForService(line, serviceLocale)}
-                lookup={entityLookup}
-                serviceLocale={serviceLocale}
-                gameLocale={gameLocale}
-              />
-            </span>
-            <span className="flex shrink-0 items-center justify-end gap-2 self-end sm:self-start">
-              <PatchMetaReferenceLink
-                patchLine={line}
-                patches={patches}
-                serviceLocale={serviceLocale}
-                entitiesByKey={entitiesByKey}
-              />
-              {trailingAction?.(line)}
-            </span>
-          </div>
-        </li>
-      ))}
-    </ul>
+    <>
+      {columnHeaders && (
+        <div className={`mb-0.5 ml-4 flex min-w-0 justify-end gap-2 sm:grid sm:gap-x-2 ${desktopGridClass}`}>
+          <span className="hidden sm:block" aria-hidden="true" />
+          <span className="flex justify-end">{columnHeaders.patch}</span>
+          {hasTrailingColumn && (
+            <span className="flex justify-end">{columnHeaders.trailing}</span>
+          )}
+        </div>
+      )}
+      <ul className="space-y-1">
+        {lines.map((line) => (
+          <li
+            key={line.id}
+            data-resource-patch-line={line.id}
+            className="group/change ml-4 list-outside list-disc py-1 text-sm text-muted-foreground"
+          >
+            <div className={`flex min-w-0 flex-col gap-1.5 sm:grid sm:items-start sm:gap-x-2 ${desktopGridClass}`}>
+              <span className="min-w-0 font-game-text text-sm leading-relaxed text-gray-300">
+                <PatchNoteInlineText
+                  markdown={patchLineMarkdownForService(line, serviceLocale)}
+                  lookup={entityLookup}
+                  serviceLocale={serviceLocale}
+                  gameLocale={gameLocale}
+                />
+              </span>
+              <span className="flex shrink-0 items-center justify-end gap-2 self-end sm:contents">
+                <span className="flex justify-end">
+                  <PatchMetaReferenceLink
+                    patchLine={line}
+                    patches={patches}
+                    serviceLocale={serviceLocale}
+                    entitiesByKey={entitiesByKey}
+                  />
+                </span>
+                {hasTrailingColumn && (
+                  <span className="flex justify-end">
+                    {trailingAction?.(line)}
+                  </span>
+                )}
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
 

@@ -145,6 +145,12 @@ export const serviceMessages = {
       changeCount: "변경항목 {count}개",
       more: "더 보기",
       less: "접기",
+      sort: {
+        patch: "날짜 · 패치",
+        stories: "이야기",
+        ascending: "오름차순",
+        descending: "내림차순",
+      },
       types: {
         release: "메인",
         beta: "베타",
@@ -851,6 +857,12 @@ export const serviceMessages = {
       changeCount: "{count} changes",
       more: "Show more",
       less: "Show less",
+      sort: {
+        patch: "Date · Patch",
+        stories: "Stories",
+        ascending: "Ascending",
+        descending: "Descending",
+      },
       types: {
         release: "Main",
         beta: "Beta",
