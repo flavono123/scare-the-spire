@@ -16,7 +16,7 @@ import { CustomKeyword } from "@/components/chemicalx/custom-keyword";
 import { MentionList, type MentionListRef } from "@/components/chemicalx/mention-list";
 import { EntityMapProvider } from "@/components/chemicalx/entity-context";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
-import { YouTubeReferenceNode } from "@/components/combo/youtube-reference-node";
+import { YouTubeReferenceExtension } from "@/components/editor/youtube-reference-extension";
 import {
   buildEntityKeywordIndex,
   blocksToPlainText,
@@ -228,7 +228,7 @@ export interface RichContentEditorProps {
     requestId: number;
     entity: EntityInfo;
   } | null;
-  youtubePaste?: {
+  youtubeExtension?: {
     pending: string;
     added: string;
     duplicate: string;
@@ -249,7 +249,7 @@ export function RichContentEditor({
   showKeywordTip = false,
   keywordTip,
   entityInsertRequest,
-  youtubePaste,
+  youtubeExtension,
 }: RichContentEditorProps) {
   const [submitting, setSubmitting] = useState(false);
   const [youtubeResolving, setYoutubeResolving] = useState(false);
@@ -332,7 +332,7 @@ export function RichContentEditor({
       Placeholder.configure({ placeholder: richPlaceholder ? "" : placeholder }),
       CharacterCount.configure(maxChars == null ? {} : { limit: maxChars }),
       CustomKeyword,
-      ...(youtubePaste ? [YouTubeReferenceNode] : []),
+      ...(youtubeExtension ? [YouTubeReferenceExtension] : []),
       EntityMention.configure({
         HTMLAttributes: {
           class: "spire-gold font-semibold",
@@ -583,7 +583,7 @@ export function RichContentEditor({
       },
       transformPastedText: stripNullCharacters,
       handlePaste: (view, event) => {
-        if (!youtubePaste) return false;
+        if (!youtubeExtension) return false;
 
         const pastedText = event.clipboardData?.getData("text/plain").trim() ?? "";
         const videoId = parseYouTubeVideoId(pastedText);
@@ -598,7 +598,7 @@ export function RichContentEditor({
           }
         });
         if (alreadyReferenced) {
-          setYoutubeFeedback({ tone: "error", message: youtubePaste.duplicate });
+          setYoutubeFeedback({ tone: "error", message: youtubeExtension.duplicate });
           return true;
         }
 
@@ -609,13 +609,13 @@ export function RichContentEditor({
           .replaceSelectionWith(referenceNode.create({
             videoId,
             title: "",
-            pendingLabel: youtubePaste.pending,
+            pendingLabel: youtubeExtension.pending,
           }))
           .insertText(" ")
           .scrollIntoView();
         view.dispatch(insertTransaction);
         setYoutubeResolving(true);
-        setYoutubeFeedback({ tone: "aqua", message: youtubePaste.pending });
+        setYoutubeFeedback({ tone: "aqua", message: youtubeExtension.pending });
 
         void resolveYouTubeReference(pastedText)
           .then((reference) => {
@@ -640,12 +640,12 @@ export function RichContentEditor({
               {
                 videoId: reference.videoId,
                 title: reference.title,
-                pendingLabel: youtubePaste.pending,
+                pendingLabel: youtubeExtension.pending,
               },
             ));
             setYoutubeFeedback({
               tone: "aqua",
-              message: youtubePaste.added.replace("{title}", reference.title),
+              message: youtubeExtension.added.replace("{title}", reference.title),
             });
           })
           .catch(() => {
@@ -670,7 +670,7 @@ export function RichContentEditor({
                 referencePosition + referenceSize,
               ));
             }
-            setYoutubeFeedback({ tone: "error", message: youtubePaste.unavailable });
+            setYoutubeFeedback({ tone: "error", message: youtubeExtension.unavailable });
           })
           .finally(() => {
             setYoutubeResolving(false);
@@ -689,7 +689,7 @@ export function RichContentEditor({
         return false;
       },
     },
-  }, [draftKey, entities, maxChars, placeholder, richPlaceholder, youtubePaste]);
+  }, [draftKey, entities, maxChars, placeholder, richPlaceholder, youtubeExtension]);
 
   useEffect(() => {
     if (

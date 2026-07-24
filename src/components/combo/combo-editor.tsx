@@ -43,7 +43,7 @@ export function ComboEditor({
     entity: EntityInfo;
   } | null>(null);
   const [youtubeGuideBeforeLink, youtubeGuideAfterLink] = copy.youtubeGuide.split("{youtubeLink}");
-  const youtubePaste = useMemo(() => ({
+  const youtubeExtension = useMemo(() => ({
     pending: copy.youtubePending,
     added: copy.youtubeAdded,
     duplicate: copy.youtubeLimit,
@@ -139,7 +139,7 @@ export function ComboEditor({
           maxChars={null}
           submitIconSrc="/images/sts2/badges/ccccombo.webp"
           entityInsertRequest={entityInsertRequest}
-          youtubePaste={youtubePaste}
+          youtubeExtension={youtubeExtension}
         />
       </div>
 

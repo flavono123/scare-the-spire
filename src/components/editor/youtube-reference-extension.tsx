@@ -27,7 +27,11 @@ function YouTubeReferenceNodeView({ node }: NodeViewProps) {
   );
 }
 
-export const YouTubeReferenceNode = Node.create({
+/**
+ * Optional TipTap extension for services that support a single YouTube
+ * reference. RichContentEditor only installs it when explicitly configured.
+ */
+export const YouTubeReferenceExtension = Node.create({
   name: "youtube-reference",
   group: "inline",
   inline: true,
