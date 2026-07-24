@@ -62,6 +62,14 @@ export const EntityMention = Mention.extend({
   addNodeView() {
     return ReactNodeViewRenderer(MentionNodeView, { as: "span" });
   },
+}).configure({
+  deleteTriggerWithBackspace: true,
+  renderText: ({ node }) => (node.attrs.label ?? node.attrs.id ?? "") as string,
+  renderHTML: ({ options, node }) => [
+    "span",
+    options.HTMLAttributes,
+    (node.attrs.label ?? node.attrs.id ?? "") as string,
+  ],
 });
 
 /**
@@ -69,6 +77,8 @@ export const EntityMention = Mention.extend({
  * The `items` and `render` must be provided by the consumer.
  */
 export const entitySuggestionBase = {
-  char: "\0", // placeholder, overridden by findSuggestionMatch
+  // The custom matcher does not need a trigger character. An empty value also
+  // prevents TipTap Mention from persisting an invisible prefix in the node.
+  char: "",
   findSuggestionMatch,
 };

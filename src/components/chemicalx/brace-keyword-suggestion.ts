@@ -45,7 +45,7 @@ export const BraceKeywordSuggestion = Extension.create<{
   addOptions() {
     return {
       suggestion: {
-        char: "\0",
+        char: "",
         allowSpaces: true,
         findSuggestionMatch: findBraceKeywordMatch,
         items: () => [],

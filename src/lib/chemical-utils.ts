@@ -17,6 +17,33 @@ const ENTITY_TYPE_FALLBACK_PRIORITY: readonly EntityType[] = [
   "epoch",
 ];
 
+export function stripNullCharacters(text: string): string {
+  return text.replace(/\u0000/g, "");
+}
+
+function sanitizeJsonValue(value: unknown): unknown {
+  if (typeof value === "string") return stripNullCharacters(value);
+  if (Array.isArray(value)) return value.map(sanitizeJsonValue);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, entry]) => [key, sanitizeJsonValue(entry)]),
+    );
+  }
+  return value;
+}
+
+/**
+ * Remove PostgreSQL-incompatible NUL characters from editor JSON, including
+ * old draft attributes created by triggerless TipTap suggestions.
+ */
+export function sanitizeRichTextJson(doc: JSONContent): JSONContent {
+  return sanitizeJsonValue(doc) as JSONContent;
+}
+
+function nodeString(value: unknown): string {
+  return typeof value === "string" ? stripNullCharacters(value) : "";
+}
+
 function uniqueStrings(values: Array<string | undefined>): string[] {
   const seen = new Set<string>();
   const result: string[] = [];
@@ -42,28 +69,28 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
     if (!paragraph.content) continue;
     for (const node of paragraph.content) {
       if (node.type === "text" && node.text) {
-        blocks.push({ type: "text", text: node.text });
+        blocks.push({ type: "text", text: stripNullCharacters(node.text) });
       } else if (node.type === "entity-mention") {
         blocks.push({
           type: "entity",
-          entityId: node.attrs?.id ?? "",
-          entityType: node.attrs?.entityType ?? "card",
-          displayText: node.attrs?.label ?? "",
+          entityId: nodeString(node.attrs?.id),
+          entityType: (nodeString(node.attrs?.entityType) || "card") as EntityType,
+          displayText: nodeString(node.attrs?.label),
         });
       } else if (node.type === "custom-keyword") {
-        const entityId = node.attrs?.entityId ?? "";
-        const entityType = node.attrs?.entityType ?? "";
+        const entityId = nodeString(node.attrs?.entityId);
+        const entityType = nodeString(node.attrs?.entityType);
         blocks.push({
           type: "keyword",
-          text: node.attrs?.text ?? "",
-          keyword: node.attrs?.keyword ?? "",
-          description: node.attrs?.description ?? "",
+          text: nodeString(node.attrs?.text),
+          keyword: nodeString(node.attrs?.keyword),
+          description: nodeString(node.attrs?.description),
           entityId: entityId || undefined,
           entityType: (entityType || undefined) as EntityType | undefined,
         });
       } else if (node.type === "youtube-reference") {
-        const videoId = node.attrs?.videoId ?? "";
-        const title = node.attrs?.title?.trim() ?? "";
+        const videoId = nodeString(node.attrs?.videoId);
+        const title = nodeString(node.attrs?.title).trim();
         if (isYouTubeVideoId(videoId) && title) {
           blocks.push({
             type: "youtube",
@@ -83,10 +110,10 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
 export function blocksToPlainText(blocks: PostBlock[]): string {
   return blocks
     .map((b) => {
-      if (b.type === "text") return b.text;
-      if (b.type === "keyword") return b.text;
-      if (b.type === "youtube") return b.title;
-      return b.displayText;
+      if (b.type === "text") return stripNullCharacters(b.text);
+      if (b.type === "keyword") return stripNullCharacters(b.text);
+      if (b.type === "youtube") return stripNullCharacters(b.title);
+      return stripNullCharacters(b.displayText);
     })
     .join("");
 }
@@ -102,12 +129,12 @@ export function blocksToPlainText(blocks: PostBlock[]): string {
 export function blocksToStorageText(blocks: PostBlock[]): string {
   return blocks
     .map((b) => {
-      if (b.type === "text") return b.text;
-      if (b.type === "entity") return b.displayText;
-      if (b.type === "youtube") return b.title;
+      if (b.type === "text") return stripNullCharacters(b.text);
+      if (b.type === "entity") return stripNullCharacters(b.displayText);
+      if (b.type === "youtube") return stripNullCharacters(b.title);
 
-      const text = b.text;
-      const keyword = b.keyword?.trim();
+      const text = stripNullCharacters(b.text);
+      const keyword = stripNullCharacters(b.keyword ?? "").trim();
       return keyword ? `${text}{${keyword}}` : text;
     })
     .join("");
@@ -123,7 +150,7 @@ export function entityDisplayNames(entity: EntityInfo): string[] {
 }
 
 function sanitizeLookupText(text: string): string {
-  return text
+  return stripNullCharacters(text)
     .replace(/\uFFFC/g, "")
     .normalize("NFKC")
     .toLowerCase()

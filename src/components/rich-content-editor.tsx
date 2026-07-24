@@ -24,6 +24,8 @@ import {
   matchEntities,
   normalizeKeywordLookupKey,
   resolveEntityKeyword,
+  sanitizeRichTextJson,
+  stripNullCharacters,
   tiptapToBlocks,
 } from "@/lib/chemical-utils";
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
@@ -48,7 +50,7 @@ function cleanTooltipText(text: string): string {
 }
 
 function sanitizeKeywordPart(text: string): string {
-  return text.replace(/\uFFFC/g, "").trim();
+  return stripNullCharacters(text).replace(/\uFFFC/g, "").trim();
 }
 
 interface KeywordResolution {
@@ -186,6 +188,17 @@ function getSavedDraft(draftKey: string): string | null {
   return sessionStorage.getItem(draftKey);
 }
 
+function parseSavedDraft(draftKey: string) {
+  const draft = getSavedDraft(draftKey);
+  if (!draft) return undefined;
+
+  try {
+    return sanitizeRichTextJson(JSON.parse(draft));
+  } catch {
+    return undefined;
+  }
+}
+
 function saveDraft(draftKey: string, json: string) {
   sessionStorage.setItem(draftKey, json);
 }
@@ -245,15 +258,8 @@ export function RichContentEditor({
     message: string;
   } | null>(null);
   const [charCount, setCharCount] = useState(() => {
-    const draft = getSavedDraft(draftKey);
-    if (draft) {
-      try {
-        return blocksToPlainText(tiptapToBlocks(JSON.parse(draft))).length;
-      } catch {
-        return 0;
-      }
-    }
-    return 0;
+    const draft = parseSavedDraft(draftKey);
+    return draft ? blocksToPlainText(tiptapToBlocks(draft)).length : 0;
   });
   const editorRef = useRef<Editor | null>(null);
   const composeTimeoutRef = useRef<number | null>(null);
@@ -293,7 +299,7 @@ export function RichContentEditor({
   }, [keywordDescriptionMap, keywordEntityIndex]);
 
   const syncEditorState = useCallback((editor: Editor) => {
-    const json = editor.getJSON();
+    const json = sanitizeRichTextJson(editor.getJSON());
     const blocks = tiptapToBlocks(json);
     const len = blocksToPlainText(blocks).length;
     setCharCount(len);
@@ -312,17 +318,7 @@ export function RichContentEditor({
 
   const editor = useEditor({
     immediatelyRender: false,
-    content: (() => {
-      const draft = getSavedDraft(draftKey);
-      if (draft) {
-        try {
-          return JSON.parse(draft);
-        } catch {
-          return undefined;
-        }
-      }
-      return undefined;
-    })(),
+    content: parseSavedDraft(draftKey),
     extensions: [
       StarterKit.configure({
         heading: false,
@@ -426,7 +422,7 @@ export function RichContentEditor({
       }),
       BraceKeywordSuggestion.configure({
         suggestion: {
-          char: "\0",
+          char: "",
           allowSpaces: true,
           items: ({ query }: { query: string }) => matchEntities(query, entities),
           command: ({ editor: ed, range, props }) => {
@@ -585,6 +581,7 @@ export function RichContentEditor({
           return false;
         },
       },
+      transformPastedText: stripNullCharacters,
       handlePaste: (view, event) => {
         if (!youtubePaste) return false;
 
@@ -725,6 +722,7 @@ export function RichContentEditor({
             id: entity.id,
             label: entity.nameKo,
             entityType: entity.type,
+            mentionSuggestionChar: "",
           },
         },
         { type: "text", text: " " },
@@ -734,7 +732,7 @@ export function RichContentEditor({
 
   const handleSubmit = useCallback(async () => {
     if (!editor || submitting) return;
-    const blocks = tiptapToBlocks(editor.getJSON());
+    const blocks = tiptapToBlocks(sanitizeRichTextJson(editor.getJSON()));
     const text = blocksToPlainText(blocks);
 
     if (text.length < minChars || (maxChars != null && text.length > maxChars)) return;

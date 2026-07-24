@@ -1,0 +1,80 @@
+import assert from "node:assert/strict";
+import {
+  blocksToPlainText,
+  blocksToStorageText,
+  sanitizeRichTextJson,
+  tiptapToBlocks,
+} from "../src/lib/chemical-utils";
+
+const dirtyDocument = {
+  type: "doc",
+  content: [
+    {
+      type: "paragraph",
+      content: [
+        { type: "text", text: "완벽한 \u0000타격 " },
+        {
+          type: "entity-mention",
+          attrs: {
+            id: "perfected_strike\u0000",
+            entityType: "card\u0000",
+            label: "완벽한 타격\u0000",
+            mentionSuggestionChar: "\u0000",
+          },
+        },
+        {
+          type: "custom-keyword",
+          attrs: {
+            text: "완타\u0000",
+            keyword: "완벽한 타격\u0000",
+            description: "타격 카드\u0000",
+          },
+        },
+        {
+          type: "youtube-reference",
+          attrs: {
+            videoId: "dQw4w9WgXcQ\u0000",
+            title: "영상 제목\u0000",
+          },
+        },
+      ],
+    },
+  ],
+};
+
+const sanitizedDocument = sanitizeRichTextJson(dirtyDocument);
+assert.equal(JSON.stringify(sanitizedDocument).includes("\\u0000"), false);
+
+const blocks = tiptapToBlocks(dirtyDocument);
+assert.deepEqual(blocks, [
+  { type: "text", text: "완벽한 타격 " },
+  {
+    type: "entity",
+    entityId: "perfected_strike",
+    entityType: "card",
+    displayText: "완벽한 타격",
+  },
+  {
+    type: "keyword",
+    text: "완타",
+    keyword: "완벽한 타격",
+    description: "타격 카드",
+    entityId: undefined,
+    entityType: undefined,
+  },
+  {
+    type: "youtube",
+    videoId: "dQw4w9WgXcQ",
+    title: "영상 제목",
+  },
+]);
+assert.equal(blocksToPlainText(blocks).includes("\u0000"), false);
+assert.equal(blocksToStorageText(blocks).includes("\u0000"), false);
+
+const externallyConstructedBlocks = [
+  { type: "text" as const, text: "앞\u0000뒤" },
+];
+assert.equal(blocksToPlainText(externallyConstructedBlocks), "앞뒤");
+assert.equal(blocksToStorageText(externallyConstructedBlocks), "앞뒤");
+
+console.log("rich content NUL sanitization: ok");
