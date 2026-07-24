@@ -75,7 +75,6 @@ const resourcePatchIndexClientPath = path.join(
   process.cwd(),
   "src/components/patches/resource-patch-index-client.tsx",
 );
-const includeDevPatchChanges = process.env.STS_PATCH_CHANGES_DEV === "1";
 const spinePlayerClientPath = path.join(
   process.cwd(),
   "node_modules/@esotericsoftware/spine-player/dist/iife/spine-player.min.js",
@@ -597,24 +596,22 @@ async function writePatchClientAssets() {
     target: ["es2022"],
   });
 
-  if (includeDevPatchChanges) {
-    await buildClientBundle({
-      entryPoints: [resourcePatchIndexClientPath],
-      outfile: path.join(outDir, "_patches/resource-patch-index.js"),
-      bundle: true,
-      minify: true,
-      platform: "browser",
-      format: "iife",
-      target: ["es2022"],
-      plugins: [patchClientNextShims],
-      define: {
-        "process.env.NODE_ENV": JSON.stringify("production"),
-        "process.env.NEXT_PUBLIC_SUPABASE_URL": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""),
-        "process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""),
-        "process.env.NEXT_PUBLIC_SUPABASE_ENV": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production"),
-      },
-    });
-  }
+  await buildClientBundle({
+    entryPoints: [resourcePatchIndexClientPath],
+    outfile: path.join(outDir, "_patches/resource-patch-index.js"),
+    bundle: true,
+    minify: true,
+    platform: "browser",
+    format: "iife",
+    target: ["es2022"],
+    plugins: [patchClientNextShims],
+    define: {
+      "process.env.NODE_ENV": JSON.stringify("production"),
+      "process.env.NEXT_PUBLIC_SUPABASE_URL": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""),
+      "process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""),
+      "process.env.NEXT_PUBLIC_SUPABASE_ENV": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production"),
+    },
+  });
   stopClientBundler();
 }
 
@@ -649,11 +646,7 @@ async function main() {
       serviceLocale: "ko",
       gameLocale: "kor",
       metadata: getPatchListMetadata("ko"),
-      element: await PatchListPage({
-        serviceLocale: "ko",
-        gameLocale: "kor",
-        showSectionTabs: includeDevPatchChanges,
-      }),
+      element: await PatchListPage({ serviceLocale: "ko", gameLocale: "kor" }),
     },
   ];
 
@@ -664,37 +657,32 @@ async function main() {
       element: await PatchListPage({
         serviceLocale: route.serviceLocale,
         gameLocale: route.gameLocale,
-        showSectionTabs: includeDevPatchChanges,
       }),
     });
   }
 
-  if (includeDevPatchChanges) {
-    routes.push({
-      pathname: "/patches/changes",
+  routes.push({
+    pathname: "/patches/changes",
+    serviceLocale: "ko",
+    gameLocale: "kor",
+    metadata: getResourcePatchIndexMetadata("ko"),
+    element: await ResourcePatchIndexPage({
       serviceLocale: "ko",
       gameLocale: "kor",
-      metadata: getResourcePatchIndexMetadata("ko"),
+    }),
+    clientScripts: ["/_patches/resource-patch-index.js"],
+  });
+
+  for (const route of await localizedPatchRoutes("changes")) {
+    routes.push({
+      ...route,
+      metadata: getResourcePatchIndexMetadata(route.serviceLocale),
       element: await ResourcePatchIndexPage({
-        serviceLocale: "ko",
-        gameLocale: "kor",
-        showSectionTabs: true,
+        serviceLocale: route.serviceLocale,
+        gameLocale: route.gameLocale,
       }),
       clientScripts: ["/_patches/resource-patch-index.js"],
     });
-
-    for (const route of await localizedPatchRoutes("changes")) {
-      routes.push({
-        ...route,
-        metadata: getResourcePatchIndexMetadata(route.serviceLocale),
-        element: await ResourcePatchIndexPage({
-          serviceLocale: route.serviceLocale,
-          gameLocale: route.gameLocale,
-          showSectionTabs: true,
-        }),
-        clientScripts: ["/_patches/resource-patch-index.js"],
-      });
-    }
   }
 
   for (const { version } of versions) {

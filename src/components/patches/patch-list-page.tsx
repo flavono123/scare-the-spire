@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import Image from "@/components/ui/static-image";
 import { Badge } from "@/components/ui/badge";
 import { getSTS2Patches } from "@/lib/data";
-import { devToolsEnabled } from "@/lib/dev-tools";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import {
   localizeHrefWithGameLocale,
@@ -142,11 +141,9 @@ export function getPatchListMetadata(serviceLocale: ServiceLocale): Metadata {
 export async function PatchListPage({
   serviceLocale,
   gameLocale,
-  showSectionTabs = devToolsEnabled(),
 }: {
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
-  showSectionTabs?: boolean;
 }) {
   const copy = PATCH_COPY[serviceLocale];
   const [patches, entities, patchStageCopy] = await Promise.all([
@@ -165,7 +162,6 @@ export async function PatchListPage({
         active="notes"
         serviceLocale={serviceLocale}
         gameLocale={gameLocale}
-        enabled={showSectionTabs}
       />
 
       <div className="mt-6 space-y-3">

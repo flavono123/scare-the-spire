@@ -11,15 +11,11 @@ export function PatchSectionTabs({
   active,
   serviceLocale,
   gameLocale,
-  enabled,
 }: {
   active: "notes" | "changes";
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
-  enabled: boolean;
 }) {
-  if (!enabled) return null;
-
   const copy = serviceMessages[serviceLocale].patchChanges.tabs;
   const items = [
     {
