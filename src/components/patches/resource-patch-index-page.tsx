@@ -52,7 +52,7 @@ export async function ResourcePatchIndexPage({
     <div className="mx-auto max-w-6xl px-4 py-6">
       <h1 className="flex items-center gap-2 font-game-title text-2xl font-bold">
         <Image
-          src="/images/sts2/ui/topbar/submenu_history_icon.png"
+          src="/images/sts2/relics/bookmark.webp"
           alt=""
           width={34}
           height={34}

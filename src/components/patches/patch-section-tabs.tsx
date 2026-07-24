@@ -32,7 +32,7 @@ export function PatchSectionTabs({
       id: "changes" as const,
       label: copy.changes,
       href: "/patches/changes",
-      icon: "/images/sts2/ui/topbar/submenu_history_icon.png",
+      icon: "/images/sts2/relics/bookmark.webp",
     },
   ];
 
