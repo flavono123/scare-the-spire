@@ -129,15 +129,13 @@ export function getToyBoxNavItems({
         label: messages.nav.thisOrThat,
         icon: "/images/sts2/relics/choices_paradox.webp",
       },
+      {
+        href: "/c-c-c-combo",
+        label: messages.nav.combo,
+        icon: "/images/sts2/badges/ccccombo.webp",
+      },
       ...(showDevMenu
-        ? [
-            {
-              href: "/c-c-c-combo",
-              label: messages.nav.combo,
-              icon: "/images/sts2/badges/ccccombo.webp",
-            },
-            ...devNavItems,
-          ]
+        ? devNavItems
         : []),
     ],
     serviceLocale,

@@ -22,6 +22,7 @@ const PUBLIC_INDEX_PATHS = [
   "/",
   "/byrdispatch",
   "/cards",
+  "/c-c-c-combo",
   "/chemical-x",
   "/history-course",
   "/patches",
