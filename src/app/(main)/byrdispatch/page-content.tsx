@@ -55,6 +55,7 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   "섀소식": { href: "/byrdispatch", icon: BYRDISPATCH_ICON },
   "패치노트": { href: "/patches", icon: "/images/sts2/nav/patch_notes_icon.png" },
   "패치 노트": { href: "/patches", icon: "/images/sts2/nav/patch_notes_icon.png" },
+  "슬서운 변경": { href: "/patches/changes", icon: "/images/sts2/relics/bookmark.webp" },
   백과사전: { href: null, icon: "/images/sts2/icons/app_icon.png" },
   캐릭터: { href: "/compendium/characters", icon: "/images/sts2/characters/character_icon_ironclad.webp" },
   카드: { href: "/compendium/cards", icon: "/images/sts2/nav/stats_cards.png" },
@@ -82,6 +83,7 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
 const SERVICE_REFERENCE_LINKS: Record<string, string> = {
   패치노트: "/patches",
   "패치 노트": "/patches",
+  "슬서운 변경": "/patches/changes",
   "슬서운 이야기": "/",
   섀소식: "/byrdispatch",
   백과사전: "/compendium",
@@ -93,7 +95,7 @@ const SERVICE_REFERENCE_LINKS: Record<string, string> = {
   "프로필": "/profile",
 };
 
-const SERVICE_REFERENCE_RE = /(이거 아님 저거\?|역사 강의서|슬서운 이야기|패치노트|패치 노트|코오오옴보|케미컬X|케미컬엑스|백과사전|섀소식|프로필)/g;
+const SERVICE_REFERENCE_RE = /(이거 아님 저거\?|역사 강의서|슬서운 이야기|슬서운 변경|패치노트|패치 노트|코오오옴보|케미컬X|케미컬엑스|백과사전|섀소식|프로필)/g;
 const STORY_COMPOSER_ACTION_TOKEN = "[새 이야기 쓰기 버튼 노출/링크]";
 const INLINE_ACTION_RE = new RegExp(`${STORY_COMPOSER_ACTION_TOKEN.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}|${SERVICE_REFERENCE_RE.source}`, "g");
 
