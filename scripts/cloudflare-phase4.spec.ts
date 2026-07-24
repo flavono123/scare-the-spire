@@ -82,6 +82,19 @@ test("locale matrix keeps static route ownership and service language", async ({
   }
 });
 
+test("patch index exposes resource change history", async ({ page }) => {
+  const indexResponse = await page.goto(absolute("/patches"), { waitUntil: "domcontentloaded" });
+  expect(indexResponse?.status()).toBe(200);
+
+  const changesTab = page.getByRole("link", { name: "슬서운 변경" });
+  await expect(changesTab).toBeVisible();
+  await changesTab.click();
+
+  await expect(page).toHaveURL(absolute("/patches/changes"));
+  await expect(page.getByRole("heading", { level: 1, name: "슬서운 변경" })).toBeVisible();
+  await expect(page.locator("[data-resource-patch-line]").first()).toBeVisible();
+});
+
 test("redirect and canonical metadata match the public locale URL", async ({ request, page }) => {
   const redirect = await request.get(absolute("/"), {
     headers: { Accept: "text/html", "Accept-Language": "en-US,en;q=0.9" },

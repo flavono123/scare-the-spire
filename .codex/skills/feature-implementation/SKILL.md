@@ -42,12 +42,11 @@ resources, rich patch notes, mobile layout, animation, or QA.
 - Keep `/patches*` and `/_patches*` owned by the separate static patch Worker.
   Generate patch HTML, CSS, JavaScript, and resource indexes ahead of time
   instead of moving patch work into the main OpenNext request path.
-- Keep the resource change-history explorer and its patch tabs development-only.
-  `pnpm dev` exposes its patch tab with `STS_PATCH_CHANGES_DEV=1` and proxies
-  `/patches/changes` to Next dev so the explorer keeps HMR. Production patch
-  builds must not emit that route HTML or its client bundle.
-  Continue generating `/generated/sts2-resource-patch-index.json` at build time
-  for Compendium resource-detail history rails.
+- Keep the public resource change-history explorer and its patch tabs in the
+  static patch Worker. Production patch builds must emit `/patches/changes`
+  route HTML and its client bundle ahead of time. Continue generating
+  `/generated/sts2-resource-patch-index.json` at build time for the explorer and
+  Compendium resource-detail history rails.
 - Keep pending Compendium references hover-only when the deployed resource
   manifest does not contain the target; do not turn them into links that 404.
 - Treat OpenNext as still present in the main Worker fallback. Do not implement

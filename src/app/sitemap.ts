@@ -26,6 +26,7 @@ const PUBLIC_INDEX_PATHS = [
   "/chemical-x",
   "/history-course",
   "/patches",
+  "/patches/changes",
   "/potions",
   "/relics",
   "/this-or-that",

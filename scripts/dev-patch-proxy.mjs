@@ -16,7 +16,6 @@ function runInitialPatchBuild() {
     env: {
       ...process.env,
       NEXT_PUBLIC_ENABLE_DEV_TOOLS: "1",
-      STS_PATCH_CHANGES_DEV: "1",
     },
   });
   if (result.status !== 0) process.exit(result.status ?? 1);
