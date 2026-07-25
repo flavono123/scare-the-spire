@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create Toy Box Service"
+  short_description: "Choose game-backed identity and build Toy Box services"
+  default_prompt: "Use $create-toybox-service to choose game-backed title, subtitle, token, and background assets and build a new Toy Box service."
