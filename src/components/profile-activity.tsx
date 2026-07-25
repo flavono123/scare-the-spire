@@ -101,6 +101,9 @@ function commentTargetHref(targetKey: string): string {
   if (targetKey.startsWith("this-or-that:")) {
     return `/this-or-that/${encodeURIComponent(targetKey.slice("this-or-that:".length))}#comments`;
   }
+  if (targetKey.startsWith("c-c-c-combo:")) {
+    return `/c-c-c-combo/${encodeURIComponent(targetKey.slice("c-c-c-combo:".length))}#comments`;
+  }
   if (targetKey === "byrdispatch") return "/byrdispatch#comments";
   return `/#${targetKey}`;
 }

@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Link2 } from "lucide-react";
 import Image from "@/components/ui/static-image";
+import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { useComboPost } from "@/hooks/use-combo-posts";
@@ -16,6 +17,7 @@ import {
 import { getSiteDisplayOrigin } from "@/lib/site-origin";
 import { serviceMessages } from "@/messages/service";
 import { extractComboYouTubeReference } from "@/lib/combo-types";
+import { buildComboCommentThreadKey } from "@/lib/comment-threads";
 import { buildComboEntityMap, ComboPostRenderer } from "./combo-post-renderer";
 import { ComboResourceGallery } from "./combo-resource-gallery";
 import { ComboYouTubeEmbed } from "./combo-youtube-reference";
@@ -149,6 +151,19 @@ export function ComboPostView({ postId, gameLocale }: ComboPostViewProps) {
           </span>
         </div>
       </article>
+
+      <section
+        id="comments"
+        className="scroll-mt-16 rounded-lg border border-border bg-card/20 p-4"
+      >
+        <h2 className="mb-3 font-service text-sm font-semibold text-zinc-300">
+          {copy.commentsTitle}
+        </h2>
+        <CommentSection
+          threadKey={buildComboCommentThreadKey(post.id)}
+          initialEntities={entities}
+        />
+      </section>
     </div>
   );
 }

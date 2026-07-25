@@ -9,3 +9,7 @@ export function buildCodexCommentThreadKey(entityType: string, entityId: string)
 export function buildByrdispatchCommentThreadKey(): string {
   return "byrdispatch";
 }
+
+export function buildComboCommentThreadKey(postId: string): string {
+  return `c-c-c-combo:${postId}`;
+}
