@@ -48,7 +48,7 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
     const selectedKeys = selectedGameElements.map(comboResourceKey);
     return posts.filter((post) => {
       const postKeys = new Set(post.resources.map(comboResourceKey));
-      return selectedKeys.every((key) => postKeys.has(key));
+      return selectedKeys.some((key) => postKeys.has(key));
     });
   }, [posts, selectedGameElements]);
 
