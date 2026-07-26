@@ -49,7 +49,7 @@ Resolve these four fields as one set:
 | --- | --- |
 | Title | Use Korean first. Prefer exact game-localized naming when a resource naturally names the service; otherwise label deliberate service-owned wordplay honestly. |
 | Page subtitle | Use an exact `gameLocale` line or a minimal documented transformation of one. Render it only inside the service page. |
-| Token asset | Use a same-name or semantically tight in-game token that remains legible in navigation and the page header. |
+| Token asset | Use a same-name or semantically tight in-game token that remains legible in navigation and the page header. Keep its meaning distinct across the entire site, not only among Toy Box services. |
 | Background art | Use related card, event, or scene art that expresses the service action and survives desktop and mobile cropping. |
 
 Never use the page subtitle as `Metadata.description`, Open Graph description,
@@ -68,13 +68,20 @@ PCK, or DLL searches inside a Worker request.
    and tracked assets in the order defined by the source-discovery reference.
 2. Escalate to current local PCK or DLL evidence only when extracted sources
    leave a real gap.
-3. Inspect actual candidate images. Do not select token or background art from
+3. Before choosing a token, search its asset path, resource id, imports, and
+   visually or semantically equivalent symbols across all site surfaces. Include
+   Toy Box and non-Toy-Box services, global navigation, page headers, profiles,
+   comments, and aggregate views. Reject a duplicate when separate features
+   would compete for the same symbol or interfere with each other's meaning.
+   Reuse is acceptable only when every appearance intentionally represents the
+   same feature or concept.
+4. Inspect actual candidate images. Do not select token or background art from
    filename semantics alone.
-4. Rank coherent sets by semantic fit, source evidence, cross-locale support,
+5. Rank coherent sets by semantic fit, source evidence, cross-locale support,
    existing asset availability, token legibility, and background crop quality.
-5. For recommendations, offer two or three coherent sets with one clear
+6. For recommendations, offer two or three coherent sets with one clear
    recommendation. For direct creation, choose one set.
-6. Record for each field whether it was provided, exact game text/art, adapted
+7. Record for each field whether it was provided, exact game text/art, adapted
    game text, or a related game resource, plus its precise source.
 
 Do not weaken an exact title/token pairing merely to force novelty. Do not claim
@@ -113,6 +120,8 @@ For recommendations:
 
 - Confirm every game-derived claim against a precise source.
 - Confirm every asset path exists or clearly mark extraction as pending.
+- Report the site-wide token collision check and exclude candidates whose reuse
+  would make distinct services or features interfere with each other's meaning.
 - State explicitly that the page subtitle is excluded from metadata.
 
 For implementations:
@@ -120,9 +129,11 @@ For implementations:
 1. Search metadata code to prove that the page subtitle was not reused as an
    SEO description.
 2. Run the checks selected by `$qa` for the touched scope.
-3. Inspect the token at navigation/header sizes and the background on desktop
+3. Search the final token across the repository and confirm that every existing
+   use is either the same concept or non-conflicting.
+4. Inspect the token at navigation/header sizes and the background on desktop
    and repository mobile presets.
-4. Verify localized title and subtitle fallbacks from generated output, not
+5. Verify localized title and subtitle fallbacks from generated output, not
    only Korean source text.
-5. Report the final four-field identity table, exact sources, metadata
+6. Report the final four-field identity table, exact sources, metadata
    description, Cloudflare guardrail result, and verification performed.
