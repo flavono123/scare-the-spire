@@ -64,25 +64,32 @@ try {
         { timeout: timeoutMs },
       );
       await page.waitForFunction(
-        ({ expectedSpine }) => {
+        ({ compositeSpine, expectedSpine }) => {
           const root = document.querySelector("[data-selected-resource-spine]");
           if (!root) return false;
           const hasFit = Number.parseFloat(root.dataset.spineFitScale ?? "") > 0;
           if (!expectedSpine) return hasFit && Boolean(root.querySelector("img"));
-          return hasFit && Boolean(root.querySelector(".sts2-spine-stage canvas"));
+          const selector = compositeSpine
+            ? ".sts2-spine-stage canvas"
+            : ".sts2-spine-stage.opacity-100 canvas";
+          return hasFit && Boolean(root.querySelector(selector));
         },
-        { expectedSpine: resource.expectedSpine },
+        {
+          compositeSpine: resource.id === "DECIMILLIPEDE_SEGMENT",
+          expectedSpine: resource.expectedSpine,
+        },
         { timeout: timeoutMs },
       );
       await page.waitForTimeout(350);
       if (resource.expectedSpine) {
         await page.waitForFunction(
-          () => Boolean(
-            document.querySelector(
-              "[data-selected-resource-spine] .sts2-spine-stage canvas",
-            ),
-          ),
-          undefined,
+          ({ compositeSpine }) => {
+            const selector = compositeSpine
+              ? "[data-selected-resource-spine] .sts2-spine-stage canvas"
+              : "[data-selected-resource-spine] .sts2-spine-stage.opacity-100 canvas";
+            return Boolean(document.querySelector(selector));
+          },
+          { compositeSpine: resource.id === "DECIMILLIPEDE_SEGMENT" },
           { timeout: timeoutMs },
         );
       }
