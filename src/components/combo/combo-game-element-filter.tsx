@@ -348,7 +348,9 @@ export function ComboGameElementFilter({
             <div className="min-h-0 flex-1 overflow-y-auto p-3">
               {results.length === 0 ? (
                 <p className="px-3 py-12 text-center text-xs text-zinc-600">
-                  {commonCopy.noResults}
+                  {normalizedQuery
+                    ? copy.noGameElementSearchResults
+                    : copy.noGameElementsInPosts}
                 </p>
               ) : (
                 <div className="grid grid-cols-3 gap-1.5 min-[390px]:grid-cols-4 sm:grid-cols-6">
