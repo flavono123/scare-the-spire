@@ -60,6 +60,11 @@ const DEFAULT_VISIBLE_GROUP_COUNT = 4;
 const FALLBACK_RESOURCE_TOKEN_CAPACITY = 6;
 const RESOURCE_TOKEN_SIZE = 32;
 const RESOURCE_TOKEN_GAP = 2;
+const RESOURCE_SPINE_VISUAL_SCALE: Partial<Record<string, number>> = {
+  INFESTED_PRISM: 1.5,
+  SLUDGE_SPINNER: 1.85,
+  VANTOM: 1.5,
+};
 
 type ChangeSortKey = "patch" | "stories";
 type ChangeSortDirection = "asc" | "desc";
@@ -434,7 +439,10 @@ function SelectedResourceSpinePreview({
   const handleVisualBoundsChange = useCallback((bounds: MonsterStageVisualBounds | null) => {
     setVisualBounds(bounds);
   }, []);
-  const fit = selectedResourceSpineFit(visualBounds);
+  const fit = selectedResourceSpineFit(
+    visualBounds,
+    RESOURCE_SPINE_VISUAL_SCALE[character?.id ?? monster?.id ?? ""] ?? 1,
+  );
   if (!character && !monster) return null;
 
   return (
@@ -494,7 +502,10 @@ function SelectedResourceSpinePreview({
   );
 }
 
-function selectedResourceSpineFit(bounds: MonsterStageVisualBounds | null): {
+function selectedResourceSpineFit(
+  bounds: MonsterStageVisualBounds | null,
+  visualScale: number,
+): {
   scale: number;
   style: CSSProperties;
 } | null {
@@ -505,11 +516,12 @@ function selectedResourceSpineFit(bounds: MonsterStageVisualBounds | null): {
   const bottomPadding = bounds.stageHeight * 0.04;
   const availableWidth = bounds.stageWidth - horizontalPadding * 2;
   const availableHeight = bounds.stageHeight - topPadding - bottomPadding;
-  const scale = Math.min(
+  const fittedScale = Math.min(
     3,
     availableWidth / bounds.width,
     availableHeight / bounds.height,
   );
+  const scale = Math.min(3, fittedScale * visualScale);
   const translateX = horizontalPadding
     + (availableWidth - bounds.width * scale) / 2
     - bounds.left * scale;
