@@ -24,6 +24,7 @@
 Rules:
 
 - The H1 is exactly the deployment date in `YYYY-MM-DD`.
+- The renderer presents the H1 date as each entry's visual title, not muted metadata: use a larger title scale, the Byrdispatch teaser's purple border/background color family, and visible spacing or a divider between dates.
 - H2 headings are service areas.
 - `## 공지` is optional, but when present it must be the first H2 section.
 - The renderer treats `## 공지` as a pink highlighted notice block above regular sections.
@@ -70,6 +71,7 @@ Token/icon asset anchors:
 - In progress: `public/images/sts2/powers/hammer_time_power.webp`
 - Bug fix: `public/images/sts2/powers/infested_power.webp`
 - Community report thanks: `public/images/sts2/relics/wongo_customer_appreciation_badge.webp`
+- Transfigure service: `public/images/sts2/relics/astrolabe.webp`
 - Compendium top-level service: use the STS2 desktop/app icon from the top navbar.
 - Compendium child services: use the icon token assets already used by the compendium dropdown.
 
@@ -87,6 +89,7 @@ Prefer these exact Korean headings:
 - `백과사전`
 - `케미컬X`
 - `이거 아님 저거?`
+- `변형`
 - `프로필`
 - `댓글`
 - `개발/운영`

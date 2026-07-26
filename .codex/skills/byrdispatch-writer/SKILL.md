@@ -17,6 +17,7 @@ Turn rough service-update notes into canonical 섀소식 / byrdispatch markdown.
 4. Create or update `data/byrdispatch/YYYY-MM-DD.md`.
    - Create `data/byrdispatch/` if absent.
    - Use one `# YYYY-MM-DD` heading.
+   - Treat the H1 date as the title of that individual update entry. Do not add decorative date markup in Markdown; the renderer owns the larger purple date-title treatment and spacing between entries.
    - Put `## 공지` first when the entry includes a site-wide notice.
    - Use `## 서비스명` headings and `### 하위 서비스명` headings.
    - Keep a parent `## 서비스명` heading even when it has no bullets if it groups child `###` sections.
