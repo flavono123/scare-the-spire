@@ -2,8 +2,12 @@ import assert from "node:assert/strict";
 import type { EntityInfo } from "../src/components/patch-note-renderer";
 import {
   getTransfigureInitialBlocks,
+  getTransfigureSourceCost,
   getTransfigureSourceText,
+  isTransfigureChanged,
   isTransfiguredContent,
+  normalizeTransfigureCost,
+  normalizeTransfigureName,
   transfigureBlocksToGameDescription,
 } from "../src/lib/transfigure-types";
 
@@ -15,6 +19,8 @@ const expertise = {
   color: "silent",
   type: "card",
   cardData: {
+    cost: 1,
+    isXCost: false,
     description: "카드를 {Cards:diff()}장 뽑습니다.\n그 카드가 이번 턴에\n[gold]보존[/gold]을 얻습니다.",
   },
 } as unknown as EntityInfo;
@@ -54,7 +60,48 @@ assert.equal(
   transfigureBlocksToGameDescription(sourceBlocks),
   "카드를 {Cards:diff()}장 뽑습니다. 그 카드가 이번 턴에 [gold]보존[/gold]을 얻습니다.",
 );
+assert.equal(getTransfigureSourceCost(expertise), "1");
+assert.equal(normalizeTransfigureName("", "전문성"), null);
+assert.equal(normalizeTransfigureName("전문가", "전문성"), "전문가");
+assert.equal(normalizeTransfigureCost("1", "1"), null);
+assert.equal(normalizeTransfigureCost("x", "1"), "X");
 assert.equal(isTransfiguredContent(sourceBlocks, sourceText ?? "", sourceBlocks), false);
+assert.equal(
+  isTransfigureChanged({
+    blocks: sourceBlocks,
+    sourceText: sourceText ?? "",
+    sourceBlocks,
+    transformedName: "",
+    sourceName: "전문성",
+    transformedCost: "",
+    sourceCost: "1",
+  }),
+  false,
+);
+assert.equal(
+  isTransfigureChanged({
+    blocks: sourceBlocks,
+    sourceText: sourceText ?? "",
+    sourceBlocks,
+    transformedName: "전문가",
+    sourceName: "전문성",
+    transformedCost: "",
+    sourceCost: "1",
+  }),
+  true,
+);
+assert.equal(
+  isTransfigureChanged({
+    blocks: sourceBlocks,
+    sourceText: sourceText ?? "",
+    sourceBlocks,
+    transformedName: "",
+    sourceName: "전문성",
+    transformedCost: "0",
+    sourceCost: "1",
+  }),
+  true,
+);
 assert.equal(
   isTransfiguredContent(
     [
