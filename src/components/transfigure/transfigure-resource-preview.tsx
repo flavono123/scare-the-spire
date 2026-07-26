@@ -1,14 +1,20 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { buildEntityMap, PostRenderer } from "@/components/chemicalx/post-renderer";
 import { CardTile } from "@/components/codex/card-tile";
+import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { GameHoverTip } from "@/components/codex/hover-tip";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import type { PostBlock } from "@/lib/chemical-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
-import { transfigureBlocksToGameDescription } from "@/lib/transfigure-types";
+import {
+  getTransfigureSourceCost,
+  getTransfigureUpgradeInitialBlocks,
+  getTransfigureUpgradeSourceCost,
+  transfigureBlocksToGameDescription,
+} from "@/lib/transfigure-types";
 
 interface TransfigureResourcePreviewProps {
   blocks: PostBlock[];
@@ -18,6 +24,9 @@ interface TransfigureResourcePreviewProps {
   serviceLocale: ServiceLocale;
   transformedName?: string | null;
   transformedCost?: string | null;
+  transformedUpgradeCost?: string | null;
+  upgradedBlocks?: PostBlock[] | null;
+  upgradeLabel: string;
 }
 
 export function TransfigureResourcePreview({
@@ -28,16 +37,37 @@ export function TransfigureResourcePreview({
   serviceLocale,
   transformedName,
   transformedCost,
+  transformedUpgradeCost,
+  upgradedBlocks,
+  upgradeLabel,
 }: TransfigureResourcePreviewProps) {
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
+  const gameUpgradeBlocks = useMemo(
+    () => getTransfigureUpgradeInitialBlocks(entity, entities),
+    [entities, entity],
+  );
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const displayName = transformedName?.trim() || entity.nameKo;
 
   if (entity.type === "card" && entity.cardData) {
-    const normalizedCost = transformedCost?.trim().toUpperCase() || null;
+    const effectiveUpgradeBlocks = upgradedBlocks ?? gameUpgradeBlocks;
+    const activeBlocks = showUpgrade && effectiveUpgradeBlocks != null
+      ? effectiveUpgradeBlocks
+      : blocks;
+    const sourceCost = showUpgrade
+      ? getTransfigureUpgradeSourceCost(entity)
+      : getTransfigureSourceCost(entity);
+    const transformedActiveCost = showUpgrade
+      ? transformedUpgradeCost
+      : transformedCost;
+    const normalizedCost = transformedActiveCost?.trim().toUpperCase()
+      || sourceCost;
+    const description = transfigureBlocksToGameDescription(activeBlocks);
     const card = {
       ...entity.cardData,
       name: displayName,
-      description: transfigureBlocksToGameDescription(blocks),
+      description,
+      descriptionRaw: description,
       isXCost: normalizedCost == null
         ? entity.cardData.isXCost
         : normalizedCost === "X",
@@ -46,16 +76,28 @@ export function TransfigureResourcePreview({
       ? Number(normalizedCost)
       : undefined;
     return (
-      <div className="flex justify-center" data-transfigure-preview="card">
+      <div
+        className="flex flex-col items-center justify-center"
+        data-transfigure-preview="card"
+      >
         <CardTile
           card={card}
           serviceLocale={serviceLocale}
-          showUpgrade={false}
+          showUpgrade={showUpgrade}
           showBeta={false}
           width={280}
           interactive={false}
           forcedCost={forcedCost}
         />
+        {effectiveUpgradeBlocks != null && (
+          <GameCheckboxToggle
+            checked={showUpgrade}
+            onCheckedChange={setShowUpgrade}
+            label={upgradeLabel}
+            size="sm"
+            className="mt-2 justify-center"
+          />
+        )}
       </div>
     );
   }

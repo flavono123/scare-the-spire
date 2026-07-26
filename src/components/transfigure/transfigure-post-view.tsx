@@ -199,6 +199,9 @@ export function TransfigurePostView({
                 serviceLocale={serviceLocale}
                 transformedName={post.transformed_name}
                 transformedCost={post.transformed_cost}
+                transformedUpgradeCost={post.transformed_upgrade_cost}
+                upgradedBlocks={post.upgraded_content}
+                upgradeLabel={upgradeLabel}
               />
             ) : (
               <div className="text-lg font-bold leading-relaxed text-[#f0e6d2]">
