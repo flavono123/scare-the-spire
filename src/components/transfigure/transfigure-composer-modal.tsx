@@ -39,7 +39,12 @@ export function TransfigureComposerModal({
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    dialogRef.current?.focus();
+    const initialFocus = initialPost
+      ? dialogRef.current
+      : dialogRef.current?.querySelector<HTMLInputElement>(
+        '[data-transfigure-resource-picker] input[type="search"]',
+      );
+    initialFocus?.focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
@@ -50,7 +55,7 @@ export function TransfigureComposerModal({
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onClose]);
+  }, [initialPost, onClose]);
 
   const handleDelete = async () => {
     if (!onDelete || deleting) return;
