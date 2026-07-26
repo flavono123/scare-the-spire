@@ -502,5 +502,23 @@
       { "type": "card", "id": "WELL_LAID_PLANS" },
       { "type": "card", "id": "MIDNIGHT" }
     ]
+  },
+  {
+    "id": "v0.109.1",
+    "version": "0.109.1",
+    "date": "2026-07-25",
+    "title": "Beta Hotfix Patch Notes - v0.109.1",
+    "titleKo": "베타 핫픽스 패치 노트 - v0.109.1",
+    "type": "hotfix",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/680756685198854785",
+    "summary": "Traditional Chinese translation hotfix for broken plural evaluation.",
+    "summaryKo": "번체 중국어의 잘못된 복수형 처리 문제를 수정한 번역 핫픽스입니다.",
+    "hasBalanceChanges": false,
+    "art": {
+      "type": "image",
+      "imageUrl": "/images/sts2/patches/default-art.jpg",
+      "alt": "Slay the Spire 2 patch notes banner",
+      "altKo": "슬레이 더 스파이어 2 패치 노트 배너"
+    }
   }
 ]
