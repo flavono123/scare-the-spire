@@ -31,7 +31,37 @@ export interface YouTubeBlock {
   title: string;
 }
 
-export type PostBlock = TextBlock | EntityBlock | KeywordBlock | YouTubeBlock;
+/** Stable display metadata captured when a History Course run is referenced. */
+export interface HistoryRunReferenceSnapshot {
+  title?: string | null;
+  character: string;
+  startTime: number | null;
+  ascension: number;
+  win: boolean;
+  totalFloors: number;
+  runTime: number | null;
+  build: string;
+  seed: string;
+}
+
+/**
+ * A reference to a publicly shared History Course run.
+ *
+ * `runId` remains the identity and link target. The snapshot keeps an existing
+ * Combo readable if the shared run is later removed.
+ */
+export interface HistoryRunBlock {
+  type: "history-run";
+  runId: string;
+  snapshot: HistoryRunReferenceSnapshot;
+}
+
+export type PostBlock =
+  | TextBlock
+  | EntityBlock
+  | KeywordBlock
+  | YouTubeBlock
+  | HistoryRunBlock;
 
 export interface ChemicalPost {
   id: string;

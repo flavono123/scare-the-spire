@@ -2,6 +2,7 @@ import type { JSONContent } from "@tiptap/react";
 import { getChoseong } from "es-hangul";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
+import { historyRunPlainText } from "@/lib/history-run-reference";
 import { isYouTubeVideoId } from "@/lib/youtube-reference";
 
 const ENTITY_TYPE_FALLBACK_PRIORITY: readonly EntityType[] = [
@@ -42,6 +43,15 @@ export function sanitizeRichTextJson(doc: JSONContent): JSONContent {
 
 function nodeString(value: unknown): string {
   return typeof value === "string" ? stripNullCharacters(value) : "";
+}
+
+function nodeNumber(value: unknown): number | null {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  return null;
+}
+
+function nodeBoolean(value: unknown): boolean {
+  return value === true || value === "true";
 }
 
 function uniqueStrings(values: Array<string | undefined>): string[] {
@@ -98,6 +108,24 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
             title,
           });
         }
+      } else if (node.type === "history-run-reference") {
+        const runId = nodeString(node.attrs?.runId).trim();
+        if (!runId) continue;
+        blocks.push({
+          type: "history-run",
+          runId,
+          snapshot: {
+            title: nodeString(node.attrs?.title).trim() || null,
+            character: nodeString(node.attrs?.character),
+            startTime: nodeNumber(node.attrs?.startTime),
+            ascension: nodeNumber(node.attrs?.ascension) ?? 0,
+            win: nodeBoolean(node.attrs?.win),
+            totalFloors: nodeNumber(node.attrs?.totalFloors) ?? 0,
+            runTime: nodeNumber(node.attrs?.runTime),
+            build: nodeString(node.attrs?.build),
+            seed: nodeString(node.attrs?.seed),
+          },
+        });
       }
     }
   }
@@ -133,12 +161,29 @@ export function blocksToTiptapDocument(blocks: PostBlock[]): JSONContent {
         },
       }];
     }
+    if (block.type === "youtube") {
+      return [{
+        type: "youtube-reference",
+        attrs: {
+          videoId: block.videoId,
+          title: block.title,
+          pendingLabel: "",
+        },
+      }];
+    }
     return [{
-      type: "youtube-reference",
+      type: "history-run-reference",
       attrs: {
-        videoId: block.videoId,
-        title: block.title,
-        pendingLabel: "",
+        runId: block.runId,
+        title: block.snapshot.title ?? "",
+        character: block.snapshot.character,
+        startTime: block.snapshot.startTime,
+        ascension: block.snapshot.ascension,
+        win: block.snapshot.win,
+        totalFloors: block.snapshot.totalFloors,
+        runTime: block.snapshot.runTime,
+        build: block.snapshot.build,
+        seed: block.snapshot.seed,
       },
     }];
   });
@@ -161,6 +206,7 @@ export function blocksToPlainText(blocks: PostBlock[]): string {
       if (b.type === "text") return stripNullCharacters(b.text);
       if (b.type === "keyword") return stripNullCharacters(b.text);
       if (b.type === "youtube") return stripNullCharacters(b.title);
+      if (b.type === "history-run") return historyRunPlainText(b);
       return stripNullCharacters(b.displayText);
     })
     .join("");
@@ -180,6 +226,7 @@ export function blocksToStorageText(blocks: PostBlock[]): string {
       if (b.type === "text") return stripNullCharacters(b.text);
       if (b.type === "entity") return stripNullCharacters(b.displayText);
       if (b.type === "youtube") return stripNullCharacters(b.title);
+      if (b.type === "history-run") return historyRunPlainText(b);
 
       const text = stripNullCharacters(b.text);
       const keyword = stripNullCharacters(b.keyword ?? "").trim();

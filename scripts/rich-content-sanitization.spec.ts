@@ -37,6 +37,21 @@ const dirtyDocument = {
             title: "영상 제목\u0000",
           },
         },
+        {
+          type: "history-run-reference",
+          attrs: {
+            runId: "1abcdefghijklmno\u0000",
+            title: "",
+            character: "CHARACTER.IRONCLAD\u0000",
+            startTime: 1_752_669_600,
+            ascension: 10,
+            win: true,
+            totalFloors: 52,
+            runTime: 3_600,
+            build: "v0.109.0\u0000",
+            seed: "ABC123\u0000",
+          },
+        },
       ],
     },
   ],
@@ -66,6 +81,21 @@ assert.deepEqual(blocks, [
     type: "youtube",
     videoId: "dQw4w9WgXcQ",
     title: "영상 제목",
+  },
+  {
+    type: "history-run",
+    runId: "1abcdefghijklmno",
+    snapshot: {
+      title: null,
+      character: "CHARACTER.IRONCLAD",
+      startTime: 1_752_669_600,
+      ascension: 10,
+      win: true,
+      totalFloors: 52,
+      runTime: 3_600,
+      build: "v0.109.0",
+      seed: "ABC123",
+    },
   },
 ]);
 assert.equal(blocksToPlainText(blocks).includes("\u0000"), false);
