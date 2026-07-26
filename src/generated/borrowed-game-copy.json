@@ -21,6 +21,10 @@
     "thisOrThat": {
       "title": "이거 아님 저거?",
       "prompt": "날카롭게 긁어대는 목소리가 아래쪽에서 속삭입니다."
+    },
+    "transfigure": {
+      "title": "변형",
+      "subtitle": "[aqua]변성체들[/aqua]은 당신에게 자신들의 결합된 지식을 공유하고, [sine]변성 마법[/sine]을 주입해 당신의 본질을 변화시킵니다... 정말 사랑스러운 생명체들인 것 같네요."
     }
   },
   "eng": {
@@ -45,6 +49,10 @@
     "thisOrThat": {
       "title": "This or That?",
       "prompt": "a scratched-up voice whispers from below."
+    },
+    "transfigure": {
+      "title": "Transfigure",
+      "subtitle": "They share their combined knowledge and inject you with [sine]Morphic Magic[/sine], changing your nature... Such lovely creatures, these [aqua]Morphics[/aqua]."
     }
   },
   "zhs": {
@@ -69,6 +77,10 @@
     "thisOrThat": {
       "title": "这个还是那个？",
       "prompt": "一个嘶哑的声音从地下传来，向你低语。"
+    },
+    "transfigure": {
+      "title": "重构",
+      "subtitle": "它们将自己共有的知识分享给了你，更为你注入了[sine]拟形魔法[/sine]，改变了你的本质……这些[aqua]变形灵[/aqua]还真是群可爱的小生物啊。"
     }
   },
   "jpn": {
@@ -93,6 +105,10 @@
     "thisOrThat": {
       "title": "こっちか、そっちか？",
       "prompt": "穴の奥底から、しゃがれた声がささやく。"
+    },
+    "transfigure": {
+      "title": "変貌",
+      "subtitle": "彼らは共有する知識を分け与え、[sine]モーフィックの魔法[/sine]を注入して、あなたの性質を造り変えていく…… この[aqua]モーフィック[/aqua]たちは、なんて愛らしい生き物なんだろう。"
     }
   },
   "deu": {
@@ -117,6 +133,10 @@
     "thisOrThat": {
       "title": "Dies oder Das?",
       "prompt": "flüstert eine aufgekratzte Stimme von unten."
+    },
+    "transfigure": {
+      "title": "Verwandeln",
+      "subtitle": "Sie teilen ihr gemeinsames Wissen und flößen dir [sine]Morphermagie[/sine] ein, was dein Wesen verändert... So entzückende Wesen, diese [aqua]Morpher[/aqua]."
     }
   },
   "fra": {
@@ -141,6 +161,10 @@
     "thisOrThat": {
       "title": "Ceci ou Cela ?",
       "prompt": "chuchote une voix rauque d’en-dessous."
+    },
+    "transfigure": {
+      "title": "Transfiguration",
+      "subtitle": "Ils partagent avec vous leur savoir collectif et vous infusent de [sine]Magie morphique[/sine], altérant votre nature... Quelles charmantes créatures, ces [aqua]Morphiques[/aqua]."
     }
   },
   "ita": {
@@ -165,6 +189,10 @@
     "thisOrThat": {
       "title": "Sinistra o destra",
       "prompt": "Sussurra una voce roca dal basso."
+    },
+    "transfigure": {
+      "title": "Trasfigurazione",
+      "subtitle": "Condividono la loro conoscenza collettiva e ti infondono la [sine]magia morfica[/sine], alterando la tua stessa natura... Che creature incantevoli che sono questi [aqua]morfici[/aqua]."
     }
   },
   "spa": {
@@ -189,6 +217,10 @@
     "thisOrThat": {
       "title": "¿Izquierda o derecha?",
       "prompt": "—¿Izquierda o derecha?"
+    },
+    "transfigure": {
+      "title": "Transfigurar",
+      "subtitle": "Comparten su conocimiento conjunto y te imbuyen de [sine]magia mórfica[/sine], lo que altera tu naturaleza... Qué tipos más majos, estos [aqua]mórficos[/aqua]."
     }
   },
   "esp": {
@@ -213,6 +245,10 @@
     "thisOrThat": {
       "title": "¿Izquierda o derecha?",
       "prompt": "Susurra una voz ronca desde abajo."
+    },
+    "transfigure": {
+      "title": "Transfiguración",
+      "subtitle": "Comparten su conocimiento colectivo y te inyectan [sine]magia mórfica[/sine], lo que cambia tu naturaleza... ¡Qué criaturas tan encantadoras estos [aqua]mórficos[/aqua]!"
     }
   },
   "ptb": {
@@ -237,6 +273,10 @@
     "thisOrThat": {
       "title": "Isto ou Aquilo?",
       "prompt": "Pergunta uma voz rouca de dentro do buraco."
+    },
+    "transfigure": {
+      "title": "Transfigurar",
+      "subtitle": "Eles compartilham seus conhecimentos e imbuem você com [sine]Magia Mórfica[/sine], alterando a sua natureza... Que criaturas mais amáveis, estes [aqua]Mórficos[/aqua]."
     }
   },
   "rus": {
@@ -261,6 +301,10 @@
     "thisOrThat": {
       "title": "Первое или второе?",
       "prompt": "вопрошает хриплый голос."
+    },
+    "transfigure": {
+      "title": "Превращение",
+      "subtitle": "Морфы делятся с вами тайнами [sine]особой магии[/sine]. Ваш разум преображается. Какие же эти [aqua]морфы[/aqua] все-таки приятные!"
     }
   },
   "pol": {
@@ -285,6 +329,10 @@
     "thisOrThat": {
       "title": "To czy tamto?",
       "prompt": "„To... czy tamto?”."
+    },
+    "transfigure": {
+      "title": "Przekształcenie",
+      "subtitle": "Dzielą się z tobą ich skumulowaną wiedzą i zaszczepiają w tobie [sine]imitatorską magię[/sine], która zmienia twój charakter... Co za kochane stworzenia z tych [aqua]Imitatorów[/aqua]."
     }
   },
   "tha": {
@@ -309,6 +357,10 @@
     "thisOrThat": {
       "title": "อันนี้หรืออันนั้น?",
       "prompt": "เสียงกระซิบแหบแห้งออกมาจากเบื้องล่าง"
+    },
+    "transfigure": {
+      "title": "Transfigure",
+      "subtitle": "พวกมันแบ่งปันความรู้ที่พวกมันมีร่วมกันให้กับคุณ และอัดฉีดคุณด้วย[sine]เวทมนตร์มอร์ฟิก[/sine]ซึ่งเปลี่ยนแปลงธรรมชาติของคุณ... เป็นสิ่งมีชีวิตที่น่ารักจัง เจ้า[aqua]มอร์ฟิก[/aqua]พวกนี้"
     }
   },
   "tur": {
@@ -333,6 +385,10 @@
     "thisOrThat": {
       "title": "Bu mu? Şu mu?",
       "prompt": "“Bu mu? Şu mu?”"
+    },
+    "transfigure": {
+      "title": "Başkalaştır",
+      "subtitle": "Ortak bilgilerini seninle paylaşırlar ve sana [sine]Şekillenen Büyüsü[/sine] enjekte ederek doğanı değiştirirler... Ne hoş yaratıklar şu [aqua]Şekillenenler[/aqua]."
     }
   }
 }

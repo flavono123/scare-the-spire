@@ -14,6 +14,11 @@ export interface ThisOrThatGameCopy {
   prompt: string;
 }
 
+export interface TransfigureGameCopy {
+  title: string;
+  subtitle: string;
+}
+
 export interface PatchStageGameCopy {
   prepTime: {
     title: string;
@@ -32,6 +37,7 @@ interface BorrowedGameCopyPayload {
   historyCourseLanding: HistoryCourseLandingGameCopy;
   patchStage: PatchStageGameCopy;
   thisOrThat: ThisOrThatGameCopy;
+  transfigure: TransfigureGameCopy;
 }
 
 const borrowedGameCopy = borrowedGameCopyPayload as Record<GameLocale, BorrowedGameCopyPayload>;
@@ -68,4 +74,10 @@ export async function getThisOrThatGameCopy(
   gameLocale: GameLocale,
 ): Promise<ThisOrThatGameCopy> {
   return getBorrowedGameCopy(gameLocale).thisOrThat;
+}
+
+export async function getTransfigureGameCopy(
+  gameLocale: GameLocale,
+): Promise<TransfigureGameCopy> {
+  return getBorrowedGameCopy(gameLocale).transfigure;
 }

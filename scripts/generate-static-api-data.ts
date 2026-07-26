@@ -47,6 +47,11 @@ interface ThisOrThatGameCopy {
   prompt: string;
 }
 
+interface TransfigureGameCopy {
+  title: string;
+  subtitle: string;
+}
+
 interface PatchStageGameCopy {
   prepTime: {
     title: string;
@@ -65,6 +70,7 @@ interface BorrowedGameCopyPayload {
   historyCourseLanding: HistoryCourseLandingGameCopy;
   patchStage: PatchStageGameCopy;
   thisOrThat: ThisOrThatGameCopy;
+  transfigure: TransfigureGameCopy;
 }
 
 interface LocalizedPhraseReplacement {
@@ -392,6 +398,28 @@ async function buildThisOrThatGameCopy(gameLocale: GameLocale): Promise<ThisOrTh
   };
 }
 
+async function buildTransfigureGameCopy(
+  gameLocale: GameLocale,
+): Promise<TransfigureGameCopy> {
+  const [title, morphicGroveDescription] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "cards", "TRANSFIGURE.title"),
+    readGameTextWithEnglishFallback(
+      gameLocale,
+      "events",
+      "MORPHIC_GROVE.pages.GROUP.description",
+    ),
+  ]);
+  const paragraphs = morphicGroveDescription
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+
+  return {
+    title: title || "Transfigure",
+    subtitle: paragraphs[1] ?? paragraphs[0] ?? "",
+  };
+}
+
 async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, BorrowedGameCopyPayload>> {
   const entries = await Promise.all(
     GAME_LOCALES.map(async (gameLocale) => {
@@ -401,6 +429,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         historyCourseLanding,
         patchStage,
         thisOrThat,
+        transfigure,
       ] = await Promise.all([
         readGameTextWithEnglishFallback(
           gameLocale,
@@ -415,6 +444,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         buildHistoryCourseLandingGameCopy(gameLocale),
         buildPatchStageGameCopy(gameLocale),
         buildThisOrThatGameCopy(gameLocale),
+        buildTransfigureGameCopy(gameLocale),
       ]);
       return [
         gameLocale,
@@ -424,6 +454,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
           historyCourseLanding,
           patchStage,
           thisOrThat,
+          transfigure,
         },
       ] as const;
     }),
@@ -443,6 +474,14 @@ async function generateCommentEntitiesOnly() {
 async function main() {
   if (process.argv.includes("--comment-entities-only")) {
     await generateCommentEntitiesOnly();
+    return;
+  }
+  if (process.argv.includes("--borrowed-game-copy-only")) {
+    const borrowedGameCopyPayload = await buildBorrowedGameCopyPayload();
+    await writeSourceJson({
+      path: "generated/borrowed-game-copy.json",
+      data: borrowedGameCopyPayload,
+    });
     return;
   }
 
