@@ -199,6 +199,25 @@ function parseSavedDraft(draftKey: string) {
   }
 }
 
+function createPlainTextDocument(initialText: string | undefined) {
+  const text = stripNullCharacters(initialText ?? "").trim();
+  if (!text) return undefined;
+
+  return {
+    type: "doc",
+    content: [
+      {
+        type: "paragraph",
+        content: [{ type: "text", text }],
+      },
+    ],
+  };
+}
+
+function getInitialEditorContent(draftKey: string, initialText: string | undefined) {
+  return parseSavedDraft(draftKey) ?? createPlainTextDocument(initialText);
+}
+
 function saveDraft(draftKey: string, json: string) {
   sessionStorage.setItem(draftKey, json);
 }
@@ -216,6 +235,7 @@ export interface RichContentEditorProps {
   submitLabel: string;
   minChars?: number;
   maxChars?: number | null;
+  initialText?: string;
   submitIconSrc?: string;
   showKeywordTip?: boolean;
   keywordTip?: {
@@ -245,6 +265,7 @@ export function RichContentEditor({
   submitLabel,
   minChars = 2,
   maxChars = 30,
+  initialText,
   submitIconSrc,
   showKeywordTip = false,
   keywordTip,
@@ -258,8 +279,8 @@ export function RichContentEditor({
     message: string;
   } | null>(null);
   const [charCount, setCharCount] = useState(() => {
-    const draft = parseSavedDraft(draftKey);
-    return draft ? blocksToPlainText(tiptapToBlocks(draft)).length : 0;
+    const initialContent = getInitialEditorContent(draftKey, initialText);
+    return initialContent ? blocksToPlainText(tiptapToBlocks(initialContent)).length : 0;
   });
   const editorRef = useRef<Editor | null>(null);
   const composeTimeoutRef = useRef<number | null>(null);
@@ -318,7 +339,7 @@ export function RichContentEditor({
 
   const editor = useEditor({
     immediatelyRender: false,
-    content: parseSavedDraft(draftKey),
+    content: getInitialEditorContent(draftKey, initialText),
     extensions: [
       StarterKit.configure({
         heading: false,
@@ -689,7 +710,15 @@ export function RichContentEditor({
         return false;
       },
     },
-  }, [draftKey, entities, maxChars, placeholder, richPlaceholder, youtubeExtension]);
+  }, [
+    draftKey,
+    entities,
+    initialText,
+    maxChars,
+    placeholder,
+    richPlaceholder,
+    youtubeExtension,
+  ]);
 
   useEffect(() => {
     if (
