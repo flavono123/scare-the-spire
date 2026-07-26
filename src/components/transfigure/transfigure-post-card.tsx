@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Pencil, Sparkles, Trash2 } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { PostRenderer } from "@/components/chemicalx/post-renderer";
+import { TinyCardIcon } from "@/components/history-course/card-action-icon";
 import Image from "@/components/ui/static-image";
 import {
   localizeHrefWithGameLocale,
@@ -88,7 +89,16 @@ export function TransfigurePostCard({
       <div className="mb-2 flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-black/25">
-            {resource?.imageUrl ? (
+            {resource?.type === "card" && resource.cardData ? (
+              <TinyCardIcon
+                card={{
+                  color: resource.cardData.visualColor ?? resource.cardData.color,
+                  rarity: resource.cardData.rarity,
+                  type: resource.cardData.type,
+                }}
+                width={34}
+              />
+            ) : resource?.imageUrl ? (
               <Image
                 src={resource.imageUrl}
                 alt=""
