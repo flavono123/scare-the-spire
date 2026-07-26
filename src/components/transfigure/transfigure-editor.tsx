@@ -17,6 +17,7 @@ import {
   getTransfigureUpgradeSourceText,
   isTransfigureChanged,
   isTransfigureResourceType,
+  transfigureBlocksSignature,
   type TransfigurePost,
 } from "@/lib/transfigure-types";
 import { serviceMessages } from "@/messages/service";
@@ -138,8 +139,17 @@ export function TransfigureEditor({
       || transformedCost.trim() !== (initialPost.transformed_cost ?? "").trim()
       || transformedUpgradeCost.trim()
         !== (initialPost.transformed_upgrade_cost ?? "").trim()
-      || JSON.stringify(blocks) !== JSON.stringify(initialPost.content)
-      || JSON.stringify(upgradedBlocks) !== JSON.stringify(initialUpgradeBlocks)
+      || transfigureBlocksSignature(blocks)
+        !== transfigureBlocksSignature(initialPost.content)
+      || (
+        upgradedBlocks == null
+          ? initialUpgradeBlocks != null
+          : (
+            initialUpgradeBlocks == null
+            || transfigureBlocksSignature(upgradedBlocks)
+              !== transfigureBlocksSignature(initialUpgradeBlocks)
+          )
+      )
     );
   }, [
     initialPost,
@@ -415,7 +425,10 @@ export function TransfigureEditor({
               upgradedBlocks={previewUpgradeBlocks}
               upgradeLabel={upgradeLabel}
               onBlocksChange={(blocks) => {
-                if (JSON.stringify(blocks) !== JSON.stringify(previewBlocks)) {
+                if (
+                  transfigureBlocksSignature(blocks)
+                  !== transfigureBlocksSignature(previewBlocks)
+                ) {
                   setSaveFeedback(null);
                 }
                 setPreviewBlocks(blocks);
@@ -426,8 +439,13 @@ export function TransfigureEditor({
               }}
               onUpgradeBlocksChange={(blocks) => {
                 if (
-                  JSON.stringify(blocks)
-                  !== JSON.stringify(previewUpgradeBlocks)
+                  blocks == null
+                    ? previewUpgradeBlocks != null
+                    : (
+                      previewUpgradeBlocks == null
+                      || transfigureBlocksSignature(blocks)
+                        !== transfigureBlocksSignature(previewUpgradeBlocks)
+                    )
                 ) {
                   setSaveFeedback(null);
                 }

@@ -291,6 +291,39 @@ export function transfigureResourceKey(resource: TransfigureResourceRef): string
   return `${resource.type}:${resource.id}`;
 }
 
+export function transfigureBlocksSignature(items: PostBlock[]): string {
+  const tokens: string[] = [];
+  let text = "";
+  const flushText = () => {
+    if (!text) return;
+    tokens.push(`text:${text.replace(/\s+/g, " ")}`);
+    text = "";
+  };
+
+  for (const block of items) {
+    if (block.type === "text") {
+      text += block.text;
+      continue;
+    }
+    flushText();
+    if (block.type === "keyword") {
+      tokens.push(
+        `keyword:${block.text}:${block.keyword ?? ""}:${block.description ?? ""}:${block.entityType ?? ""}:${block.entityId ?? ""}`,
+      );
+    } else if (block.type === "entity") {
+      tokens.push(
+        `entity:${block.displayText}:${block.entityType}:${block.entityId}`,
+      );
+    } else if (block.type === "history-run") {
+      tokens.push(`history-run:${block.runId}:${JSON.stringify(block.snapshot)}`);
+    } else {
+      tokens.push(`youtube:${block.videoId}:${block.title}`);
+    }
+  }
+  flushText();
+  return tokens.join("|");
+}
+
 export function isTransfiguredContent(
   blocks: PostBlock[],
   sourceText: string,
@@ -311,20 +344,10 @@ export function isTransfiguredContent(
 
   if (normalizedContent !== normalizedSource) return true;
   if (sourceBlocks) {
-    const signature = (items: PostBlock[]) => items.map((block) => {
-      if (block.type === "text") return `text:${block.text.replace(/\s+/g, " ")}`;
-      if (block.type === "keyword") {
-        return `keyword:${block.text}:${block.keyword ?? ""}:${block.entityType ?? ""}:${block.entityId ?? ""}`;
-      }
-      if (block.type === "entity") {
-        return `entity:${block.displayText}:${block.entityType}:${block.entityId}`;
-      }
-      if (block.type === "history-run") {
-        return `history-run:${block.runId}`;
-      }
-      return `youtube:${block.videoId}:${block.title}`;
-    }).join("|");
-    return signature(blocks) !== signature(sourceBlocks);
+    return (
+      transfigureBlocksSignature(blocks)
+      !== transfigureBlocksSignature(sourceBlocks)
+    );
   }
   return blocks.some((block) => block.type !== "text");
 }
