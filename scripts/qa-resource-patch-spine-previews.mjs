@@ -74,7 +74,18 @@ try {
         { expectedSpine: resource.expectedSpine },
         { timeout: timeoutMs },
       );
-      await page.waitForTimeout(120);
+      await page.waitForTimeout(350);
+      if (resource.expectedSpine) {
+        await page.waitForFunction(
+          () => Boolean(
+            document.querySelector(
+              "[data-selected-resource-spine] .sts2-spine-stage canvas",
+            ),
+          ),
+          undefined,
+          { timeout: timeoutMs },
+        );
+      }
     } catch (error) {
       failures.push(error instanceof Error ? error.message : String(error));
     }
