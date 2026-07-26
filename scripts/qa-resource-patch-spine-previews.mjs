@@ -125,6 +125,103 @@ console.log(`[resource-patch-spine-qa] summary: ${summaryPath}`);
 if (!summary.ok) process.exitCode = 1;
 
 function measurePreview(root) {
+  function alphaBounds(pixels, width, height) {
+    let left = width;
+    let top = height;
+    let right = -1;
+    let bottom = -1;
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) {
+        if (pixels[(y * width + x) * 4 + 3] <= 8) continue;
+        left = Math.min(left, x);
+        top = Math.min(top, y);
+        right = Math.max(right, x + 1);
+        bottom = Math.max(bottom, y + 1);
+      }
+    }
+    return right > left && bottom > top ? { left, top, right, bottom } : null;
+  }
+
+  function canvasVisualBounds(canvas, stageRect) {
+    if (!(canvas instanceof HTMLCanvasElement) || canvas.width <= 0 || canvas.height <= 0) return null;
+    const copy = document.createElement("canvas");
+    copy.width = canvas.width;
+    copy.height = canvas.height;
+    const context = copy.getContext("2d", { willReadFrequently: true });
+    if (!context) return null;
+    context.drawImage(canvas, 0, 0);
+    const pixels = context.getImageData(0, 0, copy.width, copy.height).data;
+    const bounds = alphaBounds(pixels, copy.width, copy.height);
+    if (!bounds) return null;
+
+    const rect = canvas.getBoundingClientRect();
+    return {
+      left: rect.left - stageRect.left + (bounds.left / copy.width) * rect.width,
+      top: rect.top - stageRect.top + (bounds.top / copy.height) * rect.height,
+      right: rect.left - stageRect.left + (bounds.right / copy.width) * rect.width,
+      bottom: rect.top - stageRect.top + (bounds.bottom / copy.height) * rect.height,
+    };
+  }
+
+  function imageVisualBounds(image, stageRect) {
+    if (!(image instanceof HTMLImageElement) || image.naturalWidth <= 0 || image.naturalHeight <= 0) return null;
+    const copy = document.createElement("canvas");
+    copy.width = image.naturalWidth;
+    copy.height = image.naturalHeight;
+    const context = copy.getContext("2d", { willReadFrequently: true });
+    if (!context) return null;
+    context.drawImage(image, 0, 0);
+    const pixels = context.getImageData(0, 0, copy.width, copy.height).data;
+    const bounds = alphaBounds(pixels, copy.width, copy.height);
+    if (!bounds) return null;
+
+    const rect = image.getBoundingClientRect();
+    const imageAspect = image.naturalWidth / image.naturalHeight;
+    const rectAspect = rect.width / rect.height;
+    const drawnWidth = rectAspect > imageAspect ? rect.height * imageAspect : rect.width;
+    const drawnHeight = rectAspect > imageAspect ? rect.height : rect.width / imageAspect;
+    const drawnLeft = rect.left - stageRect.left + (rect.width - drawnWidth) / 2;
+    const drawnTop = rect.top - stageRect.top + (rect.height - drawnHeight) / 2;
+    return {
+      left: drawnLeft + (bounds.left / copy.width) * drawnWidth,
+      top: drawnTop + (bounds.top / copy.height) * drawnHeight,
+      right: drawnLeft + (bounds.right / copy.width) * drawnWidth,
+      bottom: drawnTop + (bounds.bottom / copy.height) * drawnHeight,
+    };
+  }
+
+  function mergeBounds(bounds, stageRect) {
+    if (bounds.length === 0) return null;
+    const left = Math.min(...bounds.map((bound) => bound.left));
+    const top = Math.min(...bounds.map((bound) => bound.top));
+    const right = Math.max(...bounds.map((bound) => bound.right));
+    const bottom = Math.max(...bounds.map((bound) => bound.bottom));
+    const width = right - left;
+    const height = bottom - top;
+    const centerOffset = (left + right) / 2 - stageRect.width / 2;
+    return {
+      left,
+      top,
+      right,
+      bottom,
+      width,
+      height,
+      widthRatio: width / stageRect.width,
+      heightRatio: height / stageRect.height,
+      centerOffset,
+      centerOffsetRatio: centerOffset / stageRect.width,
+    };
+  }
+
+  function rectJson(rect) {
+    return {
+      x: rect.x,
+      y: rect.y,
+      width: rect.width,
+      height: rect.height,
+    };
+  }
+
   const stage = root.querySelector(":scope > span");
   if (!(stage instanceof HTMLElement)) return null;
 
@@ -154,94 +251,6 @@ function measurePreview(root) {
     visual,
     documentWidth: document.documentElement.scrollWidth,
     viewportWidth: window.innerWidth,
-  };
-}
-
-function canvasVisualBounds(canvas, stageRect) {
-  if (!(canvas instanceof HTMLCanvasElement) || canvas.width <= 0 || canvas.height <= 0) return null;
-  const copy = document.createElement("canvas");
-  copy.width = canvas.width;
-  copy.height = canvas.height;
-  const context = copy.getContext("2d", { willReadFrequently: true });
-  if (!context) return null;
-  context.drawImage(canvas, 0, 0);
-  const pixels = context.getImageData(0, 0, copy.width, copy.height).data;
-  const bounds = alphaBounds(pixels, copy.width, copy.height);
-  if (!bounds) return null;
-
-  const rect = canvas.getBoundingClientRect();
-  return {
-    left: rect.left - stageRect.left + (bounds.left / copy.width) * rect.width,
-    top: rect.top - stageRect.top + (bounds.top / copy.height) * rect.height,
-    right: rect.left - stageRect.left + (bounds.right / copy.width) * rect.width,
-    bottom: rect.top - stageRect.top + (bounds.bottom / copy.height) * rect.height,
-  };
-}
-
-function imageVisualBounds(image, stageRect) {
-  if (!(image instanceof HTMLImageElement) || image.naturalWidth <= 0 || image.naturalHeight <= 0) return null;
-  const copy = document.createElement("canvas");
-  copy.width = image.naturalWidth;
-  copy.height = image.naturalHeight;
-  const context = copy.getContext("2d", { willReadFrequently: true });
-  if (!context) return null;
-  context.drawImage(image, 0, 0);
-  const pixels = context.getImageData(0, 0, copy.width, copy.height).data;
-  const bounds = alphaBounds(pixels, copy.width, copy.height);
-  if (!bounds) return null;
-
-  const rect = image.getBoundingClientRect();
-  const imageAspect = image.naturalWidth / image.naturalHeight;
-  const rectAspect = rect.width / rect.height;
-  const drawnWidth = rectAspect > imageAspect ? rect.height * imageAspect : rect.width;
-  const drawnHeight = rectAspect > imageAspect ? rect.height : rect.width / imageAspect;
-  const drawnLeft = rect.left - stageRect.left + (rect.width - drawnWidth) / 2;
-  const drawnTop = rect.top - stageRect.top + (rect.height - drawnHeight) / 2;
-  return {
-    left: drawnLeft + (bounds.left / copy.width) * drawnWidth,
-    top: drawnTop + (bounds.top / copy.height) * drawnHeight,
-    right: drawnLeft + (bounds.right / copy.width) * drawnWidth,
-    bottom: drawnTop + (bounds.bottom / copy.height) * drawnHeight,
-  };
-}
-
-function alphaBounds(pixels, width, height) {
-  let left = width;
-  let top = height;
-  let right = -1;
-  let bottom = -1;
-  for (let y = 0; y < height; y += 1) {
-    for (let x = 0; x < width; x += 1) {
-      if (pixels[(y * width + x) * 4 + 3] <= 8) continue;
-      left = Math.min(left, x);
-      top = Math.min(top, y);
-      right = Math.max(right, x + 1);
-      bottom = Math.max(bottom, y + 1);
-    }
-  }
-  return right > left && bottom > top ? { left, top, right, bottom } : null;
-}
-
-function mergeBounds(bounds, stageRect) {
-  if (bounds.length === 0) return null;
-  const left = Math.min(...bounds.map((bound) => bound.left));
-  const top = Math.min(...bounds.map((bound) => bound.top));
-  const right = Math.max(...bounds.map((bound) => bound.right));
-  const bottom = Math.max(...bounds.map((bound) => bound.bottom));
-  const width = right - left;
-  const height = bottom - top;
-  const centerOffset = (left + right) / 2 - stageRect.width / 2;
-  return {
-    left,
-    top,
-    right,
-    bottom,
-    width,
-    height,
-    widthRatio: width / stageRect.width,
-    heightRatio: height / stageRect.height,
-    centerOffset,
-    centerOffsetRatio: centerOffset / stageRect.width,
   };
 }
 
@@ -296,15 +305,6 @@ function hasSpineAsset(entity) {
 
 function resourceKey(resource) {
   return `${resource.type}:${resource.id}`;
-}
-
-function rectJson(rect) {
-  return {
-    x: rect.x,
-    y: rect.y,
-    width: rect.width,
-    height: rect.height,
-  };
 }
 
 async function readJson(filePath) {
