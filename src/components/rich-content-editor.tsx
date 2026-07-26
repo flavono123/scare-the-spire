@@ -17,6 +17,13 @@ import { MentionList, type MentionListRef } from "@/components/chemicalx/mention
 import { EntityMapProvider } from "@/components/chemicalx/entity-context";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { YouTubeReferenceExtension } from "@/components/editor/youtube-reference-extension";
+import { HistoryRunReferenceExtension } from "@/components/editor/history-run-reference-extension";
+import {
+  SlashCommandList,
+  type SlashCommandItem,
+  type SlashCommandListRef,
+} from "@/components/editor/slash-command-list";
+import { SlashCommandSuggestion } from "@/components/editor/slash-command-suggestion";
 import {
   buildEntityKeywordIndex,
   blocksToTiptapDocument,
@@ -31,6 +38,7 @@ import {
 } from "@/lib/chemical-utils";
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
 import type { PostBlock } from "@/lib/chemical-types";
+import type { HistoryRunBlock } from "@/lib/chemical-types";
 import {
   parseYouTubeVideoId,
   resolveYouTubeReference,
@@ -268,6 +276,13 @@ export interface RichContentEditorProps {
     duplicate: string;
     unavailable: string;
   };
+  historyRunReferences?: {
+    insertRequest: {
+      requestId: number;
+      block: HistoryRunBlock;
+    } | null;
+    slashCommands: SlashCommandItem[];
+  };
 }
 
 export function RichContentEditor({
@@ -292,6 +307,7 @@ export function RichContentEditor({
   keywordTip,
   entityInsertRequest,
   youtubeExtension,
+  historyRunReferences,
 }: RichContentEditorProps) {
   const [submitting, setSubmitting] = useState(false);
   const [youtubeResolving, setYoutubeResolving] = useState(false);
@@ -313,6 +329,7 @@ export function RichContentEditor({
   const submitRef = useRef<() => void>(() => {});
   const suggestionOpenRef = useRef(false);
   const lastEntityInsertRequestIdRef = useRef<number | null>(null);
+  const lastHistoryRunInsertRequestIdRef = useRef<number | null>(null);
   const lastSubmitRequestIdRef = useRef(submitRequestId);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
   const keywordEntityIndex = useMemo(() => buildEntityKeywordIndex(entities), [entities]);
@@ -383,6 +400,7 @@ export function RichContentEditor({
       CharacterCount.configure(maxChars == null ? {} : { limit: maxChars }),
       CustomKeyword,
       ...(youtubeExtension ? [YouTubeReferenceExtension] : []),
+      ...(historyRunReferences ? [HistoryRunReferenceExtension] : []),
       EntityMention.configure({
         HTMLAttributes: {
           class: "spire-gold font-semibold",
@@ -585,6 +603,100 @@ export function RichContentEditor({
           },
         },
       }),
+      ...(historyRunReferences ? [
+        SlashCommandSuggestion.configure({
+          suggestion: {
+            char: "/",
+            allowSpaces: false,
+            items: ({ query }: { query: string }) => {
+              const normalized = query.trim().toLowerCase();
+              return historyRunReferences.slashCommands.filter((command) => (
+                !normalized
+                || command.label.toLowerCase().includes(normalized)
+                || command.aliases.some((alias) => (
+                  alias.replace(/^\//, "").toLowerCase().includes(normalized)
+                ))
+              ));
+            },
+            command: ({ editor: ed, range, props }) => {
+              const command = props as unknown as SlashCommandItem;
+              ed.chain().focus().deleteRange(range).run();
+              window.setTimeout(command.onSelect, 0);
+            },
+            render: () => {
+              let renderer: ReactRenderer<SlashCommandListRef> | null = null;
+              let popup: HTMLDivElement | null = null;
+
+              const buildCommand = (props: SuggestionProps) => (
+                command: SlashCommandItem,
+              ) => {
+                props.command(command as unknown as Record<string, unknown>);
+              };
+
+              return {
+                onStart: (props: SuggestionProps) => {
+                  suggestionOpenRef.current = true;
+                  renderer = new ReactRenderer(SlashCommandList, {
+                    props: {
+                      items: props.items as SlashCommandItem[],
+                      command: buildCommand(props),
+                    },
+                    editor: props.editor,
+                  });
+
+                  popup = document.createElement("div");
+                  popup.style.position = "fixed";
+                  popup.style.zIndex = "130";
+                  popup.appendChild(renderer.element);
+                  document.body.appendChild(popup);
+
+                  if (props.clientRect) {
+                    const rect = props.clientRect();
+                    if (rect) {
+                      popup.style.left = `${rect.left}px`;
+                      popup.style.top = `${rect.bottom + 4}px`;
+                    }
+                  }
+                },
+
+                onUpdate: (props: SuggestionProps) => {
+                  renderer?.updateProps({
+                    items: props.items as SlashCommandItem[],
+                    command: buildCommand(props),
+                  });
+                  if (popup && props.clientRect) {
+                    const rect = props.clientRect();
+                    if (rect) {
+                      popup.style.left = `${rect.left}px`;
+                      popup.style.top = `${rect.bottom + 4}px`;
+                    }
+                  }
+                },
+
+                onKeyDown: (props: SuggestionKeyDownProps) => {
+                  if (props.event.key === "Escape") {
+                    suggestionOpenRef.current = false;
+                    popup?.remove();
+                    renderer?.destroy();
+                    popup = null;
+                    renderer = null;
+                    return true;
+                  }
+                  return renderer?.ref?.onKeyDown(props) ?? false;
+                },
+
+                onExit: () => {
+                  suggestionOpenRef.current = false;
+                  popup?.remove();
+                  renderer?.destroy();
+                  popup = null;
+                  renderer = null;
+                },
+              };
+            },
+          },
+        }),
+      ] : []),
     ],
     onCreate: ({ editor }) => {
       editorRef.current = editor;
@@ -750,6 +862,7 @@ export function RichContentEditor({
     richPlaceholder,
     submitOnEnter,
     youtubeExtension,
+    historyRunReferences,
   ]);
 
   useEffect(() => {
@@ -796,6 +909,52 @@ export function RichContentEditor({
       ]).run();
     }, 0);
   }, [editor, entityInsertRequest]);
+
+  useEffect(() => {
+    const request = historyRunReferences?.insertRequest;
+    if (
+      !editor
+      || !request
+      || lastHistoryRunInsertRequestIdRef.current === request.requestId
+    ) {
+      return;
+    }
+
+    lastHistoryRunInsertRequestIdRef.current = request.requestId;
+    const { block } = request;
+    window.setTimeout(() => {
+      if (editor.isDestroyed || !editor.schema.nodes["history-run-reference"]) return;
+
+      const { $from } = editor.state.selection;
+      const textBefore = $from.parent.textBetween(
+        Math.max(0, $from.parentOffset - 1),
+        $from.parentOffset,
+        undefined,
+        "\uFFFC",
+      );
+      const needsLeadingSpace = textBefore.length > 0 && !/\s/.test(textBefore);
+
+      editor.chain().focus().insertContent([
+        ...(needsLeadingSpace ? [{ type: "text", text: " " }] : []),
+        {
+          type: "history-run-reference",
+          attrs: {
+            runId: block.runId,
+            title: block.snapshot.title ?? "",
+            character: block.snapshot.character,
+            startTime: block.snapshot.startTime,
+            ascension: block.snapshot.ascension,
+            win: block.snapshot.win,
+            totalFloors: block.snapshot.totalFloors,
+            runTime: block.snapshot.runTime,
+            build: block.snapshot.build,
+            seed: block.snapshot.seed,
+          },
+        },
+        { type: "text", text: " " },
+      ]).run();
+    }, 0);
+  }, [editor, historyRunReferences]);
 
   const handleSubmit = useCallback(async () => {
     if (!editor || submitting) return;

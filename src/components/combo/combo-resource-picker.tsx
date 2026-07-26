@@ -5,6 +5,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type ReactNode,
 } from "react";
 import { Check, Plus, Search, X } from "lucide-react";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
@@ -56,12 +57,14 @@ interface ComboResourcePickerProps {
   entities: EntityInfo[];
   serviceLocale: ServiceLocale;
   onSelect: (entity: EntityInfo) => void;
+  secondaryAction?: ReactNode;
 }
 
 export function ComboResourcePicker({
   entities,
   serviceLocale,
   onSelect,
+  secondaryAction,
 }: ComboResourcePickerProps) {
   const copy = serviceMessages[serviceLocale].combo;
   const commonCopy = serviceMessages[serviceLocale].codex.common;
@@ -139,17 +142,20 @@ export function ComboResourcePicker({
   return (
     <div ref={rootRef} className="min-w-0 flex-1" data-combo-resource-picker>
       <div className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2 gap-y-1.5 sm:grid-cols-[auto_minmax(0,1fr)_auto]">
-        <button
-          type="button"
-          aria-expanded={open}
-          aria-controls="combo-resource-picker-panel"
-          data-combo-picker-trigger
-          onClick={() => setOpen((current) => !current)}
-          className="flex shrink-0 items-center gap-1.5 rounded-md border border-yellow-400/25 bg-yellow-500/10 px-2.5 py-1.5 text-xs font-semibold text-yellow-200 transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-yellow-300/45 hover:bg-yellow-500/15 active:translate-y-0 motion-reduce:transform-none"
-        >
-          <Plus className="h-3.5 w-3.5" aria-hidden="true" />
-          {copy.addResource}
-        </button>
+        <div className="flex flex-wrap items-center gap-1.5">
+          <button
+            type="button"
+            aria-expanded={open}
+            aria-controls="combo-resource-picker-panel"
+            data-combo-picker-trigger
+            onClick={() => setOpen((current) => !current)}
+            className="flex shrink-0 items-center gap-1.5 rounded-md border border-yellow-400/25 bg-yellow-500/10 px-2.5 py-1.5 text-xs font-semibold text-yellow-200 transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-yellow-300/45 hover:bg-yellow-500/15 active:translate-y-0 motion-reduce:transform-none"
+          >
+            <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+            {copy.addResource}
+          </button>
+          {secondaryAction}
+        </div>
         <p className="col-span-2 row-start-2 min-w-0 text-xs leading-relaxed text-zinc-500 sm:col-span-1 sm:col-start-2 sm:row-start-1">
           {hintBeforeKeyword}
           <span className="group/keyword relative inline">

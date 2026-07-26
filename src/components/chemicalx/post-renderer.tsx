@@ -13,6 +13,7 @@ import {
   isYouTubeVideoId,
   youtubeWatchUrl,
 } from "@/lib/youtube-reference";
+import { historyRunPlainText } from "@/lib/history-run-reference";
 
 interface PostRendererProps {
   blocks: PostBlock[];
@@ -108,6 +109,14 @@ export function PostRenderer({
               >
                 {block.title}
               </a>
+            );
+          }
+
+          if (block.type === "history-run") {
+            return (
+              <span key={i} className="font-semibold text-amber-100">
+                {historyRunPlainText(block, serviceLocale)}
+              </span>
             );
           }
 

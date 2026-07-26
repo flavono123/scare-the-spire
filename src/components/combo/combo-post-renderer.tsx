@@ -87,6 +87,8 @@ export function ComboPostRenderer({
           );
         }
 
+        if (block.type === "history-run") return null;
+
         const entity = entityMap.get(`${block.entityType}:${block.entityId}`);
         if (entity) {
           return (

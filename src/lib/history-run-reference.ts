@@ -158,9 +158,13 @@ export function historyRunSearchText(
   block: HistoryRunBlock,
   serviceLocale: ServiceLocale,
 ): string {
+  const isoDate = block.snapshot.startTime == null
+    ? ""
+    : new Date(block.snapshot.startTime * 1000).toISOString().slice(0, 16);
   return [
     historyRunPrimaryLabel(block, serviceLocale),
     historyRunSecondaryLabel(block, serviceLocale),
+    isoDate,
     block.runId,
     block.snapshot.seed,
     block.snapshot.build,

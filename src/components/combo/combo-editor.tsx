@@ -6,13 +6,16 @@ import { Youtube } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { RichContentEditorProps } from "@/components/rich-content-editor";
 import type { PostBlock } from "@/lib/chemical-types";
+import type { HistoryRunBlock } from "@/lib/chemical-types";
 import {
   countComboYouTubeReferences,
   extractComboResourceRefs,
 } from "@/lib/combo-types";
+import { HISTORY_COURSE_RELIC_IMAGE } from "@/lib/history-run-reference";
 import type { ServiceLocale } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
 import { ComboResourcePicker } from "./combo-resource-picker";
+import { ComboHistoryRunPicker } from "./combo-history-run-picker";
 
 const RichContentEditor = dynamic<RichContentEditorProps>(
   () => import("@/components/rich-content-editor").then((module) => module.RichContentEditor),
@@ -37,10 +40,16 @@ export function ComboEditor({
   const copy = serviceMessages[serviceLocale].combo;
   const nicknameInputRef = useRef<HTMLInputElement>(null);
   const entityInsertRequestIdRef = useRef(0);
+  const historyRunInsertRequestIdRef = useRef(0);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [historyRunPickerOpen, setHistoryRunPickerOpen] = useState(false);
   const [entityInsertRequest, setEntityInsertRequest] = useState<{
     requestId: number;
     entity: EntityInfo;
+  } | null>(null);
+  const [historyRunInsertRequest, setHistoryRunInsertRequest] = useState<{
+    requestId: number;
+    block: HistoryRunBlock;
   } | null>(null);
   const [youtubeGuideBeforeLink, youtubeGuideAfterLink] = copy.youtubeGuide.split("{youtubeLink}");
   const youtubeExtension = useMemo(() => ({
@@ -62,6 +71,30 @@ export function ComboEditor({
       entity,
     });
   }, []);
+
+  const handleHistoryRunSelect = useCallback((block: HistoryRunBlock) => {
+    historyRunInsertRequestIdRef.current += 1;
+    setHistoryRunInsertRequest({
+      requestId: historyRunInsertRequestIdRef.current,
+      block,
+    });
+  }, []);
+
+  const slashCommands = useMemo(() => [{
+    id: "history-run",
+    label: copy.historyRunSlashLabel,
+    description: copy.historyRunSlashDescription,
+    aliases: ["/도전", "/런", "/역사"],
+    iconSrc: HISTORY_COURSE_RELIC_IMAGE,
+    onSelect: () => setHistoryRunPickerOpen(true),
+  }], [
+    copy.historyRunSlashDescription,
+    copy.historyRunSlashLabel,
+  ]);
+  const historyRunReferences = useMemo(() => ({
+    insertRequest: historyRunInsertRequest,
+    slashCommands,
+  }), [historyRunInsertRequest, slashCommands]);
 
   const handleSubmit = useCallback(async (blocks: PostBlock[]) => {
     if (extractComboResourceRefs(blocks).length < 2) {
@@ -106,6 +139,14 @@ export function ComboEditor({
             entities={entities}
             serviceLocale={serviceLocale}
             onSelect={handleResourceSelect}
+            secondaryAction={(
+              <ComboHistoryRunPicker
+                open={historyRunPickerOpen}
+                onOpenChange={setHistoryRunPickerOpen}
+                serviceLocale={serviceLocale}
+                onSelect={handleHistoryRunSelect}
+              />
+            )}
           />
         </div>
 
@@ -140,6 +181,7 @@ export function ComboEditor({
           submitIconSrc="/images/sts2/badges/ccccombo.webp"
           entityInsertRequest={entityInsertRequest}
           youtubeExtension={youtubeExtension}
+          historyRunReferences={historyRunReferences}
         />
       </div>
 

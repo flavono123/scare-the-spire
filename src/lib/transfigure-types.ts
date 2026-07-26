@@ -1,5 +1,6 @@
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
+import { historyRunPlainText } from "@/lib/history-run-reference";
 import {
   buildEntityKeywordIndex,
   entityKeywordDescription,
@@ -145,6 +146,7 @@ export function transfigureBlocksToGameDescription(blocks: PostBlock[]): string 
     if (block.type === "text") return block.text;
     if (block.type === "keyword") return `[gold]${block.text}[/gold]`;
     if (block.type === "entity") return `[gold]${block.displayText}[/gold]`;
+    if (block.type === "history-run") return historyRunPlainText(block);
     return block.title;
   }).join("");
 }
@@ -210,6 +212,7 @@ export function isTransfiguredContent(
       if (block.type === "text") return block.text;
       if (block.type === "keyword") return block.text;
       if (block.type === "entity") return block.displayText;
+      if (block.type === "history-run") return historyRunPlainText(block);
       return block.title;
     })
     .join("")
@@ -225,6 +228,9 @@ export function isTransfiguredContent(
       }
       if (block.type === "entity") {
         return `entity:${block.displayText}:${block.entityType}:${block.entityId}`;
+      }
+      if (block.type === "history-run") {
+        return `history-run:${block.runId}`;
       }
       return `youtube:${block.videoId}:${block.title}`;
     }).join("|");

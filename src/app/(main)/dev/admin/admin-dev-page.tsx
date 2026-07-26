@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { PostBlock } from "@/lib/chemical-types";
+import { historyRunPlainText } from "@/lib/history-run-reference";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import { supabase, supabaseEnabled } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
@@ -338,6 +339,7 @@ function blockText(blocks: PostBlock[] | null | undefined): string {
     if (block.type === "text") return block.text;
     if (block.type === "entity") return block.displayText;
     if (block.type === "youtube") return block.title;
+    if (block.type === "history-run") return historyRunPlainText(block);
     return block.text;
   }).join("");
 }
