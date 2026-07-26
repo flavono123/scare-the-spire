@@ -16,11 +16,15 @@ import {
 } from "@/lib/i18n";
 import { getSiteDisplayOrigin } from "@/lib/site-origin";
 import { serviceMessages } from "@/messages/service";
-import { extractComboYouTubeReference } from "@/lib/combo-types";
+import {
+  extractComboHistoryRunReferences,
+  extractComboYouTubeReference,
+} from "@/lib/combo-types";
 import { buildComboCommentThreadKey } from "@/lib/comment-threads";
 import { buildComboEntityMap, ComboPostRenderer } from "./combo-post-renderer";
 import { ComboResourceGallery } from "./combo-resource-gallery";
 import { ComboYouTubeEmbed } from "./combo-youtube-reference";
+import { ComboHistoryRunReferences } from "./combo-history-run-reference";
 
 interface ComboPostViewProps {
   postId: string;
@@ -72,6 +76,7 @@ export function ComboPostView({ postId, gameLocale }: ComboPostViewProps) {
   }
 
   const youtubeReference = extractComboYouTubeReference(post.content);
+  const historyRunReferences = extractComboHistoryRunReferences(post.content);
 
   return (
     <div data-combo-page="detail" className="space-y-4">
@@ -121,6 +126,17 @@ export function ComboPostView({ postId, gameLocale }: ComboPostViewProps) {
         {youtubeReference && (
           <div className="relative mb-5">
             <ComboYouTubeEmbed reference={youtubeReference} />
+          </div>
+        )}
+
+        {historyRunReferences.length > 0 && (
+          <div className="relative mb-5">
+            <ComboHistoryRunReferences
+              references={historyRunReferences}
+              serviceLocale={serviceLocale}
+              gameLocale={gameLocale}
+              variant="detail"
+            />
           </div>
         )}
 

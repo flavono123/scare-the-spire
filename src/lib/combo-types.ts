@@ -69,3 +69,20 @@ export function extractComboYouTubeReference(
   ));
   return block?.type === "youtube" ? block : null;
 }
+
+export function extractComboHistoryRunReferences(
+  blocks: PostBlock[],
+): Array<Extract<PostBlock, { type: "history-run" }>> {
+  const references: Array<Extract<PostBlock, { type: "history-run" }>> = [];
+  const seen = new Set<string>();
+
+  for (const block of blocks) {
+    if (block.type !== "history-run") continue;
+    const runId = block.runId.trim();
+    if (!runId || seen.has(runId)) continue;
+    seen.add(runId);
+    references.push(block);
+  }
+
+  return references;
+}

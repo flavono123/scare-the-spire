@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
+  extractComboHistoryRunReferences,
   extractComboYouTubeReference,
   type ComboPost,
 } from "@/lib/combo-types";
@@ -17,6 +18,7 @@ import { serviceMessages } from "@/messages/service";
 import { ComboPostRenderer } from "./combo-post-renderer";
 import { ComboResourceStack } from "./combo-resource-stack";
 import { ComboYouTubeThumbnail } from "./combo-youtube-reference";
+import { ComboHistoryRunReferences } from "./combo-history-run-reference";
 
 interface ComboPostCardProps {
   post: ComboPost;
@@ -59,6 +61,7 @@ export function ComboPostCard({
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const router = useRouter();
   const youtubeReference = extractComboYouTubeReference(post.content);
+  const historyRunReferences = extractComboHistoryRunReferences(post.content);
   const href = localizeHrefWithGameLocale(`/c-c-c-combo/${post.id}`, serviceLocale, gameLocale);
   const openPost = useCallback(() => {
     router.push(href);
@@ -115,6 +118,13 @@ export function ComboPostCard({
           <ComboYouTubeThumbnail reference={youtubeReference} />
         )}
       </div>
+
+      <ComboHistoryRunReferences
+        references={historyRunReferences}
+        serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
+        variant="compact"
+      />
 
       <div className="text-sm leading-relaxed">
         <ComboPostRenderer
