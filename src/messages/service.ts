@@ -147,7 +147,7 @@ export const serviceMessages = {
       noResults: "일치하는 변경 기록이 없습니다",
       changeCount: "변경항목 {count}개",
       openResource: "{name} 상세 보기",
-      commentsTitle: "{name} 댓글",
+      commentsTitle: "댓글",
       more: "더 보기",
       less: "접기",
       sort: {
@@ -908,7 +908,7 @@ export const serviceMessages = {
       noResults: "No matching change history",
       changeCount: "{count} changes",
       openResource: "Open {name} details",
-      commentsTitle: "Comments on {name}",
+      commentsTitle: "Comments",
       more: "Show more",
       less: "Show less",
       sort: {
