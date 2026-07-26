@@ -71,6 +71,11 @@ export function TransfigureClient({
     setComposerOpen(false);
     setEditingPost(null);
   }, []);
+  const handleComposerDelete = useCallback(async () => {
+    if (!editingPost) return;
+    const removed = await remove(editingPost.id);
+    if (removed) closeComposer();
+  }, [closeComposer, editingPost, remove]);
 
   return (
     <div data-transfigure-page="index" className="space-y-6">
@@ -120,6 +125,7 @@ export function TransfigureClient({
           profileNickname={profile.nickname}
           serviceLocale={serviceLocale}
           onSubmit={handleSubmit}
+          onDelete={editingPost ? handleComposerDelete : undefined}
           onClose={closeComposer}
         />
       )}

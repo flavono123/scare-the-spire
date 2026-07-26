@@ -38,7 +38,7 @@ interface UseTransfigurePostsReturn {
     postId: string,
     input: SaveTransfigurePostInput,
   ) => Promise<TransfigurePost | null>;
-  remove: (postId: string) => Promise<void>;
+  remove: (postId: string) => Promise<boolean>;
 }
 
 interface UseTransfigurePostReturn {
@@ -48,6 +48,7 @@ interface UseTransfigurePostReturn {
   update: (
     input: SaveTransfigurePostInput,
   ) => Promise<TransfigurePost | null>;
+  remove: () => Promise<boolean>;
 }
 
 function normalizePost(row: unknown): TransfigurePost {
@@ -314,16 +315,22 @@ export function useTransfigurePosts(
 
   const remove = useCallback(
     async (postId: string) => {
-      if (!userId || !supabaseEnabled) return;
+      if (!userId || !supabaseEnabled) return false;
       const { error } = await withSupabaseTimeout(
         "transfigure_posts.delete",
-        supabase.from("transfigure_posts").delete().eq("id", postId),
+        supabase
+          .from("transfigure_posts")
+          .delete()
+          .eq("id", postId)
+          .eq("user_id", userId)
+          .eq("env", supabaseEnv),
       ).catch(() => ({ error: new Error("timeout") }));
       if (error) {
         setUnavailable(true);
-        return;
+        return false;
       }
       setPosts((current) => current.filter((post) => post.id !== postId));
+      return true;
     },
     [userId],
   );
@@ -388,5 +395,24 @@ export function useTransfigurePost(
     [postId, userId],
   );
 
-  return { post, loading, unavailable, update };
+  const remove = useCallback(async () => {
+    if (!userId || !supabaseEnabled) return false;
+    const { error } = await withSupabaseTimeout(
+      "transfigure_posts.detail.delete",
+      supabase
+        .from("transfigure_posts")
+        .delete()
+        .eq("id", postId)
+        .eq("user_id", userId)
+        .eq("env", supabaseEnv),
+    ).catch(() => ({ error: new Error("timeout") }));
+    if (error) {
+      setUnavailable(true);
+      return false;
+    }
+    setPost(null);
+    return true;
+  }, [postId, userId]);
+
+  return { post, loading, unavailable, update, remove };
 }

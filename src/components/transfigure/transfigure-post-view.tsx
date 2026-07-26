@@ -3,7 +3,8 @@
 import { useCallback, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { ArrowLeft, Link2, Pencil, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Link2, Pencil, Sparkles, Trash2 } from "lucide-react";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
@@ -47,8 +48,9 @@ export function TransfigurePostView({
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const [copied, setCopied] = useState(false);
   const [editing, setEditing] = useState(false);
+  const router = useRouter();
   const { userId, ready, ensureUser } = useAuth();
-  const { post, loading, unavailable, update } = useTransfigurePost(postId, userId);
+  const { post, loading, unavailable, update, remove } = useTransfigurePost(postId, userId);
   const { entities } = useCommentEntities(undefined, { enabled: Boolean(post) });
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
 
@@ -66,6 +68,14 @@ export function TransfigurePostView({
     if (!updatedPost) throw new Error("transfigure update rejected");
     setEditing(false);
   }, [ensureUser, update, userId]);
+  const handleDelete = useCallback(async () => {
+    const removed = await remove();
+    if (!removed) return;
+    setEditing(false);
+    router.replace(
+      localizeHrefWithGameLocale("/transfigure", serviceLocale, gameLocale),
+    );
+  }, [gameLocale, remove, router, serviceLocale]);
 
   if (unavailable) {
     return <StorageUnavailableNotice title={copy.unavailableTitle} />;
@@ -103,14 +113,24 @@ export function TransfigurePostView({
         </Link>
         <div className="flex items-center gap-2">
           {ready && userId === post.user_id && (
-            <button
-              type="button"
-              onClick={() => setEditing(true)}
-              className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-yellow-400/30 hover:text-yellow-200"
-            >
-              <Pencil size={14} />
-              {copy.edit}
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => setEditing(true)}
+                className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-yellow-400/30 hover:text-yellow-200"
+              >
+                <Pencil size={14} />
+                {copy.edit}
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="flex items-center gap-1.5 rounded border border-red-400/15 px-3 py-1.5 text-xs text-red-300/70 transition-colors hover:border-red-300/40 hover:text-red-200"
+              >
+                <Trash2 size={14} />
+                {copy.delete}
+              </button>
+            </>
           )}
           <button
             type="button"
@@ -218,6 +238,7 @@ export function TransfigurePostView({
           profileNickname={post.nickname}
           serviceLocale={serviceLocale}
           onSubmit={handleUpdate}
+          onDelete={handleDelete}
           onClose={() => setEditing(false)}
         />
       )}
