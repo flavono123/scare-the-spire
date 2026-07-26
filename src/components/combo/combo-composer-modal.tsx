@@ -56,7 +56,7 @@ export function ComboComposerModal({
         aria-labelledby="combo-composer-title"
         tabIndex={-1}
         data-combo-composer
-        className="flex max-h-[calc(100svh-3rem)] w-full flex-col rounded-t-2xl border border-b-0 border-yellow-500/20 bg-[#08080f] shadow-[0_-18px_60px_rgba(0,0,0,0.6)] outline-none sm:max-h-[90vh] sm:max-w-2xl sm:rounded-xl sm:border-b sm:shadow-2xl"
+        className="flex h-[calc(100svh-3rem)] w-full flex-col rounded-t-2xl border border-b-0 border-yellow-500/20 bg-[#08080f] shadow-[0_-18px_60px_rgba(0,0,0,0.6)] outline-none sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-xl sm:border-b sm:shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex shrink-0 items-center justify-between border-b border-border/70 px-4 py-3">
