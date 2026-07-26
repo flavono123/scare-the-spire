@@ -1,4 +1,4 @@
 interface:
   display_name: "Supabase Migrations"
-  short_description: "Apply repo SQL migrations via Supabase CLI"
-  default_prompt: "Use $supabase-migrations to apply pending scare-the-spire Supabase migrations safely."
+  short_description: "Plan and apply production-safe Supabase rollouts"
+  default_prompt: "Use $supabase-migrations to plan and apply a backward-compatible scare-the-spire database rollout."
