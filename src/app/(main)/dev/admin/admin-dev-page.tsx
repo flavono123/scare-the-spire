@@ -35,6 +35,32 @@ interface ChemicalPostRow {
   created_at: string;
 }
 
+interface ComboPostRow {
+  id: string;
+  user_id: string;
+  nickname: string;
+  content: PostBlock[];
+  content_text: string;
+  resources: Array<{
+    type: string;
+    id: string;
+  }>;
+  env: string;
+  created_at: string;
+}
+
+interface TransfigurePostRow {
+  id: string;
+  user_id: string;
+  nickname: string;
+  resource_type: string;
+  resource_id: string;
+  content: PostBlock[];
+  content_text: string;
+  env: string;
+  created_at: string;
+}
+
 interface CommunityStoryRow {
   id: string;
   user_id: string | null;
@@ -113,6 +139,8 @@ interface AdminSnapshot {
   communityStories: QueryState<CommunityStoryRow[]>;
   thisOrThatPosts: QueryState<ThisOrThatPostRow[]>;
   chemicalPosts: QueryState<ChemicalPostRow[]>;
+  comboPosts: QueryState<ComboPostRow[]>;
+  transfigurePosts: QueryState<TransfigurePostRow[]>;
   runs: QueryState<RunRow[]>;
   likes: QueryState<LikeRow[]>;
   commentLikes: QueryState<CommentLikeRow[]>;
@@ -180,6 +208,8 @@ async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
     communityStories,
     thisOrThatPosts,
     chemicalPosts,
+    comboPosts,
+    transfigurePosts,
     runs,
     likes,
     commentLikes,
@@ -212,6 +242,26 @@ async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
       supabase
         .from("chemical_posts")
         .select("id, user_id, nickname, content, content_text, env, created_at", { count: "exact" })
+        .eq("env", ADMIN_DATA_ENV)
+        .order("created_at", { ascending: false })
+        .limit(ROW_LIMIT),
+      [],
+    ),
+    readSupabase<ComboPostRow[]>(
+      "admin.combo_posts",
+      supabase
+        .from("combo_posts")
+        .select("id, user_id, nickname, content, content_text, resources, env, created_at", { count: "exact" })
+        .eq("env", ADMIN_DATA_ENV)
+        .order("created_at", { ascending: false })
+        .limit(ROW_LIMIT),
+      [],
+    ),
+    readSupabase<TransfigurePostRow[]>(
+      "admin.transfigure_posts",
+      supabase
+        .from("transfigure_posts")
+        .select("id, user_id, nickname, resource_type, resource_id, content, content_text, env, created_at", { count: "exact" })
         .eq("env", ADMIN_DATA_ENV)
         .order("created_at", { ascending: false })
         .limit(ROW_LIMIT),
@@ -250,6 +300,8 @@ async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
     communityStories,
     thisOrThatPosts,
     chemicalPosts,
+    comboPosts,
+    transfigurePosts,
     runs,
     likes,
     commentLikes,
@@ -637,6 +689,92 @@ export default async function SupabaseAdminPage() {
                   {snapshot.chemicalPosts.data.length === 0 && (
                     <tr>
                       <td className="px-3 py-6 text-center text-sm text-muted-foreground" colSpan={6}>케미컬 X 없음</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Section>
+
+          <Section title="코오오옴보" count={countLabel(snapshot.comboPosts)} error={snapshot.comboPosts.error}>
+            <div className="overflow-x-auto rounded-md border border-border">
+              <table className="w-full min-w-[900px] text-left text-sm">
+                <thead className="bg-muted/40 text-xs text-muted-foreground">
+                  <tr>
+                    <th className="px-3 py-2">작성일</th>
+                    <th className="px-3 py-2">env</th>
+                    <th className="px-3 py-2">닉네임</th>
+                    <th className="px-3 py-2">게임 요소</th>
+                    <th className="px-3 py-2">내용</th>
+                    <th className="px-3 py-2">post</th>
+                    <th className="px-3 py-2">user_id</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {snapshot.comboPosts.data.map((post) => (
+                    <tr key={post.id} className="border-t border-border/70 align-top">
+                      <td className="whitespace-nowrap px-3 py-2 text-xs text-muted-foreground">{formatDate(post.created_at)}</td>
+                      <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{post.env}</code></td>
+                      <td className="px-3 py-2 text-cyan-200">{post.nickname}</td>
+                      <td className="px-3 py-2">
+                        <code className="text-[11px] text-muted-foreground">
+                          {truncate(post.resources.map((resource) => `${resource.type}:${resource.id}`).join(", "), 100)}
+                        </code>
+                      </td>
+                      <td className="px-3 py-2">{truncate(blockText(post.content) || post.content_text, 100)}</td>
+                      <td className="px-3 py-2">
+                        <Link href={productionHref(`/c-c-c-combo/${post.id}`)} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
+                          {post.id.slice(0, 8)}
+                        </Link>
+                      </td>
+                      <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{post.user_id}</code></td>
+                    </tr>
+                  ))}
+                  {snapshot.comboPosts.data.length === 0 && (
+                    <tr>
+                      <td className="px-3 py-6 text-center text-sm text-muted-foreground" colSpan={7}>코오오옴보 없음</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Section>
+
+          <Section title="변형" count={countLabel(snapshot.transfigurePosts)} error={snapshot.transfigurePosts.error}>
+            <div className="overflow-x-auto rounded-md border border-border">
+              <table className="w-full min-w-[860px] text-left text-sm">
+                <thead className="bg-muted/40 text-xs text-muted-foreground">
+                  <tr>
+                    <th className="px-3 py-2">작성일</th>
+                    <th className="px-3 py-2">env</th>
+                    <th className="px-3 py-2">닉네임</th>
+                    <th className="px-3 py-2">대상</th>
+                    <th className="px-3 py-2">내용</th>
+                    <th className="px-3 py-2">post</th>
+                    <th className="px-3 py-2">user_id</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {snapshot.transfigurePosts.data.map((post) => (
+                    <tr key={post.id} className="border-t border-border/70 align-top">
+                      <td className="whitespace-nowrap px-3 py-2 text-xs text-muted-foreground">{formatDate(post.created_at)}</td>
+                      <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{post.env}</code></td>
+                      <td className="px-3 py-2 text-fuchsia-200">{post.nickname}</td>
+                      <td className="px-3 py-2">
+                        <code className="text-[11px] text-muted-foreground">{post.resource_type}:{post.resource_id}</code>
+                      </td>
+                      <td className="px-3 py-2">{truncate(blockText(post.content) || post.content_text, 100)}</td>
+                      <td className="px-3 py-2">
+                        <Link href={productionHref(`/transfigure/${post.id}`)} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
+                          {post.id.slice(0, 8)}
+                        </Link>
+                      </td>
+                      <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{post.user_id}</code></td>
+                    </tr>
+                  ))}
+                  {snapshot.transfigurePosts.data.length === 0 && (
+                    <tr>
+                      <td className="px-3 py-6 text-center text-sm text-muted-foreground" colSpan={7}>변형 없음</td>
                     </tr>
                   )}
                 </tbody>
