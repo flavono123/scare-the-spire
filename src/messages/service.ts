@@ -148,6 +148,8 @@ export const serviceMessages = {
       changeCount: "변경항목 {count}개",
       openResource: "{name} 상세 보기",
       commentsTitle: "댓글",
+      commentsCount: "댓글 {count}",
+      commentsWrite: "댓글 쓰기",
       more: "더 보기",
       less: "접기",
       sort: {
@@ -915,6 +917,8 @@ export const serviceMessages = {
       changeCount: "{count} changes",
       openResource: "Open {name} details",
       commentsTitle: "Comments",
+      commentsCount: "{count} comments",
+      commentsWrite: "Write a comment",
       more: "Show more",
       less: "Show less",
       sort: {
