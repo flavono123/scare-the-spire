@@ -54,13 +54,13 @@ export function CommentSection({
   const { profile } = useUserProfile(profileFallback);
   const storageUnavailable = unavailable;
 
-  const prevCount = useRef(0);
+  const prevCount = useRef<number | null>(null);
   useEffect(() => {
-    if (comments.length !== prevCount.current) {
+    if (!loading && comments.length !== prevCount.current) {
       prevCount.current = comments.length;
       onCountChange?.(comments.length);
     }
-  }, [comments.length, onCountChange]);
+  }, [comments.length, loading, onCountChange]);
 
   const [submitting, setSubmitting] = useState(false);
 
