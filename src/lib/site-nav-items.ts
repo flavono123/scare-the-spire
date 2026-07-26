@@ -39,7 +39,6 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     icon: "/images/sts2/relics/astrolabe.webp",
     createdAt: "2026-07-26",
     byrdispatchSectionTitle: "변형",
-    devOnly: true,
     getLabel: (_serviceLocale, gameLocale) => getTransfigureNavTitle(gameLocale),
   },
   {

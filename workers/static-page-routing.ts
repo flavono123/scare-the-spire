@@ -21,6 +21,7 @@ const STATIC_SERVICE_PAGE_SEGMENTS = new Set([
   "history-course",
   "profile",
   "this-or-that",
+  "transfigure",
 ]);
 
 const STATIC_LEGACY_PAGE_SEGMENTS = new Set([

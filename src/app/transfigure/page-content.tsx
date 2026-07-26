@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { ServiceBackground } from "@/components/service-background";
 import { TransfigureClient } from "@/components/transfigure/transfigure-client";
 import { getTransfigureGameCopy } from "@/lib/borrowed-game-copy";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
-import { devToolsEnabled } from "@/lib/dev-tools";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
@@ -26,20 +24,12 @@ export async function generateTransfigureMetadata(
       description: copy.transfigureDescription,
       image: TRANSFIGURE_PAGE_OG_IMAGE,
     }),
-    robots: {
-      index: false,
-      follow: false,
-    },
   };
 }
 
 export async function renderTransfigurePage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
-  if (!devToolsEnabled()) {
-    notFound();
-  }
-
   const [entities, gameCopy, gameUi] = await Promise.all([
     loadAllEntities({ gameLocale }),
     getTransfigureGameCopy(gameLocale),

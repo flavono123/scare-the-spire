@@ -27,6 +27,7 @@ const PUBLIC_INDEX_PATHS = [
   "/patches",
   "/patches/changes",
   "/this-or-that",
+  "/transfigure",
 ] as const;
 
 const COMPENDIUM_INDEX_PATHS = [

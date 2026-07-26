@@ -45,6 +45,7 @@ const staticServicePageSegments = new Set([
   "history-course",
   "profile",
   "this-or-that",
+  "transfigure",
 ]);
 const staticLegacyPageSegments = new Set([
   "cards",

@@ -20,7 +20,7 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "*",
         allow: "/",
         // Keep duplicate legacy routes and internal development pages out of search.
-        disallow: ["/codex", "/dev", "/transfigure"],
+        disallow: ["/codex", "/dev"],
       },
     ],
     host: SITE_ORIGIN,

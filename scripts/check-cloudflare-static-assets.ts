@@ -58,6 +58,7 @@ const staticServicePageSegments = [
   "history-course",
   "profile",
   "this-or-that",
+  "transfigure",
 ] as const;
 const staticLegacyPageSegments = ["cards", "potions", "relics"] as const;
 const staticMetadataAssets = ["robots.txt", "sitemap.xml"] as const;

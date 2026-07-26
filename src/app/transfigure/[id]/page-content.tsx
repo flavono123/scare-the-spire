@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { TransfigurePostView } from "@/components/transfigure/transfigure-post-view";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
-import { devToolsEnabled } from "@/lib/dev-tools";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { TRANSFIGURE_PAGE_OG_IMAGE } from "@/lib/page-og-images";
@@ -24,10 +22,6 @@ export async function generateTransfigurePostMetadata(
       description: copy.transfigureDescription,
       image: TRANSFIGURE_PAGE_OG_IMAGE,
     }),
-    robots: {
-      index: false,
-      follow: false,
-    },
   };
 }
 
@@ -35,10 +29,6 @@ export async function renderTransfigurePostPage(
   id: string,
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
-  if (!devToolsEnabled()) {
-    notFound();
-  }
-
   const gameUi = await getCodexGameUiLabels(gameLocale);
 
   return (
