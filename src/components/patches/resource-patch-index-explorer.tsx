@@ -12,11 +12,22 @@ import {
   Search,
   Shrink,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import { CharacterSpineStage } from "@/components/codex/character-spine-stage";
 import { DecimillipedeSpineStage } from "@/components/codex/decimillipede-spine-stage";
 import { GameHoverTip } from "@/components/codex/hover-tip";
-import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
+import {
+  MonsterSpineStage,
+  type MonsterStageVisualBounds,
+} from "@/components/codex/monster-spine-stage";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import {
   PatchLineStoriesPanel,
@@ -419,51 +430,98 @@ function SelectedResourceSpinePreview({
 }) {
   const character = entity.type === "character" ? entity.characterData : null;
   const monster = entity.type === "monster" ? entity.monsterData : null;
+  const [visualBounds, setVisualBounds] = useState<MonsterStageVisualBounds | null>(null);
+  const handleVisualBoundsChange = useCallback((bounds: MonsterStageVisualBounds | null) => {
+    setVisualBounds(bounds);
+  }, []);
+  const fit = selectedResourceSpineFit(visualBounds);
   if (!character && !monster) return null;
 
   return (
-    <span className="block w-full max-w-[23rem]" data-selected-resource-spine>
+    <span
+      className="block w-full max-w-[23rem]"
+      data-selected-resource-spine
+      data-spine-fit-scale={fit?.scale}
+    >
       <span className="relative block h-64 w-full overflow-hidden sm:h-72">
         <span className="pointer-events-none absolute inset-x-[18%] bottom-3 h-10 rounded-[50%] bg-black/45 blur-xl" />
-        {character ? (
-          <CharacterSpineStage
-            key={character.id}
-            character={character}
-            selectedMoveId="IDLE"
-            imagePriority={false}
-            className="relative h-full w-full"
-            fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.55)]"
-          />
-        ) : monster?.id === "DECIMILLIPEDE_SEGMENT" ? (
-          <DecimillipedeSpineStage
-            fallbackImageUrl={monster.imageUrl ?? monster.bossImageUrl}
-            monsterName={monster.name}
-            selectedMoveId={null}
-            mode="part"
-            partId="middle"
-            imagePriority={false}
-            showLoadingLabel={false}
-            className="relative h-full w-full"
-            fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-2xl"
-          />
-        ) : monster ? (
-          <MonsterSpineStage
-            asset={monster.spineAsset}
-            fallbackImageUrl={monster.imageUrl ?? monster.bossImageUrl}
-            monsterName={monster.name}
-            selectedMoveId={null}
-            imagePriority={false}
-            showLoadingLabel={false}
-            className="relative h-full w-full"
-            fallbackImageClassName="absolute inset-0 z-10 h-full w-full scale-[0.82] object-contain drop-shadow-2xl"
-          />
-        ) : null}
+        <span
+          className="absolute inset-0 block transition-transform duration-200 ease-out"
+          style={fit?.style}
+        >
+          {character ? (
+            <CharacterSpineStage
+              key={character.id}
+              character={character}
+              selectedMoveId="IDLE"
+              imagePriority={false}
+              className="relative h-full w-full"
+              fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.55)]"
+              onVisualBoundsChange={handleVisualBoundsChange}
+            />
+          ) : monster?.id === "DECIMILLIPEDE_SEGMENT" ? (
+            <DecimillipedeSpineStage
+              fallbackImageUrl={monster.imageUrl ?? monster.bossImageUrl}
+              monsterName={monster.name}
+              selectedMoveId={null}
+              mode="part"
+              partId="middle"
+              imagePriority={false}
+              showLoadingLabel={false}
+              className="relative h-full w-full"
+              fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-2xl"
+              onVisualBoundsChange={handleVisualBoundsChange}
+            />
+          ) : monster ? (
+            <MonsterSpineStage
+              asset={monster.spineAsset}
+              fallbackImageUrl={monster.imageUrl ?? monster.bossImageUrl}
+              monsterName={monster.name}
+              selectedMoveId={null}
+              imagePriority={false}
+              showLoadingLabel={false}
+              className="relative h-full w-full"
+              fallbackImageClassName="absolute inset-0 z-10 h-full w-full scale-[0.82] object-contain drop-shadow-2xl"
+              onVisualBoundsChange={handleVisualBoundsChange}
+            />
+          ) : null}
+        </span>
       </span>
       <span className="mt-1 block text-center font-game-title text-lg font-semibold spire-gold lg:text-left">
         {label}
       </span>
     </span>
   );
+}
+
+function selectedResourceSpineFit(bounds: MonsterStageVisualBounds | null): {
+  scale: number;
+  style: CSSProperties;
+} | null {
+  if (!bounds || bounds.width <= 0 || bounds.height <= 0) return null;
+
+  const horizontalPadding = bounds.stageWidth * 0.04;
+  const topPadding = bounds.stageHeight * 0.04;
+  const bottomPadding = bounds.stageHeight * 0.04;
+  const availableWidth = bounds.stageWidth - horizontalPadding * 2;
+  const availableHeight = bounds.stageHeight - topPadding - bottomPadding;
+  const scale = Math.min(
+    3,
+    availableWidth / bounds.width,
+    availableHeight / bounds.height,
+  );
+  const translateX = horizontalPadding
+    + (availableWidth - bounds.width * scale) / 2
+    - bounds.left * scale;
+  const translateY = bounds.stageHeight - bottomPadding - bounds.bottom * scale;
+
+  return {
+    scale,
+    style: {
+      transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`,
+      transformOrigin: "top left",
+    },
+  };
 }
 
 function SelectedResourcePreview({
@@ -490,7 +548,13 @@ function SelectedResourcePreview({
   ) || (
     entity.type === "monster" && entity.monsterData
   )
-    ? <SelectedResourceSpinePreview entity={entity} label={label} />
+    ? (
+        <SelectedResourceSpinePreview
+          key={`${entity.type}:${entity.id}`}
+          entity={entity}
+          label={label}
+        />
+      )
     : null;
   const preview = spinePreview ?? (
     <EntityPreview

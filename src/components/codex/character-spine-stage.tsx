@@ -1,7 +1,10 @@
 "use client";
 
 import type { CodexCharacter } from "@/lib/codex-types";
-import { MonsterSpineStage } from "./monster-spine-stage";
+import {
+  MonsterSpineStage,
+  type MonsterStageVisualBounds,
+} from "./monster-spine-stage";
 
 const CHARACTER_STAGE_VIEWPORT_PADDING = {
   padLeft: "14%",
@@ -17,6 +20,7 @@ interface CharacterSpineStageProps {
   imagePriority?: boolean;
   className?: string;
   fallbackImageClassName?: string;
+  onVisualBoundsChange?: (bounds: MonsterStageVisualBounds | null) => void;
 }
 
 export function CharacterSpineStage({
@@ -26,6 +30,7 @@ export function CharacterSpineStage({
   imagePriority = false,
   className,
   fallbackImageClassName = "absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.55)]",
+  onVisualBoundsChange,
 }: CharacterSpineStageProps) {
   return (
     <MonsterSpineStage
@@ -40,6 +45,7 @@ export function CharacterSpineStage({
       viewportPadding={CHARACTER_STAGE_VIEWPORT_PADDING}
       fallbackImageClassName={fallbackImageClassName}
       className={className}
+      onVisualBoundsChange={onVisualBoundsChange}
     />
   );
 }
