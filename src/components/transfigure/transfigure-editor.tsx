@@ -47,6 +47,10 @@ export function TransfigureEditor({
   const nicknameInputRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState<EntityInfo | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const sourceEntities = useMemo(
+    () => entities.filter((entity) => getTransfigureSourceText(entity) != null),
+    [entities],
+  );
   const sourceDescription = useMemo(
     () => selected ? getTransfigureEntityDescription(selected) : null,
     [selected],
@@ -94,7 +98,7 @@ export function TransfigureEditor({
   return (
     <div className="space-y-3" data-transfigure-editor>
       <TransfigureResourcePicker
-        entities={entities}
+        entities={sourceEntities}
         selected={selected}
         serviceLocale={serviceLocale}
         onSelect={handleSelect}
