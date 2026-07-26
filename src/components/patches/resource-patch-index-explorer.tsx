@@ -66,8 +66,6 @@ const RESOURCE_SPINE_VISUAL_FIT: Partial<Record<string, {
   translateYRatio: number;
 }>> = {
   INFESTED_PRISM: { scale: 1.35, translateXRatio: -0.159, translateYRatio: 0.187 },
-  SLUDGE_SPINNER: { scale: 1.7, translateXRatio: -0.352, translateYRatio: 0.122 },
-  VANTOM: { scale: 1.4, translateXRatio: -0.194, translateYRatio: -0.313 },
 };
 
 type ChangeSortKey = "patch" | "stories";
