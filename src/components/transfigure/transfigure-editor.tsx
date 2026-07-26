@@ -94,6 +94,10 @@ export function TransfigureEditor({
     selected,
     sourceText,
   ]);
+  const canSubmitBlocks = useCallback(
+    (blocks: PostBlock[]) => sourceText != null && isTransfiguredContent(blocks, sourceText),
+    [sourceText],
+  );
 
   return (
     <div className="space-y-3" data-transfigure-editor>
@@ -142,6 +146,7 @@ export function TransfigureEditor({
             onSubmit={handleSubmit}
             placeholder={sourceText}
             initialText={sourceText}
+            canSubmitBlocks={canSubmitBlocks}
             draftKey={`sts-transfigure-draft:${gameLocale}:${selected.type}:${selected.id}`}
             submitLabel={copy.submit}
             maxChars={null}

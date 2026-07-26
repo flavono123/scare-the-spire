@@ -236,6 +236,7 @@ export interface RichContentEditorProps {
   minChars?: number;
   maxChars?: number | null;
   initialText?: string;
+  canSubmitBlocks?: (blocks: PostBlock[]) => boolean;
   submitIconSrc?: string;
   showKeywordTip?: boolean;
   keywordTip?: {
@@ -266,6 +267,7 @@ export function RichContentEditor({
   minChars = 2,
   maxChars = 30,
   initialText,
+  canSubmitBlocks,
   submitIconSrc,
   showKeywordTip = false,
   keywordTip,
@@ -281,6 +283,11 @@ export function RichContentEditor({
   const [charCount, setCharCount] = useState(() => {
     const initialContent = getInitialEditorContent(draftKey, initialText);
     return initialContent ? blocksToPlainText(tiptapToBlocks(initialContent)).length : 0;
+  });
+  const [blocksSubmittable, setBlocksSubmittable] = useState(() => {
+    if (!canSubmitBlocks) return true;
+    const initialContent = getInitialEditorContent(draftKey, initialText);
+    return canSubmitBlocks(initialContent ? tiptapToBlocks(initialContent) : []);
   });
   const editorRef = useRef<Editor | null>(null);
   const composeTimeoutRef = useRef<number | null>(null);
@@ -324,9 +331,10 @@ export function RichContentEditor({
     const blocks = tiptapToBlocks(json);
     const len = blocksToPlainText(blocks).length;
     setCharCount(len);
+    setBlocksSubmittable(canSubmitBlocks ? canSubmitBlocks(blocks) : true);
     if (len > 0) saveDraft(draftKey, JSON.stringify(json));
     else clearDraft(draftKey);
-  }, [draftKey]);
+  }, [canSubmitBlocks, draftKey]);
 
   const processEditorUpdate = useCallback((editor: Editor) => {
     if (replaceKeywordsInEditor(editor, resolveKeyword)) {
@@ -785,6 +793,7 @@ export function RichContentEditor({
 
   const isValid = (
     !youtubeResolving
+    && blocksSubmittable
     && charCount >= minChars
     && (maxChars == null || charCount <= maxChars)
   );
