@@ -13,3 +13,7 @@ export function buildByrdispatchCommentThreadKey(): string {
 export function buildComboCommentThreadKey(postId: string): string {
   return `c-c-c-combo:${postId}`;
 }
+
+export function buildTransfigureCommentThreadKey(postId: string): string {
+  return `transfigure:${postId}`;
+}
