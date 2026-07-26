@@ -366,7 +366,7 @@ export default async function OgImagesDevPage({ previewPath }: { previewPath?: s
           </button>
         </form>
         <p className="mt-3 text-xs text-zinc-500">
-          카드와 리소스 query URL의 실제 og:title, og:description, og:image는 이 영역에서 확인합니다.
+          카드와 게임 요소 query URL의 실제 og:title, og:description, og:image는 이 영역에서 확인합니다.
         </p>
         {preview ? <OgMetadataPreviewCard preview={preview} /> : null}
       </section>
