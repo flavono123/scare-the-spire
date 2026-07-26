@@ -9,6 +9,7 @@ import {
   CircleHelp,
   Ellipsis,
   EllipsisVertical,
+  MessageCircle,
   Search,
   Shrink,
 } from "lucide-react";
@@ -561,6 +562,8 @@ function SelectedResourcePreview({
   available,
   label,
   changeCountLabel,
+  commentCount,
+  commentLabel,
   openLabel,
   serviceLocale,
   gameLocale,
@@ -570,6 +573,8 @@ function SelectedResourcePreview({
   available: boolean;
   label: string;
   changeCountLabel: string;
+  commentCount: number | undefined;
+  commentLabel: string;
   openLabel: string;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
@@ -619,9 +624,24 @@ function SelectedResourcePreview({
       ) : (
         <span className="block w-full max-w-[23rem]">{preview}</span>
       )}
-      <p className="mt-2 font-game-text text-xs text-gray-500">
-        {changeCountLabel}
-      </p>
+      <div className="mt-2 flex items-center gap-2 font-service text-xs">
+        <span className="text-gray-500">{changeCountLabel}</span>
+        <span aria-hidden="true" className="text-gray-700">·</span>
+        <a
+          href="#comments"
+          data-comments-jump
+          data-comment-count={commentCount}
+          aria-label={`${label} ${commentLabel}`}
+          className={`inline-flex items-center gap-1 rounded-sm outline-none transition-colors focus-visible:ring-1 focus-visible:ring-yellow-400/60 ${
+            commentCount && commentCount > 0
+              ? "text-yellow-300/90 hover:text-yellow-200"
+              : "text-gray-400 hover:text-yellow-300"
+          }`}
+        >
+          <MessageCircle size={12} aria-hidden="true" />
+          <span>{commentLabel}</span>
+        </a>
+      </div>
     </div>
   );
 }
@@ -651,6 +671,7 @@ export function ResourcePatchIndexExplorer({
   }>({ key: "patch", direction: "desc" });
   const [activePatchLineId, setActivePatchLineId] = useState<string | null>(null);
   const [composerPatchLineId, setComposerPatchLineId] = useState<string | null>(null);
+  const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const { userId, ready: authReady, ensureUser } = useAuth();
   const { entities: previewEntities } = useCommentEntities();
   const communityStories = useCommunityStories(userId, { limit: 1_000 });
@@ -784,6 +805,19 @@ export function ResourcePatchIndexExplorer({
     selectedResource.type,
     selectedResource.id,
   );
+  const selectedCommentCount = commentCounts[selectedCommentThreadKey];
+  const selectedCommentLabel = selectedCommentCount === undefined
+    ? copy.commentsTitle
+    : selectedCommentCount > 0
+      ? copy.commentsCount.replace("{count}", String(selectedCommentCount))
+      : copy.commentsWrite;
+  const handleSelectedCommentCountChange = useCallback((count: number) => {
+    setCommentCounts((current) => (
+      current[selectedCommentThreadKey] === count
+        ? current
+        : { ...current, [selectedCommentThreadKey]: count }
+    ));
+  }, [selectedCommentThreadKey]);
   const selectedPreview = useMemo(
     () => selectedResourceEntity(selectedResource, previewEntities),
     [previewEntities, selectedResource],
@@ -863,13 +897,18 @@ export function ResourcePatchIndexExplorer({
         aria-live="polite"
       >
         <div className="grid min-w-0 gap-x-8 gap-y-6 lg:grid-cols-[minmax(18rem,23rem)_minmax(0,1fr)] lg:items-start">
-          <div className="min-w-0">
+          <div
+            data-resource-summary
+            className="min-w-0 lg:sticky lg:top-20 lg:self-start"
+          >
             <SelectedResourcePreview
               resource={selectedResource}
               entity={selectedPreview.entity}
               available={selectedPreview.available}
               label={selectedLabel}
               changeCountLabel={copy.changeCount.replace("{count}", String(selectedResource.changeCount))}
+              commentCount={selectedCommentCount}
+              commentLabel={selectedCommentLabel}
               openLabel={copy.openResource}
               serviceLocale={serviceLocale}
               gameLocale={gameLocale}
@@ -918,7 +957,7 @@ export function ResourcePatchIndexExplorer({
           id="comments"
           data-resource-comments
           data-comment-thread-key={selectedCommentThreadKey}
-          className="mt-8 border-t border-white/10 pt-6"
+          className="mt-8 scroll-mt-20 border-t border-white/10 pt-6"
         >
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
             <h2 className="font-service text-lg font-semibold text-foreground">
@@ -934,6 +973,7 @@ export function ResourcePatchIndexExplorer({
                 key={selectedCommentThreadKey}
                 threadKey={selectedCommentThreadKey}
                 initialEntities={previewEntities}
+                onCountChange={handleSelectedCommentCountChange}
               />
             ) : null}
           </div>
