@@ -77,6 +77,8 @@ const LEGACY_RUN_DETAIL_COLUMNS =
   "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, created_at";
 const LEGACY_RUN_SUMMARY_COLUMNS =
   "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, created_at";
+const HISTORY_REFERENCE_SUMMARY_COLUMNS =
+  "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, created_at";
 
 function runReadEnvs(): string[] {
   if (devToolsEnabled() && supabaseEnv !== "production") {
@@ -163,6 +165,27 @@ async function selectRecentDonatedRunsForEnv(
   return {
     data: legacy.data ? (legacy.data as RunRow[]).map(normalizeRunSummaryRow) : null,
     error: legacy.error ?? null,
+  };
+}
+
+async function selectHistoryRunReferencesForEnv(
+  env: string,
+): Promise<{ data: DonatedRunSummary[] | null; error: unknown }> {
+  const result = await withSupabaseTimeout(
+    "runs.select.history-references",
+    supabase
+      .from("runs")
+      .select(HISTORY_REFERENCE_SUMMARY_COLUMNS)
+      .eq("env", env)
+      .order("start_time", { ascending: false })
+      .limit(HISTORY_RUN_REFERENCE_LIMIT),
+  ).catch((error) => ({ data: null, error }));
+
+  return {
+    data: result.data
+      ? (result.data as RunRow[]).map(normalizeRunSummaryRow)
+      : null,
+    error: result.error ?? null,
   };
 }
 
@@ -327,12 +350,32 @@ export async function listMyDonatedRunIds(
 }
 
 const RECENT_DONATED_RUNS_LIMIT = 100;
+const HISTORY_RUN_REFERENCE_LIMIT = 30;
 
 export async function listRecentDonatedRuns(): Promise<DonatedRunSummary[]> {
   if (!supabaseEnabled) return [];
   let lastError: unknown = null;
   for (const env of runReadEnvs()) {
     const { data, error } = await selectRecentDonatedRunsForEnv(env);
+    if (data?.length) return data;
+    if (error) lastError = error;
+  }
+  if (lastError) throw lastError;
+  return [];
+}
+
+/**
+ * Bounded metadata-only listing for the Combo reference picker.
+ *
+ * Unlike the History Course gallery's legacy-compatible query, this never
+ * downloads or parses raw run JSON. The picker filters these rows in the
+ * browser and only loads them when opened.
+ */
+export async function listHistoryRunReferences(): Promise<DonatedRunSummary[]> {
+  if (!supabaseEnabled) return [];
+  let lastError: unknown = null;
+  for (const env of runReadEnvs()) {
+    const { data, error } = await selectHistoryRunReferencesForEnv(env);
     if (data?.length) return data;
     if (error) lastError = error;
   }
