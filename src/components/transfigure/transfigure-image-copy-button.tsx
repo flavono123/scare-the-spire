@@ -11,6 +11,7 @@ interface TransfigureImageCopyButtonProps {
     copy: string;
     copying: string;
     copied: string;
+    success: string;
     failed: string;
     unsupported: string;
   };
@@ -59,7 +60,7 @@ export function TransfigureImageCopyButton({
   const label = status === "copying"
     ? labels.copying
     : status === "copied"
-      ? labels.copied
+      ? labels.success
       : status === "unsupported"
         ? labels.unsupported
         : status === "failed"
@@ -92,7 +93,7 @@ export function TransfigureImageCopyButton({
             ? labels.copied
             : labels.copy}
       </button>
-      {status !== "idle" && (
+      {status !== "idle" && status !== "copying" && (
         <span
           role={status === "failed" || status === "unsupported" ? "alert" : "status"}
           aria-live="polite"

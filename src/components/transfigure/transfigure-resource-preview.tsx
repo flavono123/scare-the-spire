@@ -55,7 +55,8 @@ export function TransfigureResourcePreview({
   const copyLabels = {
     copy: copy.copyAssetImage,
     copying: copy.copyingAssetImage,
-    copied: copy.assetImageCopied,
+    copied: copy.copied,
+    success: copy.assetImageCopied,
     failed: copy.assetImageCopyFailed,
     unsupported: copy.assetImageCopyUnsupported,
   };
