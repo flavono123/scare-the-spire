@@ -9,7 +9,9 @@ export const PROFILE_ACTIVITY_CATEGORIES = [
   "stories",
   "chemical_x",
   "this_or_that",
+  "combo",
   "comments",
+  "history_course",
 ] as const;
 
 export type ProfileActivityCategory = (typeof PROFILE_ACTIVITY_CATEGORIES)[number];
@@ -57,7 +59,9 @@ function emptyStats(): ProfileActivityStats {
     stories: { postCount: 0, likeCount: 0 },
     chemical_x: { postCount: 0, likeCount: 0 },
     this_or_that: { postCount: 0, likeCount: 0 },
+    combo: { postCount: 0, likeCount: 0 },
     comments: { postCount: 0, likeCount: 0 },
+    history_course: { postCount: 0, likeCount: 0 },
   };
 }
 

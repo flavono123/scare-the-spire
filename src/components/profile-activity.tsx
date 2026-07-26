@@ -30,7 +30,9 @@ export interface ProfileActivityCopy {
     stories: string;
     chemicalX: string;
     thisOrThat: string;
+    combo: string;
     comments: string;
+    historyCourse: string;
   };
   sort: {
     latest: string;
@@ -51,7 +53,9 @@ const CATEGORY_ICON: Record<ProfileActivityCategory, string> = {
   stories: "/images/sts2/relics/bone_tea.webp",
   chemical_x: "/images/sts2/relics/chemical_x.webp",
   this_or_that: "/images/sts2/relics/choices_paradox.webp",
+  combo: "/images/sts2/badges/ccccombo.webp",
   comments: "/images/sts2/relics/pen_nib.webp",
+  history_course: "/images/sts2/relics/history_course.webp",
 };
 
 const LIKE_ICON = "/images/sts2/ui/emote/thumb_up.png";
@@ -83,7 +87,9 @@ function categoryLabel(category: ProfileActivityCategory, copy: ProfileActivityC
   if (category === "stories") return copy.categories.stories;
   if (category === "chemical_x") return copy.categories.chemicalX;
   if (category === "this_or_that") return copy.categories.thisOrThat;
-  return copy.categories.comments;
+  if (category === "combo") return copy.categories.combo;
+  if (category === "comments") return copy.categories.comments;
+  return copy.categories.historyCourse;
 }
 
 function commentTargetHref(targetKey: string): string {
@@ -117,6 +123,8 @@ function activityHref(
   if (item.category === "stories") href = `/#${item.targetKey}`;
   else if (item.category === "chemical_x") href = `/chemical-x/${item.targetKey}`;
   else if (item.category === "this_or_that") href = `/this-or-that/${item.targetKey}`;
+  else if (item.category === "combo") href = `/c-c-c-combo/${item.targetKey}`;
+  else if (item.category === "history_course") href = `/history-course/${item.targetKey}`;
   else href = commentTargetHref(item.targetKey);
   return localizeHrefWithGameLocale(href, serviceLocale, gameLocale);
 }
@@ -172,7 +180,7 @@ export function ProfileActivity({
         >
           {copy.statsTitle}
         </h3>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6 xl:grid-cols-8">
           <StatButton
             active={filter === "all"}
             icon="/images/sts2/relics/pen_nib.webp"
