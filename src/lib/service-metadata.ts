@@ -29,7 +29,7 @@ const SERVICE_METADATA_COPY: Record<ServiceLocale, ServiceMetadataCopy> = {
     chemicalXTitle: "케미컬 X(구 트윕터)",
     chemicalXDescription: "슬레이 더 스파이어 2 고봉밥 트윕",
     comboTitle: "코오오옴보",
-    comboDescription: "카드, 유물, 포션 등 슬레이 더 스파이어 2 컴펜디움 리소스 조합을 공유합니다.",
+    comboDescription: "카드, 유물, 포션 등 슬레이 더 스파이어 2 게임 요소 조합을 공유합니다.",
   },
   en: {
     siteDescription: "Slay the Spire 2 patch notes, Compendium, and community.",
