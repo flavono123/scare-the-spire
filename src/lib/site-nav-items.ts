@@ -1,4 +1,5 @@
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
+import { getTransfigureNavTitle } from "@/lib/borrowed-game-copy";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   localizeHrefWithGameLocale,
@@ -6,6 +7,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
+import { isLatestByrdispatchNewSection } from "@/lib/toy-box-news";
 
 export type CodexLabelKey = {
   [Key in keyof typeof serviceMessages.ko.codex]:
@@ -16,7 +18,61 @@ export type NavDropdownItem = {
   href: string;
   label: string;
   icon: string;
+  isNew?: boolean;
 };
+
+type ToyBoxServiceDefinition = {
+  href: string;
+  icon: string;
+  createdAt: string;
+  byrdispatchSectionTitle?: string;
+  devOnly?: boolean;
+  getLabel: (
+    serviceLocale: ServiceLocale,
+    gameLocale: GameLocale,
+  ) => string;
+};
+
+const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
+  {
+    href: "/transfigure",
+    icon: "/images/sts2/relics/astrolabe.webp",
+    createdAt: "2026-07-26",
+    byrdispatchSectionTitle: "변형",
+    devOnly: true,
+    getLabel: (_serviceLocale, gameLocale) => getTransfigureNavTitle(gameLocale),
+  },
+  {
+    href: "/c-c-c-combo",
+    icon: "/images/sts2/badges/ccccombo.webp",
+    createdAt: "2026-07-24",
+    byrdispatchSectionTitle: "코오오옴보",
+    getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.combo,
+  },
+  {
+    href: "/this-or-that",
+    icon: "/images/sts2/relics/choices_paradox.webp",
+    createdAt: "2026-07-09",
+    byrdispatchSectionTitle: "이거 아님 저거?",
+    getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.thisOrThat,
+  },
+  {
+    href: "/history-course",
+    icon: "/images/sts2/relics/history_course.webp",
+    createdAt: "2026-06-18",
+    byrdispatchSectionTitle: "역사 강의서",
+    getLabel: (serviceLocale, gameLocale) => (
+      getCodexNavGameLabel(gameLocale, "historyCourse")
+      ?? serviceMessages[serviceLocale].nav.historyCourse
+    ),
+  },
+  {
+    href: "/chemical-x",
+    icon: "/images/sts2/relics/chemical_x.webp",
+    createdAt: "2026-04-15",
+    getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.chemicalX,
+  },
+] as const;
 
 export const sts2NavItems = [
   { href: "/compendium/characters", labelKey: "characters", icon: "/images/sts2/characters/character_icon_ironclad.webp" },
@@ -79,7 +135,9 @@ export function localizeCodexNavItems<T extends { href: string; labelKey: CodexL
   }));
 }
 
-export function localizePlainNavItems<T extends { href: string; label: string; icon: string }>(
+export function localizePlainNavItems<
+  T extends { href: string; label: string; icon: string; isNew?: boolean },
+>(
   items: readonly T[],
   serviceLocale: ServiceLocale,
   gameLocale: GameLocale,
@@ -88,6 +146,7 @@ export function localizePlainNavItems<T extends { href: string; label: string; i
     href: localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale),
     label: item.label,
     icon: item.icon,
+    isNew: item.isNew,
   }));
 }
 
@@ -110,30 +169,22 @@ export function getToyBoxNavItems({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }): NavDropdownItem[] {
-  const messages = serviceMessages[serviceLocale];
   const showDevMenu = devToolsEnabled();
+  const serviceItems = TOY_BOX_SERVICE_DEFINITIONS
+    .filter((service) => showDevMenu || !service.devOnly)
+    .toSorted((left, right) => right.createdAt.localeCompare(left.createdAt))
+    .map((service) => ({
+      href: service.href,
+      label: service.getLabel(serviceLocale, gameLocale),
+      icon: service.icon,
+      isNew: service.byrdispatchSectionTitle
+        ? isLatestByrdispatchNewSection(service.byrdispatchSectionTitle)
+        : false,
+    }));
+
   return localizePlainNavItems(
     [
-      {
-        href: "/chemical-x",
-        label: messages.nav.chemicalX,
-        icon: "/images/sts2/relics/chemical_x.webp",
-      },
-      {
-        href: "/history-course",
-        label: getCodexNavGameLabel(gameLocale, "historyCourse") ?? messages.nav.historyCourse,
-        icon: "/images/sts2/relics/history_course.webp",
-      },
-      {
-        href: "/this-or-that",
-        label: messages.nav.thisOrThat,
-        icon: "/images/sts2/relics/choices_paradox.webp",
-      },
-      {
-        href: "/c-c-c-combo",
-        label: messages.nav.combo,
-        icon: "/images/sts2/badges/ccccombo.webp",
-      },
+      ...serviceItems,
       ...(showDevMenu
         ? devNavItems
         : []),
