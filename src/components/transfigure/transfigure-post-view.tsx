@@ -232,8 +232,8 @@ export function TransfigurePostView({
           </div>
         </div>
 
-        <div className="relative mt-4 flex items-center justify-between border-t border-white/5 pt-3">
-          <div className="flex items-center gap-1.5">
+        <div className="relative mt-4 flex flex-col gap-1.5 border-t border-white/5 pt-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex shrink-0 items-center gap-1.5">
             <Image
               src="/images/sts2/relics/astrolabe.webp"
               alt=""
@@ -241,11 +241,11 @@ export function TransfigurePostView({
               height={14}
               className="object-contain opacity-60"
             />
-            <span className="spire-gold text-[11px] font-semibold tracking-wide opacity-50">
+            <span className="spire-gold whitespace-nowrap text-[11px] font-semibold tracking-wide opacity-50">
               {serviceMessages[serviceLocale].brand}
             </span>
           </div>
-          <span className="text-[11px] tracking-wide text-gray-600/60">
+          <span className="block max-w-full truncate text-[11px] tracking-wide text-gray-600/60 sm:text-right">
             {siteDisplayOrigin}/transfigure/{postId.slice(0, 8)}
           </span>
         </div>
