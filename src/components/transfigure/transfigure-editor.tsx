@@ -186,13 +186,15 @@ export function TransfigureEditor({
 
   return (
     <div className="space-y-3" data-transfigure-editor>
-      <TransfigureResourcePicker
-        entities={sourceEntities}
-        selected={selected}
-        serviceLocale={serviceLocale}
-        onSelect={handleSelect}
-        disabled={Boolean(initialPost)}
-      />
+      {!initialPost && (
+        <TransfigureResourcePicker
+          entities={sourceEntities}
+          selected={selected}
+          serviceLocale={serviceLocale}
+          defaultOpen
+          onSelect={handleSelect}
+        />
+      )}
 
       {selected && sourceText && isTransfigureResourceType(selected.type) && (
         <div className="grid items-start gap-4 lg:grid-cols-[16rem_minmax(0,1fr)]">
@@ -217,7 +219,7 @@ export function TransfigureEditor({
               </label>
             </div>
 
-            <div className="border-b border-white/10 px-3 py-2">
+            <div className="px-3 py-2">
               <input
                 key={`${initialPost?.id ?? "new"}:${profileNickname}`}
                 ref={nicknameInputRef}
@@ -229,9 +231,6 @@ export function TransfigureEditor({
               />
             </div>
 
-            <div className="space-y-2 px-3 py-3 text-xs leading-relaxed text-zinc-500">
-              <p>{copy.directEditHint}</p>
-            </div>
           </div>
 
           <section className="rounded-xl border border-yellow-500/15 bg-black/20 p-3 lg:sticky lg:top-0">
@@ -247,7 +246,6 @@ export function TransfigureEditor({
               nameLabel={copy.nameLabel}
               costLabel={copy.costLabel}
               descriptionLabel={copy.descriptionLabel}
-              directEditLabel={copy.directEditLabel}
               serviceLocale={serviceLocale}
               sourceText={sourceText}
               submitLabel={initialPost ? copy.saveChanges : copy.submit}

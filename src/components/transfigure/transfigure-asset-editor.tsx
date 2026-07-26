@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Pencil } from "lucide-react";
 import { CardTile } from "@/components/codex/card-tile";
 import { GameHoverTip } from "@/components/codex/hover-tip";
 import type { RichContentEditorProps } from "@/components/rich-content-editor";
@@ -26,7 +25,6 @@ interface TransfigureAssetEditorProps {
   nameLabel: string;
   costLabel: string;
   descriptionLabel: string;
-  directEditLabel: string;
   serviceLocale: ServiceLocale;
   sourceText: string;
   submitLabel: string;
@@ -41,11 +39,12 @@ interface TransfigureAssetEditorProps {
 }
 
 const editFieldClass = [
-  "rounded-sm outline outline-1 outline-dashed outline-[#d4a843]/35",
-  "transition-[background-color,box-shadow,outline-color] duration-150",
-  "hover:bg-black/15 hover:outline-[#d4a843]/70",
-  "focus-within:bg-black/25 focus-within:outline-2 focus-within:outline-[#EFC851]",
-  "focus-within:shadow-[0_0_14px_rgba(212,168,67,0.22)]",
+  "box-border rounded-md border-2 border-dashed border-[#EFC851]/80 bg-[#EFC851]/10",
+  "shadow-[inset_0_0_12px_rgba(239,200,81,0.08)]",
+  "transition-[background-color,border-color,box-shadow] duration-150",
+  "hover:border-[#F6DF8B] hover:bg-[#EFC851]/15",
+  "focus-within:border-solid focus-within:border-[#FFF0A8] focus-within:bg-black/25",
+  "focus-within:shadow-[0_0_16px_rgba(239,200,81,0.32),inset_0_0_12px_rgba(239,200,81,0.12)]",
 ].join(" ");
 
 export function TransfigureAssetEditor({
@@ -58,7 +57,6 @@ export function TransfigureAssetEditor({
   nameLabel,
   costLabel,
   descriptionLabel,
-  directEditLabel,
   serviceLocale,
   sourceText,
   submitLabel,
@@ -120,11 +118,6 @@ export function TransfigureAssetEditor({
 
   return (
     <div className="space-y-2" data-transfigure-asset-editor>
-      <div className="flex items-center justify-center gap-1.5 text-[11px] text-[#d4a843]/80">
-        <Pencil className="h-3 w-3" aria-hidden="true" />
-        <span>{directEditLabel}</span>
-      </div>
-
       {entity.type === "card" && entity.cardData ? (
         <div className="flex justify-center">
           <CardTile
