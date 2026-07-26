@@ -81,7 +81,14 @@ export function TransfigureAssetEditor({
         placeholder={entity.nameKo}
         aria-label={nameLabel}
         maxLength={80}
-        className="w-full bg-transparent text-center font-inherit text-inherit caret-[#EFC851] outline-none placeholder:text-inherit placeholder:opacity-65"
+        className="w-full bg-transparent text-center text-inherit caret-[#EFC851] outline-none placeholder:text-inherit placeholder:opacity-65"
+        style={{
+          color: "inherit",
+          fontFamily: "inherit",
+          fontSize: "inherit",
+          fontWeight: "inherit",
+          textShadow: "inherit",
+        }}
         data-transfigure-name-input
       />
     </span>
@@ -147,16 +154,25 @@ export function TransfigureAssetEditor({
                 inputMode="text"
                 value={transformedCost}
                 onChange={(event) => {
-                  const next = event.target.value
+                  const cleaned = event.target.value
                     .toUpperCase()
-                    .replace(/[^0-9X]/g, "")
-                    .slice(0, 2);
+                    .replace(/[^0-9X]/g, "");
+                  const next = cleaned.includes("X")
+                    ? "X"
+                    : cleaned.slice(0, 2);
                   onCostChange(next);
                 }}
                 placeholder={sourceCost ?? "—"}
                 aria-label={costLabel}
                 maxLength={2}
-                className={`h-full w-full bg-transparent text-center font-inherit text-inherit caret-[#EFC851] outline-none placeholder:text-inherit placeholder:opacity-65 ${editFieldClass}`}
+                className={`h-full w-full bg-transparent text-center text-inherit caret-[#EFC851] outline-none placeholder:text-inherit placeholder:opacity-65 ${editFieldClass}`}
+                style={{
+                  color: "inherit",
+                  fontFamily: "inherit",
+                  fontSize: "inherit",
+                  fontWeight: "inherit",
+                  textShadow: "inherit",
+                }}
                 data-transfigure-cost-input
               />
             )}
