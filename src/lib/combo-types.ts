@@ -22,6 +22,16 @@ export function comboResourceKey(resource: ComboResourceRef): string {
   return `${resource.type}:${resource.id}`;
 }
 
+export function comboPostMatchesAnyGameElement(
+  post: Pick<ComboPost, "resources">,
+  selected: ComboResourceRef[],
+): boolean {
+  if (selected.length === 0) return true;
+
+  const postKeys = new Set(post.resources.map(comboResourceKey));
+  return selected.some((gameElement) => postKeys.has(comboResourceKey(gameElement)));
+}
+
 export function extractComboResourceRefs(blocks: PostBlock[]): ComboResourceRef[] {
   const resources: ComboResourceRef[] = [];
   const seen = new Set<string>();

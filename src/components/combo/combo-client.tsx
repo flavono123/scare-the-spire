@@ -11,7 +11,10 @@ import { useComboPosts } from "@/hooks/use-combo-posts";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import type { PostBlock } from "@/lib/chemical-types";
-import { comboResourceKey, type ComboResourceRef } from "@/lib/combo-types";
+import {
+  comboPostMatchesAnyGameElement,
+  type ComboResourceRef,
+} from "@/lib/combo-types";
 import type { GameLocale } from "@/lib/i18n";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
@@ -43,14 +46,12 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
   );
   const { profile } = useUserProfile(profileFallback);
   const entityMap = useMemo(() => buildComboEntityMap(entities), [entities]);
-  const filteredPosts = useMemo(() => {
-    if (selectedGameElements.length === 0) return posts;
-    const selectedKeys = selectedGameElements.map(comboResourceKey);
-    return posts.filter((post) => {
-      const postKeys = new Set(post.resources.map(comboResourceKey));
-      return selectedKeys.some((key) => postKeys.has(key));
-    });
-  }, [posts, selectedGameElements]);
+  const filteredPosts = useMemo(
+    () => posts.filter((post) => (
+      comboPostMatchesAnyGameElement(post, selectedGameElements)
+    )),
+    [posts, selectedGameElements],
+  );
 
   const handleSubmit = useCallback(async (blocks: PostBlock[], nickname: string) => {
     const activeUserId = userId ?? await ensureUser();
