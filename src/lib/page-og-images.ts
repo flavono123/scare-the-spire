@@ -43,6 +43,13 @@ export const COMBO_PAGE_OG_IMAGE: PageOgImage = {
   alt: "코오오옴보 — 융합자 Amalgamator",
 };
 
+export const TRANSFIGURE_PAGE_OG_IMAGE: PageOgImage = {
+  url: "/images/sts2/cards/transfigure.webp",
+  width: 1000,
+  height: 760,
+  alt: "변형 — Transfigure",
+};
+
 export const HISTORY_COURSE_PAGE_OG_IMAGE: PageOgImage = {
   url: "/images/sts2/cards/spoils_map.webp",
   width: 1000,
@@ -77,6 +84,16 @@ export const PAGE_OG_IMAGE_RULES = [
     pattern: "/c-c-c-combo/*",
     label: "코오오옴보 상세",
     image: COMBO_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/transfigure",
+    label: "변형",
+    image: TRANSFIGURE_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/transfigure/*",
+    label: "변형 상세",
+    image: TRANSFIGURE_PAGE_OG_IMAGE,
   },
   {
     pattern: "/history-course",
