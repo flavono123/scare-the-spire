@@ -39,6 +39,7 @@ interface TransfigureResourcePickerProps {
   entities: EntityInfo[];
   selected: EntityInfo | null;
   serviceLocale: ServiceLocale;
+  disabled?: boolean;
   onSelect: (entity: EntityInfo) => void;
 }
 
@@ -46,6 +47,7 @@ export function TransfigureResourcePicker({
   entities,
   selected,
   serviceLocale,
+  disabled = false,
   onSelect,
 }: TransfigureResourcePickerProps) {
   const copy = serviceMessages[serviceLocale].transfigure;
@@ -111,8 +113,11 @@ export function TransfigureResourcePicker({
         type="button"
         aria-expanded={open}
         aria-controls="transfigure-resource-picker-panel"
-        onClick={() => setOpen((current) => !current)}
-        className="flex w-full items-center gap-3 rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-3 py-2.5 text-left transition-[border-color,background-color] hover:border-yellow-300/40 hover:bg-yellow-500/15 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-300/70"
+        onClick={() => {
+          if (!disabled) setOpen((current) => !current);
+        }}
+        disabled={disabled}
+        className="flex w-full items-center gap-3 rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-3 py-2.5 text-left transition-[border-color,background-color] hover:border-yellow-300/40 hover:bg-yellow-500/15 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-300/70 disabled:cursor-default disabled:opacity-80"
       >
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-black/25">
           {selected?.imageUrl ? (

@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import { ArrowLeft, Link2, Sparkles } from "lucide-react";
+import { ArrowLeft, Link2, Pencil, Sparkles } from "lucide-react";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
@@ -10,8 +11,12 @@ import { StorageUnavailableNotice } from "@/components/storage-unavailable-notic
 import Image from "@/components/ui/static-image";
 import { TransfigureResourcePreview } from "@/components/transfigure/transfigure-resource-preview";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
+import { useAuth } from "@/hooks/use-auth";
 import { useServiceLocale } from "@/hooks/use-service-locale";
-import { useTransfigurePost } from "@/hooks/use-transfigure-posts";
+import {
+  useTransfigurePost,
+  type SaveTransfigurePostInput,
+} from "@/hooks/use-transfigure-posts";
 import { buildTransfigureCommentThreadKey } from "@/lib/comment-threads";
 import {
   localizeHrefWithGameLocale,
@@ -19,6 +24,13 @@ import {
 } from "@/lib/i18n";
 import { getSiteDisplayOrigin } from "@/lib/site-origin";
 import { serviceMessages } from "@/messages/service";
+
+const TransfigureComposerModal = dynamic(
+  () => import("./transfigure-composer-modal").then(
+    (module) => module.TransfigureComposerModal,
+  ),
+  { ssr: false },
+);
 
 interface TransfigurePostViewProps {
   postId: string;
@@ -34,7 +46,9 @@ export function TransfigurePostView({
   const siteDisplayOrigin = getSiteDisplayOrigin();
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const [copied, setCopied] = useState(false);
-  const { post, loading, unavailable } = useTransfigurePost(postId);
+  const [editing, setEditing] = useState(false);
+  const { userId, ready, ensureUser } = useAuth();
+  const { post, loading, unavailable, update } = useTransfigurePost(postId, userId);
   const { entities } = useCommentEntities(undefined, { enabled: Boolean(post) });
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
 
@@ -43,6 +57,15 @@ export function TransfigurePostView({
     setCopied(true);
     window.setTimeout(() => setCopied(false), 2000);
   }, []);
+  const handleUpdate = useCallback(async (
+    input: Omit<SaveTransfigurePostInput, "activeUserId">,
+  ) => {
+    const activeUserId = userId ?? await ensureUser();
+    if (!activeUserId) throw new Error("anonymous auth unavailable");
+    const updatedPost = await update({ ...input, activeUserId });
+    if (!updatedPost) throw new Error("transfigure update rejected");
+    setEditing(false);
+  }, [ensureUser, update, userId]);
 
   if (unavailable) {
     return <StorageUnavailableNotice title={copy.unavailableTitle} />;
@@ -78,14 +101,26 @@ export function TransfigurePostView({
           <ArrowLeft size={16} />
           {copy.backToIndex}
         </Link>
-        <button
-          type="button"
-          onClick={handleCopyUrl}
-          className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-yellow-400/30 hover:text-yellow-200"
-        >
-          <Link2 size={14} />
-          {copied ? copy.copied : copy.copyLink}
-        </button>
+        <div className="flex items-center gap-2">
+          {ready && userId === post.user_id && (
+            <button
+              type="button"
+              onClick={() => setEditing(true)}
+              className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-yellow-400/30 hover:text-yellow-200"
+            >
+              <Pencil size={14} />
+              {copy.edit}
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={handleCopyUrl}
+            className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-yellow-400/30 hover:text-yellow-200"
+          >
+            <Link2 size={14} />
+            {copied ? copy.copied : copy.copyLink}
+          </button>
+        </div>
       </div>
 
       <article className="relative overflow-hidden rounded-2xl border border-yellow-500/15 bg-gradient-to-b from-[#080c17] via-[#0b1220] to-[#080c17] p-4 sm:p-6">
@@ -117,7 +152,9 @@ export function TransfigurePostView({
                 {post.title?.trim() || resource?.nameKo || post.resource_id}
               </span>
               <span className="block truncate text-xs text-zinc-500">
-                {resource?.nameKo ?? post.resource_id} · {post.nickname}
+                {post.transformed_name?.trim() || resource?.nameKo || post.resource_id}
+                {" · "}
+                {post.nickname}
               </span>
             </span>
           </div>
@@ -138,6 +175,8 @@ export function TransfigurePostView({
                 entity={resource}
                 gameLocale={gameLocale}
                 serviceLocale={serviceLocale}
+                transformedName={post.transformed_name}
+                transformedCost={post.transformed_cost}
               />
             ) : (
               <div className="text-lg font-bold leading-relaxed text-[#f0e6d2]">
@@ -170,6 +209,18 @@ export function TransfigurePostView({
           </span>
         </div>
       </article>
+
+      {editing && resource && (
+        <TransfigureComposerModal
+          entities={entities}
+          gameLocale={gameLocale}
+          initialPost={post}
+          profileNickname={post.nickname}
+          serviceLocale={serviceLocale}
+          onSubmit={handleUpdate}
+          onClose={() => setEditing(false)}
+        />
+      )}
 
       <section
         id="comments"

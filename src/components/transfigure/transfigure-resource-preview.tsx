@@ -16,6 +16,8 @@ interface TransfigureResourcePreviewProps {
   entity: EntityInfo;
   gameLocale: GameLocale;
   serviceLocale: ServiceLocale;
+  transformedName?: string | null;
+  transformedCost?: string | null;
 }
 
 export function TransfigureResourcePreview({
@@ -24,14 +26,25 @@ export function TransfigureResourcePreview({
   entity,
   gameLocale,
   serviceLocale,
+  transformedName,
+  transformedCost,
 }: TransfigureResourcePreviewProps) {
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
+  const displayName = transformedName?.trim() || entity.nameKo;
 
   if (entity.type === "card" && entity.cardData) {
+    const normalizedCost = transformedCost?.trim().toUpperCase() || null;
     const card = {
       ...entity.cardData,
+      name: displayName,
       description: transfigureBlocksToGameDescription(blocks),
+      isXCost: normalizedCost == null
+        ? entity.cardData.isXCost
+        : normalizedCost === "X",
     };
+    const forcedCost = normalizedCost && normalizedCost !== "X"
+      ? Number(normalizedCost)
+      : undefined;
     return (
       <div className="flex justify-center" data-transfigure-preview="card">
         <CardTile
@@ -41,6 +54,7 @@ export function TransfigureResourcePreview({
           showBeta={false}
           width={280}
           interactive={false}
+          forcedCost={forcedCost}
         />
       </div>
     );
@@ -63,7 +77,7 @@ export function TransfigureResourcePreview({
         </span>
       )}
       <GameHoverTip
-        title={entity.nameKo}
+        title={displayName}
         className="w-full max-w-80"
         style={{ minWidth: 240, maxWidth: 320 }}
       >

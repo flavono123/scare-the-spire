@@ -38,6 +38,8 @@ export interface TransfigurePost {
   resource_id: string;
   source_text: string;
   source_game_locale: GameLocale;
+  transformed_name: string | null;
+  transformed_cost: string | null;
   content: PostBlock[];
   content_text: string;
   env: string;
@@ -145,6 +147,52 @@ export function transfigureBlocksToGameDescription(blocks: PostBlock[]): string 
     if (block.type === "entity") return `[gold]${block.displayText}[/gold]`;
     return block.title;
   }).join("");
+}
+
+export function getTransfigureSourceCost(entity: EntityInfo): string | null {
+  if (entity.type !== "card" || !entity.cardData) return null;
+  if (entity.cardData.isXCost) return "X";
+  return entity.cardData.cost >= 0 ? String(entity.cardData.cost) : null;
+}
+
+export function normalizeTransfigureName(
+  value: string,
+  sourceName: string,
+): string | null {
+  const trimmed = value.trim();
+  return trimmed && trimmed !== sourceName.trim() ? trimmed : null;
+}
+
+export function normalizeTransfigureCost(
+  value: string,
+  sourceCost: string | null,
+): string | null {
+  const trimmed = value.trim().toUpperCase();
+  return trimmed && trimmed !== sourceCost ? trimmed : null;
+}
+
+export function isTransfigureChanged({
+  blocks,
+  sourceText,
+  sourceBlocks,
+  transformedName,
+  sourceName,
+  transformedCost,
+  sourceCost,
+}: {
+  blocks: PostBlock[];
+  sourceText: string;
+  sourceBlocks: PostBlock[];
+  transformedName: string;
+  sourceName: string;
+  transformedCost: string;
+  sourceCost: string | null;
+}): boolean {
+  return (
+    isTransfiguredContent(blocks, sourceText, sourceBlocks)
+    || normalizeTransfigureName(transformedName, sourceName) != null
+    || normalizeTransfigureCost(transformedCost, sourceCost) != null
+  );
 }
 
 export function transfigureResourceKey(resource: TransfigureResourceRef): string {

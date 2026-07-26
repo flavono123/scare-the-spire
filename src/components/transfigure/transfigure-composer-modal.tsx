@@ -3,24 +3,20 @@
 import { useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import type { PostBlock } from "@/lib/chemical-types";
+import type { SaveTransfigurePostInput } from "@/hooks/use-transfigure-posts";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
-import type { TransfigureResourceRef } from "@/lib/transfigure-types";
+import type { TransfigurePost } from "@/lib/transfigure-types";
 import { serviceMessages } from "@/messages/service";
 import { TransfigureEditor } from "./transfigure-editor";
 
 interface TransfigureComposerModalProps {
   entities: EntityInfo[];
   gameLocale: GameLocale;
+  initialPost?: TransfigurePost | null;
   profileNickname: string;
   serviceLocale: ServiceLocale;
   onSubmit: (
-    title: string,
-    blocks: PostBlock[],
-    nickname: string,
-    resource: TransfigureResourceRef,
-    sourceText: string,
-    sourceBlocks: PostBlock[],
+    input: Omit<SaveTransfigurePostInput, "activeUserId">,
   ) => Promise<void>;
   onClose: () => void;
 }
@@ -28,6 +24,7 @@ interface TransfigureComposerModalProps {
 export function TransfigureComposerModal({
   entities,
   gameLocale,
+  initialPost,
   profileNickname,
   serviceLocale,
   onSubmit,
@@ -73,7 +70,7 @@ export function TransfigureComposerModal({
               id="transfigure-composer-title"
               className="spire-gold font-service text-sm font-semibold"
             >
-              {copy.create}
+              {initialPost ? copy.editTitle : copy.create}
             </h2>
           </div>
           <button
@@ -91,6 +88,7 @@ export function TransfigureComposerModal({
           <TransfigureEditor
             entities={entities}
             gameLocale={gameLocale}
+            initialPost={initialPost}
             profileNickname={profileNickname}
             serviceLocale={serviceLocale}
             onSubmit={onSubmit}

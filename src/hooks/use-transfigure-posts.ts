@@ -7,12 +7,14 @@ import type { GameLocale } from "@/lib/i18n";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
-  isTransfiguredContent,
+  isTransfigureChanged,
+  normalizeTransfigureCost,
+  normalizeTransfigureName,
   type TransfigurePost,
   type TransfigureResourceRef,
 } from "@/lib/transfigure-types";
 
-interface AddTransfigurePostInput {
+export interface SaveTransfigurePostInput {
   blocks: PostBlock[];
   nickname: string;
   title: string;
@@ -20,6 +22,10 @@ interface AddTransfigurePostInput {
   sourceText: string;
   sourceBlocks: PostBlock[];
   sourceGameLocale: GameLocale;
+  sourceName: string;
+  sourceCost: string | null;
+  transformedName: string;
+  transformedCost: string;
   activeUserId?: string;
 }
 
@@ -27,7 +33,11 @@ interface UseTransfigurePostsReturn {
   posts: TransfigurePost[];
   loading: boolean;
   unavailable: boolean;
-  add: (input: AddTransfigurePostInput) => Promise<TransfigurePost | null>;
+  add: (input: SaveTransfigurePostInput) => Promise<TransfigurePost | null>;
+  update: (
+    postId: string,
+    input: SaveTransfigurePostInput,
+  ) => Promise<TransfigurePost | null>;
   remove: (postId: string) => Promise<void>;
 }
 
@@ -35,10 +45,92 @@ interface UseTransfigurePostReturn {
   post: TransfigurePost | null;
   loading: boolean;
   unavailable: boolean;
+  update: (
+    input: SaveTransfigurePostInput,
+  ) => Promise<TransfigurePost | null>;
 }
 
 function normalizePost(row: unknown): TransfigurePost {
   return row as TransfigurePost;
+}
+
+function validateSaveInput(input: SaveTransfigurePostInput) {
+  const contentText = blocksToPlainText(input.blocks).trim();
+  const nickname = input.nickname.trim();
+  const title = input.title.trim();
+  const sourceText = input.sourceText.trim();
+  const transformedName = normalizeTransfigureName(
+    input.transformedName,
+    input.sourceName,
+  );
+  const transformedCost = normalizeTransfigureCost(
+    input.transformedCost,
+    input.sourceCost,
+  );
+  const validCost = transformedCost == null || /^(X|[0-9]{1,2})$/.test(transformedCost);
+
+  if (
+    !input.activeUserId
+    || !supabaseEnabled
+    || contentText.length < 2
+    || nickname.length < 1
+    || nickname.length > 20
+    || title.length < 1
+    || title.length > 80
+    || !input.resource.id
+    || !sourceText
+    || !validCost
+    || (transformedName?.length ?? 0) > 80
+    || !isTransfigureChanged({
+      blocks: input.blocks,
+      sourceText,
+      sourceBlocks: input.sourceBlocks,
+      transformedName: input.transformedName,
+      sourceName: input.sourceName,
+      transformedCost: input.transformedCost,
+      sourceCost: input.sourceCost,
+    })
+  ) {
+    return null;
+  }
+
+  return {
+    contentText,
+    nickname,
+    title,
+    sourceText,
+    transformedName,
+    transformedCost,
+  };
+}
+
+async function persistTransfigurePostUpdate(
+  postId: string,
+  input: SaveTransfigurePostInput,
+) {
+  const normalized = validateSaveInput(input);
+  if (!normalized || !input.activeUserId) {
+    return { data: null, error: null };
+  }
+
+  return withSupabaseTimeout(
+    "transfigure_posts.update",
+    supabase
+      .from("transfigure_posts")
+      .update({
+        nickname: normalized.nickname,
+        title: normalized.title,
+        content: input.blocks,
+        content_text: normalized.contentText,
+        transformed_name: normalized.transformedName,
+        transformed_cost: normalized.transformedCost,
+      })
+      .eq("id", postId)
+      .eq("user_id", input.activeUserId)
+      .eq("env", supabaseEnv)
+      .select()
+      .single(),
+  ).catch(() => ({ data: null, error: new Error("timeout") }));
 }
 
 export function useTransfigurePosts(
@@ -76,6 +168,21 @@ export function useTransfigurePosts(
 
     const channel = supabase
       .channel("transfigure_posts")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "transfigure_posts",
+        },
+        (payload) => {
+          const updatedPost = normalizePost(payload.new);
+          if (updatedPost.env !== supabaseEnv) return;
+          setPosts((current) => current.map((post) => (
+            post.id === updatedPost.id ? updatedPost : post
+          )));
+        },
+      )
       .on(
         "postgres_changes",
         {
@@ -125,25 +232,26 @@ export function useTransfigurePosts(
       sourceBlocks,
       sourceGameLocale,
       activeUserId = userId ?? undefined,
-    }: AddTransfigurePostInput): Promise<TransfigurePost | null> => {
-      const contentText = blocksToPlainText(blocks).trim();
-      const trimmedNickname = nickname.trim();
-      const trimmedTitle = title.trim();
-      const trimmedSourceText = sourceText.trim();
-      if (
-        !activeUserId
-        || !supabaseEnabled
-        || contentText.length < 2
-        || trimmedNickname.length < 1
-        || trimmedNickname.length > 20
-        || trimmedTitle.length < 1
-        || trimmedTitle.length > 80
-        || !resource.id
-        || !trimmedSourceText
-        || !isTransfiguredContent(blocks, trimmedSourceText, sourceBlocks)
-      ) {
-        return null;
-      }
+      sourceName,
+      sourceCost,
+      transformedName,
+      transformedCost,
+    }: SaveTransfigurePostInput): Promise<TransfigurePost | null> => {
+      const normalized = validateSaveInput({
+        blocks,
+        nickname,
+        title,
+        resource,
+        sourceText,
+        sourceBlocks,
+        sourceGameLocale,
+        sourceName,
+        sourceCost,
+        transformedName,
+        transformedCost,
+        activeUserId,
+      });
+      if (!normalized || !activeUserId) return null;
 
       const { data, error } = await withSupabaseTimeout(
         "transfigure_posts.insert",
@@ -151,14 +259,16 @@ export function useTransfigurePosts(
           .from("transfigure_posts")
           .insert({
             user_id: activeUserId,
-            nickname: trimmedNickname,
-            title: trimmedTitle,
+            nickname: normalized.nickname,
+            title: normalized.title,
             resource_type: resource.type,
             resource_id: resource.id,
-            source_text: trimmedSourceText,
+            source_text: normalized.sourceText,
             source_game_locale: sourceGameLocale,
             content: blocks,
-            content_text: contentText,
+            content_text: normalized.contentText,
+            transformed_name: normalized.transformedName,
+            transformed_cost: normalized.transformedCost,
             env: supabaseEnv,
           })
           .select()
@@ -181,6 +291,27 @@ export function useTransfigurePosts(
     [userId],
   );
 
+  const update = useCallback(
+    async (postId: string, input: SaveTransfigurePostInput) => {
+      const { data, error } = await persistTransfigurePostUpdate(postId, {
+        ...input,
+        activeUserId: input.activeUserId ?? userId ?? undefined,
+      });
+      if (error) {
+        setUnavailable(true);
+        throw new Error(error.message);
+      }
+      if (!data) return null;
+
+      const post = normalizePost(data);
+      setPosts((current) => current.map((item) => (
+        item.id === post.id ? post : item
+      )));
+      return post;
+    },
+    [userId],
+  );
+
   const remove = useCallback(
     async (postId: string) => {
       if (!userId || !supabaseEnabled) return;
@@ -197,10 +328,13 @@ export function useTransfigurePosts(
     [userId],
   );
 
-  return { posts, loading, unavailable, add, remove };
+  return { posts, loading, unavailable, add, update, remove };
 }
 
-export function useTransfigurePost(postId: string): UseTransfigurePostReturn {
+export function useTransfigurePost(
+  postId: string,
+  userId: string | null = null,
+): UseTransfigurePostReturn {
   const [post, setPost] = useState<TransfigurePost | null>(null);
   const [loading, setLoading] = useState(supabaseEnabled);
   const [unavailable, setUnavailable] = useState(!supabaseEnabled);
@@ -236,5 +370,23 @@ export function useTransfigurePost(postId: string): UseTransfigurePostReturn {
     };
   }, [postId]);
 
-  return { post, loading, unavailable };
+  const update = useCallback(
+    async (input: SaveTransfigurePostInput) => {
+      const { data, error } = await persistTransfigurePostUpdate(postId, {
+        ...input,
+        activeUserId: input.activeUserId ?? userId ?? undefined,
+      });
+      if (error) {
+        setUnavailable(true);
+        throw new Error(error.message);
+      }
+      if (!data) return null;
+      const updatedPost = normalizePost(data);
+      setPost(updatedPost);
+      return updatedPost;
+    },
+    [postId, userId],
+  );
+
+  return { post, loading, unavailable, update };
 }

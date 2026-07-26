@@ -2,7 +2,7 @@
 
 import { useCallback, type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Sparkles, Trash2 } from "lucide-react";
+import { Pencil, Sparkles, Trash2 } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { PostRenderer } from "@/components/chemicalx/post-renderer";
 import Image from "@/components/ui/static-image";
@@ -20,6 +20,7 @@ interface TransfigurePostCardProps {
   isOwner: boolean;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
+  onEdit: (post: TransfigurePost) => void;
   onDelete: (postId: string) => void;
 }
 
@@ -49,6 +50,7 @@ export function TransfigurePostCard({
   isOwner,
   serviceLocale,
   gameLocale,
+  onEdit,
   onDelete,
 }: TransfigurePostCardProps) {
   const copy = serviceMessages[serviceLocale].transfigure;
@@ -103,7 +105,9 @@ export function TransfigurePostCard({
               {post.title?.trim() || resource?.nameKo || post.resource_id}
             </span>
             <span className="block truncate text-[11px] text-zinc-500">
-              {resource?.nameKo ?? post.resource_id} · {post.nickname}
+              {post.transformed_name?.trim() || resource?.nameKo || post.resource_id}
+              {" · "}
+              {post.nickname}
             </span>
           </span>
         </div>
@@ -112,14 +116,24 @@ export function TransfigurePostCard({
             {timeAgo(post.created_at, copy, dateLocale)}
           </span>
           {isOwner && (
-            <button
-              type="button"
-              onClick={() => onDelete(post.id)}
-              className="text-gray-500 opacity-0 transition-all hover:text-red-400 group-hover:opacity-100 focus-visible:opacity-100"
-              title={copy.delete}
-            >
-              <Trash2 size={14} />
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => onEdit(post)}
+                className="text-gray-500 opacity-0 transition-all hover:text-yellow-300 group-hover:opacity-100 focus-visible:opacity-100"
+                title={copy.edit}
+              >
+                <Pencil size={14} />
+              </button>
+              <button
+                type="button"
+                onClick={() => onDelete(post.id)}
+                className="text-gray-500 opacity-0 transition-all hover:text-red-400 group-hover:opacity-100 focus-visible:opacity-100"
+                title={copy.delete}
+              >
+                <Trash2 size={14} />
+              </button>
+            </>
           )}
         </div>
       </div>
