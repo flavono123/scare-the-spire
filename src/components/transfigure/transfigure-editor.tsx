@@ -29,6 +29,7 @@ interface TransfigureEditorProps {
   profileNickname: string;
   serviceLocale: ServiceLocale;
   onSubmit: (
+    title: string,
     blocks: PostBlock[],
     nickname: string,
     resource: TransfigureResourceRef,
@@ -44,6 +45,7 @@ export function TransfigureEditor({
   onSubmit,
 }: TransfigureEditorProps) {
   const copy = serviceMessages[serviceLocale].transfigure;
+  const titleInputRef = useRef<HTMLInputElement>(null);
   const nicknameInputRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState<EntityInfo | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -76,11 +78,17 @@ export function TransfigureEditor({
       throw new Error("transfigure content is unchanged");
     }
 
+    const title = titleInputRef.current?.value.trim() ?? "";
+    if (!title) {
+      setValidationError(copy.titleRequired);
+      throw new Error("transfigure title is required");
+    }
     const nickname = nicknameInputRef.current?.value.trim()
       || profileNickname
       || copy.defaultNickname;
     setValidationError(null);
     await onSubmit(
+      title,
       blocks,
       nickname,
       { type: selected.type, id: selected.id },
@@ -89,6 +97,7 @@ export function TransfigureEditor({
   }, [
     copy.changeRequired,
     copy.defaultNickname,
+    copy.titleRequired,
     onSubmit,
     profileNickname,
     selected,
@@ -117,6 +126,21 @@ export function TransfigureEditor({
             <div className="mt-1 font-game-text text-sm leading-relaxed text-zinc-400">
               <RichText text={sourceDescription} />
             </div>
+          </div>
+
+          <div className="border-b border-white/10 px-3 py-2">
+            <label className="block">
+              <span className="mb-1 block text-[11px] font-semibold uppercase tracking-[0.12em] text-cyan-200/60">
+                {copy.titleLabel}
+              </span>
+              <input
+                ref={titleInputRef}
+                type="text"
+                placeholder={copy.titlePlaceholder}
+                maxLength={80}
+                className="w-full bg-transparent text-sm text-gray-200 outline-none placeholder:text-gray-600"
+              />
+            </label>
           </div>
 
           <div className="border-b border-white/10 px-3 py-2">

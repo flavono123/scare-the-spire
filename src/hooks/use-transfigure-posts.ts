@@ -15,6 +15,7 @@ import {
 interface AddTransfigurePostInput {
   blocks: PostBlock[];
   nickname: string;
+  title: string;
   resource: TransfigureResourceRef;
   sourceText: string;
   sourceGameLocale: GameLocale;
@@ -117,6 +118,7 @@ export function useTransfigurePosts(
     async ({
       blocks,
       nickname,
+      title,
       resource,
       sourceText,
       sourceGameLocale,
@@ -124,6 +126,7 @@ export function useTransfigurePosts(
     }: AddTransfigurePostInput): Promise<TransfigurePost | null> => {
       const contentText = blocksToPlainText(blocks).trim();
       const trimmedNickname = nickname.trim();
+      const trimmedTitle = title.trim();
       const trimmedSourceText = sourceText.trim();
       if (
         !activeUserId
@@ -131,6 +134,8 @@ export function useTransfigurePosts(
         || contentText.length < 2
         || trimmedNickname.length < 1
         || trimmedNickname.length > 20
+        || trimmedTitle.length < 1
+        || trimmedTitle.length > 80
         || !resource.id
         || !trimmedSourceText
         || !isTransfiguredContent(blocks, trimmedSourceText)
@@ -145,6 +150,7 @@ export function useTransfigurePosts(
           .insert({
             user_id: activeUserId,
             nickname: trimmedNickname,
+            title: trimmedTitle,
             resource_type: resource.type,
             resource_id: resource.id,
             source_text: trimmedSourceText,

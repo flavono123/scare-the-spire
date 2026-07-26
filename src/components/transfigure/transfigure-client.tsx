@@ -53,6 +53,7 @@ export function TransfigureClient({
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
 
   const handleSubmit = useCallback(async (
+    postTitle: string,
     blocks: PostBlock[],
     nickname: string,
     resource: TransfigureResourceRef,
@@ -63,6 +64,7 @@ export function TransfigureClient({
     const post = await add({
       blocks,
       nickname,
+      title: postTitle,
       resource,
       sourceText,
       sourceGameLocale: gameLocale,

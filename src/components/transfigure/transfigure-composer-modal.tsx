@@ -15,6 +15,7 @@ interface TransfigureComposerModalProps {
   profileNickname: string;
   serviceLocale: ServiceLocale;
   onSubmit: (
+    title: string,
     blocks: PostBlock[],
     nickname: string,
     resource: TransfigureResourceRef,

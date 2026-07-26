@@ -100,10 +100,10 @@ export function TransfigurePostCard({
           </span>
           <span className="min-w-0">
             <span className="block truncate text-sm font-semibold text-zinc-200">
-              {resource?.nameKo ?? post.resource_id}
+              {post.title?.trim() || resource?.nameKo || post.resource_id}
             </span>
             <span className="block truncate text-[11px] text-zinc-500">
-              {post.nickname}
+              {resource?.nameKo ?? post.resource_id} · {post.nickname}
             </span>
           </span>
         </div>

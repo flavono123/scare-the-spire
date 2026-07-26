@@ -118,11 +118,11 @@ export function TransfigurePostView({
               )}
             </span>
             <span className="min-w-0">
-              <span className="block truncate text-sm font-semibold text-zinc-200">
-                {resource?.nameKo ?? post.resource_id}
+              <span className="block truncate text-lg font-semibold text-zinc-100">
+                {post.title?.trim() || resource?.nameKo || post.resource_id}
               </span>
               <span className="block truncate text-xs text-zinc-500">
-                {post.nickname}
+                {resource?.nameKo ?? post.resource_id} · {post.nickname}
               </span>
             </span>
           </div>

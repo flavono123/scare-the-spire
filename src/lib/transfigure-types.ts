@@ -28,6 +28,7 @@ export interface TransfigurePost {
   id: string;
   user_id: string;
   nickname: string;
+  title: string | null;
   resource_type: TransfigureResourceType;
   resource_id: string;
   source_text: string;
