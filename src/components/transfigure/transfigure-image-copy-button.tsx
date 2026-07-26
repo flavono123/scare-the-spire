@@ -17,13 +17,11 @@ interface TransfigureImageCopyButtonProps {
     copy: string;
     copying: string;
     copied: string;
-    copySuccess: string;
     copyFailed: string;
     copyUnsupported: string;
     download: string;
     downloading: string;
     downloaded: string;
-    downloadSuccess: string;
     downloadFailed: string;
   };
 }
@@ -62,10 +60,7 @@ export function TransfigureImageCopyButton({
 }: TransfigureImageCopyButtonProps) {
   const [copyStatus, setCopyStatus] = useState<ActionStatus>("idle");
   const [downloadStatus, setDownloadStatus] = useState<ActionStatus>("idle");
-  const [feedback, setFeedback] = useState<{
-    message: string;
-    tone: "error" | "status";
-  } | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleCopy = useCallback(() => {
     const target = targetRef.current;
@@ -75,13 +70,13 @@ export function TransfigureImageCopyButton({
       || !navigator.clipboard?.write
       || !("ClipboardItem" in window)
     ) {
-      setFeedback({ message: labels.copyUnsupported, tone: "error" });
+      setErrorMessage(labels.copyUnsupported);
       return;
     }
 
     setCopyStatus("working");
     setDownloadStatus("idle");
-    setFeedback(null);
+    setErrorMessage(null);
     const blobPromise = renderTargetPng(target);
 
     void navigator.clipboard.write([
@@ -89,29 +84,27 @@ export function TransfigureImageCopyButton({
     ]).then(
       () => {
         setCopyStatus("success");
-        setFeedback({ message: labels.copySuccess, tone: "status" });
       },
       () => {
         setCopyStatus("idle");
-        setFeedback({ message: labels.copyFailed, tone: "error" });
+        setErrorMessage(labels.copyFailed);
       },
     );
   }, [
     labels.copyFailed,
-    labels.copySuccess,
     labels.copyUnsupported,
     targetRef,
   ]);
   const handleDownload = useCallback(async () => {
     const target = targetRef.current;
     if (!target) {
-      setFeedback({ message: labels.downloadFailed, tone: "error" });
+      setErrorMessage(labels.downloadFailed);
       return;
     }
 
     setCopyStatus("idle");
     setDownloadStatus("working");
-    setFeedback(null);
+    setErrorMessage(null);
     try {
       const blob = await renderTargetPng(target);
       const url = URL.createObjectURL(blob);
@@ -123,15 +116,13 @@ export function TransfigureImageCopyButton({
       anchor.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 1000);
       setDownloadStatus("success");
-      setFeedback({ message: labels.downloadSuccess, tone: "status" });
     } catch {
       setDownloadStatus("idle");
-      setFeedback({ message: labels.downloadFailed, tone: "error" });
+      setErrorMessage(labels.downloadFailed);
     }
   }, [
     fileName,
     labels.downloadFailed,
-    labels.downloadSuccess,
     targetRef,
   ]);
   const busy = copyStatus === "working" || downloadStatus === "working";
@@ -180,15 +171,13 @@ export function TransfigureImageCopyButton({
               : labels.download}
         </button>
       </div>
-      {feedback && (
+      {errorMessage && (
         <span
-          role={feedback.tone === "error" ? "alert" : "status"}
+          role="alert"
           aria-live="polite"
-          className={feedback.tone === "error"
-            ? "max-w-72 text-center text-xs text-red-300"
-            : "max-w-72 text-center text-xs text-yellow-100/75"}
+          className="max-w-72 text-center text-xs text-red-300"
         >
-          {feedback.message}
+          {errorMessage}
         </span>
       )}
     </div>

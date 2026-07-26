@@ -56,13 +56,11 @@ export function TransfigureResourcePreview({
     copy: copy.copyAssetImage,
     copying: copy.copyingAssetImage,
     copied: copy.copied,
-    copySuccess: copy.assetImageCopied,
     copyFailed: copy.assetImageCopyFailed,
     copyUnsupported: copy.assetImageCopyUnsupported,
     download: copy.downloadAssetImage,
     downloading: copy.downloadingAssetImage,
     downloaded: copy.downloaded,
-    downloadSuccess: copy.assetImageDownloaded,
     downloadFailed: copy.assetImageDownloadFailed,
   };
   const imageFileName = copy.assetImageFileName.replace("{name}", displayName);
