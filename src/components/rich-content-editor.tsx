@@ -246,6 +246,10 @@ export interface RichContentEditorProps {
   initialBlocks?: PostBlock[];
   onBlocksChange?: (blocks: PostBlock[]) => void;
   canSubmitBlocks?: (blocks: PostBlock[]) => boolean;
+  embedded?: boolean;
+  submitOnEnter?: boolean;
+  submitRequestId?: number;
+  onValidityChange?: (valid: boolean) => void;
   submitIconSrc?: string;
   showKeywordTip?: boolean;
   keywordTip?: {
@@ -279,6 +283,10 @@ export function RichContentEditor({
   initialBlocks,
   onBlocksChange,
   canSubmitBlocks,
+  embedded = false,
+  submitOnEnter = true,
+  submitRequestId,
+  onValidityChange,
   submitIconSrc,
   showKeywordTip = false,
   keywordTip,
@@ -305,6 +313,7 @@ export function RichContentEditor({
   const submitRef = useRef<() => void>(() => {});
   const suggestionOpenRef = useRef(false);
   const lastEntityInsertRequestIdRef = useRef<number | null>(null);
+  const lastSubmitRequestIdRef = useRef(submitRequestId);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
   const keywordEntityIndex = useMemo(() => buildEntityKeywordIndex(entities), [entities]);
   const keywordDescriptionMap = useMemo(() => {
@@ -607,16 +616,16 @@ export function RichContentEditor({
     },
     editorProps: {
       attributes: {
-        class: `${richPlaceholder ? "min-h-[3.75rem]" : "min-h-[2.5rem]"} px-3 py-2 text-sm text-gray-200 outline-none`,
+        class: embedded
+          ? "h-full min-h-full w-full cursor-text px-1 py-1 text-center leading-[1.18] text-inherit outline-none"
+          : `${richPlaceholder ? "min-h-[3.75rem]" : "min-h-[2.5rem]"} px-3 py-2 text-sm text-gray-200 outline-none`,
         "aria-placeholder": richPlaceholder ? cleanTooltipText(richPlaceholder) : placeholder,
       },
       handleDOMEvents: {
         compositionend: () => {
           window.setTimeout(() => {
             const currentEditor = editorRef.current;
-            if (!currentEditor || currentEditor.isDestroyed || currentEditor.view.composing) {
-              return;
-            }
+            if (!currentEditor || currentEditor.isDestroyed) return;
             processEditorUpdate(currentEditor);
           }, 0);
           return false;
@@ -720,7 +729,7 @@ export function RichContentEditor({
         return true;
       },
       handleKeyDown: (_view, event) => {
-        if (event.key === "Enter" && !event.shiftKey) {
+        if (submitOnEnter && event.key === "Enter" && !event.shiftKey) {
           if (suggestionOpenRef.current) {
             return false;
           }
@@ -732,12 +741,14 @@ export function RichContentEditor({
     },
   }, [
     draftKey,
+    embedded,
     entities,
     initialBlocks,
     initialText,
     maxChars,
     placeholder,
     richPlaceholder,
+    submitOnEnter,
     youtubeExtension,
   ]);
 
@@ -816,6 +827,21 @@ export function RichContentEditor({
     && charCount >= minChars
     && (maxChars == null || charCount <= maxChars)
   );
+  useEffect(() => {
+    onValidityChange?.(isValid);
+  }, [isValid, onValidityChange]);
+
+  useEffect(() => {
+    if (
+      submitRequestId == null
+      || lastSubmitRequestIdRef.current === submitRequestId
+    ) {
+      return;
+    }
+    lastSubmitRequestIdRef.current = submitRequestId;
+    if (isValid) void handleSubmit();
+  }, [handleSubmit, isValid, submitRequestId]);
+
   const charCountColor = useMemo(() => {
     if (charCount === 0) return "text-gray-500";
     if (charCount < minChars || (maxChars != null && charCount > maxChars)) return "text-red-400";
@@ -824,8 +850,13 @@ export function RichContentEditor({
   }, [charCount, maxChars, minChars]);
 
   return (
-    <div className="border border-border rounded-lg bg-card/30 overflow-visible">
-      <div className="overflow-visible relative">
+    <div
+      className={embedded
+        ? "h-full w-full overflow-visible"
+        : "overflow-visible rounded-lg border border-border bg-card/30"}
+      data-rich-editor-surface={embedded ? "embedded" : "default"}
+    >
+      <div className={`relative overflow-visible ${embedded ? "h-full" : ""}`}>
         {richPlaceholder && charCount === 0 && (
           <div
             aria-hidden="true"
@@ -835,11 +866,14 @@ export function RichContentEditor({
           </div>
         )}
         <EntityMapProvider value={entityMap}>
-          <EditorContent editor={editor} className="relative z-10" />
+          <EditorContent
+            editor={editor}
+            className={`relative z-10 ${embedded ? "h-full" : ""}`}
+          />
         </EntityMapProvider>
       </div>
 
-      {youtubeFeedback && (
+      {!embedded && youtubeFeedback && (
         <p
           className={`border-t border-border px-3 py-1.5 text-[11px] ${
             youtubeFeedback.tone === "aqua" ? "spire-aqua" : "text-red-300"
@@ -851,40 +885,42 @@ export function RichContentEditor({
         </p>
       )}
 
-      <div className="flex items-center gap-3 px-3 py-2 border-t border-border">
-        {maxChars != null && (
-          <span className={`text-xs font-mono shrink-0 ${charCountColor}`}>
-            {charCount}/{maxChars}
-          </span>
-        )}
-        {showKeywordTip && keywordTip && (
-          <span className="hidden sm:block text-[11px] text-gray-500 truncate flex-1 min-w-0 opacity-70">
-            {keywordTip.label} {keywordTip.text}
-            {"{"}
-            <span className="spire-gold">{keywordTip.keyword}</span>
-            {"}"}
-            {" → "}
-            <span className="spire-gold">{keywordTip.result}</span>
-          </span>
-        )}
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={!isValid || submitting}
-          className="ml-auto flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0"
-        >
-          {submitting ? "..." : submitLabel}
-          {submitIconSrc && (
-            <Image
-              src={submitIconSrc}
-              alt=""
-              width={14}
-              height={14}
-              className="object-contain"
-            />
+      {!embedded && (
+        <div className="flex items-center gap-3 border-t border-border px-3 py-2">
+          {maxChars != null && (
+            <span className={`shrink-0 font-mono text-xs ${charCountColor}`}>
+              {charCount}/{maxChars}
+            </span>
           )}
-        </button>
-      </div>
+          {showKeywordTip && keywordTip && (
+            <span className="hidden min-w-0 flex-1 truncate text-[11px] text-gray-500 opacity-70 sm:block">
+              {keywordTip.label} {keywordTip.text}
+              {"{"}
+              <span className="spire-gold">{keywordTip.keyword}</span>
+              {"}"}
+              {" → "}
+              <span className="spire-gold">{keywordTip.result}</span>
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={!isValid || submitting}
+            className="ml-auto flex shrink-0 items-center gap-1.5 rounded bg-yellow-500/20 px-3 py-1 text-xs font-semibold text-yellow-400 transition-colors hover:bg-yellow-500/30 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {submitting ? "..." : submitLabel}
+            {submitIconSrc && (
+              <Image
+                src={submitIconSrc}
+                alt=""
+                width={14}
+                height={14}
+                className="object-contain"
+              />
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

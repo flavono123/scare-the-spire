@@ -34,7 +34,7 @@ export type HoverTipArt = {
 };
 
 interface HoverTipProps {
-  title: string;
+  title: ReactNode;
   variant?: HoverTipVariant;
   icon?: string | null;
   art?: HoverTipArt;

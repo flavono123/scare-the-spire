@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, memo, Fragment, CSSProperties, type ComponentProps } from "react";
+import {
+  useState,
+  memo,
+  Fragment,
+  CSSProperties,
+  type ComponentProps,
+  type ReactNode,
+} from "react";
 import StaticImage from "@/components/ui/static-image";
 import type { ServiceLocale } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
@@ -469,6 +476,14 @@ interface CardTileProps {
   onClick?: () => void;
   /** Static preview mode: disables pointer cursor and hover scale. */
   interactive?: boolean;
+  /** Replaces the rendered title while preserving the game card frame. */
+  titleContent?: ReactNode;
+  /** Replaces the rendered description while preserving the game card frame. */
+  descriptionContent?: ReactNode;
+  /** Replaces the energy-cost text while preserving the game energy orb. */
+  costContent?: ReactNode;
+  /** Allows text selection and editing inside custom content slots. */
+  editableContent?: boolean;
   engagementStats?: {
     commentCount: number;
     likeCount: number;
@@ -497,6 +512,10 @@ export const CardTile = memo(function CardTile({
   onEnchantSlotClick,
   onClick,
   interactive = true,
+  titleContent,
+  descriptionContent,
+  costContent,
+  editableContent = false,
   engagementStats,
 }: CardTileProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
@@ -737,7 +756,7 @@ export const CardTile = memo(function CardTile({
   );
 
   // ─── Energy cost orb ───
-  const renderCostOrb = () => costDisplay ? (
+  const renderCostOrb = () => costDisplay || costContent ? (
     <div
       className="absolute z-[6]"
       style={{
@@ -758,7 +777,7 @@ export const CardTile = memo(function CardTile({
           ...(costStroke as CSSProperties),
         }}
       >
-        {costDisplay}
+        {costContent ?? costDisplay}
       </span>
     </div>
   ) : null;
@@ -892,7 +911,7 @@ export const CardTile = memo(function CardTile({
   };
   const cardRootClassName = interactive
     ? "group relative cursor-pointer select-none transition-transform hover:scale-[1.03] hover:z-10"
-    : "group relative select-none";
+    : `group relative ${editableContent ? "select-text" : "select-none"}`;
   const lifecycleClassName = card.deprecated ? " opacity-50 grayscale saturate-0" : "";
 
   // =====================================================================
@@ -1020,7 +1039,7 @@ export const CardTile = memo(function CardTile({
                 ...(titleStroke as CSSProperties),
               }}
             >
-              {renderedCardName}{titleUpgradeSuffix}
+              {titleContent ?? <>{renderedCardName}{titleUpgradeSuffix}</>}
             </span>
           </div>
 
@@ -1060,7 +1079,7 @@ export const CardTile = memo(function CardTile({
               fontFamily: CARD_FONT,
             }}
           >
-            {renderDescription()}
+            {descriptionContent ?? renderDescription()}
           </div>
 
           {renderCostOrb()}
@@ -1172,7 +1191,7 @@ export const CardTile = memo(function CardTile({
               ...(titleStroke as CSSProperties),
             }}
           >
-            {renderedCardName}{titleUpgradeSuffix}
+            {titleContent ?? <>{renderedCardName}{titleUpgradeSuffix}</>}
           </span>
         </div>
 
@@ -1212,7 +1231,7 @@ export const CardTile = memo(function CardTile({
             fontFamily: CARD_FONT,
           }}
         >
-          {renderDescription()}
+          {descriptionContent ?? renderDescription()}
         </div>
 
         {renderCostOrb()}
