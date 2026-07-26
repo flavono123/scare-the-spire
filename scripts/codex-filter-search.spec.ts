@@ -224,7 +224,7 @@ test.describe("This or That resource search", () => {
     await openCompendium(page, "/this-or-that");
 
     await page.getByRole("button", { name: "작성", exact: true }).click();
-    await page.getByPlaceholder("컴펜디움 리소스 검색").first().fill("ㄴㅋㄹㅂㅇㄷ");
+    await page.getByPlaceholder("게임 요소 검색").first().fill("ㄴㅋㄹㅂㅇㄷ");
 
     await expect(page.getByRole("button", { name: /네크로바인더/ })).toBeVisible();
   });
