@@ -375,6 +375,7 @@ export function ComboGameElementFilter({
                         <span className="relative flex h-12 w-14 items-center justify-center">
                           <ComboResourceAsset
                             entity={entity}
+                            entityMap={entityMap}
                             serviceLocale={serviceLocale}
                           />
                           {isSelected && (

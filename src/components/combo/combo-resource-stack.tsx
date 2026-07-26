@@ -4,6 +4,11 @@ import { useMemo, type CSSProperties } from "react";
 import Image from "@/components/ui/static-image";
 import { TinyCardIcon } from "@/components/history-course/card-action-icon";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
+import {
+  COMBO_KEYWORD_IMAGE_URL,
+  getComboEncounterMonsterIds,
+  getComboEncounterNodeImageUrl,
+} from "@/lib/combo-resource-visuals";
 import { comboResourceKey, type ComboResourceRef } from "@/lib/combo-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -24,9 +29,11 @@ type ComboStackStyle = CSSProperties & {
 
 export function ComboResourceAsset({
   entity,
+  entityMap,
   serviceLocale,
 }: {
   entity: EntityInfo;
+  entityMap?: ReadonlyMap<string, EntityInfo>;
   serviceLocale: ServiceLocale;
 }) {
   const fallbackName = serviceLocale === "en" ? entity.nameEn : entity.nameKo;
@@ -40,6 +47,62 @@ export function ComboResourceAsset({
           type: entity.cardData.type,
         }}
         width={52}
+      />
+    );
+  }
+
+  if (entity.type === "encounter" && entity.encounterData) {
+    const monsterImageUrls = getComboEncounterMonsterIds(entity.encounterData)
+      .map((monsterId) => entityMap?.get(`monster:${monsterId}`)?.imageUrl)
+      .filter((imageUrl): imageUrl is string => Boolean(imageUrl));
+    const representativeImageUrls = monsterImageUrls.length > 0
+      ? monsterImageUrls
+      : entity.imageUrl
+        ? [entity.imageUrl]
+        : [];
+
+    return (
+      <span className="relative block h-[52px] w-14">
+        <Image
+          src={getComboEncounterNodeImageUrl(entity.encounterData)}
+          alt=""
+          width={34}
+          height={34}
+          className={cn(
+            "absolute bottom-0 left-0 z-0 h-[34px] w-[34px] object-contain",
+            "drop-shadow-[0_3px_5px_rgba(0,0,0,0.8)]",
+          )}
+        />
+        {representativeImageUrls.slice(0, 2).map((imageUrl, index, images) => (
+          <Image
+            key={`${imageUrl}:${index}`}
+            src={imageUrl}
+            alt=""
+            width={42}
+            height={48}
+            className={cn(
+              "absolute top-0 h-12 w-[42px] object-contain",
+              "drop-shadow-[0_5px_8px_rgba(0,0,0,0.7)]",
+              images.length === 1
+                ? "left-3.5 z-10"
+                : index === 0
+                  ? "left-1.5 z-10"
+                  : "right-0 z-20",
+            )}
+          />
+        ))}
+      </span>
+    );
+  }
+
+  if (entity.type === "keyword") {
+    return (
+      <Image
+        src={COMBO_KEYWORD_IMAGE_URL}
+        alt=""
+        width={52}
+        height={32}
+        className="max-h-10 max-w-[52px] object-contain drop-shadow-[0_5px_8px_rgba(0,0,0,0.6)]"
       />
     );
   }
@@ -128,6 +191,7 @@ export function ComboResourceStack({
                 >
                   <ComboResourceAsset
                     entity={entity}
+                    entityMap={entityMap}
                     serviceLocale={serviceLocale}
                   />
                   <span className="sr-only">
