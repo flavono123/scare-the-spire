@@ -12,6 +12,8 @@ type ServiceMetadataCopy = {
   chemicalXDescription: string;
   comboTitle: string;
   comboDescription: string;
+  transfigureTitle: string;
+  transfigureDescription: string;
 };
 
 type ServiceOgImage = PageOgImage | {
@@ -30,6 +32,8 @@ const SERVICE_METADATA_COPY: Record<ServiceLocale, ServiceMetadataCopy> = {
     chemicalXDescription: "슬레이 더 스파이어 2 고봉밥 트윕",
     comboTitle: "코오오옴보",
     comboDescription: "카드, 유물, 포션 등 슬레이 더 스파이어 2 게임 요소 조합을 공유합니다.",
+    transfigureTitle: "변형",
+    transfigureDescription: "슬레이 더 스파이어 2 게임 요소를 골라 설명을 새롭게 써서 공유합니다.",
   },
   en: {
     siteDescription: "Slay the Spire 2 patch notes, Compendium, and community.",
@@ -39,6 +43,8 @@ const SERVICE_METADATA_COPY: Record<ServiceLocale, ServiceMetadataCopy> = {
     chemicalXDescription: "Full Slay the Spire 2 twips.",
     comboTitle: "C-c-c-Combo",
     comboDescription: "Share combinations of Slay the Spire 2 Compendium resources, including cards, relics, and potions.",
+    transfigureTitle: "Transfigure",
+    transfigureDescription: "Choose a Slay the Spire 2 game element, rewrite its description, and share it.",
   },
 };
 
