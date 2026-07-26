@@ -40,7 +40,6 @@ interface TransfigureAssetEditorProps {
   sourceUpgradeText: string | null;
   sourceUpgradeCost: string | null;
   submitLabel: string;
-  submitRequestId: number;
   transformedName: string;
   transformedCost: string;
   transformedUpgradeCost: string;
@@ -84,7 +83,6 @@ export function TransfigureAssetEditor({
   sourceUpgradeText,
   sourceUpgradeCost,
   submitLabel,
-  submitRequestId,
   transformedName,
   transformedCost,
   transformedUpgradeCost,
@@ -164,7 +162,6 @@ export function TransfigureAssetEditor({
         maxChars={null}
         embedded
         submitOnEnter={false}
-        submitRequestId={submitRequestId}
         onValidityChange={onValidityChange}
       />
     </div>

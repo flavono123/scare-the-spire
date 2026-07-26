@@ -80,7 +80,7 @@ export function TransfigureEditor({
     initialPost?.transformed_upgrade_cost ?? "",
   );
   const [editorValid, setEditorValid] = useState(false);
-  const [submitRequestId, setSubmitRequestId] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const sourceEntities = useMemo(
     () => entities.filter((entity) => getTransfigureSourceText(entity) != null),
@@ -238,14 +238,27 @@ export function TransfigureEditor({
     previewBlocks,
     previewUpgradeBlocks,
   );
-  const requestSubmit = useCallback(() => {
+  const requestSubmit = useCallback(async () => {
     if (!canSubmit) {
       setValidationError(copy.changeRequired);
       return;
     }
     setValidationError(null);
-    setSubmitRequestId((current) => current + 1);
-  }, [canSubmit, copy.changeRequired]);
+    setSubmitting(true);
+    try {
+      await handleSubmit(previewBlocks, previewUpgradeBlocks);
+    } catch {
+      // Keep the current editor state intact when persistence is unavailable.
+    } finally {
+      setSubmitting(false);
+    }
+  }, [
+    canSubmit,
+    copy.changeRequired,
+    handleSubmit,
+    previewBlocks,
+    previewUpgradeBlocks,
+  ]);
 
   return (
     <div className="space-y-3" data-transfigure-editor>
@@ -316,7 +329,6 @@ export function TransfigureEditor({
               sourceUpgradeText={sourceUpgradeText}
               sourceUpgradeCost={sourceUpgradeCost}
               submitLabel={initialPost ? copy.saveChanges : copy.submit}
-              submitRequestId={submitRequestId}
               transformedName={transformedName}
               transformedCost={transformedCost}
               transformedUpgradeCost={transformedUpgradeCost}
@@ -342,7 +354,7 @@ export function TransfigureEditor({
             <button
               type="button"
               onClick={requestSubmit}
-              disabled={!canSubmit}
+              disabled={!canSubmit || submitting}
               className="mx-auto mt-4 flex items-center gap-1.5 rounded-lg border border-yellow-500/30 bg-yellow-500/15 px-4 py-2 text-sm font-semibold text-yellow-200 transition-colors hover:bg-yellow-500/25 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {initialPost ? copy.saveChanges : copy.submit}
