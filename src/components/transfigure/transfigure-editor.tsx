@@ -123,6 +123,31 @@ export function TransfigureEditor({
     () => selected ? getTransfigureUpgradeSourceCost(selected) : null,
     [selected],
   );
+  const hasUpdateDiff = useCallback((
+    blocks: PostBlock[],
+    upgradedBlocks: PostBlock[] | null,
+    title: string,
+    nickname: string,
+  ) => {
+    if (!initialPost) return true;
+    const initialUpgradeBlocks = initialPost.upgraded_content ?? sourceUpgradeBlocks;
+    return (
+      title !== (initialPost.title ?? "").trim()
+      || nickname !== initialPost.nickname.trim()
+      || transformedName.trim() !== (initialPost.transformed_name ?? "").trim()
+      || transformedCost.trim() !== (initialPost.transformed_cost ?? "").trim()
+      || transformedUpgradeCost.trim()
+        !== (initialPost.transformed_upgrade_cost ?? "").trim()
+      || JSON.stringify(blocks) !== JSON.stringify(initialPost.content)
+      || JSON.stringify(upgradedBlocks) !== JSON.stringify(initialUpgradeBlocks)
+    );
+  }, [
+    initialPost,
+    sourceUpgradeBlocks,
+    transformedCost,
+    transformedName,
+    transformedUpgradeCost,
+  ]);
 
   const handleSelect = useCallback((entity: EntityInfo) => {
     setSelected(entity);
@@ -170,6 +195,10 @@ export function TransfigureEditor({
     const nickname = nicknameInputRef.current?.value.trim()
       || profileNickname
       || copy.defaultNickname;
+    if (!hasUpdateDiff(blocks, upgradedBlocks, title, nickname)) {
+      setSaveFeedback({ message: copy.noChanges, tone: "error" });
+      throw new Error("transfigure post is unchanged");
+    }
     setSaveFeedback(null);
     await onSubmit({
       title,
@@ -195,6 +224,7 @@ export function TransfigureEditor({
     copy.defaultTitle,
     copy.noChanges,
     gameLocale,
+    hasUpdateDiff,
     initialPost,
     onSubmit,
     postTitle,
@@ -265,6 +295,22 @@ export function TransfigureEditor({
       });
       return;
     }
+    const title = postTitle.trim()
+      || (selected
+        ? copy.defaultTitle.replace("{name}", selected.nameKo)
+        : "");
+    const nickname = nicknameInputRef.current?.value.trim()
+      || profileNickname
+      || copy.defaultNickname;
+    if (!hasUpdateDiff(
+      previewBlocks,
+      previewUpgradeBlocks,
+      title,
+      nickname,
+    )) {
+      setSaveFeedback({ message: copy.noChanges, tone: "error" });
+      return;
+    }
     setSaveFeedback({ message: copy.saving, tone: "status" });
     setSubmitting(true);
     try {
@@ -276,6 +322,8 @@ export function TransfigureEditor({
     }
   }, [
     copy.changeRequired,
+    copy.defaultNickname,
+    copy.defaultTitle,
     copy.invalidDescription,
     copy.noChanges,
     copy.saveFailed,
@@ -283,9 +331,13 @@ export function TransfigureEditor({
     descriptionsValid,
     handleSubmit,
     hasChanges,
+    hasUpdateDiff,
     initialPost,
+    postTitle,
     previewBlocks,
     previewUpgradeBlocks,
+    profileNickname,
+    selected,
   ]);
 
   return (
