@@ -517,12 +517,12 @@ function SelectedResourcePreview({
           href={href}
           prefetch={false}
           aria-label={openLabel.replace("{name}", label)}
-          className="game-inspect-cursor inline-block max-w-full rounded-md outline-none transition-[filter,transform] hover:brightness-110 focus-visible:ring-1 focus-visible:ring-yellow-400/60"
+          className="game-inspect-cursor block w-full max-w-[23rem] rounded-md outline-none transition-[filter,transform] hover:brightness-110 focus-visible:ring-1 focus-visible:ring-yellow-400/60"
         >
           {preview}
         </Link>
       ) : (
-        <span className="inline-block max-w-full">{preview}</span>
+        <span className="block w-full max-w-[23rem]">{preview}</span>
       )}
       <p className="mt-2 font-game-text text-xs text-gray-500">
         {changeCountLabel}
