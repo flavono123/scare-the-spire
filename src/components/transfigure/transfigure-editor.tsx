@@ -9,6 +9,7 @@ import type { PostBlock } from "@/lib/chemical-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
   getTransfigureEntityDescription,
+  getTransfigureInitialBlocks,
   getTransfigureSourceText,
   isTransfiguredContent,
   isTransfigureResourceType,
@@ -34,6 +35,7 @@ interface TransfigureEditorProps {
     nickname: string,
     resource: TransfigureResourceRef,
     sourceText: string,
+    sourceBlocks: PostBlock[],
   ) => Promise<void>;
 }
 
@@ -61,6 +63,10 @@ export function TransfigureEditor({
     () => selected ? getTransfigureSourceText(selected) : null,
     [selected],
   );
+  const sourceBlocks = useMemo(
+    () => selected ? getTransfigureInitialBlocks(selected, entities) : [],
+    [entities, selected],
+  );
 
   const handleSelect = useCallback((entity: EntityInfo) => {
     setSelected(entity);
@@ -72,7 +78,7 @@ export function TransfigureEditor({
       !selected
       || !sourceText
       || !isTransfigureResourceType(selected.type)
-      || !isTransfiguredContent(blocks, sourceText)
+      || !isTransfiguredContent(blocks, sourceText, sourceBlocks)
     ) {
       setValidationError(copy.changeRequired);
       throw new Error("transfigure content is unchanged");
@@ -93,6 +99,7 @@ export function TransfigureEditor({
       nickname,
       { type: selected.type, id: selected.id },
       sourceText,
+      sourceBlocks,
     );
   }, [
     copy.changeRequired,
@@ -101,11 +108,14 @@ export function TransfigureEditor({
     onSubmit,
     profileNickname,
     selected,
+    sourceBlocks,
     sourceText,
   ]);
   const canSubmitBlocks = useCallback(
-    (blocks: PostBlock[]) => sourceText != null && isTransfiguredContent(blocks, sourceText),
-    [sourceText],
+    (blocks: PostBlock[]) => (
+      sourceText != null && isTransfiguredContent(blocks, sourceText, sourceBlocks)
+    ),
+    [sourceBlocks, sourceText],
   );
 
   return (
@@ -169,7 +179,7 @@ export function TransfigureEditor({
             entities={entities}
             onSubmit={handleSubmit}
             placeholder={sourceText}
-            initialText={sourceText}
+            initialBlocks={sourceBlocks}
             canSubmitBlocks={canSubmitBlocks}
             draftKey={`sts-transfigure-draft:${gameLocale}:${selected.type}:${selected.id}`}
             submitLabel={copy.submit}

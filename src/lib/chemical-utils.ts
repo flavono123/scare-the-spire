@@ -104,6 +104,54 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
   return blocks;
 }
 
+export function blocksToTiptapDocument(blocks: PostBlock[]): JSONContent {
+  const content = blocks.flatMap((block): JSONContent[] => {
+    if (block.type === "text") {
+      const text = stripNullCharacters(block.text);
+      return text ? [{ type: "text", text }] : [];
+    }
+    if (block.type === "entity") {
+      return [{
+        type: "entity-mention",
+        attrs: {
+          id: block.entityId,
+          label: block.displayText,
+          entityType: block.entityType,
+          mentionSuggestionChar: "",
+        },
+      }];
+    }
+    if (block.type === "keyword") {
+      return [{
+        type: "custom-keyword",
+        attrs: {
+          text: block.text,
+          keyword: block.keyword ?? block.text,
+          description: block.description,
+          entityId: block.entityId ?? "",
+          entityType: block.entityType ?? "",
+        },
+      }];
+    }
+    return [{
+      type: "youtube-reference",
+      attrs: {
+        videoId: block.videoId,
+        title: block.title,
+        pendingLabel: "",
+      },
+    }];
+  });
+
+  return {
+    type: "doc",
+    content: [{
+      type: "paragraph",
+      ...(content.length > 0 ? { content } : {}),
+    }],
+  };
+}
+
 /**
  * Convert PostBlock array to plain text for character counting.
  */
@@ -330,6 +378,7 @@ export function resolveEntityKeyword(
 export function entityKeywordDescription(entity: EntityInfo): string | null {
   return (
     entity.cardData?.description
+    ?? entity.keywordData?.description
     ?? entity.relicData?.description
     ?? entity.potionData?.description
     ?? entity.powerData?.description

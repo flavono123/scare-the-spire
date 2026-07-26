@@ -19,6 +19,7 @@ import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { YouTubeReferenceExtension } from "@/components/editor/youtube-reference-extension";
 import {
   buildEntityKeywordIndex,
+  blocksToTiptapDocument,
   blocksToPlainText,
   entityKeywordDescription,
   matchEntities,
@@ -214,8 +215,14 @@ function createPlainTextDocument(initialText: string | undefined) {
   };
 }
 
-function getInitialEditorContent(draftKey: string, initialText: string | undefined) {
-  return parseSavedDraft(draftKey) ?? createPlainTextDocument(initialText);
+function getInitialEditorContent(
+  draftKey: string,
+  initialBlocks: PostBlock[] | undefined,
+  initialText: string | undefined,
+) {
+  return parseSavedDraft(draftKey)
+    ?? (initialBlocks ? blocksToTiptapDocument(initialBlocks) : undefined)
+    ?? createPlainTextDocument(initialText);
 }
 
 function saveDraft(draftKey: string, json: string) {
@@ -236,6 +243,8 @@ export interface RichContentEditorProps {
   minChars?: number;
   maxChars?: number | null;
   initialText?: string;
+  initialBlocks?: PostBlock[];
+  onBlocksChange?: (blocks: PostBlock[]) => void;
   canSubmitBlocks?: (blocks: PostBlock[]) => boolean;
   submitIconSrc?: string;
   showKeywordTip?: boolean;
@@ -267,6 +276,8 @@ export function RichContentEditor({
   minChars = 2,
   maxChars = 30,
   initialText,
+  initialBlocks,
+  onBlocksChange,
   canSubmitBlocks,
   submitIconSrc,
   showKeywordTip = false,
@@ -281,12 +292,12 @@ export function RichContentEditor({
     message: string;
   } | null>(null);
   const [charCount, setCharCount] = useState(() => {
-    const initialContent = getInitialEditorContent(draftKey, initialText);
+    const initialContent = getInitialEditorContent(draftKey, initialBlocks, initialText);
     return initialContent ? blocksToPlainText(tiptapToBlocks(initialContent)).length : 0;
   });
   const [blocksSubmittable, setBlocksSubmittable] = useState(() => {
     if (!canSubmitBlocks) return true;
-    const initialContent = getInitialEditorContent(draftKey, initialText);
+    const initialContent = getInitialEditorContent(draftKey, initialBlocks, initialText);
     return canSubmitBlocks(initialContent ? tiptapToBlocks(initialContent) : []);
   });
   const editorRef = useRef<Editor | null>(null);
@@ -332,9 +343,10 @@ export function RichContentEditor({
     const len = blocksToPlainText(blocks).length;
     setCharCount(len);
     setBlocksSubmittable(canSubmitBlocks ? canSubmitBlocks(blocks) : true);
+    onBlocksChange?.(blocks);
     if (len > 0) saveDraft(draftKey, JSON.stringify(json));
     else clearDraft(draftKey);
-  }, [canSubmitBlocks, draftKey]);
+  }, [canSubmitBlocks, draftKey, onBlocksChange]);
 
   const processEditorUpdate = useCallback((editor: Editor) => {
     if (replaceKeywordsInEditor(editor, resolveKeyword)) {
@@ -347,7 +359,7 @@ export function RichContentEditor({
 
   const editor = useEditor({
     immediatelyRender: false,
-    content: getInitialEditorContent(draftKey, initialText),
+    content: getInitialEditorContent(draftKey, initialBlocks, initialText),
     extensions: [
       StarterKit.configure({
         heading: false,
@@ -721,6 +733,7 @@ export function RichContentEditor({
   }, [
     draftKey,
     entities,
+    initialBlocks,
     initialText,
     maxChars,
     placeholder,

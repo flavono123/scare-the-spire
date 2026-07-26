@@ -18,6 +18,7 @@ interface AddTransfigurePostInput {
   title: string;
   resource: TransfigureResourceRef;
   sourceText: string;
+  sourceBlocks: PostBlock[];
   sourceGameLocale: GameLocale;
   activeUserId?: string;
 }
@@ -121,6 +122,7 @@ export function useTransfigurePosts(
       title,
       resource,
       sourceText,
+      sourceBlocks,
       sourceGameLocale,
       activeUserId = userId ?? undefined,
     }: AddTransfigurePostInput): Promise<TransfigurePost | null> => {
@@ -138,7 +140,7 @@ export function useTransfigurePosts(
         || trimmedTitle.length > 80
         || !resource.id
         || !trimmedSourceText
-        || !isTransfiguredContent(blocks, trimmedSourceText)
+        || !isTransfiguredContent(blocks, trimmedSourceText, sourceBlocks)
       ) {
         return null;
       }

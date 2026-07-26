@@ -20,6 +20,7 @@ interface TransfigureComposerModalProps {
     nickname: string,
     resource: TransfigureResourceRef,
     sourceText: string,
+    sourceBlocks: PostBlock[],
   ) => Promise<void>;
   onClose: () => void;
 }

@@ -58,6 +58,7 @@ export function TransfigureClient({
     nickname: string,
     resource: TransfigureResourceRef,
     sourceText: string,
+    sourceBlocks: PostBlock[],
   ) => {
     const activeUserId = userId ?? await ensureUser();
     if (!activeUserId) throw new Error("anonymous auth unavailable");
@@ -67,6 +68,7 @@ export function TransfigureClient({
       title: postTitle,
       resource,
       sourceText,
+      sourceBlocks,
       sourceGameLocale: gameLocale,
       activeUserId,
     });

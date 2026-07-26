@@ -1,5 +1,10 @@
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
+import {
+  buildEntityKeywordIndex,
+  entityKeywordDescription,
+  resolveEntityKeyword,
+} from "@/lib/chemical-utils";
 import { stripCodexMarkup } from "@/lib/codex-search";
 import type { GameLocale } from "@/lib/i18n";
 
@@ -72,6 +77,67 @@ export function getTransfigureSourceText(entity: EntityInfo): string | null {
   return text || null;
 }
 
+function appendTextBlock(blocks: PostBlock[], text: string) {
+  if (!text) return;
+  const previous = blocks.at(-1);
+  if (previous?.type === "text") {
+    previous.text += text;
+    return;
+  }
+  blocks.push({ type: "text", text });
+}
+
+export function getTransfigureInitialBlocks(
+  entity: EntityInfo,
+  entities: EntityInfo[],
+): PostBlock[] {
+  const description = getTransfigureEntityDescription(entity);
+  if (!description) return [];
+
+  const blocks: PostBlock[] = [];
+  const keywordIndex = buildEntityKeywordIndex(entities);
+  const goldPattern = /\[gold(?:\s+[^\]]*)?\]([\s\S]*?)\[\/gold\]/gi;
+  let cursor = 0;
+
+  for (const match of description.matchAll(goldPattern)) {
+    if (match.index == null) continue;
+    appendTextBlock(
+      blocks,
+      stripCodexMarkup(description.slice(cursor, match.index)).replace(/\s+/g, " "),
+    );
+
+    const text = stripCodexMarkup(match[1] ?? "").replace(/\s+/g, " ").trim();
+    if (text) {
+      const keywordEntity = resolveEntityKeyword(text, keywordIndex);
+      const keywordDescription = keywordEntity
+        ? entityKeywordDescription(keywordEntity)
+        : null;
+      blocks.push({
+        type: "keyword",
+        text,
+        keyword: keywordEntity?.nameKo ?? text,
+        description: keywordDescription
+          ? stripCodexMarkup(keywordDescription).replace(/\s+/g, " ").trim()
+          : text,
+        entityId: keywordEntity?.id,
+        entityType: keywordEntity?.type,
+      });
+    }
+    cursor = match.index + match[0].length;
+  }
+
+  appendTextBlock(
+    blocks,
+    stripCodexMarkup(description.slice(cursor)).replace(/\s+/g, " "),
+  );
+
+  const first = blocks[0];
+  if (first?.type === "text") first.text = first.text.trimStart();
+  const last = blocks.at(-1);
+  if (last?.type === "text") last.text = last.text.trimEnd();
+  return blocks;
+}
+
 export function transfigureResourceKey(resource: TransfigureResourceRef): string {
   return `${resource.type}:${resource.id}`;
 }
@@ -79,6 +145,7 @@ export function transfigureResourceKey(resource: TransfigureResourceRef): string
 export function isTransfiguredContent(
   blocks: PostBlock[],
   sourceText: string,
+  sourceBlocks?: PostBlock[],
 ): boolean {
   const normalizedSource = sourceText.replace(/\s+/g, " ").trim();
   const normalizedContent = blocks
@@ -92,10 +159,21 @@ export function isTransfiguredContent(
     .replace(/\s+/g, " ")
     .trim();
 
-  return (
-    normalizedContent !== normalizedSource
-    || blocks.some((block) => block.type !== "text")
-  );
+  if (normalizedContent !== normalizedSource) return true;
+  if (sourceBlocks) {
+    const signature = (items: PostBlock[]) => items.map((block) => {
+      if (block.type === "text") return `text:${block.text.replace(/\s+/g, " ")}`;
+      if (block.type === "keyword") {
+        return `keyword:${block.text}:${block.keyword ?? ""}:${block.entityType ?? ""}:${block.entityId ?? ""}`;
+      }
+      if (block.type === "entity") {
+        return `entity:${block.displayText}:${block.entityType}:${block.entityId}`;
+      }
+      return `youtube:${block.videoId}:${block.title}`;
+    }).join("|");
+    return signature(blocks) !== signature(sourceBlocks);
+  }
+  return blocks.some((block) => block.type !== "text");
 }
 
 export function findTransfigureEntity(
