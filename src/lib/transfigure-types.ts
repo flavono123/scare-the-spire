@@ -75,6 +75,28 @@ export function transfigureResourceKey(resource: TransfigureResourceRef): string
   return `${resource.type}:${resource.id}`;
 }
 
+export function isTransfiguredContent(
+  blocks: PostBlock[],
+  sourceText: string,
+): boolean {
+  const normalizedSource = sourceText.replace(/\s+/g, " ").trim();
+  const normalizedContent = blocks
+    .map((block) => {
+      if (block.type === "text") return block.text;
+      if (block.type === "keyword") return block.text;
+      if (block.type === "entity") return block.displayText;
+      return block.title;
+    })
+    .join("")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return (
+    normalizedContent !== normalizedSource
+    || blocks.some((block) => block.type !== "text")
+  );
+}
+
 export function findTransfigureEntity(
   entities: EntityInfo[],
   resource: TransfigureResourceRef,
