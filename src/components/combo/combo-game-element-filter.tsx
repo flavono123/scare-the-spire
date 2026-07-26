@@ -75,6 +75,7 @@ export function ComboGameElementFilter({
   const commonCopy = serviceMessages[serviceLocale].codex.common;
   const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const mobileInputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [activeType, setActiveType] = useState<EntityType | null>(null);
@@ -139,7 +140,10 @@ export function ComboGameElementFilter({
     };
     const mobileQuery = window.matchMedia("(max-width: 639px)");
     const previousOverflow = document.body.style.overflow;
-    if (mobileQuery.matches) document.body.style.overflow = "hidden";
+    if (mobileQuery.matches) {
+      document.body.style.overflow = "hidden";
+      window.requestAnimationFrame(() => mobileInputRef.current?.focus());
+    }
 
     document.addEventListener("pointerdown", handlePointerDown);
     window.addEventListener("keydown", handleKeyDown);
@@ -281,6 +285,33 @@ export function ComboGameElementFilter({
                 <X className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>
+
+            <label className="flex shrink-0 items-center gap-2 border-b border-white/10 px-3 py-2 sm:hidden">
+              <Search className="h-4 w-4 shrink-0 text-yellow-300/60" aria-hidden="true" />
+              <input
+                ref={mobileInputRef}
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder={copy.filterSearchPlaceholder}
+                aria-label={copy.filterSearchPlaceholder}
+                data-combo-filter-mobile-search
+                className="h-8 min-w-0 flex-1 bg-transparent text-sm text-zinc-100 outline-none placeholder:text-zinc-600"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery("");
+                    mobileInputRef.current?.focus();
+                  }}
+                  className="inline-flex h-7 w-7 items-center justify-center rounded text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200"
+                  aria-label={copy.clearGameElementSearch}
+                >
+                  <X className="h-3.5 w-3.5" aria-hidden="true" />
+                </button>
+              )}
+            </label>
 
             <div className="flex shrink-0 gap-1 overflow-x-auto border-b border-white/10 px-3 py-2">
               <button
