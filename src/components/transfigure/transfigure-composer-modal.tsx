@@ -15,6 +15,7 @@ interface TransfigureComposerModalProps {
   initialPost?: TransfigurePost | null;
   profileNickname: string;
   serviceLocale: ServiceLocale;
+  upgradeLabel: string;
   onSubmit: (
     input: Omit<SaveTransfigurePostInput, "activeUserId">,
   ) => Promise<void>;
@@ -28,6 +29,7 @@ export function TransfigureComposerModal({
   initialPost,
   profileNickname,
   serviceLocale,
+  upgradeLabel,
   onSubmit,
   onDelete,
   onClose,
@@ -122,6 +124,7 @@ export function TransfigureComposerModal({
             initialPost={initialPost}
             profileNickname={profileNickname}
             serviceLocale={serviceLocale}
+            upgradeLabel={upgradeLabel}
             onSubmit={onSubmit}
           />
         </div>

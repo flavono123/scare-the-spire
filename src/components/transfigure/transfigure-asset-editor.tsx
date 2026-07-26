@@ -1,14 +1,19 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useState, type KeyboardEvent } from "react";
 import { CardTile } from "@/components/codex/card-tile";
+import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { GameHoverTip } from "@/components/codex/hover-tip";
 import type { RichContentEditorProps } from "@/components/rich-content-editor";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import type { PostBlock } from "@/lib/chemical-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
-import { getTransfigureSourceCost } from "@/lib/transfigure-types";
+import {
+  getTransfigureSourceCost,
+  normalizeTransfigureCostInput,
+} from "@/lib/transfigure-types";
 
 const RichContentEditor = dynamic<RichContentEditorProps>(
   () => import("@/components/rich-content-editor").then((module) => module.RichContentEditor),
@@ -16,25 +21,40 @@ const RichContentEditor = dynamic<RichContentEditorProps>(
 );
 
 interface TransfigureAssetEditorProps {
-  canSubmitBlocks: (blocks: PostBlock[]) => boolean;
+  canSubmitBlocks: (
+    blocks: PostBlock[],
+    upgradedBlocks: PostBlock[] | null,
+  ) => boolean;
+  blocks: PostBlock[];
   draftKey: string;
   entities: EntityInfo[];
   entity: EntityInfo;
   gameLocale: GameLocale;
   initialBlocks: PostBlock[];
+  initialUpgradeBlocks: PostBlock[] | null;
   nameLabel: string;
   costLabel: string;
   descriptionLabel: string;
   serviceLocale: ServiceLocale;
   sourceText: string;
+  sourceUpgradeText: string | null;
+  sourceUpgradeCost: string | null;
   submitLabel: string;
   submitRequestId: number;
   transformedName: string;
   transformedCost: string;
+  transformedUpgradeCost: string;
+  upgradedBlocks: PostBlock[] | null;
+  upgradeLabel: string;
   onBlocksChange: (blocks: PostBlock[]) => void;
   onCostChange: (value: string) => void;
   onNameChange: (value: string) => void;
-  onSubmit: (blocks: PostBlock[]) => Promise<void>;
+  onUpgradeBlocksChange: (blocks: PostBlock[] | null) => void;
+  onUpgradeCostChange: (value: string) => void;
+  onSubmit: (
+    blocks: PostBlock[],
+    upgradedBlocks: PostBlock[] | null,
+  ) => Promise<void>;
   onValidityChange: (valid: boolean) => void;
 }
 
@@ -49,29 +69,53 @@ const editFieldClass = [
 
 export function TransfigureAssetEditor({
   canSubmitBlocks,
+  blocks,
   draftKey,
   entities,
   entity,
   gameLocale,
   initialBlocks,
+  initialUpgradeBlocks,
   nameLabel,
   costLabel,
   descriptionLabel,
   serviceLocale,
   sourceText,
+  sourceUpgradeText,
+  sourceUpgradeCost,
   submitLabel,
   submitRequestId,
   transformedName,
   transformedCost,
+  transformedUpgradeCost,
+  upgradedBlocks,
+  upgradeLabel,
   onBlocksChange,
   onCostChange,
   onNameChange,
+  onUpgradeBlocksChange,
+  onUpgradeCostChange,
   onSubmit,
   onValidityChange,
 }: TransfigureAssetEditorProps) {
   const sourceCost = getTransfigureSourceCost(entity);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const activeInitialBlocks = showUpgrade && initialUpgradeBlocks != null
+    ? initialUpgradeBlocks
+    : initialBlocks;
+  const activeSourceText = showUpgrade && sourceUpgradeText != null
+    ? sourceUpgradeText
+    : sourceText;
+  const activeCost = showUpgrade ? transformedUpgradeCost : transformedCost;
+  const activeSourceCost = showUpgrade ? sourceUpgradeCost : sourceCost;
+  const updateActiveCost = showUpgrade ? onUpgradeCostChange : onCostChange;
+  const handleCostKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key.toLowerCase() !== "x") return;
+    event.preventDefault();
+    updateActiveCost("X");
+  };
   const titleInput = (
-    <span className={`block w-full ${editFieldClass}`}>
+    <span className={`flex w-full items-center justify-center ${editFieldClass}`}>
       <input
         type="text"
         value={transformedName}
@@ -79,7 +123,7 @@ export function TransfigureAssetEditor({
         placeholder={entity.nameKo}
         aria-label={nameLabel}
         maxLength={80}
-        className="w-full bg-transparent text-center text-inherit caret-[#EFC851] outline-none placeholder:text-inherit placeholder:opacity-65"
+        className="min-w-0 flex-1 bg-transparent text-center text-inherit caret-[#EFC851] outline-none placeholder:text-inherit placeholder:opacity-65"
         style={{
           color: "inherit",
           fontFamily: "inherit",
@@ -89,6 +133,7 @@ export function TransfigureAssetEditor({
         }}
         data-transfigure-name-input
       />
+      {showUpgrade && <span aria-hidden="true">+</span>}
     </span>
   );
   const descriptionEditor = (
@@ -98,14 +143,23 @@ export function TransfigureAssetEditor({
       data-transfigure-description-input
     >
       <RichContentEditor
-        key={`${gameLocale}:${entity.type}:${entity.id}`}
+        key={`${gameLocale}:${entity.type}:${entity.id}:${showUpgrade ? "upgrade" : "base"}`}
         entities={entities}
-        onSubmit={onSubmit}
-        onBlocksChange={onBlocksChange}
-        placeholder={sourceText}
-        initialBlocks={initialBlocks}
-        canSubmitBlocks={canSubmitBlocks}
-        draftKey={draftKey}
+        onSubmit={(nextBlocks) => onSubmit(
+          showUpgrade ? blocks : nextBlocks,
+          showUpgrade ? nextBlocks : upgradedBlocks,
+        )}
+        onBlocksChange={(nextBlocks) => {
+          if (showUpgrade) onUpgradeBlocksChange(nextBlocks);
+          else onBlocksChange(nextBlocks);
+        }}
+        placeholder={activeSourceText}
+        initialBlocks={activeInitialBlocks}
+        canSubmitBlocks={(nextBlocks) => canSubmitBlocks(
+          showUpgrade ? blocks : nextBlocks,
+          showUpgrade ? nextBlocks : upgradedBlocks,
+        )}
+        draftKey={showUpgrade ? `${draftKey}:upgrade` : draftKey}
         submitLabel={submitLabel}
         maxChars={null}
         embedded
@@ -119,11 +173,11 @@ export function TransfigureAssetEditor({
   return (
     <div className="space-y-2" data-transfigure-asset-editor>
       {entity.type === "card" && entity.cardData ? (
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center justify-center">
           <CardTile
             card={entity.cardData}
             serviceLocale={serviceLocale}
-            showUpgrade={false}
+            showUpgrade={showUpgrade}
             showBeta={false}
             width={280}
             interactive={false}
@@ -145,17 +199,16 @@ export function TransfigureAssetEditor({
               <input
                 type="text"
                 inputMode="text"
-                value={transformedCost}
+                autoCapitalize="characters"
+                spellCheck={false}
+                value={activeCost}
+                onKeyDown={handleCostKeyDown}
                 onChange={(event) => {
-                  const cleaned = event.target.value
-                    .toUpperCase()
-                    .replace(/[^0-9X]/g, "");
-                  const next = cleaned.includes("X")
-                    ? "X"
-                    : cleaned.slice(0, 2);
-                  onCostChange(next);
+                  updateActiveCost(
+                    normalizeTransfigureCostInput(event.target.value),
+                  );
                 }}
-                placeholder={sourceCost ?? "—"}
+                placeholder={activeSourceCost ?? "—"}
                 aria-label={costLabel}
                 maxLength={2}
                 className={`h-full w-full bg-transparent text-center text-inherit caret-[#EFC851] outline-none placeholder:text-inherit placeholder:opacity-65 ${editFieldClass}`}
@@ -166,10 +219,19 @@ export function TransfigureAssetEditor({
                   fontWeight: "inherit",
                   textShadow: "inherit",
                 }}
-                data-transfigure-cost-input
+                data-transfigure-cost-input={showUpgrade ? "upgrade" : "base"}
               />
             )}
           />
+          {upgradedBlocks != null && (
+            <GameCheckboxToggle
+              checked={showUpgrade}
+              onCheckedChange={setShowUpgrade}
+              label={upgradeLabel}
+              size="sm"
+              className="mt-2 justify-center"
+            />
+          )}
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:items-start">

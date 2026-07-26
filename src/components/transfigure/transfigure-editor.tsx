@@ -11,6 +11,9 @@ import {
   getTransfigureInitialBlocks,
   getTransfigureSourceCost,
   getTransfigureSourceText,
+  getTransfigureUpgradeInitialBlocks,
+  getTransfigureUpgradeSourceCost,
+  getTransfigureUpgradeSourceText,
   isTransfigureChanged,
   isTransfigureResourceType,
   type TransfigurePost,
@@ -25,6 +28,7 @@ interface TransfigureEditorProps {
   initialPost?: TransfigurePost | null;
   profileNickname: string;
   serviceLocale: ServiceLocale;
+  upgradeLabel: string;
   onSubmit: (
     input: Omit<SaveTransfigurePostInput, "activeUserId">,
   ) => Promise<void>;
@@ -36,6 +40,7 @@ export function TransfigureEditor({
   initialPost,
   profileNickname,
   serviceLocale,
+  upgradeLabel,
   onSubmit,
 }: TransfigureEditorProps) {
   const copy = serviceMessages[serviceLocale].transfigure;
@@ -59,11 +64,20 @@ export function TransfigureEditor({
   const [previewBlocks, setPreviewBlocks] = useState<PostBlock[]>(
     initialPost?.content ?? [],
   );
+  const [previewUpgradeBlocks, setPreviewUpgradeBlocks] = useState<PostBlock[] | null>(
+    initialPost?.upgraded_content
+      ?? (initialEntity
+        ? getTransfigureUpgradeInitialBlocks(initialEntity, entities)
+        : null),
+  );
   const [transformedName, setTransformedName] = useState(
     initialPost?.transformed_name ?? "",
   );
   const [transformedCost, setTransformedCost] = useState(
     initialPost?.transformed_cost ?? "",
+  );
+  const [transformedUpgradeCost, setTransformedUpgradeCost] = useState(
+    initialPost?.transformed_upgrade_cost ?? "",
   );
   const [editorValid, setEditorValid] = useState(false);
   const [submitRequestId, setSubmitRequestId] = useState(0);
@@ -88,17 +102,40 @@ export function TransfigureEditor({
     () => selected ? getTransfigureSourceCost(selected) : null,
     [selected],
   );
+  const sourceUpgradeText = useMemo(
+    () => selected ? getTransfigureUpgradeSourceText(selected) : null,
+    [selected],
+  );
+  const sourceUpgradeBlocks = useMemo(
+    () => selected
+      ? getTransfigureUpgradeInitialBlocks(selected, entities)
+      : null,
+    [entities, selected],
+  );
+  const editorInitialUpgradeBlocks = useMemo(
+    () => initialPost?.upgraded_content ?? sourceUpgradeBlocks,
+    [initialPost, sourceUpgradeBlocks],
+  );
+  const sourceUpgradeCost = useMemo(
+    () => selected ? getTransfigureUpgradeSourceCost(selected) : null,
+    [selected],
+  );
 
   const handleSelect = useCallback((entity: EntityInfo) => {
     setSelected(entity);
     setPostTitle(copy.defaultTitle.replace("{name}", entity.nameKo));
     setPreviewBlocks(getTransfigureInitialBlocks(entity, entities));
+    setPreviewUpgradeBlocks(getTransfigureUpgradeInitialBlocks(entity, entities));
     setTransformedName("");
     setTransformedCost("");
+    setTransformedUpgradeCost("");
     setValidationError(null);
   }, [copy.defaultTitle, entities]);
 
-  const handleSubmit = useCallback(async (blocks: PostBlock[]) => {
+  const handleSubmit = useCallback(async (
+    blocks: PostBlock[],
+    upgradedBlocks: PostBlock[] | null,
+  ) => {
     if (
       !selected
       || !sourceText
@@ -111,6 +148,11 @@ export function TransfigureEditor({
         sourceName: selected.nameKo,
         transformedCost,
         sourceCost,
+        upgradedBlocks,
+        sourceUpgradeText,
+        sourceUpgradeBlocks,
+        transformedUpgradeCost,
+        sourceUpgradeCost,
       })
     ) {
       setValidationError(copy.changeRequired);
@@ -133,8 +175,13 @@ export function TransfigureEditor({
       sourceGameLocale: gameLocale,
       sourceName: selected.nameKo,
       sourceCost,
+      sourceUpgradeText,
+      sourceUpgradeBlocks,
+      sourceUpgradeCost,
       transformedName,
       transformedCost,
+      upgradedBlocks,
+      transformedUpgradeCost,
     });
   }, [
     copy.changeRequired,
@@ -148,11 +195,15 @@ export function TransfigureEditor({
     sourceBlocks,
     sourceCost,
     sourceText,
+    sourceUpgradeBlocks,
+    sourceUpgradeCost,
+    sourceUpgradeText,
     transformedCost,
     transformedName,
+    transformedUpgradeCost,
   ]);
   const canSubmitBlocks = useCallback(
-    (blocks: PostBlock[]) => (
+    (blocks: PostBlock[], upgradedBlocks: PostBlock[] | null) => (
       sourceText != null
       && selected != null
       && isTransfigureChanged({
@@ -163,6 +214,11 @@ export function TransfigureEditor({
         sourceName: selected.nameKo,
         transformedCost,
         sourceCost,
+        upgradedBlocks,
+        sourceUpgradeText,
+        sourceUpgradeBlocks,
+        transformedUpgradeCost,
+        sourceUpgradeCost,
       })
     ),
     [
@@ -170,11 +226,18 @@ export function TransfigureEditor({
       sourceBlocks,
       sourceCost,
       sourceText,
+      sourceUpgradeBlocks,
+      sourceUpgradeCost,
+      sourceUpgradeText,
       transformedCost,
       transformedName,
+      transformedUpgradeCost,
     ],
   );
-  const canSubmit = editorValid && canSubmitBlocks(previewBlocks);
+  const canSubmit = editorValid && canSubmitBlocks(
+    previewBlocks,
+    previewUpgradeBlocks,
+  );
   const requestSubmit = useCallback(() => {
     if (!canSubmit) {
       setValidationError(copy.changeRequired);
@@ -242,19 +305,31 @@ export function TransfigureEditor({
               entities={entities}
               entity={selected}
               gameLocale={gameLocale}
+              blocks={previewBlocks}
               initialBlocks={editorInitialBlocks}
+              initialUpgradeBlocks={editorInitialUpgradeBlocks}
               nameLabel={copy.nameLabel}
               costLabel={copy.costLabel}
               descriptionLabel={copy.descriptionLabel}
               serviceLocale={serviceLocale}
               sourceText={sourceText}
+              sourceUpgradeText={sourceUpgradeText}
+              sourceUpgradeCost={sourceUpgradeCost}
               submitLabel={initialPost ? copy.saveChanges : copy.submit}
               submitRequestId={submitRequestId}
               transformedName={transformedName}
               transformedCost={transformedCost}
+              transformedUpgradeCost={transformedUpgradeCost}
+              upgradedBlocks={previewUpgradeBlocks}
+              upgradeLabel={upgradeLabel}
               onBlocksChange={setPreviewBlocks}
               onCostChange={(value) => {
                 setTransformedCost(value);
+                setValidationError(null);
+              }}
+              onUpgradeBlocksChange={setPreviewUpgradeBlocks}
+              onUpgradeCostChange={(value) => {
+                setTransformedUpgradeCost(value);
                 setValidationError(null);
               }}
               onNameChange={(value) => {

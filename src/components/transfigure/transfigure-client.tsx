@@ -34,6 +34,7 @@ interface TransfigureClientProps {
   gameLocale: GameLocale;
   title: string;
   subtitle: string;
+  upgradeLabel: string;
 }
 
 export function TransfigureClient({
@@ -41,6 +42,7 @@ export function TransfigureClient({
   gameLocale,
   title,
   subtitle,
+  upgradeLabel,
 }: TransfigureClientProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].transfigure;
@@ -124,6 +126,7 @@ export function TransfigureClient({
           initialPost={editingPost}
           profileNickname={profile.nickname}
           serviceLocale={serviceLocale}
+          upgradeLabel={upgradeLabel}
           onSubmit={handleSubmit}
           onDelete={editingPost ? handleComposerDelete : undefined}
           onClose={closeComposer}

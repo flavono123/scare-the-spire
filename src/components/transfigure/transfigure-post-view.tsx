@@ -36,11 +36,13 @@ const TransfigureComposerModal = dynamic(
 interface TransfigurePostViewProps {
   postId: string;
   gameLocale: GameLocale;
+  upgradeLabel: string;
 }
 
 export function TransfigurePostView({
   postId,
   gameLocale,
+  upgradeLabel,
 }: TransfigurePostViewProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].transfigure;
@@ -237,6 +239,7 @@ export function TransfigurePostView({
           initialPost={post}
           profileNickname={post.nickname}
           serviceLocale={serviceLocale}
+          upgradeLabel={upgradeLabel}
           onSubmit={handleUpdate}
           onDelete={handleDelete}
           onClose={() => setEditing(false)}

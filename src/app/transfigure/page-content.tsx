@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ServiceBackground } from "@/components/service-background";
 import { TransfigureClient } from "@/components/transfigure/transfigure-client";
 import { getTransfigureGameCopy } from "@/lib/borrowed-game-copy";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { loadAllEntities } from "@/lib/load-all-entities";
@@ -39,9 +40,10 @@ export async function renderTransfigurePage(
     notFound();
   }
 
-  const [entities, gameCopy] = await Promise.all([
+  const [entities, gameCopy, gameUi] = await Promise.all([
     loadAllEntities({ gameLocale }),
     getTransfigureGameCopy(gameLocale),
+    getCodexGameUiLabels(gameLocale),
   ]);
 
   return (
@@ -56,6 +58,7 @@ export async function renderTransfigurePage(
           gameLocale={gameLocale}
           title={gameCopy.title}
           subtitle={gameCopy.subtitle}
+          upgradeLabel={gameUi.cardLibrary.viewUpgrades}
         />
       </div>
     </div>
