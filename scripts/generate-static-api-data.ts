@@ -4,7 +4,10 @@ import { buildSearchIndexPayload } from "../src/lib/search-index-data";
 import { loadAllEntities } from "../src/lib/load-all-entities";
 import { buildCompendiumDetailPayload } from "../src/lib/compendium-detail-payload-builder";
 import { buildCompendiumResourceManifest } from "../src/lib/compendium-resource-manifest";
-import { getLatestByrdispatchNotice } from "../src/lib/byrdispatch";
+import {
+  getLatestByrdispatchEntry,
+  getLatestByrdispatchNotice,
+} from "../src/lib/byrdispatch";
 import { getSTS2PatchLines } from "../src/lib/data";
 import { GAME_LOCALES } from "../src/lib/i18n";
 import type { GameLocale } from "../src/lib/i18n";
@@ -71,6 +74,11 @@ interface BorrowedGameCopyPayload {
   patchStage: PatchStageGameCopy;
   thisOrThat: ThisOrThatGameCopy;
   transfigure: TransfigureGameCopy;
+}
+
+interface ToyBoxNewsPayload {
+  latestDate: string | null;
+  newSectionTitles: string[];
 }
 
 interface LocalizedPhraseReplacement {
@@ -463,6 +471,16 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
   return Object.fromEntries(entries) as Record<GameLocale, BorrowedGameCopyPayload>;
 }
 
+async function buildToyBoxNewsPayload(): Promise<ToyBoxNewsPayload> {
+  const latest = await getLatestByrdispatchEntry();
+  return {
+    latestDate: latest?.date ?? null,
+    newSectionTitles: latest?.regularSections
+      .filter((section) => section.statuses.includes("new"))
+      .map((section) => section.title) ?? [],
+  };
+}
+
 async function generateCommentEntitiesOnly() {
   const commentEntities = await loadAllEntities();
   await Promise.all([
@@ -484,6 +502,14 @@ async function main() {
     });
     return;
   }
+  if (process.argv.includes("--toy-box-news-only")) {
+    const toyBoxNewsPayload = await buildToyBoxNewsPayload();
+    await writeSourceJson({
+      path: "generated/toy-box-news.json",
+      data: toyBoxNewsPayload,
+    });
+    return;
+  }
 
   const [
     searchIndex,
@@ -495,6 +521,7 @@ async function main() {
     sts2PatchLines,
     thisOrThatResourceTargets,
     borrowedGameCopyPayload,
+    toyBoxNewsPayload,
   ] = await Promise.all([
     buildSearchIndexPayload(),
     loadAllEntities(),
@@ -505,10 +532,12 @@ async function main() {
     getSTS2PatchLines(),
     buildThisOrThatResourceTargets(),
     buildBorrowedGameCopyPayload(),
+    buildToyBoxNewsPayload(),
   ]);
 
   await Promise.all([
     writeSourceJson({ path: "generated/borrowed-game-copy.json", data: borrowedGameCopyPayload }),
+    writeSourceJson({ path: "generated/toy-box-news.json", data: toyBoxNewsPayload }),
     writeJson({ path: "generated/search-index.json", data: searchIndex }),
     writeJson({ path: "generated/comment-entities-sts2.json", data: commentEntities }),
     writeJson({ path: "generated/compendium-detail-kor.json", data: koreanCompendiumDetailPayload }),
