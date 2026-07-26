@@ -415,16 +415,23 @@ export function TransfigureEditor({
               upgradedBlocks={previewUpgradeBlocks}
               upgradeLabel={upgradeLabel}
               onBlocksChange={(blocks) => {
+                if (JSON.stringify(blocks) !== JSON.stringify(previewBlocks)) {
+                  setSaveFeedback(null);
+                }
                 setPreviewBlocks(blocks);
-                setSaveFeedback(null);
               }}
               onCostChange={(value) => {
                 setTransformedCost(value);
                 setSaveFeedback(null);
               }}
               onUpgradeBlocksChange={(blocks) => {
+                if (
+                  JSON.stringify(blocks)
+                  !== JSON.stringify(previewUpgradeBlocks)
+                ) {
+                  setSaveFeedback(null);
+                }
                 setPreviewUpgradeBlocks(blocks);
-                setSaveFeedback(null);
               }}
               onUpgradeCostChange={(value) => {
                 setTransformedUpgradeCost(value);
