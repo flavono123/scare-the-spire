@@ -114,6 +114,11 @@ export function SiteNavDropdown({
               className={`${isToyBox ? "h-6 w-6" : ""} shrink-0 object-contain`}
             />
             <span className="min-w-0 truncate">{item.label}</span>
+            {item.isNew && (
+              <span className="ml-auto shrink-0 rounded-full border border-emerald-300/30 bg-emerald-400/10 px-1.5 py-0.5 text-[9px] font-bold tracking-[0.08em] text-emerald-200">
+                NEW
+              </span>
+            )}
           </Link>
         ))}
       </div>
