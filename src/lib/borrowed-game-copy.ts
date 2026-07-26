@@ -81,3 +81,7 @@ export async function getTransfigureGameCopy(
 ): Promise<TransfigureGameCopy> {
   return getBorrowedGameCopy(gameLocale).transfigure;
 }
+
+export function getTransfigureNavTitle(gameLocale: GameLocale): string {
+  return getBorrowedGameCopy(gameLocale).transfigure.title;
+}
