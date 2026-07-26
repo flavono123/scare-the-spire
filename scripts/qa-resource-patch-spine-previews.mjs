@@ -67,8 +67,9 @@ try {
         ({ expectedSpine }) => {
           const root = document.querySelector("[data-selected-resource-spine]");
           if (!root) return false;
-          if (!expectedSpine) return Boolean(root.querySelector("img"));
-          return Boolean(root.querySelector(".sts2-spine-stage.opacity-100 canvas"));
+          const hasFit = Number.parseFloat(root.dataset.spineFitScale ?? "") > 0;
+          if (!expectedSpine) return hasFit && Boolean(root.querySelector("img"));
+          return hasFit && Boolean(root.querySelector(".sts2-spine-stage canvas"));
         },
         { expectedSpine: resource.expectedSpine },
         { timeout: timeoutMs },
@@ -248,6 +249,7 @@ function measurePreview(root) {
     wrapper: rectJson(root.getBoundingClientRect()),
     stage: rectJson(stageRect),
     canvasCount: canvases.length,
+    fitScale: Number.parseFloat(root.dataset.spineFitScale ?? ""),
     visual,
     documentWidth: document.documentElement.scrollWidth,
     viewportWidth: window.innerWidth,
@@ -270,8 +272,10 @@ function validateMeasurement(measurement, expectedSpine, failures) {
   if (expectedSpine && measurement.canvasCount === 0) {
     failures.push("Expected a ready WebGL Spine canvas.");
   }
+  if (!Number.isFinite(measurement.fitScale) || measurement.fitScale <= 0) {
+    failures.push("Preview did not report an automatic visual-bounds fit.");
+  }
   if (!measurement.visual) {
-    failures.push("Preview has no visible actor pixels.");
     return;
   }
   if (Math.max(measurement.visual.widthRatio, measurement.visual.heightRatio) < 0.72) {
