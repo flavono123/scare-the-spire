@@ -112,7 +112,7 @@ export function TransfigureResourcePicker({
         aria-expanded={open}
         aria-controls="transfigure-resource-picker-panel"
         onClick={() => setOpen((current) => !current)}
-        className="flex w-full items-center gap-3 rounded-xl border border-cyan-400/20 bg-cyan-500/10 px-3 py-2.5 text-left transition-[border-color,background-color] hover:border-cyan-300/40 hover:bg-cyan-500/15 focus-visible:outline focus-visible:outline-1 focus-visible:outline-cyan-300/70"
+        className="flex w-full items-center gap-3 rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-3 py-2.5 text-left transition-[border-color,background-color] hover:border-yellow-300/40 hover:bg-yellow-500/15 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-300/70"
       >
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-black/25">
           {selected?.imageUrl ? (
@@ -124,11 +124,11 @@ export function TransfigureResourcePicker({
               className="max-h-9 max-w-9 object-contain"
             />
           ) : (
-            <Sparkles className="h-5 w-5 text-cyan-200/80" aria-hidden="true" />
+            <Sparkles className="h-5 w-5 text-yellow-200/80" aria-hidden="true" />
           )}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-xs font-semibold text-cyan-100">
+          <span className="spire-gold block text-xs font-semibold">
             {copy.selectResource}
           </span>
           <span className="block truncate text-sm text-zinc-400">
@@ -144,10 +144,10 @@ export function TransfigureResourcePicker({
           id="transfigure-resource-picker-panel"
           role="dialog"
           aria-label={copy.pickerLabel}
-          className="absolute inset-x-0 top-full z-50 mt-2 flex max-h-[min(30rem,70svh)] flex-col overflow-hidden rounded-xl border border-cyan-400/25 bg-[#080b14]/98 shadow-[0_18px_48px_rgba(0,0,0,0.58)]"
+          className="relative z-10 mt-2 flex max-h-[min(34rem,70svh)] flex-col overflow-hidden rounded-xl border border-yellow-500/25 bg-[#080b14]/98 shadow-[0_18px_48px_rgba(0,0,0,0.58)]"
         >
           <div className="flex items-center gap-2 border-b border-white/10 p-2.5">
-            <Search className="h-4 w-4 shrink-0 text-cyan-200/70" aria-hidden="true" />
+            <Search className="h-4 w-4 shrink-0 text-yellow-200/70" aria-hidden="true" />
             <input
               ref={searchInputRef}
               type="search"
@@ -175,7 +175,7 @@ export function TransfigureResourcePicker({
               className={cn(
                 "shrink-0 rounded-full border px-2.5 py-1 text-[11px] transition-colors",
                 activeType == null
-                  ? "border-cyan-300/40 bg-cyan-500/15 text-cyan-100"
+                  ? "border-yellow-300/40 bg-yellow-500/15 text-yellow-100"
                   : "border-white/10 text-zinc-500 hover:border-white/20 hover:text-zinc-300",
               )}
             >
@@ -190,7 +190,7 @@ export function TransfigureResourcePicker({
                 className={cn(
                   "shrink-0 rounded-full border px-2.5 py-1 text-[11px] transition-colors",
                   activeType === type
-                    ? "border-cyan-300/40 bg-cyan-500/15 text-cyan-100"
+                    ? "border-yellow-300/40 bg-yellow-500/15 text-yellow-100"
                     : "border-white/10 text-zinc-500 hover:border-white/20 hover:text-zinc-300",
                 )}
               >
@@ -217,9 +217,9 @@ export function TransfigureResourcePicker({
                       role="listitem"
                       onClick={() => selectEntity(entity)}
                       className={cn(
-                        "flex min-w-0 items-center gap-2 rounded-lg border px-2 py-1.5 text-left transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-cyan-400/25 hover:bg-cyan-500/10 focus-visible:border-cyan-300/50 focus-visible:bg-cyan-500/10 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none",
+                        "flex min-w-0 items-center gap-2 rounded-lg border px-2 py-1.5 text-left transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-yellow-400/25 hover:bg-yellow-500/10 focus-visible:border-yellow-300/50 focus-visible:bg-yellow-500/10 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none",
                         isSelected
-                          ? "border-cyan-300/45 bg-cyan-500/15"
+                          ? "border-yellow-300/45 bg-yellow-500/15"
                           : "border-transparent",
                       )}
                     >
@@ -233,7 +233,7 @@ export function TransfigureResourcePicker({
                             className="max-h-9 max-w-9 object-contain"
                           />
                         ) : (
-                          <span className="font-game-title text-sm font-bold text-cyan-100/70">
+                          <span className="font-game-title text-sm font-bold text-yellow-100/70">
                             {entity.nameKo.slice(0, 1)}
                           </span>
                         )}
@@ -248,7 +248,7 @@ export function TransfigureResourcePicker({
                       </span>
                       <span className="shrink-0 text-[9px] text-zinc-600">
                         {isSelected ? (
-                          <Check className="h-4 w-4 text-cyan-200" aria-hidden="true" />
+                          <Check className="h-4 w-4 text-yellow-200" aria-hidden="true" />
                         ) : (
                           typeLabels[entity.type] ?? entity.type
                         )}

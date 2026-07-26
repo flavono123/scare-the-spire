@@ -138,6 +138,15 @@ export function getTransfigureInitialBlocks(
   return blocks;
 }
 
+export function transfigureBlocksToGameDescription(blocks: PostBlock[]): string {
+  return blocks.map((block) => {
+    if (block.type === "text") return block.text;
+    if (block.type === "keyword") return `[gold]${block.text}[/gold]`;
+    if (block.type === "entity") return `[gold]${block.displayText}[/gold]`;
+    return block.title;
+  }).join("");
+}
+
 export function transfigureResourceKey(resource: TransfigureResourceRef): string {
   return `${resource.type}:${resource.id}`;
 }

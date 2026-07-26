@@ -2,12 +2,13 @@
 
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowDown, ArrowLeft, Link2, Sparkles } from "lucide-react";
+import { ArrowLeft, Link2, Sparkles } from "lucide-react";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import Image from "@/components/ui/static-image";
+import { TransfigureResourcePreview } from "@/components/transfigure/transfigure-resource-preview";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { useTransfigurePost } from "@/hooks/use-transfigure-posts";
@@ -22,12 +23,6 @@ import { serviceMessages } from "@/messages/service";
 interface TransfigurePostViewProps {
   postId: string;
   gameLocale: GameLocale;
-}
-
-function getTextClass(length: number): string {
-  if (length <= 80) return "text-xl sm:text-2xl";
-  if (length <= 240) return "text-lg sm:text-xl";
-  return "text-base sm:text-lg";
 }
 
 export function TransfigurePostView({
@@ -63,7 +58,7 @@ export function TransfigurePostView({
         <p className="mb-4 text-sm text-gray-500">{copy.notFound}</p>
         <Link
           href={localizeHrefWithGameLocale("/transfigure", serviceLocale, gameLocale)}
-          className="text-sm text-cyan-200 hover:underline"
+          className="spire-gold text-sm hover:underline"
         >
           {copy.backToIndex}
         </Link>
@@ -78,7 +73,7 @@ export function TransfigurePostView({
       <div className="flex items-center justify-between">
         <Link
           href={localizeHrefWithGameLocale("/transfigure", serviceLocale, gameLocale)}
-          className="inline-flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-cyan-200"
+          className="inline-flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-yellow-200"
         >
           <ArrowLeft size={16} />
           {copy.backToIndex}
@@ -86,18 +81,18 @@ export function TransfigurePostView({
         <button
           type="button"
           onClick={handleCopyUrl}
-          className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-cyan-400/30 hover:text-cyan-200"
+          className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-yellow-400/30 hover:text-yellow-200"
         >
           <Link2 size={14} />
           {copied ? copy.copied : copy.copyLink}
         </button>
       </div>
 
-      <article className="relative overflow-hidden rounded-2xl border border-cyan-400/15 bg-gradient-to-b from-[#080c17] via-[#0b1220] to-[#080c17] p-4 sm:p-6">
+      <article className="relative overflow-hidden rounded-2xl border border-yellow-500/15 bg-gradient-to-b from-[#080c17] via-[#0b1220] to-[#080c17] p-4 sm:p-6">
         <div
           className="pointer-events-none absolute left-1/2 top-1/3 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full"
           style={{
-            background: "radial-gradient(circle, rgba(34,211,238,0.09) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(239,200,81,0.09) 0%, transparent 70%)",
             filter: "blur(40px)",
           }}
         />
@@ -114,7 +109,7 @@ export function TransfigurePostView({
                   className="max-h-9 max-w-9 object-contain"
                 />
               ) : (
-                <Sparkles className="h-5 w-5 text-cyan-200/70" aria-hidden="true" />
+                <Sparkles className="h-5 w-5 text-yellow-200/70" aria-hidden="true" />
               )}
             </span>
             <span className="min-w-0">
@@ -131,30 +126,29 @@ export function TransfigurePostView({
           </span>
         </div>
 
-        <div className="relative rounded-xl border border-white/5 bg-black/15 px-3 py-3">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-cyan-200/45">
-            {copy.sourceLabel}
-          </span>
-          <p className="mt-1 text-sm leading-relaxed text-zinc-500">
-            {post.source_text}
-          </p>
-        </div>
-
-        <div className="relative flex justify-center py-2 text-cyan-200/45">
-          <ArrowDown className="h-4 w-4" aria-hidden="true" />
-        </div>
-
-        <div className="relative rounded-xl border border-cyan-300/10 bg-cyan-500/5 px-3 py-4">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-cyan-200/55">
+        <div className="relative rounded-xl border border-yellow-300/10 bg-yellow-500/5 px-3 py-4">
+          <span className="spire-gold text-[10px] font-semibold uppercase tracking-[0.12em] opacity-70">
             {copy.resultLabel}
           </span>
-          <div className={`mt-2 font-bold leading-relaxed text-[#f0e6d2] ${getTextClass(post.content_text.length)}`}>
-            <PostRenderer
-              blocks={post.content}
-              entityMap={entityMap}
-              serviceLocale={serviceLocale}
-              gameLocale={gameLocale}
-            />
+          <div className="mt-3">
+            {resource ? (
+              <TransfigureResourcePreview
+                blocks={post.content}
+                entities={entities}
+                entity={resource}
+                gameLocale={gameLocale}
+                serviceLocale={serviceLocale}
+              />
+            ) : (
+              <div className="text-lg font-bold leading-relaxed text-[#f0e6d2]">
+                <PostRenderer
+                  blocks={post.content}
+                  entityMap={entityMap}
+                  serviceLocale={serviceLocale}
+                  gameLocale={gameLocale}
+                />
+              </div>
+            )}
           </div>
         </div>
 
@@ -167,7 +161,7 @@ export function TransfigurePostView({
               height={14}
               className="object-contain opacity-60"
             />
-            <span className="text-[11px] font-semibold tracking-wide text-cyan-200/40">
+            <span className="spire-gold text-[11px] font-semibold tracking-wide opacity-50">
               {serviceMessages[serviceLocale].brand}
             </span>
           </div>

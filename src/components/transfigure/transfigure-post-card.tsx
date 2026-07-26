@@ -81,7 +81,7 @@ export function TransfigurePostCard({
       tabIndex={0}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="group cursor-pointer rounded-xl border border-cyan-400/15 bg-[#090c15]/75 px-4 py-3 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-cyan-300/30 hover:bg-[#0b101b]/85 hover:shadow-lg hover:shadow-black/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-cyan-300/70 active:translate-y-0 motion-reduce:transform-none"
+      className="group cursor-pointer rounded-xl border border-yellow-500/15 bg-[#090c15]/75 px-4 py-3 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-yellow-300/30 hover:bg-[#0b101b]/85 hover:shadow-lg hover:shadow-black/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-300/70 active:translate-y-0 motion-reduce:transform-none"
     >
       <div className="mb-2 flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
@@ -95,7 +95,7 @@ export function TransfigurePostCard({
                 className="max-h-8 max-w-8 object-contain"
               />
             ) : (
-              <Sparkles className="h-4 w-4 text-cyan-200/70" aria-hidden="true" />
+              <Sparkles className="h-4 w-4 text-yellow-200/70" aria-hidden="true" />
             )}
           </span>
           <span className="min-w-0">
@@ -123,10 +123,6 @@ export function TransfigurePostCard({
           )}
         </div>
       </div>
-
-      <p className="line-clamp-2 border-l border-cyan-400/20 pl-2 text-xs leading-relaxed text-zinc-600">
-        {post.source_text}
-      </p>
 
       <div className="mt-2 text-sm leading-relaxed text-[#f0e6d2]">
         <PostRenderer

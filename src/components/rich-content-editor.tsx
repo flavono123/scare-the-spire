@@ -742,6 +742,12 @@ export function RichContentEditor({
   ]);
 
   useEffect(() => {
+    if (!editor || editor.isDestroyed) return;
+    const blocks = tiptapToBlocks(sanitizeRichTextJson(editor.getJSON()));
+    setBlocksSubmittable(canSubmitBlocks ? canSubmitBlocks(blocks) : true);
+  }, [canSubmitBlocks, editor]);
+
+  useEffect(() => {
     if (
       !editor
       || !entityInsertRequest
