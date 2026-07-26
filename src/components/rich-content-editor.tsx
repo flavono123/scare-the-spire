@@ -331,6 +331,8 @@ export function RichContentEditor({
   const lastEntityInsertRequestIdRef = useRef<number | null>(null);
   const lastHistoryRunInsertRequestIdRef = useRef<number | null>(null);
   const lastSubmitRequestIdRef = useRef(submitRequestId);
+  const historyRunInsertRequest = historyRunReferences?.insertRequest ?? null;
+  const historyRunSlashCommands = historyRunReferences?.slashCommands ?? null;
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
   const keywordEntityIndex = useMemo(() => buildEntityKeywordIndex(entities), [entities]);
   const keywordDescriptionMap = useMemo(() => {
@@ -400,7 +402,7 @@ export function RichContentEditor({
       CharacterCount.configure(maxChars == null ? {} : { limit: maxChars }),
       CustomKeyword,
       ...(youtubeExtension ? [YouTubeReferenceExtension] : []),
-      ...(historyRunReferences ? [HistoryRunReferenceExtension] : []),
+      ...(historyRunSlashCommands ? [HistoryRunReferenceExtension] : []),
       EntityMention.configure({
         HTMLAttributes: {
           class: "spire-gold font-semibold",
@@ -603,14 +605,14 @@ export function RichContentEditor({
           },
         },
       }),
-      ...(historyRunReferences ? [
+      ...(historyRunSlashCommands ? [
         SlashCommandSuggestion.configure({
           suggestion: {
             char: "/",
             allowSpaces: false,
             items: ({ query }: { query: string }) => {
               const normalized = query.trim().toLowerCase();
-              return historyRunReferences.slashCommands.filter((command) => (
+              return historyRunSlashCommands.filter((command) => (
                 !normalized
                 || command.label.toLowerCase().includes(normalized)
                 || command.aliases.some((alias) => (
@@ -862,7 +864,7 @@ export function RichContentEditor({
     richPlaceholder,
     submitOnEnter,
     youtubeExtension,
-    historyRunReferences,
+    historyRunSlashCommands,
   ]);
 
   useEffect(() => {
@@ -911,7 +913,7 @@ export function RichContentEditor({
   }, [editor, entityInsertRequest]);
 
   useEffect(() => {
-    const request = historyRunReferences?.insertRequest;
+    const request = historyRunInsertRequest;
     if (
       !editor
       || !request
@@ -920,11 +922,11 @@ export function RichContentEditor({
       return;
     }
 
-    lastHistoryRunInsertRequestIdRef.current = request.requestId;
     const { block } = request;
     window.setTimeout(() => {
       if (editor.isDestroyed || !editor.schema.nodes["history-run-reference"]) return;
 
+      lastHistoryRunInsertRequestIdRef.current = request.requestId;
       const { $from } = editor.state.selection;
       const textBefore = $from.parent.textBetween(
         Math.max(0, $from.parentOffset - 1),
@@ -954,7 +956,7 @@ export function RichContentEditor({
         { type: "text", text: " " },
       ]).run();
     }, 0);
-  }, [editor, historyRunReferences]);
+  }, [editor, historyRunInsertRequest]);
 
   const handleSubmit = useCallback(async () => {
     if (!editor || submitting) return;
