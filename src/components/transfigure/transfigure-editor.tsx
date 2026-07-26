@@ -50,7 +50,12 @@ export function TransfigureEditor({
     [entities, initialPost],
   );
   const [selected, setSelected] = useState<EntityInfo | null>(initialEntity);
-  const [postTitle, setPostTitle] = useState(initialPost?.title ?? "");
+  const [postTitle, setPostTitle] = useState(
+    initialPost?.title
+      ?? (initialEntity
+        ? copy.defaultTitle.replace("{name}", initialEntity.nameKo)
+        : ""),
+  );
   const [previewBlocks, setPreviewBlocks] = useState<PostBlock[]>(
     initialPost?.content ?? [],
   );
@@ -86,11 +91,12 @@ export function TransfigureEditor({
 
   const handleSelect = useCallback((entity: EntityInfo) => {
     setSelected(entity);
+    setPostTitle(copy.defaultTitle.replace("{name}", entity.nameKo));
     setPreviewBlocks(getTransfigureInitialBlocks(entity, entities));
     setTransformedName("");
     setTransformedCost("");
     setValidationError(null);
-  }, [entities]);
+  }, [copy.defaultTitle, entities]);
 
   const handleSubmit = useCallback(async (blocks: PostBlock[]) => {
     if (
@@ -111,11 +117,8 @@ export function TransfigureEditor({
       throw new Error("transfigure content is unchanged");
     }
 
-    const title = postTitle.trim();
-    if (!title) {
-      setValidationError(copy.titleRequired);
-      throw new Error("transfigure title is required");
-    }
+    const title = postTitle.trim()
+      || copy.defaultTitle.replace("{name}", selected.nameKo);
     const nickname = nicknameInputRef.current?.value.trim()
       || profileNickname
       || copy.defaultNickname;
@@ -136,7 +139,7 @@ export function TransfigureEditor({
   }, [
     copy.changeRequired,
     copy.defaultNickname,
-    copy.titleRequired,
+    copy.defaultTitle,
     gameLocale,
     onSubmit,
     postTitle,
@@ -150,8 +153,7 @@ export function TransfigureEditor({
   ]);
   const canSubmitBlocks = useCallback(
     (blocks: PostBlock[]) => (
-      postTitle.trim().length > 0
-      && sourceText != null
+      sourceText != null
       && selected != null
       && isTransfigureChanged({
         blocks,
@@ -164,7 +166,6 @@ export function TransfigureEditor({
       })
     ),
     [
-      postTitle,
       selected,
       sourceBlocks,
       sourceCost,
@@ -175,17 +176,13 @@ export function TransfigureEditor({
   );
   const canSubmit = editorValid && canSubmitBlocks(previewBlocks);
   const requestSubmit = useCallback(() => {
-    if (!postTitle.trim()) {
-      setValidationError(copy.titleRequired);
-      return;
-    }
     if (!canSubmit) {
       setValidationError(copy.changeRequired);
       return;
     }
     setValidationError(null);
     setSubmitRequestId((current) => current + 1);
-  }, [canSubmit, copy.changeRequired, copy.titleRequired, postTitle]);
+  }, [canSubmit, copy.changeRequired]);
 
   return (
     <div className="space-y-3" data-transfigure-editor>
