@@ -65,7 +65,7 @@ export function TransfigureResourcePreview({
     downloadSuccess: copy.assetImageDownloaded,
     downloadFailed: copy.assetImageDownloadFailed,
   };
-  const imageFileName = `변형-${displayName}.png`;
+  const imageFileName = copy.assetImageFileName.replace("{name}", displayName);
 
   if (entity.type === "card" && entity.cardData) {
     const effectiveUpgradeBlocks = upgradedBlocks ?? gameUpgradeBlocks;
