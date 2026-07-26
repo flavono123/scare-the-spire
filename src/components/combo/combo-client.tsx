@@ -11,11 +11,13 @@ import { useComboPosts } from "@/hooks/use-combo-posts";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import type { PostBlock } from "@/lib/chemical-types";
+import { comboResourceKey, type ComboResourceRef } from "@/lib/combo-types";
 import type { GameLocale } from "@/lib/i18n";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 import { buildComboEntityMap } from "./combo-post-renderer";
 import { ComboPostCard } from "./combo-post-card";
+import { ComboGameElementFilter } from "./combo-game-element-filter";
 
 const ComboComposerModal = dynamic(
   () => import("./combo-composer-modal").then((module) => module.ComboComposerModal),
@@ -34,12 +36,21 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
   const { userId, ready, ensureUser } = useAuth();
   const { posts, loading, unavailable, add, remove } = useComboPosts(userId);
   const [composerOpen, setComposerOpen] = useState(false);
+  const [selectedGameElements, setSelectedGameElements] = useState<ComboResourceRef[]>([]);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
     [copy.defaultNickname],
   );
   const { profile } = useUserProfile(profileFallback);
   const entityMap = useMemo(() => buildComboEntityMap(entities), [entities]);
+  const filteredPosts = useMemo(() => {
+    if (selectedGameElements.length === 0) return posts;
+    const selectedKeys = selectedGameElements.map(comboResourceKey);
+    return posts.filter((post) => {
+      const postKeys = new Set(post.resources.map(comboResourceKey));
+      return selectedKeys.every((key) => postKeys.has(key));
+    });
+  }, [posts, selectedGameElements]);
 
   const handleSubmit = useCallback(async (blocks: PostBlock[], nickname: string) => {
     const activeUserId = userId ?? await ensureUser();
@@ -95,9 +106,18 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
       )}
 
       {!loading && !unavailable && (
-        <span className="text-xs text-gray-500">
-          {copy.count.replace("{count}", String(posts.length))}
-        </span>
+        <div className="space-y-3">
+          <ComboGameElementFilter
+            entities={entities}
+            posts={posts}
+            selected={selectedGameElements}
+            serviceLocale={serviceLocale}
+            onSelectedChange={setSelectedGameElements}
+          />
+          <span className="block text-xs text-gray-500">
+            {copy.count.replace("{count}", String(filteredPosts.length))}
+          </span>
+        </div>
       )}
 
       {unavailable ? (
@@ -106,9 +126,11 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
         <ContentLoadingNotice label={copy.loading} />
       ) : posts.length === 0 ? (
         <p className="py-8 text-center text-sm text-zinc-500">{copy.empty}</p>
+      ) : filteredPosts.length === 0 ? (
+        <p className="py-8 text-center text-sm text-zinc-500">{copy.noMatchingCombos}</p>
       ) : (
         <div className="space-y-3">
-          {posts.map((post) => (
+          {filteredPosts.map((post) => (
             <ComboPostCard
               key={post.id}
               post={post}

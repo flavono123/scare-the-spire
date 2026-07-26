@@ -22,7 +22,7 @@ type ComboStackStyle = CSSProperties & {
   "--combo-z": number;
 };
 
-function ComboResourceAsset({
+export function ComboResourceAsset({
   entity,
   serviceLocale,
 }: {
