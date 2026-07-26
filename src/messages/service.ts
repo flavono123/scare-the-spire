@@ -1054,7 +1054,7 @@ export const serviceMessages = {
       unavailableTitle: "No responses from database",
     },
     transfigure: {
-      defaultNickname: "Anonymous transfigurer",
+      defaultNickname: "Unnamed transfigurer",
       create: "Create transfiguration",
       close: "Close",
       submit: "Create transfiguration",
