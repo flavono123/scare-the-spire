@@ -14,6 +14,7 @@ import {
   normalizeTransfigureName,
   transfigureBlocksToGameDescription,
 } from "../src/lib/transfigure-types";
+import { serviceMessages } from "../src/messages/service";
 
 const expertise = {
   id: "EXPERTISE",
@@ -98,6 +99,12 @@ assert.equal(normalizeTransfigureName("", "전문성"), null);
 assert.equal(normalizeTransfigureName("전문가", "전문성"), "전문가");
 assert.equal(normalizeTransfigureCost("1", "1"), null);
 assert.equal(normalizeTransfigureCost("x", "1"), "X");
+for (const [locale, messages] of Object.entries(serviceMessages)) {
+  assert.ok(
+    messages.transfigure.defaultNickname.length <= 20,
+    `${locale} Transfigure default nickname must fit the database limit`,
+  );
+}
 assert.equal(isTransfiguredContent(sourceBlocks, sourceText ?? "", sourceBlocks), false);
 assert.equal(
   isTransfigureChanged({
