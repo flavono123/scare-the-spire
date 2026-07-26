@@ -66,10 +66,10 @@ export function ComboResourceAsset({
         <Image
           src={getComboEncounterNodeImageUrl(entity.encounterData)}
           alt=""
-          width={34}
-          height={34}
+          width={30}
+          height={30}
           className={cn(
-            "absolute bottom-0 left-0 z-0 h-[34px] w-[34px] object-contain",
+            "absolute bottom-0 left-0 z-30 h-[30px] w-[30px] object-contain",
             "drop-shadow-[0_3px_5px_rgba(0,0,0,0.8)]",
           )}
         />
