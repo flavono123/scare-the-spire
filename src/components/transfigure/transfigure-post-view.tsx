@@ -50,6 +50,7 @@ export function TransfigurePostView({
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const [copied, setCopied] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [saveNotice, setSaveNotice] = useState<string | null>(null);
   const router = useRouter();
   const { userId, ready, ensureUser } = useAuth();
   const { post, loading, unavailable, update, remove } = useTransfigurePost(postId, userId);
@@ -69,7 +70,8 @@ export function TransfigurePostView({
     const updatedPost = await update({ ...input, activeUserId });
     if (!updatedPost) throw new Error("transfigure update rejected");
     setEditing(false);
-  }, [ensureUser, update, userId]);
+    setSaveNotice(copy.updateSuccess);
+  }, [copy.updateSuccess, ensureUser, update, userId]);
   const handleDelete = useCallback(async () => {
     const removed = await remove();
     if (!removed) return;
@@ -118,7 +120,10 @@ export function TransfigurePostView({
             <>
               <button
                 type="button"
-                onClick={() => setEditing(true)}
+                onClick={() => {
+                  setSaveNotice(null);
+                  setEditing(true);
+                }}
                 className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-yellow-400/30 hover:text-yellow-200"
               >
                 <Pencil size={14} />
@@ -144,6 +149,17 @@ export function TransfigurePostView({
           </button>
         </div>
       </div>
+
+      {saveNotice && (
+        <p
+          role="status"
+          aria-live="polite"
+          className="rounded-lg border border-yellow-300/20 bg-yellow-500/10 px-3 py-2 text-sm text-yellow-100"
+          data-transfigure-save-feedback="success"
+        >
+          {saveNotice}
+        </p>
+      )}
 
       <article className="relative overflow-hidden rounded-2xl border border-yellow-500/15 bg-gradient-to-b from-[#080c17] via-[#0b1220] to-[#080c17] p-4 sm:p-6">
         <div

@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import type { PostBlock } from "@/lib/chemical-types";
+import { blocksToPlainText } from "@/lib/chemical-utils";
 import type { SaveTransfigurePostInput } from "@/hooks/use-transfigure-posts";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
@@ -79,9 +80,11 @@ export function TransfigureEditor({
   const [transformedUpgradeCost, setTransformedUpgradeCost] = useState(
     initialPost?.transformed_upgrade_cost ?? "",
   );
-  const [editorValid, setEditorValid] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [validationError, setValidationError] = useState<string | null>(null);
+  const [saveFeedback, setSaveFeedback] = useState<{
+    message: string;
+    tone: "error" | "status";
+  } | null>(null);
   const sourceEntities = useMemo(
     () => entities.filter((entity) => getTransfigureSourceText(entity) != null),
     [entities],
@@ -129,7 +132,7 @@ export function TransfigureEditor({
     setTransformedName("");
     setTransformedCost("");
     setTransformedUpgradeCost("");
-    setValidationError(null);
+    setSaveFeedback(null);
   }, [copy.defaultTitle, entities]);
 
   const handleSubmit = useCallback(async (
@@ -155,7 +158,10 @@ export function TransfigureEditor({
         sourceUpgradeCost,
       })
     ) {
-      setValidationError(copy.changeRequired);
+      setSaveFeedback({
+        message: initialPost ? copy.noChanges : copy.changeRequired,
+        tone: "error",
+      });
       throw new Error("transfigure content is unchanged");
     }
 
@@ -164,7 +170,7 @@ export function TransfigureEditor({
     const nickname = nicknameInputRef.current?.value.trim()
       || profileNickname
       || copy.defaultNickname;
-    setValidationError(null);
+    setSaveFeedback(null);
     await onSubmit({
       title,
       blocks,
@@ -187,7 +193,9 @@ export function TransfigureEditor({
     copy.changeRequired,
     copy.defaultNickname,
     copy.defaultTitle,
+    copy.noChanges,
     gameLocale,
+    initialPost,
     onSubmit,
     postTitle,
     profileNickname,
@@ -234,28 +242,48 @@ export function TransfigureEditor({
       transformedUpgradeCost,
     ],
   );
-  const canSubmit = editorValid && canSubmitBlocks(
+  const hasChanges = canSubmitBlocks(
     previewBlocks,
     previewUpgradeBlocks,
   );
+  const descriptionsValid = (
+    blocksToPlainText(previewBlocks).trim().length >= 2
+    && (
+      previewUpgradeBlocks == null
+      || blocksToPlainText(previewUpgradeBlocks).trim().length >= 2
+    )
+  );
   const requestSubmit = useCallback(async () => {
-    if (!canSubmit) {
-      setValidationError(copy.changeRequired);
+    if (!descriptionsValid) {
+      setSaveFeedback({ message: copy.invalidDescription, tone: "error" });
       return;
     }
-    setValidationError(null);
+    if (!hasChanges) {
+      setSaveFeedback({
+        message: initialPost ? copy.noChanges : copy.changeRequired,
+        tone: "error",
+      });
+      return;
+    }
+    setSaveFeedback({ message: copy.saving, tone: "status" });
     setSubmitting(true);
     try {
       await handleSubmit(previewBlocks, previewUpgradeBlocks);
     } catch {
-      // Keep the current editor state intact when persistence is unavailable.
+      setSaveFeedback({ message: copy.saveFailed, tone: "error" });
     } finally {
       setSubmitting(false);
     }
   }, [
-    canSubmit,
     copy.changeRequired,
+    copy.invalidDescription,
+    copy.noChanges,
+    copy.saveFailed,
+    copy.saving,
+    descriptionsValid,
     handleSubmit,
+    hasChanges,
+    initialPost,
     previewBlocks,
     previewUpgradeBlocks,
   ]);
@@ -285,7 +313,7 @@ export function TransfigureEditor({
                   value={postTitle}
                   onChange={(event) => {
                     setPostTitle(event.target.value);
-                    setValidationError(null);
+                    setSaveFeedback(null);
                   }}
                   placeholder={copy.titlePlaceholder}
                   maxLength={80}
@@ -301,6 +329,7 @@ export function TransfigureEditor({
                 ref={nicknameInputRef}
                 type="text"
                 defaultValue={initialPost?.nickname ?? profileNickname}
+                onChange={() => setSaveFeedback(null)}
                 placeholder={copy.defaultNickname}
                 maxLength={20}
                 className="w-full bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
@@ -311,7 +340,6 @@ export function TransfigureEditor({
 
           <section className="rounded-xl border border-yellow-500/15 bg-black/20 p-3 lg:sticky lg:top-0">
             <TransfigureAssetEditor
-              canSubmitBlocks={canSubmitBlocks}
               draftKey={initialPost
                 ? `sts-transfigure-edit-draft:${initialPost.id}`
                 : `sts-transfigure-draft:${gameLocale}:${selected.type}:${selected.id}`}
@@ -334,30 +362,39 @@ export function TransfigureEditor({
               transformedUpgradeCost={transformedUpgradeCost}
               upgradedBlocks={previewUpgradeBlocks}
               upgradeLabel={upgradeLabel}
-              onBlocksChange={setPreviewBlocks}
+              onBlocksChange={(blocks) => {
+                setPreviewBlocks(blocks);
+                setSaveFeedback(null);
+              }}
               onCostChange={(value) => {
                 setTransformedCost(value);
-                setValidationError(null);
+                setSaveFeedback(null);
               }}
-              onUpgradeBlocksChange={setPreviewUpgradeBlocks}
+              onUpgradeBlocksChange={(blocks) => {
+                setPreviewUpgradeBlocks(blocks);
+                setSaveFeedback(null);
+              }}
               onUpgradeCostChange={(value) => {
                 setTransformedUpgradeCost(value);
-                setValidationError(null);
+                setSaveFeedback(null);
               }}
               onNameChange={(value) => {
                 setTransformedName(value);
-                setValidationError(null);
+                setSaveFeedback(null);
               }}
               onSubmit={handleSubmit}
-              onValidityChange={setEditorValid}
             />
             <button
               type="button"
               onClick={requestSubmit}
-              disabled={!canSubmit || submitting}
+              disabled={submitting}
               className="mx-auto mt-4 flex items-center gap-1.5 rounded-lg border border-yellow-500/30 bg-yellow-500/15 px-4 py-2 text-sm font-semibold text-yellow-200 transition-colors hover:bg-yellow-500/25 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {initialPost ? copy.saveChanges : copy.submit}
+              {submitting
+                ? copy.saving
+                : initialPost
+                  ? copy.saveChanges
+                  : copy.submit}
               <Image
                 src="/images/sts2/relics/astrolabe.webp"
                 alt=""
@@ -370,9 +407,16 @@ export function TransfigureEditor({
         </div>
       )}
 
-      {validationError && (
-        <p className="text-xs text-red-300" role="alert" aria-live="polite">
-          {validationError}
+      {saveFeedback && (
+        <p
+          className={saveFeedback.tone === "error"
+            ? "text-xs text-red-300"
+            : "text-xs text-yellow-100/75"}
+          role={saveFeedback.tone === "error" ? "alert" : "status"}
+          aria-live="polite"
+          data-transfigure-save-feedback={saveFeedback.tone}
+        >
+          {saveFeedback.message}
         </p>
       )}
     </div>

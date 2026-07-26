@@ -50,6 +50,7 @@ export function TransfigureClient({
   const { posts, loading, unavailable, add, update, remove } = useTransfigurePosts(userId);
   const [composerOpen, setComposerOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<TransfigurePost | null>(null);
+  const [saveNotice, setSaveNotice] = useState<string | null>(null);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
     [copy.defaultNickname],
@@ -62,13 +63,23 @@ export function TransfigureClient({
   ) => {
     const activeUserId = userId ?? await ensureUser();
     if (!activeUserId) throw new Error("anonymous auth unavailable");
+    const updating = editingPost != null;
     const post = editingPost
       ? await update(editingPost.id, { ...input, activeUserId })
       : await add({ ...input, activeUserId });
     if (!post) throw new Error("transfigure post rejected");
     setComposerOpen(false);
     setEditingPost(null);
-  }, [add, editingPost, ensureUser, update, userId]);
+    setSaveNotice(updating ? copy.updateSuccess : copy.createSuccess);
+  }, [
+    add,
+    copy.createSuccess,
+    copy.updateSuccess,
+    editingPost,
+    ensureUser,
+    update,
+    userId,
+  ]);
   const closeComposer = useCallback(() => {
     setComposerOpen(false);
     setEditingPost(null);
@@ -100,6 +111,7 @@ export function TransfigureClient({
               type="button"
               aria-expanded={composerOpen}
               onClick={() => {
+                setSaveNotice(null);
                 setEditingPost(null);
                 setComposerOpen(true);
               }}
@@ -118,6 +130,17 @@ export function TransfigureClient({
           <RichText text={subtitle} />
         </div>
       </header>
+
+      {saveNotice && (
+        <p
+          role="status"
+          aria-live="polite"
+          className="rounded-lg border border-yellow-300/20 bg-yellow-500/10 px-3 py-2 text-sm text-yellow-100"
+          data-transfigure-save-feedback="success"
+        >
+          {saveNotice}
+        </p>
+      )}
 
       {composerOpen && ready && !unavailable && (
         <TransfigureComposerModal
@@ -156,6 +179,7 @@ export function TransfigureClient({
               serviceLocale={serviceLocale}
               gameLocale={gameLocale}
               onEdit={(post) => {
+                setSaveNotice(null);
                 setEditingPost(post);
                 setComposerOpen(true);
               }}

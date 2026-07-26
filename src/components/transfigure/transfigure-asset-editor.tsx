@@ -21,10 +21,6 @@ const RichContentEditor = dynamic<RichContentEditorProps>(
 );
 
 interface TransfigureAssetEditorProps {
-  canSubmitBlocks: (
-    blocks: PostBlock[],
-    upgradedBlocks: PostBlock[] | null,
-  ) => boolean;
   blocks: PostBlock[];
   draftKey: string;
   entities: EntityInfo[];
@@ -54,7 +50,6 @@ interface TransfigureAssetEditorProps {
     blocks: PostBlock[],
     upgradedBlocks: PostBlock[] | null,
   ) => Promise<void>;
-  onValidityChange: (valid: boolean) => void;
 }
 
 const editFieldClass = [
@@ -67,7 +62,6 @@ const editFieldClass = [
 ].join(" ");
 
 export function TransfigureAssetEditor({
-  canSubmitBlocks,
   blocks,
   draftKey,
   entities,
@@ -94,7 +88,6 @@ export function TransfigureAssetEditor({
   onUpgradeBlocksChange,
   onUpgradeCostChange,
   onSubmit,
-  onValidityChange,
 }: TransfigureAssetEditorProps) {
   const sourceCost = getTransfigureSourceCost(entity);
   const [showUpgrade, setShowUpgrade] = useState(false);
@@ -153,16 +146,11 @@ export function TransfigureAssetEditor({
         }}
         placeholder={activeSourceText}
         initialBlocks={activeInitialBlocks}
-        canSubmitBlocks={(nextBlocks) => canSubmitBlocks(
-          showUpgrade ? blocks : nextBlocks,
-          showUpgrade ? nextBlocks : upgradedBlocks,
-        )}
         draftKey={showUpgrade ? `${draftKey}:upgrade` : draftKey}
         submitLabel={submitLabel}
         maxChars={null}
         embedded
         submitOnEnter={false}
-        onValidityChange={onValidityChange}
       />
     </div>
   );
