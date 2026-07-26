@@ -1,7 +1,10 @@
 import { Extension } from "@tiptap/core";
 import type { ResolvedPos } from "@tiptap/pm/model";
+import { PluginKey } from "@tiptap/pm/state";
 import Suggestion from "@tiptap/suggestion";
 import type { SuggestionMatch, SuggestionOptions } from "@tiptap/suggestion";
+
+const slashCommandPluginKey = new PluginKey("slash-command-suggestion");
 
 function findSlashCommandMatch(config: {
   $position: ResolvedPos;
@@ -32,6 +35,7 @@ export const SlashCommandSuggestion = Extension.create<{
   addOptions() {
     return {
       suggestion: {
+        pluginKey: slashCommandPluginKey,
         char: "/",
         allowSpaces: false,
         findSuggestionMatch: findSlashCommandMatch,
