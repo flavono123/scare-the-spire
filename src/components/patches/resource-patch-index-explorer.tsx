@@ -60,10 +60,14 @@ const DEFAULT_VISIBLE_GROUP_COUNT = 4;
 const FALLBACK_RESOURCE_TOKEN_CAPACITY = 6;
 const RESOURCE_TOKEN_SIZE = 32;
 const RESOURCE_TOKEN_GAP = 2;
-const RESOURCE_SPINE_VISUAL_SCALE: Partial<Record<string, number>> = {
-  INFESTED_PRISM: 1.5,
-  SLUDGE_SPINNER: 1.85,
-  VANTOM: 1.5,
+const RESOURCE_SPINE_VISUAL_FIT: Partial<Record<string, {
+  scale: number;
+  translateXRatio: number;
+  translateYRatio: number;
+}>> = {
+  INFESTED_PRISM: { scale: 1.35, translateXRatio: -0.159, translateYRatio: 0.187 },
+  SLUDGE_SPINNER: { scale: 1.7, translateXRatio: -0.352, translateYRatio: 0.122 },
+  VANTOM: { scale: 1.4, translateXRatio: -0.194, translateYRatio: -0.313 },
 };
 
 type ChangeSortKey = "patch" | "stories";
@@ -441,7 +445,7 @@ function SelectedResourceSpinePreview({
   }, []);
   const fit = selectedResourceSpineFit(
     visualBounds,
-    RESOURCE_SPINE_VISUAL_SCALE[character?.id ?? monster?.id ?? ""] ?? 1,
+    RESOURCE_SPINE_VISUAL_FIT[character?.id ?? monster?.id ?? ""],
   );
   if (!character && !monster) return null;
 
@@ -504,7 +508,11 @@ function SelectedResourceSpinePreview({
 
 function selectedResourceSpineFit(
   bounds: MonsterStageVisualBounds | null,
-  visualScale: number,
+  visualFit?: {
+    scale: number;
+    translateXRatio: number;
+    translateYRatio: number;
+  },
 ): {
   scale: number;
   style: CSSProperties;
@@ -521,16 +529,27 @@ function selectedResourceSpineFit(
     availableWidth / bounds.width,
     availableHeight / bounds.height,
   );
-  const scale = Math.min(3, fittedScale * visualScale);
-  const translateX = horizontalPadding
-    + (availableWidth - bounds.width * scale) / 2
-    - bounds.left * scale;
-  const translateY = bounds.stageHeight - bottomPadding - bounds.bottom * scale;
+  const fittedTranslateX = horizontalPadding
+    + (availableWidth - bounds.width * fittedScale) / 2
+    - bounds.left * fittedScale;
+  const fittedTranslateY = bounds.stageHeight
+    - bottomPadding
+    - bounds.bottom * fittedScale;
+  const visualScale = visualFit?.scale ?? 1;
+  const scale = fittedScale * visualScale;
+  const transform = visualFit
+    ? [
+        `translate3d(${bounds.stageWidth * visualFit.translateXRatio}px, ${bounds.stageHeight * visualFit.translateYRatio}px, 0)`,
+        `scale(${visualScale})`,
+        `translate3d(${fittedTranslateX}px, ${fittedTranslateY}px, 0)`,
+        `scale(${fittedScale})`,
+      ].join(" ")
+    : `translate3d(${fittedTranslateX}px, ${fittedTranslateY}px, 0) scale(${fittedScale})`;
 
   return {
     scale,
     style: {
-      transform: `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`,
+      transform,
       transformOrigin: "top left",
     },
   };
