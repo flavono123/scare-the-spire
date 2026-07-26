@@ -52,14 +52,20 @@ export function TransfigureResourcePreview({
   const copyTargetRef = useRef<HTMLDivElement>(null);
   const displayName = transformedName?.trim() || entity.nameKo;
   const copy = serviceMessages[serviceLocale].transfigure;
-  const copyLabels = {
+  const imageLabels = {
     copy: copy.copyAssetImage,
     copying: copy.copyingAssetImage,
     copied: copy.copied,
-    success: copy.assetImageCopied,
-    failed: copy.assetImageCopyFailed,
-    unsupported: copy.assetImageCopyUnsupported,
+    copySuccess: copy.assetImageCopied,
+    copyFailed: copy.assetImageCopyFailed,
+    copyUnsupported: copy.assetImageCopyUnsupported,
+    download: copy.downloadAssetImage,
+    downloading: copy.downloadingAssetImage,
+    downloaded: copy.downloaded,
+    downloadSuccess: copy.assetImageDownloaded,
+    downloadFailed: copy.assetImageDownloadFailed,
   };
+  const imageFileName = `변형-${displayName}.png`;
 
   if (entity.type === "card" && entity.cardData) {
     const effectiveUpgradeBlocks = upgradedBlocks ?? gameUpgradeBlocks;
@@ -113,8 +119,9 @@ export function TransfigureResourcePreview({
           />
         )}
         <TransfigureImageCopyButton
+          fileName={imageFileName}
           targetRef={copyTargetRef}
-          labels={copyLabels}
+          labels={imageLabels}
         />
       </div>
     );
@@ -155,8 +162,9 @@ export function TransfigureResourcePreview({
         </GameHoverTip>
       </div>
       <TransfigureImageCopyButton
+        fileName={imageFileName}
         targetRef={copyTargetRef}
-        labels={copyLabels}
+        labels={imageLabels}
       />
     </div>
   );
