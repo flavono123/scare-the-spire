@@ -21,6 +21,7 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
+import { CommentSection } from "@/components/comment-section";
 import { CharacterSpineStage } from "@/components/codex/character-spine-stage";
 import { DecimillipedeSpineStage } from "@/components/codex/decimillipede-spine-stage";
 import { GameHoverTip } from "@/components/codex/hover-tip";
@@ -40,6 +41,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useCommunityStories } from "@/hooks/use-community-stories";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
+import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -639,6 +641,7 @@ export function ResourcePatchIndexExplorer({
   const [query, setQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
   const [selectedKey, setSelectedKey] = useState(() => resourceKey(findInitialResource(data)));
+  const [selectionReady, setSelectionReady] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState<Set<StoryEntityType>>(() => new Set());
   const [allGroupsExpanded, setAllGroupsExpanded] = useState(false);
   const [allGroupsTooltipSuppressed, setAllGroupsTooltipSuppressed] = useState(false);
@@ -657,13 +660,15 @@ export function ResourcePatchIndexExplorer({
       const params = new URLSearchParams(window.location.search);
       const type = params.get("type") as StoryEntityType | null;
       const id = params.get("id");
-      if (!type || !id) return;
-      const resource = findResourcePatchIndexResource(data, type, id);
+      const resource = type && id
+        ? findResourcePatchIndexResource(data, type, id)
+        : null;
       if (resource) {
         setSelectedKey(resourceKey(resource));
         const selectedGroupIndex = data.groups.findIndex((group) => group.type === resource.type);
         if (selectedGroupIndex >= DEFAULT_VISIBLE_GROUP_COUNT) setAllGroupsExpanded(true);
       }
+      setSelectionReady(true);
     });
     return () => window.cancelAnimationFrame(frame);
   }, [data]);
@@ -775,6 +780,10 @@ export function ResourcePatchIndexExplorer({
   };
   const selectedLabel = selectedResource.names?.[gameLocale]
     ?? (serviceLocale === "ko" ? selectedResource.nameKo : selectedResource.nameEn);
+  const selectedCommentThreadKey = buildCodexCommentThreadKey(
+    selectedResource.type,
+    selectedResource.id,
+  );
   const selectedPreview = useMemo(
     () => selectedResourceEntity(selectedResource, previewEntities),
     [previewEntities, selectedResource],
@@ -902,6 +911,31 @@ export function ResourcePatchIndexExplorer({
                 {copy.noResults}
               </p>
             )}
+          </div>
+        </div>
+
+        <div
+          id="comments"
+          data-resource-comments
+          data-comment-thread-key={selectedCommentThreadKey}
+          className="mt-8 border-t border-white/10 pt-6"
+        >
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            <h2 className="font-service text-lg font-semibold text-foreground">
+              {copy.commentsTitle}
+            </h2>
+            <span className="font-game-title text-sm spire-gold">
+              {selectedLabel}
+            </span>
+          </div>
+          <div className="mt-4 max-w-4xl">
+            {selectionReady ? (
+              <CommentSection
+                key={selectedCommentThreadKey}
+                threadKey={selectedCommentThreadKey}
+                initialEntities={previewEntities}
+              />
+            ) : null}
           </div>
         </div>
       </section>
