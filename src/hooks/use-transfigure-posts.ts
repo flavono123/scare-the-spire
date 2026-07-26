@@ -24,8 +24,13 @@ export interface SaveTransfigurePostInput {
   sourceGameLocale: GameLocale;
   sourceName: string;
   sourceCost: string | null;
+  sourceUpgradeText: string | null;
+  sourceUpgradeBlocks: PostBlock[] | null;
+  sourceUpgradeCost: string | null;
   transformedName: string;
   transformedCost: string;
+  upgradedBlocks: PostBlock[] | null;
+  transformedUpgradeCost: string;
   activeUserId?: string;
 }
 
@@ -52,7 +57,13 @@ interface UseTransfigurePostReturn {
 }
 
 function normalizePost(row: unknown): TransfigurePost {
-  return row as TransfigurePost;
+  const post = row as TransfigurePost;
+  return {
+    ...post,
+    upgraded_content: post.upgraded_content ?? null,
+    upgraded_content_text: post.upgraded_content_text ?? null,
+    transformed_upgrade_cost: post.transformed_upgrade_cost ?? null,
+  };
 }
 
 function validateSaveInput(input: SaveTransfigurePostInput) {
@@ -68,7 +79,27 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     input.transformedCost,
     input.sourceCost,
   );
+  const upgradedContentText = input.upgradedBlocks
+    ? blocksToPlainText(input.upgradedBlocks).trim()
+    : null;
+  const transformedUpgradeCost = normalizeTransfigureCost(
+    input.transformedUpgradeCost,
+    input.sourceUpgradeCost,
+  );
   const validCost = transformedCost == null || /^(X|[0-9]{1,2})$/.test(transformedCost);
+  const validUpgradeCost = transformedUpgradeCost == null
+    || /^(X|[0-9]{1,2})$/.test(transformedUpgradeCost);
+  const validUpgradeContent = input.upgradedBlocks == null
+    ? (
+      input.sourceUpgradeText == null
+      && input.sourceUpgradeBlocks == null
+      && transformedUpgradeCost == null
+    )
+    : (
+      input.sourceUpgradeText != null
+      && input.sourceUpgradeBlocks != null
+      && (upgradedContentText?.length ?? 0) >= 2
+    );
 
   if (
     !input.activeUserId
@@ -81,6 +112,8 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     || !input.resource.id
     || !sourceText
     || !validCost
+    || !validUpgradeCost
+    || !validUpgradeContent
     || (transformedName?.length ?? 0) > 80
     || !isTransfigureChanged({
       blocks: input.blocks,
@@ -90,6 +123,11 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
       sourceName: input.sourceName,
       transformedCost: input.transformedCost,
       sourceCost: input.sourceCost,
+      upgradedBlocks: input.upgradedBlocks,
+      sourceUpgradeText: input.sourceUpgradeText,
+      sourceUpgradeBlocks: input.sourceUpgradeBlocks,
+      transformedUpgradeCost: input.transformedUpgradeCost,
+      sourceUpgradeCost: input.sourceUpgradeCost,
     })
   ) {
     return null;
@@ -102,6 +140,8 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     sourceText,
     transformedName,
     transformedCost,
+    upgradedContentText,
+    transformedUpgradeCost,
   };
 }
 
@@ -125,6 +165,9 @@ async function persistTransfigurePostUpdate(
         content_text: normalized.contentText,
         transformed_name: normalized.transformedName,
         transformed_cost: normalized.transformedCost,
+        upgraded_content: input.upgradedBlocks,
+        upgraded_content_text: normalized.upgradedContentText,
+        transformed_upgrade_cost: normalized.transformedUpgradeCost,
       })
       .eq("id", postId)
       .eq("user_id", input.activeUserId)
@@ -235,8 +278,13 @@ export function useTransfigurePosts(
       activeUserId = userId ?? undefined,
       sourceName,
       sourceCost,
+      sourceUpgradeText,
+      sourceUpgradeBlocks,
+      sourceUpgradeCost,
       transformedName,
       transformedCost,
+      upgradedBlocks,
+      transformedUpgradeCost,
     }: SaveTransfigurePostInput): Promise<TransfigurePost | null> => {
       const normalized = validateSaveInput({
         blocks,
@@ -248,8 +296,13 @@ export function useTransfigurePosts(
         sourceGameLocale,
         sourceName,
         sourceCost,
+        sourceUpgradeText,
+        sourceUpgradeBlocks,
+        sourceUpgradeCost,
         transformedName,
         transformedCost,
+        upgradedBlocks,
+        transformedUpgradeCost,
         activeUserId,
       });
       if (!normalized || !activeUserId) return null;
@@ -270,6 +323,9 @@ export function useTransfigurePosts(
             content_text: normalized.contentText,
             transformed_name: normalized.transformedName,
             transformed_cost: normalized.transformedCost,
+            upgraded_content: upgradedBlocks,
+            upgraded_content_text: normalized.upgradedContentText,
+            transformed_upgrade_cost: normalized.transformedUpgradeCost,
             env: supabaseEnv,
           })
           .select()
