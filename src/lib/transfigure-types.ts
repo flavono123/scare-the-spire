@@ -1,4 +1,8 @@
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
+import {
+  hasCardUpgrade,
+  renderCardDescription,
+} from "@/components/codex/codex-description";
 import type { PostBlock } from "@/lib/chemical-types";
 import { historyRunPlainText } from "@/lib/history-run-reference";
 import {
@@ -41,6 +45,9 @@ export interface TransfigurePost {
   source_game_locale: GameLocale;
   transformed_name: string | null;
   transformed_cost: string | null;
+  upgraded_content: PostBlock[] | null;
+  upgraded_content_text: string | null;
+  transformed_upgrade_cost: string | null;
   content: PostBlock[];
   content_text: string;
   env: string;
@@ -90,13 +97,10 @@ function appendTextBlock(blocks: PostBlock[], text: string) {
   blocks.push({ type: "text", text });
 }
 
-export function getTransfigureInitialBlocks(
-  entity: EntityInfo,
+function getTransfigureBlocksFromDescription(
+  description: string,
   entities: EntityInfo[],
 ): PostBlock[] {
-  const description = getTransfigureEntityDescription(entity);
-  if (!description) return [];
-
   const blocks: PostBlock[] = [];
   const keywordIndex = buildEntityKeywordIndex(entities);
   const goldPattern = /\[gold(?:\s+[^\]]*)?\]([\s\S]*?)\[\/gold\]/gi;
@@ -141,6 +145,48 @@ export function getTransfigureInitialBlocks(
   return blocks;
 }
 
+export function getTransfigureInitialBlocks(
+  entity: EntityInfo,
+  entities: EntityInfo[],
+): PostBlock[] {
+  const description = getTransfigureEntityDescription(entity);
+  return description
+    ? getTransfigureBlocksFromDescription(description, entities)
+    : [];
+}
+
+export function getTransfigureUpgradeDescription(
+  entity: EntityInfo,
+): string | null {
+  if (
+    entity.type !== "card"
+    || !entity.cardData
+    || !hasCardUpgrade(entity.cardData)
+  ) {
+    return null;
+  }
+  return renderCardDescription(entity.cardData, { upgradeLevel: 1 });
+}
+
+export function getTransfigureUpgradeSourceText(
+  entity: EntityInfo,
+): string | null {
+  const description = getTransfigureUpgradeDescription(entity);
+  if (!description) return null;
+  const text = stripCodexMarkup(description).replace(/\s+/g, " ").trim();
+  return text || null;
+}
+
+export function getTransfigureUpgradeInitialBlocks(
+  entity: EntityInfo,
+  entities: EntityInfo[],
+): PostBlock[] | null {
+  const description = getTransfigureUpgradeDescription(entity);
+  return description
+    ? getTransfigureBlocksFromDescription(description, entities)
+    : null;
+}
+
 export function transfigureBlocksToGameDescription(blocks: PostBlock[]): string {
   return blocks.map((block) => {
     if (block.type === "text") return block.text;
@@ -155,6 +201,26 @@ export function getTransfigureSourceCost(entity: EntityInfo): string | null {
   if (entity.type !== "card" || !entity.cardData) return null;
   if (entity.cardData.isXCost) return "X";
   return entity.cardData.cost >= 0 ? String(entity.cardData.cost) : null;
+}
+
+export function getTransfigureUpgradeSourceCost(
+  entity: EntityInfo,
+): string | null {
+  if (entity.type !== "card" || !entity.cardData) return null;
+  if (entity.cardData.isXCost) return "X";
+  const upgradedCost = (
+    entity.cardData.upgrade?.cost
+    ?? entity.cardData.specialUpgrade?.upgrade.cost
+  );
+  if (typeof upgradedCost === "number" && upgradedCost >= 0) {
+    return String(upgradedCost);
+  }
+  return getTransfigureSourceCost(entity);
+}
+
+export function normalizeTransfigureCostInput(value: string): string {
+  const cleaned = value.toUpperCase().replace(/[^0-9X]/g, "");
+  return cleaned.includes("X") ? "X" : cleaned.slice(0, 2);
 }
 
 export function normalizeTransfigureName(
@@ -181,6 +247,11 @@ export function isTransfigureChanged({
   sourceName,
   transformedCost,
   sourceCost,
+  upgradedBlocks,
+  sourceUpgradeText,
+  sourceUpgradeBlocks,
+  transformedUpgradeCost = "",
+  sourceUpgradeCost = null,
 }: {
   blocks: PostBlock[];
   sourceText: string;
@@ -189,11 +260,30 @@ export function isTransfigureChanged({
   sourceName: string;
   transformedCost: string;
   sourceCost: string | null;
+  upgradedBlocks?: PostBlock[] | null;
+  sourceUpgradeText?: string | null;
+  sourceUpgradeBlocks?: PostBlock[] | null;
+  transformedUpgradeCost?: string;
+  sourceUpgradeCost?: string | null;
 }): boolean {
   return (
     isTransfiguredContent(blocks, sourceText, sourceBlocks)
     || normalizeTransfigureName(transformedName, sourceName) != null
     || normalizeTransfigureCost(transformedCost, sourceCost) != null
+    || (
+      upgradedBlocks != null
+      && sourceUpgradeText != null
+      && sourceUpgradeBlocks != null
+      && isTransfiguredContent(
+        upgradedBlocks,
+        sourceUpgradeText,
+        sourceUpgradeBlocks,
+      )
+    )
+    || normalizeTransfigureCost(
+      transformedUpgradeCost,
+      sourceUpgradeCost,
+    ) != null
   );
 }
 
