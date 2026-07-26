@@ -1,5 +1,4 @@
 {
-  "ABUNDANCE.title": "Abundance",
   "ABRASIVE.description": "Gagnez {DexterityPower:diff()} de [gold]Dextérité[/gold].\nGagnez {ThornsPower:diff()} [gold]Épines[/gold].",
   "ABRASIVE.title": "Abrasif",
   "ACCELERANT.description": "Les effets du [gold]Poison[/gold] se déclenchent [blue]{Accelerant:diff()}[/blue] {Accelerant:plural:fois supplémentaire|fois supplémentaires}.",
@@ -329,7 +328,6 @@
   "DOUBLE_ENERGY.title": "Énergie double",
   "DOUBT.description": "À la fin de votre tour, si cette carte est dans votre [gold]Main[/gold], gagnez [gold]Affaibli[/gold] ({WeakPower:diff()}).",
   "DOUBT.title": "Doute",
-  "DOWSING.title": "Dowsing",
   "DRAIN_POWER.description": "Infligez {Damage:diff()} dégâts.\n[gold]Améliorez[/gold] {Cards:diff()} {Cards:plural:carte aléatoire|cartes aléatoires} de votre [gold]Défausse[/gold].",
   "DRAIN_POWER.title": "Drain de puissance",
   "DRAMATIC_ENTRANCE.description": "Infligez {Damage:diff()} dégâts à TOUS les ennemis.",
@@ -1145,7 +1143,6 @@
   "TRUE_GRIT.title": "Virilité",
   "TURBO.description": "Gagnez {Energy:energyIcons()}.\nAjoutez un [gold]Néant[/gold] à votre [gold]Défausse[/gold].",
   "TURBO.title": "TURBO",
-  "TUTOR.title": "Tutor",
   "TWIN_STRIKE.description": "Infligez {Damage:diff()} dégâts 2 fois.",
   "TWIN_STRIKE.title": "Frappe jumelée",
   "TYRANNY.description": "Au début de votre tour, piochez 1 carte et [gold]Épuisez[/gold] 1 carte de votre [gold]Main[/gold].",
