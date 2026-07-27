@@ -15,15 +15,19 @@ import type { SaveTransfigurePostInput } from "@/hooks/use-transfigure-posts";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
   findTransfigureEntity,
+  getTransfigureCardKeywords,
   getTransfigureInitialBlocks,
   getTransfigureSourceCost,
   getTransfigureSourceText,
+  getTransfigureUpgradeCardKeywords,
   getTransfigureUpgradeInitialBlocks,
   getTransfigureUpgradeSourceCost,
   getTransfigureUpgradeSourceText,
   isTransfigureChanged,
   isTransfigureResourceType,
+  transfigureCardKeywordsEqual,
   transfigureBlocksSignature,
+  type TransfigureCardKeywords,
   type TransfigurePost,
 } from "@/lib/transfigure-types";
 import { serviceMessages } from "@/messages/service";
@@ -101,8 +105,28 @@ export function TransfigureEditor({
   const [transformedCost, setTransformedCost] = useState(
     initialPost?.transformed_cost ?? "",
   );
+  const [cardKeywords, setCardKeywords] = useState<TransfigureCardKeywords | null>(
+    () => initialPost
+      ? {
+        top: initialPost.card_top_keywords,
+        bottom: initialPost.card_bottom_keywords,
+      }
+      : (initialEntity ? getTransfigureCardKeywords(initialEntity) : null),
+  );
   const [transformedUpgradeCost, setTransformedUpgradeCost] = useState(
     initialPost?.transformed_upgrade_cost ?? "",
+  );
+  const [upgradedCardKeywords, setUpgradedCardKeywords] = useState<
+    TransfigureCardKeywords | null
+  >(
+    () => initialPost?.upgraded_content
+      ? {
+        top: initialPost.upgraded_card_top_keywords,
+        bottom: initialPost.upgraded_card_bottom_keywords,
+      }
+      : (initialEntity
+        ? getTransfigureUpgradeCardKeywords(initialEntity)
+        : null),
   );
   const [showUpgrade, setShowUpgrade] = useState(
     initialPost?.show_upgrade ?? false,
@@ -138,6 +162,10 @@ export function TransfigureEditor({
     () => selected ? getTransfigureSourceCost(selected) : null,
     [selected],
   );
+  const sourceCardKeywords = useMemo(
+    () => selected ? getTransfigureCardKeywords(selected) : null,
+    [selected],
+  );
   const sourceUpgradeText = useMemo(
     () => selected ? getTransfigureUpgradeSourceText(selected) : null,
     [selected],
@@ -156,6 +184,10 @@ export function TransfigureEditor({
     () => selected ? getTransfigureUpgradeSourceCost(selected) : null,
     [selected],
   );
+  const sourceUpgradedCardKeywords = useMemo(
+    () => selected ? getTransfigureUpgradeCardKeywords(selected) : null,
+    [selected],
+  );
   const hasUpdateDiff = useCallback((
     blocks: PostBlock[],
     upgradedBlocks: PostBlock[] | null,
@@ -171,6 +203,14 @@ export function TransfigureEditor({
       || transformedCost.trim() !== (initialPost.transformed_cost ?? "").trim()
       || transformedUpgradeCost.trim()
         !== (initialPost.transformed_upgrade_cost ?? "").trim()
+      || !transfigureCardKeywordsEqual(cardKeywords, {
+        top: initialPost.card_top_keywords,
+        bottom: initialPost.card_bottom_keywords,
+      })
+      || !transfigureCardKeywordsEqual(upgradedCardKeywords, {
+        top: initialPost.upgraded_card_top_keywords,
+        bottom: initialPost.upgraded_card_bottom_keywords,
+      })
       || showUpgrade !== (initialPost.show_upgrade ?? false)
       || transfigureBlocksSignature(blocks)
         !== transfigureBlocksSignature(initialPost.content)
@@ -186,11 +226,13 @@ export function TransfigureEditor({
     );
   }, [
     initialPost,
+    cardKeywords,
     showUpgrade,
     sourceUpgradeBlocks,
     transformedCost,
     transformedName,
     transformedUpgradeCost,
+    upgradedCardKeywords,
   ]);
 
   const handleSelect = useCallback((entity: EntityInfo) => {
@@ -201,6 +243,8 @@ export function TransfigureEditor({
     setTransformedName("");
     setTransformedCost("");
     setTransformedUpgradeCost("");
+    setCardKeywords(getTransfigureCardKeywords(entity));
+    setUpgradedCardKeywords(getTransfigureUpgradeCardKeywords(entity));
     setShowUpgrade(false);
     setSaveFeedback(null);
   }, [copy.defaultTitle, entities]);
@@ -226,6 +270,10 @@ export function TransfigureEditor({
         sourceUpgradeBlocks,
         transformedUpgradeCost,
         sourceUpgradeCost,
+        cardKeywords,
+        sourceCardKeywords,
+        upgradedCardKeywords,
+        sourceUpgradedCardKeywords,
         showUpgrade,
       })
     ) {
@@ -259,10 +307,14 @@ export function TransfigureEditor({
       sourceUpgradeText,
       sourceUpgradeBlocks,
       sourceUpgradeCost,
+      sourceCardKeywords,
+      sourceUpgradedCardKeywords,
       transformedName,
       transformedCost,
+      cardKeywords,
       upgradedBlocks,
       transformedUpgradeCost,
+      upgradedCardKeywords,
       showUpgrade,
     });
   }, [
@@ -278,14 +330,18 @@ export function TransfigureEditor({
     profileNickname,
     selected,
     sourceBlocks,
+    cardKeywords,
     sourceCost,
     sourceText,
     sourceUpgradeBlocks,
     sourceUpgradeCost,
     sourceUpgradeText,
+    sourceCardKeywords,
+    sourceUpgradedCardKeywords,
     transformedCost,
     transformedName,
     transformedUpgradeCost,
+    upgradedCardKeywords,
     showUpgrade,
   ]);
   const canSubmitBlocks = useCallback(
@@ -305,20 +361,28 @@ export function TransfigureEditor({
         sourceUpgradeBlocks,
         transformedUpgradeCost,
         sourceUpgradeCost,
+        cardKeywords,
+        sourceCardKeywords,
+        upgradedCardKeywords,
+        sourceUpgradedCardKeywords,
         showUpgrade,
       })
     ),
     [
       selected,
+      cardKeywords,
       sourceBlocks,
       sourceCost,
       sourceText,
       sourceUpgradeBlocks,
       sourceUpgradeCost,
       sourceUpgradeText,
+      sourceCardKeywords,
+      sourceUpgradedCardKeywords,
       transformedCost,
       transformedName,
       transformedUpgradeCost,
+      upgradedCardKeywords,
       showUpgrade,
     ],
   );
@@ -452,6 +516,9 @@ export function TransfigureEditor({
               nameLabel={copy.nameLabel}
               costLabel={copy.costLabel}
               descriptionLabel={copy.descriptionLabel}
+              addTopKeywordLabel={copy.addTopKeyword}
+              addBottomKeywordLabel={copy.addBottomKeyword}
+              removeKeywordLabel={copy.removeKeyword}
               serviceLocale={serviceLocale}
               sourceText={sourceText}
               sourceUpgradeText={sourceUpgradeText}
@@ -459,7 +526,9 @@ export function TransfigureEditor({
               submitLabel={initialPost ? copy.saveChanges : copy.submit}
               transformedName={transformedName}
               transformedCost={transformedCost}
+              cardKeywords={cardKeywords}
               transformedUpgradeCost={transformedUpgradeCost}
+              upgradedCardKeywords={upgradedCardKeywords}
               upgradedBlocks={previewUpgradeBlocks}
               upgradeLabel={upgradeLabel}
               showUpgrade={showUpgrade}
@@ -471,6 +540,10 @@ export function TransfigureEditor({
                   setSaveFeedback(null);
                 }
                 setPreviewBlocks(blocks);
+              }}
+              onCardKeywordsChange={(keywords) => {
+                setCardKeywords(keywords);
+                setSaveFeedback(null);
               }}
               onCostChange={(value) => {
                 setTransformedCost(value);
@@ -489,6 +562,10 @@ export function TransfigureEditor({
                   setSaveFeedback(null);
                 }
                 setPreviewUpgradeBlocks(blocks);
+              }}
+              onUpgradeCardKeywordsChange={(keywords) => {
+                setUpgradedCardKeywords(keywords);
+                setSaveFeedback(null);
               }}
               onUpgradeCostChange={(value) => {
                 setTransformedUpgradeCost(value);

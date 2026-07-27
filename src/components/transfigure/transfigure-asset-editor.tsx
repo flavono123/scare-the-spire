@@ -7,12 +7,18 @@ import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { GameHoverTip } from "@/components/codex/hover-tip";
 import type { RichContentEditorProps } from "@/components/rich-content-editor";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import { TransfigureCardKeywordRail } from "@/components/transfigure/transfigure-card-keyword-rail";
 import Image from "@/components/ui/static-image";
 import type { PostBlock } from "@/lib/chemical-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
+  CARD_BOTTOM_KEYWORD_ORDER,
+  CARD_TOP_KEYWORD_ORDER,
+} from "@/lib/sts2-card-keywords";
+import {
   getTransfigureSourceCost,
   normalizeTransfigureCostInput,
+  type TransfigureCardKeywords,
 } from "@/lib/transfigure-types";
 
 const RichContentEditor = dynamic<RichContentEditorProps>(
@@ -31,6 +37,9 @@ interface TransfigureAssetEditorProps {
   nameLabel: string;
   costLabel: string;
   descriptionLabel: string;
+  addTopKeywordLabel: string;
+  addBottomKeywordLabel: string;
+  removeKeywordLabel: string;
   serviceLocale: ServiceLocale;
   sourceText: string;
   sourceUpgradeText: string | null;
@@ -38,14 +47,20 @@ interface TransfigureAssetEditorProps {
   submitLabel: string;
   transformedName: string;
   transformedCost: string;
+  cardKeywords: TransfigureCardKeywords | null;
   transformedUpgradeCost: string;
+  upgradedCardKeywords: TransfigureCardKeywords | null;
   upgradedBlocks: PostBlock[] | null;
   upgradeLabel: string;
   showUpgrade: boolean;
   onBlocksChange: (blocks: PostBlock[]) => void;
+  onCardKeywordsChange: (keywords: TransfigureCardKeywords | null) => void;
   onCostChange: (value: string) => void;
   onNameChange: (value: string) => void;
   onUpgradeBlocksChange: (blocks: PostBlock[] | null) => void;
+  onUpgradeCardKeywordsChange: (
+    keywords: TransfigureCardKeywords | null,
+  ) => void;
   onUpgradeCostChange: (value: string) => void;
   onShowUpgradeChange: (showUpgrade: boolean) => void;
   onSubmit: (
@@ -74,6 +89,9 @@ export function TransfigureAssetEditor({
   nameLabel,
   costLabel,
   descriptionLabel,
+  addTopKeywordLabel,
+  addBottomKeywordLabel,
+  removeKeywordLabel,
   serviceLocale,
   sourceText,
   sourceUpgradeText,
@@ -81,14 +99,18 @@ export function TransfigureAssetEditor({
   submitLabel,
   transformedName,
   transformedCost,
+  cardKeywords,
   transformedUpgradeCost,
+  upgradedCardKeywords,
   upgradedBlocks,
   upgradeLabel,
   showUpgrade,
   onBlocksChange,
+  onCardKeywordsChange,
   onCostChange,
   onNameChange,
   onUpgradeBlocksChange,
+  onUpgradeCardKeywordsChange,
   onUpgradeCostChange,
   onShowUpgradeChange,
   onSubmit,
@@ -101,8 +123,14 @@ export function TransfigureAssetEditor({
     ? sourceUpgradeText
     : sourceText;
   const activeCost = showUpgrade ? transformedUpgradeCost : transformedCost;
+  const activeCardKeywords = (
+    showUpgrade ? upgradedCardKeywords : cardKeywords
+  ) ?? { top: [], bottom: [] };
   const activeSourceCost = showUpgrade ? sourceUpgradeCost : sourceCost;
   const updateActiveCost = showUpgrade ? onUpgradeCostChange : onCostChange;
+  const updateActiveCardKeywords = showUpgrade
+    ? onUpgradeCardKeywordsChange
+    : onCardKeywordsChange;
   const handleCostKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key.toLowerCase() !== "x") return;
     event.preventDefault();
@@ -175,14 +203,40 @@ export function TransfigureAssetEditor({
             titleContent={titleInput}
             descriptionContent={(
               <div
-                className="h-full w-full"
+                className="flex h-full w-full flex-col"
                 style={{
                   color: "#FFF6E2",
                   fontSize: "7cqi",
                   textShadow: "2px 2px 0 rgba(0,0,0,0.45)",
                 }}
               >
-                {descriptionEditor}
+                <TransfigureCardKeywordRail
+                  addLabel={addTopKeywordLabel}
+                  card={entity.cardData}
+                  keywords={activeCardKeywords.top}
+                  options={CARD_TOP_KEYWORD_ORDER}
+                  placement="top"
+                  removeLabel={removeKeywordLabel}
+                  onChange={(top) => updateActiveCardKeywords({
+                    ...activeCardKeywords,
+                    top,
+                  })}
+                />
+                <div className="min-h-0 w-full flex-1">
+                  {descriptionEditor}
+                </div>
+                <TransfigureCardKeywordRail
+                  addLabel={addBottomKeywordLabel}
+                  card={entity.cardData}
+                  keywords={activeCardKeywords.bottom}
+                  options={CARD_BOTTOM_KEYWORD_ORDER}
+                  placement="bottom"
+                  removeLabel={removeKeywordLabel}
+                  onChange={(bottom) => updateActiveCardKeywords({
+                    ...activeCardKeywords,
+                    bottom,
+                  })}
+                />
               </div>
             )}
             costContent={(

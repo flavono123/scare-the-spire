@@ -217,8 +217,16 @@ export function TransfigurePostView({
                 serviceLocale={serviceLocale}
                 transformedName={post.transformed_name}
                 transformedCost={post.transformed_cost}
+                cardKeywords={{
+                  top: post.card_top_keywords,
+                  bottom: post.card_bottom_keywords,
+                }}
                 transformedUpgradeCost={post.transformed_upgrade_cost}
                 upgradedBlocks={post.upgraded_content}
+                upgradedCardKeywords={{
+                  top: post.upgraded_card_top_keywords,
+                  bottom: post.upgraded_card_bottom_keywords,
+                }}
                 upgradeLabel={upgradeLabel}
                 initialShowUpgrade={post.show_upgrade}
               />

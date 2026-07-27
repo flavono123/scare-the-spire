@@ -12,10 +12,10 @@ import {
 } from "@/lib/chemical-utils";
 import { stripCodexMarkup } from "@/lib/codex-search";
 import type { GameLocale } from "@/lib/i18n";
-import type { CodexCard } from "@/lib/codex-types";
 import {
+  CARD_BOTTOM_KEYWORD_ORDER,
+  CARD_TOP_KEYWORD_ORDER,
   getCardDisplayKeywords,
-  getCardKeywordDisplayText,
   splitCardDisplayKeywords,
 } from "@/lib/sts2-card-keywords";
 
@@ -51,14 +51,23 @@ export interface TransfigurePost {
   source_game_locale: GameLocale;
   transformed_name: string | null;
   transformed_cost: string | null;
+  card_top_keywords: string[];
+  card_bottom_keywords: string[];
   upgraded_content: PostBlock[] | null;
   upgraded_content_text: string | null;
   transformed_upgrade_cost: string | null;
+  upgraded_card_top_keywords: string[];
+  upgraded_card_bottom_keywords: string[];
   show_upgrade: boolean;
   content: PostBlock[];
   content_text: string;
   env: string;
   created_at: string;
+}
+
+export interface TransfigureCardKeywords {
+  top: string[];
+  bottom: string[];
 }
 
 export function isTransfigureResourceType(
@@ -70,7 +79,7 @@ export function isTransfigureResourceType(
 export function getTransfigureEntityDescription(entity: EntityInfo): string | null {
   if (!isTransfigureResourceType(entity.type)) return null;
   if (entity.cardData) {
-    return getTransfigureCardDescription(entity.cardData, entity.cardData.description, 0);
+    return entity.cardData.description;
   }
 
   return (
@@ -88,25 +97,58 @@ export function getTransfigureEntityDescription(entity: EntityInfo): string | nu
   );
 }
 
-function getTransfigureCardDescription(
-  card: CodexCard,
-  description: string,
-  upgradeLevel: number,
-): string {
+export function getTransfigureCardKeywords(
+  entity: EntityInfo,
+  upgradeLevel = 0,
+): TransfigureCardKeywords | null {
+  if (entity.type !== "card" || !entity.cardData) return null;
   const {
     preDescriptionKeywords,
     postDescriptionKeywords,
   } = splitCardDisplayKeywords(
-    getCardDisplayKeywords(card, { upgradeLevel }),
+    getCardDisplayKeywords(entity.cardData, { upgradeLevel }),
   );
-  const keywordLine = (keyword: string) => (
-    `[gold]${getCardKeywordDisplayText(card, keyword)}[/gold].`
+  return {
+    top: preDescriptionKeywords,
+    bottom: postDescriptionKeywords,
+  };
+}
+
+export function getTransfigureUpgradeCardKeywords(
+  entity: EntityInfo,
+): TransfigureCardKeywords | null {
+  if (
+    entity.type !== "card"
+    || !entity.cardData
+    || !hasCardUpgrade(entity.cardData)
+  ) {
+    return null;
+  }
+  return getTransfigureCardKeywords(entity, 1);
+}
+
+export function normalizeTransfigureCardKeywords(
+  keywords: TransfigureCardKeywords | null | undefined,
+): TransfigureCardKeywords {
+  const top = new Set(keywords?.top ?? []);
+  const bottom = new Set(keywords?.bottom ?? []);
+  return {
+    top: CARD_TOP_KEYWORD_ORDER.filter((keyword) => top.has(keyword)),
+    bottom: CARD_BOTTOM_KEYWORD_ORDER.filter((keyword) => bottom.has(keyword)),
+  };
+}
+
+export function transfigureCardKeywordsEqual(
+  left: TransfigureCardKeywords | null | undefined,
+  right: TransfigureCardKeywords | null | undefined,
+): boolean {
+  const normalizedLeft = normalizeTransfigureCardKeywords(left);
+  const normalizedRight = normalizeTransfigureCardKeywords(right);
+  return (
+    normalizedLeft.top.join("\u0000") === normalizedRight.top.join("\u0000")
+    && normalizedLeft.bottom.join("\u0000")
+      === normalizedRight.bottom.join("\u0000")
   );
-  return [
-    ...preDescriptionKeywords.map(keywordLine),
-    description,
-    ...postDescriptionKeywords.map(keywordLine),
-  ].filter(Boolean).join("\n");
 }
 
 export function getTransfigureSourceText(entity: EntityInfo): string | null {
@@ -195,11 +237,7 @@ export function getTransfigureUpgradeDescription(
   ) {
     return null;
   }
-  return getTransfigureCardDescription(
-    entity.cardData,
-    renderCardDescription(entity.cardData, { upgradeLevel: 1 }),
-    1,
-  );
+  return renderCardDescription(entity.cardData, { upgradeLevel: 1 });
 }
 
 export function getTransfigureUpgradeSourceText(
@@ -287,6 +325,10 @@ export function isTransfigureChanged({
   transformedUpgradeCost = "",
   sourceUpgradeCost = null,
   showUpgrade = false,
+  cardKeywords = null,
+  sourceCardKeywords = null,
+  upgradedCardKeywords = null,
+  sourceUpgradedCardKeywords = null,
 }: {
   blocks: PostBlock[];
   sourceText: string;
@@ -301,9 +343,18 @@ export function isTransfigureChanged({
   transformedUpgradeCost?: string;
   sourceUpgradeCost?: string | null;
   showUpgrade?: boolean;
+  cardKeywords?: TransfigureCardKeywords | null;
+  sourceCardKeywords?: TransfigureCardKeywords | null;
+  upgradedCardKeywords?: TransfigureCardKeywords | null;
+  sourceUpgradedCardKeywords?: TransfigureCardKeywords | null;
 }): boolean {
   return (
     showUpgrade
+    || !transfigureCardKeywordsEqual(cardKeywords, sourceCardKeywords)
+    || !transfigureCardKeywordsEqual(
+      upgradedCardKeywords,
+      sourceUpgradedCardKeywords,
+    )
     || isTransfiguredContent(blocks, sourceText, sourceBlocks)
     || normalizeTransfigureName(transformedName, sourceName) != null
     || normalizeTransfigureCost(transformedCost, sourceCost) != null

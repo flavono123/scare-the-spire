@@ -8,8 +8,10 @@ import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
   isTransfigureChanged,
+  normalizeTransfigureCardKeywords,
   normalizeTransfigureCost,
   normalizeTransfigureName,
+  type TransfigureCardKeywords,
   type TransfigurePost,
   type TransfigureResourceRef,
 } from "@/lib/transfigure-types";
@@ -27,10 +29,14 @@ export interface SaveTransfigurePostInput {
   sourceUpgradeText: string | null;
   sourceUpgradeBlocks: PostBlock[] | null;
   sourceUpgradeCost: string | null;
+  sourceCardKeywords: TransfigureCardKeywords | null;
+  sourceUpgradedCardKeywords: TransfigureCardKeywords | null;
   transformedName: string;
   transformedCost: string;
+  cardKeywords: TransfigureCardKeywords | null;
   upgradedBlocks: PostBlock[] | null;
   transformedUpgradeCost: string;
+  upgradedCardKeywords: TransfigureCardKeywords | null;
   showUpgrade: boolean;
   activeUserId?: string;
 }
@@ -61,9 +67,13 @@ function normalizePost(row: unknown): TransfigurePost {
   const post = row as TransfigurePost;
   return {
     ...post,
+    card_top_keywords: post.card_top_keywords ?? [],
+    card_bottom_keywords: post.card_bottom_keywords ?? [],
     upgraded_content: post.upgraded_content ?? null,
     upgraded_content_text: post.upgraded_content_text ?? null,
     transformed_upgrade_cost: post.transformed_upgrade_cost ?? null,
+    upgraded_card_top_keywords: post.upgraded_card_top_keywords ?? [],
+    upgraded_card_bottom_keywords: post.upgraded_card_bottom_keywords ?? [],
     show_upgrade: post.show_upgrade ?? false,
   };
 }
@@ -88,6 +98,24 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     input.transformedUpgradeCost,
     input.sourceUpgradeCost,
   );
+  const cardKeywords = normalizeTransfigureCardKeywords(input.cardKeywords);
+  const upgradedCardKeywords = normalizeTransfigureCardKeywords(
+    input.upgradedCardKeywords,
+  );
+  const cardKeywordInputValid = input.resource.type === "card"
+    ? (
+      input.cardKeywords != null
+      && (
+        input.upgradedBlocks == null
+        || input.upgradedCardKeywords != null
+      )
+    )
+    : (
+      cardKeywords.top.length === 0
+      && cardKeywords.bottom.length === 0
+      && upgradedCardKeywords.top.length === 0
+      && upgradedCardKeywords.bottom.length === 0
+    );
   const validCost = transformedCost == null || /^(X|[0-9]{1,2})$/.test(transformedCost);
   const validUpgradeCost = transformedUpgradeCost == null
     || /^(X|[0-9]{1,2})$/.test(transformedUpgradeCost);
@@ -123,6 +151,7 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     || !validUpgradeCost
     || !validUpgradeContent
     || !validShowUpgrade
+    || !cardKeywordInputValid
     || (transformedName?.length ?? 0) > 80
     || !isTransfigureChanged({
       blocks: input.blocks,
@@ -137,6 +166,10 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
       sourceUpgradeBlocks: input.sourceUpgradeBlocks,
       transformedUpgradeCost: input.transformedUpgradeCost,
       sourceUpgradeCost: input.sourceUpgradeCost,
+      cardKeywords,
+      sourceCardKeywords: input.sourceCardKeywords,
+      upgradedCardKeywords,
+      sourceUpgradedCardKeywords: input.sourceUpgradedCardKeywords,
       showUpgrade: input.showUpgrade,
     })
   ) {
@@ -152,6 +185,8 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     transformedCost,
     upgradedContentText,
     transformedUpgradeCost,
+    cardKeywords,
+    upgradedCardKeywords,
   };
 }
 
@@ -175,9 +210,13 @@ async function persistTransfigurePostUpdate(
         content_text: normalized.contentText,
         transformed_name: normalized.transformedName,
         transformed_cost: normalized.transformedCost,
+        card_top_keywords: normalized.cardKeywords.top,
+        card_bottom_keywords: normalized.cardKeywords.bottom,
         upgraded_content: input.upgradedBlocks,
         upgraded_content_text: normalized.upgradedContentText,
         transformed_upgrade_cost: normalized.transformedUpgradeCost,
+        upgraded_card_top_keywords: normalized.upgradedCardKeywords.top,
+        upgraded_card_bottom_keywords: normalized.upgradedCardKeywords.bottom,
         show_upgrade: input.showUpgrade,
       })
       .eq("id", postId)
@@ -292,10 +331,14 @@ export function useTransfigurePosts(
       sourceUpgradeText,
       sourceUpgradeBlocks,
       sourceUpgradeCost,
+      sourceCardKeywords,
+      sourceUpgradedCardKeywords,
       transformedName,
       transformedCost,
+      cardKeywords,
       upgradedBlocks,
       transformedUpgradeCost,
+      upgradedCardKeywords,
       showUpgrade,
     }: SaveTransfigurePostInput): Promise<TransfigurePost | null> => {
       const normalized = validateSaveInput({
@@ -311,10 +354,14 @@ export function useTransfigurePosts(
         sourceUpgradeText,
         sourceUpgradeBlocks,
         sourceUpgradeCost,
+        sourceCardKeywords,
+        sourceUpgradedCardKeywords,
         transformedName,
         transformedCost,
+        cardKeywords,
         upgradedBlocks,
         transformedUpgradeCost,
+        upgradedCardKeywords,
         showUpgrade,
         activeUserId,
       });
@@ -336,9 +383,13 @@ export function useTransfigurePosts(
             content_text: normalized.contentText,
             transformed_name: normalized.transformedName,
             transformed_cost: normalized.transformedCost,
+            card_top_keywords: normalized.cardKeywords.top,
+            card_bottom_keywords: normalized.cardKeywords.bottom,
             upgraded_content: upgradedBlocks,
             upgraded_content_text: normalized.upgradedContentText,
             transformed_upgrade_cost: normalized.transformedUpgradeCost,
+            upgraded_card_top_keywords: normalized.upgradedCardKeywords.top,
+            upgraded_card_bottom_keywords: normalized.upgradedCardKeywords.bottom,
             show_upgrade: showUpgrade,
             env: supabaseEnv,
           })

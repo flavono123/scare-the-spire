@@ -15,6 +15,7 @@ import {
   getTransfigureUpgradeInitialBlocks,
   getTransfigureUpgradeSourceCost,
   transfigureBlocksToGameDescription,
+  type TransfigureCardKeywords,
 } from "@/lib/transfigure-types";
 import { serviceMessages } from "@/messages/service";
 
@@ -28,7 +29,9 @@ interface TransfigureResourcePreviewProps {
   transformedName?: string | null;
   transformedCost?: string | null;
   transformedUpgradeCost?: string | null;
+  cardKeywords?: TransfigureCardKeywords | null;
   upgradedBlocks?: PostBlock[] | null;
+  upgradedCardKeywords?: TransfigureCardKeywords | null;
   upgradeLabel: string;
   initialShowUpgrade?: boolean;
   showImageActions?: boolean;
@@ -45,7 +48,9 @@ export function TransfigureResourcePreview({
   transformedName,
   transformedCost,
   transformedUpgradeCost,
+  cardKeywords,
   upgradedBlocks,
+  upgradedCardKeywords,
   upgradeLabel,
   initialShowUpgrade = false,
   showImageActions = true,
@@ -81,6 +86,11 @@ export function TransfigureResourcePreview({
     const activeBlocks = showUpgrade && effectiveUpgradeBlocks != null
       ? effectiveUpgradeBlocks
       : blocks;
+    const activeCardKeywords = (
+      showUpgrade && effectiveUpgradeBlocks != null
+        ? upgradedCardKeywords
+        : cardKeywords
+    ) ?? { top: [], bottom: [] };
     const sourceCost = showUpgrade
       ? getTransfigureUpgradeSourceCost(entity)
       : getTransfigureSourceCost(entity);
@@ -115,7 +125,10 @@ export function TransfigureResourcePreview({
             showBeta={false}
             width={280}
             interactive={false}
-            keywordOverride={[]}
+            keywordOverride={[
+              ...activeCardKeywords.top,
+              ...activeCardKeywords.bottom,
+            ]}
             forcedCost={forcedCost}
           />
         </div>
