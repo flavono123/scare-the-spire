@@ -11,14 +11,14 @@ const UPGRADE_REMOVED_KEYWORDS: Record<string, string> = {
   remove_ethereal: "휘발성",
 };
 
-const PRE_DESCRIPTION_KEYWORD_ORDER = [
+export const CARD_TOP_KEYWORD_ORDER = [
   "사용불가",
   "선천성",
   "보존",
   "교활",
   "휘발성",
 ] as const;
-const POST_DESCRIPTION_KEYWORD_ORDER = ["소멸", "영구"] as const;
+export const CARD_BOTTOM_KEYWORD_ORDER = ["소멸", "영구"] as const;
 
 function getUpgradeKeywords(
   upgrade: CodexCard["upgrade"],
@@ -84,30 +84,30 @@ export function splitCardDisplayKeywords(keywords: string[]): {
 } {
   const preDescriptionKeywords = keywords
     .filter((keyword) => (
-      PRE_DESCRIPTION_KEYWORD_ORDER.includes(
-        cardKeywordLookupKey(keyword) as (typeof PRE_DESCRIPTION_KEYWORD_ORDER)[number],
+      CARD_TOP_KEYWORD_ORDER.includes(
+        cardKeywordLookupKey(keyword) as (typeof CARD_TOP_KEYWORD_ORDER)[number],
       )
     ))
     .sort((left, right) => (
-      PRE_DESCRIPTION_KEYWORD_ORDER.indexOf(
-        cardKeywordLookupKey(left) as (typeof PRE_DESCRIPTION_KEYWORD_ORDER)[number],
+      CARD_TOP_KEYWORD_ORDER.indexOf(
+        cardKeywordLookupKey(left) as (typeof CARD_TOP_KEYWORD_ORDER)[number],
       )
-      - PRE_DESCRIPTION_KEYWORD_ORDER.indexOf(
-        cardKeywordLookupKey(right) as (typeof PRE_DESCRIPTION_KEYWORD_ORDER)[number],
+      - CARD_TOP_KEYWORD_ORDER.indexOf(
+        cardKeywordLookupKey(right) as (typeof CARD_TOP_KEYWORD_ORDER)[number],
       )
     ));
   const postDescriptionKeywords = keywords
     .filter((keyword) => (
-      !PRE_DESCRIPTION_KEYWORD_ORDER.includes(
-        cardKeywordLookupKey(keyword) as (typeof PRE_DESCRIPTION_KEYWORD_ORDER)[number],
+      !CARD_TOP_KEYWORD_ORDER.includes(
+        cardKeywordLookupKey(keyword) as (typeof CARD_TOP_KEYWORD_ORDER)[number],
       )
     ))
     .sort((left, right) => {
-      const leftIndex = POST_DESCRIPTION_KEYWORD_ORDER.indexOf(
-        cardKeywordLookupKey(left) as (typeof POST_DESCRIPTION_KEYWORD_ORDER)[number],
+      const leftIndex = CARD_BOTTOM_KEYWORD_ORDER.indexOf(
+        cardKeywordLookupKey(left) as (typeof CARD_BOTTOM_KEYWORD_ORDER)[number],
       );
-      const rightIndex = POST_DESCRIPTION_KEYWORD_ORDER.indexOf(
-        cardKeywordLookupKey(right) as (typeof POST_DESCRIPTION_KEYWORD_ORDER)[number],
+      const rightIndex = CARD_BOTTOM_KEYWORD_ORDER.indexOf(
+        cardKeywordLookupKey(right) as (typeof CARD_BOTTOM_KEYWORD_ORDER)[number],
       );
       if (leftIndex === -1 && rightIndex === -1) return 0;
       if (leftIndex === -1) return 1;
