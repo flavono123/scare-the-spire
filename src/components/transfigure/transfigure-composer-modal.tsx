@@ -72,7 +72,7 @@ export function TransfigureComposerModal({
   return (
     <div
       className="fixed inset-0 z-[70] flex items-end justify-center bg-black/70 backdrop-blur-sm sm:items-center sm:px-3 sm:py-6"
-      onClick={onClose}
+      data-transfigure-composer-backdrop
     >
       <div
         ref={dialogRef}
@@ -81,7 +81,6 @@ export function TransfigureComposerModal({
         aria-labelledby="transfigure-composer-title"
         tabIndex={-1}
         className="flex max-h-[calc(100svh-1rem)] w-full flex-col rounded-t-2xl border border-b-0 border-yellow-500/20 bg-[#070a12] shadow-[0_-18px_60px_rgba(0,0,0,0.6)] outline-none sm:max-h-[94vh] sm:max-w-6xl sm:rounded-xl sm:border-b sm:shadow-2xl"
-        onClick={(event) => event.stopPropagation()}
       >
         <div className="flex shrink-0 items-center justify-between border-b border-border/70 px-4 py-3">
           <div className="flex items-center gap-2">
