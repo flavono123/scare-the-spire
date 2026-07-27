@@ -24,7 +24,8 @@
 Rules:
 
 - The H1 is exactly the deployment date in `YYYY-MM-DD`.
-- The renderer presents the H1 date as each entry's visual title, not muted metadata: use a larger title scale, the Byrdispatch teaser's purple border/background color family, and visible spacing or a divider between dates.
+- The renderer presents the H1 date as each entry's visual title, not muted metadata: keep the larger title scale and apply only the Byrdispatch teaser's purple text color, without chip background, border, rounded corners, padding, or shadow.
+- The newest dated entry uses a borderless purple background container. Keep visible spacing between dates and do not use entry borders as separators.
 - H2 headings are service areas.
 - `## 공지` is optional, but when present it must be the first H2 section.
 - The renderer treats `## 공지` as a pink highlighted notice block above regular sections.
