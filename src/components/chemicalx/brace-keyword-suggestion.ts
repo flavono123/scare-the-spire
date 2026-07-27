@@ -2,6 +2,11 @@ import { Extension } from "@tiptap/core";
 import Suggestion from "@tiptap/suggestion";
 import type { SuggestionMatch, SuggestionOptions } from "@tiptap/suggestion";
 import type { ResolvedPos } from "@tiptap/pm/model";
+import { PluginKey } from "@tiptap/pm/state";
+
+export const braceKeywordSuggestionPluginKey = new PluginKey(
+  "brace-keyword-suggestion",
+);
 
 /**
  * Detect the current `<displayText>{<query>` being typed (brace still open,
@@ -45,6 +50,7 @@ export const BraceKeywordSuggestion = Extension.create<{
   addOptions() {
     return {
       suggestion: {
+        pluginKey: braceKeywordSuggestionPluginKey,
         char: "",
         allowSpaces: true,
         findSuggestionMatch: findBraceKeywordMatch,

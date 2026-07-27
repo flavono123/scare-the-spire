@@ -8,10 +8,17 @@ import type { Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
-import type { SuggestionProps, SuggestionKeyDownProps } from "@tiptap/suggestion";
+import {
+  exitSuggestion,
+  type SuggestionProps,
+  type SuggestionKeyDownProps,
+} from "@tiptap/suggestion";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { EntityMention, entitySuggestionBase } from "@/components/chemicalx/entity-mention";
-import { BraceKeywordSuggestion } from "@/components/chemicalx/brace-keyword-suggestion";
+import {
+  BraceKeywordSuggestion,
+  braceKeywordSuggestionPluginKey,
+} from "@/components/chemicalx/brace-keyword-suggestion";
 import { CustomKeyword } from "@/components/chemicalx/custom-keyword";
 import { MentionList, type MentionListRef } from "@/components/chemicalx/mention-list";
 import { EntityMapProvider } from "@/components/chemicalx/entity-context";
@@ -574,7 +581,10 @@ export function RichContentEditor({
                 document.body.appendChild(popup);
                 stopOutsidePressListener = listenForSuggestionOutsidePress(
                   popup,
-                  dismissPopup,
+                  () => exitSuggestion(
+                    props.editor.view,
+                    braceKeywordSuggestionPluginKey,
+                  ),
                 );
 
                 if (props.clientRect) {
