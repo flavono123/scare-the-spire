@@ -48,16 +48,10 @@ export function TransfigureComposerModal({
       );
     initialFocus?.focus();
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-
     return () => {
       document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [initialPost, onClose]);
+  }, [initialPost]);
 
   const handleDelete = async () => {
     if (!onDelete || deleting) return;
