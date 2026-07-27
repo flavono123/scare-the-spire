@@ -108,7 +108,11 @@ export function TransfigureCardKeywordRail({
         <div
           role="listbox"
           aria-label={addLabel}
-          className="mt-[1.2cqi] grid grid-cols-2 gap-[1cqi] rounded-[2cqi] border border-[#EFC851]/35 bg-black/70 p-[1.5cqi]"
+          className={`absolute left-0 right-0 z-30 grid grid-cols-2 gap-[1cqi] rounded-[2cqi] border border-[#EFC851]/35 bg-black/95 p-[1.5cqi] shadow-[0_0_10cqi_rgba(0,0,0,0.75)] ${
+            placement === "top"
+              ? "top-full mt-[1.2cqi]"
+              : "bottom-full mb-[1.2cqi]"
+          }`}
           data-transfigure-keyword-options={placement}
         >
           {options.map((keyword) => {
