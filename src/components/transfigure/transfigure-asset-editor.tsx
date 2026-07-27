@@ -222,7 +222,7 @@ export function TransfigureAssetEditor({
                     top,
                   })}
                 />
-                <div className="min-h-0 w-full flex-1">
+                <div className="relative z-0 min-h-0 w-full flex-1 overflow-hidden">
                   {descriptionEditor}
                 </div>
                 <TransfigureCardKeywordRail
