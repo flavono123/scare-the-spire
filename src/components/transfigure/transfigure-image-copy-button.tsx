@@ -10,6 +10,8 @@ import {
 
 type ActionStatus = "idle" | "working" | "success";
 
+const embeddedBorderImageCache = new Map<string, Promise<string>>();
+
 interface TransfigureImageCopyButtonProps {
   fileName: string;
   targetRef: RefObject<HTMLElement | null>;
@@ -26,11 +28,77 @@ interface TransfigureImageCopyButtonProps {
   };
 }
 
-function renderTargetPng(target: HTMLElement): Promise<Blob> {
-  return Promise.all([
+function readCssUrl(value: string): string | null {
+  const match = value.match(/^url\((?:"([^"]+)"|'([^']+)'|([^)]*))\)$/);
+  return match?.[1] ?? match?.[2] ?? match?.[3]?.trim() ?? null;
+}
+
+function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(String(reader.result)));
+    reader.addEventListener("error", () => reject(reader.error));
+    reader.readAsDataURL(blob);
+  });
+}
+
+function embedBorderImage(url: string): Promise<string> {
+  const cached = embeddedBorderImageCache.get(url);
+  if (cached) return cached;
+
+  const embedded = fetch(url)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Border image request failed: ${response.status}`);
+      }
+      return response.blob();
+    })
+    .then(blobToDataUrl);
+  embeddedBorderImageCache.set(url, embedded);
+  void embedded.catch(() => embeddedBorderImageCache.delete(url));
+  return embedded;
+}
+
+async function inlineTargetBorderImages(target: HTMLElement): Promise<() => void> {
+  const elements = [
+    target,
+    ...Array.from(target.querySelectorAll<HTMLElement>("*")),
+  ];
+  const restorations = await Promise.all(elements.map(async (element) => {
+    const source = getComputedStyle(element).borderImageSource;
+    const url = readCssUrl(source);
+    if (!url || url.startsWith("data:")) return null;
+
+    const originalValue = element.style.getPropertyValue("border-image-source");
+    const originalPriority = element.style.getPropertyPriority("border-image-source");
+    const embedded = await embedBorderImage(url);
+    element.style.setProperty("border-image-source", `url("${embedded}")`);
+
+    return () => {
+      if (originalValue) {
+        element.style.setProperty(
+          "border-image-source",
+          originalValue,
+          originalPriority,
+        );
+      } else {
+        element.style.removeProperty("border-image-source");
+      }
+    };
+  }));
+
+  return () => {
+    for (const restore of restorations) restore?.();
+  };
+}
+
+async function renderTargetPng(target: HTMLElement): Promise<Blob> {
+  const [{ toBlob }] = await Promise.all([
     import("html-to-image"),
     document.fonts?.ready ?? Promise.resolve(),
-  ]).then(async ([{ toBlob }]) => {
+  ]);
+  const restoreBorderImages = await inlineTargetBorderImages(target);
+  try {
     const blob = await toBlob(target, {
       cacheBust: true,
       pixelRatio: Math.min(3, Math.max(2, window.devicePixelRatio || 1)),
@@ -38,7 +106,9 @@ function renderTargetPng(target: HTMLElement): Promise<Blob> {
     });
     if (!blob) throw new Error("PNG rendering returned no data");
     return blob;
-  });
+  } finally {
+    restoreBorderImages();
+  }
 }
 
 function safeDownloadName(fileName: string): string {
