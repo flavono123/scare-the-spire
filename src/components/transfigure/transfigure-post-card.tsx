@@ -116,6 +116,7 @@ export function TransfigurePostCard({
             </span>
             <span className="block truncate text-[11px] text-zinc-500">
               {post.transformed_name?.trim() || resource?.nameKo || post.resource_id}
+              {post.show_upgrade && resource?.type === "card" ? "+" : ""}
               {" · "}
               {post.nickname}
             </span>
@@ -150,7 +151,9 @@ export function TransfigurePostCard({
 
       <div className="mt-2 text-sm leading-relaxed text-[#f0e6d2]">
         <PostRenderer
-          blocks={post.content}
+          blocks={post.show_upgrade && post.upgraded_content
+            ? post.upgraded_content
+            : post.content}
           entityMap={entityMap}
           serviceLocale={serviceLocale}
           gameLocale={gameLocale}

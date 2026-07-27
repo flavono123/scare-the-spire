@@ -29,6 +29,7 @@ interface TransfigureResourcePreviewProps {
   transformedUpgradeCost?: string | null;
   upgradedBlocks?: PostBlock[] | null;
   upgradeLabel: string;
+  initialShowUpgrade?: boolean;
 }
 
 export function TransfigureResourcePreview({
@@ -42,13 +43,14 @@ export function TransfigureResourcePreview({
   transformedUpgradeCost,
   upgradedBlocks,
   upgradeLabel,
+  initialShowUpgrade = false,
 }: TransfigureResourcePreviewProps) {
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
   const gameUpgradeBlocks = useMemo(
     () => getTransfigureUpgradeInitialBlocks(entity, entities),
     [entities, entity],
   );
-  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(initialShowUpgrade);
   const copyTargetRef = useRef<HTMLDivElement>(null);
   const displayName = transformedName?.trim() || entity.nameKo;
   const copy = serviceMessages[serviceLocale].transfigure;

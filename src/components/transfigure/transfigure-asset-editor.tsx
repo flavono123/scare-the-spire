@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, type KeyboardEvent } from "react";
+import type { KeyboardEvent } from "react";
 import { CardTile } from "@/components/codex/card-tile";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { GameHoverTip } from "@/components/codex/hover-tip";
@@ -41,11 +41,13 @@ interface TransfigureAssetEditorProps {
   transformedUpgradeCost: string;
   upgradedBlocks: PostBlock[] | null;
   upgradeLabel: string;
+  showUpgrade: boolean;
   onBlocksChange: (blocks: PostBlock[]) => void;
   onCostChange: (value: string) => void;
   onNameChange: (value: string) => void;
   onUpgradeBlocksChange: (blocks: PostBlock[] | null) => void;
   onUpgradeCostChange: (value: string) => void;
+  onShowUpgradeChange: (showUpgrade: boolean) => void;
   onSubmit: (
     blocks: PostBlock[],
     upgradedBlocks: PostBlock[] | null,
@@ -82,15 +84,16 @@ export function TransfigureAssetEditor({
   transformedUpgradeCost,
   upgradedBlocks,
   upgradeLabel,
+  showUpgrade,
   onBlocksChange,
   onCostChange,
   onNameChange,
   onUpgradeBlocksChange,
   onUpgradeCostChange,
+  onShowUpgradeChange,
   onSubmit,
 }: TransfigureAssetEditorProps) {
   const sourceCost = getTransfigureSourceCost(entity);
-  const [showUpgrade, setShowUpgrade] = useState(false);
   const activeInitialBlocks = showUpgrade && initialUpgradeBlocks != null
     ? initialUpgradeBlocks
     : initialBlocks;
@@ -211,7 +214,7 @@ export function TransfigureAssetEditor({
           {upgradedBlocks != null && (
             <GameCheckboxToggle
               checked={showUpgrade}
-              onCheckedChange={setShowUpgrade}
+              onCheckedChange={onShowUpgradeChange}
               label={upgradeLabel}
               size="sm"
               className="mt-2 justify-center"

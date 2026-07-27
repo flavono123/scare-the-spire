@@ -191,6 +191,7 @@ export function TransfigurePostView({
               </span>
               <span className="block truncate text-xs text-zinc-500">
                 {post.transformed_name?.trim() || resource?.nameKo || post.resource_id}
+                {post.show_upgrade && resource?.type === "card" ? "+" : ""}
                 {" · "}
                 {post.nickname}
               </span>
@@ -208,6 +209,7 @@ export function TransfigurePostView({
           <div className="mt-3">
             {resource ? (
               <TransfigureResourcePreview
+                key={`${post.id}:${post.show_upgrade}`}
                 blocks={post.content}
                 entities={entities}
                 entity={resource}
@@ -218,6 +220,7 @@ export function TransfigurePostView({
                 transformedUpgradeCost={post.transformed_upgrade_cost}
                 upgradedBlocks={post.upgraded_content}
                 upgradeLabel={upgradeLabel}
+                initialShowUpgrade={post.show_upgrade}
               />
             ) : (
               <div className="text-lg font-bold leading-relaxed text-[#f0e6d2]">

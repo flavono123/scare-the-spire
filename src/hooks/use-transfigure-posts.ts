@@ -31,6 +31,7 @@ export interface SaveTransfigurePostInput {
   transformedCost: string;
   upgradedBlocks: PostBlock[] | null;
   transformedUpgradeCost: string;
+  showUpgrade: boolean;
   activeUserId?: string;
 }
 
@@ -63,6 +64,7 @@ function normalizePost(row: unknown): TransfigurePost {
     upgraded_content: post.upgraded_content ?? null,
     upgraded_content_text: post.upgraded_content_text ?? null,
     transformed_upgrade_cost: post.transformed_upgrade_cost ?? null,
+    show_upgrade: post.show_upgrade ?? false,
   };
 }
 
@@ -100,6 +102,12 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
       && input.sourceUpgradeBlocks != null
       && (upgradedContentText?.length ?? 0) >= 2
     );
+  const validShowUpgrade = !input.showUpgrade || (
+    input.resource.type === "card"
+    && input.upgradedBlocks != null
+    && input.sourceUpgradeText != null
+    && input.sourceUpgradeBlocks != null
+  );
 
   if (
     !input.activeUserId
@@ -114,6 +122,7 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     || !validCost
     || !validUpgradeCost
     || !validUpgradeContent
+    || !validShowUpgrade
     || (transformedName?.length ?? 0) > 80
     || !isTransfigureChanged({
       blocks: input.blocks,
@@ -128,6 +137,7 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
       sourceUpgradeBlocks: input.sourceUpgradeBlocks,
       transformedUpgradeCost: input.transformedUpgradeCost,
       sourceUpgradeCost: input.sourceUpgradeCost,
+      showUpgrade: input.showUpgrade,
     })
   ) {
     return null;
@@ -168,6 +178,7 @@ async function persistTransfigurePostUpdate(
         upgraded_content: input.upgradedBlocks,
         upgraded_content_text: normalized.upgradedContentText,
         transformed_upgrade_cost: normalized.transformedUpgradeCost,
+        show_upgrade: input.showUpgrade,
       })
       .eq("id", postId)
       .eq("user_id", input.activeUserId)
@@ -285,6 +296,7 @@ export function useTransfigurePosts(
       transformedCost,
       upgradedBlocks,
       transformedUpgradeCost,
+      showUpgrade,
     }: SaveTransfigurePostInput): Promise<TransfigurePost | null> => {
       const normalized = validateSaveInput({
         blocks,
@@ -303,6 +315,7 @@ export function useTransfigurePosts(
         transformedCost,
         upgradedBlocks,
         transformedUpgradeCost,
+        showUpgrade,
         activeUserId,
       });
       if (!normalized || !activeUserId) return null;
@@ -326,6 +339,7 @@ export function useTransfigurePosts(
             upgraded_content: upgradedBlocks,
             upgraded_content_text: normalized.upgradedContentText,
             transformed_upgrade_cost: normalized.transformedUpgradeCost,
+            show_upgrade: showUpgrade,
             env: supabaseEnv,
           })
           .select()

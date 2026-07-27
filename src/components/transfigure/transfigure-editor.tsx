@@ -81,6 +81,9 @@ export function TransfigureEditor({
   const [transformedUpgradeCost, setTransformedUpgradeCost] = useState(
     initialPost?.transformed_upgrade_cost ?? "",
   );
+  const [showUpgrade, setShowUpgrade] = useState(
+    initialPost?.show_upgrade ?? false,
+  );
   const [submitting, setSubmitting] = useState(false);
   const [saveFeedback, setSaveFeedback] = useState<{
     message: string;
@@ -139,6 +142,7 @@ export function TransfigureEditor({
       || transformedCost.trim() !== (initialPost.transformed_cost ?? "").trim()
       || transformedUpgradeCost.trim()
         !== (initialPost.transformed_upgrade_cost ?? "").trim()
+      || showUpgrade !== (initialPost.show_upgrade ?? false)
       || transfigureBlocksSignature(blocks)
         !== transfigureBlocksSignature(initialPost.content)
       || (
@@ -153,6 +157,7 @@ export function TransfigureEditor({
     );
   }, [
     initialPost,
+    showUpgrade,
     sourceUpgradeBlocks,
     transformedCost,
     transformedName,
@@ -167,6 +172,7 @@ export function TransfigureEditor({
     setTransformedName("");
     setTransformedCost("");
     setTransformedUpgradeCost("");
+    setShowUpgrade(false);
     setSaveFeedback(null);
   }, [copy.defaultTitle, entities]);
 
@@ -191,6 +197,7 @@ export function TransfigureEditor({
         sourceUpgradeBlocks,
         transformedUpgradeCost,
         sourceUpgradeCost,
+        showUpgrade,
       })
     ) {
       setSaveFeedback({
@@ -227,6 +234,7 @@ export function TransfigureEditor({
       transformedCost,
       upgradedBlocks,
       transformedUpgradeCost,
+      showUpgrade,
     });
   }, [
     copy.changeRequired,
@@ -249,6 +257,7 @@ export function TransfigureEditor({
     transformedCost,
     transformedName,
     transformedUpgradeCost,
+    showUpgrade,
   ]);
   const canSubmitBlocks = useCallback(
     (blocks: PostBlock[], upgradedBlocks: PostBlock[] | null) => (
@@ -267,6 +276,7 @@ export function TransfigureEditor({
         sourceUpgradeBlocks,
         transformedUpgradeCost,
         sourceUpgradeCost,
+        showUpgrade,
       })
     ),
     [
@@ -280,6 +290,7 @@ export function TransfigureEditor({
       transformedCost,
       transformedName,
       transformedUpgradeCost,
+      showUpgrade,
     ],
   );
   const hasChanges = canSubmitBlocks(
@@ -424,6 +435,7 @@ export function TransfigureEditor({
               transformedUpgradeCost={transformedUpgradeCost}
               upgradedBlocks={previewUpgradeBlocks}
               upgradeLabel={upgradeLabel}
+              showUpgrade={showUpgrade}
               onBlocksChange={(blocks) => {
                 if (
                   transfigureBlocksSignature(blocks)
@@ -453,6 +465,10 @@ export function TransfigureEditor({
               }}
               onUpgradeCostChange={(value) => {
                 setTransformedUpgradeCost(value);
+                setSaveFeedback(null);
+              }}
+              onShowUpgradeChange={(checked) => {
+                setShowUpgrade(checked);
                 setSaveFeedback(null);
               }}
               onNameChange={(value) => {

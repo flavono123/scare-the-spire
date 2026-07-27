@@ -48,6 +48,7 @@ export interface TransfigurePost {
   upgraded_content: PostBlock[] | null;
   upgraded_content_text: string | null;
   transformed_upgrade_cost: string | null;
+  show_upgrade: boolean;
   content: PostBlock[];
   content_text: string;
   env: string;
@@ -252,6 +253,7 @@ export function isTransfigureChanged({
   sourceUpgradeBlocks,
   transformedUpgradeCost = "",
   sourceUpgradeCost = null,
+  showUpgrade = false,
 }: {
   blocks: PostBlock[];
   sourceText: string;
@@ -265,9 +267,11 @@ export function isTransfigureChanged({
   sourceUpgradeBlocks?: PostBlock[] | null;
   transformedUpgradeCost?: string;
   sourceUpgradeCost?: string | null;
+  showUpgrade?: boolean;
 }): boolean {
   return (
-    isTransfiguredContent(blocks, sourceText, sourceBlocks)
+    showUpgrade
+    || isTransfiguredContent(blocks, sourceText, sourceBlocks)
     || normalizeTransfigureName(transformedName, sourceName) != null
     || normalizeTransfigureCost(transformedCost, sourceCost) != null
     || (
