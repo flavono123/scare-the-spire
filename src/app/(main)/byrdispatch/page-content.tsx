@@ -579,12 +579,12 @@ export async function renderByrdispatchPage(
                 id={entry.date}
                 tabIndex={-1}
                 data-byrdispatch-entry
-                className="scroll-mt-20 border-t border-purple-300/20 pt-8 outline-none first:border-t-0 first:pt-0 target:bg-purple-500/[0.04] target:ring-1 target:ring-purple-300/25"
+                className="scroll-mt-20 outline-none first:rounded-xl first:bg-purple-500/10 first:px-4 first:py-5 target:bg-purple-500/[0.08] sm:first:px-5 sm:first:py-6"
               >
                 <Link
                   href={`#${entry.date}`}
                   data-byrdispatch-date-title
-                  className="spire-purple inline-flex rounded-lg border border-purple-300/35 bg-purple-500/10 px-3 py-1.5 font-service text-xl font-black tracking-tight shadow-[0_0_0_1px_rgba(216,180,254,0.08)] transition-[border-color,background-color,color] hover:border-purple-200/70 hover:bg-purple-500/15 hover:text-purple-100 sm:text-2xl"
+                  className="spire-purple inline-flex font-service text-xl font-black tracking-tight transition-colors hover:text-purple-100 sm:text-2xl"
                   aria-label={`${entry.date} 섀소식 링크`}
                 >
                   <time dateTime={entry.date}>{entry.date}</time>
