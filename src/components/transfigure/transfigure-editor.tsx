@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import type { PostBlock } from "@/lib/chemical-types";
@@ -36,6 +42,21 @@ interface TransfigureEditorProps {
   ) => Promise<void>;
 }
 
+const LEGACY_TRANSFIGURE_DRAFT_PREFIXES = [
+  "sts-transfigure-draft:",
+  "sts-transfigure-edit-draft:",
+] as const;
+
+function removeTransfigureDrafts(prefixes: readonly string[]) {
+  if (typeof window === "undefined") return;
+  for (let index = sessionStorage.length - 1; index >= 0; index -= 1) {
+    const key = sessionStorage.key(index);
+    if (key && prefixes.some((prefix) => key.startsWith(prefix))) {
+      sessionStorage.removeItem(key);
+    }
+  }
+}
+
 export function TransfigureEditor({
   entities,
   gameLocale,
@@ -46,6 +67,8 @@ export function TransfigureEditor({
   onSubmit,
 }: TransfigureEditorProps) {
   const copy = serviceMessages[serviceLocale].transfigure;
+  const [draftSessionId] = useState(() => globalThis.crypto.randomUUID());
+  const draftSessionPrefix = `sts-transfigure-composer:${draftSessionId}:`;
   const nicknameInputRef = useRef<HTMLInputElement>(null);
   const initialEntity = useMemo(
     () => initialPost
@@ -89,6 +112,12 @@ export function TransfigureEditor({
     message: string;
     tone: "error" | "status";
   } | null>(null);
+
+  useEffect(() => {
+    removeTransfigureDrafts(LEGACY_TRANSFIGURE_DRAFT_PREFIXES);
+    return () => removeTransfigureDrafts([draftSessionPrefix]);
+  }, [draftSessionPrefix]);
+
   const sourceEntities = useMemo(
     () => entities.filter((entity) => getTransfigureSourceText(entity) != null),
     [entities],
@@ -413,9 +442,7 @@ export function TransfigureEditor({
 
           <section className="rounded-xl border border-yellow-500/15 bg-black/20 p-3 lg:sticky lg:top-0">
             <TransfigureAssetEditor
-              draftKey={initialPost
-                ? `sts-transfigure-edit-draft:${initialPost.id}`
-                : `sts-transfigure-draft:${gameLocale}:${selected.type}:${selected.id}`}
+              draftKey={`${draftSessionPrefix}${gameLocale}:${selected.type}:${selected.id}`}
               entities={entities}
               entity={selected}
               gameLocale={gameLocale}
