@@ -21,6 +21,7 @@ import { serviceMessages } from "@/messages/service";
 interface TransfigureResourcePreviewProps {
   blocks: PostBlock[];
   entities: EntityInfo[];
+  entityMap?: Map<string, EntityInfo>;
   entity: EntityInfo;
   gameLocale: GameLocale;
   serviceLocale: ServiceLocale;
@@ -30,11 +31,14 @@ interface TransfigureResourcePreviewProps {
   upgradedBlocks?: PostBlock[] | null;
   upgradeLabel: string;
   initialShowUpgrade?: boolean;
+  showImageActions?: boolean;
+  showUpgradeToggle?: boolean;
 }
 
 export function TransfigureResourcePreview({
   blocks,
   entities,
+  entityMap: providedEntityMap,
   entity,
   gameLocale,
   serviceLocale,
@@ -44,8 +48,13 @@ export function TransfigureResourcePreview({
   upgradedBlocks,
   upgradeLabel,
   initialShowUpgrade = false,
+  showImageActions = true,
+  showUpgradeToggle = true,
 }: TransfigureResourcePreviewProps) {
-  const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
+  const entityMap = useMemo(
+    () => providedEntityMap ?? buildEntityMap(entities),
+    [entities, providedEntityMap],
+  );
   const gameUpgradeBlocks = useMemo(
     () => getTransfigureUpgradeInitialBlocks(entity, entities),
     [entities, entity],
@@ -109,7 +118,7 @@ export function TransfigureResourcePreview({
             forcedCost={forcedCost}
           />
         </div>
-        {effectiveUpgradeBlocks != null && (
+        {showUpgradeToggle && effectiveUpgradeBlocks != null && (
           <GameCheckboxToggle
             checked={showUpgrade}
             onCheckedChange={setShowUpgrade}
@@ -118,11 +127,13 @@ export function TransfigureResourcePreview({
             className="mt-2 justify-center"
           />
         )}
-        <TransfigureImageCopyButton
-          fileName={imageFileName}
-          targetRef={copyTargetRef}
-          labels={imageLabels}
-        />
+        {showImageActions && (
+          <TransfigureImageCopyButton
+            fileName={imageFileName}
+            targetRef={copyTargetRef}
+            labels={imageLabels}
+          />
+        )}
       </div>
     );
   }
@@ -161,11 +172,13 @@ export function TransfigureResourcePreview({
           />
         </GameHoverTip>
       </div>
-      <TransfigureImageCopyButton
-        fileName={imageFileName}
-        targetRef={copyTargetRef}
-        labels={imageLabels}
-      />
+      {showImageActions && (
+        <TransfigureImageCopyButton
+          fileName={imageFileName}
+          targetRef={copyTargetRef}
+          labels={imageLabels}
+        />
+      )}
     </div>
   );
 }

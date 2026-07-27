@@ -169,15 +169,17 @@ export function TransfigureClient({
       ) : posts.length === 0 ? (
         <p className="py-8 text-center text-sm text-zinc-500">{copy.empty}</p>
       ) : (
-        <div className="space-y-3">
+        <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
           {posts.map((post) => (
             <TransfigurePostCard
               key={post.id}
               post={post}
+              entities={entities}
               entityMap={entityMap}
               isOwner={post.user_id === userId}
               serviceLocale={serviceLocale}
               gameLocale={gameLocale}
+              upgradeLabel={upgradeLabel}
               onEdit={(post) => {
                 setSaveNotice(null);
                 setEditingPost(post);

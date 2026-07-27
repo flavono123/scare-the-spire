@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import { Pencil, Sparkles, Trash2 } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { PostRenderer } from "@/components/chemicalx/post-renderer";
-import { TinyCardIcon } from "@/components/history-course/card-action-icon";
-import Image from "@/components/ui/static-image";
+import { TransfigureResourcePreview } from "@/components/transfigure/transfigure-resource-preview";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -17,10 +16,12 @@ import { serviceMessages } from "@/messages/service";
 
 interface TransfigurePostCardProps {
   post: TransfigurePost;
+  entities: EntityInfo[];
   entityMap: Map<string, EntityInfo>;
   isOwner: boolean;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
+  upgradeLabel: string;
   onEdit: (post: TransfigurePost) => void;
   onDelete: (postId: string) => void;
 }
@@ -47,10 +48,12 @@ function timeAgo(
 
 export function TransfigurePostCard({
   post,
+  entities,
   entityMap,
   isOwner,
   serviceLocale,
   gameLocale,
+  upgradeLabel,
   onEdit,
   onDelete,
 }: TransfigurePostCardProps) {
@@ -84,54 +87,24 @@ export function TransfigurePostCard({
       tabIndex={0}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="group cursor-pointer rounded-xl border border-yellow-500/15 bg-[#090c15]/75 px-4 py-3 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-yellow-300/30 hover:bg-[#0b101b]/85 hover:shadow-lg hover:shadow-black/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-300/70 active:translate-y-0 motion-reduce:transform-none"
+      className="group flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-yellow-500/25 hover:bg-card/35 hover:shadow-lg hover:shadow-black/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-300/70 active:translate-y-0 motion-reduce:transform-none"
     >
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-2">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-black/25">
-            {resource?.type === "card" && resource.cardData ? (
-              <TinyCardIcon
-                card={{
-                  color: resource.cardData.visualColor ?? resource.cardData.color,
-                  rarity: resource.cardData.rarity,
-                  type: resource.cardData.type,
-                }}
-                width={34}
-              />
-            ) : resource?.imageUrl ? (
-              <Image
-                src={resource.imageUrl}
-                alt=""
-                width={34}
-                height={34}
-                className="max-h-8 max-w-8 object-contain"
-              />
-            ) : (
-              <Sparkles className="h-4 w-4 text-yellow-200/70" aria-hidden="true" />
-            )}
-          </span>
-          <span className="min-w-0">
-            <span className="block truncate text-sm font-semibold text-zinc-200">
-              {post.title?.trim() || resource?.nameKo || post.resource_id}
-            </span>
-            <span className="block truncate text-[11px] text-zinc-500">
-              {post.transformed_name?.trim() || resource?.nameKo || post.resource_id}
-              {post.show_upgrade && resource?.type === "card" ? "+" : ""}
-              {" · "}
-              {post.nickname}
-            </span>
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <h2 className="line-clamp-2 font-game-title text-base font-semibold leading-snug spire-gold">
+            {post.title?.trim() || resource?.nameKo || post.resource_id}
+          </h2>
+          <span className="mt-1 block text-xs text-muted-foreground">
+            {timeAgo(post.created_at, copy, dateLocale)}
           </span>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          <span className="text-xs text-gray-500">
-            {timeAgo(post.created_at, copy, dateLocale)}
-          </span>
           {isOwner && (
             <>
               <button
                 type="button"
                 onClick={() => onEdit(post)}
-                className="text-gray-500 opacity-0 transition-all hover:text-yellow-300 group-hover:opacity-100 focus-visible:opacity-100"
+                className="text-muted-foreground opacity-80 transition-colors hover:text-yellow-300 sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100"
                 title={copy.edit}
               >
                 <Pencil size={14} />
@@ -139,7 +112,7 @@ export function TransfigurePostCard({
               <button
                 type="button"
                 onClick={() => onDelete(post.id)}
-                className="text-gray-500 opacity-0 transition-all hover:text-red-400 group-hover:opacity-100 focus-visible:opacity-100"
+                className="text-muted-foreground opacity-80 transition-colors hover:text-red-400 sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100"
                 title={copy.delete}
               >
                 <Trash2 size={14} />
@@ -149,15 +122,46 @@ export function TransfigurePostCard({
         </div>
       </div>
 
-      <div className="mt-2 text-sm leading-relaxed text-[#f0e6d2]">
-        <PostRenderer
-          blocks={post.show_upgrade && post.upgraded_content
-            ? post.upgraded_content
-            : post.content}
-          entityMap={entityMap}
-          serviceLocale={serviceLocale}
-          gameLocale={gameLocale}
-        />
+      <div
+        className="flex min-h-[24rem] flex-1 items-center justify-center overflow-hidden rounded-md bg-black/15 px-2 py-3 sm:min-h-[28rem]"
+        data-transfigure-post-asset
+      >
+        {resource ? (
+          <TransfigureResourcePreview
+            blocks={post.content}
+            entities={entities}
+            entityMap={entityMap}
+            entity={resource}
+            gameLocale={gameLocale}
+            serviceLocale={serviceLocale}
+            transformedName={post.transformed_name}
+            transformedCost={post.transformed_cost}
+            transformedUpgradeCost={post.transformed_upgrade_cost}
+            upgradedBlocks={post.upgraded_content}
+            upgradeLabel={upgradeLabel}
+            initialShowUpgrade={post.show_upgrade}
+            showImageActions={false}
+            showUpgradeToggle={false}
+          />
+        ) : (
+          <div className="flex max-w-full flex-col items-center gap-3 text-sm leading-relaxed text-[#f0e6d2]">
+            <Sparkles className="h-8 w-8 text-yellow-200/70" aria-hidden="true" />
+            <PostRenderer
+              blocks={post.show_upgrade && post.upgraded_content
+                ? post.upgraded_content
+                : post.content}
+              entityMap={entityMap}
+              serviceLocale={serviceLocale}
+              gameLocale={gameLocale}
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="mt-auto flex justify-end pt-2">
+        <span className="max-w-[70%] truncate text-[11px] text-muted-foreground/80">
+          {post.nickname}
+        </span>
       </div>
     </article>
   );
