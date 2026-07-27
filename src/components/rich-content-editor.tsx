@@ -14,7 +14,11 @@ import {
   type SuggestionKeyDownProps,
 } from "@tiptap/suggestion";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
-import { EntityMention, entitySuggestionBase } from "@/components/chemicalx/entity-mention";
+import {
+  EntityMention,
+  entityMentionSuggestionPluginKey,
+  entitySuggestionBase,
+} from "@/components/chemicalx/entity-mention";
 import {
   BraceKeywordSuggestion,
   braceKeywordSuggestionPluginKey,
@@ -433,6 +437,16 @@ export function RichContentEditor({
           render: () => {
             let renderer: ReactRenderer<MentionListRef> | null = null;
             let popup: HTMLDivElement | null = null;
+            let stopOutsidePressListener: (() => void) | null = null;
+            const dismissPopup = () => {
+              suggestionOpenRef.current = false;
+              stopOutsidePressListener?.();
+              stopOutsidePressListener = null;
+              popup?.remove();
+              renderer?.destroy();
+              popup = null;
+              renderer = null;
+            };
 
             return {
               onStart: (props: SuggestionProps) => {
@@ -454,8 +468,16 @@ export function RichContentEditor({
                 popup = document.createElement("div");
                 popup.style.position = "fixed";
                 popup.style.zIndex = "100";
+                popup.dataset.richEditorSuggestionPopup = "entity";
                 popup.appendChild(renderer.element);
                 document.body.appendChild(popup);
+                stopOutsidePressListener = listenForSuggestionOutsidePress(
+                  popup,
+                  () => exitSuggestion(
+                    props.editor.view,
+                    entityMentionSuggestionPluginKey,
+                  ),
+                );
 
                 if (props.clientRect) {
                   const rect = props.clientRect();
@@ -489,22 +511,14 @@ export function RichContentEditor({
 
               onKeyDown: (props: SuggestionKeyDownProps) => {
                 if (props.event.key === "Escape") {
-                  suggestionOpenRef.current = false;
-                  popup?.remove();
-                  renderer?.destroy();
-                  popup = null;
-                  renderer = null;
+                  dismissPopup();
                   return true;
                 }
                 return renderer?.ref?.onKeyDown(props) ?? false;
               },
 
               onExit: () => {
-                suggestionOpenRef.current = false;
-                popup?.remove();
-                renderer?.destroy();
-                popup = null;
-                renderer = null;
+                dismissPopup();
               },
             };
           },
@@ -577,6 +591,7 @@ export function RichContentEditor({
                 popup = document.createElement("div");
                 popup.style.position = "fixed";
                 popup.style.zIndex = "100";
+                popup.dataset.richEditorSuggestionPopup = "keyword";
                 popup.appendChild(renderer.element);
                 document.body.appendChild(popup);
                 stopOutsidePressListener = listenForSuggestionOutsidePress(

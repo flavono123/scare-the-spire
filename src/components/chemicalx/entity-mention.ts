@@ -2,7 +2,12 @@ import Mention from "@tiptap/extension-mention";
 import { ReactNodeViewRenderer } from "@tiptap/react";
 import type { SuggestionMatch } from "@tiptap/suggestion";
 import type { ResolvedPos } from "@tiptap/pm/model";
+import { PluginKey } from "@tiptap/pm/state";
 import { MentionNodeView } from "./mention-node-view";
+
+export const entityMentionSuggestionPluginKey = new PluginKey(
+  "entity-mention-suggestion",
+);
 
 /**
  * Custom findSuggestionMatch: detects the current word (2+ chars) being typed
@@ -79,6 +84,7 @@ export const EntityMention = Mention.extend({
 export const entitySuggestionBase = {
   // The custom matcher does not need a trigger character. An empty value also
   // prevents TipTap Mention from persisting an invisible prefix in the node.
+  pluginKey: entityMentionSuggestionPluginKey,
   char: "",
   findSuggestionMatch,
 };
