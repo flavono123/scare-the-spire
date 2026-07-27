@@ -43,6 +43,12 @@ import {
 import { CardEngagementStatsOverlay } from "./engagement-stats";
 import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 import { getMadScienceRenderedCardName } from "@/lib/tinker-time";
+import {
+  cardKeywordLookupKey,
+  getCardDisplayKeywords,
+  getCardKeywordDisplayText,
+  splitCardDisplayKeywords,
+} from "@/lib/sts2-card-keywords";
 
 type StaticImageProps = ComponentProps<typeof StaticImage>;
 
@@ -379,30 +385,6 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
   );
 }
 
-const UPGRADE_ADDED_KEYWORDS: Record<string, string> = {
-  add_innate: "선천성",
-  innate: "선천성",
-  add_retain: "보존",
-};
-
-const UPGRADE_REMOVED_KEYWORDS: Record<string, string> = {
-  remove_exhaust: "소멸",
-  remove_ethereal: "휘발성",
-};
-
-const PRE_DESCRIPTION_KEYWORD_ORDER = ["사용불가", "선천성", "보존", "교활", "휘발성"];
-const POST_DESCRIPTION_KEYWORD_ORDER = ["소멸", "영구"];
-
-function getUpgradeKeywords(
-  upgrade: CodexCard["upgrade"],
-  mapping: Record<string, string>,
-): string[] {
-  if (!upgrade) return [];
-  return Object.entries(mapping).flatMap(([key, keyword]) => (
-    upgrade[key] ? [keyword] : []
-  ));
-}
-
 function getCardDisplayImageUrl(
   card: CodexCard,
   upgradeLevel: number,
@@ -465,6 +447,8 @@ interface CardTileProps {
   enchantAddedKeywords?: string[];
   /** 인챈트가 제거하는 키워드(SoulsPower→소멸). */
   enchantRemovedKeywords?: string[];
+  /** Replaces all card keywords. An empty array suppresses automatic keyword rendering. */
+  keywordOverride?: string[];
   /** 카드 본문 끝에 분홍색으로 추가될 인챈트 효과 텍스트. BBCode OK. */
   descriptionSuffix?: string | null;
   /** 인챈트가 카드 damage/block 에 미치는 효과 — descriptionRaw 재렌더에 사용. */
@@ -506,6 +490,7 @@ export const CardTile = memo(function CardTile({
   forcedCost,
   enchantAddedKeywords,
   enchantRemovedKeywords,
+  keywordOverride,
   descriptionSuffix,
   enchantStatMod,
   afflictionId,
@@ -589,50 +574,20 @@ export const CardTile = memo(function CardTile({
     : null;
 
   // 표시할 키워드: 카드 keywords + 강화/인챈트 추가 - 강화/인챈트 제거
-  const upgradeAddedKeywords = isUpgraded
-    ? getUpgradeKeywords(card.upgrade, UPGRADE_ADDED_KEYWORDS)
-    : [];
-  const upgradeRemovedKeywords = isUpgraded
-    ? getUpgradeKeywords(card.upgrade, UPGRADE_REMOVED_KEYWORDS)
-    : [];
-  const removedSet = new Set([
-    ...upgradeRemovedKeywords,
-    ...(enchantRemovedKeywords ?? []),
-  ]);
-  const baseKeywords = card.keywords.filter((k) => !removedSet.has(k));
-  const displayKeywords = [
-    ...baseKeywords,
-    ...[...upgradeAddedKeywords, ...(enchantAddedKeywords ?? [])].filter(
-      (k) => !removedSet.has(k) && !baseKeywords.includes(k)
-    ),
-  ];
-  const keywordLookupKey = (keyword: string): string => keyword.split(/\s/)[0];
-  const keywordDisplayText = (keyword: string): string => {
-    const lookupKey = keywordLookupKey(keyword);
-    const label = card.keywordLabels[lookupKey] ?? lookupKey;
-    return keyword.replace(lookupKey, label);
-  };
-  const preDescriptionKeywords = displayKeywords
-    .filter((kw) => PRE_DESCRIPTION_KEYWORD_ORDER.includes(keywordLookupKey(kw)))
-    .sort((a, b) => (
-      PRE_DESCRIPTION_KEYWORD_ORDER.indexOf(keywordLookupKey(a)) -
-      PRE_DESCRIPTION_KEYWORD_ORDER.indexOf(keywordLookupKey(b))
-    ));
-  const postDescriptionKeywords = displayKeywords.filter(
-    (kw) => !PRE_DESCRIPTION_KEYWORD_ORDER.includes(keywordLookupKey(kw)),
-  ).sort((a, b) => {
-    const ai = POST_DESCRIPTION_KEYWORD_ORDER.indexOf(keywordLookupKey(a));
-    const bi = POST_DESCRIPTION_KEYWORD_ORDER.indexOf(keywordLookupKey(b));
-    if (ai === -1 && bi === -1) return 0;
-    if (ai === -1) return 1;
-    if (bi === -1) return -1;
-    return ai - bi;
+  const displayKeywords = keywordOverride ?? getCardDisplayKeywords(card, {
+    upgradeLevel: effectiveUpgradeLevel,
+    addedKeywords: enchantAddedKeywords,
+    removedKeywords: enchantRemovedKeywords,
   });
+  const {
+    preDescriptionKeywords,
+    postDescriptionKeywords,
+  } = splitCardDisplayKeywords(displayKeywords);
   const renderKeyword = (kw: string) => {
     // 인챈트/강화 추가 키워드도 게임에선 일반 키워드와 동일한 골드.
     // 키워드 hover lookup은 첫 단어만 (예: "재사용 1" → "재사용")
-    const lookupKey = keywordLookupKey(kw);
-    const displayText = keywordDisplayText(kw);
+    const lookupKey = cardKeywordLookupKey(kw);
+    const displayText = getCardKeywordDisplayText(card, kw);
     return (
       <span
         className="relative font-bold cursor-help"

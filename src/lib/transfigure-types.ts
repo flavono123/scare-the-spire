@@ -12,6 +12,12 @@ import {
 } from "@/lib/chemical-utils";
 import { stripCodexMarkup } from "@/lib/codex-search";
 import type { GameLocale } from "@/lib/i18n";
+import type { CodexCard } from "@/lib/codex-types";
+import {
+  getCardDisplayKeywords,
+  getCardKeywordDisplayText,
+  splitCardDisplayKeywords,
+} from "@/lib/sts2-card-keywords";
 
 export const TRANSFIGURE_RESOURCE_TYPES = [
   "card",
@@ -63,10 +69,12 @@ export function isTransfigureResourceType(
 
 export function getTransfigureEntityDescription(entity: EntityInfo): string | null {
   if (!isTransfigureResourceType(entity.type)) return null;
+  if (entity.cardData) {
+    return getTransfigureCardDescription(entity.cardData, entity.cardData.description, 0);
+  }
 
   return (
-    entity.cardData?.description
-    ?? entity.characterData?.description
+    entity.characterData?.description
     ?? entity.keywordData?.description
     ?? entity.relicData?.description
     ?? entity.potionData?.description
@@ -78,6 +86,27 @@ export function getTransfigureEntityDescription(entity: EntityInfo): string | nu
     ?? entity.epochData?.description
     ?? null
   );
+}
+
+function getTransfigureCardDescription(
+  card: CodexCard,
+  description: string,
+  upgradeLevel: number,
+): string {
+  const {
+    preDescriptionKeywords,
+    postDescriptionKeywords,
+  } = splitCardDisplayKeywords(
+    getCardDisplayKeywords(card, { upgradeLevel }),
+  );
+  const keywordLine = (keyword: string) => (
+    `[gold]${getCardKeywordDisplayText(card, keyword)}[/gold].`
+  );
+  return [
+    ...preDescriptionKeywords.map(keywordLine),
+    description,
+    ...postDescriptionKeywords.map(keywordLine),
+  ].filter(Boolean).join("\n");
 }
 
 export function getTransfigureSourceText(entity: EntityInfo): string | null {
@@ -166,7 +195,11 @@ export function getTransfigureUpgradeDescription(
   ) {
     return null;
   }
-  return renderCardDescription(entity.cardData, { upgradeLevel: 1 });
+  return getTransfigureCardDescription(
+    entity.cardData,
+    renderCardDescription(entity.cardData, { upgradeLevel: 1 }),
+    1,
+  );
 }
 
 export function getTransfigureUpgradeSourceText(

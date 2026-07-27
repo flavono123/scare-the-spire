@@ -170,6 +170,7 @@ export function TransfigureAssetEditor({
             showBeta={false}
             width={280}
             interactive={false}
+            keywordOverride={[]}
             editableContent
             titleContent={titleInput}
             descriptionContent={(

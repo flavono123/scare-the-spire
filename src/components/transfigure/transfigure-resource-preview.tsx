@@ -115,6 +115,7 @@ export function TransfigureResourcePreview({
             showBeta={false}
             width={280}
             interactive={false}
+            keywordOverride={[]}
             forcedCost={forcedCost}
           />
         </div>
