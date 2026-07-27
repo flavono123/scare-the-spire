@@ -241,6 +241,19 @@ function clearDraft(draftKey: string) {
   sessionStorage.removeItem(draftKey);
 }
 
+function listenForSuggestionOutsidePress(
+  popup: HTMLDivElement,
+  onDismiss: () => void,
+) {
+  const handlePointerDown = (event: PointerEvent) => {
+    if (event.target instanceof Node && !popup.contains(event.target)) {
+      onDismiss();
+    }
+  };
+  document.addEventListener("pointerdown", handlePointerDown, true);
+  return () => document.removeEventListener("pointerdown", handlePointerDown, true);
+}
+
 export interface RichContentEditorProps {
   entities: EntityInfo[];
   onSubmit: (blocks: PostBlock[]) => Promise<void>;
@@ -519,6 +532,7 @@ export function RichContentEditor({
           render: () => {
             let renderer: ReactRenderer<MentionListRef> | null = null;
             let popup: HTMLDivElement | null = null;
+            let stopOutsidePressListener: (() => void) | null = null;
 
             const buildCommand = (props: SuggestionProps) => (item: EntityInfo) => {
               props.command({
@@ -531,6 +545,15 @@ export function RichContentEditor({
                 color: item.color,
                 imageUrl: item.imageUrl,
               } as unknown as Record<string, unknown>);
+            };
+            const dismissPopup = () => {
+              suggestionOpenRef.current = false;
+              stopOutsidePressListener?.();
+              stopOutsidePressListener = null;
+              popup?.remove();
+              renderer?.destroy();
+              popup = null;
+              renderer = null;
             };
 
             return {
@@ -549,6 +572,10 @@ export function RichContentEditor({
                 popup.style.zIndex = "100";
                 popup.appendChild(renderer.element);
                 document.body.appendChild(popup);
+                stopOutsidePressListener = listenForSuggestionOutsidePress(
+                  popup,
+                  dismissPopup,
+                );
 
                 if (props.clientRect) {
                   const rect = props.clientRect();
@@ -576,11 +603,7 @@ export function RichContentEditor({
 
               onKeyDown: (props: SuggestionKeyDownProps) => {
                 if (props.event.key === "Escape") {
-                  suggestionOpenRef.current = false;
-                  popup?.remove();
-                  renderer?.destroy();
-                  popup = null;
-                  renderer = null;
+                  dismissPopup();
                   return true;
                 }
                 // Treat `}` as commit: pick the currently-highlighted item
@@ -595,11 +618,7 @@ export function RichContentEditor({
               },
 
               onExit: () => {
-                suggestionOpenRef.current = false;
-                popup?.remove();
-                renderer?.destroy();
-                popup = null;
-                renderer = null;
+                dismissPopup();
               },
             };
           },
