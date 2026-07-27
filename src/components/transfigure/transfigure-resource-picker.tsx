@@ -135,7 +135,7 @@ export function TransfigureResourcePicker({
           </span>
           <span className="block truncate text-sm text-zinc-400">
             {selected
-              ? copy.selectedResource.replace("{name}", selected.nameKo)
+              ? copy.reselectResource.replace("{name}", selected.nameKo)
               : copy.searchPlaceholder}
           </span>
         </span>
