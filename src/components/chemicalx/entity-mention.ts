@@ -33,6 +33,7 @@ function findSuggestionMatch(config: {
   if (!match) return null;
 
   const query = match[1];
+  if (query.includes("{") || query.includes("}")) return null;
 
   return {
     range: {
