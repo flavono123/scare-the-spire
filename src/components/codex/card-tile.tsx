@@ -478,7 +478,7 @@ interface CardTileProps {
   interactive?: boolean;
   /** Replaces the rendered title while preserving the game card frame. */
   titleContent?: ReactNode;
-  /** Replaces the rendered description while preserving the game card frame. */
+  /** Replaces the rendered description while preserving the game card frame and keywords. */
   descriptionContent?: ReactNode;
   /** Replaces the energy-cost text while preserving the game energy orb. */
   costContent?: ReactNode;
@@ -718,32 +718,66 @@ export const CardTile = memo(function CardTile({
       );
     });
 
+  const hasCustomDescription = descriptionContent != null;
   const renderDescription = () => (
     <div
-      className="text-center leading-[1.18]"
+      className={`text-center leading-[1.18] ${
+        hasCustomDescription ? "flex h-full w-full flex-col items-stretch" : ""
+      }`}
       style={{
         color: TEXT_CREAM,
         fontSize: `${FONT_CQI.description}cqi`,
         textShadow: `${(2 / 300) * cardWidth}px ${(2 / 300) * cardWidth}px 0 rgba(0,0,0,0.45)`,
       }}
     >
-      {preDescriptionKeywords.map((kw, i) => (
-        <Fragment key={`pre-kw-${kw}`}>
-          {i > 0 && <br />}
-          {renderKeyword(kw)}
-        </Fragment>
-      ))}
-      {preDescriptionKeywords.length > 0 && descParts.length > 0 && <br />}
-      {renderParts(descParts, "card")}
-      {suffixParts && (
+      {hasCustomDescription ? (
         <>
-          <br />
-          <span style={{ color: "#EE82EE" }}>{renderParts(suffixParts, "suffix")}</span>
+          {preDescriptionKeywords.length > 0 && (
+            <div className="mb-[1cqi] shrink-0">
+              {preDescriptionKeywords.map((kw, i) => (
+                <Fragment key={`pre-kw-${kw}`}>
+                  {i > 0 && <br />}
+                  {renderKeyword(kw)}
+                </Fragment>
+              ))}
+            </div>
+          )}
+          <div className="min-h-0 w-full flex-1">
+            {descriptionContent}
+          </div>
+          {suffixParts && (
+            <div className="mt-[1cqi] shrink-0" style={{ color: "#EE82EE" }}>
+              {renderParts(suffixParts, "suffix")}
+            </div>
+          )}
+          {postDescriptionKeywords.length > 0 && (
+            <div className="mt-[1cqi] shrink-0">
+              {postDescriptionKeywords.map((kw, i) => (
+                <Fragment key={`post-kw-${kw}`}>
+                  {i > 0 && <br />}
+                  {renderKeyword(kw)}
+                </Fragment>
+              ))}
+            </div>
+          )}
         </>
-      )}
-      {postDescriptionKeywords.length > 0 && (
+      ) : (
         <>
-          <br />
+          {preDescriptionKeywords.map((kw, i) => (
+            <Fragment key={`pre-kw-${kw}`}>
+              {i > 0 && <br />}
+              {renderKeyword(kw)}
+            </Fragment>
+          ))}
+          {preDescriptionKeywords.length > 0 && descParts.length > 0 && <br />}
+          {renderParts(descParts, "card")}
+          {suffixParts && (
+            <>
+              <br />
+              <span style={{ color: "#EE82EE" }}>{renderParts(suffixParts, "suffix")}</span>
+            </>
+          )}
+          {postDescriptionKeywords.length > 0 && <br />}
           {postDescriptionKeywords.map((kw, i) => (
             <Fragment key={`post-kw-${kw}`}>
               {i > 0 && <br />}
@@ -1079,7 +1113,7 @@ export const CardTile = memo(function CardTile({
               fontFamily: CARD_FONT,
             }}
           >
-            {descriptionContent ?? renderDescription()}
+            {renderDescription()}
           </div>
 
           {renderCostOrb()}
@@ -1231,7 +1265,7 @@ export const CardTile = memo(function CardTile({
             fontFamily: CARD_FONT,
           }}
         >
-          {descriptionContent ?? renderDescription()}
+          {renderDescription()}
         </div>
 
         {renderCostOrb()}
