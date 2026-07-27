@@ -153,6 +153,7 @@ export function TransfigureAssetEditor({
         submitLabel={submitLabel}
         maxChars={null}
         embedded
+        allowLineBreaks
         submitOnEnter={false}
       />
     </div>

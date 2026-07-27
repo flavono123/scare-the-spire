@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import type { PostBlock } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { EntityPreview } from "@/components/patch-note-renderer";
@@ -82,7 +82,16 @@ export function PostRenderer({
       <span>
         {blocks.map((block, i) => {
           if (block.type === "text") {
-            return <span key={i}>{block.text}</span>;
+            return (
+              <span key={i}>
+                {block.text.split("\n").map((line, lineIndex) => (
+                  <Fragment key={lineIndex}>
+                    {lineIndex > 0 && <br />}
+                    {line}
+                  </Fragment>
+                ))}
+              </span>
+            );
           }
 
           if (block.type === "keyword") {

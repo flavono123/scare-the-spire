@@ -300,7 +300,10 @@ export function transfigureBlocksSignature(items: PostBlock[]): string {
   let text = "";
   const flushText = () => {
     if (!text) return;
-    tokens.push(`text:${text.replace(/\s+/g, " ")}`);
+    tokens.push(`text:${text
+      .replace(/\r\n?/g, "\n")
+      .replace(/[^\S\n]+/g, " ")
+      .replace(/ *\n */g, "\n")}`);
     text = "";
   };
 

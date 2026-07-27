@@ -279,6 +279,7 @@ export interface RichContentEditorProps {
   onBlocksChange?: (blocks: PostBlock[]) => void;
   canSubmitBlocks?: (blocks: PostBlock[]) => boolean;
   embedded?: boolean;
+  allowLineBreaks?: boolean;
   submitOnEnter?: boolean;
   submitRequestId?: number;
   onValidityChange?: (valid: boolean) => void;
@@ -323,6 +324,7 @@ export function RichContentEditor({
   onBlocksChange,
   canSubmitBlocks,
   embedded = false,
+  allowLineBreaks = false,
   submitOnEnter = true,
   submitRequestId,
   onValidityChange,
@@ -420,7 +422,7 @@ export function RichContentEditor({
         blockquote: false,
         codeBlock: false,
         horizontalRule: false,
-        hardBreak: false,
+        hardBreak: allowLineBreaks ? {} : false,
       }),
       Placeholder.configure({ placeholder: richPlaceholder ? "" : placeholder }),
       CharacterCount.configure(maxChars == null ? {} : { limit: maxChars }),
@@ -899,6 +901,7 @@ export function RichContentEditor({
     },
   }, [
     draftKey,
+    allowLineBreaks,
     embedded,
     entities,
     initialBlocks,

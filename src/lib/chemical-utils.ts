@@ -75,11 +75,25 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
   const blocks: PostBlock[] = [];
   if (!doc.content) return blocks;
 
-  for (const paragraph of doc.content) {
+  const appendText = (text: string) => {
+    const sanitized = stripNullCharacters(text);
+    if (!sanitized) return;
+    const previous = blocks.at(-1);
+    if (previous?.type === "text") {
+      previous.text += sanitized;
+    } else {
+      blocks.push({ type: "text", text: sanitized });
+    }
+  };
+
+  for (const [paragraphIndex, paragraph] of doc.content.entries()) {
+    if (paragraphIndex > 0) appendText("\n");
     if (!paragraph.content) continue;
     for (const node of paragraph.content) {
       if (node.type === "text" && node.text) {
-        blocks.push({ type: "text", text: stripNullCharacters(node.text) });
+        appendText(node.text);
+      } else if (node.type === "hardBreak") {
+        appendText("\n");
       } else if (node.type === "entity-mention") {
         blocks.push({
           type: "entity",
@@ -136,7 +150,10 @@ export function blocksToTiptapDocument(blocks: PostBlock[]): JSONContent {
   const content = blocks.flatMap((block): JSONContent[] => {
     if (block.type === "text") {
       const text = stripNullCharacters(block.text);
-      return text ? [{ type: "text", text }] : [];
+      return text.split("\n").flatMap((line, lineIndex, lines) => [
+        ...(line ? [{ type: "text", text: line }] : []),
+        ...(lineIndex < lines.length - 1 ? [{ type: "hardBreak" }] : []),
+      ]);
     }
     if (block.type === "entity") {
       return [{

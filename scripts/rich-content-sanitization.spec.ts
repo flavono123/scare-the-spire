@@ -2,9 +2,11 @@ import assert from "node:assert/strict";
 import {
   blocksToPlainText,
   blocksToStorageText,
+  blocksToTiptapDocument,
   sanitizeRichTextJson,
   tiptapToBlocks,
 } from "../src/lib/chemical-utils";
+import { transfigureBlocksSignature } from "../src/lib/transfigure-types";
 
 const dirtyDocument = {
   type: "doc",
@@ -106,5 +108,48 @@ const externallyConstructedBlocks = [
 ];
 assert.equal(blocksToPlainText(externallyConstructedBlocks), "앞뒤");
 assert.equal(blocksToStorageText(externallyConstructedBlocks), "앞뒤");
+
+const multilineDocument = {
+  type: "doc",
+  content: [
+    {
+      type: "paragraph",
+      content: [
+        { type: "text", text: "첫 줄" },
+        { type: "hardBreak" },
+        { type: "text", text: "둘째 줄" },
+      ],
+    },
+    {
+      type: "paragraph",
+      content: [{ type: "text", text: "셋째 줄" }],
+    },
+  ],
+};
+const multilineBlocks = tiptapToBlocks(multilineDocument);
+assert.deepEqual(multilineBlocks, [
+  { type: "text", text: "첫 줄\n둘째 줄\n셋째 줄" },
+]);
+assert.equal(blocksToPlainText(multilineBlocks), "첫 줄\n둘째 줄\n셋째 줄");
+assert.deepEqual(
+  blocksToTiptapDocument(multilineBlocks),
+  {
+    type: "doc",
+    content: [{
+      type: "paragraph",
+      content: [
+        { type: "text", text: "첫 줄" },
+        { type: "hardBreak" },
+        { type: "text", text: "둘째 줄" },
+        { type: "hardBreak" },
+        { type: "text", text: "셋째 줄" },
+      ],
+    }],
+  },
+);
+assert.notEqual(
+  transfigureBlocksSignature([{ type: "text", text: "첫 줄 둘째 줄" }]),
+  transfigureBlocksSignature([{ type: "text", text: "첫 줄\n둘째 줄" }]),
+);
 
 console.log("rich content NUL sanitization: ok");
