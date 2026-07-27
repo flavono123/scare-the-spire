@@ -18,7 +18,7 @@ export const CARD_TOP_KEYWORD_ORDER = [
   "교활",
   "휘발성",
 ] as const;
-export const CARD_BOTTOM_KEYWORD_ORDER = ["소멸", "영구"] as const;
+export const CARD_BOTTOM_KEYWORD_ORDER = ["소멸", "영구", "미완"] as const;
 
 function getUpgradeKeywords(
   upgrade: CodexCard["upgrade"],
