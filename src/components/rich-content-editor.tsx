@@ -295,6 +295,10 @@ export interface RichContentEditorProps {
     requestId: number;
     entity: EntityInfo;
   } | null;
+  contentReplaceRequest?: {
+    requestId: number;
+    blocks: PostBlock[];
+  } | null;
   youtubeExtension?: {
     pending: string;
     added: string;
@@ -332,6 +336,7 @@ export function RichContentEditor({
   showKeywordTip = false,
   keywordTip,
   entityInsertRequest,
+  contentReplaceRequest,
   youtubeExtension,
   historyRunReferences,
 }: RichContentEditorProps) {
@@ -355,6 +360,7 @@ export function RichContentEditor({
   const submitRef = useRef<() => void>(() => {});
   const suggestionOpenRef = useRef(false);
   const lastEntityInsertRequestIdRef = useRef<number | null>(null);
+  const lastContentReplaceRequestIdRef = useRef<number | null>(null);
   const lastHistoryRunInsertRequestIdRef = useRef<number | null>(null);
   const lastSubmitRequestIdRef = useRef(submitRequestId);
   const historyRunInsertRequest = historyRunReferences?.insertRequest ?? null;
@@ -780,6 +786,7 @@ export function RichContentEditor({
           ? "h-full min-h-full w-full cursor-text px-1 py-1 text-center leading-[1.18] text-inherit outline-none"
           : `${richPlaceholder ? "min-h-[3.75rem]" : "min-h-[2.5rem]"} px-3 py-2 text-sm text-gray-200 outline-none`,
         "aria-placeholder": richPlaceholder ? cleanTooltipText(richPlaceholder) : placeholder,
+        ...(embedded ? { "data-card-description-fit-content": "true" } : {}),
       },
       handleDOMEvents: {
         compositionend: () => {
@@ -919,6 +926,39 @@ export function RichContentEditor({
     const blocks = tiptapToBlocks(sanitizeRichTextJson(editor.getJSON()));
     setBlocksSubmittable(canSubmitBlocks ? canSubmitBlocks(blocks) : true);
   }, [canSubmitBlocks, editor]);
+
+  useEffect(() => {
+    if (
+      !editor
+      || !contentReplaceRequest
+      || lastContentReplaceRequestIdRef.current === contentReplaceRequest.requestId
+    ) {
+      return;
+    }
+
+    lastContentReplaceRequestIdRef.current = contentReplaceRequest.requestId;
+    const selectionPosition = editor.state.selection.from;
+    const json = blocksToTiptapDocument(contentReplaceRequest.blocks);
+    editor.commands.setContent(json, { emitUpdate: false });
+    const nextSelectionPosition = Math.min(
+      selectionPosition,
+      editor.state.doc.content.size,
+    );
+    editor.commands.setTextSelection(nextSelectionPosition);
+    editor.commands.focus();
+
+    const blocks = tiptapToBlocks(sanitizeRichTextJson(editor.getJSON()));
+    const len = blocksToPlainText(blocks).length;
+    setCharCount(len);
+    setBlocksSubmittable(canSubmitBlocks ? canSubmitBlocks(blocks) : true);
+    if (len > 0) saveDraft(draftKey, JSON.stringify(json));
+    else clearDraft(draftKey);
+  }, [
+    canSubmitBlocks,
+    contentReplaceRequest,
+    draftKey,
+    editor,
+  ]);
 
   useEffect(() => {
     if (
