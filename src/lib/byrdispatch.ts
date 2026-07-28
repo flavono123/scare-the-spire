@@ -27,6 +27,7 @@ export type ByrdispatchMedia = {
   alt: string;
   src: string;
   title?: string;
+  depth: number;
 };
 
 export type ByrdispatchSectionItem =
@@ -116,10 +117,12 @@ function parseByrdispatchMarkdown(markdown: string, fallbackDate: string): Byrdi
 
     const imageMatch = line.match(BYRDISPATCH_IMAGE_RE);
     if (currentSection && imageMatch) {
+      const indent = rawLine.match(/^(\s*)/)?.[1].replace(/\t/g, "  ").length ?? 0;
       const media = {
         alt: imageMatch[1],
         src: imageMatch[2],
         title: imageMatch[3],
+        depth: Math.min(Math.floor(indent / 2), 3),
       };
       currentSection.media.push(media);
       currentSection.items.push({ type: "image", media });

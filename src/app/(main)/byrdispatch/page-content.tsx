@@ -441,7 +441,7 @@ function ByrdispatchSectionItemLine({
 }) {
   if (item.type === "image") {
     return (
-      <li className="block">
+      <li className={item.media.depth > 0 ? "ml-5 block" : "block"}>
         <ByrdispatchMediaBlock media={item.media} />
       </li>
     );
