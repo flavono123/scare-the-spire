@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { ServiceBackground } from "@/components/service-background";
 import { TransfigureClient } from "@/components/transfigure/transfigure-client";
 import { getTransfigureGameCopy } from "@/lib/borrowed-game-copy";
-import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
@@ -30,10 +29,9 @@ export async function generateTransfigureMetadata(
 export async function renderTransfigurePage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
-  const [entities, gameCopy, gameUi] = await Promise.all([
+  const [entities, gameCopy] = await Promise.all([
     loadAllEntities({ gameLocale }),
     getTransfigureGameCopy(gameLocale),
-    getCodexGameUiLabels(gameLocale),
   ]);
 
   return (
@@ -48,7 +46,7 @@ export async function renderTransfigurePage(
           gameLocale={gameLocale}
           title={gameCopy.title}
           subtitle={gameCopy.subtitle}
-          upgradeLabel={gameUi.cardLibrary.viewUpgrades}
+          upgradeLabel={gameCopy.viewUpgrades}
         />
       </div>
     </div>
