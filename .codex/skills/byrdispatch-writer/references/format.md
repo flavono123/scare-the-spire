@@ -35,6 +35,7 @@ Rules:
 - Append `(new)`, `(개발 중)`, `(버그)`, or `(제보 감사)` to headings or bullets only when that status is true.
 - Bullets are one line each.
 - Preserve one nested bullet level (`  -`) when the user provides child examples/details or explicitly asks for nested bullets.
+- Indent an image by the same two spaces when it belongs to a nested example; the renderer keeps that media aligned at the nested depth.
 - No intro paragraph.
 - Do not add nested bullets on your own.
 - No empty child sections. Parent H2 grouping sections are allowed without bullets.

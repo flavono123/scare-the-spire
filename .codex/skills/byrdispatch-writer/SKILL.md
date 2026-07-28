@@ -48,6 +48,7 @@ Turn rough service-update notes into canonical 섀소식 / byrdispatch markdown.
    - Add media only when the user asks for it or the update is primarily visual/interactive.
    - Store media under `public/images/byrdispatch/YYYY-MM-DD/`.
    - Reference rendered media with root-relative paths such as `/images/byrdispatch/YYYY-MM-DD/name.png`.
+   - When media belongs to a nested example bullet, indent the image by the same two spaces; the renderer preserves that media depth.
    - For compact reaction/like palette images, keep the image centered and render it at about half the normal media width when requested.
 8. Commit every meaningful edit separately, following repository `AGENTS.md`.
 9. Run focused validation:
