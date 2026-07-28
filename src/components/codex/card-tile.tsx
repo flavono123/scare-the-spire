@@ -1,9 +1,12 @@
 "use client";
 
 import {
-  useState,
-  memo,
   Fragment,
+  memo,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
   CSSProperties,
   type ComponentProps,
   type ReactNode,
@@ -429,6 +432,11 @@ const L = {
 
 export type CardTileSize = keyof typeof CARD_WIDTH_PRESET;
 
+export interface CardDescriptionFit {
+  fits: boolean;
+  fontScale: number;
+}
+
 interface CardTileProps {
   card: CodexCard;
   serviceLocale?: ServiceLocale;
@@ -468,6 +476,10 @@ interface CardTileProps {
   costContent?: ReactNode;
   /** Allows text selection and editing inside custom content slots. */
   editableContent?: boolean;
+  /** Smallest permitted description font relative to the game default. */
+  minimumDescriptionFontScale?: number;
+  /** Reports whether the complete description fits, including card keywords. */
+  onDescriptionFitChange?: (fit: CardDescriptionFit) => void;
   engagementStats?: {
     commentCount: number;
     likeCount: number;
@@ -501,11 +513,15 @@ export const CardTile = memo(function CardTile({
   descriptionContent,
   costContent,
   editableContent = false,
+  minimumDescriptionFontScale = 0.55,
+  onDescriptionFitChange,
   engagementStats,
 }: CardTileProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const [imgError, setImgError] = useState(false);
   const [hoveredTerm, setHoveredTerm] = useState<string | null>(null);
+  const descriptionViewportRef = useRef<HTMLDivElement>(null);
+  const descriptionContentRef = useRef<HTMLDivElement>(null);
 
   const cardWidth = width ?? CARD_WIDTH_PRESET[size];
 
@@ -674,11 +690,85 @@ export const CardTile = memo(function CardTile({
     });
 
   const hasCustomDescription = descriptionContent != null;
+  const measureDescriptionFit = useCallback(() => {
+    const viewport = descriptionViewportRef.current;
+    const content = descriptionContentRef.current;
+    if (!viewport || !content) return;
+
+    const minimumScale = Math.min(
+      1,
+      Math.max(0.35, minimumDescriptionFontScale),
+    );
+    const applyScale = (scale: number) => {
+      content.style.fontSize = `${FONT_CQI.description * scale}cqi`;
+    };
+    const overflows = () => {
+      const viewportRect = viewport.getBoundingClientRect();
+      const contentRect = content.getBoundingClientRect();
+      const nestedFitContents = content.querySelectorAll<HTMLElement>(
+        "[data-card-description-fit-content]",
+      );
+
+      return (
+        content.scrollHeight > viewport.clientHeight + 1
+        || content.scrollWidth > viewport.clientWidth + 1
+        || contentRect.height > viewportRect.height + 1
+        || contentRect.width > viewportRect.width + 1
+        || Array.from(nestedFitContents).some((element) => (
+          element.scrollHeight > element.clientHeight + 1
+          || element.scrollWidth > element.clientWidth + 1
+        ))
+      );
+    };
+
+    applyScale(1);
+    let scale = 1;
+    let fits = !overflows();
+
+    if (!fits) {
+      applyScale(minimumScale);
+      fits = !overflows();
+      scale = minimumScale;
+
+      if (fits) {
+        let lower = minimumScale;
+        let upper = 1;
+        for (let index = 0; index < 8; index += 1) {
+          const candidate = (lower + upper) / 2;
+          applyScale(candidate);
+          if (overflows()) upper = candidate;
+          else lower = candidate;
+        }
+        scale = Math.max(minimumScale, lower - 0.002);
+        applyScale(scale);
+      }
+    }
+
+    viewport.dataset.cardDescriptionFits = String(fits);
+    content.dataset.cardDescriptionFontScale = scale.toFixed(3);
+    onDescriptionFitChange?.({ fits, fontScale: scale });
+  }, [minimumDescriptionFontScale, onDescriptionFitChange]);
+
+  useLayoutEffect(() => {
+    measureDescriptionFit();
+
+    const viewport = descriptionViewportRef.current;
+    if (!viewport) return;
+    const observer = new ResizeObserver(measureDescriptionFit);
+    observer.observe(viewport);
+    void document.fonts?.ready.then(measureDescriptionFit);
+    return () => observer.disconnect();
+  });
+
   const renderDescription = () => (
     <div
+      ref={descriptionContentRef}
       className={`text-center leading-[1.18] ${
-        hasCustomDescription ? "flex h-full w-full flex-col items-stretch" : ""
+        hasCustomDescription
+          ? "flex h-full w-full flex-col items-stretch"
+          : "max-w-full"
       }`}
+      data-card-description-content
       style={{
         color: TEXT_CREAM,
         fontSize: `${FONT_CQI.description}cqi`,
@@ -1059,7 +1149,9 @@ export const CardTile = memo(function CardTile({
           </div>
 
           <div
+            ref={descriptionViewportRef}
             className="absolute z-[5] overflow-hidden flex flex-col items-center justify-center"
+            data-card-description-viewport
             style={{
               top: `${L.desc.top}%`,
               bottom: `${100 - L.desc.bottom}%`,
@@ -1211,7 +1303,9 @@ export const CardTile = memo(function CardTile({
         </div>
 
         <div
+          ref={descriptionViewportRef}
           className="absolute z-[5] overflow-hidden flex flex-col items-center justify-center"
+          data-card-description-viewport
           style={{
             top: `${L.desc.top}%`,
             bottom: `${100 - L.desc.bottom}%`,
