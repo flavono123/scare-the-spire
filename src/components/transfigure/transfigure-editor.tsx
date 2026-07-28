@@ -506,6 +506,7 @@ export function TransfigureEditor({
 
           <section className="rounded-xl border border-yellow-500/15 bg-black/20 p-3 lg:sticky lg:top-0">
             <TransfigureAssetEditor
+              key={`${initialPost?.id ?? "new"}:${selected.type}:${selected.id}`}
               draftKey={`${draftSessionPrefix}${gameLocale}:${selected.type}:${selected.id}`}
               entities={entities}
               entity={selected}
@@ -516,6 +517,7 @@ export function TransfigureEditor({
               nameLabel={copy.nameLabel}
               costLabel={copy.costLabel}
               descriptionLabel={copy.descriptionLabel}
+              descriptionFrameLimit={copy.descriptionFrameLimit}
               addTopKeywordLabel={copy.addTopKeyword}
               addBottomKeywordLabel={copy.addBottomKeyword}
               removeKeywordLabel={copy.removeKeyword}
