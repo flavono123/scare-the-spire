@@ -69,7 +69,7 @@ export function TransfigureCardKeywordRail({
       ref={rootRef}
       className="relative z-20 w-full shrink-0"
       data-transfigure-keyword-rail={placement}
-      style={{ fontSize: "5.2cqi", lineHeight: 1.05 }}
+      style={{ fontSize: "0.742857em", lineHeight: 1.05 }}
     >
       <div className="flex min-h-[8cqi] flex-wrap items-center justify-center gap-[1.2cqi]">
         {keywords.map((keyword) => {
