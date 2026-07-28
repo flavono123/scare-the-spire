@@ -407,6 +407,7 @@ function getCardDisplayImageUrl(
 
 const CARD_FONT = "var(--font-game-text)";
 const TITLE_FONT = "var(--font-game-title)";
+const CARD_DESCRIPTION_SAFE_HEIGHT_RATIO = 0.9;
 
 // =============================================================================
 // Layout config (% of 300×422 holder coords)
@@ -705,14 +706,17 @@ export const CardTile = memo(function CardTile({
     const overflows = () => {
       const viewportRect = viewport.getBoundingClientRect();
       const contentRect = content.getBoundingClientRect();
+      const availableHeight = viewport.clientHeight * (
+        hasCustomDescription ? 1 : CARD_DESCRIPTION_SAFE_HEIGHT_RATIO
+      );
       const nestedFitContents = content.querySelectorAll<HTMLElement>(
         "[data-card-description-fit-content]",
       );
 
       return (
-        content.scrollHeight > viewport.clientHeight + 1
+        content.scrollHeight > availableHeight + 1
         || content.scrollWidth > viewport.clientWidth + 1
-        || contentRect.height > viewportRect.height + 1
+        || contentRect.height > availableHeight + 1
         || contentRect.width > viewportRect.width + 1
         || Array.from(nestedFitContents).some((element) => (
           element.scrollHeight > element.clientHeight + 1
@@ -747,7 +751,11 @@ export const CardTile = memo(function CardTile({
     viewport.dataset.cardDescriptionFits = String(fits);
     content.dataset.cardDescriptionFontScale = scale.toFixed(3);
     onDescriptionFitChange?.({ fits, fontScale: scale });
-  }, [minimumDescriptionFontScale, onDescriptionFitChange]);
+  }, [
+    hasCustomDescription,
+    minimumDescriptionFontScale,
+    onDescriptionFitChange,
+  ]);
 
   useLayoutEffect(() => {
     measureDescriptionFit();
