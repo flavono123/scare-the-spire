@@ -17,6 +17,7 @@ export interface ThisOrThatGameCopy {
 export interface TransfigureGameCopy {
   title: string;
   subtitle: string;
+  viewUpgrades: string;
 }
 
 export interface PatchStageGameCopy {

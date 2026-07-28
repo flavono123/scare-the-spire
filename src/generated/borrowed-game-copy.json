@@ -24,7 +24,8 @@
     },
     "transfigure": {
       "title": "변형",
-      "subtitle": "[aqua]변성체들[/aqua]은 당신에게 자신들의 결합된 지식을 공유하고, [sine]변성 마법[/sine]을 주입해 당신의 본질을 변화시킵니다... 정말 사랑스러운 생명체들인 것 같네요."
+      "subtitle": "[aqua]변성체들[/aqua]은 당신에게 자신들의 결합된 지식을 공유하고, [sine]변성 마법[/sine]을 주입해 당신의 본질을 변화시킵니다... 정말 사랑스러운 생명체들인 것 같네요.",
+      "viewUpgrades": "강화 상태 보기"
     }
   },
   "eng": {
@@ -52,7 +53,8 @@
     },
     "transfigure": {
       "title": "Transfigure",
-      "subtitle": "They share their combined knowledge and inject you with [sine]Morphic Magic[/sine], changing your nature... Such lovely creatures, these [aqua]Morphics[/aqua]."
+      "subtitle": "They share their combined knowledge and inject you with [sine]Morphic Magic[/sine], changing your nature... Such lovely creatures, these [aqua]Morphics[/aqua].",
+      "viewUpgrades": "View Upgrades"
     }
   },
   "zhs": {
@@ -80,7 +82,8 @@
     },
     "transfigure": {
       "title": "重构",
-      "subtitle": "它们将自己共有的知识分享给了你，更为你注入了[sine]拟形魔法[/sine]，改变了你的本质……这些[aqua]变形灵[/aqua]还真是群可爱的小生物啊。"
+      "subtitle": "它们将自己共有的知识分享给了你，更为你注入了[sine]拟形魔法[/sine]，改变了你的本质……这些[aqua]变形灵[/aqua]还真是群可爱的小生物啊。",
+      "viewUpgrades": "查看升级"
     }
   },
   "jpn": {
@@ -108,7 +111,8 @@
     },
     "transfigure": {
       "title": "変貌",
-      "subtitle": "彼らは共有する知識を分け与え、[sine]モーフィックの魔法[/sine]を注入して、あなたの性質を造り変えていく…… この[aqua]モーフィック[/aqua]たちは、なんて愛らしい生き物なんだろう。"
+      "subtitle": "彼らは共有する知識を分け与え、[sine]モーフィックの魔法[/sine]を注入して、あなたの性質を造り変えていく…… この[aqua]モーフィック[/aqua]たちは、なんて愛らしい生き物なんだろう。",
+      "viewUpgrades": "アップグレード版の確認"
     }
   },
   "deu": {
@@ -136,7 +140,8 @@
     },
     "transfigure": {
       "title": "Verwandeln",
-      "subtitle": "Sie teilen ihr gemeinsames Wissen und flößen dir [sine]Morphermagie[/sine] ein, was dein Wesen verändert... So entzückende Wesen, diese [aqua]Morpher[/aqua]."
+      "subtitle": "Sie teilen ihr gemeinsames Wissen und flößen dir [sine]Morphermagie[/sine] ein, was dein Wesen verändert... So entzückende Wesen, diese [aqua]Morpher[/aqua].",
+      "viewUpgrades": "Zeige Verbesserung"
     }
   },
   "fra": {
@@ -164,7 +169,8 @@
     },
     "transfigure": {
       "title": "Transfiguration",
-      "subtitle": "Ils partagent avec vous leur savoir collectif et vous infusent de [sine]Magie morphique[/sine], altérant votre nature... Quelles charmantes créatures, ces [aqua]Morphiques[/aqua]."
+      "subtitle": "Ils partagent avec vous leur savoir collectif et vous infusent de [sine]Magie morphique[/sine], altérant votre nature... Quelles charmantes créatures, ces [aqua]Morphiques[/aqua].",
+      "viewUpgrades": "Voir les améliorations"
     }
   },
   "ita": {
@@ -192,7 +198,8 @@
     },
     "transfigure": {
       "title": "Trasfigurazione",
-      "subtitle": "Condividono la loro conoscenza collettiva e ti infondono la [sine]magia morfica[/sine], alterando la tua stessa natura... Che creature incantevoli che sono questi [aqua]morfici[/aqua]."
+      "subtitle": "Condividono la loro conoscenza collettiva e ti infondono la [sine]magia morfica[/sine], alterando la tua stessa natura... Che creature incantevoli che sono questi [aqua]morfici[/aqua].",
+      "viewUpgrades": "Visualizza potenziamenti"
     }
   },
   "spa": {
@@ -220,7 +227,8 @@
     },
     "transfigure": {
       "title": "Transfigurar",
-      "subtitle": "Comparten su conocimiento conjunto y te imbuyen de [sine]magia mórfica[/sine], lo que altera tu naturaleza... Qué tipos más majos, estos [aqua]mórficos[/aqua]."
+      "subtitle": "Comparten su conocimiento conjunto y te imbuyen de [sine]magia mórfica[/sine], lo que altera tu naturaleza... Qué tipos más majos, estos [aqua]mórficos[/aqua].",
+      "viewUpgrades": "Ver mejoras"
     }
   },
   "esp": {
@@ -248,7 +256,8 @@
     },
     "transfigure": {
       "title": "Transfiguración",
-      "subtitle": "Comparten su conocimiento colectivo y te inyectan [sine]magia mórfica[/sine], lo que cambia tu naturaleza... ¡Qué criaturas tan encantadoras estos [aqua]mórficos[/aqua]!"
+      "subtitle": "Comparten su conocimiento colectivo y te inyectan [sine]magia mórfica[/sine], lo que cambia tu naturaleza... ¡Qué criaturas tan encantadoras estos [aqua]mórficos[/aqua]!",
+      "viewUpgrades": "Ver mejoras"
     }
   },
   "ptb": {
@@ -276,7 +285,8 @@
     },
     "transfigure": {
       "title": "Transfigurar",
-      "subtitle": "Eles compartilham seus conhecimentos e imbuem você com [sine]Magia Mórfica[/sine], alterando a sua natureza... Que criaturas mais amáveis, estes [aqua]Mórficos[/aqua]."
+      "subtitle": "Eles compartilham seus conhecimentos e imbuem você com [sine]Magia Mórfica[/sine], alterando a sua natureza... Que criaturas mais amáveis, estes [aqua]Mórficos[/aqua].",
+      "viewUpgrades": "Exibir Aprimoramentos"
     }
   },
   "rus": {
@@ -304,7 +314,8 @@
     },
     "transfigure": {
       "title": "Превращение",
-      "subtitle": "Морфы делятся с вами тайнами [sine]особой магии[/sine]. Ваш разум преображается. Какие же эти [aqua]морфы[/aqua] все-таки приятные!"
+      "subtitle": "Морфы делятся с вами тайнами [sine]особой магии[/sine]. Ваш разум преображается. Какие же эти [aqua]морфы[/aqua] все-таки приятные!",
+      "viewUpgrades": "Показать улучшения"
     }
   },
   "pol": {
@@ -332,7 +343,8 @@
     },
     "transfigure": {
       "title": "Przekształcenie",
-      "subtitle": "Dzielą się z tobą ich skumulowaną wiedzą i zaszczepiają w tobie [sine]imitatorską magię[/sine], która zmienia twój charakter... Co za kochane stworzenia z tych [aqua]Imitatorów[/aqua]."
+      "subtitle": "Dzielą się z tobą ich skumulowaną wiedzą i zaszczepiają w tobie [sine]imitatorską magię[/sine], która zmienia twój charakter... Co za kochane stworzenia z tych [aqua]Imitatorów[/aqua].",
+      "viewUpgrades": "Ulepszenia"
     }
   },
   "tha": {
@@ -360,7 +372,8 @@
     },
     "transfigure": {
       "title": "Transfigure",
-      "subtitle": "พวกมันแบ่งปันความรู้ที่พวกมันมีร่วมกันให้กับคุณ และอัดฉีดคุณด้วย[sine]เวทมนตร์มอร์ฟิก[/sine]ซึ่งเปลี่ยนแปลงธรรมชาติของคุณ... เป็นสิ่งมีชีวิตที่น่ารักจัง เจ้า[aqua]มอร์ฟิก[/aqua]พวกนี้"
+      "subtitle": "พวกมันแบ่งปันความรู้ที่พวกมันมีร่วมกันให้กับคุณ และอัดฉีดคุณด้วย[sine]เวทมนตร์มอร์ฟิก[/sine]ซึ่งเปลี่ยนแปลงธรรมชาติของคุณ... เป็นสิ่งมีชีวิตที่น่ารักจัง เจ้า[aqua]มอร์ฟิก[/aqua]พวกนี้",
+      "viewUpgrades": "ดูแบบพัฒนาแล้ว"
     }
   },
   "tur": {
@@ -388,7 +401,8 @@
     },
     "transfigure": {
       "title": "Başkalaştır",
-      "subtitle": "Ortak bilgilerini seninle paylaşırlar ve sana [sine]Şekillenen Büyüsü[/sine] enjekte ederek doğanı değiştirirler... Ne hoş yaratıklar şu [aqua]Şekillenenler[/aqua]."
+      "subtitle": "Ortak bilgilerini seninle paylaşırlar ve sana [sine]Şekillenen Büyüsü[/sine] enjekte ederek doğanı değiştirirler... Ne hoş yaratıklar şu [aqua]Şekillenenler[/aqua].",
+      "viewUpgrades": "Geliştirmeleri Gör"
     }
   }
 }

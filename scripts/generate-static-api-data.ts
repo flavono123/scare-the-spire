@@ -53,6 +53,7 @@ interface ThisOrThatGameCopy {
 interface TransfigureGameCopy {
   title: string;
   subtitle: string;
+  viewUpgrades: string;
 }
 
 interface PatchStageGameCopy {
@@ -409,13 +410,14 @@ async function buildThisOrThatGameCopy(gameLocale: GameLocale): Promise<ThisOrTh
 async function buildTransfigureGameCopy(
   gameLocale: GameLocale,
 ): Promise<TransfigureGameCopy> {
-  const [title, morphicGroveDescription] = await Promise.all([
+  const [title, morphicGroveDescription, viewUpgrades] = await Promise.all([
     readGameTextWithEnglishFallback(gameLocale, "cards", "TRANSFIGURE.title"),
     readGameTextWithEnglishFallback(
       gameLocale,
       "events",
       "MORPHIC_GROVE.pages.GROUP.description",
     ),
+    readGameTextWithEnglishFallback(gameLocale, "card_library", "VIEW_UPGRADES"),
   ]);
   const paragraphs = morphicGroveDescription
     .split(/\n\s*\n/)
@@ -425,6 +427,7 @@ async function buildTransfigureGameCopy(
   return {
     title: title || "Transfigure",
     subtitle: paragraphs[1] ?? paragraphs[0] ?? "",
+    viewUpgrades: viewUpgrades || "View Upgrades",
   };
 }
 
