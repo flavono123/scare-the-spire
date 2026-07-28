@@ -1,8 +1,18 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { KeyboardEvent } from "react";
-import { CardTile } from "@/components/codex/card-tile";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
+import {
+  CardTile,
+  type CardDescriptionFit,
+} from "@/components/codex/card-tile";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { GameHoverTip } from "@/components/codex/hover-tip";
 import type { RichContentEditorProps } from "@/components/rich-content-editor";
@@ -37,6 +47,7 @@ interface TransfigureAssetEditorProps {
   nameLabel: string;
   costLabel: string;
   descriptionLabel: string;
+  descriptionFrameLimit: string;
   addTopKeywordLabel: string;
   addBottomKeywordLabel: string;
   removeKeywordLabel: string;
@@ -89,6 +100,7 @@ export function TransfigureAssetEditor({
   nameLabel,
   costLabel,
   descriptionLabel,
+  descriptionFrameLimit,
   addTopKeywordLabel,
   addBottomKeywordLabel,
   removeKeywordLabel,
@@ -115,6 +127,7 @@ export function TransfigureAssetEditor({
   onShowUpgradeChange,
   onSubmit,
 }: TransfigureAssetEditorProps) {
+  const activeMode = showUpgrade ? "upgrade" : "base";
   const sourceCost = getTransfigureSourceCost(entity);
   const activeInitialBlocks = showUpgrade && initialUpgradeBlocks != null
     ? initialUpgradeBlocks
@@ -123,14 +136,112 @@ export function TransfigureAssetEditor({
     ? sourceUpgradeText
     : sourceText;
   const activeCost = showUpgrade ? transformedUpgradeCost : transformedCost;
-  const activeCardKeywords = (
-    showUpgrade ? upgradedCardKeywords : cardKeywords
-  ) ?? { top: [], bottom: [] };
+  const activeCardKeywords = useMemo(
+    () => (
+      showUpgrade ? upgradedCardKeywords : cardKeywords
+    ) ?? { top: [], bottom: [] },
+    [cardKeywords, showUpgrade, upgradedCardKeywords],
+  );
+  const activeBlocks = showUpgrade
+    ? (upgradedBlocks ?? activeInitialBlocks)
+    : blocks;
   const activeSourceCost = showUpgrade ? sourceUpgradeCost : sourceCost;
   const updateActiveCost = showUpgrade ? onUpgradeCostChange : onCostChange;
   const updateActiveCardKeywords = showUpgrade
     ? onUpgradeCardKeywordsChange
     : onCardKeywordsChange;
+  const acceptedDescriptionRef = useRef({
+    base: {
+      blocks,
+      keywords: cardKeywords ?? { top: [], bottom: [] },
+    },
+    upgrade: {
+      blocks: upgradedBlocks ?? initialUpgradeBlocks ?? [],
+      keywords: upgradedCardKeywords ?? { top: [], bottom: [] },
+    },
+  });
+  const pendingModeRef = useRef<"base" | "upgrade" | null>(null);
+  const contentReplaceRequestIdRef = useRef(0);
+  const feedbackTimeoutRef = useRef<number | null>(null);
+  const [descriptionLimitVisible, setDescriptionLimitVisible] = useState(false);
+  const [contentReplaceRequest, setContentReplaceRequest] = useState<{
+    requestId: number;
+    mode: "base" | "upgrade";
+    blocks: PostBlock[];
+  } | null>(null);
+
+  useEffect(() => () => {
+    if (feedbackTimeoutRef.current != null) {
+      window.clearTimeout(feedbackTimeoutRef.current);
+    }
+  }, []);
+
+  const showDescriptionLimit = useCallback(() => {
+    setDescriptionLimitVisible(true);
+    if (feedbackTimeoutRef.current != null) {
+      window.clearTimeout(feedbackTimeoutRef.current);
+    }
+    feedbackTimeoutRef.current = window.setTimeout(() => {
+      setDescriptionLimitVisible(false);
+      feedbackTimeoutRef.current = null;
+    }, 2800);
+  }, []);
+
+  const updateActiveBlocks = useCallback((nextBlocks: PostBlock[]) => {
+    pendingModeRef.current = activeMode;
+    if (activeMode === "upgrade") onUpgradeBlocksChange(nextBlocks);
+    else onBlocksChange(nextBlocks);
+  }, [
+    activeMode,
+    onBlocksChange,
+    onUpgradeBlocksChange,
+  ]);
+
+  const updateKeywords = useCallback((nextKeywords: TransfigureCardKeywords) => {
+    pendingModeRef.current = activeMode;
+    updateActiveCardKeywords(nextKeywords);
+  }, [activeMode, updateActiveCardKeywords]);
+
+  const handleDescriptionFitChange = useCallback((fit: CardDescriptionFit) => {
+    if (fit.fits) {
+      acceptedDescriptionRef.current[activeMode] = {
+        blocks: activeBlocks,
+        keywords: activeCardKeywords,
+      };
+      if (pendingModeRef.current === activeMode) {
+        pendingModeRef.current = null;
+      }
+      return;
+    }
+
+    if (pendingModeRef.current !== activeMode) return;
+    pendingModeRef.current = null;
+    const accepted = acceptedDescriptionRef.current[activeMode];
+    contentReplaceRequestIdRef.current += 1;
+    setContentReplaceRequest({
+      requestId: contentReplaceRequestIdRef.current,
+      mode: activeMode,
+      blocks: accepted.blocks,
+    });
+    if (activeMode === "upgrade") {
+      onUpgradeBlocksChange(accepted.blocks);
+      onUpgradeCardKeywordsChange(accepted.keywords);
+    } else {
+      onBlocksChange(accepted.blocks);
+      onCardKeywordsChange(accepted.keywords);
+    }
+    showDescriptionLimit();
+  }, [
+    activeBlocks,
+    activeCardKeywords,
+    activeMode,
+    onBlocksChange,
+    onCardKeywordsChange,
+    onUpgradeBlocksChange,
+    onUpgradeCardKeywordsChange,
+    showDescriptionLimit,
+  ]);
+
   const handleCostKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key.toLowerCase() !== "x") return;
     event.preventDefault();
@@ -172,14 +283,16 @@ export function TransfigureAssetEditor({
           showUpgrade ? nextBlocks : upgradedBlocks,
         )}
         onBlocksChange={(nextBlocks) => {
-          if (showUpgrade) onUpgradeBlocksChange(nextBlocks);
-          else onBlocksChange(nextBlocks);
+          updateActiveBlocks(nextBlocks);
         }}
         placeholder={activeSourceText}
         initialBlocks={activeInitialBlocks}
         draftKey={showUpgrade ? `${draftKey}:upgrade` : draftKey}
         submitLabel={submitLabel}
         maxChars={null}
+        contentReplaceRequest={contentReplaceRequest?.mode === activeMode
+          ? contentReplaceRequest
+          : null}
         embedded
         allowLineBreaks
         submitOnEnter={false}
@@ -190,7 +303,7 @@ export function TransfigureAssetEditor({
   return (
     <div className="space-y-2" data-transfigure-asset-editor>
       {entity.type === "card" && entity.cardData ? (
-        <div className="flex flex-col items-center justify-center">
+        <div className="relative flex flex-col items-center justify-center">
           <CardTile
             card={entity.cardData}
             serviceLocale={serviceLocale}
@@ -200,13 +313,13 @@ export function TransfigureAssetEditor({
             interactive={false}
             keywordOverride={[]}
             editableContent
+            onDescriptionFitChange={handleDescriptionFitChange}
             titleContent={titleInput}
             descriptionContent={(
               <div
                 className="flex h-full w-full flex-col"
                 style={{
                   color: "#FFF6E2",
-                  fontSize: "7cqi",
                   textShadow: "2px 2px 0 rgba(0,0,0,0.45)",
                 }}
               >
@@ -217,7 +330,7 @@ export function TransfigureAssetEditor({
                   options={CARD_TOP_KEYWORD_ORDER}
                   placement="top"
                   removeLabel={removeKeywordLabel}
-                  onChange={(top) => updateActiveCardKeywords({
+                  onChange={(top) => updateKeywords({
                     ...activeCardKeywords,
                     top,
                   })}
@@ -232,7 +345,7 @@ export function TransfigureAssetEditor({
                   options={CARD_BOTTOM_KEYWORD_ORDER}
                   placement="bottom"
                   removeLabel={removeKeywordLabel}
-                  onChange={(bottom) => updateActiveCardKeywords({
+                  onChange={(bottom) => updateKeywords({
                     ...activeCardKeywords,
                     bottom,
                   })}
@@ -267,6 +380,16 @@ export function TransfigureAssetEditor({
               />
             )}
           />
+          {descriptionLimitVisible && (
+            <div
+              role="alert"
+              aria-live="polite"
+              className="pointer-events-none absolute left-1/2 top-1/2 z-50 w-[min(16rem,90vw)] -translate-x-1/2 -translate-y-1/2 rounded-lg border border-red-300/45 bg-[#16090b]/95 px-3 py-2 text-center text-xs font-semibold text-red-100 shadow-[0_8px_30px_rgba(0,0,0,0.7)]"
+              data-transfigure-description-limit
+            >
+              {descriptionFrameLimit}
+            </div>
+          )}
           {upgradedBlocks != null && (
             <GameCheckboxToggle
               checked={showUpgrade}
