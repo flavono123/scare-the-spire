@@ -335,6 +335,19 @@ function buildKeywordLabels(
   return labels;
 }
 
+function buildCanonicalCardKeywordLabels(
+  korKeywords: GameLocalizationTable,
+  engKeywords: GameLocalizationTable,
+): Record<string, string> {
+  const labels: Record<string, string> = {};
+  for (const [key, englishLabel] of Object.entries(engKeywords)) {
+    if (!key.endsWith(".title")) continue;
+    const koreanLabel = korKeywords[key];
+    if (koreanLabel) labels[englishLabel] = koreanLabel;
+  }
+  return labels;
+}
+
 const CODEX_KEYWORD_ORDER = [
   "ETERNAL",
   "ETHEREAL",
@@ -576,6 +589,7 @@ function mapCard(
   typeLabels: Record<CardTypeKo, string>,
   rarityLabels: Record<CardRarityKo, string>,
   keywordLabels: Record<string, string>,
+  canonicalKeywordLabels: Record<string, string>,
   gameLocale: GameLocale,
 ): CodexCard {
   const vars = withCardVarFallbacks(kor.id, kor.vars);
@@ -607,7 +621,9 @@ function mapCard(
     damage: kor.damage,
     block: kor.block,
     hitCount: kor.hit_count,
-    keywords: kor.keywords ?? [],
+    keywords: (eng.keywords ?? kor.keywords ?? []).map(
+      (keyword) => canonicalKeywordLabels[keyword] ?? keyword,
+    ),
     keywordLabels,
     tags: kor.tags ?? [],
     appliedPowerIds: getAppliedPowerIds(eng),
@@ -633,19 +649,31 @@ export async function getCodexCards(opts?: {
   gameLocale?: GameLocale;
 }): Promise<CodexCard[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korCards, engCards, gameCards, gameEvents, engEvents, korKeywords, gameKeywords, gameplay] = await Promise.all([
+  const [
+    korCards,
+    engCards,
+    gameCards,
+    gameEvents,
+    engEvents,
+    korKeywords,
+    engKeywords,
+    gameKeywords,
+    gameplay,
+  ] = await Promise.all([
     readJson<RawCard[]>("kor/cards.json"),
     readJson<RawCard[]>("eng/cards.json"),
     readGameLocalizationTable(gameLocale, "cards"),
     readGameLocalizationTable(gameLocale, "events"),
     readGameLocalizationTable("eng", "events"),
     readGameLocalizationTable("kor", "card_keywords"),
+    readGameLocalizationTable("eng", "card_keywords"),
     readGameLocalizationTable(gameLocale, "card_keywords"),
     readGameLocalizationTable(gameLocale, "gameplay_ui"),
   ]);
 
   const engById = new Map(engCards.map((c) => [c.id, c]));
   const keywordLabels = buildKeywordLabels(korKeywords, gameKeywords);
+  const canonicalKeywordLabels = buildCanonicalCardKeywordLabels(korKeywords, engKeywords);
   const typeLabels = getGameplayCardTypeLabels(gameplay);
   const rarityLabels = getGameplayCardRarityLabels(gameplay);
   const madScienceLabels = buildMadScienceLabels(gameEvents, engEvents, gameLocale);
@@ -655,7 +683,16 @@ export async function getCodexCards(opts?: {
     .filter((c) => cardHasCodexImage(c) && (includeDeprecated || !c.deprecated))
     .flatMap((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      const card = mapCard(kor, eng, gameCards, typeLabels, rarityLabels, keywordLabels, gameLocale);
+      const card = mapCard(
+        kor,
+        eng,
+        gameCards,
+        typeLabels,
+        rarityLabels,
+        keywordLabels,
+        canonicalKeywordLabels,
+        gameLocale,
+      );
       if (card.id !== MAD_SCIENCE_CARD_ID) return [card];
 
       return TINKER_CARD_TYPES.map((cardType) => {
@@ -714,11 +751,20 @@ export async function getMadScienceBaseCard(opts?: {
   gameLocale?: GameLocale;
 }): Promise<CodexCard | null> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korCards, engCards, gameCards, korKeywords, gameKeywords, gameplay] = await Promise.all([
+  const [
+    korCards,
+    engCards,
+    gameCards,
+    korKeywords,
+    engKeywords,
+    gameKeywords,
+    gameplay,
+  ] = await Promise.all([
     readJson<RawCard[]>("kor/cards.json"),
     readJson<RawCard[]>("eng/cards.json"),
     readGameLocalizationTable(gameLocale, "cards"),
     readGameLocalizationTable("kor", "card_keywords"),
+    readGameLocalizationTable("eng", "card_keywords"),
     readGameLocalizationTable(gameLocale, "card_keywords"),
     readGameLocalizationTable(gameLocale, "gameplay_ui"),
   ]);
@@ -728,6 +774,7 @@ export async function getMadScienceBaseCard(opts?: {
 
   const engById = new Map(engCards.map((card) => [card.id, card]));
   const keywordLabels = buildKeywordLabels(korKeywords, gameKeywords);
+  const canonicalKeywordLabels = buildCanonicalCardKeywordLabels(korKeywords, engKeywords);
   const typeLabels = getGameplayCardTypeLabels(gameplay);
   const rarityLabels = getGameplayCardRarityLabels(gameplay);
   return mapCard(
@@ -737,6 +784,7 @@ export async function getMadScienceBaseCard(opts?: {
     typeLabels,
     rarityLabels,
     keywordLabels,
+    canonicalKeywordLabels,
     gameLocale,
   );
 }
