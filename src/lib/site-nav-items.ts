@@ -97,6 +97,12 @@ export const devNavItems = [
   { href: "/dev/admin", label: "어드민", icon: "/images/sts2/nav/question_mark.png" },
   { href: "/dev/monsters", label: "몬스터 정리", icon: "/images/sts2/nav/happy_cultist.png" },
   { href: "/dev/og-images", label: "OG 이미지 프리뷰", icon: "/images/sts2/nav/patch_notes_icon.png" },
+  {
+    href: "/dev/spire-icons",
+    label: "첨탑식 아이콘 실험실",
+    icon: "/images/sts2/powers/trash_to_treasure_power.webp",
+    strictDevOnly: true,
+  },
   { href: "/dev/text-effects", label: "텍스트 효과", icon: "/images/sts2/nav/patch_notes_icon.png" },
   { href: "/dev/reference", label: "레퍼런스", icon: "/images/sts2/nav/stats_cards.png" },
 ] as const;
@@ -185,7 +191,9 @@ export function getToyBoxNavItems({
     [
       ...serviceItems,
       ...(showDevMenu
-        ? devNavItems
+        ? devNavItems.filter(
+            (item) => !("strictDevOnly" in item) || process.env.NODE_ENV === "development",
+          )
         : []),
     ],
     serviceLocale,
