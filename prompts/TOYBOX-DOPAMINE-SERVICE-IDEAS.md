@@ -144,12 +144,12 @@ gameDataVersion + rulesVersion + seed + choices[] = 재현 가능한 한 런
 | 사례 | 확인한 성공·구조 | 실제로 강한 보상 | 옮겨올 원리 |
 |---|---|---|---|
 | [PEAK](https://store.steampowered.com/app/3527290/PEAK/) | 매일 산이 바뀌지만 같은 날에는 무제한 재도전한다. 출시 6일 만에 100만 장 판매가 보도됐다. [Game Developer](https://www.gamedeveloper.com/business/aggro-crab-side-hustle-peak-has-sold-100-000-copies-in-24-hours) | 친구가 끌어올린 순간, 실패한 경로에 대한 공동 기억 | 일일 시드는 입장 제한이 아니라 같은 문제를 공유하는 장치여야 한다. |
-| [Gamble With Your Friends](https://store.steampowered.com/app/3892270/Gamble_With_Your_Friends/) | 2026년 출시 후 1주에 100만 장을 공식 발표했다. 한 은행 계좌와 거대한 빚, 5분 할당량을 공유한다. [공식 Steam 커뮤니티](https://steamcommunity.com/games/3892270) | 친구 한 명의 무리한 베팅 때문에 모두 망한 이야기 | 개인 재화보다 한 런의 공동 잔액·마감·책임 소재가 강하다. |
+| [Gamble With Your Friends](https://store.steampowered.com/app/3892270/Gamble_With_Your_Friends/) | 2026년 출시 후 1주에 100만 장을 공식 발표했다. 한 은행 계좌와 거대한 빚, 게임 내 하루마다 5분인 할당량을 공유한다. [공식 Steam 뉴스](https://steamcommunity.com/app/3892270/allnews/) | 친구 한 명의 무리한 베팅 때문에 모두 망한 이야기 | 개인 재화보다 한 런의 공동 잔액·마감·책임 소재가 강하다. |
 | [Content Warning](https://store.steampowered.com/app/2881650/Content_Warning/) | 괴물을 찍고 귀환한 뒤 모두 영상을 본다. 첫 무료 배포일에 660만 명이 확보했다. [Landfall 프레스킷](https://landfall.se/content-warning-press-kit) | 플레이 뒤 자동으로 남는 영상과 단체 시사회 | 결과 화면을 점수가 아니라 다시 보고 보내는 콘텐츠로 만든다. |
 | [R.E.P.O.](https://store.steampowered.com/app/3241660/REPO/) | 깨지기 쉬운 물건을 물리적으로 함께 운반한다. 정상적인 목표 수행 자체가 사고를 만든다. | “누가 무엇을 어디에 박아 깨뜨렸나”가 보이는 실패 | RNG보다 원인이 보이는 연쇄 사고가 더 공정하고 웃기다. |
 | [Lethal Company](https://store.steampowered.com/app/1966720/Lethal_Company/) | 짧은 원정과 3일 할당량, 더 위험한 달, 철수 판단이 겹친다. | 들어간 사람과 관제한 사람의 정보 비대칭, 할당량 실패담 | 하나의 공유 목표와 `더 간다 / 돌아간다`만으로 세션을 묶는다. |
 | [Buckshot Roulette](https://store.steampowered.com/app/2835570/Buckshot_Roulette/) | 유한한 실탄·공포탄 수를 알고 아이템으로 확률에 개입한다. 2025년 Steam 600만 장 판매를 발표했다. [공식 발표](https://steamcommunity.com/app/2835570/announcements/) | “그 확률을 알면서도 눌렀다”는 책임감 | 후보 풀과 확률을 보여주고, 엿보기·고정·재추첨·철수를 준다. |
-| [CloverPit](https://store.steampowered.com/app/3314790/CloverPit/) | 슬롯 결과를 150개 이상의 부적과 시너지로 조작하며 마감액을 넘긴다. 100만 장 판매를 발표했다. [공식 발표](https://steamcommunity.com/app/3314790/announcements/) | 우연한 잭팟보다 내가 만든 런 엔진의 폭발 | 무작위 결과 전에 2~3개의 빌드 선택을 준다. |
+| [CloverPit](https://store.steampowered.com/app/3314790/CloverPit/) | 슬롯 결과를 150개 이상의 아이템과 시너지로 조작하며 마감액을 넘긴다. 100만 장 판매를 발표했다. [공식 발표](https://steamcommunity.com/app/3314790/allnews/) | 우연한 잭팟보다 내가 만든 런 엔진의 폭발 | 무작위 결과 전에 2~3개의 빌드 선택을 준다. |
 | [Balatro](https://store.steampowered.com/app/2379780/Balatro/) | 익숙한 포커 규칙에 조커가 규칙을 비튼다. 500만 장 판매를 발표했다. [Playstack](https://www.playstack.com/news/balatro-5-million-copies-sold/) | 이해 가능한 족보와 매번 달라지는 규칙 파괴 | STS2의 색·타입·비용·키워드를 읽을 수 있는 족보로 쓴다. |
 
 ### 횡단 결론
@@ -236,24 +236,26 @@ gameDataVersion + rulesVersion + seed + choices[] = 재현 가능한 한 런
 
 원본은 [data/sts2/kor](../data/sts2/kor), 타입은 [codex-types.ts](../src/lib/codex-types.ts), 통합 로더는 [load-all-entities.ts](../src/lib/load-all-entities.ts)에 있다.
 
-다음 수치는 구조화 파일의 행 수다. 폐기·변형·공유 항목이 섞일 수 있으므로 실제 모드 후보는 빌드 시 필터링해야 한다.
+다음 표는 원본 구조화 파일의 행 수와 현재 공개 로더가 남기는 후보 수를 구분한다. 원본에는 폐기·목업·고대의 존재·설명 없는 항목이 섞여 있다.
 
-| 종류 | 행 수 | 작은 게임에서 쓸 수 있는 축 |
-|---|---:|---|
-| 카드 | 597 | 색, 타입, 희귀도, 비용, 피해, 방어, 키워드, 파워, 업그레이드 |
-| 유물 | 298 | 희귀도, 캐릭터 풀, 설명 변수, 니오우 유물 |
-| 포션 | 64 | 희귀도, 캐릭터 풀, 효과 |
-| 파워 | 264 | 버프/디버프, 중첩 방식, 적용 카드 |
-| 인챈트 | 22 | 적용 가능한 카드 타입 |
-| 고난 | 10 | 카드형 부정 효과 |
-| 이벤트 | 66 | 첫 선택지, 후속 페이지, 사망 문구, 공식 한국어 대사 |
-| 몬스터 | 121 | 행동, 의도, 피해/방어, 행동 그래프 |
-| 조우 | 92 | 방 유형, 막, 실제 몬스터 편성, 가중치 |
-| 시대 | 57 | 시간 순서, 이야기, 해금 카드·유물·포션 |
+| 종류 | 원본 행 | 현재 공개 후보 | 작은 게임에서 쓸 수 있는 축 |
+|---|---:|---:|---|
+| 카드 | 597 | 597 | 색, 타입, 희귀도, 비용, 피해, 방어, 키워드, 파워, 업그레이드 |
+| 유물 | 298 | 298 | 희귀도, 캐릭터 풀, 설명 변수, 니오우 유물 |
+| 포션 | 64 | 64 | 희귀도, 캐릭터 풀, 효과 |
+| 파워 | 264 | 236 | 버프/디버프, 중첩 방식, 적용 카드 |
+| 인챈트 | 22 | 22 | 적용 가능한 카드 타입 |
+| 고난 | 10 | 7 | 카드형 부정 효과 |
+| 이벤트 | 66 | 57 | 첫 선택지, 후속 페이지, 사망 문구, 공식 한국어 대사 |
+| 몬스터 | 121 | 121 | 행동, 의도, 피해/방어, 행동 그래프 |
+| 조우 | 92 | 92 | 방 유형, 막, 실제 몬스터 편성, 가중치 |
+| 시대 | 57 | 57 | 시간 순서, 이야기, 해금 카드·유물·포션 |
+
+공개 후보 수에서 파워는 폐기·빈 항목, 고난은 `MOCK_*`, 이벤트는 고대의 존재와 설명 없는 항목을 제외한다.
 
 특히 가치가 높은 데이터는 다음이다.
 
-- 몬스터 110종에 행동 그래프가 있어 “다음 의도”를 추측이 아닌 실제 전이로 낼 수 있다.
+- 몬스터 110종에 행동 그래프가 있다. 첫 문제 풀은 고정 반복 72종과 확률이 명시된 무작위 반복 18종에서 고른다. 턴·체력·파워 같은 런타임 상태가 필요한 조건부 전이와 `unknown`·`partial` 그래프는 충분한 상태를 함께 제시하거나 제외한다.
 - 조우 파일은 실제 몬스터 조합과 가중치를 갖고 있어 “가짜 조우 찾기”의 정답을 검증할 수 있다.
 - 이벤트는 한국어 선택지와 후속 대사, 실패 문구까지 갖고 있어 작은 게임의 튜토리얼과 결산 카피가 이미 있다.
 - 카드의 색·타입·희귀도·비용·키워드는 슬롯 족보와 짧은 퍼즐에 바로 쓸 수 있다.
@@ -1028,13 +1030,17 @@ toy_friend_finish
 - [PEAK 공식 Steam](https://store.steampowered.com/app/3527290/PEAK/)
 - [PEAK의 friendslop 설계 인터뷰](https://www.pcgamer.com/games/adventure/peak-boss-doesnt-mind-us-calling-it-friendslop-why-not-make-a-game-where-the-point-is-to-hang-out-with-your-friends/)
 - [Gamble With Your Friends 공식 Steam](https://store.steampowered.com/app/3892270/Gamble_With_Your_Friends/)
-- [Gamble With Your Friends 공식 커뮤니티의 100만 장 발표](https://steamcommunity.com/games/3892270)
+- [Gamble With Your Friends 공식 뉴스의 100만 장 발표](https://steamcommunity.com/app/3892270/allnews/)
 - [Content Warning 공식 Steam](https://store.steampowered.com/app/2881650/Content_Warning/)
 - [Content Warning 공식 프레스킷](https://landfall.se/content-warning-press-kit)
 - [R.E.P.O. 공식 Steam](https://store.steampowered.com/app/3241660/REPO/)
 - [Lethal Company 공식 Steam](https://store.steampowered.com/app/1966720/Lethal_Company/)
 - [Buckshot Roulette 공식 Steam](https://store.steampowered.com/app/2835570/Buckshot_Roulette/)
+- [Buckshot Roulette 공식 판매 발표](https://steamcommunity.com/app/2835570/announcements/)
 - [CloverPit 공식 Steam](https://store.steampowered.com/app/3314790/CloverPit/)
+- [CloverPit 공식 판매 발표](https://steamcommunity.com/app/3314790/allnews/)
 - [Balatro 공식 Steam](https://store.steampowered.com/app/2379780/Balatro/)
+- [Balatro 500만 장 공식 발표](https://www.playstack.com/news/balatro-5-million-copies-sold/)
+- [PEAK 출시 6일 100만 장 보도](https://www.gamedeveloper.com/business/aggro-crab-side-hustle-peak-has-sold-100-000-copies-in-24-hours)
 
-외부 판매량과 리뷰 수는 성공 사례를 고르기 위한 2026-07-30 조사 스냅숏이다. 서비스 설계의 근거는 숫자 자체보다 반복 루프, 실패 비용, 공유 결과물, 일일 의존 여부에 둔다.
+판매 수치는 2026-07-30에 확인한 각 시점의 역사적 공식 마일스톤이지, 2026-07-30 현재 누적 판매량이라는 뜻이 아니다. 서비스 설계의 근거는 숫자 자체보다 반복 루프, 실패 비용, 공유 결과물, 일일 의존 여부에 둔다.
