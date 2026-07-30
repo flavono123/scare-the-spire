@@ -303,7 +303,7 @@ type VariantId = "original" | "ghost" | SpireColorId;
 
 const VARIANT_LABELS: Record<VariantId, string> = {
   original: "원본",
-  ghost: "Ghost · 밀랍 가설",
+  ghost: "Ghost · 밀랍 셰이더",
   gold: "spire-gold",
   blue: "spire-blue",
   red: "spire-red",
@@ -589,8 +589,7 @@ function TokenIcon({
   if (variant === "original" || variant === "ghost") {
     const ghostStyle: CSSProperties | undefined = variant === "ghost"
       ? {
-          filter: "grayscale(0.82) saturate(0.28) contrast(0.88) brightness(1.25)",
-          opacity: 0.46,
+          filter: 'url("#spire-icon-wax-filter")',
         }
       : undefined;
 
@@ -684,7 +683,7 @@ function VariantPalette({
         원본
       </button>
       <button
-        aria-label="Ghost 밀랍 가설 variant"
+        aria-label="Ghost 밀랍 셰이더 variant"
         aria-pressed={value === "ghost"}
         className={`flex h-7 min-w-9 items-center justify-center rounded border px-1.5 text-[10px] font-semibold transition ${
           value === "ghost"
@@ -692,7 +691,7 @@ function VariantPalette({
             : "border-white/10 bg-black/20 text-zinc-500 hover:border-white/30"
         }`}
         onClick={() => onChange("ghost")}
-        title="Ghost · 밀랍 가설"
+        title="Ghost · 밀랍 셰이더"
         type="button"
       >
         Ghost
@@ -866,6 +865,20 @@ function TokenWorkbench() {
 export default function SpireIconsDevPage() {
   return (
     <main className="mx-auto max-w-7xl px-3 py-6 sm:px-5 lg:px-8">
+      <svg aria-hidden className="absolute h-0 w-0" focusable="false">
+        <filter colorInterpolationFilters="linearRGB" id="spire-icon-wax-filter">
+          <feColorMatrix
+            type="matrix"
+            values="
+              0.333333 0.333333 0.333333 0 0
+              0.266667 0.266667 0.266667 0 0
+              0.266667 0.266667 0.266667 0 0
+              0        0        0        1 0
+            "
+          />
+        </filter>
+      </svg>
+
       <div className="mb-5 flex items-center gap-2 rounded-lg border border-yellow-500/25 bg-yellow-500/5 px-3 py-2">
         <span className="rounded bg-yellow-500/15 px-2 py-0.5 text-[10px] font-black tracking-[0.12em] text-yellow-400">
           DEV ONLY
@@ -888,8 +901,8 @@ export default function SpireIconsDevPage() {
           </h1>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-zinc-400">
             현재 사용 중인 lucide 41종을 실제 게임 토큰 후보와 나란히 비교합니다.
-            Ghost는 밀랍 유물 효과 가설이며, spire 색상은 원본의 명암 위에 단일 색
-            레이어를 합성합니다.
+            Ghost는 게임의 밀랍 유물 셰이더를 재현하며, spire 색상은 원본의 명암
+            위에 단일 색 레이어를 합성합니다.
           </p>
         </div>
       </header>
