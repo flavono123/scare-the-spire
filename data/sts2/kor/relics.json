@@ -143,8 +143,8 @@
   {
     "id": "BEAUTIFUL_BRACELET",
     "name": "아름다운 팔찌",
-    "description": "획득 시, [gold]덱[/gold]에서 카드를 [blue]3[/blue]장 선택합니다. 그 카드에 [purple]신속[/purple]을 [blue]3[/blue] [gold]인챈트[/gold]합니다.",
-    "description_raw": "획득 시, [gold]덱[/gold]에서 카드를 [blue]{Cards}[/blue]장 선택합니다. 그 카드에 [purple]신속[/purple]을 [blue]3[/blue] [gold]인챈트[/gold]합니다.",
+    "description": "획득 시, [gold]덱[/gold]에서 카드를 [blue]4[/blue]장 선택합니다. 그 카드에 [purple]신속[/purple]을 [blue]2[/blue] [gold]인챈트[/gold]합니다.",
+    "description_raw": "획득 시, [gold]덱[/gold]에서 카드를 [blue]{Cards}[/blue]장 선택합니다. 그 카드에 [purple]신속[/purple]을 [blue]2[/blue] [gold]인챈트[/gold]합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
@@ -1112,7 +1112,7 @@
   {
     "id": "FIDDLE",
     "name": "바이올린",
-    "description": "매 턴 시작 시, 카드를 추가로 [blue]3[/blue]장 뽑습니다. 내 턴 동안 카드를 뽑을 수 없습니다.",
+    "description": "매 턴 시작 시, 카드를 추가로 [blue]2[/blue]장 뽑습니다. 내 턴 동안 카드를 뽑을 수 없습니다.",
     "description_raw": "매 턴 시작 시, 카드를 추가로 [blue]{Cards}[/blue]장 뽑습니다. 내 턴 동안 카드를 뽑을 수 없습니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
@@ -1202,7 +1202,7 @@
   {
     "id": "FUR_COAT",
     "name": "모피 코트",
-    "description": "획득 시, [blue]7[/blue]번의 무작위 전투에 표식을 남깁니다. 해당 방의 적은 체력이 [blue]1[/blue]이 됩니다.",
+    "description": "획득 시, [blue]8[/blue]번의 무작위 전투에 표식을 남깁니다. 해당 방의 적은 체력이 [blue]1[/blue]이 됩니다.",
     "description_raw": "획득 시, [blue]{Combats}[/blue]번의 무작위 전투에 표식을 남깁니다. 해당 방의 적은 체력이 [blue]1[/blue]이 됩니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
@@ -2755,8 +2755,8 @@
   {
     "id": "REGALITE",
     "name": "리갈라이트",
-    "description": "카드를 생성할 때마다, [gold]방어도[/gold]를 [blue]2[/blue] 얻습니다.",
-    "description_raw": "카드를 생성할 때마다, [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다.",
+    "description": "매 턴마다 처음으로 카드를 생성할 때, [gold]방어도[/gold]를 [blue]6[/blue] 얻습니다.",
+    "description_raw": "매 턴마다 처음으로 카드를 생성할 때, [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "regent",
@@ -2957,7 +2957,7 @@
   {
     "id": "SEAL_OF_GOLD",
     "name": "황금 인장",
-    "description": "내 턴 시작 시, [gold]골드[/gold]를 [blue]5[/blue] 소모해 [energy:1]를 얻습니다.",
+    "description": "내 턴 시작 시, [gold]골드[/gold]를 [blue]3[/blue] 소모해 [energy:1]를 얻습니다.",
     "description_raw": "내 턴 시작 시, [gold]골드[/gold]를 [blue]{Gold}[/blue] 소모해 {Energy:energyIcons()}를 얻습니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
@@ -3023,7 +3023,7 @@
   {
     "id": "SIGNET_RING",
     "name": "인장 반지",
-    "description": "획득 시, [gold]골드[/gold]를 [blue]999[/blue] 얻습니다.",
+    "description": "획득 시, [gold]골드[/gold]를 [blue]888[/blue] 얻습니다.",
     "description_raw": "획득 시, [gold]골드[/gold]를 [blue]{Gold}[/blue] 얻습니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
@@ -3379,8 +3379,8 @@
   {
     "id": "TOASTY_MITTENS",
     "name": "따뜻한 장갑",
-    "description": "내 턴 시작 시, [gold]뽑을 카드 더미[/gold] 맨 위의 카드를 1장 [gold]소멸[/gold]시키고 [gold]힘[/gold]을 [blue]1[/blue] 얻습니다.",
-    "description_raw": "내 턴 시작 시, [gold]뽑을 카드 더미[/gold] 맨 위의 카드를 1장 [gold]소멸[/gold]시키고 [gold]힘[/gold]을 [blue]{StrengthPower}[/blue] 얻습니다.",
+    "description": "내 턴 시작 시, [gold]손[/gold]에 있는 카드를 [blue]1[/blue]장 [gold]소멸[/gold]시키고 [gold]힘[/gold]을 [blue]1[/blue] 얻습니다.",
+    "description_raw": "내 턴 시작 시, [gold]손[/gold]에 있는 카드를 [blue]1[/blue]장 [gold]소멸[/gold]시키고 [gold]힘[/gold]을 [blue]{StrengthPower}[/blue] 얻습니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
