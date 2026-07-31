@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import fs from "fs/promises";
 import path from "path";
 import { getCodexMeta, getEntityVersionDiffs, getSTS2Patches, getSTS2PatchLines, getSTS2Stories } from "@/lib/data";
-import { getCodexCards, getCodexRelics, getCodexPotions, getCodexPowers, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients, getCodexEpochs } from "@/lib/codex-data";
+import { getCodexCards, getCodexRelics, getCodexPotions, getCodexPowers, getCodexKeywords, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients, getCodexEpochs } from "@/lib/codex-data";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { readGameLocalizationTable, type GameLocalizationTable } from "@/lib/game-localization";
 import { loadAllEntities } from "@/lib/load-all-entities";
@@ -818,7 +818,7 @@ export async function PatchDetailPage({
   staticHoverPreviews?: boolean;
 }) {
   const copy = PATCH_COPY[serviceLocale];
-  const [patches, versionDiffs, codexMeta, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder] = await Promise.all([
+  const [patches, versionDiffs, codexMeta, codexCards, codexRelics, codexPotions, codexPowers, codexKeywords, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder] = await Promise.all([
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
@@ -826,6 +826,7 @@ export async function PatchDetailPage({
     getCodexRelics({ gameLocale }),
     getCodexPotions({ gameLocale }),
     getCodexPowers({ includeDeprecated: true, gameLocale }),
+    getCodexKeywords({ gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getCodexEvents({ gameLocale }),
     getCodexMonsters({ gameLocale }),
@@ -923,6 +924,15 @@ export async function PatchDetailPage({
       color: p.type,
       type: "power" as const,
       powerData: p,
+    })),
+    ...codexKeywords.map((k) => ({
+      id: k.id,
+      nameEn: k.nameEn,
+      nameKo: patchDisplayName(k.name, k.nameEn, gameLocale),
+      imageUrl: null,
+      color: "keyword",
+      type: "keyword" as const,
+      keywordData: k,
     })),
     ...codexEnchantments.map((e) => ({
       id: e.id,
