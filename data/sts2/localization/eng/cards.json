@@ -939,6 +939,8 @@
   "SACRIFICE.title": "Sacrifice",
   "SALVO.description": "Deal {Damage:diff()} damage.\n[gold]Retain[/gold] your [gold]Hand[/gold] this turn.",
   "SALVO.title": "Salvo",
+  "SCARE.description": "Apply 1 [gold]Weak[/gold] to ALL enemies.",
+  "SCARE.title": "Scare",
   "SCAVENGE.description": "[gold]Exhaust[/gold] a card.\nNext turn, gain {Energy:energyIcons()}.",
   "SCAVENGE.title": "Scavenge",
   "SCOURGE.description": "Apply {DoomPower:diff()} [gold]Doom[/gold].\nDraw {Cards:diff()} {Cards:plural:card|cards}.",

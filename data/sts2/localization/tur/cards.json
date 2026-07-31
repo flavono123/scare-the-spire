@@ -921,6 +921,8 @@
   "SACRIFICE.title": "Kurban Et",
   "SALVO.description": "{Damage:diff()} hasar ver.\nBu tur [gold]El[/gold]'ini [gold]Sakla[/gold].",
   "SALVO.title": "Yaylım Ateşi",
+  "SCARE.description": "TÜM düşmanlara 1 [gold]Zayıf[/gold] uygula.",
+  "SCARE.title": "Korkut",
   "SCAVENGE.description": "Bir kartı [gold]Tüket[/gold].\nSonraki turda {Energy:energyIcons()} elde et.",
   "SCAVENGE.title": "Geri Dönüştür",
   "SCOURGE.description": "{DoomPower:diff()} [gold]Kader[/gold] uygula.\n{Cards:diff()} {Cards:plural:kart|kart} çek.",

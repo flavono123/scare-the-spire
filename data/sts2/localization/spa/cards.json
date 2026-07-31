@@ -921,6 +921,8 @@
   "SACRIFICE.title": "Sacrificio",
   "SALVO.description": "Inflige {Damage:diff()} de daño.\n[gold]Retén[/gold] tu [gold]Mano[/gold] este turno.",
   "SALVO.title": "Salva",
+  "SCARE.description": "Aplica 1 de [gold]Debilidad[/gold] a TODOS los enemigos.",
+  "SCARE.title": "Asustar",
   "SCAVENGE.description": "[gold]Agota[/gold] una carta.\nAl siguiente turno, gana {Energy:energyIcons()}.",
   "SCAVENGE.title": "Reciclaje",
   "SCOURGE.description": "Aplica {DoomPower:diff()} de [gold]Condena[/gold].\nRoba {Cards:diff()} {Cards:plural:carta|cartas}.",

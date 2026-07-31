@@ -923,6 +923,8 @@
   "SACRIFICE.title": "Sacrificio",
   "SALVO.description": "Infliges {Damage:diff()} de daño.\n[gold]Retienes[/gold] tu [gold]mano[/gold] en este turno.",
   "SALVO.title": "Cañonazo",
+  "SCARE.description": "Aplicas 1 de [gold]debilitamiento[/gold] a TODOS los enemigos.",
+  "SCARE.title": "Susto",
   "SCAVENGE.description": "[gold]Agotas[/gold] una carta.\nEn el próximo turno, obtienes {Energy:energyIcons()}.",
   "SCAVENGE.title": "Escarbar",
   "SCOURGE.description": "Aplicas {DoomPower:diff()} de [gold]condena[/gold].\nRobas {Cards:diff()} {Cards:plural:carta|cartas}.",

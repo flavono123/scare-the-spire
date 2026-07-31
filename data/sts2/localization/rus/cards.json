@@ -924,6 +924,8 @@
   "SACRIFICE.title": "Жертвоприношение",
   "SALVO.description": "Наносит {Damage:diff()} урона.\nВ этом ходу вы [gold]оставляете[/gold] карты в [gold]руке[/gold].",
   "SALVO.title": "Залп",
+  "SCARE.description": "Накладывает 1 [gold]слабости[/gold] на ВСЕХ врагов.",
+  "SCARE.title": "Испуг",
   "SCAVENGE.description": "[gold]Сжигает[/gold] выбранную карту.\nДаст {Energy:energyIcons()} в начале следующего хода.",
   "SCAVENGE.title": "Переработка",
   "SCOURGE.description": "Накладывает {DoomPower:diff()} [gold]злого рока[/gold].\nВы добираете {Cards:diff()} {Cards:plural(ru):карту|карты|карт}.",

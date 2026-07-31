@@ -921,6 +921,8 @@
   "SACRIFICE.title": "Immolazione",
   "SALVO.description": "Infliggi {Damage:diff()} di danno.\nIn questo turno, [gold]conservi[/gold] la tua [gold]mano[/gold].",
   "SALVO.title": "Salva",
+  "SCARE.description": "Applichi 1 di [gold]Debolezza[/gold] a TUTTI i nemici.",
+  "SCARE.title": "Sgomento",
   "SCAVENGE.description": "[gold]Esaurisci[/gold] una carta.\nIl prossimo turno ottieni {Energy:energyIcons()}.",
   "SCAVENGE.title": "Riciclaggio",
   "SCOURGE.description": "Applichi {DoomPower:diff()} di [gold]Condanna[/gold].\nPeschi {Cards:diff()} {Cards:plural:carta|carte}.",

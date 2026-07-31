@@ -924,6 +924,8 @@
   "SACRIFICE.title": "Sacrifício",
   "SALVO.description": "Cause {Damage:diff()} de dano.\n[gold]Mantenha[/gold] sua [gold]Mão[/gold] neste turno.",
   "SALVO.title": "Saraivada",
+  "SCARE.description": "Aplique 1 de [gold]Fraqueza[/gold] a TODOS os inimigos.",
+  "SCARE.title": "Amedrontar",
   "SCAVENGE.description": "[gold]Exaure[/gold] uma carta.\nNo próximo turno, receba {Energy:energyIcons()}.",
   "SCAVENGE.title": "Reciclar",
   "SCOURGE.description": "Aplique {DoomPower:diff()} de [gold]Ruína[/gold].\nCompre {Cards:diff()} {Cards:plural:carta|cartas}.",
