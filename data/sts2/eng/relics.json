@@ -150,8 +150,8 @@
     "pool": "shared",
     "image_url": "/static/images/relics/beautiful_bracelet.png",
     "vars": {
-      "Cards": 3,
-      "Swift": 3
+      "Cards": 4,
+      "Swift": 2
     }
   },
   {
@@ -1119,7 +1119,7 @@
     "pool": "shared",
     "image_url": "/static/images/relics/fiddle.png",
     "vars": {
-      "Cards": 3
+      "Cards": 2
     }
   },
   {
@@ -1209,7 +1209,7 @@
     "pool": "shared",
     "image_url": "/static/images/relics/fur_coat.png",
     "vars": {
-      "Combats": 7
+      "Combats": 8
     }
   },
   {
@@ -2762,7 +2762,7 @@
     "pool": "regent",
     "image_url": "/static/images/relics/regalite.png",
     "vars": {
-      "Block": 2
+      "Block": 6
     }
   },
   {
@@ -2965,7 +2965,7 @@
     "image_url": "/static/images/relics/seal_of_gold.png",
     "vars": {
       "Energy": 1,
-      "Gold": 5
+      "Gold": 3
     }
   },
   {
@@ -3030,7 +3030,7 @@
     "pool": "shared",
     "image_url": "/static/images/relics/signet_ring.png",
     "vars": {
-      "Gold": 999
+      "Gold": 888
     }
   },
   {

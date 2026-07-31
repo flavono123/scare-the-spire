@@ -2331,7 +2331,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/slow_power.png",
     "vars": {
-      "SlowAmount": 0
+      "SlowAmount": 0,
+      "DisplayAmount": 0
     }
   },
   {
