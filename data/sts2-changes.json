@@ -9304,8 +9304,22 @@
     "entityType": "card",
     "entityId": "ABUNDANCE",
     "patch": "v0.110.0",
+    "date": "2026-07-31",
     "character": null,
-    "diffs": [],
+    "summary": "Abundance now always creates Upgraded Powers, and its upgrade reduces its cost to 0.",
+    "summaryKo": "풍요가 항상 강화된 파워를 생성하며, 강화 시 비용이 0으로 감소합니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Choose a Power; upgrading Abundance upgrades the choices.",
+        "beforeKo": "파워를 선택하며, 풍요를 강화해야 선택지가 강화됨",
+        "after": "Always choose an Upgraded Power; upgrading Abundance reduces its cost to 0.",
+        "afterKo": "항상 강화된 파워를 선택하며, 풍요 강화 시 비용 0",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9331,8 +9345,20 @@
     "entityType": "card",
     "entityId": "BIASED_COGNITION",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "defect",
+    "summary": "Biased Cognition Focus increased from 4(5) to 5(6).",
+    "summaryKo": "인지 편향의 밀집이 4(5)에서 5(6)으로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "focus",
+        "displayName": "Focus",
+        "displayNameKo": "밀집",
+        "before": "4(5)",
+        "after": "5(6)",
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9356,8 +9382,20 @@
     "entityType": "card",
     "entityId": "CRUSH_UNDER",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "regent",
+    "summary": "Crush Under damage increased from 7(8) to 8(9).",
+    "summaryKo": "지면 파쇄의 피해가 7(8)에서 8(9)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해",
+        "before": "7(8)",
+        "after": "8(9)",
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9381,8 +9419,22 @@
     "entityType": "card",
     "entityId": "ECHOING_SLASH",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "silent",
+    "summary": "Echoing Slash rarity decreased from Rare to Uncommon.",
+    "summaryKo": "메아리 참격의 희귀도가 희귀에서 고급으로 낮아졌습니다.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "displayNameKo": "희귀도",
+        "before": "Rare",
+        "beforeKo": "희귀",
+        "after": "Uncommon",
+        "afterKo": "고급",
+        "diffType": "enum"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "rarity",
@@ -9396,8 +9448,22 @@
     "entityType": "card",
     "entityId": "HAZE",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "silent",
+    "summary": "Haze now costs 2 and applies 4(6) Poison plus 1(2) Weak to all enemies; Sly was removed.",
+    "summaryKo": "아지랑이가 비용 2로 변경되어 모든 적에게 중독 4(6)과 약화 1(2)를 부여하며, 교활이 제거되었습니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Cost 3 | Sly | Apply 4(6) Poison to all enemies.",
+        "beforeKo": "비용 3 · 교활 · 모든 적에게 중독 4(6)",
+        "after": "Cost 2 | Apply 4(6) Poison and 1(2) Weak to all enemies.",
+        "afterKo": "비용 2 · 모든 적에게 중독 4(6)과 약화 1(2)",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "cost",
@@ -9440,8 +9506,20 @@
     "entityType": "card",
     "entityId": "MANGLE",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "ironclad",
+    "summary": "Mangle damage increased from 15(20) to 20(26).",
+    "summaryKo": "난도질의 피해가 15(20)에서 20(26)으로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해",
+        "before": "15(20)",
+        "after": "20(26)",
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9470,8 +9548,20 @@
     "entityType": "card",
     "entityId": "MAUL",
     "patch": "v0.110.0",
+    "date": "2026-07-31",
     "character": null,
-    "diffs": [],
+    "summary": "Maul's permanent combat damage scaling increased from 1(2) to 2(3).",
+    "summaryKo": "할퀴기의 전투 중 피해 증가량이 1(2)에서 2(3)으로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "damageScaling",
+        "displayName": "Damage Scaling",
+        "displayNameKo": "피해 증가량",
+        "before": "1(2)",
+        "after": "2(3)",
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9490,8 +9580,22 @@
     "entityType": "card",
     "entityId": "MIRAGE",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "silent",
+    "summary": "Mirage reverted to gaining Block equal to Poison on all enemies; it no longer Exhausts.",
+    "summaryKo": "신기루가 모든 적의 중독만큼 방어도를 얻는 효과로 돌아갔으며 더 이상 소멸하지 않습니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Cost 0 | Next turn, gain 1(2) Energy.",
+        "beforeKo": "비용 0 · 다음 턴 에너지 1(2) 획득",
+        "after": "Cost 1(0) | Gain Block equal to Poison on all enemies.",
+        "afterKo": "비용 1(0) · 모든 적의 중독만큼 방어도 획득",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "cost",
@@ -9527,8 +9631,22 @@
     "entityType": "card",
     "entityId": "OUTBREAK",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "silent",
+    "summary": "Outbreak became a 3-cost Rare Skill that applies 9(12) Poison to all enemies and triggers Poison immediately.",
+    "summaryKo": "발병이 비용 3 희귀 스킬로 변경되어 모든 적에게 중독 9(12)를 부여하고 즉시 발동시킵니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "1-cost Uncommon Power | Poison applications deal 4(5) damage to all enemies.",
+        "beforeKo": "비용 1 고급 파워 · 중독 부여 시 모든 적에게 피해 4(5)",
+        "after": "3-cost Rare Skill | Apply 9(12) Poison to all enemies; Poison triggers immediately.",
+        "afterKo": "비용 3 희귀 스킬 · 모든 적에게 중독 9(12), 즉시 발동",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "cost",
@@ -9586,8 +9704,20 @@
     "entityType": "card",
     "entityId": "PACTS_END",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "ironclad",
+    "summary": "Pact's End damage increased from 17(23) to 18(24).",
+    "summaryKo": "조약의 끝 피해가 17(23)에서 18(24)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해",
+        "before": "17(23)",
+        "after": "18(24)",
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9611,8 +9741,22 @@
     "entityType": "card",
     "entityId": "PILLAR_OF_CREATION",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "regent",
+    "summary": "Pillar of Creation reverted to triggering on every created card, with Block reduced to 2(3).",
+    "summaryKo": "창조의 기둥이 생성하는 모든 카드에 발동하는 효과로 돌아가고 방어도가 2(3)으로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "First created card each turn grants 5(7) Block.",
+        "beforeKo": "매 턴 처음 생성한 카드가 방어도 5(7) 부여",
+        "after": "Every created card grants 2(3) Block.",
+        "afterKo": "카드를 생성할 때마다 방어도 2(3) 부여",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9646,8 +9790,20 @@
     "entityType": "card",
     "entityId": "REFRACT",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "defect",
+    "summary": "Refract damage increased from 9(12) to 10(13).",
+    "summaryKo": "굴절의 피해가 9(12)에서 10(13)으로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해",
+        "before": "9(12)",
+        "after": "10(13)",
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9671,8 +9827,20 @@
     "entityType": "card",
     "entityId": "RELAX",
     "patch": "v0.110.0",
+    "date": "2026-07-31",
     "character": null,
-    "diffs": [],
+    "summary": "Relax Block increased from 15(17) to 16(18).",
+    "summaryKo": "안식의 방어도가 15(17)에서 16(18)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": "15(17)",
+        "after": "16(18)",
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9696,8 +9864,22 @@
     "entityType": "card",
     "entityId": "ROCKET_PUNCH",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "defect",
+    "summary": "Rocket Punch now reduces its cost by 1 per created Status instead of setting its cost to 0.",
+    "summaryKo": "로켓 펀치가 상태이상 생성 시 비용을 0으로 만드는 대신 1씩 감소시킵니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Cost Reduction",
+        "displayNameKo": "비용 감소",
+        "before": "Set cost to 0 until played.",
+        "beforeKo": "사용 전까지 비용을 0으로 설정",
+        "after": "Reduce cost by 1 until played.",
+        "afterKo": "사용 전까지 비용을 1 감소",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9716,8 +9898,22 @@
     "entityType": "card",
     "entityId": "SACRIFICE",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "necrobinder",
+    "summary": "Sacrifice now grants Block equal to triple Osty's Max HP instead of double.",
+    "summaryKo": "희생이 골골이 최대 체력의 2배 대신 3배만큼 방어도를 얻습니다.",
+    "diffs": [
+      {
+        "attribute": "blockMultiplier",
+        "displayName": "Block Multiplier",
+        "displayNameKo": "방어도 배율",
+        "before": "2× Osty's Max HP",
+        "beforeKo": "골골이 최대 체력의 2배",
+        "after": "3× Osty's Max HP",
+        "afterKo": "골골이 최대 체력의 3배",
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9736,8 +9932,22 @@
     "entityType": "card",
     "entityId": "SYNCHRONIZE",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "defect",
+    "summary": "Synchronize no longer Exhausts, and its upgrade increases temporary Focus per unique Orb from 2 to 3.",
+    "summaryKo": "동기화가 더 이상 소멸하지 않으며, 강화 시 구체 종류당 일시적 밀집이 2에서 3으로 증가합니다.",
+    "diffs": [
+      {
+        "attribute": "upgrade",
+        "displayName": "Upgrade",
+        "displayNameKo": "강화",
+        "before": "Remove Exhaust.",
+        "beforeKo": "소멸 제거",
+        "after": "Gain 3 temporary Focus per unique Orb instead of 2; Exhaust removed from base card.",
+        "afterKo": "구체 종류당 일시적 밀집 2 → 3, 기본 카드의 소멸 제거",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "keywords",
@@ -9761,8 +9971,20 @@
     "entityType": "card",
     "entityId": "TERRAFORMING",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "regent",
+    "summary": "Terraforming Vigor increased from 6(8) to 7(10).",
+    "summaryKo": "테라포밍의 활력이 6(8)에서 7(10)으로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "vigor",
+        "displayName": "Vigor",
+        "displayNameKo": "활력",
+        "before": "6(8)",
+        "after": "7(10)",
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9791,8 +10013,20 @@
     "entityType": "card",
     "entityId": "THE_SCYTHE",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "necrobinder",
+    "summary": "The Scythe's permanent damage scaling increased from 4(5) to 5(7).",
+    "summaryKo": "사신의 낫 영구 피해 증가량이 4(5)에서 5(7)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "damageScaling",
+        "displayName": "Damage Scaling",
+        "displayNameKo": "피해 증가량",
+        "before": "4(5)",
+        "after": "5(7)",
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9816,8 +10050,20 @@
     "entityType": "card",
     "entityId": "WELL_LAID_PLANS",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "silent",
+    "summary": "Well-Laid Plans cost increased from 1(0) to 2(1).",
+    "summaryKo": "괜찮은 전략의 비용이 1(0)에서 2(1)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "displayNameKo": "비용",
+        "before": "1(0)",
+        "after": "2(1)",
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "cost",
@@ -9836,8 +10082,20 @@
     "entityType": "card",
     "entityId": "WHISTLE",
     "patch": "v0.110.0",
+    "date": "2026-07-31",
     "character": null,
-    "diffs": [],
+    "summary": "Whistle cost decreased from 3 to 2.",
+    "summaryKo": "호각 불기의 비용이 3에서 2로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "displayNameKo": "비용",
+        "before": 3,
+        "after": 2,
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "cost",
@@ -9851,8 +10109,22 @@
     "entityType": "relic",
     "entityId": "BEAUTIFUL_BRACELET",
     "patch": "v0.110.0",
+    "date": "2026-07-31",
     "character": null,
-    "diffs": [],
+    "summary": "Beautiful Bracelet now enchants 4 cards instead of 3, with Swift reduced from 3 to 2.",
+    "summaryKo": "아름다운 팔찌가 3장 대신 4장을 인챈트하며, 신속 수치가 3에서 2로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Enchant 3 cards with Swift 3.",
+        "beforeKo": "카드 3장에 신속 3 인챈트",
+        "after": "Enchant 4 cards with Swift 2.",
+        "afterKo": "카드 4장에 신속 2 인챈트",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9871,8 +10143,20 @@
     "entityType": "relic",
     "entityId": "FIDDLE",
     "patch": "v0.110.0",
+    "date": "2026-07-31",
     "character": null,
-    "diffs": [],
+    "summary": "Fiddle's additional card draw decreased from 3 to 2.",
+    "summaryKo": "바이올린의 추가 카드 드로우가 3장에서 2장으로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "cardDraw",
+        "displayName": "Additional Draw",
+        "displayNameKo": "추가 드로우",
+        "before": 3,
+        "after": 2,
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9886,8 +10170,20 @@
     "entityType": "relic",
     "entityId": "FUR_COAT",
     "patch": "v0.110.0",
+    "date": "2026-07-31",
     "character": null,
-    "diffs": [],
+    "summary": "Fur Coat now marks 8 random combats instead of 7.",
+    "summaryKo": "모피 코트가 무작위 전투 7회 대신 8회에 표식을 남깁니다.",
+    "diffs": [
+      {
+        "attribute": "markedCombats",
+        "displayName": "Marked Combats",
+        "displayNameKo": "표식 전투",
+        "before": 7,
+        "after": 8,
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9901,8 +10197,22 @@
     "entityType": "relic",
     "entityId": "REGALITE",
     "patch": "v0.110.0",
-    "character": null,
-    "diffs": [],
+    "date": "2026-07-31",
+    "character": "regent",
+    "summary": "Regalite now grants 6 Block on the first created card each turn instead of 2 Block on every created card.",
+    "summaryKo": "리갈라이트가 생성한 모든 카드에 방어도 2를 주는 대신 매 턴 처음 생성한 카드에 방어도 6을 줍니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Every created card grants 2 Block.",
+        "beforeKo": "카드를 생성할 때마다 방어도 2",
+        "after": "The first created card each turn grants 6 Block.",
+        "afterKo": "매 턴 처음 생성한 카드가 방어도 6",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9921,8 +10231,20 @@
     "entityType": "relic",
     "entityId": "SEAL_OF_GOLD",
     "patch": "v0.110.0",
+    "date": "2026-07-31",
     "character": null,
-    "diffs": [],
+    "summary": "Seal of Gold's Gold cost decreased from 5 to 3.",
+    "summaryKo": "황금 인장이 소모하는 골드가 5에서 3으로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "gold",
+        "displayName": "Gold Cost",
+        "displayNameKo": "골드 소모",
+        "before": 5,
+        "after": 3,
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9936,8 +10258,20 @@
     "entityType": "relic",
     "entityId": "SIGNET_RING",
     "patch": "v0.110.0",
+    "date": "2026-07-31",
     "character": null,
-    "diffs": [],
+    "summary": "Signet Ring's Gold reward decreased from 999 to 888.",
+    "summaryKo": "인장 반지의 획득 골드가 999에서 888로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "gold",
+        "displayName": "Gold",
+        "displayNameKo": "골드",
+        "before": 999,
+        "after": 888,
+        "diffType": "number"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
@@ -9951,8 +10285,22 @@
     "entityType": "relic",
     "entityId": "TOASTY_MITTENS",
     "patch": "v0.110.0",
+    "date": "2026-07-31",
     "character": null,
-    "diffs": [],
+    "summary": "Toasty Mittens now Exhausts a chosen card from your Hand instead of the top card of your Draw Pile.",
+    "summaryKo": "따뜻한 장갑이 뽑을 카드 더미 맨 위 대신 손에서 선택한 카드 1장을 소멸시킵니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Exhaust Source",
+        "displayNameKo": "소멸 대상",
+        "before": "Top card of the Draw Pile",
+        "beforeKo": "뽑을 카드 더미 맨 위",
+        "after": "Choose 1 card from the Hand",
+        "afterKo": "손에서 카드 1장 선택",
+        "diffType": "rework"
+      }
+    ],
     "fieldDiffs": [
       {
         "field": "description",
