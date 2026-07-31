@@ -985,6 +985,8 @@
   "SHRUG_IT_OFF.title": "Spallucce",
   "SIC_EM.description": "[gold]Osty[/gold] infligge {OstyDamage:diff()} di danno.\nIn questo turno, ogni volta che [gold]Osty[/gold] colpisce questo nemico, applichi {SicEmPower:diff()} di [gold]Invocazione[/gold].",
   "SIC_EM.title": "All'Attacco!",
+  "SIDESTEP.description": "Next turn, gain {Energy:energyIcons()}.",
+  "SIDESTEP.title": "Sidestep",
   "SIGNAL_BOOST.description": "La prossima carta Potere che giochi viene giocata una volta in più.",
   "SIGNAL_BOOST.title": "Segnale Amplificato",
   "SKEWER.description": "Infliggi {Damage:diff()} di danno X volte.",

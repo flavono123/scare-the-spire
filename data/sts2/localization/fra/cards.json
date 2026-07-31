@@ -972,6 +972,8 @@
   "SHRUG_IT_OFF.title": "Même pas mal",
   "SIC_EM.description": "[gold]Titos[/gold] inflige {OstyDamage:diff()} dégâts.\nLorsque [gold]Titos[/gold] touche cet ennemi pendant ce tour, [gold]Invoquez[/gold] pour {SicEmPower:diff()}.",
   "SIC_EM.title": "À l'attaque !",
+  "SIDESTEP.description": "Next turn, gain {Energy:energyIcons()}.",
+  "SIDESTEP.title": "Sidestep",
   "SIGNAL_BOOST.description": "Le prochain Pouvoir que vous jouez est joué une fois supplémentaire.",
   "SIGNAL_BOOST.title": "Amplification du signal",
   "SKEWER.description": "Infligez {Damage:diff()} dégâts X fois.",

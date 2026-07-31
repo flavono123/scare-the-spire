@@ -985,6 +985,8 @@
   "SHRUG_IT_OFF.title": "Impertérrito",
   "SIC_EM.description": "[gold]Nudillos[/gold] inflige {OstyDamage:diff()} de daño.\nCuando [gold]Nudillos[/gold] ataque al enemigo este turno, [gold]Vincula[/gold] {SicEmPower:diff()}.",
   "SIC_EM.title": "¡Ataca!",
+  "SIDESTEP.description": "Next turn, gain {Energy:energyIcons()}.",
+  "SIDESTEP.title": "Sidestep",
   "SIGNAL_BOOST.description": "El siguiente Poder que juegues se jugará una vez más.",
   "SIGNAL_BOOST.title": "Potenciador de señal",
   "SKEWER.description": "Inflige {Damage:diff()} de daño X veces.",
