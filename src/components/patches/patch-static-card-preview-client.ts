@@ -1,3 +1,9 @@
+import {
+  CARD_DESCRIPTION_SAFE_HEIGHT_RATIO,
+  fitCardDescriptionText,
+} from "@/lib/card-description-fit";
+import { FONT_CQI } from "@/lib/sts2-card-style";
+
 (() => {
   const TRIGGER_SELECTOR = "[data-static-card-trigger]";
   const PREVIEW_SELECTOR = "[data-static-card-preview]";
@@ -22,6 +28,19 @@
     activePreview = null;
   }
 
+  function fitPreview(preview: HTMLElement) {
+    preview.querySelectorAll<HTMLElement>("[data-card-description-viewport]").forEach((viewport) => {
+      const content = viewport.querySelector<HTMLElement>("[data-card-description-content]");
+      if (!content) return;
+      fitCardDescriptionText({
+        viewport,
+        content,
+        baseFontCqi: FONT_CQI.description,
+        availableHeightRatio: CARD_DESCRIPTION_SAFE_HEIGHT_RATIO,
+      });
+    });
+  }
+
   function showPreview(trigger) {
     const preview = previews.get(trigger.getAttribute("data-static-card-trigger"));
     if (!preview) return;
@@ -31,6 +50,7 @@
     preview.style.visibility = "hidden";
     preview.style.left = "0";
     preview.style.top = "0";
+    fitPreview(preview);
 
     const triggerRect = trigger.getBoundingClientRect();
     const previewRect = preview.getBoundingClientRect();

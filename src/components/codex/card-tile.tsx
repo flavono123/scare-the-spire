@@ -52,6 +52,10 @@ import {
   getCardKeywordDisplayText,
   splitCardDisplayKeywords,
 } from "@/lib/sts2-card-keywords";
+import {
+  CARD_DESCRIPTION_SAFE_HEIGHT_RATIO,
+  fitCardDescriptionText,
+} from "@/lib/card-description-fit";
 
 type StaticImageProps = ComponentProps<typeof StaticImage>;
 
@@ -407,7 +411,6 @@ function getCardDisplayImageUrl(
 
 const CARD_FONT = "var(--font-game-text)";
 const TITLE_FONT = "var(--font-game-title)";
-const CARD_DESCRIPTION_SAFE_HEIGHT_RATIO = 0.9;
 
 // =============================================================================
 // Layout config (% of 300×422 holder coords)
@@ -696,61 +699,13 @@ export const CardTile = memo(function CardTile({
     const content = descriptionContentRef.current;
     if (!viewport || !content) return;
 
-    const minimumScale = Math.min(
-      1,
-      Math.max(0.35, minimumDescriptionFontScale),
-    );
-    const applyScale = (scale: number) => {
-      content.style.fontSize = `${FONT_CQI.description * scale}cqi`;
-    };
-    const overflows = () => {
-      const viewportRect = viewport.getBoundingClientRect();
-      const contentRect = content.getBoundingClientRect();
-      const availableHeight = viewport.clientHeight * (
-        hasCustomDescription ? 1 : CARD_DESCRIPTION_SAFE_HEIGHT_RATIO
-      );
-      const nestedFitContents = content.querySelectorAll<HTMLElement>(
-        "[data-card-description-fit-content]",
-      );
-
-      return (
-        content.scrollHeight > availableHeight + 1
-        || content.scrollWidth > viewport.clientWidth + 1
-        || contentRect.height > availableHeight + 1
-        || contentRect.width > viewportRect.width + 1
-        || Array.from(nestedFitContents).some((element) => (
-          element.scrollHeight > element.clientHeight + 1
-          || element.scrollWidth > element.clientWidth + 1
-        ))
-      );
-    };
-
-    applyScale(1);
-    let scale = 1;
-    let fits = !overflows();
-
-    if (!fits) {
-      applyScale(minimumScale);
-      fits = !overflows();
-      scale = minimumScale;
-
-      if (fits) {
-        let lower = minimumScale;
-        let upper = 1;
-        for (let index = 0; index < 8; index += 1) {
-          const candidate = (lower + upper) / 2;
-          applyScale(candidate);
-          if (overflows()) upper = candidate;
-          else lower = candidate;
-        }
-        scale = Math.max(minimumScale, lower - 0.002);
-        applyScale(scale);
-      }
-    }
-
-    viewport.dataset.cardDescriptionFits = String(fits);
-    content.dataset.cardDescriptionFontScale = scale.toFixed(3);
-    onDescriptionFitChange?.({ fits, fontScale: scale });
+    onDescriptionFitChange?.(fitCardDescriptionText({
+      viewport,
+      content,
+      baseFontCqi: FONT_CQI.description,
+      minimumFontScale: minimumDescriptionFontScale,
+      availableHeightRatio: hasCustomDescription ? 1 : CARD_DESCRIPTION_SAFE_HEIGHT_RATIO,
+    }));
   }, [
     hasCustomDescription,
     minimumDescriptionFontScale,

@@ -69,7 +69,7 @@ const patchStaticSpineClientPath = path.join(
 );
 const patchStaticCardPreviewClientPath = path.join(
   process.cwd(),
-  "src/components/patches/patch-static-card-preview-client.js",
+  "src/components/patches/patch-static-card-preview-client.ts",
 );
 const patchGlobalSearchClientPath = path.join(
   process.cwd(),
@@ -564,7 +564,6 @@ function renderShell(route: StaticPatchRoute): string {
 async function writePatchClientAssets() {
   const clientAssets = [
     [patchCommentsClientPath, path.join(outDir, "_patches/patch-comments.js")],
-    [patchStaticCardPreviewClientPath, path.join(outDir, "_patches/patch-static-card-preview.js")],
     [patchStaticSpineClientPath, path.join(outDir, "_patches/patch-static-spine.js")],
     [spinePlayerClientPath, path.join(outDir, "_patches/spine-player.min.js")],
   ] as const;
@@ -573,6 +572,16 @@ async function writePatchClientAssets() {
     await fs.mkdir(path.dirname(destinationPath), { recursive: true });
     await fs.copyFile(sourcePath, destinationPath);
   }
+
+  await buildClientBundle({
+    entryPoints: [patchStaticCardPreviewClientPath],
+    outfile: path.join(outDir, "_patches/patch-static-card-preview.js"),
+    bundle: true,
+    minify: true,
+    platform: "browser",
+    format: "iife",
+    target: ["es2022"],
+  });
 
   await buildClientBundle({
     entryPoints: [patchRichCommentsClientPath],
