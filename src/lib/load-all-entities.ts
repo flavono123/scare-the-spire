@@ -57,7 +57,7 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
       nameKo: c.name,
       aliasesEn: c.id === "MAD_SCIENCE_SKILL" ? ["Mad Science"] : undefined,
       aliasesKo: c.id === "MAD_SCIENCE_SKILL" ? ["괴짜 과학"] : undefined,
-      imageUrl: c.imageUrl,
+      imageUrl: c.imageUrl ?? c.betaImageUrl,
       color: c.color,
       type: "card" as const,
       cardData: c,

@@ -770,7 +770,7 @@ function reconstructPatchPreviewEntity(
     case "card": {
       if (!entity.cardData) return entity;
       const card = reconstructEntityAtVersion(entity.cardData, "card", patchVersion, currentVersion, versionDiffs, patches);
-      return { ...entity, nameKo: card.name, nameEn: card.nameEn, imageUrl: card.imageUrl, color: card.color, cardData: card };
+      return { ...entity, nameKo: card.name, nameEn: card.nameEn, imageUrl: card.imageUrl ?? card.betaImageUrl, color: card.color, cardData: card };
     }
     case "relic": {
       if (!entity.relicData) return entity;
