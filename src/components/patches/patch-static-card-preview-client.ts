@@ -69,21 +69,26 @@ import { FONT_CQI } from "@/lib/sts2-card-style";
     activePreview = preview;
   }
 
+  const closestTrigger = (target: EventTarget | null) =>
+    target instanceof Element ? target.closest(TRIGGER_SELECTOR) : null;
+  const movedOutside = (trigger: Element, relatedTarget: EventTarget | null) =>
+    !(relatedTarget instanceof Node) || !trigger.contains(relatedTarget);
+
   document.addEventListener("pointerover", (event) => {
-    const trigger = event.target.closest?.(TRIGGER_SELECTOR);
-    if (trigger && !trigger.contains(event.relatedTarget)) showPreview(trigger);
+    const trigger = closestTrigger(event.target);
+    if (trigger && movedOutside(trigger, event.relatedTarget)) showPreview(trigger);
   });
   document.addEventListener("pointerout", (event) => {
-    const trigger = event.target.closest?.(TRIGGER_SELECTOR);
-    if (trigger && !trigger.contains(event.relatedTarget)) hidePreview();
+    const trigger = closestTrigger(event.target);
+    if (trigger && movedOutside(trigger, event.relatedTarget)) hidePreview();
   });
   document.addEventListener("focusin", (event) => {
-    const trigger = event.target.closest?.(TRIGGER_SELECTOR);
+    const trigger = closestTrigger(event.target);
     if (trigger) showPreview(trigger);
   });
   document.addEventListener("focusout", (event) => {
-    const trigger = event.target.closest?.(TRIGGER_SELECTOR);
-    if (trigger && !trigger.contains(event.relatedTarget)) hidePreview();
+    const trigger = closestTrigger(event.target);
+    if (trigger && movedOutside(trigger, event.relatedTarget)) hidePreview();
   });
   window.addEventListener("resize", hidePreview);
   window.addEventListener("scroll", hidePreview, { passive: true });
