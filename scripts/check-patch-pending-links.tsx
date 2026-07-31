@@ -68,7 +68,7 @@ const staticCard = (await loadAllEntities({ gameLocale: "eng" }))
   .find((entity) => entity.type === "card" && entity.id === "BASH");
 assert(staticCard);
 const staticCardHtml = renderStaticPatch("[gold:card]Bash[/gold]", [staticCard]);
-assert.match(staticCardHtml, /Gain 8/);
+assert.match(staticCardHtml, /Deal 8 damage/);
 assert.doesNotMatch(staticCardHtml, /data-card-description-viewport/);
 
 console.log("patch pending link regression passed");
