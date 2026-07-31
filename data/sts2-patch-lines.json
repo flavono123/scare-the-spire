@@ -27654,7 +27654,7 @@
     "searchText": "v0.110.0:line-066-text-1x3mneh v0.110.0 0.110.0 문구 일반 선택지와 유물 설명의 \"포션\"을 금색 대문자 표기로 통일했습니다. \"potions\" in option and relic descriptions is now gold and capitalized."
   },
   {
-    "id": "v0.110.0:line-067-text-17r8vbe",
+    "id": "v0.110.0:line-067-power-slow",
     "patch": "v0.110.0",
     "version": "0.110.0",
     "date": "2026-07-31",
@@ -27662,12 +27662,18 @@
       "문구",
       "일반"
     ],
-    "markdownKo": "[gold:power]감속[/gold] 툴팁에 현재 배율이 표시되지 않던 문제를 수정했습니다.",
+    "markdownKo": "[gold:power]둔화[/gold] 툴팁에 현재 배율이 표시되지 않던 문제를 수정했습니다.",
     "markdownEn": "Fixed [gold:power]Slow[/gold]'s description not showing its active multiplier in the hovertip.",
-    "textKo": "감속 툴팁에 현재 배율이 표시되지 않던 문제를 수정했습니다.",
+    "textKo": "둔화 툴팁에 현재 배율이 표시되지 않던 문제를 수정했습니다.",
     "textEn": "Fixed Slow's description not showing its active multiplier in the hovertip.",
-    "entityRefs": [],
-    "searchText": "v0.110.0:line-067-text-17r8vbe v0.110.0 0.110.0 문구 일반 감속 툴팁에 현재 배율이 표시되지 않던 문제를 수정했습니다. fixed slow's description not showing its active multiplier in the hovertip."
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "SLOW",
+        "label": "둔화"
+      }
+    ],
+    "searchText": "v0.110.0:line-067-power-slow v0.110.0 0.110.0 문구 일반 둔화 툴팁에 현재 배율이 표시되지 않던 문제를 수정했습니다. fixed slow's description not showing its active multiplier in the hovertip. power slow 둔화 둔화 slow"
   },
   {
     "id": "v0.110.0:line-068-card-abundance-card-blade-symphony",
