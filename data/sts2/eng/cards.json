@@ -13364,8 +13364,8 @@
   {
     "id": "PILLAR_OF_CREATION",
     "name": "Pillar of Creation",
-    "description": "The first time you create a card each turn, gain 5 [gold]Block[/gold].",
-    "description_raw": "The first time you create a card each turn, gain {Block:diff()} [gold]Block[/gold].",
+    "description": "Whenever you create a card, gain 2 [gold]Block[/gold].",
+    "description_raw": "Whenever you create a card, gain {Block:diff()} [gold]Block[/gold].",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -13375,7 +13375,7 @@
     "target": "Self",
     "color": "regent",
     "damage": null,
-    "block": 5,
+    "block": 2,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
@@ -13385,10 +13385,10 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 5
+      "Block": 2
     },
     "upgrade": {
-      "block": "+2"
+      "block": "+1"
     },
     "image_url": "/static/images/cards/pillar_of_creation.png",
     "beta_image_url": "/static/images/cards/beta/pillar_of_creation.png"
@@ -14713,7 +14713,7 @@
   {
     "id": "REFRACT",
     "name": "Refract",
-    "description": "Deal 9 damage twice.\n[gold]Channel[/gold] 2 [gold]Glass[/gold].",
+    "description": "Deal 10 damage twice.\n[gold]Channel[/gold] 2 [gold]Glass[/gold].",
     "description_raw": "Deal {Damage:diff()} damage twice.\n[gold]Channel[/gold] {Repeat:diff()} [gold]Glass[/gold].",
     "cost": 3,
     "is_x_cost": null,
@@ -14723,7 +14723,7 @@
     "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "defect",
-    "damage": 9,
+    "damage": 10,
     "block": null,
     "hit_count": 2,
     "powers_applied": null,
@@ -14735,7 +14735,7 @@
     "spawns_cards": null,
     "vars": {
       "Repeat": 2,
-      "Damage": 9
+      "Damage": 10
     },
     "upgrade": {
       "damage": "+3"
@@ -14776,7 +14776,7 @@
   {
     "id": "RELAX",
     "name": "Relax",
-    "description": "Gain 15 [gold]Block[/gold].\nNext turn, draw 2 cards and gain [energy:2].",
+    "description": "Gain 16 [gold]Block[/gold].\nNext turn, draw 2 cards and gain [energy:2].",
     "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nNext turn, draw {Cards:diff()} {Cards:plural:card|cards} and gain {Energy:energyIcons()}.",
     "cost": 3,
     "is_x_cost": null,
@@ -14787,7 +14787,7 @@
     "target": "Self",
     "color": "event",
     "damage": null,
-    "block": 15,
+    "block": 16,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": 2,
@@ -14799,7 +14799,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 15,
+      "Block": 16,
       "Cards": 2,
       "Energy": 2
     },
@@ -15029,8 +15029,8 @@
   {
     "id": "ROCKET_PUNCH",
     "name": "Rocket Punch",
-    "description": "Deal 13 damage.\nDraw 1 card.\nWhenever you create a Status, reduce this card's cost to 0 [energy:1] until played.",
-    "description_raw": "Deal {Damage:diff()} damage.\nDraw {Cards:diff()} {Cards:plural:card|cards}.\nWhenever you create a Status, reduce this card's cost to 0 {energyPrefix:energyIcons(1)} until played.",
+    "description": "Deal 13 damage.\nDraw 1 card.\nWhenever you create a Status, reduce this card's cost by 1 [energy:1] until played.",
+    "description_raw": "Deal {Damage:diff()} damage.\nDraw {Cards:diff()} {Cards:plural:card|cards}.\nWhenever you create a Status, reduce this card's cost by 1 {energyPrefix:energyIcons(1)} until played.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -15207,8 +15207,8 @@
   {
     "id": "SACRIFICE",
     "name": "Sacrifice",
-    "description": "If [gold]Osty[/gold] is alive, he dies and you gain [gold]Block[/gold] equal to double his Max HP.",
-    "description_raw": "If [gold]Osty[/gold] is alive, he dies and you gain [gold]Block[/gold] equal to double his Max HP.{InCombat:\n(Gain {IsOstyAlive:{CalculatedBlock:diff()}|0} [gold]Block[/gold])|}",
+    "description": "If [gold]Osty[/gold] is alive, he dies and you gain [gold]Block[/gold] equal to triple his Max HP.",
+    "description_raw": "If [gold]Osty[/gold] is alive, he dies and you gain [gold]Block[/gold] equal to triple his Max HP.{InCombat:\n(Gain {IsOstyAlive:{CalculatedBlock:diff()}|0} [gold]Block[/gold])|}",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -15303,6 +15303,8 @@
       "remove_exhaust": 1
     },
     "introducedInPatch": "v0.106.0",
+    "deprecated": true,
+    "deprecatedInPatch": "v0.110.0",
     "image_url": "/static/images/cards/scare.png",
     "beta_image_url": null
   },
@@ -16275,6 +16277,39 @@
     },
     "image_url": "/static/images/cards/sic_em.png",
     "beta_image_url": "/static/images/cards/beta/sic_em.png"
+  },
+  {
+    "id": "SIDESTEP",
+    "name": "Sidestep",
+    "description": "Next turn, gain [energy:1].",
+    "description_raw": "Next turn, gain {Energy:energyIcons()}.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "silent",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 1
+    },
+    "upgrade": {
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.110.0",
+    "image_url": "/static/images/cards/sidestep.png",
+    "beta_image_url": "/static/images/cards/beta/sidestep.png"
   },
   {
     "id": "SIGNAL_BOOST",
@@ -18276,9 +18311,7 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": [
-      "Exhaust"
-    ],
+    "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
@@ -18286,7 +18319,7 @@
       "CalculationExtra": 2
     },
     "upgrade": {
-      "remove_exhaust": 1
+      "calculationextra": "+1"
     },
     "image_url": "/static/images/cards/synchronize.png",
     "beta_image_url": "/static/images/cards/beta/synchronize.png"
@@ -18528,7 +18561,7 @@
   {
     "id": "TERRAFORMING",
     "name": "Terraforming",
-    "description": "Gain 6 [gold]Vigor[/gold].",
+    "description": "Gain 7 [gold]Vigor[/gold].",
     "description_raw": "Gain {VigorPower:diff()} [gold]Vigor[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -18544,7 +18577,7 @@
     "powers_applied": [
       {
         "power": "Vigor",
-        "amount": 6
+        "amount": 7
       }
     ],
     "cards_draw": null,
@@ -18554,11 +18587,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "VigorPower": 6,
-      "Vigor": 6
+      "VigorPower": 7,
+      "Vigor": 7
     },
     "upgrade": {
-      "vigorpower": "+2"
+      "vigorpower": "+3"
     },
     "image_url": "/static/images/cards/terraforming.png",
     "beta_image_url": "/static/images/cards/beta/terraforming.png"
@@ -18730,7 +18763,7 @@
   {
     "id": "THE_SCYTHE",
     "name": "The Scythe",
-    "description": "Deal 13 damage.\nPermanently increase this card's damage by 4.",
+    "description": "Deal 13 damage.\nPermanently increase this card's damage by 5.",
     "description_raw": "Deal {Damage:diff()} damage.\nPermanently increase this card's damage by {Increase:diff()}.",
     "cost": 2,
     "is_x_cost": null,
@@ -18753,12 +18786,12 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Increase": 4,
+      "Increase": 5,
       "Damage": 13,
       "baseDamage": 13
     },
     "upgrade": {
-      "increase": "+1"
+      "increase": "+2"
     },
     "image_url": "/static/images/cards/the_scythe.png",
     "beta_image_url": "/static/images/cards/beta/the_scythe.png"
@@ -20072,7 +20105,7 @@
     "name": "Well-Laid Plans",
     "description": "At the end of your turn, you no longer discard your [gold]Hand[/gold].",
     "description_raw": "At the end of your turn, you no longer discard your [gold]Hand[/gold].",
-    "cost": 1,
+    "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -20092,7 +20125,7 @@
     "spawns_cards": null,
     "vars": null,
     "upgrade": {
-      "cost": 0
+      "cost": 1
     },
     "image_url": "/static/images/cards/well_laid_plans.png",
     "beta_image_url": null
@@ -20134,7 +20167,7 @@
     "name": "Whistle",
     "description": "Deal 33 damage.\n[gold]Stun[/gold] the enemy.",
     "description_raw": "Deal {Damage:diff()} damage.\n[gold]Stun[/gold] the enemy.",
-    "cost": 3,
+    "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
