@@ -9074,7 +9074,7 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [],
     "tags": null,
     "spawns_cards": null,
     "vars": {
@@ -18311,7 +18311,7 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [],
     "tags": null,
     "spawns_cards": null,
     "vars": {
