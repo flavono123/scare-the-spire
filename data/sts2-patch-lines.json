@@ -28111,9 +28111,9 @@
       "버그 수정",
       "멀티플레이어"
     ],
-    "markdownKo": "[gold:card]모방 학습[/gold]이 Replay와 함께 사용될 때 더 이상 진행이 멈추지 않으며 중복 사용을 무시합니다.",
+    "markdownKo": "[gold:card]모방 학습[/gold]이 [gold:keyword]재사용[/gold]과 함께 사용될 때 더 이상 진행이 멈추지 않으며 중복 사용을 무시합니다.",
     "markdownEn": "[gold:card]Imitation Learning[/gold] no longer softlocks with Replay and now ignores duplicate plays.",
-    "textKo": "모방 학습이 Replay와 함께 사용될 때 더 이상 진행이 멈추지 않으며 중복 사용을 무시합니다.",
+    "textKo": "모방 학습이 재사용과 함께 사용될 때 더 이상 진행이 멈추지 않으며 중복 사용을 무시합니다.",
     "textEn": "Imitation Learning no longer softlocks with Replay and now ignores duplicate plays.",
     "entityRefs": [
       {
@@ -28122,7 +28122,7 @@
         "label": "모방 학습"
       }
     ],
-    "searchText": "v0.110.0:line-089-card-imitation-learning v0.110.0 0.110.0 버그 수정 멀티플레이어 모방 학습이 replay와 함께 사용될 때 더 이상 진행이 멈추지 않으며 중복 사용을 무시합니다. imitation learning no longer softlocks with replay and now ignores duplicate plays. card imitation_learning 모방 학습 모방 학습 imitation learning"
+    "searchText": "v0.110.0:line-089-card-imitation-learning v0.110.0 0.110.0 버그 수정 멀티플레이어 모방 학습이 재사용과 함께 사용될 때 더 이상 진행이 멈추지 않으며 중복 사용을 무시합니다. imitation learning no longer softlocks with replay and now ignores duplicate plays. card imitation_learning 모방 학습 모방 학습 imitation learning"
   },
   {
     "id": "v0.110.0:line-090-card-tutor",
@@ -28133,9 +28133,9 @@
       "버그 수정",
       "멀티플레이어"
     ],
-    "markdownKo": "[gold:card]가르침[/gold]이 Replay와 함께 사용될 때 진행이 멈추던 문제를 수정했습니다.",
+    "markdownKo": "[gold:card]가르침[/gold]이 [gold:keyword]재사용[/gold]과 함께 사용될 때 진행이 멈추던 문제를 수정했습니다.",
     "markdownEn": "[gold:card]Tutor[/gold] no longer softlocks with Replay.",
-    "textKo": "가르침이 Replay와 함께 사용될 때 진행이 멈추던 문제를 수정했습니다.",
+    "textKo": "가르침이 재사용과 함께 사용될 때 진행이 멈추던 문제를 수정했습니다.",
     "textEn": "Tutor no longer softlocks with Replay.",
     "entityRefs": [
       {
@@ -28144,7 +28144,7 @@
         "label": "가르침"
       }
     ],
-    "searchText": "v0.110.0:line-090-card-tutor v0.110.0 0.110.0 버그 수정 멀티플레이어 가르침이 replay와 함께 사용될 때 진행이 멈추던 문제를 수정했습니다. tutor no longer softlocks with replay. card tutor 가르침 가르침 tutor"
+    "searchText": "v0.110.0:line-090-card-tutor v0.110.0 0.110.0 버그 수정 멀티플레이어 가르침이 재사용과 함께 사용될 때 진행이 멈추던 문제를 수정했습니다. tutor no longer softlocks with replay. card tutor 가르침 가르침 tutor"
   },
   {
     "id": "v0.110.0:line-091-text-17qg0bq",
