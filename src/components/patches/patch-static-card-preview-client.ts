@@ -9,8 +9,8 @@ import { FONT_CQI } from "@/lib/sts2-card-style";
   const PREVIEW_SELECTOR = "[data-static-card-preview]";
   const MARGIN = 12;
 
-  const previews = new Map();
-  document.querySelectorAll(PREVIEW_SELECTOR).forEach((preview) => {
+  const previews = new Map<string, HTMLElement>();
+  document.querySelectorAll<HTMLElement>(PREVIEW_SELECTOR).forEach((preview) => {
     const key = preview.getAttribute("data-static-card-preview");
     if (!key || previews.has(key)) return;
     preview.hidden = true;
@@ -21,7 +21,7 @@ import { FONT_CQI } from "@/lib/sts2-card-style";
     previews.set(key, preview);
   });
 
-  let activePreview = null;
+  let activePreview: HTMLElement | null = null;
 
   function hidePreview() {
     if (activePreview) activePreview.hidden = true;
@@ -41,8 +41,9 @@ import { FONT_CQI } from "@/lib/sts2-card-style";
     });
   }
 
-  function showPreview(trigger) {
-    const preview = previews.get(trigger.getAttribute("data-static-card-trigger"));
+  function showPreview(trigger: Element) {
+    const key = trigger.getAttribute("data-static-card-trigger");
+    const preview = key ? previews.get(key) : undefined;
     if (!preview) return;
 
     hidePreview();
