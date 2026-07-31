@@ -16308,7 +16308,7 @@
       "energy": "+1"
     },
     "introducedInPatch": "v0.110.0",
-    "image_url": "/static/images/cards/sidestep.png",
+    "image_url": null,
     "beta_image_url": "/static/images/cards/beta/sidestep.png"
   },
   {
