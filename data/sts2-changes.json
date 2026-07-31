@@ -9298,5 +9298,672 @@
         "diffType": "text"
       }
     ]
+  },
+  {
+    "id": "abundance-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "ABUNDANCE",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "무작위 [gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다.",
+        "after": "무작위 [gold]강화된[/gold] [gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "무작위 {IfUpgraded:show:강화된 |}[gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다.",
+        "after": "무작위 [gold]강화된[/gold] [gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다."
+      },
+      {
+        "field": "upgrade",
+        "before": null,
+        "after": {
+          "cost": 0
+        }
+      }
+    ]
+  },
+  {
+    "id": "biased-cognition-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "BIASED_COGNITION",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]밀집[/gold]을 4 얻습니다.\n내 턴 시작 시,\n[gold]밀집[/gold]을 1 잃습니다.",
+        "after": "[gold]밀집[/gold]을 5 얻습니다.\n내 턴 시작 시,\n[gold]밀집[/gold]을 1 잃습니다."
+      },
+      {
+        "field": "vars.FocusPower",
+        "before": 4,
+        "after": 5
+      },
+      {
+        "field": "vars.Focus",
+        "before": 4,
+        "after": 5
+      }
+    ]
+  },
+  {
+    "id": "crush-under-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "CRUSH_UNDER",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "모든 적에게\n피해를 7 줍니다.\n모든 적이 이번 턴 동안\n[gold]힘[/gold]을 1 잃습니다.",
+        "after": "모든 적에게\n피해를 8 줍니다.\n모든 적이 이번 턴 동안\n[gold]힘[/gold]을 1 잃습니다."
+      },
+      {
+        "field": "damage",
+        "before": 7,
+        "after": 8
+      },
+      {
+        "field": "vars.Damage",
+        "before": 7,
+        "after": 8
+      }
+    ]
+  },
+  {
+    "id": "echoing-slash-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "ECHOING_SLASH",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "희귀",
+        "after": "고급"
+      }
+    ]
+  },
+  {
+    "id": "haze-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "HAZE",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 3,
+        "after": 2
+      },
+      {
+        "field": "description",
+        "before": "모든 적에게\n[gold]중독[/gold]을 4 부여합니다.",
+        "after": "모든 적에게\n[gold]중독[/gold]을 4 부여하고\n[gold]약화[/gold]를 1 부여합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "모든 적에게\n[gold]중독[/gold]을 {PoisonPower:diff()} 부여합니다.",
+        "after": "모든 적에게\n[gold]중독[/gold]을 {PoisonPower:diff()} 부여하고\n[gold]약화[/gold]를 {WeakPower:diff()} 부여합니다."
+      },
+      {
+        "field": "vars.WeakPower",
+        "after": 1
+      },
+      {
+        "field": "vars.Weak",
+        "after": 1
+      },
+      {
+        "field": "keywords",
+        "before": [
+          "교활"
+        ],
+        "after": []
+      },
+      {
+        "field": "upgrade.weak",
+        "after": "+1"
+      }
+    ]
+  },
+  {
+    "id": "mangle-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "MANGLE",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 15 줍니다.\n이번 턴 동안 적이\n[gold]힘[/gold]을 10 잃습니다.",
+        "after": "피해를 20 줍니다.\n이번 턴 동안 적이\n[gold]힘[/gold]을 10 잃습니다."
+      },
+      {
+        "field": "damage",
+        "before": 15,
+        "after": 20
+      },
+      {
+        "field": "vars.Damage",
+        "before": 15,
+        "after": 20
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+5",
+        "after": "+6"
+      }
+    ]
+  },
+  {
+    "id": "maul-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "MAUL",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 5만큼 2번 줍니다.\n이번 전투 동안\n모든 할퀴기 카드의\n피해량이 1 증가합니다.",
+        "after": "피해를 5만큼 2번 줍니다.\n이번 전투 동안\n모든 할퀴기 카드의\n피해량이 2 증가합니다."
+      },
+      {
+        "field": "vars.Increase",
+        "before": 1,
+        "after": 2
+      }
+    ]
+  },
+  {
+    "id": "mirage-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "MIRAGE",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 0,
+        "after": 1
+      },
+      {
+        "field": "description",
+        "before": "다음 턴에, [energy:1]를 얻습니다.",
+        "after": "모든 적에게 부여된\n[gold]중독[/gold]과 동일한 만큼의\n[gold]방어도[/gold]를 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "다음 턴에, {Energy:energyIcons()}를 얻습니다.",
+        "after": "모든 적에게 부여된\n[gold]중독[/gold]과 동일한 만큼의\n[gold]방어도[/gold]를 얻습니다.{InCombat:\n([gold]방어도[/gold]를 {CalculatedBlock:diff()} 얻습니다)|}"
+      },
+      {
+        "field": "vars.Energy",
+        "before": 1
+      },
+      {
+        "field": "upgrade.energy",
+        "before": "+1"
+      },
+      {
+        "field": "upgrade.cost",
+        "after": 0
+      }
+    ]
+  },
+  {
+    "id": "outbreak-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "OUTBREAK",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 1,
+        "after": 3
+      },
+      {
+        "field": "type",
+        "before": "파워",
+        "after": "스킬"
+      },
+      {
+        "field": "rarity",
+        "before": "고급",
+        "after": "희귀"
+      },
+      {
+        "field": "description",
+        "before": "[gold]중독[/gold]을 부여할 때마다,\n모든 적에게\n피해를 4 줍니다.",
+        "after": "모든 적에게\n[gold]중독[/gold]을 9 부여합니다.\n[gold]중독[/gold]이 즉시 발동합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]중독[/gold]을 부여할 때마다,\n모든 적에게\n피해를 {OutbreakPower:diff()} 줍니다.",
+        "after": "모든 적에게\n[gold]중독[/gold]을 {PoisonPower:diff()} 부여합니다.\n[gold]중독[/gold]이 즉시 발동합니다."
+      },
+      {
+        "field": "vars.OutbreakPower",
+        "before": 4
+      },
+      {
+        "field": "vars.Outbreak",
+        "before": 4
+      },
+      {
+        "field": "vars.PoisonPower",
+        "after": 9
+      },
+      {
+        "field": "vars.Poison",
+        "after": 9
+      },
+      {
+        "field": "upgrade.outbreakpower",
+        "before": "+1"
+      },
+      {
+        "field": "upgrade.poison",
+        "after": "+3"
+      }
+    ]
+  },
+  {
+    "id": "pacts-end-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "PACTS_END",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]소멸된 카드 더미[/gold]에\n카드가 3장 이상 있다면,\n모든 적에게\n피해를 17 줍니다.",
+        "after": "[gold]소멸된 카드 더미[/gold]에\n카드가 3장 이상 있다면,\n모든 적에게\n피해를 18 줍니다."
+      },
+      {
+        "field": "damage",
+        "before": 17,
+        "after": 18
+      },
+      {
+        "field": "vars.Damage",
+        "before": 17,
+        "after": 18
+      }
+    ]
+  },
+  {
+    "id": "pillar-of-creation-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "PILLAR_OF_CREATION",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "매 턴마다 카드를 처음으로\n생성할 때마다,\n[gold]방어도[/gold]를 5 얻습니다.",
+        "after": "카드를 생성할 때마다,\n[gold]방어도[/gold]를 2 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "매 턴마다 카드를 처음으로\n생성할 때마다,\n[gold]방어도[/gold]를 {Block:diff()} 얻습니다.",
+        "after": "카드를 생성할 때마다,\n[gold]방어도[/gold]를 {Block:diff()} 얻습니다."
+      },
+      {
+        "field": "block",
+        "before": 5,
+        "after": 2
+      },
+      {
+        "field": "vars.Block",
+        "before": 5,
+        "after": 2
+      },
+      {
+        "field": "upgrade.block",
+        "before": "+2",
+        "after": "+1"
+      }
+    ]
+  },
+  {
+    "id": "refract-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "REFRACT",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 9만큼 2번 줍니다.\n[gold]유리[/gold]를 2번 [gold]영창[/gold]합니다.",
+        "after": "피해를 10만큼 2번 줍니다.\n[gold]유리[/gold]를 2번 [gold]영창[/gold]합니다."
+      },
+      {
+        "field": "damage",
+        "before": 9,
+        "after": 10
+      },
+      {
+        "field": "vars.Damage",
+        "before": 9,
+        "after": 10
+      }
+    ]
+  },
+  {
+    "id": "relax-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "RELAX",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]방어도[/gold]를 15 얻습니다.\n다음 턴에,\n카드를 2장 뽑고\n[energy:2]를 얻습니다.",
+        "after": "[gold]방어도[/gold]를 16 얻습니다.\n다음 턴에,\n카드를 2장 뽑고\n[energy:2]를 얻습니다."
+      },
+      {
+        "field": "block",
+        "before": 15,
+        "after": 16
+      },
+      {
+        "field": "vars.Block",
+        "before": 15,
+        "after": 16
+      }
+    ]
+  },
+  {
+    "id": "rocket-punch-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "ROCKET_PUNCH",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 13 줍니다.\n카드를 1장 뽑습니다.\n상태이상 카드를 생성 시,\n이 카드의 비용이 사용하기\n전까지 0 [energy:1]으로 감소합니다.",
+        "after": "피해를 13 줍니다.\n카드를 1장 뽑습니다.\n상태이상 카드를 생성 시,\n이 카드의 비용이 사용하기\n전까지 [energy:1]씩 감소합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다.\n상태이상 카드를 생성 시,\n이 카드의 비용이 사용하기\n전까지 0 {energyPrefix:energyIcons(1)}으로 감소합니다.",
+        "after": "피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다.\n상태이상 카드를 생성 시,\n이 카드의 비용이 사용하기\n전까지 {energyPrefix:energyIcons(1)}씩 감소합니다."
+      }
+    ]
+  },
+  {
+    "id": "sacrifice-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "SACRIFICE",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]골골이[/gold]가 살아있다면,\n골골이가 죽고 골골이의\n최대 체력의 2배만큼의\n[gold]방어도[/gold]를 얻습니다.",
+        "after": "[gold]골골이[/gold]가 살아있다면,\n골골이가 죽고 골골이의\n최대 체력의 3배만큼의\n[gold]방어도[/gold]를 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]골골이[/gold]가 살아있다면,\n골골이가 죽고 골골이의\n최대 체력의 2배만큼의\n[gold]방어도[/gold]를 얻습니다.{InCombat:\n\n([gold]방어도[/gold]를 {IsOstyAlive:{CalculatedBlock:diff()}|0} 얻습니다.)|}",
+        "after": "[gold]골골이[/gold]가 살아있다면,\n골골이가 죽고 골골이의\n최대 체력의 3배만큼의\n[gold]방어도[/gold]를 얻습니다.{InCombat:\n\n([gold]방어도[/gold]를 {IsOstyAlive:{CalculatedBlock:diff()}|0} 얻습니다.)|}"
+      }
+    ]
+  },
+  {
+    "id": "synchronize-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "SYNCHRONIZE",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "keywords",
+        "before": [
+          "소멸"
+        ],
+        "after": []
+      },
+      {
+        "field": "upgrade.remove_exhaust",
+        "before": 1
+      },
+      {
+        "field": "upgrade.calculationextra",
+        "after": "+1"
+      }
+    ]
+  },
+  {
+    "id": "terraforming-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "TERRAFORMING",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]활력[/gold]을 6 얻습니다.",
+        "after": "[gold]활력[/gold]을 7 얻습니다."
+      },
+      {
+        "field": "vars.VigorPower",
+        "before": 6,
+        "after": 7
+      },
+      {
+        "field": "vars.Vigor",
+        "before": 6,
+        "after": 7
+      },
+      {
+        "field": "upgrade.vigorpower",
+        "before": "+2",
+        "after": "+3"
+      }
+    ]
+  },
+  {
+    "id": "the-scythe-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "THE_SCYTHE",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 13 줍니다.\n이 카드의 피해량이 영구적으로 4 증가합니다.",
+        "after": "피해를 13 줍니다.\n이 카드의 피해량이 영구적으로 5 증가합니다."
+      },
+      {
+        "field": "vars.Increase",
+        "before": 4,
+        "after": 5
+      },
+      {
+        "field": "upgrade.increase",
+        "before": "+1",
+        "after": "+2"
+      }
+    ]
+  },
+  {
+    "id": "well-laid-plans-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "WELL_LAID_PLANS",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 1,
+        "after": 2
+      },
+      {
+        "field": "upgrade.cost",
+        "before": 0,
+        "after": 1
+      }
+    ]
+  },
+  {
+    "id": "whistle-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "WHISTLE",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 3,
+        "after": 2
+      }
+    ]
+  },
+  {
+    "id": "beautiful-bracelet-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "BEAUTIFUL_BRACELET",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "획득 시, [gold]덱[/gold]에서 카드를 [blue]3[/blue]장 선택합니다. 그 카드에 [purple]신속[/purple]을 [blue]3[/blue] [gold]인챈트[/gold]합니다.",
+        "after": "획득 시, [gold]덱[/gold]에서 카드를 [blue]4[/blue]장 선택합니다. 그 카드에 [purple]신속[/purple]을 [blue]2[/blue] [gold]인챈트[/gold]합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "획득 시, [gold]덱[/gold]에서 카드를 [blue]{Cards}[/blue]장 선택합니다. 그 카드에 [purple]신속[/purple]을 [blue]3[/blue] [gold]인챈트[/gold]합니다.",
+        "after": "획득 시, [gold]덱[/gold]에서 카드를 [blue]{Cards}[/blue]장 선택합니다. 그 카드에 [purple]신속[/purple]을 [blue]2[/blue] [gold]인챈트[/gold]합니다."
+      }
+    ]
+  },
+  {
+    "id": "fiddle-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "FIDDLE",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "매 턴 시작 시, 카드를 추가로 [blue]3[/blue]장 뽑습니다. 내 턴 동안 카드를 뽑을 수 없습니다.",
+        "after": "매 턴 시작 시, 카드를 추가로 [blue]2[/blue]장 뽑습니다. 내 턴 동안 카드를 뽑을 수 없습니다."
+      }
+    ]
+  },
+  {
+    "id": "fur-coat-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "FUR_COAT",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "획득 시, [blue]7[/blue]번의 무작위 전투에 표식을 남깁니다. 해당 방의 적은 체력이 [blue]1[/blue]이 됩니다.",
+        "after": "획득 시, [blue]8[/blue]번의 무작위 전투에 표식을 남깁니다. 해당 방의 적은 체력이 [blue]1[/blue]이 됩니다."
+      }
+    ]
+  },
+  {
+    "id": "regalite-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "REGALITE",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "카드를 생성할 때마다, [gold]방어도[/gold]를 [blue]2[/blue] 얻습니다.",
+        "after": "매 턴마다 처음으로 카드를 생성할 때, [gold]방어도[/gold]를 [blue]6[/blue] 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "카드를 생성할 때마다, [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다.",
+        "after": "매 턴마다 처음으로 카드를 생성할 때, [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다."
+      }
+    ]
+  },
+  {
+    "id": "seal-of-gold-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "SEAL_OF_GOLD",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "내 턴 시작 시, [gold]골드[/gold]를 [blue]5[/blue] 소모해 [energy:1]를 얻습니다.",
+        "after": "내 턴 시작 시, [gold]골드[/gold]를 [blue]3[/blue] 소모해 [energy:1]를 얻습니다."
+      }
+    ]
+  },
+  {
+    "id": "signet-ring-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "SIGNET_RING",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "획득 시, [gold]골드[/gold]를 [blue]999[/blue] 얻습니다.",
+        "after": "획득 시, [gold]골드[/gold]를 [blue]888[/blue] 얻습니다."
+      }
+    ]
+  },
+  {
+    "id": "toasty-mittens-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "TOASTY_MITTENS",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "내 턴 시작 시, [gold]뽑을 카드 더미[/gold] 맨 위의 카드를 1장 [gold]소멸[/gold]시키고 [gold]힘[/gold]을 [blue]1[/blue] 얻습니다.",
+        "after": "내 턴 시작 시, [gold]손[/gold]에 있는 카드를 [blue]1[/blue]장 [gold]소멸[/gold]시키고 [gold]힘[/gold]을 [blue]1[/blue] 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "내 턴 시작 시, [gold]뽑을 카드 더미[/gold] 맨 위의 카드를 1장 [gold]소멸[/gold]시키고 [gold]힘[/gold]을 [blue]{StrengthPower}[/blue] 얻습니다.",
+        "after": "내 턴 시작 시, [gold]손[/gold]에 있는 카드를 [blue]1[/blue]장 [gold]소멸[/gold]시키고 [gold]힘[/gold]을 [blue]{StrengthPower}[/blue] 얻습니다."
+      }
+    ]
   }
 ]
