@@ -67,6 +67,10 @@ const patchStaticSpineClientPath = path.join(
   process.cwd(),
   "src/components/patches/patch-static-spine-client.js",
 );
+const patchStaticCardPreviewClientPath = path.join(
+  process.cwd(),
+  "src/components/patches/patch-static-card-preview-client.js",
+);
 const patchGlobalSearchClientPath = path.join(
   process.cwd(),
   "src/components/patches/patch-global-search-client.ts",
@@ -550,7 +554,7 @@ function renderShell(route: StaticPatchRoute): string {
             supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
             supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
             supabaseEnv: process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production",
-          })}</script><script src="/_patches/patch-global-search.js" defer></script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-rich-comments.js" defer></script><script src="/_patches/patch-comments.js" defer></script>${routeClientScripts}${cloudflareWebAnalytics}`,
+          })}</script><script src="/_patches/patch-global-search.js" defer></script><script src="/_patches/patch-static-card-preview.js" defer></script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-rich-comments.js" defer></script><script src="/_patches/patch-comments.js" defer></script>${routeClientScripts}${cloudflareWebAnalytics}`,
         }}
       />
     </html>,
@@ -560,6 +564,7 @@ function renderShell(route: StaticPatchRoute): string {
 async function writePatchClientAssets() {
   const clientAssets = [
     [patchCommentsClientPath, path.join(outDir, "_patches/patch-comments.js")],
+    [patchStaticCardPreviewClientPath, path.join(outDir, "_patches/patch-static-card-preview.js")],
     [patchStaticSpineClientPath, path.join(outDir, "_patches/patch-static-spine.js")],
     [spinePlayerClientPath, path.join(outDir, "_patches/spine-player.min.js")],
   ] as const;

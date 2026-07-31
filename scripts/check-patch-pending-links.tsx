@@ -71,6 +71,8 @@ const staticCard: EntityInfo = {
 };
 const staticCardHtml = renderStaticPatch("[gold:card]Bash[/gold]", [staticCard]);
 assert.match(staticCardHtml, /Deal 8 damage/);
-assert.doesNotMatch(staticCardHtml, /data-card-description-viewport/);
+assert.match(staticCardHtml, /data-static-card-preview="BASH:0"/);
+assert.match(staticCardHtml, /data-card-description-viewport/);
+assert.match(staticCardHtml, /hidden=""/);
 
 console.log("patch pending link regression passed");

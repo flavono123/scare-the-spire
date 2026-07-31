@@ -316,6 +316,9 @@ export function EntityPreview({
   const staticPreview = staticHoverPreviews && !useTapPreview && !forceShow;
   const pendingStaticPreview = (isPendingCompendium || staticPreview) && !useTapPreview && !forceShow;
   const showResolvedPreview = (visible || staticPreview) && !isPendingCompendium;
+  const staticCardPreviewKey = staticPreview && previewEntity.type === "card" && previewEntity.cardData
+    ? `${previewEntity.id}:${previewEntity.cardPreviewUpgradeLevel ?? 0}`
+    : undefined;
 
   const handleMouseEnter = useCallback(() => {
     setPreviewNonce((value) => value + 1);
@@ -428,6 +431,7 @@ export function EntityPreview({
     <span
       ref={ref}
       className={forceShow ? "inline-block" : pendingStaticPreview ? "group relative inline" : "relative inline"}
+      data-static-card-trigger={staticCardPreviewKey}
       onMouseEnter={() => {
         if (!useTapPreview) handleMouseEnter();
       }}
@@ -493,13 +497,19 @@ export function EntityPreview({
       {showResolvedPreview && previewEntity.type === "card" && previewEntity.cardData && (
         renderTooltip(
           staticHoverPreviews ? (
-            <GameResourcePreview
-              title={previewEntity.nameKo}
-              imageUrl={previewEntity.imageUrl}
-              imageAlt={previewEntity.nameKo}
+            <div
+              hidden
+              data-static-card-preview={staticCardPreviewKey}
+              className="w-36 drop-shadow-2xl"
             >
-              <DescriptionText description={previewEntity.cardData.description} />
-            </GameResourcePreview>
+              <CardTile
+                card={previewEntity.cardData}
+                showUpgrade={Boolean(previewEntity.cardPreviewUpgradeLevel)}
+                upgradeLevel={previewEntity.cardPreviewUpgradeLevel}
+                showBeta={false}
+                interactive={false}
+              />
+            </div>
           ) : (
             <span className="block w-36 drop-shadow-2xl">
               <CardTile
@@ -510,7 +520,7 @@ export function EntityPreview({
               />
             </span>
           ),
-          staticHoverPreviews ? "box" : "card",
+          "card",
         )
       )}
       {showResolvedPreview && previewEntity.type === "character" && previewEntity.characterData && (
