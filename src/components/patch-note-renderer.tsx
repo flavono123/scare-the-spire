@@ -497,19 +497,21 @@ export function EntityPreview({
       {showResolvedPreview && previewEntity.type === "card" && previewEntity.cardData && (
         renderTooltip(
           staticHoverPreviews ? (
-            <div
-              hidden
-              data-static-card-preview={staticCardPreviewKey}
-              className="w-36 drop-shadow-2xl"
-            >
-              <CardTile
-                card={previewEntity.cardData}
-                showUpgrade={Boolean(previewEntity.cardPreviewUpgradeLevel)}
-                upgradeLevel={previewEntity.cardPreviewUpgradeLevel}
-                showBeta={false}
-                interactive={false}
-              />
-            </div>
+            <template data-static-card-preview-template={staticCardPreviewKey}>
+              <div
+                hidden
+                data-static-card-preview={staticCardPreviewKey}
+                className="w-36 drop-shadow-2xl"
+              >
+                <CardTile
+                  card={previewEntity.cardData}
+                  showUpgrade={Boolean(previewEntity.cardPreviewUpgradeLevel)}
+                  upgradeLevel={previewEntity.cardPreviewUpgradeLevel}
+                  showBeta={false}
+                  interactive={false}
+                />
+              </div>
+            </template>
           ) : (
             <span className="block w-36 drop-shadow-2xl">
               <CardTile

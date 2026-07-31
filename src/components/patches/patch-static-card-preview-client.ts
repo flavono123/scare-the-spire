@@ -6,12 +6,16 @@ import { FONT_CQI } from "@/lib/sts2-card-style";
 
 (() => {
   const TRIGGER_SELECTOR = "[data-static-card-trigger]";
+  const TEMPLATE_SELECTOR = "[data-static-card-preview-template]";
   const PREVIEW_SELECTOR = "[data-static-card-preview]";
   const MARGIN = 12;
 
   const previews = new Map<string, HTMLElement>();
-  document.querySelectorAll<HTMLElement>(PREVIEW_SELECTOR).forEach((preview) => {
-    const key = preview.getAttribute("data-static-card-preview");
+  document.querySelectorAll<HTMLTemplateElement>(TEMPLATE_SELECTOR).forEach((template) => {
+    const key = template.getAttribute("data-static-card-preview-template");
+    const preview = template.content.querySelector<HTMLElement>(PREVIEW_SELECTOR);
+    template.remove();
+    if (!preview) return;
     if (!key || previews.has(key)) return;
     preview.hidden = true;
     preview.style.position = "fixed";
