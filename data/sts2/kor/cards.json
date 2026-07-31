@@ -13367,8 +13367,8 @@
   {
     "id": "PILLAR_OF_CREATION",
     "name": "창조의 기둥",
-    "description": "매 턴마다 카드를 처음으로\n생성할 때마다,\n[gold]방어도[/gold]를 5 얻습니다.",
-    "description_raw": "매 턴마다 카드를 처음으로\n생성할 때마다,\n[gold]방어도[/gold]를 {Block:diff()} 얻습니다.",
+    "description": "카드를 생성할 때마다,\n[gold]방어도[/gold]를 2 얻습니다.",
+    "description_raw": "카드를 생성할 때마다,\n[gold]방어도[/gold]를 {Block:diff()} 얻습니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -13378,7 +13378,7 @@
     "target": "Self",
     "color": "regent",
     "damage": null,
-    "block": 5,
+    "block": 2,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
@@ -13388,10 +13388,10 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 5
+      "Block": 2
     },
     "upgrade": {
-      "block": "+2"
+      "block": "+1"
     },
     "image_url": "/static/images/cards/pillar_of_creation.png",
     "beta_image_url": "/static/images/cards/beta/pillar_of_creation.png"
@@ -14716,7 +14716,7 @@
   {
     "id": "REFRACT",
     "name": "굴절",
-    "description": "피해를 9만큼 2번 줍니다.\n[gold]유리[/gold]를 2번 [gold]영창[/gold]합니다.",
+    "description": "피해를 10만큼 2번 줍니다.\n[gold]유리[/gold]를 2번 [gold]영창[/gold]합니다.",
     "description_raw": "피해를 {Damage:diff()}만큼 2번 줍니다.\n[gold]유리[/gold]를 {Repeat:diff()}번 [gold]영창[/gold]합니다.",
     "cost": 3,
     "is_x_cost": null,
@@ -14726,7 +14726,7 @@
     "rarity": "고급",
     "target": "AnyEnemy",
     "color": "defect",
-    "damage": 9,
+    "damage": 10,
     "block": null,
     "hit_count": 2,
     "powers_applied": null,
@@ -14738,7 +14738,7 @@
     "spawns_cards": null,
     "vars": {
       "Repeat": 2,
-      "Damage": 9
+      "Damage": 10
     },
     "upgrade": {
       "damage": "+3"
@@ -14779,7 +14779,7 @@
   {
     "id": "RELAX",
     "name": "안식",
-    "description": "[gold]방어도[/gold]를 15 얻습니다.\n다음 턴에,\n카드를 2장 뽑고\n[energy:2]를 얻습니다.",
+    "description": "[gold]방어도[/gold]를 16 얻습니다.\n다음 턴에,\n카드를 2장 뽑고\n[energy:2]를 얻습니다.",
     "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n다음 턴에,\n카드를 {Cards:diff()}장 뽑고\n{Energy:energyIcons()}를 얻습니다.",
     "cost": 3,
     "is_x_cost": null,
@@ -14790,7 +14790,7 @@
     "target": "Self",
     "color": "event",
     "damage": null,
-    "block": 15,
+    "block": 16,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": 2,
@@ -14802,7 +14802,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 15,
+      "Block": 16,
       "Cards": 2,
       "Energy": 2
     },
@@ -15032,8 +15032,8 @@
   {
     "id": "ROCKET_PUNCH",
     "name": "로켓 펀치",
-    "description": "피해를 13 줍니다.\n카드를 1장 뽑습니다.\n상태이상 카드를 생성 시,\n이 카드의 비용이 사용하기\n전까지 0 [energy:1]으로 감소합니다.",
-    "description_raw": "피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다.\n상태이상 카드를 생성 시,\n이 카드의 비용이 사용하기\n전까지 0 {energyPrefix:energyIcons(1)}으로 감소합니다.",
+    "description": "피해를 13 줍니다.\n카드를 1장 뽑습니다.\n상태이상 카드를 생성 시,\n이 카드의 비용이 사용하기\n전까지 [energy:1]씩 감소합니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다.\n상태이상 카드를 생성 시,\n이 카드의 비용이 사용하기\n전까지 {energyPrefix:energyIcons(1)}씩 감소합니다.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -15210,8 +15210,8 @@
   {
     "id": "SACRIFICE",
     "name": "희생",
-    "description": "[gold]골골이[/gold]가 살아있다면,\n골골이가 죽고 골골이의\n최대 체력의 2배만큼의\n[gold]방어도[/gold]를 얻습니다.",
-    "description_raw": "[gold]골골이[/gold]가 살아있다면,\n골골이가 죽고 골골이의\n최대 체력의 2배만큼의\n[gold]방어도[/gold]를 얻습니다.{InCombat:\n\n([gold]방어도[/gold]를 {IsOstyAlive:{CalculatedBlock:diff()}|0} 얻습니다.)|}",
+    "description": "[gold]골골이[/gold]가 살아있다면,\n골골이가 죽고 골골이의\n최대 체력의 3배만큼의\n[gold]방어도[/gold]를 얻습니다.",
+    "description_raw": "[gold]골골이[/gold]가 살아있다면,\n골골이가 죽고 골골이의\n최대 체력의 3배만큼의\n[gold]방어도[/gold]를 얻습니다.{InCombat:\n\n([gold]방어도[/gold]를 {IsOstyAlive:{CalculatedBlock:diff()}|0} 얻습니다.)|}",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -15306,6 +15306,8 @@
       "remove_exhaust": 1
     },
     "introducedInPatch": "v0.106.0",
+    "deprecated": true,
+    "deprecatedInPatch": "v0.110.0",
     "image_url": "/static/images/cards/scare.png",
     "beta_image_url": null
   },
@@ -16280,6 +16282,39 @@
     },
     "image_url": "/static/images/cards/sic_em.png",
     "beta_image_url": "/static/images/cards/beta/sic_em.png"
+  },
+  {
+    "id": "SIDESTEP",
+    "name": "회피",
+    "description": "다음 턴에,\n[energy:1]를 얻습니다.",
+    "description_raw": "다음 턴에,\n{Energy:energyIcons()}를 얻습니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "silent",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 1
+    },
+    "upgrade": {
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.110.0",
+    "image_url": "/static/images/cards/sidestep.png",
+    "beta_image_url": "/static/images/cards/beta/sidestep.png"
   },
   {
     "id": "SIGNAL_BOOST",
@@ -18282,9 +18317,7 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": [
-      "소멸"
-    ],
+    "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
@@ -18292,7 +18325,7 @@
       "CalculationExtra": 2
     },
     "upgrade": {
-      "remove_exhaust": 1
+      "calculationextra": "+1"
     },
     "image_url": "/static/images/cards/synchronize.png",
     "beta_image_url": "/static/images/cards/beta/synchronize.png"
@@ -18534,7 +18567,7 @@
   {
     "id": "TERRAFORMING",
     "name": "테라포밍",
-    "description": "[gold]활력[/gold]을 6 얻습니다.",
+    "description": "[gold]활력[/gold]을 7 얻습니다.",
     "description_raw": "[gold]활력[/gold]을 {VigorPower:diff()} 얻습니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -18550,7 +18583,7 @@
     "powers_applied": [
       {
         "power": "활력",
-        "amount": 6
+        "amount": 7
       }
     ],
     "cards_draw": null,
@@ -18560,11 +18593,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "VigorPower": 6,
-      "Vigor": 6
+      "VigorPower": 7,
+      "Vigor": 7
     },
     "upgrade": {
-      "vigorpower": "+2"
+      "vigorpower": "+3"
     },
     "image_url": "/static/images/cards/terraforming.png",
     "beta_image_url": "/static/images/cards/beta/terraforming.png"
@@ -18736,7 +18769,7 @@
   {
     "id": "THE_SCYTHE",
     "name": "사신의 낫",
-    "description": "피해를 13 줍니다.\n이 카드의 피해량이 영구적으로 4 증가합니다.",
+    "description": "피해를 13 줍니다.\n이 카드의 피해량이 영구적으로 5 증가합니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n이 카드의 피해량이\n영구적으로 {Increase:diff()} 증가합니다.",
     "cost": 2,
     "is_x_cost": null,
@@ -18759,12 +18792,12 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Increase": 4,
+      "Increase": 5,
       "Damage": 13,
       "baseDamage": 13
     },
     "upgrade": {
-      "increase": "+1"
+      "increase": "+2"
     },
     "image_url": "/static/images/cards/the_scythe.png",
     "beta_image_url": "/static/images/cards/beta/the_scythe.png"
@@ -20080,7 +20113,7 @@
     "name": "괜찮은 전략",
     "description": "내 턴 종료 시, 더 이상 [gold]손[/gold]에 있는 카드를 버리지 않습니다.",
     "description_raw": "내 턴 종료 시, 더 이상 [gold]손[/gold]에 있는 카드를 버리지 않습니다.",
-    "cost": 1,
+    "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -20100,7 +20133,7 @@
     "spawns_cards": null,
     "vars": null,
     "upgrade": {
-      "cost": 0
+      "cost": 1
     },
     "image_url": "/static/images/cards/well_laid_plans.png",
     "beta_image_url": null
@@ -20142,7 +20175,7 @@
     "name": "호각 불기",
     "description": "피해를 33 줍니다.\n적을 [gold]기절[/gold]시킵니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n적을 [gold]기절[/gold]시킵니다.",
-    "cost": 3,
+    "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
