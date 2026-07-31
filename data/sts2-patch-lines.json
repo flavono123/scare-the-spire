@@ -25246,7 +25246,7 @@
     "searchText": "v0.109.0:line-037-card-trash-to-treasure v0.109.0 0.109.0 콘텐츠 & 밸런스 디펙트 고철을 보물로의 강화 효과가 선천성 획득 -> 비용 1 감소로 변경되었습니다. changed trash to treasure: upgrade changed from gaining innate -> lowering its cost by 1. card trash_to_treasure 고철을 보물로 고철을 보물로 trash to treasure"
   },
   {
-    "id": "v0.109.0:line-038-card-tutor",
+    "id": "v0.109.0:line-038-text-1n41zm4",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -25258,14 +25258,8 @@
     "markdownEn": "Added new Regent card, [gold:card]Tutor[/gold]: Rare Skill, cost 1(0), \"Another player chooses a card in their [gold]Draw Pile[/gold] to add into their [gold]Hand[/gold].\"",
     "textKo": "새로운 리젠트 카드 강사가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 뽑을 카드 더미에서 카드 1장을 선택해 손으로 가져옵니다.\"",
     "textEn": "Added new Regent card, Tutor: Rare Skill, cost 1(0), \"Another player chooses a card in their Draw Pile to add into their Hand.\"",
-    "entityRefs": [
-      {
-        "type": "card",
-        "id": "TUTOR",
-        "label": "강사"
-      }
-    ],
-    "searchText": "v0.109.0:line-038-card-tutor v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 새로운 리젠트 카드 강사가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 뽑을 카드 더미에서 카드 1장을 선택해 손으로 가져옵니다.\" added new regent card, tutor: rare skill, cost 1(0), \"another player chooses a card in their draw pile to add into their hand.\" card tutor 강사 강사 tutor"
+    "entityRefs": [],
+    "searchText": "v0.109.0:line-038-text-1n41zm4 v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 새로운 리젠트 카드 강사가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 뽑을 카드 더미에서 카드 1장을 선택해 손으로 가져옵니다.\" added new regent card, tutor: rare skill, cost 1(0), \"another player chooses a card in their draw pile to add into their hand.\""
   },
   {
     "id": "v0.109.0:line-039-card-midnight",
@@ -26342,5 +26336,1872 @@
     "textEn": "Models from non-gameplay-affecting mods are now properly excluded from the hash.",
     "entityRefs": [],
     "searchText": "v0.109.0:line-090-text-cec17z v0.109.0 0.109.0 모딩 게임플레이에 영향을 주지 않는 모드의 모델이 이제 해시에서 올바르게 제외됩니다. models from non-gameplay-affecting mods are now properly excluded from the hash."
+  },
+  {
+    "id": "v0.109.1:line-001-text-e0y1c6",
+    "patch": "v0.109.1",
+    "version": "0.109.1",
+    "date": "2026-07-25",
+    "section": [
+      "버그 수정"
+    ],
+    "markdownKo": "잘못된 복수형 처리 문제를 해결한 번체 중국어 번역을 동기화했습니다.",
+    "markdownEn": "Synced corrected Traditional Chinese translations to fix broken plural evaluation.",
+    "textKo": "잘못된 복수형 처리 문제를 해결한 번체 중국어 번역을 동기화했습니다.",
+    "textEn": "Synced corrected Traditional Chinese translations to fix broken plural evaluation.",
+    "entityRefs": [],
+    "searchText": "v0.109.1:line-001-text-e0y1c6 v0.109.1 0.109.1 버그 수정 잘못된 복수형 처리 문제를 해결한 번체 중국어 번역을 동기화했습니다. synced corrected traditional chinese translations to fix broken plural evaluation."
+  },
+  {
+    "id": "v0.110.0:line-001-card-abundance",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:card]풍요[/gold] ([green][sine]상향[/sine][/green]):",
+    "markdownEn": "[gold:card]Abundance[/gold] ([green][sine]buff[/sine][/green]):",
+    "textKo": "풍요 (상향):",
+    "textEn": "Abundance (buff):",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "ABUNDANCE",
+        "label": "풍요"
+      }
+    ],
+    "searchText": "v0.110.0:line-001-card-abundance v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 풍요 (상향): abundance (buff): card abundance 풍요 풍요 abundance"
+  },
+  {
+    "id": "v0.110.0:line-002-text-1ociu7s",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "이제 항상 강화된 파워를 생성합니다.",
+    "markdownEn": "Now always creates Upgraded Powers.",
+    "textKo": "이제 항상 강화된 파워를 생성합니다.",
+    "textEn": "Now always creates Upgraded Powers.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-002-text-1ociu7s v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 이제 항상 강화된 파워를 생성합니다. now always creates upgraded powers."
+  },
+  {
+    "id": "v0.110.0:line-003-text-kdlk2q",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "강화 시 에너지 비용이 1 감소합니다.",
+    "markdownEn": "Its upgrade now lowers its Energy cost by 1.",
+    "textKo": "강화 시 에너지 비용이 1 감소합니다.",
+    "textEn": "Its upgrade now lowers its Energy cost by 1.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-003-text-kdlk2q v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 강화 시 에너지 비용이 1 감소합니다. its upgrade now lowers its energy cost by 1."
+  },
+  {
+    "id": "v0.110.0:line-004-relic-toasty-mittens",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:relic]따뜻한 장갑[/gold] 리워크: \"내 턴 시작 시, 뽑을 카드 더미 맨 위의 카드를 1장 소멸시키고 힘을 1 얻습니다.\" → \"내 턴 시작 시, 손에 있는 카드를 1장 소멸시키고 힘을 1 얻습니다.\"",
+    "markdownEn": "Reworked [gold:relic]Toasty Mittens[/gold]: \"At the start of your turn, Exhaust the top card of your Draw Pile and gain 1 Strength.\" -> \"At the start of your turn, Exhaust 1 card from your Hand and gain 1 Strength.\"",
+    "textKo": "따뜻한 장갑 리워크: \"내 턴 시작 시, 뽑을 카드 더미 맨 위의 카드를 1장 소멸시키고 힘을 1 얻습니다.\" → \"내 턴 시작 시, 손에 있는 카드를 1장 소멸시키고 힘을 1 얻습니다.\"",
+    "textEn": "Reworked Toasty Mittens: \"At the start of your turn, Exhaust the top card of your Draw Pile and gain 1 Strength.\" -> \"At the start of your turn, Exhaust 1 card from your Hand and gain 1 Strength.\"",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "TOASTY_MITTENS",
+        "label": "따뜻한 장갑"
+      }
+    ],
+    "searchText": "v0.110.0:line-004-relic-toasty-mittens v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 따뜻한 장갑 리워크: \"내 턴 시작 시, 뽑을 카드 더미 맨 위의 카드를 1장 소멸시키고 힘을 1 얻습니다.\" → \"내 턴 시작 시, 손에 있는 카드를 1장 소멸시키고 힘을 1 얻습니다.\" reworked toasty mittens: \"at the start of your turn, exhaust the top card of your draw pile and gain 1 strength.\" -> \"at the start of your turn, exhaust 1 card from your hand and gain 1 strength.\" relic toasty_mittens 따뜻한 장갑 따뜻한 장갑 toasty mittens"
+  },
+  {
+    "id": "v0.110.0:line-005-relic-seal-of-gold",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:relic]황금 인장[/gold] ([green][sine]상향[/sine][/green]): 소모하는 골드가 5 → 3으로 감소했습니다.",
+    "markdownEn": "[gold:relic]Seal of Gold[/gold] ([green][sine]buff[/sine][/green]): Gold loss decreased from 5 -> 3.",
+    "textKo": "황금 인장 (상향): 소모하는 골드가 5 → 3으로 감소했습니다.",
+    "textEn": "Seal of Gold (buff): Gold loss decreased from 5 -> 3.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "SEAL_OF_GOLD",
+        "label": "황금 인장"
+      }
+    ],
+    "searchText": "v0.110.0:line-005-relic-seal-of-gold v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 황금 인장 (상향): 소모하는 골드가 5 → 3으로 감소했습니다. seal of gold (buff): gold loss decreased from 5 -> 3. relic seal_of_gold 황금 인장 황금 인장 seal of gold"
+  },
+  {
+    "id": "v0.110.0:line-006-relic-beautiful-bracelet",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:relic]아름다운 팔찌[/gold] 변경:",
+    "markdownEn": "Changed [gold:relic]Beautiful Bracelet[/gold]:",
+    "textKo": "아름다운 팔찌 변경:",
+    "textEn": "Changed Beautiful Bracelet:",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "BEAUTIFUL_BRACELET",
+        "label": "아름다운 팔찌"
+      }
+    ],
+    "searchText": "v0.110.0:line-006-relic-beautiful-bracelet v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 아름다운 팔찌 변경: changed beautiful bracelet: relic beautiful_bracelet 아름다운 팔찌 아름다운 팔찌 beautiful bracelet"
+  },
+  {
+    "id": "v0.110.0:line-007-text-5hyony",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "인챈트할 카드가 3 → 4장으로 증가했습니다.",
+    "markdownEn": "Cards enchanted increased from 3 -> 4.",
+    "textKo": "인챈트할 카드가 3 → 4장으로 증가했습니다.",
+    "textEn": "Cards enchanted increased from 3 -> 4.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-007-text-5hyony v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 인챈트할 카드가 3 → 4장으로 증가했습니다. cards enchanted increased from 3 -> 4."
+  },
+  {
+    "id": "v0.110.0:line-008-enchantment-swift",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:enchantment]신속[/gold] 수치가 3 → 2로 감소했습니다.",
+    "markdownEn": "[gold:enchantment]Swift[/gold] amount decreased from 3 -> 2.",
+    "textKo": "신속 수치가 3 → 2로 감소했습니다.",
+    "textEn": "Swift amount decreased from 3 -> 2.",
+    "entityRefs": [
+      {
+        "type": "enchantment",
+        "id": "SWIFT",
+        "label": "신속"
+      }
+    ],
+    "searchText": "v0.110.0:line-008-enchantment-swift v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 신속 수치가 3 → 2로 감소했습니다. swift amount decreased from 3 -> 2. enchantment swift 신속 신속 swift"
+  },
+  {
+    "id": "v0.110.0:line-009-relic-fur-coat",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:relic]모피 코트[/gold] ([green][sine]상향[/sine][/green]): 표식을 남기는 전투가 7 → 8회로 증가했습니다.",
+    "markdownEn": "[gold:relic]Fur Coat[/gold] ([green][sine]buff[/sine][/green]): marked combats increased from 7 -> 8.",
+    "textKo": "모피 코트 (상향): 표식을 남기는 전투가 7 → 8회로 증가했습니다.",
+    "textEn": "Fur Coat (buff): marked combats increased from 7 -> 8.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "FUR_COAT",
+        "label": "모피 코트"
+      }
+    ],
+    "searchText": "v0.110.0:line-009-relic-fur-coat v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 모피 코트 (상향): 표식을 남기는 전투가 7 → 8회로 증가했습니다. fur coat (buff): marked combats increased from 7 -> 8. relic fur_coat 모피 코트 모피 코트 fur coat"
+  },
+  {
+    "id": "v0.110.0:line-010-relic-signet-ring",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:relic]인장 반지[/gold] ([red][jitter]하향[/jitter][/red]): 획득 골드가 999 → 888로 감소했습니다.",
+    "markdownEn": "[gold:relic]Signet Ring[/gold] ([red][jitter]nerf[/jitter][/red]): Gold decreased from 999 -> 888.",
+    "textKo": "인장 반지 (하향): 획득 골드가 999 → 888로 감소했습니다.",
+    "textEn": "Signet Ring (nerf): Gold decreased from 999 -> 888.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "SIGNET_RING",
+        "label": "인장 반지"
+      }
+    ],
+    "searchText": "v0.110.0:line-010-relic-signet-ring v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 인장 반지 (하향): 획득 골드가 999 → 888로 감소했습니다. signet ring (nerf): gold decreased from 999 -> 888. relic signet_ring 인장 반지 인장 반지 signet ring"
+  },
+  {
+    "id": "v0.110.0:line-011-card-relax",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:card]안식[/gold] ([green][sine]상향[/sine][/green]): 방어도가 15(17) → 16(18)로 증가했습니다.",
+    "markdownEn": "[gold:card]Relax[/gold] ([green][sine]buff[/sine][/green]): Block increased from 15(17) -> 16(18).",
+    "textKo": "안식 (상향): 방어도가 15(17) → 16(18)로 증가했습니다.",
+    "textEn": "Relax (buff): Block increased from 15(17) -> 16(18).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "RELAX",
+        "label": "안식"
+      }
+    ],
+    "searchText": "v0.110.0:line-011-card-relax v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 안식 (상향): 방어도가 15(17) → 16(18)로 증가했습니다. relax (buff): block increased from 15(17) -> 16(18). card relax 안식 안식 relax"
+  },
+  {
+    "id": "v0.110.0:line-012-card-whistle",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:card]호각 불기[/gold] ([green][sine]상향[/sine][/green]): 비용이 3 → 2로 감소했습니다.",
+    "markdownEn": "[gold:card]Tanx's Whistle[/gold] ([green][sine]buff[/sine][/green]): cost decreased from 3 -> 2.",
+    "textKo": "호각 불기 (상향): 비용이 3 → 2로 감소했습니다.",
+    "textEn": "Tanx's Whistle (buff): cost decreased from 3 -> 2.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "WHISTLE",
+        "label": "호각 불기"
+      }
+    ],
+    "searchText": "v0.110.0:line-012-card-whistle v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 호각 불기 (상향): 비용이 3 → 2로 감소했습니다. tanx's whistle (buff): cost decreased from 3 -> 2. card whistle 호각 불기 호각 불기 whistle"
+  },
+  {
+    "id": "v0.110.0:line-013-card-maul",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:card]할퀴기[/gold] ([green][sine]상향[/sine][/green]): 피해 증가량이 1(2) → 2(3)으로 증가했습니다.",
+    "markdownEn": "[gold:card]Maul[/gold] ([green][sine]buff[/sine][/green]): damage scaling increased from 1(2) -> 2(3).",
+    "textKo": "할퀴기 (상향): 피해 증가량이 1(2) → 2(3)으로 증가했습니다.",
+    "textEn": "Maul (buff): damage scaling increased from 1(2) -> 2(3).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "MAUL",
+        "label": "할퀴기"
+      }
+    ],
+    "searchText": "v0.110.0:line-013-card-maul v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 할퀴기 (상향): 피해 증가량이 1(2) → 2(3)으로 증가했습니다. maul (buff): damage scaling increased from 1(2) -> 2(3). card maul 할퀴기 할퀴기 maul"
+  },
+  {
+    "id": "v0.110.0:line-014-relic-fiddle",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:relic]바이올린[/gold] ([red][jitter]되돌림[/jitter][/red]): 카드 드로우가 다시 3 → 2장으로 감소했습니다.",
+    "markdownEn": "[gold:relic]Fiddle[/gold] ([red][jitter]revert[/jitter][/red]): card draw decreased again from 3 -> 2.",
+    "textKo": "바이올린 (되돌림): 카드 드로우가 다시 3 → 2장으로 감소했습니다.",
+    "textEn": "Fiddle (revert): card draw decreased again from 3 -> 2.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "FIDDLE",
+        "label": "바이올린"
+      }
+    ],
+    "searchText": "v0.110.0:line-014-relic-fiddle v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 바이올린 (되돌림): 카드 드로우가 다시 3 → 2장으로 감소했습니다. fiddle (revert): card draw decreased again from 3 -> 2. relic fiddle 바이올린 바이올린 fiddle"
+  },
+  {
+    "id": "v0.110.0:line-015-card-mangle",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "아이언클래드"
+    ],
+    "markdownKo": "[gold:card]난도질[/gold] ([green][sine]상향[/sine][/green]): 피해가 15(20) → 20(26)으로 증가했습니다.",
+    "markdownEn": "[gold:card]Mangle[/gold] ([green][sine]buff[/sine][/green]): damage increased from 15(20) -> 20(26).",
+    "textKo": "난도질 (상향): 피해가 15(20) → 20(26)으로 증가했습니다.",
+    "textEn": "Mangle (buff): damage increased from 15(20) -> 20(26).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "MANGLE",
+        "label": "난도질"
+      }
+    ],
+    "searchText": "v0.110.0:line-015-card-mangle v0.110.0 0.110.0 콘텐츠 및 밸런스 아이언클래드 난도질 (상향): 피해가 15(20) → 20(26)으로 증가했습니다. mangle (buff): damage increased from 15(20) -> 20(26). card mangle 난도질 난도질 mangle"
+  },
+  {
+    "id": "v0.110.0:line-016-card-pacts-end",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "아이언클래드"
+    ],
+    "markdownKo": "[gold:card]조약의 끝[/gold] ([green][sine]상향[/sine][/green]): 피해가 17(23) → 18(24)로 증가했습니다.",
+    "markdownEn": "[gold:card]Pact's End[/gold] ([green][sine]buff[/sine][/green]): damage increased from 17(23) -> 18(24).",
+    "textKo": "조약의 끝 (상향): 피해가 17(23) → 18(24)로 증가했습니다.",
+    "textEn": "Pact's End (buff): damage increased from 17(23) -> 18(24).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "PACTS_END",
+        "label": "조약의 끝"
+      }
+    ],
+    "searchText": "v0.110.0:line-016-card-pacts-end v0.110.0 0.110.0 콘텐츠 및 밸런스 아이언클래드 조약의 끝 (상향): 피해가 17(23) → 18(24)로 증가했습니다. pact's end (buff): damage increased from 17(23) -> 18(24). card pacts_end 조약의 끝 조약의 끝 pact's end"
+  },
+  {
+    "id": "v0.110.0:line-017-card-haze",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "사일런트"
+    ],
+    "markdownKo": "[gold:card]아지랑이[/gold] 리워크: 비용 3 고급 스킬, \"교활. 모든 적에게 중독을 4(6) 부여합니다.\" → 비용 2 고급 스킬, \"모든 적에게 중독을 4(6), 약화를 1(2) 부여합니다.\"",
+    "markdownEn": "Reworked [gold:card]Haze[/gold]: Uncommon Skill, cost 3, \"Sly. Apply 4(6) Poison to ALL enemies.\" -> Uncommon Skill, cost 2, \"Apply 4(6) Poison and 1(2) Weak to ALL enemies.\"",
+    "textKo": "아지랑이 리워크: 비용 3 고급 스킬, \"교활. 모든 적에게 중독을 4(6) 부여합니다.\" → 비용 2 고급 스킬, \"모든 적에게 중독을 4(6), 약화를 1(2) 부여합니다.\"",
+    "textEn": "Reworked Haze: Uncommon Skill, cost 3, \"Sly. Apply 4(6) Poison to ALL enemies.\" -> Uncommon Skill, cost 2, \"Apply 4(6) Poison and 1(2) Weak to ALL enemies.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "HAZE",
+        "label": "아지랑이"
+      }
+    ],
+    "searchText": "v0.110.0:line-017-card-haze v0.110.0 0.110.0 콘텐츠 및 밸런스 사일런트 아지랑이 리워크: 비용 3 고급 스킬, \"교활. 모든 적에게 중독을 4(6) 부여합니다.\" → 비용 2 고급 스킬, \"모든 적에게 중독을 4(6), 약화를 1(2) 부여합니다.\" reworked haze: uncommon skill, cost 3, \"sly. apply 4(6) poison to all enemies.\" -> uncommon skill, cost 2, \"apply 4(6) poison and 1(2) weak to all enemies.\" card haze 아지랑이 아지랑이 haze"
+  },
+  {
+    "id": "v0.110.0:line-018-card-outbreak",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "사일런트"
+    ],
+    "markdownKo": "[gold:card]발병[/gold]이 희귀 스킬로 리워크되었습니다: 비용 1 고급 파워, \"중독을 부여할 때마다 모든 적에게 피해를 4(5) 줍니다.\" → 비용 3 희귀 스킬, \"모든 적에게 중독을 9(12) 부여합니다. 중독이 즉시 발동합니다.\"",
+    "markdownEn": "Reworked [gold:card]Outbreak[/gold] into a Rare Skill: Uncommon Power, cost 1, \"Whenever you apply Poison, deal 4(5) damage to ALL enemies.\" -> Rare Skill, cost 3, \"Apply 9(12) Poison to ALL enemies. Poison triggers immediately.\"",
+    "textKo": "발병이 희귀 스킬로 리워크되었습니다: 비용 1 고급 파워, \"중독을 부여할 때마다 모든 적에게 피해를 4(5) 줍니다.\" → 비용 3 희귀 스킬, \"모든 적에게 중독을 9(12) 부여합니다. 중독이 즉시 발동합니다.\"",
+    "textEn": "Reworked Outbreak into a Rare Skill: Uncommon Power, cost 1, \"Whenever you apply Poison, deal 4(5) damage to ALL enemies.\" -> Rare Skill, cost 3, \"Apply 9(12) Poison to ALL enemies. Poison triggers immediately.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "OUTBREAK",
+        "label": "발병"
+      }
+    ],
+    "searchText": "v0.110.0:line-018-card-outbreak v0.110.0 0.110.0 콘텐츠 및 밸런스 사일런트 발병이 희귀 스킬로 리워크되었습니다: 비용 1 고급 파워, \"중독을 부여할 때마다 모든 적에게 피해를 4(5) 줍니다.\" → 비용 3 희귀 스킬, \"모든 적에게 중독을 9(12) 부여합니다. 중독이 즉시 발동합니다.\" reworked outbreak into a rare skill: uncommon power, cost 1, \"whenever you apply poison, deal 4(5) damage to all enemies.\" -> rare skill, cost 3, \"apply 9(12) poison to all enemies. poison triggers immediately.\" card outbreak 발병 발병 outbreak"
+  },
+  {
+    "id": "v0.110.0:line-019-card-scare-card-sidestep",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "사일런트"
+    ],
+    "markdownKo": "[gold:card]위협[/gold]이 [gold:card]회피[/gold]로 이름과 효과가 변경되었습니다: 비용 0 고급 스킬, \"모든 적에게 약화를 1 부여합니다. 소멸. (강화 시 소멸 제거)\" → 비용 0 고급 스킬, \"다음 턴에 에너지를 1(2) 얻습니다.\"",
+    "markdownEn": "Reworked and renamed [gold:card]Scare[/gold] -> [gold:card]Sidestep[/gold]: Uncommon Skill, cost 0, \"Apply 1 Weak to ALL enemies. Exhaust. (Lose Exhaust.)\" -> Uncommon Skill, cost 0, \"Next turn, gain 1(2) Energy.\"",
+    "textKo": "위협이 회피로 이름과 효과가 변경되었습니다: 비용 0 고급 스킬, \"모든 적에게 약화를 1 부여합니다. 소멸. (강화 시 소멸 제거)\" → 비용 0 고급 스킬, \"다음 턴에 에너지를 1(2) 얻습니다.\"",
+    "textEn": "Reworked and renamed Scare -> Sidestep: Uncommon Skill, cost 0, \"Apply 1 Weak to ALL enemies. Exhaust. (Lose Exhaust.)\" -> Uncommon Skill, cost 0, \"Next turn, gain 1(2) Energy.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SCARE",
+        "label": "위협"
+      },
+      {
+        "type": "card",
+        "id": "SIDESTEP",
+        "label": "회피"
+      }
+    ],
+    "searchText": "v0.110.0:line-019-card-scare-card-sidestep v0.110.0 0.110.0 콘텐츠 및 밸런스 사일런트 위협이 회피로 이름과 효과가 변경되었습니다: 비용 0 고급 스킬, \"모든 적에게 약화를 1 부여합니다. 소멸. (강화 시 소멸 제거)\" → 비용 0 고급 스킬, \"다음 턴에 에너지를 1(2) 얻습니다.\" reworked and renamed scare -> sidestep: uncommon skill, cost 0, \"apply 1 weak to all enemies. exhaust. (lose exhaust.)\" -> uncommon skill, cost 0, \"next turn, gain 1(2) energy.\" card scare 위협 위협 scare card sidestep 회피 회피 sidestep"
+  },
+  {
+    "id": "v0.110.0:line-020-card-mirage",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "사일런트"
+    ],
+    "markdownKo": "[gold:card]신기루[/gold] 변경:",
+    "markdownEn": "Changed [gold:card]Mirage[/gold]:",
+    "textKo": "신기루 변경:",
+    "textEn": "Changed Mirage:",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "MIRAGE",
+        "label": "신기루"
+      }
+    ],
+    "searchText": "v0.110.0:line-020-card-mirage v0.110.0 0.110.0 콘텐츠 및 밸런스 사일런트 신기루 변경: changed mirage: card mirage 신기루 신기루 mirage"
+  },
+  {
+    "id": "v0.110.0:line-021-power-poison",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "사일런트"
+    ],
+    "markdownKo": "적에게 부여된 [gold:power]중독[/gold]만큼 방어도를 얻던 이전 버전으로 돌아갔습니다.",
+    "markdownEn": "Reverted to its previous version, gaining Block based on the [gold:power]Poison[/gold] on enemies again.",
+    "textKo": "적에게 부여된 중독만큼 방어도를 얻던 이전 버전으로 돌아갔습니다.",
+    "textEn": "Reverted to its previous version, gaining Block based on the Poison on enemies again.",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "POISON",
+        "label": "중독"
+      }
+    ],
+    "searchText": "v0.110.0:line-021-power-poison v0.110.0 0.110.0 콘텐츠 및 밸런스 사일런트 적에게 부여된 중독만큼 방어도를 얻던 이전 버전으로 돌아갔습니다. reverted to its previous version, gaining block based on the poison on enemies again. power poison 중독 중독 poison"
+  },
+  {
+    "id": "v0.110.0:line-022-text-1mudiqq",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "사일런트"
+    ],
+    "markdownKo": "더 이상 소멸하지 않습니다.",
+    "markdownEn": "No longer Exhausts.",
+    "textKo": "더 이상 소멸하지 않습니다.",
+    "textEn": "No longer Exhausts.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-022-text-1mudiqq v0.110.0 0.110.0 콘텐츠 및 밸런스 사일런트 더 이상 소멸하지 않습니다. no longer exhausts."
+  },
+  {
+    "id": "v0.110.0:line-023-card-well-laid-plans",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "사일런트"
+    ],
+    "markdownKo": "[gold:card]괜찮은 전략[/gold] ([red][jitter]하향[/jitter][/red]): 비용이 1(0) → 2(1)로 증가했습니다.",
+    "markdownEn": "[gold:card]Well-Laid Plans[/gold] ([red][jitter]nerf[/jitter][/red]): cost increased from 1(0) -> 2(1).",
+    "textKo": "괜찮은 전략 (하향): 비용이 1(0) → 2(1)로 증가했습니다.",
+    "textEn": "Well-Laid Plans (nerf): cost increased from 1(0) -> 2(1).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "WELL_LAID_PLANS",
+        "label": "괜찮은 전략"
+      }
+    ],
+    "searchText": "v0.110.0:line-023-card-well-laid-plans v0.110.0 0.110.0 콘텐츠 및 밸런스 사일런트 괜찮은 전략 (하향): 비용이 1(0) → 2(1)로 증가했습니다. well-laid plans (nerf): cost increased from 1(0) -> 2(1). card well_laid_plans 괜찮은 전략 괜찮은 전략 well-laid plans"
+  },
+  {
+    "id": "v0.110.0:line-024-card-echoing-slash",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "사일런트"
+    ],
+    "markdownKo": "[gold:card]메아리 참격[/gold]: 희귀도가 희귀 → 고급으로 낮아졌습니다.",
+    "markdownEn": "[gold:card]Echoing Slash[/gold]: rarity decreased from Rare -> Uncommon.",
+    "textKo": "메아리 참격: 희귀도가 희귀 → 고급으로 낮아졌습니다.",
+    "textEn": "Echoing Slash: rarity decreased from Rare -> Uncommon.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "ECHOING_SLASH",
+        "label": "메아리 참격"
+      }
+    ],
+    "searchText": "v0.110.0:line-024-card-echoing-slash v0.110.0 0.110.0 콘텐츠 및 밸런스 사일런트 메아리 참격: 희귀도가 희귀 → 고급으로 낮아졌습니다. echoing slash: rarity decreased from rare -> uncommon. card echoing_slash 메아리 참격 메아리 참격 echoing slash"
+  },
+  {
+    "id": "v0.110.0:line-025-relic-regalite",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:relic]리갈라이트[/gold] 리워크: \"카드를 생성할 때마다 방어도를 2 얻습니다.\" → \"매 턴 처음으로 카드를 생성할 때 방어도를 6 얻습니다.\"",
+    "markdownEn": "Reworked [gold:relic]Regalite[/gold]: \"Whenever you create a card, gain 2 Block.\" -> \"The first time you create a card each turn, gain 6 Block.\"",
+    "textKo": "리갈라이트 리워크: \"카드를 생성할 때마다 방어도를 2 얻습니다.\" → \"매 턴 처음으로 카드를 생성할 때 방어도를 6 얻습니다.\"",
+    "textEn": "Reworked Regalite: \"Whenever you create a card, gain 2 Block.\" -> \"The first time you create a card each turn, gain 6 Block.\"",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "REGALITE",
+        "label": "리갈라이트"
+      }
+    ],
+    "searchText": "v0.110.0:line-025-relic-regalite v0.110.0 0.110.0 콘텐츠 및 밸런스 리젠트 리갈라이트 리워크: \"카드를 생성할 때마다 방어도를 2 얻습니다.\" → \"매 턴 처음으로 카드를 생성할 때 방어도를 6 얻습니다.\" reworked regalite: \"whenever you create a card, gain 2 block.\" -> \"the first time you create a card each turn, gain 6 block.\" relic regalite 리갈라이트 리갈라이트 regalite"
+  },
+  {
+    "id": "v0.110.0:line-026-card-terraforming",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]테라포밍[/gold] ([green][sine]상향[/sine][/green]): 활력이 6(8) → 7(10)로 증가했습니다.",
+    "markdownEn": "[gold:card]Terraforming[/gold] ([green][sine]buff[/sine][/green]): Vigor increased from 6(8) -> 7(10).",
+    "textKo": "테라포밍 (상향): 활력이 6(8) → 7(10)로 증가했습니다.",
+    "textEn": "Terraforming (buff): Vigor increased from 6(8) -> 7(10).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "TERRAFORMING",
+        "label": "테라포밍"
+      }
+    ],
+    "searchText": "v0.110.0:line-026-card-terraforming v0.110.0 0.110.0 콘텐츠 및 밸런스 리젠트 테라포밍 (상향): 활력이 6(8) → 7(10)로 증가했습니다. terraforming (buff): vigor increased from 6(8) -> 7(10). card terraforming 테라포밍 테라포밍 terraforming"
+  },
+  {
+    "id": "v0.110.0:line-027-card-pillar-of-creation",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]창조의 기둥[/gold] 변경:",
+    "markdownEn": "Changed [gold:card]Pillar of Creation[/gold]:",
+    "textKo": "창조의 기둥 변경:",
+    "textEn": "Changed Pillar of Creation:",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "PILLAR_OF_CREATION",
+        "label": "창조의 기둥"
+      }
+    ],
+    "searchText": "v0.110.0:line-027-card-pillar-of-creation v0.110.0 0.110.0 콘텐츠 및 밸런스 리젠트 창조의 기둥 변경: changed pillar of creation: card pillar_of_creation 창조의 기둥 창조의 기둥 pillar of creation"
+  },
+  {
+    "id": "v0.110.0:line-028-text-6e3e5o",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "효과가 턴당 한 번으로 제한되지 않던 이전 버전으로 돌아갔습니다.",
+    "markdownEn": "Reverted to its previous version, so its effect is no longer limited to once per turn.",
+    "textKo": "효과가 턴당 한 번으로 제한되지 않던 이전 버전으로 돌아갔습니다.",
+    "textEn": "Reverted to its previous version, so its effect is no longer limited to once per turn.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-028-text-6e3e5o v0.110.0 0.110.0 콘텐츠 및 밸런스 리젠트 효과가 턴당 한 번으로 제한되지 않던 이전 버전으로 돌아갔습니다. reverted to its previous version, so its effect is no longer limited to once per turn."
+  },
+  {
+    "id": "v0.110.0:line-029-text-1npb6m8",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "방어도가 3(4) → 2(3)으로 감소했습니다.",
+    "markdownEn": "Block decreased from 3(4) -> 2(3).",
+    "textKo": "방어도가 3(4) → 2(3)으로 감소했습니다.",
+    "textEn": "Block decreased from 3(4) -> 2(3).",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-029-text-1npb6m8 v0.110.0 0.110.0 콘텐츠 및 밸런스 리젠트 방어도가 3(4) → 2(3)으로 감소했습니다. block decreased from 3(4) -> 2(3)."
+  },
+  {
+    "id": "v0.110.0:line-030-card-crush-under",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]지면 파쇄[/gold] ([green][sine]상향[/sine][/green]): 피해가 7(8) → 8(9)로 증가했습니다.",
+    "markdownEn": "[gold:card]Crush Under[/gold] ([green][sine]buff[/sine][/green]): damage increased from 7(8) -> 8(9).",
+    "textKo": "지면 파쇄 (상향): 피해가 7(8) → 8(9)로 증가했습니다.",
+    "textEn": "Crush Under (buff): damage increased from 7(8) -> 8(9).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "CRUSH_UNDER",
+        "label": "지면 파쇄"
+      }
+    ],
+    "searchText": "v0.110.0:line-030-card-crush-under v0.110.0 0.110.0 콘텐츠 및 밸런스 리젠트 지면 파쇄 (상향): 피해가 7(8) → 8(9)로 증가했습니다. crush under (buff): damage increased from 7(8) -> 8(9). card crush_under 지면 파쇄 지면 파쇄 crush under"
+  },
+  {
+    "id": "v0.110.0:line-031-card-eidolon",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "[gold:card]허상[/gold]: 이제 전투 중 생성되지 않습니다.",
+    "markdownEn": "Changed [gold:card]Eidolon[/gold]: can no longer be generated mid-combat.",
+    "textKo": "허상: 이제 전투 중 생성되지 않습니다.",
+    "textEn": "Changed Eidolon: can no longer be generated mid-combat.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "EIDOLON",
+        "label": "허상"
+      }
+    ],
+    "searchText": "v0.110.0:line-031-card-eidolon v0.110.0 0.110.0 콘텐츠 및 밸런스 네크로바인더 허상: 이제 전투 중 생성되지 않습니다. changed eidolon: can no longer be generated mid-combat. card eidolon 허상 허상 eidolon"
+  },
+  {
+    "id": "v0.110.0:line-032-card-sacrifice",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "[gold:card]희생[/gold] ([green][sine]상향[/sine][/green]): 얻는 방어도가 골골이 최대 체력의 2배 → 3배로 증가했습니다.",
+    "markdownEn": "[gold:card]Sacrifice[/gold] ([green][sine]buff[/sine][/green]): Block gain increased from double -> triple Osty's Max HP.",
+    "textKo": "희생 (상향): 얻는 방어도가 골골이 최대 체력의 2배 → 3배로 증가했습니다.",
+    "textEn": "Sacrifice (buff): Block gain increased from double -> triple Osty's Max HP.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SACRIFICE",
+        "label": "희생"
+      }
+    ],
+    "searchText": "v0.110.0:line-032-card-sacrifice v0.110.0 0.110.0 콘텐츠 및 밸런스 네크로바인더 희생 (상향): 얻는 방어도가 골골이 최대 체력의 2배 → 3배로 증가했습니다. sacrifice (buff): block gain increased from double -> triple osty's max hp. card sacrifice 희생 희생 sacrifice"
+  },
+  {
+    "id": "v0.110.0:line-033-card-the-scythe",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "[gold:card]사신의 낫[/gold] ([green][sine]상향[/sine][/green]): 피해 증가량이 4(5) → 5(7)로 증가했습니다.",
+    "markdownEn": "[gold:card]The Scythe[/gold] ([green][sine]buff[/sine][/green]): damage scaling increased from 4(5) -> 5(7).",
+    "textKo": "사신의 낫 (상향): 피해 증가량이 4(5) → 5(7)로 증가했습니다.",
+    "textEn": "The Scythe (buff): damage scaling increased from 4(5) -> 5(7).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "THE_SCYTHE",
+        "label": "사신의 낫"
+      }
+    ],
+    "searchText": "v0.110.0:line-033-card-the-scythe v0.110.0 0.110.0 콘텐츠 및 밸런스 네크로바인더 사신의 낫 (상향): 피해 증가량이 4(5) → 5(7)로 증가했습니다. the scythe (buff): damage scaling increased from 4(5) -> 5(7). card the_scythe 사신의 낫 사신의 낫 the scythe"
+  },
+  {
+    "id": "v0.110.0:line-034-card-biased-cognition",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "디펙트"
+    ],
+    "markdownKo": "[gold:card]인지 편향[/gold] ([green][sine]상향[/sine][/green]): 밀집이 4(5) → 5(6)으로 증가했습니다.",
+    "markdownEn": "[gold:card]Biased Cognition[/gold] ([green][sine]buff[/sine][/green]): Focus increased from 4(5) -> 5(6).",
+    "textKo": "인지 편향 (상향): 밀집이 4(5) → 5(6)으로 증가했습니다.",
+    "textEn": "Biased Cognition (buff): Focus increased from 4(5) -> 5(6).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "BIASED_COGNITION",
+        "label": "인지 편향"
+      }
+    ],
+    "searchText": "v0.110.0:line-034-card-biased-cognition v0.110.0 0.110.0 콘텐츠 및 밸런스 디펙트 인지 편향 (상향): 밀집이 4(5) → 5(6)으로 증가했습니다. biased cognition (buff): focus increased from 4(5) -> 5(6). card biased_cognition 인지 편향 인지 편향 biased cognition"
+  },
+  {
+    "id": "v0.110.0:line-035-card-refract",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "디펙트"
+    ],
+    "markdownKo": "[gold:card]굴절[/gold] ([green][sine]상향[/sine][/green]): 피해가 9(12) → 10(13)으로 증가했습니다.",
+    "markdownEn": "[gold:card]Refract[/gold] ([green][sine]buff[/sine][/green]): damage increased from 9(12) -> 10(13).",
+    "textKo": "굴절 (상향): 피해가 9(12) → 10(13)으로 증가했습니다.",
+    "textEn": "Refract (buff): damage increased from 9(12) -> 10(13).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "REFRACT",
+        "label": "굴절"
+      }
+    ],
+    "searchText": "v0.110.0:line-035-card-refract v0.110.0 0.110.0 콘텐츠 및 밸런스 디펙트 굴절 (상향): 피해가 9(12) → 10(13)으로 증가했습니다. refract (buff): damage increased from 9(12) -> 10(13). card refract 굴절 굴절 refract"
+  },
+  {
+    "id": "v0.110.0:line-036-card-rocket-punch",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "디펙트"
+    ],
+    "markdownKo": "[gold:card]로켓 펀치[/gold] ([red][jitter]하향[/jitter][/red]): \"상태이상 카드를 생성할 때마다 이 카드의 비용이 사용 전까지 0이 됩니다.\" → \"상태이상 카드를 생성할 때마다 이 카드의 비용이 사용 전까지 1 감소합니다.\"",
+    "markdownEn": "[gold:card]Rocket Punch[/gold] ([red][jitter]nerf[/jitter][/red]): \"Whenever you create a Status, reduce this card's cost to 0 Energy until played.\" -> \"Whenever you create a Status, reduce this card's cost by 1 Energy until played.\"",
+    "textKo": "로켓 펀치 (하향): \"상태이상 카드를 생성할 때마다 이 카드의 비용이 사용 전까지 0이 됩니다.\" → \"상태이상 카드를 생성할 때마다 이 카드의 비용이 사용 전까지 1 감소합니다.\"",
+    "textEn": "Rocket Punch (nerf): \"Whenever you create a Status, reduce this card's cost to 0 Energy until played.\" -> \"Whenever you create a Status, reduce this card's cost by 1 Energy until played.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "ROCKET_PUNCH",
+        "label": "로켓 펀치"
+      }
+    ],
+    "searchText": "v0.110.0:line-036-card-rocket-punch v0.110.0 0.110.0 콘텐츠 및 밸런스 디펙트 로켓 펀치 (하향): \"상태이상 카드를 생성할 때마다 이 카드의 비용이 사용 전까지 0이 됩니다.\" → \"상태이상 카드를 생성할 때마다 이 카드의 비용이 사용 전까지 1 감소합니다.\" rocket punch (nerf): \"whenever you create a status, reduce this card's cost to 0 energy until played.\" -> \"whenever you create a status, reduce this card's cost by 1 energy until played.\" card rocket_punch 로켓 펀치 로켓 펀치 rocket punch"
+  },
+  {
+    "id": "v0.110.0:line-037-card-synchronize",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "디펙트"
+    ],
+    "markdownKo": "[gold:card]동기화[/gold] ([green][sine]상향[/sine][/green]):",
+    "markdownEn": "[gold:card]Synchronize[/gold] ([green][sine]buff[/sine][/green]):",
+    "textKo": "동기화 (상향):",
+    "textEn": "Synchronize (buff):",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SYNCHRONIZE",
+        "label": "동기화"
+      }
+    ],
+    "searchText": "v0.110.0:line-037-card-synchronize v0.110.0 0.110.0 콘텐츠 및 밸런스 디펙트 동기화 (상향): synchronize (buff): card synchronize 동기화 동기화 synchronize"
+  },
+  {
+    "id": "v0.110.0:line-038-text-1vpl33f",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "디펙트"
+    ],
+    "markdownKo": "강화 시 구체 종류당 얻는 일시적 밀집이 2 → 3으로 증가합니다.",
+    "markdownEn": "Its upgrade now increases temporary Focus from 2 -> 3.",
+    "textKo": "강화 시 구체 종류당 얻는 일시적 밀집이 2 → 3으로 증가합니다.",
+    "textEn": "Its upgrade now increases temporary Focus from 2 -> 3.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-038-text-1vpl33f v0.110.0 0.110.0 콘텐츠 및 밸런스 디펙트 강화 시 구체 종류당 얻는 일시적 밀집이 2 → 3으로 증가합니다. its upgrade now increases temporary focus from 2 -> 3."
+  },
+  {
+    "id": "v0.110.0:line-039-text-1mudiqq",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "디펙트"
+    ],
+    "markdownKo": "더 이상 소멸하지 않습니다.",
+    "markdownEn": "No longer Exhausts.",
+    "textKo": "더 이상 소멸하지 않습니다.",
+    "textEn": "No longer Exhausts.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-039-text-1mudiqq v0.110.0 0.110.0 콘텐츠 및 밸런스 디펙트 더 이상 소멸하지 않습니다. no longer exhausts."
+  },
+  {
+    "id": "v0.110.0:line-040-text-d7strs",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "일반"
+    ],
+    "markdownKo": "키보드 전용 모드를 지원합니다.",
+    "markdownEn": "Added support for keyboard-only mode.",
+    "textKo": "키보드 전용 모드를 지원합니다.",
+    "textEn": "Added support for keyboard-only mode.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-040-text-d7strs v0.110.0 0.110.0 사용자 인터페이스 및 경험 일반 키보드 전용 모드를 지원합니다. added support for keyboard-only mode."
+  },
+  {
+    "id": "v0.110.0:line-041-text-1fjqjg4",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "일반"
+    ],
+    "markdownKo": "지도 전체를 스크린샷으로 찍는 \"공유\" 버튼을 지도 화면에 추가했습니다.",
+    "markdownEn": "Added a \"Share\" button to the map screen that takes a screenshot of the entire map.",
+    "textKo": "지도 전체를 스크린샷으로 찍는 \"공유\" 버튼을 지도 화면에 추가했습니다.",
+    "textEn": "Added a \"Share\" button to the map screen that takes a screenshot of the entire map.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-041-text-1fjqjg4 v0.110.0 0.110.0 사용자 인터페이스 및 경험 일반 지도 전체를 스크린샷으로 찍는 \"공유\" 버튼을 지도 화면에 추가했습니다. added a \"share\" button to the map screen that takes a screenshot of the entire map."
+  },
+  {
+    "id": "v0.110.0:line-042-text-2mpqjk",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "일반"
+    ],
+    "markdownKo": "입력 또는 키 설정을 변경할 때 \"입력 대기 중\" 팝업을 표시합니다.",
+    "markdownEn": "Added a \"Listening For Input\" popup while remapping inputs or bindings.",
+    "textKo": "입력 또는 키 설정을 변경할 때 \"입력 대기 중\" 팝업을 표시합니다.",
+    "textEn": "Added a \"Listening For Input\" popup while remapping inputs or bindings.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-042-text-2mpqjk v0.110.0 0.110.0 사용자 인터페이스 및 경험 일반 입력 또는 키 설정을 변경할 때 \"입력 대기 중\" 팝업을 표시합니다. added a \"listening for input\" popup while remapping inputs or bindings."
+  },
+  {
+    "id": "v0.110.0:line-043-text-vgqhho",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "일반"
+    ],
+    "markdownKo": "입력 재설정 화면의 여백, 글꼴 크기, 색상을 조정했습니다.",
+    "markdownEn": "Updated the padding, font sizes, and colors on the input remap screen.",
+    "textKo": "입력 재설정 화면의 여백, 글꼴 크기, 색상을 조정했습니다.",
+    "textEn": "Updated the padding, font sizes, and colors on the input remap screen.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-043-text-vgqhho v0.110.0 0.110.0 사용자 인터페이스 및 경험 일반 입력 재설정 화면의 여백, 글꼴 크기, 색상을 조정했습니다. updated the padding, font sizes, and colors on the input remap screen."
+  },
+  {
+    "id": "v0.110.0:line-044-text-yoqu9s",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "일반"
+    ],
+    "markdownKo": "여러 버튼의 입력 글리프 위치를 조정했습니다.",
+    "markdownEn": "Updated input glyph positioning on various buttons.",
+    "textKo": "여러 버튼의 입력 글리프 위치를 조정했습니다.",
+    "textEn": "Updated input glyph positioning on various buttons.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-044-text-yoqu9s v0.110.0 0.110.0 사용자 인터페이스 및 경험 일반 여러 버튼의 입력 글리프 위치를 조정했습니다. updated input glyph positioning on various buttons."
+  },
+  {
+    "id": "v0.110.0:line-045-text-zkv8s2",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "일반"
+    ],
+    "markdownKo": "프로필 변경 버튼의 입력 글리프를 더 크게 표시합니다.",
+    "markdownEn": "Updated the change profile button to render a larger input glyph.",
+    "textKo": "프로필 변경 버튼의 입력 글리프를 더 크게 표시합니다.",
+    "textEn": "Updated the change profile button to render a larger input glyph.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-045-text-zkv8s2 v0.110.0 0.110.0 사용자 인터페이스 및 경험 일반 프로필 변경 버튼의 입력 글리프를 더 크게 표시합니다. updated the change profile button to render a larger input glyph."
+  },
+  {
+    "id": "v0.110.0:line-046-text-1v9135y",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "일반"
+    ],
+    "markdownKo": "키보드 모드 글리프 임시 이미지를 게임 스타일에 맞는 에셋으로 교체했습니다.",
+    "markdownEn": "Replaced the keyboard-mode glyph placeholder with an asset matching the game's style.",
+    "textKo": "키보드 모드 글리프 임시 이미지를 게임 스타일에 맞는 에셋으로 교체했습니다.",
+    "textEn": "Replaced the keyboard-mode glyph placeholder with an asset matching the game's style.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-046-text-1v9135y v0.110.0 0.110.0 사용자 인터페이스 및 경험 일반 키보드 모드 글리프 임시 이미지를 게임 스타일에 맞는 에셋으로 교체했습니다. replaced the keyboard-mode glyph placeholder with an asset matching the game's style."
+  },
+  {
+    "id": "v0.110.0:line-047-text-h3jr8i",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "일반"
+    ],
+    "markdownKo": "상단 바 단축키 아이콘의 크기와 위치를 조정했습니다.",
+    "markdownEn": "Adjusted the hotkey icon's size and position in the top bar.",
+    "textKo": "상단 바 단축키 아이콘의 크기와 위치를 조정했습니다.",
+    "textEn": "Adjusted the hotkey icon's size and position in the top bar.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-047-text-h3jr8i v0.110.0 0.110.0 사용자 인터페이스 및 경험 일반 상단 바 단축키 아이콘의 크기와 위치를 조정했습니다. adjusted the hotkey icon's size and position in the top bar."
+  },
+  {
+    "id": "v0.110.0:line-048-text-129xpam",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "일반"
+    ],
+    "markdownKo": "선택 조준점 에셋의 대비와 해상도를 높이고 표시 크기를 줄였습니다.",
+    "markdownEn": "Updated the generic selection reticle asset for better contrast and resolution, and rendered it slightly smaller.",
+    "textKo": "선택 조준점 에셋의 대비와 해상도를 높이고 표시 크기를 줄였습니다.",
+    "textEn": "Updated the generic selection reticle asset for better contrast and resolution, and rendered it slightly smaller.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-048-text-129xpam v0.110.0 0.110.0 사용자 인터페이스 및 경험 일반 선택 조준점 에셋의 대비와 해상도를 높이고 표시 크기를 줄였습니다. updated the generic selection reticle asset for better contrast and resolution, and rendered it slightly smaller."
+  },
+  {
+    "id": "v0.110.0:line-049-text-1ophaca",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "일반"
+    ],
+    "markdownKo": "입력 설정에서 지정되지 않은 키는 회색 하이픈으로 표시합니다.",
+    "markdownEn": "Missing bindings now render a gray hyphen in input settings.",
+    "textKo": "입력 설정에서 지정되지 않은 키는 회색 하이픈으로 표시합니다.",
+    "textEn": "Missing bindings now render a gray hyphen in input settings.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-049-text-1ophaca v0.110.0 0.110.0 사용자 인터페이스 및 경험 일반 입력 설정에서 지정되지 않은 키는 회색 하이픈으로 표시합니다. missing bindings now render a gray hyphen in input settings."
+  },
+  {
+    "id": "v0.110.0:line-050-text-ff7eho",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "일반"
+    ],
+    "markdownKo": "Steam Input 활성화 여부를 더 명확히 표시합니다.",
+    "markdownEn": "The game now states more explicitly whether Steam Input is active.",
+    "textKo": "Steam Input 활성화 여부를 더 명확히 표시합니다.",
+    "textEn": "The game now states more explicitly whether Steam Input is active.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-050-text-ff7eho v0.110.0 0.110.0 사용자 인터페이스 및 경험 일반 steam input 활성화 여부를 더 명확히 표시합니다. the game now states more explicitly whether steam input is active."
+  },
+  {
+    "id": "v0.110.0:line-051-text-1qsgvr6",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "일반"
+    ],
+    "markdownKo": "비표준 화면 비율에서 설정 스크롤바의 위치를 개선했습니다.",
+    "markdownEn": "Improved the settings scrollbar placement at non-standard aspect ratios.",
+    "textKo": "비표준 화면 비율에서 설정 스크롤바의 위치를 개선했습니다.",
+    "textEn": "Improved the settings scrollbar placement at non-standard aspect ratios.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-051-text-1qsgvr6 v0.110.0 0.110.0 사용자 인터페이스 및 경험 일반 비표준 화면 비율에서 설정 스크롤바의 위치를 개선했습니다. improved the settings scrollbar placement at non-standard aspect ratios."
+  },
+  {
+    "id": "v0.110.0:line-052-relic-winged-boots",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "일반"
+    ],
+    "markdownKo": "컨트롤러 사용 시 [gold:relic]날개 달린 부츠[/gold]를 보유했다면, 지도를 열 때 현재 노드와 연결된 노드에 우선 포커스를 맞춥니다.",
+    "markdownEn": "With a controller, the map now initially tries to hover a node connected to the current one when the player has [gold:relic]Winged Boots[/gold].",
+    "textKo": "컨트롤러 사용 시 날개 달린 부츠를 보유했다면, 지도를 열 때 현재 노드와 연결된 노드에 우선 포커스를 맞춥니다.",
+    "textEn": "With a controller, the map now initially tries to hover a node connected to the current one when the player has Winged Boots.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "WINGED_BOOTS",
+        "label": "날개 달린 부츠"
+      }
+    ],
+    "searchText": "v0.110.0:line-052-relic-winged-boots v0.110.0 0.110.0 사용자 인터페이스 및 경험 일반 컨트롤러 사용 시 날개 달린 부츠를 보유했다면, 지도를 열 때 현재 노드와 연결된 노드에 우선 포커스를 맞춥니다. with a controller, the map now initially tries to hover a node connected to the current one when the player has winged boots. relic winged_boots 날개 달린 부츠 날개 달린 부츠 winged boots"
+  },
+  {
+    "id": "v0.110.0:line-053-text-15vrkrl",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "일반"
+    ],
+    "markdownKo": "아직 도전과제 화면이 없어 통계 화면의 좌우 페이지 이동을 비활성화했습니다.",
+    "markdownEn": "Disabled left/right paging on the Stats screen because the Achievements screen does not exist yet.",
+    "textKo": "아직 도전과제 화면이 없어 통계 화면의 좌우 페이지 이동을 비활성화했습니다.",
+    "textEn": "Disabled left/right paging on the Stats screen because the Achievements screen does not exist yet.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-053-text-15vrkrl v0.110.0 0.110.0 사용자 인터페이스 및 경험 일반 아직 도전과제 화면이 없어 통계 화면의 좌우 페이지 이동을 비활성화했습니다. disabled left/right paging on the stats screen because the achievements screen does not exist yet."
+  },
+  {
+    "id": "v0.110.0:line-054-text-c5wy8l",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "멀티플레이어"
+    ],
+    "markdownKo": "친구의 런에 참가하는 UI를 개선했습니다.",
+    "markdownEn": "Improved the UI for joining a friend's run.",
+    "textKo": "친구의 런에 참가하는 UI를 개선했습니다.",
+    "textEn": "Improved the UI for joining a friend's run.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-054-text-c5wy8l v0.110.0 0.110.0 사용자 인터페이스 및 경험 멀티플레이어 친구의 런에 참가하는 ui를 개선했습니다. improved the ui for joining a friend's run."
+  },
+  {
+    "id": "v0.110.0:line-055-card-tutor",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "멀티플레이어"
+    ],
+    "markdownKo": "[gold:card]가르침[/gold]을 사용하면 이미 턴을 종료한 대상의 턴이 다시 활성화됩니다.",
+    "markdownEn": "[gold:card]Tutor[/gold] now un-ends the target's turn if they had ended it.",
+    "textKo": "가르침을 사용하면 이미 턴을 종료한 대상의 턴이 다시 활성화됩니다.",
+    "textEn": "Tutor now un-ends the target's turn if they had ended it.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "TUTOR",
+        "label": "가르침"
+      }
+    ],
+    "searchText": "v0.110.0:line-055-card-tutor v0.110.0 0.110.0 사용자 인터페이스 및 경험 멀티플레이어 가르침을 사용하면 이미 턴을 종료한 대상의 턴이 다시 활성화됩니다. tutor now un-ends the target's turn if they had ended it. card tutor 가르침 가르침 tutor"
+  },
+  {
+    "id": "v0.110.0:line-056-text-112s0sy",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "사용자 인터페이스 및 경험",
+      "멀티플레이어"
+    ],
+    "markdownKo": "[gold:monster]아키텍트[/gold]에게 사망했을 때 \"다른 플레이어를 기다리는 중\" 화면을 제거했습니다.",
+    "markdownEn": "Removed the \"Waiting for Players\" screen when dying to [gold:monster]Architect[/gold].",
+    "textKo": "아키텍트에게 사망했을 때 \"다른 플레이어를 기다리는 중\" 화면을 제거했습니다.",
+    "textEn": "Removed the \"Waiting for Players\" screen when dying to Architect.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-056-text-112s0sy v0.110.0 0.110.0 사용자 인터페이스 및 경험 멀티플레이어 아키텍트에게 사망했을 때 \"다른 플레이어를 기다리는 중\" 화면을 제거했습니다. removed the \"waiting for players\" screen when dying to architect."
+  },
+  {
+    "id": "v0.110.0:line-057-text-1z0h8di",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "형태 VFX를 추가했습니다.",
+    "markdownEn": "Added form VFX.",
+    "textKo": "형태 VFX를 추가했습니다.",
+    "textEn": "Added form VFX.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-057-text-1z0h8di v0.110.0 0.110.0 아트 형태 vfx를 추가했습니다. added form vfx."
+  },
+  {
+    "id": "v0.110.0:line-058-text-1uy4sv6",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "다음 카드에 정식 초상화를 추가했습니다.",
+    "markdownEn": "Added portrait art for:",
+    "textKo": "다음 카드에 정식 초상화를 추가했습니다.",
+    "textEn": "Added portrait art for:",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-058-text-1uy4sv6 v0.110.0 0.110.0 아트 다음 카드에 정식 초상화를 추가했습니다. added portrait art for:"
+  },
+  {
+    "id": "v0.110.0:line-059-card-constellation",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:card]별자리[/gold]",
+    "markdownEn": "[gold:card]Constellation[/gold]",
+    "textKo": "별자리",
+    "textEn": "Constellation",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "CONSTELLATION",
+        "label": "별자리"
+      }
+    ],
+    "searchText": "v0.110.0:line-059-card-constellation v0.110.0 0.110.0 아트 별자리 constellation card constellation 별자리 별자리 constellation"
+  },
+  {
+    "id": "v0.110.0:line-060-card-blade-symphony",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:card]칼날 교향곡[/gold]",
+    "markdownEn": "[gold:card]Blade Symphony[/gold]",
+    "textKo": "칼날 교향곡",
+    "textEn": "Blade Symphony",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "BLADE_SYMPHONY",
+        "label": "칼날 교향곡"
+      }
+    ],
+    "searchText": "v0.110.0:line-060-card-blade-symphony v0.110.0 0.110.0 아트 칼날 교향곡 blade symphony card blade_symphony 칼날 교향곡 칼날 교향곡 blade symphony"
+  },
+  {
+    "id": "v0.110.0:line-061-card-concoct",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:card]조제[/gold]",
+    "markdownEn": "[gold:card]Concoct[/gold]",
+    "textKo": "조제",
+    "textEn": "Concoct",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "CONCOCT",
+        "label": "조제"
+      }
+    ],
+    "searchText": "v0.110.0:line-061-card-concoct v0.110.0 0.110.0 아트 조제 concoct card concoct 조제 조제 concoct"
+  },
+  {
+    "id": "v0.110.0:line-062-card-tutor",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:card]가르침[/gold]",
+    "markdownEn": "[gold:card]Tutor[/gold]",
+    "textKo": "가르침",
+    "textEn": "Tutor",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "TUTOR",
+        "label": "가르침"
+      }
+    ],
+    "searchText": "v0.110.0:line-062-card-tutor v0.110.0 0.110.0 아트 가르침 tutor card tutor 가르침 가르침 tutor"
+  },
+  {
+    "id": "v0.110.0:line-063-card-imitation-learning",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:card]모방 학습[/gold]",
+    "markdownEn": "[gold:card]Imitation Learning[/gold]",
+    "textKo": "모방 학습",
+    "textEn": "Imitation Learning",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "IMITATION_LEARNING",
+        "label": "모방 학습"
+      }
+    ],
+    "searchText": "v0.110.0:line-063-card-imitation-learning v0.110.0 0.110.0 아트 모방 학습 imitation learning card imitation_learning 모방 학습 모방 학습 imitation learning"
+  },
+  {
+    "id": "v0.110.0:line-064-card-soulbound",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:card]영혼 결속[/gold]",
+    "markdownEn": "[gold:card]Soulbound[/gold]",
+    "textKo": "영혼 결속",
+    "textEn": "Soulbound",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SOULBOUND",
+        "label": "영혼 결속"
+      }
+    ],
+    "searchText": "v0.110.0:line-064-card-soulbound v0.110.0 0.110.0 아트 영혼 결속 soulbound card soulbound 영혼 결속 영혼 결속 soulbound"
+  },
+  {
+    "id": "v0.110.0:line-065-card-fade",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:card]희미해지기[/gold]",
+    "markdownEn": "[gold:card]Fade[/gold]",
+    "textKo": "희미해지기",
+    "textEn": "Fade",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "FADE",
+        "label": "희미해지기"
+      }
+    ],
+    "searchText": "v0.110.0:line-065-card-fade v0.110.0 0.110.0 아트 희미해지기 fade card fade 희미해지기 희미해지기 fade"
+  },
+  {
+    "id": "v0.110.0:line-066-card-sidestep",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:card]회피[/gold]에 베타 초상화를 추가했습니다.",
+    "markdownEn": "Added beta portrait art for [gold:card]Sidestep[/gold].",
+    "textKo": "회피에 베타 초상화를 추가했습니다.",
+    "textEn": "Added beta portrait art for Sidestep.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SIDESTEP",
+        "label": "회피"
+      }
+    ],
+    "searchText": "v0.110.0:line-066-card-sidestep v0.110.0 0.110.0 아트 회피에 베타 초상화를 추가했습니다. added beta portrait art for sidestep. card sidestep 회피 회피 sidestep"
+  },
+  {
+    "id": "v0.110.0:line-067-monster-test-subject",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:monster]실험체 #C{Count}[/gold]의 화상 애니메이션에 불꽃을 추가했습니다.",
+    "markdownEn": "Added fire to [gold:monster]Test Subject[/gold]'s burn animation.",
+    "textKo": "실험체 #C{Count}의 화상 애니메이션에 불꽃을 추가했습니다.",
+    "textEn": "Added fire to Test Subject's burn animation.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "TEST_SUBJECT",
+        "label": "실험체 #C{Count}"
+      }
+    ],
+    "searchText": "v0.110.0:line-067-monster-test-subject v0.110.0 0.110.0 아트 실험체 #c{count}의 화상 애니메이션에 불꽃을 추가했습니다. added fire to test subject's burn animation. monster test_subject 실험체 #c{count} 실험체 #c{count} test subject #c{count}"
+  },
+  {
+    "id": "v0.110.0:line-068-text-1x3mneh",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "문구",
+      "일반"
+    ],
+    "markdownKo": "선택지와 유물 설명의 \"포션\"을 금색 대문자 표기로 통일했습니다.",
+    "markdownEn": "\"Potions\" in option and relic descriptions is now gold and capitalized.",
+    "textKo": "선택지와 유물 설명의 \"포션\"을 금색 대문자 표기로 통일했습니다.",
+    "textEn": "\"Potions\" in option and relic descriptions is now gold and capitalized.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-068-text-1x3mneh v0.110.0 0.110.0 문구 일반 선택지와 유물 설명의 \"포션\"을 금색 대문자 표기로 통일했습니다. \"potions\" in option and relic descriptions is now gold and capitalized."
+  },
+  {
+    "id": "v0.110.0:line-069-text-17r8vbe",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "문구",
+      "일반"
+    ],
+    "markdownKo": "[gold:power]감속[/gold] 툴팁에 현재 배율이 표시되지 않던 문제를 수정했습니다.",
+    "markdownEn": "Fixed [gold:power]Slow[/gold]'s description not showing its active multiplier in the hovertip.",
+    "textKo": "감속 툴팁에 현재 배율이 표시되지 않던 문제를 수정했습니다.",
+    "textEn": "Fixed Slow's description not showing its active multiplier in the hovertip.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-069-text-17r8vbe v0.110.0 0.110.0 문구 일반 감속 툴팁에 현재 배율이 표시되지 않던 문제를 수정했습니다. fixed slow's description not showing its active multiplier in the hovertip."
+  },
+  {
+    "id": "v0.110.0:line-070-card-abundance-card-blade-symphony",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "문구",
+      "일반"
+    ],
+    "markdownKo": "[gold:card]풍요[/gold]와 [gold:card]칼날 교향곡[/gold]의 오탈자를 수정했습니다.",
+    "markdownEn": "Fixed typos on [gold:card]Abundance[/gold] and [gold:card]Blade Symphony[/gold].",
+    "textKo": "풍요와 칼날 교향곡의 오탈자를 수정했습니다.",
+    "textEn": "Fixed typos on Abundance and Blade Symphony.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "ABUNDANCE",
+        "label": "풍요"
+      },
+      {
+        "type": "card",
+        "id": "BLADE_SYMPHONY",
+        "label": "칼날 교향곡"
+      }
+    ],
+    "searchText": "v0.110.0:line-070-card-abundance-card-blade-symphony v0.110.0 0.110.0 문구 일반 풍요와 칼날 교향곡의 오탈자를 수정했습니다. fixed typos on abundance and blade symphony. card abundance 풍요 풍요 abundance card blade_symphony 칼날 교향곡 칼날 교향곡 blade symphony"
+  },
+  {
+    "id": "v0.110.0:line-071-relic-diamond-diadem",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "문구",
+      "일반"
+    ],
+    "markdownKo": "[gold:relic]다이아몬드 왕관[/gold]의 효과 지속 시간 문구를 명확하게 다듬었습니다.",
+    "markdownEn": "Clarified [gold:relic]Diamond Diadem[/gold]'s wording about how long its effect lasts.",
+    "textKo": "다이아몬드 왕관의 효과 지속 시간 문구를 명확하게 다듬었습니다.",
+    "textEn": "Clarified Diamond Diadem's wording about how long its effect lasts.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "DIAMOND_DIADEM",
+        "label": "다이아몬드 왕관"
+      }
+    ],
+    "searchText": "v0.110.0:line-071-relic-diamond-diadem v0.110.0 0.110.0 문구 일반 다이아몬드 왕관의 효과 지속 시간 문구를 명확하게 다듬었습니다. clarified diamond diadem's wording about how long its effect lasts. relic diamond_diadem 다이아몬드 왕관 다이아몬드 왕관 diamond diadem"
+  },
+  {
+    "id": "v0.110.0:line-072-text-19nme1j",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "문구",
+      "일반"
+    ],
+    "markdownKo": "\"전체 키보드\"를 \"키보드 전용\"으로 변경했습니다.",
+    "markdownEn": "Renamed \"Full Keyboard\" -> \"Keyboard-Only.\"",
+    "textKo": "\"전체 키보드\"를 \"키보드 전용\"으로 변경했습니다.",
+    "textEn": "Renamed \"Full Keyboard\" -> \"Keyboard-Only.\"",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-072-text-19nme1j v0.110.0 0.110.0 문구 일반 \"전체 키보드\"를 \"키보드 전용\"으로 변경했습니다. renamed \"full keyboard\" -> \"keyboard-only.\""
+  },
+  {
+    "id": "v0.110.0:line-073-text-1tzsuoh",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "문구",
+      "현지화"
+    ],
+    "markdownKo": "여러 언어의 번역을 갱신했습니다.",
+    "markdownEn": "Updated translations for various languages.",
+    "textKo": "여러 언어의 번역을 갱신했습니다.",
+    "textEn": "Updated translations for various languages.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-073-text-1tzsuoh v0.110.0 0.110.0 문구 현지화 여러 언어의 번역을 갱신했습니다. updated translations for various languages."
+  },
+  {
+    "id": "v0.110.0:line-074-text-mu0ksp",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "문구",
+      "현지화"
+    ],
+    "markdownKo": "프랑스어, 이탈리아어, 러시아어, 태국어, 튀르키예어, 중국어 번체 번역 오류를 수정했습니다.",
+    "markdownEn": "Fixed translation errors in French, Italian, Russian, Thai, Turkish, and Traditional Chinese.",
+    "textKo": "프랑스어, 이탈리아어, 러시아어, 태국어, 튀르키예어, 중국어 번체 번역 오류를 수정했습니다.",
+    "textEn": "Fixed translation errors in French, Italian, Russian, Thai, Turkish, and Traditional Chinese.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-074-text-mu0ksp v0.110.0 0.110.0 문구 현지화 프랑스어, 이탈리아어, 러시아어, 태국어, 튀르키예어, 중국어 번체 번역 오류를 수정했습니다. fixed translation errors in french, italian, russian, thai, turkish, and traditional chinese."
+  },
+  {
+    "id": "v0.110.0:line-075-text-vj4l92",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "고급 카드가 의도대로 조금 더 자주 등장합니다.",
+    "markdownEn": "Uncommon cards now appear slightly more often, as intended.",
+    "textKo": "고급 카드가 의도대로 조금 더 자주 등장합니다.",
+    "textEn": "Uncommon cards now appear slightly more often, as intended.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-075-text-vj4l92 v0.110.0 0.110.0 버그 수정 일반 고급 카드가 의도대로 조금 더 자주 등장합니다. uncommon cards now appear slightly more often, as intended."
+  },
+  {
+    "id": "v0.110.0:line-076-text-flcm29",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "특정 상황에서 카드의 섞인 순서를 알아낼 수 없도록 수정했습니다.",
+    "markdownEn": "Players can no longer discern the shuffle order of cards in certain scenarios.",
+    "textKo": "특정 상황에서 카드의 섞인 순서를 알아낼 수 없도록 수정했습니다.",
+    "textEn": "Players can no longer discern the shuffle order of cards in certain scenarios.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-076-text-flcm29 v0.110.0 0.110.0 버그 수정 일반 특정 상황에서 카드의 섞인 순서를 알아낼 수 없도록 수정했습니다. players can no longer discern the shuffle order of cards in certain scenarios."
+  },
+  {
+    "id": "v0.110.0:line-077-text-1kq37nw",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "울트라와이드 화면에서 런 기록을 중앙에 배치했습니다.",
+    "markdownEn": "Run History is now centered on ultrawide screens.",
+    "textKo": "울트라와이드 화면에서 런 기록을 중앙에 배치했습니다.",
+    "textEn": "Run History is now centered on ultrawide screens.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-077-text-1kq37nw v0.110.0 0.110.0 버그 수정 일반 울트라와이드 화면에서 런 기록을 중앙에 배치했습니다. run history is now centered on ultrawide screens."
+  },
+  {
+    "id": "v0.110.0:line-078-text-tq1tjg",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "런 종료 시 얻은 시대 해금이 사라져 시간선 진행을 영구적으로 막던 문제를 수정했습니다. 영향을 받은 저장 데이터는 불러올 때 복구됩니다.",
+    "markdownEn": "Fixed an Epoch unlock earned at the end of a run being lost and permanently blocking Timeline progress. Affected saves are repaired when loaded.",
+    "textKo": "런 종료 시 얻은 시대 해금이 사라져 시간선 진행을 영구적으로 막던 문제를 수정했습니다. 영향을 받은 저장 데이터는 불러올 때 복구됩니다.",
+    "textEn": "Fixed an Epoch unlock earned at the end of a run being lost and permanently blocking Timeline progress. Affected saves are repaired when loaded.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-078-text-tq1tjg v0.110.0 0.110.0 버그 수정 일반 런 종료 시 얻은 시대 해금이 사라져 시간선 진행을 영구적으로 막던 문제를 수정했습니다. 영향을 받은 저장 데이터는 불러올 때 복구됩니다. fixed an epoch unlock earned at the end of a run being lost and permanently blocking timeline progress. affected saves are repaired when loaded."
+  },
+  {
+    "id": "v0.110.0:line-079-text-4519tm",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "게임 오버 애니메이션 중 화면을 벗어나면 필요한 점수를 소모하지 않고 시대가 해금되던 문제를 수정했습니다.",
+    "markdownEn": "Fixed leaving the game-over screen mid-animation granting an Epoch unlock without spending the required score.",
+    "textKo": "게임 오버 애니메이션 중 화면을 벗어나면 필요한 점수를 소모하지 않고 시대가 해금되던 문제를 수정했습니다.",
+    "textEn": "Fixed leaving the game-over screen mid-animation granting an Epoch unlock without spending the required score.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-079-text-4519tm v0.110.0 0.110.0 버그 수정 일반 게임 오버 애니메이션 중 화면을 벗어나면 필요한 점수를 소모하지 않고 시대가 해금되던 문제를 수정했습니다. fixed leaving the game-over screen mid-animation granting an epoch unlock without spending the required score."
+  },
+  {
+    "id": "v0.110.0:line-080-text-1rnr3ch",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "카드 도감에서 카드를 살펴볼 때 컨트롤러 포커스가 카드 목록으로 이동하던 문제를 수정했습니다.",
+    "markdownEn": "Fixed controller navigation reaching the card grid while inspecting a card in the Compendium.",
+    "textKo": "카드 도감에서 카드를 살펴볼 때 컨트롤러 포커스가 카드 목록으로 이동하던 문제를 수정했습니다.",
+    "textEn": "Fixed controller navigation reaching the card grid while inspecting a card in the Compendium.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-080-text-1rnr3ch v0.110.0 0.110.0 버그 수정 일반 카드 도감에서 카드를 살펴볼 때 컨트롤러 포커스가 카드 목록으로 이동하던 문제를 수정했습니다. fixed controller navigation reaching the card grid while inspecting a card in the compendium."
+  },
+  {
+    "id": "v0.110.0:line-081-text-18ycaz1",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "포션 팝업을 Escape로 닫을 때 설정 화면이 함께 열리던 문제를 수정했습니다.",
+    "markdownEn": "Fixed the settings screen opening when Escape was pressed to close the Potions popup.",
+    "textKo": "포션 팝업을 Escape로 닫을 때 설정 화면이 함께 열리던 문제를 수정했습니다.",
+    "textEn": "Fixed the settings screen opening when Escape was pressed to close the Potions popup.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-081-text-18ycaz1 v0.110.0 0.110.0 버그 수정 일반 포션 팝업을 escape로 닫을 때 설정 화면이 함께 열리던 문제를 수정했습니다. fixed the settings screen opening when escape was pressed to close the potions popup."
+  },
+  {
+    "id": "v0.110.0:line-082-monster-tough-egg",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]튼튼한 알[/gold]의 최대 체력이 1 더 높아질 수 있습니다.",
+    "markdownEn": "[gold:monster]Tough Egg[/gold] can now have 1 more Max HP.",
+    "textKo": "튼튼한 알의 최대 체력이 1 더 높아질 수 있습니다.",
+    "textEn": "Tough Egg can now have 1 more Max HP.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "TOUGH_EGG",
+        "label": "튼튼한 알"
+      }
+    ],
+    "searchText": "v0.110.0:line-082-monster-tough-egg v0.110.0 0.110.0 버그 수정 적 튼튼한 알의 최대 체력이 1 더 높아질 수 있습니다. tough egg can now have 1 more max hp. monster tough_egg 튼튼한 알 튼튼한 알 tough egg"
+  },
+  {
+    "id": "v0.110.0:line-083-monster-decimillipede-segment",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]만각지네[/gold]의 도감 능력치가 올바르게 표시됩니다.",
+    "markdownEn": "[gold:monster]Decimillipede[/gold] now displays its stats correctly in the Bestiary.",
+    "textKo": "만각지네의 도감 능력치가 올바르게 표시됩니다.",
+    "textEn": "Decimillipede now displays its stats correctly in the Bestiary.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "DECIMILLIPEDE_SEGMENT",
+        "label": "만각지네"
+      }
+    ],
+    "searchText": "v0.110.0:line-083-monster-decimillipede-segment v0.110.0 0.110.0 버그 수정 적 만각지네의 도감 능력치가 올바르게 표시됩니다. decimillipede now displays its stats correctly in the bestiary. monster decimillipede_segment 만각지네 만각지네 decimillipede"
+  },
+  {
+    "id": "v0.110.0:line-084-monster-tough-egg",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "적"
+    ],
+    "markdownKo": "도감에서 [gold:monster]튼튼한 알[/gold]이 부화할 때 오류가 발생하던 문제를 수정했습니다.",
+    "markdownEn": "Fixed an error when [gold:monster]Tough Egg[/gold] hatched in the Bestiary.",
+    "textKo": "도감에서 튼튼한 알이 부화할 때 오류가 발생하던 문제를 수정했습니다.",
+    "textEn": "Fixed an error when Tough Egg hatched in the Bestiary.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "TOUGH_EGG",
+        "label": "튼튼한 알"
+      }
+    ],
+    "searchText": "v0.110.0:line-084-monster-tough-egg v0.110.0 0.110.0 버그 수정 적 도감에서 튼튼한 알이 부화할 때 오류가 발생하던 문제를 수정했습니다. fixed an error when tough egg hatched in the bestiary. monster tough_egg 튼튼한 알 튼튼한 알 tough egg"
+  },
+  {
+    "id": "v0.110.0:line-085-event-the-lantern-key",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "이벤트"
+    ],
+    "markdownKo": "[gold:event]랜턴 열쇠[/gold] 이벤트의 오탈자를 수정했습니다.",
+    "markdownEn": "Fixed a typo in the [gold:event]Lantern Key[/gold] event.",
+    "textKo": "랜턴 열쇠 이벤트의 오탈자를 수정했습니다.",
+    "textEn": "Fixed a typo in the Lantern Key event.",
+    "entityRefs": [
+      {
+        "type": "event",
+        "id": "THE_LANTERN_KEY",
+        "label": "랜턴 열쇠"
+      }
+    ],
+    "searchText": "v0.110.0:line-085-event-the-lantern-key v0.110.0 0.110.0 버그 수정 이벤트 랜턴 열쇠 이벤트의 오탈자를 수정했습니다. fixed a typo in the lantern key event. event the_lantern_key 랜턴 열쇠 랜턴 열쇠 the lantern key"
+  },
+  {
+    "id": "v0.110.0:line-086-relic-pendulum-relic-bellows",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "포션 및 유물"
+    ],
+    "markdownKo": "1턴에 [gold:relic]펜듈럼[/gold]이 발동할 때 [gold:relic]풀무[/gold]가 추가 카드를 올바르게 강화합니다.",
+    "markdownEn": "[gold:relic]Bellows[/gold] now properly upgrades the extra card when [gold:relic]Pendulum[/gold] triggers on turn 1.",
+    "textKo": "1턴에 펜듈럼이 발동할 때 풀무가 추가 카드를 올바르게 강화합니다.",
+    "textEn": "Bellows now properly upgrades the extra card when Pendulum triggers on turn 1.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "PENDULUM",
+        "label": "펜듈럼"
+      },
+      {
+        "type": "relic",
+        "id": "BELLOWS",
+        "label": "풀무"
+      }
+    ],
+    "searchText": "v0.110.0:line-086-relic-pendulum-relic-bellows v0.110.0 0.110.0 버그 수정 포션 및 유물 1턴에 펜듈럼이 발동할 때 풀무가 추가 카드를 올바르게 강화합니다. bellows now properly upgrades the extra card when pendulum triggers on turn 1. relic pendulum 펜듈럼 펜듈럼 pendulum relic bellows 풀무 풀무 bellows"
+  },
+  {
+    "id": "v0.110.0:line-087-card-dowsing-card-abundance",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "포션 및 유물"
+    ],
+    "markdownKo": "[gold:card]다우징[/gold]이 [gold:card]풍요[/gold]를 미리 보여주지 않던 문제를 수정했습니다.",
+    "markdownEn": "Fixed [gold:card]Dowsing[/gold] not previewing [gold:card]Abundance[/gold].",
+    "textKo": "다우징이 풍요를 미리 보여주지 않던 문제를 수정했습니다.",
+    "textEn": "Fixed Dowsing not previewing Abundance.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "DOWSING",
+        "label": "다우징"
+      },
+      {
+        "type": "card",
+        "id": "ABUNDANCE",
+        "label": "풍요"
+      }
+    ],
+    "searchText": "v0.110.0:line-087-card-dowsing-card-abundance v0.110.0 0.110.0 버그 수정 포션 및 유물 다우징이 풍요를 미리 보여주지 않던 문제를 수정했습니다. fixed dowsing not previewing abundance. card dowsing 다우징 다우징 dowsing card abundance 풍요 풍요 abundance"
+  },
+  {
+    "id": "v0.110.0:line-088-card-juggling-card-uproar",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "아이언클래드"
+    ],
+    "markdownKo": "[gold:card]저글링[/gold]의 세 번째 공격이 [gold:card]난동[/gold]처럼 다른 공격을 자동으로 사용할 때, 자동 사용된 공격이 아니라 원래 공격을 복사하도록 수정했습니다.",
+    "markdownEn": "Fixed [gold:card]Juggling[/gold] so that when the third Attack also auto-plays an Attack, such as [gold:card]Uproar[/gold], it copies the original Attack instead of the auto-played Attack.",
+    "textKo": "저글링의 세 번째 공격이 난동처럼 다른 공격을 자동으로 사용할 때, 자동 사용된 공격이 아니라 원래 공격을 복사하도록 수정했습니다.",
+    "textEn": "Fixed Juggling so that when the third Attack also auto-plays an Attack, such as Uproar, it copies the original Attack instead of the auto-played Attack.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "JUGGLING",
+        "label": "저글링"
+      },
+      {
+        "type": "card",
+        "id": "UPROAR",
+        "label": "난동"
+      }
+    ],
+    "searchText": "v0.110.0:line-088-card-juggling-card-uproar v0.110.0 0.110.0 버그 수정 아이언클래드 저글링의 세 번째 공격이 난동처럼 다른 공격을 자동으로 사용할 때, 자동 사용된 공격이 아니라 원래 공격을 복사하도록 수정했습니다. fixed juggling so that when the third attack also auto-plays an attack, such as uproar, it copies the original attack instead of the auto-played attack. card juggling 저글링 저글링 juggling card uproar 난동 난동 uproar"
+  },
+  {
+    "id": "v0.110.0:line-089-potion-touch-of-insanity",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "markdownKo": "다른 플레이어가 [gold:potion]광기의 손길[/gold]을 건넬 때 선택한 카드가 멈추던 문제를 수정했습니다.",
+    "markdownEn": "Fixed a chosen card getting stuck if another player gives you [gold:potion]Touch of Insanity[/gold].",
+    "textKo": "다른 플레이어가 광기의 손길을 건넬 때 선택한 카드가 멈추던 문제를 수정했습니다.",
+    "textEn": "Fixed a chosen card getting stuck if another player gives you Touch of Insanity.",
+    "entityRefs": [
+      {
+        "type": "potion",
+        "id": "TOUCH_OF_INSANITY",
+        "label": "광기의 손길"
+      }
+    ],
+    "searchText": "v0.110.0:line-089-potion-touch-of-insanity v0.110.0 0.110.0 버그 수정 멀티플레이어 다른 플레이어가 광기의 손길을 건넬 때 선택한 카드가 멈추던 문제를 수정했습니다. fixed a chosen card getting stuck if another player gives you touch of insanity. potion touch_of_insanity 광기의 손길 광기의 손길 touch of insanity"
+  },
+  {
+    "id": "v0.110.0:line-090-card-feral-card-the-ball",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "markdownKo": "[gold:card]야성[/gold]이 다른 플레이어가 아닌 자신의 손에 [gold:card]공[/gold]을 넣습니다.",
+    "markdownEn": "[gold:card]Feral[/gold] now puts [gold:card]The Ball[/gold] into your Hand instead of another player's.",
+    "textKo": "야성이 다른 플레이어가 아닌 자신의 손에 공을 넣습니다.",
+    "textEn": "Feral now puts The Ball into your Hand instead of another player's.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "FERAL",
+        "label": "야성"
+      },
+      {
+        "type": "card",
+        "id": "THE_BALL",
+        "label": "공"
+      }
+    ],
+    "searchText": "v0.110.0:line-090-card-feral-card-the-ball v0.110.0 0.110.0 버그 수정 멀티플레이어 야성이 다른 플레이어가 아닌 자신의 손에 공을 넣습니다. feral now puts the ball into your hand instead of another player's. card feral 야성 야성 feral card the_ball 공 공 the ball"
+  },
+  {
+    "id": "v0.110.0:line-091-card-imitation-learning",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "markdownKo": "[gold:card]모방 학습[/gold]이 Replay와 함께 사용될 때 더 이상 진행이 멈추지 않으며 중복 사용을 무시합니다.",
+    "markdownEn": "[gold:card]Imitation Learning[/gold] no longer softlocks with Replay and now ignores duplicate plays.",
+    "textKo": "모방 학습이 Replay와 함께 사용될 때 더 이상 진행이 멈추지 않으며 중복 사용을 무시합니다.",
+    "textEn": "Imitation Learning no longer softlocks with Replay and now ignores duplicate plays.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "IMITATION_LEARNING",
+        "label": "모방 학습"
+      }
+    ],
+    "searchText": "v0.110.0:line-091-card-imitation-learning v0.110.0 0.110.0 버그 수정 멀티플레이어 모방 학습이 replay와 함께 사용될 때 더 이상 진행이 멈추지 않으며 중복 사용을 무시합니다. imitation learning no longer softlocks with replay and now ignores duplicate plays. card imitation_learning 모방 학습 모방 학습 imitation learning"
+  },
+  {
+    "id": "v0.110.0:line-092-card-tutor",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "markdownKo": "[gold:card]가르침[/gold]이 Replay와 함께 사용될 때 진행이 멈추던 문제를 수정했습니다.",
+    "markdownEn": "[gold:card]Tutor[/gold] no longer softlocks with Replay.",
+    "textKo": "가르침이 Replay와 함께 사용될 때 진행이 멈추던 문제를 수정했습니다.",
+    "textEn": "Tutor no longer softlocks with Replay.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "TUTOR",
+        "label": "가르침"
+      }
+    ],
+    "searchText": "v0.110.0:line-092-card-tutor v0.110.0 0.110.0 버그 수정 멀티플레이어 가르침이 replay와 함께 사용될 때 진행이 멈추던 문제를 수정했습니다. tutor no longer softlocks with replay. card tutor 가르침 가르침 tutor"
+  },
+  {
+    "id": "v0.110.0:line-093-text-17qg0bq",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "markdownKo": "전투 밖에서도 다시 런 포기를 사용할 수 있습니다.",
+    "markdownEn": "Players can Abandon Run outside of combat again.",
+    "textKo": "전투 밖에서도 다시 런 포기를 사용할 수 있습니다.",
+    "textEn": "Players can Abandon Run outside of combat again.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-093-text-17qg0bq v0.110.0 0.110.0 버그 수정 멀티플레이어 전투 밖에서도 다시 런 포기를 사용할 수 있습니다. players can abandon run outside of combat again."
+  },
+  {
+    "id": "v0.110.0:line-094-text-141uj0h",
+    "patch": "v0.110.0",
+    "version": "0.110.0",
+    "date": "2026-07-31",
+    "section": [
+      "모딩"
+    ],
+    "markdownKo": "세션의 플레이어 중 한 명이라도 모드를 사용하면 오류 창에 \"버그 신고\" 버튼을 표시하지 않습니다.",
+    "markdownEn": "The \"Report Bug\" button is no longer shown in error dialogs when any player in the session has mods.",
+    "textKo": "세션의 플레이어 중 한 명이라도 모드를 사용하면 오류 창에 \"버그 신고\" 버튼을 표시하지 않습니다.",
+    "textEn": "The \"Report Bug\" button is no longer shown in error dialogs when any player in the session has mods.",
+    "entityRefs": [],
+    "searchText": "v0.110.0:line-094-text-141uj0h v0.110.0 0.110.0 모딩 세션의 플레이어 중 한 명이라도 모드를 사용하면 오류 창에 \"버그 신고\" 버튼을 표시하지 않습니다. the \"report bug\" button is no longer shown in error dialogs when any player in the session has mods."
   }
 ]
