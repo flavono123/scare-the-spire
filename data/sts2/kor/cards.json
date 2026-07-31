@@ -2,8 +2,8 @@
   {
     "id": "ABUNDANCE",
     "name": "풍요",
-    "description": "무작위 [gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다.",
-    "description_raw": "무작위 {IfUpgraded:show:강화된 |}[gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다.",
+    "description": "무작위 [gold]강화된[/gold] [gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다.",
+    "description_raw": "무작위 [gold]강화된[/gold] [gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -25,7 +25,9 @@
     "tags": null,
     "spawns_cards": null,
     "vars": null,
-    "upgrade": null,
+    "upgrade": {
+      "cost": 0
+    },
     "image_url": "/static/images/cards/abundance.png",
     "beta_image_url": null
   },
@@ -1407,7 +1409,7 @@
   {
     "id": "BIASED_COGNITION",
     "name": "인지 편향",
-    "description": "[gold]밀집[/gold]을 4 얻습니다.\n내 턴 시작 시,\n[gold]밀집[/gold]을 1 잃습니다.",
+    "description": "[gold]밀집[/gold]을 5 얻습니다.\n내 턴 시작 시,\n[gold]밀집[/gold]을 1 잃습니다.",
     "description_raw": "[gold]밀집[/gold]을 {FocusPower:diff()} 얻습니다.\n내 턴 시작 시,\n[gold]밀집[/gold]을 {BiasedCognitionPower:diff()} 잃습니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -1423,7 +1425,7 @@
     "powers_applied": [
       {
         "power": "밀집",
-        "amount": 4
+        "amount": 5
       },
       {
         "power": "인지 편향",
@@ -1437,8 +1439,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "FocusPower": 4,
-      "Focus": 4,
+      "FocusPower": 5,
+      "Focus": 5,
       "BiasedCognitionPower": 1,
       "BiasedCognition": 1
     },
@@ -4330,7 +4332,7 @@
   {
     "id": "CRUSH_UNDER",
     "name": "지면 파쇄",
-    "description": "모든 적에게\n피해를 7 줍니다.\n모든 적이 이번 턴 동안\n[gold]힘[/gold]을 1 잃습니다.",
+    "description": "모든 적에게\n피해를 8 줍니다.\n모든 적이 이번 턴 동안\n[gold]힘[/gold]을 1 잃습니다.",
     "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n모든 적이 이번 턴 동안\n[gold]힘[/gold]을 {StrengthLoss:diff()} 잃습니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -4340,7 +4342,7 @@
     "rarity": "일반",
     "target": "AllEnemies",
     "color": "regent",
-    "damage": 7,
+    "damage": 8,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -4352,7 +4354,7 @@
     "spawns_cards": null,
     "vars": {
       "StrengthLoss": 1,
-      "Damage": 7
+      "Damage": 8
     },
     "upgrade": {
       "damage": "+1",
@@ -6127,7 +6129,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "공격",
-    "rarity": "희귀",
+    "rarity": "고급",
     "target": "AllEnemies",
     "color": "silent",
     "damage": 10,
@@ -9049,9 +9051,9 @@
   {
     "id": "HAZE",
     "name": "아지랑이",
-    "description": "모든 적에게\n[gold]중독[/gold]을 4 부여합니다.",
-    "description_raw": "모든 적에게\n[gold]중독[/gold]을 {PoisonPower:diff()} 부여합니다.",
-    "cost": 3,
+    "description": "모든 적에게\n[gold]중독[/gold]을 4 부여하고\n[gold]약화[/gold]를 1 부여합니다.",
+    "description_raw": "모든 적에게\n[gold]중독[/gold]을 {PoisonPower:diff()} 부여하고\n[gold]약화[/gold]를 {WeakPower:diff()} 부여합니다.",
+    "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -9066,22 +9068,27 @@
       {
         "power": "중독",
         "amount": 4
+      },
+      {
+        "power": "약화",
+        "amount": 1
       }
     ],
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": [
-      "교활"
-    ],
+    "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
       "PoisonPower": 4,
-      "Poison": 4
+      "Poison": 4,
+      "WeakPower": 1,
+      "Weak": 1
     },
     "upgrade": {
-      "poison": "+2"
+      "poison": "+2",
+      "weak": "+1"
     },
     "image_url": "/static/images/cards/haze.png",
     "beta_image_url": "/static/images/cards/beta/haze.png"
@@ -11148,7 +11155,7 @@
   {
     "id": "MANGLE",
     "name": "난도질",
-    "description": "피해를 15 줍니다.\n이번 턴 동안 적이\n[gold]힘[/gold]을 10 잃습니다.",
+    "description": "피해를 20 줍니다.\n이번 턴 동안 적이\n[gold]힘[/gold]을 10 잃습니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n이번 턴 동안 적이\n[gold]힘[/gold]을 {StrengthLoss:diff()} 잃습니다.",
     "cost": 3,
     "is_x_cost": null,
@@ -11158,7 +11165,7 @@
     "rarity": "희귀",
     "target": "AnyEnemy",
     "color": "ironclad",
-    "damage": 15,
+    "damage": 20,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -11170,10 +11177,10 @@
     "spawns_cards": null,
     "vars": {
       "StrengthLoss": 10,
-      "Damage": 15
+      "Damage": 20
     },
     "upgrade": {
-      "damage": "+5",
+      "damage": "+6",
       "strengthloss": "+5"
     },
     "image_url": "/static/images/cards/mangle.png",
@@ -11278,7 +11285,7 @@
   {
     "id": "MAUL",
     "name": "할퀴기",
-    "description": "피해를 5만큼 2번 줍니다.\n이번 전투 동안\n모든 할퀴기 카드의\n피해량이 1 증가합니다.",
+    "description": "피해를 5만큼 2번 줍니다.\n이번 전투 동안\n모든 할퀴기 카드의\n피해량이 2 증가합니다.",
     "description_raw": "피해를 {Damage:diff()}만큼 2번 줍니다.\n이번 전투 동안\n모든 할퀴기 카드의\n피해량이 {Increase:diff()} 증가합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -11299,7 +11306,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Increase": 1,
+      "Increase": 2,
       "Damage": 5
     },
     "upgrade": {
@@ -11774,9 +11781,9 @@
   {
     "id": "MIRAGE",
     "name": "신기루",
-    "description": "다음 턴에, [energy:1]를 얻습니다.",
-    "description_raw": "다음 턴에, {Energy:energyIcons()}를 얻습니다.",
-    "cost": 0,
+    "description": "모든 적에게 부여된\n[gold]중독[/gold]과 동일한 만큼의\n[gold]방어도[/gold]를 얻습니다.",
+    "description_raw": "모든 적에게 부여된\n[gold]중독[/gold]과 동일한 만큼의\n[gold]방어도[/gold]를 얻습니다.{InCombat:\n([gold]방어도[/gold]를 {CalculatedBlock:diff()} 얻습니다)|}",
+    "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -11794,11 +11801,9 @@
     "keywords": null,
     "tags": null,
     "spawns_cards": null,
-    "vars": {
-      "Energy": 1
-    },
+    "vars": null,
     "upgrade": {
-      "energy": "+1"
+      "cost": 0
     },
     "image_url": "/static/images/cards/mirage.png",
     "beta_image_url": null
@@ -12701,23 +12706,23 @@
   {
     "id": "OUTBREAK",
     "name": "발병",
-    "description": "[gold]중독[/gold]을 부여할 때마다,\n모든 적에게\n피해를 4 줍니다.",
-    "description_raw": "[gold]중독[/gold]을 부여할 때마다,\n모든 적에게\n피해를 {OutbreakPower:diff()} 줍니다.",
-    "cost": 1,
+    "description": "모든 적에게\n[gold]중독[/gold]을 9 부여합니다.\n[gold]중독[/gold]이 즉시 발동합니다.",
+    "description_raw": "모든 적에게\n[gold]중독[/gold]을 {PoisonPower:diff()} 부여합니다.\n[gold]중독[/gold]이 즉시 발동합니다.",
+    "cost": 3,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
-    "type": "파워",
-    "rarity": "고급",
-    "target": "Self",
+    "type": "스킬",
+    "rarity": "희귀",
+    "target": "AllEnemies",
     "color": "silent",
     "damage": null,
     "block": null,
     "hit_count": null,
     "powers_applied": [
       {
-        "power": "발병",
-        "amount": 3
+        "power": "중독",
+        "amount": 9
       }
     ],
     "cards_draw": null,
@@ -12727,11 +12732,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "OutbreakPower": 4,
-      "Outbreak": 4
+      "PoisonPower": 9,
+      "Poison": 9
     },
     "upgrade": {
-      "outbreakpower": "+1"
+      "poison": "+3"
     },
     "image_url": "/static/images/cards/outbreak.png",
     "beta_image_url": "/static/images/cards/beta/outbreak.png"
@@ -12839,7 +12844,7 @@
   {
     "id": "PACTS_END",
     "name": "조약의 끝",
-    "description": "[gold]소멸된 카드 더미[/gold]에\n카드가 3장 이상 있다면,\n모든 적에게\n피해를 17 줍니다.",
+    "description": "[gold]소멸된 카드 더미[/gold]에\n카드가 3장 이상 있다면,\n모든 적에게\n피해를 18 줍니다.",
     "description_raw": "[gold]소멸된 카드 더미[/gold]에\n카드가 {Cards:diff()}장 이상 있다면,\n모든 적에게\n피해를 {Damage:diff()} 줍니다.",
     "cost": 0,
     "is_x_cost": null,
@@ -12849,7 +12854,7 @@
     "rarity": "희귀",
     "target": "AllEnemies",
     "color": "ironclad",
-    "damage": 17,
+    "damage": 18,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -12860,7 +12865,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 17,
+      "Damage": 18,
       "Cards": 3
     },
     "upgrade": {
