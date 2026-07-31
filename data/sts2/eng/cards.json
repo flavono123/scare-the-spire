@@ -1626,7 +1626,7 @@
     "upgrade": {
       "cost": 1
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/blade_symphony.png",
     "beta_image_url": "/static/images/cards/beta/blade_symphony.png"
   },
   {
@@ -3737,7 +3737,7 @@
     "upgrade": {
       "concoctpower": "+1"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/concoct.png",
     "beta_image_url": "/static/images/cards/beta/concoct.png"
   },
   {
@@ -3836,7 +3836,7 @@
     "upgrade": {
       "block": "+3"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/constellation.png",
     "beta_image_url": "/static/images/cards/beta/constellation.png"
   },
   {
@@ -6787,7 +6787,7 @@
     "upgrade": {
       "dexterity": "+3"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/fade.png",
     "beta_image_url": "/static/images/cards/beta/fade.png"
   },
   {
@@ -9841,7 +9841,7 @@
     "upgrade": {
       "imitationlearningpower": "+1"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/imitation_learning.png",
     "beta_image_url": "/static/images/cards/beta/imitation_learning.png"
   },
   {
@@ -16877,7 +16877,7 @@
     "upgrade": {
       "add_innate": 1
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/soulbound.png",
     "beta_image_url": "/static/images/cards/beta/soulbound.png"
   },
   {
@@ -19393,7 +19393,7 @@
       "cost": 0
     },
     "introducedInPatch": "v0.109.0",
-    "image_url": null,
+    "image_url": "/static/images/cards/tutor.png",
     "beta_image_url": "/static/images/cards/beta/tutor.png"
   },
   {

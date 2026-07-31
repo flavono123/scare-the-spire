@@ -1626,7 +1626,7 @@
     "upgrade": {
       "cost": 1
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/blade_symphony.png",
     "beta_image_url": "/static/images/cards/beta/blade_symphony.png"
   },
   {
@@ -3737,7 +3737,7 @@
     "upgrade": {
       "concoctpower": "+1"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/concoct.png",
     "beta_image_url": "/static/images/cards/beta/concoct.png"
   },
   {
@@ -3836,7 +3836,7 @@
     "upgrade": {
       "block": "+3"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/constellation.png",
     "beta_image_url": "/static/images/cards/beta/constellation.png"
   },
   {
@@ -6788,7 +6788,7 @@
     "upgrade": {
       "dexterity": "+3"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/fade.png",
     "beta_image_url": "/static/images/cards/beta/fade.png"
   },
   {
@@ -9844,7 +9844,7 @@
     "upgrade": {
       "imitationlearningpower": "+1"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/imitation_learning.png",
     "beta_image_url": "/static/images/cards/beta/imitation_learning.png"
   },
   {
@@ -16882,7 +16882,7 @@
     "upgrade": {
       "add_innate": 1
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/soulbound.png",
     "beta_image_url": "/static/images/cards/beta/soulbound.png"
   },
   {
@@ -19375,7 +19375,7 @@
   },
   {
     "id": "TUTOR",
-    "name": "강사",
+    "name": "가르침",
     "description": "다른 플레이어가\n[gold]뽑을 카드 더미[/gold]에서\n카드를 1장 선택해\n[gold]손[/gold]으로 가져옵니다.",
     "description_raw": "다른 플레이어가\n[gold]뽑을 카드 더미[/gold]에서\n카드를 1장 선택해\n[gold]손[/gold]으로 가져옵니다.",
     "cost": 1,
@@ -19401,7 +19401,7 @@
       "cost": 0
     },
     "introducedInPatch": "v0.109.0",
-    "image_url": null,
+    "image_url": "/static/images/cards/tutor.png",
     "beta_image_url": "/static/images/cards/beta/tutor.png"
   },
   {
