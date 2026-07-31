@@ -492,15 +492,25 @@ export function EntityPreview({
       )}
       {showResolvedPreview && previewEntity.type === "card" && previewEntity.cardData && (
         renderTooltip(
-          <span className="block w-36 drop-shadow-2xl">
-            <CardTile
-              card={previewEntity.cardData}
-              showUpgrade={Boolean(previewEntity.cardPreviewUpgradeLevel)}
-              upgradeLevel={previewEntity.cardPreviewUpgradeLevel}
-              showBeta={false}
-            />
-          </span>,
-          "card",
+          staticHoverPreviews ? (
+            <GameResourcePreview
+              title={previewEntity.nameKo}
+              imageUrl={previewEntity.imageUrl}
+              imageAlt={previewEntity.nameKo}
+            >
+              <DescriptionText description={previewEntity.cardData.description} />
+            </GameResourcePreview>
+          ) : (
+            <span className="block w-36 drop-shadow-2xl">
+              <CardTile
+                card={previewEntity.cardData}
+                showUpgrade={Boolean(previewEntity.cardPreviewUpgradeLevel)}
+                upgradeLevel={previewEntity.cardPreviewUpgradeLevel}
+                showBeta={false}
+              />
+            </span>
+          ),
+          staticHoverPreviews ? "box" : "card",
         )
       )}
       {showResolvedPreview && previewEntity.type === "character" && previewEntity.characterData && (
