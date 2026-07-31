@@ -5,7 +5,6 @@ import {
   PatchNoteRenderer,
   type EntityInfo,
 } from "@/components/patch-note-renderer";
-import { loadAllEntities } from "@/lib/load-all-entities";
 
 function renderPatch(markdown: string, entities: EntityInfo[]): string {
   return renderToStaticMarkup(
@@ -64,9 +63,12 @@ assert.match(staticAvailableHtml, /href="\/en\/compendium\/cards\?card=bash"/);
 assert.match(staticAvailableHtml, /\/images\/sts2\/cards\/bash\.webp/);
 assert.doesNotMatch(staticAvailableHtml, /Compendium page in progress/);
 
-const staticCard = (await loadAllEntities({ gameLocale: "eng" }))
-  .find((entity) => entity.type === "card" && entity.id === "BASH");
-assert(staticCard);
+const staticCard: EntityInfo = {
+  ...availableCard,
+  cardData: {
+    description: "Deal 8 damage.",
+  } as NonNullable<EntityInfo["cardData"]>,
+};
 const staticCardHtml = renderStaticPatch("[gold:card]Bash[/gold]", [staticCard]);
 assert.match(staticCardHtml, /Deal 8 damage/);
 assert.doesNotMatch(staticCardHtml, /data-card-description-viewport/);
