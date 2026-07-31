@@ -528,16 +528,27 @@
     "title": "Beta Patch Notes - v0.110.0",
     "titleKo": "베타 패치 노트 - v0.110.0",
     "type": "beta",
-    "status": "building",
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/694268118771435039",
-    "summary": "Rich patch notes are being prepared.",
-    "summaryKo": "리치 패치 노트를 준비하고 있습니다.",
+    "summary": "Major Silent reworks, Ancient tuning, keyboard-only controls, seven official card portraits, and extensive fixes.",
+    "summaryKo": "사일런트 주요 리워크와 고대의 존재 조정, 키보드 전용 조작, 정식 카드 초상화 7종, 다양한 수정을 담았습니다.",
     "hasBalanceChanges": true,
     "art": {
       "type": "card",
-      "id": "TOOLS_OF_THE_TRADE",
-      "alt": "Tools of the Trade card art",
-      "altKo": "작업 도구 카드 아트"
-    }
+      "id": "CONSTELLATION",
+      "alt": "Constellation card art",
+      "altKo": "별자리 카드 아트"
+    },
+    "featuredEntities": [
+      { "type": "card", "id": "SIDESTEP" },
+      { "type": "card", "id": "OUTBREAK" },
+      { "type": "card", "id": "HAZE" },
+      { "type": "card", "id": "MIRAGE" },
+      { "type": "card", "id": "PILLAR_OF_CREATION" },
+      { "type": "relic", "id": "REGALITE" },
+      { "type": "card", "id": "ABUNDANCE" },
+      { "type": "relic", "id": "TOASTY_MITTENS" },
+      { "type": "card", "id": "TUTOR" },
+      { "type": "monster", "id": "TOUGH_EGG" }
+    ]
   }
 ]
