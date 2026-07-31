@@ -9965,5 +9965,224 @@
         "after": "내 턴 시작 시, [gold]손[/gold]에 있는 카드를 [blue]1[/blue]장 [gold]소멸[/gold]시키고 [gold]힘[/gold]을 [blue]{StrengthPower}[/blue] 얻습니다."
       }
     ]
+  },
+  {
+    "id": "sidestep-v0-110-0-new",
+    "entityType": "card",
+    "entityId": "SIDESTEP",
+    "patch": "v0.110.0",
+    "date": "2026-07-31",
+    "character": "silent",
+    "summary": "New Silent card: Sidestep — next turn, gain 1(2) Energy.",
+    "summaryKo": "사일런트 신규 카드 회피: 다음 턴에 에너지를 1(2) 얻습니다.",
+    "diffs": [
+      {
+        "attribute": "new",
+        "displayName": "New",
+        "displayNameKo": "신규",
+        "before": "",
+        "after": "Uncommon Skill - Cost 0 | Next turn, gain 1(2) Energy.",
+        "afterKo": "고급 스킬 · 비용 0 · 다음 턴에 에너지 1(2) 획득",
+        "diffType": "text"
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "card",
+        "id": "SCARE"
+      }
+    ]
+  },
+  {
+    "id": "scare-v0-110-0-deprecated",
+    "entityType": "card",
+    "entityId": "SCARE",
+    "patch": "v0.110.0",
+    "date": "2026-07-31",
+    "character": "silent",
+    "summary": "Scare was removed and replaced by Sidestep.",
+    "summaryKo": "위협이 제거되고 회피로 교체되었습니다.",
+    "diffs": [
+      {
+        "attribute": "deprecated",
+        "displayName": "Deprecated",
+        "displayNameKo": "삭제",
+        "before": false,
+        "after": true,
+        "diffType": "boolean"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "deprecated",
+        "before": false,
+        "after": true
+      },
+      {
+        "field": "deprecatedInPatch",
+        "before": null,
+        "after": "v0.110.0"
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "card",
+        "id": "SIDESTEP"
+      }
+    ]
+  },
+  {
+    "id": "blade-symphony-v0-110-0-official-art",
+    "entityType": "card",
+    "entityId": "BLADE_SYMPHONY",
+    "patch": "v0.110.0",
+    "date": "2026-07-31",
+    "character": "silent",
+    "summary": "Blade Symphony received its official portrait art.",
+    "summaryKo": "칼날 교향곡에 정식 초상화 일러스트가 추가되었습니다.",
+    "diffs": [
+      {
+        "attribute": "art",
+        "displayName": "Portrait Art",
+        "displayNameKo": "초상화 일러스트",
+        "before": "Beta portrait",
+        "beforeKo": "베타 초상화",
+        "after": "Official portrait",
+        "afterKo": "정식 초상화",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "concoct-v0-110-0-official-art",
+    "entityType": "card",
+    "entityId": "CONCOCT",
+    "patch": "v0.110.0",
+    "date": "2026-07-31",
+    "character": "silent",
+    "summary": "Concoct received its official portrait art.",
+    "summaryKo": "조제에 정식 초상화 일러스트가 추가되었습니다.",
+    "diffs": [
+      {
+        "attribute": "art",
+        "displayName": "Portrait Art",
+        "displayNameKo": "초상화 일러스트",
+        "before": "Beta portrait",
+        "beforeKo": "베타 초상화",
+        "after": "Official portrait",
+        "afterKo": "정식 초상화",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "constellation-v0-110-0-official-art",
+    "entityType": "card",
+    "entityId": "CONSTELLATION",
+    "patch": "v0.110.0",
+    "date": "2026-07-31",
+    "character": "regent",
+    "summary": "Constellation received its official portrait art.",
+    "summaryKo": "별자리에 정식 초상화 일러스트가 추가되었습니다.",
+    "diffs": [
+      {
+        "attribute": "art",
+        "displayName": "Portrait Art",
+        "displayNameKo": "초상화 일러스트",
+        "before": "Beta portrait",
+        "beforeKo": "베타 초상화",
+        "after": "Official portrait",
+        "afterKo": "정식 초상화",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "fade-v0-110-0-official-art",
+    "entityType": "card",
+    "entityId": "FADE",
+    "patch": "v0.110.0",
+    "date": "2026-07-31",
+    "character": "silent",
+    "summary": "Fade received its official portrait art.",
+    "summaryKo": "희미해지기에 정식 초상화 일러스트가 추가되었습니다.",
+    "diffs": [
+      {
+        "attribute": "art",
+        "displayName": "Portrait Art",
+        "displayNameKo": "초상화 일러스트",
+        "before": "Beta portrait",
+        "beforeKo": "베타 초상화",
+        "after": "Official portrait",
+        "afterKo": "정식 초상화",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "imitation-learning-v0-110-0-official-art",
+    "entityType": "card",
+    "entityId": "IMITATION_LEARNING",
+    "patch": "v0.110.0",
+    "date": "2026-07-31",
+    "character": "defect",
+    "summary": "Imitation Learning received its official portrait art.",
+    "summaryKo": "모방 학습에 정식 초상화 일러스트가 추가되었습니다.",
+    "diffs": [
+      {
+        "attribute": "art",
+        "displayName": "Portrait Art",
+        "displayNameKo": "초상화 일러스트",
+        "before": "Beta portrait",
+        "beforeKo": "베타 초상화",
+        "after": "Official portrait",
+        "afterKo": "정식 초상화",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "soulbound-v0-110-0-official-art",
+    "entityType": "card",
+    "entityId": "SOULBOUND",
+    "patch": "v0.110.0",
+    "date": "2026-07-31",
+    "character": "necrobinder",
+    "summary": "Soulbound received its official portrait art.",
+    "summaryKo": "영혼 결속에 정식 초상화 일러스트가 추가되었습니다.",
+    "diffs": [
+      {
+        "attribute": "art",
+        "displayName": "Portrait Art",
+        "displayNameKo": "초상화 일러스트",
+        "before": "Beta portrait",
+        "beforeKo": "베타 초상화",
+        "after": "Official portrait",
+        "afterKo": "정식 초상화",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "tutor-v0-110-0-official-art",
+    "entityType": "card",
+    "entityId": "TUTOR",
+    "patch": "v0.110.0",
+    "date": "2026-07-31",
+    "character": "regent",
+    "summary": "Tutor received its official portrait art.",
+    "summaryKo": "가르침에 정식 초상화 일러스트가 추가되었습니다.",
+    "diffs": [
+      {
+        "attribute": "art",
+        "displayName": "Portrait Art",
+        "displayNameKo": "초상화 일러스트",
+        "before": "Beta portrait",
+        "beforeKo": "베타 초상화",
+        "after": "Official portrait",
+        "afterKo": "정식 초상화",
+        "diffType": "text"
+      }
+    ]
   }
 ]
