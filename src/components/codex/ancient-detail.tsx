@@ -168,20 +168,18 @@ export function AncientDetail({
       <div className="space-y-5">
         <section>
           <AncientSceneStage ancient={ancient}>
-            <div className="pointer-events-none absolute inset-x-2 top-2 z-20 flex justify-center sm:top-3">
-              <div className="max-w-[85%] rounded-lg border border-blue-200/25 bg-gradient-to-r from-blue-950/90 via-teal-950/90 to-blue-950/90 px-5 py-2 text-center shadow-xl">
-                <h1
-                  id={`ancient-detail-title-${ancient.id.toLowerCase()}`}
-                  className="font-game-title text-xl text-blue-100 drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)] sm:text-2xl"
-                >
-                  {ancient.name}
-                </h1>
-                {ancient.epithet && (
-                  <p className="truncate font-game-text text-xs italic text-blue-100/80 sm:text-sm">
-                    &ldquo;{ancient.epithet}&rdquo;
-                  </p>
-                )}
-              </div>
+            <div className="pointer-events-none absolute bottom-3 left-3 z-50 max-w-[45%] text-left sm:bottom-5 sm:left-6">
+              <h1
+                id={`ancient-detail-title-${ancient.id.toLowerCase()}`}
+                className="font-game-title text-xl font-bold text-[#efc850] [text-shadow:0_3px_0_rgba(0,0,0,0.9),0_0_12px_rgba(0,0,0,0.8)] sm:text-3xl"
+              >
+                {ancient.name}
+              </h1>
+              {ancient.epithet && (
+                <p className="truncate font-game-text text-xs italic text-[#fff6e2] [text-shadow:0_2px_0_rgba(0,0,0,0.95)] sm:text-base">
+                  &ldquo;{ancient.epithet}&rdquo;
+                </p>
+              )}
             </div>
             <AncientDialogueViewer
               key={ancient.id}

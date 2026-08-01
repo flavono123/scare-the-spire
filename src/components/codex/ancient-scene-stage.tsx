@@ -30,7 +30,7 @@ export function AncientSceneStage({ ancient, children }: { ancient: CodexAncient
 
   return (
     <section
-      className="relative min-h-[34rem] w-full overflow-hidden rounded-lg border border-blue-900/30 bg-[#070910] shadow-2xl shadow-black/40 sm:min-h-[32rem] lg:aspect-[2560/1200] lg:min-h-0"
+      className="relative min-h-[34rem] w-full overflow-hidden bg-[#070910] sm:min-h-[32rem] lg:aspect-[2560/1200] lg:min-h-0"
       data-ancient-art-stage
       data-ancient-id={ancient.id}
       data-ancient-vfx-support={sceneAsset.vfx.support}
