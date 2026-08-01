@@ -84,8 +84,8 @@ export const sts2NavItems = [
   { href: "/compendium/events", labelKey: "events", icon: "/images/sts2/nav/question_mark.png" },
   { href: "/compendium/ancients", labelKey: "ancients", icon: "/images/sts2/nav/stats_ancients.png" },
   { href: "/compendium/epochs", labelKey: "epochs", icon: "/images/sts2/relics/planisphere.webp" },
-  { href: "/compendium/badges", labelKey: "badges", icon: "/images/sts2/badges/ccccombo.webp" },
   { href: "/compendium/keywords", labelKey: "keywords", icon: "/images/sts2/ui/topbar/submenu_history_icon.png" },
+  { href: "/compendium/badges", labelKey: "badges", icon: "/images/sts2/badges/ccccombo.webp" },
 ] as const;
 
 export const sts1NavItems = [
