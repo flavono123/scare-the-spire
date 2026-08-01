@@ -13,6 +13,7 @@ import { useUserProfile } from "@/hooks/use-user-profile";
 import type { PostBlock } from "@/lib/chemical-types";
 import {
   comboPostMatchesAnyGameElement,
+  type ComboPost,
   type ComboResourceRef,
 } from "@/lib/combo-types";
 import type { GameLocale } from "@/lib/i18n";
@@ -37,8 +38,9 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].combo;
   const { userId, ready, ensureUser } = useAuth();
-  const { posts, loading, unavailable, add, remove } = useComboPosts(userId);
+  const { posts, loading, unavailable, add, update, remove } = useComboPosts(userId);
   const [composerOpen, setComposerOpen] = useState(false);
+  const [editingPost, setEditingPost] = useState<ComboPost | null>(null);
   const [selectedGameElements, setSelectedGameElements] = useState<ComboResourceRef[]>([]);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
@@ -56,10 +58,17 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
   const handleSubmit = useCallback(async (blocks: PostBlock[], nickname: string) => {
     const activeUserId = userId ?? await ensureUser();
     if (!activeUserId) throw new Error("anonymous auth unavailable");
-    const post = await add({ blocks, nickname, activeUserId });
+    const post = editingPost
+      ? await update(editingPost.id, { blocks, nickname, activeUserId })
+      : await add({ blocks, nickname, activeUserId });
     if (!post) throw new Error("combo post rejected");
     setComposerOpen(false);
-  }, [add, ensureUser, userId]);
+    setEditingPost(null);
+  }, [add, editingPost, ensureUser, update, userId]);
+  const closeComposer = useCallback(() => {
+    setComposerOpen(false);
+    setEditingPost(null);
+  }, []);
 
   return (
     <div data-combo-page="index" className="space-y-6">
@@ -80,7 +89,10 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
           <button
             type="button"
             aria-expanded={composerOpen}
-            onClick={() => setComposerOpen(true)}
+            onClick={() => {
+              setEditingPost(null);
+              setComposerOpen(true);
+            }}
             className="group/create inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-yellow-400/30 bg-yellow-500/10 px-3 py-2 text-xs font-semibold text-yellow-200 shadow-[0_0_18px_rgba(250,204,21,0.06)] transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-yellow-300/50 hover:bg-yellow-500/15 hover:shadow-[0_6px_22px_rgba(250,204,21,0.1)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70 active:translate-y-0 motion-reduce:transform-none"
           >
             <Image
@@ -98,11 +110,12 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
       {composerOpen && ready && !unavailable && (
         <ComboComposerModal
           entities={entities}
+          initialPost={editingPost}
           placeholder={placeholder}
-          profileNickname={profile.nickname}
+          profileNickname={editingPost?.nickname ?? profile.nickname}
           serviceLocale={serviceLocale}
           onSubmit={handleSubmit}
-          onClose={() => setComposerOpen(false)}
+          onClose={closeComposer}
         />
       )}
 
@@ -139,6 +152,10 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
               isOwner={post.user_id === userId}
               serviceLocale={serviceLocale}
               gameLocale={gameLocale}
+              onEdit={(post) => {
+                setEditingPost(post);
+                setComposerOpen(true);
+              }}
               onDelete={remove}
             />
           ))}
