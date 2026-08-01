@@ -1,0 +1,539 @@
+{
+  "ext": {
+    "10_6n6gf": {
+      "path": "images/vfx/water_texture.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 634,
+        "source": "images/vfx/water_texture.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/vfx/water_texture.webp",
+        "width": 600
+      }
+    },
+    "12_huwpo": {
+      "path": "images/vfx/light.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 256,
+        "source": "images/vfx/light.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/vfx/light.webp",
+        "width": 256
+      }
+    },
+    "16_287cc": {
+      "path": "shaders/vfx/vfx_stepped_shader_fire_add.tres",
+      "type": "Shader"
+    },
+    "17_afhl0": {
+      "path": "images/vfx/tileable_noise_2.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 100,
+        "source": "images/vfx/tileable_noise_2.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/vfx/tileable_noise_2.webp",
+        "width": 100
+      }
+    },
+    "4_sf23e": {
+      "path": "images/vfx/fire/triangle_noise_tile.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 500,
+        "source": "images/vfx/fire/triangle_noise_tile.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/vfx/fire/triangle_noise_tile.webp",
+        "width": 500
+      }
+    }
+  },
+  "nodes": [
+    {
+      "name": "Neow",
+      "parent": null,
+      "props": {
+        "layout_mode": 3,
+        "anchors_preset": 15,
+        "anchor_right": 1.0,
+        "anchor_bottom": 1.0,
+        "grow_horizontal": 2,
+        "grow_vertical": 2,
+        "metadata/_edit_lock_": true,
+        "metadata/_edit_group_": true
+      },
+      "type": "Control"
+    },
+    {
+      "name": "water_reflection",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "ShaderMaterial_kp4l0"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            189,
+            1082
+          ]
+        },
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            12.5,
+            12
+          ]
+        },
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "12_huwpo"
+          ]
+        }
+      },
+      "type": "Sprite2D"
+    },
+    {
+      "name": "water_reflection2",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "ShaderMaterial_ke0qb"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            268,
+            878
+          ]
+        },
+        "rotation": -0.47473,
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            12.5,
+            12
+          ]
+        },
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "12_huwpo"
+          ]
+        }
+      },
+      "type": "Sprite2D"
+    },
+    {
+      "name": "water_reflection3",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "ShaderMaterial_kp4l0"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1837.17,
+            1342.5
+          ]
+        },
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            -12.5,
+            12
+          ]
+        },
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "12_huwpo"
+          ]
+        }
+      },
+      "type": "Sprite2D"
+    },
+    {
+      "name": "water_reflection4",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "ShaderMaterial_ke0qb"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1916.17,
+            1138.5
+          ]
+        },
+        "rotation": -0.47473,
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            -12.5,
+            12
+          ]
+        },
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "12_huwpo"
+          ]
+        }
+      },
+      "type": "Sprite2D"
+    }
+  ],
+  "resources": {
+    "ShaderMaterial_ke0qb": {
+      "props": {
+        "shader": {
+          "$": "ExtResource",
+          "v": [
+            "16_287cc"
+          ]
+        },
+        "shader_parameter/OuterColor": {
+          "$": "Color",
+          "v": [
+            1.44392e-07,
+            0.228034,
+            0.164565,
+            1
+          ]
+        },
+        "shader_parameter/InnerColorStep": {
+          "$": "Vector2",
+          "v": [
+            0.975,
+            0.99
+          ]
+        },
+        "shader_parameter/Noise2Strength": 1.0,
+        "shader_parameter/Noise2Scaling": {
+          "$": "Vector2",
+          "v": [
+            1,
+            1
+          ]
+        },
+        "shader_parameter/Noise2Panning": {
+          "$": "Vector2",
+          "v": [
+            0.05,
+            0.05
+          ]
+        },
+        "shader_parameter/Noise2Texture": {
+          "$": "ExtResource",
+          "v": [
+            "10_6n6gf"
+          ]
+        },
+        "shader_parameter/Noise1Strength": 1.0,
+        "shader_parameter/Noise1Scaling": {
+          "$": "Vector2",
+          "v": [
+            1,
+            1
+          ]
+        },
+        "shader_parameter/Noise1Panning": {
+          "$": "Vector2",
+          "v": [
+            0.1,
+            0.1
+          ]
+        },
+        "shader_parameter/Noise1Texture": {
+          "$": "ExtResource",
+          "v": [
+            "10_6n6gf"
+          ]
+        },
+        "shader_parameter/InvertNoiseMask": true,
+        "shader_parameter/NoiseMaskScale": {
+          "$": "Vector2",
+          "v": [
+            1,
+            2
+          ]
+        },
+        "shader_parameter/NoiseMaskOffset": {
+          "$": "Vector2",
+          "v": [
+            0,
+            -0.63
+          ]
+        },
+        "shader_parameter/NoiseMask": {
+          "$": "ExtResource",
+          "v": [
+            "12_huwpo"
+          ]
+        },
+        "shader_parameter/Distortion2Scale": {
+          "$": "Vector2",
+          "v": [
+            1,
+            1
+          ]
+        },
+        "shader_parameter/Distortion2Panning": {
+          "$": "Vector2",
+          "v": [
+            0.045,
+            0.05
+          ]
+        },
+        "shader_parameter/Distortion2Texture": {
+          "$": "ExtResource",
+          "v": [
+            "12_huwpo"
+          ]
+        },
+        "shader_parameter/Distortion2Strength": 0.1,
+        "shader_parameter/Distortion1Scale": {
+          "$": "Vector2",
+          "v": [
+            1,
+            1
+          ]
+        },
+        "shader_parameter/Distortion1Panning": {
+          "$": "Vector2",
+          "v": [
+            0.06,
+            0.05
+          ]
+        },
+        "shader_parameter/Distortion1Texture": {
+          "$": "ExtResource",
+          "v": [
+            "4_sf23e"
+          ]
+        },
+        "shader_parameter/Distortion1Strength": 0.095,
+        "shader_parameter/DistortionMaskScale": {
+          "$": "Vector2",
+          "v": [
+            1,
+            1.2
+          ]
+        },
+        "shader_parameter/DistortionMaskOffset": {
+          "$": "Vector2",
+          "v": [
+            0,
+            -0.025
+          ]
+        },
+        "shader_parameter/DistortionMask": {
+          "$": "ExtResource",
+          "v": [
+            "17_afhl0"
+          ]
+        },
+        "shader_parameter/InnerColor": {
+          "$": "Color",
+          "v": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "shader_parameter/OuterStep": {
+          "$": "Vector2",
+          "v": [
+            0.285,
+            0.99
+          ]
+        }
+      },
+      "type": "ShaderMaterial"
+    },
+    "ShaderMaterial_kp4l0": {
+      "props": {
+        "shader": {
+          "$": "ExtResource",
+          "v": [
+            "16_287cc"
+          ]
+        },
+        "shader_parameter/OuterColor": {
+          "$": "Color",
+          "v": [
+            9.14484e-07,
+            0.206164,
+            0.269111,
+            1
+          ]
+        },
+        "shader_parameter/InnerColorStep": {
+          "$": "Vector2",
+          "v": [
+            0.975,
+            0.99
+          ]
+        },
+        "shader_parameter/Noise2Strength": 1.0,
+        "shader_parameter/Noise2Scaling": {
+          "$": "Vector2",
+          "v": [
+            0.5,
+            0.5
+          ]
+        },
+        "shader_parameter/Noise2Panning": {
+          "$": "Vector2",
+          "v": [
+            0.05,
+            0.05
+          ]
+        },
+        "shader_parameter/Noise2Texture": {
+          "$": "ExtResource",
+          "v": [
+            "10_6n6gf"
+          ]
+        },
+        "shader_parameter/Noise1Strength": 1.0,
+        "shader_parameter/Noise1Scaling": {
+          "$": "Vector2",
+          "v": [
+            0.5,
+            0.5
+          ]
+        },
+        "shader_parameter/Noise1Panning": {
+          "$": "Vector2",
+          "v": [
+            0.1,
+            0.1
+          ]
+        },
+        "shader_parameter/Noise1Texture": {
+          "$": "ExtResource",
+          "v": [
+            "10_6n6gf"
+          ]
+        },
+        "shader_parameter/InvertNoiseMask": true,
+        "shader_parameter/NoiseMaskScale": {
+          "$": "Vector2",
+          "v": [
+            1,
+            2
+          ]
+        },
+        "shader_parameter/NoiseMaskOffset": {
+          "$": "Vector2",
+          "v": [
+            0,
+            -0.63
+          ]
+        },
+        "shader_parameter/NoiseMask": {
+          "$": "ExtResource",
+          "v": [
+            "12_huwpo"
+          ]
+        },
+        "shader_parameter/Distortion2Scale": {
+          "$": "Vector2",
+          "v": [
+            1,
+            1
+          ]
+        },
+        "shader_parameter/Distortion2Panning": {
+          "$": "Vector2",
+          "v": [
+            0.045,
+            0.05
+          ]
+        },
+        "shader_parameter/Distortion2Texture": {
+          "$": "ExtResource",
+          "v": [
+            "12_huwpo"
+          ]
+        },
+        "shader_parameter/Distortion2Strength": 0.1,
+        "shader_parameter/Distortion1Scale": {
+          "$": "Vector2",
+          "v": [
+            1,
+            1
+          ]
+        },
+        "shader_parameter/Distortion1Panning": {
+          "$": "Vector2",
+          "v": [
+            0.06,
+            0.05
+          ]
+        },
+        "shader_parameter/Distortion1Texture": {
+          "$": "ExtResource",
+          "v": [
+            "4_sf23e"
+          ]
+        },
+        "shader_parameter/Distortion1Strength": 0.095,
+        "shader_parameter/DistortionMaskScale": {
+          "$": "Vector2",
+          "v": [
+            1,
+            1.2
+          ]
+        },
+        "shader_parameter/DistortionMaskOffset": {
+          "$": "Vector2",
+          "v": [
+            0,
+            -0.025
+          ]
+        },
+        "shader_parameter/DistortionMask": {
+          "$": "ExtResource",
+          "v": [
+            "17_afhl0"
+          ]
+        },
+        "shader_parameter/InnerColor": {
+          "$": "Color",
+          "v": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "shader_parameter/OuterStep": {
+          "$": "Vector2",
+          "v": [
+            0.285,
+            0.99
+          ]
+        }
+      },
+      "type": "ShaderMaterial"
+    }
+  },
+  "source": "scenes/events/background_scenes/neow.tscn",
+  "version": 1
+}

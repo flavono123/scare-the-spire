@@ -1,0 +1,1812 @@
+{
+  "ext": {
+    "2_1kjdf": {
+      "path": "images/packed/vfx/event/trial_stand_light.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 2400,
+        "source": "images/packed/vfx/event/trial_stand_light.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/packed/vfx/event/trial_stand_light.webp",
+        "width": 1251
+      }
+    },
+    "3_wjc05": {
+      "path": "images/packed/vfx/generic/square_speck.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 31,
+        "source": "images/packed/vfx/generic/square_speck.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/packed/vfx/generic/square_speck.webp",
+        "width": 22
+      }
+    },
+    "4_jq7bj": {
+      "path": "images/packed/vfx/generic/twinkle_star.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 37,
+        "source": "images/packed/vfx/generic/twinkle_star.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/packed/vfx/generic/twinkle_star.webp",
+        "width": 37
+      }
+    },
+    "5_ueftv": {
+      "path": "images/vfx/light.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 256,
+        "source": "images/vfx/light.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/vfx/light.webp",
+        "width": 256
+      }
+    },
+    "6_dsevy": {
+      "path": "scenes/backgrounds/little_light_script.gd",
+      "type": "Script"
+    },
+    "shared_additive_mat": {
+      "path": "themes/canvas_item_material_additive_shared.tres",
+      "type": "Material"
+    }
+  },
+  "nodes": [
+    {
+      "name": "Pael",
+      "parent": null,
+      "props": {
+        "layout_mode": 3,
+        "anchors_preset": 15,
+        "anchor_right": 1.0,
+        "anchor_bottom": 1.0,
+        "grow_horizontal": 2,
+        "grow_vertical": 2,
+        "metadata/_edit_lock_": true
+      },
+      "type": "Control"
+    },
+    {
+      "name": "light_overlay",
+      "parent": ".",
+      "props": {
+        "modulate": {
+          "$": "Color",
+          "v": [
+            1,
+            0.705882,
+            0.301961,
+            0.333333
+          ]
+        },
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "CanvasItemMaterial_cwn76"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1579,
+            302
+          ]
+        },
+        "rotation": -0.141372,
+        "amount": 1,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "2_1kjdf"
+          ]
+        },
+        "lifetime": 10.0,
+        "preprocess": 2.0,
+        "local_coords": true,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_suqmx"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "light_overlay2",
+      "parent": ".",
+      "props": {
+        "modulate": {
+          "$": "Color",
+          "v": [
+            1,
+            0.705882,
+            0.301961,
+            0.333333
+          ]
+        },
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "CanvasItemMaterial_cwn76"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            293,
+            348
+          ]
+        },
+        "rotation": 0.233874,
+        "amount": 1,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "2_1kjdf"
+          ]
+        },
+        "lifetime": 10.0,
+        "preprocess": 2.0,
+        "local_coords": true,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_suqmx"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "light_overlay3",
+      "parent": ".",
+      "props": {
+        "modulate": {
+          "$": "Color",
+          "v": [
+            1,
+            0.705882,
+            0.301961,
+            0.556863
+          ]
+        },
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "CanvasItemMaterial_cwn76"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            614,
+            450
+          ]
+        },
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            0.5,
+            1
+          ]
+        },
+        "amount": 1,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "2_1kjdf"
+          ]
+        },
+        "lifetime": 10.0,
+        "preprocess": 2.0,
+        "local_coords": true,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_suqmx"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "light_overlay4",
+      "parent": ".",
+      "props": {
+        "modulate": {
+          "$": "Color",
+          "v": [
+            0.521569,
+            0.470588,
+            0.207843,
+            0.639216
+          ]
+        },
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "CanvasItemMaterial_cwn76"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1508,
+            418
+          ]
+        },
+        "rotation": -0.253073,
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            0.25,
+            1
+          ]
+        },
+        "amount": 1,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "2_1kjdf"
+          ]
+        },
+        "lifetime": 10.0,
+        "preprocess": 2.0,
+        "local_coords": true,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_suqmx"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "square_specks",
+      "parent": ".",
+      "props": {
+        "modulate": {
+          "$": "Color",
+          "v": [
+            0.705882,
+            0.435294,
+            0,
+            0.411765
+          ]
+        },
+        "material": {
+          "$": "ExtResource",
+          "v": [
+            "shared_additive_mat"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            508,
+            9
+          ]
+        },
+        "amount": 30,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "3_wjc05"
+          ]
+        },
+        "lifetime": 14.0,
+        "preprocess": 15.0,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_naw3t"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "twinkle_star_specks",
+      "parent": ".",
+      "props": {
+        "modulate": {
+          "$": "Color",
+          "v": [
+            0.705882,
+            0.435294,
+            0,
+            0.411765
+          ]
+        },
+        "material": {
+          "$": "ExtResource",
+          "v": [
+            "shared_additive_mat"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            630,
+            -43
+          ]
+        },
+        "amount": 30,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "4_jq7bj"
+          ]
+        },
+        "lifetime": 12.0,
+        "preprocess": 18.0,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_lqkpf"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "twinkle_star_specks2",
+      "parent": ".",
+      "props": {
+        "modulate": {
+          "$": "Color",
+          "v": [
+            0.705882,
+            0.435294,
+            0,
+            0.411765
+          ]
+        },
+        "material": {
+          "$": "ExtResource",
+          "v": [
+            "shared_additive_mat"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1552,
+            23
+          ]
+        },
+        "amount": 30,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "4_jq7bj"
+          ]
+        },
+        "lifetime": 12.0,
+        "preprocess": 18.0,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_lqkpf"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "light_small2",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "ExtResource",
+          "v": [
+            "shared_additive_mat"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            366.00003,
+            308
+          ]
+        },
+        "rotation": 2.48247,
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            0.3,
+            0.3
+          ]
+        },
+        "skew": -0.000518322,
+        "amount": 2,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "5_ueftv"
+          ]
+        },
+        "lifetime": 3.0,
+        "local_coords": true,
+        "spread": 20.21,
+        "gravity": {
+          "$": "Vector2",
+          "v": [
+            0,
+            0
+          ]
+        },
+        "scale_amount_min": 15.0,
+        "scale_amount_max": 15.0,
+        "scale_amount_curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_2qkgw"
+          ]
+        },
+        "color": {
+          "$": "Color",
+          "v": [
+            0.74902,
+            0.54902,
+            0.141176,
+            0.254902
+          ]
+        },
+        "color_ramp": {
+          "$": "SubResource",
+          "v": [
+            "Gradient_43xqa"
+          ]
+        },
+        "script": {
+          "$": "ExtResource",
+          "v": [
+            "6_dsevy"
+          ]
+        }
+      },
+      "type": "CPUParticles2D"
+    },
+    {
+      "name": "light_small6",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "ExtResource",
+          "v": [
+            "shared_additive_mat"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1053,
+            435
+          ]
+        },
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            0.1,
+            0.1
+          ]
+        },
+        "skew": -0.000518322,
+        "amount": 2,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "5_ueftv"
+          ]
+        },
+        "lifetime": 3.0,
+        "local_coords": true,
+        "spread": 20.21,
+        "gravity": {
+          "$": "Vector2",
+          "v": [
+            0,
+            0
+          ]
+        },
+        "scale_amount_min": 15.0,
+        "scale_amount_max": 15.0,
+        "scale_amount_curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_2qkgw"
+          ]
+        },
+        "color": {
+          "$": "Color",
+          "v": [
+            1,
+            0,
+            0.141176,
+            0.254902
+          ]
+        },
+        "color_ramp": {
+          "$": "SubResource",
+          "v": [
+            "Gradient_43xqa"
+          ]
+        },
+        "script": {
+          "$": "ExtResource",
+          "v": [
+            "6_dsevy"
+          ]
+        }
+      },
+      "type": "CPUParticles2D"
+    },
+    {
+      "name": "light_small3",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "ExtResource",
+          "v": [
+            "shared_additive_mat"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1883,
+            343
+          ]
+        },
+        "rotation": 2.48247,
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            0.3,
+            0.3
+          ]
+        },
+        "skew": -0.000518322,
+        "amount": 2,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "5_ueftv"
+          ]
+        },
+        "lifetime": 3.0,
+        "local_coords": true,
+        "spread": 20.21,
+        "gravity": {
+          "$": "Vector2",
+          "v": [
+            0,
+            0
+          ]
+        },
+        "scale_amount_min": 15.0,
+        "scale_amount_max": 15.0,
+        "scale_amount_curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_2qkgw"
+          ]
+        },
+        "color": {
+          "$": "Color",
+          "v": [
+            0.74902,
+            0.54902,
+            0.141176,
+            0.254902
+          ]
+        },
+        "color_ramp": {
+          "$": "SubResource",
+          "v": [
+            "Gradient_43xqa"
+          ]
+        },
+        "script": {
+          "$": "ExtResource",
+          "v": [
+            "6_dsevy"
+          ]
+        }
+      },
+      "type": "CPUParticles2D"
+    },
+    {
+      "name": "light_small4",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "ExtResource",
+          "v": [
+            "shared_additive_mat"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1706,
+            641
+          ]
+        },
+        "rotation": 2.48247,
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            0.3,
+            0.3
+          ]
+        },
+        "skew": -0.000518322,
+        "amount": 2,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "5_ueftv"
+          ]
+        },
+        "lifetime": 3.0,
+        "local_coords": true,
+        "spread": 20.21,
+        "gravity": {
+          "$": "Vector2",
+          "v": [
+            0,
+            0
+          ]
+        },
+        "scale_amount_min": 15.0,
+        "scale_amount_max": 15.0,
+        "scale_amount_curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_2qkgw"
+          ]
+        },
+        "color": {
+          "$": "Color",
+          "v": [
+            0.301961,
+            0.678431,
+            0.411765,
+            0.407843
+          ]
+        },
+        "color_ramp": {
+          "$": "SubResource",
+          "v": [
+            "Gradient_43xqa"
+          ]
+        },
+        "script": {
+          "$": "ExtResource",
+          "v": [
+            "6_dsevy"
+          ]
+        }
+      },
+      "type": "CPUParticles2D"
+    },
+    {
+      "name": "light_small5",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "ExtResource",
+          "v": [
+            "shared_additive_mat"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            239,
+            770
+          ]
+        },
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            0.3,
+            0.6
+          ]
+        },
+        "skew": -0.000518322,
+        "amount": 2,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "5_ueftv"
+          ]
+        },
+        "lifetime": 3.0,
+        "local_coords": true,
+        "spread": 20.21,
+        "gravity": {
+          "$": "Vector2",
+          "v": [
+            0,
+            0
+          ]
+        },
+        "scale_amount_min": 15.0,
+        "scale_amount_max": 15.0,
+        "scale_amount_curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_2qkgw"
+          ]
+        },
+        "color": {
+          "$": "Color",
+          "v": [
+            0.92549,
+            0.384314,
+            0.423529,
+            0.301961
+          ]
+        },
+        "color_ramp": {
+          "$": "SubResource",
+          "v": [
+            "Gradient_43xqa"
+          ]
+        },
+        "script": {
+          "$": "ExtResource",
+          "v": [
+            "6_dsevy"
+          ]
+        }
+      },
+      "type": "CPUParticles2D"
+    }
+  ],
+  "resources": {
+    "CanvasItemMaterial_cwn76": {
+      "props": {
+        "blend_mode": 1,
+        "light_mode": 1
+      },
+      "type": "CanvasItemMaterial"
+    },
+    "CurveTexture_5swo2": {
+      "props": {
+        "curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_2b72g"
+          ]
+        }
+      },
+      "type": "CurveTexture"
+    },
+    "CurveTexture_8plj5": {
+      "props": {
+        "curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_662hq"
+          ]
+        }
+      },
+      "type": "CurveTexture"
+    },
+    "CurveTexture_miej7": {
+      "props": {
+        "curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_f6mx2"
+          ]
+        }
+      },
+      "type": "CurveTexture"
+    },
+    "CurveTexture_n8c6y": {
+      "props": {
+        "curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_j6v3n"
+          ]
+        }
+      },
+      "type": "CurveTexture"
+    },
+    "CurveTexture_o3227": {
+      "props": {
+        "curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_x00pr"
+          ]
+        }
+      },
+      "type": "CurveTexture"
+    },
+    "CurveTexture_qoa3c": {
+      "props": {
+        "curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_ma8fx"
+          ]
+        }
+      },
+      "type": "CurveTexture"
+    },
+    "Curve_2b72g": {
+      "props": {
+        "_data": [
+          {
+            "$": "Vector2",
+            "v": [
+              0,
+              0
+            ]
+          },
+          0.0,
+          1.68527,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              1,
+              1
+            ]
+          },
+          2.0572,
+          0.0,
+          0,
+          0
+        ],
+        "point_count": 2
+      },
+      "type": "Curve"
+    },
+    "Curve_2qkgw": {
+      "props": {
+        "_data": [
+          {
+            "$": "Vector2",
+            "v": [
+              0,
+              0.321019
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.502521,
+              0.507939
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              1,
+              0.36242
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0
+        ],
+        "point_count": 3
+      },
+      "type": "Curve"
+    },
+    "Curve_662hq": {
+      "props": {
+        "_data": [
+          {
+            "$": "Vector2",
+            "v": [
+              0,
+              1
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              1,
+              0
+            ]
+          },
+          -0.00121226,
+          0.0,
+          0,
+          0
+        ],
+        "point_count": 2
+      },
+      "type": "Curve"
+    },
+    "Curve_f6mx2": {
+      "props": {
+        "_data": [
+          {
+            "$": "Vector2",
+            "v": [
+              0,
+              0
+            ]
+          },
+          0.0,
+          1.68527,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              1,
+              1
+            ]
+          },
+          2.0572,
+          0.0,
+          0,
+          0
+        ],
+        "point_count": 2
+      },
+      "type": "Curve"
+    },
+    "Curve_j6v3n": {
+      "props": {
+        "_data": [
+          {
+            "$": "Vector2",
+            "v": [
+              0,
+              0
+            ]
+          },
+          0.0,
+          3.42211,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.0678295,
+              0.354897
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.143411,
+              0.0674747
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.234496,
+              0.457091
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.317829,
+              0.144121
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.395349,
+              0.254831
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.48062,
+              0.0930233
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.532946,
+              0.363413
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.606589,
+              0.0461842
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.705426,
+              0.450704
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.75969,
+              0.12283
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.815892,
+              0.308058
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.872093,
+              0.0696037
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.947674,
+              0.21225
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              1,
+              0
+            ]
+          },
+          -6.93645,
+          0.0,
+          0,
+          0
+        ],
+        "point_count": 15
+      },
+      "type": "Curve"
+    },
+    "Curve_ma8fx": {
+      "props": {
+        "_data": [
+          {
+            "$": "Vector2",
+            "v": [
+              0,
+              1
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              1,
+              0
+            ]
+          },
+          -0.00121226,
+          0.0,
+          0,
+          0
+        ],
+        "point_count": 2
+      },
+      "type": "Curve"
+    },
+    "Curve_x00pr": {
+      "props": {
+        "_data": [
+          {
+            "$": "Vector2",
+            "v": [
+              0,
+              0
+            ]
+          },
+          0.0,
+          3.42211,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.0678295,
+              0.354897
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.143411,
+              0.0674747
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.234496,
+              0.457091
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.317829,
+              0.144121
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.395349,
+              0.254831
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.48062,
+              0.0930233
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.532946,
+              0.363413
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.606589,
+              0.0461842
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.705426,
+              0.450704
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.75969,
+              0.12283
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.815892,
+              0.308058
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.872093,
+              0.0696037
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.947674,
+              0.21225
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              1,
+              0
+            ]
+          },
+          -6.93645,
+          0.0,
+          0,
+          0
+        ],
+        "point_count": 15
+      },
+      "type": "Curve"
+    },
+    "GradientTexture1D_6722i": {
+      "props": {
+        "gradient": {
+          "$": "SubResource",
+          "v": [
+            "Gradient_03md1"
+          ]
+        }
+      },
+      "type": "GradientTexture1D"
+    },
+    "GradientTexture1D_bju2t": {
+      "props": {
+        "gradient": {
+          "$": "SubResource",
+          "v": [
+            "Gradient_hsu2c"
+          ]
+        }
+      },
+      "type": "GradientTexture1D"
+    },
+    "GradientTexture1D_mdvfs": {
+      "props": {
+        "gradient": {
+          "$": "SubResource",
+          "v": [
+            "Gradient_5goiu"
+          ]
+        }
+      },
+      "type": "GradientTexture1D"
+    },
+    "Gradient_03md1": {
+      "props": {
+        "offsets": {
+          "$": "PackedFloat32Array",
+          "v": [
+            0,
+            0.13986,
+            0.367619,
+            0.4,
+            0.422857,
+            0.539048,
+            0.63619,
+            0.666667,
+            0.704762,
+            0.798095,
+            0.868571,
+            0.902857,
+            0.931429,
+            0.967619,
+            1
+          ]
+        },
+        "colors": {
+          "$": "PackedColorArray",
+          "v": [
+            0,
+            0,
+            0,
+            0,
+            0.402864,
+            0.99397,
+            1,
+            1,
+            0.365884,
+            0.992627,
+            1,
+            1,
+            0.360784,
+            0.992157,
+            1,
+            0,
+            0.352941,
+            0.992157,
+            1,
+            1,
+            0.308699,
+            0.992931,
+            1,
+            1,
+            0.506445,
+            0.995114,
+            1,
+            1,
+            0.560784,
+            0.996078,
+            1,
+            0,
+            0.66484,
+            0.996863,
+            1,
+            1,
+            0.94902,
+            1,
+            1,
+            1,
+            0.94902,
+            1,
+            1,
+            1,
+            0.94902,
+            1,
+            1,
+            0,
+            0.94902,
+            1,
+            1,
+            1,
+            0.94902,
+            1,
+            1,
+            1,
+            0.94902,
+            1,
+            1,
+            0
+          ]
+        }
+      },
+      "type": "Gradient"
+    },
+    "Gradient_43xqa": {
+      "props": {
+        "offsets": {
+          "$": "PackedFloat32Array",
+          "v": [
+            0,
+            0.411546,
+            0.994413
+          ]
+        },
+        "colors": {
+          "$": "PackedColorArray",
+          "v": [
+            0.34902,
+            0.34902,
+            0.34902,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0.34902,
+            0.34902,
+            0.34902,
+            1
+          ]
+        }
+      },
+      "type": "Gradient"
+    },
+    "Gradient_5goiu": {
+      "props": {
+        "offsets": {
+          "$": "PackedFloat32Array",
+          "v": [
+            0,
+            0.0446194,
+            0.178478,
+            0.317585,
+            0.611354,
+            0.720524,
+            0.889764,
+            1
+          ]
+        },
+        "colors": {
+          "$": "PackedColorArray",
+          "v": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0.513726,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0.513726,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0
+          ]
+        }
+      },
+      "type": "Gradient"
+    },
+    "Gradient_hsu2c": {
+      "props": {
+        "offsets": {
+          "$": "PackedFloat32Array",
+          "v": [
+            0,
+            0.13986,
+            0.367619,
+            0.4,
+            0.422857,
+            0.539048,
+            0.63619,
+            0.666667,
+            0.704762,
+            0.798095,
+            0.868571,
+            0.902857,
+            0.931429,
+            0.967619,
+            1
+          ]
+        },
+        "colors": {
+          "$": "PackedColorArray",
+          "v": [
+            0,
+            0,
+            0,
+            0,
+            0.402864,
+            0.99397,
+            1,
+            1,
+            0.365884,
+            0.992627,
+            1,
+            1,
+            0.360784,
+            0.992157,
+            1,
+            0,
+            0.352941,
+            0.992157,
+            1,
+            1,
+            0.308699,
+            0.992931,
+            1,
+            1,
+            0.506445,
+            0.995114,
+            1,
+            1,
+            0.560784,
+            0.996078,
+            1,
+            0,
+            0.66484,
+            0.996863,
+            1,
+            1,
+            0.94902,
+            1,
+            1,
+            1,
+            0.94902,
+            1,
+            1,
+            1,
+            0.94902,
+            1,
+            1,
+            0,
+            0.94902,
+            1,
+            1,
+            1,
+            0.94902,
+            1,
+            1,
+            1,
+            0.94902,
+            1,
+            1,
+            0
+          ]
+        }
+      },
+      "type": "Gradient"
+    },
+    "ParticleProcessMaterial_lqkpf": {
+      "props": {
+        "particle_flag_rotate_y": true,
+        "particle_flag_disable_z": true,
+        "emission_shape_scale": {
+          "$": "Vector3",
+          "v": [
+            100,
+            0,
+            1
+          ]
+        },
+        "emission_shape": 2,
+        "emission_sphere_radius": 1.0,
+        "direction": {
+          "$": "Vector3",
+          "v": [
+            0,
+            0,
+            0
+          ]
+        },
+        "angular_velocity_min": -160.0,
+        "angular_velocity_max": 160.0,
+        "gravity": {
+          "$": "Vector3",
+          "v": [
+            0,
+            120,
+            0
+          ]
+        },
+        "scale_min": 0.3,
+        "scale_curve": {
+          "$": "SubResource",
+          "v": [
+            "CurveTexture_n8c6y"
+          ]
+        },
+        "color_ramp": {
+          "$": "SubResource",
+          "v": [
+            "GradientTexture1D_6722i"
+          ]
+        },
+        "alpha_curve": {
+          "$": "SubResource",
+          "v": [
+            "CurveTexture_8plj5"
+          ]
+        },
+        "turbulence_enabled": true,
+        "turbulence_noise_speed_random": 2.56,
+        "turbulence_influence_min": 0.164,
+        "turbulence_influence_max": 0.196,
+        "turbulence_influence_over_life": {
+          "$": "SubResource",
+          "v": [
+            "CurveTexture_miej7"
+          ]
+        }
+      },
+      "type": "ParticleProcessMaterial"
+    },
+    "ParticleProcessMaterial_naw3t": {
+      "props": {
+        "particle_flag_rotate_y": true,
+        "particle_flag_disable_z": true,
+        "emission_shape_scale": {
+          "$": "Vector3",
+          "v": [
+            100,
+            0,
+            1
+          ]
+        },
+        "emission_shape": 2,
+        "emission_sphere_radius": 1.0,
+        "direction": {
+          "$": "Vector3",
+          "v": [
+            0,
+            0,
+            0
+          ]
+        },
+        "angular_velocity_min": -160.0,
+        "angular_velocity_max": 160.0,
+        "gravity": {
+          "$": "Vector3",
+          "v": [
+            0,
+            130,
+            0
+          ]
+        },
+        "scale_min": 0.3,
+        "scale_curve": {
+          "$": "SubResource",
+          "v": [
+            "CurveTexture_o3227"
+          ]
+        },
+        "color_ramp": {
+          "$": "SubResource",
+          "v": [
+            "GradientTexture1D_bju2t"
+          ]
+        },
+        "alpha_curve": {
+          "$": "SubResource",
+          "v": [
+            "CurveTexture_qoa3c"
+          ]
+        },
+        "turbulence_enabled": true,
+        "turbulence_noise_scale": 8.636,
+        "turbulence_noise_speed_random": 2.56,
+        "turbulence_influence_min": 0.164,
+        "turbulence_influence_max": 0.196,
+        "turbulence_influence_over_life": {
+          "$": "SubResource",
+          "v": [
+            "CurveTexture_5swo2"
+          ]
+        }
+      },
+      "type": "ParticleProcessMaterial"
+    },
+    "ParticleProcessMaterial_suqmx": {
+      "props": {
+        "particle_flag_disable_z": true,
+        "emission_shape_scale": {
+          "$": "Vector3",
+          "v": [
+            0,
+            0,
+            0
+          ]
+        },
+        "spread": 0.0,
+        "gravity": {
+          "$": "Vector3",
+          "v": [
+            0,
+            0,
+            0
+          ]
+        },
+        "scale_min": 0.5,
+        "scale_max": 0.5,
+        "color_ramp": {
+          "$": "SubResource",
+          "v": [
+            "GradientTexture1D_mdvfs"
+          ]
+        }
+      },
+      "type": "ParticleProcessMaterial"
+    }
+  },
+  "source": "scenes/events/background_scenes/pael.tscn",
+  "version": 1
+}

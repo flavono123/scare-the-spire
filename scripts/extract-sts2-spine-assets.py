@@ -57,6 +57,9 @@ EVENT_BACKGROUND_SPINE_PREFIXES = {
     "animations/backgrounds/fake_merchant_room/top/fake_merchant_top",
 }
 SPINE_TEXTURE_SCALE_BY_PREFIX = {
+    # Ancient scene atlases exceed the 4096 WebGL texture limit on fallback/low-end renderers.
+    "animations/backgrounds/neow_room/neow": 0.5,
+    "animations/backgrounds/tezcatara/tezcatara": 0.5,
     # These two atlases are displayed at roughly half scale in fake_merchant.tscn.
     # Keeping their source dimensions would decode to about 140 MiB in the browser.
     "animations/backgrounds/fake_merchant_room/bottom/shop_fake_merchant_bottom": 0.5,

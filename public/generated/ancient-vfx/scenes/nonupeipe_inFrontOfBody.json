@@ -1,0 +1,1604 @@
+{
+  "ext": {
+    "2_8mveu": {
+      "path": "images/vfx/monsters/the_insatiable/sand_cloud.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 200,
+        "source": "images/vfx/monsters/the_insatiable/sand_cloud.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/vfx/monsters/the_insatiable/sand_cloud.webp",
+        "width": 800
+      }
+    },
+    "3_5hklm": {
+      "path": "images/vfx/monsters/queen/false_queen_light.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 1820,
+        "source": "images/vfx/monsters/queen/false_queen_light.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/vfx/monsters/queen/false_queen_light.webp",
+        "width": 1251
+      }
+    },
+    "4_lw2ai": {
+      "path": "themes/canvas_item_material_additive_shared.tres",
+      "type": "Material"
+    },
+    "5_vekcv": {
+      "path": "images/packed/vfx/generic/square_speck.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 31,
+        "source": "images/packed/vfx/generic/square_speck.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/packed/vfx/generic/square_speck.webp",
+        "width": 22
+      }
+    },
+    "6_7v07y": {
+      "path": "images/packed/vfx/generic/twinkle_star.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 37,
+        "source": "images/packed/vfx/generic/twinkle_star.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/packed/vfx/generic/twinkle_star.webp",
+        "width": 37
+      }
+    }
+  },
+  "nodes": [
+    {
+      "name": "Nonuepeipe",
+      "parent": null,
+      "props": {
+        "layout_mode": 3,
+        "anchors_preset": 15,
+        "anchor_right": 1.0,
+        "anchor_bottom": 1.0,
+        "grow_horizontal": 2,
+        "grow_vertical": 2,
+        "metadata/_edit_group_": true,
+        "metadata/_edit_lock_": true
+      },
+      "type": "Control"
+    },
+    {
+      "name": "fog3",
+      "parent": ".",
+      "props": {
+        "modulate": {
+          "$": "Color",
+          "v": [
+            1,
+            1,
+            1,
+            0.38039216
+          ]
+        },
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "CanvasItemMaterial_u0axj"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1540,
+            1246.0001
+          ]
+        },
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            -1.595,
+            0.96
+          ]
+        },
+        "amount": 5,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "2_8mveu"
+          ]
+        },
+        "lifetime": 15.0,
+        "preprocess": 100.0,
+        "fixed_fps": 0,
+        "visibility_rect": {
+          "$": "Rect2",
+          "v": [
+            -1000,
+            -1000,
+            2000,
+            2000
+          ]
+        },
+        "local_coords": true,
+        "draw_order": 0,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_p8vnu"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "fog4",
+      "parent": ".",
+      "props": {
+        "modulate": {
+          "$": "Color",
+          "v": [
+            1,
+            1,
+            1,
+            0.38039216
+          ]
+        },
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "CanvasItemMaterial_u0axj"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            756,
+            1263
+          ]
+        },
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            1.595,
+            0.96
+          ]
+        },
+        "amount": 5,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "2_8mveu"
+          ]
+        },
+        "lifetime": 15.0,
+        "preprocess": 100.0,
+        "fixed_fps": 0,
+        "visibility_rect": {
+          "$": "Rect2",
+          "v": [
+            -1000,
+            -1000,
+            2000,
+            2000
+          ]
+        },
+        "local_coords": true,
+        "draw_order": 0,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_p8vnu"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "fog5",
+      "parent": ".",
+      "props": {
+        "modulate": {
+          "$": "Color",
+          "v": [
+            1,
+            1,
+            1,
+            0.38039216
+          ]
+        },
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "CanvasItemMaterial_u0axj"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1630.0001,
+            913
+          ]
+        },
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            1.595,
+            0.595
+          ]
+        },
+        "amount": 7,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "2_8mveu"
+          ]
+        },
+        "lifetime": 15.0,
+        "preprocess": 100.0,
+        "fixed_fps": 0,
+        "visibility_rect": {
+          "$": "Rect2",
+          "v": [
+            -1000,
+            -1000,
+            2000,
+            2000
+          ]
+        },
+        "local_coords": true,
+        "draw_order": 0,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_1ehpu"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "fog6",
+      "parent": ".",
+      "props": {
+        "modulate": {
+          "$": "Color",
+          "v": [
+            1,
+            1,
+            1,
+            0.38039216
+          ]
+        },
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "CanvasItemMaterial_u0axj"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            306,
+            908
+          ]
+        },
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            -1.595,
+            0.595
+          ]
+        },
+        "amount": 7,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "2_8mveu"
+          ]
+        },
+        "lifetime": 15.0,
+        "preprocess": 100.0,
+        "fixed_fps": 0,
+        "visibility_rect": {
+          "$": "Rect2",
+          "v": [
+            -1000,
+            -1000,
+            2000,
+            2000
+          ]
+        },
+        "local_coords": true,
+        "draw_order": 0,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_1ehpu"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "fog7",
+      "parent": ".",
+      "props": {
+        "modulate": {
+          "$": "Color",
+          "v": [
+            1,
+            1,
+            1,
+            0.38039216
+          ]
+        },
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "CanvasItemMaterial_u0axj"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            2783,
+            1081
+          ]
+        },
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            -1.595,
+            0.96
+          ]
+        },
+        "amount": 10,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "2_8mveu"
+          ]
+        },
+        "lifetime": 30.0,
+        "preprocess": 100.0,
+        "fixed_fps": 0,
+        "visibility_rect": {
+          "$": "Rect2",
+          "v": [
+            -1000,
+            -1000,
+            2000,
+            2000
+          ]
+        },
+        "local_coords": true,
+        "draw_order": 0,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_p8vnu"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "fog8",
+      "parent": ".",
+      "props": {
+        "modulate": {
+          "$": "Color",
+          "v": [
+            1,
+            1,
+            1,
+            0.38039216
+          ]
+        },
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "CanvasItemMaterial_u0axj"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            -939.00006,
+            1081
+          ]
+        },
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            1.595,
+            0.96
+          ]
+        },
+        "amount": 10,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "2_8mveu"
+          ]
+        },
+        "lifetime": 30.0,
+        "preprocess": 100.0,
+        "fixed_fps": 0,
+        "visibility_rect": {
+          "$": "Rect2",
+          "v": [
+            -1000,
+            -1000,
+            2000,
+            2000
+          ]
+        },
+        "local_coords": true,
+        "draw_order": 0,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_p8vnu"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "light_overlay7",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "CanvasItemMaterial_b2iqy"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1644,
+            435
+          ]
+        },
+        "rotation": -0.93375117,
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            0.564,
+            2.364
+          ]
+        },
+        "skew": 0.19388759,
+        "amount": 1,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "3_5hklm"
+          ]
+        },
+        "lifetime": 10.0,
+        "preprocess": 2.0,
+        "local_coords": true,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_v66mf"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "light_overlay8",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "CanvasItemMaterial_b2iqy"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            570.00006,
+            303
+          ]
+        },
+        "rotation": 0.57770395,
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            0.564,
+            2
+          ]
+        },
+        "skew": 0.19388759,
+        "amount": 1,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "3_5hklm"
+          ]
+        },
+        "lifetime": 10.0,
+        "preprocess": 2.0,
+        "local_coords": true,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_v66mf"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "light_overlay9",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "CanvasItemMaterial_b2iqy"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1427.0001,
+            129.00006
+          ]
+        },
+        "rotation": -1.2164944,
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            0.564,
+            1.1989999
+          ]
+        },
+        "skew": 0.19388759,
+        "amount": 1,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "3_5hklm"
+          ]
+        },
+        "lifetime": 10.0,
+        "preprocess": 2.0,
+        "local_coords": true,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_v66mf"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "light_overlay10",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "CanvasItemMaterial_b2iqy"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            581,
+            156.00002
+          ]
+        },
+        "rotation": 0.57770395,
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            0.564,
+            1.1989999
+          ]
+        },
+        "skew": 0.19388759,
+        "amount": 1,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "3_5hklm"
+          ]
+        },
+        "lifetime": 10.0,
+        "preprocess": 2.0,
+        "local_coords": true,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_v66mf"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "light_overlay11",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "CanvasItemMaterial_b2iqy"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1015,
+            199.00002
+          ]
+        },
+        "rotation": -0.06981317,
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            1.289,
+            0.729
+          ]
+        },
+        "amount": 1,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "3_5hklm"
+          ]
+        },
+        "lifetime": 10.0,
+        "preprocess": 2.0,
+        "local_coords": true,
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_v66mf"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "square_specks",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "ExtResource",
+          "v": [
+            "4_lw2ai"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1014,
+            -46
+          ]
+        },
+        "amount": 60,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "5_vekcv"
+          ]
+        },
+        "lifetime": 30.0,
+        "preprocess": 15.0,
+        "visibility_rect": {
+          "$": "Rect2",
+          "v": [
+            -1000,
+            0,
+            2000,
+            2000
+          ]
+        },
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_x2akt"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    },
+    {
+      "name": "twinkle_star_specks",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "ExtResource",
+          "v": [
+            "4_lw2ai"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1011,
+            -46
+          ]
+        },
+        "amount": 60,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "6_7v07y"
+          ]
+        },
+        "lifetime": 30.0,
+        "preprocess": 18.0,
+        "visibility_rect": {
+          "$": "Rect2",
+          "v": [
+            -1000,
+            0,
+            2000,
+            2000
+          ]
+        },
+        "process_material": {
+          "$": "SubResource",
+          "v": [
+            "ParticleProcessMaterial_x2akt"
+          ]
+        }
+      },
+      "type": "GPUParticles2D"
+    }
+  ],
+  "resources": {
+    "CanvasItemMaterial_b2iqy": {
+      "props": {
+        "blend_mode": 1,
+        "light_mode": 1
+      },
+      "type": "CanvasItemMaterial"
+    },
+    "CanvasItemMaterial_u0axj": {
+      "props": {
+        "blend_mode": 1,
+        "particles_animation": true,
+        "particles_anim_h_frames": 4,
+        "particles_anim_v_frames": 1,
+        "particles_anim_loop": false
+      },
+      "type": "CanvasItemMaterial"
+    },
+    "CurveTexture_35hp8": {
+      "props": {
+        "curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_12txt"
+          ]
+        }
+      },
+      "type": "CurveTexture"
+    },
+    "CurveTexture_alpha_ParticleProcessMaterial_cl8og": {
+      "props": {
+        "curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_8hiv7"
+          ]
+        }
+      },
+      "type": "CurveTexture"
+    },
+    "CurveTexture_b4pdr": {
+      "props": {
+        "curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_6idv4"
+          ]
+        }
+      },
+      "type": "CurveTexture"
+    },
+    "CurveTexture_fja2n": {
+      "props": {
+        "curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_65i2k"
+          ]
+        }
+      },
+      "type": "CurveTexture"
+    },
+    "CurveTexture_fyrx4": {
+      "props": {
+        "curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_bmtlf"
+          ]
+        }
+      },
+      "type": "CurveTexture"
+    },
+    "CurveTexture_vgclf": {
+      "props": {
+        "curve": {
+          "$": "SubResource",
+          "v": [
+            "Curve_ykob7"
+          ]
+        }
+      },
+      "type": "CurveTexture"
+    },
+    "Curve_12txt": {
+      "props": {
+        "_data": [
+          {
+            "$": "Vector2",
+            "v": [
+              0,
+              1
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              1,
+              0
+            ]
+          },
+          -0.00121226,
+          0.0,
+          0,
+          0
+        ],
+        "point_count": 2
+      },
+      "type": "Curve"
+    },
+    "Curve_65i2k": {
+      "props": {
+        "_data": [
+          {
+            "$": "Vector2",
+            "v": [
+              0,
+              0.337644
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.546125,
+              1
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0
+        ],
+        "point_count": 2
+      },
+      "type": "Curve"
+    },
+    "Curve_6idv4": {
+      "props": {
+        "_limits": [
+          -360.0,
+          360.0,
+          0.0,
+          1.0
+        ],
+        "_data": [
+          {
+            "$": "Vector2",
+            "v": [
+              0,
+              -192.733
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.97905755,
+              -185.68756
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0
+        ],
+        "point_count": 2
+      },
+      "type": "Curve"
+    },
+    "Curve_8hiv7": {
+      "props": {
+        "_data": [
+          {
+            "$": "Vector2",
+            "v": [
+              0,
+              1
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              1,
+              1
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0
+        ],
+        "point_count": 2
+      },
+      "type": "Curve"
+    },
+    "Curve_bmtlf": {
+      "props": {
+        "_data": [
+          {
+            "$": "Vector2",
+            "v": [
+              0,
+              0
+            ]
+          },
+          0.0,
+          3.42211,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.0678295,
+              0.354897
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.143411,
+              0.0674747
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.234496,
+              0.457091
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.317829,
+              0.144121
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.395349,
+              0.254831
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.48062,
+              0.0930233
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.532946,
+              0.363413
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.606589,
+              0.0461842
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.705426,
+              0.450704
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.75969,
+              0.12283
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.815892,
+              0.308058
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.872093,
+              0.0696037
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              0.947674,
+              0.21225
+            ]
+          },
+          0.0,
+          0.0,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              1,
+              0
+            ]
+          },
+          -6.93645,
+          0.0,
+          0,
+          0
+        ],
+        "point_count": 15
+      },
+      "type": "Curve"
+    },
+    "Curve_ykob7": {
+      "props": {
+        "_data": [
+          {
+            "$": "Vector2",
+            "v": [
+              0,
+              0
+            ]
+          },
+          0.0,
+          1.68527,
+          0,
+          0,
+          {
+            "$": "Vector2",
+            "v": [
+              1,
+              1
+            ]
+          },
+          2.0572,
+          0.0,
+          0,
+          0
+        ],
+        "point_count": 2
+      },
+      "type": "Curve"
+    },
+    "GradientTexture1D_7qh6j": {
+      "props": {
+        "gradient": {
+          "$": "SubResource",
+          "v": [
+            "Gradient_py3aj"
+          ]
+        }
+      },
+      "type": "GradientTexture1D"
+    },
+    "GradientTexture1D_oxuda": {
+      "props": {
+        "gradient": {
+          "$": "SubResource",
+          "v": [
+            "Gradient_ffh1w"
+          ]
+        }
+      },
+      "type": "GradientTexture1D"
+    },
+    "GradientTexture1D_sbu3o": {
+      "props": {
+        "gradient": {
+          "$": "SubResource",
+          "v": [
+            "Gradient_owkcp"
+          ]
+        }
+      },
+      "type": "GradientTexture1D"
+    },
+    "Gradient_ffh1w": {
+      "props": {
+        "offsets": {
+          "$": "PackedFloat32Array",
+          "v": [
+            0,
+            0.230912,
+            0.780261,
+            0.998138
+          ]
+        },
+        "colors": {
+          "$": "PackedColorArray",
+          "v": [
+            0,
+            0,
+            0,
+            1,
+            0.57902,
+            0.57902,
+            0.57902,
+            1,
+            0.415686,
+            0.415686,
+            0.415686,
+            1,
+            0,
+            0,
+            0,
+            1
+          ]
+        }
+      },
+      "type": "Gradient"
+    },
+    "Gradient_owkcp": {
+      "props": {
+        "offsets": {
+          "$": "PackedFloat32Array",
+          "v": [
+            0,
+            0.170306,
+            0.286026,
+            0.423581,
+            0.611354,
+            0.720524,
+            0.847162,
+            1
+          ]
+        },
+        "colors": {
+          "$": "PackedColorArray",
+          "v": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0.513726,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0.513726,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0
+          ]
+        }
+      },
+      "type": "Gradient"
+    },
+    "Gradient_py3aj": {
+      "props": {
+        "offsets": {
+          "$": "PackedFloat32Array",
+          "v": [
+            0,
+            0.039634146,
+            0.367619,
+            0.4,
+            0.422857,
+            0.539048,
+            0.63619,
+            0.666667,
+            0.704762,
+            0.798095,
+            0.868571,
+            0.902857,
+            0.931429,
+            0.967619,
+            1
+          ]
+        },
+        "colors": {
+          "$": "PackedColorArray",
+          "v": [
+            0,
+            0,
+            0,
+            0,
+            0.402864,
+            0.99397,
+            1,
+            1,
+            0.365884,
+            0.992627,
+            1,
+            1,
+            0.360784,
+            0.992157,
+            1,
+            0,
+            0.352941,
+            0.992157,
+            1,
+            1,
+            0.308699,
+            0.992931,
+            1,
+            1,
+            0.506445,
+            0.995114,
+            1,
+            1,
+            0.560784,
+            0.996078,
+            1,
+            0,
+            0.66484,
+            0.996863,
+            1,
+            1,
+            0.94902,
+            1,
+            1,
+            1,
+            0.94902,
+            1,
+            1,
+            1,
+            0.94902,
+            1,
+            1,
+            0,
+            0.94902,
+            1,
+            1,
+            1,
+            0.94902,
+            1,
+            1,
+            1,
+            0.94902,
+            1,
+            1,
+            0
+          ]
+        }
+      },
+      "type": "Gradient"
+    },
+    "ParticleProcessMaterial_1ehpu": {
+      "props": {
+        "particle_flag_disable_z": true,
+        "angle_min": 15.0,
+        "angle_max": 15.0,
+        "angle_curve": {
+          "$": "SubResource",
+          "v": [
+            "CurveTexture_b4pdr"
+          ]
+        },
+        "gravity": {
+          "$": "Vector3",
+          "v": [
+            5,
+            0,
+            0
+          ]
+        },
+        "scale_min": 3.0,
+        "scale_max": 3.0,
+        "scale_curve": {
+          "$": "SubResource",
+          "v": [
+            "CurveTexture_fja2n"
+          ]
+        },
+        "color": {
+          "$": "Color",
+          "v": [
+            0.569583,
+            0.725612,
+            0.75896,
+            1
+          ]
+        },
+        "color_ramp": {
+          "$": "SubResource",
+          "v": [
+            "GradientTexture1D_oxuda"
+          ]
+        },
+        "alpha_curve": {
+          "$": "SubResource",
+          "v": [
+            "CurveTexture_alpha_ParticleProcessMaterial_cl8og"
+          ]
+        },
+        "anim_offset_max": 1.0
+      },
+      "type": "ParticleProcessMaterial"
+    },
+    "ParticleProcessMaterial_p8vnu": {
+      "props": {
+        "particle_flag_disable_z": true,
+        "angle_min": 15.0,
+        "angle_max": 15.0,
+        "angle_curve": {
+          "$": "SubResource",
+          "v": [
+            "CurveTexture_b4pdr"
+          ]
+        },
+        "gravity": {
+          "$": "Vector3",
+          "v": [
+            15,
+            0,
+            0
+          ]
+        },
+        "scale_min": 4.0,
+        "scale_max": 6.0,
+        "scale_curve": {
+          "$": "SubResource",
+          "v": [
+            "CurveTexture_fja2n"
+          ]
+        },
+        "color": {
+          "$": "Color",
+          "v": [
+            0.569583,
+            0.725612,
+            0.75896,
+            1
+          ]
+        },
+        "color_ramp": {
+          "$": "SubResource",
+          "v": [
+            "GradientTexture1D_oxuda"
+          ]
+        },
+        "alpha_curve": {
+          "$": "SubResource",
+          "v": [
+            "CurveTexture_alpha_ParticleProcessMaterial_cl8og"
+          ]
+        },
+        "anim_offset_max": 1.0
+      },
+      "type": "ParticleProcessMaterial"
+    },
+    "ParticleProcessMaterial_v66mf": {
+      "props": {
+        "particle_flag_disable_z": true,
+        "emission_shape_scale": {
+          "$": "Vector3",
+          "v": [
+            0,
+            0,
+            0
+          ]
+        },
+        "spread": 0.0,
+        "gravity": {
+          "$": "Vector3",
+          "v": [
+            0,
+            0,
+            0
+          ]
+        },
+        "scale_min": 0.5,
+        "scale_max": 0.5,
+        "color": {
+          "$": "Color",
+          "v": [
+            0.34901962,
+            0.9372549,
+            1,
+            1
+          ]
+        },
+        "color_ramp": {
+          "$": "SubResource",
+          "v": [
+            "GradientTexture1D_sbu3o"
+          ]
+        }
+      },
+      "type": "ParticleProcessMaterial"
+    },
+    "ParticleProcessMaterial_x2akt": {
+      "props": {
+        "particle_flag_rotate_y": true,
+        "particle_flag_disable_z": true,
+        "emission_shape_scale": {
+          "$": "Vector3",
+          "v": [
+            600,
+            0,
+            1
+          ]
+        },
+        "emission_shape": 2,
+        "emission_sphere_radius": 1.0,
+        "direction": {
+          "$": "Vector3",
+          "v": [
+            0,
+            0,
+            0
+          ]
+        },
+        "angular_velocity_min": -160.0,
+        "angular_velocity_max": 160.0,
+        "gravity": {
+          "$": "Vector3",
+          "v": [
+            0,
+            70,
+            0
+          ]
+        },
+        "radial_accel_min": 28.849997,
+        "radial_accel_max": 28.849997,
+        "scale_min": 0.3,
+        "scale_curve": {
+          "$": "SubResource",
+          "v": [
+            "CurveTexture_fyrx4"
+          ]
+        },
+        "color": {
+          "$": "Color",
+          "v": [
+            0.44951272,
+            0.9987884,
+            0.91724515,
+            0.36078432
+          ]
+        },
+        "color_ramp": {
+          "$": "SubResource",
+          "v": [
+            "GradientTexture1D_7qh6j"
+          ]
+        },
+        "alpha_curve": {
+          "$": "SubResource",
+          "v": [
+            "CurveTexture_35hp8"
+          ]
+        },
+        "turbulence_enabled": true,
+        "turbulence_noise_scale": 8.636,
+        "turbulence_noise_speed_random": 2.56,
+        "turbulence_influence_min": 0.164,
+        "turbulence_influence_max": 0.196,
+        "turbulence_influence_over_life": {
+          "$": "SubResource",
+          "v": [
+            "CurveTexture_vgclf"
+          ]
+        }
+      },
+      "type": "ParticleProcessMaterial"
+    }
+  },
+  "source": "scenes/events/background_scenes/nonupeipe.tscn",
+  "version": 1
+}

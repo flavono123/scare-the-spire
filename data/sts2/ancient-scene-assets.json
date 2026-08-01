@@ -1,0 +1,484 @@
+[
+  {
+    "alternatives": [],
+    "baseArt": {
+      "path": "/images/sts2/ancients-bg/darv_bg.webp",
+      "sourcePath": "images/ancients/darv_placeholder.png",
+      "status": "placeholder"
+    },
+    "composition": {
+      "slots": [
+        "baseArt",
+        "inFrontOfBody"
+      ],
+      "sourceZOrder": [
+        "baseArt",
+        "inFrontOfBody"
+      ]
+    },
+    "fallback": {
+      "path": "/images/sts2/ancients-bg/darv_bg.webp"
+    },
+    "id": "DARV",
+    "source": {
+      "gameVersion": "v0.110.1",
+      "scenePath": "scenes/events/background_scenes/darv.tscn"
+    },
+    "spine": null,
+    "token": "/images/sts2/ancients/darv.webp",
+    "vfx": {
+      "manifestPaths": {
+        "inFrontOfBody": "/generated/ancient-vfx/scenes/darv_inFrontOfBody.json"
+      },
+      "support": "full",
+      "supported": [
+        "CPUParticles2D:3"
+      ],
+      "unsupported": []
+    }
+  },
+  {
+    "alternatives": [],
+    "baseArt": {
+      "path": "/images/sts2/ancients-bg/neow_bg.webp",
+      "sourcePath": "animations/backgrounds/neow_room/neow_bg.png",
+      "status": "base"
+    },
+    "composition": {
+      "slots": [
+        "baseArt",
+        "behindBody",
+        "body",
+        "inFrontOfBody"
+      ],
+      "sourceZOrder": [
+        "baseArt",
+        "behindBody",
+        "body",
+        "inFrontOfBody"
+      ]
+    },
+    "fallback": {
+      "path": "/images/sts2/ancients-bg/neow_fallback.webp"
+    },
+    "id": "NEOW",
+    "source": {
+      "gameVersion": "v0.110.1",
+      "scenePath": "scenes/events/background_scenes/neow.tscn"
+    },
+    "spine": {
+      "animation": "idle_loop",
+      "assetId": "NEOW",
+      "skin": null,
+      "track": 0,
+      "transform": {
+        "position": {
+          "x": -390.0,
+          "y": -57.0
+        },
+        "scale": {
+          "x": 0.58,
+          "y": 0.58
+        }
+      },
+      "viewport": {
+        "width": 2560,
+        "height": 1200
+      }
+    },
+    "token": "/images/sts2/ancients/neow.webp",
+    "vfx": {
+      "manifestPaths": {
+        "behindBody": "/generated/ancient-vfx/scenes/neow_behindBody.json",
+        "inFrontOfBody": "/generated/ancient-vfx/scenes/neow_inFrontOfBody.json"
+      },
+      "support": "partial",
+      "supported": [
+        "CPUParticles2D:8",
+        "GPUParticles2D:3",
+        "Sprite2D:5"
+      ],
+      "unsupported": [
+        {
+          "count": 3,
+          "examples": [
+            "SpineSprite/SpineBoneNode/light4",
+            "SpineSprite/SpineBoneNode2/light4",
+            "SpineSprite/SpineBoneNode3/light4"
+          ],
+          "reason": "Spine bone attachment is not reproduced by the Canvas2D ambient runtime",
+          "type": "SpineBoneNode effects"
+        },
+        {
+          "count": 5,
+          "examples": [
+            "water_reflection",
+            "water_reflection2",
+            "water_reflection3",
+            "water_reflection4",
+            "water effect"
+          ],
+          "reason": "Godot shader motion is approximated by the static sprite or particle texture",
+          "type": "ShaderMaterial"
+        },
+        {
+          "count": 3,
+          "examples": [
+            "fog3",
+            "fog5",
+            "fog4"
+          ],
+          "reason": "Canvas2D preserves the core particle motion but not every Godot GPU material feature",
+          "type": "GPUParticles2D approximation"
+        }
+      ]
+    }
+  },
+  {
+    "alternatives": [],
+    "baseArt": {
+      "path": "/images/sts2/ancients-bg/nonupeipe_bg.webp",
+      "sourcePath": "images/ancients/nonupeipe_placeholder.png",
+      "status": "placeholder"
+    },
+    "composition": {
+      "slots": [
+        "baseArt",
+        "inFrontOfBody"
+      ],
+      "sourceZOrder": [
+        "baseArt",
+        "inFrontOfBody"
+      ]
+    },
+    "fallback": {
+      "path": "/images/sts2/ancients-bg/nonupeipe_bg.webp"
+    },
+    "id": "NONUPEIPE",
+    "source": {
+      "gameVersion": "v0.110.1",
+      "scenePath": "scenes/events/background_scenes/nonupeipe.tscn"
+    },
+    "spine": null,
+    "token": "/images/sts2/ancients/nonupeipe.webp",
+    "vfx": {
+      "manifestPaths": {
+        "inFrontOfBody": "/generated/ancient-vfx/scenes/nonupeipe_inFrontOfBody.json"
+      },
+      "support": "partial",
+      "supported": [
+        "GPUParticles2D:13"
+      ],
+      "unsupported": [
+        {
+          "count": 13,
+          "examples": [
+            "fog3",
+            "fog4",
+            "fog5",
+            "fog6",
+            "fog7"
+          ],
+          "reason": "Canvas2D preserves the core particle motion but not every Godot GPU material feature",
+          "type": "GPUParticles2D approximation"
+        }
+      ]
+    }
+  },
+  {
+    "alternatives": [],
+    "baseArt": {
+      "path": "/images/sts2/ancients-bg/orobas_bg.webp",
+      "sourcePath": "images/ancients/orobas_placeholder.png",
+      "status": "placeholder"
+    },
+    "composition": {
+      "slots": [
+        "baseArt",
+        "inFrontOfBody"
+      ],
+      "sourceZOrder": [
+        "baseArt",
+        "inFrontOfBody"
+      ]
+    },
+    "fallback": {
+      "path": "/images/sts2/ancients-bg/orobas_bg.webp"
+    },
+    "id": "OROBAS",
+    "source": {
+      "gameVersion": "v0.110.1",
+      "scenePath": "scenes/events/background_scenes/orobas.tscn"
+    },
+    "spine": null,
+    "token": "/images/sts2/ancients/orobas.webp",
+    "vfx": {
+      "manifestPaths": {
+        "inFrontOfBody": "/generated/ancient-vfx/scenes/orobas_inFrontOfBody.json"
+      },
+      "support": "partial",
+      "supported": [
+        "CPUParticles2D:4",
+        "GPUParticles2D:5"
+      ],
+      "unsupported": [
+        {
+          "count": 5,
+          "examples": [
+            "light_overlay",
+            "light_overlay2",
+            "square_specks",
+            "square_specks2",
+            "stars"
+          ],
+          "reason": "Canvas2D preserves the core particle motion but not every Godot GPU material feature",
+          "type": "GPUParticles2D approximation"
+        }
+      ]
+    }
+  },
+  {
+    "alternatives": [],
+    "baseArt": {
+      "path": "/images/sts2/ancients-bg/pael_bg.webp",
+      "sourcePath": "images/ancients/pael_placeholder.png",
+      "status": "placeholder"
+    },
+    "composition": {
+      "slots": [
+        "baseArt",
+        "inFrontOfBody"
+      ],
+      "sourceZOrder": [
+        "baseArt",
+        "inFrontOfBody"
+      ]
+    },
+    "fallback": {
+      "path": "/images/sts2/ancients-bg/pael_bg.webp"
+    },
+    "id": "PAEL",
+    "source": {
+      "gameVersion": "v0.110.1",
+      "scenePath": "scenes/events/background_scenes/pael.tscn"
+    },
+    "spine": null,
+    "token": "/images/sts2/ancients/pael.webp",
+    "vfx": {
+      "manifestPaths": {
+        "inFrontOfBody": "/generated/ancient-vfx/scenes/pael_inFrontOfBody.json"
+      },
+      "support": "partial",
+      "supported": [
+        "CPUParticles2D:5",
+        "GPUParticles2D:7"
+      ],
+      "unsupported": [
+        {
+          "count": 7,
+          "examples": [
+            "light_overlay",
+            "light_overlay2",
+            "light_overlay3",
+            "light_overlay4",
+            "square_specks"
+          ],
+          "reason": "Canvas2D preserves the core particle motion but not every Godot GPU material feature",
+          "type": "GPUParticles2D approximation"
+        }
+      ]
+    }
+  },
+  {
+    "alternatives": [],
+    "baseArt": {
+      "path": "/images/sts2/ancients-bg/tanx_bg.webp",
+      "sourcePath": "images/ancients/tanx_placeholder.png",
+      "status": "placeholder"
+    },
+    "composition": {
+      "slots": [
+        "baseArt",
+        "inFrontOfBody"
+      ],
+      "sourceZOrder": [
+        "baseArt",
+        "inFrontOfBody"
+      ]
+    },
+    "fallback": {
+      "path": "/images/sts2/ancients-bg/tanx_bg.webp"
+    },
+    "id": "TANX",
+    "source": {
+      "gameVersion": "v0.110.1",
+      "scenePath": "scenes/events/background_scenes/tanx.tscn"
+    },
+    "spine": null,
+    "token": "/images/sts2/ancients/tanx.webp",
+    "vfx": {
+      "manifestPaths": {
+        "inFrontOfBody": "/generated/ancient-vfx/scenes/tanx_inFrontOfBody.json"
+      },
+      "support": "partial",
+      "supported": [
+        "CPUParticles2D:4"
+      ],
+      "unsupported": [
+        {
+          "count": 2,
+          "examples": [
+            "ash4",
+            "ash5"
+          ],
+          "reason": "Godot shader motion is approximated by the static sprite or particle texture",
+          "type": "ShaderMaterial"
+        }
+      ]
+    }
+  },
+  {
+    "alternatives": [],
+    "baseArt": null,
+    "composition": {
+      "slots": [
+        "body",
+        "inFrontOfBody"
+      ],
+      "sourceZOrder": [
+        "body",
+        "inFrontOfBody"
+      ]
+    },
+    "fallback": {
+      "path": "/images/sts2/ancients-bg/tezcatara_fallback.webp"
+    },
+    "id": "TEZCATARA",
+    "source": {
+      "gameVersion": "v0.110.1",
+      "scenePath": "scenes/events/background_scenes/tezcatara.tscn"
+    },
+    "spine": {
+      "animation": "animation",
+      "assetId": "TEZCATARA",
+      "skin": null,
+      "track": 0,
+      "transform": {
+        "position": {
+          "x": -336.051,
+          "y": -6.640999
+        },
+        "scale": {
+          "x": 0.507,
+          "y": 0.507
+        }
+      },
+      "viewport": {
+        "width": 2560,
+        "height": 1200
+      }
+    },
+    "token": "/images/sts2/ancients/tezcatara.webp",
+    "vfx": {
+      "manifestPaths": {
+        "inFrontOfBody": "/generated/ancient-vfx/scenes/tezcatara_inFrontOfBody.json"
+      },
+      "support": "partial",
+      "supported": [
+        "CPUParticles2D:73",
+        "GPUParticles2D:72",
+        "Sprite2D:216"
+      ],
+      "unsupported": [
+        {
+          "count": 41,
+          "examples": [
+            "SpineSprite/SpineBoneNode/SteppedFireTezcatara/light_small2",
+            "SpineSprite/SpineBoneNode/SteppedFireTezcatara/light_small3",
+            "SpineSprite/SpineBoneNode/SteppedFireTezcatara/SteppedFireMix",
+            "SpineSprite/SpineBoneNode/SteppedFireTezcatara/SteppedFireAdd",
+            "SpineSprite/SpineBoneNode/SteppedFireTezcatara/SteppedFireAdd1"
+          ],
+          "reason": "Spine bone attachment is not reproduced by the Canvas2D ambient runtime",
+          "type": "SpineBoneNode effects"
+        },
+        {
+          "count": 216,
+          "examples": [
+            "FireContainer/pink7/SteppedFireMix",
+            "FireContainer/pink7/SteppedFireAdd",
+            "FireContainer/pink7/SteppedFireAdd1",
+            "FireContainer/pink6/SteppedFireMix",
+            "FireContainer/pink6/SteppedFireAdd"
+          ],
+          "reason": "Godot shader motion is approximated by the static sprite or particle texture",
+          "type": "ShaderMaterial"
+        },
+        {
+          "count": 72,
+          "examples": [
+            "FireContainer/pink7/sparks big",
+            "FireContainer/pink6/sparks big",
+            "FireContainer/pink5/sparks big",
+            "FireContainer/pink4/sparks big",
+            "FireContainer/pink3/sparks big"
+          ],
+          "reason": "Canvas2D preserves the core particle motion but not every Godot GPU material feature",
+          "type": "GPUParticles2D approximation"
+        }
+      ]
+    }
+  },
+  {
+    "alternatives": [],
+    "baseArt": {
+      "path": "/images/sts2/ancients-bg/vakuu_bg.webp",
+      "sourcePath": "images/ancients/vakuu_placeholder.png",
+      "status": "placeholder"
+    },
+    "composition": {
+      "slots": [
+        "baseArt",
+        "inFrontOfBody"
+      ],
+      "sourceZOrder": [
+        "baseArt",
+        "inFrontOfBody"
+      ]
+    },
+    "fallback": {
+      "path": "/images/sts2/ancients-bg/vakuu_bg.webp"
+    },
+    "id": "VAKUU",
+    "source": {
+      "gameVersion": "v0.110.1",
+      "scenePath": "scenes/events/background_scenes/vakuu.tscn"
+    },
+    "spine": null,
+    "token": "/images/sts2/ancients/vakuu.webp",
+    "vfx": {
+      "manifestPaths": {
+        "inFrontOfBody": "/generated/ancient-vfx/scenes/vakuu_inFrontOfBody.json"
+      },
+      "support": "partial",
+      "supported": [
+        "CPUParticles2D:5",
+        "GPUParticles2D:13"
+      ],
+      "unsupported": [
+        {
+          "count": 13,
+          "examples": [
+            "sparks big",
+            "light_overlay3",
+            "light_overlay4",
+            "square_specks",
+            "twinkle_star_specks"
+          ],
+          "reason": "Canvas2D preserves the core particle motion but not every Godot GPU material feature",
+          "type": "GPUParticles2D approximation"
+        }
+      ]
+    }
+  }
+]

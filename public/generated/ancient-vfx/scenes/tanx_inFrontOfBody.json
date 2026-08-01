@@ -1,0 +1,421 @@
+{
+  "ext": {
+    "5_lpiei": {
+      "path": "images/vfx/short_grain_rice_particle.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 32,
+        "source": "images/vfx/short_grain_rice_particle.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/vfx/short_grain_rice_particle.webp",
+        "width": 32
+      }
+    },
+    "6_c2shc": {
+      "path": "images/vfx/short_rice_no_glow_particle.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 14,
+        "source": "images/vfx/short_rice_no_glow_particle.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/vfx/short_rice_no_glow_particle.webp",
+        "width": 8
+      }
+    },
+    "7_vvxuw": {
+      "path": "shaders/scrolling_smoke.tres",
+      "type": "Shader"
+    },
+    "8_6ob42": {
+      "path": "images/vfx/fog_sheet_1.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 3316,
+        "source": "images/vfx/fog_sheet_1.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/vfx/fog_sheet_1.webp",
+        "width": 2472
+      }
+    },
+    "8_lpiei": {
+      "path": "images/vfx/monsters/lost_and_forgotten/lost_smoke_gradient.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 200,
+        "source": "images/vfx/monsters/lost_and_forgotten/lost_smoke_gradient.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/vfx/monsters/lost_and_forgotten/lost_smoke_gradient.webp",
+        "width": 10
+      }
+    },
+    "9_c2shc": {
+      "path": "images/packed/vfx/event/tanx_smoke.png",
+      "type": "Texture2D",
+      "texture": {
+        "height": 800,
+        "source": "images/packed/vfx/event/tanx_smoke.png",
+        "src": "/images/sts2/ancient-vfx/runtime/images/packed/vfx/event/tanx_smoke.webp",
+        "width": 200
+      }
+    }
+  },
+  "nodes": [
+    {
+      "name": "Tanx",
+      "parent": null,
+      "props": {
+        "layout_mode": 3,
+        "anchors_preset": 15,
+        "anchor_right": 1.0,
+        "anchor_bottom": 1.0,
+        "grow_horizontal": 2,
+        "grow_vertical": 2,
+        "metadata/_edit_group_": true,
+        "metadata/_edit_lock_": true
+      },
+      "type": "Control"
+    },
+    {
+      "name": "ash2",
+      "parent": ".",
+      "props": {
+        "position": {
+          "$": "Vector2",
+          "v": [
+            66,
+            1163
+          ]
+        },
+        "amount": 20,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "5_lpiei"
+          ]
+        },
+        "lifetime": 15.0,
+        "preprocess": 15.0,
+        "local_coords": true,
+        "emission_shape": 3,
+        "emission_rect_extents": {
+          "$": "Vector2",
+          "v": [
+            800,
+            500
+          ]
+        },
+        "gravity": {
+          "$": "Vector2",
+          "v": [
+            50,
+            -27
+          ]
+        },
+        "orbit_velocity_max": 0.03,
+        "radial_accel_max": 1.0,
+        "angle_max": 353.6,
+        "scale_amount_max": 4.0,
+        "color_ramp": {
+          "$": "SubResource",
+          "v": [
+            "Gradient_noine"
+          ]
+        }
+      },
+      "type": "CPUParticles2D"
+    },
+    {
+      "name": "ash3",
+      "parent": ".",
+      "props": {
+        "position": {
+          "$": "Vector2",
+          "v": [
+            225,
+            1163
+          ]
+        },
+        "amount": 20,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "6_c2shc"
+          ]
+        },
+        "lifetime": 15.0,
+        "preprocess": 15.0,
+        "local_coords": true,
+        "emission_shape": 3,
+        "emission_rect_extents": {
+          "$": "Vector2",
+          "v": [
+            800,
+            500
+          ]
+        },
+        "gravity": {
+          "$": "Vector2",
+          "v": [
+            50,
+            -27
+          ]
+        },
+        "orbit_velocity_max": 0.03,
+        "radial_accel_max": 1.0,
+        "angle_max": 353.6,
+        "scale_amount_max": 2.0,
+        "color": {
+          "$": "Color",
+          "v": [
+            1,
+            1,
+            1,
+            0.611765
+          ]
+        },
+        "color_ramp": {
+          "$": "SubResource",
+          "v": [
+            "Gradient_bjxus"
+          ]
+        }
+      },
+      "type": "CPUParticles2D"
+    },
+    {
+      "name": "ash4",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "ShaderMaterial_ub4r0"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            1538,
+            628
+          ]
+        },
+        "rotation": 0.596903,
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            1,
+            2.765
+          ]
+        },
+        "amount": 1,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "8_6ob42"
+          ]
+        },
+        "lifetime": 15.0,
+        "preprocess": 15.0,
+        "local_coords": true,
+        "direction": {
+          "$": "Vector2",
+          "v": [
+            0,
+            0
+          ]
+        },
+        "gravity": {
+          "$": "Vector2",
+          "v": [
+            0,
+            0
+          ]
+        },
+        "radial_accel_max": 1.0,
+        "scale_amount_min": 0.2,
+        "scale_amount_max": 0.2,
+        "color": {
+          "$": "Color",
+          "v": [
+            0,
+            0,
+            0,
+            1
+          ]
+        }
+      },
+      "type": "CPUParticles2D"
+    },
+    {
+      "name": "ash5",
+      "parent": ".",
+      "props": {
+        "material": {
+          "$": "SubResource",
+          "v": [
+            "ShaderMaterial_ub4r0"
+          ]
+        },
+        "position": {
+          "$": "Vector2",
+          "v": [
+            221,
+            494
+          ]
+        },
+        "rotation": 0.523599,
+        "scale": {
+          "$": "Vector2",
+          "v": [
+            1,
+            2.765
+          ]
+        },
+        "amount": 1,
+        "texture": {
+          "$": "ExtResource",
+          "v": [
+            "8_6ob42"
+          ]
+        },
+        "lifetime": 15.0,
+        "preprocess": 15.0,
+        "local_coords": true,
+        "direction": {
+          "$": "Vector2",
+          "v": [
+            0,
+            0
+          ]
+        },
+        "gravity": {
+          "$": "Vector2",
+          "v": [
+            0,
+            0
+          ]
+        },
+        "radial_accel_max": 1.0,
+        "scale_amount_min": 0.5,
+        "scale_amount_max": 0.5,
+        "color": {
+          "$": "Color",
+          "v": [
+            0,
+            0,
+            0,
+            1
+          ]
+        }
+      },
+      "type": "CPUParticles2D"
+    }
+  ],
+  "resources": {
+    "Gradient_bjxus": {
+      "props": {
+        "offsets": {
+          "$": "PackedFloat32Array",
+          "v": [
+            0,
+            0.178337,
+            1
+          ]
+        },
+        "colors": {
+          "$": "PackedColorArray",
+          "v": [
+            0.913725,
+            0.313726,
+            0.227451,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ]
+        }
+      },
+      "type": "Gradient"
+    },
+    "Gradient_noine": {
+      "props": {
+        "offsets": {
+          "$": "PackedFloat32Array",
+          "v": [
+            0,
+            0.178337,
+            0.573304,
+            1
+          ]
+        },
+        "colors": {
+          "$": "PackedColorArray",
+          "v": [
+            0.913725,
+            0.313726,
+            0.227451,
+            0,
+            0.913725,
+            0.313726,
+            0.227451,
+            1,
+            0.827451,
+            0.411765,
+            0.258824,
+            1,
+            0,
+            0,
+            0,
+            1
+          ]
+        }
+      },
+      "type": "Gradient"
+    },
+    "ShaderMaterial_ub4r0": {
+      "props": {
+        "shader": {
+          "$": "ExtResource",
+          "v": [
+            "7_vvxuw"
+          ]
+        },
+        "shader_parameter/Color": {
+          "$": "Color",
+          "v": [
+            0.972549,
+            0.411765,
+            0.105882,
+            1
+          ]
+        },
+        "shader_parameter/ScrollSpeed": 0.1,
+        "shader_parameter/timeOffset": 0.5,
+        "shader_parameter/smokeTex": {
+          "$": "ExtResource",
+          "v": [
+            "9_c2shc"
+          ]
+        },
+        "shader_parameter/AlphaStep": {
+          "$": "Vector2",
+          "v": [
+            0,
+            1
+          ]
+        },
+        "shader_parameter/alphaGradient": {
+          "$": "ExtResource",
+          "v": [
+            "8_lpiei"
+          ]
+        },
+        "shader_parameter/Ovarall_Alpha": 1.0
+      },
+      "type": "ShaderMaterial"
+    }
+  },
+  "source": "scenes/events/background_scenes/tanx.tscn",
+  "version": 1
+}

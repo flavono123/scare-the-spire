@@ -1,1011 +1,1011 @@
 neow.png
-size:5767,4883
+size:2884,2442
 filter:Linear,Linear
 scale:0.5
 Layer 1
-bounds:344,955,58,48
+bounds:172,478,29,24
 rotate:90
 darkwater 07
-bounds:3035,4595,1008,285
-offsets:8,0,1037,285
+bounds:1518,2298,504,142
+offsets:4,0,518,142
 darkwater 08
-bounds:3,1938,1047,284
-offsets:16,6,1070,290
+bounds:2,969,524,142
+offsets:8,3,535,145
 rotate:90
 eye a 1
-bounds:1811,515,76,74
-offsets:2,2,80,78
+bounds:906,258,38,37
+offsets:1,1,40,39
 eye a b
-bounds:692,533,75,73
-offsets:2,2,80,78
+bounds:346,266,38,36
+offsets:1,1,40,39
 rotate:90
 eye a c
-bounds:4329,112,72,69
-offsets:2,3,78,76
+bounds:2164,56,36,34
+offsets:1,2,39,38
 rotate:90
 eye a d
-bounds:398,393,69,63
-offsets:5,5,75,73
+bounds:199,196,34,32
+offsets:2,2,38,36
 eye b 1
-bounds:536,3069,73,66
-offsets:2,2,78,71
+bounds:268,1534,36,33
+offsets:1,1,39,36
 eye b 2
-bounds:536,2991,72,66
-offsets:2,2,77,71
+bounds:268,1496,36,33
+offsets:1,1,38,36
 rotate:90
 eye b 3
-bounds:544,393,71,64
-offsets:2,2,76,70
+bounds:272,196,36,32
+offsets:1,1,38,35
 eye b 4
-bounds:5588,1176,62,57
-offsets:5,5,72,66
+bounds:2794,588,31,28
+offsets:2,2,36,33
 rotate:90
 eye c 1
-bounds:2507,3,73,62
-offsets:2,2,78,66
+bounds:1254,2,36,31
+offsets:1,1,39,33
 eye c 2
-bounds:2877,4294,72,61
-offsets:2,2,77,66
+bounds:1438,2147,36,30
+offsets:1,1,38,33
 eye c 3
-bounds:1846,2316,68,57
-offsets:3,3,76,64
+bounds:923,1158,34,28
+offsets:2,2,38,32
 rotate:90
 eye c 4
-bounds:1793,1120,61,51
-offsets:5,5,66,59
+bounds:896,560,30,26
+offsets:2,2,33,30
 l waterfall
-bounds:1890,4361,519,1139
+bounds:945,2180,260,570
 rotate:90
 main water highlight 00
-bounds:2876,4021,958,108
+bounds:1438,2010,479,54
 main water highlight 01
-bounds:1254,1191,959,111
+bounds:627,596,480,56
 rotate:90
 main water highlight 02
-bounds:1890,4243,981,112
+bounds:945,2122,490,56
 main water highlight 03
-bounds:2877,4135,959,113
+bounds:1438,2068,480,56
 main waterfall a 00
-bounds:1775,595,112,492
-offsets:95,0,207,513
+bounds:888,298,56,246
+offsets:48,0,104,256
 main waterfall a 01
-bounds:3839,2533,111,492
-offsets:95,0,206,513
+bounds:1920,1266,56,246
+offsets:48,0,103,256
 main waterfall a 02
-bounds:1371,1110,171,492
-offsets:36,0,207,513
+bounds:686,555,86,246
+offsets:18,0,104,256
 main waterfall a 03
-bounds:4345,3555,171,492
-offsets:36,0,207,513
+bounds:2172,1778,86,246
+offsets:18,0,104,256
 main waterfall a 04
-bounds:3956,2533,173,492
-offsets:36,0,209,513
+bounds:1978,1266,86,246
+offsets:18,0,104,256
 main waterfall a 05
-bounds:4135,2533,112,492
-offsets:95,0,207,513
+bounds:2068,1266,56,246
+offsets:48,0,104,256
 main waterfall a 06
-bounds:4960,3643,111,492
-offsets:95,0,206,513
+bounds:2480,1822,56,246
+offsets:48,0,103,256
 rotate:90
 main waterfall a 07
-bounds:4494,3057,112,492
-offsets:48,0,160,513
+bounds:2247,1528,56,246
+offsets:24,0,80,256
 main waterfall a 08
-bounds:4497,2559,171,492
-offsets:36,0,207,513
+bounds:2248,1280,86,246
+offsets:18,0,104,256
 main waterfall a 09
-bounds:842,533,106,435
-offsets:11,0,117,456
+bounds:421,266,53,218
+offsets:6,0,58,228
 rotate:90
 main waterfall a 10
-bounds:4921,2650,106,492
-offsets:11,0,117,513
+bounds:2460,1325,53,246
+offsets:6,0,58,256
 main waterfall a 11
-bounds:4674,2539,105,492
-offsets:10,0,115,513
+bounds:2337,1270,52,246
+offsets:5,0,58,256
 rotate:90
 main waterfall a 12
-bounds:3590,1433,104,492
-offsets:10,0,114,513
+bounds:1795,716,52,246
+offsets:5,0,57,256
 main waterfall a 13
-bounds:3944,1537,99,492
-offsets:10,0,109,513
+bounds:1972,768,50,246
+offsets:5,0,54,256
 main waterfall a 14
-bounds:5172,2539,106,492
-offsets:100,0,206,513
+bounds:2586,1270,53,246
+offsets:50,0,103,256
 rotate:90
 main waterfall a 15
-bounds:4450,1895,148,492
-offsets:22,0,172,513
+bounds:2225,948,74,246
+offsets:11,0,86,256
 main waterfall a 16
-bounds:5133,1773,121,492
-offsets:46,0,167,513
+bounds:2566,886,60,246
+offsets:23,0,84,256
 rotate:90
 main waterfall a 17
-bounds:2873,746,110,492
-offsets:48,0,158,513
+bounds:1436,373,55,246
+offsets:24,0,79,256
 main waterfall a 18
-bounds:2989,746,113,492
-offsets:48,0,161,513
+bounds:1494,373,56,246
+offsets:24,0,80,256
 main waterfall a 19
-bounds:5651,1043,113,492
-offsets:48,0,161,513
+bounds:2826,522,56,246
+offsets:24,0,80,256
 main waterfall a 20
-bounds:3596,746,113,492
-offsets:95,0,208,513
+bounds:1798,373,56,246
+offsets:48,0,104,256
 main waterfall a 21
-bounds:3715,718,110,492
-offsets:95,0,205,513
+bounds:1858,359,55,246
+offsets:48,0,102,256
 main waterfall a 22
-bounds:3831,718,111,492
-offsets:95,0,206,513
+bounds:1916,359,56,246
+offsets:48,0,103,256
 main waterfall a 23
-bounds:3948,718,112,492
-offsets:95,0,207,513
+bounds:1974,359,56,246
+offsets:48,0,104,256
 main waterfall a 24
-bounds:4066,718,111,492
-offsets:95,0,206,513
+bounds:2033,359,56,246
+offsets:48,0,103,256
 main waterfall a 25
-bounds:4183,718,110,492
-offsets:95,0,205,513
+bounds:2092,359,55,246
+offsets:48,0,102,256
 main waterfall a 26
-bounds:4299,718,115,492
-offsets:13,0,128,513
+bounds:2150,359,58,246
+offsets:6,0,64,256
 main waterfall a 27
-bounds:1511,40,101,492
-offsets:11,0,112,513
+bounds:756,20,50,246
+offsets:6,0,56,256
 rotate:90
 main waterfall a 28
-bounds:5592,4388,172,492
-offsets:36,0,209,513
+bounds:2796,2194,86,246
+offsets:18,0,104,256
 main waterfall a 29
-bounds:5280,2651,169,492
-offsets:36,0,205,513
+bounds:2640,1326,84,246
+offsets:18,0,102,256
 main waterfall a 30
-bounds:4978,1034,173,492
-offsets:36,0,209,513
+bounds:2489,517,86,246
+offsets:18,0,104,256
 rotate:90
 main waterfall a 31
-bounds:2009,28,114,492
-offsets:95,0,209,513
+bounds:1004,14,57,246
+offsets:48,0,104,256
 rotate:90
 main waterfall b 00
-bounds:4978,701,159,492
-offsets:0,0,159,514
+bounds:2489,350,80,246
+offsets:0,0,80,257
 rotate:90
 main waterfall b 01
-bounds:3945,1234,160,492
-offsets:0,0,160,514
+bounds:1972,617,80,246
+offsets:0,0,80,257
 rotate:90
 main waterfall b 02
-bounds:2794,251,157,492
-offsets:0,0,157,514
+bounds:1397,126,78,246
+offsets:0,0,78,257
 rotate:90
 main waterfall b 03
-bounds:5588,545,161,492
-offsets:0,0,161,514
+bounds:2794,272,80,246
+offsets:0,0,80,257
 main waterfall b 04
-bounds:3621,391,157,492
-offsets:0,0,157,514
+bounds:1810,196,78,246
+offsets:0,0,78,257
 rotate:90
 main waterfall b 05
-bounds:1511,314,161,492
-offsets:0,0,161,514
+bounds:756,157,80,246
+offsets:0,0,80,257
 rotate:90
 main waterfall b 06
-bounds:3457,248,158,492
-offsets:0,0,158,514
+bounds:1728,124,79,246
+offsets:0,0,79,257
 main waterfall b 07
-bounds:1511,147,161,492
-offsets:0,0,161,514
+bounds:756,74,80,246
+offsets:0,0,80,257
 rotate:90
 main waterfall b 08
-bounds:3621,229,156,492
-offsets:0,0,156,514
+bounds:1810,114,78,246
+offsets:0,0,78,257
 rotate:90
 main waterfall b 09
-bounds:2009,148,160,492
-offsets:0,0,160,514
+bounds:1004,74,80,246
+offsets:0,0,80,257
 rotate:90
 main waterfall b 10
-bounds:3292,248,159,492
-offsets:0,0,159,514
+bounds:1646,124,80,246
+offsets:0,0,80,257
 main waterfall b 11
-bounds:2628,306,160,492
-offsets:0,0,160,514
+bounds:1314,153,80,246
+offsets:0,0,80,257
 main waterfall b 12
-bounds:2794,580,160,492
-offsets:0,0,160,514
+bounds:1397,290,80,246
+offsets:0,0,80,257
 rotate:90
 main waterfall b 13
-bounds:4119,220,157,492
-offsets:0,0,157,514
+bounds:2060,110,78,246
+offsets:0,0,78,257
 main waterfall b 14
-bounds:4978,866,162,492
-offsets:0,0,162,514
+bounds:2489,433,81,246
+offsets:0,0,81,257
 rotate:90
 main waterfall b 15
-bounds:3621,554,158,492
-offsets:0,0,158,514
+bounds:1810,277,79,246
+offsets:0,0,79,257
 rotate:90
 main waterfall b 16
-bounds:2794,414,160,492
-offsets:0,0,160,514
+bounds:1397,207,80,246
+offsets:0,0,80,257
 rotate:90
 main waterfall b 17
-bounds:4404,444,157,492
-offsets:0,0,157,514
+bounds:2202,222,78,246
+offsets:0,0,78,257
 rotate:90
 main waterfall b 18
-bounds:2009,314,161,492
-offsets:0,0,161,514
+bounds:1004,157,80,246
+offsets:0,0,80,257
 rotate:90
 main waterfall b 19
-bounds:1491,2177,158,435
-offsets:0,0,158,457
+bounds:746,1088,79,218
+offsets:0,0,79,228
 main waterfall b 20
-bounds:1248,3148,162,398
-offsets:0,0,162,420
+bounds:624,1574,81,199
+offsets:0,0,81,210
 main waterfall b 21
-bounds:3,35,156,353
-offsets:0,0,156,375
+bounds:2,18,78,176
+offsets:0,0,78,188
 main waterfall b 22
-bounds:4253,2393,160,345
-offsets:0,0,160,367
+bounds:2126,1196,80,172
+offsets:0,0,80,184
 rotate:90
 main waterfall b 23
-bounds:3621,65,158,340
-offsets:0,0,158,362
+bounds:1810,32,79,170
+offsets:0,0,79,181
 rotate:90
 main waterfall b 24
-bounds:1346,146,159,329
-offsets:0,0,159,351
+bounds:673,73,80,164
+offsets:0,0,80,176
 main waterfall b 25
-bounds:5460,218,156,321
-offsets:0,0,156,343
+bounds:2730,109,78,160
+offsets:0,0,78,172
 main waterfall b 26
-bounds:5600,2069,164,315
-offsets:0,0,164,337
+bounds:2800,1034,82,158
+offsets:0,0,82,168
 main waterfall b 27
-bounds:1320,2165,165,420
-offsets:0,0,165,442
+bounds:660,1082,82,210
+offsets:0,0,82,221
 main waterfall b 28
-bounds:5450,3311,168,326
-offsets:0,0,168,348
+bounds:2725,1656,84,163
+offsets:0,0,84,174
 main waterfall b 29
-bounds:3967,49,165,296
-offsets:0,0,165,318
+bounds:1984,24,82,148
+offsets:0,0,82,159
 rotate:90
 main waterfall b 30
-bounds:5460,51,161,266
-offsets:0,0,161,288
+bounds:2730,26,80,133
+offsets:0,0,80,144
 rotate:90
 main waterfall b 31
-bounds:2344,2431,156,199
-offsets:0,0,156,221
+bounds:1172,1216,78,100
+offsets:0,0,78,110
 main waterfall c 00
-bounds:2376,3632,251,492
-offsets:0,0,251,517
+bounds:1188,1816,126,246
+offsets:0,0,126,258
 main waterfall c 01
-bounds:3354,3772,243,492
-offsets:0,0,243,517
+bounds:1677,1886,122,246
+offsets:0,0,122,258
 rotate:90
 main waterfall c 02
-bounds:3354,3523,243,492
-offsets:1,0,244,517
+bounds:1677,1762,122,246
+offsets:0,0,122,258
 rotate:90
 main waterfall c 03
-bounds:4253,2559,238,492
-offsets:0,0,238,517
+bounds:2126,1280,119,246
+offsets:0,0,119,258
 main waterfall c 04
-bounds:2376,3134,244,492
-offsets:0,0,244,517
+bounds:1188,1567,122,246
+offsets:0,0,122,258
 main waterfall c 05
-bounds:1524,595,245,492
-offsets:0,0,247,517
+bounds:762,298,122,246
+offsets:0,0,124,258
 main waterfall c 06
-bounds:4960,3760,242,491
-offsets:0,0,242,517
+bounds:2480,1880,121,246
+offsets:0,0,121,258
 rotate:90
 main waterfall c 07
-bounds:3102,1433,238,492
-offsets:0,0,238,517
+bounds:1551,716,119,246
+offsets:0,0,119,258
 main waterfall c 08
-bounds:4246,3057,242,492
-offsets:0,0,242,517
+bounds:2123,1528,121,246
+offsets:0,0,121,258
 main waterfall c 09
-bounds:4952,3396,241,492
-offsets:0,0,241,517
+bounds:2476,1698,120,246
+offsets:0,0,120,258
 rotate:90
 main waterfall c 10
-bounds:2345,2636,244,492
-offsets:0,0,244,517
+bounds:1172,1318,122,246
+offsets:0,0,122,258
 main waterfall c 11
-bounds:1846,2390,240,492
-offsets:0,0,240,517
+bounds:923,1195,120,246
+offsets:0,0,120,258
 rotate:90
 main waterfall c 12
-bounds:4952,3149,241,492
-offsets:0,0,241,517
+bounds:2476,1574,120,246
+offsets:0,0,120,258
 rotate:90
 main waterfall c 13
-bounds:5102,2145,239,492
-offsets:0,0,239,517
+bounds:2551,1072,120,246
+offsets:0,0,120,258
 rotate:90
 main waterfall c 14
-bounds:3271,2297,240,492
-offsets:0,0,240,518
+bounds:1636,1148,120,246
+offsets:0,0,120,259
 rotate:90
 main waterfall c 15
-bounds:5102,1900,239,492
-offsets:0,0,239,517
+bounds:2551,950,120,246
+offsets:0,0,120,258
 rotate:90
 main waterfall c 16
-bounds:3271,2051,240,492
-offsets:0,0,240,517
+bounds:1636,1026,120,246
+offsets:0,0,120,258
 rotate:90
 main waterfall c 17
-bounds:4674,2650,241,492
-offsets:0,0,241,517
+bounds:2337,1325,120,246
+offsets:0,0,120,258
 main waterfall c 18
-bounds:4096,3555,243,492
-offsets:0,0,243,517
+bounds:2048,1778,122,246
+offsets:0,0,122,258
 main waterfall c 19
-bounds:3346,1433,238,492
-offsets:0,0,238,517
+bounds:1673,716,119,246
+offsets:0,0,119,258
 main waterfall c 20
-bounds:3769,2035,240,492
-offsets:0,0,240,516
+bounds:1884,1018,120,246
+offsets:0,0,120,258
 main waterfall c 21
-bounds:5033,2651,241,492
-offsets:2,0,243,517
+bounds:2516,1326,120,246
+offsets:1,0,122,258
 main waterfall c 22
-bounds:350,146,241,492
-offsets:0,0,241,529
+bounds:175,73,120,246
+offsets:0,0,120,264
 rotate:90
 main waterfall c 23
-bounds:3108,746,238,492
-offsets:0,0,238,517
+bounds:1554,373,119,246
+offsets:0,0,119,258
 main waterfall c 24
-bounds:4522,3704,242,492
-offsets:0,0,242,516
+bounds:2261,1852,121,246
+offsets:0,0,121,258
 main waterfall c 25
-bounds:848,146,241,492
-offsets:0,0,241,517
+bounds:424,73,120,246
+offsets:0,0,120,258
 rotate:90
 main waterfall c 26
-bounds:4204,1895,240,492
-offsets:0,0,240,517
+bounds:2102,948,120,246
+offsets:0,0,120,258
 main waterfall c 27
-bounds:3352,746,238,492
-offsets:0,0,238,517
+bounds:1676,373,119,246
+offsets:0,0,119,258
 main waterfall c 28
-bounds:2834,2048,241,492
-offsets:0,0,241,517
+bounds:1417,1024,120,246
+offsets:0,0,120,258
 main waterfall c 29
-bounds:4604,2146,240,492
-offsets:0,0,240,516
+bounds:2302,1073,120,246
+offsets:0,0,120,258
 rotate:90
 main waterfall c 30
-bounds:4604,1900,240,492
-offsets:0,0,240,516
+bounds:2302,950,120,246
+offsets:0,0,120,258
 rotate:90
 main waterfall c 31
-bounds:3700,1539,238,490
-offsets:0,0,238,517
+bounds:1850,770,119,245
+offsets:0,0,119,258
 main waterfall d 00
-bounds:4060,3031,180,489
-offsets:2,0,182,517
+bounds:2030,1516,90,244
+offsets:1,0,91,258
 main waterfall d 01
-bounds:2626,3108,184,489
-offsets:0,0,184,516
+bounds:1313,1554,92,244
+offsets:0,0,92,258
 main waterfall d 02
-bounds:1416,3175,180,432
-offsets:0,0,180,459
+bounds:708,1588,90,216
+offsets:0,0,90,230
 main waterfall d 03
-bounds:1655,2261,185,395
-offsets:0,0,185,424
+bounds:828,1130,92,198
+offsets:0,0,92,212
 main waterfall d 04
-bounds:165,68,179,350
-offsets:2,0,181,378
+bounds:82,34,90,175
+offsets:1,0,90,189
 main waterfall d 05
-bounds:3597,1244,183,342
-offsets:0,0,183,371
+bounds:1798,622,92,171
+offsets:0,0,92,186
 rotate:90
 main waterfall d 06
-bounds:2628,3,181,337
-offsets:0,0,181,366
+bounds:1314,2,90,168
+offsets:0,0,90,183
 rotate:90
 main waterfall d 07
-bounds:3289,60,182,326
-offsets:0,0,182,354
+bounds:1644,30,91,163
+offsets:0,0,91,177
 rotate:90
 main waterfall d 08
-bounds:5455,2658,179,318
-offsets:2,0,181,347
+bounds:2728,1329,90,159
+offsets:1,0,90,174
 main waterfall d 09
-bounds:2971,61,184,312
-offsets:0,0,184,341
+bounds:1486,30,92,156
+offsets:0,0,92,170
 rotate:90
 main waterfall d 10
-bounds:1602,3189,188,417
-offsets:0,0,188,445
+bounds:801,1594,94,208
+offsets:0,0,94,222
 main waterfall d 11
-bounds:5455,2982,192,323
-offsets:0,0,192,352
+bounds:2728,1491,96,162
+offsets:0,0,96,176
 main waterfall d 12
-bounds:5458,3666,189,293
-offsets:0,0,189,322
+bounds:2729,1833,94,146
+offsets:0,0,94,161
 rotate:90
 main waterfall d 13
-bounds:2506,2423,184,263
-offsets:0,0,185,292
+bounds:1253,1212,92,132
+offsets:0,0,92,146
 rotate:90
 main waterfall d 14
-bounds:2834,1863,179,196
-offsets:2,0,181,225
+bounds:1417,932,90,98
+offsets:1,0,90,112
 rotate:90
 main waterfall d 15
-bounds:4361,1400,182,489
-offsets:0,0,182,518
+bounds:2180,700,91,244
+offsets:0,0,91,259
 main waterfall d 16
-bounds:4549,1590,182,489
-offsets:0,0,182,517
+bounds:2274,795,91,244
+offsets:0,0,91,258
 rotate:90
 main waterfall d 17
-bounds:5044,1399,180,489
-offsets:0,0,181,517
+bounds:2522,700,90,244
+offsets:0,0,90,258
 rotate:90
 main waterfall d 18
-bounds:2595,2613,184,489
-offsets:0,0,184,517
+bounds:1298,1306,92,244
+offsets:0,0,92,258
 main waterfall d 19
-bounds:4549,1216,180,489
-offsets:2,0,182,517
+bounds:2274,608,90,244
+offsets:1,0,91,258
 rotate:90
 main waterfall d 20
-bounds:3870,3031,184,489
-offsets:0,0,184,517
+bounds:1935,1516,92,244
+offsets:0,0,92,258
 main waterfall d 21
-bounds:5044,1213,180,489
-offsets:0,0,180,517
+bounds:2522,606,90,244
+offsets:0,0,90,258
 rotate:90
 main waterfall d 22
-bounds:3081,2051,184,489
-offsets:0,0,398,534
+bounds:1540,1026,92,244
+offsets:0,0,199,267
 main waterfall d 23
-bounds:4420,721,180,489
-offsets:2,0,183,517
+bounds:2210,360,90,244
+offsets:1,0,92,258
 main waterfall d 24
-bounds:4015,2038,183,489
-offsets:0,0,183,518
+bounds:2008,1019,92,244
+offsets:0,0,92,259
 main waterfall d 25
-bounds:4549,1402,182,489
-offsets:0,0,182,517
+bounds:2274,701,91,244
+offsets:0,0,91,258
 rotate:90
 main waterfall d 26
-bounds:3102,1244,183,489
-offsets:0,0,183,517
+bounds:1551,622,92,244
+offsets:0,0,92,258
 rotate:90
 main waterfall d 27
-bounds:4172,1400,183,489
-offsets:0,0,183,517
+bounds:2086,700,92,244
+offsets:0,0,92,258
 main waterfall d 28
-bounds:4606,721,180,489
-offsets:2,0,182,517
+bounds:2303,360,90,244
+offsets:1,0,91,258
 main waterfall d 29
-bounds:1333,615,185,489
-offsets:0,0,185,517
+bounds:666,308,92,244
+offsets:0,0,92,258
 main waterfall d 30
-bounds:4792,721,180,489
-offsets:0,0,180,517
+bounds:2396,360,90,244
+offsets:0,0,90,258
 main waterfall d 31
-bounds:5044,1585,182,489
-offsets:0,0,182,517
+bounds:2522,792,91,244
+offsets:0,0,91,258
 rotate:90
 main waterfall e 00
-bounds:2827,3527,240,521
-offsets:0,0,240,534
+bounds:1414,1764,120,260
+offsets:0,0,120,267
 rotate:90
 main waterfall e 01
-bounds:5034,4499,240,521
-offsets:0,0,240,534
+bounds:2517,2250,120,260
+offsets:0,0,120,267
 rotate:90
 main waterfall e 02
-bounds:5006,4008,238,521
-offsets:0,0,238,534
+bounds:2503,2004,119,260
+offsets:0,0,119,267
 rotate:90
 main waterfall e 03
-bounds:1608,2662,240,521
-offsets:0,0,240,534
+bounds:804,1331,120,260
+offsets:0,0,120,267
 main waterfall e 04
-bounds:1849,3385,240,521
-offsets:0,0,240,528
+bounds:924,1692,120,260
+offsets:0,0,120,264
 rotate:90
 main waterfall e 05
-bounds:2101,2665,238,521
-offsets:0,0,238,530
+bounds:1050,1332,119,260
+offsets:0,0,119,265
 main waterfall e 06
-bounds:154,424,238,522
-offsets:0,0,238,535
+bounds:77,212,119,261
+offsets:0,0,119,268
 main waterfall e 07
-bounds:1402,3613,245,520
-offsets:0,0,245,531
+bounds:701,1806,122,260
+offsets:0,0,122,266
 main waterfall e 08
-bounds:1548,1093,239,521
-offsets:0,0,239,534
+bounds:774,546,120,260
+offsets:0,0,120,267
 main waterfall e 09
-bounds:5006,4252,241,521
-offsets:0,0,241,529
+bounds:2503,2126,120,260
+offsets:0,0,120,264
 rotate:90
 main waterfall e 10
-bounds:1665,1734,238,521
-offsets:0,0,238,534
+bounds:832,867,119,260
+offsets:0,0,119,267
 main waterfall e 11
-bounds:1849,3631,243,521
-offsets:0,0,243,534
+bounds:924,1816,122,260
+offsets:0,0,122,267
 rotate:90
 main waterfall e 12
-bounds:1849,3880,244,521
-offsets:2,0,246,534
+bounds:924,1940,122,260
+offsets:1,0,123,267
 rotate:90
 main waterfall e 13
-bounds:2827,3773,242,521
-offsets:0,0,242,533
+bounds:1414,1886,121,260
+offsets:0,0,121,266
 rotate:90
 main waterfall e 14
-bounds:1089,645,238,521
-offsets:0,0,238,534
+bounds:544,322,119,260
+offsets:0,0,119,267
 main waterfall e 15
-bounds:1854,2665,241,521
-offsets:0,0,241,534
+bounds:927,1332,120,260
+offsets:0,0,120,267
 main waterfall e 16
-bounds:3343,3277,240,521
-offsets:0,0,240,534
+bounds:1672,1638,120,260
+offsets:0,0,120,267
 rotate:90
 main waterfall e 17
-bounds:842,645,241,521
-offsets:0,0,241,534
+bounds:421,322,120,260
+offsets:0,0,120,267
 main waterfall e 18
-bounds:2816,3036,238,521
-offsets:0,0,238,534
+bounds:1408,1518,119,260
+offsets:0,0,119,267
 rotate:90
 main waterfall e 19
-bounds:3343,3031,240,521
-offsets:0,0,240,532
+bounds:1672,1516,120,260
+offsets:0,0,120,266
 rotate:90
 main waterfall e 20
-bounds:3312,2787,238,521
-offsets:0,0,238,534
+bounds:1656,1394,119,260
+offsets:0,0,119,267
 rotate:90
 main waterfall e 21
-bounds:2785,2546,238,521
-offsets:0,0,238,532
+bounds:1392,1273,119,260
+offsets:0,0,119,266
 rotate:90
 main waterfall e 22
-bounds:4770,3675,184,521
-offsets:0,0,238,534
+bounds:2385,1838,92,260
+offsets:0,0,119,267
 main waterfall e 23
-bounds:4762,3148,184,521
-offsets:0,0,236,532
+bounds:2381,1574,92,260
+offsets:0,0,118,266
 main waterfall e 24
-bounds:1796,3192,187,521
-offsets:0,0,231,534
+bounds:898,1596,94,260
+offsets:0,0,116,267
 rotate:90
 main waterfall e 25
-bounds:1653,3612,190,521
-offsets:0,0,203,534
+bounds:826,1806,95,260
+offsets:0,0,102,267
 main waterfall e 26
-bounds:5533,3861,186,521
-offsets:0,0,201,534
+bounds:2766,1930,93,260
+offsets:0,0,100,267
 main waterfall e 27
-bounds:2633,3603,188,521
-offsets:0,0,201,528
+bounds:1316,1802,94,260
+offsets:0,0,100,264
 main waterfall e 28
-bounds:2785,2790,240,521
-offsets:0,0,240,534
+bounds:1392,1395,120,260
+offsets:0,0,120,267
 rotate:90
 main waterfall e 29
-bounds:2816,3280,241,521
-offsets:0,0,241,534
+bounds:1408,1640,120,260
+offsets:0,0,120,267
 rotate:90
 main waterfall e 30
-bounds:3312,2543,238,521
-offsets:0,0,238,534
+bounds:1656,1272,119,260
+offsets:0,0,119,267
 rotate:90
 main waterfall e 31
-bounds:3852,3526,238,521
-offsets:0,0,238,529
+bounds:1926,1763,119,260
+offsets:0,0,119,264
 neow
-bounds:536,3552,860,581
-offsets:9,78,976,659
+bounds:268,1776,430,290
+offsets:4,39,488,330
 neow mouth
-bounds:536,3141,706,405
-offsets:0,53,706,458
+bounds:268,1570,353,202
+offsets:0,26,353,229
 r waterfalls
-bounds:3,2991,527,1142
+bounds:2,1496,264,571
 rock top
-bounds:1665,1620,113,108
-offsets:0,15,113,123
+bounds:832,810,56,54
+offsets:0,8,56,62
 rocks
-bounds:3,4139,1881,741
+bounds:2,2070,940,370
 waterfall highlight a 00
-bounds:635,2101,49,43
+bounds:318,1050,24,22
 rotate:90
 waterfall highlight a 01
-bounds:4549,1843,49,46
+bounds:2274,922,24,23
 waterfall highlight a 03
-bounds:1796,3557,49,47
+bounds:898,1778,24,24
 rotate:90
 waterfall highlight a 04
-bounds:2572,666,50,50
+bounds:1286,333,25,25
 waterfall highlight b 00
-bounds:2400,2390,35,48
+bounds:1200,1195,18,24
 rotate:90
 waterfall highlight b 01
-bounds:2344,2390,35,50
-offsets:0,0,45,50
+bounds:1172,1195,18,25
+offsets:0,0,22,25
 rotate:90
 waterfall highlight b 02
-bounds:2586,12,36,53
-offsets:0,0,45,53
+bounds:1293,6,18,26
+offsets:0,0,22,26
 waterfall highlight b 03
-bounds:1846,2261,36,49
-offsets:0,2,47,51
+bounds:923,1130,18,24
+offsets:0,1,24,26
 waterfall highlight c 00
-bounds:4269,3,181,54
+bounds:2134,2,90,27
 rotate:90
 waterfall highlight c 01
-bounds:5622,357,182,58
+bounds:2811,178,91,29
 rotate:90
 waterfall highlight c 02
-bounds:5686,357,182,58
+bounds:2843,178,91,29
 rotate:90
 waterfall highlight c 03
-bounds:3700,1473,183,60
+bounds:1850,736,92,30
 waterfall highlight d 00
-bounds:2794,746,41,52
+bounds:1397,373,20,26
 waterfall highlight d 01
-bounds:4612,3100,42,56
+bounds:2306,1550,21,28
 rotate:90
 waterfall highlight d 02
-bounds:3959,4206,42,56
+bounds:1980,2103,21,28
 rotate:90
 waterfall highlight d 03
-bounds:2827,4069,42,55
+bounds:1414,2034,21,28
 waterfall highlight e 00
-bounds:1283,595,31,44
-offsets:13,0,44,44
+bounds:642,298,16,22
+offsets:6,0,22,22
 waterfall highlight e 01
-bounds:1333,1139,32,46
-offsets:9,0,41,46
+bounds:666,570,16,23
+offsets:4,0,20,23
 waterfall highlight e 02
-bounds:2524,1278,31,48
-offsets:9,0,40,48
+bounds:1262,639,16,24
+offsets:4,0,20,24
 waterfall highlight e 03
-bounds:293,1966,32,45
-offsets:7,0,39,45
+bounds:146,983,16,22
+offsets:4,0,20,22
 rotate:90
 waterfall highlight f 00
-bounds:2572,614,46,50
+bounds:1286,307,23,25
 rotate:90
 waterfall highlight f 01
-bounds:2323,3325,46,54
+bounds:1162,1662,23,27
 waterfall highlight f 02
-bounds:3842,4202,46,54
+bounds:1921,2101,23,27
 rotate:90
 waterfall highlight f 03
-bounds:3902,4202,46,51
-offsets:0,1,46,52
+bounds:1951,2101,23,26
+offsets:0,0,23,26
 rotate:90
 wave left 1
-bounds:2043,599,117,523
-offsets:2,0,121,525
+bounds:1022,300,58,262
+offsets:1,0,60,262
 rotate:90
 wave left 10
-bounds:2491,1861,106,523
-offsets:1,0,109,525
+bounds:1246,930,53,262
+offsets:0,0,54,262
 wave left 11
-bounds:2524,1332,106,523
-offsets:1,0,109,525
+bounds:1262,666,53,262
+offsets:0,0,54,262
 wave left 12
-bounds:5476,685,106,522
-offsets:2,0,110,525
+bounds:2738,342,53,261
+offsets:1,0,55,262
 wave left 13
-bounds:2603,1861,107,523
-offsets:2,0,111,525
+bounds:1302,930,54,262
+offsets:1,0,56,262
 wave left 14
-bounds:4420,607,108,522
-offsets:1,0,111,525
+bounds:2210,304,54,261
+offsets:0,0,56,262
 rotate:90
 wave left 15
-bounds:2636,1332,109,523
-offsets:1,0,112,525
+bounds:1318,666,54,262
+offsets:0,0,56,262
 wave left 16
-bounds:4948,584,111,522
-offsets:1,0,114,525
+bounds:2474,292,56,261
+offsets:0,0,57,262
 rotate:90
 wave left 17
-bounds:2716,1861,112,523
-offsets:1,0,115,525
+bounds:1358,930,56,262
+offsets:0,0,58,262
 wave left 18
-bounds:1893,481,112,522
-offsets:2,0,116,525
+bounds:946,240,56,261
+offsets:1,0,58,262
 rotate:90
 wave left 19
-bounds:5651,1541,113,522
-offsets:1,0,116,525
+bounds:2826,770,56,261
+offsets:0,0,58,262
 wave left 2
-bounds:2507,71,115,522
-offsets:2,0,119,525
+bounds:1254,36,58,261
+offsets:1,0,60,262
 wave left 20
-bounds:4932,222,114,522
-offsets:2,0,118,525
+bounds:2466,111,57,261
+offsets:1,0,59,262
 rotate:90
 wave left 21
-bounds:4902,463,115,522
-offsets:2,0,119,525
+bounds:2451,232,58,261
+offsets:1,0,60,262
 rotate:90
 wave left 22
-bounds:2751,804,116,522
-offsets:1,0,119,525
+bounds:1376,402,58,261
+offsets:0,0,60,262
 wave left 23
-bounds:4282,190,116,522
-offsets:2,0,120,525
+bounds:2141,95,58,261
+offsets:1,0,60,262
 wave left 24
-bounds:4404,322,116,522
-offsets:2,0,120,525
+bounds:2202,161,58,261
+offsets:1,0,60,262
 rotate:90
 wave left 25
-bounds:2628,804,117,522
-offsets:1,0,120,525
+bounds:1314,402,58,261
+offsets:0,0,60,262
 wave left 26
-bounds:4049,1510,117,522
-offsets:1,0,120,525
+bounds:2024,755,58,261
+offsets:0,0,60,262
 wave left 27
-bounds:2751,1332,116,523
-offsets:2,0,120,525
+bounds:1376,666,58,262
+offsets:1,0,60,262
 wave left 28
-bounds:4604,1778,116,523
-offsets:2,0,120,525
+bounds:2302,889,58,262
+offsets:1,0,60,262
 rotate:90
 wave left 29
-bounds:4404,200,116,522
-offsets:2,0,119,525
+bounds:2202,100,58,261
+offsets:1,0,60,262
 rotate:90
 wave left 3
-bounds:3081,1931,114,523
-offsets:2,0,118,525
+bounds:1540,966,57,262
+offsets:1,0,59,262
 rotate:90
 wave left 30
-bounds:4932,342,115,522
-offsets:2,0,119,524
+bounds:2466,171,58,261
+offsets:1,0,60,262
 rotate:90
 wave left 4
-bounds:4932,104,112,522
-offsets:2,0,116,525
+bounds:2466,52,56,261
+offsets:1,0,58,262
 rotate:90
 wave left 5
-bounds:2873,1244,110,523
-offsets:2,0,114,525
+bounds:1436,622,55,262
+offsets:1,0,57,262
 wave left 6
-bounds:1283,481,108,522
-offsets:3,0,113,525
+bounds:642,240,54,261
+offsets:2,0,56,262
 rotate:90
 wave left 7
-bounds:4404,86,108,522
-offsets:3,0,113,525
+bounds:2202,43,54,261
+offsets:2,0,56,262
 rotate:90
 wave left 8
-bounds:2989,1244,107,523
-offsets:1,0,110,525
+bounds:1494,622,54,262
+offsets:0,0,55,262
 wave left 9
-bounds:5539,1244,106,523
-offsets:2,0,110,525
+bounds:2770,622,53,262
+offsets:1,0,55,262
 wave r 1
-bounds:3,394,145,551
-offsets:6,0,157,561
+bounds:2,197,72,276
+offsets:3,0,78,280
 wave r 10
-bounds:692,393,134,550
-offsets:6,0,146,561
+bounds:346,196,67,275
+offsets:3,0,73,280
 rotate:90
 wave r 11
-bounds:350,6,134,550
-offsets:6,0,145,561
+bounds:175,3,67,275
+offsets:3,0,72,280
 rotate:90
 wave r 12
-bounds:906,6,134,550
-offsets:6,0,145,561
+bounds:453,3,67,275
+offsets:3,0,72,280
 rotate:90
 wave r 13
-bounds:5035,4745,135,551
-offsets:6,0,146,561
+bounds:2518,2372,68,276
+offsets:3,0,73,280
 rotate:90
 wave r 14
-bounds:1909,1834,135,550
-offsets:6,0,147,561
+bounds:954,917,68,275
+offsets:3,0,74,280
 wave r 15
-bounds:1320,2591,136,551
-offsets:6,0,147,561
+bounds:660,1296,68,276
+offsets:3,0,74,280
 wave r 16
-bounds:1943,1278,138,550
-offsets:6,0,149,561
+bounds:972,639,69,275
+offsets:3,0,74,280
 wave r 17
-bounds:1371,1608,139,551
-offsets:6,0,150,561
+bounds:686,804,70,276
+offsets:3,0,75,280
 wave r 18
-bounds:1462,2618,140,551
-offsets:6,0,151,561
+bounds:731,1309,70,276
+offsets:3,0,76,280
 wave r 19
-bounds:398,462,140,551
-offsets:6,0,152,561
+bounds:199,231,70,276
+offsets:3,0,76,280
 wave r 2
-bounds:4612,3148,144,550
-offsets:6,0,156,561
+bounds:2306,1574,72,275
+offsets:3,0,78,280
 wave r 20
-bounds:4604,2392,141,550
-offsets:6,0,153,561
+bounds:2302,1196,70,275
+offsets:3,0,76,280
 rotate:90
 wave r 21
-bounds:544,463,142,551
-offsets:6,0,154,561
+bounds:272,232,71,276
+offsets:3,0,77,280
 wave r 22
-bounds:1516,1620,143,551
-offsets:6,0,154,561
+bounds:758,810,72,276
+offsets:3,0,77,280
 wave r 23
-bounds:5160,2390,143,550
-offsets:6,0,155,561
+bounds:2580,1195,72,275
+offsets:3,0,78,280
 rotate:90
 wave r 24
-bounds:2050,1834,144,550
-offsets:6,0,155,560
+bounds:1025,917,72,275
+offsets:3,0,78,280
 wave r 25
-bounds:2087,1278,144,550
-offsets:6,0,155,561
+bounds:1044,639,72,275
+offsets:3,0,78,280
 wave r 26
-bounds:1793,1177,144,551
-offsets:6,0,156,561
+bounds:896,588,72,276
+offsets:3,0,78,280
 wave r 27
-bounds:692,614,144,551
-offsets:6,0,156,561
+bounds:346,307,72,276
+offsets:3,0,78,280
 wave r 28
-bounds:1893,620,144,551
-offsets:6,0,156,561
+bounds:946,310,72,276
+offsets:3,0,78,280
 wave r 29
-bounds:2043,722,144,550
-offsets:6,0,156,560
+bounds:1022,361,72,275
+offsets:3,0,78,280
 wave r 3
-bounds:3956,4053,143,551
-offsets:6,0,155,561
+bounds:1978,2026,72,276
+offsets:3,0,78,280
 rotate:90
 wave r 30
-bounds:2193,722,144,550
-offsets:6,0,155,560
+bounds:1096,361,72,275
+offsets:3,0,78,280
 wave r 4
-bounds:2200,1834,141,550
-offsets:6,0,154,561
+bounds:1100,917,70,275
+offsets:3,0,77,280
 wave r 5
-bounds:2237,1278,139,550
-offsets:6,0,152,561
+bounds:1118,639,70,275
+offsets:3,0,76,280
 wave r 6
-bounds:2343,722,138,550
-offsets:6,0,150,561
+bounds:1172,361,69,275
+offsets:3,0,75,280
 wave r 7
-bounds:2347,1834,138,550
-offsets:6,0,150,561
+bounds:1174,917,69,275
+offsets:3,0,75,280
 wave r 8
-bounds:2382,1278,136,550
-offsets:6,0,148,561
+bounds:1191,639,68,275
+offsets:3,0,74,280
 wave r 9
-bounds:2487,722,135,550
-offsets:6,0,147,561
+bounds:1244,361,68,275
+offsets:3,0,74,280
 wave top 1
-bounds:4049,4658,979,108
-offsets:10,5,1000,118
+bounds:2024,2329,490,54
+offsets:5,2,500,59
 wave top 10
-bounds:864,2157,978,108
-offsets:11,5,1001,118
+bounds:432,1078,489,54
+offsets:6,2,500,59
 rotate:90
 wave top 11
-bounds:4049,4544,979,108
-offsets:11,5,1001,118
+bounds:2024,2272,490,54
+offsets:6,2,500,59
 wave top 12
-bounds:4021,4430,979,108
-offsets:10,5,1000,118
+bounds:2010,2215,490,54
+offsets:5,2,500,59
 wave top 13
-bounds:3035,4481,980,108
-offsets:11,5,1001,118
+bounds:1518,2240,490,54
+offsets:6,2,500,59
 wave top 14
-bounds:4021,4316,979,108
-offsets:10,5,1000,118
+bounds:2010,2158,490,54
+offsets:5,2,500,59
 wave top 15
-bounds:4021,4202,979,108
-offsets:11,5,1001,118
+bounds:2010,2101,490,54
+offsets:6,2,500,59
 wave top 16
-bounds:4049,4772,980,108
-offsets:10,5,1000,118
+bounds:2024,2386,490,54
+offsets:5,2,500,59
 wave top 17
-bounds:3,951,981,108
-offsets:10,5,1001,118
+bounds:2,476,490,54
+offsets:5,2,500,59
 rotate:90
 wave top 18
-bounds:117,952,980,108
-offsets:10,5,1000,118
+bounds:58,476,490,54
+offsets:5,2,500,59
 rotate:90
 wave top 19
-bounds:293,2004,981,108
-offsets:10,5,1001,118
+bounds:146,1002,490,54
+offsets:5,2,500,59
 rotate:90
 wave top 2
-bounds:521,2006,979,108
-offsets:10,5,1000,118
+bounds:260,1003,490,54
+offsets:5,2,500,59
 rotate:90
 wave top 20
-bounds:1890,4130,980,107
-offsets:10,5,1000,117
+bounds:945,2065,490,54
+offsets:5,2,500,58
 wave top 21
-bounds:231,952,980,107
-offsets:10,5,1000,117
+bounds:116,476,490,54
+offsets:5,2,500,58
 rotate:90
 wave top 22
-bounds:3035,4254,980,107
-offsets:10,5,1000,117
+bounds:1518,2127,490,54
+offsets:5,2,500,58
 wave top 23
-bounds:344,1019,979,107
-offsets:11,5,1001,118
+bounds:172,510,490,54
+offsets:6,2,500,59
 rotate:90
 wave top 24
-bounds:457,1020,979,107
-offsets:11,5,1000,118
+bounds:228,510,490,54
+offsets:6,2,500,59
 rotate:90
 wave top 25
-bounds:407,2005,980,108
-offsets:10,5,1000,118
+bounds:204,1002,490,54
+offsets:5,2,500,59
 rotate:90
 wave top 26
-bounds:570,1021,979,108
-offsets:10,5,1000,118
+bounds:285,510,490,54
+offsets:5,2,500,59
 rotate:90
 wave top 27
-bounds:635,2156,979,108
-offsets:11,5,1001,118
+bounds:318,1078,490,54
+offsets:6,2,500,59
 rotate:90
 wave top 28
-bounds:749,2157,978,109
-offsets:11,5,1000,119
+bounds:374,1078,489,54
+offsets:6,2,500,60
 rotate:90
 wave top 29
-bounds:1140,1174,976,108
-offsets:11,5,998,118
+bounds:570,587,488,54
+offsets:6,2,499,59
 rotate:90
 wave top 3
-bounds:978,2156,979,108
-offsets:11,5,1001,118
+bounds:489,1078,490,54
+offsets:6,2,500,59
 rotate:90
 wave top 30
-bounds:1092,2156,979,108
-offsets:10,5,999,118
+bounds:546,1078,490,54
+offsets:5,2,500,59
 rotate:90
 wave top 4
-bounds:1206,2156,979,108
-offsets:10,5,1000,118
+bounds:603,1078,490,54
+offsets:5,2,500,59
 rotate:90
 wave top 5
-bounds:684,1171,979,108
-offsets:11,5,1001,118
+bounds:342,586,490,54
+offsets:6,2,500,59
 rotate:90
 wave top 6
-bounds:798,1172,979,108
-offsets:10,5,1000,118
+bounds:399,586,490,54
+offsets:5,2,500,59
 rotate:90
 wave top 7
-bounds:3035,4367,980,108
-offsets:10,5,1000,118
+bounds:1518,2184,490,54
+offsets:5,2,500,59
 wave top 8
-bounds:912,1172,978,108
-offsets:11,5,1000,118
+bounds:456,586,489,54
+offsets:6,2,500,59
 rotate:90
 wave top 9
-bounds:1026,1172,978,108
-offsets:11,5,1000,118
+bounds:513,586,489,54
+offsets:6,2,500,59
 rotate:90
