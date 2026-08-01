@@ -287,6 +287,7 @@
       }
     }
     scene._images = images;
+    scene._additiveImages = new Map();
     scene._tints = new Map();
     scene._tintPixels = 0;
     scene._nodes = scene.nodes
@@ -328,14 +329,49 @@
     }
   }
 
-  function tintedImage(scene, image, texture, tint) {
+  function additiveImage(scene, image, texture) {
+    const cached = scene._additiveImages.get(texture.src);
+    if (cached) return cached;
+    const canvas = document.createElement("canvas");
+    canvas.width = texture.width;
+    canvas.height = texture.height;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) return image;
+    context.drawImage(image, 0, 0);
+    try {
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      const pixels = imageData.data;
+      for (let index = 3; index < pixels.length; index += 4) {
+        if (pixels[index] < 255) {
+          scene._additiveImages.set(texture.src, image);
+          return image;
+        }
+      }
+      for (let index = 0; index < pixels.length; index += 4) {
+        const intensity = Math.max(pixels[index], pixels[index + 1], pixels[index + 2]);
+        pixels[index + 3] = intensity;
+        if (intensity > 0) {
+          pixels[index] = Math.round(pixels[index] * 255 / intensity);
+          pixels[index + 1] = Math.round(pixels[index + 1] * 255 / intensity);
+          pixels[index + 2] = Math.round(pixels[index + 2] * 255 / intensity);
+        }
+      }
+      context.putImageData(imageData, 0, 0);
+      scene._additiveImages.set(texture.src, canvas);
+      return canvas;
+    } catch {
+      return image;
+    }
+  }
+
+  function tintedImage(scene, image, texture, tint, variant) {
     if (tint.r > 0.96 && tint.g > 0.96 && tint.b > 0.96) return image;
     const pixels = texture.width * texture.height;
     if (pixels > 512 * 512 || scene._tintPixels + pixels > 4 * 1024 * 1024) return image;
     const red = Math.round(clamp(tint.r, 0, 1) * 15) * 17;
     const green = Math.round(clamp(tint.g, 0, 1) * 15) * 17;
     const blue = Math.round(clamp(tint.b, 0, 1) * 15) * 17;
-    const key = `${texture.src}:${red}:${green}:${blue}`;
+    const key = `${texture.src}:${variant}:${red}:${green}:${blue}`;
     const cached = scene._tints.get(key);
     if (cached) return cached;
     if (scene._tints.size >= 24) return image;
@@ -485,7 +521,13 @@
       context.globalAlpha = clamp(particleColor.a, 0, 1);
       drawImageCentered(
         context,
-        tintedImage(scene, image, texture, particleColor),
+        tintedImage(
+          scene,
+          blend === 1 ? additiveImage(scene, image, texture) : image,
+          texture,
+          particleColor,
+          blend === 1 ? "additive" : "source",
+        ),
         source,
         sourceWidth,
         sourceHeight,
