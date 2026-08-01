@@ -66,14 +66,12 @@ function getAncientDetailLabels(serviceLocale: ServiceLocale) {
         englishEpithet: "영어 이명",
         patchHistory: "패치 이력",
         noPatchHistory: "구조화 변경 없음",
-        rewardRelics: "보상 유물",
       }
     : {
         englishName: "English name",
         englishEpithet: "English epithet",
         patchHistory: "Patch History",
         noPatchHistory: "No structured changes",
-        rewardRelics: "Reward Relics",
       };
 }
 
@@ -189,7 +187,6 @@ export function AncientDetail({
               key={ancient.id}
               ancient={ancient}
               characters={characters}
-              serviceLocale={serviceLocale}
               messages={serviceText}
               entities={entities}
               excludeSelf={excludeSelf}
@@ -227,7 +224,7 @@ export function AncientDetail({
             serviceLocale={serviceLocale}
             groups={[
               { kind: "card", targets: relatedCardTargets },
-              { kind: "relic", targets: relatedRelicTargets, label: detailLabels.rewardRelics, layout: "grid" },
+              { kind: "relic", targets: relatedRelicTargets, label: serviceText.ancientsView.rewardRelics, layout: "grid" },
             ]}
           />
 

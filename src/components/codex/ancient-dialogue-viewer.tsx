@@ -6,7 +6,6 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { CodexServiceMessages } from "@/lib/codex-service";
 import { stripCodexMarkup } from "@/lib/codex-search";
 import type { CodexAncient, CodexCharacter } from "@/lib/codex-types";
-import type { ServiceLocale } from "@/lib/i18n";
 import { DescriptionText } from "./codex-description";
 import { RichDescription } from "./rich-description";
 
@@ -17,14 +16,12 @@ const SPECIAL_GROUPS = ["First Visit", "Returning"] as const;
 export function AncientDialogueViewer({
   ancient,
   characters,
-  serviceLocale,
   messages,
   entities,
   excludeSelf,
 }: {
   ancient: CodexAncient;
   characters: CodexCharacter[];
-  serviceLocale: ServiceLocale;
   messages: CodexServiceMessages;
   entities?: EntityInfo[];
   excludeSelf?: ReadonlySet<string>;
@@ -52,8 +49,8 @@ export function AncientDialogueViewer({
   const currentLine = scene?.lines[lineIndex];
   const atLastLine = Boolean(scene && lineIndex === scene.lines.length - 1);
   const continueLabel = atLastLine
-    ? serviceLocale === "ko" ? "다시 보기" : "Replay"
-    : currentLine?.nextLabel ?? (serviceLocale === "ko" ? "계속" : "Continue");
+    ? messages.ancientsView.replay
+    : currentLine?.nextLabel ?? messages.ancientsView.continue;
 
   useEffect(() => {
     currentLineRef.current?.scrollIntoView({
@@ -103,7 +100,7 @@ export function AncientDialogueViewer({
       <div className="pointer-events-none absolute inset-x-2 bottom-14 top-[4.75rem] z-10 flex min-w-0 flex-col gap-2 sm:inset-x-4 sm:bottom-16 sm:top-[5.25rem]">
         <div
           role="tablist"
-          aria-label={serviceLocale === "ko" ? "대사 그룹" : "Dialogue group"}
+          aria-label={messages.ancientsView.dialogueGroup}
           className="pointer-events-auto flex min-h-11 gap-1.5 overflow-x-auto rounded-lg bg-black/65 p-1.5 [scrollbar-width:thin]"
         >
           {groups.map((group) => (
@@ -126,7 +123,7 @@ export function AncientDialogueViewer({
 
         <div
           role="tablist"
-          aria-label={serviceLocale === "ko" ? "대화 선택" : "Dialogue selection"}
+          aria-label={messages.ancientsView.dialogueSelection}
           className="pointer-events-auto flex min-h-11 gap-1.5 overflow-x-auto px-1 [scrollbar-width:thin]"
         >
           {scenes.map((candidate, index) => (
@@ -142,7 +139,7 @@ export function AncientDialogueViewer({
                   : "border-white/15 bg-black/45 text-gray-200 hover:bg-white/10"
               }`}
             >
-              {serviceLocale === "ko" ? `대화 ${index + 1}` : `Dialogue ${index + 1}`}
+              {messages.ancientsView.dialogueNumber.replace("{number}", String(index + 1))}
             </button>
           ))}
         </div>
@@ -154,7 +151,7 @@ export function AncientDialogueViewer({
               const isAncient = line.speaker === "ancient";
               const speakerName = isAncient
                 ? ancient.name
-                : selectedGroup.character?.name ?? (serviceLocale === "ko" ? "캐릭터" : "Character");
+                : selectedGroup.character?.name ?? messages.ancientsView.characterSpeaker;
               const portrait = isAncient
                 ? ancient.sceneAsset.token
                 : selectedGroup.character?.iconUrl ?? ancient.sceneAsset.token;
@@ -185,7 +182,7 @@ export function AncientDialogueViewer({
                     {!isCurrent && (
                       <button
                         type="button"
-                        aria-label={serviceLocale === "ko" ? "이 대사 다시 보기" : "Review this line"}
+                        aria-label={messages.ancientsView.reviewLine}
                         onClick={() => setRevealedStaleIndex(index)}
                         onFocus={() => setRevealedStaleIndex(index)}
                         onBlur={() => setRevealedStaleIndex(null)}
