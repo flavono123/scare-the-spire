@@ -12,7 +12,7 @@
 2. 투표 전에는 `총 N표`만 보여주고 좌우 득표율은 숨긴다.
 3. 게임 요소 하나를 탭하면 별도 로그인, 확인창, 제출 버튼 없이 투표한다.
 4. 선택 직후 같은 자리에서 좌우 `% + 표 수`와 내 선택을 보여준다.
-5. 한 게시글에는 익명 브라우저 계정당 한 번만 투표하며 v1에서는 바꿀 수 없다.
+5. 한 게시글에는 익명 브라우저 계정당 한 표만 유지한다. `투표 취소` 후에는 다시 고를 수 있다.
 6. 투표하지 않아도 글 열기, 백과사전 이동, 좋아요, 댓글, 다음 글 탐색은 모두 가능하다.
 7. `현황만 보기`와 마감 시간은 v1에 넣지 않는다.
 
@@ -68,8 +68,10 @@
 ```
 
 - 게임 요소 크기는 그대로 둔다. 결과 때문에 양쪽 카드 폭이 달라지지 않는다.
-- 아래의 한 줄 결과 막대만 `spire-blue`와 `spire-pink` 비율로 채운다.
+- 아래의 한 줄 결과 막대만 `spire-aqua`와 `spire-pink` 비율로 채운다.
 - 선택한 쪽에는 STS2 `thumb_up` emote와 `내 선택`을 함께 표시한다. 색만으로 상태를 전달하지 않는다.
+- 선택하지 않은 쪽에는 `선택 완료` 같은 완료 표식을 붙이지 않고 선택 프레임만 비활성화한다.
+- 결과 아래의 낮은 강조도 `투표 취소`를 누르면 표를 집계에서 빼고, 결과를 다시 가린 투표 전 상태로 돌아간다.
 - 숫자는 낙관적으로 즉시 갱신하되 저장 실패 시 원래 상태로 되돌리고 기존 engagement/storage 장애 UI를 재사용한다.
 - 결과 막대는 한 번만 짧게 전환하고 `prefers-reduced-motion`에서는 움직이지 않는다.
 
@@ -84,7 +86,8 @@
 
 - 첫 탭 즉시 선택 상태를 보여주고 버튼을 잠깐 비활성화한다. 익명 세션 생성과 insert는 뒤에서 진행한다.
 - 기존 세션에 표가 있으면 첫 렌더부터 결과와 내 선택을 보여준다.
-- v1은 최종 선택이다. 실수 탭이 실제 문제로 확인되기 전에는 확인 모달, 수정, 취소, 투표 이력을 만들지 않는다.
+- `투표 취소`는 본인 표를 delete하고 두 선택지를 다시 활성화한다. 확인 모달은 두지 않으며, 취소 후 어느 쪽이든 다시 투표할 수 있다.
+- 저장·취소 중에는 중복 조작만 잠깐 막고, 실패하면 직전 상태로 되돌린다.
 
 ## 4. 게임 우선 시각 정책
 
@@ -99,7 +102,7 @@
 | 선택 확인 | `/images/sts2/ui/emote/thumb_up.png` |
 | 카드/유물 등 | 현재 `CardTile`, `EntityPreview`, `hover_tip.png` 렌더 |
 
-좌우 진영은 고정된 `spire-blue` / `spire-pink`로 구분한다. 기존 의미가 강한 green/red의 버프/너프 조합은 쓰지 않는다. 게임 요소 자체의 gold·캐릭터 색은 그대로 두고, 진영색은 얇은 레일·포커스·결과 막대에만 쓴다.
+좌우 진영은 고정된 `spire-aqua` / `spire-pink`로 구분한다. 기존 의미가 강한 green/red의 버프/너프 조합은 쓰지 않는다. 게임 요소 자체의 gold·캐릭터 색은 그대로 두고, 진영색은 얇은 레일·포커스·결과 막대에만 쓴다.
 
 선택 영역은 최소 44×44보다 크게 유지하고, 키보드 포커스와 선택 문구를 제공한다. 목록에서는 현재 게임 요소 영역 전체가 타깃이라 별도 작은 라디오 버튼을 만들지 않는다.
 
@@ -119,7 +122,7 @@ this_or_that_post_votes
 - index (env, post_id, choice)
 ```
 
-RLS는 본인 행의 select/insert만 허용하고 v1에는 update/delete 정책을 만들지 않는다. 공개 조회는 raw `user_id` 행이 아니라 `post_id`, `left_count`, `right_count`, `total_count`만 반환하는 bounded 집계 RPC로 제한한다. 목록은 최대 50개 post id만 한 번에 요청하고 Realtime 구독은 추가하지 않는다.
+RLS는 본인 행의 select/insert/delete만 허용하고 update 정책은 만들지 않는다. 취소는 본인 행을 지우고, 재투표는 다시 insert한다. 공개 조회는 raw `user_id` 행이 아니라 `post_id`, `left_count`, `right_count`, `total_count`만 반환하는 bounded 집계 RPC로 제한한다. 목록은 최대 50개 post id만 한 번에 요청하고 Realtime 구독은 추가하지 않는다.
 
 익명 사용자는 기존 `useAuth.ensureUser()`의 `signInAnonymously()`를 그대로 쓴다. 이는 사람 한 명이 아니라 브라우저에 유지되는 익명 Supabase 계정 단위의 중복 방지다. 공개 UI는 `N명` 대신 `N표`로 표현한다.
 
@@ -134,7 +137,7 @@ RLS는 본인 행의 select/insert만 허용하고 v1에는 update/delete 정책
 ## 6. Cloudflare Free 비용
 
 - 공개 Next/Worker 요청에 Supabase, Cloudflare Analytics, 집계 subrequest를 추가하지 않는다.
-- 브라우저가 Supabase로 bounded count/own-status read와 투표 insert만 보낸다.
+- 브라우저가 Supabase로 bounded count/own-status read와 투표 insert/delete만 보낸다.
 - 전체 투표 행 다운로드, Worker SSR 집계, Realtime, KV, Durable Object, Analytics Engine을 추가하지 않는다.
 - 따라서 새 Worker CPU와 subrequest 비용은 0이고, 공개 페이지의 현재 static/OpenNext 경계도 바꾸지 않는다.
 
@@ -145,7 +148,7 @@ RLS는 본인 행의 select/insert만 허용하고 v1에는 update/delete 정책
 정확한 전환율로 부르지 않는다. Cloudflare와 Supabase는 같은 사용자를 연결하지 않고, 목록 한 번 읽는 동안 여러 게시글에 투표할 수 있다.
 
 ```text
-투표 밀도 = 해당 기간 새 투표 수 / /this-or-that* 비봇 page loads × 100
+투표 밀도 = 해당 기간 생성된 현재 유효 표 / /this-or-that* 비봇 page loads × 100
 표시: 읽힘 100회당 18.4표
 
 참여 계정 근사 = 해당 기간 고유 익명 voter UUID / 같은 page loads × 100
@@ -186,7 +189,7 @@ raw IP 저장, 브라우저 fingerprint, 매 투표 CAPTCHA는 추가하지 않�
 - 목록과 상세에서 로그인 UI·확인창 없이 한 번 탭해 투표된다.
 - 투표 전에는 총 표 수만, 투표 후에는 좌우 비율·표 수·내 선택이 보인다.
 - 양쪽의 사전 면적·강조·애니메이션이 대칭이다.
-- 같은 익명 계정은 게시글당 한 표만 insert할 수 있다.
+- 같은 익명 계정은 게시글당 한 표만 유지되며, 취소하면 결과가 가려진 투표 전 상태로 돌아가 다시 투표할 수 있다.
 - raw voter UUID는 공개 집계 응답이나 admin 표에 포함되지 않는다.
 - 모바일 320px에서 선택 타깃, 결과 숫자, 댓글·좋아요 컨트롤이 겹치지 않는다.
 - 키보드만으로 두 선택지를 구분해 투표할 수 있고 포커스가 보인다.
@@ -196,7 +199,7 @@ raw IP 저장, 브라우저 fingerprint, 매 투표 CAPTCHA는 추가하지 않�
 ## 10. 명시적으로 미루는 것
 
 - `현황만 보기` / 관전 모드
-- 투표 수정·취소·이력
+- 선택지를 결과 화면에서 바로 바꾸는 기능과 투표 이력
 - 마감 시간, 승자 선언, 알림
 - 이상형 월드컵 대진·시드·랭킹
 - 포인트, 배당, 보상, 공개 진영 배지
