@@ -5,6 +5,7 @@ import type { CodexPower, DamageValue } from "@/lib/codex-types";
 import { getEffectiveDamageValue, MONSTER_MOVE_ASCENSION_LEVEL } from "./monster-ascension";
 
 const CONTEXTLESS_AMOUNT_POWER_IDS = new Set(["VITAL_SPARK"]);
+const POWER_DETAIL_STATIC_DESCRIPTION_IDS = new Set(["SHRIEK"]);
 const AMOUNT_TEMPLATE_RE = /\{Amount(?::|})/;
 
 export function getPowerCompendiumDescription(power: CodexPower): string {
@@ -12,6 +13,18 @@ export function getPowerCompendiumDescription(power: CodexPower): string {
   if (!raw || !CONTEXTLESS_AMOUNT_POWER_IDS.has(power.id) || !AMOUNT_TEMPLATE_RE.test(raw)) {
     return power.description;
   }
+  return bakeDescription(raw, {
+    ...power.vars,
+    Amount: "X",
+  });
+}
+
+export function getPowerDetailDescription(power: CodexPower): string {
+  const raw = power.descriptionRaw;
+  if (!raw || POWER_DETAIL_STATIC_DESCRIPTION_IDS.has(power.id) || !AMOUNT_TEMPLATE_RE.test(raw)) {
+    return getPowerCompendiumDescription(power);
+  }
+
   return bakeDescription(raw, {
     ...power.vars,
     Amount: "X",

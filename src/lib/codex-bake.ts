@@ -161,6 +161,16 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
     const opts = splitBranches(rest);
 
     if (opts.some((opt) => findTopLevelQuestion(opt) >= 0)) {
+      if (v === "X") {
+        const variableBranch = opts.find((opt) => {
+          const questionIndex = findTopLevelQuestion(opt);
+          return questionIndex >= 0 && opt.slice(questionIndex + 1).includes("{}");
+        });
+        if (variableBranch) {
+          return renderTemplate(variableBranch.slice(findTopLevelQuestion(variableBranch) + 1), vars, name);
+        }
+      }
+
       let fallback = "";
       for (const opt of opts) {
         const questionIndex = findTopLevelQuestion(opt);

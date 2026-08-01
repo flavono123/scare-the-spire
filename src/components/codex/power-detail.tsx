@@ -24,7 +24,7 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameHoverTip, type HoverTipVariant } from "./hover-tip";
-import { getPowerCompendiumDescription } from "./power-preview";
+import { getPowerDetailDescription } from "./power-preview";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import {
@@ -142,7 +142,7 @@ export function PowerDetail({
   );
   const displayImageUrl = showBeta && power.betaImageUrl ? power.betaImageUrl : power.imageUrl;
   const lifecycleClassName = power.deprecated ? " opacity-50 grayscale saturate-0" : "";
-  const displayDescription = getPowerCompendiumDescription(power);
+  const displayDescription = getPowerDetailDescription(power);
   const typeLabel = gameUi.powers.types[power.type].label || serviceText.labels.powerTypes[power.type].label;
   const stackLabel = serviceText.labels.powerStackTypes[power.stackType] ?? power.stackType;
   const backTitle = backToListTitle ?? gameUi.nav.powers;
