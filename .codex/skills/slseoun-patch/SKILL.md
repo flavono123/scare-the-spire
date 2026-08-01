@@ -17,6 +17,7 @@ Create or update STS2 rich patch notes. Steam is the source of truth for patch-n
 - Never construct a Steam store/news URL from the Steam API `gid`; use a real store URL from the announcement or user.
 - Before finalizing a ready patch that touches Compendium resources, run `.codex/skills/sts2-compendium-patch-sync/SKILL.md` after rich notes and asset extraction so PCK/DLL diffs, `data/sts2-changes.json`, and lifecycle/deprecated behavior are applied together.
 - Do not push newly extracted localization or current Codex rows until lifecycle/deprecated sync, historical localization preservation, `pnpm i18n:validate`, and `pnpm codex:validate` all agree.
+- Treat `/generated/sts2-patch-lines.json` as a mutable fixed URL: client loaders must revalidate it with `cache: "no-cache"` or use an automatically content-addressed URL. Never restore `force-cache` or require a manual patch-version query bump.
 - Do not spend time preserving or checking any Vercel deployment path. Cloudflare Workers and the static patch Worker are the only deployment targets for this workflow.
 - For Cloudflare Free-plan/runtime risk, load `.codex/skills/cf-guardrails/SKILL.md` instead of repeating quota rules here.
 
@@ -209,6 +210,20 @@ Rules:
     verify that the public patch page deployed successfully. Send the public
     patch URL to the user and request review; apply subsequent corrections as
     separate speculative commits.
+
+## Community Story Patch-Line Cache Contract
+
+- After patch-note line content or IDs change, run `pnpm sts2:patch-lines` and
+  `pnpm static:data` before the main Worker deployment so both
+  `data/sts2-patch-lines.json` and
+  `public/generated/sts2-patch-lines.json` contain the new patch.
+- Keep the large static JSON cacheable while forcing browser revalidation via
+  `cache: "no-cache"`; its ETag avoids retransferring unchanged data. Do not add
+  a query string that someone must update for each patch.
+- After deployment, reload a `#community:{id}` deep link whose story references
+  the newest patch and verify `[data-story-reference-state="resolved"]`. This
+  catches the stale previous-patch JSON failure that only affects newly added
+  community stories.
 
 ## Compendium Versioning Contract
 
