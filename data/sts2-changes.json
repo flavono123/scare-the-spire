@@ -584,6 +584,41 @@
     ]
   },
   {
+    "id": "beacon-of-hope-power-v100-no-stacking",
+    "entityType": "power",
+    "entityId": "BEACON_OF_HOPE",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "colorless",
+    "summary": "Beacon of Hope's Block-sharing power no longer stacks.",
+    "summaryKo": "희망의 등불의 방어도 공유 파워가 더 이상 중첩되지 않습니다.",
+    "diffs": [
+      {
+        "attribute": "stacking",
+        "displayName": "Stacking",
+        "displayNameKo": "중첩",
+        "before": "Block sharing stacks",
+        "beforeKo": "방어도 공유 중첩",
+        "after": "Block sharing does not stack",
+        "afterKo": "방어도 공유 중첩 안 함",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "stackType",
+        "before": "Counter",
+        "after": "Single"
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "card",
+        "id": "BEACON_OF_HOPE"
+      }
+    ]
+  },
+  {
     "id": "believe-in-you-v100-nerf",
     "entityType": "card",
     "entityId": "BELIEVE_IN_YOU",
@@ -8193,6 +8228,51 @@
     "date": "2026-07-17",
     "summary": "Well-Laid Plans is now Rare and prevents discarding the Hand at end of turn; its upgrade reduces cost to 0.",
     "summaryKo": "괜찮은 전략이 희귀로 바뀌고 턴 종료 시 손을 버리지 않으며, 강화 시 비용이 0이 되도록 개편되었습니다."
+  },
+  {
+    "id": "well-laid-plans-power-v0-109-0-rework",
+    "entityType": "power",
+    "entityId": "WELL_LAID_PLANS",
+    "patch": "v0.109.0",
+    "date": "2026-07-17",
+    "character": "silent",
+    "summary": "Well-Laid Plans power now prevents the entire Hand from being discarded.",
+    "summaryKo": "괜찮은 전략 파워가 이제 손 전체를 버리지 않게 합니다.",
+    "diffs": [
+      {
+        "attribute": "effect",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Retain up to 1 card",
+        "beforeKo": "카드를 최대 1장 보존",
+        "after": "Do not discard the Hand",
+        "afterKo": "손을 버리지 않음",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "내 턴 종료 시, 카드를 최대 [blue]1[/blue]장까지 [gold]보존[/gold]합니다.",
+        "after": "내 턴 종료 시, 더 이상 [gold]손[/gold]에 있는 카드를 버리지 않습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "내 턴 종료 시, 카드를 최대 [blue]{Amount}[/blue]장까지 [gold]보존[/gold]합니다.",
+        "after": "내 턴 종료 시, 더 이상 [gold]손[/gold]에 있는 카드를 버리지 않습니다."
+      },
+      {
+        "field": "stackType",
+        "before": "Counter",
+        "after": "Single"
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "card",
+        "id": "WELL_LAID_PLANS"
+      }
+    ]
   },
   {
     "id": "diamond-diadem-v0-109-0-field-diff",
