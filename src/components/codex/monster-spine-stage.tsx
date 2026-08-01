@@ -163,6 +163,7 @@ function MonsterSpineStageComponent({
 
     let disposed = false;
     let player: SpinePlayer | null = null;
+    let rejected = false;
     const parent = containerRef.current;
 
     void loadSpinePlayerRuntime()
@@ -194,11 +195,22 @@ function MonsterSpineStageComponent({
             : undefined,
           success: (loadedPlayer) => {
             if (disposed) return;
+            const animationNames = loadedPlayer.skeleton?.data.animations.map((animation) => animation.name) ?? [];
+            if (!animationNames.includes(asset.idleAnimation)) {
+              rejected = true;
+              console.warn(`Spine asset for ${monsterName} is missing animation ${asset.idleAnimation}.`);
+              setLoadState("error");
+              playerRef.current = null;
+              releaseSpinePlayer(loadedPlayer);
+              parent.replaceChildren();
+              reportImageVisualBounds(fallbackImageRef.current, parent, onVisualBoundsChange);
+              return;
+            }
             if (skeletonTransform) applySkeletonTransform(loadedPlayer, skeletonTransform);
             applyCompositeSkin(loadedPlayer, SpineSkinCtor, Physics, compositeSkinNames, monsterName);
             applyIdleTracks(loadedPlayer, asset.idleTracks);
             playerRef.current = loadedPlayer;
-            setAvailableAnimations(loadedPlayer.skeleton?.data.animations.map((animation) => animation.name) ?? asset.animations);
+            setAvailableAnimations(animationNames);
             setLoadState("ready");
             reportSpineVisualBounds(loadedPlayer, parent, onVisualBoundsChange);
             window.requestAnimationFrame(() => {
@@ -214,7 +226,7 @@ function MonsterSpineStageComponent({
             reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChange);
           },
         });
-        playerRef.current = player;
+        playerRef.current = rejected ? null : player;
       })
       .catch((error: unknown) => {
         if (disposed) return;
