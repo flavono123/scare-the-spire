@@ -1,12 +1,14 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import { ArrowLeft, Link2 } from "lucide-react";
+import { ArrowLeft, Link2, Pencil } from "lucide-react";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
+import { useAuth } from "@/hooks/use-auth";
 import { useComboPost } from "@/hooks/use-combo-posts";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -20,15 +22,22 @@ import {
   extractComboHistoryRunReferences,
   extractComboYouTubeReference,
 } from "@/lib/combo-types";
+import type { PostBlock } from "@/lib/chemical-types";
 import { buildComboCommentThreadKey } from "@/lib/comment-threads";
 import { buildComboEntityMap, ComboPostRenderer } from "./combo-post-renderer";
 import { ComboResourceGallery } from "./combo-resource-gallery";
 import { ComboYouTubeEmbed } from "./combo-youtube-reference";
 import { ComboHistoryRunReferences } from "./combo-history-run-reference";
 
+const ComboComposerModal = dynamic(
+  () => import("./combo-composer-modal").then((module) => module.ComboComposerModal),
+  { ssr: false },
+);
+
 interface ComboPostViewProps {
   postId: string;
   gameLocale: GameLocale;
+  placeholder: string;
 }
 
 function getTextClass(length: number): string {
@@ -37,13 +46,15 @@ function getTextClass(length: number): string {
   return "text-base sm:text-lg";
 }
 
-export function ComboPostView({ postId, gameLocale }: ComboPostViewProps) {
+export function ComboPostView({ postId, gameLocale, placeholder }: ComboPostViewProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].combo;
   const siteDisplayOrigin = getSiteDisplayOrigin();
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const [copied, setCopied] = useState(false);
-  const { post, loading, unavailable } = useComboPost(postId);
+  const [editing, setEditing] = useState(false);
+  const { userId, ready, ensureUser } = useAuth();
+  const { post, loading, unavailable, update } = useComboPost(postId, userId);
   const { entities } = useCommentEntities(undefined, { enabled: Boolean(post) });
   const entityMap = useMemo(() => buildComboEntityMap(entities), [entities]);
 
@@ -52,6 +63,13 @@ export function ComboPostView({ postId, gameLocale }: ComboPostViewProps) {
     setCopied(true);
     window.setTimeout(() => setCopied(false), 2000);
   }, []);
+  const handleUpdate = useCallback(async (blocks: PostBlock[], nickname: string) => {
+    const activeUserId = userId ?? await ensureUser();
+    if (!activeUserId) throw new Error("anonymous auth unavailable");
+    const updatedPost = await update({ blocks, nickname, activeUserId });
+    if (!updatedPost) throw new Error("combo update rejected");
+    setEditing(false);
+  }, [ensureUser, update, userId]);
 
   if (unavailable) {
     return <StorageUnavailableNotice title={copy.unavailableTitle} />;
@@ -88,14 +106,26 @@ export function ComboPostView({ postId, gameLocale }: ComboPostViewProps) {
           <ArrowLeft size={16} />
           {copy.title}
         </Link>
-        <button
-          type="button"
-          onClick={handleCopyUrl}
-          className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-yellow-500/30 hover:text-yellow-400"
-        >
-          <Link2 size={14} />
-          {copied ? copy.copied : copy.copyLink}
-        </button>
+        <div className="flex items-center gap-2">
+          {ready && userId === post.user_id && (
+            <button
+              type="button"
+              onClick={() => setEditing(true)}
+              className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-yellow-500/30 hover:text-yellow-400"
+            >
+              <Pencil size={14} />
+              {copy.edit}
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={handleCopyUrl}
+            className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-yellow-500/30 hover:text-yellow-400"
+          >
+            <Link2 size={14} />
+            {copied ? copy.copied : copy.copyLink}
+          </button>
+        </div>
       </div>
 
       <article className="relative overflow-hidden rounded-2xl border border-yellow-500/15 bg-gradient-to-b from-[#0c0c18] via-[#10101e] to-[#0c0c18] p-4 pb-4 sm:p-6 sm:pb-5">
@@ -167,6 +197,18 @@ export function ComboPostView({ postId, gameLocale }: ComboPostViewProps) {
           </span>
         </div>
       </article>
+
+      {editing && (
+        <ComboComposerModal
+          entities={entities}
+          initialPost={post}
+          placeholder={placeholder}
+          profileNickname={post.nickname}
+          serviceLocale={serviceLocale}
+          onSubmit={handleUpdate}
+          onClose={() => setEditing(false)}
+        />
+      )}
 
       <section
         id="comments"
