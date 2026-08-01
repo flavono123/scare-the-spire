@@ -105,9 +105,9 @@ export function AncientDialogueViewer({
       )}
 
       <div className="pointer-events-none absolute inset-x-2 bottom-14 z-10 mx-auto flex max-h-[58%] min-w-0 max-w-[58rem] flex-col justify-end sm:inset-x-4 sm:bottom-16">
-        <div className="pointer-events-auto flex shrink-0 flex-col gap-x-6 sm:flex-row sm:items-start">
+        <div className="pointer-events-auto grid shrink-0 grid-cols-1 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-x-4">
           {situationGroups.length > 0 && (
-            <div className="flex min-w-0 items-center" role="tablist" aria-label={messages.ancientsView.dialogueSituation}>
+            <div className="flex min-w-0 items-center justify-center sm:justify-start" role="tablist" aria-label={messages.ancientsView.dialogueSituation}>
               <span className="mr-2 shrink-0 font-game-title text-xs font-bold text-[#efc850] [text-shadow:0_2px_0_rgba(0,0,0,0.9)]" aria-hidden>
                 {messages.ancientsView.dialogueSituation}
               </span>
@@ -120,7 +120,7 @@ export function AncientDialogueViewer({
                   onClick={() => selectGroup(group.key)}
                   className={`min-h-11 shrink-0 px-2 font-game-text text-sm font-bold [text-shadow:0_2px_0_rgba(0,0,0,0.95)] transition-[opacity,transform,filter] motion-reduce:transition-none ${
                     group.key === selectedGroup.key
-                      ? "scale-105 text-[#fff6e2] drop-shadow-[0_0_6px_rgba(239,200,80,0.8)]"
+                      ? "text-[#fff6e2] drop-shadow-[0_0_6px_rgba(239,200,80,0.8)]"
                       : "text-[#fff6e2] opacity-45 hover:opacity-80"
                   }`}
                 >
@@ -130,7 +130,7 @@ export function AncientDialogueViewer({
             </div>
           )}
           {characterGroups.length > 0 && (
-            <div className="flex min-w-0 items-center overflow-x-auto [scrollbar-width:thin]" role="tablist" aria-label={messages.ancientsView.characterSpeaker}>
+            <div className="flex min-w-0 flex-wrap items-center justify-center sm:justify-start" role="tablist" aria-label={messages.ancientsView.characterSpeaker}>
               <span className="mr-1 shrink-0 font-game-title text-xs font-bold text-[#efc850] [text-shadow:0_2px_0_rgba(0,0,0,0.9)]" aria-hidden>
                 {messages.ancientsView.characterSpeaker}
               </span>
@@ -144,7 +144,7 @@ export function AncientDialogueViewer({
                     role="tab"
                     aria-selected={selected}
                     onClick={() => selectGroup(group.key)}
-                    className={`flex min-h-11 shrink-0 items-center gap-1 px-1.5 font-game-text text-xs font-bold [text-shadow:0_2px_0_rgba(0,0,0,0.95)] transition-[opacity,transform,filter] motion-reduce:transition-none ${selected ? "scale-105 opacity-100" : "opacity-45 hover:opacity-80"}`}
+                    className={`flex min-h-11 shrink-0 items-center gap-1 px-1.5 font-game-text text-xs font-bold [text-shadow:0_2px_0_rgba(0,0,0,0.95)] transition-[opacity,filter] motion-reduce:transition-none ${selected ? "opacity-100" : "opacity-45 hover:opacity-80"}`}
                     style={{ color }}
                   >
                     <span className="relative h-8 w-8 shrink-0">
@@ -157,30 +157,31 @@ export function AncientDialogueViewer({
               })}
             </div>
           )}
-        </div>
-
-        {scenes.length > 1 && (
-          <div role="tablist" aria-label={messages.ancientsView.dialogueSelection} className="pointer-events-auto flex min-h-11 shrink-0 items-center justify-center gap-2">
-            <span className="font-game-title text-xs font-bold text-[#efc850] [text-shadow:0_2px_0_rgba(0,0,0,0.9)]" aria-hidden>
-              {messages.ancientsView.dialogue}
-            </span>
-            {scenes.map((candidate, index) => (
-              <button
-                key={candidate.id}
-                type="button"
-                role="tab"
-                aria-selected={index === sceneIndex}
-                onClick={() => selectScene(index)}
-                className={`flex min-h-11 min-w-11 items-center justify-center gap-1 font-game-title text-lg font-bold [text-shadow:0_2px_0_rgba(0,0,0,0.95)] transition-[opacity,transform] ${
-                  index === sceneIndex ? "scale-110 text-[#efc850] drop-shadow-[0_0_6px_rgba(239,200,80,0.75)]" : "text-[#fff6e2] opacity-65 hover:opacity-100"
-                }`}
-              >
-                <Image src={CONTINUE_ARROW} alt="" width={24} height={48} className={`h-5 w-2.5 object-contain ${index === sceneIndex ? "opacity-100" : "opacity-0"}`} />
-                {index + 1}
-              </button>
-            ))}
+          <div role={scenes.length > 1 ? "tablist" : undefined} aria-label={scenes.length > 1 ? messages.ancientsView.dialogueSelection : undefined} className="flex min-h-11 items-center justify-center gap-1 sm:justify-end">
+            {scenes.length > 1 && (
+              <>
+                <span className="font-game-title text-xs font-bold text-[#efc850] [text-shadow:0_2px_0_rgba(0,0,0,0.9)]" aria-hidden>
+                  {messages.ancientsView.dialogue}
+                </span>
+                {scenes.map((candidate, index) => (
+                  <button
+                    key={candidate.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={index === sceneIndex}
+                    onClick={() => selectScene(index)}
+                    className={`flex min-h-11 min-w-10 items-center justify-center gap-1 font-game-title text-lg font-bold [text-shadow:0_2px_0_rgba(0,0,0,0.95)] transition-[opacity,transform] ${
+                      index === sceneIndex ? "scale-110 text-[#efc850] drop-shadow-[0_0_6px_rgba(239,200,80,0.75)]" : "text-[#fff6e2] opacity-65 hover:opacity-100"
+                    }`}
+                  >
+                    <Image src={CONTINUE_ARROW} alt="" width={24} height={48} className={`h-5 w-2.5 object-contain ${index === sceneIndex ? "opacity-100" : "opacity-0"}`} />
+                    {index + 1}
+                  </button>
+                ))}
+              </>
+            )}
           </div>
-        )}
+        </div>
 
         <div className="min-h-0 overflow-y-auto overscroll-contain px-1 py-2 [scrollbar-width:thin] sm:px-3">
           <div className="mx-auto flex w-full max-w-[45rem] flex-col gap-2.5">
