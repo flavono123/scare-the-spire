@@ -44,7 +44,7 @@ class FormSpec:
 
 FORMS = (
     FormSpec("demon", "DEMON_FORM", "IRONCLAD", 0.5),
-    FormSpec("serpent", "SERPENT_FORM", "SILENT", 0.6),
+    FormSpec("serpent", "SERPENT_FORM", "SILENT", 0.4),
     FormSpec("void", "VOID_FORM", "REGENT", 0.18),
     FormSpec("reaper", "REAPER_FORM", "NECROBINDER", 0.52),
     FormSpec("echo", "ECHO_FORM", "DEFECT", 0.4),
