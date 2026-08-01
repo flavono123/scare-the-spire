@@ -10,6 +10,7 @@ import type { HistoryRunBlock } from "@/lib/chemical-types";
 import {
   countComboYouTubeReferences,
   extractComboResourceRefs,
+  type ComboPost,
 } from "@/lib/combo-types";
 import { HISTORY_COURSE_RELIC_IMAGE } from "@/lib/history-run-reference";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -24,6 +25,7 @@ const RichContentEditor = dynamic<RichContentEditorProps>(
 
 interface ComboEditorProps {
   entities: EntityInfo[];
+  initialPost?: ComboPost | null;
   placeholder: string;
   profileNickname: string;
   serviceLocale: ServiceLocale;
@@ -32,6 +34,7 @@ interface ComboEditorProps {
 
 export function ComboEditor({
   entities,
+  initialPost,
   placeholder,
   profileNickname,
   serviceLocale,
@@ -124,10 +127,10 @@ export function ComboEditor({
       <div className="overflow-visible rounded-lg border border-border bg-card/30">
         <div className="flex items-center gap-2 border-b border-border px-3 py-2">
           <input
-            key={profileNickname}
+            key={initialPost?.id ?? profileNickname}
             ref={nicknameInputRef}
             type="text"
-            defaultValue={profileNickname}
+            defaultValue={initialPost?.nickname ?? profileNickname}
             placeholder={copy.defaultNickname}
             maxLength={20}
             className="w-full bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
@@ -171,13 +174,15 @@ export function ComboEditor({
         </div>
 
         <RichContentEditor
+          key={initialPost?.id ?? "create"}
           entities={entities}
           onSubmit={handleSubmit}
           placeholder={placeholder}
           richPlaceholder={placeholder}
-          draftKey="sts-combo-draft"
-          submitLabel={copy.submit}
+          draftKey={initialPost ? `sts-combo-edit:${initialPost.id}` : "sts-combo-draft"}
+          submitLabel={initialPost ? copy.saveChanges : copy.submit}
           maxChars={null}
+          initialBlocks={initialPost?.content}
           submitIconSrc="/images/sts2/badges/ccccombo.webp"
           entityInsertRequest={entityInsertRequest}
           youtubeExtension={youtubeExtension}
