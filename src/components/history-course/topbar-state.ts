@@ -366,6 +366,8 @@ export function collectRelevantCardIds(run: ReplayRun): string[] {
       for (const c of entry.cards_lost ?? []) if (c.id) ids.add(c.id);
       for (const c of entry.cards_removed ?? []) if (c.id) ids.add(c.id);
       for (const c of entry.card_choices ?? []) if (c.id) ids.add(c.id);
+      for (const id of entry.upgraded_cards ?? []) if (id) ids.add(id);
+      for (const c of entry.cards_enchanted ?? []) if (c.cardId) ids.add(c.cardId);
     }
   }
   return Array.from(ids);
