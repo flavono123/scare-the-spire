@@ -11,6 +11,9 @@ All task instructions must be followed by an immediate speculative commit after 
 - Do not create or switch branches or worktrees unless the user explicitly asks for it.
 - By default, work on the `main` branch and make speculative commits directly there.
 - Deploy through CI by pushing the `main` branch. Do not run ad hoc `wrangler deploy` scripts.
+- Deploy only by pushing the latest local `main` HEAD as a whole. Every commit already on local `main`, including commits from concurrent tasks, is part of the next deployment and must not be omitted.
+- Never reconstruct, cherry-pick, or recreate a selected subset of commits on top of `origin/main` for deployment. Do not push an alternate ref, temporary branch, worktree, temporary clone, or synthetic commit chain to remote `main`.
+- If local and remote `main` diverge, reconcile the actual local `main` and push that ref. Do not manufacture a parallel deployment history to avoid publishing other speculative commits.
 - Do not run builds for simple patch Worker or `byrdispatch` deployment tasks.
 - Run builds only when the main Worker or assets change.
 
