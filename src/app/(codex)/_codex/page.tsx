@@ -148,6 +148,18 @@ const categories = [
       "/images/sts2/epochs/darv_epoch.webp",
     ],
   },
+  {
+    href: "/compendium/badges",
+    labelKey: "badges",
+    count: 23,
+    description: null,
+    images: [
+      "/images/sts2/badges/ccccombo.webp",
+      "/images/sts2/badges/perfect.webp",
+      "/images/sts2/badges/healer.webp",
+      "/images/sts2/badges/money_money.webp",
+    ],
+  },
 ] as const;
 
 export async function generateMetadata({
@@ -265,4 +277,5 @@ const ENGLISH_LABELS: Record<(typeof categories)[number]["labelKey"], string> = 
   events: "Events",
   ancients: "Ancients",
   epochs: "Epochs",
+  badges: "Badges",
 };
