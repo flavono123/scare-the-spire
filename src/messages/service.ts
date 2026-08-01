@@ -458,6 +458,7 @@ export const serviceMessages = {
       encounters: "전투",
       ancients: "고대의 존재",
       epochs: "연대기",
+      badges: "뱃지",
       index: "전체 보기",
       common: {
         close: "닫기",
@@ -478,6 +479,7 @@ export const serviceMessages = {
         enchantments: "개",
         afflictions: "개",
         encounters: "건",
+        badges: "개",
         affiliation: "캐릭터",
         cardTypes: {
           공격: "공격",
@@ -611,6 +613,13 @@ export const serviceMessages = {
       indexView: {
         title: "백과사전",
         subtitle: "슬레이 더 스파이어 2",
+      },
+      badgesView: {
+        title: "뱃지",
+        searchPlaceholder: "뱃지 검색...",
+        modeFilter: "플레이 방식",
+        singleplayer: "싱글플레이",
+        multiplayerOnly: "멀티플레이 전용",
       },
       cardsView: {
         title: "카드 목록",
@@ -1274,6 +1283,7 @@ export const serviceMessages = {
       encounters: "Encounters",
       ancients: "Ancients",
       epochs: "Epochs",
+      badges: "Badges",
       index: "All",
       common: {
         close: "Close",
@@ -1294,6 +1304,7 @@ export const serviceMessages = {
         enchantments: "enchantments",
         afflictions: "afflictions",
         encounters: "encounters",
+        badges: "badges",
         affiliation: "Character",
         cardTypes: {
           공격: "Attack",
@@ -1427,6 +1438,13 @@ export const serviceMessages = {
       indexView: {
         title: "Codex",
         subtitle: "Slay the Spire 2",
+      },
+      badgesView: {
+        title: "Badges",
+        searchPlaceholder: "Search badges...",
+        modeFilter: "Play Mode",
+        singleplayer: "Singleplayer",
+        multiplayerOnly: "Multiplayer Only",
       },
       cardsView: {
         title: "Card Library",
