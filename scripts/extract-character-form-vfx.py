@@ -43,9 +43,9 @@ class FormSpec:
 
 
 FORMS = (
-    FormSpec("demon", "DEMON_FORM", "IRONCLAD", 0.92),
+    FormSpec("demon", "DEMON_FORM", "IRONCLAD", 0.72),
     FormSpec("serpent", "SERPENT_FORM", "SILENT", 0.4),
-    FormSpec("void", "VOID_FORM", "REGENT", 0.2),
+    FormSpec("void", "VOID_FORM", "REGENT", 0.4),
     FormSpec("reaper", "REAPER_FORM", "NECROBINDER", 0.52),
     FormSpec("echo", "ECHO_FORM", "DEFECT", 0.4),
 )
@@ -251,6 +251,8 @@ def compile_scene(
         if node["name"].endswith("_glow") or "glow_outer" in node["name"]:
             props["browser_pulse_strength"] = 0.04
             props["browser_pulse_speed"] = 2
+        if spec.slug == "echo" and node["name"] == "vfx_echo_form_idle_glow":
+            props["self_modulate"] = {"$": "Color", "v": [0, 0.61666656, 1, 0.32]}
         if "panning" in node["name"]:
             props["hframes"] = 4
             props["browser_fps"] = 4

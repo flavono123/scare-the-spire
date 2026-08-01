@@ -6,7 +6,7 @@ import {
   type EventVfxController,
 } from "@/lib/event-vfx-runtime";
 
-type EventVfxMode = "standard" | "mirror";
+type EventVfxMode = "standard" | "mirror" | "echo";
 type LoadState = "loading" | "ready" | "error";
 
 const SCENE_ROOT = "/generated/event-vfx/scenes";

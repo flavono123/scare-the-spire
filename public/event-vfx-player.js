@@ -667,6 +667,25 @@
     }
   }
 
+  function renderEcho(context, layer, baseImage, time) {
+    const layerContext = layer.getContext("2d");
+    const pulse = (Math.sin(time * 4) + 1) / 2;
+    for (const [index, offset] of [-42, 0, 42].entries()) {
+      layerContext.setTransform(1, 0, 0, 1, 0, 0);
+      layerContext.clearRect(0, 0, layer.width, layer.height);
+      layerContext.drawImage(baseImage, 480 + offset, 0, 1600, 1200);
+      layerContext.globalCompositeOperation = "source-in";
+      layerContext.fillStyle = "#68cfff";
+      layerContext.fillRect(0, 0, layer.width, layer.height);
+      layerContext.globalCompositeOperation = "source-over";
+      context.save();
+      context.globalAlpha = 0.055 + pulse * 0.025 + index * 0.015;
+      context.globalCompositeOperation = "screen";
+      context.drawImage(layer, 0, 0);
+      context.restore();
+    }
+  }
+
   function resizeCanvas(canvas, context, logicalWidth, logicalHeight) {
     const rect = canvas.getBoundingClientRect();
     if (!rect.width || !rect.height) return false;
@@ -684,16 +703,17 @@
 
   async function create(canvas, options) {
     const mirror = options.mode === "mirror";
+    const echo = options.mode === "echo";
     const logicalWidth = mirror ? 1920 : 2560;
     const logicalHeight = mirror ? 1080 : 1200;
     const context = canvas.getContext("2d", { alpha: true });
     if (!context) throw new Error("Canvas 2D is unavailable for event VFX");
     const scene = await hydrateScene(options.sceneUrl, 0);
-    const baseImage = mirror ? await loadImage(options.baseImageUrl) : null;
-    const mirrorLayer = mirror ? document.createElement("canvas") : null;
-    if (mirrorLayer) {
-      mirrorLayer.width = logicalWidth;
-      mirrorLayer.height = logicalHeight;
+    const baseImage = mirror || echo ? await loadImage(options.baseImageUrl) : null;
+    const imageLayer = mirror || echo ? document.createElement("canvas") : null;
+    if (imageLayer) {
+      imageLayer.width = logicalWidth;
+      imageLayer.height = logicalHeight;
     }
     const bursts = [];
     const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
@@ -718,7 +738,7 @@
       context.clearRect(0, 0, logicalWidth, logicalHeight);
       const elapsed = reducedMotion ? 0 : (now - start) / 1000;
       if (mirror) {
-        renderMirror(context, mirrorLayer, scene, baseImage, elapsed);
+        renderMirror(context, imageLayer, scene, baseImage, elapsed);
       } else {
         renderScene(context, scene, elapsed, {
           x: options.offsetX ?? 268,
@@ -726,6 +746,7 @@
           scale: options.scale ?? 1,
           rotation: 0,
         }, false);
+        if (echo) renderEcho(context, imageLayer, baseImage, elapsed);
         for (let index = bursts.length - 1; index >= 0; index -= 1) {
           const burst = bursts[index];
           const age = (now - burst.startedAt) / 1000;
