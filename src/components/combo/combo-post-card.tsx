@@ -2,7 +2,7 @@
 
 import { useCallback, type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
   extractComboHistoryRunReferences,
@@ -26,6 +26,7 @@ interface ComboPostCardProps {
   isOwner: boolean;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
+  onEdit: (post: ComboPost) => void;
   onDelete: (postId: string) => void;
 }
 
@@ -55,6 +56,7 @@ export function ComboPostCard({
   isOwner,
   serviceLocale,
   gameLocale,
+  onEdit,
   onDelete,
 }: ComboPostCardProps) {
   const copy = serviceMessages[serviceLocale].combo;
@@ -93,14 +95,24 @@ export function ComboPostCard({
             {timeAgo(post.created_at, copy, dateLocale)}
           </span>
           {isOwner && (
-            <button
-              type="button"
-              onClick={() => onDelete(post.id)}
-              className="text-gray-500 opacity-0 transition-all hover:text-red-400 group-hover:opacity-100 focus-visible:opacity-100"
-              title={copy.delete}
-            >
-              <Trash2 size={14} />
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => onEdit(post)}
+                className="text-gray-500 opacity-80 transition-colors hover:text-yellow-300 sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100"
+                title={copy.edit}
+              >
+                <Pencil size={14} />
+              </button>
+              <button
+                type="button"
+                onClick={() => onDelete(post.id)}
+                className="text-gray-500 opacity-80 transition-colors hover:text-red-400 sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100"
+                title={copy.delete}
+              >
+                <Trash2 size={14} />
+              </button>
+            </>
           )}
         </div>
       </div>
