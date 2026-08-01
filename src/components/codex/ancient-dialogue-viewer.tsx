@@ -105,7 +105,7 @@ export function AncientDialogueViewer({
       )}
 
       <div className="pointer-events-none absolute inset-x-2 bottom-14 z-10 mx-auto flex max-h-[58%] min-w-0 max-w-[58rem] flex-col justify-end sm:inset-x-4 sm:bottom-16">
-        <div className="pointer-events-auto grid shrink-0 grid-cols-1 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-x-4">
+        <div className="pointer-events-auto grid shrink-0 grid-cols-1 sm:grid-cols-[auto_minmax(0,1fr)_11rem] sm:items-center sm:gap-x-4">
           {situationGroups.length > 0 && (
             <div className="flex min-w-0 items-center justify-center sm:justify-start" role="tablist" aria-label={messages.ancientsView.dialogueSituation}>
               <span className="mr-2 shrink-0 font-game-title text-xs font-bold text-[#efc850] [text-shadow:0_2px_0_rgba(0,0,0,0.9)]" aria-hidden>
