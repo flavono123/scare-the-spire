@@ -34,6 +34,7 @@ NON_VISUAL_NODES = {"Control", "Node", "Node2D", "Path2D", "PathFollow2D", "Spin
 STAGE_SIZE = {"width": 2560, "height": 1200}
 
 UI_IMPORTS = {
+    "continue_arrow": "images/packed/common_ui/little_arrow.png.import",
     "dialogue_nine_patch": "images/ui/dialogue_nine_patch.png.import",
     "dialogue_tail": "images/ui/dialogue_tail.png.import",
 }
