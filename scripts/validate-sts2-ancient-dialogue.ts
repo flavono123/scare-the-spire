@@ -4,6 +4,7 @@ import { groupAncientDialogueLines, parseAncientDialogueOrder } from "../src/lib
 import { getCodexAncients } from "../src/lib/codex-data";
 import { buildSearchIndexPayload } from "../src/lib/search-index-data";
 import { stripCodexMarkup } from "../src/lib/codex-search";
+import type { AncientDialogueScene } from "../src/lib/codex-types";
 
 type RawLine = { order: string; speaker: "ancient" | "character"; text: string };
 type RawAncient = { id: string; type: string; dialogue: Record<string, RawLine[]> };
@@ -28,7 +29,7 @@ async function main() {
     const ancient = ancients.find((candidate) => candidate.id === rawAncient.id);
     assert(ancient, `Missing Ancient dialogue: ${rawAncient.id}`);
     for (const [group, rawLines] of Object.entries(rawAncient.dialogue)) {
-      const scenes = ancient.dialogue[group];
+      const scenes: AncientDialogueScene[] | undefined = ancient.dialogue[group];
       assert(scenes, `Missing dialogue group: ${rawAncient.id}/${group}`);
       assert.equal(scenes.flatMap((scene) => scene.lines).length, rawLines.length, `Flattened or lost lines: ${rawAncient.id}/${group}`);
       assert.equal(scenes.length, groupAncientDialogueLines(rawLines).length, `Lost dialogue variants: ${rawAncient.id}/${group}`);
