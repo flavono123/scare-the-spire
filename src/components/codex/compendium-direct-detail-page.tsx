@@ -507,6 +507,7 @@ export function CompendiumDirectDetailPage({
           backToListTitle={gameUi.ancientsTitle}
           ancient={ancient}
           cards={resources.cards}
+          characters={resources.characters}
           relics={ancientRelics}
           entities={entities}
           patches={patches}

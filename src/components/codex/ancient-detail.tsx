@@ -14,36 +14,16 @@ import {
   getCodexServiceMessages,
   type CodexServiceMessages,
 } from "@/lib/codex-service";
-import type { CodexAncient, CodexCard, CodexRelic, AncientDialogueLine } from "@/lib/codex-types";
-import {
-  EVENT_ACT_UNKNOWN,
-  CHARACTER_COLORS,
-} from "@/lib/codex-types";
-import { DescriptionText } from "./codex-description";
+import type { CodexAncient, CodexCard, CodexCharacter, CodexRelic } from "@/lib/codex-types";
+import { EVENT_ACT_UNKNOWN } from "@/lib/codex-types";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
-import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
+import { AncientDialogueViewer } from "./ancient-dialogue-viewer";
 import { AncientSceneStage } from "./ancient-scene-stage";
 import {
   getRelatedCardIdsForAncient,
   getRelatedRelicIdsForAncient,
 } from "@/lib/codex-references";
-
-const CHARACTERS = [
-  { key: "Ironclad", pool: "ironclad", color: CHARACTER_COLORS.ironclad },
-  { key: "Silent", pool: "silent", color: CHARACTER_COLORS.silent },
-  { key: "Defect", pool: "defect", color: CHARACTER_COLORS.defect },
-  { key: "Necrobinder", pool: "necrobinder", color: CHARACTER_COLORS.necrobinder },
-  { key: "Regent", pool: "regent", color: CHARACTER_COLORS.regent },
-] as const;
-
-const SPECIAL_TABS = [
-  { key: "First Visit", labelKey: "firstVisit" },
-  { key: "Returning", labelKey: "returning" },
-] as const;
-
-const ANCIENT_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
-
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -84,16 +64,16 @@ function getAncientDetailLabels(serviceLocale: ServiceLocale) {
     ? {
         englishName: "영어명",
         englishEpithet: "영어 이명",
-        firstLine: "첫 조우",
         patchHistory: "패치 이력",
         noPatchHistory: "구조화 변경 없음",
+        rewardRelics: "보상 유물",
       }
     : {
         englishName: "English name",
         englishEpithet: "English epithet",
-        firstLine: "First Encounter",
         patchHistory: "Patch History",
         noPatchHistory: "No structured changes",
+        rewardRelics: "Reward Relics",
       };
 }
 
@@ -105,111 +85,6 @@ function getAncientActLabel(
   return ancient.act ? gameUi.acts[ancient.act] : serviceText.labels.acts.none;
 }
 
-// --- Dialogue viewer ---
-function DialogueViewer({
-  dialogue,
-  ancientName,
-  messages,
-  entities,
-  excludeSelf,
-}: {
-  dialogue: Record<string, AncientDialogueLine[]>;
-  ancientName: string;
-  messages: CodexServiceMessages;
-  entities?: EntityInfo[];
-  excludeSelf?: ReadonlySet<string>;
-}) {
-  const availableTabs = useMemo(() => {
-    const characterTabs = CHARACTERS
-      .filter((ch) => (dialogue[ch.key]?.length ?? 0) > 0)
-      .map((ch) => ({
-        key: ch.key,
-        label: messages.labels.pools[ch.pool],
-        color: ch.color,
-        special: false,
-      }));
-    const specialTabs = SPECIAL_TABS
-      .filter((tab) => (dialogue[tab.key]?.length ?? 0) > 0)
-      .map((tab) => ({
-        key: tab.key,
-        label: messages.ancientsView[tab.labelKey],
-        color: "#60a5fa",
-        special: true,
-      }));
-    return [...characterTabs, ...specialTabs];
-  }, [dialogue, messages]);
-
-  const [activeTab, setActiveTab] = useState(() => availableTabs[0]?.key ?? "Ironclad");
-  const resolvedActiveTab = availableTabs.some((tab) => tab.key === activeTab)
-    ? activeTab
-    : availableTabs[0]?.key ?? activeTab;
-  const lines = dialogue[resolvedActiveTab] ?? [];
-
-  return (
-    <div>
-      {/* Character tabs */}
-      <div className="flex flex-wrap gap-1.5 mb-4">
-        {availableTabs.map((tab) => {
-          const isActive = resolvedActiveTab === tab.key;
-          return (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${
-                isActive
-                  ? "border-current bg-current/10"
-                  : "border-zinc-700/40 text-zinc-500 hover:text-zinc-300 hover:border-zinc-600"
-              }`}
-              style={isActive ? { color: tab.color, borderColor: tab.color } : undefined}
-            >
-              {tab.label}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Dialogue lines */}
-      <div className="space-y-3">
-        {lines.map((line, i) => {
-          const isAncient = line.speaker === "ancient";
-          const charConfig = CHARACTERS.find((c) => c.key === activeTab);
-          return (
-            <div
-              key={`${activeTab}-${i}`}
-              className={`flex gap-3 ${isAncient ? "" : "justify-end"}`}
-            >
-              <div
-                className={`max-w-[85%] rounded-lg px-3 py-2 text-sm leading-relaxed ${
-                  isAncient
-                    ? "bg-blue-500/10 border border-blue-500/20 text-blue-100"
-                    : "bg-zinc-800/80 border border-zinc-700/40 text-zinc-300"
-                }`}
-              >
-                <div className="text-[10px] font-medium mb-1 opacity-60">
-                  {isAncient ? ancientName : charConfig ? messages.labels.pools[charConfig.pool] : activeTab}
-                </div>
-                {entities ? (
-                  <RichDescription
-                    description={line.text}
-                    entities={entities}
-                    excludeEntityTerms={excludeSelf}
-                    excludeEntityTypes={ANCIENT_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
-                  />
-                ) : (
-                  <DescriptionText description={line.text} />
-                )}
-              </div>
-            </div>
-          );
-        })}
-        {lines.length === 0 && (
-          <p className="text-sm text-zinc-600 italic">{messages.ancientsView.noDialogue}</p>
-        )}
-      </div>
-    </div>
-  );
-}
-
 // --- Main component ---
 interface AncientDetailProps {
   serviceLocale: ServiceLocale;
@@ -217,6 +92,7 @@ interface AncientDetailProps {
   backToListTitle?: string;
   ancient: CodexAncient;
   cards?: CodexCard[];
+  characters: CodexCharacter[];
   relics: CodexRelic[];
   onClose?: () => void;
   entities?: EntityInfo[];
@@ -231,6 +107,7 @@ export function AncientDetail({
   backToListTitle,
   ancient,
   cards = [],
+  characters,
   relics,
   onClose,
   entities,
@@ -286,25 +163,37 @@ export function AncientDetail({
         )}
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
-        <section className="flex min-h-[24rem] flex-col items-center justify-center py-4">
-          <div className="w-full max-w-[48rem]">
-            <AncientSceneStage ancient={ancient}>
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent px-5 pb-5 pt-16">
-                <h1 className="font-game-title text-3xl text-blue-200 drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
+      <div className="space-y-5">
+        <section>
+          <AncientSceneStage ancient={ancient}>
+            <div className="pointer-events-none absolute inset-x-2 top-2 z-20 flex justify-center sm:top-3">
+              <div className="max-w-[85%] rounded-lg border border-blue-200/25 bg-gradient-to-r from-blue-950/90 via-teal-950/90 to-blue-950/90 px-5 py-2 text-center shadow-xl">
+                <h1
+                  id={`ancient-detail-title-${ancient.id.toLowerCase()}`}
+                  className="font-game-title text-xl text-blue-100 drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)] sm:text-2xl"
+                >
                   {ancient.name}
                 </h1>
                 {ancient.epithet && (
-                  <p className="mt-1 font-game-text text-sm italic text-blue-100/75">
+                  <p className="truncate font-game-text text-xs italic text-blue-100/80 sm:text-sm">
                     &ldquo;{ancient.epithet}&rdquo;
                   </p>
                 )}
               </div>
-            </AncientSceneStage>
-          </div>
+            </div>
+            <AncientDialogueViewer
+              key={ancient.id}
+              ancient={ancient}
+              characters={characters}
+              serviceLocale={serviceLocale}
+              messages={serviceText}
+              entities={entities}
+              excludeSelf={excludeSelf}
+            />
+          </AncientSceneStage>
         </section>
 
-        <aside className="flex flex-col gap-3">
+        <aside className="grid items-start gap-3 lg:grid-cols-2">
           <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
@@ -326,23 +215,6 @@ export function AncientDetail({
                   <div className="font-game-text text-sm text-gray-300">{ancient.epithetEn}</div>
                 </div>
               )}
-              {ancient.description && (
-                <div>
-                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.firstLine}</div>
-                  <p className="font-game-text text-sm leading-relaxed text-gray-300">
-                    {entities ? (
-                      <RichDescription
-                        description={ancient.description}
-                        entities={entities}
-                        excludeEntityTerms={excludeSelf}
-                        excludeEntityTypes={ANCIENT_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
-                      />
-                    ) : (
-                      <DescriptionText description={ancient.description} />
-                    )}
-                  </p>
-                </div>
-              )}
             </div>
           </section>
 
@@ -351,21 +223,9 @@ export function AncientDetail({
             serviceLocale={serviceLocale}
             groups={[
               { kind: "card", targets: relatedCardTargets },
-              { kind: "relic", targets: relatedRelicTargets },
+              { kind: "relic", targets: relatedRelicTargets, label: detailLabels.rewardRelics, layout: "grid" },
             ]}
           />
-
-          <InfoRailSection title={serviceText.ancientsView.dialogue}>
-            <div className="max-h-[32rem] overflow-y-auto pr-1">
-              <DialogueViewer
-                dialogue={ancient.dialogue}
-                ancientName={ancient.name}
-                messages={serviceText}
-                entities={entities}
-                excludeSelf={excludeSelf}
-              />
-            </div>
-          </InfoRailSection>
 
           <InfoRailSection title={detailLabels.patchHistory}>
             <STS2ChangeHistory

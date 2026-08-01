@@ -23,7 +23,7 @@ import {
   getCodexServiceMessages,
   type CodexServiceMessages,
 } from "@/lib/codex-service";
-import type { CodexAncient, CodexCard, CodexRelic, EventAct } from "@/lib/codex-types";
+import type { CodexAncient, CodexCard, CodexCharacter, CodexRelic, EventAct } from "@/lib/codex-types";
 import {
   EVENT_ACT_ORDER,
   EVENT_ACT_UNKNOWN,
@@ -79,6 +79,7 @@ interface AncientListProps {
   gameUi: CodexGameUiLabels;
   ancients: CodexAncient[];
   cards?: CodexCard[];
+  characters: CodexCharacter[];
   relics?: CodexRelic[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
@@ -93,6 +94,7 @@ export function AncientList({
   gameUi,
   ancients,
   cards = [],
+  characters,
   relics = [],
   patches,
   changes,
@@ -340,6 +342,7 @@ export function AncientList({
               backToListTitle={gameUi.ancientsTitle}
               ancient={selectedAncient}
               cards={cards}
+              characters={characters}
               relics={selectedAncientRelics}
               onClose={closeSelectedAncient}
               entities={entities}

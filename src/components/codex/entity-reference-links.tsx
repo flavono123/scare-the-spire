@@ -26,6 +26,8 @@ interface EntityReferenceLinksProps {
 
 export interface CodexReferenceGroup {
   kind: CodexReferenceKind;
+  label?: string;
+  layout?: "inline" | "grid";
   targets: readonly CodexReferenceTarget[];
 }
 
@@ -167,9 +169,10 @@ export function EntityReferenceGroupLinks({
             key={group.kind}
             config={{
               icon: REFERENCE_KIND_CONFIG[group.kind].icon,
-              label: relatedResourceLabel(group.kind, serviceLocale, gameUi),
+              label: group.label ?? relatedResourceLabel(group.kind, serviceLocale, gameUi),
             }}
             kind={group.kind}
+            layout={group.layout}
             serviceLocale={serviceLocale}
             targets={group.targets}
           />
@@ -185,14 +188,36 @@ function ReferenceLine({
   kind,
   serviceLocale,
   targets,
+  layout = "inline",
   withBottomMargin = false,
 }: {
   config: { icon: string; label: string };
   kind: CodexReferenceKind;
+  layout?: "inline" | "grid";
   serviceLocale: ServiceLocale;
   targets: readonly CodexReferenceTarget[];
   withBottomMargin?: boolean;
 }) {
+  if (layout === "grid") {
+    return (
+      <div className={withBottomMargin ? "mb-3" : ""}>
+        <div className="mb-2 flex items-center gap-1.5 text-sm font-bold text-gray-300">
+          <Image src={config.icon} alt="" width={22} height={22} className="h-5 w-5 object-contain" />
+          <span>{config.label}:</span>
+        </div>
+        <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+          {targets.map((target) => (
+            <span key={target.id} className="min-w-0 truncate rounded-md border border-white/10 bg-black/20 px-2 py-1.5 text-sm text-gray-200">
+              <EntityPreview entity={toPreviewEntity(target, kind, serviceLocale)} preferEntityLocaleLabel={false}>
+                {target.title}
+              </EntityPreview>
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm font-bold text-gray-300 ${withBottomMargin ? "mb-3" : ""}`}>
       <Image
