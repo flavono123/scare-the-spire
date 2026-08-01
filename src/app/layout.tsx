@@ -32,6 +32,9 @@ const gcBatang = localFont({
 export const metadata: Metadata = {
   ...getDefaultServiceMetadata("ko"),
   metadataBase: SITE_METADATA_BASE,
+  verification: {
+    google: "E8V2Xb1wGY6BbJwDxVCVQ8NSoyOVoaghTCaSstAeVAA",
+  },
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-icon.png",
@@ -39,6 +42,7 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
   other: {
     "theme-color": "#1a1a2e",
+    "naver-site-verification": "3a4a92ed4d694d5e3e02163ac553ac6465ec4e5b",
   },
 };
 
