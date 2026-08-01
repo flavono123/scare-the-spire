@@ -4,12 +4,14 @@ import { useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
+import type { ComboPost } from "@/lib/combo-types";
 import type { ServiceLocale } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
 import { ComboEditor } from "./combo-editor";
 
 interface ComboComposerModalProps {
   entities: EntityInfo[];
+  initialPost?: ComboPost | null;
   placeholder: string;
   profileNickname: string;
   serviceLocale: ServiceLocale;
@@ -19,6 +21,7 @@ interface ComboComposerModalProps {
 
 export function ComboComposerModal({
   entities,
+  initialPost,
   placeholder,
   profileNickname,
   serviceLocale,
@@ -66,7 +69,7 @@ export function ComboComposerModal({
               id="combo-composer-title"
               className="font-service text-sm font-semibold text-yellow-100"
             >
-              {copy.create}
+              {initialPost ? copy.editTitle : copy.create}
             </h2>
           </div>
           <button
@@ -83,6 +86,7 @@ export function ComboComposerModal({
         <div className="min-h-0 flex-1 overflow-y-auto p-3 sm:p-4">
           <ComboEditor
             entities={entities}
+            initialPost={initialPost}
             placeholder={placeholder}
             profileNickname={profileNickname}
             serviceLocale={serviceLocale}
