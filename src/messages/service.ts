@@ -581,8 +581,6 @@ export const serviceMessages = {
         powerStackTypes: {
           Counter: "카운터",
           Single: "단일",
-          Duration: "지속",
-          Intensity: "강도",
           None: "없음",
         },
         enchantmentCardTypes: {
@@ -1411,8 +1409,6 @@ export const serviceMessages = {
         powerStackTypes: {
           Counter: "Counter",
           Single: "Single",
-          Duration: "Duration",
-          Intensity: "Intensity",
           None: "None",
         },
         enchantmentCardTypes: {

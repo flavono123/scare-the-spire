@@ -433,7 +433,7 @@ export const POTION_RARITY_ALIASES: Record<string, PotionRarityKo> = {
 
 // Power types
 export type PowerType = "Buff" | "Debuff" | "None";
-export type PowerStackType = "Counter" | "Single" | "Duration" | "Intensity" | "None";
+export type PowerStackType = "Counter" | "Single" | "None";
 
 export interface CodexPower extends CodexLifecycle {
   id: string;
@@ -468,8 +468,6 @@ export const POWER_TYPE_ALIASES: Record<string, PowerType> = {
 export const POWER_STACK_TYPE_ALIASES: Record<string, PowerStackType> = {
   카운터: "Counter", counter: "Counter",
   단일: "Single", single: "Single",
-  지속: "Duration", duration: "Duration",
-  강도: "Intensity", intensity: "Intensity",
 };
 
 // Enchantment types

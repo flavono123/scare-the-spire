@@ -4238,7 +4238,7 @@ function getPowerApplicationCounterAmount(
 }
 
 function isCountablePower(power: CodexPower | undefined): boolean {
-  return power?.stackType === "Counter" || power?.stackType === "Duration" || power?.stackType === "Intensity";
+  return power?.stackType === "Counter";
 }
 
 function normalizeNumericValue(value: DamageValue | number): DamageValue {
