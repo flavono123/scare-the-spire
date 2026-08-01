@@ -11,7 +11,7 @@ import { blocksToPlainText } from "@/lib/chemical-utils";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
-interface AddComboPostInput {
+export interface SaveComboPostInput {
   blocks: PostBlock[];
   nickname: string;
   activeUserId?: string;
@@ -21,7 +21,11 @@ interface UseComboPostsReturn {
   posts: ComboPost[];
   loading: boolean;
   unavailable: boolean;
-  add: (input: AddComboPostInput) => Promise<ComboPost | null>;
+  add: (input: SaveComboPostInput) => Promise<ComboPost | null>;
+  update: (
+    postId: string,
+    input: SaveComboPostInput,
+  ) => Promise<ComboPost | null>;
   remove: (postId: string) => Promise<void>;
 }
 
@@ -29,10 +33,57 @@ interface UseComboPostReturn {
   post: ComboPost | null;
   loading: boolean;
   unavailable: boolean;
+  update: (input: SaveComboPostInput) => Promise<ComboPost | null>;
 }
 
 function normalizePost(row: unknown): ComboPost {
   return row as ComboPost;
+}
+
+function validateSaveInput(input: SaveComboPostInput) {
+  const contentText = blocksToPlainText(input.blocks).trim();
+  const nickname = input.nickname.trim();
+  const resources = extractComboResourceRefs(input.blocks);
+  if (
+    !input.activeUserId
+    || !supabaseEnabled
+    || contentText.length < 2
+    || nickname.length < 1
+    || nickname.length > 20
+    || resources.length < 2
+    || countComboYouTubeReferences(input.blocks) > 1
+  ) {
+    return null;
+  }
+
+  return { contentText, nickname, resources };
+}
+
+async function persistComboPostUpdate(
+  postId: string,
+  input: SaveComboPostInput,
+) {
+  const normalized = validateSaveInput(input);
+  if (!normalized || !input.activeUserId) {
+    return { data: null, error: null };
+  }
+
+  return withSupabaseTimeout(
+    "combo_posts.update",
+    supabase
+      .from("combo_posts")
+      .update({
+        nickname: normalized.nickname,
+        content: input.blocks,
+        content_text: normalized.contentText,
+        resources: normalized.resources,
+      })
+      .eq("id", postId)
+      .eq("user_id", input.activeUserId)
+      .eq("env", supabaseEnv)
+      .select()
+      .single(),
+  ).catch(() => ({ data: null, error: new Error("timeout") }));
 }
 
 export function useComboPosts(userId: string | null): UseComboPostsReturn {
@@ -68,6 +119,21 @@ export function useComboPosts(userId: string | null): UseComboPostsReturn {
 
     const channel = supabase
       .channel("combo_posts")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "combo_posts",
+        },
+        (payload) => {
+          const updatedPost = normalizePost(payload.new);
+          if (updatedPost.env !== supabaseEnv) return;
+          setPosts((current) => current.map((post) => (
+            post.id === updatedPost.id ? updatedPost : post
+          )));
+        },
+      )
       .on(
         "postgres_changes",
         {
@@ -112,21 +178,9 @@ export function useComboPosts(userId: string | null): UseComboPostsReturn {
       blocks,
       nickname,
       activeUserId = userId ?? undefined,
-    }: AddComboPostInput): Promise<ComboPost | null> => {
-      const contentText = blocksToPlainText(blocks).trim();
-      const trimmedNickname = nickname.trim();
-      const resources = extractComboResourceRefs(blocks);
-      if (
-        !activeUserId
-        || !supabaseEnabled
-        || contentText.length < 2
-        || trimmedNickname.length < 1
-        || trimmedNickname.length > 20
-        || resources.length < 2
-        || countComboYouTubeReferences(blocks) > 1
-      ) {
-        return null;
-      }
+    }: SaveComboPostInput): Promise<ComboPost | null> => {
+      const normalized = validateSaveInput({ blocks, nickname, activeUserId });
+      if (!normalized || !activeUserId) return null;
 
       const { data, error } = await withSupabaseTimeout(
         "combo_posts.insert",
@@ -134,10 +188,10 @@ export function useComboPosts(userId: string | null): UseComboPostsReturn {
           .from("combo_posts")
           .insert({
             user_id: activeUserId,
-            nickname: trimmedNickname,
+            nickname: normalized.nickname,
             content: blocks,
-            content_text: contentText,
-            resources,
+            content_text: normalized.contentText,
+            resources: normalized.resources,
             env: supabaseEnv,
           })
           .select()
@@ -160,6 +214,27 @@ export function useComboPosts(userId: string | null): UseComboPostsReturn {
     [userId],
   );
 
+  const update = useCallback(
+    async (postId: string, input: SaveComboPostInput) => {
+      const { data, error } = await persistComboPostUpdate(postId, {
+        ...input,
+        activeUserId: input.activeUserId ?? userId ?? undefined,
+      });
+      if (error) {
+        setUnavailable(true);
+        throw new Error(error.message);
+      }
+      if (!data) return null;
+
+      const post = normalizePost(data);
+      setPosts((current) => current.map((item) => (
+        item.id === post.id ? post : item
+      )));
+      return post;
+    },
+    [userId],
+  );
+
   const remove = useCallback(
     async (postId: string) => {
       if (!userId || !supabaseEnabled) return;
@@ -176,10 +251,13 @@ export function useComboPosts(userId: string | null): UseComboPostsReturn {
     [userId],
   );
 
-  return { posts, loading, unavailable, add, remove };
+  return { posts, loading, unavailable, add, update, remove };
 }
 
-export function useComboPost(postId: string): UseComboPostReturn {
+export function useComboPost(
+  postId: string,
+  userId: string | null = null,
+): UseComboPostReturn {
   const [post, setPost] = useState<ComboPost | null>(null);
   const [loading, setLoading] = useState(supabaseEnabled);
   const [unavailable, setUnavailable] = useState(!supabaseEnabled);
@@ -215,5 +293,24 @@ export function useComboPost(postId: string): UseComboPostReturn {
     };
   }, [postId]);
 
-  return { post, loading, unavailable };
+  const update = useCallback(
+    async (input: SaveComboPostInput) => {
+      const { data, error } = await persistComboPostUpdate(postId, {
+        ...input,
+        activeUserId: input.activeUserId ?? userId ?? undefined,
+      });
+      if (error) {
+        setUnavailable(true);
+        throw new Error(error.message);
+      }
+      if (!data) return null;
+
+      const updatedPost = normalizePost(data);
+      setPost(updatedPost);
+      return updatedPost;
+    },
+    [postId, userId],
+  );
+
+  return { post, loading, unavailable, update };
 }
