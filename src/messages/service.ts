@@ -486,6 +486,7 @@ export const serviceMessages = {
         encounters: "건",
         badges: "개",
         affiliation: "캐릭터",
+        forms: "형상",
         cardTypes: {
           공격: "공격",
           스킬: "스킬",
@@ -1332,6 +1333,7 @@ export const serviceMessages = {
         encounters: "encounters",
         badges: "badges",
         affiliation: "Character",
+        forms: "Forms",
         cardTypes: {
           공격: "Attack",
           스킬: "Skill",

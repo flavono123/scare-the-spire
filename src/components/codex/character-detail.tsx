@@ -106,7 +106,6 @@ function getCharacterDetailLabels(serviceLocale: ServiceLocale) {
     ? {
         englishName: "영어명",
         startingCards: "시작 카드",
-        forms: "형상",
         dedicatedRelicsAndPotions: "전용 유물, 포션",
         relics: "유물",
         potions: "포션",
@@ -138,7 +137,6 @@ function getCharacterDetailLabels(serviceLocale: ServiceLocale) {
     : {
         englishName: "English name",
         startingCards: "Starting Cards",
-        forms: "Forms",
         dedicatedRelicsAndPotions: "Character Relics & Potions",
         relics: "Relics",
         potions: "Potions",
@@ -476,7 +474,7 @@ export function CharacterDetail({
             })}
           </div>
 
-          <div className="flex max-w-full flex-wrap justify-center gap-2" role="group" aria-label={detailLabels.forms}>
+          <div className="flex max-w-full flex-wrap justify-center gap-2" role="group" aria-label={serviceText.labels.forms}>
             {formOptions.map((form) => {
               const active = form.cardId === selectedFormCardId;
               const formColor = CHARACTER_COLORS[form.originCharacterId.toLowerCase()] ?? "#eab308";
