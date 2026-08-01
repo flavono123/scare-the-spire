@@ -240,7 +240,7 @@
   function localTransform(node, time, scene) {
     const props = node.props;
     let position = vector(props.position, { x: 0, y: 0 });
-    let rotation = number(props, "rotation", 0);
+    let rotation = number(props, "rotation", 0) + time * number(props, "browser_rotation_speed", 0);
     if (node.type === "PathFollow2D" && node._parent?.type === "Path2D") {
       const points = curve2dPoints(scene, node._parent.props.curve);
       const initial = number(props, "progress_ratio", 0);
@@ -249,11 +249,13 @@
       if (props.rotates !== false) rotation += sampled.rotation;
     }
     const scale = vector(props.scale, { x: 1, y: 1 });
+    const pulse = 1 + Math.sin(time * number(props, "browser_pulse_speed", 1) * TAU)
+      * number(props, "browser_pulse_strength", 0);
     const tint = multiplyColor(
       color(props.modulate, { r: 1, g: 1, b: 1, a: 1 }),
       color(props.self_modulate, { r: 1, g: 1, b: 1, a: 1 }),
     );
-    return { x: position.x, y: position.y, rotation, scaleX: scale.x, scaleY: scale.y, color: tint };
+    return { x: position.x, y: position.y, rotation, scaleX: scale.x * pulse, scaleY: scale.y * pulse, color: tint };
   }
 
   function prepareScene(scene, images, seedOffset) {
@@ -576,7 +578,10 @@
     if (!texture || !image) return;
     const horizontal = Math.max(1, number(node.props, "hframes", 1));
     const vertical = Math.max(1, number(node.props, "vframes", 1));
-    const frame = Math.max(0, Math.floor(number(node.props, "frame", 0)));
+    const browserFps = number(node.props, "browser_fps", 0);
+    const frame = browserFps > 0
+      ? Math.floor(time * browserFps) % (horizontal * vertical)
+      : Math.max(0, Math.floor(number(node.props, "frame", 0)));
     const width = texture.width / horizontal;
     const height = texture.height / vertical;
     const source = horizontal > 1 || vertical > 1
