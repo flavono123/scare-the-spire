@@ -104,7 +104,7 @@ export function AncientDialogueViewer({
         </button>
       )}
 
-      <div className="pointer-events-none absolute inset-x-2 bottom-14 top-2 z-10 mx-auto flex min-w-0 max-w-[58rem] flex-col sm:inset-x-4 sm:bottom-16 sm:top-3">
+      <div className="pointer-events-none absolute inset-x-2 bottom-14 z-10 mx-auto flex max-h-[58%] min-w-0 max-w-[58rem] flex-col justify-end sm:inset-x-4 sm:bottom-16">
         <div className="pointer-events-auto flex shrink-0 flex-col gap-x-6 sm:flex-row sm:items-start">
           {situationGroups.length > 0 && (
             <div className="flex min-w-0 items-center" role="tablist" aria-label={messages.ancientsView.dialogueSituation}>
@@ -160,7 +160,7 @@ export function AncientDialogueViewer({
         </div>
 
         {scenes.length > 1 && (
-          <div role="tablist" aria-label={messages.ancientsView.dialogueSelection} className="pointer-events-auto flex min-h-11 shrink-0 items-center justify-center gap-3">
+          <div role="tablist" aria-label={messages.ancientsView.dialogueSelection} className="pointer-events-auto flex min-h-11 shrink-0 items-center justify-center gap-2">
             <span className="font-game-title text-xs font-bold text-[#efc850] [text-shadow:0_2px_0_rgba(0,0,0,0.9)]" aria-hidden>
               {messages.ancientsView.dialogue}
             </span>
@@ -171,17 +171,18 @@ export function AncientDialogueViewer({
                 role="tab"
                 aria-selected={index === sceneIndex}
                 onClick={() => selectScene(index)}
-                className={`min-h-11 min-w-8 font-game-title text-base font-bold [text-shadow:0_2px_0_rgba(0,0,0,0.95)] transition-[opacity,transform] ${
-                  index === sceneIndex ? "scale-125 text-[#fff6e2]" : "text-[#fff6e2] opacity-40 hover:opacity-80"
+                className={`flex min-h-11 min-w-11 items-center justify-center gap-1 font-game-title text-lg font-bold [text-shadow:0_2px_0_rgba(0,0,0,0.95)] transition-[opacity,transform] ${
+                  index === sceneIndex ? "scale-110 text-[#efc850] drop-shadow-[0_0_6px_rgba(239,200,80,0.75)]" : "text-[#fff6e2] opacity-65 hover:opacity-100"
                 }`}
               >
+                <Image src={CONTINUE_ARROW} alt="" width={24} height={48} className={`h-5 w-2.5 object-contain ${index === sceneIndex ? "opacity-100" : "opacity-0"}`} />
                 {index + 1}
               </button>
             ))}
           </div>
         )}
 
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-gradient-to-b from-black/5 via-black/20 to-black/35 px-1 py-2 [scrollbar-width:thin] sm:px-3">
+        <div className="min-h-0 overflow-y-auto overscroll-contain px-1 py-2 [scrollbar-width:thin] sm:px-3">
           <div className="mx-auto flex w-full max-w-[45rem] flex-col gap-2.5">
             {scene.lines.slice(0, lineIndex + 1).map((line, index) => {
               const isCurrent = index === lineIndex;
@@ -242,9 +243,10 @@ export function AncientDialogueViewer({
                       className={`relative z-10 px-4 py-3 font-game-text text-sm leading-relaxed text-[#fff6e2] drop-shadow-[2px_5px_0_rgba(0,0,0,0.25)] ${!isCurrent ? "pr-12" : ""}`}
                       style={{
                         backgroundColor: "#28454f",
-                        backgroundImage: `url(${DIALOGUE_BACKGROUND})`,
-                        backgroundBlendMode: "multiply",
-                        backgroundSize: "100% 100%",
+                        WebkitMaskBoxImageSource: `url(${DIALOGUE_BACKGROUND})`,
+                        WebkitMaskBoxImageSlice: "28 27 fill",
+                        WebkitMaskBoxImageWidth: "14px",
+                        WebkitMaskBoxImageRepeat: "stretch",
                       }}
                     >
                       <div className="mb-1 text-xs font-bold [text-shadow:0_1px_0_rgba(0,0,0,0.8)]" style={{ color: speakerColor }}>{speakerName}</div>
