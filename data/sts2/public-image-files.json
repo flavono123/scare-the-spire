@@ -47,6 +47,11 @@
   "affliction-overlays/tainted": [
     "tainted_main_shader.webp"
   ],
+  "ancient-dialogue": [
+    "continue_arrow.webp",
+    "dialogue_nine_patch.webp",
+    "dialogue_tail.webp"
+  ],
   "ancient-nodes": [
     "ancient_node_darv_outline.webp",
     "ancient_node_darv.webp",
@@ -65,6 +70,45 @@
     "ancient_node_vakuu_outline.webp",
     "ancient_node_vakuu.webp"
   ],
+  "ancient-vfx/runtime/images/packed/vfx/event": [
+    "tanx_smoke.webp",
+    "trial_stand_light.webp"
+  ],
+  "ancient-vfx/runtime/images/packed/vfx/generic": [
+    "square_speck.webp",
+    "twinkle_star.webp"
+  ],
+  "ancient-vfx/runtime/images/rooms/hive/the_insatiable": [
+    "sand_pillar_base.webp"
+  ],
+  "ancient-vfx/runtime/images/vfx": [
+    "dot.webp",
+    "fog_sheet_1.webp",
+    "light.webp",
+    "miasma_cloud.webp",
+    "short_grain_rice_particle.webp",
+    "short_rice_no_glow_particle.webp",
+    "tileable_noise_2.webp",
+    "tiny_glow_dot.webp",
+    "water_texture.webp"
+  ],
+  "ancient-vfx/runtime/images/vfx/fire": [
+    "basic_fire_noise.webp",
+    "cinder_particle.webp",
+    "fire_base_slim.webp",
+    "fire_bottom_mask.webp",
+    "triangle_noise_tile.webp",
+    "zigzag_fire_distortion.webp"
+  ],
+  "ancient-vfx/runtime/images/vfx/monsters/lost_and_forgotten": [
+    "lost_smoke_gradient.webp"
+  ],
+  "ancient-vfx/runtime/images/vfx/monsters/queen": [
+    "false_queen_light.webp"
+  ],
+  "ancient-vfx/runtime/images/vfx/monsters/the_insatiable": [
+    "sand_cloud.webp"
+  ],
   "ancients": [
     "darv.webp",
     "neow.webp",
@@ -78,10 +122,14 @@
   "ancients-bg": [
     "darv_bg.webp",
     "neow_bg.webp",
+    "neow_fallback.webp",
+    "nonupeipe_bg.webp",
     "orobas_bg.webp",
     "pael_bg.webp",
     "tanx_bg.webp",
-    "tezcatara_bg.webp"
+    "tezcatara_bg.webp",
+    "tezcatara_fallback.webp",
+    "vakuu_bg.webp"
   ],
   "badges": [
     "big_deck.webp",
@@ -1505,6 +1553,14 @@
     "whispering_hollow.webp",
     "wood_carvings.webp",
     "zen_weaver.webp"
+  ],
+  "form-vfx/runtime": [
+    "common_glow.webp",
+    "demon_noise.webp",
+    "reaper_noise.webp",
+    "serpent_noise.webp",
+    "serpent_snakes.webp",
+    "void_spike.webp"
   ],
   "icons": [
     "app_icon.png",
