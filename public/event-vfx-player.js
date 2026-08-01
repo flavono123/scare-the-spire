@@ -520,7 +520,7 @@
       context.rotate(rotation);
       const flip = props.particle_flag_rotate_y === true ? Math.cos(progress * TAU) : 1;
       context.scale(particleScale * flip, particleScale);
-      context.globalAlpha = clamp(particleColor.a, 0, 1);
+      context.globalAlpha = clamp(particleColor.a * (blend === 1 ? 0.45 : 1), 0, 1);
       drawImageCentered(
         context,
         tintedImage(
