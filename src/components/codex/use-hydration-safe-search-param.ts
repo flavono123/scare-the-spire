@@ -1,12 +1,13 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { getCompendiumResourceIdForSearchParam } from "@/lib/compendium-resource-links";
 
 const URL_CHANGE_EVENT = "codex:urlchange";
 
 function readSearchParam(paramName: string): string | null {
   if (typeof window === "undefined") return null;
-  return new URL(window.location.href).searchParams.get(paramName);
+  return getCompendiumResourceIdForSearchParam(new URL(window.location.href), paramName);
 }
 
 function readPathname(): string {

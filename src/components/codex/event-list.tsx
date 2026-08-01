@@ -9,7 +9,10 @@ import {
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
-import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
+import {
+  buildCompendiumResourceDetailHref,
+  updateCompendiumResourceModalUrl,
+} from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
@@ -241,12 +244,11 @@ export function EventList({
 
   useEffect(() => {
     if (useUrlSelection) return;
-    const url = new URL(window.location.href);
-    if (selectedEventOverride) {
-      url.searchParams.set("event", selectedEventOverride.id.toLowerCase());
-    } else {
-      url.searchParams.delete("event");
-    }
+    const url = updateCompendiumResourceModalUrl(
+      new URL(window.location.href),
+      "event",
+      selectedEventOverride?.id ?? null,
+    );
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }

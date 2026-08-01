@@ -8,6 +8,7 @@ import {
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
+import { updateCompendiumResourceModalUrl } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
@@ -121,12 +122,11 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
   // Update URL query param when modal opens/closes
   useEffect(() => {
     if (useUrlSelection) return;
-    const url = new URL(window.location.href);
-    if (selectedRelicOverride) {
-      url.searchParams.set("relic", selectedRelicOverride.id.toLowerCase());
-    } else {
-      url.searchParams.delete("relic");
-    }
+    const url = updateCompendiumResourceModalUrl(
+      new URL(window.location.href),
+      "relic",
+      selectedRelicOverride?.id ?? null,
+    );
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }

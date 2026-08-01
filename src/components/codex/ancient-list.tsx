@@ -10,7 +10,10 @@ import {
 } from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
-import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
+import {
+  buildCompendiumResourceDetailHref,
+  updateCompendiumResourceModalUrl,
+} from "@/lib/compendium-resource-links";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -141,12 +144,11 @@ export function AncientList({
 
   useEffect(() => {
     if (useUrlSelection) return;
-    const url = new URL(window.location.href);
-    if (selectedAncientOverride) {
-      url.searchParams.set("ancient", selectedAncientOverride.id.toLowerCase());
-    } else {
-      url.searchParams.delete("ancient");
-    }
+    const url = updateCompendiumResourceModalUrl(
+      new URL(window.location.href),
+      "ancient",
+      selectedAncientOverride?.id ?? null,
+    );
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }

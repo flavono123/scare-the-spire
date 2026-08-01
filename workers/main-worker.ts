@@ -20,6 +20,7 @@ type ExecutionContextLike = {
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import openNextWorker from "../.open-next/worker.js";
+import { getLegacyCompendiumDetailRedirectPath } from "../src/lib/compendium-resource-links";
 import {
   staticCompendiumAssetPath,
   staticLegacyPageAssetPath,
@@ -114,6 +115,27 @@ function maybeRedirectRootToPreferredLocale(request: Request, url: URL): Respons
   return Response.redirect(redirectUrl.toString(), 302);
 }
 
+function maybeRedirectLegacyCompendiumDetail(request: Request, url: URL): Response | null {
+  if ((request.method !== "GET" && request.method !== "HEAD") || !isDocumentRequest(request, url)) {
+    return null;
+  }
+
+  const redirectPath = getLegacyCompendiumDetailRedirectPath(url);
+  if (!redirectPath) return null;
+
+  const redirectUrl = new URL(request.url);
+  redirectUrl.pathname = redirectPath;
+  redirectUrl.search = "";
+  redirectUrl.hash = "";
+  return new Response(null, {
+    status: 308,
+    headers: {
+      "Cache-Control": "public, max-age=86400",
+      Location: redirectUrl.toString(),
+    },
+  });
+}
+
 function staticHomeAssetPath(pathname: string, request: Request, url: URL): string | null {
   const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
   const isHomePath = normalizedPathname === "/";
@@ -197,6 +219,9 @@ const mainWorker = {
     const url = new URL(request.url);
     const localeRedirect = maybeRedirectRootToPreferredLocale(request, url);
     if (localeRedirect) return localeRedirect;
+
+    const legacyCompendiumRedirect = maybeRedirectLegacyCompendiumDetail(request, url);
+    if (legacyCompendiumRedirect) return legacyCompendiumRedirect;
 
     if (isPatchWorkerPath(url.pathname)) {
       if (env.PATCH_WORKER) return env.PATCH_WORKER.fetch(request);

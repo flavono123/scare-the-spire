@@ -5,7 +5,11 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
-import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
+import {
+  buildCompendiumResourceDetailHref,
+  getCompendiumResourceIdFromUrl,
+  updateCompendiumResourceModalUrl,
+} from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
@@ -147,7 +151,7 @@ export function EpochLibrary({
     window.setTimeout(() => {
       if (cancelled) return;
       const url = new URL(window.location.href);
-      const epochParam = url.searchParams.get("epoch");
+      const epochParam = getCompendiumResourceIdFromUrl(url, "epoch");
       setSelectedEpoch(epochParam
         ? versionedEpochs.find((epoch) => epoch.id.toLowerCase() === epochParam.toLowerCase()) ?? null
         : null);
@@ -160,12 +164,11 @@ export function EpochLibrary({
 
   useEffect(() => {
     if (!urlReady) return;
-    const url = new URL(window.location.href);
-    if (selectedEpoch) {
-      url.searchParams.set("epoch", selectedEpoch.id.toLowerCase());
-    } else {
-      url.searchParams.delete("epoch");
-    }
+    const url = updateCompendiumResourceModalUrl(
+      new URL(window.location.href),
+      "epoch",
+      selectedEpoch?.id ?? null,
+    );
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }
@@ -174,7 +177,7 @@ export function EpochLibrary({
   useEffect(() => {
     const handler = () => {
       const url = new URL(window.location.href);
-      const epochParam = url.searchParams.get("epoch");
+      const epochParam = getCompendiumResourceIdFromUrl(url, "epoch");
       if (!epochParam) {
         setSelectedEpoch(null);
       } else {
@@ -332,10 +335,13 @@ export function EpochLibrary({
     } else {
       url.searchParams.delete("beta");
     }
+    if (selectedEpoch) {
+      updateCompendiumResourceModalUrl(url, "epoch", selectedEpoch.id);
+    }
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }
-  }, []);
+  }, [selectedEpoch]);
 
   const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 

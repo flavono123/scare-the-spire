@@ -12,7 +12,10 @@ import {
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
-import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
+import {
+  buildCompendiumResourceDetailHref,
+  updateCompendiumResourceModalUrl,
+} from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
@@ -165,12 +168,11 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
   // Update URL query param when modal opens/closes
   useEffect(() => {
     if (useUrlSelection) return;
-    const url = new URL(window.location.href);
-    if (selectedPotionOverride) {
-      url.searchParams.set("potion", selectedPotionOverride.id.toLowerCase());
-    } else {
-      url.searchParams.delete("potion");
-    }
+    const url = updateCompendiumResourceModalUrl(
+      new URL(window.location.href),
+      "potion",
+      selectedPotionOverride?.id ?? null,
+    );
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }

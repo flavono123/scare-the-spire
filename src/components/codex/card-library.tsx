@@ -3,7 +3,10 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
-import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
+import {
+  buildCompendiumResourceDetailHref,
+  updateCompendiumResourceModalUrl,
+} from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
@@ -44,7 +47,6 @@ import {
 import {
   addCodexUrlChangeListener,
   pushCodexHistoryState,
-  useHydrationSafePathname,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
 
@@ -139,17 +141,6 @@ function resolveCardListId(id: string): string {
 function findCardByListId(cards: CodexCard[], id: string): CodexCard | null {
   const resolvedId = resolveCardListId(id);
   return cards.find((c) => c.id.toLowerCase() === resolvedId.toLowerCase()) ?? null;
-}
-
-function getCardLibraryBasePath(pathname: string): string {
-  const match = pathname.match(/^(.*\/compendium\/cards)(?:\/[^/]+)?\/?$/);
-  return match?.[1] ?? "/compendium/cards";
-}
-
-function getModalCardIdFromPath(pathname: string, modalParam: string | null): string | null {
-  if (modalParam !== "true") return null;
-  const match = pathname.match(/\/compendium\/cards\/([^/]+)\/?$/);
-  return match ? decodeURIComponent(match[1]) : null;
 }
 
 import { CardTile } from "./card-tile";
@@ -543,14 +534,10 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   };
 
   // Card detail modal
-  const urlPathname = useHydrationSafePathname();
-  const urlModal = useHydrationSafeSearchParam("modal");
-  const legacyUrlCardId = useHydrationSafeSearchParam("card", initialCardId);
+  const urlCardId = useHydrationSafeSearchParam("card", initialCardId);
   const urlBetaArt = useHydrationSafeSearchParam("beta", initialShowBeta ? "true" : null);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [useUrlSelection, setUseUrlSelection] = useState(true);
-  const urlPathCardId = useMemo(() => getModalCardIdFromPath(urlPathname, urlModal), [urlPathname, urlModal]);
-  const urlCardId = urlPathCardId ?? legacyUrlCardId;
   const urlBetaArtEnabled = isBetaArtParamEnabled(urlBetaArt);
   const activeShowBeta = useUrlSelection && urlBetaArt !== null ? urlBetaArtEnabled : showBeta;
   const selectedCard = useMemo(() => {
@@ -572,21 +559,12 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   useEffect(() => {
     if (useUrlSelection) return;
     const url = new URL(window.location.href);
-    if (selectedCardId) {
-      url.pathname = getCardLibraryBasePath(url.pathname);
-      url.searchParams.set("card", selectedCardId.toLowerCase());
-      url.searchParams.delete("modal");
-      if (showBeta) {
-        url.searchParams.set("beta", "true");
-      } else {
-        url.searchParams.delete("beta");
-      }
+    if (selectedCardId && showBeta) {
+      url.searchParams.set("beta", "true");
     } else {
-      url.pathname = getCardLibraryBasePath(url.pathname);
-      url.searchParams.delete("modal");
-      url.searchParams.delete("card");
       url.searchParams.delete("beta");
     }
+    updateCompendiumResourceModalUrl(url, "card", selectedCardId);
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }

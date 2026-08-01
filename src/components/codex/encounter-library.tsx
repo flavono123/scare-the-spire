@@ -9,7 +9,10 @@ import {
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
-import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
+import {
+  buildCompendiumResourceDetailHref,
+  updateCompendiumResourceModalUrl,
+} from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
@@ -164,12 +167,11 @@ export function EncounterLibrary({
   // URL sync
   useEffect(() => {
     if (useUrlSelection) return;
-    const url = new URL(window.location.href);
-    if (selectedEncounterOverride) {
-      url.searchParams.set("encounter", selectedEncounterOverride.id.toLowerCase());
-    } else {
-      url.searchParams.delete("encounter");
-    }
+    const url = updateCompendiumResourceModalUrl(
+      new URL(window.location.href),
+      "encounter",
+      selectedEncounterOverride?.id ?? null,
+    );
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }

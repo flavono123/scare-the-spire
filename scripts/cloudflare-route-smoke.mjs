@@ -110,6 +110,20 @@ function mainCases() {
     ...page("/compendium/powers/painful_stabs", "compendium"),
     ...page("/en/compendium/powers/painful_stabs", "compendium"),
     ...page("/zh/compendium/powers?power=painful_stabs", "compendium"),
+    {
+      name: "Korean legacy Compendium detail redirect",
+      path: "/compendium/powers?power=painful_stabs",
+      headers: { Accept: "text/html" },
+      statuses: [308],
+      location: "/compendium/powers/painful_stabs",
+    },
+    {
+      name: "English legacy Compendium detail redirect",
+      path: "/en/compendium/powers?power=painful_stabs",
+      headers: { Accept: "text/html" },
+      statuses: [308],
+      location: "/en/compendium/powers/painful_stabs",
+    },
     ...page("/chemical-x", "service"),
     ...page("/history-course", "service"),
     ...page("/this-or-that", "service"),
@@ -239,6 +253,13 @@ function validateCase(testCase, response, body) {
 
   if (testCase.bodyIncludes && !body.includes(testCase.bodyIncludes)) {
     return `response body is missing ${JSON.stringify(testCase.bodyIncludes)}`;
+  }
+
+  if (testCase.location) {
+    const location = response.headers.get("location");
+    if (!location || new URL(location, "http://smoke.local").pathname !== testCase.location) {
+      return `expected location ${testCase.location}, got ${location || "missing"}`;
+    }
   }
 
   return null;

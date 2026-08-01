@@ -5,7 +5,10 @@ import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { MonsterDetail } from "./monster-detail";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
-import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
+import {
+  buildCompendiumResourceDetailHref,
+  updateCompendiumResourceModalUrl,
+} from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { serviceMessages } from "@/messages/service";
@@ -189,12 +192,11 @@ export function MonsterLibrary({
   // URL sync
   useEffect(() => {
     if (useUrlSelection) return;
-    const url = new URL(window.location.href);
-    if (selectedMonsterId) {
-      url.searchParams.set("monster", selectedMonsterId.toLowerCase());
-    } else {
-      url.searchParams.delete("monster");
-    }
+    const url = updateCompendiumResourceModalUrl(
+      new URL(window.location.href),
+      "monster",
+      selectedMonsterId,
+    );
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }

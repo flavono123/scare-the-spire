@@ -36,6 +36,29 @@ const COMPENDIUM_RESOURCE_LINKS: Record<CompendiumResourceLinkType, LinkConfig> 
   relic: { path: "/compendium/relics", detailPath: "/compendium/relics", param: "relic" },
 };
 
+const COMPENDIUM_SELECTOR_PARAMS = new Set(
+  Object.values(COMPENDIUM_RESOURCE_LINKS).map(({ param }) => param),
+);
+
+function localizedCompendiumPath(pathname: string): {
+  localePrefix: string;
+  path: string;
+} | null {
+  const normalized = pathname.replace(/\/+$/, "") || "/";
+  const parts = normalized.split("/").filter(Boolean);
+  const compendiumIndex = parts.indexOf("compendium");
+  if (compendiumIndex < 0 || compendiumIndex > 1) return null;
+
+  return {
+    localePrefix: compendiumIndex === 1 ? `/${parts[0]}` : "",
+    path: `/${parts.slice(compendiumIndex).join("/")}`,
+  };
+}
+
+function supportsDirectCompendiumDetails(localePrefix: string): boolean {
+  return localePrefix === "" || localePrefix === "/en";
+}
+
 export function buildCompendiumResourceHref(
   type: CompendiumResourceLinkType,
   id: string,
@@ -52,4 +75,89 @@ export function buildCompendiumResourceDetailHref(
 ): string {
   const config = COMPENDIUM_RESOURCE_LINKS[type];
   return `${config.detailPath}/${encodeURIComponent(id.toLowerCase())}`;
+}
+
+export function getCompendiumResourceIdFromUrl(
+  url: URL,
+  type: CompendiumResourceLinkType,
+): string | null {
+  const config = COMPENDIUM_RESOURCE_LINKS[type];
+  const queryId = url.searchParams.get(config.param);
+  if (queryId) return queryId;
+
+  const localized = localizedCompendiumPath(url.pathname);
+  if (!localized) return null;
+  const detailPrefix = `${config.detailPath}/`;
+  if (!localized.path.startsWith(detailPrefix)) return null;
+
+  const encodedId = localized.path.slice(detailPrefix.length);
+  if (!encodedId || encodedId.includes("/")) return null;
+  try {
+    return decodeURIComponent(encodedId);
+  } catch {
+    return null;
+  }
+}
+
+export function getCompendiumResourceIdForSearchParam(
+  url: URL,
+  paramName: string,
+): string | null {
+  const entry = Object.entries(COMPENDIUM_RESOURCE_LINKS).find(
+    ([, config]) => config.param === paramName,
+  );
+  return entry
+    ? getCompendiumResourceIdFromUrl(url, entry[0] as CompendiumResourceLinkType)
+    : url.searchParams.get(paramName);
+}
+
+export function updateCompendiumResourceModalUrl(
+  url: URL,
+  type: CompendiumResourceLinkType,
+  id: string | null,
+): URL {
+  const config = COMPENDIUM_RESOURCE_LINKS[type];
+  const localized = localizedCompendiumPath(url.pathname);
+  const localePrefix = localized?.localePrefix ?? "";
+
+  if (supportsDirectCompendiumDetails(localePrefix)) {
+    url.pathname = id
+      ? `${localePrefix}${buildCompendiumResourceDetailHref(type, id)}`
+      : `${localePrefix}${config.path}`;
+    url.search = "";
+    if (!id && config.search) {
+      url.search = new URLSearchParams(config.search).toString();
+    }
+  } else {
+    url.pathname = `${localePrefix}${config.path}`;
+    for (const param of COMPENDIUM_SELECTOR_PARAMS) {
+      url.searchParams.delete(param);
+    }
+    if (config.search) {
+      for (const [key, value] of Object.entries(config.search)) {
+        url.searchParams.set(key, value);
+      }
+    }
+    if (id) url.searchParams.set(config.param, id.toLowerCase());
+  }
+
+  url.hash = "";
+  return url;
+}
+
+export function getLegacyCompendiumDetailRedirectPath(url: URL): string | null {
+  const localized = localizedCompendiumPath(url.pathname);
+  if (!localized || !supportsDirectCompendiumDetails(localized.localePrefix)) return null;
+
+  for (const [type, config] of Object.entries(COMPENDIUM_RESOURCE_LINKS)) {
+    if (localized.path !== config.path) continue;
+    const id = url.searchParams.get(config.param);
+    if (!id) continue;
+    return `${localized.localePrefix}${buildCompendiumResourceDetailHref(
+      type as CompendiumResourceLinkType,
+      id,
+    )}`;
+  }
+
+  return null;
 }

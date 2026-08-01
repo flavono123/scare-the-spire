@@ -27,7 +27,10 @@ import {
 } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
-import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
+import {
+  buildCompendiumResourceDetailHref,
+  updateCompendiumResourceModalUrl,
+} from "@/lib/compendium-resource-links";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
   CodexLibraryShell,
@@ -228,12 +231,11 @@ export function CharacterList({
 
   useEffect(() => {
     if (useUrlSelection) return;
-    const url = new URL(window.location.href);
-    if (selectedCharacterOverride) {
-      url.searchParams.set("character", selectedCharacterOverride.id.toLowerCase());
-    } else {
-      url.searchParams.delete("character");
-    }
+    const url = updateCompendiumResourceModalUrl(
+      new URL(window.location.href),
+      "character",
+      selectedCharacterOverride?.id ?? null,
+    );
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }

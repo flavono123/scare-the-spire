@@ -103,6 +103,27 @@ test("redirect and canonical metadata match the public locale URL", async ({ req
   expect(redirect.status()).toBe(302);
   expect(new URL(redirect.headers().location).pathname).toBe("/en");
 
+  for (const [legacyPath, canonicalPath] of [
+    ["/compendium/relics?relic=fishing_rod&beta=true", "/compendium/relics/fishing_rod"],
+    ["/en/compendium/cards?card=dowsing", "/en/compendium/cards/dowsing"],
+  ]) {
+    const legacyRedirect = await request.get(absolute(legacyPath), {
+      headers: { Accept: "text/html" },
+      maxRedirects: 0,
+    });
+    expect(legacyRedirect.status(), legacyPath).toBe(308);
+    const location = new URL(legacyRedirect.headers().location);
+    expect(location.pathname, legacyPath).toBe(canonicalPath);
+    expect(location.search, legacyPath).toBe("");
+  }
+
+  const gameLocaleModal = await request.get(
+    absolute("/zh/compendium/relics?relic=fishing_rod"),
+    { headers: { Accept: "text/html" }, maxRedirects: 0 },
+  );
+  expect(gameLocaleModal.status()).toBe(200);
+  expect(gameLocaleModal.headers()["x-cf-static-page"]).toBe("compendium");
+
   for (const path of [
     "/compendium/powers/painful_stabs",
     "/en/compendium/powers/painful_stabs",
@@ -111,6 +132,17 @@ test("redirect and canonical metadata match the public locale URL", async ({ req
     expect(response?.status()).toBe(200);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", canonical(path));
   }
+});
+
+test("compendium modal keeps its view on the canonical detail URL", async ({ page }) => {
+  await page.goto(absolute("/compendium/relics"), { waitUntil: "domcontentloaded" });
+  await page.locator('a[href="/compendium/relics/fishing_rod"]').first().click();
+
+  await expect(page).toHaveURL(absolute("/compendium/relics/fishing_rod"));
+  await expect(page.getByRole("button", { name: "닫기" })).toBeVisible();
+
+  await page.getByRole("button", { name: "닫기" }).click();
+  await expect(page).toHaveURL(absolute("/compendium/relics"));
 });
 
 test("dynamic service routes refresh directly and invalid nesting fails closed", async ({ request }) => {

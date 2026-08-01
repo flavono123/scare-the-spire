@@ -7,6 +7,7 @@ import {
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
+import { updateCompendiumResourceModalUrl } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
@@ -134,17 +135,11 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
 
   useEffect(() => {
     if (useUrlSelection) return;
-    const url = new URL(window.location.href);
-    if (selectedResourceOverride?.kind === "enchantment") {
-      url.searchParams.set("enchantment", selectedResourceOverride.item.id.toLowerCase());
-      url.searchParams.delete("affliction");
-    } else if (selectedResourceOverride?.kind === "affliction") {
-      url.searchParams.set("affliction", selectedResourceOverride.item.id.toLowerCase());
-      url.searchParams.delete("enchantment");
-    } else {
-      url.searchParams.delete("enchantment");
-      url.searchParams.delete("affliction");
-    }
+    const url = updateCompendiumResourceModalUrl(
+      new URL(window.location.href),
+      selectedResourceOverride?.kind ?? "enchantment",
+      selectedResourceOverride?.item.id ?? null,
+    );
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }
