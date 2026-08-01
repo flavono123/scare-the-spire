@@ -4,6 +4,11 @@ import {
   renderCardDescription,
 } from "@/components/codex/codex-description";
 import type { PostBlock } from "@/lib/chemical-types";
+import type {
+  CardRarityKo,
+  CardTypeKo,
+  CodexCard,
+} from "@/lib/codex-types";
 import { historyRunPlainText } from "@/lib/history-run-reference";
 import {
   buildEntityKeywordIndex,
@@ -35,6 +40,21 @@ export const TRANSFIGURE_RESOURCE_TYPES = [
 
 export type TransfigureResourceType = (typeof TRANSFIGURE_RESOURCE_TYPES)[number];
 
+export const TRANSFIGURE_CARD_TYPES = [
+  "공격",
+  "스킬",
+  "파워",
+] as const satisfies readonly CardTypeKo[];
+
+export const TRANSFIGURE_CARD_RARITIES = [
+  "일반",
+  "고급",
+  "희귀",
+] as const satisfies readonly CardRarityKo[];
+
+export type TransfigureCardType = (typeof TRANSFIGURE_CARD_TYPES)[number];
+export type TransfigureCardRarity = (typeof TRANSFIGURE_CARD_RARITIES)[number];
+
 export interface TransfigureResourceRef {
   type: TransfigureResourceType;
   id: string;
@@ -51,6 +71,8 @@ export interface TransfigurePost {
   source_game_locale: GameLocale;
   transformed_name: string | null;
   transformed_cost: string | null;
+  transformed_card_type: TransfigureCardType | null;
+  transformed_card_rarity: TransfigureCardRarity | null;
   card_top_keywords: string[];
   card_bottom_keywords: string[];
   upgraded_content: PostBlock[] | null;
@@ -311,6 +333,67 @@ export function normalizeTransfigureCost(
   return trimmed && trimmed !== sourceCost ? trimmed : null;
 }
 
+export function isTransfigureCardType(
+  value: unknown,
+): value is TransfigureCardType {
+  return TRANSFIGURE_CARD_TYPES.includes(value as TransfigureCardType);
+}
+
+export function isTransfigureCardRarity(
+  value: unknown,
+): value is TransfigureCardRarity {
+  return TRANSFIGURE_CARD_RARITIES.includes(value as TransfigureCardRarity);
+}
+
+export function normalizeTransfigureCardType(
+  value: string | null | undefined,
+  sourceType: CardTypeKo | null,
+): TransfigureCardType | null {
+  return isTransfigureCardType(value) && value !== sourceType ? value : null;
+}
+
+export function normalizeTransfigureCardRarity(
+  value: string | null | undefined,
+  sourceRarity: CardRarityKo | null,
+): TransfigureCardRarity | null {
+  return isTransfigureCardRarity(value) && value !== sourceRarity ? value : null;
+}
+
+export function getTransfigureCardTypeLabel(
+  entities: EntityInfo[],
+  type: TransfigureCardType,
+): string {
+  return entities.find((entity) => entity.cardData?.type === type)
+    ?.cardData?.typeLabel ?? type;
+}
+
+export function getTransfigureCardRarityLabel(
+  entities: EntityInfo[],
+  rarity: TransfigureCardRarity,
+): string {
+  return entities.find((entity) => entity.cardData?.rarity === rarity)
+    ?.cardData?.rarityLabel ?? rarity;
+}
+
+export function applyTransfigureCardMetadata(
+  card: CodexCard,
+  entities: EntityInfo[],
+  transformedCardType?: TransfigureCardType | null,
+  transformedCardRarity?: TransfigureCardRarity | null,
+): CodexCard {
+  return {
+    ...card,
+    type: transformedCardType ?? card.type,
+    typeLabel: transformedCardType
+      ? getTransfigureCardTypeLabel(entities, transformedCardType)
+      : card.typeLabel,
+    rarity: transformedCardRarity ?? card.rarity,
+    rarityLabel: transformedCardRarity
+      ? getTransfigureCardRarityLabel(entities, transformedCardRarity)
+      : card.rarityLabel,
+  };
+}
+
 export function isTransfigureChanged({
   blocks,
   sourceText,
@@ -329,6 +412,10 @@ export function isTransfigureChanged({
   sourceCardKeywords = null,
   upgradedCardKeywords = null,
   sourceUpgradedCardKeywords = null,
+  transformedCardType = "",
+  sourceCardType = null,
+  transformedCardRarity = "",
+  sourceCardRarity = null,
 }: {
   blocks: PostBlock[];
   sourceText: string;
@@ -347,9 +434,18 @@ export function isTransfigureChanged({
   sourceCardKeywords?: TransfigureCardKeywords | null;
   upgradedCardKeywords?: TransfigureCardKeywords | null;
   sourceUpgradedCardKeywords?: TransfigureCardKeywords | null;
+  transformedCardType?: string;
+  sourceCardType?: CardTypeKo | null;
+  transformedCardRarity?: string;
+  sourceCardRarity?: CardRarityKo | null;
 }): boolean {
   return (
     showUpgrade
+    || normalizeTransfigureCardType(transformedCardType, sourceCardType) != null
+    || normalizeTransfigureCardRarity(
+      transformedCardRarity,
+      sourceCardRarity,
+    ) != null
     || !transfigureCardKeywordsEqual(cardKeywords, sourceCardKeywords)
     || !transfigureCardKeywordsEqual(
       upgradedCardKeywords,

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import type { EntityInfo } from "../src/components/patch-note-renderer";
 import {
+  applyTransfigureCardMetadata,
   getTransfigureInitialBlocks,
   getTransfigureSourceCost,
   getTransfigureSourceText,
@@ -9,6 +10,8 @@ import {
   getTransfigureUpgradeSourceText,
   isTransfigureChanged,
   isTransfiguredContent,
+  normalizeTransfigureCardRarity,
+  normalizeTransfigureCardType,
   normalizeTransfigureCostInput,
   normalizeTransfigureCost,
   normalizeTransfigureName,
@@ -26,6 +29,10 @@ const expertise = {
   cardData: {
     cost: 1,
     isXCost: false,
+    type: "스킬",
+    typeLabel: "스킬",
+    rarity: "고급",
+    rarityLabel: "고급",
     description: "카드를 {Cards:diff()}장 뽑습니다.\n그 카드가 이번 턴에\n[gold]보존[/gold]을 얻습니다.",
     descriptionRaw: "카드를 {Cards:diff()}장 뽑습니다.\n그 카드가 이번 턴에\n[gold]보존[/gold]을 얻습니다.",
     vars: { Cards: 2 },
@@ -99,6 +106,40 @@ assert.equal(normalizeTransfigureName("", "전문성"), null);
 assert.equal(normalizeTransfigureName("전문가", "전문성"), "전문가");
 assert.equal(normalizeTransfigureCost("1", "1"), null);
 assert.equal(normalizeTransfigureCost("x", "1"), "X");
+assert.equal(normalizeTransfigureCardType("스킬", "스킬"), null);
+assert.equal(normalizeTransfigureCardType("공격", "스킬"), "공격");
+assert.equal(normalizeTransfigureCardType("저주", "스킬"), null);
+assert.equal(normalizeTransfigureCardRarity("고급", "고급"), null);
+assert.equal(normalizeTransfigureCardRarity("희귀", "고급"), "희귀");
+assert.equal(normalizeTransfigureCardRarity("고대의 존재", "고급"), null);
+const transformedCard = applyTransfigureCardMetadata(
+  expertise.cardData!,
+  [
+    expertise,
+    {
+      ...expertise,
+      id: "BASH",
+      cardData: {
+        ...expertise.cardData!,
+        type: "공격",
+        typeLabel: "Attack",
+        rarity: "희귀",
+        rarityLabel: "Rare",
+      },
+    } as EntityInfo,
+  ],
+  "공격",
+  "희귀",
+);
+assert.deepEqual(
+  [
+    transformedCard.type,
+    transformedCard.typeLabel,
+    transformedCard.rarity,
+    transformedCard.rarityLabel,
+  ],
+  ["공격", "Attack", "희귀", "Rare"],
+);
 for (const [locale, messages] of Object.entries(serviceMessages)) {
   assert.ok(
     messages.transfigure.defaultNickname.length <= 20,
@@ -133,6 +174,34 @@ assert.equal(
     transformedUpgradeCost: "",
     sourceUpgradeCost: "0",
     showUpgrade: true,
+  }),
+  true,
+);
+assert.equal(
+  isTransfigureChanged({
+    blocks: sourceBlocks,
+    sourceText: sourceText ?? "",
+    sourceBlocks,
+    transformedName: "",
+    sourceName: "전문성",
+    transformedCost: "",
+    sourceCost: "1",
+    transformedCardType: "공격",
+    sourceCardType: "스킬",
+  }),
+  true,
+);
+assert.equal(
+  isTransfigureChanged({
+    blocks: sourceBlocks,
+    sourceText: sourceText ?? "",
+    sourceBlocks,
+    transformedName: "",
+    sourceName: "전문성",
+    transformedCost: "",
+    sourceCost: "1",
+    transformedCardRarity: "희귀",
+    sourceCardRarity: "고급",
   }),
   true,
 );
