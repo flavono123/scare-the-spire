@@ -73,7 +73,7 @@
 - `src/components/codex/character-spine-stage.tsx`
   - 별도 런타임을 복제하지 않고 `MonsterSpineStage`를 얇게 감싼다.
 - `src/components/codex/monster-spine-stage.tsx`
-  - 런타임 지연 로드, 정적 우선, 첫 성공 렌더 뒤 라이브 화면 노출, straight-alpha, 실패 fallback, 명시적 정리를 구현한다.
+  - 런타임 지연 로드, 정적 우선, player success 기반 준비 상태, straight-alpha, 실패 fallback, 명시적 정리를 구현한다.
 - `src/components/codex/encounter-scene-stage.tsx`
   - 정적 배경 위에 VFX와 background Spine을 서로 독립적인 레이어로 합성한다.
 - `src/components/codex/fake-merchant-spine-stage.tsx`
@@ -83,9 +83,9 @@
 - `src/components/codex/event-detail.tsx`, `event-choice-frame.tsx`, `event-vfx-stage.tsx`, `event-vfx-runtime.ts`
   - 게임 장면 좌표, 순차 콘텐츠 상태, 실제 선택 프레임, 정적 배경과 VFX 레이어, 브라우저 전용 지연 로드를 참고한다.
 
-현재 `public/event-vfx-player.js`는 주로 `GPUParticles2D`와 일부 sprite를 처리하고 `CPUParticles2D`, `TextureRect`, `SpineSprite`를 완전하게 처리하지 않는다. 이를 그대로 연결하면 DARV와 TANX의 효과가 통째로 없어지고 다른 장면도 일부 유실된다. 범용 엔진을 새로 만들지 말고, 8개 원본 장면에서 실제로 보이는 효과를 목록화한 뒤 기존 event VFX 추출기와 런타임에 필요한 최소 지원만 더한다.
+현재 `public/event-vfx-player.js`는 Canvas2D로 Godot의 `GPUParticles2D`와 일부 sprite를 근사하고 `CPUParticles2D`, `TextureRect`, `SpineSprite`를 완전하게 처리하지 않는다. Godot 노드명의 GPU는 이 웹 런타임이 WebGL이라는 뜻이 아니다. 이를 그대로 연결하면 DARV와 TANX의 효과가 통째로 없어지고 다른 장면도 일부 유실된다. 범용 엔진을 새로 만들지 말고, 8개 원본 장면에서 실제로 보이는 효과를 목록화한 뒤 기존 event VFX 추출기와 런타임에 필요한 최소 지원만 더한다.
 
-또한 조사 당시 NEOW atlas는 5767×4883으로 디코드 메모리가 약 107 MiB였고 TEZCATARA도 약 24 MiB였다. 실제 모바일 브라우저의 최대 texture 크기와 디코드 메모리를 확인한다. 축소가 필요하면 PNG만 줄이지 말고 atlas 좌표와 texture를 같은 비율로 생성 단계에서 함께 줄인다.
+또한 조사 당시 NEOW atlas는 5767×4883으로 `width × height × 4` 기준 디코드 메모리 하한이 약 107 MiB였고 TEZCATARA도 같은 계산으로 약 24 MiB였다. PNG 전송량, 이 하한값, 실제 기기의 `gl.MAX_TEXTURE_SIZE`, 성공 렌더 여부를 기록한다. 축소가 필요하면 PNG만 줄이지 말고 atlas 좌표와 texture를 같은 비율로 생성 단계에서 함께 줄인다.
 
 ### 실제 고대의 존재 대사 UI에서 확인한 구조
 
@@ -125,23 +125,26 @@ PCK에서 다음 장면과 리소스를 직접 확인하고 구현 기준으로 
   baseArt: { path, sourcePath, status },        // 없을 수 있음
   fallback: { path },                          // 고대의 존재 본체가 포함된 완성 장면
   spine: { assetId, animation, skin, viewport }, // 없을 수 있음
-  vfx: { manifestPath, usable, unsupported },  // 없을 수 있음
+  vfx: { manifestPath, support, unsupported }, // full | partial | unsupported
+  composition: { slots, sourceZOrder },        // 원본에서 필요한 경우
   alternatives: []                             // 원본으로 확인된 경우에만
 }
 ```
 
-이 예시는 필요한 의미를 보여 주는 것이며 일회성 interface나 factory를 만들라는 뜻이 아니다. 기존 `AncientSpineAsset`, event VFX metadata, 공통 viewport 타입을 재사용한다.
+이 예시는 필요한 의미를 보여 주는 것이며 일회성 interface나 factory를 만들라는 뜻이 아니다. 현재 `getCodexAncientSpineAssets()`가 반환하는 `MonsterSpineAsset[]`, event VFX metadata, 공통 viewport 타입을 우선 재사용하고, 기존 타입으로 원본 의미를 보존할 수 없을 때만 작은 Ancient 전용 타입을 추가한다.
 
 구현 원칙:
 
 - React 컴포넌트 안의 ID Set이나 파일 존재 여부로 렌더 전략을 추측하지 않는다.
 - source scene을 파싱해 manifest를 생성하고, 8개 ID가 정확히 한 번씩 들어가는지 검증한다.
 - base art, Spine, VFX, alternative는 독립 필드다. 한 항목이 있다고 다른 항목을 지우지 않는다.
-- 브라우저가 아직 재현하지 못하는 VFX 노드도 조용히 삭제하지 않는다. node type과 `usable: false` 또는 동등한 이유를 생성 결과와 최종 보고에 남긴다.
+- 브라우저가 아직 재현하지 못하는 VFX 노드도 조용히 삭제하지 않는다. 장면 전체를 boolean 하나로 켜고 끄지 말고 `full | partial | unsupported` 상태, 지원한 node, 빠진 node와 이유를 생성 결과와 최종 보고에 남긴다.
 - fallback은 항상 고대의 존재 본체까지 포함한 완성된 정적 장면이어야 한다. NEOW의 빈 배경이나 Spine atlas page를 fallback으로 쓰지 않는다.
+- 영구 base layer와 로딩/실패용 완성 composite fallback을 구분한다. NEOW의 `neow_bg`는 Spine 준비 뒤에도 남아야 하고, 준비 뒤 사라지는 것은 본체까지 그린 임시 composite fallback뿐이다.
 - 필요한 경우 추출 단계에서 원본 scene의 기준 프레임을 정적 합성한다. 요청 처리 중 합성하지 않는다.
 - 생성 결과에는 source scene 좌표, viewport/camera transform, skin, animation, track을 보존하고 React에서 감으로 보정값을 흩뿌리지 않는다.
-- 큰 runtime manifest를 일반 리소스 JSON payload에 통째로 중복하지 않는다. 상세이 실제로 필요한 작은 descriptor 또는 정적 URL만 전달하고 측정으로 결정한다.
+- 본체 앞뒤로 VFX가 섞이는 장면은 `behindBody`/`inFrontOfBody` 또는 동등한 composition slot과 source z-order를 보존한다. 참조하는 외부 PackedScene도 추출 시 재귀적으로 해석하고 누락을 기록한다.
+- 큰 runtime manifest를 일반 리소스 JSON payload에 통째로 중복하지 않는다. 상세가 실제로 필요한 작은 descriptor 또는 정적 URL만 전달하고 측정으로 결정한다.
 
 우선 다음 파일과 흐름을 조사하고, 기존 파일을 확장하는 것이 가장 작으면 그대로 사용한다.
 
@@ -164,14 +167,16 @@ PCK에서 다음 장면과 리소스를 직접 확인하고 구현 기준으로 
 - 정적 배경 + VFX는 `EncounterSceneStage`와 event VFX의 독립 레이어 방식을 사용한다.
 - 여러 Spine 레이어가 실제로 확인될 때만 `FakeMerchantSpineStage`식 공유 canvas를 사용한다.
 - 특수 bone 또는 복합 구성이 실제로 필요한 항목만 명시적인 작은 조합을 둔다. 모든 항목을 위한 factory를 만들지 않는다.
-- Spine 또는 scene 전체가 본체를 담당하는 항목은 첫 성공 프레임 전까지 완성된 fallback을 유지한다. 파일 fetch 성공만으로 fallback을 숨기지 않는다.
+- Spine 또는 scene 전체가 본체를 담당하는 항목은 live body의 준비 신호 전까지 완성된 composite fallback을 유지한다. 현재 `MonsterSpineStage`의 success callback보다 강한 첫 draw 보장이 필요하다면 작은 readiness handshake를 추가하거나 최소 한 animation frame 동안 fallback을 더 유지한다. 파일 fetch 성공만으로 숨기지 않는다.
+- 복합 본체는 필수 body layer가 모두 준비된 뒤에만 composite fallback을 숨긴다. 영구 base layer는 그 뒤에도 유지한다.
 - ambient VFX 실패는 정적 본체나 성공한 Spine까지 숨기지 않는다. 각 레이어가 독립적으로 fail closed 해야 한다.
 - Spine은 straight-alpha를 유지하고 기존 runtime과 같은 `premultipliedAlpha: false` 경로를 사용한다.
 - offscreen, hidden tab, `prefers-reduced-motion`에서는 지속 애니메이션을 멈추거나 정적 기준 프레임을 사용한다.
-- unmount 시 timer, observer, player, renderer, asset manager, WebGL context를 모두 정리한다.
-- 라이브 렌더 실패, WebGL 비활성, 잘못된 animation, atlas/skel/texture 누락에서도 빈 무대를 만들지 않는다.
+- unmount 시 timer, observer, player, renderer, asset manager, Spine의 WebGL context와 VFX의 Canvas/runtime를 각각 정리한다.
+- Spine의 WebGL 비활성/실패와 ambient VFX의 Canvas/runtime 실패를 별도로 강제해도 빈 무대를 만들지 않는다.
+- 한 고대의 존재를 열 때 다른 7종의 atlas나 VFX texture를 다운로드·디코드하지 않는다.
 
-원본 scene에 VFX가 있는 8종은 모션 허용 환경에서 최소 하나 이상의 그 장면 고유 ambient 효과가 실제로 움직여야 한다. 특히 다음 대표 조합을 따로 검증한다.
+원본 scene별 VFX 지원 상태를 `full | partial | unsupported`로 판정한다. `full`과 `partial`은 원본에 근거한 시각적으로 중요한 효과가 실제로 움직여야 하고, `partial`은 생략한 node를 남긴다. `unsupported`는 현재 브라우저 런타임으로 안전하게 재현할 수 없다는 구체적인 근거가 있을 때만 허용하며 정적 fallback을 유지한다. 다음 대표 조합은 적어도 하나씩 라이브로 검증한다.
 
 - CPU 중심: DARV 또는 TANX
 - GPU 중심: NONUPEIPE
@@ -192,7 +197,7 @@ PCK에서 다음 장면과 리소스를 직접 확인하고 구현 기준으로 
 - `First Visit`, `Returning`, 다섯 캐릭터 그룹을 모두 보존한다.
 - 현재 locale의 `.next` 값을 optional `nextLabel`로 loader에 보존한다. 값이 있으면 임의의 `다음` 문구로 덮지 않는다.
 - 대사 본문의 BBCode와 `RichDescription` 교차 링크를 보존한다.
-- `data/sts2/<locale>/events.json`, `characters.json`, localization을 현재 loader 흐름 안에서 사용한다. 참조되지 않는 역사 파일 `data/ancients.json`을 새 SSOT로 삼지 않는다.
+- raw 구조는 현재 존재하는 `data/sts2/kor/events.json`, `eng/events.json`, `kor/characters.json`, `eng/characters.json`에서 읽고, 선택 언어 문구는 `data/sts2/localization/<locale>/ancients.json`에서 읽는 기존 loader 흐름을 따른다. 존재하지 않는 locale별 raw JSON을 가정하지 않고, 참조되지 않는 역사 파일 `data/ancients.json`을 새 SSOT로 삼지 않는다.
 - 같은 대사를 쓰는 `CharacterAncientInteractions` 등 모든 caller를 확인한다. 정규화 helper를 공유하면 의미 오류를 한 번에 막을 수 있는 범위까지만 공유하고 캐릭터 상세 전체를 새 디자인으로 재작성하지 않는다.
 
 #### 상호 작용
@@ -203,6 +208,7 @@ PCK에서 다음 장면과 리소스를 직접 확인하고 구현 기준으로 
 - 진행할 때 현재 줄을 강조하고 이미 본 줄은 게임처럼 흐린 stale 상태로 남긴다.
 - pointer hover 또는 keyboard focus를 받은 stale 줄 하나만 일시적으로 선명하게 한다. 모든 이전 줄을 동시에 활성화하지 않는다.
 - 실제 `.next` 문구와 원본의 진행 affordance를 사용한다. `ancient_event_layout`과 DLL 동작을 확인해 full-screen hitbox/continue가 정답이면 그것을 따른다. `GameChoiceFrame`은 시각·동작이 맞을 때만 재사용하고, 일반 event option과 ancient option을 근거 없이 혼용하지 않는다.
+- full-screen continue hitbox는 interaction rail의 selector, `RichDescription` 링크, stale 줄 control과 sibling으로 두고 그 영역을 덮거나 클릭을 가로채지 않는다. interactive 요소를 큰 진행 `button` 안에 중첩하지 않는다.
 - 마지막 줄에서는 진행 버튼을 비활성으로 남기지 말고 `다시 보기` 또는 변형 선택으로 돌아가는 명확한 상태를 제공한다.
 - 자동 재생으로 읽는 속도를 강요하지 않는다.
 - 고대의 존재와 캐릭터 아이콘, dialogue tail, nine-patch를 원본에서 추출해 사용한다. 손으로 비슷한 말풍선을 새로 그리지 않는다.
@@ -219,6 +225,7 @@ PCK에서 다음 장면과 리소스를 직접 확인하고 구현 기준으로 
 - 모든 주요 터치 타깃은 최소 44px, selector는 좁은 화면에서 안전하게 수평 스크롤 또는 wrap한다.
 - 360×800에서도 현재 줄과 진행 버튼에 도달할 수 있고 stage와 rail에 가로 overflow가 없어야 한다.
 - hover만으로 가능한 기능을 만들지 않는다. stale 줄 복원은 focus/tap에도 동등하게 작동해야 한다.
+- 흐린 stale 줄도 WCAG 텍스트 대비를 유지한다. focusable stale control에는 `이 대사 다시 보기`처럼 동작이 드러나는 accessible name을 주고, tap으로 복원한 같은 입력이 다음 줄 진행까지 일으키지 않게 한다.
 - `prefers-reduced-motion`에서 대사 전환과 VFX가 읽기 불편한 모션을 만들지 않는다.
 
 ### 4. 상세과 목록에 연결한다
@@ -228,7 +235,8 @@ PCK에서 다음 장면과 리소스를 직접 확인하고 구현 기준으로 
 - `AncientDetail`의 stage와 rail 구조를 게임 장면 우선으로 재배치하되 관련 리소스, 패치, 댓글 로직은 유지한다.
 - 목록 타일은 안정적인 정적 대표 이미지 또는 map node를 사용한다. 8개의 라이브 WebGL 장면을 동시에 돌리지 않는다.
 - 목록 타일에 디자인 문서가 요구하는 영어 이름 보조 표기가 빠져 있다면 함께 복구한다.
-- `ancient-list.tsx`의 기존 `?ancient=`/popstate 동작을 유지하고, modal에 `role="dialog"`, `aria-modal`, 적절한 초기 focus, Escape 닫기, 닫은 뒤 원래 타일 focus 복귀를 제공한다.
+- locale에 따라 pathname 또는 query를 사용하는 기존 resource URL, direct-or-modal 판정과 popstate 동작을 유지한다. `?ancient=` 하나로 일반화하지 않는다.
+- modal에는 `role="dialog"`, `aria-modal`, `aria-labelledby` 또는 동등한 accessible name, focus trap, 배경 `inert`, body scroll lock, 적절한 초기 focus, Escape 닫기, 닫은 뒤 원래 타일 focus 복귀를 제공한다.
 - 선택한 캐릭터나 대화 변형의 deep link가 간단히 가능한 경우에만 query/hash를 추가한다. 재생 중 `lineIndex`까지 URL 상태로 만들지는 않는다.
 - THE_ARCHITECT는 character interaction source에 있더라도 현재 8종 고대의 존재 상세 범위에 몰래 합치지 않는다.
 
@@ -242,6 +250,7 @@ PCK에서 다음 장면과 리소스를 직접 확인하고 구현 기준으로 
 4. 10~30개까지 늘어나는 `relicIds`는 단순 `관련 유물`이 아니라 고대의 존재의 보상임을 드러내는 `보상 유물` rail로 표시한다. 좁은 화면에서 끝없이 한 줄 wrap된다면 compact grid 또는 접기/더보기 중 기존 컴포넌트로 가능한 가장 작은 방식을 쓴다. 원본에 없는 분류나 확률은 추가하지 않는다.
 5. 모달 dialog semantics와 focus 복귀를 보완한다.
 6. 애셋 manifest 완전성과 대사 scene grouping을 각각 작은 자동 검증으로 남긴다.
+7. 대사 shape를 scene 단위로 바꿔도 `src/lib/search-index-data.ts`가 모든 대사 본문 줄을 계속 검색 문서에 넣게 한다. `.next` 문구는 검색 대상일 필요가 없다.
 
 다음은 재작성 대상이 아니다.
 
@@ -293,13 +302,15 @@ pnpm build
 추가하는 작은 검증은 다음을 직접 실패시켜야 한다.
 
 - 현재 원본의 고대의 존재 ID 8개가 manifest에 정확히 한 번씩 존재한다.
-- 각 manifest 경로의 정적 파일이 실제로 존재한다.
+- 출력 URL은 대응하는 저장소 정적 파일이 존재하고, PCK `sourcePath`는 추출 시 원본 PCK 내부에 존재한다.
 - 현재 조사 기준으로 NEOW와 TEZCATARA에 Spine이 연결되고 다른 6종에는 추측 Spine을 넣지 않는다. 현재 PCK가 달라졌다면 원본 기반 기대값을 명시적으로 갱신한다.
 - source scene의 base art/placeholder 상태, Spine, VFX가 한 필드 때문에 다른 필드에서 유실되지 않는다.
 - 모든 항목에 고대의 존재 본체가 포함된 fallback이 있다.
+- Spine 항목의 atlas/skel/texture가 존재하고, 지정 animation과 skin이 생성 인덱스에 있으며, viewport 값은 finite이고 texture dimension은 정한 한계 안이다.
 - `order` parser가 변형과 줄 순서 및 `r` suffix를 안정적으로 보존한다.
 - 여러 대화 변형이 하나의 transcript로 평탄화되지 않는다.
 - locale에 존재하는 `.next` 문구가 loader에서 보존된다.
+- scene grouping 뒤에도 모든 대사 본문 줄이 검색 인덱스에 남는다.
 
 Worker 코드나 binding/config를 바꿨다면 OpenNext build 뒤 Wrangler dry run으로 gzip bundle size와 binding도 확인한다. 정적 애셋과 클라이언트만 바꿨다면 불필요한 배포 명령은 실행하지 않는다.
 
@@ -307,12 +318,13 @@ Worker 코드나 binding/config를 바꿨다면 OpenNext build 뒤 Wrangler dry 
 
 headless 환경의 WebGL 성공만 믿지 말고 실제 데스크톱과 모바일 브라우저에서 확인한다. 최소한 다음을 점검한다.
 
-- 8종 상세을 각각 한 번씩 열어 배경, 본체, 크기, 중심, crop, VFX를 비교한다.
+- 8종 상세를 각각 한 번씩 열어 배경, 본체, 크기, 중심, crop, VFX를 비교한다.
 - NEOW와 TEZCATARA에서 Spine 본체가 실제로 보이고 idle animation이 움직인다.
 - NONUPEIPE와 VAKUU가 작은 토큰 확대로 회귀하지 않는다.
 - DARV/TANX의 CPU 계열, NONUPEIPE의 GPU 계열, NEOW/TEZCATARA의 Spine+VFX 조합을 별도로 확인한다.
-- WebGL 비활성, runtime load 실패, atlas/skel/texture 누락, 잘못된 animation을 강제로 만들었을 때도 완성된 정적 장면이 보인다.
-- 8종을 반복해서 열고 닫아도 WebGL context 누수 경고와 stale timer가 없다.
+- Spine WebGL 비활성/runtime 실패, ambient Canvas/runtime 실패, atlas/skel/texture 누락, 잘못된 animation을 각각 강제로 만들었을 때도 완성된 정적 장면이 보인다.
+- 8종을 반복해서 열고 닫아도 WebGL context 누수 경고, stale Canvas, stale timer가 없다.
+- NEOW 하나를 열 때 다른 7종의 atlas/VFX texture가 네트워크에서 요청되거나 디코드되지 않는다.
 - `prefers-reduced-motion`에서는 장면과 대사가 안정적인 정적 상태로 읽힌다.
 - First Visit, Returning, 다섯 캐릭터 그룹에서 서로 다른 대화 변형이 분리되고 실제 next 문구로 한 줄씩 진행된다.
 - 이미 본 줄 하나의 hover/focus/tap 복원, 키보드 진행, 마지막 줄 reset을 확인한다.
@@ -325,17 +337,17 @@ QA hook은 이름을 통일해 추가한다.
 - stage: `data-ancient-art-stage`
 - controls: `data-ancient-dialogue-controls`
 
-모바일 QA 스킬의 canonical viewport 목록을 사용하고, 예를 들어 실제 dev server 포트에 맞춰 다음처럼 목록과 직접 상세을 검사한다.
+모바일 QA 스킬의 canonical viewport 목록을 사용하고, 실제 dev server 포트에 맞춰 직접 상세를 검사한다.
 
 ```bash
-node .codex/skills/mobile-viewport-qa/scripts/mobile-qa.mjs --list
+node scripts/mobile-qa.mjs --list
 node .codex/skills/mobile-viewport-qa/scripts/check-mobile-route.mjs \
-  --route /compendium/ancients \
+  --route /compendium/ancients/neow \
   --render-selector '[data-ancient-art-stage]' \
   --controls-selector '[data-ancient-dialogue-controls]'
 ```
 
-모달은 타일을 실제로 열어 검사하고, 직접 상세은 대표적인 정적+VFX, Spine+VFX 항목을 각각 검사한다. 360×800에서 가로 overflow, 잘린 진행 버튼, 44px 미만 터치 타깃이 없어야 한다.
+모달은 목록 타일을 클릭하는 별도 Playwright 흐름에서 실제로 연 뒤 같은 selector를 검사한다. 직접 상세는 대표적인 정적+VFX, Spine+VFX 항목을 각각 검사한다. 360×800에서 가로 overflow, 잘린 진행 버튼, 44px 미만 터치 타깃이 없어야 한다.
 
 ## 완료 조건
 
@@ -345,9 +357,9 @@ node .codex/skills/mobile-viewport-qa/scripts/check-mobile-route.mjs \
 - [ ] React의 하드코딩 ID Set이 아니라 생성 manifest의 독립 capability로 렌더한다.
 - [ ] 8종 모두 본체가 포함된 안정적인 정적 fallback을 가진다.
 - [ ] NEOW와 TEZCATARA의 Spine 본체가 복구되고, 다른 6종의 정적 본체가 유지된다.
-- [ ] 원본에 VFX가 있는 각 장면에서 적어도 하나의 고유 ambient 효과가 동작하며 unsupported 차이는 node 단위로 기록된다.
+- [ ] 원본 VFX를 `full | partial | unsupported`로 분류하고 대표 CPU/GPU/Spine 조합의 핵심 ambient 효과가 동작하며 빠진 차이는 node 단위로 기록된다.
 - [ ] placeholder와 확인된 beta/alternative를 구분하며 없는 베타 UI를 발명하지 않는다.
-- [ ] 큰 atlas가 모바일 texture/memory 한계를 넘지 않는지 실측했다.
+- [ ] 큰 atlas의 전송량, `width × height × 4` 메모리 하한, 실제 기기 `gl.MAX_TEXTURE_SIZE`와 성공 렌더 여부를 기록했다.
 - [ ] 대화 변형이 분리되고 현재 줄 중심의 게임식 interaction rail로 진행된다.
 - [ ] 실제 `.next` 문구, 아이콘, tail, nine-patch, 공식 캐릭터 순서를 사용한다.
 - [ ] 첫 조우 중복, 목록 영어명, 보상 유물 정보 구조, 모달 접근성을 정리했다.
