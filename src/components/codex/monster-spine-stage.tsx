@@ -40,6 +40,12 @@ interface MonsterSpineStageProps {
   fallbackImageStyle?: CSSProperties;
   loopSelectedMove?: boolean;
   onVisualBoundsChange?: (bounds: MonsterStageVisualBounds | null) => void;
+  onReady?: () => void;
+  skeletonTransform?: {
+    coordinateHeight: number;
+    position: { x: number; y: number };
+    scale: { x: number; y: number };
+  } | null;
 }
 
 type LoadState = "loading" | "ready" | "error";
@@ -93,6 +99,8 @@ function MonsterSpineStageComponent({
   fallbackImageStyle,
   loopSelectedMove = false,
   onVisualBoundsChange,
+  onReady,
+  skeletonTransform = null,
 }: MonsterSpineStageProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const fallbackImageRef = useRef<HTMLImageElement | null>(null);
@@ -181,14 +189,23 @@ function MonsterSpineStageComponent({
           showControls: false,
           showLoading: false,
           viewport,
+          update: skeletonTransform
+            ? (loadedPlayer) => applySkeletonTransform(loadedPlayer, skeletonTransform)
+            : undefined,
           success: (loadedPlayer) => {
             if (disposed) return;
+            if (skeletonTransform) applySkeletonTransform(loadedPlayer, skeletonTransform);
             applyCompositeSkin(loadedPlayer, SpineSkinCtor, Physics, compositeSkinNames, monsterName);
             applyIdleTracks(loadedPlayer, asset.idleTracks);
             playerRef.current = loadedPlayer;
             setAvailableAnimations(loadedPlayer.skeleton?.data.animations.map((animation) => animation.name) ?? asset.animations);
             setLoadState("ready");
             reportSpineVisualBounds(loadedPlayer, parent, onVisualBoundsChange);
+            window.requestAnimationFrame(() => {
+              if (!disposed) window.requestAnimationFrame(() => {
+                if (!disposed) onReady?.();
+              });
+            });
           },
           error: (_loadedPlayer, message) => {
             if (disposed) return;
@@ -213,7 +230,36 @@ function MonsterSpineStageComponent({
       releaseSpinePlayer(player);
       parent.replaceChildren();
     };
-  }, [asset, compositeSkinNames, monsterName, onVisualBoundsChange, singleSkin, stableViewportOverride, viewportPadding, viewportTransitionTime]);
+  }, [asset, compositeSkinNames, monsterName, onReady, onVisualBoundsChange, singleSkin, skeletonTransform, stableViewportOverride, viewportPadding, viewportTransitionTime]);
+
+  useEffect(() => {
+    if (loadState !== "ready" || !playerRef.current || !containerRef.current) return;
+    const player = playerRef.current;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let visible = !document.hidden;
+    let intersecting = true;
+    const updatePlayback = () => {
+      if (visible && intersecting && !reducedMotion) player.play();
+      else player.pause();
+    };
+    const observer = "IntersectionObserver" in window
+      ? new IntersectionObserver(([entry]) => {
+          intersecting = entry?.isIntersecting !== false;
+          updatePlayback();
+        }, { rootMargin: "120px" })
+      : null;
+    observer?.observe(containerRef.current);
+    const onVisibilityChange = () => {
+      visible = !document.hidden;
+      updatePlayback();
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    updatePlayback();
+    return () => {
+      observer?.disconnect();
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [loadState]);
 
   useEffect(() => {
     if (!asset || loadState !== "ready" || !playerRef.current || !selectedAnimation) return;
@@ -374,6 +420,17 @@ function MonsterSpineStageComponent({
 
 export const MonsterSpineStage = memo(MonsterSpineStageComponent);
 MonsterSpineStage.displayName = "MonsterSpineStage";
+
+function applySkeletonTransform(
+  player: SpinePlayer,
+  transform: NonNullable<MonsterSpineStageProps["skeletonTransform"]>,
+) {
+  if (!player.skeleton) return;
+  player.skeleton.x = transform.position.x;
+  player.skeleton.y = transform.coordinateHeight - transform.position.y;
+  player.skeleton.scaleX = transform.scale.x;
+  player.skeleton.scaleY = transform.scale.y;
+}
 
 function resolveSpineAnimation(
   asset: MonsterSpineAsset,

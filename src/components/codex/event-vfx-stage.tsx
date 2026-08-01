@@ -18,6 +18,7 @@ export function EventVfxStage({
   mode = "standard",
   offsetX = 268,
   offsetY = 49,
+  sceneUrl,
   sceneSlug,
 }: {
   baseImageUrl?: string;
@@ -25,12 +26,14 @@ export function EventVfxStage({
   mode?: EventVfxMode;
   offsetX?: number;
   offsetY?: number;
-  sceneSlug: string;
+  sceneSlug?: string;
+  sceneUrl?: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const controllerRef = useRef<EventVfxController | null>(null);
   const handledBurstRef = useRef(burstSignal);
   const [loadState, setLoadState] = useState<LoadState>("loading");
+  const resolvedSceneUrl = sceneUrl ?? `${SCENE_ROOT}/${sceneSlug}.json`;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -47,7 +50,7 @@ export function EventVfxStage({
         onReady: () => {
           if (!disposed) setLoadState("ready");
         },
-        sceneUrl: `${SCENE_ROOT}/${sceneSlug}.json`,
+        sceneUrl: resolvedSceneUrl,
       }))
       .then((createdController) => {
         if (disposed) {
@@ -59,7 +62,7 @@ export function EventVfxStage({
       })
       .catch((error: unknown) => {
         if (disposed) return;
-        console.warn(`Failed to render the ${sceneSlug} event VFX scene:`, error);
+        console.warn(`Failed to render the ${sceneSlug ?? sceneUrl} VFX scene:`, error);
         setLoadState("error");
       });
 
@@ -68,7 +71,7 @@ export function EventVfxStage({
       controller?.destroy();
       if (controllerRef.current === controller) controllerRef.current = null;
     };
-  }, [baseImageUrl, mode, offsetX, offsetY, sceneSlug]);
+  }, [baseImageUrl, mode, offsetX, offsetY, resolvedSceneUrl, sceneSlug, sceneUrl]);
 
   useEffect(() => {
     if (burstSignal <= handledBurstRef.current) return;
@@ -97,7 +100,7 @@ export function EventVfxStage({
       ref={canvasRef}
       aria-hidden
       data-event-vfx-mode={mode}
-      data-event-vfx-scene={sceneSlug}
+      data-event-vfx-scene={sceneSlug ?? sceneUrl}
       data-event-vfx-state={loadState}
       className={`pointer-events-none absolute inset-0 h-full w-full transition-opacity duration-300 ${
         loadState === "ready" ? "opacity-100" : "opacity-0"

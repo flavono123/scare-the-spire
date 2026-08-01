@@ -25,6 +25,7 @@ import {
   CodexEvent,
   CodexEpoch,
   CodexAncient,
+  AncientSceneAsset,
   AncientDialogueLine,
   CodexMonster,
   CodexEncounter,
@@ -2138,6 +2139,8 @@ function mapAncient(
   eng: RawEvent,
   gameAncients: GameLocalizationTable,
   gameLocale: GameLocale,
+  sceneAsset: AncientSceneAsset,
+  spineAsset: MonsterSpineAsset | null,
 ): CodexAncient {
   const key = kor.id.toLowerCase();
   const imageUrl = `/images/sts2/ancients/${key}.webp`;
@@ -2181,6 +2184,8 @@ function mapAncient(
     relicIds: kor.relics ?? [],
     dialogue,
     imageUrl,
+    sceneAsset,
+    spineAsset,
     introducedInPatch: kor.introducedInPatch,
     deprecated: kor.deprecated,
     deprecatedInPatch: kor.deprecatedInPatch,
@@ -2189,19 +2194,25 @@ function mapAncient(
 
 export async function getCodexAncients(opts?: { gameLocale?: GameLocale }): Promise<CodexAncient[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korEvents, engEvents, gameAncients] = await Promise.all([
+  const [korEvents, engEvents, gameAncients, sceneAssets, spineAssets] = await Promise.all([
     readJson<RawEvent[]>("kor/events.json"),
     readJson<RawEvent[]>("eng/events.json"),
     readGameLocalizationTable(gameLocale, "ancients"),
+    readJson<AncientSceneAsset[]>("ancient-scene-assets.json"),
+    getCodexAncientSpineAssets(),
   ]);
 
   const engById = new Map(engEvents.map((e) => [e.id, e]));
+  const sceneAssetById = new Map(sceneAssets.map((asset) => [asset.id, asset]));
+  const spineAssetById = new Map(spineAssets.map((asset) => [asset.id, asset]));
 
   return korEvents
     .filter((e) => e.type === "Ancient")
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      return mapAncient(kor, eng, gameAncients, gameLocale);
+      const sceneAsset = sceneAssetById.get(kor.id);
+      if (!sceneAsset) throw new Error(`Missing Ancient scene asset: ${kor.id}`);
+      return mapAncient(kor, eng, gameAncients, gameLocale, sceneAsset, spineAssetById.get(kor.id) ?? null);
     });
 }
 

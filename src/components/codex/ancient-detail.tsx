@@ -1,7 +1,6 @@
 "use client";
 
 import { type ReactNode, useMemo, useState } from "react";
-import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
@@ -24,6 +23,7 @@ import { DescriptionText } from "./codex-description";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
+import { AncientSceneStage } from "./ancient-scene-stage";
 import {
   getRelatedCardIdsForAncient,
   getRelatedRelicIdsForAncient,
@@ -41,22 +41,6 @@ const SPECIAL_TABS = [
   { key: "First Visit", labelKey: "firstVisit" },
   { key: "Returning", labelKey: "returning" },
 ] as const;
-
-const ANCIENT_BACKGROUND_IDS = new Set([
-  "darv",
-  "neow",
-  "orobas",
-  "pael",
-  "tanx",
-  "tezcatara",
-]);
-
-function ancientBackgroundImageUrl(ancientId: string): string | null {
-  const slug = ancientId.toLowerCase();
-  return ANCIENT_BACKGROUND_IDS.has(slug)
-    ? `/images/sts2/ancients-bg/${slug}_bg.webp`
-    : null;
-}
 
 const ANCIENT_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
 
@@ -256,7 +240,6 @@ export function AncientDetail({
 }: AncientDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getAncientDetailLabels(serviceLocale);
-  const backgroundImageUrl = ancientBackgroundImageUrl(ancient.id);
   const [commentCount, setCommentCount] = useState(0);
   const excludeSelf = useMemo(
     () => new Set([ancient.name, ancient.nameEn]),
@@ -305,60 +288,20 @@ export function AncientDetail({
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[24rem] flex-col items-center justify-center py-4">
-          {backgroundImageUrl ? (
-            <div className="relative w-full max-w-[48rem] overflow-hidden rounded-lg border border-blue-900/30 bg-[#070910] shadow-2xl shadow-black/40">
-              <div className="relative h-56 w-full sm:aspect-[2560/1200] sm:h-auto">
-                <Image
-                  src={backgroundImageUrl}
-                  alt={ancient.name}
-                  fill
-                  sizes="(max-width: 1024px) 92vw, 48rem"
-                  className="object-cover"
-                  priority
-                />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent px-5 pb-5 pt-16">
-                  <h1 className="font-game-title text-3xl text-blue-200 drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
-                    {ancient.name}
-                  </h1>
-                  {ancient.epithet && (
-                    <p className="mt-1 font-game-text text-sm italic text-blue-100/75">
-                      &ldquo;{ancient.epithet}&rdquo;
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="flex min-h-[22rem] w-full flex-col items-center justify-center gap-4">
-              <div className="relative flex h-64 w-64 items-center justify-center sm:h-72 sm:w-72">
-                <Image
-                  src={ancient.imageUrl ?? "/images/sts2/nav/stats_ancients.png"}
-                  alt=""
-                  fill
-                  sizes="18rem"
-                  className="object-contain opacity-20 blur-2xl"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Image
-                    src={ancient.imageUrl ?? "/images/sts2/nav/stats_ancients.png"}
-                    alt={ancient.name}
-                    width={288}
-                    height={288}
-                    className="max-h-full max-w-full object-contain drop-shadow-[0_0_28px_rgba(96,165,250,0.35)]"
-                    priority
-                  />
-                </div>
-              </div>
-              <div className="text-center">
-                <h1 className="font-game-title text-3xl text-blue-200">{ancient.name}</h1>
+          <div className="w-full max-w-[48rem]">
+            <AncientSceneStage ancient={ancient}>
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent px-5 pb-5 pt-16">
+                <h1 className="font-game-title text-3xl text-blue-200 drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
+                  {ancient.name}
+                </h1>
                 {ancient.epithet && (
                   <p className="mt-1 font-game-text text-sm italic text-blue-100/75">
                     &ldquo;{ancient.epithet}&rdquo;
                   </p>
                 )}
               </div>
-            </div>
-          )}
+            </AncientSceneStage>
+          </div>
         </section>
 
         <aside className="flex flex-col gap-3">

@@ -269,7 +269,7 @@
     }
     for (const node of scene.nodes) {
       node._parent = node === root || !node.parent ? null : byPath.get(node.parent) || root;
-      if (node.type === "GPUParticles2D") {
+      if (node.type === "GPUParticles2D" || node.type === "CPUParticles2D") {
         const amount = Math.max(1, Math.floor(number(node.props, "amount", 8)));
         const random = randomFrom(hashString(`${scene.source}:${node._path}:${seedOffset}`));
         node._particles = Array.from({ length: amount }, (_, index) => ({
@@ -384,7 +384,9 @@
     const texture = textureResource(scene, node.props.texture);
     const image = texture ? scene._images.get(texture.src) : null;
     if (!texture || !image) return;
-    const process = subResource(scene, node.props.process_material);
+    const process = node.type === "CPUParticles2D"
+      ? { type: "ParticleProcessMaterial", props: cpuParticleProps(node.props) }
+      : subResource(scene, node.props.process_material);
     if (!process || process.type !== "ParticleProcessMaterial") return;
     const props = process.props;
     const lifetime = Math.max(0.01, number(node.props, "lifetime", 1));
@@ -493,6 +495,18 @@
     context.restore();
   }
 
+  function cpuParticleProps(props) {
+    return {
+      ...props,
+      alpha_curve: props.alpha_curve,
+      color_ramp: props.color_ramp,
+      emission_box_extents: props.emission_rect_extents,
+      scale_curve: props.scale_amount_curve,
+      scale_min: props.scale_amount_min,
+      scale_max: props.scale_amount_max,
+    };
+  }
+
   function spriteTextureAtTime(scene, node, time) {
     if (node.type === "Sprite2D") return textureResource(scene, node.props.texture);
     const frames = subResource(scene, node.props.sprite_frames);
@@ -555,7 +569,7 @@
     for (const node of scene._nodes) {
       const world = worldByNode.get(node);
       if (!world) continue;
-      if (node.type === "GPUParticles2D") drawParticleNode(context, scene, node, world, time, oneShot);
+      if (node.type === "GPUParticles2D" || node.type === "CPUParticles2D") drawParticleNode(context, scene, node, world, time, oneShot);
       else if (node.type === "Sprite2D" || node.type === "AnimatedSprite2D") drawSpriteNode(context, scene, node, world, time);
     }
   }
@@ -636,7 +650,7 @@
     }
     const bursts = [];
     const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
-    const targetInterval = 1000 / (reducedMotion ? 12 : 30);
+    const targetInterval = 1000 / (reducedMotion ? 1 : 30);
     let destroyed = false;
     let visible = true;
     let frameId = 0;
@@ -655,7 +669,7 @@
       previous = now;
       if (!resizeCanvas(canvas, context, logicalWidth, logicalHeight)) return;
       context.clearRect(0, 0, logicalWidth, logicalHeight);
-      const elapsed = (now - start) / 1000 * (reducedMotion ? 0.35 : 1);
+      const elapsed = reducedMotion ? 0 : (now - start) / 1000;
       if (mirror) {
         renderMirror(context, mirrorLayer, scene, baseImage, elapsed);
       } else {

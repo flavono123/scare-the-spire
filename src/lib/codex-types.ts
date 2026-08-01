@@ -555,6 +555,36 @@ export interface AncientDialogueLine {
   text: string;        // Korean, with BBCode markup
 }
 
+export interface AncientSceneAsset {
+  id: string;
+  source: { gameVersion: string; scenePath: string };
+  token: string;
+  baseArt: { path: string; sourcePath: string; status: "base" | "placeholder" } | null;
+  fallback: { path: string };
+  spine: {
+    assetId: string;
+    animation: string;
+    skin: string | null;
+    track: number;
+    viewport: { width: number; height: number };
+    transform: {
+      position: { x: number; y: number };
+      scale: { x: number; y: number };
+    };
+  } | null;
+  vfx: {
+    manifestPaths: Partial<Record<"behindBody" | "inFrontOfBody", string>>;
+    support: "full" | "partial" | "unsupported";
+    supported: string[];
+    unsupported: Array<{ count: number; examples: string[]; reason: string; type: string }>;
+  };
+  composition: {
+    slots: Array<"baseArt" | "behindBody" | "body" | "inFrontOfBody">;
+    sourceZOrder: string[];
+  };
+  alternatives: string[];
+}
+
 export interface CodexAncient extends CodexLifecycle {
   id: string;
   name: string;        // Korean
@@ -567,6 +597,8 @@ export interface CodexAncient extends CodexLifecycle {
   relicIds: string[];  // IDs of relics this ancient drops
   dialogue: Record<string, AncientDialogueLine[]>; // key = character name or "Returning"/"First Visit"
   imageUrl: string | null;
+  sceneAsset: AncientSceneAsset;
+  spineAsset: MonsterSpineAsset | null;
 }
 
 export const EVENT_ACT_ORDER: (EventAct | null)[] = [
