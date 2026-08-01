@@ -11,11 +11,16 @@ import Image from "@/components/ui/static-image";
 import type { PostBlock } from "@/lib/chemical-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
+  applyTransfigureCardMetadata,
   getTransfigureSourceCost,
   getTransfigureUpgradeInitialBlocks,
   getTransfigureUpgradeSourceCost,
+  normalizeTransfigureCardRarity,
+  normalizeTransfigureCardType,
   transfigureBlocksToGameDescription,
   type TransfigureCardKeywords,
+  type TransfigureCardRarity,
+  type TransfigureCardType,
 } from "@/lib/transfigure-types";
 import { serviceMessages } from "@/messages/service";
 
@@ -28,6 +33,8 @@ interface TransfigureResourcePreviewProps {
   serviceLocale: ServiceLocale;
   transformedName?: string | null;
   transformedCost?: string | null;
+  transformedCardType?: TransfigureCardType | null;
+  transformedCardRarity?: TransfigureCardRarity | null;
   transformedUpgradeCost?: string | null;
   cardKeywords?: TransfigureCardKeywords | null;
   upgradedBlocks?: PostBlock[] | null;
@@ -47,6 +54,8 @@ export function TransfigureResourcePreview({
   serviceLocale,
   transformedName,
   transformedCost,
+  transformedCardType,
+  transformedCardRarity,
   transformedUpgradeCost,
   cardKeywords,
   upgradedBlocks,
@@ -82,6 +91,14 @@ export function TransfigureResourcePreview({
   const imageFileName = copy.assetImageFileName.replace("{name}", displayName);
 
   if (entity.type === "card" && entity.cardData) {
+    const effectiveCardType = normalizeTransfigureCardType(
+      transformedCardType,
+      entity.cardData.type,
+    );
+    const effectiveCardRarity = normalizeTransfigureCardRarity(
+      transformedCardRarity,
+      entity.cardData.rarity,
+    );
     const effectiveUpgradeBlocks = upgradedBlocks ?? gameUpgradeBlocks;
     const activeBlocks = showUpgrade && effectiveUpgradeBlocks != null
       ? effectiveUpgradeBlocks
@@ -101,7 +118,12 @@ export function TransfigureResourcePreview({
       || sourceCost;
     const description = transfigureBlocksToGameDescription(activeBlocks);
     const card = {
-      ...entity.cardData,
+      ...applyTransfigureCardMetadata(
+        entity.cardData,
+        entities,
+        effectiveCardType,
+        effectiveCardRarity,
+      ),
       name: displayName,
       description,
       descriptionRaw: description,
@@ -132,6 +154,33 @@ export function TransfigureResourcePreview({
             forcedCost={forcedCost}
           />
         </div>
+        {(effectiveCardRarity || effectiveCardType) && (
+          <dl
+            className="mt-2 space-y-1 rounded-lg border border-yellow-500/15 bg-black/20 px-3 py-2 text-xs"
+            data-transfigure-card-metadata-diff
+          >
+            {effectiveCardRarity && (
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-gray-500">{copy.cardRarity}</dt>
+                <dd className="font-game-title text-gray-400">
+                  {entity.cardData.rarityLabel}
+                  <span className="mx-1.5 text-yellow-500/60" aria-hidden="true">→</span>
+                  <span className="text-yellow-100">{card.rarityLabel}</span>
+                </dd>
+              </div>
+            )}
+            {effectiveCardType && (
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-gray-500">{copy.cardType}</dt>
+                <dd className="font-game-title text-gray-400">
+                  {entity.cardData.typeLabel}
+                  <span className="mx-1.5 text-yellow-500/60" aria-hidden="true">→</span>
+                  <span className="text-yellow-100">{card.typeLabel}</span>
+                </dd>
+              </div>
+            )}
+          </dl>
+        )}
         {showUpgradeToggle && effectiveUpgradeBlocks != null && (
           <GameCheckboxToggle
             checked={showUpgrade}

@@ -217,6 +217,8 @@ export function TransfigurePostView({
                 serviceLocale={serviceLocale}
                 transformedName={post.transformed_name}
                 transformedCost={post.transformed_cost}
+                transformedCardType={post.transformed_card_type}
+                transformedCardRarity={post.transformed_card_rarity}
                 cardKeywords={{
                   top: post.card_top_keywords,
                   bottom: post.card_bottom_keywords,
