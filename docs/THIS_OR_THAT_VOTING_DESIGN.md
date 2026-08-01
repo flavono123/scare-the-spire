@@ -102,7 +102,7 @@
 | 페이지 배경 | `/images/sts2/events/this_or_that.webp` |
 | 선택 프레임 | `GameChoiceFrame` + `/images/sts2/ui/event_button.png` |
 | 선택 확인 | `/images/sts2/ui/emote/thumb_up.png`, `/images/sts2/ui/emote/thumb_down.png` |
-| 선택 명령·결정 확인 | `/images/sts2/map/bosses/knowledge_demon_boss_icon.png` + `KNOWLEDGE_DEMON.moves.CURSE_OF_KNOWLEDGE.startLine` / `.doneLine` |
+| 선택 명령·결정 확인 | `/images/sts2/bosses/knowledge_demon_boss.webp` + `KNOWLEDGE_DEMON.moves.CURSE_OF_KNOWLEDGE.startLine` / `.doneLine` |
 | 카드/유물 등 | 현재 `CardTile`, `EntityPreview`, `hover_tip.png` 렌더 |
 
 좌우 진영은 고정된 `spire-aqua` / `spire-pink`로 구분한다. 기존 의미가 강한 green/red의 버프/너프 조합은 쓰지 않는다. 게임 요소 자체의 gold·캐릭터 색은 그대로 두고, 진영색은 얇은 레일·포커스·결과 막대에만 쓴다.
