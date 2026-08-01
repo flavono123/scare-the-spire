@@ -924,8 +924,6 @@
   "SACRIFICE.title": "牺牲",
   "SALVO.description": "造成{Damage:diff()}点伤害。\n在本回合[gold]保留[/gold]你的[gold]手牌[/gold]。",
   "SALVO.title": "箭雨",
-  "SCARE.description": "给予所有敌人1层[gold]虚弱[/gold]。",
-  "SCARE.title": "恫吓",
   "SCAVENGE.description": "[gold]消耗[/gold]一张牌。\n在下个回合获得{Energy:energyIcons()}。",
   "SCAVENGE.title": "内存清理",
   "SCOURGE.description": "给予{DoomPower:diff()}层[gold]灾厄[/gold]。\n抽{Cards:diff()}张牌。",

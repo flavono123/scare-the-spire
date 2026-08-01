@@ -924,8 +924,6 @@
   "SACRIFICE.title": "Poświęcenie",
   "SALVO.description": "Zadaj {Damage:diff()} pkt. obrażeń.\n[gold]Zachowaj[/gold] swoją [gold]rękę[/gold] w tej turze.",
   "SALVO.title": "Salwa",
-  "SCARE.description": "Nałóż 1 pkt. [gold]Słabości[/gold] na WSZYSTKICH przeciwników.",
-  "SCARE.title": "Trwoga",
   "SCAVENGE.description": "[gold]Wyczerp[/gold] kartę.\nW następnej turze zyskaj {Energy:energyIcons()}.",
   "SCAVENGE.title": "Recykling",
   "SCOURGE.description": "Nałóż {DoomPower:diff()} pkt. [gold]Zagłady[/gold].\nDobierz {Cards:diff()} {Cards:plural:kartę|karty|kart}.",
