@@ -23,7 +23,7 @@ import {
   getCodexServiceMessages,
   type CodexServiceMessages,
 } from "@/lib/codex-service";
-import type { CodexAncient, CodexCard, CodexCharacter, CodexRelic, EventAct } from "@/lib/codex-types";
+import type { CodexAncient, CodexCard, CodexCharacter, EventAct } from "@/lib/codex-types";
 import {
   EVENT_ACT_ORDER,
   EVENT_ACT_UNKNOWN,
@@ -80,7 +80,6 @@ interface AncientListProps {
   ancients: CodexAncient[];
   cards?: CodexCard[];
   characters: CodexCharacter[];
-  relics?: CodexRelic[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
@@ -95,7 +94,6 @@ export function AncientList({
   ancients,
   cards = [],
   characters,
-  relics = [],
   patches,
   changes,
   versionDiffs,
@@ -126,17 +124,6 @@ export function AncientList({
       : null
   ), [urlAncientId, versionedAncients]);
   const selectedAncient = useUrlSelection ? urlSelectedAncient : selectedAncientOverride;
-
-  const relicById = useMemo(
-    () => new Map(relics.map((relic) => [relic.id, relic])),
-    [relics],
-  );
-  const selectedAncientRelics = useMemo(() => {
-    if (!selectedAncient) return [];
-    return selectedAncient.relicIds
-      .map((relicId) => relicById.get(relicId))
-      .filter((relic): relic is CodexRelic => Boolean(relic));
-  }, [relicById, selectedAncient]);
 
   const selectAncient = useCallback((ancient: CodexAncient, trigger: HTMLAnchorElement) => {
     triggerRef.current = trigger;
@@ -398,7 +385,6 @@ export function AncientList({
               ancient={selectedAncient}
               cards={cards}
               characters={characters}
-              relics={selectedAncientRelics}
               onClose={closeSelectedAncient}
               closeButtonRef={closeButtonRef}
               entities={entities}

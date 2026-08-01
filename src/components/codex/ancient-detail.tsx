@@ -14,7 +14,7 @@ import {
   getCodexServiceMessages,
   type CodexServiceMessages,
 } from "@/lib/codex-service";
-import type { CodexAncient, CodexCard, CodexCharacter, CodexRelic } from "@/lib/codex-types";
+import type { CodexAncient, CodexCard, CodexCharacter } from "@/lib/codex-types";
 import { EVENT_ACT_UNKNOWN } from "@/lib/codex-types";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
@@ -22,7 +22,6 @@ import { AncientDialogueViewer } from "./ancient-dialogue-viewer";
 import { AncientSceneStage } from "./ancient-scene-stage";
 import {
   getRelatedCardIdsForAncient,
-  getRelatedRelicIdsForAncient,
 } from "@/lib/codex-references";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
@@ -91,7 +90,6 @@ interface AncientDetailProps {
   ancient: CodexAncient;
   cards?: CodexCard[];
   characters: CodexCharacter[];
-  relics: CodexRelic[];
   onClose?: () => void;
   closeButtonRef?: Ref<HTMLButtonElement>;
   entities?: EntityInfo[];
@@ -107,7 +105,6 @@ export function AncientDetail({
   ancient,
   cards = [],
   characters,
-  relics,
   onClose,
   closeButtonRef,
   entities,
@@ -123,15 +120,10 @@ export function AncientDetail({
     [ancient.name, ancient.nameEn],
   );
   const cardById = new Map(cards.map((card) => [card.id, card]));
-  const relicById = new Map(relics.map((relic) => [relic.id, relic]));
   const relatedCardTargets = getRelatedCardIdsForAncient(ancient, cards)
     .map((cardId) => cardById.get(cardId))
     .filter((card): card is CodexCard => Boolean(card))
     .map(cardToReferenceTarget);
-  const relatedRelicTargets = getRelatedRelicIdsForAncient(ancient)
-    .map((relicId) => relicById.get(relicId))
-    .filter((relic): relic is CodexRelic => Boolean(relic))
-    .map(relicToReferenceTarget);
   const actLabel = getAncientActLabel(ancient, serviceText, gameUi);
   const actPillClass = ancient.act
     ? "border-blue-500/40 bg-blue-500/10 text-blue-300"
@@ -222,9 +214,15 @@ export function AncientDetail({
             serviceLocale={serviceLocale}
             groups={[
               { kind: "card", targets: relatedCardTargets },
-              { kind: "relic", targets: relatedRelicTargets, label: serviceText.ancientsView.rewardRelics, layout: "grid" },
             ]}
-          />
+          >
+            <Link
+              href={localizeHref(`/compendium/relics#ancient-${ancient.id.toLowerCase()}`, serviceLocale)}
+              className={`${relatedCardTargets.length > 0 ? "mt-3 border-t border-white/10 pt-3" : ""} flex min-h-11 items-center font-game-text text-sm font-bold text-[#efc850] transition-colors hover:text-[#fff6e2]`}
+            >
+              {serviceText.ancientsView.rewardRelics} →
+            </Link>
+          </EntityReferenceGroupLinks>
 
           <InfoRailSection title={detailLabels.patchHistory}>
             <STS2ChangeHistory
@@ -267,25 +265,6 @@ function cardToReferenceTarget(card: CodexCard): CodexReferenceTarget {
       color: card.color,
       type: "card",
       cardData: card,
-    },
-  };
-}
-
-function relicToReferenceTarget(relic: CodexRelic): CodexReferenceTarget {
-  const href = `/compendium/relics/${relic.id.toLowerCase()}`;
-  return {
-    href,
-    id: relic.id,
-    title: relic.name,
-    entity: {
-      id: relic.id,
-      nameEn: relic.nameEn,
-      nameKo: relic.name,
-      imageUrl: relic.imageUrl,
-      href,
-      color: relic.pool,
-      type: "relic",
-      relicData: relic,
     },
   };
 }

@@ -159,25 +159,27 @@ export function EntityReferenceGroupLinks({
   serviceLocale,
 }: EntityReferenceGroupLinksProps) {
   const visibleGroups = groups.filter((group) => group.targets.length > 0);
-  if (visibleGroups.length === 0) return null;
+  if (visibleGroups.length === 0 && !children) return null;
 
   return (
     <section className="w-full rounded-lg border border-white/10 bg-white/[0.04] p-4">
-      <div className="space-y-2.5">
-        {visibleGroups.map((group) => (
-          <ReferenceLine
-            key={group.kind}
-            config={{
-              icon: REFERENCE_KIND_CONFIG[group.kind].icon,
-              label: group.label ?? relatedResourceLabel(group.kind, serviceLocale, gameUi),
-            }}
-            kind={group.kind}
-            layout={group.layout}
-            serviceLocale={serviceLocale}
-            targets={group.targets}
-          />
-        ))}
-      </div>
+      {visibleGroups.length > 0 && (
+        <div className="space-y-2.5">
+          {visibleGroups.map((group) => (
+            <ReferenceLine
+              key={group.kind}
+              config={{
+                icon: REFERENCE_KIND_CONFIG[group.kind].icon,
+                label: group.label ?? relatedResourceLabel(group.kind, serviceLocale, gameUi),
+              }}
+              kind={group.kind}
+              layout={group.layout}
+              serviceLocale={serviceLocale}
+              targets={group.targets}
+            />
+          ))}
+        </div>
+      )}
       {children}
     </section>
   );

@@ -496,10 +496,6 @@ export function CompendiumDirectDetailPage({
   if (resourceType === "ancients") {
     const ancient = findByRouteId(resources.ancients, id);
     if (ancient) {
-      const ancientRelics = ancient.relicIds
-        .map((relicId) => resources.relics.find((relic) => relic.id === relicId))
-        .filter(isDefined);
-
       detail = (
         <AncientDetail
           serviceLocale={serviceLocale}
@@ -508,7 +504,6 @@ export function CompendiumDirectDetailPage({
           ancient={ancient}
           cards={resources.cards}
           characters={resources.characters}
-          relics={ancientRelics}
           entities={entities}
           patches={patches}
           changes={changes}

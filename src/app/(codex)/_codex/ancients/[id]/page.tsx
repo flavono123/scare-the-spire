@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexAncients, getCodexCards, getCodexCharacters, getCodexRelics } from "@/lib/codex-data";
+import { getCodexAncients, getCodexCards, getCodexCharacters } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } from "@/lib/data";
 import {
@@ -9,7 +9,6 @@ import {
 } from "@/lib/i18n";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { AncientDetail } from "@/components/codex/ancient-detail";
-import type { CodexRelic } from "@/lib/codex-types";
 import {
   findCodexResourceByRouteId,
   getCodexResourceOgMetadata,
@@ -47,11 +46,10 @@ export default async function AncientDetailPage({ params, searchParams }: Props)
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [ancients, cards, characters, relics, patches, changes, versionDiffs, entities, gameUi] = await Promise.all([
+  const [ancients, cards, characters, patches, changes, versionDiffs, entities, gameUi] = await Promise.all([
     getCodexAncients({ gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexCharacters({ gameLocale }),
-    getCodexRelics({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
     getEntityVersionDiffs(),
@@ -62,10 +60,6 @@ export default async function AncientDetailPage({ params, searchParams }: Props)
   const ancient = ancients.find((a) => a.id.toLowerCase() === id.toLowerCase());
   if (!ancient) notFound();
 
-  const ancientRelics = ancient.relicIds
-    .map((rid) => relics.find((r) => r.id === rid))
-    .filter((r): r is CodexRelic => r !== undefined);
-
   return (
     <AncientDetail
       serviceLocale={serviceLocale}
@@ -74,7 +68,6 @@ export default async function AncientDetailPage({ params, searchParams }: Props)
       ancient={ancient}
       cards={cards}
       characters={characters}
-      relics={ancientRelics}
       entities={entities}
       patches={patches}
       changes={changes}

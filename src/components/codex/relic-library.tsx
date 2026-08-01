@@ -407,7 +407,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
               {rarity === "고대 유물" && ancientSubgroups ? (
                 <div className="flex flex-col gap-5">
                   {ancientSubgroups.map(({ ancient, relics: ancientRelics }) => (
-                    <div key={ancient.id}>
+                    <div key={ancient.id} id={`ancient-${ancient.id.toLowerCase()}`} className="scroll-mt-4">
                       <div className="flex items-center gap-2 mb-2">
                         {ancient.imageUrl && (
                           <Image
