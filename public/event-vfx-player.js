@@ -595,7 +595,7 @@
     context.translate(offset.x, offset.y);
     setComposite(context, materialBlend(scene, node.props.material));
     context.globalAlpha = clamp(world.color.a, 0, 1);
-    drawImageCentered(context, image, source, width, height);
+    drawImageCentered(context, tintedImage(scene, image, texture, world.color, "sprite"), source, width, height);
     context.restore();
   }
 

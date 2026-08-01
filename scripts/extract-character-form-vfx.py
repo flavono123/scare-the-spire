@@ -44,7 +44,7 @@ class FormSpec:
 
 FORMS = (
     FormSpec("demon", "DEMON_FORM", "IRONCLAD", 0.5),
-    FormSpec("serpent", "SERPENT_FORM", "SILENT", 0.4),
+    FormSpec("serpent", "SERPENT_FORM", "SILENT", 0.6),
     FormSpec("void", "VOID_FORM", "REGENT", 0.18),
     FormSpec("reaper", "REAPER_FORM", "NECROBINDER", 0.52),
     FormSpec("echo", "ECHO_FORM", "DEFECT", 0.4),
@@ -288,7 +288,7 @@ def compile_scene(
             props["offset"] = {"$": "Vector2", "v": [-12.8, -89.6]}
             props["scale"] = {"$": "Vector2", "v": [0.9, 0.9]}
         if spec.slug == "serpent" and node["name"] == "snake_container":
-            props["modulate"] = {"$": "Color", "v": [1, 1, 1, 0.55]}
+            props["modulate"] = {"$": "Color", "v": [1, 1, 1, 0.45]}
         if spec.slug == "serpent" and node["name"] == "vfx_serpent_form_idle_glow":
             props["self_modulate"]["v"][3] = 0.45
         if spec.slug == "serpent" and node["name"] == "vfx_serpent_form_idle_panning_noise":
