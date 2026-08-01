@@ -139,6 +139,7 @@ function PatchStorySurface({ config }: { config: PatchStoryConfig }) {
           stories={activePatchLineStories}
           serviceLocale={config.serviceLocale}
           patches={config.patches}
+          patchArt={config.patchArt}
           communityLoading={communityStories.loading}
           communityUnavailable={communityStories.unavailable}
           onClose={() => setActivePatchLineId(null)}

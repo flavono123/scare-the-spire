@@ -18,6 +18,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
 import type { ServiceLocale } from "@/lib/i18n";
 import { patchLineDisplayText } from "@/lib/patch-line-display";
+import type { ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { STS2Patch, STS2PatchLine, Story } from "@/lib/types";
 import { serviceMessages } from "@/messages/service";
 
@@ -166,6 +167,7 @@ export function PatchLineStoriesPanel({
   serviceLocale,
   patches,
   entities,
+  patchArt,
   communityLoading = false,
   communityUnavailable,
   onClose,
@@ -176,6 +178,7 @@ export function PatchLineStoriesPanel({
   serviceLocale: ServiceLocale;
   patches?: STS2Patch[];
   entities?: PatchNoteRendererProps["entities"];
+  patchArt?: ResolvedPatchArt;
   communityLoading?: boolean;
   communityUnavailable: boolean;
   onClose: () => void;
@@ -221,6 +224,7 @@ export function PatchLineStoriesPanel({
             serviceLocale={serviceLocale}
             patches={patches}
             entities={entities}
+            artOverride={patchArt}
             compact
           />
 
