@@ -141,6 +141,20 @@ function checkServiceLocaleDetails(): Record<string, number> {
       === "/_cf_static_pages/zh/compendium/badges.html",
     "Badge indexes must remain direct static pages for every game locale.",
   );
+  assert(
+    staticCompendiumAssetPath("/compendium/badges/speedy", "html")
+      === "/_cf_static_pages/compendium/badges/speedy.html",
+    "Korean badge details must remain direct static pages.",
+  );
+  assert(
+    staticCompendiumAssetPath("/en/compendium/badges/speedy", "rsc")
+      === "/_cf_static_pages/en/compendium/badges/speedy.rsc",
+    "English badge details must remain direct static pages.",
+  );
+  assert(
+    staticCompendiumAssetPath("/zh/compendium/badges/speedy", "html") === null,
+    "Game-only badge details must stay outside the direct static detail set.",
+  );
 
   return routeCounts;
 }

@@ -14,6 +14,7 @@ import {
   generateRelicStaticParams,
 } from "@/lib/codex-static-params";
 import { getSTS2Patches } from "@/lib/data";
+import { getActiveRunBadgeCatalog } from "@/lib/run-badge-catalog";
 import { absoluteSiteUrl } from "@/lib/site-origin";
 
 export const dynamic = "force-static";
@@ -48,6 +49,7 @@ const COMPENDIUM_INDEX_PATHS = [
 
 const COMPENDIUM_DETAIL_ROUTES = [
   ["ancients", generateAncientStaticParams],
+  ["badges", async () => (await getActiveRunBadgeCatalog("eng")).map(({ slug }) => ({ id: slug }))],
   ["cards", generateCardStaticParams],
   ["characters", generateCharacterStaticParams],
   ["enchantments", generateEnchantmentStaticParams],
