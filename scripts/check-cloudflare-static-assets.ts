@@ -15,6 +15,7 @@ const maxAssetBytes = Number(process.env.CLOUDFLARE_STATIC_ASSET_SIZE_LIMIT_MIB 
 
 const compendiumSegments = new Set([
   "ancients",
+  "badges",
   "bestiary",
   "cards",
   "characters",
@@ -134,6 +135,11 @@ function checkServiceLocaleDetails(): Record<string, number> {
     staticCompendiumAssetPath("/zh/compendium/powers", "html")
       === "/_cf_static_pages/zh/compendium/powers.html",
     "Game-locale Compendium indexes must remain direct static pages.",
+  );
+  assert(
+    staticCompendiumAssetPath("/zh/compendium/badges", "html")
+      === "/_cf_static_pages/zh/compendium/badges.html",
+    "Badge indexes must remain direct static pages for every game locale.",
   );
 
   return routeCounts;

@@ -25,6 +25,7 @@ const gameLocalePathSegments = new Set([
 ]);
 const compendiumSegments = new Set([
   "ancients",
+  "badges",
   "bestiary",
   "cards",
   "characters",

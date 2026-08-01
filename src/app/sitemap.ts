@@ -33,6 +33,7 @@ const PUBLIC_INDEX_PATHS = [
 const COMPENDIUM_INDEX_PATHS = [
   "/compendium",
   "/compendium/ancients",
+  "/compendium/badges",
   "/compendium/bestiary",
   "/compendium/cards",
   "/compendium/characters",

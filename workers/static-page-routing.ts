@@ -32,6 +32,7 @@ const STATIC_LEGACY_PAGE_SEGMENTS = new Set([
 
 const STATIC_COMPENDIUM_SEGMENTS = new Set([
   "ancients",
+  "badges",
   "bestiary",
   "cards",
   "characters",
