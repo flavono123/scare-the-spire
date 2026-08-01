@@ -412,7 +412,7 @@ export function CharacterDetail({
 
       <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[30rem] min-w-0 flex-col items-center justify-center gap-5 py-4">
-          <div className="relative h-[24rem] w-full max-w-full sm:h-[28rem] lg:max-w-[44rem]">
+          <div data-character-stage className="relative h-[24rem] w-full max-w-full sm:h-[28rem] lg:max-w-[44rem]">
             <div className="absolute left-2 top-2 z-50 sm:left-3 sm:top-3">
               <MonsterAscensionStepper
                 level={ascensionLevel}
