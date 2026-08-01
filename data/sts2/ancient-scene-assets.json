@@ -91,8 +91,7 @@
       },
       "support": "partial",
       "supported": [
-        "CPUParticles2D:8",
-        "GPUParticles2D:3"
+        "CPUParticles2D:1"
       ],
       "unsupported": [
         {
@@ -118,14 +117,16 @@
           "type": "ShaderMaterial"
         },
         {
-          "count": 3,
+          "count": 10,
           "examples": [
             "fog3",
             "fog5",
-            "fog4"
+            "fog4",
+            "light4",
+            "light5"
           ],
-          "reason": "Canvas2D preserves the core particle motion but not every Godot GPU material feature",
-          "type": "GPUParticles2D approximation"
+          "reason": "Godot additive particles become opaque between stacked canvases and obscure the Ancient body",
+          "type": "CPUParticles2D:7, GPUParticles2D:3"
         }
       ]
     }

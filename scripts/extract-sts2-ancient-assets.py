@@ -187,7 +187,14 @@ def vfx_descriptor(
         )
         if is_shader_sprite:
             shader_nodes.append(node)
-    supported_nodes = [node for node in candidate_nodes if node not in shader_nodes]
+    omitted_canvas_nodes = [
+        node for node in candidate_nodes
+        if ancient_id == "neow" and node not in shader_nodes and node["name"] != "stars"
+    ]
+    supported_nodes = [
+        node for node in candidate_nodes
+        if node not in shader_nodes and node not in omitted_canvas_nodes
+    ]
     spine_index = scene["nodes"].index(spine_node) if spine_node else -1
     behind = [node for node in supported_nodes if spine_node and scene["nodes"].index(node) < spine_index]
     front = [node for node in supported_nodes if node not in behind]
@@ -216,6 +223,14 @@ def vfx_descriptor(
             "examples": [path_by_node[id(node)] for node in shader_nodes[:5]],
             "reason": "Godot shader sprites are omitted because their raw textures are not valid visual fallbacks",
             "type": "ShaderMaterial",
+        })
+    if omitted_canvas_nodes:
+        by_type = Counter(node["type"] for node in omitted_canvas_nodes)
+        unsupported.append({
+            "count": len(omitted_canvas_nodes),
+            "examples": [path_by_node[id(node)] for node in omitted_canvas_nodes[:5]],
+            "reason": "Godot additive particles become opaque between stacked canvases and obscure the Ancient body",
+            "type": ", ".join(f"{key}:{value}" for key, value in sorted(by_type.items())),
         })
     gpu_nodes = [node for node in supported_nodes if node["type"] == "GPUParticles2D"]
     if gpu_nodes:
