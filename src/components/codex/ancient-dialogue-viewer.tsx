@@ -131,7 +131,7 @@ export function AncientDialogueViewer({
           )}
           {characterGroups.length > 0 && (
             <div className="flex min-w-0 flex-wrap items-center justify-center sm:justify-start" role="tablist" aria-label={messages.ancientsView.characterSpeaker}>
-              <span className="mr-1 shrink-0 font-game-title text-xs font-bold text-[#efc850] [text-shadow:0_2px_0_rgba(0,0,0,0.9)]" aria-hidden>
+              <span className="mr-1 shrink-0 font-game-title text-[10px] font-bold text-[#efc850] [text-shadow:0_2px_0_rgba(0,0,0,0.9)] sm:text-[11px]" aria-hidden>
                 {messages.ancientsView.characterSpeaker}
               </span>
               {characterGroups.map((group) => {
@@ -144,12 +144,12 @@ export function AncientDialogueViewer({
                     role="tab"
                     aria-selected={selected}
                     onClick={() => selectGroup(group.key)}
-                    className={`flex min-h-11 shrink-0 items-center gap-1 px-1.5 font-game-text text-xs font-bold [text-shadow:0_2px_0_rgba(0,0,0,0.95)] transition-[opacity,filter] motion-reduce:transition-none ${selected ? "opacity-100" : "opacity-45 hover:opacity-80"}`}
+                    className={`flex min-h-11 shrink-0 items-center gap-0.5 px-0.5 font-game-text text-[10px] font-bold [text-shadow:0_2px_0_rgba(0,0,0,0.95)] transition-[opacity,filter] motion-reduce:transition-none sm:text-[11px] ${selected ? "opacity-100" : "opacity-45 hover:opacity-80"}`}
                     style={{ color }}
                   >
-                    <span className="relative h-8 w-8 shrink-0">
-                      <Image src={group.character.iconOutlineUrl} alt="" fill sizes="32px" className="object-contain opacity-60" />
-                      <Image src={group.character.iconUrl} alt="" fill sizes="32px" className="object-contain" />
+                    <span className="relative h-6 w-6 shrink-0 sm:h-7 sm:w-7">
+                      <Image src={group.character.iconOutlineUrl} alt="" fill sizes="(min-width: 640px) 28px, 24px" className="object-contain opacity-60" />
+                      <Image src={group.character.iconUrl} alt="" fill sizes="(min-width: 640px) 28px, 24px" className="object-contain" />
                     </span>
                     <span>{group.label}</span>
                   </button>
