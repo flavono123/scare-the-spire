@@ -118,11 +118,16 @@ def parse_badge_source_metadata(src_dir: Path) -> dict[str, dict[str, object]]:
         if not match:
             continue
         badge_id = match.group("id")
+        fixed_rarity_match = re.search(
+            r"public\s+override\s+BadgeRarity\s+Rarity\s*=>\s*BadgeRarity\.(Bronze|Silver|Gold)",
+            text,
+        )
         metadata[badge_id] = {
             "active": path.stem in active_classes,
             "requiresWin": match.group("requires") == "true",
             "multiplayerOnly": match.group("multi") == "true",
             "sourceClass": path.stem,
+            "fixedRarity": fixed_rarity_match.group(1).lower() if fixed_rarity_match else None,
         }
     return metadata
 
@@ -179,6 +184,7 @@ def build_catalog_for_locale(
                 "multiplayerOnly": metadata.get("multiplayerOnly"),
                 "sourceClass": metadata.get("sourceClass"),
                 "imageUrl": f"/images/sts2/badges/{slug}.webp" if slug in icon_slugs else None,
+                "fixedRarity": metadata.get("fixedRarity"),
                 "title": default_title,
                 "description": default_description,
                 "rarities": rarities,

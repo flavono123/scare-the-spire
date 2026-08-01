@@ -7,6 +7,7 @@
     "multiplayerOnly": false,
     "sourceClass": "BigDeck",
     "imageUrl": "/images/sts2/badges/big_deck.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -32,6 +33,7 @@
     "multiplayerOnly": false,
     "sourceClass": "CccCombo",
     "imageUrl": "/images/sts2/badges/ccccombo.webp",
+    "fixedRarity": "bronze",
     "title": "C-c-c-Combo",
     "description": "Played [blue]20[/blue] cards in a single turn.",
     "rarities": {}
@@ -44,6 +46,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Curses",
     "imageUrl": "/images/sts2/badges/curses.webp",
+    "fixedRarity": "bronze",
     "title": "Curses!",
     "description": "Won with [blue]5[/blue] or more [red]Curses[/red].",
     "rarities": {}
@@ -56,6 +59,7 @@
     "multiplayerOnly": true,
     "sourceClass": "DamageLeader",
     "imageUrl": "/images/sts2/badges/damage_leader.webp",
+    "fixedRarity": "bronze",
     "title": "Damage Leader",
     "description": "Dealt the most damage to enemies in multiplayer.",
     "rarities": {}
@@ -68,6 +72,7 @@
     "multiplayerOnly": true,
     "sourceClass": "Debuffer",
     "imageUrl": "/images/sts2/badges/debuffer.webp",
+    "fixedRarity": "bronze",
     "title": "Debuffer",
     "description": "Applied the most Debuffs in multiplayer.",
     "rarities": {}
@@ -80,6 +85,7 @@
     "multiplayerOnly": false,
     "sourceClass": "DoubleSnecko",
     "imageUrl": "/images/sts2/badges/double_snecko.webp",
+    "fixedRarity": "bronze",
     "title": "Double Snecko",
     "description": "Obtained both fake and real Snecko eyes.",
     "rarities": {}
@@ -92,6 +98,7 @@
     "multiplayerOnly": false,
     "sourceClass": "EliteKiller",
     "imageUrl": "/images/sts2/badges/elite.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -117,6 +124,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Famished",
     "imageUrl": "/images/sts2/badges/famished.webp",
+    "fixedRarity": "bronze",
     "title": "Famished",
     "description": "Won with Max HP reduced to less than half of your starting HP.",
     "rarities": {}
@@ -129,6 +137,7 @@
     "multiplayerOnly": null,
     "sourceClass": null,
     "imageUrl": "/images/sts2/badges/favorite_card.webp",
+    "fixedRarity": null,
     "title": "Favorite Card",
     "description": "Won a run and played a single card more than [blue]100[/blue] times.",
     "rarities": {}
@@ -141,6 +150,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Glutton",
     "imageUrl": "/images/sts2/badges/glutton.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -166,6 +176,7 @@
     "multiplayerOnly": true,
     "sourceClass": "Healer",
     "imageUrl": "/images/sts2/badges/healer.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -191,6 +202,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Highlander",
     "imageUrl": "/images/sts2/badges/highlander.webp",
+    "fixedRarity": "bronze",
     "title": "Highlander",
     "description": "Won with a deck where no two cards are the same (excludes Starters).",
     "rarities": {}
@@ -203,6 +215,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Honed",
     "imageUrl": "/images/sts2/badges/honed.webp",
+    "fixedRarity": "bronze",
     "title": "Honed",
     "description": "Won with a deck with [blue]5[/blue] or more of the same card (excludes Starters).",
     "rarities": {}
@@ -215,6 +228,7 @@
     "multiplayerOnly": false,
     "sourceClass": "ILikeShiny",
     "imageUrl": "/images/sts2/badges/ilikeshiny.webp",
+    "fixedRarity": "bronze",
     "title": "I Like Shiny",
     "description": "Amassed [blue]25[/blue] or more relics.",
     "rarities": {}
@@ -227,6 +241,7 @@
     "multiplayerOnly": false,
     "sourceClass": "KaChing",
     "imageUrl": "/images/sts2/badges/kaching.webp",
+    "fixedRarity": "bronze",
     "title": "Ka-Ching!",
     "description": "Spent more than [blue]1,000[/blue] [gold]Gold[/gold] at the Merchant.",
     "rarities": {}
@@ -239,6 +254,7 @@
     "multiplayerOnly": false,
     "sourceClass": "MoneyMoney",
     "imageUrl": "/images/sts2/badges/money_money.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -264,6 +280,7 @@
     "multiplayerOnly": false,
     "sourceClass": "MysteryMachine",
     "imageUrl": "/images/sts2/badges/mystery_machine.webp",
+    "fixedRarity": "bronze",
     "title": "Mystery Machine",
     "description": "Traveled to [blue]15[/blue] or more ? rooms.",
     "rarities": {}
@@ -276,6 +293,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Perfect",
     "imageUrl": "/images/sts2/badges/perfect.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -301,6 +319,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Restful",
     "imageUrl": "/images/sts2/badges/restful.webp",
+    "fixedRarity": "bronze",
     "title": "Restful",
     "description": "Won a run while resting at each Rest Site.",
     "rarities": {}
@@ -313,6 +332,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Restless",
     "imageUrl": "/images/sts2/badges/restless.webp",
+    "fixedRarity": "bronze",
     "title": "Restless",
     "description": "Won a run without ever resting.",
     "rarities": {}
@@ -325,6 +345,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Speedy",
     "imageUrl": "/images/sts2/badges/speedy.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -350,6 +371,7 @@
     "multiplayerOnly": false,
     "sourceClass": "TabletBadge",
     "imageUrl": "/images/sts2/badges/tablet.webp",
+    "fixedRarity": "gold",
     "title": "Tablet of Truth",
     "description": "Won with only [blue]1[/blue] Max HP.",
     "rarities": {}
@@ -362,6 +384,7 @@
     "multiplayerOnly": true,
     "sourceClass": "TeamPlayer",
     "imageUrl": "/images/sts2/badges/team_player.webp",
+    "fixedRarity": "silver",
     "title": "Team Player",
     "description": "Deck contained [blue]3[/blue] or more multiplayer-only cards.",
     "rarities": {}
@@ -374,6 +397,7 @@
     "multiplayerOnly": false,
     "sourceClass": "TinyDeck",
     "imageUrl": "/images/sts2/badges/tiny_deck.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -399,6 +423,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Whomper",
     "imageUrl": "/images/sts2/badges/whomper.webp",
+    "fixedRarity": "bronze",
     "title": "Whomper",
     "description": "Dealt more than [blue]100[/blue] damage with a single attack.",
     "rarities": {}

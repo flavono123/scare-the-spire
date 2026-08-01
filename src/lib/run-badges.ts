@@ -11,6 +11,7 @@ export interface RunBadgeCatalogEntry {
   multiplayerOnly: boolean | null;
   sourceClass: string | null;
   imageUrl: string | null;
+  fixedRarity: Exclude<ReplayBadgeRarity, "none"> | null;
   title: string | null;
   description: string | null;
   rarities: Partial<

@@ -7,6 +7,7 @@
     "multiplayerOnly": false,
     "sourceClass": "BigDeck",
     "imageUrl": "/images/sts2/badges/big_deck.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -32,6 +33,7 @@
     "multiplayerOnly": false,
     "sourceClass": "CccCombo",
     "imageUrl": "/images/sts2/badges/ccccombo.webp",
+    "fixedRarity": "bronze",
     "title": "코오오옴보",
     "description": "한 턴에 카드를 [blue]20[/blue]장 사용했습니다.",
     "rarities": {}
@@ -44,6 +46,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Curses",
     "imageUrl": "/images/sts2/badges/curses.webp",
+    "fixedRarity": "bronze",
     "title": "저주들!",
     "description": "[blue]5[/blue]장 이상의 [red]저주[/red] 카드를 지닌 채로 승리했습니다.",
     "rarities": {}
@@ -56,6 +59,7 @@
     "multiplayerOnly": true,
     "sourceClass": "DamageLeader",
     "imageUrl": "/images/sts2/badges/damage_leader.webp",
+    "fixedRarity": "bronze",
     "title": "메인 딜러",
     "description": "멀티플레이에서 적에게 가장 큰 피해를 입혔습니다.",
     "rarities": {}
@@ -68,6 +72,7 @@
     "multiplayerOnly": true,
     "sourceClass": "Debuffer",
     "imageUrl": "/images/sts2/badges/debuffer.webp",
+    "fixedRarity": "bronze",
     "title": "디버퍼",
     "description": "멀티플레이에서 적에게 가장 많은 디버프를 부여했습니다.",
     "rarities": {}
@@ -80,6 +85,7 @@
     "multiplayerOnly": false,
     "sourceClass": "DoubleSnecko",
     "imageUrl": "/images/sts2/badges/double_snecko.webp",
+    "fixedRarity": "bronze",
     "title": "쌍네코",
     "description": "가짜와 진짜 스네코의 눈을 모두 획득했습니다.",
     "rarities": {}
@@ -92,6 +98,7 @@
     "multiplayerOnly": false,
     "sourceClass": "EliteKiller",
     "imageUrl": "/images/sts2/badges/elite.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -117,6 +124,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Famished",
     "imageUrl": "/images/sts2/badges/famished.webp",
+    "fixedRarity": "bronze",
     "title": "굶주림",
     "description": "최대 체력이 시작 체력의 절반 이하로 감소한 상태에서 승리했습니다.",
     "rarities": {}
@@ -129,6 +137,7 @@
     "multiplayerOnly": null,
     "sourceClass": null,
     "imageUrl": "/images/sts2/badges/favorite_card.webp",
+    "fixedRarity": null,
     "title": "최애 카드",
     "description": "한 번의 도전에서 같은 카드를 [blue]100[/blue]번 이상 사용하고 승리했습니다.",
     "rarities": {}
@@ -141,6 +150,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Glutton",
     "imageUrl": "/images/sts2/badges/glutton.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -166,6 +176,7 @@
     "multiplayerOnly": true,
     "sourceClass": "Healer",
     "imageUrl": "/images/sts2/badges/healer.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -191,6 +202,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Highlander",
     "imageUrl": "/images/sts2/badges/highlander.webp",
+    "fixedRarity": "bronze",
     "title": "하이랜더",
     "description": "똑같은 카드가 없는 덱으로 승리했습니다 (시작 카드 제외).",
     "rarities": {}
@@ -203,6 +215,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Honed",
     "imageUrl": "/images/sts2/badges/honed.webp",
+    "fixedRarity": "bronze",
     "title": "갈고닦음",
     "description": "같은 카드가 [blue]5[/blue]장 이상 있는 덱으로 승리했습니다 (시작 카드 제외).",
     "rarities": {}
@@ -215,6 +228,7 @@
     "multiplayerOnly": false,
     "sourceClass": "ILikeShiny",
     "imageUrl": "/images/sts2/badges/ilikeshiny.webp",
+    "fixedRarity": "bronze",
     "title": "빛나는 것이 좋아",
     "description": "유물을 [blue]25[/blue]개 이상 수집했습니다.",
     "rarities": {}
@@ -227,6 +241,7 @@
     "multiplayerOnly": false,
     "sourceClass": "KaChing",
     "imageUrl": "/images/sts2/badges/kaching.webp",
+    "fixedRarity": "bronze",
     "title": "카칭!",
     "description": "상인을 통해 [blue]1,000[/blue] 이상의 [gold]골드[/gold]를 사용하세요.",
     "rarities": {}
@@ -239,6 +254,7 @@
     "multiplayerOnly": false,
     "sourceClass": "MoneyMoney",
     "imageUrl": "/images/sts2/badges/money_money.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -264,6 +280,7 @@
     "multiplayerOnly": false,
     "sourceClass": "MysteryMachine",
     "imageUrl": "/images/sts2/badges/mystery_machine.webp",
+    "fixedRarity": "bronze",
     "title": "미스터리 머신",
     "description": "? 방을 [blue]15[/blue]번 이상 방문하세요.",
     "rarities": {}
@@ -276,6 +293,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Perfect",
     "imageUrl": "/images/sts2/badges/perfect.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -301,6 +319,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Restful",
     "imageUrl": "/images/sts2/badges/restful.webp",
+    "fixedRarity": "bronze",
     "title": "평화로움",
     "description": "모든 휴식 장소에서 휴식을 취하고 승리했습니다.",
     "rarities": {}
@@ -313,6 +332,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Restless",
     "imageUrl": "/images/sts2/badges/restless.webp",
+    "fixedRarity": "bronze",
     "title": "불안함",
     "description": "휴식을 취하지 않고 도전을 승리했습니다.",
     "rarities": {}
@@ -325,6 +345,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Speedy",
     "imageUrl": "/images/sts2/badges/speedy.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -350,6 +371,7 @@
     "multiplayerOnly": false,
     "sourceClass": "TabletBadge",
     "imageUrl": "/images/sts2/badges/tablet.webp",
+    "fixedRarity": "gold",
     "title": "진리의 석판",
     "description": "최대 체력이 [blue]1[/blue]인 상태로 승리하세요.",
     "rarities": {}
@@ -362,6 +384,7 @@
     "multiplayerOnly": true,
     "sourceClass": "TeamPlayer",
     "imageUrl": "/images/sts2/badges/team_player.webp",
+    "fixedRarity": "silver",
     "title": "팀 플레이어",
     "description": "덱에 멀티플레이 전용 카드가 [blue]3[/blue]장 이상 포함되어 있습니다.",
     "rarities": {}
@@ -374,6 +397,7 @@
     "multiplayerOnly": false,
     "sourceClass": "TinyDeck",
     "imageUrl": "/images/sts2/badges/tiny_deck.webp",
+    "fixedRarity": null,
     "title": null,
     "description": null,
     "rarities": {
@@ -399,6 +423,7 @@
     "multiplayerOnly": false,
     "sourceClass": "Whomper",
     "imageUrl": "/images/sts2/badges/whomper.webp",
+    "fixedRarity": "bronze",
     "title": "일격필살",
     "description": "한 번의 공격으로 [blue]100[/blue]이 넘는 피해를 줬습니다.",
     "rarities": {}
