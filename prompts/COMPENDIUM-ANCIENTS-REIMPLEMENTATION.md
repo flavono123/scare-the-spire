@@ -228,12 +228,12 @@ PCK에서 다음 장면과 리소스를 직접 확인하고 구현 기준으로 
 - 흐린 stale 줄도 WCAG 텍스트 대비를 유지한다. focusable stale control에는 `이 대사 다시 보기`처럼 동작이 드러나는 accessible name을 주고, tap으로 복원한 같은 입력이 다음 줄 진행까지 일으키지 않게 한다.
 - `prefers-reduced-motion`에서 대사 전환과 VFX가 읽기 불편한 모션을 만들지 않는다.
 
-### 4. 상세과 목록에 연결한다
+### 4. 상세와 목록에 연결한다
 
 - `CodexAncient` 또는 별도 작은 descriptor에 생성된 scene asset 참조를 연결한다.
 - 목록 모달 로더도 캐릭터 데이터를 전달해 직접 상세와 같은 공식 이름, 아이콘, 순서를 사용하게 한다. 직접 payload에 이미 있는 데이터를 불필요하게 다시 fetch하지 않는다.
 - `AncientDetail`의 stage와 rail 구조를 게임 장면 우선으로 재배치하되 관련 리소스, 패치, 댓글 로직은 유지한다.
-- 목록 타일은 안정적인 정적 대표 이미지 또는 map node를 사용한다. 8개의 라이브 WebGL 장면을 동시에 돌리지 않는다.
+- 목록 타일은 안정적인 정적 대표 이미지 또는 map node를 사용한다. 8개의 라이브 canvas renderer를 동시에 돌리지 않는다.
 - 목록 타일에 디자인 문서가 요구하는 영어 이름 보조 표기가 빠져 있다면 함께 복구한다.
 - locale에 따라 pathname 또는 query를 사용하는 기존 resource URL, direct-or-modal 판정과 popstate 동작을 유지한다. `?ancient=` 하나로 일반화하지 않는다.
 - modal에는 `role="dialog"`, `aria-modal`, `aria-labelledby` 또는 동등한 accessible name, focus trap, 배경 `inert`, body scroll lock, 적절한 초기 focus, Escape 닫기, 닫은 뒤 원래 타일 focus 복귀를 제공한다.
