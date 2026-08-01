@@ -667,19 +667,20 @@
     }
   }
 
-  function renderEcho(context, layer, baseImage, time) {
+  function renderEcho(context, layer, baseImage, baseIsStage, time) {
     const layerContext = layer.getContext("2d");
     const pulse = (Math.sin(time * 4) + 1) / 2;
-    for (const [index, offset] of [-42, 0, 42].entries()) {
+    for (const [index, offset] of [-36, 36].entries()) {
       layerContext.setTransform(1, 0, 0, 1, 0, 0);
       layerContext.clearRect(0, 0, layer.width, layer.height);
-      layerContext.drawImage(baseImage, 480 + offset, 0, 1600, 1200);
+      if (baseIsStage) layerContext.drawImage(baseImage, offset, 0, 2560, 1200);
+      else layerContext.drawImage(baseImage, 480 + offset, 0, 1600, 1200);
       layerContext.globalCompositeOperation = "source-in";
       layerContext.fillStyle = "#68cfff";
       layerContext.fillRect(0, 0, layer.width, layer.height);
       layerContext.globalCompositeOperation = "source-over";
       context.save();
-      context.globalAlpha = 0.055 + pulse * 0.025 + index * 0.015;
+      context.globalAlpha = 0.08 + pulse * 0.025 + index * 0.02;
       context.globalCompositeOperation = "screen";
       context.drawImage(layer, 0, 0);
       context.restore();
@@ -709,7 +710,8 @@
     const context = canvas.getContext("2d", { alpha: true });
     if (!context) throw new Error("Canvas 2D is unavailable for event VFX");
     const scene = await hydrateScene(options.sceneUrl, 0);
-    const baseImage = mirror || echo ? await loadImage(options.baseImageUrl) : null;
+    const baseIsStage = echo && options.baseCanvas instanceof HTMLCanvasElement;
+    const baseImage = baseIsStage ? options.baseCanvas : mirror || echo ? await loadImage(options.baseImageUrl) : null;
     const imageLayer = mirror || echo ? document.createElement("canvas") : null;
     if (imageLayer) {
       imageLayer.width = logicalWidth;
@@ -746,7 +748,7 @@
           scale: options.scale ?? 1,
           rotation: 0,
         }, false);
-        if (echo) renderEcho(context, imageLayer, baseImage, elapsed);
+        if (echo) renderEcho(context, imageLayer, baseImage, baseIsStage, elapsed);
         for (let index = bursts.length - 1; index >= 0; index -= 1) {
           const burst = bursts[index];
           const age = (now - burst.startedAt) / 1000;

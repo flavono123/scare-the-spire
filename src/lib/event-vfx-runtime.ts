@@ -15,8 +15,9 @@ export interface EventVfxController {
 }
 
 interface EventVfxPlayerOptions {
+  baseCanvas?: HTMLCanvasElement;
   baseImageUrl?: string;
-  mode?: "standard" | "mirror";
+  mode?: "standard" | "mirror" | "echo";
   offsetX?: number;
   offsetY?: number;
   onReady?: () => void;

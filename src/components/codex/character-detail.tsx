@@ -35,6 +35,7 @@ type CharacterActionId = "IDLE" | "ATTACK" | "HEAVY_ATTACK" | "CAST" | "POWER_UP
 const CHARACTER_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
 const CHARACTER_WEARY_TRAVELER_ASCENSION_LEVEL = 2;
 const CHARACTER_ASCENDED_HP_PREVIEW_RATIO = 0.8;
+const FORM_REFERENCE_CHARACTER_HEIGHT = 420;
 const HEALTH_BAR_CLIP_PATH = "polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%)";
 const CHARACTER_QUOTE_EVENT_IDS = {
   goldMonologue: "SUNKEN_TREASURY",
@@ -323,6 +324,9 @@ export function CharacterDetail({
     x: ((characterBounds.left + characterBounds.width / 2) / characterBounds.stageWidth) * 2560,
     y: ((characterBounds.top + characterBounds.height * selectedForm.anchorY) / characterBounds.stageHeight) * 1200,
   } : { x: 1280, y: 600 };
+  const formScale = characterBounds
+    ? Math.min(4, Math.max(0.75, characterBounds.height / characterBounds.stageHeight * 1200 / FORM_REFERENCE_CHARACTER_HEIGHT))
+    : 1;
   const unlockCharacter = character.unlocksAfter
     ? characters.find((item) => item.id === character.unlocksAfter)?.name ?? character.unlocksAfter
     : null;
@@ -429,17 +433,18 @@ export function CharacterDetail({
               selectedMoveNonce={selectedActionNonce}
               imagePriority
               fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.55)]"
-              className="relative h-full w-full"
+              className="relative z-20 h-full w-full"
               onVisualBoundsChange={setCharacterBounds}
             />
             {selectedForm && (
-              <div className="pointer-events-none absolute inset-0 z-30">
+              <div className="pointer-events-none absolute inset-0 z-10">
                 <EventVfxStage
                   baseImageUrl={selectedForm.cardId === "ECHO_FORM" ? character.combatImageUrl : undefined}
                   mode={selectedForm.cardId === "ECHO_FORM" ? "echo" : "standard"}
                   sceneUrl={selectedForm.sceneUrl}
                   offsetX={formOffset.x}
                   offsetY={formOffset.y}
+                  scale={formScale}
                 />
               </div>
             )}

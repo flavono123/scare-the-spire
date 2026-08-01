@@ -18,6 +18,7 @@ export function EventVfxStage({
   mode = "standard",
   offsetX = 268,
   offsetY = 49,
+  scale = 1,
   sceneUrl,
   sceneSlug,
 }: {
@@ -26,6 +27,7 @@ export function EventVfxStage({
   mode?: EventVfxMode;
   offsetX?: number;
   offsetY?: number;
+  scale?: number;
   sceneSlug?: string;
   sceneUrl?: string;
 }) {
@@ -43,10 +45,14 @@ export function EventVfxStage({
 
     void loadEventVfxRuntime()
       .then((runtime) => runtime.create(canvas, {
+        baseCanvas: mode === "echo"
+          ? canvas.closest("[data-character-stage]")?.querySelector<HTMLCanvasElement>(".sts2-spine-stage canvas") ?? undefined
+          : undefined,
         baseImageUrl,
         mode,
         offsetX,
         offsetY,
+        scale,
         onReady: () => {
           if (!disposed) setLoadState("ready");
         },
@@ -71,7 +77,7 @@ export function EventVfxStage({
       controller?.destroy();
       if (controllerRef.current === controller) controllerRef.current = null;
     };
-  }, [baseImageUrl, mode, offsetX, offsetY, resolvedSceneUrl, sceneSlug, sceneUrl]);
+  }, [baseImageUrl, mode, offsetX, offsetY, resolvedSceneUrl, scale, sceneSlug, sceneUrl]);
 
   useEffect(() => {
     if (burstSignal <= handledBurstRef.current) return;
