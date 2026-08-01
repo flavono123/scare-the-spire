@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props) {
   });
 }
 
-export async function LocalizedBadgeDetailPage({ params }: Props) {
+async function LocalizedBadgeDetailPage({ params }: Props) {
   const { gameLocale, id } = await getLocalePairFromParams(params);
   return BasePage({
     params: Promise.resolve({ id }),
