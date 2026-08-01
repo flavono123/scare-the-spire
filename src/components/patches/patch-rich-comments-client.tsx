@@ -6,6 +6,7 @@ import { CommentSection } from "@/components/comment-section";
 import {
   PatchLineStoriesPanel,
   patchLineStoryCopy,
+  patchLineStoryPresentation,
   sortPatchLineStories,
 } from "@/components/patches/patch-note-with-story-actions";
 import { StoryComposerModal } from "@/components/story-composer-modal";
@@ -89,10 +90,16 @@ function PatchStorySurface({ config }: { config: PatchStoryConfig }) {
       const count = action.querySelector<HTMLElement>("[data-patch-line-story-count]");
       if (count) count.textContent = String(total);
 
-      const actionLabel = total > 0 || communityStories.unavailable ? copy.open : copy.openEmpty;
+      const presentation = patchLineStoryPresentation(copy, total, communityStories.unavailable);
+      const root = action.closest<HTMLElement>("[data-patch-line-story-action-root]");
+      const tooltipTitle = root?.querySelector<HTMLElement>("[data-patch-line-story-tooltip-title]");
+      const tooltipDescription = root?.querySelector<HTMLElement>("[data-patch-line-story-tooltip-description]");
+      if (tooltipTitle) tooltipTitle.textContent = presentation.tooltipTitle;
+      if (tooltipDescription) tooltipDescription.textContent = presentation.tooltipDescription;
+
       action.dataset.storyCountPositive = String(total > 0);
-      action.title = actionLabel;
-      action.setAttribute("aria-label", `${actionLabel}. ${copy.countLabel(total)}`);
+      action.title = presentation.actionLabel;
+      action.setAttribute("aria-label", `${presentation.actionLabel}. ${copy.countLabel(total)}`);
     });
   }, [communityStories.stories, communityStories.unavailable, config.serviceLocale]);
 

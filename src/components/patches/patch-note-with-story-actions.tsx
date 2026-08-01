@@ -59,6 +59,22 @@ export function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
   };
 }
 
+export function patchLineStoryPresentation(
+  copy: ReturnType<typeof patchLineStoryCopy>,
+  count: number,
+  storiesUnavailable: boolean,
+) {
+  return {
+    actionLabel: count > 0 || storiesUnavailable ? copy.open : copy.openEmpty,
+    tooltipTitle: count > 0 ? copy.populatedPrompt : copy.emptyPrompt,
+    tooltipDescription: storiesUnavailable
+      ? copy.open
+      : count > 0
+        ? copy.viewCount(count)
+        : copy.writeFirst,
+  };
+}
+
 export function PatchLineStoryAction({
   count,
   staticCount,
@@ -77,16 +93,10 @@ export function PatchLineStoryAction({
   onWrite: () => void;
 }) {
   const copy = patchLineStoryCopy(serviceLocale);
-  const actionLabel = count > 0 || storiesUnavailable ? copy.open : copy.openEmpty;
-  const tooltipTitle = count > 0 ? copy.populatedPrompt : copy.emptyPrompt;
-  const tooltipDescription = storiesUnavailable
-    ? copy.open
-    : count > 0
-      ? copy.viewCount(count)
-      : copy.writeFirst;
+  const presentation = patchLineStoryPresentation(copy, count, storiesUnavailable);
 
   return (
-    <span className="group/story-action relative inline-flex">
+    <span data-patch-line-story-action-root className="group/story-action relative inline-flex">
       <button
         type="button"
         onClick={(event) => {
@@ -103,7 +113,7 @@ export function PatchLineStoryAction({
         data-static-story-count={staticCount}
         data-story-count-positive={count > 0}
         className="group inline-flex h-5 items-center gap-1 rounded border border-[#fb923c]/14 bg-[#fb923c]/[0.035] px-1 align-baseline text-[10px] leading-none text-[#fed7aa]/55 opacity-80 tabular-nums transition-colors hover:border-[#fb923c]/28 hover:bg-[#fb923c]/[0.075] hover:text-[#fed7aa]/90 hover:opacity-100 focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#fb923c]/50 data-[story-count-positive=true]:border-[#fb923c]/16 data-[story-count-positive=true]:bg-[#fb923c]/[0.045] data-[story-count-positive=true]:text-[#fed7aa]/65 data-[story-count-positive=true]:opacity-85 data-[story-count-positive=true]:hover:border-[#fb923c]/32 data-[story-count-positive=true]:hover:bg-[#fb923c]/[0.08] data-[story-count-positive=true]:hover:text-[#fed7aa] data-[story-count-positive=true]:hover:opacity-100"
-        aria-label={`${actionLabel}. ${copy.countLabel(count)}`}
+        aria-label={`${presentation.actionLabel}. ${copy.countLabel(count)}`}
       >
         <StoryStatIcon size={14} className="opacity-60 group-data-[story-count-positive=true]:opacity-75" />
         <span data-patch-line-story-count>{count}</span>
@@ -113,12 +123,14 @@ export function PatchLineStoryAction({
         className="pointer-events-none absolute bottom-full right-0 z-50 hidden pb-1.5 group-hover/story-action:block group-focus-within/story-action:block"
       >
         <GameHoverTip
-          title={tooltipTitle}
+          title={<span data-patch-line-story-tooltip-title>{presentation.tooltipTitle}</span>}
           icon={STORY_WRITE_ICON_SRC}
           compact
           style={{ width: "max-content", maxWidth: "calc(100vw - 24px)" }}
         >
-          <span className="block whitespace-nowrap">{tooltipDescription}</span>
+          <span data-patch-line-story-tooltip-description className="block whitespace-nowrap">
+            {presentation.tooltipDescription}
+          </span>
         </GameHoverTip>
       </span>
     </span>
