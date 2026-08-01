@@ -20,9 +20,12 @@ import {
   type CodexRelic,
 } from "@/lib/codex-types";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
+import characterFormVfxAssets from "../../../data/sts2/character-form-vfx-assets.json";
 import { DescriptionText } from "./codex-description";
+import { EventVfxStage } from "./event-vfx-stage";
 import { GameHoverTip } from "./hover-tip";
 import { MonsterAscensionStepper, useMonsterAscensionLevel } from "./monster-ascension";
+import type { MonsterStageVisualBounds } from "./monster-spine-stage";
 import { CharacterSpineStage } from "./character-spine-stage";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
@@ -103,6 +106,7 @@ function getCharacterDetailLabels(serviceLocale: ServiceLocale) {
     ? {
         englishName: "영어명",
         startingCards: "시작 카드",
+        forms: "형상",
         dedicatedRelicsAndPotions: "전용 유물, 포션",
         relics: "유물",
         potions: "포션",
@@ -134,6 +138,7 @@ function getCharacterDetailLabels(serviceLocale: ServiceLocale) {
     : {
         englishName: "English name",
         startingCards: "Starting Cards",
+        forms: "Forms",
         dedicatedRelicsAndPotions: "Character Relics & Potions",
         relics: "Relics",
         potions: "Potions",
@@ -303,12 +308,23 @@ export function CharacterDetail({
   const [ascensionLevel, setAscensionLevel] = useMonsterAscensionLevel();
   const [selectedAction, setSelectedAction] = useState<CharacterActionId>("IDLE");
   const [selectedActionNonce, setSelectedActionNonce] = useState(0);
+  const [selectedFormCardId, setSelectedFormCardId] = useState<string | null>(null);
+  const [characterBounds, setCharacterBounds] = useState<MonsterStageVisualBounds | null>(null);
   const [commentCount, setCommentCount] = useState(0);
   const excludeSelf = useMemo(
     () => new Set([character.name, character.nameEn]),
     [character.name, character.nameEn],
   );
   const cardById = useMemo(() => new Map(cards.map((card) => [card.id, card])), [cards]);
+  const formOptions = characterFormVfxAssets.flatMap((asset) => {
+    const card = cardById.get(asset.cardId);
+    return card ? [{ ...asset, card }] : [];
+  });
+  const selectedForm = formOptions.find((form) => form.cardId === selectedFormCardId) ?? null;
+  const formOffset = characterBounds && selectedForm ? {
+    x: ((characterBounds.left + characterBounds.width / 2) / characterBounds.stageWidth) * 2560,
+    y: ((characterBounds.top + characterBounds.height * selectedForm.anchorY) / characterBounds.stageHeight) * 1200,
+  } : { x: 1280, y: 600 };
   const unlockCharacter = character.unlocksAfter
     ? characters.find((item) => item.id === character.unlocksAfter)?.name ?? character.unlocksAfter
     : null;
@@ -416,7 +432,17 @@ export function CharacterDetail({
               imagePriority
               fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.55)]"
               className="relative h-full w-full"
+              onVisualBoundsChange={setCharacterBounds}
             />
+            {selectedForm && (
+              <div className="pointer-events-none absolute inset-0 z-30">
+                <EventVfxStage
+                  sceneUrl={selectedForm.sceneUrl}
+                  offsetX={formOffset.x}
+                  offsetY={formOffset.y}
+                />
+              </div>
+            )}
             <CharacterStageHealthBar
               maxHp={character.startingHp}
               ascensionLevel={ascensionLevel}
@@ -445,6 +471,31 @@ export function CharacterDetail({
                   }}
                 >
                   <span>{serviceLocale === "ko" ? action.labelKo : action.labelEn}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex max-w-full flex-wrap justify-center gap-2" role="group" aria-label={detailLabels.forms}>
+            {formOptions.map((form) => {
+              const active = form.cardId === selectedFormCardId;
+              const formColor = CHARACTER_COLORS[form.originCharacterId.toLowerCase()] ?? "#eab308";
+              return (
+                <button
+                  key={form.cardId}
+                  type="button"
+                  title={serviceLocale === "ko" ? form.card.name : form.card.nameEn}
+                  aria-pressed={active}
+                  onClick={() => setSelectedFormCardId(active ? null : form.cardId)}
+                  className="inline-flex h-9 items-center rounded-md border px-3 font-game-text text-xs font-bold transition-[background-color,opacity] hover:opacity-100"
+                  style={{
+                    borderColor: active ? formColor : `${formColor}66`,
+                    backgroundColor: active ? `${formColor}24` : `${formColor}0d`,
+                    color: formColor,
+                    opacity: active ? 1 : 0.78,
+                  }}
+                >
+                  {serviceLocale === "ko" ? form.card.name : form.card.nameEn}
                 </button>
               );
             })}
