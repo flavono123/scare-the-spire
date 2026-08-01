@@ -14,6 +14,7 @@ export function VersionSelector({
   onChange,
 }: VersionSelectorProps) {
   const isOlderVersion = selectedVersion !== currentVersion;
+  const options = versions.includes(currentVersion) ? versions : [currentVersion, ...versions];
 
   return (
     <div className="relative shrink-0">
@@ -29,7 +30,7 @@ export function VersionSelector({
           }
         `}
       >
-        {versions.map((v) => (
+        {options.map((v) => (
           <option key={v} value={v}>
             v{v}{v === currentVersion ? " (latest)" : ""}
           </option>
