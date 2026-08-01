@@ -42,7 +42,8 @@ export function ComboResourceAsset({
     return (
       <TinyCardIcon
         card={{
-          color: entity.cardData.visualColor ?? entity.cardData.color,
+          color: entity.cardData.color,
+          visualColor: entity.cardData.visualColor,
           rarity: entity.cardData.rarity,
           type: entity.cardData.type,
         }}

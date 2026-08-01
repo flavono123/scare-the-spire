@@ -5,9 +5,8 @@ import type { CSSProperties } from "react";
 import type { CardColor, CardRarityKo, CardTypeKo, CodexCard } from "@/lib/codex-types";
 
 // Direct port of `scenes/cards/tiny_card.tscn` + NTinyCard.cs from the PCK.
-// Sprite assets live under public/images/sts2/tiny-card/ and are pure
-// white silhouettes (alpha-cut shapes). The game tints them via Godot
-// `Modulate` Color; we reproduce that with mask-image + backgroundColor.
+// Sprite assets live under public/images/sts2/tiny-card/. The game tints them
+// via Godot `Modulate` Color; we reproduce that with mask-image + backgroundColor.
 //
 // Banner colors and CardBack character colors are taken verbatim from
 // NTinyCard.GetBannerColor and CardPoolModel.DeckEntryCardColor in the
@@ -16,7 +15,7 @@ const TINY = "/images/sts2/tiny-card";
 
 // CardPoolModel.DeckEntryCardColor — character/pool tint applied to the
 // card back silhouette. Hex pulled directly from each *CardPool.cs.
-const POOL_COLOR: Record<string, string> = {
+const POOL_COLOR: Record<CardColor, string> = {
   ironclad: "#D62000",
   silent: "#5EBD00",
   defect: "#3EB3ED",
@@ -31,7 +30,7 @@ const POOL_COLOR: Record<string, string> = {
 };
 
 // NTinyCard.GetBannerColor — rarity tint on the title ribbon.
-const BANNER_COLOR: Record<string, string> = {
+const BANNER_COLOR: Partial<Record<CardRarityKo, string>> = {
   기본: "#9C9C9C",
   일반: "#9C9C9C",
   고급: "#64FFFF",
@@ -39,11 +38,22 @@ const BANNER_COLOR: Record<string, string> = {
   저주: "#E669FF",
   이벤트: "#13BE1A",
   퀘스트: "#F46836",
-  // Ancient cards are basically rare-tier in mini icons; no
-  // dedicated banner color in NTinyCard so reuse rare.
-  "고대의 존재": "#FFDA36",
-  토큰: "#9C9C9C",
-  상태이상: "#9C9C9C",
+};
+
+// CardModel.FrameMaterial comes from VisualCardPool. Its HSV shader only
+// changes the brightness of this grayscale sprite in practice.
+const FRAME_BRIGHTNESS: Record<CardColor, number> = {
+  ironclad: 1,
+  silent: 1.2,
+  defect: 1,
+  necrobinder: 1.2,
+  regent: 1.2,
+  colorless: 1.2,
+  event: 1.2,
+  curse: 0.55,
+  quest: 1,
+  status: 1.2,
+  token: 1.2,
 };
 
 // Type → which portrait sprite encodes the card-shape silhouette
@@ -64,6 +74,7 @@ const PORTRAIT_TINT = "#F2EBB1";
 
 export interface TinyCardVisual {
   color: CardColor;
+  visualColor?: CardColor;
   rarity: CardRarityKo;
   type: CardTypeKo;
 }
@@ -78,7 +89,12 @@ interface CardActionIconProps extends TinyCardIconProps {
   card: CodexCard;
 }
 
-function maskLayer(src: string, color: string, opacity = 1): CSSProperties {
+function maskLayer(
+  src: string,
+  color: string,
+  opacity = 1,
+  filter?: string,
+): CSSProperties {
   return {
     position: "absolute",
     inset: 0,
@@ -92,23 +108,47 @@ function maskLayer(src: string, color: string, opacity = 1): CSSProperties {
     WebkitMaskPosition: "center",
     maskSize: "contain",
     WebkitMaskSize: "contain",
+    filter,
+    imageRendering: "pixelated",
   };
 }
 
+function multiplyColors(left: string, right: string): string {
+  const channels = [1, 3, 5].map((offset) =>
+    Math.round(
+      (Number.parseInt(left.slice(offset, offset + 2), 16)
+        * Number.parseInt(right.slice(offset, offset + 2), 16))
+        / 255,
+    )
+      .toString(16)
+      .padStart(2, "0"),
+  );
+  return `#${channels.join("")}`.toUpperCase();
+}
+
 export function TinyCardIcon({ card, width }: TinyCardIconProps) {
-  const cardBackColor = POOL_COLOR[card.color] ?? POOL_COLOR.colorless;
-  const bannerColor = BANNER_COLOR[card.rarity] ?? BANNER_COLOR["일반"];
+  const cardBackColor = POOL_COLOR[card.color];
+  const frameBrightness = FRAME_BRIGHTNESS[card.visualColor ?? card.color];
+  const bannerColor = BANNER_COLOR[card.rarity] ?? "#FFFFFF";
+  const bannerShadowColor = multiplyColors(BANNER_SHADOW_TINT, bannerColor);
   const portrait = portraitName(card.type);
 
   return (
     <div
       className="relative shrink-0 select-none"
-      style={{ width, height: width }}
+      style={{ width, height: width, imageRendering: "pixelated" }}
     >
       {/* CardBack — outer silhouette, character color */}
-      <div style={maskLayer(`${TINY}/card_back.png`, cardBackColor)} />
+      <div
+        style={maskLayer(
+          `${TINY}/card_back.png`,
+          cardBackColor,
+          1,
+          `brightness(${frameBrightness})`,
+        )}
+      />
       {/* Description box — dark inset overlay (opacity from tscn modulate alpha) */}
-      <div style={maskLayer(`${TINY}/desc_box.png`, "#000000", 0.25)} />
+      <div style={maskLayer(`${TINY}/desc_box.png`, "#000000", 64 / 255)} />
       {/* PortraitShadow — pre-tinted (renders as <img> for its own RGBA) */}
       <Image
         src={`${TINY}/${portrait}_shadow.png`}
@@ -116,12 +156,13 @@ export function TinyCardIcon({ card, width }: TinyCardIconProps) {
         fill
         sizes={`${width}px`}
         className="object-contain"
+        style={{ imageRendering: "pixelated" }}
         unoptimized
       />
       {/* Portrait — type-specific shape, cream tinted */}
       <div style={maskLayer(`${TINY}/${portrait}.png`, PORTRAIT_TINT)} />
       {/* Banner shadow — accent behind banner */}
-      <div style={maskLayer(`${TINY}/banner_shadow.png`, BANNER_SHADOW_TINT)} />
+      <div style={maskLayer(`${TINY}/banner_shadow.png`, bannerShadowColor)} />
       {/* Banner — rarity-colored top ribbon */}
       <div style={maskLayer(`${TINY}/banner.png`, bannerColor)} />
     </div>
