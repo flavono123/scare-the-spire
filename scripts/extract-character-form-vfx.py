@@ -235,7 +235,7 @@ def animated_noise_sheet(noise: Image.Image, slug: str) -> Image.Image:
             (
                 ((0, (0, 0.079, 0.045)), (0.622, (0, 0.412, 0.191)), (1, (0, 1, 0.293)))
                 if serpent
-                else ((0.306, (0.048, 0, 0.072)), (0.703, (0.866, 0, 1)), (1, (1, 1, 1)))
+                else ((0.306, (0.048, 0, 0.072)), (0.703, (0.52, 0, 0.65)), (1, (0.86, 0.12, 1)))
             ),
             lambda u, v: sample_float_gradient(
                 ((0, 0), (0.26216215, 0.75), (1, 0)),
@@ -286,6 +286,15 @@ def compile_scene(
             props["browser_fps"] = 4
         if node["name"] == "vfx_serpent_form_snakes":
             props["offset"] = {"$": "Vector2", "v": [-12.8, -89.6]}
+            props["scale"] = {"$": "Vector2", "v": [0.9, 0.9]}
+        if spec.slug == "serpent" and node["name"] == "snake_container":
+            props["modulate"] = {"$": "Color", "v": [1, 1, 1, 0.55]}
+        if spec.slug == "serpent" and node["name"] == "vfx_serpent_form_idle_glow":
+            props["self_modulate"]["v"][3] = 0.45
+        if spec.slug == "serpent" and node["name"] == "vfx_serpent_form_idle_panning_noise":
+            props["self_modulate"]["v"][3] = 0.25
+        if spec.slug == "reaper" and node["name"] == "vfx_reaper_form_idle_panning_noise":
+            props["scale"] = {"$": "Vector2", "v": [1.75, 1.75]}
 
     used_ext_ids: set[str] = set()
     for node in kept_nodes:
