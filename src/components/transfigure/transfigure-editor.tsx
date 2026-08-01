@@ -15,7 +15,9 @@ import type { SaveTransfigurePostInput } from "@/hooks/use-transfigure-posts";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
   findTransfigureEntity,
+  getTransfigureCardRarityLabel,
   getTransfigureCardKeywords,
+  getTransfigureCardTypeLabel,
   getTransfigureInitialBlocks,
   getTransfigureSourceCost,
   getTransfigureSourceText,
@@ -25,9 +27,15 @@ import {
   getTransfigureUpgradeSourceText,
   isTransfigureChanged,
   isTransfigureResourceType,
+  normalizeTransfigureCardRarity,
+  normalizeTransfigureCardType,
+  TRANSFIGURE_CARD_RARITIES,
+  TRANSFIGURE_CARD_TYPES,
   transfigureCardKeywordsEqual,
   transfigureBlocksSignature,
   type TransfigureCardKeywords,
+  type TransfigureCardRarity,
+  type TransfigureCardType,
   type TransfigurePost,
 } from "@/lib/transfigure-types";
 import { serviceMessages } from "@/messages/service";
@@ -59,6 +67,83 @@ function removeTransfigureDrafts(prefixes: readonly string[]) {
       sessionStorage.removeItem(key);
     }
   }
+}
+
+function CardAttributeChange<T extends string>({
+  active,
+  cancelLabel,
+  kind,
+  label,
+  options,
+  selectLabel,
+  sourceLabel,
+  value,
+  onCancel,
+  onChange,
+  onOpen,
+}: {
+  active: boolean;
+  cancelLabel: string;
+  kind: "rarity" | "type";
+  label: string;
+  options: readonly { label: string; value: T }[];
+  selectLabel: string;
+  sourceLabel: string;
+  value: T | "";
+  onCancel: () => void;
+  onChange: (value: T) => void;
+  onOpen: () => void;
+}) {
+  if (!active) {
+    return (
+      <button
+        type="button"
+        onClick={onOpen}
+        className="block w-full rounded-md border border-dashed border-yellow-500/25 px-2 py-1 text-left text-xs text-yellow-100/70 transition-colors hover:border-yellow-400/50 hover:text-yellow-100"
+        data-transfigure-card-attribute-add={kind}
+      >
+        + {label}
+      </button>
+    );
+  }
+
+  return (
+    <div
+      className="space-y-1.5 rounded-lg border border-yellow-500/20 bg-black/20 p-2"
+      data-transfigure-card-attribute={kind}
+    >
+      <div className="flex items-center justify-between gap-2 text-xs">
+        <span className="text-gray-300">{label}</span>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="text-[11px] text-gray-500 hover:text-gray-200"
+          aria-label={`${cancelLabel}: ${label}`}
+        >
+          {cancelLabel}
+        </button>
+      </div>
+      <div className="flex items-center gap-1.5">
+        <span className="min-w-0 flex-1 truncate font-game-title text-xs text-gray-500">
+          {sourceLabel}
+        </span>
+        <span className="text-xs text-yellow-500/60" aria-hidden="true">→</span>
+        <select
+          value={value}
+          onChange={(event) => onChange(event.target.value as T)}
+          aria-label={label}
+          className="min-w-0 flex-1 rounded-md border border-yellow-500/25 bg-[#111522] px-2 py-1.5 font-game-title text-xs text-yellow-100 outline-none focus:border-yellow-300"
+        >
+          <option value="" disabled>{selectLabel}</option>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  );
 }
 
 export function TransfigureEditor({
@@ -104,6 +189,26 @@ export function TransfigureEditor({
   );
   const [transformedCost, setTransformedCost] = useState(
     initialPost?.transformed_cost ?? "",
+  );
+  const initialCardType = normalizeTransfigureCardType(
+    initialPost?.transformed_card_type,
+    initialEntity?.cardData?.type ?? null,
+  );
+  const initialCardRarity = normalizeTransfigureCardRarity(
+    initialPost?.transformed_card_rarity,
+    initialEntity?.cardData?.rarity ?? null,
+  );
+  const [transformedCardType, setTransformedCardType] = useState<
+    TransfigureCardType | ""
+  >(initialCardType ?? "");
+  const [transformedCardRarity, setTransformedCardRarity] = useState<
+    TransfigureCardRarity | ""
+  >(initialCardRarity ?? "");
+  const [showCardTypeChange, setShowCardTypeChange] = useState(
+    initialCardType != null,
+  );
+  const [showCardRarityChange, setShowCardRarityChange] = useState(
+    initialCardRarity != null,
   );
   const [cardKeywords, setCardKeywords] = useState<TransfigureCardKeywords | null>(
     () => initialPost
@@ -162,6 +267,8 @@ export function TransfigureEditor({
     () => selected ? getTransfigureSourceCost(selected) : null,
     [selected],
   );
+  const sourceCardType = selected?.cardData?.type ?? null;
+  const sourceCardRarity = selected?.cardData?.rarity ?? null;
   const sourceCardKeywords = useMemo(
     () => selected ? getTransfigureCardKeywords(selected) : null,
     [selected],
@@ -201,6 +308,8 @@ export function TransfigureEditor({
       || nickname !== initialPost.nickname.trim()
       || transformedName.trim() !== (initialPost.transformed_name ?? "").trim()
       || transformedCost.trim() !== (initialPost.transformed_cost ?? "").trim()
+      || transformedCardType !== (initialPost.transformed_card_type ?? "")
+      || transformedCardRarity !== (initialPost.transformed_card_rarity ?? "")
       || transformedUpgradeCost.trim()
         !== (initialPost.transformed_upgrade_cost ?? "").trim()
       || !transfigureCardKeywordsEqual(cardKeywords, {
@@ -230,6 +339,8 @@ export function TransfigureEditor({
     showUpgrade,
     sourceUpgradeBlocks,
     transformedCost,
+    transformedCardRarity,
+    transformedCardType,
     transformedName,
     transformedUpgradeCost,
     upgradedCardKeywords,
@@ -242,6 +353,10 @@ export function TransfigureEditor({
     setPreviewUpgradeBlocks(getTransfigureUpgradeInitialBlocks(entity, entities));
     setTransformedName("");
     setTransformedCost("");
+    setTransformedCardType("");
+    setTransformedCardRarity("");
+    setShowCardTypeChange(false);
+    setShowCardRarityChange(false);
     setTransformedUpgradeCost("");
     setCardKeywords(getTransfigureCardKeywords(entity));
     setUpgradedCardKeywords(getTransfigureUpgradeCardKeywords(entity));
@@ -265,6 +380,10 @@ export function TransfigureEditor({
         sourceName: selected.nameKo,
         transformedCost,
         sourceCost,
+        transformedCardType,
+        sourceCardType,
+        transformedCardRarity,
+        sourceCardRarity,
         upgradedBlocks,
         sourceUpgradeText,
         sourceUpgradeBlocks,
@@ -304,6 +423,8 @@ export function TransfigureEditor({
       sourceGameLocale: gameLocale,
       sourceName: selected.nameKo,
       sourceCost,
+      sourceCardType,
+      sourceCardRarity,
       sourceUpgradeText,
       sourceUpgradeBlocks,
       sourceUpgradeCost,
@@ -311,6 +432,8 @@ export function TransfigureEditor({
       sourceUpgradedCardKeywords,
       transformedName,
       transformedCost,
+      transformedCardType,
+      transformedCardRarity,
       cardKeywords,
       upgradedBlocks,
       transformedUpgradeCost,
@@ -332,6 +455,8 @@ export function TransfigureEditor({
     sourceBlocks,
     cardKeywords,
     sourceCost,
+    sourceCardRarity,
+    sourceCardType,
     sourceText,
     sourceUpgradeBlocks,
     sourceUpgradeCost,
@@ -339,6 +464,8 @@ export function TransfigureEditor({
     sourceCardKeywords,
     sourceUpgradedCardKeywords,
     transformedCost,
+    transformedCardRarity,
+    transformedCardType,
     transformedName,
     transformedUpgradeCost,
     upgradedCardKeywords,
@@ -356,6 +483,10 @@ export function TransfigureEditor({
         sourceName: selected.nameKo,
         transformedCost,
         sourceCost,
+        transformedCardType,
+        sourceCardType,
+        transformedCardRarity,
+        sourceCardRarity,
         upgradedBlocks,
         sourceUpgradeText,
         sourceUpgradeBlocks,
@@ -373,6 +504,8 @@ export function TransfigureEditor({
       cardKeywords,
       sourceBlocks,
       sourceCost,
+      sourceCardRarity,
+      sourceCardType,
       sourceText,
       sourceUpgradeBlocks,
       sourceUpgradeCost,
@@ -380,6 +513,8 @@ export function TransfigureEditor({
       sourceCardKeywords,
       sourceUpgradedCardKeywords,
       transformedCost,
+      transformedCardRarity,
+      transformedCardType,
       transformedName,
       transformedUpgradeCost,
       upgradedCardKeywords,
@@ -502,6 +637,68 @@ export function TransfigureEditor({
               />
             </div>
 
+            {selected.type === "card" && selected.cardData && (
+              <div
+                className="space-y-2 border-t border-white/10 px-3 py-2"
+                data-transfigure-card-attributes
+              >
+                <p className="spire-gold text-[11px] font-semibold uppercase tracking-[0.12em]">
+                  {copy.cardAttributes}
+                </p>
+
+                <CardAttributeChange
+                  active={showCardRarityChange}
+                  cancelLabel={copy.cancelChange}
+                  kind="rarity"
+                  label={copy.cardRarity}
+                  options={TRANSFIGURE_CARD_RARITIES
+                    .filter((rarity) => rarity !== sourceCardRarity)
+                    .map((rarity) => ({
+                      label: getTransfigureCardRarityLabel(entities, rarity),
+                      value: rarity,
+                    }))}
+                  selectLabel={copy.selectCardAttribute}
+                  sourceLabel={selected.cardData.rarityLabel}
+                  value={transformedCardRarity}
+                  onCancel={() => {
+                    setTransformedCardRarity("");
+                    setShowCardRarityChange(false);
+                    setSaveFeedback(null);
+                  }}
+                  onChange={(value) => {
+                    setTransformedCardRarity(value);
+                    setSaveFeedback(null);
+                  }}
+                  onOpen={() => setShowCardRarityChange(true)}
+                />
+
+                <CardAttributeChange
+                  active={showCardTypeChange}
+                  cancelLabel={copy.cancelChange}
+                  kind="type"
+                  label={copy.cardType}
+                  options={TRANSFIGURE_CARD_TYPES
+                    .filter((type) => type !== sourceCardType)
+                    .map((type) => ({
+                      label: getTransfigureCardTypeLabel(entities, type),
+                      value: type,
+                    }))}
+                  selectLabel={copy.selectCardAttribute}
+                  sourceLabel={selected.cardData.typeLabel}
+                  value={transformedCardType}
+                  onCancel={() => {
+                    setTransformedCardType("");
+                    setShowCardTypeChange(false);
+                    setSaveFeedback(null);
+                  }}
+                  onChange={(value) => {
+                    setTransformedCardType(value);
+                    setSaveFeedback(null);
+                  }}
+                  onOpen={() => setShowCardTypeChange(true)}
+                />
+              </div>
+            )}
           </div>
 
           <section className="rounded-xl border border-yellow-500/15 bg-black/20 p-3 lg:sticky lg:top-0">
@@ -528,6 +725,8 @@ export function TransfigureEditor({
               submitLabel={initialPost ? copy.saveChanges : copy.submit}
               transformedName={transformedName}
               transformedCost={transformedCost}
+              transformedCardType={transformedCardType}
+              transformedCardRarity={transformedCardRarity}
               cardKeywords={cardKeywords}
               transformedUpgradeCost={transformedUpgradeCost}
               upgradedCardKeywords={upgradedCardKeywords}

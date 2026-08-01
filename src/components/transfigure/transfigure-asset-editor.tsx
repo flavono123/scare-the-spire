@@ -26,9 +26,12 @@ import {
   CARD_TOP_KEYWORD_ORDER,
 } from "@/lib/sts2-card-keywords";
 import {
+  applyTransfigureCardMetadata,
   getTransfigureSourceCost,
   normalizeTransfigureCostInput,
   type TransfigureCardKeywords,
+  type TransfigureCardRarity,
+  type TransfigureCardType,
 } from "@/lib/transfigure-types";
 
 const RichContentEditor = dynamic<RichContentEditorProps>(
@@ -58,6 +61,8 @@ interface TransfigureAssetEditorProps {
   submitLabel: string;
   transformedName: string;
   transformedCost: string;
+  transformedCardType: TransfigureCardType | "";
+  transformedCardRarity: TransfigureCardRarity | "";
   cardKeywords: TransfigureCardKeywords | null;
   transformedUpgradeCost: string;
   upgradedCardKeywords: TransfigureCardKeywords | null;
@@ -111,6 +116,8 @@ export function TransfigureAssetEditor({
   submitLabel,
   transformedName,
   transformedCost,
+  transformedCardType,
+  transformedCardRarity,
   cardKeywords,
   transformedUpgradeCost,
   upgradedCardKeywords,
@@ -129,6 +136,17 @@ export function TransfigureAssetEditor({
 }: TransfigureAssetEditorProps) {
   const activeMode = showUpgrade ? "upgrade" : "base";
   const sourceCost = getTransfigureSourceCost(entity);
+  const displayCard = useMemo(
+    () => entity.cardData
+      ? applyTransfigureCardMetadata(
+        entity.cardData,
+        entities,
+        transformedCardType || null,
+        transformedCardRarity || null,
+      )
+      : null,
+    [entities, entity.cardData, transformedCardRarity, transformedCardType],
+  );
   const activeInitialBlocks = showUpgrade && initialUpgradeBlocks != null
     ? initialUpgradeBlocks
     : initialBlocks;
@@ -302,10 +320,10 @@ export function TransfigureAssetEditor({
 
   return (
     <div className="space-y-2" data-transfigure-asset-editor>
-      {entity.type === "card" && entity.cardData ? (
+      {entity.type === "card" && displayCard ? (
         <div className="relative flex flex-col items-center justify-center">
           <CardTile
-            card={entity.cardData}
+            card={displayCard}
             serviceLocale={serviceLocale}
             showUpgrade={showUpgrade}
             showBeta={false}
@@ -325,7 +343,7 @@ export function TransfigureAssetEditor({
               >
                 <TransfigureCardKeywordRail
                   addLabel={addTopKeywordLabel}
-                  card={entity.cardData}
+                  card={displayCard}
                   keywords={activeCardKeywords.top}
                   options={CARD_TOP_KEYWORD_ORDER}
                   placement="top"
@@ -340,7 +358,7 @@ export function TransfigureAssetEditor({
                 </div>
                 <TransfigureCardKeywordRail
                   addLabel={addBottomKeywordLabel}
-                  card={entity.cardData}
+                  card={displayCard}
                   keywords={activeCardKeywords.bottom}
                   options={CARD_BOTTOM_KEYWORD_ORDER}
                   placement="bottom"
