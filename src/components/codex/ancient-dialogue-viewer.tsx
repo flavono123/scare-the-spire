@@ -172,12 +172,15 @@ export function AncientDialogueViewer({
                       isCurrent || staleIsRevealed ? "opacity-100" : "opacity-70"
                     }`}
                   >
-                    <Image
-                      src={DIALOGUE_TAIL}
-                      alt=""
-                      width={18}
-                      height={20}
-                      className={`absolute bottom-2 z-0 h-5 w-[18px] ${isAncient ? "-left-2" : "-right-2 scale-x-[-1]"}`}
+                    <span
+                      aria-hidden
+                      className={`absolute bottom-2 z-0 h-5 w-[18px] bg-[#145e67] ${isAncient ? "-left-2" : "-right-2 scale-x-[-1]"}`}
+                      style={{
+                        WebkitMaskImage: `url(${DIALOGUE_TAIL})`,
+                        maskImage: `url(${DIALOGUE_TAIL})`,
+                        WebkitMaskSize: "100% 100%",
+                        maskSize: "100% 100%",
+                      }}
                     />
                     {!isCurrent && (
                       <button
@@ -193,7 +196,12 @@ export function AncientDialogueViewer({
                     )}
                     <div
                       className={`relative z-10 rounded-xl px-4 py-3 pr-12 font-game-text text-sm leading-relaxed text-white shadow-xl ${isCurrent ? "ring-2 ring-blue-100/50" : ""}`}
-                      style={{ backgroundImage: `url(${DIALOGUE_BACKGROUND})`, backgroundSize: "100% 100%" }}
+                      style={{
+                        backgroundColor: "#145e67",
+                        backgroundImage: `url(${DIALOGUE_BACKGROUND})`,
+                        backgroundBlendMode: "multiply",
+                        backgroundSize: "100% 100%",
+                      }}
                     >
                       <div className="mb-1 text-xs font-bold text-teal-50">{speakerName}</div>
                       {entities ? (
