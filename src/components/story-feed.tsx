@@ -30,7 +30,7 @@ const STORY_SORT_OPTIONS: StorySortMode[] = ["recommended", "comments", "latest"
 let fullPatchLinesPromise: Promise<STS2PatchLine[]> | null = null;
 
 function loadFullSts2PatchLines(): Promise<STS2PatchLine[]> {
-  fullPatchLinesPromise ??= fetch("/generated/sts2-patch-lines.json", { cache: "force-cache" })
+  fullPatchLinesPromise ??= fetch("/generated/sts2-patch-lines.json", { cache: "no-cache" })
     .then((response) => {
       if (!response.ok) {
         throw new Error(`Failed to load STS2 patch lines: ${response.status}`);
