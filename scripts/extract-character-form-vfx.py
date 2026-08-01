@@ -43,9 +43,9 @@ class FormSpec:
 
 
 FORMS = (
-    FormSpec("demon", "DEMON_FORM", "IRONCLAD", 0.72),
+    FormSpec("demon", "DEMON_FORM", "IRONCLAD", 0.5),
     FormSpec("serpent", "SERPENT_FORM", "SILENT", 0.4),
-    FormSpec("void", "VOID_FORM", "REGENT", 0.4),
+    FormSpec("void", "VOID_FORM", "REGENT", 0.18),
     FormSpec("reaper", "REAPER_FORM", "NECROBINDER", 0.52),
     FormSpec("echo", "ECHO_FORM", "DEFECT", 0.4),
 )
@@ -104,6 +104,17 @@ def smoothstep(left: float, right: float, value: float) -> float:
     return amount * amount * (3.0 - 2.0 * amount)
 
 
+def sample_float_gradient(stops: tuple[tuple[float, float], ...], value: float) -> float:
+    if value <= stops[0][0]:
+        return stops[0][1]
+    for index in range(1, len(stops)):
+        right_at, right_value = stops[index]
+        if value <= right_at:
+            left_at, left_value = stops[index - 1]
+            return mix(left_value, right_value, (value - left_at) / (right_at - left_at))
+    return stops[-1][1]
+
+
 def sample_gradient(stops: tuple[tuple[float, tuple[float, float, float]], ...], value: float) -> tuple[int, int, int]:
     if value <= stops[0][0]:
         color = stops[0][1]
@@ -155,7 +166,11 @@ def form_noise_frame(
     colors: tuple[tuple[float, tuple[float, float, float]], ...],
     mask: Callable[[float, float], float],
     overlay: Callable[[float, float], float],
+    alpha: Callable[[float, float, float], float] = lambda _u, _v, value: value,
+    initial_a: tuple[float, float] = (0, 0),
+    initial_b: tuple[float, float] = (0, 0),
     polar: bool = False,
+    polar_rotation: float = 0,
 ) -> Image.Image:
     noise_pixels = noise.load()
     output = Image.new("RGBA", (size, size))
@@ -167,24 +182,27 @@ def form_noise_frame(
             if polar:
                 dx, dy = u - 0.5, v - 0.5
                 source_u = math.hypot(dx, dy) * 2
-                source_v = (math.atan2(dy, dx) / (math.pi * 2)) % 1
+                source_v = (math.atan2(dy, dx) / (math.pi * 2) + polar_rotation) % 1
             else:
                 source_u, source_v = u, v
             a = sample_wrapped(
                 noise_pixels,
                 noise.size,
-                source_u * tiles_a[0] + tiles_a[2] * time,
-                source_v * tiles_a[1] + tiles_a[3] * time,
+                source_u * tiles_a[0] + tiles_a[2] * time + initial_a[0],
+                source_v * tiles_a[1] + tiles_a[3] * time + initial_a[1],
             )
             b = sample_wrapped(
                 noise_pixels,
                 noise.size,
-                source_u * tiles_b[0] + tiles_b[2] * time,
-                source_v * tiles_b[1] + tiles_b[3] * time,
+                source_u * tiles_b[0] + tiles_b[2] * time + initial_b[0],
+                source_v * tiles_b[1] + tiles_b[3] * time + initial_b[1],
             )
             value = ((a + b) * 0.5 + overlay(u, v)) * mask(u, v)
             value = smoothstep(erosion[0], erosion[0] + erosion[1], value)
-            output_pixels[x, y] = (*sample_gradient(colors, value), round(max(0.0, min(1.0, value)) * 255))
+            output_pixels[x, y] = (
+                *sample_gradient(colors, value),
+                round(max(0.0, min(1.0, alpha(u, v, value))) * 255),
+            )
     return output
 
 
@@ -203,6 +221,7 @@ def animated_noise_sheet(noise: Image.Image, slug: str) -> Image.Image:
             ((0.516, (1, 0, 0.177)), (1, (1, 0.485, 0))),
             lambda u, _v: smoothstep(0.1, 0.7, u) * min(1, (1 - u) / 0.25),
             lambda u, _v: smoothstep(0.549, 1, u),
+            lambda u, _v, value: value * (1 - u) / 0.25,
         )
     else:
         serpent = slug == "serpent"
@@ -218,9 +237,18 @@ def animated_noise_sheet(noise: Image.Image, slug: str) -> Image.Image:
                 if serpent
                 else ((0.306, (0.048, 0, 0.072)), (0.703, (0.866, 0, 1)), (1, (1, 1, 1)))
             ),
-            lambda u, v: max(0, 1 - abs(math.hypot(u - 0.5, v - 0.5) * 2 - 0.52) / 0.52),
-            lambda u, v: smoothstep(0.122, 0.754, math.hypot(u - 0.5, v - 0.5) * 2),
+            lambda u, v: sample_float_gradient(
+                ((0, 0), (0.26216215, 0.75), (1, 0)),
+                math.hypot(u - 0.5, v - 0.5) * 2,
+            ),
+            lambda u, v: sample_float_gradient(
+                ((0.12162162, 0), (0.75405407, 1)),
+                math.hypot(u - 0.5, v - 0.5) * 2,
+            ),
+            initial_a=(0, 0.2) if serpent else (0, 0),
+            initial_b=(0, 0.45) if serpent else (0, 0),
             polar=True,
+            polar_rotation=0 if serpent else 0.25,
         )
     for index in range(frames):
         sheet.paste(render(index / frames), (index * frame_size, 0))
@@ -257,9 +285,7 @@ def compile_scene(
             props["hframes"] = 4
             props["browser_fps"] = 4
         if node["name"] == "vfx_serpent_form_snakes":
-            props["browser_rotation_speed"] = 0.08
-            props["browser_pulse_strength"] = 0.03
-            props["browser_pulse_speed"] = 2.4
+            props["offset"] = {"$": "Vector2", "v": [-12.8, -89.6]}
 
     used_ext_ids: set[str] = set()
     for node in kept_nodes:
@@ -286,7 +312,7 @@ def compile_scene(
             "texture": texture_metadata[VOID_SPIKE],
             "type": "Texture2D",
         }
-        for index, rotation in enumerate((0, math.pi / 2, math.pi, math.pi * 1.5), start=1):
+        for index, rotation in enumerate((-math.pi / 6, math.pi / 12, math.pi * 11 / 12, -math.pi * 5 / 6), start=1):
             pivot_name = f"browser_void_spike_{index}"
             kept_nodes.extend((
                 {
