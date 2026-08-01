@@ -60,6 +60,7 @@ import {
   EncounterComposition,
   EncounterSceneAsset,
 } from "./codex-types";
+import { groupAncientDialogueLines } from "./ancient-dialogue";
 import {
   getDefaultTinkerRiderForType,
   getMadSciencePreviewCard,
@@ -2145,23 +2146,27 @@ function mapAncient(
   const key = kor.id.toLowerCase();
   const imageUrl = `/images/sts2/ancients/${key}.webp`;
 
-  // Map dialogue: each key has an array of { order, speaker, text }
-  const dialogue: Record<string, AncientDialogueLine[]> = {};
+  const dialogue: CodexAncient["dialogue"] = {};
   if (kor.dialogue) {
     for (const [charKey, lines] of Object.entries(kor.dialogue)) {
       const group = ancientTalkGroup(charKey);
-      dialogue[charKey] = (lines as RawDialogueLine[]).map((l) => ({
-        order: l.order,
-        speaker: l.speaker as "ancient" | "character",
-        text: renderAncientText(
-          gameText(
-            gameAncients,
-            `${kor.id}.talk.${group}.${l.order}.${ancientTalkSpeaker(l.speaker as "ancient" | "character")}`,
-            l.text,
+      const localizedLines: AncientDialogueLine[] = (lines as RawDialogueLine[]).map((l) => {
+        const nextLabel = gameAncients[`${kor.id}.talk.${group}.${l.order}.next`];
+        return {
+          order: l.order,
+          speaker: l.speaker as "ancient" | "character",
+          text: renderAncientText(
+            gameText(
+              gameAncients,
+              `${kor.id}.talk.${group}.${l.order}.${ancientTalkSpeaker(l.speaker as "ancient" | "character")}`,
+              l.text,
+            ),
+            charKey,
           ),
-          charKey,
-        ),
-      }));
+          ...(nextLabel ? { nextLabel: renderAncientText(nextLabel, charKey) } : {}),
+        };
+      });
+      dialogue[charKey] = groupAncientDialogueLines(localizedLines);
     }
   }
 

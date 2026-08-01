@@ -240,9 +240,11 @@ function entitySearchText(entity: EntityInfo): string {
   if (entity.ancientData) {
     const ancient = entity.ancientData;
     appendSearchParts(parts, ancient.epithet, ancient.epithetEn, ancient.description, ancient.descriptionEn, ancient.act, ancient.relicIds.join(" "));
-    for (const lines of Object.values(ancient.dialogue)) {
-      for (const line of lines) {
-        appendSearchParts(parts, line.order, line.speaker, line.text);
+    for (const scenes of Object.values(ancient.dialogue)) {
+      for (const scene of scenes) {
+        for (const line of scene.lines) {
+          appendSearchParts(parts, line.order, line.speaker, line.text);
+        }
       }
     }
   }

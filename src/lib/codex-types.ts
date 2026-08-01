@@ -553,6 +553,14 @@ export interface AncientDialogueLine {
   order: string;       // e.g. "0-0", "1-0r" (r = returning)
   speaker: "ancient" | "character";
   text: string;        // Korean, with BBCode markup
+  nextLabel?: string;
+}
+
+export interface AncientDialogueScene {
+  id: string;
+  variant: number;
+  suffix: "r" | null;
+  lines: AncientDialogueLine[];
 }
 
 export interface AncientSceneAsset {
@@ -595,7 +603,7 @@ export interface CodexAncient extends CodexLifecycle {
   descriptionEn: string; // English, with BBCode markup
   act: EventAct | null;
   relicIds: string[];  // IDs of relics this ancient drops
-  dialogue: Record<string, AncientDialogueLine[]>; // key = character name or "Returning"/"First Visit"
+  dialogue: Record<string, AncientDialogueScene[]>; // key = character name or "Returning"/"First Visit"
   imageUrl: string | null;
   sceneAsset: AncientSceneAsset;
   spineAsset: MonsterSpineAsset | null;
