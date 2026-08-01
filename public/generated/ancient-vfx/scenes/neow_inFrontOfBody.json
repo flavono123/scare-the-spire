@@ -20,10 +20,6 @@
         "width": 256
       }
     },
-    "13_6n7l7": {
-      "path": "shaders/vfx/vfx_water_reflection_post.gdshader",
-      "type": "Shader"
-    },
     "14_1qfuc": {
       "path": "images/vfx/monsters/the_insatiable/sand_cloud.png",
       "type": "Texture2D",
@@ -32,26 +28,6 @@
         "source": "images/vfx/monsters/the_insatiable/sand_cloud.png",
         "src": "/images/sts2/ancient-vfx/runtime/images/vfx/monsters/the_insatiable/sand_cloud.webp",
         "width": 800
-      }
-    },
-    "15_lyenu": {
-      "path": "images/vfx/miasma_cloud.png",
-      "type": "Texture2D",
-      "texture": {
-        "height": 115,
-        "source": "images/vfx/miasma_cloud.png",
-        "src": "/images/sts2/ancient-vfx/runtime/images/vfx/miasma_cloud.webp",
-        "width": 133
-      }
-    },
-    "9_kknf4": {
-      "path": "images/rooms/hive/the_insatiable/sand_pillar_base.png",
-      "type": "Texture2D",
-      "texture": {
-        "height": 100,
-        "source": "images/rooms/hive/the_insatiable/sand_pillar_base.png",
-        "src": "/images/sts2/ancient-vfx/runtime/images/rooms/hive/the_insatiable/sand_pillar_base.webp",
-        "width": 100
       }
     },
     "9_mewxt": {
@@ -766,39 +742,6 @@
         }
       },
       "type": "CPUParticles2D"
-    },
-    {
-      "name": "water effect",
-      "parent": ".",
-      "props": {
-        "material": {
-          "$": "SubResource",
-          "v": [
-            "ShaderMaterial_7es4v"
-          ]
-        },
-        "position": {
-          "$": "Vector2",
-          "v": [
-            1048,
-            957
-          ]
-        },
-        "scale": {
-          "$": "Vector2",
-          "v": [
-            7.725,
-            5.227
-          ]
-        },
-        "texture": {
-          "$": "ExtResource",
-          "v": [
-            "15_lyenu"
-          ]
-        }
-      },
-      "type": "Sprite2D"
     }
   ],
   "resources": {
@@ -1040,12 +983,6 @@
       },
       "type": "Curve"
     },
-    "FastNoiseLite_nnunq": {
-      "props": {
-        "frequency": 0.0022
-      },
-      "type": "FastNoiseLite"
-    },
     "GradientTexture1D_oxuda": {
       "props": {
         "gradient": {
@@ -1152,20 +1089,6 @@
       },
       "type": "Gradient"
     },
-    "NoiseTexture2D_ee6mk": {
-      "props": {
-        "noise": {
-          "$": "SubResource",
-          "v": [
-            "FastNoiseLite_nnunq"
-          ]
-        },
-        "seamless": true,
-        "normalize": false,
-        "seamless_blend_skirt": 0.293
-      },
-      "type": "NoiseTexture2D"
-    },
     "ParticleProcessMaterial_cl8og": {
       "props": {
         "particle_flag_disable_z": true,
@@ -1269,31 +1192,6 @@
         "anim_offset_max": 1.0
       },
       "type": "ParticleProcessMaterial"
-    },
-    "ShaderMaterial_7es4v": {
-      "props": {
-        "shader": {
-          "$": "ExtResource",
-          "v": [
-            "13_6n7l7"
-          ]
-        },
-        "shader_parameter/noise": {
-          "$": "SubResource",
-          "v": [
-            "NoiseTexture2D_ee6mk"
-          ]
-        },
-        "shader_parameter/mask": {
-          "$": "ExtResource",
-          "v": [
-            "9_kknf4"
-          ]
-        },
-        "shader_parameter/speed": 1.0,
-        "shader_parameter/strength": 0.015
-      },
-      "type": "ShaderMaterial"
     }
   },
   "source": "scenes/events/background_scenes/neow.tscn",

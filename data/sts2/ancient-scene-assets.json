@@ -47,13 +47,11 @@
     "composition": {
       "slots": [
         "baseArt",
-        "behindBody",
         "body",
         "inFrontOfBody"
       ],
       "sourceZOrder": [
         "baseArt",
-        "behindBody",
         "body",
         "inFrontOfBody"
       ]
@@ -89,14 +87,12 @@
     "token": "/images/sts2/ancients/neow.webp",
     "vfx": {
       "manifestPaths": {
-        "behindBody": "/generated/ancient-vfx/scenes/neow_behindBody.json",
         "inFrontOfBody": "/generated/ancient-vfx/scenes/neow_inFrontOfBody.json"
       },
       "support": "partial",
       "supported": [
         "CPUParticles2D:8",
-        "GPUParticles2D:3",
-        "Sprite2D:5"
+        "GPUParticles2D:3"
       ],
       "unsupported": [
         {
@@ -118,7 +114,7 @@
             "water_reflection4",
             "water effect"
           ],
-          "reason": "Godot shader motion is approximated by the static sprite or particle texture",
+          "reason": "Godot shader sprites are omitted because their raw textures are not valid visual fallbacks",
           "type": "ShaderMaterial"
         },
         {
@@ -320,21 +316,11 @@
       "manifestPaths": {
         "inFrontOfBody": "/generated/ancient-vfx/scenes/tanx_inFrontOfBody.json"
       },
-      "support": "partial",
+      "support": "full",
       "supported": [
         "CPUParticles2D:4"
       ],
-      "unsupported": [
-        {
-          "count": 2,
-          "examples": [
-            "ash4",
-            "ash5"
-          ],
-          "reason": "Godot shader motion is approximated by the static sprite or particle texture",
-          "type": "ShaderMaterial"
-        }
-      ]
+      "unsupported": []
     }
   },
   {
@@ -386,8 +372,7 @@
       "support": "partial",
       "supported": [
         "CPUParticles2D:73",
-        "GPUParticles2D:72",
-        "Sprite2D:216"
+        "GPUParticles2D:72"
       ],
       "unsupported": [
         {
@@ -411,7 +396,7 @@
             "FireContainer/pink6/SteppedFireMix",
             "FireContainer/pink6/SteppedFireAdd"
           ],
-          "reason": "Godot shader motion is approximated by the static sprite or particle texture",
+          "reason": "Godot shader sprites are omitted because their raw textures are not valid visual fallbacks",
           "type": "ShaderMaterial"
         },
         {

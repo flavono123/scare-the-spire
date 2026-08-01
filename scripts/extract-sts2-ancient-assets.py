@@ -176,7 +176,18 @@ def vfx_descriptor(
     by_path, path_by_node = scene_node_paths(scene)
     visual_nodes = [node for node in scene["nodes"] if node["type"] in SUPPORTED_VFX_NODES]
     bone_nodes = [node for node in visual_nodes if has_spine_bone_parent(node, by_path)]
-    supported_nodes = [node for node in visual_nodes if node not in bone_nodes and node.get("props", {}).get("visible") is not False]
+    candidate_nodes = [node for node in visual_nodes if node not in bone_nodes and node.get("props", {}).get("visible") is not False]
+    shader_nodes = []
+    for node in candidate_nodes:
+        material_id = resource_id(node.get("props", {}).get("material"), "SubResource")
+        is_shader_sprite = (
+            node["type"] in {"AnimatedSprite2D", "Sprite2D"}
+            and material_id
+            and scene["resources"].get(material_id, {}).get("type") == "ShaderMaterial"
+        )
+        if is_shader_sprite:
+            shader_nodes.append(node)
+    supported_nodes = [node for node in candidate_nodes if node not in shader_nodes]
     spine_index = scene["nodes"].index(spine_node) if spine_node else -1
     behind = [node for node in supported_nodes if spine_node and scene["nodes"].index(node) < spine_index]
     front = [node for node in supported_nodes if node not in behind]
@@ -199,16 +210,11 @@ def vfx_descriptor(
             "reason": "Spine bone attachment is not reproduced by the Canvas2D ambient runtime",
             "type": "SpineBoneNode effects",
         })
-    shader_nodes = []
-    for node in supported_nodes:
-        material_id = resource_id(node.get("props", {}).get("material"), "SubResource")
-        if material_id and scene["resources"].get(material_id, {}).get("type") == "ShaderMaterial":
-            shader_nodes.append(node)
     if shader_nodes:
         unsupported.append({
             "count": len(shader_nodes),
             "examples": [path_by_node[id(node)] for node in shader_nodes[:5]],
-            "reason": "Godot shader motion is approximated by the static sprite or particle texture",
+            "reason": "Godot shader sprites are omitted because their raw textures are not valid visual fallbacks",
             "type": "ShaderMaterial",
         })
     gpu_nodes = [node for node in supported_nodes if node["type"] == "GPUParticles2D"]
