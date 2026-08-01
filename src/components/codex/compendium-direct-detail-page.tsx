@@ -66,10 +66,6 @@ function findByRouteId<T extends { id: string }>(
   return rows.find((row) => row.id.toLowerCase() === routeId.toLowerCase());
 }
 
-function isDefined<T>(value: T | undefined): value is T {
-  return value !== undefined;
-}
-
 function isBetaSearchEnabled(): boolean {
   if (typeof window === "undefined") return false;
   const value = new URLSearchParams(window.location.search).get("beta")?.toLowerCase();
