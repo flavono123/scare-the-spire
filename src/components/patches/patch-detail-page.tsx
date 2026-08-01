@@ -27,7 +27,7 @@ import {
 } from "@/lib/service-metadata";
 import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
-import type { PatchType } from "@/lib/types";
+import type { PatchType, STS2Patch } from "@/lib/types";
 import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
 import { serviceMessages } from "@/messages/service";
 import type { CodexMonster, DamageValue, MonsterActionType, MonsterMove } from "@/lib/codex-types";
