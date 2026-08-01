@@ -8,8 +8,8 @@ import { loadEnvConfig } from "@next/env";
 import { build as buildClientBundle, stop as stopClientBundler, type Plugin } from "esbuild";
 import {
   PatchDetailPage,
-  generatePatchDetailStaticParams,
   getPatchDetailMetadata,
+  getPatchSeoTitle,
 } from "@/components/patches/patch-detail-page";
 import {
   PatchListPage,
@@ -32,6 +32,7 @@ import {
 } from "@/lib/i18n";
 import { DEFAULT_USER_PROFILE, characterIconUrl } from "@/lib/user-profile";
 import { getSiteOrigin } from "@/lib/site-origin";
+import { getSTS2Patches } from "@/lib/data";
 import { serviceMessages } from "@/messages/service";
 import {
   gameOnlyLanguageNavLocales,
@@ -50,6 +51,11 @@ type StaticPatchRoute = {
   element: ReactNode;
   metadata: Metadata;
   clientScripts?: string[];
+  article?: {
+    headline: string;
+    datePublished: string;
+    sourceUrl: string | null;
+  };
 };
 
 loadEnvConfig(process.cwd());
@@ -497,6 +503,31 @@ function renderShell(route: StaticPatchRoute): string {
   const image = metadataImage(route.metadata);
   const canonicalUrl = `${siteOrigin}${route.pathname}`;
   const lang = route.serviceLocale === "ko" ? "ko" : "en";
+  const articleStructuredData = route.article ? {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: route.article.headline,
+    description,
+    ...(image ? { image: [image] } : {}),
+    datePublished: route.article.datePublished,
+    inLanguage: lang,
+    mainEntityOfPage: canonicalUrl,
+    author: {
+      "@type": "Organization",
+      name: serviceMessages[route.serviceLocale].brand,
+      url: siteOrigin,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: serviceMessages[route.serviceLocale].brand,
+      url: siteOrigin,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteOrigin}/images/sts2/icons/app_icon.png`,
+      },
+    },
+    ...(route.article.sourceUrl ? { isBasedOn: route.article.sourceUrl } : {}),
+  } : null;
   const routeClientScripts = (route.clientScripts ?? [])
     .map((src) => `<script src="${src}" defer></script>`)
     .join("");
@@ -543,9 +574,16 @@ function renderShell(route: StaticPatchRoute): string {
         <meta property="og:title" content={title} />
         {description && <meta property="og:description" content={description} />}
         <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:type" content="website" />
+        <meta property="og:type" content={route.article ? "article" : "website"} />
+        {route.article && <meta property="article:published_time" content={route.article.datePublished} />}
         {image && <meta property="og:image" content={image} />}
         <meta name="twitter:card" content="summary_large_image" />
+        {articleStructuredData && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: escapeInlineJson(articleStructuredData) }}
+          />
+        )}
       </head>
       <body
         className="font-service antialiased bg-background text-foreground"
@@ -653,7 +691,7 @@ async function main() {
   await writePatchClientAssets();
   if (process.argv.includes("--clients-only")) return;
 
-  const versions = await generatePatchDetailStaticParams();
+  const patches = await getSTS2Patches();
   const routes: StaticPatchRoute[] = [
     {
       pathname: "/patches",
@@ -699,7 +737,9 @@ async function main() {
     });
   }
 
-  for (const { version } of versions) {
+  for (const patch of patches) {
+    const { version } = patch;
+    const isPublished = !patch.status || patch.status === "ready";
     routes.push({
       pathname: `/patches/${version}`,
       serviceLocale: "ko",
@@ -711,6 +751,11 @@ async function main() {
         gameLocale: "kor",
         staticHoverPreviews: true,
       }),
+      article: isPublished ? {
+        headline: getPatchSeoTitle(patch, "ko"),
+        datePublished: patch.date,
+        sourceUrl: patch.steamUrl,
+      } : undefined,
     });
 
     for (const route of await localizedPatchRoutes(version)) {
@@ -726,6 +771,11 @@ async function main() {
           gameLocale: route.gameLocale,
           staticHoverPreviews: true,
         }),
+        article: isPublished ? {
+          headline: getPatchSeoTitle(patch, route.serviceLocale),
+          datePublished: patch.date,
+          sourceUrl: patch.steamUrl,
+        } : undefined,
       });
     }
   }

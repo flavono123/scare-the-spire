@@ -18,20 +18,17 @@ import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType, STS2Patch } from "@/lib/types";
 import { getPatchStageGameCopy } from "@/lib/borrowed-game-copy";
+import { serviceMessages } from "@/messages/service";
 import { PatchArtPreview } from "@/components/patches/patch-art";
 import { PatchSectionTabs } from "@/components/patches/patch-section-tabs";
 
 const PATCH_COPY: Record<ServiceLocale, {
-  title: string;
-  description: string;
   balance: string;
   building: string;
   steamOriginal: string;
   types: Record<PatchType, string>;
 }> = {
   ko: {
-    title: "패치 노트",
-    description: "슬레이 더 스파이어 2 전체 패치 히스토리와 밸런스 변경 이력",
     balance: "밸런스",
     building: "작업 도구",
     steamOriginal: "Steam 원문",
@@ -43,8 +40,6 @@ const PATCH_COPY: Record<ServiceLocale, {
     },
   },
   en: {
-    title: "Patch Notes",
-    description: "Full Slay the Spire 2 patch history and balance changes.",
     balance: "Balance",
     building: "Tools of the Trade",
     steamOriginal: "Steam original",
@@ -157,7 +152,7 @@ export async function PatchListPage({
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <h1 className="text-2xl font-bold">{copy.title}</h1>
+      <h1 className="text-2xl font-bold">{serviceMessages[serviceLocale].patchNotes.indexTitle}</h1>
       <PatchSectionTabs
         active="notes"
         serviceLocale={serviceLocale}
@@ -167,6 +162,7 @@ export async function PatchListPage({
       <div className="mt-6 space-y-3">
         {sorted.map((patch, index) => {
           const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
+          const summary = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
           const versionLabel = getPatchVersionLabel(patch, serviceLocale);
           const isWatching = patch.status === "watching";
           const isBuilding = patch.status === "building";
@@ -278,6 +274,7 @@ export async function PatchListPage({
                 )}
               </div>
               <p className="mt-1 text-sm font-medium">{title}</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{summary}</p>
               <p className="mt-0.5 text-xs text-muted-foreground">{patch.date}</p>
               {patchArt && <PatchArtPreview art={patchArt} priority={index === 0} />}
             </Link>

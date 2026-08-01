@@ -29,6 +29,7 @@ import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType } from "@/lib/types";
 import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
+import { serviceMessages } from "@/messages/service";
 import type { CodexMonster, DamageValue, MonsterActionType, MonsterMove } from "@/lib/codex-types";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
 import {
@@ -124,46 +125,6 @@ function escapeInlineJson(value: unknown): string {
 function truncateOgDescription(text: string, maxLength = PATCH_OG_DESCRIPTION_MAX_LENGTH): string {
   if (text.length <= maxLength) return text;
   return `${text.slice(0, maxLength - 1).trimEnd()}…`;
-}
-
-function plainPatchMarkdownForOg(markdown: string, serviceLocale: ServiceLocale): string {
-  const localeFiltered = serviceLocale === "ko"
-    ? markdown.replace(/\[devnote:en\][\s\S]*?\[\/devnote\]/gi, " ")
-    : markdown;
-
-  const withoutStructuralLines = localeFiltered
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith("#") && !/^\[monster-pattern-diff:[^\]]+\]$/i.test(line))
-    .map((line) => line.replace(/^[-*+]\s+/, ""))
-    .join(" ");
-
-  return withoutStructuralLines
-    .replace(/\[devnote(?::en)?\]([\s\S]*?)\[\/devnote\]/gi, "$1")
-    .replace(/!\[[^\]]*]\([^)]*\)/g, " ")
-    .replace(/\[([^\]]+)]\([^)]*\)/g, "$1")
-    .replace(/\[\/?[a-z][a-z0-9_-]*(?::[a-z0-9_-]+)?(?:=[^\]]+)?\]/gi, "")
-    .replace(/[`*_~]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-async function readPatchOgDescription({
-  version,
-  serviceLocale,
-  fallback,
-}: {
-  version: string;
-  serviceLocale: ServiceLocale;
-  fallback: string;
-}): Promise<string> {
-  const markdownPath = path.join(
-    NOTES_DIR,
-    serviceLocale === "ko" ? `v${version}.ko.md` : `v${version}.md`,
-  );
-  const markdown = await fs.readFile(markdownPath, "utf-8").catch(() => null);
-  const description = markdown ? plainPatchMarkdownForOg(markdown, serviceLocale) : "";
-  return truncateOgDescription(description || fallback);
 }
 
 const PATCH_ENTITY_ALIASES_EN: Record<string, string[]> = {
@@ -771,6 +732,16 @@ export async function generatePatchDetailStaticParams() {
   return patches.map((p) => ({ version: p.version }));
 }
 
+export function getPatchSeoTitle(
+  patch: STS2Patch,
+  serviceLocale: ServiceLocale,
+): string {
+  const template = serviceMessages[serviceLocale].patchNotes.detailTitle;
+  return template
+    .replace("{version}", getPatchVersionLabel(patch, serviceLocale))
+    .replace("{type}", PATCH_COPY[serviceLocale].types[patch.type]);
+}
+
 export async function getPatchDetailMetadata({
   version,
   serviceLocale,
@@ -782,20 +753,14 @@ export async function getPatchDetailMetadata({
   const patch = patches.find((p) => p.version === version);
   if (!patch) return {};
 
-  const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
-  const fallbackDescription = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
-  const [description, entities] = await Promise.all([
-    readPatchOgDescription({
-      version: patch.version,
-      serviceLocale,
-      fallback: fallbackDescription,
-    }),
-    loadAllEntities({ gameLocale: serviceLocale === "ko" ? "kor" : "eng" }),
-  ]);
+  const title = getPatchSeoTitle(patch, serviceLocale);
+  const summary = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
+  const description = truncateOgDescription(`${title}. ${summary}`);
+  const entities = await loadAllEntities({ gameLocale: serviceLocale === "ko" ? "kor" : "eng" });
   const entitiesByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
   const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
 
-  return getServiceOgMetadata({
+  const metadata = getServiceOgMetadata({
     serviceLocale,
     title,
     description,
@@ -804,6 +769,16 @@ export async function getPatchDetailMetadata({
       alt: patchArt.alt,
     },
   });
+  if (patch.status && patch.status !== "ready") return metadata;
+
+  return {
+    ...metadata,
+    openGraph: {
+      ...metadata.openGraph,
+      type: "article",
+      publishedTime: patch.date,
+    },
+  };
 }
 
 export async function PatchDetailPage({
@@ -1031,8 +1006,8 @@ export async function PatchDetailPage({
   ];
   const entities = applyCompendiumManifestAvailability(rawEntities, compendiumManifest);
 
-  const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
-  const versionLabel = getPatchVersionLabel(patch, serviceLocale);
+  const title = getPatchSeoTitle(patch, serviceLocale);
+  const summary = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
   const rendererEntities = filterPatchNoteEntities(markdown, entities);
   const isWatching = patch.status === "watching";
   const isBuilding = patch.status === "building";
@@ -1055,8 +1030,8 @@ export async function PatchDetailPage({
       </Link>
 
       <div className="mt-4">
-        <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold">{versionLabel}</h1>
+        <div className="flex flex-wrap items-start gap-2">
+          <h1 className="text-2xl font-bold">{title}</h1>
           <Badge variant="outline" className={PATCH_TYPE_CLASSES[patch.type]}>
             {copy.types[patch.type]}
           </Badge>
@@ -1071,7 +1046,10 @@ export async function PatchDetailPage({
             </Badge>
           )}
         </div>
-        <p className="mt-1 text-lg font-medium">{title}</p>
+        <p className="mt-3 text-base font-medium leading-relaxed text-foreground/90">{summary}</p>
+        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+          {serviceMessages[serviceLocale].patchNotes.richDetails}
+        </p>
         <div className="mt-1 flex items-center gap-3 text-sm text-muted-foreground">
           <span>{patch.date}</span>
           {patch.steamUrl && !isBuilding && !isWatching && (

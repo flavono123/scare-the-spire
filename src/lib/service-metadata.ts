@@ -26,8 +26,8 @@ type ServiceOgImage = PageOgImage | {
 const SERVICE_METADATA_COPY: Record<ServiceLocale, ServiceMetadataCopy> = {
   ko: {
     siteDescription: "슬레이 더 스파이어 2 패치노트, 백과사전, 커뮤니티",
-    patchesTitle: "슬서운 변경",
-    patchesDescription: "슬레이 더 스파이어 2 패치 노트 고봉밥 버전",
+    patchesTitle: "슬레이 더 스파이어 2 패치 노트 및 업데이트 내역",
+    patchesDescription: "슬레이 더 스파이어 2 전체 패치 노트, 업데이트 내역, 카드·유물 변경 정보를 한국어로 확인하세요.",
     chemicalXTitle: "케미컬 X(구 트윕터)",
     chemicalXDescription: "슬레이 더 스파이어 2 고봉밥 트윕",
     comboTitle: "코오오옴보",
@@ -37,8 +37,8 @@ const SERVICE_METADATA_COPY: Record<ServiceLocale, ServiceMetadataCopy> = {
   },
   en: {
     siteDescription: "Slay the Spire 2 patch notes, Compendium, and community.",
-    patchesTitle: "Scare the Changes",
-    patchesDescription: "Full rich Slay the Spire 2 patch notes.",
+    patchesTitle: "Slay the Spire 2 Patch Notes & Update History",
+    patchesDescription: "Complete Slay the Spire 2 patch notes, update history, and linked card and relic changes.",
     chemicalXTitle: "Chemical X (formerly Twipter)",
     chemicalXDescription: "Full Slay the Spire 2 twips.",
     comboTitle: "C-c-c-Combo",

@@ -68,10 +68,10 @@ function parseArgs(argv) {
   return options;
 }
 
-function latestPatchVersion() {
+function latestPatch() {
   const patches = JSON.parse(readFileSync("data/sts2-patches.json", "utf8"));
   patches.sort((left, right) => right.date.localeCompare(left.date));
-  return patches[0]?.version;
+  return patches[0];
 }
 
 function page(path, owner, bodyIncludes) {
@@ -162,8 +162,8 @@ function mainCases() {
 }
 
 function patchCases() {
-  const latest = latestPatchVersion();
-  if (!latest) throw new Error("Could not resolve the latest patch version");
+  const latest = latestPatch();
+  if (!latest) throw new Error("Could not resolve the latest patch");
 
   return [
     {
@@ -196,15 +196,25 @@ function patchCases() {
     },
     {
       name: "Latest Korean patch",
-      path: `/patches/${latest}`,
+      path: `/patches/${latest.version}`,
       headers: { Accept: "text/html" },
       contentType: "text/html",
+      bodyIncludes: [
+        `슬레이 더 스파이어 2 v${latest.version}`,
+        latest.summaryKo,
+        "application/ld+json",
+      ],
     },
     {
       name: "Latest English patch",
-      path: `/en/patches/${latest}`,
+      path: `/en/patches/${latest.version}`,
       headers: { Accept: "text/html" },
       contentType: "text/html",
+      bodyIncludes: [
+        `Slay the Spire 2 v${latest.version}`,
+        latest.summary,
+        "application/ld+json",
+      ],
     },
     {
       name: "Patch stylesheet",
@@ -251,8 +261,12 @@ function validateCase(testCase, response, body) {
     }
   }
 
-  if (testCase.bodyIncludes && !body.includes(testCase.bodyIncludes)) {
-    return `response body is missing ${JSON.stringify(testCase.bodyIncludes)}`;
+  const requiredBodyParts = Array.isArray(testCase.bodyIncludes)
+    ? testCase.bodyIncludes
+    : testCase.bodyIncludes ? [testCase.bodyIncludes] : [];
+  const missingBodyPart = requiredBodyParts.find((part) => !body.includes(part));
+  if (missingBodyPart) {
+    return `response body is missing ${JSON.stringify(missingBodyPart)}`;
   }
 
   if (testCase.location) {
