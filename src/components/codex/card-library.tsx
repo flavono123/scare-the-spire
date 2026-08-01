@@ -158,6 +158,7 @@ import {
   EVENT_FILTER_ICON,
   QUEST_FILTER_ICON,
   TOKEN_FILTER_ICON,
+  getCardTypeFilterIcon,
   getCharacterTokenIcon,
 } from "./codex-filter-assets";
 
@@ -637,7 +638,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
             {availableTypes.map((type) => (
               <IconFilterButton
                 key={type}
-                icon={TYPE_SORT_ICONS[type] ?? TYPE_SORT_ICONS["공격"]}
+                icon={getCardTypeFilterIcon(type)}
                 label={gameUi.cardLibrary.types[type]}
                 active={selectedTypes.has(type)}
                 onClick={() => toggleType(type)}
@@ -867,11 +868,3 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     </CodexLibraryShell>
   );
 }
-
-
-// Game-extracted card type filter icons
-const TYPE_SORT_ICONS: Record<string, string> = {
-  "공격": "/images/game-assets/card-library/type_sort_attack.webp",
-  "스킬": "/images/game-assets/card-library/type_sort_skill.webp",
-  "파워": "/images/game-assets/card-library/type_sort_power.webp",
-};

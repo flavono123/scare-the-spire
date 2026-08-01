@@ -6,7 +6,12 @@ import {
   useMemo,
   useRef,
   useState,
+  type ReactNode,
 } from "react";
+import { CARD_TYPE_FILTER_ICONS } from "@/components/codex/codex-filter-assets";
+import { FilterSection } from "@/components/codex/codex-filters";
+import { TinyCardIcon } from "@/components/history-course/card-action-icon";
+import { MenuDropdown } from "@/components/menu-dropdown";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import type { PostBlock } from "@/lib/chemical-types";
@@ -86,7 +91,7 @@ function CardAttributeChange<T extends string>({
   cancelLabel: string;
   kind: "rarity" | "type";
   label: string;
-  options: readonly { label: string; value: T }[];
+  options: readonly { icon: ReactNode; label: string; value: T }[];
   selectLabel: string;
   sourceLabel: string;
   value: T | "";
@@ -107,6 +112,8 @@ function CardAttributeChange<T extends string>({
     );
   }
 
+  const selectedOption = options.find((option) => option.value === value);
+
   return (
     <div
       className="space-y-1.5 rounded-lg border border-yellow-500/20 bg-black/20 p-2"
@@ -123,24 +130,53 @@ function CardAttributeChange<T extends string>({
           {cancelLabel}
         </button>
       </div>
-      <div className="flex items-center gap-1.5">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1.35fr)] items-center gap-1.5">
         <span className="min-w-0 flex-1 truncate font-game-title text-xs text-gray-500">
           {sourceLabel}
         </span>
         <span className="text-xs text-yellow-500/60" aria-hidden="true">→</span>
-        <select
-          value={value}
-          onChange={(event) => onChange(event.target.value as T)}
-          aria-label={label}
-          className="min-w-0 flex-1 rounded-md border border-yellow-500/25 bg-[#111522] px-2 py-1.5 font-game-title text-xs text-yellow-100 outline-none focus:border-yellow-300"
+        <MenuDropdown
+          ariaLabel={label}
+          rootClassName="min-w-0"
+          summaryClassName="flex h-9 cursor-pointer items-center gap-1.5 rounded-md border border-yellow-500/25 bg-[#111522] px-2 font-game-title text-xs text-yellow-100 outline-none transition-colors hover:border-yellow-300/60 focus-visible:border-yellow-300"
+          menuClassName="left-0 min-w-full overflow-hidden bg-[#111522]/98"
+          summary={(
+            <>
+              {selectedOption?.icon}
+              <span className="min-w-0 flex-1 truncate text-left">
+                {selectedOption?.label ?? selectLabel}
+              </span>
+              <svg
+                className="h-3 w-3 shrink-0 text-yellow-400 transition-transform group-open:rotate-180"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+                aria-hidden="true"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </>
+          )}
         >
-          <option value="" disabled>{selectLabel}</option>
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
+            <button
+              key={option.value}
+              type="button"
+              role="menuitem"
+              aria-current={option.value === value ? "true" : undefined}
+              onClick={() => onChange(option.value)}
+              className={`flex w-full items-center gap-2.5 px-3 py-2 text-left font-game-title text-sm transition-colors ${
+                option.value === value
+                  ? "bg-yellow-500/10 text-yellow-300"
+                  : "text-gray-300 hover:bg-white/5 hover:text-yellow-100"
+              }`}
+            >
+              {option.icon}
+              <span className="min-w-0 truncate">{option.label}</span>
+            </button>
           ))}
-        </select>
+        </MenuDropdown>
       </div>
     </div>
   );
@@ -603,7 +639,7 @@ export function TransfigureEditor({
 
       {selected && sourceText && isTransfigureResourceType(selected.type) && (
         <div className="grid items-start gap-4 lg:grid-cols-[16rem_minmax(0,1fr)]">
-          <div className="overflow-hidden rounded-xl border border-yellow-500/20 bg-[#080b14]/80">
+          <div className="rounded-xl border border-white/10 bg-[#16162a]">
             <div className="border-b border-white/10 px-3 py-2">
               <label className="block">
                 <span className="spire-gold mb-1 block text-[11px] font-semibold uppercase tracking-[0.12em]">
@@ -639,64 +675,84 @@ export function TransfigureEditor({
 
             {selected.type === "card" && selected.cardData && (
               <div
-                className="space-y-2 border-t border-white/10 px-3 py-2"
+                className="border-t border-white/10 px-3 py-2"
                 data-transfigure-card-attributes
               >
-                <p className="spire-gold text-[11px] font-semibold uppercase tracking-[0.12em]">
-                  {copy.cardAttributes}
-                </p>
+                <FilterSection label={copy.cardAttributes}>
+                  <div className="space-y-2">
+                    <CardAttributeChange
+                      active={showCardRarityChange}
+                      cancelLabel={copy.cancelChange}
+                      kind="rarity"
+                      label={copy.cardRarity}
+                      options={TRANSFIGURE_CARD_RARITIES
+                        .filter((rarity) => rarity !== sourceCardRarity)
+                        .map((rarity) => ({
+                          icon: (
+                            <TinyCardIcon
+                              card={{
+                                color: selected.cardData.color,
+                                visualColor: selected.cardData.visualColor,
+                                rarity,
+                                type: transformedCardType || selected.cardData.type,
+                              }}
+                              width={24}
+                            />
+                          ),
+                          label: getTransfigureCardRarityLabel(entities, rarity),
+                          value: rarity,
+                        }))}
+                      selectLabel={copy.selectCardAttribute}
+                      sourceLabel={selected.cardData.rarityLabel}
+                      value={transformedCardRarity}
+                      onCancel={() => {
+                        setTransformedCardRarity("");
+                        setShowCardRarityChange(false);
+                        setSaveFeedback(null);
+                      }}
+                      onChange={(value) => {
+                        setTransformedCardRarity(value);
+                        setSaveFeedback(null);
+                      }}
+                      onOpen={() => setShowCardRarityChange(true)}
+                    />
 
-                <CardAttributeChange
-                  active={showCardRarityChange}
-                  cancelLabel={copy.cancelChange}
-                  kind="rarity"
-                  label={copy.cardRarity}
-                  options={TRANSFIGURE_CARD_RARITIES
-                    .filter((rarity) => rarity !== sourceCardRarity)
-                    .map((rarity) => ({
-                      label: getTransfigureCardRarityLabel(entities, rarity),
-                      value: rarity,
-                    }))}
-                  selectLabel={copy.selectCardAttribute}
-                  sourceLabel={selected.cardData.rarityLabel}
-                  value={transformedCardRarity}
-                  onCancel={() => {
-                    setTransformedCardRarity("");
-                    setShowCardRarityChange(false);
-                    setSaveFeedback(null);
-                  }}
-                  onChange={(value) => {
-                    setTransformedCardRarity(value);
-                    setSaveFeedback(null);
-                  }}
-                  onOpen={() => setShowCardRarityChange(true)}
-                />
-
-                <CardAttributeChange
-                  active={showCardTypeChange}
-                  cancelLabel={copy.cancelChange}
-                  kind="type"
-                  label={copy.cardType}
-                  options={TRANSFIGURE_CARD_TYPES
-                    .filter((type) => type !== sourceCardType)
-                    .map((type) => ({
-                      label: getTransfigureCardTypeLabel(entities, type),
-                      value: type,
-                    }))}
-                  selectLabel={copy.selectCardAttribute}
-                  sourceLabel={selected.cardData.typeLabel}
-                  value={transformedCardType}
-                  onCancel={() => {
-                    setTransformedCardType("");
-                    setShowCardTypeChange(false);
-                    setSaveFeedback(null);
-                  }}
-                  onChange={(value) => {
-                    setTransformedCardType(value);
-                    setSaveFeedback(null);
-                  }}
-                  onOpen={() => setShowCardTypeChange(true)}
-                />
+                    <CardAttributeChange
+                      active={showCardTypeChange}
+                      cancelLabel={copy.cancelChange}
+                      kind="type"
+                      label={copy.cardType}
+                      options={TRANSFIGURE_CARD_TYPES
+                        .filter((type) => type !== sourceCardType)
+                        .map((type) => ({
+                          icon: (
+                            <Image
+                              src={CARD_TYPE_FILTER_ICONS[type]}
+                              alt=""
+                              width={24}
+                              height={24}
+                              className="h-6 w-6 shrink-0 object-contain"
+                            />
+                          ),
+                          label: getTransfigureCardTypeLabel(entities, type),
+                          value: type,
+                        }))}
+                      selectLabel={copy.selectCardAttribute}
+                      sourceLabel={selected.cardData.typeLabel}
+                      value={transformedCardType}
+                      onCancel={() => {
+                        setTransformedCardType("");
+                        setShowCardTypeChange(false);
+                        setSaveFeedback(null);
+                      }}
+                      onChange={(value) => {
+                        setTransformedCardType(value);
+                        setSaveFeedback(null);
+                      }}
+                      onOpen={() => setShowCardTypeChange(true)}
+                    />
+                  </div>
+                </FilterSection>
               </div>
             )}
           </div>
