@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AncientNodeRender } from "@/components/codex/ancient-node-render";
 import {
@@ -111,6 +111,10 @@ export function AncientList({
   const [actSortDir, setActSortDir] = useState<FilterSortDir>("asc");
   const [selectedAncientOverride, setSelectedAncientOverride] = useState<CodexAncient | null>(null);
   const [useUrlSelection, setUseUrlSelection] = useState(true);
+  const modalRef = useRef<HTMLDivElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const triggerRef = useRef<HTMLAnchorElement | null>(null);
+  const modalWasOpenRef = useRef(false);
   const versionedAncients = useMemo(() => {
     if (!currentVersion || !selectedVersion) return ancients;
     return withEntityLifecycleForVersion(ancients, selectedVersion, { changes, entityType: "ancient" });
@@ -134,7 +138,8 @@ export function AncientList({
       .filter((relic): relic is CodexRelic => Boolean(relic));
   }, [relicById, selectedAncient]);
 
-  const selectAncient = useCallback((ancient: CodexAncient) => {
+  const selectAncient = useCallback((ancient: CodexAncient, trigger: HTMLAnchorElement) => {
+    triggerRef.current = trigger;
     setUseUrlSelection(false);
     setSelectedAncientOverride(ancient);
   }, [setSelectedAncientOverride, setUseUrlSelection]);
@@ -165,12 +170,50 @@ export function AncientList({
   }, []);
 
   useEffect(() => {
-    if (!selectedAncient) return;
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeSelectedAncient();
+    if (!selectedAncient) {
+      if (modalWasOpenRef.current) {
+        modalWasOpenRef.current = false;
+        window.requestAnimationFrame(() => triggerRef.current?.focus());
+      }
+      return;
+    }
+    modalWasOpenRef.current = true;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.requestAnimationFrame(() => {
+      if (closeButtonRef.current) closeButtonRef.current.focus();
+      else modalRef.current?.focus();
+    });
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeSelectedAncient();
+        return;
+      }
+      if (event.key !== "Tab" || !modalRef.current) return;
+      const focusable = [...modalRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      )].filter((element) => element.getClientRects().length > 0);
+      if (focusable.length === 0) {
+        event.preventDefault();
+        modalRef.current.focus();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && (document.activeElement === first || document.activeElement === modalRef.current)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || !modalRef.current.contains(document.activeElement))) {
+        event.preventDefault();
+        first.focus();
+      }
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    };
   }, [closeSelectedAncient, selectedAncient]);
 
   const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
@@ -232,12 +275,14 @@ export function AncientList({
   const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 
   return (
-    <CodexLibraryShell
-      sidebarOpen={sidebarOpen}
-      setSidebarOpen={setSidebarOpen}
-      isMobile={isMobile}
-      sidebar={(
-        <>
+    <>
+      <div className="contents" inert={selectedAncient ? true : undefined} aria-hidden={selectedAncient ? true : undefined}>
+        <CodexLibraryShell
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          isMobile={isMobile}
+          sidebar={(
+            <>
           <SearchBar
             value={searchQuery}
             onChange={setSearchQuery}
@@ -272,9 +317,9 @@ export function AncientList({
               })}
             </div>
           </FilterSection>
-        </>
-      )}
-    >
+            </>
+          )}
+        >
       <main className="flex-1 flex flex-col overflow-hidden">
         <CodexLibraryTopBar
           sidebarOpen={sidebarOpen}
@@ -328,6 +373,9 @@ export function AncientList({
         </div>
       </main>
 
+        </CodexLibraryShell>
+      </div>
+
       {selectedAncient && (
         <div
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
@@ -335,7 +383,14 @@ export function AncientList({
             if (e.target === e.currentTarget) closeSelectedAncient();
           }}
         >
-          <div className="my-8 mx-4 w-full max-w-6xl">
+          <div
+            ref={modalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={`ancient-detail-title-${selectedAncient.id.toLowerCase()}`}
+            tabIndex={-1}
+            className="my-4 mx-2 w-full max-w-6xl outline-none sm:my-8 sm:mx-4"
+          >
             <AncientDetail
               serviceLocale={serviceLocale}
               gameUi={gameUi}
@@ -345,6 +400,7 @@ export function AncientList({
               characters={characters}
               relics={selectedAncientRelics}
               onClose={closeSelectedAncient}
+              closeButtonRef={closeButtonRef}
               entities={entities}
               patches={patches}
               changes={changes}
@@ -353,7 +409,7 @@ export function AncientList({
           </div>
         </div>
       )}
-    </CodexLibraryShell>
+    </>
   );
 }
 
@@ -370,7 +426,7 @@ function AncientCard({
   serviceLocale: ServiceLocale;
   messages: CodexServiceMessages;
   gameUi: CodexGameUiLabels;
-  onSelect: (ancient: CodexAncient) => void;
+  onSelect: (ancient: CodexAncient, trigger: HTMLAnchorElement) => void;
 }) {
   return (
     <Link
@@ -378,7 +434,7 @@ function AncientCard({
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
         event.preventDefault();
-        onSelect(ancient);
+        onSelect(ancient, event.currentTarget);
       }}
       className={`group relative overflow-hidden rounded-xl border border-blue-900/30 bg-[#12121a] transition-all duration-200 hover:border-blue-600/50 ${
         ancient.deprecated ? "opacity-50 grayscale saturate-0" : ""
@@ -399,6 +455,9 @@ function AncientCard({
         <h2 className="font-game-title text-lg text-blue-300 group-hover:text-blue-200 transition-colors">
           {ancient.name}
         </h2>
+        {ancient.nameEn !== ancient.name && (
+          <p className="mt-0.5 truncate text-xs text-zinc-500">{ancient.nameEn}</p>
+        )}
         <p className="text-xs text-zinc-400 mt-1 italic">{ancient.epithet}</p>
         <div className="flex items-center gap-2 mt-2">
           <ActBadge act={ancient.act} messages={messages} gameUi={gameUi} />

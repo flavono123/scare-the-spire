@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, type Ref, useMemo, useState } from "react";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
@@ -95,6 +95,7 @@ interface AncientDetailProps {
   characters: CodexCharacter[];
   relics: CodexRelic[];
   onClose?: () => void;
+  closeButtonRef?: Ref<HTMLButtonElement>;
   entities?: EntityInfo[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
@@ -110,6 +111,7 @@ export function AncientDetail({
   characters,
   relics,
   onClose,
+  closeButtonRef,
   entities,
   patches,
   changes,
@@ -142,7 +144,7 @@ export function AncientDetail({
       <div className="mb-4 flex items-center justify-between gap-3">
         <Link
           href={localizeHref("/compendium/ancients", serviceLocale)}
-          className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+          className="flex min-h-11 items-center text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(e) => {
             if (onClose) {
               e.preventDefault();
@@ -154,8 +156,10 @@ export function AncientDetail({
         </Link>
         {onClose && (
           <button
+            ref={closeButtonRef}
+            type="button"
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-white/10"
+            className="flex h-11 w-11 items-center justify-center rounded-lg text-gray-400 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300"
             aria-label={serviceText.common.close}
           >
             ✕
