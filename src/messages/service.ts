@@ -623,6 +623,16 @@ export const serviceMessages = {
         modeFilter: "플레이 방식",
         singleplayer: "싱글플레이",
         multiplayerOnly: "멀티플레이 전용",
+        rankFilter: "등급 구성",
+        singleRank: "단일",
+        tieredRanks: "동 · 은 · 금",
+        ranks: {
+          bronze: "동",
+          silver: "은",
+          gold: "금",
+        },
+        winRequired: "승리 필요",
+        winNotRequired: "승패 무관",
       },
       cardsView: {
         title: "카드 목록",
@@ -1451,6 +1461,16 @@ export const serviceMessages = {
         modeFilter: "Play Mode",
         singleplayer: "Singleplayer",
         multiplayerOnly: "Multiplayer Only",
+        rankFilter: "Rank Structure",
+        singleRank: "Single",
+        tieredRanks: "Bronze · Silver · Gold",
+        ranks: {
+          bronze: "Bronze",
+          silver: "Silver",
+          gold: "Gold",
+        },
+        winRequired: "Win Required",
+        winNotRequired: "Win Not Required",
       },
       cardsView: {
         title: "Card Library",

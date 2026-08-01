@@ -3,6 +3,8 @@ import korBadges from "../../data/sts2/kor/badges.json";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { ReplayBadge, ReplayBadgeRarity } from "@/lib/sts2-run-replay";
 
+export type RunBadgeRarity = Exclude<ReplayBadgeRarity, "none">;
+
 export interface RunBadgeCatalogEntry {
   id: string;
   slug: string;
@@ -11,12 +13,12 @@ export interface RunBadgeCatalogEntry {
   multiplayerOnly: boolean | null;
   sourceClass: string | null;
   imageUrl: string | null;
-  fixedRarity: Exclude<ReplayBadgeRarity, "none"> | null;
+  fixedRarity: RunBadgeRarity | null;
   title: string | null;
   description: string | null;
   rarities: Partial<
     Record<
-      Exclude<ReplayBadgeRarity, "none">,
+      RunBadgeRarity,
       {
         title: string;
         description: string;
@@ -27,12 +29,20 @@ export interface RunBadgeCatalogEntry {
 
 export interface RunBadgeDisplay {
   id: string;
-  rarity: Exclude<ReplayBadgeRarity, "none">;
+  rarity: RunBadgeRarity;
   title: string;
   description: string;
   imageUrl: string | null;
   baseImageUrl: string;
 }
+
+export interface RunBadgeVariant {
+  rarity: RunBadgeRarity;
+  title: string;
+  description: string;
+}
+
+export const RUN_BADGE_RARITIES: RunBadgeRarity[] = ["bronze", "silver", "gold"];
 
 const BADGES_BY_LOCALE = {
   ko: korBadges as RunBadgeCatalogEntry[],
@@ -46,8 +56,23 @@ const INDEX_BY_LOCALE = Object.fromEntries(
   ]),
 ) as Record<ServiceLocale, Map<string, RunBadgeCatalogEntry>>;
 
-export function badgeBaseImageUrl(rarity: Exclude<ReplayBadgeRarity, "none">): string {
+export function badgeBaseImageUrl(rarity: RunBadgeRarity): string {
   return `/images/sts2/badges/${rarity}.webp`;
+}
+
+export function getRunBadgeVariants(badge: RunBadgeCatalogEntry): RunBadgeVariant[] {
+  const variants = RUN_BADGE_RARITIES.flatMap((rarity) => {
+    const copy = badge.rarities[rarity];
+    return copy ? [{ rarity, ...copy }] : [];
+  });
+
+  return variants.length > 0
+    ? variants
+    : [{
+        rarity: badge.fixedRarity ?? "bronze",
+        title: badge.title ?? badge.id,
+        description: badge.description ?? "",
+      }];
 }
 
 export function plainBadgeText(text: string): string {

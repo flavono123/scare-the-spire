@@ -1,6 +1,7 @@
 export type CompendiumResourceLinkType =
   | "affliction"
   | "ancient"
+  | "badge"
   | "card"
   | "character"
   | "enchantment"
@@ -23,6 +24,7 @@ type LinkConfig = {
 const COMPENDIUM_RESOURCE_LINKS: Record<CompendiumResourceLinkType, LinkConfig> = {
   affliction: { path: "/compendium/enchantments", detailPath: "/compendium/enchantments", param: "affliction" },
   ancient: { path: "/compendium/ancients", detailPath: "/compendium/ancients", param: "ancient" },
+  badge: { path: "/compendium/badges", detailPath: "/compendium/badges", param: "badge" },
   card: { path: "/compendium/cards", detailPath: "/compendium/cards", param: "card" },
   character: { path: "/compendium/characters", detailPath: "/compendium/characters", param: "character" },
   enchantment: { path: "/compendium/enchantments", detailPath: "/compendium/enchantments", param: "enchantment" },

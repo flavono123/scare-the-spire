@@ -28,6 +28,7 @@ export default async function CodexBadgesPage({ searchParams }: PageProps) {
     <Suspense>
       <BadgeLibrary
         serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
         title={serviceText.badgesView.title}
         badges={badges}
       />

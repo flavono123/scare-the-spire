@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { getActiveRunBadgeCatalog } from "../src/lib/run-badge-catalog";
+import { getRunBadgeVariants } from "../src/lib/run-badges";
 
 async function main() {
   const [korean, thai] = await Promise.all([
@@ -15,6 +16,8 @@ async function main() {
   assert.equal(korean.filter((badge) => Object.keys(badge.rarities).length > 1).length, 8);
   assert.equal(korean.find((badge) => badge.id === "TEAM_PLAYER")?.fixedRarity, "silver");
   assert.equal(korean.find((badge) => badge.id === "TABLET")?.fixedRarity, "gold");
+  assert.equal(getRunBadgeVariants(korean.find((badge) => badge.id === "TEAM_PLAYER")!)[0]?.rarity, "silver");
+  assert.equal(getRunBadgeVariants(korean.find((badge) => badge.id === "SPEEDY")!).length, 3);
 }
 
 void main();
