@@ -224,6 +224,13 @@ Rules:
   the newest patch and verify `[data-story-reference-state="resolved"]`. This
   catches the stale previous-patch JSON failure that only affects newly added
   community stories.
+- Run `pnpm patch:test` after `pnpm patch:build`; it guards the populated story
+  tooltip copy and the patch representative art used by the story panel.
+- On the newest ready patch, hover a change whose story count is positive and
+  verify the tooltip offers to view that exact count rather than writing the
+  first story. Open it and verify the panel thumbnail matches the patch's
+  representative `art`, just as the story reference block does, instead of
+  falling back to the generic patch image.
 
 ## Compendium Versioning Contract
 
