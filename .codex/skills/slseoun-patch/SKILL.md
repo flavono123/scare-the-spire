@@ -16,6 +16,7 @@ Create or update STS2 rich patch notes. Steam is the source of truth for patch-n
 - Every meaningful edit gets its own speculative commit, following `AGENTS.md`.
 - Never construct a Steam store/news URL from the Steam API `gid`; use a real store URL from the announcement or user.
 - Before finalizing a ready patch that touches Compendium resources, run `.codex/skills/sts2-compendium-patch-sync/SKILL.md` after rich notes and asset extraction so PCK/DLL diffs, `data/sts2-changes.json`, and lifecycle/deprecated behavior are applied together.
+- Do not push newly extracted localization or current Codex rows until lifecycle/deprecated sync, historical localization preservation, `pnpm i18n:validate`, and `pnpm codex:validate` all agree.
 - Do not spend time preserving or checking any Vercel deployment path. Cloudflare Workers and the static patch Worker are the only deployment targets for this workflow.
 - For Cloudflare Free-plan/runtime risk, load `.codex/skills/cf-guardrails/SKILL.md` instead of repeating quota rules here.
 
@@ -190,9 +191,21 @@ Rules:
    - Do not hand-author `data/sts2-entity-versions.json`; `getEntityVersionDiffs()` derives version diffs from `data/sts2-changes.json`.
    - `data/sts2/meta.json`
 9. Run `.codex/skills/sts2-compendium-patch-sync/SKILL.md` when the patch touched any Compendium resource, monster behavior, asset, localization, or deprecated/removed resource. Treat this as the post-patch guardrail before the patch becomes ready.
-10. Commit each meaningful file group independently and push publishable milestones
-    quickly.
-11. For the first complete draft, set the patch to ready, commit, push, and
+10. Before pushing any extraction/localization/lifecycle milestone:
+    - Compare removed or renamed game IDs with current Codex rows and apply the
+      lifecycle/deprecated sync first.
+    - Preserve the previous official localized title and description for
+      historical or deprecated resources when the current PCK no longer ships
+      them. Never invent replacement text or blindly whitelist a missing key.
+    - Run `pnpm i18n:validate` and `pnpm codex:validate`. A missing active
+      resource needs verified extracted localization; a removed resource needs
+      both lifecycle metadata and preserved historical localization.
+    - Treat extraction, lifecycle sync, and localization preservation as one
+      push boundary. Keep the shell-first WIP push separate, but do not publish
+      a partially synchronized game-data commit.
+11. Commit each meaningful file group independently and push publishable milestones
+    quickly after the validation gate passes.
+12. For the first complete draft, set the patch to ready, commit, push, and
     verify that the public patch page deployed successfully. Send the public
     patch URL to the user and request review; apply subsequent corrections as
     separate speculative commits.
