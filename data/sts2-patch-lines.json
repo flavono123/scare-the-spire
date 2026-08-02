@@ -7477,9 +7477,10 @@
       "컨텐츠 & 밸런스",
       "리젠트"
     ],
-    "markdownKo": "[gold:card]검성[/gold] (소폭 리워크):",
+    "markdownKo": "[gold:card]검성[/gold] (소폭 리워크):\n• 이전: \"파워 - 코스트 2(1) - 희귀 | [gold:card]군주의 칼날[/gold]이 이제 1번 추가로 적중합니다.\"\n• 신규: \"파워 - 코스트 2(1) - 희귀 | [gold:card]군주의 칼날[/gold]이 [gold]재사용[/gold] 1을 얻습니다.\"\n• 이 변경으로 [gold:card]검성[/gold]은 [gold:card]쳐내기[/gold]와 시너지를 갖게 됩니다.",
     "markdownEn": "**Sword Sage** (slight rework):",
-    "textKo": "검성 (소폭 리워크):",
+    "summaryMarkdownKo": "[gold:card]검성[/gold] (소폭 리워크):",
+    "textKo": "검성 (소폭 리워크):\n• 이전: \"파워 - 코스트 2(1) - 희귀 | 군주의 칼날이 이제 1번 추가로 적중합니다.\"\n• 신규: \"파워 - 코스트 2(1) - 희귀 | 군주의 칼날이 재사용 1을 얻습니다.\"\n• 이 변경으로 검성은 쳐내기와 시너지를 갖게 됩니다.",
     "textEn": "Sword Sage (slight rework):",
     "entityRefs": [
       {
@@ -7488,7 +7489,7 @@
         "label": "검성"
       }
     ],
-    "searchText": "v0.105.0:line-005-card-sword-sage v0.105.0 0.105.0 컨텐츠 & 밸런스 리젠트 검성 (소폭 리워크): sword sage (slight rework): card sword_sage 검성 검성 sword sage"
+    "searchText": "v0.105.0:line-005-card-sword-sage v0.105.0 0.105.0 컨텐츠 & 밸런스 리젠트 검성 (소폭 리워크): • 이전: \"파워 - 코스트 2(1) - 희귀 | 군주의 칼날이 이제 1번 추가로 적중합니다.\" • 신규: \"파워 - 코스트 2(1) - 희귀 | 군주의 칼날이 재사용 1을 얻습니다.\" • 이 변경으로 검성은 쳐내기와 시너지를 갖게 됩니다. sword sage (slight rework): card sword_sage 검성 검성 sword sage"
   },
   {
     "id": "v0.105.0:line-006-card-sovereign-blade",
@@ -7883,9 +7884,10 @@
       "컨텐츠 & 밸런스",
       "고대의 존재"
     ],
-    "markdownKo": "[gold:ancient]테즈카타라[/gold]의 [gold:relic]호박 양초[/gold] (리워크):",
+    "markdownKo": "[gold:ancient]테즈카타라[/gold]의 [gold:relic]호박 양초[/gold] (리워크):\n• 이전: \"매 턴 시작 시 [gold]에너지[/gold] 1을 얻습니다. 3막 시작 시 소멸합니다.\"\n• 신규: \"매 턴 시작 시 [gold]에너지[/gold] 1을 얻습니다. 5번의 전투 후에 불이 꺼집니다. [gold]휴식 장소[/gold]에서 다시 불을 붙일 수 있습니다.\"",
     "markdownEn": "**Tezcatara's Pumpkin Candle** relic (rework):",
-    "textKo": "테즈카타라의 호박 양초 (리워크):",
+    "summaryMarkdownKo": "[gold:ancient]테즈카타라[/gold]의 [gold:relic]호박 양초[/gold] (리워크):",
+    "textKo": "테즈카타라의 호박 양초 (리워크):\n• 이전: \"매 턴 시작 시 에너지 1을 얻습니다. 3막 시작 시 소멸합니다.\"\n• 신규: \"매 턴 시작 시 에너지 1을 얻습니다. 5번의 전투 후에 불이 꺼집니다. 휴식 장소에서 다시 불을 붙일 수 있습니다.\"",
     "textEn": "Tezcatara's Pumpkin Candle relic (rework):",
     "entityRefs": [
       {
@@ -7899,7 +7901,7 @@
         "label": "호박 양초"
       }
     ],
-    "searchText": "v0.105.0:line-023-ancient-tezcatara-relic-pumpkin-candle v0.105.0 0.105.0 컨텐츠 & 밸런스 고대의 존재 테즈카타라의 호박 양초 (리워크): tezcatara's pumpkin candle relic (rework): ancient tezcatara 테즈카타라 테즈카타라 tezcatara relic pumpkin_candle 호박 양초 호박 양초 pumpkin candle"
+    "searchText": "v0.105.0:line-023-ancient-tezcatara-relic-pumpkin-candle v0.105.0 0.105.0 컨텐츠 & 밸런스 고대의 존재 테즈카타라의 호박 양초 (리워크): • 이전: \"매 턴 시작 시 에너지 1을 얻습니다. 3막 시작 시 소멸합니다.\" • 신규: \"매 턴 시작 시 에너지 1을 얻습니다. 5번의 전투 후에 불이 꺼집니다. 휴식 장소에서 다시 불을 붙일 수 있습니다.\" tezcatara's pumpkin candle relic (rework): ancient tezcatara 테즈카타라 테즈카타라 tezcatara relic pumpkin_candle 호박 양초 호박 양초 pumpkin candle"
   },
   {
     "id": "v0.105.0:line-024-text-13kzqyu",
@@ -7942,9 +7944,10 @@
       "컨텐츠 & 밸런스",
       "고대의 존재"
     ],
-    "markdownKo": "[gold:ancient]니오우[/gold] 유물 추가:",
+    "markdownKo": "[gold:ancient]니오우[/gold] 유물 추가:\n• [gold:relic]만화경[/gold] (임시 이름): 획득 시 다른 캐릭터의 카드 보상을 2번 얻습니다.\n• [gold:relic]낚싯대[/gold]: 일반 전투 3번마다 [gold]덱[/gold]의 무작위 카드 1장을 [gold]강화[/gold]합니다.\n• [gold:relic]부드러운 머리칼[/gold]: 첫 카드 보상의 모든 카드에 [gold:enchantment]호화[/gold]를 [gold]인챈트[/gold]합니다.",
     "markdownEn": "Added new **Neow** relics:",
-    "textKo": "니오우 유물 추가:",
+    "summaryMarkdownKo": "[gold:ancient]니오우[/gold] 유물 추가:",
+    "textKo": "니오우 유물 추가:\n• 만화경 (임시 이름): 획득 시 다른 캐릭터의 카드 보상을 2번 얻습니다.\n• 낚싯대: 일반 전투 3번마다 덱의 무작위 카드 1장을 강화합니다.\n• 부드러운 머리칼: 첫 카드 보상의 모든 카드에 호화를 인챈트합니다.",
     "textEn": "Added new Neow relics:",
     "entityRefs": [
       {
@@ -7953,7 +7956,7 @@
         "label": "니오우"
       }
     ],
-    "searchText": "v0.105.0:line-026-ancient-neow v0.105.0 0.105.0 컨텐츠 & 밸런스 고대의 존재 니오우 유물 추가: added new neow relics: ancient neow 니오우 니오우 neow"
+    "searchText": "v0.105.0:line-026-ancient-neow v0.105.0 0.105.0 컨텐츠 & 밸런스 고대의 존재 니오우 유물 추가: • 만화경 (임시 이름): 획득 시 다른 캐릭터의 카드 보상을 2번 얻습니다. • 낚싯대: 일반 전투 3번마다 덱의 무작위 카드 1장을 강화합니다. • 부드러운 머리칼: 첫 카드 보상의 모든 카드에 호화를 인챈트합니다. added new neow relics: ancient neow 니오우 니오우 neow"
   },
   {
     "id": "v0.105.0:line-027-relic-kaleidoscope",
@@ -9595,9 +9598,10 @@
       "컨텐츠 & 밸런스",
       "일반"
     ],
-    "markdownKo": "적에게 [gold:power]취약[/gold]이 있고 플레이어가 [gold:relic]파엘의 눈[/gold]으로 추가 턴을 얻은 경우, 이제 플레이어의 추가 턴 전에 적의 [gold:power]취약[/gold] 수치가 감소하지 않습니다.",
+    "markdownKo": "적에게 [gold:power]취약[/gold]이 있고 플레이어가 [gold:relic]파엘의 눈[/gold]으로 추가 턴을 얻은 경우, 이제 플레이어의 추가 턴 전에 적의 [gold:power]취약[/gold] 수치가 감소하지 않습니다.\n• 이 변경은 적 턴 종료 시 감소하는 다른 파워에도 적용됩니다. 예: [gold:power]손상[/gold], [gold:power]불가침[/gold], [gold:power]약화[/gold] 등.",
     "markdownEn": "If an enemy has Vulnerable and a player takes an extra turn via **Pael's Eye**, the enemy's Vulnerable amount no longer decrements before the player's extra turn.",
-    "textKo": "적에게 취약이 있고 플레이어가 파엘의 눈으로 추가 턴을 얻은 경우, 이제 플레이어의 추가 턴 전에 적의 취약 수치가 감소하지 않습니다.",
+    "summaryMarkdownKo": "적에게 [gold:power]취약[/gold]이 있고 플레이어가 [gold:relic]파엘의 눈[/gold]으로 추가 턴을 얻은 경우, 이제 플레이어의 추가 턴 전에 적의 [gold:power]취약[/gold] 수치가 감소하지 않습니다.",
+    "textKo": "적에게 취약이 있고 플레이어가 파엘의 눈으로 추가 턴을 얻은 경우, 이제 플레이어의 추가 턴 전에 적의 취약 수치가 감소하지 않습니다.\n• 이 변경은 적 턴 종료 시 감소하는 다른 파워에도 적용됩니다. 예: 손상, 불가침, 약화 등.",
     "textEn": "If an enemy has Vulnerable and a player takes an extra turn via Pael's Eye, the enemy's Vulnerable amount no longer decrements before the player's extra turn.",
     "entityRefs": [
       {
@@ -9611,7 +9615,7 @@
         "label": "파엘의 눈"
       }
     ],
-    "searchText": "v0.106.0:line-003-power-vulnerable-relic-paels-eye v0.106.0 0.106.0 컨텐츠 & 밸런스 일반 적에게 취약이 있고 플레이어가 파엘의 눈으로 추가 턴을 얻은 경우, 이제 플레이어의 추가 턴 전에 적의 취약 수치가 감소하지 않습니다. if an enemy has vulnerable and a player takes an extra turn via pael's eye, the enemy's vulnerable amount no longer decrements before the player's extra turn. power vulnerable 취약 취약 vulnerable relic paels_eye 파엘의 눈 파엘의 눈 pael's eye"
+    "searchText": "v0.106.0:line-003-power-vulnerable-relic-paels-eye v0.106.0 0.106.0 컨텐츠 & 밸런스 일반 적에게 취약이 있고 플레이어가 파엘의 눈으로 추가 턴을 얻은 경우, 이제 플레이어의 추가 턴 전에 적의 취약 수치가 감소하지 않습니다. • 이 변경은 적 턴 종료 시 감소하는 다른 파워에도 적용됩니다. 예: 손상, 불가침, 약화 등. if an enemy has vulnerable and a player takes an extra turn via pael's eye, the enemy's vulnerable amount no longer decrements before the player's extra turn. power vulnerable 취약 취약 vulnerable relic paels_eye 파엘의 눈 파엘의 눈 pael's eye"
   },
   {
     "id": "v0.106.0:line-004-power-frail-power-intangible",
@@ -9779,9 +9783,10 @@
       "컨텐츠 & 밸런스",
       "사일런트"
     ],
-    "markdownKo": "[gold:card]완수[/gold] 리워크 및 이름 변경:",
+    "markdownKo": "[gold:card]완수[/gold] 리워크 및 이름 변경:\n• 희귀도 일반 -> 고급.\n• 이름 -> [gold:card]위협[/gold].",
     "markdownEn": "Reworked and renamed **Follow Through**:",
-    "textKo": "완수 리워크 및 이름 변경:",
+    "summaryMarkdownKo": "[gold:card]완수[/gold] 리워크 및 이름 변경:",
+    "textKo": "완수 리워크 및 이름 변경:\n• 희귀도 일반 -> 고급.\n• 이름 -> 위협.",
     "textEn": "Reworked and renamed Follow Through:",
     "entityRefs": [
       {
@@ -9790,7 +9795,7 @@
         "label": "완수"
       }
     ],
-    "searchText": "v0.106.0:line-010-card-follow-through v0.106.0 0.106.0 컨텐츠 & 밸런스 사일런트 완수 리워크 및 이름 변경: reworked and renamed follow through: card follow_through 완수 완수 follow through"
+    "searchText": "v0.106.0:line-010-card-follow-through v0.106.0 0.106.0 컨텐츠 & 밸런스 사일런트 완수 리워크 및 이름 변경: • 희귀도 일반 -> 고급. • 이름 -> 위협. reworked and renamed follow through: card follow_through 완수 완수 follow through"
   },
   {
     "id": "v0.106.0:line-011-text-1xen7ka",
@@ -10015,9 +10020,10 @@
       "컨텐츠 & 밸런스",
       "디펙트"
     ],
-    "markdownKo": "[gold:card]융합[/gold] (변경):",
+    "markdownKo": "[gold:card]융합[/gold] (변경):\n• [gold]에너지[/gold] 비용 2(1) -> 1.\n• 이제 [gold]소멸[/gold]하며, 강화 시 [gold]소멸[/gold]을 잃습니다.",
     "markdownEn": "**Fusion** (change):",
-    "textKo": "융합 (변경):",
+    "summaryMarkdownKo": "[gold:card]융합[/gold] (변경):",
+    "textKo": "융합 (변경):\n• 에너지 비용 2(1) -> 1.\n• 이제 소멸하며, 강화 시 소멸을 잃습니다.",
     "textEn": "Fusion (change):",
     "entityRefs": [
       {
@@ -10026,7 +10032,7 @@
         "label": "융합"
       }
     ],
-    "searchText": "v0.106.0:line-021-card-fusion v0.106.0 0.106.0 컨텐츠 & 밸런스 디펙트 융합 (변경): fusion (change): card fusion 융합 융합 fusion"
+    "searchText": "v0.106.0:line-021-card-fusion v0.106.0 0.106.0 컨텐츠 & 밸런스 디펙트 융합 (변경): • 에너지 비용 2(1) -> 1. • 이제 소멸하며, 강화 시 소멸을 잃습니다. fusion (change): card fusion 융합 융합 fusion"
   },
   {
     "id": "v0.106.0:line-022-text-eqowwt",
@@ -10135,9 +10141,10 @@
       "컨텐츠 & 밸런스",
       "포션 & 유물"
     ],
-    "markdownKo": "[gold:relic]미라의 손[/gold] ([green][sine]버프[/sine][/green]): 이제 플레이어에게 더 유리한 방식으로 무작위 카드를 선택합니다.",
+    "markdownKo": "[gold:relic]미라의 손[/gold] ([green][sine]버프[/sine][/green]): 이제 플레이어에게 더 유리한 방식으로 무작위 카드를 선택합니다.\n• 우선순위 1: 현재 비용이 1 이상이고, 현재 비용 변경 전에 기본 비용도 1 이상인 카드.\n• 우선순위 2: 기본 비용과 관계없이 현재 비용이 1 이상인 카드.\n• 우선순위 3: 기본 비용이 1 이상이지만 일시적으로 비용이 0이 된 카드.\n• 위 우선순위에 해당하는 카드가 없으면, 플레이어의 손패에서 완전히 무작위 카드가 선택됩니다.",
     "markdownEn": "**Mummified Hand** (buff): now randomly chooses cards in a way that's more favorable to the player.",
-    "textKo": "미라의 손 (버프): 이제 플레이어에게 더 유리한 방식으로 무작위 카드를 선택합니다.",
+    "summaryMarkdownKo": "[gold:relic]미라의 손[/gold] ([green][sine]버프[/sine][/green]): 이제 플레이어에게 더 유리한 방식으로 무작위 카드를 선택합니다.",
+    "textKo": "미라의 손 (버프): 이제 플레이어에게 더 유리한 방식으로 무작위 카드를 선택합니다.\n• 우선순위 1: 현재 비용이 1 이상이고, 현재 비용 변경 전에 기본 비용도 1 이상인 카드.\n• 우선순위 2: 기본 비용과 관계없이 현재 비용이 1 이상인 카드.\n• 우선순위 3: 기본 비용이 1 이상이지만 일시적으로 비용이 0이 된 카드.\n• 위 우선순위에 해당하는 카드가 없으면, 플레이어의 손패에서 완전히 무작위 카드가 선택됩니다.",
     "textEn": "Mummified Hand (buff): now randomly chooses cards in a way that's more favorable to the player.",
     "entityRefs": [
       {
@@ -10146,7 +10153,7 @@
         "label": "미라의 손"
       }
     ],
-    "searchText": "v0.106.0:line-027-relic-mummified-hand v0.106.0 0.106.0 컨텐츠 & 밸런스 포션 & 유물 미라의 손 (버프): 이제 플레이어에게 더 유리한 방식으로 무작위 카드를 선택합니다. mummified hand (buff): now randomly chooses cards in a way that's more favorable to the player. relic mummified_hand 미라의 손 미라의 손 mummified hand"
+    "searchText": "v0.106.0:line-027-relic-mummified-hand v0.106.0 0.106.0 컨텐츠 & 밸런스 포션 & 유물 미라의 손 (버프): 이제 플레이어에게 더 유리한 방식으로 무작위 카드를 선택합니다. • 우선순위 1: 현재 비용이 1 이상이고, 현재 비용 변경 전에 기본 비용도 1 이상인 카드. • 우선순위 2: 기본 비용과 관계없이 현재 비용이 1 이상인 카드. • 우선순위 3: 기본 비용이 1 이상이지만 일시적으로 비용이 0이 된 카드. • 위 우선순위에 해당하는 카드가 없으면, 플레이어의 손패에서 완전히 무작위 카드가 선택됩니다. mummified hand (buff): now randomly chooses cards in a way that's more favorable to the player. relic mummified_hand 미라의 손 미라의 손 mummified hand"
   },
   {
     "id": "v0.106.0:line-028-text-1w7fu43",
@@ -10243,9 +10250,10 @@
       "컨텐츠 & 밸런스",
       "적"
     ],
-    "markdownKo": "[gold:monster]영겁의 모래시계[/gold] 변경:",
+    "markdownKo": "[gold:monster]영겁의 모래시계[/gold] 변경:\n• 행동 패턴 조정.\n• [gold:card]시듦[/gold] 상태이상과 [gold:power]시들어가는 존재[/gold] 파워 리워크.",
     "markdownEn": "Changed **Aeonglass**:",
-    "textKo": "영겁의 모래시계 변경:",
+    "summaryMarkdownKo": "[gold:monster]영겁의 모래시계[/gold] 변경:",
+    "textKo": "영겁의 모래시계 변경:\n• 행동 패턴 조정.\n• 시듦 상태이상과 시들어가는 존재 파워 리워크.",
     "textEn": "Changed Aeonglass:",
     "entityRefs": [
       {
@@ -10254,7 +10262,7 @@
         "label": "영겁의 모래시계"
       }
     ],
-    "searchText": "v0.106.0:line-033-monster-aeonglass v0.106.0 0.106.0 컨텐츠 & 밸런스 적 영겁의 모래시계 변경: changed aeonglass: monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass"
+    "searchText": "v0.106.0:line-033-monster-aeonglass v0.106.0 0.106.0 컨텐츠 & 밸런스 적 영겁의 모래시계 변경: • 행동 패턴 조정. • 시듦 상태이상과 시들어가는 존재 파워 리워크. changed aeonglass: monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass"
   },
   {
     "id": "v0.106.0:line-034-text-hqrglh",
@@ -10330,9 +10338,10 @@
       "컨텐츠 & 밸런스",
       "적"
     ],
-    "markdownKo": "[gold:monster]권투형 구조체[/gold] 변경:",
+    "markdownKo": "[gold:monster]권투형 구조체[/gold] 변경:\n• 빠른 펀치가 이제 강한 펀치로 이어집니다. 기존에는 강한 펀치가 빠른 펀치로 이어졌습니다.\n• 준비 행동이 이제 빠른 펀치로 이어집니다.\n• 이제 [gold:power]약화[/gold] 대신 [gold:power]손상[/gold]을 부여합니다.",
     "markdownEn": "Changed **Punch Construct**:",
-    "textKo": "권투형 구조체 변경:",
+    "summaryMarkdownKo": "[gold:monster]권투형 구조체[/gold] 변경:",
+    "textKo": "권투형 구조체 변경:\n• 빠른 펀치가 이제 강한 펀치로 이어집니다. 기존에는 강한 펀치가 빠른 펀치로 이어졌습니다.\n• 준비 행동이 이제 빠른 펀치로 이어집니다.\n• 이제 약화 대신 손상을 부여합니다.",
     "textEn": "Changed Punch Construct:",
     "entityRefs": [
       {
@@ -10341,7 +10350,7 @@
         "label": "권투형 구조체"
       }
     ],
-    "searchText": "v0.106.0:line-037-monster-punch-construct v0.106.0 0.106.0 컨텐츠 & 밸런스 적 권투형 구조체 변경: changed punch construct: monster punch_construct 권투형 구조체 권투형 구조체 punch construct"
+    "searchText": "v0.106.0:line-037-monster-punch-construct v0.106.0 0.106.0 컨텐츠 & 밸런스 적 권투형 구조체 변경: • 빠른 펀치가 이제 강한 펀치로 이어집니다. 기존에는 강한 펀치가 빠른 펀치로 이어졌습니다. • 준비 행동이 이제 빠른 펀치로 이어집니다. • 이제 약화 대신 손상을 부여합니다. changed punch construct: monster punch_construct 권투형 구조체 권투형 구조체 punch construct"
   },
   {
     "id": "v0.106.0:line-038-text-1ufckps",
@@ -10411,9 +10420,10 @@
       "컨텐츠 & 밸런스",
       "적"
     ],
-    "markdownKo": "[gold:monster]잠행 군체[/gold] 변경:",
+    "markdownKo": "[gold:monster]잠행 군체[/gold] 변경:\n• HP 70(75) -> 75(80).\n• [gold:power]단단한 껍질[/gold] 15 -> 20.\n• 강타 행동이 제거되고, 이제 1턴과 2턴에 급가속 행동을 사용합니다.\n• 더 이상 [gold]방어도[/gold]를 얻지 않습니다.",
     "markdownEn": "Changed **Skulking Colony**:",
-    "textKo": "잠행 군체 변경:",
+    "summaryMarkdownKo": "[gold:monster]잠행 군체[/gold] 변경:",
+    "textKo": "잠행 군체 변경:\n• HP 70(75) -> 75(80).\n• 단단한 껍질 15 -> 20.\n• 강타 행동이 제거되고, 이제 1턴과 2턴에 급가속 행동을 사용합니다.\n• 더 이상 방어도를 얻지 않습니다.",
     "textEn": "Changed Skulking Colony:",
     "entityRefs": [
       {
@@ -10422,7 +10432,7 @@
         "label": "잠행 군체"
       }
     ],
-    "searchText": "v0.106.0:line-041-monster-skulking-colony v0.106.0 0.106.0 컨텐츠 & 밸런스 적 잠행 군체 변경: changed skulking colony: monster skulking_colony 잠행 군체 잠행 군체 skulking colony"
+    "searchText": "v0.106.0:line-041-monster-skulking-colony v0.106.0 0.106.0 컨텐츠 & 밸런스 적 잠행 군체 변경: • hp 70(75) -> 75(80). • 단단한 껍질 15 -> 20. • 강타 행동이 제거되고, 이제 1턴과 2턴에 급가속 행동을 사용합니다. • 더 이상 방어도를 얻지 않습니다. changed skulking colony: monster skulking_colony 잠행 군체 잠행 군체 skulking colony"
   },
   {
     "id": "v0.106.0:line-042-text-1wh02kk",
@@ -10850,9 +10860,10 @@
     "section": [
       "UI & UX"
     ],
-    "markdownKo": "[gold:monster]섀도니스[/gold] UX 개선:",
+    "markdownKo": "[gold:monster]섀도니스[/gold] UX 개선:\n• [gold:power]영역 동물[/gold] 파워의 툴팁이 이제 [gold:monster]섀도니스[/gold]를 이름으로 언급합니다.\n• [gold:monster]섀도니스[/gold]에 마우스를 올리면 이제 [gold:power]힘[/gold] 툴팁도 표시됩니다.",
     "markdownEn": "Improved **Byrdonis**'s UX:",
-    "textKo": "섀도니스 UX 개선:",
+    "summaryMarkdownKo": "[gold:monster]섀도니스[/gold] UX 개선:",
+    "textKo": "섀도니스 UX 개선:\n• 영역 동물 파워의 툴팁이 이제 섀도니스를 이름으로 언급합니다.\n• 섀도니스에 마우스를 올리면 이제 힘 툴팁도 표시됩니다.",
     "textEn": "Improved Byrdonis's UX:",
     "entityRefs": [
       {
@@ -10861,7 +10872,7 @@
         "label": "섀도니스"
       }
     ],
-    "searchText": "v0.106.0:line-064-monster-byrdonis v0.106.0 0.106.0 ui & ux 섀도니스 ux 개선: improved byrdonis's ux: monster byrdonis 섀도니스 섀도니스 byrdonis"
+    "searchText": "v0.106.0:line-064-monster-byrdonis v0.106.0 0.106.0 ui & ux 섀도니스 ux 개선: • 영역 동물 파워의 툴팁이 이제 섀도니스를 이름으로 언급합니다. • 섀도니스에 마우스를 올리면 이제 힘 툴팁도 표시됩니다. improved byrdonis's ux: monster byrdonis 섀도니스 섀도니스 byrdonis"
   },
   {
     "id": "v0.106.0:line-065-power-territorial-monster-byrdonis",
@@ -13617,10 +13628,12 @@
       "콘텐츠 및 밸런스",
       "적"
     ],
-    "markdownKo": "[gold:monster]영겁의 모래시계[/gold] 변경:",
-    "markdownEn": "Changed [gold:monster]Aeonglass[/gold]:",
-    "textKo": "영겁의 모래시계 변경:",
-    "textEn": "Changed Aeonglass:",
+    "markdownKo": "[gold:monster]영겁의 모래시계[/gold] 변경:\n• 더 이상 [gold:power]감쇠[/gold] 디버프를 적용하지 않습니다.\n• 이제 [gold]방어도[/gold]를 강도 증가 행동 대신 감쇠 행동(단일 타격)에서 얻습니다.",
+    "markdownEn": "Changed [gold:monster]Aeonglass[/gold]:\n• No longer applies the [gold:power]Ebb[/gold] debuff.\n• Now gains [gold]Block[/gold] on its Ebb move (single hit) instead of its Increasing Intensity move.",
+    "summaryMarkdownKo": "[gold:monster]영겁의 모래시계[/gold] 변경:",
+    "summaryMarkdownEn": "Changed [gold:monster]Aeonglass[/gold]:",
+    "textKo": "영겁의 모래시계 변경:\n• 더 이상 감쇠 디버프를 적용하지 않습니다.\n• 이제 방어도를 강도 증가 행동 대신 감쇠 행동(단일 타격)에서 얻습니다.",
+    "textEn": "Changed Aeonglass:\n• No longer applies the Ebb debuff.\n• Now gains Block on its Ebb move (single hit) instead of its Increasing Intensity move.",
     "entityRefs": [
       {
         "type": "monster",
@@ -13628,7 +13641,7 @@
         "label": "영겁의 모래시계"
       }
     ],
-    "searchText": "v0.107.0:line-002-monster-aeonglass v0.107.0 0.107.0 콘텐츠 및 밸런스 적 영겁의 모래시계 변경: changed aeonglass: monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass"
+    "searchText": "v0.107.0:line-002-monster-aeonglass v0.107.0 0.107.0 콘텐츠 및 밸런스 적 영겁의 모래시계 변경: • 더 이상 감쇠 디버프를 적용하지 않습니다. • 이제 방어도를 강도 증가 행동 대신 감쇠 행동(단일 타격)에서 얻습니다. changed aeonglass: • no longer applies the ebb debuff. • now gains block on its ebb move (single hit) instead of its increasing intensity move. monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass"
   },
   {
     "id": "v0.107.0:line-003-power-ebb",
@@ -13883,10 +13896,12 @@
       "사용자 인터페이스 및 경험",
       "고대의 존재"
     ],
-    "markdownKo": "[gold:relic]파엘의 살점[/gold] 유물이 이제 에너지 카운터에 표시되는 최대 에너지량을 시각적으로 증가시킵니다.",
-    "markdownEn": "[gold:relic]Pael's Flesh[/gold] relic now visually increases the maximum Energy amount shown in your Energy counter.",
-    "textKo": "파엘의 살점 유물이 이제 에너지 카운터에 표시되는 최대 에너지량을 시각적으로 증가시킵니다.",
-    "textEn": "Pael's Flesh relic now visually increases the maximum Energy amount shown in your Energy counter.",
+    "markdownKo": "[gold:relic]파엘의 살점[/gold] 유물이 이제 에너지 카운터에 표시되는 최대 에너지량을 시각적으로 증가시킵니다.\n• 예를 들어 [gold:relic]파엘의 살점[/gold]이 발동하기 전 최대 에너지가 3이었다면, 발동 후 에너지 카운터는 4/3 대신 4/4로 표시됩니다.",
+    "markdownEn": "[gold:relic]Pael's Flesh[/gold] relic now visually increases the maximum Energy amount shown in your Energy counter.\n• For example, if you have 3 max Energy before [gold:relic]Pael's Flesh[/gold] triggers, your Energy counter will show 4/4 instead of 4/3 after [gold:relic]Pael's Flesh[/gold] triggers.",
+    "summaryMarkdownKo": "[gold:relic]파엘의 살점[/gold] 유물이 이제 에너지 카운터에 표시되는 최대 에너지량을 시각적으로 증가시킵니다.",
+    "summaryMarkdownEn": "[gold:relic]Pael's Flesh[/gold] relic now visually increases the maximum Energy amount shown in your Energy counter.",
+    "textKo": "파엘의 살점 유물이 이제 에너지 카운터에 표시되는 최대 에너지량을 시각적으로 증가시킵니다.\n• 예를 들어 파엘의 살점이 발동하기 전 최대 에너지가 3이었다면, 발동 후 에너지 카운터는 4/3 대신 4/4로 표시됩니다.",
+    "textEn": "Pael's Flesh relic now visually increases the maximum Energy amount shown in your Energy counter.\n• For example, if you have 3 max Energy before Pael's Flesh triggers, your Energy counter will show 4/4 instead of 4/3 after Pael's Flesh triggers.",
     "entityRefs": [
       {
         "type": "relic",
@@ -13894,7 +13909,7 @@
         "label": "파엘의 살점"
       }
     ],
-    "searchText": "v0.107.0:line-015-relic-paels-flesh v0.107.0 0.107.0 사용자 인터페이스 및 경험 고대의 존재 파엘의 살점 유물이 이제 에너지 카운터에 표시되는 최대 에너지량을 시각적으로 증가시킵니다. pael's flesh relic now visually increases the maximum energy amount shown in your energy counter. relic paels_flesh 파엘의 살점 파엘의 살점 pael's flesh"
+    "searchText": "v0.107.0:line-015-relic-paels-flesh v0.107.0 0.107.0 사용자 인터페이스 및 경험 고대의 존재 파엘의 살점 유물이 이제 에너지 카운터에 표시되는 최대 에너지량을 시각적으로 증가시킵니다. • 예를 들어 파엘의 살점이 발동하기 전 최대 에너지가 3이었다면, 발동 후 에너지 카운터는 4/3 대신 4/4로 표시됩니다. pael's flesh relic now visually increases the maximum energy amount shown in your energy counter. • for example, if you have 3 max energy before pael's flesh triggers, your energy counter will show 4/4 instead of 4/3 after pael's flesh triggers. relic paels_flesh 파엘의 살점 파엘의 살점 pael's flesh"
   },
   {
     "id": "v0.107.0:line-016-relic-paels-flesh",
@@ -14935,9 +14950,10 @@
       "콘텐츠 & 밸런스",
       "고대의 존재"
     ],
-    "markdownKo": "새로운 [gold:ancient]니오우[/gold] 유물이 추가되었습니다:",
+    "markdownKo": "새로운 [gold:ancient]니오우[/gold] 유물이 추가되었습니다:\n• [gold:relic]만화경[/gold]: \"획득 시, 다른 캐릭터의 카드 보상을 2번 얻습니다.\"\n• [gold:relic]낚싯대[/gold]: \"일반 전투 3번마다, 덱의 무작위 카드를 1장 강화합니다.\"\n• [gold:relic]부드러운 머리칼[/gold]: \"내 처음 카드 보상의 모든 카드에 호화를 인챈트합니다.\"",
     "markdownEn": "This should make outcomes such as acts, rewards, events, and [gold]curse[/gold] rolls independent in practice.",
-    "textKo": "새로운 니오우 유물이 추가되었습니다:",
+    "summaryMarkdownKo": "새로운 [gold:ancient]니오우[/gold] 유물이 추가되었습니다:",
+    "textKo": "새로운 니오우 유물이 추가되었습니다:\n• 만화경: \"획득 시, 다른 캐릭터의 카드 보상을 2번 얻습니다.\"\n• 낚싯대: \"일반 전투 3번마다, 덱의 무작위 카드를 1장 강화합니다.\"\n• 부드러운 머리칼: \"내 처음 카드 보상의 모든 카드에 호화를 인챈트합니다.\"",
     "textEn": "This should make outcomes such as acts, rewards, events, and curse rolls independent in practice.",
     "entityRefs": [
       {
@@ -14946,7 +14962,7 @@
         "label": "니오우"
       }
     ],
-    "searchText": "v0.107.1:line-009-ancient-neow v0.107.1 0.107.1 콘텐츠 & 밸런스 고대의 존재 새로운 니오우 유물이 추가되었습니다: this should make outcomes such as acts, rewards, events, and curse rolls independent in practice. ancient neow 니오우 니오우 neow"
+    "searchText": "v0.107.1:line-009-ancient-neow v0.107.1 0.107.1 콘텐츠 & 밸런스 고대의 존재 새로운 니오우 유물이 추가되었습니다: • 만화경: \"획득 시, 다른 캐릭터의 카드 보상을 2번 얻습니다.\" • 낚싯대: \"일반 전투 3번마다, 덱의 무작위 카드를 1장 강화합니다.\" • 부드러운 머리칼: \"내 처음 카드 보상의 모든 카드에 호화를 인챈트합니다.\" this should make outcomes such as acts, rewards, events, and curse rolls independent in practice. ancient neow 니오우 니오우 neow"
   },
   {
     "id": "v0.107.1:line-010-relic-kaleidoscope",
@@ -15291,9 +15307,10 @@
       "콘텐츠 & 밸런스",
       "적"
     ],
-    "markdownKo": "[gold:monster]잠행 군체[/gold] 변경:",
+    "markdownKo": "[gold:monster]잠행 군체[/gold] 변경:\n• 체력이 70(75) -> 75(80)으로 증가했습니다.\n• 단단한 껍질이 15 -> 20으로 증가했습니다.\n• 후려치기 기술이 제거되었습니다. 이제 1, 2턴에 급가속을 사용합니다.\n• 더 이상 방어도를 획득하지 않습니다.\n• 높은 [gold]승천[/gold]에서 [gold:power]힘[/gold]을 얻는 턴에 이제 [gold:power]힘[/gold]을 1 추가로 획득합니다.",
     "markdownEn": "C-c-c-Combo: played 20 cards in a single turn.",
-    "textKo": "잠행 군체 변경:",
+    "summaryMarkdownKo": "[gold:monster]잠행 군체[/gold] 변경:",
+    "textKo": "잠행 군체 변경:\n• 체력이 70(75) -> 75(80)으로 증가했습니다.\n• 단단한 껍질이 15 -> 20으로 증가했습니다.\n• 후려치기 기술이 제거되었습니다. 이제 1, 2턴에 급가속을 사용합니다.\n• 더 이상 방어도를 획득하지 않습니다.\n• 높은 승천에서 힘을 얻는 턴에 이제 힘을 1 추가로 획득합니다.",
     "textEn": "C-c-c-Combo: played 20 cards in a single turn.",
     "entityRefs": [
       {
@@ -15302,7 +15319,7 @@
         "label": "잠행 군체"
       }
     ],
-    "searchText": "v0.107.1:line-022-monster-skulking-colony v0.107.1 0.107.1 콘텐츠 & 밸런스 적 잠행 군체 변경: c-c-c-combo: played 20 cards in a single turn. monster skulking_colony 잠행 군체 잠행 군체 skulking colony"
+    "searchText": "v0.107.1:line-022-monster-skulking-colony v0.107.1 0.107.1 콘텐츠 & 밸런스 적 잠행 군체 변경: • 체력이 70(75) -> 75(80)으로 증가했습니다. • 단단한 껍질이 15 -> 20으로 증가했습니다. • 후려치기 기술이 제거되었습니다. 이제 1, 2턴에 급가속을 사용합니다. • 더 이상 방어도를 획득하지 않습니다. • 높은 승천에서 힘을 얻는 턴에 이제 힘을 1 추가로 획득합니다. c-c-c-combo: played 20 cards in a single turn. monster skulking_colony 잠행 군체 잠행 군체 skulking colony"
   },
   {
     "id": "v0.107.1:line-023-text-1o0pf69",
@@ -15400,9 +15417,10 @@
       "적"
     ],
     "markdownKo": "[gold:monster]유령선[/gold] 변경: 이제 공격 시가 아니라 1턴에 [gold:power]약화[/gold]를 3 부여합니다. 전속력 기술이 제거되었으며, 이제 밀쳐내기와 발구르기를 번갈아 사용합니다. 항상 출몰 이후 밀쳐내기로 시작합니다.",
-    "markdownEn": "Changed [gold:monster]Skulking Colony[/gold]:",
+    "markdownEn": "Changed [gold:monster]Skulking Colony[/gold]:\n• HP increased from 70(75) -> 75(80), then adjusted again in v0.107.0.\n• Hardened Shell increased from 15 -> 20.\n• Smash move removed; now uses Zoom on turns 1 and 2.\n• No longer gains Block.\n• Now gets +1 [gold:power]Strength[/gold] on its [gold:power]Strength[/gold] gain turn at high [gold]Ascension[/gold].",
+    "summaryMarkdownEn": "Changed [gold:monster]Skulking Colony[/gold]:",
     "textKo": "유령선 변경: 이제 공격 시가 아니라 1턴에 약화를 3 부여합니다. 전속력 기술이 제거되었으며, 이제 밀쳐내기와 발구르기를 번갈아 사용합니다. 항상 출몰 이후 밀쳐내기로 시작합니다.",
-    "textEn": "Changed Skulking Colony:",
+    "textEn": "Changed Skulking Colony:\n• HP increased from 70(75) -> 75(80), then adjusted again in v0.107.0.\n• Hardened Shell increased from 15 -> 20.\n• Smash move removed; now uses Zoom on turns 1 and 2.\n• No longer gains Block.\n• Now gets +1 Strength on its Strength gain turn at high Ascension.",
     "entityRefs": [
       {
         "type": "monster",
@@ -15415,7 +15433,7 @@
         "label": "약화"
       }
     ],
-    "searchText": "v0.107.1:line-028-monster-haunted-ship-power-weak v0.107.1 0.107.1 콘텐츠 & 밸런스 적 유령선 변경: 이제 공격 시가 아니라 1턴에 약화를 3 부여합니다. 전속력 기술이 제거되었으며, 이제 밀쳐내기와 발구르기를 번갈아 사용합니다. 항상 출몰 이후 밀쳐내기로 시작합니다. changed skulking colony: monster haunted_ship 유령선 유령선 haunted ship power weak 약화 약화 weak"
+    "searchText": "v0.107.1:line-028-monster-haunted-ship-power-weak v0.107.1 0.107.1 콘텐츠 & 밸런스 적 유령선 변경: 이제 공격 시가 아니라 1턴에 약화를 3 부여합니다. 전속력 기술이 제거되었으며, 이제 밀쳐내기와 발구르기를 번갈아 사용합니다. 항상 출몰 이후 밀쳐내기로 시작합니다. changed skulking colony: • hp increased from 70(75) -> 75(80), then adjusted again in v0.107.0. • hardened shell increased from 15 -> 20. • smash move removed; now uses zoom on turns 1 and 2. • no longer gains block. • now gets +1 strength on its strength gain turn at high ascension. monster haunted_ship 유령선 유령선 haunted ship power weak 약화 약화 weak"
   },
   {
     "id": "v0.107.1:line-029-monster-punch-construct-power-weak",
@@ -15541,9 +15559,10 @@
       "적"
     ],
     "markdownKo": "[gold:monster]영혼 물교기[/gold] ([green][sine]버프[/sine][/green]): 절규 기술의 피해량이 11(12) -> 13(15)로 증가했습니다.",
-    "markdownEn": "Changed [gold:monster]Aeonglass[/gold]:",
+    "markdownEn": "Changed [gold:monster]Aeonglass[/gold]:\n• Adjusted moveset.\n• Reworked [gold:card]Wither[/gold] status and [gold:power]Withering Presence[/gold] power.\n• No longer applies [gold:power]Ebb[/gold].\n• Now gains [gold]Block[/gold] on its Ebb move instead of its Increasing Intensity move.",
+    "summaryMarkdownEn": "Changed [gold:monster]Aeonglass[/gold]:",
     "textKo": "영혼 물교기 (버프): 절규 기술의 피해량이 11(12) -> 13(15)로 증가했습니다.",
-    "textEn": "Changed Aeonglass:",
+    "textEn": "Changed Aeonglass:\n• Adjusted moveset.\n• Reworked Wither status and Withering Presence power.\n• No longer applies Ebb.\n• Now gains Block on its Ebb move instead of its Increasing Intensity move.",
     "entityRefs": [
       {
         "type": "monster",
@@ -15551,7 +15570,7 @@
         "label": "영혼 물교기"
       }
     ],
-    "searchText": "v0.107.1:line-034-monster-soul-fysh v0.107.1 0.107.1 콘텐츠 & 밸런스 적 영혼 물교기 (버프): 절규 기술의 피해량이 11(12) -> 13(15)로 증가했습니다. changed aeonglass: monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh"
+    "searchText": "v0.107.1:line-034-monster-soul-fysh v0.107.1 0.107.1 콘텐츠 & 밸런스 적 영혼 물교기 (버프): 절규 기술의 피해량이 11(12) -> 13(15)로 증가했습니다. changed aeonglass: • adjusted moveset. • reworked wither status and withering presence power. • no longer applies ebb. • now gains block on its ebb move instead of its increasing intensity move. monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh"
   },
   {
     "id": "v0.107.1:line-035-monster-assassin-ruby-raider",
@@ -20957,10 +20976,12 @@
       "콘텐츠 & 밸런스",
       "적"
     ],
-    "markdownKo": "[gold:monster]횃불머리 융합체[/gold] ([green][sine]버프[/sine][/green]): 승천 9에서 피해량이 증가했습니다.",
-    "markdownEn": "[gold:monster]Torch Head Amalgam[/gold] ([green][sine]buff[/sine][/green]): increased damage at [gold]Ascension[/gold] 9.",
-    "textKo": "횃불머리 융합체 (버프): 승천 9에서 피해량이 증가했습니다.",
-    "textEn": "Torch Head Amalgam (buff): increased damage at Ascension 9.",
+    "markdownKo": "[gold:monster]횃불머리 융합체[/gold] ([green][sine]버프[/sine][/green]): 승천 9에서 피해량이 증가했습니다.\n• 약한 태클 피해량이 14(15) -> 14(16)으로 증가했습니다.\n• 태클 피해량이 18(19) -> 18(22)로 증가했습니다.",
+    "markdownEn": "[gold:monster]Torch Head Amalgam[/gold] ([green][sine]buff[/sine][/green]): increased damage at [gold]Ascension[/gold] 9.\n• Weak Tackle damage increased from 14(15) -> 14(16).\n• Tackle damage increased from 18(19) -> 18(22).",
+    "summaryMarkdownKo": "[gold:monster]횃불머리 융합체[/gold] ([green][sine]버프[/sine][/green]): 승천 9에서 피해량이 증가했습니다.",
+    "summaryMarkdownEn": "[gold:monster]Torch Head Amalgam[/gold] ([green][sine]buff[/sine][/green]): increased damage at [gold]Ascension[/gold] 9.",
+    "textKo": "횃불머리 융합체 (버프): 승천 9에서 피해량이 증가했습니다.\n• 약한 태클 피해량이 14(15) -> 14(16)으로 증가했습니다.\n• 태클 피해량이 18(19) -> 18(22)로 증가했습니다.",
+    "textEn": "Torch Head Amalgam (buff): increased damage at Ascension 9.\n• Weak Tackle damage increased from 14(15) -> 14(16).\n• Tackle damage increased from 18(19) -> 18(22).",
     "entityRefs": [
       {
         "type": "monster",
@@ -20968,7 +20989,7 @@
         "label": "횃불머리 융합체"
       }
     ],
-    "searchText": "v0.108.0:line-006-monster-torch-head-amalgam v0.108.0 0.108.0 콘텐츠 & 밸런스 적 횃불머리 융합체 (버프): 승천 9에서 피해량이 증가했습니다. torch head amalgam (buff): increased damage at ascension 9. monster torch_head_amalgam 횃불머리 융합체 횃불머리 융합체 torch head amalgam"
+    "searchText": "v0.108.0:line-006-monster-torch-head-amalgam v0.108.0 0.108.0 콘텐츠 & 밸런스 적 횃불머리 융합체 (버프): 승천 9에서 피해량이 증가했습니다. • 약한 태클 피해량이 14(15) -> 14(16)으로 증가했습니다. • 태클 피해량이 18(19) -> 18(22)로 증가했습니다. torch head amalgam (buff): increased damage at ascension 9. • weak tackle damage increased from 14(15) -> 14(16). • tackle damage increased from 18(19) -> 18(22). monster torch_head_amalgam 횃불머리 융합체 횃불머리 융합체 torch head amalgam"
   },
   {
     "id": "v0.108.0:line-007-text-utb59i",
@@ -21378,10 +21399,12 @@
       "콘텐츠 & 밸런스",
       "디펙트"
     ],
-    "markdownKo": "[gold:card]압축[/gold] 카드의 [gold:card]연료[/gold] 토큰 ([red][jitter]너프[/jitter][/red]):",
-    "markdownEn": "[gold:card]Compact[/gold]'s [gold:card]Fuel[/gold] token ([red][jitter]nerf[/jitter][/red]):",
-    "textKo": "압축 카드의 연료 토큰 (너프):",
-    "textEn": "Compact's Fuel token (nerf):",
+    "markdownKo": "[gold:card]압축[/gold] 카드의 [gold:card]연료[/gold] 토큰 ([red][jitter]너프[/jitter][/red]):\n• 더 이상 카드를 뽑지 않습니다.\n• 강화 효과가 카드 뽑기 증가 -> 에너지 1 추가 획득으로 변경되었습니다.",
+    "markdownEn": "[gold:card]Compact[/gold]'s [gold:card]Fuel[/gold] token ([red][jitter]nerf[/jitter][/red]):\n• No longer draws cards.\n• Upgrade changed from increasing card draw -> granting 1 additional [gold]Energy[/gold].",
+    "summaryMarkdownKo": "[gold:card]압축[/gold] 카드의 [gold:card]연료[/gold] 토큰 ([red][jitter]너프[/jitter][/red]):",
+    "summaryMarkdownEn": "[gold:card]Compact[/gold]'s [gold:card]Fuel[/gold] token ([red][jitter]nerf[/jitter][/red]):",
+    "textKo": "압축 카드의 연료 토큰 (너프):\n• 더 이상 카드를 뽑지 않습니다.\n• 강화 효과가 카드 뽑기 증가 -> 에너지 1 추가 획득으로 변경되었습니다.",
+    "textEn": "Compact's Fuel token (nerf):\n• No longer draws cards.\n• Upgrade changed from increasing card draw -> granting 1 additional Energy.",
     "entityRefs": [
       {
         "type": "card",
@@ -21394,7 +21417,7 @@
         "label": "연료"
       }
     ],
-    "searchText": "v0.108.0:line-025-card-compact-card-fuel v0.108.0 0.108.0 콘텐츠 & 밸런스 디펙트 압축 카드의 연료 토큰 (너프): compact's fuel token (nerf): card compact 압축 압축 compact card fuel 연료 연료 fuel"
+    "searchText": "v0.108.0:line-025-card-compact-card-fuel v0.108.0 0.108.0 콘텐츠 & 밸런스 디펙트 압축 카드의 연료 토큰 (너프): • 더 이상 카드를 뽑지 않습니다. • 강화 효과가 카드 뽑기 증가 -> 에너지 1 추가 획득으로 변경되었습니다. compact's fuel token (nerf): • no longer draws cards. • upgrade changed from increasing card draw -> granting 1 additional energy. card compact 압축 압축 compact card fuel 연료 연료 fuel"
   },
   {
     "id": "v0.108.0:line-026-text-1ju4tl",
@@ -24409,10 +24432,12 @@
       "콘텐츠 & 밸런스",
       "고대의 존재"
     ],
-    "markdownKo": "새로운 [gold:ancient]니오우[/gold] 유물 [gold:relic]다우징 로드[/gold]가 추가되었습니다: \"획득 시, 덱에 [gold:card]다우징[/gold]을 1장 추가합니다.\"",
-    "markdownEn": "Added new [gold:ancient]Neow[/gold] relic, [gold:relic]Dowsing Rod[/gold]: \"Upon pickup, add 1 [gold:card]Dowsing[/gold] to your Deck.\"",
-    "textKo": "새로운 니오우 유물 다우징 로드가 추가되었습니다: \"획득 시, 덱에 다우징을 1장 추가합니다.\"",
-    "textEn": "Added new Neow relic, Dowsing Rod: \"Upon pickup, add 1 Dowsing to your Deck.\"",
+    "markdownKo": "새로운 [gold:ancient]니오우[/gold] 유물 [gold:relic]다우징 로드[/gold]가 추가되었습니다: \"획득 시, 덱에 [gold:card]다우징[/gold]을 1장 추가합니다.\"\n• [gold:card]다우징[/gold] — 퀘스트, 비용 0: \"? 방에 5번 더 진입한 후에, [gold:card]풍요[/gold]로 변화합니다.\"\n• [gold:card]풍요[/gold] — 고대의 존재 스킬, 비용 1: \"무작위 (강화된) 파워 카드 3장 중 1장을 선택해 손으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다. 소멸.\"",
+    "markdownEn": "Added new [gold:ancient]Neow[/gold] relic, [gold:relic]Dowsing Rod[/gold]: \"Upon pickup, add 1 [gold:card]Dowsing[/gold] to your Deck.\"\n• [gold:card]Dowsing[/gold] — Quest, cost 0: \"After entering 5 more ? rooms, transform this into [gold:card]Abundance[/gold].\"\n• [gold:card]Abundance[/gold] — Ancient Skill, cost 1: \"Choose 1 of 3 (Upgraded) Powers to add into your Hand. It is free to play this turn. Exhaust.\"",
+    "summaryMarkdownKo": "새로운 [gold:ancient]니오우[/gold] 유물 [gold:relic]다우징 로드[/gold]가 추가되었습니다: \"획득 시, 덱에 [gold:card]다우징[/gold]을 1장 추가합니다.\"",
+    "summaryMarkdownEn": "Added new [gold:ancient]Neow[/gold] relic, [gold:relic]Dowsing Rod[/gold]: \"Upon pickup, add 1 [gold:card]Dowsing[/gold] to your Deck.\"",
+    "textKo": "새로운 니오우 유물 다우징 로드가 추가되었습니다: \"획득 시, 덱에 다우징을 1장 추가합니다.\"\n• 다우징 — 퀘스트, 비용 0: \"? 방에 5번 더 진입한 후에, 풍요로 변화합니다.\"\n• 풍요 — 고대의 존재 스킬, 비용 1: \"무작위 (강화된) 파워 카드 3장 중 1장을 선택해 손으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다. 소멸.\"",
+    "textEn": "Added new Neow relic, Dowsing Rod: \"Upon pickup, add 1 Dowsing to your Deck.\"\n• Dowsing — Quest, cost 0: \"After entering 5 more ? rooms, transform this into Abundance.\"\n• Abundance — Ancient Skill, cost 1: \"Choose 1 of 3 (Upgraded) Powers to add into your Hand. It is free to play this turn. Exhaust.\"",
     "entityRefs": [
       {
         "type": "ancient",
@@ -24430,7 +24455,7 @@
         "label": "다우징"
       }
     ],
-    "searchText": "v0.109.0:line-001-ancient-neow-relic-dowsing-rod v0.109.0 0.109.0 콘텐츠 & 밸런스 고대의 존재 새로운 니오우 유물 다우징 로드가 추가되었습니다: \"획득 시, 덱에 다우징을 1장 추가합니다.\" added new neow relic, dowsing rod: \"upon pickup, add 1 dowsing to your deck.\" ancient neow 니오우 니오우 neow relic dowsing_rod 다우징 로드 다우징 로드 dowsing rod card dowsing 다우징 다우징 dowsing"
+    "searchText": "v0.109.0:line-001-ancient-neow-relic-dowsing-rod v0.109.0 0.109.0 콘텐츠 & 밸런스 고대의 존재 새로운 니오우 유물 다우징 로드가 추가되었습니다: \"획득 시, 덱에 다우징을 1장 추가합니다.\" • 다우징 — 퀘스트, 비용 0: \"? 방에 5번 더 진입한 후에, 풍요로 변화합니다.\" • 풍요 — 고대의 존재 스킬, 비용 1: \"무작위 (강화된) 파워 카드 3장 중 1장을 선택해 손으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다. 소멸.\" added new neow relic, dowsing rod: \"upon pickup, add 1 dowsing to your deck.\" • dowsing — quest, cost 0: \"after entering 5 more ? rooms, transform this into abundance.\" • abundance — ancient skill, cost 1: \"choose 1 of 3 (upgraded) powers to add into your hand. it is free to play this turn. exhaust.\" ancient neow 니오우 니오우 neow relic dowsing_rod 다우징 로드 다우징 로드 dowsing rod card dowsing 다우징 다우징 dowsing"
   },
   {
     "id": "v0.109.0:line-002-card-dowsing-card-abundance",
@@ -24490,10 +24515,12 @@
       "콘텐츠 & 밸런스",
       "고대의 존재"
     ],
-    "markdownKo": "새로운 [gold:ancient]니오우[/gold] 유물 [gold:relic]니오우의 희생[/gold]이 추가되었습니다: \"획득 시, [gold:potion]용연향[/gold]을 1개 생성하고 덱에 [gold:card]죄책감[/gold]을 1장 추가합니다.\"",
-    "markdownEn": "Added new [gold:ancient]Neow[/gold] relic, [gold:relic]Neow's Sacrifice[/gold]: \"Upon pickup, procure 1 [gold:potion]Ambergris[/gold] and add 1 [gold:card]Guilty[/gold] to your Deck.\"",
-    "textKo": "새로운 니오우 유물 니오우의 희생이 추가되었습니다: \"획득 시, 용연향을 1개 생성하고 덱에 죄책감을 1장 추가합니다.\"",
-    "textEn": "Added new Neow relic, Neow's Sacrifice: \"Upon pickup, procure 1 Ambergris and add 1 Guilty to your Deck.\"",
+    "markdownKo": "새로운 [gold:ancient]니오우[/gold] 유물 [gold:relic]니오우의 희생[/gold]이 추가되었습니다: \"획득 시, [gold:potion]용연향[/gold]을 1개 생성하고 덱에 [gold:card]죄책감[/gold]을 1장 추가합니다.\"\n• [gold:potion]용연향[/gold]: \"최대 체력의 50%를 회복합니다. 이번 턴 후에 추가 턴을 진행합니다.\"",
+    "markdownEn": "Added new [gold:ancient]Neow[/gold] relic, [gold:relic]Neow's Sacrifice[/gold]: \"Upon pickup, procure 1 [gold:potion]Ambergris[/gold] and add 1 [gold:card]Guilty[/gold] to your Deck.\"\n• [gold:potion]Ambergris[/gold]: \"Heal for 50% of your max HP. Take an extra turn after this one.\"",
+    "summaryMarkdownKo": "새로운 [gold:ancient]니오우[/gold] 유물 [gold:relic]니오우의 희생[/gold]이 추가되었습니다: \"획득 시, [gold:potion]용연향[/gold]을 1개 생성하고 덱에 [gold:card]죄책감[/gold]을 1장 추가합니다.\"",
+    "summaryMarkdownEn": "Added new [gold:ancient]Neow[/gold] relic, [gold:relic]Neow's Sacrifice[/gold]: \"Upon pickup, procure 1 [gold:potion]Ambergris[/gold] and add 1 [gold:card]Guilty[/gold] to your Deck.\"",
+    "textKo": "새로운 니오우 유물 니오우의 희생이 추가되었습니다: \"획득 시, 용연향을 1개 생성하고 덱에 죄책감을 1장 추가합니다.\"\n• 용연향: \"최대 체력의 50%를 회복합니다. 이번 턴 후에 추가 턴을 진행합니다.\"",
+    "textEn": "Added new Neow relic, Neow's Sacrifice: \"Upon pickup, procure 1 Ambergris and add 1 Guilty to your Deck.\"\n• Ambergris: \"Heal for 50% of your max HP. Take an extra turn after this one.\"",
     "entityRefs": [
       {
         "type": "ancient",
@@ -24516,7 +24543,7 @@
         "label": "죄책감"
       }
     ],
-    "searchText": "v0.109.0:line-004-ancient-neow-relic-neows-sacrifice v0.109.0 0.109.0 콘텐츠 & 밸런스 고대의 존재 새로운 니오우 유물 니오우의 희생이 추가되었습니다: \"획득 시, 용연향을 1개 생성하고 덱에 죄책감을 1장 추가합니다.\" added new neow relic, neow's sacrifice: \"upon pickup, procure 1 ambergris and add 1 guilty to your deck.\" ancient neow 니오우 니오우 neow relic neows_sacrifice 니오우의 희생 니오우의 희생 neow's sacrifice potion ambergris 용연향 용연향 ambergris card guilty 죄책감 죄책감 guilty"
+    "searchText": "v0.109.0:line-004-ancient-neow-relic-neows-sacrifice v0.109.0 0.109.0 콘텐츠 & 밸런스 고대의 존재 새로운 니오우 유물 니오우의 희생이 추가되었습니다: \"획득 시, 용연향을 1개 생성하고 덱에 죄책감을 1장 추가합니다.\" • 용연향: \"최대 체력의 50%를 회복합니다. 이번 턴 후에 추가 턴을 진행합니다.\" added new neow relic, neow's sacrifice: \"upon pickup, procure 1 ambergris and add 1 guilty to your deck.\" • ambergris: \"heal for 50% of your max hp. take an extra turn after this one.\" ancient neow 니오우 니오우 neow relic neows_sacrifice 니오우의 희생 니오우의 희생 neow's sacrifice potion ambergris 용연향 용연향 ambergris card guilty 죄책감 죄책감 guilty"
   },
   {
     "id": "v0.109.0:line-005-potion-ambergris",
@@ -24850,10 +24877,12 @@
       "콘텐츠 & 밸런스",
       "아이언클래드"
     ],
-    "markdownKo": "[gold:card]도발[/gold]이 변경되었습니다:",
-    "markdownEn": "Changed [gold:card]Taunt[/gold]:",
-    "textKo": "도발이 변경되었습니다:",
-    "textEn": "Changed Taunt:",
+    "markdownKo": "[gold:card]도발[/gold]이 변경되었습니다:\n• 방어도 획득량이 7(8) -> 6(7)로 감소했습니다.\n• 등급이 고급 -> 일반으로 감소했습니다.",
+    "markdownEn": "Changed [gold:card]Taunt[/gold]:\n• Block gain decreased from 7(8) -> 6(7).\n• Rarity decreased from Uncommon -> Common.",
+    "summaryMarkdownKo": "[gold:card]도발[/gold]이 변경되었습니다:",
+    "summaryMarkdownEn": "Changed [gold:card]Taunt[/gold]:",
+    "textKo": "도발이 변경되었습니다:\n• 방어도 획득량이 7(8) -> 6(7)로 감소했습니다.\n• 등급이 고급 -> 일반으로 감소했습니다.",
+    "textEn": "Changed Taunt:\n• Block gain decreased from 7(8) -> 6(7).\n• Rarity decreased from Uncommon -> Common.",
     "entityRefs": [
       {
         "type": "card",
@@ -24861,7 +24890,7 @@
         "label": "도발"
       }
     ],
-    "searchText": "v0.109.0:line-019-card-taunt v0.109.0 0.109.0 콘텐츠 & 밸런스 아이언클래드 도발이 변경되었습니다: changed taunt: card taunt 도발 도발 taunt"
+    "searchText": "v0.109.0:line-019-card-taunt v0.109.0 0.109.0 콘텐츠 & 밸런스 아이언클래드 도발이 변경되었습니다: • 방어도 획득량이 7(8) -> 6(7)로 감소했습니다. • 등급이 고급 -> 일반으로 감소했습니다. changed taunt: • block gain decreased from 7(8) -> 6(7). • rarity decreased from uncommon -> common. card taunt 도발 도발 taunt"
   },
   {
     "id": "v0.109.0:line-020-text-ug42ky",
@@ -24997,10 +25026,12 @@
       "콘텐츠 & 밸런스",
       "사일런트"
     ],
-    "markdownKo": "[gold:card]괜찮은 전략[/gold]이 개편되었습니다:",
-    "markdownEn": "Reworked [gold:card]Well-Laid Plans[/gold]:",
-    "textKo": "괜찮은 전략이 개편되었습니다:",
-    "textEn": "Reworked Well-Laid Plans:",
+    "markdownKo": "[gold:card]괜찮은 전략[/gold]이 개편되었습니다:\n• 고급 파워, 비용 1, \"내 턴 종료 시, 카드를 최대 1(2)장까지 보존합니다.\" -> 희귀 파워, 비용 1(0), \"내 턴 종료 시, 더 이상 손을 버리지 않습니다.\"\n• 이전에는 싱글플레이 전용이었지만 이제 멀티플레이에서도 등장합니다.",
+    "markdownEn": "Reworked [gold:card]Well-Laid Plans[/gold]:\n• Uncommon Power, cost 1, \"At the end of your turn, Retain up to 1(2) card(s).\" -> Rare Power, cost 1(0), \"At the end of your turn, you no longer discard your Hand.\"\n• Now also available in multiplayer; it was previously single-player only.",
+    "summaryMarkdownKo": "[gold:card]괜찮은 전략[/gold]이 개편되었습니다:",
+    "summaryMarkdownEn": "Reworked [gold:card]Well-Laid Plans[/gold]:",
+    "textKo": "괜찮은 전략이 개편되었습니다:\n• 고급 파워, 비용 1, \"내 턴 종료 시, 카드를 최대 1(2)장까지 보존합니다.\" -> 희귀 파워, 비용 1(0), \"내 턴 종료 시, 더 이상 손을 버리지 않습니다.\"\n• 이전에는 싱글플레이 전용이었지만 이제 멀티플레이에서도 등장합니다.",
+    "textEn": "Reworked Well-Laid Plans:\n• Uncommon Power, cost 1, \"At the end of your turn, Retain up to 1(2) card(s).\" -> Rare Power, cost 1(0), \"At the end of your turn, you no longer discard your Hand.\"\n• Now also available in multiplayer; it was previously single-player only.",
     "entityRefs": [
       {
         "type": "card",
@@ -25008,7 +25039,7 @@
         "label": "괜찮은 전략"
       }
     ],
-    "searchText": "v0.109.0:line-026-card-well-laid-plans v0.109.0 0.109.0 콘텐츠 & 밸런스 사일런트 괜찮은 전략이 개편되었습니다: reworked well-laid plans: card well_laid_plans 괜찮은 전략 괜찮은 전략 well-laid plans"
+    "searchText": "v0.109.0:line-026-card-well-laid-plans v0.109.0 0.109.0 콘텐츠 & 밸런스 사일런트 괜찮은 전략이 개편되었습니다: • 고급 파워, 비용 1, \"내 턴 종료 시, 카드를 최대 1(2)장까지 보존합니다.\" -> 희귀 파워, 비용 1(0), \"내 턴 종료 시, 더 이상 손을 버리지 않습니다.\" • 이전에는 싱글플레이 전용이었지만 이제 멀티플레이에서도 등장합니다. reworked well-laid plans: • uncommon power, cost 1, \"at the end of your turn, retain up to 1(2) card(s).\" -> rare power, cost 1(0), \"at the end of your turn, you no longer discard your hand.\" • now also available in multiplayer; it was previously single-player only. card well_laid_plans 괜찮은 전략 괜찮은 전략 well-laid plans"
   },
   {
     "id": "v0.109.0:line-027-text-1rua2yj",
@@ -25314,10 +25345,12 @@
       "콘텐츠 & 밸런스",
       "멀티플레이"
     ],
-    "markdownKo": "[gold:card]칼날 교향곡[/gold] ([red][jitter]너프[/jitter][/red]):",
-    "markdownEn": "[gold:card]Blade Symphony[/gold] ([red][jitter]nerf[/jitter][/red]):",
-    "textKo": "칼날 교향곡 (너프):",
-    "textEn": "Blade Symphony (nerf):",
+    "markdownKo": "[gold:card]칼날 교향곡[/gold] ([red][jitter]너프[/jitter][/red]):\n• 비용이 1 -> 2(1)로 증가했습니다.\n• 강화해도 [gold:card]단도[/gold] 수가 증가하지 않습니다.",
+    "markdownEn": "[gold:card]Blade Symphony[/gold] ([red][jitter]nerf[/jitter][/red]):\n• Cost increased from 1 -> 2(1).\n• Upgrade no longer increases [gold:card]Shiv[/gold] count.",
+    "summaryMarkdownKo": "[gold:card]칼날 교향곡[/gold] ([red][jitter]너프[/jitter][/red]):",
+    "summaryMarkdownEn": "[gold:card]Blade Symphony[/gold] ([red][jitter]nerf[/jitter][/red]):",
+    "textKo": "칼날 교향곡 (너프):\n• 비용이 1 -> 2(1)로 증가했습니다.\n• 강화해도 단도 수가 증가하지 않습니다.",
+    "textEn": "Blade Symphony (nerf):\n• Cost increased from 1 -> 2(1).\n• Upgrade no longer increases Shiv count.",
     "entityRefs": [
       {
         "type": "card",
@@ -25325,7 +25358,7 @@
         "label": "칼날 교향곡"
       }
     ],
-    "searchText": "v0.109.0:line-041-card-blade-symphony v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 칼날 교향곡 (너프): blade symphony (nerf): card blade_symphony 칼날 교향곡 칼날 교향곡 blade symphony"
+    "searchText": "v0.109.0:line-041-card-blade-symphony v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 칼날 교향곡 (너프): • 비용이 1 -> 2(1)로 증가했습니다. • 강화해도 단도 수가 증가하지 않습니다. blade symphony (nerf): • cost increased from 1 -> 2(1). • upgrade no longer increases shiv count. card blade_symphony 칼날 교향곡 칼날 교향곡 blade symphony"
   },
   {
     "id": "v0.109.0:line-042-text-8j4l35",
@@ -26361,10 +26394,12 @@
       "콘텐츠 및 밸런스",
       "고대의 존재"
     ],
-    "markdownKo": "[gold:card]풍요[/gold] ([green][sine]버프[/sine][/green]):",
-    "markdownEn": "[gold:card]Abundance[/gold] ([green][sine]buff[/sine][/green]):",
-    "textKo": "풍요 (버프):",
-    "textEn": "Abundance (buff):",
+    "markdownKo": "[gold:card]풍요[/gold] ([green][sine]버프[/sine][/green]):\n• 이제 항상 강화된 파워를 생성합니다.\n• 강화 시 에너지 비용이 1 감소합니다.",
+    "markdownEn": "[gold:card]Abundance[/gold] ([green][sine]buff[/sine][/green]):\n• Now always creates Upgraded Powers.\n• Its upgrade now lowers its Energy cost by 1.",
+    "summaryMarkdownKo": "[gold:card]풍요[/gold] ([green][sine]버프[/sine][/green]):",
+    "summaryMarkdownEn": "[gold:card]Abundance[/gold] ([green][sine]buff[/sine][/green]):",
+    "textKo": "풍요 (버프):\n• 이제 항상 강화된 파워를 생성합니다.\n• 강화 시 에너지 비용이 1 감소합니다.",
+    "textEn": "Abundance (buff):\n• Now always creates Upgraded Powers.\n• Its upgrade now lowers its Energy cost by 1.",
     "entityRefs": [
       {
         "type": "card",
@@ -26372,7 +26407,7 @@
         "label": "풍요"
       }
     ],
-    "searchText": "v0.110.0:line-001-card-abundance v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 풍요 (버프): abundance (buff): card abundance 풍요 풍요 abundance"
+    "searchText": "v0.110.0:line-001-card-abundance v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 풍요 (버프): • 이제 항상 강화된 파워를 생성합니다. • 강화 시 에너지 비용이 1 감소합니다. abundance (buff): • now always creates upgraded powers. • its upgrade now lowers its energy cost by 1. card abundance 풍요 풍요 abundance"
   },
   {
     "id": "v0.110.0:line-002-text-1ociu7s",
@@ -26459,10 +26494,12 @@
       "콘텐츠 및 밸런스",
       "고대의 존재"
     ],
-    "markdownKo": "[gold:relic]아름다운 팔찌[/gold] 변경:",
-    "markdownEn": "Changed [gold:relic]Beautiful Bracelet[/gold]:",
-    "textKo": "아름다운 팔찌 변경:",
-    "textEn": "Changed Beautiful Bracelet:",
+    "markdownKo": "[gold:relic]아름다운 팔찌[/gold] 변경:\n• 인챈트할 카드가 3 → 4장으로 증가했습니다.\n• [gold:enchantment]신속[/gold] 수치가 3 → 2로 감소했습니다.",
+    "markdownEn": "Changed [gold:relic]Beautiful Bracelet[/gold]:\n• Cards enchanted increased from 3 -> 4.\n• [gold:enchantment]Swift[/gold] amount decreased from 3 -> 2.",
+    "summaryMarkdownKo": "[gold:relic]아름다운 팔찌[/gold] 변경:",
+    "summaryMarkdownEn": "Changed [gold:relic]Beautiful Bracelet[/gold]:",
+    "textKo": "아름다운 팔찌 변경:\n• 인챈트할 카드가 3 → 4장으로 증가했습니다.\n• 신속 수치가 3 → 2로 감소했습니다.",
+    "textEn": "Changed Beautiful Bracelet:\n• Cards enchanted increased from 3 -> 4.\n• Swift amount decreased from 3 -> 2.",
     "entityRefs": [
       {
         "type": "relic",
@@ -26470,7 +26507,7 @@
         "label": "아름다운 팔찌"
       }
     ],
-    "searchText": "v0.110.0:line-006-relic-beautiful-bracelet v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 아름다운 팔찌 변경: changed beautiful bracelet: relic beautiful_bracelet 아름다운 팔찌 아름다운 팔찌 beautiful bracelet"
+    "searchText": "v0.110.0:line-006-relic-beautiful-bracelet v0.110.0 0.110.0 콘텐츠 및 밸런스 고대의 존재 아름다운 팔찌 변경: • 인챈트할 카드가 3 → 4장으로 증가했습니다. • 신속 수치가 3 → 2로 감소했습니다. changed beautiful bracelet: • cards enchanted increased from 3 -> 4. • swift amount decreased from 3 -> 2. relic beautiful_bracelet 아름다운 팔찌 아름다운 팔찌 beautiful bracelet"
   },
   {
     "id": "v0.110.0:line-007-text-5hyony",
@@ -26881,10 +26918,12 @@
       "콘텐츠 및 밸런스",
       "리젠트"
     ],
-    "markdownKo": "[gold:card]창조의 기둥[/gold] 변경:",
-    "markdownEn": "Changed [gold:card]Pillar of Creation[/gold]:",
-    "textKo": "창조의 기둥 변경:",
-    "textEn": "Changed Pillar of Creation:",
+    "markdownKo": "[gold:card]창조의 기둥[/gold] 변경:\n• 효과가 턴당 한 번으로 제한되지 않던 이전 버전으로 돌아갔습니다.\n• 방어도가 3(4) → 2(3)으로 감소했습니다.",
+    "markdownEn": "Changed [gold:card]Pillar of Creation[/gold]:\n• Reverted to its previous version, so its effect is no longer limited to once per turn.\n• Block decreased from 3(4) -> 2(3).",
+    "summaryMarkdownKo": "[gold:card]창조의 기둥[/gold] 변경:",
+    "summaryMarkdownEn": "Changed [gold:card]Pillar of Creation[/gold]:",
+    "textKo": "창조의 기둥 변경:\n• 효과가 턴당 한 번으로 제한되지 않던 이전 버전으로 돌아갔습니다.\n• 방어도가 3(4) → 2(3)으로 감소했습니다.",
+    "textEn": "Changed Pillar of Creation:\n• Reverted to its previous version, so its effect is no longer limited to once per turn.\n• Block decreased from 3(4) -> 2(3).",
     "entityRefs": [
       {
         "type": "card",
@@ -26892,7 +26931,7 @@
         "label": "창조의 기둥"
       }
     ],
-    "searchText": "v0.110.0:line-025-card-pillar-of-creation v0.110.0 0.110.0 콘텐츠 및 밸런스 리젠트 창조의 기둥 변경: changed pillar of creation: card pillar_of_creation 창조의 기둥 창조의 기둥 pillar of creation"
+    "searchText": "v0.110.0:line-025-card-pillar-of-creation v0.110.0 0.110.0 콘텐츠 및 밸런스 리젠트 창조의 기둥 변경: • 효과가 턴당 한 번으로 제한되지 않던 이전 버전으로 돌아갔습니다. • 방어도가 3(4) → 2(3)으로 감소했습니다. changed pillar of creation: • reverted to its previous version, so its effect is no longer limited to once per turn. • block decreased from 3(4) -> 2(3). card pillar_of_creation 창조의 기둥 창조의 기둥 pillar of creation"
   },
   {
     "id": "v0.110.0:line-026-text-6e3e5o",
@@ -27089,10 +27128,12 @@
       "콘텐츠 및 밸런스",
       "디펙트"
     ],
-    "markdownKo": "[gold:card]동기화[/gold] ([green][sine]버프[/sine][/green]):",
-    "markdownEn": "[gold:card]Synchronize[/gold] ([green][sine]buff[/sine][/green]):",
-    "textKo": "동기화 (버프):",
-    "textEn": "Synchronize (buff):",
+    "markdownKo": "[gold:card]동기화[/gold] ([green][sine]버프[/sine][/green]):\n• 강화 시 구체 종류당 얻는 일시적 밀집이 2 → 3으로 증가합니다.\n• 더 이상 소멸하지 않습니다.",
+    "markdownEn": "[gold:card]Synchronize[/gold] ([green][sine]buff[/sine][/green]):\n• Its upgrade now increases temporary Focus from 2 -> 3.\n• No longer Exhausts.",
+    "summaryMarkdownKo": "[gold:card]동기화[/gold] ([green][sine]버프[/sine][/green]):",
+    "summaryMarkdownEn": "[gold:card]Synchronize[/gold] ([green][sine]buff[/sine][/green]):",
+    "textKo": "동기화 (버프):\n• 강화 시 구체 종류당 얻는 일시적 밀집이 2 → 3으로 증가합니다.\n• 더 이상 소멸하지 않습니다.",
+    "textEn": "Synchronize (buff):\n• Its upgrade now increases temporary Focus from 2 -> 3.\n• No longer Exhausts.",
     "entityRefs": [
       {
         "type": "card",
@@ -27100,7 +27141,7 @@
         "label": "동기화"
       }
     ],
-    "searchText": "v0.110.0:line-035-card-synchronize v0.110.0 0.110.0 콘텐츠 및 밸런스 디펙트 동기화 (버프): synchronize (buff): card synchronize 동기화 동기화 synchronize"
+    "searchText": "v0.110.0:line-035-card-synchronize v0.110.0 0.110.0 콘텐츠 및 밸런스 디펙트 동기화 (버프): • 강화 시 구체 종류당 얻는 일시적 밀집이 2 → 3으로 증가합니다. • 더 이상 소멸하지 않습니다. synchronize (buff): • its upgrade now increases temporary focus from 2 -> 3. • no longer exhausts. card synchronize 동기화 동기화 synchronize"
   },
   {
     "id": "v0.110.0:line-036-text-1vpl33f",
