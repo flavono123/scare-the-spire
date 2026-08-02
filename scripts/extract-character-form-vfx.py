@@ -198,7 +198,7 @@ def serpent_ring_sheet(image: Image.Image) -> Image.Image:
                 polar_y = round(((angle * 2) % 1) * (height - 1))
                 polar = pixels[polar_x, polar_y]
                 polar_mask = polar[0] / 255 * polar[3] / 255
-                output_pixels[x, y] = (0, 167, 116, round(pixels[x, y][3] * polar_mask))
+                output_pixels[x, y] = (255, 255, 255, round(pixels[x, y][3] * polar_mask))
         sheet.paste(output, (frame * width, 0))
     if sheet.getbbox() is None:
         raise ValueError("serpent polar ring flipbook is blank")
@@ -389,6 +389,7 @@ def prune_resources(scene: dict[str, Any]) -> None:
 def material_metadata(reader: PCKReader, path: str) -> dict[str, Any] | None:
     if path == SCREAM_RING_MATERIAL:
         return {
+            "forceTint": True,
             "frameCount": SHADER_FLIPBOOK_FRAMES,
             "horizontal": SHADER_FLIPBOOK_FRAMES,
             "pivot": [0, 0],
