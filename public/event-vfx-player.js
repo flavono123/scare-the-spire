@@ -605,8 +605,8 @@
       x: offset.x,
       y: offset.y,
       rotation: offset.rotation || 0,
-      scaleX: offset.scale ?? 1,
-      scaleY: offset.scale ?? 1,
+      scaleX: offset.scaleX ?? offset.scale ?? 1,
+      scaleY: offset.scaleY ?? offset.scale ?? 1,
       color: { r: 1, g: 1, b: 1, a: 1 },
     };
     for (const node of scene.nodes) {
@@ -742,13 +742,16 @@
       if (mirror) {
         renderMirror(context, imageLayer, scene, baseImage, elapsed);
       } else {
-        renderScene(context, scene, elapsed, {
+        const placement = options.getPlacement?.() ?? (options.getPlacement ? null : {
           x: options.offsetX ?? 268,
           y: options.offsetY ?? 49,
           scale: options.scale ?? 1,
           rotation: 0,
-        }, false);
-        if (echo) renderEcho(context, imageLayer, baseImage, baseIsStage, elapsed);
+        });
+        if (placement) {
+          renderScene(context, scene, elapsed, placement, false);
+          if (echo) renderEcho(context, imageLayer, baseImage, baseIsStage, elapsed);
+        }
         for (let index = bursts.length - 1; index >= 0; index -= 1) {
           const burst = bursts[index];
           const age = (now - burst.startedAt) / 1000;

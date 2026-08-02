@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MutableRefObject } from "react";
 import {
   loadEventVfxRuntime,
   type EventVfxController,
+  type EventVfxPlacement,
 } from "@/lib/event-vfx-runtime";
 
 type EventVfxMode = "standard" | "mirror" | "echo";
@@ -18,6 +19,7 @@ export function EventVfxStage({
   mode = "standard",
   offsetX = 268,
   offsetY = 49,
+  placementRef,
   scale = 1,
   sceneUrl,
   sceneSlug,
@@ -27,6 +29,7 @@ export function EventVfxStage({
   mode?: EventVfxMode;
   offsetX?: number;
   offsetY?: number;
+  placementRef?: MutableRefObject<EventVfxPlacement | null>;
   scale?: number;
   sceneSlug?: string;
   sceneUrl?: string;
@@ -49,6 +52,7 @@ export function EventVfxStage({
           ? canvas.closest("[data-character-stage]")?.querySelector<HTMLCanvasElement>(".sts2-spine-stage canvas") ?? undefined
           : undefined,
         baseImageUrl,
+        getPlacement: placementRef ? () => placementRef.current : undefined,
         mode,
         offsetX,
         offsetY,
@@ -77,7 +81,7 @@ export function EventVfxStage({
       controller?.destroy();
       if (controllerRef.current === controller) controllerRef.current = null;
     };
-  }, [baseImageUrl, mode, offsetX, offsetY, resolvedSceneUrl, scale, sceneSlug, sceneUrl]);
+  }, [baseImageUrl, mode, offsetX, offsetY, placementRef, resolvedSceneUrl, scale, sceneSlug, sceneUrl]);
 
   useEffect(() => {
     if (burstSignal <= handledBurstRef.current) return;

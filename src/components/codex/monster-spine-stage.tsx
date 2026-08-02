@@ -39,6 +39,8 @@ interface MonsterSpineStageProps {
   fallbackImageClassName?: string;
   fallbackImageStyle?: CSSProperties;
   loopSelectedMove?: boolean;
+  formAttachment?: MonsterStageFormAttachment | null;
+  formPlacementRef?: MutableRefObject<MonsterStageFormPlacement | null>;
   onVisualBoundsChange?: (bounds: MonsterStageVisualBounds | null) => void;
   onReady?: () => void;
   skeletonTransform?: {
@@ -77,6 +79,22 @@ export interface MonsterStageVisualBounds {
   stageHeight: number;
 }
 
+export interface MonsterStageFormAttachment {
+  boneName: string | null;
+  visualPosition: readonly [number, number] | readonly number[];
+  visualScale: readonly [number, number] | readonly number[];
+}
+
+export interface MonsterStageFormPlacement {
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+}
+
+const FORM_VFX_LOGICAL_WIDTH = 2560;
+const FORM_VFX_LOGICAL_HEIGHT = 1200;
+
 function MonsterSpineStageComponent({
   asset,
   fallbackImageUrl,
@@ -98,6 +116,8 @@ function MonsterSpineStageComponent({
   fallbackImageClassName,
   fallbackImageStyle,
   loopSelectedMove = false,
+  formAttachment = null,
+  formPlacementRef,
   onVisualBoundsChange,
   onReady,
   skeletonTransform = null,
@@ -109,6 +129,8 @@ function MonsterSpineStageComponent({
   const playerRef = useRef<SpinePlayer | null>(null);
   const vfxPlayerRef = useRef<SpinePlayer | null>(null);
   const vfxTimeoutRef = useRef<number | null>(null);
+  const formAttachmentRef = useRef(formAttachment);
+  const formPlacementTargetRef = useRef(formPlacementRef);
   const [loadState, setLoadState] = useState<LoadState>(asset ? "loading" : "error");
   const showStaticPhobiaMode = showPhobiaMode && Boolean(phobiaModeImageUrl);
   const [availableAnimations, setAvailableAnimations] = useState<string[]>(asset?.animations ?? []);
@@ -159,6 +181,12 @@ function MonsterSpineStageComponent({
   );
 
   useEffect(() => {
+    formAttachmentRef.current = formAttachment;
+    formPlacementTargetRef.current = formPlacementRef;
+    if (!formAttachment && formPlacementRef) formPlacementRef.current = null;
+  }, [formAttachment, formPlacementRef]);
+
+  useEffect(() => {
     if (!asset || !containerRef.current) return;
 
     let disposed = false;
@@ -189,9 +217,17 @@ function MonsterSpineStageComponent({
           showControls: false,
           showLoading: false,
           viewport,
-          update: skeletonTransform
-            ? (loadedPlayer) => applySkeletonTransform(loadedPlayer, skeletonTransform)
-            : undefined,
+          update: (loadedPlayer) => {
+            if (skeletonTransform) applySkeletonTransform(loadedPlayer, skeletonTransform);
+            const target = formPlacementTargetRef.current;
+            if (target) {
+              target.current = measureSpinePlayerFormPlacement(
+                loadedPlayer,
+                parent,
+                formAttachmentRef.current,
+              );
+            }
+          },
           success: (loadedPlayer) => {
             if (disposed) return;
             if (skeletonTransform) applySkeletonTransform(loadedPlayer, skeletonTransform);
@@ -226,6 +262,7 @@ function MonsterSpineStageComponent({
     return () => {
       disposed = true;
       clearVfx(vfxPlayerRef, vfxContainerRef, vfxTimeoutRef);
+      if (formPlacementTargetRef.current) formPlacementTargetRef.current.current = null;
       playerRef.current = null;
       releaseSpinePlayer(player);
       parent.replaceChildren();
@@ -617,6 +654,44 @@ export function measureSpinePlayerVisualBounds(
   return mapWorldBoundsToStage(contentBounds, currentViewport, canvas, stageElement);
 }
 
+export function measureSpinePlayerFormPlacement(
+  player: SpinePlayer,
+  stageElement: HTMLElement,
+  attachment: MonsterStageFormAttachment | null,
+): MonsterStageFormPlacement | null {
+  if (!attachment) return null;
+  const canvas = player.canvas;
+  const skeleton = player.skeleton;
+  const currentViewport = (player as unknown as { currentViewport?: ResolvedSpineViewport }).currentViewport;
+  if (!canvas || !skeleton || !currentViewport || !hasValidViewport(currentViewport)) return null;
+
+  const visualScaleX = Math.abs(attachment.visualScale[0] ?? 0);
+  const visualScaleY = Math.abs(attachment.visualScale[1] ?? 0);
+  if (!visualScaleX || !visualScaleY) return null;
+
+  const bone = attachment.boneName ? skeleton.findBone(attachment.boneName) : null;
+  if (attachment.boneName && !bone) return null;
+  const worldX = bone
+    ? skeleton.x + bone.worldX
+    : skeleton.x - (attachment.visualPosition[0] ?? 0) / visualScaleX;
+  const worldY = bone
+    ? skeleton.y + bone.worldY
+    : skeleton.y + (attachment.visualPosition[1] ?? 0) / visualScaleY;
+  const projection = getWorldStageProjection(currentViewport, canvas, stageElement);
+  if (!projection) return null;
+
+  return {
+    x: (projection.canvasOffsetLeft + (worldX - projection.worldLeft) * projection.pixelsPerWorldX)
+      / projection.stageWidth * FORM_VFX_LOGICAL_WIDTH,
+    y: (projection.canvasOffsetTop + (projection.worldTop - worldY) * projection.pixelsPerWorldY)
+      / projection.stageHeight * FORM_VFX_LOGICAL_HEIGHT,
+    scaleX: projection.pixelsPerWorldX / visualScaleX
+      / projection.stageWidth * FORM_VFX_LOGICAL_WIDTH,
+    scaleY: projection.pixelsPerWorldY / visualScaleY
+      / projection.stageHeight * FORM_VFX_LOGICAL_HEIGHT,
+  };
+}
+
 function reportSpineVisualBounds(
   player: SpinePlayer,
   stageElement: HTMLElement | null,
@@ -679,31 +754,19 @@ function mapWorldBoundsToStage(
   canvas: HTMLCanvasElement,
   stageElement: HTMLElement,
 ): MonsterStageVisualBounds | null {
-  const canvasRect = canvas.getBoundingClientRect();
-  const stageRect = stageElement.getBoundingClientRect();
-  const paddedViewport = getPaddedViewport(currentViewport);
-  const zoom = canvas.height / canvas.width > paddedViewport.height / paddedViewport.width
-    ? paddedViewport.width / canvas.width
-    : paddedViewport.height / canvas.height;
-  const visibleWorldWidth = canvas.width * zoom;
-  const visibleWorldHeight = canvas.height * zoom;
-  const worldCenterX = paddedViewport.x + paddedViewport.width / 2;
-  const worldCenterY = paddedViewport.y + paddedViewport.height / 2;
-  const worldLeft = worldCenterX - visibleWorldWidth / 2;
-  const worldTop = worldCenterY + visibleWorldHeight / 2;
+  const projection = getWorldStageProjection(currentViewport, canvas, stageElement);
+  if (!projection) return null;
   const worldRight = worldBounds.x + worldBounds.width;
   const worldBottom = worldBounds.y;
   const worldBoundsTop = worldBounds.y + worldBounds.height;
-  const canvasOffsetLeft = canvasRect.left - stageRect.left;
-  const canvasOffsetTop = canvasRect.top - stageRect.top;
-  const left = canvasOffsetLeft + ((worldBounds.x - worldLeft) / visibleWorldWidth) * canvasRect.width;
-  const right = canvasOffsetLeft + ((worldRight - worldLeft) / visibleWorldWidth) * canvasRect.width;
-  const top = canvasOffsetTop + ((worldTop - worldBoundsTop) / visibleWorldHeight) * canvasRect.height;
-  const bottom = canvasOffsetTop + ((worldTop - worldBottom) / visibleWorldHeight) * canvasRect.height;
-  const clampedLeft = clamp(left, 0, stageRect.width);
-  const clampedTop = clamp(top, 0, stageRect.height);
-  const clampedRight = clamp(right, 0, stageRect.width);
-  const clampedBottom = clamp(bottom, 0, stageRect.height);
+  const left = projection.canvasOffsetLeft + (worldBounds.x - projection.worldLeft) * projection.pixelsPerWorldX;
+  const right = projection.canvasOffsetLeft + (worldRight - projection.worldLeft) * projection.pixelsPerWorldX;
+  const top = projection.canvasOffsetTop + (projection.worldTop - worldBoundsTop) * projection.pixelsPerWorldY;
+  const bottom = projection.canvasOffsetTop + (projection.worldTop - worldBottom) * projection.pixelsPerWorldY;
+  const clampedLeft = clamp(left, 0, projection.stageWidth);
+  const clampedTop = clamp(top, 0, projection.stageHeight);
+  const clampedRight = clamp(right, 0, projection.stageWidth);
+  const clampedBottom = clamp(bottom, 0, projection.stageHeight);
 
   if (clampedRight <= clampedLeft || clampedBottom <= clampedTop) return null;
   return {
@@ -713,8 +776,39 @@ function mapWorldBoundsToStage(
     bottom: clampedBottom,
     width: clampedRight - clampedLeft,
     height: clampedBottom - clampedTop,
+    stageWidth: projection.stageWidth,
+    stageHeight: projection.stageHeight,
+  };
+}
+
+function getWorldStageProjection(
+  currentViewport: ResolvedSpineViewport,
+  canvas: HTMLCanvasElement,
+  stageElement: HTMLElement,
+) {
+  const canvasRect = canvas.getBoundingClientRect();
+  const stageRect = stageElement.getBoundingClientRect();
+  if (!canvas.width || !canvas.height || !canvasRect.width || !canvasRect.height || !stageRect.width || !stageRect.height) {
+    return null;
+  }
+  const paddedViewport = getPaddedViewport(currentViewport);
+  const zoom = canvas.height / canvas.width > paddedViewport.height / paddedViewport.width
+    ? paddedViewport.width / canvas.width
+    : paddedViewport.height / canvas.height;
+  const visibleWorldWidth = canvas.width * zoom;
+  const visibleWorldHeight = canvas.height * zoom;
+  const worldCenterX = paddedViewport.x + paddedViewport.width / 2;
+  const worldCenterY = paddedViewport.y + paddedViewport.height / 2;
+
+  return {
+    canvasOffsetLeft: canvasRect.left - stageRect.left,
+    canvasOffsetTop: canvasRect.top - stageRect.top,
+    pixelsPerWorldX: canvasRect.width / visibleWorldWidth,
+    pixelsPerWorldY: canvasRect.height / visibleWorldHeight,
     stageWidth: stageRect.width,
     stageHeight: stageRect.height,
+    worldLeft: worldCenterX - visibleWorldWidth / 2,
+    worldTop: worldCenterY + visibleWorldHeight / 2,
   };
 }
 

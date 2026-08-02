@@ -8,6 +8,13 @@ export interface EventVfxOneShotPlacement {
   y: number;
 }
 
+export interface EventVfxPlacement {
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+}
+
 export interface EventVfxController {
   destroy(): void;
   playOneShot(sceneUrl: string, placement: EventVfxOneShotPlacement): Promise<void>;
@@ -17,6 +24,7 @@ export interface EventVfxController {
 interface EventVfxPlayerOptions {
   baseCanvas?: HTMLCanvasElement;
   baseImageUrl?: string;
+  getPlacement?: () => EventVfxPlacement | null;
   mode?: "standard" | "mirror" | "echo";
   offsetX?: number;
   offsetY?: number;
