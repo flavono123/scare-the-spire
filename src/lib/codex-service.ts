@@ -44,7 +44,7 @@ export function getCodexMetadata(
   const messages = serviceMessages[serviceLocale];
   return {
     title: {
-      absolute: `${title} — ${messages.brand}`,
+      absolute: `${title} — ${messages.codex.metadataGameTitle} — ${messages.brand}`,
     },
     description: serviceLocale === "ko"
       ? `슬레이 더 스파이어 2 ${title}`

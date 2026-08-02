@@ -454,6 +454,7 @@ export const serviceMessages = {
       },
     },
     codex: {
+      metadataGameTitle: "슬레이 더 스파이어 2",
       characters: "캐릭터",
       cards: "카드",
       keywords: "키워드",
@@ -1300,6 +1301,7 @@ export const serviceMessages = {
       },
     },
     codex: {
+      metadataGameTitle: "Slay the Spire 2",
       characters: "Characters",
       cards: "Cards",
       keywords: "Keywords",
