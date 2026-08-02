@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, type MouseEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Check, Link2, MessageCircle, Trash2 } from "lucide-react";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
@@ -91,6 +92,7 @@ export function ThisOrThatPostCard({
 }) {
   const { post, leftEntity, rightEntity } = resolvedPost;
   const copy = serviceMessages[serviceLocale].thisOrThat;
+  const router = useRouter();
   const [copied, setCopied] = useState(false);
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const href = localizeHrefWithGameLocale(`/this-or-that/${post.id}`, serviceLocale, gameLocale);
@@ -100,12 +102,17 @@ export function ThisOrThatPostCard({
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1500);
   }, [href]);
+  const handleCardClick = useCallback((event: MouseEvent<HTMLElement>) => {
+    if ((event.target as HTMLElement).closest("a, button, [role='button']")) return;
+    router.push(href);
+  }, [href, router]);
 
   if (!leftEntity || !rightEntity) return null;
 
   return (
     <article
-      className="group flex h-full flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-colors hover:border-yellow-500/25"
+      onClick={handleCardClick}
+      className="group flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-colors hover:border-yellow-500/25"
     >
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
