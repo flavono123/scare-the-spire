@@ -187,6 +187,15 @@ server.listen(proxyPort, () => {
   console.log(`Main Next dev server listening on http://localhost:${mainPort}`);
 });
 
+mainDev.on("error", (error) => {
+  console.error(`Failed to start main Next dev server: ${error.message}`);
+  process.exit(1);
+});
+mainDev.on("exit", (code, signal) => {
+  console.error(`Main Next dev server exited: ${signal ?? code ?? "unknown"}`);
+  process.exit(code ?? 1);
+});
+
 server.on("upgrade", proxyUpgradeToMain);
 
 function shutdown() {
