@@ -24,15 +24,17 @@
 
 공용 브라우저 렌더러는 형상 씬이 사용하는 원형·링 방출, 방향·방사 속도, 감쇠, 수명 랜덤, XYZ 크기 곡선, 색상 ramp, 외부 ShaderMaterial 플립북 메타데이터를 Canvas 2D로 모사한다. 노드 속성과 배치는 게임 원본이지만 GPU 파티클 적분과 셰이더 픽셀 결과는 근사다.
 
+구렁이의 polar ring과 공허의 common ray는 원본 셰이더의 핵심 좌표·마스크 변환을 추출 시점에 8프레임 정적 플립북으로 굽는다. Worker 요청 시 셰이더 변환이나 이미지 작업은 하지 않는다.
+
 ## 형상별 상태
 
 | 형상 | 구현됨 | 미구현 또는 근사 |
 | --- | --- | --- |
-| 악마의 형상 | 원점 배치, idle glow/noise 근사, 원본 packed scene의 common clouds·반복 slash·embers와 로컬 위치 | 발동 전용 slash/embers/glow, `OnEffectTriggered()` 파티클 재시작, ShaderMaterial LUT·erosion·hue shift의 정확한 픽셀 결과 |
-| 구렁이의 형상 | 캐릭터별 뼈 부착, idle glow/noise/snakes 근사, 원본 idle scream ring 노드·수명·크기/알파 곡선 | 발동 scream/common ring, `NShaker`, `NValueRamp`, 발동 후 snakes fade, polar shader의 정확한 픽셀 결과. snakes 위치·색·스케일은 수동 근사 |
-| 공허의 형상 | `head` 추적과 0.2 보간, 원본 네 spike 계층·회전·자식 오버라이드, constellation/ray/chain shards/sparkles 파티클 | 각 ShaderMaterial의 정확한 픽셀 결과, `NShaker`, swords scale ramp, glow ramp, active particle lifecycle |
-| 사신의 형상 | 캐릭터별 뼈 부착, idle glow/noise 근사, 발동 polar ring A/B 원본 노드·속성을 비활성 상태로 보존 | `OnEffectTriggered()` 파티클 재시작과 미리보기 입력, polar shader의 정확한 픽셀 결과 |
-| 메아리의 형상 | 캐릭터별 뼈 부착, 푸른 잔상 근사, 원본 common specks 파티클. lines 노드·곡선은 정적 씬에 보존 | `SubViewportTexture`를 쓰는 lines의 실제 렌더, `SubViewport`, `NSpineSpriteCopier`의 실제 Spine 복제, active/inactive `NValueRamp`. 현재 잔상은 무대 캔버스 tint |
+| 악마의 형상 | 원점 배치, idle glow/noise 근사, 원본 packed scene의 common clouds·반복 slash·embers와 로컬 위치. 공식 패치 GIF를 기준으로 배경 불꽃과 구름의 크기·광도를 축소 | 발동 전용 slash/embers/glow, `OnEffectTriggered()` 파티클 재시작, ShaderMaterial LUT·erosion·hue shift의 정확한 픽셀 결과 |
+| 구렁이의 형상 | 캐릭터별 뼈 부착, idle glow/noise/snakes 근사, 원본 polar 변환과 진행 곡선을 구운 8프레임 scream ring | 발동 scream/common ring, `NShaker`, `NValueRamp`, 발동 후 snakes fade, GPU 필터링·offset의 정확한 픽셀 결과. snakes 위치·색·스케일은 수동 근사 |
+| 공허의 형상 | `head` 추적과 0.2 보간, 원본 네 spike 계층과 느린 브라우저 회전, constellation/ray/chain shards/sparkles 파티클, common ray의 세로 알파 마스크와 길이 변화를 구운 8프레임 플립북 | spike noise-scale 셰이더의 시간 변화, `NShaker`, swords scale ramp, glow ramp, active particle lifecycle |
+| 사신의 형상 | 캐릭터별 뼈 부착, 광도를 낮춘 idle glow/noise 근사, 발동 polar ring A/B 원본 노드·속성을 비활성 상태로 보존 | `OnEffectTriggered()` 파티클 재시작과 미리보기 입력, polar shader의 정확한 픽셀 결과 |
+| 메아리의 형상 | 캐릭터별 뼈 부착, 크기를 줄인 원본 common specks 파티클. lines 노드·곡선은 정적 씬에 보존 | `SubViewportTexture`를 쓰는 lines의 실제 렌더, `SubViewport`, `NSpineSpriteCopier`의 실제 Spine 복제, active/inactive `NValueRamp`. 부정확한 전신 Canvas tint는 표시하지 않음 |
 
 미구현 요소는 사용자 UI에 별도 상태로 표시하지 않고 렌더에서 생략된다.
 
