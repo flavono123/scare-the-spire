@@ -88,6 +88,15 @@ interface ThisOrThatPostRow {
   created_at: string;
 }
 
+interface ThisOrThatVoteSummaryRow {
+  post_id: string;
+  left_count: number | string;
+  right_count: number | string;
+  total_count: number | string;
+}
+
+type ThisOrThatVoteTotalsRow = Omit<ThisOrThatVoteSummaryRow, "post_id">;
+
 interface RunRow {
   id: string;
   seed: string;
@@ -139,6 +148,8 @@ interface AdminSnapshot {
   comments: QueryState<CommentRow[]>;
   communityStories: QueryState<CommunityStoryRow[]>;
   thisOrThatPosts: QueryState<ThisOrThatPostRow[]>;
+  thisOrThatVotes: QueryState<ThisOrThatVoteSummaryRow[]>;
+  thisOrThatVoteTotals: QueryState<ThisOrThatVoteTotalsRow[]>;
   chemicalPosts: QueryState<ChemicalPostRow[]>;
   comboPosts: QueryState<ComboPostRow[]>;
   transfigurePosts: QueryState<TransfigurePostRow[]>;
@@ -208,6 +219,7 @@ async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
     comments,
     communityStories,
     thisOrThatPosts,
+    thisOrThatVoteTotals,
     chemicalPosts,
     comboPosts,
     transfigurePosts,
@@ -236,6 +248,11 @@ async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
         .eq("env", ADMIN_DATA_ENV)
         .order("created_at", { ascending: false })
         .limit(ROW_LIMIT),
+      [],
+    ),
+    readSupabase<ThisOrThatVoteTotalsRow[]>(
+      "admin.this_or_that_vote_totals",
+      supabase.rpc("get_this_or_that_vote_totals", { p_env: ADMIN_DATA_ENV }),
       [],
     ),
     readSupabase<ChemicalPostRow[]>(
@@ -295,11 +312,21 @@ async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
       [],
     ),
   ]);
+  const thisOrThatVotes = await readSupabase<ThisOrThatVoteSummaryRow[]>(
+    "admin.this_or_that_votes",
+    supabase.rpc("get_this_or_that_vote_summaries", {
+      p_post_ids: thisOrThatPosts.data.map((post) => post.id),
+      p_env: ADMIN_DATA_ENV,
+    }),
+    [],
+  );
 
   return {
     comments,
     communityStories,
     thisOrThatPosts,
+    thisOrThatVotes,
+    thisOrThatVoteTotals,
     chemicalPosts,
     comboPosts,
     transfigurePosts,
@@ -458,6 +485,10 @@ export default async function SupabaseAdminPage() {
   const topStories = topLikedStories(snapshot?.engagementCounts.data ?? []);
   const uniqueLikeUsers = new Set(snapshot?.likes.data.map((row) => row.user_id) ?? []).size;
   const uniqueCommentLikeUsers = new Set(snapshot?.commentLikes.data.map((row) => row.user_id) ?? []).size;
+  const thisOrThatVotesByPost = new Map(
+    snapshot?.thisOrThatVotes.data.map((row) => [row.post_id, row]) ?? [],
+  );
+  const totalThisOrThatVotes = numberValue(snapshot?.thisOrThatVoteTotals.data[0]?.total_count);
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-6">
@@ -618,9 +649,13 @@ export default async function SupabaseAdminPage() {
             </div>
           </Section>
 
-          <Section title="이거 아님 저거?" count={countLabel(snapshot.thisOrThatPosts)} error={snapshot.thisOrThatPosts.error}>
+          <Section
+            title="이거 아님 저거?"
+            count={`${countLabel(snapshot.thisOrThatPosts)} · ${totalThisOrThatVotes.toLocaleString("ko-KR")}표`}
+            error={snapshot.thisOrThatPosts.error ?? snapshot.thisOrThatVotes.error ?? snapshot.thisOrThatVoteTotals.error}
+          >
             <div className="overflow-x-auto rounded-md border border-border">
-              <table className="w-full min-w-[980px] text-left text-sm">
+              <table className="w-full min-w-[1120px] text-left text-sm">
                 <thead className="bg-muted/40 text-xs text-muted-foreground">
                   <tr>
                     <th className="px-3 py-2">작성일</th>
@@ -628,31 +663,40 @@ export default async function SupabaseAdminPage() {
                     <th className="px-3 py-2">닉네임</th>
                     <th className="px-3 py-2">이거</th>
                     <th className="px-3 py-2">저거</th>
+                    <th className="px-3 py-2 text-right">이거 표</th>
+                    <th className="px-3 py-2 text-right">저거 표</th>
+                    <th className="px-3 py-2 text-right">총 표</th>
                     <th className="px-3 py-2">이유</th>
                     <th className="px-3 py-2">post</th>
                     <th className="px-3 py-2">user_id</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {snapshot.thisOrThatPosts.data.map((post) => (
-                    <tr key={post.id} className="border-t border-border/70 align-top">
-                      <td className="whitespace-nowrap px-3 py-2 text-xs text-muted-foreground">{formatDate(post.created_at)}</td>
-                      <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{post.env}</code></td>
-                      <td className="px-3 py-2 text-orange-200">{post.nickname}</td>
-                      <td className="px-3 py-2"><code className="text-[11px] text-muted-foreground">{post.left_type}:{post.left_id}</code></td>
-                      <td className="px-3 py-2"><code className="text-[11px] text-muted-foreground">{post.right_type}:{post.right_id}</code></td>
-                      <td className="px-3 py-2">{truncate(post.reason, 100)}</td>
-                      <td className="px-3 py-2">
-                        <Link href={productionHref(`/this-or-that/${post.id}`)} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
-                          {post.id.slice(0, 8)}
-                        </Link>
-                      </td>
-                      <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{post.user_id}</code></td>
-                    </tr>
-                  ))}
+                  {snapshot.thisOrThatPosts.data.map((post) => {
+                    const votes = thisOrThatVotesByPost.get(post.id);
+                    return (
+                      <tr key={post.id} className="border-t border-border/70 align-top">
+                        <td className="whitespace-nowrap px-3 py-2 text-xs text-muted-foreground">{formatDate(post.created_at)}</td>
+                        <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{post.env}</code></td>
+                        <td className="px-3 py-2 text-orange-200">{post.nickname}</td>
+                        <td className="px-3 py-2"><code className="text-[11px] text-muted-foreground">{post.left_type}:{post.left_id}</code></td>
+                        <td className="px-3 py-2"><code className="text-[11px] text-muted-foreground">{post.right_type}:{post.right_id}</code></td>
+                        <td className="px-3 py-2 text-right tabular-nums spire-aqua">{numberValue(votes?.left_count).toLocaleString("ko-KR")}</td>
+                        <td className="px-3 py-2 text-right tabular-nums spire-pink">{numberValue(votes?.right_count).toLocaleString("ko-KR")}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{numberValue(votes?.total_count).toLocaleString("ko-KR")}</td>
+                        <td className="px-3 py-2">{truncate(post.reason, 100)}</td>
+                        <td className="px-3 py-2">
+                          <Link href={productionHref(`/this-or-that/${post.id}`)} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
+                            {post.id.slice(0, 8)}
+                          </Link>
+                        </td>
+                        <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{post.user_id}</code></td>
+                      </tr>
+                    );
+                  })}
                   {snapshot.thisOrThatPosts.data.length === 0 && (
                     <tr>
-                      <td className="px-3 py-6 text-center text-sm text-muted-foreground" colSpan={8}>이거저거 없음</td>
+                      <td className="px-3 py-6 text-center text-sm text-muted-foreground" colSpan={11}>이거저거 없음</td>
                     </tr>
                   )}
                 </tbody>

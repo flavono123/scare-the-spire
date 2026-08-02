@@ -71,3 +71,27 @@ $$;
 
 revoke all on function public.get_this_or_that_vote_summaries(uuid[], text) from public;
 grant execute on function public.get_this_or_that_vote_summaries(uuid[], text) to anon, authenticated;
+
+create function public.get_this_or_that_vote_totals(
+  p_env text default 'production'
+)
+returns table (
+  left_count bigint,
+  right_count bigint,
+  total_count bigint
+)
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select
+    count(*) filter (where votes.choice = 'left')::bigint,
+    count(*) filter (where votes.choice = 'right')::bigint,
+    count(*)::bigint
+  from public.this_or_that_post_votes as votes
+  where votes.env = p_env;
+$$;
+
+revoke all on function public.get_this_or_that_vote_totals(text) from public;
+grant execute on function public.get_this_or_that_vote_totals(text) to anon, authenticated;
