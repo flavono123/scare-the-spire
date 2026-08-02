@@ -77,43 +77,45 @@ export function ThisOrThatVoteStatus({
 
   return (
     <div className="space-y-2" aria-live="polite">
-      {choice ? (
-        <>
-          <div className="flex items-center justify-between gap-3 font-game-text text-xs font-bold sm:text-sm">
+      <div className="flex min-h-5 items-center justify-between gap-3 font-game-text text-xs font-bold sm:text-sm">
+        {choice ? (
+          <>
             <span className="spire-aqua">
               {formatBreakdown(leftPercent, summary.leftCount)}
             </span>
             <span className="spire-pink text-right">
               {formatBreakdown(rightPercent, summary.rightCount)}
             </span>
-          </div>
-          <div
-            className="flex h-2 overflow-hidden rounded-full bg-zinc-800"
-            role="img"
-            aria-label={`${leftPercent}% / ${rightPercent}%`}
-          >
-            <span
-              className="h-full bg-[#22d3ee] transition-[width] duration-500 motion-reduce:transition-none"
-              style={{ width: `${leftPercent}%` }}
-            />
-            <span
-              className="h-full flex-1 bg-[#f472b6] transition-[width] duration-500 motion-reduce:transition-none"
-            />
-          </div>
-        </>
-      ) : (
-        <div className={`flex min-h-5 items-center text-xs tabular-nums text-muted-foreground ${unavailable ? "justify-center" : "justify-end"}`}>
-          {loading ? (
-            <EngagementSpinner size={15} />
-          ) : unavailable ? (
-            <EngagementUnavailableIcon size={15} />
-          ) : (
-            voteCountTemplate.replace("{count}", String(summary.totalCount))
-          )}
-        </div>
-      )}
+          </>
+        ) : (
+          <span className={`flex w-full items-center tabular-nums text-muted-foreground ${unavailable ? "justify-center" : "justify-end"}`}>
+            {loading ? (
+              <EngagementSpinner size={15} />
+            ) : unavailable ? (
+              <EngagementUnavailableIcon size={15} />
+            ) : (
+              voteCountTemplate.replace("{count}", String(summary.totalCount))
+            )}
+          </span>
+        )}
+      </div>
 
-      <div className="flex min-h-10 items-center gap-2 font-game-text text-sm font-bold text-zinc-200">
+      <div
+        className={`flex h-2 overflow-hidden rounded-full bg-zinc-800 ${choice ? "" : "invisible"}`}
+        role={choice ? "img" : undefined}
+        aria-label={choice ? `${leftPercent}% / ${rightPercent}%` : undefined}
+        aria-hidden={choice ? undefined : true}
+      >
+        <span
+          className="h-full bg-[#22d3ee] transition-[width] duration-500 motion-reduce:transition-none"
+          style={{ width: `${leftPercent}%` }}
+        />
+        <span
+          className="h-full flex-1 bg-[#f472b6] transition-[width] duration-500 motion-reduce:transition-none"
+        />
+      </div>
+
+      <div className="flex min-h-11 items-center gap-2 font-game-text text-sm font-bold text-zinc-200">
         <Image
           src={KNOWLEDGE_DEMON_TOKEN}
           alt=""
@@ -122,18 +124,20 @@ export function ThisOrThatVoteStatus({
           aria-hidden
           className="h-8 w-8 shrink-0 object-contain drop-shadow"
         />
-        <span>{choice ? done : prompt}</span>
-        {pending && <EngagementSpinner size={15} />}
-        {choice && (
-          <button
-            type="button"
-            onClick={onRetry}
-            disabled={pending || unavailable}
-            className="ml-auto min-h-11 shrink-0 px-2 text-xs font-semibold text-muted-foreground underline decoration-white/20 underline-offset-4 transition-colors hover:text-yellow-300 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {retryLabel}
-          </button>
-        )}
+        <span className="min-w-0">{choice ? done : prompt}</span>
+        <span className="flex h-4 w-4 shrink-0 items-center justify-center" aria-hidden={!pending}>
+          {pending && <EngagementSpinner size={15} />}
+        </span>
+        <button
+          type="button"
+          onClick={onRetry}
+          disabled={!choice || pending || unavailable}
+          aria-hidden={!choice}
+          tabIndex={choice ? undefined : -1}
+          className={`ml-auto min-h-11 shrink-0 px-2 text-xs font-semibold text-muted-foreground underline decoration-white/20 underline-offset-4 transition-colors hover:text-yellow-300 disabled:cursor-not-allowed disabled:opacity-50 ${choice ? "" : "invisible"}`}
+        >
+          {retryLabel}
+        </button>
       </div>
     </div>
   );
