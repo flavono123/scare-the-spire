@@ -61,6 +61,7 @@ Turn rough service-update notes into canonical 섀소식 / byrdispatch markdown.
 
 - Preserve the user's intended substance, but rewrite bullets into service-update language.
 - Do not mimic game patch notes or Steam patch prose.
+- Under `패치노트`, include only functional service changes; do not list publishing a patch note, syncing a game patch, or adding patch content by itself.
 - Do not put STS2 game balance changes here unless the service UI/content changed because of them.
 - Do not add marketing copy, long explanations, or speculative roadmap items.
 - Do not auto-translate community/user-authored content.
