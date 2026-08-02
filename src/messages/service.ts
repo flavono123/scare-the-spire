@@ -13,7 +13,7 @@ export const serviceMessages = {
       transfigure: "변형",
     },
     patchNotes: {
-      indexTitle: "슬레이 더 스파이어 2 패치 노트 및 업데이트 내역",
+      indexTitle: "패치 노트",
       detailTitle: "슬레이 더 스파이어 2 {version} {type} 패치 노트",
       richDetails: "변경된 카드·유물 이름을 선택하면 상세 정보와 버전별 변경 이력을 확인할 수 있습니다.",
     },
@@ -859,7 +859,7 @@ export const serviceMessages = {
       transfigure: "Transfigure",
     },
     patchNotes: {
-      indexTitle: "Slay the Spire 2 Patch Notes & Update History",
+      indexTitle: "Patch Notes",
       detailTitle: "Slay the Spire 2 {version} {type} Patch Notes",
       richDetails: "Select a changed card or relic to view its details and version history.",
     },
