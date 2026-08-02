@@ -37,6 +37,8 @@ export async function renderThisOrThatPage(
           gameLocale={gameLocale}
           title={gameCopy.title}
           prompt={gameCopy.prompt}
+          votePrompt={gameCopy.votePrompt}
+          voteDone={gameCopy.voteDone}
         />
       </div>
     </div>

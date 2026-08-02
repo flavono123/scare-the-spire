@@ -10,6 +10,7 @@ import { useThisOrThatEntities } from "@/hooks/use-this-or-that-entities";
 import { useThisOrThatCommentCounts } from "@/hooks/use-this-or-that-comment-counts";
 import { useThisOrThatLikes } from "@/hooks/use-this-or-that-likes";
 import { useThisOrThatPosts } from "@/hooks/use-this-or-that-posts";
+import { useThisOrThatVotes } from "@/hooks/use-this-or-that-votes";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import type { GameLocale } from "@/lib/i18n";
 import {
@@ -27,10 +28,14 @@ export function ThisOrThatClient({
   gameLocale,
   title,
   prompt,
+  votePrompt,
+  voteDone,
 }: {
   gameLocale: GameLocale;
   title: string;
   prompt: string;
+  votePrompt: string;
+  voteDone: string;
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].thisOrThat;
@@ -54,6 +59,7 @@ export function ThisOrThatClient({
   const postIds = useMemo(() => posts.map((post) => post.id), [posts]);
   const likes = useThisOrThatLikes(postIds, userId);
   const comments = useThisOrThatCommentCounts(postIds);
+  const votes = useThisOrThatVotes(postIds, userId, ensureUser);
   const [composerOpen, setComposerOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -178,8 +184,18 @@ export function ThisOrThatClient({
               likesUnavailable={likes.unavailable}
               commentCount={comments.counts[resolvedPost.post.id] ?? 0}
               canLike={ready && !authUnavailable}
+              canVote={ready && !authUnavailable && !votes.loading && !votes.unavailable}
+              voteSummary={votes.summaries[resolvedPost.post.id]}
+              voteChoice={votes.choices[resolvedPost.post.id]}
+              votePending={votes.pending.has(resolvedPost.post.id)}
+              voteLoading={votes.loading}
+              voteUnavailable={votes.unavailable || authUnavailable}
+              votePrompt={votePrompt}
+              voteDone={voteDone}
               onDelete={handleDelete}
               onToggleLike={handleToggleLike}
+              onVote={(choice) => votes.vote(resolvedPost.post.id, choice, "index")}
+              onRetryVote={() => votes.cancel(resolvedPost.post.id)}
             />
           ))}
         </div>
