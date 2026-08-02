@@ -338,22 +338,29 @@ def material_metadata(reader: PCKReader, path: str) -> dict[str, Any] | None:
     }
 
 
-def flatten_packed_roots(reader: PCKReader, scene: dict[str, Any]) -> None:
-    for node in scene["nodes"]:
-        instance = node.pop("instance", None)
+def flatten_packed_scenes(reader: PCKReader, scene: dict[str, Any]) -> None:
+    original_nodes = scene["nodes"]
+    overrides = {node_path(node): node for node in original_nodes if "instance" not in node}
+    consumed: set[int] = set()
+    expanded: list[dict[str, Any]] = []
+    for node in original_nodes:
+        if id(node) in consumed:
+            continue
+        instance = node.get("instance")
         values = instance.get("v") if isinstance(instance, dict) and instance.get("$") == "ExtResource" else None
         if not isinstance(values, list) or not values:
+            expanded.append(node)
             continue
         packed_id = str(values[0])
         packed_resource = scene["ext"].get(packed_id)
         if not packed_resource or packed_resource["type"] != "PackedScene":
+            expanded.append(node)
             continue
+        node.pop("instance")
         packed = parse_scene(
             reader.read_file(packed_resource["path"]).decode("utf-8"),
             packed_resource["path"],
         )
-        if len(packed["nodes"]) != 1:
-            raise ValueError(f'{packed_resource["path"]}: expected one packed root node')
         prefix = re.sub(r"[^a-zA-Z0-9_]", "_", node["name"])
         ext_ids = {key: f"{prefix}__{key}" for key in packed["ext"]}
         sub_ids = {key: f"{prefix}__{key}" for key in packed["resources"]}
@@ -368,12 +375,28 @@ def flatten_packed_roots(reader: PCKReader, scene: dict[str, Any]) -> None:
             copied = copy.deepcopy(resource)
             copied["props"] = rewrite_refs(copied["props"], ext_ids, sub_ids)
             scene["resources"][sub_ids[key]] = copied
-        packed_root = packed["nodes"][0]
-        node["type"] = packed_root["type"]
-        node["props"] = {
-            **rewrite_refs(packed_root["props"], ext_ids, sub_ids),
-            **node["props"],
-        }
+        instance_path = node_path(node)
+        for index, packed_node in enumerate(packed["nodes"]):
+            if index == 0:
+                target = node
+            else:
+                packed_parent = packed_node.get("parent")
+                parent = instance_path if packed_parent in {None, "."} else f"{instance_path}/{packed_parent}"
+                path = f"{parent}/{packed_node['name']}"
+                target = overrides.get(path, {
+                    "name": packed_node["name"],
+                    "parent": parent,
+                    "props": {},
+                    "type": packed_node["type"],
+                })
+                consumed.add(id(target))
+            target["type"] = packed_node["type"]
+            target["props"] = {
+                **rewrite_refs(packed_node["props"], ext_ids, sub_ids),
+                **target["props"],
+            }
+            expanded.append(target)
+    scene["nodes"] = expanded
 
 
 def character_visual_transforms(reader: PCKReader) -> dict[str, dict[str, list[float]]]:
@@ -437,9 +460,9 @@ def compile_scene(
     dry_run: bool,
 ) -> dict[str, Any]:
     scene = parse_scene(reader.read_file(spec.scene_path).decode("utf-8"), spec.scene_path)
-    particle_forms = {"demon", "serpent"}
+    particle_forms = {"demon", "serpent", "void"}
     if spec.slug in particle_forms:
-        flatten_packed_roots(reader, scene)
+        flatten_packed_scenes(reader, scene)
     supported_nodes = {"Node2D", "Sprite2D"}
     if spec.slug in particle_forms:
         supported_nodes.add("GPUParticles2D")
@@ -495,33 +518,6 @@ def compile_scene(
             texture_metadata[key] = metadata
         resource["texture"] = metadata
 
-    if spec.slug == "void":
-        spike_texture_id = "browser_void_spike"
-        scene["ext"][spike_texture_id] = {
-            "path": VOID_SPIKE,
-            "texture": texture_metadata[VOID_SPIKE],
-            "type": "Texture2D",
-        }
-        for index, rotation in enumerate((-math.pi / 6, math.pi / 12, math.pi * 11 / 12, -math.pi * 5 / 6), start=1):
-            pivot_name = f"browser_void_spike_{index}"
-            kept_nodes.extend((
-                {
-                    "name": pivot_name,
-                    "parent": "center_pivot",
-                    "props": {"rotation": rotation, "browser_pulse_strength": 0.04, "browser_pulse_speed": 1.8},
-                    "type": "Node2D",
-                },
-                {
-                    "name": "gfx",
-                    "parent": f"center_pivot/{pivot_name}",
-                    "props": {
-                        "position": {"$": "Vector2", "v": [110, 0]},
-                        "scale": {"$": "Vector2", "v": [0.35, 0.35]},
-                        "texture": {"$": "ExtResource", "v": [spike_texture_id]},
-                    },
-                    "type": "Sprite2D",
-                },
-            ))
     return scene
 
 
