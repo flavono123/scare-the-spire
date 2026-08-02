@@ -142,7 +142,6 @@ export function ThisOrThatResourcePanel({
   const assetOnlyNonCardPreview = assetOnly && !entity.cardData
     ? <AssetOnlyNonCardPreview entity={entity} size={size} />
     : null;
-  const hasAssetOnlyNonCardPreview = Boolean(assetOnlyNonCardPreview);
   const preview = entity.cardData ? (
     <CardTile
       card={entity.cardData}
@@ -174,10 +173,8 @@ export function ThisOrThatResourcePanel({
   if (assetOnly) {
     const assetContent = (
       <span className={cn(
-        "flex h-full w-full items-center justify-center overflow-hidden",
-        isLarge
-          ? hasAssetOnlyNonCardPreview ? "min-h-[22rem]" : "min-h-[28rem]"
-          : hasAssetOnlyNonCardPreview ? "min-h-40" : "min-h-52",
+        "flex w-full items-center justify-center overflow-hidden",
+        isLarge ? "h-[28rem]" : "h-60",
       )}>
         {preview}
       </span>
