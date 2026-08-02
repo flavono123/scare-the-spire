@@ -9,6 +9,8 @@ import {
   PatchLineStoriesPanel,
   PatchLineStoryAction,
 } from "@/components/patches/patch-note-with-story-actions";
+import { ByrdispatchRichText } from "@/app/(main)/byrdispatch/page-content";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { STS2Patch, STS2PatchLine } from "@/lib/types";
 
 function renderPatch(markdown: string, entities: EntityInfo[]): string {
@@ -66,6 +68,26 @@ assert.match(availableHtml, /href="\/en\/compendium\/cards\?card=bash"/);
 const internalLinkHtml = renderPatch("[0.110.0](/patches/0.110.0)", []);
 assert.match(internalLinkHtml, /href="\/en\/patches\/0\.110\.0"/);
 assert.doesNotMatch(internalLinkHtml, /target="_blank"/);
+
+const knowledgeDemonTokenHtml = renderToStaticMarkup(
+  <ByrdispatchRichText
+    text="{지식의악마토큰}"
+    entities={[{
+      id: "KNOWLEDGE_DEMON_BOSS",
+      nameEn: "Knowledge Demon",
+      nameKo: "지식의 악마",
+      imageUrl: "/images/sts2/bosses/knowledge_demon_boss.webp",
+      color: "boss",
+      type: "monster",
+    }]}
+    gameUi={{} as CodexGameUiLabels}
+    serviceLocale="ko"
+    gameLocale="kor"
+    storyPlaceholder=""
+  />,
+);
+assert.match(knowledgeDemonTokenHtml, /\/images\/sts2\/bosses\/knowledge_demon_boss\.webp/);
+assert.doesNotMatch(knowledgeDemonTokenHtml, /지식의악마토큰/);
 
 const staticAvailableHtml = renderStaticPatch("[gold:card]Bash[/gold]", [availableCard]);
 assert.match(staticAvailableHtml, /href="\/en\/compendium\/cards\?card=bash"/);

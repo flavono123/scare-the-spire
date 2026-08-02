@@ -99,7 +99,8 @@ const SERVICE_REFERENCE_LINKS: Record<string, string> = {
 
 const SERVICE_REFERENCE_RE = /(이거 아님 저거\?|역사 강의서|슬서운 이야기|슬서운 변경|패치노트|패치 노트|코오오옴보|케미컬X|케미컬엑스|백과사전|섀소식|프로필|변형)/g;
 const STORY_COMPOSER_ACTION_TOKEN = "[새 이야기 쓰기 버튼 노출/링크]";
-const INLINE_ACTION_RE = new RegExp(`${STORY_COMPOSER_ACTION_TOKEN.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}|${SERVICE_REFERENCE_RE.source}`, "g");
+const KNOWLEDGE_DEMON_TOKEN = "{지식의악마토큰}";
+const INLINE_ACTION_RE = new RegExp(`${STORY_COMPOSER_ACTION_TOKEN.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}|${KNOWLEDGE_DEMON_TOKEN.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}|${SERVICE_REFERENCE_RE.source}`, "g");
 
 function normalizeServiceTitle(title: string): string {
   return title
@@ -234,7 +235,7 @@ function ServiceHeading({
   return <h2 className={headingClassName}>{content}</h2>;
 }
 
-function ByrdispatchRichText({
+export function ByrdispatchRichText({
   text,
   entities,
   gameUi,
@@ -270,12 +271,14 @@ function ByrdispatchRichText({
     );
   };
   const parts: ReactNode[] = [];
+  const knowledgeDemon = entities.find((entity) => entity.type === "monster" && entity.id === "KNOWLEDGE_DEMON_BOSS");
   let lastIndex = 0;
   let matchIndex = 0;
 
   for (const match of text.matchAll(INLINE_ACTION_RE)) {
     const index = match.index ?? 0;
     const isComposerAction = match[0] === STORY_COMPOSER_ACTION_TOKEN;
+    const isKnowledgeDemonToken = match[0] === KNOWLEDGE_DEMON_TOKEN;
     const label = match[1];
     const href = SERVICE_REFERENCE_LINKS[label];
     const service = label ? serviceIconFor(label) : null;
@@ -290,6 +293,12 @@ function ByrdispatchRichText({
         serviceLocale={serviceLocale}
         storyPlaceholder={storyPlaceholder}
         entities={entities}
+      />
+    ) : isKnowledgeDemonToken ? (
+      <TokenIcon
+        key={`knowledge-demon-${matchIndex}`}
+        src={knowledgeDemon?.imageUrl ?? "/images/sts2/bosses/knowledge_demon_boss.webp"}
+        label={knowledgeDemon?.nameKo ?? ""}
       />
     ) : href && service ? (
       <Link
