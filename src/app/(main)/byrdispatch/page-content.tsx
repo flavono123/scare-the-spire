@@ -70,6 +70,7 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   이벤트: { href: "/compendium/events", icon: "/images/sts2/nav/question_mark.png" },
   "고대의 존재": { href: "/compendium/ancients", icon: "/images/sts2/nav/stats_ancients.png" },
   연대기: { href: "/compendium/epochs", icon: "/images/sts2/relics/planisphere.webp" },
+  뱃지: { href: "/compendium/badges", icon: "/images/sts2/badges/double_snecko.webp" },
   변형: { href: "/transfigure", icon: "/images/sts2/relics/astrolabe.webp" },
   "코오오옴보": { href: "/c-c-c-combo", icon: "/images/sts2/badges/ccccombo.webp" },
   "케미컬X": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
