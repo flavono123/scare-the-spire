@@ -30,11 +30,6 @@ COMMON_GLOW = "images/vfx/common/common_glow.png"
 NOISE = "images/vfx/noise/vfx_noise_4.png"
 SERPENT_SNAKES = "images/vfx/forms/serpent/form_serpent_snakes.png"
 VOID_SPIKE = "images/vfx/forms/void/form_void_spike.png"
-DEMON_PARTICLE_TEXTURES = {
-    "images/vfx/shared_use/smoke_vfx.png": "demon/smoke_vfx.webp",
-    "images/vfx/big_slash/big_slash_impact_core_flipbook.png": "demon/big_slash_impact_core_flipbook.webp",
-    "images/vfx/fire_impact/fire_burst_ember_straight.png": "demon/fire_burst_ember_straight.webp",
-}
 
 
 @dataclass(frozen=True)
@@ -438,12 +433,15 @@ def compile_scene(
     reader: PCKReader,
     spec: FormSpec,
     texture_metadata: dict[str, dict[str, Any]],
+    force: bool,
+    dry_run: bool,
 ) -> dict[str, Any]:
     scene = parse_scene(reader.read_file(spec.scene_path).decode("utf-8"), spec.scene_path)
-    if spec.slug == "demon":
+    particle_forms = {"demon", "serpent"}
+    if spec.slug in particle_forms:
         flatten_packed_roots(reader, scene)
     supported_nodes = {"Node2D", "Sprite2D"}
-    if spec.slug == "demon":
+    if spec.slug in particle_forms:
         supported_nodes.add("GPUParticles2D")
     kept_nodes = [node for node in scene["nodes"] if node["type"] in supported_nodes]
     kept_paths = {node_path(node) for node in kept_nodes}
@@ -476,7 +474,7 @@ def compile_scene(
             props["scale"] = {"$": "Vector2", "v": [1.75, 1.75]}
 
     scene["nodes"] = kept_nodes
-    if spec.slug != "demon":
+    if spec.slug not in particle_forms:
         scene["resources"] = {}
     prune_resources(scene)
     scene.pop("resource", None)
@@ -487,8 +485,15 @@ def compile_scene(
         source = resource["path"]
         key = spec.slug if source == NOISE else source
         metadata = texture_metadata.get(key)
-        if metadata:
-            resource["texture"] = metadata
+        if not metadata:
+            metadata = save_texture(
+                read_texture(reader, source),
+                f"{spec.slug}/{Path(source).stem}.webp",
+                force,
+                dry_run,
+            )
+            texture_metadata[key] = metadata
+        resource["texture"] = metadata
 
     if spec.slug == "void":
         spike_texture_id = "browser_void_spike"
@@ -547,14 +552,6 @@ def main() -> int:
                 args.force,
                 args.dry_run,
             )
-        for source, output in DEMON_PARTICLE_TEXTURES.items():
-            texture_metadata[source] = save_texture(
-                read_texture(reader, source),
-                output,
-                args.force,
-                args.dry_run,
-            )
-
         manifest = []
         visual_transforms = character_visual_transforms(reader)
         for spec in FORMS:
@@ -562,7 +559,7 @@ def main() -> int:
                 reader.read_file(spec.scene_path).decode("utf-8"),
                 spec.scene_path,
             )
-            scene = compile_scene(reader, spec, texture_metadata)
+            scene = compile_scene(reader, spec, texture_metadata, args.force, args.dry_run)
             scene_path = SCENE_ROOT / f"{spec.slug}.json"
             write_json(scene_path, scene, args.dry_run)
             manifest.append({
