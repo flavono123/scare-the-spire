@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -35,7 +36,6 @@ class FormSpec:
     slug: str
     card_id: str
     origin_character_id: str
-    anchor_y: float
 
     @property
     def scene_path(self) -> str:
@@ -43,12 +43,20 @@ class FormSpec:
 
 
 FORMS = (
-    FormSpec("demon", "DEMON_FORM", "IRONCLAD", 0.5),
-    FormSpec("serpent", "SERPENT_FORM", "SILENT", 0.4),
-    FormSpec("void", "VOID_FORM", "REGENT", 0.18),
-    FormSpec("reaper", "REAPER_FORM", "NECROBINDER", 0.52),
-    FormSpec("echo", "ECHO_FORM", "DEFECT", 0.4),
+    FormSpec("demon", "DEMON_FORM", "IRONCLAD"),
+    FormSpec("serpent", "SERPENT_FORM", "SILENT"),
+    FormSpec("void", "VOID_FORM", "REGENT"),
+    FormSpec("reaper", "REAPER_FORM", "NECROBINDER"),
+    FormSpec("echo", "ECHO_FORM", "DEFECT"),
 )
+
+CHARACTER_SCENES = {
+    "IRONCLAD": "ironclad",
+    "SILENT": "silent",
+    "REGENT": "regent",
+    "NECROBINDER": "necrobinder",
+    "DEFECT": "defect",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -260,6 +268,51 @@ def node_path(node: dict[str, Any]) -> str:
     return "." if parent is None else node["name"] if parent == "." else f"{parent}/{node['name']}"
 
 
+def character_visual_transforms(reader: PCKReader) -> dict[str, dict[str, list[float]]]:
+    transforms = {}
+    for character_id, scene_slug in CHARACTER_SCENES.items():
+        scene_path = f"scenes/creature_visuals/{scene_slug}.tscn"
+        scene_text = reader.read_file(scene_path).decode("utf-8")
+        visuals_match = re.search(
+            r'^\[node name="Visuals"[^\n]*parent="\."[^\n]*\]\n(?P<props>.*?)(?=\n\[node|\Z)',
+            scene_text,
+            re.MULTILINE | re.DOTALL,
+        )
+        if not visuals_match:
+            raise ValueError(f"{scene_path}: root Visuals node not found")
+        props = visuals_match.group("props")
+
+        def read_vector(name: str, fallback: tuple[float, float]) -> list[float]:
+            match = re.search(
+                rf'^{re.escape(name)} = Vector2\(([^,]+),\s*([^\)]+)\)$',
+                props,
+                re.MULTILINE,
+            )
+            return [float(match.group(1)), float(match.group(2))] if match else list(fallback)
+
+        transforms[character_id] = {
+            "visualPosition": read_vector("position", (0, 0)),
+            "visualScale": read_vector("scale", (1, 1)),
+        }
+    return transforms
+
+
+def form_placements(
+    scene: dict[str, Any],
+    visual_transforms: dict[str, dict[str, list[float]]],
+) -> dict[str, dict[str, Any]]:
+    root_props = scene["nodes"][0]["props"]
+    follows_bone = "_boneFollower" in root_props
+    placements = {}
+    for character_id, transform in visual_transforms.items():
+        bone_property = f"_{CHARACTER_SCENES[character_id]}BoneName"
+        placements[character_id] = {
+            "boneName": root_props.get(bone_property) if follows_bone else None,
+            **transform,
+        }
+    return placements
+
+
 def compile_scene(
     reader: PCKReader,
     spec: FormSpec,
@@ -373,14 +426,15 @@ def main() -> int:
             )
 
         manifest = []
+        visual_transforms = character_visual_transforms(reader)
         for spec in FORMS:
             scene = compile_scene(reader, spec, texture_metadata)
             scene_path = SCENE_ROOT / f"{spec.slug}.json"
             write_json(scene_path, scene, args.dry_run)
             manifest.append({
-                "anchorY": spec.anchor_y,
                 "cardId": spec.card_id,
                 "originCharacterId": spec.origin_character_id,
+                "placements": form_placements(scene, visual_transforms),
                 "sceneUrl": public_url(scene_path),
             })
         write_json(MANIFEST_PATH, manifest, args.dry_run)
