@@ -702,7 +702,7 @@ export function TransfigureEditor({
                           label: getTransfigureCardRarityLabel(entities, rarity),
                           value: rarity,
                         }))}
-                      selectLabel={copy.selectCardAttribute}
+                      selectLabel={copy.selectCardRarity}
                       sourceLabel={selected.cardData.rarityLabel}
                       value={transformedCardRarity}
                       onCancel={() => {
@@ -737,7 +737,7 @@ export function TransfigureEditor({
                           label: getTransfigureCardTypeLabel(entities, type),
                           value: type,
                         }))}
-                      selectLabel={copy.selectCardAttribute}
+                      selectLabel={copy.selectCardType}
                       sourceLabel={selected.cardData.typeLabel}
                       value={transformedCardType}
                       onCancel={() => {
