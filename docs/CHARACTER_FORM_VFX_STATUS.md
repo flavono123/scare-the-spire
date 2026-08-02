@@ -16,8 +16,8 @@
 
 기본 형상 추출 경로는 원본 장면에서 `Node2D`와 `Sprite2D`만 남긴다. 악마의 형상부터 실제 필요가 확인된 기능만 단계적으로 공용 경로에 추가하고 있다.
 
-- 악마·구렁이·공허의 형상은 packed scene을 펼쳐 부모 장면과 자식 노드의 오버라이드를 적용하고, 사용 중인 `GPUParticles2D`, subresource, 텍스처를 정적 JSON에 보존한다.
-- 사신과 메아리의 형상은 아직 packed scene, 파티클 노드, subresource를 제거한다.
+- 악마·구렁이·공허·사신의 형상은 packed scene을 펼쳐 부모 장면과 자식 노드의 오버라이드를 적용하고, 사용 중인 `GPUParticles2D`, subresource, 텍스처를 정적 JSON에 보존한다.
+- 메아리의 형상은 아직 packed scene, 파티클 노드, subresource를 제거한다.
 - `SubViewport`와 복제 SpineSprite
 - Godot/C# 스크립트가 담당하는 값 보간, 흔들림, 활성 상태, 발동 이벤트
 
@@ -30,7 +30,7 @@
 | 악마의 형상 | 원점 배치, idle glow/noise 근사, 원본 packed scene의 common clouds·반복 slash·embers와 로컬 위치 | 발동 전용 slash/embers/glow, `OnEffectTriggered()` 파티클 재시작, ShaderMaterial LUT·erosion·hue shift의 정확한 픽셀 결과 |
 | 구렁이의 형상 | 캐릭터별 뼈 부착, idle glow/noise/snakes 근사, 원본 idle scream ring 노드·수명·크기/알파 곡선 | 발동 scream/common ring, `NShaker`, `NValueRamp`, 발동 후 snakes fade, polar shader의 정확한 픽셀 결과. snakes 위치·색·스케일은 수동 근사 |
 | 공허의 형상 | `head` 추적과 0.2 보간, 원본 네 spike 계층·회전·자식 오버라이드, constellation/ray/chain shards/sparkles 파티클 | 각 ShaderMaterial의 정확한 픽셀 결과, `NShaker`, swords scale ramp, glow ramp, active particle lifecycle |
-| 사신의 형상 | 캐릭터별 뼈 부착, idle glow/noise 근사 | 발동 polar ring A/B, `OnEffectTriggered()` 파티클 재시작, 실제 셰이더 |
+| 사신의 형상 | 캐릭터별 뼈 부착, idle glow/noise 근사, 발동 polar ring A/B 원본 노드·속성을 비활성 상태로 보존 | `OnEffectTriggered()` 파티클 재시작과 미리보기 입력, polar shader의 정확한 픽셀 결과 |
 | 메아리의 형상 | 캐릭터별 뼈 부착, 푸른 잔상 근사 | common specks, lines 파티클, `SubViewport`, `NSpineSpriteCopier`의 실제 Spine 복제, active/inactive `NValueRamp`. 현재 잔상은 무대 캔버스 tint |
 
 미구현 요소는 사용자 UI에 별도 상태로 표시하지 않고 렌더에서 생략된다.
