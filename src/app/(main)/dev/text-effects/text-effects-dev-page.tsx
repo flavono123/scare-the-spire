@@ -16,6 +16,12 @@ const COLOR_SAMPLES = [
   { tag: "purple", hex: "#c084fc", label: "Purple", desc: "예비 (미사용)" },
 ];
 
+const BADGE_RANK_COLOR_SAMPLES = [
+  { className: "spire-gold", hex: "#d4a843", label: "Gold" },
+  { className: "spire-silver", hex: "#8ad6e0", label: "Silver" },
+  { className: "spire-bronze", hex: "#d7a470", label: "Bronze" },
+];
+
 const EFFECT_SAMPLES = [
   {
     tag: "sine",
@@ -122,6 +128,29 @@ export default function TextEffectsPage() {
               <span className="text-[10px] text-muted-foreground shrink-0">
                 {c.hex}
               </span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="mb-4 text-lg font-semibold text-yellow-500">뱃지 등급 (Badge Ranks)</h2>
+        <p className="mb-3 text-xs text-muted-foreground">
+          금은 기존 강조색, 은·동은 뱃지 베이스 에셋의 밝은 테두리 대표색.
+        </p>
+        <div className="space-y-2">
+          {BADGE_RANK_COLOR_SAMPLES.map((sample) => (
+            <div
+              key={sample.className}
+              className="flex items-center gap-4 rounded border border-border bg-card/50 px-4 py-3"
+            >
+              <div
+                className="h-6 w-6 shrink-0 rounded-full border border-border"
+                style={{ backgroundColor: sample.hex }}
+              />
+              <code className="w-28 shrink-0 text-xs text-muted-foreground">.{sample.className}</code>
+              <span className={`${sample.className} flex-1 text-sm`}>{sample.label}</span>
+              <span className="shrink-0 text-[10px] text-muted-foreground">{sample.hex}</span>
             </div>
           ))}
         </div>
