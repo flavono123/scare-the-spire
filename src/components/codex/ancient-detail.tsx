@@ -1,7 +1,8 @@
 "use client";
 
-import { type ReactNode, type Ref, useMemo, useState } from "react";
+import { type ReactNode, type Ref, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -124,6 +125,19 @@ export function AncientDetail({
     .map((cardId) => cardById.get(cardId))
     .filter((card): card is CodexCard => Boolean(card))
     .map(cardToReferenceTarget);
+  const rewardRelicImages = useMemo(() => {
+    const relicIds = new Set(ancient.relicIds);
+    return (entities ?? [])
+      .filter((entity) => entity.type === "relic" && relicIds.has(entity.id))
+      .map((entity) => entity.imageUrl)
+      .filter((imageUrl): imageUrl is string => Boolean(imageUrl));
+  }, [ancient.relicIds, entities]);
+  const [rewardRelicImageUrl, setRewardRelicImageUrl] = useState<string | null>(null);
+  useEffect(() => {
+    setRewardRelicImageUrl(
+      rewardRelicImages[Math.floor(Math.random() * rewardRelicImages.length)] ?? null,
+    );
+  }, [rewardRelicImages]);
   const actLabel = getAncientActLabel(ancient, serviceText, gameUi);
   const actPillClass = ancient.act
     ? "border-blue-500/40 bg-blue-500/10 text-blue-300"
@@ -218,9 +232,14 @@ export function AncientDetail({
           >
             <Link
               href={localizeHref(`/compendium/relics#ancient-${ancient.id.toLowerCase()}`, serviceLocale)}
-              className={`${relatedCardTargets.length > 0 ? "mt-3 border-t border-white/10 pt-3" : ""} flex min-h-11 items-center font-game-text text-sm font-bold text-[#efc850] transition-colors hover:text-[#fff6e2]`}
+              className={`${relatedCardTargets.length > 0 ? "mt-3 border-t border-white/10 pt-3" : ""} spire-aqua flex min-h-11 items-center gap-2 font-game-text text-sm font-bold transition-[filter] hover:brightness-125`}
             >
-              {serviceText.ancientsView.rewardRelics} →
+              <span className="h-7 w-7 shrink-0" aria-hidden>
+                {rewardRelicImageUrl && (
+                  <Image src={rewardRelicImageUrl} alt="" width={28} height={28} className="h-7 w-7 object-contain drop-shadow-md" />
+                )}
+              </span>
+              {serviceText.ancientsView.rewardRelics}
             </Link>
           </EntityReferenceGroupLinks>
 
