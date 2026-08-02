@@ -438,6 +438,8 @@ export function CharacterDetail({
             {selectedForm && (
               <div className={`pointer-events-none absolute inset-0 ${selectedForm.cardId === "SERPENT_FORM" ? "z-30" : "z-10"}`}>
                 <EventVfxStage
+                  baseImageUrl={selectedForm.cardId === "ECHO_FORM" ? character.combatImageUrl : undefined}
+                  mode={selectedForm.cardId === "ECHO_FORM" ? "echo" : "standard"}
                   placementRef={formPlacementRef}
                   sceneUrl={selectedForm.sceneUrl}
                 />
