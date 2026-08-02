@@ -29,7 +29,12 @@ MANIFEST_PATH = ROOT / "data/sts2/character-form-vfx-assets.json"
 COMMON_GLOW = "images/vfx/common/common_glow.png"
 NOISE = "images/vfx/noise/vfx_noise_4.png"
 SERPENT_SNAKES = "images/vfx/forms/serpent/form_serpent_snakes.png"
+SCREAM_RING = "images/vfx/scream/scream_ring_polar.png"
+SCREAM_RING_MATERIAL = "materials/vfx/scream/vfx_scream_ring_polar.tres"
+COMMON_RAY = "images/vfx/common/common_ray.png"
+COMMON_RAY_MATERIAL = "materials/vfx/common/vfx_ray_fade.tres"
 VOID_SPIKE = "images/vfx/forms/void/form_void_spike.png"
+SHADER_FLIPBOOK_FRAMES = 8
 
 
 @dataclass(frozen=True)
@@ -163,6 +168,65 @@ def lut_texture(
 def sample_wrapped(pixels: Any, size: tuple[int, int], u: float, v: float) -> float:
     width, height = size
     return pixels[round((u % 1.0) * (width - 1)), round((v % 1.0) * (height - 1))][0] / 255
+
+
+def serpent_ring_sheet(image: Image.Image) -> Image.Image:
+    source = image.convert("RGBA")
+    pixels = source.load()
+    width, height = source.size
+    sheet = Image.new("RGBA", (width * SHADER_FLIPBOOK_FRAMES, height))
+    for frame in range(SHADER_FLIPBOOK_FRAMES):
+        progress = frame / (SHADER_FLIPBOOK_FRAMES - 1)
+        if progress < 0.39599:
+            amount = progress / 0.39599
+            interpolation = (
+                (amount**3 - 2 * amount**2 + amount) * 5.70854 * 0.39599
+                + (-2 * amount**3 + 3 * amount**2)
+            )
+        else:
+            interpolation = 1
+        x_offset = mix(0.4, -0.1, max(0, min(1, interpolation)))
+        output = Image.new("RGBA", source.size)
+        output_pixels = output.load()
+        for y in range(height):
+            v = y / max(1, height - 1)
+            for x in range(width):
+                u = x / max(1, width - 1)
+                radius = math.hypot(u - 0.5, v - 0.5) * 2
+                angle = math.atan2(v - 0.5, u - 0.5) / (math.pi * 2)
+                polar_x = round(((radius * 0.725 + x_offset) % 1) * (width - 1))
+                polar_y = round(((angle * 2) % 1) * (height - 1))
+                polar = pixels[polar_x, polar_y]
+                polar_mask = polar[0] / 255 * polar[3] / 255
+                output_pixels[x, y] = (0, 167, 116, round(pixels[x, y][3] * polar_mask))
+        sheet.paste(output, (frame * width, 0))
+    if sheet.getbbox() is None:
+        raise ValueError("serpent polar ring flipbook is blank")
+    return sheet
+
+
+def common_ray_sheet(image: Image.Image) -> Image.Image:
+    source = image.convert("RGBA")
+    width, height = source.size
+    source_data = list(source.getdata())
+    masked = Image.new("RGBA", source.size)
+    masked.putdata([
+        (255, 255, 255, round(alpha * sample_float_gradient(
+            ((0, 0), (0.3837535, 1), (0.75373137, 1), (1, 0)),
+            y / max(1, height - 1),
+        )))
+        for y in range(height)
+        for _red, _green, _blue, alpha in source_data[y * width:(y + 1) * width]
+    ])
+    sheet = Image.new("RGBA", (width * SHADER_FLIPBOOK_FRAMES, height))
+    for frame in range(SHADER_FLIPBOOK_FRAMES):
+        scale = mix(0.25, 1, frame / (SHADER_FLIPBOOK_FRAMES - 1))
+        frame_width = max(1, round(width * scale))
+        resized = masked.resize((frame_width, height), Image.Resampling.BILINEAR)
+        sheet.alpha_composite(resized, (frame * width + (width - frame_width) // 2, 0))
+    if sheet.getbbox() is None:
+        raise ValueError("common ray flipbook is blank")
+    return sheet
 
 
 def form_noise_frame(
@@ -323,6 +387,21 @@ def prune_resources(scene: dict[str, Any]) -> None:
 
 
 def material_metadata(reader: PCKReader, path: str) -> dict[str, Any] | None:
+    if path == SCREAM_RING_MATERIAL:
+        return {
+            "frameCount": SHADER_FLIPBOOK_FRAMES,
+            "horizontal": SHADER_FLIPBOOK_FRAMES,
+            "pivot": [0, 0],
+            "vertical": 1,
+        }
+    if path == COMMON_RAY_MATERIAL:
+        return {
+            "frameCount": SHADER_FLIPBOOK_FRAMES,
+            "horizontal": SHADER_FLIPBOOK_FRAMES,
+            "lifetimeProgress": False,
+            "pivot": [0, -0.5],
+            "vertical": 1,
+        }
     material = parse_scene(reader.read_file(path).decode("utf-8"), path)
     props = material["resource"]
     size = vector_values(props.get("shader_parameter/flipbook_size"), (1, 1))
@@ -480,21 +559,58 @@ def compile_scene(
             props["browser_pulse_strength"] = 0.04
             props["browser_pulse_speed"] = 2
         if spec.slug == "echo" and node["name"] == "vfx_echo_form_idle_glow":
-            props["self_modulate"] = {"$": "Color", "v": [0, 0.61666656, 1, 0.32]}
+            props["self_modulate"] = {"$": "Color", "v": [0, 0.61666656, 1, 0.08]}
+            props["scale"] = {"$": "Vector2", "v": [2.5, 2.5]}
         if "panning" in node["name"]:
             props["hframes"] = 4
             props["browser_fps"] = 4
         if node["name"] == "vfx_serpent_form_snakes":
             props["offset"] = {"$": "Vector2", "v": [-12.8, -89.6]}
-            props["scale"] = {"$": "Vector2", "v": [0.9, 0.9]}
+            props["scale"] = {"$": "Vector2", "v": [0.65, 0.65]}
         if spec.slug == "serpent" and node["name"] == "snake_container":
-            props["modulate"] = {"$": "Color", "v": [1, 1, 1, 0.45]}
+            props["modulate"] = {"$": "Color", "v": [1, 1, 1, 0.22]}
         if spec.slug == "serpent" and node["name"] == "vfx_serpent_form_idle_glow":
-            props["self_modulate"]["v"][3] = 0.45
+            props["self_modulate"]["v"][3] = 0.12
+            props["scale"] = {"$": "Vector2", "v": [3, 3]}
         if spec.slug == "serpent" and node["name"] == "vfx_serpent_form_idle_panning_noise":
-            props["self_modulate"]["v"][3] = 0.25
+            props["self_modulate"]["v"][3] = 0.08
+            props["scale"] = {"$": "Vector2", "v": [1.8, 1.8]}
+        if spec.slug == "demon" and node["name"] == "vfx_demon_form_idle_glow":
+            props["self_modulate"]["v"][3] = 0.08
+            props["scale"] = {"$": "Vector2", "v": [3.5, 3.5]}
+        if spec.slug == "demon" and node["name"] == "vfx_demon_form_idle_panning_fire":
+            props["self_modulate"]["v"][3] = 0.22
+            props["scale"] = {"$": "Vector2", "v": [1.2, 0.75]}
+        if spec.slug == "demon" and node["name"] == "vfx_common_clouds":
+            props["modulate"]["v"][3] = 0.2
+            props["scale"] = {"$": "Vector2", "v": [0.72, 0.72]}
+        if spec.slug == "void" and node["name"] == "vfx_void_form_idle_glow":
+            props["self_modulate"]["v"][3] = 0.08
+            props["scale"] = {"$": "Vector2", "v": [3, 3]}
+        if spec.slug == "void" and node["name"] == "vfx_void_form_spikes_container":
+            props["browser_rotation_speed"] = 0.2
+        if spec.slug == "void" and node["name"] == "vfx_ui_epoch_unlock_chain_shards":
+            props["self_modulate"] = {"$": "Color", "v": [1, 1, 1, 0.18]}
+            props["scale"] = {"$": "Vector2", "v": [0.65, 0.65]}
+        if spec.slug == "void" and node["name"] == "vfx_common_ray":
+            props["self_modulate"]["v"][3] = 0.18
+            props["scale"] = {"$": "Vector2", "v": [0.35, 0.35]}
+        if spec.slug == "void" and node["name"] == "vfx_void_form_spike_gfx":
+            props["scale"] = {"$": "Vector2", "v": [0.22, 0.22]}
+            props["self_modulate"] = {"$": "Color", "v": [1, 1, 1, 0.4]}
+        if spec.slug == "reaper" and node["name"] == "vfx_reaper_form_idle_glow":
+            props["self_modulate"]["v"][3] = 0.5
+        if spec.slug == "reaper" and node["name"] == "vfx_reaper_form_idle_glow_outer":
+            props["self_modulate"]["v"][3] = 0.3
         if spec.slug == "reaper" and node["name"] == "vfx_reaper_form_idle_panning_noise":
             props["scale"] = {"$": "Vector2", "v": [1.75, 1.75]}
+            props["self_modulate"] = {"$": "Color", "v": [1, 1, 1, 0.35]}
+        if spec.slug == "echo" and node["name"] == "vfx_echo_form_specks":
+            props["scale"] = {"$": "Vector2", "v": [0.35, 0.35]}
+            process_id = props["process_material"]["v"][0]
+            process_props = scene["resources"][process_id]["props"]
+            process_props["initial_velocity_min"] = 300
+            process_props["initial_velocity_max"] = 450
 
     scene["nodes"] = kept_nodes
     if spec.slug not in particle_forms:
@@ -503,6 +619,10 @@ def compile_scene(
     scene.pop("resource", None)
 
     for resource in scene["ext"].values():
+        if resource["type"] == "Material" and "browserAnimation" not in resource:
+            metadata = material_metadata(reader, resource["path"])
+            if metadata:
+                resource["browserAnimation"] = metadata
         if resource["type"] != "Texture2D":
             continue
         source = resource["path"]
@@ -531,6 +651,18 @@ def main() -> int:
             SERPENT_SNAKES: save_texture(
                 lut_texture(read_texture(reader, SERPENT_SNAKES), ((0, (0, 0.303, 0.148)), (1, (0.379, 0.914, 0.605)))),
                 "serpent_snakes.webp",
+                args.force,
+                args.dry_run,
+            ),
+            SCREAM_RING: save_texture(
+                serpent_ring_sheet(read_texture(reader, SCREAM_RING)),
+                "serpent/scream_ring_polar.webp",
+                args.force,
+                args.dry_run,
+            ),
+            COMMON_RAY: save_texture(
+                common_ray_sheet(read_texture(reader, COMMON_RAY)),
+                "void/common_ray.webp",
                 args.force,
                 args.dry_run,
             ),

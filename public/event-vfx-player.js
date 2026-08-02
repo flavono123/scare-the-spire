@@ -374,7 +374,7 @@
   function tintedImage(scene, image, texture, tint, variant) {
     if (tint.r > 0.96 && tint.g > 0.96 && tint.b > 0.96) return image;
     const pixels = texture.width * texture.height;
-    if (pixels > 512 * 512 || scene._tintPixels + pixels > 4 * 1024 * 1024) return image;
+    if (scene._tintPixels + pixels > 4 * 1024 * 1024) return image;
     const red = Math.round(clamp(tint.r, 0, 1) * 15) * 17;
     const green = Math.round(clamp(tint.g, 0, 1) * 15) * 17;
     const blue = Math.round(clamp(tint.b, 0, 1) * 15) * 17;
@@ -407,7 +407,11 @@
       };
     }
     const external = extResource(scene, value)?.browserAnimation;
-    return external ? { ...external, lifetimeProgress: true, loop: true } : null;
+    return external ? {
+      ...external,
+      lifetimeProgress: external.lifetimeProgress !== false,
+      loop: true,
+    } : null;
   }
 
   function textureFrame(texture, animation, frameProgress) {
