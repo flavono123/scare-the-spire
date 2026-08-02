@@ -624,6 +624,7 @@ export function TransfigureEditor({
     profileNickname,
     selected,
   ]);
+  const selectedCardData = selected?.type === "card" ? selected.cardData : undefined;
 
   return (
     <div className="space-y-3" data-transfigure-editor>
@@ -673,7 +674,7 @@ export function TransfigureEditor({
               />
             </div>
 
-            {selected.type === "card" && selected.cardData && (
+            {selectedCardData && (
               <div
                 className="border-t border-white/10 px-3 py-2"
                 data-transfigure-card-attributes
@@ -691,10 +692,10 @@ export function TransfigureEditor({
                           icon: (
                             <TinyCardIcon
                               card={{
-                                color: selected.cardData.color,
-                                visualColor: selected.cardData.visualColor,
+                                color: selectedCardData.color,
+                                visualColor: selectedCardData.visualColor,
                                 rarity,
-                                type: transformedCardType || selected.cardData.type,
+                                type: transformedCardType || selectedCardData.type,
                               }}
                               width={24}
                             />
@@ -703,7 +704,7 @@ export function TransfigureEditor({
                           value: rarity,
                         }))}
                       selectLabel={copy.selectCardRarity}
-                      sourceLabel={selected.cardData.rarityLabel}
+                      sourceLabel={selectedCardData.rarityLabel}
                       value={transformedCardRarity}
                       onCancel={() => {
                         setTransformedCardRarity("");
@@ -738,7 +739,7 @@ export function TransfigureEditor({
                           value: type,
                         }))}
                       selectLabel={copy.selectCardType}
-                      sourceLabel={selected.cardData.typeLabel}
+                      sourceLabel={selectedCardData.typeLabel}
                       value={transformedCardType}
                       onCancel={() => {
                         setTransformedCardType("");
