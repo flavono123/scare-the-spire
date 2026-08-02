@@ -12,6 +12,7 @@ import type { PostBlock } from "@/lib/chemical-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
   applyTransfigureCardMetadata,
+  canTransfigureCardMetadata,
   getTransfigureSourceCost,
   getTransfigureUpgradeInitialBlocks,
   getTransfigureUpgradeSourceCost,
@@ -91,14 +92,19 @@ export function TransfigureResourcePreview({
   const imageFileName = copy.assetImageFileName.replace("{name}", displayName);
 
   if (entity.type === "card" && entity.cardData) {
-    const effectiveCardType = normalizeTransfigureCardType(
-      transformedCardType,
+    const cardMetadataEditable = canTransfigureCardMetadata(
       entity.cardData.type,
-    );
-    const effectiveCardRarity = normalizeTransfigureCardRarity(
-      transformedCardRarity,
       entity.cardData.rarity,
     );
+    const effectiveCardType = cardMetadataEditable
+      ? normalizeTransfigureCardType(transformedCardType, entity.cardData.type)
+      : null;
+    const effectiveCardRarity = cardMetadataEditable
+      ? normalizeTransfigureCardRarity(
+        transformedCardRarity,
+        entity.cardData.rarity,
+      )
+      : null;
     const effectiveUpgradeBlocks = upgradedBlocks ?? gameUpgradeBlocks;
     const activeBlocks = showUpgrade && effectiveUpgradeBlocks != null
       ? effectiveUpgradeBlocks

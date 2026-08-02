@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import type { EntityInfo } from "../src/components/patch-note-renderer";
 import {
   applyTransfigureCardMetadata,
+  canTransfigureCardMetadata,
   getTransfigureInitialBlocks,
   getTransfigureSourceCost,
   getTransfigureSourceText,
@@ -112,6 +113,9 @@ assert.equal(normalizeTransfigureCardType("저주", "스킬"), null);
 assert.equal(normalizeTransfigureCardRarity("고급", "고급"), null);
 assert.equal(normalizeTransfigureCardRarity("희귀", "고급"), "희귀");
 assert.equal(normalizeTransfigureCardRarity("고대의 존재", "고급"), null);
+assert.equal(canTransfigureCardMetadata("스킬", "고급"), true);
+assert.equal(canTransfigureCardMetadata("스킬", "고대의 존재"), false);
+assert.equal(canTransfigureCardMetadata("저주", "저주"), false);
 const transformedCard = applyTransfigureCardMetadata(
   expertise.cardData!,
   [
@@ -139,6 +143,20 @@ assert.deepEqual(
     transformedCard.rarityLabel,
   ],
   ["공격", "Attack", "희귀", "Rare"],
+);
+const unchangedAncientCard = applyTransfigureCardMetadata(
+  {
+    ...expertise.cardData!,
+    rarity: "고대의 존재",
+    rarityLabel: "고대의 존재",
+  },
+  [expertise],
+  "공격",
+  "희귀",
+);
+assert.deepEqual(
+  [unchangedAncientCard.type, unchangedAncientCard.rarity],
+  ["스킬", "고대의 존재"],
 );
 for (const [locale, messages] of Object.entries(serviceMessages)) {
   assert.ok(
@@ -188,6 +206,7 @@ assert.equal(
     sourceCost: "1",
     transformedCardType: "공격",
     sourceCardType: "스킬",
+    sourceCardRarity: "고급",
   }),
   true,
 );
@@ -201,9 +220,25 @@ assert.equal(
     transformedCost: "",
     sourceCost: "1",
     transformedCardRarity: "희귀",
+    sourceCardType: "스킬",
     sourceCardRarity: "고급",
   }),
   true,
+);
+assert.equal(
+  isTransfigureChanged({
+    blocks: sourceBlocks,
+    sourceText: sourceText ?? "",
+    sourceBlocks,
+    transformedName: "",
+    sourceName: "풍요",
+    transformedCost: "",
+    sourceCost: "1",
+    transformedCardType: "공격",
+    sourceCardType: "스킬",
+    sourceCardRarity: "고대의 존재",
+  }),
+  false,
 );
 assert.equal(
   isTransfigureChanged({

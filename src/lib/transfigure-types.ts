@@ -345,6 +345,14 @@ export function isTransfigureCardRarity(
   return TRANSFIGURE_CARD_RARITIES.includes(value as TransfigureCardRarity);
 }
 
+export function canTransfigureCardMetadata(
+  sourceType: CardTypeKo | null | undefined,
+  sourceRarity: CardRarityKo | null | undefined,
+): boolean {
+  return isTransfigureCardType(sourceType)
+    && (sourceRarity === "기본" || isTransfigureCardRarity(sourceRarity));
+}
+
 export function normalizeTransfigureCardType(
   value: string | null | undefined,
   sourceType: CardTypeKo | null,
@@ -381,6 +389,8 @@ export function applyTransfigureCardMetadata(
   transformedCardType?: TransfigureCardType | null,
   transformedCardRarity?: TransfigureCardRarity | null,
 ): CodexCard {
+  if (!canTransfigureCardMetadata(card.type, card.rarity)) return card;
+
   return {
     ...card,
     type: transformedCardType ?? card.type,
@@ -439,13 +449,23 @@ export function isTransfigureChanged({
   transformedCardRarity?: string;
   sourceCardRarity?: CardRarityKo | null;
 }): boolean {
+  const canChangeCardMetadata = canTransfigureCardMetadata(
+    sourceCardType,
+    sourceCardRarity,
+  );
+
   return (
     showUpgrade
-    || normalizeTransfigureCardType(transformedCardType, sourceCardType) != null
-    || normalizeTransfigureCardRarity(
-      transformedCardRarity,
-      sourceCardRarity,
-    ) != null
+    || (
+      canChangeCardMetadata
+      && (
+        normalizeTransfigureCardType(transformedCardType, sourceCardType) != null
+        || normalizeTransfigureCardRarity(
+          transformedCardRarity,
+          sourceCardRarity,
+        ) != null
+      )
+    )
     || !transfigureCardKeywordsEqual(cardKeywords, sourceCardKeywords)
     || !transfigureCardKeywordsEqual(
       upgradedCardKeywords,

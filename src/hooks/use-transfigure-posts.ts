@@ -8,6 +8,7 @@ import type { GameLocale } from "@/lib/i18n";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
+  canTransfigureCardMetadata,
   isTransfigureCardRarity,
   isTransfigureCardType,
   isTransfigureChanged,
@@ -143,18 +144,19 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     );
   const cardMetadataInputValid = input.resource.type === "card"
     ? (
-      (
-        !input.transformedCardType
-        || (
-          input.sourceCardType != null
-          && isTransfigureCardType(input.transformedCardType)
+      (!input.transformedCardType && !input.transformedCardRarity)
+      || (
+        canTransfigureCardMetadata(
+          input.sourceCardType,
+          input.sourceCardRarity,
         )
-      )
-      && (
-        !input.transformedCardRarity
-        || (
-          input.sourceCardRarity != null
-          && isTransfigureCardRarity(input.transformedCardRarity)
+        && (
+          !input.transformedCardType
+          || isTransfigureCardType(input.transformedCardType)
+        )
+        && (
+          !input.transformedCardRarity
+          || isTransfigureCardRarity(input.transformedCardRarity)
         )
       )
     )

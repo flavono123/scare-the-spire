@@ -19,6 +19,7 @@ import { blocksToPlainText } from "@/lib/chemical-utils";
 import type { SaveTransfigurePostInput } from "@/hooks/use-transfigure-posts";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
+  canTransfigureCardMetadata,
   findTransfigureEntity,
   getTransfigureCardRarityLabel,
   getTransfigureCardKeywords,
@@ -226,14 +227,22 @@ export function TransfigureEditor({
   const [transformedCost, setTransformedCost] = useState(
     initialPost?.transformed_cost ?? "",
   );
-  const initialCardType = normalizeTransfigureCardType(
-    initialPost?.transformed_card_type,
-    initialEntity?.cardData?.type ?? null,
+  const initialCardMetadataEditable = canTransfigureCardMetadata(
+    initialEntity?.cardData?.type,
+    initialEntity?.cardData?.rarity,
   );
-  const initialCardRarity = normalizeTransfigureCardRarity(
-    initialPost?.transformed_card_rarity,
-    initialEntity?.cardData?.rarity ?? null,
-  );
+  const initialCardType = initialCardMetadataEditable
+    ? normalizeTransfigureCardType(
+      initialPost?.transformed_card_type,
+      initialEntity?.cardData?.type ?? null,
+    )
+    : null;
+  const initialCardRarity = initialCardMetadataEditable
+    ? normalizeTransfigureCardRarity(
+      initialPost?.transformed_card_rarity,
+      initialEntity?.cardData?.rarity ?? null,
+    )
+    : null;
   const [transformedCardType, setTransformedCardType] = useState<
     TransfigureCardType | ""
   >(initialCardType ?? "");
@@ -305,6 +314,10 @@ export function TransfigureEditor({
   );
   const sourceCardType = selected?.cardData?.type ?? null;
   const sourceCardRarity = selected?.cardData?.rarity ?? null;
+  const canChangeCardMetadata = canTransfigureCardMetadata(
+    sourceCardType,
+    sourceCardRarity,
+  );
   const sourceCardKeywords = useMemo(
     () => selected ? getTransfigureCardKeywords(selected) : null,
     [selected],
@@ -674,7 +687,7 @@ export function TransfigureEditor({
               />
             </div>
 
-            {selectedCardData && (
+            {selectedCardData && canChangeCardMetadata && (
               <div
                 className="border-t border-white/10 px-3 py-2"
                 data-transfigure-card-attributes
