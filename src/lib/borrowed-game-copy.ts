@@ -12,6 +12,8 @@ export interface HistoryCourseLandingGameCopy {
 export interface ThisOrThatGameCopy {
   title: string;
   prompt: string;
+  votePrompt: string;
+  voteDone: string;
 }
 
 export interface TransfigureGameCopy {

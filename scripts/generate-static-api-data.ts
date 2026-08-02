@@ -48,6 +48,8 @@ interface HistoryCourseLandingGameCopy {
 interface ThisOrThatGameCopy {
   title: string;
   prompt: string;
+  votePrompt: string;
+  voteDone: string;
 }
 
 interface TransfigureGameCopy {
@@ -396,14 +398,26 @@ async function buildHistoryCourseLandingGameCopy(gameLocale: GameLocale): Promis
 }
 
 async function buildThisOrThatGameCopy(gameLocale: GameLocale): Promise<ThisOrThatGameCopy> {
-  const [title, description] = await Promise.all([
+  const [title, description, votePrompt, voteDone] = await Promise.all([
     readGameTextWithEnglishFallback(gameLocale, "events", "THIS_OR_THAT.title"),
     readGameTextWithEnglishFallback(gameLocale, "events", "THIS_OR_THAT.pages.INITIAL.description"),
+    readGameTextWithEnglishFallback(
+      gameLocale,
+      "monsters",
+      "KNOWLEDGE_DEMON.moves.CURSE_OF_KNOWLEDGE.startLine",
+    ),
+    readGameTextWithEnglishFallback(
+      gameLocale,
+      "monsters",
+      "KNOWLEDGE_DEMON.moves.CURSE_OF_KNOWLEDGE.doneLine",
+    ),
   ]);
 
   return {
     title: title || "This or That?",
     prompt: extractLastPlainLine(description) || extractDialogueLine(description),
+    votePrompt,
+    voteDone,
   };
 }
 

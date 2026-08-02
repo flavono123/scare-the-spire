@@ -20,7 +20,9 @@
     },
     "thisOrThat": {
       "title": "이거 아님 저거?",
-      "prompt": "날카롭게 긁어대는 목소리가 아래쪽에서 속삭입니다."
+      "prompt": "날카롭게 긁어대는 목소리가 아래쪽에서 속삭입니다.",
+      "votePrompt": "선택하라.",
+      "voteDone": "결정되었다."
     },
     "transfigure": {
       "title": "변형",
@@ -49,7 +51,9 @@
     },
     "thisOrThat": {
       "title": "This or That?",
-      "prompt": "a scratched-up voice whispers from below."
+      "prompt": "a scratched-up voice whispers from below.",
+      "votePrompt": "Make your choice.",
+      "voteDone": "It is done."
     },
     "transfigure": {
       "title": "Transfigure",
@@ -78,7 +82,9 @@
     },
     "thisOrThat": {
       "title": "这个还是那个？",
-      "prompt": "一个嘶哑的声音从地下传来，向你低语。"
+      "prompt": "一个嘶哑的声音从地下传来，向你低语。",
+      "votePrompt": "做出选择。",
+      "voteDone": "此事已成。"
     },
     "transfigure": {
       "title": "重构",
@@ -107,7 +113,9 @@
     },
     "thisOrThat": {
       "title": "こっちか、そっちか？",
-      "prompt": "穴の奥底から、しゃがれた声がささやく。"
+      "prompt": "穴の奥底から、しゃがれた声がささやく。",
+      "votePrompt": "選ぶがいい。",
+      "voteDone": "どうだ。"
     },
     "transfigure": {
       "title": "変貌",
@@ -136,7 +144,9 @@
     },
     "thisOrThat": {
       "title": "Dies oder Das?",
-      "prompt": "flüstert eine aufgekratzte Stimme von unten."
+      "prompt": "flüstert eine aufgekratzte Stimme von unten.",
+      "votePrompt": "Triff deine Wahl.",
+      "voteDone": "Es ist getan."
     },
     "transfigure": {
       "title": "Verwandeln",
@@ -165,7 +175,9 @@
     },
     "thisOrThat": {
       "title": "Ceci ou Cela ?",
-      "prompt": "chuchote une voix rauque d’en-dessous."
+      "prompt": "chuchote une voix rauque d’en-dessous.",
+      "votePrompt": "Faites votre choix.",
+      "voteDone": "Votre choix est fait."
     },
     "transfigure": {
       "title": "Transfiguration",
@@ -194,7 +206,9 @@
     },
     "thisOrThat": {
       "title": "Sinistra o destra",
-      "prompt": "Sussurra una voce roca dal basso."
+      "prompt": "Sussurra una voce roca dal basso.",
+      "votePrompt": "Fai la tua scelta.",
+      "voteDone": "È fatta."
     },
     "transfigure": {
       "title": "Trasfigurazione",
@@ -223,7 +237,9 @@
     },
     "thisOrThat": {
       "title": "¿Izquierda o derecha?",
-      "prompt": "—¿Izquierda o derecha?"
+      "prompt": "—¿Izquierda o derecha?",
+      "votePrompt": "Elige.",
+      "voteDone": "Está hecho."
     },
     "transfigure": {
       "title": "Transfigurar",
@@ -252,7 +268,9 @@
     },
     "thisOrThat": {
       "title": "¿Izquierda o derecha?",
-      "prompt": "Susurra una voz ronca desde abajo."
+      "prompt": "Susurra una voz ronca desde abajo.",
+      "votePrompt": "Haz tu elección.",
+      "voteDone": "Está hecho."
     },
     "transfigure": {
       "title": "Transfiguración",
@@ -281,7 +299,9 @@
     },
     "thisOrThat": {
       "title": "Isto ou Aquilo?",
-      "prompt": "Pergunta uma voz rouca de dentro do buraco."
+      "prompt": "Pergunta uma voz rouca de dentro do buraco.",
+      "votePrompt": "Faça sua escolha.",
+      "voteDone": "Está feito."
     },
     "transfigure": {
       "title": "Transfigurar",
@@ -310,7 +330,9 @@
     },
     "thisOrThat": {
       "title": "Первое или второе?",
-      "prompt": "вопрошает хриплый голос."
+      "prompt": "вопрошает хриплый голос.",
+      "votePrompt": "Выбирай.",
+      "voteDone": "Сделано."
     },
     "transfigure": {
       "title": "Превращение",
@@ -339,7 +361,9 @@
     },
     "thisOrThat": {
       "title": "To czy tamto?",
-      "prompt": "„To... czy tamto?”."
+      "prompt": "„To... czy tamto?”.",
+      "votePrompt": "Decyzja należy do ciebie.",
+      "voteDone": "Postanowione."
     },
     "transfigure": {
       "title": "Przekształcenie",
@@ -368,7 +392,9 @@
     },
     "thisOrThat": {
       "title": "อันนี้หรืออันนั้น?",
-      "prompt": "เสียงกระซิบแหบแห้งออกมาจากเบื้องล่าง"
+      "prompt": "เสียงกระซิบแหบแห้งออกมาจากเบื้องล่าง",
+      "votePrompt": "Make your choice.",
+      "voteDone": "It is done."
     },
     "transfigure": {
       "title": "Transfigure",
@@ -397,7 +423,9 @@
     },
     "thisOrThat": {
       "title": "Bu mu? Şu mu?",
-      "prompt": "“Bu mu? Şu mu?”"
+      "prompt": "“Bu mu? Şu mu?”",
+      "votePrompt": "Kararını ver.",
+      "voteDone": "Seçimini yaptın."
     },
     "transfigure": {
       "title": "Başkalaştır",
