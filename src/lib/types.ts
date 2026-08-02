@@ -186,6 +186,8 @@ export interface STS2PatchLine {
   section: string[];
   markdownKo: string;
   markdownEn?: string;
+  summaryMarkdownKo?: string;
+  summaryMarkdownEn?: string;
   textKo: string;
   textEn?: string;
   entityRefs: STS2PatchLineEntityRef[];

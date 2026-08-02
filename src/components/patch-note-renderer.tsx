@@ -18,7 +18,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { patchLineAnchorId } from "@/lib/patch-line-links";
-import { patchLineMarkdownForService, withPatchChangeEffects } from "@/lib/patch-line-display";
+import { patchLineSummaryMarkdownForService, withPatchChangeEffects } from "@/lib/patch-line-display";
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import type { EntityVersionDiff, STS2Patch, STS2PatchLine } from "@/lib/types";
 import { CardTile } from "@/components/codex/card-tile";
@@ -1711,7 +1711,7 @@ export function PatchNoteRenderer({
   const patchLineByRenderedContent = useMemo(() => {
     const map = new Map<string, STS2PatchLine>();
     for (const patchLine of patchLines) {
-      const key = normalizePatchLineContent(withPatchChangeEffects(patchLineMarkdownForService(patchLine, serviceLocale)));
+      const key = normalizePatchLineContent(withPatchChangeEffects(patchLineSummaryMarkdownForService(patchLine, serviceLocale)));
       if (key && !map.has(key)) map.set(key, patchLine);
     }
     return map;

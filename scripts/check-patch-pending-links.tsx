@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { PatchLineReferenceBlock } from "@/components/patch-line-reference";
 import {
   PatchNoteRenderer,
   type EntityInfo,
@@ -145,6 +147,24 @@ const storyPatchLine: STS2PatchLine = {
   entityRefs: [{ type: "card", id: "HAZE", label: "아지랑이" }],
   searchText: "아지랑이 haze",
 };
+
+const generatedPatchLines = JSON.parse(
+  fs.readFileSync("data/sts2-patch-lines.json", "utf-8"),
+) as STS2PatchLine[];
+const synchronizePatchLine = generatedPatchLines.find(
+  (line) => line.id === "v0.110.0:line-035-card-synchronize",
+);
+assert.ok(synchronizePatchLine);
+const synchronizeReferenceHtml = renderToStaticMarkup(
+  <PatchLineReferenceBlock
+    patchLine={synchronizePatchLine}
+    serviceLocale="ko"
+    clickable={false}
+  />,
+);
+assert.match(synchronizeReferenceHtml, /강화 시 구체 종류당 얻는 일시적 밀집이 2 → 3으로 증가합니다/);
+assert.match(synchronizeReferenceHtml, /더 이상 소멸하지 않습니다/);
+
 const populatedStoryActionHtml = renderToStaticMarkup(
   <PatchLineStoryAction
     count={1}

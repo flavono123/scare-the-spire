@@ -30,6 +30,7 @@ type ParsedPatchLine = {
   markdown: string;
   text: string;
   entityLabels: Array<{ type: STS2PatchFeaturedEntityType; label: string }>;
+  details: Array<{ markdown: string; text: string }>;
 };
 
 function normalizeVersion(value: string): string {
@@ -90,6 +91,7 @@ function parsePatchLines(markdown: string): ParsedPatchLine[] {
   const lines = markdown.split(/\r?\n/);
   const section: string[] = [];
   const results: ParsedPatchLine[] = [];
+  let parentLine: ParsedPatchLine | null = null;
   let ordinal = 0;
 
   for (const line of lines) {
@@ -98,6 +100,7 @@ function parsePatchLines(markdown: string): ParsedPatchLine[] {
       const depth = headingMatch[1].length - 2;
       section.splice(depth);
       section[depth] = plainPatchLineText(headingMatch[2]);
+      parentLine = null;
       continue;
     }
 
@@ -115,16 +118,28 @@ function parsePatchLines(markdown: string): ParsedPatchLine[] {
     if (!text) continue;
 
     ordinal += 1;
-    results.push({
+    const parsedLine: ParsedPatchLine = {
       ordinal,
       section: section.filter(Boolean),
       markdown: markdownLine,
       text,
       entityLabels: extractEntityLabels(markdownLine),
-    });
+      details: [],
+    };
+    results.push(parsedLine);
+
+    if (indent === 0) {
+      parentLine = parsedLine;
+    } else if (parentLine?.entityLabels.length) {
+      parentLine.details.push({ markdown: markdownLine, text });
+    }
   }
 
   return results;
+}
+
+function withDetails(line: ParsedPatchLine, field: "markdown" | "text"): string {
+  return [line[field], ...line.details.map((detail) => `• ${detail[field]}`)].join("\n");
 }
 
 function buildEntityLookup(entities: EntityInfo[]): Map<string, EntityInfo> {
@@ -228,10 +243,12 @@ async function main() {
         version: normalizeVersion(patch.version),
         date: patch.date,
         section: koLine.section,
-        markdownKo: koLine.markdown,
-        markdownEn: enLine?.markdown,
-        textKo: koLine.text,
-        textEn: enLine?.text,
+        markdownKo: withDetails(koLine, "markdown"),
+        markdownEn: enLine ? withDetails(enLine, "markdown") : undefined,
+        summaryMarkdownKo: koLine.details.length > 0 ? koLine.markdown : undefined,
+        summaryMarkdownEn: enLine && enLine.details.length > 0 ? enLine.markdown : undefined,
+        textKo: withDetails(koLine, "text"),
+        textEn: enLine ? withDetails(enLine, "text") : undefined,
         entityRefs,
         searchText: "",
       };

@@ -21,6 +21,15 @@ export function patchLineMarkdownForService(
     : patchLine.markdownEn || patchLine.markdownKo || "";
 }
 
+export function patchLineSummaryMarkdownForService(
+  patchLine: STS2PatchLine,
+  serviceLocale: ServiceLocale | undefined,
+): string {
+  return serviceLocale === "ko"
+    ? patchLine.summaryMarkdownKo || patchLine.markdownKo || patchLine.summaryMarkdownEn || patchLine.markdownEn || ""
+    : patchLine.summaryMarkdownEn || patchLine.markdownEn || patchLine.summaryMarkdownKo || patchLine.markdownKo || "";
+}
+
 export function patchLineDisplayText(patchLine: STS2PatchLine, serviceLocale: ServiceLocale): string {
   return serviceLocale === "ko"
     ? patchLine.textKo || patchLine.textEn || ""
