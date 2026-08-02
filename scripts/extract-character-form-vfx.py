@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import math
 import re
@@ -29,6 +30,11 @@ COMMON_GLOW = "images/vfx/common/common_glow.png"
 NOISE = "images/vfx/noise/vfx_noise_4.png"
 SERPENT_SNAKES = "images/vfx/forms/serpent/form_serpent_snakes.png"
 VOID_SPIKE = "images/vfx/forms/void/form_void_spike.png"
+DEMON_PARTICLE_TEXTURES = {
+    "images/vfx/shared_use/smoke_vfx.png": "demon/smoke_vfx.webp",
+    "images/vfx/big_slash/big_slash_impact_core_flipbook.png": "demon/big_slash_impact_core_flipbook.webp",
+    "images/vfx/fire_impact/fire_burst_ember_straight.png": "demon/fire_burst_ember_straight.webp",
+}
 
 
 @dataclass(frozen=True)
@@ -276,6 +282,105 @@ def vector_values(value: Any, fallback: tuple[float, float]) -> list[float]:
     return [fallback[0], fallback[1]]
 
 
+def rewrite_refs(value: Any, ext_ids: dict[str, str], sub_ids: dict[str, str]) -> Any:
+    if isinstance(value, list):
+        return [rewrite_refs(item, ext_ids, sub_ids) for item in value]
+    if not isinstance(value, dict):
+        return value
+    kind = value.get("$")
+    values = value.get("v")
+    if kind in {"ExtResource", "SubResource"} and isinstance(values, list) and values:
+        mapping = ext_ids if kind == "ExtResource" else sub_ids
+        return {**value, "v": [mapping.get(str(values[0]), str(values[0])), *values[1:]]}
+    return {key: rewrite_refs(item, ext_ids, sub_ids) for key, item in value.items()}
+
+
+def referenced_ids(value: Any, kind: str) -> set[str]:
+    if isinstance(value, list):
+        return set().union(*(referenced_ids(item, kind) for item in value)) if value else set()
+    if not isinstance(value, dict):
+        return set()
+    values = value.get("v")
+    if value.get("$") == kind and isinstance(values, list) and values:
+        return {str(values[0])}
+    return set().union(*(referenced_ids(item, kind) for item in value.values())) if value else set()
+
+
+def prune_resources(scene: dict[str, Any]) -> None:
+    used_sub_ids = set().union(*(referenced_ids(node["props"], "SubResource") for node in scene["nodes"]))
+    pending = list(used_sub_ids)
+    while pending:
+        resource = scene["resources"].get(pending.pop())
+        if not resource:
+            continue
+        for ref in referenced_ids(resource["props"], "SubResource") - used_sub_ids:
+            used_sub_ids.add(ref)
+            pending.append(ref)
+    scene["resources"] = {
+        key: value for key, value in scene["resources"].items() if key in used_sub_ids
+    }
+    used_ext_ids = set().union(*(referenced_ids(node["props"], "ExtResource") for node in scene["nodes"]))
+    used_ext_ids.update(
+        set().union(*(referenced_ids(resource["props"], "ExtResource") for resource in scene["resources"].values()))
+        if scene["resources"] else set()
+    )
+    scene["ext"] = {key: value for key, value in scene["ext"].items() if key in used_ext_ids}
+
+
+def material_metadata(reader: PCKReader, path: str) -> dict[str, Any] | None:
+    material = parse_scene(reader.read_file(path).decode("utf-8"), path)
+    props = material["resource"]
+    size = vector_values(props.get("shader_parameter/flipbook_size"), (1, 1))
+    frame_count = props.get("shader_parameter/frame_count")
+    pivot = vector_values(props.get("shader_parameter/pivot_offset"), (0, 0))
+    if size == [1, 1] and frame_count is None and pivot == [0, 0]:
+        return None
+    return {
+        "frameCount": float(frame_count) if isinstance(frame_count, (int, float)) else size[0] * size[1],
+        "horizontal": int(size[0]),
+        "pivot": pivot,
+        "vertical": int(size[1]),
+    }
+
+
+def flatten_packed_roots(reader: PCKReader, scene: dict[str, Any]) -> None:
+    for node in scene["nodes"]:
+        instance = node.pop("instance", None)
+        values = instance.get("v") if isinstance(instance, dict) and instance.get("$") == "ExtResource" else None
+        if not isinstance(values, list) or not values:
+            continue
+        packed_id = str(values[0])
+        packed_resource = scene["ext"].get(packed_id)
+        if not packed_resource or packed_resource["type"] != "PackedScene":
+            continue
+        packed = parse_scene(
+            reader.read_file(packed_resource["path"]).decode("utf-8"),
+            packed_resource["path"],
+        )
+        if len(packed["nodes"]) != 1:
+            raise ValueError(f'{packed_resource["path"]}: expected one packed root node')
+        prefix = re.sub(r"[^a-zA-Z0-9_]", "_", node["name"])
+        ext_ids = {key: f"{prefix}__{key}" for key in packed["ext"]}
+        sub_ids = {key: f"{prefix}__{key}" for key in packed["resources"]}
+        for key, resource in packed["ext"].items():
+            copied = copy.deepcopy(resource)
+            if copied["type"] == "Material":
+                metadata = material_metadata(reader, copied["path"])
+                if metadata:
+                    copied["browserAnimation"] = metadata
+            scene["ext"][ext_ids[key]] = copied
+        for key, resource in packed["resources"].items():
+            copied = copy.deepcopy(resource)
+            copied["props"] = rewrite_refs(copied["props"], ext_ids, sub_ids)
+            scene["resources"][sub_ids[key]] = copied
+        packed_root = packed["nodes"][0]
+        node["type"] = packed_root["type"]
+        node["props"] = {
+            **rewrite_refs(packed_root["props"], ext_ids, sub_ids),
+            **node["props"],
+        }
+
+
 def character_visual_transforms(reader: PCKReader) -> dict[str, dict[str, list[float]]]:
     transforms = {}
     for character_id, scene_slug in CHARACTER_SCENES.items():
@@ -335,7 +440,12 @@ def compile_scene(
     texture_metadata: dict[str, dict[str, Any]],
 ) -> dict[str, Any]:
     scene = parse_scene(reader.read_file(spec.scene_path).decode("utf-8"), spec.scene_path)
-    kept_nodes = [node for node in scene["nodes"] if node["type"] in {"Node2D", "Sprite2D"}]
+    if spec.slug == "demon":
+        flatten_packed_roots(reader, scene)
+    supported_nodes = {"Node2D", "Sprite2D"}
+    if spec.slug == "demon":
+        supported_nodes.add("GPUParticles2D")
+    kept_nodes = [node for node in scene["nodes"] if node["type"] in supported_nodes]
     kept_paths = {node_path(node) for node in kept_nodes}
     for node in kept_nodes:
         parent = node.get("parent")
@@ -365,14 +475,11 @@ def compile_scene(
         if spec.slug == "reaper" and node["name"] == "vfx_reaper_form_idle_panning_noise":
             props["scale"] = {"$": "Vector2", "v": [1.75, 1.75]}
 
-    used_ext_ids: set[str] = set()
-    for node in kept_nodes:
-        for value in node["props"].values():
-            if isinstance(value, dict) and value.get("$") == "ExtResource":
-                used_ext_ids.add(str(value["v"][0]))
-    scene["ext"] = {key: value for key, value in scene["ext"].items() if key in used_ext_ids}
     scene["nodes"] = kept_nodes
-    scene["resources"] = {}
+    if spec.slug != "demon":
+        scene["resources"] = {}
+    prune_resources(scene)
+    scene.pop("resource", None)
 
     for resource in scene["ext"].values():
         if resource["type"] != "Texture2D":
@@ -437,6 +544,13 @@ def main() -> int:
             texture_metadata[slug] = save_texture(
                 animated_noise_sheet(noise, slug),
                 f"{slug}_noise.webp",
+                args.force,
+                args.dry_run,
+            )
+        for source, output in DEMON_PARTICLE_TEXTURES.items():
+            texture_metadata[source] = save_texture(
+                read_texture(reader, source),
+                output,
                 args.force,
                 args.dry_run,
             )
