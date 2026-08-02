@@ -14,21 +14,20 @@
 
 ## 현재 추출 한계
 
-형상 전용 `compile_scene()`은 원본 장면에서 `Node2D`와 `Sprite2D`만 남기고 다음을 제거한다.
+기본 형상 추출 경로는 원본 장면에서 `Node2D`와 `Sprite2D`만 남긴다. 악마의 형상부터 예외 없이 실제 필요가 확인된 기능만 단계적으로 공용 경로에 추가하고 있다.
 
-- packed scene 인스턴스
-- `GPUParticles2D`와 `CPUParticles2D`
-- `ShaderMaterial`을 포함한 subresource 전체
+- 악마의 형상은 루트가 하나인 packed scene을 펼쳐 부모 장면의 오버라이드를 적용하고, 사용 중인 `GPUParticles2D`, subresource, 텍스처를 정적 JSON에 보존한다.
+- 악마의 형상 외 네 형상은 아직 packed scene, 파티클 노드, subresource를 제거한다.
 - `SubViewport`와 복제 SpineSprite
 - Godot/C# 스크립트가 담당하는 값 보간, 흔들림, 활성 상태, 발동 이벤트
 
-공용 브라우저 렌더러에는 `ParticleProcessMaterial` 기반 파티클 근사 기능이 있지만, 형상 추출기가 파티클 노드와 subresource를 넘기지 않으므로 현재 형상에서는 사용되지 않는다.
+공용 브라우저 렌더러는 악마의 형상이 사용하는 원형·링 방출, 방향·방사 속도, 감쇠, 수명 랜덤, XYZ 크기 곡선, 색상 ramp, 외부 ShaderMaterial 플립북 메타데이터를 Canvas 2D로 모사한다. 노드 속성과 배치는 게임 원본이지만 GPU 파티클 적분과 셰이더 픽셀 결과는 근사다.
 
 ## 형상별 상태
 
 | 형상 | 구현됨 | 미구현 또는 근사 |
 | --- | --- | --- |
-| 악마의 형상 | 원점 배치, idle glow/noise 근사 | common clouds, 발동 slash/embers/glow, `OnEffectTriggered()` 파티클 재시작, 실제 셰이더 |
+| 악마의 형상 | 원점 배치, idle glow/noise 근사, 원본 packed scene의 common clouds·반복 slash·embers와 로컬 위치 | 발동 전용 slash/embers/glow, `OnEffectTriggered()` 파티클 재시작, ShaderMaterial LUT·erosion·hue shift의 정확한 픽셀 결과 |
 | 구렁이의 형상 | 캐릭터별 뼈 부착, idle glow/noise/snakes 근사 | idle/발동 scream ring, `NShaker`, `NValueRamp`, 발동 후 snakes fade, 실제 셰이더. snakes 위치·색·스케일은 수동 근사 |
 | 공허의 형상 | `head` 추적과 0.2 보간, glow와 네 개 spike 근사 | constellation, ray, chain shards, sparkles 파티클, 원본 spike packed scene/셰이더, swords scale ramp, glow ramp, active particle lifecycle |
 | 사신의 형상 | 캐릭터별 뼈 부착, idle glow/noise 근사 | 발동 polar ring A/B, `OnEffectTriggered()` 파티클 재시작, 실제 셰이더 |
@@ -60,10 +59,9 @@ Godot `canvas_item` 셰이더를 입력받아 현재 Canvas 2D 렌더러에서 �
 
 ## 다음 구현 순서
 
-1. packed scene을 재귀적으로 펼치고 원본 subresource와 파티클 노드를 정적 JSON에 보존한다.
-2. 기존 `event-vfx-player.js`의 bounded Canvas 2D 파티클 렌더러로 표현 가능한 노드를 먼저 연결한다.
-3. `NValueRamp`, `NShaker`, `SetActive`, `OnEffectTriggered`를 원본 C# 동작 단위로 옮긴다. 상세 페이지에는 전투 이벤트가 없으므로 발동 VFX는 명시적인 미리보기 입력이 필요하다.
-4. 실제 차이가 남는 소수의 `canvas_item` 셰이더만 WebGL2 GLSL로 수동 이식한다. 범용 Godot 셰이더 transpiler나 새 렌더링 엔진은 만들지 않는다.
-5. 메아리의 형상은 기존 Spine 런타임에서 같은 skeleton/animation state를 복제하는 별도 경로로 구현한다.
+1. 악마의 형상에서 확인한 packed root 펼치기와 Canvas 파티클 경로를 다음 형상에 하나씩 적용한다.
+2. `NValueRamp`, `NShaker`, `SetActive`, `OnEffectTriggered`를 원본 C# 동작 단위로 옮긴다. 상세 페이지에는 전투 이벤트가 없으므로 발동 VFX는 명시적인 미리보기 입력이 필요하다.
+3. 실제 차이가 남는 소수의 `canvas_item` 셰이더만 WebGL2 GLSL로 수동 이식한다. 범용 Godot 셰이더 transpiler나 새 렌더링 엔진은 만들지 않는다.
+4. 메아리의 형상은 기존 Spine 런타임에서 같은 skeleton/animation state를 복제하는 별도 경로로 구현한다.
 
 이 순서는 원본 장면 구조를 최대한 보존하면서도 Cloudflare Worker에 요청 시 작업을 추가하지 않는다. 추출은 빌드 전 정적으로 수행하고 런타임 비용은 선택된 형상 하나의 클라이언트 렌더로 제한한다.
