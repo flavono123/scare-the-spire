@@ -81,6 +81,9 @@ export interface MonsterStageVisualBounds {
 
 export interface MonsterStageFormAttachment {
   boneName: string | null;
+  initialPosition: readonly [number, number] | readonly number[];
+  interpolationSpeed: number;
+  snap: boolean;
   visualPosition: readonly [number, number] | readonly number[];
   visualScale: readonly [number, number] | readonly number[];
 }
@@ -183,7 +186,7 @@ function MonsterSpineStageComponent({
   useEffect(() => {
     formAttachmentRef.current = formAttachment;
     formPlacementTargetRef.current = formPlacementRef;
-    if (!formAttachment && formPlacementRef) formPlacementRef.current = null;
+    if (formPlacementRef) formPlacementRef.current = null;
   }, [formAttachment, formPlacementRef]);
 
   useEffect(() => {
@@ -221,11 +224,31 @@ function MonsterSpineStageComponent({
             if (skeletonTransform) applySkeletonTransform(loadedPlayer, skeletonTransform);
             const target = formPlacementTargetRef.current;
             if (target) {
-              target.current = measureSpinePlayerFormPlacement(
+              const attachment = formAttachmentRef.current;
+              const next = measureSpinePlayerFormPlacement(
                 loadedPlayer,
                 parent,
-                formAttachmentRef.current,
+                attachment,
               );
+              if (!next || !attachment) {
+                target.current = null;
+              } else if (attachment.snap) {
+                target.current = next;
+              } else {
+                const current = target.current ?? measureSpinePlayerFormPlacement(
+                  loadedPlayer,
+                  parent,
+                  attachment,
+                  true,
+                ) ?? next;
+                const speed = clamp(attachment.interpolationSpeed, 0, 1);
+                target.current = {
+                  x: current.x + (next.x - current.x) * speed,
+                  y: current.y + (next.y - current.y) * speed,
+                  scaleX: next.scaleX,
+                  scaleY: next.scaleY,
+                };
+              }
             }
           },
           success: (loadedPlayer) => {
@@ -658,6 +681,7 @@ export function measureSpinePlayerFormPlacement(
   player: SpinePlayer,
   stageElement: HTMLElement,
   attachment: MonsterStageFormAttachment | null,
+  useInitialPosition = false,
 ): MonsterStageFormPlacement | null {
   if (!attachment) return null;
   const canvas = player.canvas;
@@ -671,12 +695,14 @@ export function measureSpinePlayerFormPlacement(
 
   const bone = attachment.boneName ? skeleton.findBone(attachment.boneName) : null;
   if (attachment.boneName && !bone) return null;
-  const worldX = bone
+  const gameX = useInitialPosition ? attachment.initialPosition[0] ?? 0 : 0;
+  const gameY = useInitialPosition ? attachment.initialPosition[1] ?? 0 : 0;
+  const worldX = bone && !useInitialPosition
     ? skeleton.x + bone.worldX
-    : skeleton.x - (attachment.visualPosition[0] ?? 0) / visualScaleX;
-  const worldY = bone
+    : skeleton.x + (gameX - (attachment.visualPosition[0] ?? 0)) / visualScaleX;
+  const worldY = bone && !useInitialPosition
     ? skeleton.y + bone.worldY
-    : skeleton.y + (attachment.visualPosition[1] ?? 0) / visualScaleY;
+    : skeleton.y + ((attachment.visualPosition[1] ?? 0) - gameY) / visualScaleY;
   const projection = getWorldStageProjection(currentViewport, canvas, stageElement);
   if (!projection) return null;
 
