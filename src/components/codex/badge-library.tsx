@@ -62,13 +62,11 @@ function BadgeTile({
   badge,
   serviceLocale,
   gameLocale,
-  rankLabels,
   onClick,
 }: {
   badge: RunBadgeCatalogEntry;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
-  rankLabels: Record<RunBadgeRarity, string>;
   onClick: () => void;
 }) {
   const variants = getRunBadgeVariants(badge);
@@ -92,12 +90,7 @@ function BadgeTile({
             key={variant.rarity}
             className="grid min-w-0 grid-cols-[4rem_minmax(0,1fr)] items-center gap-2"
           >
-            <div className="flex flex-col items-center">
-              <BadgeArt badge={badge} rarity={variant.rarity} title={variant.title} />
-              <span className="font-game-text text-[10px] leading-none text-gray-500">
-                {rankLabels[variant.rarity]}
-              </span>
-            </div>
+            <BadgeArt badge={badge} rarity={variant.rarity} title={variant.title} />
             <GameHoverTip title={variant.title} className="min-w-0 w-full" style={{ minWidth: 0 }}>
               <DescriptionText description={variant.description} className="block text-left" />
             </GameHoverTip>
@@ -277,7 +270,6 @@ export function BadgeLibrary({
                 badge={badge}
                 serviceLocale={serviceLocale}
                 gameLocale={gameLocale}
-                rankLabels={serviceText.badgesView.ranks}
                 onClick={() => selectBadge(badge)}
               />
             ))}

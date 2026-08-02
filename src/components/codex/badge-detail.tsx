@@ -70,27 +70,22 @@ export function BadgeDetail({
               key={variant.rarity}
               className="flex w-full max-w-[32rem] items-center gap-3 sm:gap-5"
             >
-              <div className="flex shrink-0 flex-col items-center gap-1">
-                <div className="relative h-20 w-20 drop-shadow-[0_3px_7px_rgba(0,0,0,0.85)] sm:h-24 sm:w-24">
+              <div className="relative h-20 w-20 shrink-0 drop-shadow-[0_3px_7px_rgba(0,0,0,0.85)] sm:h-24 sm:w-24">
+                <Image
+                  src={badgeBaseImageUrl(variant.rarity)}
+                  alt=""
+                  fill
+                  className="object-contain"
+                  aria-hidden
+                />
+                {badge.imageUrl && (
                   <Image
-                    src={badgeBaseImageUrl(variant.rarity)}
-                    alt=""
+                    src={badge.imageUrl}
+                    alt={variant.title}
                     fill
                     className="object-contain"
-                    aria-hidden
                   />
-                  {badge.imageUrl && (
-                    <Image
-                      src={badge.imageUrl}
-                      alt={variant.title}
-                      fill
-                      className="object-contain"
-                    />
-                  )}
-                </div>
-                <span className="font-game-text text-xs text-gray-500">
-                  {serviceText.badgesView.ranks[variant.rarity]}
-                </span>
+                )}
               </div>
               <GameHoverTip
                 title={variant.title}
