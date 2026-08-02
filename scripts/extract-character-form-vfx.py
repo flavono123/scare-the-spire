@@ -460,7 +460,7 @@ def compile_scene(
     dry_run: bool,
 ) -> dict[str, Any]:
     scene = parse_scene(reader.read_file(spec.scene_path).decode("utf-8"), spec.scene_path)
-    particle_forms = {"demon", "serpent", "void"}
+    particle_forms = {"demon", "serpent", "void", "reaper"}
     if spec.slug in particle_forms:
         flatten_packed_scenes(reader, scene)
     supported_nodes = {"Node2D", "Sprite2D"}
