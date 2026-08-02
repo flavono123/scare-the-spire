@@ -102,7 +102,7 @@ export function ThisOrThatVoteStatus({
           </div>
         </>
       ) : (
-        <div className="flex min-h-5 items-center justify-end text-xs tabular-nums text-muted-foreground">
+        <div className={`flex min-h-5 items-center text-xs tabular-nums text-muted-foreground ${unavailable ? "justify-center" : "justify-end"}`}>
           {loading ? (
             <EngagementSpinner size={15} />
           ) : unavailable ? (
