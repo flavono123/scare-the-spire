@@ -11,6 +11,7 @@ import { useServiceLocale } from "@/hooks/use-service-locale";
 import { useThisOrThatEntities } from "@/hooks/use-this-or-that-entities";
 import { useThisOrThatLikes } from "@/hooks/use-this-or-that-likes";
 import { useThisOrThatPost } from "@/hooks/use-this-or-that-posts";
+import { useThisOrThatVotes } from "@/hooks/use-this-or-that-votes";
 import type { GameLocale } from "@/lib/i18n";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import {
@@ -20,15 +21,25 @@ import {
 import { serviceMessages } from "@/messages/service";
 import { ThisOrThatLikeButton } from "@/components/this-or-that/like-button";
 import { ThisOrThatResourcePanel } from "@/components/this-or-that/resource-panel";
+import {
+  ThisOrThatVoteChoiceFrame,
+  ThisOrThatVoteStatus,
+} from "@/components/this-or-that/vote-display";
+import { EMPTY_THIS_OR_THAT_VOTE_SUMMARY } from "@/lib/this-or-that-votes";
+import { cn } from "@/lib/utils";
 
 export function ThisOrThatPostView({
   postId,
   gameLocale,
   title,
+  votePrompt,
+  voteDone,
 }: {
   postId: string;
   gameLocale: GameLocale;
   title: string;
+  votePrompt: string;
+  voteDone: string;
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].thisOrThat;
@@ -40,6 +51,7 @@ export function ThisOrThatPostView({
   } = useThisOrThatEntities(gameLocale);
   const postIds = useMemo(() => post ? [post.id] : [], [post]);
   const likes = useThisOrThatLikes(postIds, userId);
+  const votes = useThisOrThatVotes(postIds, userId, ensureUser);
   const entityMap = useMemo(() => buildThisOrThatEntityMap(entities), [entities]);
   const resolvedPost = useMemo(
     () => (post ? resolveThisOrThatPost(post, entityMap) : null),
@@ -75,6 +87,9 @@ export function ThisOrThatPostView({
   }
 
   const { leftEntity, rightEntity } = resolvedPost;
+  const voteChoice = votes.choices[resolvedPost.post.id];
+  const votePending = votes.pending.has(resolvedPost.post.id);
+  const canVote = authReady && !authUnavailable && !votes.loading && !votes.unavailable;
 
   return (
     <div className="space-y-5">
@@ -113,28 +128,76 @@ export function ThisOrThatPostView({
         </header>
 
         <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-stretch">
-          <ThisOrThatResourcePanel
-            entity={leftEntity}
-            sideLabel={copy.leftLabel}
-            serviceLocale={serviceLocale}
-            gameLocale={gameLocale}
-            size="large"
-            assetOnly
-            linkAsset
-          />
+          <div className="min-w-0">
+            <div className={cn("transition-[filter,opacity]", voteChoice === "right" && "opacity-50 grayscale")}>
+              <ThisOrThatResourcePanel
+                entity={leftEntity}
+                sideLabel={copy.leftLabel}
+                serviceLocale={serviceLocale}
+                gameLocale={gameLocale}
+                size="large"
+                assetOnly
+                linkAsset
+              />
+            </div>
+            <div className="relative mt-2 rounded-md focus-within:outline focus-within:outline-2 focus-within:outline-cyan-300/80">
+              <button
+                type="button"
+                onClick={() => votes.vote(resolvedPost.post.id, "left", "detail")}
+                disabled={!canVote || votePending || Boolean(voteChoice)}
+                aria-label={copy.choose.replace("{name}", leftEntity.nameKo).replace("{side}", copy.leftLabel)}
+                aria-pressed={voteChoice === "left"}
+                className="absolute inset-0 z-10 rounded-md disabled:cursor-not-allowed"
+              />
+              <div className="pointer-events-none">
+                <ThisOrThatVoteChoiceFrame side="left" label={copy.leftLabel} choice={voteChoice} />
+              </div>
+            </div>
+          </div>
           <div className="flex items-center justify-center font-game-title text-2xl font-black text-yellow-500/80 md:w-12">
             VS
           </div>
-          <ThisOrThatResourcePanel
-            entity={rightEntity}
-            sideLabel={copy.rightLabel}
-            serviceLocale={serviceLocale}
-            gameLocale={gameLocale}
-            size="large"
-            assetOnly
-            linkAsset
-          />
+          <div className="min-w-0">
+            <div className={cn("transition-[filter,opacity]", voteChoice === "left" && "opacity-50 grayscale")}>
+              <ThisOrThatResourcePanel
+                entity={rightEntity}
+                sideLabel={copy.rightLabel}
+                serviceLocale={serviceLocale}
+                gameLocale={gameLocale}
+                size="large"
+                assetOnly
+                linkAsset
+              />
+            </div>
+            <div className="relative mt-2 rounded-md focus-within:outline focus-within:outline-2 focus-within:outline-pink-300/80">
+              <button
+                type="button"
+                onClick={() => votes.vote(resolvedPost.post.id, "right", "detail")}
+                disabled={!canVote || votePending || Boolean(voteChoice)}
+                aria-label={copy.choose.replace("{name}", rightEntity.nameKo).replace("{side}", copy.rightLabel)}
+                aria-pressed={voteChoice === "right"}
+                className="absolute inset-0 z-10 rounded-md disabled:cursor-not-allowed"
+              />
+              <div className="pointer-events-none">
+                <ThisOrThatVoteChoiceFrame side="right" label={copy.rightLabel} choice={voteChoice} />
+              </div>
+            </div>
+          </div>
         </div>
+
+        <ThisOrThatVoteStatus
+          summary={votes.summaries[resolvedPost.post.id] ?? EMPTY_THIS_OR_THAT_VOTE_SUMMARY}
+          choice={voteChoice}
+          prompt={votePrompt}
+          done={voteDone}
+          voteCountTemplate={copy.voteCount}
+          voteBreakdownTemplate={copy.voteBreakdown}
+          retryLabel={copy.retry}
+          loading={votes.loading}
+          pending={votePending}
+          unavailable={votes.unavailable || authUnavailable}
+          onRetry={() => votes.cancel(resolvedPost.post.id)}
+        />
       </article>
 
       <section className="rounded-lg border border-border bg-card/20 p-4">

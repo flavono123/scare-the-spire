@@ -33,6 +33,8 @@ export async function renderThisOrThatPostPage(
         postId={id}
         gameLocale={gameLocale}
         title={gameCopy.title}
+        votePrompt={gameCopy.votePrompt}
+        voteDone={gameCopy.voteDone}
       />
     </div>
   );
