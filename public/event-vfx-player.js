@@ -110,11 +110,14 @@
     };
   }
 
-  function curvePoints(scene, value) {
+  function curvePoints(scene, value, axis) {
     let resource = subResource(scene, value);
     if (!resource) return null;
     if (resource.type === "CurveTexture" || resource.type === "CurveXYZTexture") {
-      resource = subResource(scene, resource.props.curve);
+      resource = subResource(
+        scene,
+        resource.props[axis] || resource.props.curve || resource.props.curve_y || resource.props.curve_x,
+      );
     }
     if (!resource || resource.type !== "Curve") return null;
     const data = resource.props._data;
@@ -127,8 +130,8 @@
     return points.sort((a, b) => a.x - b.x);
   }
 
-  function sampleCurve(scene, value, progress, fallback) {
-    const points = curvePoints(scene, value);
+  function sampleCurve(scene, value, progress, fallback, axis = "curve") {
+    const points = curvePoints(scene, value, axis);
     if (!points || !points.length) return fallback;
     if (progress <= points[0].x) return points[0].y;
     for (let index = 1; index < points.length; index += 1) {
@@ -284,6 +287,8 @@
           angular: random(),
           scale: random(),
           anim: random(),
+          color: random(),
+          life: random(),
           turbulence: random() * TAU,
         }));
       }
@@ -394,12 +399,15 @@
 
   function animationMaterial(scene, value) {
     const resource = subResource(scene, value);
-    if (!resource || resource.type !== "CanvasItemMaterial" || resource.props.particles_animation !== true) return null;
-    return {
-      horizontal: Math.max(1, number(resource.props, "particles_anim_h_frames", 1)),
-      vertical: Math.max(1, number(resource.props, "particles_anim_v_frames", 1)),
-      loop: resource.props.particles_anim_loop !== false,
-    };
+    if (resource?.type === "CanvasItemMaterial" && resource.props.particles_animation === true) {
+      return {
+        horizontal: Math.max(1, number(resource.props, "particles_anim_h_frames", 1)),
+        vertical: Math.max(1, number(resource.props, "particles_anim_v_frames", 1)),
+        loop: resource.props.particles_anim_loop !== false,
+      };
+    }
+    const external = extResource(scene, value)?.browserAnimation;
+    return external ? { ...external, lifetimeProgress: true, loop: true } : null;
   }
 
   function textureFrame(texture, animation, frameProgress) {
@@ -428,6 +436,7 @@
     if (!process || process.type !== "ParticleProcessMaterial") return;
     const props = process.props;
     const lifetime = Math.max(0.01, number(node.props, "lifetime", 1));
+    const lifetimeRandomness = clamp(number(props, "lifetime_randomness", 0), 0, 1);
     const preprocess = number(node.props, "preprocess", 0);
     const speedScale = number(node.props, "speed_scale", 1);
     const explosiveness = number(node.props, "explosiveness", 0);
@@ -436,15 +445,24 @@
     const baseColor = color(props.color, { r: 1, g: 1, b: 1, a: 1 });
     const box = vector(props.emission_box_extents, { x: 1, y: 1 });
     const shapeScale = vector(props.emission_shape_scale, { x: 1, y: 1 });
+    const sphereRadius = number(props, "emission_sphere_radius", 1);
+    const ringRadius = number(props, "emission_ring_radius", 1);
+    const ringInnerRadius = number(props, "emission_ring_inner_radius", 0);
     const direction = vector(props.direction, { x: 1, y: 0 });
     const directionLength = Math.hypot(direction.x, direction.y) || 1;
     const directionAngle = Math.atan2(direction.y, direction.x);
     const spread = number(props, "spread", 45) * Math.PI / 180;
     const velocityMin = number(props, "initial_velocity_min", 0);
     const velocityMax = number(props, "initial_velocity_max", velocityMin);
+    const directionalMin = number(props, "directional_velocity_min", 0);
+    const directionalMax = number(props, "directional_velocity_max", directionalMin);
+    const radialMin = number(props, "radial_velocity_min", 0);
+    const radialMax = number(props, "radial_velocity_max", radialMin);
     const gravity = vector(props.gravity, { x: 0, y: 980 });
     const linearMin = number(props, "linear_accel_min", 0);
     const linearMax = number(props, "linear_accel_max", linearMin);
+    const dampingMin = number(props, "damping_min", 0);
+    const dampingMax = number(props, "damping_max", dampingMin);
     const angularMin = number(props, "angular_velocity_min", 0);
     const angularMax = number(props, "angular_velocity_max", angularMin);
     const angleMin = number(props, "angle_min", 0);
@@ -468,21 +486,47 @@
     setComposite(context, blend);
 
     for (const particle of node._particles) {
+      const particleLifetime = lifetime * (1 - particle.life * lifetimeRandomness);
       const phase = oneShot
         ? 0
-        : ((particle.index / node._particles.length) * (1 - explosiveness) + particle.phase * randomness) * lifetime;
+        : ((particle.index / node._particles.length) * (1 - explosiveness) + particle.phase * randomness) * particleLifetime;
       const ageRaw = time * speedScale + preprocess + phase;
-      if (oneShot && (ageRaw < 0 || ageRaw >= lifetime)) continue;
-      const age = oneShot ? ageRaw : ((ageRaw % lifetime) + lifetime) % lifetime;
-      const progress = age / lifetime;
+      if (oneShot && (ageRaw < 0 || ageRaw >= particleLifetime)) continue;
+      const age = oneShot ? ageRaw : ((ageRaw % particleLifetime) + particleLifetime) % particleLifetime;
+      const progress = age / particleLifetime;
       const velocity = mix(velocityMin, velocityMax, particle.velocity);
       const acceleration = mix(linearMin, linearMax, particle.velocity);
-      const travel = velocity * age + 0.5 * acceleration * age * age;
-      const emittedX = shape === 3 ? (particle.x * 2 - 1) * box.x * shapeScale.x : 0;
-      const emittedY = shape === 3 ? (particle.y * 2 - 1) * box.y * shapeScale.y : 0;
+      const damping = mix(dampingMin, dampingMax, particle.velocity);
+      const movingFor = damping > 0 ? Math.min(age, Math.abs(velocity) / damping) : age;
+      const stoppedVelocity = damping > 0
+        ? Math.sign(velocity) * Math.max(0, Math.abs(velocity) - damping * movingFor)
+        : velocity;
+      const travel = (velocity + stoppedVelocity) * 0.5 * movingFor + 0.5 * acceleration * age * age;
+      const emissionAngle = particle.y * TAU;
+      const emissionRadius = shape === 1
+        ? Math.sqrt(particle.x) * sphereRadius
+        : shape === 6
+          ? Math.sqrt(mix(ringInnerRadius * ringInnerRadius, ringRadius * ringRadius, particle.x))
+          : 0;
+      const emittedX = shape === 3
+        ? (particle.x * 2 - 1) * box.x * shapeScale.x
+        : Math.cos(emissionAngle) * emissionRadius * shapeScale.x;
+      const emittedY = shape === 3
+        ? (particle.y * 2 - 1) * box.y * shapeScale.y
+        : Math.sin(emissionAngle) * emissionRadius * shapeScale.y;
       const angle = directionAngle + (particle.angle * 2 - 1) * spread;
-      let x = emittedX + Math.cos(angle) / directionLength * travel + 0.5 * gravity.x * age * age;
-      let y = emittedY + Math.sin(angle) / directionLength * travel + 0.5 * gravity.y * age * age;
+      const directional = mix(directionalMin, directionalMax, particle.velocity)
+        * sampleCurve(scene, props.directional_velocity_curve, progress, 1, "curve_y");
+      const radial = mix(radialMin, radialMax, particle.velocity)
+        * sampleCurve(scene, props.radial_velocity_curve, progress, 1);
+      let x = emittedX
+        + Math.cos(angle) / directionLength * (travel + directional * age)
+        + Math.cos(emissionAngle) * radial * age
+        + 0.5 * gravity.x * age * age;
+      let y = emittedY
+        + Math.sin(angle) / directionLength * (travel + directional * age)
+        + Math.sin(emissionAngle) * radial * age
+        + 0.5 * gravity.y * age * age;
       const orbit = mix(orbitMin, orbitMax, particle.angular) * TAU * age;
       if (orbit) {
         const cosine = Math.cos(orbit);
@@ -501,17 +545,23 @@
         x += Math.sin(time * 1.7 + particle.turbulence) * strength * influence;
         y += Math.cos(time * 1.3 + particle.turbulence) * strength * influence;
       }
-      let particleScale = mix(scaleMin, scaleMax, particle.scale);
-      particleScale *= sampleCurve(scene, props.scale_curve, progress, 1);
+      const baseScale = mix(scaleMin, scaleMax, particle.scale);
+      const particleScaleX = baseScale * sampleCurve(scene, props.scale_curve, progress, 1, "curve_x");
+      const particleScaleY = baseScale * sampleCurve(scene, props.scale_curve, progress, 1, "curve_y");
       const particleColor = multiplyColor(
-        multiplyColor(baseColor, sampleGradient(scene, props.color_ramp, progress, { r: 1, g: 1, b: 1, a: 1 })),
+        multiplyColor(
+          multiplyColor(baseColor, sampleGradient(scene, props.color_ramp, progress, { r: 1, g: 1, b: 1, a: 1 })),
+          sampleGradient(scene, props.color_initial_ramp, particle.color, { r: 1, g: 1, b: 1, a: 1 }),
+        ),
         nodeColor,
       );
       particleColor.a *= sampleCurve(scene, props.alpha_curve, progress, 1);
-      if (particleColor.a <= 0.003 || Math.abs(particleScale) <= 0.0001) continue;
-      const rotation = (mix(angleMin, angleMax, particle.angle) + mix(angularMin, angularMax, particle.angular) * age) * Math.PI / 180;
+      if (particleColor.a <= 0.003 || Math.abs(particleScaleX) <= 0.0001 || Math.abs(particleScaleY) <= 0.0001) continue;
+      const alignedRotation = props.particle_flag_align_y === true ? angle + Math.PI / 2 : 0;
+      const rotation = alignedRotation
+        + (mix(angleMin, angleMax, particle.angle) + mix(angularMin, angularMax, particle.angular) * age) * Math.PI / 180;
       const frameProgress = mix(animationOffsetMin, animationOffsetMax, particle.anim)
-        + progress * mix(animationSpeedMin, animationSpeedMax, particle.anim);
+        + progress * (animation?.lifetimeProgress ? 1 : mix(animationSpeedMin, animationSpeedMax, particle.anim));
       const source = textureFrame(texture, animation, frameProgress);
       const sourceWidth = source?.width || texture.width;
       const sourceHeight = source?.height || texture.height;
@@ -519,7 +569,10 @@
       context.translate(x, y);
       context.rotate(rotation);
       const flip = props.particle_flag_rotate_y === true ? Math.cos(progress * TAU) : 1;
-      context.scale(particleScale * flip, particleScale);
+      context.scale(particleScaleX * flip, particleScaleY);
+      if (animation?.pivot) {
+        context.translate(animation.pivot[0] * sourceWidth, animation.pivot[1] * sourceHeight);
+      }
       context.globalAlpha = clamp(particleColor.a * (blend === 1 ? 0.45 : 1), 0, 1);
       drawImageCentered(
         context,
