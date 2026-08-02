@@ -268,6 +268,14 @@ def node_path(node: dict[str, Any]) -> str:
     return "." if parent is None else node["name"] if parent == "." else f"{parent}/{node['name']}"
 
 
+def vector_values(value: Any, fallback: tuple[float, float]) -> list[float]:
+    if isinstance(value, dict) and value.get("$") == "Vector2":
+        values = value.get("v")
+        if isinstance(values, list) and len(values) >= 2:
+            return [float(values[0]), float(values[1])]
+    return [fallback[0], fallback[1]]
+
+
 def character_visual_transforms(reader: PCKReader) -> dict[str, dict[str, list[float]]]:
     transforms = {}
     for character_id, scene_slug in CHARACTER_SCENES.items():
@@ -302,12 +310,20 @@ def form_placements(
     visual_transforms: dict[str, dict[str, list[float]]],
 ) -> dict[str, dict[str, Any]]:
     root_props = scene["nodes"][0]["props"]
-    follows_bone = "_boneFollower" in root_props
+    follower_path = root_props.get("_boneFollower", {}).get("v", [None])[0]
+    follower = next(
+        (node for node in scene["nodes"] if node_path(node) == follower_path),
+        None,
+    )
+    follower_props = follower["props"] if follower else {}
     placements = {}
     for character_id, transform in visual_transforms.items():
         bone_property = f"_{CHARACTER_SCENES[character_id]}BoneName"
         placements[character_id] = {
-            "boneName": root_props.get(bone_property) if follows_bone else None,
+            "boneName": root_props.get(bone_property) if follower else None,
+            "initialPosition": vector_values(follower_props.get("position"), (0, 0)),
+            "interpolationSpeed": float(follower_props.get("_interpolationSpeed", 0.5)),
+            "snap": bool(follower_props.get("_snap", follower is None)),
             **transform,
         }
     return placements
@@ -428,13 +444,17 @@ def main() -> int:
         manifest = []
         visual_transforms = character_visual_transforms(reader)
         for spec in FORMS:
+            source_scene = parse_scene(
+                reader.read_file(spec.scene_path).decode("utf-8"),
+                spec.scene_path,
+            )
             scene = compile_scene(reader, spec, texture_metadata)
             scene_path = SCENE_ROOT / f"{spec.slug}.json"
             write_json(scene_path, scene, args.dry_run)
             manifest.append({
                 "cardId": spec.card_id,
                 "originCharacterId": spec.origin_character_id,
-                "placements": form_placements(scene, visual_transforms),
+                "placements": form_placements(source_scene, visual_transforms),
                 "sceneUrl": public_url(scene_path),
             })
         write_json(MANIFEST_PATH, manifest, args.dry_run)
