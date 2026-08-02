@@ -489,7 +489,7 @@ export function CharacterDetail({
                   title={serviceLocale === "ko" ? form.card.name : form.card.nameEn}
                   aria-pressed={active}
                   onClick={() => setSelectedFormCardId(active ? null : form.cardId)}
-                  className="inline-flex h-9 items-center rounded-md border px-3 font-game-text text-xs font-bold transition-[background-color,opacity] hover:opacity-100"
+                  className="inline-flex h-9 items-center gap-1.5 rounded-md border px-2.5 font-game-text text-xs font-bold transition-[background-color,opacity] hover:opacity-100"
                   style={{
                     borderColor: active ? formColor : `${formColor}66`,
                     backgroundColor: active ? `${formColor}24` : `${formColor}0d`,
@@ -497,7 +497,14 @@ export function CharacterDetail({
                     opacity: active ? 1 : 0.78,
                   }}
                 >
-                  {serviceLocale === "ko" ? form.card.name : form.card.nameEn}
+                  <Image
+                    src={`/images/sts2/powers/${form.cardId.toLowerCase()}_power.webp`}
+                    alt=""
+                    width={22}
+                    height={22}
+                    className="h-[22px] w-[22px] shrink-0 object-contain"
+                  />
+                  <span>{serviceLocale === "ko" ? form.card.name : form.card.nameEn}</span>
                 </button>
               );
             })}
