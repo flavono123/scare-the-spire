@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 
@@ -11,6 +11,37 @@ const SAMPLES = [
 
 test.describe("Card detail visual", () => {
   test.setTimeout(60_000);
+
+  test("info rail uses an inline tiny card and locale-aware English name", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(`${BASE}/compendium/cards/strike_ironclad`);
+    await page.waitForLoadState("networkidle");
+
+    const meta = page.locator("[data-card-detail-meta]");
+    const tinyCard = meta.locator("[data-card-detail-tiny-card]");
+    const englishName = meta.locator("[data-card-detail-english-name]");
+    await meta.scrollIntoViewIfNeeded();
+    await expect(tinyCard).toBeVisible();
+    await expect(englishName).toHaveText("Strike");
+    await expect(meta).toHaveText("Strike");
+
+    const tinyCardBox = await tinyCard.boundingBox();
+    const englishNameBox = await englishName.boundingBox();
+    expect(tinyCardBox).not.toBeNull();
+    expect(englishNameBox).not.toBeNull();
+    expect(Math.abs(
+      tinyCardBox!.y + tinyCardBox!.height / 2
+      - (englishNameBox!.y + englishNameBox!.height / 2),
+    )).toBeLessThan(2);
+
+    await page.goto(`${BASE}/en/compendium/cards/strike_ironclad`);
+    await page.waitForLoadState("networkidle");
+    const englishMeta = page.locator("[data-card-detail-meta]");
+    await englishMeta.scrollIntoViewIfNeeded();
+    await expect(englishMeta.locator("[data-card-detail-tiny-card]")).toBeVisible();
+    await expect(englishMeta.locator("[data-card-detail-english-name]")).toHaveCount(0);
+    await expect(englishMeta).toHaveText("");
+  });
 
   for (const c of SAMPLES) {
     test(`detail: ${c.label}`, async ({ page }) => {

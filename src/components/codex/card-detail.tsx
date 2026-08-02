@@ -21,8 +21,8 @@ import {
   CodexMonster,
   CodexPotion,
   CodexPower,
-  getCharacterColor,
 } from "@/lib/codex-types";
+import { CardActionIcon } from "@/components/history-course/card-action-icon";
 import { CardTile } from "./card-tile";
 import { DescriptionText, getCardMaxUpgradeLevel, hasCardUpgrade } from "./codex-description";
 import { GameChoiceFrame } from "./event-choice-frame";
@@ -94,17 +94,6 @@ function getAfflictionTipVariant(_affliction: CodexAffliction): HoverTipVariant 
   return "debuff";
 }
 
-function MetaPill({ value, color }: { value: string; color?: string }) {
-  return (
-    <span
-      className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm font-bold"
-      style={color ? { color } : undefined}
-    >
-      {value}
-    </span>
-  );
-}
-
 function InfoRailSection({
   title,
   children,
@@ -125,78 +114,6 @@ function InfoRailSection({
       </summary>
       <div className="mt-3">{children}</div>
     </details>
-  );
-}
-
-const CARD_RARITY_COLORS: Record<CodexCard["rarity"], string> = {
-  기본: "#8b8b8b",
-  일반: "#b0b0b0",
-  고급: "#4fc3f7",
-  희귀: "#ffd740",
-  "고대의 존재": "#60a5fa",
-  이벤트: "#ce93d8",
-  토큰: "#81c784",
-  저주: "#a78bfa",
-  상태이상: "#ef4444",
-  퀘스트: "#fbbf24",
-};
-
-const CARD_TYPE_COLORS: Record<CodexCard["type"], string> = {
-  공격: "#ef4444",
-  스킬: "#60a5fa",
-  파워: "#c084fc",
-  저주: "#a78bfa",
-  상태이상: "#ef4444",
-  퀘스트: "#fbbf24",
-};
-
-function getCardPoolLabel(
-  card: CodexCard,
-  serviceText: ReturnType<typeof getCodexServiceMessages>,
-): string {
-  if (card.rarity === "고대의 존재") return serviceText.labels.pools.ancient;
-
-  switch (card.color) {
-    case "ironclad":
-    case "silent":
-    case "defect":
-    case "necrobinder":
-    case "regent":
-    case "colorless":
-    case "event":
-    case "curse":
-    case "status":
-      return serviceText.labels.pools[card.color];
-    case "token":
-      return serviceText.labels.cardRarities.토큰;
-    case "quest":
-      return serviceText.labels.cardRarities.퀘스트;
-    default:
-      return card.color;
-  }
-}
-
-function getCardPoolColor(card: CodexCard): string | undefined {
-  if (card.rarity === "고대의 존재") return "#60a5fa";
-  if (card.color === "event") return "#ce93d8";
-  if (card.color === "curse") return "#a78bfa";
-  if (card.color === "status") return "#ef4444";
-  if (card.color === "token") return "#81c784";
-  if (card.color === "quest") return "#fbbf24";
-  return getCharacterColor(card.color);
-}
-
-function getCardCostLabel(
-  card: CodexCard,
-  showUpgrade: boolean,
-  serviceLocale: ServiceLocale,
-): string {
-  const upgradedCost = showUpgrade && hasCardUpgrade(card) ? card.upgrade?.cost : undefined;
-  const cost = typeof upgradedCost === "number" ? upgradedCost : card.cost;
-  const energyCost = card.isXCost ? "X" : cost >= 0 ? String(cost) : null;
-  const starCost = card.starCost !== null ? `★ ${card.starCost}` : null;
-  return [energyCost, starCost].filter(Boolean).join(" / ") || (
-    serviceLocale === "ko" ? "비용 없음" : "No cost"
   );
 }
 
@@ -225,12 +142,10 @@ function getCardDetailLabels(serviceLocale: ServiceLocale) {
     ? {
         patchHistory: "패치 이력",
         noPatchHistory: "구조화 변경 없음",
-        englishName: "영어명",
       }
     : {
         patchHistory: "Patch History",
         noPatchHistory: "No structured changes",
-        englishName: "English name",
       };
 }
 
@@ -468,17 +383,6 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
       }) ?? hoveredAffliction.description
     : null;
 
-  const poolLabel = getCardPoolLabel(previewCard, serviceText);
-  const poolColor = getCardPoolColor(previewCard);
-  const costLabel = getCardCostLabel(previewCard, showUpgrade, serviceLocale);
-  const metaPills = [
-    { value: gameUi.cardLibrary.types[previewCard.type], color: CARD_TYPE_COLORS[previewCard.type] },
-    { value: gameUi.cardLibrary.rarities[previewCard.rarity], color: CARD_RARITY_COLORS[previewCard.rarity] },
-    { value: poolLabel, color: poolColor },
-    { value: costLabel, color: "#facc15" },
-  ].filter((pill, index, pills) => (
-    pills.findIndex((candidate) => candidate.value === pill.value) === index
-  ));
   const madScienceChoices = isMadScience ? (
     <div className="w-full max-w-2xl space-y-2.5">
       {madScienceRiderIds.map((riderId) => {
@@ -847,18 +751,21 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
         </section>
 
         <aside className="flex min-w-0 flex-col gap-3">
-          <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
-            <div className="space-y-3">
-              <div className="flex flex-wrap gap-2">
-                {metaPills.map((pill) => (
-                  <MetaPill key={pill.value} value={pill.value} color={pill.color} />
-                ))}
+          <section
+            className="rounded-lg border border-white/10 bg-black/20 px-4 py-3"
+            data-card-detail-meta
+          >
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="shrink-0" data-card-detail-tiny-card>
+                <CardActionIcon card={previewCard} width={32} />
               </div>
-              {renderedPreviewNameEn !== renderedPreviewName && (
-                <div>
-                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
-                  <div className="font-game-text text-sm text-gray-300">{renderedPreviewNameEn}</div>
-                </div>
+              {serviceLocale !== "en" && renderedPreviewNameEn !== renderedPreviewName && (
+                <span
+                  className="min-w-0 truncate font-game-text text-sm text-gray-300"
+                  data-card-detail-english-name
+                >
+                  {renderedPreviewNameEn}
+                </span>
               )}
             </div>
           </section>
