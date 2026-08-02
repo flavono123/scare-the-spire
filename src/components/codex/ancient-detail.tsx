@@ -134,9 +134,12 @@ export function AncientDetail({
   }, [ancient.relicIds, entities]);
   const [rewardRelicImageUrl, setRewardRelicImageUrl] = useState<string | null>(null);
   useEffect(() => {
-    setRewardRelicImageUrl(
-      rewardRelicImages[Math.floor(Math.random() * rewardRelicImages.length)] ?? null,
-    );
+    const frame = window.requestAnimationFrame(() => {
+      setRewardRelicImageUrl(
+        rewardRelicImages[Math.floor(Math.random() * rewardRelicImages.length)] ?? null,
+      );
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [rewardRelicImages]);
   const actLabel = getAncientActLabel(ancient, serviceText, gameUi);
   const actPillClass = ancient.act
