@@ -14,10 +14,10 @@
 
 ## 현재 추출 한계
 
-기본 형상 추출 경로는 원본 장면에서 `Node2D`와 `Sprite2D`만 남긴다. 악마의 형상부터 예외 없이 실제 필요가 확인된 기능만 단계적으로 공용 경로에 추가하고 있다.
+기본 형상 추출 경로는 원본 장면에서 `Node2D`와 `Sprite2D`만 남긴다. 악마의 형상부터 실제 필요가 확인된 기능만 단계적으로 공용 경로에 추가하고 있다.
 
-- 악마의 형상은 루트가 하나인 packed scene을 펼쳐 부모 장면의 오버라이드를 적용하고, 사용 중인 `GPUParticles2D`, subresource, 텍스처를 정적 JSON에 보존한다.
-- 악마의 형상 외 네 형상은 아직 packed scene, 파티클 노드, subresource를 제거한다.
+- 악마와 구렁이의 형상은 루트가 하나인 packed scene을 펼쳐 부모 장면의 오버라이드를 적용하고, 사용 중인 `GPUParticles2D`, subresource, 텍스처를 정적 JSON에 보존한다.
+- 나머지 세 형상은 아직 packed scene, 파티클 노드, subresource를 제거한다.
 - `SubViewport`와 복제 SpineSprite
 - Godot/C# 스크립트가 담당하는 값 보간, 흔들림, 활성 상태, 발동 이벤트
 
@@ -28,7 +28,7 @@
 | 형상 | 구현됨 | 미구현 또는 근사 |
 | --- | --- | --- |
 | 악마의 형상 | 원점 배치, idle glow/noise 근사, 원본 packed scene의 common clouds·반복 slash·embers와 로컬 위치 | 발동 전용 slash/embers/glow, `OnEffectTriggered()` 파티클 재시작, ShaderMaterial LUT·erosion·hue shift의 정확한 픽셀 결과 |
-| 구렁이의 형상 | 캐릭터별 뼈 부착, idle glow/noise/snakes 근사 | idle/발동 scream ring, `NShaker`, `NValueRamp`, 발동 후 snakes fade, 실제 셰이더. snakes 위치·색·스케일은 수동 근사 |
+| 구렁이의 형상 | 캐릭터별 뼈 부착, idle glow/noise/snakes 근사, 원본 idle scream ring 노드·수명·크기/알파 곡선 | 발동 scream/common ring, `NShaker`, `NValueRamp`, 발동 후 snakes fade, polar shader의 정확한 픽셀 결과. snakes 위치·색·스케일은 수동 근사 |
 | 공허의 형상 | `head` 추적과 0.2 보간, glow와 네 개 spike 근사 | constellation, ray, chain shards, sparkles 파티클, 원본 spike packed scene/셰이더, swords scale ramp, glow ramp, active particle lifecycle |
 | 사신의 형상 | 캐릭터별 뼈 부착, idle glow/noise 근사 | 발동 polar ring A/B, `OnEffectTriggered()` 파티클 재시작, 실제 셰이더 |
 | 메아리의 형상 | 캐릭터별 뼈 부착, 푸른 잔상 근사 | common specks, lines 파티클, `SubViewport`, `NSpineSpriteCopier`의 실제 Spine 복제, active/inactive `NValueRamp`. 현재 잔상은 무대 캔버스 tint |
