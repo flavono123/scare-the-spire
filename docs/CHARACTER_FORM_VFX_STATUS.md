@@ -14,14 +14,15 @@
 
 ## 현재 추출 한계
 
-기본 형상 추출 경로는 원본 장면에서 `Node2D`와 `Sprite2D`만 남긴다. 악마의 형상부터 실제 필요가 확인된 기능만 단계적으로 공용 경로에 추가하고 있다.
+다섯 형상 모두 원본 장면의 지원 가능한 노드를 정적 씬으로 추출한다.
 
-- 악마·구렁이·공허·사신의 형상은 packed scene을 펼쳐 부모 장면과 자식 노드의 오버라이드를 적용하고, 사용 중인 `GPUParticles2D`, subresource, 텍스처를 정적 JSON에 보존한다.
-- 메아리의 형상은 아직 packed scene, 파티클 노드, subresource를 제거한다.
-- `SubViewport`와 복제 SpineSprite
-- Godot/C# 스크립트가 담당하는 값 보간, 흔들림, 활성 상태, 발동 이벤트
+- packed scene을 펼쳐 부모 장면과 자식 노드의 오버라이드를 적용하고, 사용 중인 `GPUParticles2D`, subresource, 텍스처를 정적 JSON에 보존한다.
+- 발동 전용 파티클은 게임 원본의 `emitting=false`를 유지하므로 명시적인 미리보기 입력을 구현하기 전에는 표시되지 않는다.
+- 메아리의 `echo_form_lines`는 노드와 곡선을 보존하지만 입력이 `SubViewportTexture`라 Canvas 2D 렌더러에서 그리지 않는다.
+- `SubViewport`와 복제 SpineSprite는 렌더하지 않는다.
+- Godot/C# 스크립트가 담당하는 값 보간, 흔들림, 활성 상태, 발동 이벤트는 실행하지 않는다.
 
-공용 브라우저 렌더러는 악마의 형상이 사용하는 원형·링 방출, 방향·방사 속도, 감쇠, 수명 랜덤, XYZ 크기 곡선, 색상 ramp, 외부 ShaderMaterial 플립북 메타데이터를 Canvas 2D로 모사한다. 노드 속성과 배치는 게임 원본이지만 GPU 파티클 적분과 셰이더 픽셀 결과는 근사다.
+공용 브라우저 렌더러는 형상 씬이 사용하는 원형·링 방출, 방향·방사 속도, 감쇠, 수명 랜덤, XYZ 크기 곡선, 색상 ramp, 외부 ShaderMaterial 플립북 메타데이터를 Canvas 2D로 모사한다. 노드 속성과 배치는 게임 원본이지만 GPU 파티클 적분과 셰이더 픽셀 결과는 근사다.
 
 ## 형상별 상태
 
@@ -31,7 +32,7 @@
 | 구렁이의 형상 | 캐릭터별 뼈 부착, idle glow/noise/snakes 근사, 원본 idle scream ring 노드·수명·크기/알파 곡선 | 발동 scream/common ring, `NShaker`, `NValueRamp`, 발동 후 snakes fade, polar shader의 정확한 픽셀 결과. snakes 위치·색·스케일은 수동 근사 |
 | 공허의 형상 | `head` 추적과 0.2 보간, 원본 네 spike 계층·회전·자식 오버라이드, constellation/ray/chain shards/sparkles 파티클 | 각 ShaderMaterial의 정확한 픽셀 결과, `NShaker`, swords scale ramp, glow ramp, active particle lifecycle |
 | 사신의 형상 | 캐릭터별 뼈 부착, idle glow/noise 근사, 발동 polar ring A/B 원본 노드·속성을 비활성 상태로 보존 | `OnEffectTriggered()` 파티클 재시작과 미리보기 입력, polar shader의 정확한 픽셀 결과 |
-| 메아리의 형상 | 캐릭터별 뼈 부착, 푸른 잔상 근사 | common specks, lines 파티클, `SubViewport`, `NSpineSpriteCopier`의 실제 Spine 복제, active/inactive `NValueRamp`. 현재 잔상은 무대 캔버스 tint |
+| 메아리의 형상 | 캐릭터별 뼈 부착, 푸른 잔상 근사, 원본 common specks 파티클. lines 노드·곡선은 정적 씬에 보존 | `SubViewportTexture`를 쓰는 lines의 실제 렌더, `SubViewport`, `NSpineSpriteCopier`의 실제 Spine 복제, active/inactive `NValueRamp`. 현재 잔상은 무대 캔버스 tint |
 
 미구현 요소는 사용자 UI에 별도 상태로 표시하지 않고 렌더에서 생략된다.
 
@@ -59,9 +60,8 @@ Godot `canvas_item` 셰이더를 입력받아 현재 Canvas 2D 렌더러에서 �
 
 ## 다음 구현 순서
 
-1. 악마의 형상에서 확인한 packed root 펼치기와 Canvas 파티클 경로를 다음 형상에 하나씩 적용한다.
-2. `NValueRamp`, `NShaker`, `SetActive`, `OnEffectTriggered`를 원본 C# 동작 단위로 옮긴다. 상세 페이지에는 전투 이벤트가 없으므로 발동 VFX는 명시적인 미리보기 입력이 필요하다.
-3. 실제 차이가 남는 소수의 `canvas_item` 셰이더만 WebGL2 GLSL로 수동 이식한다. 범용 Godot 셰이더 transpiler나 새 렌더링 엔진은 만들지 않는다.
-4. 메아리의 형상은 기존 Spine 런타임에서 같은 skeleton/animation state를 복제하는 별도 경로로 구현한다.
+1. `NValueRamp`, `NShaker`, `SetActive`, `OnEffectTriggered`를 원본 C# 동작 단위로 옮긴다. 상세 페이지에는 전투 이벤트가 없으므로 발동 VFX는 명시적인 미리보기 입력이 필요하다.
+2. 실제 차이가 남는 소수의 `canvas_item` 셰이더만 WebGL2 GLSL로 수동 이식한다. 범용 Godot 셰이더 transpiler나 새 렌더링 엔진은 만들지 않는다.
+3. 메아리의 형상은 기존 Spine 런타임에서 같은 skeleton/animation state를 복제하는 별도 경로로 구현한다.
 
 이 순서는 원본 장면 구조를 최대한 보존하면서도 Cloudflare Worker에 요청 시 작업을 추가하지 않는다. 추출은 빌드 전 정적으로 수행하고 런타임 비용은 선택된 형상 하나의 클라이언트 렌더로 제한한다.
