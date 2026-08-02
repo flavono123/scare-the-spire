@@ -63,6 +63,10 @@ const availableCard: EntityInfo = {
 const availableHtml = renderPatch("[gold:card]Bash[/gold]", [availableCard]);
 assert.match(availableHtml, /href="\/en\/compendium\/cards\?card=bash"/);
 
+const internalLinkHtml = renderPatch("[0.110.0](/patches/0.110.0)", []);
+assert.match(internalLinkHtml, /href="\/en\/patches\/0\.110\.0"/);
+assert.doesNotMatch(internalLinkHtml, /target="_blank"/);
+
 const staticAvailableHtml = renderStaticPatch("[gold:card]Bash[/gold]", [availableCard]);
 assert.match(staticAvailableHtml, /href="\/en\/compendium\/cards\?card=bash"/);
 assert.match(staticAvailableHtml, /\/images\/sts2\/cards\/bash\.webp/);

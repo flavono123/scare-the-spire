@@ -1286,20 +1286,29 @@ function renderPlainTextWithMonsterMoveLinks(
 }
 
 const MARKDOWN_IMAGE_RE = /^!\[([^\]\n]*)\]\(([^)\s]+)\)$/;
-const MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
+const MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\(((?:https?:\/\/|\/)[^\s)]+)\)/g;
 
-function renderExternalMarkdownLink(
+function renderMarkdownLink(
   key: string,
   label: string,
   href: string,
+  context: RenderContext,
 ): ReactNode {
+  const className = "text-cyan-200 underline decoration-cyan-200/40 underline-offset-2 transition-colors hover:text-cyan-100";
+  if (href.startsWith("/")) {
+    const localizedHref = context.serviceLocale && context.gameLocale
+      ? localizeHrefWithGameLocale(href, context.serviceLocale, context.gameLocale)
+      : href;
+    return <Link key={key} href={localizedHref} className={className}>{label}</Link>;
+  }
+
   return (
     <a
       key={key}
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="text-cyan-200 underline decoration-cyan-200/40 underline-offset-2 transition-colors hover:text-cyan-100"
+      className={className}
     >
       {label}
     </a>
@@ -1344,7 +1353,7 @@ function renderMarkdownLinks(
       ));
     }
 
-    parts.push(renderExternalMarkdownLink(`${keyPrefix}-link-${matchIndex}`, match[1], match[2]));
+    parts.push(renderMarkdownLink(`${keyPrefix}-link-${matchIndex}`, match[1], match[2], context));
     lastIndex = index + match[0].length;
     matchIndex += 1;
   }
@@ -1445,7 +1454,7 @@ function enrichLine(
       ));
     }
 
-    parts.push(renderExternalMarkdownLink(`${key}-link-${matchIndex}`, match[1], match[2]));
+    parts.push(renderMarkdownLink(`${key}-link-${matchIndex}`, match[1], match[2], context));
     lastIndex = index + match[0].length;
     matchIndex += 1;
   }
