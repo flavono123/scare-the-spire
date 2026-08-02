@@ -184,6 +184,7 @@ def parse_scene(text: str, scene_path: str) -> dict[str, Any]:
     ext_resources: dict[str, dict[str, str]] = {}
     sub_resources: dict[str, dict[str, Any]] = {}
     nodes: list[dict[str, Any]] = []
+    resource: dict[str, Any] = {}
     for kind, header, lines in sections:
         if kind == "ext_resource":
             ext_resources[header["id"]] = {
@@ -195,18 +196,22 @@ def parse_scene(text: str, scene_path: str) -> dict[str, Any]:
                 "props": parse_properties(lines, scene_path),
                 "type": header.get("type", ""),
             }
+        elif kind == "resource":
+            resource = parse_properties(lines, scene_path)
         elif kind == "node":
-            nodes.append(
-                {
-                    "name": header.get("name", ""),
-                    "parent": header.get("parent"),
-                    "props": parse_properties(lines, scene_path),
-                    "type": header.get("type", ""),
-                }
-            )
+            node = {
+                "name": header.get("name", ""),
+                "parent": header.get("parent"),
+                "props": parse_properties(lines, scene_path),
+                "type": header.get("type", ""),
+            }
+            if "instance" in header:
+                node["instance"] = parse_value(header["instance"])
+            nodes.append(node)
     return {
         "ext": ext_resources,
         "nodes": nodes,
+        "resource": resource,
         "resources": sub_resources,
         "source": scene_path,
         "version": 1,
