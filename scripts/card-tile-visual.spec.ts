@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 const BASE = process.env.BASE_URL ?? "http://localhost:3000";
+test.use({ locale: "ko-KR" });
 
 const SAMPLES = [
   { id: "anger", label: "Anger (common ironclad)" },
