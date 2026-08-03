@@ -17,9 +17,6 @@ import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import { getSiteOrigin } from "@/lib/site-origin";
 import { contactMessages } from "@/messages/contact";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
 const ROW_LIMIT = 50;
 const CONTACT_ROW_LIMIT = 100;
 const STATS_SAMPLE_LIMIT = 1000;

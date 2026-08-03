@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
 import { devToolsEnabled } from "@/lib/dev-tools";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export const metadata = {
   title: "Supabase Admin — DEV",
   description: "개발 전용 Supabase 컨텐츠 확인 페이지",
