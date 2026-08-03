@@ -18,7 +18,6 @@ import { sanitizeContactSourcePath } from "@/lib/contact-routing";
 import type { FeedbackFormGameCopy } from "@/lib/borrowed-game-copy";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { supabaseEnabled } from "@/lib/supabase";
-import { cn } from "@/lib/utils";
 import type { ContactMessages } from "@/messages/contact";
 
 const CATEGORY_ICONS: Record<ContactCategory, string> = {
@@ -142,9 +141,6 @@ export default function ContactPage({
             <h1 className="font-game-title text-3xl font-black text-[#fff7d6] [text-shadow:0_2px_0_rgba(0,0,0,0.8)] sm:text-4xl">
               {mailboxTitle}
             </h1>
-            <p className="mt-1 max-w-xl text-sm leading-relaxed text-zinc-400 sm:text-base">
-              {copy.description}
-            </p>
           </div>
         </header>
 
@@ -213,9 +209,6 @@ export default function ContactPage({
                             <span className="block text-xs font-bold text-zinc-100 sm:text-sm">
                               {categoryCopy.label}
                             </span>
-                            <span className="mt-0.5 hidden text-[10px] leading-snug text-zinc-500 sm:block">
-                              {categoryCopy.description}
-                            </span>
                           </span>
                         </span>
                       </label>
@@ -228,7 +221,6 @@ export default function ContactPage({
                 <span className="mb-1.5 block font-game-title text-lg font-black text-[#fff7d6]">
                   {copy.messageLabel}
                 </span>
-                <span className="mb-2 block text-xs text-zinc-500">{copy.messageHint}</span>
                 <textarea
                   value={message}
                   onChange={(event) => setMessage(event.target.value.slice(0, CONTACT_MESSAGE_MAX_LENGTH))}
@@ -259,9 +251,11 @@ export default function ContactPage({
                   placeholder="name@example.com"
                   className="h-11 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-sm text-zinc-100 outline-none transition-colors placeholder:text-zinc-700 focus:border-amber-300/40"
                 />
-                <span className={cn("mt-1.5 block text-xs", category === "partnership" ? "text-amber-200/75" : "text-zinc-500")}>
-                  {category === "partnership" ? copy.partnershipEmailHint : copy.emailHint}
-                </span>
+                {category === "partnership" && (
+                  <span className="mt-1.5 block text-xs text-amber-200/75">
+                    {copy.partnershipEmailHint}
+                  </span>
+                )}
               </label>
 
               <div className="space-y-1 text-[11px] leading-relaxed text-zinc-600">
