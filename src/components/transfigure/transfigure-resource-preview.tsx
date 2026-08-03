@@ -160,33 +160,6 @@ export function TransfigureResourcePreview({
             forcedCost={forcedCost}
           />
         </div>
-        {(effectiveCardRarity || effectiveCardType) && (
-          <dl
-            className="mt-2 space-y-1 rounded-lg border border-yellow-500/15 bg-black/20 px-3 py-2 text-xs"
-            data-transfigure-card-metadata-diff
-          >
-            {effectiveCardRarity && (
-              <div className="flex items-center justify-between gap-3">
-                <dt className="text-gray-500">{copy.cardRarity}</dt>
-                <dd className="font-game-title text-gray-400">
-                  {entity.cardData.rarityLabel}
-                  <span className="mx-1.5 text-yellow-500/60" aria-hidden="true">→</span>
-                  <span className="text-yellow-100">{card.rarityLabel}</span>
-                </dd>
-              </div>
-            )}
-            {effectiveCardType && (
-              <div className="flex items-center justify-between gap-3">
-                <dt className="text-gray-500">{copy.cardType}</dt>
-                <dd className="font-game-title text-gray-400">
-                  {entity.cardData.typeLabel}
-                  <span className="mx-1.5 text-yellow-500/60" aria-hidden="true">→</span>
-                  <span className="text-yellow-100">{card.typeLabel}</span>
-                </dd>
-              </div>
-            )}
-          </dl>
-        )}
         {showUpgradeToggle && effectiveUpgradeBlocks != null && (
           <GameCheckboxToggle
             checked={showUpgrade}
