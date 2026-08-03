@@ -1,5 +1,18 @@
 # 섀소식 Format Reference
 
+## Locale Files
+
+Every deployment date has a paired service-locale source:
+
+- `data/byrdispatch/YYYY-MM-DD.md` — canonical Korean service copy.
+- `data/byrdispatch/YYYY-MM-DD.en.md` — authored English service copy.
+
+The user can provide only Korean instructions. Keep Korean as the content source,
+then write concise natural English without asking for a separate translation.
+Both files keep the same date, section order, bullet structure, URLs, media paths,
+rich-reference types, and status meaning. Renderer-only control tokens remain
+unchanged when no documented English form exists.
+
 ## Canonical Markdown
 
 ```md
@@ -27,12 +40,14 @@ Rules:
 - The renderer presents the H1 date as each entry's visual title, not muted metadata: keep the larger title scale and apply only the Byrdispatch teaser's purple text color, without chip background, border, rounded corners, padding, or shadow.
 - The newest dated entry uses a borderless purple background container. Keep visible spacing between dates and do not use entry borders as separators.
 - H2 headings are service areas.
-- `## 공지` is optional, but when present it must be the first H2 section.
-- The renderer treats `## 공지` as a pink highlighted notice block above regular sections.
+- `## 공지` / `## Notice` is optional, but when present it must be the first H2 section.
+- The renderer treats `## 공지` / `## Notice` as a pink highlighted notice block above regular sections.
 - Use `## 서비스명` for top-level services.
 - Use `### 하위 서비스명` for child services inside a top-level service.
 - A top-level service H2 may have no bullets when it only groups child service H3 sections; keep the H2 visible.
-- Append `(new)`, `(개발 중)`, `(버그)`, or `(제보 감사)` to headings or bullets only when that status is true.
+- Korean status markers are `(new)`, `(개발 중)`, `(버그)`, and `(제보 감사)`.
+- English status markers are `(new)`, `(in progress)`, `(bug)`, and `(thanks for the report)`.
+- Append a marker to headings or bullets only when that status is true.
 - Bullets are one line each.
 - Preserve one nested bullet level (`  -`) when the user provides child examples/details or explicitly asks for nested bullets.
 - Indent an image by the same two spaces when it belongs to a nested example; the renderer keeps that media aligned at the nested depth.
@@ -98,6 +113,27 @@ Prefer these exact Korean headings:
 
 Use `기타` only when no section fits.
 
+Use these established headings in `.en.md` files:
+
+| Korean | English |
+| --- | --- |
+| `공지` | `Notice` |
+| `공통` | `General` |
+| `섀소식` | `byrdispatch` |
+| `슬서운 이야기` | `Stories` |
+| `패치 노트` / `패치노트` | `Patch Notes` |
+| `슬서운 변경` | `Patch History` |
+| `역사 강의서` | `History Course` |
+| `백과사전` | `Compendium` |
+| `케미컬X` | `Chemical X` |
+| `코오오옴보` | `C-C-C-Combo` |
+| `이거 아님 저거?` | `This or That?` |
+| `변형` | `Transfigure` |
+| `프로필` | `Profile` |
+| `댓글` | `Comments` |
+| `개발/운영` | `Development / Operations` |
+| `기타` | `Other` |
+
 ## User Prompt Template
 
 ```md
@@ -118,7 +154,7 @@ Use `기타` only when no section fits.
 - 개발용 런 조회 API 추가
 
 규칙:
-- 최종 결과는 data/byrdispatch/2026-06-09.md
+- 최종 결과는 data/byrdispatch/2026-06-09.md와 data/byrdispatch/2026-06-09.en.md
 - # 2026-06-09
 - 공지가 있으면 ## 공지 를 첫 섹션으로 둠
 - 서비스는 ## 서비스명, 하위 서비스는 ### 하위 서비스명
@@ -133,6 +169,8 @@ Use `기타` only when no section fits.
 - 사용자가 원문 유지 지시를 주면 문장 표현을 바꾸지 않음
 - 사용자가 2단계 bullet을 주면 그대로 보존
 - 확실하지 않은 레퍼런스는 태그를 만들지 말고 평문으로 둬
+- 영어 원문을 따로 주지 않아도 서비스 문구의 영어 버전을 함께 작성
+- 영어 파일에서는 영문 서비스명과 영문 상태 마커 사용
 ```
 
 ## Rich Reference Examples
