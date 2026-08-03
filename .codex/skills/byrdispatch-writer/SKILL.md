@@ -1,11 +1,11 @@
 ---
 name: byrdispatch-writer
-description: Format, create, or update byrdispatch / 섀소식 service-update posts and notices for scare-the-spire from rough user notes. Use when the user asks to write, draft, publish, add, or normalize byrdispatch / 섀소식 entries, especially markdown files under data/byrdispatch/YYYY-MM-DD.md, service notices, service update changelogs, deployment-date updates, service-link sections, rich game-resource references, token status badges, or optional screenshots/videos for service announcements.
+description: Format, localize, create, or update byrdispatch / 섀소식 service-update posts and notices for scare-the-spire from rough Korean notes. Use when the user asks to write, draft, translate, publish, add, or normalize byrdispatch / 섀소식 entries, especially paired Korean and English markdown files under data/byrdispatch/, service notices, service update changelogs, deployment-date updates, service-link sections, rich game-resource references, token status badges, or optional screenshots/videos for service announcements.
 ---
 
 # byrdispatch-writer
 
-Turn rough service-update notes into canonical 섀소식 / byrdispatch markdown. The user owns the content; Codex owns formatting, validation, exact links/tooltips, token badges, and repository integration.
+Turn rough Korean service-update notes into canonical Korean 섀소식 and English byrdispatch markdown. The user owns the content; Codex owns formatting, service-copy translation, validation, exact links/tooltips, token badges, and repository integration.
 
 ## Workflow
 
@@ -14,12 +14,19 @@ Turn rough service-update notes into canonical 섀소식 / byrdispatch markdown.
    - If missing, use today's date only after saying that assumption.
 2. Read `docs/I18N.md` before editing user-visible service text.
 3. Read `references/format.md` for the canonical markdown contract and examples.
-4. Create or update `data/byrdispatch/YYYY-MM-DD.md`.
+4. Create or update both locale files for the same deployment date.
+   - Korean source: `data/byrdispatch/YYYY-MM-DD.md`.
+   - English service copy: `data/byrdispatch/YYYY-MM-DD.en.md`.
+   - The user may give instructions and source notes only in Korean. Write the English version without asking for a separate translation prompt.
+   - Keep the two files structurally aligned: the same H1 date, section order, bullets, nesting, links, media, rich references, inline action tokens, and status semantics.
+   - Translate service-owned headings, bullets, link labels, and media alt text into natural concise English. Do not mechanically transliterate Korean service names when an established English UI name exists.
+   - Preserve URLs, media paths, version numbers, code-like tokens, and other non-visible renderer control tokens exactly unless the renderer has an explicitly supported English equivalent.
+   - This paired translation rule applies to authored byrdispatch service updates, not community/user-authored content covered by the no-i18n policy in `docs/I18N.md`.
    - Create `data/byrdispatch/` if absent.
    - Use one `# YYYY-MM-DD` heading.
    - Treat the H1 date as the title of that individual update entry. Do not add decorative date markup in Markdown; the renderer owns the larger purple text treatment, while the newest entry owns the borderless purple container treatment.
-   - Put `## 공지` first when the entry includes a site-wide notice.
-   - Use `## 서비스명` headings and `### 하위 서비스명` headings.
+   - Put `## 공지` / `## Notice` first when the entry includes a site-wide notice.
+   - Use `## 서비스명` and `### 하위 서비스명` in Korean; use the established English service names in the English file.
    - Keep a parent `## 서비스명` heading even when it has no bullets if it groups child `###` sections.
    - Use one-line bullets by default.
    - Preserve one nested bullet level (`  -`) when the user provides it or explicitly asks for child examples/details.
@@ -32,14 +39,14 @@ Turn rough service-update notes into canonical 섀소식 / byrdispatch markdown.
    - Write notice URLs as markdown links so users can click through.
    - Do not add `(서비스)` markers. Refer to services by their visible service name in plain text; the renderer styles recognized service names as aqua links with a leading token asset.
    - When a service mention has a qualifier, keep the qualifier plain and let only the service name style, e.g. `슬더스2 패치노트` styles only `패치노트`.
-   - Preserve status markers such as `(new)`, `(개발 중)`, `(버그)`, and `(제보 감사)` when the user provides them; the renderer turns them into token badges.
-   - Treat `(버그)` as the Infested power token badge in rendered output.
-   - Treat `(제보 감사)` as the Wongo Customer Appreciation Badge relic token with the `제보 감사` tooltip in rendered output.
+   - Preserve status semantics when the user provides them. Korean files use `(new)`, `(개발 중)`, `(버그)`, and `(제보 감사)`; English files use `(new)`, `(in progress)`, `(bug)`, and `(thanks for the report)`. The renderer turns them into localized token badges.
+   - Treat `(버그)` / `(bug)` as the Infested power token badge in rendered output.
+   - Treat `(제보 감사)` / `(thanks for the report)` as the Wongo Customer Appreciation Badge relic token with a localized tooltip in rendered output.
    - Ask only if the target date or intended meaning is genuinely ambiguous.
 6. Add rich references only when verifiable in this repo.
-   - Use patch-note BBCode syntax such as `[gold:card]광기[/gold]` or `[gold:relic]역사 강의서[/gold]`.
+   - Use patch-note BBCode syntax such as `[gold:card]광기[/gold]` or `[gold:relic]역사 강의서[/gold]` in Korean and the verified game-localized names in English.
    - Verify game resources against extracted Codex data or existing comment/search entity data before adding a typed tag.
-   - Use typed tags for individual game resources, not service headings; game resource labels must follow the active game locale at render time.
+   - Use typed tags for individual game resources, not service headings; game resource labels must follow the active game locale at render time. Use extracted Korean game text in the Korean source and extracted English game text in the English source so each file is also readable as Markdown.
    - For epoch beta-art updates, use typed `[gold:epoch]...[/gold]` references so byrdispatch renders the hover tip in beta-art mode when present.
    - Beta-art mode selects the beta art instead of the official art; do not describe or expect both images to render together.
    - If unsure, keep plain text.
@@ -52,7 +59,7 @@ Turn rough service-update notes into canonical 섀소식 / byrdispatch markdown.
    - For compact reaction/like palette images, keep the image centered and render it at about half the normal media width when requested.
 8. Commit every meaningful edit separately, following repository `AGENTS.md`.
 9. Run focused validation:
-   - Always run `pnpm i18n:validate`.
+   - Always run `pnpm i18n:validate` and verify that every Korean date file has a same-date `.en.md` partner.
    - Run `pnpm lint` when React, TypeScript, markdown parsing, or rendering code changed.
    - Run `pnpm build` when routes, data loading, metadata, generated data, or rendering contracts changed.
    - Run mobile/browser QA when adding or changing screenshots, media rendering, or mobile-sensitive UI.
@@ -65,7 +72,7 @@ Turn rough service-update notes into canonical 섀소식 / byrdispatch markdown.
 - Do not put STS2 game balance changes here unless the service UI/content changed because of them.
 - Do not add marketing copy, long explanations, or speculative roadmap items.
 - Do not auto-translate community/user-authored content.
-- Keep Korean as the primary authored service language unless the user explicitly asks for English copy.
+- Keep Korean as the primary authored service language and derive the English service copy automatically, even when the user provides only Korean instructions.
 
 ## Media Rules
 
