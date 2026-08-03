@@ -12,7 +12,7 @@ export { BYRDISPATCH_ICON, BYRDISPATCH_NOTICE_ICON, type ByrdispatchNotice };
 const BYRDISPATCH_DIR = path.join(process.cwd(), "data/byrdispatch");
 const BYRDISPATCH_FILE_RE = /^\d{4}-\d{2}-\d{2}\.md$/;
 const BYRDISPATCH_NOTICE_SECTIONS = new Set(["공지", "Notice"]);
-const BYRDISPATCH_STATUS_RE = /\s*\((new|개발 중|버그|제보 감사)\)\s*$/;
+const BYRDISPATCH_STATUS_RE = /\s*\((new|개발 중|버그|제보 감사|in progress|bug|thanks for the report)\)\s*$/i;
 const BYRDISPATCH_MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
 const BYRDISPATCH_IMAGE_RE = /^!\[([^\]\n]*)\]\(([^)\s]+)(?:\s+"([^"]+)")?\)$/;
 
@@ -53,9 +53,12 @@ export type ByrdispatchEntry = {
 };
 
 function normalizeStatus(value: string): ByrdispatchStatus {
-  if (value === "new") return "new";
-  if (value === "버그") return "bug";
-  if (value === "제보 감사") return "reportThanks";
+  const normalizedValue = value.toLowerCase();
+  if (normalizedValue === "new") return "new";
+  if (value === "버그" || normalizedValue === "bug") return "bug";
+  if (value === "제보 감사" || normalizedValue === "thanks for the report") {
+    return "reportThanks";
+  }
   return "wip";
 }
 
