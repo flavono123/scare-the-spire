@@ -51,57 +51,110 @@ type ByrdispatchStatusLabels = Readonly<Record<ByrdispatchStatus, string>>;
 
 const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   "공통": { href: null, icon: BYRDISPATCH_ICON },
+  "General": { href: null, icon: BYRDISPATCH_ICON },
   "슬서운 이야기": { href: "/", icon: "/images/sts2/relics/bone_tea.webp" },
+  "Stories": { href: "/", icon: "/images/sts2/relics/bone_tea.webp" },
   "섀소식": { href: "/byrdispatch", icon: BYRDISPATCH_ICON },
+  "byrdispatch": { href: "/byrdispatch", icon: BYRDISPATCH_ICON },
   "패치노트": { href: "/patches", icon: "/images/sts2/nav/patch_notes_icon.png" },
   "패치 노트": { href: "/patches", icon: "/images/sts2/nav/patch_notes_icon.png" },
+  "Patch Notes": { href: "/patches", icon: "/images/sts2/nav/patch_notes_icon.png" },
   "슬서운 변경": { href: "/patches/changes", icon: "/images/sts2/relics/bookmark.webp" },
+  "Patch History": { href: "/patches/changes", icon: "/images/sts2/relics/bookmark.webp" },
   백과사전: { href: null, icon: "/images/sts2/icons/app_icon.png" },
+  Compendium: { href: null, icon: "/images/sts2/icons/app_icon.png" },
   캐릭터: { href: "/compendium/characters", icon: "/images/sts2/characters/character_icon_ironclad.webp" },
+  Characters: { href: "/compendium/characters", icon: "/images/sts2/characters/character_icon_ironclad.webp" },
   카드: { href: "/compendium/cards", icon: "/images/sts2/nav/stats_cards.png" },
   "카드 모음집": { href: "/compendium/cards", icon: "/images/sts2/nav/stats_cards.png" },
+  "Card Library": { href: "/compendium/cards", icon: "/images/sts2/nav/stats_cards.png" },
   키워드: { href: "/compendium/keywords", icon: "/images/sts2/ui/topbar/submenu_history_icon.png" },
+  Keywords: { href: "/compendium/keywords", icon: "/images/sts2/ui/topbar/submenu_history_icon.png" },
   유물: { href: "/compendium/relics", icon: "/images/sts2/relics/bing_bong.webp" },
+  Relics: { href: "/compendium/relics", icon: "/images/sts2/relics/bing_bong.webp" },
   포션: { href: "/compendium/potions", icon: "/images/sts2/potions/potion_shaped_rock.webp" },
+  Potions: { href: "/compendium/potions", icon: "/images/sts2/potions/potion_shaped_rock.webp" },
   파워: { href: "/compendium/powers", icon: "/images/sts2/nav/unmovable_power_beta.webp" },
+  Powers: { href: "/compendium/powers", icon: "/images/sts2/nav/unmovable_power_beta.webp" },
   인챈트: { href: "/compendium/enchantments", icon: "/images/sts2/enchantments/souls_power.webp" },
+  Enchantments: { href: "/compendium/enchantments", icon: "/images/sts2/enchantments/souls_power.webp" },
   몬스터: { href: "/compendium/bestiary", icon: "/images/sts2/nav/happy_cultist.png" },
+  Monsters: { href: "/compendium/bestiary", icon: "/images/sts2/nav/happy_cultist.png" },
   전투: { href: "/compendium/encounters", icon: "/images/sts2/nav/stats_monsters.png" },
+  Encounters: { href: "/compendium/encounters", icon: "/images/sts2/nav/stats_monsters.png" },
   이벤트: { href: "/compendium/events", icon: "/images/sts2/nav/question_mark.png" },
+  Events: { href: "/compendium/events", icon: "/images/sts2/nav/question_mark.png" },
   "고대의 존재": { href: "/compendium/ancients", icon: "/images/sts2/nav/stats_ancients.png" },
+  Ancients: { href: "/compendium/ancients", icon: "/images/sts2/nav/stats_ancients.png" },
   연대기: { href: "/compendium/epochs", icon: "/images/sts2/relics/planisphere.webp" },
+  Epochs: { href: "/compendium/epochs", icon: "/images/sts2/relics/planisphere.webp" },
   뱃지: { href: "/compendium/badges", icon: "/images/sts2/badges/double_snecko.webp" },
+  Badges: { href: "/compendium/badges", icon: "/images/sts2/badges/double_snecko.webp" },
   변형: { href: "/transfigure", icon: "/images/sts2/relics/astrolabe.webp" },
+  Transfigure: { href: "/transfigure", icon: "/images/sts2/relics/astrolabe.webp" },
   "코오오옴보": { href: "/c-c-c-combo", icon: "/images/sts2/badges/ccccombo.webp" },
+  "C-C-C-Combo": { href: "/c-c-c-combo", icon: "/images/sts2/badges/ccccombo.webp" },
   "케미컬X": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
   "케미컬엑스": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
+  "Chemical X": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
   "역사 강의서": { href: "/history-course", icon: "/images/sts2/relics/history_course.webp" },
+  "History Course": { href: "/history-course", icon: "/images/sts2/relics/history_course.webp" },
   "이거 아님 저거?": { href: "/this-or-that", icon: "/images/sts2/relics/choices_paradox.webp" },
+  "This or That?": { href: "/this-or-that", icon: "/images/sts2/relics/choices_paradox.webp" },
   "프로필": { href: "/profile", icon: "/images/sts2/characters/character_icon_random_character_outline.webp" },
+  Profile: { href: "/profile", icon: "/images/sts2/characters/character_icon_random_character_outline.webp" },
   "댓글": { href: null, icon: "/images/sts2/relics/storybook.webp" },
+  Comments: { href: null, icon: "/images/sts2/relics/storybook.webp" },
   "개발/운영": { href: null, icon: "/images/sts2/relics/toolbox.webp" },
+  "Development / Operations": { href: null, icon: "/images/sts2/relics/toolbox.webp" },
 };
 
 const SERVICE_REFERENCE_LINKS: Record<string, string> = {
   패치노트: "/patches",
   "패치 노트": "/patches",
+  "Patch Notes": "/patches",
   "슬서운 변경": "/patches/changes",
+  "Patch History": "/patches/changes",
   "슬서운 이야기": "/",
+  Stories: "/",
   섀소식: "/byrdispatch",
+  byrdispatch: "/byrdispatch",
   백과사전: "/compendium",
+  Compendium: "/compendium",
   "역사 강의서": "/history-course",
+  "History Course": "/history-course",
   "이거 아님 저거?": "/this-or-that",
+  "This or That?": "/this-or-that",
   변형: "/transfigure",
+  Transfigure: "/transfigure",
   "코오오옴보": "/c-c-c-combo",
+  "C-C-C-Combo": "/c-c-c-combo",
   "케미컬X": "/chemical-x",
   "케미컬엑스": "/chemical-x",
+  "Chemical X": "/chemical-x",
   "프로필": "/profile",
+  Profile: "/profile",
 };
 
-const SERVICE_REFERENCE_RE = /(이거 아님 저거\?|역사 강의서|슬서운 이야기|슬서운 변경|패치노트|패치 노트|코오오옴보|케미컬X|케미컬엑스|백과사전|섀소식|프로필|변형)/g;
 const STORY_COMPOSER_ACTION_TOKEN = "[새 이야기 쓰기 버튼 노출/링크]";
 const KNOWLEDGE_DEMON_TOKEN = "{지식의악마토큰}";
-const INLINE_ACTION_RE = new RegExp(`${STORY_COMPOSER_ACTION_TOKEN.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}|${KNOWLEDGE_DEMON_TOKEN.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}|${SERVICE_REFERENCE_RE.source}`, "g");
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+const SERVICE_REFERENCE_RE = new RegExp(
+  `(${Object.keys(SERVICE_REFERENCE_LINKS)
+    .sort((a, b) => b.length - a.length)
+    .map(escapeRegExp)
+    .join("|")})`,
+  "g",
+);
+const INLINE_ACTION_RE = new RegExp(
+  `${escapeRegExp(STORY_COMPOSER_ACTION_TOKEN)}|${escapeRegExp(KNOWLEDGE_DEMON_TOKEN)}|${SERVICE_REFERENCE_RE.source}`,
+  "g",
+);
+const PROFILE_SERVICE_TITLES = new Set(["프로필", "Profile"]);
 
 function normalizeServiceTitle(title: string): string {
   return title
@@ -206,7 +259,7 @@ function ServiceHeading({
       : "text-cyan-200";
   const content = (
     <>
-      {normalizeServiceTitle(section.title) === "프로필" ? (
+      {PROFILE_SERVICE_TITLES.has(normalizeServiceTitle(section.title)) ? (
         <ByrdispatchProfileIcon className={isChild ? "h-5 w-5" : "h-6 w-6"} />
       ) : (
         <TokenIcon
@@ -307,7 +360,7 @@ export function ByrdispatchRichText({
         href={localizeHrefWithGameLocale(href, serviceLocale, gameLocale)}
         className="inline-flex items-center gap-1 align-[-0.2em] font-semibold text-cyan-200 transition-colors hover:text-cyan-100"
       >
-        {label === "프로필" ? (
+        {label && PROFILE_SERVICE_TITLES.has(label) ? (
           <ByrdispatchProfileIcon className="inline-block h-4 w-4 shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]" />
         ) : (
           <Image
@@ -550,7 +603,7 @@ export async function renderByrdispatchPage(
   const commonMessages = serviceMessages[serviceLocale].codex.common;
   const hideMigrationNotice = isConfiguredByrdispatchMigrationTargetHost();
   const [entries, entities, gameUi, storyPlaceholder] = await Promise.all([
-    getByrdispatchEntries(),
+    getByrdispatchEntries(serviceLocale),
     loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
     getStoryComposerPlaceholder(gameLocale),
@@ -595,7 +648,7 @@ export async function renderByrdispatchPage(
                   href={`#${entry.date}`}
                   data-byrdispatch-date-title
                   className="spire-purple inline-flex font-service text-xl font-black tracking-tight transition-colors hover:text-purple-100 sm:text-2xl"
-                  aria-label={`${entry.date} 섀소식 링크`}
+                  aria-label={messages.dateLink.replace("{date}", entry.date)}
                 >
                   <time dateTime={entry.date}>{entry.date}</time>
                 </Link>
