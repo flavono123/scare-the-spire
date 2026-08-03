@@ -58,6 +58,16 @@ interface TransfigureGameCopy {
   viewUpgrades: string;
 }
 
+interface FeedbackFormGameCopy {
+  title: string;
+  categoryLabel: string;
+  descriptionPlaceholder: string;
+  sendLabel: string;
+  sendingLabel: string;
+  sendFailedLabel: string;
+  sendSuccessLabel: string;
+}
+
 interface PatchStageGameCopy {
   prepTime: {
     title: string;
@@ -73,6 +83,7 @@ interface PatchStageGameCopy {
 interface BorrowedGameCopyPayload {
   chemicalXPlaceholder: string;
   comboPlaceholder: string;
+  feedbackForm: FeedbackFormGameCopy;
   historyCourseLanding: HistoryCourseLandingGameCopy;
   patchStage: PatchStageGameCopy;
   thisOrThat: ThisOrThatGameCopy;
@@ -445,12 +456,45 @@ async function buildTransfigureGameCopy(
   };
 }
 
+async function buildFeedbackFormGameCopy(
+  gameLocale: GameLocale,
+): Promise<FeedbackFormGameCopy> {
+  const [
+    title,
+    categoryLabel,
+    descriptionPlaceholder,
+    sendLabel,
+    sendingLabel,
+    sendFailedLabel,
+    sendSuccessLabel,
+  ] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "SEND_FEEDBACK"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "FEEDBACK_CATEGORY_LABEL"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "FEEDBACK_DESCRIPTION_PLACEHOLDER"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "FEEDBACK_SEND_BUTTON_LABEL"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "FEEDBACK_SENDING_LABEL"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "FEEDBACK_SEND_FAILED_LABEL"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "FEEDBACK_SEND_SUCCESS_LABEL"),
+  ]);
+
+  return {
+    title,
+    categoryLabel,
+    descriptionPlaceholder,
+    sendLabel,
+    sendingLabel: stripGameMarkup(sendingLabel),
+    sendFailedLabel,
+    sendSuccessLabel,
+  };
+}
+
 async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, BorrowedGameCopyPayload>> {
   const entries = await Promise.all(
     GAME_LOCALES.map(async (gameLocale) => {
       const [
         chemicalXPlaceholder,
         comboPlaceholder,
+        feedbackForm,
         historyCourseLanding,
         patchStage,
         thisOrThat,
@@ -466,6 +510,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
           "events",
           "AMALGAMATOR.pages.INITIAL.description",
         ).then((description) => stripAquaMarkup(lastNonEmptyLine(description))),
+        buildFeedbackFormGameCopy(gameLocale),
         buildHistoryCourseLandingGameCopy(gameLocale),
         buildPatchStageGameCopy(gameLocale),
         buildThisOrThatGameCopy(gameLocale),
@@ -476,6 +521,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         {
           chemicalXPlaceholder,
           comboPlaceholder,
+          feedbackForm,
           historyCourseLanding,
           patchStage,
           thisOrThat,

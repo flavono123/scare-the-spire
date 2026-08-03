@@ -22,6 +22,16 @@ export interface TransfigureGameCopy {
   viewUpgrades: string;
 }
 
+export interface FeedbackFormGameCopy {
+  title: string;
+  categoryLabel: string;
+  descriptionPlaceholder: string;
+  sendLabel: string;
+  sendingLabel: string;
+  sendFailedLabel: string;
+  sendSuccessLabel: string;
+}
+
 export interface PatchStageGameCopy {
   prepTime: {
     title: string;
@@ -37,6 +47,7 @@ export interface PatchStageGameCopy {
 interface BorrowedGameCopyPayload {
   chemicalXPlaceholder: string;
   comboPlaceholder: string;
+  feedbackForm: FeedbackFormGameCopy;
   historyCourseLanding: HistoryCourseLandingGameCopy;
   patchStage: PatchStageGameCopy;
   thisOrThat: ThisOrThatGameCopy;
@@ -59,6 +70,12 @@ export async function getComboPlaceholder(
   gameLocale: GameLocale,
 ): Promise<string> {
   return getBorrowedGameCopy(gameLocale).comboPlaceholder;
+}
+
+export async function getFeedbackFormGameCopy(
+  gameLocale: GameLocale,
+): Promise<FeedbackFormGameCopy> {
+  return getBorrowedGameCopy(gameLocale).feedbackForm;
 }
 
 export async function getPatchStageGameCopy(

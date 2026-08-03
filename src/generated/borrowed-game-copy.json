@@ -2,6 +2,15 @@
   "kor": {
     "chemicalXPlaceholder": "오, 이 차는 무례한 사람들에게 내어지는 차입니다...",
     "comboPlaceholder": "“승천하는 영혼을 지닌 자가 내 공방에 찾아온 건가? 좋아, [jitter]결합이다[/jitter]!”",
+    "feedbackForm": {
+      "title": "피드백 보내기",
+      "categoryLabel": "카테고리",
+      "descriptionPlaceholder": "최대 8000자의 눈부신 피드백을 여기에 입력해주세요",
+      "sendLabel": "발송!",
+      "sendingLabel": "피드백 보내는 중...",
+      "sendFailedLabel": "실패했습니다 :(",
+      "sendSuccessLabel": "전송 성공! 감사합니다!"
+    },
     "historyCourseLanding": {
       "title": "역사 강의서",
       "runHistoryLabel": "도전 이력",
@@ -33,6 +42,15 @@
   "eng": {
     "chemicalXPlaceholder": "Oh, this tea is for the discourteous...",
     "comboPlaceholder": "“One with an Ascending Spirit has found my workshop? Let's get [jitter]COMBINING[/jitter]!”",
+    "feedbackForm": {
+      "title": "Send Feedback",
+      "categoryLabel": "Category",
+      "descriptionPlaceholder": "Enter up to 8000 characters of wonderful feedback here",
+      "sendLabel": "Send!",
+      "sendingLabel": "Sending Feedback...",
+      "sendFailedLabel": "Failed :(",
+      "sendSuccessLabel": "Success! Thank you!"
+    },
     "historyCourseLanding": {
       "title": "History Course",
       "runHistoryLabel": "Run History",
@@ -64,6 +82,15 @@
   "zhs": {
     "chemicalXPlaceholder": "啊，这是专门给无礼之人准备的茶……",
     "comboPlaceholder": "“一个拥有进阶之魂的人竟然找到了我的工坊？那就让我们开始[jitter]融合[/jitter]吧！”",
+    "feedbackForm": {
+      "title": "发送反馈",
+      "categoryLabel": "反馈类型",
+      "descriptionPlaceholder": "请在此输入您的精彩反馈（最多8000个字符）",
+      "sendLabel": "发送！",
+      "sendingLabel": "正在发送反馈...",
+      "sendFailedLabel": "发送失败:(",
+      "sendSuccessLabel": "已发送成功！感谢你的反馈！"
+    },
     "historyCourseLanding": {
       "title": "历史课",
       "runHistoryLabel": "历史记录",
@@ -95,6 +122,15 @@
   "jpn": {
     "chemicalXPlaceholder": "なるほど、これは無作法者に振る舞われるお茶らしい……。",
     "comboPlaceholder": "「高みへと昇る志を持つ者よ、我が工房を見つけおったか。 さあ、[jitter]融合[/jitter]の時間だ！」",
+    "feedbackForm": {
+      "title": "フィードバックを送信",
+      "categoryLabel": "カテゴリ",
+      "descriptionPlaceholder": "フィードバックを入力（最大8000文字）",
+      "sendLabel": "送信！",
+      "sendingLabel": "フィードバックを送信中……",
+      "sendFailedLabel": "送信失敗 :(",
+      "sendSuccessLabel": "送信完了！ ご協力に感謝します！"
+    },
     "historyCourseLanding": {
       "title": "歴史学教程",
       "runHistoryLabel": "プレイ履歴",
@@ -126,6 +162,15 @@
   "deu": {
     "chemicalXPlaceholder": "Oh, dieser Tee ist für die Unhöflichen...",
     "comboPlaceholder": "„Jemand mit Aufstiegsgeist hat meine Werkstatt gefunden? Fangen wir an, zu [jitter]KOMBINIEREN[/jitter]!“",
+    "feedbackForm": {
+      "title": "Feedback schicken",
+      "categoryLabel": "Kategorie",
+      "descriptionPlaceholder": "Gib hier bis zu 8000 Zeichen wunderbaren Feedbacks ein",
+      "sendLabel": "Senden!",
+      "sendingLabel": "Sende Feedback...",
+      "sendFailedLabel": "Hat nicht geklappt :(",
+      "sendSuccessLabel": "Erfolg! Vielen Dank!"
+    },
     "historyCourseLanding": {
       "title": "Geschichtskurs",
       "runHistoryLabel": "Run-Historie",
@@ -157,6 +202,15 @@
   "fra": {
     "chemicalXPlaceholder": "Ah, c’est le thé des malpolis...",
     "comboPlaceholder": "« Un être doté d’un Esprit Ascendant a trouvé mon atelier ? Le moment est venu de réaliser quelque [jitter]ALLIAGE[/jitter] ! »",
+    "feedbackForm": {
+      "title": "Envoyer des commentaires",
+      "categoryLabel": "Catégorie",
+      "descriptionPlaceholder": "Entrez jusqu'à 8000 caractères ici.",
+      "sendLabel": "Envoyer !",
+      "sendingLabel": "Envoi en cours...",
+      "sendFailedLabel": "Échec :(",
+      "sendSuccessLabel": "Commentaires envoyés ! Merci !"
+    },
     "historyCourseLanding": {
       "title": "Manuel d'Histoire",
       "runHistoryLabel": "Historique",
@@ -188,6 +242,15 @@
   "ita": {
     "chemicalXPlaceholder": "Oh, questo tè è per chi non conosce le buone maniere...",
     "comboPlaceholder": "\"Un essere con uno spirito ascendente ha trovato la mia bottega, eh? È il momento di [jitter]COMBINARE[/jitter]!\"",
+    "feedbackForm": {
+      "title": "Invia feedback",
+      "categoryLabel": "Categoria",
+      "descriptionPlaceholder": "Scrivi qui il tuo splendido feedback di massimo 8.000 caratteri",
+      "sendLabel": "Invia!",
+      "sendingLabel": "Invio feedback in corso...",
+      "sendFailedLabel": "Impossibile inviare il feedback :(",
+      "sendSuccessLabel": "Feedback inviato! Grazie!"
+    },
     "historyCourseLanding": {
       "title": "Corso di Storia",
       "runHistoryLabel": "Storico partite",
@@ -219,6 +282,15 @@
   "spa": {
     "chemicalXPlaceholder": "Ah, el té de la descortesía...",
     "comboPlaceholder": "—¿Alguien con un Espíritu Ascendiente ha encontrado mi taller? ¡Es hora de [jitter]COMBINAR[/jitter]!",
+    "feedbackForm": {
+      "title": "Enviar comentarios",
+      "categoryLabel": "Categoría",
+      "descriptionPlaceholder": "Escribe hasta 8000 caracteres contándonos tu maravillosa opinión o problema",
+      "sendLabel": "¡Enviado!",
+      "sendingLabel": "Enviando comentarios...",
+      "sendFailedLabel": "Ha habido un problema :(",
+      "sendSuccessLabel": "¡Enviado! ¡Gracias!"
+    },
     "historyCourseLanding": {
       "title": "Libro de historia",
       "runHistoryLabel": "Historial",
@@ -250,6 +322,15 @@
   "esp": {
     "chemicalXPlaceholder": "Oh, este té es para quienes no tienen cortesía.",
     "comboPlaceholder": "—¿Alguien con un espíritu ascendente encontró mi taller? ¡A [jitter]COMBINAR[/jitter]!",
+    "feedbackForm": {
+      "title": "Enviar comentarios",
+      "categoryLabel": "Categoría",
+      "descriptionPlaceholder": "Escribe aquí tu maravilloso comentario en 8000 caracteres o menos...",
+      "sendLabel": "¡Enviar!",
+      "sendingLabel": "Enviando comentarios...",
+      "sendFailedLabel": "Envío fallido :(",
+      "sendSuccessLabel": "¡Envío exitoso! ¡Gracias!"
+    },
     "historyCourseLanding": {
       "title": "Clase de historia",
       "runHistoryLabel": "Historial de partidas",
@@ -281,6 +362,15 @@
   "ptb": {
     "chemicalXPlaceholder": "Oh, este chá é pela descortesia...",
     "comboPlaceholder": "“Alguém com um Espírito de Ascensão encontrou a minha oficina? Hora da [jitter]COMBINAÇÃO[/jitter]!”",
+    "feedbackForm": {
+      "title": "Enviar Comentário",
+      "categoryLabel": "Categoria",
+      "descriptionPlaceholder": "Insira aqui um maravilhoso comentário de até 8000 caracteres",
+      "sendLabel": "Enviar!",
+      "sendingLabel": "Enviando Comentário...",
+      "sendFailedLabel": "Falhou :(",
+      "sendSuccessLabel": "Concluído! Obrigado!"
+    },
     "historyCourseLanding": {
       "title": "Estudos de História",
       "runHistoryLabel": "Histórico de Partidas",
@@ -312,6 +402,15 @@
   "rus": {
     "chemicalXPlaceholder": "Оказывается, это чай для грубиянов…",
     "comboPlaceholder": "«Неужто ко мне в мастерскую пожаловали гости?! [jitter]Смеситель[/jitter] к вашим услугам!»",
+    "feedbackForm": {
+      "title": "Отправить отзыв",
+      "categoryLabel": "Категория",
+      "descriptionPlaceholder": "Введите до 8000 символов очаровательной обратной связи",
+      "sendLabel": "Отправить!",
+      "sendingLabel": "Отправляем отзыв…",
+      "sendFailedLabel": "Не получилось :(",
+      "sendSuccessLabel": "Успех! Спасибо!"
+    },
     "historyCourseLanding": {
       "title": "Лекция по истории",
       "runHistoryLabel": "История вылазок",
@@ -343,6 +442,15 @@
   "pol": {
     "chemicalXPlaceholder": "Oj, to herbata dla nieuprzejmych...",
     "comboPlaceholder": "„Wyniesiony odnalazł mój warsztat? Czas na [jitter]SPAWANIE[/jitter]!”",
+    "feedbackForm": {
+      "title": "Wyślij opinię",
+      "categoryLabel": "Kategoria",
+      "descriptionPlaceholder": "Wpisz tu swoją cudowną opinię do 8000 znaków.",
+      "sendLabel": "Wysłano opinię!",
+      "sendingLabel": "Wysyłanie opinii...",
+      "sendFailedLabel": "Nie udało się wysłać opinii:(",
+      "sendSuccessLabel": "Udało się! Dziękujemy!"
+    },
     "historyCourseLanding": {
       "title": "Podręcznik do historii",
       "runHistoryLabel": "Historia wypraw",
@@ -374,6 +482,15 @@
   "tha": {
     "chemicalXPlaceholder": "โอ้ ชานี้สำหรับผู้ที่ไร้มารยาท...",
     "comboPlaceholder": "“ผู้ซึ่งมีวิญญาณผู้บรรลุหาห้องทำงานของฉันเจออย่างนั้นเหรอ? เริ่มการ[jitter]ประสาน[/jitter]กันเลย!”",
+    "feedbackForm": {
+      "title": "ส่งข้อเสนอแนะ",
+      "categoryLabel": "หมวดหมู่",
+      "descriptionPlaceholder": "เขียนข้อเสนอแนะอันยอดเยี่ยมได้สูงสุด 8000 ตัวอักษร",
+      "sendLabel": "ส่ง!",
+      "sendingLabel": "กำลังส่งข้อเสนอแนะ...",
+      "sendFailedLabel": "ล้มเหลว :(",
+      "sendSuccessLabel": "สำเร็จ! ขอบคุณ!"
+    },
     "historyCourseLanding": {
       "title": "หลักสูตรประวัติศาสตร์",
       "runHistoryLabel": "ประวัติการเดินทาง",
@@ -405,6 +522,15 @@
   "tur": {
     "chemicalXPlaceholder": "Ah... bu çay, nezaketsizler içindir...",
     "comboPlaceholder": "“Yükselen Ruh’a sahip biri atölyemi mi buldu? Hadi [jitter]KAYNAŞTIRALIM[/jitter]!”",
+    "feedbackForm": {
+      "title": "Geri Dönüt Gönder",
+      "categoryLabel": "Kategori",
+      "descriptionPlaceholder": "Buraya en fazla 8000 karakterlik harika geri bildirimini yaz.",
+      "sendLabel": "Gönder!",
+      "sendingLabel": "Geri Bildirim Gönderiliyor...",
+      "sendFailedLabel": "Başarısız :(",
+      "sendSuccessLabel": "Başarılı! Teşekkürler!"
+    },
     "historyCourseLanding": {
       "title": "Tarih Dersi",
       "runHistoryLabel": "Oyun Geçmişi",
