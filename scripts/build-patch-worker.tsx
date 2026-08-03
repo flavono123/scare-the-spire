@@ -448,20 +448,6 @@ function StaticPatchHeader({
         ))}
         </div>
       </header>
-      <a
-        href={contactHref}
-        aria-label={contactCopy.navLabel}
-        data-contact-launcher="mobile"
-        className="group fixed right-3 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-amber-200/20 bg-[#0b0a12]/90 shadow-[0_8px_28px_rgba(0,0,0,0.55)] backdrop-blur-sm transition-[border-color,background-color,transform] bottom-[calc(0.75rem+env(safe-area-inset-bottom))] hover:-translate-y-0.5 hover:border-amber-200/45 hover:bg-[#17121a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-200/70 xl:hidden motion-reduce:transform-none"
-      >
-        <img
-          src="/images/sts2/relics/tiny_mailbox.webp"
-          alt=""
-          width={34}
-          height={34}
-          className="h-8 w-8 object-contain drop-shadow-md transition-transform group-hover:scale-110"
-        />
-      </a>
     </>
   );
 }
