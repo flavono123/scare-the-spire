@@ -5,12 +5,13 @@ import {
   BYRDISPATCH_NOTICE_ICON,
   type ByrdispatchNotice,
 } from "@/lib/byrdispatch-static";
+import type { ServiceLocale } from "@/lib/i18n";
 
 export { BYRDISPATCH_ICON, BYRDISPATCH_NOTICE_ICON, type ByrdispatchNotice };
 
 const BYRDISPATCH_DIR = path.join(process.cwd(), "data/byrdispatch");
 const BYRDISPATCH_FILE_RE = /^\d{4}-\d{2}-\d{2}\.md$/;
-const BYRDISPATCH_NOTICE_SECTION = "공지";
+const BYRDISPATCH_NOTICE_SECTIONS = new Set(["공지", "Notice"]);
 const BYRDISPATCH_STATUS_RE = /\s*\((new|개발 중|버그|제보 감사)\)\s*$/;
 const BYRDISPATCH_MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
 const BYRDISPATCH_IMAGE_RE = /^!\[([^\]\n]*)\]\(([^)\s]+)(?:\s+"([^"]+)")?\)$/;
@@ -96,7 +97,7 @@ function parseByrdispatchMarkdown(markdown: string, fallbackDate: string): Byrdi
         bullets: [],
         media: [],
         items: [],
-        isNotice: title === BYRDISPATCH_NOTICE_SECTION,
+        isNotice: BYRDISPATCH_NOTICE_SECTIONS.has(title),
         statuses,
       };
       sections.push(currentSection);
@@ -151,7 +152,27 @@ function parseByrdispatchMarkdown(markdown: string, fallbackDate: string): Byrdi
   };
 }
 
-export async function getByrdispatchEntries(): Promise<ByrdispatchEntry[]> {
+async function readByrdispatchMarkdown(
+  filename: string,
+  serviceLocale: ServiceLocale,
+): Promise<string> {
+  const localizedFilename = serviceLocale === "en"
+    ? filename.replace(/\.md$/, ".en.md")
+    : filename;
+
+  try {
+    return await fs.readFile(path.join(BYRDISPATCH_DIR, localizedFilename), "utf-8");
+  } catch (error) {
+    if (serviceLocale !== "en" || (error as NodeJS.ErrnoException).code !== "ENOENT") {
+      throw error;
+    }
+    return fs.readFile(path.join(BYRDISPATCH_DIR, filename), "utf-8");
+  }
+}
+
+export async function getByrdispatchEntries(
+  serviceLocale: ServiceLocale = "ko",
+): Promise<ByrdispatchEntry[]> {
   let filenames: string[];
   try {
     filenames = await fs.readdir(BYRDISPATCH_DIR);
@@ -164,7 +185,7 @@ export async function getByrdispatchEntries(): Promise<ByrdispatchEntry[]> {
     filenames
       .filter((filename) => BYRDISPATCH_FILE_RE.test(filename))
       .map(async (filename) => {
-        const markdown = await fs.readFile(path.join(BYRDISPATCH_DIR, filename), "utf-8");
+        const markdown = await readByrdispatchMarkdown(filename, serviceLocale);
         return parseByrdispatchMarkdown(markdown, filename.slice(0, -3));
       }),
   );
@@ -174,12 +195,16 @@ export async function getByrdispatchEntries(): Promise<ByrdispatchEntry[]> {
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
-export async function getLatestByrdispatchEntry(): Promise<ByrdispatchEntry | null> {
-  return (await getByrdispatchEntries())[0] ?? null;
+export async function getLatestByrdispatchEntry(
+  serviceLocale: ServiceLocale = "ko",
+): Promise<ByrdispatchEntry | null> {
+  return (await getByrdispatchEntries(serviceLocale))[0] ?? null;
 }
 
-export async function getLatestByrdispatchNotice(): Promise<ByrdispatchNotice | null> {
-  for (const entry of await getByrdispatchEntries()) {
+export async function getLatestByrdispatchNotice(
+  serviceLocale: ServiceLocale = "ko",
+): Promise<ByrdispatchNotice | null> {
+  for (const entry of await getByrdispatchEntries(serviceLocale)) {
     const text = entry.noticeSections[0]?.bullets[0]?.text;
     if (text) {
       return {
