@@ -20,11 +20,13 @@ import {
   isGameLocale,
   isServiceLocale,
   localizeHrefWithGameLocale,
+  stripGameLocaleFromPath,
   switchGameLocaleHref,
   withGameLocaleSearch,
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
+import { getContactHref } from "@/lib/contact-routing";
 import { detectGameLocaleFromNavigator } from "@/lib/locale-detection";
 import {
   globalSearchItemScore,
@@ -36,6 +38,7 @@ import {
 import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import { characterIconUrl } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
+import { contactMessages } from "@/messages/contact";
 import { pushCodexHistoryState } from "@/components/codex/use-hydration-safe-search-param";
 import {
   getToyBoxNavItems,
@@ -740,14 +743,18 @@ export function SiteNavbar() {
     : pathGameLocale;
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const messages = serviceMessages[serviceLocale];
+  const contactCopy = contactMessages[serviceLocale];
   const profile = useStoredUserProfile();
   const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale });
+  const contactHref = getContactHref(pathname, serviceLocale, gameLocale);
+  const isContactPage = stripGameLocaleFromPath(pathname) === "/contact";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
-      <InitialLocaleDetector />
-      <LocaleCanonicalizer serviceLocale={serviceLocale} gameLocale={gameLocale} />
-      <div className="mx-auto flex h-12 items-center gap-1.5 px-2 sm:gap-2 sm:px-4">
+    <>
+      <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
+        <InitialLocaleDetector />
+        <LocaleCanonicalizer serviceLocale={serviceLocale} gameLocale={gameLocale} />
+        <div className="mx-auto flex h-12 items-center gap-1.5 px-2 sm:gap-2 sm:px-4">
         <div className="flex min-w-0 shrink-0 items-center gap-1 sm:gap-2">
           <Link
             href={localizeHrefWithGameLocale("/", serviceLocale, gameLocale)}
@@ -797,6 +804,15 @@ export function SiteNavbar() {
             items={legacySts1NavItems(sts1NavItems, serviceLocale)}
             align="right"
           />
+          <div className="hidden border-l border-white/10 pl-1 xl:block">
+            <NavIconLink
+              href={contactHref}
+              icon="/images/sts2/relics/tiny_mailbox.webp"
+              label={contactCopy.navLabel}
+              iconSize={24}
+              iconClassName="group-hover:scale-110"
+            />
+          </div>
           <NavIconLink
             href={localizeHrefWithGameLocale("/profile", serviceLocale, gameLocale)}
             icon={characterIconUrl(profile.characterId)}
@@ -805,7 +821,29 @@ export function SiteNavbar() {
             iconClassName="group-hover:scale-110"
           />
         </div>
-      </div>
-    </header>
+        </div>
+      </header>
+
+      {!isContactPage && (
+        <Link
+          href={contactHref}
+          prefetch={false}
+          aria-label={contactCopy.navLabel}
+          data-contact-launcher="mobile"
+          className="group fixed right-3 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-amber-200/20 bg-[#0b0a12]/90 shadow-[0_8px_28px_rgba(0,0,0,0.55)] backdrop-blur-sm transition-[border-color,background-color,transform] bottom-[calc(0.75rem+env(safe-area-inset-bottom))] hover:-translate-y-0.5 hover:border-amber-200/45 hover:bg-[#17121a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-200/70 xl:hidden motion-reduce:transform-none"
+        >
+          <Image
+            src="/images/sts2/relics/tiny_mailbox.webp"
+            alt=""
+            width={34}
+            height={34}
+            className="h-8 w-8 object-contain drop-shadow-md transition-transform group-hover:scale-110"
+          />
+          <span className="pointer-events-none absolute bottom-full right-0 mb-2 whitespace-nowrap rounded-md border border-amber-200/15 bg-black/90 px-2 py-1 text-xs font-bold text-amber-100 opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+            {contactCopy.navLabel}
+          </span>
+        </Link>
+      )}
+    </>
   );
 }

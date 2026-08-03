@@ -1,4 +1,5 @@
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
+import { sanitizeContactSourcePath } from "@/lib/contact-routing";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
@@ -31,12 +32,6 @@ export class ContactInquiryRateLimitError extends Error {
     super("contact_inquiry_rate_limited");
     this.name = "ContactInquiryRateLimitError";
   }
-}
-
-export function sanitizeContactSourcePath(value: string | null | undefined): string {
-  const path = value?.trim().split(/[?#]/, 1)[0] ?? "";
-  if (!path.startsWith("/")) return "/";
-  return path.slice(0, 512) || "/";
 }
 
 function errorText(error: unknown): string {

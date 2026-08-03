@@ -13,9 +13,7 @@ export async function generateMetadata({ params }: Props) {
   return generateContactMetadata(gameLocale);
 }
 
-export async function LocalizedContactPage({ params }: Props) {
+export default async function LocalizedContactPage({ params }: Props) {
   const { gameLocale } = await getLocalePairFromParams(params);
   return renderContactPage(gameLocale);
 }
-
-export default LocalizedContactPage;

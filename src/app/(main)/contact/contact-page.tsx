@@ -11,10 +11,10 @@ import {
   CONTACT_MESSAGE_MAX_LENGTH,
   CONTACT_MESSAGE_MIN_LENGTH,
   ContactInquiryRateLimitError,
-  sanitizeContactSourcePath,
   submitContactInquiry,
   type ContactCategory,
 } from "@/lib/contact-inquiries";
+import { sanitizeContactSourcePath } from "@/lib/contact-routing";
 import type { FeedbackFormGameCopy } from "@/lib/borrowed-game-copy";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { supabaseEnabled } from "@/lib/supabase";

@@ -31,9 +31,11 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { DEFAULT_USER_PROFILE, characterIconUrl } from "@/lib/user-profile";
+import { getContactHref } from "@/lib/contact-routing";
 import { getSiteOrigin } from "@/lib/site-origin";
 import { getSTS2Patches } from "@/lib/data";
 import { serviceMessages } from "@/messages/service";
+import { contactMessages } from "@/messages/contact";
 import {
   gameOnlyLanguageNavLocales,
   getToyBoxNavItems,
@@ -336,6 +338,8 @@ function StaticPatchHeader({
   const messages = serviceMessages[serviceLocale];
   const patchHref = localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale);
   const profileHref = localizeHrefWithGameLocale("/profile", serviceLocale, gameLocale);
+  const contactHref = getContactHref(pathname, serviceLocale, gameLocale);
+  const contactCopy = contactMessages[serviceLocale];
   const searchCopy = messages.globalSearch.placeholder;
   const toyBoxLabel = serviceLocale === "ko" ? "장난감 상자" : "Toy Box";
   const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale });
@@ -343,8 +347,9 @@ function StaticPatchHeader({
   const sts1Items = legacySts1NavItems(sts1NavItems, serviceLocale);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
-      <div className="mx-auto flex h-12 items-center gap-1.5 px-2 sm:gap-2 sm:px-4">
+    <>
+      <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
+        <div className="mx-auto flex h-12 items-center gap-1.5 px-2 sm:gap-2 sm:px-4">
         <div className="flex min-w-0 shrink-0 items-center gap-1 sm:gap-2">
           <a
             href={localizeHrefWithGameLocale("/", serviceLocale, gameLocale)}
@@ -414,6 +419,14 @@ function StaticPatchHeader({
             items={sts1Items}
             align="right"
           />
+          <div className="hidden border-l border-white/10 pl-1 xl:block">
+            <StaticNavIconLink
+              href={contactHref}
+              icon="/images/sts2/relics/tiny_mailbox.webp"
+              label={contactCopy.navLabel}
+              iconSize={24}
+            />
+          </div>
           <StaticNavIconLink
             href={profileHref}
             icon={characterIconUrl(DEFAULT_USER_PROFILE.characterId)}
@@ -422,8 +435,8 @@ function StaticPatchHeader({
             profileCharacterIcon
           />
         </div>
-      </div>
-      <div className="sr-only">
+        </div>
+        <div className="sr-only">
         {toyBoxItems.map((item) => (
           <a key={item.href} href={item.href}>{item.label}</a>
         ))}
@@ -433,8 +446,23 @@ function StaticPatchHeader({
         {sts1Items.map((item) => (
           <a key={item.href} href={item.href}>{item.label}</a>
         ))}
-      </div>
-    </header>
+        </div>
+      </header>
+      <a
+        href={contactHref}
+        aria-label={contactCopy.navLabel}
+        data-contact-launcher="mobile"
+        className="group fixed right-3 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-amber-200/20 bg-[#0b0a12]/90 shadow-[0_8px_28px_rgba(0,0,0,0.55)] backdrop-blur-sm transition-[border-color,background-color,transform] bottom-[calc(0.75rem+env(safe-area-inset-bottom))] hover:-translate-y-0.5 hover:border-amber-200/45 hover:bg-[#17121a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-200/70 xl:hidden motion-reduce:transform-none"
+      >
+        <img
+          src="/images/sts2/relics/tiny_mailbox.webp"
+          alt=""
+          width={34}
+          height={34}
+          className="h-8 w-8 object-contain drop-shadow-md transition-transform group-hover:scale-110"
+        />
+      </a>
+    </>
   );
 }
 

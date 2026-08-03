@@ -18,6 +18,7 @@ const STATIC_SERVICE_PAGE_SEGMENTS = new Set([
   "byrdispatch",
   "chemical-x",
   "c-c-c-combo",
+  "contact",
   "history-course",
   "profile",
   "this-or-that",

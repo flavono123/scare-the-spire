@@ -56,6 +56,7 @@ const staticServicePageSegments = [
   "byrdispatch",
   "chemical-x",
   "c-c-c-combo",
+  "contact",
   "history-course",
   "profile",
   "this-or-that",
