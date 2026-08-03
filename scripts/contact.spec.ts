@@ -141,3 +141,49 @@ test.describe("Tiny Mailbox contact form", () => {
     expect(submittedPayload).not.toHaveProperty("status");
   });
 });
+
+test.describe("Tiny Mailbox inquiry history", () => {
+  test("shows the user's environment, status, and operator response on their profile", async ({ page }) => {
+    await setKoreanLocale(page);
+
+    const userId = "00000000-0000-4000-8000-000000000002";
+    let profileReadUrl = "";
+    await page.route("**/auth/v1/signup", (route) => fulfillJson(route, mockAnonymousSession(userId)));
+    await page.route("**/rest/v1/contact_inquiries**", async (route) => {
+      if (route.request().method() === "POST") {
+        await route.fulfill({ status: 201, body: "" });
+        return;
+      }
+
+      profileReadUrl = route.request().url();
+      await fulfillJson(route, [{
+        id: "00000000-0000-4000-8000-000000000003",
+        category: "feedback",
+        message: "프로필에서 확인할 문의입니다.",
+        env: "production",
+        status: "done",
+        admin_response: "운영자 답변입니다.",
+        created_at: "2026-08-04T00:00:00.000Z",
+      }]);
+    });
+
+    await page.goto(`${BASE}/contact`, { waitUntil: "domcontentloaded" });
+    await waitForContactReady(page);
+    await page.getByLabel("문의 내용").fill("프로필에서 확인할 문의입니다.");
+    await page.getByRole("button", { name: "발송!" }).click();
+    await expect(page.getByRole("heading", { name: "전송 성공! 감사합니다!" })).toBeVisible();
+
+    await page.goto(`${BASE}/profile`, { waitUntil: "domcontentloaded" });
+    const history = page.locator("[data-profile-inquiries]");
+    await expect(history.getByRole("heading", { name: "내 1:1 문의" })).toBeVisible();
+    await expect(history.getByText("운영", { exact: true })).toBeVisible();
+    await expect(history.getByText("답변 완료", { exact: true })).toBeVisible();
+    await expect(history.getByText("운영자 답변입니다.", { exact: true })).toBeVisible();
+    expect(decodeURIComponent(profileReadUrl)).not.toContain("reply_email");
+  });
+
+  test("renders the dev admin mailbox", async ({ page }) => {
+    await page.goto(`${BASE}/dev/admin`, { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "문의 우편함" })).toBeVisible();
+  });
+});
