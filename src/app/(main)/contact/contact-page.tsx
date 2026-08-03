@@ -119,7 +119,11 @@ export default function ContactPage({
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_5%,rgba(239,200,81,0.13),transparent_34%),radial-gradient(circle_at_88%_78%,rgba(125,55,125,0.12),transparent_30%)]"
       />
 
-      <main className="relative mx-auto w-full max-w-3xl">
+      <main
+        data-contact-page
+        data-auth-ready={authReady ? "true" : "false"}
+        className="relative mx-auto w-full max-w-3xl"
+      >
         <header className="mb-5 flex items-center gap-4 sm:mb-7">
           <span className="relative flex h-20 w-20 shrink-0 items-center justify-center sm:h-24 sm:w-24">
             <span className="absolute inset-[18%] rounded-full bg-amber-300/15 blur-xl" aria-hidden="true" />
@@ -144,7 +148,7 @@ export default function ContactPage({
           </div>
         </header>
 
-        <section className="overflow-hidden rounded-2xl border border-amber-300/20 bg-[#0b0a12]/95 shadow-[0_24px_80px_rgba(0,0,0,0.5)]">
+        <section data-contact-form-panel className="overflow-hidden rounded-2xl border border-amber-300/20 bg-[#0b0a12]/95 shadow-[0_24px_80px_rgba(0,0,0,0.5)]">
           <div className="flex items-center gap-2 border-b border-white/8 bg-white/[0.025] px-4 py-3 text-xs text-zinc-400 sm:px-6">
             <LockKeyhole className="h-4 w-4 shrink-0 text-amber-300/70" aria-hidden="true" />
             <span>{copy.privateNote}</span>

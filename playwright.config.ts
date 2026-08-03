@@ -17,6 +17,7 @@ export default defineConfig({
     "compendium-index-localization.spec.ts",
     "mobile-ux.spec.ts",
     "cloudflare-phase4.spec.ts",
+    "contact.spec.ts",
   ],
   timeout: 30_000,
   use: {
