@@ -30,5 +30,10 @@ export function isConfiguredByrdispatchMigrationTargetHost(): boolean {
 
 export function isByrdispatchMigrationNoticeText(text: string): boolean {
   return text.includes(BYRDISPATCH_MIGRATION_TARGET_HOST)
-    && (text.includes("이전") || text.includes("운영되지"));
+    && (
+      text.includes("이전")
+      || text.includes("운영되지")
+      || /\bmov(?:e|es|ed|ing)\b/i.test(text)
+      || /\bno longer (?:operated|served|supported)\b/i.test(text)
+    );
 }
