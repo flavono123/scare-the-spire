@@ -77,8 +77,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const [segment] = COMPENDIUM_DETAIL_ROUTES[index];
       return params.map(({ id }) => `/compendium/${segment}/${id}`);
     }),
-    ...patches.map(({ version }) => `/patches/${version}`),
   ];
+  const latestPatchDate = patches.map(({ date }) => date).sort().at(-1);
 
-  return paths.map((path) => ({ url: absoluteSiteUrl(path) }));
+  return [
+    ...paths.map((path) => ({
+      url: absoluteSiteUrl(path),
+      ...((path === "/patches" || path === "/patches/changes") && latestPatchDate
+        ? { lastModified: latestPatchDate }
+        : {}),
+    })),
+    ...patches.map(({ version, date }) => ({
+      url: absoluteSiteUrl(`/patches/${version}`),
+      lastModified: date,
+    })),
+  ];
 }
