@@ -15,6 +15,29 @@ export type ContactCategory =
   | "partnership"
   | "other";
 
+export type ContactInquiryEnv = "development" | "production";
+export type ContactInquiryStatus = "new" | "reviewing" | "done" | "spam";
+
+export interface ContactInquiryHistoryItem {
+  id: string;
+  category: ContactCategory;
+  message: string;
+  env: ContactInquiryEnv;
+  status: ContactInquiryStatus;
+  adminResponse: string | null;
+  createdAt: string;
+}
+
+interface ContactInquiryHistoryRow {
+  id: string;
+  category: ContactCategory;
+  message: string;
+  env: ContactInquiryEnv;
+  status: ContactInquiryStatus;
+  admin_response: string | null;
+  created_at: string;
+}
+
 export interface ContactInquiryInput {
   userId: string;
   category: ContactCategory;
@@ -66,4 +89,29 @@ export async function submitContactInquiry(input: ContactInquiryInput): Promise<
     throw new ContactInquiryRateLimitError();
   }
   throw error;
+}
+
+export async function listOwnContactInquiries(): Promise<ContactInquiryHistoryItem[]> {
+  if (!supabaseEnabled) throw new Error("Supabase is not configured");
+
+  const { data, error } = await withSupabaseTimeout(
+    "contact_inquiries.select",
+    supabase
+      .from("contact_inquiries")
+      .select("id,category,message,env,status,admin_response,created_at")
+      .order("created_at", { ascending: false })
+      // ponytail: cap the first version at 50; add pagination if real users outgrow it.
+      .limit(50),
+  );
+
+  if (error) throw error;
+  return ((data ?? []) as ContactInquiryHistoryRow[]).map((row) => ({
+    id: row.id,
+    category: row.category,
+    message: row.message,
+    env: row.env,
+    status: row.status,
+    adminResponse: row.admin_response,
+    createdAt: row.created_at,
+  }));
 }

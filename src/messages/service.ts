@@ -92,6 +92,24 @@ export const serviceMessages = {
         next: "다음",
       },
       activity: {
+        inquiries: {
+          title: "내 1:1 문의",
+          loading: "문의 내역을 불러오는 중...",
+          empty: "아직 보낸 문의가 없습니다",
+          responseTitle: "운영자 답변",
+          noResponse: "아직 답변이 없습니다",
+          environment: {
+            development: "개발",
+            production: "운영",
+          },
+          status: {
+            new: "접수",
+            reviewing: "확인 중",
+            done: "답변 완료",
+            spam: "처리 완료",
+          },
+          unavailableTitle: "문의 내역을 불러올 수 없습니다",
+        },
         title: "내 작성 활동",
         statsTitle: "활동 통계",
         totalPosts: "전체 작성",
@@ -941,6 +959,24 @@ export const serviceMessages = {
         next: "Next",
       },
       activity: {
+        inquiries: {
+          title: "My 1:1 inquiries",
+          loading: "Loading your inquiries...",
+          empty: "You have not sent any inquiries yet",
+          responseTitle: "Operator response",
+          noResponse: "No response yet",
+          environment: {
+            development: "Development",
+            production: "Production",
+          },
+          status: {
+            new: "Received",
+            reviewing: "Reviewing",
+            done: "Answered",
+            spam: "Closed",
+          },
+          unavailableTitle: "Could not load your inquiries",
+        },
         title: "My contributions",
         statsTitle: "Activity stats",
         totalPosts: "All contributions",

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ChevronRight, LoaderCircle } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import Image from "@/components/ui/static-image";
@@ -16,11 +16,29 @@ import {
   type ProfileActivitySort,
   useProfileActivity,
 } from "@/hooks/use-profile-activity";
+import {
+  listOwnContactInquiries,
+  type ContactInquiryEnv,
+  type ContactInquiryHistoryItem,
+  type ContactInquiryStatus,
+} from "@/lib/contact-inquiries";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { buildRichContentIndexes, resolveRichContentBlocks } from "@/lib/rich-content-blocks";
+import { supabaseEnabled } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
+import { contactMessages } from "@/messages/contact";
 
 export interface ProfileActivityCopy {
+  inquiries: {
+    title: string;
+    loading: string;
+    empty: string;
+    responseTitle: string;
+    noResponse: string;
+    environment: Record<ContactInquiryEnv, string>;
+    status: Record<ContactInquiryStatus, string>;
+    unavailableTitle: string;
+  };
   title: string;
   statsTitle: string;
   totalPosts: string;
@@ -141,6 +159,11 @@ export function ProfileActivity({
   const { userId, ready, unavailable: authUnavailable } = useAuth();
   const [filter, setFilter] = useState<ProfileActivityFilter>("all");
   const [sort, setSort] = useState<ProfileActivitySort>("latest");
+  const [inquiryResult, setInquiryResult] = useState<{
+    userId: string;
+    items: ContactInquiryHistoryItem[];
+    unavailable: boolean;
+  } | null>(null);
   const activity = useProfileActivity(userId, filter, sort);
   const { entities } = useCommentEntities(undefined, { enabled: activity.items.length > 0 });
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
@@ -154,11 +177,116 @@ export function ProfileActivity({
     [serviceLocale],
   );
 
+  useEffect(() => {
+    if (!supabaseEnabled || !ready || !userId) return;
+
+    let cancelled = false;
+    listOwnContactInquiries()
+      .then((items) => {
+        if (cancelled) return;
+        setInquiryResult({ userId, items, unavailable: false });
+      })
+      .catch(() => {
+        if (!cancelled) setInquiryResult({ userId, items: [], unavailable: true });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [ready, userId]);
+
+  const activeInquiryResult = inquiryResult?.userId === userId ? inquiryResult : null;
+  const inquiries = activeInquiryResult?.items ?? [];
+  const inquiriesLoading = Boolean(userId) && !activeInquiryResult;
+  const inquiriesUnavailable = !supabaseEnabled || activeInquiryResult?.unavailable === true;
+
   return (
-    <section
-      data-profile-activity
-      className="border-t border-white/10 pb-16 pt-7 sm:pb-20 sm:pt-9"
-    >
+    <>
+      <section
+        data-profile-inquiries
+        className="border-t border-white/10 py-7 sm:py-9"
+      >
+        <div className="mb-5 flex items-center gap-3">
+          <Image
+            src="/images/sts2/relics/tiny_mailbox.webp"
+            alt=""
+            width={42}
+            height={42}
+            aria-hidden
+            className="h-10 w-10 object-contain drop-shadow-[0_0_8px_rgba(250,204,21,0.28)]"
+          />
+          <h2 className="font-game-title text-xl font-bold spire-gold sm:text-2xl">
+            {copy.inquiries.title}
+          </h2>
+        </div>
+
+        {!ready || inquiriesLoading ? (
+          <div className="flex min-h-28 items-center justify-center gap-2 text-sm text-zinc-500">
+            <LoaderCircle size={17} className="animate-spin" aria-hidden />
+            <span>{copy.inquiries.loading}</span>
+          </div>
+        ) : authUnavailable || inquiriesUnavailable ? (
+          <StorageUnavailableNotice
+            title={copy.inquiries.unavailableTitle}
+            compact
+            className="min-h-28"
+          />
+        ) : inquiries.length === 0 ? (
+          <div className="flex min-h-28 items-center justify-center text-sm text-zinc-500">
+            {copy.inquiries.empty}
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {inquiries.map((inquiry) => (
+              <article
+                key={inquiry.id}
+                className="rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3.5"
+              >
+                <div className="mb-2 flex flex-wrap items-center gap-2 text-[11px]">
+                  <strong className="text-amber-200/85">
+                    {contactMessages[serviceLocale].categories[inquiry.category].label}
+                  </strong>
+                  <span
+                    className={cn(
+                      "rounded-full border px-2 py-0.5 font-semibold",
+                      inquiry.env === "production"
+                        ? "border-emerald-300/20 bg-emerald-300/[0.06] text-emerald-200/80"
+                        : "border-sky-300/20 bg-sky-300/[0.06] text-sky-200/80",
+                    )}
+                  >
+                    {copy.inquiries.environment[inquiry.env]}
+                  </span>
+                  <span className="rounded-full border border-white/10 px-2 py-0.5 text-zinc-400">
+                    {copy.inquiries.status[inquiry.status]}
+                  </span>
+                  <time className="ml-auto text-zinc-600" dateTime={inquiry.createdAt}>
+                    {dateFormatter.format(new Date(inquiry.createdAt))}
+                  </time>
+                </div>
+                <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-zinc-200">
+                  {inquiry.message}
+                </p>
+                <div className="mt-3 border-t border-white/[0.07] pt-3">
+                  <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500">
+                    {copy.inquiries.responseTitle}
+                  </p>
+                  <p className={cn(
+                    "whitespace-pre-wrap break-words text-sm leading-relaxed",
+                    inquiry.adminResponse ? "text-amber-50" : "text-zinc-600",
+                  )}>
+                    {inquiry.adminResponse ?? copy.inquiries.noResponse}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section
+        data-profile-activity
+        className="border-t border-white/10 pb-16 pt-7 sm:pb-20 sm:pt-9"
+      >
       <div className="mb-5 flex items-center gap-3">
         <Image
           src="/images/sts2/relics/storybook.webp"
@@ -317,7 +445,8 @@ export function ProfileActivity({
           </div>
         </>
       )}
-    </section>
+      </section>
+    </>
   );
 }
 
