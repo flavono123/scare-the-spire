@@ -1,19 +1,61 @@
+import "server-only";
+
 import Link from "next/link";
+import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
 import type { PostBlock } from "@/lib/chemical-types";
+import type {
+  ContactCategory,
+  ContactInquiryEnv,
+  ContactInquiryStatus,
+} from "@/lib/contact-inquiries";
 import { historyRunPlainText } from "@/lib/history-run-reference";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import { supabase, supabaseEnabled } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import { getSiteOrigin } from "@/lib/site-origin";
+import { contactMessages } from "@/messages/contact";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 const ROW_LIMIT = 50;
+const CONTACT_ROW_LIMIT = 100;
 const STATS_SAMPLE_LIMIT = 1000;
 const ADMIN_DATA_ENV = "production";
 const PRODUCTION_SITE_ORIGIN = getSiteOrigin();
+
+const CONTACT_ENV_LABELS: Record<ContactInquiryEnv, string> = {
+  production: "운영",
+  development: "개발",
+};
+
+const CONTACT_STATUS_LABELS: Record<ContactInquiryStatus, string> = {
+  new: "접수",
+  reviewing: "확인 중",
+  done: "답변 완료",
+  spam: "스팸",
+};
+
+const CONTACT_STATUSES = Object.keys(CONTACT_STATUS_LABELS) as ContactInquiryStatus[];
+const CONTACT_INQUIRY_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+interface ContactInquiryAdminRow {
+  id: string;
+  user_id: string | null;
+  category: ContactCategory;
+  message: string;
+  reply_email: string | null;
+  page_path: string;
+  service_locale: string;
+  game_locale: string;
+  env: ContactInquiryEnv;
+  status: ContactInquiryStatus;
+  admin_response: string | null;
+  responded_at: string | null;
+  created_at: string;
+}
 
 interface CommentRow {
   id: string;
@@ -188,6 +230,37 @@ async function readSupabase<T>(
   }
 }
 
+function createInquiryAdminClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const secretKey = process.env.SUPABASE_SECRET_KEY?.trim()
+    || process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+  if (!url || !secretKey) return null;
+
+  return createClient(url, secretKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+    },
+  });
+}
+
+async function readContactInquiries(): Promise<QueryState<ContactInquiryAdminRow[]> | null> {
+  const admin = createInquiryAdminClient();
+  if (!admin) return null;
+
+  return readSupabase<ContactInquiryAdminRow[]>(
+    "admin.contact_inquiries",
+    admin
+      .from("contact_inquiries")
+      .select("id,user_id,category,message,reply_email,page_path,service_locale,game_locale,env,status,admin_response,responded_at,created_at", { count: "exact" })
+      .order("created_at", { ascending: false })
+      // ponytail: show the latest 100 in one dev-only page; add pagination if the mailbox grows.
+      .limit(CONTACT_ROW_LIMIT),
+    [],
+  );
+}
+
 async function readComments(): Promise<QueryState<CommentRow[]>> {
   return readSupabase<CommentRow[]>(
     "admin.comments",
@@ -337,6 +410,38 @@ async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
   };
 }
 
+async function respondToContactInquiry(formData: FormData) {
+  "use server";
+
+  if (!devToolsEnabled()) throw new Error("Dev tools are disabled");
+
+  const id = String(formData.get("id") ?? "");
+  const response = String(formData.get("response") ?? "").trim();
+  const status = String(formData.get("status") ?? "") as ContactInquiryStatus;
+  if (!CONTACT_INQUIRY_ID_PATTERN.test(id)) throw new Error("Invalid inquiry id");
+  if (!CONTACT_STATUSES.includes(status)) throw new Error("Invalid inquiry status");
+  if (response.length > 8000) throw new Error("Response is too long");
+  if (!response && status === "done") throw new Error("A completed inquiry needs a response");
+
+  const admin = createInquiryAdminClient();
+  if (!admin) throw new Error("SUPABASE_SECRET_KEY is not configured");
+
+  const { error } = await withSupabaseTimeout(
+    "admin.contact_inquiries.update",
+    admin
+      .from("contact_inquiries")
+      .update({
+        admin_response: response || null,
+        responded_at: response ? new Date().toISOString() : null,
+        status: response ? "done" : status,
+      })
+      .eq("id", id),
+  );
+  if (error) throw error;
+
+  revalidatePath("/dev/admin");
+}
+
 function formatDate(value: string): string {
   return new Intl.DateTimeFormat("ko-KR", {
     dateStyle: "medium",
@@ -481,7 +586,11 @@ export default async function SupabaseAdminPage() {
     notFound();
   }
 
-  const snapshot = await loadAdminSnapshot();
+  const [snapshot, contactInquiries] = await Promise.all([
+    loadAdminSnapshot(),
+    readContactInquiries(),
+  ]);
+  const contactRows = contactInquiries?.data ?? [];
   const topStories = topLikedStories(snapshot?.engagementCounts.data ?? []);
   const uniqueLikeUsers = new Set(snapshot?.likes.data.map((row) => row.user_id) ?? []).size;
   const uniqueCommentLikeUsers = new Set(snapshot?.commentLikes.data.map((row) => row.user_id) ?? []).size;
@@ -504,6 +613,101 @@ export default async function SupabaseAdminPage() {
           </div>
         </div>
       </div>
+
+      <Section
+        title="문의 우편함"
+        count={contactInquiries
+          ? `전체 ${(contactInquiries.count ?? contactRows.length).toLocaleString("ko-KR")}개 · 최근 ${contactRows.length.toLocaleString("ko-KR")}개 표시`
+          : "서버 키 설정 필요"}
+        error={contactInquiries?.error}
+      >
+        {!contactInquiries ? (
+          <div className="rounded-md border border-amber-500/25 bg-amber-500/5 px-4 py-4 text-sm text-amber-100">
+            <code>SUPABASE_SECRET_KEY</code>를 서버 환경에 설정하면 문의를 조회하고 답변할 수 있습니다.
+          </div>
+        ) : (
+          <div className="grid gap-6 xl:grid-cols-2">
+            {(["production", "development"] as const).map((env) => {
+              const rows = contactRows.filter((inquiry) => inquiry.env === env);
+              return (
+                <div key={env}>
+                  <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
+                    <span className={env === "production" ? "text-emerald-300" : "text-sky-300"}>
+                      {CONTACT_ENV_LABELS[env]}
+                    </span>
+                    <code className="text-[10px] text-muted-foreground">{env}</code>
+                    <span className="text-xs font-normal text-muted-foreground">{rows.length}개</span>
+                  </h3>
+                  <div className="space-y-3">
+                    {rows.map((inquiry) => (
+                      <article key={inquiry.id} className="rounded-md border border-border bg-card/35 p-4">
+                        <div className="flex flex-wrap items-center gap-2 text-xs">
+                          <strong className="text-yellow-200">
+                            {contactMessages.ko.categories[inquiry.category].label}
+                          </strong>
+                          <span className="rounded-full border border-border px-2 py-0.5 text-muted-foreground">
+                            {CONTACT_STATUS_LABELS[inquiry.status]}
+                          </span>
+                          <time className="ml-auto text-muted-foreground" dateTime={inquiry.created_at}>
+                            {formatDate(inquiry.created_at)}
+                          </time>
+                        </div>
+                        <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground">
+                          {inquiry.message}
+                        </p>
+                        <dl className="mt-3 grid gap-x-4 gap-y-1 border-t border-border/70 pt-3 text-[11px] text-muted-foreground sm:grid-cols-2">
+                          <div><dt className="inline font-semibold">답변 이메일 </dt><dd className="inline">{inquiry.reply_email ?? "-"}</dd></div>
+                          <div><dt className="inline font-semibold">문의 위치 </dt><dd className="inline"><code>{inquiry.page_path}</code></dd></div>
+                          <div><dt className="inline font-semibold">언어 </dt><dd className="inline">{inquiry.service_locale} / {inquiry.game_locale}</dd></div>
+                          <div><dt className="inline font-semibold">user_id </dt><dd className="inline"><code>{inquiry.user_id ?? "-"}</code></dd></div>
+                        </dl>
+                        <form action={respondToContactInquiry} className="mt-4 space-y-2">
+                          <input type="hidden" name="id" value={inquiry.id} />
+                          <label className="block text-xs font-semibold text-muted-foreground" htmlFor={`response-${inquiry.id}`}>
+                            운영자 답변
+                          </label>
+                          <textarea
+                            id={`response-${inquiry.id}`}
+                            name="response"
+                            defaultValue={inquiry.admin_response ?? ""}
+                            maxLength={8000}
+                            rows={4}
+                            className="w-full resize-y rounded-md border border-border bg-background/70 px-3 py-2 text-sm text-foreground outline-none focus:border-yellow-400/60"
+                          />
+                          <div className="flex flex-wrap items-center gap-2">
+                            <select
+                              name="status"
+                              defaultValue={inquiry.status}
+                              aria-label="문의 상태"
+                              className="h-9 rounded-md border border-border bg-background px-2 text-sm text-foreground"
+                            >
+                              {CONTACT_STATUSES.map((status) => (
+                                <option key={status} value={status}>{CONTACT_STATUS_LABELS[status]}</option>
+                              ))}
+                            </select>
+                            <button
+                              type="submit"
+                              className="h-9 rounded-md border border-yellow-500/30 bg-yellow-500/10 px-3 text-sm font-semibold text-yellow-200 hover:bg-yellow-500/20"
+                            >
+                              저장
+                            </button>
+                            <span className="text-[11px] text-muted-foreground">답변을 입력하면 답변 완료로 저장됩니다.</span>
+                          </div>
+                        </form>
+                      </article>
+                    ))}
+                    {rows.length === 0 && (
+                      <div className="rounded-md border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
+                        문의 없음
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </Section>
 
       {!snapshot ? (
         <div className="rounded-md border border-border bg-card/40 px-4 py-6">
