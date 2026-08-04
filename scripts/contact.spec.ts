@@ -186,7 +186,8 @@ test.describe("Tiny Mailbox inquiry history", () => {
   });
 
   test("renders the dev admin mailbox", async ({ page }) => {
-    await page.goto(`${BASE}/dev/admin`, { waitUntil: "domcontentloaded" });
+    await page.goto(`${BASE}/dev/admin?contactSave=saved`, { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: "문의 우편함" })).toBeVisible();
+    await expect(page.getByRole("status")).toHaveText("저장했습니다.");
   });
 });

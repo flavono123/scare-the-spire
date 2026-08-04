@@ -2,7 +2,7 @@ import "server-only";
 
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import type { PostBlock } from "@/lib/chemical-types";
 import type {
@@ -410,33 +410,41 @@ async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
 async function respondToContactInquiry(formData: FormData) {
   "use server";
 
-  if (!devToolsEnabled()) throw new Error("Dev tools are disabled");
+  let result: "saved" | "error" = "saved";
+  try {
+    if (!devToolsEnabled()) throw new Error("Dev tools are disabled");
 
-  const id = String(formData.get("id") ?? "");
-  const response = String(formData.get("response") ?? "").trim();
-  const status = String(formData.get("status") ?? "") as ContactInquiryStatus;
-  if (!CONTACT_INQUIRY_ID_PATTERN.test(id)) throw new Error("Invalid inquiry id");
-  if (!CONTACT_STATUSES.includes(status)) throw new Error("Invalid inquiry status");
-  if (response.length > 8000) throw new Error("Response is too long");
-  if (!response && status === "done") throw new Error("A completed inquiry needs a response");
+    const id = String(formData.get("id") ?? "");
+    const response = String(formData.get("response") ?? "").trim();
+    const status = String(formData.get("status") ?? "") as ContactInquiryStatus;
+    if (!CONTACT_INQUIRY_ID_PATTERN.test(id)) throw new Error("Invalid inquiry id");
+    if (!CONTACT_STATUSES.includes(status)) throw new Error("Invalid inquiry status");
+    if (response.length > 8000) throw new Error("Response is too long");
+    if (!response && status === "done") throw new Error("A completed inquiry needs a response");
 
-  const admin = createInquiryAdminClient();
-  if (!admin) throw new Error("SUPABASE_SECRET_KEY is not configured");
+    const admin = createInquiryAdminClient();
+    if (!admin) throw new Error("SUPABASE_SECRET_KEY is not configured");
 
-  const { error } = await withSupabaseTimeout(
-    "admin.contact_inquiries.update",
-    admin
-      .from("contact_inquiries")
-      .update({
-        admin_response: response || null,
-        responded_at: response ? new Date().toISOString() : null,
-        status: response ? "done" : status,
-      })
-      .eq("id", id),
-  );
-  if (error) throw error;
+    const { error } = await withSupabaseTimeout(
+      "admin.contact_inquiries.update",
+      admin
+        .from("contact_inquiries")
+        .update({
+          admin_response: response || null,
+          responded_at: response ? new Date().toISOString() : null,
+          status: response ? "done" : status,
+        })
+        .eq("id", id),
+    );
+    if (error) throw error;
 
-  revalidatePath("/dev/admin");
+    revalidatePath("/dev/admin");
+  } catch (error) {
+    console.error("Failed to save contact inquiry response", error);
+    result = "error";
+  }
+
+  redirect(`/dev/admin?contactSave=${result}#contact-save-result`);
 }
 
 function formatDate(value: string): string {
@@ -578,7 +586,11 @@ export const metadata = {
   description: "개발 전용 Supabase 컨텐츠 확인 페이지",
 };
 
-export default async function SupabaseAdminPage() {
+export default async function SupabaseAdminPage({
+  contactSaveResult,
+}: {
+  contactSaveResult?: "saved" | "error";
+}) {
   if (!devToolsEnabled()) {
     notFound();
   }
@@ -618,6 +630,21 @@ export default async function SupabaseAdminPage() {
           : "서버 키 설정 필요"}
         error={contactInquiries?.error}
       >
+        {contactSaveResult && (
+          <div
+            id="contact-save-result"
+            role={contactSaveResult === "saved" ? "status" : "alert"}
+            className={`mb-4 rounded-md border px-4 py-3 text-sm ${
+              contactSaveResult === "saved"
+                ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-200"
+                : "border-red-500/30 bg-red-500/10 text-red-200"
+            }`}
+          >
+            {contactSaveResult === "saved"
+              ? "저장했습니다."
+              : "저장하지 못했습니다. 다시 시도해 주세요."}
+          </div>
+        )}
         {!contactInquiries ? (
           <div className="rounded-md border border-amber-500/25 bg-amber-500/5 px-4 py-4 text-sm text-amber-100">
             <code>SUPABASE_SECRET_KEY</code>를 서버 환경에 설정하면 문의를 조회하고 답변할 수 있습니다.
@@ -688,7 +715,11 @@ export default async function SupabaseAdminPage() {
                             >
                               저장
                             </button>
-                            <span className="text-[11px] text-muted-foreground">답변을 입력하면 답변 완료로 저장됩니다.</span>
+                            <span className="text-[11px] text-muted-foreground">
+                              {inquiry.admin_response
+                                ? "저장하면 기존 답변을 덮어씁니다."
+                                : "답변을 입력하면 답변 완료로 저장됩니다."}
+                            </span>
                           </div>
                         </form>
                       </article>

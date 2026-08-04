@@ -13,11 +13,19 @@ export const metadata = {
   },
 };
 
-export default async function SupabaseAdminPage() {
+interface SupabaseAdminPageProps {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
+
+export default async function SupabaseAdminPage({ searchParams }: SupabaseAdminPageProps) {
   if (!devToolsEnabled()) {
     notFound();
   }
 
+  const contactSave = (await searchParams).contactSave;
+  const contactSaveResult = contactSave === "saved" || contactSave === "error"
+    ? contactSave
+    : undefined;
   const { default: SupabaseAdminDevPage } = await import("./admin-dev-page");
-  return <SupabaseAdminDevPage />;
+  return <SupabaseAdminDevPage contactSaveResult={contactSaveResult} />;
 }
