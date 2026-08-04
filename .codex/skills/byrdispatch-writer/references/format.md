@@ -108,6 +108,7 @@ Prefer these exact Korean headings:
 - `이거 아님 저거?`
 - `변형`
 - `프로필`
+- `작은 우편함`
 - `댓글`
 - `개발/운영`
 
@@ -130,6 +131,7 @@ Use these established headings in `.en.md` files:
 | `이거 아님 저거?` | `This or That?` |
 | `변형` | `Transfigure` |
 | `프로필` | `Profile` |
+| `작은 우편함` | `Tiny Mailbox` |
 | `댓글` | `Comments` |
 | `개발/운영` | `Development / Operations` |
 | `기타` | `Other` |

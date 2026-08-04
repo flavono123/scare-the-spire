@@ -103,6 +103,8 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   "This or That?": { href: "/this-or-that", icon: "/images/sts2/relics/choices_paradox.webp" },
   "프로필": { href: "/profile", icon: "/images/sts2/characters/character_icon_random_character_outline.webp" },
   Profile: { href: "/profile", icon: "/images/sts2/characters/character_icon_random_character_outline.webp" },
+  "작은 우편함": { href: "/contact", icon: "/images/sts2/relics/tiny_mailbox.webp" },
+  "Tiny Mailbox": { href: "/contact", icon: "/images/sts2/relics/tiny_mailbox.webp" },
   "댓글": { href: null, icon: "/images/sts2/relics/storybook.webp" },
   Comments: { href: null, icon: "/images/sts2/relics/storybook.webp" },
   "개발/운영": { href: null, icon: "/images/sts2/relics/toolbox.webp" },
@@ -134,6 +136,8 @@ const SERVICE_REFERENCE_LINKS: Record<string, string> = {
   "Chemical X": "/chemical-x",
   "프로필": "/profile",
   Profile: "/profile",
+  "작은 우편함": "/contact",
+  "Tiny Mailbox": "/contact",
 };
 
 const STORY_COMPOSER_ACTION_TOKEN = "[새 이야기 쓰기 버튼 노출/링크]";
