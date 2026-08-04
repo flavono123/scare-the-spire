@@ -125,13 +125,15 @@ test.describe("Tiny Mailbox contact form", () => {
       { waitUntil: "domcontentloaded" },
     );
     await waitForContactReady(page);
+    await expect(page.locator('input[name="contact-category"]:checked')).toHaveCount(0);
+    await expect(page.getByText("(선택)", { exact: true })).toHaveCount(0);
     await page.getByLabel("문의 내용").fill("패치 화면에서 확인할 오류가 있습니다.");
     await page.getByRole("button", { name: "발송!" }).click();
 
     await expect(page.getByRole("heading", { name: "전송 성공! 감사합니다!" })).toBeVisible();
     expect(submittedPayload).toMatchObject({
       user_id: userId,
-      category: "feedback",
+      category: "other",
       message: "패치 화면에서 확인할 오류가 있습니다.",
       reply_email: null,
       page_path: "/patches/0.103.0",
@@ -143,7 +145,7 @@ test.describe("Tiny Mailbox contact form", () => {
 });
 
 test.describe("Tiny Mailbox inquiry history", () => {
-  test("shows the user's environment, status, and operator response on their profile", async ({ page }) => {
+  test("shows the user's status and operator response on their profile", async ({ page }) => {
     await setKoreanLocale(page);
 
     const userId = "00000000-0000-4000-8000-000000000002";
@@ -176,7 +178,8 @@ test.describe("Tiny Mailbox inquiry history", () => {
     await page.goto(`${BASE}/profile`, { waitUntil: "domcontentloaded" });
     const history = page.locator("[data-profile-inquiries]");
     await expect(history.getByRole("heading", { name: "내 1:1 문의" })).toBeVisible();
-    await expect(history.getByText("운영", { exact: true })).toBeVisible();
+    await expect(history.getByText("운영", { exact: true })).toHaveCount(0);
+    await expect(history.getByText("개발", { exact: true })).toHaveCount(0);
     await expect(history.getByText("답변 완료", { exact: true })).toBeVisible();
     await expect(history.getByText("운영자 답변입니다.", { exact: true })).toBeVisible();
     expect(decodeURIComponent(profileReadUrl)).not.toContain("reply_email");

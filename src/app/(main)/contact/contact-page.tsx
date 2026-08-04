@@ -54,7 +54,7 @@ export default function ContactPage({
   gameLocale: GameLocale;
 }) {
   const { userId, ready: authReady, unavailable: authUnavailable, ensureUser } = useAuth();
-  const [category, setCategory] = useState<ContactCategory>("feedback");
+  const [category, setCategory] = useState<ContactCategory | null>(null);
   const [message, setMessage] = useState("");
   const [replyEmail, setReplyEmail] = useState("");
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
@@ -76,7 +76,7 @@ export default function ContactPage({
   const resetForm = () => {
     setMessage("");
     setReplyEmail("");
-    setCategory("feedback");
+    setCategory(null);
     setSubmitState("idle");
   };
 
@@ -94,7 +94,7 @@ export default function ContactPage({
 
       await submitContactInquiry({
         userId: activeUserId,
-        category,
+        category: category ?? "other",
         message: trimmedMessage,
         replyEmail: trimmedEmail || null,
         pagePath: sanitizeContactSourcePath(
@@ -239,7 +239,6 @@ export default function ContactPage({
               <label className="block">
                 <span className="mb-1.5 block text-sm font-bold text-zinc-200">
                   {copy.emailLabel}
-                  {category !== "partnership" && <span className="ml-1 font-normal text-zinc-500">({serviceLocale === "ko" ? "선택" : "optional"})</span>}
                 </span>
                 <input
                   type="email"

@@ -18,7 +18,6 @@ import {
 } from "@/hooks/use-profile-activity";
 import {
   listOwnContactInquiries,
-  type ContactInquiryEnv,
   type ContactInquiryHistoryItem,
   type ContactInquiryStatus,
 } from "@/lib/contact-inquiries";
@@ -35,7 +34,6 @@ export interface ProfileActivityCopy {
     empty: string;
     responseTitle: string;
     noResponse: string;
-    environment: Record<ContactInquiryEnv, string>;
     status: Record<ContactInquiryStatus, string>;
     unavailableTitle: string;
   };
@@ -246,16 +244,6 @@ export function ProfileActivity({
                   <strong className="text-amber-200/85">
                     {contactMessages[serviceLocale].categories[inquiry.category].label}
                   </strong>
-                  <span
-                    className={cn(
-                      "rounded-full border px-2 py-0.5 font-semibold",
-                      inquiry.env === "production"
-                        ? "border-emerald-300/20 bg-emerald-300/[0.06] text-emerald-200/80"
-                        : "border-sky-300/20 bg-sky-300/[0.06] text-sky-200/80",
-                    )}
-                  >
-                    {copy.inquiries.environment[inquiry.env]}
-                  </span>
                   <span className="rounded-full border border-white/10 px-2 py-0.5 text-zinc-400">
                     {copy.inquiries.status[inquiry.status]}
                   </span>

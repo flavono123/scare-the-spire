@@ -98,10 +98,6 @@ export const serviceMessages = {
           empty: "아직 보낸 문의가 없습니다",
           responseTitle: "운영자 답변",
           noResponse: "아직 답변이 없습니다",
-          environment: {
-            development: "개발",
-            production: "운영",
-          },
           status: {
             new: "접수",
             reviewing: "확인 중",
@@ -965,10 +961,6 @@ export const serviceMessages = {
           empty: "You have not sent any inquiries yet",
           responseTitle: "Operator response",
           noResponse: "No response yet",
-          environment: {
-            development: "Development",
-            production: "Production",
-          },
           status: {
             new: "Received",
             reviewing: "Reviewing",
