@@ -48,6 +48,7 @@ export const serviceMessages = {
       viewAll: "전체 보기",
       latestDate: "최신 {date}",
       dateLink: "{date} 섀소식 링크",
+      translationDisclaimer: null,
       metadata: {
         title: "섀소식",
         description: "슬서운이야기 서비스의 새 기능과 콘텐츠 소식",
@@ -911,6 +912,7 @@ export const serviceMessages = {
       viewAll: "View all",
       latestDate: "Latest {date}",
       dateLink: "{date} byrdispatch link",
+      translationDisclaimer: "Disclaimer: for non-Korean locales, translated by AI.",
       metadata: {
         title: "byrdispatch",
         description: "New features and content updates for Scare the Spire",
