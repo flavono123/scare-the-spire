@@ -99,7 +99,6 @@ function proxyToMain(req, res) {
       method: req.method,
       headers: {
         ...req.headers,
-        host: `localhost:${mainPort}`,
       },
     },
     (upstreamRes) => {
@@ -132,7 +131,6 @@ function proxyUpgradeToMain(req, socket, head) {
     method: req.method,
     headers: {
       ...req.headers,
-      host: `localhost:${mainPort}`,
     },
   });
 
