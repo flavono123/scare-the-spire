@@ -120,7 +120,7 @@ const SERVICE_REFERENCE_LINKS: Record<string, string> = {
   "슬서운 이야기": "/",
   Stories: "/",
   섀소식: "/byrdispatch",
-  byrdispatch: "/byrdispatch",
+  byrdispatch: "/en/byrdispatch",
   백과사전: "/compendium",
   Compendium: "/compendium",
   "역사 강의서": "/history-course",
@@ -361,7 +361,7 @@ export function ByrdispatchRichText({
     ) : href && service ? (
       <Link
         key={`service-${matchIndex}`}
-        href={localizeHrefWithGameLocale(href, serviceLocale, gameLocale)}
+        href={label === "byrdispatch" ? href : localizeHrefWithGameLocale(href, serviceLocale, gameLocale)}
         className="inline-flex items-center gap-1 align-[-0.2em] font-semibold text-cyan-200 transition-colors hover:text-cyan-100"
       >
         {label && PROFILE_SERVICE_TITLES.has(label) ? (

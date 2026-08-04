@@ -59,6 +59,7 @@ Rules:
 ## Route and Service Naming
 
 - Public route: `/byrdispatch`
+- English service references named `byrdispatch` link directly to `/en/byrdispatch`, even from Korean or game-only locale pages.
 - English service name: `byrdispatch`
 - Korean service name: `섀소식`
 - Data files remain under `data/byrdispatch/YYYY-MM-DD.md`.
