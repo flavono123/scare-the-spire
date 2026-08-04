@@ -631,7 +631,7 @@ export async function renderByrdispatchPage(
 
       {entries.length > 0 && (
         <div className="mt-8 space-y-10">
-          {entries.map((entry) => {
+          {entries.map((entry, index) => {
             const noticeSections = hideMigrationNotice
               ? entry.noticeSections.filter((section) => !isMigrationNoticeSection(section))
               : entry.noticeSections;
@@ -644,6 +644,11 @@ export async function renderByrdispatchPage(
                 data-byrdispatch-entry
                 className="scroll-mt-20 outline-none first:rounded-xl first:bg-purple-500/10 first:px-4 first:py-5 target:bg-purple-500/[0.08] sm:first:px-5 sm:first:py-6"
               >
+                {index === 0 && messages.translationDisclaimer && (
+                  <aside className="spire-pink mb-4 rounded-lg border border-pink-300/35 bg-pink-500/10 px-4 py-3 font-service text-sm font-semibold leading-6">
+                    {messages.translationDisclaimer}
+                  </aside>
+                )}
                 <Link
                   href={`#${entry.date}`}
                   data-byrdispatch-date-title
