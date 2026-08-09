@@ -24,6 +24,7 @@ export function getResourcePatchIndexMetadata(serviceLocale: ServiceLocale): Met
     title: copy.title,
     description: copy.metadataDescription,
     image: PATCH_NOTES_PAGE_OG_IMAGE,
+    canonicalPath: "/patches/changes",
   });
 }
 

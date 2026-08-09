@@ -10,19 +10,18 @@ import {
 } from "@/lib/service-metadata";
 
 export async function generateTransfigurePostMetadata(
-  _id?: string,
+  id?: string,
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const copy = getServiceMetadataCopy(serviceLocale);
-  return {
-    ...getServiceOgMetadata({
-      serviceLocale,
-      title: copy.transfigureTitle,
-      description: copy.transfigureDescription,
-      image: TRANSFIGURE_PAGE_OG_IMAGE,
-    }),
-  };
+  return getServiceOgMetadata({
+    serviceLocale,
+    title: copy.transfigureTitle,
+    description: copy.transfigureDescription,
+    image: TRANSFIGURE_PAGE_OG_IMAGE,
+    canonicalPath: id ? `/transfigure/${id}` : "/transfigure",
+  });
 }
 
 export async function renderTransfigurePostPage(

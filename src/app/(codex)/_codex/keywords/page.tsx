@@ -34,7 +34,7 @@ export async function generateMetadata({
   if (keyword) {
     return getCodexResourceOgMetadata(serviceLocale, gameUi.nav.keywords, keyword);
   }
-  return getCodexMetadata(serviceLocale, gameUi.nav.keywords);
+  return getCodexMetadata(serviceLocale, gameUi.nav.keywords, "/compendium/keywords");
 }
 
 export default async function CodexKeywordsPage({

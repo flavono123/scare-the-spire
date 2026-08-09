@@ -18,6 +18,7 @@ export async function generateThisOrThatMetadata(
     title: gameCopy.title,
     description: serviceMessages[serviceLocale].thisOrThat.metadata.description,
     image: THIS_OR_THAT_PAGE_OG_IMAGE,
+    canonicalPath: "/this-or-that",
   });
 }
 

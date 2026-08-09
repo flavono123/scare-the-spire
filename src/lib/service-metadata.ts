@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
 import type { ServiceLocale } from "@/lib/i18n";
 import { DEFAULT_PAGE_OG_IMAGE, type PageOgImage } from "@/lib/page-og-images";
+import {
+  withKoreanSearchCanonical,
+} from "@/lib/search-canonical";
 import { absoluteSiteUrl, SITE_METADATA_BASE } from "@/lib/site-origin";
 import { serviceMessages } from "@/messages/service";
+
+export {
+  absoluteKoreanCanonicalUrl,
+  koreanSearchPath,
+  withKoreanSearchCanonical,
+} from "@/lib/search-canonical";
 
 type ServiceMetadataCopy = {
   siteDescription: string;
@@ -109,17 +118,19 @@ export function getServiceOgMetadata({
   title,
   description,
   image = DEFAULT_PAGE_OG_IMAGE,
+  canonicalPath,
 }: {
   serviceLocale: ServiceLocale;
   title: string;
   description: string;
   image?: ServiceOgImage;
+  canonicalPath?: string;
 }): Metadata {
   const fullTitle = getServiceTitle(serviceLocale, title);
   const brand = getServiceBrand(serviceLocale);
   const ogImage = absoluteServiceOgImage(image);
 
-  return {
+  const metadata: Metadata = {
     metadataBase: SITE_METADATA_BASE,
     title: {
       absolute: fullTitle,
@@ -140,4 +151,8 @@ export function getServiceOgMetadata({
       images: [ogImage.url],
     },
   };
+
+  return canonicalPath
+    ? withKoreanSearchCanonical(metadata, canonicalPath)
+    : metadata;
 }

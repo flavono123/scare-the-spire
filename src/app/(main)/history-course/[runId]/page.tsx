@@ -8,8 +8,9 @@ type Props = {
   params: Promise<{ runId: string }>;
 };
 
-export async function generateMetadata(): Promise<Metadata> {
-  return generateHistoryCourseRunMetadata();
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { runId } = await params;
+  return generateHistoryCourseRunMetadata(undefined, runId);
 }
 
 // runId is content-addressable and per-browser; we never enumerate.

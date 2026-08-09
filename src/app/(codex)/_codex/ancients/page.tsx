@@ -36,7 +36,7 @@ export async function generateMetadata({
   if (ancient) {
     return getCodexResourceOgMetadata(serviceLocale, gameUi.ancientsTitle, ancient);
   }
-  return getCodexMetadata(serviceLocale, gameUi.ancientsTitle);
+  return getCodexMetadata(serviceLocale, gameUi.ancientsTitle, "/compendium/ancients");
 }
 
 export default async function CodexAncientsPage({

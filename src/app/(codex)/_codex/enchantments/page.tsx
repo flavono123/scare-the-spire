@@ -42,7 +42,7 @@ export async function generateMetadata({
   if (resource) {
     return getCodexResourceOgMetadata(serviceLocale, serviceText.enchantmentsView.title, resource);
   }
-  return getCodexMetadata(serviceLocale, serviceText.enchantmentsView.title);
+  return getCodexMetadata(serviceLocale, serviceText.enchantmentsView.title, "/compendium/enchantments");
 }
 
 export default async function CodexEnchantmentsPage({

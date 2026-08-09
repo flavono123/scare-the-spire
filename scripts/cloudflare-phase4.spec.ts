@@ -130,7 +130,10 @@ test("redirect and canonical metadata match the public locale URL", async ({ req
   ]) {
     const response = await page.goto(absolute(path), { waitUntil: "domcontentloaded" });
     expect(response?.status()).toBe(200);
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", canonical(path));
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      "href",
+      canonical("/compendium/powers/painful_stabs"),
+    );
   }
 });
 

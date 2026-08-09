@@ -47,7 +47,7 @@ export async function generateMetadata({
       imageUrl: useBetaArt ? epoch.betaImageUrl ?? epoch.imageUrl : epoch.imageUrl,
     });
   }
-  return getCodexMetadata(serviceLocale, gameUi.epochsTitle);
+  return getCodexMetadata(serviceLocale, gameUi.epochsTitle, "/compendium/epochs");
 }
 
 export default async function CodexEpochsPage({

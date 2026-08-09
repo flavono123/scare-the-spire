@@ -55,7 +55,7 @@ export async function generateMetadata({
     }
   }
 
-  return getCodexMetadata(serviceLocale, gameUi.bestiaryTitle);
+  return getCodexMetadata(serviceLocale, gameUi.bestiaryTitle, "/compendium/bestiary");
 }
 
 export default async function CodexMonstersPage({

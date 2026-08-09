@@ -36,7 +36,7 @@ export async function generateMetadata({
   if (power) {
     return getCodexResourceOgMetadata(serviceLocale, gameUi.nav.powers, power);
   }
-  return getCodexMetadata(serviceLocale, gameUi.nav.powers);
+  return getCodexMetadata(serviceLocale, gameUi.nav.powers, "/compendium/powers");
 }
 
 export default async function CodexPowersPage({

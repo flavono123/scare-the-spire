@@ -46,7 +46,7 @@ export async function generateMetadata({
       ),
     });
   }
-  return getCodexMetadata(serviceLocale, gameUi.relicCollectionTitle);
+  return getCodexMetadata(serviceLocale, gameUi.relicCollectionTitle, "/compendium/relics");
 }
 
 export default async function CodexRelicsPage({

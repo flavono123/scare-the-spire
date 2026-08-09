@@ -8,7 +8,7 @@ import { getServiceOgMetadata } from "@/lib/service-metadata";
 import { serviceMessages } from "@/messages/service";
 
 export async function generateThisOrThatPostMetadata(
-  _id?: string,
+  id?: string,
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
@@ -18,6 +18,7 @@ export async function generateThisOrThatPostMetadata(
     title: gameCopy.title,
     description: serviceMessages[serviceLocale].thisOrThat.metadata.description,
     image: THIS_OR_THAT_PAGE_OG_IMAGE,
+    canonicalPath: id ? `/this-or-that/${id}` : "/this-or-that",
   });
 }
 

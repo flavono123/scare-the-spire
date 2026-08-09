@@ -21,7 +21,7 @@ export async function generateCompendiumBestiaryMetadata(
 ): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const gameUi = await getCodexGameUiLabels(gameLocale);
-  return getCodexMetadata(serviceLocale, gameUi.bestiaryTitle);
+  return getCodexMetadata(serviceLocale, gameUi.bestiaryTitle, "/compendium/bestiary");
 }
 
 export async function renderCompendiumBestiaryPage(

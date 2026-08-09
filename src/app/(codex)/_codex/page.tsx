@@ -171,7 +171,7 @@ export async function generateMetadata({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const gameUi = await getCodexGameUiLabels(gameLocale);
-  return getCodexMetadata(serviceLocale, gameUi.compendiumTitle);
+  return getCodexMetadata(serviceLocale, gameUi.compendiumTitle, "/compendium");
 }
 
 export default async function CodexIndexPage({

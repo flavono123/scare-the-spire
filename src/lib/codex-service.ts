@@ -1,12 +1,7 @@
+import type { Metadata } from "next";
 import type { ServiceLocale } from "@/lib/i18n";
+import { withKoreanSearchCanonical } from "@/lib/search-canonical";
 import { serviceMessages } from "@/messages/service";
-
-type CodexMetadata = {
-  title: {
-    absolute: string;
-  };
-  description: string;
-};
 
 export type CodexServiceMessages =
   (typeof serviceMessages)[ServiceLocale]["codex"];
@@ -40,9 +35,10 @@ export function formatTemplateCount(template: string, count: number): string {
 export function getCodexMetadata(
   serviceLocale: ServiceLocale,
   title: string,
-): CodexMetadata {
+  canonicalPath?: string,
+): Metadata {
   const messages = serviceMessages[serviceLocale];
-  return {
+  const metadata: Metadata = {
     title: {
       absolute: `${title} — ${messages.codex.metadataGameTitle} — ${messages.brand}`,
     },
@@ -50,4 +46,7 @@ export function getCodexMetadata(
       ? `슬레이 더 스파이어 2 ${title}`
       : `Slay the Spire 2 ${title}.`,
   };
+  return canonicalPath
+    ? withKoreanSearchCanonical(metadata, canonicalPath)
+    : metadata;
 }

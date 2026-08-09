@@ -768,6 +768,7 @@ export async function getPatchDetailMetadata({
       url: patchArt.imageUrl,
       alt: patchArt.alt,
     },
+    canonicalPath: `/patches/${version}`,
   });
   if (patch.status && patch.status !== "ready") return metadata;
 

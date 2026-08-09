@@ -43,7 +43,7 @@ export async function generateMetadata({
   if (event) {
     return getCodexResourceOgMetadata(serviceLocale, gameUi.eventsTitle, event);
   }
-  return getCodexMetadata(serviceLocale, gameUi.eventsTitle);
+  return getCodexMetadata(serviceLocale, gameUi.eventsTitle, "/compendium/events");
 }
 
 export default async function CodexEventsPage({

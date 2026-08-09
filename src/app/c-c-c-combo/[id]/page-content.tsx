@@ -10,7 +10,7 @@ import {
 } from "@/lib/service-metadata";
 
 export async function generateComboPostMetadata(
-  _id?: string,
+  id?: string,
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
@@ -20,6 +20,7 @@ export async function generateComboPostMetadata(
     title: copy.comboTitle,
     description: copy.comboDescription,
     image: COMBO_PAGE_OG_IMAGE,
+    canonicalPath: id ? `/c-c-c-combo/${id}` : "/c-c-c-combo",
   });
 }
 

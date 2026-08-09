@@ -21,6 +21,7 @@ export async function generateChemicalXMetadata(
     title: copy.chemicalXTitle,
     description: copy.chemicalXDescription,
     image: CHEMICAL_X_PAGE_OG_IMAGE,
+    canonicalPath: "/chemical-x",
   });
 }
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { withKoreanSearchCanonical } from "@/lib/search-canonical";
 import { absoluteSiteUrl, SITE_METADATA_BASE } from "@/lib/site-origin";
 import { cacheBustSts2ImageUrl } from "@/lib/sts2-image-cache";
 
@@ -161,7 +162,7 @@ export function withPageOgImage(metadata: Metadata, pathname: string): Metadata 
     url: absoluteSiteUrl(rawImage.url),
   };
 
-  return {
+  const withOg: Metadata = {
     ...metadata,
     metadataBase: SITE_METADATA_BASE,
     openGraph: {
@@ -174,4 +175,8 @@ export function withPageOgImage(metadata: Metadata, pathname: string): Metadata 
       images: [image.url],
     },
   };
+
+  // Template paths like /history-course/[runId] are not crawlable URLs.
+  if (pathname.includes("[")) return withOg;
+  return withKoreanSearchCanonical(withOg, pathname);
 }

@@ -32,7 +32,7 @@ export async function generateMetadata({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const gameUi = await getCodexGameUiLabels(gameLocale);
-  return getCodexMetadata(serviceLocale, gameUi.cardLibraryTitle);
+  return getCodexMetadata(serviceLocale, gameUi.cardLibraryTitle, "/compendium/cards");
 }
 
 export default async function CodexCardsPage({

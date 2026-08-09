@@ -43,7 +43,7 @@ export async function generateMetadata({
     }
   }
 
-  return getCodexMetadata(serviceLocale, serviceText.encountersView.title);
+  return getCodexMetadata(serviceLocale, serviceText.encountersView.title, "/compendium/bestiary");
 }
 
 export default async function CodexEncountersPage({

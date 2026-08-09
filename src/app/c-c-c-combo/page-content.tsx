@@ -21,6 +21,7 @@ export async function generateComboMetadata(
     title: copy.comboTitle,
     description: copy.comboDescription,
     image: COMBO_PAGE_OG_IMAGE,
+    canonicalPath: "/c-c-c-combo",
   });
 }
 

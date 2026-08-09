@@ -7,12 +7,13 @@ import { serviceMessages } from "@/messages/service";
 
 export async function generateHistoryCourseRunMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+  runId?: string,
 ): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   return withPageOgImage({
     title: `${serviceMessages[serviceLocale].nav.historyCourse} — ${serviceMessages[serviceLocale].historyCourse.runTitleSuffix}`,
     description: serviceMessages[serviceLocale].historyCourse.runDescription,
-  }, "/history-course/[runId]");
+  }, runId ? `/history-course/${runId}` : "/history-course");
 }
 
 export async function renderHistoryCourseRunPage(

@@ -36,7 +36,7 @@ export async function generateMetadata({
   if (potion) {
     return getCodexResourceOgMetadata(serviceLocale, gameUi.potionLabTitle, potion);
   }
-  return getCodexMetadata(serviceLocale, gameUi.potionLabTitle);
+  return getCodexMetadata(serviceLocale, gameUi.potionLabTitle, "/compendium/potions");
 }
 
 export default async function CodexPotionsPage({

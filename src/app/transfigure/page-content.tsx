@@ -16,14 +16,13 @@ export async function generateTransfigureMetadata(
 ): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const copy = getServiceMetadataCopy(serviceLocale);
-  return {
-    ...getServiceOgMetadata({
-      serviceLocale,
-      title: copy.transfigureTitle,
-      description: copy.transfigureDescription,
-      image: TRANSFIGURE_PAGE_OG_IMAGE,
-    }),
-  };
+  return getServiceOgMetadata({
+    serviceLocale,
+    title: copy.transfigureTitle,
+    description: copy.transfigureDescription,
+    image: TRANSFIGURE_PAGE_OG_IMAGE,
+    canonicalPath: "/transfigure",
+  });
 }
 
 export async function renderTransfigurePage(

@@ -14,7 +14,7 @@ type PageProps = {
 
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
   const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
-  return getCodexMetadata(serviceLocale, getCodexServiceMessages(serviceLocale).badgesView.title);
+  return getCodexMetadata(serviceLocale, getCodexServiceMessages(serviceLocale).badgesView.title, "/compendium/badges");
 }
 
 export default async function CodexBadgesPage({ searchParams }: PageProps) {

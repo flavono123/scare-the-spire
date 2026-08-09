@@ -9,8 +9,8 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props) {
-  const { gameLocale } = await getLocalePairFromParams(params);
-  return generateHistoryCourseRunMetadata(gameLocale);
+  const { gameLocale, runId } = await getLocalePairFromParams(params);
+  return generateHistoryCourseRunMetadata(gameLocale, runId);
 }
 
 export default async function LocalizedHistoryCourseRunPage({ params }: Props) {

@@ -9,7 +9,7 @@ import {
 } from "@/lib/service-metadata";
 
 export async function generateChemicalXPostMetadata(
-  _id?: string,
+  id?: string,
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
@@ -20,6 +20,7 @@ export async function generateChemicalXPostMetadata(
     title: copy.chemicalXTitle,
     description: copy.chemicalXDescription,
     image: CHEMICAL_X_PAGE_OG_IMAGE,
+    canonicalPath: id ? `/chemical-x/${id}` : "/chemical-x",
   });
 }
 

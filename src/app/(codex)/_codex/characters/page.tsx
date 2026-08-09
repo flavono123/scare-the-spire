@@ -51,7 +51,7 @@ export async function generateMetadata({
       ),
     });
   }
-  return getCodexMetadata(serviceLocale, gameUi.charactersTitle);
+  return getCodexMetadata(serviceLocale, gameUi.charactersTitle, "/compendium/characters");
 }
 
 export default async function CodexCharactersPage({

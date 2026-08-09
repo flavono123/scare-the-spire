@@ -130,6 +130,7 @@ export function getPatchListMetadata(serviceLocale: ServiceLocale): Metadata {
     title: copy.patchesTitle,
     description: copy.patchesDescription,
     image: PATCH_NOTES_PAGE_OG_IMAGE,
+    canonicalPath: "/patches",
   });
 }
 
