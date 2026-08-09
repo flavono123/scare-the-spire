@@ -44,6 +44,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# research scrapes / learning dumps (not for commit)
+research/
+
 # dev artifacts
 __pycache__/
 .dev-screenshots/
