@@ -44,8 +44,13 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# research scrapes / learning dumps (not for commit)
-research/
+# research scrapes / learning dumps (keep notes + harvest scripts)
+research/**
+!research/history-course-covers/
+!research/history-course-covers/**/*.md
+!research/history-course-covers/**/*.mjs
+research/history-course-covers/**/*.json
+research/history-course-covers/**/*.jsonl
 
 # dev artifacts
 __pycache__/

@@ -2,7 +2,7 @@
 
 슬레이 더 스파이어 커뮤니티가 런을 공유할 때 쓰는 **중괄호형 유튜브 썸네일 문법**을 인덱스·코오오옴보 참조 표지로 옮긴다. AI 판정·추천 피드·조합 사전 운영은 하지 않는다.
 
-학습 스크랩·공출현 덤프는 gitignore된 [`research/history-course-covers/`](../research/history-course-covers/)에 둔다. 문구·요소 조합 스펙은 같은 경로의 `LOGIC.md`가 SSOT다.
+학습 스크랩·공출현 덤프(`*.json` / `*.jsonl`)는 gitignore된 [`research/history-course-covers/`](../research/history-course-covers/)에 둔다. 문구·요소 조합 스펙 SSOT는 [`research/history-course-covers/LOGIC.md`](../research/history-course-covers/LOGIC.md), 관찰 노트는 [`patterns.md`](../research/history-course-covers/patterns.md).
 
 ## 세 축
 
