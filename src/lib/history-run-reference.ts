@@ -4,6 +4,7 @@ import type {
 } from "@/lib/chemical-types";
 import type { DonatedRunSummary } from "@/lib/run-donation";
 import type { ServiceLocale } from "@/lib/i18n";
+import { ensureCoverSpec } from "@/lib/run-cover-suggest";
 import type { ReplayRun } from "@/lib/sts2-run-replay";
 
 const CHARACTER_LABELS: Record<ServiceLocale, Record<string, string>> = {
@@ -37,7 +38,10 @@ function totalFloorsFromRun(run: ReplayRun): number {
   return run.map_point_history.reduce((total, act) => total + act.length, 0);
 }
 
-export function historyRunSnapshotFromReplay(run: ReplayRun): HistoryRunReferenceSnapshot {
+export function historyRunSnapshotFromReplay(
+  run: ReplayRun,
+  runId?: string,
+): HistoryRunReferenceSnapshot {
   return {
     title: null,
     character: run.players[0]?.character ?? "",
@@ -48,6 +52,7 @@ export function historyRunSnapshotFromReplay(run: ReplayRun): HistoryRunReferenc
     runTime: run.run_time ?? null,
     build: run.build_id,
     seed: run.seed,
+    coverSpec: runId ? ensureCoverSpec(runId, run, null) : null,
   };
 }
 
@@ -64,6 +69,7 @@ export function historyRunSnapshotFromSummary(
     runTime: run.run_time,
     build: run.build,
     seed: run.seed,
+    coverSpec: run.cover_spec ?? null,
   };
 }
 
@@ -71,7 +77,7 @@ export function historyRunBlockFromReplay(runId: string, run: ReplayRun): Histor
   return {
     type: "history-run",
     runId,
-    snapshot: historyRunSnapshotFromReplay(run),
+    snapshot: historyRunSnapshotFromReplay(run, runId),
   };
 }
 

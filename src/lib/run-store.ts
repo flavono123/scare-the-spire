@@ -6,6 +6,7 @@
 // a sid round-trip.
 
 import type { PostBlock } from "@/lib/chemical-types";
+import type { CoverSpec } from "@/lib/run-cover-types";
 
 const DB_NAME = "scare-the-spire";
 const DB_VERSION = 1;
@@ -26,6 +27,7 @@ export interface StoredRun {
   // origin field existed. Treat absent origin as "upload".
   origin?: StoredRunOrigin;
   noteBlocks?: PostBlock[] | null;
+  coverSpec?: CoverSpec | null;
 }
 
 function openDb(): Promise<IDBDatabase> {
@@ -52,15 +54,32 @@ export async function saveRun(input: {
   raw: string;
   origin?: StoredRunOrigin;
   noteBlocks?: PostBlock[] | null;
+  coverSpec?: CoverSpec | null;
 }): Promise<StoredRun> {
+  const db = await openDb();
+  // Preserve fields from an existing record when the caller omits them
+  // (e.g. re-upload of the same runId should not wipe a custom cover).
+  const existing = await new Promise<StoredRun | null>((resolve, reject) => {
+    const tx = db.transaction(STORE_RUNS, "readonly");
+    const req = tx.objectStore(STORE_RUNS).get(input.runId);
+    req.onsuccess = () => resolve((req.result as StoredRun | undefined) ?? null);
+    req.onerror = () => reject(req.error);
+  }).catch(() => null);
+
   const record: StoredRun = {
     runId: input.runId,
     raw: input.raw,
-    origin: input.origin ?? "upload",
-    noteBlocks: input.noteBlocks ?? null,
+    origin: input.origin ?? existing?.origin ?? "upload",
+    noteBlocks:
+      input.noteBlocks !== undefined
+        ? input.noteBlocks
+        : (existing?.noteBlocks ?? null),
+    coverSpec:
+      input.coverSpec !== undefined
+        ? input.coverSpec
+        : (existing?.coverSpec ?? null),
     savedAt: Date.now(),
   };
-  const db = await openDb();
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_RUNS, "readwrite");
     tx.objectStore(STORE_RUNS).put(record);
@@ -72,6 +91,21 @@ export async function saveRun(input: {
       db.close();
       reject(tx.error);
     };
+  });
+}
+
+export async function updateRunCoverSpec(
+  runId: string,
+  coverSpec: CoverSpec,
+): Promise<void> {
+  const existing = await loadRun(runId);
+  if (!existing) return;
+  await saveRun({
+    runId: existing.runId,
+    raw: existing.raw,
+    origin: existing.origin,
+    noteBlocks: existing.noteBlocks,
+    coverSpec,
   });
 }
 

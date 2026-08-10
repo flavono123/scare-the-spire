@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { HistoryCourseCover } from "@/components/history-course/history-course-cover";
 import Image from "@/components/ui/static-image";
 import type { HistoryRunBlock } from "@/lib/chemical-types";
 import {
@@ -15,6 +16,7 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
+import { isCoverSpec } from "@/lib/run-cover-types";
 
 interface ComboHistoryRunReferencesProps {
   references: HistoryRunBlock[];
@@ -106,31 +108,45 @@ function HistoryRunLink({
     );
   }
 
+  const cover = isCoverSpec(block.snapshot.coverSpec)
+    ? block.snapshot.coverSpec
+    : null;
+
   return (
     <Link
       href={href}
       className="group/run flex items-center gap-3 rounded-xl border border-amber-300/10 bg-black/25 p-3 transition-[transform,border-color,background-color] hover:-translate-y-0.5 hover:border-amber-300/30 hover:bg-amber-300/5 motion-reduce:transform-none"
     >
-      <span className="relative flex h-14 w-14 shrink-0 items-center justify-center">
-        <Image
-          src={HISTORY_RUN_CHARACTER_PORTRAITS[block.snapshot.character]
-            ?? "/images/sts2/characters/char_select_random.webp"}
-          alt=""
-          width={56}
-          height={56}
-          className="h-14 w-14 object-contain"
-        />
-        <Image
-          src={HISTORY_COURSE_RELIC_IMAGE}
-          alt=""
-          width={19}
-          height={19}
-          className="absolute -bottom-0.5 -right-0.5 h-5 w-5 object-contain drop-shadow"
-        />
-      </span>
+      {cover ? (
+        <span className="w-28 shrink-0 sm:w-32">
+          <HistoryCourseCover
+            cover={cover}
+            character={block.snapshot.character}
+            size="compact"
+          />
+        </span>
+      ) : (
+        <span className="relative flex h-14 w-14 shrink-0 items-center justify-center">
+          <Image
+            src={HISTORY_RUN_CHARACTER_PORTRAITS[block.snapshot.character]
+              ?? "/images/sts2/characters/char_select_random.webp"}
+            alt=""
+            width={56}
+            height={56}
+            className="h-14 w-14 object-contain"
+          />
+          <Image
+            src={HISTORY_COURSE_RELIC_IMAGE}
+            alt=""
+            width={19}
+            height={19}
+            className="absolute -bottom-0.5 -right-0.5 h-5 w-5 object-contain drop-shadow"
+          />
+        </span>
+      )}
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-semibold text-amber-50">
-          {primary}
+          {cover?.phrase || primary}
         </span>
         <span className="mt-1 block truncate text-[11px] text-zinc-500">
           {historyRunSecondaryLabel(block, serviceLocale)}

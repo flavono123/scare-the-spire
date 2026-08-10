@@ -608,6 +608,18 @@
 .spire-pink { color: #f472b6; }
 .spire-aqua { color: #22d3ee; }
 
+/* History Course YouTube-style cover phrase */
+.cover-phrase-outline {
+  -webkit-text-stroke: 3px #fff;
+  paint-order: stroke fill;
+  text-shadow:
+    0 0 2px #fff,
+    1px 1px 0 #fff,
+    -1px 1px 0 #fff,
+    1px -1px 0 #fff,
+    -1px -1px 0 #fff;
+}
+
 /* STS2 Bestiary Spine stage */
 .sts2-spine-stage,
 .sts2-spine-stage .spine-player {

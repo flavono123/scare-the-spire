@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useCallback, useRef, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { donateRunsBatch } from "@/lib/run-donation";
+import { suggestDefaultCover } from "@/lib/run-cover-suggest";
+import type { CoverSpec } from "@/lib/run-cover-types";
 import { saveRun } from "@/lib/run-store";
 import { isBuildSupported } from "@/lib/sts2-build-version";
 import { computeRunHash, runRouteSlug } from "@/lib/sts2-run-hash";
@@ -20,6 +22,7 @@ export type ParsedRun = {
   run: ReplayRun;
   hash: string;
   slug: string;
+  coverSpec: CoverSpec;
 };
 
 type ParseError = {
@@ -73,12 +76,14 @@ async function parseFiles(
       const text = await file.text();
       const run = parseReplayRun(text);
       const hash = await computeRunHash(run);
+      const slug = runRouteSlug(hash);
       runs.push({
         fileName: file.name,
         raw: text,
         run,
         hash,
-        slug: runRouteSlug(hash),
+        slug,
+        coverSpec: suggestDefaultCover(slug, run),
       });
     } catch (err) {
       errors.push({
@@ -126,7 +131,11 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
         for (const parsed of result.runs) {
           if (!isBuildSupported(parsed.run.build_id)) continue;
           try {
-            await saveRun({ runId: parsed.slug, raw: parsed.raw });
+            await saveRun({
+              runId: parsed.slug,
+              raw: parsed.raw,
+              coverSpec: parsed.coverSpec,
+            });
             saved += 1;
             if (shareOnUpload && supabaseEnabled) toShare.push(parsed);
           } catch {
@@ -159,6 +168,7 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
                 runId: p.slug,
                 raw: p.raw,
                 run: p.run,
+                coverSpec: p.coverSpec,
               })),
               donorUserId: activeUserId,
             });

@@ -1,36 +1,18 @@
 "use client";
 
-import { Share2, Trash2, Undo2 } from "lucide-react";
-import Image from "next/image";
+import { Share2, Undo2 } from "lucide-react";
 import { useCallback } from "react";
+import { HistoryCourseCover } from "@/components/history-course/history-course-cover";
 import { RunBadgeStrip } from "@/components/history-course/run-badge-strip";
+import { SpireActionIcon } from "@/components/spire-icon";
 import type { PostBlock } from "@/lib/chemical-types";
-import { blocksToPlainText } from "@/lib/chemical-utils";
-import {
-  buildRunHighlights,
-  runHighlightName,
-  type RunHighlightResource,
-} from "@/lib/run-highlights";
+import { ensureCoverSpec } from "@/lib/run-cover-suggest";
+import type { CoverSpec } from "@/lib/run-cover-types";
 import { isBuildSupported } from "@/lib/sts2-build-version";
 import type { ReplayBadge, ReplayRun } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
-
-const CHAR_PORTRAIT: Record<string, string> = {
-  "CHARACTER.IRONCLAD": "/images/sts2/characters/char_select_ironclad.webp",
-  "CHARACTER.SILENT": "/images/sts2/characters/char_select_silent.webp",
-  "CHARACTER.DEFECT": "/images/sts2/characters/char_select_defect.webp",
-  "CHARACTER.NECROBINDER": "/images/sts2/characters/char_select_necrobinder.webp",
-  "CHARACTER.REGENT": "/images/sts2/characters/char_select_regent.webp",
-};
-
-function characterPortraitSrc(character: string | undefined): string {
-  if (!character) return "/images/sts2/characters/char_select_random.webp";
-  return (
-    CHAR_PORTRAIT[character] ?? "/images/sts2/characters/char_select_random.webp"
-  );
-}
 
 function totalFloorsReached(run: ReplayRun): number {
   let total = 0;
@@ -65,14 +47,10 @@ export interface RunCardProps {
   runTimeSeconds: number | null;
   startTimeUnix?: number | null;
   badges?: ReplayBadge[];
-  highlightCard?: RunHighlightResource | null;
-  highlightRelic?: RunHighlightResource | null;
+  coverSpec?: CoverSpec | null;
   noteBlocks?: PostBlock[] | null;
   onPick: () => void;
   onDelete?: () => void;
-  // Share toggle. When provided, renders a button next to the trash:
-  //   shareState='none'    → '공유'  (donate)
-  //   shareState='shared'  → '공유 취소' (undo donation)
   onShare?: () => void;
   shareState?: "none" | "shared";
   variant: "mine" | "shared";
@@ -82,8 +60,8 @@ export interface RunCardProps {
 export function runCardPropsFromReplay(
   run: ReplayRun,
   runId: string,
+  coverSpec?: CoverSpec | null,
 ): Omit<RunCardProps, "onPick" | "variant"> {
-  const highlights = buildRunHighlights(run, runId);
   return {
     runId,
     character: run.players[0]?.character ?? "",
@@ -95,8 +73,7 @@ export function runCardPropsFromReplay(
     runTimeSeconds: run.run_time ?? null,
     startTimeUnix: run.start_time ?? null,
     badges: run.players[0]?.badges ?? [],
-    highlightCard: highlights.card,
-    highlightRelic: highlights.relic,
+    coverSpec: ensureCoverSpec(runId, run, coverSpec),
   };
 }
 
@@ -105,12 +82,12 @@ export function RunCard({
   ascension,
   build,
   seed,
+  win,
+  totalFloors,
   runTimeSeconds,
   startTimeUnix,
   badges = [],
-  highlightCard,
-  highlightRelic,
-  noteBlocks,
+  coverSpec,
   onPick,
   onDelete,
   onShare,
@@ -121,12 +98,17 @@ export function RunCard({
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].historyCourse.runCard;
   const supported = isBuildSupported(build);
-  const portraitSrc = characterPortraitSrc(character);
   const showDate = variant === "mine" && startTimeUnix != null;
   const dateLabel = showDate ? formatDate(startTimeUnix) : null;
   const timeLabel = formatRunTime(runTimeSeconds);
-  const noteText = formatNoteText(noteBlocks);
-  const hasHighlights = Boolean(highlightCard || highlightRelic);
+  const outcome =
+    serviceLocale === "ko"
+      ? win
+        ? `${totalFloors}층 · 클리어`
+        : `${totalFloors}층 · 패배`
+      : win
+        ? `F${totalFloors} · Win`
+        : `F${totalFloors} · Loss`;
 
   const onTrashClick = useCallback(
     (e: React.MouseEvent) => {
@@ -150,76 +132,45 @@ export function RunCard({
         type="button"
         onClick={onPick}
         disabled={pending}
-        title={
-          supported
-            ? undefined
-            : copy.unsupportedTitle
-        }
+        title={supported ? undefined : copy.unsupportedTitle}
         className={cn(
-          "block w-full rounded-xl bg-zinc-900/60 p-3 text-left ring-1 ring-zinc-800 transition",
+          "block w-full overflow-hidden rounded-xl bg-zinc-900/60 text-left ring-1 ring-zinc-800 transition",
           pending && "cursor-wait opacity-60",
           !pending && supported && "hover:-translate-y-0.5 hover:ring-amber-300/40",
           !pending && !supported && "opacity-60 hover:opacity-100 hover:ring-red-300/40",
         )}
       >
-        <div className="flex items-start gap-3">
-          {/* Character portrait — char_select_<char>.webp already
-              bakes the flame frame; no outline overlay. Ascension flame
-              badge sits at the bottom-right of the portrait, matching
-              the in-game topbar's CharacterChip. */}
-          <CharacterIcon
-            src={portraitSrc}
-            ascension={ascension}
-            ascensionLabel={copy.ascension.replace("{count}", String(ascension))}
-          />
+        {coverSpec ? (
+          <HistoryCourseCover cover={coverSpec} character={character} />
+        ) : (
+          <div className="aspect-video bg-zinc-950" />
+        )}
 
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5">
-              <BuildChip build={build} supported={supported} />
-            </div>
-            <code className="mt-1.5 block truncate rounded bg-black/30 px-1.5 py-0.5 font-mono text-[11px] text-zinc-200">
-              {seed}
-            </code>
-            <div className="mt-1 flex items-center gap-2 text-[10px] text-zinc-500">
-              {dateLabel && <span>{dateLabel}</span>}
-              {dateLabel && timeLabel && <span className="text-zinc-700">·</span>}
-              {timeLabel && <span>{timeLabel}</span>}
-            </div>
-            {hasHighlights && (
-              <div className="mt-2 grid grid-cols-2 gap-1.5">
-                <HighlightPill
-                  label={copy.highlightCard}
-                  highlight={highlightCard}
-                  serviceLocale={serviceLocale}
-                />
-                <HighlightPill
-                  label={copy.highlightRelic}
-                  highlight={highlightRelic}
-                  serviceLocale={serviceLocale}
-                />
-              </div>
-            )}
-            <p
-              className={cn(
-                "mt-2 truncate text-[11px] leading-4",
-                noteText ? "text-zinc-300" : "text-zinc-500",
-              )}
-            >
-              {noteText || copy.notePlaceholder}
-            </p>
-            <RunBadgeStrip
-              badges={badges}
-              serviceLocale={serviceLocale}
-              size="sm"
-              max={4}
-              className="mt-1.5"
-            />
-            {!supported && (
-              <p className="mt-1 text-[10px] text-red-300/80">
-                {copy.unsupportedRemove}
-              </p>
-            )}
+        <div className="space-y-1.5 p-3">
+          <div className="flex items-center gap-1.5">
+            <BuildChip build={build} supported={supported} />
+            <span className="rounded-full bg-black/30 px-2 py-0.5 text-[10px] font-bold text-zinc-300 ring-1 ring-zinc-700">
+              A{ascension}
+            </span>
+            <span className="truncate text-[10px] text-zinc-400">{outcome}</span>
           </div>
+          <code className="block truncate rounded bg-black/30 px-1.5 py-0.5 font-mono text-[11px] text-zinc-200">
+            {seed}
+          </code>
+          <div className="flex items-center gap-2 text-[10px] text-zinc-500">
+            {dateLabel && <span>{dateLabel}</span>}
+            {dateLabel && timeLabel && <span className="text-zinc-700">·</span>}
+            {timeLabel && <span>{timeLabel}</span>}
+          </div>
+          <RunBadgeStrip
+            badges={badges}
+            serviceLocale={serviceLocale}
+            size="sm"
+            max={4}
+          />
+          {!supported && (
+            <p className="text-[10px] text-red-300/80">{copy.unsupportedRemove}</p>
+          )}
         </div>
       </button>
 
@@ -230,15 +181,13 @@ export function RunCard({
               type="button"
               onClick={onShareClick}
               title={
-                shareState === "shared"
-                  ? copy.unshareTitle
-                  : copy.shareTitle
+                shareState === "shared" ? copy.unshareTitle : copy.shareTitle
               }
               className={cn(
-                "inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-bold transition ring-1 ring-inset",
+                "inline-flex items-center gap-1 rounded-md bg-black/55 px-1.5 py-0.5 text-[10px] font-bold backdrop-blur transition ring-1 ring-inset",
                 shareState === "shared"
-                  ? "text-emerald-400/40 ring-emerald-400/0 hover:bg-emerald-500/15 hover:text-emerald-200 hover:ring-emerald-400/30 focus:bg-emerald-500/15 focus:text-emerald-200 focus:ring-emerald-400/30 focus:outline-none"
-                  : "text-amber-400/40 ring-amber-400/0 hover:bg-amber-500/15 hover:text-amber-200 hover:ring-amber-400/30 focus:bg-amber-500/15 focus:text-amber-200 focus:ring-amber-400/30 focus:outline-none",
+                  ? "text-emerald-200/80 ring-emerald-400/20 hover:bg-emerald-500/20 hover:text-emerald-100"
+                  : "text-amber-200/80 ring-amber-400/20 hover:bg-amber-500/20 hover:text-amber-100",
               )}
             >
               {shareState === "shared" ? (
@@ -264,105 +213,15 @@ export function RunCard({
                   : copy.deleteLocalTitle
               }
               className={cn(
-                "inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-bold transition ring-1 ring-inset",
-                "text-red-400/35 ring-red-400/0",
-                "hover:bg-red-500/15 hover:text-red-200 hover:ring-red-400/30",
-                "focus:bg-red-500/15 focus:text-red-200 focus:ring-red-400/30 focus:outline-none",
+                "inline-flex items-center gap-1 rounded-md bg-black/55 px-1.5 py-0.5 text-[10px] font-bold text-zinc-200 backdrop-blur transition ring-1 ring-inset ring-red-400/20",
+                "hover:bg-red-500/20 hover:text-red-100",
               )}
             >
-              <Trash2 className="h-3 w-3" aria-hidden />
+              <SpireActionIcon action="delete" size={12} />
               {copy.delete}
             </button>
           )}
         </div>
-      )}
-    </div>
-  );
-}
-
-function formatNoteText(noteBlocks: PostBlock[] | null | undefined): string {
-  if (!noteBlocks?.length) return "";
-  const text = blocksToPlainText(noteBlocks).replace(/\s+/g, " ").trim();
-  if (text.length <= 30) return text;
-  return `${text.slice(0, 30)}...`;
-}
-
-function HighlightPill({
-  label,
-  highlight,
-  serviceLocale,
-}: {
-  label: string;
-  highlight?: RunHighlightResource | null;
-  serviceLocale: ReturnType<typeof useServiceLocale>;
-}) {
-  if (!highlight) {
-    return (
-      <span className="min-w-0 rounded-md bg-black/20 px-1.5 py-1 text-[10px] text-zinc-600 ring-1 ring-white/5">
-        {label}
-      </span>
-    );
-  }
-  return (
-    <span className="flex min-w-0 items-center gap-1.5 rounded-md bg-black/25 px-1.5 py-1 ring-1 ring-amber-300/10">
-      <span className="relative h-5 w-5 shrink-0">
-        {highlight.imageUrl && (
-          <Image
-            src={highlight.imageUrl}
-            alt=""
-            fill
-            sizes="20px"
-            className="object-contain"
-          />
-        )}
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block text-[9px] font-bold leading-3 text-amber-300/70">
-          {label}
-        </span>
-        <span className="block truncate text-[10px] font-semibold leading-3 text-zinc-200">
-          {runHighlightName(highlight, serviceLocale)}
-        </span>
-      </span>
-    </span>
-  );
-}
-
-function CharacterIcon({
-  src,
-  ascension,
-  ascensionLabel,
-}: {
-  src: string;
-  ascension: number;
-  ascensionLabel: string;
-}) {
-  return (
-    <div className="relative h-14 w-14 shrink-0">
-      <Image
-        src={src}
-        alt=""
-        fill
-        sizes="56px"
-        className="object-contain"
-      />
-      {ascension > 0 && (
-        <span
-          className="pointer-events-none absolute -bottom-1 -right-1 flex h-6 w-6 items-end justify-center"
-          aria-label={ascensionLabel}
-        >
-          <Image
-            src="/images/sts2/ui/topbar/top_bar_ascension.png"
-            alt=""
-            fill
-            sizes="24px"
-            className="object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
-            unoptimized
-          />
-          <span className="topbar-num relative z-10 mb-0 text-[11px] leading-none">
-            {ascension}
-          </span>
-        </span>
       )}
     </div>
   );

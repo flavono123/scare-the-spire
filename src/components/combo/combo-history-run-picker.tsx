@@ -150,6 +150,7 @@ export function ComboHistoryRunPicker({
       raw: entry.raw,
       run: entry.run,
       donorUserId: activeUserId,
+      coverSpec: entry.block.snapshot.coverSpec ?? null,
     });
     setPendingRunId(null);
 
@@ -166,6 +167,7 @@ export function ComboHistoryRunPicker({
             highlight_card: null,
             highlight_relic: null,
             note_blocks: null,
+            cover_spec: entry.block.snapshot.coverSpec ?? null,
             donor_user_id: activeUserId,
             created_at: new Date().toISOString(),
             build: entry.block.snapshot.build,

@@ -9,7 +9,9 @@ import {
   listMyDonatedRunIds,
 } from "@/lib/run-donation";
 import type { PostBlock } from "@/lib/chemical-types";
-import { deleteRun, listOwnRuns } from "@/lib/run-store";
+import { ensureCoverSpec } from "@/lib/run-cover-suggest";
+import type { CoverSpec } from "@/lib/run-cover-types";
+import { deleteRun, listOwnRuns, updateRunCoverSpec } from "@/lib/run-store";
 import { isBuildSupported, MIN_SUPPORTED_BUILD } from "@/lib/sts2-build-version";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
 import { supabaseEnabled } from "@/lib/supabase";
@@ -30,6 +32,7 @@ interface Entry {
   raw: string;
   run: ReplayRun;
   noteBlocks?: PostBlock[] | null;
+  coverSpec: CoverSpec;
 }
 
 export function MyRunsList({ refreshKey = 0, query = "" }: Props) {
@@ -42,17 +45,22 @@ export function MyRunsList({ refreshKey = 0, query = "" }: Props) {
   // Hydrate from IDB whenever refreshKey changes.
   useEffect(() => {
     let cancelled = false;
-    listOwnRuns().then((records) => {
+    listOwnRuns().then(async (records) => {
       if (cancelled) return;
       const out: Entry[] = [];
       for (const rec of records) {
         try {
           const run = parseReplayRun(rec.raw);
+          const coverSpec = ensureCoverSpec(rec.runId, run, rec.coverSpec);
+          if (!rec.coverSpec) {
+            void updateRunCoverSpec(rec.runId, coverSpec);
+          }
           out.push({
             runId: rec.runId,
             raw: rec.raw,
             run,
             noteBlocks: rec.noteBlocks ?? null,
+            coverSpec,
           });
         } catch {
           // skip malformed
@@ -133,6 +141,7 @@ export function MyRunsList({ refreshKey = 0, query = "" }: Props) {
         raw: entry.raw,
         run: entry.run,
         donorUserId: activeUserId,
+        coverSpec: entry.coverSpec,
       });
       if (result.ok || (!result.ok && result.alreadyDonated)) {
         setDonatedIds((prev) => {
@@ -176,7 +185,7 @@ export function MyRunsList({ refreshKey = 0, query = "" }: Props) {
             return (
               <li key={entry.runId}>
                 <RunCard
-                  {...runCardPropsFromReplay(entry.run, entry.runId)}
+                  {...runCardPropsFromReplay(entry.run, entry.runId, entry.coverSpec)}
                   noteBlocks={entry.noteBlocks}
                   variant="mine"
                   onPick={() => handlePick(entry)}
@@ -201,16 +210,13 @@ function filterLocalEntries(entries: Entry[], query: string): Entry[] {
   const text = query.trim().toLowerCase();
   if (!text) return entries;
   return entries.filter((entry) => {
-    const props = runCardPropsFromReplay(entry.run, entry.runId);
     return [
       entry.runId,
-      props.seed,
-      props.character,
-      props.build,
-      props.highlightCard?.nameKo,
-      props.highlightCard?.nameEn,
-      props.highlightRelic?.nameKo,
-      props.highlightRelic?.nameEn,
+      entry.run.seed,
+      entry.run.players[0]?.character,
+      entry.run.build_id,
+      entry.coverSpec.phrase,
+      ...entry.coverSpec.elements.map((el) => el.id),
     ]
       .filter(Boolean)
       .some((value) => String(value).toLowerCase().includes(text));

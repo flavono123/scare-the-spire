@@ -3,6 +3,8 @@ import { withSupabaseTimeout } from "./supabase-timeout";
 import type { PostBlock } from "./chemical-types";
 import { devToolsEnabled } from "./dev-tools";
 import { buildRunHighlights, type RunHighlightResource } from "./run-highlights";
+import { suggestDefaultCover } from "./run-cover-suggest";
+import { isCoverSpec, type CoverSpec } from "./run-cover-types";
 import { parseReplayRun, type ReplayBadge, type ReplayRun } from "./sts2-run-replay";
 
 export interface DonatedRun {
@@ -20,6 +22,7 @@ export interface DonatedRun {
   highlight_card: RunHighlightResource | null;
   highlight_relic: RunHighlightResource | null;
   note_blocks: PostBlock[] | null;
+  cover_spec: CoverSpec | null;
   created_at: string;
 }
 
@@ -40,6 +43,9 @@ export interface DonatedRunSummary {
   highlight_card: RunHighlightResource | null;
   highlight_relic: RunHighlightResource | null;
   note_blocks: PostBlock[] | null;
+  cover_spec: CoverSpec | null;
+  /** Present on gallery listings that still select raw for cover backfill. */
+  raw?: string | null;
   donor_user_id: string | null;
   created_at: string;
 }
@@ -48,6 +54,10 @@ function totalFloorsFromRun(run: ReplayRun): number {
   let total = 0;
   for (const act of run.map_point_history) total += act.length;
   return total;
+}
+
+function parseCoverSpec(value: unknown): CoverSpec | null {
+  return isCoverSpec(value) ? value : null;
 }
 
 function parsedMetaFromRun(run: ReplayRun, runId: string) {
@@ -66,18 +76,26 @@ function parsedMetaFromRun(run: ReplayRun, runId: string) {
     highlight_card: highlights.card,
     highlight_relic: highlights.relic,
     note_blocks: null,
+    cover_spec: suggestDefaultCover(runId, run),
   };
 }
 
 type RunRow = Partial<DonatedRunSummary & DonatedRun> & {
   raw?: string | null;
+  cover_spec?: unknown;
 };
 
 const LEGACY_RUN_DETAIL_COLUMNS =
   "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, created_at";
+const COVER_RUN_DETAIL_COLUMNS =
+  "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, cover_spec, created_at";
 const LEGACY_RUN_SUMMARY_COLUMNS =
   "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, created_at";
+const COVER_RUN_SUMMARY_COLUMNS =
+  "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, cover_spec, donor_user_id, created_at";
 const HISTORY_REFERENCE_SUMMARY_COLUMNS =
+  "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, cover_spec, donor_user_id, created_at";
+const HISTORY_REFERENCE_SUMMARY_COLUMNS_LEGACY =
   "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, created_at";
 
 function runReadEnvs(): string[] {
@@ -99,6 +117,10 @@ function parseRunSafely(raw: string | null | undefined): ReplayRun | null {
 function normalizeRunRow(row: RunRow, runId: string): DonatedRun {
   const parsedRun = parseRunSafely(row.raw);
   const highlights = parsedRun ? buildRunHighlights(parsedRun, runId) : null;
+  const storedCover = parseCoverSpec(row.cover_spec);
+  const cover_spec =
+    storedCover ??
+    (parsedRun ? suggestDefaultCover(runId, parsedRun) : null);
   return {
     id: row.id ?? runId,
     raw: row.raw ?? "",
@@ -114,6 +136,7 @@ function normalizeRunRow(row: RunRow, runId: string): DonatedRun {
     highlight_card: row.highlight_card ?? highlights?.card ?? null,
     highlight_relic: row.highlight_relic ?? highlights?.relic ?? null,
     note_blocks: row.note_blocks ?? null,
+    cover_spec,
     created_at: row.created_at ?? new Date(0).toISOString(),
   };
 }
@@ -125,16 +148,40 @@ function normalizeRunSummaryRow(row: RunRow): DonatedRunSummary {
   return {
     ...normalized,
     total_floors: row.total_floors ?? (parsedRun ? totalFloorsFromRun(parsedRun) : 0),
+    raw: row.raw ?? null,
     donor_user_id: row.donor_user_id ?? null,
   };
+}
+
+function isMissingCoverSpecColumn(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  const message = "message" in error ? String(error.message ?? "") : "";
+  return /cover_spec/i.test(message) && /column/i.test(message);
 }
 
 async function selectDonatedRunForEnv(
   runId: string,
   env: string,
 ): Promise<{ data: DonatedRun | null; error: unknown }> {
-  const legacy = await withSupabaseTimeout(
+  const withCover = await withSupabaseTimeout(
     "runs.select.detail",
+    supabase
+      .from("runs")
+      .select(COVER_RUN_DETAIL_COLUMNS)
+      .eq("id", runId)
+      .eq("env", env)
+      .maybeSingle(),
+  ).catch((error) => ({ data: null, error }));
+
+  if (!withCover.error || !isMissingCoverSpecColumn(withCover.error)) {
+    return {
+      data: withCover.data ? normalizeRunRow(withCover.data as RunRow, runId) : null,
+      error: withCover.error ?? null,
+    };
+  }
+
+  const legacy = await withSupabaseTimeout(
+    "runs.select.detail.legacy",
     supabase
       .from("runs")
       .select(LEGACY_RUN_DETAIL_COLUMNS)
@@ -152,8 +199,27 @@ async function selectDonatedRunForEnv(
 async function selectRecentDonatedRunsForEnv(
   env: string,
 ): Promise<{ data: DonatedRunSummary[] | null; error: unknown }> {
-  const legacy = await withSupabaseTimeout(
+  const withCover = await withSupabaseTimeout(
     "runs.select.recent",
+    supabase
+      .from("runs")
+      .select(COVER_RUN_SUMMARY_COLUMNS)
+      .eq("env", env)
+      .order("created_at", { ascending: false })
+      .limit(RECENT_DONATED_RUNS_LIMIT),
+  ).catch((error) => ({ data: null, error }));
+
+  if (!withCover.error || !isMissingCoverSpecColumn(withCover.error)) {
+    return {
+      data: withCover.data
+        ? (withCover.data as RunRow[]).map(normalizeRunSummaryRow)
+        : null,
+      error: withCover.error ?? null,
+    };
+  }
+
+  const legacy = await withSupabaseTimeout(
+    "runs.select.recent.legacy",
     supabase
       .from("runs")
       .select(LEGACY_RUN_SUMMARY_COLUMNS)
@@ -171,11 +237,30 @@ async function selectRecentDonatedRunsForEnv(
 async function selectHistoryRunReferencesForEnv(
   env: string,
 ): Promise<{ data: DonatedRunSummary[] | null; error: unknown }> {
-  const result = await withSupabaseTimeout(
+  const withCover = await withSupabaseTimeout(
     "runs.select.history-references",
     supabase
       .from("runs")
       .select(HISTORY_REFERENCE_SUMMARY_COLUMNS)
+      .eq("env", env)
+      .order("start_time", { ascending: false })
+      .limit(HISTORY_RUN_REFERENCE_LIMIT),
+  ).catch((error) => ({ data: null, error }));
+
+  if (!withCover.error || !isMissingCoverSpecColumn(withCover.error)) {
+    return {
+      data: withCover.data
+        ? (withCover.data as RunRow[]).map(normalizeRunSummaryRow)
+        : null,
+      error: withCover.error ?? null,
+    };
+  }
+
+  const result = await withSupabaseTimeout(
+    "runs.select.history-references.legacy",
+    supabase
+      .from("runs")
+      .select(HISTORY_REFERENCE_SUMMARY_COLUMNS_LEGACY)
       .eq("env", env)
       .order("start_time", { ascending: false })
       .limit(HISTORY_RUN_REFERENCE_LIMIT),
@@ -189,26 +274,38 @@ async function selectHistoryRunReferencesForEnv(
   };
 }
 
+async function insertDonatedRunRow(row: Record<string, unknown>) {
+  const first = await withSupabaseTimeout(
+    "runs.insert",
+    supabase.from("runs").insert(row),
+  ).catch(() => ({ error: new Error("timeout") }));
+  if (!first.error || !isMissingCoverSpecColumn(first.error)) return first;
+  const { cover_spec: _cover, ...legacyRow } = row;
+  return withSupabaseTimeout(
+    "runs.insert.legacy",
+    supabase.from("runs").insert(legacyRow),
+  ).catch(() => ({ error: new Error("timeout") }));
+}
+
 export async function donateRun(input: {
   runId: string;
   raw: string;
   run: ReplayRun;
   donorUserId: string;
+  coverSpec?: CoverSpec | null;
 }): Promise<{ ok: true } | { ok: false; alreadyDonated: boolean; message: string }> {
   if (!supabaseEnabled) {
     return { ok: false, alreadyDonated: false, message: "Supabase 연결이 설정되지 않았습니다." };
   }
   const meta = parsedMetaFromRun(input.run, input.runId);
-  const { error } = await withSupabaseTimeout(
-    "runs.insert",
-    supabase.from("runs").insert({
-      id: input.runId,
-      raw: input.raw,
-      donor_user_id: input.donorUserId,
-      env: supabaseEnv,
-      ...meta,
-    }),
-  ).catch(() => ({ error: new Error("timeout") }));
+  if (input.coverSpec) meta.cover_spec = input.coverSpec;
+  const { error } = await insertDonatedRunRow({
+    id: input.runId,
+    raw: input.raw,
+    donor_user_id: input.donorUserId,
+    env: supabaseEnv,
+    ...meta,
+  });
   if (!error) return { ok: true };
   // 23505 = unique_violation. The row may have been donated already
   // (by anyone). Treat as "already shared" rather than an error.
@@ -233,7 +330,12 @@ export interface DonateBatchResult {
 // single upsert. ignoreDuplicates lets already-donated rows pass
 // through without aborting siblings.
 export async function donateRunsBatch(input: {
-  runs: Array<{ runId: string; raw: string; run: ReplayRun }>;
+  runs: Array<{
+    runId: string;
+    raw: string;
+    run: ReplayRun;
+    coverSpec?: CoverSpec | null;
+  }>;
   donorUserId: string;
 }): Promise<DonateBatchResult> {
   if (!supabaseEnabled) {
@@ -247,35 +349,59 @@ export async function donateRunsBatch(input: {
   if (input.runs.length === 0) {
     return { inserted: 0, alreadyDonated: 0, failed: 0 };
   }
-  const rows = input.runs.map((r) => ({
-    id: r.runId,
-    raw: r.raw,
-    donor_user_id: input.donorUserId,
-    env: supabaseEnv,
-    ...parsedMetaFromRun(r.run, r.runId),
-  }));
+  const rows = input.runs.map((r) => {
+    const meta = parsedMetaFromRun(r.run, r.runId);
+    if (r.coverSpec) meta.cover_spec = r.coverSpec;
+    return {
+      id: r.runId,
+      raw: r.raw,
+      donor_user_id: input.donorUserId,
+      env: supabaseEnv,
+      ...meta,
+    };
+  });
   // onConflict spans (id, env) — the composite PK after migration-009.
   // Same content-addressable runId in a different env is a fresh row;
   // only same id + same env is treated as a duplicate.
-  const { data, error } = await withSupabaseTimeout(
+  let result = await withSupabaseTimeout(
     "runs.upsert",
     supabase
       .from("runs")
       .upsert(rows, { onConflict: "id,env", ignoreDuplicates: true })
       .select("id"),
   ).catch(() => ({ data: null, error: new Error("timeout") }));
-  if (error) {
+
+  if (result.error && isMissingCoverSpecColumn(result.error)) {
+    const legacyRows = rows.map(({ cover_spec: _c, ...rest }) => rest);
+    result = await withSupabaseTimeout(
+      "runs.upsert.legacy",
+      supabase
+        .from("runs")
+        .upsert(legacyRows, { onConflict: "id,env", ignoreDuplicates: true })
+        .select("id"),
+    ).catch(() => ({ data: null, error: new Error("timeout") }));
+  }
+
+  if (result.error) {
+    const message =
+      result.error instanceof Error
+        ? result.error.message
+        : typeof result.error === "object" &&
+            result.error &&
+            "message" in result.error
+          ? String((result.error as { message?: unknown }).message ?? "upsert failed")
+          : "upsert failed";
     return {
       inserted: 0,
       alreadyDonated: 0,
       failed: input.runs.length,
-      errorMessage: error.message,
+      errorMessage: message,
     };
   }
   // upsert with ignoreDuplicates returns ONLY the newly-inserted rows
   // — anything that conflicted on `id` is silently skipped. We treat
   // those as 'already donated' (by this user or anyone).
-  const inserted = data?.length ?? 0;
+  const inserted = result.data?.length ?? 0;
   return {
     inserted,
     alreadyDonated: input.runs.length - inserted,

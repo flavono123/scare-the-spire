@@ -116,8 +116,7 @@ export function DonatedRunsSection({ refreshKey = 0, query = "" }: Props) {
                   runTimeSeconds={entry.run_time}
                   startTimeUnix={null}
                   badges={entry.badges ?? []}
-                  highlightCard={entry.highlight_card}
-                  highlightRelic={entry.highlight_relic}
+                  coverSpec={entry.cover_spec}
                   noteBlocks={entry.note_blocks}
                   variant="shared"
                   onPick={() => router.push(`/history-course/${entry.id}`)}
@@ -144,6 +143,8 @@ function filterSharedRuns(
       entry.seed,
       entry.character,
       entry.build,
+      entry.cover_spec?.phrase,
+      ...(entry.cover_spec?.elements.map((el) => el.id) ?? []),
       entry.highlight_card?.nameKo,
       entry.highlight_card?.nameEn,
       entry.highlight_relic?.nameKo,

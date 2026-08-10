@@ -1,4 +1,5 @@
 import type { EntityType } from "@/components/patch-note-renderer";
+import type { CoverSpec } from "@/lib/run-cover-types";
 
 /** A segment of plain text */
 export interface TextBlock {
@@ -42,6 +43,8 @@ export interface HistoryRunReferenceSnapshot {
   runTime: number | null;
   build: string;
   seed: string;
+  /** Optional YouTube-style cover captured at reference time. */
+  coverSpec?: CoverSpec | null;
 }
 
 /**
