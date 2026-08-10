@@ -52,7 +52,7 @@ export function MyRunsList({ refreshKey = 0, query = "" }: Props) {
         try {
           const run = parseReplayRun(rec.raw);
           const coverSpec = ensureCoverSpec(rec.runId, run, rec.coverSpec);
-          if (!rec.coverSpec) {
+          if (rec.coverSpec?.auto !== false) {
             void updateRunCoverSpec(rec.runId, coverSpec);
           }
           out.push({
@@ -179,7 +179,7 @@ export function MyRunsList({ refreshKey = 0, query = "" }: Props) {
           {copy.noResults}
         </p>
       ) : (
-        <ul className="grid gap-3 sm:grid-cols-2">
+        <ul className="grid grid-cols-2 gap-3 lg:grid-cols-1">
           {filteredEntries.map((entry) => {
             const shared = donatedIds.has(entry.runId);
             return (

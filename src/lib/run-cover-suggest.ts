@@ -333,13 +333,24 @@ export function suggestCovers(input: SuggestCoversInput): SuggestCoversResult {
   return { covers: [coverA, coverB] };
 }
 
-/** Default auto-saved cover (character background). */
+/** Stable A/B pick for index — alternates by runId. */
+export function pickAlternatingCover(
+  runId: string,
+  run: ReplayRun,
+  reshuffle = 0,
+): CoverSpec {
+  const { covers } = suggestCovers({ runId, run, reshuffle });
+  const index = hashString(`${runId}:cover-slot:${reshuffle}`) % 2;
+  return covers[index] ?? covers[0]!;
+}
+
+/** Default auto-saved cover (alternating A/B). */
 export function suggestDefaultCover(
   runId: string,
   run: ReplayRun,
   reshuffle = 0,
 ): CoverSpec {
-  return suggestCovers({ runId, run, reshuffle }).covers[0]!;
+  return pickAlternatingCover(runId, run, reshuffle);
 }
 
 export function ensureCoverSpec(
@@ -347,10 +358,16 @@ export function ensureCoverSpec(
   run: ReplayRun,
   existing: CoverSpec | null | undefined,
 ): CoverSpec {
-  if (existing && existing.phrase && Array.isArray(existing.elements)) {
+  // Manual custom covers win; otherwise re-pick A/B so both variants appear.
+  if (
+    existing &&
+    existing.auto === false &&
+    existing.phrase &&
+    Array.isArray(existing.elements)
+  ) {
     return existing;
   }
-  return suggestDefaultCover(runId, run);
+  return pickAlternatingCover(runId, run);
 }
 
 export function characterSlugFromReplay(character: string | undefined): string {

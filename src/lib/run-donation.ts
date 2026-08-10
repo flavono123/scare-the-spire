@@ -3,7 +3,7 @@ import { withSupabaseTimeout } from "./supabase-timeout";
 import type { PostBlock } from "./chemical-types";
 import { devToolsEnabled } from "./dev-tools";
 import { buildRunHighlights, type RunHighlightResource } from "./run-highlights";
-import { suggestDefaultCover } from "./run-cover-suggest";
+import { pickAlternatingCover, suggestDefaultCover } from "./run-cover-suggest";
 import { isCoverSpec, type CoverSpec } from "./run-cover-types";
 import { parseReplayRun, type ReplayBadge, type ReplayRun } from "./sts2-run-replay";
 
@@ -118,9 +118,13 @@ function normalizeRunRow(row: RunRow, runId: string): DonatedRun {
   const parsedRun = parseRunSafely(row.raw);
   const highlights = parsedRun ? buildRunHighlights(parsedRun, runId) : null;
   const storedCover = parseCoverSpec(row.cover_spec);
+  // Auto covers re-pick A/B on read so both variants show in the index.
   const cover_spec =
-    storedCover ??
-    (parsedRun ? suggestDefaultCover(runId, parsedRun) : null);
+    storedCover?.auto === false
+      ? storedCover
+      : parsedRun
+        ? pickAlternatingCover(runId, parsedRun)
+        : storedCover;
   return {
     id: row.id ?? runId,
     raw: row.raw ?? "",

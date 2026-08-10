@@ -92,12 +92,12 @@ export function DonatedRunsSection({ refreshKey = 0, query = "" }: Props) {
       ) : loading ? (
         <ContentLoadingNotice label={copy.loadingSharedRuns} />
       ) : (
-        <ul className="grid gap-3 sm:grid-cols-2">
-          <li>
+        <ul className="grid grid-cols-2 gap-3 lg:grid-cols-1">
+          <li className="col-span-2 lg:col-span-1">
             <RandomPickCard runs={filteredRuns} userId={userId} />
           </li>
           {hasQuery && filteredRuns.length === 0 ? (
-            <li className="rounded-xl bg-zinc-900/40 px-4 py-6 text-center text-xs text-zinc-500 ring-1 ring-zinc-800 sm:col-span-2">
+            <li className="col-span-2 rounded-xl bg-zinc-900/40 px-4 py-6 text-center text-xs text-zinc-500 ring-1 ring-zinc-800 lg:col-span-1">
               {copy.noResults}
             </li>
           ) : null}

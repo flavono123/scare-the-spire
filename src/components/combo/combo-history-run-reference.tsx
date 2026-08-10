@@ -118,11 +118,18 @@ function HistoryRunLink({
       className="group/run flex items-center gap-3 rounded-xl border border-amber-300/10 bg-black/25 p-3 transition-[transform,border-color,background-color] hover:-translate-y-0.5 hover:border-amber-300/30 hover:bg-amber-300/5 motion-reduce:transform-none"
     >
       {cover ? (
-        <span className="w-28 shrink-0 sm:w-32">
+        <span className="w-28 shrink-0 sm:w-36">
           <HistoryCourseCover
             cover={cover}
             character={block.snapshot.character}
             size="compact"
+            meta={{
+              win: block.snapshot.win,
+              totalFloors: block.snapshot.totalFloors,
+              ascension: block.snapshot.ascension,
+              build: block.snapshot.build,
+              seed: block.snapshot.seed,
+            }}
           />
         </span>
       ) : (
