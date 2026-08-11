@@ -443,6 +443,7 @@ export const serviceMessages = {
         delete: "삭제",
         randomEmptyTitle: "공유된 런이 아직 없습니다",
         randomPickTitle: "공유된 런 중에서 무작위로 한 판",
+        randomPickCta: "무작위 도전 이력 재생",
         random: "무작위",
         ascension: "승천 {count}",
         highlightCard: "카드",
