@@ -1,10 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { PostBlock } from "@/lib/chemical-types";
 import {
+  buildComboFeedKeysetFilter,
+  COMBO_FEED_PAGE_SIZE,
   countComboYouTubeReferences,
   extractComboResourceRefs,
+  type ComboFeedCursor,
   type ComboPost,
 } from "@/lib/combo-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
@@ -20,7 +23,10 @@ export interface SaveComboPostInput {
 interface UseComboPostsReturn {
   posts: ComboPost[];
   loading: boolean;
+  loadingMore: boolean;
+  hasMore: boolean;
   unavailable: boolean;
+  loadMore: () => Promise<void>;
   add: (input: SaveComboPostInput) => Promise<ComboPost | null>;
   update: (
     postId: string,
@@ -38,6 +44,10 @@ interface UseComboPostReturn {
 
 function normalizePost(row: unknown): ComboPost {
   return row as ComboPost;
+}
+
+function cursorFromPost(post: ComboPost): ComboFeedCursor {
+  return { createdAt: post.created_at, id: post.id };
 }
 
 function validateSaveInput(input: SaveComboPostInput) {
@@ -86,10 +96,30 @@ async function persistComboPostUpdate(
   ).catch(() => ({ data: null, error: new Error("timeout") }));
 }
 
+function buildComboFeedQuery(cursor: ComboFeedCursor | null) {
+  let query = supabase
+    .from("combo_posts")
+    .select("*")
+    .eq("env", supabaseEnv)
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false })
+    .limit(COMBO_FEED_PAGE_SIZE);
+
+  if (cursor) {
+    query = query.or(buildComboFeedKeysetFilter(cursor));
+  }
+
+  return query;
+}
+
 export function useComboPosts(userId: string | null): UseComboPostsReturn {
   const [posts, setPosts] = useState<ComboPost[]>([]);
   const [loading, setLoading] = useState(supabaseEnabled);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
   const [unavailable, setUnavailable] = useState(!supabaseEnabled);
+  const loadingMoreRef = useRef(false);
+  const cursorRef = useRef<ComboFeedCursor | null>(null);
 
   useEffect(() => {
     if (!supabaseEnabled) return;
@@ -97,17 +127,17 @@ export function useComboPosts(userId: string | null): UseComboPostsReturn {
 
     withSupabaseTimeout(
       "combo_posts.select",
-      supabase
-        .from("combo_posts")
-        .select("*")
-        .eq("env", supabaseEnv)
-        .order("created_at", { ascending: false })
-        .limit(50),
+      buildComboFeedQuery(null),
     )
       .then(({ data, error }) => {
         if (error) throw error;
         if (cancelled) return;
-        setPosts((data ?? []).map(normalizePost));
+        const nextPosts = (data ?? []).map(normalizePost);
+        setPosts(nextPosts);
+        cursorRef.current = nextPosts.length > 0
+          ? cursorFromPost(nextPosts[nextPosts.length - 1])
+          : null;
+        setHasMore(nextPosts.length >= COMBO_FEED_PAGE_SIZE);
         setUnavailable(false);
         setLoading(false);
       })
@@ -146,7 +176,7 @@ export function useComboPosts(userId: string | null): UseComboPostsReturn {
           if (newPost.env !== supabaseEnv) return;
           setPosts((current) => {
             if (current.some((post) => post.id === newPost.id)) return current;
-            return [newPost, ...current].slice(0, 50);
+            return [newPost, ...current];
           });
         },
       )
@@ -172,6 +202,40 @@ export function useComboPosts(userId: string | null): UseComboPostsReturn {
       supabase.removeChannel(channel);
     };
   }, []);
+
+  const loadMore = useCallback(async () => {
+    if (!supabaseEnabled || loadingMoreRef.current || !hasMore) return;
+    const cursor = cursorRef.current;
+    if (!cursor) return;
+
+    loadingMoreRef.current = true;
+    setLoadingMore(true);
+
+    try {
+      const { data, error } = await withSupabaseTimeout(
+        "combo_posts.more",
+        buildComboFeedQuery(cursor),
+      );
+      if (error) throw error;
+
+      const nextPosts = (data ?? []).map(normalizePost);
+      setPosts((current) => {
+        const seen = new Set(current.map((post) => post.id));
+        const appended = nextPosts.filter((post) => !seen.has(post.id));
+        return appended.length > 0 ? [...current, ...appended] : current;
+      });
+      if (nextPosts.length > 0) {
+        cursorRef.current = cursorFromPost(nextPosts[nextPosts.length - 1]);
+      }
+      setHasMore(nextPosts.length >= COMBO_FEED_PAGE_SIZE);
+      setUnavailable(false);
+    } catch {
+      setUnavailable(true);
+    } finally {
+      loadingMoreRef.current = false;
+      setLoadingMore(false);
+    }
+  }, [hasMore]);
 
   const add = useCallback(
     async ({
@@ -207,7 +271,7 @@ export function useComboPosts(userId: string | null): UseComboPostsReturn {
       const post = normalizePost(data);
       setPosts((current) => {
         if (current.some((item) => item.id === post.id)) return current;
-        return [post, ...current].slice(0, 50);
+        return [post, ...current];
       });
       return post;
     },
@@ -251,7 +315,17 @@ export function useComboPosts(userId: string | null): UseComboPostsReturn {
     [userId],
   );
 
-  return { posts, loading, unavailable, add, update, remove };
+  return {
+    posts,
+    loading,
+    loadingMore,
+    hasMore,
+    unavailable,
+    loadMore,
+    add,
+    update,
+    remove,
+  };
 }
 
 export function useComboPost(

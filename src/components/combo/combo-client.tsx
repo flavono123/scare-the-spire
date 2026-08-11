@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "@/components/ui/static-image";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -38,10 +38,21 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].combo;
   const { userId, ready, ensureUser } = useAuth();
-  const { posts, loading, unavailable, add, update, remove } = useComboPosts(userId);
+  const {
+    posts,
+    loading,
+    loadingMore,
+    hasMore,
+    unavailable,
+    loadMore,
+    add,
+    update,
+    remove,
+  } = useComboPosts(userId);
   const [composerOpen, setComposerOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<ComboPost | null>(null);
   const [selectedGameElements, setSelectedGameElements] = useState<ComboResourceRef[]>([]);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
     [copy.defaultNickname],
@@ -54,6 +65,20 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
     )),
     [posts, selectedGameElements],
   );
+
+  useEffect(() => {
+    const element = loadMoreRef.current;
+    if (!element || !hasMore || loadingMore || unavailable) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) void loadMore();
+      },
+      { rootMargin: "400px" },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [hasMore, loadMore, loadingMore, unavailable, filteredPosts.length]);
 
   const handleSubmit = useCallback(async (blocks: PostBlock[], nickname: string) => {
     const activeUserId = userId ?? await ensureUser();
@@ -140,25 +165,36 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
         <ContentLoadingNotice label={copy.loading} />
       ) : posts.length === 0 ? (
         <p className="py-8 text-center text-sm text-zinc-500">{copy.empty}</p>
-      ) : filteredPosts.length === 0 ? (
-        <p className="py-8 text-center text-sm text-zinc-500">{copy.noMatchingCombos}</p>
       ) : (
         <div className="space-y-3">
-          {filteredPosts.map((post) => (
-            <ComboPostCard
-              key={post.id}
-              post={post}
-              entityMap={entityMap}
-              isOwner={post.user_id === userId}
-              serviceLocale={serviceLocale}
-              gameLocale={gameLocale}
-              onEdit={(post) => {
-                setEditingPost(post);
-                setComposerOpen(true);
-              }}
-              onDelete={remove}
-            />
-          ))}
+          {filteredPosts.length === 0 ? (
+            <p className="py-8 text-center text-sm text-zinc-500">{copy.noMatchingCombos}</p>
+          ) : (
+            filteredPosts.map((post) => (
+              <ComboPostCard
+                key={post.id}
+                post={post}
+                entityMap={entityMap}
+                isOwner={post.user_id === userId}
+                serviceLocale={serviceLocale}
+                gameLocale={gameLocale}
+                onEdit={(post) => {
+                  setEditingPost(post);
+                  setComposerOpen(true);
+                }}
+                onDelete={remove}
+              />
+            ))
+          )}
+          {hasMore && (
+            <div
+              ref={loadMoreRef}
+              className="flex min-h-8 items-center justify-center py-2 text-xs text-zinc-500"
+              aria-hidden={loadingMore ? undefined : true}
+            >
+              {loadingMore ? copy.loadingMore : null}
+            </div>
+          )}
         </div>
       )}
     </div>

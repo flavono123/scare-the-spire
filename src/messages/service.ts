@@ -1316,6 +1316,7 @@ export const serviceMessages = {
         delete: "Delete",
         randomEmptyTitle: "No shared runs yet",
         randomPickTitle: "Pick a random shared run",
+        randomPickCta: "Play a random run",
         random: "Random",
         ascension: "Ascension {count}",
         highlightCard: "Card",
