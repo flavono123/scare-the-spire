@@ -348,6 +348,9 @@ export function CompendiumDirectDetailPage({
           relatedMonsters={resources.monsters}
           relatedPotions={resources.potions}
           relatedPowers={resources.powers}
+          tipCatalogSources={payload.cardSideTipSources}
+          tipCatalogCards={resources.cards}
+          tipCatalogKeywords={resources.keywords}
           patches={patches}
           changes={changes}
           versionDiffs={versionDiffs}

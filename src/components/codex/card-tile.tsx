@@ -20,9 +20,6 @@ import {
   hasCardUpgrade,
   parseDescription,
   renderCardDescription,
-  TermTooltip,
-  KEYWORD_DESC,
-  GOLD_TERM_DESC,
   type EnchantVarMod,
 } from "./codex-description";
 import {
@@ -47,7 +44,6 @@ import { CardEngagementStatsOverlay } from "./engagement-stats";
 import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 import { getMadScienceRenderedCardName } from "@/lib/tinker-time";
 import {
-  cardKeywordLookupKey,
   getCardDisplayKeywords,
   getCardKeywordDisplayText,
   splitCardDisplayKeywords,
@@ -523,7 +519,6 @@ export const CardTile = memo(function CardTile({
 }: CardTileProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const [imgError, setImgError] = useState(false);
-  const [hoveredTerm, setHoveredTerm] = useState<string | null>(null);
   const descriptionViewportRef = useRef<HTMLDivElement>(null);
   const descriptionContentRef = useRef<HTMLDivElement>(null);
 
@@ -605,20 +600,11 @@ export const CardTile = memo(function CardTile({
   } = splitCardDisplayKeywords(displayKeywords);
   const renderKeyword = (kw: string) => {
     // 인챈트/강화 추가 키워드도 게임에선 일반 키워드와 동일한 골드.
-    // 키워드 hover lookup은 첫 단어만 (예: "재사용 1" → "재사용")
-    const lookupKey = cardKeywordLookupKey(kw);
+    // 사이드 tip은 CardSideTipsAnchor가 담당 — 본문에서는 색만 유지.
     const displayText = getCardKeywordDisplayText(card, kw);
     return (
-      <span
-        className="relative font-bold cursor-help"
-        style={{ color: TEXT_GOLD }}
-        onMouseEnter={() => setHoveredTerm(kw)}
-        onMouseLeave={() => setHoveredTerm(null)}
-      >
+      <span className="font-bold" style={{ color: TEXT_GOLD }}>
         {displayText}.
-        {hoveredTerm === kw && KEYWORD_DESC[lookupKey] && (
-          <TermTooltip name={displayText} desc={KEYWORD_DESC[lookupKey]} />
-        )}
       </span>
     );
   };
@@ -640,15 +626,10 @@ export const CardTile = memo(function CardTile({
       return part.type === "gold" ? (
         <span
           key={i}
-          className="relative font-bold cursor-help"
+          className="font-bold"
           style={{ color: TEXT_GOLD }}
-          onMouseEnter={() => setHoveredTerm(part.text)}
-          onMouseLeave={() => setHoveredTerm(null)}
         >
           {part.text}
-          {hoveredTerm === part.text && GOLD_TERM_DESC[part.text] && (
-            <TermTooltip name={part.text} desc={GOLD_TERM_DESC[part.text]} />
-          )}
         </span>
       ) : part.type === "upgrade" ? (
         <span key={i} className="font-bold" style={{ color: TEXT_GREEN }}>{part.text}</span>

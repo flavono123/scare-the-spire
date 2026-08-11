@@ -28,6 +28,15 @@ import {
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import { versionCodexEntities } from "@/lib/codex-versioning";
 import {
+  collectCardSideTips,
+} from "@/lib/card-keyword-tips";
+import {
+  createCardSideTipCatalog,
+  type CardSideTipCatalogSources,
+} from "@/lib/card-side-tip-catalog";
+import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
+import { renderCardDescription } from "./codex-description";
+import {
   annotateCard,
   isEtcRarity,
   RarityDetail,
@@ -200,11 +209,12 @@ interface CardLibraryProps {
   relatedMonsters?: CodexMonster[];
   relatedPotions?: CodexPotion[];
   relatedPowers?: CodexPower[];
+  tipCatalogSources: CardSideTipCatalogSources;
   initialCardId?: string | null;
   initialShowBeta?: boolean;
 }
 
-export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, changes, versionDiffs, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], initialCardId = null, initialShowBeta = false }: CardLibraryProps) {
+export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, changes, versionDiffs, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], tipCatalogSources, initialCardId = null, initialShowBeta = false }: CardLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const [selectedVersion, setSelectedVersion] = useState(currentVersion);
   const [selectedColors, setSelectedColors] = useState<Set<CardFilterCategory>>(
@@ -237,6 +247,16 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   const engagementCounts = useEngagementCounts({
     enabled: showEngagementStats || engagementSort !== null,
   });
+
+  const tipCatalog = useMemo(
+    () => createCardSideTipCatalog({
+      sources: tipCatalogSources,
+      powers: relatedPowers,
+      cards,
+      monsters: relatedMonsters,
+    }),
+    [tipCatalogSources, relatedPowers, cards, relatedMonsters],
+  );
 
   // Sort state: ordered priority list of sort keys with directions
   const [sortKeys, setSortKeys] = useState<SortKey[]>(DEFAULT_SORT_KEYS);
@@ -816,21 +836,31 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
                       openSelectedCard(card);
                     }}
                   >
-                    <CardTile
-                      card={card}
-                      serviceLocale={serviceLocale}
-                      showUpgrade={showUpgrades}
-                      showBeta={activeShowBeta}
-                      size="grid"
-                      engagementStats={showEngagementStats
-                        ? {
-                            commentCount: engagementCounts.comments[threadKey] ?? 0,
-                            likeCount: engagementCounts.likes[threadKey] ?? 0,
-                            loading: engagementCounts.loading,
-                            unavailable: engagementCounts.unavailable,
-                          }
-                        : null}
-                    />
+                    <CardSideTipsAnchor
+                      mode="hover"
+                      tips={collectCardSideTips(card, tipCatalog, {
+                        upgradeLevel: showUpgrades ? 1 : 0,
+                        description: showUpgrades
+                          ? renderCardDescription(card, { upgradeLevel: 1 })
+                          : card.description,
+                      })}
+                    >
+                      <CardTile
+                        card={card}
+                        serviceLocale={serviceLocale}
+                        showUpgrade={showUpgrades}
+                        showBeta={activeShowBeta}
+                        size="grid"
+                        engagementStats={showEngagementStats
+                          ? {
+                              commentCount: engagementCounts.comments[threadKey] ?? 0,
+                              likeCount: engagementCounts.likes[threadKey] ?? 0,
+                              loading: engagementCounts.loading,
+                              unavailable: engagementCounts.unavailable,
+                            }
+                          : null}
+                      />
+                    </CardSideTipsAnchor>
                   </Link>
                 </div>
               );
@@ -857,7 +887,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <CardDetail key={`${selectedCard.id}:${activeShowBeta ? "beta" : "normal"}`} serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedAncients={relatedAncients} relatedEvents={relatedEvents} relatedMonsters={relatedMonsters} relatedPotions={relatedPotions} relatedPowers={relatedPowers} patches={patches} changes={changes} versionDiffs={versionDiffs} initialShowBeta={activeShowBeta} onShowBetaChange={(next) => {
+            <CardDetail key={`${selectedCard.id}:${activeShowBeta ? "beta" : "normal"}`} serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedAncients={relatedAncients} relatedEvents={relatedEvents} relatedMonsters={relatedMonsters} relatedPotions={relatedPotions} relatedPowers={relatedPowers} tipCatalogSources={tipCatalogSources} tipCatalogCards={cards} patches={patches} changes={changes} versionDiffs={versionDiffs} initialShowBeta={activeShowBeta} onShowBetaChange={(next) => {
               setUseUrlSelection(false);
               setSelectedCardId(selectedCard.id);
               setShowBeta(next);

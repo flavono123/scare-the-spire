@@ -15,6 +15,7 @@ import type {
   CodexRelic,
 } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
+import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 
 export const COMPENDIUM_DETAIL_PAYLOAD_PATH_BY_SERVICE_LOCALE = {
@@ -64,4 +65,5 @@ export type CompendiumDetailPayload = {
     changes: STS2Change[];
     versionDiffs: EntityVersionDiff[];
   };
+  cardSideTipSources?: CardSideTipCatalogSources;
 };

@@ -11,6 +11,7 @@ import {
   getCodexPotions,
   getCodexPowers,
 } from "@/lib/codex-data";
+import { loadCardSideTipCatalogSources } from "@/lib/card-side-tip-catalog.server";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
@@ -43,23 +44,39 @@ export default async function CodexCardsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [cards, characters, patches, changes, versionDiffs, meta, enchantments, afflictions, gameUi, ancients, events, monsters, potions, powers] =
-    await Promise.all([
-      getCodexCards({ includeDeprecated: true, gameLocale }),
-      getCodexCharacters({ gameLocale }),
-      getSTS2Patches(),
-      getSTS2Changes(),
-      getEntityVersionDiffs(),
-      getCodexMeta(),
-      getCodexEnchantments({ gameLocale }),
-      getCodexAfflictions({ gameLocale }),
-      getCodexGameUiLabels(gameLocale),
-      getCodexAncients({ gameLocale }),
-      getCodexEvents({ gameLocale }),
-      getCodexMonsters({ gameLocale }),
-      getCodexPotions({ gameLocale }),
-      getCodexPowers({ includeDeprecated: true, gameLocale }),
-    ]);
+  const [
+    cards,
+    characters,
+    patches,
+    changes,
+    versionDiffs,
+    meta,
+    enchantments,
+    afflictions,
+    gameUi,
+    ancients,
+    events,
+    monsters,
+    potions,
+    powers,
+    tipCatalogSources,
+  ] = await Promise.all([
+    getCodexCards({ includeDeprecated: true, gameLocale }),
+    getCodexCharacters({ gameLocale }),
+    getSTS2Patches(),
+    getSTS2Changes(),
+    getEntityVersionDiffs(),
+    getCodexMeta(),
+    getCodexEnchantments({ gameLocale }),
+    getCodexAfflictions({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
+    getCodexAncients({ gameLocale }),
+    getCodexEvents({ gameLocale }),
+    getCodexMonsters({ gameLocale }),
+    getCodexPotions({ gameLocale }),
+    getCodexPowers({ includeDeprecated: true, gameLocale }),
+    loadCardSideTipCatalogSources(gameLocale),
+  ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
 
@@ -82,6 +99,7 @@ export default async function CodexCardsPage({
         relatedMonsters={monsters}
         relatedPotions={potions}
         relatedPowers={powers}
+        tipCatalogSources={tipCatalogSources}
       />
     </Suspense>
   );

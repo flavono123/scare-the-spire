@@ -22,6 +22,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import type { CompendiumDetailPayload } from "@/lib/compendium-detail-payload";
+import { loadCardSideTipCatalogSources } from "@/lib/card-side-tip-catalog.server";
 
 export async function buildCompendiumDetailPayload(
   serviceLocale: ServiceLocale = DEFAULT_SERVICE_LOCALE,
@@ -47,6 +48,7 @@ export async function buildCompendiumDetailPayload(
     patches,
     changes,
     versionDiffs,
+    cardSideTipSources,
   ] = await Promise.all([
     getCodexAfflictions({ gameLocale }),
     getCodexAncients({ gameLocale }),
@@ -66,6 +68,7 @@ export async function buildCompendiumDetailPayload(
     getSTS2Patches(),
     getSTS2Changes(),
     getEntityVersionDiffs(),
+    loadCardSideTipCatalogSources(gameLocale),
   ]);
 
   return {
@@ -93,5 +96,6 @@ export async function buildCompendiumDetailPayload(
       changes,
       versionDiffs,
     },
+    cardSideTipSources,
   };
 }

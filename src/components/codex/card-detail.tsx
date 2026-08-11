@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useCallback, useEffect, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
@@ -21,10 +21,17 @@ import {
   CodexMonster,
   CodexPotion,
   CodexPower,
+  CodexKeyword,
 } from "@/lib/codex-types";
 import { CardActionIcon } from "@/components/history-course/card-action-icon";
 import { CardTile } from "./card-tile";
-import { DescriptionText, getCardMaxUpgradeLevel, hasCardUpgrade } from "./codex-description";
+import { DescriptionText, getCardMaxUpgradeLevel, hasCardUpgrade, renderCardDescription } from "./codex-description";
+import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
+import { collectCardSideTips } from "@/lib/card-keyword-tips";
+import {
+  createCardSideTipCatalog,
+  type CardSideTipCatalogSources,
+} from "@/lib/card-side-tip-catalog";
 import { GameChoiceFrame } from "./event-choice-frame";
 import { GameCheckboxToggle } from "./game-checkbox";
 import { CARD_DETAIL_UPGRADE_LEVEL_CAP, GameUpgradeToggle } from "./game-upgrade-toggle";
@@ -128,6 +135,10 @@ interface CardDetailProps {
   relatedMonsters?: CodexMonster[];
   relatedPotions?: CodexPotion[];
   relatedPowers?: CodexPower[];
+  tipCatalogSources?: CardSideTipCatalogSources;
+  /** Full card list for entity tip resolution (e.g. 단도 → SHIV). */
+  tipCatalogCards?: CodexCard[];
+  tipCatalogKeywords?: CodexKeyword[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
@@ -188,7 +199,7 @@ function getRemovedUpgradePreviewCard(
   };
 }
 
-export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], patches, changes, versionDiffs, initialShowBeta = false, onShowBetaChange, syncBetaSearchParam = false, onClose }: CardDetailProps) {
+export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], tipCatalogSources, tipCatalogCards, tipCatalogKeywords = [], patches, changes, versionDiffs, initialShowBeta = false, onShowBetaChange, syncBetaSearchParam = false, onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getCardDetailLabels(serviceLocale);
   const { userId, ready: authReady, ensureUser } = useAuth();
@@ -364,6 +375,45 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
     amount: activeAfflictionAmount,
   });
 
+  const tipCatalog = useMemo(
+    () => createCardSideTipCatalog({
+      sources: tipCatalogSources ?? {
+        keywords: tipCatalogKeywords,
+        staticHoverTips: {},
+        engStaticHoverTips: {},
+        orbs: {},
+        engOrbs: {},
+        monsterNames: {},
+        engMonsterNames: {},
+      },
+      powers: relatedPowers,
+      cards: tipCatalogCards ?? [card],
+      monsters: relatedMonsters,
+    }),
+    [tipCatalogSources, tipCatalogKeywords, relatedPowers, tipCatalogCards, card, relatedMonsters],
+  );
+  const sideTips = useMemo(() => {
+    const description = effectiveUpgradeLevel > 0 || activeStatMod
+      ? renderCardDescription(upgradePreviewCard, {
+          upgradeLevel: effectiveUpgradeLevel,
+          enchantMod: activeStatMod,
+        })
+      : upgradePreviewCard.description;
+    return collectCardSideTips(upgradePreviewCard, tipCatalog, {
+      upgradeLevel: effectiveUpgradeLevel,
+      description,
+      addedKeywords: activeAddedKeywordsWithAffliction,
+      removedKeywords: activeRemovedKeywords,
+    });
+  }, [
+    upgradePreviewCard,
+    tipCatalog,
+    effectiveUpgradeLevel,
+    activeStatMod,
+    activeAddedKeywordsWithAffliction,
+    activeRemovedKeywords,
+  ]);
+
   // hover 시 보여줄 미리보기 amount는 hovered 인챈트의 자체 프리셋을 쓴다.
   // 활성 인챈트 위에 hover한 경우만 사용자가 고른 amount 그대로.
   // (→ 활성 인챈트 amount가 다른 인챈트 description에 새는 버그 방지)
@@ -456,6 +506,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
               setHoveredAfflictionId((cur) => (cur === activeAfflictionId ? null : cur));
             }}
           >
+          <CardSideTipsAnchor mode="always" preferSide="left" tips={sideTips} style={{ width: cardWidth }}>
           <CardTile
             card={upgradePreviewCard}
             serviceLocale={serviceLocale}
@@ -478,12 +529,14 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
               setHoveredEnchantId(null);
             }}
           />
+          </CardSideTipsAnchor>
           {hoveredEnchant && (
             <div
               className="hidden md:block"
               style={{
                 position: "absolute",
-                top: 0,
+                top: sideTips.length > 0 ? undefined : 0,
+                bottom: sideTips.length > 0 ? 0 : undefined,
                 left: "calc(100% + 16px)",
                 // 콘텐츠 자연 폭(가장 긴 줄) 에 맞춰 호버팁이 줄어들도록 max-content + maxWidth.
                 width: "max-content",
@@ -509,7 +562,8 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
               className="hidden md:block"
               style={{
                 position: "absolute",
-                top: 0,
+                top: sideTips.length > 0 ? undefined : 0,
+                bottom: sideTips.length > 0 ? 0 : undefined,
                 left: "calc(100% + 16px)",
                 width: "max-content",
                 maxWidth: 280,
