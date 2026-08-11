@@ -1,13 +1,19 @@
 "use client";
 
-import { useCallback, useState, type MouseEvent } from "react";
+import { useCallback, type MouseEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Check, Link2, MessageCircle, Trash2 } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import type { ThisOrThatResolvedPost } from "@/lib/this-or-that";
 import { serviceMessages } from "@/messages/service";
+import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
+import { OwnPostMark } from "@/components/own-post-mark";
+import {
+  INDEX_LUCIDE_ICON_CLASS,
+  SPIRE_ACTION_CONTROL_CLASS,
+} from "@/components/spire-icon";
 import { ThisOrThatLikeButton } from "@/components/this-or-that/like-button";
 import { ThisOrThatResourcePanel } from "@/components/this-or-that/resource-panel";
 import {
@@ -47,7 +53,7 @@ export function ThisOrThatPostCard({
   resolvedPost,
   serviceLocale,
   gameLocale,
-  isOwner,
+  isOwner = false,
   likeCount,
   liked,
   likesLoading,
@@ -62,7 +68,6 @@ export function ThisOrThatPostCard({
   voteUnavailable,
   votePrompt,
   voteDone,
-  onDelete,
   onToggleLike,
   onVote,
   onRetryVote,
@@ -70,7 +75,7 @@ export function ThisOrThatPostCard({
   resolvedPost: ThisOrThatResolvedPost;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
-  isOwner: boolean;
+  isOwner?: boolean;
   likeCount: number;
   liked: boolean;
   likesLoading: boolean;
@@ -85,23 +90,19 @@ export function ThisOrThatPostCard({
   voteUnavailable: boolean;
   votePrompt: string;
   voteDone: string;
-  onDelete: (postId: string) => void;
   onToggleLike: (postId: string) => void;
   onVote: (choice: ThisOrThatVoteChoice) => void;
   onRetryVote: () => void;
 }) {
   const { post, leftEntity, rightEntity } = resolvedPost;
   const copy = serviceMessages[serviceLocale].thisOrThat;
+  const tips = serviceMessages[serviceLocale].engagementTips;
   const router = useRouter();
-  const [copied, setCopied] = useState(false);
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const href = localizeHrefWithGameLocale(`/this-or-that/${post.id}`, serviceLocale, gameLocale);
-  const handleCopy = useCallback(() => {
-    const url = new URL(href, window.location.origin).toString();
-    void navigator.clipboard?.writeText(url);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1500);
-  }, [href]);
+  const commentTip = commentCount > 0
+    ? tips.commentCount.replace("{count}", String(commentCount))
+    : tips.commentFirst;
   const handleCardClick = useCallback((event: MouseEvent<HTMLElement>) => {
     if ((event.target as HTMLElement).closest("a, button, [role='button']")) return;
     router.push(href);
@@ -112,7 +113,7 @@ export function ThisOrThatPostCard({
   return (
     <article
       onClick={handleCardClick}
-      className="group flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-colors hover:border-yellow-500/25"
+      className="flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-colors hover:border-yellow-500/25"
     >
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
@@ -129,46 +130,30 @@ export function ThisOrThatPostCard({
           </span>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          <Link
-            href={href}
-            className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-yellow-400"
-            title={copy.commentsTitle}
-          >
-            <MessageCircle size={15} />
-            <span className="tabular-nums">{commentCount}</span>
-          </Link>
-          <span>
-            <ThisOrThatLikeButton
-              count={likeCount}
-              liked={liked}
-              loading={likesLoading}
-              unavailable={likesUnavailable}
-              disabled={!canLike}
-              onToggle={() => onToggleLike(post.id)}
-              label={copy.like}
-              className="px-1.5"
-            />
-          </span>
-          <button
-            type="button"
-            onClick={handleCopy}
-            className="text-muted-foreground opacity-80 transition-colors hover:text-yellow-400 sm:opacity-0 sm:group-hover:opacity-100"
-            title={copied ? copy.copied : copy.copyLink}
-          >
-            {copied ? <Check size={16} /> : <Link2 size={16} />}
-          </button>
-          {isOwner && (
-            <button
-              type="button"
-              onClick={() => {
-                onDelete(post.id);
-              }}
-              className="text-muted-foreground opacity-80 transition-colors hover:text-red-400 sm:opacity-0 sm:group-hover:opacity-100"
-              title={copy.delete}
+          <GameUiHoverTip label={commentTip}>
+            <Link
+              href={`${href}#comments`}
+              className={cn(SPIRE_ACTION_CONTROL_CLASS, "gap-1 text-xs text-muted-foreground")}
+              aria-label={commentTip}
+              onClick={(event) => event.stopPropagation()}
             >
-              <Trash2 size={16} />
-            </button>
-          )}
+              <MessageCircle size={15} className={INDEX_LUCIDE_ICON_CLASS} aria-hidden />
+              <span className="tabular-nums">{commentCount}</span>
+            </Link>
+          </GameUiHoverTip>
+          <ThisOrThatLikeButton
+            count={likeCount}
+            liked={liked}
+            loading={likesLoading}
+            unavailable={likesUnavailable}
+            disabled={!canLike}
+            onToggle={() => onToggleLike(post.id)}
+            label={copy.like}
+            tipLabel={tips.like}
+            tipLabelActive={tips.unlike}
+            lift
+            className="px-1.5"
+          />
         </div>
       </div>
 
@@ -238,7 +223,8 @@ export function ThisOrThatPostCard({
         />
       </div>
 
-      <div className="mt-auto flex justify-end pt-2">
+      <div className="mt-auto flex items-center justify-end gap-1.5 pt-2">
+        {isOwner && <OwnPostMark />}
         <span className="max-w-[70%] truncate text-[11px] text-muted-foreground/80">
           {post.nickname}
         </span>

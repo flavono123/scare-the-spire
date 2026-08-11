@@ -26,7 +26,7 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
   const { userId, ready, ensureUser } = useAuth();
-  const { posts, loading, unavailable, add, remove } = useChemicalPosts(userId);
+  const { posts, loading, unavailable, add } = useChemicalPosts(userId);
   const [showAllTooltips, setShowAllTooltips] = useState(false);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
@@ -44,13 +44,6 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
       await add(blocks, nickname, activeUserId);
     },
     [add, ensureUser, userId],
-  );
-
-  const handleDelete = useCallback(
-    (postId: string) => {
-      remove(postId);
-    },
-    [remove],
   );
 
   return (
@@ -113,8 +106,7 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
               post={post}
               entityMap={entityMap}
               forceShowTooltips={showAllTooltips}
-              isOwner={post.user_id === userId}
-              onDelete={handleDelete}
+              isOwner={Boolean(userId && post.user_id === userId)}
             />
           ))}
         </div>

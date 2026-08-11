@@ -20,7 +20,6 @@ import {
 } from "@/lib/this-or-that";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
-import { StoryWriteIcon } from "@/components/story-token-icon";
 import { ThisOrThatComposerModal } from "@/components/this-or-that/composer-modal";
 import { ThisOrThatPostCard } from "@/components/this-or-that/post-card";
 
@@ -40,7 +39,7 @@ export function ThisOrThatClient({
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].thisOrThat;
   const { userId, ready, unavailable: authUnavailable, ensureUser } = useAuth();
-  const { posts, loading, unavailable, add, remove } = useThisOrThatPosts(userId);
+  const { posts, loading, unavailable, add } = useThisOrThatPosts(userId);
   const {
     entities,
     loading: resourcesLoading,
@@ -88,13 +87,6 @@ export function ThisOrThatClient({
       setSubmitting(false);
     }
   }, [add, ensureUser, profile.nickname, userId]);
-
-  const handleDelete = useCallback(
-    (postId: string) => {
-      remove(postId);
-    },
-    [remove],
-  );
 
   const handleToggleLike = useCallback(
     async (postId: string) => {
@@ -144,12 +136,19 @@ export function ThisOrThatClient({
         {!storageUnavailable && (
           <button
             type="button"
+            aria-expanded={composerOpen}
             onClick={() => {
               if (!resourcesLoading && !resourcesError) setComposerOpen(true);
             }}
-            className="ml-auto inline-flex h-9 shrink-0 items-center gap-2 rounded-md border border-yellow-500/30 bg-yellow-500/10 px-3 text-xs font-semibold text-yellow-300 transition-colors hover:bg-yellow-500/20"
+            className="group/create ml-auto inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-yellow-400/30 bg-yellow-500/10 px-3 text-xs font-semibold text-yellow-200 shadow-[0_0_18px_rgba(250,204,21,0.06)] transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-yellow-300/50 hover:bg-yellow-500/15 hover:shadow-[0_6px_22px_rgba(250,204,21,0.1)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70 active:translate-y-0 motion-reduce:transform-none"
           >
-            <StoryWriteIcon size={15} />
+            <Image
+              src="/images/sts2/relics/choices_paradox.webp"
+              alt=""
+              width={18}
+              height={18}
+              className="object-contain transition-transform duration-200 group-hover/create:rotate-12 motion-reduce:transform-none"
+            />
             {copy.create}
           </button>
         )}
@@ -177,7 +176,7 @@ export function ThisOrThatClient({
               resolvedPost={resolvedPost}
               serviceLocale={serviceLocale}
               gameLocale={gameLocale}
-              isOwner={resolvedPost.post.user_id === userId}
+              isOwner={Boolean(userId && resolvedPost.post.user_id === userId)}
               likeCount={likes.counts[resolvedPost.post.id] ?? 0}
               liked={likes.liked.has(resolvedPost.post.id)}
               likesLoading={likes.loading}
@@ -192,7 +191,6 @@ export function ThisOrThatClient({
               voteUnavailable={votes.unavailable || authUnavailable}
               votePrompt={votePrompt}
               voteDone={voteDone}
-              onDelete={handleDelete}
               onToggleLike={handleToggleLike}
               onVote={(choice) => votes.vote(resolvedPost.post.id, choice, "index")}
               onRetryVote={() => votes.cancel(resolvedPost.post.id)}

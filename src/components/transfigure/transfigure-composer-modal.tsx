@@ -94,7 +94,7 @@ export function TransfigureComposerModal({
                 disabled={deleting}
                 className="inline-flex h-8 items-center gap-1.5 rounded-md border border-red-400/20 px-2.5 text-xs text-red-300/80 transition-colors hover:border-red-300/40 hover:bg-red-500/10 hover:text-red-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-red-300/70 disabled:cursor-wait disabled:opacity-50"
               >
-                <Trash2 size={14} aria-hidden="true" />
+                <Trash2 size={14} />
                 {copy.delete}
               </button>
             )}

@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 import type { ChemicalPost } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import { OwnPostMark } from "@/components/own-post-mark";
 import { PostRenderer } from "./post-renderer";
-import { Trash2, ExternalLink } from "lucide-react";
 import { localizeHref } from "@/lib/i18n";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
@@ -13,8 +14,7 @@ interface PostCardProps {
   post: ChemicalPost;
   entityMap: Map<string, EntityInfo>;
   forceShowTooltips?: boolean;
-  isOwner: boolean;
-  onDelete: (postId: string) => void;
+  isOwner?: boolean;
 }
 
 function formatRelativeTime(template: string, count: number): string {
@@ -39,17 +39,24 @@ function timeAgo(
   return new Date(dateStr).toLocaleDateString(dateLocale);
 }
 
-export function PostCard({ post, entityMap, forceShowTooltips, isOwner, onDelete }: PostCardProps) {
+export function PostCard({
+  post,
+  entityMap,
+  forceShowTooltips,
+  isOwner = false,
+}: PostCardProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
 
   return (
     <div className="group border border-border rounded-lg bg-card/30 px-4 py-3 transition-colors hover:border-yellow-500/20">
-      {/* Header: nickname + time */}
       <div className="flex items-center justify-between mb-1.5">
-        <span className="text-sm font-semibold text-gray-300">
-          {post.nickname}
+        <span className="inline-flex min-w-0 items-center gap-1.5">
+          <span className="truncate text-sm font-semibold text-gray-300">
+            {post.nickname}
+          </span>
+          {isOwner && <OwnPostMark />}
         </span>
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-500">
@@ -58,25 +65,14 @@ export function PostCard({ post, entityMap, forceShowTooltips, isOwner, onDelete
           <Link
             href={localizeHref(`/chemical-x/${post.id}`, serviceLocale)}
             prefetch={false}
-            className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-yellow-400 transition-all"
+            className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-[#d4a843] transition-all"
             title={copy.share}
           >
             <ExternalLink size={14} />
           </Link>
-          {isOwner && (
-            <button
-              type="button"
-              onClick={() => onDelete(post.id)}
-              className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-400 transition-all"
-              title={copy.delete}
-            >
-              <Trash2 size={14} />
-            </button>
-          )}
         </div>
       </div>
 
-      {/* Content */}
       <div className="text-sm leading-relaxed">
         <PostRenderer
           blocks={post.content}

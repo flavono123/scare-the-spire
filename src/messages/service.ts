@@ -147,6 +147,21 @@ export const serviceMessages = {
       submit: "작성",
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
     },
+
+    engagementTips: {
+      commentFirst: "첫 댓글 쓰기",
+      commentCount: "{count}개의 댓글",
+      like: "좋아요",
+      unlike: "좋아요 취소",
+    },
+    ownPostLabel: "내 글",
+    deleteConfirm: {
+      title: "이 글을 삭제할까요?",
+      body: "삭제하면 되돌릴 수 없습니다.",
+      // GENERIC_POPUP.confirm / cancel (main_menu_ui)
+      confirm: "예",
+      cancel: "아니요",
+    },
     stories: {
       reference: {
         loading: "참조한 변경 항목을 불러오는 중...",
@@ -269,7 +284,7 @@ export const serviceMessages = {
       youtubeUnavailable: "YouTube 영상 정보를 불러오지 못했습니다. 공개 영상 링크인지 확인하세요.",
       youtubeGuide: "{youtubeLink}를 본문에 붙여넣으면 영상으로 첨부됩니다. 글마다 1개까지 가능합니다.",
       youtubeGuideLink: "YouTube 링크",
-      create: "조합 만들기",
+      create: "결합이다!",
       edit: "수정",
       editTitle: "조합 수정",
       close: "닫기",
@@ -296,9 +311,9 @@ export const serviceMessages = {
     },
     transfigure: {
       defaultNickname: "익명의 변형술사",
-      create: "변형 만들기",
+      create: "변형하기",
       close: "닫기",
-      submit: "변형 만들기",
+      submit: "변형하기",
       saveChanges: "수정 저장",
       edit: "수정",
       editTitle: "변형 수정",
@@ -363,7 +378,7 @@ export const serviceMessages = {
       defaultNickname: "닉",
       count: "{count}개의 이거저거",
       loading: "이거저거를 불러오는 중...",
-      create: "작성",
+      create: "이거... 아님 저거?",
       close: "닫기",
       submit: "올리기",
       delete: "삭제",
@@ -1030,6 +1045,21 @@ export const serviceMessages = {
       submit: "Post",
       unavailableTitle: "No responses from database",
     },
+
+    engagementTips: {
+      commentFirst: "Write the first comment",
+      commentCount: "{count} comments",
+      like: "Like",
+      unlike: "Unlike",
+    },
+    ownPostLabel: "Mine",
+    deleteConfirm: {
+      title: "Delete this post?",
+      body: "This cannot be undone.",
+      // GENERIC_POPUP.confirm / cancel (main_menu_ui)
+      confirm: "Yes",
+      cancel: "No",
+    },
     stories: {
       reference: {
         loading: "Loading the referenced patch change...",
@@ -1152,7 +1182,7 @@ export const serviceMessages = {
       youtubeUnavailable: "Could not load the YouTube video. Check that the link is public.",
       youtubeGuide: "Paste a {youtubeLink} into the post to attach the video. One video per post.",
       youtubeGuideLink: "YouTube link",
-      create: "Create combo",
+      create: "COMBINING!",
       edit: "Edit",
       editTitle: "Edit combo",
       close: "Close",
@@ -1179,9 +1209,9 @@ export const serviceMessages = {
     },
     transfigure: {
       defaultNickname: "Unnamed transfigurer",
-      create: "Create transfiguration",
+      create: "Transfigure",
       close: "Close",
-      submit: "Create transfiguration",
+      submit: "Transfigure",
       saveChanges: "Save changes",
       edit: "Edit",
       editTitle: "Edit transfiguration",
@@ -1246,7 +1276,7 @@ export const serviceMessages = {
       defaultNickname: "Nick",
       count: "{count} thisats",
       loading: "Loading thisats...",
-      create: "Write",
+      create: "This... or That?",
       close: "Close",
       submit: "Post",
       delete: "Delete",

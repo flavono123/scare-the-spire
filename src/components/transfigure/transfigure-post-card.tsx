@@ -2,10 +2,13 @@
 
 import { useCallback, type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, Sparkles, Trash2 } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { PostRenderer } from "@/components/chemicalx/post-renderer";
+import { IndexCardEngagement } from "@/components/index-card-engagement";
+import { OwnPostMark } from "@/components/own-post-mark";
 import { TransfigureResourcePreview } from "@/components/transfigure/transfigure-resource-preview";
+import { buildTransfigureCommentThreadKey } from "@/lib/comment-threads";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -18,12 +21,15 @@ interface TransfigurePostCardProps {
   post: TransfigurePost;
   entities: EntityInfo[];
   entityMap: Map<string, EntityInfo>;
-  isOwner: boolean;
+  isOwner?: boolean;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   upgradeLabel: string;
-  onEdit: (post: TransfigurePost) => void;
-  onDelete: (postId: string) => void;
+  userId: string | null;
+  authReady?: boolean;
+  ensureUser?: () => Promise<string | null>;
+  commentCount: number;
+  likeCount: number;
 }
 
 function formatRelativeTime(template: string, count: number): string {
@@ -50,12 +56,15 @@ export function TransfigurePostCard({
   post,
   entities,
   entityMap,
-  isOwner,
+  isOwner = false,
   serviceLocale,
   gameLocale,
   upgradeLabel,
-  onEdit,
-  onDelete,
+  userId,
+  authReady = true,
+  ensureUser,
+  commentCount,
+  likeCount,
 }: TransfigurePostCardProps) {
   const copy = serviceMessages[serviceLocale].transfigure;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
@@ -66,6 +75,8 @@ export function TransfigurePostCard({
     serviceLocale,
     gameLocale,
   );
+  const commentsHref = `${href}#comments`;
+  const threadKey = buildTransfigureCommentThreadKey(post.id);
   const openPost = useCallback(() => {
     router.push(href);
   }, [href, router]);
@@ -87,7 +98,7 @@ export function TransfigurePostCard({
       tabIndex={0}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="group flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-yellow-500/25 hover:bg-card/35 hover:shadow-lg hover:shadow-black/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-300/70 active:translate-y-0 motion-reduce:transform-none"
+      className="flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-yellow-500/25 hover:bg-card/35 hover:shadow-lg hover:shadow-black/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-300/70 active:translate-y-0 motion-reduce:transform-none"
     >
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
@@ -99,26 +110,15 @@ export function TransfigurePostCard({
           </span>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          {isOwner && (
-            <>
-              <button
-                type="button"
-                onClick={() => onEdit(post)}
-                className="text-muted-foreground opacity-80 transition-colors hover:text-yellow-300 sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100"
-                title={copy.edit}
-              >
-                <Pencil size={14} />
-              </button>
-              <button
-                type="button"
-                onClick={() => onDelete(post.id)}
-                className="text-muted-foreground opacity-80 transition-colors hover:text-red-400 sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100"
-                title={copy.delete}
-              >
-                <Trash2 size={14} />
-              </button>
-            </>
-          )}
+          <IndexCardEngagement
+            commentsHref={commentsHref}
+            commentCount={commentCount}
+            likeStoryId={threadKey}
+            likeCount={likeCount}
+            userId={userId}
+            authReady={authReady}
+            ensureUser={ensureUser}
+          />
         </div>
       </div>
 
@@ -168,7 +168,8 @@ export function TransfigurePostCard({
         )}
       </div>
 
-      <div className="mt-auto flex justify-end pt-2">
+      <div className="mt-auto flex items-center justify-end gap-1.5 pt-2">
+        {isOwner && <OwnPostMark />}
         <span className="max-w-[70%] truncate text-[11px] text-muted-foreground/80">
           {post.nickname}
         </span>

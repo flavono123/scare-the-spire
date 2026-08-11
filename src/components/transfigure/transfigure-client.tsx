@@ -2,7 +2,6 @@
 
 import { useCallback, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import { Sparkles } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
@@ -10,12 +9,14 @@ import { RichText } from "@/components/rich-text";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import Image from "@/components/ui/static-image";
 import { useAuth } from "@/hooks/use-auth";
+import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
   useTransfigurePosts,
   type SaveTransfigurePostInput,
 } from "@/hooks/use-transfigure-posts";
 import { useUserProfile } from "@/hooks/use-user-profile";
+import { buildTransfigureCommentThreadKey } from "@/lib/comment-threads";
 import type { GameLocale } from "@/lib/i18n";
 import type { TransfigurePost } from "@/lib/transfigure-types";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
@@ -48,6 +49,7 @@ export function TransfigureClient({
   const copy = serviceMessages[serviceLocale].transfigure;
   const { userId, ready, ensureUser } = useAuth();
   const { posts, loading, unavailable, add, update, remove } = useTransfigurePosts(userId);
+  const engagement = useEngagementCounts({ enabled: !unavailable });
   const [composerOpen, setComposerOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<TransfigurePost | null>(null);
   const [saveNotice, setSaveNotice] = useState<string | null>(null);
@@ -117,9 +119,12 @@ export function TransfigureClient({
               }}
               className="group/create inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-yellow-300/30 bg-yellow-500/10 px-3 py-2 text-xs font-semibold text-yellow-100 shadow-[0_0_18px_rgba(239,200,81,0.06)] transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-yellow-200/50 hover:bg-yellow-500/15 hover:shadow-[0_6px_22px_rgba(239,200,81,0.1)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-300/70 active:translate-y-0 motion-reduce:transform-none"
             >
-              <Sparkles
-                className="h-4 w-4 transition-transform duration-200 group-hover/create:rotate-12 group-hover/create:scale-110 motion-reduce:transform-none"
-                aria-hidden="true"
+              <Image
+                src="/images/sts2/relics/astrolabe.webp"
+                alt=""
+                width={18}
+                height={18}
+                className="object-contain transition-transform duration-200 group-hover/create:rotate-12 motion-reduce:transform-none"
               />
               {copy.create}
             </button>
@@ -170,24 +175,26 @@ export function TransfigureClient({
         <p className="py-8 text-center text-sm text-zinc-500">{copy.empty}</p>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
-          {posts.map((post) => (
-            <TransfigurePostCard
-              key={post.id}
-              post={post}
-              entities={entities}
-              entityMap={entityMap}
-              isOwner={post.user_id === userId}
-              serviceLocale={serviceLocale}
-              gameLocale={gameLocale}
-              upgradeLabel={upgradeLabel}
-              onEdit={(post) => {
-                setSaveNotice(null);
-                setEditingPost(post);
-                setComposerOpen(true);
-              }}
-              onDelete={remove}
-            />
-          ))}
+          {posts.map((post) => {
+            const threadKey = buildTransfigureCommentThreadKey(post.id);
+            return (
+              <TransfigurePostCard
+                key={post.id}
+                post={post}
+                entities={entities}
+                entityMap={entityMap}
+                isOwner={Boolean(userId && post.user_id === userId)}
+                serviceLocale={serviceLocale}
+                gameLocale={gameLocale}
+                upgradeLabel={upgradeLabel}
+                userId={userId}
+                authReady={ready}
+                ensureUser={ensureUser}
+                commentCount={engagement.comments[threadKey] ?? 0}
+                likeCount={engagement.likes[threadKey] ?? 0}
+              />
+            );
+          })}
         </div>
       )}
     </div>

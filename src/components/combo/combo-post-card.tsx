@@ -2,13 +2,15 @@
 
 import { useCallback, type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2 } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import { IndexCardEngagement } from "@/components/index-card-engagement";
+import { OwnPostMark } from "@/components/own-post-mark";
 import {
   extractComboHistoryRunReferences,
   extractComboYouTubeReference,
   type ComboPost,
 } from "@/lib/combo-types";
+import { buildComboCommentThreadKey } from "@/lib/comment-threads";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -18,16 +20,19 @@ import { serviceMessages } from "@/messages/service";
 import { ComboPostRenderer } from "./combo-post-renderer";
 import { ComboResourceStack } from "./combo-resource-stack";
 import { ComboYouTubeThumbnail } from "./combo-youtube-reference";
-import { ComboHistoryRunReferences } from "./combo-history-run-reference";
+import { ComboHistoryRunThumbnails } from "./combo-history-run-reference";
 
 interface ComboPostCardProps {
   post: ComboPost;
   entityMap: Map<string, EntityInfo>;
-  isOwner: boolean;
+  isOwner?: boolean;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
-  onEdit: (post: ComboPost) => void;
-  onDelete: (postId: string) => void;
+  userId: string | null;
+  authReady?: boolean;
+  ensureUser?: () => Promise<string | null>;
+  commentCount: number;
+  likeCount: number;
 }
 
 function formatRelativeTime(template: string, count: number): string {
@@ -53,11 +58,14 @@ function timeAgo(
 export function ComboPostCard({
   post,
   entityMap,
-  isOwner,
+  isOwner = false,
   serviceLocale,
   gameLocale,
-  onEdit,
-  onDelete,
+  userId,
+  authReady = true,
+  ensureUser,
+  commentCount,
+  likeCount,
 }: ComboPostCardProps) {
   const copy = serviceMessages[serviceLocale].combo;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
@@ -65,6 +73,8 @@ export function ComboPostCard({
   const youtubeReference = extractComboYouTubeReference(post.content);
   const historyRunReferences = extractComboHistoryRunReferences(post.content);
   const href = localizeHrefWithGameLocale(`/c-c-c-combo/${post.id}`, serviceLocale, gameLocale);
+  const commentsHref = `${href}#comments`;
+  const threadKey = buildComboCommentThreadKey(post.id);
   const openPost = useCallback(() => {
     router.push(href);
   }, [href, router]);
@@ -86,34 +96,26 @@ export function ComboPostCard({
       tabIndex={0}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="group cursor-pointer rounded-lg border border-border bg-card/30 px-4 py-3 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-yellow-500/30 hover:bg-card/40 hover:shadow-lg hover:shadow-black/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70 active:translate-y-0 motion-reduce:transform-none"
+      className="cursor-pointer rounded-lg border border-border bg-card/30 px-4 py-3 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-yellow-500/30 hover:bg-card/40 hover:shadow-lg hover:shadow-black/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70 active:translate-y-0 motion-reduce:transform-none"
     >
       <div className="mb-1.5 flex items-center justify-between">
-        <span className="text-sm font-semibold text-gray-300">{post.nickname}</span>
+        <span className="inline-flex min-w-0 items-center gap-1.5">
+          <span className="truncate text-sm font-semibold text-gray-300">{post.nickname}</span>
+          {isOwner && <OwnPostMark />}
+        </span>
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-500">
             {timeAgo(post.created_at, copy, dateLocale)}
           </span>
-          {isOwner && (
-            <>
-              <button
-                type="button"
-                onClick={() => onEdit(post)}
-                className="text-gray-500 opacity-80 transition-colors hover:text-yellow-300 sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100"
-                title={copy.edit}
-              >
-                <Pencil size={14} />
-              </button>
-              <button
-                type="button"
-                onClick={() => onDelete(post.id)}
-                className="text-gray-500 opacity-80 transition-colors hover:text-red-400 sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100"
-                title={copy.delete}
-              >
-                <Trash2 size={14} />
-              </button>
-            </>
-          )}
+          <IndexCardEngagement
+            commentsHref={commentsHref}
+            commentCount={commentCount}
+            likeStoryId={threadKey}
+            likeCount={likeCount}
+            userId={userId}
+            authReady={authReady}
+            ensureUser={ensureUser}
+          />
         </div>
       </div>
 
@@ -129,14 +131,24 @@ export function ComboPostCard({
         {youtubeReference && (
           <ComboYouTubeThumbnail reference={youtubeReference} />
         )}
+        {!youtubeReference && historyRunReferences.length > 0 && (
+          <ComboHistoryRunThumbnails
+            references={historyRunReferences}
+            serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
+          />
+        )}
       </div>
 
-      <ComboHistoryRunReferences
-        references={historyRunReferences}
-        serviceLocale={serviceLocale}
-        gameLocale={gameLocale}
-        variant="compact"
-      />
+      {youtubeReference && historyRunReferences.length > 0 && (
+        <div className="mt-2 flex justify-end">
+          <ComboHistoryRunThumbnails
+            references={historyRunReferences}
+            serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
+          />
+        </div>
+      )}
 
       <div className="text-sm leading-relaxed">
         <ComboPostRenderer

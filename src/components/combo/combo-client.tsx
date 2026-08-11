@@ -8,8 +8,10 @@ import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useComboPosts } from "@/hooks/use-combo-posts";
+import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { useUserProfile } from "@/hooks/use-user-profile";
+import { buildComboCommentThreadKey } from "@/lib/comment-threads";
 import type { PostBlock } from "@/lib/chemical-types";
 import {
   comboPostMatchesAnyGameElement,
@@ -47,8 +49,8 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
     loadMore,
     add,
     update,
-    remove,
   } = useComboPosts(userId);
+  const engagement = useEngagementCounts({ enabled: !unavailable });
   const [composerOpen, setComposerOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<ComboPost | null>(null);
   const [selectedGameElements, setSelectedGameElements] = useState<ComboResourceRef[]>([]);
@@ -125,7 +127,7 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
               alt=""
               width={18}
               height={18}
-              className="object-contain transition-transform duration-200 group-hover/create:scale-110 motion-reduce:transform-none"
+              className="object-contain transition-transform duration-200 group-hover/create:rotate-12 motion-reduce:transform-none"
             />
             {copy.create}
           </button>
@@ -170,21 +172,24 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
           {filteredPosts.length === 0 ? (
             <p className="py-8 text-center text-sm text-zinc-500">{copy.noMatchingCombos}</p>
           ) : (
-            filteredPosts.map((post) => (
-              <ComboPostCard
-                key={post.id}
-                post={post}
-                entityMap={entityMap}
-                isOwner={post.user_id === userId}
-                serviceLocale={serviceLocale}
-                gameLocale={gameLocale}
-                onEdit={(post) => {
-                  setEditingPost(post);
-                  setComposerOpen(true);
-                }}
-                onDelete={remove}
-              />
-            ))
+            filteredPosts.map((post) => {
+              const threadKey = buildComboCommentThreadKey(post.id);
+              return (
+                <ComboPostCard
+                  key={post.id}
+                  post={post}
+                  entityMap={entityMap}
+                  isOwner={Boolean(userId && post.user_id === userId)}
+                  serviceLocale={serviceLocale}
+                  gameLocale={gameLocale}
+                  userId={userId}
+                  authReady={ready}
+                  ensureUser={ensureUser}
+                  commentCount={engagement.comments[threadKey] ?? 0}
+                  likeCount={engagement.likes[threadKey] ?? 0}
+                />
+              );
+            })
           )}
           {hasMore && (
             <div
