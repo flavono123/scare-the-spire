@@ -64,6 +64,18 @@ playwright-report/
 /public/generated/comment-entities-sts2.json
 /public/comment-entities/sts2
 
+# CI/local static:data outputs (regenerate; do not commit fallout)
+/public/api/search-index
+/public/generated/search-index.json
+/public/generated/this-or-that-resources-*.json
+/public/generated/sts2-resource-patch-index.json
+/public/generated/sts2-patch-lines.json
+/public/generated/compendium-resource-manifest.json
+/public/generated/latest-byrdispatch-notice.json
+/public/generated/spine-player.min.js
+/src/generated/toy-box-news.json
+/src/generated/borrowed-game-copy.json
+
 # codex version update backup
 data/sts2-old/
 
