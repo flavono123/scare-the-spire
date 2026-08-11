@@ -691,6 +691,13 @@ export const serviceMessages = {
           rarity: "희귀도",
           source: "출처",
         },
+        toggles: {
+          wax: "밀랍",
+          melted: "녹음",
+          usedUp: "사용함",
+          disabled: "비활성",
+          cornucopia: "코르누코피아",
+        },
       },
       potionsView: {
         title: "포션 연구실",
@@ -1554,6 +1561,13 @@ export const serviceMessages = {
         stats: {
           rarity: "Rarity",
           source: "Source",
+        },
+        toggles: {
+          wax: "Wax",
+          melted: "Melted",
+          usedUp: "Used Up",
+          disabled: "Disabled",
+          cornucopia: "Cornucopia",
         },
       },
       potionsView: {
