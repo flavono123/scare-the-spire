@@ -45,10 +45,9 @@ export function resolveRelicArtFilterMode(opts: {
   statusOn: boolean;
 }): RelicArtFilterMode {
   if (opts.betaOverrides) return "none";
-  const waxOn = opts.waxCycle !== "off";
-  if (opts.source === "wax" && waxOn) return opts.waxCycle;
+  if (opts.source === "wax" && opts.waxCycle !== "off") return opts.waxCycle;
   if (opts.source === "status" && opts.statusOn) return "gray";
-  if (waxOn) return opts.waxCycle;
+  if (opts.waxCycle !== "off") return opts.waxCycle;
   if (opts.statusOn) return "gray";
   return "none";
 }

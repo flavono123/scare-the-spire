@@ -113,7 +113,7 @@ export function getCodexResourceOgMetadata(
   resource: CodexOgResource,
 ): Metadata {
   const metadata = getCodexMetadata(serviceLocale, `${resource.name} — ${collectionTitle}`);
-  const description = plainCodexOgDescription(resource.description) || metadata.description;
+  const description = plainCodexOgDescription(resource.description) || metadata.description || undefined;
   const imageUrl = absoluteSiteUrl(resource.imageUrl ?? DEFAULT_PAGE_OG_IMAGE.url);
   const image = {
     url: imageUrl,
