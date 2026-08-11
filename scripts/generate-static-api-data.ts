@@ -552,9 +552,21 @@ async function generateCommentEntitiesOnly() {
   ]);
 }
 
+async function generateSearchIndexOnly() {
+  const searchIndex = await buildSearchIndexPayload();
+  await Promise.all([
+    writeJson({ path: "generated/search-index.json", data: searchIndex }),
+    writeJson({ path: "api/search-index", data: searchIndex }),
+  ]);
+}
+
 async function main() {
   if (process.argv.includes("--comment-entities-only")) {
     await generateCommentEntitiesOnly();
+    return;
+  }
+  if (process.argv.includes("--search-index-only")) {
+    await generateSearchIndexOnly();
     return;
   }
   if (process.argv.includes("--borrowed-game-copy-only")) {
