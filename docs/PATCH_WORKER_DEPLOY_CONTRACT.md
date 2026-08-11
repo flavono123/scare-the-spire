@@ -37,6 +37,10 @@ but independently deployable surfaces.
 - When a push changes both patch notes and Compendium content, deploy the patch
   Worker first with safe pending previews, deploy the main Worker, then redeploy
   the patch Worker to enable newly available links.
+- Production CI (`.github/workflows/cloudflare-workers.yml`) must start the
+  patch Worker deploy before lint, disk cleanup, and the main Worker build.
+  Those steps are post-patch work; waiting on `pnpm cf:build` before
+  `pnpm cf:patch:deploy` is a patch-publish regression.
 
 ## Static-First Routing Target
 

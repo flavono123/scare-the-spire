@@ -123,16 +123,6 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      - name: Restore Next.js build cache
-        if: steps.changes.outputs.main == 'true'
-        uses: actions/cache@v4
-        with:
-          path: .next/cache
-          key: ${{ runner.os }}-next-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('package.json', 'next.config.*', 'open-next.config.*', 'wrangler.jsonc', 'tsconfig.json', 'src/**/*', 'data/**/*', 'public/**/*', 'scripts/**/*', 'workers/**/*') }}
-          restore-keys: |
-            ${{ runner.os }}-next-${{ hashFiles('pnpm-lock.yaml') }}-
-            ${{ runner.os }}-next-
-
       - name: Validate Cloudflare production configuration
         if: steps.changes.outputs.deploy_any == 'true'
         run: |
@@ -144,6 +134,81 @@ jobs:
           test "$NEXT_PUBLIC_SUPABASE_ENV" = "production"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - run: pnpm install --frozen-lockfile
+        if: steps.changes.outputs.deploy_any == 'true'
+
+      # Patch-first critical path: deploy patch before lint/main build.
+      # GHA telemetry (n=33 both-path runs): avg 501s to patch-deploy start was
+      # dominated by main Worker build (~6m) + free-disk + lint. Patch-only path
+      # already started patch deploy at ~69s; reorder both-path to match that floor.
+      - run: pnpm patch:test
+        if: steps.changes.outputs.patch == 'true' || steps.changes.outputs.patch_after_main == 'true'
+
+      - name: Deploy patch Worker before main
+        if: steps.changes.outputs.patch == 'true'
+        run: |
+          for attempt in 1 2 3; do
+            echo "patch Worker deploy attempt ${attempt}/3"
+            if pnpm cf:patch:deploy; then
+              exit 0
+            fi
+
+            if [[ "$attempt" -eq 3 ]]; then
+              echo "patch Worker deploy failed after ${attempt} attempts"
+              exit 1
+            fi
+
+            sleep $((attempt * 15))
+          done
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PATCH_COMPENDIUM_MANIFEST_SOURCE: live
+
+      - name: Smoke deployed patch Worker routes
+        if: steps.changes.outputs.patch == 'true'
+        run: |
+          origin="${NEXT_PUBLIC_SITE_ORIGIN%/}"
+          latest="$(node -e 'const patches = require("./data/sts2-patches.json"); patches.sort((a, b) => b.date.localeCompare(a.date)); process.stdout.write(patches[0].version)')"
+
+          smoke() {
+            path="$1"
+            url="${origin}${path}"
+
+            for attempt in $(seq 1 30); do
+              status="$(curl --silent --show-error --output /dev/null --write-out "%{http_code}" "$url" || true)"
+              echo "smoke ${url}: HTTP ${status} (attempt ${attempt}/30)"
+              case "$status" in
+                2*|3*) return 0 ;;
+              esac
+              sleep 5
+            done
+
+            echo "smoke failed for ${url}"
+            return 1
+          }
+
+          smoke "/patches"
+          smoke "/patches/${latest}"
+          smoke "/en/patches/${latest}"
+          smoke "/_patches/patch.css"
+
+      # Everything below is post-patch work: quality gates + main Worker path.
+      - run: pnpm i18n:validate
+        if: steps.changes.outputs.deploy_any == 'true'
+
+      - run: pnpm lint
+        if: steps.changes.outputs.deploy_any == 'true'
+
+      - name: Restore Next.js build cache
+        if: steps.changes.outputs.main == 'true'
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-next-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('package.json', 'next.config.*', 'open-next.config.*', 'wrangler.jsonc', 'tsconfig.json', 'src/**/*', 'data/**/*', 'public/**/*', 'scripts/**/*', 'workers/**/*') }}
+          restore-keys: |
+            ${{ runner.os }}-next-${{ hashFiles('pnpm-lock.yaml') }}-
+            ${{ runner.os }}-next-
 
       - name: Compute Cloudflare build id
         if: steps.changes.outputs.main == 'true'
@@ -170,18 +235,6 @@ jobs:
           echo "NEXT_BUILD_ID=cf-${build_hash}" >> "$GITHUB_ENV"
           echo "Cloudflare build id: cf-${build_hash}"
 
-      - run: pnpm install --frozen-lockfile
-        if: steps.changes.outputs.deploy_any == 'true'
-
-      - run: pnpm i18n:validate
-        if: steps.changes.outputs.deploy_any == 'true'
-
-      - run: pnpm lint
-        if: steps.changes.outputs.deploy_any == 'true'
-
-      - run: pnpm patch:test
-        if: steps.changes.outputs.patch == 'true' || steps.changes.outputs.patch_after_main == 'true'
-
       - name: Free runner disk space for the static build
         if: steps.changes.outputs.main == 'true'
         run: |
@@ -195,26 +248,6 @@ jobs:
       - name: Check main Worker size
         if: steps.changes.outputs.main == 'true'
         run: pnpm cf:size
-
-      - name: Deploy patch Worker before main
-        if: steps.changes.outputs.patch == 'true'
-        run: |
-          for attempt in 1 2 3; do
-            echo "patch Worker deploy attempt ${attempt}/3"
-            if pnpm cf:patch:deploy; then
-              exit 0
-            fi
-
-            if [[ "$attempt" -eq 3 ]]; then
-              echo "patch Worker deploy failed after ${attempt} attempts"
-              exit 1
-            fi
-
-            sleep $((attempt * 15))
-          done
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          PATCH_COMPENDIUM_MANIFEST_SOURCE: live
 
       - name: Deploy to Cloudflare Workers
         if: steps.changes.outputs.main == 'true'
@@ -318,8 +351,8 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PATCH_COMPENDIUM_MANIFEST_SOURCE: live
 
-      - name: Smoke deployed patch Worker routes
-        if: steps.changes.outputs.patch == 'true' || steps.changes.outputs.patch_after_main == 'true'
+      - name: Smoke redeployed patch Worker routes
+        if: steps.changes.outputs.main == 'true' && steps.changes.outputs.patch_after_main == 'true'
         run: |
           origin="${NEXT_PUBLIC_SITE_ORIGIN%/}"
           latest="$(node -e 'const patches = require("./data/sts2-patches.json"); patches.sort((a, b) => b.date.localeCompare(a.date)); process.stdout.write(patches[0].version)')"
