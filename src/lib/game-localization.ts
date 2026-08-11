@@ -1,10 +1,12 @@
 import fs from "fs/promises";
 import path from "path";
 import type { GameLocale } from "./i18n";
+import type { GameLocalizationTable } from "./game-localization-text";
+
+export type { GameLocalizationTable } from "./game-localization-text";
+export { gameText, gameNullableText } from "./game-localization-text";
 
 const LOCALIZATION_DIR = path.join(process.cwd(), "data/sts2/localization");
-
-export type GameLocalizationTable = Record<string, string>;
 
 const tableCache = new Map<string, Promise<GameLocalizationTable>>();
 
@@ -22,20 +24,4 @@ export async function readGameLocalizationTable(
 
   tableCache.set(cacheKey, tablePromise);
   return tablePromise;
-}
-
-export function gameText(
-  table: GameLocalizationTable | null,
-  key: string,
-  fallback: string,
-): string {
-  return table?.[key] ?? fallback;
-}
-
-export function gameNullableText(
-  table: GameLocalizationTable | null,
-  key: string,
-  fallback: string | null,
-): string | null {
-  return table?.[key] ?? fallback;
 }
