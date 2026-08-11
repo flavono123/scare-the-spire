@@ -632,13 +632,13 @@ function SelectedResourcePreview({
           data-comments-jump
           data-comment-count={commentCount}
           aria-label={`${label} ${commentLabel}`}
-          className={`inline-flex items-center gap-1 rounded-sm outline-none transition-colors focus-visible:ring-1 focus-visible:ring-yellow-400/60 ${
+          className={`inline-flex items-center gap-1 rounded-sm outline-none transition-colors focus-visible:ring-1 focus-visible:ring-[#d4a843]/60 ${
             commentCount && commentCount > 0
-              ? "text-yellow-300/90 hover:text-yellow-200"
-              : "text-gray-400 hover:text-yellow-300"
+              ? "text-[#d4a843]/90 hover:text-[#d4a843]"
+              : "text-gray-400 hover:text-[#d4a843]"
           }`}
         >
-          <MessageCircle size={12} aria-hidden="true" />
+          <MessageCircle size={12} />
           <span>{commentLabel}</span>
         </a>
       </div>

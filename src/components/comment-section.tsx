@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import Image from "@/components/ui/static-image";
+import { Trash2 } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { RichContentEditorProps } from "@/components/rich-content-editor";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
@@ -19,6 +19,7 @@ import { useUserProfile } from "@/hooks/use-user-profile";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 import { EngagementSpinner } from "@/components/engagement-spinner";
+import { SPIRE_ACTION_CONTROL_CLASS, SpireLikeIcon } from "@/components/spire-icon";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { buildRichContentIndexes, resolveRichContentBlocks } from "@/lib/rich-content-blocks";
@@ -116,25 +117,28 @@ export function CommentSection({
                   {new Date(comment.created_at).toLocaleDateString(dateLocale)}
                 </span>
                 <button
+                  type="button"
                   onClick={() => handleCommentLike(comment.id)}
                   disabled={!ready || storageUnavailable}
-                  className="flex items-center gap-0.5 text-[10px] text-muted-foreground transition-all disabled:opacity-30"
+                  className={`${SPIRE_ACTION_CONTROL_CLASS} gap-0.5 text-[10px] text-muted-foreground disabled:opacity-30 ${
+                    likedSet.has(comment.id) ? "text-[#d4a843]" : ""
+                  }`}
+                  title={copy.likeAlt}
                 >
-                  <Image
-                    src="/images/relics/runic-dodecahedron.webp"
-                    alt={copy.likeAlt}
-                    width={14}
-                    height={14}
-                    className={`transition-all ${likedSet.has(comment.id) ? "" : "opacity-40 grayscale"}`}
-                  />
-                  {(likeCounts.get(comment.id) ?? 0) > 0 && <span>{likeCounts.get(comment.id)}</span>}
+                  <SpireLikeIcon size={14} active={likedSet.has(comment.id)} />
+                  {(likeCounts.get(comment.id) ?? 0) > 0 && (
+                    <span className="tabular-nums">{likeCounts.get(comment.id)}</span>
+                  )}
                 </button>
                 {userId === comment.user_id && (
                   <button
+                    type="button"
                     onClick={() => remove(comment.id)}
-                    className="text-[10px] text-muted-foreground hover:text-red-400"
+                    className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground transition-colors hover:text-red-300"
+                    title={copy.delete}
                   >
-                    {copy.delete}
+                    <Trash2 size={12} />
+                    <span>{copy.delete}</span>
                   </button>
                 )}
               </div>

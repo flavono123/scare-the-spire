@@ -47,7 +47,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-type TokenKind = "유물" | "파워" | "포션";
+type TokenKind = "유물" | "파워" | "포션" | "이벤트";
 
 type TokenOption = {
   id: string;
@@ -62,6 +62,18 @@ const TOKENS = [
     label: "고철을 보물로",
     kind: "파워",
     src: "/images/sts2/powers/trash_to_treasure_power.webp",
+  },
+  {
+    id: "whisper-bubble",
+    label: "인형의 방 속삭임 말풍선",
+    kind: "이벤트",
+    src: "/images/sts2/event-vfx/doll_room_whisper_bubble_l.webp",
+  },
+  {
+    id: "necro-mastery",
+    label: "강령의 극의",
+    kind: "파워",
+    src: "/images/sts2/powers/necro_mastery_power.webp",
   },
   {
     id: "vital-spark",
@@ -469,14 +481,14 @@ const ICON_ROWS: readonly IconRow[] = [
   {
     icon: MessageCircle,
     iconName: "MessageCircle",
-    usage: "댓글 수 · 비교 카드 · /patches/changes",
-    tokenId: "emotion-chip",
+    usage: "댓글 (통일 Lucide) · 인덱스 toast-up · tip: 첫 댓글 쓰기 / n개의 댓글",
+    tokenId: "whisper-bubble",
   },
   {
     icon: Pencil,
     iconName: "Pencil",
-    usage: "/transfigure/* 수정",
-    tokenId: "book-repair-knife",
+    usage: "상세 수정 (통일 Lucide, spire-gold) · PostDetailActions",
+    tokenId: "tools-of-the-trade",
   },
   {
     icon: Play,
@@ -541,7 +553,7 @@ const ICON_ROWS: readonly IconRow[] = [
   {
     icon: Trash2,
     iconName: "Trash2",
-    usage: "게시글·댓글·승천 기록 삭제",
+    usage: "삭제 (통일 Lucide, red) · 상세 PostDetailActions · 인덱스 미노출",
     tokenId: "trash-to-treasure",
   },
   {

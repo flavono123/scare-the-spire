@@ -1,6 +1,7 @@
 "use client";
 
-import Image from "@/components/ui/static-image";
+import { MessageCircle } from "lucide-react";
+import { SpireLikeIcon } from "@/components/spire-icon";
 import { EngagementSpinner, EngagementUnavailableIcon } from "@/components/engagement-spinner";
 
 interface EngagementSummaryProps {
@@ -45,20 +46,15 @@ export function EngagementSummary({
   return (
     <span className={`inline-flex items-center gap-1.5 align-middle ${className}`}>
       {shouldShowComments && (
-        <span className="text-xs font-normal text-muted-foreground/50">
-          ({commentCount})
+        <span className="inline-flex items-center gap-0.5 text-xs font-normal text-muted-foreground/50">
+          <MessageCircle size={12} aria-hidden />
+          <span className="tabular-nums">({commentCount})</span>
         </span>
       )}
       {shouldShowLikes && (
         <span className="inline-flex items-center gap-0.5 text-xs text-muted-foreground">
-          <Image
-            src="/images/relics/runic-dodecahedron.webp"
-            alt="like"
-            width={14}
-            height={14}
-            className="opacity-40 grayscale"
-          />
-          <span>{likeCount}</span>
+          <SpireLikeIcon size={14} />
+          <span className="tabular-nums">{likeCount}</span>
         </span>
       )}
     </span>
