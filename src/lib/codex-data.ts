@@ -7,6 +7,7 @@ import {
   readGameLocalizationTable,
   type GameLocalizationTable,
 } from "./game-localization";
+import { getRelicArtVariants } from "./relic-art-variants-catalog";
 import {
   getGameplayCardRarityLabels,
   getGameplayCardTypeLabels,
@@ -825,7 +826,7 @@ const RELIC_ICON_VARIANTS_BY_ID: Record<string, RelicIconVariantSource[]> = {
   LOOMING_FRUIT: [
     {
       id: "cornucopia",
-      labelKo: "코르누코피아 있음",
+      labelKo: "코르누코피아",
       labelEn: "Cornucopia",
       filename: "looming_fruit.webp",
     },
@@ -883,6 +884,7 @@ function mapRelic(
     betaImageUrl,
     variantImageUrls: variantMap,
     iconVariants,
+    artVariants: getRelicArtVariants(kor.id),
     introducedInPatch: kor.introducedInPatch,
     deprecated: kor.deprecated,
     deprecatedInPatch: kor.deprecatedInPatch,

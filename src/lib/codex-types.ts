@@ -247,6 +247,15 @@ export interface CodexRelic extends CodexLifecycle {
   betaImageUrl: string | null; // local path
   variantImageUrls: Partial<Record<RelicPool, string>> | null; // character-specific image variants
   iconVariants: RelicIconVariant[] | null; // relic-specific icon variants
+  /** Optional stamp from mapRelic; detail UI always resolves via getRelicArtVariants(id). */
+  artVariants?: RelicArtVariants;
+}
+
+/** Detail-page art preview toggles. Prefer catalog lookup via getRelicArtVariants(id). */
+export interface RelicArtVariants {
+  wax: boolean;
+  usedUp: boolean;
+  disabled: boolean;
 }
 
 export interface RelicIconVariant {

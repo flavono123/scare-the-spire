@@ -23,6 +23,7 @@ import {
   type TransfigureCardRarity,
   type TransfigureCardType,
 } from "@/lib/transfigure-types";
+import { markUpgradePlusGreen } from "@/lib/transfigure-upgrade-diff";
 import { serviceMessages } from "@/messages/service";
 
 interface TransfigureResourcePreviewProps {
@@ -122,7 +123,11 @@ export function TransfigureResourcePreview({
       : transformedCost;
     const normalizedCost = transformedActiveCost?.trim().toUpperCase()
       || sourceCost;
-    const description = transfigureBlocksToGameDescription(activeBlocks);
+    const baseDescription = transfigureBlocksToGameDescription(blocks);
+    const activeDescription = transfigureBlocksToGameDescription(activeBlocks);
+    const description = showUpgrade && effectiveUpgradeBlocks != null
+      ? markUpgradePlusGreen(baseDescription, activeDescription)
+      : activeDescription;
     const card = {
       ...applyTransfigureCardMetadata(
         entity.cardData,
