@@ -159,7 +159,7 @@ async function main() {
     tipKeys(collectCardSideTips(constellation, engCatalog)).includes("keyword:BLOCK"),
   );
 
-  const { chooseCardSideTipHorizontal, placeCardSideTip } = await import("../src/lib/card-side-tip-placement.ts");
+  const { chooseCardSideTipHorizontal, placeCardSideTip } = await import("../src/lib/card-side-tip-placement");
   assert.equal(
     chooseCardSideTipHorizontal({
       leftSpace: 400,
