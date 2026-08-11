@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
@@ -28,10 +28,16 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
 import { EntityReferenceGroupLinks } from "./entity-reference-links";
 import { GameHoverTip } from "./hover-tip";
-import { GameCheckboxToggle } from "./game-checkbox";
+import { GameCheckboxToggle, GameWaxCycleToggle, type GameWaxCycleValue } from "./game-checkbox";
 import { RichDescription } from "./rich-description";
 import { getRelatedAncientIdsForRelic, getRelatedCardIdsForRelic, getRelatedEnchantmentIdsForRelic, getRelatedEventIdsForRelic, getRelatedPowerIdsForRelic } from "@/lib/codex-references";
 import { STS2ChangeHistory } from "./sts2-change-history";
+import {
+  composeRelicDetailFilters,
+  resolveRelicArtFilterMode,
+  type RelicArtFilterSource,
+} from "@/lib/relic-art-filters";
+import { getRelicArtVariants } from "@/lib/relic-art-variants-catalog";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -120,19 +126,34 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
     ? VARIANT_ORDER.filter((p) => relic.variantImageUrls![p])
     : [];
   const iconVariants = relic.iconVariants ?? [];
+  const cornucopiaVariant = iconVariants.find((v) => v.id === "cornucopia") ?? null;
+  const noCornucopiaVariant = iconVariants.find((v) => v.id === "no-cornucopia") ?? null;
+  const hasCornucopiaToggle = Boolean(cornucopiaVariant && noCornucopiaVariant);
   const [selectedVariant, setSelectedVariant] = useState<RelicPool>(
     initialVariant && relic.variantImageUrls?.[initialVariant] ? initialVariant : variantPools[0] ?? relic.pool,
   );
-  const [selectedIconVariantState, setSelectedIconVariantState] = useState<{ relicId: string; variantId: string | null }>({
-    relicId: relic.id,
-    variantId: iconVariants[0]?.id ?? null,
-  });
+  const [showCornucopia, setShowCornucopia] = useState(true);
+  const [waxCycle, setWaxCycle] = useState<GameWaxCycleValue>("off");
+  const [showUsedUp, setShowUsedUp] = useState(false);
+  const [showDisabled, setShowDisabled] = useState(false);
+  /** Last-clicked art family wins when wax and used-up/disabled can both be on. */
+  const [artFilterSource, setArtFilterSource] = useState<RelicArtFilterSource>(null);
   const [showBeta, setShowBeta] = useState(initialShowBeta && Boolean(relic.betaImageUrl));
   const [commentCount, setCommentCount] = useState(0);
-  const selectedIconVariantId = selectedIconVariantState.relicId === relic.id
-    ? selectedIconVariantState.variantId
-    : iconVariants[0]?.id ?? null;
-  const selectedIconVariant = iconVariants.find((variant) => variant.id === selectedIconVariantId) ?? iconVariants[0] ?? null;
+
+  useEffect(() => {
+    setWaxCycle("off");
+    setShowUsedUp(false);
+    setShowDisabled(false);
+    setArtFilterSource(null);
+    setShowCornucopia(true);
+  }, [relic.id]);
+
+  const artVariants = useMemo(() => getRelicArtVariants(relic.id), [relic.id]);
+
+  const selectedIconVariant = hasCornucopiaToggle
+    ? (showCornucopia ? cornucopiaVariant : noCornucopiaVariant)
+    : null;
 
   const displayImageUrl = showBeta && relic.betaImageUrl
     ? relic.betaImageUrl
@@ -147,6 +168,39 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
     : relic.variantImageUrls
     ? selectedVariant
     : relic.pool;
+
+  const statusFilterOn = showUsedUp || showDisabled;
+  const waxFilterOn = waxCycle !== "off";
+  const artFilterMode = resolveRelicArtFilterMode({
+    betaOverrides: Boolean(showBeta && relic.betaImageUrl),
+    source: artFilterSource,
+    waxCycle,
+    statusOn: statusFilterOn,
+  });
+  // Character-colored outlines (e.g. ironclad #f87171) make melted look vivid red;
+  // keep a neutral shadow whenever an art filter is active.
+  const outlineFilter = artFilterMode === "none"
+    ? (characterOutlineFilter(displayOutlinePool) ?? "drop-shadow(0 4px 8px rgba(0,0,0,0.5))")
+    : "drop-shadow(0 4px 8px rgba(0,0,0,0.65))";
+  const displayFilter = composeRelicDetailFilters(artFilterMode, outlineFilter);
+
+  const onWaxCycleChange = (next: GameWaxCycleValue) => {
+    setWaxCycle(next);
+    if (next !== "off") setArtFilterSource("wax");
+    else setArtFilterSource(statusFilterOn ? "status" : null);
+  };
+  const onUsedUpChange = (checked: boolean) => {
+    setShowUsedUp(checked);
+    if (checked) setArtFilterSource("status");
+    else setArtFilterSource(waxFilterOn ? "wax" : null);
+  };
+  const onDisabledChange = (checked: boolean) => {
+    setShowDisabled(checked);
+    if (checked) setArtFilterSource("status");
+    else setArtFilterSource(waxFilterOn ? "wax" : null);
+  };
+
+  const relicToggles = serviceText.relicsView.toggles;
 
   const rarityColor = RELIC_RARITY_COLORS[relic.rarity];
   const poolColor = relic.pool !== "shared" ? getCharacterColor(relic.pool) : undefined;
@@ -289,9 +343,7 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
                     width={160}
                     height={160}
                     className="h-full w-full object-contain"
-                    style={{
-                      filter: characterOutlineFilter(displayOutlinePool) ?? "drop-shadow(0 4px 8px rgba(0,0,0,0.5))",
-                    }}
+                    style={displayFilter ? { filter: displayFilter } : undefined}
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-2xl text-gray-600">
@@ -323,42 +375,53 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
                 </div>
               )}
 
-              {iconVariants.length > 0 && (
-                <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5">
-                  <span className="font-game-title text-sm font-bold text-[#f1c94f] [text-shadow:2px_2px_0_rgba(0,0,0,0.82)]">
-                    {serviceLocale === "ko" ? "외형" : "Appearance"}
-                  </span>
-                  <div className="flex flex-wrap justify-center gap-1" role="group" aria-label={`${relic.name} ${serviceLocale === "ko" ? "외형" : "appearance"}`}>
-                    {iconVariants.map((variant) => {
-                      const isSelected = variant.id === selectedIconVariant?.id;
-                      return (
-                        <button
-                          key={variant.id}
-                          type="button"
-                          onClick={() => setSelectedIconVariantState({ relicId: relic.id, variantId: variant.id })}
-                          className="rounded border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-white/10"
-                          style={{
-                            backgroundColor: isSelected ? "rgba(241, 201, 79, 0.18)" : "rgba(255,255,255,0.03)",
-                            borderColor: isSelected ? "rgba(241, 201, 79, 0.55)" : "rgba(255,255,255,0.1)",
-                            color: isSelected ? "#f1c94f" : "#a1a1aa",
-                          }}
-                        >
-                          {serviceLocale === "ko" ? variant.labelKo : variant.labelEn}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
+              <div className="flex flex-col items-center gap-1.5">
+                {hasCornucopiaToggle && (
+                  <GameCheckboxToggle
+                    checked={showCornucopia}
+                    onCheckedChange={setShowCornucopia}
+                    label={relicToggles.cornucopia}
+                    size="md"
+                  />
+                )}
 
-              {relic.betaImageUrl && (
-                <GameCheckboxToggle
-                  checked={showBeta}
-                  onCheckedChange={setShowBeta}
-                  label={serviceText.cardsView.toggles.betaArt}
-                  size="md"
-                />
-              )}
+                {artVariants.wax && (
+                  <GameWaxCycleToggle
+                    value={waxCycle}
+                    onValueChange={onWaxCycleChange}
+                    waxLabel={relicToggles.wax}
+                    meltedLabel={relicToggles.melted}
+                    size="md"
+                  />
+                )}
+
+                {artVariants.usedUp && (
+                  <GameCheckboxToggle
+                    checked={showUsedUp}
+                    onCheckedChange={onUsedUpChange}
+                    label={relicToggles.usedUp}
+                    size="md"
+                  />
+                )}
+
+                {artVariants.disabled && (
+                  <GameCheckboxToggle
+                    checked={showDisabled}
+                    onCheckedChange={onDisabledChange}
+                    label={relicToggles.disabled}
+                    size="md"
+                  />
+                )}
+
+                {relic.betaImageUrl && (
+                  <GameCheckboxToggle
+                    checked={showBeta}
+                    onCheckedChange={setShowBeta}
+                    label={serviceText.cardsView.toggles.betaArt}
+                    size="md"
+                  />
+                )}
+              </div>
             </div>
 
             <GameHoverTip
