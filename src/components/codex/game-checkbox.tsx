@@ -118,3 +118,106 @@ export function GameCheckboxToggle({
     </button>
   );
 }
+
+export type GameWaxCycleValue = "off" | "wax" | "melted";
+
+const WAX_CYCLE_ORDER: GameWaxCycleValue[] = ["off", "wax", "melted"];
+
+/** Single tickbox: off → wax → melted → off. Not aria-checked=mixed. */
+export function GameWaxCycleToggle({
+  value,
+  onValueChange,
+  waxLabel,
+  meltedLabel,
+  size = "sm",
+  align = "center",
+  disabled = false,
+  className,
+  labelClassName,
+}: {
+  value: GameWaxCycleValue;
+  onValueChange?: (value: GameWaxCycleValue) => void;
+  waxLabel: string;
+  meltedLabel: string;
+  size?: GameCheckboxSize;
+  align?: "center" | "start";
+  disabled?: boolean;
+  className?: string;
+  labelClassName?: string;
+}) {
+  const styles = SIZE_STYLES[size];
+  const active = value !== "off";
+  const melted = value === "melted";
+  const label = melted ? meltedLabel : waxLabel;
+  const markColor = melted ? "#8b0000" : "#efc65a";
+  const ariaLabel = melted ? meltedLabel : waxLabel;
+
+  return (
+    <button
+      type="button"
+      role="button"
+      aria-pressed={active}
+      aria-label={ariaLabel}
+      disabled={disabled}
+      onClick={() => {
+        const idx = WAX_CYCLE_ORDER.indexOf(value);
+        onValueChange?.(WAX_CYCLE_ORDER[(idx + 1) % WAX_CYCLE_ORDER.length]!);
+      }}
+      title={ariaLabel}
+      className={cn(
+        "group flex max-w-full select-none rounded-sm bg-transparent text-left transition-[filter,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300/70 disabled:pointer-events-none disabled:opacity-45",
+        align === "start" ? "items-start" : "items-center",
+        styles.root,
+        active ? "brightness-110" : "opacity-80 hover:opacity-100",
+        className,
+      )}
+    >
+      <span
+        aria-hidden="true"
+        className={cn(
+          "relative shrink-0 transition-transform group-hover:scale-105",
+          align === "start" && "mt-0.5",
+          styles.icon,
+        )}
+      >
+        <Image
+          src={TICKBOX_FILL_SRC}
+          alt=""
+          width={72}
+          height={72}
+          className={cn(
+            "absolute inset-[14%] h-[72%] w-[72%] object-contain opacity-70",
+            "[filter:brightness(0)_saturate(100%)_invert(22%)_sepia(14%)_saturate(1161%)_hue-rotate(139deg)_brightness(83%)_contrast(83%)]",
+            active && "opacity-85",
+          )}
+        />
+        <Image
+          src={TICKBOX_OUTLINE_SRC}
+          alt=""
+          width={72}
+          height={72}
+          className="absolute inset-0 h-full w-full object-contain [filter:sepia(0.22)_saturate(1.25)_brightness(1.1)_drop-shadow(2px_2px_0_rgba(0,0,0,0.75))]"
+        />
+        {active && (
+          <span
+            className={cn(
+              "absolute rotate-45 rounded-[2px] [filter:drop-shadow(2px_2px_0_rgba(0,0,0,0.78))]",
+              styles.mark,
+            )}
+            style={{ borderBottomColor: markColor, borderRightColor: markColor }}
+          />
+        )}
+      </span>
+      <span
+        className={cn(
+          "min-w-0 font-game-title font-bold tracking-[0] transition-colors [text-shadow:2px_2px_0_rgba(0,0,0,0.82)]",
+          melted ? "text-[#c44] group-hover:text-[#e66]" : "text-[#f1c94f] group-hover:text-[#ffe27a]",
+          styles.label,
+          labelClassName,
+        )}
+      >
+        {label}
+      </span>
+    </button>
+  );
+}
