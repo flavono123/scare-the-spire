@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { HistoryCourseCover } from "@/components/history-course/history-course-cover";
 import Image from "@/components/ui/static-image";
@@ -16,13 +17,45 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
-import { isCoverSpec } from "@/lib/run-cover-types";
+import { getRunCoverSpec } from "@/lib/run-donation";
+import { isCoverSpec, type CoverSpec } from "@/lib/run-cover-types";
+import { cn } from "@/lib/utils";
 
 interface ComboHistoryRunReferencesProps {
   references: HistoryRunBlock[];
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   variant: "compact" | "detail";
+}
+
+/** Index-card slot: same place/size language as ComboYouTubeThumbnail. */
+export function ComboHistoryRunThumbnails({
+  references,
+  serviceLocale,
+  gameLocale,
+}: {
+  references: HistoryRunBlock[];
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
+}) {
+  if (references.length === 0) return null;
+  return (
+    <div className="flex shrink-0 items-start gap-1.5">
+      {references.slice(0, 2).map((reference) => (
+        <ComboHistoryRunThumbnail
+          key={reference.runId}
+          block={reference}
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+        />
+      ))}
+      {references.length > 2 && (
+        <span className="self-center shrink-0 rounded-full border border-amber-300/10 bg-amber-100/5 px-1.5 py-0.5 text-[10px] font-semibold text-amber-200/50">
+          +{references.length - 2}
+        </span>
+      )}
+    </div>
+  );
 }
 
 export function ComboHistoryRunReferences({
@@ -34,29 +67,19 @@ export function ComboHistoryRunReferences({
   if (references.length === 0) return null;
 
   if (variant === "compact") {
-    const first = references[0];
-    if (!first) return null;
     return (
-      <div className="mt-2 flex min-w-0 items-center gap-1.5">
-        <HistoryRunLink
-          block={first}
-          serviceLocale={serviceLocale}
-          gameLocale={gameLocale}
-          compact
-        />
-        {references.length > 1 && (
-          <span className="shrink-0 rounded-full border border-amber-300/10 bg-amber-100/5 px-1.5 py-0.5 text-[10px] font-semibold text-amber-200/50">
-            +{references.length - 1}
-          </span>
-        )}
-      </div>
+      <ComboHistoryRunThumbnails
+        references={references}
+        serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
+      />
     );
   }
 
   return (
     <section className="space-y-2" data-combo-history-runs>
       {references.map((reference) => (
-        <HistoryRunLink
+        <HistoryRunDetailLink
           key={reference.runId}
           block={reference}
           serviceLocale={serviceLocale}
@@ -67,16 +90,37 @@ export function ComboHistoryRunReferences({
   );
 }
 
-function HistoryRunLink({
+function useResolvedCoverSpec(block: HistoryRunBlock): CoverSpec | null {
+  const embedded = isCoverSpec(block.snapshot.coverSpec)
+    ? block.snapshot.coverSpec
+    : null;
+  const [cover, setCover] = useState<CoverSpec | null>(embedded);
+
+  useEffect(() => {
+    if (embedded) {
+      setCover(embedded);
+      return;
+    }
+    let cancelled = false;
+    void getRunCoverSpec(block.runId).then((next) => {
+      if (!cancelled) setCover(next);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [block.runId, embedded]);
+
+  return cover;
+}
+
+function ComboHistoryRunThumbnail({
   block,
   serviceLocale,
   gameLocale,
-  compact = false,
 }: {
   block: HistoryRunBlock;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
-  compact?: boolean;
 }) {
   const href = localizeHrefWithGameLocale(
     `/history-course/${block.runId}`,
@@ -84,33 +128,72 @@ function HistoryRunLink({
     gameLocale,
   );
   const primary = historyRunPrimaryLabel(block, serviceLocale);
+  const cover = useResolvedCoverSpec(block);
 
-  if (compact) {
-    return (
-      <Link
-        href={href}
-        title={primary}
-        className="group/run flex min-w-0 max-w-full items-center gap-1.5 rounded-md border border-amber-300/10 bg-amber-100/5 px-2 py-1 text-[10px] font-semibold text-amber-100/70 transition-colors hover:border-amber-300/30 hover:text-amber-100"
-      >
-        <Image
-          src={HISTORY_COURSE_RELIC_IMAGE}
-          alt=""
-          width={15}
-          height={15}
-          className="h-4 w-4 shrink-0 object-contain"
+  return (
+    <Link
+      href={href}
+      title={cover?.phrase || primary}
+      className={cn(
+        "group/run relative block w-24 shrink-0 overflow-hidden rounded-md outline-none ring-1 ring-amber-300/20",
+        "transition-[transform,filter,box-shadow] duration-200",
+        "hover:-translate-y-0.5 hover:brightness-110 hover:ring-amber-300/45",
+        "focus-visible:ring-2 focus-visible:ring-amber-300 active:translate-y-0 motion-reduce:transform-none",
+        "sm:w-32",
+      )}
+    >
+      {cover ? (
+        <HistoryCourseCover
+          cover={cover}
+          character={block.snapshot.character}
+          size="compact"
+          meta={{
+            win: block.snapshot.win,
+            totalFloors: block.snapshot.totalFloors,
+            ascension: block.snapshot.ascension,
+            build: block.snapshot.build,
+            seed: block.snapshot.seed,
+          }}
         />
-        <span className="truncate">{primary}</span>
-        <ArrowUpRight
-          className="h-3 w-3 shrink-0 opacity-40 transition-opacity group-hover/run:opacity-80"
-          aria-hidden="true"
-        />
-      </Link>
-    );
-  }
+      ) : (
+        <span className="relative flex aspect-video items-center justify-center bg-zinc-950">
+          <Image
+            src={HISTORY_RUN_CHARACTER_PORTRAITS[block.snapshot.character]
+              ?? "/images/sts2/characters/char_select_random.webp"}
+            alt=""
+            width={56}
+            height={56}
+            className="h-10 w-10 object-contain"
+          />
+          <Image
+            src={HISTORY_COURSE_RELIC_IMAGE}
+            alt=""
+            width={16}
+            height={16}
+            className="absolute bottom-1 right-1 h-4 w-4 object-contain"
+          />
+        </span>
+      )}
+    </Link>
+  );
+}
 
-  const cover = isCoverSpec(block.snapshot.coverSpec)
-    ? block.snapshot.coverSpec
-    : null;
+function HistoryRunDetailLink({
+  block,
+  serviceLocale,
+  gameLocale,
+}: {
+  block: HistoryRunBlock;
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
+}) {
+  const href = localizeHrefWithGameLocale(
+    `/history-course/${block.runId}`,
+    serviceLocale,
+    gameLocale,
+  );
+  const primary = historyRunPrimaryLabel(block, serviceLocale);
+  const cover = useResolvedCoverSpec(block);
 
   return (
     <Link
@@ -118,7 +201,7 @@ function HistoryRunLink({
       className="group/run flex items-center gap-3 rounded-xl border border-amber-300/10 bg-black/25 p-3 transition-[transform,border-color,background-color] hover:-translate-y-0.5 hover:border-amber-300/30 hover:bg-amber-300/5 motion-reduce:transform-none"
     >
       {cover ? (
-        <span className="w-28 shrink-0 sm:w-36">
+        <span className="w-36 shrink-0 sm:w-48">
           <HistoryCourseCover
             cover={cover}
             character={block.snapshot.character}

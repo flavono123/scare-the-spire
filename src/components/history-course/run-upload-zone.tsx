@@ -99,7 +99,7 @@ export interface RunUploadZoneProps {
   // Fired after a batch of files has been parsed and stashed. The
   // parent uses this to bump a refreshKey for MyRunsList so the
   // newly-saved runs surface in the cards grid.
-  onUploadComplete?: (count: number) => void;
+  onUploadComplete?: (payload: { count: number; latestRunId?: string }) => void;
 }
 
 export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
@@ -128,6 +128,7 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
         // never rate-limits.
         const toShare: typeof result.runs = [];
         let saved = 0;
+        let latestRunId: string | undefined;
         for (const parsed of result.runs) {
           if (!isBuildSupported(parsed.run.build_id)) continue;
           try {
@@ -137,13 +138,16 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
               coverSpec: parsed.coverSpec,
             });
             saved += 1;
+            latestRunId = parsed.slug;
             if (shareOnUpload && supabaseEnabled) toShare.push(parsed);
           } catch {
             // ignore individual save failure
           }
         }
         setErrors(result.errors);
-        if (saved > 0) onUploadComplete?.(saved);
+        if (saved > 0) {
+          onUploadComplete?.({ count: saved, latestRunId });
+        }
 
         // Phase 2 — single batched donation. The previous per-run
         // sequential donateRun lost ~70% of a 42-run batch to auth

@@ -3,7 +3,20 @@ import { getChoseong } from "es-hangul";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
 import { historyRunPlainText } from "@/lib/history-run-reference";
+import { isCoverSpec, type CoverSpec } from "@/lib/run-cover-types";
 import { isYouTubeVideoId } from "@/lib/youtube-reference";
+
+function coverSpecFromUnknown(value: unknown): CoverSpec | null {
+  if (typeof value === "string" && value.trim()) {
+    try {
+      const parsed: unknown = JSON.parse(value);
+      return isCoverSpec(parsed) ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+  return isCoverSpec(value) ? value : null;
+}
 
 const ENTITY_TYPE_FALLBACK_PRIORITY: readonly EntityType[] = [
   "card",
@@ -191,6 +204,7 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
             runTime: nodeNumber(node.attrs?.runTime),
             build: nodeString(node.attrs?.build),
             seed: nodeString(node.attrs?.seed),
+            coverSpec: coverSpecFromUnknown(node.attrs?.coverSpec),
           },
         });
       }
@@ -259,6 +273,7 @@ export function blocksToTiptapDocument(blocks: PostBlock[]): JSONContent {
         runTime: block.snapshot.runTime,
         build: block.snapshot.build,
         seed: block.snapshot.seed,
+        coverSpec: block.snapshot.coverSpec ?? null,
       },
     }];
   });

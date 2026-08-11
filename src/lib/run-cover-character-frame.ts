@@ -1,12 +1,12 @@
 import type { CSSProperties } from "react";
 import { characterSlugFromReplay } from "@/lib/run-cover-suggest";
 
-/** Tuned like Compendium character index inactive rows — crops black padding. */
+/** Tuned for 16:9 cover crop — hide top letterbox; necro sits lower-right. */
 const FACE_FOCUS: Record<string, string> = {
-  defect: "55% 36%",
-  ironclad: "52% 34%",
-  necrobinder: "68% 35%",
-  regent: "54% 36%",
+  defect: "55% 42%",
+  ironclad: "52% 40%",
+  necrobinder: "78% 44%",
+  regent: "54% 46%",
   silent: "69% 34%",
 };
 
@@ -15,28 +15,28 @@ const INACTIVE_FRAME: Record<
   { scale: number; translateX: string; translateY: string; transformOrigin: string }
 > = {
   defect: {
-    scale: 1.85,
+    scale: 1.95,
     translateX: "-3%",
-    translateY: "0%",
-    transformOrigin: "52% 35%",
+    translateY: "-10%",
+    transformOrigin: "52% 40%",
   },
   ironclad: {
-    scale: 1.45,
+    scale: 1.58,
     translateX: "8%",
-    translateY: "-2%",
-    transformOrigin: "58% 40%",
+    translateY: "-12%",
+    transformOrigin: "58% 42%",
   },
   necrobinder: {
-    scale: 1.55,
-    translateX: "12%",
-    translateY: "-2%",
-    transformOrigin: "68% 38%",
+    scale: 1.65,
+    translateX: "-6%",
+    translateY: "4%",
+    transformOrigin: "78% 46%",
   },
   regent: {
-    scale: 1.48,
+    scale: 1.72,
     translateX: "2%",
-    translateY: "0%",
-    transformOrigin: "54% 36%",
+    translateY: "-16%",
+    transformOrigin: "54% 44%",
   },
   silent: {
     scale: 1.42,

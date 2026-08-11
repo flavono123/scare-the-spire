@@ -94,9 +94,9 @@ const LEGACY_RUN_SUMMARY_COLUMNS =
 const COVER_RUN_SUMMARY_COLUMNS =
   "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, cover_spec, donor_user_id, created_at";
 const HISTORY_REFERENCE_SUMMARY_COLUMNS =
-  "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, cover_spec, donor_user_id, created_at";
+  "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, cover_spec, donor_user_id, created_at";
 const HISTORY_REFERENCE_SUMMARY_COLUMNS_LEGACY =
-  "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, created_at";
+  "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, created_at";
 
 function runReadEnvs(): string[] {
   if (devToolsEnabled() && supabaseEnv !== "production") {
@@ -419,6 +419,131 @@ export async function getDonatedRun(runId: string): Promise<DonatedRun | null> {
     const { data, error } = await selectDonatedRunForEnv(runId, env);
     if (data) return data;
     if (error) return null;
+  }
+  return null;
+}
+
+/** Persist a custom cover for a donated run (donor-only via RLS). */
+export async function updateDonatedRunCoverSpec(input: {
+  runId: string;
+  donorUserId: string;
+  coverSpec: CoverSpec;
+}): Promise<{ ok: true } | { ok: false; message: string }> {
+  if (!supabaseEnabled) {
+    return { ok: false, message: "Supabase 연결이 설정되지 않았습니다." };
+  }
+  const result = await withSupabaseTimeout(
+    "runs.update.cover-spec",
+    supabase
+      .from("runs")
+      .update({ cover_spec: input.coverSpec })
+      .eq("id", input.runId)
+      .eq("env", supabaseEnv)
+      .eq("donor_user_id", input.donorUserId),
+  ).catch(() => ({ error: new Error("timeout") }));
+
+  if (result.error) {
+    if (isMissingCoverSpecColumn(result.error)) {
+      return { ok: false, message: "cover_spec column unavailable" };
+    }
+    const message =
+      result.error instanceof Error
+        ? result.error.message
+        : "message" in result.error
+          ? String((result.error as { message?: unknown }).message ?? "update failed")
+          : "update failed";
+    return { ok: false, message };
+  }
+  return { ok: true };
+}
+
+/** OG/metadata fields only — no raw parse, one small row select. */
+export async function getDonatedRunOgFields(runId: string): Promise<{
+  character: string;
+  coverSpec: CoverSpec | null;
+} | null> {
+  if (!supabaseEnabled || !runId) return null;
+  for (const env of runReadEnvs()) {
+    const withCover = await withSupabaseTimeout(
+      "runs.select.og-fields",
+      supabase
+        .from("runs")
+        .select("character, cover_spec")
+        .eq("id", runId)
+        .eq("env", env)
+        .maybeSingle(),
+    ).catch((error) => ({ data: null, error }));
+
+    if (withCover.error && isMissingCoverSpecColumn(withCover.error)) {
+      const legacy = await withSupabaseTimeout(
+        "runs.select.og-fields.legacy",
+        supabase
+          .from("runs")
+          .select("character")
+          .eq("id", runId)
+          .eq("env", env)
+          .maybeSingle(),
+      ).catch((error) => ({ data: null, error }));
+      if (!legacy.data) {
+        if (legacy.error) return null;
+        continue;
+      }
+      return {
+        character: String((legacy.data as RunRow).character ?? ""),
+        coverSpec: null,
+      };
+    }
+
+    if (withCover.error) return null;
+    if (!withCover.data) continue;
+    const row = withCover.data as RunRow;
+    return {
+      character: String(row.character ?? ""),
+      coverSpec: parseCoverSpec(row.cover_spec),
+    };
+  }
+  return null;
+}
+
+/** Light cover lookup for combo list thumbs when snapshot omitted coverSpec. */
+export async function getRunCoverSpec(runId: string): Promise<CoverSpec | null> {
+  if (!supabaseEnabled || !runId) return null;
+  for (const env of runReadEnvs()) {
+    const withCover = await withSupabaseTimeout(
+      "runs.select.cover-spec",
+      supabase
+        .from("runs")
+        .select("id, raw, cover_spec")
+        .eq("id", runId)
+        .eq("env", env)
+        .maybeSingle(),
+    ).catch((error) => ({ data: null, error }));
+
+    if (withCover.error && isMissingCoverSpecColumn(withCover.error)) {
+      const legacy = await withSupabaseTimeout(
+        "runs.select.cover-spec.legacy",
+        supabase
+          .from("runs")
+          .select("id, raw")
+          .eq("id", runId)
+          .eq("env", env)
+          .maybeSingle(),
+      ).catch((error) => ({ data: null, error }));
+      if (!legacy.data) {
+        if (legacy.error) return null;
+        continue;
+      }
+      const parsed = parseRunSafely((legacy.data as RunRow).raw);
+      return parsed ? pickAlternatingCover(runId, parsed) : null;
+    }
+
+    if (withCover.error) return null;
+    if (!withCover.data) continue;
+    const row = withCover.data as RunRow;
+    const stored = parseCoverSpec(row.cover_spec);
+    if (stored?.auto === false) return stored;
+    const parsed = parseRunSafely(row.raw);
+    return parsed ? pickAlternatingCover(runId, parsed) : stored;
   }
   return null;
 }

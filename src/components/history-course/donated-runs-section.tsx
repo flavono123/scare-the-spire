@@ -1,14 +1,19 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { CoverEditorSheet } from "@/components/history-course/cover-editor-sheet";
 import { useAuth } from "@/hooks/use-auth";
 import {
   type DonatedRunSummary,
   deleteDonatedRun,
   listRecentDonatedRuns,
+  updateDonatedRunCoverSpec,
 } from "@/lib/run-donation";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { ensureCoverSpec } from "@/lib/run-cover-suggest";
+import type { CoverSpec } from "@/lib/run-cover-types";
+import { parseReplayRun } from "@/lib/sts2-run-replay";
 import { supabaseEnabled } from "@/lib/supabase";
 import { RandomPickCard } from "./random-pick-card";
 import { RunCard } from "./run-card";
@@ -24,9 +29,10 @@ interface Props {
 export function DonatedRunsSection({ refreshKey = 0, query = "" }: Props) {
   const copy = serviceMessages[useServiceLocale()].historyCourse.lists;
   const router = useRouter();
-  const { userId } = useAuth();
+  const { userId, ensureUser } = useAuth();
   const [runs, setRuns] = useState<DonatedRunSummary[] | null>(null);
   const [unavailable, setUnavailable] = useState(false);
+  const [editing, setEditing] = useState<DonatedRunSummary | null>(null);
 
   useEffect(() => {
     if (!supabaseEnabled) {
@@ -51,9 +57,7 @@ export function DonatedRunsSection({ refreshKey = 0, query = "" }: Props) {
   }, [refreshKey]);
 
   const onUndo = async (runId: string) => {
-    if (
-      !window.confirm(copy.undoConfirm)
-    ) {
+    if (!window.confirm(copy.undoConfirm)) {
       return;
     }
     const ok = await deleteDonatedRun(runId);
@@ -62,6 +66,27 @@ export function DonatedRunsSection({ refreshKey = 0, query = "" }: Props) {
     }
   };
 
+  const handleSaveCover = useCallback(
+    async (cover: CoverSpec) => {
+      if (!editing) return;
+      const activeUserId = userId ?? (await ensureUser());
+      if (!activeUserId) return;
+      const result = await updateDonatedRunCoverSpec({
+        runId: editing.id,
+        donorUserId: activeUserId,
+        coverSpec: cover,
+      });
+      if (!result.ok) return;
+      setRuns((prev) =>
+        prev?.map((entry) =>
+          entry.id === editing.id ? { ...entry, cover_spec: cover } : entry,
+        ) ?? null,
+      );
+      setEditing((prev) => (prev ? { ...prev, cover_spec: cover } : null));
+    },
+    [editing, ensureUser, userId],
+  );
+
   if (!supabaseEnabled) {
     return null;
   }
@@ -69,6 +94,19 @@ export function DonatedRunsSection({ refreshKey = 0, query = "" }: Props) {
   const loading = runs === null && !storageUnavailable;
   const hasQuery = query.trim().length > 0;
   const filteredRuns = filterSharedRuns(runs ?? [], query);
+
+  const editingParsed = useMemo(() => {
+    if (!editing?.raw) return null;
+    try {
+      const run = parseReplayRun(editing.raw);
+      return {
+        run,
+        cover: ensureCoverSpec(editing.id, run, editing.cover_spec),
+      };
+    } catch {
+      return null;
+    }
+  }, [editing]);
 
   return (
     <section>
@@ -92,12 +130,12 @@ export function DonatedRunsSection({ refreshKey = 0, query = "" }: Props) {
       ) : loading ? (
         <ContentLoadingNotice label={copy.loadingSharedRuns} />
       ) : (
-        <ul className="grid grid-cols-2 gap-3 lg:grid-cols-1">
-          <li className="col-span-2 lg:col-span-1">
+        <ul className="grid grid-cols-1 gap-3">
+          <li>
             <RandomPickCard runs={filteredRuns} userId={userId} />
           </li>
           {hasQuery && filteredRuns.length === 0 ? (
-            <li className="col-span-2 rounded-xl bg-zinc-900/40 px-4 py-6 text-center text-xs text-zinc-500 ring-1 ring-zinc-800 lg:col-span-1">
+            <li className="rounded-xl bg-zinc-900/40 px-4 py-6 text-center text-xs text-zinc-500 ring-1 ring-zinc-800">
               {copy.noResults}
             </li>
           ) : null}
@@ -121,11 +159,38 @@ export function DonatedRunsSection({ refreshKey = 0, query = "" }: Props) {
                   variant="shared"
                   onPick={() => router.push(`/history-course/${entry.id}`)}
                   onDelete={isOwn ? () => onUndo(entry.id) : undefined}
+                  onEditCover={
+                    isOwn && entry.raw
+                      ? () => setEditing(entry)
+                      : undefined
+                  }
                 />
               </li>
             );
           })}
         </ul>
+      )}
+
+      {editing && editingParsed && (
+        <CoverEditorSheet
+          open
+          onOpenChange={(open) => {
+            if (!open) setEditing(null);
+          }}
+          runId={editing.id}
+          run={editingParsed.run}
+          character={editing.character}
+          meta={{
+            win: editing.win,
+            totalFloors: editing.total_floors,
+            ascension: editing.ascension,
+            build: editing.build,
+            seed: editing.seed,
+            badges: editing.badges ?? [],
+          }}
+          initialCover={editingParsed.cover}
+          onSave={handleSaveCover}
+        />
       )}
     </section>
   );

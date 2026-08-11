@@ -14,6 +14,19 @@ import {
   historyRunPrimaryLabel,
   historyRunShortCode,
 } from "@/lib/history-run-reference";
+import { isCoverSpec, type CoverSpec } from "@/lib/run-cover-types";
+
+function coverSpecFromAttr(value: unknown): CoverSpec | null {
+  if (typeof value === "string" && value.trim()) {
+    try {
+      const parsed: unknown = JSON.parse(value);
+      return isCoverSpec(parsed) ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+  return isCoverSpec(value) ? value : null;
+}
 
 function blockFromNode(node: NodeViewProps["node"]): HistoryRunBlock {
   return {
@@ -29,6 +42,7 @@ function blockFromNode(node: NodeViewProps["node"]): HistoryRunBlock {
       runTime: typeof node.attrs.runTime === "number" ? node.attrs.runTime : null,
       build: (node.attrs.build as string) || "",
       seed: (node.attrs.seed as string) || "",
+      coverSpec: coverSpecFromAttr(node.attrs.coverSpec),
     },
   };
 }
@@ -81,6 +95,14 @@ export const HistoryRunReferenceExtension = Node.create({
       runTime: { default: null },
       build: { default: "" },
       seed: { default: "" },
+      coverSpec: {
+        default: null,
+        parseHTML: (element) => coverSpecFromAttr(element.getAttribute("data-cover-spec")),
+        renderHTML: (attributes) => {
+          const cover = coverSpecFromAttr(attributes.coverSpec);
+          return cover ? { "data-cover-spec": JSON.stringify(cover) } : {};
+        },
+      },
     };
   },
 
@@ -90,11 +112,13 @@ export const HistoryRunReferenceExtension = Node.create({
 
   renderHTML({ node, HTMLAttributes }) {
     const block = blockFromNode(node);
+    const cover = coverSpecFromAttr(node.attrs.coverSpec);
     return [
       "span",
       mergeAttributes(HTMLAttributes, {
         "data-history-run-reference": "",
         class: "font-semibold text-amber-100",
+        ...(cover ? { "data-cover-spec": JSON.stringify(cover) } : {}),
       }),
       `${historyRunPrimaryLabel(block, "ko")} #${historyRunShortCode(block.runId)}`,
     ];

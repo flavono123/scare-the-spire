@@ -2,11 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { CoverEditorSheet } from "@/components/history-course/cover-editor-sheet";
 import { useAuth } from "@/hooks/use-auth";
 import {
   deleteDonatedRun,
   donateRun,
   listMyDonatedRunIds,
+  updateDonatedRunCoverSpec,
 } from "@/lib/run-donation";
 import type { PostBlock } from "@/lib/chemical-types";
 import { ensureCoverSpec } from "@/lib/run-cover-suggest";
@@ -25,6 +27,9 @@ interface Props {
   // are reconciled in local state without waiting for the bump.
   refreshKey?: number;
   query?: string;
+  /** Open cover editor for this runId once entries hydrate (upload CTA). */
+  pendingEditRunId?: string | null;
+  onPendingEditConsumed?: () => void;
 }
 
 interface Entry {
@@ -35,12 +40,18 @@ interface Entry {
   coverSpec: CoverSpec;
 }
 
-export function MyRunsList({ refreshKey = 0, query = "" }: Props) {
+export function MyRunsList({
+  refreshKey = 0,
+  query = "",
+  pendingEditRunId = null,
+  onPendingEditConsumed,
+}: Props) {
   const copy = serviceMessages[useServiceLocale()].historyCourse.lists;
   const router = useRouter();
   const { userId, ensureUser } = useAuth();
   const [entries, setEntries] = useState<Entry[] | null>(null);
   const [donatedIds, setDonatedIds] = useState<Set<string>>(new Set());
+  const [editing, setEditing] = useState<Entry | null>(null);
 
   // Hydrate from IDB whenever refreshKey changes.
   useEffect(() => {
@@ -88,6 +99,39 @@ export function MyRunsList({ refreshKey = 0, query = "" }: Props) {
       cancelled = true;
     };
   }, [userId, refreshKey]);
+
+  useEffect(() => {
+    if (!pendingEditRunId || !entries) return;
+    const hit = entries.find((entry) => entry.runId === pendingEditRunId);
+    if (hit) {
+      setEditing(hit);
+      onPendingEditConsumed?.();
+    }
+  }, [entries, onPendingEditConsumed, pendingEditRunId]);
+
+  const handleSaveCover = useCallback(
+    async (cover: CoverSpec) => {
+      if (!editing) return;
+      await updateRunCoverSpec(editing.runId, cover);
+      setEntries((prev) =>
+        prev?.map((entry) =>
+          entry.runId === editing.runId ? { ...entry, coverSpec: cover } : entry,
+        ) ?? null,
+      );
+      setEditing((prev) => (prev ? { ...prev, coverSpec: cover } : null));
+      if (supabaseEnabled && donatedIds.has(editing.runId)) {
+        const activeUserId = userId ?? (await ensureUser());
+        if (activeUserId) {
+          await updateDonatedRunCoverSpec({
+            runId: editing.runId,
+            donorUserId: activeUserId,
+            coverSpec: cover,
+          });
+        }
+      }
+    },
+    [donatedIds, editing, ensureUser, userId],
+  );
 
   const handlePick = useCallback(
     (entry: Entry) => {
@@ -179,7 +223,7 @@ export function MyRunsList({ refreshKey = 0, query = "" }: Props) {
           {copy.noResults}
         </p>
       ) : (
-        <ul className="grid grid-cols-2 gap-3 lg:grid-cols-1">
+        <ul className="grid grid-cols-1 gap-3">
           {filteredEntries.map((entry) => {
             const shared = donatedIds.has(entry.runId);
             return (
@@ -190,6 +234,7 @@ export function MyRunsList({ refreshKey = 0, query = "" }: Props) {
                   variant="mine"
                   onPick={() => handlePick(entry)}
                   onDelete={() => handleDelete(entry)}
+                  onEditCover={() => setEditing(entry)}
                   onShare={
                     supabaseEnabled
                       ? () => handleShare(entry)
@@ -201,6 +246,31 @@ export function MyRunsList({ refreshKey = 0, query = "" }: Props) {
             );
           })}
         </ul>
+      )}
+
+      {editing && (
+        <CoverEditorSheet
+          open={!!editing}
+          onOpenChange={(open) => {
+            if (!open) setEditing(null);
+          }}
+          runId={editing.runId}
+          run={editing.run}
+          character={editing.run.players[0]?.character ?? ""}
+          meta={{
+            win: editing.run.win,
+            totalFloors: editing.run.map_point_history.reduce(
+              (sum, act) => sum + act.length,
+              0,
+            ),
+            ascension: editing.run.ascension,
+            build: editing.run.build_id,
+            seed: editing.run.seed,
+            badges: editing.run.players[0]?.badges ?? [],
+          }}
+          initialCover={editing.coverSpec}
+          onSave={handleSaveCover}
+        />
       )}
     </section>
   );

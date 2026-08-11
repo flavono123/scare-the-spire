@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Dialog } from "radix-ui";
 import { BookOpen, LoaderCircle, Search, X } from "lucide-react";
 import Image from "@/components/ui/static-image";
+import { HistoryCourseCover } from "@/components/history-course/history-course-cover";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { useAuth } from "@/hooks/use-auth";
 import type { HistoryRunBlock } from "@/lib/chemical-types";
@@ -22,6 +23,7 @@ import {
   listHistoryRunReferences,
   type DonatedRunSummary,
 } from "@/lib/run-donation";
+import { isCoverSpec } from "@/lib/run-cover-types";
 import { listOwnRuns } from "@/lib/run-store";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
 import { supabaseEnabled } from "@/lib/supabase";
@@ -68,7 +70,11 @@ export function ComboHistoryRunPicker({
             runId: record.runId,
             raw: record.raw,
             run,
-            block: historyRunBlockFromReplay(record.runId, run),
+            block: historyRunBlockFromReplay(
+              record.runId,
+              run,
+              record.coverSpec,
+            ),
           }];
         } catch {
           return [];
@@ -336,7 +342,11 @@ function RunSection({
         </p>
       ) : (
         <ul className="grid gap-2 sm:grid-cols-2">
-          {blocks.map(({ block, action, pending, onSelect }) => (
+          {blocks.map(({ block, action, pending, onSelect }) => {
+            const cover = isCoverSpec(block.snapshot.coverSpec)
+              ? block.snapshot.coverSpec
+              : null;
+            return (
             <li key={block.runId}>
               <button
                 type="button"
@@ -344,17 +354,34 @@ function RunSection({
                 onClick={onSelect}
                 className="group flex w-full items-center gap-2.5 rounded-xl border border-white/5 bg-zinc-900/60 p-2.5 text-left transition-[transform,border-color,background-color] hover:-translate-y-0.5 hover:border-amber-300/25 hover:bg-amber-300/5 disabled:cursor-wait disabled:opacity-60 motion-reduce:transform-none"
               >
-                <Image
-                  src={HISTORY_RUN_CHARACTER_PORTRAITS[block.snapshot.character]
-                    ?? "/images/sts2/characters/char_select_random.webp"}
-                  alt=""
-                  width={46}
-                  height={46}
-                  className="h-12 w-12 shrink-0 object-contain"
-                />
+                {cover ? (
+                  <span className="w-28 shrink-0">
+                    <HistoryCourseCover
+                      cover={cover}
+                      character={block.snapshot.character}
+                      size="compact"
+                      meta={{
+                        win: block.snapshot.win,
+                        totalFloors: block.snapshot.totalFloors,
+                        ascension: block.snapshot.ascension,
+                        build: block.snapshot.build,
+                        seed: block.snapshot.seed,
+                      }}
+                    />
+                  </span>
+                ) : (
+                  <Image
+                    src={HISTORY_RUN_CHARACTER_PORTRAITS[block.snapshot.character]
+                      ?? "/images/sts2/characters/char_select_random.webp"}
+                    alt=""
+                    width={46}
+                    height={46}
+                    className="h-12 w-12 shrink-0 object-contain"
+                  />
+                )}
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-xs font-semibold text-zinc-200">
-                    {historyRunPrimaryLabel(block, serviceLocale)}
+                    {cover?.phrase || historyRunPrimaryLabel(block, serviceLocale)}
                   </span>
                   <span className="mt-1 block truncate text-[10px] text-zinc-500">
                     {historyRunSecondaryLabel(block, serviceLocale)}
@@ -368,7 +395,8 @@ function RunSection({
                 </span>
               </button>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
     </section>

@@ -6,6 +6,12 @@ import {
   type CoverSpec,
 } from "@/lib/run-cover-types";
 import { localize, prettifyId } from "@/lib/sts2-i18n";
+import {
+  isMadScienceCardId,
+  MAD_SCIENCE_CARD_ID,
+  TINKER_CARD_IMAGE_BY_TYPE,
+  getMadScienceVariantPartsFromId,
+} from "@/lib/tinker-time";
 import type { ReplayRun } from "@/lib/sts2-run-replay";
 
 type Weighted = {
@@ -15,6 +21,14 @@ type Weighted = {
   copies: number;
   rarity?: string | null;
   upgraded?: boolean;
+};
+
+/** Ranked candidate for cover editor suggestions. */
+export type CoverPoolItem = {
+  kind: CoverElementKind;
+  id: string;
+  weight: number;
+  copies: number;
 };
 
 export type SuggestCoversInput = {
@@ -76,6 +90,9 @@ function pairKey(a: Weighted, b: Weighted): string {
 }
 
 function displayName(kind: CoverElementKind, id: string): string {
+  if (kind === "card" && isMadScienceCardId(id)) {
+    return localize("cards", MAD_SCIENCE_CARD_ID) ?? "괴짜 과학";
+  }
   const table = kind === "card" ? "cards" : kind === "relic" ? "relics" : "potions";
   return localize(table, id) ?? prettifyId(id);
 }
@@ -221,11 +238,10 @@ function subjectParticle(name: string): "이" | "가" {
   return (code - 0xac00) % 28 === 0 ? "가" : "이";
 }
 
-function pickPhrase(
+function phraseCandidates(
   run: ReplayRun,
   elements: CoverElement[],
-  phraseSeed: string,
-): string {
+): Array<{ id: string; text: string; weight: number }> {
   const player = run.players[0];
   const floors = totalFloors(run);
   const deckSize = player?.deck.length ?? 0;
@@ -234,9 +250,7 @@ function pickPhrase(
   const e1 = elements[1];
   const e0Name = e0 ? displayName(e0.kind, e0.id) : "";
   const e1Name = e1 ? displayName(e1.kind, e1.id) : "";
-
-  type Candidate = { id: string; text: string; weight: number };
-  const applicable: Candidate[] = [];
+  const applicable: Array<{ id: string; text: string; weight: number }> = [];
 
   if (e0) {
     applicable.push({
@@ -278,10 +292,121 @@ function pickPhrase(
   }
 
   if (applicable.length === 0) {
-    return run.win ? `A${run.ascension} 클리어` : `${floors}층`;
+    applicable.push({
+      id: "hook_fallback",
+      text: run.win ? `A${run.ascension} 클리어` : `${floors}층`,
+      weight: 1,
+    });
   }
+  return applicable;
+}
+
+function pickPhrase(
+  run: ReplayRun,
+  elements: CoverElement[],
+  phraseSeed: string,
+): string {
+  const applicable = phraseCandidates(run, elements);
   const picked = weightedPick(applicable, phraseSeed);
   return (picked?.text ?? applicable[0]!.text).slice(0, 40);
+}
+
+/** Phrase chips for the cover editor (template/seed based, not pool-ranked). */
+export function suggestCoverPhrases(
+  run: ReplayRun,
+  elements: CoverElement[],
+  seed: string,
+  count = 5,
+): string[] {
+  const applicable = [...phraseCandidates(run, elements)].sort(
+    (a, b) => b.weight - a.weight,
+  );
+  const out: string[] = [];
+  const seen = new Set<string>();
+  // Prefer a seeded pick first, then fill by weight.
+  const first = weightedPick(applicable, seed);
+  if (first) {
+    seen.add(first.text);
+    out.push(first.text.slice(0, 40));
+  }
+  for (const item of applicable) {
+    if (out.length >= count) break;
+    if (seen.has(item.text)) continue;
+    seen.add(item.text);
+    out.push(item.text.slice(0, 40));
+  }
+  // Extra rolls for "다시 굴리기" variety without changing elements.
+  let i = 0;
+  while (out.length < count && i < applicable.length * 2) {
+    const roll = weightedPick(applicable, `${seed}:extra:${i}`);
+    i += 1;
+    if (!roll || seen.has(roll.text)) continue;
+    seen.add(roll.text);
+    out.push(roll.text.slice(0, 40));
+  }
+  return out;
+}
+
+function toPoolItem(item: Weighted): CoverPoolItem {
+  return {
+    kind: item.kind,
+    id: item.id,
+    weight: item.weight,
+    copies: item.copies,
+  };
+}
+
+function sortByWeightDesc(items: Weighted[]): Weighted[] {
+  return [...items].sort((a, b) => b.weight - a.weight || a.id.localeCompare(b.id));
+}
+
+/** Ranked element suggestions for the cover editor (run-relevance order). */
+export function listRankedCoverElements(
+  run: ReplayRun,
+  opts?: {
+    rarityById?: SuggestCoversInput["rarityById"];
+    kind?: CoverElementKind | "all";
+    exclude?: Array<{ kind: CoverElementKind; id: string }>;
+    /** Background card for cover B — hide from element picks. */
+    backgroundCardId?: string | null;
+  },
+): CoverPoolItem[] {
+  const exclude = new Set(
+    (opts?.exclude ?? []).map((item) => `${item.kind}:${item.id}`),
+  );
+  if (opts?.backgroundCardId) {
+    exclude.add(`card:${opts.backgroundCardId}`);
+  }
+  const kind = opts?.kind ?? "all";
+  return sortByWeightDesc(buildWeightedPool(run, opts?.rarityById))
+    .filter((item) => (kind === "all" ? true : item.kind === kind))
+    .filter((item) => !exclude.has(`${item.kind}:${item.id}`))
+    .map(toPoolItem);
+}
+
+/** Official art missing — beta-only focus art is last resort for cover B. */
+const BETA_ONLY_CARD_ART_IDS = new Set([
+  "BLAZE",
+  "CACOPHONY",
+  "HIBERNATE",
+  "MIDNIGHT",
+  "ONE_FOR_ALL",
+  "OUTRAGE",
+  "SIDESTEP",
+  "UNDERWORLD",
+]);
+
+/** Ranked background-card suggestions for cover B (official art preferred). */
+export function listRankedCoverBackgroundCards(
+  run: ReplayRun,
+  opts?: { rarityById?: SuggestCoversInput["rarityById"] },
+): CoverPoolItem[] {
+  const cards = sortByWeightDesc(
+    buildWeightedPool(run, opts?.rarityById).filter((item) => item.kind === "card"),
+  );
+  const official = cards.filter((item) => !BETA_ONLY_CARD_ART_IDS.has(item.id));
+  const betaOnly = cards.filter((item) => BETA_ONLY_CARD_ART_IDS.has(item.id));
+  return [...official, ...betaOnly].map(toPoolItem);
 }
 
 export function suggestCovers(input: SuggestCoversInput): SuggestCoversResult {
@@ -290,7 +415,9 @@ export function suggestCovers(input: SuggestCoversInput): SuggestCoversResult {
   const cooccurrence = input.cooccurrence ?? DEFAULT_COOCCURRENCE;
   const pool = buildWeightedPool(input.run, input.rarityById);
   const cards = pool.filter((item) => item.kind === "card");
+  const officialArtCards = cards.filter((item) => !BETA_ONLY_CARD_ART_IDS.has(item.id));
   const focusCard =
+    weightedPick(officialArtCards, `${seedBase}:focus`) ??
     weightedPick(cards, `${seedBase}:focus`) ??
     weightedPick(pool, `${seedBase}:focus-any`);
 
@@ -386,16 +513,25 @@ export function coverCharacterPortraitSrc(character: string | undefined): string
 }
 
 export function coverCardArtSrc(cardId: string): { src: string; beta: string } {
+  const parts = getMadScienceVariantPartsFromId(cardId);
+  if (parts) {
+    const src = TINKER_CARD_IMAGE_BY_TYPE[parts.cardType];
+    return { src, beta: src };
+  }
   const id = cardId.toLowerCase();
   return {
-    beta: `/images/sts2/cards-beta/${id}.webp`,
     src: `/images/sts2/cards/${id}.webp`,
+    beta: `/images/sts2/cards-beta/${id}.webp`,
   };
 }
 
 export function coverElementImageSrc(element: CoverElement): string {
+  if (element.kind === "card") {
+    const parts = getMadScienceVariantPartsFromId(element.id);
+    if (parts) return TINKER_CARD_IMAGE_BY_TYPE[parts.cardType];
+    return `/images/sts2/cards/${element.id.toLowerCase()}.webp`;
+  }
   const id = element.id.toLowerCase();
-  if (element.kind === "card") return `/images/sts2/cards/${id}.webp`;
   if (element.kind === "relic") return `/images/sts2/relics/${id}.webp`;
   return `/images/sts2/potions/${id}.webp`;
 }

@@ -3,7 +3,12 @@
  *   pnpm exec tsx scripts/run-cover-suggest.selfcheck.ts
  */
 import { readFileSync } from "node:fs";
-import { suggestCovers } from "../src/lib/run-cover-suggest";
+import {
+  listRankedCoverBackgroundCards,
+  listRankedCoverElements,
+  suggestCoverPhrases,
+  suggestCovers,
+} from "../src/lib/run-cover-suggest";
 import { computeRunHash, runRouteSlug } from "../src/lib/sts2-run-hash";
 import { parseReplayRun } from "../src/lib/sts2-run-replay";
 
@@ -46,6 +51,17 @@ async function main() {
     JSON.stringify(again.elements) === JSON.stringify(a.elements),
     "stable seed must repeat elements",
   );
+
+  const ranked = listRankedCoverElements(run);
+  assert(ranked.length > 0, "ranked elements non-empty");
+  assert(
+    ranked.every((item, i) => i === 0 || ranked[i - 1]!.weight >= item.weight),
+    "ranked elements sorted by weight desc",
+  );
+  const bgCards = listRankedCoverBackgroundCards(run);
+  assert(bgCards.every((item) => item.kind === "card"), "bg candidates are cards");
+  const phrases = suggestCoverPhrases(run, a.elements, `${runId}:ph-check`, 3);
+  assert(phrases.length >= 1, "phrase suggestions non-empty");
 
   console.log("ok", {
     runId,

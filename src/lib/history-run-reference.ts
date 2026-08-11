@@ -5,7 +5,9 @@ import type {
 import type { DonatedRunSummary } from "@/lib/run-donation";
 import type { ServiceLocale } from "@/lib/i18n";
 import { ensureCoverSpec } from "@/lib/run-cover-suggest";
-import type { ReplayRun } from "@/lib/sts2-run-replay";
+import { displayNameForCoverElement } from "@/lib/run-cover-display";
+import type { CoverSpec } from "@/lib/run-cover-types";
+import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
 
 const CHARACTER_LABELS: Record<ServiceLocale, Record<string, string>> = {
   ko: {
@@ -41,6 +43,7 @@ function totalFloorsFromRun(run: ReplayRun): number {
 export function historyRunSnapshotFromReplay(
   run: ReplayRun,
   runId?: string,
+  existingCover?: CoverSpec | null,
 ): HistoryRunReferenceSnapshot {
   return {
     title: null,
@@ -52,13 +55,21 @@ export function historyRunSnapshotFromReplay(
     runTime: run.run_time ?? null,
     build: run.build_id,
     seed: run.seed,
-    coverSpec: runId ? ensureCoverSpec(runId, run, null) : null,
+    coverSpec: runId ? ensureCoverSpec(runId, run, existingCover) : null,
   };
 }
 
 export function historyRunSnapshotFromSummary(
   run: DonatedRunSummary,
 ): HistoryRunReferenceSnapshot {
+  let coverSpec = run.cover_spec ?? null;
+  if ((!coverSpec || coverSpec.auto !== false) && run.raw) {
+    try {
+      coverSpec = ensureCoverSpec(run.id, parseReplayRun(run.raw), coverSpec);
+    } catch {
+      // keep stored cover_spec
+    }
+  }
   return {
     title: null,
     character: run.character,
@@ -69,15 +80,19 @@ export function historyRunSnapshotFromSummary(
     runTime: run.run_time,
     build: run.build,
     seed: run.seed,
-    coverSpec: run.cover_spec ?? null,
+    coverSpec,
   };
 }
 
-export function historyRunBlockFromReplay(runId: string, run: ReplayRun): HistoryRunBlock {
+export function historyRunBlockFromReplay(
+  runId: string,
+  run: ReplayRun,
+  existingCover?: CoverSpec | null,
+): HistoryRunBlock {
   return {
     type: "history-run",
     runId,
-    snapshot: historyRunSnapshotFromReplay(run, runId),
+    snapshot: historyRunSnapshotFromReplay(run, runId, existingCover),
   };
 }
 
@@ -167,13 +182,42 @@ export function historyRunSearchText(
   const isoDate = block.snapshot.startTime == null
     ? ""
     : new Date(block.snapshot.startTime * 1000).toISOString().slice(0, 16);
+  const cover = block.snapshot.coverSpec;
   return [
     historyRunPrimaryLabel(block, serviceLocale),
     historyRunSecondaryLabel(block, serviceLocale),
+    cover?.phrase,
+    ...(cover?.elements.map((el) => el.id) ?? []),
     isoDate,
     block.runId,
     block.snapshot.seed,
     block.snapshot.build,
     block.snapshot.character,
   ].join(" ").toLowerCase();
+}
+
+/** Phrase tokens (+ B-background card name) for combo composer keyword insert. */
+export function keywordsFromCoverSpec(cover: CoverSpec | null | undefined): string[] {
+  if (!cover) return [];
+  const tokens: string[] = [];
+  for (const part of cover.phrase.split(/\s+/)) {
+    const trimmed = part.trim();
+    if (trimmed) tokens.push(trimmed);
+  }
+  if (cover.background.kind === "card-beta") {
+    const cardName = displayNameForCoverElement({
+      kind: "card",
+      id: cover.background.cardId,
+    }).trim();
+    if (cardName) tokens.push(cardName);
+  }
+  const seen = new Set<string>();
+  const unique: string[] = [];
+  for (const token of tokens) {
+    const key = token.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    unique.push(token);
+  }
+  return unique;
 }

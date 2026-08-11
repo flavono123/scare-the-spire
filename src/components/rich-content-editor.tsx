@@ -30,6 +30,8 @@ import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { YouTubeReferenceExtension } from "@/components/editor/youtube-reference-extension";
 import { HistoryRunReferenceExtension } from "@/components/editor/history-run-reference-extension";
 import { CostTokenExtension } from "@/components/transfigure/cost-token-extension";
+import { keywordsFromCoverSpec } from "@/lib/history-run-reference";
+import { isCoverSpec } from "@/lib/run-cover-types";
 import {
   SlashCommandList,
   type SlashCommandItem,
@@ -1082,6 +1084,25 @@ export function RichContentEditor({
         "\uFFFC",
       );
       const needsLeadingSpace = textBefore.length > 0 && !/\s/.test(textBefore);
+      const cover = isCoverSpec(block.snapshot.coverSpec)
+        ? block.snapshot.coverSpec
+        : null;
+      const keywordNodes = keywordsFromCoverSpec(cover).flatMap((token) => {
+        const resolved = resolveKeyword(token);
+        return [
+          {
+            type: "custom-keyword" as const,
+            attrs: {
+              text: token,
+              keyword: resolved.keyword,
+              description: resolved.description,
+              entityId: resolved.entityId ?? "",
+              entityType: resolved.entityType ?? "",
+            },
+          },
+          { type: "text" as const, text: " " },
+        ];
+      });
 
       editor.chain().focus().insertContent([
         ...(needsLeadingSpace ? [{ type: "text", text: " " }] : []),
@@ -1098,12 +1119,14 @@ export function RichContentEditor({
             runTime: block.snapshot.runTime,
             build: block.snapshot.build,
             seed: block.snapshot.seed,
+            coverSpec: block.snapshot.coverSpec ?? null,
           },
         },
         { type: "text", text: " " },
+        ...keywordNodes,
       ]).run();
     }, 0);
-  }, [editor, historyRunInsertRequest]);
+  }, [editor, historyRunInsertRequest, resolveKeyword]);
 
   const handleSubmit = useCallback(async () => {
     if (!editor || submitting) return;

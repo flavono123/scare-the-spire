@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { COMPENDIUM_DETAIL_PAYLOAD_PATH } from "@/lib/compendium-detail-payload";
 import type { CodexCard } from "@/lib/codex-types";
+import { resolveCoverCardId } from "@/lib/run-cover-display";
 
 type Payload = {
   resources?: {
@@ -49,5 +50,10 @@ export function coverCatalogCard(
   catalog: Map<string, CodexCard>,
   cardId: string,
 ): CodexCard | null {
-  return catalog.get(cardId.toUpperCase()) ?? null;
+  const resolved = resolveCoverCardId(cardId);
+  return (
+    catalog.get(resolved.toUpperCase()) ??
+    catalog.get(cardId.toUpperCase()) ??
+    null
+  );
 }
