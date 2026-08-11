@@ -54,6 +54,47 @@ function nodeBoolean(value: unknown): boolean {
   return value === true || value === "true";
 }
 
+function costTokenPlainText(kind: "energy" | "star", count: number): string {
+  const safeCount = Math.max(1, Math.floor(count) || 1);
+  return kind === "energy" ? "@".repeat(safeCount) : "*".repeat(safeCount);
+}
+
+function splitPlainTextLines(text: string): JSONContent[] {
+  return text.split("\n").flatMap((line, lineIndex, lines) => [
+    ...(line ? [{ type: "text" as const, text: line }] : []),
+    ...(lineIndex < lines.length - 1 ? [{ type: "hardBreak" as const }] : []),
+  ]);
+}
+
+/** Expand author `@` / `*` runs in plain text into TipTap cost-token nodes. */
+export function splitTextContentWithCostTokens(text: string): JSONContent[] {
+  const sanitized = stripNullCharacters(text);
+  if (!sanitized) return [];
+
+  const nodes: JSONContent[] = [];
+  const tokenRe = /(@+|\*+)/g;
+  let cursor = 0;
+  let match: RegExpExecArray | null;
+  while ((match = tokenRe.exec(sanitized)) !== null) {
+    if (match.index > cursor) {
+      nodes.push(...splitPlainTextLines(sanitized.slice(cursor, match.index)));
+    }
+    const token = match[0]!;
+    nodes.push({
+      type: "cost-token",
+      attrs: {
+        kind: token[0] === "@" ? "energy" : "star",
+        count: token.length,
+      },
+    });
+    cursor = match.index + token.length;
+  }
+  if (cursor < sanitized.length) {
+    nodes.push(...splitPlainTextLines(sanitized.slice(cursor)));
+  }
+  return nodes;
+}
+
 function uniqueStrings(values: Array<string | undefined>): string[] {
   const seen = new Set<string>();
   const result: string[] = [];
@@ -112,6 +153,18 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
           entityId: entityId || undefined,
           entityType: (entityType || undefined) as EntityType | undefined,
         });
+      } else if (node.type === "cost-token") {
+        const kind = nodeString(node.attrs?.kind) === "star" ? "star" : "energy";
+        const count = Math.max(1, Math.floor(nodeNumber(node.attrs?.count) ?? 1));
+        const previous = blocks.at(-1);
+        if (
+          previous?.type === "cost-token"
+          && previous.kind === kind
+        ) {
+          previous.count += count;
+        } else {
+          blocks.push({ type: "cost-token", kind, count });
+        }
       } else if (node.type === "youtube-reference") {
         const videoId = nodeString(node.attrs?.videoId);
         const title = nodeString(node.attrs?.title).trim();
@@ -149,11 +202,16 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
 export function blocksToTiptapDocument(blocks: PostBlock[]): JSONContent {
   const content = blocks.flatMap((block): JSONContent[] => {
     if (block.type === "text") {
-      const text = stripNullCharacters(block.text);
-      return text.split("\n").flatMap((line, lineIndex, lines) => [
-        ...(line ? [{ type: "text", text: line }] : []),
-        ...(lineIndex < lines.length - 1 ? [{ type: "hardBreak" }] : []),
-      ]);
+      return splitTextContentWithCostTokens(block.text);
+    }
+    if (block.type === "cost-token") {
+      return [{
+        type: "cost-token",
+        attrs: {
+          kind: block.kind,
+          count: Math.max(1, Math.floor(block.count) || 1),
+        },
+      }];
     }
     if (block.type === "entity") {
       return [{
@@ -222,6 +280,7 @@ export function blocksToPlainText(blocks: PostBlock[]): string {
     .map((b) => {
       if (b.type === "text") return stripNullCharacters(b.text);
       if (b.type === "keyword") return stripNullCharacters(b.text);
+      if (b.type === "cost-token") return costTokenPlainText(b.kind, b.count);
       if (b.type === "youtube") return stripNullCharacters(b.title);
       if (b.type === "history-run") return historyRunPlainText(b);
       return stripNullCharacters(b.displayText);
@@ -242,6 +301,7 @@ export function blocksToStorageText(blocks: PostBlock[]): string {
     .map((b) => {
       if (b.type === "text") return stripNullCharacters(b.text);
       if (b.type === "entity") return stripNullCharacters(b.displayText);
+      if (b.type === "cost-token") return costTokenPlainText(b.kind, b.count);
       if (b.type === "youtube") return stripNullCharacters(b.title);
       if (b.type === "history-run") return historyRunPlainText(b);
 

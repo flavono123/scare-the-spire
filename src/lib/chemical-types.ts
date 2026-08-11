@@ -25,6 +25,13 @@ export interface KeywordBlock {
   entityType?: EntityType;
 }
 
+/** In-description energy / Regent star cost icons (Transfigure authoring). */
+export interface CostTokenBlock {
+  type: "cost-token";
+  kind: "energy" | "star";
+  count: number;
+}
+
 /** A normalized YouTube video reference resolved while composing a Combo post */
 export interface YouTubeBlock {
   type: "youtube";
@@ -63,6 +70,7 @@ export type PostBlock =
   | TextBlock
   | EntityBlock
   | KeywordBlock
+  | CostTokenBlock
   | YouTubeBlock
   | HistoryRunBlock;
 

@@ -33,6 +33,7 @@ import {
   type TransfigureCardRarity,
   type TransfigureCardType,
 } from "@/lib/transfigure-types";
+import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 
 const RichContentEditor = dynamic<RichContentEditorProps>(
   () => import("@/components/rich-content-editor").then((module) => module.RichContentEditor),
@@ -51,6 +52,7 @@ interface TransfigureAssetEditorProps {
   costLabel: string;
   descriptionLabel: string;
   descriptionFrameLimit: string;
+  costTokenTip: string;
   addTopKeywordLabel: string;
   addBottomKeywordLabel: string;
   removeKeywordLabel: string;
@@ -106,6 +108,7 @@ export function TransfigureAssetEditor({
   costLabel,
   descriptionLabel,
   descriptionFrameLimit,
+  costTokenTip,
   addTopKeywordLabel,
   addBottomKeywordLabel,
   removeKeywordLabel,
@@ -314,6 +317,11 @@ export function TransfigureAssetEditor({
         embedded
         allowLineBreaks
         submitOnEnter={false}
+        costTokens={{
+          energyIconSrc: resolveSts2EnergyIcon(
+            displayCard?.visualColor ?? displayCard?.color ?? "colorless",
+          ),
+        }}
       />
     </div>
   );
@@ -408,6 +416,12 @@ export function TransfigureAssetEditor({
               {descriptionFrameLimit}
             </div>
           )}
+          <p
+            className="mt-2 max-w-[17.5rem] text-center text-[11px] text-gray-500 opacity-80"
+            data-transfigure-cost-token-tip
+          >
+            {costTokenTip}
+          </p>
           {upgradedBlocks != null && (
             <GameCheckboxToggle
               checked={showUpgrade}
@@ -431,15 +445,23 @@ export function TransfigureAssetEditor({
               />
             </span>
           )}
-          <GameHoverTip
-            title={titleInput}
-            className="w-full max-w-[26rem]"
-            style={{ minWidth: 240, maxWidth: 416 }}
-          >
-            <div className="min-h-28">
-              {descriptionEditor}
-            </div>
-          </GameHoverTip>
+          <div className="flex w-full max-w-[26rem] flex-col gap-1.5">
+            <GameHoverTip
+              title={titleInput}
+              className="w-full"
+              style={{ minWidth: 240, maxWidth: 416 }}
+            >
+              <div className="min-h-28">
+                {descriptionEditor}
+              </div>
+            </GameHoverTip>
+            <p
+              className="text-[11px] text-gray-500 opacity-80"
+              data-transfigure-cost-token-tip
+            >
+              {costTokenTip}
+            </p>
+          </div>
         </div>
       )}
     </div>

@@ -173,11 +173,29 @@ export function transfigureCardKeywordsEqual(
   );
 }
 
+/** Author shorthand → Codex BBCode: `@@` → `[energy:2]`, `***` → `[star:3]`. */
+export function encodeTransfigureCostTokens(text: string): string {
+  return text
+    .replace(/@+/g, (match) => `[energy:${match.length}]`)
+    .replace(/\*+/g, (match) => `[star:${match.length}]`);
+}
+
+/** Codex BBCode → author shorthand for the transfigure editor. */
+export function decodeTransfigureCostTokens(text: string): string {
+  return text
+    .replace(/\[energy:(\d+)\]/gi, (_, count: string) => "@".repeat(Number(count)))
+    .replace(/\[star:(\d+)\]/gi, (_, count: string) => "*".repeat(Number(count)));
+}
+
+function stripTransfigureDescriptionText(text: string): string {
+  return stripCodexMarkup(decodeTransfigureCostTokens(text)).replace(/\s+/g, " ");
+}
+
 export function getTransfigureSourceText(entity: EntityInfo): string | null {
   const description = getTransfigureEntityDescription(entity);
   if (!description) return null;
 
-  const text = stripCodexMarkup(description).replace(/\s+/g, " ").trim();
+  const text = stripTransfigureDescriptionText(description).trim();
   return text || null;
 }
 
@@ -191,7 +209,28 @@ function appendTextBlock(blocks: PostBlock[], text: string) {
   blocks.push({ type: "text", text });
 }
 
-function getTransfigureBlocksFromDescription(
+/** Append description text while promoting `@` / `*` runs to cost-token blocks. */
+function appendDescriptionText(blocks: PostBlock[], text: string) {
+  if (!text) return;
+  const tokenRe = /(@+|\*+)/g;
+  let cursor = 0;
+  for (const match of text.matchAll(tokenRe)) {
+    if (match.index == null) continue;
+    appendTextBlock(blocks, text.slice(cursor, match.index));
+    const token = match[0]!;
+    const kind = token[0] === "@" ? "energy" as const : "star" as const;
+    const previous = blocks.at(-1);
+    if (previous?.type === "cost-token" && previous.kind === kind) {
+      previous.count += token.length;
+    } else {
+      blocks.push({ type: "cost-token", kind, count: token.length });
+    }
+    cursor = match.index + token.length;
+  }
+  appendTextBlock(blocks, text.slice(cursor));
+}
+
+export function getTransfigureBlocksFromDescription(
   description: string,
   entities: EntityInfo[],
 ): PostBlock[] {
@@ -202,12 +241,12 @@ function getTransfigureBlocksFromDescription(
 
   for (const match of description.matchAll(goldPattern)) {
     if (match.index == null) continue;
-    appendTextBlock(
+    appendDescriptionText(
       blocks,
-      stripCodexMarkup(description.slice(cursor, match.index)).replace(/\s+/g, " "),
+      stripTransfigureDescriptionText(description.slice(cursor, match.index)),
     );
 
-    const text = stripCodexMarkup(match[1] ?? "").replace(/\s+/g, " ").trim();
+    const text = stripTransfigureDescriptionText(match[1] ?? "").trim();
     if (text) {
       const keywordEntity = resolveEntityKeyword(text, keywordIndex);
       const keywordDescription = keywordEntity
@@ -218,7 +257,7 @@ function getTransfigureBlocksFromDescription(
         text,
         keyword: keywordEntity?.nameKo ?? text,
         description: keywordDescription
-          ? stripCodexMarkup(keywordDescription).replace(/\s+/g, " ").trim()
+          ? stripTransfigureDescriptionText(keywordDescription).trim()
           : text,
         entityId: keywordEntity?.id,
         entityType: keywordEntity?.type,
@@ -227,9 +266,9 @@ function getTransfigureBlocksFromDescription(
     cursor = match.index + match[0].length;
   }
 
-  appendTextBlock(
+  appendDescriptionText(
     blocks,
-    stripCodexMarkup(description.slice(cursor)).replace(/\s+/g, " "),
+    stripTransfigureDescriptionText(description.slice(cursor)),
   );
 
   const first = blocks[0];
@@ -267,7 +306,7 @@ export function getTransfigureUpgradeSourceText(
 ): string | null {
   const description = getTransfigureUpgradeDescription(entity);
   if (!description) return null;
-  const text = stripCodexMarkup(description).replace(/\s+/g, " ").trim();
+  const text = stripTransfigureDescriptionText(description).trim();
   return text || null;
 }
 
@@ -282,13 +321,18 @@ export function getTransfigureUpgradeInitialBlocks(
 }
 
 export function transfigureBlocksToGameDescription(blocks: PostBlock[]): string {
-  return blocks.map((block) => {
+  return encodeTransfigureCostTokens(blocks.map((block) => {
     if (block.type === "text") return block.text;
+    if (block.type === "cost-token") {
+      return block.kind === "energy"
+        ? `[energy:${Math.max(1, Math.floor(block.count) || 1)}]`
+        : `[star:${Math.max(1, Math.floor(block.count) || 1)}]`;
+    }
     if (block.type === "keyword") return `[gold]${block.text}[/gold]`;
     if (block.type === "entity") return `[gold]${block.displayText}[/gold]`;
     if (block.type === "history-run") return historyRunPlainText(block);
     return block.title;
-  }).join("");
+  }).join(""));
 }
 
 export function getTransfigureSourceCost(entity: EntityInfo): string | null {
@@ -517,6 +561,8 @@ export function transfigureBlocksSignature(items: PostBlock[]): string {
       tokens.push(
         `keyword:${block.text}:${block.keyword ?? ""}:${block.description ?? ""}:${block.entityType ?? ""}:${block.entityId ?? ""}`,
       );
+    } else if (block.type === "cost-token") {
+      tokens.push(`cost-token:${block.kind}:${block.count}`);
     } else if (block.type === "entity") {
       tokens.push(
         `entity:${block.displayText}:${block.entityType}:${block.entityId}`,
@@ -540,6 +586,11 @@ export function isTransfiguredContent(
   const normalizedContent = blocks
     .map((block) => {
       if (block.type === "text") return block.text;
+      if (block.type === "cost-token") {
+        return block.kind === "energy"
+          ? "@".repeat(Math.max(1, Math.floor(block.count) || 1))
+          : "*".repeat(Math.max(1, Math.floor(block.count) || 1));
+      }
       if (block.type === "keyword") return block.text;
       if (block.type === "entity") return block.displayText;
       if (block.type === "history-run") return historyRunPlainText(block);

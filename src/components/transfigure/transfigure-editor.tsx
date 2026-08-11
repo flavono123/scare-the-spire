@@ -785,6 +785,7 @@ export function TransfigureEditor({
               costLabel={copy.costLabel}
               descriptionLabel={copy.descriptionLabel}
               descriptionFrameLimit={copy.descriptionFrameLimit}
+              costTokenTip={copy.costTokenTip}
               addTopKeywordLabel={copy.addTopKeyword}
               addBottomKeywordLabel={copy.addBottomKeyword}
               removeKeywordLabel={copy.removeKeyword}

@@ -89,6 +89,13 @@ export function ComboPostRenderer({
 
         if (block.type === "history-run") return null;
 
+        if (block.type === "cost-token") {
+          const text = block.kind === "energy"
+            ? "@".repeat(Math.max(1, block.count))
+            : "*".repeat(Math.max(1, block.count));
+          return <span key={index}>{text}</span>;
+        }
+
         const entity = entityMap.get(`${block.entityType}:${block.entityId}`);
         if (entity) {
           return (

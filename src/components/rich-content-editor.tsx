@@ -29,6 +29,7 @@ import { EntityMapProvider } from "@/components/chemicalx/entity-context";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { YouTubeReferenceExtension } from "@/components/editor/youtube-reference-extension";
 import { HistoryRunReferenceExtension } from "@/components/editor/history-run-reference-extension";
+import { CostTokenExtension } from "@/components/transfigure/cost-token-extension";
 import {
   SlashCommandList,
   type SlashCommandItem,
@@ -129,6 +130,49 @@ function unwrapMalformedKeywords(editor: Editor): boolean {
   for (let i = unwraps.length - 1; i >= 0; i--) {
     const { from, to, text } = unwraps[i];
     tr.replaceWith(from, to, editor.schema.text(text));
+  }
+  editor.view.dispatch(tr);
+  return true;
+}
+
+function replaceCostTokensInEditor(editor: Editor): boolean {
+  const costNode = editor.schema.nodes["cost-token"];
+  if (!costNode) return false;
+
+  const replacements: Array<{
+    from: number;
+    to: number;
+    kind: "energy" | "star";
+    count: number;
+  }> = [];
+
+  editor.state.doc.descendants((node, pos) => {
+    if (!node.isText || !node.text) return;
+    for (const match of node.text.matchAll(/(@+|\*+)/g)) {
+      if (match.index == null) continue;
+      const token = match[0]!;
+      replacements.push({
+        from: pos + match.index,
+        to: pos + match.index + token.length,
+        kind: token[0] === "@" ? "energy" : "star",
+        count: token.length,
+      });
+    }
+  });
+
+  if (replacements.length === 0) return false;
+
+  const tr = editor.state.tr;
+  for (let i = replacements.length - 1; i >= 0; i--) {
+    const replacement = replacements[i]!;
+    tr.replaceWith(
+      replacement.from,
+      replacement.to,
+      costNode.create({
+        kind: replacement.kind,
+        count: replacement.count,
+      }),
+    );
   }
   editor.view.dispatch(tr);
   return true;
@@ -312,6 +356,11 @@ export interface RichContentEditorProps {
     } | null;
     slashCommands: SlashCommandItem[];
   };
+  /** Enable @ / * → in-description energy / star icon atoms (Transfigure). */
+  costTokens?: {
+    energyIconSrc: string;
+    starIconSrc?: string;
+  } | null;
 }
 
 export function RichContentEditor({
@@ -339,6 +388,7 @@ export function RichContentEditor({
   contentReplaceRequest,
   youtubeExtension,
   historyRunReferences,
+  costTokens = null,
 }: RichContentEditorProps) {
   const [submitting, setSubmitting] = useState(false);
   const [youtubeResolving, setYoutubeResolving] = useState(false);
@@ -409,6 +459,9 @@ export function RichContentEditor({
   }, [canSubmitBlocks, draftKey, onBlocksChange]);
 
   const processEditorUpdate = useCallback((editor: Editor) => {
+    if (replaceCostTokensInEditor(editor)) {
+      return;
+    }
     if (replaceKeywordsInEditor(editor, resolveKeyword)) {
       return;
     }
@@ -433,6 +486,13 @@ export function RichContentEditor({
       Placeholder.configure({ placeholder: richPlaceholder ? "" : placeholder }),
       CharacterCount.configure(maxChars == null ? {} : { limit: maxChars }),
       CustomKeyword,
+      ...(costTokens
+        ? [CostTokenExtension.configure({
+          energyIconSrc: costTokens.energyIconSrc,
+          starIconSrc: costTokens.starIconSrc
+            ?? "/images/game-assets/card-misc/star_icon.png",
+        })]
+        : []),
       ...(youtubeExtension ? [YouTubeReferenceExtension] : []),
       ...(historyRunSlashCommands ? [HistoryRunReferenceExtension] : []),
       EntityMention.configure({

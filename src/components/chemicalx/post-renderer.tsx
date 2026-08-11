@@ -106,6 +106,13 @@ export function PostRenderer({
             return <KeywordSpan key={i} text={block.text} keyword={block.keyword} description={block.description} />;
           }
 
+          if (block.type === "cost-token") {
+            const text = block.kind === "energy"
+              ? "@".repeat(Math.max(1, block.count))
+              : "*".repeat(Math.max(1, block.count));
+            return <span key={i}>{text}</span>;
+          }
+
           if (block.type === "youtube") {
             if (!isYouTubeVideoId(block.videoId) || !block.title.trim()) return null;
             return (

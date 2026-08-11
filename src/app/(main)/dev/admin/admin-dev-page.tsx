@@ -475,6 +475,11 @@ function blockText(blocks: PostBlock[] | null | undefined): string {
   return blocks.map((block) => {
     if (block.type === "text") return block.text;
     if (block.type === "entity") return block.displayText;
+    if (block.type === "cost-token") {
+      return block.kind === "energy"
+        ? "@".repeat(Math.max(1, block.count))
+        : "*".repeat(Math.max(1, block.count));
+    }
     if (block.type === "youtube") return block.title;
     if (block.type === "history-run") return historyRunPlainText(block);
     return block.text;
