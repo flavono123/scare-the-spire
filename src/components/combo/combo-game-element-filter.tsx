@@ -7,10 +7,12 @@ import {
   useState,
 } from "react";
 import { Check, Search, SlidersHorizontal, X } from "lucide-react";
+import { ScrollableBoundedCarousel } from "@/components/codex/bounded-carousel";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { matchEntities } from "@/lib/chemical-utils";
 import {
   comboResourceKey,
+  rankPopularComboResources,
   type ComboPost,
   type ComboResourceRef,
 } from "@/lib/combo-types";
@@ -18,6 +20,9 @@ import type { ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
 import { ComboResourceAsset } from "./combo-resource-stack";
+
+/** Recent-feed presets; keeps the chip row short on mobile. */
+const POPULAR_GAME_ELEMENT_LIMIT = 10;
 
 const GAME_ELEMENT_TYPE_ORDER = [
   "card",
@@ -92,6 +97,10 @@ export function ComboGameElementFilter({
     () => new Set(posts.flatMap((post) => post.resources.map(comboResourceKey))),
     [posts],
   );
+  const popularResources = useMemo(
+    () => rankPopularComboResources(posts, POPULAR_GAME_ELEMENT_LIMIT),
+    [posts],
+  );
   const selectedKeys = useMemo(
     () => new Set(selected.map(comboResourceKey)),
     [selected],
@@ -154,14 +163,17 @@ export function ComboGameElementFilter({
     };
   }, [open]);
 
-  const toggleEntity = (entity: EntityInfo) => {
-    const reference: ComboResourceRef = { type: entity.type, id: entity.id };
+  const toggleReference = (reference: ComboResourceRef) => {
     const key = comboResourceKey(reference);
     onSelectedChange(
       selectedKeys.has(key)
         ? selected.filter((item) => comboResourceKey(item) !== key)
         : [...selected, reference],
     );
+  };
+
+  const toggleEntity = (entity: EntityInfo) => {
+    toggleReference({ type: entity.type, id: entity.id });
   };
 
   const openPanel = () => {
@@ -214,6 +226,78 @@ export function ComboGameElementFilter({
           )}
         </button>
       </div>
+
+      {popularResources.length > 0 && (
+        <div
+          role="region"
+          aria-label={copy.popularGameElements}
+          data-combo-popular-game-elements
+        >
+        <ScrollableBoundedCarousel
+          previousLabel={copy.popularGameElementsPrevious}
+          nextLabel={copy.popularGameElementsNext}
+          className="pb-0.5"
+          scrollerClassName="gap-1.5"
+          dataTestId="combo-popular-game-elements"
+        >
+          {popularResources.map(({ resource, count }) => {
+            const key = comboResourceKey(resource);
+            const entity = entityMap.get(key);
+            const name = entity
+              ? (serviceLocale === "en" ? entity.nameEn : entity.nameKo)
+              : resource.id;
+            const isSelected = selectedKeys.has(key);
+            const title = (isSelected
+              ? copy.removePopularGameElement
+              : copy.applyPopularGameElement)
+              .replace("{name}", name)
+              .replace("{count}", String(count));
+
+            return (
+              <button
+                key={key}
+                type="button"
+                aria-pressed={isSelected}
+                aria-label={title}
+                title={title}
+                onClick={() => toggleReference(resource)}
+                className={cn(
+                  "group/popular inline-flex h-7 shrink-0 items-center gap-1 rounded-full border pl-1 pr-2 text-[11px] font-semibold transition-colors",
+                  isSelected
+                    ? "border-yellow-300/45 bg-yellow-500/15 text-yellow-100"
+                    : "border-white/10 bg-white/[0.03] text-zinc-300 hover:border-yellow-400/25 hover:bg-yellow-500/[0.08] hover:text-yellow-100",
+                )}
+              >
+                <span className="relative flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full bg-black/30">
+                  {entity ? (
+                    <span className="pointer-events-none origin-center scale-[0.36]">
+                      <ComboResourceAsset
+                        entity={entity}
+                        entityMap={entityMap}
+                        serviceLocale={serviceLocale}
+                      />
+                    </span>
+                  ) : (
+                    <span className="text-[9px] font-bold text-yellow-200">
+                      {name.slice(0, 1)}
+                    </span>
+                  )}
+                </span>
+                <span className="max-w-24 truncate">{name}</span>
+                <span
+                  className={cn(
+                    "tabular-nums text-[10px]",
+                    isSelected ? "text-yellow-200/80" : "text-zinc-500",
+                  )}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </ScrollableBoundedCarousel>
+        </div>
+      )}
 
       {selected.length > 0 && (
         <div
