@@ -3,10 +3,12 @@
 import { useCallback, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { ArrowLeft, Link2, Pencil } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { PostDetailActions } from "@/components/post-detail-actions";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useComboPost } from "@/hooks/use-combo-posts";
@@ -53,8 +55,9 @@ export function ComboPostView({ postId, gameLocale, placeholder }: ComboPostView
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const [copied, setCopied] = useState(false);
   const [editing, setEditing] = useState(false);
+  const router = useRouter();
   const { userId, ready, ensureUser } = useAuth();
-  const { post, loading, unavailable, update } = useComboPost(postId, userId);
+  const { post, loading, unavailable, update, remove } = useComboPost(postId, userId);
   const { entities } = useCommentEntities(undefined, { enabled: Boolean(post) });
   const entityMap = useMemo(() => buildComboEntityMap(entities), [entities]);
 
@@ -70,6 +73,13 @@ export function ComboPostView({ postId, gameLocale, placeholder }: ComboPostView
     if (!updatedPost) throw new Error("combo update rejected");
     setEditing(false);
   }, [ensureUser, update, userId]);
+  const handleDelete = useCallback(async () => {
+    const removed = await remove();
+    if (!removed) return;
+    router.replace(
+      localizeHrefWithGameLocale("/c-c-c-combo", serviceLocale, gameLocale),
+    );
+  }, [gameLocale, remove, router, serviceLocale]);
 
   if (unavailable) {
     return <StorageUnavailableNotice title={copy.unavailableTitle} />;
@@ -106,26 +116,17 @@ export function ComboPostView({ postId, gameLocale, placeholder }: ComboPostView
           <ArrowLeft size={16} />
           {copy.title}
         </Link>
-        <div className="flex items-center gap-2">
-          {ready && userId === post.user_id && (
-            <button
-              type="button"
-              onClick={() => setEditing(true)}
-              className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-yellow-500/30 hover:text-yellow-400"
-            >
-              <Pencil size={14} />
-              {copy.edit}
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={handleCopyUrl}
-            className="flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-yellow-500/30 hover:text-yellow-400"
-          >
-            <Link2 size={14} />
-            {copied ? copy.copied : copy.copyLink}
-          </button>
-        </div>
+        <PostDetailActions
+          copied={copied}
+          copyLabel={copy.copyLink}
+          copiedLabel={copy.copied}
+          onCopy={handleCopyUrl}
+          isAuthor={ready && userId === post.user_id}
+          editLabel={copy.edit}
+          onEdit={() => setEditing(true)}
+          deleteLabel={copy.delete}
+          onDelete={handleDelete}
+        />
       </div>
 
       <article className="relative overflow-hidden rounded-2xl border border-yellow-500/15 bg-gradient-to-b from-[#0c0c18] via-[#10101e] to-[#0c0c18] p-4 pb-4 sm:p-6 sm:pb-5">

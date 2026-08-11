@@ -71,6 +71,67 @@ resources, rich patch notes, mobile layout, animation, or QA.
 - Avoid visible in-app explanations of the feature design. The UI should be
   legible from the chosen token, title, layout, and game-like interaction.
 
+## Community Surface Conventions
+
+These were missing from the original skill and must stay consistent across Combo,
+Transfigure, This or That, Chemical X, History Course, Stories, and comments.
+
+### Index-card engagement
+
+- Index cards that have a detail page with `#comments` must show comment and like
+  aggregates on the card.
+- Comment control navigates to the detail `#comments` anchor (composer focus).
+- Like control toggles immediately on the index when the shared `likes` table or
+  a service-specific like table already exists. Do not invent a new Worker RPC.
+- Prefer `useEngagementCounts` (existing `get_engagement_counts` RPC) plus
+  `LikeButton` / `IndexCardEngagement` for thread keys from
+  `src/lib/comment-threads.ts`.
+- Do not add request-time Worker Supabase reads or full-table joins for these
+  counts. Keep aggregation client-side against the existing bounded RPC.
+- Codex library tile overlays are a separate surface; do not casually change
+  them when updating community index cards.
+
+### Borrowed game-locale CTAs
+
+- Primary create/submit labels should borrow short game-locale phrases when a
+  clear in-game match exists, not invent SaaS verbs like "만들기".
+- Current examples:
+  - Combo create: Korean `결합이다!` from Amalgamator (`AMALGAMATOR`); English
+    `COMBINING!` from the same event line.
+  - Transfigure create/submit: Korean `변형하기` from card title `변형`
+    (`TRANSFIGURE`); English `Transfigure`.
+  - This or That create: Korean `이거... 아님 저거?` / English
+    `This... or That?` from `THIS_OR_THAT.pages.INITIAL.description`
+    whisper line. Vote prompts stay on Knowledge Demon `선택하라.` /
+    `Make your choice.`
+- Put service shell strings in `src/messages/service.ts`. Keep game-origin
+  phrases sourced from extracted locale / borrowed-game-copy, not hand
+  translation.
+
+### Action icons (community surfaces)
+
+- **Like only** uses the game token via `SpireLikeIcon` in
+  `src/components/spire-icon.tsx`: `necro_mastery_power.webp` (강령의 극의).
+  Idle = ghost wax; hover/active = spire-gold (`#d4a843`).
+- **Comment / edit / delete** use unified Lucide icons (`MessageCircle`,
+  `Pencil`, `Trash2`). Non-delete accent hover/active color is spire-gold;
+  delete stays red.
+- Soft `-translate-y` toast-up applies **only on index engagement icons**
+  (`INDEX_LUCIDE_ICON_CLASS` / `SpireLikeIcon lift`), never from parent card
+  hover and never on detail top-right actions.
+- Index cards: comment + like only (no edit, no delete). Own posts show
+  read-only `OwnPostMark` (`ownPostLabel`: KO `내 글` / EN `Mine`) next to
+  the nickname — ownership is not signaled via a delete control.
+- Comment tips via `GameUiHoverTip` (`engagementTips`): 0 → `commentFirst`
+  ("첫 댓글 쓰기"), n → `commentCount` ("{count}개의 댓글").
+- Detail top-right order via `PostDetailActions`: copy link → edit (author) →
+  delete (author). Destructive delete is detail-only and always goes through
+  `GameConfirmModal` with game `GENERIC_POPUP` labels (`예`/`아니요`,
+  `Yes`/`No`) from `deleteConfirm` in `src/messages/service.ts`.
+  Modal chrome uses extracted `popup_vertical` + red/green ribbon buttons
+  (`public/images/sts2/ui/confirm/`, via `scripts/extract-confirm-popup-assets.py`);
+  hover matches `NPopupYesNoButton` (gold additive outline + outer-pivot scale).
+
 ## Implementation Defaults
 
 - Use existing components and data loaders before adding new abstractions.

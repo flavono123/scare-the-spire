@@ -2,9 +2,13 @@
 
 import { useEffect, useState, useMemo, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Image from "@/components/ui/static-image";
-import { ArrowLeft, Link2, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { PostDetailActions } from "@/components/post-detail-actions";
+import { useAuth } from "@/hooks/use-auth";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import { localizeHref } from "@/lib/i18n";
 import type { ChemicalPost } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -31,6 +35,8 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
   const copy = serviceMessages[serviceLocale].chemicalX;
   const siteDisplayOrigin = getSiteDisplayOrigin();
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
+  const router = useRouter();
+  const { userId, ready } = useAuth();
   const [post, setPost] = useState<ChemicalPost | null>(null);
   const [loading, setLoading] = useState(supabaseEnabled);
   const [copied, setCopied] = useState(false);
@@ -58,6 +64,21 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }, [postId]);
+
+  const handleDelete = useCallback(async () => {
+    if (!userId || !supabaseEnabled || !post) return;
+    const { error } = await withSupabaseTimeout(
+      "chemical_posts.detail.delete",
+      supabase
+        .from("chemical_posts")
+        .delete()
+        .eq("id", postId)
+        .eq("user_id", userId)
+        .eq("env", supabaseEnv),
+    ).catch(() => ({ error: new Error("timeout") }));
+    if (error) return;
+    router.replace(localizeHref("/chemical-x", serviceLocale));
+  }, [post, postId, router, serviceLocale, userId]);
 
   if (loading) {
     return (
@@ -98,24 +119,24 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
           <ArrowLeft size={16} />
           {copy.title}
         </Link>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleCopyUrl}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-gray-400 hover:text-yellow-400 hover:border-yellow-500/30 transition-colors"
-          >
-            <Link2 size={14} />
-            {copied ? copy.copied : copy.copyLink}
-          </button>
+        <PostDetailActions
+          copied={copied}
+          copyLabel={copy.copyLink}
+          copiedLabel={copy.copied}
+          onCopy={handleCopyUrl}
+          isAuthor={ready && !!userId && userId === post.user_id}
+          deleteLabel={copy.delete}
+          onDelete={handleDelete}
+        >
           <button
             type="button"
             onClick={() => setShowTooltips((v) => !v)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-gray-400 hover:text-yellow-400 hover:border-yellow-500/30 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-[#d4a843]/40 hover:text-[#d4a843]"
           >
             {showTooltips ? <EyeOff size={14} /> : <Eye size={14} />}
             {showTooltips ? copy.collapse : copy.expand}
           </button>
-        </div>
+        </PostDetailActions>
       </div>
 
       {/* ===== Screenshot-worthy card ===== */}

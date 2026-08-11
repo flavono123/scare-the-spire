@@ -40,6 +40,7 @@ interface UseComboPostReturn {
   loading: boolean;
   unavailable: boolean;
   update: (input: SaveComboPostInput) => Promise<ComboPost | null>;
+  remove: () => Promise<boolean>;
 }
 
 function normalizePost(row: unknown): ComboPost {
@@ -386,5 +387,24 @@ export function useComboPost(
     [postId, userId],
   );
 
-  return { post, loading, unavailable, update };
+  const remove = useCallback(async () => {
+    if (!userId || !supabaseEnabled) return false;
+    const { error } = await withSupabaseTimeout(
+      "combo_posts.detail.delete",
+      supabase
+        .from("combo_posts")
+        .delete()
+        .eq("id", postId)
+        .eq("user_id", userId)
+        .eq("env", supabaseEnv),
+    ).catch(() => ({ error: new Error("timeout") }));
+    if (error) {
+      setUnavailable(true);
+      return false;
+    }
+    setPost(null);
+    return true;
+  }, [postId, userId]);
+
+  return { post, loading, unavailable, update, remove };
 }

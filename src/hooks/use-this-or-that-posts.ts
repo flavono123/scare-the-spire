@@ -29,6 +29,7 @@ interface UseThisOrThatPostReturn {
   post: ThisOrThatPost | null;
   loading: boolean;
   unavailable: boolean;
+  remove: () => Promise<boolean>;
 }
 
 function normalizePost(row: unknown): ThisOrThatPost {
@@ -183,7 +184,10 @@ export function useThisOrThatPosts(userId: string | null): UseThisOrThatPostsRet
   return { posts, loading, unavailable, add, remove };
 }
 
-export function useThisOrThatPost(postId: string): UseThisOrThatPostReturn {
+export function useThisOrThatPost(
+  postId: string,
+  userId: string | null = null,
+): UseThisOrThatPostReturn {
   const [post, setPost] = useState<ThisOrThatPost | null>(null);
   const [loading, setLoading] = useState(supabaseEnabled);
   const [unavailable, setUnavailable] = useState(!supabaseEnabled);
@@ -219,5 +223,24 @@ export function useThisOrThatPost(postId: string): UseThisOrThatPostReturn {
     };
   }, [postId]);
 
-  return { post, loading, unavailable };
+  const remove = useCallback(async () => {
+    if (!userId || !supabaseEnabled) return false;
+    const { error } = await withSupabaseTimeout(
+      "this_or_that_posts.detail.delete",
+      supabase
+        .from("this_or_that_posts")
+        .delete()
+        .eq("id", postId)
+        .eq("user_id", userId)
+        .eq("env", supabaseEnv),
+    ).catch(() => ({ error: new Error("timeout") }));
+    if (error) {
+      setUnavailable(true);
+      return false;
+    }
+    setPost(null);
+    return true;
+  }, [postId, userId]);
+
+  return { post, loading, unavailable, remove };
 }

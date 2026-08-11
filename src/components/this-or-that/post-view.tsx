@@ -1,10 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { PostDetailActions } from "@/components/post-detail-actions";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -43,8 +45,11 @@ export function ThisOrThatPostView({
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].thisOrThat;
+  const tips = serviceMessages[serviceLocale].engagementTips;
+  const router = useRouter();
+  const [copied, setCopied] = useState(false);
   const { userId, ready: authReady, unavailable: authUnavailable, ensureUser } = useAuth();
-  const { post, loading, unavailable } = useThisOrThatPost(postId);
+  const { post, loading, unavailable, remove } = useThisOrThatPost(postId, userId);
   const {
     entities,
     loading: resourcesLoading,
@@ -63,6 +68,18 @@ export function ThisOrThatPostView({
     if (!activeUserId) return;
     await likes.toggle(post.id, activeUserId);
   };
+  const handleCopyUrl = useCallback(() => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2000);
+  }, []);
+  const handleDelete = useCallback(async () => {
+    const removed = await remove();
+    if (!removed) return;
+    router.replace(
+      localizeHrefWithGameLocale("/this-or-that", serviceLocale, gameLocale),
+    );
+  }, [gameLocale, remove, router, serviceLocale]);
 
   if (unavailable) {
     return <StorageUnavailableNotice title={copy.unavailableTitle} />;
@@ -93,13 +110,24 @@ export function ThisOrThatPostView({
 
   return (
     <div className="space-y-5">
-      <Link
-        href={localizeHrefWithGameLocale("/this-or-that", serviceLocale, gameLocale)}
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-yellow-400"
-      >
-        <ArrowLeft size={16} />
-        {title}
-      </Link>
+      <div className="flex items-center justify-between gap-3">
+        <Link
+          href={localizeHrefWithGameLocale("/this-or-that", serviceLocale, gameLocale)}
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-[#d4a843]"
+        >
+          <ArrowLeft size={16} />
+          {title}
+        </Link>
+        <PostDetailActions
+          copied={copied}
+          copyLabel={copy.copyLink}
+          copiedLabel={copy.copied}
+          onCopy={handleCopyUrl}
+          isAuthor={authReady && userId === resolvedPost.post.user_id}
+          deleteLabel={copy.delete}
+          onDelete={handleDelete}
+        />
+      </div>
 
       <article className="space-y-5">
         <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -123,6 +151,8 @@ export function ThisOrThatPostView({
             disabled={!authReady || authUnavailable}
             onToggle={handleToggleLike}
             label={copy.like}
+            tipLabel={tips.like}
+            tipLabelActive={tips.unlike}
             className="shrink-0"
           />
         </header>
