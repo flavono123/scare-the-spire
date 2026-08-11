@@ -22,6 +22,20 @@ export function comboResourceKey(resource: ComboResourceRef): string {
   return `${resource.type}:${resource.id}`;
 }
 
+export const COMBO_FEED_PAGE_SIZE = 20;
+
+export interface ComboFeedCursor {
+  createdAt: string;
+  id: string;
+}
+
+/** PostgREST `.or()` filter for (created_at, id) keyset, newest-first. */
+export function buildComboFeedKeysetFilter(cursor: ComboFeedCursor): string {
+  const createdAt = cursor.createdAt.replaceAll('"', "");
+  const id = cursor.id.replaceAll('"', "");
+  return `created_at.lt."${createdAt}",and(created_at.eq."${createdAt}",id.lt."${id}")`;
+}
+
 export function comboPostMatchesAnyGameElement(
   post: Pick<ComboPost, "resources">,
   selected: ComboResourceRef[],
@@ -30,6 +44,41 @@ export function comboPostMatchesAnyGameElement(
 
   const postKeys = new Set(post.resources.map(comboResourceKey));
   return selected.some((gameElement) => postKeys.has(comboResourceKey(gameElement)));
+}
+
+export interface RankedComboResourceRef {
+  resource: ComboResourceRef;
+  count: number;
+}
+
+/** Rank game elements by how many loaded posts reference them (desc). */
+export function rankPopularComboResources(
+  posts: Array<Pick<ComboPost, "resources">>,
+  limit: number,
+): RankedComboResourceRef[] {
+  if (limit <= 0 || posts.length === 0) return [];
+
+  const counts = new Map<string, RankedComboResourceRef>();
+  for (const post of posts) {
+    for (const resource of post.resources) {
+      const key = comboResourceKey(resource);
+      const current = counts.get(key);
+      if (current) {
+        current.count += 1;
+      } else {
+        counts.set(key, { resource, count: 1 });
+      }
+    }
+  }
+
+  return [...counts.values()]
+    .sort((left, right) => {
+      if (left.count !== right.count) return right.count - left.count;
+      const byType = left.resource.type.localeCompare(right.resource.type);
+      if (byType !== 0) return byType;
+      return left.resource.id.localeCompare(right.resource.id);
+    })
+    .slice(0, limit);
 }
 
 export function extractComboResourceRefs(blocks: PostBlock[]): ComboResourceRef[] {
