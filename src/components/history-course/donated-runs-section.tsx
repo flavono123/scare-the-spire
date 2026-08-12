@@ -186,6 +186,7 @@ export function DonatedRunsSection({ refreshKey = 0, query = "" }: Props) {
             ascension: editing.ascension,
             build: editing.build,
             seed: editing.seed,
+            runTimeSeconds: editing.run_time,
             badges: editing.badges ?? [],
           }}
           initialCover={editingParsed.cover}

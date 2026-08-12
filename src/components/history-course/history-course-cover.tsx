@@ -32,6 +32,10 @@ import {
   coverElementImageSrc,
   displayNameForCoverElement,
 } from "@/lib/run-cover-display";
+import {
+  gameLocaleForServiceLocale,
+  gameOverTrueWinLabel,
+} from "@/lib/game-over-copy";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CoverElement, CoverSpec } from "@/lib/run-cover-types";
 import { CARD_ASPECT_H, CARD_ASPECT_W } from "@/lib/sts2-card-style";
@@ -45,6 +49,7 @@ export interface HistoryCourseCoverMeta {
   ascension: number;
   build: string;
   seed: string;
+  runTimeSeconds?: number | null;
   badges?: ReplayBadge[];
 }
 
@@ -202,7 +207,9 @@ export function HistoryCourseCover({
                 compact ? "gap-1" : "gap-1.5",
               )}
             >
-              <OutcomeChip win={meta.win} compact={compact} ko={serviceLocale === "ko"} />
+              {meta.win && (
+                <OutcomeChip compact={compact} serviceLocale={serviceLocale} />
+              )}
               <FloorChip floor={meta.totalFloors} compact={compact} />
               {meta.ascension > 0 && (
                 <AscensionChip ascension={meta.ascension} compact={compact} />
@@ -263,15 +270,25 @@ function CoverBottomRightMeta({
   const zoneRef = useRef<HTMLDivElement>(null);
   const [tight, setTight] = useState(false);
   const hasBadges = Boolean(meta?.badges && meta.badges.length > 0);
+  const hasRunTime =
+    typeof meta?.runTimeSeconds === "number" &&
+    Number.isFinite(meta.runTimeSeconds) &&
+    meta.runTimeSeconds >= 0;
 
   useEffect(() => {
     const el = zoneRef.current;
     if (!el || !meta) return;
 
     const update = () => {
-      // Badges (~28) + gap (~4) + seed chip (~22) need ~54px stacked.
-      const needed = hasBadges ? (compact ? 50 : 56) : 0;
-      setTight(hasBadges && el.clientHeight > 0 && el.clientHeight < needed);
+      // Badges (~28) + playtime (~18) + seed (~22) + gaps — stack until short.
+      let needed = compact ? 24 : 28; // seed
+      if (hasRunTime) needed += compact ? 18 : 22;
+      if (hasBadges) needed += compact ? 28 : 32;
+      setTight(
+        (hasBadges || hasRunTime) &&
+          el.clientHeight > 0 &&
+          el.clientHeight < needed,
+      );
     };
 
     update();
@@ -282,7 +299,7 @@ function CoverBottomRightMeta({
       window.cancelAnimationFrame(raf);
       ro.disconnect();
     };
-  }, [compact, hasBadges, meta]);
+  }, [compact, hasBadges, hasRunTime, meta]);
 
   if (!meta) return <div />;
 
@@ -311,10 +328,28 @@ function CoverBottomRightMeta({
             )}
           />
         )}
+        {hasRunTime && (
+          <span
+            className={cn(
+              "font-bold tabular-nums spire-gold drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]",
+              compact ? "text-[9px]" : "text-[10px] sm:text-[11px]",
+            )}
+          >
+            {formatCoverRunTime(meta.runTimeSeconds!)}
+          </span>
+        )}
         <SeedCopyChip seed={meta.seed} compact={compact} />
       </div>
     </div>
   );
+}
+
+function formatCoverRunTime(seconds: number): string {
+  const total = Math.max(0, Math.floor(seconds));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return `${h}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
 function useCoverCardLayout(
@@ -421,23 +456,21 @@ function SeedCopyChip({
 }
 
 function OutcomeChip({
-  win,
   compact,
-  ko,
+  serviceLocale,
 }: {
-  win: boolean;
   compact: boolean;
-  ko: boolean;
+  serviceLocale: ServiceLocale;
 }) {
+  const label = gameOverTrueWinLabel(gameLocaleForServiceLocale(serviceLocale));
   return (
     <span
       className={cn(
-        "font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]",
-        win ? "text-emerald-300" : "text-red-300",
+        "font-bold text-emerald-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]",
         compact ? "text-[9px]" : "text-[11px] sm:text-xs",
       )}
     >
-      {ko ? (win ? "클리어" : "패배") : win ? "Win" : "Loss"}
+      {label}
     </span>
   );
 }

@@ -67,6 +67,7 @@ export function RunCard({
   seed,
   win,
   totalFloors,
+  runTimeSeconds,
   badges = [],
   coverSpec,
   onPick,
@@ -207,6 +208,7 @@ export function RunCard({
               ascension,
               build,
               seed,
+              runTimeSeconds,
               badges,
             }}
             topRightActions={topRightActions}

@@ -266,6 +266,7 @@ export function MyRunsList({
             ascension: editing.run.ascension,
             build: editing.run.build_id,
             seed: editing.run.seed,
+            runTimeSeconds: editing.run.run_time ?? null,
             badges: editing.run.players[0]?.badges ?? [],
           }}
           initialCover={editing.coverSpec}

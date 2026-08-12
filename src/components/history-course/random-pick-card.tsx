@@ -138,8 +138,11 @@ export function RandomPickCard({ runs, userId }: Props) {
           {/* Bottom-left game elements: intentionally empty */}
           <div className="min-h-0 min-w-0 self-stretch" />
 
-          {/* Bottom-right: seed only (no badges) */}
-          <div className="flex min-h-0 min-w-0 items-end justify-end self-stretch">
+          {/* Bottom-right: playtime + seed (no badges) */}
+          <div className="flex min-h-0 min-w-0 flex-col items-end justify-end gap-1 self-stretch">
+            <span className="text-[10px] font-bold tabular-nums spire-gold drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] sm:text-[11px]">
+              ?:??:??
+            </span>
             <span
               className={cn(
                 "inline-flex max-w-full items-center gap-1 rounded-md bg-black/55 px-1.5 py-0.5",

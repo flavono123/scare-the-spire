@@ -366,6 +366,7 @@ function RunSection({
                         ascension: block.snapshot.ascension,
                         build: block.snapshot.build,
                         seed: block.snapshot.seed,
+                        runTimeSeconds: block.snapshot.runTime,
                       }}
                     />
                   </span>
