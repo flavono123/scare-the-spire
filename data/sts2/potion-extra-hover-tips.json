@@ -1,0 +1,225 @@
+{
+  "source": "MegaCrit.Sts2.Core.Models.Potions ExtraHoverTips",
+  "tipsByPotionId": {
+    "ASHWATER": [
+      {
+        "kind": "keyword",
+        "id": "EXHAUST"
+      }
+    ],
+    "BLOCK_POTION": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "BONE_BREW": [
+      {
+        "kind": "static",
+        "id": "SUMMON_DYNAMIC",
+        "var": "Summon"
+      }
+    ],
+    "CUNNING_POTION": [
+      {
+        "kind": "card",
+        "id": "SHIV",
+        "upgrade": true
+      }
+    ],
+    "CURE_ALL": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "DEXTERITY_POTION": [
+      {
+        "kind": "power",
+        "id": "DEXTERITY"
+      }
+    ],
+    "ENERGY_POTION": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "ESSENCE_OF_DARKNESS": [
+      {
+        "kind": "static",
+        "id": "CHANNELING"
+      },
+      {
+        "kind": "orb",
+        "id": "DARK_ORB"
+      }
+    ],
+    "FLEX_POTION": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "FOCUS_POTION": [
+      {
+        "kind": "power",
+        "id": "FOCUS"
+      }
+    ],
+    "FORTIFIER": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "FYSH_OIL": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      },
+      {
+        "kind": "power",
+        "id": "DEXTERITY"
+      }
+    ],
+    "GHOST_IN_A_JAR": [
+      {
+        "kind": "power",
+        "id": "INTANGIBLE"
+      }
+    ],
+    "GLOWWATER_POTION": [
+      {
+        "kind": "keyword",
+        "id": "EXHAUST"
+      }
+    ],
+    "HEART_OF_IRON": [
+      {
+        "kind": "power",
+        "id": "PLATING"
+      },
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "KINGS_COURAGE": [
+      {
+        "kind": "forge"
+      }
+    ],
+    "LIQUID_BRONZE": [
+      {
+        "kind": "power",
+        "id": "THORNS"
+      }
+    ],
+    "LUCKY_TONIC": [
+      {
+        "kind": "power",
+        "id": "BUFFER"
+      }
+    ],
+    "MAZALETHS_GIFT": [
+      {
+        "kind": "power",
+        "id": "RITUAL"
+      },
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "POISON_POTION": [
+      {
+        "kind": "power",
+        "id": "POISON"
+      }
+    ],
+    "POTION_OF_BINDING": [
+      {
+        "kind": "power",
+        "id": "WEAK"
+      },
+      {
+        "kind": "power",
+        "id": "VULNERABLE"
+      }
+    ],
+    "POTION_OF_DOOM": [
+      {
+        "kind": "power",
+        "id": "DOOM"
+      }
+    ],
+    "POT_OF_GHOULS": [
+      {
+        "kind": "card",
+        "id": "SOUL"
+      }
+    ],
+    "RADIANT_TINCTURE": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "REGEN_POTION": [
+      {
+        "kind": "power",
+        "id": "REGEN"
+      }
+    ],
+    "SHACKLING_POTION": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "SHIP_IN_A_BOTTLE": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "SOLDIERS_STEW": [
+      {
+        "kind": "static",
+        "id": "REPLAY_STATIC"
+      }
+    ],
+    "SPEED_POTION": [
+      {
+        "kind": "power",
+        "id": "DEXTERITY"
+      }
+    ],
+    "STABLE_SERUM": [
+      {
+        "kind": "keyword",
+        "id": "RETAIN"
+      }
+    ],
+    "STRENGTH_POTION": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "VULNERABLE_POTION": [
+      {
+        "kind": "power",
+        "id": "VULNERABLE"
+      }
+    ],
+    "WEAK_POTION": [
+      {
+        "kind": "power",
+        "id": "WEAK"
+      }
+    ]
+  },
+  "skippedDynamicPotionClasses": []
+}
