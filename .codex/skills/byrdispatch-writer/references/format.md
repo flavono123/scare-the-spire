@@ -103,9 +103,11 @@ Prefer these exact Korean headings:
 - `슬서운 이야기`
 - `패치 노트`
 - `패치노트`
+- `장난감 상자`
 - `역사 강의서`
 - `백과사전`
 - `케미컬X`
+- `코오오옴보`
 - `이거 아님 저거?`
 - `변형`
 - `프로필`
@@ -125,6 +127,7 @@ Use these established headings in `.en.md` files:
 | `슬서운 이야기` | `Stories` |
 | `패치 노트` / `패치노트` | `Patch Notes` |
 | `슬서운 변경` | `Patch History` |
+| `장난감 상자` | `Toy Box` |
 | `역사 강의서` | `History Course` |
 | `백과사전` | `Compendium` |
 | `케미컬X` | `Chemical X` |

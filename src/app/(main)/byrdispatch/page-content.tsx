@@ -56,6 +56,8 @@ type ByrdispatchStatusLabels = Readonly<Record<ByrdispatchStatus, string>>;
 const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   "공통": { href: null, icon: BYRDISPATCH_ICON },
   "General": { href: null, icon: BYRDISPATCH_ICON },
+  "장난감 상자": { href: null, icon: "/images/sts2/relics/toy_box.webp" },
+  "Toy Box": { href: null, icon: "/images/sts2/relics/toy_box.webp" },
   "슬서운 이야기": { href: "/", icon: "/images/sts2/relics/bone_tea.webp" },
   "Stories": { href: "/", icon: "/images/sts2/relics/bone_tea.webp" },
   "섀소식": { href: "/byrdispatch", icon: BYRDISPATCH_ICON },
