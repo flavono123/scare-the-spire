@@ -425,10 +425,12 @@ export function CompendiumDirectDetailPage({
           relatedEnchantments={resources.enchantments}
           relatedEvents={resources.events}
           relatedPowers={resources.powers}
+          relatedMonsters={resources.monsters}
+          tipCatalogSources={payload.cardSideTipSources}
+          tipCatalogCards={resources.cards}
           patches={patches}
           changes={changes}
           versionDiffs={versionDiffs}
-          entities={entities}
         />
       );
     }

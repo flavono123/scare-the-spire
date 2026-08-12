@@ -1,7 +1,15 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexCards, getCodexCharacters, getCodexEnchantments, getCodexEvents, getCodexPotions, getCodexPowers } from "@/lib/codex-data";
-import { loadAllEntities } from "@/lib/load-all-entities";
+import {
+  getCodexCards,
+  getCodexCharacters,
+  getCodexEnchantments,
+  getCodexEvents,
+  getCodexMonsters,
+  getCodexPotions,
+  getCodexPowers,
+} from "@/lib/codex-data";
+import { loadCardSideTipCatalogSources } from "@/lib/card-side-tip-catalog.server";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
@@ -55,7 +63,20 @@ export default async function PotionDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [potions, cards, characters, enchantments, patches, changes, versionDiffs, gameUi, events, powers, entities] = await Promise.all([
+  const [
+    potions,
+    cards,
+    characters,
+    enchantments,
+    patches,
+    changes,
+    versionDiffs,
+    gameUi,
+    events,
+    powers,
+    monsters,
+    tipCatalogSources,
+  ] = await Promise.all([
     getCodexPotions({ gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexCharacters({ gameLocale }),
@@ -66,7 +87,8 @@ export default async function PotionDetailPage({
     getCodexGameUiLabels(gameLocale),
     getCodexEvents({ gameLocale }),
     getCodexPowers({ includeDeprecated: true, gameLocale }),
-    loadAllEntities({ gameLocale }),
+    getCodexMonsters({ gameLocale }),
+    loadCardSideTipCatalogSources(gameLocale),
   ]);
   const potion = potions.find((p) => p.id.toLowerCase() === id.toLowerCase());
   if (!potion) notFound();
@@ -86,7 +108,23 @@ export default async function PotionDetailPage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={gameUi.potionLabTitle} potion={potion} poolLabels={poolLabels} relatedCards={cards} relatedEnchantments={enchantments} relatedEvents={events} relatedPowers={powers} patches={patches} changes={changes} versionDiffs={versionDiffs} entities={entities} />
+      <PotionDetail
+        serviceLocale={serviceLocale}
+        gameUi={gameUi}
+        backToListTitle={gameUi.potionLabTitle}
+        potion={potion}
+        poolLabels={poolLabels}
+        relatedCards={cards}
+        relatedEnchantments={enchantments}
+        relatedEvents={events}
+        relatedPowers={powers}
+        relatedMonsters={monsters}
+        tipCatalogSources={tipCatalogSources}
+        tipCatalogCards={cards}
+        patches={patches}
+        changes={changes}
+        versionDiffs={versionDiffs}
+      />
     </div>
   );
 }

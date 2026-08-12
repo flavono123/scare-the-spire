@@ -1,7 +1,15 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexCards, getCodexPotions, getCodexCharacters, getCodexEnchantments, getCodexEvents, getCodexPowers } from "@/lib/codex-data";
-import { loadAllEntities } from "@/lib/load-all-entities";
+import {
+  getCodexCards,
+  getCodexPotions,
+  getCodexCharacters,
+  getCodexEnchantments,
+  getCodexEvents,
+  getCodexMonsters,
+  getCodexPowers,
+} from "@/lib/codex-data";
+import { loadCardSideTipCatalogSources } from "@/lib/card-side-tip-catalog.server";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
@@ -47,7 +55,21 @@ export default async function CodexPotionsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [potions, cards, characters, enchantments, patches, changes, versionDiffs, meta, gameUi, events, powers, entities] = await Promise.all([
+  const [
+    potions,
+    cards,
+    characters,
+    enchantments,
+    patches,
+    changes,
+    versionDiffs,
+    meta,
+    gameUi,
+    events,
+    powers,
+    monsters,
+    tipCatalogSources,
+  ] = await Promise.all([
     getCodexPotions({ gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexCharacters({ gameLocale }),
@@ -59,7 +81,8 @@ export default async function CodexPotionsPage({
     getCodexGameUiLabels(gameLocale),
     getCodexEvents({ gameLocale }),
     getCodexPowers({ includeDeprecated: true, gameLocale }),
-    loadAllEntities({ gameLocale }),
+    getCodexMonsters({ gameLocale }),
+    loadCardSideTipCatalogSources(gameLocale),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
@@ -81,7 +104,8 @@ export default async function CodexPotionsPage({
         relatedEnchantments={enchantments}
         relatedEvents={events}
         relatedPowers={powers}
-        entities={entities}
+        relatedMonsters={monsters}
+        tipCatalogSources={tipCatalogSources}
       />
     </Suspense>
   );
