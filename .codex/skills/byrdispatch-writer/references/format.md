@@ -74,6 +74,7 @@ Codex writes plain markdown with status markers; the app renderer owns visual st
 - Service references inside bullets are written as visible service names in plain text. The renderer turns recognized service names into aqua links with a leading token asset.
 - Do not add `(서비스)` markers. If a service mention has a qualifier, the qualifier stays plain and only the service name is styled, e.g. `슬더스2 패치노트` styles only `패치노트`.
 - Individual game resources inside bullets: patch-note rich reference behavior with gold styling, game hover tip, link, and active game locale label.
+- Inline code chips: wrap keyboard/editor tokens in backticks, e.g. `` `@` `` or `` `*` ``. The renderer shows them as monospace chips; do not rely on plain `@` / `*` alone.
 - Epoch beta-art updates should use typed `[gold:epoch]...[/gold]` references; byrdispatch renders those hover tips in beta-art mode.
 - Beta-art mode shows the beta art instead of the official art. It must not render both images together.
 - `(new)`: render a New Leaf relic token after the heading or bullet.

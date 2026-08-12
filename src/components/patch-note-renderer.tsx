@@ -1065,8 +1065,8 @@ function renderBBNodes(
     if (node.type === "newline") return <br key={key} />;
 
     if (node.type === "text" && node.text) {
-      // Within plain text, handle **bold** markdown patterns
-      return renderMarkdownBold(node.text, lookup, key, context);
+      // Within plain text, handle `inline code` then **bold** markdown
+      return renderMarkdownInlineCode(node.text, lookup, key, context);
     }
 
     if (node.type === "tag" && node.tag && node.children) {
@@ -1167,6 +1167,59 @@ function renderSineBBNodes(
 
     return null;
   });
+}
+
+const INLINE_CODE_CLASS =
+  "rounded border border-white/10 bg-black/45 px-1 py-0.5 font-mono text-[0.9em] font-semibold text-amber-100/95";
+
+// Handle `inline code` before **bold** so tokens like `*` stay literal.
+function renderMarkdownInlineCode(
+  text: string,
+  lookup: EntityLookup,
+  keyPrefix: string,
+  context: RenderContext,
+): ReactNode {
+  const regex = /`([^`\n]+)`/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  const parts: ReactNode[] = [];
+  let idx = 0;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(
+        renderMarkdownBold(
+          text.slice(lastIndex, match.index),
+          lookup,
+          `${keyPrefix}-pre-${idx}`,
+          context,
+        ),
+      );
+    }
+
+    parts.push(
+      <code key={`${keyPrefix}-code-${idx}`} className={INLINE_CODE_CLASS}>
+        {match[1]}
+      </code>,
+    );
+    idx += 1;
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex === 0) {
+    return renderMarkdownBold(text, lookup, keyPrefix, context);
+  }
+  if (lastIndex < text.length) {
+    parts.push(
+      renderMarkdownBold(
+        text.slice(lastIndex),
+        lookup,
+        `${keyPrefix}-tail`,
+        context,
+      ),
+    );
+  }
+  return <span key={keyPrefix}>{parts}</span>;
 }
 
 // Handle **bold** patterns in plain text segments
