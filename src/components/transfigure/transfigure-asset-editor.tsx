@@ -203,28 +203,28 @@ export function TransfigureAssetEditor({
   );
   const costTokenTipNode = (
     <p
-      className="mt-2 flex max-w-[20rem] flex-wrap items-center justify-center gap-x-1 gap-y-0.5 text-center text-[11px] text-gray-500 opacity-80"
+      className="mt-2 flex max-w-[20rem] flex-wrap items-center justify-center gap-x-1 gap-y-0.5 text-center text-[11px] text-gray-500 opacity-70"
       data-transfigure-cost-token-tip
     >
-      <span className="spire-gold grayscale">{("@")}</span>
+      <span className="spire-gold">{"@"}</span>
       <span>{costTokenTip.atThen}</span>
       <Image
         src={energyIconSrc}
         alt=""
         width={12}
         height={12}
-        className="inline-block align-text-bottom grayscale"
+        className="inline-block align-text-bottom"
         style={{ width: "1em", height: "1em" }}
       />
       <span>,</span>
-      <span className="spire-gold grayscale">{"*"}</span>
+      <span className="spire-gold">{"*"}</span>
       <span>{costTokenTip.starThen}</span>
       <Image
         src="/images/game-assets/card-misc/star_icon.png"
         alt=""
         width={12}
         height={12}
-        className="inline-block align-text-bottom grayscale"
+        className="inline-block align-text-bottom"
         style={{ width: "1em", height: "1em" }}
       />
       {costTokenTip.apply ? <span>{costTokenTip.apply}</span> : null}
