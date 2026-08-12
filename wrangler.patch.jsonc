@@ -11,7 +11,7 @@
     "not_found_handling": "none"
   },
   "env": {
-    "phase4": {
+    "testbed": {
       "workers_dev": true,
       "preview_urls": true
     }

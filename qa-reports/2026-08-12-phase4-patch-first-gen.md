@@ -1,5 +1,8 @@
 # QA Report: 슬서운이야기
 
+> Later rename: Cloudflare isolated env `phase4` → `testbed` (`pnpm cf:testbed`).
+> This report still describes the `phase4` Workers used that day.
+
 | Field | Value |
 |-------|-------|
 | **Date** | 2026-08-12 |

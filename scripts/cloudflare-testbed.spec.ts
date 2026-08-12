@@ -1,10 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
 import { getSiteOrigin } from "../src/lib/site-origin";
 
-const BASE_URL = (process.env.CF_PHASE4_ORIGIN ?? process.env.BASE_URL ?? "http://127.0.0.1:8787").replace(/\/$/, "");
-const CANONICAL_ORIGIN = (process.env.CF_PHASE4_CANONICAL_ORIGIN ?? getSiteOrigin()).replace(/\/$/, "");
+const BASE_URL = (process.env.CF_TESTBED_ORIGIN ?? process.env.BASE_URL ?? "http://127.0.0.1:8787").replace(/\/$/, "");
+const CANONICAL_ORIGIN = (process.env.CF_TESTBED_CANONICAL_ORIGIN ?? getSiteOrigin()).replace(/\/$/, "");
 const MISSING_UUID = "00000000-0000-4000-8000-000000000000";
-const LOCAL_RUN_ID = "1phase4localrun";
+const LOCAL_RUN_ID = "1testbedlocalrun";
 const LOCAL_RUN_RAW = JSON.stringify({
   seed: "42",
   build_id: "v0.109.0",
@@ -162,7 +162,7 @@ test("dynamic service routes refresh directly and invalid nesting fails closed",
     `/chemical-x/${MISSING_UUID}`,
     `/c-c-c-combo/${MISSING_UUID}`,
     `/this-or-that/${MISSING_UUID}`,
-    "/history-course/1phase4missingrun",
+    "/history-course/1testbedmissingrun",
   ];
   for (const path of validShapes) {
     const response = await request.get(absolute(path), { headers: { Accept: "text/html" } });

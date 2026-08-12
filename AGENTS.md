@@ -59,6 +59,14 @@ This project uses local project skills instead of global home-directory skill in
 - Future custom-domain route dispatch is documented in `docs/CLOUDFLARE_CUSTOM_DOMAIN_ROUTING.md`; keep AGENTS focused on the current guardrails and link to that document instead of duplicating DNS details here.
 - Pending Compendium resources in patch notes must render hover-only construction previews instead of clickable links to 404 pages.
 
+## Cloudflare testbed (admin preview)
+
+- Isolated Wrangler env `testbed` deploys `scare-the-spire-testbed` and
+  `scare-the-spire-patches-testbed` via local `pnpm cf:testbed` (build + wrangler
+  `--env testbed`). This is not GHA and must not touch production Workers.
+- Purpose: occasional personal/admin preview, or deploy-related stage verification.
+- Do not confuse with `pnpm cf:preview`, which is OpenNext local preview only.
+
 ## Cloudflare Free Tier Guardrails
 
 This service targets Cloudflare Workers Free unless the user explicitly accepts

@@ -16,13 +16,13 @@
     }
   ],
   "env": {
-    "phase4": {
+    "testbed": {
       "workers_dev": true,
       "preview_urls": true,
       "services": [
         {
           "binding": "PATCH_WORKER",
-          "service": "scare-the-spire-patches-phase4"
+          "service": "scare-the-spire-patches-testbed"
         }
       ]
     }

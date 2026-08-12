@@ -108,8 +108,9 @@ QA에서 Popper focus, keyboard, tab 동작을 확인한다.
   route 동작은 바꾸지 않는다.
 - `pnpm i18n:validate`는 game localization 644개와 borrowed phrase fixture
   5개를 검증했고, `pnpm lint`와 `pnpm patch:test`가 성공했다.
-- 실제 Cloudflare의 격리된 `phase4` main/patch Worker와 service binding에서
-  route smoke 53개가 모두 성공했다. 한국어·영어·중국어 home/index/detail의 document/RSC,
+- 실제 Cloudflare의 격리된 testbed(당시 이름 `phase4`) main/patch Worker와
+  service binding에서 route smoke 53개가 모두 성공했다. 한국어·영어·중국어
+  home/index/detail의 document/RSC,
   Chemical X·Combo·History Course·This or That의 유효 상세와 invalid nested
   404 document/RSC, 정적 검색/Compendium data, patch index/상세/변경 이력과
   patch asset을 포함한다.
@@ -143,10 +144,11 @@ key warning 6건은 그대로이며 위 focus/keyboard/Tab QA가 통과했다. W
 업로드한 version `503b7642-a3cd-4dea-a312-dbc379e4b66e`를 실행했다. main route
 51개는 통과했지만 binding이 이미 배포된 구버전 production patch Worker를
 가리켜 `/patches/changes` 한·영 2개가 404였다. 이를 해결하기 위해 Wrangler
-`phase4` 환경을 main/patch 양쪽에 만들고 `scare-the-spire-phase4`가
-`scare-the-spire-patches-phase4`를 binding하도록 분리했다. 마지막 자동 실행의
-patch version은 `36cbf377-4a9f-436e-960f-ab349a3a4bc4`, main version은
-`23a9c72a-74b5-4e4e-aacf-b11d27219d20`이며,
+격리 Wrangler env를 main/patch 양쪽에 만들고(당시 `phase4`, 현재 `testbed`)
+`scare-the-spire-testbed`가 `scare-the-spire-patches-testbed`를 binding하도록
+분리했다. 마지막 자동 실행의 patch version은
+`36cbf377-4a9f-436e-960f-ab349a3a4bc4`, main version은
+`23a9c72a-74b5-4e4e-aacf-b11d27219d20`이며, 당시 URL
 `https://scare-the-spire-phase4.flavono123.workers.dev`에서 53개 route와 8개
 Playwright가 모두 성공했다. production Worker version, custom domain, route,
 traffic은 변경하지 않았다.
@@ -299,21 +301,22 @@ helper 이동은 공개 route export만 Next.js 규칙에 맞추는 구조 변�
 
 ### Phase 4: 기능 보존 QA
 
-Phase 4의 권위 있는 production-shaped 검증은 `pnpm cf:phase4`다. 이 명령은
+Phase 4의 권위 있는 production-shaped 검증은 `pnpm cf:testbed`다. 이 명령은
 main/patch artifact를 빌드하고 크기·patch 회귀를 검사한 뒤, production과
-분리된 Cloudflare `phase4` Worker 둘을 갱신한다. main의 실제 service binding,
-전체 asset 전파 준비를 확인하고 route smoke와 Playwright browser QA를
-실행한다. 이미 빌드한 artifact를 재사용할 때만 `pnpm cf:phase4 -- --skip-build`를
-사용한다. 로컬 Miniflare 경로가 필요한 환경에는 `pnpm cf:phase4:local`을
-별도로 남긴다. 다음 순서로 최종 검증한다.
+분리된 Cloudflare `testbed` Worker 둘을 갱신한다. 이 env는 관리자용
+미리보기·배포 검증 stage이며 GHA production CI와 무관하다. main의 실제
+service binding, 전체 asset 전파 준비를 확인하고 route smoke와 Playwright
+browser QA를 실행한다. 이미 빌드한 artifact를 재사용할 때만
+`pnpm cf:testbed -- --skip-build`를 사용한다. 로컬 Miniflare 경로가 필요한
+환경에는 `pnpm cf:testbed:local`을 별도로 남긴다. 다음 순서로 최종 검증한다.
 
 ```bash
 pnpm i18n:validate
 pnpm lint
-pnpm cf:phase4
+pnpm cf:testbed
 ```
 
-`pnpm cf:phase4` 내부의 `pnpm cf:size`는 배포할 정확한 main artifact를
+`pnpm cf:testbed` 내부의 `pnpm cf:size`는 배포할 정확한 main artifact를
 검사한다. 다음을 문서 요청과 RSC 요청으로 모두 검증한다.
 
 - prefixless Korean, `/en`, game-only locale 각각의 home, index, detail
@@ -325,10 +328,10 @@ pnpm cf:phase4
 - 모바일 viewport의 icon/button hit target 및 주요 상호작용
 
 완료 조건: Turbopack 기준과 기능 차이가 없고 build warning으로 인한 포커스,
-키보드, tab 상태 회귀가 없으며, `pnpm cf:phase4`, `pnpm patch:test`, 최종
+키보드, tab 상태 회귀가 없으며, `pnpm cf:testbed`, `pnpm patch:test`, 최종
 `pnpm cf:size`가 같은 passing artifact에서 성공한다. 결과에는 commit SHA,
 Webpack gzip 크기, asset 수/최대 크기, 성공한 route/browser 범위와 남은
-warning을 기록한다. 격리된 `phase4` Worker 외의 Phase 4.1 production 배포를
+warning을 기록한다. 격리된 `testbed` Worker 외의 Phase 4.1 production 배포를
 실행하거나 push하지 않고 여기서 멈춘다.
 
 #### Phase 4 이후 기능 작업에 넘길 불변식
@@ -409,7 +412,7 @@ Phase 4가 통과한 artifact를 한 번 production에 배포한 직후, preview
 자동화된 read-only 검사는 배포 후 운영자 환경에서 다음처럼 실행한다.
 
 ```bash
-pnpm cf:phase4 -- --origin "$NEXT_PUBLIC_SITE_ORIGIN"
+pnpm cf:testbed -- --origin "$NEXT_PUBLIC_SITE_ORIGIN"
 ```
 
 #### 판정과 롤백

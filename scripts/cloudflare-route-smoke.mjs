@@ -3,7 +3,7 @@
 import { readFileSync } from "node:fs";
 
 const MISSING_UUID = "00000000-0000-4000-8000-000000000000";
-const HISTORY_RUN_ID = "1phase4smoketest";
+const HISTORY_RUN_ID = "1testbedsmoketest";
 
 function usage() {
   console.log(`Usage: pnpm cf:smoke -- --origin <url> [options]

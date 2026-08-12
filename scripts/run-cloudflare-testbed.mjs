@@ -4,15 +4,15 @@ import { spawn, spawnSync } from "node:child_process";
 
 const LOCAL_MAIN_ORIGIN = "http://127.0.0.1:8787";
 const LOCAL_PATCH_ORIGIN = "http://127.0.0.1:8788";
-const REMOTE_ENVIRONMENT = "phase4";
+const REMOTE_ENVIRONMENT = "testbed";
 const REMOTE_READY_TIMEOUT_MS = 180_000;
 
 function usage() {
-  console.log(`Usage: pnpm cf:phase4 -- [options]
+  console.log(`Usage: pnpm cf:testbed -- [options]
 
 Options:
   --origin <url>   Test an already-running preview without building or starting Workers
-  --remote         Deploy the isolated Phase 4 Workers to Cloudflare and test them
+  --remote         Deploy the isolated testbed Workers to Cloudflare and test them
   --skip-build     Reuse existing .open-next and .patch-worker artifacts
   --help           Show this help`);
 }
@@ -53,7 +53,7 @@ function executable(name) {
 }
 
 function run(label, command, args, env = process.env) {
-  console.log(`\n[phase4] ${label}`);
+  console.log(`\n[testbed] ${label}`);
   const result = spawnSync(executable(command), args, {
     cwd: process.cwd(),
     env,
@@ -66,7 +66,7 @@ function run(label, command, args, env = process.env) {
 }
 
 function runCaptured(label, command, args, env = process.env) {
-  console.log(`\n[phase4] ${label}`);
+  console.log(`\n[testbed] ${label}`);
   return new Promise((resolve, reject) => {
     const child = spawn(executable(command), args, {
       cwd: process.cwd(),
@@ -92,7 +92,7 @@ function runCaptured(label, command, args, env = process.env) {
 }
 
 function startWorker(label, config, port) {
-  console.log(`\n[phase4] starting ${label} on port ${port}`);
+  console.log(`\n[testbed] starting ${label} on port ${port}`);
   const child = spawn(
     executable("pnpm"),
     [
@@ -132,7 +132,7 @@ async function waitForWorker(label, child, url, timeoutMs = 90_000) {
     try {
       const response = await fetch(url, { signal: AbortSignal.timeout(2_000) });
       if (response.status < 500) {
-        console.log(`[phase4] ${label} ready · ${url} · HTTP ${response.status}`);
+        console.log(`[testbed] ${label} ready · ${url} · HTTP ${response.status}`);
         return;
       }
     } catch {
@@ -169,8 +169,8 @@ function runSuites(origin, { attempts = 1, retryDelayMs = 0 } = {}) {
   run(
     "browser behavior and mobile QA",
     "pnpm",
-    ["qa:cf:phase4"],
-    { ...process.env, BASE_URL: origin, CF_PHASE4_ORIGIN: origin },
+    ["qa:cf:testbed"],
+    { ...process.env, BASE_URL: origin, CF_TESTBED_ORIGIN: origin },
   );
 }
 
@@ -195,7 +195,7 @@ async function waitForRemoteStack(origin, timeoutMs = REMOTE_READY_TIMEOUT_MS) {
       lastStatus = `home=${home.status}/${homeOwner ?? "no-owner"}, patch=${patch.status}`;
       await Promise.all([home.body?.cancel(), patch.body?.cancel()]);
       if (home.status === 200 && homeOwner === "home" && patch.status === 200) {
-        console.log(`[phase4] remote stack ready · ${origin} · ${lastStatus}`);
+        console.log(`[testbed] remote stack ready · ${origin} · ${lastStatus}`);
         return;
       }
     } catch (error) {
@@ -203,14 +203,14 @@ async function waitForRemoteStack(origin, timeoutMs = REMOTE_READY_TIMEOUT_MS) {
     }
 
     if (Date.now() >= nextProgressAt) {
-      console.log(`[phase4] waiting for Cloudflare asset propagation · ${lastStatus}`);
+      console.log(`[testbed] waiting for Cloudflare asset propagation · ${lastStatus}`);
       nextProgressAt = Date.now() + 10_000;
     }
     await new Promise((resolve) => setTimeout(resolve, 2_000));
   }
 
   throw new Error(
-    `remote Phase 4 stack did not become ready within ${timeoutMs / 1000}s (${lastStatus})`,
+    `remote testbed stack did not become ready within ${timeoutMs / 1000}s (${lastStatus})`,
   );
 }
 
@@ -261,7 +261,7 @@ async function runRemote(options) {
     wranglerEnv,
   );
   const origin = mainOutput.match(/https:\/\/[^\s]+\.workers\.dev/)?.[0];
-  if (!origin) throw new Error("Cloudflare did not report the Phase 4 Worker URL");
+  if (!origin) throw new Error("Cloudflare did not report the testbed Worker URL");
 
   await waitForRemoteStack(origin);
   runSuites(origin, { attempts: 3, retryDelayMs: 2_000 });
@@ -306,6 +306,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error(`\n[phase4] ${error instanceof Error ? error.message : error}`);
+  console.error(`\n[testbed] ${error instanceof Error ? error.message : error}`);
   process.exitCode = 1;
 });
