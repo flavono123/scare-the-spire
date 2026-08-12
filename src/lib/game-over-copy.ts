@@ -9,9 +9,10 @@ const GAME_OVER_BY_LOCALE: Partial<Record<GameLocale, GameOverTable>> = {
   kor: korGameOver as GameOverTable,
 };
 
-const FALLBACK_TRUE_WIN: Record<"eng" | "kor", string> = {
-  eng: "Victory",
-  kor: "승리",
+/** Architect false-victory ribbon (`BANNER.falseWin`) — e.g. kor "승리...?" */
+const FALLBACK_FALSE_WIN: Record<"eng" | "kor", string> = {
+  eng: "Victory...?",
+  kor: "승리...?",
 };
 
 /** Map service UI locale to the game locale table we bake for history course. */
@@ -19,9 +20,9 @@ export function gameLocaleForServiceLocale(serviceLocale: ServiceLocale): GameLo
   return serviceLocale === "ko" ? "kor" : "eng";
 }
 
-/** In-game game-over win banner (`BANNER.trueWin`). */
-export function gameOverTrueWinLabel(gameLocale: GameLocale): string {
+/** In-game false-win banner after dying to the Architect (`BANNER.falseWin`). */
+export function gameOverFalseWinLabel(gameLocale: GameLocale): string {
   const table = GAME_OVER_BY_LOCALE[gameLocale] ?? GAME_OVER_BY_LOCALE.eng;
   const key = gameLocale === "kor" ? "kor" : "eng";
-  return table?.["BANNER.trueWin"] ?? FALLBACK_TRUE_WIN[key];
+  return table?.["BANNER.falseWin"] ?? FALLBACK_FALSE_WIN[key];
 }

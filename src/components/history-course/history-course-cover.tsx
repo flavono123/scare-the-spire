@@ -34,7 +34,7 @@ import {
 } from "@/lib/run-cover-display";
 import {
   gameLocaleForServiceLocale,
-  gameOverTrueWinLabel,
+  gameOverFalseWinLabel,
 } from "@/lib/game-over-copy";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CoverElement, CoverSpec } from "@/lib/run-cover-types";
@@ -462,7 +462,7 @@ function OutcomeChip({
   compact: boolean;
   serviceLocale: ServiceLocale;
 }) {
-  const label = gameOverTrueWinLabel(gameLocaleForServiceLocale(serviceLocale));
+  const label = gameOverFalseWinLabel(gameLocaleForServiceLocale(serviceLocale));
   return (
     <span
       className={cn(
