@@ -26,6 +26,10 @@ import {
   type TransfigureCardType,
 } from "@/lib/transfigure-types";
 import { markUpgradePlusGreen } from "@/lib/transfigure-upgrade-diff";
+import {
+  resolveSts2EnergyIcon,
+  type Sts2EnergyIconVariant,
+} from "@/lib/sts2-energy-icons";
 import { serviceMessages } from "@/messages/service";
 
 interface TransfigureResourcePreviewProps {
@@ -244,6 +248,11 @@ export function TransfigureResourcePreview({
             entityMap={entityMap}
             serviceLocale={serviceLocale}
             gameLocale={gameLocale}
+            energyIconSrc={resolveSts2EnergyIcon(
+              (entity.cardData?.visualColor
+                ?? entity.cardData?.color
+                ?? entity.color) as Sts2EnergyIconVariant,
+            )}
           />
         </GameHoverTip>
       </div>

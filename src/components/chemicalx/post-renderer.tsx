@@ -4,16 +4,20 @@ import { Fragment, useMemo, useState } from "react";
 import type { PostBlock } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { EntityPreview } from "@/components/patch-note-renderer";
+import Image from "@/components/ui/static-image";
 import {
   buildEntityKeywordIndex,
   resolveEntityKeyword,
 } from "@/lib/chemical-utils";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
+import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 import {
   isYouTubeVideoId,
   youtubeWatchUrl,
 } from "@/lib/youtube-reference";
 import { historyRunPlainText } from "@/lib/history-run-reference";
+
+const STAR_ICON_SRC = "/images/game-assets/card-misc/star_icon.png";
 
 interface PostRendererProps {
   blocks: PostBlock[];
@@ -21,6 +25,38 @@ interface PostRendererProps {
   forceShowTooltips?: boolean;
   serviceLocale?: ServiceLocale;
   gameLocale?: GameLocale;
+  /** Energy orb art for in-description cost tokens. Defaults to colorless. */
+  energyIconSrc?: string;
+}
+
+function CostTokenIcons({
+  kind,
+  count,
+  energyIconSrc,
+}: {
+  kind: "energy" | "star";
+  count: number;
+  energyIconSrc: string;
+}) {
+  const safeCount = Math.max(1, Math.floor(count) || 1);
+  const src = kind === "star" ? STAR_ICON_SRC : energyIconSrc;
+  const alt = kind === "star" ? "star" : "energy";
+
+  return (
+    <span className="inline-flex items-baseline gap-0 align-text-bottom">
+      {Array.from({ length: safeCount }, (_, index) => (
+        <Image
+          key={index}
+          src={src}
+          alt={alt}
+          width={14}
+          height={14}
+          className="mx-[0.05em] inline-block align-text-bottom"
+          style={{ width: "1em", height: "1em" }}
+        />
+      ))}
+    </span>
+  );
 }
 
 export function PostRenderer({
@@ -29,6 +65,7 @@ export function PostRenderer({
   forceShowTooltips,
   serviceLocale,
   gameLocale,
+  energyIconSrc = resolveSts2EnergyIcon("colorless"),
 }: PostRendererProps) {
   const keywordEntityIndex = useMemo(
     () => buildEntityKeywordIndex(Array.from(entityMap.values())),
@@ -107,10 +144,14 @@ export function PostRenderer({
           }
 
           if (block.type === "cost-token") {
-            const text = block.kind === "energy"
-              ? "@".repeat(Math.max(1, block.count))
-              : "*".repeat(Math.max(1, block.count));
-            return <span key={i}>{text}</span>;
+            return (
+              <CostTokenIcons
+                key={i}
+                kind={block.kind}
+                count={block.count}
+                energyIconSrc={energyIconSrc}
+              />
+            );
           }
 
           if (block.type === "youtube") {
