@@ -1,0 +1,808 @@
+{
+  "source": "MegaCrit.Sts2.Core.Models.Relics ExtraHoverTips",
+  "tipsByRelicId": {
+    "AKABEKO": [
+      {
+        "kind": "power",
+        "id": "VIGOR"
+      }
+    ],
+    "ANCHOR": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "ART_OF_WAR": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "BAG_OF_MARBLES": [
+      {
+        "kind": "power",
+        "id": "VULNERABLE"
+      }
+    ],
+    "BELT_BUCKLE": [
+      {
+        "kind": "power",
+        "id": "DEXTERITY"
+      }
+    ],
+    "BIG_HAT": [
+      {
+        "kind": "keyword",
+        "id": "ETHEREAL"
+      }
+    ],
+    "BIIIG_HUG": [
+      {
+        "kind": "card_with_tips",
+        "id": "SOOT"
+      }
+    ],
+    "BOOKMARK": [
+      {
+        "kind": "keyword",
+        "id": "RETAIN"
+      }
+    ],
+    "BOOK_REPAIR_KNIFE": [
+      {
+        "kind": "power",
+        "id": "DOOM"
+      }
+    ],
+    "BOOMING_CONCH": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "BOUND_PHYLACTERY": [
+      {
+        "kind": "static",
+        "id": "SUMMON_DYNAMIC",
+        "var": "Summon"
+      }
+    ],
+    "BREAD": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "BRIMSTONE": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "BRONZE_SCALES": [
+      {
+        "kind": "power",
+        "id": "THORNS"
+      }
+    ],
+    "BURNING_STICKS": [
+      {
+        "kind": "keyword",
+        "id": "EXHAUST"
+      }
+    ],
+    "BYRDPIP": [
+      {
+        "kind": "card_with_tips",
+        "id": "BYRD_SWOOP"
+      }
+    ],
+    "CALLING_BELL": [
+      {
+        "kind": "card_with_tips",
+        "id": "CURSE_OF_THE_BELL"
+      }
+    ],
+    "CANDELABRA": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "CAPTAINS_WHEEL": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "CHANDELIER": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "CHOICES_PARADOX": [
+      {
+        "kind": "keyword",
+        "id": "RETAIN"
+      }
+    ],
+    "CLAWS": [
+      {
+        "kind": "card_with_tips",
+        "id": "MAUL"
+      }
+    ],
+    "CLOAK_CLASP": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "CRACKED_CORE": [
+      {
+        "kind": "static",
+        "id": "CHANNELING"
+      },
+      {
+        "kind": "orb",
+        "id": "LIGHTNING_ORB"
+      }
+    ],
+    "CURSED_PEARL": [
+      {
+        "kind": "card_with_tips",
+        "id": "GREED"
+      }
+    ],
+    "DATA_DISK": [
+      {
+        "kind": "power",
+        "id": "FOCUS"
+      }
+    ],
+    "DIAMOND_DIADEM": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "DISTINGUISHED_CAPE": [
+      {
+        "kind": "card_with_tips",
+        "id": "APPARITION"
+      }
+    ],
+    "DOWSING_ROD": [
+      {
+        "kind": "card_with_tips",
+        "id": "DOWSING"
+      }
+    ],
+    "ECTOPLASM": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "ELECTRIC_SHRYMP": [
+      {
+        "kind": "enchantment",
+        "id": "IMBUED"
+      }
+    ],
+    "EMBER_TEA": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "FAKE_ANCHOR": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "FAKE_HAPPY_FLOWER": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "FAKE_ORICHALCUM": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "FAKE_SNECKO_EYE": [
+      {
+        "kind": "power",
+        "id": "CONFUSED"
+      }
+    ],
+    "FAKE_VENERABLE_TEA_SET": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "FENCING_MANUAL": [
+      {
+        "kind": "forge"
+      }
+    ],
+    "FRESNEL_LENS": [
+      {
+        "kind": "enchantment",
+        "id": "NIMBLE"
+      }
+    ],
+    "FUNERARY_MASK": [
+      {
+        "kind": "card_with_tips",
+        "id": "SOUL"
+      }
+    ],
+    "GALACTIC_DUST": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "GHOST_SEED": [
+      {
+        "kind": "keyword",
+        "id": "ETHEREAL"
+      }
+    ],
+    "GIRYA": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "GLITTER": [
+      {
+        "kind": "enchantment",
+        "id": "GLAM"
+      }
+    ],
+    "GNARLED_HAMMER": [
+      {
+        "kind": "enchantment",
+        "id": "SHARP"
+      }
+    ],
+    "GORGET": [
+      {
+        "kind": "power",
+        "id": "PLATING"
+      },
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "GREMLIN_HORN": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "HAND_DRILL": [
+      {
+        "kind": "power",
+        "id": "VULNERABLE"
+      }
+    ],
+    "HAPPY_FLOWER": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "HEFTY_TABLET": [
+      {
+        "kind": "card_with_tips",
+        "id": "INJURY"
+      }
+    ],
+    "HELICAL_DART": [
+      {
+        "kind": "card_with_tips",
+        "id": "SHIV"
+      },
+      {
+        "kind": "power",
+        "id": "DEXTERITY"
+      }
+    ],
+    "HORN_CLEAT": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "INFUSED_CORE": [
+      {
+        "kind": "static",
+        "id": "CHANNELING"
+      },
+      {
+        "kind": "orb",
+        "id": "LIGHTNING_ORB"
+      }
+    ],
+    "INTIMIDATING_HELMET": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "IVORY_TILE": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "JEWELRY_BOX": [
+      {
+        "kind": "card_with_tips",
+        "id": "APOTHEOSIS"
+      }
+    ],
+    "JOSS_PAPER": [
+      {
+        "kind": "keyword",
+        "id": "EXHAUST"
+      }
+    ],
+    "KIFUDA": [
+      {
+        "kind": "enchantment",
+        "id": "ADROIT"
+      }
+    ],
+    "KUNAI": [
+      {
+        "kind": "power",
+        "id": "DEXTERITY"
+      }
+    ],
+    "LANTERN": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "LEAFY_POULTICE": [
+      {
+        "kind": "static",
+        "id": "TRANSFORM"
+      }
+    ],
+    "MEAT_CLEAVER": [
+      {
+        "kind": "static",
+        "id": "COOK"
+      }
+    ],
+    "MINI_REGENT": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "MUSIC_BOX": [
+      {
+        "kind": "keyword",
+        "id": "ETHEREAL"
+      }
+    ],
+    "NEOWS_TORMENT": [
+      {
+        "kind": "card_with_tips",
+        "id": "NEOWS_FURY"
+      }
+    ],
+    "NEW_LEAF": [
+      {
+        "kind": "static",
+        "id": "TRANSFORM"
+      }
+    ],
+    "NINJA_SCROLL": [
+      {
+        "kind": "card_with_tips",
+        "id": "SHIV"
+      }
+    ],
+    "NUNCHAKU": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "NUTRITIOUS_SOUP": [
+      {
+        "kind": "enchantment",
+        "id": "TEZCATARAS_EMBER"
+      }
+    ],
+    "ODDLY_SMOOTH_STONE": [
+      {
+        "kind": "power",
+        "id": "DEXTERITY"
+      }
+    ],
+    "ORICHALCUM": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "ORNAMENTAL_FAN": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "PAELS_CLAW": [
+      {
+        "kind": "enchantment",
+        "id": "GOOPY"
+      }
+    ],
+    "PAELS_EYE": [
+      {
+        "kind": "keyword",
+        "id": "EXHAUST"
+      }
+    ],
+    "PAELS_FLESH": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "PAELS_GROWTH": [
+      {
+        "kind": "enchantment",
+        "id": "CLONE"
+      }
+    ],
+    "PAELS_HORN": [
+      {
+        "kind": "card_with_tips",
+        "id": "RELAX"
+      }
+    ],
+    "PAELS_LEGION": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "PAELS_TEARS": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "PAPER_KRANE": [
+      {
+        "kind": "power",
+        "id": "WEAK"
+      }
+    ],
+    "PAPER_PHROG": [
+      {
+        "kind": "power",
+        "id": "VULNERABLE"
+      }
+    ],
+    "PETRIFIED_TOAD": [
+      {
+        "kind": "potion",
+        "id": "POTION_SHAPED_ROCK"
+      }
+    ],
+    "PHILOSOPHERS_STONE": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      },
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "PHYLACTERY_UNBOUND": [
+      {
+        "kind": "static",
+        "id": "SUMMON_STATIC"
+      }
+    ],
+    "PRESERVED_FOG": [
+      {
+        "kind": "card_with_tips",
+        "id": "FOLLY"
+      }
+    ],
+    "PRISMATIC_GEM": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "PUMPKIN_CANDLE": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "PUNCH_DAGGER": [
+      {
+        "kind": "enchantment",
+        "id": "MOMENTUM"
+      }
+    ],
+    "RAINBOW_RING": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      },
+      {
+        "kind": "power",
+        "id": "DEXTERITY"
+      }
+    ],
+    "RED_MASK": [
+      {
+        "kind": "power",
+        "id": "WEAK"
+      }
+    ],
+    "RED_SKULL": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "REPTILE_TRINKET": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "RINGING_TRIANGLE": [
+      {
+        "kind": "keyword",
+        "id": "RETAIN"
+      }
+    ],
+    "RIPPLE_BASIN": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "ROYAL_STAMP": [
+      {
+        "kind": "enchantment",
+        "id": "ROYALLY_APPROVED"
+      }
+    ],
+    "RUINED_HELMET": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "SEAL_OF_GOLD": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "SELF_FORMING_CLAY": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "SERE_TALON": [
+      {
+        "kind": "card_with_tips",
+        "id": "WISH"
+      }
+    ],
+    "SHURIKEN": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "SILKEN_TRESS": [
+      {
+        "kind": "enchantment",
+        "id": "GLAM"
+      }
+    ],
+    "SLING_OF_COURAGE": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "SNECKO_EYE": [
+      {
+        "kind": "power",
+        "id": "CONFUSED"
+      }
+    ],
+    "SNECKO_SKULL": [
+      {
+        "kind": "power",
+        "id": "POISON"
+      }
+    ],
+    "SOZU": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "SPARKLING_ROUGE": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      },
+      {
+        "kind": "power",
+        "id": "DEXTERITY"
+      }
+    ],
+    "SPIKED_GAUNTLETS": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "STORYBOOK": [
+      {
+        "kind": "card_with_tips",
+        "id": "BRIGHTEST_FLAME"
+      }
+    ],
+    "STURDY_CLAMP": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "SWORD_OF_JADE": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "SYMBIOTIC_VIRUS": [
+      {
+        "kind": "static",
+        "id": "CHANNELING"
+      },
+      {
+        "kind": "orb",
+        "id": "DARK_ORB"
+      }
+    ],
+    "TANXS_WHISTLE": [
+      {
+        "kind": "card_with_tips",
+        "id": "WHISTLE"
+      }
+    ],
+    "TEA_OF_DISCOURTESY": [
+      {
+        "kind": "card_with_tips",
+        "id": "DAZED"
+      }
+    ],
+    "THE_ABACUS": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "TOASTY_MITTENS": [
+      {
+        "kind": "keyword",
+        "id": "EXHAUST"
+      },
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "TOUGH_BANDAGES": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "TRI_BOOMERANG": [
+      {
+        "kind": "enchantment",
+        "id": "INSTINCT"
+      }
+    ],
+    "TUNING_FORK": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "TWISTED_FUNNEL": [
+      {
+        "kind": "power",
+        "id": "POISON"
+      }
+    ],
+    "UNDYING_SIGIL": [
+      {
+        "kind": "power",
+        "id": "DOOM"
+      }
+    ],
+    "VAJRA": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "VAMBRACE": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "VELVET_CHOKER": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "VENERABLE_TEA_SET": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "VERY_HOT_COCOA": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "VITRUVIAN_MINION": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "WHISPERING_EARRING": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ]
+  },
+  "skippedDynamicRelicClasses": [
+    "ArchaicTooth",
+    "DustyTome",
+    "TouchOfOrobas"
+  ]
+}
