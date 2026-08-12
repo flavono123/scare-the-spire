@@ -137,14 +137,16 @@ test("redirect and canonical metadata match the public locale URL", async ({ req
   }
 });
 
-test("compendium modal keeps its view on the canonical detail URL", async ({ page }) => {
+test("compendium detail keeps its view on the canonical detail URL", async ({ page }) => {
   await page.goto(absolute("/compendium/relics"), { waitUntil: "domcontentloaded" });
   await page.locator('a[href="/compendium/relics/fishing_rod"]').first().click();
 
   await expect(page).toHaveURL(absolute("/compendium/relics/fishing_rod"));
-  await expect(page.getByRole("button", { name: "닫기" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "낚싯대" })).toBeVisible();
 
-  await page.getByRole("button", { name: "닫기" }).click();
+  const back = page.getByRole("link", { name: /유물 모음집|Relic Compendium/i });
+  await expect(back).toBeVisible();
+  await back.click();
   await expect(page).toHaveURL(absolute("/compendium/relics"));
 });
 
@@ -174,7 +176,7 @@ test("History Course invalid detail returns to its index with client navigation"
   expect(response?.status()).toBe(200);
   await expect(page.getByRole("heading", { level: 1 })).toContainText(/올바르지|invalid/i);
 
-  await page.locator('a[href="/history-course"]').click();
+  await page.getByRole("link", { name: /역사 강의서 처음으로|Back to History Course/i }).click();
   await expect(page).toHaveURL(absolute("/history-course"));
   await expect(page.locator("#history-course-run-search")).toBeVisible();
 });
