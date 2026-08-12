@@ -27,7 +27,7 @@
     "cf:smoke": "node scripts/cloudflare-route-smoke.mjs",
     "qa:cf:testbed": "playwright test scripts/cloudflare-testbed.spec.ts --reporter=list",
     "cf:typegen": "wrangler types",
-    "patch:build": "rm -rf .patch-worker && mkdir -p .patch-worker/assets/_patches && pnpm sts2:resource-changes && node scripts/ensure-comment-entities.mjs && node scripts/ensure-search-index.mjs && pnpm patch:css && pnpm patch:html && pnpm patch:assets",
+    "patch:build": "rm -rf .patch-worker && mkdir -p .patch-worker/assets/_patches && pnpm sts2:resource-changes && node scripts/ensure-comment-entities.mjs && node scripts/ensure-search-index.mjs && node scripts/ensure-lint-generated.mjs && pnpm patch:css && pnpm patch:html && pnpm patch:assets",
     "patch:css": "tailwindcss -i src/app/globals.css -o .patch-worker/assets/_patches/patch.css --minify",
     "patch:assets": "node scripts/copy-patch-worker-assets.mjs",
     "patch:dev": "pnpm cf:patch:preview",
@@ -51,7 +51,7 @@
     "sts2:validate-ancients": "node scripts/validate-sts2-ancient-scenes.mjs",
     "sts2:validate-ancient-dialogue": "tsx scripts/validate-sts2-ancient-dialogue.ts",
     "i18n:sync": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/sync-game-localization.py",
-    "i18n:validate": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate-i18n.py",
+    "i18n:validate": "node scripts/ensure-lint-generated.mjs && PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate-i18n.py",
     "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
   },
   "dependencies": {
