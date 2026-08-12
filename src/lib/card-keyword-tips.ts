@@ -43,6 +43,7 @@ export type CardSideTip = CardSideKeywordTip | CardSideCardTip | CardSideMonster
 
 export type CardSideTipCatalog = {
   keywordsByName: Map<string, CardSideKeywordTip>;
+  keywordsById: Map<string, CardSideKeywordTip>;
   cardsById: Map<string, CodexCard>;
   cardsByName: Map<string, CodexCard>;
   monstersByName: Map<string, CardSideMonsterTip>;
@@ -198,6 +199,12 @@ export function buildCardSideTipCatalog(input: {
   engMonsterNames?: GameLocalizationTable | null;
 }): CardSideTipCatalog {
   const keywordsByName = new Map<string, CardSideKeywordTip>();
+  const keywordsById = new Map<string, CardSideKeywordTip>();
+
+  const registerKeywordTip = (tip: CardSideKeywordTip, ...names: Array<string | null | undefined>) => {
+    if (!keywordsById.has(tip.id)) keywordsById.set(tip.id, tip);
+    for (const name of names) setKeywordTip(keywordsByName, name, tip);
+  };
 
   for (const keyword of input.keywords) {
     const tip: CardSideKeywordTip = {
@@ -209,8 +216,7 @@ export function buildCardSideTipCatalog(input: {
       variant: "default",
       source: keyword.source === "staticHoverTip" ? "staticHoverTip" : "cardKeyword",
     };
-    setKeywordTip(keywordsByName, keyword.name, tip);
-    setKeywordTip(keywordsByName, keyword.nameEn, tip);
+    registerKeywordTip(tip, keyword.name, keyword.nameEn);
   }
 
   for (const power of input.powers) {
@@ -223,38 +229,32 @@ export function buildCardSideTipCatalog(input: {
       variant: powerVariant(power),
       source: "power",
     };
-    setKeywordTip(keywordsByName, power.name, tip);
-    setKeywordTip(keywordsByName, power.nameEn, tip);
+    registerKeywordTip(tip, power.name, power.nameEn);
   }
 
   for (const tip of parseStaticHoverTips(input.staticHoverTips, input.engStaticHoverTips)) {
-    setKeywordTip(keywordsByName, tip.title, tip);
+    registerKeywordTip(tip, tip.title);
     if (input.engStaticHoverTips) {
       const engTitle = stripLocalizationTitleTemplates(
         gameText(input.engStaticHoverTips, `${tip.id}.title`, ""),
       );
-      setKeywordTip(keywordsByName, engTitle, {
-        ...tip,
-        // Keep localized description/title for display; eng name is lookup only.
-      });
+      registerKeywordTip(tip, engTitle);
     }
   }
 
   for (const tip of parseOrbTips(input.orbs)) {
-    setKeywordTip(keywordsByName, tip.title, tip);
+    registerKeywordTip(tip, tip.title);
   }
   if (input.engOrbs) {
     for (const tip of parseOrbTips(input.engOrbs)) {
       const localized = parseOrbTips(input.orbs).find((entry) => entry.id === tip.id) ?? tip;
-      setKeywordTip(keywordsByName, tip.title, localized);
+      registerKeywordTip(localized, tip.title);
     }
   }
 
   for (const [gold, tipId] of Object.entries(GOLD_STATIC_TIP_ALIASES)) {
-    const existing = [...keywordsByName.values()].find(
-      (tip) => tip.source === "staticHoverTip" && tip.id === tipId,
-    );
-    if (existing) setKeywordTip(keywordsByName, gold, existing);
+    const existing = keywordsById.get(tipId);
+    if (existing) registerKeywordTip(existing, gold);
   }
 
   const cardsById = new Map<string, CodexCard>();
@@ -306,7 +306,7 @@ export function buildCardSideTipCatalog(input: {
     setMonsterTip(titleEn, tip);
   }
 
-  return { keywordsByName, cardsById, cardsByName, monstersByName };
+  return { keywordsByName, keywordsById, cardsById, cardsByName, monstersByName };
 }
 
 function resolveKeywordTerm(
@@ -317,26 +317,38 @@ function resolveKeywordTerm(
   return catalog.keywordsByName.get(key) ?? null;
 }
 
-function resolveEntityTerm(
-  term: string,
+export function resolveKeywordTipById(
   catalog: CardSideTipCatalog,
-  excludeCardId?: string | null,
-): CardSideCardTip | CardSideMonsterTip | null {
-  const key = normalizeTipName(term);
-  const card = catalog.cardsByName.get(key);
-  if (card && card.id !== excludeCardId) {
-    return { kind: "card", id: card.id, card };
-  }
-  return catalog.monstersByName.get(key) ?? null;
+  id: string,
+): CardSideKeywordTip | null {
+  return catalog.keywordsById.get(id) ?? null;
 }
 
-export function resolveCardSideTipTerm(
-  term: string,
+/**
+ * Shared tip pusher with Forge → Sovereign Blade expansion.
+ * Used by card and relic side-tip collectors.
+ */
+export function createCardSideTipPusher(
   catalog: CardSideTipCatalog,
-  opts?: { excludeCardId?: string | null },
-): CardSideTip | null {
-  return resolveKeywordTerm(term, catalog)
-    ?? resolveEntityTerm(term, catalog, opts?.excludeCardId);
+  tips: CardSideTip[],
+  seen: Set<string>,
+  excludeCardId?: string | null,
+): (tip: CardSideTip | null) => void {
+  const push = (tip: CardSideTip | null) => {
+    if (!tip) return;
+    const key = `${tip.kind}:${tip.id}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    tips.push(tip);
+
+    if (tip.kind !== "keyword") return;
+    const expandCardId = KEYWORD_TIP_CARD_EXPANSIONS[tip.id];
+    if (!expandCardId) return;
+    const expandCard = catalog.cardsById.get(expandCardId);
+    if (!expandCard) return;
+    pushCardWithCardHoverTips(expandCard, catalog, push, excludeCardId);
+  };
+  return push;
 }
 
 /**
@@ -344,7 +356,7 @@ export function resolveCardSideTipTerm(
  * printed keywords, plus Exhaust when Ethereal is present.
  * Does not scrape gold from the preview card description (game doesn't either here).
  */
-function pushCardWithCardHoverTips(
+export function pushCardWithCardHoverTips(
   previewCard: CodexCard,
   catalog: CardSideTipCatalog,
   push: (tip: CardSideTip | null) => void,
@@ -369,6 +381,28 @@ function pushCardWithCardHoverTips(
   }
 }
 
+function resolveEntityTerm(
+  term: string,
+  catalog: CardSideTipCatalog,
+  excludeCardId?: string | null,
+): CardSideCardTip | CardSideMonsterTip | null {
+  const key = normalizeTipName(term);
+  const card = catalog.cardsByName.get(key);
+  if (card && card.id !== excludeCardId) {
+    return { kind: "card", id: card.id, card };
+  }
+  return catalog.monstersByName.get(key) ?? null;
+}
+
+export function resolveCardSideTipTerm(
+  term: string,
+  catalog: CardSideTipCatalog,
+  opts?: { excludeCardId?: string | null },
+): CardSideTip | null {
+  return resolveKeywordTerm(term, catalog)
+    ?? resolveEntityTerm(term, catalog, opts?.excludeCardId);
+}
+
 export function collectCardSideTips(
   card: Pick<CodexCard, "id" | "keywords" | "keywordLabels" | "upgrade" | "description">,
   catalog: CardSideTipCatalog,
@@ -381,21 +415,7 @@ export function collectCardSideTips(
 ): CardSideTip[] {
   const tips: CardSideTip[] = [];
   const seen = new Set<string>();
-
-  const push = (tip: CardSideTip | null) => {
-    if (!tip) return;
-    const key = `${tip.kind}:${tip.id}`;
-    if (seen.has(key)) return;
-    seen.add(key);
-    tips.push(tip);
-
-    if (tip.kind !== "keyword") return;
-    const expandCardId = KEYWORD_TIP_CARD_EXPANSIONS[tip.id];
-    if (!expandCardId) return;
-    const expandCard = catalog.cardsById.get(expandCardId);
-    if (!expandCard) return;
-    pushCardWithCardHoverTips(expandCard, catalog, push, card.id);
-  };
+  const push = createCardSideTipPusher(catalog, tips, seen, card.id);
 
   const printed = getCardDisplayKeywords(card, {
     upgradeLevel: opts?.upgradeLevel ?? 0,
