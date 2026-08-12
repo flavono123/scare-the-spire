@@ -43,14 +43,18 @@ export interface SaveTransfigurePostInput {
   sourceUpgradedCardKeywords: TransfigureCardKeywords | null;
   transformedName: string;
   transformedCost: string;
+  transformedStarCost?: string;
   transformedCardType?: TransfigureCardType | "";
   transformedCardRarity?: TransfigureCardRarity | "";
   cardKeywords: TransfigureCardKeywords | null;
   upgradedBlocks: PostBlock[] | null;
   transformedUpgradeCost: string;
+  transformedUpgradeStarCost?: string;
   upgradedCardKeywords: TransfigureCardKeywords | null;
   showUpgrade: boolean;
   activeUserId?: string;
+  sourceStarCost?: string | null;
+  sourceUpgradeStarCost?: string | null;
 }
 
 interface UseTransfigurePostsReturn {
@@ -90,6 +94,8 @@ function normalizePost(row: unknown): TransfigurePost {
     upgraded_content: post.upgraded_content ?? null,
     upgraded_content_text: post.upgraded_content_text ?? null,
     transformed_upgrade_cost: post.transformed_upgrade_cost ?? null,
+    transformed_star_cost: post.transformed_star_cost ?? null,
+    transformed_upgrade_star_cost: post.transformed_upgrade_star_cost ?? null,
     upgraded_card_top_keywords: post.upgraded_card_top_keywords ?? [],
     upgraded_card_bottom_keywords: post.upgraded_card_bottom_keywords ?? [],
     show_upgrade: post.show_upgrade ?? false,
@@ -109,6 +115,10 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     input.transformedCost,
     input.sourceCost,
   );
+  const transformedStarCost = normalizeTransfigureCost(
+    input.transformedStarCost ?? "",
+    input.sourceStarCost ?? null,
+  );
   const transformedCardType = normalizeTransfigureCardType(
     input.transformedCardType,
     input.sourceCardType ?? null,
@@ -123,6 +133,10 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
   const transformedUpgradeCost = normalizeTransfigureCost(
     input.transformedUpgradeCost,
     input.sourceUpgradeCost,
+  );
+  const transformedUpgradeStarCost = normalizeTransfigureCost(
+    input.transformedUpgradeStarCost ?? "",
+    input.sourceUpgradeStarCost ?? null,
   );
   const cardKeywords = normalizeTransfigureCardKeywords(input.cardKeywords);
   const upgradedCardKeywords = normalizeTransfigureCardKeywords(
@@ -162,13 +176,18 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     )
     : !input.transformedCardType && !input.transformedCardRarity;
   const validCost = transformedCost == null || /^(X|[0-9]{1,2})$/.test(transformedCost);
+  const validStarCost = transformedStarCost == null
+    || /^(X|[0-9]{1,2})$/.test(transformedStarCost);
   const validUpgradeCost = transformedUpgradeCost == null
     || /^(X|[0-9]{1,2})$/.test(transformedUpgradeCost);
+  const validUpgradeStarCost = transformedUpgradeStarCost == null
+    || /^(X|[0-9]{1,2})$/.test(transformedUpgradeStarCost);
   const validUpgradeContent = input.upgradedBlocks == null
     ? (
       input.sourceUpgradeText == null
       && input.sourceUpgradeBlocks == null
       && transformedUpgradeCost == null
+      && transformedUpgradeStarCost == null
     )
     : (
       input.sourceUpgradeText != null
@@ -193,7 +212,9 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     || !input.resource.id
     || !sourceText
     || !validCost
+    || !validStarCost
     || !validUpgradeCost
+    || !validUpgradeStarCost
     || !validUpgradeContent
     || !validShowUpgrade
     || !cardKeywordInputValid
@@ -207,6 +228,8 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
       sourceName: input.sourceName,
       transformedCost: input.transformedCost,
       sourceCost: input.sourceCost,
+      transformedStarCost: input.transformedStarCost ?? "",
+      sourceStarCost: input.sourceStarCost ?? null,
       transformedCardType: input.transformedCardType,
       sourceCardType: input.sourceCardType,
       transformedCardRarity: input.transformedCardRarity,
@@ -216,6 +239,8 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
       sourceUpgradeBlocks: input.sourceUpgradeBlocks,
       transformedUpgradeCost: input.transformedUpgradeCost,
       sourceUpgradeCost: input.sourceUpgradeCost,
+      transformedUpgradeStarCost: input.transformedUpgradeStarCost ?? "",
+      sourceUpgradeStarCost: input.sourceUpgradeStarCost ?? null,
       cardKeywords,
       sourceCardKeywords: input.sourceCardKeywords,
       upgradedCardKeywords,
@@ -233,10 +258,12 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     sourceText,
     transformedName,
     transformedCost,
+    transformedStarCost,
     transformedCardType,
     transformedCardRarity,
     upgradedContentText,
     transformedUpgradeCost,
+    transformedUpgradeStarCost,
     cardKeywords,
     upgradedCardKeywords,
   };
@@ -262,6 +289,7 @@ async function persistTransfigurePostUpdate(
         content_text: normalized.contentText,
         transformed_name: normalized.transformedName,
         transformed_cost: normalized.transformedCost,
+        transformed_star_cost: normalized.transformedStarCost,
         transformed_card_type: normalized.transformedCardType,
         transformed_card_rarity: normalized.transformedCardRarity,
         card_top_keywords: normalized.cardKeywords.top,
@@ -269,6 +297,7 @@ async function persistTransfigurePostUpdate(
         upgraded_content: input.upgradedBlocks,
         upgraded_content_text: normalized.upgradedContentText,
         transformed_upgrade_cost: normalized.transformedUpgradeCost,
+        transformed_upgrade_star_cost: normalized.transformedUpgradeStarCost,
         upgraded_card_top_keywords: normalized.upgradedCardKeywords.top,
         upgraded_card_bottom_keywords: normalized.upgradedCardKeywords.bottom,
         show_upgrade: input.showUpgrade,
@@ -445,6 +474,7 @@ export function useTransfigurePosts(
             content_text: normalized.contentText,
             transformed_name: normalized.transformedName,
             transformed_cost: normalized.transformedCost,
+            transformed_star_cost: normalized.transformedStarCost,
             transformed_card_type: normalized.transformedCardType,
             transformed_card_rarity: normalized.transformedCardRarity,
             card_top_keywords: normalized.cardKeywords.top,
@@ -452,6 +482,7 @@ export function useTransfigurePosts(
             upgraded_content: upgradedBlocks,
             upgraded_content_text: normalized.upgradedContentText,
             transformed_upgrade_cost: normalized.transformedUpgradeCost,
+            transformed_upgrade_star_cost: normalized.transformedUpgradeStarCost,
             upgraded_card_top_keywords: normalized.upgradedCardKeywords.top,
             upgraded_card_bottom_keywords: normalized.upgradedCardKeywords.bottom,
             show_upgrade: showUpgrade,

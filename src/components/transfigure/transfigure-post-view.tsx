@@ -199,6 +199,7 @@ export function TransfigurePostView({
                 serviceLocale={serviceLocale}
                 transformedName={post.transformed_name}
                 transformedCost={post.transformed_cost}
+                transformedStarCost={post.transformed_star_cost}
                 transformedCardType={post.transformed_card_type}
                 transformedCardRarity={post.transformed_card_rarity}
                 cardKeywords={{
@@ -206,6 +207,7 @@ export function TransfigurePostView({
                   bottom: post.card_bottom_keywords,
                 }}
                 transformedUpgradeCost={post.transformed_upgrade_cost}
+                transformedUpgradeStarCost={post.transformed_upgrade_star_cost}
                 upgradedBlocks={post.upgraded_content}
                 upgradedCardKeywords={{
                   top: post.upgraded_card_top_keywords,

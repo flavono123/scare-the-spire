@@ -451,6 +451,8 @@ interface CardTileProps {
   enchantmentAmount?: number | null;
   /** 인챈트 적용 후 카드 코스트 (TezcatarasEmber 등). null이면 원래 cost. */
   forcedCost?: number | null;
+  /** Override Regent star cost display. null keeps the card value; use with isX via content. */
+  forcedStarCost?: number | null;
   /** 인챈트가 추가하는 키워드(영구/선천성/보존/소멸). */
   enchantAddedKeywords?: string[];
   /** 인챈트가 제거하는 키워드(SoulsPower→소멸). */
@@ -474,6 +476,8 @@ interface CardTileProps {
   descriptionContent?: ReactNode;
   /** Replaces the energy-cost text while preserving the game energy orb. */
   costContent?: ReactNode;
+  /** Replaces the Regent star-cost text while preserving the star orb. */
+  starCostContent?: ReactNode;
   /** Allows text selection and editing inside custom content slots. */
   editableContent?: boolean;
   /** Smallest permitted description font relative to the game default. */
@@ -500,6 +504,7 @@ export const CardTile = memo(function CardTile({
   enchantmentLabel,
   enchantmentAmount,
   forcedCost,
+  forcedStarCost,
   enchantAddedKeywords,
   enchantRemovedKeywords,
   keywordOverride,
@@ -512,6 +517,7 @@ export const CardTile = memo(function CardTile({
   titleContent,
   descriptionContent,
   costContent,
+  starCostContent,
   editableContent = false,
   minimumDescriptionFontScale = 0.55,
   onDescriptionFitChange,
@@ -545,6 +551,18 @@ export const CardTile = memo(function CardTile({
   else if (card.cost >= 0) {
     costDisplay = isUpgraded && card.upgrade?.cost !== undefined
       ? String(card.upgrade.cost) : String(card.cost);
+  }
+
+  let starCostDisplay = "";
+  if (forcedStarCost !== undefined && forcedStarCost !== null) {
+    starCostDisplay = String(forcedStarCost);
+  } else if (card.isXStarCost) {
+    starCostDisplay = "X";
+  } else if (card.starCost !== null) {
+    const upgradedStar = card.upgrade?.starCost ?? card.upgrade?.StarCost;
+    starCostDisplay = isUpgraded && typeof upgradedStar === "number"
+      ? String(upgradedStar)
+      : String(card.starCost);
   }
 
   const frameAsset = FRAME_ASSETS[card.type] ?? FRAME_ASSETS["스킬"];
@@ -806,7 +824,7 @@ export const CardTile = memo(function CardTile({
   ) : null;
 
   // ─── Star cost (Regent) ───
-  const renderStarCost = () => card.starCost !== null ? (
+  const renderStarCost = () => starCostDisplay || starCostContent ? (
     <div
       className="absolute z-[6]"
       style={{
@@ -831,7 +849,7 @@ export const CardTile = memo(function CardTile({
           ...(starStroke as CSSProperties),
         }}
       >
-        {card.starCost}
+        {starCostContent ?? starCostDisplay}
       </span>
     </div>
   ) : null;

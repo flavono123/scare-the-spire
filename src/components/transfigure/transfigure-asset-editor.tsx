@@ -52,7 +52,11 @@ interface TransfigureAssetEditorProps {
   costLabel: string;
   descriptionLabel: string;
   descriptionFrameLimit: string;
-  costTokenTip: string;
+  costTokenTip: {
+    atThen: string;
+    starThen: string;
+    apply: string;
+  };
   addTopKeywordLabel: string;
   addBottomKeywordLabel: string;
   removeKeywordLabel: string;
@@ -60,26 +64,33 @@ interface TransfigureAssetEditorProps {
   sourceText: string;
   sourceUpgradeText: string | null;
   sourceUpgradeCost: string | null;
+  sourceStarCost: string | null;
+  sourceUpgradeStarCost: string | null;
   submitLabel: string;
   transformedName: string;
   transformedCost: string;
+  transformedStarCost: string;
   transformedCardType: TransfigureCardType | "";
   transformedCardRarity: TransfigureCardRarity | "";
   cardKeywords: TransfigureCardKeywords | null;
   transformedUpgradeCost: string;
+  transformedUpgradeStarCost: string;
   upgradedCardKeywords: TransfigureCardKeywords | null;
   upgradedBlocks: PostBlock[] | null;
   upgradeLabel: string;
+  starCostLabel: string;
   showUpgrade: boolean;
   onBlocksChange: (blocks: PostBlock[]) => void;
   onCardKeywordsChange: (keywords: TransfigureCardKeywords | null) => void;
   onCostChange: (value: string) => void;
+  onStarCostChange: (value: string) => void;
   onNameChange: (value: string) => void;
   onUpgradeBlocksChange: (blocks: PostBlock[] | null) => void;
   onUpgradeCardKeywordsChange: (
     keywords: TransfigureCardKeywords | null,
   ) => void;
   onUpgradeCostChange: (value: string) => void;
+  onUpgradeStarCostChange: (value: string) => void;
   onShowUpgradeChange: (showUpgrade: boolean) => void;
   onSubmit: (
     blocks: PostBlock[],
@@ -116,24 +127,31 @@ export function TransfigureAssetEditor({
   sourceText,
   sourceUpgradeText,
   sourceUpgradeCost,
+  sourceStarCost,
+  sourceUpgradeStarCost,
   submitLabel,
   transformedName,
   transformedCost,
+  transformedStarCost,
   transformedCardType,
   transformedCardRarity,
   cardKeywords,
   transformedUpgradeCost,
+  transformedUpgradeStarCost,
   upgradedCardKeywords,
   upgradedBlocks,
   upgradeLabel,
+  starCostLabel,
   showUpgrade,
   onBlocksChange,
   onCardKeywordsChange,
   onCostChange,
+  onStarCostChange,
   onNameChange,
   onUpgradeBlocksChange,
   onUpgradeCardKeywordsChange,
   onUpgradeCostChange,
+  onUpgradeStarCostChange,
   onShowUpgradeChange,
   onSubmit,
 }: TransfigureAssetEditorProps) {
@@ -157,6 +175,9 @@ export function TransfigureAssetEditor({
     ? sourceUpgradeText
     : sourceText;
   const activeCost = showUpgrade ? transformedUpgradeCost : transformedCost;
+  const activeStarCost = showUpgrade
+    ? transformedUpgradeStarCost
+    : transformedStarCost;
   const activeCardKeywords = useMemo(
     () => (
       showUpgrade ? upgradedCardKeywords : cardKeywords
@@ -167,10 +188,48 @@ export function TransfigureAssetEditor({
     ? (upgradedBlocks ?? activeInitialBlocks)
     : blocks;
   const activeSourceCost = showUpgrade ? sourceUpgradeCost : sourceCost;
+  const activeSourceStarCost = showUpgrade
+    ? sourceUpgradeStarCost
+    : sourceStarCost;
   const updateActiveCost = showUpgrade ? onUpgradeCostChange : onCostChange;
+  const updateActiveStarCost = showUpgrade
+    ? onUpgradeStarCostChange
+    : onStarCostChange;
   const updateActiveCardKeywords = showUpgrade
     ? onUpgradeCardKeywordsChange
     : onCardKeywordsChange;
+  const energyIconSrc = resolveSts2EnergyIcon(
+    displayCard?.visualColor ?? displayCard?.color ?? "colorless",
+  );
+  const costTokenTipNode = (
+    <p
+      className="mt-2 flex max-w-[20rem] flex-wrap items-center justify-center gap-x-1 gap-y-0.5 text-center text-[11px] text-gray-500 opacity-80"
+      data-transfigure-cost-token-tip
+    >
+      <span className="spire-gold grayscale">{("@")}</span>
+      <span>{costTokenTip.atThen}</span>
+      <Image
+        src={energyIconSrc}
+        alt=""
+        width={12}
+        height={12}
+        className="inline-block align-text-bottom grayscale"
+        style={{ width: "1em", height: "1em" }}
+      />
+      <span>,</span>
+      <span className="spire-gold grayscale">{"*"}</span>
+      <span>{costTokenTip.starThen}</span>
+      <Image
+        src="/images/game-assets/card-misc/star_icon.png"
+        alt=""
+        width={12}
+        height={12}
+        className="inline-block align-text-bottom grayscale"
+        style={{ width: "1em", height: "1em" }}
+      />
+      {costTokenTip.apply ? <span>{costTokenTip.apply}</span> : null}
+    </p>
+  );
   const acceptedDescriptionRef = useRef({
     base: {
       blocks,
@@ -268,6 +327,11 @@ export function TransfigureAssetEditor({
     event.preventDefault();
     updateActiveCost("X");
   };
+  const handleStarCostKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key.toLowerCase() !== "x") return;
+    event.preventDefault();
+    updateActiveStarCost("X");
+  };
   const titleInput = (
     <span className={`flex w-full items-center justify-center ${editFieldClass}`}>
       <input
@@ -318,9 +382,7 @@ export function TransfigureAssetEditor({
         allowLineBreaks
         submitOnEnter={false}
         costTokens={{
-          energyIconSrc: resolveSts2EnergyIcon(
-            displayCard?.visualColor ?? displayCard?.color ?? "colorless",
-          ),
+          energyIconSrc,
         }}
       />
     </div>
@@ -405,6 +467,33 @@ export function TransfigureAssetEditor({
                 data-transfigure-cost-input={showUpgrade ? "upgrade" : "base"}
               />
             )}
+            starCostContent={activeSourceStarCost != null ? (
+              <input
+                type="text"
+                inputMode="text"
+                autoCapitalize="characters"
+                spellCheck={false}
+                value={activeStarCost}
+                onKeyDown={handleStarCostKeyDown}
+                onChange={(event) => {
+                  updateActiveStarCost(
+                    normalizeTransfigureCostInput(event.target.value),
+                  );
+                }}
+                placeholder={activeSourceStarCost}
+                aria-label={starCostLabel}
+                maxLength={2}
+                className={`h-full w-full bg-transparent text-center text-inherit caret-[#EFC851] outline-none placeholder:text-inherit placeholder:opacity-65 ${editFieldClass}`}
+                style={{
+                  color: "inherit",
+                  fontFamily: "inherit",
+                  fontSize: "inherit",
+                  fontWeight: "inherit",
+                  textShadow: "inherit",
+                }}
+                data-transfigure-star-cost-input={showUpgrade ? "upgrade" : "base"}
+              />
+            ) : undefined}
           />
           {descriptionLimitVisible && (
             <div
@@ -416,12 +505,7 @@ export function TransfigureAssetEditor({
               {descriptionFrameLimit}
             </div>
           )}
-          <p
-            className="mt-2 max-w-[17.5rem] text-center text-[11px] text-gray-500 opacity-80"
-            data-transfigure-cost-token-tip
-          >
-            {costTokenTip}
-          </p>
+          {costTokenTipNode}
           {upgradedBlocks != null && (
             <GameCheckboxToggle
               checked={showUpgrade}
@@ -455,12 +539,7 @@ export function TransfigureAssetEditor({
                 {descriptionEditor}
               </div>
             </GameHoverTip>
-            <p
-              className="text-[11px] text-gray-500 opacity-80"
-              data-transfigure-cost-token-tip
-            >
-              {costTokenTip}
-            </p>
+            {costTokenTipNode}
           </div>
         </div>
       )}

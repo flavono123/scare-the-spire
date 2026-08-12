@@ -71,6 +71,7 @@ export interface TransfigurePost {
   source_game_locale: GameLocale;
   transformed_name: string | null;
   transformed_cost: string | null;
+  transformed_star_cost: string | null;
   transformed_card_type: TransfigureCardType | null;
   transformed_card_rarity: TransfigureCardRarity | null;
   card_top_keywords: string[];
@@ -78,6 +79,7 @@ export interface TransfigurePost {
   upgraded_content: PostBlock[] | null;
   upgraded_content_text: string | null;
   transformed_upgrade_cost: string | null;
+  transformed_upgrade_star_cost: string | null;
   upgraded_card_top_keywords: string[];
   upgraded_card_bottom_keywords: string[];
   show_upgrade: boolean;
@@ -356,6 +358,31 @@ export function getTransfigureUpgradeSourceCost(
   return getTransfigureSourceCost(entity);
 }
 
+export function getTransfigureSourceStarCost(entity: EntityInfo): string | null {
+  if (entity.type !== "card" || !entity.cardData) return null;
+  if (entity.cardData.isXStarCost) return "X";
+  return entity.cardData.starCost != null
+    ? String(entity.cardData.starCost)
+    : null;
+}
+
+export function getTransfigureUpgradeSourceStarCost(
+  entity: EntityInfo,
+): string | null {
+  if (entity.type !== "card" || !entity.cardData) return null;
+  if (entity.cardData.isXStarCost) return "X";
+  const upgradedStar = (
+    entity.cardData.upgrade?.starCost
+    ?? entity.cardData.upgrade?.StarCost
+    ?? entity.cardData.specialUpgrade?.upgrade.starCost
+    ?? entity.cardData.specialUpgrade?.upgrade.StarCost
+  );
+  if (typeof upgradedStar === "number" && upgradedStar >= 0) {
+    return String(upgradedStar);
+  }
+  return getTransfigureSourceStarCost(entity);
+}
+
 export function normalizeTransfigureCostInput(value: string): string {
   const cleaned = value.toUpperCase().replace(/[^0-9X]/g, "");
   return cleaned.includes("X") ? "X" : cleaned.slice(0, 2);
@@ -456,11 +483,15 @@ export function isTransfigureChanged({
   sourceName,
   transformedCost,
   sourceCost,
+  transformedStarCost = "",
+  sourceStarCost = null,
   upgradedBlocks,
   sourceUpgradeText,
   sourceUpgradeBlocks,
   transformedUpgradeCost = "",
   sourceUpgradeCost = null,
+  transformedUpgradeStarCost = "",
+  sourceUpgradeStarCost = null,
   showUpgrade = false,
   cardKeywords = null,
   sourceCardKeywords = null,
@@ -478,11 +509,15 @@ export function isTransfigureChanged({
   sourceName: string;
   transformedCost: string;
   sourceCost: string | null;
+  transformedStarCost?: string;
+  sourceStarCost?: string | null;
   upgradedBlocks?: PostBlock[] | null;
   sourceUpgradeText?: string | null;
   sourceUpgradeBlocks?: PostBlock[] | null;
   transformedUpgradeCost?: string;
   sourceUpgradeCost?: string | null;
+  transformedUpgradeStarCost?: string;
+  sourceUpgradeStarCost?: string | null;
   showUpgrade?: boolean;
   cardKeywords?: TransfigureCardKeywords | null;
   sourceCardKeywords?: TransfigureCardKeywords | null;
@@ -518,6 +553,7 @@ export function isTransfigureChanged({
     || isTransfiguredContent(blocks, sourceText, sourceBlocks)
     || normalizeTransfigureName(transformedName, sourceName) != null
     || normalizeTransfigureCost(transformedCost, sourceCost) != null
+    || normalizeTransfigureCost(transformedStarCost, sourceStarCost) != null
     || (
       upgradedBlocks != null
       && sourceUpgradeText != null
@@ -531,6 +567,10 @@ export function isTransfigureChanged({
     || normalizeTransfigureCost(
       transformedUpgradeCost,
       sourceUpgradeCost,
+    ) != null
+    || normalizeTransfigureCost(
+      transformedUpgradeStarCost,
+      sourceUpgradeStarCost,
     ) != null
   );
 }

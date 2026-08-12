@@ -14,8 +14,10 @@ import {
   applyTransfigureCardMetadata,
   canTransfigureCardMetadata,
   getTransfigureSourceCost,
+  getTransfigureSourceStarCost,
   getTransfigureUpgradeInitialBlocks,
   getTransfigureUpgradeSourceCost,
+  getTransfigureUpgradeSourceStarCost,
   normalizeTransfigureCardRarity,
   normalizeTransfigureCardType,
   transfigureBlocksToGameDescription,
@@ -35,9 +37,11 @@ interface TransfigureResourcePreviewProps {
   serviceLocale: ServiceLocale;
   transformedName?: string | null;
   transformedCost?: string | null;
+  transformedStarCost?: string | null;
   transformedCardType?: TransfigureCardType | null;
   transformedCardRarity?: TransfigureCardRarity | null;
   transformedUpgradeCost?: string | null;
+  transformedUpgradeStarCost?: string | null;
   cardKeywords?: TransfigureCardKeywords | null;
   upgradedBlocks?: PostBlock[] | null;
   upgradedCardKeywords?: TransfigureCardKeywords | null;
@@ -56,9 +60,11 @@ export function TransfigureResourcePreview({
   serviceLocale,
   transformedName,
   transformedCost,
+  transformedStarCost,
   transformedCardType,
   transformedCardRarity,
   transformedUpgradeCost,
+  transformedUpgradeStarCost,
   cardKeywords,
   upgradedBlocks,
   upgradedCardKeywords,
@@ -118,11 +124,19 @@ export function TransfigureResourcePreview({
     const sourceCost = showUpgrade
       ? getTransfigureUpgradeSourceCost(entity)
       : getTransfigureSourceCost(entity);
+    const sourceStarCost = showUpgrade
+      ? getTransfigureUpgradeSourceStarCost(entity)
+      : getTransfigureSourceStarCost(entity);
     const transformedActiveCost = showUpgrade
       ? transformedUpgradeCost
       : transformedCost;
+    const transformedActiveStarCost = showUpgrade
+      ? transformedUpgradeStarCost
+      : transformedStarCost;
     const normalizedCost = transformedActiveCost?.trim().toUpperCase()
       || sourceCost;
+    const normalizedStarCost = transformedActiveStarCost?.trim().toUpperCase()
+      || sourceStarCost;
     const baseDescription = transfigureBlocksToGameDescription(blocks);
     const activeDescription = transfigureBlocksToGameDescription(activeBlocks);
     const description = showUpgrade && effectiveUpgradeBlocks != null
@@ -141,9 +155,22 @@ export function TransfigureResourcePreview({
       isXCost: normalizedCost == null
         ? entity.cardData.isXCost
         : normalizedCost === "X",
+      isXStarCost: normalizedStarCost == null
+        ? entity.cardData.isXStarCost
+        : normalizedStarCost === "X",
+      starCost: normalizedStarCost == null || normalizedStarCost === "X"
+        ? (
+          normalizedStarCost === "X"
+            ? null
+            : entity.cardData.starCost
+        )
+        : Number(normalizedStarCost),
     };
     const forcedCost = normalizedCost && normalizedCost !== "X"
       ? Number(normalizedCost)
+      : undefined;
+    const forcedStarCost = normalizedStarCost && normalizedStarCost !== "X"
+      ? Number(normalizedStarCost)
       : undefined;
     return (
       <div
@@ -163,6 +190,7 @@ export function TransfigureResourcePreview({
               ...activeCardKeywords.bottom,
             ]}
             forcedCost={forcedCost}
+            forcedStarCost={forcedStarCost}
           />
         </div>
         {showUpgradeToggle && effectiveUpgradeBlocks != null && (

@@ -26,10 +26,12 @@ import {
   getTransfigureCardTypeLabel,
   getTransfigureInitialBlocks,
   getTransfigureSourceCost,
+  getTransfigureSourceStarCost,
   getTransfigureSourceText,
   getTransfigureUpgradeCardKeywords,
   getTransfigureUpgradeInitialBlocks,
   getTransfigureUpgradeSourceCost,
+  getTransfigureUpgradeSourceStarCost,
   getTransfigureUpgradeSourceText,
   isTransfigureChanged,
   isTransfigureResourceType,
@@ -227,6 +229,9 @@ export function TransfigureEditor({
   const [transformedCost, setTransformedCost] = useState(
     initialPost?.transformed_cost ?? "",
   );
+  const [transformedStarCost, setTransformedStarCost] = useState(
+    initialPost?.transformed_star_cost ?? "",
+  );
   const initialCardMetadataEditable = canTransfigureCardMetadata(
     initialEntity?.cardData?.type,
     initialEntity?.cardData?.rarity,
@@ -265,6 +270,9 @@ export function TransfigureEditor({
   );
   const [transformedUpgradeCost, setTransformedUpgradeCost] = useState(
     initialPost?.transformed_upgrade_cost ?? "",
+  );
+  const [transformedUpgradeStarCost, setTransformedUpgradeStarCost] = useState(
+    initialPost?.transformed_upgrade_star_cost ?? "",
   );
   const [upgradedCardKeywords, setUpgradedCardKeywords] = useState<
     TransfigureCardKeywords | null
@@ -312,6 +320,10 @@ export function TransfigureEditor({
     () => selected ? getTransfigureSourceCost(selected) : null,
     [selected],
   );
+  const sourceStarCost = useMemo(
+    () => selected ? getTransfigureSourceStarCost(selected) : null,
+    [selected],
+  );
   const sourceCardType = selected?.cardData?.type ?? null;
   const sourceCardRarity = selected?.cardData?.rarity ?? null;
   const canChangeCardMetadata = canTransfigureCardMetadata(
@@ -340,6 +352,10 @@ export function TransfigureEditor({
     () => selected ? getTransfigureUpgradeSourceCost(selected) : null,
     [selected],
   );
+  const sourceUpgradeStarCost = useMemo(
+    () => selected ? getTransfigureUpgradeSourceStarCost(selected) : null,
+    [selected],
+  );
   const sourceUpgradedCardKeywords = useMemo(
     () => selected ? getTransfigureUpgradeCardKeywords(selected) : null,
     [selected],
@@ -357,10 +373,14 @@ export function TransfigureEditor({
       || nickname !== initialPost.nickname.trim()
       || transformedName.trim() !== (initialPost.transformed_name ?? "").trim()
       || transformedCost.trim() !== (initialPost.transformed_cost ?? "").trim()
+      || transformedStarCost.trim()
+        !== (initialPost.transformed_star_cost ?? "").trim()
       || transformedCardType !== (initialPost.transformed_card_type ?? "")
       || transformedCardRarity !== (initialPost.transformed_card_rarity ?? "")
       || transformedUpgradeCost.trim()
         !== (initialPost.transformed_upgrade_cost ?? "").trim()
+      || transformedUpgradeStarCost.trim()
+        !== (initialPost.transformed_upgrade_star_cost ?? "").trim()
       || !transfigureCardKeywordsEqual(cardKeywords, {
         top: initialPost.card_top_keywords,
         bottom: initialPost.card_bottom_keywords,
@@ -388,10 +408,12 @@ export function TransfigureEditor({
     showUpgrade,
     sourceUpgradeBlocks,
     transformedCost,
+    transformedStarCost,
     transformedCardRarity,
     transformedCardType,
     transformedName,
     transformedUpgradeCost,
+    transformedUpgradeStarCost,
     upgradedCardKeywords,
   ]);
 
@@ -402,11 +424,13 @@ export function TransfigureEditor({
     setPreviewUpgradeBlocks(getTransfigureUpgradeInitialBlocks(entity, entities));
     setTransformedName("");
     setTransformedCost("");
+    setTransformedStarCost("");
     setTransformedCardType("");
     setTransformedCardRarity("");
     setShowCardTypeChange(false);
     setShowCardRarityChange(false);
     setTransformedUpgradeCost("");
+    setTransformedUpgradeStarCost("");
     setCardKeywords(getTransfigureCardKeywords(entity));
     setUpgradedCardKeywords(getTransfigureUpgradeCardKeywords(entity));
     setShowUpgrade(false);
@@ -429,6 +453,8 @@ export function TransfigureEditor({
         sourceName: selected.nameKo,
         transformedCost,
         sourceCost,
+        transformedStarCost,
+        sourceStarCost,
         transformedCardType,
         sourceCardType,
         transformedCardRarity,
@@ -438,6 +464,8 @@ export function TransfigureEditor({
         sourceUpgradeBlocks,
         transformedUpgradeCost,
         sourceUpgradeCost,
+        transformedUpgradeStarCost,
+        sourceUpgradeStarCost,
         cardKeywords,
         sourceCardKeywords,
         upgradedCardKeywords,
@@ -472,20 +500,24 @@ export function TransfigureEditor({
       sourceGameLocale: gameLocale,
       sourceName: selected.nameKo,
       sourceCost,
+      sourceStarCost,
       sourceCardType,
       sourceCardRarity,
       sourceUpgradeText,
       sourceUpgradeBlocks,
       sourceUpgradeCost,
+      sourceUpgradeStarCost,
       sourceCardKeywords,
       sourceUpgradedCardKeywords,
       transformedName,
       transformedCost,
+      transformedStarCost,
       transformedCardType,
       transformedCardRarity,
       cardKeywords,
       upgradedBlocks,
       transformedUpgradeCost,
+      transformedUpgradeStarCost,
       upgradedCardKeywords,
       showUpgrade,
     });
@@ -504,19 +536,23 @@ export function TransfigureEditor({
     sourceBlocks,
     cardKeywords,
     sourceCost,
+    sourceStarCost,
     sourceCardRarity,
     sourceCardType,
     sourceText,
     sourceUpgradeBlocks,
     sourceUpgradeCost,
+    sourceUpgradeStarCost,
     sourceUpgradeText,
     sourceCardKeywords,
     sourceUpgradedCardKeywords,
     transformedCost,
+    transformedStarCost,
     transformedCardRarity,
     transformedCardType,
     transformedName,
     transformedUpgradeCost,
+    transformedUpgradeStarCost,
     upgradedCardKeywords,
     showUpgrade,
   ]);
@@ -532,6 +568,8 @@ export function TransfigureEditor({
         sourceName: selected.nameKo,
         transformedCost,
         sourceCost,
+        transformedStarCost,
+        sourceStarCost,
         transformedCardType,
         sourceCardType,
         transformedCardRarity,
@@ -541,6 +579,8 @@ export function TransfigureEditor({
         sourceUpgradeBlocks,
         transformedUpgradeCost,
         sourceUpgradeCost,
+        transformedUpgradeStarCost,
+        sourceUpgradeStarCost,
         cardKeywords,
         sourceCardKeywords,
         upgradedCardKeywords,
@@ -553,19 +593,23 @@ export function TransfigureEditor({
       cardKeywords,
       sourceBlocks,
       sourceCost,
+      sourceStarCost,
       sourceCardRarity,
       sourceCardType,
       sourceText,
       sourceUpgradeBlocks,
       sourceUpgradeCost,
+      sourceUpgradeStarCost,
       sourceUpgradeText,
       sourceCardKeywords,
       sourceUpgradedCardKeywords,
       transformedCost,
+      transformedStarCost,
       transformedCardRarity,
       transformedCardType,
       transformedName,
       transformedUpgradeCost,
+      transformedUpgradeStarCost,
       upgradedCardKeywords,
       showUpgrade,
     ],
@@ -783,6 +827,7 @@ export function TransfigureEditor({
               initialUpgradeBlocks={editorInitialUpgradeBlocks}
               nameLabel={copy.nameLabel}
               costLabel={copy.costLabel}
+              starCostLabel={copy.starCostLabel}
               descriptionLabel={copy.descriptionLabel}
               descriptionFrameLimit={copy.descriptionFrameLimit}
               costTokenTip={copy.costTokenTip}
@@ -793,13 +838,17 @@ export function TransfigureEditor({
               sourceText={sourceText}
               sourceUpgradeText={sourceUpgradeText}
               sourceUpgradeCost={sourceUpgradeCost}
+              sourceStarCost={sourceStarCost}
+              sourceUpgradeStarCost={sourceUpgradeStarCost}
               submitLabel={initialPost ? copy.saveChanges : copy.submit}
               transformedName={transformedName}
               transformedCost={transformedCost}
+              transformedStarCost={transformedStarCost}
               transformedCardType={transformedCardType}
               transformedCardRarity={transformedCardRarity}
               cardKeywords={cardKeywords}
               transformedUpgradeCost={transformedUpgradeCost}
+              transformedUpgradeStarCost={transformedUpgradeStarCost}
               upgradedCardKeywords={upgradedCardKeywords}
               upgradedBlocks={previewUpgradeBlocks}
               upgradeLabel={upgradeLabel}
@@ -819,6 +868,10 @@ export function TransfigureEditor({
               }}
               onCostChange={(value) => {
                 setTransformedCost(value);
+                setSaveFeedback(null);
+              }}
+              onStarCostChange={(value) => {
+                setTransformedStarCost(value);
                 setSaveFeedback(null);
               }}
               onUpgradeBlocksChange={(blocks) => {
@@ -841,6 +894,10 @@ export function TransfigureEditor({
               }}
               onUpgradeCostChange={(value) => {
                 setTransformedUpgradeCost(value);
+                setSaveFeedback(null);
+              }}
+              onUpgradeStarCostChange={(value) => {
+                setTransformedUpgradeStarCost(value);
                 setSaveFeedback(null);
               }}
               onShowUpgradeChange={(checked) => {
