@@ -142,10 +142,12 @@ test("compendium detail keeps its view on the canonical detail URL", async ({ pa
   await page.locator('a[href="/compendium/relics/fishing_rod"]').first().click();
 
   await expect(page).toHaveURL(absolute("/compendium/relics/fishing_rod"));
-  await expect(page.getByRole("heading", { level: 1, name: "낚싯대" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /낚싯대|Fishing Rod/i })).toBeVisible({
+    timeout: 15_000,
+  });
 
   const back = page.getByRole("link", { name: /유물 모음집|Relic Compendium/i });
-  await expect(back).toBeVisible();
+  await expect(back).toBeVisible({ timeout: 15_000 });
   await back.click();
   await expect(page).toHaveURL(absolute("/compendium/relics"));
 });

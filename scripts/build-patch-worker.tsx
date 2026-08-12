@@ -635,6 +635,18 @@ async function writePatchClientAssets() {
     target: ["es2022"],
   });
 
+  // Browser bundles must not read Node `process` at runtime. Replace every
+  // NEXT_PUBLIC_* / SITE_* env access the client graph may touch.
+  const patchClientEnvDefines = {
+    "process.env.NODE_ENV": JSON.stringify("production"),
+    "process.env.NEXT_PUBLIC_SUPABASE_URL": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""),
+    "process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""),
+    "process.env.NEXT_PUBLIC_SUPABASE_ENV": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production"),
+    "process.env.NEXT_PUBLIC_SITE_ORIGIN": JSON.stringify(process.env.NEXT_PUBLIC_SITE_ORIGIN ?? ""),
+    "process.env.NEXT_PUBLIC_SITE_URL": JSON.stringify(process.env.NEXT_PUBLIC_SITE_URL ?? ""),
+    "process.env.SITE_URL": JSON.stringify(process.env.SITE_URL ?? ""),
+  };
+
   await buildClientBundle({
     entryPoints: [patchRichCommentsClientPath],
     outfile: path.join(outDir, "_patches/patch-rich-comments.js"),
@@ -644,12 +656,7 @@ async function writePatchClientAssets() {
     format: "iife",
     target: ["es2022"],
     plugins: [patchClientNextShims],
-    define: {
-      "process.env.NODE_ENV": JSON.stringify("production"),
-      "process.env.NEXT_PUBLIC_SUPABASE_URL": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""),
-      "process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""),
-      "process.env.NEXT_PUBLIC_SUPABASE_ENV": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production"),
-    },
+    define: patchClientEnvDefines,
   });
 
   await buildClientBundle({
@@ -671,12 +678,7 @@ async function writePatchClientAssets() {
     format: "iife",
     target: ["es2022"],
     plugins: [patchClientNextShims],
-    define: {
-      "process.env.NODE_ENV": JSON.stringify("production"),
-      "process.env.NEXT_PUBLIC_SUPABASE_URL": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""),
-      "process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""),
-      "process.env.NEXT_PUBLIC_SUPABASE_ENV": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production"),
-    },
+    define: patchClientEnvDefines,
   });
   stopClientBundler();
 }
