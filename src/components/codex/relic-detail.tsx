@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
@@ -140,14 +140,15 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
   const [artFilterSource, setArtFilterSource] = useState<RelicArtFilterSource>(null);
   const [showBeta, setShowBeta] = useState(initialShowBeta && Boolean(relic.betaImageUrl));
   const [commentCount, setCommentCount] = useState(0);
-
-  useEffect(() => {
+  const [artToggleRelicId, setArtToggleRelicId] = useState(relic.id);
+  if (relic.id !== artToggleRelicId) {
+    setArtToggleRelicId(relic.id);
     setWaxCycle("off");
     setShowUsedUp(false);
     setShowDisabled(false);
     setArtFilterSource(null);
     setShowCornucopia(true);
-  }, [relic.id]);
+  }
 
   const artVariants = useMemo(() => getRelicArtVariants(relic.id), [relic.id]);
 

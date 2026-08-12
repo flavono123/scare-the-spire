@@ -87,14 +87,6 @@ export function DonatedRunsSection({ refreshKey = 0, query = "" }: Props) {
     [editing, ensureUser, userId],
   );
 
-  if (!supabaseEnabled) {
-    return null;
-  }
-  const storageUnavailable = unavailable;
-  const loading = runs === null && !storageUnavailable;
-  const hasQuery = query.trim().length > 0;
-  const filteredRuns = filterSharedRuns(runs ?? [], query);
-
   const editingParsed = useMemo(() => {
     if (!editing?.raw) return null;
     try {
@@ -107,6 +99,14 @@ export function DonatedRunsSection({ refreshKey = 0, query = "" }: Props) {
       return null;
     }
   }, [editing]);
+
+  if (!supabaseEnabled) {
+    return null;
+  }
+  const storageUnavailable = unavailable;
+  const loading = runs === null && !storageUnavailable;
+  const hasQuery = query.trim().length > 0;
+  const filteredRuns = filterSharedRuns(runs ?? [], query);
 
   return (
     <section>

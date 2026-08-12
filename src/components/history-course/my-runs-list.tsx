@@ -104,6 +104,8 @@ export function MyRunsList({
     if (!pendingEditRunId || !entries) return;
     const hit = entries.find((entry) => entry.runId === pendingEditRunId);
     if (hit) {
+      // Open cover editor once the freshly uploaded run hydrates from IDB.
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot handoff from upload polish CTA
       setEditing(hit);
       onPendingEditConsumed?.();
     }

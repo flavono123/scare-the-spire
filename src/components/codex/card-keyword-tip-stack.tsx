@@ -5,6 +5,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   type CSSProperties,
   type ReactNode,
 } from "react";
@@ -139,16 +140,16 @@ export function CardSideTipsAnchor({
   const anchorRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   const [fits, setFits] = useState(false);
   const [placement, setPlacement] = useState<FixedPlacement>({ left: 0, top: 0 });
 
   const wantVisible = (mode === "always" || hovered) && tips.length > 0;
   const showTips = wantVisible && fits;
-
-  useLayoutEffect(() => {
-    setMounted(true);
-  }, []);
 
   const updatePlacement = useCallback(() => {
     const anchor = anchorRef.current;
@@ -181,11 +182,7 @@ export function CardSideTipsAnchor({
   }, [preferSide]);
 
   useLayoutEffect(() => {
-    if (!wantVisible || !mounted) {
-      setFits(false);
-      return;
-    }
-    updatePlacement();
+    if (!wantVisible || !mounted) return;
     const raf = requestAnimationFrame(() => updatePlacement());
     return () => cancelAnimationFrame(raf);
   }, [wantVisible, tips, mounted, updatePlacement]);

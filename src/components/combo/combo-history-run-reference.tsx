@@ -94,23 +94,20 @@ function useResolvedCoverSpec(block: HistoryRunBlock): CoverSpec | null {
   const embedded = isCoverSpec(block.snapshot.coverSpec)
     ? block.snapshot.coverSpec
     : null;
-  const [cover, setCover] = useState<CoverSpec | null>(embedded);
+  const [fetched, setFetched] = useState<CoverSpec | null>(null);
 
   useEffect(() => {
-    if (embedded) {
-      setCover(embedded);
-      return;
-    }
+    if (embedded) return;
     let cancelled = false;
     void getRunCoverSpec(block.runId).then((next) => {
-      if (!cancelled) setCover(next);
+      if (!cancelled) setFetched(next);
     });
     return () => {
       cancelled = true;
     };
   }, [block.runId, embedded]);
 
-  return cover;
+  return embedded ?? fetched;
 }
 
 function ComboHistoryRunThumbnail({

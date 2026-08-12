@@ -87,6 +87,13 @@ export function HistoryCourseCover({
     : coverCharacterSelectSrc(character);
   const [fgSrc, setFgSrc] = useState(desiredFgSrc);
   const [fgFailed, setFgFailed] = useState(false);
+  const [fgSrcKey, setFgSrcKey] = useState(desiredFgSrc);
+  // Cover editor switches A/B (and B card id) without remounting — resync art.
+  if (desiredFgSrc !== fgSrcKey) {
+    setFgSrcKey(desiredFgSrc);
+    setFgSrc(desiredFgSrc);
+    setFgFailed(false);
+  }
   const compact = size === "compact";
   const elements = cover.elements.slice(0, 3);
   const cardSlotCount = elements.filter((el) => el.kind === "card").length;
@@ -102,12 +109,6 @@ export function HistoryCourseCover({
     reservedWidth:
       nonCardCount * iconSize + Math.max(0, elements.length - 1) * gapPx,
   });
-
-  // Cover editor switches A/B (and B card id) without remounting — resync art.
-  useEffect(() => {
-    setFgSrc(desiredFgSrc);
-    setFgFailed(false);
-  }, [desiredFgSrc]);
 
   return (
     <div
@@ -373,7 +374,6 @@ function useCoverCardLayout(
   useEffect(() => {
     const zone = zoneRef.current;
     if (!zone || cardSlotCount <= 0) {
-      setLayout({ tinyCards: false, cardWidth: targetCardWidth });
       return;
     }
 
@@ -392,10 +392,13 @@ function useCoverCardLayout(
       });
     };
 
-    update();
+    const raf = requestAnimationFrame(update);
     const ro = new ResizeObserver(update);
     ro.observe(zone);
-    return () => ro.disconnect();
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
   }, [cardSlotCount, reservedWidth, targetCardWidth, zoneRef]);
 
   return layout;

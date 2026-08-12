@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
@@ -375,44 +375,32 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
     amount: activeAfflictionAmount,
   });
 
-  const tipCatalog = useMemo(
-    () => createCardSideTipCatalog({
-      sources: tipCatalogSources ?? {
-        keywords: tipCatalogKeywords,
-        staticHoverTips: {},
-        engStaticHoverTips: {},
-        orbs: {},
-        engOrbs: {},
-        monsterNames: {},
-        engMonsterNames: {},
-      },
-      powers: relatedPowers,
-      cards: tipCatalogCards ?? [card],
-      monsters: relatedMonsters,
-    }),
-    [tipCatalogSources, tipCatalogKeywords, relatedPowers, tipCatalogCards, card, relatedMonsters],
-  );
-  const sideTips = useMemo(() => {
-    const description = effectiveUpgradeLevel > 0 || activeStatMod
-      ? renderCardDescription(upgradePreviewCard, {
-          upgradeLevel: effectiveUpgradeLevel,
-          enchantMod: activeStatMod,
-        })
-      : upgradePreviewCard.description;
-    return collectCardSideTips(upgradePreviewCard, tipCatalog, {
-      upgradeLevel: effectiveUpgradeLevel,
-      description,
-      addedKeywords: activeAddedKeywordsWithAffliction,
-      removedKeywords: activeRemovedKeywords,
-    });
-  }, [
-    upgradePreviewCard,
-    tipCatalog,
-    effectiveUpgradeLevel,
-    activeStatMod,
-    activeAddedKeywordsWithAffliction,
-    activeRemovedKeywords,
-  ]);
+  const tipCatalog = createCardSideTipCatalog({
+    sources: tipCatalogSources ?? {
+      keywords: tipCatalogKeywords,
+      staticHoverTips: {},
+      engStaticHoverTips: {},
+      orbs: {},
+      engOrbs: {},
+      monsterNames: {},
+      engMonsterNames: {},
+    },
+    powers: relatedPowers,
+    cards: tipCatalogCards ?? [card],
+    monsters: relatedMonsters,
+  });
+  const sideTipsDescription = effectiveUpgradeLevel > 0 || activeStatMod
+    ? renderCardDescription(upgradePreviewCard, {
+        upgradeLevel: effectiveUpgradeLevel,
+        enchantMod: activeStatMod,
+      })
+    : upgradePreviewCard.description;
+  const sideTips = collectCardSideTips(upgradePreviewCard, tipCatalog, {
+    upgradeLevel: effectiveUpgradeLevel,
+    description: sideTipsDescription,
+    addedKeywords: activeAddedKeywordsWithAffliction,
+    removedKeywords: activeRemovedKeywords,
+  });
 
   // hover 시 보여줄 미리보기 amount는 hovered 인챈트의 자체 프리셋을 쓴다.
   // 활성 인챈트 위에 hover한 경우만 사용자가 고른 amount 그대로.
