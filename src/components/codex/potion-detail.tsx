@@ -7,7 +7,6 @@ import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
-import type { EntityInfo } from "@/components/patch-note-renderer";
 import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -15,6 +14,7 @@ import {
   CodexCard,
   CodexEnchantment,
   CodexEvent,
+  CodexMonster,
   CodexPotion,
   CodexPower,
   PotionPool,
@@ -22,13 +22,16 @@ import {
   characterOutlineFilter,
   getCharacterColor,
 } from "@/lib/codex-types";
-import { DescriptionText } from "./codex-description";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameChoiceFrame } from "./event-choice-frame";
-import { GameHoverTip } from "./hover-tip";
-import { RichDescription } from "./rich-description";
+import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import { RichText } from "@/components/rich-text";
+import {
+  createCardSideTipCatalog,
+  type CardSideTipCatalogSources,
+} from "@/lib/card-side-tip-catalog";
+import { collectPotionSideTips } from "@/lib/potion-side-tips";
 import {
   FUTURE_OF_POTIONS_EVENT_ID,
   FUTURE_OF_POTIONS_EVENT_NAME_KO,
@@ -93,6 +96,9 @@ interface PotionDetailProps {
   relatedEnchantments?: CodexEnchantment[];
   relatedEvents?: CodexEvent[];
   relatedPowers?: CodexPower[];
+  relatedMonsters?: CodexMonster[];
+  tipCatalogSources?: CardSideTipCatalogSources;
+  tipCatalogCards?: CodexCard[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
@@ -113,15 +119,47 @@ function getPotionDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
-const POTION_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
-
-export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, relatedCards = [], relatedEnchantments = [], relatedEvents = [], relatedPowers = [], patches, changes, versionDiffs, onClose, entities }: PotionDetailProps & { entities?: EntityInfo[] }) {
+export function PotionDetail({
+  serviceLocale,
+  gameUi,
+  backToListTitle,
+  potion,
+  poolLabels,
+  relatedCards = [],
+  relatedEnchantments = [],
+  relatedEvents = [],
+  relatedPowers = [],
+  relatedMonsters = [],
+  tipCatalogSources,
+  tipCatalogCards,
+  patches,
+  changes,
+  versionDiffs,
+  onClose,
+}: PotionDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getPotionDetailLabels(serviceLocale);
   const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
   const poolColor = potion.pool !== "shared" && potion.pool !== "event"
     ? getCharacterColor(potion.pool)
     : undefined;
+
+  const tipCatalog = useMemo(
+    () => tipCatalogSources
+      ? createCardSideTipCatalog({
+        sources: tipCatalogSources,
+        powers: relatedPowers,
+        cards: tipCatalogCards ?? relatedCards,
+        monsters: relatedMonsters,
+      })
+      : null,
+    [tipCatalogSources, relatedPowers, tipCatalogCards, relatedCards, relatedMonsters],
+  );
+  const sideTips = useMemo(() => {
+    if (!tipCatalog) return [];
+    return collectPotionSideTips(potion, tipCatalog, { includeSelf: true });
+  }, [potion, tipCatalog]);
+
   const futurePotionChoices = getFuturePotionChoicesForPotion(potion);
   const cardById = new Map(relatedCards.map((card) => [card.id, card]));
   const relatedCardTargets = getRelatedCardIdsForPotion(potion.id, relatedCards)
@@ -173,10 +211,6 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
     (potion.rarity === "고급" && option.id === "RANSACK")
   ));
   const [commentCount, setCommentCount] = useState(0);
-  const excludeSelf = useMemo(
-    () => new Set([potion.name, potion.nameEn]),
-    [potion.name, potion.nameEn],
-  );
 
   return (
     <div className="mx-auto w-full max-w-5xl p-4 sm:p-6">
@@ -206,7 +240,12 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[22rem] flex-col items-center justify-center gap-5 py-4">
-          <div className="flex w-full flex-col items-center justify-center gap-5 md:flex-row md:items-center">
+          <CardSideTipsAnchor
+            mode="always"
+            preferSide="right"
+            tips={sideTips}
+            className="flex w-full max-w-[12rem] flex-col items-center"
+          >
             <div className="flex h-32 w-32 shrink-0 items-center justify-center sm:h-40 sm:w-40">
               <Image
                 src={potion.imageUrl}
@@ -219,28 +258,10 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
                 }}
               />
             </div>
-
-            <GameHoverTip
-              title={potion.name}
-              className="w-full max-w-[23rem]"
-              style={{ minWidth: 280 }}
-            >
-              {entities ? (
-                <RichDescription
-                  description={potion.description}
-                  entities={entities}
-                  excludeEntityTerms={excludeSelf}
-                  excludeEntityTypes={POTION_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
-                  className="block text-left"
-                />
-              ) : (
-                <DescriptionText description={potion.description} className="block text-left" />
-              )}
-            </GameHoverTip>
-          </div>
+          </CardSideTipsAnchor>
         </section>
 
-        <aside className="flex flex-col gap-3">
+        <aside data-potion-detail-meta className="flex flex-col gap-3">
           <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">

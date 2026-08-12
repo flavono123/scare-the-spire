@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
-import { DescriptionText } from "./codex-description";
 import { PotionDetail } from "./potion-detail";
-import { GameHoverTip } from "./hover-tip";
+import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 import {
   addCodexUrlChangeListener,
   pushCodexHistoryState,
@@ -17,7 +16,6 @@ import {
   updateCompendiumResourceModalUrl,
 } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
-import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
   formatCodexCount,
   getCodexServiceMessages,
@@ -28,6 +26,7 @@ import {
   CodexPotion,
   CodexCharacter,
   CodexEvent,
+  CodexMonster,
   CodexPower,
   PotionRarityKo,
   PotionPool,
@@ -39,6 +38,11 @@ import {
   fuzzyMatchCodexText,
   stripCodexMarkup,
 } from "@/lib/codex-search";
+import {
+  createCardSideTipCatalog,
+  type CardSideTipCatalogSources,
+} from "@/lib/card-side-tip-catalog";
+import { collectPotionSideTips } from "@/lib/potion-side-tips";
 import { VersionSelector } from "./version-selector";
 import { SearchBar } from "./search-bar";
 import {
@@ -122,10 +126,28 @@ interface PotionLibraryProps {
   relatedEnchantments?: CodexEnchantment[];
   relatedEvents?: CodexEvent[];
   relatedPowers?: CodexPower[];
-  entities?: EntityInfo[];
+  relatedMonsters?: CodexMonster[];
+  tipCatalogSources?: CardSideTipCatalogSources;
 }
 
-export function PotionLibrary({ serviceLocale, gameUi, title, potions, characters, versions, currentVersion, patches, changes, versionDiffs, relatedCards = [], relatedEnchantments = [], relatedEvents = [], relatedPowers = [], entities }: PotionLibraryProps) {
+export function PotionLibrary({
+  serviceLocale,
+  gameUi,
+  title,
+  potions,
+  characters,
+  versions,
+  currentVersion,
+  patches,
+  changes,
+  versionDiffs,
+  relatedCards = [],
+  relatedEnchantments = [],
+  relatedEvents = [],
+  relatedPowers = [],
+  relatedMonsters = [],
+  tipCatalogSources,
+}: PotionLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlPotionId = useHydrationSafeSearchParam("potion");
   const [selectedPools, setSelectedPools] = useState<Set<PotionPool>>(
@@ -463,6 +485,10 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
                     serviceLocale={serviceLocale}
                     potion={potion}
                     onClick={() => selectPotion(potion)}
+                    tipCatalogSources={tipCatalogSources}
+                    tipCatalogCards={relatedCards}
+                    tipCatalogPowers={relatedPowers}
+                    tipCatalogMonsters={relatedMonsters}
                   />
                 ))}
               </div>
@@ -486,7 +512,24 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} potion={selectedPotion} poolLabels={poolLabels} relatedCards={relatedCards} relatedEnchantments={relatedEnchantments} relatedEvents={relatedEvents} relatedPowers={relatedPowers} patches={patches} changes={changes} versionDiffs={versionDiffs} entities={entities} onClose={closeSelectedPotion} />
+            <PotionDetail
+              serviceLocale={serviceLocale}
+              gameUi={gameUi}
+              backToListTitle={title}
+              potion={selectedPotion}
+              poolLabels={poolLabels}
+              relatedCards={relatedCards}
+              relatedEnchantments={relatedEnchantments}
+              relatedEvents={relatedEvents}
+              relatedPowers={relatedPowers}
+              relatedMonsters={relatedMonsters}
+              tipCatalogSources={tipCatalogSources}
+              tipCatalogCards={relatedCards}
+              patches={patches}
+              changes={changes}
+              versionDiffs={versionDiffs}
+              onClose={closeSelectedPotion}
+            />
           </div>
         </div>
       )}
@@ -494,63 +537,49 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
   );
 }
 
-type TooltipPlacement = {
-  horizontal: "left" | "right";
-  vertical: "top" | "bottom";
-};
-
-const TOOLTIP_GAP = 12;
-const TOOLTIP_WIDTH = 380;
-const TOOLTIP_HEIGHT = 220;
-
 // Individual potion icon tile
 function PotionTile({
   serviceLocale,
   potion,
   onClick,
+  tipCatalogSources,
+  tipCatalogCards = [],
+  tipCatalogPowers = [],
+  tipCatalogMonsters = [],
 }: {
   serviceLocale: ServiceLocale;
   potion: CodexPotion;
   onClick?: () => void;
+  tipCatalogSources?: CardSideTipCatalogSources;
+  tipCatalogCards?: readonly CodexCard[];
+  tipCatalogPowers?: readonly CodexPower[];
+  tipCatalogMonsters?: readonly CodexMonster[];
 }) {
-  const tileRef = useRef<HTMLDivElement>(null);
-  const [hovered, setHovered] = useState(false);
-  const [placement, setPlacement] = useState<TooltipPlacement>({
-    horizontal: "right",
-    vertical: "top",
-  });
   const lifecycleClassName = potion.deprecated ? " opacity-50 grayscale saturate-0" : "";
 
-  const updatePlacement = useCallback(() => {
-    const rect = tileRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const horizontal = rect.right + TOOLTIP_GAP + TOOLTIP_WIDTH > window.innerWidth
-      ? "left"
-      : "right";
-    const vertical = rect.top + TOOLTIP_HEIGHT > window.innerHeight
-      ? "bottom"
-      : "top";
-    setPlacement({ horizontal, vertical });
-  }, []);
+  const tipCatalog = useMemo(
+    () => tipCatalogSources
+      ? createCardSideTipCatalog({
+        sources: tipCatalogSources,
+        powers: tipCatalogPowers,
+        cards: tipCatalogCards,
+        monsters: tipCatalogMonsters,
+      })
+      : null,
+    [tipCatalogSources, tipCatalogPowers, tipCatalogCards, tipCatalogMonsters],
+  );
+
+  const sideTips = useMemo(() => {
+    if (!tipCatalog) return [];
+    return collectPotionSideTips(potion, tipCatalog, { includeSelf: true });
+  }, [potion, tipCatalog]);
 
   return (
-    <div
-      ref={tileRef}
-      className="group relative"
-      onMouseEnter={() => {
-        updatePlacement();
-        setHovered(true);
-      }}
-      onMouseLeave={() => setHovered(false)}
-    >
+    <CardSideTipsAnchor mode="hover" preferSide="right" tips={sideTips} className="relative">
       <Link
         href={localizeHref(buildCompendiumResourceDetailHref("potion", potion.id), serviceLocale)}
         data-potion-tile={potion.id}
-        className={`flex h-14 w-14 items-center justify-center rounded-lg border-2 p-1 transition-all sm:h-16 sm:w-16${lifecycleClassName} ${
-          hovered
-            ? "z-10 scale-110 border-yellow-500/60 bg-yellow-500/10"
-            : "border-transparent bg-white/5 hover:bg-white/10"
-        }`}
+        className={`group flex h-14 w-14 items-center justify-center rounded-lg border-2 p-1 transition-all sm:h-16 sm:w-16${lifecycleClassName} border-transparent bg-white/5 hover:bg-white/10 hover:z-10 hover:scale-110 hover:border-yellow-500/60 hover:bg-yellow-500/10`}
         onClick={(event) => {
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
           event.preventDefault();
@@ -569,34 +598,7 @@ function PotionTile({
           }}
         />
       </Link>
-
-      {hovered && (
-        <div
-          className={`pointer-events-none absolute z-50 hidden w-max max-w-[24rem] md:block ${
-            placement.horizontal === "right" ? "left-full ml-3" : "right-full mr-3"
-          } ${placement.vertical === "top" ? "top-0" : "bottom-0"}`}
-        >
-          <span className="flex w-max max-w-[24rem] items-start gap-2.5">
-            <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-black/20">
-              <Image
-                src={potion.imageUrl}
-                alt={potion.name}
-                width={64}
-                height={64}
-                loading="lazy"
-                className="h-14 w-14 object-contain"
-                style={{
-                  filter: characterOutlineFilter(potion.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
-                }}
-              />
-            </span>
-            <GameHoverTip title={potion.name} style={{ minWidth: 240, maxWidth: 320 }}>
-              <DescriptionText description={potion.description} className="block text-left" />
-            </GameHoverTip>
-          </span>
-        </div>
-      )}
-    </div>
+    </CardSideTipsAnchor>
   );
 }
 
@@ -606,3 +608,4 @@ function getPotionSectionKey(rarity: PotionRarityKo): string {
   if (rarity === "희귀") return "rare";
   return "special";
 }
+
