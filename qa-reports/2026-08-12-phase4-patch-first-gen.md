@@ -5,7 +5,7 @@
 | **Date** | 2026-08-12 |
 | **URL** | https://scare-the-spire-phase4.flavono123.workers.dev |
 | **Branch** | main |
-| **Commit** | pending |
+| **Commit** | fb9c83ea |
 | **Tier** | Standard |
 | **Scope** | Phase4 isolated workers after patch-first CI + static:data untrack/ensure |
 | **Pages visited** | home, patches, patch detail, compendium cards/relics/detail, history-course, c-c-c-combo |
