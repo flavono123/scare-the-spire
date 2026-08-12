@@ -28,6 +28,8 @@ export type CardSideCardTip = {
   kind: "card";
   id: string;
   card: CodexCard;
+  /** Mirror HoverTipFactory.FromCard(..., upgrade: true). */
+  upgrade?: boolean;
 };
 
 export type CardSideMonsterTip = {

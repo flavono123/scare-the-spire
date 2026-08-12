@@ -46,7 +46,12 @@ function KeywordSideTip({ tip }: { tip: Extract<CardSideTip, { kind: "keyword" }
 function CardEntitySideTip({ tip }: { tip: Extract<CardSideTip, { kind: "card" }> }) {
   return (
     <span className="block w-36 drop-shadow-2xl">
-      <CardTile card={tip.card} showUpgrade={false} showBeta={false} interactive={false} />
+      <CardTile
+        card={tip.card}
+        showUpgrade={Boolean(tip.upgrade)}
+        showBeta={false}
+        interactive={false}
+      />
     </span>
   );
 }
@@ -116,7 +121,9 @@ function TipStackBody({ tips }: { tips: readonly CardSideTip[] }) {
 }
 
 function getDetailRailRect(): DOMRect | null {
-  const rail = document.querySelector("[data-card-detail-meta], [data-relic-detail-meta]")?.closest("aside");
+  const rail = document.querySelector(
+    "[data-card-detail-meta], [data-relic-detail-meta], [data-potion-detail-meta]",
+  )?.closest("aside");
   if (!rail) return null;
   const rect = rail.getBoundingClientRect();
   return rect.width > 0 ? rect : null;
