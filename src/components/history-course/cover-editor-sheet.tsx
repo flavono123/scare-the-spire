@@ -47,6 +47,7 @@ export type CoverEditorMeta = {
   ascension: number;
   build: string;
   seed: string;
+  runTimeSeconds?: number | null;
   badges?: ReplayBadge[];
 };
 
