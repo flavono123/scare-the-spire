@@ -116,7 +116,7 @@ function TipStackBody({ tips }: { tips: readonly CardSideTip[] }) {
 }
 
 function getDetailRailRect(): DOMRect | null {
-  const rail = document.querySelector("[data-card-detail-meta]")?.closest("aside");
+  const rail = document.querySelector("[data-card-detail-meta], [data-relic-detail-meta]")?.closest("aside");
   if (!rail) return null;
   const rect = rail.getBoundingClientRect();
   return rect.width > 0 ? rect : null;
