@@ -15,6 +15,8 @@ import {
   CodexCard,
   CodexEnchantment,
   CodexEvent,
+  CodexMonster,
+  CodexPotion,
   CodexPower,
   CodexRelic,
   RELIC_RARITY_COLORS,
@@ -27,7 +29,7 @@ import {
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
 import { EntityReferenceGroupLinks } from "./entity-reference-links";
-import { GameHoverTip } from "./hover-tip";
+import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 import { GameCheckboxToggle, GameWaxCycleToggle, type GameWaxCycleValue } from "./game-checkbox";
 import { RichDescription } from "./rich-description";
 import { getRelatedAncientIdsForRelic, getRelatedCardIdsForRelic, getRelatedEnchantmentIdsForRelic, getRelatedEventIdsForRelic, getRelatedPowerIdsForRelic } from "@/lib/codex-references";
@@ -38,6 +40,15 @@ import {
   type RelicArtFilterSource,
 } from "@/lib/relic-art-filters";
 import { getRelicArtVariants } from "@/lib/relic-art-variants-catalog";
+import {
+  createCardSideTipCatalog,
+  type CardSideTipCatalogSources,
+} from "@/lib/card-side-tip-catalog";
+import { collectRelicSideTips } from "@/lib/relic-side-tips";
+import {
+  RELIC_INSPECT_REWARD_PANEL,
+  relicInspectFrameUrl,
+} from "@/lib/relic-inspect-assets";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -105,6 +116,10 @@ interface RelicDetailProps {
   relatedAncients?: CodexAncient[];
   relatedEnchantments?: CodexEnchantment[];
   relatedPowers?: CodexPower[];
+  relatedMonsters?: CodexMonster[];
+  relatedPotions?: CodexPotion[];
+  tipCatalogSources?: CardSideTipCatalogSources;
+  tipCatalogCards?: CodexCard[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
@@ -113,7 +128,29 @@ interface RelicDetailProps {
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
 const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
 const RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
-export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, initialShowBeta = false, onClose, entities, relatedCards = [], relatedEvents = [], relatedAncients = [], relatedEnchantments = [], relatedPowers = [], patches, changes, versionDiffs }: RelicDetailProps) {
+export function RelicDetail({
+  serviceLocale,
+  gameUi,
+  backToListTitle,
+  relic,
+  poolLabels,
+  initialVariant,
+  initialShowBeta = false,
+  onClose,
+  entities,
+  relatedCards = [],
+  relatedEvents = [],
+  relatedAncients = [],
+  relatedEnchantments = [],
+  relatedPowers = [],
+  relatedMonsters = [],
+  relatedPotions = [],
+  tipCatalogSources,
+  tipCatalogCards,
+  patches,
+  changes,
+  versionDiffs,
+}: RelicDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getRelicDetailLabels(serviceLocale);
   // Don't link the relic to itself in its own description
@@ -203,7 +240,37 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
 
   const relicToggles = serviceText.relicsView.toggles;
 
+  const tipCatalog = useMemo(
+    () => tipCatalogSources
+      ? createCardSideTipCatalog({
+        sources: tipCatalogSources,
+        powers: relatedPowers,
+        cards: tipCatalogCards ?? relatedCards,
+        monsters: relatedMonsters,
+      })
+      : null,
+    [tipCatalogSources, relatedPowers, tipCatalogCards, relatedCards, relatedMonsters],
+  );
+  const potionsById = useMemo(
+    () => new Map(relatedPotions.map((potion) => [potion.id, potion])),
+    [relatedPotions],
+  );
+  const enchantmentsById = useMemo(
+    () => new Map(relatedEnchantments.map((enchantment) => [enchantment.id, enchantment])),
+    [relatedEnchantments],
+  );
+  const sideTips = useMemo(() => {
+    if (!tipCatalog) return [];
+    return collectRelicSideTips(relic, tipCatalog, {
+      includeSelf: false,
+      potionsById,
+      enchantmentsById,
+    });
+  }, [relic, tipCatalog, potionsById, enchantmentsById]);
+
   const rarityColor = RELIC_RARITY_COLORS[relic.rarity];
+  const inspectFrameUrl = relicInspectFrameUrl(relic.rarity);
+  const rarityLabel = gameUi.relicCollection.rarities[relic.rarity].label;
   const poolColor = relic.pool !== "shared" ? getCharacterColor(relic.pool) : undefined;
   const relatedCardTargets = getRelatedCardIdsForRelic(relic.id).map((cardId) => {
     const relatedCard = relatedCards.find((card) => card.id === cardId) ?? null;
@@ -334,123 +401,189 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[22rem] flex-col items-center justify-center gap-5 py-4">
-          <div className="flex w-full flex-col items-center justify-center gap-5 md:flex-row md:items-center">
-            <div className="flex shrink-0 flex-col items-center gap-3">
-              <div className="flex h-32 w-32 items-center justify-center sm:h-40 sm:w-40">
-                {displayImageUrl ? (
+          <CardSideTipsAnchor
+            mode="always"
+            preferSide="right"
+            tips={sideTips}
+            className="w-full max-w-[28rem]"
+          >
+            <div
+              data-relic-inspect-slab
+              className="relative mx-auto w-full max-w-[28rem] aspect-square"
+            >
+              <Image
+                src={RELIC_INSPECT_REWARD_PANEL}
+                alt=""
+                width={1128}
+                height={1435}
+                className="pointer-events-none absolute inset-0 h-full w-full object-fill"
+                aria-hidden
+              />
+
+              <div className="relative z-10 flex h-full flex-col items-center px-[11%] pb-[9%] pt-[8%]">
+                <h1
+                  className="max-w-[90%] text-center font-game-title text-xl font-bold leading-tight sm:text-2xl"
+                  style={{ color: "#efc851", textShadow: "3px 3px 0 rgba(0,0,0,0.35)" }}
+                >
+                  {relic.name}
+                </h1>
+                <p
+                  className="mt-1 font-game-text text-sm font-bold sm:text-base"
+                  style={{ color: rarityColor }}
+                >
+                  {rarityLabel}
+                </p>
+
+                <div className="relative mt-3 flex w-[48%] max-w-[13.5rem] aspect-square shrink-0 items-center justify-center sm:mt-4">
                   <Image
-                    src={displayImageUrl}
-                    alt={relic.name}
-                    width={160}
-                    height={160}
-                    className="h-full w-full object-contain"
-                    style={displayFilter ? { filter: displayFilter } : undefined}
+                    src={RELIC_INSPECT_REWARD_PANEL}
+                    alt=""
+                    width={304}
+                    height={304}
+                    className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-90"
+                    aria-hidden
                   />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center text-2xl text-gray-600">
-                    ?
-                  </div>
-                )}
-              </div>
-
-              {variantPools.length > 0 && (
-                <div className="flex flex-wrap justify-center gap-1.5">
-                  {variantPools.map((pool) => {
-                    const isSelected = pool === selectedVariant;
-                    const color = CHARACTER_COLORS[pool] ?? "#888";
-                    return (
-                      <button
-                        key={pool}
-                        onClick={() => setSelectedVariant(pool)}
-                        className={`rounded-md border px-2.5 py-1 text-xs font-medium transition-all ${
-                          isSelected
-                            ? "border-current bg-current/15"
-                            : "border-white/10 bg-white/5 hover:bg-white/10"
-                        }`}
-                        style={{ color }}
-                      >
-                        {poolLabels[pool]}
-                      </button>
-                    );
-                  })}
+                  {displayImageUrl ? (
+                    <Image
+                      src={displayImageUrl}
+                      alt={relic.name}
+                      width={160}
+                      height={160}
+                      className="relative z-[1] h-[62%] w-[62%] object-contain"
+                      style={displayFilter ? { filter: displayFilter } : undefined}
+                    />
+                  ) : (
+                    <div className="relative z-[1] flex h-[62%] w-[62%] items-center justify-center text-2xl text-gray-600">
+                      ?
+                    </div>
+                  )}
+                  <Image
+                    src={inspectFrameUrl}
+                    alt=""
+                    width={408}
+                    height={408}
+                    className="pointer-events-none absolute inset-0 z-[2] h-full w-full object-contain"
+                    aria-hidden
+                  />
                 </div>
-              )}
 
-              <div className="flex flex-col items-center gap-1.5">
-                {hasCornucopiaToggle && (
-                  <GameCheckboxToggle
-                    checked={showCornucopia}
-                    onCheckedChange={setShowCornucopia}
-                    label={relicToggles.cornucopia}
-                    size="md"
+                <div className="mt-auto flex w-full flex-col items-center gap-2 pt-3 text-center">
+                  <div className="w-full max-w-[22rem] font-game-text text-sm leading-relaxed text-gray-100 sm:text-base">
+                    {entities ? (
+                      <RichDescription
+                        description={relic.description}
+                        entities={entities}
+                        excludeEntityTerms={excludeSelf}
+                        excludeEntityTypes={RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
+                        className="block"
+                      />
+                    ) : (
+                      <DescriptionText description={relic.description} className="block" />
+                    )}
+                  </div>
+                  <div
+                    className="h-px w-[70%] max-w-[16rem] bg-gradient-to-r from-transparent via-white/35 to-transparent"
+                    aria-hidden
                   />
-                )}
-
-                {artVariants.wax && (
-                  <GameWaxCycleToggle
-                    value={waxCycle}
-                    onValueChange={onWaxCycleChange}
-                    waxLabel={relicToggles.wax}
-                    meltedLabel={relicToggles.melted}
-                    size="md"
-                  />
-                )}
-
-                {artVariants.usedUp && (
-                  <GameCheckboxToggle
-                    checked={showUsedUp}
-                    onCheckedChange={onUsedUpChange}
-                    label={relicToggles.usedUp}
-                    size="md"
-                  />
-                )}
-
-                {artVariants.disabled && (
-                  <GameCheckboxToggle
-                    checked={showDisabled}
-                    onCheckedChange={onDisabledChange}
-                    label={relicToggles.disabled}
-                    size="md"
-                  />
-                )}
-
-                {relic.betaImageUrl && (
-                  <GameCheckboxToggle
-                    checked={showBeta}
-                    onCheckedChange={setShowBeta}
-                    label={serviceText.cardsView.toggles.betaArt}
-                    size="md"
-                  />
-                )}
+                  {relic.flavor ? (
+                    <div className="w-full max-w-[22rem] font-game-text text-xs italic leading-relaxed text-gray-300 sm:text-sm">
+                      {entities ? (
+                        <RichDescription
+                          description={relic.flavor}
+                          entities={entities}
+                          excludeEntityTerms={excludeSelf}
+                          excludeEntityTypes={RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
+                        />
+                      ) : (
+                        <DescriptionText description={relic.flavor} />
+                      )}
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </div>
+          </CardSideTipsAnchor>
 
-            <GameHoverTip
-              title={relic.name}
-              className="w-full max-w-[23rem]"
-              style={{ minWidth: 280 }}
-            >
-              {entities ? (
-                <RichDescription
-                  description={relic.description}
-                  entities={entities}
-                  excludeEntityTerms={excludeSelf}
-                  excludeEntityTypes={RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
-                  className="block text-left"
+          <div className="flex flex-col items-center gap-3">
+            {variantPools.length > 0 && (
+              <div className="flex flex-wrap justify-center gap-1.5">
+                {variantPools.map((pool) => {
+                  const isSelected = pool === selectedVariant;
+                  const color = CHARACTER_COLORS[pool] ?? "#888";
+                  return (
+                    <button
+                      key={pool}
+                      onClick={() => setSelectedVariant(pool)}
+                      className={`rounded-md border px-2.5 py-1 text-xs font-medium transition-all ${
+                        isSelected
+                          ? "border-current bg-current/15"
+                          : "border-white/10 bg-white/5 hover:bg-white/10"
+                      }`}
+                      style={{ color }}
+                    >
+                      {poolLabels[pool]}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <div className="flex flex-col items-center gap-1.5">
+              {hasCornucopiaToggle && (
+                <GameCheckboxToggle
+                  checked={showCornucopia}
+                  onCheckedChange={setShowCornucopia}
+                  label={relicToggles.cornucopia}
+                  size="md"
                 />
-              ) : (
-                <DescriptionText description={relic.description} className="block text-left" />
               )}
-            </GameHoverTip>
+
+              {artVariants.wax && (
+                <GameWaxCycleToggle
+                  value={waxCycle}
+                  onValueChange={onWaxCycleChange}
+                  waxLabel={relicToggles.wax}
+                  meltedLabel={relicToggles.melted}
+                  size="md"
+                />
+              )}
+
+              {artVariants.usedUp && (
+                <GameCheckboxToggle
+                  checked={showUsedUp}
+                  onCheckedChange={onUsedUpChange}
+                  label={relicToggles.usedUp}
+                  size="md"
+                />
+              )}
+
+              {artVariants.disabled && (
+                <GameCheckboxToggle
+                  checked={showDisabled}
+                  onCheckedChange={onDisabledChange}
+                  label={relicToggles.disabled}
+                  size="md"
+                />
+              )}
+
+              {relic.betaImageUrl && (
+                <GameCheckboxToggle
+                  checked={showBeta}
+                  onCheckedChange={setShowBeta}
+                  label={serviceText.cardsView.toggles.betaArt}
+                  size="md"
+                />
+              )}
+            </div>
           </div>
         </section>
 
-        <aside className="flex flex-col gap-3">
+        <aside data-relic-detail-meta className="flex flex-col gap-3">
           <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
                 <MetaPill
-                  value={gameUi.relicCollection.rarities[relic.rarity].label}
+                  value={rarityLabel}
                   color={rarityColor}
                 />
                 {relic.pool !== "shared" ? (
@@ -466,23 +599,6 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
                 <div>
                   <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
                   <div className="font-game-text text-sm text-gray-300">{relic.nameEn}</div>
-                </div>
-              )}
-              {relic.flavor && (
-                <div>
-                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.gameText}</div>
-                  <p className="font-game-text text-xs italic leading-relaxed text-gray-500">
-                    {entities ? (
-                      <RichDescription
-                        description={relic.flavor}
-                        entities={entities}
-                        excludeEntityTerms={excludeSelf}
-                        excludeEntityTypes={RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
-                      />
-                    ) : (
-                      <DescriptionText description={relic.flavor} />
-                    )}
-                  </p>
                 </div>
               )}
             </div>
