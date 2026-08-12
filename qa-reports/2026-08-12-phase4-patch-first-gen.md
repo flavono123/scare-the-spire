@@ -5,7 +5,7 @@
 | **Date** | 2026-08-12 |
 | **URL** | https://scare-the-spire-phase4.flavono123.workers.dev |
 | **Branch** | main |
-| **Commit** | b367de12 |
+| **Commit** | pending |
 | **Tier** | Standard |
 | **Scope** | Phase4 isolated workers after patch-first CI + static:data untrack/ensure |
 | **Pages visited** | home, patches, patch detail, compendium cards/relics/detail, history-course, c-c-c-combo |
@@ -42,7 +42,7 @@
 
 - `pnpm cf:phase4` deployed `scare-the-spire-phase4` + `scare-the-spire-patches-phase4`
 - Route smoke: **71/71 passed**
-- Playwright `qa:cf:phase4`: **9/9 passed** after fixes
+- Playwright `qa:cf:phase4`: **9/9 passed** after fixes (modal click uses noWaitAfter)
 - Mobile viewport presets (iPhone/Android matrix):
   - OK: `/`, `/patches`, `/compendium/cards`, `/compendium/relics`, `/compendium/relics/fishing_rod`
   - OK after page-specific selectors: `/history-course`, `/c-c-c-combo`

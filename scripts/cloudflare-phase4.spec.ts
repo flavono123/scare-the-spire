@@ -139,17 +139,22 @@ test("redirect and canonical metadata match the public locale URL", async ({ req
 
 test("compendium detail keeps its view on the canonical detail URL", async ({ page }) => {
   await page.goto(absolute("/compendium/relics"), { waitUntil: "domcontentloaded" });
-  await page.locator('a[href="/compendium/relics/fishing_rod"]').first().click();
 
-  await expect(page).toHaveURL(absolute("/compendium/relics/fishing_rod"));
-  await expect(page.getByRole("heading", { level: 1, name: /낚싯대|Fishing Rod/i })).toBeVisible({
-    timeout: 15_000,
+  // Relic tiles preventDefault and open an in-page modal while pushing the
+  // canonical detail path. Avoid Playwright's navigation auto-wait so the
+  // client click handler owns the transition.
+  await page.locator('a[href="/compendium/relics/fishing_rod"]').first().click({
+    noWaitAfter: true,
   });
 
-  const back = page.getByRole("link", { name: /유물 모음집|Relic Compendium/i });
-  await expect(back).toBeVisible({ timeout: 15_000 });
-  await back.click();
+  await expect(page).toHaveURL(absolute("/compendium/relics/fishing_rod"));
+  const modal = page.locator(".fixed.inset-0.z-50");
+  await expect(modal).toBeVisible({ timeout: 15_000 });
+  await expect(modal.getByText("낚싯대").first()).toBeVisible();
+
+  await page.keyboard.press("Escape");
   await expect(page).toHaveURL(absolute("/compendium/relics"));
+  await expect(modal).toHaveCount(0);
 });
 
 test("dynamic service routes refresh directly and invalid nesting fails closed", async ({ request }) => {
