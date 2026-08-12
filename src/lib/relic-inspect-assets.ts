@@ -1,0 +1,21 @@
+import type { RelicRarityKo } from "@/lib/codex-types";
+
+export const RELIC_INSPECT_REWARD_PANEL =
+  "/images/sts2/ui/inspect-relic/reward_panel.webp";
+
+const RELIC_INSPECT_FRAME_BY_RARITY: Record<RelicRarityKo, string> = {
+  "시작 유물": "/images/sts2/ui/inspect-relic/relic_inspect_frame-starter.webp",
+  "일반 유물": "/images/sts2/ui/inspect-relic/relic_inspect_frame-common.webp",
+  "고급 유물": "/images/sts2/ui/inspect-relic/relic_inspect_frame-uncommon.webp",
+  "희귀 유물": "/images/sts2/ui/inspect-relic/relic_inspect_frame-rare.webp",
+  "상점 유물": "/images/sts2/ui/inspect-relic/relic_inspect_frame-shop.webp",
+  "이벤트 유물": "/images/sts2/ui/inspect-relic/relic_inspect_frame-event.webp",
+  "고대 유물": "/images/sts2/ui/inspect-relic/relic_inspect_frame-ancient.webp",
+  None: "/images/sts2/ui/inspect-relic/relic_inspect_frame-common.webp",
+};
+
+/** HSV-baked inspect frame matching NInspectRelicScreen.SetRarityVisuals. */
+export function relicInspectFrameUrl(rarity: RelicRarityKo): string {
+  return RELIC_INSPECT_FRAME_BY_RARITY[rarity]
+    ?? "/images/sts2/ui/inspect-relic/relic_inspect_frame-common.webp";
+}
