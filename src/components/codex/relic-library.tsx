@@ -21,6 +21,8 @@ import {
   CodexCard,
   CodexEnchantment,
   CodexEvent,
+  CodexMonster,
+  CodexPotion,
   CodexPower,
   RelicRarityKo,
   RelicPool,
@@ -37,6 +39,7 @@ import {
 } from "@/lib/codex-search";
 import { RelicTile } from "./relic-tile";
 import { RelicDetail } from "./relic-detail";
+import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
 import { SearchBar } from "./search-bar";
 import {
   FilterSection,
@@ -79,9 +82,32 @@ interface RelicLibraryProps {
   relatedEvents?: CodexEvent[];
   relatedEnchantments?: CodexEnchantment[];
   relatedPowers?: CodexPower[];
+  relatedMonsters?: CodexMonster[];
+  relatedPotions?: CodexPotion[];
+  tipCatalogSources?: CardSideTipCatalogSources;
 }
 
-export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters, ancients, versions, currentVersion, patches, changes, versionDiffs, entities, relatedCards = [], relatedEvents = [], relatedEnchantments = [], relatedPowers = [] }: RelicLibraryProps) {
+export function RelicLibrary({
+  serviceLocale,
+  gameUi,
+  title,
+  relics,
+  characters,
+  ancients,
+  versions,
+  currentVersion,
+  patches,
+  changes,
+  versionDiffs,
+  entities,
+  relatedCards = [],
+  relatedEvents = [],
+  relatedEnchantments = [],
+  relatedPowers = [],
+  relatedMonsters = [],
+  relatedPotions = [],
+  tipCatalogSources,
+}: RelicLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlRelicId = useHydrationSafeSearchParam("relic");
   const [selectedPools, setSelectedPools] = useState<Set<RelicPoolFilter>>(new Set());
@@ -424,7 +450,19 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {ancientRelics.map((relic) => (
-                          <RelicTile key={relic.id} serviceLocale={serviceLocale} relic={relic} showBeta={showBeta} onClick={(v) => selectRelic(relic, v)} />
+                          <RelicTile
+                            key={relic.id}
+                            serviceLocale={serviceLocale}
+                            relic={relic}
+                            showBeta={showBeta}
+                            onClick={(v) => selectRelic(relic, v)}
+                            tipCatalogSources={tipCatalogSources}
+                            tipCatalogCards={relatedCards}
+                            tipCatalogPowers={relatedPowers}
+                            tipCatalogMonsters={relatedMonsters}
+                            tipCatalogPotions={relatedPotions}
+                            tipCatalogEnchantments={relatedEnchantments}
+                          />
                         ))}
                       </div>
                     </div>
@@ -434,7 +472,19 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
                 /* Regular relic icon grid */
                 <div className="flex flex-wrap gap-2">
                   {groupRelics.map((relic) => (
-                    <RelicTile key={relic.id} serviceLocale={serviceLocale} relic={relic} showBeta={showBeta} onClick={(v) => selectRelic(relic, v)} />
+                    <RelicTile
+                      key={relic.id}
+                      serviceLocale={serviceLocale}
+                      relic={relic}
+                      showBeta={showBeta}
+                      onClick={(v) => selectRelic(relic, v)}
+                      tipCatalogSources={tipCatalogSources}
+                      tipCatalogCards={relatedCards}
+                      tipCatalogPowers={relatedPowers}
+                      tipCatalogMonsters={relatedMonsters}
+                      tipCatalogPotions={relatedPotions}
+                      tipCatalogEnchantments={relatedEnchantments}
+                    />
                   ))}
                 </div>
               )}
@@ -473,6 +523,10 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
               relatedAncients={ancients}
               relatedEnchantments={relatedEnchantments}
               relatedPowers={relatedPowers}
+              relatedMonsters={relatedMonsters}
+              relatedPotions={relatedPotions}
+              tipCatalogSources={tipCatalogSources}
+              tipCatalogCards={relatedCards}
               patches={patches}
               changes={changes}
               versionDiffs={versionDiffs}

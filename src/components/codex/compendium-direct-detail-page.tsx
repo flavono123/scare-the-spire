@@ -377,6 +377,10 @@ export function CompendiumDirectDetailPage({
           relatedAncients={resources.ancients}
           relatedEnchantments={resources.enchantments}
           relatedPowers={resources.powers}
+          relatedMonsters={resources.monsters}
+          relatedPotions={resources.potions}
+          tipCatalogSources={payload.cardSideTipSources}
+          tipCatalogCards={resources.cards}
           patches={patches}
           changes={changes}
           versionDiffs={versionDiffs}
