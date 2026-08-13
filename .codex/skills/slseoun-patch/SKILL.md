@@ -35,13 +35,53 @@ Patch release work is speed-first:
    create/update the `data/sts2-patches.json` entry with `status: "building"`,
    commit it, push it, and continue. Do not wait for Cloudflare deployment
    success before starting the rich-note work.
-3. Produce the rich patch notes quickly and expect follow-up correction. A
-   useful first published version is preferred over trying to make every Korean
-   nuance, tooltip, and expression perfect in one turn.
-4. When rich notes and required data sync are ready, remove `status` or set it
-   to `"ready"`, commit, push, and run the matching patch Worker checks. After
-   the first-draft deployment is live, give the user its public patch URL and
-   explicitly wait for review before treating follow-up corrections as done.
+3. Produce the first useful rich notes quickly and publish them as a **draft**.
+   A readable first published version is preferred over trying to make every
+   Korean nuance, tooltip, and expression perfect in one turn.
+4. Draft publishing is the default after `작업 도구`. Set `draft: true` on the
+   patch index entry, keep `status` omitted or `"ready"`, commit, push, and run
+   the matching patch Worker checks. The index card must look like a finished
+   patch card plus the `재성형` keyword beside the version title; the detail
+   page must show the fixed floating furnace notice. Send the public patch URL
+   to the user and keep shaping the notes. Do not treat this as a separate
+   thumbnail/stage like `준비 시간`, `지연`, or `작업 도구`.
+5. Only remove the draft chrome when the user explicitly asks to finish the
+   patch notes. Delete `draft` (do not add a new status). Ready/complete does
+   **not** mean the notes can never change again; it only means the in-progress
+   keyword and notice come off.
+
+## Draft Chrome
+
+Draft is an overlay on an otherwise ready patch, not a visual stage.
+
+`재성형` and the type/balance chips are different ranks. Type chips (`출시` /
+`베타` / `핫픽스`) and the `밸런스` chip describe the patch notes themselves and
+stay after the draft is finished. `재성형` is a temporary notes-revision
+status: it sits beside the version title as a game keyword, never in the
+type/balance chip row, and comes off when `draft` is deleted. Do not render it
+as a Badge twin of `베타` or `밸런스`. Hover copy exists but is easy to miss;
+the glanceable signal is the gold `font-game-title` keyword next to the
+version, with a left divider before the nature chips.
+
+- Data: `draft: true`. Keep `status` omitted or `"ready"` so the card stays
+  a link with full-color representative art and the patch-notes title token.
+- Index: `src/components/patches/patch-draft-chrome.tsx` `PatchDraftChip`
+  beside the version title, in the same cluster as the ready `패치노트` token.
+  Token is `powers/furnace_power.webp` with the `spire-purple` variant (not
+  orange — that collides with hotfix). Label is `cards.BEAT_INTO_SHAPE.title`
+  (`재성형` / `Beat into Shape`) in `font-game-title` gold (`#EFC851`), matching
+  the detail-notice title. When `draft` is on, the type/balance chip cluster
+  gets a left divider. Hover uses the Early Access punchline below; do not
+  rely on hover or the furnace ember animation as the primary signal. The word
+  `재성형` alone does not explain that notes are still being revised.
+- Detail: `PatchDraftNotice` is a fixed bar under the site navbar. Copy is the
+  Early Access punchline with the unfinished subject swapped to this patch
+  note (`아직 작업이 완료되지 않았다는 뜻이죠.` /
+  `That means this patch note isn't done yet.`).
+- Always include both surfaces when publishing the first draft after
+  `작업 도구`. Remove both together when the user asks for the finished notes.
+- Do not grayscale the art, replace the title token, unlink the card, or move
+  `재성형` into the type/balance chip row.
 
 ## Steam Watch Polling
 
@@ -107,7 +147,12 @@ Index/detail behavior while `status: "building"`:
 - The card footer shows the date only.
 - The detail page renders a stronger building state when markdown files are absent, but should not add another Steam link while building.
 
-Remove `status` or set it to `"ready"` when the enriched notes are published.
+Remove `status` or set it to `"ready"` when the first enriched notes are
+published, and set `draft: true` so the `재성형` keyword and floating notice stay
+on. Do not wait for a perfect translation pass before this draft goes live.
+
+When the user explicitly asks to finish the notes, delete `draft`. Completing
+the draft chrome does not forbid later corrections.
 
 ## Cloudflare Patch-First Provisional Mode
 
@@ -206,10 +251,11 @@ Rules:
       a partially synchronized game-data commit.
 11. Commit each meaningful file group independently and push publishable milestones
     quickly after the validation gate passes.
-12. For the first complete draft, set the patch to ready, commit, push, and
-    verify that the public patch page deployed successfully. Send the public
-    patch URL to the user and request review; apply subsequent corrections as
-    separate speculative commits.
+12. For the first complete draft, set `draft: true`, omit `status` or set it to
+    `"ready"`, commit, push, and verify that the public patch page deployed with
+    both the index keyword and the detail notice. Send the public patch URL to
+    the user. Keep correcting in place until the user asks to take the draft
+    chrome off.
 
 ## Community Story Patch-Line Cache Contract
 

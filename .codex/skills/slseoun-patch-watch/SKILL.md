@@ -20,7 +20,11 @@ Use this flow for the top of the patch index:
    not published an announcement yet.
 3. `작업 도구`: Steam has published the patch and the rich patch-note work is in
    progress. This replaces the old public wording for the `building` state.
-4. `패치노트`: rich patch notes are ready.
+4. `재성형` draft: the first rich notes are live. The index card looks like a
+   finished patch plus a furnace/`재성형` keyword beside the version title; the
+   detail page keeps a fixed floating notice. Content can still change.
+5. `패치노트`: the user asked to take the draft chrome off. Later edits are
+   still allowed.
 
 Skip `준비 시간` or `지연` when an unscheduled patch is already live. In that
 case go straight to `$slseoun-patch` shell-first mode, publish `작업 도구`,
@@ -36,8 +40,10 @@ success.
 - `작업 도구`: `status: "building"`, real version/date if known, real
   `steamUrl` when available. A temporary or non-functional Steam link is
   acceptable for a local/example state, but not for real published patch data.
-- `패치노트`: default/ready state with rich patch markdown and static patch
-  Worker assets built ahead of time.
+- `재성형` draft: omit `status` or `"ready"`, plus `draft: true`. Rich markdown
+  exists. This is not a thumbnail/stage swap; it is an overlay on a ready card.
+- `패치노트`: default/ready state with `draft` removed. Rich patch markdown and
+  static patch Worker assets built ahead of time.
 
 Patch index entries should stay compact:
 
@@ -47,7 +53,9 @@ Patch index entries should stay compact:
 - Date
 - Index art: card art, epoch/history art, event art, or a static service image
 
-Do not use `{token} chip` styling. Tokens belong in the title.
+Do not use `{token} chip` styling for stage identity. Stage tokens belong in
+the title. Type/hotfix/balance chips are a separate persistent row. `재성형` is
+also not a nature chip: it is a keyword beside the version title.
 
 ## Tokens And Copy
 
@@ -64,8 +72,17 @@ Do not use `{token} chip` styling. Tokens belong in the title.
   `/images/sts2/powers/animated/tools_of_the_trade_power_tilt.webp`; title text
   is the version label. Do not add a separate `작업 도구` chip; the title token
   already carries the stage identity.
+- `재성형` draft: keep the ready `패치노트` title token and full-color art.
+  Put `PatchDraftChip` beside the version title (`powers/furnace_power.webp`,
+  `spire-purple`, `font-game-title` gold `#EFC851`). It is a temporary
+  notes-revision keyword, not a type/balance chip; when it is on, a left
+  divider separates the title cluster from the nature chips. Hover for the
+  Early Access punchline, but do not rely on hover or ember as the primary
+  signal. Detail pages add the same punchline as the floating furnace notice
+  from `$slseoun-patch` Draft Chrome.
 - `패치노트`: title token
   `/images/sts2/nav/patch_notes_icon.png`; title text is the version label.
+  No draft keyword or notice.
 
 Asset state as of 2026-07-05:
 
@@ -86,6 +103,7 @@ request.
 - `준비 시간`: `art: { "type": "card", "id": "PREP_TIME" }`
 - `지연`: `art: { "type": "card", "id": "DELAY" }`
 - `작업 도구`: `art: { "type": "card", "id": "TOOLS_OF_THE_TRADE" }`
+- `재성형` draft: use the real patch's representative art, same as `패치노트`.
 - `패치노트`: use the real patch's strongest history/card/event art, or the
   service patch-note token only when no game art is appropriate.
 

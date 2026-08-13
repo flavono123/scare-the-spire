@@ -127,6 +127,8 @@ export interface STS2Patch {
   type: PatchType;
   status?: "ready" | "building" | "watching";
   watchStage?: "prep_time" | "delay";
+  /** Published rich notes that are still being shaped. Not a visual stage. */
+  draft?: boolean;
   steamUrl: string | null;
   summary: string;
   summaryKo: string;

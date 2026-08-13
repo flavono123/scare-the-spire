@@ -42,6 +42,10 @@ export interface PatchStageGameCopy {
     description: string;
   };
   workToolsTitle: string;
+  draft: {
+    title: string;
+    notice: string;
+  };
 }
 
 interface BorrowedGameCopyPayload {

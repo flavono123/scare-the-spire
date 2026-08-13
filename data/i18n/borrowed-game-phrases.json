@@ -96,5 +96,43 @@
         "reason": "Patch delay copy borrows the Bestiary unrevealed placeholder and replaces the monster subject with this patch."
       }
     ]
+  },
+  {
+    "id": "patchStages.draft.notice.ko",
+    "mode": "serviceText",
+    "sourceLang": "kor",
+    "sourceTable": "main_menu_ui",
+    "sourceKey": "EARLY_ACCESS_DISCLAIMER.description_mkb",
+    "sourceText": "아직 개발이 완료되지 않았다는 뜻이죠!",
+    "serviceText": "아직 작업이 완료되지 않았다는 뜻이죠.",
+    "serviceFiles": [
+      "src/generated/borrowed-game-copy.json"
+    ],
+    "replacements": [
+      {
+        "from": "개발이",
+        "to": "작업이",
+        "reason": "Patch draft notice borrows the Early Access punchline and replaces development with the still-in-progress patch-note work."
+      }
+    ]
+  },
+  {
+    "id": "patchStages.draft.notice.en",
+    "mode": "serviceText",
+    "sourceLang": "eng",
+    "sourceTable": "main_menu_ui",
+    "sourceKey": "EARLY_ACCESS_DISCLAIMER.description_mkb",
+    "sourceText": "That means it's not done yet!",
+    "serviceText": "That means this patch note isn't done yet.",
+    "serviceFiles": [
+      "src/generated/borrowed-game-copy.json"
+    ],
+    "replacements": [
+      {
+        "from": "it's not done yet!",
+        "to": "this patch note isn't done yet.",
+        "reason": "Patch draft notice borrows the Early Access punchline and names the published patch note as the unfinished subject."
+      }
+    ]
   }
 ]

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Image from "@/components/ui/static-image";
-import { Badge } from "@/components/ui/badge";
 import { getSTS2Patches } from "@/lib/data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import {
@@ -14,12 +13,14 @@ import {
   getServiceMetadataCopy,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
-import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
+import { getPatchVersionLabel, isPatchDraft } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType, STS2Patch } from "@/lib/types";
 import { getPatchStageGameCopy } from "@/lib/borrowed-game-copy";
 import { serviceMessages } from "@/messages/service";
 import { PatchArtPreview } from "@/components/patches/patch-art";
+import { PatchBalanceChip, PatchTypeChip } from "@/components/patches/patch-chips";
+import { PatchDraftChip } from "@/components/patches/patch-draft-chrome";
 import { PatchSectionTabs } from "@/components/patches/patch-section-tabs";
 
 const PATCH_COPY: Record<ServiceLocale, {
@@ -116,13 +117,6 @@ function PatchStageTitle({
   );
 }
 
-const PATCH_TYPE_CLASSES: Record<PatchType, string> = {
-  release: "bg-green-500/15 text-green-400 border-green-500/30",
-  beta: "bg-blue-500/15 text-blue-400 border-blue-500/30",
-  stable: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  hotfix: "bg-orange-500/15 text-orange-400 border-orange-500/30",
-};
-
 export function getPatchListMetadata(serviceLocale: ServiceLocale): Metadata {
   const copy = getServiceMetadataCopy(serviceLocale);
   return getServiceOgMetadata({
@@ -170,6 +164,7 @@ export async function PatchListPage({
           const visualStage = patchVisualStage(patch);
           const watchStage = isWatching ? patchWatchStage(patch) : null;
           const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
+          const draft = isPatchDraft(patch);
 
           if (isWatching) {
             const isDelay = watchStage === "delay";
@@ -199,13 +194,20 @@ export async function PatchListPage({
                     serviceLocale={serviceLocale}
                     className={titleClassName}
                   />
-                  <Badge variant="outline" className={badgeClassName}>
-                    {copy.types[patch.type]}
-                  </Badge>
+                  <PatchTypeChip
+                    type={patch.type}
+                    label={copy.types[patch.type]}
+                    serviceLocale={serviceLocale}
+                    muted
+                    className={badgeClassName}
+                  />
                   {patch.hasBalanceChanges && (
-                    <Badge variant="outline" className={badgeClassName}>
-                      {copy.balance}
-                    </Badge>
+                    <PatchBalanceChip
+                      label={copy.balance}
+                      serviceLocale={serviceLocale}
+                      muted
+                      className={badgeClassName}
+                    />
                   )}
                 </div>
                 <p className={descriptionClassName}>{stageCopy.description}</p>
@@ -228,13 +230,20 @@ export async function PatchListPage({
                     serviceLocale={serviceLocale}
                     className="text-lg font-semibold text-zinc-500"
                   />
-                  <Badge variant="outline" className="border-zinc-700 bg-zinc-900/50 text-zinc-500">
-                    {copy.types[patch.type]}
-                  </Badge>
+                  <PatchTypeChip
+                    type={patch.type}
+                    label={copy.types[patch.type]}
+                    serviceLocale={serviceLocale}
+                    muted
+                    className="border-zinc-700 bg-zinc-900/50 text-zinc-500"
+                  />
                   {patch.hasBalanceChanges && (
-                    <Badge variant="outline" className="border-zinc-700 bg-zinc-900/50 text-zinc-500">
-                      {copy.balance}
-                    </Badge>
+                    <PatchBalanceChip
+                      label={copy.balance}
+                      serviceLocale={serviceLocale}
+                      muted
+                      className="border-zinc-700 bg-zinc-900/50 text-zinc-500"
+                    />
                   )}
                   {patch.steamUrl && (
                     <a
@@ -259,20 +268,38 @@ export async function PatchListPage({
               prefetch={false}
               className="block rounded-lg border border-border bg-card/50 p-4 hover:border-yellow-500/40 hover:bg-card/80 transition-colors"
             >
-              <div className="flex items-center gap-2">
-                <PatchStageTitle
-                  stage="ready"
-                  text={versionLabel}
-                  serviceLocale={serviceLocale}
-                />
-                <Badge variant="outline" className={PATCH_TYPE_CLASSES[patch.type]}>
-                  {copy.types[patch.type]}
-                </Badge>
-                {patch.hasBalanceChanges && (
-                  <Badge variant="outline" className="bg-yellow-500/15 text-yellow-400 border-yellow-500/30">
-                    {copy.balance}
-                  </Badge>
-                )}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                <span className="inline-flex min-w-0 items-center gap-2">
+                  <PatchStageTitle
+                    stage="ready"
+                    text={versionLabel}
+                    serviceLocale={serviceLocale}
+                  />
+                  {draft && (
+                    <PatchDraftChip
+                      title={patchStageCopy.draft.title}
+                      notice={patchStageCopy.draft.notice}
+                      serviceLocale={serviceLocale}
+                    />
+                  )}
+                </span>
+                <span
+                  className={`inline-flex flex-wrap items-center gap-2${
+                    draft ? " border-l border-zinc-700/80 pl-3" : ""
+                  }`}
+                >
+                  <PatchTypeChip
+                    type={patch.type}
+                    label={copy.types[patch.type]}
+                    serviceLocale={serviceLocale}
+                  />
+                  {patch.hasBalanceChanges && (
+                    <PatchBalanceChip
+                      label={copy.balance}
+                      serviceLocale={serviceLocale}
+                    />
+                  )}
+                </span>
               </div>
               <p className="mt-1 text-sm font-medium">{title}</p>
               <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{summary}</p>

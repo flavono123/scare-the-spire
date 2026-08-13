@@ -8,3 +8,8 @@ export function getPatchVersionLabel(patch: STS2Patch, serviceLocale: ServiceLoc
 
   return patch.versionLabel ?? patch.versionLabelKo ?? `v${patch.version}`;
 }
+
+export function isPatchDraft(patch: STS2Patch): boolean {
+  if (patch.draft !== true) return false;
+  return !patch.status || patch.status === "ready";
+}

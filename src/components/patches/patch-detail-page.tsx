@@ -16,6 +16,7 @@ import {
 } from "@/lib/i18n";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import { Badge } from "@/components/ui/badge";
+import { PatchTypeChip } from "@/components/patches/patch-chips";
 import {
   type EntityInfo,
 } from "@/components/patch-note-renderer";
@@ -25,10 +26,11 @@ import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
 import {
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
-import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
+import { getPatchVersionLabel, isPatchDraft } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType, STS2Patch } from "@/lib/types";
 import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
+import { getPatchStageGameCopy } from "@/lib/borrowed-game-copy";
 import { serviceMessages } from "@/messages/service";
 import type { CodexMonster, DamageValue, MonsterActionType, MonsterMove } from "@/lib/codex-types";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
@@ -41,6 +43,8 @@ import {
   compendiumResourceTypeForEntityType,
   loadPatchLocalEntities,
 } from "@/lib/patch-local-resources";
+import { PatchDraftNotice } from "@/components/patches/patch-draft-chrome";
+import { cn } from "@/lib/utils";
 
 const PATCH_COPY: Record<ServiceLocale, {
   backToList: string;
@@ -91,13 +95,6 @@ const PATCH_COPY: Record<ServiceLocale, {
       hotfix: "Hotfix",
     },
   },
-};
-
-const PATCH_TYPE_CLASSES: Record<PatchType, string> = {
-  release: "bg-green-500/15 text-green-400 border-green-500/30",
-  beta: "bg-blue-500/15 text-blue-400 border-blue-500/30",
-  stable: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  hotfix: "bg-orange-500/15 text-orange-400 border-orange-500/30",
 };
 
 function PatchArtHero({ art }: { art: ResolvedPatchArt }) {
@@ -794,7 +791,7 @@ export async function PatchDetailPage({
   staticHoverPreviews?: boolean;
 }) {
   const copy = PATCH_COPY[serviceLocale];
-  const [patches, versionDiffs, codexMeta, codexCards, codexRelics, codexPotions, codexPowers, codexKeywords, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder] = await Promise.all([
+  const [patches, versionDiffs, codexMeta, codexCards, codexRelics, codexPotions, codexPowers, codexKeywords, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder, patchStageCopy] = await Promise.all([
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
@@ -816,6 +813,7 @@ export async function PatchDetailPage({
     getSTS2PatchLines(),
     getSTS2Stories(),
     getStoryComposerPlaceholder(gameLocale),
+    getPatchStageGameCopy(gameLocale),
   ]);
 
   const patch = patches.find((p) => p.version === version);
@@ -1012,6 +1010,7 @@ export async function PatchDetailPage({
   const rendererEntities = filterPatchNoteEntities(markdown, entities);
   const isWatching = patch.status === "watching";
   const isBuilding = patch.status === "building";
+  const draft = isPatchDraft(patch);
   const entitiesByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
   const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
 
@@ -1022,7 +1021,14 @@ export async function PatchDetailPage({
   const nextPatch = idx < sortedPatches.length - 1 ? sortedPatches[idx + 1] : null;
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-6">
+    <div className={cn("mx-auto max-w-2xl px-4 py-6", draft && "pt-[4.75rem]")}>
+      {draft && (
+        <PatchDraftNotice
+          title={patchStageCopy.draft.title}
+          notice={patchStageCopy.draft.notice}
+          serviceLocale={serviceLocale}
+        />
+      )}
       <Link
         href={localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale)}
         className="text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -1033,9 +1039,11 @@ export async function PatchDetailPage({
       <div className="mt-4">
         <div className="flex flex-wrap items-start gap-2">
           <h1 className="text-2xl font-bold">{title}</h1>
-          <Badge variant="outline" className={PATCH_TYPE_CLASSES[patch.type]}>
-            {copy.types[patch.type]}
-          </Badge>
+          <PatchTypeChip
+            type={patch.type}
+            label={copy.types[patch.type]}
+            serviceLocale={serviceLocale}
+          />
           {isWatching && (
             <Badge variant="outline" className="bg-amber-500/10 text-amber-300 border-amber-400/40">
               {copy.watchingBadge}

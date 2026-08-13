@@ -16,6 +16,23 @@ This skill should be used when:
 3. **Translate** — Convert to Korean using in-game i18n for game entities (cards, relics, powers, etc.)
 4. **Enrich** — Apply BBCode markup for text effects (entity highlighting, buff/nerf indicators)
 
+The operational Codex workflow, including shell-first `작업 도구` and draft
+chrome, lives at `.codex/skills/slseoun-patch/SKILL.md`. Use that file for new
+runs. This file keeps historical extract/translate examples.
+
+## Draft vs Ready
+
+After `작업 도구`, the first published rich notes are a draft, not a finished
+thumbnail/stage:
+
+- Set `draft: true` on the `data/sts2-patches.json` entry. Keep `status`
+  omitted or `"ready"` so the index card stays a full-color patch card.
+- Always include both surfaces: the index `재성형` keyword beside the version
+  title (`PatchDraftChip` in `font-game-title` gold, not a type/balance chip)
+  and the detail-page fixed furnace notice (`PatchDraftNotice`).
+- Only remove `draft` when the user explicitly asks to finish the notes.
+  Taking the chrome off does not mean the notes can never change again.
+
 ## Data Sources
 
 ### Steam API (SSOT)
@@ -179,6 +196,7 @@ Add/update entry in `data/sts2-patches.json`:
   "title": "Beta Patch Notes - v0.101.0",
   "titleKo": "베타 패치 노트 - v0.101.0",
   "type": "beta",
+  "draft": true,
   "steamUrl": null,
   "summary": "...",
   "summaryKo": "...",
@@ -191,6 +209,9 @@ Add/update entry in `data/sts2-patches.json`:
 - `titleKo`: Direct Korean translation of the Steam title only. Do NOT add content summaries.
 - `steamUrl`: Only use user-provided URL from Step 5. NEVER construct from API gid — they don't match.
 - `summary`/`summaryKo`: Brief factual list of key changes. Keep to what the patch actually says.
+- First published rich notes: set `draft: true`. The index card looks like a
+  finished patch plus the `재성형` keyword beside the version; the detail page shows the floating
+  furnace notice. Remove `draft` only when the user asks to finish.
 
 ### Step 7: Apply Entity Data Changes
 

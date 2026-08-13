@@ -78,6 +78,10 @@ interface PatchStageGameCopy {
     description: string;
   };
   workToolsTitle: string;
+  draft: {
+    title: string;
+    notice: string;
+  };
 }
 
 interface BorrowedGameCopyPayload {
@@ -156,6 +160,65 @@ const PATCH_PREP_TIME_DESCRIPTION_REPLACEMENTS: Partial<Record<GameLocale, Local
   zhs: {
     from: "{RevealableEpochCount}个历史节点",
     to: "今天的补丁",
+  },
+};
+
+const PATCH_DRAFT_NOTICE_REPLACEMENTS: Partial<Record<GameLocale, LocalizedPhraseReplacement>> = {
+  deu: {
+    from: "Das heißt, es ist noch nicht fertig!",
+    to: "Das heißt, diese Patchnotes sind noch nicht fertig.",
+  },
+  eng: {
+    from: "That means it's not done yet!",
+    to: "That means this patch note isn't done yet.",
+  },
+  esp: {
+    from: "Eso quiere decir que aún no está terminado.",
+    to: "Eso quiere decir que estas notas aún no están terminadas.",
+  },
+  fra: {
+    from: "Cela signifie que le jeu n'est pas terminé",
+    to: "Cela signifie que ces notes de patch ne sont pas terminées.",
+  },
+  ita: {
+    from: "Ciò significa che non è ancora pronto!",
+    to: "Ciò significa che queste patch notes non sono ancora pronte.",
+  },
+  jpn: {
+    from: "つまり、ゲームはまだ未完成です！",
+    to: "つまり、このパッチノートはまだ未完成です。",
+  },
+  kor: {
+    from: "아직 개발이 완료되지 않았다는 뜻이죠!",
+    to: "아직 작업이 완료되지 않았다는 뜻이죠.",
+  },
+  pol: {
+    from: "Oznacza to, że nie została jeszcze ukończona!",
+    to: "Oznacza to, że te notatki nie zostały jeszcze ukończone.",
+  },
+  ptb: {
+    from: "Isto significa que o jogo ainda não está pronto!",
+    to: "Isto significa que estas notas ainda não estão prontas.",
+  },
+  rus: {
+    from: "То есть игра пока не готова!",
+    to: "То есть эти заметки пока не готовы.",
+  },
+  spa: {
+    from: "lo que significa que aún no está acabado.",
+    to: "lo que significa que estas notas aún no están acabadas.",
+  },
+  tha: {
+    from: "ซึ่งหมายความว่าเกมยังไม่สมบูรณ์!",
+    to: "ซึ่งหมายความว่าบันทึกแพตช์นี้ยังไม่สมบูรณ์",
+  },
+  tur: {
+    from: "Bu da oyun henüz tamamlanmamış demek!",
+    to: "Bu da bu yama notu henüz tamamlanmamış demek.",
+  },
+  zhs: {
+    from: "这意味着游戏还没有完全完成！",
+    to: "这意味着这篇补丁说明还没有完全完成！",
   },
 };
 
@@ -342,17 +405,33 @@ function patchDelayDescription(
   return bestiaryPlaceholder.replace(replacement.from, replacement.to);
 }
 
+function patchDraftNotice(
+  gameLocale: GameLocale,
+  earlyAccessDisclaimer: string,
+): string {
+  const replacement = PATCH_DRAFT_NOTICE_REPLACEMENTS[gameLocale];
+  const fallback = "That means this patch note isn't done yet.";
+  if (!replacement) return fallback;
+  const stripped = stripGameMarkup(earlyAccessDisclaimer);
+  if (!stripped.includes(replacement.from)) {
+    return gameLocale === "eng" ? fallback : replacement.to;
+  }
+  return replacement.to;
+}
+
 async function buildPatchStageGameCopy(gameLocale: GameLocale): Promise<PatchStageGameCopy> {
   const [
     cards,
     powers,
     timeline,
     bestiary,
+    mainMenu,
   ] = await Promise.all([
     readGameLocalizationTable(gameLocale, "cards"),
     readGameLocalizationTable(gameLocale, "powers"),
     readGameLocalizationTable(gameLocale, "timeline"),
     readGameLocalizationTable(gameLocale, "bestiary"),
+    readGameLocalizationTable(gameLocale, "main_menu_ui"),
   ]);
 
   const [
@@ -360,18 +439,23 @@ async function buildPatchStageGameCopy(gameLocale: GameLocale): Promise<PatchSta
     englishPowers,
     englishTimeline,
     englishBestiary,
+    englishMainMenu,
   ] = gameLocale === ENGLISH_GAME_LOCALE
-    ? [cards, powers, timeline, bestiary]
+    ? [cards, powers, timeline, bestiary, mainMenu]
     : await Promise.all([
         readGameLocalizationTable(ENGLISH_GAME_LOCALE, "cards"),
         readGameLocalizationTable(ENGLISH_GAME_LOCALE, "powers"),
         readGameLocalizationTable(ENGLISH_GAME_LOCALE, "timeline"),
         readGameLocalizationTable(ENGLISH_GAME_LOCALE, "bestiary"),
+        readGameLocalizationTable(ENGLISH_GAME_LOCALE, "main_menu_ui"),
       ]);
 
   const timelineReminder = timeline.REMINDER_TEXT ?? englishTimeline.REMINDER_TEXT ?? "";
   const bestiaryPlaceholder = bestiary["DESCRIPTION.placeholder"]
     ?? englishBestiary["DESCRIPTION.placeholder"]
+    ?? "";
+  const earlyAccessDisclaimer = mainMenu["EARLY_ACCESS_DISCLAIMER.description_mkb"]
+    ?? englishMainMenu["EARLY_ACCESS_DISCLAIMER.description_mkb"]
     ?? "";
 
   return {
@@ -386,6 +470,12 @@ async function buildPatchStageGameCopy(gameLocale: GameLocale): Promise<PatchSta
     workToolsTitle: powers["TOOLS_OF_THE_TRADE_POWER.title"]
       ?? englishPowers["TOOLS_OF_THE_TRADE_POWER.title"]
       ?? "Tools of the Trade",
+    draft: {
+      title: cards["BEAT_INTO_SHAPE.title"]
+        ?? englishCards["BEAT_INTO_SHAPE.title"]
+        ?? "Beat into Shape",
+      notice: patchDraftNotice(gameLocale, earlyAccessDisclaimer),
+    },
   };
 }
 
