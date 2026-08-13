@@ -11,6 +11,7 @@ import {
   findCodexResourceByRouteId,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
+import { KEYWORD_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import { KeywordDetail } from "@/components/codex/keyword-detail";
 
 export const dynamic = "force-static";
@@ -38,7 +39,11 @@ export async function generateMetadata({
   ]);
   const keyword = findCodexResourceByRouteId(keywords, id);
   if (!keyword) return {};
-  return getCodexResourceOgMetadata(serviceLocale, gameUi.nav.keywords, keyword);
+  return getCodexResourceOgMetadata(serviceLocale, gameUi.nav.keywords, {
+    name: keyword.name,
+    description: keyword.description,
+    imageUrl: keyword.imageUrl ?? KEYWORD_PAGE_OG_IMAGE.url,
+  });
 }
 
 export default async function KeywordDetailPage({

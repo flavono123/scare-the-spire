@@ -35,6 +35,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import type { CompendiumDetailResourceType } from "@/lib/compendium-detail-payload";
+import { KEYWORD_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import { withKoreanSearchCanonical } from "@/lib/search-canonical";
 
 type CompendiumMetadataLocale = {
@@ -233,7 +234,11 @@ export async function generateCompendiumKeywordMetadata(
   const keyword = findCodexResourceByRouteId(keywords, id);
   if (!keyword) return {};
   return withCompendiumDetailCanonical(
-    getCodexResourceOgMetadata(serviceLocale, gameUi.nav.keywords, keyword),
+    getCodexResourceOgMetadata(serviceLocale, gameUi.nav.keywords, {
+      name: keyword.name,
+      description: keyword.description,
+      imageUrl: keyword.imageUrl ?? KEYWORD_PAGE_OG_IMAGE.url,
+    }),
     "keywords",
     id,
   );

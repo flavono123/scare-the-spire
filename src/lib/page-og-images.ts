@@ -65,6 +65,13 @@ export const THIS_OR_THAT_PAGE_OG_IMAGE: PageOgImage = {
   alt: "이거 아님 저거? — This or That?",
 };
 
+export const KEYWORD_PAGE_OG_IMAGE: PageOgImage = {
+  url: "/images/sts2/ui/topbar/submenu_history_icon.png",
+  width: 128,
+  height: 128,
+  alt: "Keyword",
+};
+
 export const PAGE_OG_IMAGE_RULES = [
   {
     pattern: "/chemical-x",

@@ -3,43 +3,17 @@ import { DeferredRunDetailLoader } from "@/components/history-course/deferred-ru
 import { getHistoryCourseLandingGameCopy } from "@/lib/borrowed-game-copy";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
-import {
-  HISTORY_COURSE_PAGE_OG_IMAGE,
-  type PageOgImage,
-} from "@/lib/page-og-images";
+import { HISTORY_COURSE_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import { getDonatedRunOgFields } from "@/lib/run-donation";
-import {
-  coverCardArtSrc,
-  coverCharacterSelectSrc,
-} from "@/lib/run-cover-suggest";
-import type { CoverSpec } from "@/lib/run-cover-types";
 import { isCoverSpec } from "@/lib/run-cover-types";
-import { getServiceBrand } from "@/lib/service-metadata";
+import {
+  composeToyBoxPostOgDescription,
+  getServiceBrand,
+} from "@/lib/service-metadata";
 import { withKoreanSearchCanonical } from "@/lib/search-canonical";
 import { absoluteSiteUrl, SITE_METADATA_BASE } from "@/lib/site-origin";
+import { coverOgImageFromFields } from "@/lib/toybox-post-og";
 import { serviceMessages } from "@/messages/service";
-
-function ogImageFromRun(fields: {
-  character: string;
-  coverSpec: CoverSpec | null;
-}): PageOgImage {
-  const cover = isCoverSpec(fields.coverSpec) ? fields.coverSpec : null;
-  if (cover?.background.kind === "card-beta") {
-    const art = coverCardArtSrc(cover.background.cardId);
-    return {
-      url: art.src,
-      width: 1000,
-      height: 760,
-      alt: cover.phrase || HISTORY_COURSE_PAGE_OG_IMAGE.alt,
-    };
-  }
-  return {
-    url: coverCharacterSelectSrc(fields.character),
-    width: 1000,
-    height: 760,
-    alt: cover?.phrase || HISTORY_COURSE_PAGE_OG_IMAGE.alt,
-  };
-}
 
 export async function generateHistoryCourseRunMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
@@ -48,8 +22,16 @@ export async function generateHistoryCourseRunMetadata(
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const landing = await getHistoryCourseLandingGameCopy(gameLocale);
   const brand = getServiceBrand(serviceLocale);
-  const fallbackTitle = `${serviceMessages[serviceLocale].nav.historyCourse} — ${serviceMessages[serviceLocale].historyCourse.runTitleSuffix}`;
-  const description = landing.heroQuote;
+  const copy = serviceMessages[serviceLocale];
+  const fallbackTitle = `${copy.nav.historyCourse} — ${copy.historyCourse.runTitleSuffix}`;
+  const description = composeToyBoxPostOgDescription({
+    serviceLocale,
+    serviceName: copy.nav.historyCourse,
+    serviceDescription: copy.historyCourse.description.replace(
+      "{runHistory}",
+      landing.runHistoryLabel,
+    ),
+  });
   const canonicalPath = runId ? `/history-course/${runId}` : "/history-course";
 
   // Bounded single-row lookup (cover_spec + character only). No raw parse /
@@ -60,7 +42,7 @@ export async function generateHistoryCourseRunMetadata(
   const title = phrase
     ? `${phrase} - ${brand} ${landing.title}`
     : fallbackTitle;
-  const imageSource = ogFields ? ogImageFromRun(ogFields) : HISTORY_COURSE_PAGE_OG_IMAGE;
+  const imageSource = ogFields ? coverOgImageFromFields(ogFields) : HISTORY_COURSE_PAGE_OG_IMAGE;
   const image = {
     ...imageSource,
     url: absoluteSiteUrl(imageSource.url),

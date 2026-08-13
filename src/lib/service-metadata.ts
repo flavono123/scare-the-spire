@@ -67,6 +67,33 @@ export function getServiceBrand(serviceLocale: ServiceLocale): string {
   return serviceMessages[serviceLocale].brand;
 }
 
+const GAME_TITLE: Record<ServiceLocale, string> = {
+  ko: "슬레이 더 스파이어 2",
+  en: "Slay the Spire 2",
+};
+
+export function getGameTitle(serviceLocale: ServiceLocale): string {
+  return GAME_TITLE[serviceLocale];
+}
+
+/** Shared Toy Box post OG description: game · brand · service · service copy. */
+export function composeToyBoxPostOgDescription({
+  serviceLocale,
+  serviceName,
+  serviceDescription,
+}: {
+  serviceLocale: ServiceLocale;
+  serviceName: string;
+  serviceDescription: string;
+}): string {
+  return [
+    getGameTitle(serviceLocale),
+    getServiceBrand(serviceLocale),
+    serviceName,
+    serviceDescription,
+  ].join(" · ");
+}
+
 function absoluteServiceOgImage<T extends ServiceOgImage>(image: T): T {
   return {
     ...image,
