@@ -56,37 +56,46 @@ jobs:
               base="$(git rev-list --max-parents=0 HEAD)"
             fi
 
-            changed_files="$(git diff --name-only "$base" "$GITHUB_SHA")"
+            # Force-pushes leave github.event.before pointing at a commit that
+            # is no longer fetched. Deploy both Workers instead of failing.
+            if ! git cat-file -e "${base}^{commit}" 2>/dev/null; then
+              patch_changed=true
+              main_changed=true
+              patch_after_main=true
+              changed_files="missing-base ${base}"
+            else
+              changed_files="$(git diff --name-only "$base" "$GITHUB_SHA")"
 
-            while IFS= read -r file; do
-              [[ -z "$file" ]] && continue
+              while IFS= read -r file; do
+                [[ -z "$file" ]] && continue
 
-              case "$file" in
-                AGENTS.md|docs/*|.codex/skills/*)
-                  ;;
-                .github/workflows/cloudflare-workers.yml)
-                  main_changed=true
-                  patch_changed=true
-                  ;;
-                data/sts2-patch-notes/*|data/sts2-patches.json|data/sts2-patch-local-resources.json|src/components/patch-note-renderer.tsx|src/components/patches/*|src/app/\(main\)/patches/*|src/app/\[gameLocale\]/patches/*|src/lib/sts2-patch-*.ts|scripts/build-patch-worker.tsx|scripts/dev-patch-proxy.mjs|workers/patch-worker.ts|wrangler.patch.jsonc)
-                  patch_changed=true
-                  ;;
-                data/sts2/*|data/sts2-changes.json|data/sts2-entity-versions.json|public/images/sts2/*|src/app/\(codex\)/*|src/app/\[gameLocale\]/compendium/*|src/components/codex/*|src/lib/codex-*.ts|src/lib/compendium-*.ts|scripts/generate-static-api-data.ts)
-                  main_changed=true
-                  patch_after_main=true
-                  ;;
-                package.json|pnpm-lock.yaml|next.config.*|open-next.config.*|postcss.config.*|tsconfig.json|src/app/globals.css|src/components/*|src/lib/*|scripts/*|workers/main-worker.ts|wrangler.jsonc)
-                  main_changed=true
-                  patch_changed=true
-                  patch_after_main=true
-                  ;;
-                data/*|public/*|src/*)
-                  main_changed=true
-                  ;;
-                *)
-                  ;;
-              esac
-            done <<< "$changed_files"
+                case "$file" in
+                  AGENTS.md|docs/*|.codex/skills/*)
+                    ;;
+                  .github/workflows/cloudflare-workers.yml)
+                    main_changed=true
+                    patch_changed=true
+                    ;;
+                  data/sts2-patch-notes/*|data/sts2-patches.json|data/sts2-patch-local-resources.json|src/components/patch-note-renderer.tsx|src/components/patches/*|src/app/\(main\)/patches/*|src/app/\[gameLocale\]/patches/*|src/lib/sts2-patch-*.ts|scripts/build-patch-worker.tsx|scripts/dev-patch-proxy.mjs|workers/patch-worker.ts|wrangler.patch.jsonc)
+                    patch_changed=true
+                    ;;
+                  data/sts2/*|data/sts2-changes.json|data/sts2-entity-versions.json|public/images/sts2/*|src/app/\(codex\)/*|src/app/\[gameLocale\]/compendium/*|src/components/codex/*|src/lib/codex-*.ts|src/lib/compendium-*.ts|scripts/generate-static-api-data.ts)
+                    main_changed=true
+                    patch_after_main=true
+                    ;;
+                  package.json|pnpm-lock.yaml|next.config.*|open-next.config.*|postcss.config.*|tsconfig.json|src/app/globals.css|src/components/*|src/lib/*|scripts/*|workers/main-worker.ts|wrangler.jsonc)
+                    main_changed=true
+                    patch_changed=true
+                    patch_after_main=true
+                    ;;
+                  data/*|public/*|src/*)
+                    main_changed=true
+                    ;;
+                  *)
+                    ;;
+                esac
+              done <<< "$changed_files"
+            fi
           fi
 
           deploy_any=false
