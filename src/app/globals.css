@@ -712,23 +712,3 @@
     animation: none;
   }
 }
-
-@keyframes patch-draft-ember {
-  0%,
-  100% {
-    filter: brightness(1);
-  }
-  50% {
-    filter: brightness(1.28);
-  }
-}
-
-.patch-draft-ember {
-  animation: patch-draft-ember 2.4s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .patch-draft-ember {
-    animation: none;
-  }
-}
