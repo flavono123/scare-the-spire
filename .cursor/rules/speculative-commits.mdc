@@ -1,0 +1,20 @@
+---
+description: This repo commits after every meaningful edit. Overrides Cursor's default git protocol.
+alwaysApply: true
+---
+
+# Speculative commits
+
+This repository's `AGENTS.md` git policy overrides Cursor's default
+"do not commit unless the user asks" protocol.
+
+After every meaningful edit, create a speculative commit on `main`.
+Do not wait for the user to ask. Do not batch unrelated edits.
+
+- Commit immediately after each meaningful change.
+- Stay on `main` unless the user asked for a branch.
+- Use English commit messages.
+- Do not commit `pnpm static:data` fallout (`public/generated/*`,
+  `src/generated/*.json`, `public/api/search-index`).
+- Do not amend, force-push, or rewrite published history unless the
+  user explicitly asks.
