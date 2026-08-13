@@ -54,7 +54,9 @@ export const serviceMessages = {
         description: "슬서운이야기 서비스의 새 기능과 콘텐츠 소식",
       },
       status: {
-        new: "새로운 기능",
+        already: "이미 적용됨",
+        new: "이번에 적용됨",
+        planned: "릴리즈 예정",
         wip: "아직 개발 중",
         bug: "버그 수정",
         reportThanks: "제보 감사",
@@ -988,7 +990,9 @@ export const serviceMessages = {
         description: "New features and content updates for Scare the Spire",
       },
       status: {
-        new: "New feature",
+        already: "Already shipped",
+        new: "Shipping in this update",
+        planned: "Planned",
         wip: "Still in development",
         bug: "Bug fix",
         reportThanks: "Thanks for the report",

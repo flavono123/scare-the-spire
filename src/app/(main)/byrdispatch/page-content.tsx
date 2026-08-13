@@ -32,6 +32,7 @@ import {
   isByrdispatchMigrationNoticeText,
   isConfiguredByrdispatchMigrationTargetHost,
 } from "@/lib/byrdispatch-static";
+import { OwnPostMark } from "@/components/own-post-mark";
 import { serviceMessages } from "@/messages/service";
 
 export function generateByrdispatchMetadata(
@@ -45,11 +46,20 @@ export function generateByrdispatchMetadata(
 }
 
 const STATUS_TOKEN_ASSETS: Record<ByrdispatchStatus, { src: string }> = {
+  already: { src: "/images/sts2/relics/old_coin.webp" },
   new: { src: "/images/sts2/relics/new_leaf.webp" },
+  planned: { src: "/images/sts2/relics/mercury_hourglass.webp" },
   wip: { src: "/images/sts2/powers/hammer_time_power.webp" },
   bug: { src: "/images/sts2/powers/infested_power.webp" },
   reportThanks: { src: "/images/sts2/relics/wongo_customer_appreciation_badge.webp" },
 };
+
+function stagedReleaseStatus(statuses: ByrdispatchStatus[]): ByrdispatchStatus | null {
+  if (statuses.includes("already")) return "already";
+  if (statuses.includes("new")) return "new";
+  if (statuses.includes("planned")) return "planned";
+  return null;
+}
 
 type ByrdispatchStatusLabels = Readonly<Record<ByrdispatchStatus, string>>;
 
@@ -148,6 +158,8 @@ const SERVICE_REFERENCE_LINKS: Record<string, string> = {
 
 const STORY_COMPOSER_ACTION_TOKEN = "[새 이야기 쓰기 버튼 노출/링크]";
 const KNOWLEDGE_DEMON_TOKEN = "{지식의악마토큰}";
+const OWN_POST_MARK_TOKEN_KO = "「내 글」";
+const OWN_POST_MARK_TOKEN_EN = "「Mine」";
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -161,7 +173,7 @@ const SERVICE_REFERENCE_RE = new RegExp(
   "g",
 );
 const INLINE_ACTION_RE = new RegExp(
-  `${escapeRegExp(STORY_COMPOSER_ACTION_TOKEN)}|${escapeRegExp(KNOWLEDGE_DEMON_TOKEN)}|${SERVICE_REFERENCE_RE.source}`,
+  `${escapeRegExp(STORY_COMPOSER_ACTION_TOKEN)}|${escapeRegExp(KNOWLEDGE_DEMON_TOKEN)}|${escapeRegExp(OWN_POST_MARK_TOKEN_KO)}|${escapeRegExp(OWN_POST_MARK_TOKEN_EN)}|${SERVICE_REFERENCE_RE.source}`,
   "g",
 );
 const PROFILE_SERVICE_TITLES = new Set(["프로필", "Profile"]);
@@ -343,6 +355,8 @@ export function ByrdispatchRichText({
     const index = match.index ?? 0;
     const isComposerAction = match[0] === STORY_COMPOSER_ACTION_TOKEN;
     const isKnowledgeDemonToken = match[0] === KNOWLEDGE_DEMON_TOKEN;
+    const isOwnPostMark =
+      match[0] === OWN_POST_MARK_TOKEN_KO || match[0] === OWN_POST_MARK_TOKEN_EN;
     const label = match[1];
     const href = SERVICE_REFERENCE_LINKS[label];
     const service = label ? serviceIconFor(label) : null;
@@ -357,6 +371,11 @@ export function ByrdispatchRichText({
         serviceLocale={serviceLocale}
         storyPlaceholder={storyPlaceholder}
         entities={entities}
+      />
+    ) : isOwnPostMark ? (
+      <OwnPostMark
+        key={`own-post-${matchIndex}`}
+        className="mx-0.5 align-middle"
       />
     ) : isKnowledgeDemonToken ? (
       <TokenIcon
@@ -430,8 +449,17 @@ function ByrdispatchBulletLine({
   storyPlaceholder: string;
 }) {
   const childBullet = bullet.depth > 0;
+  const staged = childBullet ? stagedReleaseStatus(bullet.statuses) : null;
   return (
-    <li className={["flex gap-2", childBullet ? "ml-5" : ""].filter(Boolean).join(" ")}>
+    <li
+      className={[
+        "flex gap-2",
+        childBullet ? "ml-5" : "",
+        staged === "already" ? "byrdispatch-stage byrdispatch-stage--already" : "",
+        staged === "new" ? "byrdispatch-stage byrdispatch-stage--new" : "",
+        staged === "planned" ? "byrdispatch-stage byrdispatch-stage--planned" : "",
+      ].filter(Boolean).join(" ")}
+    >
       <span
         aria-hidden
         className={
@@ -450,6 +478,8 @@ function ByrdispatchBulletLine({
           "[&_.patch-note-content]:inline [&_.patch-note-content>p]:inline",
           notice
             ? "[&_.patch-note-content>p]:mb-0 [&_.patch-note-content>p]:text-pink-100"
+            : staged
+              ? "[&_.patch-note-content>p]:mb-0"
             : "[&_.patch-note-content>p]:mb-0 [&_.patch-note-content>p]:text-zinc-300",
         ].join(" ")}
       >
