@@ -14,6 +14,7 @@ from pathlib import Path
 
 DEFAULT_SOURCE = Path("/tmp/sts2-src/MegaCrit.Sts2.Core.Models.Relics")
 DEFAULT_POWERS = Path("/tmp/sts2-src/MegaCrit.Sts2.Core.Models.Powers")
+DEFAULT_AFFLICTIONS = Path("/tmp/sts2-src/MegaCrit.Sts2.Core.Models.Afflictions")
 DEFAULT_OUTPUT = Path("data/sts2/relic-extra-hover-tips.json")
 
 STATIC_ENUM_TO_ID = {
@@ -65,10 +66,30 @@ def parse_power_extra_tips(powers_dir: Path, cls: str) -> list[dict]:
     body = extract_extra_body(path.read_text(errors="ignore"))
     if not body:
         return []
-    return parse_tip_specs(body, powers_dir=None)
+    return parse_tip_specs(body, powers_dir=None, afflictions_dir=None)
 
 
-def parse_tip_specs(body: str, powers_dir: Path | None) -> list[dict]:
+def parse_affliction_extra_tips(
+    afflictions_dir: Path,
+    cls: str,
+    *,
+    powers_dir: Path | None,
+) -> list[dict]:
+    path = afflictions_dir / f"{cls}.cs"
+    if not path.exists():
+        return []
+    body = extract_extra_body(path.read_text(errors="ignore"))
+    if not body:
+        return []
+    # Expand nested power tip extras; do not re-enter afflictions.
+    return parse_tip_specs(body, powers_dir=powers_dir, afflictions_dir=None)
+
+
+def parse_tip_specs(
+    body: str,
+    powers_dir: Path | None,
+    afflictions_dir: Path | None = None,
+) -> list[dict]:
     specs: list[dict] = []
     # Scan factory calls left-to-right to preserve ExtraHoverTips order.
     token_re = re.compile(
@@ -83,6 +104,7 @@ def parse_tip_specs(body: str, powers_dir: Path | None) -> list[dict]:
         r"|FromPotion<(\w+)>"
         r"|FromEnchantment<(\w+)>"
         r"|FromOrb<(\w+)>"
+        r"|FromAffliction<(\w+)>"
     )
 
     for m in token_re.finditer(body):
@@ -120,6 +142,18 @@ def parse_tip_specs(body: str, powers_dir: Path | None) -> list[dict]:
             specs.append({"kind": "enchantment", "id": pascal_to_id(m.group(9))})
         elif raw.startswith("FromOrb"):
             specs.append({"kind": "orb", "id": pascal_to_id(m.group(10))})
+        elif raw.startswith("FromAffliction"):
+            # Mirror AfflictionModel.HoverTips = [self] + ExtraHoverTips.
+            cls = m.group(11)
+            specs.append({"kind": "affliction", "id": pascal_to_id(cls)})
+            if afflictions_dir is not None:
+                specs.extend(
+                    parse_affliction_extra_tips(
+                        afflictions_dir,
+                        cls,
+                        powers_dir=powers_dir,
+                    )
+                )
 
     seen: set[str] = set()
     out: list[dict] = []
@@ -136,6 +170,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE)
     parser.add_argument("--powers", type=Path, default=DEFAULT_POWERS)
+    parser.add_argument("--afflictions", type=Path, default=DEFAULT_AFFLICTIONS)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args()
@@ -156,7 +191,11 @@ def main() -> None:
             skipped_dynamic.append(path.stem)
             continue
         relic_id = pascal_to_id(path.stem)
-        specs = parse_tip_specs(body, powers_dir=args.powers)
+        specs = parse_tip_specs(
+            body,
+            powers_dir=args.powers,
+            afflictions_dir=args.afflictions,
+        )
         if specs:
             result[relic_id] = specs
 

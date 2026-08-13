@@ -1,0 +1,627 @@
+{
+  "source": "MegaCrit.Sts2.Core.Models.Powers ExtraHoverTips",
+  "tipsByPowerId": {
+    "ACCELERANT": [
+      {
+        "kind": "power",
+        "id": "POISON"
+      }
+    ],
+    "AFTERIMAGE": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "ARSENAL": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "BARRICADE": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "BIASED_COGNITION": [
+      {
+        "kind": "power",
+        "id": "FOCUS"
+      }
+    ],
+    "BLOCK_NEXT_TURN": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "BLUR": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "BORROWED_TIME": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "CALL_OF_THE_VOID": [
+      {
+        "kind": "keyword",
+        "id": "ETHEREAL"
+      }
+    ],
+    "CHAINS_OF_BINDING": [
+      {
+        "kind": "affliction",
+        "id": "BOUND"
+      }
+    ],
+    "COLOSSUS": [
+      {
+        "kind": "power",
+        "id": "VULNERABLE"
+      }
+    ],
+    "CONCOCT": [
+      {
+        "kind": "power",
+        "id": "POISON"
+      }
+    ],
+    "CONQUEROR": [
+      {
+        "kind": "card_with_tips",
+        "id": "SOVEREIGN_BLADE"
+      }
+    ],
+    "COOLANT": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "CORROSIVE_WAVE": [
+      {
+        "kind": "power",
+        "id": "POISON"
+      }
+    ],
+    "CORRUPTION": [
+      {
+        "kind": "keyword",
+        "id": "EXHAUST"
+      }
+    ],
+    "COUNTDOWN": [
+      {
+        "kind": "power",
+        "id": "DOOM"
+      }
+    ],
+    "CRAB_RAGE": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      },
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "CRIMSON_MANTLE": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "CRUELTY": [
+      {
+        "kind": "power",
+        "id": "VULNERABLE"
+      }
+    ],
+    "CURL_UP": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "DANSE_MACABRE": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "DARK_EMBRACE": [
+      {
+        "kind": "keyword",
+        "id": "EXHAUST"
+      }
+    ],
+    "DEBILITATE": [
+      {
+        "kind": "power",
+        "id": "VULNERABLE"
+      },
+      {
+        "kind": "power",
+        "id": "WEAK"
+      }
+    ],
+    "DEMESNE": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "DEMON_FORM": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "DEVOUR_LIFE": [
+      {
+        "kind": "card",
+        "id": "SOUL"
+      },
+      {
+        "kind": "static",
+        "id": "SUMMON_STATIC"
+      }
+    ],
+    "DEXTERITY": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "ENERGY_NEXT_TURN": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "ENTROPY": [
+      {
+        "kind": "static",
+        "id": "TRANSFORM"
+      }
+    ],
+    "ENVENOM": [
+      {
+        "kind": "power",
+        "id": "POISON"
+      }
+    ],
+    "FASTEN": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "FEEL_NO_PAIN": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "FRAIL": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "FRIENDSHIP": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "FURNACE": [
+      {
+        "kind": "forge"
+      }
+    ],
+    "GALVANIC": [
+      {
+        "kind": "affliction",
+        "id": "GALVANIZED"
+      }
+    ],
+    "HAILSTORM": [
+      {
+        "kind": "orb",
+        "id": "FROST_ORB"
+      }
+    ],
+    "HAMMER_TIME": [
+      {
+        "kind": "forge"
+      }
+    ],
+    "HANG": [
+      {
+        "kind": "card",
+        "id": "HANG"
+      }
+    ],
+    "HEX": [
+      {
+        "kind": "affliction",
+        "id": "HEXED"
+      },
+      {
+        "kind": "keyword",
+        "id": "ETHEREAL"
+      }
+    ],
+    "HIBERNATE": [
+      {
+        "kind": "orb",
+        "id": "FROST_ORB"
+      },
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "HIGH_VOLTAGE": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "INFINITE_BLADES": [
+      {
+        "kind": "card",
+        "id": "SHIV"
+      }
+    ],
+    "LIGHTNING_ROD": [
+      {
+        "kind": "static",
+        "id": "CHANNELING"
+      },
+      {
+        "kind": "orb",
+        "id": "LIGHTNING_ORB"
+      }
+    ],
+    "MONOLOGUE": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "NEUROSURGE": [
+      {
+        "kind": "power",
+        "id": "DOOM"
+      }
+    ],
+    "NOXIOUS_FUMES": [
+      {
+        "kind": "power",
+        "id": "POISON"
+      }
+    ],
+    "NO_BLOCK": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "ORBIT": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "PAGESTORM": [
+      {
+        "kind": "keyword",
+        "id": "ETHEREAL"
+      }
+    ],
+    "PAINFUL_STABS": [
+      {
+        "kind": "card_with_tips",
+        "id": "WOUND"
+      }
+    ],
+    "PERSONAL_HIVE": [
+      {
+        "kind": "card",
+        "id": "DAZED"
+      }
+    ],
+    "PHANTOM_BLADES": [
+      {
+        "kind": "card",
+        "id": "SHIV"
+      },
+      {
+        "kind": "keyword",
+        "id": "RETAIN"
+      }
+    ],
+    "PILLAR_OF_CREATION": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "PLATING": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "PLOW": [
+      {
+        "kind": "static",
+        "id": "STUN"
+      },
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "POSSESS_SPEED": [
+      {
+        "kind": "power",
+        "id": "DEXTERITY"
+      }
+    ],
+    "POSSESS_STRENGTH": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "PYRE": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "RADIANCE": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "RAGE": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "RAVENOUS": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      },
+      {
+        "kind": "static",
+        "id": "STUN"
+      }
+    ],
+    "REAPER_FORM": [
+      {
+        "kind": "power",
+        "id": "DOOM"
+      }
+    ],
+    "RITUAL": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "RUPTURE": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "SEEKING_EDGE": [
+      {
+        "kind": "forge"
+      }
+    ],
+    "SELF_FORMING_CLAY": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "SENTRY_MODE": [
+      {
+        "kind": "card",
+        "id": "SWEEPING_GAZE"
+      }
+    ],
+    "SHADOWMELD": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "SHRIEK": [
+      {
+        "kind": "static",
+        "id": "STUN"
+      }
+    ],
+    "SHROUD": [
+      {
+        "kind": "power",
+        "id": "DOOM"
+      }
+    ],
+    "SIC_EM": [
+      {
+        "kind": "static",
+        "id": "SUMMON_STATIC"
+      }
+    ],
+    "SKITTISH": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "SNEAKY": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "SOULBOUND": [
+      {
+        "kind": "card",
+        "id": "SOUL"
+      }
+    ],
+    "SPINNER": [
+      {
+        "kind": "static",
+        "id": "CHANNELING"
+      },
+      {
+        "kind": "orb",
+        "id": "GLASS_ORB"
+      }
+    ],
+    "SPIRIT_OF_ASH": [
+      {
+        "kind": "keyword",
+        "id": "ETHEREAL"
+      },
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "STORM": [
+      {
+        "kind": "static",
+        "id": "CHANNELING"
+      },
+      {
+        "kind": "orb",
+        "id": "LIGHTNING_ORB"
+      }
+    ],
+    "SUCK": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "SUMMON_NEXT_TURN": [
+      {
+        "kind": "static",
+        "id": "SUMMON_STATIC"
+      }
+    ],
+    "TENDER": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      },
+      {
+        "kind": "power",
+        "id": "DEXTERITY"
+      }
+    ],
+    "TERRITORIAL": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
+    "THUNDER": [
+      {
+        "kind": "static",
+        "id": "EVOKE"
+      },
+      {
+        "kind": "orb",
+        "id": "LIGHTNING_ORB"
+      }
+    ],
+    "TORIC_TOUGHNESS": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "TRACKING": [
+      {
+        "kind": "power",
+        "id": "WEAK"
+      }
+    ],
+    "TYRANNY": [
+      {
+        "kind": "keyword",
+        "id": "EXHAUST"
+      }
+    ],
+    "UNDERWORLD": [
+      {
+        "kind": "power",
+        "id": "DOOM"
+      }
+    ],
+    "UNMOVABLE": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "VEILPIERCER": [
+      {
+        "kind": "keyword",
+        "id": "ETHEREAL"
+      }
+    ],
+    "VICIOUS": [
+      {
+        "kind": "power",
+        "id": "VULNERABLE"
+      }
+    ],
+    "VITAL_SPARK": [
+      {
+        "kind": "affliction",
+        "id": "TAINTED"
+      },
+      {
+        "kind": "power",
+        "id": "TAINTED"
+      }
+    ],
+    "WASTE_AWAY": [
+      {
+        "kind": "static",
+        "id": "ENERGY"
+      }
+    ],
+    "WRAITH_FORM": [
+      {
+        "kind": "power",
+        "id": "DEXTERITY"
+      }
+    ]
+  },
+  "skippedDynamicPowerClasses": []
+}

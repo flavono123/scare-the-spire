@@ -1,0 +1,18 @@
+{
+  "source": "MegaCrit.Sts2.Core.Models.Afflictions ExtraHoverTips",
+  "tipsByAfflictionId": {
+    "HEXED": [
+      {
+        "kind": "keyword",
+        "id": "ETHEREAL"
+      }
+    ],
+    "TAINTED": [
+      {
+        "kind": "power",
+        "id": "TAINTED"
+      }
+    ]
+  },
+  "skippedDynamicAfflictionClasses": []
+}

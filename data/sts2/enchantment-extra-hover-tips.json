@@ -1,0 +1,60 @@
+{
+  "source": "MegaCrit.Sts2.Core.Models.Enchantments ExtraHoverTips",
+  "tipsByEnchantmentId": {
+    "GLAM": [
+      {
+        "kind": "static",
+        "id": "REPLAY_DYNAMIC",
+        "var": "Times"
+      }
+    ],
+    "GOOPY": [
+      {
+        "kind": "keyword",
+        "id": "EXHAUST"
+      }
+    ],
+    "INKY": [
+      {
+        "kind": "power",
+        "id": "WEAK"
+      }
+    ],
+    "ROYALLY_APPROVED": [
+      {
+        "kind": "keyword",
+        "id": "INNATE"
+      },
+      {
+        "kind": "keyword",
+        "id": "RETAIN"
+      }
+    ],
+    "SOULS_POWER": [
+      {
+        "kind": "keyword",
+        "id": "EXHAUST"
+      }
+    ],
+    "SPIRAL": [
+      {
+        "kind": "static",
+        "id": "REPLAY_DYNAMIC",
+        "var": "Times"
+      }
+    ],
+    "STEADY": [
+      {
+        "kind": "keyword",
+        "id": "RETAIN"
+      }
+    ],
+    "TEZCATARAS_EMBER": [
+      {
+        "kind": "keyword",
+        "id": "ETERNAL"
+      }
+    ]
+  },
+  "skippedDynamicEnchantmentClasses": []
+}
