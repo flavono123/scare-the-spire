@@ -27,6 +27,7 @@ import {
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
 import { versionCodexEntities } from "@/lib/codex-versioning";
 import { getAfflictionCardTypeRestriction } from "@/lib/sts2-affliction-rules";
 import {
@@ -91,9 +92,10 @@ interface EnchantmentLibraryProps {
   relics?: CodexRelic[];
   /** Monsters — used to surface ones that apply the selected affliction. */
   monsters?: CodexMonster[];
+  tipCatalogSources?: CardSideTipCatalogSources;
 }
 
-export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflictions = [], versions, currentVersion, patches, changes, versionDiffs, entities, cards, events, potions, powers, relics, monsters }: EnchantmentLibraryProps) {
+export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflictions = [], versions, currentVersion, patches, changes, versionDiffs, entities, cards, events, potions, powers, relics, monsters, tipCatalogSources }: EnchantmentLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlEnchantmentId = useHydrationSafeSearchParam("enchantment");
   const urlAfflictionId = useHydrationSafeSearchParam("affliction");
@@ -350,7 +352,12 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
                     key={ench.id}
                     serviceLocale={serviceLocale}
                     resource={ench}
+                    resourceKind="enchantment"
                     onClick={() => selectResource({ kind: "enchantment", item: ench })}
+                    tipCatalogSources={tipCatalogSources}
+                    tipCatalogCards={cards}
+                    tipCatalogPowers={powers}
+                    tipCatalogMonsters={monsters}
                   />
                 ))}
               </div>
@@ -374,7 +381,12 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
                     key={affliction.id}
                     serviceLocale={serviceLocale}
                     resource={affliction}
+                    resourceKind="affliction"
                     onClick={() => selectResource({ kind: "affliction", item: affliction })}
+                    tipCatalogSources={tipCatalogSources}
+                    tipCatalogCards={cards}
+                    tipCatalogPowers={powers}
+                    tipCatalogMonsters={monsters}
                   />
                 ))}
               </div>
@@ -414,6 +426,9 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
                 patches={patches}
                 changes={changes}
                 versionDiffs={versionDiffs}
+                tipCatalogSources={tipCatalogSources}
+                tipCatalogCards={cards}
+                tipCatalogPowers={powers}
               />
             ) : (
               <EnchantmentDetail
@@ -424,8 +439,13 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
                 onClose={closeSelectedResource}
                 entities={entities}
                 monsters={monsters}
+                powers={powers}
+                cards={cards}
                 patches={patches}
                 changes={changes}
+                tipCatalogSources={tipCatalogSources}
+                tipCatalogCards={cards}
+                tipCatalogPowers={powers}
               />
             )}
           </div>

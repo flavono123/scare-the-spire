@@ -122,7 +122,7 @@ function TipStackBody({ tips }: { tips: readonly CardSideTip[] }) {
 
 function getDetailRailRect(): DOMRect | null {
   const rail = document.querySelector(
-    "[data-card-detail-meta], [data-relic-detail-meta], [data-potion-detail-meta]",
+    "[data-card-detail-meta], [data-relic-detail-meta], [data-potion-detail-meta], [data-power-detail-meta], [data-enchantment-detail-meta]",
   )?.closest("aside");
   if (!rail) return null;
   const rect = rail.getBoundingClientRect();

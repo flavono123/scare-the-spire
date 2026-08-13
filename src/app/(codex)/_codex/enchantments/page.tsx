@@ -15,6 +15,7 @@ import {
   firstRouteSearchParam,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
+import { loadCardSideTipCatalogSources } from "@/lib/card-side-tip-catalog.server";
 import { EnchantmentLibrary } from "@/components/codex/enchantment-library";
 
 export const dynamic = "force-static";
@@ -53,7 +54,7 @@ export default async function CodexEnchantmentsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [enchantments, afflictions, cards, events, monsters, potions, powers, relics, patches, changes, versionDiffs, meta, entities, gameUi] = await Promise.all([
+  const [enchantments, afflictions, cards, events, monsters, potions, powers, relics, patches, changes, versionDiffs, meta, entities, gameUi, tipCatalogSources] = await Promise.all([
     getCodexEnchantments({ gameLocale }),
     getCodexAfflictions({ gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
@@ -68,6 +69,7 @@ export default async function CodexEnchantmentsPage({
     getCodexMeta(),
     loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
+    loadCardSideTipCatalogSources(gameLocale),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
@@ -91,6 +93,7 @@ export default async function CodexEnchantmentsPage({
         potions={potions}
         powers={powers}
         relics={relics}
+        tipCatalogSources={tipCatalogSources}
       />
     </Suspense>
   );

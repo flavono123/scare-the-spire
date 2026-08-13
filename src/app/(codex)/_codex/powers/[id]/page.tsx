@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexCards, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexPotions, getCodexPowers, getCodexRelics } from "@/lib/codex-data";
+import { getCodexAfflictions, getCodexCards, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexPotions, getCodexPowers, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs } from "@/lib/data";
 import {
@@ -12,6 +12,7 @@ import {
   findCodexResourceByRouteId,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
+import { loadCardSideTipCatalogSources } from "@/lib/card-side-tip-catalog.server";
 import { PowerDetail } from "@/components/codex/power-detail";
 
 export const dynamic = "force-static";
@@ -53,7 +54,7 @@ export default async function PowerDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [powers, cards, relics, potions, enchantments, events, monsters, entities, patches, changes, versionDiffs, gameUi] = await Promise.all([
+  const [powers, cards, relics, potions, enchantments, events, monsters, afflictions, entities, patches, changes, versionDiffs, gameUi, tipCatalogSources] = await Promise.all([
     getCodexPowers({ includeDeprecated: true, gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
@@ -61,18 +62,39 @@ export default async function PowerDetailPage({
     getCodexEnchantments({ gameLocale }),
     getCodexEvents({ gameLocale }),
     getCodexMonsters({ gameLocale }),
+    getCodexAfflictions({ gameLocale }),
     loadAllEntities({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
     getEntityVersionDiffs(),
     getCodexGameUiLabels(gameLocale),
+    loadCardSideTipCatalogSources(gameLocale),
   ]);
   const power = powers.find((p) => p.id.toLowerCase() === id.toLowerCase());
   if (!power) notFound();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PowerDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={gameUi.nav.powers} power={power} entities={entities} relatedCards={cards} relatedRelics={relics} relatedPotions={potions} relatedEnchantments={enchantments} relatedEvents={events} relatedMonsters={monsters} patches={patches} changes={changes} versionDiffs={versionDiffs} />
+      <PowerDetail
+        serviceLocale={serviceLocale}
+        gameUi={gameUi}
+        backToListTitle={gameUi.nav.powers}
+        power={power}
+        entities={entities}
+        relatedCards={cards}
+        relatedRelics={relics}
+        relatedPotions={potions}
+        relatedEnchantments={enchantments}
+        relatedEvents={events}
+        relatedMonsters={monsters}
+        relatedAfflictions={afflictions}
+        tipCatalogSources={tipCatalogSources}
+        tipCatalogCards={cards}
+        tipCatalogPowers={powers}
+        patches={patches}
+        changes={changes}
+        versionDiffs={versionDiffs}
+      />
     </div>
   );
 }

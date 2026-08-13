@@ -15,6 +15,7 @@ import {
   type CodexServiceMessages,
 } from "@/lib/codex-service";
 import {
+  CodexAffliction,
   CodexCard,
   CodexEnchantment,
   CodexEvent,
@@ -28,6 +29,7 @@ import {
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
 import { versionCodexEntities } from "@/lib/codex-versioning";
 import {
   fuzzyMatchCodexText,
@@ -61,6 +63,8 @@ interface PowerLibraryProps {
   enchantments?: CodexEnchantment[];
   events?: CodexEvent[];
   monsters?: CodexMonster[];
+  afflictions?: CodexAffliction[];
+  tipCatalogSources?: CardSideTipCatalogSources;
   versions?: string[];
   currentVersion?: string;
   patches?: STS2Patch[];
@@ -69,7 +73,7 @@ interface PowerLibraryProps {
   entities?: EntityInfo[];
 }
 
-export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [], relics = [], potions = [], enchantments = [], events = [], monsters = [], versions, currentVersion, patches, changes, versionDiffs, entities }: PowerLibraryProps) {
+export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [], relics = [], potions = [], enchantments = [], events = [], monsters = [], afflictions = [], tipCatalogSources, versions, currentVersion, patches, changes, versionDiffs, entities }: PowerLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlPowerId = useHydrationSafeSearchParam("power");
   const [selectedTypes, setSelectedTypes] = useState<Set<PowerType>>(new Set());
@@ -295,6 +299,11 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
                     power={power}
                     showBeta={showBeta}
                     onClick={() => selectPower(power.id)}
+                    tipCatalogSources={tipCatalogSources}
+                    tipCatalogCards={cards}
+                    tipCatalogPowers={powers}
+                    tipCatalogMonsters={monsters}
+                    tipCatalogAfflictions={afflictions}
                   />
                 ))}
               </div>
@@ -334,6 +343,10 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
               relatedEnchantments={enchantments}
               relatedEvents={events}
               relatedMonsters={monsters}
+              relatedAfflictions={afflictions}
+              tipCatalogSources={tipCatalogSources}
+              tipCatalogCards={cards}
+              tipCatalogPowers={powers}
               onClose={closeSelectedPower}
             />
           </div>

@@ -13,6 +13,7 @@ import {
   findCodexResourceByRouteId,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
+import { loadCardSideTipCatalogSources } from "@/lib/card-side-tip-catalog.server";
 import { EnchantmentDetail } from "@/components/codex/enchantment-detail";
 
 export const dynamic = "force-static";
@@ -60,7 +61,7 @@ export default async function EnchantmentDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [enchantments, afflictions, cards, events, monsters, potions, powers, relics, entities, patches, changes, versionDiffs, gameUi] = await Promise.all([
+  const [enchantments, afflictions, cards, events, monsters, potions, powers, relics, entities, patches, changes, versionDiffs, gameUi, tipCatalogSources] = await Promise.all([
     getCodexEnchantments({ gameLocale }),
     getCodexAfflictions({ gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
@@ -74,6 +75,7 @@ export default async function EnchantmentDetailPage({
     getSTS2Changes(),
     getEntityVersionDiffs(),
     getCodexGameUiLabels(gameLocale),
+    loadCardSideTipCatalogSources(gameLocale),
   ]);
   const ench = enchantments.find((e) => e.id.toLowerCase() === id.toLowerCase());
   const affliction = afflictions.find((a) => a.id.toLowerCase() === id.toLowerCase());
@@ -94,9 +96,13 @@ export default async function EnchantmentDetailPage({
           potions={potions}
           powers={powers}
           relics={relics}
+          monsters={monsters}
           patches={patches}
           changes={changes}
           versionDiffs={versionDiffs}
+          tipCatalogSources={tipCatalogSources}
+          tipCatalogCards={cards}
+          tipCatalogPowers={powers}
         />
       </div>
     );
@@ -113,8 +119,13 @@ export default async function EnchantmentDetailPage({
         affliction={affliction}
         entities={entities}
         monsters={monsters}
+        cards={cards}
+        powers={powers}
         patches={patches}
         changes={changes}
+        tipCatalogSources={tipCatalogSources}
+        tipCatalogCards={cards}
+        tipCatalogPowers={powers}
       />
     </div>
   );

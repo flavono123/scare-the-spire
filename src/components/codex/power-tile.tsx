@@ -1,25 +1,31 @@
 "use client";
 
-import { useState, useRef, useCallback, memo } from "react";
+import { useMemo, memo } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
-import type { CodexPower } from "@/lib/codex-types";
-import { DescriptionText } from "./codex-description";
-import { GameHoverTip, type HoverTipVariant } from "./hover-tip";
-import { getPowerCompendiumDescription } from "./power-preview";
+import type { CodexAffliction, CodexCard, CodexMonster, CodexPower } from "@/lib/codex-types";
+import {
+  createCardSideTipCatalog,
+  type CardSideTipCatalogSources,
+} from "@/lib/card-side-tip-catalog";
+import { collectPowerSideTips } from "@/lib/power-side-tips";
+import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 
-const TYPE_STYLES: Record<string, { border: string }> = {
+const TYPE_STYLES: Record<string, { idle: string; hover: string }> = {
   Buff: {
-    border: "border-green-500/60 bg-green-500/10",
+    idle: "border-transparent bg-white/5",
+    hover: "hover:border-green-500/60 hover:bg-green-500/10 hover:z-10 hover:scale-110",
   },
   Debuff: {
-    border: "border-red-500/60 bg-red-500/10",
+    idle: "border-transparent bg-white/5",
+    hover: "hover:border-red-500/60 hover:bg-red-500/10 hover:z-10 hover:scale-110",
   },
   None: {
-    border: "border-zinc-500/60 bg-zinc-500/10",
+    idle: "border-transparent bg-white/5",
+    hover: "hover:border-zinc-500/60 hover:bg-zinc-500/10 hover:z-10 hover:scale-110",
   },
 };
 
@@ -29,103 +35,83 @@ interface PowerTileProps {
   power: CodexPower;
   showBeta?: boolean;
   onClick?: () => void;
+  tipCatalogSources?: CardSideTipCatalogSources;
+  tipCatalogCards?: readonly CodexCard[];
+  tipCatalogPowers?: readonly CodexPower[];
+  tipCatalogMonsters?: readonly CodexMonster[];
+  tipCatalogAfflictions?: readonly CodexAffliction[];
 }
 
-type TooltipPlacement = {
-  horizontal: "left" | "right";
-  vertical: "top" | "bottom";
-};
-
-const TOOLTIP_GAP = 12;
-const TOOLTIP_WIDTH = 320;
-const TOOLTIP_HEIGHT = 220;
-
-function getPowerHoverTipVariant(power: CodexPower): HoverTipVariant {
-  if (power.type === "Buff") return "buff";
-  if (power.type === "Debuff") return "debuff";
-  return "default";
-}
-
-export const PowerTile = memo(function PowerTile({ serviceLocale = "ko", power, showBeta = false, onClick }: PowerTileProps) {
-  const [hovered, setHovered] = useState(false);
-  const tileRef = useRef<HTMLAnchorElement>(null);
-  const [placement, setPlacement] = useState<TooltipPlacement>({
-    horizontal: "right",
-    vertical: "top",
-  });
-
+export const PowerTile = memo(function PowerTile({
+  serviceLocale = "ko",
+  power,
+  showBeta = false,
+  onClick,
+  tipCatalogSources,
+  tipCatalogCards = [],
+  tipCatalogPowers = [],
+  tipCatalogMonsters = [],
+  tipCatalogAfflictions = [],
+}: PowerTileProps) {
   const style = TYPE_STYLES[power.type] ?? TYPE_STYLES.None;
   const imageUrl = showBeta && power.betaImageUrl ? power.betaImageUrl : power.imageUrl;
   const lifecycleClassName = power.deprecated ? " opacity-50 grayscale saturate-0" : "";
-  const description = getPowerCompendiumDescription(power);
 
-  const updatePlacement = useCallback(() => {
-    const rect = tileRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const horizontal = rect.right + TOOLTIP_GAP + TOOLTIP_WIDTH > window.innerWidth
-      ? "left"
-      : "right";
-    const vertical = rect.top + TOOLTIP_HEIGHT > window.innerHeight
-      ? "bottom"
-      : "top";
-    setPlacement({ horizontal, vertical });
-  }, []);
+  const tipCatalog = useMemo(
+    () => tipCatalogSources
+      ? createCardSideTipCatalog({
+        sources: tipCatalogSources,
+        powers: tipCatalogPowers,
+        cards: tipCatalogCards,
+        monsters: tipCatalogMonsters,
+      })
+      : null,
+    [tipCatalogSources, tipCatalogPowers, tipCatalogCards, tipCatalogMonsters],
+  );
+
+  const afflictionsById = useMemo(
+    () => new Map(tipCatalogAfflictions.map((item) => [item.id, item])),
+    [tipCatalogAfflictions],
+  );
+
+  const sideTips = useMemo(() => {
+    if (!tipCatalog) return [];
+    return collectPowerSideTips(power, tipCatalog, {
+      includeSelf: true,
+      afflictionsById,
+    });
+  }, [power, tipCatalog, afflictionsById]);
 
   return (
-    <Link
-      ref={tileRef}
-      href={localizeHref(buildCompendiumResourceDetailHref("power", power.id), serviceLocale)}
-      className="relative group"
-      onMouseEnter={() => {
-        updatePlacement();
-        setHovered(true);
-      }}
-      onMouseLeave={() => setHovered(false)}
-      onClick={(event) => {
-        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
-        event.preventDefault();
-        onClick?.();
-      }}
-    >
-      <div
-        className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 p-1 transition-all cursor-pointer${lifecycleClassName} ${
-          hovered
-            ? `${style.border} scale-110 z-10`
-            : "border-transparent bg-white/5 hover:bg-white/10"
-        }`}
+    <CardSideTipsAnchor mode="hover" preferSide="right" tips={sideTips} className="relative">
+      <Link
+        href={localizeHref(buildCompendiumResourceDetailHref("power", power.id), serviceLocale)}
+        className="relative group"
+        onClick={(event) => {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+          event.preventDefault();
+          onClick?.();
+        }}
       >
-        {imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt={power.name}
-            width={56}
-            height={56}
-            loading="lazy"
-            className="w-full h-full object-contain drop-shadow-md"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-600 text-xs">
-            ?
-          </div>
-        )}
-      </div>
-
-      {/* Hover tooltip */}
-      {hovered && (
         <div
-          className={`pointer-events-none absolute z-50 hidden w-max max-w-80 md:block ${
-            placement.horizontal === "right" ? "left-full ml-3" : "right-full mr-3"
-          } ${placement.vertical === "top" ? "top-0" : "bottom-0"}`}
+          className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 p-1 transition-all cursor-pointer${lifecycleClassName} ${style.idle} ${style.hover}`}
         >
-          <GameHoverTip
-            title={power.name}
-            variant={getPowerHoverTipVariant(power)}
-            style={{ minWidth: 280 }}
-          >
-            <DescriptionText description={description} className="block text-left" />
-          </GameHoverTip>
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={power.name}
+              width={56}
+              height={56}
+              loading="lazy"
+              className="w-full h-full object-contain drop-shadow-md"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-gray-600 text-xs">
+              ?
+            </div>
+          )}
         </div>
-      )}
-    </Link>
+      </Link>
+    </CardSideTipsAnchor>
   );
 });

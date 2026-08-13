@@ -23,6 +23,13 @@ import {
   type EnchantmentCardTypeFilter,
 } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import {
+  createCardSideTipCatalog,
+  type CardSideTipCatalogSources,
+} from "@/lib/card-side-tip-catalog";
+import { collectAfflictionSideTips } from "@/lib/affliction-side-tips";
+import { collectEnchantmentSideTips } from "@/lib/enchantment-side-tips";
+import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 import { DescriptionText } from "./codex-description";
 import {
   getRelatedMonsterIdsForAffliction,
@@ -34,7 +41,6 @@ import {
 } from "@/lib/codex-references";
 import { getAfflictionCardTypeRestriction } from "@/lib/sts2-affliction-rules";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
-import { GameHoverTip } from "./hover-tip";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
@@ -94,6 +100,9 @@ interface EnchantmentDetailBaseProps {
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
+  tipCatalogSources?: CardSideTipCatalogSources;
+  tipCatalogCards?: CodexCard[];
+  tipCatalogPowers?: CodexPower[];
 }
 
 type EnchantmentDetailProps = EnchantmentDetailBaseProps & (
@@ -135,6 +144,9 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
     patches,
     changes,
     versionDiffs,
+    tipCatalogSources,
+    tipCatalogCards,
+    tipCatalogPowers,
   } = props;
   const resourceKind = props.affliction ? "affliction" : "enchantment";
   const resource = props.affliction ?? props.enchantment;
@@ -144,6 +156,25 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
   const cardTypeConfig = ENCHANTMENT_CARD_TYPE_CONFIG[cardTypeFilter];
   const afflictionCardType = props.affliction ? getAfflictionCardTypeRestriction(props.affliction) : null;
   const [commentCount, setCommentCount] = useState(0);
+
+  const tipCatalog = useMemo(
+    () => tipCatalogSources
+      ? createCardSideTipCatalog({
+        sources: tipCatalogSources,
+        powers: tipCatalogPowers ?? powers,
+        cards: tipCatalogCards ?? cards,
+        monsters,
+      })
+      : null,
+    [tipCatalogSources, tipCatalogPowers, powers, tipCatalogCards, cards, monsters],
+  );
+  const sideTips = useMemo(() => {
+    if (!tipCatalog) return [];
+    if (props.affliction) {
+      return collectAfflictionSideTips(props.affliction, tipCatalog, { includeSelf: true });
+    }
+    return collectEnchantmentSideTips(props.enchantment, tipCatalog, { includeSelf: true });
+  }, [props.affliction, props.enchantment, tipCatalog]);
 
   const relatedRelics = useMemo(() => {
     if (!relics || !props.enchantment) return [];
@@ -214,7 +245,12 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[22rem] flex-col items-center justify-center gap-5 py-4">
-          <div className="flex w-full flex-col items-center justify-center gap-5 md:flex-row md:items-center">
+          <CardSideTipsAnchor
+            mode="always"
+            preferSide="right"
+            tips={sideTips}
+            className="flex w-full max-w-[12rem] flex-col items-center"
+          >
             <div className="flex h-32 w-32 shrink-0 items-center justify-center sm:h-40 sm:w-40">
               {resource.imageUrl ? (
                 <Image
@@ -230,28 +266,10 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
                 </div>
               )}
             </div>
-
-            <GameHoverTip
-              title={resource.name}
-              className="w-full max-w-[23rem]"
-              style={{ minWidth: 280 }}
-            >
-              {entities ? (
-                <RichDescription
-                  description={resource.description}
-                  entities={entities}
-                  excludeEntityTerms={excludeSelf}
-                  excludeEntityTypes={ENCHANTMENT_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
-                  className="block text-left"
-                />
-              ) : (
-                <DescriptionText description={resource.description} className="block text-left" />
-              )}
-            </GameHoverTip>
-          </div>
+          </CardSideTipsAnchor>
         </section>
 
-        <aside className="flex flex-col gap-3">
+        <aside data-enchantment-detail-meta className="flex flex-col gap-3">
           <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">

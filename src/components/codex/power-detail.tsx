@@ -11,6 +11,7 @@ import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
+  CodexAffliction,
   CodexCard,
   CodexEnchantment,
   CodexEvent,
@@ -21,11 +22,13 @@ import {
   POWER_TYPE_CONFIG,
 } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import { DescriptionText } from "./codex-description";
+import {
+  createCardSideTipCatalog,
+  type CardSideTipCatalogSources,
+} from "@/lib/card-side-tip-catalog";
+import { collectPowerSideTips } from "@/lib/power-side-tips";
+import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
-import { GameHoverTip, type HoverTipVariant } from "./hover-tip";
-import { getPowerDetailDescription } from "./power-preview";
-import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import {
   getRelatedCardIdsForPower,
@@ -86,6 +89,10 @@ interface PowerDetailProps {
   relatedEnchantments?: CodexEnchantment[];
   relatedEvents?: CodexEvent[];
   relatedMonsters?: CodexMonster[];
+  relatedAfflictions?: CodexAffliction[];
+  tipCatalogSources?: CardSideTipCatalogSources;
+  tipCatalogCards?: CodexCard[];
+  tipCatalogPowers?: CodexPower[];
   onClose?: () => void;
 }
 
@@ -105,14 +112,6 @@ function getPowerDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
-function getPowerHoverTipVariant(power: CodexPower): HoverTipVariant {
-  if (power.type === "Buff") return "buff";
-  if (power.type === "Debuff") return "debuff";
-  return "default";
-}
-
-const POWER_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
-
 export function PowerDetail({
   serviceLocale,
   gameUi,
@@ -122,13 +121,16 @@ export function PowerDetail({
   patches,
   changes,
   versionDiffs,
-  entities,
   relatedCards = [],
   relatedRelics = [],
   relatedPotions = [],
   relatedEnchantments = [],
   relatedEvents = [],
   relatedMonsters = [],
+  relatedAfflictions = [],
+  tipCatalogSources,
+  tipCatalogCards,
+  tipCatalogPowers = [],
   onClose,
 }: PowerDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
@@ -136,16 +138,34 @@ export function PowerDetail({
   const typeConfig = POWER_TYPE_CONFIG[power.type];
   const [showBeta, setShowBeta] = useState(initialShowBeta && Boolean(power.betaImageUrl));
   const [commentCount, setCommentCount] = useState(0);
-  const excludeSelf = useMemo(
-    () => new Set([power.name, power.nameEn]),
-    [power.name, power.nameEn],
-  );
   const displayImageUrl = showBeta && power.betaImageUrl ? power.betaImageUrl : power.imageUrl;
   const lifecycleClassName = power.deprecated ? " opacity-50 grayscale saturate-0" : "";
-  const displayDescription = getPowerDetailDescription(power);
   const typeLabel = gameUi.powers.types[power.type].label || serviceText.labels.powerTypes[power.type].label;
   const stackLabel = serviceText.labels.powerStackTypes[power.stackType] ?? power.stackType;
   const backTitle = backToListTitle ?? gameUi.nav.powers;
+
+  const tipCatalog = useMemo(
+    () => tipCatalogSources
+      ? createCardSideTipCatalog({
+        sources: tipCatalogSources,
+        powers: tipCatalogPowers.length > 0 ? tipCatalogPowers : [power],
+        cards: tipCatalogCards ?? relatedCards,
+        monsters: relatedMonsters,
+      })
+      : null,
+    [tipCatalogSources, tipCatalogPowers, power, tipCatalogCards, relatedCards, relatedMonsters],
+  );
+  const afflictionsById = useMemo(
+    () => new Map(relatedAfflictions.map((item) => [item.id, item])),
+    [relatedAfflictions],
+  );
+  const sideTips = useMemo(() => {
+    if (!tipCatalog) return [];
+    return collectPowerSideTips(power, tipCatalog, {
+      includeSelf: true,
+      afflictionsById,
+    });
+  }, [power, tipCatalog, afflictionsById]);
   const cardById = new Map(relatedCards.map((card) => [card.id, card]));
   const relatedCardTargets: CodexReferenceTarget[] = getRelatedCardIdsForPower(relatedCards, power.id)
     .map((cardId) => cardById.get(cardId))
@@ -210,60 +230,44 @@ export function PowerDetail({
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[22rem] flex-col items-center justify-center gap-5 py-4">
-          <div className="flex w-full flex-col items-center justify-center gap-5 md:flex-row md:items-center">
-            <div className="flex shrink-0 flex-col items-center gap-3">
-              <div className="flex h-32 w-32 items-center justify-center sm:h-40 sm:w-40">
-                {displayImageUrl ? (
-                  <Image
-                    src={displayImageUrl}
-                    alt={power.name}
-                    width={160}
-                    height={160}
-                    className={`h-full w-full object-contain drop-shadow-lg${lifecycleClassName}`}
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center text-2xl text-gray-600">
-                    ?
-                  </div>
-                )}
-              </div>
-
-              {power.betaImageUrl && (
-                <button
-                  onClick={() => setShowBeta((v) => !v)}
-                  className={`rounded-lg border px-3 py-1 text-xs transition-all ${
-                    showBeta
-                      ? "border-purple-500/50 bg-purple-500/20 text-purple-400"
-                      : "border-white/10 bg-white/5 text-gray-400 hover:border-white/30"
-                  }`}
-                >
-                  {serviceText.cardsView.toggles.betaArt}
-                </button>
+          <CardSideTipsAnchor
+            mode="always"
+            preferSide="right"
+            tips={sideTips}
+            className="flex w-full max-w-[12rem] flex-col items-center gap-3"
+          >
+            <div className="flex h-32 w-32 shrink-0 items-center justify-center sm:h-40 sm:w-40">
+              {displayImageUrl ? (
+                <Image
+                  src={displayImageUrl}
+                  alt={power.name}
+                  width={160}
+                  height={160}
+                  className={`h-full w-full object-contain drop-shadow-lg${lifecycleClassName}`}
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-2xl text-gray-600">
+                  ?
+                </div>
               )}
             </div>
 
-            <GameHoverTip
-              title={power.name}
-              variant={getPowerHoverTipVariant(power)}
-              className="w-full max-w-[23rem]"
-              style={{ minWidth: 280 }}
-            >
-              {entities ? (
-                <RichDescription
-                  description={displayDescription}
-                  entities={entities}
-                  excludeEntityTerms={excludeSelf}
-                  excludeEntityTypes={POWER_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
-                  className="block text-left"
-                />
-              ) : (
-                <DescriptionText description={displayDescription} className="block text-left" />
-              )}
-            </GameHoverTip>
-          </div>
+            {power.betaImageUrl && (
+              <button
+                onClick={() => setShowBeta((v) => !v)}
+                className={`rounded-lg border px-3 py-1 text-xs transition-all ${
+                  showBeta
+                    ? "border-purple-500/50 bg-purple-500/20 text-purple-400"
+                    : "border-white/10 bg-white/5 text-gray-400 hover:border-white/30"
+                }`}
+              >
+                {serviceText.cardsView.toggles.betaArt}
+              </button>
+            )}
+          </CardSideTipsAnchor>
         </section>
 
-        <aside className="flex flex-col gap-3">
+        <aside data-power-detail-meta className="flex flex-col gap-3">
           <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
