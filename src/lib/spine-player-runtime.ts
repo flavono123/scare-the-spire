@@ -1,6 +1,6 @@
 "use client";
 
-import type { Skin, SpinePlayer, SpinePlayerConfig } from "@esotericsoftware/spine-player";
+import type { Downloader, Skin, SpinePlayer, SpinePlayerConfig } from "@esotericsoftware/spine-player";
 
 export type { SpinePlayer, SpinePlayerConfig } from "@esotericsoftware/spine-player";
 
@@ -16,6 +16,41 @@ declare global {
 }
 
 const SPINE_PLAYER_SCRIPT_SRC = "/generated/spine-player.min.js";
+
+type SpineDownloaderInternals = Downloader & {
+  start(
+    url: string,
+    success: (data: string) => void,
+    error: (status: number, responseText: string) => void,
+  ): boolean | void;
+  finish(url: string, status: number, data: string): void;
+};
+
+export function createSpinePlainTextDownloader(runtime: SpinePlayerRuntime): Downloader {
+  const downloader = new runtime.Downloader() as SpineDownloaderInternals;
+  downloader.downloadText = function downloadText(url, success, error) {
+    if (this.start(url, success, error)) return;
+    const rawDataUri = this.rawDataUris[url];
+    if (rawDataUri && !rawDataUri.includes(".")) {
+      try {
+        this.finish(url, 200, this.dataUriToString(rawDataUri));
+      } catch (errorValue) {
+        this.finish(url, 400, JSON.stringify(errorValue));
+      }
+      return;
+    }
+    const request = new XMLHttpRequest();
+    request.overrideMimeType("text/plain; charset=UTF-8");
+    request.open("GET", rawDataUri ? rawDataUri : url, true);
+    const done = () => {
+      this.finish(url, request.status, request.responseText);
+    };
+    request.onload = done;
+    request.onerror = done;
+    request.send();
+  };
+  return downloader;
+}
 
 let spineRuntimePromise: Promise<SpinePlayerRuntime> | null = null;
 

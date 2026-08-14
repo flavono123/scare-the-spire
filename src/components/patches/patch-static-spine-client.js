@@ -29,6 +29,32 @@
     return spineRuntimePromise;
   }
 
+  function createPlainTextDownloader(runtime) {
+    const downloader = new runtime.Downloader();
+    downloader.downloadText = function downloadText(url, success, error) {
+      if (this.start(url, success, error)) return;
+      const rawDataUri = this.rawDataUris[url];
+      if (rawDataUri && !rawDataUri.includes(".")) {
+        try {
+          this.finish(url, 200, this.dataUriToString(rawDataUri));
+        } catch (errorValue) {
+          this.finish(url, 400, JSON.stringify(errorValue));
+        }
+        return;
+      }
+      const request = new XMLHttpRequest();
+      request.overrideMimeType("text/plain; charset=UTF-8");
+      request.open("GET", rawDataUri ? rawDataUri : url, true);
+      const done = () => {
+        this.finish(url, request.status, request.responseText);
+      };
+      request.onload = done;
+      request.onerror = done;
+      request.send();
+    };
+    return downloader;
+  }
+
   function parseAsset(node) {
     const raw = node.getAttribute("data-static-spine-asset");
     if (!raw) return null;
@@ -220,6 +246,7 @@
       premultipliedAlpha: false,
       showControls: false,
       showLoading: false,
+      downloader: createPlainTextDownloader(state.runtime),
       viewport: {
         padLeft: "0%",
         padRight: "0%",
@@ -309,6 +336,7 @@
           premultipliedAlpha: false,
           showControls: false,
           showLoading: false,
+          downloader: createPlainTextDownloader(runtime),
           viewport: getViewport(asset),
           success: (loadedPlayer) => {
             state.player = loadedPlayer;

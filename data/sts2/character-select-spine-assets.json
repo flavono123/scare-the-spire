@@ -6,10 +6,10 @@
     "renderTags": [
       "character-select-background"
     ],
-    "atlasUrl": "/spine/sts2/character-select/defect/characterselect_defect.atlas",
-    "binaryUrl": "/spine/sts2/character-select/defect/characterselect_defect.skel",
+    "atlasUrl": "/spine/sts2/character-select/defect/characterselect_defect.atlas?v=fe7ff199a8",
+    "binaryUrl": "/spine/sts2/character-select/defect/characterselect_defect.skel?v=0378d500b6",
     "textureUrls": [
-      "/spine/sts2/character-select/defect/characterselect_defect.png"
+      "/spine/sts2/character-select/defect/characterselect_defect.png?v=acf60342c2"
     ],
     "skin": null,
     "skins": [
@@ -34,10 +34,10 @@
     "renderTags": [
       "character-select-background"
     ],
-    "atlasUrl": "/spine/sts2/character-select/ironclad/characterselect_ironclad.atlas",
-    "binaryUrl": "/spine/sts2/character-select/ironclad/characterselect_ironclad.skel",
+    "atlasUrl": "/spine/sts2/character-select/ironclad/characterselect_ironclad.atlas?v=2db6d971fa",
+    "binaryUrl": "/spine/sts2/character-select/ironclad/characterselect_ironclad.skel?v=14a7fb7c48",
     "textureUrls": [
-      "/spine/sts2/character-select/ironclad/characterselect_ironclad.png"
+      "/spine/sts2/character-select/ironclad/characterselect_ironclad.png?v=c579a16cde"
     ],
     "skin": null,
     "skins": [
@@ -62,10 +62,10 @@
     "renderTags": [
       "character-select-background"
     ],
-    "atlasUrl": "/spine/sts2/character-select/necrobinder/characterselect_necrobinder.atlas",
-    "binaryUrl": "/spine/sts2/character-select/necrobinder/characterselect_necrobinder.skel",
+    "atlasUrl": "/spine/sts2/character-select/necrobinder/characterselect_necrobinder.atlas?v=fa08210396",
+    "binaryUrl": "/spine/sts2/character-select/necrobinder/characterselect_necrobinder.skel?v=8682316a9a",
     "textureUrls": [
-      "/spine/sts2/character-select/necrobinder/characterselect_necrobinder.png"
+      "/spine/sts2/character-select/necrobinder/characterselect_necrobinder.png?v=269184249f"
     ],
     "skin": null,
     "skins": [
@@ -90,10 +90,10 @@
     "renderTags": [
       "character-select-background"
     ],
-    "atlasUrl": "/spine/sts2/character-select/regent/characterselect_regent.atlas",
-    "binaryUrl": "/spine/sts2/character-select/regent/characterselect_regent.skel",
+    "atlasUrl": "/spine/sts2/character-select/regent/characterselect_regent.atlas?v=5da2ce5ee3",
+    "binaryUrl": "/spine/sts2/character-select/regent/characterselect_regent.skel?v=b6b557b33d",
     "textureUrls": [
-      "/spine/sts2/character-select/regent/characterselect_regent.png"
+      "/spine/sts2/character-select/regent/characterselect_regent.png?v=5c87cbdb4d"
     ],
     "skin": "normal",
     "skins": [
@@ -126,10 +126,10 @@
     "renderTags": [
       "character-select-background"
     ],
-    "atlasUrl": "/spine/sts2/character-select/silent/characterselect_silent.atlas",
-    "binaryUrl": "/spine/sts2/character-select/silent/characterselect_silent.skel",
+    "atlasUrl": "/spine/sts2/character-select/silent/characterselect_silent.atlas?v=2b6e593b37",
+    "binaryUrl": "/spine/sts2/character-select/silent/characterselect_silent.skel?v=e5180f7bc0",
     "textureUrls": [
-      "/spine/sts2/character-select/silent/characterselect_silent.png"
+      "/spine/sts2/character-select/silent/characterselect_silent.png?v=9c2783f223"
     ],
     "skin": null,
     "skins": [

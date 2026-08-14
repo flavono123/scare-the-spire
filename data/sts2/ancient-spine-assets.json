@@ -6,10 +6,10 @@
     "renderTags": [
       "ancient-background"
     ],
-    "atlasUrl": "/spine/sts2/ancients/neow_room/neow.atlas",
-    "binaryUrl": "/spine/sts2/ancients/neow_room/neow.skel",
+    "atlasUrl": "/spine/sts2/ancients/neow_room/neow.atlas?v=36b9778e25",
+    "binaryUrl": "/spine/sts2/ancients/neow_room/neow.skel?v=810e833988",
     "textureUrls": [
-      "/spine/sts2/ancients/neow_room/neow.png"
+      "/spine/sts2/ancients/neow_room/neow.png?v=a5e49b0cbe"
     ],
     "skin": null,
     "skins": [
@@ -34,10 +34,10 @@
     "renderTags": [
       "ancient-background"
     ],
-    "atlasUrl": "/spine/sts2/ancients/tezcatara/tezcatara.atlas",
-    "binaryUrl": "/spine/sts2/ancients/tezcatara/tezcatara.skel",
+    "atlasUrl": "/spine/sts2/ancients/tezcatara/tezcatara.atlas?v=0d4e145358",
+    "binaryUrl": "/spine/sts2/ancients/tezcatara/tezcatara.skel?v=aa02f61c01",
     "textureUrls": [
-      "/spine/sts2/ancients/tezcatara/tezcatara.png"
+      "/spine/sts2/ancients/tezcatara/tezcatara.png?v=79dae0f2f2"
     ],
     "skin": null,
     "skins": [

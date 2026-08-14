@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { TextureAtlas, AtlasAttachmentLoader, SkeletonBinary } from "@esotericsoftware/spine-player";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -358,16 +359,39 @@ function walkActorFolders(root) {
     .sort();
 }
 
+function pickNamedAsset(files, folderName, extension) {
+  const matches = files.filter((file) => file.endsWith(extension)).sort();
+  if (matches.length === 0) return null;
+  const preferred = `${folderName}${extension}`;
+  return matches.includes(preferred) ? preferred : matches[0];
+}
+
+function atlasPageFiles(atlas) {
+  return [...new Set(atlas.pages.map((page) => String(page.name).split(/[?#]/, 1)[0]).filter(Boolean))];
+}
+
+function hashedPublicUrl(urlPath) {
+  const rel = urlPath.replace(/^\//, "");
+  const abs = path.join(repoRoot, "public", rel);
+  if (!fs.existsSync(abs)) {
+    throw new Error(`Missing public file for hashed Spine URL: ${urlPath}`);
+  }
+  const hash = crypto.createHash("sha1").update(fs.readFileSync(abs)).digest("hex").slice(0, 10);
+  return `${urlPath}?v=${hash}`;
+}
+
 function parseSkeleton({ folder, root, sharedAtlasFile = null }) {
   const dir = path.join(root, folder);
   const files = fs.readdirSync(dir);
-  const atlasFile = files.find((file) => file.endsWith(".atlas"));
-  const skelFile = files.find((file) => file.endsWith(".skel"));
-  const pngFiles = files.filter((file) => file.endsWith(".png")).sort();
+  // Pair by folder name so companion actors (e.g. regent_weapon.atlas) cannot
+  // be attached to the body skeleton. readdir() order is not stable.
+  const atlasFile = pickNamedAsset(files, folder, ".atlas");
+  const skelFile = pickNamedAsset(files, folder, ".skel");
   if (!atlasFile || !skelFile) return null;
 
   const atlasPath = sharedAtlasFile ?? path.join(dir, atlasFile);
   const atlas = new TextureAtlas(fs.readFileSync(atlasPath, "utf8"));
+  const pngFiles = sharedAtlasFile ? files.filter((file) => file.endsWith(".png")).sort() : atlasPageFiles(atlas);
   const loader = new AtlasAttachmentLoader(atlas);
   const binary = new SkeletonBinary(loader);
   // Copy Node's pooled Buffer into a zero-offset Uint8Array. SpineBinary reads
@@ -456,9 +480,9 @@ function buildVfxAssets() {
       id,
       folder,
       source: `animations/vfx/${folder}/${base}`,
-      atlasUrl: "/spine/sts2/vfx/spine-vfx.atlas",
-      binaryUrl: `/spine/sts2/vfx/${folder}/${skelFile}`,
-      textureUrls: pngFiles.map((file) => `/spine/sts2/vfx/${file}`),
+      atlasUrl: hashedPublicUrl("/spine/sts2/vfx/spine-vfx.atlas"),
+      binaryUrl: hashedPublicUrl(`/spine/sts2/vfx/${folder}/${skelFile}`),
+      textureUrls: pngFiles.map((file) => hashedPublicUrl(`/spine/sts2/vfx/${file}`)),
       animations: [],
       idleAnimation: "",
       durationSeconds: 0.75,
@@ -752,9 +776,9 @@ function buildMonsterAsset(monster, actor, alias, vfxById) {
     source: alias?.source ?? `animations/monsters/${actor.folder}/${actor.base}`,
     renderStatus: alias?.renderStatus ?? "spine",
     renderTags: alias?.tags ?? [],
-    atlasUrl: `/spine/sts2/monsters/${actor.folder}/${actor.atlasFile}`,
-    binaryUrl: `/spine/sts2/monsters/${actor.folder}/${actor.skelFile}`,
-    textureUrls: actor.pngFiles.map((file) => `/spine/sts2/monsters/${actor.folder}/${file}`),
+    atlasUrl: hashedPublicUrl(`/spine/sts2/monsters/${actor.folder}/${actor.atlasFile}`),
+    binaryUrl: hashedPublicUrl(`/spine/sts2/monsters/${actor.folder}/${actor.skelFile}`),
+    textureUrls: actor.pngFiles.map((file) => hashedPublicUrl(`/spine/sts2/monsters/${actor.folder}/${file}`)),
     skin: alias?.skin ?? null,
     skins: actor.skins,
     ...(skinParts.length > 0 ? { skinParts } : {}),
@@ -813,9 +837,9 @@ function buildCharacterAsset(character, actor, alias, vfxById) {
     source: `animations/characters/${actor.folder}/${actor.base}`,
     renderStatus: "spine",
     renderTags: [],
-    atlasUrl: `/spine/sts2/characters/${actor.folder}/${actor.atlasFile}`,
-    binaryUrl: `/spine/sts2/characters/${actor.folder}/${actor.skelFile}`,
-    textureUrls: actor.pngFiles.map((file) => `/spine/sts2/characters/${actor.folder}/${file}`),
+    atlasUrl: hashedPublicUrl(`/spine/sts2/characters/${actor.folder}/${actor.atlasFile}`),
+    binaryUrl: hashedPublicUrl(`/spine/sts2/characters/${actor.folder}/${actor.skelFile}`),
+    textureUrls: actor.pngFiles.map((file) => hashedPublicUrl(`/spine/sts2/characters/${actor.folder}/${file}`)),
     skin: null,
     skins: actor.skins,
     animations: animationNames,
@@ -854,9 +878,9 @@ function buildCharacterSelectAsset(character, actor, alias) {
     source: `animations/character_select/${actor.folder}/${actor.base}`,
     renderStatus: "spine",
     renderTags: ["character-select-background"],
-    atlasUrl: `/spine/sts2/character-select/${actor.folder}/${actor.atlasFile}`,
-    binaryUrl: `/spine/sts2/character-select/${actor.folder}/${actor.skelFile}`,
-    textureUrls: actor.pngFiles.map((file) => `/spine/sts2/character-select/${actor.folder}/${file}`),
+    atlasUrl: hashedPublicUrl(`/spine/sts2/character-select/${actor.folder}/${actor.atlasFile}`),
+    binaryUrl: hashedPublicUrl(`/spine/sts2/character-select/${actor.folder}/${actor.skelFile}`),
+    textureUrls: actor.pngFiles.map((file) => hashedPublicUrl(`/spine/sts2/character-select/${actor.folder}/${file}`)),
     skin,
     skins: actor.skins,
     animations: animationNames,
@@ -894,9 +918,9 @@ function buildAncientAsset(id, actor) {
     source: `animations/backgrounds/${actor.folder}/${actor.base}`,
     renderStatus: "spine",
     renderTags: ["ancient-background"],
-    atlasUrl: `/spine/sts2/ancients/${actor.folder}/${actor.atlasFile}`,
-    binaryUrl: `/spine/sts2/ancients/${actor.folder}/${actor.skelFile}`,
-    textureUrls: actor.pngFiles.map((file) => `/spine/sts2/ancients/${actor.folder}/${file}`),
+    atlasUrl: hashedPublicUrl(`/spine/sts2/ancients/${actor.folder}/${actor.atlasFile}`),
+    binaryUrl: hashedPublicUrl(`/spine/sts2/ancients/${actor.folder}/${actor.skelFile}`),
+    textureUrls: actor.pngFiles.map((file) => hashedPublicUrl(`/spine/sts2/ancients/${actor.folder}/${file}`)),
     skin: null,
     skins: actor.skins,
     animations: animationNames,

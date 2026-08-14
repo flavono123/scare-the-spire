@@ -3,6 +3,7 @@
 import { memo, useEffect, useMemo, useRef, useState, type CSSProperties, type MutableRefObject } from "react";
 import Image from "@/components/ui/static-image";
 import {
+  createSpinePlainTextDownloader,
   loadSpinePlayerRuntime,
   type SpinePhysics,
   type SpinePlayer,
@@ -197,8 +198,9 @@ function MonsterSpineStageComponent({
     const parent = containerRef.current;
 
     void loadSpinePlayerRuntime()
-      .then(({ SpinePlayer: SpinePlayerCtor, Skin: SpineSkinCtor, Physics }) => {
+      .then((runtime) => {
         if (disposed || !containerRef.current) return;
+        const { SpinePlayer: SpinePlayerCtor, Skin: SpineSkinCtor, Physics } = runtime;
         const viewport = getMonsterViewport(
           asset,
           viewportTransitionTime,
@@ -218,6 +220,7 @@ function MonsterSpineStageComponent({
             premultipliedAlpha: false,
             showControls: false,
             showLoading: false,
+            downloader: createSpinePlainTextDownloader(runtime),
             viewport,
             update: (loadedPlayer) => {
               if (skeletonTransform) applySkeletonTransform(loadedPlayer, skeletonTransform);
@@ -374,8 +377,9 @@ function MonsterSpineStageComponent({
     clearVfx(vfxPlayerRef, vfxContainerRef, vfxTimeoutRef);
 
     void loadSpinePlayerRuntime()
-      .then(({ SpinePlayer: SpinePlayerCtor }) => {
+      .then((runtime) => {
         if (disposed || !vfxContainerRef.current) return;
+        const { SpinePlayer: SpinePlayerCtor } = runtime;
 
         try {
           const vfxPlayer = new SpinePlayerCtor(parent, {
@@ -387,6 +391,7 @@ function MonsterSpineStageComponent({
           premultipliedAlpha: false,
           showControls: false,
           showLoading: false,
+          downloader: createSpinePlainTextDownloader(runtime),
           viewport: {
             padLeft: "0%",
             padRight: "0%",

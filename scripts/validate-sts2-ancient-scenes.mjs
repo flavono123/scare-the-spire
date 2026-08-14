@@ -54,7 +54,8 @@ function readJson(relativePath) {
 }
 
 function staticPath(url) {
-  return path.join(repoRoot, "public", url.replace(/^\/+/, ""));
+  const pathname = url.replace(/[?#].*$/, "").replace(/^\/+/, "");
+  return path.join(repoRoot, "public", pathname);
 }
 
 function assertStaticUrl(url, label) {

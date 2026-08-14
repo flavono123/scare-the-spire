@@ -4,10 +4,10 @@
     "source": "animations/characters/defect/defect",
     "renderStatus": "spine",
     "renderTags": [],
-    "atlasUrl": "/spine/sts2/characters/defect/defect.atlas",
-    "binaryUrl": "/spine/sts2/characters/defect/defect.skel",
+    "atlasUrl": "/spine/sts2/characters/defect/defect.atlas?v=847da142f6",
+    "binaryUrl": "/spine/sts2/characters/defect/defect.skel?v=35fa877de2",
     "textureUrls": [
-      "/spine/sts2/characters/defect/defect.png"
+      "/spine/sts2/characters/defect/defect.png?v=6f458ac796"
     ],
     "skin": null,
     "skins": [
@@ -44,13 +44,13 @@
         "idle_loop",
         "attack"
       ],
+      "LOW_HP_IDLE": [
+        "low_health_loop"
+      ],
       "POWER_UP": [
         "process",
         "idle_loop",
         "attack"
-      ],
-      "LOW_HP_IDLE": [
-        "low_health_loop"
       ]
     },
     "moveEffects": {
@@ -59,10 +59,10 @@
           "id": "VFX_LASER",
           "folder": "vfx_laser",
           "source": "animations/vfx/vfx_laser/laser",
-          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
-          "binaryUrl": "/spine/sts2/vfx/vfx_laser/laser.skel",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas?v=327ec82d30",
+          "binaryUrl": "/spine/sts2/vfx/vfx_laser/laser.skel?v=0fae7bb8de",
           "textureUrls": [
-            "/spine/sts2/vfx/laser.png"
+            "/spine/sts2/vfx/laser.png?v=34542df42c"
           ],
           "animations": [
             "animation"
@@ -79,13 +79,13 @@
     "source": "animations/characters/ironclad/ironclad",
     "renderStatus": "spine",
     "renderTags": [],
-    "atlasUrl": "/spine/sts2/characters/ironclad/ironclad.atlas",
-    "binaryUrl": "/spine/sts2/characters/ironclad/ironclad.skel",
+    "atlasUrl": "/spine/sts2/characters/ironclad/ironclad.atlas?v=ea63c2a777",
+    "binaryUrl": "/spine/sts2/characters/ironclad/ironclad.skel?v=bbf625cd84",
     "textureUrls": [
-      "/spine/sts2/characters/ironclad/ironclad.png",
-      "/spine/sts2/characters/ironclad/ironclad_2.png",
-      "/spine/sts2/characters/ironclad/ironclad_3.png",
-      "/spine/sts2/characters/ironclad/ironclad_4.png"
+      "/spine/sts2/characters/ironclad/ironclad.png?v=621ccec1a7",
+      "/spine/sts2/characters/ironclad/ironclad_2.png?v=7e20a25fb2",
+      "/spine/sts2/characters/ironclad/ironclad_3.png?v=1e5fb76547",
+      "/spine/sts2/characters/ironclad/ironclad_4.png?v=58c17ac9f2"
     ],
     "skin": null,
     "skins": [
@@ -123,13 +123,13 @@
         "idle_loop",
         "attack"
       ],
+      "LOW_HP_IDLE": [
+        "low_health_loop"
+      ],
       "HEAVY_ATTACK": [
         "attack_heavy",
         "idle_loop",
         "attack"
-      ],
-      "LOW_HP_IDLE": [
-        "low_health_loop"
       ]
     },
     "moveEffects": {}
@@ -139,12 +139,12 @@
     "source": "animations/characters/necrobinder/necrobinder",
     "renderStatus": "spine",
     "renderTags": [],
-    "atlasUrl": "/spine/sts2/characters/necrobinder/necrobinder.atlas",
-    "binaryUrl": "/spine/sts2/characters/necrobinder/necrobinder.skel",
+    "atlasUrl": "/spine/sts2/characters/necrobinder/necrobinder.atlas?v=8f023a5433",
+    "binaryUrl": "/spine/sts2/characters/necrobinder/necrobinder.skel?v=34c6a32df2",
     "textureUrls": [
-      "/spine/sts2/characters/necrobinder/necrobinder.png",
-      "/spine/sts2/characters/necrobinder/necrobinder_2.png",
-      "/spine/sts2/characters/necrobinder/necrobinder_3.png"
+      "/spine/sts2/characters/necrobinder/necrobinder.png?v=6c192a4491",
+      "/spine/sts2/characters/necrobinder/necrobinder_2.png?v=d537c4f98a",
+      "/spine/sts2/characters/necrobinder/necrobinder_3.png?v=5e365d2192"
     ],
     "skin": null,
     "skins": [
@@ -182,14 +182,14 @@
         "idle_loop",
         "attack"
       ],
+      "LOW_HP_IDLE": [
+        "low_health_loop"
+      ],
       "CAST": [
         "cast_mighty",
         "cast",
         "idle_loop",
         "attack"
-      ],
-      "LOW_HP_IDLE": [
-        "low_health_loop"
       ]
     },
     "moveEffects": {
@@ -198,10 +198,10 @@
           "id": "VFX_SCRATCH",
           "folder": "vfx_scratch",
           "source": "animations/vfx/vfx_scratch/scratch",
-          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
-          "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas?v=327ec82d30",
+          "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel?v=22cf2c07a3",
           "textureUrls": [
-            "/spine/sts2/vfx/scratch.png"
+            "/spine/sts2/vfx/scratch.png?v=7e2fd15523"
           ],
           "animations": [
             "scratch"
@@ -218,11 +218,10 @@
     "source": "animations/characters/regent/regent",
     "renderStatus": "spine",
     "renderTags": [],
-    "atlasUrl": "/spine/sts2/characters/regent/regent.atlas",
-    "binaryUrl": "/spine/sts2/characters/regent/regent.skel",
+    "atlasUrl": "/spine/sts2/characters/regent/regent.atlas?v=70c4f9fbca",
+    "binaryUrl": "/spine/sts2/characters/regent/regent.skel?v=b3b742723a",
     "textureUrls": [
-      "/spine/sts2/characters/regent/regent.png",
-      "/spine/sts2/characters/regent/regent_weapon.png"
+      "/spine/sts2/characters/regent/regent.png?v=71e14e9e66"
     ],
     "skin": null,
     "skins": [
@@ -262,13 +261,13 @@
         "idle_loop",
         "attack"
       ],
+      "LOW_HP_IDLE": [
+        "low_health_loop"
+      ],
       "SOVEREIGN_BLADE": [
         "attack_sovereign",
         "idle_loop",
         "attack"
-      ],
-      "LOW_HP_IDLE": [
-        "low_health_loop"
       ]
     },
     "moveEffects": {}
@@ -278,10 +277,10 @@
     "source": "animations/characters/silent/silent",
     "renderStatus": "spine",
     "renderTags": [],
-    "atlasUrl": "/spine/sts2/characters/silent/silent.atlas",
-    "binaryUrl": "/spine/sts2/characters/silent/silent.skel",
+    "atlasUrl": "/spine/sts2/characters/silent/silent.atlas?v=2c5ec39ed1",
+    "binaryUrl": "/spine/sts2/characters/silent/silent.skel?v=9b88119be1",
     "textureUrls": [
-      "/spine/sts2/characters/silent/silent.png"
+      "/spine/sts2/characters/silent/silent.png?v=163b1fc044"
     ],
     "skin": null,
     "skins": [
@@ -328,10 +327,10 @@
           "id": "VFX_SCRATCH",
           "folder": "vfx_scratch",
           "source": "animations/vfx/vfx_scratch/scratch",
-          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
-          "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas?v=327ec82d30",
+          "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel?v=22cf2c07a3",
           "textureUrls": [
-            "/spine/sts2/vfx/scratch.png"
+            "/spine/sts2/vfx/scratch.png?v=7e2fd15523"
           ],
           "animations": [
             "scratch"

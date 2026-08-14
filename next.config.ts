@@ -67,6 +67,15 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: "/spine/:path*.atlas",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "text/plain; charset=utf-8",
+          },
+        ],
+      },
+      {
         source: "/generated/:path*",
         headers: [
           {

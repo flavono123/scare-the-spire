@@ -3,6 +3,7 @@
 import { memo, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import Image from "@/components/ui/static-image";
 import {
+  createSpinePlainTextDownloader,
   loadSpinePlayerRuntime,
   type SpinePlayer,
   type SpinePlayerConfig,
@@ -297,7 +298,8 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
     });
 
     void loadSpinePlayerRuntime()
-      .then(({ SpinePlayer: SpinePlayerCtor }) => {
+      .then((runtime) => {
+        const { SpinePlayer: SpinePlayerCtor } = runtime;
         for (const part of visibleParts) {
           const parent = mountedPartRefs[part.id];
           if (!parent || disposed) continue;
@@ -312,6 +314,7 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
             premultipliedAlpha: false,
             showControls: false,
             showLoading: false,
+            downloader: createSpinePlainTextDownloader(runtime),
             viewport: {
               ...DECIMILLIPEDE_VIEWPORT,
               padLeft: "0%",
