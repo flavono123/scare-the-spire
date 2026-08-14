@@ -19,6 +19,7 @@
       "die",
       "hurt",
       "idle_loop",
+      "low_health_loop",
       "process",
       "relaxed_loop"
     ],
@@ -94,8 +95,8 @@
       "die",
       "hurt",
       "idle_loop",
-      "relaxed_loop",
-      "weak_loop"
+      "low_health_loop",
+      "relaxed_loop"
     ],
     "bestiaryAnimations": [],
     "idleAnimation": "idle_loop",
@@ -135,7 +136,9 @@
     "atlasUrl": "/spine/sts2/characters/necrobinder/necrobinder.atlas",
     "binaryUrl": "/spine/sts2/characters/necrobinder/necrobinder.skel",
     "textureUrls": [
-      "/spine/sts2/characters/necrobinder/necrobinder.png"
+      "/spine/sts2/characters/necrobinder/necrobinder.png",
+      "/spine/sts2/characters/necrobinder/necrobinder_2.png",
+      "/spine/sts2/characters/necrobinder/necrobinder_3.png"
     ],
     "skin": null,
     "skins": [
@@ -148,7 +151,7 @@
       "die",
       "hurt",
       "idle_loop",
-      "nervous_loop",
+      "low_health_loop",
       "relaxed_loop"
     ],
     "bestiaryAnimations": [],
@@ -220,9 +223,12 @@
       "attack",
       "attack_sovereign",
       "cast",
+      "defend",
       "die",
       "hurt",
       "idle_loop",
+      "inactive loop",
+      "low_health_loop",
       "relaxed_loop"
     ],
     "bestiaryAnimations": [],
@@ -275,6 +281,7 @@
       "die",
       "hurt",
       "idle_loop",
+      "low_health_loop",
       "relaxed_loop",
       "shiv"
     ],
