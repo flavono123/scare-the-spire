@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { bakeDescription } from "../src/lib/codex-bake";
 import {
   buildCardSideTipCatalog,
   collectCardSideTips,
@@ -220,6 +221,20 @@ async function main() {
     rail: { left: 620, right: 880, top: 80, bottom: 780 },
   });
   assert.equal(tight, null);
+
+  const expectAFight = cards.find((card) => card.id === "EXPECT_A_FIGHT");
+  assert.ok(expectAFight);
+  assert.equal(expectAFight.vars.CalculatedBlock, 15);
+  assert.match(expectAFight.description, /15/);
+  assert.equal(expectAFight.description.includes("X"), false);
+  assert.match(
+    bakeDescription(expectAFight.descriptionRaw, {
+      ...expectAFight.vars,
+      CalculatedBlock: 16,
+      CalculationExtra: 8,
+    }),
+    /16/,
+  );
 
   console.log("card-keyword-tips.selfcheck: ok");
 }

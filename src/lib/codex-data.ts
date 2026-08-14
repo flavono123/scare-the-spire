@@ -131,6 +131,8 @@ interface RawCard {
 const CARD_VAR_FALLBACKS: Record<string, Record<string, number>> = {
   BORROWED_TIME: { ExtraCost: 1 },
   DOMINATE: { VulnerablePower: 1 },
+  // Out of combat, CalculatedBlock equals CalculationBase (Strength multiplier is 0).
+  EXPECT_A_FIGHT: { CalculatedBlock: 15 },
 };
 
 const CARD_RUNTIME_DESCRIPTION_VARS: Record<string, readonly string[]> = {
@@ -139,6 +141,7 @@ const CARD_RUNTIME_DESCRIPTION_VARS: Record<string, readonly string[]> = {
 
 const CARD_UPGRADE_FALLBACKS: Record<string, Record<string, string | number>> = {
   DOMINATE: { vulnerablepower: "+1" },
+  EXPECT_A_FIGHT: { calculatedblock: "+1" },
 };
 
 const CARD_SPECIAL_UPGRADES: Record<string, NonNullable<CodexCard["specialUpgrade"]>> = {
