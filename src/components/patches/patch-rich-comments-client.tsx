@@ -13,6 +13,11 @@ import { StoryComposerModal } from "@/components/story-composer-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
 import type { ServiceLocale } from "@/lib/i18n";
+import {
+  countStoriesByPatchLine,
+  indexPatchLines,
+  storyMatchesPatchLine,
+} from "@/lib/resolve-story-patch-line";
 import type { ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { STS2Patch, STS2PatchLine, Story } from "@/lib/types";
 
@@ -52,6 +57,7 @@ function readPatchStoryConfig(): PatchStoryConfig | null {
 function PatchStorySurface({ config }: { config: PatchStoryConfig }) {
   const { userId, ready, ensureUser } = useAuth();
   const communityStories = useCommunityStories(userId, { source: config.patchId, limit: 200 });
+  const patchLineMap = useMemo(() => indexPatchLines(config.patchLines), [config.patchLines]);
   const [activePatchLineId, setActivePatchLineId] = useState<string | null>(null);
   const [composerPatchLineId, setComposerPatchLineId] = useState<string | null>(null);
   const activePatchLine = useMemo(
@@ -65,20 +71,19 @@ function PatchStorySurface({ config }: { config: PatchStoryConfig }) {
   const activePatchLineStories = useMemo(() => {
     if (!activePatchLine) return [];
     const communityPatchLineStories = communityStories.stories.filter((story) =>
-      story.community && story.patchLineId === activePatchLine.id,
+      story.community && storyMatchesPatchLine(story, activePatchLine, patchLineMap),
     );
     const staticPatchLineStories = config.staticStories.filter((story) =>
-      story.patchLineId === activePatchLine.id,
+      storyMatchesPatchLine(story, activePatchLine, patchLineMap),
     );
     return sortPatchLineStories([...communityPatchLineStories, ...staticPatchLineStories]);
-  }, [activePatchLine, communityStories.stories, config.staticStories]);
+  }, [activePatchLine, communityStories.stories, config.staticStories, patchLineMap]);
 
   useEffect(() => {
-    const counts = new Map<string, number>();
-    for (const story of communityStories.stories) {
-      if (!story.community || !story.patchLineId) continue;
-      counts.set(story.patchLineId, (counts.get(story.patchLineId) ?? 0) + 1);
-    }
+    const counts = countStoriesByPatchLine(
+      communityStories.stories.filter((story) => story.community),
+      patchLineMap,
+    );
 
     const copy = patchLineStoryCopy(config.serviceLocale);
     document.querySelectorAll<HTMLElement>("[data-patch-line-story-action]").forEach((action) => {
@@ -101,7 +106,7 @@ function PatchStorySurface({ config }: { config: PatchStoryConfig }) {
       action.title = presentation.actionLabel;
       action.setAttribute("aria-label", `${presentation.actionLabel}. ${copy.countLabel(total)}`);
     });
-  }, [communityStories.stories, communityStories.unavailable, config.serviceLocale]);
+  }, [communityStories.stories, communityStories.unavailable, config.serviceLocale, patchLineMap]);
 
   useEffect(() => {
     const onClick = (event: MouseEvent) => {

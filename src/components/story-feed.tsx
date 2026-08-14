@@ -16,6 +16,7 @@ import { CommentSection } from "@/components/comment-section";
 import { EngagementSummary } from "@/components/engagement-summary";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 import { PatchLineReferenceBlock } from "@/components/patch-line-reference";
+import { resolveStoryPatchLine } from "@/lib/resolve-story-patch-line";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { StoryComposerModal } from "@/components/story-composer-modal";
 import { StoryWriteIcon } from "@/components/story-token-icon";
@@ -173,7 +174,7 @@ function stableStoryOrder(
 }
 
 function storySearchText(story: Story, patchLineMap: Map<string, STS2PatchLine>) {
-  const patchLine = story.patchLineId ? patchLineMap.get(story.patchLineId) : undefined;
+  const patchLine = resolveStoryPatchLine(story, patchLineMap);
   return [
     story.sentence,
     story.authorName,
@@ -398,34 +399,6 @@ function EntityInfoBlock({ entityType, entityId, card, relic, potion, label }: {
 function patchHrefFromId(patch: string | undefined): string | null {
   if (!patch) return null;
   return `/patches/${patch.replace(/^v/, "")}`;
-}
-
-function samePatchId(left: string | undefined, right: string | undefined) {
-  if (!left || !right) return false;
-  return left.replace(/^v/, "") === right.replace(/^v/, "");
-}
-
-function resolveStoryPatchLine(
-  story: Story,
-  patchLineMap: Map<string, STS2PatchLine>,
-): STS2PatchLine | undefined {
-  if (!story.patchLineId) return undefined;
-  const exact = patchLineMap.get(story.patchLineId);
-  if (exact) return exact;
-
-  const ordinalPrefix = story.patchLineId.match(/^(.*?:line-\d+-)/)?.[1];
-  if (ordinalPrefix) {
-    for (const line of patchLineMap.values()) {
-      if (line.id.startsWith(ordinalPrefix)) return line;
-    }
-  }
-
-  if (!story.source || !story.entityType || !story.entityId) return undefined;
-  const entityCandidates = Array.from(patchLineMap.values()).filter((line) =>
-    samePatchId(line.patch, story.source)
-    && line.entityRefs.some((ref) => ref.type === story.entityType && ref.id === story.entityId),
-  );
-  return entityCandidates.length === 1 ? entityCandidates[0] : undefined;
 }
 
 function STS2PatchLineBlock({

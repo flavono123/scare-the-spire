@@ -55,8 +55,13 @@ import {
   type ResourcePatchIndexGroup,
   type ResourcePatchIndexResource,
 } from "@/lib/resource-patch-index";
+import {
+  countStoriesByPatchLine,
+  indexPatchLines,
+  storyMatchesPatchLine,
+} from "@/lib/resolve-story-patch-line";
 import { sts2NavItems } from "@/lib/site-nav-items";
-import type { STS2PatchLine, Story, StoryEntityType } from "@/lib/types";
+import type { STS2PatchLine, StoryEntityType } from "@/lib/types";
 import { serviceMessages } from "@/messages/service";
 
 const DEFAULT_VISIBLE_GROUP_COUNT = 4;
@@ -215,15 +220,6 @@ function findInitialResource(data: ResourcePatchIndexData): ResourcePatchIndexRe
   const first = character ?? data.groups[0]?.resources[0];
   if (!first) throw new Error("Resource patch index has no resources");
   return first;
-}
-
-function countStoriesByPatchLine(stories: { patchLineId?: string }[]): Map<string, number> {
-  const counts = new Map<string, number>();
-  for (const story of stories) {
-    if (!story.patchLineId) continue;
-    counts.set(story.patchLineId, (counts.get(story.patchLineId) ?? 0) + 1);
-  }
-  return counts;
 }
 
 function IndexTokenTooltip({
@@ -715,13 +711,17 @@ export function ResourcePatchIndexExplorer({
     ? matchingGroups
     : matchingGroups.slice(0, DEFAULT_VISIBLE_GROUP_COUNT);
   const canToggleAllGroups = !normalizedQuery && matchingGroups.length > DEFAULT_VISIBLE_GROUP_COUNT;
+  const patchLineMap = useMemo(
+    () => indexPatchLines(Object.values(data.lines)),
+    [data.lines],
+  );
   const staticStoryCounts = useMemo(
-    () => countStoriesByPatchLine(data.staticStories),
-    [data.staticStories],
+    () => countStoriesByPatchLine(data.staticStories, patchLineMap),
+    [data.staticStories, patchLineMap],
   );
   const communityStoryCounts = useMemo(
-    () => countStoriesByPatchLine(communityStories.stories),
-    [communityStories.stories],
+    () => countStoriesByPatchLine(communityStories.stories, patchLineMap),
+    [communityStories.stories, patchLineMap],
   );
   const sortedSelectedLines = useMemo(() => {
     const direction = changeSort.direction === "asc" ? 1 : -1;
@@ -749,9 +749,9 @@ export function ResourcePatchIndexExplorer({
   const activeStories = useMemo(() => {
     if (!activePatchLine) return [];
     const matches = [...data.staticStories, ...communityStories.stories]
-      .filter((story): story is Story => story.patchLineId === activePatchLine.id);
+      .filter((story) => storyMatchesPatchLine(story, activePatchLine, patchLineMap));
     return sortPatchLineStories(matches);
-  }, [activePatchLine, communityStories.stories, data.staticStories]);
+  }, [activePatchLine, communityStories.stories, data.staticStories, patchLineMap]);
 
   const selectResource = (resource: ResourcePatchIndexResource) => {
     setSelectedKey(resourceKey(resource));

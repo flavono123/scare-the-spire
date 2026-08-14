@@ -18,6 +18,11 @@ import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
 import type { ServiceLocale } from "@/lib/i18n";
 import { patchLineDisplayText } from "@/lib/patch-line-display";
+import {
+  countStoriesByPatchLine,
+  indexPatchLines,
+  storyMatchesPatchLine,
+} from "@/lib/resolve-story-patch-line";
 import type { ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { STS2Patch, STS2PatchLine, Story } from "@/lib/types";
 import { serviceMessages } from "@/messages/service";
@@ -136,15 +141,6 @@ export function PatchLineStoryAction({
       </span>
     </span>
   );
-}
-
-function countStoriesByPatchLine(stories: { patchLineId?: string }[]) {
-  const counts = new Map<string, number>();
-  for (const story of stories) {
-    if (!story.patchLineId) continue;
-    counts.set(story.patchLineId, (counts.get(story.patchLineId) ?? 0) + 1);
-  }
-  return counts;
 }
 
 function storyPublishedTime(story: Story) {
@@ -292,14 +288,18 @@ export function PatchNoteWithStoryActions({
   const communityStories = useCommunityStories(userId, { source: patchId, limit: 200 });
   const [activePatchLineId, setActivePatchLineId] = useState<string | null>(null);
   const [composerPatchLineId, setComposerPatchLineId] = useState<string | null>(null);
-  const patchLineIds = useMemo(() => new Set(patchLines.map((patchLine) => patchLine.id)), [patchLines]);
-  const staticStoryCounts = useMemo(() => countStoriesByPatchLine(staticStories), [staticStories]);
-  const communityStoryCounts = useMemo(() => {
-    const scopedStories = communityStories.stories.filter((story) =>
-      story.community && story.patchLineId && patchLineIds.has(story.patchLineId),
-    );
-    return countStoriesByPatchLine(scopedStories);
-  }, [communityStories.stories, patchLineIds]);
+  const patchLineMap = useMemo(() => indexPatchLines(patchLines), [patchLines]);
+  const staticStoryCounts = useMemo(
+    () => countStoriesByPatchLine(staticStories, patchLineMap),
+    [patchLineMap, staticStories],
+  );
+  const communityStoryCounts = useMemo(
+    () => countStoriesByPatchLine(
+      communityStories.stories.filter((story) => story.community),
+      patchLineMap,
+    ),
+    [communityStories.stories, patchLineMap],
+  );
   const activePatchLine = useMemo(
     () => patchLines.find((patchLine) => patchLine.id === activePatchLineId) ?? null,
     [activePatchLineId, patchLines],
@@ -311,11 +311,13 @@ export function PatchNoteWithStoryActions({
   const activePatchLineStories = useMemo(() => {
     if (!activePatchLine) return [];
     const communityPatchLineStories = communityStories.stories.filter((story) =>
-      story.community && story.patchLineId === activePatchLine.id,
+      story.community && storyMatchesPatchLine(story, activePatchLine, patchLineMap),
     );
-    const staticPatchLineStories = staticStories.filter((story) => story.patchLineId === activePatchLine.id);
+    const staticPatchLineStories = staticStories.filter((story) =>
+      storyMatchesPatchLine(story, activePatchLine, patchLineMap),
+    );
     return sortPatchLineStories([...communityPatchLineStories, ...staticPatchLineStories]);
-  }, [activePatchLine, communityStories.stories, staticStories]);
+  }, [activePatchLine, communityStories.stories, patchLineMap, staticStories]);
   const patchLineActions = useMemo(() => {
     const actions = new Map<string, ReactNode>();
     for (const patchLine of patchLines) {
