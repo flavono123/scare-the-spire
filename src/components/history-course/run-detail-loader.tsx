@@ -41,7 +41,7 @@ interface CodexLookupData {
 let codexLookupPromise: Promise<CodexLookupData> | null = null;
 
 function fetchCodexLookupData(): Promise<CodexLookupData> {
-  codexLookupPromise ??= fetch(COMPENDIUM_DETAIL_PAYLOAD_PATH)
+  codexLookupPromise ??= fetch(COMPENDIUM_DETAIL_PAYLOAD_PATH, { cache: "no-cache" })
     .then((response) => {
       if (!response.ok) {
         throw new Error(`Failed to load ${COMPENDIUM_DETAIL_PAYLOAD_PATH}`);

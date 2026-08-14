@@ -214,8 +214,6 @@
     const player = new state.runtime.SpinePlayer(state.effectNode, {
       binaryUrl: effect.binaryUrl,
       atlasUrl: effect.atlasUrl,
-      animation: effect.idleAnimation,
-      animations: effect.animations,
       alpha: true,
       backgroundColor: "00000000",
       preserveDrawingBuffer: false,
@@ -299,11 +297,10 @@
       .then((runtime) => {
         state.runtime = runtime;
         const monsterName = node.getAttribute("data-static-spine-monster-name") || asset.id;
-        const player = new runtime.SpinePlayer(node, {
+        try {
+          const player = new runtime.SpinePlayer(node, {
           binaryUrl: asset.binaryUrl,
           atlasUrl: asset.atlasUrl,
-          animation: asset.idleAnimation,
-          animations: asset.animations,
           skin: asset.skin || undefined,
           skins: asset.skins,
           alpha: true,
@@ -325,8 +322,12 @@
             console.warn(`Failed to load static Spine asset for ${monsterName}: ${message}`);
             setReady(node, false);
           },
-        });
-        state.player = player;
+          });
+          state.player = player;
+        } catch (error) {
+          console.warn(`Failed to load static Spine asset for ${monsterName}:`, error);
+          setReady(node, false);
+        }
       })
       .catch((error) => {
         console.warn("Failed to initialize static Spine preview:", error);

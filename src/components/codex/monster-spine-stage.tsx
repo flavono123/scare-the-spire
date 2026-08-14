@@ -206,74 +206,79 @@ function MonsterSpineStageComponent({
           stableViewportOverride,
         );
 
-        player = new SpinePlayerCtor(parent, {
-          binaryUrl: asset.binaryUrl,
-          atlasUrl: asset.atlasUrl,
-          animation: asset.idleAnimation,
-          animations: asset.animations,
-          skin: singleSkin ?? undefined,
-          skins: asset.skins,
-          alpha: true,
-          backgroundColor: "00000000",
-          preserveDrawingBuffer: false,
-          premultipliedAlpha: false,
-          showControls: false,
-          showLoading: false,
-          viewport,
-          update: (loadedPlayer) => {
-            if (skeletonTransform) applySkeletonTransform(loadedPlayer, skeletonTransform);
-            const target = formPlacementTargetRef.current;
-            if (target) {
-              const attachment = formAttachmentRef.current;
-              const next = measureSpinePlayerFormPlacement(
-                loadedPlayer,
-                parent,
-                attachment,
-              );
-              if (!next || !attachment) {
-                target.current = null;
-              } else if (attachment.snap) {
-                target.current = next;
-              } else {
-                const current = target.current ?? measureSpinePlayerFormPlacement(
+        try {
+          player = new SpinePlayerCtor(parent, {
+            binaryUrl: asset.binaryUrl,
+            atlasUrl: asset.atlasUrl,
+            skin: singleSkin ?? undefined,
+            skins: asset.skins,
+            alpha: true,
+            backgroundColor: "00000000",
+            preserveDrawingBuffer: false,
+            premultipliedAlpha: false,
+            showControls: false,
+            showLoading: false,
+            viewport,
+            update: (loadedPlayer) => {
+              if (skeletonTransform) applySkeletonTransform(loadedPlayer, skeletonTransform);
+              const target = formPlacementTargetRef.current;
+              if (target) {
+                const attachment = formAttachmentRef.current;
+                const next = measureSpinePlayerFormPlacement(
                   loadedPlayer,
                   parent,
                   attachment,
-                  true,
-                ) ?? next;
-                const speed = clamp(attachment.interpolationSpeed, 0, 1);
-                target.current = {
-                  x: current.x + (next.x - current.x) * speed,
-                  y: current.y + (next.y - current.y) * speed,
-                  scaleX: next.scaleX,
-                  scaleY: next.scaleY,
-                };
+                );
+                if (!next || !attachment) {
+                  target.current = null;
+                } else if (attachment.snap) {
+                  target.current = next;
+                } else {
+                  const current = target.current ?? measureSpinePlayerFormPlacement(
+                    loadedPlayer,
+                    parent,
+                    attachment,
+                    true,
+                  ) ?? next;
+                  const speed = clamp(attachment.interpolationSpeed, 0, 1);
+                  target.current = {
+                    x: current.x + (next.x - current.x) * speed,
+                    y: current.y + (next.y - current.y) * speed,
+                    scaleX: next.scaleX,
+                    scaleY: next.scaleY,
+                  };
+                }
               }
-            }
-          },
-          success: (loadedPlayer) => {
-            if (disposed) return;
-            if (skeletonTransform) applySkeletonTransform(loadedPlayer, skeletonTransform);
-            applyCompositeSkin(loadedPlayer, SpineSkinCtor, Physics, compositeSkinNames, monsterName);
-            applyIdleTracks(loadedPlayer, asset.idleTracks);
-            playerRef.current = loadedPlayer;
-            setAvailableAnimations(loadedPlayer.skeleton?.data.animations.map((animation) => animation.name) ?? asset.animations);
-            setLoadState("ready");
-            reportSpineVisualBounds(loadedPlayer, parent, onVisualBoundsChange);
-            window.requestAnimationFrame(() => {
-              if (!disposed) window.requestAnimationFrame(() => {
-                if (!disposed) onReady?.();
+            },
+            success: (loadedPlayer) => {
+              if (disposed) return;
+              if (skeletonTransform) applySkeletonTransform(loadedPlayer, skeletonTransform);
+              applyCompositeSkin(loadedPlayer, SpineSkinCtor, Physics, compositeSkinNames, monsterName);
+              applyIdleTracks(loadedPlayer, asset.idleTracks);
+              playerRef.current = loadedPlayer;
+              setAvailableAnimations(loadedPlayer.skeleton?.data.animations.map((animation) => animation.name) ?? asset.animations);
+              setLoadState("ready");
+              reportSpineVisualBounds(loadedPlayer, parent, onVisualBoundsChange);
+              window.requestAnimationFrame(() => {
+                if (!disposed) window.requestAnimationFrame(() => {
+                  if (!disposed) onReady?.();
+                });
               });
-            });
-          },
-          error: (_loadedPlayer, message) => {
-            if (disposed) return;
-            console.warn(`Failed to load Spine asset for ${monsterName}: ${message}`);
-            setLoadState("error");
-            reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChange);
-          },
-        });
-        playerRef.current = player;
+            },
+            error: (_loadedPlayer, message) => {
+              if (disposed) return;
+              console.warn(`Failed to load Spine asset for ${monsterName}: ${message}`);
+              setLoadState("error");
+              reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChange);
+            },
+          });
+          playerRef.current = player;
+        } catch (error: unknown) {
+          if (disposed) return;
+          console.warn(`Failed to load Spine asset for ${monsterName}:`, error);
+          setLoadState("error");
+          reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChange);
+        }
       })
       .catch((error: unknown) => {
         if (disposed) return;
@@ -372,11 +377,10 @@ function MonsterSpineStageComponent({
       .then(({ SpinePlayer: SpinePlayerCtor }) => {
         if (disposed || !vfxContainerRef.current) return;
 
-        const vfxPlayer = new SpinePlayerCtor(parent, {
+        try {
+          const vfxPlayer = new SpinePlayerCtor(parent, {
           binaryUrl: effect.binaryUrl,
           atlasUrl: effect.atlasUrl,
-          animation: effect.idleAnimation,
-          animations: effect.animations,
           alpha: true,
           backgroundColor: "00000000",
           preserveDrawingBuffer: false,
@@ -409,8 +413,13 @@ function MonsterSpineStageComponent({
             console.warn(`Failed to load Spine VFX ${effect.id} for ${monsterName}: ${message}`);
             clearVfx(vfxPlayerRef, vfxContainerRef, vfxTimeoutRef);
           },
-        });
-        vfxPlayerRef.current = vfxPlayer;
+          });
+          vfxPlayerRef.current = vfxPlayer;
+        } catch (error: unknown) {
+          if (disposed) return;
+          console.warn(`Failed to load Spine VFX ${effect.id} for ${monsterName}:`, error);
+          clearVfx(vfxPlayerRef, vfxContainerRef, vfxTimeoutRef);
+        }
       })
       .catch((error: unknown) => {
         if (disposed) return;

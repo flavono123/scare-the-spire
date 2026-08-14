@@ -14,7 +14,7 @@ type Payload = {
 let catalogPromise: Promise<Map<string, CodexCard>> | null = null;
 
 function loadCatalog(): Promise<Map<string, CodexCard>> {
-  catalogPromise ??= fetch(COMPENDIUM_DETAIL_PAYLOAD_PATH)
+  catalogPromise ??= fetch(COMPENDIUM_DETAIL_PAYLOAD_PATH, { cache: "no-cache" })
     .then((res) => {
       if (!res.ok) throw new Error(`cover card catalog ${res.status}`);
       return res.json() as Promise<Payload>;

@@ -47,7 +47,7 @@ function fetchDetailPayload(payloadPath: string): Promise<CompendiumDetailPayloa
   const existingPromise = payloadPromises.get(payloadPath);
   if (existingPromise) return existingPromise;
 
-  const nextPromise = fetch(payloadPath)
+  const nextPromise = fetch(payloadPath, { cache: "no-cache" })
     .then((response) => {
       if (!response.ok) {
         throw new Error(`Failed to load ${payloadPath}`);
