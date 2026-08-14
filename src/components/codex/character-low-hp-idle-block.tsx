@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import type { CodexCharacter, MonsterSpineAsset } from "@/lib/codex-types";
@@ -75,8 +75,6 @@ function CharacterLowHpIdleCell({
   character: CodexCharacter;
   serviceLocale: ServiceLocale;
 }) {
-  const surfaceRef = useRef<HTMLDivElement | null>(null);
-  const [stageInView, setStageInView] = useState(false);
   const name = serviceLocale === "ko" ? character.name : character.nameEn;
   const href = localizeHref(buildCompendiumResourceHref("character", character.id), serviceLocale);
   const color = CHARACTER_COLORS[character.id.toLowerCase()] ?? "#eab308";
@@ -90,57 +88,40 @@ function CharacterLowHpIdleCell({
   );
   const staticAssetJson = staticAsset ? JSON.stringify(staticAsset) : undefined;
 
-  useEffect(() => {
-    const node = surfaceRef.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setStageInView(entry.isIntersecting && entry.intersectionRatio >= 0.55),
-      { threshold: [0, 0.55] },
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <div className="flex min-w-0 flex-col items-center gap-2">
       <div
-        ref={surfaceRef}
         data-character-low-hp-idle={character.id}
         className="relative h-44 w-full sm:h-52"
       >
-        {stageInView ? (
-          <CharacterSpineStage
-            character={character}
-            selectedMoveId="IDLE"
-            lowHealthIdle
-            fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.55)]"
-            className="relative z-20 h-full w-full"
+        {character.combatImageUrl ? (
+          <Image
+            src={character.combatImageUrl}
+            alt={name}
+            width={640}
+            height={640}
+            className="absolute inset-0 z-10 h-full w-full object-contain opacity-80 drop-shadow-[0_12px_24px_rgba(0,0,0,0.55)]"
+            data-static-spine-fallback={staticAssetJson ? "true" : undefined}
           />
-        ) : (
-          <>
-            {character.combatImageUrl ? (
-              <Image
-                src={character.combatImageUrl}
-                alt={name}
-                width={640}
-                height={640}
-                className="absolute inset-0 z-10 h-full w-full object-contain opacity-80 drop-shadow-[0_12px_24px_rgba(0,0,0,0.55)]"
-                data-static-spine-fallback={staticAssetJson ? "true" : undefined}
-              />
-            ) : null}
-            {staticAssetJson ? (
-              <span
-                className="sts2-static-spine-stage sts2-spine-stage pointer-events-none absolute inset-0 z-20 opacity-0 transition-opacity duration-300"
-                data-static-spine-preview="true"
-                data-static-spine-asset={staticAssetJson}
-                data-static-spine-move-id="IDLE"
-                data-static-spine-loop="true"
-                data-static-spine-monster-name={character.name}
-                aria-hidden="true"
-              />
-            ) : null}
-          </>
-        )}
+        ) : null}
+        {staticAssetJson ? (
+          <span
+            className="sts2-static-spine-stage sts2-spine-stage pointer-events-none absolute inset-0 z-20 opacity-0 transition-opacity duration-300"
+            data-static-spine-preview="true"
+            data-static-spine-asset={staticAssetJson}
+            data-static-spine-move-id="IDLE"
+            data-static-spine-loop="true"
+            data-static-spine-monster-name={character.name}
+            aria-hidden="true"
+          />
+        ) : null}
+        <CharacterSpineStage
+          character={character}
+          selectedMoveId="IDLE"
+          lowHealthIdle
+          fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.55)]"
+          className="relative z-20 h-full w-full"
+        />
         <div className="pointer-events-none absolute inset-x-2 bottom-1 z-40 flex flex-col items-center">
           <span
             className="relative inline-flex h-5 w-full max-w-36 items-center justify-center overflow-visible"

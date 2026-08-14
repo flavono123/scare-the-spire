@@ -5,10 +5,10 @@ import type { Metadata } from "next";
 import fs from "fs/promises";
 import path from "path";
 import { getCodexMeta, getEntityVersionDiffs, getSTS2Patches, getSTS2PatchLines, getSTS2Stories } from "@/lib/data";
-import { getCodexCards, getCodexRelics, getCodexPotions, getCodexPowers, getCodexKeywords, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients, getCodexEpochs } from "@/lib/codex-data";
+import { getCodexCards, getCodexCharacters, getCodexRelics, getCodexPotions, getCodexPowers, getCodexKeywords, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients, getCodexEpochs } from "@/lib/codex-data";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { readGameLocalizationTable, type GameLocalizationTable } from "@/lib/game-localization";
-import { loadAllEntities } from "@/lib/load-all-entities";
+import { characterTitleAliases, loadAllEntities } from "@/lib/load-all-entities";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -320,7 +320,9 @@ function patchEntityIsExplicitlyTagged(
 function filterPatchNoteEntities(markdown: string, entities: EntityInfo[]): EntityInfo[] {
   const searchText = normalizedPatchSearchText(markdown);
   const explicitlyTaggedLabels = explicitPatchTagLabels(markdown);
+  const includeAllCharacters = /\[character-low-hp-idle(?::[v0-9.]+)?\]/i.test(markdown);
   return entities.filter((entity) => {
+    if (includeAllCharacters && entity.type === "character") return true;
     if (patchEntityIsExplicitlyTagged(explicitlyTaggedLabels, entity)) return true;
 
     const labels = [
@@ -791,11 +793,12 @@ export async function PatchDetailPage({
   staticHoverPreviews?: boolean;
 }) {
   const copy = PATCH_COPY[serviceLocale];
-  const [patches, versionDiffs, codexMeta, codexCards, codexRelics, codexPotions, codexPowers, codexKeywords, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder, patchStageCopy] = await Promise.all([
+  const [patches, versionDiffs, codexMeta, codexCards, codexCharacters, codexRelics, codexPotions, codexPowers, codexKeywords, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder, patchStageCopy] = await Promise.all([
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
     getCodexCards({ includeDeprecated: true, gameLocale }),
+    getCodexCharacters({ gameLocale }),
     getCodexRelics({ gameLocale }),
     getCodexPotions({ gameLocale }),
     getCodexPowers({ includeDeprecated: true, gameLocale }),
@@ -868,6 +871,16 @@ export async function PatchDetailPage({
       color: c.color,
       type: "card" as const,
       cardData: c,
+    })),
+    ...codexCharacters.map((c) => ({
+      id: c.id,
+      nameEn: c.nameEn,
+      nameKo: patchDisplayName(c.name, c.nameEn, gameLocale),
+      aliasesEn: characterTitleAliases(c.nameEn),
+      imageUrl: c.iconUrl || c.imageUrl,
+      color: c.id.toLowerCase(),
+      type: "character" as const,
+      characterData: c,
     })),
     ...codexRelics.map((r) => ({
       id: r.id,

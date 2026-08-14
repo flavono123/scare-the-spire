@@ -178,7 +178,7 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
   ];
 }
 
-function characterTitleAliases(nameEn: string): string[] | undefined {
+export function characterTitleAliases(nameEn: string): string[] | undefined {
   if (!nameEn.startsWith("The ")) return undefined;
   const withoutArticle = nameEn.slice(4).trim();
   return withoutArticle ? [withoutArticle] : undefined;
