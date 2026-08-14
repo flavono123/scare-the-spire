@@ -153,7 +153,7 @@ function CharacterLowHpIdleStage({
   useEffect(() => {
     const node = surfaceRef.current;
     if (!node || !("IntersectionObserver" in window)) {
-      setStageInView(true);
+      queueMicrotask(() => setStageInView(true));
       return;
     }
     const observer = new IntersectionObserver(

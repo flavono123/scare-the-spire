@@ -29,7 +29,8 @@ import type {
   MonsterStageFormAttachment,
   MonsterStageFormPlacement,
 } from "./monster-spine-stage";
-import { CharacterSpineStage, characterHasLowHealthIdle, characterLowHealthHp, characterLowHpQueryEnabled } from "./character-spine-stage";
+import { CharacterSpineStage, CHARACTER_LOW_HP_QUERY, characterHasLowHealthIdle, characterLowHealthHp, characterLowHpParamEnabled } from "./character-spine-stage";
+import { useHydrationSafeSearchParam } from "./use-hydration-safe-search-param";
 import { GameCheckboxToggle } from "./game-checkbox";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
@@ -312,7 +313,11 @@ export function CharacterDetail({
   const [ascensionLevel, setAscensionLevel] = useMonsterAscensionLevel();
   const [selectedAction, setSelectedAction] = useState<CharacterActionId>("IDLE");
   const [selectedActionNonce, setSelectedActionNonce] = useState(0);
-  const [lowHealthIdle, setLowHealthIdle] = useState(false);
+  const [lowHealthIdleOverride, setLowHealthIdleOverride] = useState<{
+    characterId: string;
+    value: boolean;
+  } | null>(null);
+  const lowHpQueryValue = useHydrationSafeSearchParam(CHARACTER_LOW_HP_QUERY);
   const [selectedFormCardId, setSelectedFormCardId] = useState<string | null>(null);
   const formPlacementRef = useRef<MonsterStageFormPlacement | null>(null);
   const [commentCount, setCommentCount] = useState(0);
@@ -352,12 +357,11 @@ export function CharacterDetail({
     [characterPool, potions],
   );
   const hasLowHealthIdle = characterHasLowHealthIdle(character);
-  useEffect(() => {
-    if (!hasLowHealthIdle) return;
-    if (characterLowHpQueryEnabled(window.location.search)) {
-      setLowHealthIdle(true);
-    }
-  }, [character.id, hasLowHealthIdle]);
+  const lowHealthIdle = hasLowHealthIdle && (
+    lowHealthIdleOverride?.characterId === character.id
+      ? lowHealthIdleOverride.value
+      : characterLowHpParamEnabled(lowHpQueryValue)
+  );
   const hasCharacterInfo = Boolean(character.nameEn || unlockCharacter);
   const availableActions = ACTIONS.filter((action) => {
     if (!character.spineAsset) return action.id === "IDLE";
@@ -467,7 +471,7 @@ export function CharacterDetail({
             <GameCheckboxToggle
               checked={lowHealthIdle}
               onCheckedChange={(checked) => {
-                setLowHealthIdle(checked);
+                setLowHealthIdleOverride({ characterId: character.id, value: checked });
                 setSelectedActionNonce((value) => value + 1);
               }}
               label={detailLabels.lowHealthIdle}

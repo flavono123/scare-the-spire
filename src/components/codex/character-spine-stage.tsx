@@ -22,11 +22,15 @@ export function characterHasLowHealthIdle(character: CodexCharacter): boolean {
   );
 }
 
+export function characterLowHpParamEnabled(value: string | null | undefined): boolean {
+  const normalized = value?.toLowerCase();
+  return normalized === "1" || normalized === "true" || normalized === "yes";
+}
+
 export function characterLowHpQueryEnabled(search: string): boolean {
   const value = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search)
-    .get(CHARACTER_LOW_HP_QUERY)
-    ?.toLowerCase();
-  return value === "1" || value === "true" || value === "yes";
+    .get(CHARACTER_LOW_HP_QUERY);
+  return characterLowHpParamEnabled(value);
 }
 
 export function withCharacterLowHpQuery(href: string): string {

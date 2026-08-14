@@ -17,17 +17,24 @@ declare global {
 
 const SPINE_PLAYER_SCRIPT_SRC = "/generated/spine-player.min.js";
 
-type SpineDownloaderInternals = Downloader & {
+type SpinePlainTextDownloader = {
+  rawDataUris: Record<string, string>;
+  dataUriToString(dataUri: string): string;
   start(
     url: string,
     success: (data: string) => void,
     error: (status: number, responseText: string) => void,
   ): boolean | void;
   finish(url: string, status: number, data: string): void;
+  downloadText(
+    url: string,
+    success: (data: string) => void,
+    error: (status: number, responseText: string) => void,
+  ): void;
 };
 
 export function createSpinePlainTextDownloader(runtime: SpinePlayerRuntime): Downloader {
-  const downloader = new runtime.Downloader() as SpineDownloaderInternals;
+  const downloader = new runtime.Downloader() as unknown as SpinePlainTextDownloader;
   downloader.downloadText = function downloadText(url, success, error) {
     if (this.start(url, success, error)) return;
     const rawDataUri = this.rawDataUris[url];
@@ -49,7 +56,7 @@ export function createSpinePlainTextDownloader(runtime: SpinePlayerRuntime): Dow
     request.onerror = done;
     request.send();
   };
-  return downloader;
+  return downloader as unknown as Downloader;
 }
 
 let spineRuntimePromise: Promise<SpinePlayerRuntime> | null = null;
