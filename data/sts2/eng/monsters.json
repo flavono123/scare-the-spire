@@ -673,12 +673,12 @@
     },
     "damage_values": {
       "OneTwo": {
-        "normal": 9,
-        "ascension": 10
+        "normal": 10,
+        "ascension": 11
       },
       "HammerUppercut": {
-        "normal": 12,
-        "ascension": 14
+        "normal": 14,
+        "ascension": 18
       }
     },
     "block_values": {
@@ -4958,7 +4958,7 @@
     "show_in_compendium": true,
     "min_hp": 145,
     "max_hp": null,
-    "min_hp_ascension": 155,
+    "min_hp_ascension": 165,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -5207,8 +5207,8 @@
     "show_in_compendium": true,
     "min_hp": 24,
     "max_hp": 28,
-    "min_hp_ascension": 25,
-    "max_hp_ascension": 29,
+    "min_hp_ascension": 26,
+    "max_hp_ascension": 30,
     "moves": [
       {
         "id": "SKITTER",
@@ -8463,7 +8463,7 @@
         "target": "self",
         "amount": {
           "normal": 6,
-          "ascension": null
+          "ascension": 8
         }
       }
     ]
@@ -12022,7 +12022,7 @@
             "target": "self",
             "amount": {
               "normal": 5,
-              "ascension": null
+              "ascension": 7
             }
           }
         ],
@@ -12113,7 +12113,7 @@
             "target": "self",
             "amount": {
               "normal": 5,
-              "ascension": null
+              "ascension": 7
             }
           }
         ],
@@ -12792,12 +12792,22 @@
         "id": "FLAMETHROWER",
         "name": "Flamethrower",
         "action_types": [
+          "attack",
           "debuff"
         ],
         "intents": [
+          "SingleAttackIntent",
           "StatusIntent"
         ],
         "intent_details": [
+          {
+            "type": "SingleAttackIntent",
+            "damage_key": "Flamethrower",
+            "repeat": {
+              "normal": 1,
+              "ascension": null
+            }
+          },
           {
             "type": "StatusIntent"
           }
@@ -12894,12 +12904,22 @@
         "id": "FLAMETHROWER",
         "name": "Flamethrower",
         "action_types": [
+          "attack",
           "debuff"
         ],
         "intents": [
+          "SingleAttackIntent",
           "StatusIntent"
         ],
         "intent_details": [
+          {
+            "type": "SingleAttackIntent",
+            "damage_key": "Flamethrower",
+            "repeat": {
+              "normal": 1,
+              "ascension": null
+            }
+          },
           {
             "type": "StatusIntent"
           }
@@ -13025,6 +13045,10 @@
       "Charge": {
         "normal": 25,
         "ascension": 30
+      },
+      "Flamethrower": {
+        "normal": 8,
+        "ascension": 12
       },
       "HeavyCleave": {
         "normal": 35,
@@ -18583,7 +18607,7 @@
     "damage_values": {
       "DeGas": {
         "normal": 16,
-        "ascension": 17
+        "ascension": 18
       },
       "Gaze": {
         "normal": 7,
