@@ -293,6 +293,7 @@
     "bury.webp",
     "byrd_swoop.webp",
     "byrdonis_egg.webp",
+    "cacophony.webp",
     "calamity.webp",
     "calcify.webp",
     "calculated_gamble.webp",
@@ -494,6 +495,7 @@
     "hello_world.webp",
     "hellraiser.webp",
     "hemokinesis.webp",
+    "hibernate.webp",
     "hidden_cache.webp",
     "hidden_daggers.webp",
     "hidden_gem.webp",
@@ -563,6 +565,7 @@
     "metamorphosis.webp",
     "meteor_shower.webp",
     "meteor_strike.webp",
+    "midnight.webp",
     "mimic.webp",
     "mind_blast.webp",
     "mind_rot.webp",
@@ -594,6 +597,7 @@
     "oblivion.webp",
     "offering.webp",
     "omnislice.webp",
+    "one_for_all.webp",
     "one_two_punch.webp",
     "orbit.webp",
     "outbreak.webp",
@@ -807,6 +811,7 @@
     "ultimate_defend.webp",
     "ultimate_strike.webp",
     "undeath.webp",
+    "underworld.webp",
     "unleash.webp",
     "unmovable.webp",
     "unrelenting.webp",
@@ -1562,6 +1567,27 @@
     "serpent_noise.webp",
     "serpent_snakes.webp",
     "void_spike.webp"
+  ],
+  "form-vfx/runtime/demon": [
+    "big_slash_impact_core_flipbook.webp",
+    "fire_burst_ember_straight.webp",
+    "smoke_vfx.webp"
+  ],
+  "form-vfx/runtime/echo": [
+    "common_glow_speck.webp"
+  ],
+  "form-vfx/runtime/reaper": [
+    "common_ring_polar_b.webp"
+  ],
+  "form-vfx/runtime/serpent": [
+    "common_ring_polar_a.webp",
+    "scream_ring_polar.webp"
+  ],
+  "form-vfx/runtime/void": [
+    "common_ray.webp",
+    "sparkle_2.webp",
+    "starry_impact_constellation_small.webp",
+    "ui_epoch_unlock_chain_shards.webp"
   ],
   "icons": [
     "app_icon.png",
@@ -2858,6 +2884,13 @@
   "ui/combat": [
     "block.png"
   ],
+  "ui/confirm": [
+    "popup_cancel_button_outline.png",
+    "popup_cancel_button.png",
+    "popup_confirm_button_outline.png",
+    "popup_confirm_button.png",
+    "popup_vertical.png"
+  ],
   "ui/emote": [
     "exclaim.png",
     "happy_cultist.png",
@@ -2869,6 +2902,25 @@
     "thumb_up.png",
     "wedge_2.png",
     "wedge_shadow.png"
+  ],
+  "ui/inspect-relic": [
+    "relic_inspect_frame-ancient.webp",
+    "relic_inspect_frame-common.webp",
+    "relic_inspect_frame-event.webp",
+    "relic_inspect_frame-rare.webp",
+    "relic_inspect_frame-shop.webp",
+    "relic_inspect_frame-starter.webp",
+    "relic_inspect_frame-uncommon.webp",
+    "relic_inspect_frame.webp",
+    "reward_panel.webp"
+  ],
+  "ui/scrollbar": [
+    "small_track_center.png",
+    "small_track_edge.png",
+    "small_train.png",
+    "track_center.png",
+    "track_edge.png",
+    "train.png"
   ],
   "ui/topbar": [
     "potion_placeholder.png",
