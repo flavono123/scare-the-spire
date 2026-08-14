@@ -112,6 +112,7 @@ function parsePatchLines(markdown: string): ParsedPatchLine[] {
 
     const markdownLine = bulletMatch[2].trim();
     if (!markdownLine || /^\[monster-pattern-diff:/i.test(markdownLine)) continue;
+    if (/^\[character-low-hp-idle(?::[v0-9.]+)?\]/i.test(markdownLine)) continue;
     if (/^\[devnote(?::en)?\]/i.test(markdownLine)) continue;
 
     const text = plainPatchLineText(markdownLine);

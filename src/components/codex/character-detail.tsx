@@ -29,7 +29,8 @@ import type {
   MonsterStageFormAttachment,
   MonsterStageFormPlacement,
 } from "./monster-spine-stage";
-import { CharacterSpineStage } from "./character-spine-stage";
+import { CharacterSpineStage, characterHasLowHealthIdle, characterLowHealthHp } from "./character-spine-stage";
+import { GameCheckboxToggle } from "./game-checkbox";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
@@ -136,6 +137,7 @@ function getCharacterDetailLabels(serviceLocale: ServiceLocale) {
         interactionCount: "{count}개",
         patchHistory: "패치 이력",
         noPatchHistory: "구조화 변경 없음",
+        lowHealthIdle: "낮은 체력",
       }
     : {
         englishName: "English name",
@@ -167,6 +169,7 @@ function getCharacterDetailLabels(serviceLocale: ServiceLocale) {
         interactionCount: "{count}",
         patchHistory: "Patch History",
         noPatchHistory: "No structured changes",
+        lowHealthIdle: "Low HP",
       };
 }
 
@@ -309,6 +312,7 @@ export function CharacterDetail({
   const [ascensionLevel, setAscensionLevel] = useMonsterAscensionLevel();
   const [selectedAction, setSelectedAction] = useState<CharacterActionId>("IDLE");
   const [selectedActionNonce, setSelectedActionNonce] = useState(0);
+  const [lowHealthIdle, setLowHealthIdle] = useState(false);
   const [selectedFormCardId, setSelectedFormCardId] = useState<string | null>(null);
   const formPlacementRef = useRef<MonsterStageFormPlacement | null>(null);
   const [commentCount, setCommentCount] = useState(0);
@@ -347,6 +351,7 @@ export function CharacterDetail({
     () => buildDedicatedPotionTargets(potions, characterPool),
     [characterPool, potions],
   );
+  const hasLowHealthIdle = characterHasLowHealthIdle(character);
   const hasCharacterInfo = Boolean(character.nameEn || unlockCharacter);
   const availableActions = ACTIONS.filter((action) => {
     if (!character.spineAsset) return action.id === "IDLE";
@@ -425,10 +430,11 @@ export function CharacterDetail({
             </div>
             <div className="pointer-events-none absolute inset-x-8 bottom-0 h-24 rounded-[50%] bg-black/40 blur-2xl" />
             <CharacterSpineStage
-              key={character.id}
+              key={`${character.id}:${lowHealthIdle ? "low-hp" : "idle"}`}
               character={character}
               selectedMoveId={selectedAction}
               selectedMoveNonce={selectedActionNonce}
+              lowHealthIdle={hasLowHealthIdle && lowHealthIdle}
               imagePriority
               fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.55)]"
               formAttachment={formAttachment}
@@ -446,9 +452,22 @@ export function CharacterDetail({
             <CharacterStageHealthBar
               maxHp={character.startingHp}
               ascensionLevel={ascensionLevel}
+              lowHealth={hasLowHealthIdle && lowHealthIdle}
               serviceLocale={serviceLocale}
             />
           </div>
+
+          {hasLowHealthIdle && (
+            <GameCheckboxToggle
+              checked={lowHealthIdle}
+              onCheckedChange={(checked) => {
+                setLowHealthIdle(checked);
+                setSelectedActionNonce((value) => value + 1);
+              }}
+              label={detailLabels.lowHealthIdle}
+              size="md"
+            />
+          )}
 
           <div className="flex max-w-full flex-wrap justify-center gap-2" role="group" aria-label={serviceLocale === "ko" ? "모션" : "Actions"}>
             {availableActions.map((action) => {
@@ -648,14 +667,17 @@ export function CharacterDetail({
 function CharacterStageHealthBar({
   maxHp,
   ascensionLevel,
+  lowHealth = false,
   serviceLocale,
 }: {
   maxHp: number;
   ascensionLevel: number;
+  lowHealth?: boolean;
   serviceLocale: ServiceLocale;
 }) {
   const ascended = ascensionLevel >= CHARACTER_WEARY_TRAVELER_ASCENSION_LEVEL;
-  const currentHp = ascended ? Math.round(maxHp * CHARACTER_ASCENDED_HP_PREVIEW_RATIO) : maxHp;
+  const previewHp = ascended ? Math.round(maxHp * CHARACTER_ASCENDED_HP_PREVIEW_RATIO) : maxHp;
+  const currentHp = lowHealth ? characterLowHealthHp(maxHp) : previewHp;
   const fillRatio = Math.max(0, Math.min(1, currentHp / Math.max(maxHp, 1)));
   const hpLabel = `${currentHp}/${maxHp}`;
   const ariaLabel = serviceLocale === "ko" ? `체력 ${hpLabel}` : `HP ${hpLabel}`;

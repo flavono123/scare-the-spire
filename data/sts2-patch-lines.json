@@ -29163,34 +29163,66 @@
     "searchText": "v0.111.0:line-044-card-midnight v0.111.0 0.111.0 아트 심야 midnight card midnight 심야 심야 midnight"
   },
   {
-    "id": "v0.111.0:line-045-text-gpepmx",
+    "id": "v0.111.0:line-045-character-ironclad-character-silent",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
     "section": [
       "아트"
     ],
-    "markdownKo": "모든 플레이어블 캐릭터에 낮은 체력 대기 애니메이션을 추가했습니다.",
-    "markdownEn": "Added low HP idle animations for all playable characters.",
-    "textKo": "모든 플레이어블 캐릭터에 낮은 체력 대기 애니메이션을 추가했습니다.",
-    "textEn": "Added low HP idle animations for all playable characters.",
-    "entityRefs": [],
-    "searchText": "v0.111.0:line-045-text-gpepmx v0.111.0 0.111.0 아트 모든 플레이어블 캐릭터에 낮은 체력 대기 애니메이션을 추가했습니다. added low hp idle animations for all playable characters."
+    "markdownKo": "[gold:character]아이언클래드[/gold], [gold:character]사일런트[/gold], [gold:character]리젠트[/gold], [gold:character]네크로바인더[/gold], [gold:character]디펙트[/gold]에 낮은 체력 대기 애니메이션을 추가했습니다.",
+    "markdownEn": "Added low HP idle animations for [gold:character]The Ironclad[/gold], [gold:character]The Silent[/gold], [gold:character]The Regent[/gold], [gold:character]The Necrobinder[/gold], and [gold:character]The Defect[/gold].",
+    "textKo": "아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트에 낮은 체력 대기 애니메이션을 추가했습니다.",
+    "textEn": "Added low HP idle animations for The Ironclad, The Silent, The Regent, The Necrobinder, and The Defect.",
+    "entityRefs": [
+      {
+        "type": "character",
+        "id": "IRONCLAD",
+        "label": "아이언클래드"
+      },
+      {
+        "type": "character",
+        "id": "SILENT",
+        "label": "사일런트"
+      },
+      {
+        "type": "character",
+        "id": "REGENT",
+        "label": "리젠트"
+      },
+      {
+        "type": "character",
+        "id": "NECROBINDER",
+        "label": "네크로바인더"
+      },
+      {
+        "type": "character",
+        "id": "DEFECT",
+        "label": "디펙트"
+      }
+    ],
+    "searchText": "v0.111.0:line-045-character-ironclad-character-silent v0.111.0 0.111.0 아트 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트에 낮은 체력 대기 애니메이션을 추가했습니다. added low hp idle animations for the ironclad, the silent, the regent, the necrobinder, and the defect. character ironclad 아이언클래드 아이언클래드 the ironclad ironclad character silent 사일런트 사일런트 the silent silent character regent 리젠트 리젠트 the regent regent character necrobinder 네크로바인더 네크로바인더 the necrobinder necrobinder character defect 디펙트 디펙트 the defect defect"
   },
   {
-    "id": "v0.111.0:line-046-text-3xo03a",
+    "id": "v0.111.0:line-046-character-necrobinder",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
     "section": [
       "아트"
     ],
-    "markdownKo": "[pink]네크로바인더[/pink]의 베기 VFX를 업데이트했습니다.",
-    "markdownEn": "Updated [pink]Necrobinder[/pink]'s slash VFX.",
+    "markdownKo": "[gold:character]네크로바인더[/gold]의 베기 VFX를 업데이트했습니다.",
+    "markdownEn": "Updated [gold:character]The Necrobinder[/gold]'s slash VFX.",
     "textKo": "네크로바인더의 베기 VFX를 업데이트했습니다.",
-    "textEn": "Updated Necrobinder's slash VFX.",
-    "entityRefs": [],
-    "searchText": "v0.111.0:line-046-text-3xo03a v0.111.0 0.111.0 아트 네크로바인더의 베기 vfx를 업데이트했습니다. updated necrobinder's slash vfx."
+    "textEn": "Updated The Necrobinder's slash VFX.",
+    "entityRefs": [
+      {
+        "type": "character",
+        "id": "NECROBINDER",
+        "label": "네크로바인더"
+      }
+    ],
+    "searchText": "v0.111.0:line-046-character-necrobinder v0.111.0 0.111.0 아트 네크로바인더의 베기 vfx를 업데이트했습니다. updated the necrobinder's slash vfx. character necrobinder 네크로바인더 네크로바인더 the necrobinder necrobinder"
   },
   {
     "id": "v0.111.0:line-047-potion-dexterity-potion",
@@ -29512,9 +29544,9 @@
     "section": [
       "성능"
     ],
-    "markdownKo": "[gold:event]난타전[/gold]과 [gold:event]랜턴 열쇠[/gold]의 끊김을 줄였습니다.",
+    "markdownKo": "[gold:event]난타전[/gold]과 [gold:event]랜턴 열쇠[/gold]의 버벅임을 줄였습니다.",
     "markdownEn": "Reduced hitch on [gold:event]Punch Off[/gold] and [gold:event]The Lantern Key[/gold].",
-    "textKo": "난타전과 랜턴 열쇠의 끊김을 줄였습니다.",
+    "textKo": "난타전과 랜턴 열쇠의 버벅임을 줄였습니다.",
     "textEn": "Reduced hitch on Punch Off and The Lantern Key.",
     "entityRefs": [
       {
@@ -29528,22 +29560,22 @@
         "label": "랜턴 열쇠"
       }
     ],
-    "searchText": "v0.111.0:line-064-event-punch-off-event-the-lantern-key v0.111.0 0.111.0 성능 난타전과 랜턴 열쇠의 끊김을 줄였습니다. reduced hitch on punch off and the lantern key. event punch_off 난타전 난타전 punch off event the_lantern_key 랜턴 열쇠 랜턴 열쇠 the lantern key"
+    "searchText": "v0.111.0:line-064-event-punch-off-event-the-lantern-key v0.111.0 0.111.0 성능 난타전과 랜턴 열쇠의 버벅임을 줄였습니다. reduced hitch on punch off and the lantern key. event punch_off 난타전 난타전 punch off event the_lantern_key 랜턴 열쇠 랜턴 열쇠 the lantern key"
   },
   {
-    "id": "v0.111.0:line-065-text-fen8s8",
+    "id": "v0.111.0:line-065-text-1rh5rfl",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
     "section": [
       "성능"
     ],
-    "markdownKo": "일본어, 중국어, 한국어, 태국어, 러시아어에서 텍스트가 처음 나타날 때의 끊김을 줄였습니다.",
+    "markdownKo": "일본어, 중국어, 한국어, 태국어, 러시아어에서 텍스트가 처음 나타날 때 끊겨 보이던 현상을 줄였습니다.",
     "markdownEn": "Reduced stuttering when text appears for the first time in Japanese, Chinese, Korean, Thai, and Russian.",
-    "textKo": "일본어, 중국어, 한국어, 태국어, 러시아어에서 텍스트가 처음 나타날 때의 끊김을 줄였습니다.",
+    "textKo": "일본어, 중국어, 한국어, 태국어, 러시아어에서 텍스트가 처음 나타날 때 끊겨 보이던 현상을 줄였습니다.",
     "textEn": "Reduced stuttering when text appears for the first time in Japanese, Chinese, Korean, Thai, and Russian.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-065-text-fen8s8 v0.111.0 0.111.0 성능 일본어, 중국어, 한국어, 태국어, 러시아어에서 텍스트가 처음 나타날 때의 끊김을 줄였습니다. reduced stuttering when text appears for the first time in japanese, chinese, korean, thai, and russian."
+    "searchText": "v0.111.0:line-065-text-1rh5rfl v0.111.0 0.111.0 성능 일본어, 중국어, 한국어, 태국어, 러시아어에서 텍스트가 처음 나타날 때 끊겨 보이던 현상을 줄였습니다. reduced stuttering when text appears for the first time in japanese, chinese, korean, thai, and russian."
   },
   {
     "id": "v0.111.0:line-066-text-1p3jo1",

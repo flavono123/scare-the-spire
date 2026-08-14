@@ -803,6 +803,8 @@ export const TYPE_ALIASES: Record<string, CardTypeKo> = {
 };
 
 // Character color mapping (aligned with dev/text-effects reference)
+export const CHARACTER_ORDER = ["IRONCLAD", "SILENT", "REGENT", "NECROBINDER", "DEFECT"];
+
 export const CHARACTER_COLORS: Record<string, string> = {
   ironclad: "#f87171",
   silent: "#34d399",

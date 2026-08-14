@@ -66,6 +66,7 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
       id: c.id,
       nameEn: c.nameEn,
       nameKo: c.name,
+      aliasesEn: characterTitleAliases(c.nameEn),
       imageUrl: c.iconUrl || c.imageUrl,
       color: c.id.toLowerCase(),
       type: "character" as const,
@@ -175,4 +176,10 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
       epochData: e,
     })),
   ];
+}
+
+function characterTitleAliases(nameEn: string): string[] | undefined {
+  if (!nameEn.startsWith("The ")) return undefined;
+  const withoutArticle = nameEn.slice(4).trim();
+  return withoutArticle ? [withoutArticle] : undefined;
 }

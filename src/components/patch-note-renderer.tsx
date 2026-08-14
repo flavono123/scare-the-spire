@@ -30,6 +30,7 @@ import {
   MonsterAnimationPatchDiffBlock,
   MonsterMoveHoverPreview,
 } from "@/components/codex/monster-move-visuals";
+import { CharacterLowHpIdleBlock } from "@/components/codex/character-low-hp-idle-block";
 import { applyPowerAmountForPreview } from "@/components/codex/power-preview";
 import {
   expandEncounterFormations,
@@ -1645,6 +1646,7 @@ function renderLine(
 const DEVNOTE_KO_RE = /^\[devnote\](.*)\[\/devnote\]$/;
 const DEVNOTE_EN_RE = /^\[devnote:en\](.*)\[\/devnote\]$/;
 const MONSTER_PATTERN_DIFF_RE = /^\[monster-pattern-diff:([a-z0-9_]+)(?::([v0-9.]+))?(?::(full|compact))?\]$/i;
+const CHARACTER_LOW_HP_IDLE_RE = /^\[character-low-hp-idle(?::([v0-9.]+))?\]$/i;
 
 function DevnoteBlock({
   koContent,
@@ -1792,6 +1794,25 @@ export function PatchNoteRenderer({
 
   for (let i = 0; i < lines.length; i++) {
     const trimmed = lines[i].trimStart();
+
+    const characterLowHpIdleMatch = trimmed.match(CHARACTER_LOW_HP_IDLE_RE);
+    if (characterLowHpIdleMatch) {
+      flushList();
+      wasInList = false;
+      const characters = allEntities
+        .filter((entity) => entity.type === "character" && entity.characterData)
+        .map((entity) => entity.characterData!);
+      if (characters.length > 0) {
+        elements.push(
+          <CharacterLowHpIdleBlock
+            key={`character-low-hp-idle-${i}`}
+            characters={characters}
+            serviceLocale={context.serviceLocale ?? "ko"}
+          />,
+        );
+      }
+      continue;
+    }
 
     const monsterPatternDiffMatch = trimmed.match(MONSTER_PATTERN_DIFF_RE);
     if (monsterPatternDiffMatch) {

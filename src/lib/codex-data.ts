@@ -60,6 +60,7 @@ import {
   EncounterMonsterRef,
   EncounterComposition,
   EncounterSceneAsset,
+  CHARACTER_ORDER,
 } from "./codex-types";
 import { groupAncientDialogueLines } from "./ancient-dialogue";
 import {
@@ -1023,7 +1024,6 @@ export async function getCodexPotions(opts?: { gameLocale?: GameLocale }): Promi
 }
 
 // Game select order used by the Compendium.
-const CHARACTER_ORDER = ["IRONCLAD", "SILENT", "REGENT", "NECROBINDER", "DEFECT"];
 const CHARACTER_SLUGS: Record<string, string> = {
   IRONCLAD: "ironclad",
   SILENT: "silent",

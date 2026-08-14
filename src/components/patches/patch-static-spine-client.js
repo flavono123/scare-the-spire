@@ -258,6 +258,7 @@
   function startReplay(state) {
     if (!state.player || state.replayTimer) return;
     playMove(state);
+    if (state.node.getAttribute("data-static-spine-loop") === "true") return;
     state.replayTimer = window.setInterval(() => playMove(state), REPLAY_INTERVAL_MS);
   }
 
