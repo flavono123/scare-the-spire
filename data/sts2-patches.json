@@ -558,16 +558,28 @@
     "title": "Beta Patch Notes - v0.111.0",
     "titleKo": "베타 패치 노트 - v0.111.0",
     "type": "beta",
-    "status": "building",
+    "draft": true,
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/671751488532383386",
-    "summary": "Rich patch notes are being prepared.",
-    "summaryKo": "리치 패치 노트를 준비하고 있습니다.",
+    "summary": "Expect a Fight and Hyperbeam reworks, Ancient nerfs, enemy buffs, class balance, Indonesian localization, new card portraits, and low HP idle animations.",
+    "summaryKo": "싸움 준비·파괴광선 리워크, 고대의 존재 너프, 적 버프, 캐릭터 밸런스, 인도네시아어 추가, 카드 초상화와 낮은 체력 대기 애니메이션.",
     "hasBalanceChanges": true,
     "art": {
       "type": "card",
-      "id": "TOOLS_OF_THE_TRADE",
-      "alt": "Tools of the Trade card art",
-      "altKo": "작업 도구 카드 아트"
-    }
+      "id": "HYPERBEAM",
+      "alt": "Hyperbeam card art",
+      "altKo": "파괴광선 카드 아트"
+    },
+    "featuredEntities": [
+      { "type": "card", "id": "EXPECT_A_FIGHT" },
+      { "type": "card", "id": "HYPERBEAM" },
+      { "type": "card", "id": "BRIGHTEST_FLAME" },
+      { "type": "relic", "id": "BEAUTIFUL_BRACELET" },
+      { "type": "monster", "id": "AXEBOT" },
+      { "type": "card", "id": "MIRAGE" },
+      { "type": "relic", "id": "REGALITE" },
+      { "type": "card", "id": "BLADE_OF_INK" },
+      { "type": "card", "id": "THUNDER" },
+      { "type": "card", "id": "ONE_FOR_ALL" }
+    ]
   }
 ]
