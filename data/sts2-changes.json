@@ -12272,5 +12272,78 @@
         "diffType": "text"
       }
     ]
+  },
+  {
+    "id": "entomancer-v0-111-0-a8-hp",
+    "entityType": "monster",
+    "entityId": "ENTOMANCER",
+    "patch": "v0.111.0",
+    "date": "2026-08-14",
+    "character": null,
+    "summary": "Entomancer HP at A8 increased from 145(155) to 145(165).",
+    "summaryKo": "곤충술사의 승천 8 체력이 145(155)에서 145(165)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "체력",
+        "before": "145(155)",
+        "beforeKo": "145(155)",
+        "after": "145(165)",
+        "afterKo": "145(165)",
+        "diffType": "buff"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHpAscension",
+        "before": 155,
+        "after": 165
+      }
+    ]
+  },
+  {
+    "id": "guiding-star-v0-111-0-next-turn-star-cost",
+    "entityType": "card",
+    "entityId": "GUIDING_STAR",
+    "patch": "v0.111.0",
+    "date": "2026-08-14",
+    "character": "regent",
+    "summary": "Guiding Star now draws next turn, and Star cost decreased from 2 to 1.",
+    "summaryKo": "길잡이별이 이번 턴이 아니라 다음 턴에 카드를 뽑으며, 별 비용이 2에서 1로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Draw this turn, 2 Stars",
+        "beforeKo": "이번 턴에 뽑기, 별 2",
+        "after": "Draw next turn, 1 Star",
+        "afterKo": "다음 턴에 뽑기, 별 1",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "starCost",
+        "before": 2,
+        "after": 1
+      },
+      {
+        "field": "vars.StarCost",
+        "before": 2,
+        "after": 1
+      },
+      {
+        "field": "description",
+        "before": "피해를 12 줍니다.\n카드를 2장 뽑습니다.",
+        "after": "피해를 12 줍니다.\n다음 턴에,\n카드를 2장 뽑습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다.",
+        "after": "피해를 {Damage:diff()} 줍니다.\n다음 턴에,\n카드를 {Cards:diff()}장 뽑습니다."
+      }
+    ]
   }
 ]

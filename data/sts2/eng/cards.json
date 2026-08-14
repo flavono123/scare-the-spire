@@ -8718,12 +8718,12 @@
   {
     "id": "GUIDING_STAR",
     "name": "Guiding Star",
-    "description": "Deal 12 damage.\nDraw 2 cards.",
-    "description_raw": "Deal {Damage:diff()} damage.\nDraw {Cards:diff()} {Cards:plural:card|cards}.",
+    "description": "Deal 12 damage.\nNext turn, draw 2 cards.",
+    "description_raw": "Deal {Damage:diff()} damage.\nNext turn, draw {Cards:diff()} {Cards:plural:card|cards}.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
-    "star_cost": 2,
+    "star_cost": 1,
     "type": "Attack",
     "rarity": "Common",
     "target": "AnyEnemy",
@@ -8741,7 +8741,7 @@
     "vars": {
       "Damage": 12,
       "Cards": 2,
-      "StarCost": 2
+      "StarCost": 1
     },
     "upgrade": {
       "damage": "+1",

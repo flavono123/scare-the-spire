@@ -28465,7 +28465,29 @@
     "searchText": "v0.111.0:line-011-monster-soul-fysh v0.111.0 0.111.0 콘텐츠 및 밸런스 적 영혼 물교기 (버프): 승천 9에서 가스 방출 피해량이 16(17) → 16(18)로 증가했습니다. soul fysh (buff): de-gas damage at a9 increased from 16(17) -> 16(18). monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh"
   },
   {
-    "id": "v0.111.0:line-012-card-rend",
+    "id": "v0.111.0:line-012-monster-entomancer",
+    "patch": "v0.111.0",
+    "version": "0.111.0",
+    "date": "2026-08-14",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]곤충술사[/gold] ([green][sine]버프[/sine][/green]): 승천 8 체력이 145(155) → 145(165)로 증가했습니다.",
+    "markdownEn": "[gold:monster]Entomancer[/gold] ([green][sine]buff[/sine][/green]): HP at A8 increased from 145(155) -> 145(165).",
+    "textKo": "곤충술사 (버프): 승천 8 체력이 145(155) → 145(165)로 증가했습니다.",
+    "textEn": "Entomancer (buff): HP at A8 increased from 145(155) -> 145(165).",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "ENTOMANCER",
+        "label": "곤충술사"
+      }
+    ],
+    "searchText": "v0.111.0:line-012-monster-entomancer v0.111.0 0.111.0 콘텐츠 및 밸런스 적 곤충술사 (버프): 승천 8 체력이 145(155) → 145(165)로 증가했습니다. entomancer (buff): hp at a8 increased from 145(155) -> 145(165). monster entomancer 곤충술사 곤충술사 entomancer"
+  },
+  {
+    "id": "v0.111.0:line-013-card-rend",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28486,10 +28508,10 @@
         "label": "쥐어뜯기"
       }
     ],
-    "searchText": "v0.111.0:line-012-card-rend v0.111.0 0.111.0 콘텐츠 및 밸런스 무색 카드 쥐어뜯기 변경: • 에너지 비용이 2 → 1로 감소했습니다. • 기본 피해량이 15(18) → 10(12)로 감소했습니다. changed rend: • energy cost decreased from 2 -> 1. • base damage decreased from 15(18) -> 10(12). card rend 쥐어뜯기 쥐어뜯기 rend"
+    "searchText": "v0.111.0:line-013-card-rend v0.111.0 0.111.0 콘텐츠 및 밸런스 무색 카드 쥐어뜯기 변경: • 에너지 비용이 2 → 1로 감소했습니다. • 기본 피해량이 15(18) → 10(12)로 감소했습니다. changed rend: • energy cost decreased from 2 -> 1. • base damage decreased from 15(18) -> 10(12). card rend 쥐어뜯기 쥐어뜯기 rend"
   },
   {
-    "id": "v0.111.0:line-013-text-g6x28p",
+    "id": "v0.111.0:line-014-text-g6x28p",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28502,10 +28524,10 @@
     "textKo": "에너지 비용이 2 → 1로 감소했습니다.",
     "textEn": "Energy cost decreased from 2 -> 1.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-013-text-g6x28p v0.111.0 0.111.0 콘텐츠 및 밸런스 무색 카드 에너지 비용이 2 → 1로 감소했습니다. energy cost decreased from 2 -> 1."
+    "searchText": "v0.111.0:line-014-text-g6x28p v0.111.0 0.111.0 콘텐츠 및 밸런스 무색 카드 에너지 비용이 2 → 1로 감소했습니다. energy cost decreased from 2 -> 1."
   },
   {
-    "id": "v0.111.0:line-014-text-1d5cu1n",
+    "id": "v0.111.0:line-015-text-1d5cu1n",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28518,10 +28540,10 @@
     "textKo": "기본 피해량이 15(18) → 10(12)로 감소했습니다.",
     "textEn": "Base damage decreased from 15(18) -> 10(12).",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-014-text-1d5cu1n v0.111.0 0.111.0 콘텐츠 및 밸런스 무색 카드 기본 피해량이 15(18) → 10(12)로 감소했습니다. base damage decreased from 15(18) -> 10(12)."
+    "searchText": "v0.111.0:line-015-text-1d5cu1n v0.111.0 0.111.0 콘텐츠 및 밸런스 무색 카드 기본 피해량이 15(18) → 10(12)로 감소했습니다. base damage decreased from 15(18) -> 10(12)."
   },
   {
-    "id": "v0.111.0:line-015-card-salvo-card-splash",
+    "id": "v0.111.0:line-016-card-salvo-card-splash",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28545,10 +28567,10 @@
         "label": "착수"
       }
     ],
-    "searchText": "v0.111.0:line-015-card-salvo-card-splash v0.111.0 0.111.0 콘텐츠 및 밸런스 무색 카드 집중 포화와 착수의 희귀도가 서로 바뀌었습니다. 착수는 희귀, 집중 포화는 고급이 됩니다. changed salvo and splash: swapped rarities. splash is now rare and salvo is now uncommon. card salvo 집중 포화 집중 포화 salvo card splash 착수 착수 splash"
+    "searchText": "v0.111.0:line-016-card-salvo-card-splash v0.111.0 0.111.0 콘텐츠 및 밸런스 무색 카드 집중 포화와 착수의 희귀도가 서로 바뀌었습니다. 착수는 희귀, 집중 포화는 고급이 됩니다. changed salvo and splash: swapped rarities. splash is now rare and salvo is now uncommon. card salvo 집중 포화 집중 포화 salvo card splash 착수 착수 splash"
   },
   {
-    "id": "v0.111.0:line-016-card-expect-a-fight-power-strength",
+    "id": "v0.111.0:line-017-card-expect-a-fight-power-strength",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28572,10 +28594,10 @@
         "label": "힘"
       }
     ],
-    "searchText": "v0.111.0:line-016-card-expect-a-fight-power-strength v0.111.0 0.111.0 콘텐츠 및 밸런스 아이언클래드 싸움 준비 리워크: 비용 2(1) 고급 스킬, \"손에 있는 공격 카드 1장당 에너지를 1 얻습니다. 이번 턴에는 추가로 에너지를 얻을 수 없습니다.\" → 비용 3 고급 스킬, \"방어도를 15(16) 얻습니다. 가진 힘 1당 방어도를 추가로 5(8) 얻습니다.\" reworked expect a fight: uncommon skill, cost 2(1), \"gain 1 energy for each attack in your hand. you cannot gain additional energy this turn.\" -> uncommon skill, cost 3, \"gain 15(16) block. gains 5(8) additional block for each strength you have.\" card expect_a_fight 싸움 준비 싸움 준비 expect a fight power strength 힘 힘 strength"
+    "searchText": "v0.111.0:line-017-card-expect-a-fight-power-strength v0.111.0 0.111.0 콘텐츠 및 밸런스 아이언클래드 싸움 준비 리워크: 비용 2(1) 고급 스킬, \"손에 있는 공격 카드 1장당 에너지를 1 얻습니다. 이번 턴에는 추가로 에너지를 얻을 수 없습니다.\" → 비용 3 고급 스킬, \"방어도를 15(16) 얻습니다. 가진 힘 1당 방어도를 추가로 5(8) 얻습니다.\" reworked expect a fight: uncommon skill, cost 2(1), \"gain 1 energy for each attack in your hand. you cannot gain additional energy this turn.\" -> uncommon skill, cost 3, \"gain 15(16) block. gains 5(8) additional block for each strength you have.\" card expect_a_fight 싸움 준비 싸움 준비 expect a fight power strength 힘 힘 strength"
   },
   {
-    "id": "v0.111.0:line-017-card-forgotten-ritual",
+    "id": "v0.111.0:line-018-card-forgotten-ritual",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28594,10 +28616,10 @@
         "label": "잊힌 의식"
       }
     ],
-    "searchText": "v0.111.0:line-017-card-forgotten-ritual v0.111.0 0.111.0 콘텐츠 및 밸런스 아이언클래드 잊힌 의식 (버프): 더 이상 카드를 소멸시키지 않아도 에너지를 얻습니다. forgotten ritual (buff): no longer requires a card to be exhausted to gain energy. card forgotten_ritual 잊힌 의식 잊힌 의식 forgotten ritual"
+    "searchText": "v0.111.0:line-018-card-forgotten-ritual v0.111.0 0.111.0 콘텐츠 및 밸런스 아이언클래드 잊힌 의식 (버프): 더 이상 카드를 소멸시키지 않아도 에너지를 얻습니다. forgotten ritual (buff): no longer requires a card to be exhausted to gain energy. card forgotten_ritual 잊힌 의식 잊힌 의식 forgotten ritual"
   },
   {
-    "id": "v0.111.0:line-018-card-rampage",
+    "id": "v0.111.0:line-019-card-rampage",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28618,10 +28640,10 @@
         "label": "광란"
       }
     ],
-    "searchText": "v0.111.0:line-018-card-rampage v0.111.0 0.111.0 콘텐츠 및 밸런스 아이언클래드 광란 (버프): • 기본 피해량이 9 → 10으로 증가했습니다. • 증가 피해량이 5(9) → 5(10)으로 증가했습니다. rampage (buff): • base damage increased from 9 -> 10. • scaling damage increased from 5(9) -> 5(10). card rampage 광란 광란 rampage"
+    "searchText": "v0.111.0:line-019-card-rampage v0.111.0 0.111.0 콘텐츠 및 밸런스 아이언클래드 광란 (버프): • 기본 피해량이 9 → 10으로 증가했습니다. • 증가 피해량이 5(9) → 5(10)으로 증가했습니다. rampage (buff): • base damage increased from 9 -> 10. • scaling damage increased from 5(9) -> 5(10). card rampage 광란 광란 rampage"
   },
   {
-    "id": "v0.111.0:line-019-text-1j906kb",
+    "id": "v0.111.0:line-020-text-1j906kb",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28634,10 +28656,10 @@
     "textKo": "기본 피해량이 9 → 10으로 증가했습니다.",
     "textEn": "Base damage increased from 9 -> 10.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-019-text-1j906kb v0.111.0 0.111.0 콘텐츠 및 밸런스 아이언클래드 기본 피해량이 9 → 10으로 증가했습니다. base damage increased from 9 -> 10."
+    "searchText": "v0.111.0:line-020-text-1j906kb v0.111.0 0.111.0 콘텐츠 및 밸런스 아이언클래드 기본 피해량이 9 → 10으로 증가했습니다. base damage increased from 9 -> 10."
   },
   {
-    "id": "v0.111.0:line-020-text-1i3gv3i",
+    "id": "v0.111.0:line-021-text-1i3gv3i",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28650,10 +28672,10 @@
     "textKo": "증가 피해량이 5(9) → 5(10)으로 증가했습니다.",
     "textEn": "Scaling damage increased from 5(9) -> 5(10).",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-020-text-1i3gv3i v0.111.0 0.111.0 콘텐츠 및 밸런스 아이언클래드 증가 피해량이 5(9) → 5(10)으로 증가했습니다. scaling damage increased from 5(9) -> 5(10)."
+    "searchText": "v0.111.0:line-021-text-1i3gv3i v0.111.0 0.111.0 콘텐츠 및 밸런스 아이언클래드 증가 피해량이 5(9) → 5(10)으로 증가했습니다. scaling damage increased from 5(9) -> 5(10)."
   },
   {
-    "id": "v0.111.0:line-021-card-blade-of-ink-enchantment-inky",
+    "id": "v0.111.0:line-022-card-blade-of-ink-enchantment-inky",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28682,10 +28704,10 @@
         "label": "약화"
       }
     ],
-    "searchText": "v0.111.0:line-021-card-blade-of-ink-enchantment-inky v0.111.0 0.111.0 콘텐츠 및 밸런스 사일런트 잉크 칼날 (너프): 잉크투성이가 더 이상 추가 피해를 주지 않습니다 (약화는 그대로 부여합니다). blade of ink (nerf): inky no longer gives additional damage (still applies weak). card blade_of_ink 잉크 칼날 잉크 칼날 blade of ink enchantment inky 잉크투성이 잉크투성이 inky power weak 약화 약화 weak"
+    "searchText": "v0.111.0:line-022-card-blade-of-ink-enchantment-inky v0.111.0 0.111.0 콘텐츠 및 밸런스 사일런트 잉크 칼날 (너프): 잉크투성이가 더 이상 추가 피해를 주지 않습니다 (약화는 그대로 부여합니다). blade of ink (nerf): inky no longer gives additional damage (still applies weak). card blade_of_ink 잉크 칼날 잉크 칼날 blade of ink enchantment inky 잉크투성이 잉크투성이 inky power weak 약화 약화 weak"
   },
   {
-    "id": "v0.111.0:line-022-card-mirage",
+    "id": "v0.111.0:line-023-card-mirage",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28704,10 +28726,10 @@
         "label": "신기루"
       }
     ],
-    "searchText": "v0.111.0:line-022-card-mirage v0.111.0 0.111.0 콘텐츠 및 밸런스 사일런트 신기루 (너프): 이제 소멸하며, 강화 시 비용이 1 → 0으로 낮아지는 대신 소멸이 사라집니다. mirage (nerf): now exhausts and loses exhaust on upgrade instead of lowering its cost from 1 -> 0. card mirage 신기루 신기루 mirage"
+    "searchText": "v0.111.0:line-023-card-mirage v0.111.0 0.111.0 콘텐츠 및 밸런스 사일런트 신기루 (너프): 이제 소멸하며, 강화 시 비용이 1 → 0으로 낮아지는 대신 소멸이 사라집니다. mirage (nerf): now exhausts and loses exhaust on upgrade instead of lowering its cost from 1 -> 0. card mirage 신기루 신기루 mirage"
   },
   {
-    "id": "v0.111.0:line-023-card-alignment",
+    "id": "v0.111.0:line-024-card-alignment",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28726,10 +28748,10 @@
         "label": "정렬"
       }
     ],
-    "searchText": "v0.111.0:line-023-card-alignment v0.111.0 0.111.0 콘텐츠 및 밸런스 리젠트 정렬 (버프): 별 비용이 3 → 2로 감소했습니다. alignment (buff): star cost decreased from 3 -> 2. card alignment 정렬 정렬 alignment"
+    "searchText": "v0.111.0:line-024-card-alignment v0.111.0 0.111.0 콘텐츠 및 밸런스 리젠트 정렬 (버프): 별 비용이 3 → 2로 감소했습니다. alignment (buff): star cost decreased from 3 -> 2. card alignment 정렬 정렬 alignment"
   },
   {
-    "id": "v0.111.0:line-024-card-spoils-of-battle",
+    "id": "v0.111.0:line-025-card-spoils-of-battle",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28748,10 +28770,10 @@
         "label": "전투의 성과"
       }
     ],
-    "searchText": "v0.111.0:line-024-card-spoils-of-battle v0.111.0 0.111.0 콘텐츠 및 밸런스 리젠트 전투의 성과 (버프): 단조가 5(8) → 6(9)로 증가했습니다. spoils of battle (buff): forge increased from 5(8) -> 6(9). card spoils_of_battle 전투의 성과 전투의 성과 spoils of battle"
+    "searchText": "v0.111.0:line-025-card-spoils-of-battle v0.111.0 0.111.0 콘텐츠 및 밸런스 리젠트 전투의 성과 (버프): 단조가 5(8) → 6(9)로 증가했습니다. spoils of battle (buff): forge increased from 5(8) -> 6(9). card spoils_of_battle 전투의 성과 전투의 성과 spoils of battle"
   },
   {
-    "id": "v0.111.0:line-025-card-refine-blade",
+    "id": "v0.111.0:line-026-card-refine-blade",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28770,10 +28792,66 @@
         "label": "검날 개선"
       }
     ],
-    "searchText": "v0.111.0:line-025-card-refine-blade v0.111.0 0.111.0 콘텐츠 및 밸런스 리젠트 검날 개선 (너프): 단조가 9(13) → 8(12)로 감소했습니다. refine blade (nerf): forge decreased from 9(13) -> 8(12). card refine_blade 검날 개선 검날 개선 refine blade"
+    "searchText": "v0.111.0:line-026-card-refine-blade v0.111.0 0.111.0 콘텐츠 및 밸런스 리젠트 검날 개선 (너프): 단조가 9(13) → 8(12)로 감소했습니다. refine blade (nerf): forge decreased from 9(13) -> 8(12). card refine_blade 검날 개선 검날 개선 refine blade"
   },
   {
-    "id": "v0.111.0:line-026-relic-regalite",
+    "id": "v0.111.0:line-027-card-guiding-star",
+    "patch": "v0.111.0",
+    "version": "0.111.0",
+    "date": "2026-08-14",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]길잡이별[/gold] 변경:\n• 카드 뽑기가 이번 턴 → 다음 턴으로 바뀌었습니다.\n• 별 비용이 2 → 1로 감소했습니다.",
+    "markdownEn": "Changed [gold:card]Guiding Star[/gold]:\n• Card draw changed from this turn -> next turn\n• Star cost decreased from 2 -> 1",
+    "summaryMarkdownKo": "[gold:card]길잡이별[/gold] 변경:",
+    "summaryMarkdownEn": "Changed [gold:card]Guiding Star[/gold]:",
+    "textKo": "길잡이별 변경:\n• 카드 뽑기가 이번 턴 → 다음 턴으로 바뀌었습니다.\n• 별 비용이 2 → 1로 감소했습니다.",
+    "textEn": "Changed Guiding Star:\n• Card draw changed from this turn -> next turn\n• Star cost decreased from 2 -> 1",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "GUIDING_STAR",
+        "label": "길잡이별"
+      }
+    ],
+    "searchText": "v0.111.0:line-027-card-guiding-star v0.111.0 0.111.0 콘텐츠 및 밸런스 리젠트 길잡이별 변경: • 카드 뽑기가 이번 턴 → 다음 턴으로 바뀌었습니다. • 별 비용이 2 → 1로 감소했습니다. changed guiding star: • card draw changed from this turn -> next turn • star cost decreased from 2 -> 1 card guiding_star 길잡이별 길잡이별 guiding star"
+  },
+  {
+    "id": "v0.111.0:line-028-text-1h7lv6g",
+    "patch": "v0.111.0",
+    "version": "0.111.0",
+    "date": "2026-08-14",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "카드 뽑기가 이번 턴 → 다음 턴으로 바뀌었습니다.",
+    "markdownEn": "Card draw changed from this turn -> next turn",
+    "textKo": "카드 뽑기가 이번 턴 → 다음 턴으로 바뀌었습니다.",
+    "textEn": "Card draw changed from this turn -> next turn",
+    "entityRefs": [],
+    "searchText": "v0.111.0:line-028-text-1h7lv6g v0.111.0 0.111.0 콘텐츠 및 밸런스 리젠트 카드 뽑기가 이번 턴 → 다음 턴으로 바뀌었습니다. card draw changed from this turn -> next turn"
+  },
+  {
+    "id": "v0.111.0:line-029-text-j7c63h",
+    "patch": "v0.111.0",
+    "version": "0.111.0",
+    "date": "2026-08-14",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "별 비용이 2 → 1로 감소했습니다.",
+    "markdownEn": "Star cost decreased from 2 -> 1",
+    "textKo": "별 비용이 2 → 1로 감소했습니다.",
+    "textEn": "Star cost decreased from 2 -> 1",
+    "entityRefs": [],
+    "searchText": "v0.111.0:line-029-text-j7c63h v0.111.0 0.111.0 콘텐츠 및 밸런스 리젠트 별 비용이 2 → 1로 감소했습니다. star cost decreased from 2 -> 1"
+  },
+  {
+    "id": "v0.111.0:line-030-relic-regalite",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28792,10 +28870,10 @@
         "label": "리갈라이트"
       }
     ],
-    "searchText": "v0.111.0:line-026-relic-regalite v0.111.0 0.111.0 콘텐츠 및 밸런스 리젠트 리갈라이트 (너프): 얻는 방어도가 6 → 4로 감소했습니다. regalite (nerf): block gain decreased from 6 -> 4. relic regalite 리갈라이트 리갈라이트 regalite"
+    "searchText": "v0.111.0:line-030-relic-regalite v0.111.0 0.111.0 콘텐츠 및 밸런스 리젠트 리갈라이트 (너프): 얻는 방어도가 6 → 4로 감소했습니다. regalite (nerf): block gain decreased from 6 -> 4. relic regalite 리갈라이트 리갈라이트 regalite"
   },
   {
-    "id": "v0.111.0:line-027-card-shroud",
+    "id": "v0.111.0:line-031-card-shroud",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28814,10 +28892,10 @@
         "label": "수의"
       }
     ],
-    "searchText": "v0.111.0:line-027-card-shroud v0.111.0 0.111.0 콘텐츠 및 밸런스 네크로바인더 수의 (버프): 얻는 방어도가 2(3) → 3(4)로 증가했습니다. shroud (buff): block gain increased from 2(3) -> 3(4). card shroud 수의 수의 shroud"
+    "searchText": "v0.111.0:line-031-card-shroud v0.111.0 0.111.0 콘텐츠 및 밸런스 네크로바인더 수의 (버프): 얻는 방어도가 2(3) → 3(4)로 증가했습니다. shroud (buff): block gain increased from 2(3) -> 3(4). card shroud 수의 수의 shroud"
   },
   {
-    "id": "v0.111.0:line-028-card-times-up",
+    "id": "v0.111.0:line-032-card-times-up",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28836,10 +28914,10 @@
         "label": "때가 되었다"
       }
     ],
-    "searchText": "v0.111.0:line-028-card-times-up v0.111.0 0.111.0 콘텐츠 및 밸런스 네크로바인더 때가 되었다 (버프): 더 이상 소멸하지 않습니다. time's up (buff): no longer has exhaust. card times_up 때가 되었다 때가 되었다 time's up"
+    "searchText": "v0.111.0:line-032-card-times-up v0.111.0 0.111.0 콘텐츠 및 밸런스 네크로바인더 때가 되었다 (버프): 더 이상 소멸하지 않습니다. time's up (buff): no longer has exhaust. card times_up 때가 되었다 때가 되었다 time's up"
   },
   {
-    "id": "v0.111.0:line-029-card-hyperbeam-power-focus",
+    "id": "v0.111.0:line-033-card-hyperbeam-power-focus",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28863,10 +28941,10 @@
         "label": "밀집"
       }
     ],
-    "searchText": "v0.111.0:line-029-card-hyperbeam-power-focus v0.111.0 0.111.0 콘텐츠 및 밸런스 디펙트 파괴광선 리워크: \"모든 적에게 피해를 30(38) 줍니다. 밀집을 3 잃습니다.\" → \"모든 적에게 피해를 24(30) 줍니다. 이번 턴 동안 밀집을 3 잃습니다.\" reworked hyperbeam: \"deal 30(38) damage to all enemies. lose 3 focus.\" -> \"deal 24(30) damage to all enemies. lose 3 focus this turn.\" card hyperbeam 파괴광선 파괴광선 hyperbeam power focus 밀집 밀집 focus"
+    "searchText": "v0.111.0:line-033-card-hyperbeam-power-focus v0.111.0 0.111.0 콘텐츠 및 밸런스 디펙트 파괴광선 리워크: \"모든 적에게 피해를 30(38) 줍니다. 밀집을 3 잃습니다.\" → \"모든 적에게 피해를 24(30) 줍니다. 이번 턴 동안 밀집을 3 잃습니다.\" reworked hyperbeam: \"deal 30(38) damage to all enemies. lose 3 focus.\" -> \"deal 24(30) damage to all enemies. lose 3 focus this turn.\" card hyperbeam 파괴광선 파괴광선 hyperbeam power focus 밀집 밀집 focus"
   },
   {
-    "id": "v0.111.0:line-030-card-thunder",
+    "id": "v0.111.0:line-034-card-thunder",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28885,10 +28963,10 @@
         "label": "벼락"
       }
     ],
-    "searchText": "v0.111.0:line-030-card-thunder v0.111.0 0.111.0 콘텐츠 및 밸런스 디펙트 벼락 (버프): 피해량이 6(8) → 8(11)로 증가했습니다. thunder (buff): damage increased from 6(8) -> 8(11). card thunder 벼락 벼락 thunder"
+    "searchText": "v0.111.0:line-034-card-thunder v0.111.0 0.111.0 콘텐츠 및 밸런스 디펙트 벼락 (버프): 피해량이 6(8) → 8(11)로 증가했습니다. thunder (buff): damage increased from 6(8) -> 8(11). card thunder 벼락 벼락 thunder"
   },
   {
-    "id": "v0.111.0:line-031-card-null-power-weak",
+    "id": "v0.111.0:line-035-card-null-power-weak",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28912,10 +28990,10 @@
         "label": "약화"
       }
     ],
-    "searchText": "v0.111.0:line-031-card-null-power-weak v0.111.0 0.111.0 콘텐츠 및 밸런스 디펙트 null (너프): 부여하는 약화가 2(3) → 1(2)로 감소했습니다. null (nerf): weak application decreased from 2(3) -> 1(2). card null null null null power weak 약화 약화 weak"
+    "searchText": "v0.111.0:line-035-card-null-power-weak v0.111.0 0.111.0 콘텐츠 및 밸런스 디펙트 null (너프): 부여하는 약화가 2(3) → 1(2)로 감소했습니다. null (nerf): weak application decreased from 2(3) -> 1(2). card null null null null power weak 약화 약화 weak"
   },
   {
-    "id": "v0.111.0:line-032-card-synchronize-power-focus",
+    "id": "v0.111.0:line-036-card-synchronize-power-focus",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28939,10 +29017,10 @@
         "label": "밀집"
       }
     ],
-    "searchText": "v0.111.0:line-032-card-synchronize-power-focus v0.111.0 0.111.0 콘텐츠 및 밸런스 디펙트 동기화 (너프): 밀집이 2(3) → 1(2)로 감소했습니다. synchronize (nerf): focus decreased from 2(3) -> 1(2). card synchronize 동기화 동기화 synchronize power focus 밀집 밀집 focus"
+    "searchText": "v0.111.0:line-036-card-synchronize-power-focus v0.111.0 0.111.0 콘텐츠 및 밸런스 디펙트 동기화 (너프): 밀집이 2(3) → 1(2)로 감소했습니다. synchronize (nerf): focus decreased from 2(3) -> 1(2). card synchronize 동기화 동기화 synchronize power focus 밀집 밀집 focus"
   },
   {
-    "id": "v0.111.0:line-033-text-108eyq7",
+    "id": "v0.111.0:line-037-text-108eyq7",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28954,10 +29032,10 @@
     "textKo": "인도네시아어 공식 번역을 추가했으며, 없는 문구는 영어로 대체됩니다.",
     "textEn": "Added Indonesian localization with English fallback.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-033-text-108eyq7 v0.111.0 0.111.0 문구 인도네시아어 공식 번역을 추가했으며, 없는 문구는 영어로 대체됩니다. added indonesian localization with english fallback."
+    "searchText": "v0.111.0:line-037-text-108eyq7 v0.111.0 0.111.0 문구 인도네시아어 공식 번역을 추가했으며, 없는 문구는 영어로 대체됩니다. added indonesian localization with english fallback."
   },
   {
-    "id": "v0.111.0:line-034-ancient-vakuu-relic-jeweled-mask",
+    "id": "v0.111.0:line-038-ancient-vakuu-relic-jeweled-mask",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28980,10 +29058,10 @@
         "label": "보석 박힌 가면"
       }
     ],
-    "searchText": "v0.111.0:line-034-ancient-vakuu-relic-jeweled-mask v0.111.0 0.111.0 사용자 인터페이스 및 경험 바쿠의 보석 박힌 가면은 이제 덱의 모든 파워가 선천성이 아닌 한, 선천성이 아닌 파워를 고릅니다. vakuu's jeweled mask now chooses a non-innate power unless all powers in the player's deck are innate. ancient vakuu 바쿠 바쿠 vakuu relic jeweled_mask 보석 박힌 가면 보석 박힌 가면 jeweled mask"
+    "searchText": "v0.111.0:line-038-ancient-vakuu-relic-jeweled-mask v0.111.0 0.111.0 사용자 인터페이스 및 경험 바쿠의 보석 박힌 가면은 이제 덱의 모든 파워가 선천성이 아닌 한, 선천성이 아닌 파워를 고릅니다. vakuu's jeweled mask now chooses a non-innate power unless all powers in the player's deck are innate. ancient vakuu 바쿠 바쿠 vakuu relic jeweled_mask 보석 박힌 가면 보석 박힌 가면 jeweled mask"
   },
   {
-    "id": "v0.111.0:line-035-text-1uptj7e",
+    "id": "v0.111.0:line-039-text-1uptj7e",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28995,10 +29073,10 @@
     "textKo": "턴 종료 시 발동하는 카드가 많을 때 더 빠르게 사용됩니다.",
     "textEn": "Cards with on-end-turn effects are now played faster when there are many of them.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-035-text-1uptj7e v0.111.0 0.111.0 사용자 인터페이스 및 경험 턴 종료 시 발동하는 카드가 많을 때 더 빠르게 사용됩니다. cards with on-end-turn effects are now played faster when there are many of them."
+    "searchText": "v0.111.0:line-039-text-1uptj7e v0.111.0 0.111.0 사용자 인터페이스 및 경험 턴 종료 시 발동하는 카드가 많을 때 더 빠르게 사용됩니다. cards with on-end-turn effects are now played faster when there are many of them."
   },
   {
-    "id": "v0.111.0:line-036-text-1yosaot",
+    "id": "v0.111.0:line-040-text-1yosaot",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29010,10 +29088,10 @@
     "textKo": "오버레이가 꺼져 있어도 초대 버튼이 표시되며, 오류를 보여 줍니다.",
     "textEn": "The Invite button is shown when the overlay is disabled, and displays an error.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-036-text-1yosaot v0.111.0 0.111.0 사용자 인터페이스 및 경험 오버레이가 꺼져 있어도 초대 버튼이 표시되며, 오류를 보여 줍니다. the invite button is shown when the overlay is disabled, and displays an error."
+    "searchText": "v0.111.0:line-040-text-1yosaot v0.111.0 0.111.0 사용자 인터페이스 및 경험 오버레이가 꺼져 있어도 초대 버튼이 표시되며, 오류를 보여 줍니다. the invite button is shown when the overlay is disabled, and displays an error."
   },
   {
-    "id": "v0.111.0:line-037-text-6fj6ft",
+    "id": "v0.111.0:line-041-text-6fj6ft",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29025,10 +29103,10 @@
     "textKo": "E 키로 카드 선택을 다시 확정할 수 있습니다.",
     "textEn": "Players can confirm card selection via E again.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-037-text-6fj6ft v0.111.0 0.111.0 사용자 인터페이스 및 경험 e 키로 카드 선택을 다시 확정할 수 있습니다. players can confirm card selection via e again."
+    "searchText": "v0.111.0:line-041-text-6fj6ft v0.111.0 0.111.0 사용자 인터페이스 및 경험 e 키로 카드 선택을 다시 확정할 수 있습니다. players can confirm card selection via e again."
   },
   {
-    "id": "v0.111.0:line-038-text-1sn8l6",
+    "id": "v0.111.0:line-042-text-1sn8l6",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29040,10 +29118,10 @@
     "textKo": "빠른 모드에서 역사 해금 VFX가 빨라집니다.",
     "textEn": "Sped up Epoch unlock VFX when playing in fast mode.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-038-text-1sn8l6 v0.111.0 0.111.0 사용자 인터페이스 및 경험 빠른 모드에서 역사 해금 vfx가 빨라집니다. sped up epoch unlock vfx when playing in fast mode."
+    "searchText": "v0.111.0:line-042-text-1sn8l6 v0.111.0 0.111.0 사용자 인터페이스 및 경험 빠른 모드에서 역사 해금 vfx가 빨라집니다. sped up epoch unlock vfx when playing in fast mode."
   },
   {
-    "id": "v0.111.0:line-039-text-1uy4sv6",
+    "id": "v0.111.0:line-043-text-1uy4sv6",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29055,10 +29133,10 @@
     "textKo": "다음 카드에 정식 초상화를 추가했습니다.",
     "textEn": "Added portrait art for:",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-039-text-1uy4sv6 v0.111.0 0.111.0 아트 다음 카드에 정식 초상화를 추가했습니다. added portrait art for:"
+    "searchText": "v0.111.0:line-043-text-1uy4sv6 v0.111.0 0.111.0 아트 다음 카드에 정식 초상화를 추가했습니다. added portrait art for:"
   },
   {
-    "id": "v0.111.0:line-040-card-hibernate",
+    "id": "v0.111.0:line-044-card-hibernate",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29076,10 +29154,10 @@
         "label": "동면"
       }
     ],
-    "searchText": "v0.111.0:line-040-card-hibernate v0.111.0 0.111.0 아트 동면 hibernate card hibernate 동면 동면 hibernate"
+    "searchText": "v0.111.0:line-044-card-hibernate v0.111.0 0.111.0 아트 동면 hibernate card hibernate 동면 동면 hibernate"
   },
   {
-    "id": "v0.111.0:line-041-card-one-for-all",
+    "id": "v0.111.0:line-045-card-one-for-all",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29097,10 +29175,10 @@
         "label": "모두를 위한 하나"
       }
     ],
-    "searchText": "v0.111.0:line-041-card-one-for-all v0.111.0 0.111.0 아트 모두를 위한 하나 one for all card one_for_all 모두를 위한 하나 모두를 위한 하나 one for all"
+    "searchText": "v0.111.0:line-045-card-one-for-all v0.111.0 0.111.0 아트 모두를 위한 하나 one for all card one_for_all 모두를 위한 하나 모두를 위한 하나 one for all"
   },
   {
-    "id": "v0.111.0:line-042-card-cacophony",
+    "id": "v0.111.0:line-046-card-cacophony",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29118,10 +29196,10 @@
         "label": "불협화음"
       }
     ],
-    "searchText": "v0.111.0:line-042-card-cacophony v0.111.0 0.111.0 아트 불협화음 cacophony card cacophony 불협화음 불협화음 cacophony"
+    "searchText": "v0.111.0:line-046-card-cacophony v0.111.0 0.111.0 아트 불협화음 cacophony card cacophony 불협화음 불협화음 cacophony"
   },
   {
-    "id": "v0.111.0:line-043-card-underworld",
+    "id": "v0.111.0:line-047-card-underworld",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29139,10 +29217,10 @@
         "label": "지하세계"
       }
     ],
-    "searchText": "v0.111.0:line-043-card-underworld v0.111.0 0.111.0 아트 지하세계 underworld card underworld 지하세계 지하세계 underworld"
+    "searchText": "v0.111.0:line-047-card-underworld v0.111.0 0.111.0 아트 지하세계 underworld card underworld 지하세계 지하세계 underworld"
   },
   {
-    "id": "v0.111.0:line-044-card-midnight",
+    "id": "v0.111.0:line-048-card-midnight",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29160,51 +29238,25 @@
         "label": "심야"
       }
     ],
-    "searchText": "v0.111.0:line-044-card-midnight v0.111.0 0.111.0 아트 심야 midnight card midnight 심야 심야 midnight"
+    "searchText": "v0.111.0:line-048-card-midnight v0.111.0 0.111.0 아트 심야 midnight card midnight 심야 심야 midnight"
   },
   {
-    "id": "v0.111.0:line-045-character-ironclad-character-silent",
+    "id": "v0.111.0:line-049-text-gpepmx",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
     "section": [
       "아트"
     ],
-    "markdownKo": "[gold:character]아이언클래드[/gold], [gold:character]사일런트[/gold], [gold:character]리젠트[/gold], [gold:character]네크로바인더[/gold], [gold:character]디펙트[/gold]에 낮은 체력 대기 애니메이션을 추가했습니다.",
-    "markdownEn": "Added low HP idle animations for [gold:character]The Ironclad[/gold], [gold:character]The Silent[/gold], [gold:character]The Regent[/gold], [gold:character]The Necrobinder[/gold], and [gold:character]The Defect[/gold].",
-    "textKo": "아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트에 낮은 체력 대기 애니메이션을 추가했습니다.",
-    "textEn": "Added low HP idle animations for The Ironclad, The Silent, The Regent, The Necrobinder, and The Defect.",
-    "entityRefs": [
-      {
-        "type": "character",
-        "id": "IRONCLAD",
-        "label": "아이언클래드"
-      },
-      {
-        "type": "character",
-        "id": "SILENT",
-        "label": "사일런트"
-      },
-      {
-        "type": "character",
-        "id": "REGENT",
-        "label": "리젠트"
-      },
-      {
-        "type": "character",
-        "id": "NECROBINDER",
-        "label": "네크로바인더"
-      },
-      {
-        "type": "character",
-        "id": "DEFECT",
-        "label": "디펙트"
-      }
-    ],
-    "searchText": "v0.111.0:line-045-character-ironclad-character-silent v0.111.0 0.111.0 아트 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트에 낮은 체력 대기 애니메이션을 추가했습니다. added low hp idle animations for the ironclad, the silent, the regent, the necrobinder, and the defect. character ironclad 아이언클래드 아이언클래드 the ironclad ironclad character silent 사일런트 사일런트 the silent silent character regent 리젠트 리젠트 the regent regent character necrobinder 네크로바인더 네크로바인더 the necrobinder necrobinder character defect 디펙트 디펙트 the defect defect"
+    "markdownKo": "모든 플레이어블 캐릭터에 낮은 체력 대기 애니메이션을 추가했습니다.",
+    "markdownEn": "Added low HP idle animations for all playable characters.",
+    "textKo": "모든 플레이어블 캐릭터에 낮은 체력 대기 애니메이션을 추가했습니다.",
+    "textEn": "Added low HP idle animations for all playable characters.",
+    "entityRefs": [],
+    "searchText": "v0.111.0:line-049-text-gpepmx v0.111.0 0.111.0 아트 모든 플레이어블 캐릭터에 낮은 체력 대기 애니메이션을 추가했습니다. added low hp idle animations for all playable characters."
   },
   {
-    "id": "v0.111.0:line-046-character-necrobinder",
+    "id": "v0.111.0:line-050-character-necrobinder",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29222,10 +29274,10 @@
         "label": "네크로바인더"
       }
     ],
-    "searchText": "v0.111.0:line-046-character-necrobinder v0.111.0 0.111.0 아트 네크로바인더의 베기 vfx를 업데이트했습니다. updated the necrobinder's slash vfx. character necrobinder 네크로바인더 네크로바인더 the necrobinder necrobinder"
+    "searchText": "v0.111.0:line-050-character-necrobinder v0.111.0 0.111.0 아트 네크로바인더의 베기 vfx를 업데이트했습니다. updated the necrobinder's slash vfx. character necrobinder 네크로바인더 네크로바인더 the necrobinder necrobinder"
   },
   {
-    "id": "v0.111.0:line-047-potion-dexterity-potion",
+    "id": "v0.111.0:line-051-potion-dexterity-potion",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29243,10 +29295,10 @@
         "label": "민첩 포션"
       }
     ],
-    "searchText": "v0.111.0:line-047-potion-dexterity-potion v0.111.0 0.111.0 아트 민첩 포션을 다시 초록색으로 되돌렸습니다. changed dexterity potion back to being green. potion dexterity_potion 민첩 포션 민첩 포션 dexterity potion"
+    "searchText": "v0.111.0:line-051-potion-dexterity-potion v0.111.0 0.111.0 아트 민첩 포션을 다시 초록색으로 되돌렸습니다. changed dexterity potion back to being green. potion dexterity_potion 민첩 포션 민첩 포션 dexterity potion"
   },
   {
-    "id": "v0.111.0:line-048-text-9oou2b",
+    "id": "v0.111.0:line-052-text-9oou2b",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29259,10 +29311,10 @@
     "textKo": "모드 로드를 거부했지만 모드가 설치된 상태에서는, 저장 데이터가 모드 저장 폴더로 복사되지 않습니다.",
     "textEn": "Saves are no longer copied to the modded save directory if a player declined mod loading, but left their mods installed.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-048-text-9oou2b v0.111.0 0.111.0 버그 수정 일반 모드 로드를 거부했지만 모드가 설치된 상태에서는, 저장 데이터가 모드 저장 폴더로 복사되지 않습니다. saves are no longer copied to the modded save directory if a player declined mod loading, but left their mods installed."
+    "searchText": "v0.111.0:line-052-text-9oou2b v0.111.0 0.111.0 버그 수정 일반 모드 로드를 거부했지만 모드가 설치된 상태에서는, 저장 데이터가 모드 저장 폴더로 복사되지 않습니다. saves are no longer copied to the modded save directory if a player declined mod loading, but left their mods installed."
   },
   {
-    "id": "v0.111.0:line-049-text-182orvy",
+    "id": "v0.111.0:line-053-text-182orvy",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29275,10 +29327,10 @@
     "textKo": "이전에 모드 로드를 거부한 플레이어의 비모드 저장 데이터가 복사되지 않던 문제를 수정했습니다.",
     "textEn": "Fixed an issue where unmodded saves were not copied for players who had previously declined mod loading.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-049-text-182orvy v0.111.0 0.111.0 버그 수정 일반 이전에 모드 로드를 거부한 플레이어의 비모드 저장 데이터가 복사되지 않던 문제를 수정했습니다. fixed an issue where unmodded saves were not copied for players who had previously declined mod loading."
+    "searchText": "v0.111.0:line-053-text-182orvy v0.111.0 0.111.0 버그 수정 일반 이전에 모드 로드를 거부한 플레이어의 비모드 저장 데이터가 복사되지 않던 문제를 수정했습니다. fixed an issue where unmodded saves were not copied for players who had previously declined mod loading."
   },
   {
-    "id": "v0.111.0:line-050-text-4aj2jl",
+    "id": "v0.111.0:line-054-text-4aj2jl",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29291,10 +29343,10 @@
     "textKo": "지도 그리기 모드에서 선을 지운 뒤 입력이 막히던 문제를 수정했습니다.",
     "textEn": "Fixed input being blocked after clearing map drawings while in map drawing mode.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-050-text-4aj2jl v0.111.0 0.111.0 버그 수정 일반 지도 그리기 모드에서 선을 지운 뒤 입력이 막히던 문제를 수정했습니다. fixed input being blocked after clearing map drawings while in map drawing mode."
+    "searchText": "v0.111.0:line-054-text-4aj2jl v0.111.0 0.111.0 버그 수정 일반 지도 그리기 모드에서 선을 지운 뒤 입력이 막히던 문제를 수정했습니다. fixed input being blocked after clearing map drawings while in map drawing mode."
   },
   {
-    "id": "v0.111.0:line-051-text-g6r961",
+    "id": "v0.111.0:line-055-text-g6r961",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29307,10 +29359,10 @@
     "textKo": "선을 그리는 도중에 지우면 지도 그림이 깨지던 문제를 수정했습니다.",
     "textEn": "Fixed map drawings breaking when lines are cleared while a stroke is in progress.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-051-text-g6r961 v0.111.0 0.111.0 버그 수정 일반 선을 그리는 도중에 지우면 지도 그림이 깨지던 문제를 수정했습니다. fixed map drawings breaking when lines are cleared while a stroke is in progress."
+    "searchText": "v0.111.0:line-055-text-g6r961 v0.111.0 0.111.0 버그 수정 일반 선을 그리는 도중에 지우면 지도 그림이 깨지던 문제를 수정했습니다. fixed map drawings breaking when lines are cleared while a stroke is in progress."
   },
   {
-    "id": "v0.111.0:line-052-text-16g5vn6",
+    "id": "v0.111.0:line-056-text-16g5vn6",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29323,10 +29375,10 @@
     "textKo": "보물 방에서 유물을 고를 때 멀티플레이에서 발생할 수 있던 크래시를 수정했습니다.",
     "textEn": "Fixed a crash that could happen in multiplayer when selecting a relic at a treasure room.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-052-text-16g5vn6 v0.111.0 0.111.0 버그 수정 일반 보물 방에서 유물을 고를 때 멀티플레이에서 발생할 수 있던 크래시를 수정했습니다. fixed a crash that could happen in multiplayer when selecting a relic at a treasure room."
+    "searchText": "v0.111.0:line-056-text-16g5vn6 v0.111.0 0.111.0 버그 수정 일반 보물 방에서 유물을 고를 때 멀티플레이에서 발생할 수 있던 크래시를 수정했습니다. fixed a crash that could happen in multiplayer when selecting a relic at a treasure room."
   },
   {
-    "id": "v0.111.0:line-053-text-1i3q930",
+    "id": "v0.111.0:line-057-text-1i3q930",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29339,10 +29391,10 @@
     "textKo": "단일 카드 검사 화면을 닫았다가 다시 열 때 가끔 발생하던 크래시를 수정했습니다.",
     "textEn": "Fixed a crash that could occasionally happen after closing and then re-opening the single-card inspection screen.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-053-text-1i3q930 v0.111.0 0.111.0 버그 수정 일반 단일 카드 검사 화면을 닫았다가 다시 열 때 가끔 발생하던 크래시를 수정했습니다. fixed a crash that could occasionally happen after closing and then re-opening the single-card inspection screen."
+    "searchText": "v0.111.0:line-057-text-1i3q930 v0.111.0 0.111.0 버그 수정 일반 단일 카드 검사 화면을 닫았다가 다시 열 때 가끔 발생하던 크래시를 수정했습니다. fixed a crash that could occasionally happen after closing and then re-opening the single-card inspection screen."
   },
   {
-    "id": "v0.111.0:line-054-text-dujoli",
+    "id": "v0.111.0:line-058-text-dujoli",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29355,10 +29407,10 @@
     "textKo": "전투가 끝난 뒤 카드가 더미로 이동을 마칠 때 나던 오류를 수정했습니다.",
     "textEn": "Fixed an error when a card finished moving to a pile after combat ended.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-054-text-dujoli v0.111.0 0.111.0 버그 수정 일반 전투가 끝난 뒤 카드가 더미로 이동을 마칠 때 나던 오류를 수정했습니다. fixed an error when a card finished moving to a pile after combat ended."
+    "searchText": "v0.111.0:line-058-text-dujoli v0.111.0 0.111.0 버그 수정 일반 전투가 끝난 뒤 카드가 더미로 이동을 마칠 때 나던 오류를 수정했습니다. fixed an error when a card finished moving to a pile after combat ended."
   },
   {
-    "id": "v0.111.0:line-055-text-racs2r",
+    "id": "v0.111.0:line-059-text-racs2r",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29371,10 +29423,10 @@
     "textKo": "카드가 아직 섞이는 중에 전투가 끝나면 나던 오류를 수정했습니다.",
     "textEn": "Fixed an error when a combat would end while cards were still shuffling.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-055-text-racs2r v0.111.0 0.111.0 버그 수정 일반 카드가 아직 섞이는 중에 전투가 끝나면 나던 오류를 수정했습니다. fixed an error when a combat would end while cards were still shuffling."
+    "searchText": "v0.111.0:line-059-text-racs2r v0.111.0 0.111.0 버그 수정 일반 카드가 아직 섞이는 중에 전투가 끝나면 나던 오류를 수정했습니다. fixed an error when a combat would end while cards were still shuffling."
   },
   {
-    "id": "v0.111.0:line-056-text-vs3t1c",
+    "id": "v0.111.0:line-060-text-vs3t1c",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29387,10 +29439,10 @@
     "textKo": "게임 오버 화면을 일찍 나가거나 이미 모든 해금을 얻은 경우, 런 종료 시 획득한 배지가 사라질 수 있던 문제를 수정했습니다.",
     "textEn": "Fixed an issue where badges earned at the end of a run could be lost if you left the game over screen early or had already earned every unlock.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-056-text-vs3t1c v0.111.0 0.111.0 버그 수정 일반 게임 오버 화면을 일찍 나가거나 이미 모든 해금을 얻은 경우, 런 종료 시 획득한 배지가 사라질 수 있던 문제를 수정했습니다. fixed an issue where badges earned at the end of a run could be lost if you left the game over screen early or had already earned every unlock."
+    "searchText": "v0.111.0:line-060-text-vs3t1c v0.111.0 0.111.0 버그 수정 일반 게임 오버 화면을 일찍 나가거나 이미 모든 해금을 얻은 경우, 런 종료 시 획득한 배지가 사라질 수 있던 문제를 수정했습니다. fixed an issue where badges earned at the end of a run could be lost if you left the game over screen early or had already earned every unlock."
   },
   {
-    "id": "v0.111.0:line-057-text-sn0aev",
+    "id": "v0.111.0:line-061-text-sn0aev",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29403,10 +29455,10 @@
     "textKo": "컨트롤러로 보상을 다시 굴린 뒤 카드로 포커스가 돌아오지 않던 문제를 수정했습니다.",
     "textEn": "Fixed focus not returning to cards after rerolling rewards on controller.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-057-text-sn0aev v0.111.0 0.111.0 버그 수정 일반 컨트롤러로 보상을 다시 굴린 뒤 카드로 포커스가 돌아오지 않던 문제를 수정했습니다. fixed focus not returning to cards after rerolling rewards on controller."
+    "searchText": "v0.111.0:line-061-text-sn0aev v0.111.0 0.111.0 버그 수정 일반 컨트롤러로 보상을 다시 굴린 뒤 카드로 포커스가 돌아오지 않던 문제를 수정했습니다. fixed focus not returning to cards after rerolling rewards on controller."
   },
   {
-    "id": "v0.111.0:line-058-encounter-kaiser-crab-boss",
+    "id": "v0.111.0:line-062-encounter-kaiser-crab-boss",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29425,10 +29477,10 @@
         "label": "황제 게"
       }
     ],
-    "searchText": "v0.111.0:line-058-encounter-kaiser-crab-boss v0.111.0 0.111.0 버그 수정 적 황제 게 전투에서 플레이어가 방향을 바꿀 때 형태 vfx가 뒤집히지 않던 문제를 수정했습니다. fixed form vfx not flipping when the player flips direction during the kaiser crab combat. encounter kaiser_crab_boss 황제 게 황제 게 kaiser crab"
+    "searchText": "v0.111.0:line-062-encounter-kaiser-crab-boss v0.111.0 0.111.0 버그 수정 적 황제 게 전투에서 플레이어가 방향을 바꿀 때 형태 vfx가 뒤집히지 않던 문제를 수정했습니다. fixed form vfx not flipping when the player flips direction during the kaiser crab combat. encounter kaiser_crab_boss 황제 게 황제 게 kaiser crab"
   },
   {
-    "id": "v0.111.0:line-059-encounter-the-lost-and-forgotten-normal",
+    "id": "v0.111.0:line-063-encounter-the-lost-and-forgotten-normal",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29447,10 +29499,10 @@
         "label": "사라진 자와 잊힌 자"
       }
     ],
-    "searchText": "v0.111.0:line-059-encounter-the-lost-and-forgotten-normal v0.111.0 0.111.0 버그 수정 적 도감에서 애니메이션이 끊기면 사라진 자와 잊힌 자의 사망 입자가 계속 재생되던 문제를 수정했습니다. fixed lost and forgotten death particles continuing to play when the animation is interrupted in the bestiary. encounter the_lost_and_forgotten_normal 사라진 자와 잊힌 자 사라진 자와 잊힌 자 lost and forgotten"
+    "searchText": "v0.111.0:line-063-encounter-the-lost-and-forgotten-normal v0.111.0 0.111.0 버그 수정 적 도감에서 애니메이션이 끊기면 사라진 자와 잊힌 자의 사망 입자가 계속 재생되던 문제를 수정했습니다. fixed lost and forgotten death particles continuing to play when the animation is interrupted in the bestiary. encounter the_lost_and_forgotten_normal 사라진 자와 잊힌 자 사라진 자와 잊힌 자 lost and forgotten"
   },
   {
-    "id": "v0.111.0:line-060-card-echo-form",
+    "id": "v0.111.0:line-064-card-echo-form",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29469,10 +29521,10 @@
         "label": "메아리의 형상"
       }
     ],
-    "searchText": "v0.111.0:line-060-card-echo-form v0.111.0 0.111.0 버그 수정 디펙트 메아리의 형상을 사용하는 동안 중단되면 디펙트의 파워업 애니메이션이 멈추던 문제를 수정했습니다. fixed defect's power-up animation freezing when interrupted while playing echo form. card echo_form 메아리의 형상 메아리의 형상 echo form"
+    "searchText": "v0.111.0:line-064-card-echo-form v0.111.0 0.111.0 버그 수정 디펙트 메아리의 형상을 사용하는 동안 중단되면 디펙트의 파워업 애니메이션이 멈추던 문제를 수정했습니다. fixed defect's power-up animation freezing when interrupted while playing echo form. card echo_form 메아리의 형상 메아리의 형상 echo form"
   },
   {
-    "id": "v0.111.0:line-061-card-cacophony-relic-gremlin-horn",
+    "id": "v0.111.0:line-065-card-cacophony-relic-gremlin-horn",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29496,10 +29548,10 @@
         "label": "그렘린 뿔"
       }
     ],
-    "searchText": "v0.111.0:line-061-card-cacophony-relic-gremlin-horn v0.111.0 0.111.0 버그 수정 멀티플레이어 불협화음은 첫 발동으로 다른 카드가 뽑혀도 (그렘린 뿔 등) 두 번째 발동하지 않습니다. cacophony no longer triggers a second time if its first trigger causes another card to be drawn (for example via gremlin horn). card cacophony 불협화음 불협화음 cacophony relic gremlin_horn 그렘린 뿔 그렘린 뿔 gremlin horn"
+    "searchText": "v0.111.0:line-065-card-cacophony-relic-gremlin-horn v0.111.0 0.111.0 버그 수정 멀티플레이어 불협화음은 첫 발동으로 다른 카드가 뽑혀도 (그렘린 뿔 등) 두 번째 발동하지 않습니다. cacophony no longer triggers a second time if its first trigger causes another card to be drawn (for example via gremlin horn). card cacophony 불협화음 불협화음 cacophony relic gremlin_horn 그렘린 뿔 그렘린 뿔 gremlin horn"
   },
   {
-    "id": "v0.111.0:line-062-text-d6gkuz",
+    "id": "v0.111.0:line-066-text-d6gkuz",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29512,10 +29564,10 @@
     "textKo": "불러온 일일 런 로비에서 준비를 해제해도 준비 상태가 남는 문제를 수정했습니다.",
     "textEn": "Unreadying in a loaded Daily Run lobby no longer leaves you readied up.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-062-text-d6gkuz v0.111.0 0.111.0 버그 수정 멀티플레이어 불러온 일일 런 로비에서 준비를 해제해도 준비 상태가 남는 문제를 수정했습니다. unreadying in a loaded daily run lobby no longer leaves you readied up."
+    "searchText": "v0.111.0:line-066-text-d6gkuz v0.111.0 0.111.0 버그 수정 멀티플레이어 불러온 일일 런 로비에서 준비를 해제해도 준비 상태가 남는 문제를 수정했습니다. unreadying in a loaded daily run lobby no longer leaves you readied up."
   },
   {
-    "id": "v0.111.0:line-063-card-the-ball",
+    "id": "v0.111.0:line-067-card-the-ball",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29534,10 +29586,10 @@
         "label": "공"
       }
     ],
-    "searchText": "v0.111.0:line-063-card-the-ball v0.111.0 0.111.0 버그 수정 멀티플레이어 공으로 조우의 마지막 적을 처치할 때 발생할 수 있던 멀티플레이 크래시를 수정했습니다. fixed a multiplayer crash that could happen when killing the last enemy in an encounter with the ball. card the_ball 공 공 the ball"
+    "searchText": "v0.111.0:line-067-card-the-ball v0.111.0 0.111.0 버그 수정 멀티플레이어 공으로 조우의 마지막 적을 처치할 때 발생할 수 있던 멀티플레이 크래시를 수정했습니다. fixed a multiplayer crash that could happen when killing the last enemy in an encounter with the ball. card the_ball 공 공 the ball"
   },
   {
-    "id": "v0.111.0:line-064-event-punch-off-event-the-lantern-key",
+    "id": "v0.111.0:line-068-event-punch-off-event-the-lantern-key",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29560,10 +29612,10 @@
         "label": "랜턴 열쇠"
       }
     ],
-    "searchText": "v0.111.0:line-064-event-punch-off-event-the-lantern-key v0.111.0 0.111.0 성능 난타전과 랜턴 열쇠의 버벅임을 줄였습니다. reduced hitch on punch off and the lantern key. event punch_off 난타전 난타전 punch off event the_lantern_key 랜턴 열쇠 랜턴 열쇠 the lantern key"
+    "searchText": "v0.111.0:line-068-event-punch-off-event-the-lantern-key v0.111.0 0.111.0 성능 난타전과 랜턴 열쇠의 버벅임을 줄였습니다. reduced hitch on punch off and the lantern key. event punch_off 난타전 난타전 punch off event the_lantern_key 랜턴 열쇠 랜턴 열쇠 the lantern key"
   },
   {
-    "id": "v0.111.0:line-065-text-1rh5rfl",
+    "id": "v0.111.0:line-069-text-1rh5rfl",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29575,10 +29627,10 @@
     "textKo": "일본어, 중국어, 한국어, 태국어, 러시아어에서 텍스트가 처음 나타날 때 끊겨 보이던 현상을 줄였습니다.",
     "textEn": "Reduced stuttering when text appears for the first time in Japanese, Chinese, Korean, Thai, and Russian.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-065-text-1rh5rfl v0.111.0 0.111.0 성능 일본어, 중국어, 한국어, 태국어, 러시아어에서 텍스트가 처음 나타날 때 끊겨 보이던 현상을 줄였습니다. reduced stuttering when text appears for the first time in japanese, chinese, korean, thai, and russian."
+    "searchText": "v0.111.0:line-069-text-1rh5rfl v0.111.0 0.111.0 성능 일본어, 중국어, 한국어, 태국어, 러시아어에서 텍스트가 처음 나타날 때 끊겨 보이던 현상을 줄였습니다. reduced stuttering when text appears for the first time in japanese, chinese, korean, thai, and russian."
   },
   {
-    "id": "v0.111.0:line-066-text-1p3jo1",
+    "id": "v0.111.0:line-070-text-1p3jo1",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -29590,6 +29642,6 @@
     "textKo": "굵게·기울임 글꼴이 실제로 그릴 수 있는 글리프만 미리 로드합니다.",
     "textEn": "Preloaded only the glyphs the bold and italic faces can render.",
     "entityRefs": [],
-    "searchText": "v0.111.0:line-066-text-1p3jo1 v0.111.0 0.111.0 성능 굵게·기울임 글꼴이 실제로 그릴 수 있는 글리프만 미리 로드합니다. preloaded only the glyphs the bold and italic faces can render."
+    "searchText": "v0.111.0:line-070-text-1p3jo1 v0.111.0 0.111.0 성능 굵게·기울임 글꼴이 실제로 그릴 수 있는 글리프만 미리 로드합니다. preloaded only the glyphs the bold and italic faces can render."
   }
 ]

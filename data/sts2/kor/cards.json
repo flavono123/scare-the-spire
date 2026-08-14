@@ -8719,12 +8719,12 @@
   {
     "id": "GUIDING_STAR",
     "name": "길잡이별",
-    "description": "피해를 12 줍니다.\n카드를 2장 뽑습니다.",
-    "description_raw": "피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다.",
+    "description": "피해를 12 줍니다.\n다음 턴에,\n카드를 2장 뽑습니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n다음 턴에,\n카드를 {Cards:diff()}장 뽑습니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
-    "star_cost": 2,
+    "star_cost": 1,
     "type": "공격",
     "rarity": "일반",
     "target": "AnyEnemy",
@@ -8742,7 +8742,7 @@
     "vars": {
       "Damage": 12,
       "Cards": 2,
-      "StarCost": 2
+      "StarCost": 1
     },
     "upgrade": {
       "damage": "+1",
