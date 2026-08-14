@@ -1,10 +1,11 @@
 {
-  "fileCount": 644,
+  "fileCount": 690,
   "languages": [
     "deu",
     "eng",
     "esp",
     "fra",
+    "ind",
     "ita",
     "jpn",
     "kor",
@@ -18,8 +19,8 @@
   ],
   "pck": {
     "fileName": "Slay the Spire 2.pck",
-    "sha256": "6881fcb52216771673be031a0dd851aedd167b8bea4b1693b4c4bbb94e6dbef1",
-    "size": 1966053832
+    "sha256": "b3c9f133143f98a1c329c3d2efc7d8a9feb395db46fd3965b899487bf1f4d106",
+    "size": 1990434352
   },
   "schemaVersion": 1,
   "tables": [
