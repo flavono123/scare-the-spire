@@ -795,6 +795,9 @@ function buildCharacterAsset(character, actor, alias, vfxById) {
     HURT: characterActionCandidates(animationNames, ["hurt", "hit", "damage"], idleAnimation),
     DIE: characterActionCandidates(animationNames, ["die", "death", "dead"], idleAnimation),
   };
+  if (animationNames.includes("low_health_loop")) {
+    moveAnimations.LOW_HP_IDLE = ["low_health_loop"];
+  }
   const moveEffects = attackVfx ? { ATTACK: [attackVfx] } : {};
 
   for (const [actionId, action] of Object.entries(alias.specialActions ?? {})) {

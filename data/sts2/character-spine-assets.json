@@ -48,6 +48,9 @@
         "process",
         "idle_loop",
         "attack"
+      ],
+      "LOW_HP_IDLE": [
+        "low_health_loop"
       ]
     },
     "moveEffects": {
@@ -124,6 +127,9 @@
         "attack_heavy",
         "idle_loop",
         "attack"
+      ],
+      "LOW_HP_IDLE": [
+        "low_health_loop"
       ]
     },
     "moveEffects": {}
@@ -181,6 +187,9 @@
         "cast",
         "idle_loop",
         "attack"
+      ],
+      "LOW_HP_IDLE": [
+        "low_health_loop"
       ]
     },
     "moveEffects": {
@@ -257,6 +266,9 @@
         "attack_sovereign",
         "idle_loop",
         "attack"
+      ],
+      "LOW_HP_IDLE": [
+        "low_health_loop"
       ]
     },
     "moveEffects": {}
@@ -305,6 +317,9 @@
         "die",
         "idle_loop",
         "attack"
+      ],
+      "LOW_HP_IDLE": [
+        "low_health_loop"
       ]
     },
     "moveEffects": {
