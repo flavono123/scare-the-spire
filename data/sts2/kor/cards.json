@@ -11781,7 +11781,7 @@
   {
     "id": "MIRAGE",
     "name": "신기루",
-    "description": "모든 적에게 부여된\n[gold]중독[/gold]과 동일한 만큼의\n[gold]방어도[/gold]를 얻습니다. 얻습니다)|}",
+    "description": "모든 적에게 부여된\n[gold]중독[/gold]과 동일한 만큼의\n[gold]방어도[/gold]를 얻습니다.",
     "description_raw": "모든 적에게 부여된\n[gold]중독[/gold]과 동일한 만큼의\n[gold]방어도[/gold]를 얻습니다.{InCombat:\n([gold]방어도[/gold]를 {CalculatedBlock:diff()} 얻습니다)|}",
     "cost": 1,
     "is_x_cost": null,
@@ -18299,7 +18299,7 @@
   {
     "id": "SYNCHRONIZE",
     "name": "동기화",
-    "description": "영창된 구체의 종류\n하나당 이번 턴에\n[gold]밀집[/gold]을 1 얻습니다. 얻습니다)|}",
+    "description": "영창된 구체의 종류\n하나당 이번 턴에\n[gold]밀집[/gold]을 1 얻습니다.",
     "description_raw": "영창된 구체의 종류\n하나당 이번 턴에\n[gold]밀집[/gold]을 {CalculationExtra:diff()} 얻습니다.{InCombat:\n([gold]밀집[/gold]을 {CalculatedFocus:diff()} 얻습니다)|}",
     "cost": 1,
     "is_x_cost": null,
@@ -19043,7 +19043,7 @@
   {
     "id": "TIMES_UP",
     "name": "때가 되었다",
-    "description": "대상 적이 보유한 [gold]종말[/gold]만큼 피해를 줍니다. 줍니다)|}",
+    "description": "대상 적이 보유한 [gold]종말[/gold]만큼 피해를 줍니다.\n(피해를 1 줍니다)",
     "description_raw": "대상 적이 보유한 [gold]종말[/gold]만큼 피해를 줍니다.{IsTargeting:\n(피해를 {CalculatedDamage:diff()} 줍니다)|}",
     "cost": 2,
     "is_x_cost": null,

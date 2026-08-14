@@ -11780,7 +11780,7 @@
   {
     "id": "MIRAGE",
     "name": "Mirage",
-    "description": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies. [gold]Block[/gold])|}",
+    "description": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.",
     "description_raw": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.{InCombat:\n(Gain {CalculatedBlock:diff()} [gold]Block[/gold])|}",
     "cost": 1,
     "is_x_cost": null,
@@ -18296,7 +18296,7 @@
   {
     "id": "SYNCHRONIZE",
     "name": "Synchronize",
-    "description": "Gain 1 [gold]Focus[/gold] this turn for each unique Orb you have. [gold]Focus[/gold])|}",
+    "description": "Gain 1 [gold]Focus[/gold] this turn for each unique Orb you have.",
     "description_raw": "Gain {CalculationExtra:diff()} [gold]Focus[/gold] this turn for each unique Orb you have.{InCombat:\n(Gain {CalculatedFocus:diff()} [gold]Focus[/gold])|}",
     "cost": 1,
     "is_x_cost": null,
@@ -19040,7 +19040,7 @@
   {
     "id": "TIMES_UP",
     "name": "Time's Up",
-    "description": "Deal damage equal to the enemy's [gold]Doom[/gold]. damage)|}",
+    "description": "Deal damage equal to the enemy's [gold]Doom[/gold].\n(Deals 1 damage)",
     "description_raw": "Deal damage equal to the enemy's [gold]Doom[/gold].{IsTargeting:\n(Deals {CalculatedDamage:diff()} damage)|}",
     "cost": 2,
     "is_x_cost": null,
