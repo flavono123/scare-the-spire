@@ -143,8 +143,8 @@
   {
     "id": "BEAUTIFUL_BRACELET",
     "name": "아름다운 팔찌",
-    "description": "획득 시, [gold]덱[/gold]에서 카드를 [blue]4[/blue]장 선택합니다. 그 카드에 [purple]신속[/purple]을 [blue]2[/blue] [gold]인챈트[/gold]합니다.",
-    "description_raw": "획득 시, [gold]덱[/gold]에서 카드를 [blue]{Cards}[/blue]장 선택합니다. 그 카드에 [purple]신속[/purple]을 [blue]2[/blue] [gold]인챈트[/gold]합니다.",
+    "description": "획득 시, [gold]덱[/gold]에 있는 무작위 카드 [blue]4[/blue]장에 [purple]신속[/purple]을 [blue]2[/blue] [gold]인챈트[/gold]합니다.",
+    "description_raw": "획득 시, [gold]덱[/gold]에 있는 무작위 카드 [blue]{Cards}[/blue]장에 [purple]신속[/purple]을 [blue]2[/blue] [gold]인챈트[/gold]합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
@@ -2762,7 +2762,7 @@
     "pool": "regent",
     "image_url": "/static/images/relics/regalite.png",
     "vars": {
-      "Block": 6
+      "Block": 4
     }
   },
   {

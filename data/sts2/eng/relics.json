@@ -143,8 +143,8 @@
   {
     "id": "BEAUTIFUL_BRACELET",
     "name": "Beautiful Bracelet",
-    "description": "Upon pickup, choose [blue]4[/blue] cards in your [gold]Deck[/gold]. [gold]Enchant[/gold] them with [purple]Swift[/purple] [blue]2[/blue].",
-    "description_raw": "Upon pickup, choose [blue]{Cards}[/blue] {Cards:plural:card|cards} in your [gold]Deck[/gold]. [gold]Enchant[/gold] them with [purple]Swift[/purple] [blue]2[/blue].",
+    "description": "Upon pickup, [gold]Enchant[/gold] [blue]4[/blue] random cards in your [gold]Deck[/gold] with [purple]Swift[/purple] [blue]2[/blue].",
+    "description_raw": "Upon pickup, [gold]Enchant[/gold] [blue]{Cards}[/blue] random {Cards:plural:card|cards} in your [gold]Deck[/gold] with [purple]Swift[/purple] [blue]2[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
     "pool": "shared",
@@ -2762,7 +2762,7 @@
     "pool": "regent",
     "image_url": "/static/images/relics/regalite.png",
     "vars": {
-      "Block": 6
+      "Block": 4
     }
   },
   {

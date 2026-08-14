@@ -392,7 +392,7 @@
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
-    "star_cost": 3,
+    "star_cost": 2,
     "type": "스킬",
     "rarity": "고급",
     "target": "Self",
@@ -2257,7 +2257,7 @@
   {
     "id": "BRIGHTEST_FLAME",
     "name": "찬란한 불꽃",
-    "description": "[energy:2]를 얻습니다.\n카드를 2장 뽑습니다.\n최대 체력을 1 잃습니다.",
+    "description": "[energy:2]를 얻습니다.\n카드를 2장 뽑습니다.\n최대 체력을 2 잃습니다.",
     "description_raw": "{Energy:energyIcons()}를 얻습니다.\n카드를 {Cards:diff()}장 뽑습니다.\n최대 체력을 {MaxHp:diff()} 잃습니다.",
     "cost": 0,
     "is_x_cost": null,
@@ -2273,12 +2273,12 @@
     "powers_applied": null,
     "cards_draw": 2,
     "energy_gain": 2,
-    "hp_loss": null,
+    "hp_loss": 2,
     "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "MaxHp": 1,
+      "MaxHp": 2,
       "Energy": 2,
       "Cards": 2
     },
@@ -2764,7 +2764,7 @@
     "upgrade": {
       "damage": "+33"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/cacophony.png",
     "beta_image_url": "/static/images/cards/beta/cacophony.png"
   },
   {
@@ -6621,9 +6621,9 @@
   {
     "id": "EXPECT_A_FIGHT",
     "name": "싸움 준비",
-    "description": "[gold]손[/gold]에 있는 공격 카드 1장당\n[energy:1]를 얻습니다.",
-    "description_raw": "[gold]손[/gold]에 있는 공격 카드 1장당\n{energyPrefix:energyIcons(1)}를 얻습니다.{InCombat:\n({CalculatedEnergy:energyIcons()}를 얻습니다.)|}",
-    "cost": 2,
+    "description": "[gold]방어도[/gold]를 15 얻습니다.\n보유한 [gold]힘[/gold]마다 [gold]방어도[/gold]를\n추가로 5 얻습니다.",
+    "description_raw": "[gold]방어도[/gold]를 {CalculatedBlock:diff()} 얻습니다.\n보유한 [gold]힘[/gold]마다 [gold]방어도[/gold]를\n추가로 {CalculationExtra:diff()} 얻습니다.",
+    "cost": 3,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -6632,22 +6632,22 @@
     "target": "Self",
     "color": "ironclad",
     "damage": null,
-    "block": null,
+    "block": 15,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
-    "energy_gain": 0,
+    "energy_gain": null,
     "hp_loss": null,
     "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Energy": 0,
-      "CalculationBase": 0,
-      "CalculationExtra": 1
+      "CalculationBase": 15,
+      "CalculationExtra": 5
     },
     "upgrade": {
-      "cost": 1
+      "block": "+1",
+      "calculationextra": "+3"
     },
     "image_url": "/static/images/cards/expect_a_fight.png",
     "beta_image_url": null
@@ -7791,8 +7791,8 @@
   {
     "id": "FORGOTTEN_RITUAL",
     "name": "잊힌 의식",
-    "description": "이번 턴에 카드를\n[gold]소멸[/gold]시켰다면,\n[energy:3]를 얻습니다.",
-    "description_raw": "이번 턴에 카드를\n[gold]소멸[/gold]시켰다면,\n{Energy:energyIcons()}를 얻습니다.",
+    "description": "[energy:3]를 얻습니다.",
+    "description_raw": "{Energy:energyIcons()}를 얻습니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -9381,7 +9381,7 @@
     "upgrade": {
       "repeat": "+1"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/hibernate.png",
     "beta_image_url": "/static/images/cards/beta/hibernate.png"
   },
   {
@@ -9674,8 +9674,8 @@
   {
     "id": "HYPERBEAM",
     "name": "파괴광선",
-    "description": "모든 적에게\n피해를 30 줍니다.\n[gold]밀집[/gold]을 3 잃습니다.",
-    "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n[gold]밀집[/gold]을 {FocusPower:diff()} 잃습니다.",
+    "description": "모든 적에게\n피해를 24 줍니다.\n이번 턴 동안 [gold]밀집[/gold]을\n3 잃습니다.",
+    "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n이번 턴 동안 [gold]밀집[/gold]을\n{FocusPower:diff()} 잃습니다.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -9684,7 +9684,7 @@
     "rarity": "희귀",
     "target": "AllEnemies",
     "color": "defect",
-    "damage": 30,
+    "damage": 24,
     "block": null,
     "hit_count": null,
     "powers_applied": [
@@ -9700,12 +9700,12 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 30,
+      "Damage": 24,
       "FocusPower": 3,
       "Focus": 3
     },
     "upgrade": {
-      "damage": "+8"
+      "damage": "+6"
     },
     "image_url": "/static/images/cards/hyperbeam.png",
     "beta_image_url": null
@@ -11558,7 +11558,7 @@
     "upgrade": {
       "damage": "+12"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/midnight.png",
     "beta_image_url": "/static/images/cards/beta/midnight.png"
   },
   {
@@ -11781,7 +11781,7 @@
   {
     "id": "MIRAGE",
     "name": "신기루",
-    "description": "모든 적에게 부여된\n[gold]중독[/gold]과 동일한 만큼의\n[gold]방어도[/gold]를 얻습니다.",
+    "description": "모든 적에게 부여된\n[gold]중독[/gold]과 동일한 만큼의\n[gold]방어도[/gold]를 얻습니다. 얻습니다)|}",
     "description_raw": "모든 적에게 부여된\n[gold]중독[/gold]과 동일한 만큼의\n[gold]방어도[/gold]를 얻습니다.{InCombat:\n([gold]방어도[/gold]를 {CalculatedBlock:diff()} 얻습니다)|}",
     "cost": 1,
     "is_x_cost": null,
@@ -11798,12 +11798,14 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [
+      "소멸"
+    ],
     "tags": null,
     "spawns_cards": null,
     "vars": null,
     "upgrade": {
-      "cost": 0
+      "remove_exhaust": 1
     },
     "image_url": "/static/images/cards/mirage.png",
     "beta_image_url": null
@@ -12458,7 +12460,7 @@
   {
     "id": "NULL",
     "name": "Null",
-    "description": "피해를 10 줍니다.\n[gold]약화[/gold]를 2 부여합니다.\n[gold]암흑[/gold]을 1번 [gold]영창[/gold]합니다.",
+    "description": "피해를 10 줍니다.\n[gold]약화[/gold]를 1 부여합니다.\n[gold]암흑[/gold]을 1번 [gold]영창[/gold]합니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n[gold]약화[/gold]를 {WeakPower:diff()} 부여합니다.\n[gold]암흑[/gold]을 1번 [gold]영창[/gold]합니다.",
     "cost": 2,
     "is_x_cost": null,
@@ -12473,8 +12475,8 @@
     "hit_count": null,
     "powers_applied": [
       {
-        "power": "약화",
-        "amount": 2
+        "power": "Weak",
+        "amount": 1
       }
     ],
     "cards_draw": null,
@@ -12485,8 +12487,8 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 10,
-      "WeakPower": 2,
-      "Weak": 2
+      "WeakPower": 1,
+      "Weak": 1
     },
     "upgrade": {
       "damage": "+3",
@@ -12636,7 +12638,7 @@
     "upgrade": {
       "oneforallpower": "+1"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/one_for_all.png",
     "beta_image_url": "/static/images/cards/beta/one_for_all.png"
   },
   {
@@ -14346,7 +14348,7 @@
   {
     "id": "RAMPAGE",
     "name": "광란",
-    "description": "피해를 9 줍니다.\n이번 전투 동안 이 카드의 피해량이 5 증가합니다.",
+    "description": "피해를 10 줍니다.\n이번 전투 동안 이 카드의 피해량이 5 증가합니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n이번 전투 동안 이 카드의 피해량이 {Increase:diff()} 증가합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -14356,7 +14358,7 @@
     "rarity": "고급",
     "target": "AnyEnemy",
     "color": "ironclad",
-    "damage": 9,
+    "damage": 10,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -14367,11 +14369,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Increase": 5,
-      "Damage": 9
+      "Damage": 10,
+      "Increase": 5
     },
     "upgrade": {
-      "increase": "+4"
+      "increase": "+5"
     },
     "image_url": "/static/images/cards/rampage.png",
     "beta_image_url": null
@@ -14616,7 +14618,7 @@
   {
     "id": "REFINE_BLADE",
     "name": "검날 개선",
-    "description": "[gold]단조[/gold] 9.\n다음 턴에, [energy:1]를 얻습니다.",
+    "description": "[gold]단조[/gold] 8.\n다음 턴에, [energy:1]를 얻습니다.",
     "description_raw": "[gold]단조[/gold] {Forge:diff()}.\n다음 턴에, {Energy:energyIcons()}를 얻습니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -14637,7 +14639,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Forge": 9,
+      "Forge": 8,
       "Energy": 1
     },
     "upgrade": {
@@ -14817,9 +14819,9 @@
   {
     "id": "REND",
     "name": "쥐어뜯기",
-    "description": "피해를 20 줍니다.\n적이 보유한 해로운 효과의\n종류 하나당 피해량이\n5 증가합니다.",
+    "description": "피해를 {CalculatedDamage:diff()} 줍니다.\n적이 보유한 해로운 효과의\n종류 하나당 피해량이\n5 증가합니다.",
     "description_raw": "피해를 {CalculatedDamage:diff()} 줍니다.\n적이 보유한 해로운 효과의\n종류 하나당 피해량이\n{ExtraDamage:diff()} 증가합니다.",
-    "cost": 2,
+    "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -14838,14 +14840,12 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CalculationBase": 15,
-      "ExtraDamage": 5,
-      "CalculatedDamage": 20
+      "CalculationBase": 10,
+      "ExtraDamage": 5
     },
     "upgrade": {
-      "damage": "+3",
       "extradamage": "+3",
-      "calculationbase": "+3"
+      "calculationbase": "+2"
     },
     "image_url": "/static/images/cards/rend.png",
     "beta_image_url": "/static/images/cards/beta/rend.png"
@@ -15249,7 +15249,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "공격",
-    "rarity": "희귀",
+    "rarity": "고급",
     "target": "AnyEnemy",
     "color": "colorless",
     "damage": 12,
@@ -16177,7 +16177,7 @@
   {
     "id": "SHROUD",
     "name": "수의",
-    "description": "[gold]종말[/gold]을 부여할 때마다,\n[gold]방어도[/gold]를 2 얻습니다.",
+    "description": "[gold]종말[/gold]을 부여할 때마다,\n[gold]방어도[/gold]를 3 얻습니다.",
     "description_raw": "[gold]종말[/gold]을 부여할 때마다,\n[gold]방어도[/gold]를 {Block:diff()} 얻습니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -16188,7 +16188,7 @@
     "target": "Self",
     "color": "necrobinder",
     "damage": null,
-    "block": 2,
+    "block": 3,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
@@ -16198,7 +16198,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 2
+      "Block": 3
     },
     "upgrade": {
       "block": "+1"
@@ -17138,7 +17138,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "스킬",
-    "rarity": "고급",
+    "rarity": "희귀",
     "target": "Self",
     "color": "colorless",
     "damage": null,
@@ -17191,7 +17191,7 @@
   {
     "id": "SPOILS_OF_BATTLE",
     "name": "전투의 성과",
-    "description": "[gold]단조[/gold] 5.\n카드를 2장 뽑습니다.",
+    "description": "[gold]단조[/gold] 6.\n카드를 2장 뽑습니다.",
     "description_raw": "[gold]단조[/gold] {Forge:diff()}.\n카드를 {Cards:diff()}장 뽑습니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -17212,12 +17212,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Forge": 5,
+      "Forge": 6,
       "Cards": 2
     },
     "upgrade": {
-      "forge": "+3",
-      "cards": "+1"
+      "forge": "+3"
     },
     "image_url": "/static/images/cards/spoils_of_battle.png",
     "beta_image_url": "/static/images/cards/beta/spoils_of_battle.png"
@@ -18300,7 +18299,7 @@
   {
     "id": "SYNCHRONIZE",
     "name": "동기화",
-    "description": "영창된 구체의 종류\n하나당 이번 턴에\n[gold]밀집[/gold]을 2 얻습니다.",
+    "description": "영창된 구체의 종류\n하나당 이번 턴에\n[gold]밀집[/gold]을 1 얻습니다. 얻습니다)|}",
     "description_raw": "영창된 구체의 종류\n하나당 이번 턴에\n[gold]밀집[/gold]을 {CalculationExtra:diff()} 얻습니다.{InCombat:\n([gold]밀집[/gold]을 {CalculatedFocus:diff()} 얻습니다)|}",
     "cost": 1,
     "is_x_cost": null,
@@ -18322,7 +18321,7 @@
     "spawns_cards": null,
     "vars": {
       "CalculationBase": 0,
-      "CalculationExtra": 2
+      "CalculationExtra": 1
     },
     "upgrade": {
       "calculationextra": "+1"
@@ -18968,7 +18967,7 @@
   {
     "id": "THUNDER",
     "name": "벼락",
-    "description": "[gold]전기[/gold]를 [gold]발현[/gold]할 때마다,\n적중한 적에게\n피해를 6 줍니다.",
+    "description": "[gold]전기[/gold]를 [gold]발현[/gold]할 때마다,\n적중한 적에게\n피해를 8 줍니다.",
     "description_raw": "[gold]전기[/gold]를 [gold]발현[/gold]할 때마다,\n적중한 적에게\n피해를 {ThunderPower:diff()} 줍니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -18994,11 +18993,10 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "ThunderPower": 6,
-      "Thunder": 6
+      "ThunderPower": 8
     },
     "upgrade": {
-      "thunderpower": "+2"
+      "thunderpower": "+3"
     },
     "image_url": "/static/images/cards/thunder.png",
     "beta_image_url": "/static/images/cards/beta/thunder.png"
@@ -19045,7 +19043,7 @@
   {
     "id": "TIMES_UP",
     "name": "때가 되었다",
-    "description": "대상 적이 보유한 [gold]종말[/gold]만큼 피해를 줍니다.\n(피해를 1 줍니다)",
+    "description": "대상 적이 보유한 [gold]종말[/gold]만큼 피해를 줍니다. 줍니다)|}",
     "description_raw": "대상 적이 보유한 [gold]종말[/gold]만큼 피해를 줍니다.{IsTargeting:\n(피해를 {CalculatedDamage:diff()} 줍니다)|}",
     "cost": 2,
     "is_x_cost": null,
@@ -19062,9 +19060,7 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": [
-      "소멸"
-    ],
+    "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
@@ -19602,7 +19598,7 @@
     "upgrade": {
       "remove_exhaust": 1
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/underworld.png",
     "beta_image_url": "/static/images/cards/beta/underworld.png"
   },
   {

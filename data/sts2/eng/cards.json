@@ -392,7 +392,7 @@
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
-    "star_cost": 3,
+    "star_cost": 2,
     "type": "Skill",
     "rarity": "Uncommon",
     "target": "Self",
@@ -2257,7 +2257,7 @@
   {
     "id": "BRIGHTEST_FLAME",
     "name": "Brightest Flame",
-    "description": "Gain [energy:2].\nDraw 2 cards.\nLose 1 Max HP.",
+    "description": "Gain [energy:2].\nDraw 2 {Cards:plural:card|cards}.\nLose 2 Max HP.",
     "description_raw": "Gain {Energy:energyIcons()}.\nDraw {Cards:diff()} {Cards:plural:card|cards}.\nLose {MaxHp:diff()} Max HP.",
     "cost": 0,
     "is_x_cost": null,
@@ -2273,12 +2273,12 @@
     "powers_applied": null,
     "cards_draw": 2,
     "energy_gain": 2,
-    "hp_loss": null,
+    "hp_loss": 2,
     "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "MaxHp": 1,
+      "MaxHp": 2,
       "Energy": 2,
       "Cards": 2
     },
@@ -2764,7 +2764,7 @@
     "upgrade": {
       "damage": "+33"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/cacophony.png",
     "beta_image_url": "/static/images/cards/beta/cacophony.png"
   },
   {
@@ -6620,9 +6620,9 @@
   {
     "id": "EXPECT_A_FIGHT",
     "name": "Expect a Fight",
-    "description": "Gain [energy:1] for each Attack in your [gold]Hand[/gold].",
-    "description_raw": "Gain {energyPrefix:energyIcons(1)} for each Attack in your [gold]Hand[/gold].{InCombat:\n(Gain {CalculatedEnergy:energyIcons()})|}",
-    "cost": 2,
+    "description": "Gain 15 [gold]Block[/gold].\nGains 5 additional [gold]Block[/gold] for each [gold]Strength[/gold] you have.",
+    "description_raw": "Gain {CalculatedBlock:diff()} [gold]Block[/gold].\nGains {CalculationExtra:diff()} additional [gold]Block[/gold] for each [gold]Strength[/gold] you have.",
+    "cost": 3,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -6631,22 +6631,22 @@
     "target": "Self",
     "color": "ironclad",
     "damage": null,
-    "block": null,
+    "block": 15,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
-    "energy_gain": 0,
+    "energy_gain": null,
     "hp_loss": null,
     "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Energy": 0,
-      "CalculationBase": 0,
-      "CalculationExtra": 1
+      "CalculationBase": 15,
+      "CalculationExtra": 5
     },
     "upgrade": {
-      "cost": 1
+      "block": "+1",
+      "calculationextra": "+3"
     },
     "image_url": "/static/images/cards/expect_a_fight.png",
     "beta_image_url": null
@@ -7790,8 +7790,8 @@
   {
     "id": "FORGOTTEN_RITUAL",
     "name": "Forgotten Ritual",
-    "description": "If you [gold]Exhausted[/gold] a card this turn, gain [energy:3].",
-    "description_raw": "If you [gold]Exhausted[/gold] a card this turn, gain {Energy:energyIcons()}.",
+    "description": "Gain [energy:3].",
+    "description_raw": "Gain {Energy:energyIcons()}.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -7807,7 +7807,9 @@
     "cards_draw": null,
     "energy_gain": 3,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [
+      "Exhaust"
+    ],
     "tags": null,
     "spawns_cards": null,
     "vars": {
@@ -9378,7 +9380,7 @@
     "upgrade": {
       "repeat": "+1"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/hibernate.png",
     "beta_image_url": "/static/images/cards/beta/hibernate.png"
   },
   {
@@ -9671,8 +9673,8 @@
   {
     "id": "HYPERBEAM",
     "name": "Hyperbeam",
-    "description": "Deal 30 damage to ALL enemies.\nLose 3 [gold]Focus[/gold].",
-    "description_raw": "Deal {Damage:diff()} damage to ALL enemies.\nLose {FocusPower:diff()} [gold]Focus[/gold].",
+    "description": "Deal 24 damage to ALL enemies.\nLose 3 [gold]Focus[/gold] this turn.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies.\nLose {FocusPower:diff()} [gold]Focus[/gold] this turn.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -9681,7 +9683,7 @@
     "rarity": "Rare",
     "target": "AllEnemies",
     "color": "defect",
-    "damage": 30,
+    "damage": 24,
     "block": null,
     "hit_count": null,
     "powers_applied": [
@@ -9697,12 +9699,12 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 30,
+      "Damage": 24,
       "FocusPower": 3,
       "Focus": 3
     },
     "upgrade": {
-      "damage": "+8"
+      "damage": "+6"
     },
     "image_url": "/static/images/cards/hyperbeam.png",
     "beta_image_url": null
@@ -11555,7 +11557,7 @@
     "upgrade": {
       "damage": "+12"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/midnight.png",
     "beta_image_url": "/static/images/cards/beta/midnight.png"
   },
   {
@@ -11778,7 +11780,7 @@
   {
     "id": "MIRAGE",
     "name": "Mirage",
-    "description": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.",
+    "description": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies. [gold]Block[/gold])|}",
     "description_raw": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.{InCombat:\n(Gain {CalculatedBlock:diff()} [gold]Block[/gold])|}",
     "cost": 1,
     "is_x_cost": null,
@@ -11795,12 +11797,14 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [
+      "Exhaust"
+    ],
     "tags": null,
     "spawns_cards": null,
     "vars": null,
     "upgrade": {
-      "cost": 0
+      "remove_exhaust": 1
     },
     "image_url": "/static/images/cards/mirage.png",
     "beta_image_url": null
@@ -12455,7 +12459,7 @@
   {
     "id": "NULL",
     "name": "Null",
-    "description": "Deal 10 damage.\nApply 2 [gold]Weak[/gold].\n[gold]Channel[/gold] 1 [gold]Dark[/gold].",
+    "description": "Deal 10 damage.\nApply 1 [gold]Weak[/gold].\n[gold]Channel[/gold] 1 [gold]Dark[/gold].",
     "description_raw": "Deal {Damage:diff()} damage.\nApply {WeakPower:diff()} [gold]Weak[/gold].\n[gold]Channel[/gold] 1 [gold]Dark[/gold].",
     "cost": 2,
     "is_x_cost": null,
@@ -12471,7 +12475,7 @@
     "powers_applied": [
       {
         "power": "Weak",
-        "amount": 2
+        "amount": 1
       }
     ],
     "cards_draw": null,
@@ -12482,8 +12486,8 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 10,
-      "WeakPower": 2,
-      "Weak": 2
+      "WeakPower": 1,
+      "Weak": 1
     },
     "upgrade": {
       "damage": "+3",
@@ -12633,7 +12637,7 @@
     "upgrade": {
       "oneforallpower": "+1"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/one_for_all.png",
     "beta_image_url": "/static/images/cards/beta/one_for_all.png"
   },
   {
@@ -14343,7 +14347,7 @@
   {
     "id": "RAMPAGE",
     "name": "Rampage",
-    "description": "Deal 9 damage.\nIncrease this card's damage by 5 this combat.",
+    "description": "Deal 10 damage.\nIncrease this card's damage by 5 this combat.",
     "description_raw": "Deal {Damage:diff()} damage.\nIncrease this card's damage by {Increase:diff()} this combat.",
     "cost": 1,
     "is_x_cost": null,
@@ -14353,7 +14357,7 @@
     "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "ironclad",
-    "damage": 9,
+    "damage": 10,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -14364,11 +14368,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Increase": 5,
-      "Damage": 9
+      "Damage": 10,
+      "Increase": 5
     },
     "upgrade": {
-      "increase": "+4"
+      "increase": "+5"
     },
     "image_url": "/static/images/cards/rampage.png",
     "beta_image_url": null
@@ -14613,7 +14617,7 @@
   {
     "id": "REFINE_BLADE",
     "name": "Refine Blade",
-    "description": "[gold]Forge[/gold] 9.\nNext turn, gain [energy:1].",
+    "description": "[gold]Forge[/gold] 8.\nNext turn, gain [energy:1].",
     "description_raw": "[gold]Forge[/gold] {Forge:diff()}.\nNext turn, gain {Energy:energyIcons()}.",
     "cost": 1,
     "is_x_cost": null,
@@ -14634,7 +14638,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Forge": 9,
+      "Forge": 8,
       "Energy": 1
     },
     "upgrade": {
@@ -14814,9 +14818,9 @@
   {
     "id": "REND",
     "name": "Rend",
-    "description": "Deal 20 damage.\nDeals 5 additional damage for each unique debuff on the enemy.",
+    "description": "Deal {CalculatedDamage:diff()} damage.\nDeals 5 additional damage for each unique debuff on the enemy.",
     "description_raw": "Deal {CalculatedDamage:diff()} damage.\nDeals {ExtraDamage:diff()} additional damage for each unique debuff on the enemy.",
-    "cost": 2,
+    "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -14835,14 +14839,12 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CalculationBase": 15,
-      "ExtraDamage": 5,
-      "CalculatedDamage": 20
+      "CalculationBase": 10,
+      "ExtraDamage": 5
     },
     "upgrade": {
-      "damage": "+3",
       "extradamage": "+3",
-      "calculationbase": "+3"
+      "calculationbase": "+2"
     },
     "image_url": "/static/images/cards/rend.png",
     "beta_image_url": "/static/images/cards/beta/rend.png"
@@ -15246,7 +15248,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Attack",
-    "rarity": "Rare",
+    "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "colorless",
     "damage": 12,
@@ -16172,7 +16174,7 @@
   {
     "id": "SHROUD",
     "name": "Shroud",
-    "description": "Whenever you apply [gold]Doom[/gold], gain 2 [gold]Block[/gold].",
+    "description": "Whenever you apply [gold]Doom[/gold], gain 3 [gold]Block[/gold].",
     "description_raw": "Whenever you apply [gold]Doom[/gold], gain {Block:diff()} [gold]Block[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -16183,7 +16185,7 @@
     "target": "Self",
     "color": "necrobinder",
     "damage": null,
-    "block": 2,
+    "block": 3,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
@@ -16193,7 +16195,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 2
+      "Block": 3
     },
     "upgrade": {
       "block": "+1"
@@ -17133,7 +17135,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Skill",
-    "rarity": "Uncommon",
+    "rarity": "Rare",
     "target": "Self",
     "color": "colorless",
     "damage": null,
@@ -17186,7 +17188,7 @@
   {
     "id": "SPOILS_OF_BATTLE",
     "name": "Spoils of Battle",
-    "description": "[gold]Forge[/gold] 5.\nDraw X card.",
+    "description": "[gold]Forge[/gold] 6.\nDraw 2 {Cards:plural:card|cards}.",
     "description_raw": "[gold]Forge[/gold] {Forge:diff()}.\nDraw {Cards:diff()} {Cards:plural:card|cards}.",
     "cost": 1,
     "is_x_cost": null,
@@ -17207,11 +17209,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Forge": 5
+      "Forge": 6,
+      "Cards": 2
     },
     "upgrade": {
-      "forge": "+3",
-      "cards": "+1"
+      "forge": "+3"
     },
     "image_url": "/static/images/cards/spoils_of_battle.png",
     "beta_image_url": "/static/images/cards/beta/spoils_of_battle.png"
@@ -18294,7 +18296,7 @@
   {
     "id": "SYNCHRONIZE",
     "name": "Synchronize",
-    "description": "Gain 2 [gold]Focus[/gold] this turn for each unique Orb you have.",
+    "description": "Gain 1 [gold]Focus[/gold] this turn for each unique Orb you have. [gold]Focus[/gold])|}",
     "description_raw": "Gain {CalculationExtra:diff()} [gold]Focus[/gold] this turn for each unique Orb you have.{InCombat:\n(Gain {CalculatedFocus:diff()} [gold]Focus[/gold])|}",
     "cost": 1,
     "is_x_cost": null,
@@ -18316,7 +18318,7 @@
     "spawns_cards": null,
     "vars": {
       "CalculationBase": 0,
-      "CalculationExtra": 2
+      "CalculationExtra": 1
     },
     "upgrade": {
       "calculationextra": "+1"
@@ -18962,7 +18964,7 @@
   {
     "id": "THUNDER",
     "name": "Thunder",
-    "description": "Whenever you [gold]Evoke Lightning[/gold], deal 6 damage to each enemy hit.",
+    "description": "Whenever you [gold]Evoke Lightning[/gold], deal 8 damage to each enemy hit.",
     "description_raw": "Whenever you [gold]Evoke Lightning[/gold], deal {ThunderPower:diff()} damage to each enemy hit.",
     "cost": 1,
     "is_x_cost": null,
@@ -18988,11 +18990,10 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "ThunderPower": 6,
-      "Thunder": 6
+      "ThunderPower": 8
     },
     "upgrade": {
-      "thunderpower": "+2"
+      "thunderpower": "+3"
     },
     "image_url": "/static/images/cards/thunder.png",
     "beta_image_url": "/static/images/cards/beta/thunder.png"
@@ -19039,7 +19040,7 @@
   {
     "id": "TIMES_UP",
     "name": "Time's Up",
-    "description": "Deal damage equal to the enemy's [gold]Doom[/gold].\n(Deals 1 damage)",
+    "description": "Deal damage equal to the enemy's [gold]Doom[/gold]. damage)|}",
     "description_raw": "Deal damage equal to the enemy's [gold]Doom[/gold].{IsTargeting:\n(Deals {CalculatedDamage:diff()} damage)|}",
     "cost": 2,
     "is_x_cost": null,
@@ -19056,9 +19057,7 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": [
-      "Exhaust"
-    ],
+    "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
@@ -19594,7 +19593,7 @@
     "upgrade": {
       "remove_exhaust": 1
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/underworld.png",
     "beta_image_url": "/static/images/cards/beta/underworld.png"
   },
   {
