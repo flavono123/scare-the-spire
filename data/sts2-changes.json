@@ -10612,5 +10612,1665 @@
         "diffType": "text"
       }
     ]
+  },
+  {
+    "id": "alignment-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "ALIGNMENT",
+    "patch": "v0.111.0",
+    "character": "regent",
+    "diffs": [
+      {
+        "attribute": "starCost",
+        "displayName": "Star Cost",
+        "displayNameKo": "별 비용",
+        "before": 3,
+        "after": 2,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "starCost",
+        "before": 3,
+        "after": 2
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Alignment Star cost decreased from 3 to 2.",
+    "summaryKo": "정렬의 별 비용이 3에서 2로 감소했습니다."
+  },
+  {
+    "id": "brightest-flame-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "BRIGHTEST_FLAME",
+    "patch": "v0.111.0",
+    "character": null,
+    "diffs": [
+      {
+        "attribute": "hpLoss",
+        "displayName": "Max HP Loss",
+        "displayNameKo": "최대 체력 손실",
+        "before": 1,
+        "after": 2,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[energy:2]를 얻습니다.\n카드를 2장 뽑습니다.\n최대 체력을 1 잃습니다.",
+        "after": "[energy:2]를 얻습니다.\n카드를 2장 뽑습니다.\n최대 체력을 2 잃습니다."
+      },
+      {
+        "field": "vars.MaxHp",
+        "before": 1,
+        "after": 2
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Brightest Flame Max HP loss increased from 1 to 2.",
+    "summaryKo": "찬란한 불꽃의 최대 체력 손실이 1에서 2로 증가했습니다."
+  },
+  {
+    "id": "expect-a-fight-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "EXPECT_A_FIGHT",
+    "patch": "v0.111.0",
+    "character": "ironclad",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Gain Energy per Attack in hand.",
+        "after": "Gain 15(16) Block, plus 5(8) per Strength.",
+        "diffType": "rework",
+        "beforeKo": "손에 있는 공격 카드당 에너지 획득",
+        "afterKo": "방어도 15(16), 힘 1당 추가 5(8)"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 2,
+        "after": 3
+      },
+      {
+        "field": "description",
+        "before": "[gold]손[/gold]에 있는 공격 카드 1장당\n[energy:1]를 얻습니다.",
+        "after": "[gold]방어도[/gold]를 15 얻습니다.\n보유한 [gold]힘[/gold]마다 [gold]방어도[/gold]를\n추가로 5 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]손[/gold]에 있는 공격 카드 1장당\n{energyPrefix:energyIcons(1)}를 얻습니다.{InCombat:\n({CalculatedEnergy:energyIcons()}를 얻습니다.)|}",
+        "after": "[gold]방어도[/gold]를 {CalculatedBlock:diff()} 얻습니다.\n보유한 [gold]힘[/gold]마다 [gold]방어도[/gold]를\n추가로 {CalculationExtra:diff()} 얻습니다."
+      },
+      {
+        "field": "block",
+        "before": null,
+        "after": 15
+      },
+      {
+        "field": "vars.Energy",
+        "before": 0
+      },
+      {
+        "field": "vars.CalculationBase",
+        "before": 0,
+        "after": 15
+      },
+      {
+        "field": "vars.CalculationExtra",
+        "before": 1,
+        "after": 5
+      },
+      {
+        "field": "upgrade.cost",
+        "before": 1
+      },
+      {
+        "field": "upgrade.block",
+        "after": "+1"
+      },
+      {
+        "field": "upgrade.calculationextra",
+        "after": "+3"
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Expect a Fight reworked into a 3-cost Block skill that scales with Strength.",
+    "summaryKo": "싸움 준비가 비용 3 방어도 스킬로 리워크되어 힘에 비례해 방어도를 얻습니다."
+  },
+  {
+    "id": "forgotten-ritual-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "FORGOTTEN_RITUAL",
+    "patch": "v0.111.0",
+    "character": "ironclad",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Gain Energy if a card was Exhausted this turn.",
+        "after": "Gain Energy. Exhaust.",
+        "diffType": "rework",
+        "beforeKo": "이번 턴에 카드를 소멸시켜야 에너지 획득",
+        "afterKo": "에너지 획득. 소멸"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "이번 턴에 카드를\n[gold]소멸[/gold]시켰다면,\n[energy:3]를 얻습니다.",
+        "after": "[energy:3]를 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "이번 턴에 카드를\n[gold]소멸[/gold]시켰다면,\n{Energy:energyIcons()}를 얻습니다.",
+        "after": "{Energy:energyIcons()}를 얻습니다."
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Forgotten Ritual no longer needs an Exhausted card to gain Energy, and now Exhausts.",
+    "summaryKo": "잊힌 의식이 카드를 소멸시키지 않아도 에너지를 얻으며, 카드 자체는 소멸합니다."
+  },
+  {
+    "id": "hyperbeam-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "HYPERBEAM",
+    "patch": "v0.111.0",
+    "character": "defect",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Deal 30(38) to ALL. Lose 3 Focus.",
+        "after": "Deal 24(30) to ALL. Lose 3 Focus this turn.",
+        "diffType": "rework",
+        "beforeKo": "모든 적에게 30(38), 밀집 3 상실",
+        "afterKo": "모든 적에게 24(30), 이번 턴 밀집 3 상실"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "모든 적에게\n피해를 30 줍니다.\n[gold]밀집[/gold]을 3 잃습니다.",
+        "after": "모든 적에게\n피해를 24 줍니다.\n이번 턴 동안 [gold]밀집[/gold]을\n3 잃습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n[gold]밀집[/gold]을 {FocusPower:diff()} 잃습니다.",
+        "after": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n이번 턴 동안 [gold]밀집[/gold]을\n{FocusPower:diff()} 잃습니다."
+      },
+      {
+        "field": "damage",
+        "before": 30,
+        "after": 24
+      },
+      {
+        "field": "vars.Damage",
+        "before": 30,
+        "after": 24
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+8",
+        "after": "+6"
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Hyperbeam damage decreased to 24(30) and Focus loss is now temporary this turn.",
+    "summaryKo": "파괴광선 피해가 24(30)으로 줄고, 밀집 손실이 이번 턴 동안만 적용됩니다."
+  },
+  {
+    "id": "mirage-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "MIRAGE",
+    "patch": "v0.111.0",
+    "character": "silent",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Cost 1(0). Gain Block equal to Poison.",
+        "after": "Cost 1. Exhaust; upgrade removes Exhaust.",
+        "diffType": "rework",
+        "beforeKo": "비용 1(0). 중독만큼 방어도",
+        "afterKo": "비용 1. 소멸, 강화 시 소멸 제거"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "keywords",
+        "before": [],
+        "after": [
+          "소멸"
+        ]
+      },
+      {
+        "field": "upgrade.cost",
+        "before": 0
+      },
+      {
+        "field": "upgrade.remove_exhaust",
+        "after": 1
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Mirage now Exhausts, and its upgrade removes Exhaust instead of lowering cost.",
+    "summaryKo": "신기루가 소멸하며, 강화 시 비용 감소 대신 소멸이 사라집니다."
+  },
+  {
+    "id": "null-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "NULL",
+    "patch": "v0.111.0",
+    "character": "defect",
+    "diffs": [
+      {
+        "attribute": "weak",
+        "displayName": "Weak",
+        "displayNameKo": "약화",
+        "before": "2(3)",
+        "after": "1(2)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 10 줍니다.\n[gold]약화[/gold]를 2 부여합니다.\n[gold]암흑[/gold]을 1번 [gold]영창[/gold]합니다.",
+        "after": "피해를 10 줍니다.\n[gold]약화[/gold]를 1 부여합니다.\n[gold]암흑[/gold]을 1번 [gold]영창[/gold]합니다."
+      },
+      {
+        "field": "vars.WeakPower",
+        "before": 2,
+        "after": 1
+      },
+      {
+        "field": "vars.Weak",
+        "before": 2,
+        "after": 1
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Null Weak application decreased from 2(3) to 1(2).",
+    "summaryKo": "Null이 부여하는 약화가 2(3)에서 1(2)로 감소했습니다."
+  },
+  {
+    "id": "rampage-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "RAMPAGE",
+    "patch": "v0.111.0",
+    "character": "ironclad",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해",
+        "before": "9, scaling 5(9)",
+        "after": "10, scaling 5(10)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 9 줍니다.\n이번 전투 동안 이 카드의 피해량이 5 증가합니다.",
+        "after": "피해를 10 줍니다.\n이번 전투 동안 이 카드의 피해량이 5 증가합니다."
+      },
+      {
+        "field": "damage",
+        "before": 9,
+        "after": 10
+      },
+      {
+        "field": "vars.Damage",
+        "before": 9,
+        "after": 10
+      },
+      {
+        "field": "upgrade.increase",
+        "before": "+4",
+        "after": "+5"
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Rampage base damage increased from 9 to 10, and scaling increased from 5(9) to 5(10).",
+    "summaryKo": "광란의 기본 피해가 9에서 10으로, 증가량이 5(9)에서 5(10)으로 올랐습니다."
+  },
+  {
+    "id": "refine-blade-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "REFINE_BLADE",
+    "patch": "v0.111.0",
+    "character": "regent",
+    "diffs": [
+      {
+        "attribute": "forge",
+        "displayName": "Forge",
+        "displayNameKo": "단조",
+        "before": "9(13)",
+        "after": "8(12)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]단조[/gold] 9.\n다음 턴에, [energy:1]를 얻습니다.",
+        "after": "[gold]단조[/gold] 8.\n다음 턴에, [energy:1]를 얻습니다."
+      },
+      {
+        "field": "vars.Forge",
+        "before": 9,
+        "after": 8
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Refine Blade Forge decreased from 9(13) to 8(12).",
+    "summaryKo": "검날 개선의 단조가 9(13)에서 8(12)로 감소했습니다."
+  },
+  {
+    "id": "rend-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "REND",
+    "patch": "v0.111.0",
+    "character": "colorless",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Cost 2, base 15(18)",
+        "after": "Cost 1, base 10(12)",
+        "diffType": "rework",
+        "beforeKo": "비용 2, 기본 피해 15(18)",
+        "afterKo": "비용 1, 기본 피해 10(12)"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 2,
+        "after": 1
+      },
+      {
+        "field": "description",
+        "before": "피해를 20 줍니다.\n적이 보유한 해로운 효과의\n종류 하나당 피해량이\n5 증가합니다.",
+        "after": "피해를 {CalculatedDamage:diff()} 줍니다.\n적이 보유한 해로운 효과의\n종류 하나당 피해량이\n5 증가합니다."
+      },
+      {
+        "field": "vars.CalculationBase",
+        "before": 15,
+        "after": 10
+      },
+      {
+        "field": "vars.CalculatedDamage",
+        "before": 20
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+3"
+      },
+      {
+        "field": "upgrade.calculationbase",
+        "before": "+3",
+        "after": "+2"
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Rend cost decreased from 2 to 1, and base damage decreased from 15(18) to 10(12).",
+    "summaryKo": "쥐어뜯기 비용이 2에서 1로, 기본 피해가 15(18)에서 10(12)로 줄었습니다."
+  },
+  {
+    "id": "salvo-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "SALVO",
+    "patch": "v0.111.0",
+    "character": "colorless",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "displayNameKo": "희귀도",
+        "before": "Rare",
+        "after": "Uncommon",
+        "diffType": "enum",
+        "beforeKo": "희귀",
+        "afterKo": "고급"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "희귀",
+        "after": "고급"
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Salvo rarity decreased from Rare to Uncommon.",
+    "summaryKo": "집중 포화의 희귀도가 희귀에서 고급으로 낮아졌습니다."
+  },
+  {
+    "id": "shroud-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "SHROUD",
+    "patch": "v0.111.0",
+    "character": "necrobinder",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": "2(3)",
+        "after": "3(4)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]종말[/gold]을 부여할 때마다,\n[gold]방어도[/gold]를 2 얻습니다.",
+        "after": "[gold]종말[/gold]을 부여할 때마다,\n[gold]방어도[/gold]를 3 얻습니다."
+      },
+      {
+        "field": "block",
+        "before": 2,
+        "after": 3
+      },
+      {
+        "field": "vars.Block",
+        "before": 2,
+        "after": 3
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Shroud Block increased from 2(3) to 3(4).",
+    "summaryKo": "수의의 방어도가 2(3)에서 3(4)로 증가했습니다."
+  },
+  {
+    "id": "splash-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "SPLASH",
+    "patch": "v0.111.0",
+    "character": "colorless",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "displayNameKo": "희귀도",
+        "before": "Uncommon",
+        "after": "Rare",
+        "diffType": "enum",
+        "beforeKo": "고급",
+        "afterKo": "희귀"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "고급",
+        "after": "희귀"
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Splash rarity increased from Uncommon to Rare.",
+    "summaryKo": "착수의 희귀도가 고급에서 희귀로 올랐습니다."
+  },
+  {
+    "id": "spoils-of-battle-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "SPOILS_OF_BATTLE",
+    "patch": "v0.111.0",
+    "character": "regent",
+    "diffs": [
+      {
+        "attribute": "forge",
+        "displayName": "Forge",
+        "displayNameKo": "단조",
+        "before": "5(8)",
+        "after": "6(9)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "카드를 2장 뽑습니다.\n[gold]단조[/gold] 5.",
+        "after": "[gold]단조[/gold] 6.\n카드를 2장 뽑습니다."
+      },
+      {
+        "field": "vars.Forge",
+        "before": 5,
+        "after": 6
+      },
+      {
+        "field": "upgrade.cards",
+        "before": "+1"
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Spoils of Battle Forge increased from 5(8) to 6(9).",
+    "summaryKo": "전투의 성과 단조가 5(8)에서 6(9)로 증가했습니다."
+  },
+  {
+    "id": "synchronize-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "SYNCHRONIZE",
+    "patch": "v0.111.0",
+    "character": "defect",
+    "diffs": [
+      {
+        "attribute": "focus",
+        "displayName": "Focus",
+        "displayNameKo": "밀집",
+        "before": "2(3)",
+        "after": "1(2)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "영창된 구체의 종류\n하나당 이번 턴에\n[gold]밀집[/gold]을 2 얻습니다.",
+        "after": "영창된 구체의 종류\n하나당 이번 턴에\n[gold]밀집[/gold]을 1 얻습니다."
+      },
+      {
+        "field": "vars.CalculationExtra",
+        "before": 2,
+        "after": 1
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Synchronize Focus decreased from 2(3) to 1(2).",
+    "summaryKo": "동기화의 밀집이 2(3)에서 1(2)로 감소했습니다."
+  },
+  {
+    "id": "thunder-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "THUNDER",
+    "patch": "v0.111.0",
+    "character": "defect",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해",
+        "before": "6(8)",
+        "after": "8(11)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]전기[/gold]를 [gold]발현[/gold]할 때마다,\n적중한 적에게\n피해를 6 줍니다.",
+        "after": "[gold]전기[/gold]를 [gold]발현[/gold]할 때마다,\n적중한 적에게\n피해를 8 줍니다."
+      },
+      {
+        "field": "vars.ThunderPower",
+        "before": 6,
+        "after": 8
+      },
+      {
+        "field": "vars.Thunder",
+        "before": 6
+      },
+      {
+        "field": "upgrade.thunderpower",
+        "before": "+2",
+        "after": "+3"
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Thunder damage increased from 6(8) to 8(11).",
+    "summaryKo": "벼락의 피해가 6(8)에서 8(11)로 증가했습니다."
+  },
+  {
+    "id": "times-up-v0-111-0-field-diff",
+    "entityType": "card",
+    "entityId": "TIMES_UP",
+    "patch": "v0.111.0",
+    "character": "necrobinder",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Exhaust",
+        "after": "No Exhaust; upgrade adds Retain",
+        "diffType": "rework",
+        "beforeKo": "소멸",
+        "afterKo": "소멸 없음. 강화 시 보존"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "keywords",
+        "before": [
+          "소멸"
+        ],
+        "after": null
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Time's Up no longer Exhausts; its upgrade now grants Retain.",
+    "summaryKo": "때가 되었다는 더 이상 소멸하지 않으며, 강화 시 보존을 얻습니다."
+  },
+  {
+    "id": "beautiful-bracelet-v0-111-0-field-diff",
+    "entityType": "relic",
+    "entityId": "BEAUTIFUL_BRACELET",
+    "patch": "v0.111.0",
+    "character": null,
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Choose 4 cards to Enchant with Swift 2.",
+        "beforeKo": "신속 2를 인챈트할 카드 4장 선택",
+        "after": "Enchant 4 random cards with Swift 2.",
+        "afterKo": "무작위 카드 4장에 신속 2 인챈트",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "획득 시, [gold]덱[/gold]에서 카드를 [blue]4[/blue]장 선택합니다. 그 카드에 [purple]신속[/purple]을 [blue]2[/blue] [gold]인챈트[/gold]합니다.",
+        "after": "획득 시, [gold]덱[/gold]에 있는 무작위 카드 [blue]4[/blue]장에 [purple]신속[/purple]을 [blue]2[/blue] [gold]인챈트[/gold]합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "획득 시, [gold]덱[/gold]에서 카드를 [blue]{Cards}[/blue]장 선택합니다. 그 카드에 [purple]신속[/purple]을 [blue]2[/blue] [gold]인챈트[/gold]합니다.",
+        "after": "획득 시, [gold]덱[/gold]에 있는 무작위 카드 [blue]{Cards}[/blue]장에 [purple]신속[/purple]을 [blue]2[/blue] [gold]인챈트[/gold]합니다."
+      }
+    ],
+    "date": "2026-08-14",
+    "summary": "Beautiful Bracelet now Enchants 4 random cards instead of letting you choose.",
+    "summaryKo": "아름다운 팔찌가 카드를 고르는 대신 무작위 카드 4장에 인챈트합니다."
+  },
+  {
+    "id": "inky-v0-111-0-field-diff",
+    "entityType": "enchantment",
+    "entityId": "INKY",
+    "patch": "v0.111.0",
+    "date": "2026-08-14",
+    "character": "silent",
+    "summary": "Inky no longer grants additional damage; it still applies Weak.",
+    "summaryKo": "잉크투성이가 더 이상 추가 피해를 주지 않으며, 약화는 그대로 부여합니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Deals 1 additional damage and applies 1 Weak.",
+        "beforeKo": "추가 피해 1, 약화 1",
+        "after": "Applies 1 Weak.",
+        "afterKo": "약화 1",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "이 카드의 피해량이 [blue]1[/blue] 증가하고, [gold]약화[/gold] 를 [blue]1[/blue] 부여합니다.",
+        "after": "이 카드가 [gold]약화[/gold] 를 [blue]1[/blue] 부여합니다."
+      },
+      {
+        "field": "descriptionEn",
+        "before": "This card deals [blue]1[/blue] additional damage and applies [blue]1[/blue] [gold]Weak[/gold].",
+        "after": "This card applies [blue]1[/blue] [gold]Weak[/gold]."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "이 카드의 피해량이 [blue]{Damage}[/blue] 증가하고, [gold]약화[/gold] 를 [blue]{WeakPower}[/blue] 부여합니다.",
+        "after": "이 카드가 [gold]약화[/gold] 를 [blue]{WeakPower}[/blue] 부여합니다."
+      },
+      {
+        "field": "descriptionRawEn",
+        "before": "This card deals [blue]{Damage}[/blue] additional damage and applies [blue]{WeakPower}[/blue] [gold]Weak[/gold].",
+        "after": "This card applies [blue]{WeakPower}[/blue] [gold]Weak[/gold]."
+      },
+      {
+        "field": "vars",
+        "before": {
+          "Damage": 1,
+          "WeakPower": 1
+        },
+        "after": {
+          "WeakPower": 1
+        }
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "card",
+        "id": "BLADE_OF_INK"
+      }
+    ]
+  },
+  {
+    "id": "axebot-v0-111-0-field-diff",
+    "entityType": "monster",
+    "entityId": "AXEBOT",
+    "patch": "v0.111.0",
+    "date": "2026-08-14",
+    "character": null,
+    "summary": "Axebot Hammer Uppercut and The One-Two damage increased, and it gains 10 Max HP each respawn.",
+    "summaryKo": "잘라봇의 망치 올려치기와 좌우 연타 피해가 올랐고, 다시 등장할 때마다 최대 체력을 10 얻습니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Hammer Uppercut 12(14), The One-Two 9(10)x2.",
+        "beforeKo": "망치 올려치기 12(14), 좌우 연타 9(10)x2",
+        "after": "Hammer Uppercut 14(18), The One-Two 10(11)x2, +10 Max HP per respawn.",
+        "afterKo": "망치 올려치기 14(18), 좌우 연타 10(11)x2, 재등장 시 최대 체력 +10",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "damageValues",
+        "before": {
+          "OneTwo": {
+            "normal": 9,
+            "ascension": 10
+          },
+          "HammerUppercut": {
+            "normal": 12,
+            "ascension": 14
+          }
+        },
+        "after": {
+          "OneTwo": {
+            "normal": 10,
+            "ascension": 11
+          },
+          "HammerUppercut": {
+            "normal": 14,
+            "ascension": 18
+          }
+        }
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
+  },
+  {
+    "id": "mecha-knight-v0-111-0-field-diff",
+    "entityType": "monster",
+    "entityId": "MECHA_KNIGHT",
+    "patch": "v0.111.0",
+    "date": "2026-08-14",
+    "character": null,
+    "summary": "Mecha Knight now also deals 8(12) damage on its Flamethrower turn.",
+    "summaryKo": "기계 기사의 화염 방사 턴에도 피해 8(12)를 줍니다.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Flamethrower",
+        "displayNameKo": "화염 방사",
+        "before": "Status only",
+        "beforeKo": "상태이상만",
+        "after": "8(12) damage plus status",
+        "afterKo": "피해 8(12) + 상태이상",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "damageValues",
+        "before": {
+          "Charge": {
+            "normal": 25,
+            "ascension": 30
+          },
+          "HeavyCleave": {
+            "normal": 35,
+            "ascension": 40
+          }
+        },
+        "after": {
+          "Charge": {
+            "normal": 25,
+            "ascension": 30
+          },
+          "Flamethrower": {
+            "normal": 8,
+            "ascension": 12
+          },
+          "HeavyCleave": {
+            "normal": 35,
+            "ascension": 40
+          }
+        }
+      },
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "CHARGE",
+            "name": "돌진",
+            "nameEn": "Charge",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Charge",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "FLAMETHROWER",
+            "name": "화염 방사",
+            "nameEn": "Flamethrower",
+            "kind": "move",
+            "actionTypes": [
+              "debuff"
+            ],
+            "intents": [
+              "StatusIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "StatusIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "WINDUP",
+            "name": "태엽 감기",
+            "nameEn": "Windup",
+            "kind": "move",
+            "actionTypes": [
+              "defense",
+              "buff"
+            ],
+            "intents": [
+              "DefendIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "STRENGTH",
+                "powerNameEn": "STRENGTH",
+                "powerType": "None",
+                "target": "self",
+                "amount": {
+                  "normal": 5,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "HEAVY_CLEAVE",
+            "name": "묵직한 절단",
+            "nameEn": "Heavy Cleave",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "HeavyCleave",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "CHARGE",
+            "name": "돌진",
+            "nameEn": "Charge",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Charge",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "FLAMETHROWER",
+            "name": "화염 방사",
+            "nameEn": "Flamethrower",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "debuff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "StatusIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Flamethrower",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "StatusIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "WINDUP",
+            "name": "태엽 감기",
+            "nameEn": "Windup",
+            "kind": "move",
+            "actionTypes": [
+              "defense",
+              "buff"
+            ],
+            "intents": [
+              "DefendIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "STRENGTH",
+                "powerNameEn": "STRENGTH",
+                "powerType": "None",
+                "target": "self",
+                "amount": {
+                  "normal": 5,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "HEAVY_CLEAVE",
+            "name": "묵직한 절단",
+            "nameEn": "Heavy Cleave",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "HeavyCleave",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
+  },
+  {
+    "id": "exoskeleton-v0-111-0-field-diff",
+    "entityType": "monster",
+    "entityId": "EXOSKELETON",
+    "patch": "v0.111.0",
+    "date": "2026-08-14",
+    "character": null,
+    "summary": "Exoskeleton A8 HP increased from 24-28(25-29) to 24-28(26-30).",
+    "summaryKo": "갑각충의 승천 8 체력이 24-28(25-29)에서 24-28(26-30)으로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "체력",
+        "before": "24-28(25-29)",
+        "after": "24-28(26-30)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHpAscension",
+        "before": 25,
+        "after": 26
+      },
+      {
+        "field": "maxHpAscension",
+        "before": 29,
+        "after": 30
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
+  },
+  {
+    "id": "globe-head-v0-111-0-field-diff",
+    "entityType": "monster",
+    "entityId": "GLOBE_HEAD",
+    "patch": "v0.111.0",
+    "date": "2026-08-14",
+    "character": null,
+    "summary": "Globe Head Galvanic at A9 increased from 6(6) to 6(8).",
+    "summaryKo": "구체 머리의 승천 9 전류가 6(6)에서 6(8)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "galvanic",
+        "displayName": "Galvanic",
+        "displayNameKo": "전류",
+        "before": "6(6)",
+        "after": "6(8)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "initialPowerApplications",
+        "before": [
+          {
+            "powerId": "GALVANIC",
+            "powerName": "전류",
+            "powerNameEn": "Galvanic",
+            "powerType": "Buff",
+            "target": "self",
+            "amount": {
+              "normal": 6,
+              "ascension": null
+            },
+            "imageUrl": "/images/sts2/powers/galvanic_power.webp"
+          }
+        ],
+        "after": [
+          {
+            "powerId": "GALVANIC",
+            "powerName": "전류",
+            "powerNameEn": "Galvanic",
+            "powerType": "Buff",
+            "target": "self",
+            "amount": {
+              "normal": 6,
+              "ascension": 8
+            },
+            "imageUrl": "/images/sts2/powers/galvanic_power.webp"
+          }
+        ]
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
+  },
+  {
+    "id": "louse-progenitor-v0-111-0-field-diff",
+    "entityType": "monster",
+    "entityId": "LOUSE_PROGENITOR",
+    "patch": "v0.111.0",
+    "date": "2026-08-14",
+    "character": null,
+    "summary": "Louse Progenitor Strength gain at A9 increased from 5(5) to 5(7).",
+    "summaryKo": "태초의 공벌레의 승천 9 힘 획득량이 5(5)에서 5(7)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "strength",
+        "displayName": "Strength",
+        "displayNameKo": "힘",
+        "before": "5(5)",
+        "after": "5(7)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "WEB_CANNON",
+            "name": "거미줄 분사",
+            "nameEn": "Web Cannon",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "debuff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Web",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "FRAIL",
+                "powerName": "FRAIL",
+                "powerNameEn": "FRAIL",
+                "powerType": "None",
+                "target": "player",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/frail_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "POUNCE",
+            "name": "덮치기",
+            "nameEn": "Pounce",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Pounce",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "CURL_AND_GROW",
+            "name": "웅크린 성장",
+            "nameEn": "Curl and Grow",
+            "kind": "move",
+            "actionTypes": [
+              "defense",
+              "buff"
+            ],
+            "intents": [
+              "DefendIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "STRENGTH",
+                "powerNameEn": "STRENGTH",
+                "powerType": "None",
+                "target": "self",
+                "amount": {
+                  "normal": 5,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "WEB_CANNON",
+            "name": "거미줄 분사",
+            "nameEn": "Web Cannon",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "debuff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Web",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "FRAIL",
+                "powerName": "FRAIL",
+                "powerNameEn": "FRAIL",
+                "powerType": "None",
+                "target": "player",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/frail_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "POUNCE",
+            "name": "덮치기",
+            "nameEn": "Pounce",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Pounce",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "CURL_AND_GROW",
+            "name": "웅크린 성장",
+            "nameEn": "Curl and Grow",
+            "kind": "move",
+            "actionTypes": [
+              "defense",
+              "buff"
+            ],
+            "intents": [
+              "DefendIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "STRENGTH",
+                "powerNameEn": "STRENGTH",
+                "powerType": "None",
+                "target": "self",
+                "amount": {
+                  "normal": 5,
+                  "ascension": 7
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ]
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
+  },
+  {
+    "id": "soul-fysh-v0-111-0-field-diff",
+    "entityType": "monster",
+    "entityId": "SOUL_FYSH",
+    "patch": "v0.111.0",
+    "date": "2026-08-14",
+    "character": null,
+    "summary": "Soul Fysh De-Gas damage at A9 increased from 16(17) to 16(18).",
+    "summaryKo": "영혼 물교기의 승천 9 가스 방출 피해가 16(17)에서 16(18)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "De-Gas",
+        "displayNameKo": "가스 방출",
+        "before": "16(17)",
+        "after": "16(18)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "damageValues",
+        "before": {
+          "DeGas": {
+            "normal": 16,
+            "ascension": 17
+          },
+          "Gaze": {
+            "normal": 7,
+            "ascension": 8
+          },
+          "Scream": {
+            "normal": 13,
+            "ascension": 15
+          }
+        },
+        "after": {
+          "DeGas": {
+            "normal": 16,
+            "ascension": 18
+          },
+          "Gaze": {
+            "normal": 7,
+            "ascension": 8
+          },
+          "Scream": {
+            "normal": 13,
+            "ascension": 15
+          }
+        }
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
+  },
+  {
+    "id": "regalite-v0-111-0-field-diff",
+    "entityType": "relic",
+    "entityId": "REGALITE",
+    "patch": "v0.111.0",
+    "date": "2026-08-14",
+    "character": "regent",
+    "summary": "Regalite Block gain decreased from 6 to 4.",
+    "summaryKo": "리갈라이트가 얻는 방어도가 6에서 4로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": 6,
+        "after": 4,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "매 턴마다 처음으로 카드를 생성할 때, [gold]방어도[/gold]를 [blue]6[/blue] 얻습니다.",
+        "after": "매 턴마다 처음으로 카드를 생성할 때, [gold]방어도[/gold]를 [blue]4[/blue] 얻습니다."
+      }
+    ]
+  },
+  {
+    "id": "cacophony-v0-111-0-official-art",
+    "entityType": "card",
+    "entityId": "CACOPHONY",
+    "patch": "v0.111.0",
+    "date": "2026-08-14",
+    "character": "necrobinder",
+    "summary": "Cacophony received its official portrait art.",
+    "summaryKo": "불협화음에 정식 초상화 일러스트가 추가되었습니다.",
+    "diffs": [
+      {
+        "attribute": "art",
+        "displayName": "Portrait Art",
+        "displayNameKo": "초상화 일러스트",
+        "before": "Beta portrait",
+        "beforeKo": "베타 초상화",
+        "after": "Official portrait",
+        "afterKo": "정식 초상화",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "hibernate-v0-111-0-official-art",
+    "entityType": "card",
+    "entityId": "HIBERNATE",
+    "patch": "v0.111.0",
+    "date": "2026-08-14",
+    "character": "defect",
+    "summary": "Hibernate received its official portrait art.",
+    "summaryKo": "동면에 정식 초상화 일러스트가 추가되었습니다.",
+    "diffs": [
+      {
+        "attribute": "art",
+        "displayName": "Portrait Art",
+        "displayNameKo": "초상화 일러스트",
+        "before": "Beta portrait",
+        "beforeKo": "베타 초상화",
+        "after": "Official portrait",
+        "afterKo": "정식 초상화",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "midnight-v0-111-0-official-art",
+    "entityType": "card",
+    "entityId": "MIDNIGHT",
+    "patch": "v0.111.0",
+    "date": "2026-08-14",
+    "character": "ironclad",
+    "summary": "Midnight received its official portrait art.",
+    "summaryKo": "심야에 정식 초상화 일러스트가 추가되었습니다.",
+    "diffs": [
+      {
+        "attribute": "art",
+        "displayName": "Portrait Art",
+        "displayNameKo": "초상화 일러스트",
+        "before": "Beta portrait",
+        "beforeKo": "베타 초상화",
+        "after": "Official portrait",
+        "afterKo": "정식 초상화",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "one-for-all-v0-111-0-official-art",
+    "entityType": "card",
+    "entityId": "ONE_FOR_ALL",
+    "patch": "v0.111.0",
+    "date": "2026-08-14",
+    "character": "defect",
+    "summary": "One for All received its official portrait art.",
+    "summaryKo": "모두를 위한 하나에 정식 초상화 일러스트가 추가되었습니다.",
+    "diffs": [
+      {
+        "attribute": "art",
+        "displayName": "Portrait Art",
+        "displayNameKo": "초상화 일러스트",
+        "before": "Beta portrait",
+        "beforeKo": "베타 초상화",
+        "after": "Official portrait",
+        "afterKo": "정식 초상화",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "underworld-v0-111-0-official-art",
+    "entityType": "card",
+    "entityId": "UNDERWORLD",
+    "patch": "v0.111.0",
+    "date": "2026-08-14",
+    "character": "necrobinder",
+    "summary": "Underworld received its official portrait art.",
+    "summaryKo": "지하세계에 정식 초상화 일러스트가 추가되었습니다.",
+    "diffs": [
+      {
+        "attribute": "art",
+        "displayName": "Portrait Art",
+        "displayNameKo": "초상화 일러스트",
+        "before": "Beta portrait",
+        "beforeKo": "베타 초상화",
+        "after": "Official portrait",
+        "afterKo": "정식 초상화",
+        "diffType": "text"
+      }
+    ]
   }
 ]
