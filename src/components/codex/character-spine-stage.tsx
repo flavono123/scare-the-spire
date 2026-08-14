@@ -11,9 +11,34 @@ import {
 
 export const CHARACTER_LOW_HEALTH_ANIMATION = "low_health_loop";
 export const CHARACTER_LOW_HEALTH_HP_RATIO = 0.25;
+export const CHARACTER_LOW_HP_QUERY = "lowHp";
 
 export function characterHasLowHealthIdle(character: CodexCharacter): boolean {
-  return Boolean(character.spineAsset?.animations.includes(CHARACTER_LOW_HEALTH_ANIMATION));
+  const asset = character.spineAsset;
+  if (!asset) return false;
+  return (
+    asset.animations.includes(CHARACTER_LOW_HEALTH_ANIMATION)
+    || Boolean(asset.moveAnimations.LOW_HP_IDLE?.includes(CHARACTER_LOW_HEALTH_ANIMATION))
+  );
+}
+
+export function characterLowHpQueryEnabled(search: string): boolean {
+  const value = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search)
+    .get(CHARACTER_LOW_HP_QUERY)
+    ?.toLowerCase();
+  return value === "1" || value === "true" || value === "yes";
+}
+
+export function withCharacterLowHpQuery(href: string): string {
+  const hashIndex = href.indexOf("#");
+  const withoutHash = hashIndex >= 0 ? href.slice(0, hashIndex) : href;
+  const hash = hashIndex >= 0 ? href.slice(hashIndex) : "";
+  const queryIndex = withoutHash.indexOf("?");
+  const params = new URLSearchParams(queryIndex >= 0 ? withoutHash.slice(queryIndex + 1) : "");
+  if (params.has(CHARACTER_LOW_HP_QUERY)) return href;
+  params.set(CHARACTER_LOW_HP_QUERY, "1");
+  const path = queryIndex >= 0 ? withoutHash.slice(0, queryIndex) : withoutHash;
+  return `${path}?${params.toString()}${hash}`;
 }
 
 export function withCharacterLowHealthIdle(

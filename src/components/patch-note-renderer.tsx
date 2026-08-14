@@ -30,7 +30,8 @@ import {
   MonsterAnimationPatchDiffBlock,
   MonsterMoveHoverPreview,
 } from "@/components/codex/monster-move-visuals";
-import { CharacterLowHpIdleBlock } from "@/components/codex/character-low-hp-idle-block";
+import { CharacterLowHpHoverPreview, CharacterLowHpIdleBlock } from "@/components/codex/character-low-hp-idle-block";
+import { characterHasLowHealthIdle, withCharacterLowHpQuery } from "@/components/codex/character-spine-stage";
 import { applyPowerAmountForPreview } from "@/components/codex/power-preview";
 import {
   expandEncounterFormations,
@@ -127,7 +128,11 @@ type PreviewPlacement = {
 
 function estimatePreviewSize(entity: EntityInfo): { width: number; height: number } {
   if (entity.type === "card" && entity.cardData) return { width: 156, height: 230 };
-  if (entity.type === "character" && entity.characterData) return { width: 380, height: 220 };
+  if (entity.type === "character" && entity.characterData) {
+    return characterHasLowHealthIdle(entity.characterData)
+      ? { width: 220, height: 280 }
+      : { width: 380, height: 220 };
+  }
   if (entity.type === "keyword" && entity.keywordData) return { width: 320, height: 140 };
   if (entity.type === "monsterMove") return { width: 280, height: 260 };
   if (entity.eventData && !entity.eventOptionDesc) return { width: 360, height: 180 };
@@ -352,9 +357,15 @@ export function EntityPreview({
     epoch: buildCompendiumResourceHref("epoch", compendiumRouteId),
   };
   const hrefBase = isPendingCompendium ? null : entity.href === null ? null : entity.href ?? hrefMap[entity.type] ?? null;
-  const href = hrefBase && serviceLocale && gameLocale
+  const localizedHref = hrefBase && serviceLocale && gameLocale
     ? localizeHrefWithGameLocale(hrefBase, serviceLocale, gameLocale)
     : hrefBase;
+  const href = localizedHref
+    && previewEntity.type === "character"
+    && previewEntity.characterData
+    && characterHasLowHealthIdle(previewEntity.characterData)
+    ? withCharacterLowHpQuery(localizedHref)
+    : localizedHref;
   const linkText = preferEntityLocaleLabel
     ? `${previewEntity.nameKo}${cardPreviewUpgradeSuffix(previewEntity)}`
     : children;
@@ -528,17 +539,22 @@ export function EntityPreview({
       )}
       {showResolvedPreview && previewEntity.type === "character" && previewEntity.characterData && (
         renderTooltip(
-          <GameResourcePreview
-            title={previewEntity.nameKo}
-            imageUrl={previewEntity.characterData.selectImageUrl || previewEntity.characterData.imageUrl}
-            imageAlt={previewEntity.nameKo}
-            imageFrameClassName="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg bg-black/20"
-            imageClassName="h-24 w-24 object-contain"
-            imageWidth={96}
-            imageHeight={96}
-          >
-            <DescriptionText description={previewEntity.characterData.description} />
-          </GameResourcePreview>,
+          characterHasLowHealthIdle(previewEntity.characterData) ? (
+            <CharacterLowHpHoverPreview
+              character={previewEntity.characterData}
+              serviceLocale={serviceLocale ?? "ko"}
+            />
+          ) : (
+            <GameResourcePreview
+              title={previewEntity.nameKo}
+              imageUrl={previewEntity.characterData.selectImageUrl || previewEntity.characterData.imageUrl}
+              imageAlt={previewEntity.nameKo}
+              imageFrameClassName="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg bg-black/20"
+              imageClassName="h-24 w-24 object-contain"
+              imageWidth={96}
+              imageHeight={96}
+            />
+          ),
         )
       )}
       {showResolvedPreview && previewEntity.type === "keyword" && previewEntity.keywordData && (

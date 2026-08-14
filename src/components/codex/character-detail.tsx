@@ -29,7 +29,7 @@ import type {
   MonsterStageFormAttachment,
   MonsterStageFormPlacement,
 } from "./monster-spine-stage";
-import { CharacterSpineStage, characterHasLowHealthIdle, characterLowHealthHp } from "./character-spine-stage";
+import { CharacterSpineStage, characterHasLowHealthIdle, characterLowHealthHp, characterLowHpQueryEnabled } from "./character-spine-stage";
 import { GameCheckboxToggle } from "./game-checkbox";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
@@ -352,6 +352,12 @@ export function CharacterDetail({
     [characterPool, potions],
   );
   const hasLowHealthIdle = characterHasLowHealthIdle(character);
+  useEffect(() => {
+    if (!hasLowHealthIdle) return;
+    if (characterLowHpQueryEnabled(window.location.search)) {
+      setLowHealthIdle(true);
+    }
+  }, [character.id, hasLowHealthIdle]);
   const hasCharacterInfo = Boolean(character.nameEn || unlockCharacter);
   const availableActions = ACTIONS.filter((action) => {
     if (!character.spineAsset) return action.id === "IDLE";
