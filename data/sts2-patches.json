@@ -552,25 +552,22 @@
     ]
   },
   {
-    "id": "prep-time-2026-08-14",
-    "version": "prep-time-2026-08-14",
-    "versionLabel": "Prep Time",
-    "versionLabelKo": "준비 시간",
+    "id": "v0.111.0",
+    "version": "0.111.0",
     "date": "2026-08-14",
-    "title": "Today's patch is waiting to be revealed ...",
-    "titleKo": "오늘의 패치가 드러나기를 기다리고 있습니다 ...",
+    "title": "Beta Patch Notes - v0.111.0",
+    "titleKo": "베타 패치 노트 - v0.111.0",
     "type": "beta",
-    "status": "watching",
-    "watchStage": "prep_time",
-    "steamUrl": null,
-    "summary": "Today's patch is waiting to be revealed ...",
-    "summaryKo": "오늘의 패치가 드러나기를 기다리고 있습니다 ...",
-    "hasBalanceChanges": false,
+    "status": "building",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/671751488532383386",
+    "summary": "Rich patch notes are being prepared.",
+    "summaryKo": "리치 패치 노트를 준비하고 있습니다.",
+    "hasBalanceChanges": true,
     "art": {
       "type": "card",
-      "id": "PREP_TIME",
-      "alt": "Prep Time card art",
-      "altKo": "준비 시간 카드 아트"
+      "id": "TOOLS_OF_THE_TRADE",
+      "alt": "Tools of the Trade card art",
+      "altKo": "작업 도구 카드 아트"
     }
   }
 ]
