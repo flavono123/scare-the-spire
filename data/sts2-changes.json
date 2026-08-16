@@ -724,21 +724,27 @@
   },
   {
     "id": "neow-fury-v100-buff",
-    "entityType": "blessing",
+    "entityType": "card",
     "entityId": "NEOWS_FURY",
     "patch": "v0.100.0",
     "date": "2026-03-20",
     "character": null,
-    "summary": "Neow's Fury now returns 3 cards (was 2).",
-    "summaryKo": "네오의 분노: 반환 카드 수 2장에서 3장으로 증가.",
+    "summary": "Neow's Fury upgrade now returns 3 cards (was 2).",
+    "summaryKo": "니오우의 격분: 강화 시 버린 더미에서 가져오는 카드 수가 2장에서 3장으로 증가.",
     "diffs": [
       {
-        "attribute": "cards",
-        "displayName": "Cards Returned",
-        "displayNameKo": "반환 카드 수",
+        "attribute": "upgrade.cards",
+        "displayName": "Upgraded Cards Returned",
+        "displayNameKo": "강화 시 가져오는 카드 수",
         "before": 2,
         "after": 3,
         "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "upgrade.cards",
+        "after": "+1"
       }
     ]
   },
