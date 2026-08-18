@@ -200,6 +200,18 @@
         "after": "Gain 1 energy per attack in hand. Prevents additional energy gain this turn.",
         "diffType": "text"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]손[/gold]에 있는 공격 카드 1장당\n[energy:1]를 얻습니다.",
+        "after": "[gold]손[/gold]에 있는 공격 카드 1장당\n[energy:1]를 얻습니다.\n이번 턴에 추가로\n[energy:1]를 얻을 수 없습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]손[/gold]에 있는 공격 카드 1장당\n{energyPrefix:energyIcons(1)}를 얻습니다.{InCombat:\n({CalculatedEnergy:energyIcons()}를 얻습니다.)|}",
+        "after": "[gold]손[/gold]에 있는 공격 카드 1장당\n{energyPrefix:energyIcons(1)}를 얻습니다.\n이번 턴에 추가로\n{energyPrefix:energyIcons(1)}를 얻을 수 없습니다.{InCombat:\n({CalculatedEnergy:energyIcons()}를 얻습니다.)|}"
+      }
     ]
   },
   {
@@ -256,6 +268,10 @@
         "after": [
           "소멸"
         ]
+      },
+      {
+        "field": "upgrade.remove_exhaust",
+        "after": 1
       }
     ]
   },
@@ -306,6 +322,11 @@
       }
     ],
     "fieldDiffs": [
+      {
+        "field": "starCost",
+        "before": 2,
+        "after": 3
+      },
       {
         "field": "vars.StarCost",
         "before": 2,
@@ -685,7 +706,7 @@
   },
   {
     "id": "neow-hefty-tablet-v100",
-    "entityType": "blessing",
+    "entityType": "relic",
     "entityId": "HEFTY_TABLET",
     "patch": "v0.100.0",
     "date": "2026-03-20",
@@ -705,7 +726,7 @@
   },
   {
     "id": "neow-talisman-v100",
-    "entityType": "blessing",
+    "entityType": "relic",
     "entityId": "NEOWS_TALISMAN",
     "patch": "v0.100.0",
     "date": "2026-03-20",
@@ -751,7 +772,7 @@
   },
   {
     "id": "doormaker-v100-buff",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "DOORMAKER",
     "patch": "v0.100.0",
     "date": "2026-03-20",
@@ -771,7 +792,7 @@
   },
   {
     "id": "hp-cap-v99",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "_GLOBAL",
     "patch": "v0.99",
     "date": "2026-03-13",
@@ -827,6 +848,18 @@
         "after": true,
         "diffType": "boolean"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "deprecated",
+        "before": false,
+        "after": true
+      },
+      {
+        "field": "deprecatedInPatch",
+        "before": null,
+        "after": "v0.103.0"
+      }
     ]
   },
   {
@@ -847,6 +880,13 @@
         "after": "Uncommon",
         "diffType": "enum"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "희귀",
+        "after": "고급"
+      }
     ]
   },
   {
@@ -866,6 +906,13 @@
         "before": "Common",
         "after": "Uncommon",
         "diffType": "enum"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "일반",
+        "after": "고급"
       }
     ]
   },
@@ -894,6 +941,23 @@
         "before": "Deal 6(8) damage to ALL enemies. If the last card you played this turn was a Skill, apply 1(2) Weak to ALL enemies.",
         "after": "Deal 7(9) damage. If you have 5 or more other cards in your Hand, hits an additional time.",
         "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "고급",
+        "after": "일반"
+      },
+      {
+        "field": "damage",
+        "before": 6,
+        "after": 7
+      },
+      {
+        "field": "vars.Damage",
+        "before": 6,
+        "after": 7
       }
     ]
   },
@@ -961,6 +1025,22 @@
         "diffType": "text",
         "upgraded": true
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "vars.SpeedsterPower",
+        "before": 1,
+        "after": 2
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "speedsterpower": "+1"
+        },
+        "after": {
+          "innate": true
+        }
+      }
     ]
   },
   {
@@ -985,7 +1065,7 @@
   },
   {
     "id": "neow-bones-v103-new",
-    "entityType": "blessing",
+    "entityType": "relic",
     "entityId": "NEOWS_BONES",
     "patch": "v0.103.0",
     "date": "2026-04-10",
@@ -1005,7 +1085,7 @@
   },
   {
     "id": "phial-holster-v103-new",
-    "entityType": "blessing",
+    "entityType": "relic",
     "entityId": "PHIAL_HOLSTER",
     "patch": "v0.103.0",
     "date": "2026-04-10",
@@ -1025,7 +1105,7 @@
   },
   {
     "id": "winged-boots-v103-new",
-    "entityType": "blessing",
+    "entityType": "relic",
     "entityId": "WINGED_BOOTS",
     "patch": "v0.103.0",
     "date": "2026-04-10",
@@ -1045,7 +1125,7 @@
   },
   {
     "id": "tunneling-twosome-v103-deprecated",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "TUNNELER_NORMAL",
     "patch": "v0.103.0",
     "date": "2026-04-10",
@@ -1065,7 +1145,7 @@
   },
   {
     "id": "living-fog-v103-nerf",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "LIVING_FOG",
     "patch": "v0.103.0",
     "date": "2026-04-10",
@@ -1085,7 +1165,7 @@
   },
   {
     "id": "skulking-colony-v103-nerf",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "SKULKING_COLONY",
     "patch": "v0.103.0",
     "date": "2026-04-10",
@@ -1101,11 +1181,23 @@
         "after": "70(75)",
         "diffType": "text"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHp",
+        "before": 74,
+        "after": 70
+      },
+      {
+        "field": "minHpAscension",
+        "before": 79,
+        "after": 75
+      }
     ]
   },
   {
     "id": "byrdonis-v103-nerf",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "BYRDONIS",
     "patch": "v0.103.0",
     "date": "2026-04-10",
@@ -1121,11 +1213,33 @@
         "after": "81(90)-84(90)",
         "diffType": "text"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHp",
+        "before": 91,
+        "after": 81
+      },
+      {
+        "field": "maxHp",
+        "before": 94,
+        "after": 84
+      },
+      {
+        "field": "minHpAscension",
+        "before": 99,
+        "after": 90
+      },
+      {
+        "field": "maxHpAscension",
+        "before": 99,
+        "after": 90
+      }
     ]
   },
   {
     "id": "doormaker-v103-nerf",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "DOORMAKER",
     "patch": "v0.103.0",
     "date": "2026-04-10",
@@ -1289,6 +1403,36 @@
         "after": "Deal 2 damage to ALL enemies 4(5) times.",
         "diffType": "text"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "damage",
+        "before": 8,
+        "after": 2
+      },
+      {
+        "field": "hitCount",
+        "before": 1,
+        "after": 4
+      },
+      {
+        "field": "vars.Damage",
+        "before": 8,
+        "after": 2
+      },
+      {
+        "field": "vars.Repeat",
+        "after": 4
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "damage": "+1"
+        },
+        "after": {
+          "repeat": "+1"
+        }
+      }
     ]
   },
   {
@@ -1324,6 +1468,38 @@
         "before": "Draw 2(3) cards. At the start of your turn, Exhaust the top card of your Draw Pile.",
         "after": "Draw 2 cards. When this card is Exhausted, gain 2(3) Energy.",
         "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 0,
+        "after": 1
+      },
+      {
+        "field": "type",
+        "before": "파워",
+        "after": "스킬"
+      },
+      {
+        "field": "keywords",
+        "before": [],
+        "after": [
+          "소멸"
+        ]
+      },
+      {
+        "field": "vars.Energy",
+        "after": 2
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "cards": "+1"
+        },
+        "after": {
+          "energy": "+1"
+        }
       }
     ]
   },
@@ -1385,6 +1561,13 @@
         "after": "+3",
         "diffType": "text"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "upgrade.block",
+        "before": "+2",
+        "after": "+3"
+      }
     ]
   },
   {
@@ -1424,6 +1607,18 @@
         "before": "17(21)",
         "after": "16(20)",
         "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "block",
+        "before": 17,
+        "after": 16
+      },
+      {
+        "field": "vars.Block",
+        "before": 17,
+        "after": 16
       }
     ]
   },
@@ -1489,7 +1684,7 @@
   },
   {
     "id": "assassin-raider-v104-nerf",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "ASSASSIN_RUBY_RAIDER",
     "patch": "v0.104.0",
     "date": "2026-04-24",
@@ -1505,11 +1700,24 @@
         "after": "10(11)",
         "diffType": "text"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "damageValues.Killshot",
+        "before": {
+          "normal": 11,
+          "ascension": 12
+        },
+        "after": {
+          "normal": 10,
+          "ascension": 11
+        }
+      }
     ]
   },
   {
     "id": "scroll-of-biting-v104-change",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "SCROLL_OF_BITING",
     "patch": "v0.104.0",
     "date": "2026-04-24",
@@ -1525,11 +1733,33 @@
         "after": "30(33)-37(39)",
         "diffType": "text"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHp",
+        "before": 31,
+        "after": 30
+      },
+      {
+        "field": "maxHp",
+        "before": 38,
+        "after": 37
+      },
+      {
+        "field": "minHpAscension",
+        "before": 32,
+        "after": 33
+      },
+      {
+        "field": "maxHpAscension",
+        "before": 39,
+        "after": 39
+      }
     ]
   },
   {
     "id": "owl-magistrate-v104-change",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "OWL_MAGISTRATE",
     "patch": "v0.104.0",
     "date": "2026-04-24",
@@ -1545,11 +1775,23 @@
         "after": "231(247)",
         "diffType": "text"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHp",
+        "before": 234,
+        "after": 231
+      },
+      {
+        "field": "minHpAscension",
+        "before": 243,
+        "after": 247
+      }
     ]
   },
   {
     "id": "slimed-berserker-v104-change",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "SLIMED_BERSERKER",
     "patch": "v0.104.0",
     "date": "2026-04-24",
@@ -1565,11 +1807,23 @@
         "after": "261(281)",
         "diffType": "text"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHp",
+        "before": 266,
+        "after": 261
+      },
+      {
+        "field": "minHpAscension",
+        "before": 276,
+        "after": 281
+      }
     ]
   },
   {
     "id": "vantom-v104-nerf",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "VANTOM",
     "patch": "v0.104.0",
     "date": "2026-04-24",
@@ -1593,11 +1847,24 @@
         "after": "8(9)",
         "diffType": "text"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "damageValues.Dismember",
+        "before": {
+          "normal": 27,
+          "ascension": 30
+        },
+        "after": {
+          "normal": 26,
+          "ascension": 30
+        }
+      }
     ]
   },
   {
     "id": "waterfall-giant-v104-nerf",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "WATERFALL_GIANT",
     "patch": "v0.104.0",
     "date": "2026-04-24",
@@ -1617,7 +1884,7 @@
   },
   {
     "id": "axebots-v104-rework",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "AXEBOT",
     "patch": "v0.104.0",
     "date": "2026-04-24",
@@ -2157,6 +2424,13 @@
         "after": "Apply 1 Weak to ALL enemies; Exhaust, and loses Exhaust on upgrade.",
         "diffType": "rework"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "introducedInPatch",
+        "before": null,
+        "after": "v0.106.0"
+      }
     ]
   },
   {
@@ -2695,7 +2969,7 @@
   },
   {
     "id": "infested-prism-v106-rework",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "INFESTED_PRISM",
     "patch": "v0.106.0",
     "date": "2026-05-22",
@@ -3421,7 +3695,7 @@
   },
   {
     "id": "haunted-ship-v106-change",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "HAUNTED_SHIP",
     "patch": "v0.106.0",
     "date": "2026-05-22",
@@ -3444,7 +3718,7 @@
   },
   {
     "id": "punch-construct-v106-change",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "PUNCH_CONSTRUCT",
     "patch": "v0.106.0",
     "date": "2026-05-22",
@@ -3475,7 +3749,7 @@
   },
   {
     "id": "skulking-colony-v106-change",
-    "entityType": "enemy",
+    "entityType": "monster",
     "entityId": "SKULKING_COLONY",
     "patch": "v0.106.0",
     "date": "2026-05-22",
@@ -3510,7 +3784,19 @@
     ],
     "visualDiff": {
       "type": "monster-pattern"
-    }
+    },
+    "fieldDiffs": [
+      {
+        "field": "minHp",
+        "before": 70,
+        "after": 75
+      },
+      {
+        "field": "minHpAscension",
+        "before": 75,
+        "after": 80
+      }
+    ]
   },
   {
     "id": "wither-v1061-upgrade-fix",
@@ -10641,6 +10927,11 @@
         "field": "starCost",
         "before": 3,
         "after": 2
+      },
+      {
+        "field": "vars.StarCost",
+        "before": 3,
+        "after": 2
       }
     ],
     "date": "2026-08-14",
@@ -12350,6 +12641,419 @@
         "field": "descriptionRaw",
         "before": "피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다.",
         "after": "피해를 {Damage:diff()} 줍니다.\n다음 턴에,\n카드를 {Cards:diff()}장 뽑습니다."
+      }
+    ]
+  },
+  {
+    "id": "waterlogged-scriptorium-v102-gold",
+    "entityType": "event",
+    "entityId": "WATERLOGGED_SCRIPTORIUM",
+    "patch": "v0.102.0",
+    "date": "2026-04-03",
+    "character": null,
+    "summary": "Waterlogged Scriptorium gold costs decreased from 155 and 65 to 99 and 55.",
+    "summaryKo": "물에 잠긴 기록실의 골드 비용이 155·65에서 99·55로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "gold",
+        "displayName": "Gold cost",
+        "displayNameKo": "골드 비용",
+        "before": "155 / 65",
+        "after": "99 / 55",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "options",
+        "before": [
+          {
+            "id": "BLOODY_INK",
+            "title": "핏빛 잉크",
+            "description": "최대 체력을 [green]6[/green] 얻습니다."
+          },
+          {
+            "id": "TENTACLE_QUILL",
+            "title": "촉수 펜",
+            "description": "[gold]골드[/gold]를 [red]65[/red] 지불합니다. 카드 1장에 [purple]안정[/purple]을 [gold]인챈트[/gold]합니다."
+          },
+          {
+            "id": "TENTACLE_QUILL_LOCKED",
+            "title": "잠김",
+            "description": "[gold]골드[/gold]가 [blue]65[/blue] 필요합니다."
+          },
+          {
+            "id": "PRICKLY_SPONGE",
+            "title": "꺼끌꺼끌한 스펀지",
+            "description": "[gold]골드[/gold]를 [red]155[/red] 지불합니다. 카드 [blue]2[/blue]장에 [purple]안정[/purple]을 [gold]인챈트[/gold]합니다."
+          },
+          {
+            "id": "PRICKLY_SPONGE_LOCKED",
+            "title": "잠김",
+            "description": "[gold]골드[/gold]가 [blue]155[/blue] 필요합니다."
+          }
+        ],
+        "after": [
+          {
+            "id": "BLOODY_INK",
+            "title": "핏빛 잉크",
+            "description": "최대 체력을 [green]6[/green] 얻습니다."
+          },
+          {
+            "id": "TENTACLE_QUILL",
+            "title": "촉수 펜",
+            "description": "[gold]골드[/gold]를 [red]55[/red] 지불합니다. 카드 1장에 [purple]안정[/purple]을 [gold]인챈트[/gold]합니다."
+          },
+          {
+            "id": "TENTACLE_QUILL_LOCKED",
+            "title": "잠김",
+            "description": "[gold]골드[/gold]가 [blue]55[/blue] 필요합니다."
+          },
+          {
+            "id": "PRICKLY_SPONGE",
+            "title": "꺼끌꺼끌한 스펀지",
+            "description": "[gold]골드[/gold]를 [red]99[/red] 지불합니다. 카드 [blue]2[/blue]장에 [purple]안정[/purple]을 [gold]인챈트[/gold]합니다."
+          },
+          {
+            "id": "PRICKLY_SPONGE_LOCKED",
+            "title": "잠김",
+            "description": "[gold]골드[/gold]가 [blue]99[/blue] 필요합니다."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "fishing-rod-v105-new",
+    "entityType": "relic",
+    "entityId": "FISHING_ROD",
+    "patch": "v0.105.0",
+    "date": "2026-05-08",
+    "character": null,
+    "summary": "New Neow relic: Fishing Rod.",
+    "summaryKo": "신규 니오우 유물: 낚싯대.",
+    "diffs": [
+      {
+        "attribute": "new",
+        "displayName": "New",
+        "displayNameKo": "신규",
+        "before": "",
+        "after": "Fishing Rod",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "kaleidoscope-v105-new",
+    "entityType": "relic",
+    "entityId": "KALEIDOSCOPE",
+    "patch": "v0.105.0",
+    "date": "2026-05-08",
+    "character": null,
+    "summary": "New Neow relic: Kaleidoscope.",
+    "summaryKo": "신규 니오우 유물: 만화경.",
+    "diffs": [
+      {
+        "attribute": "new",
+        "displayName": "New",
+        "displayNameKo": "신규",
+        "before": "",
+        "after": "Kaleidoscope",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "silken-tress-v105-new",
+    "entityType": "relic",
+    "entityId": "SILKEN_TRESS",
+    "patch": "v0.105.0",
+    "date": "2026-05-08",
+    "character": null,
+    "summary": "New Neow relic: Silken Tress.",
+    "summaryKo": "신규 니오우 유물: 부드러운 머리칼.",
+    "diffs": [
+      {
+        "attribute": "new",
+        "displayName": "New",
+        "displayNameKo": "신규",
+        "before": "",
+        "after": "Silken Tress",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "seal-of-gold-v105-new",
+    "entityType": "relic",
+    "entityId": "SEAL_OF_GOLD",
+    "patch": "v0.105.0",
+    "date": "2026-05-08",
+    "character": null,
+    "summary": "New Neow relic: Seal of Gold. Shares a blessing pool with Amber Candle.",
+    "summaryKo": "신규 니오우 유물: 황금 인장. 호박 양초와 축복 풀을 공유합니다.",
+    "diffs": [
+      {
+        "attribute": "new",
+        "displayName": "New",
+        "displayNameKo": "신규",
+        "before": "",
+        "after": "Seal of Gold",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "dowsing-rod-v109-new",
+    "entityType": "relic",
+    "entityId": "DOWSING_ROD",
+    "patch": "v0.109.0",
+    "date": "2026-07-17",
+    "character": null,
+    "summary": "New Neow relic: Dowsing Rod.",
+    "summaryKo": "신규 니오우 유물: 다우징 로드.",
+    "diffs": [
+      {
+        "attribute": "new",
+        "displayName": "New",
+        "displayNameKo": "신규",
+        "before": "",
+        "after": "Dowsing Rod",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "neows-sacrifice-v109-new",
+    "entityType": "relic",
+    "entityId": "NEOWS_SACRIFICE",
+    "patch": "v0.109.0",
+    "date": "2026-07-17",
+    "character": null,
+    "summary": "New Neow relic: Neow's Sacrifice.",
+    "summaryKo": "신규 니오우 유물: 니오우의 희생.",
+    "diffs": [
+      {
+        "attribute": "new",
+        "displayName": "New",
+        "displayNameKo": "신규",
+        "before": "",
+        "after": "Neow's Sacrifice",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "ambergris-v109-new",
+    "entityType": "potion",
+    "entityId": "AMBERGRIS",
+    "patch": "v0.109.0",
+    "date": "2026-07-17",
+    "character": null,
+    "summary": "New potion: Ambergris.",
+    "summaryKo": "신규 포션: 용연향.",
+    "diffs": [
+      {
+        "attribute": "new",
+        "displayName": "New",
+        "displayNameKo": "신규",
+        "before": "",
+        "after": "Ambergris",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "tinker-time-v101-free-play",
+    "entityType": "event",
+    "entityId": "TINKER_TIME",
+    "patch": "v0.101.0",
+    "date": "2026-03-24",
+    "character": null,
+    "summary": "Tinker Time Mad Science Chaos is now free to play.",
+    "summaryKo": "땜질 시간의 괴짜 과학 혼돈이 이제 무료로 사용할 수 있습니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mad Science Chaos",
+        "displayNameKo": "괴짜 과학 혼돈",
+        "before": "Costs energy",
+        "after": "Free to play",
+        "beforeKo": "에너지 소모",
+        "afterKo": "무료 사용",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "welcome-to-wongos-v101-relic-pool",
+    "entityType": "event",
+    "entityId": "WELCOME_TO_WONGOS",
+    "patch": "v0.101.0",
+    "date": "2026-03-24",
+    "character": null,
+    "summary": "Welcome to Wongos featured relic offers no longer include gold-generating relics.",
+    "summaryKo": "웡고스에 오신 것을 환영합니다 추천 상품에서 골드 생성 유물이 제외되었습니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Featured relics",
+        "displayNameKo": "추천 유물",
+        "before": "Gold-generating relics included",
+        "after": "Gold-generating relics excluded",
+        "beforeKo": "골드 생성 유물 포함",
+        "afterKo": "골드 생성 유물 제외",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "hungry-for-mushrooms-v102-cards",
+    "entityType": "event",
+    "entityId": "HUNGRY_FOR_MUSHROOMS",
+    "patch": "v0.102.0",
+    "date": "2026-04-03",
+    "character": null,
+    "summary": "Hungry for Mushrooms fragrant mushroom upgraded cards decreased from 3 to 2.",
+    "summaryKo": "버섯이 먹고 싶어 향기로운 버섯의 강화 카드 수가 3에서 2로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "cards",
+        "displayName": "Upgraded cards",
+        "displayNameKo": "강화 카드",
+        "before": 3,
+        "after": 2,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "whispering-hollow-v102-gold",
+    "entityType": "event",
+    "entityId": "WHISPERING_HOLLOW",
+    "patch": "v0.102.0",
+    "date": "2026-04-03",
+    "character": null,
+    "summary": "Whispering Hollow gold trade decreased from 50 to 35.",
+    "summaryKo": "속삭이는 골짜기 골드 거래 비용이 50에서 35로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "gold",
+        "displayName": "Gold",
+        "displayNameKo": "골드",
+        "before": 50,
+        "after": 35,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "slippery-bridge-v104-repeat",
+    "entityType": "event",
+    "entityId": "SLIPPERY_BRIDGE",
+    "patch": "v0.104.0",
+    "date": "2026-04-24",
+    "character": null,
+    "summary": "Slippery Bridge no longer offers the same card for removal repeatedly.",
+    "summaryKo": "미끄러운 다리가 같은 카드 반복 제거를 제안하지 않습니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Card removal",
+        "displayNameKo": "카드 제거",
+        "before": "Could repeat the same card",
+        "after": "Does not repeat the same card",
+        "beforeKo": "같은 카드 반복 가능",
+        "afterKo": "같은 카드 반복 금지",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "regen-potion-v108-order",
+    "entityType": "potion",
+    "entityId": "REGEN_POTION",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": null,
+    "summary": "Regen Potion healing now applies before Doom.",
+    "summaryKo": "재생 포션의 회복이 이제 종말보다 먼저 적용됩니다.",
+    "diffs": [
+      {
+        "attribute": "order",
+        "displayName": "Heal order",
+        "displayNameKo": "회복 순서",
+        "before": "After Doom",
+        "after": "Before Doom",
+        "beforeKo": "종말 이후",
+        "afterKo": "종말 이전",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "fur-coat-v102-replenished",
+    "entityType": "relic",
+    "entityId": "FUR_COAT",
+    "patch": "v0.102.0",
+    "date": "2026-04-03",
+    "character": null,
+    "summary": "Fur Coat now also applies to replenished enemies.",
+    "summaryKo": "모피 코트가 이제 보충된 적에게도 적용됩니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Replenished enemies",
+        "displayNameKo": "보충된 적",
+        "before": "Did not apply",
+        "after": "Applies",
+        "beforeKo": "미적용",
+        "afterKo": "적용",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "history-course-v102-x-cost",
+    "entityType": "relic",
+    "entityId": "HISTORY_COURSE",
+    "patch": "v0.102.0",
+    "date": "2026-04-03",
+    "character": null,
+    "summary": "History Course X-cost copies now spend current Energy.",
+    "summaryKo": "역사 강의서의 X코스트 복사본이 이제 현재 에너지를 사용합니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "X-cost copies",
+        "displayNameKo": "X코스트 복사본",
+        "before": "Previous Energy handling",
+        "after": "Uses current Energy",
+        "beforeKo": "기존 에너지 처리",
+        "afterKo": "현재 에너지 사용",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "paels-eye-v106-vulnerable",
+    "entityType": "relic",
+    "entityId": "PAELS_EYE",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": null,
+    "summary": "Pael's Eye no longer reduces enemy Vulnerable before extra turns.",
+    "summaryKo": "파엘의 눈이 추가 턴 전에 적 취약을 감소시키지 않습니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Vulnerable",
+        "displayNameKo": "취약",
+        "before": "Reduced before extra turns",
+        "after": "No longer reduced",
+        "beforeKo": "추가 턴 전 감소",
+        "afterKo": "감소하지 않음",
+        "diffType": "text"
       }
     ]
   }

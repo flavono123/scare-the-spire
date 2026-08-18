@@ -9592,7 +9592,9 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [
+      "소멸"
+    ],
     "tags": null,
     "spawns_cards": null,
     "vars": {
@@ -9600,7 +9602,8 @@
       "Focus": 2
     },
     "upgrade": {
-      "focuspower": "+1"
+      "focuspower": "+1",
+      "remove_exhaust": 1
     },
     "image_url": "/static/images/cards/hotfix.png",
     "beta_image_url": "/static/images/cards/beta/hotfix.png"
