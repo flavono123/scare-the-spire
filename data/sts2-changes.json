@@ -147,19 +147,13 @@
     "summaryKo": "악의 리워크: 0비용 고급 공격으로 변경. 5 데미지, 이번 턴 HP를 잃었다면 2(3)번 타격. 카드 드로우 제거.",
     "diffs": [
       {
-        "attribute": "cost",
-        "displayName": "Cost",
-        "displayNameKo": "비용",
-        "before": "Previous cost",
-        "after": 0,
-        "diffType": "number"
-      },
-      {
         "attribute": "rarity",
         "displayName": "Rarity",
         "displayNameKo": "희귀도",
         "before": "Common",
         "after": "Uncommon",
+        "beforeKo": "일반",
+        "afterKo": "고급",
         "diffType": "enum"
       },
       {
@@ -178,6 +172,13 @@
         "after": "Deal 5 damage. Hits 3 times if you lost HP this turn.",
         "diffType": "rework",
         "upgraded": true
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "일반",
+        "after": "고급"
       }
     ]
   },

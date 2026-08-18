@@ -17099,7 +17099,7 @@
   {
     "id": "SPITE",
     "name": "악의",
-    "description": "피해를 6 줍니다.\n이번 턴 동안 체력을\n잃었다면, X번 적중합니다.",
+    "description": "피해를 5 줍니다.\n이번 턴 동안 체력을\n잃었다면, 2번 적중합니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n이번 턴 동안 체력을\n잃었다면, {Repeat:diff()}번 적중합니다.",
     "cost": 0,
     "is_x_cost": null,
@@ -17109,22 +17109,22 @@
     "rarity": "고급",
     "target": "AnyEnemy",
     "color": "ironclad",
-    "damage": 6,
+    "damage": 5,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
-    "cards_draw": 1,
+    "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
     "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 6,
-      "Cards": 1
+      "Damage": 5,
+      "Repeat": 2
     },
     "upgrade": {
-      "damage": "+3"
+      "repeat": "+1"
     },
     "image_url": "/static/images/cards/spite.png",
     "beta_image_url": "/static/images/cards/beta/spite.png"
