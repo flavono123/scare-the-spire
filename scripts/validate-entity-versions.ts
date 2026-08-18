@@ -23,8 +23,35 @@ interface EntityFieldDiff {
   upgraded?: boolean;
 }
 
+type VersionedEntityType =
+  | "card"
+  | "relic"
+  | "potion"
+  | "power"
+  | "enchantment"
+  | "affliction"
+  | "event"
+  | "monster"
+  | "encounter"
+  | "ancient"
+  | "epoch";
+
+const VERSIONED_ENTITY_TYPES = new Set<string>([
+  "card",
+  "relic",
+  "potion",
+  "power",
+  "enchantment",
+  "affliction",
+  "event",
+  "monster",
+  "encounter",
+  "ancient",
+  "epoch",
+]);
+
 interface EntityVersionDiff {
-  entityType: "card" | "relic" | "potion" | "power";
+  entityType: VersionedEntityType;
   entityId: string;
   patch: string;
   diffs: EntityFieldDiff[];
@@ -118,6 +145,32 @@ const FIELD_TO_RAW: Record<string, string> = {
   allowNegative: "allow_negative",
   pool: "pool",
   flavor: "flavor",
+  extraCardText: "extra_card_text",
+  cardType: "card_type",
+  isStackable: "is_stackable",
+  minHp: "min_hp",
+  maxHp: "max_hp",
+  minHpAscension: "min_hp_ascension",
+  maxHpAscension: "max_hp_ascension",
+  damageValues: "damage_values",
+  blockValues: "block_values",
+  bestiaryMoves: "bestiary_moves",
+  initialPowerApplications: "initial_power_applications",
+  showInCompendium: "show_in_compendium",
+  roomType: "room_type",
+  isWeak: "is_weak",
+  compositions: "compositions",
+  unlockInfo: "unlock_info",
+  unlockText: "unlock_text",
+  unlocksCards: "unlocks_cards",
+  unlocksRelics: "unlocks_relics",
+  unlocksPotions: "unlocks_potions",
+  expandsTimeline: "expands_timeline",
+  eraName: "era_name",
+  eraYear: "era_year",
+  eraPosition: "era_position",
+  sortOrder: "sort_order",
+  storyId: "story_id",
 };
 
 /** Get a value from a raw entity by camelCase field path */
@@ -136,6 +189,20 @@ function getField(entity: Record<string, unknown>, camelField: string): unknown 
   }
   return undefined;
 }
+
+/** Fields stored as mapped Codex objects, not raw JSON snake_case. */
+const CODEX_SHAPED_FIELDS = new Set([
+  "moves",
+  "bestiaryMoves",
+  "initialPowerApplications",
+  "moveGraph",
+  "options",
+  "pages",
+  "dialogue",
+  "compositions",
+  "descriptionEn",
+  "descriptionRawEn",
+]);
 
 function validateAncientRelicCoverage(
   relics: Record<string, unknown>[],
@@ -193,12 +260,18 @@ function validateAncientRelicCoverage(
   return errors;
 }
 
+function normalizeVersionedEntityType(entityType: string): VersionedEntityType | null {
+  if (entityType === "enemy") return "monster";
+  if (entityType === "blessing") return "relic";
+  return VERSIONED_ENTITY_TYPES.has(entityType) ? entityType as VersionedEntityType : null;
+}
+
 function deriveEntityVersionDiffs(changes: readonly STS2Change[]): EntityVersionDiff[] {
-  const versionedEntityTypes = new Set(["card", "relic", "potion", "power"]);
   return changes.flatMap((change) => {
-    if (!change.fieldDiffs?.length || !versionedEntityTypes.has(change.entityType)) return [];
+    const entityType = normalizeVersionedEntityType(change.entityType);
+    if (!change.fieldDiffs?.length || !entityType) return [];
     return [{
-      entityType: change.entityType as EntityVersionDiff["entityType"],
+      entityType,
       entityId: change.entityId,
       patch: change.patch,
       diffs: change.fieldDiffs,
@@ -220,14 +293,27 @@ function main() {
   const relics = readJson<Record<string, unknown>[]>("data/sts2/kor/relics.json");
   const potions = readJson<Record<string, unknown>[]>("data/sts2/kor/potions.json");
   const powers = readJson<Record<string, unknown>[]>("data/sts2/kor/powers.json");
+  const enchantments = readJson<Record<string, unknown>[]>("data/sts2/kor/enchantments.json");
+  const afflictions = readJson<Record<string, unknown>[]>("data/sts2/kor/afflictions.json");
+  const monsters = readJson<Record<string, unknown>[]>("data/sts2/kor/monsters.json");
+  const encounters = readJson<Record<string, unknown>[]>("data/sts2/kor/encounters.json");
+  const epochs = readJson<Record<string, unknown>[]>("data/sts2/kor/epochs.json");
   const korEvents = readJson<CodexEvent[]>("data/sts2/kor/events.json");
   const engEvents = readJson<CodexEvent[]>("data/sts2/eng/events.json");
+  const ancients = korEvents.filter((event) => event.type === "Ancient") as unknown as Record<string, unknown>[];
 
   const baselineMap: Record<string, Map<string, Record<string, unknown>>> = {
     card: new Map(cards.map((c) => [c.id as string, c])),
     relic: new Map(relics.map((r) => [r.id as string, r])),
     potion: new Map(potions.map((p) => [p.id as string, p])),
     power: new Map(powers.map((p) => [p.id as string, p])),
+    enchantment: new Map(enchantments.map((e) => [e.id as string, e])),
+    affliction: new Map(afflictions.map((a) => [a.id as string, a])),
+    event: new Map(korEvents.map((e) => [e.id as string, e as unknown as Record<string, unknown>])),
+    monster: new Map(monsters.map((m) => [m.id as string, m])),
+    encounter: new Map(encounters.map((e) => [e.id as string, e])),
+    ancient: new Map(ancients.map((a) => [a.id as string, a])),
+    epoch: new Map(epochs.map((e) => [e.id as string, e])),
   };
 
   let errors = 0;
@@ -262,6 +348,8 @@ function main() {
 
     for (const fieldDiff of latest.diffs) {
       if (fieldDiff.upgraded) continue; // skip upgrade-only diffs
+      const topField = fieldDiff.field.split(".")[0];
+      if (CODEX_SHAPED_FIELDS.has(topField)) continue;
       const actual = getField(baseline, fieldDiff.field);
       if (!deepEqual(actual, fieldDiff.after)) {
         console.error(
@@ -337,12 +425,52 @@ function main() {
     "description", "descriptionRaw", "vars", "type", "stackType", "allowNegative",
     ...lifecycleFields,
   ]);
+  const validEnchantmentFields = new Set([
+    "description", "descriptionRaw", "descriptionEn", "descriptionRawEn",
+    "extraCardText", "vars", "cardType", "isStackable",
+    ...lifecycleFields,
+  ]);
+  const validAfflictionFields = new Set([
+    "description", "descriptionRaw", "extraCardText", "isStackable",
+    ...lifecycleFields,
+  ]);
+  const validEventFields = new Set([
+    "description", "descriptionEn", "act", "acts", "options", "pages",
+    ...lifecycleFields,
+  ]);
+  const validMonsterFields = new Set([
+    "type", "showInCompendium", "minHp", "maxHp", "minHpAscension", "maxHpAscension",
+    "moves", "bestiaryMoves", "initialPowerApplications", "damageValues", "blockValues",
+    "moveGraph",
+    ...lifecycleFields,
+  ]);
+  const validEncounterFields = new Set([
+    "roomType", "isWeak", "act", "tags", "monsters", "compositions",
+    ...lifecycleFields,
+  ]);
+  const validAncientFields = new Set([
+    "epithet", "description", "act", "relicIds", "dialogue",
+    ...lifecycleFields,
+  ]);
+  const validEpochFields = new Set([
+    "description", "era", "eraName", "eraYear", "eraPosition", "sortOrder",
+    "storyId", "affiliation", "affiliations", "unlockInfo", "unlockText",
+    "unlocksCards", "unlocksRelics", "unlocksPotions", "expandsTimeline",
+    ...lifecycleFields,
+  ]);
 
   const fieldSets: Record<string, Set<string>> = {
     card: validCardFields,
     relic: validRelicFields,
     potion: validPotionFields,
     power: validPowerFields,
+    enchantment: validEnchantmentFields,
+    affliction: validAfflictionFields,
+    event: validEventFields,
+    monster: validMonsterFields,
+    encounter: validEncounterFields,
+    ancient: validAncientFields,
+    epoch: validEpochFields,
   };
 
   for (const d of diffs) {

@@ -84,7 +84,9 @@ export default async function CodexEpochsPage({
         relics={relics}
         potions={potions}
         ancients={ancients}
+        patches={patches}
         changes={changes}
+        versionDiffs={versionDiffs}
         versions={versions}
         currentVersion={meta.version}
         entities={entities}

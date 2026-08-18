@@ -32,7 +32,7 @@ import {
   fuzzyMatchCodexText,
   stripCodexMarkup,
 } from "@/lib/codex-search";
-import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
+import { versionCodexEntities } from "@/lib/codex-versioning";
 import {
   FilterSection,
   orderByFilterSortDir,
@@ -114,9 +114,14 @@ export function AncientList({
   const triggerRef = useRef<HTMLAnchorElement | null>(null);
   const modalWasOpenRef = useRef(false);
   const versionedAncients = useMemo(() => {
-    if (!currentVersion || !selectedVersion) return ancients;
-    return withEntityLifecycleForVersion(ancients, selectedVersion, { changes, entityType: "ancient" });
-  }, [ancients, changes, currentVersion, selectedVersion]);
+    return versionCodexEntities(ancients, "ancient", {
+      selectedVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
+  }, [ancients, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
   const urlSelectedAncient = useMemo(() => (
     urlAncientId

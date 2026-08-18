@@ -174,6 +174,16 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
     });
   }, [enchantments, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
+  const versionedAfflictions = useMemo(() => {
+    return versionCodexEntities(afflictions, "affliction", {
+      selectedVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
+  }, [afflictions, selectedVersion, currentVersion, versionDiffs, patches, changes]);
+
   const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
   // Filtered enchantments
@@ -206,7 +216,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
   }, [versionedEnchantments, selectedCardTypes, stackableOnly, searchText]);
 
   const filteredAfflictions = useMemo(() => {
-    let result = afflictions;
+    let result = versionedAfflictions;
 
     if (selectedCardTypes.size > 0) {
       result = result.filter((a) => {
@@ -231,7 +241,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
     }
 
     return [...result].sort((a, b) => a.name.localeCompare(b.name, "ko"));
-  }, [afflictions, selectedCardTypes, stackableOnly, searchText]);
+  }, [versionedAfflictions, selectedCardTypes, stackableOnly, searchText]);
 
   const filteredResourceCount = filteredEnchantments.length + filteredAfflictions.length;
 
@@ -443,6 +453,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
                 cards={cards}
                 patches={patches}
                 changes={changes}
+                versionDiffs={versionDiffs}
                 tipCatalogSources={tipCatalogSources}
                 tipCatalogCards={cards}
                 tipCatalogPowers={powers}

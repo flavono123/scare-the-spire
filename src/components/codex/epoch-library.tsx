@@ -36,8 +36,8 @@ import {
   fuzzyMatchCodexText,
   stripCodexMarkup,
 } from "@/lib/codex-search";
-import type { STS2Change } from "@/lib/types";
-import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
+import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
+import { versionCodexEntities } from "@/lib/codex-versioning";
 import {
   FilterSection,
   IconFilterButton,
@@ -96,7 +96,9 @@ interface EpochLibraryProps {
   relics?: CodexRelic[];
   potions?: CodexPotion[];
   ancients?: CodexAncient[];
+  patches?: STS2Patch[];
   changes?: STS2Change[];
+  versionDiffs?: EntityVersionDiff[];
   versions?: string[];
   currentVersion?: string;
   entities?: EntityInfo[];
@@ -116,7 +118,9 @@ export function EpochLibrary({
   relics = [],
   potions = [],
   ancients = [],
+  patches,
   changes,
+  versionDiffs,
   versions,
   currentVersion,
   entities,
@@ -137,9 +141,14 @@ export function EpochLibrary({
   const urlBetaArt = useHydrationSafeSearchParam("beta", initialShowBeta ? "true" : null);
   const activeShowBeta = urlBetaArt !== null ? isBetaArtParamEnabled(urlBetaArt) : showBeta;
   const versionedEpochs = useMemo(() => {
-    if (!currentVersion || !selectedVersion) return epochs;
-    return withEntityLifecycleForVersion(epochs, selectedVersion, { changes, entityType: "epoch" });
-  }, [epochs, changes, currentVersion, selectedVersion]);
+    return versionCodexEntities(epochs, "epoch", {
+      selectedVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
+  }, [epochs, selectedVersion, currentVersion, versionDiffs, patches, changes]);
   const hasBetaArt = versionedEpochs.some((epoch) => epoch.betaImageUrl);
 
   const selectEpoch = useCallback((epoch: CodexEpoch) => {

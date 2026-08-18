@@ -335,7 +335,7 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
               entityType={resourceKind}
               entityId={resource.id}
               changes={changes}
-              versionDiffs={props.enchantment ? versionDiffs : undefined}
+              versionDiffs={versionDiffs}
               patches={patches}
               introducedInPatch={resource.introducedInPatch}
               deprecatedInPatch={resource.deprecatedInPatch}

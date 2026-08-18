@@ -263,6 +263,17 @@ export function reconstructEntityAtVersion<T extends { id: string }>(
   if ("tags" in entity && Array.isArray(entity.tags)) {
     result.tags = [...entity.tags];
   }
+  if ("damageValues" in entity && entity.damageValues && typeof entity.damageValues === "object") {
+    result.damageValues = { ...(entity.damageValues as Record<string, unknown>) };
+  }
+  if ("blockValues" in entity && entity.blockValues && typeof entity.blockValues === "object") {
+    result.blockValues = { ...(entity.blockValues as Record<string, unknown>) };
+  }
+  if ("options" in entity && Array.isArray(entity.options)) {
+    result.options = entity.options.map((option) => (
+      option && typeof option === "object" ? { ...(option as Record<string, unknown>) } : option
+    ));
+  }
 
   for (const patch of patchesToRevert) {
     const diffs = versionDiffs.filter(

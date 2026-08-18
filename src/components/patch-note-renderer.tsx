@@ -843,6 +843,64 @@ function reconstructPatchPreviewEntity(
       const event = reconstructEntityAtVersion(entity.eventData, "event", patchVersion, currentVersion, versionDiffs, patches);
       return { ...entity, nameKo: event.name, nameEn: event.nameEn, imageUrl: event.imageUrl, color: event.act ?? "none", eventData: event };
     }
+    case "affliction": {
+      if (!entity.afflictionData) return entity;
+      const affliction = reconstructEntityAtVersion(entity.afflictionData, "affliction", patchVersion, currentVersion, versionDiffs, patches);
+      return {
+        ...entity,
+        nameKo: affliction.name,
+        nameEn: affliction.nameEn,
+        imageUrl: affliction.imageUrl,
+        afflictionData: affliction,
+      };
+    }
+    case "monster": {
+      if (!entity.monsterData) return entity;
+      const monster = reconstructEntityAtVersion(entity.monsterData, "monster", patchVersion, currentVersion, versionDiffs, patches);
+      return {
+        ...entity,
+        nameKo: monster.name,
+        nameEn: monster.nameEn,
+        imageUrl: monster.bossImageUrl ?? monster.imageUrl,
+        color: monster.type,
+        monsterData: monster,
+      };
+    }
+    case "encounter": {
+      if (!entity.encounterData) return entity;
+      const encounter = reconstructEntityAtVersion(entity.encounterData, "encounter", patchVersion, currentVersion, versionDiffs, patches);
+      return {
+        ...entity,
+        nameKo: encounter.name,
+        nameEn: encounter.nameEn,
+        imageUrl: encounter.scene?.backgroundUrl ?? encounter.imageUrl,
+        color: encounter.roomType,
+        encounterData: encounter,
+      };
+    }
+    case "ancient": {
+      if (!entity.ancientData) return entity;
+      const ancient = reconstructEntityAtVersion(entity.ancientData, "ancient", patchVersion, currentVersion, versionDiffs, patches);
+      return {
+        ...entity,
+        nameKo: ancient.name,
+        nameEn: ancient.nameEn,
+        imageUrl: ancient.imageUrl,
+        color: ancient.act ?? "none",
+        ancientData: ancient,
+      };
+    }
+    case "epoch": {
+      if (!entity.epochData) return entity;
+      const epoch = reconstructEntityAtVersion(entity.epochData, "epoch", patchVersion, currentVersion, versionDiffs, patches);
+      return {
+        ...entity,
+        nameKo: epoch.name,
+        nameEn: epoch.nameEn,
+        imageUrl: epoch.imageUrl,
+        epochData: epoch,
+      };
+    }
     default:
       return entity;
   }
