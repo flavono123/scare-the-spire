@@ -566,16 +566,43 @@
     "patch": "v0.100.0",
     "date": "2026-03-20",
     "character": "necrobinder",
-    "summary": "Grave Warden no longer upgrades Soul cards generated.",
-    "summaryKo": "무덤지기: 생성되는 영혼 카드가 더 이상 강화되지 않습니다.",
+    "summary": "Grave Warden+ no longer creates Soul+; upgraded Block 8(10) -> 8(11).",
+    "summaryKo": "무덤지기+: 영혼+를 더 이상 만들지 않고, 강화 방어도가 8(10)에서 8(11)로 바뀌었습니다.",
     "diffs": [
       {
-        "attribute": "mechanic",
-        "displayName": "Soul Generation",
-        "displayNameKo": "영혼 생성",
-        "before": "Generates upgraded Soul cards",
-        "after": "Generates normal Soul cards",
+        "attribute": "soul",
+        "displayName": "Generated Soul",
+        "displayNameKo": "생성되는 영혼",
+        "before": "Soul+",
+        "beforeKo": "영혼+",
+        "after": "Soul",
+        "afterKo": "영혼",
+        "diffType": "text",
+        "upgraded": true
+      },
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": "8(10)",
+        "after": "8(11)",
         "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "upgrade",
+        "before": {
+          "block": "+2"
+        },
+        "after": {
+          "block": "+3"
+        }
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n[gold]뽑을 카드 더미[/gold]에\n[gold]{IfUpgraded:show:영혼+|영혼}[/gold]을 1장 추가합니다.",
+        "after": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n[gold]뽑을 카드 더미[/gold]에\n[gold]영혼[/gold]을 1장 추가합니다."
       }
     ]
   },
@@ -586,8 +613,8 @@
     "patch": "v0.100.0",
     "date": "2026-03-20",
     "character": "necrobinder",
-    "summary": "Seance no longer upgrades Soul cards generated.",
-    "summaryKo": "강령회: 생성되는 영혼 카드가 더 이상 강화되지 않습니다.",
+    "summary": "Seance no longer transforms into Soul+ when upgraded.",
+    "summaryKo": "강령회: 강화해도 더 이상 영혼+로 변화시키지 않습니다.",
     "diffs": [
       {
         "attribute": "mechanic",
@@ -610,6 +637,11 @@
         "after": {
           "cost": 0
         }
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]뽑을 카드 더미[/gold]의\n카드를 1장 [gold]{IfUpgraded:show:영혼+|영혼}[/gold]으로\n변화시킵니다.",
+        "after": "[gold]뽑을 카드 더미[/gold]의\n카드를 1장 [gold]영혼[/gold]으로\n변화시킵니다."
       }
     ]
   },
