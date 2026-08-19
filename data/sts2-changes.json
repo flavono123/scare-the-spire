@@ -222,15 +222,29 @@
     "date": "2026-03-20",
     "character": "ironclad",
     "summary": "Stoke no longer draws cards; adds random card instead (upgraded gives upgraded cards).",
-    "summaryKo": "불씨: 카드 드로우 제거, 대신 랜덤 카드 추가 (강화 시 강화된 카드).",
+    "summaryKo": "화력 증폭: 더 이상 카드를 뽑지 않고, 소멸시킨 수만큼 무작위 카드를 추가합니다 (강화 시 강화된 카드).",
     "diffs": [
       {
         "attribute": "mechanic",
         "displayName": "Mechanic",
         "displayNameKo": "효과",
-        "before": "Draws cards",
-        "after": "Adds a random card (upgraded version if card is upgraded)",
+        "before": "Exhaust your Hand. Draw a card for each card Exhausted.",
+        "beforeKo": "손에 있는 모든 카드를 소멸시킵니다. 소멸시킨 카드의 수만큼 카드를 뽑습니다.",
+        "after": "Exhaust your Hand. Add 1 random card into your Hand for each card Exhausted.",
+        "afterKo": "손에 있는 모든 카드를 소멸시킵니다. 소멸시킨 수만큼 무작위 카드를 손으로 가져옵니다.",
         "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]손[/gold]에 있는 모든 카드를\n[gold]소멸[/gold]시킵니다.\n[gold]소멸[/gold]시킨 카드의 수만큼\n카드를 뽑습니다.",
+        "after": "[gold]손[/gold]에 있는 모든 카드를\n[gold]소멸[/gold]시킵니다.\n[gold]소멸[/gold]시킨 카드의 수만큼\n무작위 카드를\n1장 [gold]손[/gold]으로 가져옵니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]손[/gold]에 있는 모든 카드를\n[gold]소멸[/gold]시킵니다.\n[gold]소멸[/gold]시킨 카드의 수만큼\n카드를 뽑습니다.",
+        "after": "[gold]손[/gold]에 있는 모든 카드를\n[gold]소멸[/gold]시킵니다.\n[gold]소멸[/gold]시킨 카드의 수만큼\n무작위 {IfUpgraded:show:[gold]강화[/gold]된 |}카드를\n1장 [gold]손[/gold]으로 가져옵니다."
       }
     ]
   },
