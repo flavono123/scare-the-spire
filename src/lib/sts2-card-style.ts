@@ -17,6 +17,7 @@
 export const TEXT_CREAM = "#FFF6E2";
 export const TEXT_GREEN = "#7FFF00";
 export const TEXT_GOLD = "#EFC851";
+export const TEXT_PURPLE = "#EE82EE";
 export const TEXT_RED = "#FF5555";
 export const TEXT_BLUE = "#87CEEB";
 export const TEXT_AQUA = "#2AEBBE";

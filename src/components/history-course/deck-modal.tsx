@@ -1,80 +1,98 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { CardTile } from "@/components/codex/card-tile";
+import type { HistoryDeckCopy } from "@/components/history-course/topbar-state";
 import type { CodexCard } from "@/lib/codex-types";
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { historyCardEnchantmentTileProps } from "@/lib/history-enchantments";
 import { lookupHistoryCard } from "@/lib/history-card-lookup";
 import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
+import { CHAR_FRAME_HSV, TEXT_GOLD, hsvToFilter, type HSV } from "@/lib/sts2-card-style";
 import { gameUi, localizeGame } from "@/lib/sts2-game-i18n";
 import { serviceMessages } from "@/messages/service";
-import { cn } from "@/lib/utils";
 
-const TYPE_FILTERS = [
-  { key: "all", label: "전체" },
-  { key: "공격", label: "공격" },
-  { key: "스킬", label: "스킬" },
-  { key: "파워", label: "파워" },
-  { key: "저주", label: "저주" },
-  { key: "상태이상", label: "상태" },
-] as const;
-type TypeFilter = (typeof TYPE_FILTERS)[number]["key"];
+const SORT_KEYS = ["obtained", "type", "cost", "alphabet"] as const;
+type SortKey = (typeof SORT_KEYS)[number];
 
-const RARITY_ORDER: Record<string, number> = {
-  기본: 0,
-  일반: 1,
-  고급: 2,
-  희귀: 3,
-  저주: 4,
-  상태이상: 5,
-  이벤트: 6,
-  퀘스트: 7,
-  "고대의 존재": 8,
-  토큰: 9,
-};
-
-const TYPE_ORDER: Record<string, number> = {
-  공격: 0,
-  스킬: 1,
-  파워: 2,
-  저주: 3,
+const CARD_TYPE_ORDER: Record<string, number> = {
+  공격: 1,
+  스킬: 2,
+  파워: 3,
   상태이상: 4,
-  퀘스트: 5,
+  저주: 5,
+  퀘스트: 6,
 };
 
-function sortKey(
-  card: { rarity?: string; type?: string; name?: string } | null,
-  id: string,
-) {
-  const visual = lookupHistoryCardVisual(id);
-  return {
-    rarity: RARITY_ORDER[card?.rarity ?? visual?.rarity ?? ""] ?? 99,
-    type: TYPE_ORDER[card?.type ?? visual?.type ?? ""] ?? 99,
-    name: card?.name ?? id,
-  };
+const SORT_LABEL_KEYS: Record<SortKey, { ui: string; fallback: string }> = {
+  obtained: { ui: "sortObtained", fallback: "Obtained" },
+  type: { ui: "sortType", fallback: "Card Type" },
+  cost: { ui: "sortCost", fallback: "Cost" },
+  alphabet: { ui: "sortAlphabet", fallback: "A - Z" },
+};
+
+function characterFrameHsv(character: string | undefined): HSV {
+  const key = (character ?? "").replace(/^CHARACTER\./, "").toLowerCase();
+  if (key === "random" || key === "random_character" || key === "deprived") {
+    return CHAR_FRAME_HSV.ironclad;
+  }
+  return CHAR_FRAME_HSV[key as keyof typeof CHAR_FRAME_HSV] ?? CHAR_FRAME_HSV.ironclad;
+}
+
+function canonicalEnergyCost(card: CodexCard | null): number {
+  if (!card) return 0;
+  return card.isXCost ? 0 : card.cost;
+}
+
+function upgradedTitle(
+  name: string,
+  upgradeLevel: number,
+  maxUpgradeLevel: number,
+): string {
+  if (upgradeLevel < 1) return name;
+  if (maxUpgradeLevel > 1) return `${name}+${upgradeLevel}`;
+  return `${name}+`;
 }
 
 interface DeckModalProps {
   open: boolean;
   onClose: () => void;
-  deck: { id: string; count: number; upgradeCount: number; firstFloor: number }[];
+  copies: HistoryDeckCopy[];
   cardsById: Record<string, CodexCard>;
   currentFloor: number;
+  character?: string;
 }
 
 export function DeckModal({
   open,
   onClose,
-  deck,
+  copies,
   cardsById,
   currentFloor,
+  character,
 }: DeckModalProps) {
-  const [filter, setFilter] = useState<TypeFilter>("all");
   const tables = useGameI18n();
   const gameLocale = useGameLocale();
-  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
+  const serviceLocale = useServiceLocale();
+  const playback = serviceMessages[serviceLocale].historyCourse.detail.playback;
+  const hsv = characterFrameHsv(character);
+
+  const [descending, setDescending] = useState<Record<SortKey, boolean>>({
+    obtained: false,
+    type: false,
+    cost: false,
+    alphabet: false,
+  });
+  const [priority, setPriority] = useState<SortKey[]>([
+    "obtained",
+    "type",
+    "cost",
+    "alphabet",
+  ]);
+  const [viewUpgrades, setViewUpgrades] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -85,70 +103,64 @@ export function DeckModal({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  // Reset the filter the moment `open` flips from false → true. React 19's
-  // set-state-in-effect rule pushes us toward this conditional-render pattern
-  // instead of a useEffect.
   const [prevOpen, setPrevOpen] = useState(open);
   if (open !== prevOpen) {
     setPrevOpen(open);
-    if (open) setFilter("all");
+    if (open) {
+      setDescending({ obtained: false, type: false, cost: false, alphabet: false });
+      setPriority(["obtained", "type", "cost", "alphabet"]);
+      setViewUpgrades(false);
+    }
   }
 
-  const expanded = useMemo(() => {
-    const items: {
-      card: CodexCard | null;
-      id: string;
-      key: string;
-      upgraded: boolean;
-      firstFloor: number;
-    }[] = [];
-    for (const entry of deck) {
-      const card = lookupHistoryCard(cardsById, entry.id) ?? null;
-      // Upgraded copies render first inside this id group so the deck looks
-      // organized when sort order keeps them adjacent.
-      for (let i = 0; i < entry.count; i++) {
-        items.push({
-          card,
-          id: entry.id,
-          key: `${entry.id}-${i}`,
-          upgraded: i < entry.upgradeCount,
-          firstFloor: entry.firstFloor,
-        });
-      }
-    }
-    // Sort priority:
-    //  1) firstFloor 오름차순 (획득순 — starter cards firstFloor=0)
-    //  2) rarity (기본 → 일반 → 고급 → 희귀 → 저주 → 상태이상 → 이벤트 → ...)
-    //  3) type (공격 → 스킬 → 파워 → 저주 → 상태이상 → 퀘스트)
-    //  4) upgraded copies first within an id group
-    //  5) 가나다
-    return items.sort((a, b) => {
-      if (a.firstFloor !== b.firstFloor) return a.firstFloor - b.firstFloor;
-      const ka = sortKey(a.card, a.id);
-      const kb = sortKey(b.card, b.id);
-      if (ka.rarity !== kb.rarity) return ka.rarity - kb.rarity;
-      if (ka.type !== kb.type) return ka.type - kb.type;
-      if (a.upgraded !== b.upgraded) return Number(b.upgraded) - Number(a.upgraded);
-      return ka.name.localeCompare(kb.name, "ko");
+  const sorted = useMemo(() => {
+    const items = copies.map((copy, pileIndex) => {
+      const card = lookupHistoryCard(cardsById, copy.id) ?? null;
+      return { copy, card, pileIndex };
     });
-  }, [deck, cardsById]);
+    const primary = priority[0] ?? "obtained";
+    if (primary === "obtained") {
+      return descending.obtained ? [...items].reverse() : items;
+    }
 
-  const filtered =
-    filter === "all"
-      ? expanded
-      : expanded.filter((item) => {
-          const type =
-            item.card?.type ?? lookupHistoryCardVisual(item.id)?.type;
-          return type === filter;
-        });
-  const totalCount = expanded.length;
+    const collator = new Intl.Collator(gameLocale === "kor" ? "ko" : gameLocale, {
+      sensitivity: "variant",
+    });
+    return [...items].sort((a, b) => {
+      for (const key of priority) {
+        const dir = descending[key] ? -1 : 1;
+        let cmp = 0;
+        if (key === "obtained") {
+          cmp = a.pileIndex - b.pileIndex;
+        } else if (key === "type") {
+          const ta = CARD_TYPE_ORDER[a.card?.type ?? lookupHistoryCardVisual(a.copy.id)?.type ?? ""] ?? 0;
+          const tb = CARD_TYPE_ORDER[b.card?.type ?? lookupHistoryCardVisual(b.copy.id)?.type ?? ""] ?? 0;
+          cmp = ta - tb;
+        } else if (key === "cost") {
+          cmp = canonicalEnergyCost(a.card) - canonicalEnergyCost(b.card);
+        } else {
+          const na = upgradedTitle(
+            localizeGame(tables, "cards", a.copy.id) ?? a.card?.name ?? a.copy.id,
+            a.copy.upgradeLevel,
+            a.card?.maxUpgradeLevel ?? 1,
+          );
+          const nb = upgradedTitle(
+            localizeGame(tables, "cards", b.copy.id) ?? b.card?.name ?? b.copy.id,
+            b.copy.upgradeLevel,
+            b.card?.maxUpgradeLevel ?? 1,
+          );
+          cmp = collator.compare(na, nb);
+        }
+        if (cmp !== 0) return cmp * dir;
+      }
+      return a.copy.id.localeCompare(b.copy.id);
+    });
+  }, [copies, cardsById, priority, descending, gameLocale, tables]);
 
   if (!open) return null;
 
   return (
     <>
-      {/* Backdrop is its own fixed-viewport layer so it never scrolls out of
-          view when the deck list is taller than the screen. */}
       <button
         type="button"
         aria-label={playback.close}
@@ -157,7 +169,7 @@ export function DeckModal({
       />
       <div className="pointer-events-none fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-6 sm:p-10">
         <div className="pointer-events-auto relative w-full max-w-6xl rounded-xl border border-white/10 bg-zinc-950/95 p-5 shadow-2xl">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <h2 className="text-base font-bold tracking-tight text-zinc-50">
                 {playback.currentDeck}
@@ -165,25 +177,30 @@ export function DeckModal({
               <p className="mt-0.5 text-xs text-zinc-400">
                 {playback.deckFloor
                   .replace("{floor}", String(currentFloor))
-                  .replace("{count}", String(totalCount))}
+                  .replace("{count}", String(copies.length))}
               </p>
             </div>
-            <div className="flex flex-wrap items-center gap-1.5">
-              {TYPE_FILTERS.map((opt) => (
-                <button
-                  key={opt.key}
-                  type="button"
-                  onClick={() => setFilter(opt.key)}
-                  className={cn(
-                    "rounded-md border px-2.5 py-1 text-xs transition",
-                    filter === opt.key
-                      ? "border-amber-300/60 bg-amber-500/15 text-amber-100"
-                      : "border-white/10 bg-zinc-900/60 text-zinc-300 hover:border-white/30",
-                  )}
-                >
-                  {typeFilterLabel(opt.key, tables, playback)}
-                </button>
-              ))}
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-1.5">
+                {SORT_KEYS.map((key) => (
+                  <DeckViewSortButton
+                    key={key}
+                    label={gameUi(tables, SORT_LABEL_KEYS[key].ui, SORT_LABEL_KEYS[key].fallback)}
+                    descending={descending[key]}
+                    active={priority[0] === key}
+                    hsv={hsv}
+                    onClick={() => {
+                      setDescending((current) => ({ ...current, [key]: !current[key] }));
+                      setPriority((current) => [key, ...current.filter((item) => item !== key)]);
+                    }}
+                  />
+                ))}
+              </div>
+              <DeckViewTickbox
+                checked={viewUpgrades}
+                label={gameUi(tables, "viewUpgrades", "View Upgrades")}
+                onToggle={() => setViewUpgrades((value) => !value)}
+              />
               <button
                 type="button"
                 onClick={onClose}
@@ -194,16 +211,11 @@ export function DeckModal({
             </div>
           </div>
 
-          {filtered.length === 0 ? (
+          {sorted.length === 0 ? (
             <p className="mt-12 text-center text-sm text-zinc-500">
               {playback.emptyFilter}
             </p>
           ) : (
-            // Card banners overhang ±9% per side (≈18px on a 200px tile).
-            // Gap-x must clear that on both sides plus breathing room or
-            // adjacent ribbon tails collide. Inner padding gets bumped to
-            // match the gap so the outermost cards sit symmetric inside
-            // the modal body.
             <div
               className="mt-5 grid justify-center gap-x-12 gap-y-7 px-6"
               style={{
@@ -212,23 +224,143 @@ export function DeckModal({
                 placeContent: "start center",
               }}
             >
-              {filtered.map((item) =>
-                item.card ? (
+              {sorted.map((item, index) => {
+                const maxLevel = item.card?.maxUpgradeLevel ?? 1;
+                const preview =
+                  viewUpgrades && item.copy.upgradeLevel < maxLevel;
+                const displayLevel = preview
+                  ? item.copy.upgradeLevel + 1
+                  : item.copy.upgradeLevel;
+                const enchant = historyCardEnchantmentTileProps(
+                  item.copy.enchantmentId,
+                  item.copy.enchantmentAmount,
+                  gameLocale,
+                );
+                return item.card ? (
                   <CardTile
-                    key={item.key}
+                    key={`${item.copy.id}-${item.pileIndex}-${index}`}
                     card={localizeDeckCard(item.card, tables, gameLocale)}
-                    showUpgrade={item.upgraded}
+                    showUpgrade={displayLevel > 0}
+                    upgradeLevel={displayLevel}
                     showBeta={false}
+                    serviceLocale={serviceLocale}
+                    enchantmentImageUrl={enchant?.enchantmentImageUrl}
+                    enchantmentLabel={enchant?.enchantmentLabel}
+                    enchantmentAmount={enchant?.enchantmentAmount}
+                    forcedCost={enchant?.forcedCost}
+                    enchantAddedKeywords={enchant?.enchantAddedKeywords}
+                    enchantRemovedKeywords={enchant?.enchantRemovedKeywords}
+                    descriptionSuffix={enchant?.descriptionSuffix}
+                    enchantStatMod={enchant?.enchantStatMod}
                   />
                 ) : (
-                  <UnknownCardTile key={item.key} id={item.id} />
-                ),
-              )}
+                  <UnknownCardTile key={`${item.copy.id}-${item.pileIndex}`} id={item.copy.id} />
+                );
+              })}
             </div>
           )}
+          <p className="mt-6 text-center text-xs text-zinc-400">
+            {gameUi(tables, "deckPileInfo", "You will start combat with all of these cards.")}
+          </p>
         </div>
       </div>
     </>
+  );
+}
+
+function DeckViewSortButton({
+  label,
+  descending,
+  active,
+  hsv,
+  onClick,
+}: {
+  label: string;
+  descending: boolean;
+  active: boolean;
+  hsv: HSV;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className="relative flex h-8 min-w-[7.5rem] items-center px-2.5 pr-8"
+    >
+      <span
+        aria-hidden
+        className="absolute inset-0 bg-center bg-no-repeat"
+        style={{
+          backgroundImage: "url(/images/sts2/ui/deck-view/color_tab_bar.png)",
+          backgroundSize: "100% 100%",
+          filter: hsvToFilter({
+            h: hsv.h,
+            s: active ? 1 : 0.8,
+            v: active ? hsv.v : Math.min(hsv.v, 0.8),
+          }),
+        }}
+      />
+      <span
+        className="relative truncate font-game-title text-[15px] font-bold leading-none"
+        style={{ color: TEXT_GOLD, textShadow: "2px 2px 0 rgba(0,0,0,0.82)" }}
+      >
+        {label}
+      </span>
+      <Image
+        src="/images/sts2/ui/deck-view/sort_descending.png"
+        alt=""
+        width={89}
+        height={64}
+        className="pointer-events-none absolute right-1.5 top-1/2 h-4 w-auto"
+        style={{
+          transform: `translateY(-50%) scaleY(${descending ? 1 : -1})`,
+          imageRendering: "pixelated",
+        }}
+        unoptimized
+      />
+    </button>
+  );
+}
+
+function DeckViewTickbox({
+  checked,
+  label,
+  onToggle,
+}: {
+  checked: boolean;
+  label: string;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="checkbox"
+      aria-checked={checked}
+      aria-label={label}
+      onClick={onToggle}
+      className="flex items-center gap-1.5 px-1 py-0.5"
+    >
+      <Image
+        src={
+          checked
+            ? "/images/sts2/ui/deck-view/checkbox_ticked.png"
+            : "/images/sts2/ui/deck-view/checkbox_unticked.png"
+        }
+        alt=""
+        width={64}
+        height={64}
+        className="h-7 w-7"
+        style={{ imageRendering: "pixelated" }}
+        unoptimized
+      />
+      <span
+        className="font-game-title text-[15px] font-bold leading-none"
+        style={{ color: TEXT_GOLD, textShadow: "2px 2px 0 rgba(0,0,0,0.82)" }}
+      >
+        {label}
+      </span>
+    </button>
   );
 }
 
@@ -255,20 +387,6 @@ function localizeDeckCard(
               ? gameUi(tables, "cardTypeCurse", card.typeLabel)
               : gameUi(tables, "cardTypeStatus", card.typeLabel),
   };
-}
-
-function typeFilterLabel(
-  key: TypeFilter,
-  tables: ReturnType<typeof useGameI18n>,
-  playback: (typeof serviceMessages)["ko"]["historyCourse"]["detail"]["playback"]
-    | (typeof serviceMessages)["en"]["historyCourse"]["detail"]["playback"],
-): string {
-  if (key === "all") return playback.allTypes;
-  if (key === "공격") return gameUi(tables, "cardTypeAttack", "Attack");
-  if (key === "스킬") return gameUi(tables, "cardTypeSkill", "Skill");
-  if (key === "파워") return gameUi(tables, "cardTypePower", "Power");
-  if (key === "저주") return gameUi(tables, "cardTypeCurse", "Curse");
-  return playback.statusShort;
 }
 
 function UnknownCardTile({ id }: { id: string }) {

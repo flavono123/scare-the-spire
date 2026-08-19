@@ -12,13 +12,13 @@ import {
 } from "@/components/patch-note-renderer";
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useServiceLocale } from "@/hooks/use-service-locale";
-import { localizeGame, type GameI18nTables } from "@/lib/sts2-game-i18n";
+import { localizeGame, gameUi, formatGameTemplate, type GameI18nTables } from "@/lib/sts2-game-i18n";
 import {
   historyCardDisplayName,
   lookupHistoryCard,
 } from "@/lib/history-card-lookup";
 import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
-import { TEXT_CREAM, TEXT_GREEN } from "@/lib/sts2-card-style";
+import { TEXT_CREAM, TEXT_GREEN, TEXT_PURPLE } from "@/lib/sts2-card-style";
 import { serviceMessages } from "@/messages/service";
 import type { CodexCard, CodexRelic } from "@/lib/codex-types";
 import type {
@@ -761,26 +761,23 @@ function DeckSection({
   cardsById: Record<string, CodexCard>;
   onHoverFloor: (floor: number | null) => void;
 }) {
-  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
+  const tables = useGameI18n();
   const total = deck.reduce((acc, e) => acc + e.count, 0);
-  const counts = countDeckByRarity(deck);
+  const categories = formatDeckHistoryCategories(deck, tables);
   return (
     <div>
       <p className="text-xs font-bold text-amber-200">
-        {playback.cards.replace("{total}", String(total))}{" "}
-        <span className="font-normal text-zinc-300">
-          {playback.cardSplit
-            .replace("{rare}", String(counts.rare))
-            .replace("{uncommon}", String(counts.uncommon))
-            .replace("{common}", String(counts.common))
-            .replace("{curse}", String(counts.curse))
-            .replace("{starter}", String(counts.starter))}
-        </span>
+        {formatGameTemplate(gameUi(tables, "deckHeader", "Cards ({totalCards}):"), {
+          totalCards: total,
+        })}
+        {categories ? (
+          <span className="font-normal text-zinc-300"> {categories}</span>
+        ) : null}
       </p>
       <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {deck.map((entry) => (
+        {deck.map((entry, index) => (
           <DeckEntry
-            key={`${entry.id}-${entry.firstFloor}`}
+            key={`${entry.id}-${entry.upgradeCount}-${entry.enchantmentId ?? ""}-${entry.enchantmentAmount ?? ""}-${index}`}
             entry={entry}
             cardsById={cardsById}
             onHoverFloor={onHoverFloor}
@@ -802,42 +799,34 @@ function DeckEntry({
 }) {
   const tables = useGameI18n();
   const card = lookupHistoryCard(cardsById, entry.id);
-  const label = historyCardDisplayName(entry.id, tables, card);
-  const upgraded = entry.upgradeCount > 0;
+  const baseName = historyCardDisplayName(entry.id, tables, card);
+  const title = historyDeckCardTitle(baseName, entry.upgradeCount, card?.maxUpgradeLevel ?? 1);
+  const label = entry.count > 1 ? `${entry.count}x ${title}` : title;
   const enchanted = Boolean(entry.enchantmentId);
+  const upgraded = entry.upgradeCount > 0;
   const entity = buildCardEntityInfo(card);
   const tracksFloor = entry.firstFloor > 0;
+  const titleColor = enchanted ? TEXT_PURPLE : upgraded ? TEXT_GREEN : TEXT_CREAM;
 
   const hoverHandlers = {
     onMouseEnter: () => onHoverFloor(entry.firstFloor),
     onMouseLeave: () => onHoverFloor(null),
   };
 
-  // Card name + icon both lead to the codex card page. The icon renders the
-  // CardActionIcon (action-typed glyph) so the row stays scannable; the name
-  // is the textual link with the rarity color.
   const labelNode = (
-    <span
-      className="truncate"
-      style={{
-        color: enchanted ? "#C084FC" : upgraded ? TEXT_GREEN : TEXT_CREAM,
-      }}
-    >
-      {entry.count > 1 && (
-        <span className="text-zinc-400">{entry.count}× </span>
-      )}
+    <span className="truncate" style={{ color: titleColor }}>
       {label}
-      {upgraded && (
-        <span style={{ color: enchanted ? "#C084FC" : TEXT_GREEN }}>+</span>
-      )}
     </span>
   );
 
-  const iconNode = <HistoryTinyCardIcon id={entry.id} width={22} />;
+  const iconNode = (
+    <HistoryTinyCardIcon
+      id={entry.id}
+      width={22}
+      enchantmentId={entry.enchantmentId}
+    />
+  );
 
-  // The whole row scales up so both the action glyph and the card name pop
-  // together — origin pinned left so the name doesn't slide into the next
-  // grid column.
   const rowClass = cn(
     "flex items-center gap-1.5 text-xs origin-left transition-transform duration-150",
     "hover:z-20 hover:scale-110",
@@ -871,22 +860,40 @@ function DeckEntry({
   );
 }
 
-function countDeckByRarity(deck: TopbarState["deck"]) {
-  let rare = 0;
-  let uncommon = 0;
-  let common = 0;
-  let curse = 0;
-  let starter = 0;
+function historyDeckCardTitle(
+  name: string,
+  upgradeLevel: number,
+  maxUpgradeLevel: number,
+): string {
+  if (upgradeLevel < 1) return name;
+  if (maxUpgradeLevel > 1) return `${name}+${upgradeLevel}`;
+  return `${name}+`;
+}
+
+const DECK_HISTORY_RARITY_ORDER = [
+  { rarity: "퀘스트", uiKey: "cardRarityQuest", fallback: "Quest" },
+  { rarity: "이벤트", uiKey: "cardRarityEvent", fallback: "Event" },
+  { rarity: "희귀", uiKey: "cardRarityRare", fallback: "Rare" },
+  { rarity: "고급", uiKey: "cardRarityUncommon", fallback: "Uncommon" },
+  { rarity: "일반", uiKey: "cardRarityCommon", fallback: "Common" },
+  { rarity: "저주", uiKey: "cardRarityCurse", fallback: "Curse" },
+  { rarity: "기본", uiKey: "cardRarityBasic", fallback: "Starter" },
+] as const;
+
+function formatDeckHistoryCategories(
+  deck: TopbarState["deck"],
+  tables: GameI18nTables,
+): string {
+  const counts = new Map<string, number>();
   for (const entry of deck) {
     const rarity = lookupHistoryCardVisual(entry.id)?.rarity ?? "기본";
-    const n = entry.count;
-    if (rarity === "희귀") rare += n;
-    else if (rarity === "고급") uncommon += n;
-    else if (rarity === "일반") common += n;
-    else if (rarity === "저주") curse += n;
-    else starter += n;
+    counts.set(rarity, (counts.get(rarity) ?? 0) + entry.count);
   }
-  return { rare, uncommon, common, curse, starter };
+  return DECK_HISTORY_RARITY_ORDER.flatMap(({ rarity, uiKey, fallback }) => {
+    const n = counts.get(rarity) ?? 0;
+    if (n <= 0) return [];
+    return [`${n} ${gameUi(tables, uiKey, fallback)}`];
+  }).join(", ");
 }
 
 // ----- Helpers ---------------------------------------------------------------

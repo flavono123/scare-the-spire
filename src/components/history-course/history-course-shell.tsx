@@ -1081,9 +1081,10 @@ export function HistoryCourseShell({
       <DeckModal
         open={deckOpen}
         onClose={() => setDeckOpen(false)}
-        deck={topbarState.deck}
+        copies={topbarState.deckCopies}
         cardsById={cardsById}
         currentFloor={topbarState.currentFloor}
+        character={run.players[0]?.character}
       />
     </div>
   );

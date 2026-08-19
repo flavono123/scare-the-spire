@@ -4,6 +4,7 @@ import Image from "next/image";
 import type { CSSProperties } from "react";
 import type { CardColor, CardRarityKo, CardTypeKo, CodexCard } from "@/lib/codex-types";
 import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
+import { historyEnchantmentImageUrl } from "@/lib/history-enchantments";
 
 // Direct port of `scenes/cards/tiny_card.tscn` + NTinyCard.cs from the PCK.
 // Sprite assets live under public/images/sts2/tiny-card/. The game tints them
@@ -177,15 +178,45 @@ export function CardActionIcon(props: CardActionIconProps) {
 export function HistoryTinyCardIcon({
   id,
   width,
+  enchantmentId,
 }: {
   id: string;
   width: number;
+  enchantmentId?: string;
 }) {
   const visual = lookupHistoryCardVisual(id);
+  const tokenSrc = enchantmentId ? historyEnchantmentImageUrl(enchantmentId) : null;
   if (!visual) {
     return (
       <div aria-hidden className="shrink-0" style={{ width, height: width }} />
     );
   }
-  return <TinyCardIcon card={visual} width={width} />;
+  return (
+    <div className="relative shrink-0 overflow-visible" style={{ width, height: width }}>
+      <TinyCardIcon card={visual} width={width} />
+      {tokenSrc ? (
+        // NDeckHistoryEntry %Enchantment TextureRect: offset (18,12) size 24×24
+        // on a 32×32 tiny card.
+        <span
+          className="pointer-events-none absolute"
+          style={{
+            left: `${(18 / 32) * 100}%`,
+            top: `${(12 / 32) * 100}%`,
+            width: `${(24 / 32) * 100}%`,
+            height: `${(24 / 32) * 100}%`,
+          }}
+        >
+          <Image
+            src={tokenSrc}
+            alt=""
+            fill
+            sizes={`${Math.ceil(width * 24 / 32)}px`}
+            className="object-contain"
+            style={{ imageRendering: "pixelated" }}
+            unoptimized
+          />
+        </span>
+      ) : null}
+    </div>
+  );
 }
