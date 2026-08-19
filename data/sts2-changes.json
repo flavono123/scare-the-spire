@@ -669,16 +669,30 @@
     "patch": "v0.100.0",
     "date": "2026-03-20",
     "character": "colorless",
-    "summary": "Hidden Gem cannot grant Replay to cards already possessing it.",
-    "summaryKo": "숨겨진 보석: 이미 재생을 가진 카드에는 재생 부여 불가.",
+    "summary": "Hidden Gem can no longer grant Replay to cards that already have Replay.",
+    "summaryKo": "숨겨진 보석: 이미 재사용이 있는 카드에는 재사용을 부여하지 않습니다.",
     "diffs": [
       {
         "attribute": "mechanic",
         "displayName": "Replay",
-        "displayNameKo": "재생",
-        "before": "Can grant Replay to any card",
-        "after": "Cannot grant Replay to cards that already have it",
+        "displayNameKo": "재사용",
+        "before": "A random card in your Draw Pile gains Replay 2.",
+        "beforeKo": "뽑을 카드 더미의 무작위 카드 1장이 재사용 2를 얻습니다.",
+        "after": "A random card without Replay in your Draw Pile gains Replay 2.",
+        "afterKo": "뽑을 카드 더미의 재사용이 없는 무작위 카드 1장이 재사용 2를 얻습니다.",
         "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]뽑을 카드 더미[/gold]에 있는\n무작위 카드 1장이\n[gold]재사용[/gold]을 2 얻습니다.",
+        "after": "[gold]뽑을 카드 더미[/gold]에 있는\n[gold]재사용[/gold]이 없는\n무작위 카드 1장이\n[gold]재사용[/gold]을 2 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]뽑을 카드 더미[/gold]에 있는\n무작위 카드 1장이\n[gold]재사용[/gold]을 {Replay:diff()} 얻습니다.",
+        "after": "[gold]뽑을 카드 더미[/gold]에 있는\n[gold]재사용[/gold]이 없는\n무작위 카드 1장이\n[gold]재사용[/gold]을 {Replay:diff()} 얻습니다."
       }
     ]
   },
