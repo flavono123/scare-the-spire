@@ -386,6 +386,25 @@
         "after": "스킬"
       },
       {
+        "field": "damage",
+        "before": 4,
+        "after": null
+      },
+      {
+        "field": "vars",
+        "before": {
+          "Damage": 4
+        },
+        "after": null
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "damage": "+1"
+        },
+        "after": null
+      },
+      {
         "field": "description",
         "before": "피해를 4 줍니다.\n[gold]손[/gold]에 있는 카드를 1장\n선택해 [gold]하수인 투하[/gold]로\n[gold]변화[/gold]시킵니다.",
         "after": "[gold]손[/gold]에 있는 카드를 1장\n선택해 [gold]하수인 타격[/gold]으로\n[gold]변화[/gold]시킵니다."
