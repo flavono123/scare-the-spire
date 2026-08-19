@@ -1964,6 +1964,11 @@ function eventDisplayVars(eventId: string, gameLocale: GameLocale): EventDisplay
       return {
         EntrantNumber: "???",
       };
+    case "WHISPERING_HOLLOW":
+      return {
+        Gold: 35,
+        HpLoss: 9,
+      };
     case "WELCOME_TO_WONGOS":
       return {
         BargainBinCost: 100,

@@ -13033,6 +13033,35 @@
         "after": 35,
         "diffType": "number"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "options",
+        "before": [
+          {
+            "id": "GOLD",
+            "title": "골드를 거래한다",
+            "description": "[gold]골드[/gold]를 [red]50[/red] 잃습니다. 무작위 [gold]포션[/gold]을 [blue]2[/blue]개 생성합니다."
+          },
+          {
+            "id": "HUG",
+            "title": "나무를 끌어안는다",
+            "description": "체력을 [red]9[/red] 잃습니다. [gold]변화[/gold]시킬 카드를 1장 선택합니다."
+          }
+        ],
+        "after": [
+          {
+            "id": "GOLD",
+            "title": "골드를 거래한다",
+            "description": "[gold]골드[/gold]를 [red]35[/red] 잃습니다. 무작위 [gold]포션[/gold]을 [blue]2[/blue]개 생성합니다."
+          },
+          {
+            "id": "HUG",
+            "title": "나무를 끌어안는다",
+            "description": "체력을 [red]9[/red] 잃습니다. [gold]변화[/gold]시킬 카드를 1장 선택합니다."
+          }
+        ]
+      }
     ]
   },
   {
