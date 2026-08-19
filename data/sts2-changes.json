@@ -1701,6 +1701,51 @@
         "after": "Strikes cost 0 + Eternal + deal 3 additional damage.",
         "diffType": "text"
       }
+    ],
+    "relatedEntities": [
+      {
+        "type": "enchantment",
+        "id": "TEZCATARAS_EMBER"
+      }
+    ]
+  },
+  {
+    "id": "tezcataras-ember-v104-damage",
+    "entityType": "enchantment",
+    "entityId": "TEZCATARAS_EMBER",
+    "patch": "v0.104.0",
+    "date": "2026-04-24",
+    "character": null,
+    "summary": "Tezcatara's Ember now also deals 3 additional damage.",
+    "summaryKo": "테즈카타라의 잉걸불이 추가로 피해 3을 줍니다.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해",
+        "before": 0,
+        "after": 3,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "비용이 [blue]0[/blue]이 되고, [gold]영구[/gold]를 얻습니다.",
+        "after": "비용이 [blue]0[/blue]이 되고, 피해량이 [blue]3[/blue] 증가하고, [gold]영구[/gold]를 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "비용이 [blue]0[/blue]이 되고, [gold]영구[/gold]를 얻습니다.",
+        "after": "비용이 [blue]0[/blue]이 되고, 피해량이 [blue]{Damage}[/blue] 증가하고, [gold]영구[/gold]를 얻습니다."
+      },
+      {
+        "field": "vars",
+        "before": {},
+        "after": {
+          "Damage": 3
+        }
+      }
     ]
   },
   {
