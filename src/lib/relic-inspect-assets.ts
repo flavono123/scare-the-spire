@@ -3,6 +3,18 @@ import type { RelicRarityKo } from "@/lib/codex-types";
 export const RELIC_INSPECT_REWARD_PANEL =
   "/images/sts2/ui/inspect-relic/reward_panel.webp";
 
+/** Pixel size of `reward_panel.webp` (FrameBg stone slab). */
+export const RELIC_INSPECT_REWARD_PANEL_SIZE = {
+  width: 1128,
+  height: 1435,
+} as const;
+
+/** Pixel size of `relic_inspect_frame.webp` (square ornamental ring). */
+export const RELIC_INSPECT_FRAME_SIZE = {
+  width: 408,
+  height: 408,
+} as const;
+
 const RELIC_INSPECT_FRAME_BY_RARITY: Record<RelicRarityKo, string> = {
   "시작 유물": "/images/sts2/ui/inspect-relic/relic_inspect_frame-starter.webp",
   "일반 유물": "/images/sts2/ui/inspect-relic/relic_inspect_frame-common.webp",

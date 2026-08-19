@@ -5,6 +5,10 @@ import {
   GameWaxCycleToggle,
   type GameWaxCycleValue,
 } from "@/components/codex/game-checkbox";
+import {
+  GAME_UI_HOVER_TIP_NAV_DELAY_MS,
+  GameUiHoverTip,
+} from "@/components/game-ui-hover-tip";
 import { SPIRE_ICON_COLORS } from "@/components/spire-icon";
 import type { ServiceLocale } from "@/lib/i18n";
 import type {
@@ -44,32 +48,33 @@ export function TransfigureTokenAppearanceControls({
             const active = color === tokenColor;
             const label = copy.tokenColors[tokenColor];
             return (
-              <button
+              <GameUiHoverTip
                 key={tokenColor}
-                type="button"
-                title={label}
-                aria-label={label}
-                aria-pressed={active}
-                onClick={() => {
-                  onColorChange(active ? "" : tokenColor);
-                }}
-                className={`group relative h-9 w-9 rounded-lg border-2 p-1 transition-all ${
-                  active
-                    ? "border-yellow-500 bg-yellow-500/20"
-                    : "border-white/10 bg-white/5 hover:border-white/30"
-                }`}
+                label={label}
+                delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}
               >
-                <span
-                  aria-hidden
-                  className={`block h-full w-full rounded-md ${
-                    active ? "" : "opacity-50 group-hover:opacity-100"
+                <button
+                  type="button"
+                  aria-label={label}
+                  aria-pressed={active}
+                  onClick={() => {
+                    onColorChange(active ? "" : tokenColor);
+                  }}
+                  className={`relative h-9 w-9 rounded-lg border-2 p-1 transition-all ${
+                    active
+                      ? "border-yellow-500 bg-yellow-500/20"
+                      : "border-white/10 bg-white/5 hover:border-white/30"
                   }`}
-                  style={{ backgroundColor: SPIRE_ICON_COLORS[tokenColor] }}
-                />
-                <span className="pointer-events-none absolute -bottom-7 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded bg-black/90 px-2 py-0.5 text-[10px] text-gray-200 opacity-0 transition-opacity group-hover:opacity-100">
-                  {label}
-                </span>
-              </button>
+                >
+                  <span
+                    aria-hidden
+                    className={`block h-full w-full rounded-md ${
+                      active ? "" : "opacity-50 hover:opacity-100"
+                    }`}
+                    style={{ backgroundColor: SPIRE_ICON_COLORS[tokenColor] }}
+                  />
+                </button>
+              </GameUiHoverTip>
             );
           })}
         </div>

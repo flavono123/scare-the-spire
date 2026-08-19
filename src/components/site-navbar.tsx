@@ -5,6 +5,10 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
 import { SiteNavDropdown } from "@/components/site-nav-dropdown";
+import {
+  GAME_UI_HOVER_TIP_NAV_DELAY_MS,
+  GameUiHoverTip,
+} from "@/components/game-ui-hover-tip";
 import Image from "@/components/ui/static-image";
 import {
   DEFAULT_GAME_LOCALE_BY_SERVICE,
@@ -175,7 +179,6 @@ function NavIconLink({
   className?: string;
   external?: boolean;
 }) {
-  const [hovered, setHovered] = useState(false);
   const Tag = external ? "a" : Link;
   const extraProps = external
     ? { target: "_blank" as const, rel: "noopener noreferrer" }
@@ -183,14 +186,16 @@ function NavIconLink({
   const internalProps = external ? {} : { prefetch: false as const };
 
   return (
-    <div className={`relative group ${className ?? ""}`}>
+    <GameUiHoverTip
+      label={label}
+      delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}
+      className={className}
+    >
       <Tag
         href={href}
         {...extraProps}
         {...internalProps}
         className="flex items-center p-1 transition-colors sm:p-1.5"
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
       >
         <Image
           src={icon}
@@ -201,30 +206,7 @@ function NavIconLink({
           style={{ "--nav-icon-size": `${iconSize}px` } as React.CSSProperties}
         />
       </Tag>
-      {hovered && (
-        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-0.5 z-50 pointer-events-none">
-          <div
-            className="relative whitespace-nowrap"
-            style={{
-              borderImage: "url('/images/sts2/ui/hover_tip.png') 43 91 32 55 fill",
-              borderImageWidth: "16px 34px 12px 20px",
-              borderStyle: "solid",
-              padding: "2px 12px 6px 8px",
-            }}
-          >
-            <span
-              className="text-xs font-bold"
-              style={{
-                color: "rgb(239, 200, 81)",
-                textShadow: "2px 1px 0 rgba(0,0,0,0.25)",
-              }}
-            >
-              {label}
-            </span>
-          </div>
-        </div>
-      )}
-    </div>
+    </GameUiHoverTip>
   );
 }
 

@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-/** Same hover_tip.png chrome as site-navbar patchwork / nav icon tips. */
+/** Same hover_tip.png chrome as site-navbar patch notes / contact / profile. */
+export const GAME_UI_HOVER_TIP_NAV_DELAY_MS = 0;
+
 export function GameUiHoverTip({
   label,
   delayMs = 350,
@@ -29,6 +31,10 @@ export function GameUiHoverTip({
       className={cn("relative inline-flex", className)}
       onMouseEnter={() => {
         if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+        if (delayMs <= 0) {
+          setVisible(true);
+          return;
+        }
         timerRef.current = window.setTimeout(() => setVisible(true), delayMs);
       }}
       onMouseLeave={() => {

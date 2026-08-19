@@ -132,6 +132,26 @@ Transfigure, This or That, Chemical X, History Course, Stories, and comments.
   (`public/images/sts2/ui/confirm/`, via `scripts/extract-confirm-popup-assets.py`);
   hover matches `NPopupYesNoButton` (gold additive outline + outer-pivot scale).
 
+### Icon hover tips
+
+- Icon-only labels use `GameUiHoverTip` (`src/components/game-ui-hover-tip.tsx`):
+  `hover_tip.png` 9-slice, gold bold text, below the control (`top-full`).
+- Site navbar patch notes / contact / profile, and Transfigure image-color-filter
+  chips, must share this tip. Pass `delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}`
+  (0) so they appear immediately like the navbar.
+- Index comment/like tips keep the default delay.
+- Do not use native `title`, a black CSS tooltip, or a second hover-tip system
+  for these icon labels.
+
+### Shared relic inspect slab
+
+- Compendium relic detail and Transfigure relic preview/editor assemble the
+  inspect relic from `RelicInspectSlab` (`src/components/codex/relic-inspect-slab.tsx`).
+- Size the slab from extracted `reward_panel.webp` (1128×1435) and the
+  ornamental ring from `relic_inspect_frame.webp` (408×408) via
+  `src/lib/relic-inspect-assets.ts`. Do not force `aspect-square` on the panel.
+- Do not invent a second slab layout for Transfigure.
+
 ## Implementation Defaults
 
 - Use existing components and data loaders before adding new abstractions.

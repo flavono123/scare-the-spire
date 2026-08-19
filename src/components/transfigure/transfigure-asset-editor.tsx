@@ -546,11 +546,7 @@ export function TransfigureAssetEditor({
                 ?
               </div>
             )}
-            description={(
-              <div className="min-h-24 w-full">
-                {descriptionEditor}
-              </div>
-            )}
+            description={descriptionEditor}
             flavor={entity.relicData.flavor ? (
               <DescriptionText description={entity.relicData.flavor} />
             ) : undefined}
