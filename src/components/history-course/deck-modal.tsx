@@ -6,6 +6,7 @@ import type { CodexCard } from "@/lib/codex-types";
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { lookupHistoryCard } from "@/lib/history-card-lookup";
 import { gameUi, localizeGame } from "@/lib/sts2-game-i18n";
 import { serviceMessages } from "@/messages/service";
 import { cn } from "@/lib/utils";
@@ -97,7 +98,7 @@ export function DeckModal({
       firstFloor: number;
     }[] = [];
     for (const entry of deck) {
-      const card = cardsById[entry.id] ?? null;
+      const card = lookupHistoryCard(cardsById, entry.id) ?? null;
       // Upgraded copies render first inside this id group so the deck looks
       // organized when sort order keeps them adjacent.
       for (let i = 0; i < entry.count; i++) {

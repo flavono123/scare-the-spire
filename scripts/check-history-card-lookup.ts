@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import { collectRelevantCardIds } from "../src/components/history-course/topbar-state";
+import type { CodexCard } from "../src/lib/codex-types";
+import { indexCodexCards, lookupHistoryCard } from "../src/lib/history-card-lookup";
 import type { ReplayRun } from "../src/lib/sts2-run-replay";
 
 const run: ReplayRun = {
@@ -30,5 +32,11 @@ assert.deepEqual(
   collectRelevantCardIds(run).sort(),
   ["CARD.DUALCAST", "CARD.MAD_SCIENCE"],
 );
+
+const indexed = indexCodexCards([
+  { id: "STRIKE_IRONCLAD", name: "타격" } as CodexCard,
+]);
+assert.equal(lookupHistoryCard(indexed, "CARD.STRIKE_IRONCLAD")?.id, "STRIKE_IRONCLAD");
+assert.equal(lookupHistoryCard(indexed, "STRIKE_IRONCLAD")?.id, "STRIKE_IRONCLAD");
 
 console.log("history card lookup: ok");

@@ -53,7 +53,13 @@ export interface TopbarState {
   potions: (string | null)[];
   bossInfo: BossInfo;
   ancientInfo: AncientInfo;
-  deck: { id: string; count: number; upgradeCount: number; firstFloor: number }[];
+  deck: {
+    id: string;
+    count: number;
+    upgradeCount: number;
+    firstFloor: number;
+    enchantmentId?: string;
+  }[];
   deckCount: number;
 }
 
@@ -252,7 +258,13 @@ function buildPotionSlotsAtFloor(
 export function buildDeckAtFloor(
   run: ReplayRun,
   currentFloor: number,
-): { id: string; count: number; upgradeCount: number; firstFloor: number }[] {
+): {
+  id: string;
+  count: number;
+  upgradeCount: number;
+  firstFloor: number;
+  enchantmentId?: string;
+}[] {
   const player = run.players[0];
   if (!player) return [];
 
@@ -357,12 +369,26 @@ export function buildDeckAtFloor(
   }
 
   const snapshotCounts = new Map<string, number>();
+  const enchantmentById = new Map<string, string>();
+  let enchantFloor = 1;
+  enchantWalk: for (const act of run.map_point_history) {
+    for (const entry of act) {
+      if (enchantFloor > currentFloor) break enchantWalk;
+      for (const row of entry.cards_enchanted ?? []) {
+        if (row.cardId && row.enchantmentId) {
+          enchantmentById.set(normalize(row.cardId), row.enchantmentId);
+        }
+      }
+      enchantFloor += 1;
+    }
+  }
   for (const card of player.deck) {
     if (!card.id) continue;
     const added = card.floor_added_to_deck ?? 1;
     if (added > currentFloor) continue;
     snapshotCounts.set(card.id, (snapshotCounts.get(card.id) ?? 0) + 1);
     if (!firstFloor.has(card.id)) firstFloor.set(card.id, added);
+    if (card.enchantment?.id) enchantmentById.set(normalize(card.id), card.enchantment.id);
   }
   for (const [id, snapshotCount] of snapshotCounts) {
     const have = counts.get(id) ?? 0;
@@ -376,6 +402,7 @@ export function buildDeckAtFloor(
     // pulled the upgraded copy.
     upgradeCount: Math.min(count, upgrades.get(id) ?? 0),
     firstFloor: firstFloor.get(id) ?? 0,
+    enchantmentId: enchantmentById.get(normalize(id)),
   })).sort((a, b) => a.id.localeCompare(b.id));
 }
 

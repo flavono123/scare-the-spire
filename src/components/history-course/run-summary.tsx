@@ -13,6 +13,11 @@ import {
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { localizeGame, type GameI18nTables } from "@/lib/sts2-game-i18n";
+import {
+  historyCardDisplayName,
+  lookupHistoryCard,
+} from "@/lib/history-card-lookup";
+import { TEXT_CREAM, TEXT_GREEN } from "@/lib/sts2-card-style";
 import { serviceMessages } from "@/messages/service";
 import type { CodexCard, CodexRelic } from "@/lib/codex-types";
 import type {
@@ -795,11 +800,10 @@ function DeckEntry({
   onHoverFloor: (floor: number | null) => void;
 }) {
   const tables = useGameI18n();
-  const card = cardsById[entry.id];
-  const label = card
-    ? localizeGame(tables, "cards", entry.id) ?? card.name
-    : entry.id.split(".").pop() ?? "?";
+  const card = lookupHistoryCard(cardsById, entry.id);
+  const label = historyCardDisplayName(entry.id, tables, card);
   const upgraded = entry.upgradeCount > 0;
+  const enchanted = Boolean(entry.enchantmentId);
   const entity = buildCardEntityInfo(card);
   const tracksFloor = entry.firstFloor > 0;
 
@@ -812,12 +816,19 @@ function DeckEntry({
   // CardActionIcon (action-typed glyph) so the row stays scannable; the name
   // is the textual link with the rarity color.
   const labelNode = (
-    <span className={cn("truncate", upgraded ? "text-emerald-300" : "text-zinc-200")}>
+    <span
+      className="truncate"
+      style={{
+        color: enchanted ? "#C084FC" : upgraded ? TEXT_GREEN : TEXT_CREAM,
+      }}
+    >
       {entry.count > 1 && (
         <span className="text-zinc-400">{entry.count}× </span>
       )}
       {label}
-      {upgraded && <span className="text-emerald-300">+</span>}
+      {upgraded && (
+        <span style={{ color: enchanted ? "#C084FC" : TEXT_GREEN }}>+</span>
+      )}
     </span>
   );
 
@@ -873,7 +884,7 @@ function countDeckByRarity(
   let curse = 0;
   let starter = 0;
   for (const entry of deck) {
-    const card = cardsById[entry.id];
+    const card = lookupHistoryCard(cardsById, entry.id);
     const rarity = card?.rarity ?? "기본";
     const n = entry.count;
     if (rarity === "희귀") rare += n;

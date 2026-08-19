@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { DonationPanel } from "@/components/history-course/donation-panel";
 import { HistoryCourseShell } from "@/components/history-course/history-course-shell";
 import { collectRelevantCardIds } from "@/components/history-course/topbar-state";
+import { indexCodexCards } from "@/lib/history-card-lookup";
 import {
   COMPENDIUM_DETAIL_PAYLOAD_PATH,
   type CompendiumDetailPayload,
@@ -69,7 +70,8 @@ function buildRunMadScienceCard(
   if (!parts?.riderId) return null;
 
   const baseId = getMadScienceVariantId(parts.cardType);
-  const baseCard = cardByLookupId.get(baseId);
+  const baseCard =
+    cardByLookupId.get(baseId) ?? cardByLookupId.get(`CARD.${baseId}`);
   if (!baseCard) return null;
 
   const riderLabel =
@@ -207,16 +209,19 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
   const cardByLookupId = new Map<string, CodexCard>();
   for (const card of lookupCards) {
     cardByLookupId.set(card.id, card);
+    cardByLookupId.set(`CARD.${card.id}`, card);
   }
   const relevantIds = collectRelevantCardIds(run);
-  const cardsById: Record<string, CodexCard> = {};
+  const cardsById = indexCodexCards(lookupCards);
   for (const replayId of relevantIds) {
     const stripped = stripCardId(replayId);
     const card =
       cardByLookupId.get(replayId) ??
       cardByLookupId.get(stripped) ??
       buildRunMadScienceCard(replayId, cardByLookupId);
-    if (card) cardsById[replayId] = card;
+    if (!card) continue;
+    cardsById[replayId] = card;
+    cardsById[stripped] = card;
   }
 
   // Replay ids carry the `RELIC.` prefix, but codex relic ids don't.
