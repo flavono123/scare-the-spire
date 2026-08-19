@@ -12,16 +12,22 @@ import {
   isTransfigureCardRarity,
   isTransfigureCardType,
   isTransfigureChanged,
+  isTransfigureTokenColor,
+  isTransfigureTokenWax,
   normalizeTransfigureCardRarity,
   normalizeTransfigureCardType,
   normalizeTransfigureCardKeywords,
   normalizeTransfigureCost,
   normalizeTransfigureName,
+  normalizeTransfigureTokenColor,
+  normalizeTransfigureTokenWax,
   type TransfigureCardKeywords,
   type TransfigureCardRarity,
   type TransfigureCardType,
   type TransfigurePost,
   type TransfigureResourceRef,
+  type TransfigureTokenColor,
+  type TransfigureTokenWax,
 } from "@/lib/transfigure-types";
 
 export interface SaveTransfigurePostInput {
@@ -52,6 +58,8 @@ export interface SaveTransfigurePostInput {
   transformedUpgradeStarCost?: string;
   upgradedCardKeywords: TransfigureCardKeywords | null;
   showUpgrade: boolean;
+  tokenColor?: TransfigureTokenColor | "";
+  tokenWax?: TransfigureTokenWax | "";
   activeUserId?: string;
   sourceStarCost?: string | null;
   sourceUpgradeStarCost?: string | null;
@@ -99,6 +107,8 @@ function normalizePost(row: unknown): TransfigurePost {
     upgraded_card_top_keywords: post.upgraded_card_top_keywords ?? [],
     upgraded_card_bottom_keywords: post.upgraded_card_bottom_keywords ?? [],
     show_upgrade: post.show_upgrade ?? false,
+    token_color: isTransfigureTokenColor(post.token_color) ? post.token_color : null,
+    token_wax: isTransfigureTokenWax(post.token_wax) ? post.token_wax : null,
   };
 }
 
@@ -200,6 +210,14 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     && input.sourceUpgradeText != null
     && input.sourceUpgradeBlocks != null
   );
+  const tokenColor = normalizeTransfigureTokenColor(
+    input.tokenColor,
+    input.resource.type,
+  );
+  const tokenWax = normalizeTransfigureTokenWax(
+    input.tokenWax,
+    input.resource.type,
+  );
 
   if (
     !input.activeUserId
@@ -246,6 +264,9 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
       upgradedCardKeywords,
       sourceUpgradedCardKeywords: input.sourceUpgradedCardKeywords,
       showUpgrade: input.showUpgrade,
+      resourceType: input.resource.type,
+      tokenColor: input.tokenColor,
+      tokenWax: input.tokenWax,
     })
   ) {
     return null;
@@ -266,6 +287,8 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     transformedUpgradeStarCost,
     cardKeywords,
     upgradedCardKeywords,
+    tokenColor,
+    tokenWax,
   };
 }
 
@@ -301,6 +324,8 @@ async function persistTransfigurePostUpdate(
         upgraded_card_top_keywords: normalized.upgradedCardKeywords.top,
         upgraded_card_bottom_keywords: normalized.upgradedCardKeywords.bottom,
         show_upgrade: input.showUpgrade,
+        token_color: normalized.tokenColor,
+        token_wax: normalized.tokenWax,
       })
       .eq("id", postId)
       .eq("user_id", input.activeUserId)
@@ -400,60 +425,10 @@ export function useTransfigurePosts(
   }, []);
 
   const add = useCallback(
-    async ({
-      blocks,
-      nickname,
-      title,
-      resource,
-      sourceText,
-      sourceBlocks,
-      sourceGameLocale,
-      activeUserId = userId ?? undefined,
-      sourceName,
-      sourceCost,
-      sourceCardType,
-      sourceCardRarity,
-      sourceUpgradeText,
-      sourceUpgradeBlocks,
-      sourceUpgradeCost,
-      sourceCardKeywords,
-      sourceUpgradedCardKeywords,
-      transformedName,
-      transformedCost,
-      transformedCardType,
-      transformedCardRarity,
-      cardKeywords,
-      upgradedBlocks,
-      transformedUpgradeCost,
-      upgradedCardKeywords,
-      showUpgrade,
-    }: SaveTransfigurePostInput): Promise<TransfigurePost | null> => {
+    async (input: SaveTransfigurePostInput): Promise<TransfigurePost | null> => {
+      const activeUserId = input.activeUserId ?? userId ?? undefined;
       const normalized = validateSaveInput({
-        blocks,
-        nickname,
-        title,
-        resource,
-        sourceText,
-        sourceBlocks,
-        sourceGameLocale,
-        sourceName,
-        sourceCost,
-        sourceCardType,
-        sourceCardRarity,
-        sourceUpgradeText,
-        sourceUpgradeBlocks,
-        sourceUpgradeCost,
-        sourceCardKeywords,
-        sourceUpgradedCardKeywords,
-        transformedName,
-        transformedCost,
-        transformedCardType,
-        transformedCardRarity,
-        cardKeywords,
-        upgradedBlocks,
-        transformedUpgradeCost,
-        upgradedCardKeywords,
-        showUpgrade,
+        ...input,
         activeUserId,
       });
       if (!normalized || !activeUserId) return null;
@@ -466,11 +441,11 @@ export function useTransfigurePosts(
             user_id: activeUserId,
             nickname: normalized.nickname,
             title: normalized.title,
-            resource_type: resource.type,
-            resource_id: resource.id,
+            resource_type: input.resource.type,
+            resource_id: input.resource.id,
             source_text: normalized.sourceText,
-            source_game_locale: sourceGameLocale,
-            content: blocks,
+            source_game_locale: input.sourceGameLocale,
+            content: input.blocks,
             content_text: normalized.contentText,
             transformed_name: normalized.transformedName,
             transformed_cost: normalized.transformedCost,
@@ -479,13 +454,15 @@ export function useTransfigurePosts(
             transformed_card_rarity: normalized.transformedCardRarity,
             card_top_keywords: normalized.cardKeywords.top,
             card_bottom_keywords: normalized.cardKeywords.bottom,
-            upgraded_content: upgradedBlocks,
+            upgraded_content: input.upgradedBlocks,
             upgraded_content_text: normalized.upgradedContentText,
             transformed_upgrade_cost: normalized.transformedUpgradeCost,
             transformed_upgrade_star_cost: normalized.transformedUpgradeStarCost,
             upgraded_card_top_keywords: normalized.upgradedCardKeywords.top,
             upgraded_card_bottom_keywords: normalized.upgradedCardKeywords.bottom,
-            show_upgrade: showUpgrade,
+            show_upgrade: input.showUpgrade,
+            token_color: normalized.tokenColor,
+            token_wax: normalized.tokenWax,
             env: supabaseEnv,
           })
           .select()

@@ -55,6 +55,31 @@ export const TRANSFIGURE_CARD_RARITIES = [
 export type TransfigureCardType = (typeof TRANSFIGURE_CARD_TYPES)[number];
 export type TransfigureCardRarity = (typeof TRANSFIGURE_CARD_RARITIES)[number];
 
+export const TRANSFIGURE_TOKEN_RESOURCE_TYPES = [
+  "relic",
+  "potion",
+  "power",
+  "enchantment",
+  "affliction",
+] as const satisfies readonly TransfigureResourceType[];
+
+export type TransfigureTokenResourceType =
+  (typeof TRANSFIGURE_TOKEN_RESOURCE_TYPES)[number];
+
+export const TRANSFIGURE_TOKEN_COLORS = [
+  "gold",
+  "red",
+  "green",
+  "orange",
+  "pink",
+  "aqua",
+  "blue",
+  "purple",
+] as const;
+
+export type TransfigureTokenColor = (typeof TRANSFIGURE_TOKEN_COLORS)[number];
+export type TransfigureTokenWax = "off" | "wax" | "melted";
+
 export interface TransfigureResourceRef {
   type: TransfigureResourceType;
   id: string;
@@ -83,6 +108,8 @@ export interface TransfigurePost {
   upgraded_card_top_keywords: string[];
   upgraded_card_bottom_keywords: string[];
   show_upgrade: boolean;
+  token_color: TransfigureTokenColor | null;
+  token_wax: Exclude<TransfigureTokenWax, "off"> | null;
   content: PostBlock[];
   content_text: string;
   env: string;
@@ -98,6 +125,42 @@ export function isTransfigureResourceType(
   type: EntityType,
 ): type is TransfigureResourceType {
   return TRANSFIGURE_RESOURCE_TYPES.includes(type as TransfigureResourceType);
+}
+
+export function isTransfigureTokenResourceType(
+  type: EntityType,
+): type is TransfigureTokenResourceType {
+  return TRANSFIGURE_TOKEN_RESOURCE_TYPES.includes(
+    type as TransfigureTokenResourceType,
+  );
+}
+
+export function isTransfigureTokenColor(
+  value: unknown,
+): value is TransfigureTokenColor {
+  return TRANSFIGURE_TOKEN_COLORS.includes(value as TransfigureTokenColor);
+}
+
+export function isTransfigureTokenWax(
+  value: unknown,
+): value is Exclude<TransfigureTokenWax, "off"> {
+  return value === "wax" || value === "melted";
+}
+
+export function normalizeTransfigureTokenColor(
+  value: string | null | undefined,
+  resourceType: EntityType,
+): TransfigureTokenColor | null {
+  if (!isTransfigureTokenResourceType(resourceType)) return null;
+  return isTransfigureTokenColor(value) ? value : null;
+}
+
+export function normalizeTransfigureTokenWax(
+  value: string | null | undefined,
+  resourceType: EntityType,
+): Exclude<TransfigureTokenWax, "off"> | null {
+  if (!isTransfigureTokenResourceType(resourceType)) return null;
+  return isTransfigureTokenWax(value) ? value : null;
 }
 
 export function getTransfigureEntityDescription(entity: EntityInfo): string | null {
@@ -501,6 +564,9 @@ export function isTransfigureChanged({
   sourceCardType = null,
   transformedCardRarity = "",
   sourceCardRarity = null,
+  tokenColor = null,
+  tokenWax = "off",
+  resourceType,
 }: {
   blocks: PostBlock[];
   sourceText: string;
@@ -527,6 +593,9 @@ export function isTransfigureChanged({
   sourceCardType?: CardTypeKo | null;
   transformedCardRarity?: string;
   sourceCardRarity?: CardRarityKo | null;
+  tokenColor?: string | null;
+  tokenWax?: string | null;
+  resourceType?: EntityType;
 }): boolean {
   const canChangeCardMetadata = canTransfigureCardMetadata(
     sourceCardType,
@@ -572,6 +641,13 @@ export function isTransfigureChanged({
       transformedUpgradeStarCost,
       sourceUpgradeStarCost,
     ) != null
+    || (
+      resourceType != null
+      && (
+        normalizeTransfigureTokenColor(tokenColor, resourceType) != null
+        || normalizeTransfigureTokenWax(tokenWax, resourceType) != null
+      )
+    )
   );
 }
 

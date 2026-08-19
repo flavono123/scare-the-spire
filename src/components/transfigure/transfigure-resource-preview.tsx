@@ -4,11 +4,15 @@ import { useMemo, useRef, useState } from "react";
 import { buildEntityMap, PostRenderer } from "@/components/chemicalx/post-renderer";
 import { CardTile } from "@/components/codex/card-tile";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
+import { RelicInspectSlab } from "@/components/codex/relic-inspect-slab";
+import { DescriptionText } from "@/components/codex/codex-description";
 import { GameHoverTip } from "@/components/codex/hover-tip";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { TransfigureImageCopyButton } from "@/components/transfigure/transfigure-image-copy-button";
+import { TransfigureTokenArt } from "@/components/transfigure/transfigure-token-art";
 import Image from "@/components/ui/static-image";
 import type { PostBlock } from "@/lib/chemical-types";
+import { RELIC_RARITY_LABELS } from "@/lib/codex-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
   applyTransfigureCardMetadata,
@@ -18,12 +22,15 @@ import {
   getTransfigureUpgradeInitialBlocks,
   getTransfigureUpgradeSourceCost,
   getTransfigureUpgradeSourceStarCost,
+  isTransfigureTokenResourceType,
   normalizeTransfigureCardRarity,
   normalizeTransfigureCardType,
   transfigureBlocksToGameDescription,
   type TransfigureCardKeywords,
   type TransfigureCardRarity,
   type TransfigureCardType,
+  type TransfigureTokenColor,
+  type TransfigureTokenWax,
 } from "@/lib/transfigure-types";
 import { markUpgradePlusGreen } from "@/lib/transfigure-upgrade-diff";
 import {
@@ -53,6 +60,8 @@ interface TransfigureResourcePreviewProps {
   initialShowUpgrade?: boolean;
   showImageActions?: boolean;
   showUpgradeToggle?: boolean;
+  tokenColor?: TransfigureTokenColor | null;
+  tokenWax?: TransfigureTokenWax | null;
 }
 
 export function TransfigureResourcePreview({
@@ -76,6 +85,8 @@ export function TransfigureResourcePreview({
   initialShowUpgrade = false,
   showImageActions = true,
   showUpgradeToggle = true,
+  tokenColor = null,
+  tokenWax = "off",
 }: TransfigureResourcePreviewProps) {
   const entityMap = useMemo(
     () => providedEntityMap ?? buildEntityMap(entities),
@@ -217,6 +228,66 @@ export function TransfigureResourcePreview({
     );
   }
 
+  const tokenWaxValue = tokenWax ?? "off";
+  const displayDescription = (
+    <PostRenderer
+      blocks={blocks}
+      entityMap={entityMap}
+      serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
+      energyIconSrc={resolveSts2EnergyIcon(
+        (entity.cardData?.visualColor
+          ?? entity.cardData?.color
+          ?? entity.color) as Sts2EnergyIconVariant,
+      )}
+    />
+  );
+
+  if (entity.type === "relic" && entity.relicData) {
+    return (
+      <div
+        className="flex flex-col items-center justify-center"
+        data-transfigure-preview="relic"
+      >
+        <div ref={copyTargetRef} className="w-full" data-transfigure-copy-target>
+          <RelicInspectSlab
+            className="max-w-[20rem]"
+            titleAs="div"
+            rarity={entity.relicData.rarity}
+            rarityLabel={RELIC_RARITY_LABELS[entity.relicData.rarity]}
+            title={displayName}
+            art={entity.imageUrl ? (
+              <TransfigureTokenArt
+                src={entity.imageUrl}
+                label={displayName}
+                size={160}
+                color={tokenColor}
+                wax={tokenWaxValue}
+                outlinePool={entity.relicData.pool}
+                className="relative z-[1] h-[62%] w-[62%]"
+              />
+            ) : (
+              <div className="relative z-[1] flex h-[62%] w-[62%] items-center justify-center text-2xl text-gray-600">
+                ?
+              </div>
+            )}
+            description={displayDescription}
+            flavor={entity.relicData.flavor ? (
+              <DescriptionText description={entity.relicData.flavor} />
+            ) : undefined}
+          />
+        </div>
+        {showImageActions && (
+          <TransfigureImageCopyButton
+            fileName={imageFileName}
+            targetRef={copyTargetRef}
+            labels={imageLabels}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div
       className="flex flex-col items-center justify-center"
@@ -229,13 +300,23 @@ export function TransfigureResourcePreview({
       >
         {entity.imageUrl && (
           <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-black/25 p-1.5">
-            <Image
-              src={entity.imageUrl}
-              alt={entity.nameKo}
-              width={76}
-              height={76}
-              className="max-h-[4.5rem] max-w-[4.5rem] object-contain"
-            />
+            {isTransfigureTokenResourceType(entity.type) ? (
+              <TransfigureTokenArt
+                src={entity.imageUrl}
+                label={displayName}
+                size={72}
+                color={tokenColor}
+                wax={tokenWaxValue}
+              />
+            ) : (
+              <Image
+                src={entity.imageUrl}
+                alt={entity.nameKo}
+                width={76}
+                height={76}
+                className="max-h-[4.5rem] max-w-[4.5rem] object-contain"
+              />
+            )}
           </span>
         )}
         <GameHoverTip
@@ -243,17 +324,7 @@ export function TransfigureResourcePreview({
           className="w-full max-w-80"
           style={{ minWidth: 240, maxWidth: 320 }}
         >
-          <PostRenderer
-            blocks={blocks}
-            entityMap={entityMap}
-            serviceLocale={serviceLocale}
-            gameLocale={gameLocale}
-            energyIconSrc={resolveSts2EnergyIcon(
-              (entity.cardData?.visualColor
-                ?? entity.cardData?.color
-                ?? entity.color) as Sts2EnergyIconVariant,
-            )}
-          />
+          {displayDescription}
         </GameHoverTip>
       </div>
       {showImageActions && (

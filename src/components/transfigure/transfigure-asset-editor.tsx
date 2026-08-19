@@ -9,17 +9,18 @@ import {
   useState,
   type KeyboardEvent,
 } from "react";
-import {
-  CardTile,
-  type CardDescriptionFit,
-} from "@/components/codex/card-tile";
+import { CardTile, type CardDescriptionFit } from "@/components/codex/card-tile";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
+import { RelicInspectSlab } from "@/components/codex/relic-inspect-slab";
+import { DescriptionText } from "@/components/codex/codex-description";
 import { GameHoverTip } from "@/components/codex/hover-tip";
 import type { RichContentEditorProps } from "@/components/rich-content-editor";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { TransfigureCardKeywordRail } from "@/components/transfigure/transfigure-card-keyword-rail";
+import { TransfigureTokenArt } from "@/components/transfigure/transfigure-token-art";
 import Image from "@/components/ui/static-image";
 import type { PostBlock } from "@/lib/chemical-types";
+import { RELIC_RARITY_LABELS } from "@/lib/codex-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
   CARD_BOTTOM_KEYWORD_ORDER,
@@ -28,10 +29,13 @@ import {
 import {
   applyTransfigureCardMetadata,
   getTransfigureSourceCost,
+  isTransfigureTokenResourceType,
   normalizeTransfigureCostInput,
   type TransfigureCardKeywords,
   type TransfigureCardRarity,
   type TransfigureCardType,
+  type TransfigureTokenColor,
+  type TransfigureTokenWax,
 } from "@/lib/transfigure-types";
 import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 
@@ -80,6 +84,8 @@ interface TransfigureAssetEditorProps {
   upgradeLabel: string;
   starCostLabel: string;
   showUpgrade: boolean;
+  tokenColor: TransfigureTokenColor | "";
+  tokenWax: TransfigureTokenWax;
   onBlocksChange: (blocks: PostBlock[]) => void;
   onCardKeywordsChange: (keywords: TransfigureCardKeywords | null) => void;
   onCostChange: (value: string) => void;
@@ -143,6 +149,8 @@ export function TransfigureAssetEditor({
   upgradeLabel,
   starCostLabel,
   showUpgrade,
+  tokenColor,
+  tokenWax,
   onBlocksChange,
   onCardKeywordsChange,
   onCostChange,
@@ -516,17 +524,60 @@ export function TransfigureAssetEditor({
             />
           )}
         </div>
+      ) : entity.type === "relic" && entity.relicData ? (
+        <div className="flex w-full flex-col items-center justify-center">
+          <RelicInspectSlab
+            className="max-w-[24rem]"
+            rarity={entity.relicData.rarity}
+            rarityLabel={RELIC_RARITY_LABELS[entity.relicData.rarity]}
+            title={titleInput}
+            art={entity.imageUrl ? (
+              <TransfigureTokenArt
+                src={entity.imageUrl}
+                label={transformedName.trim() || entity.nameKo}
+                size={160}
+                color={tokenColor || null}
+                wax={tokenWax}
+                outlinePool={entity.relicData.pool}
+                className="relative z-[1] h-[62%] w-[62%]"
+              />
+            ) : (
+              <div className="relative z-[1] flex h-[62%] w-[62%] items-center justify-center text-2xl text-gray-600">
+                ?
+              </div>
+            )}
+            description={(
+              <div className="min-h-24 w-full">
+                {descriptionEditor}
+              </div>
+            )}
+            flavor={entity.relicData.flavor ? (
+              <DescriptionText description={entity.relicData.flavor} />
+            ) : undefined}
+          />
+          {costTokenTipNode}
+        </div>
       ) : (
         <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:items-start">
           {entity.imageUrl && (
             <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-black/25 p-1.5">
-              <Image
-                src={entity.imageUrl}
-                alt={entity.nameKo}
-                width={76}
-                height={76}
-                className="max-h-[4.5rem] max-w-[4.5rem] object-contain"
-              />
+              {isTransfigureTokenResourceType(entity.type) ? (
+                <TransfigureTokenArt
+                  src={entity.imageUrl}
+                  label={transformedName.trim() || entity.nameKo}
+                  size={72}
+                  color={tokenColor || null}
+                  wax={tokenWax}
+                />
+              ) : (
+                <Image
+                  src={entity.imageUrl}
+                  alt={entity.nameKo}
+                  width={76}
+                  height={76}
+                  className="max-h-[4.5rem] max-w-[4.5rem] object-contain"
+                />
+              )}
             </span>
           )}
           <div className="flex w-full max-w-[26rem] flex-col gap-1.5">

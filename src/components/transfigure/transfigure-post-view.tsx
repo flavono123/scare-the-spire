@@ -215,6 +215,8 @@ export function TransfigurePostView({
                 }}
                 upgradeLabel={upgradeLabel}
                 initialShowUpgrade={post.show_upgrade}
+                tokenColor={post.token_color}
+                tokenWax={post.token_wax}
               />
             ) : (
               <div className="text-lg font-bold leading-relaxed text-[#f0e6d2]">

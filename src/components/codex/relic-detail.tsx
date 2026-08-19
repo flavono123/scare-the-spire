@@ -31,6 +31,7 @@ import { DescriptionText } from "./codex-description";
 import { EntityReferenceGroupLinks } from "./entity-reference-links";
 import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 import { GameCheckboxToggle, GameWaxCycleToggle, type GameWaxCycleValue } from "./game-checkbox";
+import { RelicInspectSlab } from "./relic-inspect-slab";
 import { RichDescription } from "./rich-description";
 import { getRelatedAncientIdsForRelic, getRelatedCardIdsForRelic, getRelatedEnchantmentIdsForRelic, getRelatedEventIdsForRelic, getRelatedPowerIdsForRelic } from "@/lib/codex-references";
 import { STS2ChangeHistory } from "./sts2-change-history";
@@ -45,10 +46,6 @@ import {
   type CardSideTipCatalogSources,
 } from "@/lib/card-side-tip-catalog";
 import { collectRelicSideTips } from "@/lib/relic-side-tips";
-import {
-  RELIC_INSPECT_REWARD_PANEL,
-  relicInspectFrameUrl,
-} from "@/lib/relic-inspect-assets";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -269,7 +266,6 @@ export function RelicDetail({
   }, [relic, tipCatalog, potionsById, enchantmentsById]);
 
   const rarityColor = RELIC_RARITY_COLORS[relic.rarity];
-  const inspectFrameUrl = relicInspectFrameUrl(relic.rarity);
   const rarityLabel = gameUi.relicCollection.rarities[relic.rarity].label;
   const poolColor = relic.pool !== "shared" ? getCharacterColor(relic.pool) : undefined;
   const relatedCardTargets = getRelatedCardIdsForRelic(relic.id).map((cardId) => {
@@ -407,101 +403,48 @@ export function RelicDetail({
             tips={sideTips}
             className="w-full max-w-[28rem]"
           >
-            <div
-              data-relic-inspect-slab
-              className="relative mx-auto w-full max-w-[28rem] aspect-square"
-            >
-              <Image
-                src={RELIC_INSPECT_REWARD_PANEL}
-                alt=""
-                width={1128}
-                height={1435}
-                className="pointer-events-none absolute inset-0 h-full w-full object-fill"
-                aria-hidden
-              />
-
-              <div className="relative z-10 flex h-full flex-col items-center px-[11%] pb-[9%] pt-[8%]">
-                <h1
-                  className="max-w-[90%] text-center font-game-title text-xl font-bold leading-tight sm:text-2xl"
-                  style={{ color: "#efc851", textShadow: "3px 3px 0 rgba(0,0,0,0.35)" }}
-                >
-                  {relic.name}
-                </h1>
-                <p
-                  className="mt-1 font-game-text text-sm font-bold sm:text-base"
-                  style={{ color: rarityColor }}
-                >
-                  {rarityLabel}
-                </p>
-
-                <div className="relative mt-3 flex w-[48%] max-w-[13.5rem] aspect-square shrink-0 items-center justify-center sm:mt-4">
-                  <Image
-                    src={RELIC_INSPECT_REWARD_PANEL}
-                    alt=""
-                    width={304}
-                    height={304}
-                    className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-90"
-                    aria-hidden
-                  />
-                  {displayImageUrl ? (
-                    <Image
-                      src={displayImageUrl}
-                      alt={relic.name}
-                      width={160}
-                      height={160}
-                      className="relative z-[1] h-[62%] w-[62%] object-contain"
-                      style={displayFilter ? { filter: displayFilter } : undefined}
-                    />
-                  ) : (
-                    <div className="relative z-[1] flex h-[62%] w-[62%] items-center justify-center text-2xl text-gray-600">
-                      ?
-                    </div>
-                  )}
-                  <Image
-                    src={inspectFrameUrl}
-                    alt=""
-                    width={408}
-                    height={408}
-                    className="pointer-events-none absolute inset-0 z-[2] h-full w-full object-contain"
-                    aria-hidden
-                  />
+            <RelicInspectSlab
+              rarity={relic.rarity}
+              rarityLabel={rarityLabel}
+              title={relic.name}
+              art={displayImageUrl ? (
+                <Image
+                  src={displayImageUrl}
+                  alt={relic.name}
+                  width={160}
+                  height={160}
+                  className="relative z-[1] h-[62%] w-[62%] object-contain"
+                  style={displayFilter ? { filter: displayFilter } : undefined}
+                />
+              ) : (
+                <div className="relative z-[1] flex h-[62%] w-[62%] items-center justify-center text-2xl text-gray-600">
+                  ?
                 </div>
-
-                <div className="mt-auto flex w-full flex-col items-center gap-2 pt-3 text-center">
-                  <div className="w-full max-w-[22rem] font-game-text text-sm leading-relaxed text-gray-100 sm:text-base">
-                    {entities ? (
-                      <RichDescription
-                        description={relic.description}
-                        entities={entities}
-                        excludeEntityTerms={excludeSelf}
-                        excludeEntityTypes={RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
-                        className="block"
-                      />
-                    ) : (
-                      <DescriptionText description={relic.description} className="block" />
-                    )}
-                  </div>
-                  <div
-                    className="h-px w-[70%] max-w-[16rem] bg-gradient-to-r from-transparent via-white/35 to-transparent"
-                    aria-hidden
+              )}
+              description={entities ? (
+                <RichDescription
+                  description={relic.description}
+                  entities={entities}
+                  excludeEntityTerms={excludeSelf}
+                  excludeEntityTypes={RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
+                  className="block"
+                />
+              ) : (
+                <DescriptionText description={relic.description} className="block" />
+              )}
+              flavor={relic.flavor ? (
+                entities ? (
+                  <RichDescription
+                    description={relic.flavor}
+                    entities={entities}
+                    excludeEntityTerms={excludeSelf}
+                    excludeEntityTypes={RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
                   />
-                  {relic.flavor ? (
-                    <div className="w-full max-w-[22rem] font-game-text text-xs italic leading-relaxed text-gray-300 sm:text-sm">
-                      {entities ? (
-                        <RichDescription
-                          description={relic.flavor}
-                          entities={entities}
-                          excludeEntityTerms={excludeSelf}
-                          excludeEntityTypes={RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
-                        />
-                      ) : (
-                        <DescriptionText description={relic.flavor} />
-                      )}
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            </div>
+                ) : (
+                  <DescriptionText description={relic.flavor} />
+                )
+              ) : undefined}
+            />
           </CardSideTipsAnchor>
 
           <div className="flex flex-col items-center gap-3">

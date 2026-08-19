@@ -35,6 +35,7 @@ import {
   getTransfigureUpgradeSourceText,
   isTransfigureChanged,
   isTransfigureResourceType,
+  isTransfigureTokenResourceType,
   normalizeTransfigureCardRarity,
   normalizeTransfigureCardType,
   TRANSFIGURE_CARD_RARITIES,
@@ -45,10 +46,14 @@ import {
   type TransfigureCardRarity,
   type TransfigureCardType,
   type TransfigurePost,
+  type TransfigureTokenColor,
+  type TransfigureTokenWax,
 } from "@/lib/transfigure-types";
+import { getCodexServiceMessages } from "@/lib/codex-service";
 import { serviceMessages } from "@/messages/service";
 import { TransfigureAssetEditor } from "./transfigure-asset-editor";
 import { TransfigureResourcePicker } from "./transfigure-resource-picker";
+import { TransfigureTokenAppearanceControls } from "./transfigure-token-appearance";
 
 interface TransfigureEditorProps {
   entities: EntityInfo[];
@@ -289,6 +294,12 @@ export function TransfigureEditor({
   const [showUpgrade, setShowUpgrade] = useState(
     initialPost?.show_upgrade ?? false,
   );
+  const [tokenColor, setTokenColor] = useState<TransfigureTokenColor | "">(
+    initialPost?.token_color ?? "",
+  );
+  const [tokenWax, setTokenWax] = useState<TransfigureTokenWax>(
+    initialPost?.token_wax ?? "off",
+  );
   const [submitting, setSubmitting] = useState(false);
   const [saveFeedback, setSaveFeedback] = useState<{
     message: string;
@@ -390,6 +401,8 @@ export function TransfigureEditor({
         bottom: initialPost.upgraded_card_bottom_keywords,
       })
       || showUpgrade !== (initialPost.show_upgrade ?? false)
+      || (tokenColor || null) !== (initialPost.token_color ?? null)
+      || (tokenWax === "off" ? null : tokenWax) !== (initialPost.token_wax ?? null)
       || transfigureBlocksSignature(blocks)
         !== transfigureBlocksSignature(initialPost.content)
       || (
@@ -407,6 +420,8 @@ export function TransfigureEditor({
     cardKeywords,
     showUpgrade,
     sourceUpgradeBlocks,
+    tokenColor,
+    tokenWax,
     transformedCost,
     transformedStarCost,
     transformedCardRarity,
@@ -434,6 +449,8 @@ export function TransfigureEditor({
     setCardKeywords(getTransfigureCardKeywords(entity));
     setUpgradedCardKeywords(getTransfigureUpgradeCardKeywords(entity));
     setShowUpgrade(false);
+    setTokenColor("");
+    setTokenWax("off");
     setSaveFeedback(null);
   }, [copy.defaultTitle, entities]);
 
@@ -471,6 +488,9 @@ export function TransfigureEditor({
         upgradedCardKeywords,
         sourceUpgradedCardKeywords,
         showUpgrade,
+        resourceType: selected.type,
+        tokenColor,
+        tokenWax,
       })
     ) {
       setSaveFeedback({
@@ -520,6 +540,8 @@ export function TransfigureEditor({
       transformedUpgradeStarCost,
       upgradedCardKeywords,
       showUpgrade,
+      tokenColor,
+      tokenWax,
     });
   }, [
     copy.changeRequired,
@@ -555,6 +577,8 @@ export function TransfigureEditor({
     transformedUpgradeStarCost,
     upgradedCardKeywords,
     showUpgrade,
+    tokenColor,
+    tokenWax,
   ]);
   const canSubmitBlocks = useCallback(
     (blocks: PostBlock[], upgradedBlocks: PostBlock[] | null) => (
@@ -586,6 +610,9 @@ export function TransfigureEditor({
         upgradedCardKeywords,
         sourceUpgradedCardKeywords,
         showUpgrade,
+        resourceType: selected.type,
+        tokenColor,
+        tokenWax,
       })
     ),
     [
@@ -612,6 +639,8 @@ export function TransfigureEditor({
       transformedUpgradeStarCost,
       upgradedCardKeywords,
       showUpgrade,
+      tokenColor,
+      tokenWax,
     ],
   );
   const hasChanges = canSubmitBlocks(
@@ -813,6 +842,24 @@ export function TransfigureEditor({
                 </FilterSection>
               </div>
             )}
+
+            {isTransfigureTokenResourceType(selected.type) && (
+              <TransfigureTokenAppearanceControls
+                color={tokenColor}
+                wax={tokenWax}
+                serviceLocale={serviceLocale}
+                waxLabel={getCodexServiceMessages(serviceLocale).relicsView.toggles.wax}
+                meltedLabel={getCodexServiceMessages(serviceLocale).relicsView.toggles.melted}
+                onColorChange={(value) => {
+                  setTokenColor(value);
+                  setSaveFeedback(null);
+                }}
+                onWaxChange={(value) => {
+                  setTokenWax(value);
+                  setSaveFeedback(null);
+                }}
+              />
+            )}
           </div>
 
           <section className="rounded-xl border border-yellow-500/15 bg-black/20 p-3 lg:sticky lg:top-0">
@@ -853,6 +900,8 @@ export function TransfigureEditor({
               upgradedBlocks={previewUpgradeBlocks}
               upgradeLabel={upgradeLabel}
               showUpgrade={showUpgrade}
+              tokenColor={tokenColor}
+              tokenWax={tokenWax}
               onBlocksChange={(blocks) => {
                 if (
                   transfigureBlocksSignature(blocks)

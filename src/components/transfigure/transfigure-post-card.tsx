@@ -154,6 +154,8 @@ export function TransfigurePostCard({
             initialShowUpgrade={post.show_upgrade}
             showImageActions={false}
             showUpgradeToggle={false}
+            tokenColor={post.token_color}
+            tokenWax={post.token_wax}
           />
         ) : (
           <div className="flex max-w-full flex-col items-center gap-3 text-sm leading-relaxed text-[#f0e6d2]">

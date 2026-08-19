@@ -16,6 +16,8 @@ import {
   normalizeTransfigureCostInput,
   normalizeTransfigureCost,
   normalizeTransfigureName,
+  normalizeTransfigureTokenColor,
+  normalizeTransfigureTokenWax,
   transfigureBlocksToGameDescription,
 } from "../src/lib/transfigure-types";
 import { serviceMessages } from "../src/messages/service";
@@ -312,5 +314,43 @@ assert.equal(
   ),
   true,
 );
+
+assert.equal(
+  isTransfigureChanged({
+    blocks: sourceBlocks,
+    sourceText: sourceText ?? "",
+    sourceBlocks,
+    transformedName: "",
+    sourceName: "전문성",
+    transformedCost: "",
+    sourceCost: "1",
+    resourceType: "relic",
+    tokenColor: "gold",
+  }),
+  true,
+);
+assert.equal(
+  isTransfigureChanged({
+    blocks: sourceBlocks,
+    sourceText: sourceText ?? "",
+    sourceBlocks,
+    transformedName: "",
+    sourceName: "전문성",
+    transformedCost: "",
+    sourceCost: "1",
+    resourceType: "card",
+    tokenColor: "gold",
+    tokenWax: "wax",
+  }),
+  false,
+);
+
+assert.equal(normalizeTransfigureTokenColor("gold", "relic"), "gold");
+assert.equal(normalizeTransfigureTokenColor("gold", "card"), null);
+assert.equal(normalizeTransfigureTokenColor("ghost", "potion"), null);
+assert.equal(normalizeTransfigureTokenWax("wax", "power"), "wax");
+assert.equal(normalizeTransfigureTokenWax("melted", "relic"), "melted");
+assert.equal(normalizeTransfigureTokenWax("off", "relic"), null);
+assert.equal(normalizeTransfigureTokenWax("wax", "card"), null);
 
 console.log("Transfigure rich keyword preservation: ok");
