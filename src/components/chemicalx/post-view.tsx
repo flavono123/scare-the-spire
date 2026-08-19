@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "@/components/ui/static-image";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { PostDetailActions } from "@/components/post-detail-actions";
+import { CommentSection } from "@/components/comment-section";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
@@ -16,6 +17,7 @@ import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 import { PostRenderer, buildEntityMap } from "./post-renderer";
 import { blocksToPlainText } from "@/lib/chemical-utils";
+import { buildChemicalXCommentThreadKey } from "@/lib/comment-threads";
 import { getSiteDisplayOrigin } from "@/lib/site-origin";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 
@@ -179,6 +181,19 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
           </span>
         </div>
       </article>
+
+      <section
+        id="comments"
+        className="scroll-mt-16 rounded-lg border border-border bg-card/20 p-4"
+      >
+        <h2 className="mb-3 font-service text-sm font-semibold text-zinc-300">
+          {copy.commentsTitle}
+        </h2>
+        <CommentSection
+          threadKey={buildChemicalXCommentThreadKey(post.id)}
+          initialEntities={resolvedEntities}
+        />
+      </section>
     </div>
   );
 }

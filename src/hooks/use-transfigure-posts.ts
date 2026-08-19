@@ -4,9 +4,11 @@ import { useCallback, useEffect, useState } from "react";
 import type { PostBlock } from "@/lib/chemical-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 import type { CardRarityKo, CardTypeKo } from "@/lib/codex-types";
+import { useToyboxFeed } from "@/hooks/use-toybox-feed";
 import type { GameLocale } from "@/lib/i18n";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import type { ToyboxFeedSort } from "@/lib/toybox-feed";
 import {
   canTransfigureCardMetadata,
   isTransfigureCardRarity,
@@ -67,8 +69,13 @@ export interface SaveTransfigurePostInput {
 
 interface UseTransfigurePostsReturn {
   posts: TransfigurePost[];
+  likeCounts: Record<string, number>;
+  commentCounts: Record<string, number>;
   loading: boolean;
+  loadingMore: boolean;
+  hasMore: boolean;
   unavailable: boolean;
+  loadMore: () => Promise<void>;
   add: (input: SaveTransfigurePostInput) => Promise<TransfigurePost | null>;
   update: (
     postId: string,
@@ -337,92 +344,27 @@ async function persistTransfigurePostUpdate(
 
 export function useTransfigurePosts(
   userId: string | null,
+  sort: ToyboxFeedSort = "latest",
 ): UseTransfigurePostsReturn {
-  const [posts, setPosts] = useState<TransfigurePost[]>([]);
-  const [loading, setLoading] = useState(supabaseEnabled);
-  const [unavailable, setUnavailable] = useState(!supabaseEnabled);
-
-  useEffect(() => {
-    if (!supabaseEnabled) return;
-    let cancelled = false;
-
-    withSupabaseTimeout(
-      "transfigure_posts.select",
-      supabase
-        .from("transfigure_posts")
-        .select("*")
-        .eq("env", supabaseEnv)
-        .order("created_at", { ascending: false })
-        .limit(50),
-    )
-      .then(({ data, error }) => {
-        if (error) throw error;
-        if (cancelled) return;
-        setPosts((data ?? []).map(normalizePost));
-        setUnavailable(false);
-        setLoading(false);
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setUnavailable(true);
-        setLoading(false);
-      });
-
-    const channel = supabase
-      .channel("transfigure_posts")
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "transfigure_posts",
-        },
-        (payload) => {
-          const updatedPost = normalizePost(payload.new);
-          if (updatedPost.env !== supabaseEnv) return;
-          setPosts((current) => current.map((post) => (
-            post.id === updatedPost.id ? updatedPost : post
-          )));
-        },
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "transfigure_posts",
-        },
-        (payload) => {
-          const newPost = normalizePost(payload.new);
-          if (newPost.env !== supabaseEnv) return;
-          setPosts((current) => {
-            if (current.some((post) => post.id === newPost.id)) return current;
-            return [newPost, ...current].slice(0, 50);
-          });
-        },
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "DELETE",
-          schema: "public",
-          table: "transfigure_posts",
-        },
-        (payload) => {
-          setPosts((current) => current.filter((post) => post.id !== payload.old.id));
-        },
-      )
-      .subscribe((status) => {
-        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
-          setUnavailable(true);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-      supabase.removeChannel(channel);
-    };
-  }, []);
+  const {
+    posts,
+    likeCounts,
+    commentCounts,
+    loading,
+    loadingMore,
+    hasMore,
+    unavailable,
+    loadMore,
+    prependPost,
+    replacePost,
+    removePost,
+    setUnavailable,
+  } = useToyboxFeed({
+    service: "transfigure",
+    table: "transfigure_posts",
+    sort,
+    normalizePost,
+  });
 
   const add = useCallback(
     async (input: SaveTransfigurePostInput): Promise<TransfigurePost | null> => {
@@ -476,13 +418,10 @@ export function useTransfigurePosts(
       if (!data) return null;
 
       const post = normalizePost(data);
-      setPosts((current) => {
-        if (current.some((item) => item.id === post.id)) return current;
-        return [post, ...current].slice(0, 50);
-      });
+      prependPost(post, data);
       return post;
     },
-    [userId],
+    [prependPost, setUnavailable, userId],
   );
 
   const update = useCallback(
@@ -498,12 +437,10 @@ export function useTransfigurePosts(
       if (!data) return null;
 
       const post = normalizePost(data);
-      setPosts((current) => current.map((item) => (
-        item.id === post.id ? post : item
-      )));
+      replacePost(post, data);
       return post;
     },
-    [userId],
+    [replacePost, setUnavailable, userId],
   );
 
   const remove = useCallback(
@@ -522,13 +459,25 @@ export function useTransfigurePosts(
         setUnavailable(true);
         return false;
       }
-      setPosts((current) => current.filter((post) => post.id !== postId));
+      removePost(postId);
       return true;
     },
-    [userId],
+    [removePost, setUnavailable, userId],
   );
 
-  return { posts, loading, unavailable, add, update, remove };
+  return {
+    posts,
+    likeCounts,
+    commentCounts,
+    loading,
+    loadingMore,
+    hasMore,
+    unavailable,
+    loadMore,
+    add,
+    update,
+    remove,
+  };
 }
 
 export function useTransfigurePost(

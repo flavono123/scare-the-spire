@@ -19,6 +19,7 @@ function postIdKey(postIds: string[]) {
 export function useThisOrThatLikes(
   postIds: string[],
   userId: string | null,
+  seedCounts: Record<string, number> = {},
 ): UseThisOrThatLikesReturn {
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [liked, setLiked] = useState<Set<string>>(new Set());
@@ -66,7 +67,7 @@ export function useThisOrThatLikes(
           return;
         }
 
-        const nextCounts: Record<string, number> = {};
+        const nextCounts: Record<string, number> = { ...seedCounts };
         for (const row of countResult.data ?? []) {
           const postId = String((row as { post_id: unknown }).post_id);
           nextCounts[postId] = Number((row as { like_count: unknown }).like_count ?? 0);
@@ -106,7 +107,7 @@ export function useThisOrThatLikes(
     });
     setCounts((prev) => ({
       ...prev,
-      [postId]: Math.max(0, (prev[postId] ?? 0) + (currentlyLiked ? -1 : 1)),
+      [postId]: Math.max(0, (prev[postId] ?? seedCounts[postId] ?? 0) + (currentlyLiked ? -1 : 1)),
     }));
 
     const request = currentlyLiked
@@ -134,11 +135,11 @@ export function useThisOrThatLikes(
       });
       setCounts((prev) => ({
         ...prev,
-        [postId]: Math.max(0, (prev[postId] ?? 0) + (currentlyLiked ? 1 : -1)),
+        [postId]: Math.max(0, (prev[postId] ?? seedCounts[postId] ?? 0) + (currentlyLiked ? 1 : -1)),
       }));
       setUnavailable(true);
     }
-  }, [liked]);
+  }, [liked, seedCounts]);
 
   return { counts, liked, loading, unavailable, toggle };
 }

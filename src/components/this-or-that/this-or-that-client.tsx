@@ -3,11 +3,12 @@
 import { useMemo, useState, useCallback } from "react";
 import Image from "@/components/ui/static-image";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { FeedLoadMoreSentinel } from "@/components/feed-load-more-sentinel";
+import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { useThisOrThatEntities } from "@/hooks/use-this-or-that-entities";
-import { useThisOrThatCommentCounts } from "@/hooks/use-this-or-that-comment-counts";
 import { useThisOrThatLikes } from "@/hooks/use-this-or-that-likes";
 import { useThisOrThatPosts } from "@/hooks/use-this-or-that-posts";
 import { useThisOrThatVotes } from "@/hooks/use-this-or-that-votes";
@@ -18,6 +19,7 @@ import {
   resolveThisOrThatPost,
   type ThisOrThatResourceRef,
 } from "@/lib/this-or-that";
+import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 import { ThisOrThatComposerModal } from "@/components/this-or-that/composer-modal";
@@ -39,7 +41,18 @@ export function ThisOrThatClient({
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].thisOrThat;
   const { userId, ready, unavailable: authUnavailable, ensureUser } = useAuth();
-  const { posts, loading, unavailable, add } = useThisOrThatPosts(userId);
+  const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
+  const {
+    posts,
+    likeCounts,
+    commentCounts,
+    loading,
+    loadingMore,
+    hasMore,
+    unavailable,
+    loadMore,
+    add,
+  } = useThisOrThatPosts(userId, sort);
   const {
     entities,
     loading: resourcesLoading,
@@ -56,8 +69,7 @@ export function ThisOrThatClient({
     [entityMap, posts],
   );
   const postIds = useMemo(() => posts.map((post) => post.id), [posts]);
-  const likes = useThisOrThatLikes(postIds, userId);
-  const comments = useThisOrThatCommentCounts(postIds);
+  const likes = useThisOrThatLikes(postIds, userId, likeCounts);
   const votes = useThisOrThatVotes(postIds, userId, ensureUser);
   const [composerOpen, setComposerOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -159,7 +171,12 @@ export function ThisOrThatClient({
       ) : null}
 
       {!storageUnavailable && (
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <FeedSortToggle
+            sort={sort}
+            onSortChange={setSort}
+            labels={serviceMessages[serviceLocale].feedSort}
+          />
           <span className="text-xs text-muted-foreground">
             {copy.count.replace("{count}", String(posts.length))}
           </span>
@@ -177,11 +194,11 @@ export function ThisOrThatClient({
               serviceLocale={serviceLocale}
               gameLocale={gameLocale}
               isOwner={Boolean(userId && resolvedPost.post.user_id === userId)}
-              likeCount={likes.counts[resolvedPost.post.id] ?? 0}
+              likeCount={likes.counts[resolvedPost.post.id] ?? likeCounts[resolvedPost.post.id] ?? 0}
               liked={likes.liked.has(resolvedPost.post.id)}
               likesLoading={likes.loading}
               likesUnavailable={likes.unavailable}
-              commentCount={comments.counts[resolvedPost.post.id] ?? 0}
+              commentCount={commentCounts[resolvedPost.post.id] ?? 0}
               canLike={ready && !authUnavailable}
               canVote={ready && !authUnavailable && !votes.loading && !votes.unavailable}
               voteSummary={votes.summaries[resolvedPost.post.id]}
@@ -196,6 +213,14 @@ export function ThisOrThatClient({
               onRetryVote={() => votes.cancel(resolvedPost.post.id)}
             />
           ))}
+          <FeedLoadMoreSentinel
+            hasMore={hasMore}
+            loadingMore={loadingMore}
+            disabled={storageUnavailable}
+            extraKey={posts.length}
+            label={copy.loadingMore}
+            onLoadMore={() => { void loadMore(); }}
+          />
         </div>
       )}
     </div>

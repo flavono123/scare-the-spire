@@ -114,6 +114,8 @@ export interface TransfigurePost {
   content_text: string;
   env: string;
   created_at: string;
+  like_count?: number;
+  comment_count?: number;
 }
 
 export interface TransfigureCardKeywords {

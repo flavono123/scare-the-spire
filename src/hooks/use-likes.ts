@@ -31,6 +31,11 @@ export function useLikes(
   const [countLoading, setCountLoading] = useState(supabaseEnabled && initialCount === undefined);
   const [resolvedUserStatusKey, setResolvedUserStatusKey] = useState<string | null>(null);
   const [unavailable, setUnavailable] = useState(false);
+  const [seenInitialCount, setSeenInitialCount] = useState(initialCount);
+  if (seenInitialCount !== initialCount) {
+    setSeenInitialCount(initialCount);
+    setOptimisticDelta(0);
+  }
   const count = Math.max(0, (initialCount ?? fetchedCount) + optimisticDelta);
   const userStatusKey = userId ? `${storyId}:${userId}` : null;
   const userStatusLoading = supabaseEnabled && !!userStatusKey && resolvedUserStatusKey !== userStatusKey;

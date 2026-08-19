@@ -1,17 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "@/components/ui/static-image";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { FeedLoadMoreSentinel } from "@/components/feed-load-more-sentinel";
+import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useComboPosts } from "@/hooks/use-combo-posts";
-import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { useUserProfile } from "@/hooks/use-user-profile";
-import { buildComboCommentThreadKey } from "@/lib/comment-threads";
 import type { PostBlock } from "@/lib/chemical-types";
 import {
   comboPostMatchesAnyGameElement,
@@ -19,6 +19,7 @@ import {
   type ComboResourceRef,
 } from "@/lib/combo-types";
 import type { GameLocale } from "@/lib/i18n";
+import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 import { buildComboEntityMap } from "./combo-post-renderer";
@@ -40,8 +41,11 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].combo;
   const { userId, ready, ensureUser } = useAuth();
+  const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
   const {
     posts,
+    likeCounts,
+    commentCounts,
     loading,
     loadingMore,
     hasMore,
@@ -49,12 +53,10 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
     loadMore,
     add,
     update,
-  } = useComboPosts(userId);
-  const engagement = useEngagementCounts({ enabled: !unavailable });
+  } = useComboPosts(userId, sort);
   const [composerOpen, setComposerOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<ComboPost | null>(null);
   const [selectedGameElements, setSelectedGameElements] = useState<ComboResourceRef[]>([]);
-  const loadMoreRef = useRef<HTMLDivElement>(null);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
     [copy.defaultNickname],
@@ -67,20 +69,6 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
     )),
     [posts, selectedGameElements],
   );
-
-  useEffect(() => {
-    const element = loadMoreRef.current;
-    if (!element || !hasMore || loadingMore || unavailable) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) void loadMore();
-      },
-      { rootMargin: "400px" },
-    );
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [hasMore, loadMore, loadingMore, unavailable, filteredPosts.length]);
 
   const handleSubmit = useCallback(async (blocks: PostBlock[], nickname: string) => {
     const activeUserId = userId ?? await ensureUser();
@@ -148,6 +136,11 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
 
       {!loading && !unavailable && (
         <div className="space-y-3">
+          <FeedSortToggle
+            sort={sort}
+            onSortChange={setSort}
+            labels={serviceMessages[serviceLocale].feedSort}
+          />
           <ComboGameElementFilter
             entities={entities}
             posts={posts}
@@ -172,9 +165,7 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
           {filteredPosts.length === 0 ? (
             <p className="py-8 text-center text-sm text-zinc-500">{copy.noMatchingCombos}</p>
           ) : (
-            filteredPosts.map((post) => {
-              const threadKey = buildComboCommentThreadKey(post.id);
-              return (
+            filteredPosts.map((post) => (
                 <ComboPostCard
                   key={post.id}
                   post={post}
@@ -185,20 +176,20 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
                   userId={userId}
                   authReady={ready}
                   ensureUser={ensureUser}
-                  commentCount={engagement.comments[threadKey] ?? 0}
-                  likeCount={engagement.likes[threadKey] ?? 0}
+                  commentCount={commentCounts[post.id] ?? 0}
+                  likeCount={likeCounts[post.id] ?? 0}
                 />
-              );
-            })
+            ))
           )}
           {hasMore && (
-            <div
-              ref={loadMoreRef}
-              className="flex min-h-8 items-center justify-center py-2 text-xs text-zinc-500"
-              aria-hidden={loadingMore ? undefined : true}
-            >
-              {loadingMore ? copy.loadingMore : null}
-            </div>
+            <FeedLoadMoreSentinel
+              hasMore={hasMore}
+              loadingMore={loadingMore}
+              disabled={unavailable}
+              extraKey={filteredPosts.length}
+              label={copy.loadingMore}
+              onLoadMore={() => { void loadMore(); }}
+            />
           )}
         </div>
       )}

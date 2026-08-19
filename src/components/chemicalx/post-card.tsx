@@ -1,11 +1,13 @@
 "use client";
 
-import Link from "next/link";
-import { ExternalLink } from "lucide-react";
+import { useCallback, type KeyboardEvent, type MouseEvent } from "react";
+import { useRouter } from "next/navigation";
 import type { ChemicalPost } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import { IndexCardEngagement } from "@/components/index-card-engagement";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { PostRenderer } from "./post-renderer";
+import { buildChemicalXCommentThreadKey } from "@/lib/comment-threads";
 import { localizeHref } from "@/lib/i18n";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
@@ -15,6 +17,11 @@ interface PostCardProps {
   entityMap: Map<string, EntityInfo>;
   forceShowTooltips?: boolean;
   isOwner?: boolean;
+  userId?: string | null;
+  authReady?: boolean;
+  ensureUser?: () => Promise<string | null>;
+  commentCount?: number;
+  likeCount?: number;
 }
 
 function formatRelativeTime(template: string, count: number): string {
@@ -44,14 +51,43 @@ export function PostCard({
   entityMap,
   forceShowTooltips,
   isOwner = false,
+  userId = null,
+  authReady = true,
+  ensureUser,
+  commentCount = 0,
+  likeCount = 0,
 }: PostCardProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
+  const router = useRouter();
+  const href = localizeHref(`/chemical-x/${post.id}`, serviceLocale);
+  const commentsHref = `${href}#comments`;
+  const threadKey = buildChemicalXCommentThreadKey(post.id);
+  const openPost = useCallback(() => {
+    router.push(href);
+  }, [href, router]);
+  const handleClick = useCallback((event: MouseEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement;
+    if (target.closest("a, button, [role='button']")) return;
+    openPost();
+  }, [openPost]);
+  const handleKeyDown = useCallback((event: KeyboardEvent<HTMLElement>) => {
+    if (event.target !== event.currentTarget) return;
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    openPost();
+  }, [openPost]);
 
   return (
-    <div className="group border border-border rounded-lg bg-card/30 px-4 py-3 transition-colors hover:border-yellow-500/20">
-      <div className="flex items-center justify-between mb-1.5">
+    <article
+      role="link"
+      tabIndex={0}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      className="group cursor-pointer rounded-lg border border-border bg-card/30 px-4 py-3 transition-colors hover:border-yellow-500/20 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70"
+    >
+      <div className="mb-1.5 flex items-center justify-between">
         <span className="inline-flex min-w-0 items-center gap-1.5">
           <span className="truncate text-sm font-semibold text-gray-300">
             {post.nickname}
@@ -62,14 +98,15 @@ export function PostCard({
           <span className="text-xs text-gray-500">
             {timeAgo(post.created_at, copy, dateLocale)}
           </span>
-          <Link
-            href={localizeHref(`/chemical-x/${post.id}`, serviceLocale)}
-            prefetch={false}
-            className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-[#d4a843] transition-all"
-            title={copy.share}
-          >
-            <ExternalLink size={14} />
-          </Link>
+          <IndexCardEngagement
+            commentsHref={commentsHref}
+            commentCount={commentCount}
+            likeStoryId={threadKey}
+            likeCount={likeCount}
+            userId={userId}
+            authReady={authReady}
+            ensureUser={ensureUser}
+          />
         </div>
       </div>
 
@@ -80,6 +117,6 @@ export function PostCard({
           forceShowTooltips={forceShowTooltips}
         />
       </div>
-    </div>
+    </article>
   );
 }

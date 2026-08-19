@@ -6,10 +6,13 @@ import { Eye, EyeOff } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { FeedLoadMoreSentinel } from "@/components/feed-load-more-sentinel";
+import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { useAuth } from "@/hooks/use-auth";
 import { useChemicalPosts } from "@/hooks/use-chemical-posts";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
@@ -26,7 +29,18 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
   const { userId, ready, ensureUser } = useAuth();
-  const { posts, loading, unavailable, add } = useChemicalPosts(userId);
+  const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
+  const {
+    posts,
+    likeCounts,
+    commentCounts,
+    loading,
+    loadingMore,
+    hasMore,
+    unavailable,
+    loadMore,
+    add,
+  } = useChemicalPosts(userId, sort);
   const [showAllTooltips, setShowAllTooltips] = useState(false);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
@@ -75,19 +89,26 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
 
       {/* Toolbar */}
       {!loading && !storageUnavailable && (
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-500">
-            {copy.count.replace("{count}", String(posts.length))}
-          </span>
-          <button
-            type="button"
-            onClick={() => setShowAllTooltips((v) => !v)}
-            className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-yellow-400 transition-colors"
-            title={showAllTooltips ? copy.hideTooltips : copy.showAllTooltipsTitle}
-          >
-            {showAllTooltips ? <EyeOff size={14} /> : <Eye size={14} />}
-            {showAllTooltips ? copy.hideTooltips : copy.showAllTooltips}
-          </button>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <FeedSortToggle
+            sort={sort}
+            onSortChange={setSort}
+            labels={serviceMessages[serviceLocale].feedSort}
+          />
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-gray-500">
+              {copy.count.replace("{count}", String(posts.length))}
+            </span>
+            <button
+              type="button"
+              onClick={() => setShowAllTooltips((v) => !v)}
+              className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-yellow-400 transition-colors"
+              title={showAllTooltips ? copy.hideTooltips : copy.showAllTooltipsTitle}
+            >
+              {showAllTooltips ? <EyeOff size={14} /> : <Eye size={14} />}
+              {showAllTooltips ? copy.hideTooltips : copy.showAllTooltips}
+            </button>
+          </div>
         </div>
       )}
 
@@ -107,8 +128,21 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
               entityMap={entityMap}
               forceShowTooltips={showAllTooltips}
               isOwner={Boolean(userId && post.user_id === userId)}
+              userId={userId}
+              authReady={ready}
+              ensureUser={ensureUser}
+              commentCount={commentCounts[post.id] ?? 0}
+              likeCount={likeCounts[post.id] ?? 0}
             />
           ))}
+          <FeedLoadMoreSentinel
+            hasMore={hasMore}
+            loadingMore={loadingMore}
+            disabled={storageUnavailable}
+            extraKey={posts.length}
+            label={copy.loadingMore}
+            onLoadMore={() => { void loadMore(); }}
+          />
         </div>
       )}
     </div>

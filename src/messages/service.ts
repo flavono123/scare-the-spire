@@ -156,6 +156,11 @@ export const serviceMessages = {
       unlike: "좋아요 취소",
     },
     ownPostLabel: "내 글",
+    feedSort: {
+      recommended: "추천",
+      comments: "댓글",
+      latest: "최신",
+    },
     deleteConfirm: {
       title: "이 글을 삭제할까요?",
       body: "삭제하면 되돌릴 수 없습니다.",
@@ -233,6 +238,8 @@ export const serviceMessages = {
       copied: "복사됨!",
       collapse: "접기",
       expand: "펼치기",
+      commentsTitle: "댓글",
+      loadingMore: "더 불러오는 중...",
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
     },
     combo: {
@@ -389,6 +396,7 @@ export const serviceMessages = {
       assetImageDownloadFailed: "변형된 이미지를 다운로드하지 못했습니다. 다시 시도해 주세요.",
       assetImageFileName: "변형-{name}.png",
       commentsTitle: "댓글",
+      loadingMore: "더 불러오는 중...",
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
     },
     thisOrThat: {
@@ -416,6 +424,7 @@ export const serviceMessages = {
       searchPlaceholder: "게임 요소 검색",
       reasonPlaceholder: "왜 이 둘인가요?",
       commentsTitle: "댓글",
+      loadingMore: "더 불러오는 중...",
       justNow: "방금",
       minutesAgo: "{count}분 전",
       hoursAgo: "{count}시간 전",
@@ -1161,6 +1170,11 @@ export const serviceMessages = {
       unlike: "Unlike",
     },
     ownPostLabel: "Mine",
+    feedSort: {
+      recommended: "Recommended",
+      comments: "Comments",
+      latest: "Latest",
+    },
     deleteConfirm: {
       title: "Delete this post?",
       body: "This cannot be undone.",
@@ -1238,6 +1252,8 @@ export const serviceMessages = {
       copied: "Copied!",
       collapse: "Collapse",
       expand: "Expand",
+      commentsTitle: "Comments",
+      loadingMore: "Loading more...",
       unavailableTitle: "No responses from database",
     },
     combo: {
@@ -1394,6 +1410,7 @@ export const serviceMessages = {
       assetImageDownloadFailed: "Could not download the transfigured image. Please try again.",
       assetImageFileName: "transfigured-{name}.png",
       commentsTitle: "Comments",
+      loadingMore: "Loading more...",
       unavailableTitle: "No responses from database",
     },
     thisOrThat: {
@@ -1421,6 +1438,7 @@ export const serviceMessages = {
       searchPlaceholder: "Search Compendium resources",
       reasonPlaceholder: "Why these two?",
       commentsTitle: "Comments",
+      loadingMore: "Loading more...",
       justNow: "Just now",
       minutesAgo: "{count}m ago",
       hoursAgo: "{count}h ago",

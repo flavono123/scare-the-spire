@@ -1,18 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { PostBlock } from "@/lib/chemical-types";
 import {
-  buildComboFeedKeysetFilter,
-  COMBO_FEED_PAGE_SIZE,
   countComboYouTubeReferences,
   extractComboResourceRefs,
-  type ComboFeedCursor,
   type ComboPost,
 } from "@/lib/combo-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
+import { useToyboxFeed } from "@/hooks/use-toybox-feed";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import type { ToyboxFeedSort } from "@/lib/toybox-feed";
 
 export interface SaveComboPostInput {
   blocks: PostBlock[];
@@ -22,6 +21,8 @@ export interface SaveComboPostInput {
 
 interface UseComboPostsReturn {
   posts: ComboPost[];
+  likeCounts: Record<string, number>;
+  commentCounts: Record<string, number>;
   loading: boolean;
   loadingMore: boolean;
   hasMore: boolean;
@@ -45,10 +46,6 @@ interface UseComboPostReturn {
 
 function normalizePost(row: unknown): ComboPost {
   return row as ComboPost;
-}
-
-function cursorFromPost(post: ComboPost): ComboFeedCursor {
-  return { createdAt: post.created_at, id: post.id };
 }
 
 function validateSaveInput(input: SaveComboPostInput) {
@@ -97,146 +94,29 @@ async function persistComboPostUpdate(
   ).catch(() => ({ data: null, error: new Error("timeout") }));
 }
 
-function buildComboFeedQuery(cursor: ComboFeedCursor | null) {
-  let query = supabase
-    .from("combo_posts")
-    .select("*")
-    .eq("env", supabaseEnv)
-    .order("created_at", { ascending: false })
-    .order("id", { ascending: false })
-    .limit(COMBO_FEED_PAGE_SIZE);
-
-  if (cursor) {
-    query = query.or(buildComboFeedKeysetFilter(cursor));
-  }
-
-  return query;
-}
-
-export function useComboPosts(userId: string | null): UseComboPostsReturn {
-  const [posts, setPosts] = useState<ComboPost[]>([]);
-  const [loading, setLoading] = useState(supabaseEnabled);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(false);
-  const [unavailable, setUnavailable] = useState(!supabaseEnabled);
-  const loadingMoreRef = useRef(false);
-  const cursorRef = useRef<ComboFeedCursor | null>(null);
-
-  useEffect(() => {
-    if (!supabaseEnabled) return;
-    let cancelled = false;
-
-    withSupabaseTimeout(
-      "combo_posts.select",
-      buildComboFeedQuery(null),
-    )
-      .then(({ data, error }) => {
-        if (error) throw error;
-        if (cancelled) return;
-        const nextPosts = (data ?? []).map(normalizePost);
-        setPosts(nextPosts);
-        cursorRef.current = nextPosts.length > 0
-          ? cursorFromPost(nextPosts[nextPosts.length - 1])
-          : null;
-        setHasMore(nextPosts.length >= COMBO_FEED_PAGE_SIZE);
-        setUnavailable(false);
-        setLoading(false);
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setUnavailable(true);
-        setLoading(false);
-      });
-
-    const channel = supabase
-      .channel("combo_posts")
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "combo_posts",
-        },
-        (payload) => {
-          const updatedPost = normalizePost(payload.new);
-          if (updatedPost.env !== supabaseEnv) return;
-          setPosts((current) => current.map((post) => (
-            post.id === updatedPost.id ? updatedPost : post
-          )));
-        },
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "combo_posts",
-        },
-        (payload) => {
-          const newPost = normalizePost(payload.new);
-          if (newPost.env !== supabaseEnv) return;
-          setPosts((current) => {
-            if (current.some((post) => post.id === newPost.id)) return current;
-            return [newPost, ...current];
-          });
-        },
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "DELETE",
-          schema: "public",
-          table: "combo_posts",
-        },
-        (payload) => {
-          setPosts((current) => current.filter((post) => post.id !== payload.old.id));
-        },
-      )
-      .subscribe((status) => {
-        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
-          setUnavailable(true);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  const loadMore = useCallback(async () => {
-    if (!supabaseEnabled || loadingMoreRef.current || !hasMore) return;
-    const cursor = cursorRef.current;
-    if (!cursor) return;
-
-    loadingMoreRef.current = true;
-    setLoadingMore(true);
-
-    try {
-      const { data, error } = await withSupabaseTimeout(
-        "combo_posts.more",
-        buildComboFeedQuery(cursor),
-      );
-      if (error) throw error;
-
-      const nextPosts = (data ?? []).map(normalizePost);
-      setPosts((current) => {
-        const seen = new Set(current.map((post) => post.id));
-        const appended = nextPosts.filter((post) => !seen.has(post.id));
-        return appended.length > 0 ? [...current, ...appended] : current;
-      });
-      if (nextPosts.length > 0) {
-        cursorRef.current = cursorFromPost(nextPosts[nextPosts.length - 1]);
-      }
-      setHasMore(nextPosts.length >= COMBO_FEED_PAGE_SIZE);
-      setUnavailable(false);
-    } catch {
-      setUnavailable(true);
-    } finally {
-      loadingMoreRef.current = false;
-      setLoadingMore(false);
-    }
-  }, [hasMore]);
+export function useComboPosts(
+  userId: string | null,
+  sort: ToyboxFeedSort = "latest",
+): UseComboPostsReturn {
+  const {
+    posts,
+    likeCounts,
+    commentCounts,
+    loading,
+    loadingMore,
+    hasMore,
+    unavailable,
+    loadMore,
+    prependPost,
+    replacePost,
+    removePost,
+    setUnavailable,
+  } = useToyboxFeed({
+    service: "combo",
+    table: "combo_posts",
+    sort,
+    normalizePost,
+  });
 
   const add = useCallback(
     async ({
@@ -270,13 +150,10 @@ export function useComboPosts(userId: string | null): UseComboPostsReturn {
       if (!data) return null;
 
       const post = normalizePost(data);
-      setPosts((current) => {
-        if (current.some((item) => item.id === post.id)) return current;
-        return [post, ...current];
-      });
+      prependPost(post, data);
       return post;
     },
-    [userId],
+    [prependPost, setUnavailable, userId],
   );
 
   const update = useCallback(
@@ -292,12 +169,10 @@ export function useComboPosts(userId: string | null): UseComboPostsReturn {
       if (!data) return null;
 
       const post = normalizePost(data);
-      setPosts((current) => current.map((item) => (
-        item.id === post.id ? post : item
-      )));
+      replacePost(post, data);
       return post;
     },
-    [userId],
+    [replacePost, setUnavailable, userId],
   );
 
   const remove = useCallback(
@@ -311,13 +186,15 @@ export function useComboPosts(userId: string | null): UseComboPostsReturn {
         setUnavailable(true);
         return;
       }
-      setPosts((current) => current.filter((post) => post.id !== postId));
+      removePost(postId);
     },
-    [userId],
+    [removePost, setUnavailable, userId],
   );
 
   return {
     posts,
+    likeCounts,
+    commentCounts,
     loading,
     loadingMore,
     hasMore,

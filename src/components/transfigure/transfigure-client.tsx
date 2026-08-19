@@ -5,19 +5,20 @@ import dynamic from "next/dynamic";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { FeedLoadMoreSentinel } from "@/components/feed-load-more-sentinel";
+import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { RichText } from "@/components/rich-text";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import Image from "@/components/ui/static-image";
 import { useAuth } from "@/hooks/use-auth";
-import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
   useTransfigurePosts,
   type SaveTransfigurePostInput,
 } from "@/hooks/use-transfigure-posts";
 import { useUserProfile } from "@/hooks/use-user-profile";
-import { buildTransfigureCommentThreadKey } from "@/lib/comment-threads";
 import type { GameLocale } from "@/lib/i18n";
+import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import type { TransfigurePost } from "@/lib/transfigure-types";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
@@ -48,8 +49,20 @@ export function TransfigureClient({
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].transfigure;
   const { userId, ready, ensureUser } = useAuth();
-  const { posts, loading, unavailable, add, update, remove } = useTransfigurePosts(userId);
-  const engagement = useEngagementCounts({ enabled: !unavailable });
+  const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
+  const {
+    posts,
+    likeCounts,
+    commentCounts,
+    loading,
+    loadingMore,
+    hasMore,
+    unavailable,
+    loadMore,
+    add,
+    update,
+    remove,
+  } = useTransfigurePosts(userId, sort);
   const [composerOpen, setComposerOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<TransfigurePost | null>(null);
   const [saveNotice, setSaveNotice] = useState<string | null>(null);
@@ -162,9 +175,16 @@ export function TransfigureClient({
       )}
 
       {!loading && !unavailable && (
-        <span className="block text-xs text-gray-500">
-          {copy.count.replace("{count}", String(posts.length))}
-        </span>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <FeedSortToggle
+            sort={sort}
+            onSortChange={setSort}
+            labels={serviceMessages[serviceLocale].feedSort}
+          />
+          <span className="text-xs text-gray-500">
+            {copy.count.replace("{count}", String(posts.length))}
+          </span>
+        </div>
       )}
 
       {unavailable ? (
@@ -175,9 +195,7 @@ export function TransfigureClient({
         <p className="py-8 text-center text-sm text-zinc-500">{copy.empty}</p>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
-          {posts.map((post) => {
-            const threadKey = buildTransfigureCommentThreadKey(post.id);
-            return (
+          {posts.map((post) => (
               <TransfigurePostCard
                 key={post.id}
                 post={post}
@@ -190,11 +208,18 @@ export function TransfigureClient({
                 userId={userId}
                 authReady={ready}
                 ensureUser={ensureUser}
-                commentCount={engagement.comments[threadKey] ?? 0}
-                likeCount={engagement.likes[threadKey] ?? 0}
+                commentCount={commentCounts[post.id] ?? 0}
+                likeCount={likeCounts[post.id] ?? 0}
               />
-            );
-          })}
+          ))}
+          <FeedLoadMoreSentinel
+            hasMore={hasMore}
+            loadingMore={loadingMore}
+            disabled={unavailable}
+            extraKey={posts.length}
+            label={copy.loadingMore}
+            onLoadMore={() => { void loadMore(); }}
+          />
         </div>
       )}
     </div>

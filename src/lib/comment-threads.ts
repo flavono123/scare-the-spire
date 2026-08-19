@@ -17,3 +17,11 @@ export function buildComboCommentThreadKey(postId: string): string {
 export function buildTransfigureCommentThreadKey(postId: string): string {
   return `transfigure:${postId}`;
 }
+
+export function buildThisOrThatCommentThreadKey(postId: string): string {
+  return `this-or-that:${postId}`;
+}
+
+export function buildChemicalXCommentThreadKey(postId: string): string {
+  return `chemical-x:${postId}`;
+}

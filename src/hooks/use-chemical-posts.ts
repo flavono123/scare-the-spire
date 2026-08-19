@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
+import { useToyboxFeed } from "@/hooks/use-toybox-feed";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import type { ChemicalPost, PostBlock } from "@/lib/chemical-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
@@ -9,87 +10,47 @@ import {
   CHEMICAL_POST_MAX_CHARS,
   CHEMICAL_POST_MIN_CHARS,
 } from "@/lib/content-limits";
+import type { ToyboxFeedSort } from "@/lib/toybox-feed";
 
 interface UseChemicalPostsReturn {
   posts: ChemicalPost[];
+  likeCounts: Record<string, number>;
+  commentCounts: Record<string, number>;
   loading: boolean;
+  loadingMore: boolean;
+  hasMore: boolean;
   unavailable: boolean;
+  loadMore: () => Promise<void>;
   add: (blocks: PostBlock[], nickname: string, activeUserId?: string) => Promise<void>;
   remove: (postId: string) => Promise<void>;
 }
 
-export function useChemicalPosts(userId: string | null): UseChemicalPostsReturn {
-  const [posts, setPosts] = useState<ChemicalPost[]>([]);
-  const [loading, setLoading] = useState(supabaseEnabled);
-  const [unavailable, setUnavailable] = useState(false);
+function normalizePost(row: unknown): ChemicalPost {
+  return row as ChemicalPost;
+}
 
-  useEffect(() => {
-    if (!supabaseEnabled) return;
-    let cancelled = false;
-
-    withSupabaseTimeout(
-      "chemical_posts.select",
-      supabase
-        .from("chemical_posts")
-        .select("*")
-        .eq("env", supabaseEnv)
-        .order("created_at", { ascending: false })
-        .limit(50),
-    )
-      .then(({ data, error }) => {
-        if (error) throw error;
-        if (cancelled) return;
-        setPosts(data ?? []);
-        setUnavailable(false);
-        setLoading(false);
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setUnavailable(true);
-        setLoading(false);
-      });
-
-    const channel = supabase
-      .channel("chemical_posts")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "chemical_posts",
-        },
-        (payload) => {
-          const newPost = payload.new as ChemicalPost;
-          if (newPost.env === supabaseEnv) {
-            setPosts((prev) => {
-              if (prev.some((p) => p.id === newPost.id)) return prev;
-              return [newPost, ...prev];
-            });
-          }
-        },
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "DELETE",
-          schema: "public",
-          table: "chemical_posts",
-        },
-        (payload) => {
-          setPosts((prev) => prev.filter((p) => p.id !== payload.old.id));
-        },
-      )
-      .subscribe((status) => {
-        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
-          setUnavailable(true);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-      supabase.removeChannel(channel);
-    };
-  }, []);
+export function useChemicalPosts(
+  userId: string | null,
+  sort: ToyboxFeedSort = "latest",
+): UseChemicalPostsReturn {
+  const {
+    posts,
+    likeCounts,
+    commentCounts,
+    loading,
+    loadingMore,
+    hasMore,
+    unavailable,
+    loadMore,
+    prependPost,
+    removePost,
+    setUnavailable,
+  } = useToyboxFeed({
+    service: "chemical_x",
+    table: "chemical_posts",
+    sort,
+    normalizePost,
+  });
 
   const add = useCallback(
     async (blocks: PostBlock[], nickname: string, activeUserId = userId) => {
@@ -126,10 +87,10 @@ export function useChemicalPosts(userId: string | null): UseChemicalPostsReturn 
       }
 
       if (data) {
-        setPosts((prev) => [data as ChemicalPost, ...prev]);
+        prependPost(normalizePost(data), data);
       }
     },
-    [userId],
+    [prependPost, setUnavailable, userId],
   );
 
   const remove = useCallback(
@@ -143,10 +104,21 @@ export function useChemicalPosts(userId: string | null): UseChemicalPostsReturn 
         setUnavailable(true);
         return;
       }
-      setPosts((prev) => prev.filter((p) => p.id !== postId));
+      removePost(postId);
     },
-    [userId],
+    [removePost, setUnavailable, userId],
   );
 
-  return { posts, loading, unavailable, add, remove };
+  return {
+    posts,
+    likeCounts,
+    commentCounts,
+    loading,
+    loadingMore,
+    hasMore,
+    unavailable,
+    loadMore,
+    add,
+    remove,
+  };
 }

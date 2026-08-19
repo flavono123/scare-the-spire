@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useToyboxFeed } from "@/hooks/use-toybox-feed";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
@@ -8,6 +9,7 @@ import {
   type ThisOrThatPost,
   type ThisOrThatResourceRef,
 } from "@/lib/this-or-that";
+import type { ToyboxFeedSort } from "@/lib/toybox-feed";
 
 type AddThisOrThatPostInput = {
   left: ThisOrThatResourceRef;
@@ -19,8 +21,13 @@ type AddThisOrThatPostInput = {
 
 interface UseThisOrThatPostsReturn {
   posts: ThisOrThatPost[];
+  likeCounts: Record<string, number>;
+  commentCounts: Record<string, number>;
   loading: boolean;
+  loadingMore: boolean;
+  hasMore: boolean;
   unavailable: boolean;
+  loadMore: () => Promise<void>;
   add: (input: AddThisOrThatPostInput) => Promise<ThisOrThatPost | null>;
   remove: (postId: string) => Promise<void>;
 }
@@ -36,78 +43,28 @@ function normalizePost(row: unknown): ThisOrThatPost {
   return row as ThisOrThatPost;
 }
 
-export function useThisOrThatPosts(userId: string | null): UseThisOrThatPostsReturn {
-  const [posts, setPosts] = useState<ThisOrThatPost[]>([]);
-  const [loading, setLoading] = useState(supabaseEnabled);
-  const [unavailable, setUnavailable] = useState(!supabaseEnabled);
-
-  useEffect(() => {
-    if (!supabaseEnabled) return;
-    let cancelled = false;
-
-    withSupabaseTimeout(
-      "this_or_that_posts.select",
-      supabase
-        .from("this_or_that_posts")
-        .select("*")
-        .eq("env", supabaseEnv)
-        .order("created_at", { ascending: false })
-        .limit(50),
-    )
-      .then(({ data, error }) => {
-        if (error) throw error;
-        if (cancelled) return;
-        setPosts((data ?? []).map(normalizePost));
-        setUnavailable(false);
-        setLoading(false);
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setUnavailable(true);
-        setLoading(false);
-      });
-
-    const channel = supabase
-      .channel("this_or_that_posts")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "this_or_that_posts",
-        },
-        (payload) => {
-          const newPost = normalizePost(payload.new);
-          if (newPost.env === supabaseEnv) {
-            setPosts((prev) => {
-              if (prev.some((post) => post.id === newPost.id)) return prev;
-              return [newPost, ...prev].slice(0, 50);
-            });
-          }
-        },
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "DELETE",
-          schema: "public",
-          table: "this_or_that_posts",
-        },
-        (payload) => {
-          setPosts((prev) => prev.filter((post) => post.id !== payload.old.id));
-        },
-      )
-      .subscribe((status) => {
-        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
-          setUnavailable(true);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-      supabase.removeChannel(channel);
-    };
-  }, []);
+export function useThisOrThatPosts(
+  userId: string | null,
+  sort: ToyboxFeedSort = "latest",
+): UseThisOrThatPostsReturn {
+  const {
+    posts,
+    likeCounts,
+    commentCounts,
+    loading,
+    loadingMore,
+    hasMore,
+    unavailable,
+    loadMore,
+    prependPost,
+    removePost,
+    setUnavailable,
+  } = useToyboxFeed({
+    service: "this_or_that",
+    table: "this_or_that_posts",
+    sort,
+    normalizePost,
+  });
 
   const add = useCallback(
     async ({
@@ -156,13 +113,10 @@ export function useThisOrThatPosts(userId: string | null): UseThisOrThatPostsRet
 
       if (!data) return null;
       const post = normalizePost(data);
-      setPosts((prev) => {
-        if (prev.some((item) => item.id === post.id)) return prev;
-        return [post, ...prev].slice(0, 50);
-      });
+      prependPost(post, data);
       return post;
     },
-    [userId],
+    [prependPost, setUnavailable, userId],
   );
 
   const remove = useCallback(
@@ -176,12 +130,23 @@ export function useThisOrThatPosts(userId: string | null): UseThisOrThatPostsRet
         setUnavailable(true);
         return;
       }
-      setPosts((prev) => prev.filter((post) => post.id !== postId));
+      removePost(postId);
     },
-    [userId],
+    [removePost, setUnavailable, userId],
   );
 
-  return { posts, loading, unavailable, add, remove };
+  return {
+    posts,
+    likeCounts,
+    commentCounts,
+    loading,
+    loadingMore,
+    hasMore,
+    unavailable,
+    loadMore,
+    add,
+    remove,
+  };
 }
 
 export function useThisOrThatPost(

@@ -14,6 +14,7 @@ import { useThisOrThatEntities } from "@/hooks/use-this-or-that-entities";
 import { useThisOrThatLikes } from "@/hooks/use-this-or-that-likes";
 import { useThisOrThatPost } from "@/hooks/use-this-or-that-posts";
 import { useThisOrThatVotes } from "@/hooks/use-this-or-that-votes";
+import { buildThisOrThatCommentThreadKey } from "@/lib/comment-threads";
 import type { GameLocale } from "@/lib/i18n";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import {
@@ -55,7 +56,11 @@ export function ThisOrThatPostView({
     loading: resourcesLoading,
   } = useThisOrThatEntities(gameLocale);
   const postIds = useMemo(() => post ? [post.id] : [], [post]);
-  const likes = useThisOrThatLikes(postIds, userId);
+  const seedLikeCounts = useMemo(
+    () => (post ? { [post.id]: post.like_count ?? 0 } : {}),
+    [post],
+  );
+  const likes = useThisOrThatLikes(postIds, userId, seedLikeCounts);
   const votes = useThisOrThatVotes(postIds, userId, ensureUser);
   const entityMap = useMemo(() => buildThisOrThatEntityMap(entities), [entities]);
   const resolvedPost = useMemo(
@@ -144,7 +149,7 @@ export function ThisOrThatPostView({
             </div>
           </div>
           <ThisOrThatLikeButton
-            count={likes.counts[resolvedPost.post.id] ?? 0}
+            count={likes.counts[resolvedPost.post.id] ?? resolvedPost.post.like_count ?? 0}
             liked={likes.liked.has(resolvedPost.post.id)}
             loading={likes.loading}
             unavailable={likes.unavailable}
@@ -230,12 +235,15 @@ export function ThisOrThatPostView({
         />
       </article>
 
-      <section className="rounded-lg border border-border bg-card/20 p-4">
+      <section
+        id="comments"
+        className="scroll-mt-16 rounded-lg border border-border bg-card/20 p-4"
+      >
         <h2 className="mb-3 font-service text-sm font-semibold text-zinc-300">
           {copy.commentsTitle}
         </h2>
         <CommentSection
-          threadKey={`this-or-that:${resolvedPost.post.id}`}
+          threadKey={buildThisOrThatCommentThreadKey(resolvedPost.post.id)}
           initialEntities={entities}
         />
       </section>

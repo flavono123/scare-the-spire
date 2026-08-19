@@ -82,4 +82,6 @@ export interface ChemicalPost {
   content_text: string;
   env: string;
   created_at: string;
+  like_count?: number;
+  comment_count?: number;
 }

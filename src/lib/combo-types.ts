@@ -1,5 +1,9 @@
 import type { EntityType } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
+import {
+  buildLatestFeedKeysetFilter,
+  TOYBOX_FEED_PAGE_SIZE,
+} from "@/lib/toybox-feed";
 import { isYouTubeVideoId } from "@/lib/youtube-reference";
 
 export interface ComboResourceRef {
@@ -16,13 +20,15 @@ export interface ComboPost {
   resources: ComboResourceRef[];
   env: string;
   created_at: string;
+  like_count?: number;
+  comment_count?: number;
 }
 
 export function comboResourceKey(resource: ComboResourceRef): string {
   return `${resource.type}:${resource.id}`;
 }
 
-export const COMBO_FEED_PAGE_SIZE = 20;
+export const COMBO_FEED_PAGE_SIZE = TOYBOX_FEED_PAGE_SIZE;
 
 export interface ComboFeedCursor {
   createdAt: string;
@@ -31,9 +37,7 @@ export interface ComboFeedCursor {
 
 /** PostgREST `.or()` filter for (created_at, id) keyset, newest-first. */
 export function buildComboFeedKeysetFilter(cursor: ComboFeedCursor): string {
-  const createdAt = cursor.createdAt.replaceAll('"', "");
-  const id = cursor.id.replaceAll('"', "");
-  return `created_at.lt."${createdAt}",and(created_at.eq."${createdAt}",id.lt."${id}")`;
+  return buildLatestFeedKeysetFilter(cursor);
 }
 
 export function comboPostMatchesAnyGameElement(

@@ -22,6 +22,8 @@ export interface ThisOrThatPost {
   reason: string;
   env: string;
   created_at: string;
+  like_count?: number;
+  comment_count?: number;
 }
 
 export interface ThisOrThatResolvedPost {
