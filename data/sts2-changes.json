@@ -12946,6 +12946,73 @@
         "after": 2,
         "diffType": "number"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "options",
+        "before": [
+          {
+            "id": "BIG_MUSHROOM",
+            "title": "커다란 버섯",
+            "description": "Obtain [gold]커다란 버섯[/gold]. 획득 시, 최대 체력이 [blue]20%[/blue] 증가합니다. 매 전투 시작 시 카드를 [blue]2[/blue]장 덜 뽑습니다."
+          },
+          {
+            "id": "FRAGRANT_MUSHROOM",
+            "title": "향기로운 버섯",
+            "description": "Obtain [gold]향기로운 버섯[/gold]. 획득 시, 최대 체력을 [red]15%[/red] 잃고 무작위 카드를 [blue]3[/blue]장 [gold]강화[/gold]합니다."
+          }
+        ],
+        "after": [
+          {
+            "id": "BIG_MUSHROOM",
+            "title": "커다란 버섯",
+            "description": "Obtain [gold]커다란 버섯[/gold]. 획득 시, 최대 체력이 [blue]20%[/blue] 증가합니다. 매 전투 시작 시 카드를 [blue]2[/blue]장 덜 뽑습니다."
+          },
+          {
+            "id": "FRAGRANT_MUSHROOM",
+            "title": "향기로운 버섯",
+            "description": "Obtain [gold]향기로운 버섯[/gold]. 획득 시, 최대 체력을 [red]15%[/red] 잃고 무작위 카드를 [blue]2[/blue]장 [gold]강화[/gold]합니다."
+          }
+        ]
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "relic",
+        "id": "FRAGRANT_MUSHROOM"
+      }
+    ]
+  },
+  {
+    "id": "fragrant-mushroom-v102-cards",
+    "entityType": "relic",
+    "entityId": "FRAGRANT_MUSHROOM",
+    "patch": "v0.102.0",
+    "date": "2026-04-03",
+    "character": null,
+    "summary": "Fragrant Mushroom upgraded cards decreased from 3 to 2.",
+    "summaryKo": "향기로운 버섯의 강화 카드 수가 3에서 2로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "cards",
+        "displayName": "Upgraded cards",
+        "displayNameKo": "강화 카드",
+        "before": 3,
+        "after": 2,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "vars.Cards",
+        "before": 3,
+        "after": 2
+      },
+      {
+        "field": "description",
+        "before": "획득 시, 체력을 [blue]15[/blue] 잃고 무작위 카드를 [blue]3[/blue]장 [gold]강화[/gold]합니다.",
+        "after": "획득 시, 체력을 [blue]15[/blue] 잃고 무작위 카드를 [blue]2[/blue]장 [gold]강화[/gold]합니다."
+      }
     ]
   },
   {
