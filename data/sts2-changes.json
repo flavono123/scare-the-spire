@@ -391,16 +391,37 @@
     "date": "2026-03-20",
     "character": "necrobinder",
     "summary": "Defy upgrade: removed extra Weak turn; grants more block instead.",
-    "summaryKo": "저항: 강화 시 추가 약화 턴 제거, 대신 방어도 증가.",
+    "summaryKo": "반항: 강화 시 추가 약화 턴 제거, 대신 방어도 증가.",
     "diffs": [
       {
-        "attribute": "mechanic",
-        "displayName": "Upgrade Effect",
-        "displayNameKo": "강화 효과",
-        "before": "Extra Weak turn on upgrade",
-        "after": "More Block on upgrade",
-        "diffType": "text",
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": 7,
+        "after": 9,
+        "diffType": "number",
         "upgraded": true
+      },
+      {
+        "attribute": "weak",
+        "displayName": "Weak",
+        "displayNameKo": "약화",
+        "before": 2,
+        "after": 1,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "upgrade",
+        "before": {
+          "block": "+1",
+          "weak": "+1"
+        },
+        "after": {
+          "block": "+3"
+        }
       }
     ]
   },
