@@ -1805,12 +1805,36 @@
     "summaryKo": "콰광 소라 유물: 이제 정예 전투 시작 시 에너지 1 획득.",
     "diffs": [
       {
-        "attribute": "effect",
-        "displayName": "Effect",
-        "displayNameKo": "효과",
+        "attribute": "energy",
+        "displayName": "Energy",
+        "displayNameKo": "에너지",
         "before": "Draw extra cards at Elite combat start.",
+        "beforeKo": "엘리트 전투 시작 시 카드를 추가로 뽑습니다.",
         "after": "Draw extra cards and gain 1 Energy at Elite combat start.",
+        "afterKo": "엘리트 전투 시작 시 카드를 추가로 뽑고 에너지 1을 얻습니다.",
         "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]엘리트[/gold] 전투 시작 시, 카드를 추가로 [blue]2[/blue]장 뽑습니다.",
+        "after": "[gold]엘리트[/gold] 전투 시작 시, 카드를 추가로 [blue]2[/blue]장 뽑고 [energy:1]를 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]엘리트[/gold] 전투 시작 시, 카드를 추가로 [blue]{Cards}[/blue]장 뽑습니다.",
+        "after": "[gold]엘리트[/gold] 전투 시작 시, 카드를 추가로 [blue]{Cards}[/blue]장 뽑고 {Energy:energyIcons()}를 얻습니다."
+      },
+      {
+        "field": "vars",
+        "before": {
+          "Cards": 2
+        },
+        "after": {
+          "Cards": 2,
+          "Energy": 1
+        }
       }
     ]
   },
