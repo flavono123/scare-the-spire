@@ -4030,7 +4030,7 @@
     "date": "2026-05-22",
     "character": null,
     "summary": "Punch Construct move flow changed and now applies Frail instead of Weak.",
-    "summaryKo": "주먹 구조물 행동 흐름이 바뀌고, 이제 약화 대신 허약을 부여합니다.",
+    "summaryKo": "권투형 구조체 행동 흐름이 바뀌고, 이제 약화 대신 손상을 부여합니다.",
     "diffs": [
       {
         "attribute": "moveset",
@@ -4046,12 +4046,217 @@
         "displayNameKo": "디버프",
         "before": "Weak",
         "after": "Frail",
-        "diffType": "text"
+        "diffType": "text",
+        "beforeKo": "약화",
+        "afterKo": "손상"
       }
     ],
     "visualDiff": {
       "type": "monster-pattern"
-    }
+    },
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "READY",
+            "name": "준비",
+            "nameEn": "READY",
+            "kind": "move",
+            "actionTypes": [
+              "defense"
+            ],
+            "intents": [
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "STRONG_PUNCH",
+            "name": "강한 펀치",
+            "nameEn": "Strong Punch",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "StrongPunch",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "FAST_PUNCH",
+            "name": "빠른 펀치",
+            "nameEn": "Fast Punch",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "debuff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "FastPunch",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "WEAK",
+                "powerName": "약화",
+                "powerNameEn": "Weak",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/weak_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "READY",
+            "name": "준비",
+            "nameEn": "READY",
+            "kind": "move",
+            "actionTypes": [
+              "defense"
+            ],
+            "intents": [
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "STRONG_PUNCH",
+            "name": "강한 펀치",
+            "nameEn": "Strong Punch",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "StrongPunch",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "FAST_PUNCH",
+            "name": "빠른 펀치",
+            "nameEn": "Fast Punch",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "debuff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "FastPunch",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "FRAIL",
+                "powerName": "손상",
+                "powerNameEn": "Frail",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/frail_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "skulking-colony-v106-change",
