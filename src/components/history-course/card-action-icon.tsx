@@ -3,6 +3,7 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
 import type { CardColor, CardRarityKo, CardTypeKo, CodexCard } from "@/lib/codex-types";
+import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
 
 // Direct port of `scenes/cards/tiny_card.tscn` + NTinyCard.cs from the PCK.
 // Sprite assets live under public/images/sts2/tiny-card/. The game tints them
@@ -171,4 +172,20 @@ export function TinyCardIcon({ card, width }: TinyCardIconProps) {
 
 export function CardActionIcon(props: CardActionIconProps) {
   return <TinyCardIcon {...props} />;
+}
+
+export function HistoryTinyCardIcon({
+  id,
+  width,
+}: {
+  id: string;
+  width: number;
+}) {
+  const visual = lookupHistoryCardVisual(id);
+  if (!visual) {
+    return (
+      <div aria-hidden className="shrink-0" style={{ width, height: width }} />
+    );
+  }
+  return <TinyCardIcon card={visual} width={width} />;
 }

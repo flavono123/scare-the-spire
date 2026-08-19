@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { CardActionIcon } from "@/components/history-course/card-action-icon";
+import { HistoryTinyCardIcon } from "@/components/history-course/card-action-icon";
 import { NodeTooltip } from "@/components/history-course/node-tooltip";
 import { RunBadgeStrip } from "@/components/history-course/run-badge-strip";
 import {
@@ -17,6 +17,7 @@ import {
   historyCardDisplayName,
   lookupHistoryCard,
 } from "@/lib/history-card-lookup";
+import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
 import { TEXT_CREAM, TEXT_GREEN } from "@/lib/sts2-card-style";
 import { serviceMessages } from "@/messages/service";
 import type { CodexCard, CodexRelic } from "@/lib/codex-types";
@@ -762,7 +763,7 @@ function DeckSection({
 }) {
   const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   const total = deck.reduce((acc, e) => acc + e.count, 0);
-  const counts = countDeckByRarity(deck, cardsById);
+  const counts = countDeckByRarity(deck);
   return (
     <div>
       <p className="text-xs font-bold text-amber-200">
@@ -832,11 +833,7 @@ function DeckEntry({
     </span>
   );
 
-  const iconNode = card ? (
-    <CardActionIcon card={card} width={22} />
-  ) : (
-    <div aria-hidden className="h-[22px] w-[22px] shrink-0" />
-  );
+  const iconNode = <HistoryTinyCardIcon id={entry.id} width={22} />;
 
   // The whole row scales up so both the action glyph and the card name pop
   // together — origin pinned left so the name doesn't slide into the next
@@ -874,18 +871,14 @@ function DeckEntry({
   );
 }
 
-function countDeckByRarity(
-  deck: TopbarState["deck"],
-  cardsById: Record<string, CodexCard>,
-) {
+function countDeckByRarity(deck: TopbarState["deck"]) {
   let rare = 0;
   let uncommon = 0;
   let common = 0;
   let curse = 0;
   let starter = 0;
   for (const entry of deck) {
-    const card = lookupHistoryCard(cardsById, entry.id);
-    const rarity = card?.rarity ?? "기본";
+    const rarity = lookupHistoryCardVisual(entry.id)?.rarity ?? "기본";
     const n = entry.count;
     if (rarity === "희귀") rare += n;
     else if (rarity === "고급") uncommon += n;

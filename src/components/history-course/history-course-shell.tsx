@@ -6,7 +6,7 @@ import {
   MapBackdrop,
   SeededMapView,
 } from "@/components/dev/run-replay-poc";
-import { CardActionIcon } from "@/components/history-course/card-action-icon";
+import { HistoryTinyCardIcon } from "@/components/history-course/card-action-icon";
 import { DeckModal } from "@/components/history-course/deck-modal";
 import {
   NodeActionStack,
@@ -23,6 +23,8 @@ import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
+import { lookupHistoryCard } from "@/lib/history-card-lookup";
+import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
 import {
   analyzeReplayRun,
   type ReplayHistoryEntry,
@@ -316,8 +318,10 @@ function sanitizeNeowEntry(
   // option), etc. all read as legitimate stack items.
   const filteredCardsGained = (entry.cards_gained ?? []).filter((c) => {
     if (!c.id) return false;
-    const card = cardsById[c.id];
-    return card?.rarity !== "기본";
+    const rarity =
+      lookupHistoryCard(cardsById, c.id)?.rarity ??
+      lookupHistoryCardVisual(c.id)?.rarity;
+    return rarity !== "기본";
   });
 
   // Drop the character's starter relic (always player.relics[0]). Every
@@ -427,10 +431,7 @@ function buildStackItems(
   const placeholderIcon = (
     <span aria-hidden className="inline-block h-8 w-8 shrink-0" />
   );
-  const cardIcon = (id: string) => {
-    const card = cardsById[id];
-    return card ? <CardActionIcon card={card} width={32} /> : placeholderIcon;
-  };
+  const cardIcon = (id: string) => <HistoryTinyCardIcon id={id} width={32} />;
   const heartIcon = (
     <Image
       src="/images/sts2/ui/topbar/top_bar_heart.png"
