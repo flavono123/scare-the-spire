@@ -3,7 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { CardTile } from "@/components/codex/card-tile";
 import type { CodexCard } from "@/lib/codex-types";
-import { localize } from "@/lib/sts2-i18n";
+import { useGameI18n } from "@/hooks/use-game-i18n";
+import { useGameLocale } from "@/hooks/use-game-locale";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { gameUi, localizeGame } from "@/lib/sts2-game-i18n";
+import { serviceMessages } from "@/messages/service";
 import { cn } from "@/lib/utils";
 
 const TYPE_FILTERS = [
@@ -62,6 +66,9 @@ export function DeckModal({
   currentFloor,
 }: DeckModalProps) {
   const [filter, setFilter] = useState<TypeFilter>("all");
+  const tables = useGameI18n();
+  const gameLocale = useGameLocale();
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
 
   useEffect(() => {
     if (!open) return;
@@ -134,7 +141,7 @@ export function DeckModal({
           view when the deck list is taller than the screen. */}
       <button
         type="button"
-        aria-label="닫기"
+        aria-label={playback.close}
         onClick={onClose}
         className="fixed inset-0 z-40 cursor-default bg-black/70 backdrop-blur-[3px]"
       />
@@ -143,10 +150,12 @@ export function DeckModal({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-base font-bold tracking-tight text-zinc-50">
-                현재 덱
+                {playback.currentDeck}
               </h2>
               <p className="mt-0.5 text-xs text-zinc-400">
-                {currentFloor}층 기준 · {totalCount}장
+                {playback.deckFloor
+                  .replace("{floor}", String(currentFloor))
+                  .replace("{count}", String(totalCount))}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-1.5">
@@ -162,7 +171,7 @@ export function DeckModal({
                       : "border-white/10 bg-zinc-900/60 text-zinc-300 hover:border-white/30",
                   )}
                 >
-                  {opt.label}
+                  {typeFilterLabel(opt.key, tables, playback)}
                 </button>
               ))}
               <button
@@ -170,14 +179,14 @@ export function DeckModal({
                 onClick={onClose}
                 className="rounded-md border border-white/10 bg-zinc-900/60 px-2 py-1 text-xs text-zinc-300 hover:bg-white/10"
               >
-                닫기
+                {playback.close}
               </button>
             </div>
           </div>
 
           {filtered.length === 0 ? (
             <p className="mt-12 text-center text-sm text-zinc-500">
-              해당하는 카드가 없습니다.
+              {playback.emptyFilter}
             </p>
           ) : (
             // Card banners overhang ±9% per side (≈18px on a 200px tile).
@@ -197,7 +206,7 @@ export function DeckModal({
                 item.card ? (
                   <CardTile
                     key={item.key}
-                    card={item.card}
+                    card={localizeDeckCard(item.card, tables, gameLocale)}
                     showUpgrade={item.upgraded}
                     showBeta={false}
                   />
@@ -213,12 +222,53 @@ export function DeckModal({
   );
 }
 
+function localizeDeckCard(
+  card: CodexCard,
+  tables: ReturnType<typeof useGameI18n>,
+  gameLocale: ReturnType<typeof useGameLocale>,
+): CodexCard {
+  const name = localizeGame(tables, "cards", card.id) ?? card.name;
+  if (gameLocale === "kor") return { ...card, name };
+  return {
+    ...card,
+    name,
+    description: card.descriptionEn || card.description,
+    descriptionRaw: card.descriptionRawEn || card.descriptionRaw,
+    typeLabel:
+      card.type === "공격"
+        ? gameUi(tables, "cardTypeAttack", card.typeLabel)
+        : card.type === "스킬"
+          ? gameUi(tables, "cardTypeSkill", card.typeLabel)
+          : card.type === "파워"
+            ? gameUi(tables, "cardTypePower", card.typeLabel)
+            : card.type === "저주"
+              ? gameUi(tables, "cardTypeCurse", card.typeLabel)
+              : gameUi(tables, "cardTypeStatus", card.typeLabel),
+  };
+}
+
+function typeFilterLabel(
+  key: TypeFilter,
+  tables: ReturnType<typeof useGameI18n>,
+  playback: (typeof serviceMessages)["ko"]["historyCourse"]["detail"]["playback"]
+    | (typeof serviceMessages)["en"]["historyCourse"]["detail"]["playback"],
+): string {
+  if (key === "all") return playback.allTypes;
+  if (key === "공격") return gameUi(tables, "cardTypeAttack", "Attack");
+  if (key === "스킬") return gameUi(tables, "cardTypeSkill", "Skill");
+  if (key === "파워") return gameUi(tables, "cardTypePower", "Power");
+  if (key === "저주") return gameUi(tables, "cardTypeCurse", "Curse");
+  return playback.statusShort;
+}
+
 function UnknownCardTile({ id }: { id: string }) {
-  const label = localize("cards", id) ?? id.replace(/^CARD\./, "");
+  const tables = useGameI18n();
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
+  const label = localizeGame(tables, "cards", id) ?? id.replace(/^CARD\./, "");
   return (
     <div className="flex aspect-[2/3] flex-col items-center justify-center rounded-lg border border-dashed border-zinc-700 bg-zinc-900/60 text-center">
       <p className="text-[11px] uppercase tracking-[0.16em] text-zinc-500">
-        미등록
+        {playback.unregistered}
       </p>
       <p className="mt-1 text-xs text-zinc-300">{label}</p>
     </div>

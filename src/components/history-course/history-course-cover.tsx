@@ -19,7 +19,10 @@ import {
   coverCatalogCard,
   useCoverCardCatalog,
 } from "@/hooks/use-cover-card-catalog";
+import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { localizeGame } from "@/lib/sts2-game-i18n";
+import { resolveCoverPhrase } from "@/lib/run-cover-phrase";
 import {
   coverCharacterArtStyle,
   coverCharacterSelectBackgroundSrc,
@@ -72,6 +75,8 @@ export function HistoryCourseCover({
   topRightActions,
 }: HistoryCourseCoverProps) {
   const serviceLocale = useServiceLocale();
+  const tables = useGameI18n();
+  const phrase = resolveCoverPhrase(cover, meta, serviceLocale, tables);
   const cardCatalog = useCoverCardCatalog();
   const phraseClass = characterSpireClass(character);
   const cardBg =
@@ -113,7 +118,7 @@ export function HistoryCourseCover({
   return (
     <div
       className={cn(
-        "relative w-full overflow-hidden bg-zinc-950",
+        "relative w-full overflow-hidden bg-zinc-950 [container-type:size]",
         compact ? "aspect-video rounded-md" : "aspect-[16/9] rounded-xl",
         className,
       )}
@@ -171,7 +176,7 @@ export function HistoryCourseCover({
             ? "grid-cols-[minmax(0,1fr)_max-content]"
             : "grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)]",
           "grid-rows-[auto_minmax(0,1fr)]",
-          compact ? "gap-x-1.5 gap-y-1 p-2.5" : "gap-x-2 gap-y-1.5 p-3 sm:gap-x-3 sm:gap-y-2 sm:p-4 md:p-5",
+          compact ? "gap-x-1 gap-y-0.5 p-1" : "gap-x-2 gap-y-1.5 p-3 sm:gap-x-3 sm:gap-y-2 sm:p-4 md:p-5",
         )}
       >
         <div className="min-w-0 self-start overflow-hidden">
@@ -180,12 +185,12 @@ export function HistoryCourseCover({
               "font-game-title font-bold leading-tight cover-phrase-outline",
               // Narrow cards: keep phrase to one line so bottom-left art fits.
               compact
-                ? "line-clamp-2 text-[15px]"
-                : "line-clamp-1 text-lg sm:line-clamp-2 sm:text-xl md:text-3xl lg:text-4xl",
+                ? "line-clamp-3 text-[length:clamp(8px,10cqw,12px)] leading-[1.05]"
+                : "line-clamp-2 text-[length:clamp(14px,4.6cqw,36px)] leading-tight sm:line-clamp-2",
               phraseClass,
             )}
           >
-            {cover.phrase}
+            {phrase}
           </p>
         </div>
 
@@ -201,11 +206,11 @@ export function HistoryCourseCover({
               {topRightActions}
             </div>
           )}
-          {meta && (
+          {meta && !compact && (
             <div
               className={cn(
                 "flex max-w-full flex-wrap items-center justify-end",
-                compact ? "gap-1" : "gap-1.5",
+                "gap-1.5",
               )}
             >
               {meta.win && (
@@ -218,7 +223,7 @@ export function HistoryCourseCover({
               <span
                 className={cn(
                   "font-bold spire-gold drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]",
-                  compact ? "text-[9px]" : "text-[11px] sm:text-xs",
+                  "text-[11px] sm:text-xs",
                 )}
               >
                 {meta.build}
@@ -247,7 +252,7 @@ export function HistoryCourseCover({
         </div>
 
         <CoverBottomRightMeta
-          meta={meta}
+          meta={compact ? undefined : meta}
           compact={compact}
           serviceLocale={serviceLocale}
         />
@@ -470,7 +475,7 @@ function OutcomeChip({
     <span
       className={cn(
         "font-bold text-emerald-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]",
-        compact ? "text-[9px]" : "text-[11px] sm:text-xs",
+        compact ? "text-[7px]" : "text-[11px] sm:text-xs",
       )}
     >
       {label}
@@ -495,7 +500,7 @@ function FloorChip({ floor, compact }: { floor: number; compact: boolean }) {
       <span
         className={cn(
           "topbar-num font-bold tabular-nums text-zinc-50",
-          compact ? "text-[10px]" : "text-xs sm:text-sm",
+          compact ? "text-[8px]" : "text-xs sm:text-sm",
         )}
       >
         {floor}
@@ -558,7 +563,17 @@ function CoverElementVisual({
   cardWidth: number;
   tinyCards: boolean;
 }) {
-  const label = displayNameForCoverElement(element);
+  const tables = useGameI18n();
+  const label =
+    localizeGame(
+      tables,
+      element.kind === "card"
+        ? "cards"
+        : element.kind === "relic"
+          ? "relics"
+          : "potions",
+      element.id,
+    ) ?? displayNameForCoverElement(element);
   const iconSize = compact ? 36 : 56;
 
   if (element.kind === "card") {

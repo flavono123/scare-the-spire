@@ -18,7 +18,11 @@ import { RunSummary } from "@/components/history-course/run-summary";
 import { TopBar } from "@/components/history-course/topbar";
 import { buildTopbarState } from "@/components/history-course/topbar-state";
 import type { CodexCard, CodexRelic } from "@/lib/codex-types";
-import { localize } from "@/lib/sts2-i18n";
+import { localizeGame, gameUi, formatGameTemplate, type GameI18nTables } from "@/lib/sts2-game-i18n";
+import { useGameI18n } from "@/hooks/use-game-i18n";
+import { useGameLocale } from "@/hooks/use-game-locale";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 import {
   analyzeReplayRun,
   type ReplayHistoryEntry,
@@ -28,6 +32,7 @@ import {
   getMadScienceVariantPartsFromId,
   MAD_SCIENCE_CARD_ID,
   TINKER_RIDER_CHOICE_LABELS,
+  TINKER_RIDER_CHOICE_LABELS_EN,
 } from "@/lib/tinker-time";
 import {
   actPositionFromGlobalMs,
@@ -63,8 +68,11 @@ const ACT_INTRO_TOTAL_MS = ACT_INTRO_FADE_IN_MS + ACT_INTRO_HOLD_MS + ACT_INTRO_
 const INTRO_WINDOW_OFFSET_MS = 200; // before actOffset
 const INTRO_WINDOW_RADIUS_MS = 250;
 
-function actIntroNumber(index: number) {
-  return ["1막", "2막", "3막", "4막"][index] ?? `${index + 1}막`;
+function actIntroLabel(tables: GameI18nTables, index: number) {
+  return formatGameTemplate(
+    gameUi(tables, "actNumber", "Act {actNumber}"),
+    { actNumber: index + 1 },
+  );
 }
 
 const KNOWN_CHARACTER_MARKERS = new Set([
@@ -335,23 +343,6 @@ function cssEscapeAttr(value: string): string {
   return value.replace(/(["\\\]\[])/g, "\\$1");
 }
 
-const VERB_BY_KIND: Record<string, string> = {
-  "card-gained": "선택",
-  "card-bought": "구매",
-  "card-upgraded": "강화",
-  "card-enchanted": "인챈트",
-  "card-skipped": "넘기기",
-  "card-removed": "제거",
-  "relic-gained": "획득",
-  "potion-gained": "획득",
-  "potion-used": "사용",
-  "potion-discarded": "버림",
-  "hp-loss": "피해",
-  "hp-heal": "회복",
-  "max-hp-up": "최대 HP",
-  "max-hp-down": "최대 HP 손실",
-};
-
 const TEXT_BY_KIND: Record<string, string | undefined> = {
   "card-gained": undefined,
   "card-bought": "#fbbf24",
@@ -369,15 +360,51 @@ const TEXT_BY_KIND: Record<string, string | undefined> = {
   "max-hp-down": "#fca5a5",
 };
 
-function replayCardLabel(id: string, cardsById?: Record<string, CodexCard>): string {
-  const card = cardsById?.[id];
-  if (card) return card.name;
+function riderChoiceLabel(
+  riderId: keyof typeof TINKER_RIDER_CHOICE_LABELS,
+  tables: GameI18nTables,
+  localeIsKor: boolean,
+  card?: CodexCard,
+): string {
+  return (
+    localizeGame(
+      tables,
+      "events",
+      `TINKER_TIME.pages.CHOOSE_RIDER.options.${riderId}`,
+    ) ??
+    card?.madScienceLabels?.riderChoiceLabels[riderId] ??
+    (localeIsKor
+      ? TINKER_RIDER_CHOICE_LABELS[riderId]
+      : TINKER_RIDER_CHOICE_LABELS_EN[riderId])
+  );
+}
+
+function replayCardLabel(
+  id: string,
+  tables: GameI18nTables,
+  localeIsKor: boolean,
+  cardsById?: Record<string, CodexCard>,
+): string {
   const madScienceParts = getMadScienceVariantPartsFromId(id);
   if (madScienceParts?.riderId) {
-    const baseName = localize("cards", MAD_SCIENCE_CARD_ID) ?? MAD_SCIENCE_CARD_ID;
-    return `${baseName} · ${TINKER_RIDER_CHOICE_LABELS[madScienceParts.riderId]}`;
+    const card = cardsById?.[id];
+    const baseName =
+      localizeGame(tables, "cards", MAD_SCIENCE_CARD_ID) ??
+      card?.nameEn ??
+      MAD_SCIENCE_CARD_ID;
+    return `${baseName} · ${riderChoiceLabel(
+      madScienceParts.riderId,
+      tables,
+      localeIsKor,
+      card,
+    )}`;
   }
-  return localize("cards", id) ?? id.split(".").pop() ?? "?";
+  return (
+    localizeGame(tables, "cards", id) ??
+    cardsById?.[id]?.nameEn ??
+    id.split(".").pop() ??
+    "?"
+  );
 }
 
 function buildStackItems(
@@ -386,13 +413,16 @@ function buildStackItems(
   cardsById: Record<string, CodexCard>,
   onRelicLanded: (id: string) => void,
   onPotionLanded: (id: string) => void,
+  tables: GameI18nTables,
+  verbs: Record<NodeStackItemKind, string>,
+  localeIsKor: boolean,
 ): NodeStackItem[] {
   const items: NodeStackItem[] = [];
   const gainedIds = new Set<string>();
 
-  const cardLabel = (id: string) => replayCardLabel(id, cardsById);
+  const cardLabel = (id: string) => replayCardLabel(id, tables, localeIsKor, cardsById);
   const potionLabel = (id: string) =>
-    localize("potions", id) ?? id.split(".").pop() ?? "?";
+    localizeGame(tables, "potions", id) ?? id.split(".").pop() ?? "?";
 
   const placeholderIcon = (
     <span aria-hidden className="inline-block h-8 w-8 shrink-0" />
@@ -433,7 +463,7 @@ function buildStackItems(
       kind: "hp-loss",
       icon: heartIcon,
       label: `-${entry.damage_taken}`,
-      verb: VERB_BY_KIND["hp-loss"],
+      verb: verbs["hp-loss"],
       textColor: TEXT_BY_KIND["hp-loss"],
       postEffect: { kind: "fade" },
     });
@@ -444,7 +474,7 @@ function buildStackItems(
       kind: "hp-heal",
       icon: heartIcon,
       label: `+${entry.hp_healed}`,
-      verb: VERB_BY_KIND["hp-heal"],
+      verb: verbs["hp-heal"],
       textColor: TEXT_BY_KIND["hp-heal"],
       postEffect: { kind: "fade" },
     });
@@ -455,7 +485,7 @@ function buildStackItems(
       kind: "max-hp-up",
       icon: heartIcon,
       label: `+${entry.max_hp_gained}`,
-      verb: VERB_BY_KIND["max-hp-up"],
+      verb: verbs["max-hp-up"],
       textColor: TEXT_BY_KIND["max-hp-up"],
       postEffect: { kind: "fade" },
     });
@@ -466,7 +496,7 @@ function buildStackItems(
       kind: "max-hp-down",
       icon: heartIcon,
       label: `-${entry.max_hp_lost}`,
-      verb: VERB_BY_KIND["max-hp-down"],
+      verb: verbs["max-hp-down"],
       textColor: TEXT_BY_KIND["max-hp-down"],
       postEffect: { kind: "fade" },
     });
@@ -481,7 +511,7 @@ function buildStackItems(
       kind: removal.kind,
       icon: potionIcon(removal.id),
       label: potionLabel(removal.id),
-      verb: VERB_BY_KIND[removal.kind],
+      verb: verbs[removal.kind],
       textColor: TEXT_BY_KIND[removal.kind],
       postEffect: { kind: "fade" },
     });
@@ -495,7 +525,7 @@ function buildStackItems(
       kind: "potion-gained",
       icon: potionIcon(id),
       label: potionLabel(id),
-      verb: VERB_BY_KIND["potion-gained"],
+      verb: verbs["potion-gained"],
       textColor: TEXT_BY_KIND["potion-gained"],
       postEffect: { kind: "fly", targetSelector: "[data-potion-bay]" },
       onComplete: () => onPotionLanded(id),
@@ -517,7 +547,7 @@ function buildStackItems(
       kind: cardKind,
       icon: cardIcon(c.id),
       label: cardLabel(c.id),
-      verb: VERB_BY_KIND[cardKind],
+      verb: verbs[cardKind],
       textColor: TEXT_BY_KIND[cardKind],
       postEffect: { kind: "fly", targetSelector: "[data-deck-target]" },
     });
@@ -529,20 +559,21 @@ function buildStackItems(
       kind: "card-upgraded",
       icon: cardIcon(cardId),
       label: cardLabel(cardId) + "+",
-      verb: VERB_BY_KIND["card-upgraded"],
+      verb: verbs["card-upgraded"],
       textColor: TEXT_BY_KIND["card-upgraded"],
       postEffect: { kind: "fade" },
     });
   }
 
   for (const e of entry.cards_enchanted ?? []) {
-    const enchantName = localize("enchantments", e.enchantmentId) ?? e.enchantmentId;
+    const enchantName =
+      localizeGame(tables, "enchantments", e.enchantmentId) ?? e.enchantmentId;
     items.push({
       key: `s${step}-ce-${items.length}-${e.cardId}-${e.enchantmentId}`,
       kind: "card-enchanted",
       icon: cardIcon(e.cardId),
       label: `${cardLabel(e.cardId)} ${enchantName}`,
-      verb: VERB_BY_KIND["card-enchanted"],
+      verb: verbs["card-enchanted"],
       textColor: TEXT_BY_KIND["card-enchanted"],
       postEffect: { kind: "fade" },
     });
@@ -557,10 +588,38 @@ function buildStackItems(
       kind: "card-removed",
       icon: cardIcon(c.id),
       label: cardLabel(c.id),
-      verb: VERB_BY_KIND["card-removed"],
+      verb: verbs["card-removed"],
       textColor: TEXT_BY_KIND["card-removed"],
       postEffect: { kind: "fade" },
     });
+  }
+
+  for (const row of entry.cards_transformed ?? []) {
+    const fromId = row.original.id;
+    const toId = row.final.id;
+    if (fromId) {
+      items.push({
+        key: `s${step}-ct-from-${items.length}-${fromId}`,
+        kind: "card-removed",
+        icon: cardIcon(fromId),
+        label: cardLabel(fromId),
+        verb: verbs["card-removed"],
+        textColor: TEXT_BY_KIND["card-removed"],
+        postEffect: { kind: "fade" },
+      });
+    }
+    if (toId) {
+      gainedIds.add(toId);
+      items.push({
+        key: `s${step}-ct-to-${items.length}-${toId}`,
+        kind: "card-gained",
+        icon: cardIcon(toId),
+        label: cardLabel(toId),
+        verb: verbs["card-gained"],
+        textColor: TEXT_BY_KIND["card-gained"],
+        postEffect: { kind: "fly", targetSelector: "[data-deck-target]" },
+      });
+    }
   }
 
   const choices = entry.card_choices ?? [];
@@ -572,7 +631,7 @@ function buildStackItems(
         kind: "card-skipped",
         icon: placeholderIcon,
         label: "",
-        verb: VERB_BY_KIND["card-skipped"],
+        verb: verbs["card-skipped"],
         textColor: TEXT_BY_KIND["card-skipped"],
         postEffect: { kind: "fade" },
       });
@@ -597,8 +656,8 @@ function buildStackItems(
           />
         </div>
       ),
-      label: localize("relics", id) ?? id.split(".").pop() ?? "?",
-      verb: VERB_BY_KIND["relic-gained"],
+      label: localizeGame(tables, "relics", id) ?? id.split(".").pop() ?? "?",
+      verb: verbs["relic-gained"],
       textColor: TEXT_BY_KIND["relic-gained"],
       postEffect: {
         kind: "fly",
@@ -632,6 +691,11 @@ export function HistoryCourseShell({
   cardsById: Record<string, CodexCard>;
   relicsById: Record<string, CodexRelic>;
 }) {
+  const tables = useGameI18n();
+  const gameLocale = useGameLocale();
+  const serviceLocale = useServiceLocale();
+  const copy = serviceMessages[serviceLocale].historyCourse.detail;
+  const localeIsKor = gameLocale === "kor";
   const analysis = useMemo(() => analyzeReplayRun(run), [run]);
   // Strip Neow starter pollution from each act's history so both the stack
   // and the timeline see the same trimmed entry. Other UI (deck modal,
@@ -799,8 +863,21 @@ export function HistoryCourseShell({
       cardsById,
       releaseRelicId,
       releasePotionId,
+      tables,
+      copy.playback.verbs,
+      localeIsKor,
     );
-  }, [act, step, replayReady, cardsById, releaseRelicId, releasePotionId]);
+  }, [
+    act,
+    step,
+    replayReady,
+    cardsById,
+    releaseRelicId,
+    releasePotionId,
+    tables,
+    copy.playback.verbs,
+    localeIsKor,
+  ]);
 
   // The relic ids that the *current step's* stack will fly into the topbar.
   // Derived from the sanitized history entry directly (NOT stepStackItems,
@@ -948,7 +1025,7 @@ export function HistoryCourseShell({
   if (!act) {
     return (
       <div className="flex h-[calc(100dvh-49px)] items-center justify-center bg-black text-sm text-zinc-400">
-        분석 가능한 막이 없습니다.
+        {copy.playback.noActs}
       </div>
     );
   }
@@ -1312,6 +1389,7 @@ function ActIntro({
   actIndex: number;
   act: Act;
 }) {
+  const tables = useGameI18n();
   // Phase starts at "in" via the initial state, so the effect only owns
   // the timer cascade — no synchronous setState in the effect body.
   const [phase, setPhase] = useState<"in" | "hold" | "out" | "done">("in");
@@ -1362,7 +1440,7 @@ function ActIntro({
             textShadow: "0 1px 6px rgba(0,0,0,0.85)",
           }}
         >
-          {actIntroNumber(actIndex)}
+          {actIntroLabel(tables, actIndex)}
         </div>
         <div
           className="text-center"
@@ -1377,7 +1455,7 @@ function ActIntro({
               "0 2px 4px rgba(0,0,0,0.85), 0 4px 18px rgba(0,0,0,0.7)",
           }}
         >
-          {act.actLabel}
+          {localizeGame(tables, "acts", act.actId) ?? act.actLabel}
         </div>
       </div>
     </div>
@@ -1411,6 +1489,7 @@ function PlaybackBar({
   onScrubGlobalMs: (ms: number) => void;
   onJumpToStep: (actIndex: number, step: number) => void;
 }) {
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   const safeMax = Math.max(1, runTimeline.totalMs);
   const character = run.players[0]?.character ?? "CHARACTER.IRONCLAD";
   const markerSrc = characterMarkerSrc(character);
@@ -1442,7 +1521,7 @@ function PlaybackBar({
             type="button"
             onClick={onTogglePlay}
             className="flex h-7 w-12 items-center justify-center rounded-md border border-white/20 bg-black/40 transition hover:bg-white/10"
-            aria-label={playing ? "일시정지" : "재생"}
+            aria-label={playing ? playback.pause : playback.play}
           >
             {playing ? <PauseIcon /> : <PlayIcon />}
           </button>
@@ -1506,6 +1585,8 @@ function Track({
   onScrubGlobalMs: (ms: number) => void;
   onJumpToStep: (actIndex: number, step: number) => void;
 }) {
+  const tables = useGameI18n();
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   const safeMax = Math.max(1, runTimeline.totalMs);
   const containerRef = useRef<HTMLDivElement>(null);
   const [trackWidth, setTrackWidth] = useState(0);
@@ -1565,7 +1646,7 @@ function Track({
         step={50}
         value={Math.min(globalMs, safeMax)}
         onChange={(event) => onScrubGlobalMs(Number(event.target.value))}
-        aria-label="재생 위치"
+        aria-label={playback.seek}
         className="absolute inset-0 z-0 h-full w-full cursor-pointer opacity-0"
       />
 
@@ -1613,7 +1694,14 @@ function Track({
                 width: `${NODE_SPRITE_PX}px`,
                 height: `${NODE_SPRITE_PX}px`,
               }}
-              aria-label={`${rowIdx + 1}막 ${stepNum}층`}
+              aria-label={playback.floorStep
+                .replace("{act}", actIntroLabel(tables, rowIdx))
+                .replace(
+                  "{floor}",
+                  formatGameTemplate(gameUi(tables, "floor", "Floor {FloorNum}"), {
+                    FloorNum: stepNum,
+                  }),
+                )}
               aria-current={isCurrent ? "true" : undefined}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}

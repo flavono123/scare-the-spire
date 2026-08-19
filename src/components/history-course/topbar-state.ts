@@ -1,8 +1,20 @@
 import {
   type ReplayActAnalysis,
+  type ReplayCardRef,
   type ReplayHistoryEntry,
   type ReplayRun,
 } from "@/lib/sts2-run-replay";
+
+function cardGainsOnEntry(entry: ReplayHistoryEntry): ReplayCardRef[] {
+  return [
+    ...(entry.cards_gained ?? []),
+    ...(entry.cards_transformed ?? []).map((row) => row.final),
+  ];
+}
+
+function cardLossesOnEntry(entry: ReplayHistoryEntry): ReplayCardRef[] {
+  return (entry.cards_transformed ?? []).map((row) => row.original);
+}
 
 export interface RelicAtFloor {
   id: string;
@@ -237,7 +249,7 @@ function buildPotionSlotsAtFloor(
   return currentFloor >= finalFloor ? (exactFinalPotionSlots(run, potionSlots) ?? slots) : slots;
 }
 
-function buildDeckAtFloor(
+export function buildDeckAtFloor(
   run: ReplayRun,
   currentFloor: number,
 ): { id: string; count: number; upgradeCount: number; firstFloor: number }[] {
@@ -256,7 +268,7 @@ function buildDeckAtFloor(
   const gainedRemaining = new Map<string, number>();
   for (const act of run.map_point_history) {
     for (const entry of act) {
-      for (const c of entry.cards_gained ?? []) {
+      for (const c of cardGainsOnEntry(entry)) {
         if (!c.id) continue;
         gainedRemaining.set(c.id, (gainedRemaining.get(c.id) ?? 0) + 1);
       }
@@ -284,13 +296,14 @@ function buildDeckAtFloor(
   const seenGains = new Map<string, number>();
   for (const act of run.map_point_history) {
     for (const entry of act) {
-      for (const c of entry.cards_gained ?? []) {
+      for (const c of cardGainsOnEntry(entry)) {
         if (!c.id) continue;
         seenGains.set(c.id, (seenGains.get(c.id) ?? 0) + 1);
       }
       const removals = [
         ...(entry.cards_lost ?? []),
         ...(entry.cards_removed ?? []),
+        ...cardLossesOnEntry(entry),
       ];
       for (const c of removals) {
         if (!c.id) continue;
@@ -319,12 +332,12 @@ function buildDeckAtFloor(
   outer: for (const act of run.map_point_history) {
     for (const entry of act) {
       if (floor > currentFloor) break outer;
-      for (const c of entry.cards_gained ?? []) {
+      for (const c of cardGainsOnEntry(entry)) {
         if (!c.id) continue;
         counts.set(c.id, (counts.get(c.id) ?? 0) + 1);
         if (!firstFloor.has(c.id)) firstFloor.set(c.id, floor);
       }
-      for (const c of entry.cards_lost ?? []) {
+      for (const c of [...(entry.cards_lost ?? []), ...cardLossesOnEntry(entry)]) {
         if (!c.id) continue;
         const cur = counts.get(c.id) ?? 0;
         if (cur > 1) counts.set(c.id, cur - 1);
@@ -341,6 +354,19 @@ function buildDeckAtFloor(
       }
       floor += 1;
     }
+  }
+
+  const snapshotCounts = new Map<string, number>();
+  for (const card of player.deck) {
+    if (!card.id) continue;
+    const added = card.floor_added_to_deck ?? 1;
+    if (added > currentFloor) continue;
+    snapshotCounts.set(card.id, (snapshotCounts.get(card.id) ?? 0) + 1);
+    if (!firstFloor.has(card.id)) firstFloor.set(card.id, added);
+  }
+  for (const [id, snapshotCount] of snapshotCounts) {
+    const have = counts.get(id) ?? 0;
+    if (snapshotCount > have) counts.set(id, snapshotCount);
   }
 
   return Array.from(counts, ([id, count]) => ({
@@ -362,9 +388,13 @@ export function collectRelevantCardIds(run: ReplayRun): string[] {
   }
   for (const act of run.map_point_history) {
     for (const entry of act) {
-      for (const c of entry.cards_gained ?? []) if (c.id) ids.add(c.id);
+      for (const c of cardGainsOnEntry(entry)) if (c.id) ids.add(c.id);
       for (const c of entry.cards_lost ?? []) if (c.id) ids.add(c.id);
       for (const c of entry.cards_removed ?? []) if (c.id) ids.add(c.id);
+      for (const row of entry.cards_transformed ?? []) {
+        if (row.original.id) ids.add(row.original.id);
+        if (row.final.id) ids.add(row.final.id);
+      }
       for (const c of entry.card_choices ?? []) if (c.id) ids.add(c.id);
       for (const id of entry.upgraded_cards ?? []) if (id) ids.add(id);
       for (const c of entry.cards_enchanted ?? []) if (c.cardId) ids.add(c.cardId);
