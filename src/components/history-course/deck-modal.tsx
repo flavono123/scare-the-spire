@@ -7,6 +7,7 @@ import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { lookupHistoryCard } from "@/lib/history-card-lookup";
+import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
 import { gameUi, localizeGame } from "@/lib/sts2-game-i18n";
 import { serviceMessages } from "@/messages/service";
 import { cn } from "@/lib/utils";
@@ -43,10 +44,14 @@ const TYPE_ORDER: Record<string, number> = {
   퀘스트: 5,
 };
 
-function sortKey(card: { rarity?: string; type?: string; name?: string } | null, id: string) {
+function sortKey(
+  card: { rarity?: string; type?: string; name?: string } | null,
+  id: string,
+) {
+  const visual = lookupHistoryCardVisual(id);
   return {
-    rarity: RARITY_ORDER[card?.rarity ?? ""] ?? 99,
-    type: TYPE_ORDER[card?.type ?? ""] ?? 99,
+    rarity: RARITY_ORDER[card?.rarity ?? visual?.rarity ?? ""] ?? 99,
+    type: TYPE_ORDER[card?.type ?? visual?.type ?? ""] ?? 99,
     name: card?.name ?? id,
   };
 }
@@ -131,7 +136,11 @@ export function DeckModal({
   const filtered =
     filter === "all"
       ? expanded
-      : expanded.filter((item) => item.card?.type === filter);
+      : expanded.filter((item) => {
+          const type =
+            item.card?.type ?? lookupHistoryCardVisual(item.id)?.type;
+          return type === filter;
+        });
   const totalCount = expanded.length;
 
   if (!open) return null;

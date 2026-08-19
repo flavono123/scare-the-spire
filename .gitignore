@@ -75,6 +75,7 @@ playwright-report/
 /public/generated/spine-player.min.js
 /src/generated/toy-box-news.json
 /src/generated/borrowed-game-copy.json
+/src/generated/history-course-catalog.json
 
 # codex version update backup
 data/sts2-old/

@@ -27,6 +27,17 @@ const targets = [
       "scripts/ensure-lint-generated.mjs",
     ],
   },
+  {
+    output: "src/generated/history-course-catalog.json",
+    flag: "--history-course-catalog-only",
+    sources: [
+      "data/sts2",
+      "src/lib/codex-data.ts",
+      "src/lib/codex-types.ts",
+      "scripts/generate-static-api-data.ts",
+      "scripts/ensure-lint-generated.mjs",
+    ],
+  },
 ];
 
 async function newestMtime(relativePath) {

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { collectRelevantCardIds } from "../src/components/history-course/topbar-state";
 import type { CodexCard } from "../src/lib/codex-types";
+import { getHistoryCourseCatalog } from "../src/lib/history-course-catalog";
 import { indexCodexCards, lookupHistoryCard } from "../src/lib/history-card-lookup";
 import { lookupHistoryCardVisual } from "../src/lib/history-card-visuals";
 import type { ReplayRun } from "../src/lib/sts2-run-replay";
@@ -53,5 +54,18 @@ assert.equal(bane?.type, "저주");
 const madScience = lookupHistoryCardVisual("CARD.MAD_SCIENCE_ATTACK_VIOLENCE");
 assert.equal(madScience?.color, "event");
 assert.equal(madScience?.type, "공격");
+
+const catalog = indexCodexCards(getHistoryCourseCatalog().allCards);
+for (const id of [
+  "CARD.VENERATE",
+  "CARD.DEFEND_REGENT",
+  "CARD.FALLING_STAR",
+  "CARD.STRIKE_REGENT",
+  "CARD.ASCENDERS_BANE",
+]) {
+  const card = lookupHistoryCard(catalog, id);
+  assert.ok(card, id);
+  assert.ok(card?.imageUrl, `${id} image`);
+}
 
 console.log("history card lookup: ok");

@@ -5,11 +5,8 @@ import { useEffect, useState } from "react";
 import { DonationPanel } from "@/components/history-course/donation-panel";
 import { HistoryCourseShell } from "@/components/history-course/history-course-shell";
 import { collectRelevantCardIds } from "@/components/history-course/topbar-state";
+import { getHistoryCourseCatalog } from "@/lib/history-course-catalog";
 import { indexCodexCards } from "@/lib/history-card-lookup";
-import {
-  COMPENDIUM_DETAIL_PAYLOAD_PATH,
-  type CompendiumDetailPayload,
-} from "@/lib/compendium-detail-payload";
 import type { CodexCard, CodexRelic } from "@/lib/codex-types";
 import { getDonatedRun } from "@/lib/run-donation";
 import { loadRun, saveRun } from "@/lib/run-store";
@@ -37,24 +34,6 @@ type Status = "loading" | "ok" | "missing" | "invalid";
 interface CodexLookupData {
   allCards: CodexCard[];
   allRelics: CodexRelic[];
-}
-
-let codexLookupPromise: Promise<CodexLookupData> | null = null;
-
-function fetchCodexLookupData(): Promise<CodexLookupData> {
-  codexLookupPromise ??= fetch(COMPENDIUM_DETAIL_PAYLOAD_PATH, { cache: "no-cache" })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Failed to load ${COMPENDIUM_DETAIL_PAYLOAD_PATH}`);
-      }
-      return response.json() as Promise<CompendiumDetailPayload>;
-    })
-    .then((payload) => ({
-      allCards: payload.resources.cards,
-      allRelics: payload.resources.relics,
-    }));
-
-  return codexLookupPromise;
 }
 
 function stripCardId(id: string): string {
@@ -94,34 +73,15 @@ function buildRunMadScienceCard(
 
 export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderProps) {
   const copy = serviceMessages[useServiceLocale()].historyCourse.detail;
-  const initialLookup =
-    allCards?.length && allRelics?.length ? { allCards, allRelics } : null;
-  const [codexLookup, setCodexLookup] = useState<CodexLookupData | null>(() =>
-    initialLookup,
-  );
+  const bundledLookup = getHistoryCourseCatalog();
+  const codexLookup: CodexLookupData =
+    allCards?.length && allRelics?.length
+      ? { allCards, allRelics }
+      : bundledLookup;
   const [run, setRun] = useState<ReplayRun | null>(null);
   const [raw, setRaw] = useState<string | null>(null);
   const [source, setSource] = useState<Source | null>(null);
   const [status, setStatus] = useState<Status>("loading");
-
-  useEffect(() => {
-    if (codexLookup) return;
-
-    let cancelled = false;
-    fetchCodexLookupData()
-      .then((data) => {
-        if (cancelled) return;
-        setCodexLookup(data);
-      })
-      .catch((err) => {
-        console.error("[history-course] codex lookup load failed", err);
-        if (!cancelled) setCodexLookup({ allCards: [], allRelics: [] });
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [codexLookup]);
 
   useEffect(() => {
     if (!parseRunRouteSlug(runId)) {
@@ -186,7 +146,7 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
     );
   }
 
-  if (status === "loading" || (status === "ok" && !codexLookup)) {
+  if (status === "loading") {
     return (
       <div className="mx-auto max-w-md px-4 py-20 text-center text-sm text-zinc-500">
         {copy.loading}
@@ -204,8 +164,8 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
     );
   }
 
-  const lookupCards = codexLookup?.allCards ?? [];
-  const lookupRelics = codexLookup?.allRelics ?? [];
+  const lookupCards = codexLookup.allCards;
+  const lookupRelics = codexLookup.allRelics;
   const cardByLookupId = new Map<string, CodexCard>();
   for (const card of lookupCards) {
     cardByLookupId.set(card.id, card);

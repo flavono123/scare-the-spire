@@ -295,6 +295,25 @@ async function writeSourceJson(target: StaticJsonTarget) {
   console.log(`Wrote ${path.relative(process.cwd(), filePath)}`);
 }
 
+async function writeSourceJsonCompact(target: StaticJsonTarget) {
+  const filePath = path.join(srcDir, target.path);
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+  await fs.writeFile(filePath, `${JSON.stringify(target.data)}\n`);
+  console.log(`Wrote ${path.relative(process.cwd(), filePath)}`);
+}
+
+async function generateHistoryCourseCatalogOnly() {
+  const { getCodexCards, getCodexRelics } = await import("../src/lib/codex-data");
+  const [cards, relics] = await Promise.all([
+    getCodexCards({ includeDeprecated: true }),
+    getCodexRelics(),
+  ]);
+  await writeSourceJsonCompact({
+    path: "generated/history-course-catalog.json",
+    data: { cards, relics },
+  });
+}
+
 async function copyPublicFile(sourcePath: string, publicPath: string) {
   const filePath = path.join(publicDir, publicPath);
   await fs.mkdir(path.dirname(filePath), { recursive: true });
@@ -675,6 +694,10 @@ async function main() {
     });
     return;
   }
+  if (process.argv.includes("--history-course-catalog-only")) {
+    await generateHistoryCourseCatalogOnly();
+    return;
+  }
 
   const [
     searchIndex,
@@ -703,6 +726,13 @@ async function main() {
   await Promise.all([
     writeSourceJson({ path: "generated/borrowed-game-copy.json", data: borrowedGameCopyPayload }),
     writeSourceJson({ path: "generated/toy-box-news.json", data: toyBoxNewsPayload }),
+    writeSourceJsonCompact({
+      path: "generated/history-course-catalog.json",
+      data: {
+        cards: koreanCompendiumDetailPayload.resources.cards,
+        relics: koreanCompendiumDetailPayload.resources.relics,
+      },
+    }),
     writeJson({ path: "generated/search-index.json", data: searchIndex }),
     writeJson({ path: "generated/comment-entities-sts2.json", data: commentEntities }),
     writeJson({ path: "generated/compendium-detail-kor.json", data: koreanCompendiumDetailPayload }),
