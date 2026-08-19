@@ -74,6 +74,7 @@ export interface ReplayHistoryEntry {
   cards_gained?: ReplayCardRef[];
   cards_lost?: ReplayCardRef[];
   cards_removed?: ReplayCardRef[];
+  cards_transformed?: ReplayCardTransform[];
   upgraded_cards?: string[];
   cards_enchanted?: ReplayEnchantment[];
   card_choices?: ReplayChoice[];
@@ -87,6 +88,11 @@ export interface ReplayEnchantment {
   cardId: string;
   enchantmentId: string;
   amount?: number;
+}
+
+export interface ReplayCardTransform {
+  original: ReplayCardRef;
+  final: ReplayCardRef;
 }
 
 export interface ReplayDeckCard extends ReplayCardRef {
@@ -1022,6 +1028,11 @@ export function parseReplayRun(raw: string): ReplayRun {
                 cards_gained?: RawReplayCard[];
                 cards_lost?: RawReplayCard[];
                 cards_removed?: RawReplayCard[];
+                cards_transformed?: Array<{
+                  original_card?: RawReplayCard;
+                  final_card?: RawReplayCard;
+                }>;
+                bought_colorless?: Array<string | RawReplayCard>;
                 upgraded_cards?: string[];
                 cards_enchanted?: Array<{
                   card?: { id?: string; enchantment?: { id?: string; amount?: number } };
@@ -1069,6 +1080,44 @@ export function parseReplayRun(raw: string): ReplayRun {
               Array.isArray(list) ? list.filter((id): id is string => typeof id === "string") : undefined;
             const pickStringList = (list: string[] | undefined): string[] | undefined =>
               Array.isArray(list) ? list.filter((id): id is string => typeof id === "string") : undefined;
+            const pickTransforms = (
+              list:
+                | Array<{
+                    original_card?: RawReplayCard;
+                    final_card?: RawReplayCard;
+                  }>
+                | undefined,
+            ): ReplayCardTransform[] | undefined =>
+              Array.isArray(list)
+                ? list.flatMap((row): ReplayCardTransform[] => {
+                    const original = parseCardRef(row?.original_card);
+                    const final = parseCardRef(row?.final_card);
+                    if (!original?.id || !final?.id) return [];
+                    return [{ original, final }];
+                  })
+                : undefined;
+            const mergeGained = (
+              gained: ReplayCardRef[] | undefined,
+              bought: Array<string | RawReplayCard> | undefined,
+            ): ReplayCardRef[] | undefined => {
+              const out = [...(gained ?? [])];
+              const seen = new Map<string, number>();
+              for (const card of out) {
+                if (!card.id) continue;
+                seen.set(card.id, (seen.get(card.id) ?? 0) + 1);
+              }
+              for (const item of bought ?? []) {
+                const id = typeof item === "string" ? item : item?.id;
+                if (typeof id !== "string") continue;
+                const remaining = seen.get(id) ?? 0;
+                if (remaining > 0) {
+                  seen.set(id, remaining - 1);
+                  continue;
+                }
+                out.push({ id });
+              }
+              return out.length > 0 ? out : undefined;
+            };
             const pickEnchantments = (
               list:
                 | Array<{
@@ -1111,9 +1160,13 @@ export function parseReplayRun(raw: string): ReplayRun {
               gold_spent: firstStats?.gold_spent,
               gold_lost: firstStats?.gold_lost,
               gold_stolen: firstStats?.gold_stolen,
-              cards_gained: pickCards(firstStats?.cards_gained),
+              cards_gained: mergeGained(
+                pickCards(firstStats?.cards_gained),
+                firstStats?.bought_colorless,
+              ),
               cards_lost: pickCards(firstStats?.cards_lost),
               cards_removed: pickCards(firstStats?.cards_removed),
+              cards_transformed: pickTransforms(firstStats?.cards_transformed),
               upgraded_cards: pickUpgradedCards(firstStats?.upgraded_cards),
               cards_enchanted: pickEnchantments(firstStats?.cards_enchanted),
               card_choices: pickCardChoices(firstStats?.card_choices),
@@ -1920,6 +1973,10 @@ function cardWasInDeckAtFloor(
     for (const entry of act) {
       for (const card of entry.cards_gained ?? []) {
         if (matches(card.id)) lastGainedFloor = floor;
+      }
+      for (const row of entry.cards_transformed ?? []) {
+        if (matches(row.final.id)) lastGainedFloor = floor;
+        if (matches(row.original.id)) lastRemovedFloor = floor;
       }
       for (const card of entry.cards_lost ?? []) {
         if (matches(card.id)) lastRemovedFloor = floor;

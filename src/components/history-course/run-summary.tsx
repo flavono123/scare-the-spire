@@ -10,7 +10,10 @@ import {
   EntityPreview,
   type EntityInfo,
 } from "@/components/patch-note-renderer";
-import { localize } from "@/lib/sts2-i18n";
+import { useGameI18n } from "@/hooks/use-game-i18n";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { localizeGame, type GameI18nTables } from "@/lib/sts2-game-i18n";
+import { serviceMessages } from "@/messages/service";
 import type { CodexCard, CodexRelic } from "@/lib/codex-types";
 import type {
   ReplayActAnalysis,
@@ -22,7 +25,6 @@ import {
   getMadScienceVariantPartsFromId,
 } from "@/lib/tinker-time";
 import type { TopbarState } from "@/components/history-course/topbar-state";
-import { useServiceLocale } from "@/hooks/use-service-locale";
 import { visibleRunBadgesAtFloor } from "@/lib/run-badge-timing";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import { cn } from "@/lib/utils";
@@ -54,17 +56,9 @@ function characterIconSrc(character: string): string {
   return `/images/sts2/characters/character_icon_${safe}.webp`;
 }
 
-function characterLabel(character: string): string {
-  const slug = character.replace(/^CHARACTER\./, "").toLowerCase();
-  return (
-    {
-      ironclad: "아이언클래드",
-      silent: "사일런트",
-      defect: "디펙트",
-      necrobinder: "네크로바인더",
-      regent: "리젠트",
-    }[slug] ?? slug
-  );
+function characterLabel(character: string, tables: GameI18nTables): string {
+  const slug = character.replace(/^CHARACTER\./, "");
+  return localizeGame(tables, "characters", slug) ?? slug;
 }
 
 const ANCIENT_KEYS = new Set([
@@ -253,16 +247,18 @@ function SummaryPanel({
   currentStep: number;
 }) {
   const serviceLocale = useServiceLocale();
+  const playback = serviceMessages[serviceLocale].historyCourse.detail.playback;
+  const tables = useGameI18n();
   const character = run.players[0]?.character ?? "CHARACTER.IRONCLAD";
   const badges = run.players[0]?.badges ?? [];
-  const charLabel = characterLabel(character);
+  const charLabel = characterLabel(character, tables);
   const charIcon = characterIconSrc(character);
   const finalFloor = topbarState.currentFloor;
   const visibleBadges = ended
     ? badges
     : visibleRunBadgesAtFloor(run, finalFloor, ended);
   const runTimeStr = formatRunTime(run.run_time ?? 0);
-  const dateStr = formatRunDate(run.start_time);
+  const dateStr = formatRunDate(run.start_time, serviceLocale);
 
   // Cross-section hover state. Hovering a relic / deck card sets the
   // floor at which it was acquired; the act rows then highlight that
@@ -307,9 +303,14 @@ function SummaryPanel({
         <TimeChip runTime={runTimeStr} />
         <div className="ml-auto flex min-w-[190px] flex-col items-end gap-1.5 text-right text-[11px] leading-snug text-zinc-400">
           {dateStr && <div>{dateStr}</div>}
-          <div>시드: {run.seed}</div>
+          <div>{playback.seed.replace("{seed}", run.seed)}</div>
           <div className="text-amber-200/80">
-            {ended ? (run.win ? "승리" : "패배") : "진행 중"} · {finalFloor}층
+            {ended
+              ? run.win
+                ? playback.victory
+                : playback.defeat
+              : playback.inProgress}{" "}
+            · {playback.floorOnly.replace("{floor}", String(finalFloor))}
           </div>
           <div className="text-zinc-500">v{run.build_id}</div>
           <RunBadgeStrip
@@ -458,9 +459,11 @@ function PotionStrip({
   slots: number;
   potions: (string | null)[];
 }) {
+  const tables = useGameI18n();
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   return (
     <div
-      title={`포션 슬롯 ${slots}개`}
+      title={playback.potionSlots.replace("{count}", String(slots))}
       className="relative inline-flex items-center gap-1 px-1"
       style={{
         borderImage:
@@ -472,8 +475,8 @@ function PotionStrip({
       {Array.from({ length: slots }).map((_, i) => {
         const potionId = potions[i] ?? null;
         const label = potionId
-          ? localize("potions", potionId) ?? potionId
-          : "빈 포션 슬롯";
+          ? localizeGame(tables, "potions", potionId) ?? potionId
+          : playback.emptyPotion;
         return (
           <div key={i} className="relative h-6 w-5" title={label}>
             <Image
@@ -631,14 +634,17 @@ function RelicSection({
   relicsById: Record<string, CodexRelic>;
   onHoverFloor: (floor: number | null) => void;
 }) {
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   const total = relics.length;
   const counts = countRelicsByFloor(relics);
   return (
     <div>
       <p className="text-xs font-bold text-amber-200">
-        유물 ({total}):{" "}
+        {playback.relics.replace("{total}", String(total))}{" "}
         <span className="font-normal text-zinc-300">
-          {counts.starter}개 시작 · {counts.gained}개 획득
+          {playback.relicSplit
+            .replace("{starter}", String(counts.starter))
+            .replace("{gained}", String(counts.gained))}
         </span>
       </p>
       <div className="mt-2 flex flex-wrap items-center gap-1.5">
@@ -667,8 +673,11 @@ function RelicIcon({
   relic: CodexRelic | undefined;
   onHoverFloor: (floor: number | null) => void;
 }) {
+  const tables = useGameI18n();
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   const entity = buildRelicEntityInfo(replayId, relic);
-  const label = relic?.name ?? localize("relics", replayId) ?? replayId;
+  const label =
+    localizeGame(tables, "relics", replayId) ?? relic?.name ?? replayId;
 
   // Hover binds two effects:
   //   1) entity preview tooltip (handled inside EntityPreview)
@@ -703,7 +712,7 @@ function RelicIcon({
     return (
       <span
         className="relative inline-block"
-        title={`${label} · ${floor > 0 ? `${floor}층 획득` : "시작 유물"}`}
+        title={`${label} · ${floor > 0 ? playback.floorGained.replace("{floor}", String(floor)) : playback.starterRelic}`}
         {...(tracksFloor ? hoverHandlers : {})}
       >
         <EntityPreview entity={entity} linkClassName="block">
@@ -717,7 +726,7 @@ function RelicIcon({
   return (
     <span
       className="relative inline-block"
-      title={`${label} · ${floor > 0 ? `${floor}층 획득` : "시작 유물"}`}
+      title={`${label} · ${floor > 0 ? playback.floorGained.replace("{floor}", String(floor)) : playback.starterRelic}`}
       {...(tracksFloor ? hoverHandlers : {})}
     >
       {iconNode}
@@ -746,15 +755,20 @@ function DeckSection({
   cardsById: Record<string, CodexCard>;
   onHoverFloor: (floor: number | null) => void;
 }) {
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   const total = deck.reduce((acc, e) => acc + e.count, 0);
   const counts = countDeckByRarity(deck, cardsById);
   return (
     <div>
       <p className="text-xs font-bold text-amber-200">
-        카드 ({total}):{" "}
+        {playback.cards.replace("{total}", String(total))}{" "}
         <span className="font-normal text-zinc-300">
-          {counts.rare}개 희귀 · {counts.uncommon}개 고급 · {counts.common}개
-          일반 · {counts.curse}개 저주 · {counts.starter}개 시작
+          {playback.cardSplit
+            .replace("{rare}", String(counts.rare))
+            .replace("{uncommon}", String(counts.uncommon))
+            .replace("{common}", String(counts.common))
+            .replace("{curse}", String(counts.curse))
+            .replace("{starter}", String(counts.starter))}
         </span>
       </p>
       <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
@@ -780,9 +794,10 @@ function DeckEntry({
   cardsById: Record<string, CodexCard>;
   onHoverFloor: (floor: number | null) => void;
 }) {
+  const tables = useGameI18n();
   const card = cardsById[entry.id];
   const label = card
-    ? localize("cards", entry.id) ?? card.name
+    ? localizeGame(tables, "cards", entry.id) ?? card.name
     : entry.id.split(".").pop() ?? "?";
   const upgraded = entry.upgradeCount > 0;
   const entity = buildCardEntityInfo(card);
@@ -880,19 +895,24 @@ function formatRunTime(seconds: number): string {
   return `${h}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
-function formatRunDate(startTime: number | string | null | undefined): string {
+function formatRunDate(
+  startTime: number | string | null | undefined,
+  serviceLocale: "ko" | "en",
+): string {
   if (!startTime) return "";
   const date =
     typeof startTime === "number"
       ? new Date(startTime * 1000)
       : new Date(startTime);
   if (Number.isNaN(date.getTime())) return "";
-  const y = date.getFullYear();
-  const m = (date.getMonth() + 1).toString().padStart(2, "0");
-  const d = date.getDate().toString().padStart(2, "0");
-  const hh = date.getHours().toString().padStart(2, "0");
-  const mm = date.getMinutes().toString().padStart(2, "0");
-  return `${y}년 ${m}월 ${d}일 ${hh}:${mm}`;
+  return new Intl.DateTimeFormat(serviceLocale === "ko" ? "ko-KR" : "en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
 }
 
 // ----- Back button -----------------------------------------------------------
@@ -901,12 +921,13 @@ function formatRunDate(startTime: number | string | null | undefined): string {
  *  destination on the site, not a modal. Stays pinned to the bottom-left
  *  even as the panel scrolls. */
 function BackButton({ onClose }: { onClose: () => void }) {
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   return (
     <button
       type="button"
       onClick={onClose}
       className="group fixed bottom-8 left-0 z-[60]"
-      aria-label="리플레이로 돌아가기"
+      aria-label={playback.backToReplay}
     >
       <div className="relative h-[80px] w-[160px]">
         {/* Shadow layer */}
@@ -942,7 +963,7 @@ function BackButton({ onClose }: { onClose: () => void }) {
         <div className="absolute inset-0 flex items-center justify-center pl-4">
           <Image
             src="/images/sts2/ui/back_button_arrow.png"
-            alt="뒤로가기"
+            alt=""
             width={48}
             height={40}
             className="drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] transition-transform duration-200 group-hover:scale-110"

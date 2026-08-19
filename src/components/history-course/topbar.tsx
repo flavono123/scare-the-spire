@@ -4,7 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import { HoverTip } from "@/components/codex/hover-tip";
-import { localize } from "@/lib/sts2-i18n";
+import { useGameI18n } from "@/hooks/use-game-i18n";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import {
+  formatGameTemplate,
+  gameUi,
+  localizeGame,
+} from "@/lib/sts2-game-i18n";
+import { serviceMessages } from "@/messages/service";
 import {
   type ReplayActAnalysis,
   type ReplayHistoryEntry,
@@ -27,13 +34,41 @@ const CHARACTER_ICON: Record<string, string> = {
   "CHARACTER.REGENT": "/images/sts2/characters/character_icon_regent.webp",
 };
 
-const CHARACTER_LABEL: Record<string, string> = {
-  "CHARACTER.IRONCLAD": "아이언클래드",
-  "CHARACTER.SILENT": "사일런트",
-  "CHARACTER.DEFECT": "디펙트",
-  "CHARACTER.NECROBINDER": "네크로바인더",
-  "CHARACTER.REGENT": "리젠트",
-};
+function characterLabel(id: string, tables: ReturnType<typeof useGameI18n>): string {
+  return localizeGame(tables, "characters", id) ?? id.replace(/^CHARACTER\./, "");
+}
+
+function bossLabel(id: string | null, tables: ReturnType<typeof useGameI18n>): string {
+  if (!id) return "?";
+  return localizeGame(tables, "encounters", id) ?? id.replace(/_BOSS$/, "");
+}
+
+function nodeLabel(
+  entry: ReplayHistoryEntry | null,
+  tables: ReturnType<typeof useGameI18n>,
+): string {
+  if (!entry) return "—";
+  switch (entry.map_point_type) {
+    case "monster":
+      return gameUi(tables, "legendMonster", "Enemy");
+    case "elite":
+      return gameUi(tables, "legendElite", "Elite");
+    case "boss":
+      return gameUi(tables, "legendBoss", "Boss");
+    case "rest_site":
+      return gameUi(tables, "legendRest", "Rest");
+    case "treasure":
+      return gameUi(tables, "legendTreasure", "Treasure");
+    case "shop":
+      return gameUi(tables, "legendShop", "Merchant");
+    case "unknown":
+      return gameUi(tables, "legendUnknown", "Unknown");
+    case "ancient":
+      return gameUi(tables, "legendAncient", "Ancient");
+    default:
+      return entry.map_point_type;
+  }
+}
 
 // Each node type maps to a run-history sprite name. `unknown` resolves
 // further once the room contents are known so the player sees the
@@ -59,35 +94,6 @@ function potionIconSrc(id: string): string {
 
 function bossIconSrc(id: string): string {
   return `/images/sts2/bosses/${id.toLowerCase()}.webp`;
-}
-
-function bossLabel(id: string | null): string {
-  if (!id) return "?";
-  return localize("encounters", id) ?? id.replace(/_BOSS$/, "");
-}
-
-function nodeLabel(entry: ReplayHistoryEntry | null): string {
-  if (!entry) return "—";
-  switch (entry.map_point_type) {
-    case "monster":
-      return "몬스터";
-    case "elite":
-      return "엘리트";
-    case "boss":
-      return "보스";
-    case "rest_site":
-      return "휴식";
-    case "treasure":
-      return "보물";
-    case "shop":
-      return "상점";
-    case "unknown":
-      return "미지";
-    case "ancient":
-      return "고대";
-    default:
-      return "—";
-  }
 }
 
 function formatHms(seconds: number): string {
@@ -307,8 +313,14 @@ function CharacterChip({
   character: string;
   ascension: number;
 }) {
+  const tables = useGameI18n();
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   const iconSrc = CHARACTER_ICON[character];
-  const label = CHARACTER_LABEL[character] ?? character.split(".").pop();
+  const label = characterLabel(character, tables);
+  const ascensionLabel = formatGameTemplate(
+    gameUi(tables, "ascension", "Ascension {ascension}"),
+    { ascension },
+  );
   return (
     <span
       className="relative inline-block h-12 w-12 -translate-y-px"
@@ -317,7 +329,7 @@ function CharacterChip({
         backgroundSize: "100% 100%",
         backgroundRepeat: "no-repeat",
       }}
-      aria-label={`${label} · 승천 ${ascension}`}
+      aria-label={ascension > 0 ? `${label} · ${ascensionLabel}` : label}
     >
       {iconSrc && (
         <span className="absolute inset-1 overflow-hidden">
@@ -336,10 +348,14 @@ function CharacterChip({
 }
 
 function AscensionBadge({ ascension }: { ascension: number }) {
+  const tables = useGameI18n();
   return (
     <span
       className="pointer-events-none absolute -bottom-0.5 -right-1 flex h-7 w-7 items-end justify-center"
-      aria-label={`승천 ${ascension}`}
+      aria-label={formatGameTemplate(
+        gameUi(tables, "ascension", "Ascension {ascension}"),
+        { ascension },
+      )}
     >
       <Image
         src="/images/sts2/ui/topbar/top_bar_ascension.png"
@@ -410,6 +426,8 @@ function PotionSlots({
   heldPotionIds?: ReadonlySet<string>;
   heldPotionSlots?: (string | null)[];
 }) {
+  const tables = useGameI18n();
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   return (
     <span
       data-potion-bay
@@ -423,7 +441,7 @@ function PotionSlots({
         borderWidth: "8px",
         transform: "translateY(-4px)",
       }}
-      aria-label={`포션 슬롯 ${count}개`}
+      aria-label={playback.potionSlots.replace("{count}", String(count))}
     >
       {Array.from({ length: count }).map((_, i) => {
         const potionId = potions[i] ?? null;
@@ -435,8 +453,8 @@ function PotionSlots({
             ? displayedPotionId
             : null;
         const label = visiblePotionId
-          ? localize("potions", visiblePotionId) ?? visiblePotionId
-          : "빈 포션 슬롯";
+          ? localizeGame(tables, "potions", visiblePotionId) ?? visiblePotionId
+          : playback.emptyPotion;
         return (
           <span
             key={i}
@@ -480,6 +498,7 @@ function CurrentNodeChip({
   bossInfo: BossInfo;
   showSecondBoss: boolean;
 }) {
+  const tables = useGameI18n();
   if (!entry) return null;
   const type = entry.map_point_type;
 
@@ -499,7 +518,7 @@ function CurrentNodeChip({
   if (type === "ancient" && ancientInfo.spriteId) {
     return (
       <NodeIcon
-        alt={nodeLabel(entry)}
+        alt={nodeLabel(entry, tables)}
         sprite={ancientInfo.spriteId}
         size={40}
       />
@@ -510,7 +529,7 @@ function CurrentNodeChip({
   if (!sprite) return null;
   return (
     <NodeIcon
-      alt={nodeLabel(entry)}
+      alt={nodeLabel(entry, tables)}
       sprite={sprite}
       size={40}
     />
@@ -518,6 +537,7 @@ function CurrentNodeChip({
 }
 
 function BossPortrait({ id, active }: { id: string; active: boolean }) {
+  const tables = useGameI18n();
   return (
     <div
       className="relative h-10 w-10"
@@ -525,7 +545,7 @@ function BossPortrait({ id, active }: { id: string; active: boolean }) {
     >
       <Image
         src={bossIconSrc(id)}
-        alt={bossLabel(id)}
+        alt={bossLabel(id, tables)}
         fill
         sizes="40px"
         className={cn(
@@ -632,6 +652,7 @@ function BossChip({
   info: BossInfo;
   showSecond: boolean;
 }) {
+  const tables = useGameI18n();
   // First boss sits in the right cluster only while we haven't reached it
   // yet. Once it's the current node (or we're past it) the portrait moves
   // to the current-node chip.
@@ -650,7 +671,7 @@ function BossChip({
     <span
       className="relative flex items-center"
       style={{ transform: "translateY(-3px)" }}
-      aria-label={bossTitle(info, showSecond)}
+      aria-label={bossTitle(info, showSecond, tables)}
     >
       {renderFirst && info.firstBoss && (
         <BossIcon
@@ -675,11 +696,15 @@ function BossChip({
   );
 }
 
-function bossTitle(info: BossInfo, showSecond: boolean): string {
+function bossTitle(
+  info: BossInfo,
+  showSecond: boolean,
+  tables: ReturnType<typeof useGameI18n>,
+): string {
   const parts: string[] = [];
-  if (info.firstBoss) parts.push(bossLabel(info.firstBoss));
-  if (showSecond && info.secondBoss) parts.push(bossLabel(info.secondBoss));
-  return `보스: ${parts.join(" → ")}`;
+  if (info.firstBoss) parts.push(bossLabel(info.firstBoss, tables));
+  if (showSecond && info.secondBoss) parts.push(bossLabel(info.secondBoss, tables));
+  return `${gameUi(tables, "legendBoss", "Boss")}: ${parts.join(" → ")}`;
 }
 
 function BossIcon({
@@ -691,11 +716,12 @@ function BossIcon({
   active: boolean;
   className?: string;
 }) {
+  const tables = useGameI18n();
   return (
     <div className={cn("relative h-10 w-10", className)}>
       <Image
         src={bossIconSrc(id)}
-        alt={bossLabel(id)}
+        alt={bossLabel(id, tables)}
         fill
         sizes="40px"
         // Inactive boss tokens stay fully opaque (so the first one cleanly
@@ -716,6 +742,7 @@ function TimerChip({
   totalRunMs: number;
   realRunSeconds: number | null;
 }) {
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   // The visible clock is a *fake* second counter — it walks the real
   // run_time proportionally to where we are in the replay so 1× still
   // feels close to the run's actual length, but the visible value lives
@@ -728,13 +755,10 @@ function TimerChip({
       : Math.floor(elapsedMs / 1000);
   const tipBody = (
     <>
-      <div>
-        플레이 당시 실제 타임라인을 반영하지 않습니다. 리플레이 애니메이션에
-        맞춰 비례하여 재생됩니다.
-      </div>
+      <div>{playback.timelineNote}</div>
       {realRunSeconds != null && (
-        <div style={{ marginTop: 4, opacity: 0.8 }}>
-          실제 플레이 시간 {formatHms(realRunSeconds)}
+        <div className="mt-1 text-zinc-400">
+          {playback.realPlayTime.replace("{time}", formatHms(realRunSeconds))}
         </div>
       )}
     </>
@@ -742,7 +766,7 @@ function TimerChip({
   return (
     <Chip
       tip={{
-        title: `재생 시각 ${formatHms(fakeSeconds)}`,
+        title: playback.playbackClock.replace("{time}", formatHms(fakeSeconds)),
         body: tipBody,
       }}
       tipWidth={300}
@@ -768,11 +792,12 @@ function DeckChip({
   count: number;
   onOpen: () => void;
 }) {
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   return (
     <Chip
       as="button"
       onClick={onOpen}
-      tip={{ title: `현재 덱 ${count}장 보기` }}
+      tip={{ title: playback.openDeck.replace("{count}", String(count)) }}
       tipPlacement="below-right"
     >
       <span data-deck-target className="relative inline-flex items-center gap-1.5">
@@ -794,19 +819,21 @@ function DeckChip({
 // button. Uses the history_course relic icon so it visually echoes the
 // landing page header.
 function HistoryListButton() {
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
+  const title = serviceMessages[useServiceLocale()].nav.historyCourse;
   return (
     <HoverTipWrap
-      tip={{ title: "역사 강의서 — 전체 목록" }}
+      tip={{ title: `${title}` }}
       placement="below-right"
     >
       <Link
         href="/history-course"
-        aria-label="역사 강의서 목록으로 돌아가기"
+        aria-label={playback.backToList}
         className="inline-flex -translate-y-px items-center gap-1.5 text-white transition hover:brightness-125 focus:outline-none focus-visible:brightness-125"
       >
         <Image
           src="/images/sts2/relics/history_course.webp"
-          alt="역사 강의서"
+          alt={title}
           width={34}
           height={34}
           className="h-[34px] w-[34px] object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]"
@@ -818,16 +845,17 @@ function HistoryListButton() {
 }
 
 function SettingsButton({ onClick }: { onClick: () => void }) {
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   return (
     <Chip
       as="button"
       onClick={onClick}
-      tip={{ title: "런 정보" }}
+      tip={{ title: playback.runInfo }}
       tipPlacement="below-right"
     >
       <Image
         src="/images/sts2/ui/topbar/top_bar_settings.png"
-        alt="런 정보"
+        alt={playback.runInfo}
         width={34}
         height={34}
         className="h-[34px] w-[34px] object-contain"
@@ -844,6 +872,8 @@ function RelicRow({
   relics: RelicAtFloor[];
   hidingRelicIds?: ReadonlySet<string>;
 }) {
+  const tables = useGameI18n();
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   if (relics.length === 0) return <div className="h-8" data-relic-row />;
   return (
     <div className="flex flex-wrap items-center gap-1.5 pl-1" data-relic-row>
@@ -860,11 +890,11 @@ function RelicRow({
                 "drop-shadow-[0_0_10px_rgba(255,200,120,0.95)]",
             )}
             style={{ opacity: hidden ? 0 : 1 }}
-            title={`${localize("relics", relic.id) ?? relic.id} · ${relic.floor}층`}
+            title={`${localizeGame(tables, "relics", relic.id) ?? relic.id} · ${playback.floorGained.replace("{floor}", String(relic.floor))}`}
           >
             <Image
               src={relicIconSrc(relic.id)}
-              alt={localize("relics", relic.id) ?? relic.id}
+              alt={localizeGame(tables, "relics", relic.id) ?? relic.id}
               fill
               sizes="32px"
               className="object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]"
