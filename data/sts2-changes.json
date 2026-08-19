@@ -567,7 +567,7 @@
     "date": "2026-03-20",
     "character": "necrobinder",
     "summary": "Grave Warden no longer upgrades Soul cards generated.",
-    "summaryKo": "묘지기: 생성되는 영혼 카드가 더 이상 강화되지 않음.",
+    "summaryKo": "무덤지기: 생성되는 영혼 카드가 더 이상 강화되지 않습니다.",
     "diffs": [
       {
         "attribute": "mechanic",
@@ -587,7 +587,7 @@
     "date": "2026-03-20",
     "character": "necrobinder",
     "summary": "Seance no longer upgrades Soul cards generated.",
-    "summaryKo": "교령회: 생성되는 영혼 카드가 더 이상 강화되지 않음.",
+    "summaryKo": "강령회: 생성되는 영혼 카드가 더 이상 강화되지 않습니다.",
     "diffs": [
       {
         "attribute": "mechanic",
