@@ -733,7 +733,7 @@
     "date": "2026-03-20",
     "character": "colorless",
     "summary": "Beacon of Hope: block-sharing no longer stacks (Multiplayer card).",
-    "summaryKo": "희망의 등대: 방어도 공유가 더 이상 중첩되지 않음 (멀티플레이 카드).",
+    "summaryKo": "희망의 등불: 방어도 공유가 더 이상 중첩되지 않습니다 (멀티플레이 카드).",
     "diffs": [
       {
         "attribute": "mechanic",
