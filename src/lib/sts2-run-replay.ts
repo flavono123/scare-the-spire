@@ -88,6 +88,8 @@ export interface ReplayEnchantment {
   cardId: string;
   enchantmentId: string;
   amount?: number;
+  upgradeLevel?: number;
+  floorAdded?: number;
 }
 
 export interface ReplayCardTransform {
@@ -1121,7 +1123,12 @@ export function parseReplayRun(raw: string): ReplayRun {
             const pickEnchantments = (
               list:
                 | Array<{
-                    card?: { id?: string; enchantment?: { id?: string; amount?: number } };
+                    card?: {
+                      id?: string;
+                      current_upgrade_level?: number;
+                      floor_added_to_deck?: number;
+                      enchantment?: { id?: string; amount?: number };
+                    };
                     enchantment?: string;
                   }>
                 | undefined,
@@ -1134,6 +1141,12 @@ export function parseReplayRun(raw: string): ReplayRun {
                     const entry: ReplayEnchantment = { cardId, enchantmentId };
                     if (typeof e?.card?.enchantment?.amount === "number") {
                       entry.amount = e.card.enchantment.amount;
+                    }
+                    if (typeof e?.card?.current_upgrade_level === "number") {
+                      entry.upgradeLevel = e.card.current_upgrade_level;
+                    }
+                    if (typeof e?.card?.floor_added_to_deck === "number") {
+                      entry.floorAdded = e.card.floor_added_to_deck;
                     }
                     return [entry];
                   })

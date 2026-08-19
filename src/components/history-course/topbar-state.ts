@@ -53,14 +53,27 @@ export interface TopbarState {
   potions: (string | null)[];
   bossInfo: BossInfo;
   ancientInfo: AncientInfo;
-  deck: {
-    id: string;
-    count: number;
-    upgradeCount: number;
-    firstFloor: number;
-    enchantmentId?: string;
-  }[];
+  deck: HistoryDeckGroup[];
+  deckCopies: HistoryDeckCopy[];
   deckCount: number;
+}
+
+export interface HistoryDeckCopy {
+  id: string;
+  upgradeLevel: number;
+  floorAdded: number;
+  enchantmentId?: string;
+  enchantmentAmount?: number;
+}
+
+export interface HistoryDeckGroup {
+  id: string;
+  count: number;
+  /** Upgrade level shared by every copy in this group (SerializableCard.Equals). */
+  upgradeCount: number;
+  firstFloor: number;
+  enchantmentId?: string;
+  enchantmentAmount?: number;
 }
 
 const POTION_SLOT_RELIC_BONUS: Record<string, number> = {
@@ -71,6 +84,256 @@ const POTION_SLOT_RELIC_BONUS: Record<string, number> = {
 
 function normalize(id: string): string {
   return id.toUpperCase().split(".").pop() ?? id.toUpperCase();
+}
+
+function cardIdKey(id: string): string {
+  return normalize(id);
+}
+
+const CARD = (id: string) => `CARD.${id}`;
+
+const STARTING_DECK_BY_CHARACTER: Record<string, string[]> = {
+  IRONCLAD: [
+    ...Array(5).fill(CARD("STRIKE_IRONCLAD")),
+    ...Array(4).fill(CARD("DEFEND_IRONCLAD")),
+    CARD("BASH"),
+  ],
+  SILENT: [
+    ...Array(5).fill(CARD("STRIKE_SILENT")),
+    ...Array(5).fill(CARD("DEFEND_SILENT")),
+    CARD("NEUTRALIZE"),
+    CARD("SURVIVOR"),
+  ],
+  DEFECT: [
+    ...Array(4).fill(CARD("STRIKE_DEFECT")),
+    ...Array(4).fill(CARD("DEFEND_DEFECT")),
+    CARD("ZAP"),
+    CARD("DUALCAST"),
+  ],
+  NECROBINDER: [
+    ...Array(4).fill(CARD("STRIKE_NECROBINDER")),
+    ...Array(4).fill(CARD("DEFEND_NECROBINDER")),
+    CARD("BODYGUARD"),
+    CARD("UNLEASH"),
+  ],
+  REGENT: [
+    ...Array(4).fill(CARD("STRIKE_REGENT")),
+    ...Array(4).fill(CARD("DEFEND_REGENT")),
+    CARD("FALLING_STAR"),
+    CARD("VENERATE"),
+  ],
+  RANDOM_CHARACTER: [
+    CARD("STRIKE_IRONCLAD"),
+    CARD("STRIKE_SILENT"),
+    CARD("STRIKE_REGENT"),
+    CARD("STRIKE_NECROBINDER"),
+    CARD("STRIKE_DEFECT"),
+    CARD("DEFEND_IRONCLAD"),
+    CARD("DEFEND_SILENT"),
+    CARD("DEFEND_REGENT"),
+    CARD("DEFEND_NECROBINDER"),
+    CARD("DEFEND_DEFECT"),
+  ],
+  DEPRIVED: [],
+};
+
+function startingDeckIds(character: string): string[] {
+  const key = character.replace(/^CHARACTER\./, "").toUpperCase();
+  if (key === "RANDOM") return STARTING_DECK_BY_CHARACTER.RANDOM_CHARACTER;
+  return STARTING_DECK_BY_CHARACTER[key] ?? [];
+}
+
+function copyFromRef(card: ReplayCardRef, fallbackFloor: number): HistoryDeckCopy | null {
+  if (!card.id) return null;
+  const copy: HistoryDeckCopy = {
+    id: card.id,
+    upgradeLevel: card.current_upgrade_level ?? 0,
+    floorAdded: fallbackFloor,
+  };
+  if (card.enchantment?.id) {
+    copy.enchantmentId = card.enchantment.id;
+    if (typeof card.enchantment.amount === "number") {
+      copy.enchantmentAmount = card.enchantment.amount;
+    }
+  }
+  return copy;
+}
+
+function enchantKey(copy: {
+  enchantmentId?: string;
+  enchantmentAmount?: number;
+}): string {
+  if (!copy.enchantmentId) return "";
+  return `${cardIdKey(copy.enchantmentId)}:${copy.enchantmentAmount ?? 0}`;
+}
+
+function groupKey(copy: HistoryDeckCopy): string {
+  return `${cardIdKey(copy.id)}|${copy.upgradeLevel}|${enchantKey(copy)}`;
+}
+
+function floorMatches(copyFloor: number, wantFloor?: number): boolean {
+  if (wantFloor == null) return true;
+  if (copyFloor === wantFloor) return true;
+  return copyFloor === 0 && wantFloor === 1;
+}
+
+function findRemoveIndex(copies: HistoryDeckCopy[], ref: ReplayCardRef): number {
+  if (!ref.id) return -1;
+  const key = cardIdKey(ref.id);
+  let exact = -1;
+  let unenchanted = -1;
+  let any = -1;
+  for (let i = 0; i < copies.length; i++) {
+    const copy = copies[i];
+    if (cardIdKey(copy.id) !== key) continue;
+    if (any < 0) any = i;
+    const upgradeOk =
+      ref.current_upgrade_level == null || copy.upgradeLevel === ref.current_upgrade_level;
+    const floorOk = floorMatches(copy.floorAdded, ref.floor_added_to_deck);
+    if (!upgradeOk || !floorOk) continue;
+    const wantEnchant = ref.enchantment?.id;
+    const copyEnchant = copy.enchantmentId;
+    const enchantOk = wantEnchant
+      ? copyEnchant != null &&
+        cardIdKey(copyEnchant) === cardIdKey(wantEnchant) &&
+        (ref.enchantment?.amount == null ||
+          (copy.enchantmentAmount ?? 0) === (ref.enchantment.amount ?? 0))
+      : !copyEnchant;
+    if (enchantOk && exact < 0) exact = i;
+    if (!copyEnchant && unenchanted < 0) unenchanted = i;
+  }
+  if (exact >= 0) return exact;
+  if (!ref.enchantment?.id && unenchanted >= 0) return unenchanted;
+  return any;
+}
+
+function findUpgradeIndex(copies: HistoryDeckCopy[], id: string): number {
+  const key = cardIdKey(id);
+  const unupgraded = copies.findIndex(
+    (copy) => cardIdKey(copy.id) === key && copy.upgradeLevel === 0,
+  );
+  if (unupgraded >= 0) return unupgraded;
+  return copies.findIndex((copy) => cardIdKey(copy.id) === key);
+}
+
+function findEnchantIndex(
+  copies: HistoryDeckCopy[],
+  row: {
+    cardId: string;
+    upgradeLevel?: number;
+    floorAdded?: number;
+  },
+): number {
+  const key = cardIdKey(row.cardId);
+  let unenchanted = -1;
+  let any = -1;
+  for (let i = 0; i < copies.length; i++) {
+    const copy = copies[i];
+    if (cardIdKey(copy.id) !== key) continue;
+    if (any < 0) any = i;
+    if (copy.enchantmentId) continue;
+    const upgradeOk = row.upgradeLevel == null || copy.upgradeLevel === row.upgradeLevel;
+    const floorOk = floorMatches(copy.floorAdded, row.floorAdded);
+    if (upgradeOk && floorOk) return i;
+    if (unenchanted < 0) unenchanted = i;
+  }
+  if (unenchanted >= 0) return unenchanted;
+  return any;
+}
+
+function leftoverStarterCounts(run: ReplayRun): Map<string, number> {
+  const player = run.players[0];
+  const starter = new Map<string, number>();
+  if (!player) return starter;
+
+  const gainedRemaining = new Map<string, number>();
+  for (const act of run.map_point_history) {
+    for (const entry of act) {
+      for (const card of cardGainsOnEntry(entry)) {
+        if (!card.id) continue;
+        gainedRemaining.set(card.id, (gainedRemaining.get(card.id) ?? 0) + 1);
+      }
+    }
+  }
+
+  for (const card of player.deck) {
+    const added = card.floor_added_to_deck ?? 1;
+    if (added > 1 || !card.id) continue;
+    const remaining = gainedRemaining.get(card.id) ?? 0;
+    if (remaining > 0) {
+      gainedRemaining.set(card.id, remaining - 1);
+      continue;
+    }
+    starter.set(card.id, (starter.get(card.id) ?? 0) + 1);
+  }
+
+  const seenGains = new Map<string, number>();
+  for (const act of run.map_point_history) {
+    for (const entry of act) {
+      for (const card of cardGainsOnEntry(entry)) {
+        if (!card.id) continue;
+        seenGains.set(card.id, (seenGains.get(card.id) ?? 0) + 1);
+      }
+      const removals = [
+        ...(entry.cards_lost ?? []),
+        ...(entry.cards_removed ?? []),
+        ...cardLossesOnEntry(entry),
+      ];
+      for (const card of removals) {
+        if (!card.id) continue;
+        const gained = seenGains.get(card.id) ?? 0;
+        if (gained > 0) {
+          seenGains.set(card.id, gained - 1);
+        } else {
+          starter.set(card.id, (starter.get(card.id) ?? 0) + 1);
+        }
+      }
+    }
+  }
+
+  return starter;
+}
+
+function emitStartingCopies(character: string, leftover: Map<string, number>): HistoryDeckCopy[] {
+  const remaining = new Map(leftover);
+  const copies: HistoryDeckCopy[] = [];
+  for (const id of startingDeckIds(character)) {
+    const count = remaining.get(id) ?? 0;
+    if (count <= 0) continue;
+    copies.push({ id, upgradeLevel: 0, floorAdded: 0 });
+    remaining.set(id, count - 1);
+  }
+  for (const [id, count] of remaining) {
+    for (let i = 0; i < count; i++) {
+      copies.push({ id, upgradeLevel: 0, floorAdded: 0 });
+    }
+  }
+  return copies;
+}
+
+function padMissingSnapshotCopies(
+  copies: HistoryDeckCopy[],
+  run: ReplayRun,
+  currentFloor: number,
+): void {
+  const player = run.players[0];
+  if (!player) return;
+  const remaining = copies.map((_, index) => index);
+  for (const card of player.deck) {
+    if (!card.id) continue;
+    const added = card.floor_added_to_deck ?? 1;
+    if (added > currentFloor) continue;
+    const match = remaining.findIndex((index) => cardIdKey(copies[index].id) === cardIdKey(card.id));
+    if (match >= 0) {
+      remaining.splice(match, 1);
+      continue;
+    }
+    copies.push({
+      id: card.id,
+      upgradeLevel: 0,
+      floorAdded: added <= 1 ? 0 : added,
+    });
+  }
 }
 
 export function buildTopbarState(
@@ -101,6 +364,7 @@ export function buildTopbarState(
       },
       ancientInfo: { spriteId: null, active: false, passed: false },
       deck: [],
+      deckCopies: [],
       deckCount: 0,
     };
   }
@@ -178,8 +442,9 @@ export function buildTopbarState(
     ancientInfo = { spriteId, active: onIt, passed: past };
   }
 
-  const deck = buildDeckAtFloor(run, currentFloor);
-  const deckCount = deck.reduce((sum, d) => sum + d.count, 0);
+  const deckCopies = buildDeckCopiesAtFloor(run, currentFloor);
+  const deck = groupHistoryDeck(deckCopies);
+  const deckCount = deckCopies.length;
 
   return {
     hp,
@@ -193,6 +458,7 @@ export function buildTopbarState(
     bossInfo,
     ancientInfo,
     deck,
+    deckCopies,
     deckCount,
   };
 }
@@ -255,155 +521,81 @@ function buildPotionSlotsAtFloor(
   return currentFloor >= finalFloor ? (exactFinalPotionSlots(run, potionSlots) ?? slots) : slots;
 }
 
-export function buildDeckAtFloor(
+export function groupHistoryDeck(copies: HistoryDeckCopy[]): HistoryDeckGroup[] {
+  const groups: HistoryDeckGroup[] = [];
+  const indexByKey = new Map<string, number>();
+  for (const copy of copies) {
+    const key = groupKey(copy);
+    const existing = indexByKey.get(key);
+    if (existing != null) {
+      groups[existing].count += 1;
+      continue;
+    }
+    indexByKey.set(key, groups.length);
+    groups.push({
+      id: copy.id,
+      count: 1,
+      upgradeCount: copy.upgradeLevel,
+      firstFloor: copy.floorAdded,
+      enchantmentId: copy.enchantmentId,
+      enchantmentAmount: copy.enchantmentAmount,
+    });
+  }
+  return groups;
+}
+
+export function buildDeckCopiesAtFloor(
   run: ReplayRun,
   currentFloor: number,
-): {
-  id: string;
-  count: number;
-  upgradeCount: number;
-  firstFloor: number;
-  enchantmentId?: string;
-}[] {
+): HistoryDeckCopy[] {
   const player = run.players[0];
   if (!player) return [];
 
-  // Starter deck: cards present in the final deck at floor<=1, MINUS those
-  // whose floor=1 actually came from a Neow gain. Both starter cards and
-  // Neow-gained cards report floor_added_to_deck=1, so the only way to
-  // distinguish is to subtract gains globally and let the rest be starters.
-  const counts = new Map<string, number>();
-  const starter = new Map<string, number>();
-  const firstFloor = new Map<string, number>();
+  const copies = emitStartingCopies(
+    player.character,
+    leftoverStarterCounts(run),
+  );
 
-  // Pre-walk: total gain count per id across the entire run.
-  const gainedRemaining = new Map<string, number>();
-  for (const act of run.map_point_history) {
-    for (const entry of act) {
-      for (const c of cardGainsOnEntry(entry)) {
-        if (!c.id) continue;
-        gainedRemaining.set(c.id, (gainedRemaining.get(c.id) ?? 0) + 1);
-      }
-    }
-  }
-
-  // Each player.deck instance with floor<=1 either belongs to the starter
-  // pool or to a Neow gain. We allocate to gains first (popping from the
-  // remaining count); whatever's left is a true starter.
-  for (const card of player.deck) {
-    const f = card.floor_added_to_deck ?? 1;
-    if (f > 1) continue;
-    const remaining = gainedRemaining.get(card.id) ?? 0;
-    if (remaining > 0) {
-      gainedRemaining.set(card.id, remaining - 1);
-      continue;
-    }
-    starter.set(card.id, (starter.get(card.id) ?? 0) + 1);
-    if (!firstFloor.has(card.id)) firstFloor.set(card.id, 0);
-  }
-
-  // History walk #1: detect starter cards that were later removed (so they
-  // don't appear in the final deck). A removal whose card was never seen in
-  // cards_gained must be a starter card.
-  const seenGains = new Map<string, number>();
-  for (const act of run.map_point_history) {
-    for (const entry of act) {
-      for (const c of cardGainsOnEntry(entry)) {
-        if (!c.id) continue;
-        seenGains.set(c.id, (seenGains.get(c.id) ?? 0) + 1);
-      }
-      const removals = [
-        ...(entry.cards_lost ?? []),
-        ...(entry.cards_removed ?? []),
-        ...cardLossesOnEntry(entry),
-      ];
-      for (const c of removals) {
-        if (!c.id) continue;
-        const gained = seenGains.get(c.id) ?? 0;
-        if (gained > 0) {
-          seenGains.set(c.id, gained - 1);
-        } else {
-          starter.set(c.id, (starter.get(c.id) ?? 0) + 1);
-          if (!firstFloor.has(c.id)) firstFloor.set(c.id, 0);
-        }
-      }
-    }
-  }
-
-  for (const [id, count] of starter) counts.set(id, count);
-
-  // Upgrade tracking: walk `upgraded_cards` events. The events don't say
-  // *which copy* got upgraded, so we just track total upgraded copies per
-  // ID and clamp to count. Removals can't tell us if an upgraded copy
-  // was the one removed — assume non-upgraded got removed first so the
-  // upgrade tracking favors keeping upgraded copies visible.
-  const upgrades = new Map<string, number>();
-
-  // History walk #2: apply gains/losses up to currentFloor.
   let floor = 1;
   outer: for (const act of run.map_point_history) {
     for (const entry of act) {
       if (floor > currentFloor) break outer;
-      for (const c of cardGainsOnEntry(entry)) {
-        if (!c.id) continue;
-        counts.set(c.id, (counts.get(c.id) ?? 0) + 1);
-        if (!firstFloor.has(c.id)) firstFloor.set(c.id, floor);
+      for (const card of cardGainsOnEntry(entry)) {
+        const copy = copyFromRef(card, floor);
+        if (copy) copies.push(copy);
       }
-      for (const c of [...(entry.cards_lost ?? []), ...cardLossesOnEntry(entry)]) {
-        if (!c.id) continue;
-        const cur = counts.get(c.id) ?? 0;
-        if (cur > 1) counts.set(c.id, cur - 1);
-        else counts.delete(c.id);
-      }
-      for (const c of entry.cards_removed ?? []) {
-        if (!c.id) continue;
-        const cur = counts.get(c.id) ?? 0;
-        if (cur > 1) counts.set(c.id, cur - 1);
-        else counts.delete(c.id);
+      for (const card of [
+        ...(entry.cards_lost ?? []),
+        ...cardLossesOnEntry(entry),
+        ...(entry.cards_removed ?? []),
+      ]) {
+        const index = findRemoveIndex(copies, card);
+        if (index >= 0) copies.splice(index, 1);
       }
       for (const id of entry.upgraded_cards ?? []) {
-        upgrades.set(id, (upgrades.get(id) ?? 0) + 1);
+        const index = findUpgradeIndex(copies, id);
+        if (index >= 0) copies[index].upgradeLevel += 1;
+      }
+      for (const row of entry.cards_enchanted ?? []) {
+        if (!row.cardId || !row.enchantmentId) continue;
+        const index = findEnchantIndex(copies, row);
+        if (index < 0) continue;
+        copies[index].enchantmentId = row.enchantmentId;
+        copies[index].enchantmentAmount = row.amount;
       }
       floor += 1;
     }
   }
 
-  const snapshotCounts = new Map<string, number>();
-  const enchantmentById = new Map<string, string>();
-  let enchantFloor = 1;
-  enchantWalk: for (const act of run.map_point_history) {
-    for (const entry of act) {
-      if (enchantFloor > currentFloor) break enchantWalk;
-      for (const row of entry.cards_enchanted ?? []) {
-        if (row.cardId && row.enchantmentId) {
-          enchantmentById.set(normalize(row.cardId), row.enchantmentId);
-        }
-      }
-      enchantFloor += 1;
-    }
-  }
-  for (const card of player.deck) {
-    if (!card.id) continue;
-    const added = card.floor_added_to_deck ?? 1;
-    if (added > currentFloor) continue;
-    snapshotCounts.set(card.id, (snapshotCounts.get(card.id) ?? 0) + 1);
-    if (!firstFloor.has(card.id)) firstFloor.set(card.id, added);
-    if (card.enchantment?.id) enchantmentById.set(normalize(card.id), card.enchantment.id);
-  }
-  for (const [id, snapshotCount] of snapshotCounts) {
-    const have = counts.get(id) ?? 0;
-    if (snapshotCount > have) counts.set(id, snapshotCount);
-  }
+  padMissingSnapshotCopies(copies, run, currentFloor);
+  return copies;
+}
 
-  return Array.from(counts, ([id, count]) => ({
-    id,
-    count,
-    // Clamp upgradeCount to count — removals after upgrade may have
-    // pulled the upgraded copy.
-    upgradeCount: Math.min(count, upgrades.get(id) ?? 0),
-    firstFloor: firstFloor.get(id) ?? 0,
-    enchantmentId: enchantmentById.get(normalize(id)),
-  })).sort((a, b) => a.id.localeCompare(b.id));
+export function buildDeckAtFloor(
+  run: ReplayRun,
+  currentFloor: number,
+): HistoryDeckGroup[] {
+  return groupHistoryDeck(buildDeckCopiesAtFloor(run, currentFloor));
 }
 
 export function collectRelevantCardIds(run: ReplayRun): string[] {
