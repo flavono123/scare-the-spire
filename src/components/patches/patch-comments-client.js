@@ -3,6 +3,8 @@
   const PROFILE_KEY = "sts-user-profile";
   const QUERY_TIMEOUT_MS = 8000;
   const AUTH_TIMEOUT_MS = 8000;
+  const COMMENT_MIN_CHARS = 2;
+  const COMMENT_MAX_CHARS = 200;
   const CHARACTER_ICON_SLUGS = {
     IRONCLAD: "ironclad",
     SILENT: "silent",
@@ -82,6 +84,23 @@
 
   function renderText(value) {
     return escapeHtml(value).replace(/\n/g, "<br>");
+  }
+
+  function commentCountClass(length) {
+    if (length === 0) return "text-muted-foreground";
+    if (length < COMMENT_MIN_CHARS || length > COMMENT_MAX_CHARS) return "text-red-400";
+    const warnRemaining = Math.max(5, Math.ceil(COMMENT_MAX_CHARS * 0.1));
+    if (length >= COMMENT_MAX_CHARS - warnRemaining) return "text-yellow-400";
+    return "text-muted-foreground";
+  }
+
+  function syncCommentCounter(root) {
+    const contentInput = root.querySelector("[data-comment-content]");
+    const count = root.querySelector("[data-comment-count]");
+    if (!contentInput || !count) return;
+    const length = contentInput.value.length;
+    count.textContent = `${length}/${COMMENT_MAX_CHARS}`;
+    count.className = `shrink-0 font-mono text-xs tabular-nums ${commentCountClass(length)}`;
   }
 
   function characterIconUrl(characterId) {
@@ -471,7 +490,7 @@
                   </button>
                   ${canDelete ? `<button data-comment-delete="${escapeHtml(comment.id)}" class="text-[10px] text-muted-foreground hover:text-red-400">${escapeHtml(text.delete)}</button>` : ""}
                 </div>
-                <div class="mt-1.5 text-muted-foreground leading-relaxed break-words">${renderText(commentContent(comment))}</div>
+                <div class="mt-1.5 whitespace-pre-wrap break-words leading-relaxed text-muted-foreground">${renderText(commentContent(comment))}</div>
               </li>
             `;
           }).join("")}
@@ -492,15 +511,20 @@
         <textarea
           data-comment-content
           placeholder="${escapeHtml(text.placeholder)}"
-          rows="3"
-          class="w-full resize-y rounded bg-zinc-800 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-yellow-500/50"
+          rows="4"
+          minlength="${COMMENT_MIN_CHARS}"
+          maxlength="${COMMENT_MAX_CHARS}"
+          class="min-h-[6.5rem] max-h-48 w-full resize-y rounded bg-zinc-800 px-3 py-2 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-yellow-500/50"
         ></textarea>
-        <button
-          type="submit"
-          class="rounded bg-yellow-500 px-3 py-1.5 text-xs font-semibold text-black transition-colors hover:bg-yellow-400 disabled:opacity-60"
-        >
-          ${escapeHtml(state.submitting ? "..." : text.submit)}
-        </button>
+        <div class="flex items-center justify-between gap-3">
+          <span data-comment-count class="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">0/${COMMENT_MAX_CHARS}</span>
+          <button
+            type="submit"
+            class="rounded bg-yellow-500 px-3 py-1.5 text-xs font-semibold text-black transition-colors hover:bg-yellow-400 disabled:opacity-60"
+          >
+            ${escapeHtml(state.submitting ? "..." : text.submit)}
+          </button>
+        </div>
       </form>
     `;
   }
@@ -548,7 +572,12 @@
       renderLoading(root);
       state = await loadState(config, threadKey);
       renderComments(root, state);
+      syncCommentCounter(root);
     };
+
+    root.addEventListener("input", (event) => {
+      if (event.target.closest("[data-comment-content]")) syncCommentCounter(root);
+    });
 
     root.addEventListener("submit", async (event) => {
       const form = event.target.closest("[data-comment-form]");
@@ -559,7 +588,11 @@
       const nicknameInput = form.querySelector("[data-comment-nickname]");
       const content = contentInput?.value.trim() ?? "";
       const nickname = (nicknameInput?.value.trim() || copy().defaultNickname).slice(0, 20);
-      if (!content || state?.submitting) return;
+      if (
+        content.length < COMMENT_MIN_CHARS
+        || content.length > COMMENT_MAX_CHARS
+        || state?.submitting
+      ) return;
 
       state.submitting = true;
       renderComments(root, state);

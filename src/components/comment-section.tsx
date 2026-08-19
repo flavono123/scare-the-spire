@@ -23,6 +23,10 @@ import { SPIRE_ACTION_CONTROL_CLASS, SpireLikeIcon } from "@/components/spire-ic
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { buildRichContentIndexes, resolveRichContentBlocks } from "@/lib/rich-content-blocks";
+import {
+  COMMENT_MAX_CHARS,
+  COMMENT_MIN_CHARS,
+} from "@/lib/content-limits";
 
 const RichContentEditor = dynamic<RichContentEditorProps>(
   () => import("@/components/rich-content-editor").then((mod) => mod.RichContentEditor),
@@ -75,7 +79,11 @@ export function CommentSection({
     const trimmed = blocksToPlainText(blocks).trim();
     const storedContent = blocksToStorageText(blocks);
     const nick = nicknameInputRef.current?.value.trim() || profile.nickname.trim() || profileFallback.nickname;
-    if (!trimmed || !nick) return;
+    if (
+      !nick
+      || trimmed.length < COMMENT_MIN_CHARS
+      || trimmed.length > COMMENT_MAX_CHARS
+    ) return;
 
     setSubmitting(true);
     try {
@@ -142,7 +150,7 @@ export function CommentSection({
                   </button>
                 )}
               </div>
-              <div className="mt-1.5 text-muted-foreground leading-relaxed break-words">
+              <div className="mt-1.5 leading-relaxed break-words whitespace-pre-wrap text-muted-foreground">
                 <PostRenderer
                   blocks={resolveRichContentBlocks(comment.content, comment.content_blocks, richContentIndexes)}
                   entityMap={entityMap}
@@ -176,6 +184,9 @@ export function CommentSection({
               placeholder={copy.placeholder}
               draftKey={getDraftKey(threadKey)}
               submitLabel={submitting ? "..." : copy.submit}
+              minChars={COMMENT_MIN_CHARS}
+              maxChars={COMMENT_MAX_CHARS}
+              allowLineBreaks
             />
           )}
         </div>

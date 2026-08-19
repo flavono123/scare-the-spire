@@ -7,6 +7,10 @@ import type { PostBlock } from "@/lib/chemical-types";
 import type { RichContentEditorProps } from "@/components/rich-content-editor";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
+import {
+  CHEMICAL_POST_MAX_CHARS,
+  CHEMICAL_POST_MIN_CHARS,
+} from "@/lib/content-limits";
 
 const RichContentEditor = dynamic<RichContentEditorProps>(
   () => import("@/components/rich-content-editor").then((mod) => mod.RichContentEditor),
@@ -59,6 +63,8 @@ export function ChemicalXEditor({
           submitIconSrc="/images/relics/inserter.webp"
           showKeywordTip
           keywordTip={copy.keywordTip}
+          minChars={CHEMICAL_POST_MIN_CHARS}
+          maxChars={CHEMICAL_POST_MAX_CHARS}
         />
       </div>
     </div>

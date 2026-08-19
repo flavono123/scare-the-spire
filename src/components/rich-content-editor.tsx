@@ -57,6 +57,11 @@ import {
   parseYouTubeVideoId,
   resolveYouTubeReference,
 } from "@/lib/youtube-reference";
+import {
+  COMMENT_MAX_CHARS,
+  COMMENT_MIN_CHARS,
+  isCharCountNearLimit,
+} from "@/lib/content-limits";
 
 // Inner body must start AND end with non-whitespace — typing `{ foo }` (with
 // padding spaces) keeps the keyword in a pending, plain-text state so the
@@ -319,6 +324,7 @@ export interface RichContentEditorProps {
   draftKey: string;
   submitLabel: string;
   minChars?: number;
+  /** Null disables the counter and editor-side cap. Defaults to comment length. */
   maxChars?: number | null;
   initialText?: string;
   initialBlocks?: PostBlock[];
@@ -372,8 +378,8 @@ export function RichContentEditor({
   richPlaceholder,
   draftKey,
   submitLabel,
-  minChars = 2,
-  maxChars = 30,
+  minChars = COMMENT_MIN_CHARS,
+  maxChars = COMMENT_MAX_CHARS,
   initialText,
   initialBlocks,
   onBlocksChange,
@@ -846,7 +852,11 @@ export function RichContentEditor({
       attributes: {
         class: embedded
           ? "h-full min-h-full w-full cursor-text px-1 py-1 text-center leading-[1.18] text-inherit outline-none"
-          : `${richPlaceholder ? "min-h-[3.75rem]" : "min-h-[2.5rem]"} px-3 py-2 text-sm text-gray-200 outline-none`,
+          : `${
+            allowLineBreaks || (maxChars != null && maxChars > 80)
+              ? "min-h-[6.5rem] max-h-[12rem] overflow-y-auto"
+              : richPlaceholder ? "min-h-[3.75rem]" : "min-h-[2.5rem]"
+          } px-3 py-2 text-sm text-gray-200 outline-none`,
         "aria-placeholder": richPlaceholder ? cleanTooltipText(richPlaceholder) : placeholder,
         ...(embedded ? { "data-card-description-fit-content": "true" } : {}),
       },
@@ -1176,7 +1186,7 @@ export function RichContentEditor({
   const charCountColor = useMemo(() => {
     if (charCount === 0) return "text-gray-500";
     if (charCount < minChars || (maxChars != null && charCount > maxChars)) return "text-red-400";
-    if (maxChars != null && charCount >= maxChars - 5) return "text-yellow-400";
+    if (maxChars != null && isCharCountNearLimit(charCount, maxChars)) return "text-yellow-400";
     return "text-gray-400";
   }, [charCount, maxChars, minChars]);
 
@@ -1219,7 +1229,10 @@ export function RichContentEditor({
       {!embedded && (
         <div className="flex items-center gap-3 border-t border-border px-3 py-2">
           {maxChars != null && (
-            <span className={`shrink-0 font-mono text-xs ${charCountColor}`}>
+            <span
+              className={`shrink-0 font-mono text-xs tabular-nums ${charCountColor}`}
+              aria-live="polite"
+            >
               {charCount}/{maxChars}
             </span>
           )}

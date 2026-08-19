@@ -4,6 +4,12 @@ import { useCallback, useEffect, useState } from "react";
 import type { PostBlock } from "@/lib/chemical-types";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import {
+  COMMENT_MAX_CHARS,
+  COMMENT_MIN_CHARS,
+  COMMENT_STORAGE_MAX_CHARS,
+} from "@/lib/content-limits";
+import { blocksToPlainText } from "@/lib/chemical-utils";
 
 export interface Comment {
   id: string;
@@ -61,6 +67,16 @@ export function useComments(storyId: string, userId: string | null): UseComments
   const add = useCallback(
     async (nickname: string, content: string, contentBlocks?: PostBlock[], activeUserId = userId) => {
       if (!activeUserId || !supabaseEnabled) return;
+
+      const plainText = (contentBlocks ? blocksToPlainText(contentBlocks) : content).trim();
+      if (
+        plainText.length < COMMENT_MIN_CHARS
+        || plainText.length > COMMENT_MAX_CHARS
+        || content.length < COMMENT_MIN_CHARS
+        || content.length > COMMENT_STORAGE_MAX_CHARS
+      ) {
+        return;
+      }
 
       const basePayload = {
         story_id: storyId,

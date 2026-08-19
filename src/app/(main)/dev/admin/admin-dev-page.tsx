@@ -11,6 +11,7 @@ import type {
   ContactInquiryStatus,
 } from "@/lib/contact-inquiries";
 import { historyRunPlainText } from "@/lib/history-run-reference";
+import { COMMENT_MAX_CHARS } from "@/lib/content-limits";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import { supabase, supabaseEnabled } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
@@ -826,7 +827,7 @@ export default async function SupabaseAdminPage({
                       <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{comment.env}</code></td>
                       <td className="px-3 py-2 text-yellow-200">{comment.nickname}</td>
                       <td className="px-3 py-2"><StoryLink storyId={comment.story_id} /></td>
-                      <td className="px-3 py-2">{truncate(blockText(comment.content_blocks) || comment.content)}</td>
+                      <td className="px-3 py-2 whitespace-pre-wrap break-words">{truncate(blockText(comment.content_blocks) || comment.content, COMMENT_MAX_CHARS)}</td>
                       <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{comment.user_id}</code></td>
                     </tr>
                   ))}

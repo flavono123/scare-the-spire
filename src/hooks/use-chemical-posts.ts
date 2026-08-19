@@ -5,6 +5,10 @@ import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import type { ChemicalPost, PostBlock } from "@/lib/chemical-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import {
+  CHEMICAL_POST_MAX_CHARS,
+  CHEMICAL_POST_MIN_CHARS,
+} from "@/lib/content-limits";
 
 interface UseChemicalPostsReturn {
   posts: ChemicalPost[];
@@ -90,7 +94,16 @@ export function useChemicalPosts(userId: string | null): UseChemicalPostsReturn 
   const add = useCallback(
     async (blocks: PostBlock[], nickname: string, activeUserId = userId) => {
       if (!activeUserId || !supabaseEnabled) return;
-      const contentText = blocksToPlainText(blocks);
+      const contentText = blocksToPlainText(blocks).trim();
+      const trimmedNickname = nickname.trim();
+      if (
+        contentText.length < CHEMICAL_POST_MIN_CHARS
+        || contentText.length > CHEMICAL_POST_MAX_CHARS
+        || trimmedNickname.length < 1
+        || trimmedNickname.length > 20
+      ) {
+        return;
+      }
 
       const { data, error } = await withSupabaseTimeout(
         "chemical_posts.insert",
@@ -98,7 +111,7 @@ export function useChemicalPosts(userId: string | null): UseChemicalPostsReturn 
           .from("chemical_posts")
           .insert({
             user_id: activeUserId,
-            nickname,
+            nickname: trimmedNickname,
             content: blocks,
             content_text: contentText,
             env: supabaseEnv,
