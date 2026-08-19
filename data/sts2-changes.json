@@ -1691,7 +1691,27 @@
         "displayNameKo": "효과",
         "before": "Whenever you play Sovereign Blade, gain 10(14) Block.",
         "after": "Sovereign Blade now gains 10(14) Block.",
-        "diffType": "text"
+        "diffType": "text",
+        "beforeKo": "군주의 칼날을 사용할 때마다 방어도 10(14) 획득",
+        "afterKo": "군주의 칼날이 방어도 10(14)를 획득하며 칼날에 표시"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]군주의 칼날[/gold]을 사용할 때마다,\n[gold]방어도[/gold]를 10 얻습니다.",
+        "after": "[gold]군주의 칼날[/gold]을 사용 시\n이제 [gold]방어도[/gold]를 10\n얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]군주의 칼날[/gold]을 사용할 때마다,\n[gold]방어도[/gold]를 {ParryPower:diff()} 얻습니다.",
+        "after": "[gold]군주의 칼날[/gold]을 사용 시\n이제 [gold]방어도[/gold]를 {ParryPower:diff()}\n얻습니다."
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "card",
+        "id": "SOVEREIGN_BLADE"
       }
     ]
   },
