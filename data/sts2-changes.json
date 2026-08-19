@@ -355,16 +355,107 @@
     "patch": "v0.100.0",
     "date": "2026-03-20",
     "character": "regent",
-    "summary": "Begone & Charge: summoned minions swapped between cards (buffs Begone, nerfs Charge).",
-    "summaryKo": "꺼져 & 돌격: 소환 미니언이 두 카드 사이에서 교환 (꺼져 버프, 돌격 너프).",
+    "summary": "BEGONE! is now a Skill that transforms a hand card into Minion Strike instead of dealing damage and creating Minion Dive Bomb.",
+    "summaryKo": "물렀거라!: 공격에서 스킬로 바뀌고, 하수인 투하 대신 하수인 타격으로 변화시킵니다.",
     "diffs": [
       {
-        "attribute": "mechanic",
-        "displayName": "Mechanic",
-        "displayNameKo": "효과",
-        "before": "Previous minion assignment",
-        "after": "Summoned minions swapped between Begone and Charge",
+        "attribute": "type",
+        "displayName": "Type",
+        "displayNameKo": "유형",
+        "before": "Attack",
+        "beforeKo": "공격",
+        "after": "Skill",
+        "afterKo": "스킬",
         "diffType": "text"
+      },
+      {
+        "attribute": "minion",
+        "displayName": "Transform target",
+        "displayNameKo": "변화 대상",
+        "before": "Minion Dive Bomb",
+        "beforeKo": "하수인 투하",
+        "after": "Minion Strike",
+        "afterKo": "하수인 타격",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "type",
+        "before": "공격",
+        "after": "스킬"
+      },
+      {
+        "field": "description",
+        "before": "피해를 4 줍니다.\n[gold]손[/gold]에 있는 카드를 1장\n선택해 [gold]하수인 투하[/gold]로\n[gold]변화[/gold]시킵니다.",
+        "after": "[gold]손[/gold]에 있는 카드를 1장\n선택해 [gold]하수인 타격[/gold]으로\n[gold]변화[/gold]시킵니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "피해를 {Damage:diff()} 줍니다.\n[gold]손[/gold]에 있는 카드를 1장\n선택해 [gold]하수인 투하[/gold]로\n[gold]변화[/gold]시킵니다.",
+        "after": "[gold]손[/gold]에 있는 카드를 1장\n선택해 [gold]{IfUpgraded:show:하수인 타격+|하수인 타격}[/gold]으로\n[gold]변화[/gold]시킵니다."
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "card",
+        "id": "CHARGE"
+      },
+      {
+        "type": "card",
+        "id": "MINION_STRIKE"
+      },
+      {
+        "type": "card",
+        "id": "MINION_DIVE_BOMB"
+      }
+    ]
+  },
+  {
+    "id": "charge-v100-swap",
+    "entityType": "card",
+    "entityId": "CHARGE",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "regent",
+    "summary": "CHARGE!! now transforms draw-pile cards into Minion Dive Bomb instead of Minion Strike.",
+    "summaryKo": "돌격!!: 뽑을 카드 더미의 카드를 하수인 타격 대신 하수인 투하로 변화시킵니다.",
+    "diffs": [
+      {
+        "attribute": "minion",
+        "displayName": "Transform target",
+        "displayNameKo": "변화 대상",
+        "before": "Minion Strike",
+        "beforeKo": "하수인 타격",
+        "after": "Minion Dive Bomb",
+        "afterKo": "하수인 투하",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]뽑을 카드 더미[/gold]에서\n카드를 2장 선택해\n[gold]하수인 타격[/gold]으로\n[gold]변화[/gold]시킵니다.",
+        "after": "[gold]뽑을 카드 더미[/gold]에서\n카드를 2장 선택해\n[gold]하수인 투하[/gold]로\n[gold]변화[/gold]시킵니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]뽑을 카드 더미[/gold]에서\n카드를 {Cards:diff()}장 선택해\n[gold]{IfUpgraded:show:하수인 타격+|하수인 타격}[/gold]으로\n[gold]변화[/gold]시킵니다.",
+        "after": "[gold]뽑을 카드 더미[/gold]에서\n카드를 {Cards:diff()}장 선택해\n[gold]{IfUpgraded:show:하수인 투하+|하수인 투하}[/gold]로\n[gold]변화[/gold]시킵니다."
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "card",
+        "id": "BEGONE"
+      },
+      {
+        "type": "card",
+        "id": "MINION_DIVE_BOMB"
+      },
+      {
+        "type": "card",
+        "id": "MINION_STRIKE"
       }
     ]
   },
