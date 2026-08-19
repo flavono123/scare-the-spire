@@ -918,7 +918,7 @@
     "date": "2026-03-20",
     "character": null,
     "summary": "Doormaker now permanently removes every 10th drawn card; gains 1 Strength when it does.",
-    "summaryKo": "도어메이커: 10번째로 드로우한 카드를 영구 제거하고, 제거 시 힘 1 획득.",
+    "summaryKo": "문을 만드는 자: 10번째로 뽑은 카드를 영구 제거하고, 제거 시 힘 1을 얻습니다.",
     "diffs": [
       {
         "attribute": "mechanic",
