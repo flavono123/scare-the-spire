@@ -1146,7 +1146,7 @@
   },
   {
     "id": "tunneling-twosome-v103-deprecated",
-    "entityType": "monster",
+    "entityType": "encounter",
     "entityId": "TUNNELER_NORMAL",
     "patch": "v0.103.0",
     "date": "2026-04-10",
@@ -1161,6 +1161,24 @@
         "before": false,
         "after": true,
         "diffType": "boolean"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "deprecated",
+        "before": false,
+        "after": true
+      },
+      {
+        "field": "deprecatedInPatch",
+        "before": null,
+        "after": "v0.103.0"
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "TUNNELER"
       }
     ]
   },
@@ -1925,6 +1943,37 @@
           "normal": 26,
           "ascension": 30
         }
+      },
+      {
+        "field": "initialPowerApplications",
+        "before": [
+          {
+            "powerId": "SLIPPERY",
+            "powerName": "미끈거림",
+            "powerNameEn": "Slippery",
+            "powerType": "Buff",
+            "target": "self",
+            "amount": {
+              "normal": 9,
+              "ascension": 9
+            },
+            "imageUrl": "/images/sts2/powers/slippery_power.webp"
+          }
+        ],
+        "after": [
+          {
+            "powerId": "SLIPPERY",
+            "powerName": "미끈거림",
+            "powerNameEn": "Slippery",
+            "powerType": "Buff",
+            "target": "self",
+            "amount": {
+              "normal": 8,
+              "ascension": 9
+            },
+            "imageUrl": "/images/sts2/powers/slippery_power.webp"
+          }
+        ]
       }
     ]
   },
