@@ -9279,18 +9279,37 @@
     "patch": "v0.109.0",
     "date": "2026-07-17",
     "character": null,
-    "summary": "Meat Cleaver Cook HP gain decreased from 9 to 5.",
-    "summaryKo": "고기 써는 칼의 요리 체력 증가량이 9에서 5로 감소했습니다.",
+    "summary": "Meat Cleaver Cook Max HP gain decreased from 9 to 5. Card removal stays 2.",
+    "summaryKo": "고기 써는 칼 요리: 카드 2장 제거는 그대로이고, 얻는 최대 체력만 9에서 5로 감소했습니다.",
     "diffs": [
       {
-        "attribute": "change",
-        "displayName": "Change",
-        "displayNameKo": "변경",
-        "before": "9 HP",
-        "beforeKo": "체력 9",
-        "after": "5 HP",
-        "afterKo": "체력 5",
-        "diffType": "text"
+        "attribute": "maxHp",
+        "displayName": "Cook Max HP",
+        "displayNameKo": "요리 최대 체력",
+        "before": 9,
+        "after": 5,
+        "diffType": "number"
+      },
+      {
+        "attribute": "cards",
+        "displayName": "Cards removed",
+        "displayNameKo": "제거 카드",
+        "before": 2,
+        "after": 2,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "vars",
+        "before": {
+          "Cards": 2,
+          "MaxHp": 9
+        },
+        "after": {
+          "Cards": 2,
+          "MaxHp": 5
+        }
       }
     ]
   },

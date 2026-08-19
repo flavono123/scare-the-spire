@@ -1872,7 +1872,10 @@
     "rarity": "Ancient Relic",
     "pool": "shared",
     "image_url": "/static/images/relics/meat_cleaver.png",
-    "vars": {}
+    "vars": {
+      "Cards": 2,
+      "MaxHp": 5
+    }
   },
   {
     "id": "MEAT_ON_THE_BONE",
