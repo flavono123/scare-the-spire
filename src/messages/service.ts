@@ -400,7 +400,7 @@ export const serviceMessages = {
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
     },
     thisOrThat: {
-      defaultNickname: "닉",
+      defaultNickname: "세 번째 손",
       count: "{count}개의 이거저거",
       loading: "이거저거를 불러오는 중...",
       create: "이거... 아님 저거?",
@@ -1414,7 +1414,7 @@ export const serviceMessages = {
       unavailableTitle: "No responses from database",
     },
     thisOrThat: {
-      defaultNickname: "Nick",
+      defaultNickname: "THIRD hand",
       count: "{count} thisats",
       loading: "Loading thisats...",
       create: "This... or That?",

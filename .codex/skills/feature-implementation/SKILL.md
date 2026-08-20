@@ -135,10 +135,10 @@ Current:
   Korean `변형체` / English `Transfigured`.
 - Chemical X: `익명의 투입터리안` / `Anonymous Insertweetian` is an
   intentional service-owned exception, not game locale.
-- This or That currently uses the generic `닉` / `Nick`; prefer a
-  game-locale identity noun from `THIS_OR_THAT` if one is chosen later.
-  Do not borrow Knowledge Demon (`지식의 악마`) for the nickname; that
-  encounter is only for the vote CTA.
+- This or That: exact phrase from `THIS_OR_THAT.pages.PLAIN.description`
+  → Korean `세 번째 손` / English `THIRD hand`. It is event flavor, not a
+  named resource. Do not borrow Knowledge Demon (`지식의 악마`) for the
+  nickname; that encounter is only for the vote CTA.
 
 When adding a new composer service, resolve `defaultNickname` with the
 title/token set. Put the string in the service dictionary and record
