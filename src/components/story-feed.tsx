@@ -18,15 +18,13 @@ import { EngagementSpinner } from "@/components/engagement-spinner";
 import { PatchLineReferenceBlock } from "@/components/patch-line-reference";
 import { resolveStoryPatchLine } from "@/lib/resolve-story-patch-line";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
+import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { StoryComposerModal } from "@/components/story-composer-modal";
 import { StoryWriteIcon } from "@/components/story-token-icon";
 import { CardTile } from "@/components/codex/card-tile";
 import type { StoryReactionCounts } from "@/lib/reactions";
+import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { serviceMessages } from "@/messages/service";
-
-type StorySortMode = "recommended" | "comments" | "latest";
-
-const STORY_SORT_OPTIONS: StorySortMode[] = ["recommended", "comments", "latest"];
 
 let fullPatchLinesPromise: Promise<STS2PatchLine[]> | null = null;
 
@@ -51,11 +49,6 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
       deleteConfirm: "이 이야기를 삭제할까요?",
       searchPlaceholder: "검색",
       noResults: "검색 결과가 없습니다",
-      sort: {
-        recommended: "추천",
-        comments: "댓글",
-        latest: "최신",
-      },
     };
   }
 
@@ -67,11 +60,6 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
     deleteConfirm: "Delete this story?",
     searchPlaceholder: "Search",
     noResults: "No stories found",
-    sort: {
-      recommended: "Recommended",
-      comments: "Comments",
-      latest: "Latest",
-    },
   };
 }
 
@@ -152,7 +140,7 @@ function storyRecommendedScore(
 
 function stableStoryOrder(
   stories: Story[],
-  sortMode: StorySortMode,
+  sortMode: ToyboxFeedSort,
   counts: ReturnType<typeof useEngagementCounts>,
 ) {
   return [...stories].sort((a, b) => {
@@ -908,8 +896,8 @@ function StoryFeedToolbar({
   onOpenComposer,
 }: {
   serviceLocale: ServiceLocale;
-  sortMode: StorySortMode;
-  onSortModeChange: (sortMode: StorySortMode) => void;
+  sortMode: ToyboxFeedSort;
+  onSortModeChange: (sortMode: ToyboxFeedSort) => void;
   searchQuery: string;
   onSearchQueryChange: (query: string) => void;
   onOpenComposer: () => void;
@@ -918,22 +906,11 @@ function StoryFeedToolbar({
 
   return (
     <div className="flex flex-col gap-2 border-b border-border/50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="inline-flex overflow-hidden rounded-md border border-border/70 bg-background/40">
-        {STORY_SORT_OPTIONS.map((option) => (
-          <button
-            key={option}
-            type="button"
-            onClick={() => onSortModeChange(option)}
-            className={`h-8 px-3 text-xs transition-colors ${
-              sortMode === option
-                ? "bg-white/10 text-foreground"
-                : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
-            }`}
-          >
-            {copy.sort[option]}
-          </button>
-        ))}
-      </div>
+      <FeedSortToggle
+        sort={sortMode}
+        onSortChange={onSortModeChange}
+        labels={serviceMessages[serviceLocale].feedSort}
+      />
       <div className="flex min-w-0 items-center gap-2">
         <label className="relative block min-w-0 flex-1 sm:w-52">
           <Search size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -988,7 +965,7 @@ export function StoryFeed({
   const counts = useEngagementCounts();
   const [activeStoryId, setActiveStoryId] = useState<string | null>(null);
   const [commentCountOverrides, setCommentCountOverrides] = useState<Record<string, number>>({});
-  const [sortMode, setSortMode] = useState<StorySortMode>("recommended");
+  const [sortMode, setSortMode] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
   const [searchQuery, setSearchQuery] = useState("");
   const [composerOpen, setComposerOpen] = useState(false);
   const [loadedPatchLines, setLoadedPatchLines] = useState<STS2PatchLine[] | null>(null);
