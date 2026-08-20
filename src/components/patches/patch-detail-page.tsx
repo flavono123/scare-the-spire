@@ -45,6 +45,7 @@ import {
 } from "@/lib/patch-local-resources";
 import { PatchDraftNotice } from "@/components/patches/patch-draft-chrome";
 import { cn } from "@/lib/utils";
+import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 
 const PATCH_COPY: Record<ServiceLocale, {
   backToList: string;
@@ -1034,7 +1035,7 @@ export async function PatchDetailPage({
   const nextPatch = idx < sortedPatches.length - 1 ? sortedPatches[idx + 1] : null;
 
   return (
-    <div className={cn("mx-auto max-w-2xl px-4 py-6", draft && "pt-[4.75rem]")}>
+    <div className={cn(TOYBOX_WIDE_SHELL_CLASS, draft && "pt-[4.75rem]")}>
       {draft && (
         <PatchDraftNotice
           title={patchStageCopy.draft.title}

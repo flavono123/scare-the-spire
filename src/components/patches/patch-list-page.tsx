@@ -22,6 +22,7 @@ import { PatchArtPreview } from "@/components/patches/patch-art";
 import { PatchBalanceChip, PatchTypeChip } from "@/components/patches/patch-chips";
 import { PatchDraftChip } from "@/components/patches/patch-draft-chrome";
 import { PatchSectionTabs } from "@/components/patches/patch-section-tabs";
+import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 
 const PATCH_COPY: Record<ServiceLocale, {
   balance: string;
@@ -146,7 +147,7 @@ export async function PatchListPage({
   const sorted = [...patches].sort((a, b) => b.date.localeCompare(a.date));
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-6">
+    <div className={TOYBOX_WIDE_SHELL_CLASS}>
       <h1 className="text-2xl font-bold">{serviceMessages[serviceLocale].patchNotes.indexTitle}</h1>
       <PatchSectionTabs
         active="notes"

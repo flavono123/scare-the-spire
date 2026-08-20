@@ -157,7 +157,8 @@ client list and does not call `get_toybox_feed`.
 Two content max-widths only, from `src/lib/toybox-layout.ts`:
 
 - **Wide** (`max-w-6xl` / 72rem): History Course, Transfigure index, This or
-  That index and detail, 조각모음 index and federated detail.
+  That index and detail, 조각모음 index and federated detail, byrdispatch,
+  Patch Notes list and detail.
 - **Narrow** (`max-w-2xl` / 42rem): Combo, Chemical X, Transfigure detail,
   leftover native 조각모음 detail.
 

@@ -37,6 +37,7 @@ import {
 } from "@/lib/byrdispatch-static";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { serviceMessages } from "@/messages/service";
+import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
 
 export function generateByrdispatchMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
@@ -325,6 +326,7 @@ export function ByrdispatchRichText({
   serviceLocale,
   gameLocale,
   storyPlaceholder,
+  autoLinkEntities = false,
 }: {
   text: string;
   entities: EntityInfo[];
@@ -332,6 +334,7 @@ export function ByrdispatchRichText({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   storyPlaceholder: string;
+  autoLinkEntities?: boolean;
 }) {
   const renderTextSegment = (segment: string, key: string) => {
     const leadingWhitespace = segment.match(/^\s+/)?.[0] ?? "";
@@ -349,6 +352,7 @@ export function ByrdispatchRichText({
           gameLocale={gameLocale}
           preferEntityLocaleLabel
           epochArtMode="beta"
+          autoLinkEntities={autoLinkEntities}
         />
       </Fragment>
     );
@@ -425,6 +429,7 @@ export function ByrdispatchRichText({
         gameLocale={gameLocale}
         preferEntityLocaleLabel
         epochArtMode="beta"
+        autoLinkEntities={autoLinkEntities}
       />
     );
   }
@@ -445,6 +450,7 @@ function ByrdispatchBulletLine({
   gameLocale,
   statusLabels,
   storyPlaceholder,
+  autoLinkEntities = false,
 }: {
   bullet: ByrdispatchBullet;
   notice: boolean;
@@ -454,6 +460,7 @@ function ByrdispatchBulletLine({
   gameLocale: GameLocale;
   statusLabels: ByrdispatchStatusLabels;
   storyPlaceholder: string;
+  autoLinkEntities?: boolean;
 }) {
   const childBullet = bullet.depth > 0;
   const staged = childBullet ? stagedReleaseStatus(bullet.statuses) : null;
@@ -497,6 +504,7 @@ function ByrdispatchBulletLine({
           serviceLocale={serviceLocale}
           gameLocale={gameLocale}
           storyPlaceholder={storyPlaceholder}
+          autoLinkEntities={autoLinkEntities}
         />
         <StatusTokens statuses={bullet.statuses} labels={statusLabels} />
       </div>
@@ -530,15 +538,15 @@ function ByrdispatchDetailsBlock({
   return (
     <li className={details.depth > 0 ? "ml-5 block" : "block"}>
       <details
-        className="group mt-2 rounded-lg border border-purple-200/25 bg-purple-500/5 px-3 py-2"
+        className="group/byrdispatch-details relative mt-2 overflow-visible rounded-lg border border-purple-200/25 bg-purple-500/5 px-3 py-2 open:z-30"
         data-byrdispatch-details
       >
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-purple-100">
           <span>{details.summary}</span>
-          <span className="text-xs text-purple-200/70 transition-transform group-open:rotate-180">⌄</span>
+          <span className="text-xs text-purple-200/70 transition-transform group-open/byrdispatch-details:rotate-180">⌄</span>
         </summary>
         {details.items.length > 0 && (
-          <ul className="mt-2 space-y-1.5 text-sm leading-6 text-zinc-300">
+          <ul className="mt-2 space-y-1.5 overflow-visible text-sm leading-6 text-zinc-300">
             {details.items.map((item, index) => (
               <ByrdispatchSectionItemLine
                 key={byrdispatchItemKey(item, index)}
@@ -551,6 +559,7 @@ function ByrdispatchDetailsBlock({
                 statusLabels={statusLabels}
                 storyPlaceholder={storyPlaceholder}
                 characters={characters}
+                autoLinkEntities
               />
             ))}
           </ul>
@@ -623,6 +632,7 @@ function ByrdispatchSectionItemLine({
   statusLabels,
   storyPlaceholder,
   characters,
+  autoLinkEntities = false,
 }: {
   item: ByrdispatchSectionItem;
   notice: boolean;
@@ -633,6 +643,7 @@ function ByrdispatchSectionItemLine({
   statusLabels: ByrdispatchStatusLabels;
   storyPlaceholder: string;
   characters: NonNullable<EntityInfo["characterData"]>[];
+  autoLinkEntities?: boolean;
 }) {
   if (item.type === "image") {
     return (
@@ -678,6 +689,7 @@ function ByrdispatchSectionItemLine({
       gameLocale={gameLocale}
       statusLabels={statusLabels}
       storyPlaceholder={storyPlaceholder}
+      autoLinkEntities={autoLinkEntities}
     />
   );
 }
@@ -772,7 +784,7 @@ export async function renderByrdispatchPage(
     .filter((character): character is NonNullable<EntityInfo["characterData"]> => Boolean(character));
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8 text-foreground sm:py-10">
+    <main className={`${TOYBOX_WIDE_MAX_CLASS} px-4 py-8 text-foreground sm:py-10`}>
       <header className="flex items-center gap-4">
         <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded border border-purple-200/35 bg-purple-500/10">
           <Image

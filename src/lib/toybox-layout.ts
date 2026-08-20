@@ -1,6 +1,6 @@
 /** Toy Box content shells. Two widths only. */
 
-/** Tailwind `max-w-6xl` = 72rem. History Course / Transfigure / This or That / 조각모음. */
+/** Tailwind `max-w-6xl` = 72rem. History Course / Transfigure / This or That / 조각모음 / byrdispatch / Patch Notes. */
 export const TOYBOX_WIDE_MAX_CLASS = "mx-auto w-full max-w-6xl";
 
 /** Tailwind `max-w-2xl` = 42rem. Combo / Chemical X (and Transfigure detail). */

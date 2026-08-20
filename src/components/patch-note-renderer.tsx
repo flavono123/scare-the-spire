@@ -12,6 +12,7 @@ import type { CodexCard, CodexKeyword, CodexCharacter, CodexRelic, CodexPotion, 
 import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
+import { AUTO_LINK_ENTITY_TYPES, buildAutoLinkKeywordsByFirst, wrapUntaggedEntityNames, type AutoLinkKeyword } from "@/lib/auto-link-entity-names";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -123,6 +124,7 @@ type RenderContext = {
   versionDiffs?: EntityVersionDiff[];
   epochArtMode?: HoverTipArtMode;
   staticHoverPreviews?: boolean;
+  autoLinkEntities?: boolean;
 };
 
 // --- Entity Preview (hover card image) ---
@@ -1080,6 +1082,7 @@ export interface EntityLookup {
   allByEn?: Map<string, EntityInfo[]>;
   monsterMoveKeywords?: MonsterMoveKeyword[];
   monsterEntities?: EntityInfo[];
+  autoLinkKeywordsByFirst?: Map<string, AutoLinkKeyword[]>;
 }
 
 interface MonsterMoveKeyword {
@@ -1111,11 +1114,19 @@ export function buildEntityLookup(entities: EntityInfo[]): EntityLookup {
   const allByEn = new Map<string, EntityInfo[]>();
   const monsterMoveKeywords: MonsterMoveKeyword[] = [];
   const monsterEntities: EntityInfo[] = [];
+  const autoLinkNames: Array<{ label: string; type: EntityType }> = [];
   for (const e of entities) {
     addLookupEntry(byKo, allByKo, e.nameKo, e);
     addLookupEntry(byEn, allByEn, e.nameEn, e);
-    for (const alias of e.aliasesKo ?? []) addLookupEntry(byKo, allByKo, alias, e);
-    for (const alias of e.aliasesEn ?? []) addLookupEntry(byEn, allByEn, alias, e);
+    autoLinkNames.push({ label: e.nameKo, type: e.type }, { label: e.nameEn, type: e.type });
+    for (const alias of e.aliasesKo ?? []) {
+      addLookupEntry(byKo, allByKo, alias, e);
+      autoLinkNames.push({ label: alias, type: e.type });
+    }
+    for (const alias of e.aliasesEn ?? []) {
+      addLookupEntry(byEn, allByEn, alias, e);
+      autoLinkNames.push({ label: alias, type: e.type });
+    }
     if (e.type === "monster") monsterEntities.push(e);
     if (e.type === "monsterMove") {
       for (const label of [e.nameKo, e.nameEn, ...(e.aliasesKo ?? []), ...(e.aliasesEn ?? [])]) {
@@ -1131,7 +1142,15 @@ export function buildEntityLookup(entities: EntityInfo[]): EntityLookup {
     }
   }
   monsterMoveKeywords.sort((a, b) => b.label.length - a.label.length);
-  return { byKo, byEn, allByKo, allByEn, monsterMoveKeywords, monsterEntities };
+  return {
+    byKo,
+    byEn,
+    allByKo,
+    allByEn,
+    monsterMoveKeywords,
+    monsterEntities,
+    autoLinkKeywordsByFirst: buildAutoLinkKeywordsByFirst(autoLinkNames),
+  };
 }
 
 export function findEntity(text: string, lookup: EntityLookup, typeHint?: string): EntityInfo | null {
@@ -1685,6 +1704,18 @@ function enrichLine(
   key: string,
   context: RenderContext,
 ): ReactNode[] {
+  const wrapSegment = (segment: string) => (
+    context.autoLinkEntities
+      ? wrapUntaggedEntityNames(
+        segment,
+        lookup.autoLinkKeywordsByFirst,
+        (raw) => {
+          const entity = findEntity(raw, lookup);
+          return entity && AUTO_LINK_ENTITY_TYPES.has(entity.type) ? entity : null;
+        },
+      )
+      : segment
+  );
   const parts: ReactNode[] = [];
   let lastIndex = 0;
   let matchIndex = 0;
@@ -1693,7 +1724,7 @@ function enrichLine(
     const index = match.index ?? 0;
     if (index > lastIndex) {
       parts.push(...renderBBNodes(
-        parseBBCode(text.slice(lastIndex, index)),
+        parseBBCode(wrapSegment(text.slice(lastIndex, index))),
         lookup,
         `${key}-text-${matchIndex}`,
         context,
@@ -1708,7 +1739,7 @@ function enrichLine(
   if (lastIndex > 0) {
     if (lastIndex < text.length) {
       parts.push(...renderBBNodes(
-        parseBBCode(text.slice(lastIndex)),
+        parseBBCode(wrapSegment(text.slice(lastIndex))),
         lookup,
         `${key}-tail`,
         context,
@@ -1717,7 +1748,7 @@ function enrichLine(
     return parts;
   }
 
-  const nodes = parseBBCode(text);
+  const nodes = parseBBCode(wrapSegment(text));
   return renderBBNodes(nodes, lookup, key, context);
 }
 
@@ -1915,6 +1946,7 @@ export function PatchNoteRenderer({
   versionDiffs,
   epochArtMode,
   staticHoverPreviews,
+  autoLinkEntities,
   patchLines = [],
   patchLineActions,
 }: {
@@ -1933,6 +1965,7 @@ export function PatchNoteRenderer({
   versionDiffs?: EntityVersionDiff[];
   epochArtMode?: HoverTipArtMode;
   staticHoverPreviews?: boolean;
+  autoLinkEntities?: boolean;
   patchLines?: STS2PatchLine[];
   patchLineActions?: ReadonlyMap<string, ReactNode>;
 }) {
@@ -1952,8 +1985,9 @@ export function PatchNoteRenderer({
       versionDiffs,
       epochArtMode,
       staticHoverPreviews,
+      autoLinkEntities,
     }),
-    [currentVersion, epochArtMode, gameHeadingLabels, gameKeywordLabels, gameLocale, gameUi, patchVersion, patches, preferEntityLocaleLabel, serviceLocale, staticHoverPreviews, versionDiffs],
+    [currentVersion, epochArtMode, gameHeadingLabels, gameKeywordLabels, gameLocale, gameUi, patchVersion, patches, preferEntityLocaleLabel, serviceLocale, staticHoverPreviews, autoLinkEntities, versionDiffs],
   );
   const patchLineByRenderedContent = useMemo(() => {
     const map = new Map<string, STS2PatchLine>();
