@@ -38,6 +38,7 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     href: "/defragment",
     icon: "/images/sts2/powers/focus_power.webp",
     createdAt: "2026-08-20",
+    byrdispatchSectionTitle: "조각모음",
     getLabel: (_serviceLocale, gameLocale) => getDefragmentNavTitle(gameLocale),
   },
   {
