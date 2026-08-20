@@ -58,6 +58,12 @@ interface TransfigureGameCopy {
   viewUpgrades: string;
 }
 
+interface DefragmentGameCopy {
+  title: string;
+  subtitle: string;
+  placeholder: string;
+}
+
 interface FeedbackFormGameCopy {
   title: string;
   categoryLabel: string;
@@ -92,6 +98,7 @@ interface BorrowedGameCopyPayload {
   patchStage: PatchStageGameCopy;
   thisOrThat: ThisOrThatGameCopy;
   transfigure: TransfigureGameCopy;
+  defragment: DefragmentGameCopy;
 }
 
 interface ToyBoxNewsPayload {
@@ -580,6 +587,26 @@ async function buildTransfigureGameCopy(
   };
 }
 
+async function buildDefragmentGameCopy(
+  gameLocale: GameLocale,
+): Promise<DefragmentGameCopy> {
+  const [title, subtitle, description] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "cards", "DEFRAGMENT.title"),
+    readGameTextWithEnglishFallback(gameLocale, "powers", "FOCUS_POWER.description"),
+    readGameTextWithEnglishFallback(gameLocale, "cards", "DEFRAGMENT.description"),
+  ]);
+  const placeholder = stripGameMarkup(description)
+    .replace(/\{[^}]+\}/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return {
+    title: title || "Defragment",
+    subtitle: stripGameMarkup(subtitle),
+    placeholder: placeholder || "Gain Focus.",
+  };
+}
+
 async function buildFeedbackFormGameCopy(
   gameLocale: GameLocale,
 ): Promise<FeedbackFormGameCopy> {
@@ -623,6 +650,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         patchStage,
         thisOrThat,
         transfigure,
+        defragment,
       ] = await Promise.all([
         readGameTextWithEnglishFallback(
           gameLocale,
@@ -639,6 +667,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         buildPatchStageGameCopy(gameLocale),
         buildThisOrThatGameCopy(gameLocale),
         buildTransfigureGameCopy(gameLocale),
+        buildDefragmentGameCopy(gameLocale),
       ]);
       return [
         gameLocale,
@@ -650,6 +679,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
           patchStage,
           thisOrThat,
           transfigure,
+          defragment,
         },
       ] as const;
     }),

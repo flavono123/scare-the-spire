@@ -44,6 +44,7 @@ const staticServicePageSegments = new Set([
   "chemical-x",
   "c-c-c-combo",
   "contact",
+  "defragment",
   "history-course",
   "profile",
   "this-or-that",

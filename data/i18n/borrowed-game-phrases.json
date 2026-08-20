@@ -134,5 +134,43 @@
         "reason": "Patch draft notice borrows the Early Access punchline and names the published patch note as the unfinished subject."
       }
     ]
+  },
+  {
+    "id": "defragment.composerPlaceholder.ko",
+    "mode": "serviceText",
+    "sourceLang": "kor",
+    "sourceTable": "cards",
+    "sourceKey": "DEFRAGMENT.description",
+    "sourceText": "[gold]밀집[/gold]을 {FocusPower:diff()} 얻습니다.",
+    "serviceText": "밀집을 얻습니다.",
+    "serviceFiles": [
+      "src/generated/borrowed-game-copy.json"
+    ],
+    "replacements": [
+      {
+        "from": "{FocusPower:diff()}",
+        "to": "",
+        "reason": "조각모음 composer placeholder uses Defragment card text with BBCode and the Focus amount token removed so it reads as a short writing prompt."
+      }
+    ]
+  },
+  {
+    "id": "defragment.composerPlaceholder.en",
+    "mode": "serviceText",
+    "sourceLang": "eng",
+    "sourceTable": "cards",
+    "sourceKey": "DEFRAGMENT.description",
+    "sourceText": "Gain {FocusPower:diff()} [gold]Focus[/gold].",
+    "serviceText": "Gain Focus.",
+    "serviceFiles": [
+      "src/generated/borrowed-game-copy.json"
+    ],
+    "replacements": [
+      {
+        "from": "{FocusPower:diff()}",
+        "to": "",
+        "reason": "조각모음 composer placeholder uses Defragment card text with BBCode and the Focus amount token removed so it reads as a short writing prompt."
+      }
+    ]
   }
 ]

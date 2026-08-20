@@ -65,6 +65,13 @@ export const THIS_OR_THAT_PAGE_OG_IMAGE: PageOgImage = {
   alt: "이거 아님 저거? — This or That?",
 };
 
+export const DEFRAGMENT_PAGE_OG_IMAGE: PageOgImage = {
+  url: "/images/sts2/cards/defragment.webp",
+  width: 1000,
+  height: 760,
+  alt: "조각모음 — Defragment",
+};
+
 export const KEYWORD_PAGE_OG_IMAGE: PageOgImage = {
   url: "/images/sts2/ui/topbar/submenu_history_icon.png",
   width: 128,
@@ -122,6 +129,16 @@ export const PAGE_OG_IMAGE_RULES = [
     pattern: "/this-or-that/*",
     label: "이거 아님 저거? 상세",
     image: THIS_OR_THAT_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/defragment",
+    label: "조각모음",
+    image: DEFRAGMENT_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/defragment/*",
+    label: "조각모음 상세",
+    image: DEFRAGMENT_PAGE_OG_IMAGE,
   },
   {
     pattern: "/patches",

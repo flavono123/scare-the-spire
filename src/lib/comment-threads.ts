@@ -25,3 +25,7 @@ export function buildThisOrThatCommentThreadKey(postId: string): string {
 export function buildChemicalXCommentThreadKey(postId: string): string {
   return `chemical-x:${postId}`;
 }
+
+export function buildDefragmentCommentThreadKey(postId: string): string {
+  return `defragment:${postId}`;
+}

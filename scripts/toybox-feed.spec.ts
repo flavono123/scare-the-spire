@@ -7,10 +7,12 @@ import {
   isToyboxFeedSort,
   parseToyboxFeedRow,
   TOYBOX_FEED_PAGE_SIZE,
+  TOYBOX_FEED_SORT_OPTIONS,
   toyboxRecommendScore,
 } from "../src/lib/toybox-feed";
 
 assert.equal(TOYBOX_FEED_PAGE_SIZE, 20);
+assert.deepEqual([...TOYBOX_FEED_SORT_OPTIONS], ["latest", "recommended", "comments"]);
 assert.equal(toyboxRecommendScore(1, 2), 16);
 assert.equal(isToyboxFeedSort("recommended"), true);
 assert.equal(isToyboxFeedSort("hot"), false);

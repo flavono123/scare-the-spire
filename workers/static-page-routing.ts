@@ -19,6 +19,7 @@ const STATIC_SERVICE_PAGE_SEGMENTS = new Set([
   "chemical-x",
   "c-c-c-combo",
   "contact",
+  "defragment",
   "history-course",
   "profile",
   "this-or-that",

@@ -23,6 +23,8 @@ type ServiceMetadataCopy = {
   comboDescription: string;
   transfigureTitle: string;
   transfigureDescription: string;
+  defragmentTitle: string;
+  defragmentDescription: string;
 };
 
 type ServiceOgImage = PageOgImage | {
@@ -43,6 +45,8 @@ const SERVICE_METADATA_COPY: Record<ServiceLocale, ServiceMetadataCopy> = {
     comboDescription: "카드, 유물, 포션 등 슬레이 더 스파이어 2 게임 요소 조합을 공유합니다.",
     transfigureTitle: "변형",
     transfigureDescription: "슬레이 더 스파이어 2 게임 요소를 골라 설명을 새롭게 써서 공유합니다.",
+    defragmentTitle: "조각모음",
+    defragmentDescription: "장난감 상자의 글과 조각모음 본문을 한 줄로 모아서 봅니다.",
   },
   en: {
     siteDescription: "Slay the Spire 2 patch notes, Compendium, and community.",
@@ -54,6 +58,8 @@ const SERVICE_METADATA_COPY: Record<ServiceLocale, ServiceMetadataCopy> = {
     comboDescription: "Share combinations of Slay the Spire 2 Compendium resources, including cards, relics, and potions.",
     transfigureTitle: "Transfigure",
     transfigureDescription: "Choose a Slay the Spire 2 game element, rewrite its description, and share it.",
+    defragmentTitle: "Defragment",
+    defragmentDescription: "A one-line board of Toy Box posts and Defragment writing.",
   },
 };
 
