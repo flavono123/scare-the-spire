@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import type { CodexCharacter, MonsterSpineAsset } from "@/lib/codex-types";
@@ -8,9 +8,13 @@ import { CHARACTER_COLORS, CHARACTER_ORDER } from "@/lib/codex-types";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
+import {
+  createSpinePlainTextDownloader,
+  loadSpinePlayerRuntime,
+  type SpinePlayer,
+} from "@/lib/spine-player-runtime";
 import { GameHoverTip } from "./hover-tip";
 import {
-  CharacterSpineStage,
   characterHasLowHealthIdle,
   characterLowHealthHp,
   withCharacterLowHealthIdle,
@@ -148,21 +152,76 @@ function CharacterLowHpIdleStage({
   );
   const staticAssetJson = staticAsset ? JSON.stringify(staticAsset) : undefined;
   const surfaceRef = useRef<HTMLDivElement | null>(null);
-  const [stageInView, setStageInView] = useState(false);
 
   useEffect(() => {
-    const node = surfaceRef.current;
-    if (!node || !("IntersectionObserver" in window)) {
-      queueMicrotask(() => setStageInView(true));
-      return;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => setStageInView(Boolean(entry?.isIntersecting && entry.intersectionRatio >= 0.2)),
-      { threshold: [0, 0.2] },
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+    const root = surfaceRef.current;
+    const node = root?.querySelector<HTMLElement>("[data-static-spine-preview]");
+    if (!root || !node || !staticAsset?.binaryUrl || !staticAsset.atlasUrl) return;
+
+    let cancelled = false;
+    let player: SpinePlayer | null = null;
+
+    void loadSpinePlayerRuntime()
+      .then((runtime) => {
+        if (cancelled || !node.isConnected) return;
+        player = new runtime.SpinePlayer(node, {
+          binaryUrl: staticAsset.binaryUrl,
+          atlasUrl: staticAsset.atlasUrl,
+          skin: staticAsset.skin ?? undefined,
+          skins: staticAsset.skins,
+          alpha: true,
+          backgroundColor: "00000000",
+          preserveDrawingBuffer: false,
+          premultipliedAlpha: false,
+          showControls: false,
+          showLoading: false,
+          downloader: createSpinePlainTextDownloader(runtime),
+          viewport: {
+            ...staticAsset.viewport,
+            transitionTime: 0,
+          },
+          success: (loadedPlayer) => {
+            if (cancelled) return;
+            player = loadedPlayer;
+            try {
+              loadedPlayer.animationState?.clearTrack(0);
+              loadedPlayer.skeleton?.setToSetupPose();
+              const entry = loadedPlayer.setAnimation(staticAsset.idleAnimation, true);
+              if (entry) {
+                entry.mixDuration = 0;
+                entry.mixTime = 0;
+              }
+              loadedPlayer.play();
+            } catch (error) {
+              console.warn(`Failed to play low HP idle for ${character.name}:`, error);
+              return;
+            }
+            node.style.opacity = "1";
+            const fallback = root.querySelector("[data-static-spine-fallback]");
+            if (fallback instanceof HTMLElement) fallback.style.opacity = "0";
+          },
+          error: (_loadedPlayer, message) => {
+            console.warn(`Failed to load low HP idle for ${character.name}: ${message}`);
+          },
+        });
+      })
+      .catch((error: unknown) => {
+        console.warn(`Failed to import Spine player for ${character.name}:`, error);
+      });
+
+    return () => {
+      cancelled = true;
+      try {
+        const gl = player?.canvas?.getContext("webgl2") ?? player?.canvas?.getContext("webgl");
+        gl?.getExtension("WEBGL_lose_context")?.loseContext();
+      } catch {
+        // Best-effort WebGL cleanup only.
+      }
+      player?.dispose();
+      node.replaceChildren();
+      node.style.opacity = "";
+    };
+  }, [character.name, staticAsset]);
 
   return (
     <div
@@ -189,15 +248,6 @@ function CharacterLowHpIdleStage({
           data-static-spine-loop="true"
           data-static-spine-monster-name={character.name}
           aria-hidden="true"
-        />
-      ) : null}
-      {stageInView ? (
-        <CharacterSpineStage
-          character={character}
-          selectedMoveId="IDLE"
-          lowHealthIdle
-          fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.55)]"
-          className="relative z-20 h-full w-full"
         />
       ) : null}
       <div className="pointer-events-none absolute inset-x-2 bottom-1 z-40 flex flex-col items-center">

@@ -94,3 +94,29 @@ for (const target of targets) {
     runGenerate(target.flag);
   }
 }
+
+const spinePlayerSource = path.join(
+  root,
+  "node_modules/@esotericsoftware/spine-player/dist/iife/spine-player.min.js",
+);
+const spinePlayerOutput = path.join(root, "public/generated/spine-player.min.js");
+try {
+  const [outputStat, sourceStat] = await Promise.all([
+    fs.stat(spinePlayerOutput).catch((error) => {
+      if (error?.code === "ENOENT") return null;
+      throw error;
+    }),
+    fs.stat(spinePlayerSource),
+  ]);
+  if (!outputStat?.isFile() || outputStat.size === 0 || outputStat.mtimeMs < sourceStat.mtimeMs) {
+    await fs.mkdir(path.dirname(spinePlayerOutput), { recursive: true });
+    await fs.copyFile(spinePlayerSource, spinePlayerOutput);
+    console.log("Copied public/generated/spine-player.min.js");
+  }
+} catch (error) {
+  if (error?.code === "ENOENT") {
+    console.warn("Spine player runtime is missing from node_modules; skip copy.");
+  } else {
+    throw error;
+  }
+}
