@@ -12,11 +12,11 @@ export const TOYBOX_FEED_SERVICES = [
 
 export const TOYBOX_FEED_SORTS = ["latest", "recommended", "comments"] as const;
 
-/** Button order matches the home story feed: 추천 / 댓글 / 최신. */
+/** Button order for Toy Box indexes: 최신 / 추천 / 댓글. */
 export const TOYBOX_FEED_SORT_OPTIONS = [
+  "latest",
   "recommended",
   "comments",
-  "latest",
 ] as const satisfies readonly ToyboxFeedSort[];
 
 export const DEFAULT_TOYBOX_FEED_SORT: ToyboxFeedSort = "latest";

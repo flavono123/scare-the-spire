@@ -74,7 +74,8 @@ resources, rich patch notes, mobile layout, animation, or QA.
 ## Community Surface Conventions
 
 These were missing from the original skill and must stay consistent across Combo,
-Transfigure, This or That, Chemical X, History Course, Stories, and comments.
+Transfigure, This or That, Chemical X, 조각모음 (Defragment), History Course,
+Stories, and comments.
 
 ### Index-card engagement
 
@@ -83,13 +84,46 @@ Transfigure, This or That, Chemical X, History Course, Stories, and comments.
 - Comment control navigates to the detail `#comments` anchor (composer focus).
 - Like control toggles immediately on the index when the shared `likes` table or
   a service-specific like table already exists. Do not invent a new Worker RPC.
-- Prefer `useEngagementCounts` (existing `get_engagement_counts` RPC) plus
-  `LikeButton` / `IndexCardEngagement` for thread keys from
-  `src/lib/comment-threads.ts`.
+- Toy Box indexes (Combo, Transfigure, This or That, Chemical X, 조각모음) read
+  denormalized `like_count` / `comment_count` from the feed page and pass those
+  into `LikeButton` / `IndexCardEngagement` (or This or That's own like button).
+  Thread keys stay in `src/lib/comment-threads.ts`.
+- Do not call `get_engagement_counts` or `count(*)` to hydrate a Toy Box index.
+  That RPC is for bounded Codex tile overlays and similar non-feed surfaces.
 - Do not add request-time Worker Supabase reads or full-table joins for these
-  counts. Keep aggregation client-side against the existing bounded RPC.
+  counts.
 - Codex library tile overlays are a separate surface; do not casually change
   them when updating community index cards.
+
+### Toy Box index sort, keyset, and bounded RPCs
+
+Toy Box community indexes share one sort contract. Do not invent a second
+hottest/trending key or an offset page.
+
+- Sort keys and **button order** are **최신 / 추천 / 댓글**
+  (`latest`, `recommended`, `comments` in `TOYBOX_FEED_SORT_OPTIONS`).
+- Default selected sort is **최신** (`DEFAULT_TOYBOX_FEED_SORT`).
+- Recommend score is `like_count * 4 + comment_count * 6`.
+- Page size is 20 (`TOYBOX_FEED_PAGE_SIZE`). Paginate with a keyset cursor
+  `(score, created_at, id)`, never `OFFSET`.
+- Counts live on the post tables (`like_count`, `comment_count`). Triggers on
+  `comments` / `likes` (and `this_or_that_post_likes` for This or That) keep
+  them in sync. Do not scan `comments` or `likes` to build an index page.
+- Per-service indexes call `get_toybox_feed(p_env, p_service, p_sort, p_limit,
+  p_cursor_score, p_cursor_created_at, p_cursor_id)`. `p_service` is one of
+  `combo`, `transfigure`, `this_or_that`, `chemical_x`. The RPC reads one table
+  and returns at most 20 rows plus a `post` jsonb blob.
+- 조각모음's mixed board calls `get_defragment_feed` with the same sort, limit,
+  and cursor arguments. That RPC unions Combo, Transfigure, This or That,
+  Chemical X, and native 조각모음 rows. It takes **at most 20 rows from each
+  source**, then merges and returns at most 20. Do not `UNION` full tables and
+  do not issue four unbounded browser queries.
+- History Course is not a feed source.
+- If the RPC is missing (`PGRST202`), fall back to a latest-only keyset on that
+  service's own table. Do not emulate recommended/comments sort in the browser
+  by loading the whole env.
+- Keep these RPCs browser → Supabase. Do not add request-time Worker reads,
+  markdown rendering, or full Compendium joins for the feeds.
 
 ### Borrowed game-locale CTAs
 
@@ -104,6 +138,8 @@ Transfigure, This or That, Chemical X, History Course, Stories, and comments.
     `This... or That?` from `THIS_OR_THAT.pages.INITIAL.description`
     whisper line. Vote prompts stay on Knowledge Demon `선택하라.` /
     `Make your choice.`
+  - 조각모음 create/submit: exact `cards.DEFRAGMENT.title` → Korean
+    `조각모음` / English `Defragment`.
 - Put service shell strings in `src/messages/service.ts`. Keep game-origin
   phrases sourced from extracted locale / borrowed-game-copy, not hand
   translation.
@@ -139,6 +175,8 @@ Current:
   → Korean `세 번째 손` / English `THIRD hand`. It is event flavor, not a
   named resource. Do not borrow Knowledge Demon (`지식의 악마`) for the
   nickname; that encounter is only for the vote CTA.
+- 조각모음: exact `cards.DEFRAGMENT.title` → Korean `조각모음` /
+  English `Defragment`.
 
 When adding a new composer service, resolve `defaultNickname` with the
 title/token set. Put the string in the service dictionary and record

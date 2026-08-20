@@ -98,6 +98,7 @@ Use these as pattern evidence, not as a fixed catalog:
 | History Course | `relics:HISTORY_COURSE.title` | Lantern Key event quote with `RUN_HISTORY.title` substitution | `relics/history_course.webp` | `events/war_historian_repy.webp` |
 | This or That? | `events:THIS_OR_THAT.title` | Final line of the same event description | `relics/choices_paradox.webp` | `events/this_or_that.webp` |
 | C-c-c-Combo | Service-owned title | Amalgamator event line used as input copy | `badges/ccccombo.webp` | `events/amalgamator.webp` |
+| 조각모음 | `cards.DEFRAGMENT.title` | `FOCUS_POWER.description` from the Focus power the card applies | `powers/focus_power.webp` | `cards/defragment.webp` |
 
 `data/i18n/borrowed-game-phrases.json` is the precedent for documenting adapted
 game text. Generated localized copy belongs in the existing static generation
