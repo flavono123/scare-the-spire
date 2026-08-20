@@ -120,10 +120,12 @@ hottest/trending key or an offset page.
   browser queries. There is no native title+body 조각모음 post type; optional
   overlay bodies live on `defragment_bodies`.
 - 조각모음 index is a dense mixed board (유형 / 제목 / 추천 · 댓글), not gapped
-  per-row cards and not a DC/Zeroboard clone. Type uses a narrow token chip;
-  long names may truncate on phone widths. Hover and the list rail use Focus
-  cyan from the service identity. Other Toy Box indexes keep their card layouts
-  until they are explicitly redesigned.
+  per-row cards and not a DC/Zeroboard clone. Type uses a narrow token with no
+  raised or inset chip box; long names may truncate on phone widths. Idle type
+  tokens use `SpireIcon` ghost wax; row hover/focus reveals original asset
+  colors via `SpireGhostRevealIcon` (not a spire-* tint). Do not add a left
+  accent bar / vertical accent rail on the list. Other Toy Box indexes keep
+  their card layouts until they are explicitly redesigned.
 - Index rows open **조각모음 detail**, not the original service URL:
   `/defragment/{service}/{id}`. Detail embeds that type's content (combo
   renderer/gallery, transfigure preview, This or That full vote UI, Chemical X
@@ -147,6 +149,18 @@ hottest/trending key or an offset page.
   `get_defragment_feed` returns an empty page instead of native `defragment_posts`.
 - Keep these RPCs browser → Supabase. Do not add request-time Worker reads,
   markdown rendering, or full Compendium joins for the feeds.
+
+### Toy Box content widths
+
+Two content max-widths only, from `src/lib/toybox-layout.ts`:
+
+- **Wide** (`max-w-6xl` / 72rem): History Course, Transfigure index, This or
+  That index and detail, 조각모음 index and federated detail.
+- **Narrow** (`max-w-2xl` / 42rem): Combo, Chemical X, Transfigure detail,
+  leftover native 조각모음 detail.
+
+조각모음 index uses the wide max with tighter horizontal padding
+(`TOYBOX_WIDE_BOARD_SHELL_CLASS`). Do not invent a third content max-width.
 
 ### Borrowed game-locale CTAs
 
@@ -213,6 +227,8 @@ service-owned exception.
 - **Like only** uses the game token via `SpireLikeIcon` in
   `src/components/spire-icon.tsx`: `necro_mastery_power.webp` (강령의 극의).
   Idle = ghost wax; hover/active = spire-gold (`#d4a843`).
+- **조각모음 type tokens** use `SpireGhostRevealIcon`: idle = ghost wax;
+  row hover/focus = original asset colors, not gold.
 - **Comment / edit / delete** use unified Lucide icons (`MessageCircle`,
   `Pencil`, `Trash2`). Non-delete accent hover/active color is spire-gold;
   delete stays red.

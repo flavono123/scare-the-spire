@@ -96,6 +96,11 @@ Follow current Toy Box patterns instead of copying one old route wholesale:
 
 - Keep base and `[gameLocale]` route entry files thin and share rendering and
   metadata through the adjacent `page-content.tsx`.
+- Use `src/lib/toybox-layout.ts` for page content shells. Wide
+  (`TOYBOX_WIDE_SHELL_CLASS`, `max-w-6xl`) matches History Course. Narrow
+  (`TOYBOX_NARROW_SHELL_CLASS`, `max-w-2xl`) matches Combo / Chemical X. Dense
+  board indexes may use `TOYBOX_WIDE_BOARD_SHELL_CLASS` (same wide max, tighter
+  horizontal padding). Do not invent a third content max-width.
 - Add the service to `getToyBoxNavItems` with the chosen token and localized
   title.
 - Put service-owned UI text in the typed service dictionaries. Put exact or
