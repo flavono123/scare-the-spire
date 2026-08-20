@@ -413,7 +413,7 @@ export const serviceMessages = {
       overlayBody: "본문",
       openOriginal: "{name}에서",
       openTransfigure: "변형하기",
-      boardType: "말머리",
+      boardType: "유형",
       boardTitle: "제목",
       boardLikes: "추천",
       boardComments: "댓글",

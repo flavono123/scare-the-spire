@@ -119,9 +119,11 @@ hottest/trending key or an offset page.
   returns at most 20. Do not `UNION` full tables and do not issue four unbounded
   browser queries. There is no native title+body 조각모음 post type; optional
   overlay bodies live on `defragment_bodies`.
-- 조각모음 index is a dense Korean community board (말머리 / 제목 / 추천 · 댓글)
-  with hairline row separators, not gapped per-row cards. Other Toy Box indexes
-  keep their card layouts until they are explicitly redesigned.
+- 조각모음 index is a dense mixed board (유형 / 제목 / 추천 · 댓글), not gapped
+  per-row cards and not a DC/Zeroboard clone. Type uses a narrow token chip;
+  long names may truncate on phone widths. Hover and the list rail use Focus
+  cyan from the service identity. Other Toy Box indexes keep their card layouts
+  until they are explicitly redesigned.
 - Index rows open **조각모음 detail**, not the original service URL:
   `/defragment/{service}/{id}`. Detail embeds that type's content (combo
   renderer/gallery, transfigure preview, This or That full vote UI, Chemical X

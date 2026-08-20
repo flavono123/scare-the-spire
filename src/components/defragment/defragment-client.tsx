@@ -3,7 +3,11 @@
 import { useCallback, useMemo, useState } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
-import { DefragmentIndexRow } from "@/components/defragment/defragment-index-row";
+import {
+  DEFRAGMENT_ENGAGE_COL_CLASS,
+  DEFRAGMENT_TYPE_COL_CLASS,
+  DefragmentIndexRow,
+} from "@/components/defragment/defragment-index-row";
 import {
   DefragmentWritePanel,
   type DefragmentWritePlaceholders,
@@ -172,11 +176,11 @@ export function DefragmentClient({
       ) : items.length === 0 ? (
         <p className="py-8 text-center text-sm text-muted-foreground">{copy.empty}</p>
       ) : (
-        <div className="overflow-visible">
-          <div className="flex items-center gap-2 border-t-2 border-[#d4a843]/70 border-b border-white/15 px-1 py-1.5 text-[11px] font-semibold text-zinc-400">
-            <span className="w-28 shrink-0 sm:w-40">{copy.boardType}</span>
+        <div className="overflow-visible border-l-2 border-[rgba(56,176,227,0.42)] pl-2">
+          <div className="flex items-center gap-2 border-b border-yellow-500/15 px-1 py-1 text-[11px] font-semibold tracking-wide text-zinc-500">
+            <span className={DEFRAGMENT_TYPE_COL_CLASS}>{copy.boardType}</span>
             <span className="min-w-0 flex-1">{copy.boardTitle}</span>
-            <span className="w-[5.5rem] shrink-0 text-right sm:w-24">
+            <span className={`${DEFRAGMENT_ENGAGE_COL_CLASS} text-right`}>
               {copy.boardLikes} · {copy.boardComments}
             </span>
           </div>

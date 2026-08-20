@@ -24,6 +24,10 @@ import type { GameLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
 
+/** Phone-first: long type names like 이거 아님 저거? may truncate. */
+export const DEFRAGMENT_TYPE_COL_CLASS = "w-16 min-w-0 shrink-0 overflow-hidden sm:w-[4.75rem] md:w-20";
+export const DEFRAGMENT_ENGAGE_COL_CLASS = "w-[5.5rem] shrink-0 sm:w-24";
+
 export function DefragmentIndexRow({
   item,
   typeLabel,
@@ -84,24 +88,28 @@ export function DefragmentIndexRow({
       data-defragment-service={item.service}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="flex cursor-pointer items-center gap-2 border-b border-white/10 px-1 py-1.5 transition-colors hover:bg-[#3d5a80]/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70"
+      className="flex cursor-pointer items-center gap-2 border-b border-white/[0.06] px-1 py-1.5 transition-colors hover:bg-[rgba(56,176,227,0.08)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70"
     >
-      <span className="flex w-28 shrink-0 items-center gap-1.5 sm:w-40">
-        <Image
-          src={tokenSrc}
-          alt=""
-          width={16}
-          height={16}
-          className="size-4 shrink-0 object-contain"
-        />
-        <span className="truncate text-xs text-muted-foreground">
-          {typeLabel}
+      <GameUiHoverTip label={typeLabel} className={DEFRAGMENT_TYPE_COL_CLASS}>
+        <span className="flex w-full min-w-0 items-center gap-1">
+          <span className="flex size-6 shrink-0 items-center justify-center rounded-sm bg-black/40 ring-1 ring-cyan-300/15">
+            <Image
+              src={tokenSrc}
+              alt=""
+              width={14}
+              height={14}
+              className="size-3.5 object-contain"
+            />
+          </span>
+          <span className="min-w-0 truncate text-[11px] text-zinc-500">
+            {typeLabel}
+          </span>
         </span>
-      </span>
-      <span className="min-w-0 flex-1 truncate text-sm spire-purple hover:underline">
+      </GameUiHoverTip>
+      <span className="min-w-0 flex-1 truncate text-sm text-zinc-200 transition-colors hover:text-[#d4a843]">
         {item.title}
       </span>
-      <span className="inline-flex w-[5.5rem] shrink-0 items-center justify-end gap-1 sm:w-24">
+      <span className={cn(DEFRAGMENT_ENGAGE_COL_CLASS, "inline-flex items-center justify-end gap-1")}>
         {item.service === "this_or_that" ? (
           <ThisOrThatLikeButton
             count={totLikeCount ?? item.likeCount}
