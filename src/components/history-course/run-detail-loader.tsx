@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DonationPanel } from "@/components/history-course/donation-panel";
 import { HistoryCourseShell } from "@/components/history-course/history-course-shell";
 import { collectRelevantCardIds } from "@/components/history-course/topbar-state";
-import { getHistoryCourseCatalog } from "@/lib/history-course-catalog";
+import { CardSideTipCatalogProvider } from "@/components/codex/card-side-tip-catalog-context";
+import { getHistoryCourseCatalog, createHistoryCourseSideTipCatalog } from "@/lib/history-course-catalog";
 import { indexCodexCards } from "@/lib/history-card-lookup";
+import { indexCodexPotions } from "@/lib/history-potion-lookup";
 import type { CodexCard, CodexRelic } from "@/lib/codex-types";
 import { getDonatedRun } from "@/lib/run-donation";
 import { loadRun, saveRun } from "@/lib/run-store";
@@ -136,6 +138,8 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
     };
   }, [runId]);
 
+  const sideTipCatalog = useMemo(() => createHistoryCourseSideTipCatalog(), []);
+
   if (status === "invalid") {
     return (
       <EmptyState
@@ -166,6 +170,7 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
 
   const lookupCards = codexLookup.allCards;
   const lookupRelics = codexLookup.allRelics;
+  const { allPotions } = getHistoryCourseCatalog();
   const cardByLookupId = new Map<string, CodexCard>();
   for (const card of lookupCards) {
     cardByLookupId.set(card.id, card);
@@ -191,17 +196,21 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
     relicsById[relic.id] = relic;
     relicsById[`RELIC.${relic.id}`] = relic;
   }
+  const potionsById = indexCodexPotions(allPotions);
 
   return (
     <>
       {source && raw && (
         <DonationPanel runId={runId} run={run} raw={raw} source={source} />
       )}
-      <HistoryCourseShell
-        run={run}
-        cardsById={cardsById}
-        relicsById={relicsById}
-      />
+      <CardSideTipCatalogProvider catalog={sideTipCatalog}>
+        <HistoryCourseShell
+          run={run}
+          cardsById={cardsById}
+          relicsById={relicsById}
+          potionsById={potionsById}
+        />
+      </CardSideTipCatalogProvider>
     </>
   );
 }

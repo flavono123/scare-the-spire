@@ -17,7 +17,7 @@ import {
 import { RunSummary } from "@/components/history-course/run-summary";
 import { TopBar } from "@/components/history-course/topbar";
 import { buildTopbarState } from "@/components/history-course/topbar-state";
-import type { CodexCard, CodexRelic } from "@/lib/codex-types";
+import type { CodexCard, CodexPotion, CodexRelic } from "@/lib/codex-types";
 import { localizeGame, gameUi, formatGameTemplate, type GameI18nTables } from "@/lib/sts2-game-i18n";
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useGameLocale } from "@/hooks/use-game-locale";
@@ -687,10 +687,12 @@ export function HistoryCourseShell({
   run,
   cardsById,
   relicsById,
+  potionsById,
 }: {
   run: ReplayRun;
   cardsById: Record<string, CodexCard>;
   relicsById: Record<string, CodexRelic>;
+  potionsById: Record<string, CodexPotion>;
 }) {
   const tables = useGameI18n();
   const gameLocale = useGameLocale();
@@ -1061,6 +1063,7 @@ export function HistoryCourseShell({
           topbarState={topbarState}
           cardsById={cardsById}
           relicsById={relicsById}
+          potionsById={potionsById}
           summaryOpen={summaryOpen}
           summaryEnded={runEnded}
           currentActIndex={actIndex}
@@ -1134,6 +1137,7 @@ function Stage({
   topbarState,
   cardsById,
   relicsById,
+  potionsById,
   summaryOpen,
   summaryEnded,
   currentActIndex,
@@ -1170,6 +1174,7 @@ function Stage({
   topbarState: ReturnType<typeof buildTopbarState>;
   cardsById: Record<string, CodexCard>;
   relicsById: Record<string, CodexRelic>;
+  potionsById: Record<string, CodexPotion>;
   summaryOpen: boolean;
   summaryEnded: boolean;
   currentActIndex: number;
@@ -1294,6 +1299,7 @@ function Stage({
         hidingPotionIds={hidingPotionIds}
         heldPotionIds={heldPotionIds}
         heldPotionSlots={heldPotionSlots}
+        potionsById={potionsById}
         onOpenDeck={onOpenDeck}
         // Cog toggles the run-summary panel and auto-pauses playback.
         onOpenInfo={onOpenInfo}
@@ -1358,6 +1364,7 @@ function Stage({
         topbarState={topbarState}
         cardsById={cardsById}
         relicsById={relicsById}
+        potionsById={potionsById}
         open={summaryOpen}
         ended={summaryEnded}
         currentActIndex={currentActIndex}

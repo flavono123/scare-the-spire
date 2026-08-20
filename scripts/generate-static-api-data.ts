@@ -303,14 +303,27 @@ async function writeSourceJsonCompact(target: StaticJsonTarget) {
 }
 
 async function generateHistoryCourseCatalogOnly() {
-  const { getCodexCards, getCodexRelics } = await import("../src/lib/codex-data");
-  const [cards, relics] = await Promise.all([
+  const {
+    getCodexCards,
+    getCodexRelics,
+    getCodexPotions,
+    getCodexPowers,
+    getCodexMonsters,
+  } = await import("../src/lib/codex-data");
+  const { loadCardSideTipCatalogSources } = await import(
+    "../src/lib/card-side-tip-catalog.server"
+  );
+  const [cards, relics, potions, powers, monsters, tipSources] = await Promise.all([
     getCodexCards({ includeDeprecated: true }),
     getCodexRelics(),
+    getCodexPotions(),
+    getCodexPowers({ includeDeprecated: true }),
+    getCodexMonsters(),
+    loadCardSideTipCatalogSources("kor"),
   ]);
   await writeSourceJsonCompact({
     path: "generated/history-course-catalog.json",
-    data: { cards, relics },
+    data: { cards, relics, potions, powers, monsters, tipSources },
   });
 }
 
@@ -731,6 +744,10 @@ async function main() {
       data: {
         cards: koreanCompendiumDetailPayload.resources.cards,
         relics: koreanCompendiumDetailPayload.resources.relics,
+        potions: koreanCompendiumDetailPayload.resources.potions,
+        powers: koreanCompendiumDetailPayload.resources.powers,
+        monsters: koreanCompendiumDetailPayload.resources.monsters,
+        tipSources: koreanCompendiumDetailPayload.cardSideTipSources,
       },
     }),
     writeJson({ path: "generated/search-index.json", data: searchIndex }),

@@ -22,7 +22,16 @@ import { patchLineSummaryMarkdownForService, withPatchChangeEffects } from "@/li
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import type { EntityVersionDiff, STS2Patch, STS2PatchLine } from "@/lib/types";
 import { CardTile } from "@/components/codex/card-tile";
-import { DescriptionText, getCardMaxUpgradeLevel } from "@/components/codex/codex-description";
+import { CardSideTipsAnchor } from "@/components/codex/card-keyword-tip-stack";
+import { useCardSideTipCatalog } from "@/components/codex/card-side-tip-catalog-context";
+import {
+  DescriptionText,
+  getCardMaxUpgradeLevel,
+  renderCardDescription,
+  type EnchantVarMod,
+} from "@/components/codex/codex-description";
+import { collectCardSideTips } from "@/lib/card-keyword-tips";
+import { collectPotionSideTips } from "@/lib/potion-side-tips";
 import { GameHoverTip, type HoverTipArt, type HoverTipArtMode } from "@/components/codex/hover-tip";
 import {
   buildMonsterMoveVisual,
@@ -54,6 +63,17 @@ export interface EntityInfo {
   color: string; // card color or pool
   type: EntityType;
   cardPreviewUpgradeLevel?: number; // Patch-note token explicitly refers to an upgraded card, e.g. Largesse+.
+  /** History Course / in-run copy: enchantment painted onto the hover CardTile. */
+  cardPreviewEnchantment?: {
+    enchantmentImageUrl: string | null;
+    enchantmentLabel: string | null;
+    enchantmentAmount: number | null;
+    forcedCost: number | null;
+    enchantAddedKeywords: string[];
+    enchantRemovedKeywords: string[];
+    descriptionSuffix: string | null;
+    enchantStatMod: EnchantVarMod | null;
+  } | null;
   cardData?: CodexCard; // Full card data for rich preview
   characterData?: CodexCharacter; // Full character data for rich preview
   keywordData?: CodexKeyword; // Card keyword or static hover-tip concept preview data
@@ -265,6 +285,104 @@ function MonsterMoveKeywordPreview({
       selectedMoveNonce={previewNonce}
       title={title}
     />
+  );
+}
+
+function EntityCardHoverPreview({ entity }: { entity: EntityInfo }) {
+  const catalog = useCardSideTipCatalog();
+  const card = entity.cardData;
+  if (!card) return null;
+
+  const upgradeLevel = entity.cardPreviewUpgradeLevel ?? 0;
+  const enchant = entity.cardPreviewEnchantment;
+  const tile = (
+    <CardTile
+      card={card}
+      showUpgrade={Boolean(upgradeLevel)}
+      upgradeLevel={upgradeLevel}
+      showBeta={false}
+      interactive={false}
+      enchantmentImageUrl={enchant?.enchantmentImageUrl}
+      enchantmentLabel={enchant?.enchantmentLabel}
+      enchantmentAmount={enchant?.enchantmentAmount}
+      forcedCost={enchant?.forcedCost}
+      enchantAddedKeywords={enchant?.enchantAddedKeywords}
+      enchantRemovedKeywords={enchant?.enchantRemovedKeywords}
+      descriptionSuffix={enchant?.descriptionSuffix}
+      enchantStatMod={enchant?.enchantStatMod}
+    />
+  );
+
+  const tips = catalog
+    ? collectCardSideTips(card, catalog, {
+        upgradeLevel,
+        description: upgradeLevel > 0 || enchant?.enchantStatMod
+          ? renderCardDescription(card, {
+              upgradeLevel,
+              enchantMod: enchant?.enchantStatMod ?? null,
+            })
+          : card.description,
+        addedKeywords: enchant?.enchantAddedKeywords,
+        removedKeywords: enchant?.enchantRemovedKeywords,
+      })
+    : [];
+
+  if (tips.length === 0) {
+    return <span className="block w-36 drop-shadow-2xl">{tile}</span>;
+  }
+
+  return (
+    <CardSideTipsAnchor mode="always" tips={tips} className="block w-36 drop-shadow-2xl">
+      {tile}
+    </CardSideTipsAnchor>
+  );
+}
+
+function EntityPotionHoverPreview({
+  entity,
+  gameUi,
+}: {
+  entity: EntityInfo;
+  gameUi?: CodexGameUiLabels;
+}) {
+  const catalog = useCardSideTipCatalog();
+  const potion = entity.potionData;
+  if (!potion) return null;
+
+  const preview = (
+    <GameResourcePreview
+      title={entity.nameKo}
+      imageUrl={potion.imageUrl}
+      imageAlt={entity.nameKo}
+      imageStyle={{
+        filter: characterOutlineFilter(potion.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
+      }}
+      meta={(
+        <>
+          <span style={{ color: POTION_RARITY_CONFIG[potion.rarity].color }}>
+            {gameUi?.potionLab.rarities[potion.rarity].label ?? POTION_RARITY_CONFIG[potion.rarity].label}
+          </span>
+          {potion.pool !== "shared" && (
+            <span style={{ color: getCharacterColor(potion.pool) }}>
+              {potion.pool === "event" ? gameUi?.eventsTitle ?? "이벤트" : POOL_LABELS[potion.pool as RelicFilterPool]}
+            </span>
+          )}
+        </>
+      )}
+    >
+      <DescriptionText description={potion.description} />
+    </GameResourcePreview>
+  );
+
+  const extraTips = catalog
+    ? collectPotionSideTips(potion, catalog, { includeSelf: false })
+    : [];
+  if (extraTips.length === 0) return preview;
+
+  return (
+    <CardSideTipsAnchor mode="always" tips={extraTips}>
+      {preview}
+    </CardSideTipsAnchor>
   );
 }
 
@@ -525,14 +643,7 @@ export function EntityPreview({
               </div>
             </template>
           ) : (
-            <span className="block w-36 drop-shadow-2xl">
-              <CardTile
-                card={previewEntity.cardData}
-                showUpgrade={Boolean(previewEntity.cardPreviewUpgradeLevel)}
-                upgradeLevel={previewEntity.cardPreviewUpgradeLevel}
-                showBeta={false}
-              />
-            </span>
+            <EntityCardHoverPreview entity={previewEntity} />
           ),
           "card",
         )
@@ -592,28 +703,7 @@ export function EntityPreview({
       )}
       {showResolvedPreview && previewEntity.type === "potion" && previewEntity.potionData && (
         renderTooltip(
-          <GameResourcePreview
-            title={previewEntity.nameKo}
-            imageUrl={previewEntity.potionData.imageUrl}
-            imageAlt={previewEntity.nameKo}
-            imageStyle={{
-              filter: characterOutlineFilter(previewEntity.potionData.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
-            }}
-            meta={(
-              <>
-                <span style={{ color: POTION_RARITY_CONFIG[previewEntity.potionData.rarity].color }}>
-                  {gameUi?.potionLab.rarities[previewEntity.potionData.rarity].label ?? POTION_RARITY_CONFIG[previewEntity.potionData.rarity].label}
-                </span>
-                {previewEntity.potionData.pool !== "shared" && (
-                  <span style={{ color: getCharacterColor(previewEntity.potionData.pool) }}>
-                    {previewEntity.potionData.pool === "event" ? gameUi?.eventsTitle ?? "이벤트" : POOL_LABELS[previewEntity.potionData.pool as RelicFilterPool]}
-                  </span>
-                )}
-              </>
-            )}
-          >
-            <DescriptionText description={previewEntity.potionData.description} />
-          </GameResourcePreview>,
+          <EntityPotionHoverPreview entity={previewEntity} gameUi={gameUi} />,
         )
       )}
       {showResolvedPreview && previewEntity.type === "power" && previewEntity.powerData && (

@@ -3,14 +3,23 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
+import { DescriptionText } from "@/components/codex/codex-description";
 import { HoverTip } from "@/components/codex/hover-tip";
+import { EntityPreview } from "@/components/patch-note-renderer";
 import { useGameI18n } from "@/hooks/use-game-i18n";
+import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
   formatGameTemplate,
   gameUi,
   localizeGame,
 } from "@/lib/sts2-game-i18n";
+import {
+  buildPotionEntityInfo,
+  lookupHistoryPotion,
+} from "@/lib/history-potion-lookup";
+import { historyStaticHoverTip } from "@/lib/history-static-hover-tips";
+import type { CodexPotion } from "@/lib/codex-types";
 import { serviceMessages } from "@/messages/service";
 import {
   type ReplayActAnalysis,
@@ -122,6 +131,7 @@ interface TopBarProps {
   hidingPotionIds?: ReadonlySet<string>;
   heldPotionIds?: ReadonlySet<string>;
   heldPotionSlots?: (string | null)[];
+  potionsById?: Record<string, CodexPotion>;
   onOpenDeck: () => void;
   onOpenInfo: () => void;
 }
@@ -136,6 +146,7 @@ export function TopBar({
   hidingPotionIds,
   heldPotionIds,
   heldPotionSlots,
+  potionsById,
   onOpenDeck,
   onOpenInfo,
 }: TopBarProps) {
@@ -167,6 +178,7 @@ export function TopBar({
             hidingPotionIds={hidingPotionIds}
             heldPotionIds={heldPotionIds}
             heldPotionSlots={heldPotionSlots}
+            potionsById={potionsById}
           />
           <CurrentNodeChip
             entry={state.currentEntry}
@@ -419,15 +431,19 @@ function PotionSlots({
   hidingPotionIds,
   heldPotionIds,
   heldPotionSlots,
+  potionsById,
 }: {
   count: number;
   potions: (string | null)[];
   hidingPotionIds?: ReadonlySet<string>;
   heldPotionIds?: ReadonlySet<string>;
   heldPotionSlots?: (string | null)[];
+  potionsById?: Record<string, CodexPotion>;
 }) {
   const tables = useGameI18n();
+  const gameLocale = useGameLocale();
   const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
+  const emptyTip = historyStaticHoverTip("POTION_SLOT", gameLocale);
   return (
     <span
       data-potion-bay
@@ -452,16 +468,15 @@ function PotionSlots({
           displayedPotionId && (isHeld || !hidingPotionIds?.has(displayedPotionId))
             ? displayedPotionId
             : null;
+        const potion = visiblePotionId
+          ? lookupHistoryPotion(potionsById, visiblePotionId)
+          : undefined;
+        const entity = buildPotionEntityInfo(potion);
         const label = visiblePotionId
-          ? localizeGame(tables, "potions", visiblePotionId) ?? visiblePotionId
-          : playback.emptyPotion;
-        return (
-          <span
-            key={i}
-            data-potion-slot-index={i}
-            className="relative inline-block h-6 w-5"
-            title={label}
-          >
+          ? localizeGame(tables, "potions", visiblePotionId) ?? potion?.name ?? visiblePotionId
+          : emptyTip.title;
+        const slot = (
+          <span className="relative inline-block h-6 w-5" data-potion-slot-index={i}>
             <Image
               src="/images/sts2/ui/topbar/potion_placeholder.png"
               alt=""
@@ -481,6 +496,24 @@ function PotionSlots({
               />
             )}
           </span>
+        );
+        if (entity) {
+          return (
+            <EntityPreview key={i} entity={entity} linkClassName="block">
+              {slot}
+            </EntityPreview>
+          );
+        }
+        return (
+          <HoverTipWrap
+            key={i}
+            tip={{
+              title: emptyTip.title,
+              body: <DescriptionText description={emptyTip.description} className="block text-left" />,
+            }}
+          >
+            {slot}
+          </HoverTipWrap>
         );
       })}
     </span>

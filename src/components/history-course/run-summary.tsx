@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { HistoryTinyCardIcon } from "@/components/history-course/card-action-icon";
 import { NodeTooltip } from "@/components/history-course/node-tooltip";
 import { RunBadgeStrip } from "@/components/history-course/run-badge-strip";
@@ -10,17 +9,26 @@ import {
   EntityPreview,
   type EntityInfo,
 } from "@/components/patch-note-renderer";
+import { DescriptionText } from "@/components/codex/codex-description";
+import { GameHoverTip } from "@/components/codex/hover-tip";
 import { useGameI18n } from "@/hooks/use-game-i18n";
+import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { localizeGame, gameUi, formatGameTemplate, type GameI18nTables } from "@/lib/sts2-game-i18n";
 import {
   historyCardDisplayName,
   lookupHistoryCard,
 } from "@/lib/history-card-lookup";
+import { historyCardEnchantmentTileProps } from "@/lib/history-enchantments";
+import { historyStaticHoverTip } from "@/lib/history-static-hover-tips";
+import {
+  buildPotionEntityInfo,
+  lookupHistoryPotion,
+} from "@/lib/history-potion-lookup";
 import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
 import { TEXT_CREAM, TEXT_GREEN, TEXT_PURPLE } from "@/lib/sts2-card-style";
 import { serviceMessages } from "@/messages/service";
-import type { CodexCard, CodexRelic } from "@/lib/codex-types";
+import type { CodexCard, CodexPotion, CodexRelic } from "@/lib/codex-types";
 import type {
   ReplayActAnalysis,
   ReplayHistoryEntry,
@@ -33,6 +41,7 @@ import {
 import type { TopbarState } from "@/components/history-course/topbar-state";
 import { visibleRunBadgesAtFloor } from "@/lib/run-badge-timing";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 // ============================================================================
@@ -151,12 +160,26 @@ function buildRelicEntityInfo(
   };
 }
 
-function buildCardEntityInfo(card: CodexCard | undefined): EntityInfo | null {
+function buildCardEntityInfo(
+  card: CodexCard | undefined,
+  opts?: {
+    upgradeLevel?: number;
+    enchantmentId?: string | null;
+    enchantmentAmount?: number;
+    locale?: GameLocale | ServiceLocale;
+  },
+): EntityInfo | null {
   if (!card) return null;
   const madScienceParts = getMadScienceVariantPartsFromId(card.id);
   const linkId = madScienceParts
     ? getMadScienceVariantId(madScienceParts.cardType)
     : card.id;
+  const upgradeLevel = opts?.upgradeLevel ?? 0;
+  const enchant = historyCardEnchantmentTileProps(
+    opts?.enchantmentId,
+    opts?.enchantmentAmount,
+    opts?.locale ?? "kor",
+  );
   return {
     id: linkId,
     nameEn: card.nameEn,
@@ -166,6 +189,8 @@ function buildCardEntityInfo(card: CodexCard | undefined): EntityInfo | null {
     color: card.color,
     type: "card",
     cardData: card,
+    cardPreviewUpgradeLevel: upgradeLevel > 0 ? upgradeLevel : undefined,
+    cardPreviewEnchantment: enchant,
   };
 }
 
@@ -175,6 +200,7 @@ interface Props {
   topbarState: TopbarState;
   cardsById: Record<string, CodexCard>;
   relicsById: Record<string, CodexRelic>;
+  potionsById: Record<string, CodexPotion>;
   /** Whether the panel is mounted/visible. */
   open: boolean;
   /** True when the run has reached its final node (globalMs ≥ totalMs).
@@ -199,6 +225,7 @@ export function RunSummary({
   topbarState,
   cardsById,
   relicsById,
+  potionsById,
   open,
   ended,
   currentActIndex,
@@ -222,6 +249,7 @@ export function RunSummary({
         topbarState={topbarState}
         cardsById={cardsById}
         relicsById={relicsById}
+        potionsById={potionsById}
         ended={ended}
         currentActIndex={currentActIndex}
         currentStep={currentStep}
@@ -239,6 +267,7 @@ function SummaryPanel({
   topbarState,
   cardsById,
   relicsById,
+  potionsById,
   ended,
   currentActIndex,
   currentStep,
@@ -248,6 +277,7 @@ function SummaryPanel({
   topbarState: TopbarState;
   cardsById: Record<string, CodexCard>;
   relicsById: Record<string, CodexRelic>;
+  potionsById: Record<string, CodexPotion>;
   ended: boolean;
   currentActIndex: number;
   currentStep: number;
@@ -304,7 +334,11 @@ function SummaryPanel({
         />
         <HpChip hp={topbarState.hp} maxHp={topbarState.maxHp} />
         <GoldChip gold={topbarState.gold} />
-        <PotionStrip slots={topbarState.potionSlots} potions={topbarState.potions} />
+        <PotionStrip
+          slots={topbarState.potionSlots}
+          potions={topbarState.potions}
+          potionsById={potionsById}
+        />
         <ScoreChip win={run.win && ended} floor={finalFloor} />
         <TimeChip runTime={runTimeStr} />
         <div className="ml-auto flex min-w-[190px] flex-col items-end gap-1.5 text-right text-[11px] leading-snug text-zinc-400">
@@ -461,15 +495,19 @@ function GoldChip({ gold }: { gold: number | null }) {
 function PotionStrip({
   slots,
   potions,
+  potionsById,
 }: {
   slots: number;
   potions: (string | null)[];
+  potionsById: Record<string, CodexPotion>;
 }) {
   const tables = useGameI18n();
+  const gameLocale = useGameLocale();
   const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
+  const emptyTip = historyStaticHoverTip("POTION_SLOT", gameLocale);
   return (
     <div
-      title={playback.potionSlots.replace("{count}", String(slots))}
+      aria-label={playback.potionSlots.replace("{count}", String(slots))}
       className="relative inline-flex items-center gap-1 px-1"
       style={{
         borderImage:
@@ -480,11 +518,13 @@ function PotionStrip({
     >
       {Array.from({ length: slots }).map((_, i) => {
         const potionId = potions[i] ?? null;
+        const potion = potionId ? lookupHistoryPotion(potionsById, potionId) : undefined;
+        const entity = buildPotionEntityInfo(potion);
         const label = potionId
-          ? localizeGame(tables, "potions", potionId) ?? potionId
-          : playback.emptyPotion;
-        return (
-          <div key={i} className="relative h-6 w-5" title={label}>
+          ? localizeGame(tables, "potions", potionId) ?? potion?.name ?? potionId
+          : emptyTip.title;
+        const slot = (
+          <span className="relative block h-6 w-5">
             <Image
               src="/images/sts2/ui/topbar/potion_placeholder.png"
               alt=""
@@ -503,10 +543,53 @@ function PotionStrip({
                 unoptimized
               />
             )}
-          </div>
+          </span>
+        );
+        if (entity) {
+          return (
+            <EntityPreview key={i} entity={entity} linkClassName="block">
+              {slot}
+            </EntityPreview>
+          );
+        }
+        return (
+          <PotionSlotHoverTip key={i} title={emptyTip.title} description={emptyTip.description}>
+            {slot}
+          </PotionSlotHoverTip>
         );
       })}
     </div>
+  );
+}
+
+function PotionSlotHoverTip({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description: string;
+  children: ReactNode;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <span
+      className="relative inline-flex"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {children}
+      {hovered && (
+        <span
+          className="pointer-events-none absolute left-1/2 top-full z-50"
+          style={{ transform: "translate(-50%, 8px)" }}
+        >
+          <GameHoverTip title={title} style={{ minWidth: 220, maxWidth: 280 }}>
+            <DescriptionText description={description} className="block text-left" />
+          </GameHoverTip>
+        </span>
+      )}
+    </span>
   );
 }
 
@@ -798,13 +881,19 @@ function DeckEntry({
   onHoverFloor: (floor: number | null) => void;
 }) {
   const tables = useGameI18n();
+  const gameLocale = useGameLocale();
   const card = lookupHistoryCard(cardsById, entry.id);
   const baseName = historyCardDisplayName(entry.id, tables, card);
   const title = historyDeckCardTitle(baseName, entry.upgradeCount, card?.maxUpgradeLevel ?? 1);
   const label = entry.count > 1 ? `${entry.count}x ${title}` : title;
   const enchanted = Boolean(entry.enchantmentId);
   const upgraded = entry.upgradeCount > 0;
-  const entity = buildCardEntityInfo(card);
+  const entity = buildCardEntityInfo(card, {
+    upgradeLevel: entry.upgradeCount,
+    enchantmentId: entry.enchantmentId,
+    enchantmentAmount: entry.enchantmentAmount,
+    locale: gameLocale,
+  });
   const tracksFloor = entry.firstFloor > 0;
   const titleColor = enchanted ? TEXT_PURPLE : upgraded ? TEXT_GREEN : TEXT_CREAM;
 
@@ -846,14 +935,11 @@ function DeckEntry({
       className={cn("relative", rowClass)}
       {...(tracksFloor ? hoverHandlers : {})}
     >
-      <Link
-        href={buildCompendiumResourceHref("card", entity.id)}
-        className="shrink-0"
-        aria-label={`${entity.nameKo} 카드 페이지`}
+      <EntityPreview
+        entity={entity}
+        linkClassName="inline-flex min-w-0 items-center gap-1.5 cursor-pointer hover:text-amber-200 transition-colors"
       >
-        {iconNode}
-      </Link>
-      <EntityPreview entity={entity} linkClassName="cursor-pointer hover:text-amber-200 transition-colors">
+        <span className="shrink-0">{iconNode}</span>
         {labelNode}
       </EntityPreview>
     </div>
