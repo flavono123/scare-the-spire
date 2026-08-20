@@ -206,3 +206,40 @@ export const SPIRE_ACTION_CONTROL_CLASS =
 /** Index-only Lucide toast-up + spire-gold hover. */
 export const INDEX_LUCIDE_ICON_CLASS =
   "transition-[transform,color] duration-200 ease-out motion-reduce:transition-none motion-reduce:transform-none group-hover/spire:-translate-y-0.5 group-focus-visible/spire:-translate-y-0.5 group-hover/spire:text-[#d4a843] group-focus-visible/spire:text-[#d4a843]";
+
+/**
+ * Idle = ghost wax. Hover/focus of an ancestor `group` reveals the original
+ * asset colors (not a spire-* tint).
+ */
+export function SpireGhostRevealIcon({
+  src,
+  size = 16,
+  className,
+}: {
+  src: string;
+  size?: number;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn("relative inline-flex shrink-0", className)}
+      style={{ width: size, height: size }}
+    >
+      <SpireIcon
+        src={src}
+        size={size}
+        variant="ghost"
+        className="absolute inset-0 opacity-100 transition-opacity duration-200 ease-out motion-reduce:transition-none group-hover:opacity-0 group-focus-visible:opacity-0"
+      />
+      <Image
+        alt=""
+        aria-hidden
+        className="pointer-events-none absolute inset-0 h-full w-full object-contain opacity-0 transition-opacity duration-200 ease-out motion-reduce:transition-none group-hover:opacity-100 group-focus-visible:opacity-100"
+        height={size}
+        src={src}
+        unoptimized
+        width={size}
+      />
+    </span>
+  );
+}

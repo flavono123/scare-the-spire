@@ -176,7 +176,7 @@ export function DefragmentClient({
       ) : items.length === 0 ? (
         <p className="py-8 text-center text-sm text-muted-foreground">{copy.empty}</p>
       ) : (
-        <div className="overflow-visible border-l-2 border-[rgba(56,176,227,0.42)] pl-2">
+        <div className="overflow-visible">
           <div className="flex items-center gap-2 border-b border-yellow-500/15 px-1 py-1 text-[11px] font-semibold tracking-wide text-zinc-500">
             <span className={DEFRAGMENT_TYPE_COL_CLASS}>{copy.boardType}</span>
             <span className="min-w-0 flex-1">{copy.boardTitle}</span>

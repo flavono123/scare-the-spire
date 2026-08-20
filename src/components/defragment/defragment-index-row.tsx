@@ -9,9 +9,9 @@ import { LikeButton } from "@/components/like-button";
 import {
   INDEX_LUCIDE_ICON_CLASS,
   SPIRE_ACTION_CONTROL_CLASS,
+  SpireGhostRevealIcon,
 } from "@/components/spire-icon";
 import { ThisOrThatLikeButton } from "@/components/this-or-that/like-button";
-import Image from "@/components/ui/static-image";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
   DEFRAGMENT_FEED_SERVICE_META,
@@ -88,19 +88,11 @@ export function DefragmentIndexRow({
       data-defragment-service={item.service}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="flex cursor-pointer items-center gap-2 border-b border-white/[0.06] px-1 py-1.5 transition-colors hover:bg-[rgba(56,176,227,0.08)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70"
+      className="group flex cursor-pointer items-center gap-2 border-b border-white/[0.06] px-1 py-1.5 transition-colors hover:bg-white/[0.04] focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70"
     >
       <GameUiHoverTip label={typeLabel} className={DEFRAGMENT_TYPE_COL_CLASS}>
         <span className="flex w-full min-w-0 items-center gap-1">
-          <span className="flex size-6 shrink-0 items-center justify-center rounded-sm bg-black/40 ring-1 ring-cyan-300/15">
-            <Image
-              src={tokenSrc}
-              alt=""
-              width={14}
-              height={14}
-              className="size-3.5 object-contain"
-            />
-          </span>
+          <SpireGhostRevealIcon src={tokenSrc} size={16} className="shrink-0" />
           <span className="min-w-0 truncate text-[11px] text-zinc-500">
             {typeLabel}
           </span>
