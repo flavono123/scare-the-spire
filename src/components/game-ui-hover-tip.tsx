@@ -23,16 +23,15 @@ export function GameUiHoverTip({
 }) {
   const triggerRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
-  const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
   const [placement, setPlacement] = useState<{
     left: number;
     top: number;
     above: boolean;
   } | null>(null);
   const timerRef = useRef<number | null>(null);
+  const portalRoot = typeof document !== "undefined" ? document.body : null;
 
   useEffect(() => {
-    setPortalRoot(document.body);
     return () => {
       if (timerRef.current !== null) window.clearTimeout(timerRef.current);
     };

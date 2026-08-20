@@ -147,7 +147,7 @@ export function DefragmentWritePanel({
     }
   }, [ensureUser, onCreated, onUnavailable, readNickname, userId]);
 
-  const handleComboSubmit = useCallback(async (blocks: PostBlock[], _nickname: string) => {
+  const handleComboSubmit = useCallback(async (blocks: PostBlock[]) => {
     const activeUserId = userId ?? await ensureUser();
     if (!activeUserId) throw new Error("anonymous auth unavailable");
     const nickname = readNickname();
@@ -165,7 +165,7 @@ export function DefragmentWritePanel({
     }
   }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
 
-  const handleChemicalSubmit = useCallback(async (blocks: PostBlock[], _nickname: string) => {
+  const handleChemicalSubmit = useCallback(async (blocks: PostBlock[]) => {
     const activeUserId = userId ?? await ensureUser();
     if (!activeUserId) throw new Error("anonymous auth unavailable");
     const nickname = readNickname();
@@ -315,7 +315,7 @@ export function DefragmentWritePanel({
             serviceLocale={serviceLocale}
             hideNickname
             draftKey="sts-defragment-combo-draft"
-            onSubmit={handleComboSubmit}
+            onSubmit={async (blocks) => handleComboSubmit(blocks)}
           />
           {overlay}
         </>
@@ -329,7 +329,7 @@ export function DefragmentWritePanel({
             profileNickname={readNickname()}
             hideNickname
             draftKey="sts-defragment-chemical-draft"
-            onSubmit={handleChemicalSubmit}
+            onSubmit={async (blocks) => handleChemicalSubmit(blocks)}
           />
           {overlay}
         </>
