@@ -13,9 +13,13 @@ const BYRDISPATCH_DIR = path.join(process.cwd(), "data/byrdispatch");
 const BYRDISPATCH_FILE_RE = /^\d{4}-\d{2}-\d{2}\.md$/;
 const BYRDISPATCH_NOTICE_SECTIONS = new Set(["공지", "Notice"]);
 const BYRDISPATCH_STATUS_RE =
-  /\s*\((new|적용됨|예정|개발 중|버그|제보 감사|already|planned|in progress|bug|thanks for the report)\)\s*$/i;
+  /\s*\((new|적용됨|예정|개발 중|버그|제보 감사|제보감사|already|planned|in progress|bug|thanks for the report)\)\s*$/i;
 const BYRDISPATCH_MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
 const BYRDISPATCH_IMAGE_RE = /^!\[([^\]\n]*)\]\(([^)\s]+)(?:\s+"([^"]+)")?\)$/;
+const BYRDISPATCH_DETAILS_OPEN_RE = /^<details>$/i;
+const BYRDISPATCH_DETAILS_CLOSE_RE = /^<\/details>$/i;
+const BYRDISPATCH_SUMMARY_RE = /^<summary>(.*)<\/summary>$/i;
+const BYRDISPATCH_CHARACTER_LOW_HP_IDLE_RE = /^\[character-low-hp-idle(?::([v0-9.]+))?\]$/i;
 
 export type ByrdispatchStatus = "already" | "new" | "planned" | "wip" | "bug" | "reportThanks";
 
@@ -32,9 +36,22 @@ export type ByrdispatchMedia = {
   depth: number;
 };
 
+export type ByrdispatchDetails = {
+  summary: string;
+  depth: number;
+  items: ByrdispatchSectionItem[];
+};
+
+export type ByrdispatchCharacterLowHpIdle = {
+  version: string | null;
+  depth: number;
+};
+
 export type ByrdispatchSectionItem =
   | { type: "bullet"; bullet: ByrdispatchBullet }
-  | { type: "image"; media: ByrdispatchMedia };
+  | { type: "image"; media: ByrdispatchMedia }
+  | { type: "details"; details: ByrdispatchDetails }
+  | { type: "characterLowHpIdle"; block: ByrdispatchCharacterLowHpIdle };
 
 export type ByrdispatchSection = {
   title: string;
@@ -59,7 +76,11 @@ function normalizeStatus(value: string): ByrdispatchStatus {
   if (value === "적용됨" || normalizedValue === "already") return "already";
   if (value === "예정" || normalizedValue === "planned") return "planned";
   if (value === "버그" || normalizedValue === "bug") return "bug";
-  if (value === "제보 감사" || normalizedValue === "thanks for the report") {
+  if (
+    value === "제보 감사"
+    || value === "제보감사"
+    || normalizedValue === "thanks for the report"
+  ) {
     return "reportThanks";
   }
   return "wip";
@@ -82,18 +103,88 @@ function extractStatusMarkers(source: string): {
   return { text, statuses };
 }
 
-function parseByrdispatchMarkdown(markdown: string, fallbackDate: string): ByrdispatchEntry {
+function lineIndent(rawLine: string): number {
+  return rawLine.match(/^(\s*)/)?.[1].replace(/\t/g, "  ").length ?? 0;
+}
+
+function relativeDepth(indent: number, baseIndent = 0): number {
+  return Math.min(Math.max(Math.floor((indent - baseIndent) / 2), 0), 3);
+}
+
+function parseSectionItem(
+  rawLine: string,
+  line: string,
+  baseIndent = 0,
+): ByrdispatchSectionItem | null {
+  const indent = lineIndent(rawLine);
+  const depth = relativeDepth(indent, baseIndent);
+
+  const bulletMatch = rawLine.match(/^(\s*)-\s+(.*)$/);
+  if (bulletMatch) {
+    return {
+      type: "bullet",
+      bullet: {
+        ...extractStatusMarkers(bulletMatch[2]),
+        depth,
+      },
+    };
+  }
+
+  const imageMatch = line.match(BYRDISPATCH_IMAGE_RE);
+  if (imageMatch) {
+    return {
+      type: "image",
+      media: {
+        alt: imageMatch[1],
+        src: imageMatch[2],
+        title: imageMatch[3],
+        depth,
+      },
+    };
+  }
+
+  const characterLowHpIdleMatch = line.match(BYRDISPATCH_CHARACTER_LOW_HP_IDLE_RE);
+  if (characterLowHpIdleMatch) {
+    return {
+      type: "characterLowHpIdle",
+      block: {
+        version: characterLowHpIdleMatch[1] ?? null,
+        depth,
+      },
+    };
+  }
+
+  return null;
+}
+
+function pushSectionItem(section: ByrdispatchSection, item: ByrdispatchSectionItem) {
+  section.items.push(item);
+  if (item.type === "bullet") section.bullets.push(item.bullet);
+  if (item.type === "image") section.media.push(item.media);
+}
+
+export function parseByrdispatchMarkdown(markdown: string, fallbackDate: string): ByrdispatchEntry {
   const lines = markdown.split(/\r?\n/);
   const h1 = lines.find((line) => line.startsWith("# "))?.slice(2).trim();
   const date = h1 && /^\d{4}-\d{2}-\d{2}$/.test(h1) ? h1 : fallbackDate;
   const sections: ByrdispatchSection[] = [];
   let currentSection: ByrdispatchSection | null = null;
+  let openDetails: ByrdispatchDetails | null = null;
+
+  function closeDetails() {
+    if (!currentSection || !openDetails) return;
+    if (openDetails.summary || openDetails.items.length > 0) {
+      currentSection.items.push({ type: "details", details: openDetails });
+    }
+    openDetails = null;
+  }
 
   for (const rawLine of lines) {
     const line = rawLine.trim();
     if (!line || line.startsWith("# ")) continue;
 
     if (line.startsWith("## ") || line.startsWith("### ")) {
+      closeDetails();
       const level: 2 | 3 = line.startsWith("### ") ? 3 : 2;
       const rawTitle = line.slice(level + 1).trim();
       const { text: title, statuses } = extractStatusMarkers(rawTitle);
@@ -110,31 +201,38 @@ function parseByrdispatchMarkdown(markdown: string, fallbackDate: string): Byrdi
       continue;
     }
 
-    const bulletMatch = rawLine.match(/^(\s*)-\s+(.*)$/);
-    if (currentSection && bulletMatch) {
-      const indent = bulletMatch[1].replace(/\t/g, "  ").length;
-      const bullet = {
-        ...extractStatusMarkers(bulletMatch[2]),
-        depth: Math.min(Math.floor(indent / 2), 3),
+    if (currentSection && BYRDISPATCH_DETAILS_OPEN_RE.test(line)) {
+      closeDetails();
+      openDetails = {
+        summary: "",
+        depth: relativeDepth(lineIndent(rawLine)),
+        items: [],
       };
-      currentSection.bullets.push(bullet);
-      currentSection.items.push({ type: "bullet", bullet });
       continue;
     }
 
-    const imageMatch = line.match(BYRDISPATCH_IMAGE_RE);
-    if (currentSection && imageMatch) {
-      const indent = rawLine.match(/^(\s*)/)?.[1].replace(/\t/g, "  ").length ?? 0;
-      const media = {
-        alt: imageMatch[1],
-        src: imageMatch[2],
-        title: imageMatch[3],
-        depth: Math.min(Math.floor(indent / 2), 3),
-      };
-      currentSection.media.push(media);
-      currentSection.items.push({ type: "image", media });
+    if (openDetails && BYRDISPATCH_DETAILS_CLOSE_RE.test(line)) {
+      closeDetails();
+      continue;
     }
+
+    if (openDetails) {
+      const summaryMatch = line.match(BYRDISPATCH_SUMMARY_RE);
+      if (summaryMatch) {
+        openDetails.summary = summaryMatch[1].trim();
+        continue;
+      }
+      const item = parseSectionItem(rawLine, line, openDetails.depth * 2);
+      if (item) openDetails.items.push(item);
+      continue;
+    }
+
+    if (!currentSection) continue;
+    const item = parseSectionItem(rawLine, line);
+    if (item) pushSectionItem(currentSection, item);
   }
+
+  closeDetails();
 
   const populatedSections = sections.filter((section, index) => {
     if (section.items.length > 0) return true;

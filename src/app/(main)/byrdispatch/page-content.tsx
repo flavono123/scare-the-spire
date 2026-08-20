@@ -4,6 +4,7 @@ import { Fragment, type ReactNode } from "react";
 import { CommentSection } from "@/components/comment-section";
 import { ByrdispatchProfileIcon } from "@/components/byrdispatch-profile-icon";
 import { ByrdispatchStoryComposerButton } from "@/components/byrdispatch-story-composer-button";
+import { CharacterLowHpIdleBlock } from "@/components/codex/character-low-hp-idle-block";
 import { PatchNoteRenderer, type EntityInfo } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import {
@@ -23,6 +24,8 @@ import {
   BYRDISPATCH_ICON,
   BYRDISPATCH_NOTICE_ICON,
   type ByrdispatchBullet,
+  type ByrdispatchCharacterLowHpIdle,
+  type ByrdispatchDetails,
   type ByrdispatchMedia,
   type ByrdispatchSection,
   type ByrdispatchSectionItem,
@@ -184,7 +187,7 @@ const PROFILE_SERVICE_TITLES = new Set(["프로필", "Profile"]);
 
 function normalizeServiceTitle(title: string): string {
   return title
-    .replace(/\s*\((?:베타|beta)\)\s*/gi, "")
+    .replace(/\s*\((?:베타|beta|공통|General)\)\s*/gi, "")
     .trim();
 }
 
@@ -501,6 +504,89 @@ function ByrdispatchBulletLine({
   );
 }
 
+function ByrdispatchDetailsBlock({
+  details,
+  notice,
+  entities,
+  gameUi,
+  serviceLocale,
+  gameLocale,
+  statusLabels,
+  storyPlaceholder,
+  characters,
+}: {
+  details: ByrdispatchDetails;
+  notice: boolean;
+  entities: EntityInfo[];
+  gameUi: CodexGameUiLabels;
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
+  statusLabels: ByrdispatchStatusLabels;
+  storyPlaceholder: string;
+  characters: NonNullable<EntityInfo["characterData"]>[];
+}) {
+  if (!details.summary && details.items.length === 0) return null;
+
+  return (
+    <li className={details.depth > 0 ? "ml-5 block" : "block"}>
+      <details
+        className="group mt-2 rounded-lg border border-purple-200/25 bg-purple-500/5 px-3 py-2"
+        data-byrdispatch-details
+      >
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-purple-100">
+          <span>{details.summary}</span>
+          <span className="text-xs text-purple-200/70 transition-transform group-open:rotate-180">⌄</span>
+        </summary>
+        {details.items.length > 0 && (
+          <ul className="mt-2 space-y-1.5 text-sm leading-6 text-zinc-300">
+            {details.items.map((item, index) => (
+              <ByrdispatchSectionItemLine
+                key={byrdispatchItemKey(item, index)}
+                item={item}
+                notice={notice}
+                entities={entities}
+                gameUi={gameUi}
+                serviceLocale={serviceLocale}
+                gameLocale={gameLocale}
+                statusLabels={statusLabels}
+                storyPlaceholder={storyPlaceholder}
+                characters={characters}
+              />
+            ))}
+          </ul>
+        )}
+      </details>
+    </li>
+  );
+}
+
+function ByrdispatchCharacterLowHpIdleMedia({
+  block,
+  characters,
+  serviceLocale,
+}: {
+  block: ByrdispatchCharacterLowHpIdle;
+  characters: NonNullable<EntityInfo["characterData"]>[];
+  serviceLocale: ServiceLocale;
+}) {
+  if (characters.length === 0) return null;
+  return (
+    <li className={block.depth > 0 ? "ml-5 block" : "block"}>
+      <CharacterLowHpIdleBlock
+        characters={characters}
+        serviceLocale={serviceLocale}
+      />
+    </li>
+  );
+}
+
+function byrdispatchItemKey(item: ByrdispatchSectionItem, index: number): string {
+  if (item.type === "bullet") return `bullet-${item.bullet.text}-${index}`;
+  if (item.type === "image") return `image-${item.media.src}-${index}`;
+  if (item.type === "details") return `details-${item.details.summary}-${index}`;
+  return `character-low-hp-idle-${item.block.version ?? "current"}-${index}`;
+}
+
 function ByrdispatchMediaBlock({ media }: { media: ByrdispatchMedia }) {
   const compact = media.src.includes("/story-reaction-palette.");
   return (
@@ -536,6 +622,7 @@ function ByrdispatchSectionItemLine({
   gameLocale,
   statusLabels,
   storyPlaceholder,
+  characters,
 }: {
   item: ByrdispatchSectionItem;
   notice: boolean;
@@ -545,12 +632,39 @@ function ByrdispatchSectionItemLine({
   gameLocale: GameLocale;
   statusLabels: ByrdispatchStatusLabels;
   storyPlaceholder: string;
+  characters: NonNullable<EntityInfo["characterData"]>[];
 }) {
   if (item.type === "image") {
     return (
       <li className={item.media.depth > 0 ? "ml-5 block" : "block"}>
         <ByrdispatchMediaBlock media={item.media} />
       </li>
+    );
+  }
+
+  if (item.type === "details") {
+    return (
+      <ByrdispatchDetailsBlock
+        details={item.details}
+        notice={notice}
+        entities={entities}
+        gameUi={gameUi}
+        serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
+        statusLabels={statusLabels}
+        storyPlaceholder={storyPlaceholder}
+        characters={characters}
+      />
+    );
+  }
+
+  if (item.type === "characterLowHpIdle") {
+    return (
+      <ByrdispatchCharacterLowHpIdleMedia
+        block={item.block}
+        characters={characters}
+        serviceLocale={serviceLocale}
+      />
     );
   }
 
@@ -577,6 +691,7 @@ function ByrdispatchSectionList({
   gameLocale,
   statusLabels,
   storyPlaceholder,
+  characters,
 }: {
   sections: ByrdispatchSection[];
   notice?: boolean;
@@ -586,6 +701,7 @@ function ByrdispatchSectionList({
   gameLocale: GameLocale;
   statusLabels: ByrdispatchStatusLabels;
   storyPlaceholder: string;
+  characters: NonNullable<EntityInfo["characterData"]>[];
 }) {
   if (sections.length === 0) return null;
 
@@ -611,9 +727,7 @@ function ByrdispatchSectionList({
           {section.items.length > 0 && (
             <ul className="mt-2 space-y-1.5 text-sm leading-6 text-zinc-300">
               {section.items.map((item, index) => (
-                <Fragment
-                  key={item.type === "bullet" ? `bullet-${item.bullet.text}` : `image-${item.media.src}-${index}`}
-                >
+                <Fragment key={byrdispatchItemKey(item, index)}>
                   <ByrdispatchSectionItemLine
                     item={item}
                     notice={notice}
@@ -623,6 +737,7 @@ function ByrdispatchSectionList({
                     gameLocale={gameLocale}
                     statusLabels={statusLabels}
                     storyPlaceholder={storyPlaceholder}
+                    characters={characters}
                   />
                 </Fragment>
               ))}
@@ -652,6 +767,9 @@ export async function renderByrdispatchPage(
     getCodexGameUiLabels(gameLocale),
     getStoryComposerPlaceholder(gameLocale),
   ]);
+  const characters = entities
+    .map((entity) => entity.characterData)
+    .filter((character): character is NonNullable<EntityInfo["characterData"]> => Boolean(character));
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8 text-foreground sm:py-10">
@@ -712,6 +830,7 @@ export async function renderByrdispatchPage(
                       gameLocale={gameLocale}
                       statusLabels={statusLabels}
                       storyPlaceholder={storyPlaceholder}
+                      characters={characters}
                     />
                   </div>
                 )}
@@ -725,6 +844,7 @@ export async function renderByrdispatchPage(
                       gameLocale={gameLocale}
                       statusLabels={statusLabels}
                       storyPlaceholder={storyPlaceholder}
+                      characters={characters}
                     />
                   </div>
                 )}

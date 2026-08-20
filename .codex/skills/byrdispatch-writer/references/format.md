@@ -54,6 +54,8 @@ Rules:
 - Bullets are one line each.
 - Preserve one nested bullet level (`  -`) when the user provides child examples/details or explicitly asks for nested bullets.
 - Convert user numbered lists (`1. 2. 3.`) to nested `-` bullets. The parser only accepts `-`.
+- `<details>` / `<summary>` is allowed for long expandable lists. Put `<details>` then `<summary>표시 문구</summary>`, then `-` bullets, then `</details>`. Version rows should be markdown links to `/patches/vX.Y.Z`.
+- `[character-low-hp-idle]` or `[character-low-hp-idle:v0.111.0]` inserts the same all-character low HP idle render used in patch notes. Use it as a standalone line, like images, not as a screenshot.
 - Indent an image by the same two spaces when it belongs to a nested example; the renderer keeps that media aligned at the nested depth.
 - Place each image immediately before the bullet it illustrates.
 - No intro paragraph.
