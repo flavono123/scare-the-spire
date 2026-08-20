@@ -238,6 +238,7 @@ export function DefragmentWritePanel({
 
   const overlay = writeType !== "defragment" ? (
     <DefragmentOverlayBodyEditor
+      key={writeType}
       entities={entities}
       placeholder={placeholders.defragment}
       draftKey={`sts-defragment-overlay:${writeType}`}
