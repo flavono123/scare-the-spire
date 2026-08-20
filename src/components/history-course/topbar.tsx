@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import { DescriptionText } from "@/components/codex/codex-description";
 import { HoverTip } from "@/components/codex/hover-tip";
+import { PortaledHoverTipLayer } from "@/components/codex/card-keyword-tip-stack";
 import { EntityPreview } from "@/components/patch-note-renderer";
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useGameLocale } from "@/hooks/use-game-locale";
@@ -224,12 +225,14 @@ function HoverTipWrap({
   className,
   width = 240,
   placement = "below",
+  portaled = false,
 }: {
   tip: TipContent;
   children: ReactNode;
   className?: string;
   width?: number;
   placement?: TipPlacement;
+  portaled?: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
   // The stage clips overflow, so chips near the right edge anchor their
@@ -263,7 +266,15 @@ function HoverTipWrap({
             maxWidth: width,
           }}
         >
-          <HoverTip title={tip.title}>{tip.body}</HoverTip>
+          {portaled ? (
+            <PortaledHoverTipLayer>
+              <HoverTip title={tip.title} style={{ minWidth: 220, maxWidth: width }}>
+                {tip.body}
+              </HoverTip>
+            </PortaledHoverTipLayer>
+          ) : (
+            <HoverTip title={tip.title}>{tip.body}</HoverTip>
+          )}
         </span>
       )}
     </span>
@@ -507,6 +518,7 @@ function PotionSlots({
         return (
           <HoverTipWrap
             key={i}
+            portaled
             tip={{
               title: emptyTip.title,
               body: <DescriptionText description={emptyTip.description} className="block text-left" />,

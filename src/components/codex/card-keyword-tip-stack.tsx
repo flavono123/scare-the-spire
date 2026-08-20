@@ -120,6 +120,73 @@ function TipStackBody({ tips }: { tips: readonly CardSideTip[] }) {
   );
 }
 
+/** Above card-library modal (z-100), side-tip stack (200), and History Course chrome. */
+export const HOVER_TIP_LAYER_Z_INDEX = 300;
+
+export function PortaledHoverTipLayer({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const anchorRef = useRef<HTMLSpanElement>(null);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+  const [box, setBox] = useState<{ left: number; top: number } | null>(null);
+
+  const updateBox = useCallback(() => {
+    const rect = anchorRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setBox({ left: rect.left, top: rect.top });
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!mounted) return;
+    const raf = requestAnimationFrame(updateBox);
+    return () => cancelAnimationFrame(raf);
+  }, [mounted, children, updateBox]);
+
+  useLayoutEffect(() => {
+    if (!mounted) return;
+    window.addEventListener("resize", updateBox);
+    window.addEventListener("scroll", updateBox, true);
+    return () => {
+      window.removeEventListener("resize", updateBox);
+      window.removeEventListener("scroll", updateBox, true);
+    };
+  }, [mounted, updateBox]);
+
+  const portal = mounted && box
+    ? createPortal(
+      <div
+        className="pointer-events-none"
+        style={{
+          position: "fixed",
+          left: box.left,
+          top: box.top,
+          zIndex: HOVER_TIP_LAYER_Z_INDEX,
+        }}
+      >
+        {children}
+      </div>,
+      document.body,
+    )
+    : null;
+
+  return (
+    <>
+      <span ref={anchorRef} className="block h-0 w-0" aria-hidden />
+      {portal}
+    </>
+  );
+}
+
+export function HoverTipStack({ tips }: { tips: readonly CardSideTip[] }) {
+  return <TipStackBody tips={tips} />;
+}
+
 function getDetailRailRect(): DOMRect | null {
   const rail = document.querySelector(
     "[data-card-detail-meta], [data-relic-detail-meta], [data-potion-detail-meta], [data-power-detail-meta], [data-enchantment-detail-meta]",

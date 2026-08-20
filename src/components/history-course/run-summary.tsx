@@ -11,6 +11,7 @@ import {
 } from "@/components/patch-note-renderer";
 import { DescriptionText } from "@/components/codex/codex-description";
 import { GameHoverTip } from "@/components/codex/hover-tip";
+import { PortaledHoverTipLayer } from "@/components/codex/card-keyword-tip-stack";
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -581,12 +582,14 @@ function PotionSlotHoverTip({
       {children}
       {hovered && (
         <span
-          className="pointer-events-none absolute left-1/2 top-full z-50"
+          className="pointer-events-none absolute left-1/2 top-full"
           style={{ transform: "translate(-50%, 8px)" }}
         >
-          <GameHoverTip title={title} style={{ minWidth: 220, maxWidth: 280 }}>
-            <DescriptionText description={description} className="block text-left" />
-          </GameHoverTip>
+          <PortaledHoverTipLayer>
+            <GameHoverTip title={title} style={{ minWidth: 220, maxWidth: 280 }}>
+              <DescriptionText description={description} className="block text-left" />
+            </GameHoverTip>
+          </PortaledHoverTipLayer>
         </span>
       )}
     </span>
@@ -903,7 +906,7 @@ function DeckEntry({
   };
 
   const labelNode = (
-    <span className="truncate" style={{ color: titleColor }}>
+    <span className="min-w-0 truncate" style={{ color: titleColor }}>
       {label}
     </span>
   );
@@ -937,7 +940,7 @@ function DeckEntry({
     >
       <EntityPreview
         entity={entity}
-        linkClassName="inline-flex min-w-0 items-center gap-1.5 cursor-pointer hover:text-amber-200 transition-colors"
+        linkClassName="inline-flex min-w-0 max-w-full items-center gap-1.5 cursor-pointer hover:text-amber-200 transition-colors"
       >
         <span className="shrink-0">{iconNode}</span>
         {labelNode}

@@ -22,7 +22,11 @@ import { patchLineSummaryMarkdownForService, withPatchChangeEffects } from "@/li
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import type { EntityVersionDiff, STS2Patch, STS2PatchLine } from "@/lib/types";
 import { CardTile } from "@/components/codex/card-tile";
-import { CardSideTipsAnchor } from "@/components/codex/card-keyword-tip-stack";
+import {
+  CardSideTipsAnchor,
+  HoverTipStack,
+  PortaledHoverTipLayer,
+} from "@/components/codex/card-keyword-tip-stack";
 import { useCardSideTipCatalog } from "@/components/codex/card-side-tip-catalog-context";
 import {
   DescriptionText,
@@ -349,40 +353,32 @@ function EntityPotionHoverPreview({
   const potion = entity.potionData;
   if (!potion) return null;
 
-  const preview = (
-    <GameResourcePreview
-      title={entity.nameKo}
-      imageUrl={potion.imageUrl}
-      imageAlt={entity.nameKo}
-      imageStyle={{
-        filter: characterOutlineFilter(potion.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
-      }}
-      meta={(
-        <>
-          <span style={{ color: POTION_RARITY_CONFIG[potion.rarity].color }}>
-            {gameUi?.potionLab.rarities[potion.rarity].label ?? POTION_RARITY_CONFIG[potion.rarity].label}
-          </span>
-          {potion.pool !== "shared" && (
-            <span style={{ color: getCharacterColor(potion.pool) }}>
-              {potion.pool === "event" ? gameUi?.eventsTitle ?? "이벤트" : POOL_LABELS[potion.pool as RelicFilterPool]}
-            </span>
-          )}
-        </>
-      )}
-    >
-      <DescriptionText description={potion.description} />
-    </GameResourcePreview>
-  );
-
   const extraTips = catalog
     ? collectPotionSideTips(potion, catalog, { includeSelf: false })
     : [];
-  if (extraTips.length === 0) return preview;
 
   return (
-    <CardSideTipsAnchor mode="always" tips={extraTips}>
-      {preview}
-    </CardSideTipsAnchor>
+    <PortaledHoverTipLayer>
+      <span className="flex w-max items-start gap-2">
+        <GameHoverTip
+          title={entity.nameKo}
+          style={{ minWidth: 240, maxWidth: 320 }}
+        >
+          <span className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[12px]">
+            <span style={{ color: POTION_RARITY_CONFIG[potion.rarity].color }}>
+              {gameUi?.potionLab.rarities[potion.rarity].label ?? POTION_RARITY_CONFIG[potion.rarity].label}
+            </span>
+            {potion.pool !== "shared" && (
+              <span style={{ color: getCharacterColor(potion.pool) }}>
+                {potion.pool === "event" ? gameUi?.eventsTitle ?? "이벤트" : POOL_LABELS[potion.pool as RelicFilterPool]}
+              </span>
+            )}
+          </span>
+          <DescriptionText description={potion.description} />
+        </GameHoverTip>
+        {extraTips.length > 0 ? <HoverTipStack tips={extraTips} /> : null}
+      </span>
+    </PortaledHoverTipLayer>
   );
 }
 
@@ -487,7 +483,11 @@ export function EntityPreview({
   const linkText = preferEntityLocaleLabel
     ? `${previewEntity.nameKo}${cardPreviewUpgradeSuffix(previewEntity)}`
     : children;
-  const renderedLinkText = <span className="font-game-title">{linkText}</span>;
+  const renderedLinkText = (
+    <span className="inline-flex max-w-full items-center gap-1.5 font-game-title">
+      {linkText}
+    </span>
+  );
   const baseLinkClassName = isPendingCompendium
     ? [
         linkClassName ?? DEFAULT_ENTITY_LINK_CLASS,
@@ -560,7 +560,7 @@ export function EntityPreview({
   return (
     <span
       ref={ref}
-      className={forceShow ? "inline-block" : pendingStaticPreview ? "group relative inline" : "relative inline"}
+      className={forceShow ? "inline-block" : pendingStaticPreview ? "group relative inline-flex max-w-full items-center" : "relative inline-flex max-w-full items-center"}
       data-static-card-trigger={staticCardPreviewKey}
       onMouseEnter={() => {
         if (!useTapPreview) handleMouseEnter();
