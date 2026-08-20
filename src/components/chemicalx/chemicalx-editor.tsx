@@ -22,6 +22,8 @@ interface ChemicalXEditorProps {
   placeholder: string;
   profileNickname: string;
   onSubmit: (blocks: PostBlock[], nickname: string) => Promise<void>;
+  hideNickname?: boolean;
+  draftKey?: string;
 }
 
 export function ChemicalXEditor({
@@ -29,19 +31,24 @@ export function ChemicalXEditor({
   placeholder,
   profileNickname,
   onSubmit,
+  hideNickname = false,
+  draftKey = "sts-chemicalx-draft",
 }: ChemicalXEditorProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
   const nicknameInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = useCallback(async (blocks: PostBlock[]) => {
-    const nickname = nicknameInputRef.current?.value.trim() || profileNickname || copy.defaultNickname;
+    const nickname = hideNickname
+      ? (profileNickname.trim() || copy.defaultNickname)
+      : (nicknameInputRef.current?.value.trim() || profileNickname || copy.defaultNickname);
     await onSubmit(blocks, nickname);
-  }, [copy.defaultNickname, onSubmit, profileNickname]);
+  }, [copy.defaultNickname, hideNickname, onSubmit, profileNickname]);
 
   return (
     <div className="space-y-3">
       <div className="border border-border rounded-lg bg-card/30 overflow-visible">
+        {!hideNickname && (
         <div className="flex items-center gap-2 px-3 py-2 border-b border-border">
           <input
             key={profileNickname}
@@ -53,12 +60,13 @@ export function ChemicalXEditor({
             className="w-full bg-transparent text-sm text-gray-300 placeholder:text-gray-600 outline-none"
           />
         </div>
+        )}
 
         <RichContentEditor
           entities={entities}
           onSubmit={handleSubmit}
           placeholder={placeholder}
-          draftKey="sts-chemicalx-draft"
+          draftKey={draftKey}
           submitLabel={copy.submit}
           submitIconSrc="/images/relics/inserter.webp"
           showKeywordTip

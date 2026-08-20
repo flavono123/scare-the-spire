@@ -67,6 +67,32 @@ function validateSaveInput(input: SaveComboPostInput) {
   return { contentText, nickname, resources };
 }
 
+export async function insertComboPost(
+  input: SaveComboPostInput,
+): Promise<ComboPost | null> {
+  const normalized = validateSaveInput(input);
+  if (!normalized || !input.activeUserId) return null;
+
+  const { data, error } = await withSupabaseTimeout(
+    "combo_posts.insert",
+    supabase
+      .from("combo_posts")
+      .insert({
+        user_id: input.activeUserId,
+        nickname: normalized.nickname,
+        content: input.blocks,
+        content_text: normalized.contentText,
+        resources: normalized.resources,
+        env: supabaseEnv,
+      })
+      .select()
+      .single(),
+  );
+  if (error) throw error;
+  if (!data) return null;
+  return normalizePost(data);
+}
+
 async function persistComboPostUpdate(
   postId: string,
   input: SaveComboPostInput,
@@ -124,34 +150,15 @@ export function useComboPosts(
       nickname,
       activeUserId = userId ?? undefined,
     }: SaveComboPostInput): Promise<ComboPost | null> => {
-      const normalized = validateSaveInput({ blocks, nickname, activeUserId });
-      if (!normalized || !activeUserId) return null;
-
-      const { data, error } = await withSupabaseTimeout(
-        "combo_posts.insert",
-        supabase
-          .from("combo_posts")
-          .insert({
-            user_id: activeUserId,
-            nickname: normalized.nickname,
-            content: blocks,
-            content_text: normalized.contentText,
-            resources: normalized.resources,
-            env: supabaseEnv,
-          })
-          .select()
-          .single(),
-      ).catch(() => ({ data: null, error: new Error("timeout") }));
-
-      if (error) {
+      try {
+        const post = await insertComboPost({ blocks, nickname, activeUserId });
+        if (!post) return null;
+        prependPost(post);
+        return post;
+      } catch (error) {
         setUnavailable(true);
-        throw new Error(error.message);
+        throw error;
       }
-      if (!data) return null;
-
-      const post = normalizePost(data);
-      prependPost(post, data);
-      return post;
     },
     [prependPost, setUnavailable, userId],
   );

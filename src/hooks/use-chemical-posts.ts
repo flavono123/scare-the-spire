@@ -29,6 +29,42 @@ function normalizePost(row: unknown): ChemicalPost {
   return row as ChemicalPost;
 }
 
+export async function insertChemicalPost(
+  blocks: PostBlock[],
+  nickname: string,
+  activeUserId: string,
+): Promise<ChemicalPost | null> {
+  if (!activeUserId || !supabaseEnabled) return null;
+  const contentText = blocksToPlainText(blocks).trim();
+  const trimmedNickname = nickname.trim();
+  if (
+    contentText.length < CHEMICAL_POST_MIN_CHARS
+    || contentText.length > CHEMICAL_POST_MAX_CHARS
+    || trimmedNickname.length < 1
+    || trimmedNickname.length > 20
+  ) {
+    return null;
+  }
+
+  const { data, error } = await withSupabaseTimeout(
+    "chemical_posts.insert",
+    supabase
+      .from("chemical_posts")
+      .insert({
+        user_id: activeUserId,
+        nickname: trimmedNickname,
+        content: blocks,
+        content_text: contentText,
+        env: supabaseEnv,
+      })
+      .select()
+      .single(),
+  );
+  if (error) throw error;
+  if (!data) return null;
+  return normalizePost(data);
+}
+
 export function useChemicalPosts(
   userId: string | null,
   sort: ToyboxFeedSort = "latest",
@@ -54,40 +90,13 @@ export function useChemicalPosts(
 
   const add = useCallback(
     async (blocks: PostBlock[], nickname: string, activeUserId = userId) => {
-      if (!activeUserId || !supabaseEnabled) return;
-      const contentText = blocksToPlainText(blocks).trim();
-      const trimmedNickname = nickname.trim();
-      if (
-        contentText.length < CHEMICAL_POST_MIN_CHARS
-        || contentText.length > CHEMICAL_POST_MAX_CHARS
-        || trimmedNickname.length < 1
-        || trimmedNickname.length > 20
-      ) {
-        return;
-      }
-
-      const { data, error } = await withSupabaseTimeout(
-        "chemical_posts.insert",
-        supabase
-          .from("chemical_posts")
-          .insert({
-            user_id: activeUserId,
-            nickname: trimmedNickname,
-            content: blocks,
-            content_text: contentText,
-            env: supabaseEnv,
-          })
-          .select()
-          .single(),
-      ).catch(() => ({ data: null, error: new Error("timeout") }));
-
-      if (error) {
+      if (!activeUserId) return;
+      try {
+        const post = await insertChemicalPost(blocks, nickname, activeUserId);
+        if (post) prependPost(post);
+      } catch (error) {
         setUnavailable(true);
-        throw new Error(error.message);
-      }
-
-      if (data) {
-        prependPost(normalizePost(data), data);
+        throw error;
       }
     },
     [prependPost, setUnavailable, userId],

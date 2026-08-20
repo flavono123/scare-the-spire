@@ -40,6 +40,7 @@ interface ComboPostViewProps {
   postId: string;
   gameLocale: GameLocale;
   placeholder: string;
+  variant?: "page" | "embed";
 }
 
 function getTextClass(length: number): string {
@@ -48,7 +49,7 @@ function getTextClass(length: number): string {
   return "text-base sm:text-lg";
 }
 
-export function ComboPostView({ postId, gameLocale, placeholder }: ComboPostViewProps) {
+export function ComboPostView({ postId, gameLocale, placeholder, variant = "page" }: ComboPostViewProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].combo;
   const siteDisplayOrigin = getSiteDisplayOrigin();
@@ -105,9 +106,11 @@ export function ComboPostView({ postId, gameLocale, placeholder }: ComboPostView
 
   const youtubeReference = extractComboYouTubeReference(post.content);
   const historyRunReferences = extractComboHistoryRunReferences(post.content);
+  const embed = variant === "embed";
 
   return (
-    <div data-combo-page="detail" className="space-y-4">
+    <div data-combo-page={embed ? "embed" : "detail"} className="space-y-4">
+      {!embed && (
       <div className="flex items-center justify-between">
         <Link
           href={localizeHrefWithGameLocale("/c-c-c-combo", serviceLocale, gameLocale)}
@@ -128,6 +131,7 @@ export function ComboPostView({ postId, gameLocale, placeholder }: ComboPostView
           onDelete={handleDelete}
         />
       </div>
+      )}
 
       <article className="relative overflow-hidden rounded-2xl border border-yellow-500/15 bg-gradient-to-b from-[#0c0c18] via-[#10101e] to-[#0c0c18] p-4 pb-4 sm:p-6 sm:pb-5">
         <div
@@ -199,7 +203,7 @@ export function ComboPostView({ postId, gameLocale, placeholder }: ComboPostView
         </div>
       </article>
 
-      {editing && (
+      {!embed && editing && (
         <ComboComposerModal
           entities={entities}
           initialPost={post}
@@ -211,6 +215,7 @@ export function ComboPostView({ postId, gameLocale, placeholder }: ComboPostView
         />
       )}
 
+      {!embed && (
       <section
         id="comments"
         className="scroll-mt-16 rounded-lg border border-border bg-card/20 p-4"
@@ -223,6 +228,7 @@ export function ComboPostView({ postId, gameLocale, placeholder }: ComboPostView
           initialEntities={entities}
         />
       </section>
+      )}
     </div>
   );
 }

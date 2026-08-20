@@ -3,8 +3,11 @@
 import { useCallback, useMemo, useState } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
-import { DefragmentComposer } from "@/components/defragment/defragment-composer";
 import { DefragmentIndexRow } from "@/components/defragment/defragment-index-row";
+import {
+  DefragmentWritePanel,
+  type DefragmentWritePlaceholders,
+} from "@/components/defragment/defragment-write-panel";
 import { FeedLoadMoreSentinel } from "@/components/feed-load-more-sentinel";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { RichText } from "@/components/rich-text";
@@ -12,17 +15,13 @@ import { StorageUnavailableNotice } from "@/components/storage-unavailable-notic
 import Image from "@/components/ui/static-image";
 import { useAuth } from "@/hooks/use-auth";
 import { useDefragmentFeed } from "@/hooks/use-defragment-feed";
-import {
-  feedItemFromDefragmentPost,
-  useDefragmentPostMutations,
-} from "@/hooks/use-defragment-posts";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { useThisOrThatLikes } from "@/hooks/use-this-or-that-likes";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import { getTransfigureNavTitle } from "@/lib/borrowed-game-copy";
-import type { PostBlock } from "@/lib/chemical-types";
 import {
   DEFRAGMENT_TOKEN_SRC,
+  type DefragmentFeedItem,
   type DefragmentFeedService,
 } from "@/lib/defragment";
 import type { GameLocale } from "@/lib/i18n";
@@ -35,13 +34,15 @@ export function DefragmentClient({
   gameLocale,
   title,
   subtitle,
-  placeholder,
+  placeholders,
+  upgradeLabel,
 }: {
   entities: EntityInfo[];
   gameLocale: GameLocale;
   title: string;
   subtitle: string;
-  placeholder: string;
+  placeholders: DefragmentWritePlaceholders;
+  upgradeLabel: string;
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].defragment;
@@ -59,7 +60,6 @@ export function DefragmentClient({
     prependItem,
     setUnavailable,
   } = useDefragmentFeed(sort);
-  const { add } = useDefragmentPostMutations();
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
     [copy.defaultNickname],
@@ -93,25 +93,10 @@ export function DefragmentClient({
     await totLikes.toggle(postId, activeUserId);
   }, [ensureUser, totLikes, userId]);
 
-  const handleSubmit = useCallback(async (input: {
-    title: string;
-    blocks: PostBlock[];
-    nickname: string;
-  }) => {
-    const activeUserId = userId ?? await ensureUser();
-    if (!activeUserId) return;
-    try {
-      const post = await add({
-        ...input,
-        activeUserId,
-      });
-      if (!post) return;
-      prependItem(feedItemFromDefragmentPost(post));
-      setComposerOpen(false);
-    } catch {
-      setUnavailable(true);
-    }
-  }, [add, ensureUser, prependItem, setUnavailable, userId]);
+  const handleCreated = useCallback((item: DefragmentFeedItem) => {
+    prependItem(item);
+    setComposerOpen(false);
+  }, [prependItem]);
 
   return (
     <div data-defragment-page="index" className="space-y-6">
@@ -153,13 +138,18 @@ export function DefragmentClient({
       </header>
 
       {composerOpen && ready && !unavailable && (
-        <DefragmentComposer
+        <DefragmentWritePanel
           entities={entities}
-          placeholder={placeholder}
+          gameLocale={gameLocale}
+          placeholders={placeholders}
+          upgradeLabel={upgradeLabel}
           profileNickname={profile.nickname}
-          submitLabel={copy.submit}
-          draftKey="sts-defragment-draft"
-          onSubmit={handleSubmit}
+          typeLabels={typeLabels}
+          onCreated={handleCreated}
+          onUnavailable={() => setUnavailable(true)}
+          ensureUser={ensureUser}
+          userId={userId}
+          authReady={ready}
         />
       )}
 

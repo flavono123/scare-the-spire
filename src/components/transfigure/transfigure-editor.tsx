@@ -65,6 +65,7 @@ interface TransfigureEditorProps {
   onSubmit: (
     input: Omit<SaveTransfigurePostInput, "activeUserId">,
   ) => Promise<void>;
+  hideNickname?: boolean;
 }
 
 const LEGACY_TRANSFIGURE_DRAFT_PREFIXES = [
@@ -198,6 +199,7 @@ export function TransfigureEditor({
   serviceLocale,
   upgradeLabel,
   onSubmit,
+  hideNickname = false,
 }: TransfigureEditorProps) {
   const copy = serviceMessages[serviceLocale].transfigure;
   const [draftSessionId] = useState(() => globalThis.crypto.randomUUID());
@@ -502,9 +504,11 @@ export function TransfigureEditor({
 
     const title = postTitle.trim()
       || copy.defaultTitle.replace("{name}", selected.nameKo);
-    const nickname = nicknameInputRef.current?.value.trim()
-      || profileNickname
-      || copy.defaultNickname;
+    const nickname = hideNickname
+      ? (profileNickname.trim() || copy.defaultNickname)
+      : (nicknameInputRef.current?.value.trim()
+        || profileNickname
+        || copy.defaultNickname);
     if (!hasUpdateDiff(blocks, upgradedBlocks, title, nickname)) {
       setSaveFeedback({ message: copy.noChanges, tone: "error" });
       throw new Error("transfigure post is unchanged");
@@ -550,6 +554,7 @@ export function TransfigureEditor({
     copy.noChanges,
     gameLocale,
     hasUpdateDiff,
+    hideNickname,
     initialPost,
     onSubmit,
     postTitle,
@@ -670,9 +675,11 @@ export function TransfigureEditor({
       || (selected
         ? copy.defaultTitle.replace("{name}", selected.nameKo)
         : "");
-    const nickname = nicknameInputRef.current?.value.trim()
-      || profileNickname
-      || copy.defaultNickname;
+    const nickname = hideNickname
+      ? (profileNickname.trim() || copy.defaultNickname)
+      : (nicknameInputRef.current?.value.trim()
+        || profileNickname
+        || copy.defaultNickname);
     if (!hasUpdateDiff(
       previewBlocks,
       previewUpgradeBlocks,
@@ -703,6 +710,7 @@ export function TransfigureEditor({
     handleSubmit,
     hasChanges,
     hasUpdateDiff,
+    hideNickname,
     initialPost,
     postTitle,
     previewBlocks,
@@ -747,6 +755,7 @@ export function TransfigureEditor({
               </label>
             </div>
 
+            {!hideNickname && (
             <div className="px-3 py-2">
               <input
                 key={`${initialPost?.id ?? "new"}:${profileNickname}`}
@@ -759,6 +768,7 @@ export function TransfigureEditor({
                 className="w-full bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
               />
             </div>
+            )}
 
             {selectedCardData && canChangeCardMetadata && (
               <div

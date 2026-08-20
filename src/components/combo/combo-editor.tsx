@@ -30,6 +30,8 @@ interface ComboEditorProps {
   profileNickname: string;
   serviceLocale: ServiceLocale;
   onSubmit: (blocks: PostBlock[], nickname: string) => Promise<void>;
+  hideNickname?: boolean;
+  draftKey?: string;
 }
 
 export function ComboEditor({
@@ -39,6 +41,8 @@ export function ComboEditor({
   profileNickname,
   serviceLocale,
   onSubmit,
+  hideNickname = false,
+  draftKey,
 }: ComboEditorProps) {
   const copy = serviceMessages[serviceLocale].combo;
   const nicknameInputRef = useRef<HTMLInputElement>(null);
@@ -110,14 +114,17 @@ export function ComboEditor({
     }
 
     setValidationError(null);
-    const nickname = nicknameInputRef.current?.value.trim()
-      || profileNickname
-      || copy.defaultNickname;
+    const nickname = hideNickname
+      ? (profileNickname.trim() || copy.defaultNickname)
+      : (nicknameInputRef.current?.value.trim()
+        || profileNickname
+        || copy.defaultNickname);
     await onSubmit(blocks, nickname);
   }, [
     copy.defaultNickname,
     copy.minimumResources,
     copy.youtubeLimit,
+    hideNickname,
     onSubmit,
     profileNickname,
   ]);
@@ -125,6 +132,7 @@ export function ComboEditor({
   return (
     <div className="space-y-2">
       <div className="overflow-visible rounded-lg border border-border bg-card/30">
+        {!hideNickname && (
         <div className="flex items-center gap-2 border-b border-border px-3 py-2">
           <input
             key={initialPost?.id ?? profileNickname}
@@ -136,6 +144,7 @@ export function ComboEditor({
             className="w-full bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
           />
         </div>
+        )}
 
         <div className="border-b border-border px-3 py-2">
           <ComboResourcePicker
@@ -179,7 +188,7 @@ export function ComboEditor({
           onSubmit={handleSubmit}
           placeholder={placeholder}
           richPlaceholder={placeholder}
-          draftKey={initialPost ? `sts-combo-edit:${initialPost.id}` : "sts-combo-draft"}
+          draftKey={draftKey ?? (initialPost ? `sts-combo-edit:${initialPost.id}` : "sts-combo-draft")}
           submitLabel={initialPost ? copy.saveChanges : copy.submit}
           maxChars={null}
           initialBlocks={initialPost?.content}

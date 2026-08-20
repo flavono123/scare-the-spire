@@ -37,12 +37,14 @@ export function ThisOrThatPostView({
   title,
   votePrompt,
   voteDone,
+  variant = "page",
 }: {
   postId: string;
   gameLocale: GameLocale;
   title: string;
   votePrompt: string;
   voteDone: string;
+  variant?: "page" | "embed";
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].thisOrThat;
@@ -112,9 +114,11 @@ export function ThisOrThatPostView({
   const voteChoice = votes.choices[resolvedPost.post.id];
   const votePending = votes.pending.has(resolvedPost.post.id);
   const canVote = authReady && !authUnavailable && !votes.loading && !votes.unavailable;
+  const embed = variant === "embed";
 
   return (
     <div className="space-y-5">
+      {!embed && (
       <div className="flex items-center justify-between gap-3">
         <Link
           href={localizeHrefWithGameLocale("/this-or-that", serviceLocale, gameLocale)}
@@ -133,6 +137,7 @@ export function ThisOrThatPostView({
           onDelete={handleDelete}
         />
       </div>
+      )}
 
       <article className="space-y-5">
         <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -235,6 +240,7 @@ export function ThisOrThatPostView({
         />
       </article>
 
+      {!embed && (
       <section
         id="comments"
         className="scroll-mt-16 rounded-lg border border-border bg-card/20 p-4"
@@ -247,6 +253,7 @@ export function ThisOrThatPostView({
           initialEntities={entities}
         />
       </section>
+      )}
     </div>
   );
 }

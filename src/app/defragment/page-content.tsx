@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { DefragmentClient } from "@/components/defragment/defragment-client";
 import { ServiceBackground } from "@/components/service-background";
-import { getDefragmentGameCopy } from "@/lib/borrowed-game-copy";
+import {
+  getChemicalXPlaceholder,
+  getComboPlaceholder,
+  getDefragmentGameCopy,
+  getThisOrThatGameCopy,
+  getTransfigureGameCopy,
+} from "@/lib/borrowed-game-copy";
 import { DEFRAGMENT_BACKGROUND_SRC } from "@/lib/defragment";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
@@ -27,9 +33,13 @@ export async function generateDefragmentMetadata(
 export async function renderDefragmentPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
-  const [entities, gameCopy] = await Promise.all([
+  const [entities, gameCopy, comboPlaceholder, chemicalPlaceholder, totCopy, transfigureCopy] = await Promise.all([
     loadAllEntities({ gameLocale }),
     getDefragmentGameCopy(gameLocale),
+    getComboPlaceholder(gameLocale),
+    getChemicalXPlaceholder(gameLocale),
+    getThisOrThatGameCopy(gameLocale),
+    getTransfigureGameCopy(gameLocale),
   ]);
 
   return (
@@ -38,13 +48,19 @@ export async function renderDefragmentPage(
         src={DEFRAGMENT_BACKGROUND_SRC}
         imageClassName="object-[58%_center] sm:object-center"
       />
-      <div className="mx-auto max-w-3xl px-4 py-6">
+      <div className="mx-auto max-w-4xl px-4 py-6">
         <DefragmentClient
           entities={entities}
           gameLocale={gameLocale}
           title={gameCopy.title}
           subtitle={gameCopy.subtitle}
-          placeholder={gameCopy.placeholder}
+          placeholders={{
+            defragment: gameCopy.placeholder,
+            combo: comboPlaceholder,
+            chemicalX: chemicalPlaceholder,
+            thisOrThat: totCopy.prompt,
+          }}
+          upgradeLabel={transfigureCopy.viewUpgrades}
         />
       </div>
     </div>

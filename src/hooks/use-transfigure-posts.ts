@@ -342,6 +342,52 @@ async function persistTransfigurePostUpdate(
   ).catch(() => ({ data: null, error: new Error("timeout") }));
 }
 
+export async function insertTransfigurePost(
+  input: SaveTransfigurePostInput,
+): Promise<TransfigurePost | null> {
+  const normalized = validateSaveInput(input);
+  if (!normalized || !input.activeUserId) return null;
+
+  const { data, error } = await withSupabaseTimeout(
+    "transfigure_posts.insert",
+    supabase
+      .from("transfigure_posts")
+      .insert({
+        user_id: input.activeUserId,
+        nickname: normalized.nickname,
+        title: normalized.title,
+        resource_type: input.resource.type,
+        resource_id: input.resource.id,
+        source_text: normalized.sourceText,
+        source_game_locale: input.sourceGameLocale,
+        content: input.blocks,
+        content_text: normalized.contentText,
+        transformed_name: normalized.transformedName,
+        transformed_cost: normalized.transformedCost,
+        transformed_star_cost: normalized.transformedStarCost,
+        transformed_card_type: normalized.transformedCardType,
+        transformed_card_rarity: normalized.transformedCardRarity,
+        card_top_keywords: normalized.cardKeywords.top,
+        card_bottom_keywords: normalized.cardKeywords.bottom,
+        upgraded_content: input.upgradedBlocks,
+        upgraded_content_text: normalized.upgradedContentText,
+        transformed_upgrade_cost: normalized.transformedUpgradeCost,
+        transformed_upgrade_star_cost: normalized.transformedUpgradeStarCost,
+        upgraded_card_top_keywords: normalized.upgradedCardKeywords.top,
+        upgraded_card_bottom_keywords: normalized.upgradedCardKeywords.bottom,
+        show_upgrade: input.showUpgrade,
+        token_color: normalized.tokenColor,
+        token_wax: normalized.tokenWax,
+        env: supabaseEnv,
+      })
+      .select()
+      .single(),
+  );
+  if (error) throw error;
+  if (!data) return null;
+  return normalizePost(data);
+}
+
 export function useTransfigurePosts(
   userId: string | null,
   sort: ToyboxFeedSort = "latest",
@@ -369,57 +415,18 @@ export function useTransfigurePosts(
   const add = useCallback(
     async (input: SaveTransfigurePostInput): Promise<TransfigurePost | null> => {
       const activeUserId = input.activeUserId ?? userId ?? undefined;
-      const normalized = validateSaveInput({
-        ...input,
-        activeUserId,
-      });
-      if (!normalized || !activeUserId) return null;
-
-      const { data, error } = await withSupabaseTimeout(
-        "transfigure_posts.insert",
-        supabase
-          .from("transfigure_posts")
-          .insert({
-            user_id: activeUserId,
-            nickname: normalized.nickname,
-            title: normalized.title,
-            resource_type: input.resource.type,
-            resource_id: input.resource.id,
-            source_text: normalized.sourceText,
-            source_game_locale: input.sourceGameLocale,
-            content: input.blocks,
-            content_text: normalized.contentText,
-            transformed_name: normalized.transformedName,
-            transformed_cost: normalized.transformedCost,
-            transformed_star_cost: normalized.transformedStarCost,
-            transformed_card_type: normalized.transformedCardType,
-            transformed_card_rarity: normalized.transformedCardRarity,
-            card_top_keywords: normalized.cardKeywords.top,
-            card_bottom_keywords: normalized.cardKeywords.bottom,
-            upgraded_content: input.upgradedBlocks,
-            upgraded_content_text: normalized.upgradedContentText,
-            transformed_upgrade_cost: normalized.transformedUpgradeCost,
-            transformed_upgrade_star_cost: normalized.transformedUpgradeStarCost,
-            upgraded_card_top_keywords: normalized.upgradedCardKeywords.top,
-            upgraded_card_bottom_keywords: normalized.upgradedCardKeywords.bottom,
-            show_upgrade: input.showUpgrade,
-            token_color: normalized.tokenColor,
-            token_wax: normalized.tokenWax,
-            env: supabaseEnv,
-          })
-          .select()
-          .single(),
-      ).catch(() => ({ data: null, error: new Error("timeout") }));
-
-      if (error) {
+      try {
+        const post = await insertTransfigurePost({
+          ...input,
+          activeUserId,
+        });
+        if (!post) return null;
+        prependPost(post);
+        return post;
+      } catch (error) {
         setUnavailable(true);
-        throw new Error(error.message);
+        throw error;
       }
-      if (!data) return null;
-
-      const post = normalizePost(data);
-      prependPost(post, data);
-      return post;
     },
     [prependPost, setUnavailable, userId],
   );

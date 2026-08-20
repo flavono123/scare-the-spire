@@ -21,6 +21,7 @@ interface TransfigureComposerModalProps {
   ) => Promise<void>;
   onDelete?: () => Promise<void> | void;
   onClose: () => void;
+  hideNickname?: boolean;
 }
 
 export function TransfigureComposerModal({
@@ -33,6 +34,7 @@ export function TransfigureComposerModal({
   onSubmit,
   onDelete,
   onClose,
+  hideNickname = false,
 }: TransfigureComposerModalProps) {
   const copy = serviceMessages[serviceLocale].transfigure;
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -118,6 +120,7 @@ export function TransfigureComposerModal({
             profileNickname={profileNickname}
             serviceLocale={serviceLocale}
             upgradeLabel={upgradeLabel}
+            hideNickname={hideNickname}
             onSubmit={onSubmit}
           />
         </div>

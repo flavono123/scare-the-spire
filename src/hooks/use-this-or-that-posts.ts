@@ -11,7 +11,7 @@ import {
 } from "@/lib/this-or-that";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
 
-type AddThisOrThatPostInput = {
+export type AddThisOrThatPostInput = {
   left: ThisOrThatResourceRef;
   right: ThisOrThatResourceRef;
   reason: string;
@@ -43,6 +43,45 @@ function normalizePost(row: unknown): ThisOrThatPost {
   return row as ThisOrThatPost;
 }
 
+export async function insertThisOrThatPost(
+  input: AddThisOrThatPostInput,
+): Promise<ThisOrThatPost | null> {
+  const trimmedReason = input.reason.trim();
+  const trimmedNickname = input.nickname.trim();
+  if (
+    !input.activeUserId
+    || !supabaseEnabled
+    || trimmedReason.length < 2
+    || trimmedReason.length > 500
+    || trimmedNickname.length < 1
+    || trimmedNickname.length > 20
+    || isSameThisOrThatResource(input.left, input.right)
+  ) {
+    return null;
+  }
+
+  const { data, error } = await withSupabaseTimeout(
+    "this_or_that_posts.insert",
+    supabase
+      .from("this_or_that_posts")
+      .insert({
+        user_id: input.activeUserId,
+        nickname: trimmedNickname,
+        left_type: input.left.type,
+        left_id: input.left.id,
+        right_type: input.right.type,
+        right_id: input.right.id,
+        reason: trimmedReason,
+        env: supabaseEnv,
+      })
+      .select()
+      .single(),
+  );
+  if (error) throw error;
+  if (!data) return null;
+  return normalizePost(data);
+}
+
 export function useThisOrThatPosts(
   userId: string | null,
   sort: ToyboxFeedSort = "latest",
@@ -67,54 +106,19 @@ export function useThisOrThatPosts(
   });
 
   const add = useCallback(
-    async ({
-      left,
-      right,
-      reason,
-      nickname,
-      activeUserId = userId ?? undefined,
-    }: AddThisOrThatPostInput): Promise<ThisOrThatPost | null> => {
-      const trimmedReason = reason.trim();
-      const trimmedNickname = nickname.trim();
-      if (
-        !activeUserId
-        || !supabaseEnabled
-        || trimmedReason.length < 2
-        || trimmedReason.length > 500
-        || trimmedNickname.length < 1
-        || trimmedNickname.length > 20
-        || isSameThisOrThatResource(left, right)
-      ) {
-        return null;
-      }
-
-      const { data, error } = await withSupabaseTimeout(
-        "this_or_that_posts.insert",
-        supabase
-          .from("this_or_that_posts")
-          .insert({
-            user_id: activeUserId,
-            nickname: trimmedNickname,
-            left_type: left.type,
-            left_id: left.id,
-            right_type: right.type,
-            right_id: right.id,
-            reason: trimmedReason,
-            env: supabaseEnv,
-          })
-          .select()
-          .single(),
-      ).catch(() => ({ data: null, error: new Error("timeout") }));
-
-      if (error) {
+    async (input: AddThisOrThatPostInput): Promise<ThisOrThatPost | null> => {
+      try {
+        const post = await insertThisOrThatPost({
+          ...input,
+          activeUserId: input.activeUserId ?? userId ?? undefined,
+        });
+        if (!post) return null;
+        prependPost(post);
+        return post;
+      } catch (error) {
         setUnavailable(true);
-        throw new Error(error.message);
+        throw error;
       }
-
-      if (!data) return null;
-      const post = normalizePost(data);
-      prependPost(post, data);
-      return post;
     },
     [prependPost, setUnavailable, userId],
   );

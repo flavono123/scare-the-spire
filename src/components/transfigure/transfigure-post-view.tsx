@@ -38,12 +38,14 @@ interface TransfigurePostViewProps {
   postId: string;
   gameLocale: GameLocale;
   upgradeLabel: string;
+  variant?: "page" | "embed";
 }
 
 export function TransfigurePostView({
   postId,
   gameLocale,
   upgradeLabel,
+  variant = "page",
 }: TransfigurePostViewProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].transfigure;
@@ -105,9 +107,11 @@ export function TransfigurePostView({
   }
 
   const resource = entityMap.get(`${post.resource_type}:${post.resource_id}`);
+  const embed = variant === "embed";
 
   return (
-    <div data-transfigure-page="detail" className="space-y-4">
+    <div data-transfigure-page={embed ? "embed" : "detail"} className="space-y-4">
+      {!embed && (
       <div className="flex items-center justify-between">
         <Link
           href={localizeHrefWithGameLocale("/transfigure", serviceLocale, gameLocale)}
@@ -131,6 +135,7 @@ export function TransfigurePostView({
           onDelete={handleDelete}
         />
       </div>
+      )}
 
       {saveNotice && (
         <p
@@ -250,7 +255,7 @@ export function TransfigurePostView({
         </div>
       </article>
 
-      {editing && resource && (
+      {!embed && editing && resource && (
         <TransfigureComposerModal
           entities={entities}
           gameLocale={gameLocale}
@@ -264,6 +269,7 @@ export function TransfigurePostView({
         />
       )}
 
+      {!embed && (
       <section
         id="comments"
         className="scroll-mt-16 rounded-lg border border-border bg-card/20 p-4"
@@ -276,6 +282,7 @@ export function TransfigurePostView({
           initialEntities={entities}
         />
       </section>
+      )}
     </div>
   );
 }

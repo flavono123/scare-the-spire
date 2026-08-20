@@ -369,6 +369,7 @@ export interface RichContentEditorProps {
     energyIconSrc: string;
     starIconSrc?: string;
   } | null;
+  hideSubmitButton?: boolean;
 }
 
 export function RichContentEditor({
@@ -397,6 +398,7 @@ export function RichContentEditor({
   youtubeExtension,
   historyRunReferences,
   costTokens = null,
+  hideSubmitButton = false,
 }: RichContentEditorProps) {
   const [submitting, setSubmitting] = useState(false);
   const [youtubeResolving, setYoutubeResolving] = useState(false);
@@ -1246,6 +1248,7 @@ export function RichContentEditor({
               <span className="spire-gold">{keywordTip.result}</span>
             </span>
           )}
+          {!hideSubmitButton && (
           <button
             type="button"
             onClick={handleSubmit}
@@ -1263,6 +1266,7 @@ export function RichContentEditor({
               />
             )}
           </button>
+          )}
         </div>
       )}
     </div>

@@ -24,6 +24,7 @@ import { useCommentEntities } from "@/hooks/use-comment-entities";
 interface PostViewProps {
   postId: string;
   entities?: EntityInfo[];
+  variant?: "page" | "embed";
 }
 
 function getTextClass(len: number): string {
@@ -32,7 +33,7 @@ function getTextClass(len: number): string {
   return "text-lg";
 }
 
-export function ChemicalXPostView({ postId, entities }: PostViewProps) {
+export function ChemicalXPostView({ postId, entities, variant = "page" }: PostViewProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
   const siteDisplayOrigin = getSiteDisplayOrigin();
@@ -109,10 +110,11 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
   }
 
   const textLen = blocksToPlainText(post.content).length;
+  const embed = variant === "embed";
 
   return (
     <div className="space-y-4">
-      {/* Back + actions — outside the card (not in screenshot) */}
+      {!embed && (
       <div className="flex items-center justify-between">
         <Link
           href={localizeHref("/chemical-x", serviceLocale)}
@@ -140,6 +142,7 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
           </button>
         </PostDetailActions>
       </div>
+      )}
 
       {/* ===== Screenshot-worthy card ===== */}
       <article className="relative rounded-2xl overflow-hidden bg-gradient-to-b from-[#0c0c18] via-[#10101e] to-[#0c0c18] border border-yellow-500/15 p-6 pb-5">
@@ -182,6 +185,7 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
         </div>
       </article>
 
+      {!embed && (
       <section
         id="comments"
         className="scroll-mt-16 rounded-lg border border-border bg-card/20 p-4"
@@ -194,6 +198,7 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
           initialEntities={resolvedEntities}
         />
       </section>
+      )}
     </div>
   );
 }

@@ -30,6 +30,7 @@ export function DefragmentComposer({
   initialBlocks,
   draftKey,
   onSubmit,
+  hideNickname = false,
 }: {
   entities: EntityInfo[];
   placeholder: string;
@@ -43,6 +44,7 @@ export function DefragmentComposer({
     blocks: PostBlock[];
     nickname: string;
   }) => Promise<void>;
+  hideNickname?: boolean;
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].defragment;
@@ -61,19 +63,22 @@ export function DefragmentComposer({
   }, [title]);
 
   const handleSubmit = useCallback(async (blocks: PostBlock[]) => {
-    const nickname = nicknameInputRef.current?.value.trim()
-      || profileNickname
-      || copy.defaultNickname;
+    const nickname = hideNickname
+      ? (profileNickname.trim() || copy.defaultNickname)
+      : (nicknameInputRef.current?.value.trim()
+        || profileNickname
+        || copy.defaultNickname);
     await onSubmit({
       title,
       blocks,
       nickname,
     });
-  }, [copy.defaultNickname, onSubmit, profileNickname, title]);
+  }, [copy.defaultNickname, hideNickname, onSubmit, profileNickname, title]);
 
   return (
     <div className="space-y-3" data-defragment-composer>
       <div className="overflow-visible rounded-lg border border-border bg-card/30">
+        {!hideNickname && (
         <div className="flex items-center gap-2 border-b border-border px-3 py-2">
           <input
             key={profileNickname}
@@ -85,6 +90,7 @@ export function DefragmentComposer({
             className="w-full bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
           />
         </div>
+        )}
         <div className="border-b border-border px-3 py-2">
           <input
             type="text"
