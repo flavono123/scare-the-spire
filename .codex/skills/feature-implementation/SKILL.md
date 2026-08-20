@@ -98,7 +98,9 @@ Stories, and comments.
 ### Toy Box index sort, keyset, and bounded RPCs
 
 Toy Box community indexes share one sort contract. Do not invent a second
-hottest/trending key or an offset page.
+hottest/trending key or an offset page. Stories (슬서운 이야기) uses the same
+button order and default via `FeedSortToggle`; it still sorts the already-loaded
+client list and does not call `get_toybox_feed`.
 
 - Sort keys and **button order** are **최신 / 추천 / 댓글**
   (`latest`, `recommended`, `comments` in `TOYBOX_FEED_SORT_OPTIONS`).
