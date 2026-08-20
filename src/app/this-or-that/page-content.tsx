@@ -7,6 +7,7 @@ import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { THIS_OR_THAT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import { getServiceOgMetadata } from "@/lib/service-metadata";
 import { serviceMessages } from "@/messages/service";
+import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 
 export async function generateThisOrThatMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
@@ -33,7 +34,7 @@ export async function renderThisOrThatPage(
         src="/images/sts2/events/this_or_that.webp"
         imageClassName="object-[38%_center] sm:object-center"
       />
-      <div className="mx-auto max-w-6xl px-4 py-6">
+      <div className={TOYBOX_WIDE_SHELL_CLASS}>
         <ThisOrThatClient
           gameLocale={gameLocale}
           title={gameCopy.title}

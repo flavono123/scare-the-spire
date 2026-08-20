@@ -29,6 +29,7 @@ import {
 import { buildRelicEntityInfo } from "@/lib/history-relic-lookup";
 import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
 import { TEXT_CREAM, TEXT_GREEN, TEXT_PURPLE } from "@/lib/sts2-card-style";
+import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 import type { CodexCard, CodexPotion, CodexRelic } from "@/lib/codex-types";
 import type {
@@ -300,7 +301,7 @@ function SummaryPanel({
   return (
     <div
       data-testid="summary-panel"
-      className="mx-auto w-full max-w-[1100px] px-6 py-8 text-zinc-100"
+      className={`${TOYBOX_WIDE_MAX_CLASS} px-4 py-8 text-zinc-100`}
       style={{ animation: "summary-fade-in 280ms ease-out both" }}
     >
       <style>{`

@@ -21,6 +21,7 @@ import {
   getServiceMetadataCopy,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
+import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 
 export async function generateDefragmentFederatedPostMetadata(
@@ -75,7 +76,7 @@ export async function renderDefragmentFederatedPostPage(
         src={DEFRAGMENT_BACKGROUND_SRC}
         imageClassName="object-[58%_center] sm:object-center"
       />
-      <div className="mx-auto max-w-5xl px-4 py-6">
+      <div className={TOYBOX_WIDE_SHELL_CLASS}>
         <DefragmentFederatedPostView
           service={service}
           postId={id}

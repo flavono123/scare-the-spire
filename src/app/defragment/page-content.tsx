@@ -14,6 +14,7 @@ import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { DEFRAGMENT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import { getServiceOgMetadata } from "@/lib/service-metadata";
+import { TOYBOX_WIDE_BOARD_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 
 export async function generateDefragmentMetadata(
@@ -48,7 +49,7 @@ export async function renderDefragmentPage(
         src={DEFRAGMENT_BACKGROUND_SRC}
         imageClassName="object-[58%_center] sm:object-center"
       />
-      <div className="mx-auto max-w-4xl px-4 py-6">
+      <div className={TOYBOX_WIDE_BOARD_SHELL_CLASS}>
         <DefragmentClient
           entities={entities}
           gameLocale={gameLocale}

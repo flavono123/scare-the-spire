@@ -11,6 +11,7 @@ import {
 } from "@/lib/run-donation";
 import { supabaseEnabled } from "@/lib/supabase";
 import type { ReplayRun } from "@/lib/sts2-run-replay";
+import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
 import { cn } from "@/lib/utils";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
@@ -122,7 +123,7 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-4">
+    <div className={`${TOYBOX_WIDE_MAX_CLASS} px-4 pt-4`}>
       <div
         className={cn(
           "flex flex-wrap items-center gap-3 rounded-lg px-4 py-2.5 ring-1 ring-inset",

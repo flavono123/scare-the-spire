@@ -15,6 +15,7 @@ import {
   truncateOgTitle,
 } from "@/lib/toybox-post-og";
 import { serviceMessages } from "@/messages/service";
+import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 
 export async function generateComboPostMetadata(
   id?: string,
@@ -54,7 +55,7 @@ export async function renderComboPostPage(
   const placeholder = await getComboPlaceholder(gameLocale);
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-6">
+    <div className={TOYBOX_NARROW_SHELL_CLASS}>
       <ComboPostView postId={id} gameLocale={gameLocale} placeholder={placeholder} />
     </div>
   );

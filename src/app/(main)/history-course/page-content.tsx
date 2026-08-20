@@ -6,6 +6,7 @@ import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { withPageOgImage } from "@/lib/page-og-images";
 import { getHistoryCourseLandingGameCopy } from "@/lib/borrowed-game-copy";
+import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 
 export async function generateHistoryCourseMetadata(
@@ -33,7 +34,7 @@ export async function renderHistoryCourseIndexPage(
         src="/images/sts2/events/war_historian_repy.webp"
         imageClassName="object-[38%_center] sm:object-center"
       />
-      <div className="mx-auto max-w-6xl px-4 py-10">
+      <div className={`${TOYBOX_WIDE_MAX_CLASS} px-4 py-10`}>
         <header className="flex items-center gap-4">
           <Image
             src="/images/sts2/relics/history_course.webp"

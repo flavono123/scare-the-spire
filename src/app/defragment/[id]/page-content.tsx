@@ -12,6 +12,7 @@ import {
   getServiceMetadataCopy,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
+import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 
 export async function generateDefragmentPostMetadata(
@@ -49,7 +50,7 @@ export async function renderDefragmentPostPage(
         src={DEFRAGMENT_BACKGROUND_SRC}
         imageClassName="object-[58%_center] sm:object-center"
       />
-      <div className="mx-auto max-w-2xl px-4 py-6">
+      <div className={TOYBOX_NARROW_SHELL_CLASS}>
         <DefragmentPostView
           postId={id}
           gameLocale={gameLocale}

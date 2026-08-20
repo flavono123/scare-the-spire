@@ -10,6 +10,7 @@ import {
   getServiceMetadataCopy,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
+import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 
 export async function generateComboMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
@@ -39,7 +40,7 @@ export async function renderComboPage(
         src="/images/sts2/events/amalgamator.webp"
         imageClassName="object-[38%_center] sm:object-center"
       />
-      <div className="mx-auto max-w-2xl px-4 py-6">
+      <div className={TOYBOX_NARROW_SHELL_CLASS}>
         <ComboClient
           entities={entities}
           gameLocale={gameLocale}

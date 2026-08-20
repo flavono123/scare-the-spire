@@ -10,6 +10,7 @@ import {
   getServiceMetadataCopy,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
+import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 
 export async function generateTransfigureMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
@@ -39,7 +40,7 @@ export async function renderTransfigurePage(
         src="/images/sts2/cards/transfigure.webp"
         imageClassName="object-[58%_center] sm:object-center"
       />
-      <div className="mx-auto max-w-6xl px-4 py-6">
+      <div className={TOYBOX_WIDE_SHELL_CLASS}>
         <TransfigureClient
           entities={entities}
           gameLocale={gameLocale}

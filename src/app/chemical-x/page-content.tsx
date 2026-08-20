@@ -10,6 +10,7 @@ import {
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
 import { getChemicalXPlaceholder } from "@/lib/borrowed-game-copy";
+import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 
 export async function generateChemicalXMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
@@ -39,7 +40,7 @@ export async function renderChemicalXPage(
         src="/images/sts2/cards/eradicate.webp"
         imageClassName="object-center"
       />
-      <div className="mx-auto max-w-2xl px-4 py-6">
+      <div className={TOYBOX_NARROW_SHELL_CLASS}>
         <ChemicalXClient entities={entities} placeholder={placeholder} />
       </div>
     </div>

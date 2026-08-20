@@ -14,6 +14,7 @@ import {
   truncateOgTitle,
 } from "@/lib/toybox-post-og";
 import { serviceMessages } from "@/messages/service";
+import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 
 export async function generateThisOrThatPostMetadata(
   id?: string,
@@ -58,7 +59,7 @@ export async function renderThisOrThatPostPage(
   const gameCopy = await getThisOrThatGameCopy(gameLocale);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-6">
+    <div className={TOYBOX_WIDE_SHELL_CLASS}>
       <ThisOrThatPostView
         postId={id}
         gameLocale={gameLocale}

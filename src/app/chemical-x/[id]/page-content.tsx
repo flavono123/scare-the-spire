@@ -13,6 +13,7 @@ import {
   getChemicalPostOgFields,
   truncateOgTitle,
 } from "@/lib/toybox-post-og";
+import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 
 export async function generateChemicalXPostMetadata(
@@ -50,7 +51,7 @@ export async function renderChemicalXPostPage(
   id: string,
 ) {
   return (
-    <div className="mx-auto max-w-2xl px-4 py-6">
+    <div className={TOYBOX_NARROW_SHELL_CLASS}>
       <ChemicalXPostView postId={id} />
     </div>
   );
