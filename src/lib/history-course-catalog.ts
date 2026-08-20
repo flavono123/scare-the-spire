@@ -4,6 +4,7 @@ import { createCardSideTipCatalog } from "@/lib/card-side-tip-catalog";
 import type { CardSideTipCatalog } from "@/lib/card-keyword-tips";
 import type {
   CodexCard,
+  CodexEnchantment,
   CodexMonster,
   CodexPotion,
   CodexPower,
@@ -16,6 +17,7 @@ const raw = catalog as unknown as {
   potions?: CodexPotion[];
   powers?: CodexPower[];
   monsters?: CodexMonster[];
+  enchantments?: CodexEnchantment[];
   tipSources?: CardSideTipCatalogSources;
 };
 
@@ -31,6 +33,7 @@ export function getHistoryCourseCatalog(): {
   allPotions: CodexPotion[];
   allPowers: CodexPower[];
   allMonsters: CodexMonster[];
+  allEnchantments: CodexEnchantment[];
   tipSources: CardSideTipCatalogSources | null;
 } {
   return {
@@ -39,6 +42,7 @@ export function getHistoryCourseCatalog(): {
     allPotions: (raw.potions ?? []) as CodexPotion[],
     allPowers: (raw.powers ?? []) as CodexPower[],
     allMonsters: (raw.monsters ?? []) as CodexMonster[],
+    allEnchantments: (raw.enchantments ?? []) as CodexEnchantment[],
     tipSources: raw.tipSources ?? null,
   };
 }

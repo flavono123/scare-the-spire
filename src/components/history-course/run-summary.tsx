@@ -26,6 +26,7 @@ import {
   buildPotionEntityInfo,
   lookupHistoryPotion,
 } from "@/lib/history-potion-lookup";
+import { buildRelicEntityInfo } from "@/lib/history-relic-lookup";
 import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
 import { TEXT_CREAM, TEXT_GREEN, TEXT_PURPLE } from "@/lib/sts2-card-style";
 import { serviceMessages } from "@/messages/service";
@@ -141,24 +142,6 @@ function relicIconSrc(id: string): string {
 function potionIconSrc(id: string): string {
   const slug = id.replace(/^POTION\./, "").toLowerCase();
   return `/images/sts2/potions/${slug}.webp`;
-}
-
-// Build the minimal EntityInfo a relic icon needs to drive an EntityPreview
-// (rich tooltip + click-through to the codex relic page).
-function buildRelicEntityInfo(
-  replayId: string,
-  relic: CodexRelic | undefined,
-): EntityInfo | null {
-  if (!relic) return null;
-  return {
-    id: relic.id,
-    nameEn: relic.nameEn,
-    nameKo: relic.name,
-    imageUrl: relic.imageUrl,
-    color: relic.pool,
-    type: "relic",
-    relicData: relic,
-  };
 }
 
 function buildCardEntityInfo(
@@ -767,7 +750,7 @@ function RelicIcon({
 }) {
   const tables = useGameI18n();
   const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
-  const entity = buildRelicEntityInfo(replayId, relic);
+  const entity = buildRelicEntityInfo(relic);
   const label =
     localizeGame(tables, "relics", replayId) ?? relic?.name ?? replayId;
 

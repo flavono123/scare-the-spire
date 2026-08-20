@@ -1300,6 +1300,7 @@ function Stage({
         heldPotionIds={heldPotionIds}
         heldPotionSlots={heldPotionSlots}
         potionsById={potionsById}
+        relicsById={relicsById}
         onOpenDeck={onOpenDeck}
         // Cog toggles the run-summary panel and auto-pauses playback.
         onOpenInfo={onOpenInfo}

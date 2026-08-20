@@ -9,7 +9,7 @@ import {
   EFFECT_CLASSES,
 } from "@/components/rich-text";
 import type { CodexCard, CodexKeyword, CodexCharacter, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexAffliction, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch, DamageValue, MonsterMove } from "@/lib/codex-types";
-import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, characterOutlineFilter, type RelicFilterPool } from "@/lib/codex-types";
+import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import {
@@ -27,7 +27,10 @@ import {
   HoverTipStack,
   PortaledHoverTipLayer,
 } from "@/components/codex/card-keyword-tip-stack";
-import { useCardSideTipCatalog } from "@/components/codex/card-side-tip-catalog-context";
+import {
+  useCardSideTipCatalog,
+  useCardSideTipResourceMaps,
+} from "@/components/codex/card-side-tip-catalog-context";
 import {
   DescriptionText,
   getCardMaxUpgradeLevel,
@@ -36,6 +39,7 @@ import {
 } from "@/components/codex/codex-description";
 import { collectCardSideTips } from "@/lib/card-keyword-tips";
 import { collectPotionSideTips } from "@/lib/potion-side-tips";
+import { collectRelicSideTips } from "@/lib/relic-side-tips";
 import { GameHoverTip, type HoverTipArt, type HoverTipArtMode } from "@/components/codex/hover-tip";
 import {
   buildMonsterMoveVisual,
@@ -382,6 +386,51 @@ function EntityPotionHoverPreview({
   );
 }
 
+function EntityRelicHoverPreview({
+  entity,
+  gameUi,
+}: {
+  entity: EntityInfo;
+  gameUi?: CodexGameUiLabels;
+}) {
+  const catalog = useCardSideTipCatalog();
+  const { potionsById, enchantmentsById } = useCardSideTipResourceMaps();
+  const relic = entity.relicData;
+  if (!relic) return null;
+
+  const extraTips = catalog
+    ? collectRelicSideTips(relic, catalog, {
+        includeSelf: false,
+        potionsById,
+        enchantmentsById,
+      })
+    : [];
+
+  return (
+    <PortaledHoverTipLayer>
+      <span className="flex w-max items-start gap-2">
+        <GameHoverTip
+          title={entity.nameKo}
+          style={{ minWidth: 240, maxWidth: 320 }}
+        >
+          <span className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[12px]">
+            <span style={{ color: RELIC_RARITY_COLORS[relic.rarity] }}>
+              {gameUi?.relicCollection.rarities[relic.rarity].label ?? RELIC_RARITY_LABELS[relic.rarity]}
+            </span>
+            {relic.pool !== "shared" && (
+              <span style={{ color: getCharacterColor(relic.pool) }}>
+                {POOL_LABELS[relic.pool as RelicFilterPool]}
+              </span>
+            )}
+          </span>
+          <DescriptionText description={relic.description} />
+        </GameHoverTip>
+        {extraTips.length > 0 ? <HoverTipStack tips={extraTips} /> : null}
+      </span>
+    </PortaledHoverTipLayer>
+  );
+}
+
 export function EntityPreview({
   entity,
   children,
@@ -677,28 +726,7 @@ export function EntityPreview({
       )}
       {showResolvedPreview && previewEntity.type === "relic" && previewEntity.relicData && (
         renderTooltip(
-          <GameResourcePreview
-            title={previewEntity.nameKo}
-            imageUrl={previewEntity.relicData.imageUrl}
-            imageAlt={previewEntity.nameKo}
-            imageStyle={{
-              filter: characterOutlineFilter(previewEntity.relicData.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
-            }}
-            meta={(
-              <>
-                <span style={{ color: RELIC_RARITY_COLORS[previewEntity.relicData.rarity] }}>
-                  {gameUi?.relicCollection.rarities[previewEntity.relicData.rarity].label ?? RELIC_RARITY_LABELS[previewEntity.relicData.rarity]}
-                </span>
-                {previewEntity.relicData.pool !== "shared" && (
-                  <span style={{ color: getCharacterColor(previewEntity.relicData.pool) }}>
-                    {POOL_LABELS[previewEntity.relicData.pool as RelicFilterPool]}
-                  </span>
-                )}
-              </>
-            )}
-          >
-            <DescriptionText description={previewEntity.relicData.description} />
-          </GameResourcePreview>,
+          <EntityRelicHoverPreview entity={previewEntity} gameUi={gameUi} />,
         )
       )}
       {showResolvedPreview && previewEntity.type === "potion" && previewEntity.potionData && (

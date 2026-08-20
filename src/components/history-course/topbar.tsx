@@ -19,8 +19,12 @@ import {
   buildPotionEntityInfo,
   lookupHistoryPotion,
 } from "@/lib/history-potion-lookup";
+import {
+  buildRelicEntityInfo,
+  lookupHistoryRelic,
+} from "@/lib/history-relic-lookup";
 import { historyStaticHoverTip } from "@/lib/history-static-hover-tips";
-import type { CodexPotion } from "@/lib/codex-types";
+import type { CodexPotion, CodexRelic } from "@/lib/codex-types";
 import { serviceMessages } from "@/messages/service";
 import {
   type ReplayActAnalysis,
@@ -133,6 +137,7 @@ interface TopBarProps {
   heldPotionIds?: ReadonlySet<string>;
   heldPotionSlots?: (string | null)[];
   potionsById?: Record<string, CodexPotion>;
+  relicsById?: Record<string, CodexRelic>;
   onOpenDeck: () => void;
   onOpenInfo: () => void;
 }
@@ -148,6 +153,7 @@ export function TopBar({
   heldPotionIds,
   heldPotionSlots,
   potionsById,
+  relicsById,
   onOpenDeck,
   onOpenInfo,
 }: TopBarProps) {
@@ -204,7 +210,11 @@ export function TopBar({
           <SettingsButton onClick={onOpenInfo} />
         </div>
       </div>
-      <RelicRow relics={state.relics} hidingRelicIds={hidingRelicIds} />
+      <RelicRow
+        relics={state.relics}
+        hidingRelicIds={hidingRelicIds}
+        relicsById={relicsById}
+      />
     </div>
   );
 }
@@ -913,9 +923,11 @@ function SettingsButton({ onClick }: { onClick: () => void }) {
 function RelicRow({
   relics,
   hidingRelicIds,
+  relicsById,
 }: {
   relics: RelicAtFloor[];
   hidingRelicIds?: ReadonlySet<string>;
+  relicsById?: Record<string, CodexRelic>;
 }) {
   const tables = useGameI18n();
   const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
@@ -924,27 +936,40 @@ function RelicRow({
     <div className="flex flex-wrap items-center gap-1.5 pl-1" data-relic-row>
       {relics.map((relic) => {
         const hidden = hidingRelicIds?.has(relic.id) ?? false;
+        const catalogRelic = lookupHistoryRelic(relicsById, relic.id);
+        const entity = buildRelicEntityInfo(catalogRelic);
+        const label = localizeGame(tables, "relics", relic.id) ?? catalogRelic?.name ?? relic.id;
+        const icon = (
+          <span className="relative block h-8 w-8">
+            <Image
+              src={relicIconSrc(relic.id)}
+              alt={label}
+              fill
+              sizes="32px"
+              className="object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]"
+              unoptimized
+            />
+          </span>
+        );
         return (
           <div
             key={`${relic.id}-${relic.floor}`}
             data-relic-target={relic.id}
             className={cn(
               "relative h-8 w-8 transition-opacity duration-200",
+              hidden && "pointer-events-none",
               relic.justAcquired &&
                 !hidden &&
                 "drop-shadow-[0_0_10px_rgba(255,200,120,0.95)]",
             )}
             style={{ opacity: hidden ? 0 : 1 }}
-            title={`${localizeGame(tables, "relics", relic.id) ?? relic.id} · ${playback.floorGained.replace("{floor}", String(relic.floor))}`}
+            title={entity ? undefined : `${label} · ${playback.floorGained.replace("{floor}", String(relic.floor))}`}
           >
-            <Image
-              src={relicIconSrc(relic.id)}
-              alt={localizeGame(tables, "relics", relic.id) ?? relic.id}
-              fill
-              sizes="32px"
-              className="object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]"
-              unoptimized
-            />
+            {entity ? (
+              <EntityPreview entity={entity} linkClassName="block h-8 w-8">
+                {icon}
+              </EntityPreview>
+            ) : icon}
           </div>
         );
       })}

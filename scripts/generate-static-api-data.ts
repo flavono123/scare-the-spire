@@ -309,21 +309,23 @@ async function generateHistoryCourseCatalogOnly() {
     getCodexPotions,
     getCodexPowers,
     getCodexMonsters,
+    getCodexEnchantments,
   } = await import("../src/lib/codex-data");
   const { loadCardSideTipCatalogSources } = await import(
     "../src/lib/card-side-tip-catalog.server"
   );
-  const [cards, relics, potions, powers, monsters, tipSources] = await Promise.all([
+  const [cards, relics, potions, powers, monsters, enchantments, tipSources] = await Promise.all([
     getCodexCards({ includeDeprecated: true }),
     getCodexRelics(),
     getCodexPotions(),
     getCodexPowers({ includeDeprecated: true }),
     getCodexMonsters(),
+    getCodexEnchantments(),
     loadCardSideTipCatalogSources("kor"),
   ]);
   await writeSourceJsonCompact({
     path: "generated/history-course-catalog.json",
-    data: { cards, relics, potions, powers, monsters, tipSources },
+    data: { cards, relics, potions, powers, monsters, enchantments, tipSources },
   });
 }
 
@@ -747,6 +749,7 @@ async function main() {
         potions: koreanCompendiumDetailPayload.resources.potions,
         powers: koreanCompendiumDetailPayload.resources.powers,
         monsters: koreanCompendiumDetailPayload.resources.monsters,
+        enchantments: koreanCompendiumDetailPayload.resources.enchantments,
         tipSources: koreanCompendiumDetailPayload.cardSideTipSources,
       },
     }),

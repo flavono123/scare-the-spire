@@ -9,6 +9,7 @@ import { CardSideTipCatalogProvider } from "@/components/codex/card-side-tip-cat
 import { getHistoryCourseCatalog, createHistoryCourseSideTipCatalog } from "@/lib/history-course-catalog";
 import { indexCodexCards } from "@/lib/history-card-lookup";
 import { indexCodexPotions } from "@/lib/history-potion-lookup";
+import { indexCodexRelics } from "@/lib/history-relic-lookup";
 import type { CodexCard, CodexRelic } from "@/lib/codex-types";
 import { getDonatedRun } from "@/lib/run-donation";
 import { loadRun, saveRun } from "@/lib/run-store";
@@ -170,7 +171,7 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
 
   const lookupCards = codexLookup.allCards;
   const lookupRelics = codexLookup.allRelics;
-  const { allPotions } = getHistoryCourseCatalog();
+  const { allPotions, allEnchantments } = getHistoryCourseCatalog();
   const cardByLookupId = new Map<string, CodexCard>();
   for (const card of lookupCards) {
     cardByLookupId.set(card.id, card);
@@ -189,13 +190,7 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
     cardsById[stripped] = card;
   }
 
-  // Replay ids carry the `RELIC.` prefix, but codex relic ids don't.
-  // Index both shapes so lookups by either form succeed.
-  const relicsById: Record<string, CodexRelic> = {};
-  for (const relic of lookupRelics) {
-    relicsById[relic.id] = relic;
-    relicsById[`RELIC.${relic.id}`] = relic;
-  }
+  const relicsById = indexCodexRelics(lookupRelics);
   const potionsById = indexCodexPotions(allPotions);
 
   return (
@@ -203,7 +198,11 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
       {source && raw && (
         <DonationPanel runId={runId} run={run} raw={raw} source={source} />
       )}
-      <CardSideTipCatalogProvider catalog={sideTipCatalog}>
+      <CardSideTipCatalogProvider
+        catalog={sideTipCatalog}
+        potions={allPotions}
+        enchantments={allEnchantments}
+      >
         <HistoryCourseShell
           run={run}
           cardsById={cardsById}
