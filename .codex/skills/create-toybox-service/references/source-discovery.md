@@ -65,6 +65,10 @@ Build a coherent identity rather than four independent choices:
 - **Background:** Prefer card portrait or event art whose subject expresses the
   service action. Confirm that the composition survives the dark
   `ServiceBackground` treatment and mobile crop.
+- **Default nickname:** When the service posts a nickname, pick an exact
+  in-game identity noun from the same resource, or a minimal documented
+  adaptation. Do not invent `익명의 ~술사` labels. Chemical X's
+  `익명의 투입터리안` is the documented exception.
 
 Rank candidates by semantic fit, game-source evidence, cross-locale viability,
 asset availability, small-size token legibility, and background crop quality.
@@ -79,6 +83,7 @@ and recommend one. For every value, include:
 | Page subtitle | Localized line | exact / adapted | table, key, and replacement if any |
 | Token | Public asset path | exact / related | resource id and source |
 | Background | Public asset path | exact / related | card/event id and source |
+| Default nickname | Identity noun for empty-profile posts | exact / adapted / service-owned exception | table and key, or documented exception |
 
 For direct implementation, choose one best-supported set and record the same
 evidence in the final report.

@@ -244,7 +244,7 @@ export const serviceMessages = {
     },
     combo: {
       title: "코오오옴보",
-      defaultNickname: "익명의 조합가",
+      defaultNickname: "융합자",
       composerHint: "게임 요소를 고르거나 {keyword}를 입력해 2개 이상 불러오세요.",
       composerHintKeyword: "키워드",
       composerHintKeywordDescription: "단어 뒤에 {키워드}를 붙이면 해당 키워드의 설명을 불러옵니다.",
@@ -318,7 +318,7 @@ export const serviceMessages = {
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
     },
     transfigure: {
-      defaultNickname: "익명의 변형술사",
+      defaultNickname: "변형체",
       create: "변형하기",
       close: "닫기",
       submit: "변형하기",
@@ -1258,7 +1258,7 @@ export const serviceMessages = {
     },
     combo: {
       title: "C-c-c-Combo",
-      defaultNickname: "Anonymous combiner",
+      defaultNickname: "Amalgamator",
       composerHint: "Pick game elements or enter {keyword} to load at least two.",
       composerHintKeyword: "keywords",
       composerHintKeywordDescription: "Add {keyword} after a word to load that keyword's description.",
@@ -1332,7 +1332,7 @@ export const serviceMessages = {
       unavailableTitle: "No responses from database",
     },
     transfigure: {
-      defaultNickname: "Unnamed transfigurer",
+      defaultNickname: "Transfigured",
       create: "Transfigure",
       close: "Close",
       submit: "Transfigure",

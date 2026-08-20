@@ -108,6 +108,43 @@ Transfigure, This or That, Chemical X, History Course, Stories, and comments.
   phrases sourced from extracted locale / borrowed-game-copy, not hand
   translation.
 
+### Service default nicknames
+
+Community composers still need a per-service `defaultNickname` in
+`src/messages/service.ts`. Profile character nicknames (`네바`, `아클단`, …)
+are suggested only on the profile page and persist only after the user
+interacts there (`sts-user-profile` in localStorage). They are not seeded
+when a Toy Box page loads.
+
+Each composer calls `useUserProfile` with `{ ...DEFAULT_USER_PROFILE,
+nickname: copy.defaultNickname }`. That service string is the real nickname
+when localStorage is empty: first visit, never opened profile, iPad/Safari
+private browsing or ITP, or a nickname field left blank on submit. Do not
+remove the fallback or assume a stored profile exists.
+
+Choose the default from the same game-locale identity as the service: an
+exact in-game name, or a minimal documented adaptation of one. Do not invent
+SaaS labels like `익명의 ~술사` / `Anonymous combiner`. Keep it ≤ 20
+characters (database limit). Comments stay on the generic profile fallback
+(`닉` / `Nick`).
+
+Current:
+
+- Combo: exact `AMALGAMATOR.title` → Korean `융합자` / English `Amalgamator`.
+- Transfigure: adapted from `TRANSFIGURE.title` `변형` / `Transfigure` →
+  Korean `변형체` / English `Transfigured`.
+- Chemical X: `익명의 투입터리안` / `Anonymous Insertweetian` is an
+  intentional service-owned exception, not game locale.
+- This or That currently uses the generic `닉` / `Nick`; prefer a
+  game-locale identity noun from `THIS_OR_THAT` if one is chosen later.
+  Do not borrow Knowledge Demon (`지식의 악마`) for the nickname; that
+  encounter is only for the vote CTA.
+
+When adding a new composer service, resolve `defaultNickname` with the
+title/token set. Put the string in the service dictionary and record
+whether it is exact game text, adapted game text, or an intentional
+service-owned exception.
+
 ### Action icons (community surfaces)
 
 - **Like only** uses the game token via `SpireLikeIcon` in

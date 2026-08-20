@@ -43,7 +43,8 @@ the service unless the user explicitly asks to approve the identity first.
 
 ## Identity contract
 
-Resolve these four fields as one set:
+Resolve these identity fields as one set. If the service has a public composer
+that posts a nickname, also resolve `defaultNickname` from the same identity.
 
 | Field | Requirement |
 | --- | --- |
@@ -51,6 +52,7 @@ Resolve these four fields as one set:
 | Page subtitle | Use an exact `gameLocale` line or a minimal documented transformation of one. Render it only inside the service page. |
 | Token asset | Use a same-name or semantically tight in-game token that remains legible in navigation and the page header. Keep its meaning distinct across the entire site, not only among Toy Box services. |
 | Background art | Use related card, event, or scene art that expresses the service action and survives desktop and mobile cropping. |
+| Default nickname | Required when the service posts a nickname. Use an exact in-game identity noun or a minimal documented adaptation of one (Combo `융합자` / `Amalgamator` from `AMALGAMATOR.title`; Transfigure `변형체` / `Transfigured` from `TRANSFIGURE.title`). Do not invent `익명의 ~술사` labels. Chemical X `익명의 투입터리안` is the documented service-owned exception. Keep ≤ 20 characters. This remains the real fallback when `sts-user-profile` is missing; profile character nicknames are not auto-seeded on service pages. |
 
 Never use the page subtitle as `Metadata.description`, Open Graph description,
 Twitter description, or another SEO description. It can be mistaken for the
@@ -98,6 +100,10 @@ Follow current Toy Box patterns instead of copying one old route wholesale:
   title.
 - Put service-owned UI text in the typed service dictionaries. Put exact or
   adapted game copy in the generated `gameLocale` path.
+- If the service posts a nickname, set `defaultNickname` in
+  `src/messages/service.ts` from the same game-locale identity and pass it as
+  the `useUserProfile` fallback. See `$feature-implementation` service default
+  nicknames.
 - Reuse the chosen token in the page header and render the chosen background
   with `ServiceBackground`; use the repository static-image/cache-busting
   conventions.
@@ -135,5 +141,6 @@ For implementations:
    and repository mobile presets.
 5. Verify localized title and subtitle fallbacks from generated output, not
    only Korean source text.
-6. Report the final four-field identity table, exact sources, metadata
+6. Report the identity table (title, subtitle, token, background, and
+   `defaultNickname` when the service posts), exact sources, metadata
    description, Cloudflare guardrail result, and verification performed.
