@@ -183,7 +183,14 @@ export function DefragmentClient({
       ) : items.length === 0 ? (
         <p className="py-8 text-center text-sm text-muted-foreground">{copy.empty}</p>
       ) : (
-        <div className="space-y-2">
+        <div className="overflow-visible">
+          <div className="flex items-center gap-2 border-t-2 border-[#d4a843]/70 border-b border-white/15 px-1 py-1.5 text-[11px] font-semibold text-zinc-400">
+            <span className="w-28 shrink-0 sm:w-40">{copy.boardType}</span>
+            <span className="min-w-0 flex-1">{copy.boardTitle}</span>
+            <span className="w-[5.5rem] shrink-0 text-right sm:w-24">
+              {copy.boardLikes} · {copy.boardComments}
+            </span>
+          </div>
           {items.map((item) => (
             <DefragmentIndexRow
               key={`${item.service}:${item.id}`}

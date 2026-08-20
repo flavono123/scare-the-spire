@@ -118,7 +118,27 @@ hottest/trending key or an offset page.
   Chemical X, and native 조각모음 rows. It takes **at most 20 rows from each
   source**, then merges and returns at most 20. Do not `UNION` full tables and
   do not issue four unbounded browser queries.
-- History Course is not a feed source.
+- 조각모음 index is a dense Korean community board (말머리 / 제목 / 추천 · 댓글)
+  with hairline row separators, not gapped per-row cards. Other Toy Box indexes
+  keep their card layouts until they are explicitly redesigned.
+- Index rows open **조각모음 detail**, not the original service URL:
+  native `/defragment/{id}`, federated `/defragment/{service}/{id}`. Detail
+  embeds that type's content (combo renderer/gallery, transfigure preview,
+  This or That full vote UI, Chemical X renderer, native title+body). A quiet
+  `{name}에서` / `In {name}` link reaches the original page. Do not add a
+  required extra hop through the original detail to read or vote.
+- Comments and likes on 조각모음 use the original thread keys
+  (`defragmentItemThreadKey`) so they stay in sync with Combo / Transfigure /
+  This or That / Chemical X.
+- Write from 조각모음: pick a type and get that service's matching composer,
+  plus an optional 조각모음-only overlay body for federated types
+  (`defragment_bodies`, keyed by env + source_service + source_id). Native
+  posts keep title+body on `defragment_posts`. Do not change Combo /
+  Transfigure / This or That / Chemical X own compose or index UX. Additive
+  editor props such as `hideNickname` / `draftKey` are allowed. Do not call
+  those services' feed hooks from the 조각모음 write panel; use standalone
+  insert helpers. Do not delete original posts from 조각모음.
+- History Course is not a feed source or 조각모음 write type.
 - If the RPC is missing (`PGRST202`), fall back to a latest-only keyset on that
   service's own table. Do not emulate recommended/comments sort in the browser
   by loading the whole env.
@@ -138,8 +158,10 @@ hottest/trending key or an offset page.
     `This... or That?` from `THIS_OR_THAT.pages.INITIAL.description`
     whisper line. Vote prompts stay on Knowledge Demon `선택하라.` /
     `Make your choice.`
-  - 조각모음 create/submit: exact `cards.DEFRAGMENT.title` → Korean
-    `조각모음` / English `Defragment`.
+  - 조각모음 header create: adapted `cards.DEFRAGMENT.description` → Korean
+    `밀집을 얻습니다` / English `Gain Focus.` Type submit labels stay that
+    type's own CTA (`결합이다!`, `변형하기`, …). Title stays `조각모음` /
+    `Defragment` and must not be reused as nick or CTA.
 - Put service shell strings in `src/messages/service.ts`. Keep game-origin
   phrases sourced from extracted locale / borrowed-game-copy, not hand
   translation.
@@ -175,8 +197,8 @@ Current:
   → Korean `세 번째 손` / English `THIRD hand`. It is event flavor, not a
   named resource. Do not borrow Knowledge Demon (`지식의 악마`) for the
   nickname; that encounter is only for the vote CTA.
-- 조각모음: exact `cards.DEFRAGMENT.title` → Korean `조각모음` /
-  English `Defragment`.
+- 조각모음: exact `FOCUS_POWER.title` → Korean `밀집` / English `Focus`.
+  Do not reuse the service title as the nickname.
 
 When adding a new composer service, resolve `defaultNickname` with the
 title/token set. Put the string in the service dictionary and record
@@ -210,7 +232,9 @@ service-owned exception.
 ### Icon hover tips
 
 - Icon-only labels use `GameUiHoverTip` (`src/components/game-ui-hover-tip.tsx`):
-  `hover_tip.png` 9-slice, gold bold text, below the control (`top-full`).
+  `hover_tip.png` 9-slice, gold bold text. The tip portals to `document.body`
+  at z-index 400 so dense board rows and overflow-clipped chrome cannot hide
+  it. Prefer flipping above the control when there is no room below.
 - Site navbar patch notes / contact / profile, and Transfigure image-color-filter
   chips, must share this tip. Pass `delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}`
   (0) so they appear immediately like the navbar.

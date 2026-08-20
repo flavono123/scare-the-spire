@@ -11,20 +11,26 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
-import type { ToyboxFeedSort } from "@/lib/toybox-feed";
+import { toyboxRecommendScore, type ToyboxFeedSort } from "@/lib/toybox-feed";
 
 export const DEFRAGMENT_HREF = "/defragment";
 export const DEFRAGMENT_TOKEN_SRC = "/images/sts2/powers/focus_power.webp";
 export const DEFRAGMENT_BACKGROUND_SRC = "/images/sts2/cards/defragment.webp";
 
-export const DEFRAGMENT_FEED_SERVICES = [
-  "defragment",
+export const DEFRAGMENT_FEDERATED_SERVICES = [
   "combo",
   "transfigure",
   "this_or_that",
   "chemical_x",
 ] as const;
 
+export const DEFRAGMENT_FEED_SERVICES = [
+  "defragment",
+  ...DEFRAGMENT_FEDERATED_SERVICES,
+] as const;
+
+export type DefragmentFederatedService =
+  (typeof DEFRAGMENT_FEDERATED_SERVICES)[number];
 export type DefragmentFeedService = (typeof DEFRAGMENT_FEED_SERVICES)[number];
 
 export interface DefragmentPost {
@@ -76,13 +82,67 @@ export const DEFRAGMENT_FEED_SERVICE_META: Record<
   },
 };
 
+export function isDefragmentFederatedService(
+  value: unknown,
+): value is DefragmentFederatedService {
+  return DEFRAGMENT_FEDERATED_SERVICES.includes(value as DefragmentFederatedService);
+}
+
 export function isDefragmentFeedService(
   value: unknown,
 ): value is DefragmentFeedService {
   return DEFRAGMENT_FEED_SERVICES.includes(value as DefragmentFeedService);
 }
 
+export function feedItemFromPost(
+  service: DefragmentFeedService,
+  post: {
+    id: string;
+    created_at: string;
+    like_count?: number;
+    comment_count?: number;
+    title?: string | null;
+    content_text?: string;
+    transformed_name?: string | null;
+    reason?: string;
+  },
+): DefragmentFeedItem {
+  const likeCount = post.like_count ?? 0;
+  const commentCount = post.comment_count ?? 0;
+  let title = "";
+  if (service === "this_or_that") title = post.reason ?? "";
+  else if (service === "transfigure") {
+    title = post.title?.trim() || post.transformed_name?.trim() || post.content_text || "";
+  } else if (service === "defragment") title = post.title ?? "";
+  else title = post.content_text ?? "";
+
+  return {
+    id: post.id,
+    created_at: post.created_at,
+    service,
+    title: title.replace(/\s+/g, " ").trim().slice(0, 120),
+    likeCount,
+    commentCount,
+    recommendScore: toyboxRecommendScore(likeCount, commentCount),
+  };
+}
+
+export function defragmentBoardPath(
+  item: Pick<DefragmentFeedItem, "id" | "service">,
+): string {
+  if (item.service === "defragment") return `${DEFRAGMENT_HREF}/${item.id}`;
+  return `${DEFRAGMENT_HREF}/${item.service}/${item.id}`;
+}
+
 export function defragmentItemHref(
+  item: Pick<DefragmentFeedItem, "id" | "service">,
+  serviceLocale: ServiceLocale,
+  gameLocale: GameLocale,
+): string {
+  return localizeHrefWithGameLocale(defragmentBoardPath(item), serviceLocale, gameLocale);
+}
+
+export function defragmentOriginalHref(
   item: Pick<DefragmentFeedItem, "id" | "service">,
   serviceLocale: ServiceLocale,
   gameLocale: GameLocale,

@@ -10,10 +10,9 @@ import {
   DEFRAGMENT_TITLE_MAX_CHARS,
   DEFRAGMENT_TITLE_MIN_CHARS,
 } from "@/lib/content-limits";
-import type { DefragmentPost } from "@/lib/defragment";
+import { feedItemFromPost, type DefragmentPost } from "@/lib/defragment";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
-import { toyboxRecommendScore } from "@/lib/toybox-feed";
 
 export interface SaveDefragmentPostInput {
   title: string;
@@ -67,17 +66,7 @@ function validateSaveInput(input: SaveDefragmentPostInput): {
 }
 
 export function feedItemFromDefragmentPost(post: DefragmentPost) {
-  const likeCount = post.like_count ?? 0;
-  const commentCount = post.comment_count ?? 0;
-  return {
-    id: post.id,
-    created_at: post.created_at,
-    service: "defragment" as const,
-    title: post.title,
-    likeCount,
-    commentCount,
-    recommendScore: toyboxRecommendScore(likeCount, commentCount),
-  };
+  return feedItemFromPost("defragment", post);
 }
 
 export async function insertDefragmentPost(

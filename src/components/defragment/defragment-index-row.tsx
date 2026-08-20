@@ -84,9 +84,9 @@ export function DefragmentIndexRow({
       data-defragment-service={item.service}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="flex cursor-pointer items-center gap-2 overflow-hidden rounded-lg border border-border bg-card/30 px-3 py-2 transition-colors hover:border-yellow-500/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70"
+      className="flex cursor-pointer items-center gap-2 border-b border-white/10 px-1 py-1.5 transition-colors hover:bg-[#3d5a80]/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70"
     >
-      <span className="flex w-24 shrink-0 items-center gap-1.5 sm:w-36">
+      <span className="flex w-28 shrink-0 items-center gap-1.5 sm:w-40">
         <Image
           src={tokenSrc}
           alt=""
@@ -98,13 +98,10 @@ export function DefragmentIndexRow({
           {typeLabel}
         </span>
       </span>
-      <span className="shrink-0 text-muted-foreground/40" aria-hidden>
-        |
-      </span>
-      <span className="min-w-0 flex-1 truncate font-service text-sm text-zinc-100">
+      <span className="min-w-0 flex-1 truncate text-sm text-[#c8b4e8] hover:underline">
         {item.title}
       </span>
-      <span className="inline-flex shrink-0 items-center gap-1.5">
+      <span className="inline-flex w-[5.5rem] shrink-0 items-center justify-end gap-1 sm:w-24">
         {item.service === "this_or_that" ? (
           <ThisOrThatLikeButton
             count={totLikeCount ?? item.likeCount}
