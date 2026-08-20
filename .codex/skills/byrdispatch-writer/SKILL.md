@@ -138,6 +138,7 @@ Treat `<캡쳐>`, `(이미지)`, and explicit "캡쳐 포함" notes as the shot 
 
 - Place each image **immediately before** the bullet it illustrates, matching published `2026-08-04` / `2026-08-12`.
 - Indent an image by the same two spaces when it belongs to a nested example.
+- Crop to the feature at its on-screen size. The renderer centers captures at intrinsic pixel size and must not stretch them to the content column.
 - Do not add extra shots the user did not list (the 2026-08-12 create-post modal was this failure).
 - If a placeholder is ambiguous (`<모달창 캡쳐>` next to a delete bullet), capture that feature, not a nearby similar modal.
 

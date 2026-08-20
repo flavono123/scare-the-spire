@@ -597,21 +597,14 @@ function byrdispatchItemKey(item: ByrdispatchSectionItem, index: number): string
 }
 
 function ByrdispatchMediaBlock({ media }: { media: ByrdispatchMedia }) {
-  const compact = media.src.includes("/story-reaction-palette.");
   return (
-    <figure className={[
-      "mt-3 overflow-hidden rounded-lg border border-border/70 bg-zinc-950/70",
-      compact ? "mx-auto w-1/2" : "",
-    ].filter(Boolean).join(" ")}
-    >
+    <figure className="mx-auto mt-3 w-fit max-w-full overflow-hidden rounded-lg border border-border/70 bg-zinc-950/70">
       <Image
         src={media.src}
         alt={media.alt}
         title={media.title}
-        width={1280}
-        height={776}
         loading="lazy"
-        className="w-full object-cover"
+        className="mx-auto block h-auto w-auto max-w-full object-contain"
       />
       {media.alt && (
         <figcaption className="border-t border-border/60 px-3 py-2 text-xs font-medium text-zinc-400">
