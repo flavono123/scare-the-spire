@@ -98,7 +98,7 @@ export function DefragmentIndexRow({
           {typeLabel}
         </span>
       </span>
-      <span className="min-w-0 flex-1 truncate text-sm text-[#c8b4e8] hover:underline">
+      <span className="min-w-0 flex-1 truncate text-sm spire-purple hover:underline">
         {item.title}
       </span>
       <span className="inline-flex w-[5.5rem] shrink-0 items-center justify-end gap-1 sm:w-24">

@@ -22,7 +22,7 @@ import { getTransfigureNavTitle } from "@/lib/borrowed-game-copy";
 import {
   DEFRAGMENT_TOKEN_SRC,
   type DefragmentFeedItem,
-  type DefragmentFeedService,
+  type DefragmentFederatedService,
 } from "@/lib/defragment";
 import type { GameLocale } from "@/lib/i18n";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
@@ -66,13 +66,12 @@ export function DefragmentClient({
   );
   const { profile } = useUserProfile(profileFallback);
 
-  const typeLabels = useMemo<Record<DefragmentFeedService, string>>(() => ({
-    defragment: title,
+  const typeLabels = useMemo<Record<DefragmentFederatedService, string>>(() => ({
     combo: nav.combo,
     transfigure: getTransfigureNavTitle(gameLocale),
     this_or_that: nav.thisOrThat,
     chemical_x: nav.chemicalX,
-  }), [gameLocale, nav.chemicalX, nav.combo, nav.thisOrThat, title]);
+  }), [gameLocale, nav.chemicalX, nav.combo, nav.thisOrThat]);
 
   const totIds = useMemo(
     () => items.filter((item) => item.service === "this_or_that").map((item) => item.id),

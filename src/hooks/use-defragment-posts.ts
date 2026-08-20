@@ -10,7 +10,7 @@ import {
   DEFRAGMENT_TITLE_MAX_CHARS,
   DEFRAGMENT_TITLE_MIN_CHARS,
 } from "@/lib/content-limits";
-import { feedItemFromPost, type DefragmentPost } from "@/lib/defragment";
+import type { DefragmentPost } from "@/lib/defragment";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
@@ -63,10 +63,6 @@ function validateSaveInput(input: SaveDefragmentPostInput): {
     ? contentText.slice(0, DEFRAGMENT_BODY_STORAGE_MAX_CHARS)
     : contentText;
   return { title, nickname, contentText: storageText };
-}
-
-export function feedItemFromDefragmentPost(post: DefragmentPost) {
-  return feedItemFromPost("defragment", post);
 }
 
 export async function insertDefragmentPost(

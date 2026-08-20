@@ -6,10 +6,9 @@ import {
   cursorFromDefragmentItem,
   fetchDefragmentFeedPage,
 } from "@/lib/defragment-feed";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+import { supabaseEnabled } from "@/lib/supabase";
 import {
   DEFAULT_TOYBOX_FEED_SORT,
-  toyboxRecommendScore,
   type ToyboxFeedCursor,
   type ToyboxFeedSort,
 } from "@/lib/toybox-feed";
@@ -70,64 +69,6 @@ export function useDefragmentFeed(
     };
   }, [sort]);
 
-  useEffect(() => {
-    if (!supabaseEnabled) return;
-
-    const channel = supabase
-      .channel("defragment_posts_feed")
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "defragment_posts" },
-        (payload) => {
-          const record = payload.new as {
-            id?: unknown;
-            env?: unknown;
-            title?: unknown;
-            created_at?: unknown;
-            like_count?: unknown;
-            comment_count?: unknown;
-          };
-          const id = typeof record.id === "string" ? record.id : "";
-          if (!id) return;
-          if (typeof record.env === "string" && record.env !== supabaseEnv) return;
-          const likeCount = Number(record.like_count ?? 0) || 0;
-          const commentCount = Number(record.comment_count ?? 0) || 0;
-          setItems((current) => current.map((item) => (
-            item.id === id && item.service === "defragment"
-              ? {
-                  ...item,
-                  title: typeof record.title === "string" ? record.title : item.title,
-                  created_at: typeof record.created_at === "string"
-                    ? record.created_at
-                    : item.created_at,
-                  likeCount,
-                  commentCount,
-                  recommendScore: toyboxRecommendScore(likeCount, commentCount),
-                }
-              : item
-          )));
-        },
-      )
-      .on(
-        "postgres_changes",
-        { event: "DELETE", schema: "public", table: "defragment_posts" },
-        (payload) => {
-          const deletedId = String(
-            (payload.old as { id?: unknown } | null)?.id ?? "",
-          );
-          if (!deletedId) return;
-          setItems((current) => current.filter((item) => (
-            !(item.service === "defragment" && item.id === deletedId)
-          )));
-        },
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
   const loadMore = useCallback(async () => {
     if (!supabaseEnabled || loadingMoreRef.current || !hasMore) return;
     const cursor = cursorRef.current;
@@ -177,9 +118,7 @@ export function useDefragmentFeed(
   }, []);
 
   const removeItem = useCallback((postId: string) => {
-    setItems((current) => current.filter((item) => (
-      !(item.service === "defragment" && item.id === postId)
-    )));
+    setItems((current) => current.filter((item) => item.id !== postId));
   }, []);
 
   return {

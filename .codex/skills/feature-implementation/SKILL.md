@@ -114,34 +114,35 @@ hottest/trending key or an offset page.
   `combo`, `transfigure`, `this_or_that`, `chemical_x`. The RPC reads one table
   and returns at most 20 rows plus a `post` jsonb blob.
 - 조각모음's mixed board calls `get_defragment_feed` with the same sort, limit,
-  and cursor arguments. That RPC unions Combo, Transfigure, This or That,
-  Chemical X, and native 조각모음 rows. It takes **at most 20 rows from each
-  source**, then merges and returns at most 20. Do not `UNION` full tables and
-  do not issue four unbounded browser queries.
+  and cursor arguments. That RPC unions Combo, Transfigure, This or That, and
+  Chemical X. It takes **at most 20 rows from each source**, then merges and
+  returns at most 20. Do not `UNION` full tables and do not issue four unbounded
+  browser queries. There is no native title+body 조각모음 post type; optional
+  overlay bodies live on `defragment_bodies`.
 - 조각모음 index is a dense Korean community board (말머리 / 제목 / 추천 · 댓글)
   with hairline row separators, not gapped per-row cards. Other Toy Box indexes
   keep their card layouts until they are explicitly redesigned.
 - Index rows open **조각모음 detail**, not the original service URL:
-  native `/defragment/{id}`, federated `/defragment/{service}/{id}`. Detail
-  embeds that type's content (combo renderer/gallery, transfigure preview,
-  This or That full vote UI, Chemical X renderer, native title+body). A quiet
-  `{name}에서` / `In {name}` link reaches the original page. Do not add a
-  required extra hop through the original detail to read or vote.
+  `/defragment/{service}/{id}`. Detail embeds that type's content (combo
+  renderer/gallery, transfigure preview, This or That full vote UI, Chemical X
+  renderer). A quiet `{name}에서` / `In {name}` link reaches the original page.
+  Do not add a required extra hop through the original detail to read or vote.
 - Comments and likes on 조각모음 use the original thread keys
   (`defragmentItemThreadKey`) so they stay in sync with Combo / Transfigure /
   This or That / Chemical X.
-- Write from 조각모음: pick a type and get that service's matching composer,
-  plus an optional 조각모음-only overlay body for federated types
-  (`defragment_bodies`, keyed by env + source_service + source_id). Native
-  posts keep title+body on `defragment_posts`. Do not change Combo /
-  Transfigure / This or That / Chemical X own compose or index UX. Additive
-  editor props such as `hideNickname` / `draftKey` are allowed. Do not call
-  those services' feed hooks from the 조각모음 write panel; use standalone
-  insert helpers. Do not delete original posts from 조각모음.
+- Write from 조각모음: pick Combo / Transfigure / This or That / Chemical X and
+  get that service's matching composer, plus an optional 조각모음-only overlay
+  body (`defragment_bodies`, keyed by env + source_service + source_id). Do not
+  offer a native title+body 조각모음 type. Do not change Combo / Transfigure /
+  This or That / Chemical X own compose or index UX. Additive editor props such
+  as `hideNickname` / `draftKey` are allowed. Do not call those services' feed
+  hooks from the 조각모음 write panel; use standalone insert helpers. Do not
+  delete original posts from 조각모음.
 - History Course is not a feed source or 조각모음 write type.
 - If the RPC is missing (`PGRST202`), fall back to a latest-only keyset on that
   service's own table. Do not emulate recommended/comments sort in the browser
-  by loading the whole env.
+  by loading the whole env. 조각모음 has no single-table fallback; a missing
+  `get_defragment_feed` returns an empty page instead of native `defragment_posts`.
 - Keep these RPCs browser → Supabase. Do not add request-time Worker reads,
   markdown rendering, or full Compendium joins for the feeds.
 

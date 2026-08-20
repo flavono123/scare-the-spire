@@ -3,7 +3,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import { DefragmentComposer } from "@/components/defragment/defragment-composer";
 import { DefragmentOverlayBodyEditor } from "@/components/defragment/defragment-overlay-body";
 import Image from "@/components/ui/static-image";
 import { insertChemicalPost } from "@/hooks/use-chemical-posts";
@@ -12,7 +11,6 @@ import {
   overlayBodyForSave,
   upsertDefragmentBody,
 } from "@/hooks/use-defragment-bodies";
-import { insertDefragmentPost } from "@/hooks/use-defragment-posts";
 import { insertThisOrThatPost } from "@/hooks/use-this-or-that-posts";
 import { useThisOrThatEntities } from "@/hooks/use-this-or-that-entities";
 import {
@@ -21,12 +19,11 @@ import {
 } from "@/hooks/use-transfigure-posts";
 import type { PostBlock } from "@/lib/chemical-types";
 import {
+  DEFRAGMENT_FEDERATED_SERVICES,
   DEFRAGMENT_FEED_SERVICE_META,
-  DEFRAGMENT_TOKEN_SRC,
   feedItemFromPost,
   type DefragmentFeedItem,
   type DefragmentFederatedService,
-  type DefragmentFeedService,
 } from "@/lib/defragment";
 import type { GameLocale } from "@/lib/i18n";
 import type { ThisOrThatResourceRef } from "@/lib/this-or-that";
@@ -53,14 +50,6 @@ const TransfigureComposerModal = dynamic(
   { ssr: false },
 );
 
-const WRITE_TYPES: DefragmentFeedService[] = [
-  "defragment",
-  "combo",
-  "transfigure",
-  "this_or_that",
-  "chemical_x",
-];
-
 export interface DefragmentWritePlaceholders {
   defragment: string;
   combo: string;
@@ -86,7 +75,7 @@ export function DefragmentWritePanel({
   placeholders: DefragmentWritePlaceholders;
   upgradeLabel: string;
   profileNickname: string;
-  typeLabels: Record<DefragmentFeedService, string>;
+  typeLabels: Record<DefragmentFederatedService, string>;
   onCreated: (item: DefragmentFeedItem) => void;
   onUnavailable: () => void;
   ensureUser: () => Promise<string | null>;
@@ -96,7 +85,7 @@ export function DefragmentWritePanel({
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].defragment;
   const nicknameInputRef = useRef<HTMLInputElement>(null);
-  const [writeType, setWriteType] = useState<DefragmentFeedService>("defragment");
+  const [writeType, setWriteType] = useState<DefragmentFederatedService>("combo");
   const [overlayBlocks, setOverlayBlocks] = useState<PostBlock[]>([]);
   const [transfigureOpen, setTransfigureOpen] = useState(false);
   const [totSubmitting, setTotSubmitting] = useState(false);
@@ -125,27 +114,6 @@ export function DefragmentWritePanel({
       activeUserId,
     });
   }, [overlayBlocks]);
-
-  const handleNativeSubmit = useCallback(async (input: {
-    title: string;
-    blocks: PostBlock[];
-    nickname: string;
-  }) => {
-    const activeUserId = userId ?? await ensureUser();
-    if (!activeUserId) return;
-    try {
-      const post = await insertDefragmentPost({
-        title: input.title,
-        blocks: input.blocks,
-        nickname: readNickname(),
-        activeUserId,
-      });
-      if (!post) return;
-      onCreated(feedItemFromPost("defragment", post));
-    } catch {
-      onUnavailable();
-    }
-  }, [ensureUser, onCreated, onUnavailable, readNickname, userId]);
 
   const handleComboSubmit = useCallback(async (blocks: PostBlock[]) => {
     const activeUserId = userId ?? await ensureUser();
@@ -236,7 +204,7 @@ export function DefragmentWritePanel({
     }
   }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
 
-  const overlay = writeType !== "defragment" ? (
+  const overlay = (
     <DefragmentOverlayBodyEditor
       key={writeType}
       entities={entities}
@@ -244,9 +212,9 @@ export function DefragmentWritePanel({
       draftKey={`sts-defragment-overlay:${writeType}`}
       onBlocksChange={setOverlayBlocks}
     />
-  ) : null;
+  );
 
-  const typeChips = useMemo(() => WRITE_TYPES.map((service) => {
+  const typeChips = useMemo(() => DEFRAGMENT_FEDERATED_SERVICES.map((service) => {
     const selected = writeType === service;
     return (
       <button
@@ -267,9 +235,7 @@ export function DefragmentWritePanel({
         )}
       >
         <Image
-          src={service === "defragment"
-            ? DEFRAGMENT_TOKEN_SRC
-            : DEFRAGMENT_FEED_SERVICE_META[service].tokenSrc}
+          src={DEFRAGMENT_FEED_SERVICE_META[service].tokenSrc}
           alt=""
           width={14}
           height={14}
@@ -294,18 +260,6 @@ export function DefragmentWritePanel({
         />
       </div>
       <div className="flex flex-wrap gap-1.5">{typeChips}</div>
-
-      {writeType === "defragment" && (
-        <DefragmentComposer
-          entities={entities}
-          placeholder={placeholders.defragment}
-          profileNickname={readNickname()}
-          submitLabel={copy.submit}
-          draftKey="sts-defragment-draft"
-          hideNickname
-          onSubmit={handleNativeSubmit}
-        />
-      )}
 
       {writeType === "combo" && (
         <>

@@ -7,7 +7,6 @@ import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
   asNonNegativeInt,
-  buildLatestFeedKeysetFilter,
   isToyboxFeedSort,
   TOYBOX_FEED_PAGE_SIZE,
   toyboxRecommendScore,
@@ -73,34 +72,6 @@ export function cursorFromDefragmentItem(
   };
 }
 
-async function fetchLatestNativePage(
-  cursor: ToyboxFeedCursor | null,
-): Promise<DefragmentFeedPage> {
-  let query = supabase
-    .from("defragment_posts")
-    .select("id, created_at, title, like_count, comment_count")
-    .eq("env", supabaseEnv)
-    .order("created_at", { ascending: false })
-    .order("id", { ascending: false })
-    .limit(TOYBOX_FEED_PAGE_SIZE);
-
-  if (cursor) {
-    query = query.or(buildLatestFeedKeysetFilter(cursor));
-  }
-
-  const { data, error } = await withSupabaseTimeout(
-    "defragment_posts.feed.latest",
-    query,
-  );
-  if (error) throw error;
-
-  const items = (data ?? [])
-    .map((row) => parseDefragmentFeedRow({ ...row, service: "defragment" }))
-    .filter((item): item is DefragmentFeedItem => item != null);
-
-  return { items, hasMore: items.length >= TOYBOX_FEED_PAGE_SIZE };
-}
-
 export async function fetchDefragmentFeedPage(options: {
   sort: ToyboxFeedSort;
   cursor: ToyboxFeedCursor | null;
@@ -128,6 +99,5 @@ export async function fetchDefragmentFeedPage(options: {
   }
 
   if (!isMissingDefragmentFeedRpc(error)) throw error;
-
-  return fetchLatestNativePage(options.cursor);
+  return { items: [], hasMore: false };
 }

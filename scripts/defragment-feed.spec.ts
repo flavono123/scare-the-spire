@@ -41,6 +41,12 @@ assert.equal(
 assert.equal(cursorFromDefragmentItem(parsed, "recommended").score, 26);
 
 assert.equal(parseDefragmentFeedRow({ service: "history_course" }), null);
+assert.equal(parseDefragmentFeedRow({
+  id: parsed.id,
+  created_at: parsed.created_at,
+  service: "defragment",
+  title: "native body",
+}), null);
 assert.equal(isMissingDefragmentFeedRpc({ code: "PGRST202" }), true);
 assert.equal(
   isMissingDefragmentFeedRpc({ message: "Could not find the function public.get_defragment_feed" }),
@@ -54,10 +60,6 @@ assert.equal(serviceMessages.en.defragment.create, "Gain Focus.");
 assert.equal(serviceMessages.ko.defragment.defaultNickname.length <= 20, true);
 assert.equal(serviceMessages.en.defragment.defaultNickname.length <= 20, true);
 
-assert.equal(
-  defragmentBoardPath({ id: parsed.id, service: "defragment" }),
-  `/defragment/${parsed.id}`,
-);
 assert.equal(
   defragmentBoardPath({ id: parsed.id, service: "combo" }),
   `/defragment/combo/${parsed.id}`,

@@ -2,7 +2,6 @@ import type { PostBlock } from "@/lib/chemical-types";
 import {
   buildChemicalXCommentThreadKey,
   buildComboCommentThreadKey,
-  buildDefragmentCommentThreadKey,
   buildThisOrThatCommentThreadKey,
   buildTransfigureCommentThreadKey,
 } from "@/lib/comment-threads";
@@ -24,14 +23,11 @@ export const DEFRAGMENT_FEDERATED_SERVICES = [
   "chemical_x",
 ] as const;
 
-export const DEFRAGMENT_FEED_SERVICES = [
-  "defragment",
-  ...DEFRAGMENT_FEDERATED_SERVICES,
-] as const;
+export const DEFRAGMENT_FEED_SERVICES = DEFRAGMENT_FEDERATED_SERVICES;
 
 export type DefragmentFederatedService =
   (typeof DEFRAGMENT_FEDERATED_SERVICES)[number];
-export type DefragmentFeedService = (typeof DEFRAGMENT_FEED_SERVICES)[number];
+export type DefragmentFeedService = DefragmentFederatedService;
 
 export interface DefragmentPost {
   id: string;
@@ -60,10 +56,6 @@ export const DEFRAGMENT_FEED_SERVICE_META: Record<
   DefragmentFeedService,
   { hrefBase: string; tokenSrc: string }
 > = {
-  defragment: {
-    hrefBase: DEFRAGMENT_HREF,
-    tokenSrc: DEFRAGMENT_TOKEN_SRC,
-  },
   combo: {
     hrefBase: "/c-c-c-combo",
     tokenSrc: "/images/sts2/badges/ccccombo.webp",
@@ -113,8 +105,7 @@ export function feedItemFromPost(
   if (service === "this_or_that") title = post.reason ?? "";
   else if (service === "transfigure") {
     title = post.title?.trim() || post.transformed_name?.trim() || post.content_text || "";
-  } else if (service === "defragment") title = post.title ?? "";
-  else title = post.content_text ?? "";
+  } else title = post.content_text ?? "";
 
   return {
     id: post.id,
@@ -130,7 +121,6 @@ export function feedItemFromPost(
 export function defragmentBoardPath(
   item: Pick<DefragmentFeedItem, "id" | "service">,
 ): string {
-  if (item.service === "defragment") return `${DEFRAGMENT_HREF}/${item.id}`;
   // App Router folder is [id]/[postId] so the first dynamic segment stays `id`.
   return `${DEFRAGMENT_HREF}/${item.service}/${item.id}`;
 }
@@ -172,8 +162,6 @@ export function defragmentItemThreadKey(
       return buildThisOrThatCommentThreadKey(item.id);
     case "chemical_x":
       return buildChemicalXCommentThreadKey(item.id);
-    default:
-      return buildDefragmentCommentThreadKey(item.id);
   }
 }
 
