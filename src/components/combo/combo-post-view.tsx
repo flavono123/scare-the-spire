@@ -82,6 +82,8 @@ export function ComboPostView({ postId, gameLocale, placeholder, variant = "page
     );
   }, [gameLocale, remove, router, serviceLocale]);
 
+  const embed = variant === "embed";
+
   if (unavailable) {
     return <StorageUnavailableNotice title={copy.unavailableTitle} />;
   }
@@ -94,19 +96,20 @@ export function ComboPostView({ postId, gameLocale, placeholder, variant = "page
     return (
       <div className="py-12 text-center">
         <p className="mb-4 text-sm text-gray-500">{copy.notFound}</p>
-        <Link
-          href={localizeHrefWithGameLocale("/c-c-c-combo", serviceLocale, gameLocale)}
-          className="text-sm text-yellow-400 hover:underline"
-        >
-          {copy.backToIndex}
-        </Link>
+        {!embed && (
+          <Link
+            href={localizeHrefWithGameLocale("/c-c-c-combo", serviceLocale, gameLocale)}
+            className="text-sm text-yellow-400 hover:underline"
+          >
+            {copy.backToIndex}
+          </Link>
+        )}
       </div>
     );
   }
 
   const youtubeReference = extractComboYouTubeReference(post.content);
   const historyRunReferences = extractComboHistoryRunReferences(post.content);
-  const embed = variant === "embed";
 
   return (
     <div data-combo-page={embed ? "embed" : "detail"} className="space-y-4">

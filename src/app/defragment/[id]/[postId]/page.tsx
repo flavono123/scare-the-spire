@@ -5,15 +5,15 @@ import {
 } from "./page-content";
 
 type Props = {
-  params: Promise<{ service: string; id: string }>;
+  params: Promise<{ id: string; postId: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { service, id } = await params;
-  return generateDefragmentFederatedPostMetadata(service, id);
+  const { id: service, postId } = await params;
+  return generateDefragmentFederatedPostMetadata(service, postId);
 }
 
 export default async function DefragmentFederatedPostPage({ params }: Props) {
-  const { service, id } = await params;
-  return renderDefragmentFederatedPostPage(service, id);
+  const { id: service, postId } = await params;
+  return renderDefragmentFederatedPostPage(service, postId);
 }

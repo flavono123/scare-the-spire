@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { DefragmentPostView } from "@/components/defragment/defragment-post-view";
 import { ServiceBackground } from "@/components/service-background";
 import { getDefragmentGameCopy } from "@/lib/borrowed-game-copy";
-import { DEFRAGMENT_BACKGROUND_SRC } from "@/lib/defragment";
+import { DEFRAGMENT_BACKGROUND_SRC, isDefragmentFederatedService } from "@/lib/defragment";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { DEFRAGMENT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
@@ -38,6 +39,8 @@ export async function renderDefragmentPostPage(
   id: string,
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
+  if (isDefragmentFederatedService(id)) notFound();
+
   const gameCopy = await getDefragmentGameCopy(gameLocale);
 
   return (

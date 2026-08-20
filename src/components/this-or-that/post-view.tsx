@@ -88,6 +88,8 @@ export function ThisOrThatPostView({
     );
   }, [gameLocale, remove, router, serviceLocale]);
 
+  const embed = variant === "embed";
+
   if (unavailable) {
     return <StorageUnavailableNotice title={copy.unavailableTitle} />;
   }
@@ -100,12 +102,14 @@ export function ThisOrThatPostView({
     return (
       <div className="py-12 text-center">
         <p className="mb-4 text-sm text-muted-foreground">{copy.notFound}</p>
-        <Link
-          href={localizeHrefWithGameLocale("/this-or-that", serviceLocale, gameLocale)}
-          className="text-sm text-yellow-400 underline-offset-4 hover:underline"
-        >
-          {title}
-        </Link>
+        {!embed && (
+          <Link
+            href={localizeHrefWithGameLocale("/this-or-that", serviceLocale, gameLocale)}
+            className="text-sm text-yellow-400 underline-offset-4 hover:underline"
+          >
+            {title}
+          </Link>
+        )}
       </div>
     );
   }
@@ -114,7 +118,6 @@ export function ThisOrThatPostView({
   const voteChoice = votes.choices[resolvedPost.post.id];
   const votePending = votes.pending.has(resolvedPost.post.id);
   const canVote = authReady && !authUnavailable && !votes.loading && !votes.unavailable;
-  const embed = variant === "embed";
 
   return (
     <div className="space-y-5">

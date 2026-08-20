@@ -84,6 +84,8 @@ export function TransfigurePostView({
     );
   }, [gameLocale, remove, router, serviceLocale]);
 
+  const embed = variant === "embed";
+
   if (unavailable) {
     return <StorageUnavailableNotice title={copy.unavailableTitle} />;
   }
@@ -96,18 +98,19 @@ export function TransfigurePostView({
     return (
       <div className="py-12 text-center">
         <p className="mb-4 text-sm text-gray-500">{copy.notFound}</p>
-        <Link
-          href={localizeHrefWithGameLocale("/transfigure", serviceLocale, gameLocale)}
-          className="spire-gold text-sm hover:underline"
-        >
-          {copy.backToIndex}
-        </Link>
+        {!embed && (
+          <Link
+            href={localizeHrefWithGameLocale("/transfigure", serviceLocale, gameLocale)}
+            className="spire-gold text-sm hover:underline"
+          >
+            {copy.backToIndex}
+          </Link>
+        )}
       </div>
     );
   }
 
   const resource = entityMap.get(`${post.resource_type}:${post.resource_id}`);
-  const embed = variant === "embed";
 
   return (
     <div data-transfigure-page={embed ? "embed" : "detail"} className="space-y-4">

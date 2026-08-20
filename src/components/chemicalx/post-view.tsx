@@ -98,19 +98,22 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
     );
   }
 
+  const embed = variant === "embed";
+
   if (!post) {
     return (
       <div className="text-center py-12">
         <p className="text-gray-500 text-sm mb-4">{copy.notFound}</p>
-        <Link href={localizeHref("/chemical-x", serviceLocale)} className="text-yellow-400 text-sm hover:underline">
-          {copy.backToChemicalX}
-        </Link>
+        {!embed && (
+          <Link href={localizeHref("/chemical-x", serviceLocale)} className="text-yellow-400 text-sm hover:underline">
+            {copy.backToChemicalX}
+          </Link>
+        )}
       </div>
     );
   }
 
   const textLen = blocksToPlainText(post.content).length;
-  const embed = variant === "embed";
 
   return (
     <div className="space-y-4">

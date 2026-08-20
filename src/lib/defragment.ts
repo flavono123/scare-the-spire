@@ -131,6 +131,7 @@ export function defragmentBoardPath(
   item: Pick<DefragmentFeedItem, "id" | "service">,
 ): string {
   if (item.service === "defragment") return `${DEFRAGMENT_HREF}/${item.id}`;
+  // App Router folder is [id]/[postId] so the first dynamic segment stays `id`.
   return `${DEFRAGMENT_HREF}/${item.service}/${item.id}`;
 }
 
