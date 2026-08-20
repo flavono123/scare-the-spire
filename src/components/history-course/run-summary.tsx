@@ -37,6 +37,7 @@ import type {
   ReplayHistoryEntry,
   ReplayRun,
 } from "@/lib/sts2-run-replay";
+import { historyEntryForPlayer } from "@/lib/sts2-run-replay";
 import {
   getMadScienceVariantId,
   getMadScienceVariantPartsFromId,
@@ -46,6 +47,7 @@ import { visibleRunBadgesAtFloor } from "@/lib/run-badge-timing";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { PartyPortraitStack } from "@/components/history-course/party-portrait-stack";
 
 // ============================================================================
 // Run summary panel — port of
@@ -59,25 +61,6 @@ import { cn } from "@/lib/utils";
 //     animation in front. The user can dismiss the panel via the back
 //     button and keep scrubbing the playback at the final node.
 // ============================================================================
-
-const KNOWN_CHARACTERS = new Set([
-  "ironclad",
-  "silent",
-  "defect",
-  "necrobinder",
-  "regent",
-]);
-
-function characterIconSrc(character: string): string {
-  const slug = character.replace(/^CHARACTER\./, "").toLowerCase();
-  const safe = KNOWN_CHARACTERS.has(slug) ? slug : "ironclad";
-  return `/images/sts2/characters/character_icon_${safe}.webp`;
-}
-
-function characterLabel(character: string, tables: GameI18nTables): string {
-  const slug = character.replace(/^CHARACTER\./, "");
-  return localizeGame(tables, "characters", slug) ?? slug;
-}
 
 const ANCIENT_KEYS = new Set([
   "NEOW",
@@ -198,6 +181,8 @@ interface Props {
    *  hidden entirely. */
   currentActIndex: number;
   currentStep: number;
+  focusedPlayerIndex?: number;
+  onFocusPlayer?: (index: number) => void;
   /** Back button — when present a codex-style return chip is rendered
    *  in the bottom-left and `onClose` fires on click / Escape. The
    *  topbar cog also drives this same close path. */
@@ -215,6 +200,8 @@ export function RunSummary({
   ended,
   currentActIndex,
   currentStep,
+  focusedPlayerIndex = 0,
+  onFocusPlayer,
   onClose,
 }: Props) {
   if (!open) return null;
@@ -238,6 +225,8 @@ export function RunSummary({
         ended={ended}
         currentActIndex={currentActIndex}
         currentStep={currentStep}
+        focusedPlayerIndex={focusedPlayerIndex}
+        onFocusPlayer={onFocusPlayer}
       />
       <BackButton onClose={onClose} />
     </div>
@@ -256,6 +245,8 @@ function SummaryPanel({
   ended,
   currentActIndex,
   currentStep,
+  focusedPlayerIndex,
+  onFocusPlayer,
 }: {
   run: ReplayRun;
   acts: ReplayActAnalysis[];
@@ -266,18 +257,16 @@ function SummaryPanel({
   ended: boolean;
   currentActIndex: number;
   currentStep: number;
+  focusedPlayerIndex: number;
+  onFocusPlayer?: (index: number) => void;
 }) {
   const serviceLocale = useServiceLocale();
   const playback = serviceMessages[serviceLocale].historyCourse.detail.playback;
-  const tables = useGameI18n();
-  const character = run.players[0]?.character ?? "CHARACTER.IRONCLAD";
-  const badges = run.players[0]?.badges ?? [];
-  const charLabel = characterLabel(character, tables);
-  const charIcon = characterIconSrc(character);
+  const badges = run.players[focusedPlayerIndex]?.badges ?? [];
   const finalFloor = topbarState.currentFloor;
   const visibleBadges = ended
     ? badges
-    : visibleRunBadgesAtFloor(run, finalFloor, ended);
+    : visibleRunBadgesAtFloor(run, finalFloor, ended, focusedPlayerIndex);
   const runTimeStr = formatRunTime(run.run_time ?? 0);
   const dateStr = formatRunDate(run.start_time, serviceLocale);
 
@@ -290,9 +279,21 @@ function SummaryPanel({
   // current act stops at `currentStep`; future acts disappear.
   const visibleActs = acts
     .map((act, idx) => {
-      if (idx < currentActIndex) return { act, history: act.history };
+      if (idx < currentActIndex) {
+        return {
+          act,
+          history: act.history.map((entry) =>
+            historyEntryForPlayer(entry, focusedPlayerIndex),
+          ),
+        };
+      }
       if (idx === currentActIndex) {
-        return { act, history: act.history.slice(0, Math.max(0, currentStep)) };
+        return {
+          act,
+          history: act.history
+            .slice(0, Math.max(0, currentStep))
+            .map((entry) => historyEntryForPlayer(entry, focusedPlayerIndex)),
+        };
       }
       return null;
     })
@@ -312,10 +313,11 @@ function SummaryPanel({
       `}</style>
 
       <header className="flex flex-wrap items-center gap-3 border-b border-amber-500/20 pb-3">
-        <CharacterChip
-          iconSrc={charIcon}
-          label={charLabel}
-          ascension={run.ascension}
+        <PartyPortraitStack
+          run={run}
+          focusedIndex={focusedPlayerIndex}
+          onFocus={onFocusPlayer}
+          size="summary"
         />
         <HpChip hp={topbarState.hp} maxHp={topbarState.maxHp} />
         <GoldChip gold={topbarState.gold} />
@@ -379,61 +381,6 @@ function SummaryPanel({
 }
 
 // ----- Top mirror chips ------------------------------------------------------
-
-function CharacterChip({
-  iconSrc,
-  label,
-  ascension,
-}: {
-  iconSrc: string;
-  label: string;
-  ascension: number;
-}) {
-  return (
-    <div
-      className="relative h-12 w-12 shrink-0"
-      title={ascension > 0 ? `${label} · 승천 ${ascension}` : label}
-      style={{
-        backgroundImage: "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
-        backgroundSize: "100% 100%",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      <div className="absolute inset-1 overflow-hidden">
-        <Image
-          src={iconSrc}
-          alt={label}
-          fill
-          sizes="44px"
-          className="object-contain"
-          unoptimized
-        />
-      </div>
-      {ascension > 0 && <AscensionBadge ascension={ascension} />}
-    </div>
-  );
-}
-
-function AscensionBadge({ ascension }: { ascension: number }) {
-  return (
-    <span
-      className="pointer-events-none absolute -bottom-0.5 -right-1 flex h-7 w-7 items-end justify-center"
-      aria-label={`승천 ${ascension}`}
-    >
-      <Image
-        src="/images/sts2/ui/topbar/top_bar_ascension.png"
-        alt=""
-        fill
-        sizes="28px"
-        className="object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
-        unoptimized
-      />
-      <span className="relative z-10 mb-0.5 text-[13px] font-bold leading-none text-white">
-        {ascension}
-      </span>
-    </span>
-  );
-}
 
 function HpChip({
   hp,

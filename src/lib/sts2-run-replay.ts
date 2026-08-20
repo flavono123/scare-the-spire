@@ -57,9 +57,8 @@ export interface ReplayCardRef {
   ints?: Record<string, number>;
 }
 
-export interface ReplayHistoryEntry {
-  map_point_type: string;
-  rooms: ReplayRoom[];
+export interface ReplayPlayerStats {
+  playerId?: number;
   current_hp?: number;
   max_hp?: number;
   current_gold?: number;
@@ -71,17 +70,34 @@ export interface ReplayHistoryEntry {
   gold_spent?: number;
   gold_lost?: number;
   gold_stolen?: number;
+  stolen_loot?: number;
+  is_affected_by_fur_coat?: boolean;
   cards_gained?: ReplayCardRef[];
   cards_lost?: ReplayCardRef[];
   cards_removed?: ReplayCardRef[];
   cards_transformed?: ReplayCardTransform[];
   upgraded_cards?: string[];
+  downgraded_cards?: string[];
   cards_enchanted?: ReplayEnchantment[];
   card_choices?: ReplayChoice[];
   relic_choices?: ReplayChoice[];
   potion_choices?: ReplayChoice[];
   potion_used?: string[];
   potion_discarded?: string[];
+  rest_site_choices?: string[];
+  event_choices?: ReplayChoice[];
+  ancient_choice?: ReplayChoice[];
+  bought_relics?: string[];
+  bought_potions?: string[];
+  relics_removed?: string[];
+  completed_quests?: string[];
+}
+
+export interface ReplayHistoryEntry extends ReplayPlayerStats {
+  map_point_type: string;
+  rooms: ReplayRoom[];
+  /** Per-player floor stats. Flattened fields above mirror player 0. */
+  player_stats?: ReplayPlayerStats[];
 }
 
 export interface ReplayEnchantment {
@@ -832,6 +848,97 @@ const ACT_CONFIGS: Record<string, ReplayActConfig> = {
   },
 };
 
+const EMPTY_PLAYER_STATS: ReplayPlayerStats = {};
+
+function applyPlayerStats(
+  entry: ReplayHistoryEntry,
+  stats: ReplayPlayerStats | undefined,
+): ReplayHistoryEntry {
+  if (!stats) {
+    return {
+      ...entry,
+      current_hp: undefined,
+      max_hp: undefined,
+      current_gold: undefined,
+      damage_taken: undefined,
+      hp_healed: undefined,
+      max_hp_gained: undefined,
+      max_hp_lost: undefined,
+      gold_gained: undefined,
+      gold_spent: undefined,
+      gold_lost: undefined,
+      gold_stolen: undefined,
+      stolen_loot: undefined,
+      is_affected_by_fur_coat: undefined,
+      cards_gained: undefined,
+      cards_lost: undefined,
+      cards_removed: undefined,
+      cards_transformed: undefined,
+      upgraded_cards: undefined,
+      downgraded_cards: undefined,
+      cards_enchanted: undefined,
+      card_choices: undefined,
+      relic_choices: undefined,
+      potion_choices: undefined,
+      potion_used: undefined,
+      potion_discarded: undefined,
+      rest_site_choices: undefined,
+      event_choices: undefined,
+      ancient_choice: undefined,
+      bought_relics: undefined,
+      bought_potions: undefined,
+      relics_removed: undefined,
+      completed_quests: undefined,
+    };
+  }
+  return {
+    ...entry,
+    playerId: stats.playerId,
+    current_hp: stats.current_hp,
+    max_hp: stats.max_hp,
+    current_gold: stats.current_gold,
+    damage_taken: stats.damage_taken,
+    hp_healed: stats.hp_healed,
+    max_hp_gained: stats.max_hp_gained,
+    max_hp_lost: stats.max_hp_lost,
+    gold_gained: stats.gold_gained,
+    gold_spent: stats.gold_spent,
+    gold_lost: stats.gold_lost,
+    gold_stolen: stats.gold_stolen,
+    stolen_loot: stats.stolen_loot,
+    is_affected_by_fur_coat: stats.is_affected_by_fur_coat,
+    cards_gained: stats.cards_gained,
+    cards_lost: stats.cards_lost,
+    cards_removed: stats.cards_removed,
+    cards_transformed: stats.cards_transformed,
+    upgraded_cards: stats.upgraded_cards,
+    downgraded_cards: stats.downgraded_cards,
+    cards_enchanted: stats.cards_enchanted,
+    card_choices: stats.card_choices,
+    relic_choices: stats.relic_choices,
+    potion_choices: stats.potion_choices,
+    potion_used: stats.potion_used,
+    potion_discarded: stats.potion_discarded,
+    rest_site_choices: stats.rest_site_choices,
+    event_choices: stats.event_choices,
+    ancient_choice: stats.ancient_choice,
+    bought_relics: stats.bought_relics,
+    bought_potions: stats.bought_potions,
+    relics_removed: stats.relics_removed,
+    completed_quests: stats.completed_quests,
+  };
+}
+
+/** Overlay flattened floor stats with `playerIndex`. Player 0 is the parse default. */
+export function historyEntryForPlayer(
+  entry: ReplayHistoryEntry,
+  playerIndex: number,
+): ReplayHistoryEntry {
+  if (playerIndex <= 0) return entry;
+  const stats = entry.player_stats?.[playerIndex];
+  return applyPlayerStats(entry, stats ?? EMPTY_PLAYER_STATS);
+}
+
 export function parseReplayRun(raw: string): ReplayRun {
   const parsed = JSON.parse(raw) as Partial<ReplayRun>;
 
@@ -1014,40 +1121,60 @@ export function parseReplayRun(raw: string): ReplayRun {
         ? act.map((entry) => {
             type RawCardChoice = { card?: { id?: string }; was_picked?: boolean };
             type RawSimpleChoice = { choice?: string; was_picked?: boolean };
-            const rawEntry = entry as Partial<ReplayHistoryEntry> & {
-              player_stats?: Array<{
-                current_hp?: number;
-                max_hp?: number;
-                current_gold?: number;
-                damage_taken?: number;
-                hp_healed?: number;
-                max_hp_gained?: number;
-                max_hp_lost?: number;
-                gold_gained?: number;
-                gold_spent?: number;
-                gold_lost?: number;
-                gold_stolen?: number;
-                cards_gained?: RawReplayCard[];
-                cards_lost?: RawReplayCard[];
-                cards_removed?: RawReplayCard[];
-                cards_transformed?: Array<{
-                  original_card?: RawReplayCard;
-                  final_card?: RawReplayCard;
-                }>;
-                bought_colorless?: Array<string | RawReplayCard>;
-                upgraded_cards?: string[];
-                cards_enchanted?: Array<{
-                  card?: { id?: string; enchantment?: { id?: string; amount?: number } };
-                  enchantment?: string;
-                }>;
-                card_choices?: RawCardChoice[];
-                relic_choices?: RawSimpleChoice[];
-                potion_choices?: RawSimpleChoice[];
-                potion_used?: string[];
-                potion_discarded?: string[];
+            type RawPlayerStats = {
+              player_id?: number;
+              current_hp?: number;
+              max_hp?: number;
+              current_gold?: number;
+              damage_taken?: number;
+              hp_healed?: number;
+              max_hp_gained?: number;
+              max_hp_lost?: number;
+              gold_gained?: number;
+              gold_spent?: number;
+              gold_lost?: number;
+              gold_stolen?: number;
+              stolen_loot?: number;
+              is_affected_by_fur_coat?: boolean;
+              cards_gained?: RawReplayCard[];
+              cards_lost?: RawReplayCard[];
+              cards_removed?: RawReplayCard[];
+              cards_transformed?: Array<{
+                original_card?: RawReplayCard;
+                final_card?: RawReplayCard;
+              }>;
+              bought_colorless?: Array<string | RawReplayCard>;
+              bought_relics?: string[];
+              bought_potions?: string[];
+              relics_removed?: string[];
+              completed_quests?: string[];
+              upgraded_cards?: string[];
+              downgraded_cards?: string[];
+              cards_enchanted?: Array<{
+                card?: { id?: string; enchantment?: { id?: string; amount?: number } };
+                enchantment?: string;
+              }>;
+              card_choices?: RawCardChoice[];
+              relic_choices?: RawSimpleChoice[];
+              potion_choices?: RawSimpleChoice[];
+              potion_used?: string[];
+              potion_discarded?: string[];
+              rest_site_choices?: string[];
+              event_choices?: Array<{
+                title?: { key?: string; table?: string };
+              }>;
+              ancient_choice?: Array<{
+                TextKey?: string;
+                was_chosen?: boolean;
+                title?: { key?: string; table?: string };
               }>;
             };
-            const firstStats = Array.isArray(rawEntry.player_stats) ? rawEntry.player_stats[0] : undefined;
+            const rawEntry = entry as Omit<Partial<ReplayHistoryEntry>, "player_stats"> & {
+              player_stats?: RawPlayerStats[];
+            };
+            const rawStatsList = Array.isArray(rawEntry.player_stats)
+              ? rawEntry.player_stats
+              : [];
             const pickStat = (
               flat: number | undefined,
               nested: number | undefined,
@@ -1151,6 +1278,73 @@ export function parseReplayRun(raw: string): ReplayRun {
                     return [entry];
                   })
                 : undefined;
+            const pickTitledChoices = (
+              list:
+                | Array<{
+                    TextKey?: string;
+                    was_chosen?: boolean;
+                    title?: { key?: string; table?: string };
+                  }>
+                | undefined,
+            ): ReplayChoice[] | undefined =>
+              Array.isArray(list)
+                ? list.flatMap((row): ReplayChoice[] => {
+                    const id = row?.TextKey ?? row?.title?.key;
+                    if (typeof id !== "string") return [];
+                    return [{ id, picked: !!row.was_chosen }];
+                  })
+                : undefined;
+            const parseStats = (rawStats: RawPlayerStats | undefined): ReplayPlayerStats => {
+              if (!rawStats) return {};
+              const stats: ReplayPlayerStats = {};
+              if (typeof rawStats.player_id === "number") stats.playerId = rawStats.player_id;
+              if (typeof rawStats.current_hp === "number") stats.current_hp = rawStats.current_hp;
+              if (typeof rawStats.max_hp === "number") stats.max_hp = rawStats.max_hp;
+              if (typeof rawStats.current_gold === "number") stats.current_gold = rawStats.current_gold;
+              if (typeof rawStats.damage_taken === "number") stats.damage_taken = rawStats.damage_taken;
+              if (typeof rawStats.hp_healed === "number") stats.hp_healed = rawStats.hp_healed;
+              if (typeof rawStats.max_hp_gained === "number") stats.max_hp_gained = rawStats.max_hp_gained;
+              if (typeof rawStats.max_hp_lost === "number") stats.max_hp_lost = rawStats.max_hp_lost;
+              if (typeof rawStats.gold_gained === "number") stats.gold_gained = rawStats.gold_gained;
+              if (typeof rawStats.gold_spent === "number") stats.gold_spent = rawStats.gold_spent;
+              if (typeof rawStats.gold_lost === "number") stats.gold_lost = rawStats.gold_lost;
+              if (typeof rawStats.gold_stolen === "number") stats.gold_stolen = rawStats.gold_stolen;
+              if (typeof rawStats.stolen_loot === "number") stats.stolen_loot = rawStats.stolen_loot;
+              if (typeof rawStats.is_affected_by_fur_coat === "boolean") {
+                stats.is_affected_by_fur_coat = rawStats.is_affected_by_fur_coat;
+              }
+              stats.cards_gained = mergeGained(
+                pickCards(rawStats.cards_gained),
+                rawStats.bought_colorless,
+              );
+              stats.cards_lost = pickCards(rawStats.cards_lost);
+              stats.cards_removed = pickCards(rawStats.cards_removed);
+              stats.cards_transformed = pickTransforms(rawStats.cards_transformed);
+              stats.upgraded_cards = pickUpgradedCards(rawStats.upgraded_cards);
+              stats.downgraded_cards = pickUpgradedCards(rawStats.downgraded_cards);
+              stats.cards_enchanted = pickEnchantments(rawStats.cards_enchanted);
+              stats.card_choices = pickCardChoices(rawStats.card_choices);
+              stats.relic_choices = pickSimpleChoices(rawStats.relic_choices);
+              stats.potion_choices = pickSimpleChoices(rawStats.potion_choices);
+              stats.potion_used = pickStringList(rawStats.potion_used);
+              stats.potion_discarded = pickStringList(rawStats.potion_discarded);
+              stats.rest_site_choices = pickStringList(rawStats.rest_site_choices);
+              stats.bought_relics = pickStringList(rawStats.bought_relics);
+              stats.bought_potions = pickStringList(rawStats.bought_potions);
+              stats.relics_removed = pickStringList(rawStats.relics_removed);
+              stats.completed_quests = pickStringList(rawStats.completed_quests);
+              stats.event_choices = Array.isArray(rawStats.event_choices)
+                ? rawStats.event_choices.flatMap((row): ReplayChoice[] => {
+                    const id = row?.title?.key;
+                    if (typeof id !== "string") return [];
+                    return [{ id, picked: true }];
+                  })
+                : undefined;
+              stats.ancient_choice = pickTitledChoices(rawStats.ancient_choice);
+              return stats;
+            };
+            const playerStats = rawStatsList.map((rawStats) => parseStats(rawStats));
+            const focused = playerStats[0];
             return {
               map_point_type:
                 typeof rawEntry.map_point_type === "string" ? rawEntry.map_point_type : "unknown",
@@ -1162,31 +1356,39 @@ export function parseReplayRun(raw: string): ReplayRun {
                       turns_taken: typeof room?.turns_taken === "number" ? room.turns_taken : 0,
                     }))
                 : [],
-              current_hp: pickStat(rawEntry.current_hp, firstStats?.current_hp),
-              max_hp: pickStat(rawEntry.max_hp, firstStats?.max_hp),
-              current_gold: pickStat(rawEntry.current_gold, firstStats?.current_gold),
-              damage_taken: firstStats?.damage_taken,
-              hp_healed: firstStats?.hp_healed,
-              max_hp_gained: firstStats?.max_hp_gained,
-              max_hp_lost: firstStats?.max_hp_lost,
-              gold_gained: firstStats?.gold_gained,
-              gold_spent: firstStats?.gold_spent,
-              gold_lost: firstStats?.gold_lost,
-              gold_stolen: firstStats?.gold_stolen,
-              cards_gained: mergeGained(
-                pickCards(firstStats?.cards_gained),
-                firstStats?.bought_colorless,
-              ),
-              cards_lost: pickCards(firstStats?.cards_lost),
-              cards_removed: pickCards(firstStats?.cards_removed),
-              cards_transformed: pickTransforms(firstStats?.cards_transformed),
-              upgraded_cards: pickUpgradedCards(firstStats?.upgraded_cards),
-              cards_enchanted: pickEnchantments(firstStats?.cards_enchanted),
-              card_choices: pickCardChoices(firstStats?.card_choices),
-              relic_choices: pickSimpleChoices(firstStats?.relic_choices),
-              potion_choices: pickSimpleChoices(firstStats?.potion_choices),
-              potion_used: pickStringList(firstStats?.potion_used),
-              potion_discarded: pickStringList(firstStats?.potion_discarded),
+              player_stats: playerStats.length > 0 ? playerStats : undefined,
+              current_hp: pickStat(rawEntry.current_hp, focused?.current_hp),
+              max_hp: pickStat(rawEntry.max_hp, focused?.max_hp),
+              current_gold: pickStat(rawEntry.current_gold, focused?.current_gold),
+              damage_taken: focused?.damage_taken,
+              hp_healed: focused?.hp_healed,
+              max_hp_gained: focused?.max_hp_gained,
+              max_hp_lost: focused?.max_hp_lost,
+              gold_gained: focused?.gold_gained,
+              gold_spent: focused?.gold_spent,
+              gold_lost: focused?.gold_lost,
+              gold_stolen: focused?.gold_stolen,
+              stolen_loot: focused?.stolen_loot,
+              is_affected_by_fur_coat: focused?.is_affected_by_fur_coat,
+              cards_gained: focused?.cards_gained,
+              cards_lost: focused?.cards_lost,
+              cards_removed: focused?.cards_removed,
+              cards_transformed: focused?.cards_transformed,
+              upgraded_cards: focused?.upgraded_cards,
+              downgraded_cards: focused?.downgraded_cards,
+              cards_enchanted: focused?.cards_enchanted,
+              card_choices: focused?.card_choices,
+              relic_choices: focused?.relic_choices,
+              potion_choices: focused?.potion_choices,
+              potion_used: focused?.potion_used,
+              potion_discarded: focused?.potion_discarded,
+              rest_site_choices: focused?.rest_site_choices,
+              event_choices: focused?.event_choices,
+              ancient_choice: focused?.ancient_choice,
+              bought_relics: focused?.bought_relics,
+              bought_potions: focused?.bought_potions,
+              relics_removed: focused?.relics_removed,
+              completed_quests: focused?.completed_quests,
             };
           })
         : [],
@@ -1715,12 +1917,8 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
   const acts: ReplayActAnalysis[] = [];
   let baseFloor = 1;
 
-  const player = run.players[0];
   const hasFlightModifier = modifierIds.has("FLIGHT");
-  const bootsRelic = player?.relics.find(
-    (relic) => normalizeIdentifier(relic.id) === "WINGED_BOOTS",
-  );
-  const bootsAcquiredFloor = bootsRelic?.floor_added_to_deck ?? Infinity;
+  const bootsAcquiredFloor = partyWingedBootsAcquiredFloor(run);
   let totalBootsFlightsUsed = 0;
 
   const isMultiplayer = run.players.length > 1;
@@ -1896,28 +2094,33 @@ function chooseActMapVariant(
   actStartFloor: number,
   actEndFloor: number,
 ): ActMapVariant {
-  const player = run.players[0];
-  if (!player) return "standard";
+  if (run.players.length === 0) return "standard";
   const idOf = (value?: string) => (value ?? "").toUpperCase();
   // Golden Compass: granted at Tezcatara's ancient option (start of an act).
   // Game's GoldenCompass.AfterObtained calls RunManager.GenerateMap immediately,
   // so the act's map is regenerated as Golden Path the moment the relic is
   // picked. We detect it via the relic's floor_added_to_deck falling inside
-  // this act's floor range.
-  const compassInThisAct = player.relics.some((relic) => {
-    const id = idOf(relic.id);
-    if (!id.endsWith("GOLDEN_COMPASS")) return false;
-    const added = relic.floor_added_to_deck ?? 0;
-    return added >= actStartFloor && added <= actEndFloor;
-  });
+  // this act's floor range. Shared map: any party member's compass counts.
+  const compassInThisAct = run.players.some((player) =>
+    player.relics.some((relic) => {
+      const id = idOf(relic.id);
+      if (!id.endsWith("GOLDEN_COMPASS")) return false;
+      const added = relic.floor_added_to_deck ?? 0;
+      return added >= actStartFloor && added <= actEndFloor;
+    }),
+  );
   if (compassInThisAct) return "golden_path";
   // Spoils Map card: SpoilsMap.ModifyGeneratedMap fires when actIndex == 1
   // AND the card is in the deck pile at map-generation time (= start of act
   // 2). The card auto-removes on quest completion (mid-act 2), so the FINAL
   // deck snapshot in `.run` may not contain it. We must reconstruct deck
   // membership at the start of this act by replaying cards_gained/cards_lost
-  // history.
-  if (cardWasInDeckAtFloor(run, "SPOILS_MAP", actStartFloor)) {
+  // history. Shared map: any party member holding Spoils counts.
+  if (
+    run.players.some((_, playerIndex) =>
+      cardWasInDeckAtFloor(run, "SPOILS_MAP", actStartFloor, playerIndex),
+    )
+  ) {
     return "spoils";
   }
   return "standard";
@@ -1927,11 +2130,12 @@ function collectFurCoatMarkerNodeIds(
   run: ReplayRun,
   actIndex: number,
   map: GeneratedActMap,
+  playerIndex = 0,
 ): string[] {
   // Game's FurCoat saves marked coordinates in props.int_arrays
   // (FurCoatCoordCols / FurCoatCoordRows). The relic also stores
   // FurCoatActIndex — markers only show in the act it was obtained.
-  const player = run.players[0];
+  const player = run.players[playerIndex];
   if (!player) return [];
   const relic = player.relics.find(
     (r) => normalizeIdentifier(r.id) === "FUR_COAT",
@@ -1949,6 +2153,56 @@ function collectFurCoatMarkerNodeIds(
   return result;
 }
 
+/** Quest-marker node ids for the focused player, matched against analyzed nodes. */
+export function furCoatMarkerNodeIdsForPlayer(
+  run: ReplayRun,
+  actIndex: number,
+  nodes: ReplayMapNode[],
+  playerIndex: number,
+): string[] {
+  const player = run.players[playerIndex];
+  if (!player) return [];
+  const relic = player.relics.find(
+    (r) => normalizeIdentifier(r.id) === "FUR_COAT",
+  );
+  if (!relic) return [];
+  const furActIndex = relic.ints?.FurCoatActIndex;
+  if (typeof furActIndex !== "number" || furActIndex !== actIndex) return [];
+  const cols = relic.intArrays?.FurCoatCoordCols ?? [];
+  const rows = relic.intArrays?.FurCoatCoordRows ?? [];
+  const result: string[] = [];
+  for (let i = 0; i < Math.min(cols.length, rows.length); i++) {
+    const node = nodes.find((n) => n.col === cols[i] && n.row === rows[i]);
+    if (node) result.push(node.id);
+  }
+  return result;
+}
+
+export function playerHasRelic(
+  run: ReplayRun,
+  playerIndex: number,
+  relicSuffix: string,
+): boolean {
+  const player = run.players[playerIndex];
+  if (!player) return false;
+  const needle = relicSuffix.toUpperCase();
+  return player.relics.some((relic) =>
+    normalizeIdentifier(relic.id).endsWith(needle),
+  );
+}
+
+function partyWingedBootsAcquiredFloor(run: ReplayRun): number {
+  let earliest = Infinity;
+  for (const player of run.players) {
+    const relic = player.relics.find(
+      (candidate) => normalizeIdentifier(candidate.id) === "WINGED_BOOTS",
+    );
+    if (!relic) continue;
+    earliest = Math.min(earliest, relic.floor_added_to_deck ?? Infinity);
+  }
+  return earliest;
+}
+
 function collectSpoilsMarkerNodeId(map: GeneratedActMap): string | null {
   // SpoilsMap.ModifyGeneratedMapLate picks the first treasure node in
   // GetAllMapPoints iteration order. SpoilsActMap collapses to a single
@@ -1960,14 +2214,15 @@ function collectSpoilsMarkerNodeId(map: GeneratedActMap): string | null {
   return null;
 }
 
-function cardWasInDeckAtFloor(
+export function cardWasInDeckAtFloor(
   run: ReplayRun,
   cardSuffix: string,
   targetFloor: number,
+  playerIndex = 0,
 ): boolean {
   // Check player.deck for cards still present at the end of run that were
   // added before targetFloor — those are definitely in deck at targetFloor.
-  const player = run.players[0];
+  const player = run.players[playerIndex];
   if (!player) return false;
   const matches = (id: string | undefined) =>
     typeof id === "string" && id.toUpperCase().endsWith(cardSuffix);
@@ -1983,7 +2238,8 @@ function cardWasInDeckAtFloor(
   let lastGainedFloor: number | null = null;
   let lastRemovedFloor: number | null = null;
   for (const act of run.map_point_history) {
-    for (const entry of act) {
+    for (const rawEntry of act) {
+      const entry = historyEntryForPlayer(rawEntry, playerIndex);
       for (const card of entry.cards_gained ?? []) {
         if (matches(card.id)) lastGainedFloor = floor;
       }

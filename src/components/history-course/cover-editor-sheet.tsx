@@ -289,6 +289,7 @@ export function CoverEditorSheet({
               <HistoryCourseCover
                 cover={draft}
                 character={character}
+                characters={run.players.map((player) => player.character)}
                 meta={meta}
               />
             </div>

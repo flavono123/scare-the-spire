@@ -18,14 +18,15 @@ export interface RunHighlights {
 }
 
 export function buildRunHighlights(run: ReplayRun, runId: string): RunHighlights {
-  const player = run.players[0];
-  if (!player) return { card: null, relic: null };
-
-  const finalCards = player.deck.filter((card) => typeof card.id === "string");
+  const finalCards = run.players.flatMap((player) =>
+    player.deck.filter((card) => typeof card.id === "string"),
+  );
   const acquiredCards = finalCards.filter((card) => (card.floor_added_to_deck ?? 1) > 1);
   const cardPool = acquiredCards.length > 0 ? acquiredCards : finalCards;
 
-  const finalRelics = player.relics.filter((relic) => typeof relic.id === "string");
+  const finalRelics = run.players.flatMap((player) =>
+    player.relics.filter((relic) => typeof relic.id === "string"),
+  );
   const acquiredRelics = finalRelics.filter((relic) => (relic.floor_added_to_deck ?? 0) > 0);
   const relicPool = acquiredRelics.length > 0 ? acquiredRelics : finalRelics;
 

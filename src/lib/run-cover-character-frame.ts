@@ -58,7 +58,10 @@ export function coverCharacterSelectBackgroundSrc(
   return SELECT_BACKGROUNDS[slug] ?? null;
 }
 
-export function coverCharacterArtStyle(character: string | undefined): CSSProperties {
+export function coverCharacterArtStyle(
+  character: string | undefined,
+  extraTranslateXPct = 0,
+): CSSProperties {
   const slug = characterSlugFromReplay(character);
   const frame = INACTIVE_FRAME[slug] ?? {
     scale: 1.4,
@@ -66,9 +69,38 @@ export function coverCharacterArtStyle(character: string | undefined): CSSProper
     translateY: "0%",
     transformOrigin: "55% 36%",
   };
+  const translateX =
+    extraTranslateXPct === 0
+      ? frame.translateX
+      : `calc(${frame.translateX} + ${extraTranslateXPct}%)`;
   return {
     objectPosition: FACE_FOCUS[slug] ?? "56% 35%",
-    transform: `translate3d(${frame.translateX}, ${frame.translateY}, 0) scale(${frame.scale})`,
+    transform: `translate3d(${translateX}, ${frame.translateY}, 0) scale(${frame.scale})`,
     transformOrigin: frame.transformOrigin,
+  };
+}
+
+/** Party character-art cover: TR→BL diagonal, equal split, front shifted left. */
+export function coverPartyCharacterSlotStyle(
+  character: string | undefined,
+  slotIndex: number,
+  partySize: number,
+): { wrapper: CSSProperties; image: CSSProperties } {
+  const n = Math.max(1, partySize);
+  const t = n === 1 ? 0 : slotIndex / (n - 1);
+  const widthPct = 100 / n + 42;
+  const extraLeft = (1 - t) * 16;
+  const leftPct = (slotIndex / n) * 100 - extraLeft;
+  const topPct = 10 - t * 24;
+  return {
+    wrapper: {
+      position: "absolute",
+      left: `${leftPct}%`,
+      top: `${topPct}%`,
+      width: `${widthPct}%`,
+      height: "120%",
+      zIndex: n - slotIndex,
+    },
+    image: coverCharacterArtStyle(character, -(1 - t) * 22),
   };
 }

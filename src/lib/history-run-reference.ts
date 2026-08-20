@@ -48,6 +48,7 @@ export function historyRunSnapshotFromReplay(
   return {
     title: null,
     character: run.players[0]?.character ?? "",
+    characters: run.players.map((player) => player.character),
     startTime: run.start_time ?? null,
     ascension: run.ascension,
     win: run.win,
@@ -73,6 +74,7 @@ export function historyRunSnapshotFromSummary(
   return {
     title: null,
     character: run.character,
+    characters: run.characters ?? [run.character],
     startTime: run.start_time,
     ascension: run.ascension,
     win: run.win,
@@ -193,6 +195,7 @@ export function historyRunSearchText(
     block.snapshot.seed,
     block.snapshot.build,
     block.snapshot.character,
+    ...(block.snapshot.characters ?? []),
   ].join(" ").toLowerCase();
 }
 

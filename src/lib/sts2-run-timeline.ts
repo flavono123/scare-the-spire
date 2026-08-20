@@ -71,10 +71,12 @@ export function countStackItems(entry: ReplayHistoryEntry): number {
   const relics = (entry.relic_choices ?? []).filter(
     (c) => c.picked && c.id,
   ).length;
+  const restSite = (entry.rest_site_choices ?? []).length;
   return (
     damage + heal + maxUp + maxDown +
     potionsUsed + potionsDiscarded + potionsGained +
-    gained + upgraded + enchanted + removed + transformed + skipped + relics
+    gained + upgraded + enchanted + removed + transformed + skipped + relics +
+    restSite
   );
 }
 

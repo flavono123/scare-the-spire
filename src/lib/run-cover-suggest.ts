@@ -107,20 +107,21 @@ function buildWeightedPool(
   run: ReplayRun,
   rarityById?: SuggestCoversInput["rarityById"],
 ): Weighted[] {
-  const player = run.players[0];
-  if (!player) return [];
+  if (run.players.length === 0) return [];
 
   const cards = new Map<string, { copies: number; floors: number[]; upgraded: boolean }>();
-  for (const card of player.deck) {
-    if (typeof card.id !== "string") continue;
-    const id = normalizeId(card.id);
-    const entry = cards.get(id) ?? { copies: 0, floors: [], upgraded: false };
-    entry.copies += 1;
-    if (typeof card.floor_added_to_deck === "number") {
-      entry.floors.push(card.floor_added_to_deck);
+  for (const player of run.players) {
+    for (const card of player.deck) {
+      if (typeof card.id !== "string") continue;
+      const id = normalizeId(card.id);
+      const entry = cards.get(id) ?? { copies: 0, floors: [], upgraded: false };
+      entry.copies += 1;
+      if (typeof card.floor_added_to_deck === "number") {
+        entry.floors.push(card.floor_added_to_deck);
+      }
+      if ((card.current_upgrade_level ?? 0) > 0) entry.upgraded = true;
+      cards.set(id, entry);
     }
-    if ((card.current_upgrade_level ?? 0) > 0) entry.upgraded = true;
-    cards.set(id, entry);
   }
 
   const pool: Weighted[] = [];
@@ -148,25 +149,34 @@ function buildWeightedPool(
     });
   }
 
-  for (const relic of player.relics) {
-    if (typeof relic.id !== "string") continue;
-    const id = normalizeId(relic.id);
-    let weight = 2;
-    if ((relic.floor_added_to_deck ?? 0) > 0) weight += 2;
-    const rarity = rarityById?.relic?.[id] ?? null;
-    if (rarity === "보스" || rarity === "희귀") weight += 3;
-    if (STARTER_RELICS.has(id) || rarity === "시작 유물") weight *= 0.4;
-    pool.push({ kind: "relic", id, weight, copies: 1, rarity });
+  const relics = new Map<string, Weighted>();
+  for (const player of run.players) {
+    for (const relic of player.relics) {
+      if (typeof relic.id !== "string") continue;
+      const id = normalizeId(relic.id);
+      let weight = 2;
+      if ((relic.floor_added_to_deck ?? 0) > 0) weight += 2;
+      const rarity = rarityById?.relic?.[id] ?? null;
+      if (rarity === "보스" || rarity === "희귀") weight += 3;
+      if (STARTER_RELICS.has(id) || rarity === "시작 유물") weight *= 0.4;
+      const current = relics.get(id);
+      if (!current || weight > current.weight) {
+        relics.set(id, { kind: "relic", id, weight, copies: 1, rarity });
+      }
+    }
   }
+  pool.push(...relics.values());
 
-  for (const potion of player.potions ?? []) {
-    if (typeof potion.id !== "string") continue;
-    const id = normalizeId(potion.id);
-    if (!id || id === "POTION_SLOT" || id === "NONE") continue;
-    let weight = 1;
-    const rarity = rarityById?.potion?.[id] ?? null;
-    if (rarity === "희귀") weight += 1;
-    pool.push({ kind: "potion", id, weight, copies: 1, rarity });
+  for (const player of run.players) {
+    for (const potion of player.potions ?? []) {
+      if (typeof potion.id !== "string") continue;
+      const id = normalizeId(potion.id);
+      if (!id || id === "POTION_SLOT" || id === "NONE") continue;
+      let weight = 1;
+      const rarity = rarityById?.potion?.[id] ?? null;
+      if (rarity === "희귀") weight += 1;
+      pool.push({ kind: "potion", id, weight, copies: 1, rarity });
+    }
   }
 
   return pool;
@@ -242,10 +252,15 @@ function phraseCandidates(
   run: ReplayRun,
   elements: CoverElement[],
 ): Array<{ id: string; text: string; weight: number }> {
-  const player = run.players[0];
   const floors = totalFloors(run);
-  const deckSize = player?.deck.length ?? 0;
-  const relicCount = player?.relics.length ?? 0;
+  const deckSize = run.players.reduce(
+    (max, player) => Math.max(max, player.deck.length),
+    0,
+  );
+  const relicCount = run.players.reduce(
+    (max, player) => Math.max(max, player.relics.length),
+    0,
+  );
   const e0 = elements[0];
   const e1 = elements[1];
   const e0Name = e0 ? displayName(e0.kind, e0.id) : "";

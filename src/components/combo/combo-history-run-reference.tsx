@@ -143,6 +143,7 @@ function ComboHistoryRunThumbnail({
         <HistoryCourseCover
           cover={cover}
           character={block.snapshot.character}
+          characters={block.snapshot.characters}
           size="compact"
           meta={{
             win: block.snapshot.win,
@@ -203,6 +204,7 @@ function HistoryRunDetailLink({
           <HistoryCourseCover
             cover={cover}
             character={block.snapshot.character}
+            characters={block.snapshot.characters}
             size="compact"
             meta={{
               win: block.snapshot.win,

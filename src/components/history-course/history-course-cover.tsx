@@ -26,6 +26,7 @@ import { resolveCoverPhrase } from "@/lib/run-cover-phrase";
 import {
   coverCharacterArtStyle,
   coverCharacterSelectBackgroundSrc,
+  coverPartyCharacterSlotStyle,
 } from "@/lib/run-cover-character-frame";
 import {
   characterSpireClass,
@@ -43,6 +44,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import type { CoverElement, CoverSpec } from "@/lib/run-cover-types";
 import { CARD_ASPECT_H, CARD_ASPECT_W } from "@/lib/sts2-card-style";
 import type { ReplayBadge } from "@/lib/sts2-run-replay";
+import { PARTY_COVER_BADGE_MAX } from "@/lib/history-party";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
 
@@ -59,6 +61,7 @@ export interface HistoryCourseCoverMeta {
 interface HistoryCourseCoverProps {
   cover: CoverSpec;
   character: string;
+  characters?: string[];
   meta?: HistoryCourseCoverMeta;
   className?: string;
   size?: "index" | "compact";
@@ -69,6 +72,7 @@ interface HistoryCourseCoverProps {
 export function HistoryCourseCover({
   cover,
   character,
+  characters,
   meta,
   className,
   size = "index",
@@ -78,14 +82,16 @@ export function HistoryCourseCover({
   const tables = useGameI18n();
   const phrase = resolveCoverPhrase(cover, meta, serviceLocale, tables);
   const cardCatalog = useCoverCardCatalog();
-  const phraseClass = characterSpireClass(character);
+  const party = characters && characters.length > 0 ? characters : [character];
+  const phraseClass = characterSpireClass(party[0] ?? character);
   const cardBg =
     cover.background.kind === "card-beta" ? cover.background : null;
   const cardArt = cardBg ? coverCardArtSrc(cardBg.cardId) : null;
-  const selectBg = !cardBg
+  const partyArt = !cardBg && party.length > 1;
+  const selectBg = !cardBg && !partyArt
     ? coverCharacterSelectBackgroundSrc(character)
     : null;
-  const charArtStyle = !cardBg ? coverCharacterArtStyle(character) : undefined;
+  const charArtStyle = !cardBg && !partyArt ? coverCharacterArtStyle(character) : undefined;
   // Official art first; beta only if official is missing (onError).
   const desiredFgSrc = cardArt
     ? cardArt.src
@@ -134,31 +140,35 @@ export function HistoryCourseCover({
       )}
 
       <div className="absolute inset-0 overflow-hidden">
-        <Image
-          src={
-            fgFailed
-              ? coverCharacterPortraitSrc(character)
-              : fgSrc
-          }
-          alt=""
-          fill
-          sizes={compact ? "160px" : "720px"}
-          className={cn(
-            "object-cover",
-            cardBg ? "object-center scale-110" : "will-change-transform",
-          )}
-          style={charArtStyle as CSSProperties | undefined}
-          onError={() => {
-            if (cardArt && fgSrc === cardArt.src && cardArt.beta !== cardArt.src) {
-              setFgSrc(cardArt.beta);
-              return;
+        {partyArt ? (
+          <PartyCharacterArts characters={party} compact={compact} />
+        ) : (
+          <Image
+            src={
+              fgFailed
+                ? coverCharacterPortraitSrc(character)
+                : fgSrc
             }
-            if (!cardBg && !fgFailed) {
-              setFgFailed(true);
-              setFgSrc(coverCharacterPortraitSrc(character));
-            }
-          }}
-        />
+            alt=""
+            fill
+            sizes={compact ? "160px" : "720px"}
+            className={cn(
+              "object-cover",
+              cardBg ? "object-center scale-110" : "will-change-transform",
+            )}
+            style={charArtStyle as CSSProperties | undefined}
+            onError={() => {
+              if (cardArt && fgSrc === cardArt.src && cardArt.beta !== cardArt.src) {
+                setFgSrc(cardArt.beta);
+                return;
+              }
+              if (!cardBg && !fgFailed) {
+                setFgFailed(true);
+                setFgSrc(coverCharacterPortraitSrc(character));
+              }
+            }}
+          />
+        )}
       </div>
 
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/35 to-transparent" />
@@ -261,6 +271,69 @@ export function HistoryCourseCover({
   );
 }
 
+function PartyCharacterArts({
+  characters,
+  compact,
+}: {
+  characters: string[];
+  compact: boolean;
+}) {
+  return (
+    <div className="absolute inset-0" data-testid="cover-party-arts">
+      {characters.map((character, index) => (
+        <CoverPartyCharacterSlot
+          key={`${character}-${index}`}
+          character={character}
+          index={index}
+          partySize={characters.length}
+          compact={compact}
+        />
+      ))}
+    </div>
+  );
+}
+
+function CoverPartyCharacterSlot({
+  character,
+  index,
+  partySize,
+  compact,
+}: {
+  character: string;
+  index: number;
+  partySize: number;
+  compact: boolean;
+}) {
+  const slot = coverPartyCharacterSlotStyle(character, index, partySize);
+  const desired = coverCharacterSelectSrc(character);
+  const [src, setSrc] = useState(desired);
+  const [failed, setFailed] = useState(false);
+  const [srcKey, setSrcKey] = useState(desired);
+  if (desired !== srcKey) {
+    setSrcKey(desired);
+    setSrc(desired);
+    setFailed(false);
+  }
+  return (
+    <div style={slot.wrapper}>
+      <Image
+        src={failed ? coverCharacterPortraitSrc(character) : src}
+        alt=""
+        fill
+        sizes={compact ? "160px" : "720px"}
+        className="object-cover will-change-transform"
+        style={slot.image}
+        onError={() => {
+          if (!failed) {
+            setFailed(true);
+            setSrc(coverCharacterPortraitSrc(character));
+          }
+        }}
+      />
+    </div>
+  );
+}
+
 const MIN_FULL_CARD_WIDTH = 72;
 
 /** Stack badges above seed by default; collapse to one row only when zone is short. */
@@ -326,7 +399,7 @@ function CoverBottomRightMeta({
             badges={meta.badges!}
             serviceLocale={serviceLocale}
             size="sm"
-            max={compact ? 3 : 5}
+            max={compact ? 3 : PARTY_COVER_BADGE_MAX}
             tipPlacement="below-left"
             className={cn(
               "justify-end",

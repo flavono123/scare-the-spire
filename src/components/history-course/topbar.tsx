@@ -11,7 +11,6 @@ import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
-  formatGameTemplate,
   gameUi,
   localizeGame,
 } from "@/lib/sts2-game-i18n";
@@ -31,6 +30,7 @@ import {
   type ReplayHistoryEntry,
   type ReplayRun,
 } from "@/lib/sts2-run-replay";
+import { PartyPortraitStack } from "@/components/history-course/party-portrait-stack";
 import { cn } from "@/lib/utils";
 import {
   type AncientInfo,
@@ -38,19 +38,6 @@ import {
   type RelicAtFloor,
   type TopbarState,
 } from "./topbar-state";
-
-const CHARACTER_ICON: Record<string, string> = {
-  "CHARACTER.IRONCLAD": "/images/sts2/characters/character_icon_ironclad.webp",
-  "CHARACTER.SILENT": "/images/sts2/characters/character_icon_silent.webp",
-  "CHARACTER.DEFECT": "/images/sts2/characters/character_icon_defect.webp",
-  "CHARACTER.NECROBINDER":
-    "/images/sts2/characters/character_icon_necrobinder.webp",
-  "CHARACTER.REGENT": "/images/sts2/characters/character_icon_regent.webp",
-};
-
-function characterLabel(id: string, tables: ReturnType<typeof useGameI18n>): string {
-  return localizeGame(tables, "characters", id) ?? id.replace(/^CHARACTER\./, "");
-}
 
 function bossLabel(id: string | null, tables: ReturnType<typeof useGameI18n>): string {
   if (!id) return "?";
@@ -140,6 +127,8 @@ interface TopBarProps {
   relicsById?: Record<string, CodexRelic>;
   onOpenDeck: () => void;
   onOpenInfo: () => void;
+  focusedPlayerIndex?: number;
+  onFocusPlayer?: (index: number) => void;
 }
 
 export function TopBar({
@@ -156,8 +145,9 @@ export function TopBar({
   relicsById,
   onOpenDeck,
   onOpenInfo,
+  focusedPlayerIndex = 0,
+  onFocusPlayer,
 }: TopBarProps) {
-  const character = run.players[0]?.character ?? "CHARACTER.IRONCLAD";
   const isFinalAct = act.actIndex === run.acts.length - 1;
   const showSecondBoss =
     isFinalAct && run.ascension >= 10 && state.bossInfo.secondBoss !== null;
@@ -173,9 +163,10 @@ export function TopBar({
         }}
       >
         <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
-          <CharacterChip
-            character={character}
-            ascension={run.ascension}
+          <PartyPortraitStack
+            run={run}
+            focusedIndex={focusedPlayerIndex}
+            onFocus={onFocusPlayer}
           />
           <HpChip hp={state.hp} maxHp={state.maxHp} />
           <GoldChip gold={state.gold} />
@@ -336,72 +327,6 @@ function Chip({
     <HoverTipWrap tip={tip} width={tipWidth} placement={tipPlacement}>
       {inner}
     </HoverTipWrap>
-  );
-}
-
-function CharacterChip({
-  character,
-  ascension,
-}: {
-  character: string;
-  ascension: number;
-}) {
-  const tables = useGameI18n();
-  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
-  const iconSrc = CHARACTER_ICON[character];
-  const label = characterLabel(character, tables);
-  const ascensionLabel = formatGameTemplate(
-    gameUi(tables, "ascension", "Ascension {ascension}"),
-    { ascension },
-  );
-  return (
-    <span
-      className="relative inline-block h-12 w-12 -translate-y-px"
-      style={{
-        backgroundImage: "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
-        backgroundSize: "100% 100%",
-        backgroundRepeat: "no-repeat",
-      }}
-      aria-label={ascension > 0 ? `${label} · ${ascensionLabel}` : label}
-    >
-      {iconSrc && (
-        <span className="absolute inset-1 overflow-hidden">
-          <Image
-            src={iconSrc}
-            alt={label ?? character}
-            fill
-            sizes="44px"
-            className="object-contain"
-          />
-        </span>
-      )}
-      {ascension > 0 && <AscensionBadge ascension={ascension} />}
-    </span>
-  );
-}
-
-function AscensionBadge({ ascension }: { ascension: number }) {
-  const tables = useGameI18n();
-  return (
-    <span
-      className="pointer-events-none absolute -bottom-0.5 -right-1 flex h-7 w-7 items-end justify-center"
-      aria-label={formatGameTemplate(
-        gameUi(tables, "ascension", "Ascension {ascension}"),
-        { ascension },
-      )}
-    >
-      <Image
-        src="/images/sts2/ui/topbar/top_bar_ascension.png"
-        alt=""
-        fill
-        sizes="28px"
-        className="object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
-        unoptimized
-      />
-      <span className="topbar-num relative z-10 mb-0.5 text-[13px] leading-none">
-        {ascension}
-      </span>
-    </span>
   );
 }
 

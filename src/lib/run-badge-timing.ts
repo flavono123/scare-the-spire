@@ -1,8 +1,9 @@
-import type {
-  ReplayBadge,
-  ReplayBadgeRarity,
-  ReplayHistoryEntry,
-  ReplayRun,
+import {
+  type ReplayBadge,
+  type ReplayBadgeRarity,
+  type ReplayHistoryEntry,
+  type ReplayRun,
+  historyEntryForPlayer,
 } from "@/lib/sts2-run-replay";
 
 const ELITE_THRESHOLDS = { bronze: 3, silver: 6, gold: 9 } as const;
@@ -15,30 +16,35 @@ export function visibleRunBadgesAtFloor(
   run: ReplayRun,
   currentFloor: number,
   ended: boolean,
+  playerIndex = 0,
 ): ReplayBadge[] {
-  const badges = run.players[0]?.badges ?? [];
+  const badges = run.players[playerIndex]?.badges ?? [];
   if (ended) return badges;
 
   return badges.filter((badge) => {
-    const floor = badgeAvailableFloor(run, badge);
+    const floor = badgeAvailableFloor(run, badge, playerIndex);
     return floor !== null && floor <= currentFloor;
   });
 }
 
-function badgeAvailableFloor(run: ReplayRun, badge: ReplayBadge): number | null {
+function badgeAvailableFloor(
+  run: ReplayRun,
+  badge: ReplayBadge,
+  playerIndex: number,
+): number | null {
   switch (normalizeId(badge.id)) {
     case "ELITE":
       return floorOfNthElite(run, thresholdForRarity(badge.rarity, ELITE_THRESHOLDS));
     case "PERFECT":
-      return floorOfNthPerfectBoss(run, thresholdForRarity(badge.rarity, PERFECT_THRESHOLDS));
+      return floorOfNthPerfectBoss(run, thresholdForRarity(badge.rarity, PERFECT_THRESHOLDS), playerIndex);
     case "MYSTERY_MACHINE":
       return floorOfNthUnknown(run, MYSTERY_MACHINE_EVENTS);
     case "KACHING":
-      return floorOfCumulativeShopSpend(run, KACHING_GOLD_SPENT);
+      return floorOfCumulativeShopSpend(run, KACHING_GOLD_SPENT, playerIndex);
     case "ILIKESHINY":
-      return floorOfNthRelic(run, SHINY_RELICS);
+      return floorOfNthRelic(run, SHINY_RELICS, playerIndex);
     case "DOUBLE_SNECKO":
-      return floorOfAllRelics(run, ["SNECKO_EYE", "FAKE_SNECKO_EYE"]);
+      return floorOfAllRelics(run, ["SNECKO_EYE", "FAKE_SNECKO_EYE"], playerIndex);
     default:
       return null;
   }
@@ -57,7 +63,10 @@ function normalizeId(id: string): string {
   return id.replace(/^[A-Z]+\./, "").toUpperCase();
 }
 
-function flattenedHistory(run: ReplayRun): Array<{
+function flattenedHistory(
+  run: ReplayRun,
+  playerIndex = 0,
+): Array<{
   entry: ReplayHistoryEntry;
   floor: number;
   isFinalEntry: boolean;
@@ -73,9 +82,9 @@ function flattenedHistory(run: ReplayRun): Array<{
   }> = [];
   let floor = 1;
   for (const act of run.map_point_history) {
-    for (const entry of act) {
+    for (const raw of act) {
       result.push({
-        entry,
+        entry: historyEntryForPlayer(raw, playerIndex),
         floor,
         isFinalEntry: floor === totalFloors,
       });
@@ -102,9 +111,13 @@ function floorOfNthElite(run: ReplayRun, threshold: number): number | null {
   return null;
 }
 
-function floorOfNthPerfectBoss(run: ReplayRun, threshold: number): number | null {
+function floorOfNthPerfectBoss(
+  run: ReplayRun,
+  threshold: number,
+  playerIndex: number,
+): number | null {
   let count = 0;
-  for (const { entry, floor, isFinalEntry } of flattenedHistory(run)) {
+  for (const { entry, floor, isFinalEntry } of flattenedHistory(run, playerIndex)) {
     const isBoss = entry.map_point_type === "boss" || entryHasRoom(entry, "Boss");
     if (!isBoss) continue;
     if (!run.win && isFinalEntry) continue;
@@ -125,9 +138,13 @@ function floorOfNthUnknown(run: ReplayRun, threshold: number): number | null {
   return null;
 }
 
-function floorOfCumulativeShopSpend(run: ReplayRun, threshold: number): number | null {
+function floorOfCumulativeShopSpend(
+  run: ReplayRun,
+  threshold: number,
+  playerIndex: number,
+): number | null {
   let total = 0;
-  for (const { entry, floor } of flattenedHistory(run)) {
+  for (const { entry, floor } of flattenedHistory(run, playerIndex)) {
     const isShop = entry.map_point_type === "shop" || entryHasRoom(entry, "Shop");
     if (!isShop) continue;
     total += entry.gold_spent ?? 0;
@@ -136,8 +153,12 @@ function floorOfCumulativeShopSpend(run: ReplayRun, threshold: number): number |
   return null;
 }
 
-function floorOfNthRelic(run: ReplayRun, threshold: number): number | null {
-  const player = run.players[0];
+function floorOfNthRelic(
+  run: ReplayRun,
+  threshold: number,
+  playerIndex: number,
+): number | null {
+  const player = run.players[playerIndex];
   if (!player || player.relics.length < threshold) return null;
   const floors = player.relics
     .map((relic) => relic.floor_added_to_deck ?? 0)
@@ -145,8 +166,12 @@ function floorOfNthRelic(run: ReplayRun, threshold: number): number | null {
   return Math.max(1, floors[threshold - 1] ?? 1);
 }
 
-function floorOfAllRelics(run: ReplayRun, relicIds: string[]): number | null {
-  const player = run.players[0];
+function floorOfAllRelics(
+  run: ReplayRun,
+  relicIds: string[],
+  playerIndex: number,
+): number | null {
+  const player = run.players[playerIndex];
   if (!player) return null;
   const floors = relicIds.map((targetId) => {
     const relic = player.relics.find((candidate) => normalizeId(candidate.id) === targetId);

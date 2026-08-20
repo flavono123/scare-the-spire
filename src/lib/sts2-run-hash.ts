@@ -39,7 +39,7 @@ function runIdentityKeyV1(run: ReplayRun): string {
     String(run.start_time ?? 0),
     String(run.run_time ?? 0),
     String(run.acts.length),
-    run.players[0]?.character ?? "",
+    run.players.map((player) => player.character).join(",") || "",
   ].join("|");
 }
 

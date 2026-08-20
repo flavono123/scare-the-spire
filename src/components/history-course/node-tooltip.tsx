@@ -20,6 +20,7 @@ import {
   TINKER_RIDER_CHOICE_LABELS_EN,
 } from "@/lib/tinker-time";
 import { serviceMessages } from "@/messages/service";
+import { restSiteChoiceLabel } from "@/lib/history-party";
 
 // Hover tip used both on the replay map and inside the run summary's act
 // rows. Lifted out of run-replay-poc.tsx so the summary panel can reuse it
@@ -40,7 +41,8 @@ export function NodeTooltip({
   position = "right",
 }: NodeTooltipProps) {
   const tables = useGameI18n();
-  const localeIsKor = useGameLocale() === "kor";
+  const gameLocale = useGameLocale();
+  const localeIsKor = gameLocale === "kor";
   const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   const floor = act.baseFloor + stepIndex;
   const room = entry.rooms[0];
@@ -182,6 +184,30 @@ export function NodeTooltip({
           {turns > 0 && (
             <li>{playback.turns.replace("{count}", String(turns))}</li>
           )}
+          {(entry.rest_site_choices ?? []).map((choice) => (
+            <li key={`rest-${choice}`}>
+              {restSiteChoiceLabel(choice, gameLocale)}
+            </li>
+          ))}
+          {(entry.event_choices ?? []).map((choice, i) => (
+            <li key={`ev-${choice.id}-${i}`}>
+              {localizeGame(tables, "events", choice.id) ?? choice.id}
+            </li>
+          ))}
+          {(entry.ancient_choice ?? [])
+            .filter((choice) => choice.picked)
+            .map((choice, i) => (
+              <li key={`anc-${choice.id}-${i}`}>
+                {localizeGame(tables, "events", choice.id) ??
+                  localizeGame(tables, "ancients", choice.id) ??
+                  choice.id}
+              </li>
+            ))}
+          {(entry.bought_relics ?? [])
+            .filter((id) => !relicPicked.includes(id))
+            .map((id) => (
+              <li key={`br-${id}`}>⊡ {nameOf("relics", id)}</li>
+            ))}
           {entry.map_point_type === "ancient" &&
             (entry.relic_choices ?? []).map((c) => (
               <li key={`ac-${c.id}`}>

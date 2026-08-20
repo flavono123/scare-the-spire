@@ -43,6 +43,8 @@ export interface YouTubeBlock {
 export interface HistoryRunReferenceSnapshot {
   title?: string | null;
   character: string;
+  /** Party order; omitted on older Combo snapshots. */
+  characters?: string[];
   startTime: number | null;
   ascension: number;
   win: boolean;

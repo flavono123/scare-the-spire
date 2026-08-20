@@ -6,6 +6,7 @@ import { buildRunHighlights, type RunHighlightResource } from "./run-highlights"
 import { pickAlternatingCover, suggestDefaultCover } from "./run-cover-suggest";
 import { isCoverSpec, type CoverSpec } from "./run-cover-types";
 import { parseReplayRun, type ReplayBadge, type ReplayRun } from "./sts2-run-replay";
+import { mergePartyBadges, partyCharacters } from "./history-party";
 
 export interface DonatedRun {
   id: string;
@@ -31,6 +32,8 @@ export interface DonatedRunSummary {
   seed: string;
   build: string;
   character: string;
+  /** Present when listing still has raw and can parse the party. */
+  characters?: string[];
   ascension: number;
   win: boolean;
   start_time: number | null;
@@ -72,7 +75,7 @@ function parsedMetaFromRun(run: ReplayRun, runId: string) {
     run_time: run.run_time ?? null,
     acts_count: run.acts.length,
     total_floors: totalFloorsFromRun(run),
-    badges: run.players[0]?.badges ?? [],
+    badges: mergePartyBadges(run),
     highlight_card: highlights.card,
     highlight_relic: highlights.relic,
     note_blocks: null,
@@ -136,7 +139,7 @@ function normalizeRunRow(row: RunRow, runId: string): DonatedRun {
     start_time: row.start_time ?? parsedRun?.start_time ?? null,
     run_time: row.run_time ?? parsedRun?.run_time ?? null,
     acts_count: row.acts_count ?? parsedRun?.acts.length ?? 0,
-    badges: row.badges ?? parsedRun?.players[0]?.badges ?? [],
+    badges: parsedRun ? mergePartyBadges(parsedRun) : (row.badges ?? []),
     highlight_card: row.highlight_card ?? highlights?.card ?? null,
     highlight_relic: row.highlight_relic ?? highlights?.relic ?? null,
     note_blocks: row.note_blocks ?? null,
@@ -151,6 +154,7 @@ function normalizeRunSummaryRow(row: RunRow): DonatedRunSummary {
   const parsedRun = parseRunSafely(row.raw);
   return {
     ...normalized,
+    characters: parsedRun ? partyCharacters(parsedRun) : [normalized.character],
     total_floors: row.total_floors ?? (parsedRun ? totalFloorsFromRun(parsedRun) : 0),
     raw: row.raw ?? null,
     donor_user_id: row.donor_user_id ?? null,

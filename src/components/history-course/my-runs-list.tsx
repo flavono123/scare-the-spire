@@ -16,6 +16,7 @@ import type { CoverSpec } from "@/lib/run-cover-types";
 import { deleteRun, listOwnRuns, updateRunCoverSpec } from "@/lib/run-store";
 import { isBuildSupported, MIN_SUPPORTED_BUILD } from "@/lib/sts2-build-version";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
+import { mergePartyBadges } from "@/lib/history-party";
 import { supabaseEnabled } from "@/lib/supabase";
 import { RunCard, runCardPropsFromReplay } from "./run-card";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -269,7 +270,7 @@ export function MyRunsList({
             build: editing.run.build_id,
             seed: editing.run.seed,
             runTimeSeconds: editing.run.run_time ?? null,
-            badges: editing.run.players[0]?.badges ?? [],
+            badges: mergePartyBadges(editing.run),
           }}
           initialCover={editing.coverSpec}
           onSave={handleSaveCover}
@@ -286,7 +287,7 @@ function filterLocalEntries(entries: Entry[], query: string): Entry[] {
     return [
       entry.runId,
       entry.run.seed,
-      entry.run.players[0]?.character,
+      entry.run.players.map((player) => player.character).join(" "),
       entry.run.build_id,
       entry.coverSpec.phrase,
       ...entry.coverSpec.elements.map((el) => el.id),

@@ -8,6 +8,7 @@ import { ensureCoverSpec } from "@/lib/run-cover-suggest";
 import type { CoverSpec } from "@/lib/run-cover-types";
 import { isBuildSupported } from "@/lib/sts2-build-version";
 import type { ReplayBadge, ReplayRun } from "@/lib/sts2-run-replay";
+import { mergePartyBadges, partyCharacters } from "@/lib/history-party";
 import { cn } from "@/lib/utils";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
@@ -21,6 +22,7 @@ function totalFloorsReached(run: ReplayRun): number {
 export interface RunCardProps {
   runId: string;
   character: string;
+  characters?: string[];
   ascension: number;
   build: string;
   seed: string;
@@ -48,6 +50,7 @@ export function runCardPropsFromReplay(
   return {
     runId,
     character: run.players[0]?.character ?? "",
+    characters: partyCharacters(run),
     ascension: run.ascension,
     build: run.build_id,
     seed: run.seed,
@@ -55,13 +58,14 @@ export function runCardPropsFromReplay(
     totalFloors: totalFloorsReached(run),
     runTimeSeconds: run.run_time ?? null,
     startTimeUnix: run.start_time ?? null,
-    badges: run.players[0]?.badges ?? [],
+    badges: mergePartyBadges(run),
     coverSpec: ensureCoverSpec(runId, run, coverSpec),
   };
 }
 
 export function RunCard({
   character,
+  characters,
   ascension,
   build,
   seed,
@@ -202,6 +206,7 @@ export function RunCard({
           <HistoryCourseCover
             cover={coverSpec}
             character={character}
+            characters={characters}
             meta={{
               win,
               totalFloors,

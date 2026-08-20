@@ -170,6 +170,7 @@ export function ComboHistoryRunPicker({
             total_floors: entry.block.snapshot.totalFloors,
             acts_count: entry.run.acts.length,
             badges: entry.run.players[0]?.badges ?? [],
+            characters: entry.block.snapshot.characters,
             highlight_card: null,
             highlight_relic: null,
             note_blocks: null,
@@ -359,6 +360,7 @@ function RunSection({
                     <HistoryCourseCover
                       cover={cover}
                       character={block.snapshot.character}
+                      characters={block.snapshot.characters}
                       size="compact"
                       meta={{
                         win: block.snapshot.win,

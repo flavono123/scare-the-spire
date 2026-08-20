@@ -146,6 +146,7 @@ export function DonatedRunsSection({ refreshKey = 0, query = "" }: Props) {
                 <RunCard
                   runId={entry.id}
                   character={entry.character}
+                  characters={entry.characters}
                   ascension={entry.ascension}
                   build={entry.build}
                   seed={entry.seed}

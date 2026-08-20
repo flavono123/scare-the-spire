@@ -3,6 +3,7 @@ import {
   type ReplayCardRef,
   type ReplayHistoryEntry,
   type ReplayRun,
+  historyEntryForPlayer,
 } from "@/lib/sts2-run-replay";
 
 function cardGainsOnEntry(entry: ReplayHistoryEntry): ReplayCardRef[] {
@@ -241,14 +242,15 @@ function findEnchantIndex(
   return any;
 }
 
-function leftoverStarterCounts(run: ReplayRun): Map<string, number> {
-  const player = run.players[0];
+function leftoverStarterCounts(run: ReplayRun, playerIndex: number): Map<string, number> {
+  const player = run.players[playerIndex];
   const starter = new Map<string, number>();
   if (!player) return starter;
 
   const gainedRemaining = new Map<string, number>();
   for (const act of run.map_point_history) {
-    for (const entry of act) {
+    for (const raw of act) {
+      const entry = historyEntryForPlayer(raw, playerIndex);
       for (const card of cardGainsOnEntry(entry)) {
         if (!card.id) continue;
         gainedRemaining.set(card.id, (gainedRemaining.get(card.id) ?? 0) + 1);
@@ -269,7 +271,8 @@ function leftoverStarterCounts(run: ReplayRun): Map<string, number> {
 
   const seenGains = new Map<string, number>();
   for (const act of run.map_point_history) {
-    for (const entry of act) {
+    for (const raw of act) {
+      const entry = historyEntryForPlayer(raw, playerIndex);
       for (const card of cardGainsOnEntry(entry)) {
         if (!card.id) continue;
         seenGains.set(card.id, (seenGains.get(card.id) ?? 0) + 1);
@@ -315,8 +318,9 @@ function padMissingSnapshotCopies(
   copies: HistoryDeckCopy[],
   run: ReplayRun,
   currentFloor: number,
+  playerIndex: number,
 ): void {
-  const player = run.players[0];
+  const player = run.players[playerIndex];
   if (!player) return;
   const remaining = copies.map((_, index) => index);
   for (const card of player.deck) {
@@ -340,9 +344,10 @@ export function buildTopbarState(
   analysis: { run: ReplayRun; acts: ReplayActAnalysis[] },
   actIndex: number,
   step: number,
+  playerIndex = 0,
 ): TopbarState {
   const { run, acts } = analysis;
-  const player = run.players[0];
+  const player = run.players[playerIndex] ?? run.players[0];
   const act = acts[actIndex];
   if (!player || !act) {
     return {
@@ -371,15 +376,19 @@ export function buildTopbarState(
 
   const safeStep = Math.max(1, Math.min(step, act.history.length));
   const currentFloor = act.baseFloor + safeStep - 1;
-  const currentEntry = act.history[safeStep - 1] ?? null;
+  const currentEntryRaw = act.history[safeStep - 1] ?? null;
+  const currentEntry = currentEntryRaw
+    ? historyEntryForPlayer(currentEntryRaw, playerIndex)
+    : null;
 
   let hp: number | null = null;
   let maxHp: number | null = null;
   let gold: number | null = null;
   let floor = 1;
   outer: for (const pastAct of run.map_point_history) {
-    for (const entry of pastAct) {
+    for (const raw of pastAct) {
       if (floor > currentFloor) break outer;
+      const entry = historyEntryForPlayer(raw, playerIndex);
       if (typeof entry.current_hp === "number") hp = entry.current_hp;
       if (typeof entry.max_hp === "number") maxHp = entry.max_hp;
       if (typeof entry.current_gold === "number") gold = entry.current_gold;
@@ -413,7 +422,7 @@ export function buildTopbarState(
   ) {
     potionSlots = player.maxPotionSlotCount;
   }
-  const potions = buildPotionSlotsAtFloor(run, currentFloor, potionSlots);
+  const potions = buildPotionSlotsAtFloor(run, currentFloor, potionSlots, playerIndex);
 
   const bossStepIndices = act.history
     .map((entry, i) => (entry.map_point_type === "boss" ? i : -1))
@@ -442,7 +451,7 @@ export function buildTopbarState(
     ancientInfo = { spriteId, active: onIt, passed: past };
   }
 
-  const deckCopies = buildDeckCopiesAtFloor(run, currentFloor);
+  const deckCopies = buildDeckCopiesAtFloor(run, currentFloor, playerIndex);
   const deck = groupHistoryDeck(deckCopies);
   const deckCount = deckCopies.length;
 
@@ -477,8 +486,12 @@ function addPotionToSlots(slots: (string | null)[], id: string): void {
   slots[idx] = id;
 }
 
-function exactFinalPotionSlots(run: ReplayRun, potionSlots: number): (string | null)[] | null {
-  const player = run.players[0];
+function exactFinalPotionSlots(
+  run: ReplayRun,
+  potionSlots: number,
+  playerIndex: number,
+): (string | null)[] | null {
+  const player = run.players[playerIndex];
   if (!player || player.potions.length === 0) return null;
   const slots = Array.from({ length: potionSlots }, () => null as string | null);
   for (const potion of player.potions) {
@@ -497,12 +510,14 @@ function buildPotionSlotsAtFloor(
   run: ReplayRun,
   currentFloor: number,
   potionSlots: number,
+  playerIndex: number,
 ): (string | null)[] {
   const slots = Array.from({ length: potionSlots }, () => null as string | null);
   let floor = 1;
   outer: for (const act of run.map_point_history) {
-    for (const entry of act) {
+    for (const raw of act) {
       if (floor > currentFloor) break outer;
+      const entry = historyEntryForPlayer(raw, playerIndex);
       const remainingRemovals: string[] = [];
       for (const id of [...(entry.potion_used ?? []), ...(entry.potion_discarded ?? [])]) {
         if (!removePotionFromSlots(slots, id)) remainingRemovals.push(id);
@@ -518,7 +533,9 @@ function buildPotionSlotsAtFloor(
   }
 
   const finalFloor = run.map_point_history.reduce((sum, history) => sum + history.length, 0);
-  return currentFloor >= finalFloor ? (exactFinalPotionSlots(run, potionSlots) ?? slots) : slots;
+  return currentFloor >= finalFloor
+    ? (exactFinalPotionSlots(run, potionSlots, playerIndex) ?? slots)
+    : slots;
 }
 
 export function groupHistoryDeck(copies: HistoryDeckCopy[]): HistoryDeckGroup[] {
@@ -547,19 +564,21 @@ export function groupHistoryDeck(copies: HistoryDeckCopy[]): HistoryDeckGroup[] 
 export function buildDeckCopiesAtFloor(
   run: ReplayRun,
   currentFloor: number,
+  playerIndex = 0,
 ): HistoryDeckCopy[] {
-  const player = run.players[0];
+  const player = run.players[playerIndex];
   if (!player) return [];
 
   const copies = emitStartingCopies(
     player.character,
-    leftoverStarterCounts(run),
+    leftoverStarterCounts(run, playerIndex),
   );
 
   let floor = 1;
   outer: for (const act of run.map_point_history) {
-    for (const entry of act) {
+    for (const raw of act) {
       if (floor > currentFloor) break outer;
+      const entry = historyEntryForPlayer(raw, playerIndex);
       for (const card of cardGainsOnEntry(entry)) {
         const copy = copyFromRef(card, floor);
         if (copy) copies.push(copy);
@@ -587,15 +606,16 @@ export function buildDeckCopiesAtFloor(
     }
   }
 
-  padMissingSnapshotCopies(copies, run, currentFloor);
+  padMissingSnapshotCopies(copies, run, currentFloor, playerIndex);
   return copies;
 }
 
 export function buildDeckAtFloor(
   run: ReplayRun,
   currentFloor: number,
+  playerIndex = 0,
 ): HistoryDeckGroup[] {
-  return groupHistoryDeck(buildDeckCopiesAtFloor(run, currentFloor));
+  return groupHistoryDeck(buildDeckCopiesAtFloor(run, currentFloor, playerIndex));
 }
 
 export function collectRelevantCardIds(run: ReplayRun): string[] {
@@ -606,17 +626,22 @@ export function collectRelevantCardIds(run: ReplayRun): string[] {
     }
   }
   for (const act of run.map_point_history) {
-    for (const entry of act) {
-      for (const c of cardGainsOnEntry(entry)) if (c.id) ids.add(c.id);
-      for (const c of entry.cards_lost ?? []) if (c.id) ids.add(c.id);
-      for (const c of entry.cards_removed ?? []) if (c.id) ids.add(c.id);
-      for (const row of entry.cards_transformed ?? []) {
-        if (row.original.id) ids.add(row.original.id);
-        if (row.final.id) ids.add(row.final.id);
+    for (const raw of act) {
+      const entries = raw.player_stats?.length
+        ? raw.player_stats.map((_, index) => historyEntryForPlayer(raw, index))
+        : [raw];
+      for (const entry of entries) {
+        for (const c of cardGainsOnEntry(entry)) if (c.id) ids.add(c.id);
+        for (const c of entry.cards_lost ?? []) if (c.id) ids.add(c.id);
+        for (const c of entry.cards_removed ?? []) if (c.id) ids.add(c.id);
+        for (const row of entry.cards_transformed ?? []) {
+          if (row.original.id) ids.add(row.original.id);
+          if (row.final.id) ids.add(row.final.id);
+        }
+        for (const c of entry.card_choices ?? []) if (c.id) ids.add(c.id);
+        for (const id of entry.upgraded_cards ?? []) if (id) ids.add(id);
+        for (const c of entry.cards_enchanted ?? []) if (c.cardId) ids.add(c.cardId);
       }
-      for (const c of entry.card_choices ?? []) if (c.id) ids.add(c.id);
-      for (const id of entry.upgraded_cards ?? []) if (id) ids.add(id);
-      for (const c of entry.cards_enchanted ?? []) if (c.cardId) ids.add(c.cardId);
     }
   }
   return Array.from(ids);

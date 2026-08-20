@@ -1,9 +1,12 @@
 import { readFileSync, readdirSync } from "node:fs";
+import { homedir } from "node:os";
 import { join } from "node:path";
 import { analyzeReplayRun, parseReplayRun } from "../src/lib/sts2-run-replay";
 
-const RUN_DIR =
-  "/Users/hansuk.hong/Library/Application Support/SlayTheSpire2/steam/76561199168753671/profile1/saves/history";
+const RUN_DIR = join(
+  homedir(),
+  "Library/Application Support/SlayTheSpire2/steam/76561199168753671/profile1/saves/history",
+);
 
 function parseBuild(b: string): [number, number, number] | null {
   const m = /^v?(\d+)\.(\d+)(?:\.(\d+))?/.exec(b);

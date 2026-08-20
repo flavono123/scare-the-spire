@@ -19,6 +19,7 @@ import { TopBar } from "@/components/history-course/topbar";
 import { buildTopbarState } from "@/components/history-course/topbar-state";
 import type { CodexCard, CodexPotion, CodexRelic } from "@/lib/codex-types";
 import { localizeGame, gameUi, formatGameTemplate, type GameI18nTables } from "@/lib/sts2-game-i18n";
+import type { GameLocale } from "@/lib/i18n";
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -27,9 +28,18 @@ import { lookupHistoryCard } from "@/lib/history-card-lookup";
 import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
 import {
   analyzeReplayRun,
+  historyEntryForPlayer,
   type ReplayHistoryEntry,
   type ReplayRun,
 } from "@/lib/sts2-run-replay";
+import {
+  characterIconOutlineSrc,
+  characterIconSrc,
+  characterMapMarkerSrc,
+  clampPlayerIndex,
+  focusedMapAct,
+  restSiteChoiceLabel,
+} from "@/lib/history-party";
 import {
   getMadScienceVariantPartsFromId,
   MAD_SCIENCE_CARD_ID,
@@ -75,40 +85,6 @@ function actIntroLabel(tables: GameI18nTables, index: number) {
     gameUi(tables, "actNumber", "Act {actNumber}"),
     { actNumber: index + 1 },
   );
-}
-
-const KNOWN_CHARACTER_MARKERS = new Set([
-  "ironclad",
-  "silent",
-  "defect",
-  "necrobinder",
-  "regent",
-]);
-
-function characterMarkerSrc(character: string): string {
-  // Playback bar slider thumb — game's map_marker_<character>.png sprite,
-  // a stylised footstep icon designed to sit on a path.
-  const slug = character.replace(/^CHARACTER\./, "").toLowerCase();
-  const safe = KNOWN_CHARACTER_MARKERS.has(slug) ? slug : "ironclad";
-  return `/images/sts2/map/markers/map_marker_${safe}.png`;
-}
-
-function characterIconSrc(character: string): string {
-  // On-map character sprite at the current node — matches the topbar's
-  // character chip (`character_icon_<x>.webp`) so the player sees the
-  // same portrait in two places.
-  const slug = character.replace(/^CHARACTER\./, "").toLowerCase();
-  const safe = KNOWN_CHARACTER_MARKERS.has(slug) ? slug : "ironclad";
-  return `/images/sts2/characters/character_icon_${safe}.webp`;
-}
-
-function characterIconOutlineSrc(character: string): string {
-  // Outline silhouette companion to character_icon_<x>.webp. Layered
-  // beneath the portrait on the map so the marker reads against busy
-  // backgrounds without needing a separate disc/ring frame.
-  const slug = character.replace(/^CHARACTER\./, "").toLowerCase();
-  const safe = KNOWN_CHARACTER_MARKERS.has(slug) ? slug : "ironclad";
-  return `/images/sts2/characters/character_icon_${safe}_outline.webp`;
 }
 
 function bossKeyFromEntry(entry: ReplayHistoryEntry): string | null {
@@ -306,11 +282,12 @@ function sanitizeNeowEntry(
   entry: ReplayHistoryEntry,
   run: ReplayRun,
   cardsById: Record<string, CodexCard>,
+  playerIndex = 0,
 ): ReplayHistoryEntry {
   const isNeow = (entry.rooms ?? []).some((r) => r.model_id === "EVENT.NEOW");
   if (!isNeow) return entry;
 
-  const player = run.players[0];
+  const player = run.players[playerIndex];
 
   // Drop class starter cards (rarity="기본" — STRIKE_X / DEFEND_X). Every
   // other card stays — Curse (DECAY/REGRET as Neow's Bones penalty),
@@ -420,6 +397,7 @@ function buildStackItems(
   tables: GameI18nTables,
   verbs: Record<NodeStackItemKind, string>,
   localeIsKor: boolean,
+  gameLocale: GameLocale,
 ): NodeStackItem[] {
   const items: NodeStackItem[] = [];
   const gainedIds = new Set<string>();
@@ -668,6 +646,27 @@ function buildStackItems(
     });
   }
 
+  const restSiteIcon = (
+    <Image
+      src="/images/sts2/run-history/rest_site.png"
+      alt=""
+      width={32}
+      height={32}
+      className="h-8 w-8 shrink-0 object-contain"
+      unoptimized
+    />
+  );
+  for (const choice of entry.rest_site_choices ?? []) {
+    items.push({
+      key: `s${step}-rest-${items.length}-${choice}`,
+      kind: "card-gained",
+      icon: restSiteIcon,
+      label: restSiteChoiceLabel(choice, gameLocale),
+      verb: verbs["card-gained"],
+      postEffect: { kind: "fade" },
+    });
+  }
+
   return items;
 }
 
@@ -675,12 +674,28 @@ function buildPreviousTopbarState(
   analysis: Analysis,
   actIndex: number,
   step: number,
+  playerIndex = 0,
 ): ReturnType<typeof buildTopbarState> | null {
-  if (step > 1) return buildTopbarState(analysis, actIndex, step - 1);
+  if (step > 1) return buildTopbarState(analysis, actIndex, step - 1, playerIndex);
   if (actIndex <= 0) return null;
   const previousAct = analysis.acts[actIndex - 1];
   if (!previousAct || previousAct.history.length === 0) return null;
-  return buildTopbarState(analysis, actIndex - 1, previousAct.history.length);
+  return buildTopbarState(analysis, actIndex - 1, previousAct.history.length, playerIndex);
+}
+
+function focusedNodeEntry(
+  entry: ReplayHistoryEntry | undefined,
+  run: ReplayRun,
+  cardsById: Record<string, CodexCard>,
+  playerIndex: number,
+): ReplayHistoryEntry | undefined {
+  if (!entry) return entry;
+  return sanitizeNeowEntry(
+    historyEntryForPlayer(entry, playerIndex),
+    run,
+    cardsById,
+    playerIndex,
+  );
 }
 
 export function HistoryCourseShell({
@@ -724,6 +739,7 @@ export function HistoryCourseShell({
   const [playing, setPlaying] = useState(true);
   const [rate, setRate] = useState<Rate>(2);
   const [deckOpen, setDeckOpen] = useState(false);
+  const [focusedPlayerIndex, setFocusedPlayerIndex] = useState(0);
   // Run-summary panel — opens via the topbar cog (mid-run partial view)
   // and auto-opens at end-of-run. Both paths can be dismissed by the
   // codex-style back button so the user can keep scrubbing.
@@ -765,13 +781,20 @@ export function HistoryCourseShell({
     () => (actTimeline ? stepFromElapsed(actTimeline, actLocalMs) : 1),
     [actTimeline, actLocalMs],
   );
+  const playerIndex = clampPlayerIndex(run, focusedPlayerIndex);
+  const onFocusPlayer = useCallback(
+    (index: number) => {
+      setFocusedPlayerIndex(clampPlayerIndex(run, index));
+    },
+    [run],
+  );
   const topbarState = useMemo(
-    () => buildTopbarState(analysis, actIndex, step),
-    [analysis, actIndex, step],
+    () => buildTopbarState(analysis, actIndex, step, playerIndex),
+    [analysis, actIndex, step, playerIndex],
   );
   const previousTopbarState = useMemo(
-    () => buildPreviousTopbarState(analysis, actIndex, step),
-    [analysis, actIndex, step],
+    () => buildPreviousTopbarState(analysis, actIndex, step, playerIndex),
+    [analysis, actIndex, step, playerIndex],
   );
   const nodeStackLocalMs = Math.max(
     0,
@@ -858,7 +881,12 @@ export function HistoryCourseShell({
 
   const stepStackItems = useMemo<NodeStackItem[]>(() => {
     if (!act || !replayReady) return [];
-    const entry = act.history[step - 1];
+    const entry = focusedNodeEntry(
+      act.history[step - 1],
+      run,
+      cardsById,
+      playerIndex,
+    );
     if (!entry) return [];
     return buildStackItems(
       entry,
@@ -869,17 +897,21 @@ export function HistoryCourseShell({
       tables,
       copy.playback.verbs,
       localeIsKor,
+      gameLocale,
     );
   }, [
     act,
     step,
     replayReady,
+    run,
+    playerIndex,
     cardsById,
     releaseRelicId,
     releasePotionId,
     tables,
     copy.playback.verbs,
     localeIsKor,
+    gameLocale,
   ]);
 
   // The relic ids that the *current step's* stack will fly into the topbar.
@@ -890,13 +922,18 @@ export function HistoryCourseShell({
   // / restart / map-node-click all hit the same code path now.
   const stepRelicIdsKey = useMemo(() => {
     if (!act) return "";
-    const entry = act.history[step - 1];
+    const entry = focusedNodeEntry(
+      act.history[step - 1],
+      run,
+      cardsById,
+      playerIndex,
+    );
     if (!entry) return "";
     return (entry.relic_choices ?? [])
       .filter((c) => c.picked && c.id)
       .map((c) => c.id)
       .join("|");
-  }, [act, step]);
+  }, [act, step, run, cardsById, playerIndex]);
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setPendingRelicIds(
@@ -906,7 +943,12 @@ export function HistoryCourseShell({
 
   const stepPotionIdsKey = useMemo(() => {
     if (!act) return "";
-    const entry = act.history[step - 1];
+    const entry = focusedNodeEntry(
+      act.history[step - 1],
+      run,
+      cardsById,
+      playerIndex,
+    );
     if (!entry) return "";
     const visiblePotionKeys = new Set(
       topbarState.potions
@@ -917,7 +959,7 @@ export function HistoryCourseShell({
       .filter((c) => c.picked && c.id && visiblePotionKeys.has(normalizeItemId(c.id)))
       .map((c) => c.id)
       .join("|");
-  }, [act, step, topbarState.potions]);
+  }, [act, step, run, cardsById, playerIndex, topbarState.potions]);
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setPendingPotionIds(
@@ -928,11 +970,11 @@ export function HistoryCourseShell({
   const heldPotionRemovalIds = useMemo(
     () =>
       buildHeldPotionRemovalIds(
-        act?.history[step - 1],
+        focusedNodeEntry(act?.history[step - 1], run, cardsById, playerIndex),
         previousTopbarState?.potions ?? [],
         nodeStackLocalMs,
       ),
-    [act, step, previousTopbarState?.potions, nodeStackLocalMs],
+    [act, step, run, cardsById, playerIndex, previousTopbarState?.potions, nodeStackLocalMs],
   );
 
   // Auto-open the summary panel exactly once when the run reaches its
@@ -1078,6 +1120,8 @@ export function HistoryCourseShell({
           onJumpToStep={onJumpToStep}
           onOpenDeck={() => setDeckOpen(true)}
           onOpenInfo={onToggleSummary}
+          focusedPlayerIndex={playerIndex}
+          onFocusPlayer={onFocusPlayer}
         />
       </div>
 
@@ -1087,7 +1131,7 @@ export function HistoryCourseShell({
         copies={topbarState.deckCopies}
         cardsById={cardsById}
         currentFloor={topbarState.currentFloor}
-        character={run.players[0]?.character}
+        character={run.players[playerIndex]?.character}
       />
     </div>
   );
@@ -1149,6 +1193,8 @@ function Stage({
   onJumpToStep,
   onOpenDeck,
   onOpenInfo,
+  focusedPlayerIndex,
+  onFocusPlayer,
 }: {
   run: ReplayRun;
   act: Act;
@@ -1186,6 +1232,8 @@ function Stage({
   onJumpToStep: (actIndex: number, step: number) => void;
   onOpenDeck: () => void;
   onOpenInfo: () => void;
+  focusedPlayerIndex: number;
+  onFocusPlayer: (index: number) => void;
 }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const mapBoxRef = useRef<HTMLDivElement>(null);
@@ -1211,11 +1259,13 @@ function Stage({
     () => new Set(act.candidateEdgeIdsByStep[step - 1] ?? []),
     [act, step],
   );
-  const mapCharacterMarkerSrc = characterIconSrc(
-    run.players[0]?.character ?? "CHARACTER.IRONCLAD",
-  );
-  const mapCharacterMarkerOutlineSrc = characterIconOutlineSrc(
-    run.players[0]?.character ?? "CHARACTER.IRONCLAD",
+  const focusedCharacter =
+    run.players[focusedPlayerIndex]?.character ?? "CHARACTER.IRONCLAD";
+  const mapCharacterMarkerSrc = characterIconSrc(focusedCharacter);
+  const mapCharacterMarkerOutlineSrc = characterIconOutlineSrc(focusedCharacter);
+  const mapAct = useMemo(
+    () => focusedMapAct(act, run, focusedPlayerIndex),
+    [act, run, focusedPlayerIndex],
   );
 
   // Position the current node at ~60% from the top of the viewport
@@ -1304,6 +1354,8 @@ function Stage({
         onOpenDeck={onOpenDeck}
         // Cog toggles the run-summary panel and auto-pauses playback.
         onOpenInfo={onOpenInfo}
+        focusedPlayerIndex={focusedPlayerIndex}
+        onFocusPlayer={onFocusPlayer}
       />
 
       <div
@@ -1316,7 +1368,7 @@ function Stage({
       >
         <div className="flex min-h-full justify-center">
           <SeededMapView
-            act={act}
+            act={mapAct}
             step={step}
             onSeekToStep={(s) => onJumpToStep(actIndex, s)}
             transitProgress={transitProgress}
@@ -1345,7 +1397,7 @@ function Stage({
       />
 
       <PlaybackBar
-        run={run}
+        character={focusedCharacter}
         runTimeline={runTimeline}
         sanitizedActs={sanitizedActs}
         actIndex={actIndex}
@@ -1370,6 +1422,8 @@ function Stage({
         ended={summaryEnded}
         currentActIndex={currentActIndex}
         currentStep={currentStep}
+        focusedPlayerIndex={focusedPlayerIndex}
+        onFocusPlayer={onFocusPlayer}
         onClose={onCloseSummary}
       />
     </div>
@@ -1473,7 +1527,7 @@ function ActIntro({
 }
 
 function PlaybackBar({
-  run,
+  character,
   runTimeline,
   sanitizedActs,
   actIndex,
@@ -1486,7 +1540,7 @@ function PlaybackBar({
   onScrubGlobalMs,
   onJumpToStep,
 }: {
-  run: ReplayRun;
+  character: string;
   runTimeline: RunTimeline;
   sanitizedActs: Act[];
   actIndex: number;
@@ -1501,8 +1555,7 @@ function PlaybackBar({
 }) {
   const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   const safeMax = Math.max(1, runTimeline.totalMs);
-  const character = run.players[0]?.character ?? "CHARACTER.IRONCLAD";
-  const markerSrc = characterMarkerSrc(character);
+  const markerSrc = characterMapMarkerSrc(character);
   const progressPct = (Math.min(globalMs, safeMax) / safeMax) * 100;
   const totalStepCount = sanitizedActs.reduce(
     (acc, a) => acc + a.history.length,
