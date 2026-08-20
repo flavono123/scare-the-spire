@@ -410,9 +410,15 @@ const TITLE_FONT = "var(--font-game-title)";
 
 // =============================================================================
 // Layout config (% of 300×422 holder coords)
+// Holder: CardContainer origin center, top-left = (-150, -211)
 // banner: card.tscn NameBanner offset(-160 ~ 160, -250 ~ -180) → w=320(=107%), h=70/422=16.6%
-// energy orb: 64×64 / holder ~21%
+// EnergyIcon: offset(-166,-227)~(-102,-163) → 64×64
+// StarIcon: offset(-186,-189)~(-128,-131) → 58×58, sits below-left of energy
+// Enchantment: offset(-166,-116)~(-94,-62) → 72×54, below both orbs (star bottom y=80, enchant top y=95)
 // =============================================================================
+
+const HOLDER_W = 300;
+const HOLDER_H = 422;
 
 const L = {
   art: { top: 9, left: 6, right: 6, bottom: 56 },
@@ -421,9 +427,22 @@ const L = {
   ancientBanner: { top: -2.4, width: 112, aspectRatio: "671/182", titlePaddingX: 16, titleTranslateY: -28 },
   plaque: { width: 22, top: 55 },
   desc: { top: 64, bottom: 95, paddingX: 9 },
-  cost: { top: -3, left: -3, size: 17 },
-  starCost: { top: 13, left: 0, size: 12 },
-  enchant: { top: 16, left: -3, width: 22, height: 14 },
+  cost: {
+    top: (-16 / HOLDER_H) * 100,
+    left: (-16 / HOLDER_W) * 100,
+    size: (64 / HOLDER_W) * 100,
+  },
+  starCost: {
+    top: (22 / HOLDER_H) * 100,
+    left: (-36 / HOLDER_W) * 100,
+    size: (58 / HOLDER_W) * 100,
+  },
+  enchant: {
+    top: (95 / HOLDER_H) * 100,
+    left: (-16 / HOLDER_W) * 100,
+    width: (72 / HOLDER_W) * 100,
+    height: (54 / HOLDER_H) * 100,
+  },
 };
 
 // =============================================================================
