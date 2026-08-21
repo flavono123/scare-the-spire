@@ -1,19 +1,31 @@
 "use client";
 
-import { TOYBOX_FEED_SORT_OPTIONS, type ToyboxFeedSort } from "@/lib/toybox-feed";
+import {
+  TOYBOX_FEED_SORT_OPTIONS,
+  toyboxFeedSortOptionsFor,
+  type ToyboxFeedService,
+  type ToyboxFeedSort,
+} from "@/lib/toybox-feed";
 
 export function FeedSortToggle({
   sort,
   onSortChange,
   labels,
+  service,
+  options,
 }: {
   sort: ToyboxFeedSort;
   onSortChange: (sort: ToyboxFeedSort) => void;
   labels: Record<ToyboxFeedSort, string>;
+  service?: ToyboxFeedService;
+  options?: readonly ToyboxFeedSort[];
 }) {
+  const resolvedOptions = options
+    ?? (service ? toyboxFeedSortOptionsFor(service) : TOYBOX_FEED_SORT_OPTIONS);
+
   return (
-    <div className="inline-flex overflow-hidden rounded-md border border-border/70 bg-background/40">
-      {TOYBOX_FEED_SORT_OPTIONS.map((option) => (
+    <div className="inline-flex max-w-full flex-wrap overflow-hidden rounded-md border border-border/70 bg-background/40">
+      {resolvedOptions.map((option) => (
         <button
           key={option}
           type="button"

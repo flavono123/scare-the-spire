@@ -173,6 +173,7 @@ export function ThisOrThatClient({
       {!storageUnavailable && (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <FeedSortToggle
+            service="this_or_that"
             sort={sort}
             onSortChange={setSort}
             labels={serviceMessages[serviceLocale].feedSort}

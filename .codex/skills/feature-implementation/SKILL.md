@@ -102,15 +102,26 @@ hottest/trending key or an offset page. Stories (슬서운 이야기) uses the s
 button order and default via `FeedSortToggle`; it still sorts the already-loaded
 client list and does not call `get_toybox_feed`.
 
-- Sort keys and **button order** are **최신 / 추천 / 댓글**
-  (`latest`, `recommended`, `comments` in `TOYBOX_FEED_SORT_OPTIONS`).
+- Core sort keys and **button order** are **최신 / 추천 / 댓글**
+  (`latest`, `recommended`, `comments` in `TOYBOX_FEED_CORE_SORTS` /
+  `TOYBOX_FEED_SORT_OPTIONS`). `FeedSortToggle` defaults to that list.
+  Per-service extras append after the core three via
+  `TOYBOX_FEED_EXTRA_SORTS` + `TOYBOX_FEED_EXTRA_SORTS_BY_SERVICE`, then
+  pass `service` into `FeedSortToggle`. Do not fork a second toggle or
+  invent an ad-hoc sort row for one Toy Box index.
 - Default selected sort is **최신** (`DEFAULT_TOYBOX_FEED_SORT`).
+- Current extra: This or That **투표율 높은 순 / 투표율 낮은 순**
+  (`vote_rate_high`, `vote_rate_low`) sorts by winner share
+  (`max(left, right) / total`, basis points). Posts with 0 votes are
+  excluded. 조각모음 and Stories stay on the core three.
 - Recommend score is `like_count * 4 + comment_count * 6`.
 - Page size is 20 (`TOYBOX_FEED_PAGE_SIZE`). Paginate with a keyset cursor
   `(score, created_at, id)`, never `OFFSET`.
 - Counts live on the post tables (`like_count`, `comment_count`). Triggers on
   `comments` / `likes` (and `this_or_that_post_likes` for This or That) keep
-  them in sync. Do not scan `comments` or `likes` to build an index page.
+  them in sync. This or That also denormalizes `left_vote_count` /
+  `right_vote_count` from `this_or_that_post_votes` for extra vote-rate
+  sorts. Do not scan `comments`, `likes`, or votes to build an index page.
 - Per-service indexes call `get_toybox_feed(p_env, p_service, p_sort, p_limit,
   p_cursor_score, p_cursor_created_at, p_cursor_id)`. `p_service` is one of
   `combo`, `transfigure`, `this_or_that`, `chemical_x`. The RPC reads one table

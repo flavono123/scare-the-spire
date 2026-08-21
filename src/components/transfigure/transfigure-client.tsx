@@ -177,6 +177,7 @@ export function TransfigureClient({
       {!loading && !unavailable && (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <FeedSortToggle
+            service="transfigure"
             sort={sort}
             onSortChange={setSort}
             labels={serviceMessages[serviceLocale].feedSort}

@@ -10,17 +10,6 @@ export const TOYBOX_FEED_SERVICES = [
   "chemical_x",
 ] as const;
 
-export const TOYBOX_FEED_SORTS = ["latest", "recommended", "comments"] as const;
-
-/** Button order for Toy Box indexes: 최신 / 추천 / 댓글. */
-export const TOYBOX_FEED_SORT_OPTIONS = [
-  "latest",
-  "recommended",
-  "comments",
-] as const satisfies readonly ToyboxFeedSort[];
-
-export const DEFAULT_TOYBOX_FEED_SORT: ToyboxFeedSort = "latest";
-
 export const TOYBOX_FEED_TABLES = {
   combo: "combo_posts",
   transfigure: "transfigure_posts",
@@ -29,8 +18,34 @@ export const TOYBOX_FEED_TABLES = {
 } as const;
 
 export type ToyboxFeedService = (typeof TOYBOX_FEED_SERVICES)[number];
-export type ToyboxFeedSort = (typeof TOYBOX_FEED_SORTS)[number];
 export type ToyboxFeedTable = (typeof TOYBOX_FEED_TABLES)[ToyboxFeedService];
+
+/** Shared button order: 최신 / 추천 / 댓글. Extra sorts append after these. */
+export const TOYBOX_FEED_CORE_SORTS = ["latest", "recommended", "comments"] as const;
+export type ToyboxFeedCoreSort = (typeof TOYBOX_FEED_CORE_SORTS)[number];
+
+/** Registered extra sorts. Append via `TOYBOX_FEED_EXTRA_SORTS_BY_SERVICE`. */
+export const TOYBOX_FEED_EXTRA_SORTS = ["vote_rate_high", "vote_rate_low"] as const;
+export type ToyboxFeedExtraSort = (typeof TOYBOX_FEED_EXTRA_SORTS)[number];
+
+export const TOYBOX_FEED_SORTS = [
+  ...TOYBOX_FEED_CORE_SORTS,
+  ...TOYBOX_FEED_EXTRA_SORTS,
+] as const;
+export type ToyboxFeedSort = (typeof TOYBOX_FEED_SORTS)[number];
+
+/** Default toggle options for indexes that do not opt into extras. */
+export const TOYBOX_FEED_SORT_OPTIONS = TOYBOX_FEED_CORE_SORTS;
+
+export const DEFAULT_TOYBOX_FEED_SORT: ToyboxFeedCoreSort = "latest";
+
+export const TOYBOX_FEED_VOTE_RATE_BPS_MAX = 10000;
+
+export const TOYBOX_FEED_EXTRA_SORTS_BY_SERVICE: {
+  readonly [K in ToyboxFeedService]?: readonly ToyboxFeedExtraSort[];
+} = {
+  this_or_that: ["vote_rate_high", "vote_rate_low"],
+};
 
 export interface ToyboxFeedCursor {
   score: number;
@@ -55,8 +70,39 @@ type PostIdentity = {
   created_at: string;
 };
 
+const TOYBOX_FEED_CORE_SORT_SET = new Set<string>(TOYBOX_FEED_CORE_SORTS);
+const TOYBOX_FEED_SORT_SET = new Set<string>(TOYBOX_FEED_SORTS);
+
+export function isToyboxFeedCoreSort(value: unknown): value is ToyboxFeedCoreSort {
+  return typeof value === "string" && TOYBOX_FEED_CORE_SORT_SET.has(value);
+}
+
 export function isToyboxFeedSort(value: unknown): value is ToyboxFeedSort {
-  return value === "latest" || value === "recommended" || value === "comments";
+  return typeof value === "string" && TOYBOX_FEED_SORT_SET.has(value);
+}
+
+export function toyboxFeedSortOptionsFor(
+  service: ToyboxFeedService,
+): readonly ToyboxFeedSort[] {
+  const extras = TOYBOX_FEED_EXTRA_SORTS_BY_SERVICE[service];
+  if (!extras || extras.length === 0) return TOYBOX_FEED_CORE_SORTS;
+  return [...TOYBOX_FEED_CORE_SORTS, ...extras];
+}
+
+export function resolveToyboxFeedSort(
+  service: ToyboxFeedService,
+  sort: ToyboxFeedSort,
+): ToyboxFeedSort {
+  return toyboxFeedSortOptionsFor(service).includes(sort)
+    ? sort
+    : DEFAULT_TOYBOX_FEED_SORT;
+}
+
+/** Winner share in basis points (50%–100% for two-option votes; 0 when empty). */
+export function toyboxWinnerShareBps(leftCount: number, rightCount: number): number {
+  const total = leftCount + rightCount;
+  if (total <= 0) return 0;
+  return Math.trunc((Math.max(leftCount, rightCount) * TOYBOX_FEED_VOTE_RATE_BPS_MAX) / total);
 }
 
 export function toyboxRecommendScore(likeCount: number, commentCount: number): number {
@@ -137,12 +183,37 @@ export function parseToyboxFeedRow<T extends PostIdentity>(
   };
 }
 
+function voteRateBpsFromPost(post: PostIdentity): number {
+  const record = post as PostIdentity & Record<string, unknown>;
+  const left = asNonNegativeInt(record.left_vote_count) ?? 0;
+  const right = asNonNegativeInt(record.right_vote_count) ?? 0;
+  return toyboxWinnerShareBps(left, right);
+}
+
+const EXTRA_SORT_CURSOR_SCORE: Record<
+  ToyboxFeedExtraSort,
+  (item: ToyboxFeedItem<PostIdentity>) => number
+> = {
+  vote_rate_high: (item) => voteRateBpsFromPost(item.post),
+  vote_rate_low: (item) => TOYBOX_FEED_VOTE_RATE_BPS_MAX - voteRateBpsFromPost(item.post),
+};
+
+export function toyboxFeedCursorScore<T extends PostIdentity>(
+  item: ToyboxFeedItem<T>,
+  sort: ToyboxFeedSort,
+): number {
+  if (sort === "comments") return item.commentCount;
+  const extraScore = EXTRA_SORT_CURSOR_SCORE[sort as ToyboxFeedExtraSort];
+  if (extraScore) return extraScore(item);
+  return item.recommendScore;
+}
+
 export function cursorFromFeedItem<T extends PostIdentity>(
   item: ToyboxFeedItem<T>,
   sort: ToyboxFeedSort,
 ): ToyboxFeedCursor {
   return {
-    score: sort === "comments" ? item.commentCount : item.recommendScore,
+    score: toyboxFeedCursorScore(item, sort),
     createdAt: item.post.created_at,
     id: item.post.id,
   };
@@ -221,12 +292,13 @@ export async function fetchToyboxFeedPage<T extends PostIdentity>(options: {
 }): Promise<ToyboxFeedPage<T>> {
   if (!supabaseEnabled) return { items: [], hasMore: false };
 
+  const sort = resolveToyboxFeedSort(options.service, options.sort);
   const { data, error } = await withSupabaseTimeout(
     `get_toybox_feed.${options.service}`,
     supabase.rpc("get_toybox_feed", {
       p_env: supabaseEnv,
       p_service: options.service,
-      p_sort: options.sort,
+      p_sort: sort,
       p_limit: TOYBOX_FEED_PAGE_SIZE,
       p_cursor_score: options.cursor?.score ?? null,
       p_cursor_created_at: options.cursor?.createdAt ?? null,

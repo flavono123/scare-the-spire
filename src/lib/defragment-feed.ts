@@ -7,7 +7,7 @@ import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
   asNonNegativeInt,
-  isToyboxFeedSort,
+  isToyboxFeedCoreSort,
   TOYBOX_FEED_PAGE_SIZE,
   toyboxRecommendScore,
   type ToyboxFeedCursor,
@@ -78,7 +78,7 @@ export async function fetchDefragmentFeedPage(options: {
 }): Promise<DefragmentFeedPage> {
   if (!supabaseEnabled) return { items: [], hasMore: false };
 
-  const sort: ToyboxFeedSort = isToyboxFeedSort(options.sort) ? options.sort : "latest";
+  const sort: ToyboxFeedSort = isToyboxFeedCoreSort(options.sort) ? options.sort : "latest";
   const { data, error } = await withSupabaseTimeout(
     "get_defragment_feed",
     supabase.rpc("get_defragment_feed", {

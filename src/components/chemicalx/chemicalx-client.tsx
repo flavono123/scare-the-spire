@@ -91,6 +91,7 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
       {!loading && !storageUnavailable && (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <FeedSortToggle
+            service="chemical_x"
             sort={sort}
             onSortChange={setSort}
             labels={serviceMessages[serviceLocale].feedSort}

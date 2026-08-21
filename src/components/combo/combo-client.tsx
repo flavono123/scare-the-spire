@@ -137,6 +137,7 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
       {!loading && !unavailable && (
         <div className="space-y-3">
           <FeedSortToggle
+            service="combo"
             sort={sort}
             onSortChange={setSort}
             labels={serviceMessages[serviceLocale].feedSort}

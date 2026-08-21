@@ -161,6 +161,8 @@ export const serviceMessages = {
       recommended: "추천",
       comments: "댓글",
       latest: "최신",
+      vote_rate_high: "투표율 높은 순",
+      vote_rate_low: "투표율 낮은 순",
     },
     deleteConfirm: {
       title: "이 글을 삭제할까요?",
@@ -1213,6 +1215,8 @@ export const serviceMessages = {
       recommended: "Recommended",
       comments: "Comments",
       latest: "Latest",
+      vote_rate_high: "High vote rate",
+      vote_rate_low: "Low vote rate",
     },
     deleteConfirm: {
       title: "Delete this post?",

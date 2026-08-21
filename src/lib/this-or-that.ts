@@ -24,6 +24,9 @@ export interface ThisOrThatPost {
   created_at: string;
   like_count?: number;
   comment_count?: number;
+  left_vote_count?: number;
+  right_vote_count?: number;
+  vote_rate_bps?: number;
 }
 
 export interface ThisOrThatResolvedPost {
