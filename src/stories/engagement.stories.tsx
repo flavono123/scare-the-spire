@@ -21,9 +21,8 @@ export const Like: Story = {
     return (
       <StoryStack>
         <StoryNote>
-          LikeButton(훅+likes 테이블)과 ThisOrThatLikeButton(제어 컴포넌트,
-          별도 테이블)은 데이터 층이 달라 분기다. 보이는 버튼은 LikeControl로
-          합쳤다.
+          이야기·장난감 상자·백과사전 좋아요는 강령의 극. 이거아님저거는
+          같은 버튼이고 테이블만 아직 갈라져 있다. 투표 엄지는 좋아요가 아니다.
         </StoryNote>
         <LikeControl
           count={count}
@@ -62,7 +61,7 @@ export const IndexEngagement: Story = {
     <StoryStack>
       <StoryNote>
         Combo / Chemical X / Transfigure 인덱스 카드가 이걸 쓴다.
-        This or That는 투표 때문에 댓글 링크를 카드 안에 다시 그렸다 — 분기.
+        이거아님저거는 투표 줄 때문에 카드 안에서 댓글 링크를 다시 그린다.
       </StoryNote>
       <IndexCardEngagement
         commentsHref="#comments"

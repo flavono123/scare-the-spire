@@ -14,8 +14,8 @@ export const Roles: Story = {
   render: () => (
     <StoryStack>
       <StoryNote>
-        제품 규칙: 게임 리소스 = gold, 섀소식 내부 서비스 링크와 외부 = aqua.
-        아래 첫 줄이 목표, 둘째 줄이 현장에서 흔한 대체물이다.
+        제품 규칙: 게임 리소스 = gold, 섀소식·외부 = aqua.
+        토큰 잔여를 치운 뒤에 링크 유틸을 맞춘다. 지금은 목표만 그린다.
       </StoryNote>
       <div className="space-y-4 font-service">
         <div>

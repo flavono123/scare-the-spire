@@ -45,8 +45,8 @@ export const ShadcnBadge: Story = {
     <StoryStack>
       <StoryHeading>프리미티브 vs 제품</StoryHeading>
       <StoryNote>
-        Badge default는 bg-primary라 흰 회색 칩이 된다. CharacterBadge는 STS1
-        유물/포션 페이지만 쓴다. STS2 캐릭터는 CHARACTER_COLORS + 아웃라인.
+        Badge default는 이제 gold fill이다. CharacterBadge는 STS1 유물/포션만.
+        deprecated. 새 화면에 쓰지 않는다.
       </StoryNote>
       <div className="flex flex-wrap gap-2">
         <Badge>default primary</Badge>

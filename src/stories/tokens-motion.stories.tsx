@@ -15,8 +15,7 @@ export const BuffNerf: Story = {
   render: () => (
     <StoryStack>
       <StoryNote>
-        DESIGN.md와 구현이 같다. 스킴에 묶지 않는다. 라이트 페이지 안에서도
-        이 색+애니메이션은 게임 크롬이다.
+        DESIGN.md 정본. 색은 StsColors, 애니메이션은 게임 BBCode. 스킴에 묶지 않는다.
       </StoryNote>
       <div className="space-y-3 font-game-text text-lg">
         <p>
