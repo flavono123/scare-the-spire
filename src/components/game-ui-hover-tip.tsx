@@ -27,7 +27,7 @@ export function GameUiHoverTip({
   children: ReactNode;
   className?: string;
 }) {
-  const triggerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLSpanElement>(null);
   const [visible, setVisible] = useState(false);
   const [placement, setPlacement] = useState<{
     left: number;
@@ -118,14 +118,16 @@ export function GameUiHoverTip({
     : null;
 
   return (
-    <div
+    <span
       ref={triggerRef}
       className={cn("relative inline-flex", className)}
       onMouseEnter={show}
       onMouseLeave={hide}
+      onFocus={show}
+      onBlur={hide}
     >
       {children}
       {tip}
-    </div>
+    </span>
   );
 }

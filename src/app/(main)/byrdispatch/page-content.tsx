@@ -35,6 +35,10 @@ import {
   isByrdispatchMigrationNoticeText,
   isConfiguredByrdispatchMigrationTargetHost,
 } from "@/lib/byrdispatch-static";
+import {
+  GAME_UI_HOVER_TIP_NAV_DELAY_MS,
+  GameUiHoverTip,
+} from "@/components/game-ui-hover-tip";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { SERVICE_ACCENT_CLASS } from "@/lib/service-link-classes";
 import { serviceMessages } from "@/messages/service";
@@ -238,20 +242,21 @@ function StatusTokenIcon({
   label: string;
 }) {
   return (
-    <span
-      aria-label={label}
-      data-tooltip={label}
-      tabIndex={0}
+    <GameUiHoverTip
+      label={label}
+      delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}
       className="byrdispatch-status-token h-5 w-5"
     >
-      <Image
-        src={src}
-        alt=""
-        width={20}
-        height={20}
-        className="h-full w-full object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]"
-      />
-    </span>
+      <span aria-label={label} tabIndex={0} className="inline-flex h-5 w-5">
+        <Image
+          src={src}
+          alt=""
+          width={20}
+          height={20}
+          className="h-full w-full object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]"
+        />
+      </span>
+    </GameUiHoverTip>
   );
 }
 
