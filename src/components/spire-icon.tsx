@@ -5,7 +5,7 @@ import { useEffect, type CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 
 export const SPIRE_ICON_COLORS = {
-  gold: "#d4a843",
+  gold: "#EFC851",
   blue: "#60a5fa",
   red: "#f87171",
   green: "#34d399",
@@ -205,7 +205,7 @@ export const SPIRE_ACTION_CONTROL_CLASS =
 
 /** Index-only Lucide toast-up + spire-gold hover. */
 export const INDEX_LUCIDE_ICON_CLASS =
-  "transition-[transform,color] duration-200 ease-out motion-reduce:transition-none motion-reduce:transform-none group-hover/spire:-translate-y-0.5 group-focus-visible/spire:-translate-y-0.5 group-hover/spire:text-[#d4a843] group-focus-visible/spire:text-[#d4a843]";
+  "transition-[transform,color] duration-200 ease-out motion-reduce:transition-none motion-reduce:transform-none group-hover/spire:-translate-y-0.5 group-focus-visible/spire:-translate-y-0.5 group-hover/spire:text-[#EFC851] group-focus-visible/spire:text-[#EFC851]";
 
 /**
  * Idle = ghost wax. Hover/focus of an ancestor `group` reveals the original

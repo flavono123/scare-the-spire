@@ -6,18 +6,18 @@ export const metadata = {
 };
 
 const COLOR_SAMPLES = [
-  { tag: "gold", hex: "#d4a843", label: "Gold", desc: "게임 엔티티 강조 (카드, 유물, 파워, 토큰: 취약, 방어도, 힘 등)" },
-  { tag: "red", hex: "#f87171", label: "Red", desc: "아이언클래드 캐릭터 색상 / 너프 표현" },
-  { tag: "green", hex: "#34d399", label: "Green", desc: "사일런트 캐릭터 색상 / 버프 표현" },
-  { tag: "aqua", hex: "#22d3ee", label: "Aqua", desc: "디펙트 캐릭터 색상" },
-  { tag: "orange", hex: "#fb923c", label: "Orange", desc: "리젠트 캐릭터 색상" },
-  { tag: "pink", hex: "#f472b6", label: "Pink", desc: "네크로바인더 캐릭터 색상" },
-  { tag: "blue", hex: "#60a5fa", label: "Blue", desc: "고대의 존재 (Ancient) 색상" },
-  { tag: "purple", hex: "#c084fc", label: "Purple", desc: "예비 (미사용)" },
+  { tag: "gold", hex: "#EFC851", label: "Gold", desc: "StsColors TEXT_GOLD. 카드/유물 강조, primary" },
+  { tag: "red", hex: "#FF5555", label: "Red", desc: "StsColors TEXT_RED. 너프 [red], 아이언클래드와 다름" },
+  { tag: "green", hex: "#7FFF00", label: "Green", desc: "StsColors TEXT_GREEN. 버프 [green], 사일런트와 다름" },
+  { tag: "aqua", hex: "#2AEBBE", label: "Aqua", desc: "StsColors TEXT_AQUA. 디펙트 캐릭터색과 다름" },
+  { tag: "orange", hex: "#fb923c", label: "Orange", desc: "리젠트 캐릭터 색. 게임 본문 태그 없음" },
+  { tag: "pink", hex: "#f472b6", label: "Pink", desc: "네크로바인더 캐릭터 색. 게임 본문 태그 없음" },
+  { tag: "blue", hex: "#87CEEB", label: "Blue", desc: "StsColors TEXT_BLUE. 막 파랑(#60a5fa)과 다름" },
+  { tag: "purple", hex: "#EE82EE", label: "Purple", desc: "StsColors TEXT_PURPLE. 인챈트 제목" },
 ];
 
 const BADGE_RANK_COLOR_SAMPLES = [
-  { className: "spire-gold", hex: "#d4a843", label: "Gold" },
+  { className: "spire-gold", hex: "#EFC851", label: "Gold" },
   { className: "spire-silver", hex: "#8ad6e0", label: "Silver" },
   { className: "spire-bronze", hex: "#d7a470", label: "Bronze" },
 ];

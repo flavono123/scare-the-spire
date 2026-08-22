@@ -461,8 +461,8 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.92 0.004 286.32);
-  --primary-foreground: oklch(0.21 0.006 285.885);
+  --primary: #efc851;
+  --primary-foreground: #1a1408;
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.274 0.006 286.033);
@@ -609,8 +609,17 @@
 .topbar-num-red { color: #f8b4b4; }   /* HP — light red, stays legible against black stroke */
 .topbar-num-gold { color: #f8d56a; }  /* Gold + timer — warm gold */
 
-/* Spire text colors */
-.spire-gold { color: #d4a843; }
+/* Game StsColors — BBCode / card titles / hover-tip titles. Not scheme-bound. */
+.sts-text-cream { color: #fff6e2; }
+.sts-text-gold { color: #efc851; }
+.sts-text-green { color: #7fff00; }
+.sts-text-red { color: #ff5555; }
+.sts-text-blue { color: #87ceeb; }
+.sts-text-aqua { color: #2aebbe; }
+.sts-text-purple { color: #ee82ee; }
+
+/* Character identity + service chrome that borrows it. Not [green]/[red] tags. */
+.spire-gold { color: #efc851; }
 .spire-silver { color: #8ad6e0; }
 .spire-bronze { color: #d7a470; }
 .spire-blue { color: #60a5fa; }
@@ -689,7 +698,7 @@
 }
 
 .tiptap [data-type="entity-mention"] {
-  color: #d4a843;
+  color: #efc851;
   font-weight: 600;
 }
 

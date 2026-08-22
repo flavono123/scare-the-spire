@@ -2,25 +2,19 @@
 
 import { ReactNode } from "react";
 import Image from "@/components/ui/static-image";
-
-// =============================================================================
-// 게임 hover_tip 9-slice (scenes/ui/hover_tip.tscn)
-// 원본: 339×107 / patch margin (l,t,r,b) = (55, 43, 91, 32)
-// 게임 폰트 사이즈: title 22px, description 22px (둘 다 동일)
-// 게임 패딩(TextContainer margin): left=22, top=16, right=45, bottom=28
-// =============================================================================
-
-const SLICE = { top: 43, right: 91, bottom: 32, left: 55 };
-const SCALE = 0.55; // 코덱스 페이지에 맞게 축소
-
-const SRC: Record<HoverTipVariant, string> = {
-  default: "/images/sts2/ui/hover_tip.png",
-  buff: "/images/sts2/ui/hover_tip_buff.png",
-  debuff: "/images/sts2/ui/hover_tip_debuff.png",
-};
+import {
+  HOVER_TIP_BODY_COLOR,
+  HOVER_TIP_SLICE,
+  HOVER_TIP_SRC,
+  HOVER_TIP_TITLE_COLOR,
+} from "@/lib/hover-tip-chrome";
 
 export type HoverTipVariant = "default" | "buff" | "debuff";
 export type HoverTipArtMode = "official" | "beta";
+
+const SCALE = 0.55;
+
+const SRC = HOVER_TIP_SRC;
 
 export type HoverTipArt = {
   mode: HoverTipArtMode;
@@ -68,10 +62,10 @@ export function GameHoverTip({
   className = "",
   style,
 }: HoverTipProps) {
-  const bt = compact ? 10 : Math.round(SLICE.top * SCALE);
-  const br = compact ? 12 : Math.round(SLICE.right * SCALE);
-  const bb = compact ? 8 : Math.round(SLICE.bottom * SCALE);
-  const bl = compact ? 12 : Math.round(SLICE.left * SCALE);
+  const bt = compact ? 10 : Math.round(HOVER_TIP_SLICE.top * SCALE);
+  const br = compact ? 12 : Math.round(HOVER_TIP_SLICE.right * SCALE);
+  const bb = compact ? 8 : Math.round(HOVER_TIP_SLICE.bottom * SCALE);
+  const bl = compact ? 12 : Math.round(HOVER_TIP_SLICE.left * SCALE);
 
   // 게임 hover_tip: title 22px, description 22px — 동일 사이즈.
   // 카드 본문 폰트(380px 카드 × 7cqi = 26.6px)와 비슷한 크기.
@@ -90,7 +84,7 @@ export function GameHoverTip({
         borderBottomWidth: `${bb}px`,
         borderLeftWidth: `${bl}px`,
         borderImageSource: `url(${SRC[variant]})`,
-        borderImageSlice: `${SLICE.top} ${SLICE.right} ${SLICE.bottom} ${SLICE.left} fill`,
+        borderImageSlice: `${HOVER_TIP_SLICE.top} ${HOVER_TIP_SLICE.right} ${HOVER_TIP_SLICE.bottom} ${HOVER_TIP_SLICE.left} fill`,
         borderImageWidth: `${bt}px ${br}px ${bb}px ${bl}px`,
         borderImageRepeat: "stretch",
         boxSizing: "border-box",
@@ -106,7 +100,7 @@ export function GameHoverTip({
             fontFamily: "var(--font-game-text)",
             fontSize,
             fontWeight: 700,
-            color: "#EFC851",
+            color: HOVER_TIP_TITLE_COLOR,
             textShadow: "2px 2px 0 rgba(0,0,0,0.45)",
             textAlign: "left",
             marginBottom: children || selectedArt ? compact ? 2 : 4 : 0,
@@ -141,7 +135,7 @@ export function GameHoverTip({
               fontFamily: "var(--font-game-text)",
               fontSize,
               lineHeight: 1.4,
-              color: "#FFF6E2",
+              color: HOVER_TIP_BODY_COLOR,
               textShadow: "2px 2px 0 rgba(0,0,0,0.45)",
               textAlign: "left",
               textIndent: 0,

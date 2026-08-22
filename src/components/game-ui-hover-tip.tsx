@@ -3,6 +3,11 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
+import {
+  HOVER_TIP_SLICE,
+  HOVER_TIP_SRC,
+  HOVER_TIP_TITLE_COLOR,
+} from "@/lib/hover-tip-chrome";
 
 /** Same hover_tip.png chrome as site-navbar patch notes / contact / profile. */
 export const GAME_UI_HOVER_TIP_NAV_DELAY_MS = 0;
@@ -93,7 +98,7 @@ export function GameUiHoverTip({
         <div
           className="relative whitespace-nowrap"
           style={{
-            borderImage: "url('/images/sts2/ui/hover_tip.png') 43 91 32 55 fill",
+            borderImage: `url('${HOVER_TIP_SRC.default}') ${HOVER_TIP_SLICE.top} ${HOVER_TIP_SLICE.right} ${HOVER_TIP_SLICE.bottom} ${HOVER_TIP_SLICE.left} fill`,
             borderImageWidth: "16px 34px 12px 20px",
             borderStyle: "solid",
             padding: "2px 12px 6px 8px",
@@ -102,7 +107,7 @@ export function GameUiHoverTip({
           <span
             className="text-xs font-bold"
             style={{
-              color: "rgb(239, 200, 81)",
+              color: HOVER_TIP_TITLE_COLOR,
               textShadow: "2px 1px 0 rgba(0,0,0,0.25)",
             }}
           >

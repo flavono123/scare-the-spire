@@ -300,7 +300,7 @@ const TOKEN_BY_ID = new Map<TokenId, (typeof TOKENS)[number]>(
 );
 
 const SPIRE_COLORS = [
-  { id: "gold", label: "Gold", hex: "#d4a843" },
+  { id: "gold", label: "Gold", hex: "#EFC851" },
   { id: "blue", label: "Blue", hex: "#60a5fa" },
   { id: "red", label: "Red", hex: "#f87171" },
   { id: "green", label: "Green", hex: "#34d399" },

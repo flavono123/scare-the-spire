@@ -51,7 +51,7 @@ export function LikeControl({
       className={cn(
         SPIRE_ACTION_CONTROL_CLASS,
         "gap-1 text-xs text-muted-foreground disabled:cursor-not-allowed disabled:opacity-40",
-        liked && "text-[#d4a843]",
+        liked && "sts-text-gold",
         className,
       )}
       aria-label={tip}

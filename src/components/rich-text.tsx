@@ -9,14 +9,14 @@ import {
 
 // BBCode tag -> CSS class mapping
 const COLOR_CLASSES: Record<string, string> = {
-  gold: "spire-gold",
-  blue: "spire-blue",
-  red: "spire-red",
-  green: "spire-green",
-  purple: "spire-purple",
+  gold: "sts-text-gold",
+  blue: "sts-text-blue",
+  red: "sts-text-red",
+  green: "sts-text-green",
+  purple: "sts-text-purple",
+  aqua: "sts-text-aqua",
   orange: "spire-orange",
   pink: "spire-pink",
-  aqua: "spire-aqua",
 };
 
 const EFFECT_CLASSES: Record<string, string> = {
