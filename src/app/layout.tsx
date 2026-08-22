@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Suspense } from "react";
 import { CloudflareWebAnalytics } from "@/components/cloudflare-web-analytics";
+import { ColorSchemeScript } from "@/components/color-scheme-script";
 import { LocaleDocumentAttributes } from "@/components/locale-document-attributes";
 import { SiteNavbar } from "@/components/site-navbar";
+import { ColorSchemeDocumentAttributes } from "@/hooks/use-color-scheme";
 import { getDefaultServiceMetadata } from "@/lib/service-metadata";
 import { SITE_METADATA_BASE } from "@/lib/site-origin";
 import "./globals.css";
@@ -54,13 +56,17 @@ export default function RootLayout({
       lang="ko"
       data-service-locale="ko"
       data-game-locale="kor"
-      className={`${spectral.variable} ${kreon.variable} ${gcBatang.variable} dark`}
+      className={`${spectral.variable} ${kreon.variable} ${gcBatang.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <ColorSchemeScript />
+      </head>
       <body
         suppressHydrationWarning
         className="font-service antialiased bg-background text-foreground"
       >
+        <ColorSchemeDocumentAttributes />
         <Suspense>
           <LocaleDocumentAttributes />
           <SiteNavbar />

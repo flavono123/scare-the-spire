@@ -23,7 +23,7 @@ export const Layout: Story = {
       <StoryStack>
         <StoryNote>
           DESIGN.md 이름. 호출부는 CompendiumIndexLayout / CompendiumIndexTopBar.
-          필터 드로어 bg-[#16162a]는 문서 패널값과 같다. 제목은 text-primary (TEXT_GOLD).
+          필터·상단바는 `bg-sidebar`. 제목은 text-primary (TEXT_GOLD). 검색창 인셋은 게임 크롬이라 다크로 남긴다.
         </StoryNote>
         <CompendiumIndexLayout
           sidebarOpen={sidebarOpen}

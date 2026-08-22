@@ -17,7 +17,8 @@ export const Overview: Story = {
       </h1>
       <StoryNote>
         `docs/DESIGN.md`가 정본이다. 이 Storybook은 그 문서를 그린다. 다크가
-        기본이고, 게임에서 뽑은 색·애셋이 Tailwind `*-500`보다 앞선다.
+        기본이고, 라이트는 프로필에서 켜는 서비스 셸 variant다. 게임에서 뽑은
+        색·애셋이 Tailwind `*-500`보다 앞선다.
       </StoryNote>
       <StoryHeading>보는 순서</StoryHeading>
       <CompareTable

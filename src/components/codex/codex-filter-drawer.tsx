@@ -79,7 +79,7 @@ export function CompendiumIndexLayout({
 
       <aside
         className={`
-          border-r border-white/10 bg-[#16162a] flex flex-col gap-2 overflow-y-auto overscroll-contain transition-all duration-200 shrink-0
+          border-r border-border bg-sidebar flex flex-col gap-2 overflow-y-auto overscroll-contain transition-all duration-200 shrink-0
           ${
             isMobile
               ? `fixed z-50 bottom-0 top-12 left-0 w-52 touch-pan-y ${sidebarOpen ? "translate-x-0 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]" : "-translate-x-full p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]"}`
@@ -113,10 +113,10 @@ export function CompendiumIndexTopBar({
   trailing?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2 border-b border-white/10 bg-[#16162a]/80">
+    <div className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2 border-b border-border bg-sidebar/80">
       <button
         onClick={() => setSidebarOpen((v) => !v)}
-        className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 hover:bg-white/10 text-gray-400"
+        className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-border hover:bg-muted text-muted-foreground"
         aria-label={sidebarOpen ? closeFiltersLabel : openFiltersLabel}
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,7 +129,7 @@ export function CompendiumIndexTopBar({
       </button>
       <h1 className={`min-w-0 truncate text-base font-bold text-primary ${trailing ? "max-[430px]:sr-only" : ""}`}>{title}</h1>
       <div className="min-w-0 flex-1" />
-      <span className={`${trailing ? "hidden sm:inline" : "inline"} text-sm text-gray-500 shrink-0 tabular-nums`}>{count}</span>
+      <span className={`${trailing ? "hidden sm:inline" : "inline"} text-sm text-muted-foreground shrink-0 tabular-nums`}>{count}</span>
       {trailing}
     </div>
   );

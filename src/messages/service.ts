@@ -83,6 +83,14 @@ export const serviceMessages = {
         pet: "펫",
         ancient: "종교",
       },
+      appearance: {
+        label: "화면",
+        dark: "다크",
+        darkHint: "기본 · 권장",
+        light: "라이트",
+        system: "시스템",
+        systemHint: "기기 설정을 따름",
+      },
       actions: {
         idle: "대기",
         attack: "공격",
@@ -1154,6 +1162,14 @@ export const serviceMessages = {
         character: "Character",
         pet: "Pet",
         ancient: "Religion",
+      },
+      appearance: {
+        label: "Appearance",
+        dark: "Dark",
+        darkHint: "default · recommended",
+        light: "Light",
+        system: "System",
+        systemHint: "match device",
       },
       actions: {
         idle: "Idle",

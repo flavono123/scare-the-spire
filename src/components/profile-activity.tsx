@@ -203,7 +203,7 @@ export function ProfileActivity({
     <>
       <section
         data-profile-inquiries
-        className="border-t border-white/10 py-7 sm:py-9"
+        className="border-t border-border py-7 sm:py-9"
       >
         <div className="mb-5 flex items-center gap-3">
           <Image
@@ -220,7 +220,7 @@ export function ProfileActivity({
         </div>
 
         {!ready || inquiriesLoading ? (
-          <div className="flex min-h-28 items-center justify-center gap-2 text-sm text-zinc-500">
+          <div className="flex min-h-28 items-center justify-center gap-2 text-sm text-muted-foreground">
             <LoaderCircle size={17} className="animate-spin" aria-hidden />
             <span>{copy.inquiries.loading}</span>
           </div>
@@ -231,7 +231,7 @@ export function ProfileActivity({
             className="min-h-28"
           />
         ) : inquiries.length === 0 ? (
-          <div className="flex min-h-28 items-center justify-center text-sm text-zinc-500">
+          <div className="flex min-h-28 items-center justify-center text-sm text-muted-foreground">
             {copy.inquiries.empty}
           </div>
         ) : (
@@ -239,29 +239,29 @@ export function ProfileActivity({
             {inquiries.map((inquiry) => (
               <article
                 key={inquiry.id}
-                className="rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3.5"
+                className="rounded-xl border border-border bg-card/40 px-4 py-3.5"
               >
                 <div className="mb-2 flex flex-wrap items-center gap-2 text-[11px]">
-                  <strong className="text-amber-200/85">
+                  <strong className="text-primary">
                     {contactMessages[serviceLocale].categories[inquiry.category].label}
                   </strong>
-                  <span className="rounded-full border border-white/10 px-2 py-0.5 text-zinc-400">
+                  <span className="rounded-full border border-border px-2 py-0.5 text-muted-foreground">
                     {copy.inquiries.status[inquiry.status]}
                   </span>
-                  <time className="ml-auto text-zinc-600" dateTime={inquiry.createdAt}>
+                  <time className="ml-auto text-muted-foreground" dateTime={inquiry.createdAt}>
                     {dateFormatter.format(new Date(inquiry.createdAt))}
                   </time>
                 </div>
-                <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-zinc-200">
+                <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground">
                   {inquiry.message}
                 </p>
-                <div className="mt-3 border-t border-white/[0.07] pt-3">
-                  <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500">
+                <div className="mt-3 border-t border-border pt-3">
+                  <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                     {copy.inquiries.responseTitle}
                   </p>
                   <p className={cn(
                     "whitespace-pre-wrap break-words text-sm leading-relaxed",
-                    inquiry.adminResponse ? "text-amber-50" : "text-zinc-600",
+                    inquiry.adminResponse ? "text-foreground" : "text-muted-foreground",
                   )}>
                     {inquiry.adminResponse ?? copy.inquiries.noResponse}
                   </p>
@@ -274,7 +274,7 @@ export function ProfileActivity({
 
       <section
         data-profile-activity
-        className="border-t border-white/10 pb-16 pt-7 sm:pb-20 sm:pt-9"
+        className="border-t border-border pb-16 pt-7 sm:pb-20 sm:pt-9"
       >
       <div className="mb-5 flex items-center gap-3">
         <Image
@@ -293,7 +293,7 @@ export function ProfileActivity({
       <div aria-labelledby="profile-activity-stats-title">
         <h3
           id="profile-activity-stats-title"
-          className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500"
+          className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground"
         >
           {copy.statsTitle}
         </h3>
@@ -306,12 +306,12 @@ export function ProfileActivity({
             detail={formatTemplate(copy.categoryLikes, { count: activity.totals.likeCount })}
             onClick={() => setFilter("all")}
           />
-          <div className="flex min-h-24 flex-col justify-between rounded-lg border border-amber-300/15 bg-amber-400/[0.035] px-3 py-3">
-            <div className="flex items-center gap-2 text-xs font-semibold text-zinc-400">
+          <div className="flex min-h-24 flex-col justify-between rounded-lg border border-primary/25 bg-primary/[0.08] px-3 py-3">
+            <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
               <SpireLikeIcon size={20} />
               <span>{copy.totalLikes}</span>
             </div>
-            <strong className="text-2xl font-bold tabular-nums text-amber-100">
+            <strong className="text-2xl font-bold tabular-nums text-primary">
               {activity.totals.likeCount.toLocaleString()}
             </strong>
           </div>
@@ -329,11 +329,11 @@ export function ProfileActivity({
         </div>
       </div>
 
-      <div className="mt-7 flex items-center justify-between gap-3 border-b border-white/10 pb-2">
-        <span className="min-w-0 truncate text-sm font-semibold text-zinc-200">
+      <div className="mt-7 flex items-center justify-between gap-3 border-b border-border pb-2">
+        <span className="min-w-0 truncate text-sm font-semibold text-foreground">
           {filter === "all" ? copy.categories.all : categoryLabel(filter, copy)}
         </span>
-        <div className="flex shrink-0 rounded-md border border-white/10 bg-black/20 p-0.5">
+        <div className="flex shrink-0 rounded-md border border-border bg-muted/40 p-0.5">
           {(["latest", "likes"] as const).map((sortOption) => (
             <button
               key={sortOption}
@@ -343,8 +343,8 @@ export function ProfileActivity({
               className={cn(
                 "rounded px-2.5 py-1 text-xs font-semibold transition-colors",
                 sort === sortOption
-                  ? "bg-amber-300/15 text-amber-100"
-                  : "text-zinc-500 hover:text-zinc-200",
+                  ? "bg-primary/15 text-primary"
+                  : "text-muted-foreground hover:text-foreground",
               )}
             >
               {copy.sort[sortOption]}
@@ -354,23 +354,23 @@ export function ProfileActivity({
       </div>
 
       {!ready || activity.loading ? (
-        <div className="flex min-h-40 items-center justify-center gap-2 text-sm text-zinc-500">
+        <div className="flex min-h-40 items-center justify-center gap-2 text-sm text-muted-foreground">
           <LoaderCircle size={17} className="animate-spin" aria-hidden />
           <span>{copy.loading}</span>
         </div>
       ) : authUnavailable || activity.unavailable ? (
         <StorageUnavailableNotice title={copy.unavailableTitle} compact className="min-h-40" />
       ) : activity.items.length === 0 ? (
-        <div className="flex min-h-40 items-center justify-center text-sm text-zinc-500">
+        <div className="flex min-h-40 items-center justify-center text-sm text-muted-foreground">
           {copy.empty}
         </div>
       ) : (
         <>
-          <div className="divide-y divide-white/[0.07]">
+          <div className="divide-y divide-border">
             {activity.items.map((item) => (
               <article
                 key={`${item.category}:${item.activityId}`}
-                className="group grid grid-cols-[2.25rem_minmax(0,1fr)_auto] items-start gap-3 py-3.5 transition-colors hover:bg-white/[0.025] sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:px-2"
+                className="group grid grid-cols-[2.25rem_minmax(0,1fr)_auto] items-start gap-3 py-3.5 transition-colors hover:bg-muted/40 sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:px-2"
               >
                 <Image
                   src={CATEGORY_ICON[item.category]}
@@ -381,13 +381,13 @@ export function ProfileActivity({
                   className="h-9 w-9 object-contain opacity-90"
                 />
                 <div className="min-w-0">
-                  <div className="mb-1 flex items-center gap-2 text-[11px] text-zinc-500">
-                    <span className="font-semibold text-amber-200/75">
+                  <div className="mb-1 flex items-center gap-2 text-[11px] text-muted-foreground">
+                    <span className="font-semibold text-primary">
                       {categoryLabel(item.category, copy)}
                     </span>
                     <time dateTime={item.createdAt}>{dateFormatter.format(new Date(item.createdAt))}</time>
                   </div>
-                  <div className="break-words text-sm leading-relaxed text-zinc-200 group-hover:text-amber-50">
+                  <div className="break-words text-sm leading-relaxed text-foreground">
                     <PostRenderer
                       blocks={resolveRichContentBlocks(item.content, item.contentBlocks, richContentIndexes)}
                       entityMap={entityMap}
@@ -396,7 +396,7 @@ export function ProfileActivity({
                     />
                   </div>
                 </div>
-                <div className="flex items-center gap-2 pl-1 pt-5 text-zinc-500">
+                <div className="flex items-center gap-2 pl-1 pt-5 text-muted-foreground">
                   <span className="inline-flex items-center gap-1 text-xs tabular-nums" title={formatTemplate(copy.likes, { count: item.likeCount })}>
                     <SpireLikeIcon size={16} />
                     {item.likeCount}
@@ -405,7 +405,7 @@ export function ProfileActivity({
                     href={activityHref(item, serviceLocale, gameLocale)}
                     prefetch={false}
                     aria-label={copy.open}
-                    className="rounded-sm p-0.5 transition-colors hover:text-amber-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-amber-300"
+                    className="rounded-sm p-0.5 transition-colors hover:text-primary focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary"
                   >
                     <ChevronRight size={16} className="transition-transform group-hover:translate-x-0.5" aria-hidden />
                   </Link>
@@ -415,7 +415,7 @@ export function ProfileActivity({
           </div>
 
           <div className="mt-5 flex flex-col items-center gap-2">
-            <span className="text-xs tabular-nums text-zinc-600">
+            <span className="text-xs tabular-nums text-muted-foreground">
               {formatTemplate(copy.progress, {
                 shown: activity.items.length.toLocaleString(),
                 total: activity.totalCount.toLocaleString(),
@@ -426,7 +426,7 @@ export function ProfileActivity({
                 type="button"
                 disabled={activity.loadingMore}
                 onClick={() => void activity.loadMore()}
-                className="min-w-32 rounded-md border border-amber-300/25 bg-amber-300/[0.07] px-4 py-2 text-sm font-semibold text-amber-100 transition-colors hover:bg-amber-300/15 disabled:cursor-wait disabled:opacity-60"
+                className="min-w-32 rounded-md border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/15 disabled:cursor-wait disabled:opacity-60"
               >
                 {activity.loadingMore ? copy.loadingMore : copy.loadMore}
               </button>
@@ -462,19 +462,19 @@ function StatButton({
       className={cn(
         "flex min-h-24 flex-col justify-between rounded-lg border px-3 py-3 text-left transition-colors",
         active
-          ? "border-amber-300/40 bg-amber-300/[0.08]"
-          : "border-white/10 bg-white/[0.02] hover:border-amber-300/25 hover:bg-amber-300/[0.04]",
+          ? "border-primary/40 bg-primary/[0.08]"
+          : "border-border bg-card/30 hover:border-primary/25 hover:bg-primary/[0.04]",
       )}
     >
       <div className="flex min-w-0 items-center gap-2">
         <Image src={icon} alt="" width={22} height={22} aria-hidden className="h-5 w-5 shrink-0 object-contain" />
-        <span className="truncate text-xs font-semibold text-zinc-400">{label}</span>
+        <span className="truncate text-xs font-semibold text-muted-foreground">{label}</span>
       </div>
       <div>
-        <strong className="block text-2xl font-bold tabular-nums text-zinc-100">
+        <strong className="block text-2xl font-bold tabular-nums text-foreground">
           {value.toLocaleString()}
         </strong>
-        <span className="text-[11px] text-zinc-600">{detail}</span>
+        <span className="text-[11px] text-muted-foreground">{detail}</span>
       </div>
     </button>
   );

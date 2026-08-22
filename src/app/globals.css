@@ -58,8 +58,9 @@
   }
 }
 
-/* Dark is the default scheme. `.light` is reserved for a later service-shell variant. */
+/* Dark is the default scheme. `.light` is the service-shell variant only. */
 @custom-variant dark (&:not(.light *));
+@custom-variant light (&:where(.light, .light *));
 
 .byrdispatch-status-token {
   position: relative;
@@ -456,8 +457,7 @@
   }
 }
 
-/* Same tokens as :root. Keep html.dark on current layouts so a future .light
-   island can restore dark by nesting. Do not put light values here. */
+/* Same tokens as :root. html.dark is applied when the resolved scheme is dark. */
 .dark {
   color-scheme: dark;
   --background: oklch(0.141 0.005 285.823);
@@ -491,6 +491,42 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
+}
+
+/* Service-shell paper. `--primary` stays TEXT_GOLD. Game chrome is not inverted. */
+.light {
+  color-scheme: light;
+  --background: #f4f1ea;
+  --foreground: oklch(0.22 0.02 70);
+  --card: oklch(0.985 0.008 85);
+  --card-foreground: oklch(0.22 0.02 70);
+  --popover: oklch(0.99 0.006 85);
+  --popover-foreground: oklch(0.22 0.02 70);
+  --primary: #efc851;
+  --primary-foreground: #1a1408;
+  --secondary: oklch(0.92 0.015 80);
+  --secondary-foreground: oklch(0.25 0.02 70);
+  --muted: oklch(0.92 0.012 80);
+  --muted-foreground: oklch(0.45 0.02 70);
+  --accent: oklch(0.93 0.02 85);
+  --accent-foreground: oklch(0.25 0.02 70);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.25 0.02 70 / 14%);
+  --input: oklch(0.25 0.02 70 / 12%);
+  --ring: #efc851;
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.94 0.014 82);
+  --sidebar-foreground: oklch(0.22 0.02 70);
+  --sidebar-primary: #efc851;
+  --sidebar-primary-foreground: #1a1408;
+  --sidebar-accent: oklch(0.90 0.02 80);
+  --sidebar-accent-foreground: oklch(0.25 0.02 70);
+  --sidebar-border: oklch(0.25 0.02 70 / 12%);
+  --sidebar-ring: #efc851;
 }
 
 @layer base {

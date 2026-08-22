@@ -240,7 +240,7 @@ function LanguageDropdown({
         aria-haspopup="menu"
         aria-label={label}
         onClick={() => setOpen((v) => !v)}
-        className="flex h-8 min-w-[4.5rem] max-w-[5.5rem] items-center justify-between gap-1 rounded-md border border-border bg-background/80 px-2 text-left text-xs font-semibold text-foreground shadow-sm transition-colors hover:bg-white/5 sm:min-w-[5.75rem] sm:max-w-[8.25rem] sm:gap-2 sm:px-2.5 sm:text-sm"
+        className="flex h-8 min-w-[4.5rem] max-w-[5.5rem] items-center justify-between gap-1 rounded-md border border-border bg-background/80 px-2 text-left text-xs font-semibold text-foreground shadow-sm transition-colors hover:bg-muted sm:min-w-[5.75rem] sm:max-w-[8.25rem] sm:gap-2 sm:px-2.5 sm:text-sm"
       >
         <span className="truncate">{GAME_LOCALE_NATIVE_LABELS[value]}</span>
         <svg
@@ -585,9 +585,9 @@ function GlobalSearch({
       />
       <div
         ref={panelRef}
-        className="relative z-10 mx-auto w-full max-w-xl overflow-hidden rounded-lg border border-white/10 bg-[#111827] shadow-2xl"
+        className="relative z-10 mx-auto w-full max-w-xl overflow-hidden rounded-lg border border-border bg-popover shadow-2xl"
       >
-        <div className="flex items-center gap-2 border-b border-white/10 px-3 py-2">
+        <div className="flex items-center gap-2 border-b border-border px-3 py-2">
           <svg className="h-4 w-4 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.3-4.3" />
@@ -691,7 +691,7 @@ function GlobalSearch({
       <button
         type="button"
         onClick={openSearch}
-        className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-2.5 text-left text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:bg-white/[0.07] sm:max-w-[18rem] lg:max-w-[22rem]"
+        className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-border bg-muted/40 px-2.5 text-left text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:bg-muted/70 sm:max-w-[18rem] lg:max-w-[22rem]"
         aria-label={copy.placeholder}
       >
         <svg className="h-4 w-4 shrink-0 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -699,7 +699,7 @@ function GlobalSearch({
           <path d="m21 21-4.3-4.3" />
         </svg>
         <span className="min-w-0 flex-1 truncate">{copy.placeholder}</span>
-        <kbd className="hidden shrink-0 rounded border border-white/10 bg-black/20 px-1.5 py-0.5 font-mono text-[10px] text-gray-500 sm:inline">
+        <kbd className="hidden shrink-0 rounded border border-border bg-muted/50 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:inline">
           ⌘K
         </kbd>
       </button>
@@ -786,7 +786,7 @@ export function SiteNavbar() {
             items={legacySts1NavItems(sts1NavItems, serviceLocale)}
             align="right"
           />
-          <div className="hidden border-l border-white/10 pl-1 xl:block">
+          <div className="hidden border-l border-border pl-1 xl:block">
             <NavIconLink
               href={contactHref}
               icon="/images/sts2/relics/tiny_mailbox.webp"
@@ -812,7 +812,7 @@ export function SiteNavbar() {
           prefetch={false}
           aria-label={contactCopy.navLabel}
           data-contact-launcher="mobile"
-          className="group fixed right-3 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-amber-200/20 bg-[#0b0a12]/90 shadow-[0_8px_28px_rgba(0,0,0,0.55)] backdrop-blur-sm transition-[border-color,background-color,transform] bottom-[calc(0.75rem+env(safe-area-inset-bottom))] hover:-translate-y-0.5 hover:border-amber-200/45 hover:bg-[#17121a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-200/70 xl:hidden motion-reduce:transform-none"
+          className="group fixed right-3 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background/90 shadow-[0_8px_28px_rgba(0,0,0,0.18)] backdrop-blur-sm transition-[border-color,background-color,transform] bottom-[calc(0.75rem+env(safe-area-inset-bottom))] hover:-translate-y-0.5 hover:border-primary/45 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 xl:hidden motion-reduce:transform-none"
         >
           <Image
             src="/images/sts2/relics/tiny_mailbox.webp"
@@ -821,7 +821,7 @@ export function SiteNavbar() {
             height={34}
             className="h-8 w-8 object-contain drop-shadow-md transition-transform group-hover:scale-110"
           />
-          <span className="pointer-events-none absolute bottom-full right-0 mb-2 whitespace-nowrap rounded-md border border-amber-200/15 bg-black/90 px-2 py-1 text-xs font-bold text-amber-100 opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+          <span className="pointer-events-none absolute bottom-full right-0 mb-2 whitespace-nowrap rounded-md border border-border bg-popover px-2 py-1 text-xs font-bold text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
             {contactCopy.navLabel}
           </span>
         </Link>

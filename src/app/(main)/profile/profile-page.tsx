@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AncientNodeRender } from "@/components/codex/ancient-node-render";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
+import { ColorSchemePicker, type ColorSchemePickerCopy } from "@/components/color-scheme-picker";
 import { ProfileActivity, type ProfileActivityCopy } from "@/components/profile-activity";
 import Image from "@/components/ui/static-image";
 import { useUserProfile } from "@/hooks/use-user-profile";
@@ -58,6 +59,7 @@ export interface ProfilePageCopy {
     pet: string;
     ancient: string;
   };
+  appearance: ColorSchemePickerCopy;
   actions: {
     idle: string;
     attack: string;
@@ -169,7 +171,7 @@ export default function ProfilePage({
         data-profile-hero
         className="flex h-[calc(100svh-3.25rem)] flex-col gap-3 overflow-hidden py-2 md:h-[18rem] lg:h-[20rem] xl:h-[21rem]"
       >
-        <header className="flex h-10 shrink-0 items-center justify-between gap-3 border-b border-white/10 pb-2">
+        <header className="flex h-10 shrink-0 items-center justify-between gap-3 border-b border-border pb-2">
           <div className="flex min-w-0 items-center gap-2">
             <Image
               src={character?.iconUrl ?? "/images/sts2/characters/character_icon_necrobinder.webp"}
@@ -194,14 +196,17 @@ export default function ProfilePage({
                   event.currentTarget.blur();
                 }
               }}
-              className="min-w-0 bg-transparent text-lg font-bold text-zinc-100 outline-none placeholder:text-zinc-600 focus:text-amber-100"
+              className="min-w-0 bg-transparent text-lg font-bold text-foreground outline-none placeholder:text-muted-foreground focus:text-primary"
             />
           </div>
-          {copy.devBadge && (
-            <span className="shrink-0 rounded border border-amber-300/30 bg-amber-400/10 px-2 py-0.5 text-[11px] font-semibold text-amber-100">
-              {copy.devBadge}
-            </span>
-          )}
+          <div className="flex shrink-0 items-center gap-2">
+            <ColorSchemePicker copy={copy.appearance} />
+            {copy.devBadge ? (
+              <span className="shrink-0 rounded border border-primary/30 bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                {copy.devBadge}
+              </span>
+            ) : null}
+          </div>
         </header>
 
         <section
@@ -300,7 +305,7 @@ function ProfileRow({
   return (
     <div className="grid min-h-0 grid-cols-[4rem_minmax(0,1fr)] items-center gap-2">
       <div className="flex items-center">
-        <h2 className="text-sm font-bold text-zinc-100">{label}</h2>
+        <h2 className="text-sm font-bold text-foreground">{label}</h2>
       </div>
       <div className="min-w-0 self-center">{carousel}</div>
     </div>
@@ -574,8 +579,8 @@ function SkinOptionBar({
             className={cn(
               "h-6 rounded px-2 text-[11px] font-semibold transition-colors",
               active
-                ? "text-amber-100 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]"
-                : "text-zinc-500 hover:text-zinc-300",
+                ? "text-primary drop-shadow-[0_0_8px_rgba(239,200,81,0.6)]"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             {option.label}

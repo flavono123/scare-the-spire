@@ -75,7 +75,8 @@ export const SemanticSurfaces: Story = {
   render: () => (
     <StoryStack>
       <StoryNote>
-        `--primary`는 TEXT_GOLD다. `:root`가 다크 정본이다. `html.dark`는 같은 값의 호환 클래스다.
+        `--primary`는 TEXT_GOLD다. `:root`가 다크 정본이다. 라이트는 `.light` 셸 variant이며
+        `--primary`는 그대로다.
       </StoryNote>
       <div className="grid gap-3 sm:grid-cols-2">
         <Swatch label="background" value="bg-background" className="bg-background" />
@@ -91,6 +92,31 @@ export const SemanticSurfaces: Story = {
         <p className="text-primary">text-primary — 골드</p>
       </div>
     </StoryStack>
+  ),
+};
+
+export const SemanticSurfacesLight: Story = {
+  name: "shadcn 의미 토큰 (라이트 셸)",
+  render: () => (
+    <div className="light rounded-lg border border-border bg-background p-4 text-foreground">
+      <StoryStack>
+        <StoryNote>
+          워크숍 html은 다크다. 이 칸만 `.light`다. `--primary`는 같은 TEXT_GOLD.
+          패치 Worker와 Storybook 캔버스는 라이트하지 않는다.
+        </StoryNote>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Swatch label="background 종이" value="#f4f1ea" className="bg-background" />
+          <Swatch label="card" value="bg-card" className="bg-card" />
+          <Swatch label="sidebar" value="bg-sidebar" className="bg-sidebar" />
+          <Swatch label="primary = gold" value="bg-primary" className="bg-primary" />
+        </div>
+        <div className="space-y-1 rounded-lg border border-border bg-card p-3">
+          <p className="text-foreground">foreground — 주요 텍스트</p>
+          <p className="text-muted-foreground">muted-foreground — 보조</p>
+          <p className="text-primary">text-primary — 골드</p>
+        </div>
+      </StoryStack>
+    </div>
   ),
 };
 
