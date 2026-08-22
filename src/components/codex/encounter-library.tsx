@@ -42,8 +42,8 @@ import {
   type FilterSortDir,
 } from "./codex-filters";
 import {
-  CodexLibraryShell,
-  CodexLibraryTopBar,
+  CompendiumIndexLayout,
+  CompendiumIndexTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { EncounterDetail } from "./encounter-detail";
@@ -283,7 +283,7 @@ export function EncounterLibrary({
   const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 
   return (
-    <CodexLibraryShell
+    <CompendiumIndexLayout
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
       isMobile={isMobile}
@@ -407,7 +407,7 @@ export function EncounterLibrary({
 
       {/* Main */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        <CodexLibraryTopBar
+        <CompendiumIndexTopBar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           closeFiltersLabel={serviceText.common.closeFilters}
@@ -474,7 +474,7 @@ export function EncounterLibrary({
           </div>
         </div>
       )}
-    </CodexLibraryShell>
+    </CompendiumIndexLayout>
   );
 }
 

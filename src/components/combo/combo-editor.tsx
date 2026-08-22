@@ -14,6 +14,7 @@ import {
 } from "@/lib/combo-types";
 import { HISTORY_COURSE_RELIC_IMAGE } from "@/lib/history-run-reference";
 import type { ServiceLocale } from "@/lib/i18n";
+import { SERVICE_ACCENT_CLASS } from "@/lib/service-link-classes";
 import { serviceMessages } from "@/messages/service";
 import { ComboResourcePicker } from "./combo-resource-picker";
 import { ComboHistoryRunPicker } from "./combo-history-run-picker";
@@ -167,13 +168,13 @@ export function ComboEditor({
           data-combo-youtube-guide
         >
           <Youtube
-            className="mt-0.5 h-3.5 w-3.5 shrink-0 spire-aqua opacity-70"
+            className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${SERVICE_ACCENT_CLASS} opacity-70`}
             aria-hidden="true"
           />
           <p>
             {youtubeGuideBeforeLink}
             <span
-              className="font-semibold spire-aqua opacity-70"
+              className={`font-semibold ${SERVICE_ACCENT_CLASS} opacity-70`}
               data-variant="ghost"
             >
               {copy.youtubeGuideLink}

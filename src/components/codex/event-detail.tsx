@@ -65,7 +65,7 @@ import {
   getRelatedPotionIdsForEvent,
   getRelatedRelicIdsForEvent,
 } from "@/lib/codex-references";
-import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
 const GAME_TEXT_SHADOW = "3px 2px 0 rgba(0,0,0,0.5), 0 0 12px rgba(0,0,0,0.75)";
@@ -2291,7 +2291,7 @@ export function EventDetail({
             </div>
           </section>
 
-          <EntityReferenceGroupLinks
+          <RelatedResourceLinks
             gameUi={gameUi}
             groups={[
               { kind: "card", targets: relatedCardTargets },

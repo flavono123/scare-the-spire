@@ -14,7 +14,7 @@ export const Divergence: Story = {
   render: () => (
     <StoryStack>
       <StoryNote>
-        DESIGN.md가 정본이다. 아래는 아직 코드가 문서를 못 따라간 것.
+        DESIGN.md가 정본이다. 아래는 라이트모드 전에 남는 것.
       </StoryNote>
       <CompareTable
         headers={["항목", "정본", "아직"]}
@@ -25,24 +25,14 @@ export const Divergence: Story = {
             "html.dark 클래스는 레이아웃에 남아 있음. 값은 :root와 같음",
           ],
           [
-            "링크",
-            "게임 리소스 gold, 섀소식·외부 aqua",
-            "섀소식은 아직 cyan-200. 유틸 정리 전",
-          ],
-          [
             "페이지 배경",
             "의미 토큰 한 벌",
             "ServiceBackground hex, theme-color, --background가 제각각",
           ],
           [
-            "컴포넌트 이름",
-            "CompendiumIndexLayout, RelatedResourceLinks",
-            "호출부는 아직 Codex* / EntityReference*",
-          ],
-          [
-            "검색 라벨",
-            "인챈트",
-            "통합검색은 마법부여",
+            "이야기 좋아요",
+            "강령의 극 하나",
+            "운영 감정 팔레트가 깨지지 않게 보류",
           ],
         ]}
       />
@@ -50,11 +40,11 @@ export const Divergence: Story = {
       <CompareTable
         headers={["층", "상태"]}
         rows={[
-          ["골드", "TEXT_GOLD #EFC851 = spire-gold = --primary. 셸 잔여 yellow-500/#d4a843 정리"],
-          ["[green]/[red]", "StsColors. 캐릭터 spire-green/red와 분리"],
-          ["폰트", "font-service / font-game-title / font-game-text"],
-          ["막 파랑", "spire-blue #60a5fa. 게임 본문 [blue]와 다름"],
-          ["버프·너프 모션", "sine / jitter"],
+          ["골드", "TEXT_GOLD #EFC851 = spire-gold = --primary"],
+          ["링크", "리소스 gold, 섀소식·외부 TEXT_AQUA. cyan 링크 제거"],
+          ["이름", "호출부 CompendiumIndexLayout / RelatedResourceLinks"],
+          ["검색 라벨", "인챈트"],
+          ["백과사전 좋아요 스킨", "타일 오버레이 강령의 극 + TEXT_GOLD"],
         ]}
       />
     </StoryStack>

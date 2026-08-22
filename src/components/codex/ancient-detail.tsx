@@ -17,7 +17,7 @@ import {
 } from "@/lib/codex-service";
 import type { CodexAncient, CodexCard, CodexCharacter } from "@/lib/codex-types";
 import { EVENT_ACT_UNKNOWN } from "@/lib/codex-types";
-import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import { AncientDialogueViewer } from "./ancient-dialogue-viewer";
 import { AncientSceneStage } from "./ancient-scene-stage";
@@ -226,7 +226,7 @@ export function AncientDetail({
             </div>
           </section>
 
-          <EntityReferenceGroupLinks
+          <RelatedResourceLinks
             gameUi={gameUi}
             serviceLocale={serviceLocale}
             groups={[
@@ -235,7 +235,7 @@ export function AncientDetail({
           >
             <Link
               href={localizeHref(`/compendium/relics#ancient-${ancient.id.toLowerCase()}`, serviceLocale)}
-              className={`${relatedCardTargets.length > 0 ? "mt-3 border-t border-white/10 pt-3" : ""} spire-aqua flex min-h-11 items-center gap-2 font-game-text text-sm font-bold transition-[filter] hover:brightness-125`}
+              className={`${relatedCardTargets.length > 0 ? "mt-3 border-t border-white/10 pt-3" : ""} spire-gold flex min-h-11 items-center gap-2 font-game-text text-sm font-bold transition-[filter] hover:brightness-125`}
             >
               <span className="h-7 w-7 shrink-0" aria-hidden>
                 {rewardRelicImageUrl && (
@@ -244,7 +244,7 @@ export function AncientDetail({
               </span>
               {serviceText.ancientsView.rewardRelics}
             </Link>
-          </EntityReferenceGroupLinks>
+          </RelatedResourceLinks>
 
           <InfoRailSection title={detailLabels.patchHistory}>
             <STS2ChangeHistory

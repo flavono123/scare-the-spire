@@ -2,9 +2,9 @@
 
 import type { ServiceLocale } from "@/lib/i18n";
 import { EngagementSpinner } from "@/components/engagement-spinner";
+import { SpireLikeIcon } from "@/components/spire-icon";
+import { TEXT_CREAM, TEXT_GOLD } from "@/lib/sts2-card-style";
 
-const GOLD = "#d6b25e";
-const TEXT = "#f5f0df";
 const MUTED = "#95856b";
 const SHADOW = "0 1px 0 #000, 0 0 3px #000, 0 0 6px rgba(0,0,0,0.85)";
 
@@ -26,7 +26,6 @@ export function EngagementStatsText({
   className = "",
 }: EngagementStatsTextProps) {
   const commentsLabel = serviceLocale === "ko" ? "댓글:" : "Comments:";
-  const likesLabel = serviceLocale === "ko" ? "좋아요:" : "Likes:";
   const value = unavailable ? "-" : null;
 
   if (loading) {
@@ -39,14 +38,14 @@ export function EngagementStatsText({
 
   return (
     <span
-      className={`font-service whitespace-nowrap font-bold leading-none ${className}`}
+      className={`font-service inline-flex items-center gap-1 whitespace-nowrap font-bold leading-none ${className}`}
       style={{ textShadow: SHADOW }}
     >
-      <span style={{ color: GOLD }}>{commentsLabel}</span>{" "}
-      <span className="tabular-nums" style={{ color: TEXT }}>{value ?? commentCount}</span>
-      <span className="px-1" style={{ color: MUTED }}>·</span>
-      <span style={{ color: GOLD }}>{likesLabel}</span>{" "}
-      <span className="tabular-nums" style={{ color: TEXT }}>{value ?? likeCount}</span>
+      <span style={{ color: TEXT_GOLD }}>{commentsLabel}</span>{" "}
+      <span className="tabular-nums" style={{ color: TEXT_CREAM }}>{value ?? commentCount}</span>
+      <span className="px-0.5" style={{ color: MUTED }}>·</span>
+      <SpireLikeIcon size={11} />
+      <span className="tabular-nums" style={{ color: TEXT_CREAM }}>{value ?? likeCount}</span>
     </span>
   );
 }

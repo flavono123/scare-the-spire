@@ -18,7 +18,7 @@ import type {
   EpochAffiliation,
 } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
-import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { RichDescription } from "./rich-description";
 import { GameCheckboxToggle } from "./game-checkbox";
 import {
@@ -361,7 +361,7 @@ export function EpochDetail({
             </div>
           </section>
 
-          <EntityReferenceGroupLinks
+          <RelatedResourceLinks
             gameUi={gameUi}
             serviceLocale={serviceLocale}
             groups={[

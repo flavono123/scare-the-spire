@@ -158,8 +158,8 @@ import { SearchBar } from "./search-bar";
 import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
 import {
-  CodexLibraryShell,
-  CodexLibraryTopBar,
+  CompendiumIndexLayout,
+  CompendiumIndexTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import {
@@ -613,7 +613,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 
   return (
-    <CodexLibraryShell
+    <CompendiumIndexLayout
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
       isMobile={isMobile}
@@ -796,7 +796,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        <CodexLibraryTopBar
+        <CompendiumIndexTopBar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           closeFiltersLabel={serviceText.common.closeFilters}
@@ -895,6 +895,6 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
           </div>
         </div>
       )}
-    </CodexLibraryShell>
+    </CompendiumIndexLayout>
   );
 }

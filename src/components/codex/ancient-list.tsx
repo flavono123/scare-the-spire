@@ -40,8 +40,8 @@ import {
   type FilterSortDir,
 } from "./codex-filters";
 import {
-  CodexLibraryShell,
-  CodexLibraryTopBar,
+  CompendiumIndexLayout,
+  CompendiumIndexTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { SearchBar } from "./search-bar";
@@ -269,7 +269,7 @@ export function AncientList({
   return (
     <>
       <div className="contents" inert={selectedAncient ? true : undefined} aria-hidden={selectedAncient ? true : undefined}>
-        <CodexLibraryShell
+        <CompendiumIndexLayout
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           isMobile={isMobile}
@@ -313,7 +313,7 @@ export function AncientList({
           )}
         >
       <main className="flex-1 flex flex-col overflow-hidden">
-        <CodexLibraryTopBar
+        <CompendiumIndexTopBar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           closeFiltersLabel={serviceText.common.closeFilters}
@@ -365,7 +365,7 @@ export function AncientList({
         </div>
       </main>
 
-        </CodexLibraryShell>
+        </CompendiumIndexLayout>
       </div>
 
       {selectedAncient && (

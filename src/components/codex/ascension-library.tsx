@@ -31,8 +31,8 @@ import { AscensionDetail } from "./ascension-detail";
 import { AscensionToken } from "./ascension-token";
 import { DescriptionText } from "./codex-description";
 import {
-  CodexLibraryShell,
-  CodexLibraryTopBar,
+  CompendiumIndexLayout,
+  CompendiumIndexTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { GameHoverTip } from "./hover-tip";
@@ -161,7 +161,7 @@ export function AscensionLibrary({
   }, [ascensions, selectedAscensionId]);
 
   return (
-    <CodexLibraryShell
+    <CompendiumIndexLayout
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
       isMobile={isMobile}
@@ -175,7 +175,7 @@ export function AscensionLibrary({
       )}
     >
       <main className="flex flex-1 flex-col overflow-hidden" data-ascension-library>
-        <CodexLibraryTopBar
+        <CompendiumIndexTopBar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           closeFiltersLabel={serviceText.common.closeFilters}
@@ -223,6 +223,6 @@ export function AscensionLibrary({
           </div>
         </div>
       )}
-    </CodexLibraryShell>
+    </CompendiumIndexLayout>
   );
 }

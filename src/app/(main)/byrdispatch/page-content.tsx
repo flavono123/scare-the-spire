@@ -36,6 +36,7 @@ import {
   isConfiguredByrdispatchMigrationTargetHost,
 } from "@/lib/byrdispatch-static";
 import { OwnPostMark } from "@/components/own-post-mark";
+import { SERVICE_ACCENT_CLASS } from "@/lib/service-link-classes";
 import { serviceMessages } from "@/messages/service";
 import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
 
@@ -285,8 +286,8 @@ function ServiceHeading({
   const titleClassName = section.isNotice
     ? "text-pink-100"
     : canLink
-      ? "text-cyan-200 transition-colors hover:text-cyan-100"
-      : "text-cyan-200";
+      ? `${SERVICE_ACCENT_CLASS} transition-colors hover:brightness-125`
+      : SERVICE_ACCENT_CLASS;
   const content = (
     <>
       {PROFILE_SERVICE_TITLES.has(normalizeServiceTitle(section.title)) ? (
@@ -398,7 +399,7 @@ export function ByrdispatchRichText({
       <Link
         key={`service-${matchIndex}`}
         href={label === "byrdispatch" ? href : localizeHrefWithGameLocale(href, serviceLocale, gameLocale)}
-        className="inline-flex items-center gap-1 align-[-0.2em] font-semibold text-cyan-200 transition-colors hover:text-cyan-100"
+        className={`inline-flex items-center gap-1 align-[-0.2em] font-semibold ${SERVICE_ACCENT_CLASS} transition-colors hover:brightness-125`}
       >
         {label && PROFILE_SERVICE_TITLES.has(label) ? (
           <ByrdispatchProfileIcon className="inline-block h-4 w-4 shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]" />

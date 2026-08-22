@@ -54,8 +54,8 @@ import {
 } from "./codex-filters";
 import { GameCheckboxToggle } from "./game-checkbox";
 import {
-  CodexLibraryShell,
-  CodexLibraryTopBar,
+  CompendiumIndexLayout,
+  CompendiumIndexTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import {
@@ -354,7 +354,7 @@ export function PotionLibrary({
   }));
 
   return (
-    <CodexLibraryShell
+    <CompendiumIndexLayout
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
       isMobile={isMobile}
@@ -443,7 +443,7 @@ export function PotionLibrary({
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        <CodexLibraryTopBar
+        <CompendiumIndexTopBar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           closeFiltersLabel={serviceText.common.closeFilters}
@@ -533,7 +533,7 @@ export function PotionLibrary({
           </div>
         </div>
       )}
-    </CodexLibraryShell>
+    </CompendiumIndexLayout>
   );
 }
 

@@ -23,8 +23,10 @@ export const Inventory: Story = {
         rows={[
           ["골드", "TEXT_GOLD 하나. 셸 강조는 --primary. yellow-500/#d4a843 잔여 정리"],
           ["호버 팁", "둘 유지. 9-slice 상수만 공유"],
-          ["이야기 감정 팔레트", "강령의 극 LikeButton. reaction_type 컬럼은 나중에"],
+          ["이야기 감정 팔레트", "운영 깨짐 위험으로 보류. 백과사전 타일만 강령의 극 스킨"],
           ["댓글·프로필 좋아요 아이콘", "같은 SpireLikeIcon"],
+          ["링크", "리소스 gold / 섀소식·외부 aqua"],
+          ["호출부 이름", "CompendiumIndexLayout / RelatedResourceLinks"],
           ["STS1 Badge", "deprecated. 새 UI에 안 씀"],
         ]}
       />
@@ -39,7 +41,7 @@ export const Inventory: Story = {
           ],
           [
             "이거아님저거 아랫줄",
-            "좋아요 옆에 투표가 있음. 테이블도 아직 별도",
+            "좋아요 옆에 투표가 있음. 테이블은 병합하지 않음",
           ],
           [
             "리소스 고르는 창 3종",
@@ -60,7 +62,7 @@ export const Inventory: Story = {
           ["이야기 쓰기 창", "ServiceModalFrame 후보"],
           ["케미컬X 작성", "목록 인라인. 창이 없는 게 제품"],
           ["STS1 브라우저 / CharacterBadge", "옛 사이트. 합치지 않음"],
-          ["통합검색 마법부여", "백과사전은 인챈트"],
+          ["통합검색 인챈트", "백과사전과 같은 게임 번역"],
           ["Composer 제목 색", "primary vs gold 잔여"],
         ]}
       />

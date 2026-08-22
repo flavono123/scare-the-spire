@@ -272,7 +272,7 @@ export function ProdRunsDevSection() {
                           prefetch={false}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-zinc-800 bg-black/20 text-zinc-300 transition hover:border-cyan-400/60 hover:text-cyan-200"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-zinc-800 bg-black/20 text-zinc-300 transition hover:border-primary/60 hover:text-primary"
                           title="production에서 열기"
                         >
                           <ExternalLink className="h-3.5 w-3.5" aria-hidden />

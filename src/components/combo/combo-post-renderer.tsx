@@ -12,6 +12,7 @@ import {
   isYouTubeVideoId,
   youtubeWatchUrl,
 } from "@/lib/youtube-reference";
+import { SERVICE_LINK_CLASS } from "@/lib/service-link-classes";
 
 interface ComboPostRendererProps {
   blocks: PostBlock[];
@@ -80,7 +81,7 @@ export function ComboPostRenderer({
               href={youtubeWatchUrl(block.videoId)}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold spire-aqua underline decoration-cyan-300/30 underline-offset-2 transition-colors hover:text-cyan-200 hover:decoration-cyan-200"
+              className={SERVICE_LINK_CLASS}
             >
               {block.title}
             </a>

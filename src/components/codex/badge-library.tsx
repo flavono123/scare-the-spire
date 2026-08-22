@@ -24,8 +24,8 @@ import { BadgeDetail } from "./badge-detail";
 import { DescriptionText } from "./codex-description";
 import { FilterSection, ToggleButton } from "./codex-filters";
 import {
-  CodexLibraryShell,
-  CodexLibraryTopBar,
+  CompendiumIndexLayout,
+  CompendiumIndexTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { GameHoverTip } from "./hover-tip";
@@ -209,7 +209,7 @@ export function BadgeLibrary({
   }
 
   return (
-    <CodexLibraryShell
+    <CompendiumIndexLayout
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
       isMobile={isMobile}
@@ -254,7 +254,7 @@ export function BadgeLibrary({
       )}
     >
       <main className="flex flex-1 flex-col overflow-hidden" data-badge-library>
-        <CodexLibraryTopBar
+        <CompendiumIndexTopBar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           closeFiltersLabel={serviceText.common.closeFilters}
@@ -301,6 +301,6 @@ export function BadgeLibrary({
           </div>
         </div>
       )}
-    </CodexLibraryShell>
+    </CompendiumIndexLayout>
   );
 }

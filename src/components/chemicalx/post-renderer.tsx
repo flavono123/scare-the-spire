@@ -16,6 +16,7 @@ import {
   youtubeWatchUrl,
 } from "@/lib/youtube-reference";
 import { historyRunPlainText } from "@/lib/history-run-reference";
+import { SERVICE_LINK_CLASS } from "@/lib/service-link-classes";
 
 const STAR_ICON_SRC = "/images/game-assets/card-misc/star_icon.png";
 
@@ -162,7 +163,7 @@ export function PostRenderer({
                 href={youtubeWatchUrl(block.videoId)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold spire-aqua"
+                className={SERVICE_LINK_CLASS}
               >
                 {block.title}
               </a>

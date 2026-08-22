@@ -47,8 +47,8 @@ import {
 } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
 import {
-  CodexLibraryShell,
-  CodexLibraryTopBar,
+  CompendiumIndexLayout,
+  CompendiumIndexTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 
@@ -199,7 +199,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
   const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 
   return (
-    <CodexLibraryShell
+    <CompendiumIndexLayout
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
       isMobile={isMobile}
@@ -255,7 +255,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        <CodexLibraryTopBar
+        <CompendiumIndexTopBar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           closeFiltersLabel={serviceText.common.closeFilters}
@@ -352,7 +352,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
           </div>
         </div>
       )}
-    </CodexLibraryShell>
+    </CompendiumIndexLayout>
   );
 }
 

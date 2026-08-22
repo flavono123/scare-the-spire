@@ -81,7 +81,7 @@ import {
   getAfflictionForcedCost,
   getAfflictionPreviewAmount,
 } from "@/lib/sts2-affliction-rules";
-import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import { ScrollableBoundedCarousel } from "./bounded-carousel";
 
@@ -812,7 +812,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
             </div>
           </section>
 
-          <EntityReferenceGroupLinks
+          <RelatedResourceLinks
             gameUi={gameUi}
             groups={[
               { kind: "ancient", targets: relatedAncientTargets },

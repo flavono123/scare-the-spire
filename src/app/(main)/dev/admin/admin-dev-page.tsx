@@ -580,7 +580,7 @@ function StoryLink({ storyId }: { storyId: string }) {
     <Link
       href={href}
       prefetch={false}
-      className="text-[11px] text-cyan-300 underline-offset-4 hover:underline"
+      className="text-[11px] sts-text-aqua underline-offset-4 hover:underline"
     >
       {storyId}
     </Link>
@@ -870,7 +870,7 @@ export default async function SupabaseAdminPage({
                       </td>
                       <td className="px-3 py-2"><code className="text-[11px] text-muted-foreground">{story.source ?? "-"}</code></td>
                       <td className="px-3 py-2">
-                        <Link href={productionHref(`/#community:${story.id}`)} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
+                        <Link href={productionHref(`/#community:${story.id}`)} prefetch={false} className="sts-text-aqua underline-offset-4 hover:underline">
                           {story.id.slice(0, 8)}
                         </Link>
                       </td>
@@ -924,7 +924,7 @@ export default async function SupabaseAdminPage({
                         <td className="px-3 py-2 text-right tabular-nums">{numberValue(votes?.total_count).toLocaleString("ko-KR")}</td>
                         <td className="px-3 py-2">{truncate(post.reason, 100)}</td>
                         <td className="px-3 py-2">
-                          <Link href={productionHref(`/this-or-that/${post.id}`)} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
+                          <Link href={productionHref(`/this-or-that/${post.id}`)} prefetch={false} className="sts-text-aqua underline-offset-4 hover:underline">
                             {post.id.slice(0, 8)}
                           </Link>
                         </td>
@@ -963,7 +963,7 @@ export default async function SupabaseAdminPage({
                       <td className="px-3 py-2 text-lime-200">{post.nickname}</td>
                       <td className="px-3 py-2">{truncate(blockText(post.content) || post.content_text, 80)}</td>
                       <td className="px-3 py-2">
-                        <Link href={productionHref(`/chemical-x/${post.id}`)} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
+                        <Link href={productionHref(`/chemical-x/${post.id}`)} prefetch={false} className="sts-text-aqua underline-offset-4 hover:underline">
                           {post.id.slice(0, 8)}
                         </Link>
                       </td>
@@ -999,7 +999,7 @@ export default async function SupabaseAdminPage({
                     <tr key={post.id} className="border-t border-border/70 align-top">
                       <td className="whitespace-nowrap px-3 py-2 text-xs text-muted-foreground">{formatDate(post.created_at)}</td>
                       <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{post.env}</code></td>
-                      <td className="px-3 py-2 text-cyan-200">{post.nickname}</td>
+                      <td className="px-3 py-2 text-primary">{post.nickname}</td>
                       <td className="px-3 py-2">
                         <code className="text-[11px] text-muted-foreground">
                           {truncate(post.resources.map((resource) => `${resource.type}:${resource.id}`).join(", "), 100)}
@@ -1007,7 +1007,7 @@ export default async function SupabaseAdminPage({
                       </td>
                       <td className="px-3 py-2">{truncate(blockText(post.content) || post.content_text, 100)}</td>
                       <td className="px-3 py-2">
-                        <Link href={productionHref(`/c-c-c-combo/${post.id}`)} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
+                        <Link href={productionHref(`/c-c-c-combo/${post.id}`)} prefetch={false} className="sts-text-aqua underline-offset-4 hover:underline">
                           {post.id.slice(0, 8)}
                         </Link>
                       </td>
@@ -1049,7 +1049,7 @@ export default async function SupabaseAdminPage({
                       </td>
                       <td className="px-3 py-2">{truncate(blockText(post.content) || post.content_text, 100)}</td>
                       <td className="px-3 py-2">
-                        <Link href={productionHref(`/transfigure/${post.id}`)} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
+                        <Link href={productionHref(`/transfigure/${post.id}`)} prefetch={false} className="sts-text-aqua underline-offset-4 hover:underline">
                           {post.id.slice(0, 8)}
                         </Link>
                       </td>
@@ -1096,7 +1096,7 @@ export default async function SupabaseAdminPage({
                       <td className="px-3 py-2"><code className="text-[11px] text-muted-foreground">{run.build}</code></td>
                       <td className="px-3 py-2"><code className="text-[11px] text-muted-foreground">{run.seed}</code></td>
                       <td className="px-3 py-2">
-                        <Link href={productionHref(`/history-course/${run.id}`)} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
+                        <Link href={productionHref(`/history-course/${run.id}`)} prefetch={false} className="sts-text-aqua underline-offset-4 hover:underline">
                           {run.id}
                         </Link>
                       </td>

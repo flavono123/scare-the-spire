@@ -81,7 +81,7 @@ HUD 숫자(히스토리 코스 `topbar-num-gold` `#f8d56a`)는 검정 외곽선 
 | 너프 | `TEXT_RED` + jitter | |
 | 고대의 존재 카테고리 | blue | 개별 리소스 링크는 gold |
 
-링크 색(게임 리소스 gold / 섀소식·외부 aqua)은 위 층이 코드에 붙은 뒤에 맞춘다. 지금은 규칙을 바꾸지 않는다.
+링크 색(게임 리소스 gold / 섀소식·외부 aqua)은 `src/lib/service-link-classes.ts`가 정본이다. Tailwind `cyan-*`는 링크에 쓰지 않는다. 디펙트 `.spire-aqua`와 이거아님저거 왼쪽 투표 크롬은 캐릭터/투표 층이라 링크 aqua(`TEXT_AQUA`)와 다르다.
 
 ## 전체 톤
 
@@ -120,11 +120,11 @@ HUD 숫자(히스토리 코스 `topbar-num-gold` `#f8d56a`)는 검정 외곽선 
 
 ## 좋아요 — 강령의 극의 하나
 
-보이는 좋아요는 전부 `SpireLikeIcon`(`necro_mastery_power.webp`, 강령의 극의)이다. 유휴는 ghost wax, 호버/활성은 `TEXT_GOLD`.
+백과사전·장난감 상자에서 보이는 좋아요는 `SpireLikeIcon`(`necro_mastery_power.webp`, 강령의 극의)이다. 유휴는 ghost wax, 호버/활성은 `TEXT_GOLD`.
 
-- 이야기 8감정 팔레트(원형 이모트 휠)는 쓰지 않는다. 기존 `likes` 행은 사용자당 1행이므로 합산 없이 그대로 좋아요 수로 읽는다. `reaction_type` 컬럼은 배포된 옛 클라이언트가 사라진 뒤에 걷는다.
+- 이야기 8감정 팔레트는 운영에서 깨질 수 있어 **이번에는 바꾸지 않는다.** 백과사전 타일·상세 좋아요만 강령의 극 스킨이다. `reaction_type` 컬럼은 그대로 둔다.
 - 장난감 상자(코옴보/변형/케미컬X/조각모음)와 백과사전·패치 스레드는 이미 공유 `likes` 테이블이다.
-- 이거아님저거는 **보이는 버튼은 같다.** 지금은 `this_or_that_post_likes`가 따로 있어 훅만 갈라져 있다. 테이블을 `likes`(`this-or-that:{id}`)로 옮기는 일은 expand/contract 마이그레이션으로 따로 한다. 투표용 엄지(`thumb_up`/`thumb_down` 석판)는 좋아요가 아니다.
+- 이거아님저거는 **보이는 버튼은 같다.** `this_or_that_post_likes` 테이블은 그대로 둔다. 투표용 엄지(`thumb_up`/`thumb_down` 석판)는 좋아요가 아니다.
 - 댓글 좋아요는 `comment_likes`를 유지하되 크롬만 `LikeControl`이다.
 - STS1 `CharacterBadge` / shadcn `Badge`는 **deprecated**. STS1 레거시 화면에만 두고, 새 UI에 쓰지 않는다. 나중에 백과사전 캐릭터 표시와 통합할 수는 있으나 지금은 기술부채로 남긴다.
 
@@ -141,10 +141,10 @@ HUD 숫자(히스토리 코스 `topbar-num-gold` `#f8d56a`)는 검정 외곽선 
 
 ## 공통 컴포넌트 용어
 
-- `CompendiumIndexLayout`: 좌측 필터, 상단바, 목록 본문을 묶는 백과사전 인덱스 공통 레이아웃 컴포넌트명이다. 기존 `CodexLibraryShell`은 이 이름으로 리팩토링한다.
-- `CompendiumIndexTopBar`: 검색창, 필터 버튼, 결과 수, 버전 선택기를 담는 백과사전 인덱스 상단바 컴포넌트명이다. 기존 `CodexLibraryTopBar`는 이 이름으로 리팩토링한다.
+- `CompendiumIndexLayout`: 좌측 필터, 상단바, 목록 본문을 묶는 백과사전 인덱스 공통 레이아웃. 옛 이름 `CodexLibraryShell`은 별칭만 남긴다.
+- `CompendiumIndexTopBar`: 검색창, 필터 버튼, 결과 수, 버전 선택기를 담는 백과사전 인덱스 상단바. 옛 이름 `CodexLibraryTopBar`는 별칭만 남긴다.
 - `GameHoverTip` / `GameUiHoverTip`: 위 호버 팁 절.
-- `RelatedResourceLinks`: 관련 리소스 라인을 렌더하는 표준 컴포넌트명이다. 기존 `EntityReferenceLinks` 계열은 이 이름으로 리팩토링한다.
+- `RelatedResourceLinks`: 관련 리소스 라인을 렌더한다. 옛 이름 `EntityReferenceGroupLinks`는 별칭만 남긴다.
 - `ResourceDetailView`: 카드, 유물, 포션 같은 리소스의 상세 보기를 렌더하는 표준 컴포넌트명이다. 모달과 직접 URL 진입에서 같은 상세 보기를 공유한다.
 - `LikeControl` / `LikeButton`: 좋아요 크롬과 `likes` 테이블 훅. 이거아님저거 테이블이 남는 동안만 별도 훅을 둔다.
 
@@ -250,10 +250,10 @@ Rich 패치는 Steam 패치노트를 소스로 하되, 백과사전 데이터와
 1. **정본 문서** — 이 파일. Storybook은 문서를 그린다. 완료.
 2. **게임 텍스트 토큰 + `:root` 다크** — `.spire-gold`/`--primary` = `TEXT_GOLD`. `[green]`/`[red]`/`[blue]` 등은 `StsColors`. `:root`가 다크 정본. 완료.
 3. **서비스 셸의 `yellow-500` / `#d4a843` 잔여** — 강조는 `--primary` / `TEXT_GOLD`. 완료. 3막 영광 칩과 통합검색 유물 타입 칩은 골드 강조가 아니라서 그대로 둔다.
-4. **링크 색** — 게임 리소스 gold, 섀소식·외부 aqua. `cyan-*` 제거.
-5. **좋아요** — 이야기 팔레트를 강령의 극으로 (앱 먼저, DB `reaction_type`은 나중에). 이거아님저거 테이블 병합은 마이그레이션 전용 패스.
-6. **이름 정리** — 호출부를 `CompendiumIndexLayout` / `RelatedResourceLinks`로.
-7. **라이트 variant** — 서비스 셸만. 게임 크롬은 그대로.
+4. **링크 색** — 게임 리소스 gold, 섀소식·외부 aqua. `cyan-*` 링크 유틸 제거. 완료.
+5. **좋아요** — 백과사전 타일 스킨은 강령의 극. 이야기 감정 팔레트는 prod에서 깨질 수 있어 보류. 이거아님저거 테이블은 병합하지 않는다.
+6. **이름 정리** — 호출부 `CompendiumIndexLayout` / `RelatedResourceLinks`. 완료. 통합검색 라벨은 인챈트.
+7. **라이트 variant** — 서비스 셸만. 게임 크롬은 그대로. **다음.**
 
 ## 아직 손대지 않는 것들 (사람말로)
 
@@ -265,7 +265,7 @@ Rich 패치는 Steam 패치노트를 소스로 하되, 백과사전 데이터와
 - **백과사전에서 항목을 열 때 뒤에 깔리는 어두운 막**은 같은 CSS가 여러 파일에 복사돼 있다. 상세 보기 공통 스크림으로 모을 후보다.
 - **이야기 쓰기 창**은 아직 장난감 상자 글쓰기 공통 프레임(`ServiceModalFrame`)을 안 쓴다. 케미컬X는 목록에서 바로 써서 창이 없다. 제품이 달라서다.
 - **STS1 카드/유물/포션 브라우저**는 옛 사이트다. 백과사전 셸과 합치지 않는다.
-- **통합검색의 ‘마법부여’와 백과사전의 ‘인챈트’**는 같은 게임 용어를 두 번 부른 것이다. 게임 번역이면 인챈트.
+- **통합검색과 백과사전의 인챈트**는 같은 게임 용어다. 검색 라벨도 인챈트다.
 - **`/dev/text-effects`, `/dev/spire-icons`**는 개발자 견본이다. Storybook이 정본 견본이다.
 
 ## 남은 디자인 과제

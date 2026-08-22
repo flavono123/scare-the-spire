@@ -40,7 +40,7 @@ import {
   getRelatedRelicIdsForEnchantment,
 } from "@/lib/codex-references";
 import { getAfflictionCardTypeRestriction } from "@/lib/sts2-affliction-rules";
-import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
@@ -316,7 +316,7 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
             </div>
           </section>
 
-          <EntityReferenceGroupLinks
+          <RelatedResourceLinks
             gameUi={gameUi}
             groups={[
               { kind: "card", targets: relatedCardTargets },

@@ -16,7 +16,7 @@ export interface CodexReferenceTarget {
   entity?: EntityInfo;
 }
 
-interface EntityReferenceLinksProps {
+interface RelatedResourceLineProps {
   children?: ReactNode;
   gameUi?: CodexGameUiLabels;
   kind: CodexReferenceKind;
@@ -31,7 +31,7 @@ export interface CodexReferenceGroup {
   targets: readonly CodexReferenceTarget[];
 }
 
-interface EntityReferenceGroupLinksProps {
+interface RelatedResourceLinksProps {
   children?: ReactNode;
   gameUi?: CodexGameUiLabels;
   groups: readonly CodexReferenceGroup[];
@@ -125,13 +125,13 @@ function relatedResourceLabel(
   return serviceLocale === "ko" ? `관련 ${resourceLabel}` : `Related ${resourceLabel}`;
 }
 
-export function EntityReferenceLinks({
+export function RelatedResourceLine({
   children,
   gameUi,
   kind,
   serviceLocale,
   targets,
-}: EntityReferenceLinksProps) {
+}: RelatedResourceLineProps) {
   if (targets.length === 0) return null;
   const config = {
     icon: REFERENCE_KIND_CONFIG[kind].icon,
@@ -152,12 +152,12 @@ export function EntityReferenceLinks({
   );
 }
 
-export function EntityReferenceGroupLinks({
+export function RelatedResourceLinks({
   children,
   gameUi,
   groups,
   serviceLocale,
-}: EntityReferenceGroupLinksProps) {
+}: RelatedResourceLinksProps) {
   const visibleGroups = groups.filter((group) => group.targets.length > 0);
   if (visibleGroups.length === 0 && !children) return null;
 
@@ -264,7 +264,7 @@ function toPreviewEntity(
 }
 
 export {
-  EntityReferenceGroupLinks as RelatedResourceLinks,
-  EntityReferenceLinks as RelatedResourceLine,
+  RelatedResourceLinks as EntityReferenceGroupLinks,
+  RelatedResourceLine as EntityReferenceLinks,
 };
 

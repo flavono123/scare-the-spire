@@ -25,7 +25,7 @@ import {
 import { getRelatedMonsterIdsForEncounter } from "@/lib/codex-references";
 import { DecimillipedeSpineStage } from "./decimillipede-spine-stage";
 import { EncounterSceneStage } from "./encounter-scene-stage";
-import { EntityReferenceLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { RelatedResourceLine, type CodexReferenceTarget } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
 const BESTIARY_ACT_COLOR = "#60a5fa";
@@ -303,7 +303,7 @@ export function EncounterDetail({
             </div>
           </section>
 
-          <EntityReferenceLinks
+          <RelatedResourceLine
             gameUi={gameUi}
             kind="monster"
             serviceLocale={serviceLocale}

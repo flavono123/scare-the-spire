@@ -54,7 +54,7 @@ import {
   getRelatedEncounterIdsForMonster,
   getRelatedPowerIdsForMonster,
 } from "@/lib/codex-references";
-import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import { TinyCardIcon } from "@/components/history-course/card-action-icon";
 import { TEXT_CREAM, TEXT_GREEN } from "@/lib/sts2-card-style";
@@ -2017,7 +2017,7 @@ export function MonsterDetail({
             )}
           </InfoRailSection>
 
-          <EntityReferenceGroupLinks
+          <RelatedResourceLinks
             gameUi={gameUi}
             serviceLocale={serviceLocale}
             groups={[

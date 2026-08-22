@@ -33,8 +33,8 @@ import {
 } from "@/lib/compendium-resource-links";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
-  CodexLibraryShell,
-  CodexLibraryTopBar,
+  CompendiumIndexLayout,
+  CompendiumIndexTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { CharacterDetail } from "./character-detail";
@@ -299,7 +299,7 @@ export function CharacterList({
   const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer(false);
 
   return (
-    <CodexLibraryShell
+    <CompendiumIndexLayout
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
       isMobile={isMobile}
@@ -313,7 +313,7 @@ export function CharacterList({
       )}
     >
       <main className="flex flex-1 flex-col overflow-hidden">
-        <CodexLibraryTopBar
+        <CompendiumIndexTopBar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           closeFiltersLabel={serviceText.common.closeFilters}
@@ -379,7 +379,7 @@ export function CharacterList({
           </div>
         </div>
       )}
-    </CodexLibraryShell>
+    </CompendiumIndexLayout>
   );
 }
 

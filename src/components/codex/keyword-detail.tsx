@@ -10,7 +10,7 @@ import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { CodexAffliction, CodexCard, CodexEnchantment, CodexEvent, CodexKeyword, CodexPotion, CodexPower, CodexRelic } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
-import { EntityReferenceGroupLinks, type CodexReferenceGroup, type CodexReferenceKind, type CodexReferenceTarget } from "./entity-reference-links";
+import { RelatedResourceLinks, type CodexReferenceGroup, type CodexReferenceKind, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameHoverTip } from "./hover-tip";
 import { RichDescription } from "./rich-description";
 import {
@@ -254,7 +254,7 @@ export function KeywordDetail({
             </div>
           </section>
 
-          <EntityReferenceGroupLinks
+          <RelatedResourceLinks
             gameUi={gameUi}
             groups={relatedResourceGroups}
             serviceLocale={serviceLocale}

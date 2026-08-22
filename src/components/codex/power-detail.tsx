@@ -28,7 +28,7 @@ import {
 } from "@/lib/card-side-tip-catalog";
 import { collectPowerSideTips } from "@/lib/power-side-tips";
 import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
-import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import {
   getRelatedCardIdsForPower,
@@ -286,7 +286,7 @@ export function PowerDetail({
             </div>
           </section>
 
-          <EntityReferenceGroupLinks
+          <RelatedResourceLinks
             gameUi={gameUi}
             groups={[
               { kind: "card", targets: relatedCardTargets },

@@ -30,7 +30,7 @@ export const serviceMessages = {
         relic: "유물",
         potion: "포션",
         power: "파워",
-        enchantment: "마법부여",
+        enchantment: "인챈트",
         affliction: "고난",
         event: "이벤트",
         monster: "몬스터",

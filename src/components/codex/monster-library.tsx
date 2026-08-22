@@ -51,8 +51,8 @@ import {
 } from "./codex-filters";
 import { MonsterSpineStage } from "./monster-spine-stage";
 import {
-  CodexLibraryShell,
-  CodexLibraryTopBar,
+  CompendiumIndexLayout,
+  CompendiumIndexTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { VersionSelector } from "./version-selector";
@@ -349,7 +349,7 @@ export function MonsterLibrary({
   ) : undefined;
 
   return (
-    <CodexLibraryShell
+    <CompendiumIndexLayout
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
       isMobile={isMobile}
@@ -434,7 +434,7 @@ export function MonsterLibrary({
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        <CodexLibraryTopBar
+        <CompendiumIndexTopBar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           closeFiltersLabel={commonText.closeFilters}
@@ -513,7 +513,7 @@ export function MonsterLibrary({
           </div>
         </div>
       )}
-    </CodexLibraryShell>
+    </CompendiumIndexLayout>
   );
 }
 

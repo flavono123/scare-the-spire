@@ -1219,7 +1219,7 @@ export function RichContentEditor({
       {!embedded && youtubeFeedback && (
         <p
           className={`border-t border-border px-3 py-1.5 text-[11px] ${
-            youtubeFeedback.tone === "aqua" ? "spire-aqua" : "text-red-300"
+            youtubeFeedback.tone === "aqua" ? "sts-text-aqua" : "text-red-300"
           }`}
           role={youtubeFeedback.tone === "error" ? "alert" : "status"}
           aria-live="polite"

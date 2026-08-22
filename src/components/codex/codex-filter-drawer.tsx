@@ -26,7 +26,7 @@ export function useCodexFilterDrawer(defaultDesktopOpen = true): CodexFilterDraw
   return { sidebarOpen, setSidebarOpen, isMobile };
 }
 
-export function CodexLibraryShell({
+export function CompendiumIndexLayout({
   sidebarOpen,
   setSidebarOpen,
   isMobile,
@@ -95,7 +95,7 @@ export function CodexLibraryShell({
   );
 }
 
-export function CodexLibraryTopBar({
+export function CompendiumIndexTopBar({
   sidebarOpen,
   setSidebarOpen,
   closeFiltersLabel,
@@ -136,7 +136,7 @@ export function CodexLibraryTopBar({
 }
 
 export {
-  CodexLibraryShell as CompendiumIndexLayout,
-  CodexLibraryTopBar as CompendiumIndexTopBar,
+  CompendiumIndexLayout as CodexLibraryShell,
+  CompendiumIndexTopBar as CodexLibraryTopBar,
 };
 

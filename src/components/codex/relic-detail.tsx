@@ -28,7 +28,7 @@ import {
 } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
-import { EntityReferenceGroupLinks } from "./entity-reference-links";
+import { RelatedResourceLinks } from "./entity-reference-links";
 import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 import { GameCheckboxToggle, GameWaxCycleToggle, type GameWaxCycleValue } from "./game-checkbox";
 import { RelicInspectSlab } from "./relic-inspect-slab";
@@ -547,7 +547,7 @@ export function RelicDetail({
             </div>
           </section>
 
-          <EntityReferenceGroupLinks
+          <RelatedResourceLinks
             gameUi={gameUi}
             serviceLocale={serviceLocale}
             groups={[

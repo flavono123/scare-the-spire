@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { StoryHeading, StoryNote, StoryStack } from "./_ui";
+import {
+  RESOURCE_LINK_CLASS,
+  SERVICE_ACCENT_CLASS,
+  SERVICE_LINK_CLASS,
+} from "@/lib/service-link-classes";
 
 const meta = {
   title: "컴포넌트/링크",
@@ -10,39 +15,32 @@ export default meta;
 type Story = StoryObj;
 
 export const Roles: Story = {
-  name: "역할별 색 — 지금은 유틸이 갈라짐",
+  name: "역할별 색",
   render: () => (
     <StoryStack>
       <StoryNote>
-        제품 규칙: 게임 리소스 = gold, 섀소식·외부 = aqua.
-        골드 잔여는 치웠다. 링크 역할(gold vs aqua)과 cyan-* 제거는 다음 단계.
+        게임 리소스 = gold (`spire-gold` / TEXT_GOLD). 섀소식·외부 = aqua
+        (`sts-text-aqua` / TEXT_AQUA). Tailwind `cyan-*`와 디펙트 `spire-aqua`는
+        링크 색이 아니다.
       </StoryNote>
       <div className="space-y-4 font-service">
         <div>
-          <StoryHeading>목표</StoryHeading>
+          <StoryHeading>게임 리소스</StoryHeading>
           <p>
-            <a className="spire-gold font-semibold underline decoration-primary/30" href="#card">
+            <a className={RESOURCE_LINK_CLASS} href="#card">
               충격파
-            </a>
-            {" · "}
-            <a className="spire-aqua font-semibold" href="#byrdispatch">
-              조각모음
-            </a>
-            {" · "}
-            <a className="spire-aqua font-semibold" href="https://youtube.com">
-              YouTube
             </a>
           </p>
         </div>
         <div>
-          <StoryHeading>현장에서 흔함 (맞출 것)</StoryHeading>
+          <StoryHeading>섀소식 · 외부</StoryHeading>
           <p>
-            <a className="text-primary hover:text-primary" href="#feed">
-              피드 링크 (지금은 primary = gold)
+            <a className={`${SERVICE_ACCENT_CLASS} font-semibold`} href="#byrdispatch">
+              조각모음
             </a>
             {" · "}
-            <a className="text-cyan-200 hover:text-cyan-100" href="#news">
-              cyan-200 섀소식
+            <a className={SERVICE_LINK_CLASS} href="https://youtube.com">
+              YouTube
             </a>
           </p>
         </div>

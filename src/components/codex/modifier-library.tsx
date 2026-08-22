@@ -34,8 +34,8 @@ import {
 import { DescriptionText } from "./codex-description";
 import { FilterSection } from "./codex-filters";
 import {
-  CodexLibraryShell,
-  CodexLibraryTopBar,
+  CompendiumIndexLayout,
+  CompendiumIndexTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { GameCheckboxToggle } from "./game-checkbox";
@@ -194,7 +194,7 @@ export function ModifierLibrary({
   }, []);
 
   return (
-    <CodexLibraryShell
+    <CompendiumIndexLayout
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
       isMobile={isMobile}
@@ -228,7 +228,7 @@ export function ModifierLibrary({
       )}
     >
       <main className="flex flex-1 flex-col overflow-hidden" data-modifier-library>
-        <CodexLibraryTopBar
+        <CompendiumIndexTopBar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           closeFiltersLabel={serviceText.common.closeFilters}
@@ -288,6 +288,6 @@ export function ModifierLibrary({
           </div>
         </div>
       )}
-    </CodexLibraryShell>
+    </CompendiumIndexLayout>
   );
 }

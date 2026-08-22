@@ -16,14 +16,14 @@ export default meta;
 type Story = StoryObj;
 
 export const Layout: Story = {
-  name: "CompendiumIndexLayout (alias of CodexLibraryShell)",
+  name: "CompendiumIndexLayout",
   render: function ShellStory() {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     return (
       <StoryStack>
         <StoryNote>
-          DESIGN.md 이름. 구현 심볼은 아직 CodexLibrary*. 필터 드로어
-          bg-[#16162a]는 문서 패널값과 같다. 제목은 text-primary (TEXT_GOLD).
+          DESIGN.md 이름. 호출부는 CompendiumIndexLayout / CompendiumIndexTopBar.
+          필터 드로어 bg-[#16162a]는 문서 패널값과 같다. 제목은 text-primary (TEXT_GOLD).
         </StoryNote>
         <CompendiumIndexLayout
           sidebarOpen={sidebarOpen}

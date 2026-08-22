@@ -22,7 +22,7 @@ import {
   characterOutlineFilter,
   getCharacterColor,
 } from "@/lib/codex-types";
-import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameChoiceFrame } from "./event-choice-frame";
 import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 import { STS2ChangeHistory } from "./sts2-change-history";
@@ -283,7 +283,7 @@ export function PotionDetail({
             </div>
           </section>
 
-          <EntityReferenceGroupLinks
+          <RelatedResourceLinks
             gameUi={gameUi}
             groups={[
               { kind: "card", targets: relatedCardTargets },
@@ -315,7 +315,7 @@ export function PotionDetail({
                 </GameChoiceFrame>
               ))}
             </div>
-          </EntityReferenceGroupLinks>
+          </RelatedResourceLinks>
 
           <InfoRailSection title={detailLabels.patchHistory}>
             <STS2ChangeHistory

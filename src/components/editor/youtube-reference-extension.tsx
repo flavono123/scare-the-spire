@@ -11,7 +11,7 @@ function YouTubeReferenceNodeView({ node }: NodeViewProps) {
   return (
     <NodeViewWrapper
       as="span"
-      className="mx-0.5 inline-flex max-w-full items-center gap-1 align-baseline font-semibold spire-aqua"
+      className="mx-0.5 inline-flex max-w-full items-center gap-1 align-baseline font-semibold sts-text-aqua"
       data-youtube-reference=""
     >
       {pending ? (
@@ -54,7 +54,7 @@ export const YouTubeReferenceExtension = Node.create({
       "span",
       mergeAttributes(HTMLAttributes, {
         "data-youtube-reference": "",
-        class: "spire-aqua font-semibold",
+        class: "sts-text-aqua font-semibold",
       }),
       (node.attrs.title || node.attrs.pendingLabel) as string,
     ];

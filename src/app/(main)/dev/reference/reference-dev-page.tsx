@@ -142,7 +142,7 @@ export default async function ReferencePage() {
       </Section>
 
       {/* ═══════ Keywords ═══════ */}
-      <Section title="키워드 (Keyword)" count={kwKor.length} color="text-cyan-400">
+      <Section title="키워드 (Keyword)" count={kwKor.length} color="text-zinc-200">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border text-left text-xs text-muted-foreground">
@@ -158,7 +158,7 @@ export default async function ReferencePage() {
                 <td className="py-1.5 pr-2">
                   <code className="text-[10px] text-muted-foreground/50">{k.id}</code>
                 </td>
-                <td className="py-1.5 pr-2 font-medium text-cyan-400">{k.name}</td>
+                <td className="py-1.5 pr-2 font-medium text-zinc-200">{k.name}</td>
                 <td className="py-1.5 pr-2 text-muted-foreground">{kwEng[i]?.name}</td>
                 <td className="py-1.5 text-muted-foreground">
                   <RichText text={k.description} />
