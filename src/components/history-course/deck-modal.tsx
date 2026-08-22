@@ -13,6 +13,7 @@ import { lookupHistoryCard } from "@/lib/history-card-lookup";
 import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
 import { CHAR_FRAME_HSV, TEXT_GOLD, hsvToFilter, type HSV } from "@/lib/sts2-card-style";
 import { gameUi, localizeGame } from "@/lib/sts2-game-i18n";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import { serviceMessages } from "@/messages/service";
 
 const SORT_KEYS = ["obtained", "type", "cost", "alphabet"] as const;
@@ -167,7 +168,7 @@ export function DeckModal({
         onClick={onClose}
         className="fixed inset-0 z-40 cursor-default bg-black/70 backdrop-blur-[3px]"
       />
-      <div className="pointer-events-none fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-6 sm:p-10">
+      <GameScrollArea className="pointer-events-none fixed inset-0 z-50" size="large" scrollerClassName="flex items-start justify-center p-6 sm:p-10">
         <div className="pointer-events-auto relative w-full max-w-6xl rounded-xl border border-border bg-background p-5 shadow-2xl">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
@@ -263,7 +264,7 @@ export function DeckModal({
             {gameUi(tables, "deckPileInfo", "You will start combat with all of these cards.")}
           </p>
         </div>
-      </div>
+      </GameScrollArea>
     </>
   );
 }

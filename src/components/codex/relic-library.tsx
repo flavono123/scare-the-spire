@@ -53,6 +53,8 @@ import { VersionSelector } from "./version-selector";
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
+  CompendiumIndexScroller,
+  CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import {
@@ -413,7 +415,7 @@ export function RelicLibrary({
         />
 
         {/* Relic Grid (grouped by rarity) */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
           {groupedRelics.map(({ rarity, relics: groupRelics }) => (
             <section key={rarity} className="mb-8 last:mb-0">
               {/* Rarity section header */}
@@ -496,17 +498,12 @@ export function RelicLibrary({
               {serviceText.common.noResults}
             </div>
           )}
-        </div>
+        </CompendiumIndexScroller>
       </main>
 
       {/* Relic Detail Modal */}
       {selectedRelic && (
-        <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeSelectedRelic();
-          }}
-        >
+        <CompendiumDetailOverlay onClose={() => closeSelectedRelic()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
             <RelicDetail
               serviceLocale={serviceLocale}
@@ -532,7 +529,7 @@ export function RelicLibrary({
               versionDiffs={versionDiffs}
             />
           </div>
-        </div>
+        </CompendiumDetailOverlay>
       )}
     </CompendiumIndexLayout>
   );

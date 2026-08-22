@@ -33,6 +33,8 @@ import { DescriptionText } from "./codex-description";
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
+  CompendiumIndexScroller,
+  CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { GameHoverTip } from "./hover-tip";
@@ -183,7 +185,7 @@ export function AscensionLibrary({
           title={title}
           count={formatCodexCount(filteredAscensions.length, serviceText.labels.ascensions, serviceLocale)}
         />
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
           <div className="columns-1 gap-5 xl:columns-2">
             {filteredAscensions.map((ascension) => (
               <AscensionTile
@@ -200,17 +202,11 @@ export function AscensionLibrary({
               {serviceText.common.noResults}
             </div>
           )}
-        </div>
+        </CompendiumIndexScroller>
       </main>
 
       {selectedAscension && (
-        <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) closeSelectedAscension();
-          }}
-          data-ascension-modal
-        >
+        <CompendiumDetailOverlay onClose={() => closeSelectedAscension()} data-ascension-modal>
           <div className="my-8 mx-4 w-full max-w-6xl">
             <AscensionDetail
               serviceLocale={serviceLocale}
@@ -221,7 +217,7 @@ export function AscensionLibrary({
               onClose={closeSelectedAscension}
             />
           </div>
-        </div>
+        </CompendiumDetailOverlay>
       )}
     </CompendiumIndexLayout>
   );

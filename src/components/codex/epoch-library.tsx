@@ -49,6 +49,8 @@ import {
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
+  CompendiumIndexScroller,
+  CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { SearchBar } from "./search-bar";
@@ -453,7 +455,7 @@ export function EpochLibrary({
           ) : undefined}
         />
 
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
           {groupedEpochs.length === 0 ? (
             <div className="flex h-64 items-center justify-center text-gray-500">
               {serviceText.common.noResults}
@@ -494,19 +496,11 @@ export function EpochLibrary({
               ))}
             </div>
           )}
-        </div>
+        </CompendiumIndexScroller>
       </main>
 
       {selectedEpoch && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={selectedEpoch.name}
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) setSelectedEpoch(null);
-          }}
-        >
+        <CompendiumDetailOverlay onClose={() => setSelectedEpoch(null)} aria-label={selectedEpoch.name}>
           <div className="mx-4 my-4 w-full max-w-[92rem]">
             <EpochDetail
               serviceLocale={serviceLocale}
@@ -524,7 +518,7 @@ export function EpochLibrary({
               onClose={() => setSelectedEpoch(null)}
             />
           </div>
-        </div>
+        </CompendiumDetailOverlay>
       )}
     </CompendiumIndexLayout>
   );

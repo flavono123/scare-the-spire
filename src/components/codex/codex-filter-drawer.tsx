@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type HTMLAttributes, type ReactNode } from "react";
+import { GameScrollArea } from "@/components/game-scroll-area";
+import { cn } from "@/lib/utils";
 
 interface CodexFilterDrawerState {
   sidebarOpen: boolean;
@@ -79,7 +81,7 @@ export function CompendiumIndexLayout({
 
       <aside
         className={`
-          border-r border-border bg-sidebar flex flex-col gap-2 overflow-y-auto overscroll-contain transition-all duration-200 shrink-0
+          border-r border-border bg-sidebar flex flex-col gap-2 overflow-hidden overscroll-contain transition-all duration-200 shrink-0
           ${
             isMobile
               ? `fixed z-50 bottom-0 top-12 left-0 w-52 touch-pan-y ${sidebarOpen ? "translate-x-0 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]" : "-translate-x-full p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]"}`
@@ -87,7 +89,9 @@ export function CompendiumIndexLayout({
           }
         `}
       >
-        {sidebar}
+        <GameScrollArea className="min-h-0 flex-1" size="small" scrollerClassName="flex flex-col gap-2 pr-1">
+          {sidebar}
+        </GameScrollArea>
       </aside>
 
       {children}
@@ -139,4 +143,62 @@ export {
   CompendiumIndexLayout as CodexLibraryShell,
   CompendiumIndexTopBar as CodexLibraryTopBar,
 };
+
+export function CompendiumIndexScroller({
+  children,
+  className,
+  scrollerClassName,
+}: {
+  children: ReactNode;
+  className?: string;
+  scrollerClassName?: string;
+}) {
+  return (
+    <GameScrollArea
+      className={cn("min-h-0 flex-1", className)}
+      size="large"
+      scrollerClassName={scrollerClassName}
+    >
+      {children}
+    </GameScrollArea>
+  );
+}
+
+export function CompendiumDetailOverlay({
+  children,
+  onClose,
+  zClassName = "z-50",
+  className,
+  "aria-label": ariaLabel,
+  ...rest
+}: {
+  children: ReactNode;
+  onClose: () => void;
+  zClassName?: string;
+} & HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("fixed inset-0 bg-black/70 backdrop-blur-sm", zClassName, className)}
+      role={ariaLabel ? "dialog" : rest.role}
+      aria-modal={ariaLabel ? true : rest["aria-modal"]}
+      aria-label={ariaLabel}
+      {...rest}
+    >
+      <GameScrollArea
+        className="h-full"
+        size="large"
+        scrollerClassName="min-h-full"
+      >
+        <div
+          className="flex min-h-full w-full items-start justify-center"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) onClose();
+          }}
+        >
+          {children}
+        </div>
+      </GameScrollArea>
+    </div>
+  );
+}
 

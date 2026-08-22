@@ -48,6 +48,8 @@ import { VersionSelector } from "./version-selector";
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
+  CompendiumIndexScroller,
+  CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 
@@ -341,7 +343,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
         />
 
         {/* Enchantment Grid (grouped by card type) */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
           {groupedEnchantments.map(({ cardType, enchantments: groupEnchantments }) => (
             <section key={cardType} className="mb-8 last:mb-0">
               <div className="mb-3">
@@ -408,17 +410,12 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
               {serviceText.common.noResults}
             </div>
           )}
-        </div>
+        </CompendiumIndexScroller>
       </main>
 
       {/* Enchantment or affliction detail modal */}
       {selectedResource && (
-        <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeSelectedResource();
-          }}
-        >
+        <CompendiumDetailOverlay onClose={() => closeSelectedResource()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
             {selectedResource.kind === "enchantment" ? (
               <EnchantmentDetail
@@ -460,7 +457,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
               />
             )}
           </div>
-        </div>
+        </CompendiumDetailOverlay>
       )}
     </CompendiumIndexLayout>
   );

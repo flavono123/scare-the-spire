@@ -2,6 +2,7 @@
 
 import { useMemo, useState, type ComponentProps, type ReactNode } from "react";
 import { X } from "lucide-react";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import {
   PatchNoteRenderer,
 } from "@/components/patch-note-renderer";
@@ -214,7 +215,7 @@ export function PatchLineStoriesPanel({
           </button>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+        <GameScrollArea className="min-h-0 flex-1" size="large" scrollerClassName="px-4 py-4">
           <PatchLineReferenceBlock
             patchLine={patchLine}
             serviceLocale={serviceLocale}
@@ -255,7 +256,7 @@ export function PatchLineStoriesPanel({
               )}
             </div>
           )}
-        </div>
+        </GameScrollArea>
 
         <div className="flex items-center justify-end border-t border-border/60 px-4 py-3">
           <button

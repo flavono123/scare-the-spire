@@ -35,6 +35,8 @@ import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
+  CompendiumIndexScroller,
+  CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { CharacterDetail } from "./character-detail";
@@ -322,7 +324,7 @@ export function CharacterList({
           count={formatCodexCount(filteredCharacters.length, serviceText.labels.items, serviceLocale)}
         />
 
-        <div className="flex-1 overflow-y-auto bg-[#050508]">
+        <CompendiumIndexScroller scrollerClassName="bg-[#050508]">
           {filteredCharacters.length === 0 ? (
             <div className="flex h-64 items-center justify-center text-gray-500">
               {serviceText.common.noResults}
@@ -347,19 +349,11 @@ export function CharacterList({
               ))}
             </div>
           )}
-        </div>
+        </CompendiumIndexScroller>
       </main>
 
       {selectedCharacter && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={selectedCharacter.name}
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) closeSelectedCharacter();
-          }}
-        >
+        <CompendiumDetailOverlay onClose={() => closeSelectedCharacter()} aria-label={selectedCharacter.name}>
           <div className="mx-4 my-8 w-full max-w-6xl">
             <CharacterDetail
               serviceLocale={serviceLocale}
@@ -377,7 +371,7 @@ export function CharacterList({
               versionDiffs={versionDiffs}
             />
           </div>
-        </div>
+        </CompendiumDetailOverlay>
       )}
     </CompendiumIndexLayout>
   );

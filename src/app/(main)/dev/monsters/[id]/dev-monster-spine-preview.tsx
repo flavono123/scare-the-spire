@@ -18,6 +18,7 @@ import {
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { DecimillipedeSpineStage } from "@/components/codex/decimillipede-spine-stage";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
+import { GameScrollArea } from "@/components/game-scroll-area";
 
 interface DevMonsterSpinePreviewProps {
   monster: CodexMonster;
@@ -188,7 +189,7 @@ export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonster
           <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
             <h2 className="mb-3 text-sm font-semibold text-zinc-200">행동/애니메이션</h2>
             {actions.length > 0 ? (
-              <div className="flex max-h-[34rem] flex-col gap-2 overflow-y-auto pr-1">
+              <GameScrollArea className="max-h-[34rem]" size="small" scrollerClassName="flex flex-col gap-2 pr-1">
                 {actions.map((action) => {
                   const selected = selectedActionId === action.id;
                   const effects = asset?.moveEffects[action.id] ?? [];
@@ -218,7 +219,7 @@ export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonster
                     </button>
                   );
                 })}
-              </div>
+              </GameScrollArea>
             ) : (
               <p className="text-sm text-zinc-500">재생 가능한 Spine 애니메이션이 없습니다.</p>
             )}

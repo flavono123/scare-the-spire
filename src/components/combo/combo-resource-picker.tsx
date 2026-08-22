@@ -14,6 +14,7 @@ import { matchEntities } from "@/lib/chemical-utils";
 import { compendiumTypeLabels } from "@/lib/compendium-type-labels";
 import type { ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import { serviceMessages } from "@/messages/service";
 
 const PICKER_TYPE_ORDER = [
@@ -246,7 +247,8 @@ export function ComboResourcePicker({
             ))}
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto p-2" role="list">
+          <GameScrollArea className="min-h-0 flex-1" size="small" scrollerClassName="p-2">
+            <div role="list">
             {results.length === 0 ? (
               <p className="px-3 py-8 text-center text-xs text-muted-foreground">
                 {commonCopy.noResults}
@@ -308,7 +310,8 @@ export function ComboResourcePicker({
                 {copy.refineResourceSearch}
               </p>
             )}
-          </div>
+            </div>
+          </GameScrollArea>
         </div>
       )}
     </div>

@@ -53,6 +53,8 @@ import { MonsterSpineStage } from "./monster-spine-stage";
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
+  CompendiumIndexScroller,
+  CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { VersionSelector } from "./version-selector";
@@ -445,7 +447,7 @@ export function MonsterLibrary({
         />
 
         {/* Monster Grid */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
           {sections.map((section) => (
             <div key={section.key} className="mb-8 last:mb-0">
               <div className="mb-3 flex items-baseline gap-2">
@@ -483,17 +485,12 @@ export function MonsterLibrary({
           {sections.length === 0 && (
             <div className="flex items-center justify-center h-64 text-gray-500">{commonText.noResults}</div>
           )}
-        </div>
+        </CompendiumIndexScroller>
       </main>
 
       {/* Detail Modal */}
       {selectedMonster && (
-        <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeSelectedMonster();
-          }}
-        >
+        <CompendiumDetailOverlay onClose={() => closeSelectedMonster()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
             <MonsterDetail
               serviceLocale={serviceLocale}
@@ -511,7 +508,7 @@ export function MonsterLibrary({
               onClose={closeSelectedMonster}
             />
           </div>
-        </div>
+        </CompendiumDetailOverlay>
       )}
     </CompendiumIndexLayout>
   );

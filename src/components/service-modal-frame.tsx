@@ -8,6 +8,7 @@ import {
 } from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { GameScrollArea } from "@/components/game-scroll-area";
 
 function assignRef<T>(ref: Ref<T> | undefined, value: T | null) {
   if (!ref) return;
@@ -116,9 +117,13 @@ export function ServiceModalFrame({
             </button>
           </div>
         </div>
-        <div className={cn("min-h-0 flex-1 overflow-y-auto p-3 sm:p-4", bodyClassName)}>
+        <GameScrollArea
+          className="min-h-0 flex-1"
+          size="large"
+          scrollerClassName={cn("p-3 sm:p-4", bodyClassName)}
+        >
           {children}
-        </div>
+        </GameScrollArea>
       </div>
     </div>
   );

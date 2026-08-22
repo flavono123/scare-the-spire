@@ -51,6 +51,7 @@ import {
   tiptapToBlocks,
 } from "@/lib/chemical-utils";
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import type { PostBlock } from "@/lib/chemical-types";
 import type { HistoryRunBlock } from "@/lib/chemical-types";
 import {
@@ -856,7 +857,7 @@ export function RichContentEditor({
           ? "h-full min-h-full w-full cursor-text px-1 py-1 text-center leading-[1.18] text-inherit outline-none"
           : `${
             allowLineBreaks || (maxChars != null && maxChars > 80)
-              ? "min-h-[6.5rem] max-h-[12rem] overflow-y-auto"
+              ? "min-h-[6.5rem]"
               : richPlaceholder ? "min-h-[3.75rem]" : "min-h-[2.5rem]"
           } px-3 py-2 text-sm text-gray-200 outline-none`,
         "aria-placeholder": richPlaceholder ? cleanTooltipText(richPlaceholder) : placeholder,
@@ -1209,10 +1210,26 @@ export function RichContentEditor({
           </div>
         )}
         <EntityMapProvider value={entityMap}>
-          <EditorContent
-            editor={editor}
-            className={`relative z-10 ${embedded ? "h-full" : ""}`}
-          />
+          {embedded ? (
+            <EditorContent
+              editor={editor}
+              className="relative z-10 h-full"
+            />
+          ) : (
+            <GameScrollArea
+              className={
+                allowLineBreaks || (maxChars != null && maxChars > 80)
+                  ? "max-h-[12rem]"
+                  : undefined
+              }
+              size="small"
+            >
+              <EditorContent
+                editor={editor}
+                className="relative z-10"
+              />
+            </GameScrollArea>
+          )}
         </EntityMapProvider>
       </div>
 

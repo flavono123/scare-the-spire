@@ -5,6 +5,7 @@ import Image from "@/components/ui/static-image";
 import type { Relic, Rarity, Change } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { ChangeList } from "@/components/change-list";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import { CharacterBadge, characterRing } from "@/components/character-badge";
 
 const RARITY_SECTIONS: { value: Rarity; label: string; description: string; color: string }[] = [
@@ -33,9 +34,10 @@ function RelicModal({
       onClick={onClose}
     >
       <div
-        className="mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl border border-border bg-background p-5"
+        className="mx-4 max-h-[90vh] w-full max-w-md overflow-hidden rounded-xl border border-border bg-background"
         onClick={(e) => e.stopPropagation()}
       >
+        <GameScrollArea className="max-h-[90vh]" size="large" scrollerClassName="p-5">
         <div className="flex items-start gap-4 mb-4">
           <div className="relative w-16 h-16 shrink-0 flex items-center justify-center">
             <Image
@@ -74,6 +76,7 @@ function RelicModal({
             <ChangeList changes={changes} />
           </div>
         )}
+        </GameScrollArea>
       </div>
     </div>
   );

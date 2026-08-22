@@ -49,6 +49,8 @@ import { VersionSelector } from "./version-selector";
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
+  CompendiumIndexScroller,
+  CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 
@@ -273,7 +275,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
         />
 
         {/* Power Grid (grouped by type) */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
           {groupedPowers.map(({ type, powers: groupPowers }) => (
             <section key={type} className="mb-8 last:mb-0">
               <div className="mb-3">
@@ -315,17 +317,12 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
               {serviceText.common.noResults}
             </div>
           )}
-        </div>
+        </CompendiumIndexScroller>
       </main>
 
       {/* Power Detail Modal */}
       {selectedPower && (
-        <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeSelectedPower();
-          }}
-        >
+        <CompendiumDetailOverlay onClose={() => closeSelectedPower()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
             <PowerDetail
               serviceLocale={serviceLocale}
@@ -350,7 +347,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
               onClose={closeSelectedPower}
             />
           </div>
-        </div>
+        </CompendiumDetailOverlay>
       )}
     </CompendiumIndexLayout>
   );

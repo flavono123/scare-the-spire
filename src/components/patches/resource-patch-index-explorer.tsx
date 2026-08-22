@@ -23,6 +23,7 @@ import {
   type ReactNode,
 } from "react";
 import { CommentSection } from "@/components/comment-section";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import { CharacterSpineStage } from "@/components/codex/character-spine-stage";
 import { DecimillipedeSpineStage } from "@/components/codex/decimillipede-spine-stage";
 import { GameHoverTip } from "@/components/codex/hover-tip";
@@ -843,7 +844,11 @@ export function ResourcePatchIndexExplorer({
           />
         </label>
 
-        <div className={`mt-3 space-y-1 ${searchMode ? "h-[12.25rem] overflow-y-auto overscroll-contain pr-1" : ""}`}>
+        <GameScrollArea
+          className={searchMode ? "mt-3 h-[12.25rem]" : "mt-3"}
+          size="small"
+          scrollerClassName="space-y-1 pr-1"
+        >
           {visibleGroups.map(({ group, resources }) => (
             <ResourceGroupRow
               key={group.type}
@@ -893,7 +898,7 @@ export function ResourcePatchIndexExplorer({
           {normalizedQuery && matchingGroups.length === 0 && (
             <p className="px-2 py-6 text-center font-game-text text-sm text-gray-500">{copy.noResults}</p>
           )}
-        </div>
+        </GameScrollArea>
       </div>
 
       <section

@@ -56,6 +56,8 @@ import { GameCheckboxToggle } from "./game-checkbox";
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
+  CompendiumIndexScroller,
+  CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import {
@@ -461,7 +463,7 @@ export function PotionLibrary({
         />
 
         {/* Potion Grid by Rarity */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
           {sections.map((section) => (
             <div key={section.key} className="mb-8 last:mb-0">
               {/* Section header */}
@@ -500,17 +502,12 @@ export function PotionLibrary({
               {serviceText.common.noResults}
             </div>
           )}
-        </div>
+        </CompendiumIndexScroller>
       </main>
 
       {/* Potion Detail Modal */}
       {selectedPotion && (
-        <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeSelectedPotion();
-          }}
-        >
+        <CompendiumDetailOverlay onClose={() => closeSelectedPotion()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
             <PotionDetail
               serviceLocale={serviceLocale}
@@ -531,7 +528,7 @@ export function PotionLibrary({
               onClose={closeSelectedPotion}
             />
           </div>
-        </div>
+        </CompendiumDetailOverlay>
       )}
     </CompendiumIndexLayout>
   );

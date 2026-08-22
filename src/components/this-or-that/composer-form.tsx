@@ -13,6 +13,7 @@ import {
   type ThisOrThatResourceRef,
 } from "@/lib/this-or-that";
 import { cn } from "@/lib/utils";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import { serviceMessages } from "@/messages/service";
 
 export function ThisOrThatComposerForm({
@@ -74,7 +75,7 @@ export function ThisOrThatComposerForm({
 
   return (
     <form onSubmit={handleSubmit} className={cn("flex flex-col", className)}>
-      <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4">
+      <GameScrollArea className="min-h-0 flex-1" size="large" scrollerClassName="space-y-4 px-4 py-4">
         <div className="grid gap-4 md:grid-cols-2">
           <ThisOrThatResourcePicker
             entities={entities}
@@ -110,7 +111,7 @@ export function ThisOrThatComposerForm({
             className="service-textarea min-h-28 resize-y"
           />
         </label>
-      </div>
+      </GameScrollArea>
 
       <div className="flex items-center justify-between gap-3 border-t border-border/60 px-4 py-3">
         <span className={`font-mono text-xs ${trimmedReason.length > 500 ? "text-red-400" : "text-muted-foreground"}`}>

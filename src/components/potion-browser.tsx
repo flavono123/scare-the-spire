@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Image from "@/components/ui/static-image";
 import type { Potion, PotionRarity, Change } from "@/lib/types";
 import { ChangeList } from "@/components/change-list";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import { CharacterBadge, characterRing } from "@/components/character-badge";
 
 const RARITY_SECTIONS: { value: PotionRarity; label: string; description: string; color: string }[] = [
@@ -27,9 +28,10 @@ function PotionModal({
       onClick={onClose}
     >
       <div
-        className="mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl border border-border bg-background p-5"
+        className="mx-4 max-h-[90vh] w-full max-w-md overflow-hidden rounded-xl border border-border bg-background"
         onClick={(e) => e.stopPropagation()}
       >
+        <GameScrollArea className="max-h-[90vh]" size="large" scrollerClassName="p-5">
         <div className="flex items-start gap-4 mb-4">
           <div className="relative w-16 h-16 shrink-0 flex items-center justify-center">
             <Image
@@ -63,6 +65,7 @@ function PotionModal({
             <ChangeList changes={changes} />
           </div>
         )}
+        </GameScrollArea>
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ import {
   useTransition,
 } from "react";
 import { listRuns, saveRun } from "@/lib/run-store";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import { computeRunHash, runRouteSlug } from "@/lib/sts2-run-hash";
 import {
   analyzeReplayRun,
@@ -816,7 +817,8 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
             </div>
           </div>
 
-          <ol className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
+          <GameScrollArea className="min-h-0 flex-1" size="small" scrollerClassName="pr-1">
+          <ol className="space-y-2">
             {act.history.map((entry, index) => {
               const floor = act.baseFloor + index;
               const stepType = act.historyTypes[index];
@@ -862,6 +864,7 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
               );
             })}
           </ol>
+          </GameScrollArea>
         </div>
       </div>
     </section>

@@ -5,6 +5,7 @@ import { CloudflareWebAnalytics } from "@/components/cloudflare-web-analytics";
 import { ColorSchemeScript } from "@/components/color-scheme-script";
 import { LocaleDocumentAttributes } from "@/components/locale-document-attributes";
 import { SiteNavbar } from "@/components/site-navbar";
+import { GamePageScroll } from "@/components/game-page-scroll";
 import { ColorSchemeDocumentAttributes } from "@/hooks/use-color-scheme";
 import { getDefaultServiceMetadata } from "@/lib/service-metadata";
 import { SITE_METADATA_BASE } from "@/lib/site-origin";
@@ -64,14 +65,16 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning
-        className="font-service antialiased bg-background text-foreground"
+        className="flex h-dvh flex-col overflow-hidden font-service antialiased bg-background text-foreground"
       >
         <ColorSchemeDocumentAttributes />
         <Suspense>
           <LocaleDocumentAttributes />
           <SiteNavbar />
         </Suspense>
-        {children}
+        <GamePageScroll>
+          {children}
+        </GamePageScroll>
         <CloudflareWebAnalytics />
       </body>
     </html>

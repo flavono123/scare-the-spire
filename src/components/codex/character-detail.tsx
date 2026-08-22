@@ -4,6 +4,7 @@ import { type ReactNode, type WheelEvent, useCallback, useEffect, useMemo, useRe
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -969,7 +970,7 @@ function CharacterAncientInteractions({
         </div>
       </div>
 
-      <div className="max-h-[32rem] space-y-3 overflow-y-auto pr-1">
+      <GameScrollArea className="max-h-[32rem]" size="small" scrollerClassName="space-y-3 pr-1">
         {activeGroup.interactions.map((interaction, interactionIndex) => (
           <div key={interaction.id} className="rounded-md border border-white/10 bg-white/[0.03] px-3 py-2.5">
             <div className="mb-2 flex items-center justify-between gap-2">
@@ -1013,7 +1014,7 @@ function CharacterAncientInteractions({
             </div>
           </div>
         ))}
-      </div>
+      </GameScrollArea>
     </div>
   );
 }

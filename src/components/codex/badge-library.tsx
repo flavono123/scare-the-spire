@@ -26,6 +26,8 @@ import { FilterSection, ToggleButton } from "./codex-filters";
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
+  CompendiumIndexScroller,
+  CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { GameHoverTip } from "./hover-tip";
@@ -262,7 +264,7 @@ export function BadgeLibrary({
           title={title}
           count={formatCodexCount(filteredBadges.length, serviceText.labels.badges, serviceLocale)}
         />
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
           <div className="columns-1 gap-5 xl:columns-2">
             {filteredBadges.map((badge) => (
               <BadgeTile
@@ -279,17 +281,11 @@ export function BadgeLibrary({
               {serviceText.common.noResults}
             </div>
           )}
-        </div>
+        </CompendiumIndexScroller>
       </main>
 
       {selectedBadge && (
-        <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) closeSelectedBadge();
-          }}
-          data-badge-modal
-        >
+        <CompendiumDetailOverlay onClose={() => closeSelectedBadge()} data-badge-modal>
           <div className="my-8 mx-4 w-full max-w-6xl">
             <BadgeDetail
               serviceLocale={serviceLocale}
@@ -299,7 +295,7 @@ export function BadgeLibrary({
               onClose={closeSelectedBadge}
             />
           </div>
-        </div>
+        </CompendiumDetailOverlay>
       )}
     </CompendiumIndexLayout>
   );

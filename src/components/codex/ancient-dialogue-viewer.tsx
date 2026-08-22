@@ -8,6 +8,7 @@ import { stripCodexMarkup } from "@/lib/codex-search";
 import { CHARACTER_COLORS, type CodexAncient, type CodexCharacter } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
 import { RichDescription } from "./rich-description";
+import { GameScrollArea } from "@/components/game-scroll-area";
 
 const DIALOGUE_BACKGROUND = "/images/sts2/ancient-dialogue/dialogue_nine_patch.webp";
 const DIALOGUE_TAIL = "/images/sts2/ancient-dialogue/dialogue_tail.webp";
@@ -183,7 +184,7 @@ export function AncientDialogueViewer({
           </div>
         </div>
 
-        <div className="min-h-0 overflow-y-auto overscroll-contain px-1 py-2 [scrollbar-width:thin] sm:px-3">
+        <GameScrollArea className="min-h-0 flex-1" size="large" scrollerClassName="px-1 py-2 sm:px-3">
           <div className="mx-auto flex w-full max-w-[45rem] flex-col gap-2.5">
             {scene.lines.slice(0, lineIndex + 1).map((line, index) => {
               const isCurrent = index === lineIndex;
@@ -267,7 +268,7 @@ export function AncientDialogueViewer({
               );
             })}
           </div>
-        </div>
+        </GameScrollArea>
       </div>
 
       <p className="sr-only" aria-live="polite">

@@ -18,6 +18,7 @@ import {
 } from "@/lib/combo-types";
 import type { ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import { serviceMessages } from "@/messages/service";
 import { ComboResourceAsset } from "./combo-resource-stack";
 
@@ -429,7 +430,7 @@ export function ComboGameElementFilter({
               ))}
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto p-3">
+            <GameScrollArea className="min-h-0 flex-1" size="small" scrollerClassName="p-3">
               {results.length === 0 ? (
                 <p className="px-3 py-12 text-center text-xs text-muted-foreground">
                   {normalizedQuery
@@ -476,7 +477,7 @@ export function ComboGameElementFilter({
                   })}
                 </div>
               )}
-            </div>
+            </GameScrollArea>
           </div>
         </>
       )}

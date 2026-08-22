@@ -14,6 +14,7 @@ import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { patchLineDisplayText } from "@/lib/patch-line-display";
 import type { ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import { cn } from "@/lib/utils";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import { serviceMessages } from "@/messages/service";
 
 const STORY_DRAFT_MAX_LENGTH = 120;
@@ -200,7 +201,7 @@ export function StoryComposerModal({
           </button>
         </div>
 
-        <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4">
+        <GameScrollArea className="min-h-0 flex-1" size="large" scrollerClassName="space-y-3 px-4 py-4">
           <textarea
             value={sentence}
             onChange={(event) => setSentence(event.target.value.slice(0, STORY_DRAFT_MAX_LENGTH))}
@@ -219,7 +220,7 @@ export function StoryComposerModal({
               placeholder={copy.nickname}
               maxLength={20}
               disabled={!authReady || !supabaseEnabled}
-              className="h-8 min-w-0 flex-1 rounded-md border border-border/60 bg-background/50 px-2.5 text-xs text-muted-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-primary/40 disabled:opacity-40"
+              className="service-input h-8 min-w-0 flex-1 !py-1.5 text-xs disabled:opacity-40"
             />
             <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">
               {sentence.length}/{STORY_DRAFT_MAX_LENGTH}
@@ -302,7 +303,7 @@ export function StoryComposerModal({
               ))}
             </div>
           </div>
-        </div>
+        </GameScrollArea>
 
         <div className="border-t border-border/60 px-4 py-3">
           {(!supabaseEnabled || submitFeedback) && (

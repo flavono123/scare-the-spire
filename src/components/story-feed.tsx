@@ -20,6 +20,7 @@ import { PatchLineReferenceBlock } from "@/components/patch-line-reference";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { StoryComposerModal } from "@/components/story-composer-modal";
 import { StoryWriteIcon } from "@/components/story-token-icon";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import { CardTile } from "@/components/codex/card-tile";
 import { resolveStoryPatchLine } from "@/lib/resolve-story-patch-line";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
@@ -822,7 +823,7 @@ function StoryDetailModal({
           </button>
         </div>
 
-        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4">
+        <GameScrollArea className="min-h-0 flex-1" size="large" scrollerClassName="space-y-4 px-4 py-4">
           <div className="flex items-start gap-3">
             <div className="min-w-0 flex-1 text-center">
               <p className="text-xl font-medium leading-snug sm:text-2xl">
@@ -876,7 +877,7 @@ function StoryDetailModal({
             threadKey={story.id}
             onCountChange={(count) => onCommentCountChange(story.id, count)}
           />
-        </div>
+        </GameScrollArea>
       </article>
     </div>
   );

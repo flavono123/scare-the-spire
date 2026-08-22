@@ -160,6 +160,8 @@ import { VersionSelector } from "./version-selector";
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
+  CompendiumIndexScroller,
+  CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import {
@@ -814,7 +816,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
         />
 
         {/* Card Grid */}
-        <div className="flex-1 overflow-y-auto p-3">
+        <CompendiumIndexScroller scrollerClassName="p-3">
           <div
             className="grid gap-2 sm:gap-3 justify-center"
             style={{ gridTemplateColumns: "repeat(auto-fill, 200px)" }}
@@ -875,17 +877,12 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
               {gameUi.cardLibrary.noResults}
             </div>
           )}
-        </div>
+        </CompendiumIndexScroller>
       </main>
 
       {/* Card Detail Modal */}
       {selectedCard && (
-        <div
-          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeSelectedCard();
-          }}
-        >
+        <CompendiumDetailOverlay onClose={() => closeSelectedCard()} zClassName="z-[100]">
           <div className="my-8 mx-4 w-full max-w-6xl">
             <CardDetail key={`${selectedCard.id}:${activeShowBeta ? "beta" : "normal"}`} serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedAncients={relatedAncients} relatedEvents={relatedEvents} relatedMonsters={relatedMonsters} relatedPotions={relatedPotions} relatedPowers={relatedPowers} tipCatalogSources={tipCatalogSources} tipCatalogCards={cards} patches={patches} changes={changes} versionDiffs={versionDiffs} initialShowBeta={activeShowBeta} onShowBetaChange={(next) => {
               setUseUrlSelection(false);
@@ -893,7 +890,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
               setShowBeta(next);
             }} onClose={closeSelectedCard} />
           </div>
-        </div>
+        </CompendiumDetailOverlay>
       )}
     </CompendiumIndexLayout>
   );

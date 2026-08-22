@@ -12,6 +12,7 @@ import {
   TRANSFIGURE_RESOURCE_TYPES,
 } from "@/lib/transfigure-types";
 import { cn } from "@/lib/utils";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import { serviceMessages } from "@/messages/service";
 
 const BROWSE_RESULT_LIMIT = 48;
@@ -183,7 +184,8 @@ export function TransfigureResourcePicker({
             ))}
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto p-2" role="list">
+          <GameScrollArea className="min-h-0 flex-1" size="small" scrollerClassName="p-2">
+            <div role="list">
             {results.length === 0 ? (
               <p className="px-3 py-8 text-center text-xs text-muted-foreground">
                 {commonCopy.noResults}
@@ -247,7 +249,8 @@ export function TransfigureResourcePicker({
                 {copy.refineSearch}
               </p>
             )}
-          </div>
+            </div>
+          </GameScrollArea>
         </div>
       )}
     </div>

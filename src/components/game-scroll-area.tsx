@@ -4,6 +4,7 @@ import {
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
+  type Ref,
   useEffect,
   useRef,
   useState,
@@ -54,6 +55,8 @@ export function GameScrollArea({
   children,
   className,
   scrollerClassName,
+  scrollerRef,
+  scrollerStyle,
   size = "large",
   "aria-label": ariaLabel,
   dataTestId,
@@ -61,12 +64,14 @@ export function GameScrollArea({
   children: ReactNode;
   className?: string;
   scrollerClassName?: string;
+  scrollerRef?: Ref<HTMLDivElement>;
+  scrollerStyle?: CSSProperties;
   size?: GameScrollAreaSize;
   "aria-label"?: string;
   dataTestId?: string;
 }) {
   const assets = ASSETS[size];
-  const scrollerRef = useRef<HTMLDivElement>(null);
+  const scrollerNodeRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{
     pointerId: number;
@@ -80,7 +85,7 @@ export function GameScrollArea({
   });
 
   useEffect(() => {
-    const scroller = scrollerRef.current;
+    const scroller = scrollerNodeRef.current;
     const track = trackRef.current;
     if (!scroller) return;
 
@@ -124,7 +129,7 @@ export function GameScrollArea({
   }, [assets.trainHeight]);
 
   const scrollFromThumbTop = (thumbTop: number) => {
-    const scroller = scrollerRef.current;
+    const scroller = scrollerNodeRef.current;
     if (!scroller) return;
     const maxScroll = scroller.scrollHeight - scroller.clientHeight;
     const travel = Math.max(0, metrics.trackHeight - assets.trainHeight);
@@ -136,7 +141,7 @@ export function GameScrollArea({
   const onTrackPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (event.button !== 0) return;
     const track = trackRef.current;
-    const scroller = scrollerRef.current;
+    const scroller = scrollerNodeRef.current;
     if (!track || !scroller || !metrics.overflow) return;
 
     const rect = track.getBoundingClientRect();
@@ -148,7 +153,7 @@ export function GameScrollArea({
     if (event.button !== 0) return;
     event.preventDefault();
     event.stopPropagation();
-    const scroller = scrollerRef.current;
+    const scroller = scrollerNodeRef.current;
     if (!scroller) return;
     event.currentTarget.setPointerCapture(event.pointerId);
     dragRef.current = {
@@ -160,7 +165,7 @@ export function GameScrollArea({
 
   const onTrainPointerMove = (event: ReactPointerEvent<HTMLButtonElement>) => {
     const drag = dragRef.current;
-    const scroller = scrollerRef.current;
+    const scroller = scrollerNodeRef.current;
     if (!drag || drag.pointerId !== event.pointerId || !scroller) return;
     const maxScroll = scroller.scrollHeight - scroller.clientHeight;
     const travel = Math.max(0, metrics.trackHeight - assets.trainHeight);
@@ -195,12 +200,17 @@ export function GameScrollArea({
       style={railStyle}
     >
       <div
-        ref={scrollerRef}
+        ref={(node) => {
+          scrollerNodeRef.current = node;
+          if (typeof scrollerRef === "function") scrollerRef(node);
+          else if (scrollerRef) scrollerRef.current = node;
+        }}
         data-testid={dataTestId}
         className={cn(
           "min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
           scrollerClassName,
         )}
+        style={scrollerStyle}
       >
         {children}
       </div>

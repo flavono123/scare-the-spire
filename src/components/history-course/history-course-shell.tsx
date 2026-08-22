@@ -15,6 +15,7 @@ import {
   type NodeStackItemKind,
 } from "@/components/history-course/node-action-stack";
 import { RunSummary } from "@/components/history-course/run-summary";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import { TopBar } from "@/components/history-course/topbar";
 import { buildTopbarState } from "@/components/history-course/topbar-state";
 import type { CodexCard, CodexPotion, CodexRelic } from "@/lib/codex-types";
@@ -1358,10 +1359,12 @@ function Stage({
         onFocusPlayer={onFocusPlayer}
       />
 
-      <div
-        ref={mapBoxRef}
-        className="absolute inset-0 overflow-y-auto overflow-x-hidden pt-[96px]"
-        style={{
+      <GameScrollArea
+        className="absolute inset-0"
+        size="large"
+        scrollerRef={mapBoxRef}
+        scrollerClassName="overflow-x-hidden pt-[96px]"
+        scrollerStyle={{
           willChange: "scroll-position",
           contain: "paint",
         }}
@@ -1377,7 +1380,7 @@ function Stage({
             characterMarkerOutlineSrc={mapCharacterMarkerOutlineSrc}
           />
         </div>
-      </div>
+      </GameScrollArea>
 
       <NodePulse step={step} />
 

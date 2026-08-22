@@ -28,6 +28,7 @@ import { listOwnRuns } from "@/lib/run-store";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
 import { supabaseEnabled } from "@/lib/supabase";
 import { serviceMessages } from "@/messages/service";
+import { GameScrollArea } from "@/components/game-scroll-area";
 
 interface LocalRunEntry {
   runId: string;
@@ -258,7 +259,7 @@ export function ComboHistoryRunPicker({
             />
           </label>
 
-          <div className="min-h-0 flex-1 overflow-y-auto p-3">
+          <GameScrollArea className="min-h-0 flex-1" size="large" scrollerClassName="p-3">
             {loading ? (
               <div className="flex items-center justify-center gap-2 py-12 text-xs text-muted-foreground">
                 <LoaderCircle className="h-4 w-4 animate-spin motion-reduce:animate-none" aria-hidden="true" />
@@ -299,7 +300,7 @@ export function ComboHistoryRunPicker({
                 )}
               </div>
             )}
-          </div>
+          </GameScrollArea>
 
           {error && (
             <p

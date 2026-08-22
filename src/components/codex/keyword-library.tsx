@@ -31,6 +31,8 @@ import {
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
+  CompendiumIndexScroller,
+  CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { GameHoverTip } from "./hover-tip";
@@ -231,7 +233,7 @@ export function KeywordLibrary({
           count={formatCodexCount(filteredKeywords.length, serviceText.labels.keywords, serviceLocale)}
         />
 
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
           {groupedKeywords.map(({ source, keywords: groupKeywords }) => {
             const config = KEYWORD_SOURCE_CONFIG[source];
             return (
@@ -264,16 +266,11 @@ export function KeywordLibrary({
               {serviceText.common.noResults}
             </div>
           )}
-        </div>
+        </CompendiumIndexScroller>
       </main>
 
       {selectedKeyword && (
-        <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) closeSelectedKeyword();
-          }}
-        >
+        <CompendiumDetailOverlay onClose={() => closeSelectedKeyword()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
             <KeywordDetail
               serviceLocale={serviceLocale}
@@ -285,7 +282,7 @@ export function KeywordLibrary({
               onClose={closeSelectedKeyword}
             />
           </div>
-        </div>
+        </CompendiumDetailOverlay>
       )}
     </CompendiumIndexLayout>
   );

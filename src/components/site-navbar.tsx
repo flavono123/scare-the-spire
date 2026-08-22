@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
 import { SiteNavDropdown } from "@/components/site-nav-dropdown";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import {
   GAME_UI_HOVER_TIP_NAV_DELAY_MS,
   GameUiHoverTip,
@@ -604,7 +605,7 @@ function GlobalSearch({
             spellCheck={false}
           />
         </div>
-        <div className="max-h-[min(28rem,calc(100dvh-9rem))] overflow-y-auto p-1.5">
+        <GameScrollArea className="max-h-[min(28rem,calc(100dvh-9rem))]" size="small" scrollerClassName="p-1.5">
           {!query.trim() && (
             <div className="px-3 py-8 text-center text-sm text-muted-foreground">
               {copy.empty}
@@ -681,7 +682,7 @@ function GlobalSearch({
               </section>
             );
           })}
-        </div>
+        </GameScrollArea>
       </div>
     </div>
   );

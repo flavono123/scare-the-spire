@@ -12,6 +12,7 @@ import {
 import { DescriptionText } from "@/components/codex/codex-description";
 import { GameHoverTip } from "@/components/codex/hover-tip";
 import { PortaledHoverTipLayer } from "@/components/codex/card-keyword-tip-stack";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -208,13 +209,14 @@ export function RunSummary({
   return (
     <div
       data-testid="run-summary-overlay"
-      className="pointer-events-auto absolute inset-0 z-50 overflow-y-auto bg-zinc-950/96"
+      className="pointer-events-auto absolute inset-0 z-50 bg-zinc-950/96"
       role="dialog"
       aria-modal="true"
       onKeyDown={(e) => {
         if (e.key === "Escape") onClose();
       }}
     >
+      <GameScrollArea className="h-full" size="large">
       <SummaryPanel
         run={run}
         acts={acts}
@@ -229,6 +231,7 @@ export function RunSummary({
         onFocusPlayer={onFocusPlayer}
       />
       <BackButton onClose={onClose} />
+      </GameScrollArea>
     </div>
   );
 }

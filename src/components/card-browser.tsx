@@ -5,6 +5,7 @@ import Image from "@/components/ui/static-image";
 import type { Card, CardClass, CardType, Rarity, Change } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { ChangeList } from "@/components/change-list";
+import { GameScrollArea } from "@/components/game-scroll-area";
 
 const CLASS_TABS: { value: CardClass; label: string; color: string }[] = [
   { value: "ironclad", label: "아이언클래드", color: "text-red-400" },
@@ -58,9 +59,10 @@ function ChangeModal({
       onClick={onClose}
     >
       <div
-        className="mx-4 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border border-border bg-background p-5"
+        className="mx-4 max-h-[90vh] w-full max-w-lg overflow-hidden rounded-xl border border-border bg-background"
         onClick={(e) => e.stopPropagation()}
       >
+        <GameScrollArea className="max-h-[90vh]" size="large" scrollerClassName="p-5">
         {/* Header */}
         <div className="flex items-start gap-4 mb-4">
           <div className="relative w-24 shrink-0">
@@ -133,6 +135,7 @@ function ChangeModal({
         ) : (
           <p className="text-sm text-muted-foreground">변경 이력 없음</p>
         )}
+        </GameScrollArea>
       </div>
     </div>
   );
