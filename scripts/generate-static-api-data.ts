@@ -743,6 +743,11 @@ async function main() {
     await generateHistoryCourseCatalogOnly();
     return;
   }
+  if (process.argv.includes("--this-or-that-resources-only")) {
+    const thisOrThatResourceTargets = await buildThisOrThatResourceTargets();
+    await Promise.all(thisOrThatResourceTargets.map(writeJson));
+    return;
+  }
 
   const [
     searchIndex,

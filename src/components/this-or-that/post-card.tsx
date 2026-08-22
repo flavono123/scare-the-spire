@@ -87,8 +87,6 @@ export function ThisOrThatPostCard({
     router.push(href);
   }, [href, router]);
 
-  if (!leftEntity || !rightEntity) return null;
-
   return (
     <article
       onClick={handleCardClick}

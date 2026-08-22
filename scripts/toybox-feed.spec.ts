@@ -96,8 +96,13 @@ assert.equal(toyboxFeedCursorScore(parsed, "vote_rate_high"), 9000);
 assert.equal(toyboxFeedCursorScore(parsed, "vote_rate_low"), 1000);
 
 assert.equal(isMissingToyboxFeedRpc({ code: "PGRST202" }), true);
+assert.equal(isMissingToyboxFeedRpc({ code: "42703" }), true);
 assert.equal(
   isMissingToyboxFeedRpc({ message: "Could not find the function public.get_toybox_feed" }),
+  true,
+);
+assert.equal(
+  isMissingToyboxFeedRpc({ message: 'column "left_vote_count" does not exist' }),
   true,
 );
 assert.equal(isMissingToyboxFeedRpc({ code: "42501" }), false);

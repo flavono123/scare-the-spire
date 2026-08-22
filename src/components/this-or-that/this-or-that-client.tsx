@@ -168,6 +168,8 @@ export function ThisOrThatClient({
 
       {storageUnavailable ? (
         <StorageUnavailableNotice title={copy.unavailableTitle} />
+      ) : resourcesError ? (
+        <p className="text-sm text-muted-foreground">{copy.resourcesMissing}</p>
       ) : null}
 
       {!storageUnavailable && (

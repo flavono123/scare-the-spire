@@ -52,11 +52,12 @@ export function ThisOrThatPostView({
   const router = useRouter();
   const [copied, setCopied] = useState(false);
   const { userId, ready: authReady, unavailable: authUnavailable, ensureUser } = useAuth();
-  const { post, loading, unavailable, remove } = useThisOrThatPost(postId, userId);
   const {
     entities,
     loading: resourcesLoading,
+    error: resourcesError,
   } = useThisOrThatEntities(gameLocale);
+  const { post, loading, unavailable, remove } = useThisOrThatPost(postId, userId);
   const postIds = useMemo(() => post ? [post.id] : [], [post]);
   const seedLikeCounts = useMemo(
     () => (post ? { [post.id]: post.like_count ?? 0 } : {}),
@@ -98,7 +99,7 @@ export function ThisOrThatPostView({
     return <ContentLoadingNotice label={copy.loading} />;
   }
 
-  if (!resolvedPost?.leftEntity || !resolvedPost.rightEntity) {
+  if (!resolvedPost) {
     return (
       <div className="py-12 text-center">
         <p className="mb-4 text-sm text-muted-foreground">{copy.notFound}</p>
@@ -121,6 +122,9 @@ export function ThisOrThatPostView({
 
   return (
     <div className="space-y-5">
+      {resourcesError ? (
+        <p className="text-sm text-muted-foreground">{copy.resourcesMissing}</p>
+      ) : null}
       {!embed && (
       <div className="flex items-center justify-between gap-3">
         <Link

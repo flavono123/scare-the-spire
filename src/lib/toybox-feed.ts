@@ -122,8 +122,10 @@ export function isMissingToyboxFeedRpc(
   error: { code?: string; message?: string } | null | undefined,
 ): boolean {
   if (!error) return false;
-  if (error.code === "PGRST202") return true;
-  return /get_toybox_feed/i.test(error.message ?? "");
+  if (error.code === "PGRST202" || error.code === "42703") return true;
+  return /get_toybox_feed|left_vote_count|right_vote_count|vote_rate_bps/i.test(
+    error.message ?? "",
+  );
 }
 
 export function asNonNegativeInt(value: unknown): number | null {

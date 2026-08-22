@@ -31,8 +31,8 @@ export interface ThisOrThatPost {
 
 export interface ThisOrThatResolvedPost {
   post: ThisOrThatPost;
-  leftEntity: EntityInfo | null;
-  rightEntity: EntityInfo | null;
+  leftEntity: EntityInfo;
+  rightEntity: EntityInfo;
 }
 
 const RESOURCE_LINK_TYPES: Record<ThisOrThatResourceType, CompendiumResourceLinkType> = {
@@ -98,13 +98,36 @@ export function buildThisOrThatEntityMap(
   return map;
 }
 
+export function createMissingThisOrThatEntity(
+  type: ThisOrThatResourceType,
+  id: string,
+): EntityInfo {
+  return {
+    id,
+    nameEn: id,
+    nameKo: id,
+    imageUrl: null,
+    href: null,
+    availability: "pending-compendium",
+    color: "",
+    type,
+    keywordData: {
+      description: id,
+    } as EntityInfo["keywordData"],
+  };
+}
+
 export function resolveThisOrThatPost(
   post: ThisOrThatPost,
   entityMap: Map<string, EntityInfo>,
 ): ThisOrThatResolvedPost {
   return {
     post,
-    leftEntity: entityMap.get(thisOrThatResourceKey(post.left_type, post.left_id)) ?? null,
-    rightEntity: entityMap.get(thisOrThatResourceKey(post.right_type, post.right_id)) ?? null,
+    leftEntity:
+      entityMap.get(thisOrThatResourceKey(post.left_type, post.left_id))
+      ?? createMissingThisOrThatEntity(post.left_type, post.left_id),
+    rightEntity:
+      entityMap.get(thisOrThatResourceKey(post.right_type, post.right_id))
+      ?? createMissingThisOrThatEntity(post.right_type, post.right_id),
   };
 }
