@@ -11,18 +11,17 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
-import { StoryReactionButton } from "@/components/story-reaction-button";
 import { CommentSection } from "@/components/comment-section";
 import { EngagementSummary } from "@/components/engagement-summary";
 import { EngagementSpinner } from "@/components/engagement-spinner";
-import { PatchLineReferenceBlock } from "@/components/patch-line-reference";
-import { resolveStoryPatchLine } from "@/lib/resolve-story-patch-line";
-import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
+import { LikeButton } from "@/components/like-button";
+import { PatchLineReferenceBlock } from "@/components/patch-line-reference";
+import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { StoryComposerModal } from "@/components/story-composer-modal";
 import { StoryWriteIcon } from "@/components/story-token-icon";
 import { CardTile } from "@/components/codex/card-tile";
-import type { StoryReactionCounts } from "@/lib/reactions";
+import { resolveStoryPatchLine } from "@/lib/resolve-story-patch-line";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { serviceMessages } from "@/messages/service";
 
@@ -115,27 +114,15 @@ function formatStoryPublishedAt(publishedAt: string, serviceLocale: ServiceLocal
   return formatShortDate(date);
 }
 
-function reactionTotal(counts: StoryReactionCounts | undefined) {
-  if (!counts) return 0;
-  return Object.values(counts).reduce((total, count) => total + (count ?? 0), 0);
-}
-
-function storyReactionTotal(
-  storyId: string,
-  counts: ReturnType<typeof useEngagementCounts>,
-) {
-  return Math.max(counts.likes[storyId] ?? 0, reactionTotal(counts.reactions[storyId]));
-}
-
 function storyRecommendedScore(
   story: Story,
   counts: ReturnType<typeof useEngagementCounts>,
 ) {
-  const reactions = storyReactionTotal(story.id, counts);
+  const likes = counts.likes[story.id] ?? 0;
   const comments = counts.comments[story.id] ?? 0;
   const communityBase = story.community ? 2 : 0;
 
-  return reactions * 4 + comments * 6 + communityBase;
+  return likes * 4 + comments * 6 + communityBase;
 }
 
 function stableStoryOrder(
@@ -651,7 +638,6 @@ function StoryCard({
   canDelete,
   onDelete,
   likeCount,
-  reactionCounts,
   commentCount,
   engagementLoading,
   engagementUnavailable,
@@ -665,13 +651,13 @@ function StoryCard({
   canDelete: boolean;
   onDelete: (storyId: string) => Promise<void>;
   likeCount: number;
-  reactionCounts: StoryReactionCounts;
   commentCount: number;
   engagementLoading: boolean;
   engagementUnavailable: boolean;
 }) {
   const [deleting, setDeleting] = useState(false);
   const copy = storyFeedCopy(serviceLocale);
+  const tips = serviceMessages[serviceLocale].engagementTips;
   const publishedLabel = story.publishedAt ? formatStoryPublishedAt(story.publishedAt, serviceLocale) : "";
 
   const handleDelete = async () => {
@@ -726,14 +712,17 @@ function StoryCard({
             )}
           </div>
           <div className="shrink-0">
-            <StoryReactionButton
+            <LikeButton
               storyId={story.id}
               userId={userId}
-              initialCounts={reactionCounts}
-              initialTotal={likeCount}
+              initialCount={likeCount}
+              size={16}
               authReady={authReady}
               userStatusLoading="lazy"
               ensureUser={ensureUser}
+              tipLabel={tips.like}
+              tipLabelActive={tips.unlike}
+              lift
             />
           </div>
         </div>
@@ -761,7 +750,6 @@ function StoryDetailModal({
   authReady,
   ensureUser,
   likeCount,
-  reactionCounts,
   commentCount,
   engagementLoading,
   engagementUnavailable,
@@ -786,7 +774,6 @@ function StoryDetailModal({
   authReady: boolean;
   ensureUser: () => Promise<string | null>;
   likeCount: number;
-  reactionCounts: StoryReactionCounts;
   commentCount: number;
   engagementLoading: boolean;
   engagementUnavailable: boolean;
@@ -794,6 +781,7 @@ function StoryDetailModal({
   onClose: () => void;
 }) {
   const copy = storyFeedCopy(serviceLocale);
+  const tips = serviceMessages[serviceLocale].engagementTips;
   const publishedLabel = story.publishedAt ? formatStoryPublishedAt(story.publishedAt, serviceLocale) : "";
 
   useEffect(() => {
@@ -849,14 +837,17 @@ function StoryDetailModal({
                 </p>
               )}
             </div>
-            <StoryReactionButton
+            <LikeButton
               storyId={story.id}
               userId={userId}
-              initialCounts={reactionCounts}
-              initialTotal={likeCount}
+              initialCount={likeCount}
+              size={16}
               authReady={authReady}
               userStatusLoading="lazy"
               ensureUser={ensureUser}
+              tipLabel={tips.like}
+              tipLabelActive={tips.unlike}
+              lift
             />
           </div>
 
@@ -1105,7 +1096,6 @@ export function StoryFeed({
           authReady={authReady}
           ensureUser={ensureUser}
           likeCount={counts.likes[activeStory.id] ?? 0}
-          reactionCounts={counts.reactions[activeStory.id] ?? {}}
           commentCount={commentCountOverrides[activeStory.id] ?? counts.comments[activeStory.id] ?? 0}
           engagementLoading={counts.loading}
           engagementUnavailable={counts.unavailable}
@@ -1141,7 +1131,6 @@ export function StoryFeed({
                 canDelete={Boolean(story.community && userId && story.authorUserId === userId)}
                 onDelete={communityStories.remove}
                 likeCount={counts.likes[story.id] ?? 0}
-                reactionCounts={counts.reactions[story.id] ?? {}}
                 commentCount={commentCountOverrides[story.id] ?? counts.comments[story.id] ?? 0}
                 engagementLoading={counts.loading}
                 engagementUnavailable={counts.unavailable}

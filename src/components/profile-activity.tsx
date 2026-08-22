@@ -5,6 +5,7 @@ import { ChevronRight, LoaderCircle } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
+import { SpireLikeIcon } from "@/components/spire-icon";
 import Image from "@/components/ui/static-image";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
@@ -73,8 +74,6 @@ const CATEGORY_ICON: Record<ProfileActivityCategory, string> = {
   comments: "/images/sts2/relics/pen_nib.webp",
   history_course: "/images/sts2/relics/history_course.webp",
 };
-
-const LIKE_ICON = "/images/sts2/ui/emote/thumb_up.png";
 
 const CODEX_PATHS: Record<string, string> = {
   affliction: "enchantments",
@@ -307,7 +306,7 @@ export function ProfileActivity({
           />
           <div className="flex min-h-24 flex-col justify-between rounded-lg border border-amber-300/15 bg-amber-400/[0.035] px-3 py-3">
             <div className="flex items-center gap-2 text-xs font-semibold text-zinc-400">
-              <Image src={LIKE_ICON} alt="" width={20} height={20} aria-hidden className="h-5 w-5 object-contain" />
+              <SpireLikeIcon size={20} />
               <span>{copy.totalLikes}</span>
             </div>
             <strong className="text-2xl font-bold tabular-nums text-amber-100">
@@ -397,7 +396,7 @@ export function ProfileActivity({
                 </div>
                 <div className="flex items-center gap-2 pl-1 pt-5 text-zinc-500">
                   <span className="inline-flex items-center gap-1 text-xs tabular-nums" title={formatTemplate(copy.likes, { count: item.likeCount })}>
-                    <Image src={LIKE_ICON} alt="" width={16} height={16} aria-hidden className="h-4 w-4 object-contain opacity-80" />
+                    <SpireLikeIcon size={16} />
                     {item.likeCount}
                   </span>
                   <Link

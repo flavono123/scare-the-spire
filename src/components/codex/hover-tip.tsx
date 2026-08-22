@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { type CSSProperties, type ReactNode } from "react";
 import Image from "@/components/ui/static-image";
 import {
   HOVER_TIP_BODY_COLOR,
@@ -35,7 +35,7 @@ interface HoverTipProps {
   compact?: boolean;
   children?: ReactNode;
   className?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
 function selectedHoverTipArt(art?: HoverTipArt) {

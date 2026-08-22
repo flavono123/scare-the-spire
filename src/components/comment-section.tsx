@@ -19,7 +19,7 @@ import { useUserProfile } from "@/hooks/use-user-profile";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 import { EngagementSpinner } from "@/components/engagement-spinner";
-import { SPIRE_ACTION_CONTROL_CLASS, SpireLikeIcon } from "@/components/spire-icon";
+import { LikeControl } from "@/components/like-control";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { buildRichContentIndexes, resolveRichContentBlocks } from "@/lib/rich-content-blocks";
@@ -48,6 +48,7 @@ export function CommentSection({
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].comments;
+  const tips = serviceMessages[serviceLocale].engagementTips;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const { userId, ready, ensureUser } = useAuth();
   const { entities, loading: entitiesLoading } = useCommentEntities(initialEntities);
@@ -124,20 +125,17 @@ export function CommentSection({
                 <span className="text-[10px] text-muted-foreground">
                   {new Date(comment.created_at).toLocaleDateString(dateLocale)}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => handleCommentLike(comment.id)}
+                <LikeControl
+                  count={likeCounts.get(comment.id) ?? 0}
+                  liked={likedSet.has(comment.id)}
                   disabled={!ready || storageUnavailable}
-                  className={`${SPIRE_ACTION_CONTROL_CLASS} gap-0.5 text-[10px] text-muted-foreground disabled:opacity-30 ${
-                    likedSet.has(comment.id) ? "text-[#d4a843]" : ""
-                  }`}
-                  title={copy.likeAlt}
-                >
-                  <SpireLikeIcon size={14} active={likedSet.has(comment.id)} />
-                  {(likeCounts.get(comment.id) ?? 0) > 0 && (
-                    <span className="tabular-nums">{likeCounts.get(comment.id)}</span>
-                  )}
-                </button>
+                  onToggle={() => {
+                    void handleCommentLike(comment.id);
+                  }}
+                  tipLabel={tips.like}
+                  tipLabelActive={tips.unlike}
+                  size={14}
+                />
                 {userId === comment.user_id && (
                   <button
                     type="button"
