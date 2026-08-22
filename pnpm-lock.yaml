@@ -136,7 +136,7 @@ importers:
         specifier: ^5
         version: 5.9.3
       vite:
-        specifier: latest
+        specifier: 8.2.2
         version: 8.2.2(@types/node@20.19.35)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.16.9)(tsx@4.21.0)(yaml@2.9.0)
       wrangler:
         specifier: ^4.100.0
