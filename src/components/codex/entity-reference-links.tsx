@@ -262,3 +262,9 @@ function toPreviewEntity(
     type: target.entity?.type ?? kind,
   };
 }
+
+export {
+  EntityReferenceGroupLinks as RelatedResourceLinks,
+  EntityReferenceLinks as RelatedResourceLine,
+};
+

@@ -6,25 +6,10 @@ import {
   useState,
 } from "react";
 import Image from "@/components/ui/static-image";
-import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import { getCharacterColor } from "@/lib/codex-types";
+import { compendiumTypeLabels } from "@/lib/compendium-type-labels";
 import { useServiceLocale } from "@/hooks/use-service-locale";
-import { serviceMessages } from "@/messages/service";
-
-function getEntityTypeLabels(serviceLocale: ReturnType<typeof useServiceLocale>): Partial<Record<EntityType, string>> {
-  const codex = serviceMessages[serviceLocale].codex;
-  return {
-    card: codex.cards,
-    relic: codex.relics,
-    potion: codex.potions,
-    power: codex.powers,
-    enchantment: codex.enchantments,
-    event: codex.events,
-    monster: codex.monsters,
-    encounter: codex.encounters,
-    ancient: codex.ancients,
-  };
-}
 
 export interface MentionListRef {
   onKeyDown: (props: { event: KeyboardEvent }) => boolean;
@@ -38,7 +23,7 @@ interface MentionListProps {
 export const MentionList = forwardRef<MentionListRef, MentionListProps>(
   ({ items, command }, ref) => {
     const serviceLocale = useServiceLocale();
-    const entityTypeLabels = getEntityTypeLabels(serviceLocale);
+    const entityTypeLabels = compendiumTypeLabels(serviceLocale);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const safeSelectedIndex =
       items.length === 0

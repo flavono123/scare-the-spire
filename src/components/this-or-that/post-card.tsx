@@ -8,6 +8,7 @@ import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import type { ThisOrThatResolvedPost } from "@/lib/this-or-that";
 import { serviceMessages } from "@/messages/service";
+import { formatTimeAgo } from "@/lib/relative-time";
 import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { OwnPostMark } from "@/components/own-post-mark";
 import {
@@ -26,28 +27,6 @@ import {
   type ThisOrThatVoteSummary,
 } from "@/lib/this-or-that-votes";
 import { cn } from "@/lib/utils";
-
-function formatRelativeTime(template: string, count: number): string {
-  return template.replace("{count}", String(count));
-}
-
-function timeAgo(
-  dateStr: string,
-  copy: Record<"justNow" | "minutesAgo" | "hoursAgo" | "daysAgo", string>,
-  dateLocale: string,
-): string {
-  const now = Date.now();
-  const then = new Date(dateStr).getTime();
-  const diff = now - then;
-  const minutes = Math.floor(diff / 60_000);
-  if (minutes < 1) return copy.justNow;
-  if (minutes < 60) return formatRelativeTime(copy.minutesAgo, minutes);
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return formatRelativeTime(copy.hoursAgo, hours);
-  const days = Math.floor(hours / 24);
-  if (days < 30) return formatRelativeTime(copy.daysAgo, days);
-  return new Date(dateStr).toLocaleDateString(dateLocale);
-}
 
 export function ThisOrThatPostCard({
   resolvedPost,
@@ -126,7 +105,7 @@ export function ThisOrThatPostCard({
             </Link>
           </h2>
           <span className="mt-1 block text-xs text-muted-foreground">
-            {timeAgo(post.created_at, copy, dateLocale)}
+            {formatTimeAgo(post.created_at, copy, dateLocale)}
           </span>
         </div>
         <div className="flex shrink-0 items-center gap-2">

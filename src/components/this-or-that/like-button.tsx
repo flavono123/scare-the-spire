@@ -1,9 +1,6 @@
 "use client";
 
-import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
-import { SPIRE_ACTION_CONTROL_CLASS, SpireLikeIcon } from "@/components/spire-icon";
-import { EngagementSpinner, EngagementUnavailableIcon } from "@/components/engagement-spinner";
-import { cn } from "@/lib/utils";
+import { LikeControl } from "@/components/like-control";
 
 export function ThisOrThatLikeButton({
   count,
@@ -30,40 +27,23 @@ export function ThisOrThatLikeButton({
   lift?: boolean;
   className?: string;
 }) {
-  const blocked = unavailable || disabled;
-  const tip = liked && tipLabelActive ? tipLabelActive : tipLabel ?? label;
-
-  const button = (
-    <button
-      type="button"
-      onClick={(event) => {
+  return (
+    <LikeControl
+      count={count}
+      liked={liked}
+      pending={loading}
+      blocked={unavailable}
+      disabled={disabled}
+      onToggle={(event) => {
         event.stopPropagation();
         onToggle();
       }}
-      disabled={blocked || loading}
-      className={cn(
-        SPIRE_ACTION_CONTROL_CLASS,
-        "gap-1.5 rounded-md px-2 py-1 text-xs text-muted-foreground",
-        "disabled:cursor-not-allowed disabled:opacity-50",
-        liked && "text-[#d4a843]",
-        className,
-      )}
-      title={label}
-      aria-label={tip}
-      aria-pressed={liked}
-    >
-      {unavailable ? (
-        <EngagementUnavailableIcon size={16} />
-      ) : loading ? (
-        <EngagementSpinner size={16} />
-      ) : (
-        <SpireLikeIcon size={16} active={liked} lift={lift} />
-      )}
-      <span className="tabular-nums">{count}</span>
-    </button>
+      tipLabel={tipLabel ?? label}
+      tipLabelActive={tipLabelActive}
+      lift={lift}
+      size={16}
+      alwaysShowCount
+      className={className}
+    />
   );
-
-  if (!tipLabel || unavailable || loading) return button;
-
-  return <GameUiHoverTip label={tip}>{button}</GameUiHoverTip>;
 }

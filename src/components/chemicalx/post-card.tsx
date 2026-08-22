@@ -11,6 +11,7 @@ import { buildChemicalXCommentThreadKey } from "@/lib/comment-threads";
 import { localizeHref } from "@/lib/i18n";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
+import { formatTimeAgo } from "@/lib/relative-time";
 
 interface PostCardProps {
   post: ChemicalPost;
@@ -22,28 +23,6 @@ interface PostCardProps {
   ensureUser?: () => Promise<string | null>;
   commentCount?: number;
   likeCount?: number;
-}
-
-function formatRelativeTime(template: string, count: number): string {
-  return template.replace("{count}", String(count));
-}
-
-function timeAgo(
-  dateStr: string,
-  copy: Record<"justNow" | "minutesAgo" | "hoursAgo" | "daysAgo", string>,
-  dateLocale: string,
-): string {
-  const now = Date.now();
-  const then = new Date(dateStr).getTime();
-  const diff = now - then;
-  const minutes = Math.floor(diff / 60_000);
-  if (minutes < 1) return copy.justNow;
-  if (minutes < 60) return formatRelativeTime(copy.minutesAgo, minutes);
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return formatRelativeTime(copy.hoursAgo, hours);
-  const days = Math.floor(hours / 24);
-  if (days < 30) return formatRelativeTime(copy.daysAgo, days);
-  return new Date(dateStr).toLocaleDateString(dateLocale);
 }
 
 export function PostCard({
@@ -96,7 +75,7 @@ export function PostCard({
         </span>
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-500">
-            {timeAgo(post.created_at, copy, dateLocale)}
+            {formatTimeAgo(post.created_at, copy, dateLocale)}
           </span>
           <IndexCardEngagement
             commentsHref={commentsHref}

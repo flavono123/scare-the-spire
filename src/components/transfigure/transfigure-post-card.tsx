@@ -16,6 +16,7 @@ import {
 } from "@/lib/i18n";
 import type { TransfigurePost } from "@/lib/transfigure-types";
 import { serviceMessages } from "@/messages/service";
+import { formatTimeAgo } from "@/lib/relative-time";
 
 interface TransfigurePostCardProps {
   post: TransfigurePost;
@@ -30,26 +31,6 @@ interface TransfigurePostCardProps {
   ensureUser?: () => Promise<string | null>;
   commentCount: number;
   likeCount: number;
-}
-
-function formatRelativeTime(template: string, count: number): string {
-  return template.replace("{count}", String(count));
-}
-
-function timeAgo(
-  dateString: string,
-  copy: Record<"justNow" | "minutesAgo" | "hoursAgo" | "daysAgo", string>,
-  dateLocale: string,
-): string {
-  const diff = Date.now() - new Date(dateString).getTime();
-  const minutes = Math.floor(diff / 60_000);
-  if (minutes < 1) return copy.justNow;
-  if (minutes < 60) return formatRelativeTime(copy.minutesAgo, minutes);
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return formatRelativeTime(copy.hoursAgo, hours);
-  const days = Math.floor(hours / 24);
-  if (days < 30) return formatRelativeTime(copy.daysAgo, days);
-  return new Date(dateString).toLocaleDateString(dateLocale);
 }
 
 export function TransfigurePostCard({
@@ -106,7 +87,7 @@ export function TransfigurePostCard({
             {post.title?.trim() || resource?.nameKo || post.resource_id}
           </h2>
           <span className="mt-1 block text-xs text-muted-foreground">
-            {timeAgo(post.created_at, copy, dateLocale)}
+            {formatTimeAgo(post.created_at, copy, dateLocale)}
           </span>
         </div>
         <div className="flex shrink-0 items-center gap-2">

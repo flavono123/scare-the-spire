@@ -3,32 +3,13 @@
 import { useMemo, useState } from "react";
 import { X } from "lucide-react";
 import Image from "@/components/ui/static-image";
-import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import { matchEntities } from "@/lib/chemical-utils";
 import { getCharacterColor } from "@/lib/codex-types";
+import { compendiumTypeLabels } from "@/lib/compendium-type-labels";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import type { GameLocale } from "@/lib/i18n";
-import { serviceMessages } from "@/messages/service";
 import { ThisOrThatResourcePanel } from "@/components/this-or-that/resource-panel";
-
-function entityTypeLabels(serviceLocale: ReturnType<typeof useServiceLocale>): Partial<Record<EntityType, string>> {
-  const codex = serviceMessages[serviceLocale].codex;
-  return {
-    affliction: codex.afflictions,
-    ancient: codex.ancients,
-    card: codex.cards,
-    character: codex.characters,
-    enchantment: codex.enchantments,
-    encounter: codex.encounters,
-    epoch: codex.epochs,
-    event: codex.events,
-    keyword: codex.keywords,
-    monster: codex.monsters,
-    potion: codex.potions,
-    power: codex.powers,
-    relic: codex.relics,
-  };
-}
 
 export function ThisOrThatResourcePicker({
   entities,
@@ -48,7 +29,7 @@ export function ThisOrThatResourcePicker({
   gameLocale: GameLocale;
 }) {
   const serviceLocale = useServiceLocale();
-  const labels = entityTypeLabels(serviceLocale);
+  const labels = compendiumTypeLabels(serviceLocale);
   const [query, setQuery] = useState("");
   const candidates = useMemo(
     () => entities.filter((entity) => (

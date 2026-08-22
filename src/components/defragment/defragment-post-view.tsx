@@ -33,26 +33,7 @@ import { getSiteDisplayOrigin } from "@/lib/site-origin";
 import { supabaseEnabled } from "@/lib/supabase";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
-
-function formatRelativeTime(template: string, count: number): string {
-  return template.replace("{count}", String(count));
-}
-
-function timeAgo(
-  dateStr: string,
-  copy: Record<"justNow" | "minutesAgo" | "hoursAgo" | "daysAgo", string>,
-  dateLocale: string,
-): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const minutes = Math.floor(diff / 60_000);
-  if (minutes < 1) return copy.justNow;
-  if (minutes < 60) return formatRelativeTime(copy.minutesAgo, minutes);
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return formatRelativeTime(copy.hoursAgo, hours);
-  const days = Math.floor(hours / 24);
-  if (days < 30) return formatRelativeTime(copy.daysAgo, days);
-  return new Date(dateStr).toLocaleDateString(dateLocale);
-}
+import { formatTimeAgo } from "@/lib/relative-time";
 
 export function DefragmentPostView({
   postId,
@@ -191,7 +172,7 @@ export function DefragmentPostView({
             {post.nickname}
           </span>
           <span className="text-xs text-gray-500">
-            {timeAgo(post.created_at, copy, dateLocale)}
+            {formatTimeAgo(post.created_at, copy, dateLocale)}
           </span>
         </div>
         <h1 className="mb-3 font-service text-xl font-bold text-zinc-50">

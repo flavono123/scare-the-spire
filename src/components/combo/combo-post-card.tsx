@@ -17,6 +17,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
+import { formatTimeAgo } from "@/lib/relative-time";
 import { ComboPostRenderer } from "./combo-post-renderer";
 import { ComboResourceStack } from "./combo-resource-stack";
 import { ComboYouTubeThumbnail } from "./combo-youtube-reference";
@@ -33,26 +34,6 @@ interface ComboPostCardProps {
   ensureUser?: () => Promise<string | null>;
   commentCount: number;
   likeCount: number;
-}
-
-function formatRelativeTime(template: string, count: number): string {
-  return template.replace("{count}", String(count));
-}
-
-function timeAgo(
-  dateString: string,
-  copy: Record<"justNow" | "minutesAgo" | "hoursAgo" | "daysAgo", string>,
-  dateLocale: string,
-): string {
-  const diff = Date.now() - new Date(dateString).getTime();
-  const minutes = Math.floor(diff / 60_000);
-  if (minutes < 1) return copy.justNow;
-  if (minutes < 60) return formatRelativeTime(copy.minutesAgo, minutes);
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return formatRelativeTime(copy.hoursAgo, hours);
-  const days = Math.floor(hours / 24);
-  if (days < 30) return formatRelativeTime(copy.daysAgo, days);
-  return new Date(dateString).toLocaleDateString(dateLocale);
 }
 
 export function ComboPostCard({
@@ -105,7 +86,7 @@ export function ComboPostCard({
         </span>
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-500">
-            {timeAgo(post.created_at, copy, dateLocale)}
+            {formatTimeAgo(post.created_at, copy, dateLocale)}
           </span>
           <IndexCardEngagement
             commentsHref={commentsHref}

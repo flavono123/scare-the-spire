@@ -5,6 +5,7 @@ import { Check, Search, Sparkles, X } from "lucide-react";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import { matchEntities } from "@/lib/chemical-utils";
+import { compendiumTypeLabels } from "@/lib/compendium-type-labels";
 import type { ServiceLocale } from "@/lib/i18n";
 import {
   getTransfigureSourceText,
@@ -15,25 +16,6 @@ import { serviceMessages } from "@/messages/service";
 
 const BROWSE_RESULT_LIMIT = 48;
 const SEARCH_RESULT_LIMIT = 80;
-
-function getEntityTypeLabels(
-  serviceLocale: ServiceLocale,
-): Partial<Record<EntityType, string>> {
-  const codex = serviceMessages[serviceLocale].codex;
-  return {
-    character: codex.characters,
-    card: codex.cards,
-    keyword: codex.keywords,
-    relic: codex.relics,
-    potion: codex.potions,
-    power: codex.powers,
-    enchantment: codex.enchantments,
-    affliction: codex.afflictions,
-    event: codex.events,
-    ancient: codex.ancients,
-    epoch: codex.epochs,
-  };
-}
 
 interface TransfigureResourcePickerProps {
   entities: EntityInfo[];
@@ -52,7 +34,7 @@ export function TransfigureResourcePicker({
 }: TransfigureResourcePickerProps) {
   const copy = serviceMessages[serviceLocale].transfigure;
   const commonCopy = serviceMessages[serviceLocale].codex.common;
-  const typeLabels = getEntityTypeLabels(serviceLocale);
+  const typeLabels = compendiumTypeLabels(serviceLocale);
   const [open, setOpen] = useState(defaultOpen);
   const [query, setQuery] = useState("");
   const [activeType, setActiveType] = useState<EntityType | null>(null);

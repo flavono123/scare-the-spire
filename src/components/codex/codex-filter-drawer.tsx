@@ -134,3 +134,9 @@ export function CodexLibraryTopBar({
     </div>
   );
 }
+
+export {
+  CodexLibraryShell as CompendiumIndexLayout,
+  CodexLibraryTopBar as CompendiumIndexTopBar,
+};
+

@@ -11,6 +11,7 @@ import { Check, Plus, Search, X } from "lucide-react";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import { matchEntities } from "@/lib/chemical-utils";
+import { compendiumTypeLabels } from "@/lib/compendium-type-labels";
 import type { ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
@@ -34,25 +35,6 @@ const PICKER_TYPE_ORDER = [
 const BROWSE_RESULT_LIMIT = 48;
 const SEARCH_RESULT_LIMIT = 80;
 
-function getEntityTypeLabels(serviceLocale: ServiceLocale): Partial<Record<EntityType, string>> {
-  const codex = serviceMessages[serviceLocale].codex;
-  return {
-    character: codex.characters,
-    card: codex.cards,
-    keyword: codex.keywords,
-    relic: codex.relics,
-    potion: codex.potions,
-    power: codex.powers,
-    enchantment: codex.enchantments,
-    affliction: codex.afflictions,
-    event: codex.events,
-    monster: codex.monsters,
-    encounter: codex.encounters,
-    ancient: codex.ancients,
-    epoch: codex.epochs,
-  };
-}
-
 interface ComboResourcePickerProps {
   entities: EntityInfo[];
   serviceLocale: ServiceLocale;
@@ -68,7 +50,7 @@ export function ComboResourcePicker({
 }: ComboResourcePickerProps) {
   const copy = serviceMessages[serviceLocale].combo;
   const commonCopy = serviceMessages[serviceLocale].codex.common;
-  const typeLabels = getEntityTypeLabels(serviceLocale);
+  const typeLabels = compendiumTypeLabels(serviceLocale);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [activeType, setActiveType] = useState<EntityType | null>(null);
