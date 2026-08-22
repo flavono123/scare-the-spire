@@ -374,6 +374,7 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-compendium-rail: var(--compendium-rail-fill);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -421,6 +422,7 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
+  --compendium-rail-fill: rgb(0 0 0 / 0.2);
 }
 
 [data-service-locale="ko"] {
@@ -523,6 +525,7 @@
   --color-purple-50: oklch(0.977 0.014 308.299);
   --color-purple-100: oklch(0.946 0.033 307.174);
   --color-purple-200: oklch(0.902 0.063 306.703);
+  --compendium-rail-fill: rgb(0 0 0 / 0.2);
 }
 
 /* Service-shell paper. Accents are ink-weight versions of the same hues. */
@@ -574,6 +577,7 @@
   --color-purple-50: #5b21b6;
   --color-purple-100: #6d28d9;
   --color-purple-200: #6d28d9;
+  --compendium-rail-fill: rgb(255 255 255 / 0.2);
 }
 
 @layer base {

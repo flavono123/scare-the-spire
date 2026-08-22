@@ -74,7 +74,7 @@ function InfoRailSection({
 }) {
   return (
     <details
-      className="group rounded-lg border border-border bg-black/20 px-4 py-3"
+      className="group rounded-lg border border-border bg-compendium-rail px-4 py-3"
       open={defaultOpen}
     >
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-foreground">
@@ -262,7 +262,7 @@ export function PotionDetail({
         </section>
 
         <aside data-potion-detail-meta className="flex flex-col gap-3">
-          <section className="rounded-lg border border-border bg-black/20 px-4 py-3">
+          <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
                 <MetaPill

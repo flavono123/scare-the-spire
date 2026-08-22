@@ -109,6 +109,7 @@ export const SemanticSurfacesLight: Story = {
           <Swatch label="card" value="bg-card" className="bg-card" />
           <Swatch label="sidebar" value="bg-sidebar" className="bg-sidebar" />
           <Swatch label="primary 잉크 골드" value="#7a4e0e" className="bg-primary" />
+          <Swatch label="정보 레일 흰 유리" value="white / 20%" className="bg-compendium-rail" />
         </div>
         <div className="space-y-1 rounded-lg border border-border bg-card p-3">
           <p className="text-foreground">foreground — 주요 텍스트</p>

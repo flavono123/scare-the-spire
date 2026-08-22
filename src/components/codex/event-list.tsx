@@ -164,7 +164,7 @@ function EventThumbnail({
       ) : (
         <div className="absolute inset-0 bg-gradient-to-r from-zinc-800/50 to-zinc-900/80" />
       )}
-      <div className="relative flex h-full items-center px-4 gap-3">
+      <div className="dark relative flex h-full items-center px-4 gap-3">
         <div className="flex-1 min-w-0">
           <h3 className="font-game-title text-sm font-semibold text-zinc-100 truncate group-hover:text-primary transition-colors">
             {event.name}

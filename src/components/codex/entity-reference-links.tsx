@@ -139,7 +139,7 @@ export function RelatedResourceLine({
   };
 
   return (
-    <section className="w-full rounded-lg border border-border bg-black/20 p-4">
+    <section className="w-full rounded-lg border border-border bg-compendium-rail p-4">
       <ReferenceLine
         config={config}
         kind={kind}
@@ -162,7 +162,7 @@ export function RelatedResourceLinks({
   if (visibleGroups.length === 0 && !children) return null;
 
   return (
-    <section className="w-full rounded-lg border border-border bg-black/20 p-4">
+    <section className="w-full rounded-lg border border-border bg-compendium-rail p-4">
       {visibleGroups.length > 0 && (
         <div className="space-y-2.5">
           {visibleGroups.map((group) => (
@@ -209,7 +209,7 @@ function ReferenceLine({
         </div>
         <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
           {targets.map((target) => (
-            <span key={target.id} className="min-w-0 truncate rounded-md border border-border bg-black/20 px-2 py-1.5 text-sm text-gray-200">
+            <span key={target.id} className="min-w-0 truncate rounded-md border border-border bg-compendium-rail px-2 py-1.5 text-sm text-gray-200">
               <EntityPreview entity={toPreviewEntity(target, kind, serviceLocale)} preferEntityLocaleLabel={false}>
                 {target.title}
               </EntityPreview>

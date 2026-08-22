@@ -94,7 +94,7 @@ function InfoRailSection({
 }) {
   return (
     <details
-      className="group min-w-0 rounded-lg border border-border bg-black/20 px-4 py-3"
+      className="group min-w-0 rounded-lg border border-border bg-compendium-rail px-4 py-3"
       open={defaultOpen}
     >
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-foreground">
@@ -558,7 +558,7 @@ export function CharacterDetail({
 
         <aside className="flex min-w-0 flex-col gap-3">
           {hasCharacterInfo && (
-            <section className="min-w-0 rounded-lg border border-border bg-black/20 px-4 py-3">
+            <section className="min-w-0 rounded-lg border border-border bg-compendium-rail px-4 py-3">
               <div className="space-y-3">
                 {character.nameEn && (
                   <div>
@@ -725,7 +725,7 @@ function CharacterStageHealthBar({
 
 function CharacterReferenceRail({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="w-full rounded-lg border border-border bg-black/20 p-4">
+    <section className="w-full rounded-lg border border-border bg-compendium-rail p-4">
       <div className="mb-2 font-game-title text-sm font-bold text-foreground">{title}</div>
       {children}
     </section>

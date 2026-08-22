@@ -112,7 +112,7 @@ function InfoRailSection({
 }) {
   return (
     <details
-      className="group rounded-lg border border-border bg-black/20 px-4 py-3"
+      className="group rounded-lg border border-border bg-compendium-rail px-4 py-3"
       open={defaultOpen}
     >
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-foreground">
@@ -794,7 +794,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
 
         <aside className="flex min-w-0 flex-col gap-3">
           <section
-            className="rounded-lg border border-border bg-black/20 px-4 py-3"
+            className="rounded-lg border border-border bg-compendium-rail px-4 py-3"
             data-card-detail-meta
           >
             <div className="flex min-w-0 items-center gap-3">
