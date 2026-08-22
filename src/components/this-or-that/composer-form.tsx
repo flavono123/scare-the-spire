@@ -107,7 +107,7 @@ export function ThisOrThatComposerForm({
             onChange={(event) => setReason(event.target.value)}
             maxLength={500}
             rows={4}
-            className="min-h-28 w-full resize-y rounded-md border border-border/70 bg-zinc-900/70 px-3 py-2 text-sm leading-relaxed text-foreground outline-none transition-colors focus:border-yellow-500/40"
+            className="min-h-28 w-full resize-y rounded-md border border-border/70 bg-zinc-900/70 px-3 py-2 text-sm leading-relaxed text-foreground outline-none transition-colors focus:border-primary/40"
           />
         </label>
       </div>
@@ -119,7 +119,7 @@ export function ThisOrThatComposerForm({
         <button
           type="submit"
           disabled={!canSubmit}
-          className="inline-flex h-9 items-center gap-2 rounded-md border border-yellow-500/30 bg-yellow-500/10 px-3 text-xs font-semibold text-yellow-300 transition-colors hover:bg-yellow-500/20 disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex h-9 items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-3 text-xs font-semibold text-primary transition-colors hover:bg-primary/20 disabled:cursor-not-allowed disabled:opacity-40"
         >
           {submitting ? <EngagementSpinner size={14} /> : <StoryWriteIcon size={15} />}
           {submitting ? "..." : copy.submit}

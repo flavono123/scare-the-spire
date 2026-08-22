@@ -77,7 +77,7 @@ export function ComboPostCard({
       tabIndex={0}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="cursor-pointer rounded-lg border border-border bg-card/30 px-4 py-3 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-yellow-500/30 hover:bg-card/40 hover:shadow-lg hover:shadow-black/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70 active:translate-y-0 motion-reduce:transform-none"
+      className="cursor-pointer rounded-lg border border-border bg-card/30 px-4 py-3 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:bg-card/40 hover:shadow-lg hover:shadow-black/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 active:translate-y-0 motion-reduce:transform-none"
     >
       <div className="mb-1.5 flex items-center justify-between">
         <span className="inline-flex min-w-0 items-center gap-1.5">

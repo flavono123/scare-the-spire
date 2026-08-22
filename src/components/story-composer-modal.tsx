@@ -208,7 +208,7 @@ export function StoryComposerModal({
             maxLength={STORY_DRAFT_MAX_LENGTH}
             rows={3}
             disabled={!authReady || !supabaseEnabled}
-            className="min-h-24 w-full resize-none rounded-md border border-border/70 bg-background/60 px-3 py-2 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-yellow-500/40 disabled:opacity-40"
+            className="min-h-24 w-full resize-none rounded-md border border-border/70 bg-background/60 px-3 py-2 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/40 disabled:opacity-40"
           />
 
           <div className="flex items-center gap-2">
@@ -219,7 +219,7 @@ export function StoryComposerModal({
               placeholder={copy.nickname}
               maxLength={20}
               disabled={!authReady || !supabaseEnabled}
-              className="h-8 min-w-0 flex-1 rounded-md border border-border/60 bg-background/50 px-2.5 text-xs text-muted-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-yellow-500/40 disabled:opacity-40"
+              className="h-8 min-w-0 flex-1 rounded-md border border-border/60 bg-background/50 px-2.5 text-xs text-muted-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-primary/40 disabled:opacity-40"
             />
             <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">
               {sentence.length}/{STORY_DRAFT_MAX_LENGTH}
@@ -234,7 +234,7 @@ export function StoryComposerModal({
                 value={patchLineQuery}
                 onChange={(event) => setPatchLineQuery(event.target.value)}
                 placeholder={copy.patchLineSearchPlaceholder}
-                className="h-9 w-full rounded-md border border-border/70 bg-background/40 pl-8 pr-2.5 text-xs text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-yellow-500/40"
+                className="h-9 w-full rounded-md border border-border/70 bg-background/40 pl-8 pr-2.5 text-xs text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/40"
               />
             </label>
 
@@ -251,7 +251,7 @@ export function StoryComposerModal({
                   <button
                     type="button"
                     onClick={() => setSelectedPatchLine(null)}
-                    className="absolute right-1.5 top-1.5 inline-flex h-6 w-6 items-center justify-center rounded text-yellow-500/80 transition-colors hover:bg-yellow-500/10 hover:text-yellow-300"
+                    className="absolute right-1.5 top-1.5 inline-flex h-6 w-6 items-center justify-center rounded text-primary/80 transition-colors hover:bg-primary/10 hover:text-primary"
                     title={copy.clearPatchLine}
                   >
                     <X size={14} />
@@ -279,7 +279,7 @@ export function StoryComposerModal({
                   type="button"
                   onClick={() => setSelectedPatchLine(patchLine)}
                   className={cn(
-                    "block w-full border-b text-left last:border-b-0 transition-[background-color,opacity,padding] hover:bg-white/5 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-yellow-500/30",
+                    "block w-full border-b text-left last:border-b-0 transition-[background-color,opacity,padding] hover:bg-white/5 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-primary/30",
                     selectedPatchLine
                       ? "border-border/25 px-3 py-1.5 opacity-75"
                       : "border-border/40 px-3 py-2 opacity-100",
@@ -289,7 +289,7 @@ export function StoryComposerModal({
                     "mb-1 flex items-center gap-2 text-[11px]",
                     selectedPatchLine ? "text-muted-foreground/65" : "text-muted-foreground",
                   )}>
-                    <span className="font-medium text-yellow-500">{patchLine.patch}</span>
+                    <span className="font-medium text-primary">{patchLine.patch}</span>
                     {patchLine.section.length > 0 && <span>{patchLine.section.join(" / ")}</span>}
                   </span>
                   <span className={cn(

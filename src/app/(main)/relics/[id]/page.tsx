@@ -59,7 +59,7 @@ export default async function RelicDetailPage({
 
       {relicChanges.length > 0 && (
         <section className="mt-8">
-          <h2 className="text-lg font-semibold text-yellow-500 mb-4">
+          <h2 className="text-lg font-semibold text-primary mb-4">
             변경 이력 ({relicChanges.length})
           </h2>
           <ChangeList changes={relicChanges} />

@@ -625,7 +625,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                             onClick={() => setEnchantAmount(n)}
                             className={`min-w-[1.75em] px-1.5 py-0.5 rounded border transition-all ${
                               enchantAmount === n
-                                ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/60"
+                                ? "bg-primary/20 text-primary border-primary/60"
                                 : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
                             }`}
                             aria-pressed={enchantAmount === n}
@@ -686,7 +686,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                         }
                         className={`flex w-16 shrink-0 flex-col items-center gap-1 rounded-lg border p-1.5 transition-all sm:w-20 sm:p-2 ${
                           active
-                            ? "bg-yellow-500/15 border-yellow-500/60 ring-1 ring-yellow-500/30"
+                            ? "bg-primary/15 border-primary/60 ring-1 ring-primary/30"
                             : "bg-white/5 border-white/10 hover:border-white/30"
                         }`}
                         aria-pressed={active}

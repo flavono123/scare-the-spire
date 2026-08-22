@@ -75,8 +75,8 @@ export default async function ReferencePage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-6">
       {/* DEV ONLY banner */}
-      <div className="mb-6 rounded border border-yellow-500/30 bg-yellow-500/5 px-4 py-2">
-        <span className="text-xs font-bold text-yellow-500">DEV ONLY</span>
+      <div className="mb-6 rounded border border-primary/30 bg-primary/5 px-4 py-2">
+        <span className="text-xs font-bold text-primary">DEV ONLY</span>
         <span className="ml-2 text-xs text-muted-foreground">
           개발 환경 전용 레퍼런스 — 패치노트 번역 시 게임 내 공식 용어 참조용
         </span>

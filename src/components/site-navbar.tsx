@@ -244,7 +244,7 @@ function LanguageDropdown({
       >
         <span className="truncate">{GAME_LOCALE_NATIVE_LABELS[value]}</span>
         <svg
-          className={`h-3.5 w-3.5 shrink-0 text-yellow-400 transition-transform sm:h-4 sm:w-4 ${open ? "rotate-180" : ""}`}
+          className={`h-3.5 w-3.5 shrink-0 text-primary transition-transform sm:h-4 sm:w-4 ${open ? "rotate-180" : ""}`}
           fill="currentColor"
           viewBox="0 0 20 20"
           aria-hidden="true"
@@ -278,7 +278,7 @@ function LanguageDropdown({
                 }}
                 className={`flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors ${
                   active
-                    ? "bg-yellow-500/10 text-yellow-300"
+                    ? "bg-primary/10 text-primary"
                     : "text-foreground hover:bg-white/5"
                 }`}
               >
@@ -314,7 +314,7 @@ function LanguageDropdown({
                 }}
                 className={`block px-3 py-2 text-sm transition-colors ${
                   active
-                    ? "bg-yellow-500/10 text-yellow-300"
+                    ? "bg-primary/10 text-primary"
                     : "text-foreground hover:bg-white/5"
                 }`}
               >
@@ -588,7 +588,7 @@ function GlobalSearch({
         className="relative z-10 mx-auto w-full max-w-xl overflow-hidden rounded-lg border border-white/10 bg-[#111827] shadow-2xl"
       >
         <div className="flex items-center gap-2 border-b border-white/10 px-3 py-2">
-          <svg className="h-4 w-4 shrink-0 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <svg className="h-4 w-4 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.3-4.3" />
           </svg>
@@ -651,7 +651,7 @@ function GlobalSearch({
                       data-global-search-pending={isPending ? "true" : undefined}
                       className={`flex items-center gap-3 rounded-md px-2.5 py-2 text-sm transition-colors ${
                         isPending
-                          ? "bg-white/[0.08] ring-1 ring-yellow-500/25"
+                          ? "bg-white/[0.08] ring-1 ring-primary/25"
                           : hasPendingResult
                             ? "cursor-wait opacity-45"
                             : "hover:bg-white/[0.07]"
@@ -691,7 +691,7 @@ function GlobalSearch({
       <button
         type="button"
         onClick={openSearch}
-        className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-2.5 text-left text-sm text-muted-foreground transition-colors hover:border-yellow-500/40 hover:bg-white/[0.07] sm:max-w-[18rem] lg:max-w-[22rem]"
+        className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-2.5 text-left text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:bg-white/[0.07] sm:max-w-[18rem] lg:max-w-[22rem]"
         aria-label={copy.placeholder}
       >
         <svg className="h-4 w-4 shrink-0 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -741,7 +741,7 @@ export function SiteNavbar() {
           <Link
             href={localizeHrefWithGameLocale("/", serviceLocale, gameLocale)}
             prefetch={false}
-            className="flex shrink-0 items-center gap-1 text-sm font-bold text-yellow-500 sm:gap-1.5 sm:text-base"
+            className="flex shrink-0 items-center gap-1 text-sm font-bold text-primary sm:gap-1.5 sm:text-base"
           >
             <Image
               src="/images/bone_tea.png"

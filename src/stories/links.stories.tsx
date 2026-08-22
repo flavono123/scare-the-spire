@@ -15,13 +15,13 @@ export const Roles: Story = {
     <StoryStack>
       <StoryNote>
         제품 규칙: 게임 리소스 = gold, 섀소식·외부 = aqua.
-        토큰 잔여를 치운 뒤에 링크 유틸을 맞춘다. 지금은 목표만 그린다.
+        골드 잔여는 치웠다. 링크 역할(gold vs aqua)과 cyan-* 제거는 다음 단계.
       </StoryNote>
       <div className="space-y-4 font-service">
         <div>
           <StoryHeading>목표</StoryHeading>
           <p>
-            <a className="spire-gold font-semibold underline decoration-yellow-500/30" href="#card">
+            <a className="spire-gold font-semibold underline decoration-primary/30" href="#card">
               충격파
             </a>
             {" · "}
@@ -37,8 +37,8 @@ export const Roles: Story = {
         <div>
           <StoryHeading>현장에서 흔함 (맞출 것)</StoryHeading>
           <p>
-            <a className="text-yellow-500 hover:text-yellow-400" href="#feed">
-              yellow-500 피드 링크
+            <a className="text-primary hover:text-primary" href="#feed">
+              피드 링크 (지금은 primary = gold)
             </a>
             {" · "}
             <a className="text-cyan-200 hover:text-cyan-100" href="#news">

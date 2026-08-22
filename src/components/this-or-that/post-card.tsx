@@ -90,14 +90,14 @@ export function ThisOrThatPostCard({
   return (
     <article
       onClick={handleCardClick}
-      className="flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-colors hover:border-yellow-500/25"
+      className="flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-colors hover:border-primary/25"
     >
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <h2>
             <Link
               href={href}
-              className="line-clamp-2 font-game-title text-base font-semibold leading-snug spire-gold focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70"
+              className="line-clamp-2 font-game-title text-base font-semibold leading-snug spire-gold focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
             >
               {post.reason}
             </Link>
@@ -157,7 +157,7 @@ export function ThisOrThatPostCard({
             <ThisOrThatVoteChoiceFrame side="left" label={copy.leftLabel} choice={voteChoice} />
           </div>
         </div>
-        <div className="flex w-8 items-center justify-center font-game-title text-lg font-black text-yellow-500/80">
+        <div className="flex w-8 items-center justify-center font-game-title text-lg font-black text-primary/80">
           VS
         </div>
         <div className="relative min-w-0 rounded-md focus-within:outline focus-within:outline-2 focus-within:outline-pink-300/80">

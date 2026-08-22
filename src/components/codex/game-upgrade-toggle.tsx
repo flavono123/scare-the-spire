@@ -32,7 +32,7 @@ function UpgradeStepButton({
       onClick={onClick}
       className={cn(
         "group relative h-8 w-8 shrink-0 rounded-sm transition-[filter,transform]",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300/70",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70",
         disabled ? "opacity-40" : "hover:scale-105 hover:brightness-125",
       )}
     >

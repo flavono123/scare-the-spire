@@ -135,7 +135,7 @@ export function DefragmentPostView({
   if (!post) {
     return (
       <div className="space-y-4">
-        <Link href={indexHref} className="text-sm text-yellow-400 hover:underline">
+        <Link href={indexHref} className="text-sm text-primary hover:underline">
           {copy.backToIndex}
         </Link>
         <p className="text-sm text-muted-foreground">{copy.notFound}</p>
@@ -148,7 +148,7 @@ export function DefragmentPostView({
       <div className="flex items-start justify-between gap-3">
         <Link
           href={indexHref}
-          className="inline-flex items-center gap-1 text-sm text-yellow-400 hover:underline"
+          className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
         >
           <ArrowLeft size={14} />
           {copy.backToIndex}
@@ -223,7 +223,7 @@ export function DefragmentPostView({
               height={14}
               className="object-contain opacity-50"
             />
-            <span className="text-[11px] font-semibold tracking-wide text-yellow-500/40">
+            <span className="text-[11px] font-semibold tracking-wide text-primary/40">
               {serviceMessages[serviceLocale].brand}
             </span>
           </div>

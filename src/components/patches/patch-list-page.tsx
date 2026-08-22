@@ -267,7 +267,7 @@ export async function PatchListPage({
               key={patch.id}
               href={localizeHrefWithGameLocale(`/patches/${patch.version}`, serviceLocale, gameLocale)}
               prefetch={false}
-              className="block rounded-lg border border-border bg-card/50 p-4 hover:border-yellow-500/40 hover:bg-card/80 transition-colors"
+              className="block rounded-lg border border-border bg-card/50 p-4 hover:border-primary/40 hover:bg-card/80 transition-colors"
             >
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
                 <span className="inline-flex min-w-0 items-center gap-2">

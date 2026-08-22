@@ -105,7 +105,7 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
       <div className="text-center py-12">
         <p className="text-gray-500 text-sm mb-4">{copy.notFound}</p>
         {!embed && (
-          <Link href={localizeHref("/chemical-x", serviceLocale)} className="text-yellow-400 text-sm hover:underline">
+          <Link href={localizeHref("/chemical-x", serviceLocale)} className="text-primary text-sm hover:underline">
             {copy.backToChemicalX}
           </Link>
         )}
@@ -121,7 +121,7 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
       <div className="flex items-center justify-between">
         <Link
           href={localizeHref("/chemical-x", serviceLocale)}
-          className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-yellow-400 transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-primary transition-colors"
         >
           <ArrowLeft size={16} />
           {copy.title}
@@ -138,7 +138,7 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
           <button
             type="button"
             onClick={() => setShowTooltips((v) => !v)}
-            className="inline-flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-[#d4a843]/40 hover:text-[#d4a843]"
+            className="inline-flex items-center gap-1.5 rounded border border-border px-3 py-1.5 text-xs text-gray-400 transition-colors hover:border-[#efc851]/40 hover:text-[#efc851]"
           >
             {showTooltips ? <EyeOff size={14} /> : <Eye size={14} />}
             {showTooltips ? copy.collapse : copy.expand}
@@ -148,7 +148,7 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
       )}
 
       {/* ===== Screenshot-worthy card ===== */}
-      <article className="relative rounded-2xl overflow-hidden bg-gradient-to-b from-[#0c0c18] via-[#10101e] to-[#0c0c18] border border-yellow-500/15 p-6 pb-5">
+      <article className="relative rounded-2xl overflow-hidden bg-gradient-to-b from-[#0c0c18] via-[#10101e] to-[#0c0c18] border border-primary/15 p-6 pb-5">
         {/* Ambient gold glow */}
         <div
           className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full pointer-events-none"
@@ -178,7 +178,7 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
               height={14}
               className="object-contain opacity-50"
             />
-            <span className="text-[11px] text-yellow-500/40 font-semibold tracking-wide">
+            <span className="text-[11px] text-primary/40 font-semibold tracking-wide">
               {serviceMessages[serviceLocale].brand}
             </span>
           </div>

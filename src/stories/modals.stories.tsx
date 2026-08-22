@@ -36,7 +36,7 @@ export const ComposerChrome: Story = {
             closeLabel="닫기"
             onClose={() => setOpen(false)}
             showAccentDot
-            titleClassName="text-yellow-100"
+            titleClassName="text-primary"
             panelClassName="relative sm:max-w-lg"
             overlayClassName="!absolute min-h-[24rem]"
           >

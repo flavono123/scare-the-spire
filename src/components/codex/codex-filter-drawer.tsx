@@ -127,7 +127,7 @@ export function CodexLibraryTopBar({
           )}
         </svg>
       </button>
-      <h1 className={`min-w-0 truncate text-base font-bold text-yellow-500 ${trailing ? "max-[430px]:sr-only" : ""}`}>{title}</h1>
+      <h1 className={`min-w-0 truncate text-base font-bold text-primary ${trailing ? "max-[430px]:sr-only" : ""}`}>{title}</h1>
       <div className="min-w-0 flex-1" />
       <span className={`${trailing ? "hidden sm:inline" : "inline"} text-sm text-gray-500 shrink-0 tabular-nums`}>{count}</span>
       {trailing}

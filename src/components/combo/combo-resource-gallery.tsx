@@ -167,7 +167,7 @@ function LargeResourceAsset({
   }
 
   return (
-    <span className="mx-auto flex h-32 w-32 items-center justify-center font-game-title text-5xl font-bold text-yellow-200 drop-shadow-[0_8px_12px_rgba(0,0,0,0.7)]">
+    <span className="mx-auto flex h-32 w-32 items-center justify-center font-game-title text-5xl font-bold text-primary drop-shadow-[0_8px_12px_rgba(0,0,0,0.7)]">
       {name.slice(0, 1)}
     </span>
   );
@@ -197,7 +197,7 @@ export function ComboResourceGallery({
         const href = getDetailHref(entity, serviceLocale, gameLocale);
         const content = (
           <>
-            <h2 className="mb-3 font-game-title text-base font-bold text-yellow-100/90 transition-colors group-hover/resource:text-yellow-300 sm:text-lg">
+            <h2 className="mb-3 font-game-title text-base font-bold text-primary/90 transition-colors group-hover/resource:text-primary sm:text-lg">
               {name}
             </h2>
             <LargeResourceAsset entity={entity} serviceLocale={serviceLocale} />
@@ -213,7 +213,7 @@ export function ComboResourceGallery({
             {href ? (
               <Link
                 href={href}
-                className="group/resource block rounded-sm outline-none transition-[transform,filter] duration-150 hover:-translate-y-0.5 hover:brightness-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70 active:translate-y-0 motion-reduce:transform-none"
+                className="group/resource block rounded-sm outline-none transition-[transform,filter] duration-150 hover:-translate-y-0.5 hover:brightness-110 focus-visible:ring-2 focus-visible:ring-primary/70 active:translate-y-0 motion-reduce:transform-none"
               >
                 {content}
               </Link>

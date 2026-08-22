@@ -564,7 +564,7 @@ function Section({
   return (
     <section className="mt-8">
       <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
-        <h2 className="text-lg font-semibold text-yellow-400">{title}</h2>
+        <h2 className="text-lg font-semibold text-primary">{title}</h2>
         {count && <span className="text-xs text-muted-foreground">{count}</span>}
       </div>
       <ErrorLine error={error} />
@@ -616,14 +616,14 @@ export default async function SupabaseAdminPage({
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-6">
-      <div className="mb-6 rounded-md border border-yellow-500/30 bg-yellow-500/5 px-4 py-3">
+      <div className="mb-6 rounded-md border border-primary/30 bg-primary/5 px-4 py-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <span className="text-xs font-bold text-yellow-400">DEV ONLY</span>
+            <span className="text-xs font-bold text-primary">DEV ONLY</span>
             <h1 className="mt-1 text-2xl font-bold">Supabase Admin</h1>
           </div>
           <div className="text-right text-xs text-muted-foreground">
-            <div>data: <code className="text-yellow-300">{ADMIN_DATA_ENV}</code></div>
+            <div>data: <code className="text-primary">{ADMIN_DATA_ENV}</code></div>
             <div>limit: latest {ROW_LIMIT}</div>
           </div>
         </div>
@@ -672,7 +672,7 @@ export default async function SupabaseAdminPage({
                     {rows.map((inquiry) => (
                       <article key={inquiry.id} className="rounded-md border border-border bg-card/35 p-4">
                         <div className="flex flex-wrap items-center gap-2 text-xs">
-                          <strong className="text-yellow-200">
+                          <strong className="text-primary">
                             {contactMessages.ko.categories[inquiry.category].label}
                           </strong>
                           <span className="rounded-full border border-border px-2 py-0.5 text-muted-foreground">
@@ -702,7 +702,7 @@ export default async function SupabaseAdminPage({
                             defaultValue={inquiry.admin_response ?? ""}
                             maxLength={8000}
                             rows={4}
-                            className="w-full resize-y rounded-md border border-border bg-background/70 px-3 py-2 text-sm text-foreground outline-none focus:border-yellow-400/60"
+                            className="w-full resize-y rounded-md border border-border bg-background/70 px-3 py-2 text-sm text-foreground outline-none focus:border-primary/60"
                           />
                           <div className="flex flex-wrap items-center gap-2">
                             <select
@@ -717,7 +717,7 @@ export default async function SupabaseAdminPage({
                             </select>
                             <button
                               type="submit"
-                              className="h-9 rounded-md border border-yellow-500/30 bg-yellow-500/10 px-3 text-sm font-semibold text-yellow-200 hover:bg-yellow-500/20"
+                              className="h-9 rounded-md border border-primary/30 bg-primary/10 px-3 text-sm font-semibold text-primary hover:bg-primary/20"
                             >
                               저장
                             </button>
@@ -753,7 +753,7 @@ export default async function SupabaseAdminPage({
       ) : (
         <>
           <section>
-            <h2 className="mb-3 text-lg font-semibold text-yellow-400">좋아요 통계</h2>
+            <h2 className="mb-3 text-lg font-semibold text-primary">좋아요 통계</h2>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <StatTile
                 label="스토리 좋아요"
@@ -801,7 +801,7 @@ export default async function SupabaseAdminPage({
           </section>
 
           <div className="mt-10 border-t border-border/70 pt-6">
-            <h2 className="text-xl font-semibold text-yellow-400">서비스별 최신 작성글</h2>
+            <h2 className="text-xl font-semibold text-primary">서비스별 최신 작성글</h2>
             <p className="mt-1 text-xs text-muted-foreground">
               production 환경의 작성글을 서비스마다 최신 {ROW_LIMIT}개까지 표시합니다.
             </p>
@@ -825,7 +825,7 @@ export default async function SupabaseAdminPage({
                     <tr key={comment.id} className="border-t border-border/70 align-top">
                       <td className="whitespace-nowrap px-3 py-2 text-xs text-muted-foreground">{formatDate(comment.created_at)}</td>
                       <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{comment.env}</code></td>
-                      <td className="px-3 py-2 text-yellow-200">{comment.nickname}</td>
+                      <td className="px-3 py-2 text-primary">{comment.nickname}</td>
                       <td className="px-3 py-2"><StoryLink storyId={comment.story_id} /></td>
                       <td className="px-3 py-2 whitespace-pre-wrap break-words">{truncate(blockText(comment.content_blocks) || comment.content, COMMENT_MAX_CHARS)}</td>
                       <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{comment.user_id}</code></td>
@@ -861,7 +861,7 @@ export default async function SupabaseAdminPage({
                     <tr key={story.id} className="border-t border-border/70 align-top">
                       <td className="whitespace-nowrap px-3 py-2 text-xs text-muted-foreground">{formatDate(story.created_at)}</td>
                       <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{story.env}</code></td>
-                      <td className="px-3 py-2 text-yellow-200">{story.nickname}</td>
+                      <td className="px-3 py-2 text-primary">{story.nickname}</td>
                       <td className="px-3 py-2">{truncate(story.sentence)}</td>
                       <td className="px-3 py-2">
                         <code className="text-[11px] text-muted-foreground">

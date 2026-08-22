@@ -146,10 +146,10 @@ export function ProdRunsDevSection() {
   const loading = runs === null;
 
   return (
-    <section className="rounded-md border border-yellow-500/30 bg-yellow-500/5 p-4">
+    <section className="rounded-md border border-primary/30 bg-primary/5 p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <div className="text-xs font-bold text-yellow-400">DEV ONLY</div>
+          <div className="text-xs font-bold text-primary">DEV ONLY</div>
           <h2 className="mt-1 text-sm font-bold text-zinc-100">
             production 공유 런
             {!loading && (
@@ -172,13 +172,13 @@ export function ProdRunsDevSection() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="runid, seed, build, character"
-              className="min-h-9 w-full rounded-md border border-zinc-800 bg-black/30 py-2 pl-9 pr-3 text-xs text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-yellow-400/70"
+              className="min-h-9 w-full rounded-md border border-zinc-800 bg-black/30 py-2 pl-9 pr-3 text-xs text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-primary/70"
             />
           </label>
           <button
             type="button"
             onClick={() => setRefreshKey((value) => value + 1)}
-            className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md border border-zinc-800 bg-black/20 px-2.5 text-xs font-semibold text-zinc-300 transition hover:border-yellow-400/60 hover:text-yellow-200"
+            className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md border border-zinc-800 bg-black/20 px-2.5 text-xs font-semibold text-zinc-300 transition hover:border-primary/60 hover:text-primary"
           >
             <RefreshCw className="h-3.5 w-3.5" aria-hidden />
             새로고침
@@ -258,7 +258,7 @@ export function ProdRunsDevSection() {
                           data-run-id={run.id}
                           onClick={() => void openLocalRun(run.id)}
                           disabled={pending}
-                          className="inline-flex h-8 items-center gap-1.5 rounded-md bg-yellow-400 px-2.5 text-xs font-bold text-zinc-950 transition hover:bg-yellow-300 disabled:cursor-wait disabled:opacity-60"
+                          className="inline-flex h-8 items-center gap-1.5 rounded-md bg-primary px-2.5 text-xs font-bold text-zinc-950 transition hover:bg-primary disabled:cursor-wait disabled:opacity-60"
                         >
                           {pending ? (
                             <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />

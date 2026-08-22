@@ -87,7 +87,7 @@ export function PatchMetaReferenceLink({
       <Link
         href={localizeHref(patchLineHref(patchLine), serviceLocale)}
         prefetch={false}
-        className="game-inspect-cursor whitespace-nowrap font-game-text text-sm leading-relaxed spire-gold transition-colors hover:text-yellow-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/50"
+        className="game-inspect-cursor whitespace-nowrap font-game-text text-sm leading-relaxed spire-gold transition-colors hover:text-primary focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/50"
       >
         {dateLabel(patchLine.date, serviceLocale)} {version}
       </Link>

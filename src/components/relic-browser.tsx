@@ -11,7 +11,7 @@ const RARITY_SECTIONS: { value: Rarity; label: string; description: string; colo
   { value: "starter", label: "시작", description: "각 캐릭터가 처음부터 갖고 시작하는 유물입니다.", color: "text-green-400" },
   { value: "common", label: "일반", description: "쉽게 찾을 수 있는 평범한 유물입니다.", color: "text-zinc-400" },
   { value: "uncommon", label: "고급", description: "일반적으로 쉽게 찾을 수 없는 강력한 유물입니다.", color: "text-blue-400" },
-  { value: "rare", label: "희귀", description: "매우 강력하고 드문 유물입니다.", color: "text-yellow-500" },
+  { value: "rare", label: "희귀", description: "매우 강력하고 드문 유물입니다.", color: "text-primary" },
   { value: "boss", label: "보스", description: "보스를 처치하면 얻을 수 있는 유물입니다.", color: "text-red-400" },
   { value: "shop", label: "상점", description: "상점에서 구매할 수 있는 유물입니다.", color: "text-emerald-400" },
   { value: "event", label: "이벤트", description: "특정 이벤트에서만 얻을 수 있는 유물입니다.", color: "text-purple-400" },
@@ -68,7 +68,7 @@ function RelicModal({
 
         {changes.length > 0 && (
           <div>
-            <h3 className="mb-3 text-sm font-semibold text-yellow-500">
+            <h3 className="mb-3 text-sm font-semibold text-primary">
               변경 이력 ({changes.length})
             </h3>
             <ChangeList changes={changes} />
@@ -115,7 +115,7 @@ function RelicIcon({
           </div>
         )}
         {hasChanges && (
-          <div className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-500 text-[9px] font-bold text-black">
+          <div className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-black">
             {changes.length}
           </div>
         )}

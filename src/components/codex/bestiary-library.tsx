@@ -81,7 +81,7 @@ export function BestiaryLibrary({
         onClick={() => setView("monsters")}
         className={`px-2 py-1 text-[11px] font-medium transition-colors sm:px-2.5 sm:text-xs ${
           activeView === "monsters"
-            ? "rounded bg-yellow-500/20 text-yellow-300"
+            ? "rounded bg-primary/20 text-primary"
             : "text-gray-400 hover:text-gray-200"
         }`}
       >
@@ -92,7 +92,7 @@ export function BestiaryLibrary({
         onClick={() => setView("encounters")}
         className={`px-2 py-1 text-[11px] font-medium transition-colors sm:px-2.5 sm:text-xs ${
           activeView === "encounters"
-            ? "rounded bg-yellow-500/20 text-yellow-300"
+            ? "rounded bg-primary/20 text-primary"
             : "text-gray-400 hover:text-gray-200"
         }`}
       >

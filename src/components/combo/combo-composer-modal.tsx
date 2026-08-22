@@ -36,7 +36,7 @@ export function ComboComposerModal({
       closeLabel={copy.close}
       onClose={onClose}
       showAccentDot
-      titleClassName="text-yellow-100"
+      titleClassName="text-primary"
       panelClassName="h-[calc(100svh-3rem)] sm:h-auto sm:max-h-[90vh] sm:max-w-2xl"
       panelDataAttribute="data-combo-composer"
     >

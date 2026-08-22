@@ -35,7 +35,7 @@ export function DefragmentOverlayBodyEditor({
   const copy = serviceMessages[serviceLocale].defragment;
 
   return (
-    <div className="overflow-visible rounded-lg border border-dashed border-yellow-500/20 bg-card/20">
+    <div className="overflow-visible rounded-lg border border-dashed border-primary/20 bg-card/20">
       <div className="border-b border-border/70 px-3 py-2 text-[11px] font-semibold tracking-wide text-zinc-500">
         {copy.overlayBody}
       </div>

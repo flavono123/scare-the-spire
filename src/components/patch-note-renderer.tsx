@@ -132,7 +132,7 @@ type RenderContext = {
 // --- Entity Preview (hover card image) ---
 
 const DEFAULT_ENTITY_LINK_CLASS =
-  "font-game-title font-semibold spire-gold hover:text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 transition-colors cursor-pointer";
+  "font-game-title font-semibold spire-gold hover:text-primary underline decoration-primary/30 underline-offset-2 transition-colors cursor-pointer";
 const GAME_INSPECT_CURSOR_CLASS = "game-inspect-cursor";
 
 function withGameInspectCursor(className: string): string {
@@ -610,7 +610,7 @@ export function EntityPreview({
             className={
               variant === "card"
                 ? "block cursor-pointer outline-none transition-[transform,filter] duration-100 focus-visible:brightness-125 data-[pressed=true]:scale-[0.97] data-[pressed=true]:brightness-125"
-                : "block cursor-pointer rounded-lg outline-none ring-1 ring-yellow-400/20 shadow-[0_0_0_1px_rgba(250,204,21,0.14)] transition-[transform,filter,box-shadow] duration-100 focus-visible:ring-2 focus-visible:ring-yellow-400/70 data-[pressed=true]:scale-[0.97] data-[pressed=true]:brightness-125 data-[pressed=true]:ring-yellow-300/70 data-[pressed=true]:shadow-[0_0_0_2px_rgba(250,204,21,0.55),0_18px_45px_rgba(0,0,0,0.45)]"
+                : "block cursor-pointer rounded-lg outline-none ring-1 ring-primary/20 shadow-[0_0_0_1px_rgba(239,200,81,0.14)] transition-[transform,filter,box-shadow] duration-100 focus-visible:ring-2 focus-visible:ring-primary/70 data-[pressed=true]:scale-[0.97] data-[pressed=true]:brightness-125 data-[pressed=true]:ring-primary/70 data-[pressed=true]:shadow-[0_0_0_2px_rgba(239,200,81,0.55),0_18px_45px_rgba(0,0,0,0.45)]"
             }
           >
             {content}
@@ -1817,7 +1817,7 @@ function renderLine(
   if (trimmed.startsWith("### ")) {
     const heading = gameHeadingLabel(trimmed.slice(4), context);
     return (
-      <h3 key={key} className="font-game-title text-base font-semibold mt-6 mb-2 text-yellow-500">
+      <h3 key={key} className="font-game-title text-base font-semibold mt-6 mb-2 text-primary">
         {enrichLine(heading, lookup, key, context)}
       </h3>
     );
@@ -1827,7 +1827,7 @@ function renderLine(
     return (
       <h2
         key={key}
-        className="font-game-title text-lg font-bold mt-8 mb-3 text-yellow-400 border-b border-border pb-1"
+        className="font-game-title text-lg font-bold mt-8 mb-3 text-primary border-b border-border pb-1"
       >
         {enrichLine(heading, lookup, key, context)}
       </h2>

@@ -130,7 +130,7 @@ export function TransfigureClient({
                 setEditingPost(null);
                 setComposerOpen(true);
               }}
-              className="group/create inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-yellow-300/30 bg-yellow-500/10 px-3 py-2 text-xs font-semibold text-yellow-100 shadow-[0_0_18px_rgba(239,200,81,0.06)] transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-yellow-200/50 hover:bg-yellow-500/15 hover:shadow-[0_6px_22px_rgba(239,200,81,0.1)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-300/70 active:translate-y-0 motion-reduce:transform-none"
+              className="group/create inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary shadow-[0_0_18px_rgba(239,200,81,0.06)] transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/15 hover:shadow-[0_6px_22px_rgba(239,200,81,0.1)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 active:translate-y-0 motion-reduce:transform-none"
             >
               <Image
                 src="/images/sts2/relics/astrolabe.webp"
@@ -153,7 +153,7 @@ export function TransfigureClient({
         <p
           role="status"
           aria-live="polite"
-          className="rounded-lg border border-yellow-300/20 bg-yellow-500/10 px-3 py-2 text-sm text-yellow-100"
+          className="rounded-lg border border-primary/20 bg-primary/10 px-3 py-2 text-sm text-primary"
           data-transfigure-save-feedback="success"
         >
           {saveNotice}

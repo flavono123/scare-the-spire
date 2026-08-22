@@ -138,8 +138,8 @@ function KeywordSpan({
     >
       {text}
       {hovered && description && (
-        <span className="pointer-events-none absolute left-0 top-full z-[100] mt-1 w-48 rounded border border-yellow-500/30 bg-[#0a0a1a] px-2.5 py-2 text-left shadow-xl">
-          <span className="block text-xs font-bold text-yellow-400">{keyword || text}</span>
+        <span className="pointer-events-none absolute left-0 top-full z-[100] mt-1 w-48 rounded border border-primary/30 bg-[#0a0a1a] px-2.5 py-2 text-left shadow-xl">
+          <span className="block text-xs font-bold text-primary">{keyword || text}</span>
           <span className="mt-0.5 block text-[11px] font-normal leading-relaxed text-gray-300">
             {description}
           </span>

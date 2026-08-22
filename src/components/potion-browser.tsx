@@ -9,7 +9,7 @@ import { CharacterBadge, characterRing } from "@/components/character-badge";
 const RARITY_SECTIONS: { value: PotionRarity; label: string; description: string; color: string }[] = [
   { value: "common", label: "일반", description: "첨탑에서 가장 흔하게 찾을 수 있는 포션들입니다.", color: "text-zinc-400" },
   { value: "uncommon", label: "고급", description: "일반 포션보다는 드물게 나타나는 조금 더 강력한 포션입니다.", color: "text-blue-400" },
-  { value: "rare", label: "희귀", description: "가끔 보이는 독특하고 강력한 포션들입니다.", color: "text-yellow-500" },
+  { value: "rare", label: "희귀", description: "가끔 보이는 독특하고 강력한 포션들입니다.", color: "text-primary" },
 ];
 
 function PotionModal({
@@ -57,7 +57,7 @@ function PotionModal({
 
         {changes.length > 0 && (
           <div>
-            <h3 className="mb-3 text-sm font-semibold text-yellow-500">
+            <h3 className="mb-3 text-sm font-semibold text-primary">
               변경 이력 ({changes.length})
             </h3>
             <ChangeList changes={changes} />
@@ -102,7 +102,7 @@ function PotionIcon({
           </div>
         )}
         {hasChanges && (
-          <div className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-500 text-[9px] font-bold text-black">
+          <div className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-black">
             {changes.length}
           </div>
         )}

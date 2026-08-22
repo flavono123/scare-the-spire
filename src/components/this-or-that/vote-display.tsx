@@ -134,7 +134,7 @@ export function ThisOrThatVoteStatus({
           disabled={!choice || pending || unavailable}
           aria-hidden={!choice}
           tabIndex={choice ? undefined : -1}
-          className={`ml-auto min-h-11 shrink-0 px-2 text-xs font-semibold text-muted-foreground underline decoration-white/20 underline-offset-4 transition-colors hover:text-yellow-300 disabled:cursor-not-allowed disabled:opacity-50 ${choice ? "" : "invisible"}`}
+          className={`ml-auto min-h-11 shrink-0 px-2 text-xs font-semibold text-muted-foreground underline decoration-white/20 underline-offset-4 transition-colors hover:text-primary disabled:cursor-not-allowed disabled:opacity-50 ${choice ? "" : "invisible"}`}
         >
           {retryLabel}
         </button>

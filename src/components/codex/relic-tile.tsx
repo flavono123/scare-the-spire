@@ -109,7 +109,7 @@ export function RelicTile({
         }}
       >
         <div
-          className={`w-14 h-14 sm:w-16 sm:h-16 rounded-lg border-2 p-1 transition-all cursor-pointer${lifecycleClassName} border-transparent bg-white/5 hover:bg-white/10 group-hover:border-yellow-500/60 group-hover:bg-yellow-500/10 group-hover:scale-110 group-hover:z-10`}
+          className={`w-14 h-14 sm:w-16 sm:h-16 rounded-lg border-2 p-1 transition-all cursor-pointer${lifecycleClassName} border-transparent bg-white/5 hover:bg-white/10 group-hover:border-primary/60 group-hover:bg-primary/10 group-hover:scale-110 group-hover:z-10`}
         >
           {tileImageUrl ? (
             <Image

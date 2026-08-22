@@ -287,7 +287,7 @@ function STS2EntityInfoBlock({ entity, label, serviceLocale }: { entity?: Entity
         />
       </div>
       <div className="min-w-0 pt-2">
-        <p className="font-medium transition-colors group-hover:text-yellow-500">
+        <p className="font-medium transition-colors group-hover:text-primary">
           {title}
           {label && (
             <span className="ml-1.5 rounded bg-red-500/10 px-1 py-0.5 text-[10px] font-medium text-red-400">
@@ -316,7 +316,7 @@ function STS2EntityInfoBlock({ entity, label, serviceLocale }: { entity?: Entity
         </div>
       )}
       <div>
-        <p className="font-medium transition-colors group-hover:text-yellow-500">
+        <p className="font-medium transition-colors group-hover:text-primary">
           {title}
           {label && (
             <span className="ml-1.5 rounded bg-red-500/10 px-1 py-0.5 text-[10px] font-medium text-red-400">
@@ -356,7 +356,7 @@ function EntityInfoBlock({ entityType, entityId, card, relic, potion, label }: {
     <Link href={href} className="flex gap-3 items-start group">
       <EntityImage entityType={entityType} entityId={entityId} name={nameKo || name} deprecated={deprecated} />
       <div>
-        <p className="font-medium group-hover:text-yellow-500 transition-colors">
+        <p className="font-medium group-hover:text-primary transition-colors">
           {nameKo}
           {label && (
             <span className="ml-1.5 text-[10px] font-medium text-red-400 bg-red-500/10 rounded px-1 py-0.5">{label}</span>
@@ -418,7 +418,7 @@ function STS2PatchLineBlock({
   if (story.patchLineId && patchLineLoading) {
     return (
       <div
-        className="flex items-center gap-2 rounded-lg border border-yellow-500/30 bg-yellow-500/[0.06] px-4 py-3 text-xs text-yellow-100/80"
+        className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/[0.06] px-4 py-3 text-xs text-primary/80"
         role="status"
         aria-live="polite"
         data-story-reference-state="loading"
@@ -431,16 +431,16 @@ function STS2PatchLineBlock({
 
   return (
     <div
-      className="rounded-lg border border-yellow-500/30 bg-yellow-500/[0.05] p-4"
+      className="rounded-lg border border-primary/30 bg-primary/[0.05] p-4"
       data-story-reference-state="unavailable"
     >
       <div className="mb-2 flex items-center gap-2">
         {href && patchLabel ? (
-          <Link href={localizeHref(href, serviceLocale)} className="text-sm font-medium text-yellow-500 hover:text-yellow-400">
+          <Link href={localizeHref(href, serviceLocale)} className="text-sm font-medium text-primary hover:text-primary">
             {patchLabel}
           </Link>
         ) : patchLabel ? (
-          <span className="text-sm font-medium text-yellow-500">{patchLabel}</span>
+          <span className="text-sm font-medium text-primary">{patchLabel}</span>
         ) : null}
         {(change?.date ?? patch?.date) && (
           <span className="text-xs text-muted-foreground">{change?.date ?? patch?.date}</span>
@@ -460,7 +460,7 @@ function ChangeBlock({ change }: { change: Change }) {
   return (
     <div className="rounded-lg border border-border bg-card/30 p-4">
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-sm font-medium text-yellow-500">{change.patch}</span>
+        <span className="text-sm font-medium text-primary">{change.patch}</span>
         {change.date && (
           <span className="text-xs text-muted-foreground">{change.date}</span>
         )}
@@ -596,7 +596,7 @@ function StoryExpanded({
         </>
       ) : story.source ? (
         <div className="rounded-lg border border-border bg-card/30 p-4">
-          <span className="text-sm text-yellow-500">{story.source}</span>
+          <span className="text-sm text-primary">{story.source}</span>
         </div>
       ) : null}
 
@@ -910,7 +910,7 @@ function StoryFeedToolbar({
             value={searchQuery}
             onChange={(event) => onSearchQueryChange(event.target.value)}
             placeholder={copy.searchPlaceholder}
-            className="h-8 w-full rounded-md border border-border/70 bg-background/40 pl-8 pr-2.5 text-xs text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-yellow-500/40"
+            className="h-8 w-full rounded-md border border-border/70 bg-background/40 pl-8 pr-2.5 text-xs text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/40"
           />
         </label>
         <button

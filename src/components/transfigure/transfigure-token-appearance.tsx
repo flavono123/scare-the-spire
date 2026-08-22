@@ -62,7 +62,7 @@ export function TransfigureTokenAppearanceControls({
                   }}
                   className={`relative h-9 w-9 rounded-lg border-2 p-1 transition-all ${
                     active
-                      ? "border-yellow-500 bg-yellow-500/20"
+                      ? "border-primary bg-primary/20"
                       : "border-white/10 bg-white/5 hover:border-white/30"
                   }`}
                 >

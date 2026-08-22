@@ -60,7 +60,7 @@ export function PostDetailActions({
         <button
           type="button"
           onClick={onCopy}
-          className={cn(ACTION_BTN, "hover:border-[#d4a843]/40 hover:text-[#d4a843]")}
+          className={cn(ACTION_BTN, "hover:border-[#efc851]/40 hover:text-[#efc851]")}
         >
           <Link2 size={14} />
           {copied ? copiedLabel : copyLabel}
@@ -69,7 +69,7 @@ export function PostDetailActions({
           <button
             type="button"
             onClick={onEdit}
-            className={cn(ACTION_BTN, "hover:border-[#d4a843]/40 hover:text-[#d4a843]")}
+            className={cn(ACTION_BTN, "hover:border-[#efc851]/40 hover:text-[#efc851]")}
           >
             <Pencil size={14} />
             {editLabel}

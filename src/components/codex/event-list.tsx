@@ -143,7 +143,7 @@ function EventThumbnail({
         clickEvent.preventDefault();
         onClick();
       }}
-      className={`group relative block h-[72px] w-full cursor-pointer overflow-hidden rounded-lg border border-zinc-700/40 bg-zinc-900/80 text-left shadow-sm shadow-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-500/40 hover:bg-white/[0.04] hover:shadow-lg hover:shadow-black/30${lifecycleClassName}`}
+      className={`group relative block h-[72px] w-full cursor-pointer overflow-hidden rounded-lg border border-zinc-700/40 bg-zinc-900/80 text-left shadow-sm shadow-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-white/[0.04] hover:shadow-lg hover:shadow-black/30${lifecycleClassName}`}
     >
       {event.imageUrl ? (
         <div className="absolute inset-0">
@@ -162,13 +162,13 @@ function EventThumbnail({
       )}
       <div className="relative flex h-full items-center px-4 gap-3">
         <div className="flex-1 min-w-0">
-          <h3 className="font-game-title text-sm font-semibold text-zinc-100 truncate group-hover:text-yellow-200 transition-colors">
+          <h3 className="font-game-title text-sm font-semibold text-zinc-100 truncate group-hover:text-primary transition-colors">
             {event.name}
           </h3>
         </div>
         <ActBadges event={event} messages={messages} gameUi={gameUi} />
         <svg
-          className="w-4 h-4 text-zinc-600 group-hover:text-yellow-500 transition-colors flex-shrink-0"
+          className="w-4 h-4 text-zinc-600 group-hover:text-primary transition-colors flex-shrink-0"
           viewBox="0 0 16 16"
           fill="currentColor"
         >
@@ -374,7 +374,7 @@ export function EventList({
                     onClick={() => toggleAct(key)}
                     className={`flex items-center gap-2 text-left text-sm px-2.5 py-1 rounded transition-all ${
                       selectedActs.has(key)
-                        ? "bg-yellow-500/20 text-yellow-400"
+                        ? "bg-primary/20 text-primary"
                         : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
                     }`}
                   >

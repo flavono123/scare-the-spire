@@ -558,7 +558,7 @@ function EpochThumbnail({
         event.preventDefault();
         onSelect(epoch);
       }}
-      className={`group relative block h-[132px] overflow-hidden rounded-lg border border-zinc-700/40 bg-zinc-900/80 text-left shadow-sm shadow-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-500/40 hover:bg-white/[0.04] hover:shadow-lg hover:shadow-black/30 ${
+      className={`group relative block h-[132px] overflow-hidden rounded-lg border border-zinc-700/40 bg-zinc-900/80 text-left shadow-sm shadow-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-white/[0.04] hover:shadow-lg hover:shadow-black/30 ${
         epoch.deprecated ? "opacity-50 grayscale saturate-0" : ""
       }`}
     >
@@ -579,7 +579,7 @@ function EpochThumbnail({
       )}
       <div className="relative flex h-full min-w-0 flex-col justify-between gap-2 p-4">
         <div className="min-w-0">
-          <h3 className="truncate font-game-title text-lg font-semibold text-zinc-100 transition-colors group-hover:text-yellow-200">
+          <h3 className="truncate font-game-title text-lg font-semibold text-zinc-100 transition-colors group-hover:text-primary">
             {epoch.name}
           </h3>
         </div>

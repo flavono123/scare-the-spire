@@ -36,7 +36,7 @@ export function StoryWriteIcon({
     <GameAssetIcon
       src={STORY_WRITE_ICON_SRC}
       size={size}
-      className={`drop-shadow-[0_0_4px_rgba(250,204,21,0.35)] ${className}`}
+      className={`drop-shadow-[0_0_4px_rgba(239,200,81,0.35)] ${className}`}
     />
   );
 }

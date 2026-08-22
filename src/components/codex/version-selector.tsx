@@ -23,9 +23,9 @@ export function VersionSelector({
         onChange={(e) => onChange(e.target.value)}
         className={`
           appearance-none text-xs font-mono px-2 py-1 pr-6 rounded-md border cursor-pointer
-          bg-[#1a1a2e] focus:outline-none focus:ring-1 focus:ring-yellow-500/50
+          bg-[#1a1a2e] focus:outline-none focus:ring-1 focus:ring-primary/50
           ${isOlderVersion
-            ? "border-yellow-500/50 text-yellow-400"
+            ? "border-primary/50 text-primary"
             : "border-white/10 text-gray-400 hover:border-white/30"
           }
         `}

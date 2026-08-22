@@ -768,7 +768,7 @@ function CharacterReferenceLine({
                 {target.title}
               </EntityPreview>
             ) : (
-              <Link href={href} className="font-game-title text-yellow-200 hover:text-yellow-100">
+              <Link href={href} className="font-game-title text-primary hover:text-primary">
                 {target.title}
               </Link>
             )}

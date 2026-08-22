@@ -852,7 +852,7 @@ function PatchDiffInlinePreview({
     >
       <Link
         href={href}
-        className="font-game-title font-semibold spire-gold underline decoration-yellow-500/30 underline-offset-2 transition-colors hover:text-yellow-300"
+        className="font-game-title font-semibold spire-gold underline decoration-primary/30 underline-offset-2 transition-colors hover:text-primary"
       >
         {children}
       </Link>
@@ -1623,7 +1623,7 @@ function PowerApplicationIcon({
   ascensionLevel: number;
   compact: boolean;
 }) {
-  const className = `relative inline-flex items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70 ${compact ? "h-5 w-5" : "h-6 w-6"}`;
+  const className = `relative inline-flex items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-primary/70 ${compact ? "h-5 w-5" : "h-6 w-6"}`;
   const title = serviceLocale === "ko" ? power.powerName : power.powerNameEn;
   const amount = getEffectiveDamageValue(power.amount, ascensionLevel);
   const amountLabel = amount != null ? `${added ? "+" : ""}${amount}` : null;

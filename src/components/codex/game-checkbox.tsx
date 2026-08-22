@@ -62,7 +62,7 @@ export function GameCheckboxToggle({
       onClick={() => onCheckedChange?.(!checked)}
       title={title ?? labelText}
       className={cn(
-        "group flex max-w-full select-none rounded-sm bg-transparent text-left transition-[filter,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300/70 disabled:pointer-events-none disabled:opacity-45",
+        "group flex max-w-full select-none rounded-sm bg-transparent text-left transition-[filter,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 disabled:pointer-events-none disabled:opacity-45",
         align === "start" ? "items-start" : "items-center",
         styles.root,
         checked
@@ -165,7 +165,7 @@ export function GameWaxCycleToggle({
       }}
       title={ariaLabel}
       className={cn(
-        "group flex max-w-full select-none rounded-sm bg-transparent text-left transition-[filter,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300/70 disabled:pointer-events-none disabled:opacity-45",
+        "group flex max-w-full select-none rounded-sm bg-transparent text-left transition-[filter,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 disabled:pointer-events-none disabled:opacity-45",
         align === "start" ? "items-start" : "items-center",
         styles.root,
         active ? "brightness-110" : "opacity-80 hover:opacity-100",

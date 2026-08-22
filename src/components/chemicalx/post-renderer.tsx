@@ -212,8 +212,8 @@ export function PostRenderer({
             </EntityPreview>
           ))}
           {expandedKeywords.map((kw) => (
-            <span key={`kw:${kw.keyword || kw.text}`} className="block w-fit rounded-lg shadow-2xl border border-yellow-500/20 bg-[#0c0c20]/95 px-3 py-2">
-              <span className="block font-bold text-sm text-yellow-400">{kw.keyword || kw.text}</span>
+            <span key={`kw:${kw.keyword || kw.text}`} className="block w-fit rounded-lg shadow-2xl border border-primary/20 bg-[#0c0c20]/95 px-3 py-2">
+              <span className="block font-bold text-sm text-primary">{kw.keyword || kw.text}</span>
               <span className="block text-xs text-gray-300 leading-relaxed mt-0.5">{kw.description}</span>
             </span>
           ))}
@@ -234,8 +234,8 @@ function KeywordSpan({ text, keyword, description }: { text: string; keyword?: s
     >
       {text}
       {hover && description && (
-        <span className="absolute top-full left-0 mt-1 w-48 bg-[#0a0a1a] border border-yellow-500/30 rounded px-2.5 py-2 text-left z-[100] pointer-events-none shadow-xl">
-          <span className="font-bold text-yellow-400 text-xs block">{title}</span>
+        <span className="absolute top-full left-0 mt-1 w-48 bg-[#0a0a1a] border border-primary/30 rounded px-2.5 py-2 text-left z-[100] pointer-events-none shadow-xl">
+          <span className="font-bold text-primary text-xs block">{title}</span>
           <span className="text-[11px] text-gray-300 font-normal leading-relaxed block mt-0.5">{description}</span>
         </span>
       )}

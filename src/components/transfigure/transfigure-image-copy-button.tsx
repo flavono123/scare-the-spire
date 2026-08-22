@@ -204,7 +204,7 @@ export function TransfigureImageCopyButton({
           type="button"
           onClick={handleCopy}
           disabled={busy}
-          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-yellow-300/35 bg-yellow-500/15 px-4 py-2 text-sm font-semibold text-yellow-100 shadow-[0_0_18px_rgba(239,200,81,0.08)] transition-[transform,border-color,background-color,box-shadow] hover:-translate-y-0.5 hover:border-yellow-200/55 hover:bg-yellow-500/25 hover:shadow-[0_6px_22px_rgba(239,200,81,0.12)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-yellow-300/70 active:translate-y-0 disabled:cursor-wait disabled:opacity-65 motion-reduce:transform-none"
+          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-primary/35 bg-primary/15 px-4 py-2 text-sm font-semibold text-primary shadow-[0_0_18px_rgba(239,200,81,0.08)] transition-[transform,border-color,background-color,box-shadow] hover:-translate-y-0.5 hover:border-primary/55 hover:bg-primary/25 hover:shadow-[0_6px_22px_rgba(239,200,81,0.12)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary/70 active:translate-y-0 disabled:cursor-wait disabled:opacity-65 motion-reduce:transform-none"
           data-transfigure-copy-image
         >
           {copyStatus === "working" ? (
@@ -224,7 +224,7 @@ export function TransfigureImageCopyButton({
           type="button"
           onClick={handleDownload}
           disabled={busy}
-          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-yellow-300/20 bg-black/25 px-4 py-2 text-sm font-semibold text-yellow-100/90 transition-[transform,border-color,background-color] hover:-translate-y-0.5 hover:border-yellow-200/40 hover:bg-yellow-500/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-yellow-300/70 active:translate-y-0 disabled:cursor-wait disabled:opacity-65 motion-reduce:transform-none"
+          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-primary/20 bg-black/25 px-4 py-2 text-sm font-semibold text-primary/90 transition-[transform,border-color,background-color] hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary/70 active:translate-y-0 disabled:cursor-wait disabled:opacity-65 motion-reduce:transform-none"
           data-transfigure-download-image
         >
           {downloadStatus === "working" ? (

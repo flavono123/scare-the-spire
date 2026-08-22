@@ -21,7 +21,7 @@ export const Inventory: Story = {
       <CompareTable
         headers={["것", "결정"]}
         rows={[
-          ["골드", "TEXT_GOLD 하나. yellow-500 / 옛 #d4a843은 잔여 정리"],
+          ["골드", "TEXT_GOLD 하나. 셸 강조는 --primary. yellow-500/#d4a843 잔여 정리"],
           ["호버 팁", "둘 유지. 9-slice 상수만 공유"],
           ["이야기 감정 팔레트", "강령의 극 LikeButton. reaction_type 컬럼은 나중에"],
           ["댓글·프로필 좋아요 아이콘", "같은 SpireLikeIcon"],
@@ -61,7 +61,7 @@ export const Inventory: Story = {
           ["케미컬X 작성", "목록 인라인. 창이 없는 게 제품"],
           ["STS1 브라우저 / CharacterBadge", "옛 사이트. 합치지 않음"],
           ["통합검색 마법부여", "백과사전은 인챈트"],
-          ["Composer 제목 색", "yellow-100 vs gold 잔여"],
+          ["Composer 제목 색", "primary vs gold 잔여"],
         ]}
       />
     </StoryStack>

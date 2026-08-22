@@ -249,7 +249,7 @@ Rich 패치는 Steam 패치노트를 소스로 하되, 백과사전 데이터와
 
 1. **정본 문서** — 이 파일. Storybook은 문서를 그린다. 완료.
 2. **게임 텍스트 토큰 + `:root` 다크** — `.spire-gold`/`--primary` = `TEXT_GOLD`. `[green]`/`[red]`/`[blue]` 등은 `StsColors`. `:root`가 다크 정본. 완료.
-3. **서비스 셸의 `yellow-500` / `#d4a843` 잔여** — 강조는 gold 토큰으로. 넓으면 별도 패스.
+3. **서비스 셸의 `yellow-500` / `#d4a843` 잔여** — 강조는 `--primary` / `TEXT_GOLD`. 완료. 3막 영광 칩과 통합검색 유물 타입 칩은 골드 강조가 아니라서 그대로 둔다.
 4. **링크 색** — 게임 리소스 gold, 섀소식·외부 aqua. `cyan-*` 제거.
 5. **좋아요** — 이야기 팔레트를 강령의 극으로 (앱 먼저, DB `reaction_type`은 나중에). 이거아님저거 테이블 병합은 마이그레이션 전용 패스.
 6. **이름 정리** — 호출부를 `CompendiumIndexLayout` / `RelatedResourceLinks`로.

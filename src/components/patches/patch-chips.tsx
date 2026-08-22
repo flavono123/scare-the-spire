@@ -42,7 +42,7 @@ export const PATCH_BALANCE_TOKEN: ChipToken = {
   src: "/images/sts2/powers/imbalanced_power.webp",
   alt: { ko: "불균형", en: "Imbalanced" },
   variant: "gold",
-  className: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
+  className: "bg-primary/15 text-primary border-primary/30",
 };
 
 const CHIP_BADGE_CLASS = "overflow-visible";

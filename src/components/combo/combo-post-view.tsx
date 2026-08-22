@@ -99,7 +99,7 @@ export function ComboPostView({ postId, gameLocale, placeholder, variant = "page
         {!embed && (
           <Link
             href={localizeHrefWithGameLocale("/c-c-c-combo", serviceLocale, gameLocale)}
-            className="text-sm text-yellow-400 hover:underline"
+            className="text-sm text-primary hover:underline"
           >
             {copy.backToIndex}
           </Link>
@@ -117,7 +117,7 @@ export function ComboPostView({ postId, gameLocale, placeholder, variant = "page
       <div className="flex items-center justify-between">
         <Link
           href={localizeHrefWithGameLocale("/c-c-c-combo", serviceLocale, gameLocale)}
-          className="inline-flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-yellow-400"
+          className="inline-flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-primary"
         >
           <ArrowLeft size={16} />
           {copy.title}
@@ -136,7 +136,7 @@ export function ComboPostView({ postId, gameLocale, placeholder, variant = "page
       </div>
       )}
 
-      <article className="relative overflow-hidden rounded-2xl border border-yellow-500/15 bg-gradient-to-b from-[#0c0c18] via-[#10101e] to-[#0c0c18] p-4 pb-4 sm:p-6 sm:pb-5">
+      <article className="relative overflow-hidden rounded-2xl border border-primary/15 bg-gradient-to-b from-[#0c0c18] via-[#10101e] to-[#0c0c18] p-4 pb-4 sm:p-6 sm:pb-5">
         <div
           className="pointer-events-none absolute left-1/2 top-1/3 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full"
           style={{
@@ -196,7 +196,7 @@ export function ComboPostView({ postId, gameLocale, placeholder, variant = "page
               height={14}
               className="object-contain opacity-50"
             />
-            <span className="text-[11px] font-semibold tracking-wide text-yellow-500/40">
+            <span className="text-[11px] font-semibold tracking-wide text-primary/40">
               {serviceMessages[serviceLocale].brand}
             </span>
           </div>

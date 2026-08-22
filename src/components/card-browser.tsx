@@ -36,7 +36,7 @@ const RARITY_BORDER: Record<string, string> = {
   starter: "border-zinc-700",
   common: "border-zinc-600",
   uncommon: "border-blue-500/60",
-  rare: "border-yellow-500/60",
+  rare: "border-primary/60",
   special: "border-pink-500/60",
 };
 
@@ -125,7 +125,7 @@ function ChangeModal({
         {/* Changes */}
         {changes.length > 0 ? (
           <div>
-            <h3 className="mb-3 text-sm font-semibold text-yellow-500">
+            <h3 className="mb-3 text-sm font-semibold text-primary">
               변경 이력 ({changes.length})
             </h3>
             <ChangeList changes={changes} />
@@ -186,7 +186,7 @@ function CardTile({
         )}
         {/* Change indicator */}
         {hasChanges && (
-          <div className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-500 text-[10px] font-bold text-black">
+          <div className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-black">
             {changes.length}
           </div>
         )}
@@ -311,7 +311,7 @@ export function CardBrowser({
               onClick={() => setShowUpgraded(!showUpgraded)}
               className={`rounded px-2 py-0.5 transition-colors ${
                 showUpgraded
-                  ? "bg-yellow-500/20 border border-yellow-500/50 text-yellow-400"
+                  ? "bg-primary/20 border border-primary/50 text-primary"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >

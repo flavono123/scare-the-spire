@@ -124,7 +124,7 @@ function SortColumnButton({
       aria-pressed={active}
       aria-label={`${label} ${directionLabel}`}
       className={`inline-flex h-6 items-center gap-1 whitespace-nowrap font-game-text text-[11px] transition-colors ${
-        active ? "text-yellow-300/90" : "text-gray-600 hover:text-gray-400"
+        active ? "text-primary/90" : "text-gray-600 hover:text-gray-400"
       }`}
     >
       <span>{label}</span>
@@ -613,7 +613,7 @@ function SelectedResourcePreview({
           href={href}
           prefetch={false}
           aria-label={openLabel.replace("{name}", label)}
-          className="game-inspect-cursor block w-full max-w-[23rem] rounded-md outline-none transition-[filter,transform] hover:brightness-110 focus-visible:ring-1 focus-visible:ring-yellow-400/60"
+          className="game-inspect-cursor block w-full max-w-[23rem] rounded-md outline-none transition-[filter,transform] hover:brightness-110 focus-visible:ring-1 focus-visible:ring-primary/60"
         >
           {preview}
         </Link>
@@ -628,10 +628,10 @@ function SelectedResourcePreview({
           data-comments-jump
           data-comment-count={commentCount}
           aria-label={`${label} ${commentLabel}`}
-          className={`inline-flex items-center gap-1 rounded-sm outline-none transition-colors focus-visible:ring-1 focus-visible:ring-[#d4a843]/60 ${
+          className={`inline-flex items-center gap-1 rounded-sm outline-none transition-colors focus-visible:ring-1 focus-visible:ring-[#efc851]/60 ${
             commentCount && commentCount > 0
-              ? "text-[#d4a843]/90 hover:text-[#d4a843]"
-              : "text-gray-400 hover:text-[#d4a843]"
+              ? "text-[#efc851]/90 hover:text-[#efc851]"
+              : "text-gray-400 hover:text-[#efc851]"
           }`}
         >
           <MessageCircle size={12} />
@@ -825,7 +825,7 @@ export function ResourcePatchIndexExplorer({
 
   return (
     <>
-      <div className="mt-4 rounded-xl border border-transparent p-2 transition-[background-color,border-color,box-shadow] duration-150 focus-within:border-yellow-400/20 focus-within:bg-yellow-500/[0.025] focus-within:shadow-[0_0_24px_rgba(234,179,8,0.06)]">
+      <div className="mt-4 rounded-xl border border-transparent p-2 transition-[background-color,border-color,box-shadow] duration-150 focus-within:border-primary/20 focus-within:bg-primary/[0.025] focus-within:shadow-[0_0_24px_rgba(234,179,8,0.06)]">
         <label className="relative block max-w-md">
           <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
           <input
@@ -835,7 +835,7 @@ export function ResourcePatchIndexExplorer({
             onFocus={() => setSearchFocused(true)}
             onBlur={() => setSearchFocused(false)}
             placeholder={copy.searchPlaceholder}
-            className="h-9 w-full rounded-md border border-white/10 bg-white/[0.035] pl-9 pr-3 font-game-text text-sm text-foreground outline-none transition-[background-color,border-color,box-shadow] placeholder:text-gray-600 focus:border-yellow-400/45 focus:bg-black/20 focus:shadow-[0_0_16px_rgba(234,179,8,0.08)]"
+            className="h-9 w-full rounded-md border border-white/10 bg-white/[0.035] pl-9 pr-3 font-game-text text-sm text-foreground outline-none transition-[background-color,border-color,box-shadow] placeholder:text-gray-600 focus:border-primary/45 focus:bg-black/20 focus:shadow-[0_0_16px_rgba(234,179,8,0.08)]"
           />
         </label>
 

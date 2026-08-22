@@ -86,7 +86,7 @@ export function ServiceModalFrame({
         tabIndex={-1}
         {...(panelDataAttribute ? { [panelDataAttribute]: "" } : {})}
         className={cn(
-          "flex w-full flex-col rounded-t-2xl border border-b-0 border-yellow-500/20 bg-[#08080f] shadow-[0_-18px_60px_rgba(0,0,0,0.6)] outline-none sm:rounded-xl sm:border-b sm:shadow-2xl",
+          "flex w-full flex-col rounded-t-2xl border border-b-0 border-primary/20 bg-[#08080f] shadow-[0_-18px_60px_rgba(0,0,0,0.6)] outline-none sm:rounded-xl sm:border-b sm:shadow-2xl",
           panelClassName,
         )}
         onClick={(event) => event.stopPropagation()}
@@ -94,7 +94,7 @@ export function ServiceModalFrame({
         <div className="flex shrink-0 items-center justify-between border-b border-border/70 px-4 py-3">
           <div className="flex items-center gap-2">
             {showAccentDot ? (
-              <span className="h-1.5 w-1.5 rounded-full bg-[#d4a843] shadow-[0_0_8px_rgba(212,168,67,0.8)]" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#efc851] shadow-[0_0_8px_rgba(239,200,81,0.8)]" />
             ) : null}
             <h2
               id={titleId}
@@ -108,7 +108,7 @@ export function ServiceModalFrame({
             <button
               type="button"
               onClick={onClose}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
               title={closeLabel}
             >
               <X size={16} aria-hidden="true" />

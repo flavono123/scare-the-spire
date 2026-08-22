@@ -131,7 +131,7 @@ export function ComboResourcePicker({
             aria-controls="combo-resource-picker-panel"
             data-combo-picker-trigger
             onClick={() => setOpen((current) => !current)}
-            className="flex shrink-0 items-center gap-1.5 rounded-md border border-yellow-400/25 bg-yellow-500/10 px-2.5 py-1.5 text-xs font-semibold text-yellow-200 transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-yellow-300/45 hover:bg-yellow-500/15 active:translate-y-0 motion-reduce:transform-none"
+            className="flex shrink-0 items-center gap-1.5 rounded-md border border-primary/25 bg-primary/10 px-2.5 py-1.5 text-xs font-semibold text-primary transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-primary/45 hover:bg-primary/15 active:translate-y-0 motion-reduce:transform-none"
           >
             <Plus className="h-3.5 w-3.5" aria-hidden="true" />
             {copy.addResource}
@@ -148,8 +148,8 @@ export function ComboResourcePicker({
             >
               {copy.composerHintKeyword}
             </span>
-            <span className="pointer-events-none absolute left-1/2 top-full z-[100] mt-1 hidden w-48 -translate-x-1/2 rounded border border-yellow-500/30 bg-[#0a0a1a] px-2.5 py-2 text-left shadow-xl group-hover/keyword:block group-focus-within/keyword:block">
-              <span className="block text-xs font-bold text-yellow-400">
+            <span className="pointer-events-none absolute left-1/2 top-full z-[100] mt-1 hidden w-48 -translate-x-1/2 rounded border border-primary/30 bg-[#0a0a1a] px-2.5 py-2 text-left shadow-xl group-hover/keyword:block group-focus-within/keyword:block">
+              <span className="block text-xs font-bold text-primary">
                 {copy.composerHintKeyword}
               </span>
               <span className="mt-0.5 block text-[11px] font-normal leading-relaxed text-gray-300">
@@ -161,7 +161,7 @@ export function ComboResourcePicker({
         </p>
         <span
           aria-live="polite"
-          className="col-start-2 row-start-1 inline-flex min-h-5 min-w-0 items-center justify-self-end text-[11px] font-semibold text-yellow-200 sm:col-start-3"
+          className="col-start-2 row-start-1 inline-flex min-h-5 min-w-0 items-center justify-self-end text-[11px] font-semibold text-primary sm:col-start-3"
         >
           {recentlyAdded && (
             <span
@@ -184,10 +184,10 @@ export function ComboResourcePicker({
           role="dialog"
           aria-label={copy.resourcePickerLabel}
           data-combo-picker-panel
-          className="mt-2 flex max-h-72 w-full flex-col overflow-hidden rounded-xl border border-yellow-500/25 bg-[#090913]/98 shadow-[0_14px_36px_rgba(0,0,0,0.48)]"
+          className="mt-2 flex max-h-72 w-full flex-col overflow-hidden rounded-xl border border-primary/25 bg-[#090913]/98 shadow-[0_14px_36px_rgba(0,0,0,0.48)]"
         >
           <div className="flex items-center gap-2 border-b border-white/10 p-2.5">
-            <Search className="h-4 w-4 shrink-0 text-yellow-300/70" aria-hidden="true" />
+            <Search className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
             <input
               ref={searchInputRef}
               type="search"
@@ -219,7 +219,7 @@ export function ComboResourcePicker({
               className={cn(
                 "shrink-0 rounded-full border px-2.5 py-1 text-[11px] transition-colors",
                 activeType == null
-                  ? "border-yellow-300/40 bg-yellow-500/15 text-yellow-200"
+                  ? "border-primary/40 bg-primary/15 text-primary"
                   : "border-white/10 text-zinc-500 hover:border-white/20 hover:text-zinc-300",
               )}
             >
@@ -237,7 +237,7 @@ export function ComboResourcePicker({
                 className={cn(
                   "shrink-0 rounded-full border px-2.5 py-1 text-[11px] transition-colors",
                   activeType === type
-                    ? "border-yellow-300/40 bg-yellow-500/15 text-yellow-200"
+                    ? "border-primary/40 bg-primary/15 text-primary"
                     : "border-white/10 text-zinc-500 hover:border-white/20 hover:text-zinc-300",
                 )}
               >
@@ -261,9 +261,9 @@ export function ComboResourcePicker({
                     data-combo-picker-result
                     onClick={() => selectEntity(entity)}
                     className={cn(
-                      "flex min-w-0 items-center gap-2 rounded-lg border px-2 py-1.5 text-left transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-yellow-500/20 hover:bg-yellow-500/10 focus-visible:border-yellow-400/40 focus-visible:bg-yellow-500/10 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none",
+                      "flex min-w-0 items-center gap-2 rounded-lg border px-2 py-1.5 text-left transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-primary/20 hover:bg-primary/10 focus-visible:border-primary/40 focus-visible:bg-primary/10 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none",
                       recentlyAdded?.id === entity.id && recentlyAdded.type === entity.type
-                        ? "border-yellow-300/45 bg-yellow-500/15"
+                        ? "border-primary/45 bg-primary/15"
                         : "border-transparent",
                     )}
                   >
@@ -277,7 +277,7 @@ export function ComboResourcePicker({
                           className="max-h-8 max-w-8 object-contain"
                         />
                       ) : (
-                        <span className="font-game-title text-sm font-bold text-yellow-200/70">
+                        <span className="font-game-title text-sm font-bold text-primary/70">
                           {entity.nameKo.slice(0, 1)}
                         </span>
                       )}
@@ -294,7 +294,7 @@ export function ComboResourcePicker({
                     </span>
                     <span className="shrink-0 text-[9px] text-zinc-600">
                       {recentlyAdded?.id === entity.id && recentlyAdded.type === entity.type ? (
-                        <Check className="h-4 w-4 text-yellow-300" aria-hidden="true" />
+                        <Check className="h-4 w-4 text-primary" aria-hidden="true" />
                       ) : (
                         typeLabels[entity.type] ?? entity.type
                       )}

@@ -106,7 +106,7 @@ export function ThisOrThatPostView({
         {!embed && (
           <Link
             href={localizeHrefWithGameLocale("/this-or-that", serviceLocale, gameLocale)}
-            className="text-sm text-yellow-400 underline-offset-4 hover:underline"
+            className="text-sm text-primary underline-offset-4 hover:underline"
           >
             {title}
           </Link>
@@ -129,7 +129,7 @@ export function ThisOrThatPostView({
       <div className="flex items-center justify-between gap-3">
         <Link
           href={localizeHrefWithGameLocale("/this-or-that", serviceLocale, gameLocale)}
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-[#d4a843]"
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-[#efc851]"
         >
           <ArrowLeft size={16} />
           {title}
@@ -201,7 +201,7 @@ export function ThisOrThatPostView({
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-center font-game-title text-2xl font-black text-yellow-500/80 md:w-12">
+          <div className="flex items-center justify-center font-game-title text-2xl font-black text-primary/80 md:w-12">
             VS
           </div>
           <div className="min-w-0">

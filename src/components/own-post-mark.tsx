@@ -12,7 +12,7 @@ export function OwnPostMark({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center rounded border border-[#d4a843]/35 px-1.5 py-px text-[10px] font-semibold leading-none text-[#d4a843]/90",
+        "inline-flex shrink-0 items-center rounded border border-[#efc851]/35 px-1.5 py-px text-[10px] font-semibold leading-none text-[#efc851]/90",
         className,
       )}
     >

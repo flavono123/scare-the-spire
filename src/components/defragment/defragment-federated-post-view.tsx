@@ -85,7 +85,7 @@ export function DefragmentFederatedPostView({
       <div className="flex items-start justify-between gap-3">
         <Link
           href={indexHref}
-          className="inline-flex items-center gap-1 text-sm text-yellow-400 hover:underline"
+          className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
         >
           <ArrowLeft size={14} />
           {copy.backToIndex}
@@ -100,7 +100,7 @@ export function DefragmentFederatedPostView({
 
       <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-500">
         <Image src={tokenSrc} alt="" width={16} height={16} className="size-4 object-contain" />
-        <Link href={originalHref} className="text-yellow-400/80 hover:underline">
+        <Link href={originalHref} className="text-primary/80 hover:underline">
           {copy.openOriginal.replace("{name}", typeLabel)}
         </Link>
       </div>

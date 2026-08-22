@@ -121,7 +121,7 @@ export function CommentSection({
           {comments.map((comment) => (
             <li key={comment.id} className="rounded-lg border border-border/50 bg-card/20 px-3 py-2.5 text-sm">
               <div className="flex items-center gap-2">
-                <span className="font-medium text-yellow-500">{comment.nickname}</span>
+                <span className="font-medium text-primary">{comment.nickname}</span>
                 <span className="text-[10px] text-muted-foreground">
                   {new Date(comment.created_at).toLocaleDateString(dateLocale)}
                 </span>
@@ -168,7 +168,7 @@ export function CommentSection({
             placeholder={copy.nicknamePlaceholder}
             defaultValue={profile.nickname}
             maxLength={20}
-            className="w-full rounded bg-zinc-800 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-yellow-500/50"
+            className="w-full rounded bg-zinc-800 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-primary/50"
           />
           {entitiesLoading ? (
             <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card/30 px-3 py-2 text-xs text-muted-foreground">

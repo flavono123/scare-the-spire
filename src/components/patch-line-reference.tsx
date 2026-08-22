@@ -83,13 +83,13 @@ export function PatchLineReferenceBlock({
         art={art}
         className={cn(
           compact ? "h-9 w-12" : undefined,
-          emphasized && "ring-1 ring-yellow-400/35 shadow-[0_0_14px_rgba(234,179,8,0.16)]",
+          emphasized && "ring-1 ring-primary/35 shadow-[0_0_14px_rgba(234,179,8,0.16)]",
         )}
       />
       <div className="min-w-0">
         <p className={cn(
           "font-medium",
-          emphasized ? "text-yellow-300" : "text-yellow-500/90",
+          emphasized ? "text-primary" : "text-primary/90",
           compact ? "text-xs" : "text-sm",
         )}>
           <span>{versionLabel}</span>
@@ -115,7 +115,7 @@ export function PatchLineReferenceBlock({
     emphasized
       ? "bg-black/15 text-foreground hover:bg-black/25"
       : "text-muted-foreground hover:bg-white/[0.035] hover:text-foreground",
-    "focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-500/30",
+    "focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/30",
     compact ? "text-xs" : "text-sm",
   );
   const line = (
@@ -126,7 +126,7 @@ export function PatchLineReferenceBlock({
   const rootClassName = cn(
     "relative space-y-1.5",
     emphasized && [
-      "rounded-lg border border-yellow-500/45 bg-gradient-to-br from-yellow-500/[0.13] via-yellow-500/[0.055] to-transparent p-3",
+      "rounded-lg border border-primary/45 bg-gradient-to-br from-primary/[0.13] via-primary/[0.055] to-transparent p-3",
       "shadow-[0_0_0_1px_rgba(234,179,8,0.06),0_12px_28px_rgba(0,0,0,0.28),0_0_24px_rgba(234,179,8,0.08)]",
     ],
     trailingAction && "pr-8",

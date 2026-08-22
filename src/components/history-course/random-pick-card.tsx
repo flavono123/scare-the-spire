@@ -162,7 +162,7 @@ export function RandomPickCard({ runs, userId }: Props) {
               "text-[11px] font-bold text-zinc-950 shadow-[0_2px_10px_rgba(0,0,0,0.45)]",
               "ring-1 ring-inset ring-amber-200/80",
               "transition-[transform,background-color,box-shadow] duration-200",
-              "group-hover:bg-amber-300 group-hover:shadow-[0_4px_16px_rgba(212,168,67,0.45)]",
+              "group-hover:bg-amber-300 group-hover:shadow-[0_4px_16px_rgba(239,200,81,0.45)]",
               "group-hover:-translate-y-0.5",
               "group-active:translate-y-0 group-active:bg-amber-400",
             )}

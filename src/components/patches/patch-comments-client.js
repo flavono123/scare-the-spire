@@ -90,7 +90,7 @@
     if (length === 0) return "text-muted-foreground";
     if (length < COMMENT_MIN_CHARS || length > COMMENT_MAX_CHARS) return "text-red-400";
     const warnRemaining = Math.max(5, Math.ceil(COMMENT_MAX_CHARS * 0.1));
-    if (length >= COMMENT_MAX_CHARS - warnRemaining) return "text-yellow-400";
+    if (length >= COMMENT_MAX_CHARS - warnRemaining) return "text-primary";
     return "text-muted-foreground";
   }
 
@@ -332,13 +332,13 @@
           <button type="button" data-static-story-close class="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground" title="${escapeHtml(text.storyClose)}" aria-label="${escapeHtml(text.storyClose)}">×</button>
         </div>
         <div class="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4">
-          <textarea data-static-story-sentence maxlength="120" rows="3" required minlength="2" placeholder="${escapeHtml(text.storyPlaceholder)}" class="min-h-24 w-full resize-none rounded-md border border-border/70 bg-background/60 px-3 py-2 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-yellow-500/40"></textarea>
+          <textarea data-static-story-sentence maxlength="120" rows="3" required minlength="2" placeholder="${escapeHtml(text.storyPlaceholder)}" class="min-h-24 w-full resize-none rounded-md border border-border/70 bg-background/60 px-3 py-2 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/40"></textarea>
           <div class="flex items-center gap-2">
-            <input data-static-story-nickname type="text" maxlength="20" required value="${escapeHtml(readStoredNickname(text.defaultNickname))}" placeholder="${escapeHtml(text.storyNickname)}" class="h-8 min-w-0 flex-1 rounded-md border border-border/60 bg-background/50 px-2.5 text-xs text-muted-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-yellow-500/40" />
+            <input data-static-story-nickname type="text" maxlength="20" required value="${escapeHtml(readStoredNickname(text.defaultNickname))}" placeholder="${escapeHtml(text.storyNickname)}" class="h-8 min-w-0 flex-1 rounded-md border border-border/60 bg-background/50 px-2.5 text-xs text-muted-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-primary/40" />
             <span data-static-story-count class="shrink-0 text-[11px] tabular-nums text-muted-foreground">0/120</span>
           </div>
-          <div class="rounded-md border border-yellow-500/20 bg-yellow-500/[0.035] px-3 py-2.5">
-            <span class="block text-[11px] font-medium text-yellow-500">${escapeHtml(patchId)}</span>
+          <div class="rounded-md border border-primary/20 bg-primary/[0.035] px-3 py-2.5">
+            <span class="block text-[11px] font-medium text-primary">${escapeHtml(patchId)}</span>
             <span class="mt-1 block text-xs leading-relaxed text-foreground">${escapeHtml(patchLineLabel(action))}</span>
           </div>
           <p data-static-story-error class="hidden text-[11px] text-amber-300"></p>
@@ -482,7 +482,7 @@
             return `
               <li class="rounded-lg border border-border/50 bg-card/20 px-3 py-2.5 text-sm">
                 <div class="flex items-center gap-2">
-                  <span class="font-medium text-yellow-500">${escapeHtml(comment.nickname)}</span>
+                  <span class="font-medium text-primary">${escapeHtml(comment.nickname)}</span>
                   <span class="text-[10px] text-muted-foreground">${new Date(comment.created_at).toLocaleDateString(serviceLocale() === "ko" ? "ko-KR" : "en-US")}</span>
                   <button data-comment-like="${escapeHtml(comment.id)}" class="flex items-center gap-0.5 text-[10px] text-muted-foreground transition-all">
                     <img src="/images/relics/runic-dodecahedron.webp" alt="${escapeHtml(text.likeAlt)}" width="14" height="14" class="transition-all ${liked ? "" : "opacity-40 grayscale"}" />
@@ -506,7 +506,7 @@
           placeholder="${escapeHtml(text.nicknamePlaceholder)}"
           value="${escapeHtml(state.nickname)}"
           maxlength="20"
-          class="w-full rounded bg-zinc-800 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-yellow-500/50"
+          class="w-full rounded bg-zinc-800 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-primary/50"
         />
         <textarea
           data-comment-content
@@ -514,13 +514,13 @@
           rows="4"
           minlength="${COMMENT_MIN_CHARS}"
           maxlength="${COMMENT_MAX_CHARS}"
-          class="min-h-[6.5rem] max-h-48 w-full resize-y rounded bg-zinc-800 px-3 py-2 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-yellow-500/50"
+          class="min-h-[6.5rem] max-h-48 w-full resize-y rounded bg-zinc-800 px-3 py-2 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-primary/50"
         ></textarea>
         <div class="flex items-center justify-between gap-3">
           <span data-comment-count class="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">0/${COMMENT_MAX_CHARS}</span>
           <button
             type="submit"
-            class="rounded bg-yellow-500 px-3 py-1.5 text-xs font-semibold text-black transition-colors hover:bg-yellow-400 disabled:opacity-60"
+            class="rounded bg-primary px-3 py-1.5 text-xs font-semibold text-black transition-colors hover:bg-primary disabled:opacity-60"
           >
             ${escapeHtml(state.submitting ? "..." : text.submit)}
           </button>

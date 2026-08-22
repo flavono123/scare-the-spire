@@ -313,8 +313,8 @@ export default async function OgImagesDevPage({ previewPath }: { previewPath?: s
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-6">
-      <div className="mb-6 rounded border border-yellow-500/30 bg-yellow-500/5 px-4 py-2">
-        <span className="text-xs font-bold text-yellow-500">DEV ONLY</span>
+      <div className="mb-6 rounded border border-primary/30 bg-primary/5 px-4 py-2">
+        <span className="text-xs font-bold text-primary">DEV ONLY</span>
         <span className="ml-2 text-xs text-muted-foreground">
           실제 링크 프리뷰와 정적 OG 이미지 매핑 현황
         </span>

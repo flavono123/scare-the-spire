@@ -240,8 +240,8 @@ function StaticNavIconLink({
       title={label}
       className={`group inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border transition-colors ${
         active
-          ? "border-yellow-500/35 bg-yellow-500/10"
-          : "border-transparent hover:border-yellow-500/25 hover:bg-white/[0.05]"
+          ? "border-primary/35 bg-primary/10"
+          : "border-transparent hover:border-primary/25 hover:bg-white/[0.05]"
       }`}
     >
       <img
@@ -275,7 +275,7 @@ function StaticLanguageDropdown({
       >
         <span className="truncate">{GAME_LOCALE_NATIVE_LABELS[value]}</span>
         <svg
-          className="h-3.5 w-3.5 shrink-0 text-yellow-400 transition-transform group-open:rotate-180 sm:h-4 sm:w-4"
+          className="h-3.5 w-3.5 shrink-0 text-primary transition-transform group-open:rotate-180 sm:h-4 sm:w-4"
           fill="currentColor"
           viewBox="0 0 20 20"
           aria-hidden="true"
@@ -291,7 +291,7 @@ function StaticLanguageDropdown({
             aria-current={locale === value ? "true" : undefined}
             className={`flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors ${
               locale === value
-                ? "bg-yellow-500/10 text-yellow-300"
+                ? "bg-primary/10 text-primary"
                 : "text-foreground hover:bg-white/5"
             }`}
           >
@@ -312,7 +312,7 @@ function StaticLanguageDropdown({
             aria-current={locale === value ? "true" : undefined}
             className={`block px-3 py-2 text-sm transition-colors ${
               locale === value
-                ? "bg-yellow-500/10 text-yellow-300"
+                ? "bg-primary/10 text-primary"
                 : "text-foreground hover:bg-white/5"
             }`}
           >
@@ -353,7 +353,7 @@ function StaticPatchHeader({
         <div className="flex min-w-0 shrink-0 items-center gap-1 sm:gap-2">
           <a
             href={localizeHrefWithGameLocale("/", serviceLocale, gameLocale)}
-            className="flex shrink-0 items-center gap-1 text-sm font-bold text-yellow-500 sm:gap-1.5 sm:text-base"
+            className="flex shrink-0 items-center gap-1 text-sm font-bold text-primary sm:gap-1.5 sm:text-base"
           >
             <img
               src="/images/bone_tea.png"
@@ -388,7 +388,7 @@ function StaticPatchHeader({
             aria-controls="patch-global-search-overlay"
             aria-expanded="false"
             aria-label={searchCopy}
-            className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-2.5 text-left text-sm text-muted-foreground transition-colors hover:border-yellow-500/40 hover:bg-white/[0.07] sm:max-w-[18rem] lg:max-w-[22rem]"
+            className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-2.5 text-left text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:bg-white/[0.07] sm:max-w-[18rem] lg:max-w-[22rem]"
           >
             <svg className="h-4 w-4 shrink-0 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8" />
@@ -475,7 +475,7 @@ function StaticGlobalSearchOverlay({ serviceLocale }: { serviceLocale: ServiceLo
         className="relative z-10 mx-auto w-full max-w-xl overflow-hidden rounded-lg border border-white/10 bg-[#111827] shadow-2xl"
       >
         <div className="flex items-center gap-2 border-b border-white/10 px-3 py-2">
-          <svg className="h-4 w-4 shrink-0 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <svg className="h-4 w-4 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.3-4.3" />
           </svg>

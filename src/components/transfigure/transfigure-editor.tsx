@@ -113,7 +113,7 @@ function CardAttributeChange<T extends string>({
       <button
         type="button"
         onClick={onOpen}
-        className="block w-full rounded-md border border-dashed border-yellow-500/25 px-2 py-1 text-left text-xs text-yellow-100/70 transition-colors hover:border-yellow-400/50 hover:text-yellow-100"
+        className="block w-full rounded-md border border-dashed border-primary/25 px-2 py-1 text-left text-xs text-primary/70 transition-colors hover:border-primary/50 hover:text-primary"
         data-transfigure-card-attribute-add={kind}
       >
         + {label}
@@ -125,7 +125,7 @@ function CardAttributeChange<T extends string>({
 
   return (
     <div
-      className="space-y-1.5 rounded-lg border border-yellow-500/20 bg-black/20 p-2"
+      className="space-y-1.5 rounded-lg border border-primary/20 bg-black/20 p-2"
       data-transfigure-card-attribute={kind}
     >
       <div className="flex items-center justify-between gap-2 text-xs">
@@ -143,11 +143,11 @@ function CardAttributeChange<T extends string>({
         <span className="min-w-0 flex-1 truncate font-game-title text-xs text-gray-500">
           {sourceLabel}
         </span>
-        <span className="text-xs text-yellow-500/60" aria-hidden="true">→</span>
+        <span className="text-xs text-primary/60" aria-hidden="true">→</span>
         <MenuDropdown
           ariaLabel={label}
           rootClassName="min-w-0"
-          summaryClassName="flex h-9 cursor-pointer items-center gap-1.5 rounded-md border border-yellow-500/25 bg-[#111522] px-2 font-game-title text-xs text-yellow-100 outline-none transition-colors hover:border-yellow-300/60 focus-visible:border-yellow-300"
+          summaryClassName="flex h-9 cursor-pointer items-center gap-1.5 rounded-md border border-primary/25 bg-[#111522] px-2 font-game-title text-xs text-primary outline-none transition-colors hover:border-primary/60 focus-visible:border-primary"
           menuClassName="left-0 min-w-full overflow-hidden bg-[#111522]/98"
           summary={(
             <>
@@ -156,7 +156,7 @@ function CardAttributeChange<T extends string>({
                 {selectedOption?.label ?? selectLabel}
               </span>
               <svg
-                className="h-3 w-3 shrink-0 text-yellow-400 transition-transform group-open:rotate-180"
+                className="h-3 w-3 shrink-0 text-primary transition-transform group-open:rotate-180"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -177,8 +177,8 @@ function CardAttributeChange<T extends string>({
               onClick={() => onChange(option.value)}
               className={`flex w-full items-center gap-2.5 px-3 py-2 text-left font-game-title text-sm transition-colors ${
                 option.value === value
-                  ? "bg-yellow-500/10 text-yellow-300"
-                  : "text-gray-300 hover:bg-white/5 hover:text-yellow-100"
+                  ? "bg-primary/10 text-primary"
+                  : "text-gray-300 hover:bg-white/5 hover:text-primary"
               }`}
             >
               {option.icon}
@@ -872,7 +872,7 @@ export function TransfigureEditor({
             )}
           </div>
 
-          <section className="rounded-xl border border-yellow-500/15 bg-black/20 p-3 lg:sticky lg:top-0">
+          <section className="rounded-xl border border-primary/15 bg-black/20 p-3 lg:sticky lg:top-0">
             <TransfigureAssetEditor
               key={`${initialPost?.id ?? "new"}:${selected.type}:${selected.id}`}
               draftKey={`${draftSessionPrefix}${gameLocale}:${selected.type}:${selected.id}`}
@@ -973,7 +973,7 @@ export function TransfigureEditor({
               type="button"
               onClick={requestSubmit}
               disabled={submitting}
-              className="mx-auto mt-4 flex items-center gap-1.5 rounded-lg border border-yellow-500/30 bg-yellow-500/15 px-4 py-2 text-sm font-semibold text-yellow-200 transition-colors hover:bg-yellow-500/25 disabled:cursor-not-allowed disabled:opacity-40"
+              className="mx-auto mt-4 flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/15 px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/25 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {submitting
                 ? copy.saving
@@ -996,7 +996,7 @@ export function TransfigureEditor({
         <p
           className={saveFeedback.tone === "error"
             ? "text-xs text-red-300"
-            : "text-xs text-yellow-100/75"}
+            : "text-xs text-primary/75"}
           role={saveFeedback.tone === "error" ? "alert" : "status"}
           aria-live="polite"
           data-transfigure-save-feedback={saveFeedback.tone}

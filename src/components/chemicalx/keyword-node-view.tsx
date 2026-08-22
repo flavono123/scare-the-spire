@@ -37,10 +37,10 @@ export function KeywordNodeView({ node }: NodeViewProps) {
       )}
       {pos && description && createPortal(
         <div
-          className="fixed w-fit max-w-48 bg-[#0a0a1a] border border-yellow-500/30 rounded px-2.5 py-2 text-left z-[200] pointer-events-none shadow-xl"
+          className="fixed w-fit max-w-48 bg-[#0a0a1a] border border-primary/30 rounded px-2.5 py-2 text-left z-[200] pointer-events-none shadow-xl"
           style={{ left: pos.x, top: pos.y }}
         >
-          <div className="font-bold text-yellow-400 text-xs">{title}</div>
+          <div className="font-bold text-primary text-xs">{title}</div>
           <div className="text-[11px] text-gray-300 leading-relaxed mt-0.5">{description}</div>
         </div>,
         document.body,

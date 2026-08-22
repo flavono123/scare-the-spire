@@ -22,7 +22,7 @@ function ReportButton({ change }: { change: Change }) {
       target="_blank"
       rel="noopener noreferrer"
       onClick={(e) => e.stopPropagation()}
-      className="mt-2 flex w-full items-center justify-center rounded py-1 text-xs font-medium bg-yellow-500/10 text-yellow-500 border border-yellow-500/30 hover:bg-yellow-500/20 transition-colors"
+      className="mt-2 flex w-full items-center justify-center rounded py-1 text-xs font-medium bg-primary/10 text-primary border border-primary/30 hover:bg-primary/20 transition-colors"
     >
       이야기 제보하기
     </a>
@@ -39,10 +39,10 @@ export function ChangeList({ changes }: { changes: Change[] }) {
 
         return (
           <div key={c.id} className="relative mb-4 last:mb-0">
-            <div className="absolute -left-2.5 top-1.5 h-2 w-2 rounded-full border-2 border-yellow-500 bg-background" />
+            <div className="absolute -left-2.5 top-1.5 h-2 w-2 rounded-full border-2 border-primary bg-background" />
             <div className="rounded border border-border bg-card/50 p-3">
               <div className="flex items-center gap-2 text-xs">
-                <span className="font-medium text-yellow-500">{c.patch}</span>
+                <span className="font-medium text-primary">{c.patch}</span>
                 {c.date && (
                   <span className="text-muted-foreground">{c.date}</span>
                 )}

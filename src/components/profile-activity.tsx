@@ -210,7 +210,7 @@ export function ProfileActivity({
             width={42}
             height={42}
             aria-hidden
-            className="h-10 w-10 object-contain drop-shadow-[0_0_8px_rgba(250,204,21,0.28)]"
+            className="h-10 w-10 object-contain drop-shadow-[0_0_8px_rgba(239,200,81,0.28)]"
           />
           <h2 className="font-game-title text-xl font-bold spire-gold sm:text-2xl">
             {copy.inquiries.title}
@@ -281,7 +281,7 @@ export function ProfileActivity({
           width={42}
           height={42}
           aria-hidden
-          className="h-10 w-10 object-contain drop-shadow-[0_0_8px_rgba(250,204,21,0.28)]"
+          className="h-10 w-10 object-contain drop-shadow-[0_0_8px_rgba(239,200,81,0.28)]"
         />
         <h2 className="font-game-title text-xl font-bold spire-gold sm:text-2xl">
           {copy.title}

@@ -362,7 +362,7 @@ export function RelicLibrary({
                 onClick={() => toggleRarity(r.key)}
                 className={`flex items-center gap-2 text-left text-sm px-2.5 py-1 rounded transition-all ${
                   selectedRarities.has(r.key)
-                    ? "bg-yellow-500/20 text-yellow-400"
+                    ? "bg-primary/20 text-primary"
                     : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
                 }`}
               >

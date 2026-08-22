@@ -391,8 +391,8 @@ export function RunReplayPoc() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
-      <div className="mb-6 rounded border border-yellow-500/30 bg-yellow-500/5 px-4 py-2">
-        <span className="text-xs font-bold text-yellow-500">DEV ONLY</span>
+      <div className="mb-6 rounded border border-primary/30 bg-primary/5 px-4 py-2">
+        <span className="text-xs font-bold text-primary">DEV ONLY</span>
         <span className="ml-2 text-xs text-muted-foreground">
           `.run` 업로드 기반 seeded replay PoC · 여러 파일을 저장해두고 전환해서 볼 수 있음
         </span>

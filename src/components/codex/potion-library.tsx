@@ -402,7 +402,7 @@ export function PotionLibrary({
                 onClick={() => toggleRarity(r.key)}
                 className={`flex items-center gap-2 text-left text-sm px-2.5 py-1 rounded transition-all ${
                   selectedRarities.has(r.key)
-                    ? "bg-yellow-500/20 text-yellow-400"
+                    ? "bg-primary/20 text-primary"
                     : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
                 }`}
               >
@@ -579,7 +579,7 @@ function PotionTile({
       <Link
         href={localizeHref(buildCompendiumResourceDetailHref("potion", potion.id), serviceLocale)}
         data-potion-tile={potion.id}
-        className={`group flex h-14 w-14 items-center justify-center rounded-lg border-2 p-1 transition-all sm:h-16 sm:w-16${lifecycleClassName} border-transparent bg-white/5 hover:bg-white/10 hover:z-10 hover:scale-110 hover:border-yellow-500/60 hover:bg-yellow-500/10`}
+        className={`group flex h-14 w-14 items-center justify-center rounded-lg border-2 p-1 transition-all sm:h-16 sm:w-16${lifecycleClassName} border-transparent bg-white/5 hover:bg-white/10 hover:z-10 hover:scale-110 hover:border-primary/60 hover:bg-primary/10`}
         onClick={(event) => {
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
           event.preventDefault();

@@ -60,7 +60,7 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
     if (items.length === 0) return null;
 
     return (
-      <div className="bg-[#0a0a1a]/95 border border-yellow-500/30 rounded-lg shadow-xl overflow-hidden max-h-64 overflow-y-auto">
+      <div className="bg-[#0a0a1a]/95 border border-primary/30 rounded-lg shadow-xl overflow-hidden max-h-64 overflow-y-auto">
         {items.map((item, i) => {
           const charColor = getCharacterColor(item.color);
           return (
@@ -69,8 +69,8 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
               type="button"
               className={`flex items-center gap-2 w-full px-3 py-1.5 text-left text-sm transition-colors ${
                 i === safeSelectedIndex
-                  ? "bg-yellow-500/20 text-yellow-300"
-                  : "text-gray-300 hover:bg-yellow-500/10"
+                  ? "bg-primary/20 text-primary"
+                  : "text-gray-300 hover:bg-primary/10"
               }`}
               onClick={() => command(item)}
               onMouseEnter={() => setSelectedIndex(i)}

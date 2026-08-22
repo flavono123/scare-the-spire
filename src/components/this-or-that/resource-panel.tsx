@@ -201,7 +201,7 @@ export function ThisOrThatResourcePanel({
       <Link
         href={href}
         title={entity.nameKo}
-        className="block h-full text-left focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70"
+        className="block h-full text-left focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
       >
         {assetContent}
       </Link>
@@ -266,7 +266,7 @@ export function ThisOrThatResourcePanel({
       href={href}
       className={cn(
         "block h-full rounded-lg border border-border bg-card/35 p-3 text-left transition-colors",
-        "hover:border-yellow-500/35 hover:bg-card/50 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70",
+        "hover:border-primary/35 hover:bg-card/50 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70",
       )}
     >
       {content}

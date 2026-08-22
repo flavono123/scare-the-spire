@@ -202,10 +202,10 @@ export default async function CodexIndexPage({
       {/* Header */}
       <div className="border-b border-yellow-900/30 bg-[#0d0d14]">
         <div className="mx-auto max-w-5xl px-6 py-12 text-center">
-          <h1 className="font-game-title text-4xl md:text-5xl text-yellow-500 mb-3">
+          <h1 className="font-game-title text-4xl md:text-5xl text-primary mb-3">
             {gameUi.compendiumTitle}
           </h1>
-          <p className="font-service text-lg text-yellow-200/60">
+          <p className="font-service text-lg text-primary/60">
             {messages.indexView.subtitle}
           </p>
         </div>
@@ -240,16 +240,16 @@ export default async function CodexIndexPage({
 
               {/* Text */}
               <div className="px-6 pb-6 text-center">
-                <h2 className="font-game-title text-2xl text-yellow-400 group-hover:text-yellow-300 transition-colors">
+                <h2 className="font-game-title text-2xl text-primary group-hover:text-primary transition-colors">
                   {gameCategoryLabels[cat.labelKey] ?? messages[cat.labelKey]}
                   {serviceLocale === "ko" && (
-                    <span className="font-game-text ml-2 text-base text-yellow-200/30">
+                    <span className="font-game-text ml-2 text-base text-primary/30">
                       {ENGLISH_LABELS[cat.labelKey]}
                     </span>
                   )}
                 </h2>
                 {cat.description && (
-                  <p className="font-service mt-1 text-sm text-yellow-200/40">
+                  <p className="font-service mt-1 text-sm text-primary/40">
                     {cat.description}
                   </p>
                 )}

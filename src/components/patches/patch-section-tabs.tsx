@@ -43,12 +43,12 @@ export function PatchSectionTabs({
             prefetch={false}
             aria-current={selected ? "page" : undefined}
             className={`relative inline-flex items-center gap-2 pb-2 font-game-title text-sm transition-colors ${
-              selected ? "text-yellow-300" : "text-muted-foreground hover:text-foreground"
+              selected ? "text-primary" : "text-muted-foreground hover:text-foreground"
             }`}
           >
             <Image src={item.icon} alt="" width={24} height={24} className="h-6 w-6 object-contain" />
             <span>{item.label}</span>
-            {selected && <span className="absolute inset-x-0 -bottom-px h-px bg-yellow-400" />}
+            {selected && <span className="absolute inset-x-0 -bottom-px h-px bg-primary" />}
           </Link>
         );
       })}

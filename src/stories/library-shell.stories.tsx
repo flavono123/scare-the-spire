@@ -23,7 +23,7 @@ export const Layout: Story = {
       <StoryStack>
         <StoryNote>
           DESIGN.md 이름. 구현 심볼은 아직 CodexLibrary*. 필터 드로어
-          bg-[#16162a]는 문서 패널값과 같다. 제목은 아직 text-yellow-500.
+          bg-[#16162a]는 문서 패널값과 같다. 제목은 text-primary (TEXT_GOLD).
         </StoryNote>
         <CompendiumIndexLayout
           sidebarOpen={sidebarOpen}

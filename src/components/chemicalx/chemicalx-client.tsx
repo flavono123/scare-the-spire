@@ -72,7 +72,7 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
           className="object-contain"
         />
         <div>
-          <h1 className="font-service text-xl font-bold text-yellow-400">{copy.title}</h1>
+          <h1 className="font-service text-xl font-bold text-primary">{copy.title}</h1>
           <span className="text-xs text-gray-500">{copy.legacyName}</span>
         </div>
       </div>
@@ -103,7 +103,7 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
             <button
               type="button"
               onClick={() => setShowAllTooltips((v) => !v)}
-              className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-yellow-400 transition-colors"
+              className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-primary transition-colors"
               title={showAllTooltips ? copy.hideTooltips : copy.showAllTooltipsTitle}
             >
               {showAllTooltips ? <EyeOff size={14} /> : <Eye size={14} />}

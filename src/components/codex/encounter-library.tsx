@@ -311,7 +311,7 @@ export function EncounterLibrary({
                   })}
                   className={`flex items-center gap-2 text-left text-sm px-2.5 py-1 rounded transition-all ${
                     selectedRoomTypes.has(type)
-                      ? "bg-yellow-500/20 text-yellow-400"
+                      ? "bg-primary/20 text-primary"
                       : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
                   }`}
                 >
@@ -341,7 +341,7 @@ export function EncounterLibrary({
                   })}
                   className={`flex items-center gap-2 text-left text-sm px-2.5 py-1 rounded transition-all ${
                     selectedActs.has(key)
-                      ? "bg-yellow-500/20 text-yellow-400"
+                      ? "bg-primary/20 text-primary"
                       : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
                   }`}
                 >
@@ -511,7 +511,7 @@ function EncounterTile({
         event.preventDefault();
         onClick();
       }}
-      className={`group flex items-center gap-3 rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2.5 text-left transition-all hover:border-yellow-500/40 hover:bg-white/10 ${
+      className={`group flex items-center gap-3 rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2.5 text-left transition-all hover:border-primary/40 hover:bg-white/10 ${
         encounter.deprecated ? "opacity-50 grayscale saturate-0" : ""
       }`}
     >

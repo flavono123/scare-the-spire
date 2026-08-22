@@ -67,7 +67,7 @@ export function ThisOrThatResourcePicker({
                 onChange(null);
                 setQuery("");
               }}
-              className="absolute right-3 top-3 z-10 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded bg-black/70 text-muted-foreground transition-colors hover:bg-black hover:text-yellow-300"
+              className="absolute right-3 top-3 z-10 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded bg-black/70 text-muted-foreground transition-colors hover:bg-black hover:text-primary"
               title={serviceLocale === "ko" ? "선택 해제" : "Clear selection"}
             >
               <X size={14} />
@@ -79,7 +79,7 @@ export function ThisOrThatResourcePicker({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={placeholder}
-            className="w-full bg-transparent px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-1 focus:ring-yellow-500/40"
+            className="w-full bg-transparent px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-1 focus:ring-primary/40"
           />
         )}
 
@@ -95,7 +95,7 @@ export function ThisOrThatResourcePicker({
                     onChange(entity);
                     setQuery("");
                   }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-zinc-300 transition-colors hover:bg-yellow-500/10 hover:text-yellow-200"
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-zinc-300 transition-colors hover:bg-primary/10 hover:text-primary"
                 >
                   {entity.imageUrl && (
                     <Image

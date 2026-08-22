@@ -152,7 +152,7 @@ export function ThisOrThatClient({
             onClick={() => {
               if (!resourcesLoading && !resourcesError) setComposerOpen(true);
             }}
-            className="group/create ml-auto inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-yellow-400/30 bg-yellow-500/10 px-3 text-xs font-semibold text-yellow-200 shadow-[0_0_18px_rgba(250,204,21,0.06)] transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-yellow-300/50 hover:bg-yellow-500/15 hover:shadow-[0_6px_22px_rgba(250,204,21,0.1)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70 active:translate-y-0 motion-reduce:transform-none"
+            className="group/create ml-auto inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 text-xs font-semibold text-primary shadow-[0_0_18px_rgba(239,200,81,0.06)] transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/15 hover:shadow-[0_6px_22px_rgba(239,200,81,0.1)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 active:translate-y-0 motion-reduce:transform-none"
           >
             <Image
               src="/images/sts2/relics/choices_paradox.webp"

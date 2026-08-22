@@ -198,7 +198,7 @@ export function PatchLineStoriesPanel({
           <div className="min-w-0">
             <h2 className="text-sm font-semibold">{copy.title}</h2>
             <p className="mt-1 text-[11px] text-muted-foreground">
-              <span className="font-medium text-yellow-500">{patchLine.patch}</span>
+              <span className="font-medium text-primary">{patchLine.patch}</span>
               <span className="mx-1.5 text-muted-foreground/60">·</span>
               {copy.countLabel(stories.length)}
             </p>

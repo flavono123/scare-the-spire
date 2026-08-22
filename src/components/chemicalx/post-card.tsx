@@ -64,7 +64,7 @@ export function PostCard({
       tabIndex={0}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="group cursor-pointer rounded-lg border border-border bg-card/30 px-4 py-3 transition-colors hover:border-yellow-500/20 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70"
+      className="group cursor-pointer rounded-lg border border-border bg-card/30 px-4 py-3 transition-colors hover:border-primary/20 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
     >
       <div className="mb-1.5 flex items-center justify-between">
         <span className="inline-flex min-w-0 items-center gap-1.5">

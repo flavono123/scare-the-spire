@@ -312,8 +312,8 @@ export function renderCardDescription(
 
 export function TermTooltip({ name, desc }: { name: string; desc: string }) {
   return (
-    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 w-44 bg-[#0a0a1a]/95 border border-yellow-500/30 rounded px-2 py-1.5 text-left z-50 pointer-events-none shadow-xl">
-      <span className="font-bold text-yellow-400 text-[10px] block">{name}</span>
+    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 w-44 bg-[#0a0a1a]/95 border border-primary/30 rounded px-2 py-1.5 text-left z-50 pointer-events-none shadow-xl">
+      <span className="font-bold text-primary text-[10px] block">{name}</span>
       <span className="text-[9px] text-gray-300 font-normal leading-relaxed not-italic">{desc}</span>
     </span>
   );
@@ -383,7 +383,7 @@ export function DescriptionText({
         part.type === "gold" ? (
           <span
             key={i}
-            className="relative text-yellow-500 font-bold cursor-help"
+            className="relative text-primary font-bold cursor-help"
             onMouseEnter={() => setHoveredTerm(part.text)}
             onMouseLeave={() => setHoveredTerm(null)}
           >

@@ -491,7 +491,7 @@ function MonsterInitialPowerPreview({
             entity={buildPowerEntity(application, power, ascensionLevel, ownerName)}
             serviceLocale={serviceLocale}
             forcePosition="above"
-            linkClassName="relative inline-flex h-9 w-9 items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70 sm:h-10 sm:w-10"
+            linkClassName="relative inline-flex h-9 w-9 items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-primary/70 sm:h-10 sm:w-10"
           >
             <span className="relative inline-flex h-9 w-9 items-center justify-center sm:h-10 sm:w-10" title={label}>
               {application.imageUrl && (
@@ -656,7 +656,7 @@ function MoveApplicationToken({
     <EntityPreview
       entity={entity}
       serviceLocale={serviceLocale}
-      linkClassName="relative inline-flex h-7 w-7 items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70"
+      linkClassName="relative inline-flex h-7 w-7 items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-primary/70"
     >
       <span className="relative inline-flex h-7 w-7 items-center justify-center" title={label}>
         {imageUrl && (
@@ -699,7 +699,7 @@ function MoveCardApplicationToken({
     <EntityPreview
       entity={entity}
       serviceLocale={serviceLocale}
-      linkClassName="inline-flex min-h-7 items-center gap-1 rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70"
+      linkClassName="inline-flex min-h-7 items-center gap-1 rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-primary/70"
     >
       <span className="inline-flex min-h-7 items-center gap-1 whitespace-nowrap" title={displayLabel}>
         <TinyCardIcon
@@ -759,7 +759,7 @@ function InitialPowerApplicationsRail({
             key={`initial-${application.powerId}-${application.target}-${formatNumericValue(application.amount ?? { normal: null, ascension: null })}`}
             entity={buildPowerEntity(application, power, monsterAscensionLevel, ownerName)}
             serviceLocale={serviceLocale}
-            linkClassName="block rounded-md border border-white/[0.07] bg-white/[0.025] px-2.5 py-2 transition-colors hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-yellow-300/70"
+            linkClassName="block rounded-md border border-white/[0.07] bg-white/[0.025] px-2.5 py-2 transition-colors hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-primary/70"
           >
             <span className="flex min-w-0 items-center gap-2.5">
               <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-black/30">
@@ -1424,7 +1424,7 @@ function PatternMoveStateNode({
     <div
       role="button"
       tabIndex={0}
-      className="absolute z-10 cursor-pointer bg-transparent px-3 py-2 text-center shadow-[0_0_18px_rgba(0,0,0,0.25)] transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300/70"
+      className="absolute z-10 cursor-pointer bg-transparent px-3 py-2 text-center shadow-[0_0_18px_rgba(0,0,0,0.25)] transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
       style={{
         ...PATTERN_MOVE_PANEL_STYLE,
         left: node.x,

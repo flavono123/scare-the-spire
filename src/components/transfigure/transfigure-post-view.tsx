@@ -118,7 +118,7 @@ export function TransfigurePostView({
       <div className="flex items-center justify-between">
         <Link
           href={localizeHrefWithGameLocale("/transfigure", serviceLocale, gameLocale)}
-          className="inline-flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-yellow-200"
+          className="inline-flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-primary"
         >
           <ArrowLeft size={16} />
           {copy.backToIndex}
@@ -144,14 +144,14 @@ export function TransfigurePostView({
         <p
           role="status"
           aria-live="polite"
-          className="rounded-lg border border-yellow-300/20 bg-yellow-500/10 px-3 py-2 text-sm text-yellow-100"
+          className="rounded-lg border border-primary/20 bg-primary/10 px-3 py-2 text-sm text-primary"
           data-transfigure-save-feedback="success"
         >
           {saveNotice}
         </p>
       )}
 
-      <article className="relative overflow-hidden rounded-2xl border border-yellow-500/15 bg-gradient-to-b from-[#080c17] via-[#0b1220] to-[#080c17] p-4 sm:p-6">
+      <article className="relative overflow-hidden rounded-2xl border border-primary/15 bg-gradient-to-b from-[#080c17] via-[#0b1220] to-[#080c17] p-4 sm:p-6">
         <div
           className="pointer-events-none absolute left-1/2 top-1/3 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full"
           style={{
@@ -172,7 +172,7 @@ export function TransfigurePostView({
                   className="max-h-9 max-w-9 object-contain"
                 />
               ) : (
-                <Sparkles className="h-5 w-5 text-yellow-200/70" aria-hidden="true" />
+                <Sparkles className="h-5 w-5 text-primary/70" aria-hidden="true" />
               )}
             </span>
             <span className="min-w-0">
@@ -192,7 +192,7 @@ export function TransfigurePostView({
           </span>
         </div>
 
-        <div className="relative rounded-xl border border-yellow-300/10 bg-yellow-500/5 px-3 py-4">
+        <div className="relative rounded-xl border border-primary/10 bg-primary/5 px-3 py-4">
           <span className="spire-gold text-[10px] font-semibold uppercase tracking-[0.12em] opacity-70">
             {copy.resultLabel}
           </span>

@@ -122,7 +122,7 @@ export function ComboResourceAsset({
 
   return (
     <span className={cn(
-      "flex items-center justify-center font-game-title font-bold text-yellow-200",
+      "flex items-center justify-center font-game-title font-bold text-primary",
       "h-11 w-11 text-lg drop-shadow-[0_3px_5px_rgba(0,0,0,0.8)]",
     )}>
       {fallbackName.slice(0, 1)}
@@ -185,7 +185,7 @@ export function ComboResourceStack({
                 entity={entity}
                 serviceLocale={serviceLocale}
                 gameLocale={gameLocale}
-                linkClassName="block rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-yellow-300/80"
+                linkClassName="block rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-primary/80"
               >
                 <span
                   className="relative flex h-16 w-[62px] shrink-0 origin-center items-center justify-center transition-[transform,filter] duration-150 group-hover/item:scale-110 group-hover/item:brightness-125 group-focus-within/item:scale-110 group-focus-within/item:brightness-125 motion-reduce:transform-none"
@@ -206,7 +206,7 @@ export function ComboResourceStack({
 
         {hiddenCount > 0 && (
           <span
-            className="absolute bottom-0 z-[60] rounded-full border border-yellow-400/25 bg-zinc-950/90 px-1.5 py-0.5 text-[10px] font-semibold text-yellow-200 shadow-lg"
+            className="absolute bottom-0 z-[60] rounded-full border border-primary/25 bg-zinc-950/90 px-1.5 py-0.5 text-[10px] font-semibold text-primary shadow-lg"
             style={{ left: collapsedStep * (entities.length - 1) + itemWidth - 16 }}
             aria-label={copy.moreResourcesLabel.replace("{count}", String(hiddenCount))}
           >

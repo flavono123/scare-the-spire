@@ -88,8 +88,8 @@ const USAGE_EXAMPLES = [
 export default function TextEffectsPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
-      <div className="mb-6 rounded border border-yellow-500/30 bg-yellow-500/5 px-4 py-2">
-        <span className="text-xs font-bold text-yellow-500">DEV ONLY</span>
+      <div className="mb-6 rounded border border-primary/30 bg-primary/5 px-4 py-2">
+        <span className="text-xs font-bold text-primary">DEV ONLY</span>
         <span className="ml-2 text-xs text-muted-foreground">
           개발 환경 전용 레퍼런스 — 프로덕션 빌드에서 숨김 처리 필요
         </span>
@@ -102,7 +102,7 @@ export default function TextEffectsPage() {
 
       {/* Colors */}
       <section className="mt-8">
-        <h2 className="text-lg font-semibold text-yellow-500 mb-4">색상 (Colors)</h2>
+        <h2 className="text-lg font-semibold text-primary mb-4">색상 (Colors)</h2>
         <p className="text-xs text-muted-foreground mb-3">
           STS2 인게임 BBCode 색상. [tag]...[/tag] 형식.
         </p>
@@ -134,7 +134,7 @@ export default function TextEffectsPage() {
       </section>
 
       <section className="mt-8">
-        <h2 className="mb-4 text-lg font-semibold text-yellow-500">뱃지 등급 (Badge Ranks)</h2>
+        <h2 className="mb-4 text-lg font-semibold text-primary">뱃지 등급 (Badge Ranks)</h2>
         <p className="mb-3 text-xs text-muted-foreground">
           금은 기존 강조색, 은·동은 뱃지 베이스 에셋의 밝은 테두리 대표색.
         </p>
@@ -158,7 +158,7 @@ export default function TextEffectsPage() {
 
       {/* In-game Effects */}
       <section className="mt-8">
-        <h2 className="text-lg font-semibold text-yellow-500 mb-4">인게임 애니메이션 (In-game Effects)</h2>
+        <h2 className="text-lg font-semibold text-primary mb-4">인게임 애니메이션 (In-game Effects)</h2>
         <p className="text-xs text-muted-foreground mb-3">
           STS2 인게임 텍스트 애니메이션.
         </p>
@@ -184,7 +184,7 @@ export default function TextEffectsPage() {
 
       {/* Buff/Nerf Indicators */}
       <section className="mt-8">
-        <h2 className="text-lg font-semibold text-yellow-500 mb-4">버프 / 너프 표현</h2>
+        <h2 className="text-lg font-semibold text-primary mb-4">버프 / 너프 표현</h2>
         <p className="text-xs text-muted-foreground mb-3">
           인게임 애니메이션 + 캐릭터 색상을 조합. 패치노트 원문에서 명시적 버프/너프에만 적용.
         </p>
@@ -209,7 +209,7 @@ export default function TextEffectsPage() {
 
       {/* Nesting */}
       <section className="mt-8">
-        <h2 className="text-lg font-semibold text-yellow-500 mb-4">중첩 (Nesting)</h2>
+        <h2 className="text-lg font-semibold text-primary mb-4">중첩 (Nesting)</h2>
         <p className="text-xs text-muted-foreground mb-3">
           색상 + 효과 중첩 예시. 인게임에서 자주 사용됨.
         </p>
@@ -235,7 +235,7 @@ export default function TextEffectsPage() {
 
       {/* Usage Examples */}
       <section className="mt-8">
-        <h2 className="text-lg font-semibold text-yellow-500 mb-4">슬서운변경 사용 예시</h2>
+        <h2 className="text-lg font-semibold text-primary mb-4">슬서운변경 사용 예시</h2>
         <p className="text-xs text-muted-foreground mb-3">
           Rich 패치노트에서의 실제 사용 패턴.
         </p>
@@ -259,7 +259,7 @@ export default function TextEffectsPage() {
 
       {/* Usage Guide */}
       <section className="mt-8 mb-12">
-        <h2 className="text-lg font-semibold text-yellow-500 mb-4">사용법</h2>
+        <h2 className="text-lg font-semibold text-primary mb-4">사용법</h2>
         <div className="rounded border border-border bg-card/50 px-4 py-3 text-xs text-muted-foreground space-y-2">
           <p>
             <code className="bg-zinc-800 px-1 rounded">{`<RichText text="[gold]방어도[/gold]를 [gold]5[/gold] 획득" />`}</code>

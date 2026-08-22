@@ -1188,7 +1188,7 @@ export function RichContentEditor({
   const charCountColor = useMemo(() => {
     if (charCount === 0) return "text-gray-500";
     if (charCount < minChars || (maxChars != null && charCount > maxChars)) return "text-red-400";
-    if (maxChars != null && isCharCountNearLimit(charCount, maxChars)) return "text-yellow-400";
+    if (maxChars != null && isCharCountNearLimit(charCount, maxChars)) return "text-primary";
     return "text-gray-400";
   }, [charCount, maxChars, minChars]);
 
@@ -1253,7 +1253,7 @@ export function RichContentEditor({
             type="button"
             onClick={handleSubmit}
             disabled={!isValid || submitting}
-            className="ml-auto flex shrink-0 items-center gap-1.5 rounded bg-yellow-500/20 px-3 py-1 text-xs font-semibold text-yellow-400 transition-colors hover:bg-yellow-500/30 disabled:cursor-not-allowed disabled:opacity-40"
+            className="ml-auto flex shrink-0 items-center gap-1.5 rounded bg-primary/20 px-3 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary/30 disabled:cursor-not-allowed disabled:opacity-40"
           >
             {submitting ? "..." : submitLabel}
             {submitIconSrc && (

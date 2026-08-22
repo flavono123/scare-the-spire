@@ -676,7 +676,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
                 onClick={() => toggleRarity(r.key)}
                 className={`flex items-center gap-2 text-left text-sm px-2.5 py-1 rounded transition-all ${
                   selectedRarities.has(r.key)
-                    ? "bg-yellow-500/20 text-yellow-400"
+                    ? "bg-primary/20 text-primary"
                     : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
                 }`}
               >
@@ -696,7 +696,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
                     onClick={() => toggleRarityDetail(detail)}
                     className={`flex items-center gap-2 text-left text-xs px-2 py-0.5 rounded transition-all ${
                       selectedRarityDetails.has(detail)
-                        ? "bg-yellow-500/20 text-yellow-400"
+                        ? "bg-primary/20 text-primary"
                         : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
                     }`}
                   >
@@ -723,7 +723,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
                   onClick={() => toggleCost(key)}
                   className={`w-8 h-7 rounded text-xs font-bold transition-all ${
                     selectedCosts.has(key)
-                      ? "bg-yellow-500/30 text-yellow-400 border border-yellow-500"
+                      ? "bg-primary/30 text-primary border border-primary"
                       : "bg-white/5 text-gray-400 border border-white/10 hover:border-white/30"
                   }`}
                 >
