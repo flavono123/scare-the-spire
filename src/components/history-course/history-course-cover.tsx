@@ -305,6 +305,7 @@ function CoverPartyCharacterSlot({
   compact: boolean;
 }) {
   const slot = coverPartyCharacterSlotStyle(character, index, partySize);
+  const selectBg = coverCharacterSelectBackgroundSrc(character);
   const desired = coverCharacterSelectSrc(character);
   const [src, setSrc] = useState(desired);
   const [failed, setFailed] = useState(false);
@@ -315,21 +316,33 @@ function CoverPartyCharacterSlot({
     setFailed(false);
   }
   return (
-    <div style={slot.wrapper}>
-      <Image
-        src={failed ? coverCharacterPortraitSrc(character) : src}
-        alt=""
-        fill
-        sizes={compact ? "160px" : "720px"}
-        className="object-cover will-change-transform"
-        style={slot.image}
-        onError={() => {
-          if (!failed) {
-            setFailed(true);
-            setSrc(coverCharacterPortraitSrc(character));
-          }
-        }}
-      />
+    <div data-testid={`cover-party-slot-${index}`} style={slot.wrapper}>
+      <div className="absolute inset-0 will-change-transform" style={slot.set}>
+        {selectBg && (
+          <Image
+            src={selectBg}
+            alt=""
+            fill
+            sizes={compact ? "160px" : "720px"}
+            className="object-cover object-center"
+            style={slot.image}
+          />
+        )}
+        <Image
+          src={failed ? coverCharacterPortraitSrc(character) : src}
+          alt=""
+          fill
+          sizes={compact ? "160px" : "720px"}
+          className="object-cover"
+          style={slot.image}
+          onError={() => {
+            if (!failed) {
+              setFailed(true);
+              setSrc(coverCharacterPortraitSrc(character));
+            }
+          }}
+        />
+      </div>
     </div>
   );
 }

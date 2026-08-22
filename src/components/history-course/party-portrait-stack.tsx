@@ -4,18 +4,14 @@ import Image from "next/image";
 import { useState } from "react";
 import { HoverTip } from "@/components/codex/hover-tip";
 import { useGameI18n } from "@/hooks/use-game-i18n";
-import {
-  characterIconSrc,
-  partyDuplicateOrdinals,
-  partyPortraitVisualOrder,
-} from "@/lib/history-party";
+import { characterIconSrc, partyDuplicateOrdinals } from "@/lib/history-party";
 import { formatGameTemplate, gameUi, localizeGame } from "@/lib/sts2-game-i18n";
 import type { ReplayRun } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
 
 const CHIP = 48;
 const OVERLAP_X = 20;
-const OVERLAP_Y = 7;
+const POP_PX = 6;
 
 function characterLabel(id: string, tables: ReturnType<typeof useGameI18n>): string {
   return localizeGame(tables, "characters", id) ?? id.replace(/^CHARACTER\./, "");
@@ -35,28 +31,26 @@ export function PartyPortraitStack({
   const tables = useGameI18n();
   const characters = run.players.map((player) => player.character);
   const ordinals = partyDuplicateOrdinals(characters);
-  const order = partyPortraitVisualOrder(run.players.length, focusedIndex);
   const interactive = typeof onFocus === "function" && run.players.length > 1;
+  const multi = run.players.length > 1;
   const chip = size === "summary" ? 48 : CHIP;
   const overlapX = size === "summary" ? 22 : OVERLAP_X;
-  const overlapY = size === "summary" ? 8 : OVERLAP_Y;
-  const width = chip + Math.max(0, order.length - 1) * overlapX;
-  const height = chip + Math.max(0, order.length - 1) * overlapY;
+  const popPx = multi ? POP_PX : 0;
+  const width = chip + Math.max(0, characters.length - 1) * overlapX;
+  const height = chip + popPx;
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
     <div
-      className="relative shrink-0"
+      className="relative shrink-0 overflow-visible"
       style={{ width, height }}
       data-testid="party-portrait-stack"
       data-focused-player={focusedIndex}
     >
-      {order.map((playerIndex, visualIndex) => {
-        const character = characters[playerIndex] ?? "CHARACTER.IRONCLAD";
+      {characters.map((character, playerIndex) => {
         const label = characterLabel(character, tables);
         const ordinal = ordinals[playerIndex];
         const focused = playerIndex === focusedIndex;
-        const z = order.length - visualIndex;
         const title = ordinal != null ? `${label} ${ordinal}` : label;
         const inner = (
           <>
@@ -66,7 +60,10 @@ export function PartyPortraitStack({
                 alt=""
                 fill
                 sizes="44px"
-                className="object-contain"
+                className={cn(
+                  "object-contain transition-[filter] duration-200",
+                  !focused && multi && "[filter:blur(2.5px)]",
+                )}
               />
             </span>
             {ordinal != null && (
@@ -100,17 +97,15 @@ export function PartyPortraitStack({
         const frameStyle = {
           width: chip,
           height: chip,
-          left: visualIndex * overlapX,
-          top: visualIndex * overlapY,
-          zIndex: z,
+          left: playerIndex * overlapX,
+          top: popPx,
+          zIndex: focused ? 20 : 10,
+          transform: focused && multi ? `translateY(-${popPx}px)` : undefined,
           backgroundImage: "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
           backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
         } as const;
-        const frameClass = cn(
-          "absolute overflow-visible",
-          focused ? "brightness-100" : "brightness-[0.72]",
-        );
+        const frameClass = "absolute overflow-visible transition-transform duration-200";
 
         if (interactive) {
           return (

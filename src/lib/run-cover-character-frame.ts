@@ -80,27 +80,73 @@ export function coverCharacterArtStyle(
   };
 }
 
-/** Party character-art cover: TR→BL diagonal, equal split, front shifted left. */
+/** TR→BL slice angle, from the horizontal, in screen space (y down). */
+export const COVER_PARTY_DIAGONAL_DEG = 60;
+const COVER_PARTY_ASPECT_H = 9 / 16;
+const COVER_PARTY_SLANT_PCT =
+  (COVER_PARTY_ASPECT_H / Math.tan((COVER_PARTY_DIAGONAL_DEG * Math.PI) / 180)) *
+  100;
+const COVER_PARTY_SEAM_PCT = 1.25;
+
+export type CoverPartyPolygon = {
+  topLeft: number;
+  topRight: number;
+  bottomRight: number;
+  bottomLeft: number;
+};
+
+/** Equal-height parallelograms; only the 60° TR→BL edges move with slot index. */
+export function coverPartySlicePolygon(
+  slotIndex: number,
+  partySize: number,
+): CoverPartyPolygon {
+  const n = Math.max(1, partySize);
+  const i = Math.max(0, Math.min(slotIndex, n - 1));
+  const half = COVER_PARTY_SLANT_PCT / 2;
+  const leftMid = (i / n) * 100 - COVER_PARTY_SEAM_PCT;
+  const rightMid = ((i + 1) / n) * 100 + COVER_PARTY_SEAM_PCT;
+  return {
+    topLeft: leftMid + half,
+    topRight: rightMid + half,
+    bottomRight: rightMid - half,
+    bottomLeft: leftMid - half,
+  };
+}
+
+export function coverPartyClipPath(slotIndex: number, partySize: number): string {
+  const p = coverPartySlicePolygon(slotIndex, partySize);
+  return `polygon(${p.topLeft}% 0%, ${p.topRight}% 0%, ${p.bottomRight}% 100%, ${p.bottomLeft}% 100%)`;
+}
+
+/** Keep the body in the right of each slice — select art is right-weighted. */
+export function coverPartyCharacterImageStyle(
+  character: string | undefined,
+  slotIndex: number,
+  partySize: number,
+): CSSProperties {
+  const n = Math.max(1, partySize);
+  const targetX = ((slotIndex + 0.72) / n) * 100;
+  return coverCharacterArtStyle(character, targetX - 72);
+}
+
+/** Full-bleed layer; spine + select background share this clip. */
 export function coverPartyCharacterSlotStyle(
   character: string | undefined,
   slotIndex: number,
   partySize: number,
-): { wrapper: CSSProperties; image: CSSProperties } {
-  const n = Math.max(1, partySize);
-  const t = n === 1 ? 0 : slotIndex / (n - 1);
-  const widthPct = 100 / n + 42;
-  const extraLeft = (1 - t) * 16;
-  const leftPct = (slotIndex / n) * 100 - extraLeft;
-  const topPct = 10 - t * 24;
+): { wrapper: CSSProperties; set: CSSProperties; image: CSSProperties } {
+  const clip = coverPartyClipPath(slotIndex, partySize);
+  const framed = coverPartyCharacterImageStyle(character, slotIndex, partySize);
+  const { objectPosition, ...set } = framed;
   return {
     wrapper: {
       position: "absolute",
-      left: `${leftPct}%`,
-      top: `${topPct}%`,
-      width: `${widthPct}%`,
-      height: "120%",
-      zIndex: n - slotIndex,
+      inset: 0,
+      zIndex: Math.max(1, partySize) - slotIndex,
+      clipPath: clip,
+      WebkitClipPath: clip,
     },
-    image: coverCharacterArtStyle(character, -(1 - t) * 22),
+    set,
+    image: { objectPosition },
   };
 }

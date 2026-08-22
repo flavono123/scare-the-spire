@@ -77,20 +77,6 @@ export function partyDuplicateOrdinals(characters: readonly string[]): Array<num
   });
 }
 
-/** Visual stack: focused first, remaining party members in file order. */
-export function partyPortraitVisualOrder(
-  playerCount: number,
-  focusedIndex: number,
-): number[] {
-  if (playerCount <= 1) return playerCount === 1 ? [0] : [];
-  const focused = Math.max(0, Math.min(focusedIndex, playerCount - 1));
-  const rest: number[] = [];
-  for (let i = 0; i < playerCount; i++) {
-    if (i !== focused) rest.push(i);
-  }
-  return [focused, ...rest];
-}
-
 const BADGE_ID = (id: string) => id.replace(/^[A-Z]+\./, "").toUpperCase();
 
 /** Union party badges; same id keeps the highest rarity. */

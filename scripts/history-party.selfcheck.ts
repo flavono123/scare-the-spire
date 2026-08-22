@@ -8,9 +8,13 @@ import { join } from "node:path";
 import {
   mergePartyBadges,
   partyDuplicateOrdinals,
-  partyPortraitVisualOrder,
   focusedMapAct,
 } from "../src/lib/history-party";
+import {
+  COVER_PARTY_DIAGONAL_DEG,
+  coverPartyClipPath,
+  coverPartySlicePolygon,
+} from "../src/lib/run-cover-character-frame";
 import { computeRunHash } from "../src/lib/sts2-run-hash";
 import {
   analyzeReplayRun,
@@ -51,14 +55,32 @@ async function main() {
     ) === JSON.stringify([1, null, 2, null]),
     "duplicate necro ordinals are 1-based among that character",
   );
-  assert(
-    JSON.stringify(partyPortraitVisualOrder(4, 2)) === JSON.stringify([2, 0, 1, 3]),
-    "focused portrait is first in visual order",
-  );
-  assert(
-    JSON.stringify(partyPortraitVisualOrder(1, 0)) === JSON.stringify([0]),
-    "single-player visual order is identity",
-  );
+  assert(COVER_PARTY_DIAGONAL_DEG === 60, "party cover diagonal is 60°");
+  for (const n of [2, 3, 4]) {
+    const slants: number[] = [];
+    for (let i = 0; i < n; i++) {
+      const p = coverPartySlicePolygon(i, n);
+      const clip = coverPartyClipPath(i, n);
+      assert(clip.includes("% 0%") && clip.includes("% 100%"), `slot ${i}/${n} is full height`);
+      assert(p.topLeft > p.bottomLeft, `slot ${i}/${n} TR→BL left edge`);
+      assert(p.topRight > p.bottomRight, `slot ${i}/${n} TR→BL right edge`);
+      const leftSlant = p.topLeft - p.bottomLeft;
+      const rightSlant = p.topRight - p.bottomRight;
+      assert(
+        Math.abs(leftSlant - rightSlant) < 0.01,
+        `slot ${i}/${n} is a parallelogram`,
+      );
+      slants.push(leftSlant);
+      if (i > 0) {
+        const prev = coverPartySlicePolygon(i - 1, n);
+        assert(prev.topRight > p.topLeft, `slots ${i - 1} and ${i} overlap`);
+      }
+    }
+    assert(
+      slants.every((slant) => Math.abs(slant - slants[0]!) < 0.01),
+      `${n}P slices share the same diagonal`,
+    );
+  }
 
   const mp = loadRun("1783139400.run");
   assert(mp.players.length === 4, "4P fixture player count");
