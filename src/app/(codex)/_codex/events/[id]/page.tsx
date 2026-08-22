@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
   getCodexCards,
+  getCodexCharacters,
   getCodexEnchantments,
   getCodexEvents,
   getCodexPotions,
@@ -20,6 +21,7 @@ import {
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
 import { EventDetail } from "@/components/codex/event-detail";
+import { toEventCharacterQuoteSpeaker } from "@/lib/event-character-quotes";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -60,8 +62,9 @@ export default async function EventDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [events, cards, enchantments, relics, powers, patches, changes, versionDiffs, gameUi, madScienceBaseCard, potions] = await Promise.all([
+  const [events, characters, cards, enchantments, relics, powers, patches, changes, versionDiffs, gameUi, madScienceBaseCard, potions] = await Promise.all([
     getCodexEvents({ gameLocale }),
+    getCodexCharacters({ gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getCodexRelics({ gameLocale }),
@@ -83,6 +86,7 @@ export default async function EventDetailPage({
         gameUi={gameUi}
         event={event}
         cards={cards}
+        characters={characters.map(toEventCharacterQuoteSpeaker)}
         enchantments={enchantments}
         madScienceBaseCard={madScienceBaseCard}
         potions={potions}

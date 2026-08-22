@@ -2,6 +2,10 @@ import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { stripCodexMarkup } from "@/lib/codex-search";
 import { buildCompendiumResourceHref, type CompendiumResourceLinkType } from "@/lib/compendium-resource-links";
 import { getStories, getSTS2Patches, getSTS2Stories } from "@/lib/data";
+import {
+  characterQuoteSearchParts,
+  eventContainsCharacterQuotePlaceholders,
+} from "@/lib/event-character-quotes";
 import { loadAllEntities } from "@/lib/load-all-entities";
 
 export type SearchItemType = EntityType | "patch" | "story" | "historyCourse" | "thisOrThat";
@@ -289,12 +293,30 @@ function entitySearchImageUrl(entity: EntityInfo): string | null {
   return entity.imageUrl;
 }
 
+function characterQuoteSearchText(entities: EntityInfo[]): string {
+  return compactSearchParts(
+    characterQuoteSearchParts(
+      entities.flatMap((entity) => entity.characterData ? [entity.characterData] : []),
+    ),
+  );
+}
+
+function eventSearchText(entity: EntityInfo, characterQuotes: string): string {
+  const base = entitySearchText(entity);
+  if (!entity.eventData || !eventContainsCharacterQuotePlaceholders(entity.eventData)) {
+    return base;
+  }
+  return compactSearchParts([base, characterQuotes]);
+}
+
 export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
   const [entities, englishEntities] = await Promise.all([
     loadAllEntities({ gameLocale: "kor" }),
     loadAllEntities({ gameLocale: "eng" }),
   ]);
   const englishByKey = new Map(englishEntities.map((entity) => [entityKey(entity), entity]));
+  const characterQuotesKo = characterQuoteSearchText(entities);
+  const characterQuotesEn = characterQuoteSearchText(englishEntities);
   const items: SearchIndexItem[] = entities
     .flatMap((entity) => {
       const href = entityHref(entity);
@@ -306,8 +328,10 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
         type: entity.type,
         title: entity.nameKo,
         titleEn: entity.nameEn,
-        description: entitySearchText(entity),
-        descriptionEn: englishEntity ? entitySearchText(englishEntity) : entitySearchText(entity),
+        description: eventSearchText(entity, characterQuotesKo),
+        descriptionEn: englishEntity
+          ? eventSearchText(englishEntity, characterQuotesEn)
+          : eventSearchText(entity, characterQuotesKo),
         imageUrl: entitySearchImageUrl(entity),
         href,
       }];

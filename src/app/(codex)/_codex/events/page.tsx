@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import {
   getCodexCards,
+  getCodexCharacters,
   getCodexEnchantments,
   getCodexEvents,
   getCodexPotions,
@@ -23,6 +24,7 @@ import {
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
 import { EventList } from "@/components/codex/event-list";
+import { toEventCharacterQuoteSpeaker } from "@/lib/event-character-quotes";
 
 export const dynamic = "force-static";
 
@@ -54,8 +56,9 @@ export default async function CodexEventsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [events, cards, enchantments, potions, powers, relics, madScienceBaseCard, patches, changes, versionDiffs, meta, gameUi] = await Promise.all([
+  const [events, characters, cards, enchantments, potions, powers, relics, madScienceBaseCard, patches, changes, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexEvents({ gameLocale }),
+    getCodexCharacters({ gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getCodexPotions({ gameLocale }),
@@ -80,6 +83,7 @@ export default async function CodexEventsPage({
         cards={cards}
         enchantments={enchantments}
         events={events}
+        characters={characters.map(toEventCharacterQuoteSpeaker)}
         madScienceBaseCard={madScienceBaseCard}
         potions={potions}
         powers={powers}

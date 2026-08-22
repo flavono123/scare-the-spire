@@ -28,6 +28,16 @@ import {
   characterOutlineFilter,
   getEventActs,
 } from "@/lib/codex-types";
+import {
+  eventCharacterQuoteForPlaceholder,
+  splitEventDescriptionQuotes,
+  type EventCharacterQuoteSpeaker,
+} from "@/lib/event-character-quotes";
+import { useStoredUserProfile } from "@/hooks/use-user-profile";
+import {
+  GAME_UI_HOVER_TIP_NAV_DELAY_MS,
+  GameUiHoverTip,
+} from "@/components/game-ui-hover-tip";
 import { RichText } from "@/components/rich-text";
 import { CardTile } from "@/components/codex/card-tile";
 import { GameChoiceFrame } from "@/components/codex/event-choice-frame";
@@ -1293,9 +1303,55 @@ function resolveSequencePage(
   return null;
 }
 
+function EventQuotedDescription({
+  character,
+  profileHref,
+  text,
+}: {
+  character: EventCharacterQuoteSpeaker | null;
+  profileHref: string;
+  text: string;
+}) {
+  const segments = useMemo(() => splitEventDescriptionQuotes(text), [text]);
+  if (!character || (segments.length === 1 && segments[0]?.type === "text")) {
+    return <RichText text={text} />;
+  }
+
+  return (
+    <>
+      {segments.map((segment, index) => {
+        if (segment.type === "text") {
+          return <RichText key={`event-text-${index}`} text={segment.value} />;
+        }
+
+        const quote = eventCharacterQuoteForPlaceholder(character.quotes, segment.placeholder);
+        const quotedText = Array.from({ length: segment.count }, () => quote).join("\n");
+        return (
+          <GameUiHoverTip
+            key={`event-quote-${segment.placeholder}-${index}`}
+            className="inline max-w-full align-baseline"
+            delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}
+            label={character.name}
+          >
+            <Link
+              href={profileHref}
+              aria-label={character.name}
+              data-event-character-quote={character.id}
+              className="text-inherit no-underline hover:no-underline"
+            >
+              <RichText text={quotedText} />
+            </Link>
+          </GameUiHoverTip>
+        );
+      })}
+    </>
+  );
+}
+
 // --- Interactive event content viewer (game-like flow) ---
 export function EventContentViewer({
   cards = [],
+  character,
   event,
   gameUi,
   madScienceBaseCard,
@@ -1304,9 +1360,11 @@ export function EventContentViewer({
   onVfxTrigger,
   onTrialNpcChange,
   potions,
+  profileHref,
   relics = [],
 }: {
   cards?: CodexCard[];
+  character?: EventCharacterQuoteSpeaker | null;
   event: CodexEvent;
   gameUi: CodexGameUiLabels;
   madScienceBaseCard?: CodexCard | null;
@@ -1315,6 +1373,7 @@ export function EventContentViewer({
   onVfxTrigger?: (optionId: string) => void;
   onTrialNpcChange?: (overlay: TrialNpcOverlay | null) => void;
   potions?: CodexPotion[];
+  profileHref: string;
   relics?: CodexRelic[];
 }) {
   const [history, setHistory] = useState<NavEntry[]>([]);
@@ -1629,7 +1688,11 @@ export function EventContentViewer({
           className="mb-3 font-game-text text-sm leading-[1.65] text-[#fff4dc] sm:text-[15px]"
           style={{ textShadow: GAME_TEXT_SHADOW }}
         >
-          <RichText text={description} />
+          <EventQuotedDescription
+            character={character ?? null}
+            profileHref={profileHref}
+            text={description}
+          />
         </div>
       )}
 
@@ -1693,6 +1756,7 @@ interface EventDetailProps {
   gameUi: CodexGameUiLabels;
   event: CodexEvent;
   cards?: CodexCard[];
+  characters?: EventCharacterQuoteSpeaker[];
   enchantments?: CodexEnchantment[];
   madScienceBaseCard?: CodexCard | null;
   potions?: CodexPotion[];
@@ -1977,6 +2041,7 @@ export function EventDetail({
   gameUi,
   event,
   cards = [],
+  characters = [],
   enchantments = [],
   madScienceBaseCard,
   potions,
@@ -1992,6 +2057,14 @@ export function EventDetail({
     ? { englishName: "영어명", patchHistory: "패치 이력", noPatchHistory: "구조화 변경 없음" }
     : { englishName: "English name", patchHistory: "Patch History", noPatchHistory: "No structured changes" };
   const isModal = Boolean(onClose);
+  const profile = useStoredUserProfile();
+  const selectedCharacter = useMemo(
+    () => characters.find((character) => character.id === profile.characterId)
+      ?? characters[0]
+      ?? null,
+    [characters, profile.characterId],
+  );
+  const profileHref = localizeHref("/profile", serviceLocale);
   const [preview, setPreview] = useState<EventPreview | null>(null);
   const [commentCount, setCommentCount] = useState(0);
   const [trialNpcOverlay, setTrialNpcOverlay] = useState<TrialNpcOverlay | null>(null);
@@ -2179,6 +2252,7 @@ export function EventDetail({
                     </h1>
                     <EventContentViewer
                       cards={cards}
+                      character={selectedCharacter}
                       event={event}
                       gameUi={gameUi}
                       madScienceBaseCard={madScienceBaseCard}
@@ -2191,6 +2265,7 @@ export function EventDetail({
                         }
                       } : undefined}
                       potions={potions}
+                      profileHref={profileHref}
                       relics={relics}
                     />
                   </div>

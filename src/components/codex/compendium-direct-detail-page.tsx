@@ -24,6 +24,7 @@ import {
 } from "@/lib/compendium-detail-payload";
 import type { CompendiumDetailSeoSummary } from "@/lib/compendium-detail-metadata";
 import { getCodexServiceMessages } from "@/lib/codex-service";
+import { toEventCharacterQuoteSpeaker } from "@/lib/event-character-quotes";
 import type { PotionPool, RelicPool } from "@/lib/codex-types";
 
 type CompendiumDirectDetailPageProps = {
@@ -527,6 +528,7 @@ export function CompendiumDirectDetailPage({
           gameUi={gameUi}
           event={event}
           cards={resources.cards}
+          characters={resources.characters.map(toEventCharacterQuoteSpeaker)}
           enchantments={resources.enchantments}
           madScienceBaseCard={resources.madScienceBaseCard}
           potions={resources.potions}

@@ -7,6 +7,8 @@
 // When a variable isn't in `vars`, the template is left intact so missing
 // data is visible during ingest.
 
+import { isEventCharacterQuotePlaceholder } from "./event-character-quotes";
+
 const REFERENCE_PLACEHOLDERS: Record<string, string> = {
   StarterCard: "시작 카드",
   AncientCard: "고대 카드",
@@ -343,6 +345,9 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
     const v = looksLike(body, vars);
     if (v !== undefined) return String(v);
     if (body in REFERENCE_PLACEHOLDERS) return REFERENCE_PLACEHOLDERS[body];
+    // Character-authored event lines are filled from the selected profile at
+    // render time, not from static event vars.
+    if (isEventCharacterQuotePlaceholder(body)) return `{${body}}`;
     // Unmatched bare var = runtime stack/counter (e.g. {Amount}). Render as X.
     return "X";
   }

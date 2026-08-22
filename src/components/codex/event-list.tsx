@@ -33,6 +33,11 @@ import {
   EVENT_ACT_UNKNOWN,
   getEventActs,
 } from "@/lib/codex-types";
+import {
+  characterQuoteSearchParts,
+  eventContainsCharacterQuotePlaceholders,
+  type EventCharacterQuoteSpeaker,
+} from "@/lib/event-character-quotes";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { versionCodexEntities } from "@/lib/codex-versioning";
 import { fuzzyMatchCodexText, stripCodexMarkup } from "@/lib/codex-search";
@@ -187,6 +192,7 @@ interface EventListProps {
   cards?: CodexCard[];
   enchantments?: CodexEnchantment[];
   events: CodexEvent[];
+  characters?: EventCharacterQuoteSpeaker[];
   madScienceBaseCard?: CodexCard | null;
   potions?: CodexPotion[];
   powers?: CodexPower[];
@@ -205,6 +211,7 @@ export function EventList({
   cards,
   enchantments,
   events,
+  characters = [],
   madScienceBaseCard,
   potions,
   powers,
@@ -295,11 +302,18 @@ export function EventList({
         const nameEnMatch = fuzzyMatchCodexText(e.nameEn, searchText);
         const descriptionMatch = fuzzyMatchCodexText(stripCodexMarkup(e.description), searchText);
         const descriptionEnMatch = fuzzyMatchCodexText(stripCodexMarkup(e.descriptionEn), searchText);
-        if (!nameMatch && !nameEnMatch && !descriptionMatch && !descriptionEnMatch) return false;
+        const pageMatch = (e.pages ?? []).some((page) => (
+          fuzzyMatchCodexText(stripCodexMarkup(page.description ?? ""), searchText)
+        ));
+        const quoteMatch = eventContainsCharacterQuotePlaceholders(e)
+          && characterQuoteSearchParts(characters).some((quote) => (
+            fuzzyMatchCodexText(stripCodexMarkup(quote), searchText)
+          ));
+        if (!nameMatch && !nameEnMatch && !descriptionMatch && !descriptionEnMatch && !pageMatch && !quoteMatch) return false;
       }
       return true;
     });
-  }, [versionedEvents, selectedActs, searchText]);
+  }, [versionedEvents, selectedActs, searchText, characters]);
 
   // Group by act
   const groups = useMemo(() => {
@@ -464,6 +478,7 @@ export function EventList({
               gameUi={gameUi}
               event={selectedEvent}
               cards={cards}
+              characters={characters}
               enchantments={enchantments}
               madScienceBaseCard={madScienceBaseCard}
               potions={potions}

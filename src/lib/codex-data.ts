@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { bakeDescription } from "./codex-bake";
+import { EVENT_CHARACTER_QUOTE_PLACEHOLDER_NAMES } from "./event-character-quotes";
 import {
   gameNullableText,
   gameText,
@@ -1481,8 +1482,12 @@ interface RawEpoch {
   deprecatedInPatch?: string;
 }
 
+const EVENT_STATIC_SMART_TEMPLATE_RE = new RegExp(
+  `\\{(?!(?:${EVENT_CHARACTER_QUOTE_PLACEHOLDER_NAMES.join("|")})\\})[^}]+\\}`,
+);
+
 function hasEventSmartTemplate(text: string | null | undefined): boolean {
-  return Boolean(text && /\{[^}]+\}/.test(text));
+  return Boolean(text && EVENT_STATIC_SMART_TEMPLATE_RE.test(text));
 }
 
 function normalizeEventMarkup(text: string): string {
