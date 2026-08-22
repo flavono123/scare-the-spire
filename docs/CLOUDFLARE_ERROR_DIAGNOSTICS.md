@@ -2,6 +2,19 @@
 
 Use Workers metrics for historical error counts, Workers Logs for request details, and `wrangler tail` while reproducing an issue. The main Worker and patch Worker are separate services and must be inspected separately.
 
+`pnpm cf:logs` is an on-demand lookup for a past window. It is not a collector: it does not run when the laptop is off, and it cannot see logs older than Workers Free retention (three days). Persistence for an incident is stdout plus a redacted `qa-reports/` write.
+
+## Outcome names
+
+GraphQL metrics (`pnpm cf:metrics`) and Workers Logs (`pnpm cf:logs`, dashboard Observability) use different names for the same Free-plan CPU kill:
+
+| Surface | Resource-limit outcome | Typical HTTP |
+|---|---|---|
+| GraphQL metrics | `exceededResources` | 503 / Error 1102 |
+| Workers Logs | `exceededCpu` (also `exceededMemory`) | 503 |
+
+Do not filter logs with `$workers.outcome = "exceededResources"`. That string does not appear on invocation events. Client aborts are `clientDisconnected` in metrics and usually `canceled` in logs.
+
 ## Quick CLI workflow
 
 Show invocation outcomes and CPU usage from the last 24 hours:
@@ -20,6 +33,18 @@ pnpm cf:metrics -- --hours 6 --json
 ```
 
 The command uses `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` when present. Otherwise it refreshes and reuses the local `wrangler login` session. It never prints the token.
+
+Once metrics show `exceededResources`, look up paths in stored logs (last 72 hours):
+
+```bash
+pnpm cf:logs -- --hours 24 --outcome exceededCpu
+pnpm cf:logs -- --from 2026-08-21T12:20:00+09:00 --to 2026-08-21T12:30:00+09:00 --outcome exceededCpu
+pnpm cf:logs -- --worker patch --hours 24
+```
+
+Workers Logs REST requires a Custom API token with Account → Workers Observability → Write. That permission is log query, not Workers Scripts Edit / deploy. Wrangler OAuth is enough for `cf:metrics` and `cf:errors` but returns 403 here.
+
+`cf:logs` redacts user IDs, unbounded Toy Box IDs, and request query strings. It records `_rsc` as a flag. Do not persist IPs, cookies, or `cf-connecting-ip`.
 
 Watch only new main Worker invocation errors, then reproduce the issue on the phone:
 
@@ -61,7 +86,7 @@ $metadata.service = "scare-the-spire" AND $workers.event.response.status >= 500
 ```
 
 ```text
-$metadata.service = "scare-the-spire" AND $workers.outcome = "exceededResources"
+$metadata.service = "scare-the-spire" AND $workers.outcome = "exceededCpu"
 ```
 
 5. Open **Invocations**, expand an invocation, and record the request URL, outcome, CPU time, exception, Worker version, and request ID.
@@ -71,7 +96,7 @@ If the exact query field is not offered by autocomplete, add the equivalent filt
 
 - `$metadata.service` equals `scare-the-spire`
 - `$workers.event.response.status` greater than or equal to `500`
-- or `$workers.outcome` equals `exceededResources`
+- or `$workers.outcome` equals `exceededCpu`
 
 Save the query as `STS 5xx by path` and group a Count visualization by `$workers.event.request.path` and `$workers.event.response.status`.
 
@@ -96,7 +121,11 @@ The historical Workers metrics query found this cluster on the main Worker:
 
 All 38 errors were concentrated in the same 40-second interval as the production crawl benchmark. This was not exhaustion of the 100,000-request daily allowance. The failures crossed the Workers Free per-invocation CPU limit while the benchmark requested many uncached routes. A phone request during that interval could therefore have received a Cloudflare resource-limit 5xx response.
 
-Metrics cannot identify the exact URL. The stored invocation in Workers Logs, or a future live tail, is required to tie an individual phone failure to its path and Ray ID.
+Metrics cannot identify the exact URL. Use `pnpm cf:logs` (or dashboard Observability) while the three-day retention still covers the window, or a live `pnpm cf:errors` tail while reproducing.
+
+## August 21, 2026 incident
+
+See `qa-reports/2026-08-21-cf-exceeded-cpu.md`. GraphQL counted 132 `exceededResources` on the main Worker; stored logs named the outcome `exceededCpu`. The noon burst was `/this-or-that/{id}` (often RSC) hitting the 10 ms Free CPU limit. Smaller clusters were other OpenNext ID routes: `/transfigure/{id}`, `/defragment/{kind}/{id}`, `/history-course/{id}`.
 
 ## Information to capture from a phone failure
 
