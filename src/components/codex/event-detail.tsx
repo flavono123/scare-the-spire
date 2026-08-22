@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect, type ReactNode } from "react";
+import { useState, useMemo, useCallback, useEffect, Fragment, type ReactNode } from "react";
 import type { CSSProperties } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
@@ -1305,6 +1305,33 @@ function resolveSequencePage(
   return null;
 }
 
+function renderCharacterQuoteTipTrail(
+  trail: string,
+  characterUnit: ReactNode,
+  profileWord: ReactNode,
+): ReactNode[] {
+  const nodes: ReactNode[] = [];
+  const pattern = /\{(character|profile)\}/g;
+  let lastIndex = 0;
+  let key = 0;
+  for (const match of trail.matchAll(pattern)) {
+    const index = match.index ?? 0;
+    if (index > lastIndex) {
+      nodes.push(trail.slice(lastIndex, index));
+    }
+    nodes.push(
+      <Fragment key={`event-quote-tip-${key++}`}>
+        {match[1] === "character" ? characterUnit : profileWord}
+      </Fragment>,
+    );
+    lastIndex = index + match[0].length;
+  }
+  if (lastIndex < trail.length) {
+    nodes.push(trail.slice(lastIndex));
+  }
+  return nodes;
+}
+
 function EventCharacterQuoteTip({
   character,
   profileLabel,
@@ -1316,23 +1343,28 @@ function EventCharacterQuoteTip({
   tipLead: string;
   tipTrail: string;
 }) {
-  const [beforeProfile, afterProfile] = tipTrail.split("{profile}");
+  const goldProfile = () => (
+    <span className="whitespace-nowrap" style={{ color: HOVER_TIP_TITLE_COLOR }}>
+      {profileLabel}
+    </span>
+  );
+  const characterUnit = (
+    <span className="inline-flex items-baseline gap-0.5 whitespace-nowrap align-baseline">
+      <Image
+        src={character.iconUrl}
+        alt=""
+        width={16}
+        height={16}
+        className="h-3.5 w-3.5 self-center object-contain"
+      />
+      {goldProfile()}
+    </span>
+  );
   return (
-    <span className="font-service">
+    <span className="font-service break-keep">
       <span className="block">{tipLead}</span>
-      <span className="mt-0.5 flex items-center gap-1">
-        <Image
-          src={character.iconUrl}
-          alt=""
-          width={16}
-          height={16}
-          className="h-4 w-4 shrink-0 object-contain"
-        />
-        <span>
-          {beforeProfile}
-          <span style={{ color: HOVER_TIP_TITLE_COLOR }}>{profileLabel}</span>
-          {afterProfile}
-        </span>
+      <span className="mt-0.5 block">
+        {renderCharacterQuoteTipTrail(tipTrail, characterUnit, goldProfile())}
       </span>
     </span>
   );

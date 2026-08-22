@@ -47,7 +47,7 @@ export function GameUiHoverTip({
     const el = triggerRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const estimatedHeight = typeof label === "string" ? 36 : 72;
+    const estimatedHeight = typeof label === "string" ? 36 : 88;
     const spaceBelow = window.innerHeight - rect.bottom;
     const above = spaceBelow < estimatedHeight + 8 && rect.top > estimatedHeight + 8;
     setPlacement({
@@ -99,7 +99,7 @@ export function GameUiHoverTip({
         <div
           className={cn(
             "relative text-xs font-bold",
-            typeof label === "string" ? "whitespace-nowrap" : "max-w-[17.5rem] whitespace-normal leading-snug",
+            typeof label === "string" ? "whitespace-nowrap" : "max-w-[22rem] whitespace-normal break-keep leading-snug",
           )}
           style={{
             borderImage: `url('${HOVER_TIP_SRC.default}') ${HOVER_TIP_SLICE.top} ${HOVER_TIP_SLICE.right} ${HOVER_TIP_SLICE.bottom} ${HOVER_TIP_SLICE.left} fill`,

@@ -942,7 +942,7 @@ export const serviceMessages = {
         first: "처음",
         previous: "이전",
         characterQuoteTipLead: "이 상호작용 문구는 캐릭터마다 다릅니다.",
-        characterQuoteTipTrail: "{profile}의 캐릭터를 변경하여 대사를 확인해보세요.",
+        characterQuoteTipTrail: "{character}의 캐릭터를 변경하여 대사를 확인해보세요. (클릭 시 {profile} 로 이동)",
       },
       encountersView: {
         title: "전투 도감",
@@ -2014,7 +2014,7 @@ export const serviceMessages = {
         first: "Start",
         previous: "Previous",
         characterQuoteTipLead: "This interaction line is different for each character.",
-        characterQuoteTipTrail: "Change the character in {profile} to see other lines.",
+        characterQuoteTipTrail: "Change the character in {character} to see other lines. (Click to go to {profile})",
       },
       encountersView: {
         title: "Encounter Codex",
