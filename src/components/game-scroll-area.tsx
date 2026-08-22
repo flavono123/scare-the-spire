@@ -51,6 +51,14 @@ export function gameScrollThumbTopPx(input: {
   return ratio * travel;
 }
 
+function assignRef<T>(ref: Ref<T> | undefined, value: T | null) {
+  if (typeof ref === "function") {
+    ref(value);
+    return;
+  }
+  if (ref) ref.current = value;
+}
+
 export function GameScrollArea({
   children,
   className,
@@ -202,8 +210,7 @@ export function GameScrollArea({
       <div
         ref={(node) => {
           scrollerNodeRef.current = node;
-          if (typeof scrollerRef === "function") scrollerRef(node);
-          else if (scrollerRef) scrollerRef.current = node;
+          assignRef(scrollerRef, node);
         }}
         data-testid={dataTestId}
         className={cn(
