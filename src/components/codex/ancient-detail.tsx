@@ -47,7 +47,7 @@ function InfoRailSection({
 }) {
   return (
     <details
-      className="group rounded-lg border border-border bg-card/80 px-4 py-3"
+      className="group rounded-lg border border-border bg-black/20 px-4 py-3"
       open={defaultOpen}
     >
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-foreground">
@@ -202,7 +202,7 @@ export function AncientDetail({
         </section>
 
         <aside className="grid items-start gap-3 lg:grid-cols-2">
-          <section className="rounded-lg border border-border bg-card/80 px-4 py-3">
+          <section className="rounded-lg border border-border bg-black/20 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
                 <MetaPill value={gameUi.ancientsTitle} color="#60a5fa" />
