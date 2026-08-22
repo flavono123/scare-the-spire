@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "re
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import {
+  HOVER_TIP_BODY_COLOR,
   HOVER_TIP_SLICE,
   HOVER_TIP_SRC,
   HOVER_TIP_TITLE_COLOR,
@@ -21,7 +22,7 @@ export function GameUiHoverTip({
   className,
   children,
 }: {
-  label: string;
+  label: ReactNode;
   delayMs?: number;
   children: ReactNode;
   className?: string;
@@ -46,7 +47,7 @@ export function GameUiHoverTip({
     const el = triggerRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const estimatedHeight = 36;
+    const estimatedHeight = typeof label === "string" ? 36 : 72;
     const spaceBelow = window.innerHeight - rect.bottom;
     const above = spaceBelow < estimatedHeight + 8 && rect.top > estimatedHeight + 8;
     setPlacement({
@@ -96,23 +97,20 @@ export function GameUiHoverTip({
         }}
       >
         <div
-          className="relative whitespace-nowrap"
+          className={cn(
+            "relative text-xs font-bold",
+            typeof label === "string" ? "whitespace-nowrap" : "max-w-[17.5rem] whitespace-normal leading-snug",
+          )}
           style={{
             borderImage: `url('${HOVER_TIP_SRC.default}') ${HOVER_TIP_SLICE.top} ${HOVER_TIP_SLICE.right} ${HOVER_TIP_SLICE.bottom} ${HOVER_TIP_SLICE.left} fill`,
             borderImageWidth: "16px 34px 12px 20px",
             borderStyle: "solid",
             padding: "2px 12px 6px 8px",
+            color: typeof label === "string" ? HOVER_TIP_TITLE_COLOR : HOVER_TIP_BODY_COLOR,
+            textShadow: "2px 1px 0 rgba(0,0,0,0.25)",
           }}
         >
-          <span
-            className="text-xs font-bold"
-            style={{
-              color: HOVER_TIP_TITLE_COLOR,
-              textShadow: "2px 1px 0 rgba(0,0,0,0.25)",
-            }}
-          >
-            {label}
-          </span>
+          {label}
         </div>
       </div>,
       portalRoot,

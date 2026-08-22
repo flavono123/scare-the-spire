@@ -8,6 +8,8 @@ import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import { serviceMessages } from "@/messages/service";
+import { HOVER_TIP_TITLE_COLOR } from "@/lib/hover-tip-chrome";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
@@ -1303,14 +1305,53 @@ function resolveSequencePage(
   return null;
 }
 
+function EventCharacterQuoteTip({
+  character,
+  profileLabel,
+  tipLead,
+  tipTrail,
+}: {
+  character: EventCharacterQuoteSpeaker;
+  profileLabel: string;
+  tipLead: string;
+  tipTrail: string;
+}) {
+  const [beforeProfile, afterProfile] = tipTrail.split("{profile}");
+  return (
+    <span className="font-service">
+      <span className="block">{tipLead}</span>
+      <span className="mt-0.5 flex items-center gap-1">
+        <Image
+          src={character.iconUrl}
+          alt=""
+          width={16}
+          height={16}
+          className="h-4 w-4 shrink-0 object-contain"
+        />
+        <span>
+          {beforeProfile}
+          <span style={{ color: HOVER_TIP_TITLE_COLOR }}>{profileLabel}</span>
+          {afterProfile}
+        </span>
+      </span>
+    </span>
+  );
+}
+
 function EventQuotedDescription({
   character,
   profileHref,
+  profileLabel,
   text,
+  tipLead,
+  tipTrail,
 }: {
   character: EventCharacterQuoteSpeaker | null;
   profileHref: string;
+  profileLabel: string;
   text: string;
+  tipLead: string;
+  tipTrail: string;
 }) {
   const segments = useMemo(() => splitEventDescriptionQuotes(text), [text]);
   if (!character || (segments.length === 1 && segments[0]?.type === "text")) {
@@ -1331,15 +1372,32 @@ function EventQuotedDescription({
             key={`event-quote-${segment.placeholder}-${index}`}
             className="inline max-w-full align-baseline"
             delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}
-            label={character.name}
+            label={(
+              <EventCharacterQuoteTip
+                character={character}
+                profileLabel={profileLabel}
+                tipLead={tipLead}
+                tipTrail={tipTrail}
+              />
+            )}
           >
             <Link
               href={profileHref}
-              aria-label={character.name}
+              aria-label={`${tipLead} ${character.name}`}
               data-event-character-quote={character.id}
-              className="text-inherit no-underline hover:no-underline"
+              className="inline-flex max-w-full items-start gap-1.5 text-inherit no-underline hover:no-underline"
             >
-              <RichText text={quotedText} />
+              <Image
+                src={character.iconUrl}
+                alt=""
+                width={18}
+                height={18}
+                data-event-character-quote-affordance=""
+                className="mt-[0.15em] h-[1.05em] w-[1.05em] shrink-0 object-contain"
+              />
+              <span className="underline decoration-dotted decoration-[#EFC851]/80 underline-offset-[3px]">
+                <RichText text={quotedText} />
+              </span>
             </Link>
           </GameUiHoverTip>
         );
@@ -1361,6 +1419,7 @@ export function EventContentViewer({
   onTrialNpcChange,
   potions,
   profileHref,
+  profileLabel,
   relics = [],
 }: {
   cards?: CodexCard[];
@@ -1374,6 +1433,7 @@ export function EventContentViewer({
   onTrialNpcChange?: (overlay: TrialNpcOverlay | null) => void;
   potions?: CodexPotion[];
   profileHref: string;
+  profileLabel: string;
   relics?: CodexRelic[];
 }) {
   const [history, setHistory] = useState<NavEntry[]>([]);
@@ -1691,7 +1751,10 @@ export function EventContentViewer({
           <EventQuotedDescription
             character={character ?? null}
             profileHref={profileHref}
+            profileLabel={profileLabel}
             text={description}
+            tipLead={messages.eventsView.characterQuoteTipLead}
+            tipTrail={messages.eventsView.characterQuoteTipTrail}
           />
         </div>
       )}
@@ -2266,6 +2329,7 @@ export function EventDetail({
                       } : undefined}
                       potions={potions}
                       profileHref={profileHref}
+                      profileLabel={serviceMessages[serviceLocale].profile.navLabel}
                       relics={relics}
                     />
                   </div>

@@ -941,6 +941,8 @@ export const serviceMessages = {
         actFilter: "막",
         first: "처음",
         previous: "이전",
+        characterQuoteTipLead: "이 상호작용 문구는 캐릭터마다 다릅니다.",
+        characterQuoteTipTrail: "{profile}의 캐릭터를 변경하여 대사를 확인해보세요.",
       },
       encountersView: {
         title: "전투 도감",
@@ -2011,6 +2013,8 @@ export const serviceMessages = {
         actFilter: "Act",
         first: "Start",
         previous: "Previous",
+        characterQuoteTipLead: "This interaction line is different for each character.",
+        characterQuoteTipTrail: "Change the character in {profile} to see other lines.",
       },
       encountersView: {
         title: "Encounter Codex",
