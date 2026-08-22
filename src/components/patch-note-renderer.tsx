@@ -9,7 +9,7 @@ import {
   EFFECT_CLASSES,
 } from "@/components/rich-text";
 import type { CodexCard, CodexKeyword, CodexCharacter, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexAffliction, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch, DamageValue, MonsterMove } from "@/lib/codex-types";
-import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, type RelicFilterPool } from "@/lib/codex-types";
+import { RELIC_RARITY_LABELS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import { AUTO_LINK_ENTITY_TYPES, buildAutoLinkKeywordsByFirst, wrapUntaggedEntityNames, type AutoLinkKeyword } from "@/lib/auto-link-entity-names";
@@ -41,6 +41,8 @@ import {
 import { collectCardSideTips } from "@/lib/card-keyword-tips";
 import { collectPotionSideTips } from "@/lib/potion-side-tips";
 import { collectRelicSideTips } from "@/lib/relic-side-tips";
+import { RELIC_INSPECT_HOVER_SIZE } from "@/lib/relic-inspect-assets";
+import { RelicInspectPreview } from "@/components/codex/relic-inspect-preview";
 import { GameHoverTip, type HoverTipArt, type HoverTipArtMode } from "@/components/codex/hover-tip";
 import {
   buildMonsterMoveVisual,
@@ -164,6 +166,12 @@ function estimatePreviewSize(entity: EntityInfo): { width: number; height: numbe
       : { width: 380, height: 220 };
   }
   if (entity.type === "keyword" && entity.keywordData) return { width: 320, height: 140 };
+  if (entity.type === "relic" && entity.relicData) {
+    return {
+      width: RELIC_INSPECT_HOVER_SIZE.width + 280,
+      height: RELIC_INSPECT_HOVER_SIZE.height,
+    };
+  }
   if (entity.type === "monsterMove") return { width: 280, height: 260 };
   if (entity.eventData && !entity.eventOptionDesc) return { width: 360, height: 180 };
   if (entity.epochData) return { width: 360, height: 180 };
@@ -391,9 +399,13 @@ function EntityPotionHoverPreview({
 function EntityRelicHoverPreview({
   entity,
   gameUi,
+  portal = false,
+  growUp = false,
 }: {
   entity: EntityInfo;
   gameUi?: CodexGameUiLabels;
+  portal?: boolean;
+  growUp?: boolean;
 }) {
   const catalog = useCardSideTipCatalog();
   const { potionsById, enchantmentsById } = useCardSideTipResourceMaps();
@@ -408,27 +420,27 @@ function EntityRelicHoverPreview({
       })
     : [];
 
+  const preview = (
+    <span
+      className="flex w-max max-w-[calc(100vw-1.5rem)] flex-col items-start gap-2 sm:flex-row"
+      data-relic-inspect-hover
+    >
+      <RelicInspectPreview
+        relic={relic}
+        title={entity.nameKo}
+        rarityLabel={gameUi?.relicCollection.rarities[relic.rarity].label ?? RELIC_RARITY_LABELS[relic.rarity]}
+        density="hover"
+        className="shrink-0 drop-shadow-2xl"
+      />
+      {extraTips.length > 0 ? <HoverTipStack tips={extraTips} /> : null}
+    </span>
+  );
+
+  if (!portal) return preview;
+
   return (
-    <PortaledHoverTipLayer>
-      <span className="flex w-max items-start gap-2">
-        <GameHoverTip
-          title={entity.nameKo}
-          style={{ minWidth: 240, maxWidth: 320 }}
-        >
-          <span className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[12px]">
-            <span style={{ color: RELIC_RARITY_COLORS[relic.rarity] }}>
-              {gameUi?.relicCollection.rarities[relic.rarity].label ?? RELIC_RARITY_LABELS[relic.rarity]}
-            </span>
-            {relic.pool !== "shared" && (
-              <span style={{ color: getCharacterColor(relic.pool) }}>
-                {POOL_LABELS[relic.pool as RelicFilterPool]}
-              </span>
-            )}
-          </span>
-          <DescriptionText description={relic.description} />
-        </GameHoverTip>
-        {extraTips.length > 0 ? <HoverTipStack tips={extraTips} /> : null}
-      </span>
+    <PortaledHoverTipLayer pin={growUp ? "bottom-left" : "top-left"}>
+      {preview}
     </PortaledHoverTipLayer>
   );
 }
@@ -728,7 +740,12 @@ export function EntityPreview({
       )}
       {showResolvedPreview && previewEntity.type === "relic" && previewEntity.relicData && (
         renderTooltip(
-          <EntityRelicHoverPreview entity={previewEntity} gameUi={gameUi} />,
+          <EntityRelicHoverPreview
+            entity={previewEntity}
+            gameUi={gameUi}
+            portal={!staticHoverPreviews && !useTapPreview && !forceShow}
+            growUp={placement.vertical === "above"}
+          />,
         )
       )}
       {showResolvedPreview && previewEntity.type === "potion" && previewEntity.potionData && (

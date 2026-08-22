@@ -15,6 +15,17 @@ export const RELIC_INSPECT_FRAME_SIZE = {
   height: 408,
 } as const;
 
+/** Compact hover / keyword-preview width. Keep the panel aspect, not a square. */
+export const RELIC_INSPECT_HOVER_WIDTH_PX = 224;
+
+export const RELIC_INSPECT_HOVER_SIZE = {
+  width: RELIC_INSPECT_HOVER_WIDTH_PX,
+  height: Math.round(
+    RELIC_INSPECT_HOVER_WIDTH_PX
+      * (RELIC_INSPECT_REWARD_PANEL_SIZE.height / RELIC_INSPECT_REWARD_PANEL_SIZE.width),
+  ),
+} as const;
+
 const RELIC_INSPECT_FRAME_BY_RARITY: Record<RelicRarityKo, string> = {
   "시작 유물": "/images/sts2/ui/inspect-relic/relic_inspect_frame-starter.webp",
   "일반 유물": "/images/sts2/ui/inspect-relic/relic_inspect_frame-common.webp",

@@ -136,6 +136,39 @@ assert.match(staticCardHtml, /data-static-card-preview="BASH:0"/);
 assert.match(staticCardHtml, /data-card-description-viewport/);
 assert.match(staticCardHtml, /hidden=""/);
 
+const staticRelic: EntityInfo = {
+  id: "AKABEKO",
+  nameEn: "Akabeko",
+  nameKo: "아카베코",
+  imageUrl: "/images/sts2/relics/akabeko.webp",
+  availability: "available",
+  color: "shared",
+  type: "relic",
+  relicData: {
+    id: "AKABEKO",
+    name: "아카베코",
+    nameEn: "Akabeko",
+    description: "첫 번째 공격의 피해량이 8 증가합니다.",
+    descriptionEn: "Your first Attack each combat deals 8 additional damage.",
+    descriptionRaw: "첫 번째 공격의 피해량이 {Damage} 증가합니다.",
+    descriptionRawEn: "Your first Attack each combat deals {Damage} additional damage.",
+    vars: { Damage: 8 },
+    flavor: "Moo.",
+    rarity: "일반 유물",
+    pool: "shared",
+    imageUrl: "/images/sts2/relics/akabeko.webp",
+    betaImageUrl: null,
+    variantImageUrls: null,
+    iconVariants: null,
+  },
+};
+const staticRelicHtml = renderStaticPatch("[gold:relic]아카베코[/gold]", [staticRelic]);
+assert.match(staticRelicHtml, /data-relic-inspect-slab/);
+assert.match(staticRelicHtml, /data-relic-inspect-hover/);
+assert.match(staticRelicHtml, /\/images\/sts2\/ui\/inspect-relic\/reward_panel\.webp/);
+assert.match(staticRelicHtml, /\/images\/sts2\/relics\/akabeko\.webp/);
+assert.match(staticRelicHtml, /첫 번째 공격의 피해량이 8 증가합니다/);
+
 const storyPatchLine: STS2PatchLine = {
   id: "v0.110.0:line-017-card-haze",
   patch: "v0.110.0",

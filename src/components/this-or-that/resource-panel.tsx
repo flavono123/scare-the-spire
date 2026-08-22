@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
+import { RelicInspectPreview } from "@/components/codex/relic-inspect-preview";
 import { EntityPreview, type EntityInfo, type EntityType } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
-import { getCharacterColor } from "@/lib/codex-types";
+import { getCharacterColor, RELIC_RARITY_LABELS } from "@/lib/codex-types";
 import { cn } from "@/lib/utils";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
@@ -150,6 +151,14 @@ export function ThisOrThatResourcePanel({
       showBeta={false}
       width={cardWidth}
       interactive={false}
+    />
+  ) : entity.type === "relic" && entity.relicData ? (
+    <RelicInspectPreview
+      relic={entity.relicData}
+      title={entity.nameKo}
+      rarityLabel={RELIC_RARITY_LABELS[entity.relicData.rarity]}
+      density="hover"
+      className={isLarge ? "w-[16rem] max-w-[16rem]" : "w-[10.5rem] max-w-[10.5rem]"}
     />
   ) : assetOnlyNonCardPreview ? (
     assetOnlyNonCardPreview

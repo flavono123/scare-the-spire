@@ -125,8 +125,11 @@ export const HOVER_TIP_LAYER_Z_INDEX = 300;
 
 export function PortaledHoverTipLayer({
   children,
+  pin = "top-left",
 }: {
   children: ReactNode;
+  /** Grow upward from a zero-size `bottom-full` tooltip anchor. */
+  pin?: "top-left" | "bottom-left";
 }) {
   const anchorRef = useRef<HTMLSpanElement>(null);
   const mounted = useSyncExternalStore(
@@ -167,6 +170,7 @@ export function PortaledHoverTipLayer({
           left: box.left,
           top: box.top,
           zIndex: HOVER_TIP_LAYER_Z_INDEX,
+          transform: pin === "bottom-left" ? "translateY(-100%)" : undefined,
         }}
       >
         {children}

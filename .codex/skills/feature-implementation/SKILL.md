@@ -277,12 +277,18 @@ service-owned exception.
 
 ### Shared relic inspect slab
 
-- Compendium relic detail and Transfigure relic preview/editor assemble the
-  inspect relic from `RelicInspectSlab` (`src/components/codex/relic-inspect-slab.tsx`).
+- Compendium relic detail, Transfigure relic preview/editor, patch-note /
+  Toy Box `EntityPreview` relic hovers, and This or That relic previews
+  assemble the inspect relic from `RelicInspectSlab`
+  (`src/components/codex/relic-inspect-slab.tsx`) via `RelicInspectPreview`
+  when the caller does not need custom art.
 - Size the slab from extracted `reward_panel.webp` (1128×1435) and the
   ornamental ring from `relic_inspect_frame.webp` (408×408) via
   `src/lib/relic-inspect-assets.ts`. Do not force `aspect-square` on the panel.
-- Do not invent a second slab layout for Transfigure.
+- Do not invent a second slab layout for Transfigure, patch notes, or Toy Box.
+- Relic keyword hovers are the inspect slab plus ExtraHoverTips, not a
+  GameHoverTip that restates the relic description. Keep that set in the
+  static patch HTML; do not portal it away during `renderToStaticMarkup`.
 
 ## Implementation Defaults
 
