@@ -14,6 +14,7 @@ import {
   COVER_PARTY_DIAGONAL_DEG,
   coverPartyClipPath,
   coverPartySlicePolygon,
+  coverPartySliceWidthAtY,
 } from "../src/lib/run-cover-character-frame";
 import { computeRunHash } from "../src/lib/sts2-run-hash";
 import {
@@ -92,6 +93,16 @@ async function main() {
       innerSlants.every((slant) => Math.abs(slant - innerSlants[0]!) < 0.01),
       `${n}P inner edges share the same diagonal`,
     );
+    const midWidths = Array.from({ length: n }, (_, i) =>
+      coverPartySliceWidthAtY(i, n, 0.5),
+    );
+    const expectedMid = 100 / n;
+    for (const width of midWidths) {
+      assert(
+        Math.abs(width - expectedMid) < 4,
+        `${n}P mid-height width stays near equal split`,
+      );
+    }
   }
 
   const mp = loadRun("1783139400.run");

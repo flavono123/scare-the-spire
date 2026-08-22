@@ -46,6 +46,25 @@ export function characterMapMarkerSrc(character: string | undefined): string {
 }
 export const PARTY_COVER_BADGE_MAX = 4;
 
+/**
+ * Unfocused run-history portraits are not Gaussian-blurred.
+ * NRunHistoryPlayerIcon.Select/Deselect drives shaders/hsv.gdshader:
+ * selected s=1 v=1 scale=1.1; deselected s=0.3 v=0.55 scale=0.95; tween 0.05s.
+ */
+export const RUN_HISTORY_ICON_SELECTED = {
+  saturate: 1,
+  brightness: 1,
+  scale: 1.1,
+  durationSec: 0.05,
+} as const;
+
+export const RUN_HISTORY_ICON_DESELECTED = {
+  saturate: 0.3,
+  brightness: 0.55,
+  scale: 0.95,
+  durationSec: 0.05,
+} as const;
+
 export function isMultiplayerRun(run: ReplayRun): boolean {
   return run.players.length > 1;
 }

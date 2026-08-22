@@ -123,15 +123,28 @@ export function coverPartyClipPath(slotIndex: number, partySize: number): string
   return `polygon(${p.topLeft}% 0%, ${p.topRight}% 0%, ${p.bottomRight}% 100%, ${p.bottomLeft}% 100%)`;
 }
 
-/** Body sits in each slice, nudged left so the face is not clipped on the right. */
+/** Body sits in each slice; extra left is last nudge plus ~1/3 more. */
 export function coverPartyCharacterImageStyle(
   character: string | undefined,
   slotIndex: number,
   partySize: number,
 ): CSSProperties {
   const n = Math.max(1, partySize);
-  const targetX = ((slotIndex + 0.55) / n) * 100;
-  return coverCharacterArtStyle(character, targetX - 78);
+  const targetX = ((slotIndex + 0.493) / n) * 100;
+  return coverCharacterArtStyle(character, targetX - 80);
+}
+
+/** Horizontal slice width at y in [0, 1] (0 = top, 1 = bottom), as % of cover. */
+export function coverPartySliceWidthAtY(
+  slotIndex: number,
+  partySize: number,
+  y: number,
+): number {
+  const p = coverPartySlicePolygon(slotIndex, partySize);
+  const t = Math.max(0, Math.min(1, y));
+  const left = p.topLeft + (p.bottomLeft - p.topLeft) * t;
+  const right = p.topRight + (p.bottomRight - p.topRight) * t;
+  return right - left;
 }
 
 /** Full-bleed layer; spine + select background share this clip. */

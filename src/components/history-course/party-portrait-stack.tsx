@@ -4,7 +4,13 @@ import Image from "next/image";
 import { useState } from "react";
 import { HoverTip } from "@/components/codex/hover-tip";
 import { useGameI18n } from "@/hooks/use-game-i18n";
-import { characterIconSrc, partyDuplicateOrdinals } from "@/lib/history-party";
+import {
+  characterIconSrc,
+  partyDuplicateOrdinals,
+  RUN_HISTORY_ICON_DESELECTED,
+  RUN_HISTORY_ICON_SELECTED,
+} from "@/lib/history-party";
+import { characterSpireClass } from "@/lib/run-cover-display";
 import { formatGameTemplate, gameUi, localizeGame } from "@/lib/sts2-game-i18n";
 import type { ReplayRun } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
@@ -131,21 +137,33 @@ function PortraitIcons({
         const title = ordinal != null ? `${label} ${ordinal}` : label;
         const inner = (
           <>
-            <span className="absolute inset-1 overflow-hidden">
+            <span className="absolute inset-1 overflow-visible">
               <Image
                 src={characterIconSrc(character)}
                 alt=""
                 fill
                 sizes="44px"
-                className={cn(
-                  "object-contain transition-[filter] duration-200",
-                  !focused && multi && "[filter:blur(2.5px)]",
-                )}
+                className="origin-center object-contain"
+                style={{
+                  transitionProperty: "filter, transform",
+                  transitionDuration: `${RUN_HISTORY_ICON_SELECTED.durationSec * 1000}ms`,
+                  ...(multi
+                    ? focused
+                      ? { transform: `scale(${RUN_HISTORY_ICON_SELECTED.scale})` }
+                      : {
+                          filter: `saturate(${RUN_HISTORY_ICON_DESELECTED.saturate}) brightness(${RUN_HISTORY_ICON_DESELECTED.brightness})`,
+                          transform: `scale(${RUN_HISTORY_ICON_DESELECTED.scale})`,
+                        }
+                    : undefined),
+                }}
               />
             </span>
             {ordinal != null && (
               <span
-                className="absolute bottom-0.5 left-0.5 z-10 flex h-4 min-w-4 items-center justify-center rounded-sm bg-black/75 px-0.5 text-[10px] font-bold leading-none text-amber-100"
+                className={cn(
+                  "absolute bottom-0.5 left-0.5 z-10 flex h-4 min-w-4 items-center justify-center rounded-sm bg-black/75 px-0.5 text-[10px] font-bold leading-none",
+                  characterSpireClass(character),
+                )}
                 aria-hidden
               >
                 {ordinal}
@@ -177,7 +195,6 @@ function PortraitIcons({
           left: playerIndex * overlapX,
           top: nested ? 0 : popPx,
           zIndex: focused ? 20 : 10,
-          transform: focused && multi ? `translateY(-${popPx}px)` : undefined,
           backgroundImage: perIconBackdrop ? `url(${CHAR_BACKDROP})` : undefined,
           backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
