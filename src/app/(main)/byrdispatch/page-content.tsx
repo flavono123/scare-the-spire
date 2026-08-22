@@ -39,6 +39,10 @@ import { OwnPostMark } from "@/components/own-post-mark";
 import { SERVICE_ACCENT_CLASS } from "@/lib/service-link-classes";
 import { serviceMessages } from "@/messages/service";
 import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
+import {
+  ASCENSION_TOKEN_IMAGE_URL,
+  CHARACTER_CARDS_MODIFIER_IMAGE_URL,
+} from "@/lib/codex-types";
 
 export function generateByrdispatchMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
@@ -105,6 +109,10 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   Encounters: { href: "/compendium/encounters", icon: "/images/sts2/nav/stats_monsters.png" },
   이벤트: { href: "/compendium/events", icon: "/images/sts2/nav/question_mark.png" },
   Events: { href: "/compendium/events", icon: "/images/sts2/nav/question_mark.png" },
+  승천: { href: "/compendium/ascensions", icon: ASCENSION_TOKEN_IMAGE_URL },
+  Ascension: { href: "/compendium/ascensions", icon: ASCENSION_TOKEN_IMAGE_URL },
+  모드: { href: "/compendium/modifiers", icon: CHARACTER_CARDS_MODIFIER_IMAGE_URL },
+  Modifiers: { href: "/compendium/modifiers", icon: CHARACTER_CARDS_MODIFIER_IMAGE_URL },
   "고대의 존재": { href: "/compendium/ancients", icon: "/images/sts2/nav/stats_ancients.png" },
   Ancients: { href: "/compendium/ancients", icon: "/images/sts2/nav/stats_ancients.png" },
   연대기: { href: "/compendium/epochs", icon: "/images/sts2/relics/planisphere.webp" },
@@ -163,6 +171,10 @@ const SERVICE_REFERENCE_LINKS: Record<string, string> = {
   Profile: "/profile",
   "작은 우편함": "/contact",
   "Tiny Mailbox": "/contact",
+  승천: "/compendium/ascensions",
+  Ascension: "/compendium/ascensions",
+  모드: "/compendium/modifiers",
+  Modifiers: "/compendium/modifiers",
 };
 
 const STORY_COMPOSER_ACTION_TOKEN = "[새 이야기 쓰기 버튼 노출/링크]";
