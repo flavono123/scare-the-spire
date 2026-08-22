@@ -58,7 +58,7 @@ export const SlashCommandList = forwardRef<
   if (items.length === 0) return null;
 
   return (
-    <div className="max-h-60 overflow-y-auto rounded-lg border border-amber-300/25 bg-[#090913]/98 p-1 shadow-xl">
+    <div className="max-h-60 overflow-y-auto rounded-lg border border-border bg-popover p-1 shadow-xl">
       {items.map((item, index) => (
         <button
           key={item.id}
@@ -67,8 +67,8 @@ export const SlashCommandList = forwardRef<
           onMouseEnter={() => setSelectedIndex(index)}
           className={`flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left transition-colors ${
             index === safeIndex
-              ? "bg-amber-300/10 text-amber-100"
-              : "text-zinc-300 hover:bg-white/5"
+              ? "bg-primary/10 text-primary"
+              : "text-foreground hover:bg-muted"
           }`}
         >
           <Image
@@ -80,11 +80,11 @@ export const SlashCommandList = forwardRef<
           />
           <span className="min-w-0 flex-1">
             <span className="block text-xs font-semibold">{item.label}</span>
-            <span className="block truncate text-[10px] text-zinc-500">
+            <span className="block truncate text-[10px] text-muted-foreground">
               {item.description}
             </span>
           </span>
-          <span className="shrink-0 font-mono text-[10px] text-amber-300/50">
+          <span className="shrink-0 font-mono text-[10px] text-muted-foreground">
             {item.aliases[0]}
           </span>
         </button>

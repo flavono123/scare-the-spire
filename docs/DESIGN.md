@@ -26,7 +26,7 @@
 - `text-zinc-50` / `amber-100` 재매핑은 Tailwind가 `var(--color-zinc-50)`를 쓸 때만 자동이다. 인라인 hex는 안 바뀐다. `.light`의 `--color-zinc-200`처럼 고정 oklch 잉크는 자식에게 상속되므로, 게임 애셋 위에서는 깨진다.
 - `zinc-400` 이상은 라이트에서 재매핑하지 않는다. 다크에서도 보조 카피(`zinc-400/500`)와 패널(`bg-zinc-800/900`)에 그대로 필요하다.
 - `amber-100`은 다크 크롬의 창백한 골드 글자(히스토리 코스 배너/HUD, 코옴보 런 피커, 패치 목록 제목, 문의 성공 버튼, 케미컬X 강조)다. 종이 위에서는 `--primary` 잉크로 재매핑한다.
-- 게임 크롬은 **`.dark` 섬**이다. 카드 아트, 유물 석판, 연대기 아트 오버레이, hover tip 9-slice, 확인 팝업, 인스펙트 커서는 추출 hex(`TEXT_GOLD` `#EFC851` 등)를 유지한다. 섬의 `.dark`는 `--primary`만이 아니라 창백한 zinc/gray/amber/purple 스케일도 다크 정본으로 되돌린다. `dark:` 유틸은 `html.light` 안에서 켜지지 않으므로 섬에는 쓰지 않는다.
+- 서비스 모달(`ServiceModalFrame`, 표지 편집, 도전 이력 피커)은 페이지와 같은 `bg-background`다. 게임 확인 팝업·카드/유물 석판은 `.dark` 섬.
 - 패치 Worker HTML도 같은 `sts-color-scheme` 부트 스크립트를 쓴다. 요청 시점에 테마를 계산하지 않는다. Storybook 워크숍 캔버스는 다크다.
 
 ## 색 층: 게임 텍스트 ≠ 캐릭터 ≠ Tailwind 숫자

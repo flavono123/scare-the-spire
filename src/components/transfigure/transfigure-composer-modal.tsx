@@ -76,7 +76,7 @@ export function TransfigureComposerModal({
             type="button"
             onClick={handleDelete}
             disabled={deleting}
-            className="inline-flex h-8 items-center gap-1.5 rounded-md border border-red-400/20 px-2.5 text-xs text-red-300/80 transition-colors hover:border-red-300/40 hover:bg-red-500/10 hover:text-red-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-red-300/70 disabled:cursor-wait disabled:opacity-50"
+            className="inline-flex h-8 items-center gap-1.5 rounded-md border border-red-700/30 px-2.5 text-xs text-red-800 transition-colors hover:border-red-700/50 hover:bg-red-600/10 hover:text-red-900 focus-visible:outline focus-visible:outline-1 focus-visible:outline-red-700/70 disabled:cursor-wait disabled:opacity-50 dark:border-red-400/20 dark:text-red-300/80 dark:hover:border-red-300/40 dark:hover:bg-red-500/10 dark:hover:text-red-200"
           >
             <Trash2 size={14} />
             {copy.delete}

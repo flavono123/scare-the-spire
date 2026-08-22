@@ -1203,7 +1203,7 @@ export function RichContentEditor({
         {richPlaceholder && charCount === 0 && (
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-3 top-2 font-game-text text-sm leading-5 text-gray-600"
+            className="pointer-events-none absolute inset-x-3 top-2 font-game-text text-sm leading-5 text-muted-foreground"
           >
             <RichText text={richPlaceholder} />
           </div>

@@ -208,7 +208,7 @@ export function StoryComposerModal({
             maxLength={STORY_DRAFT_MAX_LENGTH}
             rows={3}
             disabled={!authReady || !supabaseEnabled}
-            className="min-h-24 w-full resize-none rounded-md border border-border/70 bg-background/60 px-3 py-2 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/40 disabled:opacity-40"
+            className="service-textarea min-h-24 resize-none disabled:opacity-40"
           />
 
           <div className="flex items-center gap-2">
@@ -310,10 +310,10 @@ export function StoryComposerModal({
               className={cn(
                 "mb-3 flex items-center gap-2 rounded-md border px-3 py-2 text-xs font-medium",
                 !supabaseEnabled
-                  ? "border-amber-400/30 bg-amber-400/10 text-amber-200"
+                  ? "border-amber-700/30 bg-amber-600/10 text-amber-900 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-200"
                   : submitFeedback?.tone === "success"
-                    ? "border-emerald-400/35 bg-emerald-400/10 text-emerald-200"
-                    : "border-red-400/35 bg-red-400/10 text-red-200",
+                    ? "border-emerald-700/30 bg-emerald-600/10 text-emerald-800 dark:border-emerald-400/35 dark:bg-emerald-400/10 dark:text-emerald-200"
+                    : "border-red-700/30 bg-red-600/10 text-red-800 dark:border-red-400/35 dark:bg-red-400/10 dark:text-red-200",
               )}
               role={!supabaseEnabled || submitFeedback?.tone === "error" ? "alert" : "status"}
               aria-live={submitFeedback?.tone === "success" ? "polite" : "assertive"}
@@ -335,8 +335,8 @@ export function StoryComposerModal({
               className={cn(
                 "inline-flex h-9 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors disabled:cursor-not-allowed",
                 submitted
-                  ? "border-emerald-400/35 bg-emerald-400/10 text-emerald-200 disabled:opacity-100"
-                  : "border-[#fb923c]/35 bg-[#fb923c]/10 text-[#fb923c] hover:bg-[#fb923c]/16 hover:text-[#fed7aa] disabled:opacity-30",
+                  ? "border-emerald-700/30 bg-emerald-600/10 text-emerald-800 disabled:opacity-100 dark:border-emerald-400/35 dark:bg-emerald-400/10 dark:text-emerald-200"
+                  : "border-orange-800/40 bg-orange-600/10 text-orange-900 hover:bg-orange-600/16 disabled:opacity-30 dark:border-[#fb923c]/35 dark:bg-[#fb923c]/10 dark:text-[#fb923c] dark:hover:bg-[#fb923c]/16 dark:hover:text-[#fed7aa]",
               )}
             >
               {submitted ? (

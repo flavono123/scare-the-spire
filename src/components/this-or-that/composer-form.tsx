@@ -107,7 +107,7 @@ export function ThisOrThatComposerForm({
             onChange={(event) => setReason(event.target.value)}
             maxLength={500}
             rows={4}
-            className="min-h-28 w-full resize-y rounded-md border border-border/70 bg-zinc-900/70 px-3 py-2 text-sm leading-relaxed text-foreground outline-none transition-colors focus:border-primary/40"
+            className="service-textarea min-h-28 resize-y"
           />
         </label>
       </div>

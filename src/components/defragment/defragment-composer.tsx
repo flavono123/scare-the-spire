@@ -87,7 +87,7 @@ export function DefragmentComposer({
             defaultValue={profileNickname}
             placeholder={copy.nicknamePlaceholder}
             maxLength={20}
-            className="w-full bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
+            className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
           />
         </div>
         )}
@@ -98,7 +98,7 @@ export function DefragmentComposer({
             onChange={(event) => setTitle(event.target.value)}
             placeholder={copy.titlePlaceholder}
             maxLength={DEFRAGMENT_TITLE_MAX_CHARS}
-            className="w-full bg-transparent font-service text-sm font-semibold text-zinc-100 outline-none placeholder:text-gray-600"
+            className="w-full bg-transparent font-service text-sm font-semibold text-foreground outline-none placeholder:text-muted-foreground"
           />
         </div>
         <RichContentEditor

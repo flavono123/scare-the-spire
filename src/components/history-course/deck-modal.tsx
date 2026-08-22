@@ -168,13 +168,13 @@ export function DeckModal({
         className="fixed inset-0 z-40 cursor-default bg-black/70 backdrop-blur-[3px]"
       />
       <div className="pointer-events-none fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-6 sm:p-10">
-        <div className="pointer-events-auto relative w-full max-w-6xl rounded-xl border border-white/10 bg-zinc-950/95 p-5 shadow-2xl">
+        <div className="pointer-events-auto relative w-full max-w-6xl rounded-xl border border-border bg-background p-5 shadow-2xl">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h2 className="text-base font-bold tracking-tight text-zinc-50">
+              <h2 className="text-base font-bold tracking-tight text-foreground">
                 {playback.currentDeck}
               </h2>
-              <p className="mt-0.5 text-xs text-zinc-400">
+              <p className="mt-0.5 text-xs text-muted-foreground">
                 {playback.deckFloor
                   .replace("{floor}", String(currentFloor))
                   .replace("{count}", String(copies.length))}
@@ -204,7 +204,7 @@ export function DeckModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-md border border-white/10 bg-zinc-900/60 px-2 py-1 text-xs text-zinc-300 hover:bg-white/10"
+                className="rounded-md border border-border bg-muted px-2 py-1 text-xs text-foreground hover:bg-accent"
               >
                 {playback.close}
               </button>
@@ -212,7 +212,7 @@ export function DeckModal({
           </div>
 
           {sorted.length === 0 ? (
-            <p className="mt-12 text-center text-sm text-zinc-500">
+            <p className="mt-12 text-center text-sm text-muted-foreground">
               {playback.emptyFilter}
             </p>
           ) : (
@@ -394,11 +394,11 @@ function UnknownCardTile({ id }: { id: string }) {
   const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   const label = localizeGame(tables, "cards", id) ?? id.replace(/^CARD\./, "");
   return (
-    <div className="flex aspect-[2/3] flex-col items-center justify-center rounded-lg border border-dashed border-zinc-700 bg-zinc-900/60 text-center">
-      <p className="text-[11px] uppercase tracking-[0.16em] text-zinc-500">
+    <div className="flex aspect-[2/3] flex-col items-center justify-center rounded-lg border border-dashed border-border bg-muted/50 text-center">
+      <p className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
         {playback.unregistered}
       </p>
-      <p className="mt-1 text-xs text-zinc-300">{label}</p>
+      <p className="mt-1 text-xs text-foreground">{label}</p>
     </div>
   );
 }

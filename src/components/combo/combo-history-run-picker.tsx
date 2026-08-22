@@ -200,7 +200,7 @@ export function ComboHistoryRunPicker({
       <Dialog.Trigger asChild>
         <button
           type="button"
-          className="flex shrink-0 items-center gap-1.5 rounded-md border border-amber-300/15 bg-amber-100/5 px-2.5 py-1.5 text-xs font-semibold text-amber-100/80 transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-amber-300/35 hover:bg-amber-100/10 active:translate-y-0 motion-reduce:transform-none"
+          className="flex shrink-0 items-center gap-1.5 rounded-md border border-primary/25 bg-primary/10 px-2.5 py-1.5 text-xs font-semibold text-primary transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/15 active:translate-y-0 motion-reduce:transform-none"
         >
           <Image
             src={HISTORY_COURSE_RELIC_IMAGE}
@@ -217,9 +217,9 @@ export function ComboHistoryRunPicker({
         <Dialog.Overlay className="fixed inset-0 z-[120] bg-black/70 backdrop-blur-[2px]" />
         <Dialog.Content
           aria-describedby={undefined}
-          className="fixed inset-x-3 bottom-3 top-auto z-[121] flex max-h-[min(82dvh,48rem)] flex-col overflow-hidden rounded-2xl border border-amber-300/20 bg-[#090913] shadow-2xl sm:left-1/2 sm:top-1/2 sm:w-[min(46rem,calc(100vw-2rem))] sm:-translate-x-1/2 sm:-translate-y-1/2"
+          className="fixed inset-x-3 bottom-3 top-auto z-[121] flex max-h-[min(82dvh,48rem)] flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:left-1/2 sm:top-1/2 sm:w-[min(46rem,calc(100vw-2rem))] sm:-translate-x-1/2 sm:-translate-y-1/2"
         >
-          <div className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
+          <div className="flex items-center gap-3 border-b border-border px-4 py-3">
             <Image
               src={HISTORY_COURSE_RELIC_IMAGE}
               alt=""
@@ -228,10 +228,10 @@ export function ComboHistoryRunPicker({
               className="h-8 w-8 shrink-0 object-contain"
             />
             <div className="min-w-0 flex-1">
-              <Dialog.Title className="font-service text-sm font-bold text-amber-100">
+              <Dialog.Title className="font-service text-sm font-bold text-foreground">
                 {copy.historyRunPickerLabel}
               </Dialog.Title>
-              <p className="text-[10px] text-zinc-500">
+              <p className="text-[10px] text-muted-foreground">
                 {copy.historyRunPickerDescription}
               </p>
             </div>
@@ -239,28 +239,28 @@ export function ComboHistoryRunPicker({
               <button
                 type="button"
                 aria-label={serviceMessages[serviceLocale].codex.common.close}
-                className="rounded-md p-1.5 text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200"
+                className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               >
                 <X className="h-4 w-4" aria-hidden="true" />
               </button>
             </Dialog.Close>
           </div>
 
-          <label className="flex items-center gap-2 border-b border-white/10 px-4 py-2.5">
-            <Search className="h-4 w-4 shrink-0 text-amber-300/60" aria-hidden="true" />
+          <label className="flex items-center gap-2 border-b border-border px-4 py-2.5">
+            <Search className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
             <input
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={copy.historyRunSearchPlaceholder}
-              className="min-w-0 flex-1 bg-transparent text-sm text-zinc-100 outline-none placeholder:text-zinc-600"
+              className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
               autoFocus
             />
           </label>
 
           <div className="min-h-0 flex-1 overflow-y-auto p-3">
             {loading ? (
-              <div className="flex items-center justify-center gap-2 py-12 text-xs text-zinc-500">
+              <div className="flex items-center justify-center gap-2 py-12 text-xs text-muted-foreground">
                 <LoaderCircle className="h-4 w-4 animate-spin motion-reduce:animate-none" aria-hidden="true" />
                 {copy.historyRunLoading}
               </div>
@@ -303,7 +303,7 @@ export function ComboHistoryRunPicker({
 
           {error && (
             <p
-              className="border-t border-red-300/10 px-4 py-2 text-xs text-red-300"
+              className="border-t border-red-700/20 px-4 py-2 text-xs text-red-800 dark:border-red-300/10 dark:text-red-300"
               role="alert"
             >
               {error}
@@ -333,12 +333,12 @@ function RunSection({
 }) {
   return (
     <section>
-      <h3 className="mb-2 flex items-center gap-1.5 text-xs font-bold text-zinc-300">
-        <BookOpen className="h-3.5 w-3.5 text-amber-300/60" aria-hidden="true" />
+      <h3 className="mb-2 flex items-center gap-1.5 text-xs font-bold text-foreground">
+        <BookOpen className="h-3.5 w-3.5 text-primary/70" aria-hidden="true" />
         {title}
       </h3>
       {blocks.length === 0 ? (
-        <p className="rounded-lg border border-white/5 bg-black/20 px-3 py-5 text-center text-xs text-zinc-600">
+        <p className="rounded-lg border border-border bg-muted/40 px-3 py-5 text-center text-xs text-muted-foreground">
           {empty}
         </p>
       ) : (
@@ -353,7 +353,7 @@ function RunSection({
                 type="button"
                 disabled={pending}
                 onClick={onSelect}
-                className="group flex w-full items-center gap-2.5 rounded-xl border border-white/5 bg-zinc-900/60 p-2.5 text-left transition-[transform,border-color,background-color] hover:-translate-y-0.5 hover:border-amber-300/25 hover:bg-amber-300/5 disabled:cursor-wait disabled:opacity-60 motion-reduce:transform-none"
+                className="group flex w-full items-center gap-2.5 rounded-xl border border-border bg-card/70 p-2.5 text-left transition-[transform,border-color,background-color] hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/5 disabled:cursor-wait disabled:opacity-60 motion-reduce:transform-none"
               >
                 {cover ? (
                   <span className="w-28 shrink-0">
@@ -383,13 +383,13 @@ function RunSection({
                   />
                 )}
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-xs font-semibold text-zinc-200">
+                  <span className="block truncate text-xs font-semibold text-foreground">
                     {cover?.phrase || historyRunPrimaryLabel(block, serviceLocale)}
                   </span>
-                  <span className="mt-1 block truncate text-[10px] text-zinc-500">
+                  <span className="mt-1 block truncate text-[10px] text-muted-foreground">
                     {historyRunSecondaryLabel(block, serviceLocale)}
                   </span>
-                  <span className="mt-1 block text-[10px] font-semibold text-amber-300/65 group-hover:text-amber-200">
+                  <span className="mt-1 block text-[10px] font-semibold text-primary group-hover:text-primary">
                     {pending ? (
                       <LoaderCircle className="mr-1 inline h-3 w-3 animate-spin motion-reduce:animate-none" aria-hidden="true" />
                     ) : null}

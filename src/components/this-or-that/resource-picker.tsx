@@ -46,7 +46,7 @@ export function ThisOrThatResourcePicker({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-2">
-        <span className="font-service text-sm font-semibold text-zinc-300">
+        <span className="font-service text-sm font-semibold text-foreground">
           {label}
         </span>
       </div>
@@ -95,7 +95,7 @@ export function ThisOrThatResourcePicker({
                     onChange(entity);
                     setQuery("");
                   }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-zinc-300 transition-colors hover:bg-primary/10 hover:text-primary"
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground transition-colors hover:bg-primary/10 hover:text-primary"
                 >
                   {entity.imageUrl && (
                     <Image

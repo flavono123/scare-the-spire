@@ -42,7 +42,6 @@ export function ThisOrThatComposerModal({
       onClose={onClose}
       overlayClassName="items-center px-3 py-6"
       panelClassName="max-h-[90vh] max-w-4xl rounded-lg border-b border-border bg-background shadow-2xl sm:rounded-lg"
-      titleClassName="text-zinc-200"
       bodyClassName="p-0"
     >
       <ThisOrThatComposerForm

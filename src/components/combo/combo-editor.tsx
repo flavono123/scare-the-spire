@@ -142,7 +142,7 @@ export function ComboEditor({
             defaultValue={initialPost?.nickname ?? profileNickname}
             placeholder={copy.defaultNickname}
             maxLength={20}
-            className="w-full bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
+            className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
           />
         </div>
         )}

@@ -184,9 +184,9 @@ export function ComboResourcePicker({
           role="dialog"
           aria-label={copy.resourcePickerLabel}
           data-combo-picker-panel
-          className="mt-2 flex max-h-72 w-full flex-col overflow-hidden rounded-xl border border-primary/25 bg-[#090913]/98 shadow-[0_14px_36px_rgba(0,0,0,0.48)]"
+          className="mt-2 flex max-h-72 w-full flex-col overflow-hidden rounded-xl border border-border bg-popover shadow-lg"
         >
-          <div className="flex items-center gap-2 border-b border-white/10 p-2.5">
+          <div className="flex items-center gap-2 border-b border-border p-2.5">
             <Search className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
             <input
               ref={searchInputRef}
@@ -196,19 +196,19 @@ export function ComboResourcePicker({
               placeholder={copy.resourceSearchPlaceholder}
               aria-label={copy.resourceSearchPlaceholder}
               data-combo-picker-search
-              className="min-w-0 flex-1 bg-transparent text-sm text-zinc-100 outline-none placeholder:text-zinc-600"
+              className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
             />
             <button
               type="button"
               onClick={() => setOpen(false)}
               aria-label={commonCopy.close}
-              className="rounded p-1 text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200"
+              className="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
 
-          <div className="flex shrink-0 gap-1 overflow-x-auto border-b border-white/10 px-2.5 py-2">
+          <div className="flex shrink-0 gap-1 overflow-x-auto border-b border-border px-2.5 py-2">
             <button
               type="button"
               aria-pressed={activeType == null}
@@ -220,7 +220,7 @@ export function ComboResourcePicker({
                 "shrink-0 rounded-full border px-2.5 py-1 text-[11px] transition-colors",
                 activeType == null
                   ? "border-primary/40 bg-primary/15 text-primary"
-                  : "border-white/10 text-zinc-500 hover:border-white/20 hover:text-zinc-300",
+                  : "border-border text-muted-foreground hover:border-border hover:text-foreground",
               )}
             >
               {copy.allResources}
@@ -238,7 +238,7 @@ export function ComboResourcePicker({
                   "shrink-0 rounded-full border px-2.5 py-1 text-[11px] transition-colors",
                   activeType === type
                     ? "border-primary/40 bg-primary/15 text-primary"
-                    : "border-white/10 text-zinc-500 hover:border-white/20 hover:text-zinc-300",
+                    : "border-border text-muted-foreground hover:border-border hover:text-foreground",
                 )}
               >
                 {typeLabels[type] ?? type}
@@ -248,7 +248,7 @@ export function ComboResourcePicker({
 
           <div className="min-h-0 flex-1 overflow-y-auto p-2" role="list">
             {results.length === 0 ? (
-              <p className="px-3 py-8 text-center text-xs text-zinc-600">
+              <p className="px-3 py-8 text-center text-xs text-muted-foreground">
                 {commonCopy.noResults}
               </p>
             ) : (
@@ -283,16 +283,16 @@ export function ComboResourcePicker({
                       )}
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-xs font-semibold text-zinc-200">
+                      <span className="block truncate text-xs font-semibold text-foreground">
                         {entity.nameKo}
                       </span>
                       {entity.nameEn !== entity.nameKo && (
-                        <span className="block truncate text-[10px] text-zinc-600">
+                        <span className="block truncate text-[10px] text-muted-foreground">
                           {entity.nameEn}
                         </span>
                       )}
                     </span>
-                    <span className="shrink-0 text-[9px] text-zinc-600">
+                    <span className="shrink-0 text-[9px] text-muted-foreground">
                       {recentlyAdded?.id === entity.id && recentlyAdded.type === entity.type ? (
                         <Check className="h-4 w-4 text-primary" aria-hidden="true" />
                       ) : (
@@ -304,7 +304,7 @@ export function ComboResourcePicker({
               </div>
             )}
             {hasMoreBrowseResults && (
-              <p className="px-3 py-2 text-center text-[10px] text-zinc-600">
+              <p className="px-3 py-2 text-center text-[10px] text-muted-foreground">
                 {copy.refineResourceSearch}
               </p>
             )}

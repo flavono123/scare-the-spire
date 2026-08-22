@@ -57,7 +57,7 @@ export function ChemicalXEditor({
             defaultValue={profileNickname}
             placeholder={copy.defaultNickname}
             maxLength={20}
-            className="w-full bg-transparent text-sm text-gray-300 placeholder:text-gray-600 outline-none"
+            className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
           />
         </div>
         )}

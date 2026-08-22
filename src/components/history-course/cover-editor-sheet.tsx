@@ -266,18 +266,18 @@ export function CoverEditorSheet({
         <Dialog.Overlay className="fixed inset-0 z-[120] bg-black/70 backdrop-blur-[2px]" />
         <Dialog.Content
           aria-describedby={undefined}
-          className="fixed inset-x-0 bottom-0 z-[121] flex h-[min(92dvh,52rem)] max-h-[min(92dvh,52rem)] flex-col overflow-hidden rounded-t-2xl border border-amber-300/20 bg-black shadow-2xl sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:h-[min(92dvh,52rem)] sm:w-[min(40rem,calc(100vw-2rem))] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl"
+          className="fixed inset-x-0 bottom-0 z-[121] flex h-[min(92dvh,52rem)] max-h-[min(92dvh,52rem)] flex-col overflow-hidden rounded-t-2xl border border-border bg-background shadow-2xl sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:h-[min(92dvh,52rem)] sm:w-[min(40rem,calc(100vw-2rem))] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl"
         >
-          <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
-            <Pencil className="h-4 w-4 text-amber-300/70" aria-hidden />
-            <Dialog.Title className="flex-1 font-service text-sm font-bold text-amber-100">
+          <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+            <Pencil className="h-4 w-4 text-primary" aria-hidden />
+            <Dialog.Title className="flex-1 font-service text-sm font-bold text-foreground">
               {copy.title}
             </Dialog.Title>
             <Dialog.Close asChild>
               <button
                 type="button"
                 aria-label={serviceMessages[serviceLocale].codex.common.close}
-                className="rounded-md p-1.5 text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200"
+                className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               >
                 <X className="h-4 w-4" aria-hidden />
               </button>
@@ -285,7 +285,7 @@ export function CoverEditorSheet({
           </div>
 
           <div className="flex min-h-0 flex-1 flex-col">
-            <div className="shrink-0 border-b border-white/5 bg-black p-4 shadow-[0_8px_24px_rgba(0,0,0,0.65)]">
+            <div className="dark shrink-0 border-b border-border bg-black p-4 shadow-[0_8px_24px_rgba(0,0,0,0.35)]">
               <HistoryCourseCover
                 cover={draft}
                 character={character}
@@ -302,7 +302,7 @@ export function CoverEditorSheet({
             >
             <div className="relative z-0 space-y-5 p-4">
               <section className="relative z-0 space-y-2">
-                <h3 className="text-xs font-bold text-zinc-300">{copy.variantLabel}</h3>
+                <h3 className="text-xs font-bold text-foreground">{copy.variantLabel}</h3>
                 <div className="grid grid-cols-2 gap-2">
                   {(["A", "B"] as const).map((key) => {
                     const bCardId =
@@ -318,9 +318,9 @@ export function CoverEditorSheet({
                         onClick={() => selectVariant(key)}
                         className={cn(
                           "relative z-0 overflow-hidden rounded-lg ring-2 transition",
-                          selected
-                            ? "ring-amber-300/80"
-                            : "ring-white/10 hover:ring-amber-300/25",
+                            selected
+                              ? "ring-primary/70"
+                              : "ring-border hover:ring-primary/30",
                         )}
                       >
                         <span
@@ -339,8 +339,8 @@ export function CoverEditorSheet({
                           className={cn(
                             "block px-2 py-1 text-center text-[10px] font-bold",
                             selected
-                              ? "bg-amber-300/20 text-amber-50"
-                              : "bg-black/60 text-zinc-400",
+                              ? "bg-primary/20 text-primary"
+                              : "bg-muted text-muted-foreground",
                           )}
                         >
                           {key === "A" ? copy.variantA : copy.variantB}
@@ -353,7 +353,7 @@ export function CoverEditorSheet({
 
               {variant === "B" && (
                 <section className="space-y-2">
-                  <h3 className="text-xs font-bold text-zinc-300">
+                  <h3 className="text-xs font-bold text-foreground">
                     {copy.backgroundCardLabel}
                   </h3>
                   <ScrollableBoundedCarousel
@@ -371,8 +371,8 @@ export function CoverEditorSheet({
                           className={cn(
                             "relative h-16 w-12 shrink-0 overflow-hidden rounded-md ring-1",
                             selected
-                              ? "ring-amber-300/70"
-                              : "ring-white/10 hover:ring-amber-300/30",
+                              ? "ring-primary/70"
+                              : "ring-border hover:ring-primary/30",
                           )}
                           title={displayNameForCoverElement({
                             kind: "card",
@@ -398,11 +398,11 @@ export function CoverEditorSheet({
 
               <section className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-xs font-bold text-zinc-300">{copy.phraseLabel}</h3>
+                  <h3 className="text-xs font-bold text-foreground">{copy.phraseLabel}</h3>
                   <span
                     className={cn(
                       "text-[10px] tabular-nums",
-                      draft.phrase.length > 18 ? "text-amber-300/80" : "text-zinc-600",
+                      draft.phrase.length > 18 ? "text-primary" : "text-muted-foreground",
                     )}
                   >
                     {draft.phrase.length}/18
@@ -413,7 +413,7 @@ export function CoverEditorSheet({
                   onChange={(e) =>
                     setDraft((prev) => ({ ...prev, phrase: e.target.value }))
                   }
-                  className="w-full rounded-md border border-white/10 bg-black/40 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-amber-300/40"
+                  className="w-full rounded-md border border-border bg-muted/50 px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/40"
                   placeholder={copy.phrasePlaceholder}
                 />
                 <div className="flex flex-wrap gap-1.5">
@@ -422,7 +422,7 @@ export function CoverEditorSheet({
                       key={chip}
                       type="button"
                       onClick={() => setDraft((prev) => ({ ...prev, phrase: chip }))}
-                      className="rounded-full border border-amber-300/15 bg-amber-100/5 px-2 py-0.5 text-[11px] text-amber-100/80 hover:border-amber-300/35"
+                      className="rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-[11px] text-primary hover:border-primary/45"
                     >
                       {chip}
                     </button>
@@ -430,7 +430,7 @@ export function CoverEditorSheet({
                   <button
                     type="button"
                     onClick={() => setPhraseSeed((n) => n + 1)}
-                    className="inline-flex items-center gap-1 rounded-full border border-white/10 px-2 py-0.5 text-[11px] text-zinc-400 hover:text-zinc-200"
+                    className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[11px] text-muted-foreground hover:text-foreground"
                   >
                     <RefreshCw className="h-3 w-3" aria-hidden />
                     {copy.rerollPhrases}
@@ -439,12 +439,12 @@ export function CoverEditorSheet({
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-xs font-bold text-zinc-300">{copy.elementsLabel}</h3>
+                <h3 className="text-xs font-bold text-foreground">{copy.elementsLabel}</h3>
                 <div className="flex flex-wrap gap-2">
                   {draft.elements.map((el, index) => (
                     <div
                       key={`${el.kind}:${el.id}:${index}`}
-                      className="flex items-center gap-1 rounded-lg border border-white/10 bg-black/30 p-1.5"
+                      className="flex items-center gap-1 rounded-lg border border-border bg-muted/40 p-1.5"
                     >
                       <ElementThumb element={el} catalog={catalog} />
                       <div className="flex flex-col gap-0.5">
@@ -452,7 +452,7 @@ export function CoverEditorSheet({
                           type="button"
                           aria-label={copy.moveUp}
                           onClick={() => moveElement(index, -1)}
-                          className="rounded p-0.5 text-zinc-500 hover:bg-white/5 hover:text-zinc-200"
+                          className="rounded p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                         >
                           <ArrowUp className="h-3 w-3" />
                         </button>
@@ -460,7 +460,7 @@ export function CoverEditorSheet({
                           type="button"
                           aria-label={copy.moveDown}
                           onClick={() => moveElement(index, 1)}
-                          className="rounded p-0.5 text-zinc-500 hover:bg-white/5 hover:text-zinc-200"
+                          className="rounded p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                         >
                           <ArrowDown className="h-3 w-3" />
                         </button>
@@ -475,7 +475,7 @@ export function CoverEditorSheet({
                     </div>
                   ))}
                   {draft.elements.length < 3 && (
-                    <span className="rounded-lg border border-dashed border-white/10 px-3 py-2 text-[11px] text-zinc-600">
+                    <span className="rounded-lg border border-dashed border-border px-3 py-2 text-[11px] text-muted-foreground">
                       {copy.slotEmpty}
                     </span>
                   )}
@@ -497,8 +497,8 @@ export function CoverEditorSheet({
                       className={cn(
                         "rounded-full px-2 py-0.5 text-[11px]",
                         elementFilter === key
-                          ? "bg-amber-300/15 text-amber-100"
-                          : "text-zinc-500 hover:text-zinc-300",
+                          ? "bg-primary/15 text-primary"
+                          : "text-muted-foreground hover:text-foreground",
                       )}
                     >
                       {label}
@@ -509,11 +509,11 @@ export function CoverEditorSheet({
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={copy.searchPlaceholder}
-                  className="w-full rounded-md border border-white/10 bg-black/30 px-2.5 py-1.5 text-xs text-zinc-200 outline-none focus:border-amber-300/30"
+                  className="w-full rounded-md border border-border bg-muted/50 px-2.5 py-1.5 text-xs text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/40"
                 />
                 <GameScrollArea
                   aria-label={copy.scrollbar}
-                  className="h-40 rounded-lg border border-white/5 bg-black/20"
+                  className="h-40 rounded-lg border border-border bg-muted/30"
                   scrollerClassName="p-2"
                   dataTestId="cover-editor-element-candidates"
                   size="small"
@@ -526,7 +526,7 @@ export function CoverEditorSheet({
                         disabled={draft.elements.length >= 3}
                         onClick={() => addElement(item)}
                         title={displayNameForCoverElement(item)}
-                        className="rounded-md border border-white/10 bg-zinc-900/80 p-1 transition hover:border-amber-300/30 disabled:opacity-40"
+                        className="rounded-md border border-border bg-card p-1 transition hover:border-primary/40 disabled:opacity-40"
                       >
                         <ElementThumb
                           element={{
@@ -540,7 +540,7 @@ export function CoverEditorSheet({
                       </button>
                     ))}
                     {elementCandidates.length === 0 && (
-                      <p className="w-full py-4 text-center text-[11px] text-zinc-600">
+                      <p className="w-full py-4 text-center text-[11px] text-muted-foreground">
                         {copy.noCandidates}
                       </p>
                     )}
@@ -551,11 +551,11 @@ export function CoverEditorSheet({
             </GameScrollArea>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 border-t border-white/10 px-4 py-3">
+          <div className="flex flex-wrap items-center gap-2 border-t border-border px-4 py-3">
             <button
               type="button"
               onClick={applyReshuffle}
-              className="inline-flex items-center gap-1 rounded-md border border-white/10 px-2.5 py-1.5 text-xs text-zinc-300 hover:border-amber-300/30 hover:text-amber-100"
+              className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs text-foreground hover:border-primary/40 hover:text-primary"
             >
               <RefreshCw className="h-3.5 w-3.5" aria-hidden />
               {copy.reshuffle}
@@ -563,7 +563,7 @@ export function CoverEditorSheet({
             <button
               type="button"
               onClick={resetToAuto}
-              className="inline-flex items-center gap-1 rounded-md border border-white/10 px-2.5 py-1.5 text-xs text-zinc-300 hover:border-amber-300/30 hover:text-amber-100"
+              className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs text-foreground hover:border-primary/40 hover:text-primary"
             >
               <RotateCcw className="h-3.5 w-3.5" aria-hidden />
               {copy.reset}
@@ -572,7 +572,7 @@ export function CoverEditorSheet({
             <Dialog.Close asChild>
               <button
                 type="button"
-                className="rounded-md px-3 py-1.5 text-xs text-zinc-500 hover:text-zinc-200"
+                className="rounded-md px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
               >
                 {copy.cancel}
               </button>

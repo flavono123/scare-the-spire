@@ -19,8 +19,8 @@ export const ComposerChrome: Story = {
       <StoryStack>
         <StoryNote>
           오버레이, Escape, 스크롤 잠금, 헤더+닫기를 한 프레임으로 올렸다.
-          패널 폭(좁은 코옴보 vs 넓은 변형)과 제목색은 className 확장.
-          이야기 작성 모달·패치 스토리 시트·GameConfirmModal은 아직 바깥.
+          패널은 `bg-background`라 라이트/다크 셸을 따른다. 폭과 제목색은
+          className 확장. 이야기 작성 모달·패치 스토리 시트는 아직 바깥.
         </StoryNote>
         <button
           type="button"

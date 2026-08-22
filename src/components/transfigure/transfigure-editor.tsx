@@ -129,7 +129,7 @@ function CardAttributeChange<T extends string>({
       data-transfigure-card-attribute={kind}
     >
       <div className="flex items-center justify-between gap-2 text-xs">
-        <span className="text-gray-300">{label}</span>
+        <span className="text-foreground">{label}</span>
         <button
           type="button"
           onClick={onCancel}
@@ -147,8 +147,8 @@ function CardAttributeChange<T extends string>({
         <MenuDropdown
           ariaLabel={label}
           rootClassName="min-w-0"
-          summaryClassName="flex h-9 cursor-pointer items-center gap-1.5 rounded-md border border-primary/25 bg-[#111522] px-2 font-game-title text-xs text-primary outline-none transition-colors hover:border-primary/60 focus-visible:border-primary"
-          menuClassName="left-0 min-w-full overflow-hidden bg-[#111522]/98"
+          summaryClassName="flex h-9 cursor-pointer items-center gap-1.5 rounded-md border border-border bg-muted px-2 font-game-title text-xs text-primary outline-none transition-colors hover:border-primary/60 focus-visible:border-primary"
+          menuClassName="left-0 min-w-full overflow-hidden bg-popover"
           summary={(
             <>
               {selectedOption?.icon}
@@ -178,7 +178,7 @@ function CardAttributeChange<T extends string>({
               className={`flex w-full items-center gap-2.5 px-3 py-2 text-left font-game-title text-sm transition-colors ${
                 option.value === value
                   ? "bg-primary/10 text-primary"
-                  : "text-gray-300 hover:bg-white/5 hover:text-primary"
+                  : "text-foreground hover:bg-muted hover:text-primary"
               }`}
             >
               {option.icon}
@@ -734,8 +734,8 @@ export function TransfigureEditor({
 
       {selected && sourceText && isTransfigureResourceType(selected.type) && (
         <div className="grid items-start gap-4 lg:grid-cols-[16rem_minmax(0,1fr)]">
-          <div className="rounded-xl border border-white/10 bg-[#16162a]">
-            <div className="border-b border-white/10 px-3 py-2">
+          <div className="rounded-xl border border-border bg-card">
+            <div className="border-b border-border px-3 py-2">
               <label className="block">
                 <span className="spire-gold mb-1 block text-[11px] font-semibold uppercase tracking-[0.12em]">
                   {copy.titleLabel}
@@ -750,7 +750,7 @@ export function TransfigureEditor({
                   placeholder={copy.titlePlaceholder}
                   maxLength={80}
                   data-transfigure-title-input
-                  className="w-full bg-transparent text-sm text-gray-200 outline-none placeholder:text-gray-600"
+                  className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
                 />
               </label>
             </div>
@@ -765,14 +765,14 @@ export function TransfigureEditor({
                 onChange={() => setSaveFeedback(null)}
                 placeholder={copy.defaultNickname}
                 maxLength={20}
-                className="w-full bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
+                className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
               />
             </div>
             )}
 
             {selectedCardData && canChangeCardMetadata && (
               <div
-                className="border-t border-white/10 px-3 py-2"
+                className="border-t border-border px-3 py-2"
                 data-transfigure-card-attributes
               >
                 <FilterSection label={copy.cardAttributes}>
@@ -872,7 +872,7 @@ export function TransfigureEditor({
             )}
           </div>
 
-          <section className="rounded-xl border border-primary/15 bg-black/20 p-3 lg:sticky lg:top-0">
+          <section className="dark rounded-xl border border-primary/15 bg-black/20 p-3 lg:sticky lg:top-0">
             <TransfigureAssetEditor
               key={`${initialPost?.id ?? "new"}:${selected.type}:${selected.id}`}
               draftKey={`${draftSessionPrefix}${gameLocale}:${selected.type}:${selected.id}`}

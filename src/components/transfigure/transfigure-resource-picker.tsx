@@ -115,7 +115,7 @@ export function TransfigureResourcePicker({
           <span className="spire-gold block text-xs font-semibold">
             {copy.selectResource}
           </span>
-          <span className="block truncate text-sm text-zinc-400">
+          <span className="block truncate text-sm text-muted-foreground">
             {selected
               ? copy.reselectResource.replace("{name}", selected.nameKo)
               : copy.searchPlaceholder}
@@ -128,9 +128,9 @@ export function TransfigureResourcePicker({
           id="transfigure-resource-picker-panel"
           role="dialog"
           aria-label={copy.pickerLabel}
-          className="relative z-10 mt-2 flex max-h-[min(34rem,70svh)] flex-col overflow-hidden rounded-xl border border-primary/25 bg-[#080b14]/98 shadow-[0_18px_48px_rgba(0,0,0,0.58)]"
+          className="relative z-10 mt-2 flex max-h-[min(34rem,70svh)] flex-col overflow-hidden rounded-xl border border-border bg-popover shadow-lg"
         >
-          <div className="flex items-center gap-2 border-b border-white/10 p-2.5">
+          <div className="flex items-center gap-2 border-b border-border p-2.5">
             <Search className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
             <input
               ref={searchInputRef}
@@ -139,19 +139,19 @@ export function TransfigureResourcePicker({
               onChange={(event) => setQuery(event.target.value)}
               placeholder={copy.searchPlaceholder}
               aria-label={copy.searchPlaceholder}
-              className="min-w-0 flex-1 bg-transparent text-sm text-zinc-100 outline-none placeholder:text-zinc-600"
+              className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
             />
             <button
               type="button"
               onClick={() => setOpen(false)}
               aria-label={commonCopy.close}
-              className="rounded p-1 text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200"
+              className="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
 
-          <div className="flex shrink-0 gap-1 overflow-x-auto border-b border-white/10 px-2.5 py-2">
+          <div className="flex shrink-0 gap-1 overflow-x-auto border-b border-border px-2.5 py-2">
             <button
               type="button"
               aria-pressed={activeType == null}
@@ -160,7 +160,7 @@ export function TransfigureResourcePicker({
                 "shrink-0 rounded-full border px-2.5 py-1 text-[11px] transition-colors",
                 activeType == null
                   ? "border-primary/40 bg-primary/15 text-primary"
-                  : "border-white/10 text-zinc-500 hover:border-white/20 hover:text-zinc-300",
+                  : "border-border text-muted-foreground hover:border-border hover:text-foreground",
               )}
             >
               {copy.allResources}
@@ -175,7 +175,7 @@ export function TransfigureResourcePicker({
                   "shrink-0 rounded-full border px-2.5 py-1 text-[11px] transition-colors",
                   activeType === type
                     ? "border-primary/40 bg-primary/15 text-primary"
-                    : "border-white/10 text-zinc-500 hover:border-white/20 hover:text-zinc-300",
+                    : "border-border text-muted-foreground hover:border-border hover:text-foreground",
                 )}
               >
                 {typeLabels[type] ?? type}
@@ -185,7 +185,7 @@ export function TransfigureResourcePicker({
 
           <div className="min-h-0 flex-1 overflow-y-auto p-2" role="list">
             {results.length === 0 ? (
-              <p className="px-3 py-8 text-center text-xs text-zinc-600">
+              <p className="px-3 py-8 text-center text-xs text-muted-foreground">
                 {commonCopy.noResults}
               </p>
             ) : (
@@ -223,14 +223,14 @@ export function TransfigureResourcePicker({
                         )}
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-xs font-semibold text-zinc-200">
+                        <span className="block truncate text-xs font-semibold text-foreground">
                           {entity.nameKo}
                         </span>
-                        <span className="block truncate text-[10px] text-zinc-600">
+                        <span className="block truncate text-[10px] text-muted-foreground">
                           {getTransfigureSourceText(entity)}
                         </span>
                       </span>
-                      <span className="shrink-0 text-[9px] text-zinc-600">
+                      <span className="shrink-0 text-[9px] text-muted-foreground">
                         {isSelected ? (
                           <Check className="h-4 w-4 text-primary" aria-hidden="true" />
                         ) : (
@@ -243,7 +243,7 @@ export function TransfigureResourcePicker({
               </div>
             )}
             {hasMoreBrowseResults && (
-              <p className="px-3 py-2 text-center text-[10px] text-zinc-600">
+              <p className="px-3 py-2 text-center text-[10px] text-muted-foreground">
                 {copy.refineSearch}
               </p>
             )}
