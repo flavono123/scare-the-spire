@@ -3,6 +3,7 @@ import { bakeDescription } from "../src/lib/codex-bake";
 import { getCodexCharacters, getCodexEvents } from "../src/lib/codex-data";
 import {
   applyEventCharacterQuotes,
+  eventCharacterQuoteSearchParts,
   eventContainsCharacterQuotePlaceholders,
   splitEventDescriptionQuotes,
   toEventCharacterQuoteSpeaker,
@@ -79,6 +80,14 @@ async function checkExtractedEvents() {
   const renderedPrinciple = applyEventCharacterQuotes(maintainControl, speaker.quotes);
   assert.ok(renderedMonologue.includes(ironclad.quotes.goldMonologue));
   assert.equal(renderedPrinciple.split(ironclad.quotes.aromaPrinciple).length - 1, 3);
+
+  const speakers = characters.map(toEventCharacterQuoteSpeaker);
+  const sunkenQuotes = eventCharacterQuoteSearchParts(sunken, speakers).join("\n");
+  const aromaQuotes = eventCharacterQuoteSearchParts(aroma, speakers).join("\n");
+  assert.ok(sunkenQuotes.includes(ironclad.quotes.goldMonologue));
+  assert.equal(sunkenQuotes.includes(ironclad.quotes.aromaPrinciple), false);
+  assert.ok(aromaQuotes.includes(ironclad.quotes.aromaPrinciple));
+  assert.equal(aromaQuotes.includes(ironclad.quotes.goldMonologue), false);
 }
 
 void main();

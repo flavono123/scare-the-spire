@@ -131,11 +131,41 @@ function mergeAdjacentQuoteSegments(segments: EventDescriptionSegment[]): EventD
   return merged;
 }
 
+export function eventCharacterQuotePlaceholderNames(event: {
+  description?: string | null;
+  descriptionEn?: string | null;
+  pages?: ReadonlyArray<{ description?: string | null }> | null;
+}): EventCharacterQuotePlaceholder[] {
+  const names = new Set<EventCharacterQuotePlaceholder>();
+  const consider = (text?: string | null) => {
+    if (!text) return;
+    for (const match of text.matchAll(PLACEHOLDER_PATTERN)) {
+      names.add((match[1] ?? match[2]) as EventCharacterQuotePlaceholder);
+    }
+  };
+
+  consider(event.description);
+  consider(event.descriptionEn);
+  for (const page of event.pages ?? []) consider(page.description);
+  return [...names];
+}
+
 export function characterQuoteSearchParts(
   characters: ReadonlyArray<{ quotes: EventCharacterQuoteSpeaker["quotes"] }>,
+  placeholders: readonly EventCharacterQuotePlaceholder[] = EVENT_CHARACTER_QUOTE_PLACEHOLDER_NAMES,
 ): string[] {
-  return characters.flatMap((character) => [
-    character.quotes.goldMonologue,
-    character.quotes.aromaPrinciple,
-  ]);
+  return characters.flatMap((character) => (
+    placeholders.map((placeholder) => eventCharacterQuoteForPlaceholder(character.quotes, placeholder))
+  ));
+}
+
+export function eventCharacterQuoteSearchParts(
+  event: {
+    description?: string | null;
+    descriptionEn?: string | null;
+    pages?: ReadonlyArray<{ description?: string | null }> | null;
+  },
+  characters: ReadonlyArray<{ quotes: EventCharacterQuoteSpeaker["quotes"] }>,
+): string[] {
+  return characterQuoteSearchParts(characters, eventCharacterQuotePlaceholderNames(event));
 }

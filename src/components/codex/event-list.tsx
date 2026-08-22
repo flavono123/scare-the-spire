@@ -34,8 +34,7 @@ import {
   getEventActs,
 } from "@/lib/codex-types";
 import {
-  characterQuoteSearchParts,
-  eventContainsCharacterQuotePlaceholders,
+  eventCharacterQuoteSearchParts,
   type EventCharacterQuoteSpeaker,
 } from "@/lib/event-character-quotes";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
@@ -305,10 +304,9 @@ export function EventList({
         const pageMatch = (e.pages ?? []).some((page) => (
           fuzzyMatchCodexText(stripCodexMarkup(page.description ?? ""), searchText)
         ));
-        const quoteMatch = eventContainsCharacterQuotePlaceholders(e)
-          && characterQuoteSearchParts(characters).some((quote) => (
-            fuzzyMatchCodexText(stripCodexMarkup(quote), searchText)
-          ));
+        const quoteMatch = eventCharacterQuoteSearchParts(e, characters).some((quote) => (
+          fuzzyMatchCodexText(stripCodexMarkup(quote), searchText)
+        ));
         if (!nameMatch && !nameEnMatch && !descriptionMatch && !descriptionEnMatch && !pageMatch && !quoteMatch) return false;
       }
       return true;
