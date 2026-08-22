@@ -58,7 +58,7 @@ export const globalSearchTypeStyles: Record<GlobalSearchType, {
   encounter: { icon: "/images/sts2/nav/happy_cultist.png", color: "text-stone-200", bg: "bg-stone-500/10", border: "border-stone-400/30" },
   ancient: { icon: "/images/sts2/nav/stats_ancients.png", color: "text-blue-200", bg: "bg-blue-500/10", border: "border-blue-400/30" },
   epoch: { icon: "/images/sts2/relics/planisphere.webp", color: "text-teal-200", bg: "bg-teal-500/10", border: "border-teal-400/30" },
-  modifier: { icon: "/images/sts2/modifiers/draft.webp", color: "text-lime-200", bg: "bg-lime-500/10", border: "border-lime-400/30" },
+  modifier: { icon: "/images/sts2/modifiers/character_cards.webp", color: "text-lime-200", bg: "bg-lime-500/10", border: "border-lime-400/30" },
   ascension: { icon: "/images/sts2/ui/topbar/top_bar_ascension.png", color: "text-orange-200", bg: "bg-orange-500/10", border: "border-orange-400/30" },
   historyCourse: { icon: "/images/sts2/relics/history_course.webp", color: "text-violet-200", bg: "bg-violet-500/10", border: "border-violet-400/30" },
   thisOrThat: { icon: "/images/sts2/relics/choices_paradox.webp", color: "text-blue-200", bg: "bg-blue-500/10", border: "border-blue-400/30" },

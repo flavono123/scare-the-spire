@@ -29,7 +29,7 @@ export function SiteNavDropdown({
       summaryClassName="flex cursor-pointer items-center gap-0.5 rounded-md px-1 py-1 transition-colors hover:bg-white/5 sm:gap-1 sm:px-1.5"
       menuClassName={`${
         isToyBox ? "min-w-[190px]" : "min-w-[140px]"
-      } ${align === "right" ? "right-0" : "left-0"}`}
+      } max-h-[min(24rem,calc(100svh-4.5rem))] overflow-y-auto ${align === "right" ? "right-0" : "left-0"}`}
       summary={(
         <>
           <Image
@@ -73,7 +73,9 @@ export function SiteNavDropdown({
               alt=""
               width={isToyBox ? 24 : 18}
               height={isToyBox ? 24 : 18}
-              className={`${isToyBox ? "h-6 w-6" : ""} shrink-0 object-contain`}
+              className={`${
+                isToyBox ? "h-6 w-6" : item.iconClassName ?? "h-[18px] w-[18px]"
+              } shrink-0 object-contain`}
             />
             <span className="min-w-0 truncate">{item.label}</span>
             {item.isNew && (

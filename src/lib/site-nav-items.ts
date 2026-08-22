@@ -1,5 +1,9 @@
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
 import { getDefragmentNavTitle, getTransfigureNavTitle } from "@/lib/borrowed-game-copy";
+import {
+  ASCENSION_TOKEN_IMAGE_URL,
+  CHARACTER_CARDS_MODIFIER_IMAGE_URL,
+} from "@/lib/codex-types";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   localizeHrefWithGameLocale,
@@ -18,6 +22,7 @@ export type NavDropdownItem = {
   href: string;
   label: string;
   icon: string;
+  iconClassName?: string;
   isNew?: boolean;
 };
 
@@ -91,9 +96,9 @@ export const sts2NavItems = [
   { href: "/compendium/ancients", labelKey: "ancients", icon: "/images/sts2/nav/stats_ancients.png" },
   { href: "/compendium/epochs", labelKey: "epochs", icon: "/images/sts2/relics/planisphere.webp" },
   { href: "/compendium/keywords", labelKey: "keywords", icon: "/images/sts2/ui/topbar/submenu_history_icon.png" },
-  { href: "/compendium/modifiers", labelKey: "modifiers", icon: "/images/sts2/modifiers/draft.webp" },
-  { href: "/compendium/ascensions", labelKey: "ascensions", icon: "/images/sts2/ui/topbar/top_bar_ascension.png" },
   { href: "/compendium/badges", labelKey: "badges", icon: "/images/sts2/badges/double_snecko.webp" },
+  { href: "/compendium/ascensions", labelKey: "ascensions", icon: ASCENSION_TOKEN_IMAGE_URL, iconClassName: "h-4 w-[14px]" },
+  { href: "/compendium/modifiers", labelKey: "modifiers", icon: CHARACTER_CARDS_MODIFIER_IMAGE_URL },
 ] as const;
 
 export const sts1NavItems = [
@@ -133,7 +138,7 @@ export const gameOnlyLanguageNavLocales = [
   "tur",
 ] as const satisfies readonly GameLocale[];
 
-export function localizeCodexNavItems<T extends { href: string; labelKey: CodexLabelKey; icon: string }>(
+export function localizeCodexNavItems<T extends { href: string; labelKey: CodexLabelKey; icon: string; iconClassName?: string }>(
   items: readonly T[],
   serviceLocale: ServiceLocale,
   gameLocale: GameLocale,
@@ -146,6 +151,7 @@ export function localizeCodexNavItems<T extends { href: string; labelKey: CodexL
       ? getCodexNavGameLabel(gameLocale, item.labelKey) ?? messages.codex[item.labelKey]
       : messages.codex[item.labelKey],
     icon: item.icon,
+    iconClassName: item.iconClassName,
   }));
 }
 
