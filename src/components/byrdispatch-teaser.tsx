@@ -34,7 +34,7 @@ export function ByrdispatchTeaser({
         />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-sm font-bold text-zinc-100 sm:text-base">
+        <span className="block truncate text-sm font-bold text-foreground sm:text-base">
           {messages.title}
         </span>
         {latestDate && (

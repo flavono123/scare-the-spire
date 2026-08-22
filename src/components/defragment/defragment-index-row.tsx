@@ -88,17 +88,17 @@ export function DefragmentIndexRow({
       data-defragment-service={item.service}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="group flex cursor-pointer items-center gap-2 border-b border-white/[0.06] px-1 py-1.5 transition-colors hover:bg-white/[0.04] focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
+      className="group flex cursor-pointer items-center gap-2 border-b border-border px-1 py-1.5 transition-colors hover:bg-muted/50 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
     >
       <GameUiHoverTip label={typeLabel} className={DEFRAGMENT_TYPE_COL_CLASS}>
         <span className="flex w-full min-w-0 items-center gap-1">
           <SpireGhostRevealIcon src={tokenSrc} size={16} className="shrink-0" />
-          <span className="min-w-0 truncate text-[11px] text-zinc-500">
+          <span className="min-w-0 truncate text-[11px] text-muted-foreground">
             {typeLabel}
           </span>
         </span>
       </GameUiHoverTip>
-      <span className="min-w-0 flex-1 truncate text-sm text-zinc-200 transition-colors hover:text-[#efc851]">
+      <span className="min-w-0 flex-1 truncate text-sm text-foreground transition-colors hover:text-primary">
         {item.title}
       </span>
       <span className={cn(DEFRAGMENT_ENGAGE_COL_CLASS, "inline-flex items-center justify-end gap-1")}>

@@ -114,6 +114,18 @@
   color: rgb(253 230 138);
 }
 
+.light .byrdispatch-stage--already .patch-note-content > p {
+  color: var(--muted-foreground);
+}
+
+.light .byrdispatch-stage--new .patch-note-content > p {
+  color: #157a3a;
+}
+
+.light .byrdispatch-stage--planned .patch-note-content > p {
+  color: var(--primary);
+}
+
 .engagement-unavailable-icon {
   position: relative;
   display: inline-flex;
@@ -357,6 +369,7 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+  --color-service-aqua: var(--service-aqua);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -384,6 +397,7 @@
   --popover-foreground: oklch(0.985 0 0);
   --primary: #efc851;
   --primary-foreground: #1a1408;
+  --service-aqua: #2aebbe;
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.274 0.006 286.033);
@@ -468,6 +482,7 @@
   --popover-foreground: oklch(0.985 0 0);
   --primary: #efc851;
   --primary-foreground: #1a1408;
+  --service-aqua: #2aebbe;
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.274 0.006 286.033);
@@ -493,40 +508,55 @@
   --sidebar-ring: oklch(0.552 0.016 285.938);
 }
 
-/* Service-shell paper. `--primary` stays TEXT_GOLD. Game chrome is not inverted. */
+/* Service-shell paper. Accents are ink-weight versions of the same hues. */
 .light {
   color-scheme: light;
   --background: #f4f1ea;
-  --foreground: oklch(0.22 0.02 70);
-  --card: oklch(0.985 0.008 85);
-  --card-foreground: oklch(0.22 0.02 70);
-  --popover: oklch(0.99 0.006 85);
-  --popover-foreground: oklch(0.22 0.02 70);
-  --primary: #efc851;
-  --primary-foreground: #1a1408;
-  --secondary: oklch(0.92 0.015 80);
-  --secondary-foreground: oklch(0.25 0.02 70);
-  --muted: oklch(0.92 0.012 80);
-  --muted-foreground: oklch(0.45 0.02 70);
-  --accent: oklch(0.93 0.02 85);
-  --accent-foreground: oklch(0.25 0.02 70);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.25 0.02 70 / 14%);
-  --input: oklch(0.25 0.02 70 / 12%);
-  --ring: #efc851;
+  --foreground: oklch(0.22 0.03 70);
+  --card: oklch(0.985 0.01 85);
+  --card-foreground: oklch(0.22 0.03 70);
+  --popover: oklch(0.99 0.008 85);
+  --popover-foreground: oklch(0.22 0.03 70);
+  --primary: #7a4e0e;
+  --primary-foreground: #faf6ee;
+  --service-aqua: #0e6b5f;
+  --secondary: oklch(0.91 0.018 80);
+  --secondary-foreground: oklch(0.24 0.03 70);
+  --muted: oklch(0.91 0.014 80);
+  --muted-foreground: oklch(0.4 0.025 70);
+  --accent: oklch(0.9 0.022 80);
+  --accent-foreground: oklch(0.24 0.03 70);
+  --destructive: oklch(0.5 0.2 27);
+  --border: oklch(0.28 0.03 70 / 22%);
+  --input: oklch(0.28 0.03 70 / 16%);
+  --ring: #7a4e0e;
   --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.94 0.014 82);
-  --sidebar-foreground: oklch(0.22 0.02 70);
-  --sidebar-primary: #efc851;
-  --sidebar-primary-foreground: #1a1408;
-  --sidebar-accent: oklch(0.90 0.02 80);
-  --sidebar-accent-foreground: oklch(0.25 0.02 70);
-  --sidebar-border: oklch(0.25 0.02 70 / 12%);
-  --sidebar-ring: #efc851;
+  --chart-2: oklch(0.55 0.14 162);
+  --chart-3: oklch(0.55 0.14 75);
+  --chart-4: oklch(0.5 0.18 303);
+  --chart-5: oklch(0.5 0.18 16);
+  --sidebar: oklch(0.93 0.016 82);
+  --sidebar-foreground: oklch(0.22 0.03 70);
+  --sidebar-primary: #7a4e0e;
+  --sidebar-primary-foreground: #faf6ee;
+  --sidebar-accent: oklch(0.88 0.02 80);
+  --sidebar-accent-foreground: oklch(0.24 0.03 70);
+  --sidebar-border: oklch(0.28 0.03 70 / 16%);
+  --sidebar-ring: #7a4e0e;
+  --color-zinc-50: var(--foreground);
+  --color-zinc-100: var(--foreground);
+  --color-zinc-200: oklch(0.28 0.03 70);
+  --color-zinc-300: oklch(0.35 0.025 70);
+  --color-gray-50: var(--foreground);
+  --color-gray-100: var(--foreground);
+  --color-gray-200: oklch(0.28 0.03 70);
+  --color-gray-300: oklch(0.35 0.025 70);
+  --color-amber-50: var(--primary);
+  --color-amber-100: var(--primary);
+  --color-amber-200: var(--primary);
+  --color-purple-50: #5b21b6;
+  --color-purple-100: #6d28d9;
+  --color-purple-200: #6d28d9;
 }
 
 @layer base {
@@ -650,7 +680,7 @@
 .topbar-num-red { color: #f8b4b4; }   /* HP — light red, stays legible against black stroke */
 .topbar-num-gold { color: #f8d56a; }  /* Gold + timer — warm gold */
 
-/* Game StsColors — BBCode / card titles / hover-tip titles. Not scheme-bound. */
+/* Game StsColors on dark chrome. Light paper uses ink-weight hues; .dark islands restore extract hex. */
 .sts-text-cream { color: #fff6e2; }
 .sts-text-gold { color: #efc851; }
 .sts-text-green { color: #7fff00; }
@@ -659,8 +689,26 @@
 .sts-text-aqua { color: #2aebbe; }
 .sts-text-purple { color: #ee82ee; }
 
+.light .sts-text-cream { color: var(--foreground); }
+.light .sts-text-gold { color: var(--primary); }
+.light .sts-text-green { color: #1f7a22; }
+.light .sts-text-red { color: #c03636; }
+.light .sts-text-blue { color: #1d6a8a; }
+.light .sts-text-aqua { color: var(--service-aqua); }
+.light .sts-text-purple { color: #8a2f9a; }
+
+.dark .sts-text-cream { color: #fff6e2; }
+.dark .sts-text-gold { color: #efc851; }
+.dark .sts-text-green { color: #7fff00; }
+.dark .sts-text-red { color: #ff5555; }
+.dark .sts-text-blue { color: #87ceeb; }
+.dark .sts-text-aqua { color: #2aebbe; }
+.dark .sts-text-purple { color: #ee82ee; }
+
+.service-aqua { color: var(--service-aqua); }
+
 /* Character identity + service chrome that borrows it. Not [green]/[red] tags. */
-.spire-gold { color: #efc851; }
+.spire-gold { color: var(--primary); }
 .spire-silver { color: #8ad6e0; }
 .spire-bronze { color: #d7a470; }
 .spire-blue { color: #60a5fa; }
@@ -670,6 +718,26 @@
 .spire-orange { color: #fb923c; }
 .spire-pink { color: #f472b6; }
 .spire-aqua { color: #22d3ee; }
+
+.light .spire-silver { color: #0f766e; }
+.light .spire-bronze { color: #9a5b24; }
+.light .spire-blue { color: #1d4ed8; }
+.light .spire-red { color: #dc2626; }
+.light .spire-green { color: #047857; }
+.light .spire-purple { color: #6d28d9; }
+.light .spire-orange { color: #c2410c; }
+.light .spire-pink { color: #be185d; }
+.light .spire-aqua { color: #0e7490; }
+
+.dark .spire-silver { color: #8ad6e0; }
+.dark .spire-bronze { color: #d7a470; }
+.dark .spire-blue { color: #60a5fa; }
+.dark .spire-red { color: #f87171; }
+.dark .spire-green { color: #34d399; }
+.dark .spire-purple { color: #c084fc; }
+.dark .spire-orange { color: #fb923c; }
+.dark .spire-pink { color: #f472b6; }
+.dark .spire-aqua { color: #22d3ee; }
 
 /* History Course YouTube-style cover phrase */
 .cover-phrase-outline {

@@ -32,8 +32,9 @@ import {
 } from "@/lib/i18n";
 import { DEFAULT_USER_PROFILE, characterIconUrl } from "@/lib/user-profile";
 import { getContactHref } from "@/lib/contact-routing";
-import { getSiteOrigin } from "@/lib/site-origin";
+import { COLOR_SCHEME_BOOT_SCRIPT, THEME_COLOR_DARK } from "@/lib/color-scheme";
 import { getSTS2Patches } from "@/lib/data";
+import { getSiteOrigin } from "@/lib/site-origin";
 import { serviceMessages } from "@/messages/service";
 import { contactMessages } from "@/messages/contact";
 import {
@@ -269,7 +270,7 @@ function StaticLanguageDropdown({
   return (
     <details data-static-nav-dropdown className="patch-static-dropdown relative group">
       <summary
-        className="flex h-8 min-w-[4.5rem] max-w-[5.5rem] cursor-pointer items-center justify-between gap-1 rounded-md border border-border bg-background/80 px-2 text-left text-xs font-semibold text-foreground shadow-sm transition-colors hover:bg-white/5 sm:min-w-[5.75rem] sm:max-w-[8.25rem] sm:gap-2 sm:px-2.5 sm:text-sm"
+        className="flex h-8 min-w-[4.5rem] max-w-[5.5rem] cursor-pointer items-center justify-between gap-1 rounded-md border border-border bg-background/80 px-2 text-left text-xs font-semibold text-foreground shadow-sm transition-colors hover:bg-muted sm:min-w-[5.75rem] sm:max-w-[8.25rem] sm:gap-2 sm:px-2.5 sm:text-sm"
         aria-label={label}
         title={label}
       >
@@ -574,11 +575,13 @@ function renderShell(route: StaticPatchRoute): string {
       lang={lang}
       data-service-locale={route.serviceLocale}
       data-game-locale={route.gameLocale}
-      className="dark patch-static-fonts"
+      className="patch-static-fonts"
     >
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content={THEME_COLOR_DARK} />
+        <script dangerouslySetInnerHTML={{ __html: COLOR_SCHEME_BOOT_SCRIPT }} />
         <title>{title}</title>
         {description && <meta name="description" content={description} />}
         <link rel="canonical" href={canonicalUrl} />

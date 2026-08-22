@@ -15,15 +15,15 @@
 - `Codex`라는 이름은 새 UI, 새 문서, 새 컴포넌트명에서 쓰지 않는다. 백과사전 canonical URL은 `/compendium`이며, 기존 `/codex` 라우트는 호환을 고려해 리다이렉트 대상으로 점진적으로 정리한다.
 - 첫 화면은 실제 탐색/검색/비교가 가능한 도구여야 한다. 설명형 랜딩 페이지나 큰 마케팅 히어로는 만들지 않는다.
 
-## 스킴: 다크가 기본, 라이트는 셸 variant
+## 스킴: 다크가 기본, 라이트는 종이 위 잉크
 
-- **다크 + 게임 원본 애셋이 먼저다.** `:root`가 다크 정본이고 `color-scheme: dark`다. 라이트는 `.light`가 서비스 셸 토큰만 덮는다.
+- **다크 + 게임 원본 애셋이 먼저다.** `:root`가 다크 정본이다. 라이트는 `.light`가 **서비스 셸 팔레트 전체**를 종이 배경에 맞게 다시 깐다. 배경만 밝히고 다크용 글자색을 그대로 두지 않는다.
 - 방문 기본은 항상 다크다. localStorage에 값이 없으면 **다크**다. 시스템 설정을 기본으로 쓰지 않는다.
 - 저장 키는 `sts-color-scheme`. 값: `dark`(기본·권장) / `light` / `system`. `system`만 `prefers-color-scheme`을 따른다.
-- 컨트롤은 상단바가 아니라 **프로필** 헤더에 둔다. 상단바는 이미 검색·언어·백과사전·레거시·문의·프로필로 꽉 차 있다.
-- 라이트는 서비스 셸(페이지 배경, 내비, 필터 패널, 댓글 패널, 프로필 활동)만 밝게 한다. 카드 아트, Spine, hover tip 9-slice, 확인 팝업, 인스펙트 커서, rich sine/jitter, 게임 텍스트 색, 백과사전 검색창 인셋은 스킴에 묶지 않는다.
-- Tailwind `dark:`는 `.light`가 아닌 모든 곳에서 적용된다. `--primary`는 라이트에서도 `TEXT_GOLD`다. 두 번째 골드를 만들지 않는다.
-- 패치 Worker HTML과 Storybook 워크숍은 다크로 남긴다. 요청 시점에 테마를 계산하지 않는다.
+- 컨트롤은 상단바가 아니라 **프로필** 헤더에 둔다.
+- 라이트 셸: 페이지 배경 `#f4f1ea`, 본문 잉크, `--primary` 잉크 골드 `#7a4e0e`(같은 골드 색상, 종이 대비용), `--service-aqua` 잉크 틸 `#0e6b5f`. `zinc-50`/`zinc-100` 같은 다크용 창백한 유틸도 잉크로 재매핑한다.
+- 게임 크롬은 `.dark` 섬이다. 카드 아트, hover tip 9-slice, 확인 팝업, 인스펙트 커서, 백과사전 검색창 인셋은 추출 hex(`TEXT_GOLD` `#EFC851` 등)를 유지한다.
+- 패치 Worker HTML도 같은 `sts-color-scheme` 부트 스크립트를 쓴다. 요청 시점에 테마를 계산하지 않는다. Storybook 워크숍 캔버스는 다크다.
 
 ## 색 층: 게임 텍스트 ≠ 캐릭터 ≠ Tailwind 숫자
 
@@ -35,17 +35,17 @@
 
 | 토큰 | hex | 쓰는 곳 |
 | --- | --- | --- |
-| `TEXT_GOLD` | `#EFC851` | 유일한 **골드**. 강조, `--primary`, `[gold]`, hover tip 제목, 좋아요 활성 |
+| `TEXT_GOLD` | `#EFC851` | 게임 크롬 골드. `[gold]`, hover tip 제목, 다크 `--primary` |
 | `TEXT_GREEN` | `#7FFF00` | `[green]`, 강화 수치, 버프 + sine |
 | `TEXT_RED` | `#FF5555` | `[red]`, 너프 + jitter |
 | `TEXT_BLUE` | `#87CEEB` | `[blue]` 수치/방어도 등 게임 본문 파랑 |
-| `TEXT_AQUA` | `#2AEBBE` | `[aqua]` |
+| `TEXT_AQUA` | `#2AEBBE` | `[aqua]`. 서비스 링크 aqua는 라이트에서 `--service-aqua` |
 | `TEXT_PURPLE` | `#EE82EE` | `[purple]`, 인챈트 제목 |
 | `TEXT_CREAM` | `#FFF6E2` | 카드/팁 본문 크림 |
 
-이 hex들은 Tailwind 팔레트에 없다. `yellow-500`(`#eab308`)은 문서가 예전에 가져온 프레임워크 기본값일 뿐이고, 서비스가 쓰던 `#d4a843`은 게임 골드가 아니라 사이트에서 만든 무딘 골드다. **골드 3분기를 유지할 이유는 없다.** 게임의 gold 키워드가 하나이므로 사이트도 `TEXT_GOLD` 하나다.
+이 hex들은 Tailwind 팔레트에 없다. `yellow-500`은 프레임워크 기본값이고, 옛 `#d4a843`은 게임 골드가 아니다. **게임 gold 키워드는 `TEXT_GOLD` 하나**다. 라이트 셸의 `--primary`는 그 색을 종이에 올릴 수 있게 같은 색상환에서 잉크로 내린 값이지, 다른 골드 브랜드가 아니다.
 
-Tailwind `500`은 라이트 모드 중심 스케일의 중간이다. 다크가 기본인 이 서비스에서 500을 “다크 기본 강조”로 쓰지 않는다. 강조는 게임 hex다. 라이트가 생기면 같은 토큰의 대비용 variant를 붙일 뿐, 두 번째 골드를 만들지 않는다.
+Tailwind `500`은 라이트 모드 중심 스케일의 중간이다. 다크가 기본인 이 서비스에서 500을 “다크 기본 강조”로 쓰지 않는다. 다크 강조는 게임 hex, 라이트 강조는 같은 색의 잉크 variant다.
 
 HUD 숫자(히스토리 코스 `topbar-num-gold` `#f8d56a`)는 검정 외곽선 위의 **체력/골드/타이머 페인트**이지 `[gold]`가 아니다. 이 층에 합치지 않는다.
 
@@ -71,19 +71,17 @@ HUD 숫자(히스토리 코스 `topbar-num-gold` `#f8d56a`)는 검정 외곽선 
 
 ### 4. 서비스 셸 (shadcn 의미 토큰)
 
-페이지 배경, 패널, 본문/보조 글자, 테두리. 다크 값이 정본이다. `--primary`는 흰 회색이 아니라 `TEXT_GOLD`다.
+페이지 배경, 패널, 본문/보조 글자, 테두리. 다크 값이 정본이다. `--primary`는 흰 회색이 아니다.
 
-| 용도 | 값 | 비고 |
+| 용도 | 다크 | 라이트 |
 | --- | --- | --- |
-| 페이지 배경 | `bg-background` | 다크 정본 / 라이트는 따뜻한 종이색 `#f4f1ea` |
-| 패널/상단바 | `bg-sidebar` | 백과사전 필터·인덱스 상단바. 다크는 옛 `#16162a` 계열 |
-| 주요 텍스트 | `#e4e4e7`, `zinc-200` | |
-| 보조 텍스트 | `#a1a1aa`, `zinc-400` | |
-| 약한 텍스트 | `zinc-600` | 카운트, 영어 보조명 |
-| 기본 강조 / primary | `TEXT_GOLD` `#EFC851` | `yellow-500` 사용 금지 |
-| 버프 | `TEXT_GREEN` + sine | |
-| 너프 | `TEXT_RED` + jitter | |
-| 고대의 존재 카테고리 | blue | 개별 리소스 링크는 gold |
+| 페이지 배경 | `bg-background` | 종이 `#f4f1ea` |
+| 패널/상단바 | `bg-sidebar` (`#16162a` 계열) | 크림 사이드바 |
+| 주요 텍스트 | `text-foreground` | 잉크 |
+| 기본 강조 / primary | `TEXT_GOLD` `#EFC851` | 잉크 골드 `#7a4e0e` |
+| 섀소식·외부 링크 | `TEXT_AQUA` `#2AEBBE` | 잉크 틸 `#0e6b5f` |
+| 버프 | `TEXT_GREEN` + sine | 종이 위는 `#1f7a22` |
+| 너프 | `TEXT_RED` + jitter | 종이 위는 `#c03636` |
 
 링크 색(게임 리소스 gold / 섀소식·외부 aqua)은 `src/lib/service-link-classes.ts`가 정본이다. Tailwind `cyan-*`는 링크에 쓰지 않는다. 디펙트 `.spire-aqua`와 이거아님저거 왼쪽 투표 크롬은 캐릭터/투표 층이라 링크 aqua(`TEXT_AQUA`)와 다르다.
 
@@ -257,7 +255,7 @@ Rich 패치는 Steam 패치노트를 소스로 하되, 백과사전 데이터와
 4. **링크 색** — 게임 리소스 gold, 섀소식·외부 aqua. `cyan-*` 링크 유틸 제거. 완료.
 5. **좋아요** — 백과사전 타일 스킨은 강령의 극. 이야기 감정 팔레트는 prod에서 깨질 수 있어 보류. 이거아님저거 테이블은 병합하지 않는다.
 6. **이름 정리** — 호출부 `CompendiumIndexLayout` / `RelatedResourceLinks`. 완료. 통합검색 라벨은 인챈트.
-7. **라이트 variant** — 서비스 셸만. 프로필 `sts-color-scheme` (`dark`/`light`/`system`). 게임 크롬·패치 Worker·Storybook은 다크. 완료.
+7. **라이트 variant** — 서비스 셸 팔레트(잉크 골드/틸). 프로필 `sts-color-scheme`. 패치 Worker도 같은 키를 읽는다. 게임 크롬은 `.dark` 섬. Storybook 캔버스는 다크. 완료.
 
 ## 아직 손대지 않는 것들 (사람말로)
 

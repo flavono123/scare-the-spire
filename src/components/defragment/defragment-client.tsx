@@ -122,7 +122,7 @@ export function DefragmentClient({
               type="button"
               aria-expanded={composerOpen}
               onClick={() => setComposerOpen((open) => !open)}
-              className="group/create inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary shadow-[0_0_18px_rgba(239,200,81,0.06)] transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/15 hover:shadow-[0_6px_22px_rgba(239,200,81,0.1)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 active:translate-y-0 motion-reduce:transform-none"
+              className="group/create inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary shadow-[0_0_18px_rgba(122,78,14,0.08)] transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/15 hover:shadow-[0_6px_22px_rgba(122,78,14,0.12)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 active:translate-y-0 motion-reduce:transform-none"
             >
               <Image
                 src={DEFRAGMENT_TOKEN_SRC}
@@ -135,7 +135,7 @@ export function DefragmentClient({
             </button>
           )}
         </div>
-        <div className="max-w-xl font-game-text text-sm leading-relaxed text-zinc-400">
+        <div className="max-w-xl font-game-text text-sm leading-relaxed text-muted-foreground">
           <RichText text={subtitle} />
         </div>
       </header>

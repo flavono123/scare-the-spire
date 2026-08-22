@@ -2,6 +2,7 @@
 
 import { type CSSProperties, type ReactNode } from "react";
 import Image from "@/components/ui/static-image";
+import { cn } from "@/lib/utils";
 import {
   HOVER_TIP_BODY_COLOR,
   HOVER_TIP_SLICE,
@@ -74,7 +75,7 @@ export function GameHoverTip({
 
   return (
     <span
-      className={className}
+      className={cn("dark", className)}
       style={{
         display: "block",
         borderStyle: "solid",

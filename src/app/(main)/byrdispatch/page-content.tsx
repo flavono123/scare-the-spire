@@ -495,7 +495,7 @@ function ByrdispatchBulletLine({
             ? "[&_.patch-note-content>p]:mb-0 [&_.patch-note-content>p]:text-pink-100"
             : staged
               ? "[&_.patch-note-content>p]:mb-0"
-            : "[&_.patch-note-content>p]:mb-0 [&_.patch-note-content>p]:text-zinc-300",
+            : "[&_.patch-note-content>p]:mb-0 [&_.patch-note-content>p]:text-foreground",
         ].join(" ")}
       >
         <ByrdispatchRichText
@@ -547,7 +547,7 @@ function ByrdispatchDetailsBlock({
           <span className="text-xs text-purple-200/70 transition-transform group-open/byrdispatch-details:rotate-180">⌄</span>
         </summary>
         {details.items.length > 0 && (
-          <ul className="mt-2 space-y-1.5 overflow-visible text-sm leading-6 text-zinc-300">
+          <ul className="mt-2 space-y-1.5 overflow-visible text-sm leading-6 text-foreground">
             {details.items.map((item, index) => (
               <ByrdispatchSectionItemLine
                 key={byrdispatchItemKey(item, index)}
@@ -608,7 +608,7 @@ function ByrdispatchMediaBlock({ media }: { media: ByrdispatchMedia }) {
         className="mx-auto block h-auto w-auto max-w-full object-contain"
       />
       {media.alt && (
-        <figcaption className="border-t border-border/60 px-3 py-2 text-xs font-medium text-zinc-400">
+        <figcaption className="border-t border-border/60 px-3 py-2 text-xs font-medium text-muted-foreground">
           {media.alt}
         </figcaption>
       )}
@@ -731,7 +731,7 @@ function ByrdispatchSectionList({
             statusLabels={statusLabels}
           />
           {section.items.length > 0 && (
-            <ul className="mt-2 space-y-1.5 text-sm leading-6 text-zinc-300">
+            <ul className="mt-2 space-y-1.5 text-sm leading-6 text-foreground">
               {section.items.map((item, index) => (
                 <Fragment key={byrdispatchItemKey(item, index)}>
                   <ByrdispatchSectionItemLine
@@ -791,7 +791,7 @@ export async function renderByrdispatchPage(
           />
         </div>
         <div className="min-w-0">
-          <h1 className="text-3xl font-black tracking-tight text-zinc-50">
+          <h1 className="text-3xl font-black tracking-tight text-foreground">
             {messages.title}
           </h1>
         </div>
@@ -861,7 +861,7 @@ export async function renderByrdispatchPage(
       )}
 
       <section className="mt-8 border-t border-border/70 pt-6">
-        <h2 className="mb-3 text-sm font-bold text-zinc-100">
+        <h2 className="mb-3 text-sm font-bold text-foreground">
           {commonMessages.comments}
         </h2>
         <CommentSection

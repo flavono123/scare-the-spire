@@ -87,7 +87,7 @@ export function GameUiHoverTip({
   const tip = visible && placement && portalRoot
     ? createPortal(
       <div
-        className="pointer-events-none"
+        className="pointer-events-none dark"
         style={{
           position: "fixed",
           left: placement.left,

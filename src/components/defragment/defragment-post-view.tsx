@@ -175,7 +175,7 @@ export function DefragmentPostView({
             {formatTimeAgo(post.created_at, copy, dateLocale)}
           </span>
         </div>
-        <h1 className="mb-3 font-service text-xl font-bold text-zinc-50">
+        <h1 className="mb-3 font-service text-xl font-bold text-foreground">
           {post.title}
         </h1>
         {editing && isAuthor ? (

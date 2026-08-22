@@ -75,8 +75,8 @@ export const SemanticSurfaces: Story = {
   render: () => (
     <StoryStack>
       <StoryNote>
-        `--primary`는 TEXT_GOLD다. `:root`가 다크 정본이다. 라이트는 `.light` 셸 variant이며
-        `--primary`는 그대로다.
+        `--primary`는 다크에서 TEXT_GOLD, 라이트에서 종이용 잉크 골드다.
+        게임 `[gold]`/hover tip은 추출 hex를 `.dark` 섬에서 유지한다.
       </StoryNote>
       <div className="grid gap-3 sm:grid-cols-2">
         <Swatch label="background" value="bg-background" className="bg-background" />
@@ -101,14 +101,14 @@ export const SemanticSurfacesLight: Story = {
     <div className="light rounded-lg border border-border bg-background p-4 text-foreground">
       <StoryStack>
         <StoryNote>
-          워크숍 html은 다크다. 이 칸만 `.light`다. `--primary`는 같은 TEXT_GOLD.
-          패치 Worker와 Storybook 캔버스는 라이트하지 않는다.
+          워크숍 html은 다크다. 이 칸만 `.light`다. `--primary`는 잉크 골드
+          `#7a4e0e`이고, 패치 Worker도 같은 `sts-color-scheme`을 읽는다.
         </StoryNote>
         <div className="grid gap-3 sm:grid-cols-2">
           <Swatch label="background 종이" value="#f4f1ea" className="bg-background" />
           <Swatch label="card" value="bg-card" className="bg-card" />
           <Swatch label="sidebar" value="bg-sidebar" className="bg-sidebar" />
-          <Swatch label="primary = gold" value="bg-primary" className="bg-primary" />
+          <Swatch label="primary 잉크 골드" value="#7a4e0e" className="bg-primary" />
         </div>
         <div className="space-y-1 rounded-lg border border-border bg-card p-3">
           <p className="text-foreground">foreground — 주요 텍스트</p>
