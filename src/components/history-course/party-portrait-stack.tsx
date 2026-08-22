@@ -10,8 +10,12 @@ import type { ReplayRun } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
 
 const CHIP = 48;
-const OVERLAP_X = 20;
+const OVERLAP_X = 22;
 const POP_PX = 6;
+const CHAR_BACKDROP = "/images/sts2/ui/topbar/top_bar_char_backdrop.png";
+const FRAME_SLICE =
+  "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png) 28 fill / 8px / 0 stretch";
+const FRAME_BORDER = 8;
 
 function characterLabel(id: string, tables: ReturnType<typeof useGameI18n>): string {
   return localizeGame(tables, "characters", id) ?? id.replace(/^CHARACTER\./, "");
@@ -28,23 +32,96 @@ export function PartyPortraitStack({
   onFocus?: (index: number) => void;
   size?: "topbar" | "summary";
 }) {
+  const multi = run.players.length > 1;
+  const framed = size === "topbar";
+  const stretchFrame = framed && multi;
+  const chip = CHIP;
+  const overlapX = OVERLAP_X;
+  const popPx = multi ? POP_PX : 0;
+  const stackWidth = chip + Math.max(0, run.players.length - 1) * overlapX;
+  const stackHeight = chip + (stretchFrame ? 0 : popPx);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  const icons = (
+    <PortraitIcons
+      run={run}
+      focusedIndex={focusedIndex}
+      onFocus={onFocus}
+      chip={chip}
+      overlapX={overlapX}
+      popPx={popPx}
+      stackWidth={stackWidth}
+      stackHeight={stackHeight}
+      perIconBackdrop={framed && !multi}
+      hoveredIndex={hoveredIndex}
+      setHoveredIndex={setHoveredIndex}
+    />
+  );
+
+  if (!stretchFrame) {
+    return icons;
+  }
+
+  return (
+    <div
+      className="relative shrink-0 overflow-visible"
+      style={{ paddingTop: popPx, boxSizing: "content-box" }}
+      data-testid="party-portrait-stack"
+      data-focused-player={focusedIndex}
+      data-portrait-frame="stretched"
+    >
+      <div
+        className="relative overflow-visible"
+        style={{
+          boxSizing: "content-box",
+          borderImage: FRAME_SLICE,
+          borderStyle: "solid",
+          borderWidth: FRAME_BORDER,
+        }}
+      >
+        {icons}
+      </div>
+    </div>
+  );
+}
+
+function PortraitIcons({
+  run,
+  focusedIndex,
+  onFocus,
+  chip,
+  overlapX,
+  popPx,
+  stackWidth,
+  stackHeight,
+  perIconBackdrop,
+  hoveredIndex,
+  setHoveredIndex,
+}: {
+  run: ReplayRun;
+  focusedIndex: number;
+  onFocus?: (index: number) => void;
+  chip: number;
+  overlapX: number;
+  popPx: number;
+  stackWidth: number;
+  stackHeight: number;
+  perIconBackdrop: boolean;
+  hoveredIndex: number | null;
+  setHoveredIndex: (index: number | null) => void;
+}) {
   const tables = useGameI18n();
   const characters = run.players.map((player) => player.character);
   const ordinals = partyDuplicateOrdinals(characters);
   const interactive = typeof onFocus === "function" && run.players.length > 1;
   const multi = run.players.length > 1;
-  const chip = size === "summary" ? 48 : CHIP;
-  const overlapX = size === "summary" ? 22 : OVERLAP_X;
-  const popPx = multi ? POP_PX : 0;
-  const width = chip + Math.max(0, characters.length - 1) * overlapX;
-  const height = chip + popPx;
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const nested = stackHeight === chip;
 
   return (
     <div
       className="relative shrink-0 overflow-visible"
-      style={{ width, height }}
-      data-testid="party-portrait-stack"
+      style={{ width: stackWidth, height: stackHeight }}
+      data-testid={nested ? "party-portrait-icons" : "party-portrait-stack"}
       data-focused-player={focusedIndex}
     >
       {characters.map((character, playerIndex) => {
@@ -98,10 +175,10 @@ export function PartyPortraitStack({
           width: chip,
           height: chip,
           left: playerIndex * overlapX,
-          top: popPx,
+          top: nested ? 0 : popPx,
           zIndex: focused ? 20 : 10,
           transform: focused && multi ? `translateY(-${popPx}px)` : undefined,
-          backgroundImage: "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
+          backgroundImage: perIconBackdrop ? `url(${CHAR_BACKDROP})` : undefined,
           backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
         } as const;
@@ -117,7 +194,7 @@ export function PartyPortraitStack({
               data-testid={`party-portrait-${playerIndex}`}
               className={cn(frameClass, "cursor-pointer")}
               style={frameStyle}
-              onClick={() => onFocus(playerIndex)}
+              onClick={() => onFocus?.(playerIndex)}
               onMouseEnter={() => setHoveredIndex(playerIndex)}
               onMouseLeave={() => setHoveredIndex(null)}
               onFocus={() => setHoveredIndex(playerIndex)}

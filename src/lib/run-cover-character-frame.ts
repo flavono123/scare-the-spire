@@ -95,7 +95,10 @@ export type CoverPartyPolygon = {
   bottomLeft: number;
 };
 
-/** Equal-height parallelograms; only the 60° TR→BL edges move with slot index. */
+/**
+ * Equal-height 60° TR→BL slices. Ends are open: leftmost keeps a vertical
+ * left edge, rightmost a vertical right edge, so the cover corners stay filled.
+ */
 export function coverPartySlicePolygon(
   slotIndex: number,
   partySize: number,
@@ -105,11 +108,13 @@ export function coverPartySlicePolygon(
   const half = COVER_PARTY_SLANT_PCT / 2;
   const leftMid = (i / n) * 100 - COVER_PARTY_SEAM_PCT;
   const rightMid = ((i + 1) / n) * 100 + COVER_PARTY_SEAM_PCT;
+  const leftmost = i === 0;
+  const rightmost = i === n - 1;
   return {
-    topLeft: leftMid + half,
-    topRight: rightMid + half,
-    bottomRight: rightMid - half,
-    bottomLeft: leftMid - half,
+    topLeft: leftmost ? 0 : leftMid + half,
+    topRight: rightmost ? 100 : rightMid + half,
+    bottomRight: rightmost ? 100 : rightMid - half,
+    bottomLeft: leftmost ? 0 : leftMid - half,
   };
 }
 
@@ -118,15 +123,15 @@ export function coverPartyClipPath(slotIndex: number, partySize: number): string
   return `polygon(${p.topLeft}% 0%, ${p.topRight}% 0%, ${p.bottomRight}% 100%, ${p.bottomLeft}% 100%)`;
 }
 
-/** Keep the body in the right of each slice — select art is right-weighted. */
+/** Body sits in each slice, nudged left so the face is not clipped on the right. */
 export function coverPartyCharacterImageStyle(
   character: string | undefined,
   slotIndex: number,
   partySize: number,
 ): CSSProperties {
   const n = Math.max(1, partySize);
-  const targetX = ((slotIndex + 0.72) / n) * 100;
-  return coverCharacterArtStyle(character, targetX - 72);
+  const targetX = ((slotIndex + 0.55) / n) * 100;
+  return coverCharacterArtStyle(character, targetX - 78);
 }
 
 /** Full-bleed layer; spine + select background share this clip. */

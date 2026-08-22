@@ -57,28 +57,40 @@ async function main() {
   );
   assert(COVER_PARTY_DIAGONAL_DEG === 60, "party cover diagonal is 60°");
   for (const n of [2, 3, 4]) {
-    const slants: number[] = [];
+    const innerSlants: number[] = [];
     for (let i = 0; i < n; i++) {
       const p = coverPartySlicePolygon(i, n);
       const clip = coverPartyClipPath(i, n);
       assert(clip.includes("% 0%") && clip.includes("% 100%"), `slot ${i}/${n} is full height`);
-      assert(p.topLeft > p.bottomLeft, `slot ${i}/${n} TR→BL left edge`);
-      assert(p.topRight > p.bottomRight, `slot ${i}/${n} TR→BL right edge`);
-      const leftSlant = p.topLeft - p.bottomLeft;
-      const rightSlant = p.topRight - p.bottomRight;
-      assert(
-        Math.abs(leftSlant - rightSlant) < 0.01,
-        `slot ${i}/${n} is a parallelogram`,
-      );
-      slants.push(leftSlant);
+      const leftmost = i === 0;
+      const rightmost = i === n - 1;
+      if (leftmost) {
+        assert(p.topLeft === 0 && p.bottomLeft === 0, `${n}P left edge is open`);
+        assert(p.topRight > p.bottomRight, `${n}P leftmost still crops the right`);
+        innerSlants.push(p.topRight - p.bottomRight);
+      } else if (rightmost) {
+        assert(p.topRight === 100 && p.bottomRight === 100, `${n}P right edge is open`);
+        assert(p.topLeft > p.bottomLeft, `${n}P rightmost still crops the left`);
+        innerSlants.push(p.topLeft - p.bottomLeft);
+      } else {
+        assert(p.topLeft > p.bottomLeft, `slot ${i}/${n} TR→BL left edge`);
+        assert(p.topRight > p.bottomRight, `slot ${i}/${n} TR→BL right edge`);
+        const leftSlant = p.topLeft - p.bottomLeft;
+        const rightSlant = p.topRight - p.bottomRight;
+        assert(
+          Math.abs(leftSlant - rightSlant) < 0.01,
+          `slot ${i}/${n} is a parallelogram`,
+        );
+        innerSlants.push(leftSlant);
+      }
       if (i > 0) {
         const prev = coverPartySlicePolygon(i - 1, n);
         assert(prev.topRight > p.topLeft, `slots ${i - 1} and ${i} overlap`);
       }
     }
     assert(
-      slants.every((slant) => Math.abs(slant - slants[0]!) < 0.01),
-      `${n}P slices share the same diagonal`,
+      innerSlants.every((slant) => Math.abs(slant - innerSlants[0]!) < 0.01),
+      `${n}P inner edges share the same diagonal`,
     );
   }
 
