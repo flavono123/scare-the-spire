@@ -21,8 +21,8 @@ export const Divergence: Story = {
         rows={[
           [
             "토큰 방향",
-            ":root = 다크",
-            "html.dark 강제, :root는 아직 shadcn 라이트 값",
+            ":root = 다크, color-scheme: dark",
+            "html.dark 클래스는 레이아웃에 남아 있음. 값은 :root와 같음",
           ],
           [
             "yellow-500 / 옛 #d4a843",

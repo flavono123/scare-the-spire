@@ -75,7 +75,7 @@ export const SemanticSurfaces: Story = {
   render: () => (
     <StoryStack>
       <StoryNote>
-        `--primary`는 TEXT_GOLD다. `:root`를 다크 정본으로 뒤집는 일은 다음 패스.
+        `--primary`는 TEXT_GOLD다. `:root`가 다크 정본이다. `html.dark`는 같은 값의 호환 클래스다.
       </StoryNote>
       <div className="grid gap-3 sm:grid-cols-2">
         <Swatch label="background" value="bg-background" className="bg-background" />
