@@ -47,10 +47,10 @@ function InfoRailSection({
 }) {
   return (
     <details
-      className="group rounded-lg border border-white/10 bg-black/20 px-4 py-3"
+      className="group rounded-lg border border-border bg-card/80 px-4 py-3"
       open={defaultOpen}
     >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-gray-200">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-foreground">
         <span>{title}</span>
         <span className="text-xs text-gray-500 transition-transform group-open:rotate-180">⌄</span>
       </summary>
@@ -202,7 +202,7 @@ export function AncientDetail({
         </section>
 
         <aside className="grid items-start gap-3 lg:grid-cols-2">
-          <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
+          <section className="rounded-lg border border-border bg-card/80 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
                 <MetaPill value={gameUi.ancientsTitle} color="#60a5fa" />
@@ -213,14 +213,14 @@ export function AncientDetail({
               </div>
               {ancient.nameEn !== ancient.name && (
                 <div>
-                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
-                  <div className="font-game-text text-sm text-gray-300">{ancient.nameEn}</div>
+                  <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{detailLabels.englishName}</div>
+                  <div className="font-game-text text-sm text-foreground">{ancient.nameEn}</div>
                 </div>
               )}
               {ancient.epithetEn && ancient.epithetEn !== ancient.epithet && (
                 <div>
-                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishEpithet}</div>
-                  <div className="font-game-text text-sm text-gray-300">{ancient.epithetEn}</div>
+                  <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{detailLabels.englishEpithet}</div>
+                  <div className="font-game-text text-sm text-foreground">{ancient.epithetEn}</div>
                 </div>
               )}
             </div>

@@ -209,7 +209,7 @@ function ReferenceLine({
         </div>
         <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
           {targets.map((target) => (
-            <span key={target.id} className="min-w-0 truncate rounded-md border border-white/10 bg-black/20 px-2 py-1.5 text-sm text-gray-200">
+            <span key={target.id} className="min-w-0 truncate rounded-md border border-border bg-card/80 px-2 py-1.5 text-sm text-gray-200">
               <EntityPreview entity={toPreviewEntity(target, kind, serviceLocale)} preferEntityLocaleLabel={false}>
                 {target.title}
               </EntityPreview>

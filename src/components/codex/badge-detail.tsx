@@ -99,7 +99,7 @@ export function BadgeDetail({
         </section>
 
         <aside className="flex flex-col gap-3">
-          <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
+          <section className="rounded-lg border border-border bg-card/80 px-4 py-3">
             <div className="flex flex-wrap gap-2">
               <span className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm font-bold text-gray-300">
                 {badge.multiplayerOnly
@@ -120,10 +120,10 @@ export function BadgeDetail({
           </section>
 
           <details
-            className="group rounded-lg border border-white/10 bg-black/20 px-4 py-3"
+            className="group rounded-lg border border-border bg-card/80 px-4 py-3"
             open
           >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-gray-200">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-foreground">
               <span>
                 {serviceText.common.comments}{commentCount > 0 ? ` (${commentCount})` : ""}
               </span>

@@ -48,7 +48,7 @@ export function RelicInspectSlab({
     <div
       data-relic-inspect-slab
       data-relic-inspect-density={density}
-      className={cn("relative mx-auto w-full max-w-[28rem]", className)}
+      className={cn("dark relative mx-auto w-full max-w-[28rem]", className)}
       style={{ aspectRatio: PANEL_ASPECT }}
     >
       <Image

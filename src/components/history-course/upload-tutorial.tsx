@@ -62,8 +62,8 @@ function PathBox({ path, copyLabel, copiedLabel }: { path: string; copyLabel: st
     }
   };
   return (
-    <div className="flex items-center gap-2 rounded-md bg-black/40 px-3 py-2 ring-1 ring-zinc-800">
-      <code className="flex-1 overflow-x-auto whitespace-nowrap font-mono text-xs text-zinc-200">
+    <div className="flex items-center gap-2 rounded-md bg-muted px-3 py-2 ring-1 ring-border dark:bg-black/40 dark:ring-zinc-800">
+      <code className="flex-1 overflow-x-auto whitespace-nowrap font-mono text-xs text-foreground">
         {path}
       </code>
       <button
@@ -72,8 +72,8 @@ function PathBox({ path, copyLabel, copiedLabel }: { path: string; copyLabel: st
         className={cn(
           "inline-flex items-center gap-1 rounded px-2 py-1 text-[10px] font-semibold transition",
           copied
-            ? "bg-emerald-500/15 text-emerald-300"
-            : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700",
+            ? "bg-emerald-600/15 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300"
+            : "bg-card text-muted-foreground ring-1 ring-border hover:bg-accent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700",
         )}
       >
         {copied ? (
@@ -100,20 +100,20 @@ export function UploadTutorial() {
   }, []);
 
   return (
-    <details className="group rounded-xl bg-zinc-900/40 ring-1 ring-zinc-800/80 open:ring-zinc-700">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-zinc-200">
+    <details className="group rounded-xl border border-border bg-card/80 ring-1 ring-border open:ring-foreground/20 dark:border-transparent dark:bg-zinc-900/40 dark:ring-zinc-800/80 dark:open:ring-zinc-700">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-foreground">
         <span>
           {copy.summary.split("{runFile}")[0]}
-          <code className="rounded bg-black/40 px-1.5 py-0.5 font-mono text-xs text-zinc-300">
+          <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground dark:bg-black/40 dark:text-zinc-300">
             .run
           </code>
           {copy.summary.split("{runFile}")[1]}
         </span>
-        <span className="text-xs font-normal text-zinc-500 group-open:rotate-180 transition">
+        <span className="text-xs font-normal text-muted-foreground transition group-open:rotate-180">
           ▾
         </span>
       </summary>
-      <div className="space-y-3 border-t border-zinc-800/80 px-4 py-4">
+      <div className="space-y-3 border-t border-border px-4 py-4 dark:border-zinc-800/80">
         <div className="flex gap-1.5">
           {(Object.keys(OS_LABEL) as OS[]).map((os) => {
             const Icon = OS_ICON[os];
@@ -124,9 +124,9 @@ export function UploadTutorial() {
                 onClick={() => setActive(os)}
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-semibold ring-1 ring-inset transition",
-                  os === active
-                    ? "bg-amber-300/15 text-amber-200 ring-amber-300/30"
-                    : "bg-zinc-900/60 text-zinc-400 ring-zinc-800 hover:text-zinc-200",
+                    os === active
+                    ? "bg-primary/15 text-primary ring-primary/30"
+                    : "bg-muted/60 text-muted-foreground ring-border hover:text-foreground dark:bg-zinc-900/60 dark:ring-zinc-800 dark:hover:text-zinc-200",
                 )}
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -138,14 +138,14 @@ export function UploadTutorial() {
 
         <PathBox path={OS_PATH[active]} copyLabel={copy.copy} copiedLabel={copy.copied} />
 
-        <p className="text-xs leading-5 text-zinc-400">
+        <p className="text-xs leading-5 text-muted-foreground">
           {copy.hints[active]}
         </p>
 
-        <ul className="space-y-1.5 text-xs leading-5 text-zinc-400">
+        <ul className="space-y-1.5 text-xs leading-5 text-muted-foreground">
           {copy.bullets.map((text) => (
             <li key={text}>
-              <span className="text-zinc-500">·</span> {text}
+              <span className="text-muted-foreground/70">·</span> {text}
             </li>
           ))}
         </ul>

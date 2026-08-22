@@ -23,10 +23,10 @@ export function VersionSelector({
         onChange={(e) => onChange(e.target.value)}
         className={`
           appearance-none text-xs font-mono px-2 py-1 pr-6 rounded-md border cursor-pointer
-          bg-[#1a1a2e] focus:outline-none focus:ring-1 focus:ring-primary/50
+          bg-card focus:outline-none focus:ring-1 focus:ring-primary/50 dark:bg-[#1a1a2e]
           ${isOlderVersion
             ? "border-primary/50 text-primary"
-            : "border-white/10 text-gray-400 hover:border-white/30"
+            : "border-border text-muted-foreground hover:border-foreground/30 dark:border-white/10 dark:text-gray-400 dark:hover:border-white/30"
           }
         `}
       >
@@ -38,9 +38,11 @@ export function VersionSelector({
       </select>
       {/* Dropdown arrow */}
       <svg
-        className="absolute right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 pointer-events-none"
+        className={`absolute right-1.5 top-1/2 h-3 w-3 -translate-y-1/2 pointer-events-none ${
+          isOlderVersion ? "text-primary" : "text-muted-foreground"
+        }`}
         fill="none"
-        stroke={isOlderVersion ? "#fbbf24" : "#9ca3af"}
+        stroke="currentColor"
         viewBox="0 0 24 24"
       >
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />

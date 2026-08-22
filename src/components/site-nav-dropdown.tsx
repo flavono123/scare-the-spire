@@ -54,7 +54,7 @@ export function SiteNavDropdown({
     >
       <>
         {isToyBox && (
-          <div className="border-b border-border/60 px-3 pb-2 pt-1.5 font-service text-xs font-semibold text-zinc-300">
+          <div className="border-b border-border/60 px-3 pb-2 pt-1.5 font-service text-xs font-semibold text-muted-foreground">
             {alt}
           </div>
         )}
@@ -79,7 +79,7 @@ export function SiteNavDropdown({
             />
             <span className="min-w-0 truncate">{item.label}</span>
             {item.isNew && (
-              <span className="ml-auto shrink-0 rounded-full border border-emerald-300/30 bg-emerald-400/10 px-1.5 py-0.5 text-[9px] font-bold tracking-[0.08em] text-emerald-200">
+              <span className="ml-auto shrink-0 rounded-full border border-emerald-700/35 bg-emerald-600/10 px-1.5 py-0.5 text-[9px] font-bold tracking-[0.08em] text-emerald-800 dark:border-emerald-300/30 dark:bg-emerald-400/10 dark:text-emerald-200">
                 NEW
               </span>
             )}

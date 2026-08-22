@@ -75,7 +75,7 @@ export function BestiaryLibrary({
   };
 
   const switcher = (
-    <div className="flex shrink-0 overflow-hidden rounded-md border border-white/10 bg-black/20 p-0.5">
+    <div className="flex shrink-0 overflow-hidden rounded-md border border-border bg-card/80 p-0.5">
       <button
         type="button"
         onClick={() => setView("monsters")}

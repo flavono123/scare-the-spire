@@ -112,7 +112,7 @@ export default function ContactPage({
   };
 
   return (
-    <div className="relative min-h-[calc(100svh-3rem)] overflow-hidden bg-[#07070d] px-3 py-8 text-zinc-100 sm:px-6 sm:py-12">
+    <div className="relative min-h-[calc(100svh-3rem)] overflow-hidden bg-background px-3 py-8 text-foreground sm:px-6 sm:py-12">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_5%,rgba(239,200,81,0.13),transparent_34%),radial-gradient(circle_at_88%_78%,rgba(125,55,125,0.12),transparent_30%)]"
@@ -135,18 +135,18 @@ export default function ContactPage({
             />
           </span>
           <div className="min-w-0">
-            <p className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-amber-300/70">
+            <p className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-primary/80">
               {copy.eyebrow}
             </p>
-            <h1 className="font-game-title text-3xl font-black text-[#fff7d6] [text-shadow:0_2px_0_rgba(0,0,0,0.8)] sm:text-4xl">
+            <h1 className="font-game-title text-3xl font-black text-foreground sm:text-4xl">
               {mailboxTitle}
             </h1>
           </div>
         </header>
 
-        <section data-contact-form-panel className="overflow-hidden rounded-2xl border border-amber-300/20 bg-[#0b0a12]/95 shadow-[0_24px_80px_rgba(0,0,0,0.5)]">
-          <div className="flex items-center gap-2 border-b border-white/8 bg-white/[0.025] px-4 py-3 text-xs text-zinc-400 sm:px-6">
-            <LockKeyhole className="h-4 w-4 shrink-0 text-amber-300/70" aria-hidden="true" />
+        <section data-contact-form-panel className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+          <div className="flex items-center gap-2 border-b border-border bg-muted/50 px-4 py-3 text-xs text-muted-foreground sm:px-6">
+            <LockKeyhole className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
             <span>{copy.privateNote}</span>
           </div>
 
@@ -162,18 +162,18 @@ export default function ContactPage({
                   height={72}
                   className="h-16 w-16 object-contain drop-shadow-lg"
                 />
-                <CheckCircle2 className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full bg-[#0b0a12] p-1 text-emerald-300" aria-hidden="true" />
+                <CheckCircle2 className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full bg-card p-1 text-emerald-700 dark:bg-[#0b0a12] dark:text-emerald-300" aria-hidden="true" />
               </span>
               <div>
-                <h2 className="font-game-title text-2xl font-black text-emerald-200">
+                <h2 className="font-game-title text-2xl font-black text-emerald-800 dark:text-emerald-200">
                   {feedbackCopy.sendSuccessLabel}
                 </h2>
-                <p className="mt-2 text-sm text-zinc-400">{copy.successDetail}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{copy.successDetail}</p>
               </div>
               <button
                 type="button"
                 onClick={resetForm}
-                className="mt-2 rounded-lg border border-amber-300/25 bg-amber-300/8 px-4 py-2 text-sm font-bold text-amber-100 transition-colors hover:bg-amber-300/14"
+                className="mt-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-bold text-primary transition-colors hover:bg-primary/16"
               >
                 {copy.sendAnother}
               </button>
@@ -181,7 +181,7 @@ export default function ContactPage({
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6 px-4 py-5 sm:px-6 sm:py-6">
               <fieldset>
-                <legend className="mb-3 font-game-title text-lg font-black text-[#fff7d6]">
+                <legend className="mb-3 font-game-title text-lg font-black text-foreground">
                   {feedbackCopy.categoryLabel}
                 </legend>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -197,7 +197,7 @@ export default function ContactPage({
                           onChange={() => setCategory(categoryId)}
                           className="peer sr-only"
                         />
-                        <span className="flex min-h-[5.5rem] items-center gap-2 rounded-xl border border-white/10 bg-white/[0.025] px-3 py-2.5 transition-[border-color,background-color,transform] hover:border-amber-300/25 hover:bg-amber-300/[0.045] peer-checked:border-amber-300/55 peer-checked:bg-amber-300/10 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-200/70 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0b0a12] sm:min-h-[6.25rem] sm:flex-col sm:justify-center sm:text-center">
+                        <span className="flex min-h-[5.5rem] items-center gap-2 rounded-xl border border-border bg-muted/30 px-3 py-2.5 transition-[border-color,background-color,transform] hover:border-primary/40 hover:bg-primary/8 peer-checked:border-primary/60 peer-checked:bg-primary/12 peer-focus-visible:ring-2 peer-focus-visible:ring-primary/70 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background sm:min-h-[6.25rem] sm:flex-col sm:justify-center sm:text-center">
                           <Image
                             src={CATEGORY_ICONS[categoryId]}
                             alt=""
@@ -206,7 +206,7 @@ export default function ContactPage({
                             className="h-9 w-9 shrink-0 object-contain drop-shadow-md sm:h-10 sm:w-10"
                           />
                           <span className="min-w-0">
-                            <span className="block text-xs font-bold text-zinc-100 sm:text-sm">
+                            <span className="block text-xs font-bold text-foreground sm:text-sm">
                               {categoryCopy.label}
                             </span>
                           </span>
@@ -218,7 +218,7 @@ export default function ContactPage({
               </fieldset>
 
               <label className="block">
-                <span className="mb-1.5 block font-game-title text-lg font-black text-[#fff7d6]">
+                <span className="mb-1.5 block font-game-title text-lg font-black text-foreground">
                   {copy.messageLabel}
                 </span>
                 <textarea
@@ -229,15 +229,15 @@ export default function ContactPage({
                   maxLength={CONTACT_MESSAGE_MAX_LENGTH}
                   rows={8}
                   required
-                  className="min-h-48 w-full resize-y rounded-xl border border-fuchsia-300/15 bg-[#250b2d]/75 px-4 py-3 text-sm leading-relaxed text-zinc-100 outline-none transition-colors placeholder:text-fuchsia-100/28 focus:border-amber-300/45 focus:bg-[#2b0d34]/80 sm:text-base"
+                  className="min-h-48 w-full resize-y rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/45 focus:bg-card sm:text-base"
                 />
-                <span className="mt-1.5 block text-right text-[11px] tabular-nums text-zinc-500">
+                <span className="mt-1.5 block text-right text-[11px] tabular-nums text-muted-foreground">
                   {message.length.toLocaleString()} / {CONTACT_MESSAGE_MAX_LENGTH.toLocaleString()}
                 </span>
               </label>
 
               <label className="block">
-                <span className="mb-1.5 block text-sm font-bold text-zinc-200">
+                <span className="mb-1.5 block text-sm font-bold text-foreground">
                   {copy.emailLabel}
                 </span>
                 <input
@@ -248,23 +248,23 @@ export default function ContactPage({
                   required={category === "partnership"}
                   autoComplete="email"
                   placeholder="name@example.com"
-                  className="h-11 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-sm text-zinc-100 outline-none transition-colors placeholder:text-zinc-700 focus:border-amber-300/40"
+                  className="h-11 w-full rounded-lg border border-border bg-muted/40 px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/40"
                 />
                 {category === "partnership" && (
-                  <span className="mt-1.5 block text-xs text-amber-200/75">
+                  <span className="mt-1.5 block text-xs text-primary">
                     {copy.partnershipEmailHint}
                   </span>
                 )}
               </label>
 
-              <div className="space-y-1 text-[11px] leading-relaxed text-zinc-600">
+              <div className="space-y-1 text-[11px] leading-relaxed text-muted-foreground">
                 <p>{copy.privacyNote}</p>
                 <p>{copy.sourceNote}</p>
               </div>
 
               {submitState === "rate-limited" && (
                 <p
-                  className="rounded-lg border border-red-300/25 bg-red-300/8 px-3 py-2 text-sm font-medium text-red-200"
+                  className="rounded-lg border border-red-700/30 bg-red-600/8 px-3 py-2 text-sm font-medium text-red-800 dark:border-red-300/25 dark:bg-red-300/8 dark:text-red-200"
                   role="alert"
                 >
                   {copy.rateLimited}
@@ -275,7 +275,7 @@ export default function ContactPage({
                 <button
                   type="submit"
                   disabled={submitDisabled}
-                  className="inline-flex h-11 min-w-28 items-center justify-center gap-2 rounded-xl border border-amber-200/35 bg-amber-300/12 px-5 font-game-title text-base font-black text-[#fff7d6] shadow-[0_8px_24px_rgba(0,0,0,0.3)] transition-[background-color,border-color,transform] hover:-translate-y-0.5 hover:border-amber-200/60 hover:bg-amber-300/18 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0 motion-reduce:transform-none"
+                  className="inline-flex h-11 min-w-28 items-center justify-center gap-2 rounded-xl border border-primary/40 bg-primary/12 px-5 font-game-title text-base font-black text-primary shadow-sm transition-[background-color,border-color,transform] hover:-translate-y-0.5 hover:border-primary/60 hover:bg-primary/18 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0 motion-reduce:transform-none"
                 >
                   {submitting && <EngagementSpinner size={15} />}
                   {submitting ? feedbackCopy.sendingLabel : feedbackCopy.sendLabel}

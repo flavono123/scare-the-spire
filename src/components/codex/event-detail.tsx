@@ -94,10 +94,10 @@ function InfoRailSection({
 }) {
   return (
     <details
-      className="group rounded-lg border border-white/10 bg-black/20 px-4 py-3"
+      className="group rounded-lg border border-border bg-card/80 px-4 py-3"
       open={defaultOpen}
     >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-gray-200">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-foreground">
         <span>{title}</span>
         <span className="text-xs text-gray-500 transition-transform group-open:rotate-180">⌄</span>
       </summary>
@@ -2372,7 +2372,7 @@ export function EventDetail({
         </section>
 
         <aside className="grid gap-3 lg:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)] xl:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)_minmax(18rem,1fr)_minmax(18rem,1fr)] xl:items-start">
-          <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
+          <section className="rounded-lg border border-border bg-card/80 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
                 <MetaPill value={eventTypeLabel} color="#f3c640" />
@@ -2380,8 +2380,8 @@ export function EventDetail({
               </div>
               {event.nameEn !== event.name && (
                 <div>
-                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
-                  <div className="font-game-text text-sm text-gray-300">{event.nameEn}</div>
+                  <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{detailLabels.englishName}</div>
+                  <div className="font-game-text text-sm text-foreground">{event.nameEn}</div>
                 </div>
               )}
             </div>

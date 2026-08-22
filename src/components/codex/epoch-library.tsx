@@ -577,7 +577,7 @@ function EpochThumbnail({
       ) : (
         <div className="absolute inset-0 bg-gradient-to-r from-zinc-800/50 to-zinc-900/80" />
       )}
-      <div className="relative flex h-full min-w-0 flex-col justify-between gap-2 p-4">
+      <div className="dark relative flex h-full min-w-0 flex-col justify-between gap-2 p-4">
         <div className="min-w-0">
           <h3 className="truncate font-game-title text-lg font-semibold text-zinc-100 transition-colors group-hover:text-primary">
             {epoch.name}

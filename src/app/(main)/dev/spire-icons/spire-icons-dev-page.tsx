@@ -686,7 +686,7 @@ function VariantPalette({
         className={`flex h-7 min-w-9 items-center justify-center rounded border px-1.5 text-[10px] font-semibold transition ${
           value === "original"
             ? "border-white/70 bg-white/15 text-white"
-            : "border-white/10 bg-black/20 text-zinc-500 hover:border-white/30"
+            : "border-border bg-card/80 text-zinc-500 hover:border-white/30"
         }`}
         onClick={() => onChange("original")}
         title="원본"
@@ -700,7 +700,7 @@ function VariantPalette({
         className={`flex h-7 min-w-9 items-center justify-center rounded border px-1.5 text-[10px] font-semibold transition ${
           value === "ghost"
             ? "border-zinc-200/70 bg-zinc-200/15 text-zinc-100"
-            : "border-white/10 bg-black/20 text-zinc-500 hover:border-white/30"
+            : "border-border bg-card/80 text-zinc-500 hover:border-white/30"
         }`}
         onClick={() => onChange("ghost")}
         title="Ghost · 밀랍 셰이더"

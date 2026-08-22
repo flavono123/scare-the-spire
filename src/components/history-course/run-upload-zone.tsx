@@ -249,8 +249,8 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
         className={cn(
           "relative overflow-hidden rounded-2xl border-2 border-dashed px-6 py-10 transition",
           isDragging
-            ? "border-amber-300/70 bg-amber-300/5"
-            : "border-zinc-700 bg-zinc-900/40 hover:border-zinc-600",
+            ? "border-primary/70 bg-primary/5"
+            : "border-border bg-card/70 hover:border-foreground/25 dark:border-zinc-700 dark:bg-zinc-900/40 dark:hover:border-zinc-600",
         )}
       >
         {/* Background flair — flail knight peeking from the right edge,
@@ -270,20 +270,20 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
           <Upload
             className={cn(
               "h-8 w-8",
-              isDragging ? "text-amber-300" : "text-zinc-500",
+              isDragging ? "text-primary" : "text-muted-foreground",
             )}
             aria-hidden
           />
           <div>
-            <p className="text-base font-semibold text-zinc-100">
+            <p className="text-base font-semibold text-foreground">
               {copy.dropTitle}
             </p>
-            <p className="mt-1 text-xs text-zinc-400">
-              <code className="rounded bg-black/40 px-1.5 py-0.5 font-mono text-zinc-300">
+            <p className="mt-1 text-xs text-muted-foreground">
+              <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-foreground dark:bg-black/40 dark:text-zinc-300">
                 SlayTheSpire2/steam
               </code>{" "}
               {copy.dropDescription.split("{runFile}")[0]}
-              <code className="rounded bg-black/40 px-1.5 py-0.5 font-mono text-zinc-300">
+              <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-foreground dark:bg-black/40 dark:text-zinc-300">
                 .run
               </code>
               {copy.dropDescription.split("{runFile}")[1]}
@@ -293,7 +293,7 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
             <button
               type="button"
               onClick={() => folderInputRef.current?.click()}
-              className="inline-flex items-center gap-1.5 rounded-md bg-zinc-800 px-3 py-1.5 text-xs font-semibold text-zinc-100 ring-1 ring-zinc-700 hover:bg-zinc-700"
+              className="inline-flex items-center gap-1.5 rounded-md bg-muted px-3 py-1.5 text-xs font-semibold text-foreground ring-1 ring-border hover:bg-accent dark:bg-zinc-800 dark:text-zinc-100 dark:ring-zinc-700 dark:hover:bg-zinc-700"
             >
               <FolderUp className="h-3.5 w-3.5" aria-hidden />
               {copy.selectFolder}
@@ -301,14 +301,14 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="inline-flex items-center gap-1.5 rounded-md bg-zinc-800 px-3 py-1.5 text-xs font-semibold text-zinc-100 ring-1 ring-zinc-700 hover:bg-zinc-700"
+              className="inline-flex items-center gap-1.5 rounded-md bg-muted px-3 py-1.5 text-xs font-semibold text-foreground ring-1 ring-border hover:bg-accent dark:bg-zinc-800 dark:text-zinc-100 dark:ring-zinc-700 dark:hover:bg-zinc-700"
             >
               <Upload className="h-3.5 w-3.5" aria-hidden />
               {copy.selectFile}
             </button>
           </div>
           {supabaseEnabled && (
-            <label className="inline-flex cursor-pointer items-center gap-2 text-[11px] text-zinc-400 hover:text-zinc-200">
+            <label className="inline-flex cursor-pointer items-center gap-2 text-[11px] text-muted-foreground hover:text-foreground">
               <input
                 type="checkbox"
                 checked={shareOnUpload}
@@ -319,7 +319,7 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
             </label>
           )}
           {isParsing && (
-            <p className="flex items-center gap-1.5 text-xs text-zinc-400">
+            <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <RefreshCw className="h-3 w-3 animate-spin" aria-hidden />
               {copy.parsing}
             </p>
@@ -328,7 +328,7 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
             <p
               className={cn(
                 "text-xs",
-                donationToast.tone === "success" ? "text-emerald-300" : "text-red-300",
+                donationToast.tone === "success" ? "text-emerald-700 dark:text-emerald-300" : "text-red-700 dark:text-red-300",
               )}
             >
               {donationToast.message}
@@ -359,10 +359,10 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
         <div className="rounded-lg bg-red-500/10 px-4 py-3 ring-1 ring-red-400/30">
           <div className="flex items-start gap-2">
             <AlertCircle
-              className="mt-0.5 h-4 w-4 shrink-0 text-red-300"
+              className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-300"
               aria-hidden
             />
-            <div className="text-xs text-red-200">
+            <div className="text-xs text-red-800 dark:text-red-200">
               <p className="font-semibold">
                 {copy.unreadableCount.replace("{count}", String(errors.length))}
               </p>

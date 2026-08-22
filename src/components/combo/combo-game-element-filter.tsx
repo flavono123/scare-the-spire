@@ -183,7 +183,7 @@ export function ComboGameElementFilter({
 
   return (
     <div ref={rootRef} className="relative space-y-2" data-combo-game-element-filter>
-      <div className="flex min-w-0 items-center rounded-xl border border-white/10 bg-black/25 p-1 shadow-[0_8px_28px_rgba(0,0,0,0.18)] transition-colors focus-within:border-primary/25">
+      <div className="flex min-w-0 items-center rounded-xl border border-border bg-card p-1 shadow-sm transition-colors focus-within:border-primary/25 dark:border-white/10 dark:bg-black/25 dark:shadow-[0_8px_28px_rgba(0,0,0,0.18)]">
         <Search className="ml-2.5 h-4 w-4 shrink-0 text-primary/60" aria-hidden="true" />
         <input
           ref={inputRef}
@@ -197,7 +197,7 @@ export function ComboGameElementFilter({
           placeholder={copy.filterSearchPlaceholder}
           aria-label={copy.filterSearchPlaceholder}
           aria-controls="combo-game-element-filter-panel"
-          className="h-9 min-w-0 flex-1 bg-transparent px-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-600"
+          className="h-9 min-w-0 flex-1 bg-transparent px-2 text-sm text-foreground outline-none placeholder:text-muted-foreground"
         />
         <button
           type="button"
@@ -214,7 +214,7 @@ export function ComboGameElementFilter({
             "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-semibold transition-[border-color,background-color,color] sm:px-3",
             open || selected.length > 0
               ? "border-primary/30 bg-primary/10 text-primary"
-              : "border-white/10 bg-white/[0.03] text-zinc-400 hover:border-white/20 hover:text-zinc-200",
+              : "border-border bg-muted/40 text-muted-foreground hover:border-border hover:text-foreground dark:border-white/10 dark:bg-white/[0.03] dark:text-zinc-300 dark:hover:border-white/20 dark:hover:text-zinc-100",
           )}
         >
           <SlidersHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
@@ -265,7 +265,7 @@ export function ComboGameElementFilter({
                   "group/popular inline-flex h-7 shrink-0 items-center gap-1 rounded-full border pl-1 pr-2 text-[11px] font-semibold transition-colors",
                   isSelected
                     ? "border-primary/45 bg-primary/15 text-primary"
-                    : "border-white/10 bg-white/[0.03] text-zinc-300 hover:border-primary/25 hover:bg-primary/[0.08] hover:text-primary",
+                    : "border-border bg-muted/30 text-muted-foreground hover:border-primary/25 hover:bg-primary/[0.08] hover:text-primary dark:border-white/10 dark:bg-white/[0.03] dark:text-zinc-300",
                 )}
               >
                 <span className="relative flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full bg-black/30">
@@ -287,7 +287,7 @@ export function ComboGameElementFilter({
                 <span
                   className={cn(
                     "tabular-nums text-[10px]",
-                    isSelected ? "text-primary/80" : "text-zinc-500",
+                    isSelected ? "text-primary/80" : "text-muted-foreground",
                   )}
                 >
                   {count}
@@ -329,7 +329,7 @@ export function ComboGameElementFilter({
           <button
             type="button"
             onClick={() => onSelectedChange([])}
-            className="h-8 shrink-0 px-2 text-[11px] text-zinc-500 transition-colors hover:text-zinc-200"
+            className="h-8 shrink-0 px-2 text-[11px] text-muted-foreground transition-colors hover:text-foreground"
           >
             {copy.clearGameElements}
           </button>
@@ -349,28 +349,28 @@ export function ComboGameElementFilter({
             role="dialog"
             aria-label={copy.gameElementFilterLabel}
             data-combo-game-element-filter-panel
-            className="fixed inset-x-0 bottom-0 z-[80] flex max-h-[78svh] flex-col overflow-hidden rounded-t-2xl border border-b-0 border-primary/25 bg-[#080810] shadow-[0_-18px_60px_rgba(0,0,0,0.65)] sm:absolute sm:inset-auto sm:left-0 sm:right-0 sm:top-full sm:z-40 sm:mt-2 sm:max-h-[28rem] sm:rounded-xl sm:border-b sm:shadow-[0_18px_50px_rgba(0,0,0,0.55)]"
+            className="fixed inset-x-0 bottom-0 z-[80] flex max-h-[78svh] flex-col overflow-hidden rounded-t-2xl border border-b-0 border-border bg-popover shadow-[0_-18px_60px_rgba(0,0,0,0.18)] sm:absolute sm:inset-auto sm:left-0 sm:right-0 sm:top-full sm:z-40 sm:mt-2 sm:max-h-[28rem] sm:rounded-xl sm:border-b sm:shadow-[0_18px_50px_rgba(0,0,0,0.18)] dark:border-primary/25 dark:bg-[#080810] dark:shadow-[0_-18px_60px_rgba(0,0,0,0.65)] sm:dark:shadow-[0_18px_50px_rgba(0,0,0,0.55)]"
           >
-            <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-3 py-2.5 sm:px-4">
+            <div className="flex shrink-0 items-center justify-between border-b border-border px-3 py-2.5 sm:px-4 dark:border-white/10">
               <div>
                 <h2 className="text-xs font-semibold text-primary">
                   {copy.gameElementFilterLabel}
                 </h2>
-                <p className="mt-0.5 text-[10px] text-zinc-500">
+                <p className="mt-0.5 text-[10px] text-muted-foreground">
                   {normalizedQuery ? copy.gameElementSearchResults : copy.gameElementsInPosts}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 aria-label={commonCopy.close}
               >
                 <X className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>
 
-            <label className="flex shrink-0 items-center gap-2 border-b border-white/10 px-3 py-2 sm:hidden">
+            <label className="flex shrink-0 items-center gap-2 border-b border-border px-3 py-2 sm:hidden dark:border-white/10">
               <Search className="h-4 w-4 shrink-0 text-primary/60" aria-hidden="true" />
               <input
                 ref={mobileInputRef}
@@ -380,7 +380,7 @@ export function ComboGameElementFilter({
                 placeholder={copy.filterSearchPlaceholder}
                 aria-label={copy.filterSearchPlaceholder}
                 data-combo-filter-mobile-search
-                className="h-8 min-w-0 flex-1 bg-transparent text-sm text-zinc-100 outline-none placeholder:text-zinc-600"
+                className="h-8 min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
               />
               {query && (
                 <button
@@ -389,7 +389,7 @@ export function ComboGameElementFilter({
                     setQuery("");
                     mobileInputRef.current?.focus();
                   }}
-                  className="inline-flex h-7 w-7 items-center justify-center rounded text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200"
+                  className="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                   aria-label={copy.clearGameElementSearch}
                 >
                   <X className="h-3.5 w-3.5" aria-hidden="true" />
@@ -397,7 +397,7 @@ export function ComboGameElementFilter({
               )}
             </label>
 
-            <div className="flex shrink-0 gap-1 overflow-x-auto border-b border-white/10 px-3 py-2">
+            <div className="flex shrink-0 gap-1 overflow-x-auto border-b border-border px-3 py-2 dark:border-white/10">
               <button
                 type="button"
                 aria-pressed={activeType == null}
@@ -406,7 +406,7 @@ export function ComboGameElementFilter({
                   "shrink-0 rounded-full border px-2.5 py-1 text-[11px] transition-colors",
                   activeType == null
                     ? "border-primary/40 bg-primary/15 text-primary"
-                    : "border-white/10 text-zinc-500 hover:border-white/20 hover:text-zinc-300",
+                    : "border-border text-muted-foreground hover:border-border hover:text-foreground dark:border-white/10 dark:hover:border-white/20 dark:hover:text-zinc-300",
                 )}
               >
                 {copy.allResources}
@@ -421,7 +421,7 @@ export function ComboGameElementFilter({
                     "shrink-0 rounded-full border px-2.5 py-1 text-[11px] transition-colors",
                     activeType === type
                       ? "border-primary/40 bg-primary/15 text-primary"
-                      : "border-white/10 text-zinc-500 hover:border-white/20 hover:text-zinc-300",
+                      : "border-border text-muted-foreground hover:border-border hover:text-foreground dark:border-white/10 dark:hover:border-white/20 dark:hover:text-zinc-300",
                   )}
                 >
                   {typeLabels[type] ?? type}
@@ -431,7 +431,7 @@ export function ComboGameElementFilter({
 
             <div className="min-h-0 flex-1 overflow-y-auto p-3">
               {results.length === 0 ? (
-                <p className="px-3 py-12 text-center text-xs text-zinc-600">
+                <p className="px-3 py-12 text-center text-xs text-muted-foreground">
                   {normalizedQuery
                     ? copy.noGameElementSearchResults
                     : copy.noGameElementsInPosts}
@@ -468,7 +468,7 @@ export function ComboGameElementFilter({
                             </span>
                           )}
                         </span>
-                        <span className="w-full truncate text-[10px] font-semibold text-zinc-300">
+                        <span className="w-full truncate text-[10px] font-semibold text-foreground">
                           {name}
                         </span>
                       </button>

@@ -67,10 +67,10 @@ function InfoRailSection({
 }) {
   return (
     <details
-      className="group rounded-lg border border-white/10 bg-black/20 px-4 py-3"
+      className="group rounded-lg border border-border bg-card/80 px-4 py-3"
       open={defaultOpen}
     >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-gray-200">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-foreground">
         <span>{title}</span>
         <span className="text-xs text-gray-500 transition-transform group-open:rotate-180">⌄</span>
       </summary>
@@ -254,7 +254,7 @@ export function EpochDetail({
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,rgba(96,165,250,0.20),transparent_34%),linear-gradient(135deg,#111827,#050505_65%)]" />
               )}
               <div className="absolute inset-0 bg-gradient-to-l from-black/90 via-black/45 to-black/10" />
-              <div className="absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[5%] sm:right-[4%] sm:top-[5%] sm:w-[48%] sm:min-w-[360px] sm:max-w-[560px]">
+              <div className="dark absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[5%] sm:right-[4%] sm:top-[5%] sm:w-[48%] sm:min-w-[360px] sm:max-w-[560px]">
                 <div className="relative flex min-h-0 flex-1 flex-col">
                   <div className="pointer-events-none absolute -inset-6 rounded-full bg-black/35 blur-2xl" />
                   <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto pr-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -297,7 +297,7 @@ export function EpochDetail({
         </section>
 
         <aside className="flex flex-col gap-3">
-          <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
+          <section className="rounded-lg border border-border bg-card/80 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
                 {epoch.affiliations.map((affiliation) => (
@@ -324,12 +324,12 @@ export function EpochDetail({
               </div>
               {epoch.nameEn !== epoch.name && (
                 <div>
-                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
-                  <div className="font-game-text text-sm text-gray-300">{epoch.nameEn}</div>
+                  <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{detailLabels.englishName}</div>
+                  <div className="font-game-text text-sm text-foreground">{epoch.nameEn}</div>
                 </div>
               )}
               <div>
-                <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.unlockInfo}</div>
+                <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{detailLabels.unlockInfo}</div>
                 <p className="font-game-text text-sm leading-relaxed text-gray-300">
                   {entities ? (
                     <RichDescription
@@ -344,7 +344,7 @@ export function EpochDetail({
               </div>
               {epoch.unlockText && (
                 <div>
-                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.unlockText}</div>
+                  <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{detailLabels.unlockText}</div>
                   <p className="font-game-text text-sm leading-relaxed text-gray-300">
                     {entities ? (
                       <RichDescription

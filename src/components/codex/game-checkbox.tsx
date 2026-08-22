@@ -108,7 +108,7 @@ export function GameCheckboxToggle({
       </span>
       <span
         className={cn(
-          "min-w-0 font-game-title font-bold tracking-[0] text-[#f1c94f] transition-colors [text-shadow:2px_2px_0_rgba(0,0,0,0.82)] group-hover:text-[#ffe27a]",
+          "min-w-0 font-game-title font-bold tracking-[0] text-primary transition-colors [text-shadow:none] group-hover:text-primary dark:text-[#f1c94f] dark:[text-shadow:2px_2px_0_rgba(0,0,0,0.82)] dark:group-hover:text-[#ffe27a]",
           styles.label,
           labelClassName,
         )}
@@ -210,8 +210,10 @@ export function GameWaxCycleToggle({
       </span>
       <span
         className={cn(
-          "min-w-0 font-game-title font-bold tracking-[0] transition-colors [text-shadow:2px_2px_0_rgba(0,0,0,0.82)]",
-          melted ? "text-[#c44] group-hover:text-[#e66]" : "text-[#f1c94f] group-hover:text-[#ffe27a]",
+          "min-w-0 font-game-title font-bold tracking-[0] transition-colors [text-shadow:none] dark:[text-shadow:2px_2px_0_rgba(0,0,0,0.82)]",
+          melted
+            ? "text-red-800 group-hover:text-red-700 dark:text-[#c44] dark:group-hover:text-[#e66]"
+            : "text-primary group-hover:text-primary dark:text-[#f1c94f] dark:group-hover:text-[#ffe27a]",
           styles.label,
           labelClassName,
         )}

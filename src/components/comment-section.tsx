@@ -168,7 +168,7 @@ export function CommentSection({
             placeholder={copy.nicknamePlaceholder}
             defaultValue={profile.nickname}
             maxLength={20}
-            className="w-full rounded bg-zinc-800 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-primary/50"
+            className="w-full rounded bg-muted px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-primary/50"
           />
           {entitiesLoading ? (
             <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card/30 px-3 py-2 text-xs text-muted-foreground">

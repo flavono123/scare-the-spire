@@ -94,10 +94,10 @@ function InfoRailSection({
 }) {
   return (
     <details
-      className="group min-w-0 rounded-lg border border-white/10 bg-black/20 px-4 py-3"
+      className="group min-w-0 rounded-lg border border-border bg-card/80 px-4 py-3"
       open={defaultOpen}
     >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-gray-200">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-foreground">
         <span>{title}</span>
         <span className="text-xs text-gray-500 transition-transform group-open:rotate-180">⌄</span>
       </summary>
@@ -558,12 +558,12 @@ export function CharacterDetail({
 
         <aside className="flex min-w-0 flex-col gap-3">
           {hasCharacterInfo && (
-            <section className="min-w-0 rounded-lg border border-white/10 bg-black/20 px-4 py-3">
+            <section className="min-w-0 rounded-lg border border-border bg-card/80 px-4 py-3">
               <div className="space-y-3">
                 {character.nameEn && (
                   <div>
-                    <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
-                    <div className="font-game-text text-sm text-gray-300">{character.nameEn}</div>
+                    <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{detailLabels.englishName}</div>
+                    <div className="font-game-text text-sm text-foreground">{character.nameEn}</div>
                   </div>
                 )}
                 {unlockCharacter && (
@@ -607,7 +607,7 @@ export function CharacterDetail({
               <div className="space-y-2 font-game-text text-xs leading-relaxed text-gray-400">
                 {quoteRows.map((quote) => (
                   <div key={`${character.id}-quote-${quote.id}`} className="rounded-md border border-white/10 bg-white/[0.03] px-3 py-2.5">
-                    <div className="mb-1.5 flex items-center gap-1.5 font-game-title text-sm font-bold text-gray-200">
+                    <div className="mb-1.5 flex items-center gap-1.5 font-game-title text-sm font-bold text-foreground">
                       <Image
                         src={quote.iconUrl}
                         alt=""
@@ -726,7 +726,7 @@ function CharacterStageHealthBar({
 function CharacterReferenceRail({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="w-full rounded-lg border border-white/10 bg-white/[0.04] p-4">
-      <div className="mb-2 font-game-title text-sm font-bold text-gray-200">{title}</div>
+      <div className="mb-2 font-game-title text-sm font-bold text-foreground">{title}</div>
       {children}
     </section>
   );

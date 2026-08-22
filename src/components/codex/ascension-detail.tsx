@@ -26,10 +26,10 @@ function InfoRailSection({
 }) {
   return (
     <details
-      className="group rounded-lg border border-white/10 bg-black/20 px-4 py-3"
+      className="group rounded-lg border border-border bg-card/80 px-4 py-3"
       open={defaultOpen}
     >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-gray-200">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-foreground">
         <span>{title}</span>
         <span className="text-xs text-gray-500 transition-transform group-open:rotate-180">⌄</span>
       </summary>
@@ -138,7 +138,7 @@ export function AscensionDetail({
         </section>
 
         <aside className="flex flex-col gap-3">
-          <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
+          <section className="rounded-lg border border-border bg-card/80 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm font-bold text-gray-300">
@@ -147,8 +147,8 @@ export function AscensionDetail({
               </div>
               {ascension.nameEn !== ascension.name && (
                 <div>
-                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{labels.englishName}</div>
-                  <div className="font-game-text text-sm text-gray-300">{ascension.nameEn}</div>
+                  <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{labels.englishName}</div>
+                  <div className="font-game-text text-sm text-foreground">{ascension.nameEn}</div>
                 </div>
               )}
             </div>

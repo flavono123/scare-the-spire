@@ -115,6 +115,11 @@ export const SemanticSurfacesLight: Story = {
           <p className="text-muted-foreground">muted-foreground — 보조</p>
           <p className="text-primary">text-primary — 골드</p>
         </div>
+        <StoryNote>
+          게임 애셋 위 글자는 조상에 `dark`를 붙인다. 섬은 zinc/amber 잉크
+          재매핑을 다크 정본으로 되돌린다. `dark:` 유틸은 html.light 안에서
+          켜지지 않는다.
+        </StoryNote>
       </StoryStack>
     </div>
   ),

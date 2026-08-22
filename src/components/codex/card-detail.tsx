@@ -112,10 +112,10 @@ function InfoRailSection({
 }) {
   return (
     <details
-      className="group rounded-lg border border-white/10 bg-black/20 px-4 py-3"
+      className="group rounded-lg border border-border bg-card/80 px-4 py-3"
       open={defaultOpen}
     >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-gray-200">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-foreground">
         <span>{title}</span>
         <span className="text-xs text-gray-500 transition-transform group-open:rotate-180">⌄</span>
       </summary>
@@ -794,7 +794,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
 
         <aside className="flex min-w-0 flex-col gap-3">
           <section
-            className="rounded-lg border border-white/10 bg-black/20 px-4 py-3"
+            className="rounded-lg border border-border bg-card/80 px-4 py-3"
             data-card-detail-meta
           >
             <div className="flex min-w-0 items-center gap-3">
@@ -803,7 +803,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
               </div>
               {serviceLocale !== "en" && renderedPreviewNameEn !== renderedPreviewName && (
                 <span
-                  className="min-w-0 truncate font-game-text text-sm text-gray-300"
+                  className="min-w-0 truncate font-game-text text-sm text-foreground"
                   data-card-detail-english-name
                 >
                   {renderedPreviewNameEn}
