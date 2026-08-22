@@ -311,11 +311,23 @@ Patch notes follow the truth table in `docs/I18N.md`.
 - Enchantments: `[gold:enchantment]이름[/gold]`
 - Events: `[gold:event]이름[/gold]`
 - Monsters/encounters: `[gold:monster]이름[/gold]`, `[gold:encounter]이름[/gold]`
+- Ascensions: `[gold:ascension]승천 8[/gold]`, `[gold:ascension]Ascension 8[/gold]`, `[gold:ascension]A8[/gold]`. Never tag bare `승천` / `Ascension` — that hits tutorials and phrases like "높은 승천".
 - Ancients: `[blue]고대의 존재[/blue]` for the category; `[gold:ancient]니오우[/gold]` for a specific Ancient.
 - Buff label: `([green][sine]버프[/sine][/green])`
 - Nerf label: `([red][jitter]너프[/jitter][/red])`
 
 When a name can be both a card and a power, always use a type hint. Patch notes usually mean cards in card-change sections, so prefer `[gold:card]` there.
+
+### Ascension history (tier 2)
+
+An Ascension's patch history includes **every change that affects that level**, not only notes *about* the modifier itself.
+
+- Explicit `승천 N` / `Ascension N` / `A8` always belongs to that level. Example: `갑각충 (버프): 승천 8 체력이 24-28(25-29) → 24-28(26-30)` is both the monster's history **and** Ascension 8's history.
+- Some A8/A9 monster changes never say 승천. Tag the numbered phrase when Steam wrote it; when Steam only changed the parenthetical value, still treat it as that Ascension:
+  - Monster **HP** `N-N(N-N)` / `N(N)` parentheticals are Ascension 8 (질긴 적들), even with no 승천 mention.
+  - Monster **damage** `N(M) → N(M2)` parentheticals are Ascension 9 (지독한 적들). Card upgrade parens like `6(8)` on cards are **not** A9.
+- Do not invent a `승천 9` clause in the Korean prose if Steam did not say it. Matching is done by `scripts/generate-sts2-patch-lines.ts`; the renderer also auto-wraps untagged numbered mentions for hover/link.
+- After notes change, run `pnpm sts2:patch-lines`. Commit `data/sts2-patch-lines.json`; do not commit `public/generated/*`.
 
 ## Monster Animation Patch Diff
 
