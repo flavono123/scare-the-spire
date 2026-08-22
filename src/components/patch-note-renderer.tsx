@@ -12,7 +12,7 @@ import type { CodexCard, CodexKeyword, CodexCharacter, CodexRelic, CodexPotion, 
 import { RELIC_RARITY_LABELS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
-import { AUTO_LINK_ENTITY_TYPES, buildAutoLinkKeywordsByFirst, wrapUntaggedEntityNames, type AutoLinkKeyword } from "@/lib/auto-link-entity-names";
+import { AUTO_LINK_ENTITY_TYPES, buildAutoLinkKeywordsByFirst, wrapNumberedAscensionMentions, wrapUntaggedEntityNames, type AutoLinkKeyword } from "@/lib/auto-link-entity-names";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -1749,18 +1749,19 @@ function enrichLine(
   key: string,
   context: RenderContext,
 ): ReactNode[] {
-  const wrapSegment = (segment: string) => (
-    context.autoLinkEntities
+  const wrapSegment = (segment: string) => {
+    const withNumberedAscensions = wrapNumberedAscensionMentions(segment);
+    return context.autoLinkEntities
       ? wrapUntaggedEntityNames(
-        segment,
+        withNumberedAscensions,
         lookup.autoLinkKeywordsByFirst,
         (raw) => {
           const entity = findEntity(raw, lookup);
           return entity && AUTO_LINK_ENTITY_TYPES.has(entity.type) ? entity : null;
         },
       )
-      : segment
-  );
+      : withNumberedAscensions;
+  };
   const parts: ReactNode[] = [];
   let lastIndex = 0;
   let matchIndex = 0;

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {
   buildAutoLinkKeywordsByFirst,
+  wrapNumberedAscensionMentions,
   wrapUntaggedEntityNames,
 } from "../src/lib/auto-link-entity-names";
 import type { EntityType } from "../src/components/patch-note-renderer";
@@ -65,6 +66,31 @@ assert.equal(
 assert.equal(
   wrapUntaggedEntityNames("추가 타격", keywordsByFirst, resolve),
   "추가 타격",
+);
+
+assert.equal(
+  wrapNumberedAscensionMentions("승천 8 체력이 24-28(25-29) → 24-28(26-30)으로 증가했습니다."),
+  "[gold:ascension]승천 8[/gold] 체력이 24-28(25-29) → 24-28(26-30)으로 증가했습니다.",
+);
+
+assert.equal(
+  wrapNumberedAscensionMentions("HP at A8 increased from 24-28(25-29) -> 24-28(26-30)."),
+  "HP at [gold:ascension]A8[/gold] increased from 24-28(25-29) -> 24-28(26-30).",
+);
+
+assert.equal(
+  wrapNumberedAscensionMentions("Reworked Ascension 10 scoring."),
+  "Reworked [gold:ascension]Ascension 10[/gold] scoring.",
+);
+
+assert.equal(
+  wrapNumberedAscensionMentions("낮은 승천 9 -> 8 (높은 승천은 9 유지)."),
+  "낮은 승천 9 -> 8 (높은 승천은 9 유지).",
+);
+
+assert.equal(
+  wrapNumberedAscensionMentions("[gold:ascension]승천 8[/gold] 체력"),
+  "[gold:ascension]승천 8[/gold] 체력",
 );
 
 console.log("auto-link-entity-names.spec.ts: ok");

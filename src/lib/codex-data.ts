@@ -2826,11 +2826,11 @@ export async function getCodexAscensions(opts?: { gameLocale?: GameLocale }): Pr
       const nameEn = gameText(engGameAscension, `${kor.id}.title`, eng.name);
       const historical = ASCENSION_HISTORICAL_ALIASES[kor.id];
       const aliasesKo = [
-        ...(kor.level > 0 ? [`승천 ${kor.level}`] : []),
+        ...(kor.level > 0 ? [`승천 ${kor.level}`, `A${kor.level}`] : []),
         ...(historical?.ko ?? []),
       ].filter((alias) => alias !== name);
       const aliasesEn = [
-        ...(kor.level > 0 ? [`Ascension ${kor.level}`] : []),
+        ...(kor.level > 0 ? [`Ascension ${kor.level}`, `A${kor.level}`] : []),
         ...(historical?.en ?? []),
       ].filter((alias) => alias !== nameEn);
 

@@ -4,6 +4,10 @@ import { stripCodexMarkup } from "../src/lib/codex-search";
 import { getSTS2Patches } from "../src/lib/data";
 import { loadAllEntities } from "../src/lib/load-all-entities";
 import type { EntityInfo } from "../src/components/patch-note-renderer";
+import {
+  extractAscensionPatchLabels,
+  isNumberedAscensionLabel,
+} from "../src/lib/sts2-patch-ascension-refs";
 import type { STS2PatchFeaturedEntityType, STS2PatchLine, STS2PatchLineEntityRef } from "../src/lib/types";
 
 const NOTES_DIR = path.join(process.cwd(), "data/sts2-patch-notes");
@@ -115,10 +119,6 @@ function extractImplicitRunLabels(markdown: string): ParsedPatchLine["entityLabe
   return labels;
 }
 
-function isNumberedAscensionLabel(label: string): boolean {
-  return /^(?:승천|ascension)\s*\d+$/i.test(normalizeLookup(label));
-}
-
 function buildNameLookup(entities: EntityInfo[]): Map<string, EntityInfo> {
   const lookup = new Map<string, EntityInfo>();
   for (const entity of entities) {
@@ -136,36 +136,6 @@ function buildNameLookup(entities: EntityInfo[]): Map<string, EntityInfo> {
     }
   }
   return lookup;
-}
-
-function extractNumberedAscensionLabels(text: string): ParsedPatchLine["entityLabels"] {
-  const labels: ParsedPatchLine["entityLabels"] = [];
-  const seen = new Set<string>();
-  const pushLevel = (raw: string) => {
-    const level = raw.replace(/^0+/, "") || "0";
-    if (seen.has(level)) return;
-    seen.add(level);
-    labels.push({ type: "ascension", label: `승천 ${level}` });
-    labels.push({ type: "ascension", label: `Ascension ${level}` });
-  };
-
-  const patterns = [
-    /(?:^|\n)\s*\*{0,2}\s*(승천|ascension)\s*(\d+)/gi,
-    /(승천|ascension)\s*(\d+)\s*(?:리워크|모디파이어|modifier|rework)/gi,
-    /(승천)\s*(\d+)\s*(?:에서\s*)?점수/gi,
-    /ascension\s*(\d+)\s*(?:score|scoring)/gi,
-    /reworked\s+ascension\s+(\d+)/gi,
-    /score[^.]*ascension\s+(\d+)/gi,
-  ];
-
-  for (const pattern of patterns) {
-    let match: RegExpExecArray | null;
-    while ((match = pattern.exec(text)) !== null) {
-      pushLevel(match[match.length - 1]);
-    }
-  }
-
-  return labels;
 }
 
 function extractNamedRunLabels(
@@ -351,7 +321,7 @@ async function main() {
       const combinedLabels = [
         ...koLine.entityLabels,
         ...extractImplicitRunLabels(koLine.markdown),
-        ...extractNumberedAscensionLabels(koLine.markdown),
+        ...extractAscensionPatchLabels(withDetails(koLine, "markdown")),
         ...extractNamedRunLabels(koLine.text, nameLookup),
       ];
       const entityRefs = resolveEntityRefs(combinedLabels, entityLookup, nameLookup);

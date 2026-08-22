@@ -957,7 +957,7 @@
         "label": "인플레이션"
       }
     ],
-    "searchText": "v0.100.0:line-025-ascension-level-06 v0.100.0 0.100.0 적 / 승천 변경 비관: 이제 미스터리 방 유물 발견 확률에 영향. gloom: now impacts mystery room relic find chances. ascension level_06 인플레이션 인플레이션 inflation 승천 6 비관 침울 ascension 6 gloom"
+    "searchText": "v0.100.0:line-025-ascension-level-06 v0.100.0 0.100.0 적 / 승천 변경 비관: 이제 미스터리 방 유물 발견 확률에 영향. gloom: now impacts mystery room relic find chances. ascension level_06 인플레이션 인플레이션 inflation 승천 6 a6 비관 침울 ascension 6 a6 gloom"
   },
   {
     "id": "v0.100.0:line-026-text-1ej0uct",
@@ -1217,7 +1217,7 @@
         "label": "비관"
       }
     ],
-    "searchText": "v0.101.0:line-010-ascension-level-06 v0.101.0 0.101.0 밸런스 일반 비관 승천 모디파이어가 더 이상 휴식 장소 외에 ? 방에 영향을 주지 않음 gloom ascension modifier no longer affects ? rooms in addition to rest sites ascension level_06 비관 인플레이션 inflation 승천 6 비관 침울 ascension 6 gloom"
+    "searchText": "v0.101.0:line-010-ascension-level-06 v0.101.0 0.101.0 밸런스 일반 비관 승천 모디파이어가 더 이상 휴식 장소 외에 ? 방에 영향을 주지 않음 gloom ascension modifier no longer affects ? rooms in addition to rest sites ascension level_06 비관 인플레이션 inflation 승천 6 a6 비관 침울 ascension 6 a6 gloom"
   },
   {
     "id": "v0.101.0:line-011-text-l3nnh2",
@@ -2258,7 +2258,7 @@
         "label": "비관"
       }
     ],
-    "searchText": "v0.102.0:line-001-ascension-level-06 v0.102.0 0.102.0 컨텐츠 일반 승천 6 리워크: 비관 - \"휴식 장소가 줄어듭니다.\"에서 인플레이션 - \"상인에게서 카드를 제거하는 비용이 증가합니다.\"로 변경. 카드 제거 비용이 100 골드에서 시작하며, 제거당 25가 아닌 50씩 증가. reworked ascension 6 from gloom - \"less rest sites.\" -> inflation - \"removing cards from your deck at the merchant is more expensive.\" card removal now starts at 100 gold, increases by 50 gold per removal instead of 25. ascension level_06 비관 인플레이션 inflation 승천 6 비관 침울 ascension 6 gloom"
+    "searchText": "v0.102.0:line-001-ascension-level-06 v0.102.0 0.102.0 컨텐츠 일반 승천 6 리워크: 비관 - \"휴식 장소가 줄어듭니다.\"에서 인플레이션 - \"상인에게서 카드를 제거하는 비용이 증가합니다.\"로 변경. 카드 제거 비용이 100 골드에서 시작하며, 제거당 25가 아닌 50씩 증가. reworked ascension 6 from gloom - \"less rest sites.\" -> inflation - \"removing cards from your deck at the merchant is more expensive.\" card removal now starts at 100 gold, increases by 50 gold per removal instead of 25. ascension level_06 비관 인플레이션 inflation 승천 6 a6 비관 침울 ascension 6 a6 gloom"
   },
   {
     "id": "v0.102.0:line-002-text-yr3gr",
@@ -4589,7 +4589,7 @@
         "label": "승천 10"
       }
     ],
-    "searchText": "v0.103.1:line-007-ascension-level-10 v0.103.1 0.103.1 버그 수정 일반 승천 10에서 점수가 올바르게 계산되도록 수정 score is now correct when at ascension 10 ascension level_10 승천 10 더블 보스 double boss 승천 10 ascension 10"
+    "searchText": "v0.103.1:line-007-ascension-level-10 v0.103.1 0.103.1 버그 수정 일반 승천 10에서 점수가 올바르게 계산되도록 수정 score is now correct when at ascension 10 ascension level_10 승천 10 더블 보스 double boss 승천 10 a10 ascension 10 a10"
   },
   {
     "id": "v0.103.1:line-008-text-xjfgu3",
@@ -4675,7 +4675,7 @@
         "label": "승천 6"
       }
     ],
-    "searchText": "v0.103.2:line-001-ascension-level-06 v0.103.2 0.103.2 컨텐츠 & 밸런스 전반적 변경 승천 6 리워크: 침울 - \"휴식 장소 감소.\" → 인플레이션 - \"상인에게서 덱의 카드를 제거하는 비용이 증가합니다.\" ascension 6 reworked: gloom - \"less rest sites.\" -> inflation - \"removing cards from your deck at the merchant is more expensive.\" ascension level_06 승천 6 인플레이션 inflation 승천 6 비관 침울 ascension 6 gloom"
+    "searchText": "v0.103.2:line-001-ascension-level-06 v0.103.2 0.103.2 컨텐츠 & 밸런스 전반적 변경 승천 6 리워크: 침울 - \"휴식 장소 감소.\" → 인플레이션 - \"상인에게서 덱의 카드를 제거하는 비용이 증가합니다.\" ascension 6 reworked: gloom - \"less rest sites.\" -> inflation - \"removing cards from your deck at the merchant is more expensive.\" ascension level_06 승천 6 인플레이션 inflation 승천 6 a6 비관 침울 ascension 6 a6 gloom"
   },
   {
     "id": "v0.103.2:line-002-text-1f96k7x",
@@ -6691,7 +6691,7 @@
         "label": "승천 10"
       }
     ],
-    "searchText": "v0.104.0:line-068-ascension-level-10 v0.104.0 0.104.0 버그 수정 일반 승천 10 점수 정상 처리. fixed softlock on run histories from older versions of the game. ascension level_10 승천 10 더블 보스 double boss 승천 10 ascension 10"
+    "searchText": "v0.104.0:line-068-ascension-level-10 v0.104.0 0.104.0 버그 수정 일반 승천 10 점수 정상 처리. fixed softlock on run histories from older versions of the game. ascension level_10 승천 10 더블 보스 double boss 승천 10 a10 ascension 10 a10"
   },
   {
     "id": "v0.104.0:line-069-text-mnm6dn",
@@ -7908,7 +7908,7 @@
     "searchText": "v0.105.0:line-021-monster-haunted-ship v0.105.0 0.105.0 컨텐츠 & 밸런스 적 유령선 (변경): 공격할 때 약화를 적용하는 대신, 이제 1턴에 약화 3을 적용합니다. haunted ship (change): now applies 3 weak on turn 1 instead of applying weak when it attacks. monster haunted_ship 유령선 유령선 haunted ship"
   },
   {
-    "id": "v0.105.0:line-022-monster-soul-fysh",
+    "id": "v0.105.0:line-022-monster-soul-fysh-ascension-level-09",
     "patch": "v0.105.0",
     "version": "0.105.0",
     "date": "2026-05-08",
@@ -7925,9 +7925,14 @@
         "type": "monster",
         "id": "SOUL_FYSH",
         "label": "영혼 물교기"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
       }
     ],
-    "searchText": "v0.105.0:line-022-monster-soul-fysh v0.105.0 0.105.0 컨텐츠 & 밸런스 적 영혼 물교기 (버프): 비명 행동의 피해량 11(12) -> 13(15). soul fysh (buff): scream move damage increased from 11(12) -> 13(15). monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh"
+    "searchText": "v0.105.0:line-022-monster-soul-fysh-ascension-level-09 v0.105.0 0.105.0 컨텐츠 & 밸런스 적 영혼 물교기 (버프): 비명 행동의 피해량 11(12) -> 13(15). soul fysh (buff): scream move damage increased from 11(12) -> 13(15). monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
   },
   {
     "id": "v0.105.0:line-023-ancient-tezcatara-relic-pumpkin-candle",
@@ -10478,7 +10483,7 @@
     "searchText": "v0.106.0:line-040-power-weak-power-frail v0.106.0 0.106.0 컨텐츠 & 밸런스 적 이제 약화 대신 손상을 부여합니다. now applies frail instead of weak. power weak 약화 약화 weak power frail 손상 손상 frail"
   },
   {
-    "id": "v0.106.0:line-041-monster-skulking-colony",
+    "id": "v0.106.0:line-041-monster-skulking-colony-ascension-level-08",
     "patch": "v0.106.0",
     "version": "0.106.0",
     "date": "2026-05-22",
@@ -10496,9 +10501,14 @@
         "type": "monster",
         "id": "SKULKING_COLONY",
         "label": "잠행 군체"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_08",
+        "label": "승천 8"
       }
     ],
-    "searchText": "v0.106.0:line-041-monster-skulking-colony v0.106.0 0.106.0 컨텐츠 & 밸런스 적 잠행 군체 변경: • hp 70(75) -> 75(80). • 단단한 껍질 15 -> 20. • 강타 행동이 제거되고, 이제 1턴과 2턴에 급가속 행동을 사용합니다. • 더 이상 방어도를 얻지 않습니다. changed skulking colony: monster skulking_colony 잠행 군체 잠행 군체 skulking colony"
+    "searchText": "v0.106.0:line-041-monster-skulking-colony-ascension-level-08 v0.106.0 0.106.0 컨텐츠 & 밸런스 적 잠행 군체 변경: • hp 70(75) -> 75(80). • 단단한 껍질 15 -> 20. • 강타 행동이 제거되고, 이제 1턴과 2턴에 급가속 행동을 사용합니다. • 더 이상 방어도를 얻지 않습니다. changed skulking colony: monster skulking_colony 잠행 군체 잠행 군체 skulking colony ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
   },
   {
     "id": "v0.106.0:line-042-text-1wh02kk",
@@ -11417,7 +11427,7 @@
         "label": "더블 보스"
       }
     ],
-    "searchText": "v0.106.0:line-090-ascension-level-10 v0.106.0 0.106.0 버그 수정 일반 deprecated 보스가 포함된 세이브 파일을 불러오면, 더 이상 같은 더블 보스가 굴러가지 않습니다. if you load a save file with a deprecated boss, it can no longer roll the same double boss. ascension level_10 더블 보스 더블 보스 double boss 승천 10 ascension 10"
+    "searchText": "v0.106.0:line-090-ascension-level-10 v0.106.0 0.106.0 버그 수정 일반 deprecated 보스가 포함된 세이브 파일을 불러오면, 더 이상 같은 더블 보스가 굴러가지 않습니다. if you load a save file with a deprecated boss, it can no longer roll the same double boss. ascension level_10 더블 보스 더블 보스 double boss 승천 10 a10 ascension 10 a10"
   },
   {
     "id": "v0.106.0:line-091-text-10y60kq",
@@ -12857,7 +12867,7 @@
         "label": "더블 보스"
       }
     ],
-    "searchText": "build-23478716:line-026-ascension-level-10 build-23478716 23478716 버그 수정 일반 삭제된 보스가 포함된 세이브 파일을 불러오면 더블 보스 전투에서 같은 보스가 두 번 나올 수 있던 문제를 수정했습니다. fixed loading a save file with a deprecated boss being able to roll the same boss twice in a double-boss fight. ascension level_10 더블 보스 더블 보스 double boss 승천 10 ascension 10"
+    "searchText": "build-23478716:line-026-ascension-level-10 build-23478716 23478716 버그 수정 일반 삭제된 보스가 포함된 세이브 파일을 불러오면 더블 보스 전투에서 같은 보스가 두 번 나올 수 있던 문제를 수정했습니다. fixed loading a save file with a deprecated boss being able to roll the same boss twice in a double-boss fight. ascension level_10 더블 보스 더블 보스 double boss 승천 10 a10 ascension 10 a10"
   },
   {
     "id": "build-23478716:line-027-card-spoils-map",
@@ -15394,7 +15404,7 @@
     "searchText": "v0.107.1:line-021-monster-axebot v0.107.1 0.107.1 콘텐츠 & 밸런스 적 잘라봇 전투를 더욱 도전적인 잘라봇 한 개체와 싸우는 방식으로 개편했습니다. debuffer: applied the most debuffs in multiplayer. monster axebot 잘라봇 잘라봇 axebot"
   },
   {
-    "id": "v0.107.1:line-022-monster-skulking-colony",
+    "id": "v0.107.1:line-022-monster-skulking-colony-ascension-level-08",
     "patch": "v0.107.1",
     "version": "0.107.1",
     "date": "2026-06-19",
@@ -15412,9 +15422,14 @@
         "type": "monster",
         "id": "SKULKING_COLONY",
         "label": "잠행 군체"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_08",
+        "label": "승천 8"
       }
     ],
-    "searchText": "v0.107.1:line-022-monster-skulking-colony v0.107.1 0.107.1 콘텐츠 & 밸런스 적 잠행 군체 변경: • 체력이 70(75) -> 75(80)으로 증가했습니다. • 단단한 껍질이 15 -> 20으로 증가했습니다. • 후려치기 기술이 제거되었습니다. 이제 1, 2턴에 급가속을 사용합니다. • 더 이상 방어도를 획득하지 않습니다. • 높은 승천에서 힘을 얻는 턴에 이제 힘을 1 추가로 획득합니다. c-c-c-combo: played 20 cards in a single turn. monster skulking_colony 잠행 군체 잠행 군체 skulking colony"
+    "searchText": "v0.107.1:line-022-monster-skulking-colony-ascension-level-08 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 잠행 군체 변경: • 체력이 70(75) -> 75(80)으로 증가했습니다. • 단단한 껍질이 15 -> 20으로 증가했습니다. • 후려치기 기술이 제거되었습니다. 이제 1, 2턴에 급가속을 사용합니다. • 더 이상 방어도를 획득하지 않습니다. • 높은 승천에서 힘을 얻는 턴에 이제 힘을 1 추가로 획득합니다. c-c-c-combo: played 20 cards in a single turn. monster skulking_colony 잠행 군체 잠행 군체 skulking colony ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
   },
   {
     "id": "v0.107.1:line-023-text-1o0pf69",
@@ -15579,7 +15594,7 @@
     "searchText": "v0.107.1:line-030-text-ya4elb v0.107.1 0.107.1 콘텐츠 & 밸런스 적 승천 단계 양극단에서 적 체력이 조정되었습니다. 낮은 승천에서는 소폭 감소, 높은 승천에서는 소폭 증가했습니다: hardened shell increased from 15 -> 20."
   },
   {
-    "id": "v0.107.1:line-031-monster-scroll-of-biting",
+    "id": "v0.107.1:line-031-monster-scroll-of-biting-ascension-level-08",
     "patch": "v0.107.1",
     "version": "0.107.1",
     "date": "2026-06-19",
@@ -15596,9 +15611,14 @@
         "type": "monster",
         "id": "SCROLL_OF_BITING",
         "label": "물어뜯는 두루마리"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_08",
+        "label": "승천 8"
       }
     ],
-    "searchText": "v0.107.1:line-031-monster-scroll-of-biting v0.107.1 0.107.1 콘텐츠 & 밸런스 적 물어뜯는 두루마리: 31(32)-38(39) -> 30(33)-37(39). smash move removed; now uses zoom on turns 1 and 2. monster scroll_of_biting 물어뜯는 두루마리 물어뜯는 두루마리 scroll of biting"
+    "searchText": "v0.107.1:line-031-monster-scroll-of-biting-ascension-level-08 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 물어뜯는 두루마리: 31(32)-38(39) -> 30(33)-37(39). smash move removed; now uses zoom on turns 1 and 2. monster scroll_of_biting 물어뜯는 두루마리 물어뜯는 두루마리 scroll of biting ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
   },
   {
     "id": "v0.107.1:line-032-monster-owl-magistrate",
@@ -15645,7 +15665,7 @@
     "searchText": "v0.107.1:line-033-monster-slimed-berserker v0.107.1 0.107.1 콘텐츠 & 밸런스 적 슬라임 광전사: 266(276) -> 261(281). now gets +1 strength on its strength gain turn at high ascension. monster slimed_berserker 슬라임 광전사 슬라임 광전사 slimed berserker"
   },
   {
-    "id": "v0.107.1:line-034-monster-soul-fysh",
+    "id": "v0.107.1:line-034-monster-soul-fysh-ascension-level-09",
     "patch": "v0.107.1",
     "version": "0.107.1",
     "date": "2026-06-19",
@@ -15663,12 +15683,17 @@
         "type": "monster",
         "id": "SOUL_FYSH",
         "label": "영혼 물교기"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
       }
     ],
-    "searchText": "v0.107.1:line-034-monster-soul-fysh v0.107.1 0.107.1 콘텐츠 & 밸런스 적 영혼 물교기 (버프): 절규 기술의 피해량이 11(12) -> 13(15)로 증가했습니다. changed aeonglass: • adjusted moveset. • reworked wither status and withering presence power. • no longer applies ebb. • now gains block on its ebb move instead of its increasing intensity move. monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh"
+    "searchText": "v0.107.1:line-034-monster-soul-fysh-ascension-level-09 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 영혼 물교기 (버프): 절규 기술의 피해량이 11(12) -> 13(15)로 증가했습니다. changed aeonglass: • adjusted moveset. • reworked wither status and withering presence power. • no longer applies ebb. • now gains block on its ebb move instead of its increasing intensity move. monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
   },
   {
-    "id": "v0.107.1:line-035-monster-assassin-ruby-raider",
+    "id": "v0.107.1:line-035-monster-assassin-ruby-raider-ascension-level-09",
     "patch": "v0.107.1",
     "version": "0.107.1",
     "date": "2026-06-19",
@@ -15685,9 +15710,14 @@
         "type": "monster",
         "id": "ASSASSIN_RUBY_RAIDER",
         "label": "암살 습격자"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
       }
     ],
-    "searchText": "v0.107.1:line-035-monster-assassin-ruby-raider v0.107.1 0.107.1 콘텐츠 & 밸런스 적 암살 습격자 (너프): 피해량이 11(12) -> 10(11)로 감소했습니다. adjusted moveset. monster assassin_ruby_raider 암살 습격자 암살 습격자 assassin raider"
+    "searchText": "v0.107.1:line-035-monster-assassin-ruby-raider-ascension-level-09 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 암살 습격자 (너프): 피해량이 11(12) -> 10(11)로 감소했습니다. adjusted moveset. monster assassin_ruby_raider 암살 습격자 암살 습격자 assassin raider ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
   },
   {
     "id": "v0.107.1:line-036-monster-vantom",
@@ -18771,7 +18801,7 @@
         "label": "승천 10"
       }
     ],
-    "searchText": "v0.107.1:line-184-ascension-level-10 v0.107.1 0.107.1 버그 수정 일반 승천 10에서 점수가 잘못 계산되던 문제, 일일 도전 점수 제출 시 층수가 잘못 표시되던 문제, 점수 불러오기 중 또는 실패 후에도 점수 구분선이 표시되던 문제를 수정했습니다. ascension level_10 승천 10 더블 보스 double boss 승천 10 ascension 10"
+    "searchText": "v0.107.1:line-184-ascension-level-10 v0.107.1 0.107.1 버그 수정 일반 승천 10에서 점수가 잘못 계산되던 문제, 일일 도전 점수 제출 시 층수가 잘못 표시되던 문제, 점수 불러오기 중 또는 실패 후에도 점수 구분선이 표시되던 문제를 수정했습니다. ascension level_10 승천 10 더블 보스 double boss 승천 10 a10 ascension 10 a10"
   },
   {
     "id": "v0.107.1:line-185-text-9tzduq",
@@ -21085,7 +21115,7 @@
     "searchText": "v0.108.0:line-005-card-neurosurge v0.108.0 0.108.0 콘텐츠 & 밸런스 일반 정신 폭주처럼 자기 자신에게 부여한 종말로 사망할 상황이라도, 턴 종료 구체 지속 효과가 마지막 적을 먼저 처치한다면 전투에서 승리합니다. if a player would die to self-doom, such as from neurosurge, but an end-of-turn orb passive kills the last enemy first, they now win the combat instead of losing. card neurosurge 정신 폭주 정신 폭주 neurosurge"
   },
   {
-    "id": "v0.108.0:line-006-monster-torch-head-amalgam",
+    "id": "v0.108.0:line-006-monster-torch-head-amalgam-ascension-level-09",
     "patch": "v0.108.0",
     "version": "0.108.0",
     "date": "2026-07-03",
@@ -21104,9 +21134,14 @@
         "type": "monster",
         "id": "TORCH_HEAD_AMALGAM",
         "label": "횃불머리 융합체"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
       }
     ],
-    "searchText": "v0.108.0:line-006-monster-torch-head-amalgam v0.108.0 0.108.0 콘텐츠 & 밸런스 적 횃불머리 융합체 (버프): 승천 9에서 피해량이 증가했습니다. • 약한 태클 피해량이 14(15) -> 14(16)으로 증가했습니다. • 태클 피해량이 18(19) -> 18(22)로 증가했습니다. torch head amalgam (buff): increased damage at ascension 9. • weak tackle damage increased from 14(15) -> 14(16). • tackle damage increased from 18(19) -> 18(22). monster torch_head_amalgam 횃불머리 융합체 횃불머리 융합체 torch head amalgam"
+    "searchText": "v0.108.0:line-006-monster-torch-head-amalgam-ascension-level-09 v0.108.0 0.108.0 콘텐츠 & 밸런스 적 횃불머리 융합체 (버프): 승천 9에서 피해량이 증가했습니다. • 약한 태클 피해량이 14(15) -> 14(16)으로 증가했습니다. • 태클 피해량이 18(19) -> 18(22)로 증가했습니다. torch head amalgam (buff): increased damage at ascension 9. • weak tackle damage increased from 14(15) -> 14(16). • tackle damage increased from 18(19) -> 18(22). monster torch_head_amalgam 횃불머리 융합체 횃불머리 융합체 torch head amalgam ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
   },
   {
     "id": "v0.108.0:line-007-text-utb59i",
@@ -23718,7 +23753,7 @@
         "label": "등반자의 골칫거리"
       }
     ],
-    "searchText": "v0.108.0:line-134-card-entropy-card-ascenders-bane v0.108.0 0.108.0 버그 수정 무색 카드 엔트로피가 저주를 등반자의 골칫거리로 변형할 수 있던 문제를 수정했습니다. fixed entropy being able to transform curses into ascender's bane. card entropy 엔트로피 엔트로피 entropy card ascenders_bane 등반자의 골칫거리 등반자의 골칫거리 ascender's bane ascension level_05 등반자의 골칫거리 등반자의 골칫거리 ascender's bane 승천 5 ascension 5"
+    "searchText": "v0.108.0:line-134-card-entropy-card-ascenders-bane v0.108.0 0.108.0 버그 수정 무색 카드 엔트로피가 저주를 등반자의 골칫거리로 변형할 수 있던 문제를 수정했습니다. fixed entropy being able to transform curses into ascender's bane. card entropy 엔트로피 엔트로피 entropy card ascenders_bane 등반자의 골칫거리 등반자의 골칫거리 ascender's bane ascension level_05 등반자의 골칫거리 등반자의 골칫거리 ascender's bane 승천 5 a5 ascension 5 a5"
   },
   {
     "id": "v0.108.0:line-135-card-hellraiser-card-shining-strike",
@@ -24855,7 +24890,7 @@
     "searchText": "v0.109.0:line-012-relic-sere-talon-relic-distinguished-cape v0.109.0 0.109.0 콘텐츠 & 밸런스 고대의 존재 말라비틀어진 발톱과 기품 있는 망토의 단점이 서로 바뀌었습니다. changed sere talon and distinguished cape: swapped their downsides. relic sere_talon 말라비틀어진 발톱 말라비틀어진 발톱 sere talon relic distinguished_cape 기품 있는 망토 기품 있는 망토 distinguished cape"
   },
   {
-    "id": "v0.109.0:line-013-monster-aeonglass",
+    "id": "v0.109.0:line-013-monster-aeonglass-ascension-level-09",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -24872,12 +24907,17 @@
         "type": "monster",
         "id": "AEONGLASS",
         "label": "영겁의 모래시계"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
       }
     ],
-    "searchText": "v0.109.0:line-013-monster-aeonglass v0.109.0 0.109.0 콘텐츠 & 밸런스 적 영겁의 모래시계 (너프): 초반 피해를 낮추기 위해 감쇠 피해량이 26(32) -> 22(26)으로 감소했습니다. aeonglass (nerf): ebb damage decreased from 26(32) -> 22(26) to reduce its front-loaded damage. monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass"
+    "searchText": "v0.109.0:line-013-monster-aeonglass-ascension-level-09 v0.109.0 0.109.0 콘텐츠 & 밸런스 적 영겁의 모래시계 (너프): 초반 피해를 낮추기 위해 감쇠 피해량이 26(32) -> 22(26)으로 감소했습니다. aeonglass (nerf): ebb damage decreased from 26(32) -> 22(26) to reduce its front-loaded damage. monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
   },
   {
-    "id": "v0.109.0:line-014-monster-torch-head-amalgam",
+    "id": "v0.109.0:line-014-monster-torch-head-amalgam-ascension-level-09",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -24894,9 +24934,14 @@
         "type": "monster",
         "id": "TORCH_HEAD_AMALGAM",
         "label": "횃불머리 융합체"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
       }
     ],
-    "searchText": "v0.109.0:line-014-monster-torch-head-amalgam v0.109.0 0.109.0 콘텐츠 & 밸런스 적 횃불머리 융합체 (버프): 이제 1턴에 새로운 강한 태클을 사용하며, 초반 피해량이 18(22) -> 26(32)으로 증가했습니다. torch head amalgam (buff): now starts with a new strong tackle move on turn 1, increasing front-loaded damage from 18(22) -> 26(32). monster torch_head_amalgam 횃불머리 융합체 횃불머리 융합체 torch head amalgam"
+    "searchText": "v0.109.0:line-014-monster-torch-head-amalgam-ascension-level-09 v0.109.0 0.109.0 콘텐츠 & 밸런스 적 횃불머리 융합체 (버프): 이제 1턴에 새로운 강한 태클을 사용하며, 초반 피해량이 18(22) -> 26(32)으로 증가했습니다. torch head amalgam (buff): now starts with a new strong tackle move on turn 1, increasing front-loaded damage from 18(22) -> 26(32). monster torch_head_amalgam 횃불머리 융합체 횃불머리 융합체 torch head amalgam ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
   },
   {
     "id": "v0.109.0:line-015-relic-history-course",
@@ -28401,7 +28446,7 @@
     "searchText": "v0.111.0:line-002-ancient-nonupeipe-relic-beautiful-bracelet v0.111.0 0.111.0 콘텐츠 및 밸런스 고대의 존재 노누파이페의 아름다운 팔찌 (너프): 이제 카드를 고르는 대신 무작위 카드 4장에 인챈트합니다. beautiful bracelet (nerf): now enchants 4 random cards instead of letting you choose the cards to enchant. ancient nonupeipe 노누파이페 노누파이페 nonupeipe relic beautiful_bracelet 아름다운 팔찌 아름다운 팔찌 beautiful bracelet"
   },
   {
-    "id": "v0.111.0:line-003-monster-axebot",
+    "id": "v0.111.0:line-003-monster-axebot-ascension-level-09",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28420,9 +28465,14 @@
         "type": "monster",
         "id": "AXEBOT",
         "label": "잘라봇"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.0:line-003-monster-axebot v0.111.0 0.111.0 콘텐츠 및 밸런스 적 잘라봇 (버프): • 망치 올려치기 피해량이 12(14) → 14(18)로 증가했습니다. • 이제 다시 등장할 때마다 최대 체력을 10 얻습니다. • 좌우 연타 피해량이 9(10)x2 → 10(11)x2로 증가했습니다. axebot (buff): • hammer uppercut damage increased from 12(14) -> 14(18). • now gains +10 max hp each time it respawns. • the one-two damage increased from 9(10)x2 -> 10(11)x2. monster axebot 잘라봇 잘라봇 axebot"
+    "searchText": "v0.111.0:line-003-monster-axebot-ascension-level-09 v0.111.0 0.111.0 콘텐츠 및 밸런스 적 잘라봇 (버프): • 망치 올려치기 피해량이 12(14) → 14(18)로 증가했습니다. • 이제 다시 등장할 때마다 최대 체력을 10 얻습니다. • 좌우 연타 피해량이 9(10)x2 → 10(11)x2로 증가했습니다. axebot (buff): • hammer uppercut damage increased from 12(14) -> 14(18). • now gains +10 max hp each time it respawns. • the one-two damage increased from 9(10)x2 -> 10(11)x2. monster axebot 잘라봇 잘라봇 axebot ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
   },
   {
     "id": "v0.111.0:line-004-text-1cjdzdw",
@@ -28473,7 +28523,7 @@
     "searchText": "v0.111.0:line-006-text-1jih5gi v0.111.0 0.111.0 콘텐츠 및 밸런스 적 좌우 연타 피해량이 9(10)x2 → 10(11)x2로 증가했습니다. the one-two damage increased from 9(10)x2 -> 10(11)x2."
   },
   {
-    "id": "v0.111.0:line-007-monster-mecha-knight",
+    "id": "v0.111.0:line-007-monster-mecha-knight-ascension-level-09",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28490,12 +28540,17 @@
         "type": "monster",
         "id": "MECHA_KNIGHT",
         "label": "기계 기사"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.0:line-007-monster-mecha-knight v0.111.0 0.111.0 콘텐츠 및 밸런스 적 기계 기사 (버프): 화염 방사 턴에도 피해를 8(12) 줍니다. mecha knight (buff): now also deals 8(12) damage on its flamethrower turn. monster mecha_knight 기계 기사 기계 기사 mecha knight"
+    "searchText": "v0.111.0:line-007-monster-mecha-knight-ascension-level-09 v0.111.0 0.111.0 콘텐츠 및 밸런스 적 기계 기사 (버프): 화염 방사 턴에도 피해를 8(12) 줍니다. mecha knight (buff): now also deals 8(12) damage on its flamethrower turn. monster mecha_knight 기계 기사 기계 기사 mecha knight ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
   },
   {
-    "id": "v0.111.0:line-008-monster-exoskeleton",
+    "id": "v0.111.0:line-008-monster-exoskeleton-ascension-level-08",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28512,9 +28567,14 @@
         "type": "monster",
         "id": "EXOSKELETON",
         "label": "갑각충"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_08",
+        "label": "승천 8"
       }
     ],
-    "searchText": "v0.111.0:line-008-monster-exoskeleton v0.111.0 0.111.0 콘텐츠 및 밸런스 적 갑각충 (버프): 승천 8 체력이 24-28(25-29) → 24-28(26-30)으로 증가했습니다. exoskeleton (buff): hp at a8 increased from 24-28(25-29) -> 24-28(26-30). monster exoskeleton 갑각충 갑각충 exoskeleton"
+    "searchText": "v0.111.0:line-008-monster-exoskeleton-ascension-level-08 v0.111.0 0.111.0 콘텐츠 및 밸런스 적 갑각충 (버프): 승천 8 체력이 24-28(25-29) → 24-28(26-30)으로 증가했습니다. exoskeleton (buff): hp at a8 increased from 24-28(25-29) -> 24-28(26-30). monster exoskeleton 갑각충 갑각충 exoskeleton ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
   },
   {
     "id": "v0.111.0:line-009-monster-globe-head-power-galvanic",
@@ -28539,9 +28599,14 @@
         "type": "power",
         "id": "GALVANIC",
         "label": "전류"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.0:line-009-monster-globe-head-power-galvanic v0.111.0 0.111.0 콘텐츠 및 밸런스 적 구체 머리 (버프): 승천 9에서 전류가 6(6) → 6(8)로 증가했습니다. globe head (buff): galvanic at a9 increased from 6(6) -> 6(8). monster globe_head 구체 머리 구체 머리 globe head power galvanic 전류 전류 galvanic"
+    "searchText": "v0.111.0:line-009-monster-globe-head-power-galvanic v0.111.0 0.111.0 콘텐츠 및 밸런스 적 구체 머리 (버프): 승천 9에서 전류가 6(6) → 6(8)로 증가했습니다. globe head (buff): galvanic at a9 increased from 6(6) -> 6(8). monster globe_head 구체 머리 구체 머리 globe head power galvanic 전류 전류 galvanic ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
   },
   {
     "id": "v0.111.0:line-010-monster-louse-progenitor-power-strength",
@@ -28566,12 +28631,17 @@
         "type": "power",
         "id": "STRENGTH",
         "label": "힘"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.0:line-010-monster-louse-progenitor-power-strength v0.111.0 0.111.0 콘텐츠 및 밸런스 적 태초의 공벌레 (버프): 승천 9에서 힘 획득량이 5(5) → 5(7)로 증가했습니다. louse progenitor (buff): strength gain at a9 increased from 5(5) -> 5(7). monster louse_progenitor 태초의 공벌레 태초의 공벌레 louse progenitor power strength 힘 힘 strength"
+    "searchText": "v0.111.0:line-010-monster-louse-progenitor-power-strength v0.111.0 0.111.0 콘텐츠 및 밸런스 적 태초의 공벌레 (버프): 승천 9에서 힘 획득량이 5(5) → 5(7)로 증가했습니다. louse progenitor (buff): strength gain at a9 increased from 5(5) -> 5(7). monster louse_progenitor 태초의 공벌레 태초의 공벌레 louse progenitor power strength 힘 힘 strength ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
   },
   {
-    "id": "v0.111.0:line-011-monster-soul-fysh",
+    "id": "v0.111.0:line-011-monster-soul-fysh-ascension-level-09",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28588,12 +28658,17 @@
         "type": "monster",
         "id": "SOUL_FYSH",
         "label": "영혼 물교기"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.0:line-011-monster-soul-fysh v0.111.0 0.111.0 콘텐츠 및 밸런스 적 영혼 물교기 (버프): 승천 9에서 가스 방출 피해량이 16(17) → 16(18)로 증가했습니다. soul fysh (buff): de-gas damage at a9 increased from 16(17) -> 16(18). monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh"
+    "searchText": "v0.111.0:line-011-monster-soul-fysh-ascension-level-09 v0.111.0 0.111.0 콘텐츠 및 밸런스 적 영혼 물교기 (버프): 승천 9에서 가스 방출 피해량이 16(17) → 16(18)로 증가했습니다. soul fysh (buff): de-gas damage at a9 increased from 16(17) -> 16(18). monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
   },
   {
-    "id": "v0.111.0:line-012-monster-entomancer",
+    "id": "v0.111.0:line-012-monster-entomancer-ascension-level-08",
     "patch": "v0.111.0",
     "version": "0.111.0",
     "date": "2026-08-14",
@@ -28610,9 +28685,14 @@
         "type": "monster",
         "id": "ENTOMANCER",
         "label": "곤충술사"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_08",
+        "label": "승천 8"
       }
     ],
-    "searchText": "v0.111.0:line-012-monster-entomancer v0.111.0 0.111.0 콘텐츠 및 밸런스 적 곤충술사 (버프): 승천 8 체력이 145(155) → 145(165)로 증가했습니다. entomancer (buff): hp at a8 increased from 145(155) -> 145(165). monster entomancer 곤충술사 곤충술사 entomancer"
+    "searchText": "v0.111.0:line-012-monster-entomancer-ascension-level-08 v0.111.0 0.111.0 콘텐츠 및 밸런스 적 곤충술사 (버프): 승천 8 체력이 145(155) → 145(165)로 증가했습니다. entomancer (buff): hp at a8 increased from 145(155) -> 145(165). monster entomancer 곤충술사 곤충술사 entomancer ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
   },
   {
     "id": "v0.111.0:line-013-card-rend",

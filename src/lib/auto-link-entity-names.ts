@@ -35,6 +35,43 @@ const AUTO_LINK_SKIP_LABELS = new Set([
 
 const GOLD_OR_CODE_PROTECT_RE = /\[gold(?::[a-zA-Z]+)?\][\s\S]*?\[\/gold\]|`[^`\n]+`/g;
 
+/** Numbered Ascension mentions only. Do not match bare 승천 / Ascension. */
+const NUMBERED_ASCENSION_MENTION_RE =
+  /(?<![낮높]은\s)(?<!(?:low|high)\s)(?:승천|ascension)\s*(?:10|[1-9])(?!\d)|\bA(?:10|[1-9])\b/gi;
+
+function protectedRangesOf(text: string): Array<{ start: number; end: number }> {
+  return [...text.matchAll(GOLD_OR_CODE_PROTECT_RE)].map((match) => {
+    const start = match.index ?? 0;
+    return { start, end: start + match[0].length };
+  });
+}
+
+function rangeOverlaps(
+  start: number,
+  end: number,
+  ranges: Array<{ start: number; end: number }>,
+): boolean {
+  return ranges.some((range) => start < range.end && end > range.start);
+}
+
+export function wrapNumberedAscensionMentions(text: string): string {
+  const protectedRanges = protectedRangesOf(text);
+  let result = "";
+  let index = 0;
+
+  for (const match of text.matchAll(NUMBERED_ASCENSION_MENTION_RE)) {
+    const start = match.index ?? 0;
+    const end = start + match[0].length;
+    if (rangeOverlaps(start, end, protectedRanges)) continue;
+    result += text.slice(index, start);
+    result += `[gold:ascension]${match[0]}[/gold]`;
+    index = end;
+  }
+
+  result += text.slice(index);
+  return result;
+}
+
 export function buildAutoLinkKeywordsByFirst(
   names: Array<{ label: string; type: EntityType }>,
 ): Map<string, AutoLinkKeyword[]> {
@@ -73,10 +110,7 @@ export function wrapUntaggedEntityNames(
 ): string {
   if (!keywordsByFirst?.size) return text;
 
-  const protectedRanges = [...text.matchAll(GOLD_OR_CODE_PROTECT_RE)].map((match) => {
-    const start = match.index ?? 0;
-    return { start, end: start + match[0].length };
-  });
+  const protectedRanges = protectedRangesOf(text);
 
   let result = "";
   let index = 0;
@@ -116,7 +150,7 @@ function matchAutoLinkAt(
   for (const keyword of keywords) {
     if (!lower.startsWith(keyword.lower, start)) continue;
     const end = start + keyword.lower.length;
-    if (protectedRanges.some((range) => start < range.end && end > range.start)) continue;
+    if (rangeOverlaps(start, end, protectedRanges)) continue;
     if (keyword.ascii && !hasAsciiTokenBoundary(lower, start, keyword.lower.length)) continue;
 
     const plusMatch = text.slice(end).match(/^\++/);
