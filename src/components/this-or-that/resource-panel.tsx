@@ -40,6 +40,8 @@ function assetOnlyDescription(entity: EntityInfo): string | null {
     ?? entity.enchantmentData?.description
     ?? entity.afflictionData?.description
     ?? entity.keywordData?.description
+    ?? entity.modifierData?.description
+    ?? entity.ascensionData?.description
     ?? entity.characterData?.description
     ?? entity.eventOptionDesc
     ?? null;

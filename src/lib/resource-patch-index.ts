@@ -22,6 +22,8 @@ export const RESOURCE_PATCH_GROUP_ORDER: StoryEntityType[] = [
   "encounter",
   "ancient",
   "epoch",
+  "modifier",
+  "ascension",
 ];
 
 export interface ResourcePatchIndexResource {

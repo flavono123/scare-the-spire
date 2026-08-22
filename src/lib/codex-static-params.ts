@@ -8,6 +8,8 @@ import {
   getCodexEpochs,
   getCodexEvents,
   getCodexKeywords,
+  getCodexModifiers,
+  getCodexAscensions,
   getCodexMonsters,
   getCodexPotions,
   getCodexPowers,
@@ -70,6 +72,14 @@ export async function generateEventStaticParams(): Promise<StaticIdParam[]> {
 
 export async function generateKeywordStaticParams(): Promise<StaticIdParam[]> {
   return idParams(await getCodexKeywords());
+}
+
+export async function generateModifierStaticParams(): Promise<StaticIdParam[]> {
+  return idParams(await getCodexModifiers());
+}
+
+export async function generateAscensionStaticParams(): Promise<StaticIdParam[]> {
+  return idParams(await getCodexAscensions());
 }
 
 export async function generateMonsterStaticParams(): Promise<StaticIdParam[]> {

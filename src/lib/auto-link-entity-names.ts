@@ -18,6 +18,9 @@ export const AUTO_LINK_ENTITY_TYPES = new Set<EntityType>([
   "monster",
   "encounter",
   "ancient",
+  "epoch",
+  "modifier",
+  "ascension",
 ]);
 
 const AUTO_LINK_SKIP_LABELS = new Set([
@@ -25,6 +28,9 @@ const AUTO_LINK_SKIP_LABELS = new Set([
   "수비",
   "strike",
   "defend",
+  "draft",
+  "flight",
+  "midas",
 ]);
 
 const GOLD_OR_CODE_PROTECT_RE = /\[gold(?::[a-zA-Z]+)?\][\s\S]*?\[\/gold\]|`[^`\n]+`/g;

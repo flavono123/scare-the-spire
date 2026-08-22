@@ -49,6 +49,8 @@ const RESOURCE_LINK_TYPES: Record<ThisOrThatResourceType, CompendiumResourceLink
   potion: "potion",
   power: "power",
   relic: "relic",
+  modifier: "modifier",
+  ascension: "ascension",
 };
 
 export const THIS_OR_THAT_RESOURCE_TYPES = Object.keys(

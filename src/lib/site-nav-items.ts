@@ -91,6 +91,8 @@ export const sts2NavItems = [
   { href: "/compendium/ancients", labelKey: "ancients", icon: "/images/sts2/nav/stats_ancients.png" },
   { href: "/compendium/epochs", labelKey: "epochs", icon: "/images/sts2/relics/planisphere.webp" },
   { href: "/compendium/keywords", labelKey: "keywords", icon: "/images/sts2/ui/topbar/submenu_history_icon.png" },
+  { href: "/compendium/modifiers", labelKey: "modifiers", icon: "/images/sts2/modifiers/draft.webp" },
+  { href: "/compendium/ascensions", labelKey: "ascensions", icon: "/images/sts2/ui/topbar/top_bar_ascension.png" },
   { href: "/compendium/badges", labelKey: "badges", icon: "/images/sts2/badges/double_snecko.webp" },
 ] as const;
 

@@ -22,6 +22,8 @@ const SUPPORTED_ENTITY_TYPES = new Set<STS2PatchFeaturedEntityType>([
   "encounter",
   "ancient",
   "epoch",
+  "modifier",
+  "ascension",
 ]);
 
 type ParsedPatchLine = {
@@ -82,6 +84,110 @@ function extractEntityLabels(markdown: string): ParsedPatchLine["entityLabels"] 
     const type = match[1] as STS2PatchFeaturedEntityType;
     const label = plainPatchLineText(match[2]);
     if (SUPPORTED_ENTITY_TYPES.has(type) && label) labels.push({ type, label });
+  }
+
+  return labels;
+}
+
+function extractImplicitRunLabels(markdown: string): ParsedPatchLine["entityLabels"] {
+  const labels: ParsedPatchLine["entityLabels"] = [];
+  const seen = new Set<string>();
+  const push = (type: STS2PatchFeaturedEntityType, label: string) => {
+    const key = `${type}:${normalizeLookup(label)}`;
+    if (!label || seen.has(key)) return;
+    seen.add(key);
+    labels.push({ type, label });
+  };
+
+  const untypedGoldRe = /\[gold\]([\s\S]*?)\[\/gold\]/gi;
+  let match: RegExpExecArray | null;
+  while ((match = untypedGoldRe.exec(markdown)) !== null) {
+    const label = plainPatchLineText(match[1]);
+    if (label) push("modifier", label);
+  }
+
+  const boldRe = /\*\*([^*]+)\*\*/g;
+  while ((match = boldRe.exec(markdown)) !== null) {
+    const label = plainPatchLineText(match[1]);
+    if (label) push("modifier", label);
+  }
+
+  return labels;
+}
+
+function isNumberedAscensionLabel(label: string): boolean {
+  return /^(?:승천|ascension)\s*\d+$/i.test(normalizeLookup(label));
+}
+
+function buildNameLookup(entities: EntityInfo[]): Map<string, EntityInfo> {
+  const lookup = new Map<string, EntityInfo>();
+  for (const entity of entities) {
+    if (entity.type !== "modifier" && entity.type !== "ascension") continue;
+    for (const label of [
+      entity.nameKo,
+      entity.nameEn,
+      ...(entity.aliasesKo ?? []),
+      ...(entity.aliasesEn ?? []),
+    ]) {
+      if (isNumberedAscensionLabel(label)) continue;
+      const key = normalizeLookup(label);
+      if (key.length < 2 || lookup.has(key)) continue;
+      lookup.set(key, entity);
+    }
+  }
+  return lookup;
+}
+
+function extractNumberedAscensionLabels(text: string): ParsedPatchLine["entityLabels"] {
+  const labels: ParsedPatchLine["entityLabels"] = [];
+  const seen = new Set<string>();
+  const pushLevel = (raw: string) => {
+    const level = raw.replace(/^0+/, "") || "0";
+    if (seen.has(level)) return;
+    seen.add(level);
+    labels.push({ type: "ascension", label: `승천 ${level}` });
+    labels.push({ type: "ascension", label: `Ascension ${level}` });
+  };
+
+  const patterns = [
+    /(?:^|\n)\s*\*{0,2}\s*(승천|ascension)\s*(\d+)/gi,
+    /(승천|ascension)\s*(\d+)\s*(?:리워크|모디파이어|modifier|rework)/gi,
+    /(승천)\s*(\d+)\s*(?:에서\s*)?점수/gi,
+    /ascension\s*(\d+)\s*(?:score|scoring)/gi,
+    /reworked\s+ascension\s+(\d+)/gi,
+    /score[^.]*ascension\s+(\d+)/gi,
+  ];
+
+  for (const pattern of patterns) {
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(text)) !== null) {
+      pushLevel(match[match.length - 1]);
+    }
+  }
+
+  return labels;
+}
+
+function extractNamedRunLabels(
+  text: string,
+  nameLookup: Map<string, EntityInfo>,
+): ParsedPatchLine["entityLabels"] {
+  const labels: ParsedPatchLine["entityLabels"] = [];
+  const haystack = normalizeLookup(text);
+  if (!haystack) return labels;
+
+  for (const [key, entity] of nameLookup) {
+    if (entity.type === "modifier" && entity.modifierData?.source === "characterCards") continue;
+    if (key.length < 2) continue;
+    if (/^[a-z0-9]+$/.test(key)) continue;
+    const found = /^[a-z0-9 ]+$/.test(key)
+      ? new RegExp(`(?:^|[^a-z0-9])${key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?:$|[^a-z0-9])`).test(haystack)
+      : haystack.includes(key);
+    if (!found) continue;
+    labels.push({
+      type: entity.type as STS2PatchFeaturedEntityType,
+      label: entity.nameKo || entity.nameEn,
+    });
   }
 
   return labels;
@@ -162,12 +268,17 @@ function buildEntityLookup(entities: EntityInfo[]): Map<string, EntityInfo> {
 function resolveEntityRefs(
   labels: ParsedPatchLine["entityLabels"],
   lookup: Map<string, EntityInfo>,
+  nameLookup: Map<string, EntityInfo>,
 ): STS2PatchLineEntityRef[] {
   const refs: STS2PatchLineEntityRef[] = [];
   const seen = new Set<string>();
 
   for (const { type, label } of labels) {
-    const entity = lookup.get(`${type}:${normalizeLookup(label)}`);
+    const typed = lookup.get(`${type}:${normalizeLookup(label)}`);
+    const named = nameLookup.get(normalizeLookup(label));
+    const entity = typed ?? (
+      (type === "modifier" || type === "ascension") ? named : undefined
+    );
     if (!entity || !SUPPORTED_ENTITY_TYPES.has(entity.type as STS2PatchFeaturedEntityType)) continue;
 
     const key = `${entity.type}:${entity.id}`;
@@ -223,6 +334,7 @@ async function main() {
     loadAllEntities({ gameLocale: "kor" }),
   ]);
   const entityLookup = buildEntityLookup(entities);
+  const nameLookup = buildNameLookup(entities);
   const entityByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
   const output: STS2PatchLine[] = [];
 
@@ -236,7 +348,13 @@ async function main() {
 
     for (const koLine of koLines) {
       const enLine = enLines.find((candidate) => candidate.ordinal === koLine.ordinal);
-      const entityRefs = resolveEntityRefs(koLine.entityLabels, entityLookup);
+      const combinedLabels = [
+        ...koLine.entityLabels,
+        ...extractImplicitRunLabels(koLine.markdown),
+        ...extractNumberedAscensionLabels(koLine.markdown),
+        ...extractNamedRunLabels(koLine.text, nameLookup),
+      ];
+      const entityRefs = resolveEntityRefs(combinedLabels, entityLookup, nameLookup);
       const id = `${patch.id}:line-${String(koLine.ordinal).padStart(3, "0")}-${refSlug(entityRefs, koLine.text)}`;
       const line: STS2PatchLine = {
         id,

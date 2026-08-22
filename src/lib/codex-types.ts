@@ -94,6 +94,70 @@ export interface CodexKeyword {
   sortOrder: number;
 }
 
+export type ModifierPolarity = "good" | "bad";
+export type ModifierSource = "run" | "characterCards";
+
+export interface CodexModifier {
+  id: string;
+  name: string;
+  nameEn: string;
+  description: string;
+  descriptionEn: string;
+  polarity: ModifierPolarity;
+  source: ModifierSource;
+  characterId: string | null;
+  imageUrl: string;
+  sortOrder: number;
+  aliasesKo?: string[];
+  aliasesEn?: string[];
+}
+
+export const MODIFIER_POLARITY_ORDER: ModifierPolarity[] = ["good", "bad"];
+
+/** Custom-run token icons from `images/packed/modifiers/*.png`. */
+export const CHARACTER_CARDS_MODIFIER_IMAGE_URL = "/images/sts2/modifiers/character_cards.webp";
+
+/**
+ * Canonical custom-run lists from `ModelDb.GoodModifiers` / `ModelDb.BadModifiers`.
+ * CharacterCards is expanded per character separately.
+ */
+export const GOOD_RUN_MODIFIER_IDS = [
+  "DRAFT",
+  "SEALED_DECK",
+  "HOARDER",
+  "SPECIALIZED",
+  "INSANITY",
+  "ALL_STAR",
+  "FLIGHT",
+  "VINTAGE",
+] as const;
+
+export const BAD_RUN_MODIFIER_IDS = [
+  "DEADLY_EVENTS",
+  "CURSED_RUN",
+  "BIG_GAME_HUNTER",
+  "MIDAS",
+  "MURDEROUS",
+  "NIGHT_TERRORS",
+  "TERMINAL",
+] as const;
+
+export interface CodexAscension {
+  id: string;
+  level: number;
+  name: string;
+  nameEn: string;
+  description: string;
+  descriptionEn: string;
+  aliasesKo: string[];
+  aliasesEn: string[];
+  imageUrl: string;
+  sortOrder: number;
+}
+
+/** In-game ascension flame from `ui_atlas.sprites/top_bar/top_bar_ascension`. */
+export const ASCENSION_TOKEN_IMAGE_URL = "/images/sts2/ui/topbar/top_bar_ascension.png";
+
 export interface CodexCharacter {
   id: string;
   name: string; // selected game locale

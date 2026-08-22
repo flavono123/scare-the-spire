@@ -43,6 +43,8 @@ const STATIC_COMPENDIUM_SEGMENTS = new Set([
   "epochs",
   "events",
   "keywords",
+  "modifiers",
+  "ascensions",
   "monsters",
   "potions",
   "powers",

@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import fs from "fs/promises";
 import path from "path";
 import { getCodexMeta, getEntityVersionDiffs, getSTS2Patches, getSTS2PatchLines, getSTS2Stories } from "@/lib/data";
-import { getCodexCards, getCodexCharacters, getCodexRelics, getCodexPotions, getCodexPowers, getCodexKeywords, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients, getCodexEpochs } from "@/lib/codex-data";
+import { getCodexCards, getCodexCharacters, getCodexRelics, getCodexPotions, getCodexPowers, getCodexKeywords, getCodexModifiers, getCodexAscensions, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients, getCodexEpochs } from "@/lib/codex-data";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { readGameLocalizationTable, type GameLocalizationTable } from "@/lib/game-localization";
 import { characterTitleAliases, loadAllEntities } from "@/lib/load-all-entities";
@@ -794,7 +794,7 @@ export async function PatchDetailPage({
   staticHoverPreviews?: boolean;
 }) {
   const copy = PATCH_COPY[serviceLocale];
-  const [patches, versionDiffs, codexMeta, codexCards, codexCharacters, codexRelics, codexPotions, codexPowers, codexKeywords, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder, patchStageCopy] = await Promise.all([
+  const [patches, versionDiffs, codexMeta, codexCards, codexCharacters, codexRelics, codexPotions, codexPowers, codexKeywords, codexModifiers, codexAscensions, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder, patchStageCopy] = await Promise.all([
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
@@ -804,6 +804,8 @@ export async function PatchDetailPage({
     getCodexPotions({ gameLocale }),
     getCodexPowers({ includeDeprecated: true, gameLocale }),
     getCodexKeywords({ gameLocale }),
+    getCodexModifiers({ gameLocale }),
+    getCodexAscensions({ gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getCodexEvents({ gameLocale }),
     getCodexMonsters({ gameLocale }),
@@ -921,6 +923,30 @@ export async function PatchDetailPage({
       color: "keyword",
       type: "keyword" as const,
       keywordData: k,
+    })),
+    ...codexModifiers.map((m) => ({
+      id: m.id,
+      nameEn: m.nameEn,
+      nameKo: patchDisplayName(m.name, m.nameEn, gameLocale),
+      aliasesEn: m.aliasesEn,
+      aliasesKo: m.aliasesKo,
+      imageUrl: m.imageUrl,
+      href: buildCompendiumResourceHref("modifier", m.id),
+      color: m.polarity,
+      type: "modifier" as const,
+      modifierData: m,
+    })),
+    ...codexAscensions.map((a) => ({
+      id: a.id,
+      nameEn: a.nameEn,
+      nameKo: patchDisplayName(a.name, a.nameEn, gameLocale),
+      aliasesEn: a.aliasesEn,
+      aliasesKo: a.aliasesKo,
+      imageUrl: a.imageUrl,
+      href: buildCompendiumResourceHref("ascension", a.id),
+      color: "ascension",
+      type: "ascension" as const,
+      ascensionData: a,
     })),
     ...codexEnchantments.map((e) => ({
       id: e.id,

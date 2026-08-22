@@ -73,7 +73,9 @@ export type StoryEntityType =
   | "monster"
   | "encounter"
   | "ancient"
-  | "epoch";
+  | "epoch"
+  | "modifier"
+  | "ascension";
 
 export interface LinkedEntity {
   game?: StoryGame;
@@ -98,7 +100,9 @@ export type STS2PatchFeaturedEntityType =
   | "monster"
   | "encounter"
   | "ancient"
-  | "epoch";
+  | "epoch"
+  | "modifier"
+  | "ascension";
 
 export interface STS2PatchFeaturedEntity {
   type: STS2PatchFeaturedEntityType;

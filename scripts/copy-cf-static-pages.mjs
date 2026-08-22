@@ -34,6 +34,8 @@ const compendiumSegments = new Set([
   "epochs",
   "events",
   "keywords",
+  "modifiers",
+  "ascensions",
   "monsters",
   "potions",
   "powers",

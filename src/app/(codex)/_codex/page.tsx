@@ -149,6 +149,30 @@ const categories = [
     ],
   },
   {
+    href: "/compendium/modifiers",
+    labelKey: "modifiers",
+    count: 20,
+    description: null,
+    images: [
+      "/images/sts2/modifiers/draft.webp",
+      "/images/sts2/modifiers/hoarder.webp",
+      "/images/sts2/modifiers/terminal.webp",
+      "/images/sts2/modifiers/character_cards.webp",
+    ],
+  },
+  {
+    href: "/compendium/ascensions",
+    labelKey: "ascensions",
+    count: 11,
+    description: null,
+    images: [
+      "/images/sts2/ui/topbar/top_bar_ascension.png",
+      "/images/sts2/ui/topbar/top_bar_ascension.png",
+      "/images/sts2/ui/topbar/top_bar_ascension.png",
+      "/images/sts2/ui/topbar/top_bar_ascension.png",
+    ],
+  },
+  {
     href: "/compendium/badges",
     labelKey: "badges",
     count: 23,
@@ -195,6 +219,8 @@ export default async function CodexIndexPage({
     events: gameUi.eventsTitle,
     ancients: gameUi.ancientsTitle,
     epochs: gameUi.epochsTitle,
+    modifiers: gameUi.nav.modifiers,
+    ascensions: gameUi.nav.ascensions,
   };
 
   return (
@@ -277,5 +303,7 @@ const ENGLISH_LABELS: Record<(typeof categories)[number]["labelKey"], string> = 
   events: "Events",
   ancients: "Ancients",
   epochs: "Epochs",
+  modifiers: "Modifiers",
+  ascensions: "Ascension",
   badges: "Badges",
 };

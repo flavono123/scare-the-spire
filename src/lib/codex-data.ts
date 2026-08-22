@@ -18,6 +18,8 @@ import { DEFAULT_GAME_LOCALE_BY_SERVICE, type GameLocale } from "./i18n";
 import {
   CodexCard,
   CodexKeyword,
+  CodexModifier,
+  CodexAscension,
   CodexCharacter,
   CodexRelic,
   CodexPotion,
@@ -62,6 +64,10 @@ import {
   EncounterComposition,
   EncounterSceneAsset,
   CHARACTER_ORDER,
+  GOOD_RUN_MODIFIER_IDS,
+  BAD_RUN_MODIFIER_IDS,
+  CHARACTER_CARDS_MODIFIER_IMAGE_URL,
+  ASCENSION_TOKEN_IMAGE_URL,
 } from "./codex-types";
 import { groupAncientDialogueLines } from "./ancient-dialogue";
 import {
@@ -228,6 +234,19 @@ interface RawCharacterAncientDialogueLine {
 
 interface RawKeyword {
   id: string;
+  name: string;
+  description: string;
+}
+
+interface RawModifier {
+  id: string;
+  name: string;
+  description: string;
+}
+
+interface RawAscension {
+  id: string;
+  level: number;
   name: string;
   description: string;
 }
@@ -2698,4 +2717,134 @@ export async function getCodexEncounters(opts?: { gameLocale?: GameLocale }): Pr
       sceneById.get(kor.id) ?? null,
     );
   });
+}
+
+function modifierImageUrl(id: string): string {
+  return `/images/sts2/modifiers/${id.toLowerCase()}.webp`;
+}
+
+function characterCardsModifierId(characterId: string): string {
+  return `CHARACTER_CARDS_${characterId}`;
+}
+
+export async function getCodexModifiers(opts?: { gameLocale?: GameLocale }): Promise<CodexModifier[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [
+    korModifiers,
+    engModifiers,
+    gameModifiers,
+    engGameModifiers,
+    characters,
+    englishCharacters,
+  ] = await Promise.all([
+    readJson<RawModifier[]>("kor/modifiers.json"),
+    readJson<RawModifier[]>("eng/modifiers.json"),
+    readGameLocalizationTable(gameLocale, "modifiers"),
+    readGameLocalizationTable("eng", "modifiers"),
+    getCodexCharacters({ gameLocale }),
+    gameLocale === "eng" ? Promise.resolve(null) : getCodexCharacters({ gameLocale: "eng" }),
+  ]);
+
+  const korById = new Map(korModifiers.map((modifier) => [modifier.id, modifier]));
+  const engById = new Map(engModifiers.map((modifier) => [modifier.id, modifier]));
+  const englishCharacterById = new Map((englishCharacters ?? characters).map((character) => [character.id, character]));
+  const modifiers: CodexModifier[] = [];
+  const historicalModifierAliases: Record<string, { ko: string[]; en: string[] }> = {
+    SEALED_DECK: { ko: ["봉인된 덱"], en: [] },
+    NIGHT_TERRORS: { ko: ["야간 공포"], en: [] },
+    MURDEROUS: { ko: ["살인마"], en: [] },
+  };
+
+  const pushRunModifier = (id: string, polarity: CodexModifier["polarity"], sortOrder: number) => {
+    const kor = korById.get(id);
+    const eng = engById.get(id) ?? kor;
+    if (!kor || !eng) return;
+    const aliases = historicalModifierAliases[id];
+    modifiers.push({
+      id,
+      name: gameText(gameModifiers, `${id}.title`, kor.name),
+      nameEn: gameText(engGameModifiers, `${id}.title`, eng.name),
+      description: gameText(gameModifiers, `${id}.description`, kor.description),
+      descriptionEn: gameText(engGameModifiers, `${id}.description`, eng.description),
+      polarity,
+      source: "run",
+      characterId: null,
+      imageUrl: modifierImageUrl(id),
+      sortOrder,
+      aliasesKo: aliases?.ko,
+      aliasesEn: aliases?.en,
+    });
+  };
+
+  GOOD_RUN_MODIFIER_IDS.forEach((id, index) => pushRunModifier(id, "good", index));
+  characters.forEach((character, index) => {
+    const englishCharacter = englishCharacterById.get(character.id) ?? character;
+    modifiers.push({
+      id: characterCardsModifierId(character.id),
+      name: character.quotes.cardsModifierTitle,
+      nameEn: englishCharacter.quotes.cardsModifierTitle,
+      description: character.quotes.cardsModifierDescription,
+      descriptionEn: englishCharacter.quotes.cardsModifierDescription,
+      polarity: "good",
+      source: "characterCards",
+      characterId: character.id,
+      imageUrl: CHARACTER_CARDS_MODIFIER_IMAGE_URL,
+      sortOrder: GOOD_RUN_MODIFIER_IDS.length + index,
+    });
+  });
+  BAD_RUN_MODIFIER_IDS.forEach((id, index) => {
+    pushRunModifier(id, "bad", GOOD_RUN_MODIFIER_IDS.length + characters.length + index);
+  });
+
+  return modifiers;
+}
+
+const ASCENSION_HISTORICAL_ALIASES: Record<string, { ko: string[]; en: string[] }> = {
+  // A6 was reworked from Gloom to Inflation; keep both names for patch matching.
+  LEVEL_06: {
+    ko: ["비관", "침울"],
+    en: ["Gloom"],
+  },
+};
+
+export async function getCodexAscensions(opts?: { gameLocale?: GameLocale }): Promise<CodexAscension[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [korAscensions, engAscensions, gameAscension, engGameAscension] = await Promise.all([
+    readJson<RawAscension[]>("kor/ascensions.json"),
+    readJson<RawAscension[]>("eng/ascensions.json"),
+    readGameLocalizationTable(gameLocale, "ascension"),
+    readGameLocalizationTable("eng", "ascension"),
+  ]);
+
+  const engById = new Map(engAscensions.map((ascension) => [ascension.id, ascension]));
+  return korAscensions
+    .slice()
+    .sort((left, right) => left.level - right.level)
+    .map((kor) => {
+      const eng = engById.get(kor.id) ?? kor;
+      const name = gameText(gameAscension, `${kor.id}.title`, kor.name);
+      const nameEn = gameText(engGameAscension, `${kor.id}.title`, eng.name);
+      const historical = ASCENSION_HISTORICAL_ALIASES[kor.id];
+      const aliasesKo = [
+        ...(kor.level > 0 ? [`승천 ${kor.level}`] : []),
+        ...(historical?.ko ?? []),
+      ].filter((alias) => alias !== name);
+      const aliasesEn = [
+        ...(kor.level > 0 ? [`Ascension ${kor.level}`] : []),
+        ...(historical?.en ?? []),
+      ].filter((alias) => alias !== nameEn);
+
+      return {
+        id: kor.id,
+        level: kor.level,
+        name,
+        nameEn,
+        description: gameText(gameAscension, `${kor.id}.description`, kor.description),
+        descriptionEn: gameText(engGameAscension, `${kor.id}.description`, eng.description),
+        aliasesKo,
+        aliasesEn,
+        imageUrl: ASCENSION_TOKEN_IMAGE_URL,
+        sortOrder: kor.level,
+      };
+    });
 }

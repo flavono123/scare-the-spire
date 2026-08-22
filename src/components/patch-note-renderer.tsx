@@ -8,7 +8,7 @@ import {
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
-import type { CodexCard, CodexKeyword, CodexCharacter, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexAffliction, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch, DamageValue, MonsterMove } from "@/lib/codex-types";
+import type { CodexCard, CodexKeyword, CodexCharacter, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexAffliction, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch, CodexModifier, CodexAscension, DamageValue, MonsterMove } from "@/lib/codex-types";
 import { RELIC_RARITY_LABELS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
@@ -19,6 +19,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { patchLineAnchorId } from "@/lib/patch-line-links";
+import { classNameForHref, RESOURCE_LINK_CLASS } from "@/lib/service-link-classes";
 import { patchLineSummaryMarkdownForService, withPatchChangeEffects } from "@/lib/patch-line-display";
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import type { EntityVersionDiff, STS2Patch, STS2PatchLine } from "@/lib/types";
@@ -53,13 +54,15 @@ import {
 import { CharacterLowHpHoverPreview, CharacterLowHpIdleBlock } from "@/components/codex/character-low-hp-idle-block";
 import { characterHasLowHealthIdle, withCharacterLowHpQuery } from "@/components/codex/character-spine-stage";
 import { applyPowerAmountForPreview } from "@/components/codex/power-preview";
+import { AscensionToken } from "@/components/codex/ascension-token";
+import { ModifierToken } from "@/components/codex/modifier-token";
 import {
   expandEncounterFormations,
   formatEncounterProbability,
 } from "@/lib/encounter-compositions";
 
 // Entity types that can appear in patch notes
-export type EntityType = "card" | "character" | "keyword" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "monsterMove" | "encounter" | "ancient" | "epoch";
+export type EntityType = "card" | "character" | "keyword" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "monsterMove" | "encounter" | "ancient" | "epoch" | "modifier" | "ascension";
 
 export interface EntityInfo {
   id: string;
@@ -107,6 +110,8 @@ export interface EntityInfo {
   encounterData?: CodexEncounter; // Full encounter data for rich preview
   ancientData?: CodexAncient; // Full ancient data for rich preview
   epochData?: CodexEpoch; // Full epoch data for rich preview
+  modifierData?: CodexModifier;
+  ascensionData?: CodexAscension;
 }
 
 // Keep backward compat alias
@@ -131,8 +136,7 @@ type RenderContext = {
 
 // --- Entity Preview (hover card image) ---
 
-const DEFAULT_ENTITY_LINK_CLASS =
-  "font-game-title font-semibold spire-gold hover:text-primary underline decoration-primary/30 underline-offset-2 transition-colors cursor-pointer";
+const DEFAULT_ENTITY_LINK_CLASS = RESOURCE_LINK_CLASS;
 const GAME_INSPECT_CURSOR_CLASS = "game-inspect-cursor";
 
 function withGameInspectCursor(className: string): string {
@@ -166,6 +170,8 @@ function estimatePreviewSize(entity: EntityInfo): { width: number; height: numbe
       : { width: 380, height: 220 };
   }
   if (entity.type === "keyword" && entity.keywordData) return { width: 320, height: 140 };
+  if (entity.type === "modifier" && entity.modifierData) return { width: 420, height: 160 };
+  if (entity.type === "ascension" && entity.ascensionData) return { width: 420, height: 160 };
   if (entity.type === "relic" && entity.relicData) {
     return {
       width: RELIC_INSPECT_HOVER_SIZE.width + 280,
@@ -532,6 +538,8 @@ export function EntityPreview({
     encounter: buildCompendiumResourceHref("encounter", compendiumRouteId),
     ancient: buildCompendiumResourceHref("ancient", compendiumRouteId),
     epoch: buildCompendiumResourceHref("epoch", compendiumRouteId),
+    modifier: buildCompendiumResourceHref("modifier", compendiumRouteId),
+    ascension: buildCompendiumResourceHref("ascension", compendiumRouteId),
   };
   const hrefBase = isPendingCompendium ? null : entity.href === null ? null : entity.href ?? hrefMap[entity.type] ?? null;
   const localizedHref = hrefBase && serviceLocale && gameLocale
@@ -738,6 +746,26 @@ export function EntityPreview({
           </GameHoverTip>,
         )
       )}
+      {showResolvedPreview && previewEntity.type === "modifier" && previewEntity.modifierData && (
+        renderTooltip(
+          <div className="flex items-center gap-3">
+            <ModifierToken modifier={previewEntity.modifierData} size={64} />
+            <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
+              <DescriptionText description={previewEntity.modifierData.description} />
+            </GameHoverTip>
+          </div>,
+        )
+      )}
+      {showResolvedPreview && previewEntity.type === "ascension" && previewEntity.ascensionData && (
+        renderTooltip(
+          <div className="flex items-center gap-3">
+            <AscensionToken level={previewEntity.ascensionData.level} size={64} />
+            <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
+              <DescriptionText description={previewEntity.ascensionData.description} />
+            </GameHoverTip>
+          </div>,
+        )
+      )}
       {showResolvedPreview && previewEntity.type === "relic" && previewEntity.relicData && (
         renderTooltip(
           <EntityRelicHoverPreview
@@ -917,7 +945,7 @@ export function EntityPreview({
           />,
         )
       )}
-      {showResolvedPreview && !entity.cardData && !entity.characterData && !entity.keywordData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.afflictionData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.monsterMoveData && !entity.encounterData && !entity.ancientData && !entity.epochData && entity.imageUrl && (
+      {showResolvedPreview && !entity.cardData && !entity.characterData && !entity.keywordData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.afflictionData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.monsterMoveData && !entity.encounterData && !entity.ancientData && !entity.epochData && !entity.modifierData && !entity.ascensionData && entity.imageUrl && (
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
@@ -1576,7 +1604,7 @@ function renderMarkdownLink(
   href: string,
   context: RenderContext,
 ): ReactNode {
-  const className = "text-cyan-200 underline decoration-cyan-200/40 underline-offset-2 transition-colors hover:text-cyan-100";
+  const className = classNameForHref(href);
   if (href.startsWith("/")) {
     const localizedHref = context.serviceLocale && context.gameLocale
       ? localizeHrefWithGameLocale(href, context.serviceLocale, context.gameLocale)

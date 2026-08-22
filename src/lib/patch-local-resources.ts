@@ -37,6 +37,8 @@ const COMPENDIUM_RESOURCE_TYPE_BY_ENTITY_TYPE: Partial<Record<EntityType, Compen
   encounter: "encounters",
   ancient: "ancients",
   epoch: "epochs",
+  modifier: "modifiers",
+  ascension: "ascensions",
 };
 
 async function readPatchLocalResources(): Promise<PatchLocalResource[]> {

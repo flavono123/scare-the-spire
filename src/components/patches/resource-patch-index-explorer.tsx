@@ -152,6 +152,8 @@ function resourceGroupLabel(type: StoryEntityType, serviceLocale: ServiceLocale)
     case "encounter": return copy.encounters;
     case "ancient": return copy.ancients;
     case "epoch": return copy.epochs;
+    case "modifier": return copy.modifiers;
+    case "ascension": return copy.ascensions;
   }
 }
 
@@ -174,6 +176,8 @@ const RESOURCE_GROUP_ICON: Record<StoryEntityType, string> = {
   encounter: "/images/sts2/map/icons/map_monster.png",
   ancient: navIcon("ancients"),
   epoch: navIcon("epochs"),
+  modifier: navIcon("modifiers"),
+  ascension: navIcon("ascensions"),
 };
 
 function resourceMatches(resource: ResourcePatchIndexResource, query: string): boolean {

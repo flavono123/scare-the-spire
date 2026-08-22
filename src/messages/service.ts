@@ -38,6 +38,8 @@ export const serviceMessages = {
         encounter: "전투",
         ancient: "고대의 존재",
         epoch: "연대기",
+        modifier: "모드",
+        ascension: "승천",
         patch: "패치 노트",
         story: "슬서운 이야기",
         historyCourse: "역사 강의서",
@@ -670,6 +672,8 @@ export const serviceMessages = {
       ancients: "고대의 존재",
       epochs: "연대기",
       badges: "뱃지",
+      modifiers: "모드",
+      ascensions: "승천",
       index: "전체 보기",
       common: {
         close: "닫기",
@@ -691,6 +695,8 @@ export const serviceMessages = {
         afflictions: "개",
         encounters: "건",
         badges: "개",
+        modifiers: "개",
+        ascensions: "개",
         affiliation: "캐릭터",
         forms: "형상",
         cardTypes: {
@@ -835,6 +841,15 @@ export const serviceMessages = {
         tieredRanks: "금 · 은 · 동",
         winRequired: "승리 필요",
         winNotRequired: "승패 무관",
+      },
+      modifiersView: {
+        searchPlaceholder: "모드 검색...",
+        polarityFilter: "영향",
+        positive: "긍정",
+        negative: "부정",
+      },
+      ascensionsView: {
+        searchPlaceholder: "승천 검색...",
       },
       cardsView: {
         title: "카드 목록",
@@ -1093,6 +1108,8 @@ export const serviceMessages = {
         encounter: "Encounter",
         ancient: "Ancient",
         epoch: "Epoch",
+        modifier: "Modifier",
+        ascension: "Ascension",
         patch: "Patch Note",
         story: "Story",
         historyCourse: "History Course",
@@ -1725,6 +1742,8 @@ export const serviceMessages = {
       ancients: "Ancients",
       epochs: "Epochs",
       badges: "Badges",
+      modifiers: "Modifiers",
+      ascensions: "Ascension",
       index: "All",
       common: {
         close: "Close",
@@ -1746,6 +1765,8 @@ export const serviceMessages = {
         afflictions: "afflictions",
         encounters: "encounters",
         badges: "badges",
+        modifiers: "modifiers",
+        ascensions: "ascensions",
         affiliation: "Character",
         forms: "Forms",
         cardTypes: {
@@ -1890,6 +1911,15 @@ export const serviceMessages = {
         tieredRanks: "Gold · Silver · Bronze",
         winRequired: "Win Required",
         winNotRequired: "Win Not Required",
+      },
+      modifiersView: {
+        searchPlaceholder: "Search modifiers...",
+        polarityFilter: "Effect",
+        positive: "Positive",
+        negative: "Negative",
+      },
+      ascensionsView: {
+        searchPlaceholder: "Search ascensions...",
       },
       cardsView: {
         title: "Card Library",

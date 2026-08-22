@@ -261,6 +261,10 @@ function sts2EntityHref(entity: EntityInfo): string | null {
       return buildCompendiumResourceHref("ancient", entity.id);
     case "epoch":
       return buildCompendiumResourceHref("epoch", entity.id);
+    case "modifier":
+      return buildCompendiumResourceHref("modifier", entity.id);
+    case "ascension":
+      return buildCompendiumResourceHref("ascension", entity.id);
     default:
       return null;
   }

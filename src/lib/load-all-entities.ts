@@ -92,6 +92,8 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
       id: m.id,
       nameEn: m.nameEn,
       nameKo: m.name,
+      aliasesEn: m.aliasesEn,
+      aliasesKo: m.aliasesKo,
       imageUrl: m.imageUrl,
       href: buildCompendiumResourceHref("modifier", m.id),
       color: m.polarity,

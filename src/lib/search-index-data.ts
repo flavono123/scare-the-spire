@@ -39,6 +39,8 @@ const TYPE_TO_COMPENDIUM_LINK_TYPE: Partial<Record<EntityType, CompendiumResourc
   encounter: "encounter",
   ancient: "ancient",
   epoch: "epoch",
+  modifier: "modifier",
+  ascension: "ascension",
 };
 
 function entityHref(entity: EntityInfo): string | null {
@@ -276,6 +278,32 @@ function entitySearchText(entity: EntityInfo): string {
       epoch.unlocksRelics.join(" "),
       epoch.unlocksPotions.join(" "),
       epoch.expandsTimeline.join(" "),
+    );
+  }
+
+  if (entity.modifierData) {
+    const modifier = entity.modifierData;
+    appendSearchParts(
+      parts,
+      modifier.description,
+      modifier.descriptionEn,
+      modifier.polarity,
+      modifier.source,
+      modifier.characterId,
+      ...(modifier.aliasesKo ?? []),
+      ...(modifier.aliasesEn ?? []),
+    );
+  }
+
+  if (entity.ascensionData) {
+    const ascension = entity.ascensionData;
+    appendSearchParts(
+      parts,
+      ascension.description,
+      ascension.descriptionEn,
+      ascension.level,
+      ...ascension.aliasesKo,
+      ...ascension.aliasesEn,
     );
   }
 

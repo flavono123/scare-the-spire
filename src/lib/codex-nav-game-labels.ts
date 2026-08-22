@@ -11,6 +11,8 @@ type CodexNavGameLabelKey =
   | "events"
   | "ancients"
   | "epochs"
+  | "modifiers"
+  | "ascensions"
   | "historyCourse";
 
 // Exact client-safe labels from STS2 localization tables:
@@ -27,6 +29,8 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     events: "Ereignis",
     ancients: "Ahnen",
     epochs: "Epochen",
+    modifiers: "Modifikatoren",
+    ascensions: "Aufstieg",
     historyCourse: "Geschichtskurs",
   },
   eng: {
@@ -40,6 +44,8 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     events: "Event",
     ancients: "Ancients",
     epochs: "Epochs",
+    modifiers: "Modifiers",
+    ascensions: "Ascension",
     historyCourse: "History Course",
   },
   esp: {
@@ -53,6 +59,8 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     events: "Evento",
     ancients: "Ancestrales",
     epochs: "Eras",
+    modifiers: "Modificadores",
+    ascensions: "Ascensión",
     historyCourse: "Clase de historia",
   },
   fra: {
@@ -66,6 +74,8 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     events: "Événement",
     ancients: "Les Anciens",
     epochs: "Ères",
+    modifiers: "Affixes",
+    ascensions: "Ascension",
     historyCourse: "Manuel d'Histoire",
   },
   ita: {
@@ -79,6 +89,8 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     events: "Evento",
     ancients: "Gli Antichi",
     epochs: "Epoche",
+    modifiers: "Modificatori",
+    ascensions: "Ascensione",
     historyCourse: "Corso di Storia",
   },
   jpn: {
@@ -92,6 +104,8 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     events: "イベント",
     ancients: "エンシェント",
     epochs: "断章",
+    modifiers: "特殊条件",
+    ascensions: "アセンション",
     historyCourse: "歴史学教程",
   },
   kor: {
@@ -105,6 +119,8 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     events: "이벤트",
     ancients: "고대의 존재",
     epochs: "연대기",
+    modifiers: "모드",
+    ascensions: "승천",
     historyCourse: "역사 강의서",
   },
   pol: {
@@ -118,6 +134,8 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     events: "Wydarzenie",
     ancients: "Starożytni",
     epochs: "Epoki",
+    modifiers: "Modyfikatory",
+    ascensions: "Wyniesienie",
     historyCourse: "Podręcznik do historii",
   },
   ptb: {
@@ -131,6 +149,8 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     events: "Evento",
     ancients: "Ancestrais",
     epochs: "Épocas",
+    modifiers: "Modificadores",
+    ascensions: "Ascensão",
     historyCourse: "Estudos de História",
   },
   rus: {
@@ -144,6 +164,8 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     events: "Событие",
     ancients: "Древние",
     epochs: "Эпохи",
+    modifiers: "Модификаторы",
+    ascensions: "Возвышение",
     historyCourse: "Лекция по истории",
   },
   spa: {
@@ -157,6 +179,8 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     events: "Evento",
     ancients: "Los Antiguos",
     epochs: "Épocas",
+    modifiers: "Modificadores",
+    ascensions: "Ascensión",
     historyCourse: "Libro de historia",
   },
   tha: {
@@ -170,6 +194,8 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     events: "เหตุการณ์",
     ancients: "เทพโบราณ",
     epochs: "ศักราช",
+    modifiers: "กติกา",
+    ascensions: "ผู้บรรลุ",
     historyCourse: "หลักสูตรประวัติศาสตร์",
   },
   tur: {
@@ -183,6 +209,8 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     events: "Etkinlik",
     ancients: "Kadimler",
     epochs: "Çağlar",
+    modifiers: "Kurallar",
+    ascensions: "Yükseliş",
     historyCourse: "Tarih Dersi",
   },
   zhs: {
@@ -196,6 +224,8 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     events: "事件",
     ancients: "先古之民",
     epochs: "历史节点",
+    modifiers: "特效",
+    ascensions: "进阶",
     historyCourse: "历史课",
   },
 };

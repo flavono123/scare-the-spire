@@ -22,5 +22,7 @@ export function compendiumTypeLabels(
     encounter: codex.encounters,
     ancient: codex.ancients,
     epoch: codex.epochs,
+    modifier: codex.modifiers,
+    ascension: codex.ascensions,
   };
 }

@@ -12,7 +12,9 @@ export type CompendiumResourceLinkType =
   | "monster"
   | "potion"
   | "power"
-  | "relic";
+  | "relic"
+  | "modifier"
+  | "ascension";
 
 type LinkConfig = {
   path: string;
@@ -36,6 +38,8 @@ const COMPENDIUM_RESOURCE_LINKS: Record<CompendiumResourceLinkType, LinkConfig> 
   potion: { path: "/compendium/potions", detailPath: "/compendium/potions", param: "potion" },
   power: { path: "/compendium/powers", detailPath: "/compendium/powers", param: "power" },
   relic: { path: "/compendium/relics", detailPath: "/compendium/relics", param: "relic" },
+  modifier: { path: "/compendium/modifiers", detailPath: "/compendium/modifiers", param: "modifier" },
+  ascension: { path: "/compendium/ascensions", detailPath: "/compendium/ascensions", param: "ascension" },
 };
 
 const COMPENDIUM_SELECTOR_PARAMS = new Set(

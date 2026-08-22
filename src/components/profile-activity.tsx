@@ -89,6 +89,8 @@ const CODEX_PATHS: Record<string, string> = {
   potion: "potions",
   power: "powers",
   relic: "relics",
+  modifier: "modifiers",
+  ascension: "ascensions",
 };
 
 function formatTemplate(template: string, values: Record<string, string | number>): string {
