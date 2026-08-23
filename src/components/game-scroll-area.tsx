@@ -202,7 +202,8 @@ export function GameScrollArea({
     <div
       className={cn(
         "relative flex min-h-0",
-        metrics.overflow && "pr-[calc(var(--game-scroll-rail-width)+0.35rem)]",
+        // Desktop only: the gold rail needs gutter. Mobile keeps full width for touch pan.
+        metrics.overflow && "md:pr-[calc(var(--game-scroll-rail-width)+0.35rem)]",
         className,
       )}
       style={railStyle}
@@ -228,8 +229,9 @@ export function GameScrollArea({
           aria-label={ariaLabel}
           aria-orientation="vertical"
           aria-hidden={!metrics.overflow}
+          data-game-scroll-rail=""
           className={cn(
-            "absolute bottom-1 right-0 top-1 w-[var(--game-scroll-rail-width)] select-none",
+            "absolute bottom-1 right-0 top-1 hidden w-[var(--game-scroll-rail-width)] select-none md:block",
             !metrics.overflow && "pointer-events-none opacity-0",
           )}
           onPointerDown={onTrackPointerDown}
