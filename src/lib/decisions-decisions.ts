@@ -10,7 +10,7 @@ import sts2Meta from "../../data/sts2/meta.json";
 
 export const DECISIONS_DECISIONS_HREF = "/decisions-decisions";
 export const DECISIONS_DECISIONS_TOKEN_SRC =
-  "/images/sts2/potions/skill_potion.webp";
+  "/images/sts2/powers/stratagem_power.webp";
 export const DECISIONS_DECISIONS_BACKGROUND_SRC =
   "/images/sts2/cards/decisions_decisions.webp";
 
@@ -105,8 +105,9 @@ export const DEFAULT_TIER_ROWS: readonly TierRow[] = [
   { id: "d", label: "D", color: "red" },
 ];
 
+/** Same hexes as Transfigure token appearance / `SPIRE_ICON_COLORS`. */
 const SPIRE_TIER_BAR: Record<SpireTierColorKey, string> = {
-  gold: "#d4a843",
+  gold: "#EFC851",
   green: "#34d399",
   aqua: "#22d3ee",
   orange: "#fb923c",
@@ -117,6 +118,19 @@ const SPIRE_TIER_BAR: Record<SpireTierColorKey, string> = {
   silver: "#8ad6e0",
   bronze: "#d7a470",
 };
+
+export const TIER_PALETTE_KEYS = [
+  "gold",
+  "red",
+  "green",
+  "orange",
+  "pink",
+  "aqua",
+  "blue",
+  "purple",
+] as const satisfies readonly SpireTierColorKey[];
+
+export type TierPaletteKey = (typeof TIER_PALETTE_KEYS)[number];
 
 const SPIRE_TIER_TEXT: Record<SpireTierColorKey, string> = {
   gold: "spire-gold",
@@ -192,7 +206,38 @@ export function entityToResourceRef(
   return { type: entity.type, id: entity.id };
 }
 
-const CUSTOM_PRESET_KEY = "custom";
+export const CUSTOM_PRESET_KEY = "custom";
+
+export const CARD_POOL_MINORS = [
+  "ironclad",
+  "silent",
+  "defect",
+  "necrobinder",
+  "regent",
+  "colorless",
+] as const satisfies readonly CardColor[];
+
+export const RELIC_POOL_MINORS = [
+  "shared",
+  "ironclad",
+  "silent",
+  "defect",
+  "necrobinder",
+  "regent",
+] as const satisfies readonly RelicPool[];
+
+export const POTION_POOL_MINORS = [
+  "all",
+  "shared",
+  "ironclad",
+  "silent",
+  "defect",
+  "necrobinder",
+  "regent",
+  "event",
+] as const satisfies readonly (PotionPool | "all")[];
+
+export type DecisionsPoolMajor = DecisionsDecisionsResourceType;
 
 export type DecisionsDecisionsPresetKind = "custom" | "cards" | "relics" | "potions";
 
@@ -354,6 +399,86 @@ export function normalizeDecisionsDecisionsPost(raw: unknown): DecisionsDecision
 
 export function cloneDefaultRows(): TierRow[] {
   return DEFAULT_TIER_ROWS.map((row) => ({ ...row }));
+}
+
+export function tierColorHex(color: TierColorKey): string {
+  return tierColorBar(color).toLowerCase();
+}
+
+export function usedTierColorHexes(
+  rows: readonly TierRow[],
+  exceptRowId?: string,
+): Set<string> {
+  return new Set(
+    rows
+      .filter((row) => row.id !== exceptRowId)
+      .map((row) => tierColorHex(row.color)),
+  );
+}
+
+export function nextUnusedTierColor(rows: readonly TierRow[]): TierPaletteKey | null {
+  const used = usedTierColorHexes(rows);
+  return TIER_PALETTE_KEYS.find((key) => !used.has(tierColorHex(key))) ?? null;
+}
+
+export function namedPresetDefs(): DecisionsDecisionsPresetDef[] {
+  return DECISIONS_DECISIONS_PRESET_DEFS.filter((preset) => preset.kind !== "custom");
+}
+
+export function namedPresetKeyFromFilter(
+  major: DecisionsPoolMajor | null,
+  minor: string | null,
+): string {
+  if (!major || !minor) return CUSTOM_PRESET_KEY;
+  const key = major === "card"
+    ? `cards-${minor}`
+    : major === "relic"
+      ? `relics-${minor}`
+      : minor === "all"
+        ? "potions-all"
+        : `potions-${minor}`;
+  return isDecisionsDecisionsPresetKey(key) ? key : CUSTOM_PRESET_KEY;
+}
+
+export function filterStateFromPresetKey(key: string): {
+  major: DecisionsPoolMajor | null;
+  minor: string | null;
+} {
+  const def = findPresetDef(key);
+  if (def.kind === "custom") return { major: null, minor: null };
+  if (def.kind === "cards") return { major: "card", minor: def.color };
+  if (def.kind === "relics") return { major: "relic", minor: def.pool };
+  return { major: "potion", minor: def.pool };
+}
+
+function isCardColor(value: string): value is CardColor {
+  return (CARD_POOL_MINORS as readonly string[]).includes(value);
+}
+
+function isRelicPoolValue(value: string): value is RelicPool {
+  return (RELIC_POOL_MINORS as readonly string[]).includes(value);
+}
+
+function isPotionPoolValue(value: string): value is PotionPool | "all" {
+  return (POTION_POOL_MINORS as readonly string[]).includes(value);
+}
+
+export function stampFilterIds(
+  entities: EntityInfo[],
+  major: DecisionsPoolMajor | null,
+  minor: string | null,
+): DecisionsDecisionsResourceRef[] {
+  if (!major || !minor) return [];
+  if (major === "card" && isCardColor(minor)) {
+    return stampPresetIds({ key: `cards-${minor}`, kind: "cards", color: minor }, entities);
+  }
+  if (major === "relic" && isRelicPoolValue(minor)) {
+    return stampPresetIds({ key: `relics-${minor}`, kind: "relics", pool: minor }, entities);
+  }
+  if (major === "potion" && isPotionPoolValue(minor)) {
+    return stampPresetIds({ key: `potions-${minor}`, kind: "potions", pool: minor }, entities);
+  }
+  return [];
 }
 
 export function placementText(

@@ -425,9 +425,9 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     type: "decisionsDecisions",
     title: "어려운 결정",
     titleEn: "Decisions, Decisions",
-    description: "티어 보드 카드 유물 포션 랭킹 가이드 어려운 결정 스킬 포션",
-    descriptionEn: "tier list board ranking card relic potion skill potion decisions",
-    imageUrl: "/images/sts2/potions/skill_potion.webp",
+    description: "티어 보드 카드 유물 포션 랭킹 가이드 어려운 결정 책략",
+    descriptionEn: "tier list board ranking card relic potion stratagem decisions",
+    imageUrl: "/images/sts2/powers/stratagem_power.webp",
     href: "/decisions-decisions",
   }];
 

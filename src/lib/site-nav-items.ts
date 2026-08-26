@@ -8,6 +8,7 @@ import {
   ASCENSION_TOKEN_IMAGE_URL,
   CHARACTER_CARDS_MODIFIER_IMAGE_URL,
 } from "@/lib/codex-types";
+import { DECISIONS_DECISIONS_TOKEN_SRC } from "@/lib/decisions-decisions";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   localizeHrefWithGameLocale,
@@ -90,7 +91,7 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
   },
   {
     href: "/decisions-decisions",
-    icon: "/images/sts2/potions/skill_potion.webp",
+    icon: DECISIONS_DECISIONS_TOKEN_SRC,
     createdAt: "2026-08-26",
     nestedUnder: "/defragment",
     getLabel: (_serviceLocale, gameLocale) => getDecisionsDecisionsNavTitle(gameLocale),

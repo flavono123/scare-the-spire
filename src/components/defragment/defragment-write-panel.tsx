@@ -384,7 +384,7 @@ export function DefragmentWritePanel({
             gameLocale={gameLocale}
             serviceLocale={serviceLocale}
             presetLabels={decisionsCopy.presetLabels}
-            submitLabel={decisionsCopy.subtitle}
+            submitLabel={serviceMessages[serviceLocale].decisionsDecisions.submit}
             profileNickname={readNickname()}
             hideNickname
             onSubmit={handleDecisionsSubmit}

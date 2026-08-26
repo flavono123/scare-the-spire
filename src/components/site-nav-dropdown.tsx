@@ -90,17 +90,17 @@ export function SiteNavDropdown({
                 href={child.href}
                 prefetch={false}
                 role="menuitem"
-                className={`flex items-center gap-2.5 py-1.5 pl-8 pr-3 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground ${
-                  isToyBox ? "font-service" : ""
+                className={`ml-3 flex items-center gap-2.5 border-l border-border/60 px-3 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground ${
+                  isToyBox ? "py-2 font-service" : "py-1.5"
                 }`}
               >
                 <Image
                   src={child.icon}
                   alt=""
-                  width={isToyBox ? 20 : 16}
-                  height={isToyBox ? 20 : 16}
+                  width={isToyBox ? 24 : 18}
+                  height={isToyBox ? 24 : 18}
                   className={`${
-                    isToyBox ? "h-5 w-5" : "h-4 w-4"
+                    isToyBox ? "h-6 w-6" : child.iconClassName ?? "h-[18px] w-[18px]"
                   } shrink-0 object-contain`}
                 />
                 <span className="min-w-0 truncate">{child.label}</span>

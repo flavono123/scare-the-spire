@@ -63,7 +63,7 @@ export const globalSearchTypeStyles: Record<GlobalSearchType, {
   ascension: { icon: "/images/sts2/ui/topbar/top_bar_ascension.png", color: "text-orange-200", bg: "bg-orange-500/10", border: "border-orange-400/30" },
   historyCourse: { icon: "/images/sts2/relics/history_course.webp", color: "text-violet-200", bg: "bg-violet-500/10", border: "border-violet-400/30" },
   thisOrThat: { icon: "/images/sts2/relics/choices_paradox.webp", color: "text-blue-200", bg: "bg-blue-500/10", border: "border-blue-400/30" },
-  decisionsDecisions: { icon: "/images/sts2/potions/skill_potion.webp", color: "text-emerald-200", bg: "bg-emerald-500/10", border: "border-emerald-400/30" },
+  decisionsDecisions: { icon: "/images/sts2/powers/stratagem_power.webp", color: "text-sky-200", bg: "bg-sky-500/10", border: "border-sky-400/30" },
 };
 
 function globalSearchFieldScore(value: string, query: string, weight: number): number | null {

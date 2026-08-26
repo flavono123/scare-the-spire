@@ -57,7 +57,7 @@ export function DecisionsDecisionsPostView({
   const { profile } = useUserProfile(profileFallback);
   const [copied, setCopied] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [showNames, setShowNames] = useState(true);
+  const [showNames, setShowNames] = useState(false);
   const boardRef = useRef<HTMLDivElement>(null);
   const isEmbed = variant === "embed";
   const indexHref = localizeHrefWithGameLocale(DECISIONS_DECISIONS_HREF, serviceLocale, gameLocale);
@@ -148,6 +148,7 @@ export function DecisionsDecisionsPostView({
           submitLabel={copy.saveChanges}
           profileNickname={profile.nickname}
           initial={post}
+          onClose={() => setEditing(false)}
           onSubmit={async (values) => {
             const activeUserId = userId ?? await ensureUser();
             if (!activeUserId) return false;
