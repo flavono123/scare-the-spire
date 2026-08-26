@@ -10,6 +10,12 @@ Game source:
 The in-game card library tickbox VIEW_MULTIPLAYER_CARDS hides MultiplayerOnly
 cards when unticked. This catalog is that same flag.
 
+When the local decompile is older than data/sts2/{eng,kor}/cards.json (the
+installed Steam build may lag Codex), cards that exist in JSON but have no
+matching *.cs file are filled from Steam patch notes that explicitly added
+them as multiplayer cards. C# wins for any card that is present in the
+decompile.
+
 Outputs:
   - data/sts2/card-multiplayer-constraints.json
 
@@ -35,6 +41,30 @@ CONSTRAINT_RE = {
     "MultiplayerOnly": "MultiplayerConstraint => CardMultiplayerConstraint.MultiplayerOnly",
     "SingleplayerOnly": "MultiplayerConstraint => CardMultiplayerConstraint.SingleplayerOnly",
 }
+
+# Steam patch-note IDs used only when the matching CardModel *.cs is missing
+# from this decompile (local Steam currently trails Codex 0.111.0).
+# v0.108.0: "Added new multiplayer {character/colorless} cards"
+# v0.109.0: "Added new Regent card, Tutor" ("Another player chooses…");
+#           v0.110.0 lists Tutor under Multiplayer UI fixes.
+PATCH_NOTE_MULTIPLAYER_ONLY_IDS = (
+    "MIDNIGHT",
+    "BLAZE",
+    "OUTRAGE",
+    "BLADE_SYMPHONY",
+    "CONCOCT",
+    "FADE",
+    "PLOT",
+    "CONSTELLATION",
+    "UNDERWORLD",
+    "SOULBOUND",
+    "CACOPHONY",
+    "HIBERNATE",
+    "ONE_FOR_ALL",
+    "IMITATION_LEARNING",
+    "THE_BALL",
+    "TUTOR",
+)
 
 
 def slugify(name: str) -> str:
@@ -72,13 +102,36 @@ def main() -> int:
         return 1
 
     known_ids = {card["id"] for card in json.loads(CARDS_JSON.read_text(encoding="utf-8"))}
+    decompiled_ids = {slugify(path.stem) for path in src_dir.glob("*.cs")}
     multiplayer_only = collect_ids(src_dir, CONSTRAINT_RE["MultiplayerOnly"])
     singleplayer_only = collect_ids(src_dir, CONSTRAINT_RE["SingleplayerOnly"])
 
-    missing = [card_id for card_id in [*multiplayer_only, *singleplayer_only] if card_id not in known_ids]
-    if missing:
-        print(f"slugified ids missing from cards.json: {missing}", flush=True)
+    missing_from_json = [
+        card_id for card_id in [*multiplayer_only, *singleplayer_only] if card_id not in known_ids
+    ]
+    if missing_from_json:
+        print(f"slugified ids missing from cards.json: {missing_from_json}", flush=True)
         return 1
+
+    unknown_patch_note_ids = [card_id for card_id in PATCH_NOTE_MULTIPLAYER_ONLY_IDS if card_id not in known_ids]
+    if unknown_patch_note_ids:
+        print(f"patch-note multiplayer ids missing from cards.json: {unknown_patch_note_ids}", flush=True)
+        return 1
+
+    supplement = [
+        card_id
+        for card_id in PATCH_NOTE_MULTIPLAYER_ONLY_IDS
+        if card_id not in decompiled_ids
+    ]
+    if supplement:
+        print(
+            f"decompile missing {len(supplement)} Codex cards; filling MultiplayerOnly from patch notes: {supplement}",
+            flush=True,
+        )
+        multiplayer_only = sorted(set(multiplayer_only) | set(supplement))
+    else:
+        multiplayer_only = sorted(multiplayer_only)
+    singleplayer_only = sorted(singleplayer_only)
 
     payload = {
         "multiplayerOnlyIds": multiplayer_only,

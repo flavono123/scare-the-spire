@@ -14,7 +14,7 @@ const byId = new Set(engCards.map((card) => card.id));
 const multiplayerOnly = new Set(catalog.multiplayerOnlyIds);
 const singleplayerOnly = new Set(catalog.singleplayerOnlyIds);
 
-assert.equal(catalog.multiplayerOnlyIds.length, 21);
+assert.equal(catalog.multiplayerOnlyIds.length, 37);
 assert.equal(catalog.singleplayerOnlyIds.length, 1);
 assert.ok(singleplayerOnly.has("WELL_LAID_PLANS"));
 assert.equal(multiplayerOnly.has("WELL_LAID_PLANS"), false);
@@ -25,7 +25,11 @@ for (const id of [...multiplayerOnly, ...singleplayerOnly]) {
 
 assert.ok(isMultiplayerOnlyCardId("BELIEVE_IN_YOU"));
 assert.ok(isMultiplayerOnlyCardId("TAG_TEAM"));
+assert.ok(isMultiplayerOnlyCardId("THE_BALL"));
+assert.ok(isMultiplayerOnlyCardId("BLADE_SYMPHONY"));
+assert.ok(isMultiplayerOnlyCardId("TUTOR"));
 assert.equal(isMultiplayerOnlyCardId("BASH"), false);
+assert.equal(isMultiplayerOnlyCardId("ABUNDANCE"), false);
 assert.equal(isMultiplayerOnlyCardId("WELL_LAID_PLANS"), false);
 
 console.log("card-multiplayer-constraints.selfcheck: ok");
