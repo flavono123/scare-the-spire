@@ -37,6 +37,21 @@ For historical work:
 DC's public search and recommendation state can change, and historical
 recommended-list membership is not a permanent archive.
 
+For topic work:
+
+1. Resolve the supplied term against game/repository data and public usage.
+   Record the canonical subject and aliases actually searched. If multiple
+   meanings remain plausible, ask instead of merging unrelated results.
+2. Search the supplied wording first, then verified Korean canonical names and
+   common aliases. Use an English name or resource ID only when public posts
+   demonstrably use it.
+3. A requested date window is optional. Without one, report `window: null` and
+   set `observed_range` to the earliest and latest verified matching posts; this
+   is search coverage, not a claim that no older material exists.
+4. Keep only posts whose body or context is genuinely about the subject. A
+   keyword appearing in navigation, quoted unrelated text, or boilerplate is
+   not a match.
+
 ## Source balance
 
 - `slgall`: the default and dominant source.
@@ -88,10 +103,18 @@ Return Korean Markdown or YAML with every field below. Keep the watchlist broad
 and candidates selective.
 
 ```yaml
-mode: now | trigger | historical
-window:
+mode: now | trigger | historical | topic
+query: supplied subject for topic mode, otherwise null
+resolved_subject:
+  canonical: verified game/community subject, or null
+  aliases_searched: []
+window: # null when topic mode has no requested dates
   from: ISO-8601 timestamp or YYYY-MM-DD
   to: ISO-8601 timestamp or YYYY-MM-DD
+  tz: KST
+observed_range: # required for topic mode
+  from: earliest verified matching post
+  to: latest verified matching post
   tz: KST
 patch_context:
   version: verified version or null
