@@ -31,6 +31,13 @@ community shorthand against game or repository data, search both the supplied
 term and verified canonical aliases, and report the earliest/latest dates
 actually observed. Never silently guess what an ambiguous nickname means.
 
+Invocation examples:
+
+- `/youtube-content-collector now 최근 24시간`
+- `/youtube-content-collector historical v0.109.0 전후 3일`
+- `/youtube-content-collector 싸준에 대해서 컨텐츠 거리의 동향을 찾아와라`
+  → `topic`, query `싸준`, no requested window
+
 ## Collection workflow
 
 1. Read [reference.md](reference.md).
