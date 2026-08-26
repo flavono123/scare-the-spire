@@ -72,6 +72,13 @@ export const DEFRAGMENT_PAGE_OG_IMAGE: PageOgImage = {
   alt: "조각모음 — Defragment",
 };
 
+export const DECISIONS_DECISIONS_PAGE_OG_IMAGE: PageOgImage = {
+  url: "/images/sts2/cards/decisions_decisions.webp",
+  width: 1000,
+  height: 760,
+  alt: "어려운 결정 — Decisions, Decisions",
+};
+
 export const KEYWORD_PAGE_OG_IMAGE: PageOgImage = {
   url: "/images/sts2/ui/topbar/submenu_history_icon.png",
   width: 128,
@@ -139,6 +146,16 @@ export const PAGE_OG_IMAGE_RULES = [
     pattern: "/defragment/*",
     label: "조각모음 상세",
     image: DEFRAGMENT_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/decisions-decisions",
+    label: "어려운 결정",
+    image: DECISIONS_DECISIONS_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/decisions-decisions/*",
+    label: "어려운 결정 상세",
+    image: DECISIONS_DECISIONS_PAGE_OG_IMAGE,
   },
   {
     pattern: "/patches",

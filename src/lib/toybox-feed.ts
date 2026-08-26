@@ -8,6 +8,7 @@ export const TOYBOX_FEED_SERVICES = [
   "transfigure",
   "this_or_that",
   "chemical_x",
+  "decisions_decisions",
 ] as const;
 
 export const TOYBOX_FEED_TABLES = {
@@ -15,6 +16,7 @@ export const TOYBOX_FEED_TABLES = {
   transfigure: "transfigure_posts",
   this_or_that: "this_or_that_posts",
   chemical_x: "chemical_posts",
+  decisions_decisions: "decisions_decisions_posts",
 } as const;
 
 export type ToyboxFeedService = (typeof TOYBOX_FEED_SERVICES)[number];

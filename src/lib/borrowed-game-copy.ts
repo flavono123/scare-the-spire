@@ -28,6 +28,12 @@ export interface DefragmentGameCopy {
   placeholder: string;
 }
 
+export interface DecisionsDecisionsGameCopy {
+  title: string;
+  subtitle: string;
+  presetLabels: Record<string, string>;
+}
+
 export interface FeedbackFormGameCopy {
   title: string;
   categoryLabel: string;
@@ -63,6 +69,7 @@ interface BorrowedGameCopyPayload {
   thisOrThat: ThisOrThatGameCopy;
   transfigure: TransfigureGameCopy;
   defragment: DefragmentGameCopy;
+  decisionsDecisions: DecisionsDecisionsGameCopy;
 }
 
 const borrowedGameCopy = borrowedGameCopyPayload as Record<GameLocale, BorrowedGameCopyPayload>;
@@ -125,4 +132,14 @@ export async function getDefragmentGameCopy(
 
 export function getDefragmentNavTitle(gameLocale: GameLocale): string {
   return getBorrowedGameCopy(gameLocale).defragment.title;
+}
+
+export async function getDecisionsDecisionsGameCopy(
+  gameLocale: GameLocale,
+): Promise<DecisionsDecisionsGameCopy> {
+  return getBorrowedGameCopy(gameLocale).decisionsDecisions;
+}
+
+export function getDecisionsDecisionsNavTitle(gameLocale: GameLocale): string {
+  return getBorrowedGameCopy(gameLocale).decisionsDecisions.title;
 }

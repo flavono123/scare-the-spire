@@ -29,3 +29,7 @@ export function buildChemicalXCommentThreadKey(postId: string): string {
 export function buildDefragmentCommentThreadKey(postId: string): string {
   return `defragment:${postId}`;
 }
+
+export function buildDecisionsDecisionsCommentThreadKey(postId: string): string {
+  return `decisions-decisions:${postId}`;
+}

@@ -172,5 +172,43 @@
         "reason": "조각모음 composer placeholder uses Defragment card text with BBCode and the Focus amount token removed so it reads as a short writing prompt."
       }
     ]
+  },
+  {
+    "id": "decisionsDecisions.defaultNickname.ko",
+    "mode": "serviceText",
+    "sourceLang": "kor",
+    "sourceTable": "cards",
+    "sourceKey": "DECISIONS_DECISIONS.title",
+    "sourceText": "어려운 결정",
+    "serviceText": "결정",
+    "serviceFiles": [
+      "src/messages/service.ts"
+    ],
+    "replacements": [
+      {
+        "from": "어려운 ",
+        "to": "",
+        "reason": "Default nickname keeps the title noun 결정 and drops 어려운 so it is not the full service title."
+      }
+    ]
+  },
+  {
+    "id": "decisionsDecisions.defaultNickname.en",
+    "mode": "serviceText",
+    "sourceLang": "eng",
+    "sourceTable": "cards",
+    "sourceKey": "DECISIONS_DECISIONS.title",
+    "sourceText": "Decisions, Decisions",
+    "serviceText": "Decision",
+    "serviceFiles": [
+      "src/messages/service.ts"
+    ],
+    "replacements": [
+      {
+        "from": "Decisions, Decisions",
+        "to": "Decision",
+        "reason": "Default nickname uses the singular noun from the card title so it is not the full service title."
+      }
+    ]
   }
 ]

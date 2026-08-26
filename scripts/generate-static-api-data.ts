@@ -13,6 +13,11 @@ import { GAME_LOCALES } from "../src/lib/i18n";
 import type { GameLocale } from "../src/lib/i18n";
 import { readGameLocalizationTable } from "../src/lib/game-localization";
 import { loadCompactThisOrThatEntities } from "../src/lib/this-or-that-data";
+import {
+  DECISIONS_DECISIONS_GAME_VERSION,
+  stampAllPresetIds,
+} from "../src/lib/decisions-decisions";
+import { getCodexNavGameLabel } from "../src/lib/codex-nav-game-labels";
 
 type StaticJsonTarget = {
   path: string;
@@ -64,6 +69,12 @@ interface DefragmentGameCopy {
   placeholder: string;
 }
 
+interface DecisionsDecisionsGameCopy {
+  title: string;
+  subtitle: string;
+  presetLabels: Record<string, string>;
+}
+
 interface FeedbackFormGameCopy {
   title: string;
   categoryLabel: string;
@@ -99,6 +110,7 @@ interface BorrowedGameCopyPayload {
   thisOrThat: ThisOrThatGameCopy;
   transfigure: TransfigureGameCopy;
   defragment: DefragmentGameCopy;
+  decisionsDecisions: DecisionsDecisionsGameCopy;
 }
 
 interface ToyBoxNewsPayload {
@@ -354,6 +366,17 @@ async function buildThisOrThatResourceTargets(): Promise<StaticJsonTarget[]> {
   return targets;
 }
 
+async function buildDecisionsDecisionsPresetTarget(): Promise<StaticJsonTarget> {
+  const entities = await loadCompactThisOrThatEntities({ gameLocale: "kor" });
+  return {
+    path: "generated/decisions-decisions-presets.json",
+    data: {
+      gameVersion: DECISIONS_DECISIONS_GAME_VERSION,
+      presets: stampAllPresetIds(entities),
+    },
+  };
+}
+
 async function readGameTextWithEnglishFallback(
   gameLocale: GameLocale,
   tableName: string,
@@ -607,6 +630,53 @@ async function buildDefragmentGameCopy(
   };
 }
 
+function stripTrailingSentenceMark(text: string): string {
+  return text.replace(/[.。]\s*$/, "").trim();
+}
+
+async function buildDecisionsDecisionsGameCopy(
+  gameLocale: GameLocale,
+): Promise<DecisionsDecisionsGameCopy> {
+  const [
+    title,
+    subtitle,
+    ironclad,
+    silent,
+    defect,
+    necrobinder,
+    regent,
+    colorlessTip,
+  ] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "cards", "DECISIONS_DECISIONS.title"),
+    readGameTextWithEnglishFallback(
+      gameLocale,
+      "cards",
+      "DECISIONS_DECISIONS.selectionScreenPrompt",
+    ),
+    readGameTextWithEnglishFallback(gameLocale, "characters", "IRONCLAD.title"),
+    readGameTextWithEnglishFallback(gameLocale, "characters", "SILENT.title"),
+    readGameTextWithEnglishFallback(gameLocale, "characters", "DEFECT.title"),
+    readGameTextWithEnglishFallback(gameLocale, "characters", "NECROBINDER.title"),
+    readGameTextWithEnglishFallback(gameLocale, "characters", "REGENT.title"),
+    readGameTextWithEnglishFallback(gameLocale, "card_library", "POOL_COLORLESS_TIP"),
+  ]);
+
+  return {
+    title: title || "Decisions, Decisions",
+    subtitle: subtitle || "Decide a Skill.",
+    presetLabels: {
+      "cards-ironclad": ironclad,
+      "cards-silent": silent,
+      "cards-defect": defect,
+      "cards-necrobinder": necrobinder,
+      "cards-regent": regent,
+      "cards-colorless": stripTrailingSentenceMark(stripGameMarkup(colorlessTip)),
+      "relics-shared": getCodexNavGameLabel(gameLocale, "relics") ?? "Relics",
+      "potions-all": getCodexNavGameLabel(gameLocale, "potions") ?? "Potions",
+    },
+  };
+}
+
 async function buildFeedbackFormGameCopy(
   gameLocale: GameLocale,
 ): Promise<FeedbackFormGameCopy> {
@@ -651,6 +721,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         thisOrThat,
         transfigure,
         defragment,
+        decisionsDecisions,
       ] = await Promise.all([
         readGameTextWithEnglishFallback(
           gameLocale,
@@ -668,6 +739,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         buildThisOrThatGameCopy(gameLocale),
         buildTransfigureGameCopy(gameLocale),
         buildDefragmentGameCopy(gameLocale),
+        buildDecisionsDecisionsGameCopy(gameLocale),
       ]);
       return [
         gameLocale,
@@ -680,6 +752,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
           thisOrThat,
           transfigure,
           defragment,
+          decisionsDecisions,
         },
       ] as const;
     }),
@@ -748,6 +821,10 @@ async function main() {
     await Promise.all(thisOrThatResourceTargets.map(writeJson));
     return;
   }
+  if (process.argv.includes("--decisions-decisions-presets-only")) {
+    await writeJson(await buildDecisionsDecisionsPresetTarget());
+    return;
+  }
 
   const [
     searchIndex,
@@ -760,6 +837,7 @@ async function main() {
     thisOrThatResourceTargets,
     borrowedGameCopyPayload,
     toyBoxNewsPayload,
+    decisionsDecisionsPresetTarget,
   ] = await Promise.all([
     buildSearchIndexPayload(),
     loadAllEntities(),
@@ -771,6 +849,7 @@ async function main() {
     buildThisOrThatResourceTargets(),
     buildBorrowedGameCopyPayload(),
     buildToyBoxNewsPayload(),
+    buildDecisionsDecisionsPresetTarget(),
   ]);
 
   await Promise.all([
@@ -798,6 +877,7 @@ async function main() {
     writeJson({ path: "api/search-index", data: searchIndex }),
     writeJson({ path: "comment-entities/sts2", data: commentEntities }),
     ...thisOrThatResourceTargets.map(writeJson),
+    writeJson(decisionsDecisionsPresetTarget),
     copyPublicFile(spinePlayerClientPath, "generated/spine-player.min.js"),
   ]);
 }

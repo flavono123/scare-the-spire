@@ -2,9 +2,11 @@ import type { PostBlock } from "@/lib/chemical-types";
 import {
   buildChemicalXCommentThreadKey,
   buildComboCommentThreadKey,
+  buildDecisionsDecisionsCommentThreadKey,
   buildThisOrThatCommentThreadKey,
   buildTransfigureCommentThreadKey,
 } from "@/lib/comment-threads";
+import { DECISIONS_DECISIONS_HREF, DECISIONS_DECISIONS_TOKEN_SRC } from "@/lib/decisions-decisions";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -21,13 +23,14 @@ export const DEFRAGMENT_FEDERATED_SERVICES = [
   "transfigure",
   "this_or_that",
   "chemical_x",
+  "decisions_decisions",
 ] as const;
 
 export const DEFRAGMENT_FEED_SERVICES = DEFRAGMENT_FEDERATED_SERVICES;
 
 export type DefragmentFederatedService =
   (typeof DEFRAGMENT_FEDERATED_SERVICES)[number];
-export type DefragmentFeedService = DefragmentFederatedService;
+export type DefragmentFeedService = string;
 
 export interface DefragmentPost {
   id: string;
@@ -53,7 +56,7 @@ export interface DefragmentFeedItem {
 }
 
 export const DEFRAGMENT_FEED_SERVICE_META: Record<
-  DefragmentFeedService,
+  DefragmentFederatedService,
   { hrefBase: string; tokenSrc: string }
 > = {
   combo: {
@@ -72,6 +75,15 @@ export const DEFRAGMENT_FEED_SERVICE_META: Record<
     hrefBase: "/chemical-x",
     tokenSrc: "/images/sts2/relics/chemical_x.webp",
   },
+  decisions_decisions: {
+    hrefBase: DECISIONS_DECISIONS_HREF,
+    tokenSrc: DECISIONS_DECISIONS_TOKEN_SRC,
+  },
+};
+
+const UNKNOWN_SERVICE_META = {
+  hrefBase: DEFRAGMENT_HREF,
+  tokenSrc: DEFRAGMENT_TOKEN_SRC,
 };
 
 export function isDefragmentFederatedService(
@@ -82,8 +94,18 @@ export function isDefragmentFederatedService(
 
 export function isDefragmentFeedService(
   value: unknown,
-): value is DefragmentFeedService {
-  return DEFRAGMENT_FEED_SERVICES.includes(value as DefragmentFeedService);
+): value is DefragmentFederatedService {
+  return isDefragmentFederatedService(value);
+}
+
+export function defragmentServiceMeta(service: string): {
+  hrefBase: string;
+  tokenSrc: string;
+} {
+  if (isDefragmentFederatedService(service)) {
+    return DEFRAGMENT_FEED_SERVICE_META[service];
+  }
+  return UNKNOWN_SERVICE_META;
 }
 
 export function feedItemFromPost(
@@ -97,6 +119,7 @@ export function feedItemFromPost(
     content_text?: string;
     transformed_name?: string | null;
     reason?: string;
+    note?: string;
   },
 ): DefragmentFeedItem {
   const likeCount = post.like_count ?? 0;
@@ -105,6 +128,8 @@ export function feedItemFromPost(
   if (service === "this_or_that") title = post.reason ?? "";
   else if (service === "transfigure") {
     title = post.title?.trim() || post.transformed_name?.trim() || post.content_text || "";
+  } else if (service === "decisions_decisions") {
+    title = post.title?.trim() || post.note?.trim() || "";
   } else title = post.content_text ?? "";
 
   return {
@@ -138,7 +163,10 @@ export function defragmentOriginalHref(
   serviceLocale: ServiceLocale,
   gameLocale: GameLocale,
 ): string {
-  const { hrefBase } = DEFRAGMENT_FEED_SERVICE_META[item.service];
+  const { hrefBase } = defragmentServiceMeta(item.service);
+  if (!isDefragmentFederatedService(item.service)) {
+    return localizeHrefWithGameLocale(DEFRAGMENT_HREF, serviceLocale, gameLocale);
+  }
   return localizeHrefWithGameLocale(`${hrefBase}/${item.id}`, serviceLocale, gameLocale);
 }
 
@@ -152,7 +180,7 @@ export function defragmentItemCommentsHref(
 
 export function defragmentItemThreadKey(
   item: Pick<DefragmentFeedItem, "id" | "service">,
-): string {
+): string | null {
   switch (item.service) {
     case "combo":
       return buildComboCommentThreadKey(item.id);
@@ -162,6 +190,10 @@ export function defragmentItemThreadKey(
       return buildThisOrThatCommentThreadKey(item.id);
     case "chemical_x":
       return buildChemicalXCommentThreadKey(item.id);
+    case "decisions_decisions":
+      return buildDecisionsDecisionsCommentThreadKey(item.id);
+    default:
+      return null;
   }
 }
 

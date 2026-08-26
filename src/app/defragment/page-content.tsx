@@ -4,6 +4,7 @@ import { ServiceBackground } from "@/components/service-background";
 import {
   getChemicalXPlaceholder,
   getComboPlaceholder,
+  getDecisionsDecisionsGameCopy,
   getDefragmentGameCopy,
   getThisOrThatGameCopy,
   getTransfigureGameCopy,
@@ -34,13 +35,22 @@ export async function generateDefragmentMetadata(
 export async function renderDefragmentPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
-  const [entities, gameCopy, comboPlaceholder, chemicalPlaceholder, totCopy, transfigureCopy] = await Promise.all([
+  const [
+    entities,
+    gameCopy,
+    comboPlaceholder,
+    chemicalPlaceholder,
+    totCopy,
+    transfigureCopy,
+    decisionsCopy,
+  ] = await Promise.all([
     loadAllEntities({ gameLocale }),
     getDefragmentGameCopy(gameLocale),
     getComboPlaceholder(gameLocale),
     getChemicalXPlaceholder(gameLocale),
     getThisOrThatGameCopy(gameLocale),
     getTransfigureGameCopy(gameLocale),
+    getDecisionsDecisionsGameCopy(gameLocale),
   ]);
 
   return (
@@ -62,6 +72,7 @@ export async function renderDefragmentPage(
             thisOrThat: totCopy.prompt,
           }}
           upgradeLabel={transfigureCopy.viewUpgrades}
+          decisionsCopy={decisionsCopy}
         />
       </div>
     </div>

@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { ChemicalXPostView } from "@/components/chemicalx/post-view";
 import { ComboPostView } from "@/components/combo/combo-post-view";
+import { DecisionsDecisionsPostView } from "@/components/decisions-decisions/decisions-decisions-post-view";
 import { CommentSection } from "@/components/comment-section";
 import { LikeButton } from "@/components/like-button";
 import { PostDetailActions } from "@/components/post-detail-actions";
@@ -16,11 +17,12 @@ import { useAuth } from "@/hooks/use-auth";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { fetchDefragmentBody, type DefragmentBody } from "@/hooks/use-defragment-bodies";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import type { DecisionsDecisionsGameCopy } from "@/lib/borrowed-game-copy";
 import {
-  DEFRAGMENT_FEED_SERVICE_META,
   DEFRAGMENT_HREF,
   defragmentItemThreadKey,
   defragmentOriginalHref,
+  defragmentServiceMeta,
   type DefragmentFederatedService,
 } from "@/lib/defragment";
 import { localizeHrefWithGameLocale, type GameLocale } from "@/lib/i18n";
@@ -36,6 +38,7 @@ export function DefragmentFederatedPostView({
   thisOrThatTitle,
   votePrompt,
   voteDone,
+  decisionsCopy,
 }: {
   service: DefragmentFederatedService;
   postId: string;
@@ -46,6 +49,7 @@ export function DefragmentFederatedPostView({
   thisOrThatTitle: string;
   votePrompt: string;
   voteDone: string;
+  decisionsCopy: DecisionsDecisionsGameCopy;
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].defragment;
@@ -58,7 +62,7 @@ export function DefragmentFederatedPostView({
   const indexHref = localizeHrefWithGameLocale(DEFRAGMENT_HREF, serviceLocale, gameLocale);
   const originalHref = defragmentOriginalHref({ id: postId, service }, serviceLocale, gameLocale);
   const threadKey = defragmentItemThreadKey({ id: postId, service });
-  const tokenSrc = DEFRAGMENT_FEED_SERVICE_META[service].tokenSrc;
+  const tokenSrc = defragmentServiceMeta(service).tokenSrc;
 
   useEffect(() => {
     let cancelled = false;
@@ -145,8 +149,16 @@ export function DefragmentFederatedPostView({
       {service === "chemical_x" && (
         <ChemicalXPostView postId={postId} variant="embed" />
       )}
+      {service === "decisions_decisions" && (
+        <DecisionsDecisionsPostView
+          postId={postId}
+          gameLocale={gameLocale}
+          gameCopy={decisionsCopy}
+          variant="embed"
+        />
+      )}
 
-      {service !== "this_or_that" && (
+      {service !== "this_or_that" && threadKey && (
         <LikeButton
           storyId={threadKey}
           userId={userId}
@@ -159,15 +171,17 @@ export function DefragmentFederatedPostView({
         />
       )}
 
-      <section
-        id="comments"
-        className="scroll-mt-16 rounded-lg border border-border bg-card/20 p-4"
-      >
-        <h2 className="mb-3 font-service text-sm font-semibold text-zinc-300">
-          {copy.commentsTitle}
-        </h2>
-        <CommentSection threadKey={threadKey} initialEntities={entities} />
-      </section>
+      {threadKey && (
+        <section
+          id="comments"
+          className="scroll-mt-16 rounded-lg border border-border bg-card/20 p-4"
+        >
+          <h2 className="mb-3 font-service text-sm font-semibold text-zinc-300">
+            {copy.commentsTitle}
+          </h2>
+          <CommentSection threadKey={threadKey} initialEntities={entities} />
+        </section>
+      )}
     </div>
   );
 }

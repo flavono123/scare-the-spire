@@ -1,5 +1,9 @@
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
-import { getDefragmentNavTitle, getTransfigureNavTitle } from "@/lib/borrowed-game-copy";
+import {
+  getDecisionsDecisionsNavTitle,
+  getDefragmentNavTitle,
+  getTransfigureNavTitle,
+} from "@/lib/borrowed-game-copy";
 import {
   ASCENSION_TOKEN_IMAGE_URL,
   CHARACTER_CARDS_MODIFIER_IMAGE_URL,
@@ -24,6 +28,7 @@ export type NavDropdownItem = {
   icon: string;
   iconClassName?: string;
   isNew?: boolean;
+  children?: NavDropdownItem[];
 };
 
 type ToyBoxServiceDefinition = {
@@ -32,6 +37,7 @@ type ToyBoxServiceDefinition = {
   createdAt: string;
   byrdispatchSectionTitle?: string;
   devOnly?: boolean;
+  nestedUnder?: string;
   getLabel: (
     serviceLocale: ServiceLocale,
     gameLocale: GameLocale,
@@ -81,6 +87,13 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     icon: "/images/sts2/relics/chemical_x.webp",
     createdAt: "2026-04-15",
     getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.chemicalX,
+  },
+  {
+    href: "/decisions-decisions",
+    icon: "/images/sts2/potions/skill_potion.webp",
+    createdAt: "2026-08-26",
+    nestedUnder: "/defragment",
+    getLabel: (_serviceLocale, gameLocale) => getDecisionsDecisionsNavTitle(gameLocale),
   },
 ] as const;
 
@@ -156,7 +169,18 @@ export function localizeCodexNavItems<T extends { href: string; labelKey: CodexL
 }
 
 export function localizePlainNavItems<
-  T extends { href: string; label: string; icon: string; isNew?: boolean },
+  T extends {
+    href: string;
+    label: string;
+    icon: string;
+    isNew?: boolean;
+    children?: readonly {
+      href: string;
+      label: string;
+      icon: string;
+      isNew?: boolean;
+    }[];
+  },
 >(
   items: readonly T[],
   serviceLocale: ServiceLocale,
@@ -167,6 +191,9 @@ export function localizePlainNavItems<
     label: item.label,
     icon: item.icon,
     isNew: item.isNew,
+    children: item.children
+      ? localizePlainNavItems(item.children, serviceLocale, gameLocale)
+      : undefined,
   }));
 }
 
@@ -190,17 +217,39 @@ export function getToyBoxNavItems({
   gameLocale: GameLocale;
 }): NavDropdownItem[] {
   const showDevMenu = devToolsEnabled();
-  const serviceItems = TOY_BOX_SERVICE_DEFINITIONS
-    .filter((service) => showDevMenu || !service.devOnly)
+  const visible = TOY_BOX_SERVICE_DEFINITIONS
+    .filter((service) => showDevMenu || !service.devOnly);
+  const nestedByParent = new Map<string, ToyBoxServiceDefinition[]>();
+  for (const service of visible) {
+    if (!service.nestedUnder) continue;
+    const group = nestedByParent.get(service.nestedUnder) ?? [];
+    group.push(service);
+    nestedByParent.set(service.nestedUnder, group);
+  }
+
+  const serviceItems = visible
+    .filter((service) => !service.nestedUnder)
     .toSorted((left, right) => right.createdAt.localeCompare(left.createdAt))
-    .map((service) => ({
-      href: service.href,
-      label: service.getLabel(serviceLocale, gameLocale),
-      icon: service.icon,
-      isNew: service.byrdispatchSectionTitle
-        ? isLatestByrdispatchNewSection(service.byrdispatchSectionTitle)
-        : false,
-    }));
+    .map((service) => {
+      const nested = (nestedByParent.get(service.href) ?? [])
+        .toSorted((left, right) => right.createdAt.localeCompare(left.createdAt));
+      return {
+        href: service.href,
+        label: service.getLabel(serviceLocale, gameLocale),
+        icon: service.icon,
+        isNew: service.byrdispatchSectionTitle
+          ? isLatestByrdispatchNewSection(service.byrdispatchSectionTitle)
+          : false,
+        children: nested.map((child) => ({
+          href: child.href,
+          label: child.getLabel(serviceLocale, gameLocale),
+          icon: child.icon,
+          isNew: child.byrdispatchSectionTitle
+            ? isLatestByrdispatchNewSection(child.byrdispatchSectionTitle)
+            : false,
+        })),
+      };
+    });
 
   return localizePlainNavItems(
     [

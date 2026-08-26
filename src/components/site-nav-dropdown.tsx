@@ -59,31 +59,59 @@ export function SiteNavDropdown({
           </div>
         )}
         {items.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            prefetch={false}
-            role="menuitem"
-            className={`flex items-center gap-2.5 px-3 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground ${
-              isToyBox ? "py-2 font-service" : "py-1.5"
-            }`}
-          >
-            <Image
-              src={item.icon}
-              alt=""
-              width={isToyBox ? 24 : 18}
-              height={isToyBox ? 24 : 18}
-              className={`${
-                isToyBox ? "h-6 w-6" : item.iconClassName ?? "h-[18px] w-[18px]"
-              } shrink-0 object-contain`}
-            />
-            <span className="min-w-0 truncate">{item.label}</span>
-            {item.isNew && (
-              <span className="ml-auto shrink-0 rounded-full border border-emerald-700/35 bg-emerald-600/10 px-1.5 py-0.5 text-[9px] font-bold tracking-[0.08em] text-emerald-800 dark:border-emerald-300/30 dark:bg-emerald-400/10 dark:text-emerald-200">
-                NEW
-              </span>
-            )}
-          </Link>
+          <div key={item.href}>
+            <Link
+              href={item.href}
+              prefetch={false}
+              role="menuitem"
+              className={`flex items-center gap-2.5 px-3 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground ${
+                isToyBox ? "py-2 font-service" : "py-1.5"
+              }`}
+            >
+              <Image
+                src={item.icon}
+                alt=""
+                width={isToyBox ? 24 : 18}
+                height={isToyBox ? 24 : 18}
+                className={`${
+                  isToyBox ? "h-6 w-6" : item.iconClassName ?? "h-[18px] w-[18px]"
+                } shrink-0 object-contain`}
+              />
+              <span className="min-w-0 truncate">{item.label}</span>
+              {item.isNew && (
+                <span className="ml-auto shrink-0 rounded-full border border-emerald-700/35 bg-emerald-600/10 px-1.5 py-0.5 text-[9px] font-bold tracking-[0.08em] text-emerald-800 dark:border-emerald-300/30 dark:bg-emerald-400/10 dark:text-emerald-200">
+                  NEW
+                </span>
+              )}
+            </Link>
+            {item.children?.map((child) => (
+              <Link
+                key={child.href}
+                href={child.href}
+                prefetch={false}
+                role="menuitem"
+                className={`flex items-center gap-2.5 py-1.5 pl-8 pr-3 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground ${
+                  isToyBox ? "font-service" : ""
+                }`}
+              >
+                <Image
+                  src={child.icon}
+                  alt=""
+                  width={isToyBox ? 20 : 16}
+                  height={isToyBox ? 20 : 16}
+                  className={`${
+                    isToyBox ? "h-5 w-5" : "h-4 w-4"
+                  } shrink-0 object-contain`}
+                />
+                <span className="min-w-0 truncate">{child.label}</span>
+                {child.isNew && (
+                  <span className="ml-auto shrink-0 rounded-full border border-emerald-700/35 bg-emerald-600/10 px-1.5 py-0.5 text-[9px] font-bold tracking-[0.08em] text-emerald-800 dark:border-emerald-300/30 dark:bg-emerald-400/10 dark:text-emerald-200">
+                    NEW
+                  </span>
+                )}
+              </Link>
+            ))}
+          </div>
         ))}
       </>
     </MenuDropdown>

@@ -4,6 +4,8 @@ import { DefragmentFederatedPostView } from "@/components/defragment/defragment-
 import { ServiceBackground } from "@/components/service-background";
 import {
   getComboPlaceholder,
+  getDecisionsDecisionsGameCopy,
+  getDecisionsDecisionsNavTitle,
   getDefragmentGameCopy,
   getThisOrThatGameCopy,
   getTransfigureGameCopy,
@@ -58,16 +60,18 @@ export async function renderDefragmentFederatedPostPage(
 
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const nav = serviceMessages[serviceLocale].nav;
-  const [comboPlaceholder, totCopy, transfigureCopy] = await Promise.all([
+  const [comboPlaceholder, totCopy, transfigureCopy, decisionsCopy] = await Promise.all([
     getComboPlaceholder(gameLocale),
     getThisOrThatGameCopy(gameLocale),
     getTransfigureGameCopy(gameLocale),
+    getDecisionsDecisionsGameCopy(gameLocale),
   ]);
   const typeLabels = {
     combo: nav.combo,
     transfigure: getTransfigureNavTitle(gameLocale),
     this_or_that: nav.thisOrThat,
     chemical_x: nav.chemicalX,
+    decisions_decisions: getDecisionsDecisionsNavTitle(gameLocale),
   } as const;
 
   return (
@@ -87,6 +91,7 @@ export async function renderDefragmentFederatedPostPage(
           thisOrThatTitle={totCopy.title}
           votePrompt={totCopy.votePrompt}
           voteDone={totCopy.voteDone}
+          decisionsCopy={decisionsCopy}
         />
       </div>
     </div>

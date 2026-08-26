@@ -5,7 +5,7 @@ import { getStories, getSTS2Patches, getSTS2Stories } from "@/lib/data";
 import { eventCharacterQuoteSearchParts } from "@/lib/event-character-quotes";
 import { loadAllEntities } from "@/lib/load-all-entities";
 
-export type SearchItemType = EntityType | "patch" | "story" | "historyCourse" | "thisOrThat";
+export type SearchItemType = EntityType | "patch" | "story" | "historyCourse" | "thisOrThat" | "decisionsDecisions";
 
 export type SearchIndexItem = {
   id: string;
@@ -420,5 +420,16 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     href: "/this-or-that",
   }];
 
-  return { items: [...patchItems, ...storyItems, ...items, ...historyCourseItems, ...thisOrThatItems] };
+  const decisionsDecisionsItems: SearchIndexItem[] = [{
+    id: "decisions-decisions",
+    type: "decisionsDecisions",
+    title: "어려운 결정",
+    titleEn: "Decisions, Decisions",
+    description: "티어 보드 카드 유물 포션 랭킹 가이드 어려운 결정 스킬 포션",
+    descriptionEn: "tier list board ranking card relic potion skill potion decisions",
+    imageUrl: "/images/sts2/potions/skill_potion.webp",
+    href: "/decisions-decisions",
+  }];
+
+  return { items: [...patchItems, ...storyItems, ...items, ...historyCourseItems, ...thisOrThatItems, ...decisionsDecisionsItems] };
 }

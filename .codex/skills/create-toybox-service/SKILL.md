@@ -50,7 +50,7 @@ that posts a nickname, also resolve `defaultNickname` from the same identity.
 | --- | --- |
 | Title | Use Korean first. Prefer exact game-localized naming when a resource naturally names the service; otherwise label deliberate service-owned wordplay honestly. |
 | Page subtitle | Use an exact `gameLocale` line or a minimal documented transformation of one. Render it only inside the service page. |
-| Token asset | Use a same-name or semantically tight in-game token that remains legible in navigation and the page header. Keep its meaning distinct across the entire site, not only among Toy Box services. |
+| Token asset | Use a same-name or semantically tight in-game token that remains legible in navigation and the page header. Prefer relic, potion, power, badge, or Ancient art. Do not use card portraits as the service token. Keep its meaning distinct across the entire site, not only among Toy Box services. |
 | Background art | Use related card, event, or scene art that expresses the service action and survives desktop and mobile cropping. |
 | Default nickname | Required when the service posts a nickname. Use an exact in-game identity noun or a minimal documented adaptation of one (Combo `융합자` / `Amalgamator` from `AMALGAMATOR.title`; Transfigure `변형체` / `Transfigured` from `TRANSFIGURE.title`; This or That `세 번째 손` / `THIRD hand` from `THIS_OR_THAT.pages.PLAIN.description`; 조각모음 `밀집` / `Focus` from `FOCUS_POWER.title`, not the Defragment card title). Do not invent `익명의 ~술사` labels. Chemical X `익명의 투입터리안` is the documented service-owned exception. Keep ≤ 20 characters. This remains the real fallback when `sts-user-profile` is missing; profile character nicknames are not auto-seeded on service pages. |
 
@@ -102,7 +102,12 @@ Follow current Toy Box patterns instead of copying one old route wholesale:
   board indexes may use `TOYBOX_WIDE_BOARD_SHELL_CLASS` (same wide max, tighter
   horizontal padding). Do not invent a third content max-width.
 - Add the service to `getToyBoxNavItems` with the chosen token and localized
-  title.
+  title. New Toy Box community services nest under 조각모음
+  (`nestedUnder: "/defragment"`) and federate into the 조각모음 feed, write
+  panel, and detail. Do not use a card portrait as the nav/header token; keep
+  tokens small and icon-like (relic, potion, power, badge, Ancient). Card art
+  may still be the page background or OG image. History Course stays top-level
+  and is not a 조각모음 feed source.
 - Put service-owned UI text in the typed service dictionaries. Put exact or
   adapted game copy in the generated `gameLocale` path.
 - If the service posts a nickname, set `defaultNickname` in

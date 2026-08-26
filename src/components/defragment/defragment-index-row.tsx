@@ -14,10 +14,10 @@ import {
 import { ThisOrThatLikeButton } from "@/components/this-or-that/like-button";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
-  DEFRAGMENT_FEED_SERVICE_META,
   defragmentItemCommentsHref,
   defragmentItemHref,
   defragmentItemThreadKey,
+  defragmentServiceMeta,
   type DefragmentFeedItem,
 } from "@/lib/defragment";
 import type { GameLocale } from "@/lib/i18n";
@@ -60,7 +60,7 @@ export function DefragmentIndexRow({
   const href = defragmentItemHref(item, serviceLocale, gameLocale);
   const commentsHref = defragmentItemCommentsHref(item, serviceLocale, gameLocale);
   const threadKey = defragmentItemThreadKey(item);
-  const tokenSrc = DEFRAGMENT_FEED_SERVICE_META[item.service].tokenSrc;
+  const tokenSrc = defragmentServiceMeta(item.service).tokenSrc;
   const commentTip = item.commentCount > 0
     ? tips.commentCount.replace("{count}", String(item.commentCount))
     : tips.commentFirst;
@@ -116,7 +116,7 @@ export function DefragmentIndexRow({
             lift
             className="px-0.5"
           />
-        ) : (
+        ) : threadKey ? (
           <LikeButton
             storyId={threadKey}
             userId={userId}
@@ -130,7 +130,7 @@ export function DefragmentIndexRow({
             lift
             className="px-0.5"
           />
-        )}
+        ) : null}
         <GameUiHoverTip label={commentTip}>
           <Link
             href={commentsHref}

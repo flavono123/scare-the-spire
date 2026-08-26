@@ -64,10 +64,16 @@ resources, rich patch notes, mobile layout, animation, or QA.
 - Reduce cognitive load. Prefer familiar game tokens, hover previews, concise
   labels, and direct affordances over service jargon.
 - New services need a token asset plus title before implementation:
-  - Token asset usually comes from relic, potion, power, card, Ancient, or other
-    small icon-like game art.
+  - Token asset comes from relic, potion, power, badge, Ancient, or other
+    **small icon-like** game art that stays legible in the navbar and page
+    header. Do **not** use card portraits as the service token. Card art may
+    still be used as a page background or OG image.
   - Title should follow service language policy: Korean first, English fallback
     only when appropriate.
+  - New Toy Box community services nest under 조각모음 in
+    `getToyBoxNavItems` (`nestedUnder: "/defragment"`). They also federate
+    into the 조각모음 feed, write panel, and detail embed. History Course
+    stays a top-level Toy Box item and is not a 조각모음 feed source.
 - Avoid visible in-app explanations of the feature design. The UI should be
   legible from the chosen token, title, layout, and game-like interaction.
 
@@ -84,7 +90,8 @@ Stories, and comments.
 - Comment control navigates to the detail `#comments` anchor (composer focus).
 - Like control toggles immediately on the index when the shared `likes` table or
   a service-specific like table already exists. Do not invent a new Worker RPC.
-- Toy Box indexes (Combo, Transfigure, This or That, Chemical X, 조각모음) read
+- Toy Box indexes (Combo, Transfigure, This or That, Chemical X, 어려운 결정,
+  조각모음) read
   denormalized `like_count` / `comment_count` from the feed page and pass those
   into `LikeButton` / `IndexCardEngagement` (or This or That's own like button).
   Thread keys stay in `src/lib/comment-threads.ts`.
@@ -124,14 +131,14 @@ client list and does not call `get_toybox_feed`.
   sorts. Do not scan `comments`, `likes`, or votes to build an index page.
 - Per-service indexes call `get_toybox_feed(p_env, p_service, p_sort, p_limit,
   p_cursor_score, p_cursor_created_at, p_cursor_id)`. `p_service` is one of
-  `combo`, `transfigure`, `this_or_that`, `chemical_x`. The RPC reads one table
-  and returns at most 20 rows plus a `post` jsonb blob.
+  `combo`, `transfigure`, `this_or_that`, `chemical_x`, `decisions_decisions`.
+  The RPC reads one table and returns at most 20 rows plus a `post` jsonb blob.
 - 조각모음's mixed board calls `get_defragment_feed` with the same sort, limit,
-  and cursor arguments. That RPC unions Combo, Transfigure, This or That, and
-  Chemical X. It takes **at most 20 rows from each source**, then merges and
-  returns at most 20. Do not `UNION` full tables and do not issue four unbounded
-  browser queries. There is no native title+body 조각모음 post type; optional
-  overlay bodies live on `defragment_bodies`.
+  and cursor arguments. That RPC unions Combo, Transfigure, This or That,
+  Chemical X, and 어려운 결정. It takes **at most 20 rows from each source**,
+  then merges and returns at most 20. Do not `UNION` full tables and do not
+  issue unbounded browser queries per source. There is no native title+body
+  조각모음 post type; optional overlay bodies live on `defragment_bodies`.
 - 조각모음 index is a dense mixed board (유형 / 제목 / 추천 · 댓글), not gapped
   per-row cards and not a DC/Zeroboard clone. Type uses a narrow token with no
   raised or inset chip box; long names may truncate on phone widths. Idle type
@@ -142,19 +149,21 @@ client list and does not call `get_toybox_feed`.
 - Index rows open **조각모음 detail**, not the original service URL:
   `/defragment/{service}/{id}`. Detail embeds that type's content (combo
   renderer/gallery, transfigure preview, This or That full vote UI, Chemical X
-  renderer). A quiet `{name}에서` / `In {name}` link reaches the original page.
+  renderer, 어려운 결정 board). A quiet `{name}에서` / `In {name}` link
+  reaches the original page.
   Do not add a required extra hop through the original detail to read or vote.
 - Comments and likes on 조각모음 use the original thread keys
   (`defragmentItemThreadKey`) so they stay in sync with Combo / Transfigure /
   This or That / Chemical X.
-- Write from 조각모음: pick Combo / Transfigure / This or That / Chemical X and
-  get that service's matching composer, plus an optional 조각모음-only overlay
-  body (`defragment_bodies`, keyed by env + source_service + source_id). Do not
-  offer a native title+body 조각모음 type. Do not change Combo / Transfigure /
-  This or That / Chemical X own compose or index UX. Additive editor props such
-  as `hideNickname` / `draftKey` are allowed. Do not call those services' feed
-  hooks from the 조각모음 write panel; use standalone insert helpers. Do not
-  delete original posts from 조각모음.
+- Write from 조각모음: pick Combo / Transfigure / This or That / Chemical X /
+  어려운 결정 and get that service's matching composer, plus an optional
+  조각모음-only overlay body (`defragment_bodies`, keyed by env +
+  source_service + source_id). Do not offer a native title+body 조각모음 type.
+  Do not change Combo / Transfigure / This or That / Chemical X / 어려운 결정
+  own compose or index UX. Additive editor props such as `hideNickname` /
+  `draftKey` are allowed. Do not call those services' feed hooks from the
+  조각모음 write panel; use standalone insert helpers. Do not delete original
+  posts from 조각모음.
 - History Course is not a feed source or 조각모음 write type.
 - If the RPC is missing (`PGRST202`), fall back to a latest-only keyset on that
   service's own table. Do not emulate recommended/comments sort in the browser
@@ -230,6 +239,9 @@ Current:
   nickname; that encounter is only for the vote CTA.
 - 조각모음: exact `FOCUS_POWER.title` → Korean `밀집` / English `Focus`.
   Do not reuse the service title as the nickname.
+- 어려운 결정: adapted from `DECISIONS_DECISIONS.title` `어려운 결정` /
+  `Decisions, Decisions` → Korean `결정` / English `Decision`. Do not reuse
+  the service title as the nickname.
 
 When adding a new composer service, resolve `defaultNickname` with the
 title/token set. Put the string in the service dictionary and record

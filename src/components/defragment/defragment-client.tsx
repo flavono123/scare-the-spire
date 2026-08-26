@@ -22,7 +22,11 @@ import { useDefragmentFeed } from "@/hooks/use-defragment-feed";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { useThisOrThatLikes } from "@/hooks/use-this-or-that-likes";
 import { useUserProfile } from "@/hooks/use-user-profile";
-import { getTransfigureNavTitle } from "@/lib/borrowed-game-copy";
+import {
+  getDecisionsDecisionsNavTitle,
+  getTransfigureNavTitle,
+  type DecisionsDecisionsGameCopy,
+} from "@/lib/borrowed-game-copy";
 import {
   DEFRAGMENT_TOKEN_SRC,
   type DefragmentFeedItem,
@@ -40,6 +44,7 @@ export function DefragmentClient({
   subtitle,
   placeholders,
   upgradeLabel,
+  decisionsCopy,
 }: {
   entities: EntityInfo[];
   gameLocale: GameLocale;
@@ -47,6 +52,7 @@ export function DefragmentClient({
   subtitle: string;
   placeholders: DefragmentWritePlaceholders;
   upgradeLabel: string;
+  decisionsCopy: DecisionsDecisionsGameCopy;
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].defragment;
@@ -75,6 +81,7 @@ export function DefragmentClient({
     transfigure: getTransfigureNavTitle(gameLocale),
     this_or_that: nav.thisOrThat,
     chemical_x: nav.chemicalX,
+    decisions_decisions: getDecisionsDecisionsNavTitle(gameLocale),
   }), [gameLocale, nav.chemicalX, nav.combo, nav.thisOrThat]);
 
   const totIds = useMemo(
@@ -148,6 +155,7 @@ export function DefragmentClient({
           upgradeLabel={upgradeLabel}
           profileNickname={profile.nickname}
           typeLabels={typeLabels}
+          decisionsCopy={decisionsCopy}
           onCreated={handleCreated}
           onUnavailable={() => setUnavailable(true)}
           ensureUser={ensureUser}
@@ -188,7 +196,7 @@ export function DefragmentClient({
             <DefragmentIndexRow
               key={`${item.service}:${item.id}`}
               item={item}
-              typeLabel={typeLabels[item.service]}
+              typeLabel={typeLabels[item.service] ?? item.service}
               gameLocale={gameLocale}
               userId={userId}
               authReady={ready}

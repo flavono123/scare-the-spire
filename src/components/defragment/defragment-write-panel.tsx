@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import type { DecisionsDecisionsComposerValues } from "@/components/decisions-decisions/decisions-decisions-composer";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DefragmentOverlayBodyEditor } from "@/components/defragment/defragment-overlay-body";
 import Image from "@/components/ui/static-image";
@@ -11,12 +12,15 @@ import {
   overlayBodyForSave,
   upsertDefragmentBody,
 } from "@/hooks/use-defragment-bodies";
+import { insertDecisionsDecisionsPost } from "@/hooks/use-decisions-decisions-posts";
+import { useDecisionsDecisionsCatalog } from "@/hooks/use-decisions-decisions-catalog";
 import { insertThisOrThatPost } from "@/hooks/use-this-or-that-posts";
 import { useThisOrThatEntities } from "@/hooks/use-this-or-that-entities";
 import {
   insertTransfigurePost,
   type SaveTransfigurePostInput,
 } from "@/hooks/use-transfigure-posts";
+import type { DecisionsDecisionsGameCopy } from "@/lib/borrowed-game-copy";
 import type { PostBlock } from "@/lib/chemical-types";
 import {
   DEFRAGMENT_FEDERATED_SERVICES,
@@ -49,6 +53,12 @@ const TransfigureComposerModal = dynamic(
   ),
   { ssr: false },
 );
+const DecisionsDecisionsComposer = dynamic(
+  () => import("@/components/decisions-decisions/decisions-decisions-composer").then(
+    (mod) => mod.DecisionsDecisionsComposer,
+  ),
+  { ssr: false },
+);
 
 export interface DefragmentWritePlaceholders {
   defragment: string;
@@ -64,6 +74,7 @@ export function DefragmentWritePanel({
   upgradeLabel,
   profileNickname,
   typeLabels,
+  decisionsCopy,
   onCreated,
   onUnavailable,
   ensureUser,
@@ -76,6 +87,7 @@ export function DefragmentWritePanel({
   upgradeLabel: string;
   profileNickname: string;
   typeLabels: Record<DefragmentFederatedService, string>;
+  decisionsCopy: DecisionsDecisionsGameCopy;
   onCreated: (item: DefragmentFeedItem) => void;
   onUnavailable: () => void;
   ensureUser: () => Promise<string | null>;
@@ -90,6 +102,7 @@ export function DefragmentWritePanel({
   const [transfigureOpen, setTransfigureOpen] = useState(false);
   const [totSubmitting, setTotSubmitting] = useState(false);
   const totResources = useThisOrThatEntities(gameLocale);
+  const decisionsCatalog = useDecisionsDecisionsCatalog(gameLocale);
 
   const readNickname = useCallback(() => {
     return nicknameInputRef.current?.value.trim()
@@ -201,6 +214,29 @@ export function DefragmentWritePanel({
     } catch (error) {
       onUnavailable();
       throw error;
+    }
+  }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
+
+  const handleDecisionsSubmit = useCallback(async (
+    values: DecisionsDecisionsComposerValues,
+  ) => {
+    const activeUserId = userId ?? await ensureUser();
+    if (!activeUserId) return false;
+    const nickname = readNickname();
+    if (overlayBodyForSave(overlayBlocks) === "invalid") return false;
+    try {
+      const post = await insertDecisionsDecisionsPost({
+        ...values,
+        nickname,
+        activeUserId,
+      });
+      if (!post) return false;
+      await saveOverlay("decisions_decisions", post.id, nickname, activeUserId);
+      onCreated(feedItemFromPost("decisions_decisions", post));
+      return true;
+    } catch {
+      onUnavailable();
+      return false;
     }
   }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
 
@@ -336,6 +372,24 @@ export function DefragmentWritePanel({
               onClose={() => setTransfigureOpen(false)}
             />
           )}
+        </>
+      )}
+
+      {writeType === "decisions_decisions" && (
+        <>
+          <DecisionsDecisionsComposer
+            entities={decisionsCatalog.entities}
+            entityMap={decisionsCatalog.entityMap}
+            stamps={decisionsCatalog.stamps}
+            gameLocale={gameLocale}
+            serviceLocale={serviceLocale}
+            presetLabels={decisionsCopy.presetLabels}
+            submitLabel={decisionsCopy.subtitle}
+            profileNickname={readNickname()}
+            hideNickname
+            onSubmit={handleDecisionsSubmit}
+          />
+          {overlay}
         </>
       )}
     </div>
