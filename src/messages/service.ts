@@ -927,6 +927,7 @@ export const serviceMessages = {
         },
         toggles: {
           multiplayer: "멀티플레이 카드",
+          multiplayerOnly: "멀티플레이 카드만",
           upgrade: "강화 보기",
           betaArt: "베타 아트",
         },
@@ -2062,6 +2063,7 @@ export const serviceMessages = {
         },
         toggles: {
           multiplayer: "Multiplayer Cards",
+          multiplayerOnly: "Multiplayer Cards Only",
           upgrade: "Show Upgrades",
           betaArt: "Beta Art",
         },

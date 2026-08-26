@@ -8,6 +8,7 @@ import {
   readGameLocalizationTable,
   type GameLocalizationTable,
 } from "./game-localization";
+import { isMultiplayerOnlyCardId } from "./card-multiplayer-catalog";
 import { getRelicArtVariants } from "./relic-art-variants-catalog";
 import {
   getGameplayCardRarityLabels,
@@ -654,6 +655,7 @@ function mapCard(
     keywordLabels,
     tags: kor.tags ?? [],
     appliedPowerIds: getAppliedPowerIds(eng),
+    multiplayerOnly: isMultiplayerOnlyCardId(kor.id),
     upgrade,
     maxUpgradeLevel: kor.max_upgrade_level ?? (upgrade ? 1 : 0),
     specialUpgrade: CARD_SPECIAL_UPGRADES[kor.id],

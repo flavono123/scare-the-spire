@@ -1,0 +1,28 @@
+{
+  "multiplayerOnlyIds": [
+    "BEACON_OF_HOPE",
+    "BELIEVE_IN_YOU",
+    "COORDINATE",
+    "DEMONIC_SHIELD",
+    "ENERGY_SURGE",
+    "FLANKING",
+    "GANG_UP",
+    "GLIMPSE_BEYOND",
+    "HAMMER_TIME",
+    "HUDDLE_UP",
+    "IGNITION",
+    "INTERCEPT",
+    "KNOCKDOWN",
+    "LARGESSE",
+    "LEGION_OF_BONE",
+    "LIFT",
+    "MIMIC",
+    "RALLY",
+    "SNEAKY",
+    "TAG_TEAM",
+    "TANK"
+  ],
+  "singleplayerOnlyIds": [
+    "WELL_LAID_PLANS"
+  ]
+}

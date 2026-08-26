@@ -123,6 +123,7 @@ const staticCard: EntityInfo = {
     keywordLabels: {},
     tags: [],
     appliedPowerIds: [],
+    multiplayerOnly: false,
     upgrade: null,
     maxUpgradeLevel: 0,
     imageUrl: "/images/sts2/cards/bash.webp",

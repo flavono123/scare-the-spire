@@ -123,12 +123,23 @@ export type GameWaxCycleValue = "off" | "wax" | "melted";
 
 const WAX_CYCLE_ORDER: GameWaxCycleValue[] = ["off", "wax", "melted"];
 
+const WAX_MARK_COLOR = "#efc65a";
+const MELTED_MARK_COLOR = "#8b0000";
+const WAX_LABEL_CLASS =
+  "text-primary group-hover:text-primary dark:text-[#f1c94f] dark:group-hover:text-[#ffe27a]";
+const MELTED_LABEL_CLASS =
+  "text-red-800 group-hover:text-red-700 dark:text-[#c44] dark:group-hover:text-[#e66]";
+
 /** Single tickbox: off → wax → melted → off. Not aria-checked=mixed. */
 export function GameWaxCycleToggle({
   value,
   onValueChange,
   waxLabel,
   meltedLabel,
+  waxMarkColor = WAX_MARK_COLOR,
+  meltedMarkColor = MELTED_MARK_COLOR,
+  waxLabelClassName = WAX_LABEL_CLASS,
+  meltedLabelClassName = MELTED_LABEL_CLASS,
   size = "sm",
   align = "center",
   disabled = false,
@@ -139,6 +150,10 @@ export function GameWaxCycleToggle({
   onValueChange?: (value: GameWaxCycleValue) => void;
   waxLabel: string;
   meltedLabel: string;
+  waxMarkColor?: string;
+  meltedMarkColor?: string;
+  waxLabelClassName?: string;
+  meltedLabelClassName?: string;
   size?: GameCheckboxSize;
   align?: "center" | "start";
   disabled?: boolean;
@@ -149,7 +164,7 @@ export function GameWaxCycleToggle({
   const active = value !== "off";
   const melted = value === "melted";
   const label = melted ? meltedLabel : waxLabel;
-  const markColor = melted ? "#8b0000" : "#efc65a";
+  const markColor = melted ? meltedMarkColor : waxMarkColor;
   const ariaLabel = melted ? meltedLabel : waxLabel;
 
   return (
@@ -211,9 +226,7 @@ export function GameWaxCycleToggle({
       <span
         className={cn(
           "min-w-0 font-game-title font-bold tracking-[0] transition-colors [text-shadow:none] dark:[text-shadow:2px_2px_0_rgba(0,0,0,0.82)]",
-          melted
-            ? "text-red-800 group-hover:text-red-700 dark:text-[#c44] dark:group-hover:text-[#e66]"
-            : "text-primary group-hover:text-primary dark:text-[#f1c94f] dark:group-hover:text-[#ffe27a]",
+          melted ? meltedLabelClassName : waxLabelClassName,
           styles.label,
           labelClassName,
         )}

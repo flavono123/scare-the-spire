@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
+import { SPIRE_ICON_COLORS } from "@/components/spire-icon";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import {
   buildCompendiumResourceDetailHref,
@@ -156,6 +157,7 @@ import { CardTile } from "./card-tile";
 import { CardDetail } from "./card-detail";
 import { SearchBar } from "./search-bar";
 import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
+import { GameWaxCycleToggle, type GameWaxCycleValue } from "./game-checkbox";
 import { VersionSelector } from "./version-selector";
 import {
   CompendiumIndexLayout,
@@ -244,7 +246,8 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   const [showUpgrades, setShowUpgrades] = useState(false);
   const [showEngagementStats, setShowEngagementStats] = useState(false);
   const [showBeta, setShowBeta] = useState(false);
-  const [showMultiplayer, setShowMultiplayer] = useState(true);
+  /** Relic wax cycle: off = hide MP, wax = include (game default), melted = MP only. */
+  const [multiplayerCycle, setMultiplayerCycle] = useState<GameWaxCycleValue>("wax");
   const [engagementSort, setEngagementSort] = useState<EngagementSortState | null>(null);
   const engagementCounts = useEngagementCounts({
     enabled: showEngagementStats || engagementSort !== null,
@@ -299,6 +302,13 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   // Filtered & sorted cards (always sorted by name)
   const filteredCards = useMemo(() => {
     let result = versionedCards;
+
+    // Game NCardLibrary: unticked hides MultiplayerOnly; extra melted state is MP-only.
+    if (multiplayerCycle === "off") {
+      result = result.filter((c) => !c.multiplayerOnly);
+    } else if (multiplayerCycle === "melted") {
+      result = result.filter((c) => c.multiplayerOnly);
+    }
 
     // Color/category filter
     if (selectedColors.size > 0) {
@@ -385,6 +395,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
       .map(({ card }) => card);
   }, [
     versionedCards,
+    multiplayerCycle,
     selectedColors,
     selectedTypes,
     selectedRarities,
@@ -404,8 +415,8 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   // Build a stable key from filter inputs to reset visibleCount on change
   const filterKey = useMemo(
     () =>
-      `${[...selectedColors].sort()}-${[...selectedTypes].sort()}-${[...selectedRarities].sort()}-${[...selectedRarityDetails].sort()}-${[...selectedCosts].sort()}-${searchText}`,
-    [selectedColors, selectedTypes, selectedRarities, selectedRarityDetails, selectedCosts, searchText],
+      `${[...selectedColors].sort()}-${[...selectedTypes].sort()}-${[...selectedRarities].sort()}-${[...selectedRarityDetails].sort()}-${[...selectedCosts].sort()}-${searchText}-${multiplayerCycle}`,
+    [selectedColors, selectedTypes, selectedRarities, selectedRarityDetails, selectedCosts, searchText, multiplayerCycle],
   );
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
   const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -745,10 +756,15 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
 
         {/* Toggles */}
         <div className="flex flex-col gap-1">
-          <ToggleButton
-            label={gameUi.cardLibrary.viewMultiplayerCards}
-            active={showMultiplayer}
-            onClick={() => setShowMultiplayer((v) => !v)}
+          <GameWaxCycleToggle
+            value={multiplayerCycle}
+            onValueChange={setMultiplayerCycle}
+            waxLabel={gameUi.cardLibrary.viewMultiplayerCards}
+            meltedLabel={serviceText.cardsView.toggles.multiplayerOnly}
+            meltedMarkColor={SPIRE_ICON_COLORS.blue}
+            meltedLabelClassName="spire-blue group-hover:brightness-125"
+            size="sm"
+            className="w-full"
           />
           <ToggleButton
             label={gameUi.cardLibrary.viewUpgrades}

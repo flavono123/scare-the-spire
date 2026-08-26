@@ -61,6 +61,8 @@ export interface CodexCard extends CodexLifecycle {
   keywordLabels: Record<string, string>; // Korean keyword -> selected game locale label
   tags: string[];
   appliedPowerIds: string[]; // Canonical power ids applied or granted by this card
+  /** Game `CardMultiplayerConstraint.MultiplayerOnly`. Hidden when the library MP tick is off. */
+  multiplayerOnly: boolean;
   upgrade: Record<string, string | number> | null;
   maxUpgradeLevel: number;
   specialUpgrade?: {
