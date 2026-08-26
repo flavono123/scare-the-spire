@@ -1,6 +1,6 @@
 ---
 name: youtube-content-collector
-description: Collects Slay the Spire 2 community trends as monitored topics and a smaller set of safe YouTube Shorts script candidates. Use when the user mentions 슬갤, 동향, 유튜브 대본, 과거 시점 조사, a patch-day trend scan, or asks to collect current or historical community reactions.
+description: Collects Slay the Spire 2 community trends as monitored topics and a smaller set of safe YouTube Shorts script candidates. Use when the user mentions 슬갤, 동향, 유튜브 대본, 과거 시점 조사, 특정 주제 조사, a patch-day trend scan, or asks to collect current, historical, or subject-centered community reactions.
 ---
 
 # youtube-content-collector
@@ -12,8 +12,11 @@ public archive, or automatic publishing workflow.
 
 Resolve these before browsing:
 
-- `mode`: `now`, `trigger`, or `historical`.
+- `mode`: `now`, `trigger`, `historical`, or `topic`.
+- `query`: required for `topic`; accept a card/relic/game term, community
+  nickname, mechanic, sentiment, or other specific subject.
 - `window`: exact KST dates/times. `now` defaults to the latest 48 hours.
+  `topic` accepts an optional window but does not require one.
 - `patch_context`: verify a version from the repository's patch data or a
   primary source; otherwise use `null` and explain the uncertainty.
 - Optional operator-owned 재미 memory: use it when supplied, but never create
@@ -23,12 +26,19 @@ For `historical`, accept either an explicit date range or a patch version plus
 `before/after N days`. Ask for the missing range only when it materially changes
 the investigation.
 
+For `topic`, do not ask for a date merely because none was supplied. Verify
+community shorthand against game or repository data, search both the supplied
+term and verified canonical aliases, and report the earliest/latest dates
+actually observed. Never silently guess what an ambiguous nickname means.
+
 ## Collection workflow
 
 1. Read [reference.md](reference.md).
 2. Browse the public web as a person would. Use DC Inside `board/slay` as the
    primary source; inspect both recommended posts and topic-bearing general
    posts. Do not build a scraper, unofficial dump API, or request-time Worker.
+   In `topic` mode, start with the subject search rather than the newest page,
+   then follow only directly relevant posts and verified patch context.
 3. Record only evidence visible on the public page: title, timestamp,
    recommendation/comment signals, short body excerpt, short comments, and
    canonical URL. Never invent inaccessible or deleted content.
@@ -82,7 +92,8 @@ it.
 
 Follow [reference.md](reference.md#output-contract) exactly:
 
-- State `mode`, the KST window, verified patch context, and limitations.
+- State `mode`, `query`, the requested window or observed KST coverage, verified
+  patch context, and limitations.
 - Every watchlist row needs topic, type, source, heat evidence, reason, URL, and
   flags.
 - Every candidate needs a short body excerpt and URL, an author label, and
