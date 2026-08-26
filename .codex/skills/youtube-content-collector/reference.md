@@ -24,9 +24,11 @@ per-comment URLs, so use the canonical post URL and state that limitation.
 For historical work:
 
 1. Bound the KST window before browsing.
-2. Use the gallery's visible search and recommended-list pagination when
-   available. Search likely terms from the verified patch context, but do not
-   treat keyword results as a complete census.
+2. Do not assume an advanced date-range filter. When the public gallery exposes
+   only basic keyword search, locate the window through manual list pagination;
+   page numbers drift as new posts arrive and are not durable evidence.
+   Search likely terms from the verified patch context, but do not treat keyword
+   results as a complete census.
 3. Open every reported post and verify its full timestamp. Do not infer a year
    from a list-only `MM.DD` label.
 4. Record deleted, inaccessible, edited, or search-truncated material only as a
