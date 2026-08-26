@@ -93,6 +93,10 @@ Follow [reference.md](reference.md#output-contract) exactly:
 - Quotes are highlights, not full-post reproductions. Keep source links so the
   operator can review context and handle attribution or deletion requests.
 
+Use [examples.md](examples.md) to calibrate the two-layer output, historical
+patch context, risk flags, and explicit collection limits. Do not reuse its
+time-sensitive topics as a fresh run.
+
 ## Limits
 
 Historical search may miss deleted posts, edits, posts outside search results,
