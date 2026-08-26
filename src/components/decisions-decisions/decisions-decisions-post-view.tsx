@@ -207,7 +207,6 @@ export function DecisionsDecisionsPostView({
               entitiesByKey={catalog.entityMap}
               serviceLocale={serviceLocale}
               gameLocale={gameLocale}
-              unrankedLabel={copy.unranked}
               showNames={showNames}
               selectedKey={null}
               readOnly

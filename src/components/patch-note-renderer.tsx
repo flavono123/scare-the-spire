@@ -312,7 +312,15 @@ function MonsterMoveKeywordPreview({
   );
 }
 
-function EntityCardHoverPreview({ entity }: { entity: EntityInfo }) {
+function EntityCardHoverPreview({
+  entity,
+  portal = false,
+  growUp = false,
+}: {
+  entity: EntityInfo;
+  portal?: boolean;
+  growUp?: boolean;
+}) {
   const catalog = useCardSideTipCatalog();
   const card = entity.cardData;
   if (!card) return null;
@@ -351,14 +359,20 @@ function EntityCardHoverPreview({ entity }: { entity: EntityInfo }) {
       })
     : [];
 
-  if (tips.length === 0) {
-    return <span className="block w-36 drop-shadow-2xl">{tile}</span>;
-  }
+  const preview = tips.length === 0
+    ? <span className="block w-36 drop-shadow-2xl">{tile}</span>
+    : (
+      <CardSideTipsAnchor mode="always" tips={tips} className="block w-36 drop-shadow-2xl">
+        {tile}
+      </CardSideTipsAnchor>
+    );
+
+  if (!portal) return preview;
 
   return (
-    <CardSideTipsAnchor mode="always" tips={tips} className="block w-36 drop-shadow-2xl">
-      {tile}
-    </CardSideTipsAnchor>
+    <PortaledHoverTipLayer pin={growUp ? "bottom-left" : "top-left"}>
+      {preview}
+    </PortaledHoverTipLayer>
   );
 }
 
@@ -714,7 +728,11 @@ export function EntityPreview({
               </div>
             </template>
           ) : (
-            <EntityCardHoverPreview entity={previewEntity} />
+            <EntityCardHoverPreview
+              entity={previewEntity}
+              portal={!staticHoverPreviews && !useTapPreview && !forceShow}
+              growUp={placement.vertical === "above"}
+            />
           ),
           "card",
         )

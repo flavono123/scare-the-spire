@@ -1,5 +1,6 @@
 "use client";
 
+import type { DragEvent } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { EntityPreview } from "@/components/patch-note-renderer";
 import { CardTile } from "@/components/codex/card-tile";
@@ -10,6 +11,34 @@ import {
 } from "@/lib/decisions-decisions";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+
+const TILE_ATTR = "data-decisions-decisions-tile";
+
+export function setDecisionsTokenDragImage(event: DragEvent<HTMLElement>) {
+  const tile = event.currentTarget.querySelector(`[${TILE_ATTR}]`);
+  if (!(tile instanceof HTMLElement)) return;
+  const rect = tile.getBoundingClientRect();
+  const clone = tile.cloneNode(true) as HTMLElement;
+  clone.setAttribute("aria-hidden", "true");
+  clone.style.position = "fixed";
+  clone.style.top = "-1200px";
+  clone.style.left = "-1200px";
+  clone.style.width = `${rect.width}px`;
+  clone.style.height = `${rect.height}px`;
+  clone.style.margin = "0";
+  clone.style.zIndex = "-1";
+  clone.style.pointerEvents = "none";
+  clone.style.transform = "none";
+  document.body.appendChild(clone);
+  event.dataTransfer.setDragImage(
+    clone,
+    Math.min(Math.max(event.clientX - rect.left, 0), rect.width),
+    Math.min(Math.max(event.clientY - rect.top, 0), rect.height),
+  );
+  const cleanup = () => clone.remove();
+  event.currentTarget.addEventListener("dragend", cleanup, { once: true });
+  window.setTimeout(cleanup, 1500);
+}
 
 export function DecisionsDecisionsToken({
   entity,
@@ -57,22 +86,33 @@ export function DecisionsDecisionsToken({
         )}
       >
         {entity.type === "card" && entity.cardData ? (
-          <CardTile
-            card={entity.cardData}
-            serviceLocale={serviceLocale}
-            showUpgrade={false}
-            showBeta={false}
-            width={DECISIONS_DECISIONS_CARD_WIDTH}
-            interactive={false}
-          />
+          <span
+            {...{ [TILE_ATTR]: "" }}
+            className="block [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
+          >
+            <CardTile
+              card={entity.cardData}
+              serviceLocale={serviceLocale}
+              showUpgrade={false}
+              showBeta={false}
+              width={DECISIONS_DECISIONS_CARD_WIDTH}
+              interactive={false}
+            />
+          </span>
         ) : (
-          <Image
-            src={entity.imageUrl ?? ""}
-            alt={label}
-            width={40}
-            height={40}
-            className="h-10 w-10 object-contain"
-          />
+          <span
+            {...{ [TILE_ATTR]: "" }}
+            className="block [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
+          >
+            <Image
+              src={entity.imageUrl ?? ""}
+              alt={label}
+              width={40}
+              height={40}
+              draggable={false}
+              className="h-10 w-10 object-contain"
+            />
+          </span>
         )}
         {showName && (
           <span

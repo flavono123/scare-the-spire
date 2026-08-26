@@ -1,16 +1,18 @@
 "use client";
 
-import { useMemo, type DragEvent } from "react";
-import { ChevronDown, ChevronUp, Plus, X } from "lucide-react";
+import { useMemo, useRef, useState, type DragEvent } from "react";
+import { GripVertical, Plus, Search, X } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
   DecisionsDecisionsToken,
   DecisionsDecisionsTokenPlaceholder,
+  setDecisionsTokenDragImage,
 } from "@/components/decisions-decisions/decisions-decisions-token";
 import {
   GAME_UI_HOVER_TIP_NAV_DELAY_MS,
   GameUiHoverTip,
 } from "@/components/game-ui-hover-tip";
+import { ServiceModalFrame } from "@/components/service-modal-frame";
 import {
   nextUnusedTierColor,
   resourceKey,
@@ -29,8 +31,11 @@ import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
 
-function parseDragPayload(event: DragEvent): DecisionsDecisionsResourceRef | null {
-  const raw = event.dataTransfer.getData("text/plain");
+const ROW_DRAG_PREFIX = "row:";
+
+type DragKind = "token" | "row";
+
+function parseTokenPayload(raw: string): DecisionsDecisionsResourceRef | null {
   const [type, id] = raw.split(":");
   if ((type === "card" || type === "relic" || type === "potion") && id) {
     return { type, id };
@@ -38,114 +43,118 @@ function parseDragPayload(event: DragEvent): DecisionsDecisionsResourceRef | nul
   return null;
 }
 
+function parseRowPayload(raw: string): string | null {
+  if (!raw.startsWith(ROW_DRAG_PREFIX)) return null;
+  const id = raw.slice(ROW_DRAG_PREFIX.length).trim();
+  return id || null;
+}
+
 function TierRowEditor({
   row,
-  rows,
   serviceLocale,
   canRemove,
   onLabelChange,
-  onColorChange,
-  onMove,
+  onOpenPalette,
   onRemove,
+  onRowDragStart,
+  onRowDragEnd,
 }: {
   row: TierRow;
-  rows: TierRow[];
   serviceLocale: ServiceLocale;
   canRemove: boolean;
   onLabelChange: (label: string) => void;
-  onColorChange: (color: TierPaletteKey) => void;
-  onMove: (direction: -1 | 1) => void;
+  onOpenPalette: () => void;
   onRemove: () => void;
+  onRowDragStart: () => void;
+  onRowDragEnd: () => void;
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
-  const colorLabels = serviceMessages[serviceLocale].transfigure.tokenColors;
-  const taken = usedTierColorHexes(rows, row.id);
-  const rowHex = tierColorHex(row.color);
-  const index = rows.findIndex((item) => item.id === row.id);
 
   return (
     <div
       data-decisions-decisions-row-editor
-      className="flex w-[6.75rem] shrink-0 flex-col gap-1 border-l border-white/10 p-1 sm:w-[8.75rem]"
+      className="flex w-[6.75rem] shrink-0 items-center gap-0.5 border-l border-white/10 px-1 py-1 sm:w-[8.75rem]"
       onClick={(event) => event.stopPropagation()}
       onPointerDown={(event) => event.stopPropagation()}
     >
-      <div className="flex items-center gap-0.5">
+      <div
+        draggable
+        aria-label={copy.moveRow}
+        onDragStart={(event) => {
+          onRowDragStart();
+          event.dataTransfer.setData("text/plain", `${ROW_DRAG_PREFIX}${row.id}`);
+          event.dataTransfer.effectAllowed = "move";
+          event.dataTransfer.setDragImage(event.currentTarget, 8, 8);
+        }}
+        onDragEnd={onRowDragEnd}
+        className="cursor-grab rounded p-0.5 text-zinc-500 hover:text-foreground active:cursor-grabbing"
+      >
+        <GripVertical className="h-3.5 w-3.5" />
+      </div>
+      <GameUiHoverTip
+        label={copy.rowColor}
+        delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}
+      >
         <button
           type="button"
-          aria-label={copy.moveRowUp}
-          disabled={index <= 0}
-          onClick={() => onMove(-1)}
-          className="rounded p-0.5 text-zinc-400 hover:text-foreground disabled:opacity-30"
+          aria-label={copy.rowColor}
+          onClick={onOpenPalette}
+          className="h-5 w-5 shrink-0 rounded-md border border-white/20 p-0.5 hover:border-white/40"
         >
-          <ChevronUp className="h-3.5 w-3.5" />
+          <span
+            aria-hidden
+            className="block h-full w-full rounded-sm"
+            style={{ backgroundColor: tierColorBar(row.color) }}
+          />
         </button>
+      </GameUiHoverTip>
+      <input
+        value={row.label}
+        aria-label={copy.rowLabel}
+        onChange={(event) => onLabelChange(event.target.value.slice(0, 12))}
+        className="min-w-0 flex-1 rounded border border-white/10 bg-black/30 px-1 py-0.5 text-center text-[11px] font-semibold text-foreground outline-none focus:border-primary/40"
+      />
+      {canRemove && (
         <button
           type="button"
-          aria-label={copy.moveRowDown}
-          disabled={index < 0 || index >= rows.length - 1}
-          onClick={() => onMove(1)}
-          className="rounded p-0.5 text-zinc-400 hover:text-foreground disabled:opacity-30"
+          aria-label={copy.removeRow}
+          onClick={onRemove}
+          className="rounded p-0.5 text-zinc-500 hover:text-red-300"
         >
-          <ChevronDown className="h-3.5 w-3.5" />
+          <X className="h-3.5 w-3.5" />
         </button>
-        <input
-          value={row.label}
-          aria-label={copy.rowLabel}
-          onChange={(event) => onLabelChange(event.target.value.slice(0, 12))}
-          className="min-w-0 flex-1 rounded border border-white/10 bg-black/30 px-1 py-0.5 text-center text-[11px] font-semibold text-foreground outline-none focus:border-primary/40"
-        />
-        {canRemove && (
-          <button
-            type="button"
-            aria-label={copy.removeRow}
-            onClick={onRemove}
-            className="rounded p-0.5 text-zinc-500 hover:text-red-300"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        )}
-      </div>
-      <div className="flex flex-wrap gap-0.5">
-        {TIER_PALETTE_KEYS.map((color) => {
-          const hex = tierColorBar(color);
-          const active = hex.toLowerCase() === rowHex;
-          const disabled = !active && taken.has(hex.toLowerCase());
-          const label = colorLabels[color];
-          return (
-            <GameUiHoverTip
-              key={color}
-              label={label}
-              delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}
-            >
-              <button
-                type="button"
-                aria-label={label}
-                aria-pressed={active}
-                disabled={disabled}
-                onClick={() => {
-                  if (!disabled) onColorChange(color);
-                }}
-                className={cn(
-                  "h-5 w-5 rounded-md border-2 p-0.5 transition-all",
-                  active
-                    ? "border-primary bg-primary/20"
-                    : disabled
-                      ? "cursor-not-allowed border-white/5 opacity-25"
-                      : "border-white/10 bg-white/5 hover:border-white/30",
-                )}
-              >
-                <span
-                  aria-hidden
-                  className="block h-full w-full rounded-sm"
-                  style={{ backgroundColor: hex }}
-                />
-              </button>
-            </GameUiHoverTip>
-          );
-        })}
-      </div>
+      )}
     </div>
+  );
+}
+
+function PoolEmptyAffordance({
+  label,
+  onActivate,
+}: {
+  label: string;
+  onActivate?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      onClick={(event) => {
+        event.stopPropagation();
+        onActivate?.();
+      }}
+      className="flex min-h-20 w-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-primary/35 bg-primary/[0.04] px-3 py-4 text-primary/80 transition-colors hover:border-primary/55 hover:bg-primary/[0.08]"
+    >
+      <span aria-hidden className="flex items-center gap-2">
+        <span className="flex h-9 w-7 items-center justify-center rounded-[4px] border border-dashed border-primary/40" />
+        <span className="flex h-9 w-7 items-center justify-center rounded-[4px] border border-dashed border-primary/25" />
+        <span className="flex h-9 w-7 items-center justify-center rounded-[4px] border border-dashed border-primary/15" />
+      </span>
+      <span aria-hidden className="flex items-center gap-1.5 text-primary/70">
+        <Plus className="h-4 w-4" />
+        <Search className="h-4 w-4" />
+      </span>
+    </button>
   );
 }
 
@@ -156,7 +165,6 @@ export function DecisionsDecisionsBoard({
   entitiesByKey,
   serviceLocale,
   gameLocale,
-  unrankedLabel,
   showNames,
   selectedKey,
   readOnly = false,
@@ -164,9 +172,11 @@ export function DecisionsDecisionsBoard({
   showUnranked,
   onSelect,
   onMove,
+  onRemoveFromPool,
+  onEmptyPoolActivate,
   onRowLabelChange,
   onRowColorChange,
-  onMoveRow,
+  onReorderRows,
   onRemoveRow,
   onAddRow,
 }: {
@@ -176,7 +186,6 @@ export function DecisionsDecisionsBoard({
   entitiesByKey: Map<string, EntityInfo>;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
-  unrankedLabel: string;
   showNames: boolean;
   selectedKey: string | null;
   readOnly?: boolean;
@@ -184,15 +193,29 @@ export function DecisionsDecisionsBoard({
   showUnranked?: boolean;
   onSelect?: (ref: DecisionsDecisionsResourceRef) => void;
   onMove?: (ref: DecisionsDecisionsResourceRef, rowId: string) => void;
+  onRemoveFromPool?: (ref: DecisionsDecisionsResourceRef) => void;
+  onEmptyPoolActivate?: () => void;
   onRowLabelChange?: (rowId: string, label: string) => void;
   onRowColorChange?: (rowId: string, color: TierPaletteKey) => void;
-  onMoveRow?: (rowId: string, direction: -1 | 1) => void;
+  onReorderRows?: (fromId: string, toId: string) => void;
   onRemoveRow?: (rowId: string) => void;
   onAddRow?: () => void;
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
   const includeUnranked = showUnranked ?? !compact;
-  const editable = Boolean(!readOnly && onRowLabelChange && onRowColorChange && onMoveRow);
+  const editable = Boolean(!readOnly && onRowLabelChange && onRowColorChange && onReorderRows);
+  const dragKindRef = useRef<DragKind | null>(null);
+  const [rowDropId, setRowDropId] = useState<string | null>(null);
+  const [colorRowId, setColorRowId] = useState<string | null>(null);
+  const colorRow = rows.find((row) => row.id === colorRowId) ?? null;
+  const colorLabels = serviceMessages[serviceLocale].transfigure.tokenColors;
+  const availableColors = colorRow
+    ? TIER_PALETTE_KEYS.filter((color) => {
+      const hex = tierColorHex(color);
+      return hex === tierColorHex(colorRow.color)
+        || !usedTierColorHexes(rows, colorRow.id).has(hex);
+    })
+    : [];
 
   const byRow = useMemo(() => {
     const grouped = new Map<string, TierPlacement[]>();
@@ -217,7 +240,12 @@ export function DecisionsDecisionsBoard({
     return grouped;
   }, [placements, pool, rows]);
 
-  const renderTokens = (items: TierPlacement[]) => (
+  const unrankedItems = byRow.get(UNRANKED_ROW_ID) ?? [];
+
+  const renderTokens = (
+    items: TierPlacement[],
+    options: { removable?: boolean } = {},
+  ) => (
     <div className="flex min-h-16 flex-wrap content-start gap-1 px-2 py-1.5">
       {items.map((item) => {
         const entity = entitiesByKey.get(resourceKey(item));
@@ -229,11 +257,39 @@ export function DecisionsDecisionsBoard({
           <div
             key={key}
             draggable={!readOnly}
+            className="relative [&_img]:pointer-events-none [&_*]:[-webkit-user-drag:none]"
             onDragStart={(event) => {
+              if ((event.target as HTMLElement).closest("button")) {
+                event.preventDefault();
+                return;
+              }
+              dragKindRef.current = "token";
               event.dataTransfer.setData("text/plain", key);
               event.dataTransfer.effectAllowed = "move";
+              setDecisionsTokenDragImage(event);
+            }}
+            onDragEnd={() => {
+              dragKindRef.current = null;
+              setRowDropId(null);
             }}
           >
+            {options.removable && onRemoveFromPool && (
+              <button
+                type="button"
+                aria-label={copy.removeFromPool}
+                draggable={false}
+                onPointerDown={(event) => event.stopPropagation()}
+                onMouseDown={(event) => event.stopPropagation()}
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  onRemoveFromPool(item);
+                }}
+                className="absolute -right-1 -top-1 z-10 flex h-4 w-4 items-center justify-center rounded-full border border-white/20 bg-black/80 text-zinc-300 hover:text-red-300"
+              >
+                <X className="h-2.5 w-2.5" />
+              </button>
+            )}
             <DecisionsDecisionsToken
               entity={entity}
               serviceLocale={serviceLocale}
@@ -248,15 +304,30 @@ export function DecisionsDecisionsBoard({
     </div>
   );
 
-  const dropProps = (rowId: string) => readOnly ? {} : {
+  const tokenDropProps = (rowId: string) => readOnly ? {} : {
     onDragOver: (event: DragEvent<HTMLDivElement>) => {
       event.preventDefault();
       event.dataTransfer.dropEffect = "move";
+      if (dragKindRef.current === "row" && rowId !== UNRANKED_ROW_ID) {
+        setRowDropId(rowId);
+      }
+    },
+    onDragLeave: () => {
+      if (rowDropId === rowId) setRowDropId(null);
     },
     onDrop: (event: DragEvent<HTMLDivElement>) => {
       event.preventDefault();
-      const ref = parseDragPayload(event);
+      setRowDropId(null);
+      const raw = event.dataTransfer.getData("text/plain");
+      const draggedRowId = parseRowPayload(raw);
+      if (draggedRowId) {
+        if (rowId !== UNRANKED_ROW_ID) onReorderRows?.(draggedRowId, rowId);
+        dragKindRef.current = null;
+        return;
+      }
+      const ref = parseTokenPayload(raw);
       if (ref) onMove?.(ref, rowId);
+      dragKindRef.current = null;
     },
     onClick: () => {
       if (!selectedKey) return;
@@ -268,6 +339,7 @@ export function DecisionsDecisionsBoard({
   };
 
   return (
+    <>
     <div
       className={cn(
         "overflow-hidden rounded-lg border border-border bg-black/40",
@@ -275,8 +347,15 @@ export function DecisionsDecisionsBoard({
       )}
     >
       {rows.map((row) => (
-        <div key={row.id} className="flex border-b border-white/10 last:border-b-0">
-          <div className="flex min-w-0 flex-1" {...dropProps(row.id)}>
+        <div
+          key={row.id}
+          className={cn(
+            "flex border-b border-white/10 last:border-b-0",
+            rowDropId === row.id && "bg-primary/10",
+          )}
+          {...tokenDropProps(row.id)}
+        >
+          <div className="flex min-w-0 flex-1">
             <div
               className="flex w-12 shrink-0 items-center justify-center px-1 sm:w-16"
               style={{ backgroundColor: `${tierColorBar(row.color)}22` }}
@@ -290,13 +369,18 @@ export function DecisionsDecisionsBoard({
           {editable && (
             <TierRowEditor
               row={row}
-              rows={rows}
               serviceLocale={serviceLocale}
               canRemove={rows.length > 1 && Boolean(onRemoveRow)}
               onLabelChange={(label) => onRowLabelChange?.(row.id, label)}
-              onColorChange={(color) => onRowColorChange?.(row.id, color)}
-              onMove={(direction) => onMoveRow?.(row.id, direction)}
+              onOpenPalette={() => setColorRowId(row.id)}
               onRemove={() => onRemoveRow?.(row.id)}
+              onRowDragStart={() => {
+                dragKindRef.current = "row";
+              }}
+              onRowDragEnd={() => {
+                dragKindRef.current = null;
+                setRowDropId(null);
+              }}
             />
           )}
         </div>
@@ -313,19 +397,70 @@ export function DecisionsDecisionsBoard({
           </button>
         </div>
       )}
-      {includeUnranked && (
+      {includeUnranked && !(readOnly && unrankedItems.length === 0) && (
         <div
-          className="flex border-t border-white/10"
-          {...dropProps(UNRANKED_ROW_ID)}
+          className="border-t border-white/10"
+          data-decisions-decisions-pool
+          {...tokenDropProps(UNRANKED_ROW_ID)}
         >
-          <div className="flex w-12 shrink-0 items-center justify-center px-1 text-[10px] text-zinc-500 sm:w-16">
-            {unrankedLabel}
-          </div>
-          <div className="min-w-0 flex-1 overflow-x-auto">
-            {renderTokens(byRow.get(UNRANKED_ROW_ID) ?? [])}
+          <div className="min-w-0 flex-1 overflow-x-auto p-2">
+            {unrankedItems.length === 0
+              ? (
+                readOnly
+                  ? null
+                  : (
+                    <PoolEmptyAffordance
+                      label={copy.poolAffordance}
+                      onActivate={onEmptyPoolActivate}
+                    />
+                  )
+              )
+              : renderTokens(unrankedItems, { removable: !readOnly })}
           </div>
         </div>
       )}
     </div>
+    {colorRow && (
+      <ServiceModalFrame
+        title={copy.rowColor}
+        titleId={`decisions-decisions-row-color-${colorRow.id}`}
+        closeLabel={copy.close}
+        onClose={() => setColorRowId(null)}
+        panelClassName="max-h-[min(24rem,80dvh)] max-w-sm"
+      >
+        <div className="flex flex-wrap gap-2">
+          {availableColors.map((color) => {
+            const hex = tierColorBar(color);
+            const active = hex.toLowerCase() === tierColorHex(colorRow.color);
+            const label = colorLabels[color];
+            return (
+              <button
+                key={color}
+                type="button"
+                aria-label={label}
+                aria-pressed={active}
+                onClick={() => {
+                  onRowColorChange?.(colorRow.id, color);
+                  setColorRowId(null);
+                }}
+                className={cn(
+                  "h-8 w-8 rounded-md border-2 p-0.5 transition-all",
+                  active
+                    ? "border-primary bg-primary/20"
+                    : "border-white/10 bg-white/5 hover:border-white/30",
+                )}
+              >
+                <span
+                  aria-hidden
+                  className="block h-full w-full rounded-sm"
+                  style={{ backgroundColor: hex }}
+                />
+              </button>
+            );
+          })}
+        </div>
+      </ServiceModalFrame>
+    )}
+    </>
   );
 }

@@ -107,7 +107,6 @@ export function DecisionsDecisionsPostCard({
         entitiesByKey={entityMap}
         serviceLocale={serviceLocale}
         gameLocale={gameLocale}
-        unrankedLabel={copy.unranked}
         showNames={false}
         selectedKey={null}
         readOnly

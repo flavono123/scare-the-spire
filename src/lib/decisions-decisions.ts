@@ -2,7 +2,9 @@ import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import {
   CHARACTER_COLORS,
   type CardColor,
+  type CardFilterCategory,
   type CardTypeKo,
+  type CodexCard,
   type PotionPool,
   type RelicPool,
 } from "@/lib/codex-types";
@@ -217,6 +219,22 @@ export const CARD_POOL_MINORS = [
   "colorless",
 ] as const satisfies readonly CardColor[];
 
+/** Compendium card-library affiliation keys, character row then extras. */
+export const CARD_AFFILIATION_MINORS = [
+  "ironclad",
+  "silent",
+  "defect",
+  "necrobinder",
+  "regent",
+  "colorless",
+  "ancient",
+  "status",
+  "curse",
+  "event",
+  "quest",
+  "token",
+] as const satisfies readonly CardFilterCategory[];
+
 export const RELIC_POOL_MINORS = [
   "shared",
   "ironclad",
@@ -225,6 +243,16 @@ export const RELIC_POOL_MINORS = [
   "necrobinder",
   "regent",
 ] as const satisfies readonly RelicPool[];
+
+export const RELIC_AFFILIATION_MINORS = [
+  "ironclad",
+  "silent",
+  "defect",
+  "necrobinder",
+  "regent",
+  "shared",
+  "event",
+] as const satisfies readonly (RelicPool | "event")[];
 
 export const POTION_POOL_MINORS = [
   "all",
@@ -236,6 +264,16 @@ export const POTION_POOL_MINORS = [
   "regent",
   "event",
 ] as const satisfies readonly (PotionPool | "all")[];
+
+export const POTION_AFFILIATION_MINORS = [
+  "ironclad",
+  "silent",
+  "defect",
+  "necrobinder",
+  "regent",
+  "shared",
+  "event",
+] as const satisfies readonly PotionPool[];
 
 export type DecisionsPoolMajor = DecisionsDecisionsResourceType;
 
@@ -286,6 +324,49 @@ function isPotion(entity: EntityInfo, pool: PotionPool | "all"): boolean {
   if (entity.type !== "potion" || !potion || potion.deprecated) return false;
   if (pool === "all") return true;
   return potion.pool === pool;
+}
+
+/** Same affiliation rules as Compendium `card-library` sidebar chips. */
+function cardMatchesFilterCategory(card: CodexCard, category: CardFilterCategory): boolean {
+  switch (category) {
+    case "ancient":
+      return card.rarity === "고대의 존재";
+    case "colorless":
+      return card.color === "colorless";
+    case "token":
+      return card.rarity === "토큰";
+    case "event":
+      return card.rarity === "이벤트";
+    case "quest":
+      return card.rarity === "퀘스트" || card.type === "퀘스트" || card.color === "quest";
+    case "curse":
+      return card.color === "curse" || card.rarity === "저주" || card.type === "저주";
+    case "status":
+      return card.color === "status" || card.rarity === "상태이상" || card.type === "상태이상";
+    default:
+      return card.color === category;
+  }
+}
+
+function isAffiliationCard(entity: EntityInfo, category: CardFilterCategory): boolean {
+  const card = entity.cardData;
+  if (entity.type !== "card" || !card || card.deprecated) return false;
+  return cardMatchesFilterCategory(card, category);
+}
+
+function isAffiliationRelic(entity: EntityInfo, pool: RelicPool | "event"): boolean {
+  const relic = entity.relicData;
+  if (entity.type !== "relic" || !relic || relic.deprecated) return false;
+  if (pool === "event") return relic.rarity === "이벤트 유물";
+  return relic.pool === pool;
+}
+
+function isCardFilterCategory(value: string): value is CardFilterCategory {
+  return (CARD_AFFILIATION_MINORS as readonly string[]).includes(value);
+}
+
+function isRelicAffiliation(value: string): value is RelicPool | "event" {
+  return (RELIC_AFFILIATION_MINORS as readonly string[]).includes(value);
 }
 
 export function stampPresetIds(
@@ -427,9 +508,11 @@ export function namedPresetDefs(): DecisionsDecisionsPresetDef[] {
 
 export function namedPresetKeyFromFilter(
   major: DecisionsPoolMajor | null,
-  minor: string | null,
+  minors: readonly string[],
 ): string {
-  if (!major || !minor) return CUSTOM_PRESET_KEY;
+  if (!major || minors.length !== 1) return CUSTOM_PRESET_KEY;
+  const minor = minors[0];
+  if (!minor) return CUSTOM_PRESET_KEY;
   const key = major === "card"
     ? `cards-${minor}`
     : major === "relic"
@@ -451,34 +534,58 @@ export function filterStateFromPresetKey(key: string): {
   return { major: "potion", minor: def.pool };
 }
 
-function isCardColor(value: string): value is CardColor {
-  return (CARD_POOL_MINORS as readonly string[]).includes(value);
-}
-
-function isRelicPoolValue(value: string): value is RelicPool {
-  return (RELIC_POOL_MINORS as readonly string[]).includes(value);
-}
-
 function isPotionPoolValue(value: string): value is PotionPool | "all" {
   return (POTION_POOL_MINORS as readonly string[]).includes(value);
+}
+
+export function poolFilterIsReady(
+  major: DecisionsPoolMajor | null,
+  minors: ReadonlySet<string> | readonly string[],
+): boolean {
+  const count = minors instanceof Set ? minors.size : minors.length;
+  return major != null && count > 0;
 }
 
 export function stampFilterIds(
   entities: EntityInfo[],
   major: DecisionsPoolMajor | null,
-  minor: string | null,
+  minors: readonly string[],
 ): DecisionsDecisionsResourceRef[] {
-  if (!major || !minor) return [];
-  if (major === "card" && isCardColor(minor)) {
-    return stampPresetIds({ key: `cards-${minor}`, kind: "cards", color: minor }, entities);
-  }
-  if (major === "relic" && isRelicPoolValue(minor)) {
-    return stampPresetIds({ key: `relics-${minor}`, kind: "relics", pool: minor }, entities);
-  }
-  if (major === "potion" && isPotionPoolValue(minor)) {
-    return stampPresetIds({ key: `potions-${minor}`, kind: "potions", pool: minor }, entities);
-  }
-  return [];
+  if (!major || minors.length === 0) return [];
+  const matches = entities.filter((entity) => {
+    if (major === "card") {
+      return minors.some((minor) => (
+        isCardFilterCategory(minor) && isAffiliationCard(entity, minor)
+      ));
+    }
+    if (major === "relic") {
+      return minors.some((minor) => (
+        isRelicAffiliation(minor) && isAffiliationRelic(entity, minor)
+      ));
+    }
+    return minors.some((minor) => (
+      isPotionPoolValue(minor) && isPotion(entity, minor)
+    ));
+  });
+  return matches
+    .map(entityToResourceRef)
+    .filter((ref): ref is DecisionsDecisionsResourceRef => ref != null);
+}
+
+export function reorderTierRows(
+  rows: readonly TierRow[],
+  fromId: string,
+  toId: string,
+): TierRow[] {
+  if (fromId === toId) return [...rows];
+  const from = rows.findIndex((row) => row.id === fromId);
+  const to = rows.findIndex((row) => row.id === toId);
+  if (from < 0 || to < 0) return [...rows];
+  const next = [...rows];
+  const [moved] = next.splice(from, 1);
+  if (!moved) return [...rows];
+  next.splice(to, 0, moved);
+  return next;
 }
 
 export function placementText(

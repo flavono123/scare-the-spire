@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { X } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
@@ -14,6 +14,8 @@ import {
   filterStateFromPresetKey,
   namedPresetKeyFromFilter,
   nextUnusedTierColor,
+  poolFilterIsReady,
+  reorderTierRows,
   resourceKey,
   stampFilterIds,
   UNRANKED_ROW_ID,
@@ -44,10 +46,16 @@ function mergePool(
   return [...stamped, ...extras.filter((ref) => !seen.has(resourceKey(ref)))];
 }
 
+function toggleMinor(current: Set<string>, minor: string): Set<string> {
+  const next = new Set(current);
+  if (next.has(minor)) next.delete(minor);
+  else next.add(minor);
+  return next;
+}
+
 export function DecisionsDecisionsComposer({
   entities,
   entityMap,
-  stamps,
   gameLocale,
   serviceLocale,
   presetLabels,
@@ -73,12 +81,14 @@ export function DecisionsDecisionsComposer({
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
   const initialFilter = filterStateFromPresetKey(initial?.preset_key ?? CUSTOM_PRESET_KEY);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [nickname, setNickname] = useState(initial?.nickname ?? profileNickname);
   const [title, setTitle] = useState(initial?.title ?? "");
   const [note, setNote] = useState(initial?.note ?? "");
-  const [presetKey, setPresetKey] = useState(initial?.preset_key ?? CUSTOM_PRESET_KEY);
   const [major, setMajor] = useState<DecisionsPoolMajor | null>(initialFilter.major);
-  const [minor, setMinor] = useState<string | null>(initialFilter.minor);
+  const [minors, setMinors] = useState<Set<string>>(
+    () => initialFilter.minor ? new Set([initialFilter.minor]) : new Set(),
+  );
   const [rows, setRows] = useState<TierRow[]>(
     initial?.rows?.length ? initial.rows.map((row) => ({ ...row })) : cloneDefaultRows(),
   );
@@ -88,47 +98,33 @@ export function DecisionsDecisionsComposer({
   const [extraIds, setExtraIds] = useState<DecisionsDecisionsResourceRef[]>(
     initial?.extra_ids ?? [],
   );
+  const [excludedKeys, setExcludedKeys] = useState<Set<string>>(new Set());
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const filterReady = poolFilterIsReady(major, minors);
+  const minorList = useMemo(() => [...minors], [minors]);
+  const presetKey = namedPresetKeyFromFilter(major, minorList);
+
   const filteredStamp = useMemo(() => {
-    const named = namedPresetKeyFromFilter(major, minor);
-    if (named !== CUSTOM_PRESET_KEY) {
-      return stamps[named] ?? stampFilterIds(entities, major, minor);
-    }
-    return stampFilterIds(entities, major, minor);
-  }, [entities, major, minor, stamps]);
+    if (!filterReady) return [];
+    return stampFilterIds(entities, major, minorList);
+  }, [entities, filterReady, major, minorList]);
 
-  const pool = useMemo(
-    () => mergePool(filteredStamp, extraIds),
-    [extraIds, filteredStamp],
-  );
+  const pool = useMemo(() => {
+    return mergePool(filteredStamp, extraIds).filter(
+      (ref) => !excludedKeys.has(resourceKey(ref)),
+    );
+  }, [excludedKeys, extraIds, filteredStamp]);
 
-  const resetBoard = useCallback(() => {
-    setPlacements([]);
-    setSelectedKey(null);
+  const handleMajor = useCallback((nextMajor: DecisionsPoolMajor | null) => {
+    setMajor(nextMajor);
+    setMinors(new Set());
   }, []);
 
-  const handlePreset = useCallback((nextKey: string) => {
-    const nextFilter = filterStateFromPresetKey(nextKey);
-    setPresetKey(nextKey);
-    setMajor(nextFilter.major);
-    setMinor(nextFilter.minor);
-    setExtraIds([]);
-    resetBoard();
-  }, [resetBoard]);
-
-  const handleFilter = useCallback((
-    nextMajor: DecisionsPoolMajor | null,
-    nextMinor: string | null,
-  ) => {
-    const nextKey = namedPresetKeyFromFilter(nextMajor, nextMinor);
-    setMajor(nextMajor);
-    setMinor(nextMinor);
-    setPresetKey(nextKey);
-    setExtraIds([]);
-    resetBoard();
-  }, [resetBoard]);
+  const handleToggleMinor = useCallback((minor: string) => {
+    setMinors((current) => toggleMinor(current, minor));
+  }, []);
 
   const handleMove = useCallback((
     ref: DecisionsDecisionsResourceRef,
@@ -148,6 +144,12 @@ export function DecisionsDecisionsComposer({
     if (!ref) return;
     const key = resourceKey(ref);
     setSelectedKey(key);
+    setExcludedKeys((current) => {
+      if (!current.has(key)) return current;
+      const next = new Set(current);
+      next.delete(key);
+      return next;
+    });
     setExtraIds((current) => {
       if (current.some((item) => resourceKey(item) === key)) return current;
       if (filteredStamp.some((item) => resourceKey(item) === key)) return current;
@@ -155,13 +157,25 @@ export function DecisionsDecisionsComposer({
     });
   }, [filteredStamp]);
 
+  const handleRemoveFromPool = useCallback((ref: DecisionsDecisionsResourceRef) => {
+    const key = resourceKey(ref);
+    setPlacements((current) => current.filter((item) => resourceKey(item) !== key));
+    setExtraIds((current) => current.filter((item) => resourceKey(item) !== key));
+    setExcludedKeys((current) => {
+      if (current.has(key)) return current;
+      const next = new Set(current);
+      next.add(key);
+      return next;
+    });
+    if (selectedKey === key) setSelectedKey(null);
+  }, [selectedKey]);
+
   const extrasForSave = useMemo(() => {
-    if (presetKey === CUSTOM_PRESET_KEY) return pool;
-    const stampedKeys = new Set(
-      (stamps[presetKey] ?? filteredStamp).map(resourceKey),
-    );
+    const hasExclusions = excludedKeys.size > 0;
+    if (presetKey === CUSTOM_PRESET_KEY || hasExclusions) return pool;
+    const stampedKeys = new Set(filteredStamp.map(resourceKey));
     return pool.filter((ref) => !stampedKeys.has(resourceKey(ref)));
-  }, [filteredStamp, pool, presetKey, stamps]);
+  }, [excludedKeys, filteredStamp, pool, presetKey]);
 
   const handleSubmit = useCallback(async () => {
     setSubmitting(true);
@@ -170,7 +184,7 @@ export function DecisionsDecisionsComposer({
         nickname,
         title,
         note,
-        presetKey,
+        presetKey: excludedKeys.size > 0 ? CUSTOM_PRESET_KEY : presetKey,
         rows,
         placements,
         extraIds: extrasForSave,
@@ -179,7 +193,7 @@ export function DecisionsDecisionsComposer({
     } finally {
       setSubmitting(false);
     }
-  }, [extrasForSave, nickname, note, onSubmit, placements, presetKey, rows, title]);
+  }, [excludedKeys, extrasForSave, nickname, note, onSubmit, placements, presetKey, rows, title]);
 
   return (
     <div
@@ -234,11 +248,12 @@ export function DecisionsDecisionsComposer({
         entitiesByKey={entityMap}
         serviceLocale={serviceLocale}
         gameLocale={gameLocale}
-        unrankedLabel={copy.unranked}
         showNames={false}
         selectedKey={selectedKey}
         onSelect={(ref) => setSelectedKey(resourceKey(ref))}
         onMove={handleMove}
+        onRemoveFromPool={handleRemoveFromPool}
+        onEmptyPoolActivate={() => searchInputRef.current?.focus()}
         onRowLabelChange={(rowId, label) => {
           setRows((current) => current.map((row) => (
             row.id === rowId ? { ...row, label } : row
@@ -249,16 +264,8 @@ export function DecisionsDecisionsComposer({
             row.id === rowId ? { ...row, color } : row
           )));
         }}
-        onMoveRow={(rowId, direction) => {
-          setRows((current) => {
-            const index = current.findIndex((row) => row.id === rowId);
-            const nextIndex = index + direction;
-            if (index < 0 || nextIndex < 0 || nextIndex >= current.length) return current;
-            const next = [...current];
-            const [moved] = next.splice(index, 1);
-            next.splice(nextIndex, 0, moved!);
-            return next;
-          });
+        onReorderRows={(fromId, toId) => {
+          setRows((current) => reorderTierRows(current, fromId, toId));
         }}
         onRemoveRow={(rowId) => {
           setRows((current) => current.length <= 1
@@ -285,11 +292,11 @@ export function DecisionsDecisionsComposer({
         entityMap={entityMap}
         serviceLocale={serviceLocale}
         presetLabels={presetLabels}
-        presetKey={presetKey}
         major={major}
-        minor={minor}
-        onPreset={handlePreset}
-        onFilter={handleFilter}
+        minors={minors}
+        searchInputRef={searchInputRef}
+        onMajor={handleMajor}
+        onToggleMinor={handleToggleMinor}
         onAdd={handleAdd}
       />
 
