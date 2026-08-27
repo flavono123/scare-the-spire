@@ -60,6 +60,12 @@ import { serviceMessages } from "@/messages/service";
 const CARD_COLLECTION_ICON = "/images/sts2/nav/stats_cards.png";
 const RELIC_COLLECTION_ICON = "/images/sts2/relics/bing_bong.webp";
 const POTION_COLLECTION_ICON = "/images/sts2/potions/potion_shaped_rock.webp";
+const ANCIENT_TOKEN_ICON = "/images/sts2/ancients/neow.webp";
+const MAP_ELITE_ICON = "/images/sts2/map/icons/map_elite.png";
+const MAP_BOSS_ICON = "/images/sts2/map/icons/map_chest_boss.png";
+const OVERGROWTH_ELITE_ICON = "/images/sts2/map/icons-by-act/overgrowth/map_elite.png";
+const UNDERDOCKS_ELITE_ICON = "/images/sts2/map/icons-by-act/underdocks/map_elite.png";
+const ANCIENT_ACCENT = "#60a5fa";
 const GOLD = "#EFC851";
 const PURPLE = "#c084fc";
 const ACT_COLOR = "#60a5fa";
@@ -328,7 +334,12 @@ function presetJumpLabel(
     presetNamedCards: string;
     presetAllRelics: string;
     presetAllPotions: string;
+    presetAncientRelics: string;
+    presetNamedAncientRelics: string;
+    presetAct1Elites: string;
   },
+  ancientNames: Map<string, string>,
+  monsterTypeLabels: { Boss: { label: string }; Elite: { label: string } },
 ): string {
   if (preset.kind === "cards") {
     const name = presetLabels[preset.key] ?? preset.key;
@@ -336,30 +347,41 @@ function presetJumpLabel(
     return copy.presetNamedCards.replace("{name}", name);
   }
   if (preset.kind === "relics") return copy.presetAllRelics;
+  if (preset.kind === "ancient-relics") return copy.presetAncientRelics;
+  if (preset.kind === "ancient-relics-named") {
+    const name = ancientNames.get(preset.ancientId) ?? preset.ancientId;
+    return copy.presetNamedAncientRelics.replace("{name}", name);
+  }
+  if (preset.kind === "monsters") {
+    if (preset.key === "monsters-elite-act1") return copy.presetAct1Elites;
+    if (preset.monsterType === "Boss") return monsterTypeLabels.Boss.label;
+    return monsterTypeLabels.Elite.label;
+  }
   if (preset.kind === "potions") return copy.presetAllPotions;
   return presetLabels[preset.key] ?? preset.key;
 }
 
-function CardPresetJump({
-  preset,
+function ComboPresetJump({
+  presetKey,
+  lead,
+  trail,
+  accent,
   label,
   onClick,
 }: {
-  preset: Extract<DecisionsDecisionsPresetDef, { kind: "cards" }>;
+  presetKey: string;
+  lead: string;
+  trail: string;
+  accent?: string;
   label: string;
   onClick: () => void;
 }) {
-  const trail = preset.color === "colorless"
-    ? COLORLESS_FILTER_ICON
-    : CHARACTER_TOKEN_ICONS[preset.color];
-  const accent = CHARACTER_COLORS[preset.color];
-
   return (
       <button
         type="button"
         aria-label={label}
         onClick={onClick}
-        data-decisions-decisions-preset-jump={preset.key}
+        data-decisions-decisions-preset-jump={presetKey}
         className={cn(
           "group/preset relative inline-flex items-center gap-1.5 rounded-xl border border-primary/35 bg-primary/10 py-1.5 pl-2 pr-2",
           "text-[11px] font-semibold text-primary shadow-[0_0_14px_rgba(239,200,81,0.05)]",
@@ -376,13 +398,37 @@ function CardPresetJump({
             style={{ backgroundColor: accent }}
           />
         ) : null}
-        <ComboStyleStack lead={CARD_COLLECTION_ICON} trail={trail ?? COLORLESS_FILTER_ICON} />
+        <ComboStyleStack lead={lead} trail={trail} />
         <span className="whitespace-nowrap">{label}</span>
         <ChevronRight
           className="h-3.5 w-3.5 shrink-0 opacity-80 transition-transform duration-200 group-hover/preset:translate-x-0.5"
           aria-hidden="true"
         />
       </button>
+  );
+}
+
+function CardPresetJump({
+  preset,
+  label,
+  onClick,
+}: {
+  preset: Extract<DecisionsDecisionsPresetDef, { kind: "cards" }>;
+  label: string;
+  onClick: () => void;
+}) {
+  const trail = preset.color === "colorless"
+    ? COLORLESS_FILTER_ICON
+    : CHARACTER_TOKEN_ICONS[preset.color];
+  return (
+    <ComboPresetJump
+      presetKey={preset.key}
+      lead={CARD_COLLECTION_ICON}
+      trail={trail ?? COLORLESS_FILTER_ICON}
+      accent={CHARACTER_COLORS[preset.color]}
+      label={label}
+      onClick={onClick}
+    />
   );
 }
 
@@ -511,19 +557,42 @@ export function DecisionsDecisionsPoolPicker({
     return [];
   }, [codex.labels.relicRarities, major, pools, presetLabels, rarityDetails, serviceLocale]);
 
+  const ancientNames = useMemo(() => {
+    const names = new Map<string, string>();
+    for (const entity of entities) {
+      if (entity.type === "ancient") names.set(entity.id, entity.nameKo);
+    }
+    return names;
+  }, [entities]);
+
   const keywordSourceLabels = serviceLocale === "ko"
     ? { cardKeyword: "카드 키워드", staticHoverTip: "툴팁 키워드" }
     : { cardKeyword: "Card keyword", staticHoverTip: "Hover tip" };
 
-  const namedPresets = namedPresetDefs();
+  const namedPresets = namedPresetDefs(entities);
   const cardPresets = namedPresets.filter(
     (preset): preset is Extract<DecisionsDecisionsPresetDef, { kind: "cards" }> => (
       preset.kind === "cards"
     ),
   );
-  const catalogPresets = namedPresets.filter((preset) => (
-    preset.kind === "relics" || preset.kind === "potions"
+  const relicPresets = namedPresets.filter((preset) => (
+    preset.kind === "relics"
+    || preset.kind === "ancient-relics"
+    || preset.kind === "ancient-relics-named"
   ));
+  const monsterPresets = namedPresets.filter(
+    (preset): preset is Extract<DecisionsDecisionsPresetDef, { kind: "monsters" }> => (
+      preset.kind === "monsters"
+    ),
+  );
+  const potionPresets = namedPresets.filter((preset) => preset.kind === "potions");
+  const jumpLabel = (preset: DecisionsDecisionsPresetDef) => presetJumpLabel(
+    preset,
+    presetLabels,
+    copy,
+    ancientNames,
+    codex.monstersView.monsterTypes,
+  );
   const hasFilters = Boolean(major) && (
     affiliationChips.length > 0
     || major === "card"
@@ -547,18 +616,74 @@ export function DecisionsDecisionsPoolPicker({
             <CardPresetJump
               key={preset.key}
               preset={preset}
-              label={presetJumpLabel(preset, presetLabels, copy)}
+              label={jumpLabel(preset)}
               onClick={() => onPreset(preset.key)}
             />
           ))}
         </div>
+        <div className="flex flex-wrap gap-1.5">
+          {relicPresets.map((preset) => {
+            const label = jumpLabel(preset);
+            if (preset.kind === "relics") {
+              return (
+                <CatalogPresetJump
+                  key={preset.key}
+                  presetKey={preset.key}
+                  icon={RELIC_COLLECTION_ICON}
+                  label={label}
+                  onClick={() => onPreset(preset.key)}
+                />
+              );
+            }
+            const trail = preset.kind === "ancient-relics-named"
+              ? (entityMap.get(`ancient:${preset.ancientId}`)?.imageUrl ?? ANCIENT_TOKEN_ICON)
+              : ANCIENT_TOKEN_ICON;
+            return (
+              <ComboPresetJump
+                key={preset.key}
+                presetKey={preset.key}
+                lead={RELIC_COLLECTION_ICON}
+                trail={trail}
+                accent={ANCIENT_ACCENT}
+                label={label}
+                onClick={() => onPreset(preset.key)}
+              />
+            );
+          })}
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {monsterPresets.map((preset) => {
+            const label = jumpLabel(preset);
+            if (preset.key === "monsters-elite-act1") {
+              return (
+                <ComboPresetJump
+                  key={preset.key}
+                  presetKey={preset.key}
+                  lead={OVERGROWTH_ELITE_ICON}
+                  trail={UNDERDOCKS_ELITE_ICON}
+                  label={label}
+                  onClick={() => onPreset(preset.key)}
+                />
+              );
+            }
+            return (
+              <CatalogPresetJump
+                key={preset.key}
+                presetKey={preset.key}
+                icon={preset.monsterType === "Boss" ? MAP_BOSS_ICON : MAP_ELITE_ICON}
+                label={label}
+                onClick={() => onPreset(preset.key)}
+              />
+            );
+          })}
+        </div>
         <div className="flex flex-wrap gap-2">
-          {catalogPresets.map((preset) => (
+          {potionPresets.map((preset) => (
             <CatalogPresetJump
               key={preset.key}
               presetKey={preset.key}
-              icon={preset.kind === "relics" ? RELIC_COLLECTION_ICON : POTION_COLLECTION_ICON}
-              label={presetJumpLabel(preset, presetLabels, copy)}
+              icon={POTION_COLLECTION_ICON}
+              label={jumpLabel(preset)}
               onClick={() => onPreset(preset.key)}
             />
           ))}

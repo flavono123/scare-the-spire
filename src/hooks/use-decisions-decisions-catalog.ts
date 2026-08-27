@@ -33,13 +33,11 @@ export function useDecisionsDecisionsCatalog(gameLocale: GameLocale) {
     let disposed = false;
     void presetPromise.then((payload) => {
       if (disposed) return;
-      if (payload?.presets) {
-        setStamps(payload.presets);
-        return;
-      }
       if (resources.entities.length > 0) {
         setStamps(stampAllPresetIds(resources.entities));
+        return;
       }
+      if (payload?.presets) setStamps(payload.presets);
     });
     return () => {
       disposed = true;

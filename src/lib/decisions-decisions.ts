@@ -1,4 +1,5 @@
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
+import { getBestiaryDisplayMonsterType, getForcedBestiaryAct } from "@/lib/bestiary-monster-policy";
 import { isEtcRarity } from "@/lib/card-annotations";
 import {
   CHARACTER_COLORS,
@@ -345,13 +346,31 @@ export type DecisionsFilterDims = {
   act: Set<string>;
 };
 
-export type DecisionsDecisionsPresetKind = "custom" | "cards" | "relics" | "potions";
+export type DecisionsDecisionsPresetKind =
+  | "custom"
+  | "cards"
+  | "relics"
+  | "ancient-relics"
+  | "ancient-relics-named"
+  | "potions"
+  | "monsters";
 
 export type DecisionsDecisionsPresetDef =
   | { key: typeof CUSTOM_PRESET_KEY; kind: "custom" }
   | { key: string; kind: "cards"; color: CardColor }
   | { key: string; kind: "relics"; pool: RelicPool }
-  | { key: string; kind: "potions"; pool: PotionPool | "all" };
+  | { key: string; kind: "ancient-relics" }
+  | { key: string; kind: "ancient-relics-named"; ancientId: string }
+  | { key: string; kind: "potions"; pool: PotionPool | "all" }
+  | { key: string; kind: "monsters"; monsterType: MonsterType; acts?: readonly EventAct[] };
+
+export const ANCIENT_RELIC_RARITY: RelicRarityKo = "고대 유물";
+export const ALL_ANCIENT_RELICS_PRESET_KEY = "relics-ancient";
+export const NAMED_ANCIENT_RELIC_PRESET_PREFIX = "relics-ancient-";
+export const ACT1_ELITE_ACTS = [
+  "Act 1 - Overgrowth",
+  "Underdocks",
+] as const satisfies readonly EventAct[];
 
 export const DECISIONS_DECISIONS_PRESET_DEFS: readonly DecisionsDecisionsPresetDef[] = [
   { key: CUSTOM_PRESET_KEY, kind: "custom" },
@@ -362,15 +381,62 @@ export const DECISIONS_DECISIONS_PRESET_DEFS: readonly DecisionsDecisionsPresetD
   { key: "cards-regent", kind: "cards", color: "regent" },
   { key: "cards-colorless", kind: "cards", color: "colorless" },
   { key: "relics-shared", kind: "relics", pool: "shared" },
+  { key: ALL_ANCIENT_RELICS_PRESET_KEY, kind: "ancient-relics" },
+  { key: "monsters-boss", kind: "monsters", monsterType: "Boss" },
+  { key: "monsters-elite", kind: "monsters", monsterType: "Elite" },
+  {
+    key: "monsters-elite-act1",
+    kind: "monsters",
+    monsterType: "Elite",
+    acts: ACT1_ELITE_ACTS,
+  },
   { key: "potions-all", kind: "potions", pool: "all" },
 ];
 
+function namedAncientRelicPresetKey(ancientId: string): string {
+  return `${NAMED_ANCIENT_RELIC_PRESET_PREFIX}${ancientId}`;
+}
+
+function parseNamedAncientRelicPreset(
+  key: string,
+): Extract<DecisionsDecisionsPresetDef, { kind: "ancient-relics-named" }> | null {
+  if (!key.startsWith(NAMED_ANCIENT_RELIC_PRESET_PREFIX)) return null;
+  const ancientId = key.slice(NAMED_ANCIENT_RELIC_PRESET_PREFIX.length).trim();
+  if (!ancientId) return null;
+  return { key, kind: "ancient-relics-named", ancientId };
+}
+
+export function ancientNamedPresetDefs(
+  entities: readonly EntityInfo[],
+): Extract<DecisionsDecisionsPresetDef, { kind: "ancient-relics-named" }>[] {
+  return entities
+    .filter((entity) => (
+      entity.type === "ancient"
+      && !entityIsDeprecated(entity)
+      && (entity.ancientData?.relicIds?.length ?? 0) > 0
+    ))
+    .sort((left, right) => {
+      const leftAct = EVENT_ACT_ORDER.indexOf(left.ancientData?.act ?? null);
+      const rightAct = EVENT_ACT_ORDER.indexOf(right.ancientData?.act ?? null);
+      if (leftAct !== rightAct) return leftAct - rightAct;
+      return left.nameKo.localeCompare(right.nameKo, "ko");
+    })
+    .map((entity) => ({
+      key: namedAncientRelicPresetKey(entity.id),
+      kind: "ancient-relics-named" as const,
+      ancientId: entity.id,
+    }));
+}
+
 export function isDecisionsDecisionsPresetKey(value: unknown): boolean {
-  return DECISIONS_DECISIONS_PRESET_DEFS.some((preset) => preset.key === value);
+  if (typeof value !== "string") return false;
+  if (DECISIONS_DECISIONS_PRESET_DEFS.some((preset) => preset.key === value)) return true;
+  return parseNamedAncientRelicPreset(value) != null;
 }
 
 export function findPresetDef(key: string): DecisionsDecisionsPresetDef {
   return DECISIONS_DECISIONS_PRESET_DEFS.find((preset) => preset.key === key)
+    ?? parseNamedAncientRelicPreset(key)
     ?? DECISIONS_DECISIONS_PRESET_DEFS[0]!;
 }
 
@@ -385,6 +451,22 @@ function isPoolRelic(entity: EntityInfo, pool: RelicPool): boolean {
   const relic = entity.relicData;
   if (entity.type !== "relic" || !relic || relic.deprecated) return false;
   return relic.pool === pool;
+}
+
+function isAncientRelic(entity: EntityInfo): boolean {
+  const relic = entity.relicData;
+  if (entity.type !== "relic" || !relic || relic.deprecated) return false;
+  return relic.rarity === ANCIENT_RELIC_RARITY;
+}
+
+function monsterFilterDims(
+  monsterType: MonsterType,
+  acts?: readonly EventAct[],
+): DecisionsFilterDims {
+  const dims = emptyFilterDims();
+  dims.kind.add(monsterType);
+  for (const act of acts ?? []) dims.act.add(act);
+  return dims;
 }
 
 function isPotion(entity: EntityInfo, pool: PotionPool | "all"): boolean {
@@ -442,6 +524,25 @@ export function stampPresetIds(
   entities: EntityInfo[],
 ): DecisionsDecisionsResourceRef[] {
   if (def.kind === "custom") return [];
+  if (def.kind === "ancient-relics") {
+    return entities
+      .filter(isAncientRelic)
+      .map(entityToResourceRef)
+      .filter((ref): ref is DecisionsDecisionsResourceRef => ref != null);
+  }
+  if (def.kind === "ancient-relics-named") {
+    const relicIds = new Set(
+      entities.find((entity) => entity.type === "ancient" && entity.id === def.ancientId)
+        ?.ancientData?.relicIds ?? [],
+    );
+    return entities
+      .filter((entity) => isAncientRelic(entity) && relicIds.has(entity.id))
+      .map(entityToResourceRef)
+      .filter((ref): ref is DecisionsDecisionsResourceRef => ref != null);
+  }
+  if (def.kind === "monsters") {
+    return stampFilterIds(entities, "monster", monsterFilterDims(def.monsterType, def.acts));
+  }
   const matches = entities.filter((entity) => {
     if (def.kind === "cards") return isPlayableCard(entity, def.color);
     if (def.kind === "relics") return isPoolRelic(entity, def.pool);
@@ -456,7 +557,7 @@ export function stampAllPresetIds(
   entities: EntityInfo[],
 ): Record<string, DecisionsDecisionsResourceRef[]> {
   const stamps: Record<string, DecisionsDecisionsResourceRef[]> = {};
-  for (const def of DECISIONS_DECISIONS_PRESET_DEFS) {
+  for (const def of [...DECISIONS_DECISIONS_PRESET_DEFS, ...ancientNamedPresetDefs(entities)]) {
     stamps[def.key] = stampPresetIds(def, entities);
   }
   return stamps;
@@ -570,8 +671,11 @@ export function nextUnusedTierColor(rows: readonly TierRow[]): TierPaletteKey | 
   return TIER_PALETTE_KEYS.find((key) => !used.has(tierColorHex(key))) ?? null;
 }
 
-export function namedPresetDefs(): DecisionsDecisionsPresetDef[] {
-  return DECISIONS_DECISIONS_PRESET_DEFS.filter((preset) => preset.kind !== "custom");
+export function namedPresetDefs(entities: readonly EntityInfo[] = []): DecisionsDecisionsPresetDef[] {
+  return [
+    ...DECISIONS_DECISIONS_PRESET_DEFS.filter((preset) => preset.kind !== "custom"),
+    ...ancientNamedPresetDefs(entities),
+  ];
 }
 
 export function emptyFilterDims(): DecisionsFilterDims {
@@ -615,24 +719,51 @@ export function namedPresetKeyFromFilter(
   dims: DecisionsFilterDims,
 ): string {
   if (!major) return CUSTOM_PRESET_KEY;
-  if (dims.kind.size > 0 || dims.rarity.size > 0 || dims.act.size > 0) {
-    return CUSTOM_PRESET_KEY;
-  }
   if (major === "card") {
+    if (dims.kind.size > 0 || dims.rarity.size > 0 || dims.act.size > 0) {
+      return CUSTOM_PRESET_KEY;
+    }
     if (dims.affiliation.size !== 1) return CUSTOM_PRESET_KEY;
     const key = `cards-${[...dims.affiliation][0]}`;
     return isDecisionsDecisionsPresetKey(key) ? key : CUSTOM_PRESET_KEY;
   }
   if (major === "relic") {
+    if (dims.kind.size > 0 || dims.act.size > 0) return CUSTOM_PRESET_KEY;
+    if (
+      dims.affiliation.size === 0
+      && dims.rarity.size === 1
+      && dims.rarity.has(ANCIENT_RELIC_RARITY)
+    ) {
+      return ALL_ANCIENT_RELICS_PRESET_KEY;
+    }
+    if (dims.rarity.size > 0) return CUSTOM_PRESET_KEY;
     if (dims.affiliation.size !== 1) return CUSTOM_PRESET_KEY;
     const key = `relics-${[...dims.affiliation][0]}`;
     return isDecisionsDecisionsPresetKey(key) ? key : CUSTOM_PRESET_KEY;
   }
   if (major === "potion") {
+    if (dims.kind.size > 0 || dims.rarity.size > 0 || dims.act.size > 0) {
+      return CUSTOM_PRESET_KEY;
+    }
     if (dims.affiliation.size === 0) return "potions-all";
     if (dims.affiliation.size !== 1) return CUSTOM_PRESET_KEY;
     const key = `potions-${[...dims.affiliation][0]}`;
     return isDecisionsDecisionsPresetKey(key) ? key : CUSTOM_PRESET_KEY;
+  }
+  if (major === "monster") {
+    if (dims.affiliation.size > 0 || dims.rarity.size > 0) return CUSTOM_PRESET_KEY;
+    if (dims.kind.size !== 1) return CUSTOM_PRESET_KEY;
+    const kind = [...dims.kind][0];
+    if (kind === "Boss" && dims.act.size === 0) return "monsters-boss";
+    if (kind === "Elite" && dims.act.size === 0) return "monsters-elite";
+    if (
+      kind === "Elite"
+      && dims.act.size === ACT1_ELITE_ACTS.length
+      && ACT1_ELITE_ACTS.every((act) => dims.act.has(act))
+    ) {
+      return "monsters-elite-act1";
+    }
+    return CUSTOM_PRESET_KEY;
   }
   return CUSTOM_PRESET_KEY;
 }
@@ -651,6 +782,13 @@ export function filterStateFromPresetKey(key: string): {
   if (def.kind === "relics") {
     dims.affiliation.add(def.pool);
     return { major: "relic", dims };
+  }
+  if (def.kind === "ancient-relics" || def.kind === "ancient-relics-named") {
+    dims.rarity.add(ANCIENT_RELIC_RARITY);
+    return { major: "relic", dims };
+  }
+  if (def.kind === "monsters") {
+    return { major: "monster", dims: monsterFilterDims(def.monsterType, def.acts) };
   }
   return { major: "potion", dims };
 }
@@ -717,7 +855,11 @@ function monsterActKeys(
   entity: EntityInfo,
   encounterActs: Map<string, Set<string>>,
 ): Set<string> {
-  return encounterActs.get(entity.id) ?? new Set(["none"]);
+  const acts = new Set(encounterActs.get(entity.id) ?? []);
+  const forced = getForcedBestiaryAct(entity.id);
+  if (forced) acts.add(actKey(forced));
+  if (acts.size === 0) acts.add("none");
+  return acts;
 }
 
 export function encounterActKeysByMonster(
@@ -783,7 +925,9 @@ function matchesKind(entity: EntityInfo, major: DecisionsPoolMajor, keys: Readon
     return [...keys].some((key) => isEnchantmentKind(key) && kind === key);
   }
   if (major === "monster") {
-    const type = entity.monsterData?.type;
+    const type = entity.monsterData
+      ? getBestiaryDisplayMonsterType(entity.id, entity.monsterData.type)
+      : null;
     return Boolean(type && [...keys].some((key) => isMonsterType(key) && type === key));
   }
   if (major === "keyword") {

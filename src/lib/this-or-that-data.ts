@@ -173,6 +173,7 @@ export function compactThisOrThatEntity(entity: EntityInfo): EntityInfo {
       act: entity.ancientData.act,
       epithet: entity.ancientData.epithet,
       imageUrl: entity.ancientData.imageUrl,
+      relicIds: entity.ancientData.relicIds,
     } as EntityInfo["ancientData"] : undefined,
     epochData: entity.epochData ? {
       affiliation: entity.epochData.affiliation,
