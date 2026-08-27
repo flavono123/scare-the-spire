@@ -230,6 +230,22 @@ export function resourceKey(
   return `${ref.type}:${ref.id}`;
 }
 
+/** Ranked 말 only. Unplaced pool leftovers are not part of a saved board. */
+export function placedPool(
+  placements: readonly Pick<TierPlacement, "type" | "id" | "rowId">[],
+): DecisionsDecisionsResourceRef[] {
+  const seen = new Set<string>();
+  const next: DecisionsDecisionsResourceRef[] = [];
+  for (const item of placements) {
+    if (item.rowId === UNRANKED_ROW_ID) continue;
+    const key = resourceKey(item);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    next.push({ type: item.type, id: item.id });
+  }
+  return next;
+}
+
 export function entityToResourceRef(
   entity: EntityInfo,
 ): DecisionsDecisionsResourceRef | null {

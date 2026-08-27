@@ -16,9 +16,9 @@ import {
   entityToResourceRef,
   filterStateFromPresetKey,
   findPresetDef,
-  isDecisionsDecisionsPresetKey,
   namedPresetKeyFromFilter,
   nextUnusedTierColor,
+  placedPool,
   dimsHaveSelection,
   poolFilterIsReady,
   reorderTierRows,
@@ -56,11 +56,6 @@ function mergePool(
 ): DecisionsDecisionsResourceRef[] {
   const seen = new Set(stamped.map(resourceKey));
   return [...stamped, ...extras.filter((ref) => !seen.has(resourceKey(ref)))];
-}
-
-function namedLockedKey(key: string | undefined): string | null {
-  if (!key || key === CUSTOM_PRESET_KEY || !isDecisionsDecisionsPresetKey(key)) return null;
-  return key;
 }
 
 type BoardBaseline = {
@@ -116,7 +111,7 @@ export function DecisionsDecisionsComposer({
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
   const confirmCopy = serviceMessages[serviceLocale].deleteConfirm;
-  const initialFilter = filterStateFromPresetKey(initial?.preset_key ?? CUSTOM_PRESET_KEY);
+  const initialFilter = filterStateFromPresetKey(CUSTOM_PRESET_KEY);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const boardBaselineRef = useRef<BoardBaseline | null>(null);
   const previousStepRef = useRef<"template" | "board">("template");
@@ -129,9 +124,7 @@ export function DecisionsDecisionsComposer({
   const [dims, setDims] = useState<DecisionsFilterDims>(
     () => cloneFilterDims(initialFilter.dims),
   );
-  const [lockedPresetKey, setLockedPresetKey] = useState<string | null>(
-    () => namedLockedKey(initial?.preset_key),
-  );
+  const [lockedPresetKey, setLockedPresetKey] = useState<string | null>(null);
   const [rows, setRows] = useState<TierRow[]>(
     initial?.rows?.length ? initial.rows.map((row) => ({ ...row })) : cloneDefaultRows(),
   );
@@ -139,7 +132,7 @@ export function DecisionsDecisionsComposer({
     initial?.placements ?? [],
   );
   const [extraIds, setExtraIds] = useState<DecisionsDecisionsResourceRef[]>(
-    initial?.extra_ids ?? [],
+    () => initial ? placedPool(initial.placements) : [],
   );
   const [excludedKeys, setExcludedKeys] = useState<Set<string>>(new Set());
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
@@ -283,12 +276,19 @@ export function DecisionsDecisionsComposer({
     setStep("template");
   }, []);
 
+  const placedForSave = useMemo(() => placedPool(placements), [placements]);
+  const hasUnplacedPool = useMemo(() => {
+    const placedKeys = new Set(placedForSave.map(resourceKey));
+    return pool.some((ref) => !placedKeys.has(resourceKey(ref)));
+  }, [placedForSave, pool]);
+
   const extrasForSave = useMemo(() => {
-    const hasExclusions = excludedKeys.size > 0;
-    if (presetKey === CUSTOM_PRESET_KEY || hasExclusions) return pool;
+    if (hasUnplacedPool || excludedKeys.size > 0 || presetKey === CUSTOM_PRESET_KEY) {
+      return placedForSave;
+    }
     const stampedKeys = new Set(filteredStamp.map(resourceKey));
-    return pool.filter((ref) => !stampedKeys.has(resourceKey(ref)));
-  }, [excludedKeys, filteredStamp, pool, presetKey]);
+    return placedForSave.filter((ref) => !stampedKeys.has(resourceKey(ref)));
+  }, [excludedKeys, filteredStamp, hasUnplacedPool, placedForSave, presetKey]);
 
   const handleSubmit = useCallback(async () => {
     setSubmitting(true);
@@ -297,7 +297,9 @@ export function DecisionsDecisionsComposer({
         nickname,
         title,
         note,
-        presetKey: excludedKeys.size > 0 ? CUSTOM_PRESET_KEY : presetKey,
+        presetKey: hasUnplacedPool || excludedKeys.size > 0
+          ? CUSTOM_PRESET_KEY
+          : presetKey,
         rows,
         placements,
         extraIds: extrasForSave,
@@ -306,7 +308,18 @@ export function DecisionsDecisionsComposer({
     } finally {
       setSubmitting(false);
     }
-  }, [excludedKeys, extrasForSave, nickname, note, onSubmit, placements, presetKey, rows, title]);
+  }, [
+    excludedKeys,
+    extrasForSave,
+    hasUnplacedPool,
+    nickname,
+    note,
+    onSubmit,
+    placements,
+    presetKey,
+    rows,
+    title,
+  ]);
 
   const canMakeTiers = pool.length > 0;
   const goToBoard = useCallback(() => {

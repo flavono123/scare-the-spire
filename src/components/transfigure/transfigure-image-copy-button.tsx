@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, type RefObject } from "react";
+import { useCallback, useEffect, useState, type RefObject } from "react";
 import {
   Check,
   ClipboardCopy,
@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 
 type ActionStatus = "idle" | "working" | "success";
+
+const STATUS_RESET_MS = 2000;
 
 const embeddedBorderImageCache = new Map<string, Promise<string>>();
 
@@ -131,6 +133,18 @@ export function TransfigureImageCopyButton({
   const [copyStatus, setCopyStatus] = useState<ActionStatus>("idle");
   const [downloadStatus, setDownloadStatus] = useState<ActionStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (copyStatus !== "success") return;
+    const timer = window.setTimeout(() => setCopyStatus("idle"), STATUS_RESET_MS);
+    return () => window.clearTimeout(timer);
+  }, [copyStatus]);
+
+  useEffect(() => {
+    if (downloadStatus !== "success") return;
+    const timer = window.setTimeout(() => setDownloadStatus("idle"), STATUS_RESET_MS);
+    return () => window.clearTimeout(timer);
+  }, [downloadStatus]);
 
   const handleCopy = useCallback(() => {
     const target = targetRef.current;

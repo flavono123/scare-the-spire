@@ -22,8 +22,7 @@ import { buildDecisionsDecisionsCommentThreadKey } from "@/lib/comment-threads";
 import {
   DECISIONS_DECISIONS_HREF,
   DECISIONS_DECISIONS_TOKEN_SRC,
-  placementText,
-  resourceKey,
+  placedPool,
   sortPoolRefs,
 } from "@/lib/decisions-decisions";
 import type { GameLocale } from "@/lib/i18n";
@@ -65,7 +64,6 @@ export function DecisionsDecisionsPostView({
   const { profile } = useUserProfile(profileFallback);
   const [copied, setCopied] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [showNames, setShowNames] = useState(false);
   const boardRef = useRef<HTMLDivElement>(null);
   const isEmbed = variant === "embed";
   const indexHref = localizeHrefWithGameLocale(DECISIONS_DECISIONS_HREF, serviceLocale, gameLocale);
@@ -73,13 +71,8 @@ export function DecisionsDecisionsPostView({
 
   const pool = useMemo(() => {
     if (!post) return [];
-    const stamped = catalog.stamps[post.preset_key] ?? [];
-    const seen = new Set(stamped.map(resourceKey));
-    return sortPoolRefs(
-      [...stamped, ...post.extra_ids.filter((ref) => !seen.has(resourceKey(ref)))],
-      catalog.entityMap,
-    );
-  }, [catalog.entityMap, catalog.stamps, post]);
+    return sortPoolRefs(placedPool(post.placements), catalog.entityMap);
+  }, [catalog.entityMap, post]);
 
   const handleCopyUrl = useCallback(() => {
     navigator.clipboard.writeText(window.location.href);
@@ -170,46 +163,21 @@ export function DecisionsDecisionsPostView({
         />
       )}
 
-      <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={() => setShowNames(true)}
-          className="text-xs text-primary"
-        >
-          {copy.exportNamed}
-        </button>
-        <button
-          type="button"
-          onClick={() => setShowNames(false)}
-          className="text-xs text-primary"
-        >
-          {copy.exportCompact}
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            void navigator.clipboard.writeText(placementText(post, catalog.entityMap));
-          }}
-          className="text-xs text-primary"
-        >
-          {copy.exportText}
-        </button>
-        <TransfigureImageCopyButton
-          fileName={`${post.title}.png`}
-          targetRef={boardRef}
-          labels={{
-            copy: copy.exportNamed,
-            copying: copy.copying,
-            copied: copy.copied,
-            copyFailed: copy.copyFailed,
-            copyUnsupported: copy.copyUnsupported,
-            download: copy.download,
-            downloading: copy.downloading,
-            downloaded: copy.downloaded,
-            downloadFailed: copy.downloadFailed,
-          }}
-        />
-      </div>
+      <TransfigureImageCopyButton
+        fileName={`${post.title}.png`}
+        targetRef={boardRef}
+        labels={{
+          copy: copy.copyImage,
+          copying: copy.copying,
+          copied: copy.copied,
+          copyFailed: copy.copyFailed,
+          copyUnsupported: copy.copyUnsupported,
+          download: copy.download,
+          downloading: copy.downloading,
+          downloaded: copy.downloaded,
+          downloadFailed: copy.downloadFailed,
+        }}
+      />
       <div ref={boardRef}>
         <DecisionsDecisionsBoard
           rows={post.rows}
@@ -218,7 +186,7 @@ export function DecisionsDecisionsPostView({
           entitiesByKey={catalog.entityMap}
           serviceLocale={serviceLocale}
           gameLocale={gameLocale}
-          showNames={showNames}
+          showNames={false}
           selectedKey={null}
           readOnly
         />

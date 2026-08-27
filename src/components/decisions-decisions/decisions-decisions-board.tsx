@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type DragEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import { createPortal } from "react-dom";
 import { GripVertical, Plus, X } from "lucide-react";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
@@ -12,7 +12,6 @@ import {
 import {
   isDecisionsDecisionsResourceType,
   nextUnusedTierColor,
-  reorderTierRows,
   resourceKey,
   TIER_PALETTE_KEYS,
   tierColorBar,
@@ -69,11 +68,6 @@ function setRowDragImage(event: DragEvent<HTMLElement>, rowEl: HTMLElement | nul
   const cleanup = () => clone.remove();
   event.currentTarget.addEventListener("dragend", cleanup, { once: true });
   window.setTimeout(cleanup, 1500);
-}
-
-function prefersReducedMotion() {
-  return typeof window !== "undefined"
-    && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 function palettePosition(anchor: {
@@ -334,7 +328,6 @@ export function DecisionsDecisionsBoard({
   const editable = Boolean(!readOnly && !poolOnly && onRowLabelChange && onRowColorChange && onReorderRows);
   const canDrag = Boolean(!readOnly && !poolOnly);
   const dragKindRef = useRef<DragKind | null>(null);
-  const rowElsRef = useRef(new Map<string, HTMLElement>());
   const [rowDropId, setRowDropId] = useState<string | null>(null);
   const [draggingRowId, setDraggingRowId] = useState<string | null>(null);
   const [palette, setPalette] = useState<{
@@ -350,39 +343,6 @@ export function DecisionsDecisionsBoard({
         || !usedTierColorHexes(rows, colorRow.id).has(hex);
     })
     : [];
-  const previewRows = draggingRowId && rowDropId
-    ? reorderTierRows(rows, draggingRowId, rowDropId)
-    : rows;
-  const previewOrder = previewRows.map((row) => row.id).join("|");
-
-  useLayoutEffect(() => {
-    if (!draggingRowId || prefersReducedMotion()) {
-      for (const [id, el] of rowElsRef.current) {
-        el.style.transition = "";
-        el.style.transform = "";
-      }
-      return;
-    }
-    for (const [id, el] of rowElsRef.current) {
-      if (id === draggingRowId) {
-        el.style.transition = "";
-        el.style.transform = "";
-        continue;
-      }
-      const visualTop = el.getBoundingClientRect().top;
-      el.style.transition = "none";
-      el.style.transform = "none";
-      const layoutTop = el.getBoundingClientRect().top;
-      const dy = visualTop - layoutTop;
-      if (Math.abs(dy) < 1) continue;
-      el.style.transform = `translateY(${dy}px)`;
-      requestAnimationFrame(() => {
-        el.style.transition = "transform 340ms cubic-bezier(0.22, 1, 0.36, 1)";
-        el.style.transform = "";
-      });
-    }
-  }, [draggingRowId, previewOrder]);
-
   const byRow = useMemo(() => {
     const grouped = new Map<string, TierPlacement[]>();
     for (const row of rows) grouped.set(row.id, []);
@@ -475,11 +435,8 @@ export function DecisionsDecisionsBoard({
       event.preventDefault();
       event.dataTransfer.dropEffect = "move";
       if (dragKindRef.current === "row" && rowId !== UNRANKED_ROW_ID) {
-        setRowDropId(rowId);
+        setRowDropId((current) => current === rowId ? current : rowId);
       }
-    },
-    onDragLeave: () => {
-      if (rowDropId === rowId) setRowDropId(null);
     },
     onDrop: (event: DragEvent<HTMLDivElement>) => {
       event.preventDefault();
@@ -513,17 +470,16 @@ export function DecisionsDecisionsBoard({
         poolOnly && "max-h-[min(28rem,50dvh)] overflow-y-auto",
       )}
     >
-      {!poolOnly && previewRows.map((row) => (
+      {!poolOnly && rows.map((row) => (
         <div
           key={row.id}
-          ref={(node) => {
-            if (node) rowElsRef.current.set(row.id, node);
-            else rowElsRef.current.delete(row.id);
-          }}
           data-decisions-decisions-row={row.id}
           className={cn(
             "flex border-b border-white/10 last:border-b-0",
-            !draggingRowId && rowDropId === row.id && "bg-primary/10",
+            draggingRowId
+              && rowDropId === row.id
+              && draggingRowId !== row.id
+              && "bg-primary/10",
             draggingRowId === row.id && "relative z-10 bg-primary/10 opacity-45 ring-1 ring-primary/50",
           )}
           {...tokenDropProps(row.id)}
