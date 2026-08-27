@@ -65,7 +65,7 @@ export function characterLowHealthHp(maxHp: number): number {
   return Math.max(1, Math.floor(maxHp * CHARACTER_LOW_HEALTH_HP_RATIO));
 }
 
-const CHARACTER_STAGE_VIEWPORT_PADDING = {
+export const CHARACTER_STAGE_VIEWPORT_PADDING = {
   padLeft: "14%",
   padRight: "14%",
   padTop: "10%",

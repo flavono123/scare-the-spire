@@ -1,5 +1,6 @@
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { loadAllEntities } from "@/lib/load-all-entities";
+import type { MonsterSpineAsset } from "@/lib/codex-types";
 import type { GameLocale } from "@/lib/i18n";
 import {
   getThisOrThatEntityHref,
@@ -53,7 +54,44 @@ function compareThisOrThatEntities(a: EntityInfo, b: EntityInfo): number {
   return a.nameKo.localeCompare(b.nameKo, "ko");
 }
 
-function compactThisOrThatEntity(entity: EntityInfo): EntityInfo {
+export function compactIdleSpineAsset(
+  asset: MonsterSpineAsset | null | undefined,
+  { includeIdleVfx }: { includeIdleVfx: boolean },
+): MonsterSpineAsset | undefined {
+  if (!asset?.atlasUrl || !asset.binaryUrl) return undefined;
+
+  const idleAnims = new Set<string>([asset.idleAnimation, ...(asset.moveAnimations.IDLE ?? [])]);
+  for (const track of asset.idleTracks ?? []) {
+    idleAnims.add(track.animation);
+    if (track.idleAnimation) idleAnims.add(track.idleAnimation);
+  }
+
+  const idleEffects = includeIdleVfx
+    ? (asset.moveEffects.IDLE ?? []).filter((effect) => effect.usable !== false)
+    : [];
+
+  return {
+    id: asset.id,
+    source: asset.source,
+    renderStatus: asset.renderStatus,
+    renderTags: asset.renderTags,
+    atlasUrl: asset.atlasUrl,
+    binaryUrl: asset.binaryUrl,
+    textureUrls: asset.textureUrls,
+    skin: asset.skin,
+    skins: asset.skins,
+    defaultSkinCombination: asset.defaultSkinCombination,
+    viewport: asset.viewport,
+    idleTracks: asset.idleTracks,
+    animations: [...idleAnims],
+    bestiaryAnimations: [],
+    idleAnimation: asset.idleAnimation,
+    moveAnimations: { IDLE: [...idleAnims] },
+    moveEffects: idleEffects.length > 0 ? { IDLE: idleEffects } : {},
+  };
+}
+
+export function compactThisOrThatEntity(entity: EntityInfo): EntityInfo {
   return {
     id: entity.id,
     nameEn: entity.nameEn,
@@ -71,6 +109,9 @@ function compactThisOrThatEntity(entity: EntityInfo): EntityInfo {
       description: entity.characterData.description,
       imageUrl: entity.characterData.imageUrl,
       selectImageUrl: entity.characterData.selectImageUrl,
+      combatImageUrl: entity.characterData.combatImageUrl,
+      name: entity.characterData.name,
+      spineAsset: compactIdleSpineAsset(entity.characterData.spineAsset, { includeIdleVfx: true }),
     } as EntityInfo["characterData"] : undefined,
     keywordData: entity.keywordData ? {
       description: entity.keywordData.description,
@@ -117,6 +158,7 @@ function compactThisOrThatEntity(entity: EntityInfo): EntityInfo {
       maxHp: entity.monsterData.maxHp,
       minHp: entity.monsterData.minHp,
       type: entity.monsterData.type,
+      spineAsset: compactIdleSpineAsset(entity.monsterData.spineAsset, { includeIdleVfx: false }),
     } as EntityInfo["monsterData"] : undefined,
     encounterData: entity.encounterData ? {
       act: entity.encounterData.act,
@@ -141,10 +183,14 @@ function compactThisOrThatEntity(entity: EntityInfo): EntityInfo {
       imageUrl: entity.epochData.imageUrl,
     } as EntityInfo["epochData"] : undefined,
     modifierData: entity.modifierData ? {
+      name: entity.modifierData.name,
+      description: entity.modifierData.description,
       imageUrl: entity.modifierData.imageUrl,
       polarity: entity.modifierData.polarity,
     } as EntityInfo["modifierData"] : undefined,
     ascensionData: entity.ascensionData ? {
+      name: entity.ascensionData.name,
+      description: entity.ascensionData.description,
       imageUrl: entity.ascensionData.imageUrl,
       level: entity.ascensionData.level,
     } as EntityInfo["ascensionData"] : undefined,

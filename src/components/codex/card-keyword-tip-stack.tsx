@@ -120,8 +120,8 @@ function TipStackBody({ tips }: { tips: readonly CardSideTip[] }) {
   );
 }
 
-/** Above card-library modal (z-100), side-tip stack (200), and History Course chrome. */
-export const HOVER_TIP_LAYER_Z_INDEX = 300;
+/** Above card-library modal (z-100), side-tip stack (200), GameUiHoverTip (400), and composer chrome. */
+export const HOVER_TIP_LAYER_Z_INDEX = 500;
 
 export function PortaledHoverTipLayer({
   children,

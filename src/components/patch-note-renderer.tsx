@@ -392,27 +392,25 @@ function EntityPotionHoverPreview({
     : [];
 
   return (
-    <PortaledHoverTipLayer>
-      <span className="flex w-max items-start gap-2">
-        <GameHoverTip
-          title={entity.nameKo}
-          style={{ minWidth: 240, maxWidth: 320 }}
-        >
-          <span className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[12px]">
-            <span style={{ color: POTION_RARITY_CONFIG[potion.rarity].color }}>
-              {gameUi?.potionLab.rarities[potion.rarity].label ?? POTION_RARITY_CONFIG[potion.rarity].label}
-            </span>
-            {potion.pool !== "shared" && (
-              <span style={{ color: getCharacterColor(potion.pool) }}>
-                {potion.pool === "event" ? gameUi?.eventsTitle ?? "이벤트" : POOL_LABELS[potion.pool as RelicFilterPool]}
-              </span>
-            )}
+    <span className="flex w-max items-start gap-2">
+      <GameHoverTip
+        title={entity.nameKo}
+        style={{ minWidth: 240, maxWidth: 320 }}
+      >
+        <span className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[12px]">
+          <span style={{ color: POTION_RARITY_CONFIG[potion.rarity].color }}>
+            {gameUi?.potionLab.rarities[potion.rarity].label ?? POTION_RARITY_CONFIG[potion.rarity].label}
           </span>
-          <DescriptionText description={potion.description} />
-        </GameHoverTip>
-        {extraTips.length > 0 ? <HoverTipStack tips={extraTips} /> : null}
-      </span>
-    </PortaledHoverTipLayer>
+          {potion.pool !== "shared" && (
+            <span style={{ color: getCharacterColor(potion.pool) }}>
+              {potion.pool === "event" ? gameUi?.eventsTitle ?? "이벤트" : POOL_LABELS[potion.pool as RelicFilterPool]}
+            </span>
+          )}
+        </span>
+        <DescriptionText description={potion.description} />
+      </GameHoverTip>
+      {extraTips.length > 0 ? <HoverTipStack tips={extraTips} /> : null}
+    </span>
   );
 }
 
@@ -617,30 +615,39 @@ export function EntityPreview({
             staticPreviewDesktopClass(placement),
           ].join(" ")
         : `absolute ${previewHorizontalClass(placement.horizontal)} z-50 pointer-events-none ${placement.vertical === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;
-  const renderTooltip = (content: ReactNode, variant: "card" | "box" = "box") => (
-    <span className={tooltipPos} style={useTapPreview ? tapPreviewStyle : undefined}>
-      {useTapPreview ? (
-        href ? (
-          <Link
-            href={href}
-            aria-label={`${entity.nameKo} 페이지로 이동`}
-            data-pressed={previewPressed}
-            onPointerDown={() => setPreviewPressed(true)}
-            onPointerLeave={() => setPreviewPressed(false)}
-            onPointerCancel={() => setPreviewPressed(false)}
-            onPointerUp={() => setPreviewPressed(false)}
-            className={
-              variant === "card"
-                ? "block cursor-pointer outline-none transition-[transform,filter] duration-100 focus-visible:brightness-125 data-[pressed=true]:scale-[0.97] data-[pressed=true]:brightness-125"
-                : "block cursor-pointer rounded-lg outline-none ring-1 ring-primary/20 shadow-[0_0_0_1px_rgba(239,200,81,0.14)] transition-[transform,filter,box-shadow] duration-100 focus-visible:ring-2 focus-visible:ring-primary/70 data-[pressed=true]:scale-[0.97] data-[pressed=true]:brightness-125 data-[pressed=true]:ring-primary/70 data-[pressed=true]:shadow-[0_0_0_2px_rgba(239,200,81,0.55),0_18px_45px_rgba(0,0,0,0.45)]"
-            }
-          >
-            {content}
-          </Link>
-        ) : content
-      ) : content}
-    </span>
-  );
+  const portalHoverTips = !staticHoverPreviews && !useTapPreview && !forceShow;
+  const renderTooltip = (content: ReactNode, variant: "card" | "box" = "box") => {
+    const body = useTapPreview ? (
+      href ? (
+        <Link
+          href={href}
+          aria-label={`${entity.nameKo} 페이지로 이동`}
+          data-pressed={previewPressed}
+          onPointerDown={() => setPreviewPressed(true)}
+          onPointerLeave={() => setPreviewPressed(false)}
+          onPointerCancel={() => setPreviewPressed(false)}
+          onPointerUp={() => setPreviewPressed(false)}
+          className={
+            variant === "card"
+              ? "block cursor-pointer outline-none transition-[transform,filter] duration-100 focus-visible:brightness-125 data-[pressed=true]:scale-[0.97] data-[pressed=true]:brightness-125"
+              : "block cursor-pointer rounded-lg outline-none ring-1 ring-primary/20 shadow-[0_0_0_1px_rgba(239,200,81,0.14)] transition-[transform,filter,box-shadow] duration-100 focus-visible:ring-2 focus-visible:ring-primary/70 data-[pressed=true]:scale-[0.97] data-[pressed=true]:brightness-125 data-[pressed=true]:ring-primary/70 data-[pressed=true]:shadow-[0_0_0_2px_rgba(239,200,81,0.55),0_18px_45px_rgba(0,0,0,0.45)]"
+          }
+        >
+          {content}
+        </Link>
+      ) : content
+    ) : content;
+
+    return (
+      <span className={tooltipPos} style={useTapPreview ? tapPreviewStyle : undefined}>
+        {portalHoverTips ? (
+          <PortaledHoverTipLayer pin={placement.vertical === "above" ? "bottom-left" : "top-left"}>
+            {body}
+          </PortaledHoverTipLayer>
+        ) : body}
+      </span>
+    );
+  };
 
   return (
     <span
@@ -730,7 +737,7 @@ export function EntityPreview({
           ) : (
             <EntityCardHoverPreview
               entity={previewEntity}
-              portal={!staticHoverPreviews && !useTapPreview && !forceShow}
+              portal={false}
               growUp={placement.vertical === "above"}
             />
           ),
@@ -767,7 +774,13 @@ export function EntityPreview({
       {showResolvedPreview && previewEntity.type === "modifier" && previewEntity.modifierData && (
         renderTooltip(
           <div className="flex items-center gap-3">
-            <ModifierToken modifier={previewEntity.modifierData} size={64} />
+            <ModifierToken
+              modifier={{
+                name: previewEntity.modifierData.name || previewEntity.nameKo,
+                imageUrl: previewEntity.modifierData.imageUrl,
+              }}
+              size={64}
+            />
             <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
               <DescriptionText description={previewEntity.modifierData.description} />
             </GameHoverTip>
@@ -789,7 +802,7 @@ export function EntityPreview({
           <EntityRelicHoverPreview
             entity={previewEntity}
             gameUi={gameUi}
-            portal={!staticHoverPreviews && !useTapPreview && !forceShow}
+            portal={false}
             growUp={placement.vertical === "above"}
           />,
         )

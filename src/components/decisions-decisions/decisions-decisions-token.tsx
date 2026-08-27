@@ -4,6 +4,7 @@ import type { DragEvent } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { EntityPreview } from "@/components/patch-note-renderer";
 import { CardTile } from "@/components/codex/card-tile";
+import { DecisionsActorSprite } from "@/components/decisions-decisions/decisions-decisions-actor";
 import Image from "@/components/ui/static-image";
 import {
   DECISIONS_DECISIONS_CARD_WIDTH,
@@ -13,6 +14,7 @@ import { COMBO_KEYWORD_IMAGE_URL } from "@/lib/combo-resource-visuals";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
+/** Draggable pool/board piece (말). */
 const TILE_ATTR = "data-decisions-decisions-tile";
 
 export function setDecisionsTokenDragImage(event: DragEvent<HTMLElement>) {
@@ -58,6 +60,17 @@ export function DecisionsDecisionsToken({
 }) {
   const label = entity.nameKo;
   const previewEntity = { ...entity, href: null };
+  const actorSpine = entity.type === "character"
+    ? entity.characterData?.spineAsset
+    : entity.type === "monster"
+      ? entity.monsterData?.spineAsset
+      : null;
+  const actorFallback = entity.type === "character"
+    ? (entity.characterData?.combatImageUrl || entity.characterData?.imageUrl || entity.imageUrl)
+    : entity.type === "monster"
+      ? (entity.monsterData?.imageUrl || entity.monsterData?.bossImageUrl || entity.imageUrl)
+      : null;
+  const isActor = entity.type === "character" || entity.type === "monster";
   const tokenSrc = entity.imageUrl
     || (entity.type === "keyword" ? COMBO_KEYWORD_IMAGE_URL : null);
 
@@ -91,6 +104,7 @@ export function DecisionsDecisionsToken({
         {entity.type === "card" && entity.cardData ? (
           <span
             {...{ [TILE_ATTR]: "" }}
+            data-decisions-piece=""
             className="block [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
           >
             <CardTile
@@ -102,9 +116,23 @@ export function DecisionsDecisionsToken({
               interactive={false}
             />
           </span>
+        ) : isActor ? (
+          <span
+            {...{ [TILE_ATTR]: "" }}
+            data-decisions-piece=""
+            className="[&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none [&_canvas]:pointer-events-none"
+          >
+            <DecisionsActorSprite
+              name={label}
+              fallbackUrl={actorFallback}
+              spineAsset={actorSpine}
+              kind={entity.type === "character" ? "character" : "monster"}
+            />
+          </span>
         ) : (
           <span
             {...{ [TILE_ATTR]: "" }}
+            data-decisions-piece=""
             className="flex h-10 w-10 items-center justify-center [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
           >
             {tokenSrc ? (

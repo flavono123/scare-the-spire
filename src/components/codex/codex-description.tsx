@@ -361,7 +361,7 @@ export const GOLD_TERM_DESC: Record<string, string> = {
 // =============================================================================
 
 interface DescriptionTextProps {
-  description: string;
+  description?: string | null;
   energyIcon?: string;
   className?: string;
   termDescriptions?: Record<string, string>;
@@ -374,7 +374,7 @@ export function DescriptionText({
   termDescriptions,
 }: DescriptionTextProps) {
   const [hoveredTerm, setHoveredTerm] = useState<string | null>(null);
-  const parts = parseDescription(description);
+  const parts = parseDescription(description ?? "");
   const allTerms = { ...GOLD_TERM_DESC, ...termDescriptions };
 
   return (
