@@ -306,12 +306,19 @@ export function DecisionsDecisionsComposer({
     }
   }, [excludedKeys, extrasForSave, nickname, note, onSubmit, placements, presetKey, rows, title]);
 
+  const canMakeTiers = pool.length > 0;
+  const goToBoard = useCallback(() => {
+    if (!canMakeTiers) return;
+    setStep("board");
+  }, [canMakeTiers]);
+
   return (
     <div
       className={cn("space-y-3", !embedded && "rounded-lg border border-border bg-card/20 p-3")}
       data-decisions-decisions-composer
       data-decisions-decisions-step={step}
     >
+      {canMakeTiers && (
       <nav
         aria-label={`${copy.stepPrepare} / ${copy.continueToBoard}`}
         data-decisions-decisions-steps
@@ -334,13 +341,9 @@ export function DecisionsDecisionsComposer({
         <button
           type="button"
           aria-current={step === "board" ? "step" : undefined}
-          disabled={pool.length === 0}
-          onClick={() => {
-            if (pool.length === 0) return;
-            setStep("board");
-          }}
+          onClick={goToBoard}
           className={cn(
-            "rounded-md px-2 py-1 font-semibold transition-colors disabled:opacity-40",
+            "rounded-md px-2 py-1 font-semibold transition-colors",
             step === "board"
               ? "bg-primary/15 text-primary"
               : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
@@ -349,6 +352,7 @@ export function DecisionsDecisionsComposer({
           {copy.continueToBoard}
         </button>
       </nav>
+      )}
 
       {(step === "board" || (onClose && !embedded)) && (
       <div className="flex items-start gap-2">
@@ -426,6 +430,18 @@ export function DecisionsDecisionsComposer({
             onRemoveFromPool={handleRemoveFromPool}
             emptyPoolLabel={emptyPoolLabel}
           />
+          {canMakeTiers && (
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={goToBoard}
+                data-decisions-decisions-continue-board
+                className="inline-flex items-center rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary"
+              >
+                {copy.continueToBoard}
+              </button>
+            </div>
+          )}
         </>
       )}
 

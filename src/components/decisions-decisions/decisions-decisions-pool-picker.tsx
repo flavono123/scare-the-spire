@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, type RefObject, useMemo, useState } from "react";
+import { type ReactNode, type RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronRight, Search } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ComboResourceAsset } from "@/components/combo/combo-resource-stack";
@@ -61,11 +61,12 @@ const CARD_COLLECTION_ICON = "/images/sts2/nav/stats_cards.png";
 const RELIC_COLLECTION_ICON = "/images/sts2/relics/bing_bong.webp";
 const POTION_COLLECTION_ICON = "/images/sts2/potions/potion_shaped_rock.webp";
 const ANCIENT_TOKEN_ICON = "/images/sts2/ancients/neow.webp";
+const MONSTER_TYPE_ICON = "/images/sts2/nav/happy_cultist.png";
 const MAP_ELITE_ICON = "/images/sts2/map/icons/map_elite.png";
-const MAP_BOSS_ICON = "/images/sts2/map/icons/map_chest_boss.png";
 const OVERGROWTH_ELITE_ICON = "/images/sts2/map/icons-by-act/overgrowth/map_elite.png";
 const UNDERDOCKS_ELITE_ICON = "/images/sts2/map/icons-by-act/underdocks/map_elite.png";
 const ANCIENT_ACCENT = "#60a5fa";
+const PRESET_FAN_COUNT = 3;
 const GOLD = "#EFC851";
 const PURPLE = "#c084fc";
 const ACT_COLOR = "#60a5fa";
@@ -327,6 +328,86 @@ function ComboStyleStack({ lead, trail }: { lead: string; trail: string }) {
   );
 }
 
+function uniqueUrls(urls: Array<string | null | undefined>): string[] {
+  const seen = new Set<string>();
+  const next: string[] = [];
+  for (const url of urls) {
+    if (!url || seen.has(url)) continue;
+    seen.add(url);
+    next.push(url);
+  }
+  return next;
+}
+
+function shuffleTake<T>(items: T[], count: number): T[] {
+  const pool = [...items];
+  for (let index = pool.length - 1; index > 0; index -= 1) {
+    const swap = Math.floor(Math.random() * (index + 1));
+    const current = pool[index];
+    const other = pool[swap];
+    if (current === undefined || other === undefined) continue;
+    pool[index] = other;
+    pool[swap] = current;
+  }
+  return pool.slice(0, Math.min(count, pool.length));
+}
+
+function sampleAncientTokenUrls(entities: EntityInfo[]): string[] {
+  return shuffleTake(
+    uniqueUrls(entities.map((entity) => (
+      entity.type === "ancient"
+        ? entity.ancientData?.imageUrl ?? entity.imageUrl
+        : null
+    ))),
+    PRESET_FAN_COUNT,
+  );
+}
+
+function sampleBossTokenUrls(entities: EntityInfo[]): string[] {
+  return shuffleTake(
+    uniqueUrls(entities.map((entity) => (
+      entity.type === "monster" ? entity.monsterData?.bossImageUrl : null
+    ))),
+    PRESET_FAN_COUNT,
+  );
+}
+
+function TypeTokenFan({
+  typeSrc,
+  overlaySrcs,
+}: {
+  typeSrc: string;
+  overlaySrcs: string[];
+}) {
+  const overlays = overlaySrcs.slice(0, PRESET_FAN_COUNT);
+  return (
+    <span
+      className="relative block h-8 shrink-0"
+      style={{ width: `${28 + Math.max(overlays.length, 1) * 10}px` }}
+      aria-hidden
+    >
+      <Image
+        src={typeSrc}
+        alt=""
+        width={28}
+        height={28}
+        className="absolute left-0 top-1 z-0 h-7 w-7 object-contain opacity-90 drop-shadow-[0_3px_5px_rgba(0,0,0,0.75)]"
+      />
+      {overlays.map((src, index) => (
+        <Image
+          key={`${src}-${index}`}
+          src={src}
+          alt=""
+          width={32}
+          height={32}
+          className="absolute top-0 h-8 w-8 object-contain drop-shadow-[0_3px_5px_rgba(0,0,0,0.75)]"
+          style={{ left: `${8 + index * 10}px`, zIndex: 10 + index }}
+        />
+      ))}
+    </span>
+  );
+}
+
 function presetJumpLabel(
   preset: DecisionsDecisionsPresetDef,
   presetLabels: Record<string, string>,
@@ -399,6 +480,53 @@ function ComboPresetJump({
           />
         ) : null}
         <ComboStyleStack lead={lead} trail={trail} />
+        <span className="whitespace-nowrap">{label}</span>
+        <ChevronRight
+          className="h-3.5 w-3.5 shrink-0 opacity-80 transition-transform duration-200 group-hover/preset:translate-x-0.5"
+          aria-hidden="true"
+        />
+      </button>
+  );
+}
+
+function FanPresetJump({
+  presetKey,
+  typeSrc,
+  overlaySrcs,
+  accent,
+  label,
+  onClick,
+}: {
+  presetKey: string;
+  typeSrc: string;
+  overlaySrcs: string[];
+  accent?: string;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+      <button
+        type="button"
+        aria-label={label}
+        onClick={onClick}
+        data-decisions-decisions-preset-jump={presetKey}
+        className={cn(
+          "group/preset relative inline-flex items-center gap-1.5 rounded-xl border border-primary/35 bg-primary/10 py-1.5 pl-2 pr-2",
+          "text-[11px] font-semibold text-primary shadow-[0_0_14px_rgba(239,200,81,0.05)]",
+          "transition-[transform,border-color,background-color,box-shadow] duration-200",
+          "hover:-translate-y-0.5 hover:border-primary/55 hover:bg-primary/15 hover:shadow-[0_6px_18px_rgba(239,200,81,0.1)]",
+          "focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70",
+          "active:translate-y-0 motion-reduce:transform-none",
+        )}
+      >
+        {accent ? (
+          <span
+            aria-hidden
+            className="absolute inset-y-1.5 left-0 w-[3px] rounded-full"
+            style={{ backgroundColor: accent }}
+          />
+        ) : null}
+        <TypeTokenFan typeSrc={typeSrc} overlaySrcs={overlaySrcs} />
         <span className="whitespace-nowrap">{label}</span>
         <ChevronRight
           className="h-3.5 w-3.5 shrink-0 opacity-80 transition-transform duration-200 group-hover/preset:translate-x-0.5"
@@ -499,6 +627,17 @@ export function DecisionsDecisionsPoolPicker({
   const rarityDetails = codex.labels.rarityDetails;
   const typeLabels = compendiumTypeLabels(serviceLocale);
   const [query, setQuery] = useState("");
+  const [fanOverlays, setFanOverlays] = useState<Record<string, string[]>>({});
+  const fanRolledRef = useRef(false);
+
+  useEffect(() => {
+    if (fanRolledRef.current || entities.length === 0) return;
+    fanRolledRef.current = true;
+    setFanOverlays({
+      "relics-ancient": sampleAncientTokenUrls(entities),
+      "monsters-boss": sampleBossTokenUrls(entities),
+    });
+  }, [entities]);
 
   const catalog = useMemo(
     () => entities.filter((entity) => isDecisionsDecisionsResourceType(entity.type)),
@@ -635,15 +774,25 @@ export function DecisionsDecisionsPoolPicker({
                 />
               );
             }
-            const trail = preset.kind === "ancient-relics-named"
-              ? (entityMap.get(`ancient:${preset.ancientId}`)?.imageUrl ?? ANCIENT_TOKEN_ICON)
-              : ANCIENT_TOKEN_ICON;
+            if (preset.kind === "ancient-relics") {
+              return (
+                <FanPresetJump
+                  key={preset.key}
+                  presetKey={preset.key}
+                  typeSrc={RELIC_COLLECTION_ICON}
+                  overlaySrcs={fanOverlays[preset.key] ?? []}
+                  accent={ANCIENT_ACCENT}
+                  label={label}
+                  onClick={() => onPreset(preset.key)}
+                />
+              );
+            }
             return (
               <ComboPresetJump
                 key={preset.key}
                 presetKey={preset.key}
                 lead={RELIC_COLLECTION_ICON}
-                trail={trail}
+                trail={entityMap.get(`ancient:${preset.ancientId}`)?.imageUrl ?? ANCIENT_TOKEN_ICON}
                 accent={ANCIENT_ACCENT}
                 label={label}
                 onClick={() => onPreset(preset.key)}
@@ -654,6 +803,18 @@ export function DecisionsDecisionsPoolPicker({
         <div className="flex flex-wrap gap-1.5">
           {monsterPresets.map((preset) => {
             const label = jumpLabel(preset);
+            if (preset.key === "monsters-boss") {
+              return (
+                <FanPresetJump
+                  key={preset.key}
+                  presetKey={preset.key}
+                  typeSrc={MONSTER_TYPE_ICON}
+                  overlaySrcs={fanOverlays[preset.key] ?? []}
+                  label={label}
+                  onClick={() => onPreset(preset.key)}
+                />
+              );
+            }
             if (preset.key === "monsters-elite-act1") {
               return (
                 <ComboPresetJump
@@ -670,7 +831,7 @@ export function DecisionsDecisionsPoolPicker({
               <CatalogPresetJump
                 key={preset.key}
                 presetKey={preset.key}
-                icon={preset.monsterType === "Boss" ? MAP_BOSS_ICON : MAP_ELITE_ICON}
+                icon={MAP_ELITE_ICON}
                 label={label}
                 onClick={() => onPreset(preset.key)}
               />
