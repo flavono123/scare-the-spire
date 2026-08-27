@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { HoverTip } from "@/components/codex/hover-tip";
+import { PortaledHoverTipLayer } from "@/components/codex/portaled-hover-tip-layer";
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import {
   characterIconSrc,
@@ -173,10 +174,7 @@ function PortraitIcons({
               <AscensionBadge ascension={run.ascension} />
             )}
             {hoveredIndex === playerIndex && (
-              <span
-                className="pointer-events-none absolute left-1/2 top-full z-50 -translate-x-1/2 translate-y-2"
-                style={{ width: "max-content", maxWidth: 220 }}
-              >
+              <PortaledHoverTipLayer pin="top-left">
                 <HoverTip title={title} compact>
                   {run.ascension > 0
                     ? formatGameTemplate(
@@ -185,7 +183,7 @@ function PortraitIcons({
                       )
                     : null}
                 </HoverTip>
-              </span>
+              </PortaledHoverTipLayer>
             )}
           </>
         );

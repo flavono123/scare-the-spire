@@ -1,9 +1,11 @@
 "use client";
 
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useMemo } from "react";
 import type { PostBlock } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { EntityPreview } from "@/components/patch-note-renderer";
+import { KeywordHoverTip } from "@/components/keyword-hover-tip";
+import { GameHoverTip } from "@/components/codex/hover-tip";
 import Image from "@/components/ui/static-image";
 import {
   buildEntityKeywordIndex,
@@ -141,7 +143,15 @@ export function PostRenderer({
                 </EntityPreview>
               );
             }
-            return <KeywordSpan key={i} text={block.text} keyword={block.keyword} description={block.description} />;
+            return (
+              <KeywordHoverTip
+                key={i}
+                title={block.keyword || block.text}
+                description={block.description}
+              >
+                {block.text}
+              </KeywordHoverTip>
+            );
           }
 
           if (block.type === "cost-token") {
@@ -213,34 +223,15 @@ export function PostRenderer({
             </EntityPreview>
           ))}
           {expandedKeywords.map((kw) => (
-            <span key={`kw:${kw.keyword || kw.text}`} className="block w-fit rounded-lg shadow-2xl border border-primary/20 bg-[#0c0c20]/95 px-3 py-2">
-              <span className="block font-bold text-sm text-primary">{kw.keyword || kw.text}</span>
-              <span className="block text-xs text-gray-300 leading-relaxed mt-0.5">{kw.description}</span>
+            <span key={`kw:${kw.keyword || kw.text}`} className="block w-fit">
+              <GameHoverTip title={kw.keyword || kw.text} style={{ minWidth: 200, maxWidth: 280 }}>
+                <span className="block text-left">{kw.description}</span>
+              </GameHoverTip>
             </span>
           ))}
         </div>
       )}
     </div>
-  );
-}
-
-function KeywordSpan({ text, keyword, description }: { text: string; keyword?: string; description: string }) {
-  const [hover, setHover] = useState(false);
-  const title = keyword || text;
-  return (
-    <span
-      className="relative inline spire-gold font-semibold cursor-help"
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-    >
-      {text}
-      {hover && description && (
-        <span className="absolute top-full left-0 mt-1 w-48 bg-[#0a0a1a] border border-primary/30 rounded px-2.5 py-2 text-left z-[100] pointer-events-none shadow-xl">
-          <span className="font-bold text-primary text-xs block">{title}</span>
-          <span className="text-[11px] text-gray-300 font-normal leading-relaxed block mt-0.5">{description}</span>
-        </span>
-      )}
-    </span>
   );
 }
 

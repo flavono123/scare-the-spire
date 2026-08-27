@@ -17,6 +17,7 @@ import {
   type CardSideTipHorizontal,
 } from "@/lib/card-side-tip-placement";
 import { MONSTER_TYPE_CONFIG } from "@/lib/codex-types";
+import { getHoverTipPortalRoot, HOVER_TIP_LAYER_Z_INDEX } from "@/lib/hover-tip-layer";
 import { DescriptionText } from "./codex-description";
 import { CardTile } from "./card-tile";
 import { GameHoverTip } from "./hover-tip";
@@ -27,8 +28,6 @@ type FixedPlacement = {
 };
 
 const MIN_VIEWPORT_WIDTH = 768;
-/** Above card-library modal (z-100) and detail chrome. */
-const TIP_Z_INDEX = 200;
 
 function KeywordSideTip({ tip }: { tip: Extract<CardSideTip, { kind: "keyword" }> }) {
   return (
@@ -120,72 +119,7 @@ function TipStackBody({ tips }: { tips: readonly CardSideTip[] }) {
   );
 }
 
-/** Above card-library modal (z-100), side-tip stack (200), GameUiHoverTip (400), and composer chrome. */
-export const HOVER_TIP_LAYER_Z_INDEX = 500;
-
-export function PortaledHoverTipLayer({
-  children,
-  pin = "top-left",
-}: {
-  children: ReactNode;
-  /** Grow upward from a zero-size `bottom-full` tooltip anchor. */
-  pin?: "top-left" | "bottom-left";
-}) {
-  const anchorRef = useRef<HTMLSpanElement>(null);
-  const mounted = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false,
-  );
-  const [box, setBox] = useState<{ left: number; top: number } | null>(null);
-
-  const updateBox = useCallback(() => {
-    const rect = anchorRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    setBox({ left: rect.left, top: rect.top });
-  }, []);
-
-  useLayoutEffect(() => {
-    if (!mounted) return;
-    const raf = requestAnimationFrame(updateBox);
-    return () => cancelAnimationFrame(raf);
-  }, [mounted, children, updateBox]);
-
-  useLayoutEffect(() => {
-    if (!mounted) return;
-    window.addEventListener("resize", updateBox);
-    window.addEventListener("scroll", updateBox, true);
-    return () => {
-      window.removeEventListener("resize", updateBox);
-      window.removeEventListener("scroll", updateBox, true);
-    };
-  }, [mounted, updateBox]);
-
-  const portal = mounted && box
-    ? createPortal(
-      <div
-        className="pointer-events-none"
-        style={{
-          position: "fixed",
-          left: box.left,
-          top: box.top,
-          zIndex: HOVER_TIP_LAYER_Z_INDEX,
-          transform: pin === "bottom-left" ? "translateY(-100%)" : undefined,
-        }}
-      >
-        {children}
-      </div>,
-      document.body,
-    )
-    : null;
-
-  return (
-    <>
-      <span ref={anchorRef} className="block h-0 w-0" aria-hidden />
-      {portal}
-    </>
-  );
-}
+export { HOVER_TIP_LAYER_Z_INDEX, PortaledHoverTipLayer } from "./portaled-hover-tip-layer";
 
 export function HoverTipStack({ tips }: { tips: readonly CardSideTip[] }) {
   return <TipStackBody tips={tips} />;
@@ -281,18 +215,19 @@ export function CardSideTipsAnchor({
       <div
         ref={measureRef}
         data-card-side-tips
+        data-hover-tip-layer=""
         className="pointer-events-none"
         style={{
           position: "fixed",
           left: placement.left,
           top: placement.top,
-          zIndex: TIP_Z_INDEX,
+          zIndex: HOVER_TIP_LAYER_Z_INDEX,
           visibility: showTips ? "visible" : "hidden",
         }}
       >
         <TipStackBody tips={tips} />
       </div>,
-      document.body,
+      getHoverTipPortalRoot() ?? document.body,
     )
     : null;
 

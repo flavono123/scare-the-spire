@@ -75,7 +75,7 @@ export function GameHoverTip({
 
   return (
     <span
-      className={cn("dark", className)}
+      className={cn("game-hover-tip dark", className)}
       style={{
         display: "block",
         borderStyle: "solid",

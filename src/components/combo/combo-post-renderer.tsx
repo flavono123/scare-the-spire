@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
+import { KeywordHoverTip } from "@/components/keyword-hover-tip";
 import type { PostBlock } from "@/lib/chemical-types";
 import {
   buildEntityKeywordIndex,
@@ -64,12 +65,13 @@ export function ComboPostRenderer({
             );
           }
           return (
-            <KeywordSpan
+            <KeywordHoverTip
               key={index}
-              text={block.text}
-              keyword={block.keyword}
+              title={block.keyword || block.text}
               description={block.description}
-            />
+            >
+              {block.text}
+            </KeywordHoverTip>
           );
         }
 
@@ -117,35 +119,6 @@ export function ComboPostRenderer({
           </span>
         );
       })}
-    </span>
-  );
-}
-
-function KeywordSpan({
-  text,
-  keyword,
-  description,
-}: {
-  text: string;
-  keyword?: string;
-  description: string;
-}) {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <span
-      className="relative inline cursor-help font-semibold spire-gold"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      {text}
-      {hovered && description && (
-        <span className="pointer-events-none absolute left-0 top-full z-[100] mt-1 w-48 rounded border border-primary/30 bg-[#0a0a1a] px-2.5 py-2 text-left shadow-xl">
-          <span className="block text-xs font-bold text-primary">{keyword || text}</span>
-          <span className="mt-0.5 block text-[11px] font-normal leading-relaxed text-gray-300">
-            {description}
-          </span>
-        </span>
-      )}
     </span>
   );
 }

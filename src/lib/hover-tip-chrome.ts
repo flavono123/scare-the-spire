@@ -14,3 +14,8 @@ export const HOVER_TIP_SRC = {
 
 export const HOVER_TIP_TITLE_COLOR = TEXT_GOLD;
 export const HOVER_TIP_BODY_COLOR = TEXT_CREAM;
+
+export {
+  HOVER_TIP_LAYER_ID,
+  HOVER_TIP_LAYER_Z_INDEX,
+} from "@/lib/hover-tip-layer";

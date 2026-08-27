@@ -75,6 +75,10 @@ export default function RootLayout({
         <GamePageScroll>
           {children}
         </GamePageScroll>
+        <div
+          id="hover-tip-root"
+          className="pointer-events-none fixed inset-0 z-[10050] overflow-visible"
+        />
         <CloudflareWebAnalytics />
       </body>
     </html>

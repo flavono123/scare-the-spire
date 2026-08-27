@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useMemo, useEffect, type CSSProperties, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import {
@@ -60,6 +61,7 @@ import {
   expandEncounterFormations,
   formatEncounterProbability,
 } from "@/lib/encounter-compositions";
+import { getHoverTipPortalRoot, HOVER_TIP_LAYER_Z_INDEX } from "@/lib/hover-tip-layer";
 
 // Entity types that can appear in patch notes
 export type EntityType = "card" | "character" | "keyword" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "monsterMove" | "encounter" | "ancient" | "epoch" | "modifier" | "ascension";
@@ -499,7 +501,6 @@ export function EntityPreview({
 }) {
   const [show, setShow] = useState(false);
   const [previewPressed, setPreviewPressed] = useState(false);
-  const [tapPreviewStyle, setTapPreviewStyle] = useState<React.CSSProperties | undefined>();
   const [previewNonce, setPreviewNonce] = useState(0);
   const [placement, setPlacement] = useState<PreviewPlacement>({
     vertical: forcePosition ?? "above",
@@ -582,40 +583,20 @@ export function EntityPreview({
   const openTapPreview = useCallback((event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => {
     if (!useTapPreview) return;
     event.preventDefault();
-    const rect = event.currentTarget.getBoundingClientRect();
-    const { width: estimatedWidth, height: estimatedHeight } = estimatePreviewSize(entity);
-    const margin = 12;
-    const topSafeArea = 56;
-    const x = Math.min(
-      Math.max(rect.left + rect.width / 2 - estimatedWidth / 2, margin),
-      Math.max(margin, window.innerWidth - estimatedWidth - margin),
-    );
-    const hasRoomBelow = rect.bottom + margin + estimatedHeight < window.innerHeight;
-    const preferredY = hasRoomBelow
-      ? rect.bottom + 8
-      : rect.top - estimatedHeight - 8;
-    const y = Math.min(
-      Math.max(preferredY, topSafeArea),
-      Math.max(topSafeArea, window.innerHeight - estimatedHeight - margin),
-    );
-
     setPreviewPressed(false);
     setPreviewNonce((value) => value + 1);
-    setTapPreviewStyle({ left: x, top: y });
     setShow(true);
-  }, [entity, useTapPreview]);
+  }, [useTapPreview]);
 
   const tooltipPos = forceShow
     ? "relative z-50 mt-1"
-    : useTapPreview
-      ? "fixed z-[120] pointer-events-auto"
-      : pendingStaticPreview
-        ? [
-            "fixed left-3 right-3 top-16 z-50 pointer-events-none opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100",
-            staticPreviewDesktopClass(placement),
-          ].join(" ")
-        : `absolute ${previewHorizontalClass(placement.horizontal)} z-50 pointer-events-none ${placement.vertical === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;
-  const portalHoverTips = !staticHoverPreviews && !useTapPreview && !forceShow;
+    : pendingStaticPreview
+      ? [
+          "fixed left-3 right-3 top-16 z-50 pointer-events-none opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100",
+          staticPreviewDesktopClass(placement),
+        ].join(" ")
+      : `absolute ${previewHorizontalClass(placement.horizontal)} z-50 pointer-events-none ${placement.vertical === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;
+  const portalHoverTips = !staticHoverPreviews && !forceShow;
   const renderTooltip = (content: ReactNode, variant: "card" | "box" = "box") => {
     const body = useTapPreview ? (
       href ? (
@@ -638,13 +619,20 @@ export function EntityPreview({
       ) : content
     ) : content;
 
+    if (portalHoverTips) {
+      return (
+        <PortaledHoverTipLayer
+          pin={placement.vertical === "above" ? "bottom-left" : "top-left"}
+          interactive={useTapPreview}
+        >
+          {body}
+        </PortaledHoverTipLayer>
+      );
+    }
+
     return (
-      <span className={tooltipPos} style={useTapPreview ? tapPreviewStyle : undefined}>
-        {portalHoverTips ? (
-          <PortaledHoverTipLayer pin={placement.vertical === "above" ? "bottom-left" : "top-left"}>
-            {body}
-          </PortaledHoverTipLayer>
-        ) : body}
+      <span className={tooltipPos}>
+        {body}
       </span>
     );
   };
@@ -687,13 +675,15 @@ export function EntityPreview({
           {renderedLinkText}
         </span>
       )}
-      {visible && useTapPreview && (
+      {visible && useTapPreview && getHoverTipPortalRoot() && createPortal(
         <button
           type="button"
           aria-label="미리보기 닫기"
-          className="fixed inset-0 z-[110] cursor-default bg-black/35"
+          className="pointer-events-auto fixed inset-0 cursor-default bg-black/35"
+          style={{ zIndex: HOVER_TIP_LAYER_Z_INDEX - 1 }}
           onClick={() => setShow(false)}
-        />
+        />,
+        getHoverTipPortalRoot()!,
       )}
       {(visible || pendingStaticPreview) && isPendingCompendium && (
         renderTooltip(

@@ -4,6 +4,8 @@ import { useState } from "react";
 import Image from "@/components/ui/static-image";
 import { bakeDescription } from "@/lib/codex-bake";
 import type { CodexCard } from "@/lib/codex-types";
+import { PortaledHoverTipLayer } from "@/components/codex/portaled-hover-tip-layer";
+import { GameHoverTip } from "@/components/codex/hover-tip";
 
 // =============================================================================
 // Description parsing (BBCode -> structured parts)
@@ -312,10 +314,11 @@ export function renderCardDescription(
 
 export function TermTooltip({ name, desc }: { name: string; desc: string }) {
   return (
-    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 w-44 bg-[#0a0a1a]/95 border border-primary/30 rounded px-2 py-1.5 text-left z-50 pointer-events-none shadow-xl">
-      <span className="font-bold text-primary text-[10px] block">{name}</span>
-      <span className="text-[9px] text-gray-300 font-normal leading-relaxed not-italic">{desc}</span>
-    </span>
+    <PortaledHoverTipLayer pin="bottom-left">
+      <GameHoverTip title={name} style={{ minWidth: 180, maxWidth: 260 }}>
+        <span className="block text-left">{desc}</span>
+      </GameHoverTip>
+    </PortaledHoverTipLayer>
   );
 }
 

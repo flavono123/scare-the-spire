@@ -515,16 +515,11 @@ function PotionSlotHoverTip({
     >
       {children}
       {hovered && (
-        <span
-          className="pointer-events-none absolute left-1/2 top-full"
-          style={{ transform: "translate(-50%, 8px)" }}
-        >
-          <PortaledHoverTipLayer>
-            <GameHoverTip title={title} style={{ minWidth: 220, maxWidth: 280 }}>
-              <DescriptionText description={description} className="block text-left" />
-            </GameHoverTip>
-          </PortaledHoverTipLayer>
-        </span>
+        <PortaledHoverTipLayer pin="top-left">
+          <GameHoverTip title={title} style={{ minWidth: 220, maxWidth: 280 }}>
+            <DescriptionText description={description} className="block text-left" />
+          </GameHoverTip>
+        </PortaledHoverTipLayer>
       )}
     </span>
   );

@@ -225,8 +225,6 @@ function HoverTipWrap({
   children,
   className,
   width = 240,
-  placement = "below",
-  portaled = false,
 }: {
   tip: TipContent;
   children: ReactNode;
@@ -236,19 +234,6 @@ function HoverTipWrap({
   portaled?: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
-  // The stage clips overflow, so chips near the right edge anchor their
-  // popover to the right-edge of the trigger instead of centering it.
-  const anchorStyle: React.CSSProperties = (() => {
-    switch (placement) {
-      case "below-right":
-        return { right: 0, top: "100%", transform: "translateY(8px)" };
-      case "below-left":
-        return { left: 0, top: "100%", transform: "translateY(8px)" };
-      case "below":
-      default:
-        return { left: "50%", top: "100%", transform: "translate(-50%, 8px)" };
-    }
-  })();
   return (
     <span
       className={cn("relative inline-flex", className)}
@@ -259,24 +244,11 @@ function HoverTipWrap({
     >
       {children}
       {hovered && (
-        <span
-          className="pointer-events-none absolute z-50"
-          style={{
-            ...anchorStyle,
-            width: "max-content",
-            maxWidth: width,
-          }}
-        >
-          {portaled ? (
-            <PortaledHoverTipLayer>
-              <HoverTip title={tip.title} style={{ minWidth: 220, maxWidth: width }}>
-                {tip.body}
-              </HoverTip>
-            </PortaledHoverTipLayer>
-          ) : (
-            <HoverTip title={tip.title}>{tip.body}</HoverTip>
-          )}
-        </span>
+        <PortaledHoverTipLayer pin="top-left">
+          <HoverTip title={tip.title} style={{ minWidth: 220, maxWidth: width }}>
+            {tip.body}
+          </HoverTip>
+        </PortaledHoverTipLayer>
       )}
     </span>
   );

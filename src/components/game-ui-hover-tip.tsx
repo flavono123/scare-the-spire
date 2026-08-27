@@ -9,12 +9,13 @@ import {
   HOVER_TIP_SRC,
   HOVER_TIP_TITLE_COLOR,
 } from "@/lib/hover-tip-chrome";
+import {
+  getHoverTipPortalRoot,
+  HOVER_TIP_LAYER_Z_INDEX,
+} from "@/lib/hover-tip-layer";
 
 /** Same hover_tip.png chrome as site-navbar patch notes / contact / profile. */
 export const GAME_UI_HOVER_TIP_NAV_DELAY_MS = 0;
-
-/** Above board rows, modals, and other overflow-clipped chrome. */
-const TIP_Z_INDEX = 400;
 
 export function GameUiHoverTip({
   label,
@@ -35,7 +36,7 @@ export function GameUiHoverTip({
     above: boolean;
   } | null>(null);
   const timerRef = useRef<number | null>(null);
-  const portalRoot = typeof document !== "undefined" ? document.body : null;
+  const portalRoot = typeof document !== "undefined" ? getHoverTipPortalRoot() : null;
 
   useEffect(() => {
     return () => {
@@ -87,13 +88,14 @@ export function GameUiHoverTip({
   const tip = visible && placement && portalRoot
     ? createPortal(
       <div
+        data-hover-tip-layer=""
         className="pointer-events-none dark"
         style={{
           position: "fixed",
           left: placement.left,
           top: placement.top,
           transform: placement.above ? "translate(-50%, -100%)" : "translate(-50%, 0)",
-          zIndex: TIP_Z_INDEX,
+          zIndex: HOVER_TIP_LAYER_Z_INDEX,
         }}
       >
         <div

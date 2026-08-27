@@ -21,6 +21,7 @@ import {
 } from "@/lib/tinker-time";
 import { serviceMessages } from "@/messages/service";
 import { restSiteChoiceLabel } from "@/lib/history-party";
+import { PortaledHoverTipLayer } from "@/components/codex/portaled-hover-tip-layer";
 
 // Hover tip used both on the replay map and inside the run summary's act
 // rows. Lifted out of run-replay-poc.tsx so the summary panel can reuse it
@@ -87,21 +88,16 @@ export function NodeTooltip({
   const hasSkipped =
     cardSkipped.length > 0 || relicSkipped.length > 0 || potionSkipped.length > 0;
 
-  const positionStyle =
-    position === "below"
-      ? { left: "50%", top: "100%", transform: "translate(-50%, 8px)" }
-      : { left: "100%", top: "50%", transform: "translate(8px, -50%)" };
-
   const nameOf = (table: "cards" | "relics" | "potions", id: string) =>
     localizeGame(tables, table, id) ?? id;
   const cardName = (id: string | undefined) =>
     tooltipCardLabel(id, tables, localeIsKor);
 
   return (
+    <PortaledHoverTipLayer pin={position === "below" ? "top-left" : "center-right"}>
     <div
-      className="pointer-events-none absolute z-50"
+      className="pointer-events-none"
       style={{
-        ...positionStyle,
         width: 280,
       }}
     >
@@ -283,6 +279,7 @@ export function NodeTooltip({
         )}
       </div>
     </div>
+    </PortaledHoverTipLayer>
   );
 }
 

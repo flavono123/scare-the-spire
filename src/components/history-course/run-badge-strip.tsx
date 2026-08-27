@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { RichText } from "@/components/rich-text";
 import StaticImage from "@/components/ui/static-image";
+import { GameHoverTip } from "@/components/codex/hover-tip";
+import { PortaledHoverTipLayer } from "@/components/codex/portaled-hover-tip-layer";
 import type { ServiceLocale } from "@/lib/i18n";
 import {
   getRunBadgeDisplay,
@@ -36,7 +38,6 @@ export function RunBadgeStrip({
   className,
   max,
   size = "md",
-  tipPlacement = "below-left",
 }: RunBadgeStripProps) {
   const displays = badges
     .map((badge) => getRunBadgeDisplay(badge, serviceLocale))
@@ -53,7 +54,6 @@ export function RunBadgeStrip({
           key={`${badge.id}-${badge.rarity}-${index}`}
           badge={badge}
           size={size}
-          tipPlacement={tipPlacement}
         />
       ))}
       {remaining > 0 && (
@@ -68,11 +68,9 @@ export function RunBadgeStrip({
 function RunBadgeIcon({
   badge,
   size,
-  tipPlacement,
 }: {
   badge: RunBadgeDisplay;
   size: BadgeSize;
-  tipPlacement: BadgeTipPlacement;
 }) {
   const description = plainBadgeText(badge.description);
   const title = description ? `${badge.title}: ${description}` : badge.title;
@@ -109,28 +107,15 @@ function RunBadgeIcon({
         />
       )}
       {hovered && (
-        <span
-          className={cn(
-            "pointer-events-none absolute top-full z-50 block w-[260px] translate-y-2 text-left",
-            tipPlacement === "below-right" ? "right-0" : "left-0",
-          )}
-          style={{
-            borderStyle: "solid",
-            borderWidth: 24,
-            borderImage:
-              "url('/images/sts2/ui/hover_tip.png') 24 fill / 24px / 0 stretch",
-            padding: "4px 8px",
-          }}
-        >
-          <span className="block text-xs font-bold leading-5 text-[#FFD479]">
-            <RichText text={badge.title} />
-          </span>
-          {badge.description && (
-            <span className="mt-1 block text-[11px] font-medium leading-5 text-zinc-200">
-              <RichText text={badge.description} />
-            </span>
-          )}
-        </span>
+        <PortaledHoverTipLayer pin="top-left">
+          <GameHoverTip title={<RichText text={badge.title} />} style={{ minWidth: 200, maxWidth: 260 }}>
+            {badge.description ? (
+              <span className="block text-left">
+                <RichText text={badge.description} />
+              </span>
+            ) : null}
+          </GameHoverTip>
+        </PortaledHoverTipLayer>
       )}
     </span>
   );

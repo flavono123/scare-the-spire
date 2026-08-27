@@ -19,6 +19,7 @@ import { DescriptionText } from "@/components/codex/codex-description";
 import { TEXT_CREAM, TEXT_GREEN } from "@/lib/sts2-card-style";
 import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 import { GameHoverTip } from "./hover-tip";
+import { PortaledHoverTipLayer } from "./portaled-hover-tip-layer";
 import { bakePowerAmountDescription } from "./power-preview";
 import {
   getEffectiveDamageValue,
@@ -857,9 +858,9 @@ function PatchDiffInlinePreview({
         {children}
       </Link>
       {show && (
-        <span className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2">
+        <PortaledHoverTipLayer pin="bottom-left">
           {preview(previewNonce)}
-        </span>
+        </PortaledHoverTipLayer>
       )}
     </span>
   );

@@ -52,6 +52,20 @@
   cursor: url("/images/sts2/ui/cursor_inspect.png") 12 12, pointer !important;
 }
 
+/* Game hover tips (keywords, assets, card side tips) always paint above
+   overflow-clipped chrome. Keep in sync with HOVER_TIP_LAYER_Z_INDEX. */
+:root {
+  --z-hover-tip: 10050;
+}
+
+#hover-tip-root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-hover-tip);
+  pointer-events: none;
+  overflow: visible;
+}
+
 @media (hover: none), (pointer: coarse) {
   .game-inspect-cursor {
     cursor: pointer !important;
