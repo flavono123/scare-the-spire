@@ -801,42 +801,22 @@ export function DecisionsDecisionsPoolPicker({
           })}
         </div>
         <div className="flex flex-wrap gap-1.5">
-          {monsterPresets.map((preset) => {
-            const label = jumpLabel(preset);
-            if (preset.key === "monsters-boss") {
-              return (
-                <FanPresetJump
-                  key={preset.key}
-                  presetKey={preset.key}
-                  typeSrc={MONSTER_TYPE_ICON}
-                  overlaySrcs={fanOverlays[preset.key] ?? []}
-                  label={label}
-                  onClick={() => onPreset(preset.key)}
-                />
-              );
-            }
-            if (preset.key === "monsters-elite-act1") {
-              return (
-                <ComboPresetJump
-                  key={preset.key}
-                  presetKey={preset.key}
-                  lead={OVERGROWTH_ELITE_ICON}
-                  trail={UNDERDOCKS_ELITE_ICON}
-                  label={label}
-                  onClick={() => onPreset(preset.key)}
-                />
-              );
-            }
-            return (
-              <CatalogPresetJump
-                key={preset.key}
-                presetKey={preset.key}
-                icon={MAP_ELITE_ICON}
-                label={label}
-                onClick={() => onPreset(preset.key)}
-              />
-            );
-          })}
+          {monsterPresets.map((preset) => (
+            <FanPresetJump
+              key={preset.key}
+              presetKey={preset.key}
+              typeSrc={MONSTER_TYPE_ICON}
+              overlaySrcs={
+                preset.key === "monsters-boss"
+                  ? (fanOverlays[preset.key] ?? [])
+                  : preset.key === "monsters-elite-act1"
+                    ? [OVERGROWTH_ELITE_ICON, UNDERDOCKS_ELITE_ICON]
+                    : [MAP_ELITE_ICON]
+              }
+              label={jumpLabel(preset)}
+              onClick={() => onPreset(preset.key)}
+            />
+          ))}
         </div>
         <div className="flex flex-wrap gap-2">
           {potionPresets.map((preset) => (
