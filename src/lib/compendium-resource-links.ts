@@ -65,6 +65,12 @@ function supportsDirectCompendiumDetails(localePrefix: string): boolean {
   return localePrefix === "" || localePrefix === "/en";
 }
 
+export function isCompendiumResourceLinkType(
+  value: string,
+): value is CompendiumResourceLinkType {
+  return Object.hasOwn(COMPENDIUM_RESOURCE_LINKS, value);
+}
+
 export function buildCompendiumResourceHref(
   type: CompendiumResourceLinkType,
   id: string,

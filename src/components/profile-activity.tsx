@@ -22,6 +22,7 @@ import {
   type ContactInquiryHistoryItem,
   type ContactInquiryStatus,
 } from "@/lib/contact-inquiries";
+import { commentThreadHref } from "@/lib/comment-threads";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { buildRichContentIndexes, resolveRichContentBlocks } from "@/lib/rich-content-blocks";
 import { supabaseEnabled } from "@/lib/supabase";
@@ -75,24 +76,6 @@ const CATEGORY_ICON: Record<ProfileActivityCategory, string> = {
   history_course: "/images/sts2/relics/history_course.webp",
 };
 
-const CODEX_PATHS: Record<string, string> = {
-  affliction: "enchantments",
-  ancient: "ancients",
-  card: "cards",
-  character: "characters",
-  encounter: "encounters",
-  enchantment: "enchantments",
-  epoch: "epochs",
-  event: "events",
-  keyword: "keywords",
-  monster: "monsters",
-  potion: "potions",
-  power: "powers",
-  relic: "relics",
-  modifier: "modifiers",
-  ascension: "ascensions",
-};
-
 function formatTemplate(template: string, values: Record<string, string | number>): string {
   return Object.entries(values).reduce(
     (result, [key, value]) => result.replace(`{${key}}`, String(value)),
@@ -109,28 +92,6 @@ function categoryLabel(category: ProfileActivityCategory, copy: ProfileActivityC
   return copy.categories.historyCourse;
 }
 
-function commentTargetHref(targetKey: string): string {
-  if (targetKey.startsWith("sts2-patch:")) {
-    return `/patches/${encodeURIComponent(targetKey.slice("sts2-patch:".length))}#comments`;
-  }
-
-  const codexMatch = /^sts2-codex:([^:]+):(.+)$/.exec(targetKey);
-  if (codexMatch) {
-    const [, type, id] = codexMatch;
-    const path = CODEX_PATHS[type];
-    if (path) return `/compendium/${path}/${encodeURIComponent(id.toLowerCase())}#comments`;
-  }
-
-  if (targetKey.startsWith("this-or-that:")) {
-    return `/this-or-that/${encodeURIComponent(targetKey.slice("this-or-that:".length))}#comments`;
-  }
-  if (targetKey.startsWith("c-c-c-combo:")) {
-    return `/c-c-c-combo/${encodeURIComponent(targetKey.slice("c-c-c-combo:".length))}#comments`;
-  }
-  if (targetKey === "byrdispatch") return "/byrdispatch#comments";
-  return `/#${targetKey}`;
-}
-
 function activityHref(
   item: ProfileActivityItem,
   serviceLocale: ServiceLocale,
@@ -142,7 +103,7 @@ function activityHref(
   else if (item.category === "this_or_that") href = `/this-or-that/${item.targetKey}`;
   else if (item.category === "combo") href = `/c-c-c-combo/${item.targetKey}`;
   else if (item.category === "history_course") href = `/history-course/${item.targetKey}`;
-  else href = commentTargetHref(item.targetKey);
+  else href = commentThreadHref(item.targetKey);
   return localizeHrefWithGameLocale(href, serviceLocale, gameLocale);
 }
 

@@ -11,6 +11,7 @@ import type {
   ContactInquiryStatus,
 } from "@/lib/contact-inquiries";
 import { historyRunPlainText } from "@/lib/history-run-reference";
+import { commentThreadHref } from "@/lib/comment-threads";
 import { COMMENT_MAX_CHARS } from "@/lib/content-limits";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import { supabase, supabaseEnabled } from "@/lib/supabase";
@@ -198,20 +199,6 @@ interface AdminSnapshot {
   commentLikes: QueryState<CommentLikeRow[]>;
   engagementCounts: QueryState<EngagementCountRow[]>;
 }
-
-const CODEX_PATHS: Record<string, string> = {
-  ancient: "ancients",
-  affliction: "enchantments",
-  card: "cards",
-  encounter: "encounters",
-  enchantment: "enchantments",
-  epoch: "epochs",
-  event: "events",
-  monster: "monsters",
-  potion: "potions",
-  power: "powers",
-  relic: "relics",
-};
 
 async function readSupabase<T>(
   operation: string,
@@ -487,19 +474,8 @@ function blockText(blocks: PostBlock[] | null | undefined): string {
   }).join("");
 }
 
-function hrefForStoryId(storyId: string): string | null {
-  if (storyId.startsWith("sts2-patch:")) {
-    return productionHref(`/patches/${storyId.slice("sts2-patch:".length)}`);
-  }
-
-  const match = /^sts2-codex:([^:]+):(.+)$/.exec(storyId);
-  if (!match) return null;
-
-  const [, type, id] = match;
-  const normalizedId = encodeURIComponent(id.toLowerCase());
-
-  const path = CODEX_PATHS[type];
-  return path ? productionHref(`/compendium/${path}/${normalizedId}`) : null;
+function hrefForStoryId(storyId: string): string {
+  return productionHref(commentThreadHref(storyId));
 }
 
 function productionHref(path: string): string {
@@ -574,11 +550,9 @@ function Section({
 }
 
 function StoryLink({ storyId }: { storyId: string }) {
-  const href = hrefForStoryId(storyId);
-  if (!href) return <code className="text-[11px] text-muted-foreground">{storyId}</code>;
   return (
     <Link
-      href={href}
+      href={hrefForStoryId(storyId)}
       prefetch={false}
       className="text-[11px] sts-text-aqua underline-offset-4 hover:underline"
     >
