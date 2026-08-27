@@ -7,20 +7,28 @@ import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisi
 import { DecisionsDecisionsPoolPicker } from "@/components/decisions-decisions/decisions-decisions-pool-picker";
 import {
   cloneDefaultRows,
+  cloneFilterDims,
   CUSTOM_PRESET_KEY,
   DECISIONS_DECISIONS_NOTE_MAX_CHARS,
   DECISIONS_DECISIONS_TITLE_MAX_CHARS,
+  emptyFilterDims,
   entityToResourceRef,
   filterStateFromPresetKey,
+  findPresetDef,
+  isDecisionsDecisionsPresetKey,
   namedPresetKeyFromFilter,
   nextUnusedTierColor,
   poolFilterIsReady,
   reorderTierRows,
   resourceKey,
   stampFilterIds,
+  stampPresetIds,
+  toggleFilterDim,
   UNRANKED_ROW_ID,
   type DecisionsDecisionsPost,
   type DecisionsDecisionsResourceRef,
+  type DecisionsFilterDim,
+  type DecisionsFilterDims,
   type DecisionsPoolMajor,
   type TierPlacement,
   type TierRow,
@@ -46,16 +54,15 @@ function mergePool(
   return [...stamped, ...extras.filter((ref) => !seen.has(resourceKey(ref)))];
 }
 
-function toggleMinor(current: Set<string>, minor: string): Set<string> {
-  const next = new Set(current);
-  if (next.has(minor)) next.delete(minor);
-  else next.add(minor);
-  return next;
+function namedLockedKey(key: string | undefined): string | null {
+  if (!key || key === CUSTOM_PRESET_KEY || !isDecisionsDecisionsPresetKey(key)) return null;
+  return key;
 }
 
 export function DecisionsDecisionsComposer({
   entities,
   entityMap,
+  stamps,
   gameLocale,
   serviceLocale,
   presetLabels,
@@ -82,12 +89,16 @@ export function DecisionsDecisionsComposer({
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
   const initialFilter = filterStateFromPresetKey(initial?.preset_key ?? CUSTOM_PRESET_KEY);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [step, setStep] = useState<"template" | "board">(initial ? "board" : "template");
   const [nickname, setNickname] = useState(initial?.nickname ?? profileNickname);
   const [title, setTitle] = useState(initial?.title ?? "");
   const [note, setNote] = useState(initial?.note ?? "");
   const [major, setMajor] = useState<DecisionsPoolMajor | null>(initialFilter.major);
-  const [minors, setMinors] = useState<Set<string>>(
-    () => initialFilter.minor ? new Set([initialFilter.minor]) : new Set(),
+  const [dims, setDims] = useState<DecisionsFilterDims>(
+    () => cloneFilterDims(initialFilter.dims),
+  );
+  const [lockedPresetKey, setLockedPresetKey] = useState<string | null>(
+    () => namedLockedKey(initial?.preset_key),
   );
   const [rows, setRows] = useState<TierRow[]>(
     initial?.rows?.length ? initial.rows.map((row) => ({ ...row })) : cloneDefaultRows(),
@@ -102,14 +113,17 @@ export function DecisionsDecisionsComposer({
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const filterReady = poolFilterIsReady(major, minors);
-  const minorList = useMemo(() => [...minors], [minors]);
-  const presetKey = namedPresetKeyFromFilter(major, minorList);
+  const filterReady = poolFilterIsReady(major, dims);
+  const presetKey = lockedPresetKey ?? namedPresetKeyFromFilter(major, dims);
 
   const filteredStamp = useMemo(() => {
+    if (lockedPresetKey) {
+      return stamps[lockedPresetKey]
+        ?? stampPresetIds(findPresetDef(lockedPresetKey), entities);
+    }
     if (!filterReady) return [];
-    return stampFilterIds(entities, major, minorList);
-  }, [entities, filterReady, major, minorList]);
+    return stampFilterIds(entities, major, dims);
+  }, [dims, entities, filterReady, lockedPresetKey, major, stamps]);
 
   const pool = useMemo(() => {
     return mergePool(filteredStamp, extraIds).filter(
@@ -119,11 +133,25 @@ export function DecisionsDecisionsComposer({
 
   const handleMajor = useCallback((nextMajor: DecisionsPoolMajor | null) => {
     setMajor(nextMajor);
-    setMinors(new Set());
+    setDims(emptyFilterDims());
+    setLockedPresetKey(null);
+    setExcludedKeys(new Set());
   }, []);
 
-  const handleToggleMinor = useCallback((minor: string) => {
-    setMinors((current) => toggleMinor(current, minor));
+  const handleToggleDim = useCallback((dim: DecisionsFilterDim, key: string) => {
+    setLockedPresetKey(null);
+    setDims((current) => toggleFilterDim(current, dim, key));
+  }, []);
+
+  const handlePreset = useCallback((key: string) => {
+    const next = filterStateFromPresetKey(key);
+    setMajor(next.major);
+    setDims(cloneFilterDims(next.dims));
+    setLockedPresetKey(key);
+    setExtraIds([]);
+    setExcludedKeys(new Set());
+    setSelectedKey(null);
+    setStep("board");
   }, []);
 
   const handleMove = useCallback((
@@ -199,35 +227,40 @@ export function DecisionsDecisionsComposer({
     <div
       className="space-y-3 rounded-lg border border-border bg-card/20 p-3"
       data-decisions-decisions-composer
+      data-decisions-decisions-step={step}
     >
       <div className="flex items-start gap-2">
         <div className="min-w-0 flex-1 space-y-2">
-          {!hideNickname && (
-            <input
-              type="text"
-              value={nickname}
-              onChange={(event) => setNickname(event.target.value.slice(0, 20))}
-              placeholder={copy.nicknamePlaceholder}
-              maxLength={20}
-              className="w-full bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
-            />
+          {step === "board" && (
+            <>
+              {!hideNickname && (
+                <input
+                  type="text"
+                  value={nickname}
+                  onChange={(event) => setNickname(event.target.value.slice(0, 20))}
+                  placeholder={copy.nicknamePlaceholder}
+                  maxLength={20}
+                  className="w-full bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
+                />
+              )}
+              <input
+                type="text"
+                value={title}
+                onChange={(event) => setTitle(event.target.value.slice(0, DECISIONS_DECISIONS_TITLE_MAX_CHARS))}
+                placeholder={copy.titlePlaceholder}
+                maxLength={DECISIONS_DECISIONS_TITLE_MAX_CHARS}
+                className="w-full bg-transparent font-service text-base font-semibold text-foreground outline-none placeholder:text-gray-600"
+              />
+              <input
+                type="text"
+                value={note}
+                onChange={(event) => setNote(event.target.value.slice(0, DECISIONS_DECISIONS_NOTE_MAX_CHARS))}
+                placeholder={copy.notePlaceholder}
+                maxLength={DECISIONS_DECISIONS_NOTE_MAX_CHARS}
+                className="w-full bg-transparent text-sm text-zinc-400 outline-none placeholder:text-gray-600"
+              />
+            </>
           )}
-          <input
-            type="text"
-            value={title}
-            onChange={(event) => setTitle(event.target.value.slice(0, DECISIONS_DECISIONS_TITLE_MAX_CHARS))}
-            placeholder={copy.titlePlaceholder}
-            maxLength={DECISIONS_DECISIONS_TITLE_MAX_CHARS}
-            className="w-full bg-transparent font-service text-base font-semibold text-foreground outline-none placeholder:text-gray-600"
-          />
-          <input
-            type="text"
-            value={note}
-            onChange={(event) => setNote(event.target.value.slice(0, DECISIONS_DECISIONS_NOTE_MAX_CHARS))}
-            placeholder={copy.notePlaceholder}
-            maxLength={DECISIONS_DECISIONS_NOTE_MAX_CHARS}
-            className="w-full bg-transparent text-sm text-zinc-400 outline-none placeholder:text-gray-600"
-          />
         </div>
         {onClose && (
           <button
@@ -241,73 +274,110 @@ export function DecisionsDecisionsComposer({
         )}
       </div>
 
-      <DecisionsDecisionsBoard
-        rows={rows}
-        placements={placements}
-        pool={pool}
-        entitiesByKey={entityMap}
-        serviceLocale={serviceLocale}
-        gameLocale={gameLocale}
-        showNames={false}
-        selectedKey={selectedKey}
-        onSelect={(ref) => setSelectedKey(resourceKey(ref))}
-        onMove={handleMove}
-        onRemoveFromPool={handleRemoveFromPool}
-        onEmptyPoolActivate={() => searchInputRef.current?.focus()}
-        onRowLabelChange={(rowId, label) => {
-          setRows((current) => current.map((row) => (
-            row.id === rowId ? { ...row, label } : row
-          )));
-        }}
-        onRowColorChange={(rowId, color) => {
-          setRows((current) => current.map((row) => (
-            row.id === rowId ? { ...row, color } : row
-          )));
-        }}
-        onReorderRows={(fromId, toId) => {
-          setRows((current) => reorderTierRows(current, fromId, toId));
-        }}
-        onRemoveRow={(rowId) => {
-          setRows((current) => current.length <= 1
-            ? current
-            : current.filter((row) => row.id !== rowId));
-          setPlacements((current) => current.filter((item) => item.rowId !== rowId));
-        }}
-        onAddRow={() => {
-          const color = nextUnusedTierColor(rows);
-          if (!color) return;
-          setRows((current) => [
-            ...current,
-            {
-              id: `row-${Date.now()}`,
-              label: String(current.length + 1),
-              color,
-            },
-          ]);
-        }}
-      />
+      {step === "template" && (
+        <>
+          <DecisionsDecisionsPoolPicker
+            entities={entities}
+            entityMap={entityMap}
+            serviceLocale={serviceLocale}
+            presetLabels={presetLabels}
+            major={major}
+            dims={dims}
+            searchInputRef={searchInputRef}
+            onMajor={handleMajor}
+            onToggleDim={handleToggleDim}
+            onPreset={handlePreset}
+            onAdd={handleAdd}
+          />
+          <DecisionsDecisionsBoard
+            variant="pool"
+            rows={rows}
+            placements={[]}
+            pool={pool}
+            entitiesByKey={entityMap}
+            serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
+            showNames={false}
+            selectedKey={selectedKey}
+            onSelect={(ref) => setSelectedKey(resourceKey(ref))}
+            onRemoveFromPool={handleRemoveFromPool}
+            onEmptyPoolActivate={() => searchInputRef.current?.focus()}
+          />
+          <button
+            type="button"
+            disabled={pool.length === 0}
+            onClick={() => setStep("board")}
+            className="inline-flex items-center rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary disabled:opacity-50"
+          >
+            {copy.continueToBoard}
+          </button>
+        </>
+      )}
 
-      <DecisionsDecisionsPoolPicker
-        entities={entities}
-        entityMap={entityMap}
-        serviceLocale={serviceLocale}
-        presetLabels={presetLabels}
-        major={major}
-        minors={minors}
-        searchInputRef={searchInputRef}
-        onMajor={handleMajor}
-        onToggleMinor={handleToggleMinor}
-        onAdd={handleAdd}
-      />
-
-      <button
-        type="button"
-        disabled={submitting || title.trim().length < 1}
-        onClick={() => { void handleSubmit(); }}
-        className="inline-flex items-center rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary disabled:opacity-50"
-      >
-        {submitLabel}
-      </button>
+      {step === "board" && (
+        <>
+          <DecisionsDecisionsBoard
+            rows={rows}
+            placements={placements}
+            pool={pool}
+            entitiesByKey={entityMap}
+            serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
+            showNames={false}
+            selectedKey={selectedKey}
+            onSelect={(ref) => setSelectedKey(resourceKey(ref))}
+            onMove={handleMove}
+            onRowLabelChange={(rowId, label) => {
+              setRows((current) => current.map((row) => (
+                row.id === rowId ? { ...row, label } : row
+              )));
+            }}
+            onRowColorChange={(rowId, color) => {
+              setRows((current) => current.map((row) => (
+                row.id === rowId ? { ...row, color } : row
+              )));
+            }}
+            onReorderRows={(fromId, toId) => {
+              setRows((current) => reorderTierRows(current, fromId, toId));
+            }}
+            onRemoveRow={(rowId) => {
+              setRows((current) => current.length <= 1
+                ? current
+                : current.filter((row) => row.id !== rowId));
+              setPlacements((current) => current.filter((item) => item.rowId !== rowId));
+            }}
+            onAddRow={() => {
+              const color = nextUnusedTierColor(rows);
+              if (!color) return;
+              setRows((current) => [
+                ...current,
+                {
+                  id: `row-${Date.now()}`,
+                  label: String(current.length + 1),
+                  color,
+                },
+              ]);
+            }}
+          />
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setStep("template")}
+              className="inline-flex items-center rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-xs font-semibold text-foreground"
+            >
+              {copy.backToTemplate}
+            </button>
+            <button
+              type="button"
+              disabled={submitting || title.trim().length < 1}
+              onClick={() => { void handleSubmit(); }}
+              className="inline-flex items-center rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary disabled:opacity-50"
+            >
+              {submitLabel}
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

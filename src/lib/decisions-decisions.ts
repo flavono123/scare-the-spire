@@ -1,12 +1,30 @@
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
+import { isEtcRarity } from "@/lib/card-annotations";
 import {
   CHARACTER_COLORS,
+  EPOCH_AFFILIATION_ORDER,
+  EVENT_ACT_ORDER,
+  getEventActs,
+  MODIFIER_POLARITY_ORDER,
+  MONSTER_TYPE_ORDER,
+  POTION_RARITY_ORDER,
+  POWER_TYPE_ORDER,
+  RELIC_RARITY_ORDER,
   type CardColor,
   type CardFilterCategory,
   type CardTypeKo,
   type CodexCard,
+  type CodexKeywordSource,
+  type EnchantmentCardTypeFilter,
+  type EpochAffiliation,
+  type EventAct,
+  type ModifierPolarity,
+  type MonsterType,
   type PotionPool,
+  type PotionRarityKo,
+  type PowerType,
   type RelicPool,
+  type RelicRarityKo,
 } from "@/lib/codex-types";
 import sts2Meta from "../../data/sts2/meta.json";
 
@@ -31,9 +49,19 @@ export const DECISIONS_DECISIONS_GAME_VERSION = sts2Meta.version;
 export const UNRANKED_ROW_ID = "unranked";
 
 export const DECISIONS_DECISIONS_RESOURCE_TYPES = [
+  "character",
   "card",
   "relic",
   "potion",
+  "power",
+  "enchantment",
+  "monster",
+  "event",
+  "ancient",
+  "epoch",
+  "keyword",
+  "ascension",
+  "modifier",
 ] as const satisfies readonly EntityType[];
 
 export type DecisionsDecisionsResourceType =
@@ -275,7 +303,47 @@ export const POTION_AFFILIATION_MINORS = [
   "event",
 ] as const satisfies readonly PotionPool[];
 
+export const CARD_KIND_MINORS = ["공격", "스킬", "파워"] as const satisfies readonly CardTypeKo[];
+
+export const CARD_RARITY_MINORS = ["일반", "고급", "희귀", "기타"] as const;
+
+export const RELIC_RARITY_MINORS = RELIC_RARITY_ORDER.filter(
+  (rarity) => rarity !== "None",
+);
+
+export const POTION_RARITY_MINORS = POTION_RARITY_ORDER;
+
+export const POWER_KIND_MINORS = POWER_TYPE_ORDER;
+
+export const ENCHANTMENT_KIND_MINORS = [
+  "Attack",
+  "Skill",
+  "Any",
+] as const satisfies readonly EnchantmentCardTypeFilter[];
+
+export const MONSTER_KIND_MINORS = MONSTER_TYPE_ORDER;
+
+export const ACT_MINORS = EVENT_ACT_ORDER.map((act) => act ?? "none");
+
+export const KEYWORD_KIND_MINORS = [
+  "cardKeyword",
+  "staticHoverTip",
+] as const satisfies readonly CodexKeywordSource[];
+
+export const MODIFIER_KIND_MINORS = MODIFIER_POLARITY_ORDER;
+
+export const EPOCH_AFFILIATION_MINORS = EPOCH_AFFILIATION_ORDER;
+
 export type DecisionsPoolMajor = DecisionsDecisionsResourceType;
+
+export type DecisionsFilterDim = "affiliation" | "kind" | "rarity" | "act";
+
+export type DecisionsFilterDims = {
+  affiliation: Set<string>;
+  kind: Set<string>;
+  rarity: Set<string>;
+  act: Set<string>;
+};
 
 export type DecisionsDecisionsPresetKind = "custom" | "cards" | "relics" | "potions";
 
@@ -506,68 +574,302 @@ export function namedPresetDefs(): DecisionsDecisionsPresetDef[] {
   return DECISIONS_DECISIONS_PRESET_DEFS.filter((preset) => preset.kind !== "custom");
 }
 
+export function emptyFilterDims(): DecisionsFilterDims {
+  return {
+    affiliation: new Set(),
+    kind: new Set(),
+    rarity: new Set(),
+    act: new Set(),
+  };
+}
+
+export function cloneFilterDims(dims: DecisionsFilterDims): DecisionsFilterDims {
+  return {
+    affiliation: new Set(dims.affiliation),
+    kind: new Set(dims.kind),
+    rarity: new Set(dims.rarity),
+    act: new Set(dims.act),
+  };
+}
+
+export function toggleFilterDim(
+  dims: DecisionsFilterDims,
+  dim: DecisionsFilterDim,
+  key: string,
+): DecisionsFilterDims {
+  const next = cloneFilterDims(dims);
+  if (next[dim].has(key)) next[dim].delete(key);
+  else next[dim].add(key);
+  return next;
+}
+
+export function dimsHaveSelection(dims: DecisionsFilterDims): boolean {
+  return dims.affiliation.size > 0
+    || dims.kind.size > 0
+    || dims.rarity.size > 0
+    || dims.act.size > 0;
+}
+
 export function namedPresetKeyFromFilter(
   major: DecisionsPoolMajor | null,
-  minors: readonly string[],
+  dims: DecisionsFilterDims,
 ): string {
-  if (!major || minors.length !== 1) return CUSTOM_PRESET_KEY;
-  const minor = minors[0];
-  if (!minor) return CUSTOM_PRESET_KEY;
-  const key = major === "card"
-    ? `cards-${minor}`
-    : major === "relic"
-      ? `relics-${minor}`
-      : minor === "all"
-        ? "potions-all"
-        : `potions-${minor}`;
-  return isDecisionsDecisionsPresetKey(key) ? key : CUSTOM_PRESET_KEY;
+  if (!major) return CUSTOM_PRESET_KEY;
+  if (dims.kind.size > 0 || dims.rarity.size > 0 || dims.act.size > 0) {
+    return CUSTOM_PRESET_KEY;
+  }
+  if (major === "card") {
+    if (dims.affiliation.size !== 1) return CUSTOM_PRESET_KEY;
+    const key = `cards-${[...dims.affiliation][0]}`;
+    return isDecisionsDecisionsPresetKey(key) ? key : CUSTOM_PRESET_KEY;
+  }
+  if (major === "relic") {
+    if (dims.affiliation.size !== 1) return CUSTOM_PRESET_KEY;
+    const key = `relics-${[...dims.affiliation][0]}`;
+    return isDecisionsDecisionsPresetKey(key) ? key : CUSTOM_PRESET_KEY;
+  }
+  if (major === "potion") {
+    if (dims.affiliation.size === 0) return "potions-all";
+    if (dims.affiliation.size !== 1) return CUSTOM_PRESET_KEY;
+    const key = `potions-${[...dims.affiliation][0]}`;
+    return isDecisionsDecisionsPresetKey(key) ? key : CUSTOM_PRESET_KEY;
+  }
+  return CUSTOM_PRESET_KEY;
 }
 
 export function filterStateFromPresetKey(key: string): {
   major: DecisionsPoolMajor | null;
-  minor: string | null;
+  dims: DecisionsFilterDims;
 } {
+  const dims = emptyFilterDims();
   const def = findPresetDef(key);
-  if (def.kind === "custom") return { major: null, minor: null };
-  if (def.kind === "cards") return { major: "card", minor: def.color };
-  if (def.kind === "relics") return { major: "relic", minor: def.pool };
-  return { major: "potion", minor: def.pool };
+  if (def.kind === "custom") return { major: null, dims };
+  if (def.kind === "cards") {
+    dims.affiliation.add(def.color);
+    return { major: "card", dims };
+  }
+  if (def.kind === "relics") {
+    dims.affiliation.add(def.pool);
+    return { major: "relic", dims };
+  }
+  return { major: "potion", dims };
 }
 
 function isPotionPoolValue(value: string): value is PotionPool | "all" {
   return (POTION_POOL_MINORS as readonly string[]).includes(value);
 }
 
+function isRelicRarity(value: string): value is RelicRarityKo {
+  return (RELIC_RARITY_ORDER as readonly string[]).includes(value);
+}
+
+function isPotionRarity(value: string): value is PotionRarityKo {
+  return (POTION_RARITY_ORDER as readonly string[]).includes(value);
+}
+
+function isPowerType(value: string): value is PowerType {
+  return (POWER_TYPE_ORDER as readonly string[]).includes(value);
+}
+
+function isEnchantmentKind(value: string): value is EnchantmentCardTypeFilter {
+  return (ENCHANTMENT_KIND_MINORS as readonly string[]).includes(value);
+}
+
+function isMonsterType(value: string): value is MonsterType {
+  return (MONSTER_TYPE_ORDER as readonly string[]).includes(value);
+}
+
+function isKeywordSource(value: string): value is CodexKeywordSource {
+  return (KEYWORD_KIND_MINORS as readonly string[]).includes(value);
+}
+
+function isModifierPolarity(value: string): value is ModifierPolarity {
+  return (MODIFIER_POLARITY_ORDER as readonly string[]).includes(value);
+}
+
+function isEpochAffiliation(value: string): value is EpochAffiliation {
+  return (EPOCH_AFFILIATION_ORDER as readonly string[]).includes(value);
+}
+
+function isCardKind(value: string): value is CardTypeKo {
+  return (CARD_KIND_MINORS as readonly string[]).includes(value);
+}
+
+function actKey(act: EventAct | null | undefined): string {
+  return act ?? "none";
+}
+
+function entityIsDeprecated(entity: EntityInfo): boolean {
+  return Boolean(
+    entity.cardData?.deprecated
+    || entity.relicData?.deprecated
+    || entity.potionData?.deprecated
+    || entity.powerData?.deprecated
+    || entity.enchantmentData?.deprecated
+    || entity.eventData?.deprecated
+    || entity.monsterData?.deprecated
+    || entity.ancientData?.deprecated
+    || entity.epochData?.deprecated
+  );
+}
+
+function monsterActKeys(
+  entity: EntityInfo,
+  encounterActs: Map<string, Set<string>>,
+): Set<string> {
+  return encounterActs.get(entity.id) ?? new Set(["none"]);
+}
+
+export function encounterActKeysByMonster(
+  entities: readonly EntityInfo[],
+): Map<string, Set<string>> {
+  const map = new Map<string, Set<string>>();
+  for (const entity of entities) {
+    if (entity.type !== "encounter" || !entity.encounterData) continue;
+    const key = actKey(entity.encounterData.act);
+    for (const monster of entity.encounterData.monsters ?? []) {
+      const acts = map.get(monster.id) ?? new Set<string>();
+      acts.add(key);
+      map.set(monster.id, acts);
+    }
+  }
+  return map;
+}
+
+function matchesAffiliation(
+  entity: EntityInfo,
+  major: DecisionsPoolMajor,
+  keys: ReadonlySet<string>,
+): boolean {
+  if (keys.size === 0) return true;
+  if (major === "card") {
+    return [...keys].some((key) => (
+      isCardFilterCategory(key) && isAffiliationCard(entity, key)
+    ));
+  }
+  if (major === "relic") {
+    return [...keys].some((key) => (
+      isRelicAffiliation(key) && isAffiliationRelic(entity, key)
+    ));
+  }
+  if (major === "potion") {
+    return [...keys].some((key) => (
+      isPotionPoolValue(key) && isPotion(entity, key)
+    ));
+  }
+  if (major === "epoch") {
+    const affiliations = entity.epochData?.affiliations ?? [];
+    const primary = entity.epochData?.affiliation;
+    return [...keys].some((key) => (
+      isEpochAffiliation(key)
+      && (affiliations.includes(key) || primary === key)
+    ));
+  }
+  return true;
+}
+
+function matchesKind(entity: EntityInfo, major: DecisionsPoolMajor, keys: ReadonlySet<string>): boolean {
+  if (keys.size === 0) return true;
+  if (major === "card") {
+    const type = entity.cardData?.type;
+    return Boolean(type && [...keys].some((key) => isCardKind(key) && type === key));
+  }
+  if (major === "power") {
+    const type = entity.powerData?.type;
+    return Boolean(type && [...keys].some((key) => isPowerType(key) && type === key));
+  }
+  if (major === "enchantment") {
+    const kind: EnchantmentCardTypeFilter = entity.enchantmentData?.cardType ?? "Any";
+    return [...keys].some((key) => isEnchantmentKind(key) && kind === key);
+  }
+  if (major === "monster") {
+    const type = entity.monsterData?.type;
+    return Boolean(type && [...keys].some((key) => isMonsterType(key) && type === key));
+  }
+  if (major === "keyword") {
+    const source = entity.keywordData?.source;
+    return Boolean(source && [...keys].some((key) => isKeywordSource(key) && source === key));
+  }
+  if (major === "modifier") {
+    const polarity = entity.modifierData?.polarity;
+    return Boolean(polarity && [...keys].some((key) => isModifierPolarity(key) && polarity === key));
+  }
+  return true;
+}
+
+function matchesRarity(entity: EntityInfo, major: DecisionsPoolMajor, keys: ReadonlySet<string>): boolean {
+  if (keys.size === 0) return true;
+  if (major === "card") {
+    const card = entity.cardData;
+    if (!card) return false;
+    return [...keys].some((key) => (
+      key === "기타" ? isEtcRarity(card) : card.rarity === key
+    ));
+  }
+  if (major === "relic") {
+    const rarity = entity.relicData?.rarity;
+    return Boolean(rarity && [...keys].some((key) => isRelicRarity(key) && rarity === key));
+  }
+  if (major === "potion") {
+    const rarity = entity.potionData?.rarity;
+    return Boolean(rarity && [...keys].some((key) => isPotionRarity(key) && rarity === key));
+  }
+  return true;
+}
+
+function matchesAct(
+  entity: EntityInfo,
+  major: DecisionsPoolMajor,
+  keys: ReadonlySet<string>,
+  encounterActs: Map<string, Set<string>>,
+): boolean {
+  if (keys.size === 0) return true;
+  if (major === "event") {
+    if (!entity.eventData) return false;
+    const acts = getEventActs(entity.eventData).map(actKey);
+    return acts.some((act) => keys.has(act));
+  }
+  if (major === "ancient") {
+    return keys.has(actKey(entity.ancientData?.act));
+  }
+  if (major === "monster") {
+    const acts = monsterActKeys(entity, encounterActs);
+    return [...keys].some((key) => acts.has(key));
+  }
+  return true;
+}
+
+function matchesFilter(
+  entity: EntityInfo,
+  major: DecisionsPoolMajor,
+  dims: DecisionsFilterDims,
+  encounterActs: Map<string, Set<string>>,
+): boolean {
+  if (entity.type !== major || entityIsDeprecated(entity)) return false;
+  return matchesAffiliation(entity, major, dims.affiliation)
+    && matchesKind(entity, major, dims.kind)
+    && matchesRarity(entity, major, dims.rarity)
+    && matchesAct(entity, major, dims.act, encounterActs);
+}
+
 export function poolFilterIsReady(
   major: DecisionsPoolMajor | null,
-  minors: ReadonlySet<string> | readonly string[],
+  dims: DecisionsFilterDims,
 ): boolean {
-  const count = minors instanceof Set ? minors.size : minors.length;
-  return major != null && count > 0;
+  if (!major) return false;
+  if (major === "card") return dimsHaveSelection(dims);
+  return true;
 }
 
 export function stampFilterIds(
   entities: EntityInfo[],
   major: DecisionsPoolMajor | null,
-  minors: readonly string[],
+  dims: DecisionsFilterDims,
 ): DecisionsDecisionsResourceRef[] {
-  if (!major || minors.length === 0) return [];
-  const matches = entities.filter((entity) => {
-    if (major === "card") {
-      return minors.some((minor) => (
-        isCardFilterCategory(minor) && isAffiliationCard(entity, minor)
-      ));
-    }
-    if (major === "relic") {
-      return minors.some((minor) => (
-        isRelicAffiliation(minor) && isAffiliationRelic(entity, minor)
-      ));
-    }
-    return minors.some((minor) => (
-      isPotionPoolValue(minor) && isPotion(entity, minor)
-    ));
-  });
-  return matches
+  if (!poolFilterIsReady(major, dims) || !major) return [];
+  const encounterActs = encounterActKeysByMonster(entities);
+  return entities
+    .filter((entity) => matchesFilter(entity, major, dims, encounterActs))
     .map(entityToResourceRef)
     .filter((ref): ref is DecisionsDecisionsResourceRef => ref != null);
 }

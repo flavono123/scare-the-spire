@@ -7,6 +7,7 @@ import {
 } from "@/lib/this-or-that";
 
 const RESOURCE_TYPE_ORDER = [
+  "character",
   "card",
   "relic",
   "potion",
@@ -19,7 +20,8 @@ const RESOURCE_TYPE_ORDER = [
   "ancient",
   "epoch",
   "keyword",
-  "character",
+  "modifier",
+  "ascension",
 ] as const;
 
 const resourceTypeOrder = new Map<string, number>(
@@ -72,6 +74,7 @@ function compactThisOrThatEntity(entity: EntityInfo): EntityInfo {
     } as EntityInfo["characterData"] : undefined,
     keywordData: entity.keywordData ? {
       description: entity.keywordData.description,
+      source: entity.keywordData.source,
     } as EntityInfo["keywordData"] : undefined,
     relicData: entity.relicData ? {
       description: entity.relicData.description,
@@ -89,15 +92,19 @@ function compactThisOrThatEntity(entity: EntityInfo): EntityInfo {
       deprecated: entity.powerData.deprecated,
       description: entity.powerData.description,
       imageUrl: entity.powerData.imageUrl,
+      type: entity.powerData.type,
     } as EntityInfo["powerData"] : undefined,
     enchantmentData: entity.enchantmentData ? {
       description: entity.enchantmentData.description,
+      cardType: entity.enchantmentData.cardType,
     } as EntityInfo["enchantmentData"] : undefined,
     afflictionData: entity.afflictionData ? {
       description: entity.afflictionData.description,
     } as EntityInfo["afflictionData"] : undefined,
     eventData: entity.eventData ? {
       imageUrl: entity.eventData.imageUrl,
+      act: entity.eventData.act,
+      acts: entity.eventData.acts,
     } as EntityInfo["eventData"] : undefined,
     eventOptionDesc: entity.eventOptionDesc,
     monsterData: entity.monsterData ? {
@@ -126,11 +133,21 @@ function compactThisOrThatEntity(entity: EntityInfo): EntityInfo {
       imageUrl: entity.ancientData.imageUrl,
     } as EntityInfo["ancientData"] : undefined,
     epochData: entity.epochData ? {
+      affiliation: entity.epochData.affiliation,
+      affiliations: entity.epochData.affiliations,
       betaImageUrl: entity.epochData.betaImageUrl,
       eraName: entity.epochData.eraName,
       eraYear: entity.epochData.eraYear,
       imageUrl: entity.epochData.imageUrl,
     } as EntityInfo["epochData"] : undefined,
+    modifierData: entity.modifierData ? {
+      imageUrl: entity.modifierData.imageUrl,
+      polarity: entity.modifierData.polarity,
+    } as EntityInfo["modifierData"] : undefined,
+    ascensionData: entity.ascensionData ? {
+      imageUrl: entity.ascensionData.imageUrl,
+      level: entity.ascensionData.level,
+    } as EntityInfo["ascensionData"] : undefined,
   };
 }
 

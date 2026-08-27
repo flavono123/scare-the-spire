@@ -9,6 +9,7 @@ import {
   DECISIONS_DECISIONS_CARD_WIDTH,
   type DecisionsDecisionsResourceRef,
 } from "@/lib/decisions-decisions";
+import { COMBO_KEYWORD_IMAGE_URL } from "@/lib/combo-resource-visuals";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -57,6 +58,8 @@ export function DecisionsDecisionsToken({
 }) {
   const label = entity.nameKo;
   const previewEntity = { ...entity, href: null };
+  const tokenSrc = entity.imageUrl
+    || (entity.type === "keyword" ? COMBO_KEYWORD_IMAGE_URL : null);
 
   return (
     <EntityPreview
@@ -102,16 +105,25 @@ export function DecisionsDecisionsToken({
         ) : (
           <span
             {...{ [TILE_ATTR]: "" }}
-            className="block [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
+            className="flex h-10 w-10 items-center justify-center [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
           >
-            <Image
-              src={entity.imageUrl ?? ""}
-              alt={label}
-              width={40}
-              height={40}
-              draggable={false}
-              className="h-10 w-10 object-contain"
-            />
+            {tokenSrc ? (
+              <Image
+                src={tokenSrc}
+                alt={label}
+                width={40}
+                height={40}
+                draggable={false}
+                className="h-10 w-10 object-contain"
+              />
+            ) : (
+              <span
+                aria-hidden
+                className="font-game-title text-lg font-bold text-primary"
+              >
+                {label.slice(0, 1)}
+              </span>
+            )}
           </span>
         )}
         {showName && (

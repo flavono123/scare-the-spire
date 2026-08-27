@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState, type DragEvent } from "react";
 import { GripVertical, Plus, Search, X } from "lucide-react";
-import type { EntityInfo } from "@/components/patch-note-renderer";
+import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import {
   DecisionsDecisionsToken,
   DecisionsDecisionsTokenPlaceholder,
@@ -14,6 +14,7 @@ import {
 } from "@/components/game-ui-hover-tip";
 import { ServiceModalFrame } from "@/components/service-modal-frame";
 import {
+  isDecisionsDecisionsResourceType,
   nextUnusedTierColor,
   resourceKey,
   TIER_PALETTE_KEYS,
@@ -37,10 +38,8 @@ type DragKind = "token" | "row";
 
 function parseTokenPayload(raw: string): DecisionsDecisionsResourceRef | null {
   const [type, id] = raw.split(":");
-  if ((type === "card" || type === "relic" || type === "potion") && id) {
-    return { type, id };
-  }
-  return null;
+  if (!type || !id || !isDecisionsDecisionsResourceType(type as EntityType)) return null;
+  return { type, id };
 }
 
 function parseRowPayload(raw: string): string | null {
@@ -169,6 +168,7 @@ export function DecisionsDecisionsBoard({
   selectedKey,
   readOnly = false,
   compact = false,
+  variant = "board",
   showUnranked,
   onSelect,
   onMove,
@@ -190,6 +190,7 @@ export function DecisionsDecisionsBoard({
   selectedKey: string | null;
   readOnly?: boolean;
   compact?: boolean;
+  variant?: "board" | "pool";
   showUnranked?: boolean;
   onSelect?: (ref: DecisionsDecisionsResourceRef) => void;
   onMove?: (ref: DecisionsDecisionsResourceRef, rowId: string) => void;
@@ -202,8 +203,10 @@ export function DecisionsDecisionsBoard({
   onAddRow?: () => void;
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
-  const includeUnranked = showUnranked ?? !compact;
-  const editable = Boolean(!readOnly && onRowLabelChange && onRowColorChange && onReorderRows);
+  const poolOnly = variant === "pool";
+  const includeUnranked = showUnranked ?? (!compact || poolOnly);
+  const editable = Boolean(!readOnly && !poolOnly && onRowLabelChange && onRowColorChange && onReorderRows);
+  const canDrag = Boolean(!readOnly && !poolOnly);
   const dragKindRef = useRef<DragKind | null>(null);
   const [rowDropId, setRowDropId] = useState<string | null>(null);
   const [colorRowId, setColorRowId] = useState<string | null>(null);
@@ -256,7 +259,7 @@ export function DecisionsDecisionsBoard({
         return (
           <div
             key={key}
-            draggable={!readOnly}
+            draggable={canDrag}
             className="relative [&_img]:pointer-events-none [&_*]:[-webkit-user-drag:none]"
             onDragStart={(event) => {
               if ((event.target as HTMLElement).closest("button")) {
@@ -304,7 +307,7 @@ export function DecisionsDecisionsBoard({
     </div>
   );
 
-  const tokenDropProps = (rowId: string) => readOnly ? {} : {
+  const tokenDropProps = (rowId: string) => (!canDrag && !onMove) ? {} : {
     onDragOver: (event: DragEvent<HTMLDivElement>) => {
       event.preventDefault();
       event.dataTransfer.dropEffect = "move";
@@ -332,7 +335,7 @@ export function DecisionsDecisionsBoard({
     onClick: () => {
       if (!selectedKey) return;
       const [type, id] = selectedKey.split(":");
-      if ((type === "card" || type === "relic" || type === "potion") && id) {
+      if (type && id && isDecisionsDecisionsResourceType(type as EntityType)) {
         onMove?.({ type, id }, rowId);
       }
     },
@@ -344,9 +347,10 @@ export function DecisionsDecisionsBoard({
       className={cn(
         "overflow-hidden rounded-lg border border-border bg-black/40",
         compact && "text-[10px]",
+        poolOnly && "max-h-[min(28rem,50dvh)] overflow-y-auto",
       )}
     >
-      {rows.map((row) => (
+      {!poolOnly && rows.map((row) => (
         <div
           key={row.id}
           className={cn(
@@ -385,7 +389,7 @@ export function DecisionsDecisionsBoard({
           )}
         </div>
       ))}
-      {editable && onAddRow && nextUnusedTierColor(rows) && (
+      {!poolOnly && editable && onAddRow && nextUnusedTierColor(rows) && (
         <div className="flex justify-end border-b border-white/10 px-2 py-1">
           <button
             type="button"
@@ -399,23 +403,25 @@ export function DecisionsDecisionsBoard({
       )}
       {includeUnranked && !(readOnly && unrankedItems.length === 0) && (
         <div
-          className="border-t border-white/10"
+          className={cn(!poolOnly && "border-t border-white/10")}
           data-decisions-decisions-pool
-          {...tokenDropProps(UNRANKED_ROW_ID)}
+          {...(poolOnly ? {} : tokenDropProps(UNRANKED_ROW_ID))}
         >
           <div className="min-w-0 flex-1 overflow-x-auto p-2">
             {unrankedItems.length === 0
               ? (
                 readOnly
                   ? null
-                  : (
-                    <PoolEmptyAffordance
-                      label={copy.poolAffordance}
-                      onActivate={onEmptyPoolActivate}
-                    />
-                  )
+                  : onEmptyPoolActivate
+                    ? (
+                      <PoolEmptyAffordance
+                        label={copy.poolAffordance}
+                        onActivate={onEmptyPoolActivate}
+                      />
+                    )
+                    : <div className="min-h-16" />
               )
-              : renderTokens(unrankedItems, { removable: !readOnly })}
+              : renderTokens(unrankedItems, { removable: Boolean(onRemoveFromPool) })}
           </div>
         </div>
       )}
