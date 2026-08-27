@@ -26,7 +26,7 @@ export async function generateThisOrThatPostMetadata(
   const description = composeToyBoxPostOgDescription({
     serviceLocale,
     serviceName: serviceMessages[serviceLocale].nav.thisOrThat,
-    serviceDescription: copy.metadata.description,
+    serviceDescription: copy.subtitle,
   });
   const fallback = getServiceOgMetadata({
     serviceLocale,

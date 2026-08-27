@@ -7,8 +7,8 @@ import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { FeedLoadMoreSentinel } from "@/components/feed-load-more-sentinel";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
-import { RichText } from "@/components/rich-text";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
+import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
 import Image from "@/components/ui/static-image";
 import { useAuth } from "@/hooks/use-auth";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -144,9 +144,11 @@ export function TransfigureClient({
           )}
         </div>
 
-        <div className="max-w-xl font-game-text text-sm leading-relaxed text-zinc-400">
-          <RichText text={subtitle} />
-        </div>
+        <ToyBoxIndexHeading
+          subtitle={copy.subtitle}
+          hero={subtitle}
+          heroRich
+        />
       </header>
 
       {saveNotice && (

@@ -14,7 +14,7 @@ import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { DEFRAGMENT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
-import { getServiceOgMetadata } from "@/lib/service-metadata";
+import { composeToyBoxIndexOgDescription, getServiceOgMetadata } from "@/lib/service-metadata";
 import { TOYBOX_WIDE_BOARD_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 
@@ -26,7 +26,10 @@ export async function generateDefragmentMetadata(
   return getServiceOgMetadata({
     serviceLocale,
     title: gameCopy.title,
-    description: serviceMessages[serviceLocale].defragment.metadata.description,
+    description: composeToyBoxIndexOgDescription(
+      serviceLocale,
+      serviceMessages[serviceLocale].defragment.subtitle,
+    ),
     image: DEFRAGMENT_PAGE_OG_IMAGE,
     canonicalPath: "/defragment",
   });

@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import type { PostBlock } from "../src/lib/chemical-types";
 import { CHEMICAL_X_PAGE_OG_IMAGE } from "../src/lib/page-og-images";
-import { composeToyBoxPostOgDescription } from "../src/lib/service-metadata";
+import {
+  composeToyBoxIndexOgDescription,
+  composeToyBoxPostOgDescription,
+} from "../src/lib/service-metadata";
 import {
   chemicalPostOgImage,
   comboPostOgImage,
@@ -14,6 +17,15 @@ assert.equal(truncateOgTitle("  bash   strike  "), "bash strike");
 assert.equal(truncateOgTitle(""), "");
 assert.ok(truncateOgTitle("한".repeat(90)).endsWith("…"));
 assert.equal(truncateOgTitle("한".repeat(90)).length, 80);
+
+assert.equal(
+  composeToyBoxIndexOgDescription("ko", "게임 요소 투표하기"),
+  "슬레이 더 스파이어 2 게임 요소 투표하기 - 슬서운 이야기",
+);
+assert.equal(
+  composeToyBoxIndexOgDescription("en", "Vote on game elements"),
+  "Slay the Spire 2 Vote on game elements - Scare the Spire",
+);
 
 assert.equal(
   composeToyBoxPostOgDescription({

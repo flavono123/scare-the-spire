@@ -22,6 +22,7 @@ import type { GameLocale } from "@/lib/i18n";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
+import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
 import { buildComboEntityMap } from "./combo-post-renderer";
 import { ComboPostCard } from "./combo-post-card";
 import { ComboGameElementFilter } from "./combo-game-element-filter";
@@ -87,7 +88,8 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
 
   return (
     <div data-combo-page="index" className="space-y-6">
-      <header className="flex items-center justify-between gap-3">
+      <header className="space-y-3">
+        <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <Image
             src="/images/sts2/badges/ccccombo.webp"
@@ -120,6 +122,8 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
             {copy.create}
           </button>
         )}
+      </div>
+        <ToyBoxIndexHeading subtitle={copy.subtitle} />
       </header>
 
       {composerOpen && ready && !unavailable && (

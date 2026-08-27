@@ -14,8 +14,8 @@ import {
 } from "@/components/defragment/defragment-write-panel";
 import { FeedLoadMoreSentinel } from "@/components/feed-load-more-sentinel";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
-import { RichText } from "@/components/rich-text";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
+import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
 import Image from "@/components/ui/static-image";
 import { useAuth } from "@/hooks/use-auth";
 import { useDefragmentFeed } from "@/hooks/use-defragment-feed";
@@ -142,9 +142,11 @@ export function DefragmentClient({
             </button>
           )}
         </div>
-        <div className="max-w-xl font-game-text text-sm leading-relaxed text-muted-foreground">
-          <RichText text={subtitle} />
-        </div>
+        <ToyBoxIndexHeading
+          subtitle={copy.subtitle}
+          hero={subtitle}
+          heroRich
+        />
       </header>
 
       {composerOpen && ready && !unavailable && (

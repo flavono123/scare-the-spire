@@ -16,6 +16,7 @@ import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
+import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
 import { ChemicalXEditor } from "./chemicalx-editor";
 import { PostCard } from "./post-card";
 import { buildEntityMap } from "./post-renderer";
@@ -62,7 +63,7 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      <header className="space-y-2">
       <div className="flex items-center gap-3">
         <Image
           src="/images/sts2/relics/chemical_x.webp"
@@ -76,6 +77,8 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
           <span className="text-xs text-gray-500">{copy.legacyName}</span>
         </div>
       </div>
+        <ToyBoxIndexHeading subtitle={copy.subtitle} />
+      </header>
 
       {/* Editor */}
       {ready && !storageUnavailable && (

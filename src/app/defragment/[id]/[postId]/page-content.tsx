@@ -20,7 +20,6 @@ import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { DEFRAGMENT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import {
   composeToyBoxPostOgDescription,
-  getServiceMetadataCopy,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
@@ -35,12 +34,11 @@ export async function generateDefragmentFederatedPostMetadata(
     return {};
   }
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  const copy = getServiceMetadataCopy(serviceLocale);
   const gameCopy = await getDefragmentGameCopy(gameLocale);
   const description = composeToyBoxPostOgDescription({
     serviceLocale,
     serviceName: serviceMessages[serviceLocale].nav.defragment,
-    serviceDescription: copy.defragmentDescription,
+    serviceDescription: serviceMessages[serviceLocale].defragment.subtitle,
   });
   return getServiceOgMetadata({
     serviceLocale,

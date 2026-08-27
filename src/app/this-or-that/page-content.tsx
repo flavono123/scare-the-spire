@@ -5,7 +5,7 @@ import { getThisOrThatGameCopy } from "@/lib/borrowed-game-copy";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { THIS_OR_THAT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
-import { getServiceOgMetadata } from "@/lib/service-metadata";
+import { composeToyBoxIndexOgDescription, getServiceOgMetadata } from "@/lib/service-metadata";
 import { serviceMessages } from "@/messages/service";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 
@@ -17,7 +17,10 @@ export async function generateThisOrThatMetadata(
   return getServiceOgMetadata({
     serviceLocale,
     title: gameCopy.title,
-    description: serviceMessages[serviceLocale].thisOrThat.metadata.description,
+    description: composeToyBoxIndexOgDescription(
+      serviceLocale,
+      serviceMessages[serviceLocale].thisOrThat.subtitle,
+    ),
     image: THIS_OR_THAT_PAGE_OG_IMAGE,
     canonicalPath: "/this-or-that",
   });

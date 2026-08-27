@@ -7,6 +7,7 @@ import { DecisionsDecisionsPostCard } from "@/components/decisions-decisions/dec
 import { FeedLoadMoreSentinel } from "@/components/feed-load-more-sentinel";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
+import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
 import Image from "@/components/ui/static-image";
 import { useAuth } from "@/hooks/use-auth";
 import { useDecisionsDecisionsCatalog } from "@/hooks/use-decisions-decisions-catalog";
@@ -72,7 +73,8 @@ export function DecisionsDecisionsClient({
 
   return (
     <div className="space-y-6">
-      <header className="flex items-center gap-4">
+      <header className="space-y-2">
+        <div className="flex items-center gap-4">
         <Image
           src={DECISIONS_DECISIONS_TOKEN_SRC}
           alt={gameCopy.title}
@@ -84,7 +86,6 @@ export function DecisionsDecisionsClient({
           <h1 className="font-service text-xl font-bold spire-gold sm:text-3xl">
             {gameCopy.title}
           </h1>
-          <p className="mt-1 text-sm text-zinc-400">{gameCopy.subtitle}</p>
         </div>
         {ready && !unavailable && (
           <button
@@ -103,6 +104,11 @@ export function DecisionsDecisionsClient({
             {copy.create}
           </button>
         )}
+        </div>
+        <ToyBoxIndexHeading
+          subtitle={copy.subtitle}
+          hero={gameCopy.subtitle}
+        />
       </header>
 
       {composerOpen && ready && (

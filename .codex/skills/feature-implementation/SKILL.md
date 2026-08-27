@@ -163,7 +163,7 @@ the hero.
 | Chemical X | 게임 요소로 짧은 글 쓰기 | no game hero; keep `legacyName` |
 | 조각모음 | 커뮤니티 | `FOCUS_POWER.description` |
 | 어려운 결정 | 게임 요소 티어 만들기 | `selectionScreenPrompt` |
-| History Course | 런 도전 이력 다시 보기 | Lantern Key parody `heroQuote` |
+| History Course | 도전 이력 다시 보기 | Lantern Key parody `heroQuote` |
 
 `$create-toybox-service` must resolve title, functional subtitle, optional
 hero, token, and background as one set. Hero is the old "page subtitle"

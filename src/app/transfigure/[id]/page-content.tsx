@@ -26,7 +26,7 @@ export async function generateTransfigurePostMetadata(
   const description = composeToyBoxPostOgDescription({
     serviceLocale,
     serviceName: serviceMessages[serviceLocale].nav.transfigure,
-    serviceDescription: copy.transfigureDescription,
+    serviceDescription: serviceMessages[serviceLocale].transfigure.subtitle,
   });
   const fallback = getServiceOgMetadata({
     serviceLocale,

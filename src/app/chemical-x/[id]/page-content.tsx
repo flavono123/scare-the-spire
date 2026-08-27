@@ -25,7 +25,7 @@ export async function generateChemicalXPostMetadata(
   const description = composeToyBoxPostOgDescription({
     serviceLocale,
     serviceName: serviceMessages[serviceLocale].nav.chemicalX,
-    serviceDescription: copy.chemicalXDescription,
+    serviceDescription: serviceMessages[serviceLocale].chemicalX.subtitle,
   });
   const fallback = getServiceOgMetadata({
     serviceLocale,

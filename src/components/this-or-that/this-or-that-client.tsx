@@ -24,6 +24,7 @@ import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 import { ThisOrThatComposerModal } from "@/components/this-or-that/composer-modal";
 import { ThisOrThatPostCard } from "@/components/this-or-that/post-card";
+import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
 
 export function ThisOrThatClient({
   gameLocale,
@@ -127,7 +128,8 @@ export function ThisOrThatClient({
         />
       )}
 
-      <header className="flex items-center gap-4">
+      <header className="space-y-2">
+        <div className="flex items-center gap-4">
         <Image
           src="/images/sts2/relics/choices_paradox.webp"
           alt={title}
@@ -139,11 +141,6 @@ export function ThisOrThatClient({
           <h1 className="text-3xl font-black tracking-tight text-zinc-50">
             {title}
           </h1>
-          {prompt && (
-            <p className="mt-1 line-clamp-2 max-w-2xl text-sm leading-6 text-zinc-400">
-              {prompt}
-            </p>
-          )}
         </div>
         {!storageUnavailable && (
           <button
@@ -164,6 +161,8 @@ export function ThisOrThatClient({
             {copy.create}
           </button>
         )}
+        </div>
+        <ToyBoxIndexHeading subtitle={copy.subtitle} hero={prompt} />
       </header>
 
       {storageUnavailable ? (

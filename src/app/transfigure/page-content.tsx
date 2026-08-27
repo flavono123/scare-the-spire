@@ -7,10 +7,12 @@ import { loadAllEntities } from "@/lib/load-all-entities";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { TRANSFIGURE_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import {
+  composeToyBoxIndexOgDescription,
   getServiceMetadataCopy,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
+import { serviceMessages } from "@/messages/service";
 
 export async function generateTransfigureMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
@@ -20,7 +22,10 @@ export async function generateTransfigureMetadata(
   return getServiceOgMetadata({
     serviceLocale,
     title: copy.transfigureTitle,
-    description: copy.transfigureDescription,
+    description: composeToyBoxIndexOgDescription(
+      serviceLocale,
+      serviceMessages[serviceLocale].transfigure.subtitle,
+    ),
     image: TRANSFIGURE_PAGE_OG_IMAGE,
     canonicalPath: "/transfigure",
   });

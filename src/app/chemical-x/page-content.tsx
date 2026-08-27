@@ -6,11 +6,13 @@ import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { CHEMICAL_X_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import {
+  composeToyBoxIndexOgDescription,
   getServiceMetadataCopy,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
 import { getChemicalXPlaceholder } from "@/lib/borrowed-game-copy";
 import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
+import { serviceMessages } from "@/messages/service";
 
 export async function generateChemicalXMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
@@ -20,7 +22,10 @@ export async function generateChemicalXMetadata(
   return getServiceOgMetadata({
     serviceLocale,
     title: copy.chemicalXTitle,
-    description: copy.chemicalXDescription,
+    description: composeToyBoxIndexOgDescription(
+      serviceLocale,
+      serviceMessages[serviceLocale].chemicalX.subtitle,
+    ),
     image: CHEMICAL_X_PAGE_OG_IMAGE,
     canonicalPath: "/chemical-x",
   });

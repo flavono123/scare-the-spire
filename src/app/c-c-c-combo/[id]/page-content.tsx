@@ -26,7 +26,7 @@ export async function generateComboPostMetadata(
   const description = composeToyBoxPostOgDescription({
     serviceLocale,
     serviceName: serviceMessages[serviceLocale].nav.combo,
-    serviceDescription: copy.comboDescription,
+    serviceDescription: serviceMessages[serviceLocale].combo.subtitle,
   });
   const fallback = getServiceOgMetadata({
     serviceLocale,

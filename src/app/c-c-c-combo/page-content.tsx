@@ -7,10 +7,12 @@ import { loadAllEntities } from "@/lib/load-all-entities";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { COMBO_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import {
+  composeToyBoxIndexOgDescription,
   getServiceMetadataCopy,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
 import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
+import { serviceMessages } from "@/messages/service";
 
 export async function generateComboMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
@@ -20,7 +22,10 @@ export async function generateComboMetadata(
   return getServiceOgMetadata({
     serviceLocale,
     title: copy.comboTitle,
-    description: copy.comboDescription,
+    description: composeToyBoxIndexOgDescription(
+      serviceLocale,
+      serviceMessages[serviceLocale].combo.subtitle,
+    ),
     image: COMBO_PAGE_OG_IMAGE,
     canonicalPath: "/c-c-c-combo",
   });

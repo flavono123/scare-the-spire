@@ -9,7 +9,7 @@ import {
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { DECISIONS_DECISIONS_PAGE_OG_IMAGE } from "@/lib/page-og-images";
-import { getServiceOgMetadata } from "@/lib/service-metadata";
+import { composeToyBoxIndexOgDescription, getServiceOgMetadata } from "@/lib/service-metadata";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 
@@ -21,7 +21,10 @@ export async function generateDecisionsDecisionsMetadata(
   return getServiceOgMetadata({
     serviceLocale,
     title: gameCopy.title,
-    description: serviceMessages[serviceLocale].decisionsDecisions.metadata.description,
+    description: composeToyBoxIndexOgDescription(
+      serviceLocale,
+      serviceMessages[serviceLocale].decisionsDecisions.subtitle,
+    ),
     image: DECISIONS_DECISIONS_PAGE_OG_IMAGE,
     canonicalPath: DECISIONS_DECISIONS_HREF,
   });

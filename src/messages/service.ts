@@ -227,6 +227,7 @@ export const serviceMessages = {
     },
     chemicalX: {
       title: "케미컬X",
+      subtitle: "게임 요소로 짧은 글 쓰기",
       legacyName: "(구 투입터)",
       defaultNickname: "익명의 투입터리안",
       submit: "투입",
@@ -259,6 +260,7 @@ export const serviceMessages = {
     },
     combo: {
       title: "코오오옴보",
+      subtitle: "게임 요소 조합 공유하기",
       defaultNickname: "융합자",
       composerHint: "게임 요소를 고르거나 {keyword}를 입력해 2개 이상 불러오세요.",
       composerHintKeyword: "키워드",
@@ -333,6 +335,7 @@ export const serviceMessages = {
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
     },
     transfigure: {
+      subtitle: "게임 요소 설명 다시 쓰기",
       defaultNickname: "변형체",
       create: "변형하기",
       close: "닫기",
@@ -415,6 +418,7 @@ export const serviceMessages = {
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
     },
     defragment: {
+      subtitle: "커뮤니티",
       defaultNickname: "밀집",
       create: "밀집을 얻습니다",
       close: "닫기",
@@ -447,11 +451,9 @@ export const serviceMessages = {
       copied: "복사됨!",
       commentsTitle: "댓글",
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
-      metadata: {
-        description: "장난감 상자의 글과 조각모음 본문을 한 줄로 모아서 봅니다.",
-      },
     },
     decisionsDecisions: {
+      subtitle: "게임 요소 티어 만들기",
       defaultNickname: "결정",
       create: "티어 만들기",
       close: "닫기",
@@ -520,11 +522,9 @@ export const serviceMessages = {
       commentsTitle: "댓글",
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
       resourcesMissing: "게임 요소 목록을 불러오지 못했습니다.",
-      metadata: {
-        description: "슬레이 더 스파이어 2 카드·유물을 버전별 묶음으로 나눠 공유하고, 가이드에 붙일 수 있게 내보내는 장난감 상자.",
-      },
     },
     thisOrThat: {
+      subtitle: "게임 요소 투표하기",
       defaultNickname: "세 번째 손",
       count: "{count}개의 이거저거",
       loading: "이거저거를 불러오는 중...",
@@ -555,11 +555,9 @@ export const serviceMessages = {
       minutesAgo: "{count}분 전",
       hoursAgo: "{count}시간 전",
       daysAgo: "{count}일 전",
-      metadata: {
-        description: "슬레이 더 스파이어 2 게임 요소 두 개를 나란히 놓고 이야기하는 장난감 상자 서비스",
-      },
     },
     historyCourse: {
+      subtitle: "도전 이력 다시 보기",
       description:
         "슬레이 더 스파이어 2의 시드 기반 {runHistory}. 막 맵 위에 진행 노드를 다시 그려 한 판을 처음부터 끝까지 따라갑니다.",
       runTitleSuffix: "런",
@@ -1383,6 +1381,7 @@ export const serviceMessages = {
     },
     chemicalX: {
       title: "Chemical X",
+      subtitle: "Write a short post with game elements",
       legacyName: "(formerly Tuipter)",
       defaultNickname: "Anonymous Insertweetian",
       submit: "Insertweet",
@@ -1415,6 +1414,7 @@ export const serviceMessages = {
     },
     combo: {
       title: "C-c-c-Combo",
+      subtitle: "Share game-element combos",
       defaultNickname: "Amalgamator",
       composerHint: "Pick game elements or enter {keyword} to load at least two.",
       composerHintKeyword: "keywords",
@@ -1489,6 +1489,7 @@ export const serviceMessages = {
       unavailableTitle: "No responses from database",
     },
     transfigure: {
+      subtitle: "Rewrite a game element's text",
       defaultNickname: "Transfigured",
       create: "Transfigure",
       close: "Close",
@@ -1571,6 +1572,7 @@ export const serviceMessages = {
       unavailableTitle: "No responses from database",
     },
     defragment: {
+      subtitle: "Community",
       defaultNickname: "Focus",
       create: "Gain Focus.",
       close: "Close",
@@ -1603,11 +1605,9 @@ export const serviceMessages = {
       copied: "Copied!",
       commentsTitle: "Comments",
       unavailableTitle: "No responses from database",
-      metadata: {
-        description: "A one-line board of Toy Box posts and Defragment writing.",
-      },
     },
     decisionsDecisions: {
+      subtitle: "Make game-element tiers",
       defaultNickname: "Decision",
       create: "Make tiers",
       close: "Close",
@@ -1676,11 +1676,9 @@ export const serviceMessages = {
       commentsTitle: "Comments",
       unavailableTitle: "No responses from database",
       resourcesMissing: "Could not load the game element list.",
-      metadata: {
-        description: "A Toy Box for ranking Slay the Spire 2 cards and relics by versioned sets, then exporting them for guides.",
-      },
     },
     thisOrThat: {
+      subtitle: "Vote on game elements",
       defaultNickname: "THIRD hand",
       count: "{count} thisats",
       loading: "Loading thisats...",
@@ -1711,11 +1709,9 @@ export const serviceMessages = {
       minutesAgo: "{count}m ago",
       hoursAgo: "{count}h ago",
       daysAgo: "{count}d ago",
-      metadata: {
-        description: "A Toy Box service for putting two Slay the Spire 2 resources side by side.",
-      },
     },
     historyCourse: {
+      subtitle: "View run history again",
       description:
         "Seed-based Slay the Spire 2 {runHistory}. Replays a run from start to finish on the act map.",
       runTitleSuffix: "Run",

@@ -40,26 +40,26 @@ const SERVICE_METADATA_COPY: Record<ServiceLocale, ServiceMetadataCopy> = {
     patchesTitle: "슬레이 더 스파이어 2 패치 노트 및 업데이트 내역",
     patchesDescription: "슬레이 더 스파이어 2 전체 패치 노트, 업데이트 내역, 카드·유물 변경 정보를 한국어로 확인하세요.",
     chemicalXTitle: "케미컬 X(구 트윕터)",
-    chemicalXDescription: "슬레이 더 스파이어 2 고봉밥 트윕",
+    chemicalXDescription: "슬레이 더 스파이어 2 게임 요소로 짧은 글 쓰기 - 슬서운 이야기",
     comboTitle: "코오오옴보",
-    comboDescription: "카드, 유물, 포션 등 슬레이 더 스파이어 2 게임 요소 조합을 공유합니다.",
+    comboDescription: "슬레이 더 스파이어 2 게임 요소 조합 공유하기 - 슬서운 이야기",
     transfigureTitle: "변형",
-    transfigureDescription: "슬레이 더 스파이어 2 게임 요소를 골라 설명을 새롭게 써서 공유합니다.",
+    transfigureDescription: "슬레이 더 스파이어 2 게임 요소 설명 다시 쓰기 - 슬서운 이야기",
     defragmentTitle: "조각모음",
-    defragmentDescription: "장난감 상자의 글과 조각모음 본문을 한 줄로 모아서 봅니다.",
+    defragmentDescription: "슬레이 더 스파이어 2 커뮤니티 - 슬서운 이야기",
   },
   en: {
     siteDescription: "Slay the Spire 2 patch notes, Compendium, and community.",
     patchesTitle: "Slay the Spire 2 Patch Notes & Update History",
     patchesDescription: "Complete Slay the Spire 2 patch notes, update history, and linked card and relic changes.",
     chemicalXTitle: "Chemical X (formerly Twipter)",
-    chemicalXDescription: "Full Slay the Spire 2 twips.",
+    chemicalXDescription: "Slay the Spire 2 Write a short post with game elements - Scare the Spire",
     comboTitle: "C-c-c-Combo",
-    comboDescription: "Share combinations of Slay the Spire 2 Compendium resources, including cards, relics, and potions.",
+    comboDescription: "Slay the Spire 2 Share game-element combos - Scare the Spire",
     transfigureTitle: "Transfigure",
-    transfigureDescription: "Choose a Slay the Spire 2 game element, rewrite its description, and share it.",
+    transfigureDescription: "Slay the Spire 2 Rewrite a game element's text - Scare the Spire",
     defragmentTitle: "Defragment",
-    defragmentDescription: "A one-line board of Toy Box posts and Defragment writing.",
+    defragmentDescription: "Slay the Spire 2 Community - Scare the Spire",
   },
 };
 
@@ -80,6 +80,14 @@ const GAME_TITLE: Record<ServiceLocale, string> = {
 
 export function getGameTitle(serviceLocale: ServiceLocale): string {
   return GAME_TITLE[serviceLocale];
+}
+
+/** Index OG/Twitter description: `{game} {subtitle} - {brand}`. */
+export function composeToyBoxIndexOgDescription(
+  serviceLocale: ServiceLocale,
+  subtitle: string,
+): string {
+  return `${getGameTitle(serviceLocale)} ${subtitle} - ${getServiceBrand(serviceLocale)}`;
 }
 
 /** Shared Toy Box post OG description: game · brand · service · service copy. */

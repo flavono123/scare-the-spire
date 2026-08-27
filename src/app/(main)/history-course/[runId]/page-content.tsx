@@ -27,10 +27,7 @@ export async function generateHistoryCourseRunMetadata(
   const description = composeToyBoxPostOgDescription({
     serviceLocale,
     serviceName: copy.nav.historyCourse,
-    serviceDescription: copy.historyCourse.description.replace(
-      "{runHistory}",
-      landing.runHistoryLabel,
-    ),
+    serviceDescription: copy.historyCourse.subtitle,
   });
   const canonicalPath = runId ? `/history-course/${runId}` : "/history-course";
 

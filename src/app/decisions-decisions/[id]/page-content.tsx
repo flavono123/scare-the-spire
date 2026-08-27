@@ -26,7 +26,7 @@ export async function generateDecisionsDecisionsPostMetadata(
   const description = composeToyBoxPostOgDescription({
     serviceLocale,
     serviceName: gameCopy.title,
-    serviceDescription: copy.metadata.description,
+    serviceDescription: copy.subtitle,
   });
   return getServiceOgMetadata({
     serviceLocale,
