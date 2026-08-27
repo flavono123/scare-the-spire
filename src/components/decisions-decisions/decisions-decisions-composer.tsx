@@ -25,6 +25,7 @@ import {
   resourceKey,
   stampFilterIds,
   stampPresetIds,
+  sortPoolRefs,
   toggleFilterDim,
   UNRANKED_ROW_ID,
   type DecisionsDecisionsPost,
@@ -157,10 +158,11 @@ export function DecisionsDecisionsComposer({
   }, [dims, entities, filterReady, lockedPresetKey, major, stamps]);
 
   const pool = useMemo(() => {
-    return mergePool(filteredStamp, extraIds).filter(
+    const next = mergePool(filteredStamp, extraIds).filter(
       (ref) => !excludedKeys.has(resourceKey(ref)),
     );
-  }, [excludedKeys, extraIds, filteredStamp]);
+    return sortPoolRefs(next, entityMap);
+  }, [entityMap, excludedKeys, extraIds, filteredStamp]);
 
   const handleMajor = useCallback((nextMajor: DecisionsPoolMajor | null) => {
     setMajor(nextMajor);

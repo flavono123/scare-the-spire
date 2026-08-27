@@ -114,7 +114,14 @@ function TierColorPaletteDropdown({
 
   useEffect(() => {
     const onDoc = (event: MouseEvent) => {
-      if (panelRef.current?.contains(event.target as Node)) return;
+      const target = event.target as Node | null;
+      if (panelRef.current?.contains(target)) return;
+      if (
+        target instanceof Element
+        && target.closest("[data-decisions-decisions-color-trigger]")
+      ) {
+        return;
+      }
       onClose();
     };
     const onKey = (event: KeyboardEvent) => {
@@ -177,6 +184,7 @@ function TierRowEditor({
   row,
   serviceLocale,
   canRemove,
+  paletteOpen,
   onLabelChange,
   onOpenPalette,
   onRemove,
@@ -186,6 +194,7 @@ function TierRowEditor({
   row: TierRow;
   serviceLocale: ServiceLocale;
   canRemove: boolean;
+  paletteOpen: boolean;
   onLabelChange: (label: string) => void;
   onOpenPalette: (anchor: DOMRect) => void;
   onRemove: () => void;
@@ -220,6 +229,8 @@ function TierRowEditor({
         type="button"
         aria-label={copy.rowColor}
         aria-haspopup="listbox"
+        aria-expanded={paletteOpen}
+        data-decisions-decisions-color-trigger={row.id}
         onClick={(event) => {
           event.stopPropagation();
           onOpenPalette(event.currentTarget.getBoundingClientRect());
@@ -324,7 +335,6 @@ export function DecisionsDecisionsBoard({
   const canDrag = Boolean(!readOnly && !poolOnly);
   const dragKindRef = useRef<DragKind | null>(null);
   const rowElsRef = useRef(new Map<string, HTMLElement>());
-  const prevRowTopsRef = useRef(new Map<string, number>());
   const [rowDropId, setRowDropId] = useState<string | null>(null);
   const [draggingRowId, setDraggingRowId] = useState<string | null>(null);
   const [palette, setPalette] = useState<{
@@ -343,30 +353,35 @@ export function DecisionsDecisionsBoard({
   const previewRows = draggingRowId && rowDropId
     ? reorderTierRows(rows, draggingRowId, rowDropId)
     : rows;
+  const previewOrder = previewRows.map((row) => row.id).join("|");
 
   useLayoutEffect(() => {
     if (!draggingRowId || prefersReducedMotion()) {
-      prevRowTopsRef.current.clear();
       for (const [id, el] of rowElsRef.current) {
-        prevRowTopsRef.current.set(id, el.getBoundingClientRect().top);
+        el.style.transition = "";
+        el.style.transform = "";
       }
       return;
     }
     for (const [id, el] of rowElsRef.current) {
-      const nextTop = el.getBoundingClientRect().top;
-      const prevTop = prevRowTopsRef.current.get(id);
-      prevRowTopsRef.current.set(id, nextTop);
-      if (prevTop == null) continue;
-      const dy = prevTop - nextTop;
-      if (Math.abs(dy) < 1) continue;
+      if (id === draggingRowId) {
+        el.style.transition = "";
+        el.style.transform = "";
+        continue;
+      }
+      const visualTop = el.getBoundingClientRect().top;
       el.style.transition = "none";
+      el.style.transform = "none";
+      const layoutTop = el.getBoundingClientRect().top;
+      const dy = visualTop - layoutTop;
+      if (Math.abs(dy) < 1) continue;
       el.style.transform = `translateY(${dy}px)`;
       requestAnimationFrame(() => {
-        el.style.transition = "transform 180ms ease";
+        el.style.transition = "transform 340ms cubic-bezier(0.22, 1, 0.36, 1)";
         el.style.transform = "";
       });
     }
-  }, [draggingRowId, previewRows]);
+  }, [draggingRowId, previewOrder]);
 
   const byRow = useMemo(() => {
     const grouped = new Map<string, TierPlacement[]>();
@@ -529,17 +544,22 @@ export function DecisionsDecisionsBoard({
               row={row}
               serviceLocale={serviceLocale}
               canRemove={rows.length > 1 && Boolean(onRemoveRow)}
+              paletteOpen={palette?.rowId === row.id}
               onLabelChange={(label) => onRowLabelChange?.(row.id, label)}
               onOpenPalette={(rect) => {
-                setPalette({
-                  rowId: row.id,
-                  rect: {
-                    left: rect.left,
-                    top: rect.top,
-                    right: rect.right,
-                    bottom: rect.bottom,
-                  },
-                });
+                setPalette((current) => (
+                  current?.rowId === row.id
+                    ? null
+                    : {
+                      rowId: row.id,
+                      rect: {
+                        left: rect.left,
+                        top: rect.top,
+                        right: rect.right,
+                        bottom: rect.bottom,
+                      },
+                    }
+                ));
               }}
               onRemove={() => onRemoveRow?.(row.id)}
               onRowDragStart={() => {

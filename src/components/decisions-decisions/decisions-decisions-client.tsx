@@ -17,7 +17,7 @@ import {
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import type { DecisionsDecisionsGameCopy } from "@/lib/borrowed-game-copy";
-import { DECISIONS_DECISIONS_TOKEN_SRC, resourceKey } from "@/lib/decisions-decisions";
+import { DECISIONS_DECISIONS_TOKEN_SRC, resourceKey, sortPoolRefs } from "@/lib/decisions-decisions";
 import type { GameLocale } from "@/lib/i18n";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
@@ -150,10 +150,10 @@ export function DecisionsDecisionsClient({
           {posts.map((post) => {
             const stamped = catalog.stamps[post.preset_key] ?? [];
             const seen = new Set(stamped.map(resourceKey));
-            const pool = [
+            const pool = sortPoolRefs([
               ...stamped,
               ...post.extra_ids.filter((ref) => !seen.has(resourceKey(ref))),
-            ];
+            ], catalog.entityMap);
             return (
               <DecisionsDecisionsPostCard
                 key={post.id}

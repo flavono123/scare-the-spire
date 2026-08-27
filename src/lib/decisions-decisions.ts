@@ -1012,10 +1012,35 @@ export function stampFilterIds(
 ): DecisionsDecisionsResourceRef[] {
   if (!poolFilterIsReady(major, dims) || !major) return [];
   const encounterActs = encounterActKeysByMonster(entities);
-  return entities
-    .filter((entity) => matchesFilter(entity, major, dims, encounterActs))
+  const matched = entities.filter((entity) => matchesFilter(entity, major, dims, encounterActs));
+  const ordered = major === "ascension"
+    ? [...matched].sort((left, right) => (
+      (left.ascensionData?.level ?? 0) - (right.ascensionData?.level ?? 0)
+    ))
+    : matched;
+  return ordered
     .map(entityToResourceRef)
     .filter((ref): ref is DecisionsDecisionsResourceRef => ref != null);
+}
+
+export function sortPoolRefs(
+  refs: readonly DecisionsDecisionsResourceRef[],
+  entityMap: Map<string, EntityInfo>,
+): DecisionsDecisionsResourceRef[] {
+  return [...refs].sort((left, right) => {
+    const leftEntity = entityMap.get(resourceKey(left));
+    const rightEntity = entityMap.get(resourceKey(right));
+    const leftLevel = leftEntity?.type === "ascension"
+      ? leftEntity.ascensionData?.level ?? 0
+      : null;
+    const rightLevel = rightEntity?.type === "ascension"
+      ? rightEntity.ascensionData?.level ?? 0
+      : null;
+    if (leftLevel != null && rightLevel != null) return leftLevel - rightLevel;
+    if (leftLevel != null) return -1;
+    if (rightLevel != null) return 1;
+    return 0;
+  });
 }
 
 export function reorderTierRows(

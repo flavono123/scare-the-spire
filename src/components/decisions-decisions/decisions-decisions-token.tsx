@@ -4,6 +4,7 @@ import type { DragEvent } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { EntityPreview } from "@/components/patch-note-renderer";
 import { CardTile } from "@/components/codex/card-tile";
+import { AscensionToken } from "@/components/codex/ascension-token";
 import { DecisionsActorSprite } from "@/components/decisions-decisions/decisions-decisions-actor";
 import Image from "@/components/ui/static-image";
 import {
@@ -142,6 +143,15 @@ export function DecisionsDecisionsToken({
               width={DECISIONS_DECISIONS_CARD_WIDTH}
               interactive={false}
             />
+          </span>
+        ) : entity.type === "ascension" && entity.ascensionData ? (
+          <span
+            {...{ [TILE_ATTR]: "" }}
+            data-decisions-piece=""
+            data-drag-preview=""
+            className="flex h-10 w-10 items-center justify-center [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
+          >
+            <AscensionToken level={entity.ascensionData.level} size={40} />
           </span>
         ) : isMonster ? (
           <span

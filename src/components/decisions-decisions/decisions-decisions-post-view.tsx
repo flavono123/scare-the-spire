@@ -24,6 +24,7 @@ import {
   DECISIONS_DECISIONS_TOKEN_SRC,
   placementText,
   resourceKey,
+  sortPoolRefs,
 } from "@/lib/decisions-decisions";
 import type { GameLocale } from "@/lib/i18n";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
@@ -74,8 +75,11 @@ export function DecisionsDecisionsPostView({
     if (!post) return [];
     const stamped = catalog.stamps[post.preset_key] ?? [];
     const seen = new Set(stamped.map(resourceKey));
-    return [...stamped, ...post.extra_ids.filter((ref) => !seen.has(resourceKey(ref)))];
-  }, [catalog.stamps, post]);
+    return sortPoolRefs(
+      [...stamped, ...post.extra_ids.filter((ref) => !seen.has(resourceKey(ref)))],
+      catalog.entityMap,
+    );
+  }, [catalog.entityMap, catalog.stamps, post]);
 
   const handleCopyUrl = useCallback(() => {
     navigator.clipboard.writeText(window.location.href);
