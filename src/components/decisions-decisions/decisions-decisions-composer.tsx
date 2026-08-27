@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronRight, X } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
 import { DecisionsDecisionsPoolPicker } from "@/components/decisions-decisions/decisions-decisions-pool-picker";
+import { GameConfirmModal } from "@/components/game-confirm-modal";
 import {
   cloneDefaultRows,
   cloneFilterDims,
@@ -61,6 +62,28 @@ function namedLockedKey(key: string | undefined): string | null {
   return key;
 }
 
+type BoardBaseline = {
+  rows: TierRow[];
+  placements: TierPlacement[];
+  title: string;
+  note: string;
+  nickname: string;
+};
+
+function cloneBoardBaseline(value: BoardBaseline): BoardBaseline {
+  return {
+    rows: value.rows.map((row) => ({ ...row })),
+    placements: value.placements.map((item) => ({ ...item })),
+    title: value.title,
+    note: value.note,
+    nickname: value.nickname,
+  };
+}
+
+function boardStatesMatch(left: BoardBaseline, right: BoardBaseline): boolean {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
 export function DecisionsDecisionsComposer({
   entities,
   entityMap,
@@ -91,9 +114,13 @@ export function DecisionsDecisionsComposer({
   embedded?: boolean;
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
+  const confirmCopy = serviceMessages[serviceLocale].deleteConfirm;
   const initialFilter = filterStateFromPresetKey(initial?.preset_key ?? CUSTOM_PRESET_KEY);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const boardBaselineRef = useRef<BoardBaseline | null>(null);
+  const previousStepRef = useRef<"template" | "board">("template");
   const [step, setStep] = useState<"template" | "board">(initial ? "board" : "template");
+  const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false);
   const [nickname, setNickname] = useState(initial?.nickname ?? profileNickname);
   const [title, setTitle] = useState(initial?.title ?? "");
   const [note, setNote] = useState(initial?.note ?? "");
@@ -208,6 +235,52 @@ export function DecisionsDecisionsComposer({
       ? copy.poolApplyFilter
       : copy.poolAffordance;
 
+  const currentBoard = useMemo<BoardBaseline>(() => ({
+    rows,
+    placements,
+    title,
+    note,
+    nickname,
+  }), [nickname, note, placements, rows, title]);
+
+  useEffect(() => {
+    if (step === "board" && previousStepRef.current !== "board") {
+      boardBaselineRef.current = cloneBoardBaseline(currentBoard);
+    }
+    previousStepRef.current = step;
+  }, [currentBoard, step]);
+
+  const requestPrepare = useCallback(() => {
+    if (step !== "board") {
+      setStep("template");
+      return;
+    }
+    const baseline = boardBaselineRef.current;
+    if (baseline && !boardStatesMatch(baseline, currentBoard)) {
+      setLeaveConfirmOpen(true);
+      return;
+    }
+    setStep("template");
+  }, [currentBoard, step]);
+
+  const confirmLeaveBoard = useCallback(() => {
+    const baseline = boardBaselineRef.current;
+    if (baseline) {
+      const restored = cloneBoardBaseline(baseline);
+      setRows(restored.rows);
+      setPlacements(restored.placements);
+      setTitle(restored.title);
+      setNote(restored.note);
+      setNickname(restored.nickname);
+    } else {
+      setRows(cloneDefaultRows());
+      setPlacements([]);
+    }
+    setSelectedKey(null);
+    setLeaveConfirmOpen(false);
+    setStep("template");
+  }, []);
+
   const extrasForSave = useMemo(() => {
     const hasExclusions = excludedKeys.size > 0;
     if (presetKey === CUSTOM_PRESET_KEY || hasExclusions) return pool;
@@ -247,7 +320,7 @@ export function DecisionsDecisionsComposer({
         <button
           type="button"
           aria-current={step === "template" ? "step" : undefined}
-          onClick={() => setStep("template")}
+          onClick={requestPrepare}
           className={cn(
             "rounded-md px-2 py-1 font-semibold transition-colors",
             step === "template"
@@ -413,6 +486,16 @@ export function DecisionsDecisionsComposer({
           </div>
         </>
       )}
+
+      <GameConfirmModal
+        open={leaveConfirmOpen}
+        title={copy.leaveBoardConfirm.title}
+        body={copy.leaveBoardConfirm.body}
+        confirmLabel={confirmCopy.confirm}
+        cancelLabel={confirmCopy.cancel}
+        onConfirm={confirmLeaveBoard}
+        onCancel={() => setLeaveConfirmOpen(false)}
+      />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useRef, useState, type DragEvent } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type DragEvent } from "react";
+import { createPortal } from "react-dom";
 import { GripVertical, Plus, X } from "lucide-react";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import {
@@ -9,13 +10,9 @@ import {
   setDecisionsTokenDragImage,
 } from "@/components/decisions-decisions/decisions-decisions-token";
 import {
-  GAME_UI_HOVER_TIP_NAV_DELAY_MS,
-  GameUiHoverTip,
-} from "@/components/game-ui-hover-tip";
-import { ServiceModalFrame } from "@/components/service-modal-frame";
-import {
   isDecisionsDecisionsResourceType,
   nextUnusedTierColor,
+  reorderTierRows,
   resourceKey,
   TIER_PALETTE_KEYS,
   tierColorBar,
@@ -48,6 +45,134 @@ function parseRowPayload(raw: string): string | null {
   return id || null;
 }
 
+function setRowDragImage(event: DragEvent<HTMLElement>, rowEl: HTMLElement | null) {
+  if (!rowEl) return;
+  const rect = rowEl.getBoundingClientRect();
+  const clone = rowEl.cloneNode(true) as HTMLElement;
+  clone.setAttribute("aria-hidden", "true");
+  clone.style.position = "fixed";
+  clone.style.top = "-1600px";
+  clone.style.left = "-1600px";
+  clone.style.width = `${rect.width}px`;
+  clone.style.margin = "0";
+  clone.style.opacity = "0.95";
+  clone.style.pointerEvents = "none";
+  clone.style.zIndex = "-1";
+  clone.style.transform = "none";
+  clone.style.boxShadow = "0 12px 28px rgba(0,0,0,0.45)";
+  document.body.appendChild(clone);
+  event.dataTransfer.setDragImage(
+    clone,
+    Math.min(Math.max(event.clientX - rect.left, 16), rect.width),
+    Math.min(Math.max(event.clientY - rect.top, 8), rect.height),
+  );
+  const cleanup = () => clone.remove();
+  event.currentTarget.addEventListener("dragend", cleanup, { once: true });
+  window.setTimeout(cleanup, 1500);
+}
+
+function prefersReducedMotion() {
+  return typeof window !== "undefined"
+    && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function palettePosition(anchor: {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+}) {
+  const width = 152;
+  const height = 72;
+  const viewW = typeof window === "undefined" ? 1200 : window.innerWidth;
+  const viewH = typeof window === "undefined" ? 800 : window.innerHeight;
+  let left = anchor.right - width;
+  let top = anchor.bottom + 6;
+  if (left < 8) left = 8;
+  if (left + width > viewW - 8) left = Math.max(8, viewW - width - 8);
+  if (top + height > viewH - 8) top = Math.max(8, anchor.top - height - 6);
+  return { left, top };
+}
+
+function TierColorPaletteDropdown({
+  row,
+  colors,
+  colorLabels,
+  anchor,
+  onPick,
+  onClose,
+}: {
+  row: TierRow;
+  colors: TierPaletteKey[];
+  colorLabels: Record<string, string>;
+  anchor: { left: number; top: number; right: number; bottom: number };
+  onPick: (color: TierPaletteKey) => void;
+  onClose: () => void;
+}) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const pos = palettePosition(anchor);
+
+  useEffect(() => {
+    const onDoc = (event: MouseEvent) => {
+      if (panelRef.current?.contains(event.target as Node)) return;
+      onClose();
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("mousedown", onDoc);
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("resize", onClose);
+    window.addEventListener("scroll", onClose, true);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", onClose);
+      window.removeEventListener("scroll", onClose, true);
+    };
+  }, [onClose]);
+
+  return createPortal(
+    <div
+      ref={panelRef}
+      role="listbox"
+      aria-label={row.label}
+      data-decisions-decisions-color-palette=""
+      className="fixed z-[80] grid grid-cols-5 gap-1 rounded-lg border border-white/15 bg-zinc-950/95 p-1.5 shadow-xl backdrop-blur-sm"
+      style={{ left: pos.left, top: pos.top }}
+    >
+      {colors.map((color) => {
+        const hex = tierColorBar(color);
+        const active = hex.toLowerCase() === tierColorHex(row.color);
+        const label = colorLabels[color];
+        return (
+          <button
+            key={color}
+            type="button"
+            role="option"
+            aria-label={label}
+            aria-selected={active}
+            onClick={() => onPick(color)}
+            className={cn(
+              "h-6 w-6 rounded-md border p-0.5 transition-all",
+              active
+                ? "border-primary bg-primary/20"
+                : "border-white/10 bg-white/5 hover:border-white/35",
+            )}
+          >
+            <span
+              aria-hidden
+              className="block h-full w-full rounded-sm"
+              style={{ backgroundColor: hex }}
+            />
+          </button>
+        );
+      })}
+    </div>,
+    document.body,
+  );
+}
+
 function TierRowEditor({
   row,
   serviceLocale,
@@ -62,7 +187,7 @@ function TierRowEditor({
   serviceLocale: ServiceLocale;
   canRemove: boolean;
   onLabelChange: (label: string) => void;
-  onOpenPalette: () => void;
+  onOpenPalette: (anchor: DOMRect) => void;
   onRemove: () => void;
   onRowDragStart: () => void;
   onRowDragEnd: () => void;
@@ -83,30 +208,30 @@ function TierRowEditor({
           onRowDragStart();
           event.dataTransfer.setData("text/plain", `${ROW_DRAG_PREFIX}${row.id}`);
           event.dataTransfer.effectAllowed = "move";
-          event.dataTransfer.setDragImage(event.currentTarget, 8, 8);
+          const rowEl = event.currentTarget.closest("[data-decisions-decisions-row]");
+          setRowDragImage(event, rowEl instanceof HTMLElement ? rowEl : null);
         }}
         onDragEnd={onRowDragEnd}
         className="cursor-grab rounded p-0.5 text-zinc-500 hover:text-foreground active:cursor-grabbing"
       >
         <GripVertical className="h-3.5 w-3.5" />
       </div>
-      <GameUiHoverTip
-        label={copy.rowColor}
-        delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}
+      <button
+        type="button"
+        aria-label={copy.rowColor}
+        aria-haspopup="listbox"
+        onClick={(event) => {
+          event.stopPropagation();
+          onOpenPalette(event.currentTarget.getBoundingClientRect());
+        }}
+        className="h-5 w-5 shrink-0 rounded-md border border-white/20 p-0.5 hover:border-white/40"
       >
-        <button
-          type="button"
-          aria-label={copy.rowColor}
-          onClick={onOpenPalette}
-          className="h-5 w-5 shrink-0 rounded-md border border-white/20 p-0.5 hover:border-white/40"
-        >
-          <span
-            aria-hidden
-            className="block h-full w-full rounded-sm"
-            style={{ backgroundColor: tierColorBar(row.color) }}
-          />
-        </button>
-      </GameUiHoverTip>
+        <span
+          aria-hidden
+          className="block h-full w-full rounded-sm"
+          style={{ backgroundColor: tierColorBar(row.color) }}
+        />
+      </button>
       <input
         value={row.label}
         aria-label={copy.rowLabel}
@@ -198,9 +323,15 @@ export function DecisionsDecisionsBoard({
   const editable = Boolean(!readOnly && !poolOnly && onRowLabelChange && onRowColorChange && onReorderRows);
   const canDrag = Boolean(!readOnly && !poolOnly);
   const dragKindRef = useRef<DragKind | null>(null);
+  const rowElsRef = useRef(new Map<string, HTMLElement>());
+  const prevRowTopsRef = useRef(new Map<string, number>());
   const [rowDropId, setRowDropId] = useState<string | null>(null);
-  const [colorRowId, setColorRowId] = useState<string | null>(null);
-  const colorRow = rows.find((row) => row.id === colorRowId) ?? null;
+  const [draggingRowId, setDraggingRowId] = useState<string | null>(null);
+  const [palette, setPalette] = useState<{
+    rowId: string;
+    rect: { left: number; top: number; right: number; bottom: number };
+  } | null>(null);
+  const colorRow = rows.find((row) => row.id === palette?.rowId) ?? null;
   const colorLabels = serviceMessages[serviceLocale].transfigure.tokenColors;
   const availableColors = colorRow
     ? TIER_PALETTE_KEYS.filter((color) => {
@@ -209,6 +340,33 @@ export function DecisionsDecisionsBoard({
         || !usedTierColorHexes(rows, colorRow.id).has(hex);
     })
     : [];
+  const previewRows = draggingRowId && rowDropId
+    ? reorderTierRows(rows, draggingRowId, rowDropId)
+    : rows;
+
+  useLayoutEffect(() => {
+    if (!draggingRowId || prefersReducedMotion()) {
+      prevRowTopsRef.current.clear();
+      for (const [id, el] of rowElsRef.current) {
+        prevRowTopsRef.current.set(id, el.getBoundingClientRect().top);
+      }
+      return;
+    }
+    for (const [id, el] of rowElsRef.current) {
+      const nextTop = el.getBoundingClientRect().top;
+      const prevTop = prevRowTopsRef.current.get(id);
+      prevRowTopsRef.current.set(id, nextTop);
+      if (prevTop == null) continue;
+      const dy = prevTop - nextTop;
+      if (Math.abs(dy) < 1) continue;
+      el.style.transition = "none";
+      el.style.transform = `translateY(${dy}px)`;
+      requestAnimationFrame(() => {
+        el.style.transition = "transform 180ms ease";
+        el.style.transform = "";
+      });
+    }
+  }, [draggingRowId, previewRows]);
 
   const byRow = useMemo(() => {
     const grouped = new Map<string, TierPlacement[]>();
@@ -340,12 +498,18 @@ export function DecisionsDecisionsBoard({
         poolOnly && "max-h-[min(28rem,50dvh)] overflow-y-auto",
       )}
     >
-      {!poolOnly && rows.map((row) => (
+      {!poolOnly && previewRows.map((row) => (
         <div
           key={row.id}
+          ref={(node) => {
+            if (node) rowElsRef.current.set(row.id, node);
+            else rowElsRef.current.delete(row.id);
+          }}
+          data-decisions-decisions-row={row.id}
           className={cn(
             "flex border-b border-white/10 last:border-b-0",
-            rowDropId === row.id && "bg-primary/10",
+            !draggingRowId && rowDropId === row.id && "bg-primary/10",
+            draggingRowId === row.id && "relative z-10 bg-primary/10 opacity-45 ring-1 ring-primary/50",
           )}
           {...tokenDropProps(row.id)}
         >
@@ -366,13 +530,26 @@ export function DecisionsDecisionsBoard({
               serviceLocale={serviceLocale}
               canRemove={rows.length > 1 && Boolean(onRemoveRow)}
               onLabelChange={(label) => onRowLabelChange?.(row.id, label)}
-              onOpenPalette={() => setColorRowId(row.id)}
+              onOpenPalette={(rect) => {
+                setPalette({
+                  rowId: row.id,
+                  rect: {
+                    left: rect.left,
+                    top: rect.top,
+                    right: rect.right,
+                    bottom: rect.bottom,
+                  },
+                });
+              }}
               onRemove={() => onRemoveRow?.(row.id)}
               onRowDragStart={() => {
                 dragKindRef.current = "row";
+                setDraggingRowId(row.id);
+                setRowDropId(row.id);
               }}
               onRowDragEnd={() => {
                 dragKindRef.current = null;
+                setDraggingRowId(null);
                 setRowDropId(null);
               }}
             />
@@ -413,46 +590,18 @@ export function DecisionsDecisionsBoard({
         </div>
       )}
     </div>
-    {colorRow && (
-      <ServiceModalFrame
-        title={copy.rowColor}
-        titleId={`decisions-decisions-row-color-${colorRow.id}`}
-        closeLabel={copy.close}
-        onClose={() => setColorRowId(null)}
-        panelClassName="max-h-[min(24rem,80dvh)] max-w-sm"
-      >
-        <div className="flex flex-wrap gap-2">
-          {availableColors.map((color) => {
-            const hex = tierColorBar(color);
-            const active = hex.toLowerCase() === tierColorHex(colorRow.color);
-            const label = colorLabels[color];
-            return (
-              <button
-                key={color}
-                type="button"
-                aria-label={label}
-                aria-pressed={active}
-                onClick={() => {
-                  onRowColorChange?.(colorRow.id, color);
-                  setColorRowId(null);
-                }}
-                className={cn(
-                  "h-8 w-8 rounded-md border-2 p-0.5 transition-all",
-                  active
-                    ? "border-primary bg-primary/20"
-                    : "border-white/10 bg-white/5 hover:border-white/30",
-                )}
-              >
-                <span
-                  aria-hidden
-                  className="block h-full w-full rounded-sm"
-                  style={{ backgroundColor: hex }}
-                />
-              </button>
-            );
-          })}
-        </div>
-      </ServiceModalFrame>
+    {colorRow && palette && (
+      <TierColorPaletteDropdown
+        row={colorRow}
+        colors={availableColors}
+        colorLabels={colorLabels}
+        anchor={palette.rect}
+        onPick={(color) => {
+          onRowColorChange?.(colorRow.id, color);
+          setPalette(null);
+        }}
+        onClose={() => setPalette(null)}
+      />
     )}
     </>
   );

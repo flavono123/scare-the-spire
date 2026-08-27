@@ -284,9 +284,17 @@ function ChipRow({ children }: { children: ReactNode }) {
   );
 }
 
+function BlockTitle({ children }: { children: ReactNode }) {
+  return (
+    <h3 className="font-service text-sm font-semibold text-foreground">
+      {children}
+    </h3>
+  );
+}
+
 function SectionLabel({ children }: { children: ReactNode }) {
   return (
-    <p className="font-service text-[11px] font-semibold text-zinc-400">
+    <p className="font-service text-[11px] font-semibold text-zinc-500">
       {children}
     </p>
   );
@@ -335,12 +343,10 @@ function presetJumpLabel(
 function CardPresetJump({
   preset,
   label,
-  jumpHint,
   onClick,
 }: {
   preset: Extract<DecisionsDecisionsPresetDef, { kind: "cards" }>;
   label: string;
-  jumpHint: string;
   onClick: () => void;
 }) {
   const trail = preset.color === "colorless"
@@ -349,10 +355,9 @@ function CardPresetJump({
   const accent = CHARACTER_COLORS[preset.color];
 
   return (
-    <GameUiHoverTip label={jumpHint} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
       <button
         type="button"
-        aria-label={`${label}. ${jumpHint}`}
+        aria-label={label}
         onClick={onClick}
         data-decisions-decisions-preset-jump={preset.key}
         className={cn(
@@ -378,7 +383,6 @@ function CardPresetJump({
           aria-hidden="true"
         />
       </button>
-    </GameUiHoverTip>
   );
 }
 
@@ -386,20 +390,17 @@ function CatalogPresetJump({
   presetKey,
   icon,
   label,
-  jumpHint,
   onClick,
 }: {
   presetKey: string;
   icon: string;
   label: string;
-  jumpHint: string;
   onClick: () => void;
 }) {
   return (
-    <GameUiHoverTip label={jumpHint} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
       <button
         type="button"
-        aria-label={`${label}. ${jumpHint}`}
+        aria-label={label}
         onClick={onClick}
         data-decisions-decisions-preset-jump={presetKey}
         className={cn(
@@ -418,7 +419,6 @@ function CatalogPresetJump({
           aria-hidden="true"
         />
       </button>
-    </GameUiHoverTip>
   );
 }
 
@@ -541,17 +541,13 @@ export function DecisionsDecisionsPoolPicker({
   return (
     <div className="space-y-3" data-decisions-decisions-pool-picker>
       <div className="space-y-2" data-decisions-decisions-presets>
-        <div className="flex flex-wrap items-baseline gap-2">
-          <SectionLabel>{copy.presetSection}</SectionLabel>
-          <p className="text-[11px] text-zinc-500">{copy.presetHint}</p>
-        </div>
+        <BlockTitle>{copy.presetSection}</BlockTitle>
         <div className="flex flex-wrap gap-1.5">
           {cardPresets.map((preset) => (
             <CardPresetJump
               key={preset.key}
               preset={preset}
               label={presetJumpLabel(preset, presetLabels, copy)}
-              jumpHint={copy.presetHint}
               onClick={() => onPreset(preset.key)}
             />
           ))}
@@ -563,7 +559,6 @@ export function DecisionsDecisionsPoolPicker({
               presetKey={preset.key}
               icon={preset.kind === "relics" ? RELIC_COLLECTION_ICON : POTION_COLLECTION_ICON}
               label={presetJumpLabel(preset, presetLabels, copy)}
-              jumpHint={copy.presetHint}
               onClick={() => onPreset(preset.key)}
             />
           ))}
@@ -574,6 +569,7 @@ export function DecisionsDecisionsPoolPicker({
         className="space-y-3 border-t-2 border-primary/25 pt-4"
         data-decisions-decisions-pool-generator
       >
+        <BlockTitle>{copy.pickYourself}</BlockTitle>
       <div className="space-y-1.5">
         <SectionLabel>{copy.typeSection}</SectionLabel>
       <div className="flex flex-wrap gap-1.5" data-decisions-decisions-filter-major>
