@@ -19,24 +19,47 @@ const TILE_ATTR = "data-decisions-decisions-tile";
 
 export function setDecisionsTokenDragImage(event: DragEvent<HTMLElement>) {
   const tile = event.currentTarget.querySelector(`[${TILE_ATTR}]`);
-  if (!(tile instanceof HTMLElement)) return;
-  const rect = tile.getBoundingClientRect();
-  const clone = tile.cloneNode(true) as HTMLElement;
+  const preview = event.currentTarget.querySelector("[data-drag-preview]");
+  const source = preview instanceof HTMLElement ? preview : tile;
+  if (!(source instanceof HTMLElement)) return;
+  const rect = source.getBoundingClientRect();
+  const width = Math.max(rect.width, 40);
+  const height = Math.max(rect.height, 40);
+  const imgSrc = source instanceof HTMLImageElement
+    ? (source.currentSrc || source.src)
+    : null;
+  const clone = imgSrc
+    ? Object.assign(document.createElement("img"), {
+      src: imgSrc,
+      alt: "",
+      width,
+      height,
+    })
+    : source.cloneNode(true) as HTMLElement;
+  if (!(clone instanceof HTMLImageElement)) {
+    clone.classList.remove("opacity-0");
+    clone.querySelectorAll(".opacity-0").forEach((node) => {
+      node.classList.remove("opacity-0");
+    });
+    clone.querySelectorAll("canvas").forEach((node) => node.remove());
+  }
   clone.setAttribute("aria-hidden", "true");
   clone.style.position = "fixed";
   clone.style.top = "-1200px";
   clone.style.left = "-1200px";
-  clone.style.width = `${rect.width}px`;
-  clone.style.height = `${rect.height}px`;
+  clone.style.width = `${width}px`;
+  clone.style.height = `${height}px`;
   clone.style.margin = "0";
+  clone.style.opacity = "1";
+  clone.style.visibility = "visible";
   clone.style.zIndex = "-1";
   clone.style.pointerEvents = "none";
   clone.style.transform = "none";
   document.body.appendChild(clone);
   event.dataTransfer.setDragImage(
     clone,
-    Math.min(Math.max(event.clientX - rect.left, 0), rect.width),
-    Math.min(Math.max(event.clientY - rect.top, 0), rect.height),
+    Math.min(Math.max(event.clientX - rect.left, 0), width),
+    Math.min(Math.max(event.clientY - rect.top, 0), height),
   );
   const cleanup = () => clone.remove();
   event.currentTarget.addEventListener("dragend", cleanup, { once: true });
@@ -60,19 +83,23 @@ export function DecisionsDecisionsToken({
 }) {
   const label = entity.nameKo;
   const previewEntity = { ...entity, href: null };
-  const actorSpine = entity.type === "character"
-    ? entity.characterData?.spineAsset
-    : entity.type === "monster"
-      ? entity.monsterData?.spineAsset
-      : null;
-  const actorFallback = entity.type === "character"
-    ? (entity.characterData?.combatImageUrl || entity.characterData?.imageUrl || entity.imageUrl)
-    : entity.type === "monster"
-      ? (entity.monsterData?.imageUrl || entity.monsterData?.bossImageUrl || entity.imageUrl)
-      : null;
-  const isActor = entity.type === "character" || entity.type === "monster";
-  const tokenSrc = entity.imageUrl
-    || (entity.type === "keyword" ? COMBO_KEYWORD_IMAGE_URL : null);
+  const actorSpine = entity.type === "monster"
+    ? entity.monsterData?.spineAsset
+    : null;
+  const actorFallback = entity.type === "monster"
+    ? (
+      entity.monsterData?.imageUrl
+      || entity.monsterData?.bossImageUrl
+      || entity.imageUrl
+      || entity.monsterData?.spineAsset?.textureUrls[0]
+      || null
+    )
+    : null;
+  const isMonster = entity.type === "monster";
+  const tokenSrc = entity.type === "character"
+    ? (entity.characterData?.iconUrl || entity.imageUrl)
+    : entity.imageUrl
+      || (entity.type === "keyword" ? COMBO_KEYWORD_IMAGE_URL : null);
 
   return (
     <EntityPreview
@@ -116,7 +143,7 @@ export function DecisionsDecisionsToken({
               interactive={false}
             />
           </span>
-        ) : isActor ? (
+        ) : isMonster ? (
           <span
             {...{ [TILE_ATTR]: "" }}
             data-decisions-piece=""
@@ -126,7 +153,6 @@ export function DecisionsDecisionsToken({
               name={label}
               fallbackUrl={actorFallback}
               spineAsset={actorSpine}
-              kind={entity.type === "character" ? "character" : "monster"}
             />
           </span>
         ) : (
@@ -142,6 +168,7 @@ export function DecisionsDecisionsToken({
                 width={40}
                 height={40}
                 draggable={false}
+                data-drag-preview=""
                 className="h-10 w-10 object-contain"
               />
             ) : (

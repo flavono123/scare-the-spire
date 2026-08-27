@@ -284,6 +284,14 @@ function ChipRow({ children }: { children: ReactNode }) {
   );
 }
 
+function SectionLabel({ children }: { children: ReactNode }) {
+  return (
+    <p className="font-service text-[11px] font-semibold text-zinc-400">
+      {children}
+    </p>
+  );
+}
+
 function ComboStyleStack({ lead, trail }: { lead: string; trail: string }) {
   return (
     <span className="relative block h-8 w-10 shrink-0" aria-hidden>
@@ -516,17 +524,34 @@ export function DecisionsDecisionsPoolPicker({
   const catalogPresets = namedPresets.filter((preset) => (
     preset.kind === "relics" || preset.kind === "potions"
   ));
+  const hasFilters = Boolean(major) && (
+    affiliationChips.length > 0
+    || major === "card"
+    || major === "relic"
+    || major === "potion"
+    || major === "power"
+    || major === "enchantment"
+    || major === "monster"
+    || major === "event"
+    || major === "ancient"
+    || major === "keyword"
+    || major === "modifier"
+  );
 
   return (
     <div className="space-y-3" data-decisions-decisions-pool-picker>
       <div className="space-y-2" data-decisions-decisions-presets>
+        <div className="flex flex-wrap items-baseline gap-2">
+          <SectionLabel>{copy.presetSection}</SectionLabel>
+          <p className="text-[11px] text-zinc-500">{copy.presetHint}</p>
+        </div>
         <div className="flex flex-wrap gap-1.5">
           {cardPresets.map((preset) => (
             <CardPresetJump
               key={preset.key}
               preset={preset}
               label={presetJumpLabel(preset, presetLabels, copy)}
-              jumpHint={copy.continueToBoard}
+              jumpHint={copy.presetHint}
               onClick={() => onPreset(preset.key)}
             />
           ))}
@@ -538,7 +563,7 @@ export function DecisionsDecisionsPoolPicker({
               presetKey={preset.key}
               icon={preset.kind === "relics" ? RELIC_COLLECTION_ICON : POTION_COLLECTION_ICON}
               label={presetJumpLabel(preset, presetLabels, copy)}
-              jumpHint={copy.continueToBoard}
+              jumpHint={copy.presetHint}
               onClick={() => onPreset(preset.key)}
             />
           ))}
@@ -549,67 +574,8 @@ export function DecisionsDecisionsPoolPicker({
         className="space-y-3 border-t-2 border-primary/25 pt-4"
         data-decisions-decisions-pool-generator
       >
-        <div className="relative">
-          <div className="flex items-center gap-2 overflow-hidden rounded-xl border border-border bg-popover/80 p-2.5">
-            <Search className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
-            <input
-              ref={searchInputRef}
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={copy.searchPlaceholder}
-              aria-label={copy.searchPlaceholder}
-              className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
-            />
-          </div>
-          {query.trim() && (
-            <div className="absolute z-20 mt-1 max-h-72 w-full overflow-y-auto rounded-xl border border-border bg-popover p-2 shadow-lg">
-            {matches.length === 0 ? (
-              <p className="px-3 py-8 text-center text-xs text-muted-foreground">
-                {codex.common.noResults}
-              </p>
-            ) : (
-              <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
-                {matches.map((entity) => (
-                  <button
-                    key={`${entity.type}:${entity.id}`}
-                    type="button"
-                    onClick={() => {
-                      onAdd(entity);
-                      setQuery("");
-                    }}
-                    className="flex min-w-0 items-center gap-2 rounded-lg border border-transparent px-2 py-1.5 text-left transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-primary/20 hover:bg-primary/10 focus-visible:border-primary/40 focus-visible:bg-primary/10 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none"
-                  >
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-black/25">
-                      <span className="pointer-events-none origin-center scale-[0.7]">
-                        <ComboResourceAsset
-                          entity={entity}
-                          entityMap={entityMap}
-                          serviceLocale={serviceLocale}
-                        />
-                      </span>
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-xs font-semibold text-foreground">
-                        {entity.nameKo}
-                      </span>
-                      {entity.nameEn !== entity.nameKo && (
-                        <span className="block truncate text-[10px] text-muted-foreground">
-                          {entity.nameEn}
-                        </span>
-                      )}
-                    </span>
-                    <span className="shrink-0 text-[9px] text-muted-foreground">
-                      {typeLabels[entity.type] ?? entity.type}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-        </div>
-
+      <div className="space-y-1.5">
+        <SectionLabel>{copy.typeSection}</SectionLabel>
       <div className="flex flex-wrap gap-1.5" data-decisions-decisions-filter-major>
         {TYPE_CHIPS.map((chip) => (
           <RoundTypeChip
@@ -623,7 +589,11 @@ export function DecisionsDecisionsPoolPicker({
           />
         ))}
       </div>
+      </div>
 
+      {hasFilters && (
+      <div className="space-y-2">
+        <SectionLabel>{copy.filterSection}</SectionLabel>
       {affiliationChips.length > 0 && (
         <ChipRow>
           {affiliationChips.map((chip) => (
@@ -789,6 +759,69 @@ export function DecisionsDecisionsPoolPicker({
           ))}
         </ChipRow>
       )}
+      </div>
+      )}
+
+        <div className="relative">
+          <div className="flex items-center gap-2 overflow-hidden rounded-xl border border-border bg-popover/80 p-2.5">
+            <Search className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
+            <input
+              ref={searchInputRef}
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={copy.searchPlaceholder}
+              aria-label={copy.searchPlaceholder}
+              className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+            />
+          </div>
+          {query.trim() && (
+            <div className="absolute z-20 mt-1 max-h-72 w-full overflow-y-auto rounded-xl border border-border bg-popover p-2 shadow-lg">
+            {matches.length === 0 ? (
+              <p className="px-3 py-8 text-center text-xs text-muted-foreground">
+                {codex.common.noResults}
+              </p>
+            ) : (
+              <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
+                {matches.map((entity) => (
+                  <button
+                    key={`${entity.type}:${entity.id}`}
+                    type="button"
+                    onClick={() => {
+                      onAdd(entity);
+                      setQuery("");
+                    }}
+                    className="flex min-w-0 items-center gap-2 rounded-lg border border-transparent px-2 py-1.5 text-left transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-primary/20 hover:bg-primary/10 focus-visible:border-primary/40 focus-visible:bg-primary/10 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none"
+                  >
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-black/25">
+                      <span className="pointer-events-none origin-center scale-[0.7]">
+                        <ComboResourceAsset
+                          entity={entity}
+                          entityMap={entityMap}
+                          serviceLocale={serviceLocale}
+                        />
+                      </span>
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-xs font-semibold text-foreground">
+                        {entity.nameKo}
+                      </span>
+                      {entity.nameEn !== entity.nameKo && (
+                        <span className="block truncate text-[10px] text-muted-foreground">
+                          {entity.nameEn}
+                        </span>
+                      )}
+                    </span>
+                    <span className="shrink-0 text-[9px] text-muted-foreground">
+                      {typeLabels[entity.type] ?? entity.type}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+        </div>
       </div>
     </div>
   );

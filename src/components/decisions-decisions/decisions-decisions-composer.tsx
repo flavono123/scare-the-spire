@@ -5,14 +5,12 @@ import { ChevronRight, X } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
 import { DecisionsDecisionsPoolPicker } from "@/components/decisions-decisions/decisions-decisions-pool-picker";
-import Image from "@/components/ui/static-image";
 import {
   cloneDefaultRows,
   cloneFilterDims,
   CUSTOM_PRESET_KEY,
   DECISIONS_DECISIONS_NOTE_MAX_CHARS,
   DECISIONS_DECISIONS_TITLE_MAX_CHARS,
-  DECISIONS_DECISIONS_TOKEN_SRC,
   emptyFilterDims,
   entityToResourceRef,
   filterStateFromPresetKey,
@@ -20,6 +18,7 @@ import {
   isDecisionsDecisionsPresetKey,
   namedPresetKeyFromFilter,
   nextUnusedTierColor,
+  dimsHaveSelection,
   poolFilterIsReady,
   reorderTierRows,
   resourceKey,
@@ -203,6 +202,12 @@ export function DecisionsDecisionsComposer({
     if (selectedKey === key) setSelectedKey(null);
   }, [selectedKey]);
 
+  const emptyPoolLabel = !major
+    ? copy.poolPickType
+    : major === "card" && !dimsHaveSelection(dims)
+      ? copy.poolApplyFilter
+      : copy.poolAffordance;
+
   const extrasForSave = useMemo(() => {
     const hasExclusions = excludedKeys.size > 0;
     if (presetKey === CUSTOM_PRESET_KEY || hasExclusions) return pool;
@@ -234,6 +239,44 @@ export function DecisionsDecisionsComposer({
       data-decisions-decisions-composer
       data-decisions-decisions-step={step}
     >
+      <nav
+        aria-label={`${copy.stepPrepare} / ${copy.continueToBoard}`}
+        data-decisions-decisions-steps
+        className="flex flex-wrap items-center gap-1 text-sm"
+      >
+        <button
+          type="button"
+          aria-current={step === "template" ? "step" : undefined}
+          onClick={() => setStep("template")}
+          className={cn(
+            "rounded-md px-2 py-1 font-semibold transition-colors",
+            step === "template"
+              ? "bg-primary/15 text-primary"
+              : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
+          )}
+        >
+          {copy.stepPrepare}
+        </button>
+        <ChevronRight className="h-3.5 w-3.5 text-zinc-500" aria-hidden="true" />
+        <button
+          type="button"
+          aria-current={step === "board" ? "step" : undefined}
+          disabled={pool.length === 0}
+          onClick={() => {
+            if (pool.length === 0) return;
+            setStep("board");
+          }}
+          className={cn(
+            "rounded-md px-2 py-1 font-semibold transition-colors disabled:opacity-40",
+            step === "board"
+              ? "bg-primary/15 text-primary"
+              : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
+          )}
+        >
+          {copy.continueToBoard}
+        </button>
+      </nav>
+
       {(step === "board" || (onClose && !embedded)) && (
       <div className="flex items-start gap-2">
         <div className="min-w-0 flex-1 space-y-2">
@@ -308,24 +351,8 @@ export function DecisionsDecisionsComposer({
             selectedKey={selectedKey}
             onSelect={(ref) => setSelectedKey(resourceKey(ref))}
             onRemoveFromPool={handleRemoveFromPool}
-            onEmptyPoolActivate={() => searchInputRef.current?.focus()}
+            emptyPoolLabel={emptyPoolLabel}
           />
-          <button
-            type="button"
-            disabled={pool.length === 0}
-            onClick={() => setStep("board")}
-            className="group/create inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2.5 text-sm font-semibold text-primary shadow-[0_0_18px_rgba(239,200,81,0.06)] transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/15 hover:shadow-[0_6px_22px_rgba(239,200,81,0.1)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 active:translate-y-0 disabled:opacity-50 motion-reduce:transform-none sm:w-auto"
-          >
-            <Image
-              src={DECISIONS_DECISIONS_TOKEN_SRC}
-              alt=""
-              width={16}
-              height={16}
-              className="object-contain transition-transform duration-200 group-hover/create:rotate-12 motion-reduce:transform-none"
-            />
-            {copy.continueToBoard}
-            <ChevronRight className="h-4 w-4" aria-hidden="true" />
-          </button>
         </>
       )}
 
@@ -375,13 +402,6 @@ export function DecisionsDecisionsComposer({
             }}
           />
           <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setStep("template")}
-              className="inline-flex items-center rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-xs font-semibold text-foreground"
-            >
-              {copy.backToTemplate}
-            </button>
             <button
               type="button"
               disabled={submitting || title.trim().length < 1}

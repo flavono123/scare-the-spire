@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState, type DragEvent } from "react";
-import { GripVertical, Plus, Search, X } from "lucide-react";
+import { GripVertical, Plus, X } from "lucide-react";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import {
   DecisionsDecisionsToken,
@@ -129,31 +129,21 @@ function TierRowEditor({
 
 function PoolEmptyAffordance({
   label,
-  onActivate,
 }: {
   label: string;
-  onActivate?: () => void;
 }) {
   return (
-    <button
-      type="button"
-      aria-label={label}
-      onClick={(event) => {
-        event.stopPropagation();
-        onActivate?.();
-      }}
-      className="flex min-h-20 w-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-primary/35 bg-primary/[0.04] px-3 py-4 text-primary/80 transition-colors hover:border-primary/55 hover:bg-primary/[0.08]"
+    <div
+      role="note"
+      className="flex min-h-20 w-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-primary/35 bg-primary/[0.04] px-3 py-4 text-primary/80"
     >
       <span aria-hidden className="flex items-center gap-2">
         <span className="flex h-9 w-7 items-center justify-center rounded-[4px] border border-dashed border-primary/40" />
         <span className="flex h-9 w-7 items-center justify-center rounded-[4px] border border-dashed border-primary/25" />
         <span className="flex h-9 w-7 items-center justify-center rounded-[4px] border border-dashed border-primary/15" />
       </span>
-      <span aria-hidden className="flex items-center gap-1.5 text-primary/70">
-        <Plus className="h-4 w-4" />
-        <Search className="h-4 w-4" />
-      </span>
-    </button>
+      <span className="text-center text-xs font-medium">{label}</span>
+    </div>
   );
 }
 
@@ -170,10 +160,10 @@ export function DecisionsDecisionsBoard({
   compact = false,
   variant = "board",
   showUnranked,
+  emptyPoolLabel,
   onSelect,
   onMove,
   onRemoveFromPool,
-  onEmptyPoolActivate,
   onRowLabelChange,
   onRowColorChange,
   onReorderRows,
@@ -192,10 +182,10 @@ export function DecisionsDecisionsBoard({
   compact?: boolean;
   variant?: "board" | "pool";
   showUnranked?: boolean;
+  emptyPoolLabel?: string;
   onSelect?: (ref: DecisionsDecisionsResourceRef) => void;
   onMove?: (ref: DecisionsDecisionsResourceRef, rowId: string) => void;
   onRemoveFromPool?: (ref: DecisionsDecisionsResourceRef) => void;
-  onEmptyPoolActivate?: () => void;
   onRowLabelChange?: (rowId: string, label: string) => void;
   onRowColorChange?: (rowId: string, color: TierPaletteKey) => void;
   onReorderRows?: (fromId: string, toId: string) => void;
@@ -412,14 +402,11 @@ export function DecisionsDecisionsBoard({
               ? (
                 readOnly
                   ? null
-                  : onEmptyPoolActivate
-                    ? (
-                      <PoolEmptyAffordance
-                        label={copy.poolAffordance}
-                        onActivate={onEmptyPoolActivate}
-                      />
-                    )
-                    : <div className="min-h-16" />
+                  : (
+                    <PoolEmptyAffordance
+                      label={emptyPoolLabel ?? copy.poolAffordance}
+                    />
+                  )
               )
               : renderTokens(unrankedItems, { removable: Boolean(onRemoveFromPool) })}
           </div>
