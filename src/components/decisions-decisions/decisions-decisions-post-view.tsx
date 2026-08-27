@@ -1,13 +1,13 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
-import { DecisionsDecisionsComposer } from "@/components/decisions-decisions/decisions-decisions-composer";
 import { LikeButton } from "@/components/like-button";
 import { PostDetailActions } from "@/components/post-detail-actions";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
@@ -31,6 +31,13 @@ import { formatTimeAgo } from "@/lib/relative-time";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 import Image from "@/components/ui/static-image";
+
+const DecisionsDecisionsComposerModal = dynamic(
+  () => import("@/components/decisions-decisions/decisions-decisions-composer-modal").then(
+    (mod) => mod.DecisionsDecisionsComposerModal,
+  ),
+  { ssr: false },
+);
 
 export function DecisionsDecisionsPostView({
   postId,
@@ -137,8 +144,8 @@ export function DecisionsDecisionsPostView({
 
       {post.note && <p className="text-sm text-zinc-300">{post.note}</p>}
 
-      {editing && isAuthor ? (
-        <DecisionsDecisionsComposer
+      {editing && isAuthor && (
+        <DecisionsDecisionsComposerModal
           entities={catalog.entities}
           entityMap={catalog.entityMap}
           stamps={catalog.stamps}
@@ -157,63 +164,61 @@ export function DecisionsDecisionsPostView({
             return Boolean(next);
           }}
         />
-      ) : (
-        <>
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => setShowNames(true)}
-              className="text-xs text-primary"
-            >
-              {copy.exportNamed}
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowNames(false)}
-              className="text-xs text-primary"
-            >
-              {copy.exportCompact}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                void navigator.clipboard.writeText(placementText(post, catalog.entityMap));
-              }}
-              className="text-xs text-primary"
-            >
-              {copy.exportText}
-            </button>
-            <TransfigureImageCopyButton
-              fileName={`${post.title}.png`}
-              targetRef={boardRef}
-              labels={{
-                copy: copy.exportNamed,
-                copying: copy.copying,
-                copied: copy.copied,
-                copyFailed: copy.copyFailed,
-                copyUnsupported: copy.copyUnsupported,
-                download: copy.download,
-                downloading: copy.downloading,
-                downloaded: copy.downloaded,
-                downloadFailed: copy.downloadFailed,
-              }}
-            />
-          </div>
-          <div ref={boardRef}>
-            <DecisionsDecisionsBoard
-              rows={post.rows}
-              placements={post.placements}
-              pool={pool}
-              entitiesByKey={catalog.entityMap}
-              serviceLocale={serviceLocale}
-              gameLocale={gameLocale}
-              showNames={showNames}
-              selectedKey={null}
-              readOnly
-            />
-          </div>
-        </>
       )}
+
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => setShowNames(true)}
+          className="text-xs text-primary"
+        >
+          {copy.exportNamed}
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowNames(false)}
+          className="text-xs text-primary"
+        >
+          {copy.exportCompact}
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void navigator.clipboard.writeText(placementText(post, catalog.entityMap));
+          }}
+          className="text-xs text-primary"
+        >
+          {copy.exportText}
+        </button>
+        <TransfigureImageCopyButton
+          fileName={`${post.title}.png`}
+          targetRef={boardRef}
+          labels={{
+            copy: copy.exportNamed,
+            copying: copy.copying,
+            copied: copy.copied,
+            copyFailed: copy.copyFailed,
+            copyUnsupported: copy.copyUnsupported,
+            download: copy.download,
+            downloading: copy.downloading,
+            downloaded: copy.downloaded,
+            downloadFailed: copy.downloadFailed,
+          }}
+        />
+      </div>
+      <div ref={boardRef}>
+        <DecisionsDecisionsBoard
+          rows={post.rows}
+          placements={post.placements}
+          pool={pool}
+          entitiesByKey={catalog.entityMap}
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+          showNames={showNames}
+          selectedKey={null}
+          readOnly
+        />
+      </div>
 
       {!isEmbed && (
         <LikeButton

@@ -231,17 +231,19 @@ export function getToyBoxNavItems({
   const serviceItems = visible
     .filter((service) => !service.nestedUnder)
     .toSorted((left, right) => right.createdAt.localeCompare(left.createdAt))
-    .map((service) => {
+    .flatMap((service) => {
       const nested = (nestedByParent.get(service.href) ?? [])
         .toSorted((left, right) => right.createdAt.localeCompare(left.createdAt));
-      return {
-        href: service.href,
-        label: service.getLabel(serviceLocale, gameLocale),
-        icon: service.icon,
-        isNew: service.byrdispatchSectionTitle
-          ? isLatestByrdispatchNewSection(service.byrdispatchSectionTitle)
-          : false,
-        children: nested.map((child) => ({
+      return [
+        {
+          href: service.href,
+          label: service.getLabel(serviceLocale, gameLocale),
+          icon: service.icon,
+          isNew: service.byrdispatchSectionTitle
+            ? isLatestByrdispatchNewSection(service.byrdispatchSectionTitle)
+            : false,
+        },
+        ...nested.map((child) => ({
           href: child.href,
           label: child.getLabel(serviceLocale, gameLocale),
           icon: child.icon,
@@ -249,7 +251,7 @@ export function getToyBoxNavItems({
             ? isLatestByrdispatchNewSection(child.byrdispatchSectionTitle)
             : false,
         })),
-      };
+      ];
     });
 
   return localizePlainNavItems(

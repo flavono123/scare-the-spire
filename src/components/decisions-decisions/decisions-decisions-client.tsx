@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
-import { DecisionsDecisionsComposer } from "@/components/decisions-decisions/decisions-decisions-composer";
 import { DecisionsDecisionsPostCard } from "@/components/decisions-decisions/decisions-decisions-post-card";
 import { FeedLoadMoreSentinel } from "@/components/feed-load-more-sentinel";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
@@ -22,6 +22,13 @@ import type { GameLocale } from "@/lib/i18n";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
+
+const DecisionsDecisionsComposerModal = dynamic(
+  () => import("@/components/decisions-decisions/decisions-decisions-composer-modal").then(
+    (mod) => mod.DecisionsDecisionsComposerModal,
+  ),
+  { ssr: false },
+);
 
 export function DecisionsDecisionsClient({
   gameLocale,
@@ -98,11 +105,11 @@ export function DecisionsDecisionsClient({
         )}
       </header>
 
-      {composerOpen && ready && !unavailable && (
+      {composerOpen && ready && (
         catalog.error ? (
           <p className="text-sm text-muted-foreground">{copy.resourcesMissing}</p>
         ) : (
-          <DecisionsDecisionsComposer
+          <DecisionsDecisionsComposerModal
             entities={catalog.entities}
             entityMap={catalog.entityMap}
             stamps={catalog.stamps}

@@ -30,7 +30,7 @@ import sts2Meta from "../../data/sts2/meta.json";
 
 export const DECISIONS_DECISIONS_HREF = "/decisions-decisions";
 export const DECISIONS_DECISIONS_TOKEN_SRC =
-  "/images/sts2/powers/stratagem_power.webp";
+  "/images/sts2/powers/buffer_power.webp";
 export const DECISIONS_DECISIONS_BACKGROUND_SRC =
   "/images/sts2/cards/decisions_decisions.webp";
 

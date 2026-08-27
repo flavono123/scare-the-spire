@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode, type RefObject, useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { ChevronRight, Search } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ComboResourceAsset } from "@/components/combo/combo-resource-stack";
 import { getEpochAffiliationLabel } from "@/components/codex/epoch-display";
@@ -22,6 +22,7 @@ import Image from "@/components/ui/static-image";
 import { matchEntities } from "@/lib/chemical-utils";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import {
+  CHARACTER_COLORS,
   ENCHANTMENT_CARD_TYPE_CONFIG,
   MONSTER_TYPE_CONFIG,
   POTION_RARITY_CONFIG,
@@ -46,6 +47,7 @@ import {
   RELIC_AFFILIATION_MINORS,
   RELIC_RARITY_MINORS,
   isDecisionsDecisionsResourceType,
+  type DecisionsDecisionsPresetDef,
   type DecisionsFilterDim,
   type DecisionsFilterDims,
   type DecisionsPoolMajor,
@@ -55,6 +57,9 @@ import { sts2NavItems } from "@/lib/site-nav-items";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
 
+const CARD_COLLECTION_ICON = "/images/sts2/nav/stats_cards.png";
+const RELIC_COLLECTION_ICON = "/images/sts2/relics/bing_bong.webp";
+const POTION_COLLECTION_ICON = "/images/sts2/potions/potion_shaped_rock.webp";
 const GOLD = "#EFC851";
 const PURPLE = "#c084fc";
 const ACT_COLOR = "#60a5fa";
@@ -279,6 +284,136 @@ function ChipRow({ children }: { children: ReactNode }) {
   );
 }
 
+function ComboStyleStack({ lead, trail }: { lead: string; trail: string }) {
+  return (
+    <span className="relative block h-8 w-10 shrink-0" aria-hidden>
+      <Image
+        src={lead}
+        alt=""
+        width={32}
+        height={32}
+        className="absolute left-0 top-0 z-10 h-8 w-8 object-contain drop-shadow-[0_3px_5px_rgba(0,0,0,0.75)]"
+      />
+      <Image
+        src={trail}
+        alt=""
+        width={32}
+        height={32}
+        className="absolute left-2.5 top-0 z-20 h-8 w-8 object-contain drop-shadow-[0_3px_5px_rgba(0,0,0,0.75)]"
+      />
+    </span>
+  );
+}
+
+function presetJumpLabel(
+  preset: DecisionsDecisionsPresetDef,
+  presetLabels: Record<string, string>,
+  copy: {
+    presetNamedCards: string;
+    presetAllRelics: string;
+    presetAllPotions: string;
+  },
+): string {
+  if (preset.kind === "cards") {
+    const name = presetLabels[preset.key] ?? preset.key;
+    if (preset.color === "colorless") return name;
+    return copy.presetNamedCards.replace("{name}", name);
+  }
+  if (preset.kind === "relics") return copy.presetAllRelics;
+  if (preset.kind === "potions") return copy.presetAllPotions;
+  return presetLabels[preset.key] ?? preset.key;
+}
+
+function CardPresetJump({
+  preset,
+  label,
+  jumpHint,
+  onClick,
+}: {
+  preset: Extract<DecisionsDecisionsPresetDef, { kind: "cards" }>;
+  label: string;
+  jumpHint: string;
+  onClick: () => void;
+}) {
+  const trail = preset.color === "colorless"
+    ? COLORLESS_FILTER_ICON
+    : CHARACTER_TOKEN_ICONS[preset.color];
+  const accent = CHARACTER_COLORS[preset.color];
+
+  return (
+    <GameUiHoverTip label={jumpHint} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
+      <button
+        type="button"
+        aria-label={`${label}. ${jumpHint}`}
+        onClick={onClick}
+        data-decisions-decisions-preset-jump={preset.key}
+        className={cn(
+          "group/preset relative inline-flex items-center gap-1.5 rounded-xl border border-primary/35 bg-primary/10 py-1.5 pl-2 pr-2",
+          "text-[11px] font-semibold text-primary shadow-[0_0_14px_rgba(239,200,81,0.05)]",
+          "transition-[transform,border-color,background-color,box-shadow] duration-200",
+          "hover:-translate-y-0.5 hover:border-primary/55 hover:bg-primary/15 hover:shadow-[0_6px_18px_rgba(239,200,81,0.1)]",
+          "focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70",
+          "active:translate-y-0 motion-reduce:transform-none",
+        )}
+      >
+        {accent ? (
+          <span
+            aria-hidden
+            className="absolute inset-y-1.5 left-0 w-[3px] rounded-full"
+            style={{ backgroundColor: accent }}
+          />
+        ) : null}
+        <ComboStyleStack lead={CARD_COLLECTION_ICON} trail={trail ?? COLORLESS_FILTER_ICON} />
+        <span className="whitespace-nowrap">{label}</span>
+        <ChevronRight
+          className="h-3.5 w-3.5 shrink-0 opacity-80 transition-transform duration-200 group-hover/preset:translate-x-0.5"
+          aria-hidden="true"
+        />
+      </button>
+    </GameUiHoverTip>
+  );
+}
+
+function CatalogPresetJump({
+  presetKey,
+  icon,
+  label,
+  jumpHint,
+  onClick,
+}: {
+  presetKey: string;
+  icon: string;
+  label: string;
+  jumpHint: string;
+  onClick: () => void;
+}) {
+  return (
+    <GameUiHoverTip label={jumpHint} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
+      <button
+        type="button"
+        aria-label={`${label}. ${jumpHint}`}
+        onClick={onClick}
+        data-decisions-decisions-preset-jump={presetKey}
+        className={cn(
+          "group/catalog inline-flex h-11 items-center gap-2 rounded-lg border border-primary/50 bg-primary/15 px-3",
+          "text-xs font-semibold text-primary shadow-[0_0_18px_rgba(239,200,81,0.1)]",
+          "transition-[transform,border-color,background-color,box-shadow] duration-200",
+          "hover:-translate-y-0.5 hover:border-primary/70 hover:bg-primary/20 hover:shadow-[0_8px_22px_rgba(239,200,81,0.14)]",
+          "focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70",
+          "active:translate-y-0 motion-reduce:transform-none",
+        )}
+      >
+        <Image src={icon} alt="" width={24} height={24} className="h-6 w-6 object-contain" />
+        <span className="whitespace-nowrap">{label}</span>
+        <ChevronRight
+          className="h-4 w-4 shrink-0 opacity-90 transition-transform duration-200 group-hover/catalog:translate-x-0.5"
+          aria-hidden="true"
+        />
+      </button>
+    </GameUiHoverTip>
+  );
+}
+
 export function DecisionsDecisionsPoolPicker({
   entities,
   entityMap,
@@ -372,39 +507,63 @@ export function DecisionsDecisionsPoolPicker({
     ? { cardKeyword: "카드 키워드", staticHoverTip: "툴팁 키워드" }
     : { cardKeyword: "Card keyword", staticHoverTip: "Hover tip" };
 
+  const namedPresets = namedPresetDefs();
+  const cardPresets = namedPresets.filter(
+    (preset): preset is Extract<DecisionsDecisionsPresetDef, { kind: "cards" }> => (
+      preset.kind === "cards"
+    ),
+  );
+  const catalogPresets = namedPresets.filter((preset) => (
+    preset.kind === "relics" || preset.kind === "potions"
+  ));
+
   return (
     <div className="space-y-3" data-decisions-decisions-pool-picker>
-      <div
-        className="flex flex-wrap gap-1.5"
-        data-decisions-decisions-presets
-      >
-        {namedPresetDefs().map((preset) => (
-          <button
-            key={preset.key}
-            type="button"
-            onClick={() => onPreset(preset.key)}
-            className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-[11px] font-semibold text-foreground transition-colors hover:border-primary/40 hover:bg-primary/10"
-          >
-            {presetLabels[preset.key] ?? preset.key}
-          </button>
-        ))}
+      <div className="space-y-2" data-decisions-decisions-presets>
+        <div className="flex flex-wrap gap-1.5">
+          {cardPresets.map((preset) => (
+            <CardPresetJump
+              key={preset.key}
+              preset={preset}
+              label={presetJumpLabel(preset, presetLabels, copy)}
+              jumpHint={copy.continueToBoard}
+              onClick={() => onPreset(preset.key)}
+            />
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {catalogPresets.map((preset) => (
+            <CatalogPresetJump
+              key={preset.key}
+              presetKey={preset.key}
+              icon={preset.kind === "relics" ? RELIC_COLLECTION_ICON : POTION_COLLECTION_ICON}
+              label={presetJumpLabel(preset, presetLabels, copy)}
+              jumpHint={copy.continueToBoard}
+              onClick={() => onPreset(preset.key)}
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="relative">
-        <div className="flex items-center gap-2 overflow-hidden rounded-xl border border-border bg-popover/80 p-2.5">
-          <Search className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
-          <input
-            ref={searchInputRef}
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={copy.searchPlaceholder}
-            aria-label={copy.searchPlaceholder}
-            className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
-          />
-        </div>
-        {query.trim() && (
-          <div className="absolute z-20 mt-1 max-h-72 w-full overflow-y-auto rounded-xl border border-border bg-popover p-2 shadow-lg">
+      <div
+        className="space-y-3 border-t-2 border-primary/25 pt-4"
+        data-decisions-decisions-pool-generator
+      >
+        <div className="relative">
+          <div className="flex items-center gap-2 overflow-hidden rounded-xl border border-border bg-popover/80 p-2.5">
+            <Search className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
+            <input
+              ref={searchInputRef}
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={copy.searchPlaceholder}
+              aria-label={copy.searchPlaceholder}
+              className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+            />
+          </div>
+          {query.trim() && (
+            <div className="absolute z-20 mt-1 max-h-72 w-full overflow-y-auto rounded-xl border border-border bg-popover p-2 shadow-lg">
             {matches.length === 0 ? (
               <p className="px-3 py-8 text-center text-xs text-muted-foreground">
                 {codex.common.noResults}
@@ -449,7 +608,7 @@ export function DecisionsDecisionsPoolPicker({
             )}
           </div>
         )}
-      </div>
+        </div>
 
       <div className="flex flex-wrap gap-1.5" data-decisions-decisions-filter-major>
         {TYPE_CHIPS.map((chip) => (
@@ -630,6 +789,7 @@ export function DecisionsDecisionsPoolPicker({
           ))}
         </ChipRow>
       )}
+      </div>
     </div>
   );
 }

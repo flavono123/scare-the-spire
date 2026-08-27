@@ -1,16 +1,18 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
-import { X } from "lucide-react";
+import { ChevronRight, X } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
 import { DecisionsDecisionsPoolPicker } from "@/components/decisions-decisions/decisions-decisions-pool-picker";
+import Image from "@/components/ui/static-image";
 import {
   cloneDefaultRows,
   cloneFilterDims,
   CUSTOM_PRESET_KEY,
   DECISIONS_DECISIONS_NOTE_MAX_CHARS,
   DECISIONS_DECISIONS_TITLE_MAX_CHARS,
+  DECISIONS_DECISIONS_TOKEN_SRC,
   emptyFilterDims,
   entityToResourceRef,
   filterStateFromPresetKey,
@@ -34,6 +36,7 @@ import {
   type TierRow,
 } from "@/lib/decisions-decisions";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
 
 export type DecisionsDecisionsComposerValues = {
@@ -72,6 +75,7 @@ export function DecisionsDecisionsComposer({
   initial,
   onSubmit,
   onClose,
+  embedded = false,
 }: {
   entities: EntityInfo[];
   entityMap: Map<string, EntityInfo>;
@@ -85,6 +89,7 @@ export function DecisionsDecisionsComposer({
   initial?: DecisionsDecisionsPost | null;
   onSubmit: (values: DecisionsDecisionsComposerValues) => Promise<boolean>;
   onClose?: () => void;
+  embedded?: boolean;
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
   const initialFilter = filterStateFromPresetKey(initial?.preset_key ?? CUSTOM_PRESET_KEY);
@@ -225,10 +230,11 @@ export function DecisionsDecisionsComposer({
 
   return (
     <div
-      className="space-y-3 rounded-lg border border-border bg-card/20 p-3"
+      className={cn("space-y-3", !embedded && "rounded-lg border border-border bg-card/20 p-3")}
       data-decisions-decisions-composer
       data-decisions-decisions-step={step}
     >
+      {(step === "board" || (onClose && !embedded)) && (
       <div className="flex items-start gap-2">
         <div className="min-w-0 flex-1 space-y-2">
           {step === "board" && (
@@ -262,7 +268,7 @@ export function DecisionsDecisionsComposer({
             </>
           )}
         </div>
-        {onClose && (
+        {onClose && !embedded && (
           <button
             type="button"
             onClick={onClose}
@@ -273,6 +279,7 @@ export function DecisionsDecisionsComposer({
           </button>
         )}
       </div>
+      )}
 
       {step === "template" && (
         <>
@@ -307,9 +314,17 @@ export function DecisionsDecisionsComposer({
             type="button"
             disabled={pool.length === 0}
             onClick={() => setStep("board")}
-            className="inline-flex items-center rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary disabled:opacity-50"
+            className="group/create inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2.5 text-sm font-semibold text-primary shadow-[0_0_18px_rgba(239,200,81,0.06)] transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/15 hover:shadow-[0_6px_22px_rgba(239,200,81,0.1)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 active:translate-y-0 disabled:opacity-50 motion-reduce:transform-none sm:w-auto"
           >
+            <Image
+              src={DECISIONS_DECISIONS_TOKEN_SRC}
+              alt=""
+              width={16}
+              height={16}
+              className="object-contain transition-transform duration-200 group-hover/create:rotate-12 motion-reduce:transform-none"
+            />
             {copy.continueToBoard}
+            <ChevronRight className="h-4 w-4" aria-hidden="true" />
           </button>
         </>
       )}
