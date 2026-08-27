@@ -161,8 +161,8 @@ the hero.
 | Combo | 게임 요소 조합 공유하기 | none today; optional Amalgamator line |
 | Transfigure | 게임 요소 설명 다시 쓰기 | Morphic Grove paragraph |
 | Chemical X | 게임 요소로 짧은 글 쓰기 | no game hero; keep `legacyName` |
-| 조각모음 | 장난감 상자 글을 한곳에 모으기 | `FOCUS_POWER.description` |
-| 어려운 결정 | 게임 요소 티어 나누기 | `selectionScreenPrompt` |
+| 조각모음 | 커뮤니티 | `FOCUS_POWER.description` |
+| 어려운 결정 | 게임 요소 티어 만들기 | `selectionScreenPrompt` |
 | History Course | 런 도전 이력 다시 보기 | Lantern Key parody `heroQuote` |
 
 `$create-toybox-service` must resolve title, functional subtitle, optional
@@ -273,28 +273,15 @@ Two content max-widths only, from `src/lib/toybox-layout.ts`:
 
 ### Create / submit CTAs
 
-Product review, not yet flipped: flavor create labels do not scale as services
-multiply, and some already fail as write verbs. Until that review lands, do
-not mass-replace existing CTAs in incidental work.
+Do not retouch existing create/submit labels except `올리기` → `등록`
+(English `Register`). 어려운 결정 already uses `등록`. Keep Combo
+`결합이다!` / `조합 공유`, Transfigure `변형하기`, This or That create
+`이거... 아님 저거?`, vote `선택하라.`, 조각모음 `밀집을 얻습니다`,
+Chemical X `투입`.
 
-- **Keep** short verb-like borrows on index create when they name the action
-  and are not the service title: Combo `결합이다!` / `COMBINING!`
-  (Amalgamator), Transfigure `변형하기` / `Transfigure` (`TRANSFIGURE.title`).
-- **Do not** use the service title as the create CTA. This or That
-  `이거... 아님 저거?` restates `h1`. If retouched, use `작성` / `Write`.
-- **Do not** use a flavor sentence as the write control. 조각모음
-  `밀집을 얻습니다` / `Gain Focus.` is card text, not "compose". If retouched,
-  use `작성` / `Write`; type submit labels inside the write panel may
-  still follow that type's own CTA.
-- In-flow game prompts that are not write buttons stay borrowed: This or That
-  vote stays Knowledge Demon `선택하라.` / `Make your choice.`
-- Composer confirm stays a service verb already in use (`조합 공유`,
-  `변형하기`, Chemical X `투입`). Do not use `올리기`. 어려운 결정 create
-  `티어 만들기` is already service-owned, not a game quote; its confirm
-  label should move off `올리기` to `공유` / `Share` if retouched.
-- New services: if no short verb-like game line exists, use `작성` / `Write`
-  to open the composer and `공유` / `Share` to confirm. Do not use `올리기`,
-  `만들기`, `제출하기`, or `게시`.
+- New services may still borrow a short verb-like game line for create.
+  When there is no such line, confirm with `등록` / `Register`. Do not use
+  `올리기`.
 - Put service shell strings in `src/messages/service.ts`. Keep remaining
   game-origin phrases sourced from extracted locale / borrowed-game-copy, not
   hand translation.

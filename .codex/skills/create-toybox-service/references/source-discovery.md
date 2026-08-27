@@ -104,7 +104,7 @@ Use these as pattern evidence, not as a fixed catalog:
 | History Course | `relics:HISTORY_COURSE.title` | 런 도전 이력 다시 보기 | Lantern Key event quote with `RUN_HISTORY.title` substitution | `relics/history_course.webp` | `events/war_historian_repy.webp` |
 | This or That? | `events:THIS_OR_THAT.title` | 게임 요소 투표하기 | Final line of the same event description | `relics/choices_paradox.webp` | `events/this_or_that.webp` |
 | C-c-c-Combo | Service-owned title | 게임 요소 조합 공유하기 | none required; Amalgamator line is input copy today | `badges/ccccombo.webp` | `events/amalgamator.webp` |
-| 조각모음 | `cards.DEFRAGMENT.title` | 장난감 상자 글을 한곳에 모으기 | `FOCUS_POWER.description` from the Focus power the card applies | `powers/focus_power.webp` | `cards/defragment.webp` |
+| 조각모음 | `cards.DEFRAGMENT.title` | 커뮤니티 | `FOCUS_POWER.description` from the Focus power the card applies | `powers/focus_power.webp` | `cards/defragment.webp` |
 
 `data/i18n/borrowed-game-phrases.json` is the precedent for documenting adapted
 game text. Generated localized copy belongs in the existing static generation
