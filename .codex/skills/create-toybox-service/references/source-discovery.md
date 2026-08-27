@@ -1,7 +1,7 @@
 # Toy Box source discovery
 
-Use this reference while choosing or verifying a Toy Box service title, page
-subtitle, token asset, or background art.
+Use this reference while choosing or verifying a Toy Box service title,
+functional subtitle, hero phrase, token asset, or background art.
 
 ## Search order
 
@@ -55,10 +55,15 @@ Build a coherent identity rather than four independent choices:
 - **Title:** Prefer an exact game-localized title when a game resource naturally
   names the service. A service-created Korean title is acceptable when it is a
   deliberate wordplay or clearer product name; do not present it as game text.
-- **Page subtitle:** Prefer a concise line from the same resource or a closely
+- **Functional subtitle:** Write a short service-owned verb phrase for what the
+  visitor does (`게임 요소 투표하기`). Wrap it with
+  `슬레이 더 스파이어 2 {기능 설명} - 슬서운 이야기` for metadata. On-page `h2`
+  is the phrase only. Do not borrow a `gameLocale` line into this slot.
+- **Hero phrase:** Prefer a concise line from the same resource or a closely
   related event. It may be an exact `gameLocale` line or a minimal,
   mechanically documented substitution. Keep the source table, key, original
-  text, and replacement rule.
+  text, and replacement rule. Page-only; never metadata. Omit when no honest
+  line exists.
 - **Token:** Prefer a transparent, icon-like asset that stays legible in both
   navigation and the page header. The same-name relic, badge, potion, power, or
   token wins over a merely decorative match.
@@ -80,7 +85,8 @@ and recommend one. For every value, include:
 | Field | Value | Status | Evidence |
 | --- | --- | --- | --- |
 | Title | Localized or service title | provided / exact / adapted | table and key, or service rationale |
-| Page subtitle | Localized line | exact / adapted | table, key, and replacement if any |
+| Functional subtitle | `{기능 설명}` + metadata template | service-owned | verb phrase; not a game quote |
+| Hero phrase | Localized line or omitted | exact / adapted / omitted | table, key, and replacement if any |
 | Token | Public asset path | exact / related | resource id and source |
 | Background | Public asset path | exact / related | card/event id and source |
 | Default nickname | Identity noun for empty-profile posts | exact / adapted / service-owned exception | table and key, or documented exception |
@@ -92,13 +98,13 @@ evidence in the final report.
 
 Use these as pattern evidence, not as a fixed catalog:
 
-| Service | Title source | Page-only copy | Token | Background |
-| --- | --- | --- | --- | --- |
-| Chemical X | `CHEMICAL_X` relic / service spelling | Tea Master event line used as input copy | `relics/chemical_x.webp` | `cards/eradicate.webp` |
-| History Course | `relics:HISTORY_COURSE.title` | Lantern Key event quote with `RUN_HISTORY.title` substitution | `relics/history_course.webp` | `events/war_historian_repy.webp` |
-| This or That? | `events:THIS_OR_THAT.title` | Final line of the same event description | `relics/choices_paradox.webp` | `events/this_or_that.webp` |
-| C-c-c-Combo | Service-owned title | Amalgamator event line used as input copy | `badges/ccccombo.webp` | `events/amalgamator.webp` |
-| 조각모음 | `cards.DEFRAGMENT.title` | `FOCUS_POWER.description` from the Focus power the card applies | `powers/focus_power.webp` | `cards/defragment.webp` |
+| Service | Title source | Functional subtitle (planned) | Hero / page-only copy | Token | Background |
+| --- | --- | --- | --- | --- | --- |
+| Chemical X | `CHEMICAL_X` relic / service spelling | 게임 요소로 짧은 글 쓰기 | none; `legacyName` aside. Tea Master line is input copy | `relics/chemical_x.webp` | `cards/eradicate.webp` |
+| History Course | `relics:HISTORY_COURSE.title` | 런 도전 이력 다시 보기 | Lantern Key event quote with `RUN_HISTORY.title` substitution | `relics/history_course.webp` | `events/war_historian_repy.webp` |
+| This or That? | `events:THIS_OR_THAT.title` | 게임 요소 투표하기 | Final line of the same event description | `relics/choices_paradox.webp` | `events/this_or_that.webp` |
+| C-c-c-Combo | Service-owned title | 게임 요소 조합 공유하기 | none required; Amalgamator line is input copy today | `badges/ccccombo.webp` | `events/amalgamator.webp` |
+| 조각모음 | `cards.DEFRAGMENT.title` | 장난감 상자 글을 한곳에 모으기 | `FOCUS_POWER.description` from the Focus power the card applies | `powers/focus_power.webp` | `cards/defragment.webp` |
 
 `data/i18n/borrowed-game-phrases.json` is the precedent for documenting adapted
 game text. Generated localized copy belongs in the existing static generation

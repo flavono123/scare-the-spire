@@ -1,6 +1,6 @@
 ---
 name: create-toybox-service
-description: Choose and implement game-backed identities for new scare-the-spire Toy Box services. Use when the user asks to create, build, or add a Toy Box service, or asks for recommendations for any combination of its title, gameLocale page subtitle, token asset, and background art. Accept complete, partial, or absent identity inputs; verify provided values and resolve missing ones from the codebase, extracted game data and assets, PCK, or DLL without guessing.
+description: Choose and implement game-backed identities for new scare-the-spire Toy Box services. Use when the user asks to create, build, or add a Toy Box service, or asks for recommendations for any combination of its title, functional subtitle, hero phrase, token asset, and background art. Accept complete, partial, or absent identity inputs; verify provided values and resolve missing ones from the codebase, extracted game data and assets, PCK, or DLL without guessing.
 ---
 
 # Create Toy Box Service
@@ -25,7 +25,8 @@ the choice.
 Split the request into:
 
 - The service behavior or user problem.
-- Any provided title, page subtitle, token asset, and background art.
+- Any provided title, functional subtitle, hero phrase, token asset, and
+  background art.
 - Whether the user wants recommendations only or an implemented service.
 
 Preserve provided identity choices unless they conflict with game evidence,
@@ -48,16 +49,17 @@ that posts a nickname, also resolve `defaultNickname` from the same identity.
 
 | Field | Requirement |
 | --- | --- |
-| Title | Use Korean first. Prefer exact game-localized naming when a resource naturally names the service; otherwise label deliberate service-owned wordplay honestly. |
-| Page subtitle | Use an exact `gameLocale` line or a minimal documented transformation of one. Render it only inside the service page. |
+| Title | Use Korean first. Prefer exact game-localized naming when a resource naturally names the service; otherwise label deliberate service-owned wordplay honestly. This is `h1`, nav, and OG title (`{title} - {brand}`). |
+| Functional subtitle | Service-owned verb phrase for what the page does. Korean template: `슬레이 더 스파이어 2 {기능 설명} - 슬서운 이야기`. English: `Slay the Spire 2 {function} - Scare the Spire`. On-page `h2` is only `{기능 설명}`; metadata description is the full template. Do not borrow or lightly adapt a gameLocale line into this slot. See `$feature-implementation` Toy Box title, subtitle, and hero. |
+| Hero phrase | Optional exact `gameLocale` line or a minimal documented transformation of one. Render it only inside the service page, one step under the `h2`, as `<p>` flavor. Omit when no honest game line exists. |
 | Token asset | Use a same-name or semantically tight in-game token that remains legible in navigation and the page header. Prefer relic, potion, power, badge, or Ancient art. Do not use card portraits as the service token. Keep its meaning distinct across the entire site, not only among Toy Box services. |
 | Background art | Use related card, event, or scene art that expresses the service action and survives desktop and mobile cropping. |
 | Default nickname | Required when the service posts a nickname. Use an exact in-game identity noun or a minimal documented adaptation of one (Combo `융합자` / `Amalgamator` from `AMALGAMATOR.title`; Transfigure `변형체` / `Transfigured` from `TRANSFIGURE.title`; This or That `세 번째 손` / `THIRD hand` from `THIS_OR_THAT.pages.PLAIN.description`; 조각모음 `밀집` / `Focus` from `FOCUS_POWER.title`, not the Defragment card title). Do not invent `익명의 ~술사` labels. Chemical X `익명의 투입터리안` is the documented service-owned exception. Keep ≤ 20 characters. This remains the real fallback when `sts-user-profile` is missing; profile character nicknames are not auto-seeded on service pages. |
 
-Never use the page subtitle as `Metadata.description`, Open Graph description,
+Never use the hero phrase as `Metadata.description`, Open Graph description,
 Twitter description, or another SEO description. It can be mistaken for the
-description of the game resource from which it was borrowed. Write a separate,
-factual service-owned metadata description.
+description of the game resource from which it was borrowed. The functional
+subtitle template *is* the metadata description.
 
 Store an adapted game phrase's source table, key, original text, and replacement
 rule in `data/i18n/borrowed-game-phrases.json`. Generate localized runtime copy
@@ -108,8 +110,10 @@ Follow current Toy Box patterns instead of copying one old route wholesale:
   tokens small and icon-like (relic, potion, power, badge, Ancient). Card art
   may still be the page background or OG image. History Course stays top-level
   and is not a 조각모음 feed source.
-- Put service-owned UI text in the typed service dictionaries. Put exact or
-  adapted game copy in the generated `gameLocale` path.
+- Put service-owned UI text in the typed service dictionaries, including the
+  functional subtitle phrase and the composed metadata template. Put exact or
+  adapted game copy (title, hero, placeholders, remaining verb-like CTAs) in
+  the generated `gameLocale` path.
 - If the service posts a nickname, set `defaultNickname` in
   `src/messages/service.ts` from the same game-locale identity and pass it as
   the `useUserProfile` fallback. See `$feature-implementation` service default
@@ -117,10 +121,12 @@ Follow current Toy Box patterns instead of copying one old route wholesale:
 - Reuse the chosen token in the page header and render the chosen background
   with `ServiceBackground`; use the repository static-image/cache-busting
   conventions.
-- Add route metadata, OG image rules, search/crawl surfaces, and detail-route
+- Index header outline is `h1` title, `h2` `{기능 설명}`, optional hero `<p>`.
+  Add route metadata, OG image rules, search/crawl surfaces, and detail-route
   variants when the service shape requires them.
-- Keep the page subtitle separate from metadata. An OG image may use the
-  selected background art, but its description must remain service-owned.
+- Keep the hero separate from metadata. An OG image may use the selected
+  background art, but `description` must be the functional subtitle template,
+  not the hero. OG title stays `{title} - {brand}`.
 - Preserve the sole `StorageUnavailableNotice` rule for public storage failure
   UI.
 - Keep all source discovery, localization transformation, image extraction, and
@@ -138,19 +144,22 @@ For recommendations:
 - Confirm every asset path exists or clearly mark extraction as pending.
 - Report the site-wide token collision check and exclude candidates whose reuse
   would make distinct services or features interfere with each other's meaning.
-- State explicitly that the page subtitle is excluded from metadata.
+- State explicitly that the hero phrase is excluded from metadata, and that
+  the functional subtitle template is the metadata description.
 
 For implementations:
 
-1. Search metadata code to prove that the page subtitle was not reused as an
-   SEO description.
+1. Search metadata code to prove that the hero phrase was not reused as an
+   SEO description, and that OG description uses the functional subtitle
+   template.
 2. Run the checks selected by `$qa` for the touched scope.
 3. Search the final token across the repository and confirm that every existing
    use is either the same concept or non-conflicting.
 4. Inspect the token at navigation/header sizes and the background on desktop
    and repository mobile presets.
-5. Verify localized title and subtitle fallbacks from generated output, not
-   only Korean source text.
-6. Report the identity table (title, subtitle, token, background, and
-   `defaultNickname` when the service posts), exact sources, metadata
-   description, Cloudflare guardrail result, and verification performed.
+5. Verify localized title, functional subtitle, and hero fallbacks from
+   generated output and `src/messages/service.ts`, not only Korean source text.
+6. Report the identity table (title, functional subtitle, hero, token,
+   background, and `defaultNickname` when the service posts), exact sources,
+   metadata description, Cloudflare guardrail result, and verification
+   performed.

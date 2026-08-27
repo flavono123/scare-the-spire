@@ -63,25 +63,111 @@ resources, rich patch notes, mobile layout, animation, or QA.
   understand it without explanatory copy.
 - Reduce cognitive load. Prefer familiar game tokens, hover previews, concise
   labels, and direct affordances over service jargon.
-- New services need a token asset plus title before implementation:
+- New services need a token asset, title, and functional subtitle before
+  implementation:
   - Token asset comes from relic, potion, power, badge, Ancient, or other
     **small icon-like** game art that stays legible in the navbar and page
     header. Do **not** use card portraits as the service token. Card art may
     still be used as a page background or OG image.
   - Title should follow service language policy: Korean first, English fallback
-    only when appropriate.
+    only when appropriate. Prefer an exact game-localized name.
+  - Functional subtitle names what the service does. It is service-owned, not a
+    game-locale quote. See Toy Box title, subtitle, and hero.
   - New Toy Box community services nest under 조각모음 in
     `getToyBoxNavItems` (`nestedUnder: "/defragment"`). They also federate
     into the 조각모음 feed, write panel, and detail embed. History Course
     stays a top-level Toy Box item and is not a 조각모음 feed source.
-- Avoid visible in-app explanations of the feature design. The UI should be
-  legible from the chosen token, title, layout, and game-like interaction.
+- Avoid visible in-app explanations of the feature *design*. A one-line
+  functional subtitle is required so a new visitor can tell the named game
+  thing from the site action. Do not add design essays, how-it-works copy, or
+  a second explanation of the token.
 
 ## Community Surface Conventions
 
 These were missing from the original skill and must stay consistent across Combo,
 Transfigure, This or That, Chemical X, 조각모음 (Defragment), History Course,
 Stories, and comments.
+
+### Toy Box title, subtitle, and hero
+
+Game-locale flavor does not describe the service. As Toy Box surfaces multiply,
+borrowed quotes in the subtitle / OG description slot read as the game resource
+talking, not as what the page does. Split identity copy into three layers.
+
+| Layer | Role | Source | Surfaces |
+| --- | --- | --- | --- |
+| **Title** | Named game thing | Exact game locale, or documented service wordplay | `h1`, navbar, OG/Twitter title |
+| **Subtitle** | What the service does | Service-owned verb phrase in the template below | real `h2`, `Metadata.description`, OG/Twitter description |
+| **Hero** | Flavor, one step quieter | Exact or minimally adapted `gameLocale` line | index header `<p>` only; never metadata |
+
+**Title.** Keep the current game-backed names (이거 아님 저거?, 변형, 조각모음,
+어려운 결정, 역사 강의서, 코오오옴보, 케미컬X). OG title stays
+`{title} - {brand}` from `getServiceTitle`. Do not put the functional template
+in `h1`.
+
+**Subtitle template** (Korean first; English parallel in the `en` dictionary):
+
+```
+슬레이 더 스파이어 2 {기능 설명} - 슬서운 이야기
+Slay the Spire 2 {function} - Scare the Spire
+```
+
+`{기능 설명}` is a short service-owned verb phrase (what the visitor does),
+not a card/event quote. Example: This or That uses `게임 요소 투표하기`, so
+the metadata line is `슬레이 더 스파이어 2 게임 요소 투표하기 - 슬서운 이야기`.
+A collapsed one-liner that must carry the game name too may append
+` : {title}`:
+
+```
+슬레이 더 스파이어 2 게임 요소 투표하기 - 슬서운 이야기 : 이거 아님 저거?
+```
+
+Use the colon form only when a *single* string has to identify both function
+and name (rare share/search one-liners). Do not append `: {title}` to OG
+description when OG title is already `{title} - {brand}`.
+
+**On-page `h2` vs metadata.** Metadata uses the full template so a Discord /
+Google snippet names the game and the brand. The visible `h2` uses only
+`{기능 설명}` (`게임 요소 투표하기`). The page already has site chrome and
+`h1`; repeating `슬레이 더 스파이어 2` and `슬서운 이야기` under the title is
+noise. Do not render the colon form on the page.
+
+Store the phrase and the composed metadata string in `src/messages/service.ts`
+(or `getServiceMetadataCopy`). Do not generate this slot from
+`borrowed-game-copy` / `gameLocale`.
+
+**Hero.** Demote the current page-only game quote here (Transfigure Morphic
+Grove paragraph, This or That whisper, 조각모음 Focus description, 어려운 결정
+`selectionScreenPrompt`, History Course Lantern Key parody). Render it as a
+`<p>` under the `h2`, `font-game-text`, `text-sm`, muted (`text-zinc-400` /
+`text-muted-foreground`), optional `RichText`. Clamp to two lines on small
+viewports. It is not a heading. Omit the hero when there is no documented
+game line (Chemical X stays on `legacyName` as a tiny aside, not a hero).
+Combo may gain an Amalgamator line as hero or stay title+subtitle only.
+Do not invent a hero to fill the slot. Never use the hero as
+`Metadata.description`.
+
+**Heading outline.** `h1` = title, `h2` = functional subtitle, hero = `<p>`.
+Today several services already show the quote in a `<p>` that *looks* like a
+subtitle; after this change that `<p>` is the hero and the functional line
+becomes the real `h2`. Index create CTA stays on the title row, not beside
+the hero.
+
+**Existing services (planned `{기능 설명}`, not yet applied):**
+
+| Service | `{기능 설명}` (ko) | Current quote → hero |
+| --- | --- | --- |
+| This or That | 게임 요소 투표하기 | event whisper / `prompt` |
+| Combo | 게임 요소 조합 공유하기 | none today; optional Amalgamator line |
+| Transfigure | 게임 요소 설명 다시 쓰기 | Morphic Grove paragraph |
+| Chemical X | 게임 요소로 짧은 글 쓰기 | no game hero; keep `legacyName` |
+| 조각모음 | 장난감 상자 글을 한곳에 모으기 | `FOCUS_POWER.description` |
+| 어려운 결정 | 게임 요소 티어 나누기 | `selectionScreenPrompt` |
+| History Course | 런 도전 이력 다시 보기 | Lantern Key parody `heroQuote` |
+
+`$create-toybox-service` must resolve title, functional subtitle, optional
+hero, token, and background as one set. Hero is the old "page subtitle"
+identity field.
 
 ### Index-card engagement
 
@@ -185,26 +271,32 @@ Two content max-widths only, from `src/lib/toybox-layout.ts`:
 조각모음 index uses the wide max with tighter horizontal padding
 (`TOYBOX_WIDE_BOARD_SHELL_CLASS`). Do not invent a third content max-width.
 
-### Borrowed game-locale CTAs
+### Create / submit CTAs
 
-- Primary create/submit labels should borrow short game-locale phrases when a
-  clear in-game match exists, not invent SaaS verbs like "만들기".
-- Current examples:
-  - Combo create: Korean `결합이다!` from Amalgamator (`AMALGAMATOR`); English
-    `COMBINING!` from the same event line.
-  - Transfigure create/submit: Korean `변형하기` from card title `변형`
-    (`TRANSFIGURE`); English `Transfigure`.
-  - This or That create: Korean `이거... 아님 저거?` / English
-    `This... or That?` from `THIS_OR_THAT.pages.INITIAL.description`
-    whisper line. Vote prompts stay on Knowledge Demon `선택하라.` /
-    `Make your choice.`
-  - 조각모음 header create: adapted `cards.DEFRAGMENT.description` → Korean
-    `밀집을 얻습니다` / English `Gain Focus.` Type submit labels stay that
-    type's own CTA (`결합이다!`, `변형하기`, …). Title stays `조각모음` /
-    `Defragment` and must not be reused as nick or CTA.
-- Put service shell strings in `src/messages/service.ts`. Keep game-origin
-  phrases sourced from extracted locale / borrowed-game-copy, not hand
-  translation.
+Product review, not yet flipped: flavor create labels do not scale as services
+multiply, and some already fail as write verbs. Until that review lands, do
+not mass-replace existing CTAs in incidental work.
+
+- **Keep** short verb-like borrows on index create when they name the action
+  and are not the service title: Combo `결합이다!` / `COMBINING!`
+  (Amalgamator), Transfigure `변형하기` / `Transfigure` (`TRANSFIGURE.title`).
+- **Do not** use the service title as the create CTA. This or That
+  `이거... 아님 저거?` restates `h1`. Prefer a generic write verb there if
+  CTAs are retouched (`작성` / `Write`, or keep composer `올리기` / `Post`).
+- **Do not** use a flavor sentence as the write control. 조각모음
+  `밀집을 얻습니다` / `Gain Focus.` is card text, not "compose". If retouched,
+  use a generic write verb; type submit labels inside the write panel may
+  still follow that type's own CTA.
+- In-flow game prompts that are not write buttons stay borrowed: This or That
+  vote stays Knowledge Demon `선택하라.` / `Make your choice.`
+- Composer submit may stay generic (`올리기`, `조합 공유`, Chemical X `투입`).
+  어려운 결정 create `티어 만들기` is already service-owned, not a game quote.
+- New services: if no short verb-like game line exists, use generic
+  `작성` / `올리기` (ko) and `Write` / `Post` (en). Do not invent a SaaS verb
+  family (`만들기`, `제출하기`, `게시`) just to sound like a CMS.
+- Put service shell strings in `src/messages/service.ts`. Keep remaining
+  game-origin phrases sourced from extracted locale / borrowed-game-copy, not
+  hand translation.
 
 ### Service default nicknames
 
@@ -307,8 +399,11 @@ service-owned exception.
 - Use existing components and data loaders before adding new abstractions.
 - Keep data schemas generated or derived from game/source data where possible.
 - Keep service-owned UI strings in typed service dictionaries when the surface
-  is localized.
+  is localized. Toy Box functional subtitles and OG descriptions belong here,
+  not in borrowed game copy.
 - Use game-origin text from extracted localization instead of hand translation.
+  On Toy Box indexes that text is the title, optional hero, nickname, and
+  remaining verb-like CTAs — not the `h2` / OG description.
 - For new routes, choose static generation unless user-specific or live data
   makes that impossible.
 - For new public assets, use existing extracted assets first. Generate or author
@@ -322,4 +417,6 @@ service-owned exception.
 - In the final report, state:
   - Which `$cf-guardrails` risk was considered.
   - Which game assets/locales informed the design.
-  - The token asset and title chosen for any new service surface.
+  - The token, title, functional subtitle (`{기능 설명}` + metadata template),
+    and hero phrase (or explicit omission) for any new or retitled Toy Box
+    surface. Confirm the hero was not reused as OG description.
