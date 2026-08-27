@@ -281,19 +281,20 @@ not mass-replace existing CTAs in incidental work.
   and are not the service title: Combo `결합이다!` / `COMBINING!`
   (Amalgamator), Transfigure `변형하기` / `Transfigure` (`TRANSFIGURE.title`).
 - **Do not** use the service title as the create CTA. This or That
-  `이거... 아님 저거?` restates `h1`. Prefer a generic write verb there if
-  CTAs are retouched (`작성` / `Write`, or keep composer `올리기` / `Post`).
+  `이거... 아님 저거?` restates `h1`. If retouched, use `작성` / `Write`.
 - **Do not** use a flavor sentence as the write control. 조각모음
   `밀집을 얻습니다` / `Gain Focus.` is card text, not "compose". If retouched,
-  use a generic write verb; type submit labels inside the write panel may
+  use `작성` / `Write`; type submit labels inside the write panel may
   still follow that type's own CTA.
 - In-flow game prompts that are not write buttons stay borrowed: This or That
   vote stays Knowledge Demon `선택하라.` / `Make your choice.`
-- Composer submit may stay generic (`올리기`, `조합 공유`, Chemical X `투입`).
-  어려운 결정 create `티어 만들기` is already service-owned, not a game quote.
-- New services: if no short verb-like game line exists, use generic
-  `작성` / `올리기` (ko) and `Write` / `Post` (en). Do not invent a SaaS verb
-  family (`만들기`, `제출하기`, `게시`) just to sound like a CMS.
+- Composer confirm stays a service verb already in use (`조합 공유`,
+  `변형하기`, Chemical X `투입`). Do not use `올리기`. 어려운 결정 create
+  `티어 만들기` is already service-owned, not a game quote; its confirm
+  label should move off `올리기` to `공유` / `Share` if retouched.
+- New services: if no short verb-like game line exists, use `작성` / `Write`
+  to open the composer and `공유` / `Share` to confirm. Do not use `올리기`,
+  `만들기`, `제출하기`, or `게시`.
 - Put service shell strings in `src/messages/service.ts`. Keep remaining
   game-origin phrases sourced from extracted locale / borrowed-game-copy, not
   hand translation.
