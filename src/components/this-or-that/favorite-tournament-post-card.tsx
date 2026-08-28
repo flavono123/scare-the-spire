@@ -17,6 +17,7 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
+import { worldcupPostTitle } from "@/components/this-or-that/favorite-tournament-title";
 import { formatTimeAgo } from "@/lib/relative-time";
 import { serviceMessages } from "@/messages/service";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -32,6 +33,7 @@ export function FavoriteTournamentPostCard({
   ensureUser,
   commentCount,
   likeCount,
+  presetLabels,
 }: {
   post: FavoriteTournamentPost;
   entityMap: Map<string, EntityInfo>;
@@ -43,6 +45,7 @@ export function FavoriteTournamentPostCard({
   ensureUser?: () => Promise<string | null>;
   commentCount: number;
   likeCount: number;
+  presetLabels: Record<string, string>;
 }) {
   const copy = serviceMessages[serviceLocale].favoriteTournament;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
@@ -82,7 +85,7 @@ export function FavoriteTournamentPostCard({
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <h2 className="line-clamp-2 font-game-title text-base font-semibold leading-snug spire-gold">
-            {post.title}
+            {worldcupPostTitle(post, serviceLocale, presetLabels, entityMap)}
           </h2>
           <span className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             {post.nickname}

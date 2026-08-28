@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { FavoriteTournamentPostView } from "@/components/this-or-that/favorite-tournament-post-view";
-import { getThisOrThatGameCopy } from "@/lib/borrowed-game-copy";
+import { getDecisionsDecisionsGameCopy, getThisOrThatGameCopy } from "@/lib/borrowed-game-copy";
 import { FAVORITE_TOURNAMENT_HREF } from "@/lib/favorite-tournament";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
@@ -37,7 +37,10 @@ export async function renderFavoriteTournamentPostPage(
   id: string,
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
-  const totCopy = await getThisOrThatGameCopy(gameLocale);
+  const [totCopy, decisionsCopy] = await Promise.all([
+    getThisOrThatGameCopy(gameLocale),
+    getDecisionsDecisionsGameCopy(gameLocale),
+  ]);
 
   return (
     <div className={TOYBOX_WIDE_SHELL_CLASS}>
@@ -45,6 +48,7 @@ export async function renderFavoriteTournamentPostPage(
         postId={id}
         gameLocale={gameLocale}
         votePrompt={totCopy.votePrompt}
+        presetLabels={decisionsCopy.presetLabels}
       />
     </div>
   );

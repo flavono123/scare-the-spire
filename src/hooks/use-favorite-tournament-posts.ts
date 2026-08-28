@@ -12,6 +12,7 @@ import {
   FAVORITE_TOURNAMENT_TABLE,
   FAVORITE_TOURNAMENT_TITLE_MAX_CHARS,
   FAVORITE_TOURNAMENT_TITLE_MIN_CHARS,
+  isFavoriteTournamentBuiltinKey,
   normalizeCandidateStats,
   normalizeFavoriteTournamentPost,
   type FavoriteTournamentCandidateStats,
@@ -110,6 +111,45 @@ export function useFavoriteTournamentPosts(
   }, [feed, userId]);
 
   return { ...feed, add, remove };
+}
+
+export function useFavoriteTournamentBuiltins() {
+  const [posts, setPosts] = useState<FavoriteTournamentPost[]>([]);
+  const [loading, setLoading] = useState(supabaseEnabled);
+
+  useEffect(() => {
+    if (!supabaseEnabled) return;
+    let cancelled = false;
+    withSupabaseTimeout(
+      "favorite_tournament_posts.builtins",
+      supabase
+        .from(FAVORITE_TOURNAMENT_TABLE)
+        .select("*")
+        .eq("env", supabaseEnv)
+        .like("preset_key", "builtin:%")
+        .order("created_at", { ascending: true }),
+    )
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) throw error;
+        setPosts(
+          (data ?? [])
+            .map(normalizeFavoriteTournamentPost)
+            .filter((post) => isFavoriteTournamentBuiltinKey(post.preset_key)),
+        );
+        setLoading(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setPosts([]);
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return { posts, loading };
 }
 
 export function useFavoriteTournamentPost(

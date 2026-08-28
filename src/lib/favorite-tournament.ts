@@ -1,8 +1,13 @@
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
+  findPresetDef,
+  namedPresetDefs,
   resourceKey,
+  stampPresetIds,
+  type DecisionsDecisionsPresetDef,
   type DecisionsDecisionsResourceRef,
 } from "@/lib/decisions-decisions";
+import { decisionsPresetLabel, type DecisionsPresetLabelCopy, type DecisionsPresetMonsterTypeLabels } from "@/lib/decisions-preset-label";
 import sts2Meta from "../../data/sts2/meta.json";
 
 export const FAVORITE_TOURNAMENT_HREF = "/this-or-that/worldcup";
@@ -25,43 +30,28 @@ export const FAVORITE_TOURNAMENT_NOTE_MAX_CHARS = 500;
 export const FAVORITE_TOURNAMENT_MIN_POOL = 2;
 
 /**
- * User-authored worldcups always store this key. Built-in worldcups are
- * official feed posts (`builtin:*`), not composer shortcuts and not the
- * Decisions, Decisions pool stamps used by 티어 메이커.
- *
- * Seed builtins later from FAVORITE_TOURNAMENT_BUILTIN_CATALOG with a
- * deploy-time idempotent upsert on (env, preset_key). Never upsert from the
- * browser or a Worker request. User INSERT RLS rejects the builtin: prefix
- * so visitors cannot squat official keys.
+ * User-authored worldcups always store this key. Built-in worldcups are the
+ * Decisions, Decisions named presets, upserted as official feed posts with
+ * `builtin:<decisions-key>`. Seed with `pnpm worldcup:seed` (deploy-time SQL
+ * upsert on (env, preset_key)). Never upsert from the browser or a Worker
+ * request. User INSERT RLS rejects the builtin: prefix.
  */
 export const FAVORITE_TOURNAMENT_CUSTOM_PRESET_KEY = "custom";
 export const FAVORITE_TOURNAMENT_BUILTIN_KEY_PREFIX = "builtin:";
-
-export type FavoriteTournamentBuiltinSpec = {
-  id: string;
-  title: string;
-  titleEn: string;
-  note: string;
-  noteEn: string;
-  pool: FavoriteTournamentResourceRef[];
-};
-
-/** Official worldcups. Empty until the first builtin ships; no seed script until then. */
-export const FAVORITE_TOURNAMENT_BUILTIN_CATALOG: readonly FavoriteTournamentBuiltinSpec[] = [];
-
-export function favoriteTournamentBuiltinKey(id: string): string {
-  return `${FAVORITE_TOURNAMENT_BUILTIN_KEY_PREFIX}${id}`;
-}
-
-export function isFavoriteTournamentBuiltinKey(key: string): boolean {
-  return key.startsWith(FAVORITE_TOURNAMENT_BUILTIN_KEY_PREFIX);
-}
+export const FAVORITE_TOURNAMENT_BUILTIN_NICKNAME = "세 번째 손";
 
 export type FavoriteTournamentResourceRef = DecisionsDecisionsResourceRef;
 
+export type FavoriteTournamentBuiltinSeed = {
+  presetKey: string;
+  title: string;
+  note: string;
+  pool: FavoriteTournamentResourceRef[];
+};
+
 export type FavoriteTournamentPost = {
   id: string;
-  user_id: string;
+  user_id: string | null;
   nickname: string;
   title: string;
   note: string;
@@ -154,6 +144,53 @@ export function formatBracketRoundLabel(
   return copy.roundLabelWithCount
     .replace("{size}", String(bracket))
     .replace("{count}", String(contestantCount));
+}
+
+export function favoriteTournamentBuiltinKey(id: string): string {
+  return `${FAVORITE_TOURNAMENT_BUILTIN_KEY_PREFIX}${id}`;
+}
+
+export function isFavoriteTournamentBuiltinKey(key: string): boolean {
+  return key.startsWith(FAVORITE_TOURNAMENT_BUILTIN_KEY_PREFIX);
+}
+
+export function decisionsKeyFromBuiltinPresetKey(key: string): string | null {
+  if (!isFavoriteTournamentBuiltinKey(key)) return null;
+  const id = key.slice(FAVORITE_TOURNAMENT_BUILTIN_KEY_PREFIX.length);
+  return id || null;
+}
+
+export function buildFavoriteTournamentBuiltinSeeds(
+  entities: EntityInfo[],
+  titleFor: (def: Exclude<DecisionsDecisionsPresetDef, { kind: "custom" }>) => string,
+): FavoriteTournamentBuiltinSeed[] {
+  const seeds: FavoriteTournamentBuiltinSeed[] = [];
+  for (const def of namedPresetDefs(entities)) {
+    if (def.kind === "custom") continue;
+    const pool = stampPresetIds(def, entities);
+    if (pool.length < FAVORITE_TOURNAMENT_MIN_POOL) continue;
+    seeds.push({
+      presetKey: favoriteTournamentBuiltinKey(def.key),
+      title: titleFor(def).slice(0, FAVORITE_TOURNAMENT_TITLE_MAX_CHARS),
+      note: "",
+      pool,
+    });
+  }
+  return seeds;
+}
+
+export function favoriteTournamentDisplayTitle(
+  post: FavoriteTournamentPost,
+  presetLabels: Record<string, string>,
+  copy: DecisionsPresetLabelCopy,
+  ancientNames: Map<string, string>,
+  monsterTypeLabels: DecisionsPresetMonsterTypeLabels,
+): string {
+  const decisionsKey = decisionsKeyFromBuiltinPresetKey(post.preset_key);
+  if (!decisionsKey) return post.title;
+  const def = findPresetDef(decisionsKey);
+  if (def.kind === "custom") return post.title;
+  return decisionsPresetLabel(def, presetLabels, copy, ancientNames, monsterTypeLabels);
 }
 
 export function shuffleInPlace<T>(
@@ -316,7 +353,7 @@ export function normalizeFavoriteTournamentPost(row: unknown): FavoriteTournamen
     : [];
   return {
     id: String(record.id ?? ""),
-    user_id: String(record.user_id ?? ""),
+    user_id: typeof record.user_id === "string" ? record.user_id : null,
     nickname: String(record.nickname ?? ""),
     title: String(record.title ?? ""),
     note: String(record.note ?? ""),

@@ -1,10 +1,11 @@
 import assert from "node:assert/strict";
 import {
   byeCountForSize,
+  buildFavoriteTournamentBuiltinSeeds,
   buildOpeningRound,
   championshipRate,
-  FAVORITE_TOURNAMENT_BUILTIN_CATALOG,
   favoriteTournamentBuiltinKey,
+  favoriteTournamentDisplayTitle,
   formatBracketRoundLabel,
   formatRoundLabel,
   isFavoriteTournamentBuiltinKey,
@@ -46,11 +47,39 @@ assert.equal(formatBracketRoundLabel(10, roundCopy), "16강(10개)");
 assert.equal(formatBracketRoundLabel(16, roundCopy), "16강");
 assert.equal(formatBracketRoundLabel(20, roundCopy), "32강(20개)");
 assert.equal(formatBracketRoundLabel(10, roundCopyEn), "Round of 16 (10)");
-assert.equal(isFavoriteTournamentBuiltinKey("builtin:ironclad-cards"), true);
+assert.equal(isFavoriteTournamentBuiltinKey("builtin:cards-ironclad"), true);
 assert.equal(isFavoriteTournamentBuiltinKey("custom"), false);
 assert.equal(isFavoriteTournamentBuiltinKey("cards-ironclad"), false);
-assert.equal(favoriteTournamentBuiltinKey("ironclad-cards"), "builtin:ironclad-cards");
-assert.equal(FAVORITE_TOURNAMENT_BUILTIN_CATALOG.length, 0);
+assert.equal(favoriteTournamentBuiltinKey("cards-ironclad"), "builtin:cards-ironclad");
+assert.deepEqual(buildFavoriteTournamentBuiltinSeeds([], () => "x"), []);
+assert.equal(
+  favoriteTournamentDisplayTitle(
+    {
+      id: "1",
+      user_id: null,
+      nickname: "세 번째 손",
+      title: "fallback",
+      note: "",
+      preset_key: "builtin:cards-ironclad",
+      game_version: "x",
+      pool: [],
+      env: "production",
+      created_at: "",
+    },
+    { "cards-ironclad": "아이언클래드" },
+    {
+      presetNamedCards: "{name} 카드",
+      presetAllRelics: "유물 전체",
+      presetAllPotions: "포션 전체",
+      presetAncientRelics: "고존 유물",
+      presetNamedAncientRelics: "{name} 유물",
+      presetAct1Elites: "1막 엘리트",
+    },
+    new Map(),
+    { Boss: { label: "보스" }, Elite: { label: "엘리트" } },
+  ),
+  "아이언클래드 카드",
+);
 
 const pool = Array.from({ length: 20 }, (_, i) => ({
   type: "card" as const,

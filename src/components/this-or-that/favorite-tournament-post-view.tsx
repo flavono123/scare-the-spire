@@ -22,12 +22,14 @@ import {
   entityForRef,
   FAVORITE_TOURNAMENT_HREF,
   formatBracketRoundLabel,
+  isFavoriteTournamentBuiltinKey,
   playRoundOptions,
   type FavoriteTournamentMatchRecord,
   type FavoriteTournamentResourceRef,
 } from "@/lib/favorite-tournament";
 import type { GameLocale } from "@/lib/i18n";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
+import { worldcupPostTitle } from "@/components/this-or-that/favorite-tournament-title";
 import { formatTimeAgo } from "@/lib/relative-time";
 import { serviceMessages } from "@/messages/service";
 
@@ -35,10 +37,12 @@ export function FavoriteTournamentPostView({
   postId,
   gameLocale,
   votePrompt,
+  presetLabels,
 }: {
   postId: string;
   gameLocale: GameLocale;
   votePrompt: string;
+  presetLabels: Record<string, string>;
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].favoriteTournament;
@@ -106,7 +110,11 @@ export function FavoriteTournamentPostView({
     );
   }
 
-  const isAuthor = Boolean(userId && post.user_id === userId);
+  const isAuthor = Boolean(
+    userId
+    && post.user_id === userId
+    && !isFavoriteTournamentBuiltinKey(post.preset_key),
+  );
   const selectedSize = startingSize ?? roundOptions[0] ?? post.pool.length;
   const championEntity = champion ? entityForRef(champion, catalog.entityMap) : null;
 
@@ -135,7 +143,7 @@ export function FavoriteTournamentPostView({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <h1 className="font-game-title text-2xl font-semibold leading-snug spire-gold md:text-3xl">
-              {post.title}
+              {worldcupPostTitle(post, serviceLocale, presetLabels, catalog.entityMap)}
             </h1>
             <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
               <span>{post.nickname}</span>

@@ -52,6 +52,7 @@ import {
   type DecisionsFilterDims,
   type DecisionsPoolMajor,
 } from "@/lib/decisions-decisions";
+import { decisionsPresetLabel } from "@/lib/decisions-preset-label";
 import type { ServiceLocale } from "@/lib/i18n";
 import { sts2NavItems } from "@/lib/site-nav-items";
 import { cn } from "@/lib/utils";
@@ -408,40 +409,6 @@ function TypeTokenFan({
   );
 }
 
-function presetJumpLabel(
-  preset: DecisionsDecisionsPresetDef,
-  presetLabels: Record<string, string>,
-  copy: {
-    presetNamedCards: string;
-    presetAllRelics: string;
-    presetAllPotions: string;
-    presetAncientRelics: string;
-    presetNamedAncientRelics: string;
-    presetAct1Elites: string;
-  },
-  ancientNames: Map<string, string>,
-  monsterTypeLabels: { Boss: { label: string }; Elite: { label: string } },
-): string {
-  if (preset.kind === "cards") {
-    const name = presetLabels[preset.key] ?? preset.key;
-    if (preset.color === "colorless") return name;
-    return copy.presetNamedCards.replace("{name}", name);
-  }
-  if (preset.kind === "relics") return copy.presetAllRelics;
-  if (preset.kind === "ancient-relics") return copy.presetAncientRelics;
-  if (preset.kind === "ancient-relics-named") {
-    const name = ancientNames.get(preset.ancientId) ?? preset.ancientId;
-    return copy.presetNamedAncientRelics.replace("{name}", name);
-  }
-  if (preset.kind === "monsters") {
-    if (preset.key === "monsters-elite-act1") return copy.presetAct1Elites;
-    if (preset.monsterType === "Boss") return monsterTypeLabels.Boss.label;
-    return monsterTypeLabels.Elite.label;
-  }
-  if (preset.kind === "potions") return copy.presetAllPotions;
-  return presetLabels[preset.key] ?? preset.key;
-}
-
 function ComboPresetJump({
   presetKey,
   lead,
@@ -723,7 +690,7 @@ export function DecisionsDecisionsPoolPicker({
     ),
   );
   const potionPresets = namedPresets.filter((preset) => preset.kind === "potions");
-  const jumpLabel = (preset: DecisionsDecisionsPresetDef) => presetJumpLabel(
+  const jumpLabel = (preset: DecisionsDecisionsPresetDef) => decisionsPresetLabel(
     preset,
     presetLabels,
     copy,

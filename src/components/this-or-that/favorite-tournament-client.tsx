@@ -12,12 +12,13 @@ import Image from "@/components/ui/static-image";
 import { useAuth } from "@/hooks/use-auth";
 import { useDecisionsDecisionsCatalog } from "@/hooks/use-decisions-decisions-catalog";
 import {
+  useFavoriteTournamentBuiltins,
   useFavoriteTournamentPosts,
   type SaveFavoriteTournamentInput,
 } from "@/hooks/use-favorite-tournament-posts";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { useUserProfile } from "@/hooks/use-user-profile";
-import { FAVORITE_TOURNAMENT_TOKEN_SRC } from "@/lib/favorite-tournament";
+import { FAVORITE_TOURNAMENT_TOKEN_SRC, isFavoriteTournamentBuiltinKey } from "@/lib/favorite-tournament";
 import type { GameLocale } from "@/lib/i18n";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
@@ -64,6 +65,11 @@ export function FavoriteTournamentClient({
     loadMore,
     add,
   } = useFavoriteTournamentPosts(userId, sort);
+  const builtins = useFavoriteTournamentBuiltins();
+  const communityPosts = useMemo(
+    () => posts.filter((post) => !isFavoriteTournamentBuiltinKey(post.preset_key)),
+    [posts],
+  );
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
     [copy.defaultNickname],
@@ -140,52 +146,78 @@ export function FavoriteTournamentClient({
         )
       )}
 
-      {!loading && !unavailable && (
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <FeedSortToggle
-            service="favorite_tournament"
-            sort={sort}
-            onSortChange={setSort}
-            labels={serviceMessages[serviceLocale].feedSort}
-          />
-          <span className="text-xs text-muted-foreground">
-            {copy.count.replace("{count}", String(posts.length))}
-          </span>
-        </div>
-      )}
-
       {unavailable ? (
         <StorageUnavailableNotice title={copy.unavailableTitle} />
-      ) : loading ? (
+      ) : loading || builtins.loading ? (
         <ContentLoadingNotice label={copy.loading} />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {posts.length === 0 && (
-            <p className="text-sm text-muted-foreground">{copy.empty}</p>
+        <div className="space-y-6">
+          {builtins.posts.length > 0 && (
+            <section className="space-y-3">
+              <h2 className="text-xs font-semibold tracking-wide text-muted-foreground">
+                {copy.officialSection}
+              </h2>
+              <div className="grid gap-4 md:grid-cols-2">
+                {builtins.posts.map((post) => (
+                  <FavoriteTournamentPostCard
+                    key={post.id}
+                    post={post}
+                    entityMap={catalog.entityMap}
+                    serviceLocale={serviceLocale}
+                    gameLocale={gameLocale}
+                    userId={userId}
+                    authReady={ready}
+                    ensureUser={ensureUser}
+                    commentCount={post.comment_count ?? 0}
+                    likeCount={post.like_count ?? 0}
+                    presetLabels={presetLabels}
+                  />
+                ))}
+              </div>
+            </section>
           )}
-          {posts.map((post) => (
-            <FavoriteTournamentPostCard
-              key={post.id}
-              post={post}
-              entityMap={catalog.entityMap}
-              isOwner={Boolean(userId && post.user_id === userId)}
-              serviceLocale={serviceLocale}
-              gameLocale={gameLocale}
-              userId={userId}
-              authReady={ready}
-              ensureUser={ensureUser}
-              commentCount={commentCounts[post.id] ?? 0}
-              likeCount={likeCounts[post.id] ?? 0}
+
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <FeedSortToggle
+              service="favorite_tournament"
+              sort={sort}
+              onSortChange={setSort}
+              labels={serviceMessages[serviceLocale].feedSort}
             />
-          ))}
-          <FeedLoadMoreSentinel
-            hasMore={hasMore}
-            loadingMore={loadingMore}
-            disabled={unavailable}
-            extraKey={posts.length}
-            label={copy.loadingMore}
-            onLoadMore={() => { void loadMore(); }}
-          />
+            <span className="text-xs text-muted-foreground">
+              {copy.count.replace("{count}", String(communityPosts.length))}
+            </span>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            {communityPosts.length === 0 && (
+              <p className="text-sm text-muted-foreground">{copy.empty}</p>
+            )}
+            {communityPosts.map((post) => (
+              <FavoriteTournamentPostCard
+                key={post.id}
+                post={post}
+                entityMap={catalog.entityMap}
+                isOwner={Boolean(userId && post.user_id === userId)}
+                serviceLocale={serviceLocale}
+                gameLocale={gameLocale}
+                userId={userId}
+                authReady={ready}
+                ensureUser={ensureUser}
+                commentCount={commentCounts[post.id] ?? 0}
+                likeCount={likeCounts[post.id] ?? 0}
+                presetLabels={presetLabels}
+              />
+            ))}
+            <FeedLoadMoreSentinel
+              hasMore={hasMore}
+              loadingMore={loadingMore}
+              disabled={unavailable}
+              extraKey={communityPosts.length}
+              label={copy.loadingMore}
+              onLoadMore={() => { void loadMore(); }}
+            />
+          </div>
         </div>
       )}
     </div>
