@@ -24,6 +24,39 @@ export const FAVORITE_TOURNAMENT_TITLE_MAX_CHARS = 80;
 export const FAVORITE_TOURNAMENT_NOTE_MAX_CHARS = 500;
 export const FAVORITE_TOURNAMENT_MIN_POOL = 2;
 
+/**
+ * User-authored worldcups always store this key. Built-in worldcups are
+ * official feed posts (`builtin:*`), not composer shortcuts and not the
+ * Decisions, Decisions pool stamps used by 티어 메이커.
+ *
+ * Seed builtins later from FAVORITE_TOURNAMENT_BUILTIN_CATALOG with a
+ * deploy-time idempotent upsert on (env, preset_key). Never upsert from the
+ * browser or a Worker request. User INSERT RLS rejects the builtin: prefix
+ * so visitors cannot squat official keys.
+ */
+export const FAVORITE_TOURNAMENT_CUSTOM_PRESET_KEY = "custom";
+export const FAVORITE_TOURNAMENT_BUILTIN_KEY_PREFIX = "builtin:";
+
+export type FavoriteTournamentBuiltinSpec = {
+  id: string;
+  title: string;
+  titleEn: string;
+  note: string;
+  noteEn: string;
+  pool: FavoriteTournamentResourceRef[];
+};
+
+/** Official worldcups. Empty until the first builtin ships; no seed script until then. */
+export const FAVORITE_TOURNAMENT_BUILTIN_CATALOG: readonly FavoriteTournamentBuiltinSpec[] = [];
+
+export function favoriteTournamentBuiltinKey(id: string): string {
+  return `${FAVORITE_TOURNAMENT_BUILTIN_KEY_PREFIX}${id}`;
+}
+
+export function isFavoriteTournamentBuiltinKey(key: string): boolean {
+  return key.startsWith(FAVORITE_TOURNAMENT_BUILTIN_KEY_PREFIX);
+}
+
 export type FavoriteTournamentResourceRef = DecisionsDecisionsResourceRef;
 
 export type FavoriteTournamentPost = {
@@ -104,6 +137,23 @@ export function formatRoundLabel(
   locale: "ko" | "en",
 ): string {
   return locale === "ko" ? `${size}강` : `Round of ${size}`;
+}
+
+/** Label uses the ceil-power-of-two bracket; actual count is appended when it differs. */
+export function formatBracketRoundLabel(
+  contestantCount: number,
+  copy: {
+    roundLabel: string;
+    roundLabelWithCount: string;
+  },
+): string {
+  const bracket = nextPowerOfTwo(Math.max(contestantCount, 1));
+  if (contestantCount === bracket) {
+    return copy.roundLabel.replace("{size}", String(bracket));
+  }
+  return copy.roundLabelWithCount
+    .replace("{size}", String(bracket))
+    .replace("{count}", String(contestantCount));
 }
 
 export function shuffleInPlace<T>(

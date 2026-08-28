@@ -21,6 +21,7 @@ import {
   byeCountForSize,
   entityForRef,
   FAVORITE_TOURNAMENT_HREF,
+  formatBracketRoundLabel,
   playRoundOptions,
   type FavoriteTournamentMatchRecord,
   type FavoriteTournamentResourceRef,
@@ -44,7 +45,7 @@ export function FavoriteTournamentPostView({
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const router = useRouter();
   const { userId, ready, ensureUser } = useAuth();
-  const catalog = useDecisionsDecisionsCatalog(gameLocale);
+  const catalog = useDecisionsDecisionsCatalog(gameLocale, { includeStamps: false });
   const { post, stats, loading, unavailable, remove, completePlay } = useFavoriteTournamentPost(
     postId,
     userId,
@@ -139,7 +140,7 @@ export function FavoriteTournamentPostView({
             <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
               <span>{post.nickname}</span>
               <span>{formatTimeAgo(post.created_at, copy, dateLocale)}</span>
-              <span>{copy.roundLabel.replace("{size}", String(post.pool.length))}</span>
+              <span>{formatBracketRoundLabel(post.pool.length, copy)}</span>
               <span>{copy.playCount.replace("{count}", String(post.play_count ?? 0))}</span>
             </div>
             {post.note ? (
@@ -181,7 +182,7 @@ export function FavoriteTournamentPostView({
                     : "border-border text-muted-foreground hover:bg-white/5"
                 }`}
               >
-                {copy.roundLabel.replace("{size}", String(size))}
+                {formatBracketRoundLabel(size, copy)}
               </button>
             ))}
           </div>

@@ -3,7 +3,11 @@ import {
   byeCountForSize,
   buildOpeningRound,
   championshipRate,
+  FAVORITE_TOURNAMENT_BUILTIN_CATALOG,
+  favoriteTournamentBuiltinKey,
+  formatBracketRoundLabel,
   formatRoundLabel,
+  isFavoriteTournamentBuiltinKey,
   matchWinRate,
   nextPowerOfTwo,
   openingAutoAdvances,
@@ -27,8 +31,26 @@ assert.deepEqual(playRoundOptions(16), [16, 8, 4]);
 assert.deepEqual(playRoundOptions(3), [3]);
 assert.deepEqual(playRoundOptions(1), []);
 
-assert.equal(formatRoundLabel(20, "ko"), "20강");
-assert.equal(formatRoundLabel(20, "en"), "Round of 20");
+assert.equal(formatRoundLabel(16, "ko"), "16강");
+assert.equal(formatRoundLabel(16, "en"), "Round of 16");
+
+const roundCopy = {
+  roundLabel: "{size}강",
+  roundLabelWithCount: "{size}강({count}개)",
+};
+const roundCopyEn = {
+  roundLabel: "Round of {size}",
+  roundLabelWithCount: "Round of {size} ({count})",
+};
+assert.equal(formatBracketRoundLabel(10, roundCopy), "16강(10개)");
+assert.equal(formatBracketRoundLabel(16, roundCopy), "16강");
+assert.equal(formatBracketRoundLabel(20, roundCopy), "32강(20개)");
+assert.equal(formatBracketRoundLabel(10, roundCopyEn), "Round of 16 (10)");
+assert.equal(isFavoriteTournamentBuiltinKey("builtin:ironclad-cards"), true);
+assert.equal(isFavoriteTournamentBuiltinKey("custom"), false);
+assert.equal(isFavoriteTournamentBuiltinKey("cards-ironclad"), false);
+assert.equal(favoriteTournamentBuiltinKey("ironclad-cards"), "builtin:ironclad-cards");
+assert.equal(FAVORITE_TOURNAMENT_BUILTIN_CATALOG.length, 0);
 
 const pool = Array.from({ length: 20 }, (_, i) => ({
   type: "card" as const,

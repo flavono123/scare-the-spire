@@ -9,6 +9,7 @@ import { buildFavoriteTournamentCommentThreadKey } from "@/lib/comment-threads";
 import { sortPoolRefs } from "@/lib/decisions-decisions";
 import {
   FAVORITE_TOURNAMENT_HREF,
+  formatBracketRoundLabel,
   type FavoriteTournamentPost,
 } from "@/lib/favorite-tournament";
 import {
@@ -87,7 +88,7 @@ export function FavoriteTournamentPostCard({
             {post.nickname}
             {isOwner && <OwnPostMark />}
             <span>{formatTimeAgo(post.created_at, copy, dateLocale)}</span>
-            <span>{copy.roundLabel.replace("{size}", String(pool.length))}</span>
+            <span>{formatBracketRoundLabel(pool.length, copy)}</span>
             <span>{copy.playCount.replace("{count}", String(post.play_count ?? 0))}</span>
           </span>
         </div>

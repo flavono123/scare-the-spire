@@ -12,6 +12,7 @@ import { resourceKey } from "@/lib/decisions-decisions";
 import {
   buildOpeningRound,
   entityForRef,
+  formatBracketRoundLabel,
   openingAutoAdvances,
   openingPlayablePairs,
   pairNextRound,
@@ -127,7 +128,7 @@ export function FavoriteTournamentPlay({
   return (
     <div className="space-y-4" data-favorite-tournament-play>
       <div className="flex flex-wrap items-center justify-between gap-2 font-game-text text-sm text-zinc-300">
-        <span>{copy.playingRound.replace("{size}", String(roundSize || startingSize))}</span>
+        <span>{formatBracketRoundLabel(roundSize || startingSize, copy)}</span>
         <span className="tabular-nums text-muted-foreground">
           {copy.matchProgress
             .replace("{current}", String(phase.matches.length + 1))

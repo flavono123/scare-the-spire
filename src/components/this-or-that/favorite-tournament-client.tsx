@@ -52,7 +52,7 @@ export function FavoriteTournamentClient({
   const { userId, ready, ensureUser } = useAuth();
   const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
   const [composerOpen, setComposerOpen] = useState(false);
-  const catalog = useDecisionsDecisionsCatalog(gameLocale);
+  const catalog = useDecisionsDecisionsCatalog(gameLocale, { includeStamps: false });
   const {
     posts,
     likeCounts,
@@ -129,7 +129,6 @@ export function FavoriteTournamentClient({
           <FavoriteTournamentComposerModal
             entities={catalog.entities}
             entityMap={catalog.entityMap}
-            stamps={catalog.stamps}
             gameLocale={gameLocale}
             serviceLocale={serviceLocale}
             presetLabels={presetLabels}

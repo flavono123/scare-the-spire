@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useToyboxFeed } from "@/hooks/use-toybox-feed";
 import {
+  FAVORITE_TOURNAMENT_CUSTOM_PRESET_KEY,
   FAVORITE_TOURNAMENT_FEED_SERVICE,
   FAVORITE_TOURNAMENT_GAME_VERSION,
   FAVORITE_TOURNAMENT_MIN_POOL,
@@ -26,7 +27,6 @@ export type SaveFavoriteTournamentInput = {
   nickname: string;
   title: string;
   note: string;
-  presetKey: string;
   pool: FavoriteTournamentResourceRef[];
   activeUserId: string;
 };
@@ -61,7 +61,7 @@ export async function insertFavoriteTournamentPost(
         nickname: input.nickname.trim(),
         title: input.title.trim(),
         note: input.note.trim(),
-        preset_key: input.presetKey,
+        preset_key: FAVORITE_TOURNAMENT_CUSTOM_PRESET_KEY,
         game_version: FAVORITE_TOURNAMENT_GAME_VERSION,
         pool: input.pool,
         env: supabaseEnv,

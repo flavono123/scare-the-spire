@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, type RefObject, useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, type RefObject, useMemo, useState } from "react";
 import { ChevronRight, Search } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ComboResourceAsset } from "@/components/combo/combo-resource-stack";
@@ -608,6 +608,7 @@ export function DecisionsDecisionsPoolPicker({
   onToggleDim,
   onPreset,
   onAdd,
+  showPresets = true,
 }: {
   entities: EntityInfo[];
   entityMap: Map<string, EntityInfo>;
@@ -618,8 +619,9 @@ export function DecisionsDecisionsPoolPicker({
   searchInputRef?: RefObject<HTMLInputElement | null>;
   onMajor: (major: DecisionsPoolMajor | null) => void;
   onToggleDim: (dim: DecisionsFilterDim, key: string) => void;
-  onPreset: (key: string) => void;
+  onPreset?: (key: string) => void;
   onAdd: (entity: EntityInfo) => void;
+  showPresets?: boolean;
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
   const codex = serviceMessages[serviceLocale].codex;
@@ -628,16 +630,12 @@ export function DecisionsDecisionsPoolPicker({
   const typeLabels = compendiumTypeLabels(serviceLocale);
   const [query, setQuery] = useState("");
   const [fanOverlays, setFanOverlays] = useState<Record<string, string[]>>({});
-  const fanRolledRef = useRef(false);
-
-  useEffect(() => {
-    if (fanRolledRef.current || entities.length === 0) return;
-    fanRolledRef.current = true;
+  if (showPresets && Object.keys(fanOverlays).length === 0 && entities.length > 0) {
     setFanOverlays({
       "relics-ancient": sampleAncientTokenUrls(entities),
       "monsters-boss": sampleBossTokenUrls(entities),
     });
-  }, [entities]);
+  }
 
   const catalog = useMemo(
     () => entities.filter((entity) => isDecisionsDecisionsResourceType(entity.type)),
@@ -708,7 +706,7 @@ export function DecisionsDecisionsPoolPicker({
     ? { cardKeyword: "카드 키워드", staticHoverTip: "툴팁 키워드" }
     : { cardKeyword: "Card keyword", staticHoverTip: "Hover tip" };
 
-  const namedPresets = namedPresetDefs(entities);
+  const namedPresets = showPresets ? namedPresetDefs(entities) : [];
   const cardPresets = namedPresets.filter(
     (preset): preset is Extract<DecisionsDecisionsPresetDef, { kind: "cards" }> => (
       preset.kind === "cards"
@@ -748,6 +746,7 @@ export function DecisionsDecisionsPoolPicker({
 
   return (
     <div className="space-y-3" data-decisions-decisions-pool-picker>
+      {showPresets && (
       <div className="space-y-2" data-decisions-decisions-presets>
         <BlockTitle>{copy.presetSection}</BlockTitle>
         <div className="flex flex-wrap gap-1.5">
@@ -756,7 +755,7 @@ export function DecisionsDecisionsPoolPicker({
               key={preset.key}
               preset={preset}
               label={jumpLabel(preset)}
-              onClick={() => onPreset(preset.key)}
+              onClick={() => onPreset?.(preset.key)}
             />
           ))}
         </div>
@@ -770,7 +769,7 @@ export function DecisionsDecisionsPoolPicker({
                   presetKey={preset.key}
                   icon={RELIC_COLLECTION_ICON}
                   label={label}
-                  onClick={() => onPreset(preset.key)}
+                  onClick={() => onPreset?.(preset.key)}
                 />
               );
             }
@@ -783,7 +782,7 @@ export function DecisionsDecisionsPoolPicker({
                   overlaySrcs={fanOverlays[preset.key] ?? []}
                   accent={ANCIENT_ACCENT}
                   label={label}
-                  onClick={() => onPreset(preset.key)}
+                  onClick={() => onPreset?.(preset.key)}
                 />
               );
             }
@@ -795,7 +794,7 @@ export function DecisionsDecisionsPoolPicker({
                 trail={entityMap.get(`ancient:${preset.ancientId}`)?.imageUrl ?? ANCIENT_TOKEN_ICON}
                 accent={ANCIENT_ACCENT}
                 label={label}
-                onClick={() => onPreset(preset.key)}
+                onClick={() => onPreset?.(preset.key)}
               />
             );
           })}
@@ -814,7 +813,7 @@ export function DecisionsDecisionsPoolPicker({
                     : [MAP_ELITE_ICON]
               }
               label={jumpLabel(preset)}
-              onClick={() => onPreset(preset.key)}
+              onClick={() => onPreset?.(preset.key)}
             />
           ))}
         </div>
@@ -825,17 +824,21 @@ export function DecisionsDecisionsPoolPicker({
               presetKey={preset.key}
               icon={POTION_COLLECTION_ICON}
               label={jumpLabel(preset)}
-              onClick={() => onPreset(preset.key)}
+              onClick={() => onPreset?.(preset.key)}
             />
           ))}
         </div>
       </div>
+      )}
 
       <div
-        className="space-y-3 border-t-2 border-primary/25 pt-4"
+        className={cn(
+          "space-y-3",
+          showPresets && "border-t-2 border-primary/25 pt-4",
+        )}
         data-decisions-decisions-pool-generator
       >
-        <BlockTitle>{copy.pickYourself}</BlockTitle>
+        {showPresets ? <BlockTitle>{copy.pickYourself}</BlockTitle> : null}
       <div className="space-y-1.5">
         <SectionLabel>{copy.typeSection}</SectionLabel>
       <div className="flex flex-wrap gap-1.5" data-decisions-decisions-filter-major>

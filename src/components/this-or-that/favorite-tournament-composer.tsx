@@ -6,18 +6,13 @@ import { DecisionsDecisionsPoolPicker } from "@/components/decisions-decisions/d
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
   cloneFilterDims,
-  CUSTOM_PRESET_KEY,
   dimsHaveSelection,
   emptyFilterDims,
   entityToResourceRef,
-  filterStateFromPresetKey,
-  findPresetDef,
-  namedPresetKeyFromFilter,
   poolFilterIsReady,
   resourceKey,
   sortPoolRefs,
   stampFilterIds,
-  stampPresetIds,
   toggleFilterDim,
   type DecisionsDecisionsResourceRef,
   type DecisionsFilterDim,
@@ -25,7 +20,7 @@ import {
   type DecisionsPoolMajor,
 } from "@/lib/decisions-decisions";
 import {
-  byeCountForSize,
+  formatBracketRoundLabel,
   FAVORITE_TOURNAMENT_MIN_POOL,
   FAVORITE_TOURNAMENT_NOTE_MAX_CHARS,
   FAVORITE_TOURNAMENT_TITLE_MAX_CHARS,
@@ -39,7 +34,6 @@ export type FavoriteTournamentComposerValues = {
   nickname: string;
   title: string;
   note: string;
-  presetKey: string;
   pool: FavoriteTournamentResourceRef[];
 };
 
@@ -54,7 +48,6 @@ function mergePool(
 export function FavoriteTournamentComposer({
   entities,
   entityMap,
-  stamps,
   gameLocale,
   serviceLocale,
   presetLabels,
@@ -66,7 +59,6 @@ export function FavoriteTournamentComposer({
 }: {
   entities: EntityInfo[];
   entityMap: Map<string, EntityInfo>;
-  stamps: Record<string, DecisionsDecisionsResourceRef[]>;
   gameLocale: GameLocale;
   serviceLocale: ServiceLocale;
   presetLabels: Record<string, string>;
@@ -78,20 +70,12 @@ export function FavoriteTournamentComposer({
 }) {
   const copy = serviceMessages[serviceLocale].favoriteTournament;
   const decisionsCopy = serviceMessages[serviceLocale].decisionsDecisions;
-  const initialFilter = filterStateFromPresetKey(initial?.preset_key ?? CUSTOM_PRESET_KEY);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [nickname, setNickname] = useState(initial?.nickname ?? profileNickname);
   const [title, setTitle] = useState(initial?.title ?? "");
   const [note, setNote] = useState(initial?.note ?? "");
-  const [major, setMajor] = useState<DecisionsPoolMajor | null>(initialFilter.major);
-  const [dims, setDims] = useState<DecisionsFilterDims>(
-    () => cloneFilterDims(initialFilter.dims),
-  );
-  const [lockedPresetKey, setLockedPresetKey] = useState<string | null>(
-    initial?.preset_key && initial.preset_key !== CUSTOM_PRESET_KEY
-      ? initial.preset_key
-      : null,
-  );
+  const [major, setMajor] = useState<DecisionsPoolMajor | null>(null);
+  const [dims, setDims] = useState<DecisionsFilterDims>(() => cloneFilterDims(emptyFilterDims()));
   const [extraIds, setExtraIds] = useState<DecisionsDecisionsResourceRef[]>(
     () => initial?.pool ?? [],
   );
@@ -100,16 +84,11 @@ export function FavoriteTournamentComposer({
   const [submitting, setSubmitting] = useState(false);
 
   const filterReady = poolFilterIsReady(major, dims);
-  const presetKey = lockedPresetKey ?? namedPresetKeyFromFilter(major, dims);
 
   const filteredStamp = useMemo(() => {
-    if (lockedPresetKey) {
-      return stamps[lockedPresetKey]
-        ?? stampPresetIds(findPresetDef(lockedPresetKey), entities);
-    }
     if (!filterReady) return [];
     return stampFilterIds(entities, major, dims);
-  }, [dims, entities, filterReady, lockedPresetKey, major, stamps]);
+  }, [dims, entities, filterReady, major]);
 
   const pool = useMemo(() => {
     const next = mergePool(filteredStamp, extraIds).filter(
@@ -121,23 +100,11 @@ export function FavoriteTournamentComposer({
   const handleMajor = useCallback((nextMajor: DecisionsPoolMajor | null) => {
     setMajor(nextMajor);
     setDims(emptyFilterDims());
-    setLockedPresetKey(null);
     setExcludedKeys(new Set());
   }, []);
 
   const handleToggleDim = useCallback((dim: DecisionsFilterDim, key: string) => {
-    setLockedPresetKey(null);
     setDims((current) => toggleFilterDim(current, dim, key));
-  }, []);
-
-  const handlePreset = useCallback((key: string) => {
-    const next = filterStateFromPresetKey(key);
-    setMajor(next.major);
-    setDims(cloneFilterDims(next.dims));
-    setLockedPresetKey(key);
-    setExtraIds([]);
-    setExcludedKeys(new Set());
-    setSelectedKey(null);
   }, []);
 
   const handleAdd = useCallback((entity: EntityInfo) => {
@@ -177,7 +144,6 @@ export function FavoriteTournamentComposer({
       : decisionsCopy.poolAffordance;
 
   const canSubmit = pool.length >= FAVORITE_TOURNAMENT_MIN_POOL && title.trim().length >= 1;
-  const byeCount = byeCountForSize(pool.length);
 
   const handleSubmit = useCallback(async () => {
     if (!canSubmit) return;
@@ -187,15 +153,12 @@ export function FavoriteTournamentComposer({
         nickname,
         title,
         note,
-        presetKey: excludedKeys.size > 0 || extraIds.length > 0
-          ? CUSTOM_PRESET_KEY
-          : presetKey,
         pool,
       });
     } finally {
       setSubmitting(false);
     }
-  }, [canSubmit, excludedKeys, extraIds, nickname, note, onSubmit, pool, presetKey, title]);
+  }, [canSubmit, nickname, note, onSubmit, pool, title]);
 
   return (
     <div className="space-y-3" data-favorite-tournament-composer>
@@ -236,16 +199,15 @@ export function FavoriteTournamentComposer({
         major={major}
         dims={dims}
         searchInputRef={searchInputRef}
+        showPresets={false}
         onMajor={handleMajor}
         onToggleDim={handleToggleDim}
-        onPreset={handlePreset}
         onAdd={handleAdd}
       />
 
       {pool.length > 0 && (
         <p className="font-game-text text-sm text-zinc-300">
-          {copy.roundLabel.replace("{size}", String(pool.length))}
-          {byeCount > 0 ? ` · ${copy.byeNote}` : null}
+          {formatBracketRoundLabel(pool.length, copy)}
         </p>
       )}
 

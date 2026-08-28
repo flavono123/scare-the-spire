@@ -6,7 +6,6 @@ import {
   type FavoriteTournamentComposerValues,
 } from "@/components/this-or-that/favorite-tournament-composer";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import type { DecisionsDecisionsResourceRef } from "@/lib/decisions-decisions";
 import type { FavoriteTournamentPost } from "@/lib/favorite-tournament";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
@@ -14,7 +13,6 @@ import { serviceMessages } from "@/messages/service";
 export function FavoriteTournamentComposerModal({
   entities,
   entityMap,
-  stamps,
   gameLocale,
   serviceLocale,
   presetLabels,
@@ -27,7 +25,6 @@ export function FavoriteTournamentComposerModal({
 }: {
   entities: EntityInfo[];
   entityMap: Map<string, EntityInfo>;
-  stamps: Record<string, DecisionsDecisionsResourceRef[]>;
   gameLocale: GameLocale;
   serviceLocale: ServiceLocale;
   presetLabels: Record<string, string>;
@@ -54,7 +51,6 @@ export function FavoriteTournamentComposerModal({
       <FavoriteTournamentComposer
         entities={entities}
         entityMap={entityMap}
-        stamps={stamps}
         gameLocale={gameLocale}
         serviceLocale={serviceLocale}
         presetLabels={presetLabels}

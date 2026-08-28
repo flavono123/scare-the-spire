@@ -25,11 +25,16 @@ const presetPromise = fetch(
   })
   .catch(() => null);
 
-export function useDecisionsDecisionsCatalog(gameLocale: GameLocale) {
+export function useDecisionsDecisionsCatalog(
+  gameLocale: GameLocale,
+  options?: { includeStamps?: boolean },
+) {
   const resources = useThisOrThatEntities(gameLocale);
   const [stamps, setStamps] = useState<Record<string, DecisionsDecisionsResourceRef[]>>({});
+  const includeStamps = options?.includeStamps !== false;
 
   useEffect(() => {
+    if (!includeStamps) return;
     let disposed = false;
     void presetPromise.then((payload) => {
       if (disposed) return;
@@ -42,7 +47,7 @@ export function useDecisionsDecisionsCatalog(gameLocale: GameLocale) {
     return () => {
       disposed = true;
     };
-  }, [resources.entities]);
+  }, [includeStamps, resources.entities]);
 
   const entityMap = new Map<string, EntityInfo>();
   for (const entity of resources.entities) {
