@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
 import {
-  composeTokenDuotoneRgba,
   hexToRgb255,
   luminance01,
   remapDuotoneRgba,
@@ -25,17 +24,10 @@ assert.equal(atlas[3], 255);
 assert.deepEqual([...atlas.slice(4)], [0, 0, 0, 0]);
 
 const fill = new Uint8ClampedArray([
-  255, 255, 255, 255,
+  255, 255, 255, 180,
   0, 0, 0, 0,
 ]);
-const outline = new Uint8ClampedArray([
-  255, 255, 255, 255,
-  255, 255, 255, 200,
-]);
-const shadow = hexToRgb255("#111111");
-const highlight = hexToRgb255("#EEEEEE");
-const token = composeTokenDuotoneRgba(fill, outline, shadow, highlight);
-assert.deepEqual([...token.slice(0, 4)], [238, 238, 238, 255]);
-assert.deepEqual([...token.slice(4)], [17, 17, 17, 200]);
+remapDuotoneRgba(fill, hexToRgb255("#111111"), hexToRgb255("#EEEEEE"));
+assert.deepEqual([...fill], [238, 238, 238, 180, 0, 0, 0, 0]);
 
 console.log("duotone-pixels.spec.ts: ok");

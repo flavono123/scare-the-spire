@@ -79,7 +79,7 @@ export default function CharacterPaletteDevPage({
         </p>
         <h1 className="text-3xl font-bold text-zinc-100">캐릭터 2색 배색</h1>
         <p className="max-w-3xl text-sm leading-relaxed text-zinc-400">
-          토큰은 게임 outline 마스크와 명암으로 조합하고, Spine은 아틀라스 픽셀을 두 색으로 다시 칠한다. 프리셋은{" "}
+          토큰과 Spine 모두 원본 명암으로 두 색을 다시 칠한다. 프리셋은{" "}
           <a
             href={CHARACTER_PALETTE_SOURCE.url}
             target="_blank"
@@ -181,7 +181,7 @@ export default function CharacterPaletteDevPage({
       <section className="flex flex-col gap-3">
         <div className="flex items-end justify-between gap-3">
           <h2 className="text-lg font-semibold text-zinc-100">얼굴 토큰</h2>
-          <p className="text-xs text-zinc-500">원본 / outline 조합. 클릭하면 Spine 캐릭터가 바뀐다.</p>
+          <p className="text-xs text-zinc-500">원본 / 배색. 클릭하면 Spine 캐릭터가 바뀐다.</p>
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {characters.map((entry) => (
@@ -359,13 +359,12 @@ function TokenPreviewCard({
         {tokenMap ? (
           <DuotoneCharacterToken
             iconUrl={character.iconUrl}
-            iconOutlineUrl={character.iconOutlineUrl}
             shadowHex={tokenMap.shadow}
             highlightHex={tokenMap.highlight}
           />
         ) : (
           <Image
-            src={character.iconOutlineUrl}
+            src={character.iconUrl}
             alt=""
             width={56}
             height={56}

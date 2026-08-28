@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import {
-  composeTokenDuotoneRgba,
-  hexToRgb255,
-} from "@/lib/duotone-pixels";
+import { hexToRgb255, remapDuotoneRgba } from "@/lib/duotone-pixels";
 import { cn } from "@/lib/utils";
 
 function loadImage(src: string): Promise<HTMLImageElement> {
@@ -17,31 +14,14 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
-function drawToImageData(
-  image: HTMLImageElement,
-  width: number,
-  height: number,
-): ImageData {
-  const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext("2d", { willReadFrequently: true });
-  if (!ctx) throw new Error("2D canvas unavailable");
-  ctx.clearRect(0, 0, width, height);
-  ctx.drawImage(image, 0, 0, width, height);
-  return ctx.getImageData(0, 0, width, height);
-}
-
 export function DuotoneCharacterToken({
   iconUrl,
-  iconOutlineUrl,
   shadowHex,
   highlightHex,
   size = 56,
   className,
 }: {
   iconUrl: string;
-  iconOutlineUrl: string;
   shadowHex: string;
   highlightHex: string;
   size?: number;
@@ -58,21 +38,27 @@ export function DuotoneCharacterToken({
     canvas.width = pixelSize;
     canvas.height = pixelSize;
 
-    void Promise.all([loadImage(iconUrl), loadImage(iconOutlineUrl)])
-      .then(([fillImage, outlineImage]) => {
+    void loadImage(iconUrl)
+      .then((fillImage) => {
         if (cancelled || !canvasRef.current) return;
-        const fill = drawToImageData(fillImage, pixelSize, pixelSize);
-        const outline = drawToImageData(outlineImage, pixelSize, pixelSize);
-        const composed = composeTokenDuotoneRgba(
-          fill.data,
-          outline.data,
-          hexToRgb255(shadowHex),
-          hexToRgb255(highlightHex),
-        );
+        const srcWidth = fillImage.naturalWidth || fillImage.width;
+        const srcHeight = fillImage.naturalHeight || fillImage.height;
+        const source = document.createElement("canvas");
+        source.width = srcWidth;
+        source.height = srcHeight;
+        const sourceCtx = source.getContext("2d", { willReadFrequently: true });
+        if (!sourceCtx) return;
+        sourceCtx.drawImage(fillImage, 0, 0);
+        const fill = sourceCtx.getImageData(0, 0, srcWidth, srcHeight);
+        remapDuotoneRgba(fill.data, hexToRgb255(shadowHex), hexToRgb255(highlightHex));
+        sourceCtx.putImageData(fill, 0, 0);
+
         const ctx = canvasRef.current.getContext("2d");
         if (!ctx) return;
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
         ctx.clearRect(0, 0, pixelSize, pixelSize);
-        ctx.putImageData(new ImageData(composed, pixelSize, pixelSize), 0, 0);
+        ctx.drawImage(source, 0, 0, pixelSize, pixelSize);
       })
       .catch((error: unknown) => {
         if (!cancelled) console.warn("Failed to compose duotone token:", error);
@@ -81,7 +67,7 @@ export function DuotoneCharacterToken({
     return () => {
       cancelled = true;
     };
-  }, [highlightHex, iconOutlineUrl, iconUrl, shadowHex, size]);
+  }, [highlightHex, iconUrl, shadowHex, size]);
 
   return (
     <canvas
