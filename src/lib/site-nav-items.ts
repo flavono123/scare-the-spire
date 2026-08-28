@@ -9,7 +9,6 @@ import {
   CHARACTER_CARDS_MODIFIER_IMAGE_URL,
 } from "@/lib/codex-types";
 import { DECISIONS_DECISIONS_TOKEN_SRC } from "@/lib/decisions-decisions";
-import { FAVORITE_TOURNAMENT_TOKEN_SRC } from "@/lib/favorite-tournament";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   localizeHrefWithGameLocale,
@@ -73,13 +72,6 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     createdAt: "2026-07-09",
     byrdispatchSectionTitle: "이거 아님 저거?",
     getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.thisOrThat,
-  },
-  {
-    href: "/this-or-that/worldcup",
-    icon: FAVORITE_TOURNAMENT_TOKEN_SRC,
-    createdAt: "2026-08-28",
-    nestedUnder: "/this-or-that",
-    getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.favoriteTournament,
   },
   {
     href: "/history-course",
