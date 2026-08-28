@@ -5,7 +5,7 @@ import { getStories, getSTS2Patches, getSTS2Stories } from "@/lib/data";
 import { eventCharacterQuoteSearchParts } from "@/lib/event-character-quotes";
 import { loadAllEntities } from "@/lib/load-all-entities";
 
-export type SearchItemType = EntityType | "patch" | "story" | "historyCourse" | "thisOrThat" | "decisionsDecisions";
+export type SearchItemType = EntityType | "patch" | "story" | "historyCourse" | "thisOrThat" | "favoriteTournament" | "decisionsDecisions";
 
 export type SearchIndexItem = {
   id: string;
@@ -420,6 +420,17 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     href: "/this-or-that",
   }];
 
+  const favoriteTournamentItems: SearchIndexItem[] = [{
+    id: "favorite-tournament",
+    type: "favoriteTournament",
+    title: "이상형 월드컵",
+    titleEn: "Favorite Tournament",
+    description: "게임 요소 토너먼트 이상형 월드컵 강장제 대진 우승 승률",
+    descriptionEn: "game element tournament favorite bracket champion win rate",
+    imageUrl: "/images/sts2/potions/fortifier.webp",
+    href: "/this-or-that/worldcup",
+  }];
+
   const decisionsDecisionsItems: SearchIndexItem[] = [{
     id: "decisions-decisions",
     type: "decisionsDecisions",
@@ -431,5 +442,5 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     href: "/decisions-decisions",
   }];
 
-  return { items: [...patchItems, ...storyItems, ...items, ...historyCourseItems, ...thisOrThatItems, ...decisionsDecisionsItems] };
+  return { items: [...patchItems, ...storyItems, ...items, ...historyCourseItems, ...thisOrThatItems, ...favoriteTournamentItems, ...decisionsDecisionsItems] };
 }

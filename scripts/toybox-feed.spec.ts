@@ -26,7 +26,9 @@ assert.equal(toyboxRecommendScore(1, 2), 16);
 assert.equal(isToyboxFeedSort("recommended"), true);
 assert.equal(isToyboxFeedCoreSort("recommended"), true);
 assert.equal(isToyboxFeedSort("vote_rate_high"), true);
+assert.equal(isToyboxFeedSort("play_count"), true);
 assert.equal(isToyboxFeedCoreSort("vote_rate_high"), false);
+assert.equal(isToyboxFeedCoreSort("play_count"), false);
 assert.equal(isToyboxFeedSort("hot"), false);
 
 assert.deepEqual(
@@ -37,8 +39,14 @@ assert.deepEqual(
   [...toyboxFeedSortOptionsFor("this_or_that")],
   ["latest", "recommended", "comments", "vote_rate_high", "vote_rate_low"],
 );
+assert.deepEqual(
+  [...toyboxFeedSortOptionsFor("favorite_tournament")],
+  ["latest", "recommended", "comments", "play_count"],
+);
 assert.equal(resolveToyboxFeedSort("combo", "vote_rate_high"), "latest");
 assert.equal(resolveToyboxFeedSort("this_or_that", "vote_rate_low"), "vote_rate_low");
+assert.equal(resolveToyboxFeedSort("favorite_tournament", "play_count"), "play_count");
+assert.equal(resolveToyboxFeedSort("favorite_tournament", "vote_rate_high"), "latest");
 
 assert.equal(toyboxWinnerShareBps(0, 0), 0);
 assert.equal(toyboxWinnerShareBps(1, 1), 5000);
@@ -109,7 +117,9 @@ assert.equal(isMissingToyboxFeedRpc({ code: "42501" }), false);
 
 assert.equal(serviceMessages.ko.feedSort.vote_rate_high, "투표율 높은 순");
 assert.equal(serviceMessages.ko.feedSort.vote_rate_low, "투표율 낮은 순");
+assert.equal(serviceMessages.ko.feedSort.play_count, "플레이 많은 순");
 assert.equal(serviceMessages.en.feedSort.vote_rate_high, "High vote rate");
 assert.equal(serviceMessages.en.feedSort.vote_rate_low, "Low vote rate");
+assert.equal(serviceMessages.en.feedSort.play_count, "Most played");
 
 console.log("toybox-feed.spec.ts: ok");

@@ -41,6 +41,10 @@ export function buildDecisionsDecisionsCommentThreadKey(postId: string): string 
   return `decisions-decisions:${postId}`;
 }
 
+export function buildFavoriteTournamentCommentThreadKey(postId: string): string {
+  return `favorite-tournament:${postId}`;
+}
+
 function prefixedResourceCommentsHref(storyId: string, prefix: string, pathname: string): string | null {
   if (!storyId.startsWith(prefix)) return null;
   const id = storyId.slice(prefix.length);
@@ -66,5 +70,6 @@ export function commentThreadHref(storyId: string): string {
     ?? prefixedResourceCommentsHref(storyId, "chemical-x:", "/chemical-x")
     ?? prefixedResourceCommentsHref(storyId, "defragment:", "/defragment")
     ?? prefixedResourceCommentsHref(storyId, "decisions-decisions:", "/decisions-decisions")
+    ?? prefixedResourceCommentsHref(storyId, "favorite-tournament:", "/this-or-that/worldcup")
     ?? (storyId === "byrdispatch" ? `/byrdispatch${COMMENTS_ANCHOR}` : `/#${storyId}`);
 }

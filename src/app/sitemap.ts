@@ -31,6 +31,7 @@ const PUBLIC_INDEX_PATHS = [
   "/patches",
   "/patches/changes",
   "/this-or-that",
+  "/this-or-that/worldcup",
   "/transfigure",
   "/decisions-decisions",
 ] as const;

@@ -25,6 +25,7 @@ import { serviceMessages } from "@/messages/service";
 import { ThisOrThatComposerModal } from "@/components/this-or-that/composer-modal";
 import { ThisOrThatPostCard } from "@/components/this-or-that/post-card";
 import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
+import { ThisOrThatServiceTabs } from "@/components/this-or-that/this-or-that-service-tabs";
 
 export function ThisOrThatClient({
   gameLocale,
@@ -163,6 +164,11 @@ export function ThisOrThatClient({
         )}
         </div>
         <ToyBoxIndexHeading subtitle={copy.subtitle} hero={prompt} />
+        <ThisOrThatServiceTabs
+          active="this-or-that"
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+        />
       </header>
 
       {storageUnavailable ? (

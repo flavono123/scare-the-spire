@@ -128,6 +128,16 @@ export const PAGE_OG_IMAGE_RULES = [
     image: HISTORY_COURSE_PAGE_OG_IMAGE,
   },
   {
+    pattern: "/this-or-that/worldcup",
+    label: "이상형 월드컵",
+    image: THIS_OR_THAT_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/this-or-that/worldcup/*",
+    label: "이상형 월드컵 상세",
+    image: THIS_OR_THAT_PAGE_OG_IMAGE,
+  },
+  {
     pattern: "/this-or-that",
     label: "이거 아님 저거?",
     image: THIS_OR_THAT_PAGE_OG_IMAGE,

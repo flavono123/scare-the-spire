@@ -9,6 +9,7 @@ import {
   CHARACTER_CARDS_MODIFIER_IMAGE_URL,
 } from "@/lib/codex-types";
 import { DECISIONS_DECISIONS_TOKEN_SRC } from "@/lib/decisions-decisions";
+import { FAVORITE_TOURNAMENT_TOKEN_SRC } from "@/lib/favorite-tournament";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   localizeHrefWithGameLocale,
@@ -74,6 +75,13 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.thisOrThat,
   },
   {
+    href: "/this-or-that/worldcup",
+    icon: FAVORITE_TOURNAMENT_TOKEN_SRC,
+    createdAt: "2026-08-28",
+    nestedUnder: "/this-or-that",
+    getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.favoriteTournament,
+  },
+  {
     href: "/history-course",
     icon: "/images/sts2/relics/history_course.webp",
     createdAt: "2026-06-18",
@@ -129,6 +137,12 @@ export const devNavItems = [
     href: "/dev/spire-icons",
     label: "첨탑식 아이콘 실험실",
     icon: "/images/sts2/powers/trash_to_treasure_power.webp",
+    strictDevOnly: true,
+  },
+  {
+    href: "/dev/character-palette",
+    label: "캐릭터 배색",
+    icon: "/images/sts2/characters/character_icon_ironclad.webp",
     strictDevOnly: true,
   },
   { href: "/dev/text-effects", label: "텍스트 효과", icon: "/images/sts2/nav/patch_notes_icon.png" },

@@ -9,6 +9,7 @@ export const TOYBOX_FEED_SERVICES = [
   "this_or_that",
   "chemical_x",
   "decisions_decisions",
+  "favorite_tournament",
 ] as const;
 
 export const TOYBOX_FEED_TABLES = {
@@ -17,6 +18,7 @@ export const TOYBOX_FEED_TABLES = {
   this_or_that: "this_or_that_posts",
   chemical_x: "chemical_posts",
   decisions_decisions: "decisions_decisions_posts",
+  favorite_tournament: "favorite_tournament_posts",
 } as const;
 
 export type ToyboxFeedService = (typeof TOYBOX_FEED_SERVICES)[number];
@@ -27,7 +29,7 @@ export const TOYBOX_FEED_CORE_SORTS = ["latest", "recommended", "comments"] as c
 export type ToyboxFeedCoreSort = (typeof TOYBOX_FEED_CORE_SORTS)[number];
 
 /** Registered extra sorts. Append via `TOYBOX_FEED_EXTRA_SORTS_BY_SERVICE`. */
-export const TOYBOX_FEED_EXTRA_SORTS = ["vote_rate_high", "vote_rate_low"] as const;
+export const TOYBOX_FEED_EXTRA_SORTS = ["vote_rate_high", "vote_rate_low", "play_count"] as const;
 export type ToyboxFeedExtraSort = (typeof TOYBOX_FEED_EXTRA_SORTS)[number];
 
 export const TOYBOX_FEED_SORTS = [
@@ -47,6 +49,7 @@ export const TOYBOX_FEED_EXTRA_SORTS_BY_SERVICE: {
   readonly [K in ToyboxFeedService]?: readonly ToyboxFeedExtraSort[];
 } = {
   this_or_that: ["vote_rate_high", "vote_rate_low"],
+  favorite_tournament: ["play_count"],
 };
 
 export interface ToyboxFeedCursor {
@@ -200,6 +203,9 @@ const EXTRA_SORT_CURSOR_SCORE: Record<
 > = {
   vote_rate_high: (item) => voteRateBpsFromPost(item.post),
   vote_rate_low: (item) => TOYBOX_FEED_VOTE_RATE_BPS_MAX - voteRateBpsFromPost(item.post),
+  play_count: (item) => asNonNegativeInt(
+    (item.post as PostIdentity & Record<string, unknown>).play_count,
+  ) ?? 0,
 };
 
 export function toyboxFeedCursorScore<T extends PostIdentity>(
