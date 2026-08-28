@@ -152,7 +152,7 @@ export function FavoriteTournamentClient({
 
       {unavailable ? (
         <StorageUnavailableNotice title={copy.unavailableTitle} />
-      ) : loading || catalog.loading ? (
+      ) : loading ? (
         <ContentLoadingNotice label={copy.loading} />
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
