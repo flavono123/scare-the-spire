@@ -2,6 +2,7 @@ import engEnchantments from "../../data/sts2/eng/enchantments.json";
 import korEnchantments from "../../data/sts2/kor/enchantments.json";
 import type { CodexEnchantment } from "@/lib/codex-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
+import { historyEnchantmentLocaleCopy } from "@/lib/history-catalog-locale";
 import {
   getEnchantAddedKeywords,
   getEnchantForcedCost,
@@ -42,14 +43,36 @@ function catalogLocale(locale: GameLocale | ServiceLocale): "kor" | "eng" {
   return locale === "eng" || locale === "en" ? "eng" : "kor";
 }
 
+function asGameLocale(locale: GameLocale | ServiceLocale): GameLocale {
+  if (locale === "en") return "eng";
+  if (locale === "ko") return "kor";
+  return locale;
+}
+
 export function lookupHistoryEnchantment(
   id: string | null | undefined,
   locale: GameLocale | ServiceLocale = "kor",
 ): RawEnchantment | undefined {
   if (!id) return undefined;
-  const table = INDEX[catalogLocale(locale)];
   const key = enchantmentIdKey(id);
-  return table.get(key) ?? INDEX.eng.get(key) ?? INDEX.kor.get(key);
+  const localeCopy = historyEnchantmentLocaleCopy(id, asGameLocale(locale));
+  const table = INDEX[catalogLocale(locale)];
+  const row = table.get(key) ?? INDEX.eng.get(key) ?? INDEX.kor.get(key);
+  if (localeCopy && row) {
+    return {
+      ...row,
+      name: localeCopy.name || row.name,
+      extra_card_text: localeCopy.extraCardText ?? row.extra_card_text,
+    };
+  }
+  if (localeCopy) {
+    return {
+      id: key,
+      name: localeCopy.name,
+      extra_card_text: localeCopy.extraCardText,
+    };
+  }
+  return row;
 }
 
 export function historyEnchantmentImageUrl(

@@ -6,9 +6,10 @@ import { useState, type ReactNode } from "react";
 import { DescriptionText } from "@/components/codex/codex-description";
 import { HoverTip } from "@/components/codex/hover-tip";
 import { PortaledHoverTipLayer } from "@/components/codex/card-keyword-tip-stack";
-import { EntityPreview } from "@/components/patch-note-renderer";
+import { HistoryEntityPreview } from "@/components/history-course/history-entity-preview";
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useGameLocale } from "@/hooks/use-game-locale";
+import { useOptionalHistoryCatalogLocale } from "@/hooks/use-history-catalog-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
   gameUi,
@@ -22,6 +23,7 @@ import {
   buildRelicEntityInfo,
   lookupHistoryRelic,
 } from "@/lib/history-relic-lookup";
+import { historyStaticHoverTipFromTables } from "@/lib/history-catalog-locale";
 import { historyStaticHoverTip } from "@/lib/history-static-hover-tips";
 import type { CodexPotion, CodexRelic } from "@/lib/codex-types";
 import { serviceMessages } from "@/messages/service";
@@ -360,8 +362,13 @@ function PotionSlots({
 }) {
   const tables = useGameI18n();
   const gameLocale = useGameLocale();
+  const locTables = useOptionalHistoryCatalogLocale()?.locTables;
   const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
-  const emptyTip = historyStaticHoverTip("POTION_SLOT", gameLocale);
+  const emptyTip = historyStaticHoverTipFromTables(
+    "POTION_SLOT",
+    locTables,
+    historyStaticHoverTip("POTION_SLOT", gameLocale),
+  );
   return (
     <span
       data-potion-bay
@@ -417,9 +424,9 @@ function PotionSlots({
         );
         if (entity) {
           return (
-            <EntityPreview key={i} entity={entity} linkClassName="block">
+            <HistoryEntityPreview key={i} entity={entity} linkClassName="block">
               {slot}
-            </EntityPreview>
+            </HistoryEntityPreview>
           );
         }
         return (
@@ -863,9 +870,9 @@ function RelicRow({
             title={entity ? undefined : `${label} · ${playback.floorGained.replace("{floor}", String(relic.floor))}`}
           >
             {entity ? (
-              <EntityPreview entity={entity} linkClassName="block h-8 w-8">
+              <HistoryEntityPreview entity={entity} linkClassName="block h-8 w-8">
                 {icon}
-              </EntityPreview>
+              </HistoryEntityPreview>
             ) : icon}
           </div>
         );

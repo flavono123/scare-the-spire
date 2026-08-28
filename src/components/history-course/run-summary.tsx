@@ -5,16 +5,15 @@ import { useState, type ReactNode } from "react";
 import { HistoryTinyCardIcon } from "@/components/history-course/card-action-icon";
 import { NodeTooltip } from "@/components/history-course/node-tooltip";
 import { RunBadgeStrip } from "@/components/history-course/run-badge-strip";
-import {
-  EntityPreview,
-  type EntityInfo,
-} from "@/components/patch-note-renderer";
+import { HistoryEntityPreview } from "@/components/history-course/history-entity-preview";
+import { type EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "@/components/codex/codex-description";
 import { GameHoverTip } from "@/components/codex/hover-tip";
 import { PortaledHoverTipLayer } from "@/components/codex/card-keyword-tip-stack";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useGameLocale } from "@/hooks/use-game-locale";
+import { useOptionalHistoryCatalogLocale } from "@/hooks/use-history-catalog-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { localizeGame, gameUi, formatGameTemplate, type GameI18nTables } from "@/lib/sts2-game-i18n";
 import {
@@ -22,12 +21,13 @@ import {
   lookupHistoryCard,
 } from "@/lib/history-card-lookup";
 import { historyCardEnchantmentTileProps } from "@/lib/history-enchantments";
+import { historyStaticHoverTipFromTables } from "@/lib/history-catalog-locale";
 import { historyStaticHoverTip } from "@/lib/history-static-hover-tips";
 import {
   buildPotionEntityInfo,
   lookupHistoryPotion,
 } from "@/lib/history-potion-lookup";
-import { buildRelicEntityInfo } from "@/lib/history-relic-lookup";
+import { buildRelicEntityInfo, lookupHistoryRelic } from "@/lib/history-relic-lookup";
 import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
 import { TEXT_CREAM, TEXT_GREEN, TEXT_PURPLE } from "@/lib/sts2-card-style";
 import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
@@ -438,8 +438,13 @@ function PotionStrip({
 }) {
   const tables = useGameI18n();
   const gameLocale = useGameLocale();
+  const locTables = useOptionalHistoryCatalogLocale()?.locTables;
   const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
-  const emptyTip = historyStaticHoverTip("POTION_SLOT", gameLocale);
+  const emptyTip = historyStaticHoverTipFromTables(
+    "POTION_SLOT",
+    locTables,
+    historyStaticHoverTip("POTION_SLOT", gameLocale),
+  );
   return (
     <div
       aria-label={playback.potionSlots.replace("{count}", String(slots))}
@@ -482,9 +487,9 @@ function PotionStrip({
         );
         if (entity) {
           return (
-            <EntityPreview key={i} entity={entity} linkClassName="block">
+            <HistoryEntityPreview key={i} entity={entity} linkClassName="block">
               {slot}
-            </EntityPreview>
+            </HistoryEntityPreview>
           );
         }
         return (
@@ -569,10 +574,11 @@ function ActRow({
   history: ReplayHistoryEntry[];
   highlightedFloor: number | null;
 }) {
+  const tables = useGameI18n();
   return (
     <div className="flex items-center gap-3 rounded-md bg-zinc-900/40 px-3 py-2">
       <span className="w-20 shrink-0 text-sm font-bold text-amber-100">
-        {act.actLabel}
+        {localizeGame(tables, "acts", act.actId) ?? act.actLabel}
       </span>
       <div className="flex flex-wrap items-center gap-1">
         {history.map((entry, i) => {
@@ -674,7 +680,7 @@ function RelicSection({
             key={r.id}
             replayId={r.id}
             floor={r.floor}
-            relic={relicsById[r.id]}
+            relic={lookupHistoryRelic(relicsById, r.id)}
             onHoverFloor={onHoverFloor}
           />
         ))}
@@ -736,9 +742,9 @@ function RelicIcon({
         title={`${label} · ${floor > 0 ? playback.floorGained.replace("{floor}", String(floor)) : playback.starterRelic}`}
         {...(tracksFloor ? hoverHandlers : {})}
       >
-        <EntityPreview entity={entity} linkClassName="block">
+        <HistoryEntityPreview entity={entity} linkClassName="block">
           {iconNode}
-        </EntityPreview>
+        </HistoryEntityPreview>
       </span>
     );
   }
@@ -867,13 +873,13 @@ function DeckEntry({
       className={cn("relative", rowClass)}
       {...(tracksFloor ? hoverHandlers : {})}
     >
-      <EntityPreview
+      <HistoryEntityPreview
         entity={entity}
         linkClassName="inline-flex min-w-0 max-w-full items-center gap-1.5 cursor-pointer hover:text-amber-200 transition-colors"
       >
         <span className="shrink-0">{iconNode}</span>
         {labelNode}
-      </EntityPreview>
+      </HistoryEntityPreview>
     </div>
   );
 }

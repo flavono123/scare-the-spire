@@ -6,7 +6,9 @@ import { DonationPanel } from "@/components/history-course/donation-panel";
 import { HistoryCourseShell } from "@/components/history-course/history-course-shell";
 import { collectRelevantCardIds } from "@/components/history-course/topbar-state";
 import { CardSideTipCatalogProvider } from "@/components/codex/card-side-tip-catalog-context";
-import { getHistoryCourseCatalog, createHistoryCourseSideTipCatalog } from "@/lib/history-course-catalog";
+import { HistoryCatalogLocaleProvider, useHistoryCatalogLocale } from "@/hooks/use-history-catalog-locale";
+import { getHistoryCourseCatalog } from "@/lib/history-course-catalog";
+import { createLocalizedHistorySideTipCatalog } from "@/lib/history-catalog-locale";
 import { indexCodexCards } from "@/lib/history-card-lookup";
 import { indexCodexPotions } from "@/lib/history-potion-lookup";
 import { indexCodexRelics } from "@/lib/history-relic-lookup";
@@ -76,7 +78,7 @@ function buildRunMadScienceCard(
 
 export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderProps) {
   const copy = serviceMessages[useServiceLocale()].historyCourse.detail;
-  const bundledLookup = getHistoryCourseCatalog();
+  const bundledLookup = useMemo(() => getHistoryCourseCatalog(), []);
   const codexLookup: CodexLookupData =
     allCards?.length && allRelics?.length
       ? { allCards, allRelics }
@@ -139,7 +141,15 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
     };
   }, [runId]);
 
-  const sideTipCatalog = useMemo(() => createHistoryCourseSideTipCatalog(), []);
+  const bundledCatalog = useMemo(() => ({
+    allCards: codexLookup.allCards,
+    allRelics: codexLookup.allRelics,
+    allPotions: bundledLookup.allPotions,
+    allPowers: bundledLookup.allPowers,
+    allMonsters: bundledLookup.allMonsters,
+    allEnchantments: bundledLookup.allEnchantments,
+    tipSources: bundledLookup.tipSources,
+  }), [bundledLookup, codexLookup.allCards, codexLookup.allRelics]);
 
   if (status === "invalid") {
     return (
@@ -169,9 +179,37 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
     );
   }
 
-  const lookupCards = codexLookup.allCards;
-  const lookupRelics = codexLookup.allRelics;
-  const { allPotions, allEnchantments } = getHistoryCourseCatalog();
+  return (
+    <HistoryCatalogLocaleProvider bundled={bundledCatalog}>
+      <LocalizedRunDetail
+        runId={runId}
+        run={run}
+        raw={raw}
+        source={source}
+      />
+    </HistoryCatalogLocaleProvider>
+  );
+}
+
+function LocalizedRunDetail({
+  runId,
+  run,
+  raw,
+  source,
+}: {
+  runId: string;
+  run: ReplayRun;
+  raw: string | null;
+  source: Source | null;
+}) {
+  const { catalog } = useHistoryCatalogLocale();
+  const sideTipCatalog = useMemo(
+    () => createLocalizedHistorySideTipCatalog(catalog),
+    [catalog],
+  );
+
+  const lookupCards = catalog.allCards;
+  const lookupRelics = catalog.allRelics;
   const cardByLookupId = new Map<string, CodexCard>();
   for (const card of lookupCards) {
     cardByLookupId.set(card.id, card);
@@ -191,7 +229,7 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
   }
 
   const relicsById = indexCodexRelics(lookupRelics);
-  const potionsById = indexCodexPotions(allPotions);
+  const potionsById = indexCodexPotions(catalog.allPotions);
 
   return (
     <>
@@ -200,8 +238,8 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
       )}
       <CardSideTipCatalogProvider
         catalog={sideTipCatalog}
-        potions={allPotions}
-        enchantments={allEnchantments}
+        potions={catalog.allPotions}
+        enchantments={catalog.allEnchantments}
       >
         <HistoryCourseShell
           run={run}

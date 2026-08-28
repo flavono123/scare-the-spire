@@ -240,7 +240,7 @@ export function DeckModal({
                 return item.card ? (
                   <CardTile
                     key={`${item.copy.id}-${item.pileIndex}-${index}`}
-                    card={localizeDeckCard(item.card, tables, gameLocale)}
+                    card={localizeDeckCard(item.card, tables)}
                     showUpgrade={displayLevel > 0}
                     upgradeLevel={displayLevel}
                     showBeta={false}
@@ -368,26 +368,9 @@ function DeckViewTickbox({
 function localizeDeckCard(
   card: CodexCard,
   tables: ReturnType<typeof useGameI18n>,
-  gameLocale: ReturnType<typeof useGameLocale>,
 ): CodexCard {
   const name = localizeGame(tables, "cards", card.id) ?? card.name;
-  if (gameLocale === "kor") return { ...card, name };
-  return {
-    ...card,
-    name,
-    description: card.descriptionEn || card.description,
-    descriptionRaw: card.descriptionRawEn || card.descriptionRaw,
-    typeLabel:
-      card.type === "공격"
-        ? gameUi(tables, "cardTypeAttack", card.typeLabel)
-        : card.type === "스킬"
-          ? gameUi(tables, "cardTypeSkill", card.typeLabel)
-          : card.type === "파워"
-            ? gameUi(tables, "cardTypePower", card.typeLabel)
-            : card.type === "저주"
-              ? gameUi(tables, "cardTypeCurse", card.typeLabel)
-              : gameUi(tables, "cardTypeStatus", card.typeLabel),
-  };
+  return { ...card, name };
 }
 
 function UnknownCardTile({ id }: { id: string }) {
