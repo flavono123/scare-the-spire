@@ -53,8 +53,13 @@ Invocation examples:
    슬서운이야기 low-weight until its community is active, then read existing
    public feeds/comments without full-scanning Supabase.
 5. Apply the gates below before ranking.
-6. Produce a broad `watchlist` of 8–20 topics and a smaller
-   `script_candidates` list of 2–5. Do not return only the top candidate.
+6. Produce a broad `watchlist` of 15–30 topics and exactly 10
+   `script_candidates` when ten safe, verified choices exist. If fewer exist,
+   return the smaller set and explain the shortfall; never lower the target
+   merely to finish faster.
+7. Keep the ten candidates editorially distinct. Cover separate reactions,
+   punchlines, resources, or moments in the arc instead of selecting ten posts
+   that repeat one complaint.
 
 ## Editorial rubric
 
@@ -105,6 +110,8 @@ Follow [reference.md](reference.md#output-contract) exactly:
   flags.
 - Every candidate needs a short body excerpt and URL, an author label, and
   three short verbatim comments with links.
+- Return 10 candidates by default, ordered by script value. Each candidate must
+  also appear in the broader watchlist.
 - If comment permalinks do not exist, reuse the post URL and say so. If only
   two safe comments exist, include two and mark the shortage; never pad with
   ads, disputes, or unrelated replies.
