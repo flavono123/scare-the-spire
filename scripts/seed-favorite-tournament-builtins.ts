@@ -14,9 +14,14 @@ import { serviceMessages } from "../src/messages/service";
 
 const dryRun = process.argv.includes("--dry-run");
 const envFlag = process.argv.find((arg) => arg.startsWith("--env="));
-const env = envFlag?.slice("--env=".length)
-  ?? process.env.NEXT_PUBLIC_SUPABASE_ENV
-  ?? "production";
+// Local `.env.local` uses `development`; production Workers use `production`.
+const DEFAULT_ENVS = ["production", "development"] as const;
+const envs = envFlag
+  ? [envFlag.slice("--env=".length)]
+  : [...new Set([
+    ...DEFAULT_ENVS,
+    process.env.NEXT_PUBLIC_SUPABASE_ENV,
+  ].filter((value): value is string => Boolean(value)))];
 
 function ancientNamesFromEntities(
   entities: Awaited<ReturnType<typeof loadCompactThisOrThatEntities>>,
@@ -49,7 +54,7 @@ async function main() {
     throw new Error("No builtin worldcup seeds (pools too small or catalog empty).");
   }
 
-  const rows = seeds.map((seed, index) => ({
+  const rows = envs.flatMap((env) => seeds.map((seed, index) => ({
     nickname: FAVORITE_TOURNAMENT_BUILTIN_NICKNAME,
     title: seed.title,
     note: seed.note,
@@ -58,11 +63,11 @@ async function main() {
     pool: seed.pool,
     env,
     created_at: new Date(Date.UTC(2026, 7, 28, 0, 0, index)).toISOString(),
-  }));
+  })));
 
-  console.log(`Builtin worldcups: ${rows.length} for env=${env}`);
-  for (const row of rows) {
-    console.log(`  ${row.preset_key}  ${row.title}  (${row.pool.length})`);
+  console.log(`Builtin worldcups: ${seeds.length} presets × ${envs.join(", ")}`);
+  for (const seed of seeds) {
+    console.log(`  ${seed.presetKey}  ${seed.title}  (${seed.pool.length})`);
   }
   if (dryRun) return;
 

@@ -66,6 +66,10 @@ export function FavoriteTournamentClient({
     add,
   } = useFavoriteTournamentPosts(userId, sort);
   const builtins = useFavoriteTournamentBuiltins();
+  const officialPosts = useMemo(() => {
+    if (builtins.posts.length > 0) return builtins.posts;
+    return posts.filter((post) => isFavoriteTournamentBuiltinKey(post.preset_key));
+  }, [builtins.posts, posts]);
   const communityPosts = useMemo(
     () => posts.filter((post) => !isFavoriteTournamentBuiltinKey(post.preset_key)),
     [posts],
@@ -152,13 +156,13 @@ export function FavoriteTournamentClient({
         <ContentLoadingNotice label={copy.loading} />
       ) : (
         <div className="space-y-6">
-          {builtins.posts.length > 0 && (
+          {officialPosts.length > 0 && (
             <section className="space-y-3">
               <h2 className="text-xs font-semibold tracking-wide text-muted-foreground">
                 {copy.officialSection}
               </h2>
               <div className="grid gap-4 md:grid-cols-2">
-                {builtins.posts.map((post) => (
+                {officialPosts.map((post) => (
                   <FavoriteTournamentPostCard
                     key={post.id}
                     post={post}
