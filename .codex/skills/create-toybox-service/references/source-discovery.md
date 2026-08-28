@@ -98,7 +98,7 @@ evidence in the final report.
 
 Use these as pattern evidence, not as a fixed catalog:
 
-| Service | Title source | Functional subtitle (planned) | Hero / page-only copy | Token | Background |
+| Service | Title source | Functional subtitle | Hero / page-only copy | Token | Background |
 | --- | --- | --- | --- | --- | --- |
 | Chemical X | `CHEMICAL_X` relic / service spelling | 게임 요소로 짧은 글 쓰기 | none; `legacyName` aside. Tea Master line is input copy | `relics/chemical_x.webp` | `cards/eradicate.webp` |
 | History Course | `relics:HISTORY_COURSE.title` | 도전 이력 다시 보기 | Lantern Key event quote with `RUN_HISTORY.title` substitution | `relics/history_course.webp` | `events/war_historian_repy.webp` |

@@ -148,12 +148,11 @@ Do not invent a hero to fill the slot. Never use the hero as
 `Metadata.description`.
 
 **Heading outline.** `h1` = title, `h2` = functional subtitle, hero = `<p>`.
-Today several services already show the quote in a `<p>` that *looks* like a
-subtitle; after this change that `<p>` is the hero and the functional line
-becomes the real `h2`. Index create CTA stays on the title row, not beside
-the hero.
+Index create CTA stays on the title row, not beside the hero. Shared chrome is
+`ToyBoxIndexHeading`. Index OG/Twitter description is
+`composeToyBoxIndexOgDescription(serviceLocale, subtitle)`.
 
-**Existing services (planned `{기능 설명}`, not yet applied):**
+**Existing services (`{기능 설명}` in `src/messages/service.ts`):**
 
 | Service | `{기능 설명}` (ko) | Current quote → hero |
 | --- | --- | --- |
