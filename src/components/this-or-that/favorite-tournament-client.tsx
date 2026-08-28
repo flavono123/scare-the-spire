@@ -6,7 +6,6 @@ import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { FeedLoadMoreSentinel } from "@/components/feed-load-more-sentinel";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
-import { FavoriteTournamentPostCard } from "@/components/this-or-that/favorite-tournament-post-card";
 import { ThisOrThatServiceTabs } from "@/components/this-or-that/this-or-that-service-tabs";
 import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
 import Image from "@/components/ui/static-image";
@@ -29,6 +28,12 @@ const FavoriteTournamentComposerModal = dynamic(
     (mod) => mod.FavoriteTournamentComposerModal,
   ),
   { ssr: false },
+);
+
+const FavoriteTournamentPostCard = dynamic(
+  () => import("@/components/this-or-that/favorite-tournament-post-card").then(
+    (mod) => mod.FavoriteTournamentPostCard,
+  ),
 );
 
 export function FavoriteTournamentClient({
