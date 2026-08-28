@@ -3,6 +3,8 @@
 These are one-time verification runs captured from the public gallery on
 2026-08-26 KST. They demonstrate the schema and gates; rerun the skill for
 current editorial decisions instead of treating this file as a live feed.
+Their 2–3 candidate counts predate the current 10-candidate requirement; use
+them for field and gate shape only, never as the output-size target.
 
 ## `now` verification
 
