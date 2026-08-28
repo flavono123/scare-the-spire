@@ -17,6 +17,12 @@ import type {
   MonsterSpineTrackAnimation,
   MonsterSpineViewport,
 } from "@/lib/codex-types";
+import {
+  applySpineAtlasDuotone,
+  neutralizeSpineSlotTint,
+  restoreSpineAtlasDuotone,
+  type SpineAtlasDuotone,
+} from "@/lib/spine-atlas-duotone";
 import { MonsterPhobiaSceneStage } from "./monster-phobia-scene-stage";
 
 interface MonsterSpineStageProps {
@@ -44,6 +50,7 @@ interface MonsterSpineStageProps {
   formPlacementRef?: MutableRefObject<MonsterStageFormPlacement | null>;
   onVisualBoundsChange?: (bounds: MonsterStageVisualBounds | null) => void;
   onReady?: () => void;
+  atlasDuotone?: SpineAtlasDuotone | null;
   skeletonTransform?: {
     coordinateHeight: number;
     position: { x: number; y: number };
@@ -124,6 +131,7 @@ function MonsterSpineStageComponent({
   formPlacementRef,
   onVisualBoundsChange,
   onReady,
+  atlasDuotone,
   skeletonTransform = null,
 }: MonsterSpineStageProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -135,6 +143,7 @@ function MonsterSpineStageComponent({
   const vfxTimeoutRef = useRef<number | null>(null);
   const formAttachmentRef = useRef(formAttachment);
   const formPlacementTargetRef = useRef(formPlacementRef);
+  const atlasDuotoneRef = useRef(atlasDuotone);
   const [loadState, setLoadState] = useState<LoadState>(asset ? "loading" : "error");
   const showStaticPhobiaMode = showPhobiaMode && Boolean(phobiaModeImageUrl);
   const [availableAnimations, setAvailableAnimations] = useState<string[]>(asset?.animations ?? []);
@@ -191,6 +200,10 @@ function MonsterSpineStageComponent({
   }, [formAttachment, formPlacementRef]);
 
   useEffect(() => {
+    atlasDuotoneRef.current = atlasDuotone;
+  }, [atlasDuotone]);
+
+  useEffect(() => {
     if (!asset || !containerRef.current) return;
 
     let disposed = false;
@@ -224,6 +237,13 @@ function MonsterSpineStageComponent({
             viewport,
             update: (loadedPlayer) => {
               if (skeletonTransform) applySkeletonTransform(loadedPlayer, skeletonTransform);
+              if (atlasDuotoneRef.current && loadedPlayer.skeleton?.slots) {
+                try {
+                  neutralizeSpineSlotTint(loadedPlayer);
+                } catch {
+                  // Slot tint neutralization must not abort Spine loading/rendering.
+                }
+              }
               const target = formPlacementTargetRef.current;
               if (target) {
                 const attachment = formAttachmentRef.current;
@@ -261,6 +281,13 @@ function MonsterSpineStageComponent({
               playerRef.current = loadedPlayer;
               setAvailableAnimations(loadedPlayer.skeleton?.data.animations.map((animation) => animation.name) ?? asset.animations);
               setLoadState("ready");
+              try {
+                if (atlasDuotoneRef.current) {
+                  applySpineAtlasDuotone(loadedPlayer, atlasDuotoneRef.current, asset.atlasUrl);
+                }
+              } catch (error: unknown) {
+                console.warn(`Failed to apply Spine atlas duotone for ${monsterName}:`, error);
+              }
               reportSpineVisualBounds(loadedPlayer, parent, onVisualBoundsChange);
               window.requestAnimationFrame(() => {
                 if (!disposed) window.requestAnimationFrame(() => {
@@ -295,10 +322,34 @@ function MonsterSpineStageComponent({
       clearVfx(vfxPlayerRef, vfxContainerRef, vfxTimeoutRef);
       if (formPlacementTargetRef.current) formPlacementTargetRef.current.current = null;
       playerRef.current = null;
+      try {
+        restoreSpineAtlasDuotone(player, asset.atlasUrl);
+      } catch {
+        // Restore is best-effort; the player is being disposed next.
+      }
       releaseSpinePlayer(player);
       parent.replaceChildren();
     };
   }, [asset, compositeSkinNames, monsterName, onReady, onVisualBoundsChange, singleSkin, skeletonTransform, stableViewportOverride, viewportPadding, viewportTransitionTime]);
+
+  const duotoneShadow = atlasDuotone?.shadow ?? null;
+  const duotoneHighlight = atlasDuotone?.highlight ?? null;
+  const skipAtlasDuotone = atlasDuotone === undefined;
+
+  useEffect(() => {
+    if (loadState !== "ready" || !playerRef.current || skipAtlasDuotone) return;
+    try {
+      applySpineAtlasDuotone(
+        playerRef.current,
+        duotoneShadow && duotoneHighlight
+          ? { shadow: duotoneShadow, highlight: duotoneHighlight }
+          : null,
+        asset?.atlasUrl,
+      );
+    } catch (error: unknown) {
+      console.warn("Failed to apply Spine atlas duotone:", error);
+    }
+  }, [asset?.atlasUrl, duotoneHighlight, duotoneShadow, loadState, skipAtlasDuotone]);
 
   useEffect(() => {
     if (loadState !== "ready" || !playerRef.current || !containerRef.current) return;

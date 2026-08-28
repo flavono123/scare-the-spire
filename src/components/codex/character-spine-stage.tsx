@@ -2,6 +2,7 @@
 
 import type { MutableRefObject } from "react";
 import type { CodexCharacter, MonsterSpineAsset } from "@/lib/codex-types";
+import type { SpineAtlasDuotone } from "@/lib/spine-atlas-duotone";
 import {
   MonsterSpineStage,
   type MonsterStageFormAttachment,
@@ -83,6 +84,7 @@ interface CharacterSpineStageProps {
   formAttachment?: MonsterStageFormAttachment | null;
   formPlacementRef?: MutableRefObject<MonsterStageFormPlacement | null>;
   onVisualBoundsChange?: (bounds: MonsterStageVisualBounds | null) => void;
+  atlasDuotone?: SpineAtlasDuotone | null;
 }
 
 export function CharacterSpineStage({
@@ -96,6 +98,7 @@ export function CharacterSpineStage({
   formAttachment = null,
   formPlacementRef,
   onVisualBoundsChange,
+  atlasDuotone,
 }: CharacterSpineStageProps) {
   return (
     <MonsterSpineStage
@@ -113,6 +116,7 @@ export function CharacterSpineStage({
       formPlacementRef={formPlacementRef}
       className={className}
       onVisualBoundsChange={onVisualBoundsChange}
+      atlasDuotone={atlasDuotone}
     />
   );
 }

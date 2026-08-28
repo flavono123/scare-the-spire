@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { ArrowLeftRight } from "lucide-react";
 import { CharacterSpineStage } from "@/components/codex/character-spine-stage";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
-import { DuotoneSvgFilter, useDuotoneFilterStyle } from "@/components/dev/duotone-filter";
+import { DuotoneCharacterToken } from "@/components/dev/duotone-character-token";
 import Image from "@/components/ui/static-image";
 import type { CodexCharacter } from "@/lib/codex-types";
 import {
@@ -16,9 +16,6 @@ import {
   type CharacterPalettePair,
 } from "@/lib/dev-character-palettes";
 import { cn } from "@/lib/utils";
-
-const TOKEN_FILTER_ID = "dev-character-palette-token";
-const SPINE_FILTER_ID = "dev-character-palette-spine";
 
 type ActionId = "IDLE" | "ATTACK" | "HURT";
 
@@ -76,28 +73,13 @@ export default function CharacterPaletteDevPage({
       data-dev-character-palette
       className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6"
     >
-      {tokenMap ? (
-        <DuotoneSvgFilter
-          id={TOKEN_FILTER_ID}
-          shadowHex={tokenMap.shadow}
-          highlightHex={tokenMap.highlight}
-        />
-      ) : null}
-      {spineMap ? (
-        <DuotoneSvgFilter
-          id={SPINE_FILTER_ID}
-          shadowHex={spineMap.shadow}
-          highlightHex={spineMap.highlight}
-        />
-      ) : null}
-
       <header className="flex flex-col gap-2">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-300/80">
           DEV / CHARACTER PALETTE
         </p>
         <h1 className="text-3xl font-bold text-zinc-100">캐릭터 2색 배색</h1>
         <p className="max-w-3xl text-sm leading-relaxed text-zinc-400">
-          두 HEX를 그림자·하이라이트로 매핑해 얼굴 토큰과 Spine에 입힌다. 프리셋은{" "}
+          토큰은 게임 outline 마스크와 명암으로 조합하고, Spine은 아틀라스 픽셀을 두 색으로 다시 칠한다. 프리셋은{" "}
           <a
             href={CHARACTER_PALETTE_SOURCE.url}
             target="_blank"
@@ -199,7 +181,7 @@ export default function CharacterPaletteDevPage({
       <section className="flex flex-col gap-3">
         <div className="flex items-end justify-between gap-3">
           <h2 className="text-lg font-semibold text-zinc-100">얼굴 토큰</h2>
-          <p className="text-xs text-zinc-500">원본 / 배색. 클릭하면 Spine 캐릭터가 바뀐다.</p>
+          <p className="text-xs text-zinc-500">원본 / outline 조합. 클릭하면 Spine 캐릭터가 바뀐다.</p>
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {characters.map((entry) => (
@@ -207,7 +189,7 @@ export default function CharacterPaletteDevPage({
               key={entry.id}
               character={entry}
               selected={entry.id === character?.id}
-              filterReady={Boolean(tokenMap)}
+              tokenMap={tokenMap}
               onSelect={() => {
                 setCharacterId(entry.id);
                 playAction("ATTACK");
@@ -241,7 +223,7 @@ export default function CharacterPaletteDevPage({
           </div>
           <SpinePreview
             character={character}
-            filterReady={Boolean(spineMap)}
+            atlasDuotone={spineMap}
             selectedMoveId={action.id}
             selectedMoveNonce={action.nonce}
           />
@@ -344,16 +326,14 @@ function MapSwatch({
 function TokenPreviewCard({
   character,
   selected,
-  filterReady,
+  tokenMap,
   onSelect,
 }: {
   character: CodexCharacter;
   selected: boolean;
-  filterReady: boolean;
+  tokenMap: { shadow: string; highlight: string } | null;
   onSelect: () => void;
 }) {
-  const duotoneStyle = useDuotoneFilterStyle(TOKEN_FILTER_ID);
-
   return (
     <button
       type="button"
@@ -376,14 +356,22 @@ function TokenPreviewCard({
           height={56}
           className="h-14 w-14 object-contain"
         />
-        <Image
-          src={character.iconUrl}
-          alt=""
-          width={56}
-          height={56}
-          className="h-14 w-14 object-contain"
-          style={filterReady ? duotoneStyle : undefined}
-        />
+        {tokenMap ? (
+          <DuotoneCharacterToken
+            iconUrl={character.iconUrl}
+            iconOutlineUrl={character.iconOutlineUrl}
+            shadowHex={tokenMap.shadow}
+            highlightHex={tokenMap.highlight}
+          />
+        ) : (
+          <Image
+            src={character.iconOutlineUrl}
+            alt=""
+            width={56}
+            height={56}
+            className="h-14 w-14 object-contain opacity-70"
+          />
+        )}
       </span>
     </button>
   );
@@ -391,36 +379,27 @@ function TokenPreviewCard({
 
 function SpinePreview({
   character,
-  filterReady,
+  atlasDuotone,
   selectedMoveId,
   selectedMoveNonce,
 }: {
   character: CodexCharacter;
-  filterReady: boolean;
+  atlasDuotone: { shadow: string; highlight: string } | null;
   selectedMoveId: ActionId;
   selectedMoveNonce: number;
 }) {
-  const duotoneStyle = useDuotoneFilterStyle(SPINE_FILTER_ID);
-  const stage = useMemo(
-    () => (
-      <CharacterSpineStage
-        character={character}
-        selectedMoveId={selectedMoveId}
-        selectedMoveNonce={selectedMoveNonce}
-        className="relative h-full w-full"
-      />
-    ),
-    [character, selectedMoveId, selectedMoveNonce],
-  );
-
   return (
     <div
       data-spine-character-id={character.id}
       className="relative h-[22rem] overflow-hidden rounded-lg border border-white/10 bg-[#120f18] sm:h-[28rem]"
     >
-      <div className="absolute inset-0" style={filterReady ? duotoneStyle : undefined}>
-        {stage}
-      </div>
+      <CharacterSpineStage
+        character={character}
+        selectedMoveId={selectedMoveId}
+        selectedMoveNonce={selectedMoveNonce}
+        atlasDuotone={atlasDuotone}
+        className="relative h-full w-full"
+      />
     </div>
   );
 }
