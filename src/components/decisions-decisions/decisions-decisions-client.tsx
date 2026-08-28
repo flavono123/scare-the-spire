@@ -107,7 +107,7 @@ export function DecisionsDecisionsClient({
         </div>
         <ToyBoxIndexHeading
           subtitle={copy.subtitle}
-          hero={gameCopy.subtitle}
+          hero={gameCopy.hero}
         />
       </header>
 

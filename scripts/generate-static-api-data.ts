@@ -71,7 +71,7 @@ interface DefragmentGameCopy {
 
 interface DecisionsDecisionsGameCopy {
   title: string;
-  subtitle: string;
+  hero: string;
   presetLabels: Record<string, string>;
 }
 
@@ -398,6 +398,14 @@ function stripGameMarkup(text: string): string {
     .trim();
 }
 
+/** Static pages have no player gender; keep the first SmartFormat branch. */
+function resolveCharacterGenderChoose(text: string): string {
+  return text.replace(
+    /\{characterGender:choose\([^)]*\):([^}|]*)(?:\|[^}]*)*\}/g,
+    "$1",
+  );
+}
+
 function lastNonEmptyLine(text: string): string {
   const lines = text
     .split(/\n+/)
@@ -639,7 +647,7 @@ async function buildDecisionsDecisionsGameCopy(
 ): Promise<DecisionsDecisionsGameCopy> {
   const [
     title,
-    subtitle,
+    hero,
     ironclad,
     silent,
     defect,
@@ -650,8 +658,8 @@ async function buildDecisionsDecisionsGameCopy(
     readGameTextWithEnglishFallback(gameLocale, "cards", "DECISIONS_DECISIONS.title"),
     readGameTextWithEnglishFallback(
       gameLocale,
-      "cards",
-      "DECISIONS_DECISIONS.selectionScreenPrompt",
+      "events",
+      "TRIAL.pages.INITIAL.options.ACCEPT.description",
     ),
     readGameTextWithEnglishFallback(gameLocale, "characters", "IRONCLAD.title"),
     readGameTextWithEnglishFallback(gameLocale, "characters", "SILENT.title"),
@@ -663,7 +671,7 @@ async function buildDecisionsDecisionsGameCopy(
 
   return {
     title: title || "Decisions, Decisions",
-    subtitle: subtitle || "Decide a Skill.",
+    hero: resolveCharacterGenderChoose(hero) || "Serve as today's Decider.",
     presetLabels: {
       "cards-ironclad": ironclad,
       "cards-silent": silent,

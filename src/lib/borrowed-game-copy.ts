@@ -30,7 +30,7 @@ export interface DefragmentGameCopy {
 
 export interface DecisionsDecisionsGameCopy {
   title: string;
-  subtitle: string;
+  hero: string;
   presetLabels: Record<string, string>;
 }
 
