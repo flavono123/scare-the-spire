@@ -99,8 +99,8 @@ channel sentiment and also stay out of candidates.
 
 ## Output contract
 
-Return Korean Markdown or YAML with every field below. Keep the watchlist broad
-and candidates selective.
+Return Korean Markdown or YAML with every field below. Keep the watchlist at
+15–30 verified topics and rank 10 distinct script candidates.
 
 ```yaml
 mode: now | trigger | historical | topic
@@ -149,15 +149,18 @@ script_candidates:
     skip_reason: null
 ```
 
-If fewer than eight distinct topics or two safe candidates can be verified,
-return the smaller set and explain the shortfall in `limitations`. Never fill a
-quota with fabricated, unrelated, risky, or duplicated material.
+If fewer than 15 distinct topics or 10 safe candidates can be verified, return
+the smaller set and explain the shortfall in `limitations`. Never fill a quota
+with fabricated, unrelated, risky, or duplicated material.
 
 ## Final checks
 
 - Every URL opens and every reported timestamp belongs to the requested window.
 - Every count in `heat` was visible during this run.
 - Every candidate also appears in `watchlist`.
+- There are 10 candidates, or `limitations` explains the evidence-based
+  shortfall.
+- The candidates cover distinct beats rather than minor variations of one take.
 - Candidate excerpts and comments are short, verbatim, and context-preserving.
 - Candidate flags are empty and `skip_reason` is `null`.
 - Rejected high-heat items remain visible in `watchlist` with their flags.
