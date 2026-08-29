@@ -44,6 +44,14 @@ import { SERVICE_ACCENT_CLASS } from "@/lib/service-link-classes";
 import { serviceMessages } from "@/messages/service";
 import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
 import {
+  DECISIONS_DECISIONS_HREF,
+  DECISIONS_DECISIONS_TOKEN_SRC,
+} from "@/lib/decisions-decisions";
+import {
+  FAVORITE_TOURNAMENT_HREF,
+  FAVORITE_TOURNAMENT_TOKEN_SRC,
+} from "@/lib/favorite-tournament";
+import {
   ASCENSION_TOKEN_IMAGE_URL,
   CHARACTER_CARDS_MODIFIER_IMAGE_URL,
 } from "@/lib/codex-types";
@@ -136,6 +144,10 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   "History Course": { href: "/history-course", icon: "/images/sts2/relics/history_course.webp" },
   "이거 아님 저거?": { href: "/this-or-that", icon: "/images/sts2/relics/choices_paradox.webp" },
   "This or That?": { href: "/this-or-that", icon: "/images/sts2/relics/choices_paradox.webp" },
+  "이아저? 월드컵": { href: FAVORITE_TOURNAMENT_HREF, icon: FAVORITE_TOURNAMENT_TOKEN_SRC },
+  "thisorthat? tournament": { href: FAVORITE_TOURNAMENT_HREF, icon: FAVORITE_TOURNAMENT_TOKEN_SRC },
+  "어려운 결정": { href: DECISIONS_DECISIONS_HREF, icon: DECISIONS_DECISIONS_TOKEN_SRC },
+  "Decisions, Decisions": { href: DECISIONS_DECISIONS_HREF, icon: DECISIONS_DECISIONS_TOKEN_SRC },
   "프로필": { href: "/profile", icon: "/images/sts2/characters/character_icon_random_character_outline.webp" },
   Profile: { href: "/profile", icon: "/images/sts2/characters/character_icon_random_character_outline.webp" },
   "작은 우편함": { href: "/contact", icon: "/images/sts2/relics/tiny_mailbox.webp" },
@@ -162,6 +174,10 @@ const SERVICE_REFERENCE_LINKS: Record<string, string> = {
   "History Course": "/history-course",
   "이거 아님 저거?": "/this-or-that",
   "This or That?": "/this-or-that",
+  "이아저? 월드컵": FAVORITE_TOURNAMENT_HREF,
+  "thisorthat? tournament": FAVORITE_TOURNAMENT_HREF,
+  "어려운 결정": DECISIONS_DECISIONS_HREF,
+  "Decisions, Decisions": DECISIONS_DECISIONS_HREF,
   변형: "/transfigure",
   Transfigure: "/transfigure",
   조각모음: "/defragment",
