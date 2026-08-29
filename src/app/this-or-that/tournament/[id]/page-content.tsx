@@ -48,6 +48,7 @@ export async function renderFavoriteTournamentPostPage(
         postId={id}
         gameLocale={gameLocale}
         votePrompt={totCopy.votePrompt}
+        voteDone={totCopy.voteDone}
         presetLabels={decisionsCopy.presetLabels}
       />
     </div>

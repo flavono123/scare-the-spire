@@ -1,13 +1,6 @@
-import type { Metadata } from "next";
-import {
-  generateFavoriteTournamentMetadata,
-  renderFavoriteTournamentPage,
-} from "./page-content";
+import { permanentRedirect } from "next/navigation";
+import { FAVORITE_TOURNAMENT_HREF } from "@/lib/favorite-tournament";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return generateFavoriteTournamentMetadata();
-}
-
-export default async function FavoriteTournamentPage() {
-  return renderFavoriteTournamentPage();
+export default function LegacyFavoriteTournamentPage() {
+  permanentRedirect(FAVORITE_TOURNAMENT_HREF);
 }

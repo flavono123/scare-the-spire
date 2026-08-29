@@ -22,6 +22,7 @@ import { FAVORITE_TOURNAMENT_TOKEN_SRC, isFavoriteTournamentBuiltinKey } from "@
 import type { GameLocale } from "@/lib/i18n";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
+import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
 
 const FavoriteTournamentComposerModal = dynamic(
@@ -52,6 +53,7 @@ export function FavoriteTournamentClient({
   const copy = serviceMessages[serviceLocale].favoriteTournament;
   const { userId, ready, ensureUser } = useAuth();
   const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
+  const [presetOnly, setPresetOnly] = useState(false);
   const [composerOpen, setComposerOpen] = useState(false);
   const catalog = useDecisionsDecisionsCatalog(gameLocale, { includeStamps: false });
   const {
@@ -66,14 +68,11 @@ export function FavoriteTournamentClient({
     add,
   } = useFavoriteTournamentPosts(userId, sort);
   const builtins = useFavoriteTournamentBuiltins();
-  const officialPosts = useMemo(() => {
+  const visiblePosts = useMemo(() => {
+    if (!presetOnly) return posts;
     if (builtins.posts.length > 0) return builtins.posts;
     return posts.filter((post) => isFavoriteTournamentBuiltinKey(post.preset_key));
-  }, [builtins.posts, posts]);
-  const communityPosts = useMemo(
-    () => posts.filter((post) => !isFavoriteTournamentBuiltinKey(post.preset_key)),
-    [posts],
-  );
+  }, [builtins.posts, posts, presetOnly]);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
     [copy.defaultNickname],
@@ -90,8 +89,14 @@ export function FavoriteTournamentClient({
     return Boolean(post);
   }, [add, ensureUser, userId]);
 
+  const listLoading = unavailable
+    ? false
+    : presetOnly
+      ? (builtins.loading && visiblePosts.length === 0)
+      : loading;
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-favorite-tournament-index>
       <header className="space-y-2">
         <div className="flex items-center gap-4">
           <Image
@@ -102,7 +107,7 @@ export function FavoriteTournamentClient({
             className="h-14 w-14 shrink-0 object-contain drop-shadow"
           />
           <div className="min-w-0">
-            <h1 className="text-3xl font-black tracking-tight text-zinc-50">
+            <h1 className="font-service text-xl font-bold text-primary sm:text-3xl">
               {title}
             </h1>
           </div>
@@ -126,7 +131,7 @@ export function FavoriteTournamentClient({
         </div>
         <ToyBoxIndexHeading subtitle={copy.subtitle} hero={hero} />
         <ThisOrThatServiceTabs
-          active="worldcup"
+          active="tournament"
           serviceLocale={serviceLocale}
           gameLocale={gameLocale}
         />
@@ -152,52 +157,42 @@ export function FavoriteTournamentClient({
 
       {unavailable ? (
         <StorageUnavailableNotice title={copy.unavailableTitle} />
-      ) : loading || builtins.loading ? (
+      ) : listLoading ? (
         <ContentLoadingNotice label={copy.loading} />
       ) : (
         <div className="space-y-6">
-          {officialPosts.length > 0 && (
-            <section className="space-y-3">
-              <h2 className="text-xs font-semibold tracking-wide text-muted-foreground">
-                {copy.officialSection}
-              </h2>
-              <div className="grid gap-4 md:grid-cols-2">
-                {officialPosts.map((post) => (
-                  <FavoriteTournamentPostCard
-                    key={post.id}
-                    post={post}
-                    entityMap={catalog.entityMap}
-                    serviceLocale={serviceLocale}
-                    gameLocale={gameLocale}
-                    userId={userId}
-                    authReady={ready}
-                    ensureUser={ensureUser}
-                    commentCount={post.comment_count ?? 0}
-                    likeCount={post.like_count ?? 0}
-                    presetLabels={presetLabels}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <FeedSortToggle
-              service="favorite_tournament"
-              sort={sort}
-              onSortChange={setSort}
-              labels={serviceMessages[serviceLocale].feedSort}
-            />
+            <div className="flex flex-wrap items-center gap-2">
+              <FeedSortToggle
+                service="favorite_tournament"
+                sort={sort}
+                onSortChange={setSort}
+                labels={serviceMessages[serviceLocale].feedSort}
+              />
+              <button
+                type="button"
+                aria-pressed={presetOnly}
+                onClick={() => setPresetOnly((current) => !current)}
+                className={cn(
+                  "h-8 rounded-md border px-3 text-xs transition-colors",
+                  presetOnly
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border/70 bg-background text-muted-foreground hover:bg-muted hover:text-foreground",
+                )}
+              >
+                {copy.presetFilter}
+              </button>
+            </div>
             <span className="text-xs text-muted-foreground">
-              {copy.count.replace("{count}", String(communityPosts.length))}
+              {copy.count.replace("{count}", String(visiblePosts.length))}
             </span>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            {communityPosts.length === 0 && (
-              <p className="text-sm text-muted-foreground">{copy.empty}</p>
+          <div className="grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+            {visiblePosts.length === 0 && (
+              <p className="text-sm text-muted-foreground sm:col-span-2 lg:col-span-3">{copy.empty}</p>
             )}
-            {communityPosts.map((post) => (
+            {visiblePosts.map((post) => (
               <FavoriteTournamentPostCard
                 key={post.id}
                 post={post}
@@ -208,19 +203,23 @@ export function FavoriteTournamentClient({
                 userId={userId}
                 authReady={ready}
                 ensureUser={ensureUser}
-                commentCount={commentCounts[post.id] ?? 0}
-                likeCount={likeCounts[post.id] ?? 0}
+                commentCount={commentCounts[post.id] ?? post.comment_count ?? 0}
+                likeCount={likeCounts[post.id] ?? post.like_count ?? 0}
                 presetLabels={presetLabels}
               />
             ))}
-            <FeedLoadMoreSentinel
-              hasMore={hasMore}
-              loadingMore={loadingMore}
-              disabled={unavailable}
-              extraKey={communityPosts.length}
-              label={copy.loadingMore}
-              onLoadMore={() => { void loadMore(); }}
-            />
+            {!presetOnly && (
+              <div className="sm:col-span-2 lg:col-span-3">
+                <FeedLoadMoreSentinel
+                  hasMore={hasMore}
+                  loadingMore={loadingMore}
+                  disabled={unavailable}
+                  extraKey={visiblePosts.length}
+                  label={copy.loadingMore}
+                  onLoadMore={() => { void loadMore(); }}
+                />
+              </div>
+            )}
           </div>
         </div>
       )}

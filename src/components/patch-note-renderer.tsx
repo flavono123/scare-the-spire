@@ -481,6 +481,7 @@ export function EntityPreview({
   versionDiffs,
   epochArtMode = "official",
   staticHoverPreviews = false,
+  disablePreview = false,
 }: {
   entity: EntityInfo;
   children: ReactNode;
@@ -498,6 +499,7 @@ export function EntityPreview({
   versionDiffs?: EntityVersionDiff[];
   epochArtMode?: HoverTipArtMode;
   staticHoverPreviews?: boolean;
+  disablePreview?: boolean;
 }) {
   const [show, setShow] = useState(false);
   const [previewPressed, setPreviewPressed] = useState(false);
@@ -636,6 +638,10 @@ export function EntityPreview({
       </span>
     );
   };
+
+  if (disablePreview) {
+    return children;
+  }
 
   return (
     <span

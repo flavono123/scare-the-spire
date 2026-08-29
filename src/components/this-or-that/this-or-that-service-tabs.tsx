@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { FAVORITE_TOURNAMENT_HREF, FAVORITE_TOURNAMENT_TOKEN_SRC } from "@/lib/favorite-tournament";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
-import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
 
 const THIS_OR_THAT_TOKEN = "/images/sts2/relics/choices_paradox.webp";
@@ -14,51 +13,51 @@ export function ThisOrThatServiceTabs({
   serviceLocale,
   gameLocale,
 }: {
-  active: "this-or-that" | "worldcup";
+  active: "this-or-that" | "tournament";
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
   const copy = serviceMessages[serviceLocale].favoriteTournament;
-  const totHref = localizeHrefWithGameLocale("/this-or-that", serviceLocale, gameLocale);
-  const cupHref = localizeHrefWithGameLocale(FAVORITE_TOURNAMENT_HREF, serviceLocale, gameLocale);
+  const items = [
+    {
+      id: "this-or-that" as const,
+      label: copy.tabThisOrThat,
+      href: "/this-or-that",
+      icon: THIS_OR_THAT_TOKEN,
+    },
+    {
+      id: "tournament" as const,
+      label: copy.tabWorldCup,
+      href: FAVORITE_TOURNAMENT_HREF,
+      icon: FAVORITE_TOURNAMENT_TOKEN_SRC,
+    },
+  ];
 
   return (
     <nav
-      aria-label={copy.tabWorldCup}
-      className="flex flex-wrap gap-1 rounded-lg border border-border/70 bg-background/40 p-1"
+      className="mt-4 flex items-center gap-5 border-b border-border"
+      aria-label={copy.tabsLabel}
     >
-      <Link
-        href={totHref}
-        aria-current={active === "this-or-that" ? "page" : undefined}
-        className={cn(
-          "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-semibold transition-colors",
-          active === "this-or-that"
-            ? "bg-white/10 text-foreground"
-            : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
-        )}
-      >
-        <Image src={THIS_OR_THAT_TOKEN} alt="" width={16} height={16} className="h-4 w-4 object-contain" />
-        {copy.tabThisOrThat}
-      </Link>
-      <Link
-        href={cupHref}
-        aria-current={active === "worldcup" ? "page" : undefined}
-        className={cn(
-          "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-semibold transition-colors",
-          active === "worldcup"
-            ? "bg-white/10 text-foreground"
-            : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
-        )}
-      >
-        <Image
-          src={FAVORITE_TOURNAMENT_TOKEN_SRC}
-          alt=""
-          width={16}
-          height={16}
-          className="h-4 w-4 object-contain"
-        />
-        {copy.tabWorldCup}
-      </Link>
+      {items.map((item) => {
+        const selected = item.id === active;
+        return (
+          <Link
+            key={item.id}
+            href={localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale)}
+            prefetch={false}
+            aria-current={selected ? "page" : undefined}
+            className={`relative inline-flex items-center gap-2 pb-2.5 font-game-title text-sm transition-colors ${
+              selected
+                ? "font-semibold text-primary"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Image src={item.icon} alt="" width={24} height={24} className="h-6 w-6 object-contain" />
+            <span>{item.label}</span>
+            {selected && <span className="absolute inset-x-0 -bottom-px h-0.5 bg-primary" />}
+          </Link>
+        );
+      })}
     </nav>
   );
 }

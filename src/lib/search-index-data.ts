@@ -423,12 +423,12 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
   const favoriteTournamentItems: SearchIndexItem[] = [{
     id: "favorite-tournament",
     type: "favoriteTournament",
-    title: "이상형 월드컵",
-    titleEn: "Favorite Tournament",
-    description: "게임 요소 토너먼트 이상형 월드컵 강장제 대진 우승 승률",
-    descriptionEn: "game element tournament favorite bracket champion win rate",
+    title: "이아저? 월드컵",
+    titleEn: "thisorthat? tournament",
+    description: "게임 요소 토너먼트 이아저 월드컵 이상형 월드컵 강장제 대진 우승 승률",
+    descriptionEn: "game element tournament thisorthat worldcup bracket champion win rate",
     imageUrl: "/images/sts2/potions/fortifier.webp",
-    href: "/this-or-that/worldcup",
+    href: "/this-or-that/tournament",
   }];
 
   const decisionsDecisionsItems: SearchIndexItem[] = [{

@@ -4,12 +4,52 @@ import { GameChoiceFrame } from "@/components/codex/event-choice-frame";
 import { EngagementSpinner, EngagementUnavailableIcon } from "@/components/engagement-spinner";
 import Image from "@/components/ui/static-image";
 import {
+  HOVER_TIP_SLICE,
+  HOVER_TIP_SRC,
+  HOVER_TIP_TITLE_COLOR,
+} from "@/lib/hover-tip-chrome";
+import {
   thisOrThatVotePercentage,
   type ThisOrThatVoteChoice,
   type ThisOrThatVoteSummary,
 } from "@/lib/this-or-that-votes";
+import { cn } from "@/lib/utils";
 
 const KNOWLEDGE_DEMON_TOKEN = "/images/sts2/bosses/knowledge_demon_boss.webp";
+
+export function KnowledgeDemonSpeech({
+  line,
+  className,
+}: {
+  line: string;
+  className?: string;
+}) {
+  return (
+    <div className={cn("dark flex items-center justify-center gap-2", className)}>
+      <Image
+        src={KNOWLEDGE_DEMON_TOKEN}
+        alt=""
+        width={34}
+        height={34}
+        aria-hidden
+        className="h-8 w-8 shrink-0 object-contain drop-shadow"
+      />
+      <span
+        className="relative max-w-[min(100%,22rem)] font-game-text text-sm font-bold leading-snug"
+        style={{
+          borderImage: `url('${HOVER_TIP_SRC.default}') ${HOVER_TIP_SLICE.top} ${HOVER_TIP_SLICE.right} ${HOVER_TIP_SLICE.bottom} ${HOVER_TIP_SLICE.left} fill`,
+          borderImageWidth: "16px 34px 12px 20px",
+          borderStyle: "solid",
+          padding: "2px 12px 6px 8px",
+          color: HOVER_TIP_TITLE_COLOR,
+          textShadow: "2px 1px 0 rgba(0,0,0,0.25)",
+        }}
+      >
+        {line}
+      </span>
+    </div>
+  );
+}
 
 export function ThisOrThatVoteChoiceFrame({
   side,
@@ -116,15 +156,7 @@ export function ThisOrThatVoteStatus({
       </div>
 
       <div className="flex min-h-11 items-center gap-2 font-game-text text-sm font-bold text-zinc-200">
-        <Image
-          src={KNOWLEDGE_DEMON_TOKEN}
-          alt=""
-          width={34}
-          height={34}
-          aria-hidden
-          className="h-8 w-8 shrink-0 object-contain drop-shadow"
-        />
-        <span className="min-w-0">{choice ? done : prompt}</span>
+        <KnowledgeDemonSpeech line={choice ? done : prompt} className="min-w-0 flex-1 justify-start" />
         <span className="flex h-4 w-4 shrink-0 items-center justify-center" aria-hidden={!pending}>
           {pending && <EngagementSpinner size={15} />}
         </span>

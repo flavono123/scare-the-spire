@@ -1,19 +1,11 @@
-import type { Metadata } from "next";
-import {
-  generateFavoriteTournamentPostMetadata,
-  renderFavoriteTournamentPostPage,
-} from "./page-content";
+import { permanentRedirect } from "next/navigation";
+import { FAVORITE_TOURNAMENT_HREF } from "@/lib/favorite-tournament";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export default async function LegacyFavoriteTournamentPostPage({ params }: Props) {
   const { id } = await params;
-  return generateFavoriteTournamentPostMetadata(id);
-}
-
-export default async function FavoriteTournamentPostPage({ params }: Props) {
-  const { id } = await params;
-  return renderFavoriteTournamentPostPage(id);
+  permanentRedirect(`${FAVORITE_TOURNAMENT_HREF}/${id}`);
 }

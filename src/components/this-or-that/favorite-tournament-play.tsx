@@ -6,6 +6,7 @@ import {
   ThisOrThatResourcePanel,
 } from "@/components/this-or-that/resource-panel";
 import {
+  KnowledgeDemonSpeech,
   ThisOrThatVoteChoiceFrame,
 } from "@/components/this-or-that/vote-display";
 import { resourceKey } from "@/lib/decisions-decisions";
@@ -35,6 +36,13 @@ type PlayPhase = {
   totalMatches: number;
 };
 
+const CONFIRM_MS = 720;
+
+function confirmDelayMs() {
+  if (typeof window === "undefined") return CONFIRM_MS;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 80 : CONFIRM_MS;
+}
+
 export function FavoriteTournamentPlay({
   pool,
   startingSize,
@@ -42,6 +50,7 @@ export function FavoriteTournamentPlay({
   serviceLocale,
   gameLocale,
   votePrompt,
+  voteDone,
   onComplete,
 }: {
   pool: FavoriteTournamentResourceRef[];
@@ -50,6 +59,7 @@ export function FavoriteTournamentPlay({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   votePrompt: string;
+  voteDone: string;
   onComplete: (result: {
     champion: FavoriteTournamentResourceRef;
     matches: FavoriteTournamentMatchRecord[];
@@ -76,6 +86,7 @@ export function FavoriteTournamentPlay({
   const current = phase.remainingPairs[0] ?? null;
   const leftEntity = current ? entityForRef(current.left, entityMap) : undefined;
   const rightEntity = current ? entityForRef(current.right, entityMap) : undefined;
+  const confirming = Boolean(choice);
 
   const pick = useCallback((side: "left" | "right") => {
     if (!current || choice) return;
@@ -106,7 +117,7 @@ export function FavoriteTournamentPlay({
         };
       });
       setChoice(undefined);
-    }, 180);
+    }, confirmDelayMs());
   }, [choice, current, onComplete]);
 
   const remainingThisRound = (current ? 1 : 0) + Math.max(0, phase.remainingPairs.length - 1);
@@ -125,9 +136,49 @@ export function FavoriteTournamentPlay({
     return null;
   }
 
+  const renderSide = (side: "left" | "right") => {
+    const entity = side === "left" ? leftEntity : rightEntity;
+    const label = side === "left" ? tot.leftLabel : tot.rightLabel;
+    const focusRing = side === "left" ? "focus-within:outline-cyan-300/80" : "focus-within:outline-pink-300/80";
+    const isWinner = choice === side;
+    const isLoser = confirming && !isWinner;
+    return (
+      <div
+        className={cn(
+          "min-w-0 transition-[opacity,filter,transform] duration-300",
+          isLoser && "hidden",
+          isWinner && "knowledge-curse-confirm mx-auto w-full max-w-md",
+        )}
+      >
+        <div className={cn(!confirming && choice && choice !== side && "opacity-50 grayscale")}>
+          <ThisOrThatResourcePanel
+            entity={entity}
+            sideLabel={label}
+            serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
+            size="large"
+            assetOnly
+          />
+        </div>
+        <div className={cn("relative mt-2 rounded-md focus-within:outline focus-within:outline-2", focusRing)}>
+          <button
+            type="button"
+            onClick={() => pick(side)}
+            disabled={confirming}
+            aria-label={tot.choose.replace("{name}", entity.nameKo).replace("{side}", label)}
+            className="absolute inset-0 z-10 rounded-md disabled:cursor-not-allowed"
+          />
+          <div className="pointer-events-none">
+            <ThisOrThatVoteChoiceFrame side={side} label={label} choice={choice} />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-4" data-favorite-tournament-play>
-      <div className="flex flex-wrap items-center justify-between gap-2 font-game-text text-sm text-zinc-300">
+      <div className="flex flex-wrap items-center justify-between gap-2 font-game-text text-sm text-muted-foreground">
         <span>{formatBracketRoundLabel(roundSize || startingSize, copy)}</span>
         <span className="tabular-nums text-muted-foreground">
           {copy.matchProgress
@@ -136,60 +187,23 @@ export function FavoriteTournamentPlay({
         </span>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-stretch">
-        <div className="min-w-0">
-          <div className={cn("transition-[filter,opacity]", choice === "right" && "opacity-50 grayscale")}>
-            <ThisOrThatResourcePanel
-              entity={leftEntity}
-              sideLabel={tot.leftLabel}
-              serviceLocale={serviceLocale}
-              gameLocale={gameLocale}
-              size="large"
-              assetOnly
-            />
+      <div
+        className={cn(
+          "grid gap-3 md:items-stretch",
+          confirming
+            ? "grid-cols-1 place-items-center"
+            : "md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]",
+        )}
+      >
+        {renderSide("left")}
+        {!confirming && (
+          <div className="flex items-center justify-center font-game-title text-2xl font-black text-primary/80 md:w-12">
+            VS
           </div>
-          <div className="relative mt-2 rounded-md focus-within:outline focus-within:outline-2 focus-within:outline-cyan-300/80">
-            <button
-              type="button"
-              onClick={() => pick("left")}
-              disabled={Boolean(choice)}
-              aria-label={tot.choose.replace("{name}", leftEntity.nameKo).replace("{side}", tot.leftLabel)}
-              className="absolute inset-0 z-10 rounded-md disabled:cursor-not-allowed"
-            />
-            <div className="pointer-events-none">
-              <ThisOrThatVoteChoiceFrame side="left" label={tot.leftLabel} choice={choice} />
-            </div>
-          </div>
-        </div>
-        <div className="flex items-center justify-center font-game-title text-2xl font-black text-primary/80 md:w-12">
-          VS
-        </div>
-        <div className="min-w-0">
-          <div className={cn("transition-[filter,opacity]", choice === "left" && "opacity-50 grayscale")}>
-            <ThisOrThatResourcePanel
-              entity={rightEntity}
-              sideLabel={tot.rightLabel}
-              serviceLocale={serviceLocale}
-              gameLocale={gameLocale}
-              size="large"
-              assetOnly
-            />
-          </div>
-          <div className="relative mt-2 rounded-md focus-within:outline focus-within:outline-2 focus-within:outline-pink-300/80">
-            <button
-              type="button"
-              onClick={() => pick("right")}
-              disabled={Boolean(choice)}
-              aria-label={tot.choose.replace("{name}", rightEntity.nameKo).replace("{side}", tot.rightLabel)}
-              className="absolute inset-0 z-10 rounded-md disabled:cursor-not-allowed"
-            />
-            <div className="pointer-events-none">
-              <ThisOrThatVoteChoiceFrame side="right" label={tot.rightLabel} choice={choice} />
-            </div>
-          </div>
-        </div>
+        )}
+        {renderSide("right")}
       </div>
-      <p className="text-center font-game-text text-sm text-zinc-400">{votePrompt}</p>
+      <KnowledgeDemonSpeech line={choice ? voteDone : votePrompt} />
     </div>
   );
 }

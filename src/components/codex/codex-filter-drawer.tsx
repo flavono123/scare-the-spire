@@ -154,13 +154,9 @@ export function CompendiumIndexScroller({
   scrollerClassName?: string;
 }) {
   return (
-    <GameScrollArea
-      className={cn("min-h-0 flex-1", className)}
-      size="large"
-      scrollerClassName={scrollerClassName}
-    >
+    <div className={cn("min-h-0 flex-1 overflow-y-auto overscroll-contain", className, scrollerClassName)}>
       {children}
-    </GameScrollArea>
+    </div>
   );
 }
 

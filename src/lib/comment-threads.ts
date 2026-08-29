@@ -70,6 +70,6 @@ export function commentThreadHref(storyId: string): string {
     ?? prefixedResourceCommentsHref(storyId, "chemical-x:", "/chemical-x")
     ?? prefixedResourceCommentsHref(storyId, "defragment:", "/defragment")
     ?? prefixedResourceCommentsHref(storyId, "decisions-decisions:", "/decisions-decisions")
-    ?? prefixedResourceCommentsHref(storyId, "favorite-tournament:", "/this-or-that/worldcup")
+    ?? prefixedResourceCommentsHref(storyId, "favorite-tournament:", "/this-or-that/tournament")
     ?? (storyId === "byrdispatch" ? `/byrdispatch${COMMENTS_ANCHOR}` : `/#${storyId}`);
 }

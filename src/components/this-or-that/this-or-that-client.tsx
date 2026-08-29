@@ -139,7 +139,7 @@ export function ThisOrThatClient({
           className="h-14 w-14 shrink-0 object-contain drop-shadow"
         />
         <div className="min-w-0">
-          <h1 className="text-3xl font-black tracking-tight text-zinc-50">
+          <h1 className="font-service text-xl font-bold text-primary sm:text-3xl">
             {title}
           </h1>
         </div>

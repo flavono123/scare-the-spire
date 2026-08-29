@@ -39,17 +39,22 @@ export function DecisionsActorSprite({
   name,
   fallbackUrl,
   spineAsset,
+  staticOnly = false,
+  size = 48,
 }: {
   name: string;
   fallbackUrl: string | null;
   spineAsset: MonsterSpineAsset | null | undefined;
+  staticOnly?: boolean;
+  size?: number;
 }) {
   const rootRef = useRef<HTMLSpanElement>(null);
   const [live, setLive] = useState(false);
+  const sizeClass = size === 32 ? "h-8 w-8" : "h-12 w-12";
 
   useEffect(() => {
     const node = rootRef.current;
-    if (!node || !spineAsset) return;
+    if (!node || !spineAsset || staticOnly) return;
 
     let cancelled = false;
     let held = false;
@@ -97,23 +102,23 @@ export function DecisionsActorSprite({
       spineWaiters.delete(tryHold);
       drop();
     };
-  }, [spineAsset]);
+  }, [spineAsset, staticOnly]);
 
   return (
     <span
       ref={rootRef}
-      data-decisions-actor={spineAsset ? (live ? "live" : "spine") : "static"}
-      className="relative block h-12 w-12 overflow-hidden"
+      data-decisions-actor={spineAsset && !staticOnly ? (live ? "live" : "spine") : "static"}
+      className={`relative block overflow-hidden ${sizeClass}`}
     >
       {fallbackUrl ? (
         <Image
           src={fallbackUrl}
           alt={name}
-          width={48}
-          height={48}
+          width={size}
+          height={size}
           draggable={false}
           data-drag-preview=""
-          className="absolute inset-0 h-12 w-12 object-contain"
+          className={`absolute inset-0 object-contain ${sizeClass}`}
         />
       ) : (
         <span

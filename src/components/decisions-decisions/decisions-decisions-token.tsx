@@ -74,6 +74,8 @@ export function DecisionsDecisionsToken({
   showName = false,
   selected = false,
   onSelect,
+  disablePreview = false,
+  compact = false,
 }: {
   entity: EntityInfo;
   serviceLocale: ServiceLocale;
@@ -81,8 +83,12 @@ export function DecisionsDecisionsToken({
   showName?: boolean;
   selected?: boolean;
   onSelect?: () => void;
+  disablePreview?: boolean;
+  compact?: boolean;
 }) {
   const label = entity.nameKo;
+  const iconPx = compact ? 28 : 40;
+  const cardWidth = compact ? 48 : DECISIONS_DECISIONS_CARD_WIDTH;
   const previewEntity = { ...entity, href: null };
   const actorSpine = entity.type === "monster"
     ? entity.monsterData?.spineAsset
@@ -102,20 +108,15 @@ export function DecisionsDecisionsToken({
     : entity.imageUrl
       || (entity.type === "keyword" ? COMBO_KEYWORD_IMAGE_URL : null);
 
-  return (
-    <EntityPreview
-      entity={previewEntity}
-      serviceLocale={serviceLocale}
-      gameLocale={gameLocale}
-      linkClassName="block"
-    >
+  const tile = (
       <span
         role={onSelect ? "button" : undefined}
         tabIndex={onSelect ? 0 : undefined}
         onClick={(event) => {
+          if (!onSelect) return;
           event.preventDefault();
           event.stopPropagation();
-          onSelect?.();
+          onSelect();
         }}
         onKeyDown={(event) => {
           if (!onSelect) return;
@@ -125,7 +126,8 @@ export function DecisionsDecisionsToken({
           onSelect();
         }}
         className={cn(
-          "flex max-w-[5.5rem] flex-col items-center gap-0.5 rounded-sm p-0.5 text-left",
+          "flex flex-col items-center gap-0.5 rounded-sm p-0.5 text-left",
+          compact ? "max-w-[3.25rem]" : "max-w-[5.5rem]",
           selected && "ring-1 ring-primary",
         )}
       >
@@ -140,7 +142,7 @@ export function DecisionsDecisionsToken({
               serviceLocale={serviceLocale}
               showUpgrade={false}
               showBeta={false}
-              width={DECISIONS_DECISIONS_CARD_WIDTH}
+              width={cardWidth}
               interactive={false}
             />
           </span>
@@ -149,9 +151,12 @@ export function DecisionsDecisionsToken({
             {...{ [TILE_ATTR]: "" }}
             data-decisions-piece=""
             data-drag-preview=""
-            className="flex h-10 w-10 items-center justify-center [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
+            className={cn(
+              "flex items-center justify-center [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none",
+              compact ? "h-7 w-7" : "h-10 w-10",
+            )}
           >
-            <AscensionToken level={entity.ascensionData.level} size={40} />
+            <AscensionToken level={entity.ascensionData.level} size={iconPx} />
           </span>
         ) : isMonster ? (
           <span
@@ -163,23 +168,28 @@ export function DecisionsDecisionsToken({
               name={label}
               fallbackUrl={actorFallback}
               spineAsset={actorSpine}
+              staticOnly={compact}
+              size={compact ? 32 : 48}
             />
           </span>
         ) : (
           <span
             {...{ [TILE_ATTR]: "" }}
             data-decisions-piece=""
-            className="flex h-10 w-10 items-center justify-center [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
+            className={cn(
+              "flex items-center justify-center [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none",
+              compact ? "h-7 w-7" : "h-10 w-10",
+            )}
           >
             {tokenSrc ? (
               <Image
                 src={tokenSrc}
                 alt={label}
-                width={40}
-                height={40}
+                width={iconPx}
+                height={iconPx}
                 draggable={false}
                 data-drag-preview=""
-                className="h-10 w-10 object-contain"
+                className={compact ? "h-7 w-7 object-contain" : "h-10 w-10 object-contain"}
               />
             ) : (
               <span
@@ -200,6 +210,16 @@ export function DecisionsDecisionsToken({
           </span>
         )}
       </span>
+  );
+  if (disablePreview) return tile;
+  return (
+    <EntityPreview
+      entity={previewEntity}
+      serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
+      linkClassName="block"
+    >
+      {tile}
     </EntityPreview>
   );
 }

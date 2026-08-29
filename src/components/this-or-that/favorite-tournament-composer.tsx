@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
 import { DecisionsDecisionsPoolPicker } from "@/components/decisions-decisions/decisions-decisions-pool-picker";
+import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
   cloneFilterDims,
@@ -23,6 +24,7 @@ import {
   formatBracketRoundLabel,
   FAVORITE_TOURNAMENT_MIN_POOL,
   FAVORITE_TOURNAMENT_NOTE_MAX_CHARS,
+  FAVORITE_TOURNAMENT_NOTE_MIN_CHARS,
   FAVORITE_TOURNAMENT_TITLE_MAX_CHARS,
   type FavoriteTournamentPost,
   type FavoriteTournamentResourceRef,
@@ -82,6 +84,7 @@ export function FavoriteTournamentComposer({
   const [excludedKeys, setExcludedKeys] = useState<Set<string>>(new Set());
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [attempted, setAttempted] = useState(false);
 
   const filterReady = poolFilterIsReady(major, dims);
 
@@ -143,9 +146,20 @@ export function FavoriteTournamentComposer({
       ? decisionsCopy.poolApplyFilter
       : decisionsCopy.poolAffordance;
 
-  const canSubmit = pool.length >= FAVORITE_TOURNAMENT_MIN_POOL && title.trim().length >= 1;
+  const titleOk = title.trim().length >= 1;
+  const noteOk = note.trim().length >= FAVORITE_TOURNAMENT_NOTE_MIN_CHARS;
+  const poolOk = pool.length >= FAVORITE_TOURNAMENT_MIN_POOL;
+  const canSubmit = titleOk && noteOk && poolOk;
+  const titleError = attempted && !titleOk;
+  const noteError = attempted && !noteOk;
+  const submitHint = !titleOk || !noteOk
+    ? copy.submitHint
+    : !poolOk
+      ? copy.poolTooSmall
+      : submitLabel;
 
   const handleSubmit = useCallback(async () => {
+    setAttempted(true);
     if (!canSubmit) return;
     setSubmitting(true);
     try {
@@ -170,7 +184,7 @@ export function FavoriteTournamentComposer({
             onChange={(event) => setNickname(event.target.value.slice(0, 20))}
             placeholder={copy.nicknamePlaceholder}
             maxLength={20}
-            className="w-full bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
+            className="service-input"
           />
         )}
         <input
@@ -179,16 +193,24 @@ export function FavoriteTournamentComposer({
           onChange={(event) => setTitle(event.target.value.slice(0, FAVORITE_TOURNAMENT_TITLE_MAX_CHARS))}
           placeholder={copy.titlePlaceholder}
           maxLength={FAVORITE_TOURNAMENT_TITLE_MAX_CHARS}
-          className="w-full bg-transparent font-service text-base font-semibold text-foreground outline-none placeholder:text-gray-600"
+          aria-invalid={titleError}
+          className={`service-input font-service text-base font-semibold ${titleError ? "border-red-500" : ""}`}
         />
-        <input
-          type="text"
+        {titleError && (
+          <p className="text-xs text-red-500">{copy.titleRequired}</p>
+        )}
+        <textarea
           value={note}
           onChange={(event) => setNote(event.target.value.slice(0, FAVORITE_TOURNAMENT_NOTE_MAX_CHARS))}
           placeholder={copy.notePlaceholder}
           maxLength={FAVORITE_TOURNAMENT_NOTE_MAX_CHARS}
-          className="w-full bg-transparent text-sm text-zinc-400 outline-none placeholder:text-gray-600"
+          rows={3}
+          aria-invalid={noteError}
+          className={`service-textarea ${noteError ? "border-red-500" : ""}`}
         />
+        {noteError && (
+          <p className="text-xs text-red-500">{copy.noteRequired}</p>
+        )}
       </div>
 
       <DecisionsDecisionsPoolPicker
@@ -206,7 +228,7 @@ export function FavoriteTournamentComposer({
       />
 
       {pool.length > 0 && (
-        <p className="font-game-text text-sm text-zinc-300">
+        <p className="font-game-text text-sm text-muted-foreground">
           {formatBracketRoundLabel(pool.length, copy)}
         </p>
       )}
@@ -227,15 +249,17 @@ export function FavoriteTournamentComposer({
       />
 
       <div className="flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          disabled={submitting || !canSubmit}
-          onClick={() => { void handleSubmit(); }}
-          className="inline-flex items-center rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary disabled:opacity-50"
-        >
-          {submitLabel}
-        </button>
-        {pool.length > 0 && pool.length < FAVORITE_TOURNAMENT_MIN_POOL && (
+        <GameUiHoverTip label={submitHint}>
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={() => { void handleSubmit(); }}
+            className="inline-flex items-center rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary disabled:opacity-50"
+          >
+            {submitLabel}
+          </button>
+        </GameUiHoverTip>
+        {attempted && pool.length > 0 && pool.length < FAVORITE_TOURNAMENT_MIN_POOL && (
           <span className="text-xs text-muted-foreground">{copy.poolTooSmall}</span>
         )}
       </div>

@@ -44,13 +44,13 @@
 
 ## 스크롤바
 
-보이는 세로 스크롤은 게임 애셋 레일(`GameScrollArea`)이다. History Course 표지 편집과 같은 `/images/sts2/ui/scrollbar/` 트랙·골드 트레인이다. `large`(레일 28px)가 페이지·인덱스·모달 기본이고, 좁은 목록만 `small`(레일 18px)이다.
+게임 애셋 레일(`GameScrollArea`, `/images/sts2/ui/scrollbar/` 트랙·골드 트레인)은 **안쪽 페인과 모달에만** 쓴다. 페이지·인덱스처럼 가장 바깥에서 문서를 미는 스크롤은 네이티브다. `body`는 `min-h-dvh`이고 상단바는 `sticky`다. 문서를 `h-dvh overflow-hidden`으로 잠그고 바깥에 골든 레일을 두지 않는다.
 
-- 페이지 본문은 `GamePageScroll`이다. `body`는 `h-dvh overflow-hidden`이고, 상단바 아래 한 레일이 문서를 민다.
-- 백과사전 인덱스 본문은 `CompendiumIndexScroller`, 상세 오버레이는 `CompendiumDetailOverlay`, 좌측 필터는 `small` 레일이다.
-- 서비스 모달 본문은 `ServiceModalFrame`의 `GameScrollArea`다. 피커·이야기 쓰기·패치 라인 이야기 패널도 같은 레일이다.
+- `large`(레일 28px)는 모달·피커·오버레이 기본이고, 좁은 목록·썸네일 풀만 `small`(레일 18px)이다.
+- 백과사전 인덱스 본문(`CompendiumIndexScroller`)도 네이티브 overflow다. 좌측 필터와 상세 오버레이(`CompendiumDetailOverlay`)는 안쪽 페인이므로 `GameScrollArea`를 유지한다.
+- 서비스 모달 본문은 `ServiceModalFrame`의 `GameScrollArea`다. 피커·이야기 쓰기·패치 라인 이야기 패널·토너먼트 썸네일 말 풀도 같은 레일이다.
 - **좁은 드롭다운에는 골든 트레인을 넣지 않는다.** 백과사전/장난감 상자 내비, 언어 메뉴, 슬래시 명령, 멘션, 타입ahead, 이야기 패치 라인 선택 목록은 폭이 대략 140–232px다. 레일만 18–28px라 메뉴를 잠식한다. 여기는 네이티브 얇은 스크롤을 유지한다.
-- **모바일(`< md`, 768px 미만)에서도 골든 레일을 그리지 않는다.** 터치 드래그가 스크롤의 기본 제스처다. 레일과 오른쪽 거터가 필터 `w-52`, 피커, 시트, 페이지 본문을 잠식하고, 트레인 버튼의 `touch-none`이 가장자리 스와이프와 겹친다. overflow-y는 유지한다.
+- **모바일(`< md`, 768px 미만)에서도 골든 레일을 그리지 않는다.** 터치 드래그가 스크롤의 기본 제스처다. 레일과 오른쪽 거터가 필터 `w-52`, 피커, 시트를 잠식하고, 트레인 버튼의 `touch-none`이 가장자리 스와이프와 겹친다. overflow-y는 유지한다.
 - 중첩된 짧은 페인(표지 편집 후보 `h-40`, 캐릭터 대사 `max-h-[32rem]`)도 모바일에선 숨긴다. 점프용 트레인은 손가락으로 잡기 어렵고, 영역 안 스와이프가 맞다.
 - 이벤트·연대기 아트 위 텍스트 패널은 이미 네이티브 바를 숨긴다. 가로 캐러셀도 숨긴다. 게임 아트 무대에 골든 레일을 겹치지 않는다.
 - 패치 Worker 정적 HTML(`patch-comments-client.js`, 패치 상단바 미러)은 React `GameScrollArea`를 쓰지 않는다. 정적 복제가 생기기 전에는 네이티브를 유지한다.
@@ -179,7 +179,7 @@ HUD 숫자(히스토리 코스 `topbar-num-gold` `#f8d56a`)는 검정 외곽선 
 - `RelatedResourceLinks`: 관련 리소스 라인을 렌더한다. 옛 이름 `EntityReferenceGroupLinks`는 별칭만 남긴다.
 - `ResourceDetailView`: 카드, 유물, 포션 같은 리소스의 상세 보기를 렌더하는 표준 컴포넌트명이다. 모달과 직접 URL 진입에서 같은 상세 보기를 공유한다.
 - `LikeControl` / `LikeButton`: 좋아요 크롬과 `likes` 테이블 훅. 이거아님저거 테이블이 남는 동안만 별도 훅을 둔다.
-- `GameScrollArea` / `GamePageScroll`: 게임 애셋 세로 스크롤. 페이지·인덱스·모달·피커 페인에 쓴다. 좁은 드롭다운과 모바일(`< md`)에는 레일을 그리지 않는다. overflow는 유지한다.
+- `GameScrollArea`: 게임 애셋 세로 스크롤. 모달·피커·필터·썸네일 풀처럼 **안쪽** 페인에만 쓴다. 페이지와 인덱스 바깥 스크롤은 네이티브다. 좁은 드롭다운과 모바일(`< md`)에는 레일을 그리지 않는다. overflow는 유지한다.
 - `.service-input` / `.service-textarea`: 스킴 토큰을 따르는 서비스 필드. 댓글 닉네임, 이야기 닉네임, 본문 입력.
 
 ## 목록 화면
@@ -289,7 +289,7 @@ Rich 패치는 Steam 패치노트를 소스로 하되, 백과사전 데이터와
 5. **좋아요** — 백과사전 타일 스킨은 강령의 극. 이야기 감정 팔레트는 prod에서 깨질 수 있어 보류. 이거아님저거 테이블은 병합하지 않는다.
 6. **이름 정리** — 호출부 `CompendiumIndexLayout` / `RelatedResourceLinks`. 완료. 통합검색 라벨은 인챈트.
 7. **라이트 variant** — 서비스 셸 팔레트(잉크 골드/틸). 프로필 `sts-color-scheme`. 패치 Worker도 같은 키를 읽는다. 게임 크롬은 `.dark` 섬. Storybook 캔버스는 다크. 완료.
-8. **다크/라이트 공존 + 게임 스크롤** — 필드 `.service-input`, 레일 `bg-compendium-rail`, 페인 `GameScrollArea`. 좁은 내비 드롭다운은 네이티브. 완료.
+8. **다크/라이트 공존 + 게임 스크롤** — 필드 `.service-input`, 레일 `bg-compendium-rail`. 바깥 페이지/인덱스는 네이티브 스크롤, 안쪽 페인만 `GameScrollArea`. 좁은 내비 드롭다운은 네이티브. 완료.
 
 ## 아직 손대지 않는 것들 (사람말로)
 

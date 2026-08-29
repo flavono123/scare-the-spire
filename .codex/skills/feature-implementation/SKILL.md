@@ -100,7 +100,7 @@ talking, not as what the page does. Split identity copy into three layers.
 | **Subtitle** | What the service does | Service-owned verb phrase in the template below | real `h2`, `Metadata.description`, OG/Twitter description |
 | **Hero** | Flavor, one step quieter | Exact or minimally adapted `gameLocale` line | index header `<p>` only; never metadata |
 
-**Title.** Keep the current game-backed names (이거 아님 저거?, 변형, 조각모음,
+**Title.** Keep the current game-backed names (이거 아님 저거?, 이아저? 월드컵, 변형, 조각모음,
 어려운 결정, 역사 강의서, 코오오옴보, 케미컬X). OG title stays
 `{title} - {brand}` from `getServiceTitle`. Do not put the functional template
 in `h1`.
@@ -157,6 +157,7 @@ Index create CTA stays on the title row, not beside the hero. Shared chrome is
 | Service | `{기능 설명}` (ko) | Current quote → hero |
 | --- | --- | --- |
 | This or That | 게임 요소 투표하기 | event whisper / `prompt` |
+| 이아저? 월드컵 | 게임 요소 토너먼트하기 | same This or That `prompt`; tab under `/this-or-that`, URL `/this-or-that/tournament` |
 | Combo | 게임 요소 조합 공유하기 | none today; optional Amalgamator line |
 | Transfigure | 게임 요소 설명 다시 쓰기 | Morphic Grove paragraph |
 | Chemical X | 게임 요소로 짧은 글 쓰기 | no game hero; keep `legacyName` |
@@ -275,7 +276,8 @@ Two content max-widths only, from `src/lib/toybox-layout.ts`:
 Do not retouch existing create/submit labels except `올리기` → `등록`
 (English `Register`). 어려운 결정 already uses `등록`. Keep Combo
 `결합이다!` / `조합 공유`, Transfigure `변형하기`, This or That create
-`이거... 아님 저거?`, vote `선택하라.`, 조각모음 `밀집을 얻습니다`,
+`이거... 아님 저거?`, vote `선택하라.`, 이아저? 월드컵 create
+`월드컵 만들기` / `Make a tournament`, 조각모음 `밀집을 얻습니다`,
 Chemical X `투입`.
 
 - New services may still borrow a short verb-like game line for create.
@@ -315,7 +317,8 @@ Current:
 - This or That: exact phrase from `THIS_OR_THAT.pages.PLAIN.description`
   → Korean `세 번째 손` / English `THIRD hand`. It is event flavor, not a
   named resource. Do not borrow Knowledge Demon (`지식의 악마`) for the
-  nickname; that encounter is only for the vote CTA.
+  nickname; that encounter is only for the vote CTA. 이아저? 월드컵 uses
+  the same nickname (tab under This or That, not a separate composer identity).
 - 조각모음: exact `FOCUS_POWER.title` → Korean `밀집` / English `Focus`.
   Do not reuse the service title as the nickname.
 - 어려운 결정: adapted from `DECISIONS_DECISIONS.title` `어려운 결정` /
@@ -380,6 +383,18 @@ service-owned exception.
 - Relic keyword hovers are the inspect slab plus ExtraHoverTips, not a
   GameHoverTip that restates the relic description. Keep that set in the
   static patch HTML; do not portal it away during `renderToStaticMarkup`.
+
+### Page and index scroll
+
+Game-asset scrollbar rails (`GameScrollArea`, `/images/sts2/ui/scrollbar/`)
+belong on **inner panes and modals only**: pickers, `ServiceModalFrame`,
+filter sidebars, detail overlays, tournament thumbnail pools. The outermost
+page and index scroll is native document overflow. Do not wrap the site
+navbar + children in `GamePageScroll`. Do not lock `body` to
+`h-dvh overflow-hidden` for a gold train. Compendium library indexes use
+native overflow on `CompendiumIndexScroller`; keep `GameScrollArea` on the
+filter rail and `CompendiumDetailOverlay`. Mobile still hides the rail below
+`md`. See `docs/DESIGN.md` 스크롤바.
 
 ## Implementation Defaults
 

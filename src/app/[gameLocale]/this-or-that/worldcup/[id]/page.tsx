@@ -1,19 +1,13 @@
-import {
-  generateFavoriteTournamentPostMetadata,
-  renderFavoriteTournamentPostPage,
-} from "@/app/this-or-that/worldcup/[id]/page-content";
+import { permanentRedirect } from "next/navigation";
+import { FAVORITE_TOURNAMENT_HREF } from "@/lib/favorite-tournament";
+import { pathPrefixForGameLocale } from "@/lib/i18n";
 import { getLocalePairFromParams, type LocaleRouteParams } from "@/lib/locale-routing";
 
 type Props = {
   params: Promise<LocaleRouteParams<{ id: string }>>;
 };
 
-export async function generateMetadata({ params }: Props) {
+export default async function LocalizedLegacyFavoriteTournamentPostPage({ params }: Props) {
   const { gameLocale, id } = await getLocalePairFromParams(params);
-  return generateFavoriteTournamentPostMetadata(id, gameLocale);
-}
-
-export default async function LocalizedFavoriteTournamentPostPage({ params }: Props) {
-  const { gameLocale, id } = await getLocalePairFromParams(params);
-  return renderFavoriteTournamentPostPage(id, gameLocale);
+  permanentRedirect(`${pathPrefixForGameLocale(gameLocale)}${FAVORITE_TOURNAMENT_HREF}/${id}`);
 }

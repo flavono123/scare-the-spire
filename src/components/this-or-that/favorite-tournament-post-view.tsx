@@ -37,11 +37,13 @@ export function FavoriteTournamentPostView({
   postId,
   gameLocale,
   votePrompt,
+  voteDone,
   presetLabels,
 }: {
   postId: string;
   gameLocale: GameLocale;
   votePrompt: string;
+  voteDone: string;
   presetLabels: Record<string, string>;
 }) {
   const serviceLocale = useServiceLocale();
@@ -58,6 +60,7 @@ export function FavoriteTournamentPostView({
   const [startingSize, setStartingSize] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
   const [champion, setChampion] = useState<FavoriteTournamentResourceRef | null>(null);
+  const [rankingOpen, setRankingOpen] = useState(false);
   const indexHref = localizeHrefWithGameLocale(FAVORITE_TOURNAMENT_HREF, serviceLocale, gameLocale);
   const threadKey = buildFavoriteTournamentCommentThreadKey(postId);
 
@@ -115,6 +118,7 @@ export function FavoriteTournamentPostView({
     && post.user_id === userId
     && !isFavoriteTournamentBuiltinKey(post.preset_key),
   );
+  const builtin = isFavoriteTournamentBuiltinKey(post.preset_key);
   const selectedSize = startingSize ?? roundOptions[0] ?? post.pool.length;
   const championEntity = champion ? entityForRef(champion, catalog.entityMap) : null;
 
@@ -146,13 +150,13 @@ export function FavoriteTournamentPostView({
               {worldcupPostTitle(post, serviceLocale, presetLabels, catalog.entityMap)}
             </h1>
             <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
-              <span>{post.nickname}</span>
-              <span>{formatTimeAgo(post.created_at, copy, dateLocale)}</span>
+              {!builtin && <span>{post.nickname}</span>}
+              {!builtin && <span>{formatTimeAgo(post.created_at, copy, dateLocale)}</span>}
               <span>{formatBracketRoundLabel(post.pool.length, copy)}</span>
               <span>{copy.playCount.replace("{count}", String(post.play_count ?? 0))}</span>
             </div>
             {post.note ? (
-              <p className="mt-2 font-game-text text-sm text-zinc-400">{post.note}</p>
+              <p className="mt-2 font-game-text text-sm text-muted-foreground">{post.note}</p>
             ) : null}
           </div>
           <LikeButton
@@ -173,21 +177,22 @@ export function FavoriteTournamentPostView({
           serviceLocale={serviceLocale}
           gameLocale={gameLocale}
           votePrompt={votePrompt}
+          voteDone={voteDone}
           onComplete={(result) => { void handleComplete(result); }}
         />
       ) : (
-        <section className="space-y-3 rounded-lg border border-border/70 bg-card/20 p-4">
-          <p className="font-game-text text-sm text-zinc-300">{copy.roundPrompt}</p>
+        <section className="space-y-5 rounded-xl border border-primary/25 bg-card/30 p-5 sm:p-6">
+          <p className="font-game-title text-lg font-semibold text-foreground">{copy.roundPrompt}</p>
           <div className="flex flex-wrap gap-2">
             {roundOptions.map((size) => (
               <button
                 key={size}
                 type="button"
                 onClick={() => setStartingSize(size)}
-                className={`rounded-md border px-3 py-1.5 text-xs font-semibold ${
+                className={`rounded-md border px-4 py-2 text-sm font-semibold transition-colors ${
                   selectedSize === size
-                    ? "border-primary/50 bg-primary/15 text-primary"
-                    : "border-border text-muted-foreground hover:bg-white/5"
+                    ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                    : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground"
                 }`}
               >
                 {formatBracketRoundLabel(size, copy)}
@@ -209,7 +214,7 @@ export function FavoriteTournamentPostView({
               setChampion(null);
               setPlaying(true);
             }}
-            className="inline-flex items-center rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary"
+            className="inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-6 py-2.5 text-sm font-bold text-primary-foreground shadow-[0_8px_24px_rgba(239,200,81,0.18)] transition-transform hover:-translate-y-0.5 motion-reduce:transform-none"
           >
             {copy.startPlay}
           </button>
@@ -218,7 +223,7 @@ export function FavoriteTournamentPostView({
 
       {championEntity && !playing && (
         <section className="space-y-3 rounded-lg border border-border/70 bg-card/20 p-4">
-          <h2 className="font-service text-sm font-semibold text-zinc-300">{copy.championTitle}</h2>
+          <h2 className="font-service text-sm font-semibold text-foreground">{copy.championTitle}</h2>
           <div className="max-w-sm">
             <ThisOrThatResourcePanel
               entity={championEntity}
@@ -234,12 +239,24 @@ export function FavoriteTournamentPostView({
       )}
 
       {!playing && (
-        <FavoriteTournamentRanking
-          post={post}
-          stats={stats}
-          entityMap={catalog.entityMap}
-          serviceLocale={serviceLocale}
-        />
+        <div className="space-y-3">
+          <button
+            type="button"
+            aria-expanded={rankingOpen}
+            onClick={() => setRankingOpen((current) => !current)}
+            className="inline-flex items-center rounded-md border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:border-primary/40 hover:text-foreground"
+          >
+            {rankingOpen ? copy.rankingHide : copy.rankingShow}
+          </button>
+          {rankingOpen && (
+            <FavoriteTournamentRanking
+              post={post}
+              stats={stats}
+              entityMap={catalog.entityMap}
+              serviceLocale={serviceLocale}
+            />
+          )}
+        </div>
       )}
 
       <section

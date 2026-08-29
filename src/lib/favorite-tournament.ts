@@ -10,7 +10,8 @@ import {
 import { decisionsPresetLabel, type DecisionsPresetLabelCopy, type DecisionsPresetMonsterTypeLabels } from "@/lib/decisions-preset-label";
 import sts2Meta from "../../data/sts2/meta.json";
 
-export const FAVORITE_TOURNAMENT_HREF = "/this-or-that/worldcup";
+export const FAVORITE_TOURNAMENT_HREF = "/this-or-that/tournament";
+export const FAVORITE_TOURNAMENT_LEGACY_HREF = "/this-or-that/worldcup";
 export const FAVORITE_TOURNAMENT_TOKEN_SRC =
   "/images/sts2/potions/fortifier.webp";
 export const FAVORITE_TOURNAMENT_BACKGROUND_SRC =
@@ -26,6 +27,7 @@ export const FAVORITE_TOURNAMENT_GAME_VERSION = sts2Meta.version;
 
 export const FAVORITE_TOURNAMENT_TITLE_MIN_CHARS = 1;
 export const FAVORITE_TOURNAMENT_TITLE_MAX_CHARS = 80;
+export const FAVORITE_TOURNAMENT_NOTE_MIN_CHARS = 1;
 export const FAVORITE_TOURNAMENT_NOTE_MAX_CHARS = 500;
 export const FAVORITE_TOURNAMENT_MIN_POOL = 2;
 

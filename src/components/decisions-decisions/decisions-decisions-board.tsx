@@ -35,7 +35,7 @@ type DragKind = "token" | "row";
 function parseTokenPayload(raw: string): DecisionsDecisionsResourceRef | null {
   const [type, id] = raw.split(":");
   if (!type || !id || !isDecisionsDecisionsResourceType(type as EntityType)) return null;
-  return { type, id };
+  return { type, id } as DecisionsDecisionsResourceRef;
 }
 
 function parseRowPayload(raw: string): string | null {
@@ -299,6 +299,8 @@ export function DecisionsDecisionsBoard({
   onReorderRows,
   onRemoveRow,
   onAddRow,
+  disablePreview = false,
+  thumbnail = false,
 }: {
   rows: TierRow[];
   placements: TierPlacement[];
@@ -321,6 +323,8 @@ export function DecisionsDecisionsBoard({
   onReorderRows?: (fromId: string, toId: string) => void;
   onRemoveRow?: (rowId: string) => void;
   onAddRow?: () => void;
+  disablePreview?: boolean;
+  thumbnail?: boolean;
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
   const poolOnly = variant === "pool";
@@ -372,7 +376,10 @@ export function DecisionsDecisionsBoard({
     items: TierPlacement[],
     options: { removable?: boolean } = {},
   ) => (
-    <div className="flex min-h-16 flex-wrap content-start gap-1 px-2 py-1.5">
+    <div className={cn(
+      "flex flex-wrap content-start gap-1",
+      thumbnail ? "px-1 py-1" : "min-h-16 px-2 py-1.5",
+    )}>
       {items.map((item) => {
         const entity = entitiesByKey.get(resourceKey(item));
         const key = resourceKey(item);
@@ -422,7 +429,9 @@ export function DecisionsDecisionsBoard({
               gameLocale={gameLocale}
               showName={showNames}
               selected={selectedKey === key}
-              onSelect={() => onSelect?.(item)}
+              onSelect={onSelect ? () => onSelect(item) : undefined}
+              disablePreview={disablePreview}
+              compact={thumbnail}
             />
           </div>
         );
@@ -456,7 +465,7 @@ export function DecisionsDecisionsBoard({
       if (!selectedKey) return;
       const [type, id] = selectedKey.split(":");
       if (type && id && isDecisionsDecisionsResourceType(type as EntityType)) {
-        onMove?.({ type, id }, rowId);
+        onMove?.({ type, id } as DecisionsDecisionsResourceRef, rowId);
       }
     },
   };
@@ -465,9 +474,10 @@ export function DecisionsDecisionsBoard({
     <>
     <div
       className={cn(
-        "overflow-hidden rounded-lg border border-border bg-black/40",
+        !thumbnail && "overflow-hidden rounded-lg border border-border bg-black/40",
         compact && "text-[10px]",
-        poolOnly && "max-h-[min(28rem,50dvh)] overflow-y-auto",
+        poolOnly && !thumbnail && "max-h-[min(28rem,50dvh)] overflow-y-auto",
+        thumbnail && "bg-transparent",
       )}
     >
       {!poolOnly && rows.map((row) => (

@@ -1,13 +1,11 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { GameScrollArea } from "@/components/game-scroll-area";
 
-/** Document-level vertical pane under the site navbar. */
+/**
+ * @deprecated The document scrolls natively. Do not wrap page or index chrome.
+ * Keep GameScrollArea for inner panes and modals only.
+ */
 export function GamePageScroll({ children }: { children: ReactNode }) {
-  return (
-    <GameScrollArea className="min-h-0 flex-1" size="large">
-      {children}
-    </GameScrollArea>
-  );
+  return children;
 }
