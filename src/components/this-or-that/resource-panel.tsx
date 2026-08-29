@@ -78,7 +78,7 @@ function MonsterAssetPreview({
     [spine],
   );
 
-  if (panelSpine) {
+  if (panelSpine && isLarge) {
     return (
       <span
         data-this-or-that-monster-spine=""
