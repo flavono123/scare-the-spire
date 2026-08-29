@@ -18,6 +18,11 @@ import {
   stampAllPresetIds,
 } from "../src/lib/decisions-decisions";
 import { getCodexNavGameLabel } from "../src/lib/codex-nav-game-labels";
+import {
+  HISTORY_LOC_PUBLIC_DIR,
+  HISTORY_LOC_TABLE_SOURCES,
+  type HistoryLocTables,
+} from "../src/lib/history-loc-tables";
 
 type StaticJsonTarget = {
   path: string;
@@ -319,6 +324,22 @@ async function writeSourceJsonCompact(target: StaticJsonTarget) {
   await fs.mkdir(path.dirname(filePath), { recursive: true });
   await fs.writeFile(filePath, `${JSON.stringify(target.data)}\n`);
   console.log(`Wrote ${path.relative(process.cwd(), filePath)}`);
+}
+
+async function buildHistoryLocTableTargets(): Promise<StaticJsonTarget[]> {
+  const locales = GAME_LOCALES.filter((locale): locale is Exclude<GameLocale, "kor"> => locale !== "kor");
+  return Promise.all(locales.map(async (locale) => {
+    const entries = await Promise.all(
+      HISTORY_LOC_TABLE_SOURCES.map(async ([key, file]) => [
+        key,
+        await readGameLocalizationTable(locale, file),
+      ] as const),
+    );
+    return {
+      path: `${HISTORY_LOC_PUBLIC_DIR}/${locale}.json`,
+      data: Object.fromEntries(entries) as HistoryLocTables,
+    };
+  }));
 }
 
 async function generateHistoryCourseCatalogOnly() {
@@ -824,6 +845,10 @@ async function main() {
     await generateHistoryCourseCatalogOnly();
     return;
   }
+  if (process.argv.includes("--history-loc-tables-only")) {
+    await Promise.all((await buildHistoryLocTableTargets()).map(writeJson));
+    return;
+  }
   if (process.argv.includes("--this-or-that-resources-only")) {
     const thisOrThatResourceTargets = await buildThisOrThatResourceTargets();
     await Promise.all(thisOrThatResourceTargets.map(writeJson));
@@ -846,6 +871,7 @@ async function main() {
     borrowedGameCopyPayload,
     toyBoxNewsPayload,
     decisionsDecisionsPresetTarget,
+    historyLocTableTargets,
   ] = await Promise.all([
     buildSearchIndexPayload(),
     loadAllEntities(),
@@ -858,6 +884,7 @@ async function main() {
     buildBorrowedGameCopyPayload(),
     buildToyBoxNewsPayload(),
     buildDecisionsDecisionsPresetTarget(),
+    buildHistoryLocTableTargets(),
   ]);
 
   await Promise.all([
@@ -885,6 +912,7 @@ async function main() {
     writeJson({ path: "api/search-index", data: searchIndex }),
     writeJson({ path: "comment-entities/sts2", data: commentEntities }),
     ...thisOrThatResourceTargets.map(writeJson),
+    ...historyLocTableTargets.map(writeJson),
     writeJson(decisionsDecisionsPresetTarget),
     copyPublicFile(spinePlayerClientPath, "generated/spine-player.min.js"),
   ]);

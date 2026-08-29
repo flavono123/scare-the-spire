@@ -38,6 +38,16 @@ const targets = [
       "scripts/ensure-lint-generated.mjs",
     ],
   },
+  {
+    output: "public/generated/history-loc/eng.json",
+    flag: "--history-loc-tables-only",
+    sources: [
+      "data/sts2/localization",
+      "src/lib/history-loc-tables.ts",
+      "scripts/generate-static-api-data.ts",
+      "scripts/ensure-lint-generated.mjs",
+    ],
+  },
 ];
 
 async function newestMtime(relativePath) {

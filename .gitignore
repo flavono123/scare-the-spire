@@ -75,6 +75,7 @@ playwright-report/
 /public/generated/compendium-resource-manifest.json
 /public/generated/latest-byrdispatch-notice.json
 /public/generated/spine-player.min.js
+/public/generated/history-loc/
 /src/generated/toy-box-news.json
 /src/generated/borrowed-game-copy.json
 /src/generated/history-course-catalog.json

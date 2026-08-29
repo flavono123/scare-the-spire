@@ -1,16 +1,26 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   overlayHistoryCard,
   overlayHistoryRelic,
   localizeHistoryCatalog,
   locResourceId,
 } from "../src/lib/history-catalog-locale";
-import { getHistoryLocTablesSync, loadHistoryLocTables } from "../src/lib/history-loc-tables";
+import {
+  HISTORY_LOC_PUBLIC_DIR,
+  type HistoryLocTables,
+} from "../src/lib/history-loc-tables";
 import type { CodexCard, CodexKeyword, CodexRelic } from "../src/lib/codex-types";
 
+function readPackedHistoryLocTables(locale: "eng" | "zhs"): HistoryLocTables {
+  return JSON.parse(
+    readFileSync(`public/${HISTORY_LOC_PUBLIC_DIR}/${locale}.json`, "utf8"),
+  ) as HistoryLocTables;
+}
+
 async function main() {
-  const eng = getHistoryLocTablesSync("eng");
-  assert.ok(eng, "English history locale tables must be available synchronously");
+  const eng = readPackedHistoryLocTables("eng");
+  assert.ok(eng, "English history locale tables must be generated");
 
   const strike = {
     id: "STRIKE_IRONCLAD",
@@ -55,8 +65,8 @@ async function main() {
   assert.equal(overlaidRelic.name, "Burning Blood");
   assert.match(overlaidRelic.description, /heal/i);
 
-  const zhs = await loadHistoryLocTables("zhs");
-  assert.ok(zhs, "Chinese history locale tables must load");
+  const zhs = readPackedHistoryLocTables("zhs");
+  assert.ok(zhs, "Chinese history locale tables must be generated");
   const zhsCard = overlayHistoryCard(strike, zhs, keywords);
   assert.notEqual(zhsCard.name, "타격");
   assert.notEqual(zhsCard.name, "Strike");
