@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
+import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import { RelicInspectPreview } from "@/components/codex/relic-inspect-preview";
 import { EntityPreview, type EntityInfo, type EntityType } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
@@ -45,6 +46,58 @@ function assetOnlyDescription(entity: EntityInfo): string | null {
     ?? entity.characterData?.description
     ?? entity.eventOptionDesc
     ?? null;
+}
+
+function monsterFallbackImageUrl(entity: EntityInfo): string | null {
+  return entity.monsterData?.bossImageUrl
+    ?? entity.monsterData?.imageUrl
+    ?? entity.imageUrl
+    ?? null;
+}
+
+function MonsterAssetPreview({
+  entity,
+  size,
+}: {
+  entity: EntityInfo;
+  size: "compact" | "large";
+}) {
+  const spine = entity.monsterData?.spineAsset ?? null;
+  const fallback = monsterFallbackImageUrl(entity);
+  const isLarge = size === "large";
+
+  if (spine) {
+    return (
+      <span
+        data-this-or-that-monster-spine=""
+        className="relative block h-full w-full min-h-0 self-stretch"
+      >
+        <MonsterSpineStage
+          asset={spine}
+          fallbackImageUrl={fallback}
+          monsterName={entity.nameKo}
+          selectedMoveId="IDLE"
+          imagePriority={false}
+          showLoadingLabel={false}
+          viewportTransitionTime={0}
+          className="relative h-full w-full"
+          fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain"
+        />
+      </span>
+    );
+  }
+
+  if (!fallback) return null;
+
+  return (
+    <Image
+      src={fallback}
+      alt={entity.nameKo}
+      width={isLarge ? 320 : 180}
+      height={isLarge ? 320 : 180}
+      className="max-h-full max-w-full object-contain"
+    />
+  );
 }
 
 function AssetOnlyNonCardPreview({
@@ -142,7 +195,11 @@ export function ThisOrThatResourcePanel({
     ? localizeHrefWithGameLocale(hrefBase, serviceLocale, gameLocale)
     : null;
   const cardWidth = isLarge ? 300 : assetOnly ? 164 : 126;
-  const assetOnlyNonCardPreview = assetOnly && !entity.cardData
+  const monsterPreview = entity.type === "monster"
+    && (entity.monsterData?.spineAsset || monsterFallbackImageUrl(entity))
+    ? <MonsterAssetPreview entity={entity} size={size} />
+    : null;
+  const assetOnlyHoverTip = assetOnly && !entity.cardData && assetOnlyDescription(entity)
     ? <AssetOnlyNonCardPreview entity={entity} size={size} />
     : null;
   const preview = entity.cardData ? (
@@ -162,8 +219,10 @@ export function ThisOrThatResourcePanel({
       density="hover"
       className={isLarge ? "w-[16rem] max-w-[16rem]" : "w-[10.5rem] max-w-[10.5rem]"}
     />
-  ) : assetOnlyNonCardPreview ? (
-    assetOnlyNonCardPreview
+  ) : monsterPreview ? (
+    monsterPreview
+  ) : assetOnlyHoverTip ? (
+    assetOnlyHoverTip
   ) : (
     <span className={cn(
       "block origin-center [&_.game-hover-tip]:shadow-2xl",
