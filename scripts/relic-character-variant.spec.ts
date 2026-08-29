@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import type { CodexRelic } from "../src/lib/codex-types";
 import {
   pickRelicCharacterVariant,
+  relicAwareImageUrl,
   relicPoolFromCharacterId,
   resolveRelicDisplayImage,
 } from "../src/lib/relic-character-variant";
@@ -44,4 +45,25 @@ assert.equal(pickRelicCharacterVariant(burningBlood, "ironclad"), null);
 assert.equal(
   resolveRelicDisplayImage(burningBlood, "silent"),
   "/images/sts2/relics/burning_blood.webp",
+);
+assert.equal(
+  relicAwareImageUrl(
+    { type: "relic", imageUrl: null, relicData: yummyCookie },
+    "IRONCLAD",
+  ),
+  "/images/sts2/relics/yummy_cookie_ironclad.webp",
+);
+assert.equal(
+  relicAwareImageUrl(
+    { type: "relic", imageUrl: null, relicData: yummyCookie },
+    "NECROBINDER",
+  ),
+  "/images/sts2/relics/yummy_cookie_necro.webp",
+);
+assert.equal(
+  relicAwareImageUrl(
+    { type: "potion", imageUrl: "/images/sts2/potions/potion.webp" },
+    "IRONCLAD",
+  ),
+  "/images/sts2/potions/potion.webp",
 );

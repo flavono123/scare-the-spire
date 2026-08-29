@@ -12,7 +12,9 @@ import {
   type DecisionsDecisionsResourceRef,
 } from "@/lib/decisions-decisions";
 import { COMBO_KEYWORD_IMAGE_URL } from "@/lib/combo-resource-visuals";
+import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
+import { relicAwareImageUrl } from "@/lib/relic-character-variant";
 import { cn } from "@/lib/utils";
 
 /** Draggable pool/board piece (말). */
@@ -86,6 +88,7 @@ export function DecisionsDecisionsToken({
   disablePreview?: boolean;
   staticOnly?: boolean;
 }) {
+  const profile = useStoredUserProfile();
   const label = entity.nameKo;
   const previewEntity = { ...entity, href: null };
   const actorSpine = entity.type === "monster"
@@ -103,7 +106,7 @@ export function DecisionsDecisionsToken({
   const isMonster = entity.type === "monster";
   const tokenSrc = entity.type === "character"
     ? (entity.characterData?.iconUrl || entity.imageUrl)
-    : entity.imageUrl
+    : relicAwareImageUrl(entity, profile.characterId)
       || (entity.type === "keyword" ? COMBO_KEYWORD_IMAGE_URL : null);
 
   const tile = (

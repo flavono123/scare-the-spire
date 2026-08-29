@@ -34,3 +34,27 @@ export function resolveRelicDisplayImage(
   const pool = pickRelicCharacterVariant(relic, preferred);
   return pool ? relic.variantImageUrls?.[pool] ?? null : null;
 }
+
+export function relicAwareImageUrl(
+  entity: {
+    type: string;
+    imageUrl?: string | null;
+    relicData?: Pick<CodexRelic, "imageUrl" | "variantImageUrls" | "betaImageUrl"> | null;
+  } | null | undefined,
+  characterId: string,
+  options?: { showBeta?: boolean },
+): string | null {
+  if (!entity) return null;
+  if (entity.type === "relic") {
+    return resolveRelicDisplayImage(
+      entity.relicData ?? {
+        imageUrl: entity.imageUrl ?? null,
+        variantImageUrls: null,
+        betaImageUrl: null,
+      },
+      relicPoolFromCharacterId(characterId),
+      options,
+    );
+  }
+  return entity.imageUrl ?? null;
+}

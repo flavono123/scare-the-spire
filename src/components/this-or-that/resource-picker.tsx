@@ -8,7 +8,9 @@ import { matchEntities } from "@/lib/chemical-utils";
 import { getCharacterColor } from "@/lib/codex-types";
 import { compendiumTypeLabels } from "@/lib/compendium-type-labels";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import type { GameLocale } from "@/lib/i18n";
+import { relicAwareImageUrl } from "@/lib/relic-character-variant";
 import { ThisOrThatResourcePanel } from "@/components/this-or-that/resource-panel";
 
 export function ThisOrThatResourcePicker({
@@ -29,6 +31,7 @@ export function ThisOrThatResourcePicker({
   gameLocale: GameLocale;
 }) {
   const serviceLocale = useServiceLocale();
+  const profile = useStoredUserProfile();
   const labels = compendiumTypeLabels(serviceLocale);
   const [query, setQuery] = useState("");
   const candidates = useMemo(
@@ -87,6 +90,7 @@ export function ThisOrThatResourcePicker({
           <div className="max-h-72 overflow-y-auto border-t border-border/70">
             {matches.map((entity) => {
               const characterColor = getCharacterColor(entity.color);
+              const imageUrl = relicAwareImageUrl(entity, profile.characterId);
               return (
                 <button
                   key={`${entity.type}:${entity.id}`}
@@ -97,9 +101,9 @@ export function ThisOrThatResourcePicker({
                   }}
                   className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground transition-colors hover:bg-primary/10 hover:text-primary"
                 >
-                  {entity.imageUrl && (
+                  {imageUrl && (
                     <Image
-                      src={entity.imageUrl}
+                      src={imageUrl}
                       alt=""
                       width={28}
                       height={28}

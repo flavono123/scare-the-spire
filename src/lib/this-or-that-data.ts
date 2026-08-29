@@ -118,6 +118,7 @@ export function compactThisOrThatEntity(entity: EntityInfo): EntityInfo {
       source: entity.keywordData.source,
     } as EntityInfo["keywordData"] : undefined,
     relicData: entity.relicData ? {
+      name: entity.relicData.name,
       description: entity.relicData.description,
       flavor: entity.relicData.flavor,
       imageUrl: entity.relicData.imageUrl,

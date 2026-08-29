@@ -13,7 +13,9 @@ import {
   type FavoriteTournamentPost,
 } from "@/lib/favorite-tournament";
 import type { ServiceLocale } from "@/lib/i18n";
+import { relicAwareImageUrl } from "@/lib/relic-character-variant";
 import { serviceMessages } from "@/messages/service";
+import { useStoredUserProfile } from "@/hooks/use-user-profile";
 
 export function FavoriteTournamentRanking({
   post,
@@ -27,6 +29,7 @@ export function FavoriteTournamentRanking({
   serviceLocale: ServiceLocale;
 }) {
   const copy = serviceMessages[serviceLocale].favoriteTournament;
+  const profile = useStoredUserProfile();
   const playCount = post.play_count ?? 0;
   const ranked = rankedCandidateStats(stats);
 
@@ -59,6 +62,7 @@ export function FavoriteTournamentRanking({
               const ref = { type: row.resource_type, id: row.resource_id };
               const entity = entityForRef(ref, entityMap);
               const name = entity?.nameKo ?? row.resource_id;
+              const imageUrl = relicAwareImageUrl(entity, profile.characterId);
               const trend = row.rank_history
                 .slice(-6)
                 .map((snap) => `${snap.rank}`)
@@ -68,9 +72,9 @@ export function FavoriteTournamentRanking({
                   <td className="px-3 py-2 tabular-nums text-muted-foreground">{index + 1}</td>
                   <td className="px-3 py-2">
                     <span className="flex items-center gap-2">
-                      {entity?.imageUrl ? (
+                      {imageUrl ? (
                         <Image
-                          src={entity.imageUrl}
+                          src={imageUrl}
                           alt=""
                           width={28}
                           height={28}
