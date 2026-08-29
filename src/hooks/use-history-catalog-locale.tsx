@@ -42,30 +42,28 @@ export function HistoryCatalogLocaleProvider({
 }) {
   const gameLocale = useGameLocale();
   const serviceLocale = useServiceLocale();
-  const [tables, setTables] = useState<HistoryLocTables | null>(() =>
-    gameLocale === "kor" ? null : getHistoryLocTablesSync(gameLocale) ?? getHistoryLocTablesSync("eng"),
-  );
+  const [loadedTables, setLoadedTables] = useState<{
+    locale: GameLocale;
+    tables: HistoryLocTables;
+  } | null>(null);
 
   useEffect(() => {
-    if (gameLocale === "kor") {
-      setTables(null);
-      return;
-    }
+    if (gameLocale === "kor") return;
+    if (getHistoryLocTablesSync(gameLocale)) return;
     let cancelled = false;
-    const cached = getHistoryLocTablesSync(gameLocale);
-    if (cached) {
-      setTables(cached);
-      return;
-    }
-    const english = getHistoryLocTablesSync("eng");
-    if (english) setTables(english);
     void loadHistoryLocTables(gameLocale).then((next) => {
-      if (!cancelled && next) setTables(next);
+      if (!cancelled && next) setLoadedTables({ locale: gameLocale, tables: next });
     });
     return () => {
       cancelled = true;
     };
   }, [gameLocale]);
+
+  const tables = gameLocale === "kor"
+    ? null
+    : getHistoryLocTablesSync(gameLocale)
+      ?? (loadedTables?.locale === gameLocale ? loadedTables.tables : null)
+      ?? getHistoryLocTablesSync("eng");
 
   const value = useMemo<HistoryCatalogLocaleValue>(() => {
     const locTables = gameLocale === "kor" ? null : tables;
