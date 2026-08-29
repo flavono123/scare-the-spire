@@ -117,9 +117,9 @@ assert.equal(isMissingToyboxFeedRpc({ code: "42501" }), false);
 
 assert.equal(serviceMessages.ko.feedSort.vote_rate_high, "투표율 높은 순");
 assert.equal(serviceMessages.ko.feedSort.vote_rate_low, "투표율 낮은 순");
-assert.equal(serviceMessages.ko.feedSort.play_count, "플레이 많은 순");
+assert.equal(serviceMessages.ko.feedSort.play_count, "인기");
 assert.equal(serviceMessages.en.feedSort.vote_rate_high, "High vote rate");
 assert.equal(serviceMessages.en.feedSort.vote_rate_low, "Low vote rate");
-assert.equal(serviceMessages.en.feedSort.play_count, "Most played");
+assert.equal(serviceMessages.en.feedSort.play_count, "Popular");
 
 console.log("toybox-feed.spec.ts: ok");
