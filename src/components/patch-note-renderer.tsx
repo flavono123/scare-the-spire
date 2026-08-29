@@ -598,7 +598,10 @@ export function EntityPreview({
           staticPreviewDesktopClass(placement),
         ].join(" ")
       : `absolute ${previewHorizontalClass(placement.horizontal)} z-50 pointer-events-none ${placement.vertical === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;
-  const portalHoverTips = !staticHoverPreviews && !forceShow;
+  // Pending construction previews stay inline so static HTML and patch:test
+  // always include the fail-closed "in progress" copy. Portals drop that
+  // markup during SSR.
+  const portalHoverTips = !staticHoverPreviews && !forceShow && !isPendingCompendium;
   const renderTooltip = (content: ReactNode, variant: "card" | "box" = "box") => {
     const body = useTapPreview ? (
       href ? (

@@ -54,6 +54,11 @@ assert.match(pendingHtml, /Compendium page in progress/);
 assert.match(pendingHtml, /role="button"/);
 assert.doesNotMatch(pendingHtml, /href="\/compendium\/cards\/fake_patch_local_card"/);
 
+const staticPendingHtml = renderStaticPatch("[gold:card]Patch First Test Card[/gold]", [pendingCard]);
+assert.match(staticPendingHtml, /Compendium page in progress/);
+assert.match(staticPendingHtml, /role="button"/);
+assert.doesNotMatch(staticPendingHtml, /href="\/compendium\/cards\/fake_patch_local_card"/);
+
 const availableCard: EntityInfo = {
   id: "BASH",
   nameEn: "Bash",
