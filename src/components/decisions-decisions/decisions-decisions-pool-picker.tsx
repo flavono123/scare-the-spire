@@ -23,6 +23,10 @@ import {
   GameUiHoverTip,
 } from "@/components/game-ui-hover-tip";
 import Image from "@/components/ui/static-image";
+import {
+  CHIP_ACCENT_RAIL_HOST_CLASS,
+  ChipAccentRail,
+} from "@/components/ui/chip-accent-rail";
 import { matchEntities } from "@/lib/chemical-utils";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import {
@@ -380,7 +384,8 @@ function ComboPresetJump({
         onClick={onClick}
         data-decisions-decisions-preset-jump={presetKey}
         className={cn(
-          "group/preset relative inline-flex items-center gap-1.5 rounded-xl border border-primary/35 bg-primary/10 py-1.5 pl-2 pr-2",
+          CHIP_ACCENT_RAIL_HOST_CLASS,
+          "group/preset inline-flex items-center gap-1.5 rounded-xl border border-primary/35 bg-primary/10 py-1.5 pl-2 pr-2",
           "text-[11px] font-semibold text-primary shadow-[0_0_14px_rgba(239,200,81,0.05)]",
           "transition-[transform,border-color,background-color,box-shadow] duration-200",
           "hover:-translate-y-0.5 hover:border-primary/55 hover:bg-primary/15 hover:shadow-[0_6px_18px_rgba(239,200,81,0.1)]",
@@ -388,19 +393,15 @@ function ComboPresetJump({
           "active:translate-y-0 motion-reduce:transform-none",
         )}
       >
-        {accent ? (
-          <span
-            aria-hidden
-            className="absolute inset-y-1.5 left-0 w-[3px] rounded-full"
-            style={{ backgroundColor: accent }}
+        {accent ? <ChipAccentRail color={accent} /> : null}
+        <span className="relative z-[1] inline-flex items-center gap-1.5">
+          <DecisionsPresetComboStack lead={lead} trail={trail} />
+          <span className="whitespace-nowrap">{label}</span>
+          <ChevronRight
+            className="h-3.5 w-3.5 shrink-0 opacity-80 transition-transform duration-200 group-hover/preset:translate-x-0.5"
+            aria-hidden="true"
           />
-        ) : null}
-        <DecisionsPresetComboStack lead={lead} trail={trail} />
-        <span className="whitespace-nowrap">{label}</span>
-        <ChevronRight
-          className="h-3.5 w-3.5 shrink-0 opacity-80 transition-transform duration-200 group-hover/preset:translate-x-0.5"
-          aria-hidden="true"
-        />
+        </span>
       </button>
   );
 }
@@ -427,7 +428,8 @@ function FanPresetJump({
         onClick={onClick}
         data-decisions-decisions-preset-jump={presetKey}
         className={cn(
-          "group/preset relative inline-flex items-center gap-1.5 rounded-xl border border-primary/35 bg-primary/10 py-1.5 pl-2 pr-2",
+          CHIP_ACCENT_RAIL_HOST_CLASS,
+          "group/preset inline-flex items-center gap-1.5 rounded-xl border border-primary/35 bg-primary/10 py-1.5 pl-2 pr-2",
           "text-[11px] font-semibold text-primary shadow-[0_0_14px_rgba(239,200,81,0.05)]",
           "transition-[transform,border-color,background-color,box-shadow] duration-200",
           "hover:-translate-y-0.5 hover:border-primary/55 hover:bg-primary/15 hover:shadow-[0_6px_18px_rgba(239,200,81,0.1)]",
@@ -435,19 +437,15 @@ function FanPresetJump({
           "active:translate-y-0 motion-reduce:transform-none",
         )}
       >
-        {accent ? (
-          <span
-            aria-hidden
-            className="absolute inset-y-1.5 left-0 w-[3px] rounded-full"
-            style={{ backgroundColor: accent }}
+        {accent ? <ChipAccentRail color={accent} /> : null}
+        <span className="relative z-[1] inline-flex items-center gap-1.5">
+          <DecisionsPresetTypeFan typeSrc={typeSrc} overlaySrcs={overlaySrcs} />
+          <span className="whitespace-nowrap">{label}</span>
+          <ChevronRight
+            className="h-3.5 w-3.5 shrink-0 opacity-80 transition-transform duration-200 group-hover/preset:translate-x-0.5"
+            aria-hidden="true"
           />
-        ) : null}
-        <DecisionsPresetTypeFan typeSrc={typeSrc} overlaySrcs={overlaySrcs} />
-        <span className="whitespace-nowrap">{label}</span>
-        <ChevronRight
-          className="h-3.5 w-3.5 shrink-0 opacity-80 transition-transform duration-200 group-hover/preset:translate-x-0.5"
-          aria-hidden="true"
-        />
+        </span>
       </button>
   );
 }
