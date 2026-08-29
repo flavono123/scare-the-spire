@@ -9,6 +9,10 @@ import { CodexRelic, characterOutlineFilter, type RelicPool } from "@/lib/codex-
 import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
 import { createCardSideTipCatalog } from "@/lib/card-side-tip-catalog";
 import { collectRelicSideTips } from "@/lib/relic-side-tips";
+import {
+  pickRelicCharacterVariant,
+  resolveRelicDisplayImage,
+} from "@/lib/relic-character-variant";
 import type {
   CodexCard,
   CodexEnchantment,
@@ -18,27 +22,10 @@ import type {
 } from "@/lib/codex-types";
 import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 
-// Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
-const VARIANT_POOLS: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
-
-function stableHash(value: string): number {
-  let hash = 0;
-  for (let i = 0; i < value.length; i += 1) {
-    hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
-  }
-  return hash;
-}
-
-function pickStableVariant(relic: CodexRelic): RelicPool | null {
-  if (!relic.variantImageUrls) return null;
-  const pools = VARIANT_POOLS.filter((pool) => relic.variantImageUrls?.[pool]);
-  if (pools.length === 0) return null;
-  return pools[stableHash(relic.id) % pools.length] ?? null;
-}
-
 interface RelicTileProps {
   serviceLocale?: ServiceLocale;
   relic: CodexRelic;
+  preferredPool: RelicPool;
   showBeta?: boolean;
   onClick?: (variantPool?: RelicPool) => void;
   tipCatalogSources?: CardSideTipCatalogSources;
@@ -52,6 +39,7 @@ interface RelicTileProps {
 export function RelicTile({
   serviceLocale = "ko",
   relic,
+  preferredPool,
   showBeta = false,
   onClick,
   tipCatalogSources,
@@ -61,10 +49,9 @@ export function RelicTile({
   tipCatalogPotions = [],
   tipCatalogEnchantments = [],
 }: RelicTileProps) {
-  const tileVariant = pickStableVariant(relic);
-  const tileImageUrl = showBeta && relic.betaImageUrl
-    ? relic.betaImageUrl
-    : relic.imageUrl ?? (tileVariant ? relic.variantImageUrls?.[tileVariant] ?? null : null);
+  const tileVariant = pickRelicCharacterVariant(relic, preferredPool);
+  const tileImageUrl = resolveRelicDisplayImage(relic, preferredPool, { showBeta });
+  const outlinePool = tileVariant ?? relic.pool;
   const lifecycleClassName = relic.deprecated ? " opacity-50 grayscale saturate-0" : "";
 
   const tipCatalog = useMemo(
@@ -90,12 +77,16 @@ export function RelicTile({
 
   const sideTips = useMemo(() => {
     if (!tipCatalog) return [];
-    return collectRelicSideTips(relic, tipCatalog, {
-      includeSelf: true,
-      potionsById,
-      enchantmentsById,
-    });
-  }, [relic, tipCatalog, potionsById, enchantmentsById]);
+    return collectRelicSideTips(
+      { ...relic, imageUrl: tileImageUrl ?? relic.imageUrl },
+      tipCatalog,
+      {
+        includeSelf: true,
+        potionsById,
+        enchantmentsById,
+      },
+    );
+  }, [relic, tileImageUrl, tipCatalog, potionsById, enchantmentsById]);
 
   return (
     <CardSideTipsAnchor mode="hover" preferSide="right" tips={sideTips} className="relative">
@@ -120,7 +111,7 @@ export function RelicTile({
               loading="lazy"
               className="w-full h-full object-contain"
               style={{
-                filter: characterOutlineFilter(relic.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
+                filter: characterOutlineFilter(outlinePool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
               }}
             />
           ) : (

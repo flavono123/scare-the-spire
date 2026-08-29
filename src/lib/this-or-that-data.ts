@@ -119,9 +119,12 @@ export function compactThisOrThatEntity(entity: EntityInfo): EntityInfo {
     } as EntityInfo["keywordData"] : undefined,
     relicData: entity.relicData ? {
       description: entity.relicData.description,
+      flavor: entity.relicData.flavor,
       imageUrl: entity.relicData.imageUrl,
+      variantImageUrls: entity.relicData.variantImageUrls,
       pool: entity.relicData.pool,
       rarity: entity.relicData.rarity,
+      deprecated: entity.relicData.deprecated,
     } as EntityInfo["relicData"] : undefined,
     potionData: entity.potionData ? {
       description: entity.potionData.description,

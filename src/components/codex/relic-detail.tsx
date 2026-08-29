@@ -42,6 +42,12 @@ import {
 } from "@/lib/relic-art-filters";
 import { getRelicArtVariants } from "@/lib/relic-art-variants-catalog";
 import {
+  pickRelicCharacterVariant,
+  relicPoolFromCharacterId,
+  RELIC_CHARACTER_VARIANT_ORDER,
+} from "@/lib/relic-character-variant";
+import { useStoredUserProfile } from "@/hooks/use-user-profile";
+import {
   createCardSideTipCatalog,
   type CardSideTipCatalogSources,
 } from "@/lib/card-side-tip-catalog";
@@ -122,8 +128,6 @@ interface RelicDetailProps {
   versionDiffs?: EntityVersionDiff[];
 }
 
-// Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
-const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
 const RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
 export function RelicDetail({
   serviceLocale,
@@ -148,6 +152,7 @@ export function RelicDetail({
   changes,
   versionDiffs,
 }: RelicDetailProps) {
+  const profile = useStoredUserProfile();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getRelicDetailLabels(serviceLocale);
   // Don't link the relic to itself in its own description
@@ -157,15 +162,22 @@ export function RelicDetail({
   );
 
   const variantPools = relic.variantImageUrls
-    ? VARIANT_ORDER.filter((p) => relic.variantImageUrls![p])
+    ? RELIC_CHARACTER_VARIANT_ORDER.filter((p) => relic.variantImageUrls![p])
     : [];
   const iconVariants = relic.iconVariants ?? [];
   const cornucopiaVariant = iconVariants.find((v) => v.id === "cornucopia") ?? null;
   const noCornucopiaVariant = iconVariants.find((v) => v.id === "no-cornucopia") ?? null;
   const hasCornucopiaToggle = Boolean(cornucopiaVariant && noCornucopiaVariant);
-  const [selectedVariant, setSelectedVariant] = useState<RelicPool>(
-    initialVariant && relic.variantImageUrls?.[initialVariant] ? initialVariant : variantPools[0] ?? relic.pool,
+  const preferredVariant = pickRelicCharacterVariant(
+    relic,
+    relicPoolFromCharacterId(profile.characterId),
   );
+  const defaultVariant = preferredVariant
+    ?? (initialVariant && relic.variantImageUrls?.[initialVariant] ? initialVariant : null)
+    ?? relic.pool;
+  const [selectedVariant, setSelectedVariant] = useState<RelicPool>(defaultVariant);
+  const variantSyncKey = `${relic.id}:${initialVariant ?? ""}:${preferredVariant ?? ""}`;
+  const [variantSyncState, setVariantSyncState] = useState(variantSyncKey);
   const [showCornucopia, setShowCornucopia] = useState(true);
   const [waxCycle, setWaxCycle] = useState<GameWaxCycleValue>("off");
   const [showUsedUp, setShowUsedUp] = useState(false);
@@ -182,6 +194,10 @@ export function RelicDetail({
     setShowDisabled(false);
     setArtFilterSource(null);
     setShowCornucopia(true);
+  }
+  if (variantSyncKey !== variantSyncState) {
+    setVariantSyncState(variantSyncKey);
+    setSelectedVariant(defaultVariant);
   }
 
   const artVariants = useMemo(() => getRelicArtVariants(relic.id), [relic.id]);

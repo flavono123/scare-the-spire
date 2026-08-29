@@ -37,6 +37,11 @@ import {
 } from "@/lib/event-character-quotes";
 import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import {
+  pickRelicCharacterVariant,
+  relicPoolFromCharacterId,
+  resolveRelicDisplayImage,
+} from "@/lib/relic-character-variant";
+import {
   GAME_UI_HOVER_TIP_NAV_DELAY_MS,
   GameUiHoverTip,
 } from "@/components/game-ui-hover-tip";
@@ -1895,7 +1900,17 @@ function EventPotionSetPreview({ potions }: { potions: CodexPotion[] }) {
 }
 
 function EventRelicSetPreview({ relics }: { relics: CodexRelic[] }) {
-  const visibleRelics = relics.filter((relic): relic is CodexRelic & { imageUrl: string } => Boolean(relic.imageUrl));
+  const profile = useStoredUserProfile();
+  const preferredPool = relicPoolFromCharacterId(profile.characterId);
+  const visibleRelics = relics.flatMap((relic) => {
+    const imageUrl = resolveRelicDisplayImage(relic, preferredPool);
+    if (!imageUrl) return [];
+    return [{
+      relic,
+      imageUrl,
+      outlinePool: pickRelicCharacterVariant(relic, preferredPool) ?? relic.pool,
+    }];
+  });
   const columns = Math.min(5, Math.max(1, Math.ceil(Math.sqrt(visibleRelics.length))));
   if (visibleRelics.length === 0) return null;
 
@@ -1905,19 +1920,19 @@ function EventRelicSetPreview({ relics }: { relics: CodexRelic[] }) {
         className="grid max-w-[320px] gap-2"
         style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
       >
-        {visibleRelics.map((relic) => (
+        {visibleRelics.map(({ relic, imageUrl, outlinePool }) => (
           <div
             key={relic.id}
             className="relative flex h-12 w-12 items-center justify-center sm:h-14 sm:w-14"
           >
             <Image
-              src={relic.imageUrl}
+              src={imageUrl}
               alt={relic.name}
               width={56}
               height={56}
               className="h-11 w-11 object-contain sm:h-12 sm:w-12"
               style={{
-                filter: `${characterOutlineFilter(relic.pool) ?? "drop-shadow(0 3px 5px rgba(0,0,0,0.65))"} drop-shadow(0 0 12px rgba(255,232,154,0.42))`,
+                filter: `${characterOutlineFilter(outlinePool) ?? "drop-shadow(0 3px 5px rgba(0,0,0,0.65))"} drop-shadow(0 0 12px rgba(255,232,154,0.42))`,
               }}
             />
           </div>

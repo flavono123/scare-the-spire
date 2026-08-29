@@ -4,11 +4,17 @@ import type { ReactNode } from "react";
 import Image from "@/components/ui/static-image";
 import { DescriptionText } from "@/components/codex/codex-description";
 import { RelicInspectSlab } from "@/components/codex/relic-inspect-slab";
+import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import {
   characterOutlineFilter,
   RELIC_RARITY_LABELS,
   type CodexRelic,
 } from "@/lib/codex-types";
+import {
+  pickRelicCharacterVariant,
+  relicPoolFromCharacterId,
+  resolveRelicDisplayImage,
+} from "@/lib/relic-character-variant";
 import { cn } from "@/lib/utils";
 
 export function RelicInspectPreview({
@@ -21,7 +27,7 @@ export function RelicInspectPreview({
 }: {
   relic: Pick<
     CodexRelic,
-    "name" | "description" | "flavor" | "rarity" | "pool" | "imageUrl" | "deprecated"
+    "name" | "description" | "flavor" | "rarity" | "pool" | "imageUrl" | "variantImageUrls" | "deprecated"
   >;
   title?: ReactNode;
   rarityLabel?: string;
@@ -29,9 +35,13 @@ export function RelicInspectPreview({
   className?: string;
   titleAs?: "h1" | "div";
 }) {
+  const profile = useStoredUserProfile();
+  const preferredPool = relicPoolFromCharacterId(profile.characterId);
+  const displayImageUrl = resolveRelicDisplayImage(relic, preferredPool);
+  const outlinePool = pickRelicCharacterVariant(relic, preferredPool) ?? relic.pool;
   const displayTitle = title ?? relic.name;
   const artAlt = typeof displayTitle === "string" ? displayTitle : relic.name;
-  const outline = characterOutlineFilter(relic.pool)
+  const outline = characterOutlineFilter(outlinePool)
     ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.3))";
   const artSize = density === "hover" ? 120 : 160;
 
@@ -46,9 +56,9 @@ export function RelicInspectPreview({
         density === "hover" && "w-[14rem] max-w-[min(14rem,calc(100vw-2rem))]",
         className,
       )}
-      art={relic.imageUrl ? (
+      art={displayImageUrl ? (
         <Image
-          src={relic.imageUrl}
+          src={displayImageUrl}
           alt={artAlt}
           width={artSize}
           height={artSize}

@@ -41,6 +41,8 @@ import { RelicTile } from "./relic-tile";
 import { RelicDetail } from "./relic-detail";
 import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
 import { SearchBar } from "./search-bar";
+import { useStoredUserProfile } from "@/hooks/use-user-profile";
+import { relicPoolFromCharacterId } from "@/lib/relic-character-variant";
 import {
   FilterSection,
   IconFilterButton,
@@ -110,6 +112,8 @@ export function RelicLibrary({
   relatedPotions = [],
   tipCatalogSources,
 }: RelicLibraryProps) {
+  const profile = useStoredUserProfile();
+  const preferredPool = relicPoolFromCharacterId(profile.characterId);
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlRelicId = useHydrationSafeSearchParam("relic");
   const [selectedPools, setSelectedPools] = useState<Set<RelicPoolFilter>>(new Set());
@@ -456,6 +460,7 @@ export function RelicLibrary({
                             key={relic.id}
                             serviceLocale={serviceLocale}
                             relic={relic}
+                            preferredPool={preferredPool}
                             showBeta={showBeta}
                             onClick={(v) => selectRelic(relic, v)}
                             tipCatalogSources={tipCatalogSources}
@@ -478,6 +483,7 @@ export function RelicLibrary({
                       key={relic.id}
                       serviceLocale={serviceLocale}
                       relic={relic}
+                      preferredPool={preferredPool}
                       showBeta={showBeta}
                       onClick={(v) => selectRelic(relic, v)}
                       tipCatalogSources={tipCatalogSources}

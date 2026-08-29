@@ -17,7 +17,14 @@ export const DEFAULT_USER_PROFILE: UserProfile = {
   ancientId: "OROBAS",
 };
 
-const CHARACTER_ICON_SLUGS: Record<string, string> = {
+export type CharacterPoolSlug =
+  | "ironclad"
+  | "silent"
+  | "regent"
+  | "necrobinder"
+  | "defect";
+
+const CHARACTER_ICON_SLUGS: Record<string, CharacterPoolSlug> = {
   IRONCLAD: "ironclad",
   SILENT: "silent",
   REGENT: "regent",
@@ -25,8 +32,12 @@ const CHARACTER_ICON_SLUGS: Record<string, string> = {
   DEFECT: "defect",
 };
 
+export function characterPoolSlug(characterId: string): CharacterPoolSlug {
+  return CHARACTER_ICON_SLUGS[characterId] ?? "necrobinder";
+}
+
 export function characterIconUrl(characterId: string): string {
-  const slug = CHARACTER_ICON_SLUGS[characterId] ?? CHARACTER_ICON_SLUGS.NECROBINDER;
+  const slug = characterPoolSlug(characterId);
   return `/images/sts2/characters/character_icon_${slug}.webp`;
 }
 
