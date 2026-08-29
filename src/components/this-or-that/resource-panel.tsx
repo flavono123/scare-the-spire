@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
@@ -48,6 +49,13 @@ function assetOnlyDescription(entity: EntityInfo): string | null {
     ?? null;
 }
 
+const VOTE_PANEL_SPINE_PADDING = {
+  padLeft: "10%",
+  padRight: "10%",
+  padTop: "12%",
+  padBottom: "10%",
+} as const;
+
 function monsterFallbackImageUrl(entity: EntityInfo): string | null {
   return entity.monsterData?.bossImageUrl
     ?? entity.monsterData?.imageUrl
@@ -65,21 +73,26 @@ function MonsterAssetPreview({
   const spine = entity.monsterData?.spineAsset ?? null;
   const fallback = monsterFallbackImageUrl(entity);
   const isLarge = size === "large";
+  const panelSpine = useMemo(
+    () => (spine ? { ...spine, viewport: undefined } : null),
+    [spine],
+  );
 
-  if (spine) {
+  if (panelSpine) {
     return (
       <span
         data-this-or-that-monster-spine=""
         className="relative block h-full w-full min-h-0 self-stretch"
       >
         <MonsterSpineStage
-          asset={spine}
+          asset={panelSpine}
           fallbackImageUrl={fallback}
           monsterName={entity.nameKo}
           selectedMoveId="IDLE"
           imagePriority={false}
           showLoadingLabel={false}
           viewportTransitionTime={0}
+          viewportPadding={VOTE_PANEL_SPINE_PADDING}
           className="relative h-full w-full"
           fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain"
         />
