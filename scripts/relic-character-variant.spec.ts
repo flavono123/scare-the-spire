@@ -47,6 +47,27 @@ assert.equal(
   "/images/sts2/relics/burning_blood.webp",
 );
 assert.equal(
+  resolveRelicDisplayImage(
+    {
+      ...yummyCookie,
+      imageUrl: "/images/sts2/relics/yummy_cookie_defect.webp",
+    },
+    "ironclad",
+  ),
+  "/images/sts2/relics/yummy_cookie_ironclad.webp",
+);
+assert.equal(
+  relicAwareImageUrl(
+    {
+      type: "relic",
+      imageUrl: "/images/sts2/relics/yummy_cookie_ironclad.webp",
+      relicData: { imageUrl: null, variantImageUrls: null, betaImageUrl: null },
+    },
+    "IRONCLAD",
+  ),
+  "/images/sts2/relics/yummy_cookie_ironclad.webp",
+);
+assert.equal(
   relicAwareImageUrl(
     { type: "relic", imageUrl: null, relicData: yummyCookie },
     "IRONCLAD",

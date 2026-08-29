@@ -30,9 +30,9 @@ export function resolveRelicDisplayImage(
   options?: { showBeta?: boolean },
 ): string | null {
   if (options?.showBeta && relic.betaImageUrl) return relic.betaImageUrl;
-  if (relic.imageUrl) return relic.imageUrl;
   const pool = pickRelicCharacterVariant(relic, preferred);
-  return pool ? relic.variantImageUrls?.[pool] ?? null : null;
+  if (pool) return relic.variantImageUrls?.[pool] ?? null;
+  return relic.imageUrl ?? null;
 }
 
 export function relicAwareImageUrl(
@@ -54,7 +54,7 @@ export function relicAwareImageUrl(
       },
       relicPoolFromCharacterId(characterId),
       options,
-    );
+    ) ?? entity.imageUrl ?? null;
   }
   return entity.imageUrl ?? null;
 }

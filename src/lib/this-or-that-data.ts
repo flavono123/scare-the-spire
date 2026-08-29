@@ -3,6 +3,10 @@ import { loadAllEntities } from "@/lib/load-all-entities";
 import type { MonsterSpineAsset } from "@/lib/codex-types";
 import type { GameLocale } from "@/lib/i18n";
 import {
+  RELIC_CHARACTER_VARIANT_ORDER,
+  resolveRelicDisplayImage,
+} from "@/lib/relic-character-variant";
+import {
   getThisOrThatEntityHref,
   isThisOrThatResourceType,
 } from "@/lib/this-or-that";
@@ -91,6 +95,20 @@ export function compactIdleSpineAsset(
   };
 }
 
+function compactEntityImageUrl(entity: EntityInfo): string | null {
+  if (entity.type === "relic") {
+    return resolveRelicDisplayImage(
+      entity.relicData ?? {
+        imageUrl: entity.imageUrl ?? null,
+        variantImageUrls: null,
+        betaImageUrl: null,
+      },
+      RELIC_CHARACTER_VARIANT_ORDER[0],
+    ) ?? entity.imageUrl ?? null;
+  }
+  return entity.imageUrl ?? null;
+}
+
 export function compactThisOrThatEntity(entity: EntityInfo): EntityInfo {
   return {
     id: entity.id,
@@ -98,7 +116,7 @@ export function compactThisOrThatEntity(entity: EntityInfo): EntityInfo {
     nameKo: entity.nameKo,
     aliasesEn: entity.aliasesEn,
     aliasesKo: entity.aliasesKo,
-    imageUrl: entity.imageUrl,
+    imageUrl: compactEntityImageUrl(entity),
     href: entity.href,
     availability: entity.availability,
     compendiumResourceId: entity.compendiumResourceId,

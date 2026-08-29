@@ -18,7 +18,7 @@ function loadThisOrThatStaticEntities(gameLocale: GameLocale): Promise<EntityInf
   const cached = entityPromises.get(gameLocale);
   if (cached) return cached;
 
-  const resourceUrl = `/generated/this-or-that-resources-${gameLocale}.json?v=${STS2_IMAGE_CACHE_BUSTER}`;
+  const resourceUrl = `/generated/this-or-that-resources-${gameLocale}.json?v=${STS2_IMAGE_CACHE_BUSTER}&cat=relic-art`;
   const promise = fetch(resourceUrl, { cache: "no-cache" })
     .then((response) => {
       if (!response.ok) {
