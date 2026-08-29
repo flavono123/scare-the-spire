@@ -45,6 +45,9 @@ export const DEFAULT_TOYBOX_FEED_SORT: ToyboxFeedCoreSort = "latest";
 
 export const TOYBOX_FEED_VOTE_RATE_BPS_MAX = 10000;
 
+/** Keyset ceiling so vote_rate_low can stay descending. Must match get_toybox_feed. */
+export const TOYBOX_FEED_VOTE_TOTAL_SCORE_CEILING = 1_000_000_000;
+
 export const TOYBOX_FEED_EXTRA_SORTS_BY_SERVICE: {
   readonly [K in ToyboxFeedService]?: readonly ToyboxFeedExtraSort[];
 } = {
@@ -108,6 +111,11 @@ export function toyboxWinnerShareBps(leftCount: number, rightCount: number): num
   const total = leftCount + rightCount;
   if (total <= 0) return 0;
   return Math.trunc((Math.max(leftCount, rightCount) * TOYBOX_FEED_VOTE_RATE_BPS_MAX) / total);
+}
+
+/** Total ballots on a This or That post (`left_vote_count + right_vote_count`). */
+export function toyboxVoteTotal(leftCount: number, rightCount: number): number {
+  return leftCount + rightCount;
 }
 
 export function toyboxRecommendScore(likeCount: number, commentCount: number): number {
@@ -190,19 +198,19 @@ export function parseToyboxFeedRow<T extends PostIdentity>(
   };
 }
 
-function voteRateBpsFromPost(post: PostIdentity): number {
+function voteTotalFromPost(post: PostIdentity): number {
   const record = post as PostIdentity & Record<string, unknown>;
   const left = asNonNegativeInt(record.left_vote_count) ?? 0;
   const right = asNonNegativeInt(record.right_vote_count) ?? 0;
-  return toyboxWinnerShareBps(left, right);
+  return toyboxVoteTotal(left, right);
 }
 
 const EXTRA_SORT_CURSOR_SCORE: Record<
   ToyboxFeedExtraSort,
   (item: ToyboxFeedItem<PostIdentity>) => number
 > = {
-  vote_rate_high: (item) => voteRateBpsFromPost(item.post),
-  vote_rate_low: (item) => TOYBOX_FEED_VOTE_RATE_BPS_MAX - voteRateBpsFromPost(item.post),
+  vote_rate_high: (item) => voteTotalFromPost(item.post),
+  vote_rate_low: (item) => TOYBOX_FEED_VOTE_TOTAL_SCORE_CEILING - voteTotalFromPost(item.post),
   play_count: (item) => asNonNegativeInt(
     (item.post as PostIdentity & Record<string, unknown>).play_count,
   ) ?? 0,

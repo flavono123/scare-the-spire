@@ -204,9 +204,11 @@ client list and does not call `get_toybox_feed`.
   invent an ad-hoc sort row for one Toy Box index.
 - Default selected sort is **최신** (`DEFAULT_TOYBOX_FEED_SORT`).
 - Current extra: This or That **투표율 높은 순 / 투표율 낮은 순**
-  (`vote_rate_high`, `vote_rate_low`) sorts by winner share
-  (`max(left, right) / total`, basis points). Posts with 0 votes are
-  excluded. 조각모음 and Stories stay on the core three.
+  (`vote_rate_high`, `vote_rate_low`) sorts by total ballots
+  (`left_vote_count + right_vote_count`), high then reverse. Keep the
+  chip names; do not sort by winner share. Posts with 0 votes are
+  excluded. 이아저? 월드컵 **인기** (`play_count`) sorts by
+  `play_count`. 조각모음 and Stories stay on the core three.
 - Recommend score is `like_count * 4 + comment_count * 6`.
 - Page size is 20 (`TOYBOX_FEED_PAGE_SIZE`). Paginate with a keyset cursor
   `(score, created_at, id)`, never `OFFSET`.
@@ -217,7 +219,8 @@ client list and does not call `get_toybox_feed`.
   sorts. Do not scan `comments`, `likes`, or votes to build an index page.
 - Per-service indexes call `get_toybox_feed(p_env, p_service, p_sort, p_limit,
   p_cursor_score, p_cursor_created_at, p_cursor_id)`. `p_service` is one of
-  `combo`, `transfigure`, `this_or_that`, `chemical_x`, `decisions_decisions`.
+  `combo`, `transfigure`, `this_or_that`, `chemical_x`,
+  `decisions_decisions`, `favorite_tournament`.
   The RPC reads one table and returns at most 20 rows plus a `post` jsonb blob.
 - 조각모음's mixed board calls `get_defragment_feed` with the same sort, limit,
   and cursor arguments. That RPC unions Combo, Transfigure, This or That,

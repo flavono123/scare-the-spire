@@ -12,9 +12,11 @@ import {
   TOYBOX_FEED_PAGE_SIZE,
   TOYBOX_FEED_SORT_OPTIONS,
   TOYBOX_FEED_VOTE_RATE_BPS_MAX,
+  TOYBOX_FEED_VOTE_TOTAL_SCORE_CEILING,
   toyboxFeedCursorScore,
   toyboxFeedSortOptionsFor,
   toyboxRecommendScore,
+  toyboxVoteTotal,
   toyboxWinnerShareBps,
 } from "../src/lib/toybox-feed";
 import { serviceMessages } from "../src/messages/service";
@@ -52,6 +54,8 @@ assert.equal(toyboxWinnerShareBps(0, 0), 0);
 assert.equal(toyboxWinnerShareBps(1, 1), 5000);
 assert.equal(toyboxWinnerShareBps(9, 1), 9000);
 assert.equal(toyboxWinnerShareBps(1, 0), TOYBOX_FEED_VOTE_RATE_BPS_MAX);
+assert.equal(toyboxVoteTotal(9, 1), 10);
+assert.equal(toyboxVoteTotal(0, 0), 0);
 
 assert.equal(asNonNegativeInt("12"), 12);
 assert.equal(asNonNegativeInt(-1), null);
@@ -100,8 +104,11 @@ assert.deepEqual(
   },
 );
 assert.equal(cursorFromFeedItem(parsed, "recommended").score, 26);
-assert.equal(toyboxFeedCursorScore(parsed, "vote_rate_high"), 9000);
-assert.equal(toyboxFeedCursorScore(parsed, "vote_rate_low"), 1000);
+assert.equal(toyboxFeedCursorScore(parsed, "vote_rate_high"), 10);
+assert.equal(
+  toyboxFeedCursorScore(parsed, "vote_rate_low"),
+  TOYBOX_FEED_VOTE_TOTAL_SCORE_CEILING - 10,
+);
 
 assert.equal(isMissingToyboxFeedRpc({ code: "PGRST202" }), true);
 assert.equal(isMissingToyboxFeedRpc({ code: "42703" }), true);
