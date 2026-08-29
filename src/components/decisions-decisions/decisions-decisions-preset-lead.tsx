@@ -6,11 +6,15 @@ import {
   COLORLESS_FILTER_ICON,
 } from "@/components/codex/codex-filter-assets";
 import Image from "@/components/ui/static-image";
+import { CHARACTER_COLORS } from "@/lib/codex-types";
 import {
   findPresetDef,
   type DecisionsDecisionsPresetDef,
 } from "@/lib/decisions-decisions";
 import { decisionsKeyFromBuiltinPresetKey } from "@/lib/favorite-tournament";
+
+/** Same Ancient blue as 티어 만들기 named/all-ancient preset chips. */
+export const DECISIONS_PRESET_ANCIENT_ACCENT = "#60a5fa";
 
 const CARD_COLLECTION_ICON = "/images/sts2/nav/stats_cards.png";
 const RELIC_COLLECTION_ICON = "/images/sts2/relics/bing_bong.webp";
@@ -179,6 +183,25 @@ function leadForDef(
   return null;
 }
 
+export function decisionsPresetDef(presetKey: string): DecisionsDecisionsPresetDef {
+  const decisionsKey = decisionsKeyFromBuiltinPresetKey(presetKey) ?? presetKey;
+  return findPresetDef(decisionsKey);
+}
+
+/**
+ * Leading accent on 티어 만들기 preset chips. Character card presets use
+ * the character color; Ancient relic presets use Ancient blue. Catalog and
+ * monster chips have no rail — keep that mapping here so index cards match.
+ */
+export function decisionsPresetAccent(presetKey: string): string | undefined {
+  const def = decisionsPresetDef(presetKey);
+  if (def.kind === "cards") return CHARACTER_COLORS[def.color];
+  if (def.kind === "ancient-relics" || def.kind === "ancient-relics-named") {
+    return DECISIONS_PRESET_ANCIENT_ACCENT;
+  }
+  return undefined;
+}
+
 /** Token shown in front of a Decisions preset chip — reused on tournament index cards. */
 export function DecisionsPresetLead({
   presetKey,
@@ -187,8 +210,7 @@ export function DecisionsPresetLead({
   presetKey: string;
   entityMap: Map<string, EntityInfo>;
 }) {
-  const decisionsKey = decisionsKeyFromBuiltinPresetKey(presetKey) ?? presetKey;
-  const def = findPresetDef(decisionsKey);
+  const def = decisionsPresetDef(presetKey);
   if (def.kind === "custom") return null;
   return leadForDef(def, entityMap);
 }

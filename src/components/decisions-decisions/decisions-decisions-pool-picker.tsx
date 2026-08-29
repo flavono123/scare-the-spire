@@ -7,6 +7,7 @@ import { ComboResourceAsset } from "@/components/combo/combo-resource-stack";
 import {
   DecisionsPresetComboStack,
   DecisionsPresetTypeFan,
+  decisionsPresetAccent,
 } from "@/components/decisions-decisions/decisions-decisions-preset-lead";
 import { getEpochAffiliationLabel } from "@/components/codex/epoch-display";
 import {
@@ -30,7 +31,6 @@ import {
 import { matchEntities } from "@/lib/chemical-utils";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import {
-  CHARACTER_COLORS,
   ENCHANTMENT_CARD_TYPE_CONFIG,
   MONSTER_TYPE_CONFIG,
   POTION_RARITY_CONFIG,
@@ -74,7 +74,6 @@ const MONSTER_TYPE_ICON = "/images/sts2/nav/happy_cultist.png";
 const MAP_ELITE_ICON = "/images/sts2/map/icons/map_elite.png";
 const OVERGROWTH_ELITE_ICON = "/images/sts2/map/icons-by-act/overgrowth/map_elite.png";
 const UNDERDOCKS_ELITE_ICON = "/images/sts2/map/icons-by-act/underdocks/map_elite.png";
-const ANCIENT_ACCENT = "#60a5fa";
 const PRESET_FAN_COUNT = 3;
 const GOLD = "#EFC851";
 const PURPLE = "#c084fc";
@@ -467,7 +466,7 @@ function CardPresetJump({
       presetKey={preset.key}
       lead={CARD_COLLECTION_ICON}
       trail={trail ?? COLORLESS_FILTER_ICON}
-      accent={CHARACTER_COLORS[preset.color]}
+      accent={decisionsPresetAccent(preset.key)}
       label={label}
       onClick={onClick}
     />
@@ -694,7 +693,7 @@ export function DecisionsDecisionsPoolPicker({
                   presetKey={preset.key}
                   typeSrc={RELIC_COLLECTION_ICON}
                   overlaySrcs={fanOverlays[preset.key] ?? []}
-                  accent={ANCIENT_ACCENT}
+                  accent={decisionsPresetAccent(preset.key)}
                   label={label}
                   onClick={() => onPreset?.(preset.key)}
                 />
@@ -706,7 +705,7 @@ export function DecisionsDecisionsPoolPicker({
                 presetKey={preset.key}
                 lead={RELIC_COLLECTION_ICON}
                 trail={entityMap.get(`ancient:${preset.ancientId}`)?.imageUrl ?? ANCIENT_TOKEN_ICON}
-                accent={ANCIENT_ACCENT}
+                accent={decisionsPresetAccent(preset.key)}
                 label={label}
                 onClick={() => onPreset?.(preset.key)}
               />

@@ -5,7 +5,15 @@ import { useRouter } from "next/navigation";
 import { IndexCardEngagement } from "@/components/index-card-engagement";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
-import { DecisionsPresetLead } from "@/components/decisions-decisions/decisions-decisions-preset-lead";
+import {
+  DecisionsPresetLead,
+  decisionsPresetAccent,
+} from "@/components/decisions-decisions/decisions-decisions-preset-lead";
+import {
+  CHIP_ACCENT_RAIL_HOST_CLASS,
+  ChipAccentRail,
+} from "@/components/ui/chip-accent-rail";
+import { cn } from "@/lib/utils";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import { buildFavoriteTournamentCommentThreadKey } from "@/lib/comment-threads";
 import { sortPoolRefs } from "@/lib/decisions-decisions";
@@ -61,6 +69,7 @@ export function FavoriteTournamentPostCard({
   const threadKey = buildFavoriteTournamentCommentThreadKey(post.id);
   const pool = sortPoolRefs(post.pool, entityMap);
   const builtin = isFavoriteTournamentBuiltinKey(post.preset_key);
+  const accent = builtin ? decisionsPresetAccent(post.preset_key) : undefined;
   const title = worldcupPostTitle(post, serviceLocale, presetLabels, entityMap);
   const dragOrigin = useRef<{ x: number; y: number } | null>(null);
   const dragged = useRef(false);
@@ -146,18 +155,32 @@ export function FavoriteTournamentPostCard({
       </div>
       <div className="mt-3 flex items-start gap-3">
         {builtin ? (
-          <span className="shrink-0 pt-0.5">
-            <DecisionsPresetLead presetKey={post.preset_key} entityMap={entityMap} />
-          </span>
+          <div
+            className={cn(
+              "flex min-w-0 flex-1 items-start gap-3",
+              accent && CHIP_ACCENT_RAIL_HOST_CLASS,
+              accent && "rounded-xl pl-1.5",
+            )}
+          >
+            {accent ? <ChipAccentRail color={accent} /> : null}
+            <span className="relative z-[1] shrink-0 pt-0.5">
+              <DecisionsPresetLead presetKey={post.preset_key} entityMap={entityMap} />
+            </span>
+            <h2 className="relative z-[1] min-w-0 flex-1 line-clamp-2 font-service text-[15px] font-semibold leading-snug text-foreground">
+              {title}
+            </h2>
+          </div>
         ) : (
-          <span className="w-16 shrink-0 truncate pt-0.5 text-xs text-muted-foreground">
-            {post.nickname}
-            {isOwner && <OwnPostMark />}
-          </span>
+          <>
+            <span className="w-16 shrink-0 truncate pt-0.5 text-xs text-muted-foreground">
+              {post.nickname}
+              {isOwner && <OwnPostMark />}
+            </span>
+            <h2 className="min-w-0 flex-1 line-clamp-2 font-service text-[15px] font-semibold leading-snug text-foreground">
+              {title}
+            </h2>
+          </>
         )}
-        <h2 className="min-w-0 flex-1 line-clamp-2 font-service text-[15px] font-semibold leading-snug text-foreground">
-          {title}
-        </h2>
         <div className="flex shrink-0 flex-col items-end gap-1">
           <IndexCardEngagement
             commentsHref={commentsHref}
