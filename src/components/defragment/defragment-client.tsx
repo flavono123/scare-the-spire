@@ -29,6 +29,7 @@ import {
 } from "@/lib/borrowed-game-copy";
 import {
   DEFRAGMENT_TOKEN_SRC,
+  DEFRAGMENT_FEDERATED_SERVICES,
   type DefragmentFeedItem,
   type DefragmentFederatedService,
 } from "@/lib/defragment";
@@ -198,7 +199,11 @@ export function DefragmentClient({
             <DefragmentIndexRow
               key={`${item.service}:${item.id}`}
               item={item}
-              typeLabel={typeLabels[item.service] ?? item.service}
+              typeLabel={
+                (DEFRAGMENT_FEDERATED_SERVICES as readonly string[]).includes(item.service)
+                  ? typeLabels[item.service as DefragmentFederatedService]
+                  : item.service
+              }
               gameLocale={gameLocale}
               userId={userId}
               authReady={ready}

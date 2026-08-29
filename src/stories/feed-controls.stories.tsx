@@ -32,6 +32,7 @@ export const Sort: Story = {
             comments: "댓글",
             vote_rate_high: "득표↑",
             vote_rate_low: "득표↓",
+            play_count: "인기",
           }}
         />
       </StoryStack>

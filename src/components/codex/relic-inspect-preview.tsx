@@ -27,7 +27,7 @@ export function RelicInspectPreview({
 }: {
   relic: Pick<
     CodexRelic,
-    "name" | "description" | "flavor" | "rarity" | "pool" | "imageUrl" | "variantImageUrls" | "deprecated"
+    "name" | "description" | "flavor" | "rarity" | "pool" | "imageUrl" | "betaImageUrl" | "variantImageUrls" | "deprecated"
   >;
   title?: ReactNode;
   rarityLabel?: string;
