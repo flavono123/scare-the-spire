@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { IndexCardEngagement } from "@/components/index-card-engagement";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
+import { DecisionsPresetLead } from "@/components/decisions-decisions/decisions-decisions-preset-lead";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import { buildFavoriteTournamentCommentThreadKey } from "@/lib/comment-threads";
 import { sortPoolRefs } from "@/lib/decisions-decisions";
@@ -109,11 +110,13 @@ export function FavoriteTournamentPostCard({
       aria-label={title}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="group cursor-pointer transition-[transform,box-shadow] duration-200 hover:-translate-y-1 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 motion-reduce:transform-none"
+      className="favorite-tournament-lockup group cursor-pointer hover:z-10 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
     >
+      <span className="favorite-tournament-lockup-plate" aria-hidden />
+      <div className="relative z-[1]">
       <div
         data-favorite-tournament-thumb
-        className="aspect-video overflow-hidden rounded-xl bg-muted/40 shadow-sm transition-shadow duration-200 group-hover:shadow-[0_12px_28px_rgba(15,15,15,0.16)]"
+        className="aspect-video overflow-hidden rounded-xl bg-muted/40"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -124,8 +127,7 @@ export function FavoriteTournamentPostCard({
           size="small"
           aria-label={copy.thumbnailScroll}
         >
-          <div className="origin-top scale-[0.72] sm:scale-[0.78]">
-            <DecisionsDecisionsBoard
+          <DecisionsDecisionsBoard
               variant="pool"
               rows={[]}
               placements={[]}
@@ -140,11 +142,14 @@ export function FavoriteTournamentPostCard({
               thumbnail
               disablePreview
             />
-          </div>
         </GameScrollArea>
       </div>
       <div className="mt-3 flex items-start gap-3">
-        {!builtin && (
+        {builtin ? (
+          <span className="shrink-0 pt-0.5">
+            <DecisionsPresetLead presetKey={post.preset_key} entityMap={entityMap} />
+          </span>
+        ) : (
           <span className="w-16 shrink-0 truncate pt-0.5 text-xs text-muted-foreground">
             {post.nickname}
             {isOwner && <OwnPostMark />}
@@ -167,6 +172,7 @@ export function FavoriteTournamentPostCard({
             {copy.playCount.replace("{count}", String(post.play_count ?? 0))}
           </span>
         </div>
+      </div>
       </div>
     </article>
   );

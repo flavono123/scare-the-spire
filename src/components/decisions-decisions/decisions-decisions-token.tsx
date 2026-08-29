@@ -75,7 +75,7 @@ export function DecisionsDecisionsToken({
   selected = false,
   onSelect,
   disablePreview = false,
-  compact = false,
+  staticOnly = false,
 }: {
   entity: EntityInfo;
   serviceLocale: ServiceLocale;
@@ -84,11 +84,9 @@ export function DecisionsDecisionsToken({
   selected?: boolean;
   onSelect?: () => void;
   disablePreview?: boolean;
-  compact?: boolean;
+  staticOnly?: boolean;
 }) {
   const label = entity.nameKo;
-  const iconPx = compact ? 28 : 40;
-  const cardWidth = compact ? 48 : DECISIONS_DECISIONS_CARD_WIDTH;
   const previewEntity = { ...entity, href: null };
   const actorSpine = entity.type === "monster"
     ? entity.monsterData?.spineAsset
@@ -126,8 +124,7 @@ export function DecisionsDecisionsToken({
           onSelect();
         }}
         className={cn(
-          "flex flex-col items-center gap-0.5 rounded-sm p-0.5 text-left",
-          compact ? "max-w-[3.25rem]" : "max-w-[5.5rem]",
+          "flex max-w-[5.5rem] flex-col items-center gap-0.5 rounded-sm p-0.5 text-left",
           selected && "ring-1 ring-primary",
         )}
       >
@@ -142,7 +139,7 @@ export function DecisionsDecisionsToken({
               serviceLocale={serviceLocale}
               showUpgrade={false}
               showBeta={false}
-              width={cardWidth}
+              width={DECISIONS_DECISIONS_CARD_WIDTH}
               interactive={false}
             />
           </span>
@@ -151,12 +148,9 @@ export function DecisionsDecisionsToken({
             {...{ [TILE_ATTR]: "" }}
             data-decisions-piece=""
             data-drag-preview=""
-            className={cn(
-              "flex items-center justify-center [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none",
-              compact ? "h-7 w-7" : "h-10 w-10",
-            )}
+            className="flex h-10 w-10 items-center justify-center [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
           >
-            <AscensionToken level={entity.ascensionData.level} size={iconPx} />
+            <AscensionToken level={entity.ascensionData.level} size={40} />
           </span>
         ) : isMonster ? (
           <span
@@ -168,28 +162,25 @@ export function DecisionsDecisionsToken({
               name={label}
               fallbackUrl={actorFallback}
               spineAsset={actorSpine}
-              staticOnly={compact}
-              size={compact ? 32 : 48}
+              staticOnly={staticOnly}
+              size={48}
             />
           </span>
         ) : (
           <span
             {...{ [TILE_ATTR]: "" }}
             data-decisions-piece=""
-            className={cn(
-              "flex items-center justify-center [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none",
-              compact ? "h-7 w-7" : "h-10 w-10",
-            )}
+            className="flex h-10 w-10 items-center justify-center [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
           >
             {tokenSrc ? (
               <Image
                 src={tokenSrc}
                 alt={label}
-                width={iconPx}
-                height={iconPx}
+                width={40}
+                height={40}
                 draggable={false}
                 data-drag-preview=""
-                className={compact ? "h-7 w-7 object-contain" : "h-10 w-10 object-contain"}
+                className="h-10 w-10 object-contain"
               />
             ) : (
               <span

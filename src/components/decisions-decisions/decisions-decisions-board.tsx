@@ -431,7 +431,7 @@ export function DecisionsDecisionsBoard({
               selected={selectedKey === key}
               onSelect={onSelect ? () => onSelect(item) : undefined}
               disablePreview={disablePreview}
-              compact={thumbnail}
+              staticOnly={thumbnail}
             />
           </div>
         );

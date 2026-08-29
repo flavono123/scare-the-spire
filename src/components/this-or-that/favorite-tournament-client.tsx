@@ -188,7 +188,7 @@ export function FavoriteTournamentClient({
             </span>
           </div>
 
-          <div className="grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-4 gap-y-8 overflow-visible sm:grid-cols-2 lg:grid-cols-3">
             {visiblePosts.length === 0 && (
               <p className="text-sm text-muted-foreground sm:col-span-2 lg:col-span-3">{copy.empty}</p>
             )}

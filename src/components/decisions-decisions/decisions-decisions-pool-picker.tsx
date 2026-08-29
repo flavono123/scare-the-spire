@@ -4,6 +4,10 @@ import { type ReactNode, type RefObject, useMemo, useState } from "react";
 import { ChevronRight, Search } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ComboResourceAsset } from "@/components/combo/combo-resource-stack";
+import {
+  DecisionsPresetComboStack,
+  DecisionsPresetTypeFan,
+} from "@/components/decisions-decisions/decisions-decisions-preset-lead";
 import { getEpochAffiliationLabel } from "@/components/codex/epoch-display";
 import {
   CARD_TYPE_FILTER_ICONS,
@@ -308,26 +312,6 @@ function SectionLabel({ children }: { children: ReactNode }) {
   );
 }
 
-function ComboStyleStack({ lead, trail }: { lead: string; trail: string }) {
-  return (
-    <span className="relative block h-8 w-10 shrink-0" aria-hidden>
-      <Image
-        src={lead}
-        alt=""
-        width={32}
-        height={32}
-        className="absolute left-0 top-0 z-10 h-8 w-8 object-contain drop-shadow-[0_3px_5px_rgba(0,0,0,0.75)]"
-      />
-      <Image
-        src={trail}
-        alt=""
-        width={32}
-        height={32}
-        className="absolute left-2.5 top-0 z-20 h-8 w-8 object-contain drop-shadow-[0_3px_5px_rgba(0,0,0,0.75)]"
-      />
-    </span>
-  );
-}
 
 function uniqueUrls(urls: Array<string | null | undefined>): string[] {
   const seen = new Set<string>();
@@ -373,41 +357,6 @@ function sampleBossTokenUrls(entities: EntityInfo[]): string[] {
   );
 }
 
-function TypeTokenFan({
-  typeSrc,
-  overlaySrcs,
-}: {
-  typeSrc: string;
-  overlaySrcs: string[];
-}) {
-  const overlays = overlaySrcs.slice(0, PRESET_FAN_COUNT);
-  return (
-    <span
-      className="relative block h-8 shrink-0"
-      style={{ width: `${28 + Math.max(overlays.length, 1) * 10}px` }}
-      aria-hidden
-    >
-      <Image
-        src={typeSrc}
-        alt=""
-        width={28}
-        height={28}
-        className="absolute left-0 top-1 z-0 h-7 w-7 object-contain opacity-90 drop-shadow-[0_3px_5px_rgba(0,0,0,0.75)]"
-      />
-      {overlays.map((src, index) => (
-        <Image
-          key={`${src}-${index}`}
-          src={src}
-          alt=""
-          width={32}
-          height={32}
-          className="absolute top-0 h-8 w-8 object-contain drop-shadow-[0_3px_5px_rgba(0,0,0,0.75)]"
-          style={{ left: `${8 + index * 10}px`, zIndex: 10 + index }}
-        />
-      ))}
-    </span>
-  );
-}
 
 function ComboPresetJump({
   presetKey,
@@ -446,7 +395,7 @@ function ComboPresetJump({
             style={{ backgroundColor: accent }}
           />
         ) : null}
-        <ComboStyleStack lead={lead} trail={trail} />
+        <DecisionsPresetComboStack lead={lead} trail={trail} />
         <span className="whitespace-nowrap">{label}</span>
         <ChevronRight
           className="h-3.5 w-3.5 shrink-0 opacity-80 transition-transform duration-200 group-hover/preset:translate-x-0.5"
@@ -493,7 +442,7 @@ function FanPresetJump({
             style={{ backgroundColor: accent }}
           />
         ) : null}
-        <TypeTokenFan typeSrc={typeSrc} overlaySrcs={overlaySrcs} />
+        <DecisionsPresetTypeFan typeSrc={typeSrc} overlaySrcs={overlaySrcs} />
         <span className="whitespace-nowrap">{label}</span>
         <ChevronRight
           className="h-3.5 w-3.5 shrink-0 opacity-80 transition-transform duration-200 group-hover/preset:translate-x-0.5"
