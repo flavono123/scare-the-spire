@@ -9,6 +9,10 @@ import {
   CHARACTER_CARDS_MODIFIER_IMAGE_URL,
 } from "@/lib/codex-types";
 import { DECISIONS_DECISIONS_TOKEN_SRC } from "@/lib/decisions-decisions";
+import {
+  FAVORITE_TOURNAMENT_HREF,
+  FAVORITE_TOURNAMENT_TOKEN_SRC,
+} from "@/lib/favorite-tournament";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   localizeHrefWithGameLocale,
@@ -74,6 +78,14 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.thisOrThat,
   },
   {
+    href: FAVORITE_TOURNAMENT_HREF,
+    icon: FAVORITE_TOURNAMENT_TOKEN_SRC,
+    createdAt: "2026-08-29",
+    nestedUnder: "/this-or-that",
+    byrdispatchSectionTitle: "이아저? 월드컵",
+    getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.favoriteTournament,
+  },
+  {
     href: "/history-course",
     icon: "/images/sts2/relics/history_course.webp",
     createdAt: "2026-06-18",
@@ -94,6 +106,7 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     icon: DECISIONS_DECISIONS_TOKEN_SRC,
     createdAt: "2026-08-26",
     nestedUnder: "/defragment",
+    byrdispatchSectionTitle: "어려운 결정",
     getLabel: (_serviceLocale, gameLocale) => getDecisionsDecisionsNavTitle(gameLocale),
   },
 ] as const;
