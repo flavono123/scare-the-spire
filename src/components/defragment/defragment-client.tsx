@@ -83,7 +83,8 @@ export function DefragmentClient({
     this_or_that: nav.thisOrThat,
     chemical_x: nav.chemicalX,
     decisions_decisions: getDecisionsDecisionsNavTitle(gameLocale),
-  }), [gameLocale, nav.chemicalX, nav.combo, nav.thisOrThat]);
+    favorite_tournament: nav.favoriteTournament,
+  }), [gameLocale, nav.chemicalX, nav.combo, nav.favoriteTournament, nav.thisOrThat]);
 
   const totIds = useMemo(
     () => items.filter((item) => item.service === "this_or_that").map((item) => item.id),

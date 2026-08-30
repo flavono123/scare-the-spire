@@ -3,10 +3,15 @@ import {
   buildChemicalXCommentThreadKey,
   buildComboCommentThreadKey,
   buildDecisionsDecisionsCommentThreadKey,
+  buildFavoriteTournamentCommentThreadKey,
   buildThisOrThatCommentThreadKey,
   buildTransfigureCommentThreadKey,
 } from "@/lib/comment-threads";
 import { DECISIONS_DECISIONS_HREF, DECISIONS_DECISIONS_TOKEN_SRC } from "@/lib/decisions-decisions";
+import {
+  FAVORITE_TOURNAMENT_HREF,
+  FAVORITE_TOURNAMENT_TOKEN_SRC,
+} from "@/lib/favorite-tournament";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -22,6 +27,7 @@ export const DEFRAGMENT_FEDERATED_SERVICES = [
   "combo",
   "transfigure",
   "this_or_that",
+  "favorite_tournament",
   "chemical_x",
   "decisions_decisions",
 ] as const;
@@ -79,6 +85,10 @@ export const DEFRAGMENT_FEED_SERVICE_META: Record<
     hrefBase: DECISIONS_DECISIONS_HREF,
     tokenSrc: DECISIONS_DECISIONS_TOKEN_SRC,
   },
+  favorite_tournament: {
+    hrefBase: FAVORITE_TOURNAMENT_HREF,
+    tokenSrc: FAVORITE_TOURNAMENT_TOKEN_SRC,
+  },
 };
 
 const UNKNOWN_SERVICE_META = {
@@ -128,7 +138,7 @@ export function feedItemFromPost(
   if (service === "this_or_that") title = post.reason ?? "";
   else if (service === "transfigure") {
     title = post.title?.trim() || post.transformed_name?.trim() || post.content_text || "";
-  } else if (service === "decisions_decisions") {
+  } else if (service === "decisions_decisions" || service === "favorite_tournament") {
     title = post.title?.trim() || post.note?.trim() || "";
   } else title = post.content_text ?? "";
 
@@ -192,6 +202,8 @@ export function defragmentItemThreadKey(
       return buildChemicalXCommentThreadKey(item.id);
     case "decisions_decisions":
       return buildDecisionsDecisionsCommentThreadKey(item.id);
+    case "favorite_tournament":
+      return buildFavoriteTournamentCommentThreadKey(item.id);
     default:
       return null;
   }

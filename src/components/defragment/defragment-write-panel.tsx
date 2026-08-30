@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import type { DecisionsDecisionsComposerValues } from "@/components/decisions-decisions/decisions-decisions-composer";
+import type { FavoriteTournamentComposerValues } from "@/components/this-or-that/favorite-tournament-composer";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DefragmentOverlayBodyEditor } from "@/components/defragment/defragment-overlay-body";
 import Image from "@/components/ui/static-image";
@@ -13,6 +14,7 @@ import {
   upsertDefragmentBody,
 } from "@/hooks/use-defragment-bodies";
 import { insertDecisionsDecisionsPost } from "@/hooks/use-decisions-decisions-posts";
+import { insertFavoriteTournamentPost } from "@/hooks/use-favorite-tournament-posts";
 import { useDecisionsDecisionsCatalog } from "@/hooks/use-decisions-decisions-catalog";
 import { insertThisOrThatPost } from "@/hooks/use-this-or-that-posts";
 import { useThisOrThatEntities } from "@/hooks/use-this-or-that-entities";
@@ -56,6 +58,12 @@ const TransfigureComposerModal = dynamic(
 const DecisionsDecisionsComposer = dynamic(
   () => import("@/components/decisions-decisions/decisions-decisions-composer").then(
     (mod) => mod.DecisionsDecisionsComposer,
+  ),
+  { ssr: false },
+);
+const FavoriteTournamentComposer = dynamic(
+  () => import("@/components/this-or-that/favorite-tournament-composer").then(
+    (mod) => mod.FavoriteTournamentComposer,
   ),
   { ssr: false },
 );
@@ -240,6 +248,29 @@ export function DefragmentWritePanel({
     }
   }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
 
+  const handleFavoriteTournamentSubmit = useCallback(async (
+    values: FavoriteTournamentComposerValues,
+  ) => {
+    const activeUserId = userId ?? await ensureUser();
+    if (!activeUserId) return false;
+    const nickname = readNickname();
+    if (overlayBodyForSave(overlayBlocks) === "invalid") return false;
+    try {
+      const post = await insertFavoriteTournamentPost({
+        ...values,
+        nickname,
+        activeUserId,
+      });
+      if (!post) return false;
+      await saveOverlay("favorite_tournament", post.id, nickname, activeUserId);
+      onCreated(feedItemFromPost("favorite_tournament", post));
+      return true;
+    } catch {
+      onUnavailable();
+      return false;
+    }
+  }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
+
   const overlay = (
     <DefragmentOverlayBodyEditor
       key={writeType}
@@ -388,6 +419,23 @@ export function DefragmentWritePanel({
             profileNickname={readNickname()}
             hideNickname
             onSubmit={handleDecisionsSubmit}
+          />
+          {overlay}
+        </>
+      )}
+
+      {writeType === "favorite_tournament" && (
+        <>
+          <FavoriteTournamentComposer
+            entities={decisionsCatalog.entities}
+            entityMap={decisionsCatalog.entityMap}
+            gameLocale={gameLocale}
+            serviceLocale={serviceLocale}
+            presetLabels={decisionsCopy.presetLabels}
+            submitLabel={serviceMessages[serviceLocale].favoriteTournament.submit}
+            profileNickname={readNickname()}
+            hideNickname
+            onSubmit={handleFavoriteTournamentSubmit}
           />
           {overlay}
         </>

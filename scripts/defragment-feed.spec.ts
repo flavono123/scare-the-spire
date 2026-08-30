@@ -68,6 +68,14 @@ assert.equal(
   defragmentOriginalHref({ id: parsed.id, service: "combo" }, "ko", "kor"),
   `/c-c-c-combo/${parsed.id}`,
 );
+assert.equal(
+  defragmentOriginalHref({ id: parsed.id, service: "favorite_tournament" }, "ko", "kor"),
+  `/this-or-that/tournament/${parsed.id}`,
+);
+assert.equal(
+  defragmentBoardPath({ id: parsed.id, service: "favorite_tournament" }),
+  `/defragment/favorite_tournament/${parsed.id}`,
+);
 
 const fromCombo = feedItemFromPost("combo", {
   id: parsed.id,
@@ -78,5 +86,36 @@ const fromCombo = feedItemFromPost("combo", {
 });
 assert.equal(fromCombo.service, "combo");
 assert.equal(fromCombo.title, "Strike / Bash extra words");
+
+const fromTournament = feedItemFromPost("favorite_tournament", {
+  id: parsed.id,
+  created_at: parsed.created_at,
+  title: "네크공주님을석방하라",
+  note: "note",
+  like_count: 0,
+  comment_count: 1,
+});
+assert.equal(fromTournament.service, "favorite_tournament");
+assert.equal(fromTournament.title, "네크공주님을석방하라");
+
+const parsedTournament = parseDefragmentFeedRow({
+  id: parsed.id,
+  created_at: parsed.created_at,
+  like_count: 0,
+  comment_count: 0,
+  service: "favorite_tournament",
+  title: "네크공주님을석방하라",
+});
+assert.ok(parsedTournament);
+assert.equal(parsedTournament.service, "favorite_tournament");
+
+const parsedDecisions = parseDefragmentFeedRow({
+  id: parsed.id,
+  created_at: parsed.created_at,
+  service: "decisions_decisions",
+  title: "티어",
+});
+assert.ok(parsedDecisions);
+assert.equal(parsedDecisions.service, "decisions_decisions");
 
 console.log("defragment-feed.spec.ts: ok");

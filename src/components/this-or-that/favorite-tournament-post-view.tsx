@@ -39,12 +39,14 @@ export function FavoriteTournamentPostView({
   votePrompt,
   voteDone,
   presetLabels,
+  variant = "page",
 }: {
   postId: string;
   gameLocale: GameLocale;
   votePrompt: string;
   voteDone: string;
   presetLabels: Record<string, string>;
+  variant?: "page" | "embed";
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].favoriteTournament;
@@ -63,6 +65,7 @@ export function FavoriteTournamentPostView({
   const [rankingOpen, setRankingOpen] = useState(false);
   const indexHref = localizeHrefWithGameLocale(FAVORITE_TOURNAMENT_HREF, serviceLocale, gameLocale);
   const threadKey = buildFavoriteTournamentCommentThreadKey(postId);
+  const isEmbed = variant === "embed";
 
   const roundOptions = useMemo(
     () => (post ? playRoundOptions(post.pool.length) : []),
@@ -104,12 +107,16 @@ export function FavoriteTournamentPostView({
   }
   if (!post) {
     return (
-      <div className="py-12 text-center">
-        <p className="mb-4 text-sm text-muted-foreground">{copy.notFound}</p>
-        <Link href={indexHref} className="text-sm text-primary underline-offset-4 hover:underline">
-          {copy.backToIndex}
-        </Link>
-      </div>
+      isEmbed
+        ? <p className="text-sm text-muted-foreground">{copy.notFound}</p>
+        : (
+          <div className="py-12 text-center">
+            <p className="mb-4 text-sm text-muted-foreground">{copy.notFound}</p>
+            <Link href={indexHref} className="text-sm text-primary underline-offset-4 hover:underline">
+              {copy.backToIndex}
+            </Link>
+          </div>
+        )
     );
   }
 
@@ -123,25 +130,27 @@ export function FavoriteTournamentPostView({
   const championEntity = champion ? entityForRef(champion, catalog.entityMap) : null;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between gap-3">
-        <Link
-          href={indexHref}
-          className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
-        >
-          <ArrowLeft size={14} />
-          {copy.backToIndex}
-        </Link>
-        <PostDetailActions
-          copied={copied}
-          copyLabel={copy.copyLink}
-          copiedLabel={copy.copied}
-          onCopy={handleCopyUrl}
-          isAuthor={isAuthor}
-          deleteLabel={copy.delete}
-          onDelete={() => { void handleDelete(); }}
-        />
-      </div>
+    <div className="space-y-6" data-favorite-tournament-embed={isEmbed ? "true" : undefined}>
+      {!isEmbed && (
+        <div className="flex items-start justify-between gap-3">
+          <Link
+            href={indexHref}
+            className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+          >
+            <ArrowLeft size={14} />
+            {copy.backToIndex}
+          </Link>
+          <PostDetailActions
+            copied={copied}
+            copyLabel={copy.copyLink}
+            copiedLabel={copy.copied}
+            onCopy={handleCopyUrl}
+            isAuthor={isAuthor}
+            deleteLabel={copy.delete}
+            onDelete={() => { void handleDelete(); }}
+          />
+        </div>
+      )}
 
       <header className="space-y-1">
         <div className="flex items-start justify-between gap-3">
@@ -159,13 +168,15 @@ export function FavoriteTournamentPostView({
               <p className="mt-2 font-game-text text-sm text-muted-foreground">{post.note}</p>
             ) : null}
           </div>
-          <LikeButton
-            storyId={threadKey}
-            userId={userId}
-            initialCount={post.like_count ?? 0}
-            authReady={ready}
-            ensureUser={ensureUser}
-          />
+          {!isEmbed && (
+            <LikeButton
+              storyId={threadKey}
+              userId={userId}
+              initialCount={post.like_count ?? 0}
+              authReady={ready}
+              ensureUser={ensureUser}
+            />
+          )}
         </div>
       </header>
 
@@ -259,18 +270,20 @@ export function FavoriteTournamentPostView({
         </div>
       )}
 
-      <section
-        id="comments"
-        className="scroll-mt-16 rounded-lg border border-border bg-card/20 p-4"
-      >
-        <h2 className="mb-3 font-service text-sm font-semibold text-zinc-300">
-          {copy.commentsTitle}
-        </h2>
-        <CommentSection
-          threadKey={threadKey}
-          initialEntities={catalog.entities}
-        />
-      </section>
+      {!isEmbed && (
+        <section
+          id="comments"
+          className="scroll-mt-16 rounded-lg border border-border bg-card/20 p-4"
+        >
+          <h2 className="mb-3 font-service text-sm font-semibold text-zinc-300">
+            {copy.commentsTitle}
+          </h2>
+          <CommentSection
+            threadKey={threadKey}
+            initialEntities={catalog.entities}
+          />
+        </section>
+      )}
     </div>
   );
 }

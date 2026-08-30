@@ -11,6 +11,7 @@ import { CommentSection } from "@/components/comment-section";
 import { LikeButton } from "@/components/like-button";
 import { PostDetailActions } from "@/components/post-detail-actions";
 import { ThisOrThatPostView } from "@/components/this-or-that/post-view";
+import { FavoriteTournamentPostView } from "@/components/this-or-that/favorite-tournament-post-view";
 import { TransfigurePostView } from "@/components/transfigure/transfigure-post-view";
 import Image from "@/components/ui/static-image";
 import { useAuth } from "@/hooks/use-auth";
@@ -154,6 +155,16 @@ export function DefragmentFederatedPostView({
           postId={postId}
           gameLocale={gameLocale}
           gameCopy={decisionsCopy}
+          variant="embed"
+        />
+      )}
+      {service === "favorite_tournament" && (
+        <FavoriteTournamentPostView
+          postId={postId}
+          gameLocale={gameLocale}
+          votePrompt={votePrompt}
+          voteDone={voteDone}
+          presetLabels={decisionsCopy.presetLabels}
           variant="embed"
         />
       )}

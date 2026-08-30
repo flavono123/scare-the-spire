@@ -1,4 +1,5 @@
 import {
+  isDefragmentFederatedService,
   type DefragmentFeedItem,
 } from "@/lib/defragment";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
@@ -41,7 +42,7 @@ export function parseDefragmentFeedRow(row: unknown): DefragmentFeedItem | null 
   const id = asUuid(record.id);
   const createdAt = asIsoTimestamp(record.created_at);
   const service = typeof record.service === "string" ? record.service.trim() : "";
-  if (!id || !createdAt || !service) return null;
+  if (!id || !createdAt || !isDefragmentFederatedService(service)) return null;
 
   const likeCount = asNonNegativeInt(record.like_count) ?? 0;
   const commentCount = asNonNegativeInt(record.comment_count) ?? 0;

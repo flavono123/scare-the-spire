@@ -70,6 +70,7 @@ export async function renderDefragmentFederatedPostPage(
     this_or_that: nav.thisOrThat,
     chemical_x: nav.chemicalX,
     decisions_decisions: getDecisionsDecisionsNavTitle(gameLocale),
+    favorite_tournament: nav.favoriteTournament,
   } as const;
 
   return (
