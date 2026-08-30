@@ -73,10 +73,14 @@ resources, rich patch notes, mobile layout, animation, or QA.
     only when appropriate. Prefer an exact game-localized name.
   - Functional subtitle names what the service does. It is service-owned, not a
     game-locale quote. See Toy Box title, subtitle, and hero.
-  - New Toy Box community services nest under 조각모음 in
-    `getToyBoxNavItems` (`nestedUnder: "/defragment"`). They also federate
-    into the 조각모음 feed, write panel, and detail embed. History Course
-    stays a top-level Toy Box item and is not a 조각모음 feed source.
+- New Toy Box community services nest under 조각모음 in
+  `getToyBoxNavItems` (`nestedUnder: "/defragment"`). They also federate
+  into the 조각모음 feed, write panel, and detail embed. History Course
+  stays a top-level Toy Box item and is not a 조각모음 feed source.
+  이아저? 월드컵 is the exception: it is a tab of 이거 아님 저거?
+  (`nestedUnder: "/this-or-that"`, `dropdownHidden: true`). Do not add it as
+  a Toy Box dropdown row. Its byrdispatch `(new)` attaches NEW to
+  이거 아님 저거? instead.
 - Avoid visible in-app explanations of the feature *design*. A one-line
   functional subtitle is required so a new visitor can tell the named game
   thing from the site action. Do not add design essays, how-it-works copy, or
@@ -224,7 +228,8 @@ client list and does not call `get_toybox_feed`.
   The RPC reads one table and returns at most 20 rows plus a `post` jsonb blob.
 - 조각모음's mixed board calls `get_defragment_feed` with the same sort, limit,
   and cursor arguments. That RPC unions Combo, Transfigure, This or That,
-  Chemical X, and 어려운 결정. It takes **at most 20 rows from each source**,
+  Chemical X, 어려운 결정, and 이아저? 월드컵. It takes **at most 20 rows from
+  each source**,
   then merges and returns at most 20. Do not `UNION` full tables and do not
   issue unbounded browser queries per source. There is no native title+body
   조각모음 post type; optional overlay bodies live on `defragment_bodies`.
@@ -238,18 +243,18 @@ client list and does not call `get_toybox_feed`.
 - Index rows open **조각모음 detail**, not the original service URL:
   `/defragment/{service}/{id}`. Detail embeds that type's content (combo
   renderer/gallery, transfigure preview, This or That full vote UI, Chemical X
-  renderer, 어려운 결정 board). A quiet `{name}에서` / `In {name}` link
+  renderer, 어려운 결정 board, 이아저? 월드컵 play). A quiet `{name}에서` / `In {name}` link
   reaches the original page.
   Do not add a required extra hop through the original detail to read or vote.
 - Comments and likes on 조각모음 use the original thread keys
   (`defragmentItemThreadKey`) so they stay in sync with Combo / Transfigure /
-  This or That / Chemical X.
+  This or That / Chemical X / 어려운 결정 / 이아저? 월드컵.
 - Write from 조각모음: pick Combo / Transfigure / This or That / Chemical X /
-  어려운 결정 and get that service's matching composer, plus an optional
+  어려운 결정 / 이아저? 월드컵 and get that service's matching composer, plus an optional
   조각모음-only overlay body (`defragment_bodies`, keyed by env +
   source_service + source_id). Do not offer a native title+body 조각모음 type.
-  Do not change Combo / Transfigure / This or That / Chemical X / 어려운 결정
-  own compose or index UX. Additive editor props such as `hideNickname` /
+  Do not change Combo / Transfigure / This or That / Chemical X / 어려운 결정 /
+  이아저? 월드컵 own compose or index UX. Additive editor props such as `hideNickname` /
   `draftKey` are allowed. Do not call those services' feed hooks from the
   조각모음 write panel; use standalone insert helpers. Do not delete original
   posts from 조각모음.

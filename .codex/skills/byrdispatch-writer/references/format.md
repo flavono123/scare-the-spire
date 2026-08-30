@@ -123,11 +123,14 @@ Prefer these exact Korean headings:
 - `패치 노트`
 - `패치노트`
 - `장난감 상자`
+- `조각모음`
 - `역사 강의서`
 - `백과사전`
 - `케미컬X`
 - `코오오옴보`
 - `이거 아님 저거?`
+- `이아저? 월드컵` — This or That tab heading only. Not a Toy Box dropdown item. `(new)` here still attaches NEW to `이거 아님 저거?` in the nav.
+- `어려운 결정`
 - `변형`
 - `프로필`
 - `작은 우편함`
@@ -147,11 +150,14 @@ Use these established headings in `.en.md` files:
 | `패치 노트` / `패치노트` | `Patch Notes` |
 | `슬서운 변경` | `Patch History` |
 | `장난감 상자` | `Toy Box` |
+| `조각모음` | `Defragment` |
 | `역사 강의서` | `History Course` |
 | `백과사전` | `Compendium` |
 | `케미컬X` | `Chemical X` |
 | `코오오옴보` | `C-C-C-Combo` |
 | `이거 아님 저거?` | `This or That?` |
+| `이아저? 월드컵` | `thisorthat? tournament` |
+| `어려운 결정` | `Decisions, Decisions` |
 | `변형` | `Transfigure` |
 | `프로필` | `Profile` |
 | `작은 우편함` | `Tiny Mailbox` |

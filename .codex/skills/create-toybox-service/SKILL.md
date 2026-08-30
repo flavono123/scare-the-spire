@@ -109,7 +109,10 @@ Follow current Toy Box patterns instead of copying one old route wholesale:
   panel, and detail. Do not use a card portrait as the nav/header token; keep
   tokens small and icon-like (relic, potion, power, badge, Ancient). Card art
   may still be the page background or OG image. History Course stays top-level
-  and is not a 조각모음 feed source.
+  and is not a 조각모음 feed source. 이아저? 월드컵 is a tab of 이거 아님
+  저거? (`nestedUnder: "/this-or-that"`, `dropdownHidden: true`); do not add
+  it as a Toy Box dropdown row. NEW from its byrdispatch heading attaches to
+  이거 아님 저거?.
 - Put service-owned UI text in the typed service dictionaries, including the
   functional subtitle phrase and the composed metadata template. Put exact or
   adapted game copy (title, hero, placeholders, remaining verb-like CTAs) in

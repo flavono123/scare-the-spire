@@ -35,6 +35,7 @@ Compare against published entries the user already corrected (`2026-07-09`, `202
    - Preserve one nested bullet level (`  -`) when the user provides it or explicitly asks for child examples/details.
    - If the user writes a numbered list (`1. 2. 3.`), convert it to nested `-` bullets. The parser only accepts `-` bullets.
    - Route/service English naming is `byrdispatch`; the canonical public route is `/byrdispatch`.
+   - This or That tab exception: 이아저? 월드컵 is a tab of 이거 아님 저거?, not a Toy Box dropdown item. Keep writing `### 이아저? 월드컵` / `### thisorthat? tournament` when that tab itself is the update. Do not add it to `getToyBoxNavItems` as a visible row. Dropdown NEW for that work attaches to 이거 아님 저거? / This or That? (`dropdownHidden` child bubbling, or `(new)` on the parent heading). Do not invent a separate Toy Box menu entry to make the heading match.
 5. Normalize user notes without inventing product facts.
    - When the user supplies Korean copy, that wording is the SSOT. Format it (headings, bullets, markers, links, gold tags, image paths). Do not rewrite it into a different "service-update voice."
    - When the user does not supply copy, write short factual bullets in the published voice: `합니다` / `했습니다`. Do not use `했다` / `이다` diary tone from older format examples.
