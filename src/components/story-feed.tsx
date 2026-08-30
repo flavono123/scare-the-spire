@@ -115,17 +115,6 @@ function formatStoryPublishedAt(publishedAt: string, serviceLocale: ServiceLocal
   return formatShortDate(date);
 }
 
-function storyRecommendedScore(
-  story: Story,
-  counts: ReturnType<typeof useEngagementCounts>,
-) {
-  const likes = counts.likes[story.id] ?? 0;
-  const comments = counts.comments[story.id] ?? 0;
-  const communityBase = story.community ? 2 : 0;
-
-  return likes * 4 + comments * 6 + communityBase;
-}
-
 function stableStoryOrder(
   stories: Story[],
   sortMode: ToyboxFeedSort,
@@ -136,8 +125,8 @@ function stableStoryOrder(
       const commentDiff = (counts.comments[b.id] ?? 0) - (counts.comments[a.id] ?? 0);
       if (commentDiff !== 0) return commentDiff;
     } else if (sortMode === "recommended") {
-      const scoreDiff = storyRecommendedScore(b, counts) - storyRecommendedScore(a, counts);
-      if (scoreDiff !== 0) return scoreDiff;
+      const likeDiff = (counts.likes[b.id] ?? 0) - (counts.likes[a.id] ?? 0);
+      if (likeDiff !== 0) return likeDiff;
     }
 
     const publishedDiff = storyPublishedTime(b) - storyPublishedTime(a);

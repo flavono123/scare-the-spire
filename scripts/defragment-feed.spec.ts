@@ -38,7 +38,7 @@ assert.equal(
   cursorFromDefragmentItem(parsed, "comments").score,
   3,
 );
-assert.equal(cursorFromDefragmentItem(parsed, "recommended").score, 26);
+assert.equal(cursorFromDefragmentItem(parsed, "recommended").score, 2);
 
 assert.equal(parseDefragmentFeedRow({ service: "history_course" }), null);
 assert.equal(parseDefragmentFeedRow({

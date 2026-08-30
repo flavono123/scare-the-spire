@@ -118,8 +118,8 @@ export function toyboxVoteTotal(leftCount: number, rightCount: number): number {
   return leftCount + rightCount;
 }
 
-export function toyboxRecommendScore(likeCount: number, commentCount: number): number {
-  return likeCount * 4 + commentCount * 6;
+export function toyboxRecommendScore(likeCount: number): number {
+  return likeCount;
 }
 
 export function buildLatestFeedKeysetFilter(cursor: {
@@ -165,7 +165,7 @@ export function itemFromPostRecord<T extends PostIdentity>(
     post,
     likeCount,
     commentCount,
-    recommendScore: toyboxRecommendScore(likeCount, commentCount),
+    recommendScore: toyboxRecommendScore(likeCount),
   };
 }
 
@@ -188,7 +188,7 @@ export function parseToyboxFeedRow<T extends PostIdentity>(
     ?? asNonNegativeInt((nested as Record<string, unknown>).comment_count)
     ?? 0;
   const recommendScore = asNonNegativeInt(record.recommend_score)
-    ?? toyboxRecommendScore(likeCount, commentCount);
+    ?? toyboxRecommendScore(likeCount);
 
   return {
     post,
@@ -221,6 +221,7 @@ export function toyboxFeedCursorScore<T extends PostIdentity>(
   sort: ToyboxFeedSort,
 ): number {
   if (sort === "comments") return item.commentCount;
+  if (sort === "recommended") return item.likeCount;
   const extraScore = EXTRA_SORT_CURSOR_SCORE[sort as ToyboxFeedExtraSort];
   if (extraScore) return extraScore(item);
   return item.recommendScore;
@@ -251,7 +252,7 @@ export function mergeToyboxFeedItem<T extends PostIdentity>(
     post: nextPost,
     likeCount,
     commentCount,
-    recommendScore: toyboxRecommendScore(likeCount, commentCount),
+    recommendScore: toyboxRecommendScore(likeCount),
   };
 }
 

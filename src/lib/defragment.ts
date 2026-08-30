@@ -149,7 +149,7 @@ export function feedItemFromPost(
     title: title.replace(/\s+/g, " ").trim().slice(0, 120),
     likeCount,
     commentCount,
-    recommendScore: toyboxRecommendScore(likeCount, commentCount),
+    recommendScore: toyboxRecommendScore(likeCount),
   };
 }
 
@@ -213,5 +213,7 @@ export function defragmentFeedScore(
   item: DefragmentFeedItem,
   sort: ToyboxFeedSort,
 ): number {
-  return sort === "comments" ? item.commentCount : item.recommendScore;
+  if (sort === "comments") return item.commentCount;
+  if (sort === "recommended") return item.likeCount;
+  return item.recommendScore;
 }

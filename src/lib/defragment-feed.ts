@@ -47,7 +47,7 @@ export function parseDefragmentFeedRow(row: unknown): DefragmentFeedItem | null 
   const likeCount = asNonNegativeInt(record.like_count) ?? 0;
   const commentCount = asNonNegativeInt(record.comment_count) ?? 0;
   const recommendScore = asNonNegativeInt(record.recommend_score)
-    ?? toyboxRecommendScore(likeCount, commentCount);
+    ?? toyboxRecommendScore(likeCount);
   const title = typeof record.title === "string" ? record.title : "";
 
   return {
@@ -66,7 +66,11 @@ export function cursorFromDefragmentItem(
   sort: ToyboxFeedSort,
 ): ToyboxFeedCursor {
   return {
-    score: sort === "comments" ? item.commentCount : item.recommendScore,
+    score: sort === "comments"
+      ? item.commentCount
+      : sort === "recommended"
+        ? item.likeCount
+        : item.recommendScore,
     createdAt: item.created_at,
     id: item.id,
   };

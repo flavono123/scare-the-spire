@@ -24,7 +24,7 @@ import { serviceMessages } from "../src/messages/service";
 assert.equal(TOYBOX_FEED_PAGE_SIZE, 20);
 assert.deepEqual([...TOYBOX_FEED_SORT_OPTIONS], ["latest", "recommended", "comments"]);
 assert.deepEqual([...TOYBOX_FEED_CORE_SORTS], ["latest", "recommended", "comments"]);
-assert.equal(toyboxRecommendScore(1, 2), 16);
+assert.equal(toyboxRecommendScore(1), 1);
 assert.equal(isToyboxFeedSort("recommended"), true);
 assert.equal(isToyboxFeedCoreSort("recommended"), true);
 assert.equal(isToyboxFeedSort("vote_rate_high"), true);
@@ -103,7 +103,7 @@ assert.deepEqual(
     id: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
   },
 );
-assert.equal(cursorFromFeedItem(parsed, "recommended").score, 26);
+assert.equal(cursorFromFeedItem(parsed, "recommended").score, 2);
 assert.equal(toyboxFeedCursorScore(parsed, "vote_rate_high"), 10);
 assert.equal(
   toyboxFeedCursorScore(parsed, "vote_rate_low"),
