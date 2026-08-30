@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { StaticDetailShell } from "@/components/static-detail-shell";
 import { FavoriteTournamentPostView } from "@/components/this-or-that/favorite-tournament-post-view";
 import { getDecisionsDecisionsGameCopy, getThisOrThatGameCopy } from "@/lib/borrowed-game-copy";
 import { FAVORITE_TOURNAMENT_HREF } from "@/lib/favorite-tournament";
@@ -9,6 +10,7 @@ import {
   composeToyBoxPostOgDescription,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
+import { metadataRecordId } from "@/lib/static-detail-shell";
 import { serviceMessages } from "@/messages/service";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 
@@ -24,17 +26,17 @@ export async function generateFavoriteTournamentPostMetadata(
     serviceName: title,
     serviceDescription: copy.subtitle,
   });
+  const recordId = metadataRecordId(id);
   return getServiceOgMetadata({
     serviceLocale,
     title,
     description,
     image: THIS_OR_THAT_PAGE_OG_IMAGE,
-    canonicalPath: id ? `${FAVORITE_TOURNAMENT_HREF}/${id}` : FAVORITE_TOURNAMENT_HREF,
+    canonicalPath: recordId ? `${FAVORITE_TOURNAMENT_HREF}/${recordId}` : FAVORITE_TOURNAMENT_HREF,
   });
 }
 
 export async function renderFavoriteTournamentPostPage(
-  id: string,
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
   const [totCopy, decisionsCopy] = await Promise.all([
@@ -44,13 +46,15 @@ export async function renderFavoriteTournamentPostPage(
 
   return (
     <div className={TOYBOX_WIDE_SHELL_CLASS}>
-      <FavoriteTournamentPostView
-        postId={id}
-        gameLocale={gameLocale}
-        votePrompt={totCopy.votePrompt}
-        voteDone={totCopy.voteDone}
-        presetLabels={decisionsCopy.presetLabels}
-      />
+      <StaticDetailShell>
+        <FavoriteTournamentPostView
+          postId=""
+          gameLocale={gameLocale}
+          votePrompt={totCopy.votePrompt}
+          voteDone={totCopy.voteDone}
+          presetLabels={decisionsCopy.presetLabels}
+        />
+      </StaticDetailShell>
     </div>
   );
 }

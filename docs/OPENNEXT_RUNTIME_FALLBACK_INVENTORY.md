@@ -64,6 +64,7 @@ KiB를 108.87 KiB 초과했다. 정적 asset 수와 별개로 OpenNext runtime i
 - `/chemical-x/{postId}`
 - `/c-c-c-combo/{postId}`
 - `/this-or-that/{postId}`
+- `/this-or-that/tournament/{postId}` (legacy `/this-or-that/worldcup/{postId}` 308)
 - `/transfigure/{postId}`
 - `/decisions-decisions/{postId}`
 - `/history-course/{runId}`
@@ -85,8 +86,9 @@ canonical은 마운트 후 현재 URL로 맞춘다.
 4. document와 RSC navigation, direct refresh, invalid nested path를 검증한다.
 
 상태: **코드 반영.** 메인 Worker가 검증된 ID 형태를 `__id__` HTML/RSC 셸로
-rewrite하고 `x-cf-static-page: shell`을 붙인다. `/this-or-that/tournament/{id}`와
-`/this-or-that/worldcup/{id}`는 아직 OpenNext다.
+rewrite하고 `x-cf-static-page: shell`을 붙인다. `/this-or-that/worldcup/{id}`는
+OpenNext `permanentRedirect` 대신 Worker 308로 `/this-or-that/tournament/{id}`에
+붙인다.
 
 ### 3. game-only locale Compendium detail
 

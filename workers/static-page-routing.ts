@@ -131,6 +131,8 @@ const DEFRAGMENT_FEDERATED_SERVICES = new Set([
   "favorite_tournament",
 ]);
 
+const THIS_OR_THAT_NESTED_SEGMENTS = new Set(["tournament", "worldcup"]);
+
 const RECORD_ID_PATTERN = /^[A-Za-z0-9_-]{1,128}$/;
 
 function isRecordIdSegment(segment: string | undefined): boolean {
@@ -180,6 +182,28 @@ export function staticServiceDetailShellAssetPath(
   }
 
   if (
+    rest.length === 3
+    && rest[0] === "this-or-that"
+    && rest[1] === "tournament"
+    && isRecordIdSegment(rest[2])
+  ) {
+    return `/_cf_static_pages/${[
+      ...localePrefix,
+      "this-or-that",
+      "tournament",
+      STATIC_DETAIL_SHELL_SEGMENT,
+    ].join("/")}.${extension}`;
+  }
+
+  if (
+    rest.length === 2
+    && rest[0] === "this-or-that"
+    && THIS_OR_THAT_NESTED_SEGMENTS.has(rest[1])
+  ) {
+    return null;
+  }
+
+  if (
     rest.length === 2
     && STATIC_SERVICE_DETAIL_SEGMENTS.has(rest[0])
     && isRecordIdSegment(rest[1])
@@ -189,6 +213,30 @@ export function staticServiceDetailShellAssetPath(
       rest[0],
       STATIC_DETAIL_SHELL_SEGMENT,
     ].join("/")}.${extension}`;
+  }
+
+  return null;
+}
+
+export function legacyWorldcupDetailRedirectPath(pathname: string): string | null {
+  const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
+  const parts = normalizedPathname.split("/").filter(Boolean);
+  if (parts.length < 3) return null;
+
+  let localePrefix: string[] = [];
+  let rest = parts;
+  if (STATIC_GAME_LOCALE_PREFIXES.has(parts[0])) {
+    localePrefix = [parts[0]];
+    rest = parts.slice(1);
+  }
+
+  if (
+    rest.length === 3
+    && rest[0] === "this-or-that"
+    && rest[1] === "worldcup"
+    && isRecordIdSegment(rest[2])
+  ) {
+    return `/${[...localePrefix, "this-or-that", "tournament", rest[2]].join("/")}`;
   }
 
   return null;

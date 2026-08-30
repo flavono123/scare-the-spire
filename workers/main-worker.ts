@@ -22,6 +22,7 @@ type ExecutionContextLike = {
 import openNextWorker from "../.open-next/worker.js";
 import { getLegacyCompendiumDetailRedirectPath } from "../src/lib/compendium-resource-links";
 import {
+  legacyWorldcupDetailRedirectPath,
   staticCompendiumAssetPath,
   staticLegacyPageAssetPath,
   staticServiceDetailShellAssetPath,
@@ -137,6 +138,25 @@ function maybeRedirectLegacyCompendiumDetail(request: Request, url: URL): Respon
   });
 }
 
+function maybeRedirectLegacyWorldcupDetail(request: Request, url: URL): Response | null {
+  if (request.method !== "GET" && request.method !== "HEAD") return null;
+
+  const redirectPath = legacyWorldcupDetailRedirectPath(url.pathname);
+  if (!redirectPath) return null;
+
+  const redirectUrl = new URL(request.url);
+  redirectUrl.pathname = redirectPath;
+  redirectUrl.search = "";
+  redirectUrl.hash = "";
+  return new Response(null, {
+    status: 308,
+    headers: {
+      "Cache-Control": "public, max-age=86400",
+      Location: redirectUrl.toString(),
+    },
+  });
+}
+
 function staticHomeAssetPath(pathname: string, request: Request, url: URL): string | null {
   const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
   const isHomePath = normalizedPathname === "/";
@@ -229,6 +249,9 @@ const mainWorker = {
 
     const legacyCompendiumRedirect = maybeRedirectLegacyCompendiumDetail(request, url);
     if (legacyCompendiumRedirect) return legacyCompendiumRedirect;
+
+    const legacyWorldcupRedirect = maybeRedirectLegacyWorldcupDetail(request, url);
+    if (legacyWorldcupRedirect) return legacyWorldcupRedirect;
 
     if (isPatchWorkerPath(url.pathname)) {
       if (env.PATCH_WORKER) return env.PATCH_WORKER.fetch(request);

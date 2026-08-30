@@ -127,11 +127,24 @@ function staticPageRelativePath(file) {
     && gameLocalePathSegments.has(parts[0])
     && parts[1] === "defragment"
     && defragmentFederatedServices.has(parts[2]);
+  const isDefaultTournamentDetailShell =
+    parsed.name === staticDetailShellSegment
+    && parts.length === 2
+    && parts[0] === "this-or-that"
+    && parts[1] === "tournament";
+  const isGameLocaleTournamentDetailShell =
+    parsed.name === staticDetailShellSegment
+    && parts.length === 3
+    && gameLocalePathSegments.has(parts[0])
+    && parts[1] === "this-or-that"
+    && parts[2] === "tournament";
   if (
     isDefaultLocaleDetailShell
     || isGameLocaleDetailShell
     || isDefaultFederatedDetailShell
     || isGameLocaleFederatedDetailShell
+    || isDefaultTournamentDetailShell
+    || isGameLocaleTournamentDetailShell
   ) {
     return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
   }

@@ -23,8 +23,9 @@ request
 Chemical X, Combo, Transfigure, This or That, 어려운 결정, History Course,
 and 조각모음 unbounded IDs are served as static HTML/RSC shells. The thin Worker
 rewrites a validated one-segment ID to a prerendered `__id__` asset for both
-document and RSC requests. Direct tournament/worldcup IDs remain on OpenNext
-until a later pass.
+document and RSC requests. `/this-or-that/tournament/{id}` uses the same shell.
+`/this-or-that/worldcup/{id}` stays a bounded Worker 308 onto the tournament
+path.
 
 This removes their known Error 1102 path without coupling the incident fix to a
 broad deployment migration.
@@ -133,8 +134,11 @@ resource data is fetched as immutable or long-lived static JSON.
   from the URL and loads from IndexedDB or Supabase.
 - Create one static This or That detail shell with the same path-derived ID
   contract.
-- Cover Combo, Transfigure, 어려운 결정, native 조각모음, and federated
-  `/defragment/{service}/{id}` shells, including locale prefixes.
+- Cover Combo, Transfigure, 어려운 결정, native 조각모음, federated
+  `/defragment/{service}/{id}`, and `/this-or-that/tournament/{id}` shells,
+  including locale prefixes.
+- Keep `/this-or-that/worldcup/{id}` as a Worker 308 onto the tournament path
+  so the legacy alias never invokes OpenNext.
 - Teach the thin Worker to rewrite only the validated route shapes to those
   shells for both document and RSC navigation.
 - Preserve generic metadata at build time. The browser updates the canonical URL
@@ -142,8 +146,7 @@ resource data is fetched as immutable or long-lived static JSON.
   separate design and must not reintroduce request-time Next rendering by default.
 
 Exit condition: unbounded user-content paths never invoke OpenNext and invalid
-nested paths fail closed. Direct `/this-or-that/tournament/{id}` and
-`/this-or-that/worldcup/{id}` remain OpenNext until they get the same treatment.
+nested paths fail closed.
 
 ### Phase 4: Consolidate game-only locale detail delivery
 

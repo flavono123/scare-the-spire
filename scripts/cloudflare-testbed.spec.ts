@@ -165,6 +165,7 @@ test("dynamic service routes refresh directly and invalid nesting fails closed",
     `/defragment/combo/${MISSING_UUID}`,
     `/defragment/transfigure/${MISSING_UUID}`,
     `/this-or-that/${MISSING_UUID}`,
+    `/this-or-that/tournament/${MISSING_UUID}`,
     `/transfigure/${MISSING_UUID}`,
     `/decisions-decisions/${MISSING_UUID}`,
     "/history-course/1testbedmissingrun",
@@ -176,7 +177,18 @@ test("dynamic service routes refresh directly and invalid nesting fails closed",
     expect(response.headers()["x-cf-static-page"], path).toBe("shell");
   }
 
-  for (const path of validShapes.map((value) => `${value}/extra`)) {
+  const worldcupRedirect = await request.get(
+    absolute(`/this-or-that/worldcup/${MISSING_UUID}`),
+    { headers: { Accept: "text/html" }, maxRedirects: 0 },
+  );
+  expect(worldcupRedirect.status()).toBe(308);
+  expect(new URL(worldcupRedirect.headers()["location"], "http://smoke.local").pathname)
+    .toBe(`/this-or-that/tournament/${MISSING_UUID}`);
+
+  for (const path of [
+    ...validShapes.map((value) => `${value}/extra`),
+    `/this-or-that/worldcup/${MISSING_UUID}/extra`,
+  ]) {
     const response = await request.get(absolute(path), { headers: { Accept: "text/html" } });
     expect(response.status(), path).toBe(404);
   }

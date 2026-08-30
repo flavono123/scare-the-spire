@@ -2,6 +2,7 @@ import { readdirSync, statSync } from "node:fs";
 import path from "node:path";
 
 import {
+  legacyWorldcupDetailRedirectPath,
   staticCompendiumAssetPath,
   staticLegacyPageAssetPath,
   staticServiceDetailShellAssetPath,
@@ -254,6 +255,33 @@ function checkStaticDetailShellRouting(): void {
     staticServiceDetailShellAssetPath("/defragment/not_a_service/abc", "rsc") === null,
     "Unknown 조각모음 service names must fail closed.",
   );
+  assert(
+    staticServiceDetailShellAssetPath("/this-or-that/tournament", "html") === null,
+    "This or That tournament index must not match the post-id shell.",
+  );
+  assert(
+    staticServiceDetailShellAssetPath("/this-or-that/tournament/post-id", "html")
+      === `/_cf_static_pages/this-or-that/tournament/${staticDetailShellSegment}.html`,
+    "This or That tournament details must rewrite to the static shell.",
+  );
+  assert(
+    staticServiceDetailShellAssetPath("/en/this-or-that/worldcup/post-id", "rsc") === null,
+    "Legacy worldcup details must redirect instead of using a static shell.",
+  );
+  assert(
+    legacyWorldcupDetailRedirectPath("/this-or-that/worldcup/post-id")
+      === "/this-or-that/tournament/post-id",
+    "Legacy worldcup details must 308 to the tournament path.",
+  );
+  assert(
+    legacyWorldcupDetailRedirectPath("/zh/this-or-that/worldcup/post-id")
+      === "/zh/this-or-that/tournament/post-id",
+    "Locale worldcup details must keep the game-locale prefix.",
+  );
+  assert(
+    legacyWorldcupDetailRedirectPath("/this-or-that/worldcup/post-id/extra") === null,
+    "Nested worldcup extra path segments must fail closed.",
+  );
 }
 
 function checkStaticDetailShellAssets(): number {
@@ -308,6 +336,21 @@ function checkStaticDetailShellAssets(): number {
         );
         count += 1;
       }
+    }
+
+    const tournamentPath = `/${pathPrefix ? `${pathPrefix}/` : ""}this-or-that/tournament/${staticDetailShellSegment}`;
+    for (const extension of ["html", "rsc"] satisfies StaticPageExtension[]) {
+      const assetPath = staticServiceDetailShellAssetPath(
+        tournamentPath.replace(staticDetailShellSegment, "post-id"),
+        extension,
+      );
+      assert(assetPath, `Static routing rejected tournament shell ${tournamentPath}.${extension}`);
+      const outputPath = path.join(assetsRoot, assetPath.slice(1));
+      assert(
+        statSync(outputPath, { throwIfNoEntry: false })?.isFile(),
+        `Missing copied tournament detail shell: ${outputPath}`,
+      );
+      count += 1;
     }
   }
 
