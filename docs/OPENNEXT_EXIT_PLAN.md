@@ -30,6 +30,12 @@ path.
 This removes their known Error 1102 path without coupling the incident fix to a
 broad deployment migration.
 
+**Required for new work:** any new unbounded public ID route (UUID posts, run
+IDs, federated 조각모음 details) must ship this shell in the same feature.
+Do not leave a new `/{id}` path on OpenNext. Removing the OpenNext runtime
+fallback remains Phases 5–6 only. See `$feature-implementation` Unbounded ID
+detail shells and `$cf-guardrails`.
+
 ## Goal
 
 Remove request-time OpenNext execution from public production traffic, then
@@ -144,6 +150,10 @@ resource data is fetched as immutable or long-lived static JSON.
 - Preserve generic metadata at build time. The browser updates the canonical URL
   from `window.location` after mount. Record-specific OG rendering is a
   separate design and must not reintroduce request-time Next rendering by default.
+- New Toy Box / UUID detail routes added after this phase reuse the same
+  helpers (`src/lib/static-detail-shell.ts`, `StaticDetailShell`) and must be
+  registered in the Worker and copy/check/smoke allowlists in the same change.
+  Allowlists do not auto-discover `[id]` routes.
 
 Exit condition: unbounded user-content paths never invoke OpenNext and invalid
 nested paths fail closed.

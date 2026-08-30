@@ -49,9 +49,57 @@ resources, rich patch notes, mobile layout, animation, or QA.
   Compendium resource-detail history rails.
 - Keep pending Compendium references hover-only when the deployed resource
   manifest does not contain the target; do not turn them into links that 404.
-- Treat OpenNext as still present in the main Worker fallback. Do not implement
-  static detail shells, Worker rewrites, or fallback removal as incidental
-  feature work; those belong to the separate OpenNext exit plan.
+- Treat OpenNext as still present in the main Worker fallback. Do not remove
+  that fallback, replace `openNextWorker.fetch`, or add game-only locale
+  Compendium shells as incidental feature work; those belong to
+  `docs/OPENNEXT_EXIT_PLAN.md` Phases 4–6.
+- New unbounded public ID routes **must** ship the Phase 3 static HTML/RSC
+  detail shell in the same feature. Leaving `/{id}` on OpenNext is an Error
+  1102 regression. See Unbounded ID detail shells below.
+
+### Unbounded ID detail shells (Error 1102)
+
+Public record URLs are not enumerable at build time. OpenNext rendering them
+on a cold Workers Free isolate exceeds 10 ms CPU (`exceededCpu` / Error 1102 /
+503). A plain `200` is not proof of static delivery.
+
+Required for every new `/{service}/[id]` (locale prefixes included), History
+Course `runId` paths, federated `/defragment/{service}/{id}`, and similar
+one-segment record URLs:
+
+1. Prerender one `__id__` HTML and RSC asset per route × locale with the
+   `generateStaticParams` helpers in `src/lib/static-detail-shell.ts`.
+2. Wrap the client record view with `StaticDetailShell`. The browser reads the
+   real ID from the current pathname **after hydration**. Do not use
+   `useParams()` or a first-paint prop for the record ID; those bake `__id__`.
+3. Keep metadata generic. Skip OG/record fetches for the placeholder via
+   `metadataRecordId()`. Update canonical from `window.location` after mount.
+4. Register the route in every shell allowlist in the same change:
+   - `workers/static-page-routing.ts` (`STATIC_SERVICE_DETAIL_SEGMENTS` and,
+     for 조각모음 federation, `DEFRAGMENT_FEDERATED_SERVICES`)
+   - `scripts/copy-cf-static-pages.mjs`
+   - `scripts/check-cloudflare-static-assets.ts`
+   - `scripts/cloudflare-route-smoke.mjs` and `scripts/cloudflare-testbed.spec.ts`
+5. The thin Worker rewrites only a validated one-segment ID
+   (`^[A-Za-z0-9_-]{1,128}$`) to that asset for **both document and RSC**
+   (`?_rsc=` / RSC headers). Extra path segments fail closed (no OpenNext).
+6. Production and preview smoke must return `x-cf-static-page: shell`.
+   `x-opennext: 1` on a UUID/record URL is a ship blocker.
+7. Community post services also need the federated
+   `/defragment/{service}/{id}` shell. Do not prerender a `permanentRedirect`
+   page as a `__id__` shell; legacy aliases such as `/this-or-that/worldcup/{id}`
+   use a bounded Worker 308 instead.
+8. Prefetching a shelled detail is fine once the Worker rewrite covers RSC.
+   Do not prefetch a still-OpenNext ID URL.
+
+New service **indexes** must be exact static pages (`x-cf-static-page: service`)
+copied into `_cf_static_pages`, including `/en`. A `ƒ`+`●` split that omits
+the English index HTML leaves that locale on OpenNext.
+
+These allowlists do not auto-discover new `[id]` routes. Omitting a
+registration can pass CI and 1102 in production. Follow
+`docs/OPENNEXT_EXIT_PLAN.md` Phase 3 and
+`docs/OPENNEXT_RUNTIME_FALLBACK_INVENTORY.md` item 2.
 
 ## Game-First Product Rules
 
@@ -74,8 +122,12 @@ resources, rich patch notes, mobile layout, animation, or QA.
   - Functional subtitle names what the service does. It is service-owned, not a
     game-locale quote. See Toy Box title, subtitle, and hero.
 - New Toy Box community services nest under 조각모음 in
-  `getToyBoxNavItems` (`nestedUnder: "/defragment"`). They also federate
-  into the 조각모음 feed, write panel, and detail embed. History Course
+  `getToyBoxNavItems` (`nestedUnder: "/defragment"`) unless the user
+  explicitly places them elsewhere. They also federate into the 조각모음
+  feed, write panel, and detail embed. Set `createdAt` to the add date;
+  the dropdown lists those children immediately under the 조각모음 row,
+  newest-added first (`createdAt` descending in `getToyBoxNavItems`). Do
+  not sort by array order in `TOY_BOX_SERVICE_DEFINITIONS`. History Course
   stays a top-level Toy Box item and is not a 조각모음 feed source.
   이아저? 월드컵 is the exception: it is a tab of 이거 아님 저거?
   (`nestedUnder: "/this-or-that"`, `dropdownHidden: true`). Do not add it as
@@ -213,7 +265,9 @@ client list and does not call `get_toybox_feed`.
   chip names; do not sort by winner share. Posts with 0 votes are
   excluded. 이아저? 월드컵 **인기** (`play_count`) sorts by
   `play_count`. 조각모음 and Stories stay on the core three.
-- Recommend score is `like_count * 4 + comment_count * 6`.
+- Recommend / 추천 sort is `like_count` desc (the 추천 column), then
+  `created_at`, `id`. Comments sort is `comment_count` desc. Do not mix likes
+  and comments into a composite “hot” score.
 - Page size is 20 (`TOYBOX_FEED_PAGE_SIZE`). Paginate with a keyset cursor
   `(score, created_at, id)`, never `OFFSET`.
 - Counts live on the post tables (`like_count`, `comment_count`). Triggers on
@@ -415,7 +469,9 @@ filter rail and `CompendiumDetailOverlay`. Mobile still hides the rail below
   On Toy Box indexes that text is the title, optional hero, nickname, and
   remaining verb-like CTAs — not the `h2` / OG description.
 - For new routes, choose static generation unless user-specific or live data
-  makes that impossible.
+  makes that impossible. Unbounded record IDs are not an exception: prerender
+  a `__id__` HTML/RSC shell and load the live row in the browser. Do not add
+  `force-dynamic` or request-time OpenNext rendering for UUID/post details.
 - For new public assets, use existing extracted assets first. Generate or author
   new art only when no game asset can represent the service concept.
 
@@ -430,3 +486,8 @@ filter rail and `CompendiumDetailOverlay`. Mobile still hides the rail below
   - The token, title, functional subtitle (`{기능 설명}` + metadata template),
     and hero phrase (or explicit omission) for any new or retitled Toy Box
     surface. Confirm the hero was not reused as OG description.
+  - For new unbounded ID routes: allowlists updated, and document+RSC smoke
+    returned `x-cf-static-page: shell` (not `x-opennext`).
+  - For a new Toy Box community service: `nestedUnder: "/defragment"` unless
+    the user placed it elsewhere, and `createdAt` so it sorts newest-first
+    under 조각모음.

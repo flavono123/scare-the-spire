@@ -88,7 +88,9 @@ canonical은 마운트 후 현재 URL로 맞춘다.
 상태: **코드 반영.** 메인 Worker가 검증된 ID 형태를 `__id__` HTML/RSC 셸로
 rewrite하고 `x-cf-static-page: shell`을 붙인다. `/this-or-that/worldcup/{id}`는
 OpenNext `permanentRedirect` 대신 Worker 308로 `/this-or-that/tournament/{id}`에
-붙인다.
+붙인다. **이후 신규 unbounded ID 라우트도 같은 셸을 기능 작업에서 함께
+등록해야 한다.** allowlist에 없는 `/{id}`는 OpenNext로 떨어져 Error 1102가
+난다. OpenNext fallback 제거 자체는 이 문서의 후속 Phase에서만 한다.
 
 ### 3. game-only locale Compendium detail
 

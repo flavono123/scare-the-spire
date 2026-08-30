@@ -24,6 +24,7 @@ Run the smallest QA set that credibly covers the implementation scope. Treat `do
      - Apply `$cf-guardrails` to review Free-plan runtime risk, request-time work, bundle size, subrequests, and `exceededResources`/503 failure modes.
      - Smoke representative static, SSG, and dynamic routes plus cache headers for `_next/static`, `/images`, `/spine`, `/generated`, `/api/search-index`, and `/comment-entities/sts2`.
      - For Compendium details, smoke both document and RSC requests in Korean and English and require `x-cf-static-page: compendium` so an OpenNext fallback cannot pass as a static-route success.
+     - For unbounded ID / UUID details (Toy Box posts, History Course runs, federated 조각모음), smoke both document and RSC requests and require `x-cf-static-page: shell`. `x-opennext: 1` on a record URL is a failure.
    - Domain validators such as `pnpm codex:validate` or `pnpm codex:validate-references` when Codex entity data, versions, references, hover links, or rich patch content changed.
 5. Run feature-specific tests or Playwright specs that directly cover the changed area. Prefer existing scripts in `scripts/*.spec.ts` over inventing new checks.
 6. Delegate to the linked QA skills below when their trigger conditions match.

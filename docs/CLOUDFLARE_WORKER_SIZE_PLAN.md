@@ -351,8 +351,11 @@ warning을 기록한다. 격리된 `testbed` Worker 외의 Phase 4.1 production 
 - pending Compendium 링크는 deployed manifest에 없으면 hover-only preview로
   fail closed한다. main과 patch를 함께 바꾸는 후속 배포는 patch -> main ->
   patch 순서를 유지한다.
-- 이후 기능 작업은 OpenNext exit이 완료됐다고 가정하지 않는다. 정적 detail
-  shell, Worker rewrite, OpenNext fallback 제거는 별도 계획에서만 수행한다.
+- 이후 기능 작업은 OpenNext exit이 완료됐다고 가정하지 않는다. OpenNext
+  fallback 제거와 game-only locale Compendium shell은 별도 계획(Phase 4~6)에서만
+  수행한다. 신규 unbounded ID / UUID 상세는 기능 작업에서 Phase 3 정적
+  HTML/RSC 셸을 함께 넣는다. `/{id}`를 OpenNext에 남기는 것은 Error 1102
+  회귀다.
 - main build/shared payload에 영향을 주는 후속 변경은 `pnpm cf:build`와 `pnpm
   cf:size`를, patch Worker 변경은 `pnpm patch:build`와 `pnpm patch:test`를 다시
   검증한다.

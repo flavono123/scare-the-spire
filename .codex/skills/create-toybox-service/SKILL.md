@@ -104,15 +104,24 @@ Follow current Toy Box patterns instead of copying one old route wholesale:
   board indexes may use `TOYBOX_WIDE_BOARD_SHELL_CLASS` (same wide max, tighter
   horizontal padding). Do not invent a third content max-width.
 - Add the service to `getToyBoxNavItems` with the chosen token and localized
-  title. New Toy Box community services nest under 조각모음
-  (`nestedUnder: "/defragment"`) and federate into the 조각모음 feed, write
-  panel, and detail. Do not use a card portrait as the nav/header token; keep
-  tokens small and icon-like (relic, potion, power, badge, Ancient). Card art
-  may still be the page background or OG image. History Course stays top-level
-  and is not a 조각모음 feed source. 이아저? 월드컵 is a tab of 이거 아님
-  저거? (`nestedUnder: "/this-or-that"`, `dropdownHidden: true`); do not add
-  it as a Toy Box dropdown row. NEW from its byrdispatch heading attaches to
+  title. Unless the user explicitly places it elsewhere, a new Toy Box
+  community service nests under 조각모음 (`nestedUnder: "/defragment"`),
+  federates into the 조각모음 feed, write panel, and detail, and uses
+  today's `createdAt` so `getToyBoxNavItems` lists it immediately under the
+  조각모음 row, newest-added first. Do not sort by array position. Do not
+  use a card portrait as the nav/header token; keep tokens small and
+  icon-like (relic, potion, power, badge, Ancient). Card art may still be
+  the page background or OG image. History Course stays top-level and is
+  not a 조각모음 feed source. 이아저? 월드컵 is a tab of 이거 아님 저거?
+  (`nestedUnder: "/this-or-that"`, `dropdownHidden: true`); do not add it
+  as a Toy Box dropdown row. NEW from its byrdispatch heading attaches to
   이거 아님 저거?.
+- If the service has a public `/{id}` (or federated 조각모음) record URL,
+  ship the static `__id__` HTML/RSC shell in the same change. Follow
+  `$feature-implementation` Unbounded ID detail shells and
+  `$cf-guardrails`: `StaticDetailShell`, Worker rewrite, copy/check/smoke
+  allowlists, document+RSC `x-cf-static-page: shell`. Do not leave the
+  UUID path on OpenNext.
 - Put service-owned UI text in the typed service dictionaries, including the
   functional subtitle phrase and the composed metadata template. Put exact or
   adapted game copy (title, hero, placeholders, remaining verb-like CTAs) in
@@ -166,3 +175,9 @@ For implementations:
    background, and `defaultNickname` when the service posts), exact sources,
    metadata description, Cloudflare guardrail result, and verification
    performed.
+7. For a UUID/record detail route, confirm document and RSC smoke return
+   `x-cf-static-page: shell`, and that Worker/copy/check/smoke allowlists
+   include the new path and the federated `/defragment/{service}/{id}`
+   shell when the service federates.
+8. Confirm `nestedUnder: "/defragment"` unless the user placed the service
+   elsewhere, and that `createdAt` sorts it newest-first under 조각모음.

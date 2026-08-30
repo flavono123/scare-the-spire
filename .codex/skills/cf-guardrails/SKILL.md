@@ -40,6 +40,16 @@ domain being changed.
 - Prefixless Korean and `/en` service-locale Compendium detail HTML/RSC must be
   copied to `_cf_static_pages` and served before OpenNext. Game-only locale
   detail copies are excluded to stay below the Workers Free asset-count limit.
+- Unbounded public ID routes (UUID posts, History Course runs, federated
+  조각모음 details) must be prerendered `__id__` HTML/RSC shells. The thin
+  Worker rewrites a validated one-segment ID to that asset for both document
+  and RSC requests (`x-cf-static-page: shell`). Register every new ID route
+  in `workers/static-page-routing.ts`, `scripts/copy-cf-static-pages.mjs`,
+  `scripts/check-cloudflare-static-assets.ts`, and the route-smoke/testbed
+  allowlists in the same change. Allowlists do not auto-discover `[id]`
+  routes; an unlisted UUID path falls through to OpenNext and can 1102.
+  Removing the OpenNext fallback itself stays on `docs/OPENNEXT_EXIT_PLAN.md`
+  Phases 5–6, not incidental feature work.
 - Patch Worker: separate static Worker. Patch HTML, CSS, fonts, images, and
   provisional `/_patches/*` assets must be generated ahead of time.
 - Do not move `/patches*` back into the main OpenNext runtime as the primary
@@ -55,6 +65,9 @@ domain being changed.
 - Smoke both HTML and RSC requests for representative Korean and English
   Compendium details. Require `x-cf-static-page: compendium`; a plain `200` is
   insufficient because OpenNext fallback can also return one.
+- For unbounded ID / UUID details, smoke both document and RSC requests
+  (prefixless and `/en`) and require `x-cf-static-page: shell`. `x-opennext: 1`
+  on a record URL is a failure even when the body is 200.
 - For patch Worker changes, run `pnpm patch:build`, `pnpm patch:test`, and
   preview/deploy checks from `$slseoun-patch` or `$qa`.
 - For feature work, record the expected request-time cost and why it remains
