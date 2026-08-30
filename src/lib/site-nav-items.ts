@@ -43,11 +43,20 @@ type ToyBoxServiceDefinition = {
   byrdispatchSectionTitle?: string;
   devOnly?: boolean;
   nestedUnder?: string;
+  /** Tab of the parent service; omitted from the Toy Box dropdown. */
+  dropdownHidden?: boolean;
   getLabel: (
     serviceLocale: ServiceLocale,
     gameLocale: GameLocale,
   ) => string;
 };
+
+function toyBoxServiceIsNew(service: ToyBoxServiceDefinition): boolean {
+  return Boolean(
+    service.byrdispatchSectionTitle
+    && isLatestByrdispatchNewSection(service.byrdispatchSectionTitle),
+  );
+}
 
 const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
   {
@@ -82,6 +91,7 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     icon: FAVORITE_TOURNAMENT_TOKEN_SRC,
     createdAt: "2026-08-29",
     nestedUnder: "/this-or-that",
+    dropdownHidden: true,
     byrdispatchSectionTitle: "이아저? 월드컵",
     getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.favoriteTournament,
   },
@@ -253,22 +263,20 @@ export function getToyBoxNavItems({
     .flatMap((service) => {
       const nested = (nestedByParent.get(service.href) ?? [])
         .toSorted((left, right) => right.createdAt.localeCompare(left.createdAt));
+      const dropdownChildren = nested.filter((child) => !child.dropdownHidden);
       return [
         {
           href: service.href,
           label: service.getLabel(serviceLocale, gameLocale),
           icon: service.icon,
-          isNew: service.byrdispatchSectionTitle
-            ? isLatestByrdispatchNewSection(service.byrdispatchSectionTitle)
-            : false,
+          isNew: toyBoxServiceIsNew(service)
+            || nested.some((child) => child.dropdownHidden && toyBoxServiceIsNew(child)),
         },
-        ...nested.map((child) => ({
+        ...dropdownChildren.map((child) => ({
           href: child.href,
           label: child.getLabel(serviceLocale, gameLocale),
           icon: child.icon,
-          isNew: child.byrdispatchSectionTitle
-            ? isLatestByrdispatchNewSection(child.byrdispatchSectionTitle)
-            : false,
+          isNew: toyBoxServiceIsNew(child),
         })),
       ];
     });
