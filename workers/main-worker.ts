@@ -24,6 +24,7 @@ import { getLegacyCompendiumDetailRedirectPath } from "../src/lib/compendium-res
 import {
   staticCompendiumAssetPath,
   staticLegacyPageAssetPath,
+  staticServiceDetailShellAssetPath,
   staticServicePageAssetPath,
 } from "./static-page-routing";
 
@@ -208,6 +209,12 @@ async function maybeServeStaticServicePage(request: Request, env: Env, url: URL)
   return assetPath ? fetchStaticPageAsset(request, env, assetPath, "service") : null;
 }
 
+async function maybeServeStaticServiceDetailShell(request: Request, env: Env, url: URL): Promise<Response | null> {
+  const extension = isRscRequest(request, url) ? "rsc" : "html";
+  const assetPath = staticServiceDetailShellAssetPath(url.pathname, extension);
+  return assetPath ? fetchStaticPageAsset(request, env, assetPath, "shell") : null;
+}
+
 async function maybeServeStaticLegacyPage(request: Request, env: Env, url: URL): Promise<Response | null> {
   const extension = isRscRequest(request, url) ? "rsc" : "html";
   const assetPath = staticLegacyPageAssetPath(url.pathname, extension);
@@ -241,6 +248,9 @@ const mainWorker = {
 
     const staticServiceResponse = await maybeServeStaticServicePage(request, env, url);
     if (staticServiceResponse) return staticServiceResponse;
+
+    const staticServiceDetailShellResponse = await maybeServeStaticServiceDetailShell(request, env, url);
+    if (staticServiceDetailShellResponse) return staticServiceDetailShellResponse;
 
     const staticLegacyResponse = await maybeServeStaticLegacyPage(request, env, url);
     if (staticLegacyResponse) return staticLegacyResponse;

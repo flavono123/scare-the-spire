@@ -3,6 +3,10 @@ import {
   generateComboPostMetadata,
   renderComboPostPage,
 } from "./page-content";
+import { generateStaticDetailShellParams } from "@/lib/static-detail-shell";
+
+export const dynamic = "force-static";
+export const generateStaticParams = generateStaticDetailShellParams;
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -13,7 +17,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return generateComboPostMetadata(id);
 }
 
-export default async function ComboPostPage({ params }: Props) {
-  const { id } = await params;
-  return renderComboPostPage(id);
+export default async function ComboPostPage() {
+  return renderComboPostPage();
 }

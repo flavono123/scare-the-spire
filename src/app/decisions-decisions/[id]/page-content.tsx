@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DecisionsDecisionsPostView } from "@/components/decisions-decisions/decisions-decisions-post-view";
 import { ServiceBackground } from "@/components/service-background";
+import { StaticDetailShell } from "@/components/static-detail-shell";
 import { getDecisionsDecisionsGameCopy } from "@/lib/borrowed-game-copy";
 import {
   DECISIONS_DECISIONS_BACKGROUND_SRC,
@@ -13,6 +14,7 @@ import {
   composeToyBoxPostOgDescription,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
+import { metadataRecordId } from "@/lib/static-detail-shell";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 
@@ -28,17 +30,17 @@ export async function generateDecisionsDecisionsPostMetadata(
     serviceName: gameCopy.title,
     serviceDescription: copy.subtitle,
   });
+  const recordId = metadataRecordId(id);
   return getServiceOgMetadata({
     serviceLocale,
     title: gameCopy.title,
     description,
     image: DECISIONS_DECISIONS_PAGE_OG_IMAGE,
-    canonicalPath: id ? `${DECISIONS_DECISIONS_HREF}/${id}` : DECISIONS_DECISIONS_HREF,
+    canonicalPath: recordId ? `${DECISIONS_DECISIONS_HREF}/${recordId}` : DECISIONS_DECISIONS_HREF,
   });
 }
 
 export async function renderDecisionsDecisionsPostPage(
-  id: string,
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
   const gameCopy = await getDecisionsDecisionsGameCopy(gameLocale);
@@ -50,11 +52,13 @@ export async function renderDecisionsDecisionsPostPage(
         imageClassName="object-[42%_center] sm:object-center"
       />
       <div className={TOYBOX_WIDE_SHELL_CLASS}>
-        <DecisionsDecisionsPostView
-          postId={id}
-          gameLocale={gameLocale}
-          gameCopy={gameCopy}
-        />
+        <StaticDetailShell>
+          <DecisionsDecisionsPostView
+            postId=""
+            gameLocale={gameLocale}
+            gameCopy={gameCopy}
+          />
+        </StaticDetailShell>
       </div>
     </div>
   );

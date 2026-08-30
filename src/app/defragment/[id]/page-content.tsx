@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { DefragmentPostView } from "@/components/defragment/defragment-post-view";
 import { ServiceBackground } from "@/components/service-background";
+import { StaticDetailShell } from "@/components/static-detail-shell";
 import { getDefragmentGameCopy } from "@/lib/borrowed-game-copy";
 import { DEFRAGMENT_BACKGROUND_SRC, isDefragmentFederatedService } from "@/lib/defragment";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
@@ -11,6 +12,7 @@ import {
   composeToyBoxPostOgDescription,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
+import { metadataRecordId } from "@/lib/static-detail-shell";
 import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 
@@ -25,12 +27,13 @@ export async function generateDefragmentPostMetadata(
     serviceName: serviceMessages[serviceLocale].nav.defragment,
     serviceDescription: serviceMessages[serviceLocale].defragment.subtitle,
   });
+  const recordId = metadataRecordId(id);
   return getServiceOgMetadata({
     serviceLocale,
     title: gameCopy.title,
     description,
     image: DEFRAGMENT_PAGE_OG_IMAGE,
-    canonicalPath: id ? `/defragment/${id}` : "/defragment",
+    canonicalPath: recordId ? `/defragment/${recordId}` : "/defragment",
   });
 }
 
@@ -49,11 +52,13 @@ export async function renderDefragmentPostPage(
         imageClassName="object-[58%_center] sm:object-center"
       />
       <div className={TOYBOX_NARROW_SHELL_CLASS}>
-        <DefragmentPostView
-          postId={id}
-          gameLocale={gameLocale}
-          placeholder={gameCopy.placeholder}
-        />
+        <StaticDetailShell>
+          <DefragmentPostView
+            postId=""
+            gameLocale={gameLocale}
+            placeholder={gameCopy.placeholder}
+          />
+        </StaticDetailShell>
       </div>
     </div>
   );

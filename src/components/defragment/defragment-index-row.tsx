@@ -134,6 +134,7 @@ export function DefragmentIndexRow({
         <GameUiHoverTip label={commentTip}>
           <Link
             href={commentsHref}
+            prefetch={false}
             className={cn(
               SPIRE_ACTION_CONTROL_CLASS,
               "gap-0.5 text-xs text-muted-foreground",

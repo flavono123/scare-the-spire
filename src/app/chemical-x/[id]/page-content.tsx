@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ChemicalXPostView } from "@/components/chemicalx/post-view";
+import { StaticDetailShell } from "@/components/static-detail-shell";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { CHEMICAL_X_PAGE_OG_IMAGE } from "@/lib/page-og-images";
@@ -8,6 +9,7 @@ import {
   getServiceMetadataCopy,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
+import { metadataRecordId } from "@/lib/static-detail-shell";
 import {
   chemicalPostOgImage,
   getChemicalPostOgFields,
@@ -27,32 +29,33 @@ export async function generateChemicalXPostMetadata(
     serviceName: serviceMessages[serviceLocale].nav.chemicalX,
     serviceDescription: serviceMessages[serviceLocale].chemicalX.subtitle,
   });
+  const recordId = metadataRecordId(id);
   const fallback = getServiceOgMetadata({
     serviceLocale,
     title: copy.chemicalXTitle,
     description,
     image: CHEMICAL_X_PAGE_OG_IMAGE,
-    canonicalPath: id ? `/chemical-x/${id}` : "/chemical-x",
+    canonicalPath: recordId ? `/chemical-x/${recordId}` : "/chemical-x",
   });
-  if (!id) return fallback;
+  if (!recordId) return fallback;
 
-  const fields = await getChemicalPostOgFields(id);
+  const fields = await getChemicalPostOgFields(recordId);
   if (!fields) return fallback;
   return getServiceOgMetadata({
     serviceLocale,
     title: truncateOgTitle(fields.contentText) || copy.chemicalXTitle,
     description,
     image: chemicalPostOgImage(fields.content),
-    canonicalPath: `/chemical-x/${id}`,
+    canonicalPath: `/chemical-x/${recordId}`,
   });
 }
 
-export async function renderChemicalXPostPage(
-  id: string,
-) {
+export async function renderChemicalXPostPage() {
   return (
     <div className={TOYBOX_NARROW_SHELL_CLASS}>
-      <ChemicalXPostView postId={id} />
+      <StaticDetailShell>
+        <ChemicalXPostView postId="" />
+      </StaticDetailShell>
     </div>
   );
 }

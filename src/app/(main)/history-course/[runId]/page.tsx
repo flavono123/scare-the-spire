@@ -3,6 +3,10 @@ import {
   generateHistoryCourseRunMetadata,
   renderHistoryCourseRunPage,
 } from "./page-content";
+import { generateStaticHistoryCourseShellParams } from "@/lib/static-detail-shell";
+
+export const dynamic = "force-static";
+export const generateStaticParams = generateStaticHistoryCourseShellParams;
 
 type Props = {
   params: Promise<{ runId: string }>;
@@ -13,11 +17,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return generateHistoryCourseRunMetadata(undefined, runId);
 }
 
-// runId is content-addressable and per-browser; we never enumerate.
-// The loader resolves runId from IndexedDB on the client.
-export const dynamic = "force-dynamic";
-
-export default async function HistoryCourseRunPage({ params }: Props) {
-  const { runId } = await params;
-  return renderHistoryCourseRunPage(runId);
+export default async function HistoryCourseRunPage() {
+  return renderHistoryCourseRunPage();
 }

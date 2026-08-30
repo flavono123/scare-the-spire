@@ -110,3 +110,86 @@ export function staticCompendiumAssetPath(
 
   return `/_cf_static_pages/${parts.join("/")}.${extension}`;
 }
+
+export const STATIC_DETAIL_SHELL_SEGMENT = "__id__";
+
+const STATIC_SERVICE_DETAIL_SEGMENTS = new Set([
+  "chemical-x",
+  "c-c-c-combo",
+  "this-or-that",
+  "transfigure",
+  "history-course",
+  "decisions-decisions",
+]);
+
+const DEFRAGMENT_FEDERATED_SERVICES = new Set([
+  "combo",
+  "transfigure",
+  "this_or_that",
+  "chemical_x",
+  "decisions_decisions",
+  "favorite_tournament",
+]);
+
+const RECORD_ID_PATTERN = /^[A-Za-z0-9_-]{1,128}$/;
+
+function isRecordIdSegment(segment: string | undefined): boolean {
+  return Boolean(segment && RECORD_ID_PATTERN.test(segment));
+}
+
+export function staticServiceDetailShellAssetPath(
+  pathname: string,
+  extension: StaticPageExtension,
+): string | null {
+  const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
+  const parts = normalizedPathname.split("/").filter(Boolean);
+  if (parts.length < 2) return null;
+
+  let localePrefix: string[] = [];
+  let rest = parts;
+  if (STATIC_GAME_LOCALE_PREFIXES.has(parts[0])) {
+    localePrefix = [parts[0]];
+    rest = parts.slice(1);
+  }
+
+  if (
+    rest.length === 3
+    && rest[0] === "defragment"
+    && DEFRAGMENT_FEDERATED_SERVICES.has(rest[1])
+    && isRecordIdSegment(rest[2])
+  ) {
+    return `/_cf_static_pages/${[
+      ...localePrefix,
+      "defragment",
+      rest[1],
+      STATIC_DETAIL_SHELL_SEGMENT,
+    ].join("/")}.${extension}`;
+  }
+
+  if (
+    rest.length === 2
+    && rest[0] === "defragment"
+    && !DEFRAGMENT_FEDERATED_SERVICES.has(rest[1])
+    && isRecordIdSegment(rest[1])
+  ) {
+    return `/_cf_static_pages/${[
+      ...localePrefix,
+      "defragment",
+      STATIC_DETAIL_SHELL_SEGMENT,
+    ].join("/")}.${extension}`;
+  }
+
+  if (
+    rest.length === 2
+    && STATIC_SERVICE_DETAIL_SEGMENTS.has(rest[0])
+    && isRecordIdSegment(rest[1])
+  ) {
+    return `/_cf_static_pages/${[
+      ...localePrefix,
+      rest[0],
+      STATIC_DETAIL_SHELL_SEGMENT,
+    ].join("/")}.${extension}`;
+  }
+
+  return null;
+}

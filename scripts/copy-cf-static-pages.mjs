@@ -52,6 +52,24 @@ const staticServicePageSegments = new Set([
   "this-or-that",
   "transfigure",
 ]);
+const staticDetailShellSegment = "__id__";
+const staticServiceDetailSegments = new Set([
+  "chemical-x",
+  "c-c-c-combo",
+  "this-or-that",
+  "transfigure",
+  "history-course",
+  "decisions-decisions",
+  "defragment",
+]);
+const defragmentFederatedServices = new Set([
+  "combo",
+  "transfigure",
+  "this_or_that",
+  "chemical_x",
+  "decisions_decisions",
+  "favorite_tournament",
+]);
 const staticLegacyPageSegments = new Set([
   "cards",
   "potions",
@@ -86,6 +104,35 @@ function staticPageRelativePath(file) {
     && gameLocalePathSegments.has(parts[0])
     && staticServicePageSegments.has(parsed.name);
   if (isDefaultLocaleServicePage || isGameLocaleServicePage) {
+    return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
+  }
+
+  const isDefaultLocaleDetailShell =
+    parsed.name === staticDetailShellSegment
+    && parts.length === 1
+    && staticServiceDetailSegments.has(parts[0]);
+  const isGameLocaleDetailShell =
+    parsed.name === staticDetailShellSegment
+    && parts.length === 2
+    && gameLocalePathSegments.has(parts[0])
+    && staticServiceDetailSegments.has(parts[1]);
+  const isDefaultFederatedDetailShell =
+    parsed.name === staticDetailShellSegment
+    && parts.length === 2
+    && parts[0] === "defragment"
+    && defragmentFederatedServices.has(parts[1]);
+  const isGameLocaleFederatedDetailShell =
+    parsed.name === staticDetailShellSegment
+    && parts.length === 3
+    && gameLocalePathSegments.has(parts[0])
+    && parts[1] === "defragment"
+    && defragmentFederatedServices.has(parts[2]);
+  if (
+    isDefaultLocaleDetailShell
+    || isGameLocaleDetailShell
+    || isDefaultFederatedDetailShell
+    || isGameLocaleFederatedDetailShell
+  ) {
     return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
   }
 

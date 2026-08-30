@@ -4,6 +4,7 @@ import path from "node:path";
 import {
   staticCompendiumAssetPath,
   staticLegacyPageAssetPath,
+  staticServiceDetailShellAssetPath,
   staticServicePageAssetPath,
   type StaticPageExtension,
 } from "../workers/static-page-routing";
@@ -64,6 +65,23 @@ const staticServicePageSegments = [
   "profile",
   "this-or-that",
   "transfigure",
+] as const;
+const staticDetailShellSegment = "__id__";
+const staticServiceDetailShellSegments = [
+  "chemical-x",
+  "c-c-c-combo",
+  "this-or-that",
+  "transfigure",
+  "history-course",
+  "decisions-decisions",
+] as const;
+const defragmentFederatedServices = [
+  "combo",
+  "transfigure",
+  "this_or_that",
+  "chemical_x",
+  "decisions_decisions",
+  "favorite_tournament",
 ] as const;
 const staticLegacyPageSegments = ["cards", "potions", "relics"] as const;
 const staticMetadataAssets = ["robots.txt", "sitemap.xml"] as const;
@@ -199,6 +217,103 @@ function checkStaticServicePages(): number {
   return count;
 }
 
+function checkStaticDetailShellRouting(): void {
+  assert(
+    staticServiceDetailShellAssetPath("/chemical-x/post-id", "html")
+      === `/_cf_static_pages/chemical-x/${staticDetailShellSegment}.html`,
+    "Chemical X details must rewrite to the static shell.",
+  );
+  assert(
+    staticServiceDetailShellAssetPath("/en/history-course/1testbedsmoketest", "rsc")
+      === `/_cf_static_pages/en/history-course/${staticDetailShellSegment}.rsc`,
+    "Locale History Course details must rewrite to the static shell.",
+  );
+  assert(
+    staticServiceDetailShellAssetPath("/defragment/transfigure/abc", "html")
+      === `/_cf_static_pages/defragment/transfigure/${staticDetailShellSegment}.html`,
+    "Federated 조각모음 details must rewrite to the matching service shell.",
+  );
+  assert(
+    staticServiceDetailShellAssetPath("/zh/defragment/native-post", "html")
+      === `/_cf_static_pages/zh/defragment/${staticDetailShellSegment}.html`,
+    "Native 조각모음 details must rewrite to the native shell.",
+  );
+  assert(
+    staticServiceDetailShellAssetPath("/defragment/combo", "html") === null,
+    "Federated service names without a post id must not use the native shell.",
+  );
+  assert(
+    staticServiceDetailShellAssetPath("/chemical-x/post-id/extra", "html") === null,
+    "Nested extra path segments must fail closed.",
+  );
+  assert(
+    staticServiceDetailShellAssetPath("/chemical-x", "html") === null,
+    "Service indexes must not match the detail shell matcher.",
+  );
+  assert(
+    staticServiceDetailShellAssetPath("/defragment/not_a_service/abc", "rsc") === null,
+    "Unknown 조각모음 service names must fail closed.",
+  );
+}
+
+function checkStaticDetailShellAssets(): number {
+  checkStaticDetailShellRouting();
+  let count = 0;
+
+  for (const pathPrefix of gameLocalePathPrefixes) {
+    for (const pageSegment of staticServiceDetailShellSegments) {
+      const routePath = `/${pathPrefix ? `${pathPrefix}/` : ""}${pageSegment}/${staticDetailShellSegment}`;
+      for (const extension of ["html", "rsc"] satisfies StaticPageExtension[]) {
+        const assetPath = staticServiceDetailShellAssetPath(
+          routePath.replace(staticDetailShellSegment, "post-id"),
+          extension,
+        );
+        assert(assetPath, `Static routing rejected detail shell ${routePath}.${extension}`);
+        const outputPath = path.join(assetsRoot, assetPath.slice(1));
+        assert(
+          statSync(outputPath, { throwIfNoEntry: false })?.isFile(),
+          `Missing copied static detail shell: ${outputPath}`,
+        );
+        count += 1;
+      }
+    }
+
+    const nativeDefragmentPath = `/${pathPrefix ? `${pathPrefix}/` : ""}defragment/${staticDetailShellSegment}`;
+    for (const extension of ["html", "rsc"] satisfies StaticPageExtension[]) {
+      const assetPath = staticServiceDetailShellAssetPath(
+        nativeDefragmentPath.replace(staticDetailShellSegment, "native-post"),
+        extension,
+      );
+      assert(assetPath, `Static routing rejected native 조각모음 shell ${nativeDefragmentPath}.${extension}`);
+      const outputPath = path.join(assetsRoot, assetPath.slice(1));
+      assert(
+        statSync(outputPath, { throwIfNoEntry: false })?.isFile(),
+        `Missing copied native 조각모음 shell: ${outputPath}`,
+      );
+      count += 1;
+    }
+
+    for (const service of defragmentFederatedServices) {
+      const routePath = `/${pathPrefix ? `${pathPrefix}/` : ""}defragment/${service}/${staticDetailShellSegment}`;
+      for (const extension of ["html", "rsc"] satisfies StaticPageExtension[]) {
+        const assetPath = staticServiceDetailShellAssetPath(
+          routePath.replace(staticDetailShellSegment, "post-id"),
+          extension,
+        );
+        assert(assetPath, `Static routing rejected federated shell ${routePath}.${extension}`);
+        const outputPath = path.join(assetsRoot, assetPath.slice(1));
+        assert(
+          statSync(outputPath, { throwIfNoEntry: false })?.isFile(),
+          `Missing copied federated detail shell: ${outputPath}`,
+        );
+        count += 1;
+      }
+    }
+  }
+
+  return count;
+}
+
 function checkStaticCompendiumRoots(): number {
   let count = 0;
 
@@ -311,6 +426,7 @@ function checkCloudflareAssetLimits(): { count: number; largestBytes: number; la
 
 const routeCounts = checkServiceLocaleDetails();
 const staticServicePageCount = checkStaticServicePages();
+const staticDetailShellCount = checkStaticDetailShellAssets();
 const staticCompendiumRootCount = checkStaticCompendiumRoots();
 const staticLegacyPageCount = checkStaticLegacyPages();
 const staticMetadataAssetCount = checkStaticMetadataAssets();
@@ -318,6 +434,7 @@ const assetStats = checkCloudflareAssetLimits();
 
 console.log(`Cloudflare static detail routes: ko=${routeCounts.ko}, en=${routeCounts.en}`);
 console.log(`Cloudflare static service page assets: ${staticServicePageCount}`);
+console.log(`Cloudflare static detail shell assets: ${staticDetailShellCount}`);
 console.log(`Cloudflare static Compendium root assets: ${staticCompendiumRootCount}`);
 console.log(`Cloudflare static legacy page assets: ${staticLegacyPageCount}`);
 console.log(`Cloudflare static metadata assets: ${staticMetadataAssetCount}`);

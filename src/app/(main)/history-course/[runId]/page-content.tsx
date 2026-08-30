@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DeferredRunDetailLoader } from "@/components/history-course/deferred-run-detail-loader";
+import { StaticDetailShell } from "@/components/static-detail-shell";
 import { getHistoryCourseLandingGameCopy } from "@/lib/borrowed-game-copy";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
@@ -12,6 +13,7 @@ import {
 } from "@/lib/service-metadata";
 import { withKoreanSearchCanonical } from "@/lib/search-canonical";
 import { absoluteSiteUrl, SITE_METADATA_BASE } from "@/lib/site-origin";
+import { metadataRecordId } from "@/lib/static-detail-shell";
 import { coverOgImageFromFields } from "@/lib/toybox-post-og";
 import { serviceMessages } from "@/messages/service";
 
@@ -29,11 +31,12 @@ export async function generateHistoryCourseRunMetadata(
     serviceName: copy.nav.historyCourse,
     serviceDescription: copy.historyCourse.subtitle,
   });
-  const canonicalPath = runId ? `/history-course/${runId}` : "/history-course";
+  const recordId = metadataRecordId(runId);
+  const canonicalPath = recordId ? `/history-course/${recordId}` : "/history-course";
 
   // Bounded single-row lookup (cover_spec + character only). No raw parse /
   // image generation — CF Free-safe. Private IDB-only runs keep the fallback.
-  const ogFields = runId ? await getDonatedRunOgFields(runId) : null;
+  const ogFields = recordId ? await getDonatedRunOgFields(recordId) : null;
   const phrase = isCoverSpec(ogFields?.coverSpec) ? ogFields.coverSpec.phrase.trim() : "";
   // Exact share title shape: "{phrase} - 슬서운 이야기 역사 강의서"
   const title = phrase
@@ -68,8 +71,10 @@ export async function generateHistoryCourseRunMetadata(
   return withKoreanSearchCanonical(metadata, canonicalPath);
 }
 
-export async function renderHistoryCourseRunPage(
-  runId: string,
-) {
-  return <DeferredRunDetailLoader runId={runId} />;
+export async function renderHistoryCourseRunPage() {
+  return (
+    <StaticDetailShell idProp="runId">
+      <DeferredRunDetailLoader runId="" />
+    </StaticDetailShell>
+  );
 }

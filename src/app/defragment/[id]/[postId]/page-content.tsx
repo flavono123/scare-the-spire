@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { DefragmentFederatedPostView } from "@/components/defragment/defragment-federated-post-view";
 import { ServiceBackground } from "@/components/service-background";
+import { StaticDetailShell } from "@/components/static-detail-shell";
 import {
   getComboPlaceholder,
   getDecisionsDecisionsGameCopy,
@@ -22,6 +23,7 @@ import {
   composeToyBoxPostOgDescription,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
+import { metadataRecordId } from "@/lib/static-detail-shell";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 
@@ -40,18 +42,18 @@ export async function generateDefragmentFederatedPostMetadata(
     serviceName: serviceMessages[serviceLocale].nav.defragment,
     serviceDescription: serviceMessages[serviceLocale].defragment.subtitle,
   });
+  const recordId = metadataRecordId(id);
   return getServiceOgMetadata({
     serviceLocale,
     title: gameCopy.title,
     description,
     image: DEFRAGMENT_PAGE_OG_IMAGE,
-    canonicalPath: id ? `/defragment/${service}/${id}` : "/defragment",
+    canonicalPath: recordId ? `/defragment/${service}/${recordId}` : "/defragment",
   });
 }
 
 export async function renderDefragmentFederatedPostPage(
   service: string,
-  id: string,
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
   if (!isDefragmentFederatedService(service)) notFound();
@@ -80,18 +82,20 @@ export async function renderDefragmentFederatedPostPage(
         imageClassName="object-[58%_center] sm:object-center"
       />
       <div className={TOYBOX_WIDE_SHELL_CLASS}>
-        <DefragmentFederatedPostView
-          service={service}
-          postId={id}
-          gameLocale={gameLocale}
-          typeLabel={typeLabels[service]}
-          comboPlaceholder={comboPlaceholder}
-          upgradeLabel={transfigureCopy.viewUpgrades}
-          thisOrThatTitle={totCopy.title}
-          votePrompt={totCopy.votePrompt}
-          voteDone={totCopy.voteDone}
-          decisionsCopy={decisionsCopy}
-        />
+        <StaticDetailShell>
+          <DefragmentFederatedPostView
+            service={service}
+            postId=""
+            gameLocale={gameLocale}
+            typeLabel={typeLabels[service]}
+            comboPlaceholder={comboPlaceholder}
+            upgradeLabel={transfigureCopy.viewUpgrades}
+            thisOrThatTitle={totCopy.title}
+            votePrompt={totCopy.votePrompt}
+            voteDone={totCopy.voteDone}
+            decisionsCopy={decisionsCopy}
+          />
+        </StaticDetailShell>
       </div>
     </div>
   );

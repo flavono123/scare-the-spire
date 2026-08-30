@@ -64,15 +64,18 @@ KiB를 108.87 KiB 초과했다. 정적 asset 수와 별개로 OpenNext runtime i
 - `/chemical-x/{postId}`
 - `/c-c-c-combo/{postId}`
 - `/this-or-that/{postId}`
+- `/transfigure/{postId}`
+- `/decisions-decisions/{postId}`
 - `/history-course/{runId}`
+- `/defragment/{postId}` and `/defragment/{service}/{postId}`
 - 위 route의 `/en`, `/zh` 등 game-locale variant
 
 판정: **공개 기능에는 필요하지만 OpenNext SSR은 불필요. 대체 후 삭제.**
 
 현재 서버가 record 본문을 소유해 렌더하지 않는다. Chemical X, Combo, This or
-That은 브라우저에서 Supabase record를 읽고, History Course는 IndexedDB 또는
-Supabase에서 run을 읽는다. metadata도 ID별 record 데이터를 사용하지 않는
-generic metadata다.
+That, Transfigure, 어려운 결정은 브라우저에서 Supabase record를 읽고, History
+Course는 IndexedDB 또는 Supabase에서 run을 읽는다. 셸 metadata는 generic이며,
+canonical은 마운트 후 현재 URL로 맞춘다.
 
 삭제 선행 조건:
 
@@ -81,7 +84,9 @@ generic metadata다.
 3. Worker가 허용된 한 segment ID 형태만 shell로 rewrite한다.
 4. document와 RSC navigation, direct refresh, invalid nested path를 검증한다.
 
-상태: **fallback 유지. 다음 우선순위.**
+상태: **코드 반영.** 메인 Worker가 검증된 ID 형태를 `__id__` HTML/RSC 셸로
+rewrite하고 `x-cf-static-page: shell`을 붙인다. `/this-or-that/tournament/{id}`와
+`/this-or-that/worldcup/{id}`는 아직 OpenNext다.
 
 ### 3. game-only locale Compendium detail
 

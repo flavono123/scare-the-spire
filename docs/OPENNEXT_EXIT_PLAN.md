@@ -20,9 +20,14 @@ request
   -> OpenNext fallback otherwise
 ```
 
-Chemical X and History Course indexes are direct static HTML/RSC pages across
-all supported game-locale prefixes. This removes their known Error 1102 path
-without coupling the incident fix to a broad deployment migration.
+Chemical X, Combo, Transfigure, This or That, 어려운 결정, History Course,
+and 조각모음 unbounded IDs are served as static HTML/RSC shells. The thin Worker
+rewrites a validated one-segment ID to a prerendered `__id__` asset for both
+document and RSC requests. Direct tournament/worldcup IDs remain on OpenNext
+until a later pass.
+
+This removes their known Error 1102 path without coupling the incident fix to a
+broad deployment migration.
 
 ## Goal
 
@@ -128,14 +133,17 @@ resource data is fetched as immutable or long-lived static JSON.
   from the URL and loads from IndexedDB or Supabase.
 - Create one static This or That detail shell with the same path-derived ID
   contract.
+- Cover Combo, Transfigure, 어려운 결정, native 조각모음, and federated
+  `/defragment/{service}/{id}` shells, including locale prefixes.
 - Teach the thin Worker to rewrite only the validated route shapes to those
   shells for both document and RSC navigation.
-- Preserve canonical URLs and generic metadata. Any future record-specific OG
-  rendering is a separate design and must not reintroduce request-time Next
-  rendering by default.
+- Preserve generic metadata at build time. The browser updates the canonical URL
+  from `window.location` after mount. Record-specific OG rendering is a
+  separate design and must not reintroduce request-time Next rendering by default.
 
 Exit condition: unbounded user-content paths never invoke OpenNext and invalid
-nested paths fail closed.
+nested paths fail closed. Direct `/this-or-that/tournament/{id}` and
+`/this-or-that/worldcup/{id}` remain OpenNext until they get the same treatment.
 
 ### Phase 4: Consolidate game-only locale detail delivery
 
