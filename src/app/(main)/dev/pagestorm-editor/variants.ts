@@ -3,19 +3,19 @@ export const PAGESTORM_EDITOR_VARIANTS = [
     id: "tiptap-toolbar",
     label: "Tiptap · 상단 툴바",
     engine: "이미 있는 Tiptap 3",
-    chrome: "문서 위 고정 GUI. Word/블로그 글쓰기 기본형.",
+    chrome: "문서 위 고정 GUI. `{` 로 초상 자동완성. Word/블로그 글쓰기 기본형.",
   },
   {
     id: "tiptap-bubble",
     label: "Tiptap · 버블/플로팅",
     engine: "이미 있는 Tiptap 3",
-    chrome: "선택하면 버블, 빈 줄에서 플로팅. Medium식.",
+    chrome: "선택하면 버블, 빈 줄에서 플로팅. `{` 자동완성은 툴바와 동일.",
   },
   {
     id: "blocknote",
     label: "BlockNote",
     engine: "@blocknote (Tiptap 위 Notion식 UI)",
-    chrome: "슬래시 메뉴 + 블록 핸들 + 포맷 툴바가 기본 포함.",
+    chrome: "슬래시 `/` + `{` 메뉴 + 블록 핸들 + 포맷 툴바가 기본 포함.",
   },
   {
     id: "lexical",

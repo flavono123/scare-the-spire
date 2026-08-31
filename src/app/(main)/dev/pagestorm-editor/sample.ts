@@ -98,6 +98,31 @@ export function findSampleAsset(id: string): MockGameAsset | undefined {
   return SAMPLE_ASSETS.find((asset) => asset.id === id);
 }
 
+export function defaultAssetWidth(kind: MockAssetKind): number {
+  return kind === "card" ? 128 : 64;
+}
+
+export function clampAssetWidth(kind: MockAssetKind, width: number): number {
+  if (kind === "card") return Math.min(240, Math.max(72, Math.round(width)));
+  return Math.min(128, Math.max(40, Math.round(width)));
+}
+
+export function defaultPlayerWidth(): number {
+  return 576;
+}
+
+export function clampPlayerWidth(width: number): number {
+  return Math.min(720, Math.max(240, Math.round(width)));
+}
+
+export function filterPrefixItems(query: string): MockGameAsset[] {
+  const needle = query.trim().toLowerCase();
+  if (!needle) return [...SAMPLE_ASSETS];
+  return SAMPLE_ASSETS.filter((asset) => {
+    return asset.name.toLowerCase().includes(needle) || asset.id.toLowerCase().includes(needle);
+  });
+}
+
 export function resolvePastedUrl(raw: string):
   | { kind: "youtube"; videoId: string; title: string }
   | { kind: "og"; bookmark: MockOgBookmark }

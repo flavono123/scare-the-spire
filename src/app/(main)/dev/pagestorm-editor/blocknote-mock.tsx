@@ -10,12 +10,16 @@ import {
 } from "@blocknote/react";
 import "@blocknote/ariakit/style.css";
 import {
+  EditBlockChrome,
   GameAssetFigure,
   OgBookmarkFigure,
   YoutubePlayerFigure,
 } from "./figures";
-import { AlignButtons, InsertBar } from "./insert-bar";
+import { InsertBar } from "./insert-bar";
 import {
+  defaultAssetWidth,
+  defaultPlayerWidth,
+  filterPrefixItems,
   findSampleAsset,
   SAMPLE_ASSETS,
   SAMPLE_YOUTUBE,
@@ -44,6 +48,8 @@ const gameAssetSpec = createReactBlockSpec(
       href: { default: "" },
       kind: { default: "card" },
       align: alignSpec,
+      linked: { default: true },
+      width: { default: 128 },
     },
     content: "none",
   },
@@ -57,15 +63,23 @@ const gameAssetSpec = createReactBlockSpec(
         href: block.props.href || "#",
       };
       const align = asAlign(block.props.align);
+      const linked = block.props.linked !== false;
+      const width = Number(block.props.width) || defaultAssetWidth(asset.kind);
       return (
         <div>
-          <GameAssetFigure asset={asset} align={align} />
-          <div className="flex justify-center gap-1 pb-2">
-            <AlignButtons
-              value={align}
-              onChange={(next) => editor.updateBlock(block, { props: { align: next } })}
-            />
-          </div>
+          <GameAssetFigure
+            asset={asset}
+            align={align}
+            linked={linked}
+            width={width}
+            onResize={(next) => editor.updateBlock(block, { props: { width: next } })}
+          />
+          <EditBlockChrome
+            align={align}
+            onAlign={(next) => editor.updateBlock(block, { props: { align: next } })}
+            linked={linked}
+            onLinked={(next) => editor.updateBlock(block, { props: { linked: next } })}
+          />
         </div>
       );
     },
@@ -79,25 +93,27 @@ const youtubeSpec = createReactBlockSpec(
       videoId: { default: "" },
       title: { default: "YouTube" },
       align: alignSpec,
+      width: { default: 576 },
     },
     content: "none",
   },
   {
     render: ({ block, editor }) => {
       const align = asAlign(block.props.align);
+      const width = Number(block.props.width) || defaultPlayerWidth();
       return (
         <div>
           <YoutubePlayerFigure
             videoId={block.props.videoId}
             title={block.props.title}
             align={align}
+            width={width}
+            onResize={(next) => editor.updateBlock(block, { props: { width: next } })}
           />
-          <div className="flex justify-center gap-1 pb-2">
-            <AlignButtons
-              value={align}
-              onChange={(next) => editor.updateBlock(block, { props: { align: next } })}
-            />
-          </div>
+          <EditBlockChrome
+            align={align}
+            onAlign={(next) => editor.updateBlock(block, { props: { align: next } })}
+          />
         </div>
       );
     },
@@ -114,6 +130,8 @@ const ogSpec = createReactBlockSpec(
       image: { default: "" },
       siteName: { default: "" },
       align: alignSpec,
+      linked: { default: true },
+      width: { default: 576 },
     },
     content: "none",
   },
@@ -127,15 +145,23 @@ const ogSpec = createReactBlockSpec(
         siteName: block.props.siteName,
       };
       const align = asAlign(block.props.align);
+      const linked = block.props.linked !== false;
+      const width = Number(block.props.width) || defaultPlayerWidth();
       return (
         <div>
-          <OgBookmarkFigure bookmark={bookmark} align={align} />
-          <div className="flex justify-center gap-1 pb-2">
-            <AlignButtons
-              value={align}
-              onChange={(next) => editor.updateBlock(block, { props: { align: next } })}
-            />
-          </div>
+          <OgBookmarkFigure
+            bookmark={bookmark}
+            align={align}
+            linked={linked}
+            width={width}
+            onResize={(next) => editor.updateBlock(block, { props: { width: next } })}
+          />
+          <EditBlockChrome
+            align={align}
+            onAlign={(next) => editor.updateBlock(block, { props: { align: next } })}
+            linked={linked}
+            onLinked={(next) => editor.updateBlock(block, { props: { linked: next } })}
+          />
         </div>
       );
     },
@@ -164,6 +190,8 @@ function assetProps(asset: MockGameAsset) {
     href: asset.href,
     kind: asset.kind,
     align: "center" as const,
+    linked: true,
+    width: defaultAssetWidth(asset.kind),
   };
 }
 
@@ -174,6 +202,8 @@ const steamOg = {
   image: "/images/sts2/cards/pagestorm.webp",
   siteName: "Steam · mock OG snapshot",
   align: "left" as const,
+  linked: true,
+  width: 576,
 };
 
 export function BlockNotePagestormMock() {
@@ -195,14 +225,17 @@ export function BlockNotePagestormMock() {
         type: "gameAsset",
         props: assetProps(SAMPLE_ASSETS[0]),
       },
+      { type: "paragraph", content: "" },
       {
         type: "gameAsset",
         props: assetProps(SAMPLE_ASSETS[1]),
       },
+      { type: "paragraph", content: "" },
       {
         type: "gameAsset",
         props: assetProps(SAMPLE_ASSETS[2]),
       },
+      { type: "paragraph", content: "" },
       {
         type: "heading",
         props: { level: 3 },
@@ -229,8 +262,13 @@ export function BlockNotePagestormMock() {
   }, []);
 
   const insertAfterCursor = (block: Record<string, unknown>) => {
-    const cursor = editor.getTextCursorPosition();
-    editor.insertBlocks([block as never], cursor.block, "after");
+    try {
+      const cursor = editor.getTextCursorPosition();
+      editor.insertBlocks([block as never], cursor.block, "after");
+    } catch {
+      const last = editor.document.at(-1);
+      if (last) editor.insertBlocks([block as never], last, "after");
+    }
   };
 
   return (
@@ -241,12 +279,12 @@ export function BlockNotePagestormMock() {
         onInsertYoutube={(videoId, title) =>
           insertAfterCursor({
             type: "youtubePlayer",
-            props: { videoId, title, align: "center" },
+            props: { videoId, title, align: "center", width: 576 },
           })}
         onInsertOg={(bookmark) =>
           insertAfterCursor({
             type: "ogBookmark",
-            props: { ...bookmark, image: bookmark.image ?? "", align: "center" },
+            props: { ...bookmark, image: bookmark.image ?? "", align: "center", linked: true, width: 576 },
           })}
       />
       <BlockNoteView editor={editor} theme="dark" slashMenu={false} filePanel={false} emojiPicker={false}>
@@ -257,6 +295,16 @@ export function BlockNotePagestormMock() {
               if (/image|video|audio|file|embed/i.test(item.title)) return false;
               return item.title.toLowerCase().includes(query.toLowerCase());
             })}
+        />
+        <SuggestionMenuController
+          triggerCharacter="{"
+          getItems={async (query) =>
+            filterPrefixItems(query).map((asset) => ({
+              title: asset.name,
+              subtext: asset.kind,
+              onItemClick: () =>
+                insertAfterCursor({ type: "gameAsset", props: assetProps(asset) }),
+            }))}
         />
       </BlockNoteView>
     </div>

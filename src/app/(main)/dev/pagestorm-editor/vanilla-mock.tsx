@@ -1,13 +1,18 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import {
+  EditBlockChrome,
   GameAssetFigure,
   OgBookmarkFigure,
   YoutubePlayerFigure,
 } from "./figures";
 import { AlignButtons, InsertBar, MarkToolbar, mockButtonClass } from "./insert-bar";
+import { PrefixMenu } from "./prefix-menu";
 import {
+  defaultAssetWidth,
+  defaultPlayerWidth,
+  filterPrefixItems,
   SAMPLE_ASSETS,
   SAMPLE_YOUTUBE,
   type MockAlign,
@@ -21,9 +26,9 @@ type VanillaBlock =
   | { id: string; type: "paragraph"; text: string; align: MockAlign }
   | { id: string; type: "quote"; text: string }
   | { id: string; type: "divider" }
-  | { id: string; type: "asset"; asset: MockGameAsset; align: MockAlign }
-  | { id: string; type: "youtube"; videoId: string; title: string; align: MockAlign }
-  | { id: string; type: "og"; bookmark: MockOgBookmark; align: MockAlign };
+  | { id: string; type: "asset"; asset: MockGameAsset; align: MockAlign; linked: boolean; width: number }
+  | { id: string; type: "youtube"; videoId: string; title: string; align: MockAlign; width: number }
+  | { id: string; type: "og"; bookmark: MockOgBookmark; align: MockAlign; linked: boolean; width: number };
 
 function nid(): string {
   return `block-${Math.random().toString(36).slice(2, 10)}`;
@@ -33,7 +38,14 @@ function seedBlocks(): VanillaBlock[] {
   const asset = (id: string): VanillaBlock => {
     const found = SAMPLE_ASSETS.find((item) => item.id === id);
     if (!found) throw new Error(id);
-    return { id: `asset-${id}`, type: "asset", asset: found, align: "center" };
+    return {
+      id: `asset-${id}`,
+      type: "asset",
+      asset: found,
+      align: "center",
+      linked: true,
+      width: defaultAssetWidth(found.kind),
+    };
   };
   return [
     { id: "h-synergy", type: "heading", level: 2, text: "다단히트 시너지" },
@@ -44,8 +56,11 @@ function seedBlocks(): VanillaBlock[] {
       text: "강철도 다단히트고 우주 먼지도 다단히트다. 그래서 케미컬 X · 우주 먼지 · 천원돌파에 동시에 잘 들어간다.",
     },
     asset("CHEMICAL_X"),
+    { id: "p-after-chemical", type: "paragraph", align: "left", text: "" },
     asset("STARDUST"),
+    { id: "p-after-stardust", type: "paragraph", align: "left", text: "" },
     asset("HEAVENLY_DRILL"),
+    { id: "p-after-drill", type: "paragraph", align: "left", text: "" },
     { id: "h-deck", type: "heading", level: 3, text: "덱 조작" },
     {
       id: "q-photon",
@@ -59,11 +74,14 @@ function seedBlocks(): VanillaBlock[] {
       videoId: SAMPLE_YOUTUBE.videoId,
       title: SAMPLE_YOUTUBE.title,
       align: "center",
+      width: defaultPlayerWidth(),
     },
     {
       id: "og-1",
       type: "og",
       align: "left",
+      linked: true,
+      width: defaultPlayerWidth(),
       bookmark: {
         url: "https://store.steampowered.com/app/2868840/Slay_the_Spire_2/",
         title: "Slay the Spire 2 on Steam",
@@ -79,9 +97,50 @@ function runMark(command: "bold" | "italic"): void {
   document.execCommand(command);
 }
 
+/** Keep DOM text while parent re-renders so `{` is not wiped by React children. */
+function SeededEditable({
+  tag: Tag,
+  initial,
+  className,
+  style,
+  onFocus,
+  onBlur,
+  onInput,
+}: {
+  tag: "p" | "h2" | "h3" | "blockquote";
+  initial: string;
+  className?: string;
+  style?: CSSProperties;
+  onFocus: () => void;
+  onBlur: (text: string) => void;
+  onInput?: (text: string, el: HTMLElement) => void;
+}) {
+  const ref = useRef<HTMLElement>(null);
+  const seeded = useRef(false);
+  useLayoutEffect(() => {
+    if (seeded.current || !ref.current) return;
+    ref.current.textContent = initial;
+    seeded.current = true;
+  }, [initial]);
+  return (
+    <Tag
+      ref={ref as never}
+      contentEditable
+      suppressContentEditableWarning
+      className={className}
+      style={style}
+      onFocus={onFocus}
+      onBlur={(event) => onBlur(event.currentTarget.textContent ?? "")}
+      onInput={(event) =>
+        onInput?.(event.currentTarget.textContent ?? "", event.currentTarget)}
+    />
+  );
+}
+
 export function VanillaPagestormMock() {
   const [blocks, setBlocks] = useState<VanillaBlock[]>(seedBlocks);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [prefix, setPrefix] = useState<{ query: string; left: number; top: number } | null>(null);
 
   const update = useCallback((id: string, patch: Partial<VanillaBlock>) => {
     setBlocks((current) =>
@@ -100,6 +159,31 @@ export function VanillaPagestormMock() {
     });
     setSelectedId(block.id);
   }, [selectedId]);
+
+  const removeSelected = useCallback(() => {
+    if (!selectedId) return;
+    setBlocks((current) => current.filter((block) => block.id !== selectedId));
+    setSelectedId(null);
+  }, [selectedId]);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      const selected = blocks.find((block) => block.id === selectedId);
+      if (!selected || selected.type === "paragraph" || selected.type === "heading" || selected.type === "quote") {
+        return;
+      }
+      if (event.key === "Backspace" || event.key === "Delete") {
+        event.preventDefault();
+        removeSelected();
+      }
+      if (event.key === "Enter") {
+        event.preventDefault();
+        insertAfter({ id: nid(), type: "paragraph", text: "", align: "left" });
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [blocks, insertAfter, removeSelected, selectedId]);
 
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-card/20">
@@ -143,44 +227,75 @@ export function VanillaPagestormMock() {
         </span>
       </MarkToolbar>
       <InsertBar
-        onInsertAsset={(asset) => insertAfter({ id: nid(), type: "asset", asset, align: "center" })}
+        onInsertAsset={(asset) => insertAfter({
+          id: nid(),
+          type: "asset",
+          asset,
+          align: "center",
+          linked: true,
+          width: defaultAssetWidth(asset.kind),
+        })}
         onInsertYoutube={(videoId, title) =>
-          insertAfter({ id: nid(), type: "youtube", videoId, title, align: "center" })}
-        onInsertOg={(bookmark) => insertAfter({ id: nid(), type: "og", bookmark, align: "center" })}
+          insertAfter({
+            id: nid(),
+            type: "youtube",
+            videoId,
+            title,
+            align: "center",
+            width: defaultPlayerWidth(),
+          })}
+        onInsertOg={(bookmark) => insertAfter({
+          id: nid(),
+          type: "og",
+          bookmark,
+          align: "center",
+          linked: true,
+          width: defaultPlayerWidth(),
+        })}
       />
       <div className="pagestorm-mock-editor space-y-1">
         {blocks.map((block) => {
           const selected = block.id === selectedId;
           const frame = selected ? "rounded-md ring-1 ring-primary/60" : "";
           if (block.type === "heading") {
-            const Tag = block.level === 2 ? "h2" : "h3";
             return (
-              <Tag
+              <SeededEditable
                 key={block.id}
-                contentEditable
-                suppressContentEditableWarning
+                tag={block.level === 2 ? "h2" : "h3"}
+                initial={block.text}
                 className={`outline-none ${frame}`}
                 onFocus={() => setSelectedId(block.id)}
-                onBlur={(event) => update(block.id, { text: event.currentTarget.textContent ?? "" })}
-              >
-                {block.text}
-              </Tag>
+                onBlur={(text) => update(block.id, { text })}
+              />
             );
           }
           if (block.type === "paragraph") {
             return (
               <div key={block.id} className={frame}>
-                <p
-                  contentEditable
-                  suppressContentEditableWarning
+                <SeededEditable
+                  tag="p"
+                  initial={block.text}
                   className="outline-none"
                   style={{ textAlign: block.align }}
                   onFocus={() => setSelectedId(block.id)}
-                  onBlur={(event) =>
-                    update(block.id, { text: event.currentTarget.textContent ?? "" })}
-                >
-                  {block.text}
-                </p>
+                  onBlur={(text) => update(block.id, { text })}
+                  onInput={(text, el) => {
+                    const match = text.match(/\{([^{}\n]*)$/);
+                    if (!match) {
+                      setPrefix(null);
+                      return;
+                    }
+                    const native = window.getSelection();
+                    const rect = native?.rangeCount
+                      ? native.getRangeAt(0).getBoundingClientRect()
+                      : el.getBoundingClientRect();
+                    setPrefix({
+                      query: match[1] ?? "",
+                      left: rect.left,
+                      top: rect.bottom + 6,
+                    });
+                  }}
+                />
                 <div className="flex justify-center gap-1">
                   <AlignButtons
                     value={block.align}
@@ -192,16 +307,14 @@ export function VanillaPagestormMock() {
           }
           if (block.type === "quote") {
             return (
-              <blockquote
+              <SeededEditable
                 key={block.id}
-                contentEditable
-                suppressContentEditableWarning
+                tag="blockquote"
+                initial={block.text}
                 className={`outline-none ${frame}`}
                 onFocus={() => setSelectedId(block.id)}
-                onBlur={(event) => update(block.id, { text: event.currentTarget.textContent ?? "" })}
-              >
-                {block.text}
-              </blockquote>
+                onBlur={(text) => update(block.id, { text })}
+              />
             );
           }
           if (block.type === "divider") {
@@ -216,13 +329,19 @@ export function VanillaPagestormMock() {
           if (block.type === "asset") {
             return (
               <div key={block.id} className={frame} onClick={() => setSelectedId(block.id)}>
-                <GameAssetFigure asset={block.asset} align={block.align} />
-                <div className="flex justify-center gap-1 pb-2">
-                  <AlignButtons
-                    value={block.align}
-                    onChange={(align) => update(block.id, { align })}
-                  />
-                </div>
+                <GameAssetFigure
+                  asset={block.asset}
+                  align={block.align}
+                  linked={block.linked}
+                  width={block.width}
+                  onResize={(width) => update(block.id, { width })}
+                />
+                <EditBlockChrome
+                  align={block.align}
+                  onAlign={(align) => update(block.id, { align })}
+                  linked={block.linked}
+                  onLinked={(linked) => update(block.id, { linked })}
+                />
               </div>
             );
           }
@@ -233,25 +352,31 @@ export function VanillaPagestormMock() {
                   videoId={block.videoId}
                   title={block.title}
                   align={block.align}
+                  width={block.width}
+                  onResize={(width) => update(block.id, { width })}
                 />
-                <div className="flex justify-center gap-1 pb-2">
-                  <AlignButtons
-                    value={block.align}
-                    onChange={(align) => update(block.id, { align })}
-                  />
-                </div>
+                <EditBlockChrome
+                  align={block.align}
+                  onAlign={(align) => update(block.id, { align })}
+                />
               </div>
             );
           }
           return (
             <div key={block.id} className={frame} onClick={() => setSelectedId(block.id)}>
-              <OgBookmarkFigure bookmark={block.bookmark} align={block.align} />
-              <div className="flex justify-center gap-1 pb-2">
-                <AlignButtons
-                  value={block.align}
-                  onChange={(align) => update(block.id, { align })}
-                />
-              </div>
+              <OgBookmarkFigure
+                bookmark={block.bookmark}
+                align={block.align}
+                linked={block.linked}
+                width={block.width}
+                onResize={(width) => update(block.id, { width })}
+              />
+              <EditBlockChrome
+                align={block.align}
+                onAlign={(align) => update(block.id, { align })}
+                linked={block.linked}
+                onLinked={(linked) => update(block.id, { linked })}
+              />
             </div>
           );
         })}
@@ -264,6 +389,28 @@ export function VanillaPagestormMock() {
           문단 추가
         </button>
       </div>
+      {prefix ? (
+        <div className="fixed z-50" style={{ left: prefix.left, top: prefix.top }}>
+          <PrefixMenu
+            items={filterPrefixItems(prefix.query).slice(0, 8)}
+            command={(asset) => {
+              const el = document.activeElement;
+              if (el instanceof HTMLElement && el.isContentEditable) {
+                el.textContent = (el.textContent ?? "").replace(/\{([^{}\n]*)$/, "");
+              }
+              insertAfter({
+                id: nid(),
+                type: "asset",
+                asset,
+                align: "center",
+                linked: true,
+                width: defaultAssetWidth(asset.kind),
+              });
+              setPrefix(null);
+            }}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

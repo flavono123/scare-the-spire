@@ -1,5 +1,7 @@
 import type { JSONContent } from "@tiptap/react";
-import { SAMPLE_ASSETS, SAMPLE_YOUTUBE } from "./sample";
+import { defaultAssetWidth, SAMPLE_ASSETS, SAMPLE_YOUTUBE } from "./sample";
+
+const emptyParagraph: JSONContent = { type: "paragraph" };
 
 function assetNode(id: string): JSONContent {
   const asset = SAMPLE_ASSETS.find((item) => item.id === id);
@@ -13,6 +15,8 @@ function assetNode(id: string): JSONContent {
       imageUrl: asset.imageUrl,
       href: asset.href,
       align: "center",
+      linked: true,
+      width: defaultAssetWidth(asset.kind),
     },
   };
 }
@@ -38,8 +42,11 @@ export const TIPTAP_SEED: JSONContent = {
       ],
     },
     assetNode("CHEMICAL_X"),
+    emptyParagraph,
     assetNode("STARDUST"),
+    emptyParagraph,
     assetNode("HEAVENLY_DRILL"),
+    emptyParagraph,
     {
       type: "heading",
       attrs: { level: 3, textAlign: "left" },
@@ -89,8 +96,10 @@ export const TIPTAP_SEED: JSONContent = {
         videoId: SAMPLE_YOUTUBE.videoId,
         title: SAMPLE_YOUTUBE.title,
         align: "center",
+        width: 576,
       },
     },
+    emptyParagraph,
     {
       type: "ogBookmark",
       attrs: {
@@ -100,7 +109,10 @@ export const TIPTAP_SEED: JSONContent = {
         image: "/images/sts2/cards/pagestorm.webp",
         siteName: "Steam · mock OG snapshot",
         align: "left",
+        linked: true,
+        width: 576,
       },
     },
+    emptyParagraph,
   ],
 };

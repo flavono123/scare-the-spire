@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   $createParagraphNode,
   $createTextNode,
@@ -8,8 +8,13 @@ import {
   $getSelection,
   $isParagraphNode,
   $isRangeSelection,
+  $isTextNode,
+  COMMAND_PRIORITY_HIGH,
   FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
+  KEY_BACKSPACE_COMMAND,
+  KEY_DELETE_COMMAND,
+  KEY_ENTER_COMMAND,
   type Klass,
   type LexicalNode,
 } from "lexical";
@@ -29,6 +34,7 @@ import {
 import { INSERT_UNORDERED_LIST_COMMAND, ListItemNode, ListNode } from "@lexical/list";
 import { $setBlocksType } from "@lexical/selection";
 import { InsertBar, MarkToolbar, mockButtonClass } from "./insert-bar";
+import { PrefixMenu } from "./prefix-menu";
 import {
   $createGameAssetLexicalNode,
   $createOgLexicalNode,
@@ -37,7 +43,13 @@ import {
   OgLexicalNode,
   YoutubeLexicalNode,
 } from "./lexical-nodes";
-import { SAMPLE_ASSETS, SAMPLE_YOUTUBE, type MockGameAsset, type MockOgBookmark } from "./sample";
+import {
+  filterPrefixItems,
+  SAMPLE_ASSETS,
+  SAMPLE_YOUTUBE,
+  type MockGameAsset,
+  type MockOgBookmark,
+} from "./sample";
 import "./pagestorm-mock-editor.css";
 
 const NODES: Klass<LexicalNode>[] = [
@@ -78,8 +90,11 @@ function SeedPlugin() {
       );
       root.append(heading, lead);
       root.append($createGameAssetLexicalNode(sampleAsset("CHEMICAL_X")));
+      root.append($createParagraphNode());
       root.append($createGameAssetLexicalNode(sampleAsset("STARDUST")));
+      root.append($createParagraphNode());
       root.append($createGameAssetLexicalNode(sampleAsset("HEAVENLY_DRILL")));
+      root.append($createParagraphNode());
       const sub = $createHeadingNode("h3");
       sub.append($createTextNode("덱 조작"));
       const quote = $createQuoteNode();
@@ -90,6 +105,7 @@ function SeedPlugin() {
       root.append(
         $createYoutubeLexicalNode(SAMPLE_YOUTUBE.videoId, SAMPLE_YOUTUBE.title),
       );
+      root.append($createParagraphNode());
       root.append(
         $createOgLexicalNode({
           url: "https://store.steampowered.com/app/2868840/Slay_the_Spire_2/",
@@ -99,6 +115,7 @@ function SeedPlugin() {
           siteName: "Steam · mock OG snapshot",
         }, "left"),
       );
+      root.append($createParagraphNode());
     });
   }, [editor]);
   return null;
@@ -196,16 +213,152 @@ function Toolbar() {
   );
 }
 
+function isAtomNode(
+  node: LexicalNode | null,
+): node is GameAssetLexicalNode | YoutubeLexicalNode | OgLexicalNode {
+  return (
+    node instanceof GameAssetLexicalNode
+    || node instanceof YoutubeLexicalNode
+    || node instanceof OgLexicalNode
+  );
+}
+
+function AtomKeysPlugin() {
+  const [editor] = useLexicalComposerContext();
+  useEffect(() => {
+    const enter = editor.registerCommand(
+      KEY_ENTER_COMMAND,
+      () => {
+        let handled = false;
+        editor.update(() => {
+          const selection = $getSelection();
+          if (!$isRangeSelection(selection)) return;
+          const node = selection.getNodes()[0] ?? selection.anchor.getNode();
+          const top = node.getTopLevelElement();
+          if (!isAtomNode(top)) return;
+          const para = $createParagraphNode();
+          top.insertAfter(para);
+          para.selectStart();
+          handled = true;
+        });
+        return handled;
+      },
+      COMMAND_PRIORITY_HIGH,
+    );
+    const del = editor.registerCommand(
+      KEY_BACKSPACE_COMMAND,
+      () => {
+        let handled = false;
+        editor.update(() => {
+          const selection = $getSelection();
+          if (!$isRangeSelection(selection)) return;
+          const node = selection.anchor.getNode();
+          const top = node.getTopLevelElement();
+          if (isAtomNode(top)) {
+            top.remove();
+            handled = true;
+          }
+        });
+        return handled;
+      },
+      COMMAND_PRIORITY_HIGH,
+    );
+    const delFwd = editor.registerCommand(
+      KEY_DELETE_COMMAND,
+      () => {
+        let handled = false;
+        editor.update(() => {
+          const selection = $getSelection();
+          if (!$isRangeSelection(selection)) return;
+          const node = selection.anchor.getNode();
+          const top = node.getTopLevelElement();
+          if (isAtomNode(top)) {
+            top.remove();
+            handled = true;
+          }
+        });
+        return handled;
+      },
+      COMMAND_PRIORITY_HIGH,
+    );
+    return () => {
+      enter();
+      del();
+      delFwd();
+    };
+  }, [editor]);
+  return null;
+}
+
+function BracePlugin() {
+  const [editor] = useLexicalComposerContext();
+  const [query, setQuery] = useState<string | null>(null);
+  const [anchor, setAnchor] = useState<{ left: number; top: number } | null>(null);
+
+  useEffect(() => {
+    return editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => {
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
+          setQuery(null);
+          return;
+        }
+        const text = selection.anchor.getNode().getTextContent().slice(0, selection.anchor.offset);
+        const match = text.match(/\{([^{}\n]*)$/);
+        if (!match) {
+          setQuery(null);
+          return;
+        }
+        setQuery(match[1] ?? "");
+        const native = window.getSelection();
+        const rect = native?.rangeCount ? native.getRangeAt(0).getBoundingClientRect() : null;
+        if (rect) setAnchor({ left: rect.left, top: rect.bottom + 6 });
+      });
+    });
+  }, [editor]);
+
+  if (query == null || !anchor) return null;
+  const items = filterPrefixItems(query).slice(0, 8);
+  return (
+    <div className="fixed z-50" style={{ left: anchor.left, top: anchor.top }}>
+      <PrefixMenu
+        items={items}
+        command={(asset) => {
+          editor.update(() => {
+            const selection = $getSelection();
+            if ($isRangeSelection(selection)) {
+              const node = selection.anchor.getNode();
+              const text = node.getTextContent().slice(0, selection.anchor.offset);
+              const match = text.match(/\{([^{}\n]*)$/);
+              if (match && $isTextNode(node)) {
+                const offset = selection.anchor.offset;
+                node.spliceText(offset - match[0].length, match[0].length, "");
+              }
+              const block = $createGameAssetLexicalNode(asset);
+              const para = $createParagraphNode();
+              selection.insertNodes([block, para]);
+            } else {
+              $getRoot().append($createGameAssetLexicalNode(asset), $createParagraphNode());
+            }
+          });
+          setQuery(null);
+        }}
+      />
+    </div>
+  );
+}
+
 function InsertPluginBar() {
   const [editor] = useLexicalComposerContext();
   const insertNode = (factory: () => LexicalNode) => {
     editor.update(() => {
       const selection = $getSelection();
       const node = factory();
+      const para = $createParagraphNode();
       if ($isRangeSelection(selection)) {
-        selection.insertNodes([node]);
+        selection.insertNodes([node, para]);
       } else {
-        $getRoot().append(node);
+        $getRoot().append(node, para);
       }
     });
   };
@@ -252,6 +405,8 @@ export function LexicalPagestormMock() {
         <HistoryPlugin />
         <ListPlugin />
         <SeedPlugin />
+        <AtomKeysPlugin />
+        <BracePlugin />
       </div>
     </LexicalComposer>
   );

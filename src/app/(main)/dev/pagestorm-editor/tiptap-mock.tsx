@@ -10,6 +10,7 @@ import {
   MarkToolbar,
   mockButtonClass,
 } from "./insert-bar";
+import { BraceAssetSuggestion } from "./prefix-menu";
 import {
   GameAssetNode,
   OgBookmarkNode,
@@ -97,6 +98,7 @@ export function TiptapPagestormMock({ chrome }: { chrome: "toolbar" | "bubble" }
       GameAssetNode,
       YoutubePlayerNode,
       OgBookmarkNode,
+      BraceAssetSuggestion,
     ],
     editorProps: {
       attributes: {
@@ -111,13 +113,19 @@ export function TiptapPagestormMock({ chrome }: { chrome: "toolbar" | "bubble" }
 
   const insert = {
     onInsertAsset: (asset: Parameters<typeof gameAssetAttrs>[0]) => {
-      editor.chain().focus().insertContent({ type: "gameAsset", attrs: gameAssetAttrs(asset) }).run();
+      editor.chain().focus().insertContent([
+        { type: "gameAsset", attrs: gameAssetAttrs(asset) },
+        { type: "paragraph" },
+      ]).run();
     },
     onInsertYoutube: (videoId: string, title: string) => {
-      editor.chain().focus().insertContent({
-        type: "youtubePlayer",
-        attrs: { videoId, title, align: "center" },
-      }).run();
+      editor.chain().focus().insertContent([
+        {
+          type: "youtubePlayer",
+          attrs: { videoId, title, align: "center", width: 576 },
+        },
+        { type: "paragraph" },
+      ]).run();
     },
     onInsertOg: (bookmark: {
       url: string;
@@ -126,10 +134,13 @@ export function TiptapPagestormMock({ chrome }: { chrome: "toolbar" | "bubble" }
       image: string | null;
       siteName: string;
     }) => {
-      editor.chain().focus().insertContent({
-        type: "ogBookmark",
-        attrs: { ...bookmark, align: "center" },
-      }).run();
+      editor.chain().focus().insertContent([
+        {
+          type: "ogBookmark",
+          attrs: { ...bookmark, align: "center", linked: true, width: 576 },
+        },
+        { type: "paragraph" },
+      ]).run();
     },
   };
 

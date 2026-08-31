@@ -28,9 +28,9 @@ export function PagestormEditorShell({
         </div>
         <h1 className="font-game-title text-2xl">서류 작성기 비교</h1>
         <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">
-          같은 시나리오(게임 요소 이미지, 가로 정렬, URL OG 카드, 유튜브 플레이어,
-          업로드 없음, 서비스 폰트만)를 엔진마다 붙여 본다. 키워드 작성기(케미컬X)와
-          구분한다. 프로덕션 라우트가 아니다.
+          같은 시나리오를 엔진마다 붙인다. {"{"} 자동완성, 편집 중 비링크, 발행 시 링크
+          토글, 리사이즈, 애셋 옆 Enter/Backspace는 공통 요구사항이다. 키워드 작성기의
+          골드 칩과 달리 여기 {"{"} 는 초상을 넣는다.
         </p>
       </header>
 

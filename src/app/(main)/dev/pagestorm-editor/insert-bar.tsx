@@ -105,6 +105,10 @@ export function InsertBar({
         </button>
       </form>
       {urlError ? <p className="text-xs text-red-400">{urlError}</p> : null}
+      <p className="w-full text-[11px] text-muted-foreground">
+        <span className="font-game-title text-foreground">{"{"}</span>
+        로 초상 자동완성. 편집 중 애셋은 링크로 이동하지 않고, 발행 시 링크/크기는 애셋 아래 컨트롤로 정한다.
+      </p>
     </div>
   );
 }
