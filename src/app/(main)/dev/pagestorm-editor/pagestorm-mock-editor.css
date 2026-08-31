@@ -1,0 +1,69 @@
+.pagestorm-mock-editor {
+  min-height: 28rem;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-game-text, inherit);
+  outline: none;
+}
+
+.pagestorm-mock-editor h2 {
+  margin: 1rem 0 0.45rem;
+  font-family: var(--font-game-title, inherit);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.pagestorm-mock-editor h3 {
+  margin: 0.85rem 0 0.35rem;
+  font-family: var(--font-game-title, inherit);
+  font-size: 1.02rem;
+  font-weight: 650;
+}
+
+.pagestorm-mock-editor p {
+  margin: 0.4rem 0;
+  line-height: 1.65;
+}
+
+.pagestorm-mock-editor ul {
+  margin: 0.4rem 0;
+  padding-left: 1.35rem;
+  list-style: disc;
+}
+
+.pagestorm-mock-editor ol {
+  margin: 0.4rem 0;
+  padding-left: 1.35rem;
+  list-style: decimal;
+}
+
+.pagestorm-mock-editor blockquote {
+  margin: 0.6rem 0;
+  border-left: 3px solid #d4a843;
+  padding-left: 0.75rem;
+  color: #a1a1aa;
+}
+
+.pagestorm-mock-editor hr {
+  margin: 1rem 0;
+  border-color: hsl(var(--border));
+}
+
+.pagestorm-mock-editor a {
+  color: #d4a843;
+  text-underline-offset: 3px;
+}
+
+.pagestorm-mock-editor:focus-visible {
+  outline: none;
+}
+
+.pagestorm-mock-bubble {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--popover));
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+}

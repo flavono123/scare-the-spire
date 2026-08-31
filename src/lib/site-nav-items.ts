@@ -160,6 +160,12 @@ export const devNavItems = [
     icon: "/images/sts2/characters/character_icon_ironclad.webp",
     strictDevOnly: true,
   },
+  {
+    href: "/dev/pagestorm-editor",
+    label: "서류 작성기 목",
+    icon: "/images/sts2/powers/pagestorm_power.webp",
+    strictDevOnly: true,
+  },
   { href: "/dev/text-effects", label: "텍스트 효과", icon: "/images/sts2/nav/patch_notes_icon.png" },
   { href: "/dev/reference", label: "레퍼런스", icon: "/images/sts2/nav/stats_cards.png" },
 ] as const;
