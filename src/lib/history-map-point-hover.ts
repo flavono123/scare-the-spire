@@ -10,7 +10,6 @@ import type { GameLocale } from "@/lib/i18n";
 import {
   formatGameTemplate,
   isGameI18nTableName,
-  localizeGame,
   localizeGameKey,
   type GameI18nTableName,
   type GameI18nTables,
@@ -101,7 +100,7 @@ function resourceName(
   id: string | undefined,
 ): string {
   if (!id) return "?";
-  return localizeGame(tables, table, id) ?? id;
+  return localizeGameKey(tables, table, id) ?? id;
 }
 
 function locChoiceTitle(
@@ -121,7 +120,7 @@ function locChoiceTitle(
     const hit = localizeGameKey(tables, table, key);
     if (hit) return choice.locVars ? bakeDescription(hit, choice.locVars) : hit;
   }
-  return localizeGame(tables, fallbackTables[0] ?? "events", choice.id) ?? choice.id;
+  return localizeGameKey(tables, fallbackTables[0] ?? "events", choice.id) ?? choice.id;
 }
 
 function roomTypeKey(entry: ReplayHistoryEntry): string | null {
@@ -141,15 +140,15 @@ function modelTitle(
   const modelId = room?.model_id ?? null;
   if (roomType === "event") {
     return (
-      localizeGame(tables, "events", modelId) ??
-      localizeGame(tables, "ancients", modelId) ??
+      localizeGameKey(tables, "events", modelId) ??
+      localizeGameKey(tables, "ancients", modelId) ??
       ""
     );
   }
   if (roomType === "treasure" || roomType === "shop" || roomType === "rest_site") {
     return "";
   }
-  return localizeGame(tables, "encounters", modelId) ?? "";
+  return localizeGameKey(tables, "encounters", modelId) ?? "";
 }
 
 function combatRoom(entry: ReplayHistoryEntry) {
@@ -225,13 +224,13 @@ function buildActionLines(
     const picked = (entry.ancient_choice ?? []).find((choice) => choice.picked);
     if (picked) {
       lines.push(
-        line(chose(locChoiceTitle(picked, tables, ["relics", "events", "ancients"]))),
+        line(chose(locChoiceTitle(picked, tables, ["relics", "events", "ancients", "characters"]))),
       );
     }
     for (const choice of entry.ancient_choice ?? []) {
       if (choice.picked) continue;
       lines.push(
-        line(skipped(locChoiceTitle(choice, tables, ["relics", "events", "ancients"]))),
+        line(skipped(locChoiceTitle(choice, tables, ["relics", "events", "ancients", "characters"]))),
       );
     }
   } else if (
@@ -249,7 +248,7 @@ function buildActionLines(
   }
 
   if (entry.is_affected_by_fur_coat) {
-    const coatTitle = localizeGame(tables, "relics", "FUR_COAT") ?? "FUR_COAT";
+    const coatTitle = localizeGameKey(tables, "relics", "FUR_COAT") ?? "FUR_COAT";
     lines.push(
       line(formatGameTemplate(furCoatHistoryEntryText(locale), { Title: coatTitle })),
     );

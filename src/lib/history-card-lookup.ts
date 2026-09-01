@@ -1,6 +1,5 @@
 import type { CodexCard } from "@/lib/codex-types";
 import {
-  localizeGame,
   localizeGameKey,
   type GameI18nTables,
 } from "@/lib/sts2-game-i18n";
@@ -51,7 +50,7 @@ export function historyCardDisplayName(
   const parts = getMadScienceVariantPartsFromId(id);
   const baseId = parts ? MAD_SCIENCE_CARD_ID : id;
   const base =
-    localizeGame(tables, "cards", baseId) ??
+    localizeGameKey(tables, "cards", baseId) ??
     card?.name ??
     stripCardPrefix(baseId);
   if (!parts?.riderId) return base;

@@ -469,11 +469,52 @@ def validate_codex_entity_titles(errors: list[str]) -> None:
             errors.append(f"{lang}: missing codex entity localization keys: {sample}{suffix}.")
 
 
+GAME_I18N_TITLE_TABLES = {
+    "encounters": "encounters.json",
+    "events": "events.json",
+    "ancients": "ancients.json",
+    "relics": "relics.json",
+    "cards": "cards.json",
+    "potions": "potions.json",
+    "acts": "acts.json",
+    "enchantments": "enchantments.json",
+    "characters": "characters.json",
+}
+
+
+def validate_game_i18n_title_bundle(errors: list[str]) -> None:
+    """kor/eng compact title tables must include every localization `.title`."""
+    for lang in ("kor", "eng"):
+        bundle_path = ROOT / "src/lib/sts2-game-i18n" / f"{lang}.json"
+        if not bundle_path.exists():
+            errors.append(f"Missing game i18n bundle: {bundle_path.relative_to(ROOT)}")
+            continue
+        bundle = read_json(bundle_path)
+        missing: list[str] = []
+        for table, filename in GAME_I18N_TITLE_TABLES.items():
+            loc_path = LOCALIZATION_DIR / lang / filename
+            loc = read_json(loc_path)
+            titles = bundle.get(table) or {}
+            for key, value in loc.items():
+                if not isinstance(value, str) or not key.endswith(".title"):
+                    continue
+                compact = key[: -len(".title")]
+                if compact not in titles:
+                    missing.append(f"{table}:{compact}")
+        if missing:
+            sample = ", ".join(missing[:20])
+            suffix = f" and {len(missing) - 20} more" if len(missing) > 20 else ""
+            errors.append(
+                f"{lang}: sts2-game-i18n missing localization titles: {sample}{suffix}."
+            )
+
+
 def main() -> int:
     errors: list[str] = []
     validate_localization(errors)
     validate_borrowed_phrases(errors)
     validate_codex_entity_titles(errors)
+    validate_game_i18n_title_bundle(errors)
 
     if errors:
         print("i18n validation failed:")

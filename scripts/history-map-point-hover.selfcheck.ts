@@ -244,6 +244,61 @@ function main() {
     `skipped upgraded card from run: ${skippedHover.skippedLines.map((line) => line.text).join(" | ")}`,
   );
 
+  const kaleido = hover(
+    synthetic({
+      relic_choices: [
+        { id: "RELIC.KALEIDOSCOPE", picked: true },
+        { id: "FISHING_ROD", picked: false },
+      ],
+      cards_gained: [{ id: "CARD.ABUNDANCE" }],
+    }),
+  );
+  assert(
+    kaleido.rewardLines.some((line) => line.text === "만화경"),
+    `kaleidoscope loc: ${kaleido.rewardLines.map((line) => line.text).join(" | ")}`,
+  );
+  assert(
+    kaleido.skippedLines.some((line) => line.text === "낚싯대"),
+    `fishing rod loc: ${kaleido.skippedLines.map((line) => line.text).join(" | ")}`,
+  );
+  assert(
+    kaleido.rewardLines.some((line) => line.text === "풍요"),
+    `abundance loc: ${kaleido.rewardLines.map((line) => line.text).join(" | ")}`,
+  );
+  assert(
+    !kaleido.rewardLines.some((line) => /RELIC|KALEIDOSCOPE|ABUNDANCE/.test(line.text)),
+    "new relics/cards must not fall back to data ids",
+  );
+  const seaGlass = hover(
+    synthetic({
+      map_point_type: "ancient",
+      rooms: [{ room_type: "event", model_id: "EVENT.NEOW", turns_taken: 0 }],
+      ancient_choice: [
+        {
+          id: "IRONCLAD",
+          picked: false,
+          locTable: "relics",
+          locKey: "SEA_GLASS.IRONCLAD.title",
+        },
+        {
+          id: "KALEIDOSCOPE",
+          picked: true,
+          locTable: "relics",
+          locKey: "KALEIDOSCOPE.title",
+        },
+      ],
+    }),
+    1,
+  );
+  assert(
+    seaGlass.actionLines.some((line) => line.text.includes("악마 유리")),
+    `sea glass loc: ${seaGlass.actionLines.map((line) => line.text).join(" | ")}`,
+  );
+  assert(
+    seaGlass.actionLines.some((line) => line.text.includes("만화경")),
+    `ancient kaleidoscope loc: ${seaGlass.actionLines.map((line) => line.text).join(" | ")}`,
+  );
+
   const ancientFloor = run.map_point_history.flat().find(
     (entry) => entry.map_point_type === "ancient" && (entry.ancient_choice?.length ?? 0) > 1,
   );
