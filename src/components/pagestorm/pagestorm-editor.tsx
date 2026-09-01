@@ -45,8 +45,10 @@ type PendingCard = {
 
 export function PagestormEditor({
   mode = "edit",
+  seed = "empty",
 }: {
   mode?: "edit" | "preview";
+  seed?: "empty" | "lorem";
 }) {
   const { entities } = useCommentEntities();
   const serviceLocale = useServiceLocale();
@@ -82,7 +84,7 @@ export function PagestormEditor({
   const editor = useEditor({
     immediatelyRender: false,
     editable: mode === "edit",
-    content: mode === "preview" ? pagestormLoremDoc(copy) : PAGESTORM_EMPTY_DOC,
+    content: seed === "lorem" ? pagestormLoremDoc(copy) : PAGESTORM_EMPTY_DOC,
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3] },
@@ -162,6 +164,10 @@ export function PagestormEditor({
   useEffect(() => {
     editorRef.current = editor;
   }, [editor]);
+
+  useEffect(() => {
+    editor?.setEditable(mode === "edit");
+  }, [editor, mode]);
 
   function insertEntity(
     entity: EntityInfo,

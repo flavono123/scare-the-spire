@@ -115,6 +115,7 @@ function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
           presentation={presentation}
           beta={beta}
           card={entity?.cardData}
+          entity={entity}
           onResize={(size) => updateAttributes({ width: size.width, height: size.height })}
           onLinked={(next) => updateAttributes({ linked: next })}
           onAlign={(next) => updateAttributes({ align: next })}

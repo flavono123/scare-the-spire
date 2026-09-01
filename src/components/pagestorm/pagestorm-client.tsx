@@ -1,8 +1,11 @@
 "use client";
 
+import { useCallback, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { OwnPostMark } from "@/components/own-post-mark";
+import { PostDetailActions } from "@/components/post-detail-actions";
 import Image from "@/components/ui/static-image";
 import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
 import { useGameLocale } from "@/hooks/use-game-locale";
@@ -96,8 +99,11 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
         >
           <article data-pagestorm-post="lorem">
             <div className="mb-1.5 flex items-center justify-between">
-              <span className="truncate text-sm font-semibold text-gray-300">
-                {copy.defaultNickname}
+              <span className="inline-flex min-w-0 items-center gap-1.5">
+                <span className="truncate text-sm font-semibold text-gray-300">
+                  {copy.defaultNickname}
+                </span>
+                <OwnPostMark />
               </span>
             </div>
             <h2 className="font-game-title text-base text-foreground">
@@ -128,17 +134,46 @@ function PagestormDocumentClient({
     serviceLocale,
     gameLocale,
   );
+  const [editing, setEditing] = useState(surface === "write");
+  const [copied, setCopied] = useState(false);
+  const mode = surface === "write" || editing ? "edit" : "preview";
+  const handleCopyUrl = useCallback(() => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2000);
+  }, []);
 
   return (
     <div className="space-y-4">
       <header className="space-y-3">
-        <Link
-          href={indexHref}
-          className="inline-flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-primary"
-        >
-          <ArrowLeft size={16} />
-          {copy.backToIndex}
-        </Link>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <Link
+            href={indexHref}
+            className="inline-flex min-w-0 items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-primary"
+          >
+            <ArrowLeft size={16} />
+            {copy.backToIndex}
+          </Link>
+          {surface === "lorem" ? (
+            <PostDetailActions
+              copied={copied}
+              copyLabel={copy.copyLink}
+              copiedLabel={copy.copied}
+              onCopy={handleCopyUrl}
+              isAuthor
+              editLabel={mode === "preview" ? copy.edit : undefined}
+              onEdit={mode === "preview" ? () => setEditing(true) : undefined}
+            />
+          ) : null}
+        </div>
+        {surface === "lorem" ? (
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm font-semibold text-gray-300">
+              {copy.defaultNickname}
+            </span>
+            <OwnPostMark />
+          </div>
+        ) : null}
         <div className="flex items-center gap-3">
           <Image
             src={PAGESTORM_TOKEN_SRC}
@@ -150,7 +185,7 @@ function PagestormDocumentClient({
           <h1 className="font-service text-xl font-bold text-primary">{gameCopy.title}</h1>
         </div>
       </header>
-      <Editor mode={surface === "lorem" ? "preview" : "edit"} />
+      <Editor mode={mode} seed={surface === "lorem" ? "lorem" : "empty"} />
     </div>
   );
 }

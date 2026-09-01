@@ -226,7 +226,12 @@ const LOREM_LIGHT =
 
 const ALIGNS: readonly MockAlign[] = ["left", "center", "right"];
 
-function sampleAssetNode(id: string, kind: MockAssetKind, align: MockAlign = "center"): JSONContent {
+function sampleAssetNode(
+  id: string,
+  kind: MockAssetKind,
+  align: MockAlign = "center",
+  linked = true,
+): JSONContent {
   const found = findSampleAsset(id, kind);
   if (!found) {
     return { type: "paragraph" };
@@ -242,7 +247,7 @@ function sampleAssetNode(id: string, kind: MockAssetKind, align: MockAlign = "ce
       imageUrl: found.imageUrl,
       href: found.href,
       align,
-      linked: true,
+      linked,
       width,
       height: found.kind === "card" ? Math.round(width * 1.56) : width,
       presentation: "art",
@@ -341,14 +346,19 @@ function ogNode(bookmark: MockOgBookmark): JSONContent {
   };
 }
 
-function toyboxNode(postId: string, service: string, height: number): JSONContent {
+function toyboxNode(
+  postId: string,
+  service: string,
+  height: number,
+  linked = true,
+): JSONContent {
   return {
     type: "toyboxEmbed",
     attrs: {
       postId,
       service,
       align: "center",
-      linked: true,
+      linked,
       width: 576,
       height,
     },
@@ -362,10 +372,20 @@ export const PAGESTORM_EMPTY_DOC: JSONContent = {
 
 export function pagestormLoremDoc(copy: PagestormCopy): JSONContent {
   const loremAssets = LOREM_ASSET_KEYS.map(([id, kind], index) => (
-    sampleAssetNode(id, kind, ALIGNS[index % ALIGNS.length])
+    sampleAssetNode(
+      id,
+      kind,
+      ALIGNS[index % ALIGNS.length],
+      index < LOREM_ASSET_KEYS.length - 1,
+    )
   ));
-  const toyboxNodes = PAGESTORM_TOYBOX_POSTS.map((post) => (
-    toyboxNode(post.id, post.service, post.service === "/this-or-that" ? 320 : 280)
+  const toyboxNodes = PAGESTORM_TOYBOX_POSTS.map((post, index) => (
+    toyboxNode(
+      post.id,
+      post.service,
+      post.service === "/this-or-that" ? 320 : 280,
+      index < PAGESTORM_TOYBOX_POSTS.length - 1,
+    )
   ));
 
   return {

@@ -171,9 +171,23 @@ export function ToyboxEmbedFigure({
   if (mode === "preview" && linked && post) {
     return (
       <div className={alignRowClass(align)}>
-        <a href={post.service} className="block no-underline" target="_blank" rel="noreferrer">
+        <a
+          href={post.service}
+          className="block min-w-0 max-w-full cursor-pointer no-underline"
+          target="_blank"
+          rel="noreferrer"
+          data-pagestorm-embed="linked"
+        >
           {card}
         </a>
+      </div>
+    );
+  }
+
+  if (mode === "preview") {
+    return (
+      <div className={`${alignRowClass(align)} cursor-default`} data-pagestorm-embed="unlinked">
+        <div className="min-w-0 max-w-full">{card}</div>
       </div>
     );
   }

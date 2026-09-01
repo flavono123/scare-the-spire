@@ -10,6 +10,7 @@ import {
   MoveDiagonal2,
   Play,
 } from "lucide-react";
+import Link from "next/link";
 import { CardTile } from "@/components/codex/card-tile";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import {
@@ -17,9 +18,13 @@ import {
   GameUiHoverTip,
 } from "@/components/game-ui-hover-tip";
 import { TinyCardIcon } from "@/components/history-course/card-action-icon";
+import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
+import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { isCompendiumResourceLinkType } from "@/lib/compendium-resource-links";
 import type { CodexCard } from "@/lib/codex-types";
+import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import { youtubeThumbnailUrl, youtubeWatchUrl } from "@/lib/youtube-reference";
 import { serviceMessages } from "@/messages/service";
 import {
@@ -40,6 +45,69 @@ const ALIGN_CLASS: Record<MockAlign, string> = {
 
 export function alignRowClass(align: MockAlign): string {
   return `my-3 flex w-full ${ALIGN_CLASS[align]}`;
+}
+
+const PAGESTORM_COMPENDIUM_PREVIEW_LINK_CLASS =
+  "block no-underline outline-none focus-visible:ring-2 focus-visible:ring-primary/80";
+
+function PreviewCompendiumAssetWrap({
+  linked,
+  entity,
+  asset,
+  children,
+}: {
+  linked: boolean;
+  entity?: EntityInfo;
+  asset: MockGameAsset;
+  children: ReactNode;
+}) {
+  const serviceLocale = useServiceLocale();
+  const gameLocale = useGameLocale();
+
+  if (!linked) {
+    return (
+      <div className="cursor-default" data-pagestorm-asset="unlinked">
+        {children}
+      </div>
+    );
+  }
+
+  if (entity) {
+    return (
+      <span className="inline-block max-w-full" data-pagestorm-asset="compendium">
+        <EntityPreview
+          entity={entity}
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+          linkClassName={PAGESTORM_COMPENDIUM_PREVIEW_LINK_CLASS}
+        >
+          {children}
+        </EntityPreview>
+      </span>
+    );
+  }
+
+  if (
+    isCompendiumResourceLinkType(asset.kind)
+    && asset.href
+    && asset.href !== "#"
+  ) {
+    return (
+      <Link
+        href={localizeHrefWithGameLocale(asset.href, serviceLocale, gameLocale)}
+        className={`game-inspect-cursor ${PAGESTORM_COMPENDIUM_PREVIEW_LINK_CLASS}`}
+        data-pagestorm-asset="compendium-fallback"
+      >
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <div className="cursor-default" data-pagestorm-asset="unlinked">
+      {children}
+    </div>
+  );
 }
 
 export function mockButtonClass(active?: boolean): string {
@@ -399,6 +467,7 @@ export function GameAssetFigure({
   presentation = "art",
   beta = false,
   card,
+  entity,
   onResize,
   onLinked,
   onAlign,
@@ -413,6 +482,7 @@ export function GameAssetFigure({
   presentation?: CardPresentation;
   beta?: boolean;
   card?: CodexCard | null;
+  entity?: EntityInfo;
   onResize?: (size: { width: number; height: number }) => void;
   onLinked?: (linked: boolean) => void;
   onAlign?: (align: MockAlign) => void;
@@ -439,11 +509,9 @@ export function GameAssetFigure({
   if (mode === "preview") {
     return (
       <div className={alignRowClass(align)}>
-        {linked ? (
-          <a href={asset.href} className="block no-underline" target="_blank" rel="noreferrer">
-            {figure}
-          </a>
-        ) : figure}
+        <PreviewCompendiumAssetWrap linked={linked} entity={entity} asset={asset}>
+          {figure}
+        </PreviewCompendiumAssetWrap>
       </div>
     );
   }

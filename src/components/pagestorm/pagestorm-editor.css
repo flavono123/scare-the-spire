@@ -53,6 +53,16 @@
   text-underline-offset: 3px;
 }
 
+.pagestorm-mock-editor a.game-inspect-cursor {
+  color: inherit;
+  text-decoration: none;
+}
+
+.pagestorm-mock-editor [data-pagestorm-asset="unlinked"],
+.pagestorm-mock-editor [data-pagestorm-embed="unlinked"] {
+  cursor: default !important;
+}
+
 .pagestorm-mock-editor:focus-visible {
   outline: none;
 }
