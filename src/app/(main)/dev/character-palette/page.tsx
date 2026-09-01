@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
-import { getCodexCharacters } from "@/lib/codex-data";
+import { getCodexAncients, getCodexCharacters, getCodexMonsters } from "@/lib/codex-data";
+import { buildPaletteSubjects } from "@/lib/dev-palette-subjects";
 
 export const metadata = {
-  title: "캐릭터 배색 — DEV",
-  description: "개발 전용: 2색 배색을 얼굴 토큰과 캐릭터 Spine에 적용",
+  title: "2색 배색 — DEV",
+  description: "개발 전용: 2색 배색을 캐릭터·보스·엘리트·고대의 존재 토큰과 Spine에 적용",
   robots: {
     index: false,
     follow: false,
@@ -17,7 +18,12 @@ export default async function CharacterPalettePage() {
     notFound();
   }
 
-  const characters = await getCodexCharacters({ gameLocale: "kor" });
+  const [characters, monsters, ancients] = await Promise.all([
+    getCodexCharacters({ gameLocale: "kor" }),
+    getCodexMonsters({ gameLocale: "kor" }),
+    getCodexAncients({ gameLocale: "kor" }),
+  ]);
+  const subjects = buildPaletteSubjects({ characters, monsters, ancients });
   const { default: CharacterPaletteDevPage } = await import("./character-palette-dev-page");
-  return <CharacterPaletteDevPage characters={characters} />;
+  return <CharacterPaletteDevPage subjects={subjects} />;
 }

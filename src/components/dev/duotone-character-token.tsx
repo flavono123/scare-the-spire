@@ -58,7 +58,17 @@ export function DuotoneCharacterToken({
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = "high";
         ctx.clearRect(0, 0, pixelSize, pixelSize);
-        ctx.drawImage(source, 0, 0, pixelSize, pixelSize);
+        if (srcWidth < 1 || srcHeight < 1) return;
+        const scale = Math.min(pixelSize / srcWidth, pixelSize / srcHeight);
+        const drawWidth = Math.max(1, srcWidth * scale);
+        const drawHeight = Math.max(1, srcHeight * scale);
+        ctx.drawImage(
+          source,
+          (pixelSize - drawWidth) / 2,
+          (pixelSize - drawHeight) / 2,
+          drawWidth,
+          drawHeight,
+        );
       })
       .catch((error: unknown) => {
         if (!cancelled) console.warn("Failed to compose duotone token:", error);

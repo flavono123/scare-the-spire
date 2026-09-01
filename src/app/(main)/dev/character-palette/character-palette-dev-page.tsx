@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ArrowLeftRight } from "lucide-react";
-import { CharacterSpineStage } from "@/components/codex/character-spine-stage";
+import { CHARACTER_STAGE_VIEWPORT_PADDING } from "@/components/codex/character-spine-stage";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
+import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import { DuotoneCharacterToken } from "@/components/dev/duotone-character-token";
 import Image from "@/components/ui/static-image";
-import type { CodexCharacter } from "@/lib/codex-types";
 import {
   CHARACTER_PALETTE_PAIRS,
   CHARACTER_PALETTE_SOURCE,
@@ -15,14 +15,27 @@ import {
   swapHexPair,
   type CharacterPalettePair,
 } from "@/lib/dev-character-palettes";
+import {
+  PALETTE_KIND_COPY,
+  PALETTE_KINDS,
+  paletteActionLabel,
+  subjectsForKind,
+  type PaletteKind,
+  type PaletteSubject,
+} from "@/lib/dev-palette-subjects";
 import { cn } from "@/lib/utils";
 
-type ActionId = "IDLE" | "ATTACK" | "HURT";
+const MONSTER_LAB_VIEWPORT_PADDING = {
+  padLeft: "8%",
+  padRight: "8%",
+  padTop: "24%",
+  padBottom: "16%",
+} as const;
 
 export default function CharacterPaletteDevPage({
-  characters,
+  subjects,
 }: {
-  characters: CodexCharacter[];
+  subjects: PaletteSubject[];
 }) {
   const firstPair = CHARACTER_PALETTE_PAIRS[0];
   const [colorAInput, setColorAInput] = useState(firstPair.colorA);
@@ -30,8 +43,9 @@ export default function CharacterPaletteDevPage({
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(firstPair.id);
   const [tokenCrossed, setTokenCrossed] = useState(false);
   const [spineCrossed, setSpineCrossed] = useState(false);
-  const [characterId, setCharacterId] = useState(characters[0]?.id ?? "NECROBINDER");
-  const [action, setAction] = useState<{ id: ActionId; nonce: number }>({
+  const [kind, setKind] = useState<PaletteKind>("character");
+  const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? "IRONCLAD");
+  const [action, setAction] = useState<{ id: string; nonce: number }>({
     id: "IDLE",
     nonce: 0,
   });
@@ -39,16 +53,33 @@ export default function CharacterPaletteDevPage({
   const colorA = normalizeHex(colorAInput);
   const colorB = normalizeHex(colorBInput);
   const colorsReady = Boolean(colorA && colorB);
-  const character = characters.find((entry) => entry.id === characterId) ?? characters[0];
+  const kindSubjects = useMemo(() => subjectsForKind(subjects, kind), [kind, subjects]);
+  const subject = kindSubjects.find((entry) => entry.id === subjectId) ?? kindSubjects[0];
   const tokenMap = colorA && colorB
     ? resolveDuotoneColors(colorA, colorB, tokenCrossed)
     : null;
   const spineMap = colorA && colorB
     ? resolveDuotoneColors(colorA, colorB, spineCrossed)
     : null;
+  const selectedActionId = subject?.actionIds.includes(action.id)
+    ? action.id
+    : (subject?.actionIds[0] ?? "IDLE");
+  const copy = PALETTE_KIND_COPY[kind];
 
-  const playAction = (id: ActionId) => {
+  const playAction = (id: string) => {
     setAction((current) => ({ id, nonce: current.nonce + 1 }));
+  };
+
+  const selectKind = (nextKind: PaletteKind) => {
+    const nextSubjects = subjectsForKind(subjects, nextKind);
+    setKind(nextKind);
+    setSubjectId(nextSubjects[0]?.id ?? "");
+    setAction({ id: nextSubjects[0]?.actionIds[0] ?? "IDLE", nonce: 0 });
+  };
+
+  const selectSubject = (entry: PaletteSubject) => {
+    setSubjectId(entry.id);
+    playAction(entry.actionIds[0] ?? "IDLE");
   };
 
   const applyPreset = (pair: CharacterPalettePair) => {
@@ -71,15 +102,16 @@ export default function CharacterPaletteDevPage({
   return (
     <main
       data-dev-character-palette
+      data-palette-kind={kind}
       className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6"
     >
       <header className="flex flex-col gap-2">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-300/80">
           DEV / CHARACTER PALETTE
         </p>
-        <h1 className="text-3xl font-bold text-zinc-100">캐릭터 2색 배색</h1>
+        <h1 className="text-3xl font-bold text-zinc-100">2색 배색</h1>
         <p className="max-w-3xl text-sm leading-relaxed text-zinc-400">
-          토큰과 Spine 모두 원본 명암으로 두 색을 다시 칠한다. 프리셋은{" "}
+          토큰이 있으면 원본 명암·알파로, 스파인이 있으면 아틀라스 픽셀로 두 색을 다시 칠한다. 프리셋은{" "}
           <a
             href={CHARACTER_PALETTE_SOURCE.url}
             target="_blank"
@@ -88,7 +120,7 @@ export default function CharacterPaletteDevPage({
           >
             {CHARACTER_PALETTE_SOURCE.title}
           </a>
-          의 화면 HEX다. 교차하면 토큰과 Spine이 서로 뒤집힌다.
+          의 화면 HEX다. 엘리트는 게임 토큰이 없고, 고대의 존재는 니오우·테즈카타라만 스파인이 있다.
         </p>
       </header>
 
@@ -178,54 +210,74 @@ export default function CharacterPaletteDevPage({
         </div>
       </section>
 
+      <nav className="flex flex-wrap gap-2" aria-label="배색 대상">
+        {PALETTE_KINDS.map((entry) => (
+          <button
+            key={entry}
+            type="button"
+            data-palette-kind-tab={entry}
+            aria-pressed={entry === kind}
+            onClick={() => selectKind(entry)}
+            className={cn(
+              "rounded px-3 py-1.5 text-sm font-semibold",
+              entry === kind
+                ? "border border-amber-300/70 bg-amber-300/10 text-amber-100"
+                : "border border-white/10 bg-white/[0.03] text-zinc-300 hover:border-white/25",
+            )}
+          >
+            {PALETTE_KIND_COPY[entry].title}
+          </button>
+        ))}
+      </nav>
+
       <section className="flex flex-col gap-3">
         <div className="flex items-end justify-between gap-3">
-          <h2 className="text-lg font-semibold text-zinc-100">얼굴 토큰</h2>
-          <p className="text-xs text-zinc-500">원본 / 배색. 클릭하면 Spine 캐릭터가 바뀐다.</p>
+          <h2 className="text-lg font-semibold text-zinc-100">{copy.tokenHeading}</h2>
+          <p className="text-xs text-zinc-500">{copy.tokenHint}</p>
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {characters.map((entry) => (
-            <TokenPreviewCard
-              key={entry.id}
-              character={entry}
-              selected={entry.id === character?.id}
+          {kindSubjects.map((entry) => (
+            <SubjectPreviewCard
+              key={`${entry.kind}:${entry.id}`}
+              subject={entry}
+              selected={entry.id === subject?.id}
               tokenMap={tokenMap}
-              onSelect={() => {
-                setCharacterId(entry.id);
-                playAction("ATTACK");
-              }}
+              onSelect={() => selectSubject(entry)}
             />
           ))}
         </div>
       </section>
 
-      {character ? (
+      {subject ? (
         <section className="flex flex-col gap-3">
           <div className="flex flex-wrap items-end justify-between gap-3">
-            <h2 className="text-lg font-semibold text-zinc-100">Spine · {character.name}</h2>
-            <div className="flex gap-1">
-              {(["IDLE", "ATTACK", "HURT"] as const).map((id) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => playAction(id)}
-                  className={cn(
-                    "rounded px-2 py-1 text-[11px] font-semibold",
-                    action.id === id
-                      ? "text-amber-200"
-                      : "text-zinc-500 hover:text-zinc-200",
-                  )}
-                >
-                  {id === "IDLE" ? "대기" : id === "ATTACK" ? "공격" : "피격"}
-                </button>
-              ))}
-            </div>
+            <h2 className="text-lg font-semibold text-zinc-100">Spine · {subject.name}</h2>
+            {subject.spineAsset ? (
+              <div className="flex flex-wrap gap-1">
+                {subject.actionIds.map((id) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => playAction(id)}
+                    className={cn(
+                      "rounded px-2 py-1 text-[11px] font-semibold",
+                      selectedActionId === id
+                        ? "text-amber-200"
+                        : "text-zinc-500 hover:text-zinc-200",
+                    )}
+                  >
+                    {paletteActionLabel(id)}
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </div>
           <SpinePreview
-            character={character}
+            subject={subject}
             atlasDuotone={spineMap}
-            selectedMoveId={action.id}
+            selectedMoveId={selectedActionId}
             selectedMoveNonce={action.nonce}
+            emptyLabel={copy.emptySpine}
           />
         </section>
       ) : null}
@@ -323,21 +375,22 @@ function MapSwatch({
   );
 }
 
-function TokenPreviewCard({
-  character,
+function SubjectPreviewCard({
+  subject,
   selected,
   tokenMap,
   onSelect,
 }: {
-  character: CodexCharacter;
+  subject: PaletteSubject;
   selected: boolean;
   tokenMap: { shadow: string; highlight: string } | null;
   onSelect: () => void;
 }) {
+  const originalUrl = subject.tokenUrl ?? subject.pickerImageUrl;
   return (
     <button
       type="button"
-      data-character-id={character.id}
+      data-palette-subject-id={subject.id}
       aria-pressed={selected}
       onClick={onSelect}
       className={cn(
@@ -347,55 +400,89 @@ function TokenPreviewCard({
           : "border-white/10 bg-white/[0.03] hover:border-white/25",
       )}
     >
-      <span className="text-xs font-semibold text-zinc-200">{character.name}</span>
+      <span className="text-center text-xs font-semibold text-zinc-200">{subject.name}</span>
       <span className="flex items-center gap-3">
-        <Image
-          src={character.iconUrl}
-          alt=""
-          width={56}
-          height={56}
-          className="h-14 w-14 object-contain"
-        />
-        {tokenMap ? (
-          <DuotoneCharacterToken
-            iconUrl={character.iconUrl}
-            shadowHex={tokenMap.shadow}
-            highlightHex={tokenMap.highlight}
-          />
-        ) : (
+        {originalUrl ? (
           <Image
-            src={character.iconUrl}
+            src={originalUrl}
             alt=""
             width={56}
             height={56}
-            className="h-14 w-14 object-contain opacity-70"
+            className="h-14 w-14 object-contain"
           />
+        ) : (
+          <span className="flex h-14 w-14 items-center justify-center text-[10px] text-zinc-500">
+            없음
+          </span>
         )}
+        {subject.kind !== "elite" ? (
+          subject.tokenUrl && tokenMap ? (
+            <DuotoneCharacterToken
+              iconUrl={subject.tokenUrl}
+              shadowHex={tokenMap.shadow}
+              highlightHex={tokenMap.highlight}
+            />
+          ) : subject.tokenUrl ? (
+            <Image
+              src={subject.tokenUrl}
+              alt=""
+              width={56}
+              height={56}
+              className="h-14 w-14 object-contain opacity-70"
+            />
+          ) : (
+            <span className="flex h-14 w-14 items-center justify-center text-[10px] leading-tight text-zinc-500">
+              토큰 없음
+            </span>
+          )
+        ) : null}
       </span>
     </button>
   );
 }
 
 function SpinePreview({
-  character,
+  subject,
   atlasDuotone,
   selectedMoveId,
   selectedMoveNonce,
+  emptyLabel,
 }: {
-  character: CodexCharacter;
+  subject: PaletteSubject;
   atlasDuotone: { shadow: string; highlight: string } | null;
-  selectedMoveId: ActionId;
+  selectedMoveId: string;
   selectedMoveNonce: number;
+  emptyLabel: string;
 }) {
+  if (!subject.spineAsset) {
+    return (
+      <div
+        data-spine-subject-id={subject.id}
+        className="flex h-[12rem] items-center justify-center rounded-lg border border-white/10 bg-[#120f18] text-sm text-zinc-500 sm:h-[16rem]"
+      >
+        {emptyLabel}
+      </div>
+    );
+  }
+
   return (
     <div
-      data-spine-character-id={character.id}
+      data-spine-subject-id={subject.id}
       className="relative h-[22rem] overflow-hidden rounded-lg border border-white/10 bg-[#120f18] sm:h-[28rem]"
     >
-      <CharacterSpineStage
-        character={character}
+      <MonsterSpineStage
+        asset={subject.spineAsset}
+        fallbackImageUrl={subject.fallbackImageUrl}
+        monsterName={subject.name}
         selectedMoveId={selectedMoveId}
         selectedMoveNonce={selectedMoveNonce}
+        showLoadingLabel={false}
+        viewportTransitionTime={0}
+        viewportPadding={
+          subject.kind === "character"
+            ? CHARACTER_STAGE_VIEWPORT_PADDING
+            : MONSTER_LAB_VIEWPORT_PADDING
+        }
         atlasDuotone={atlasDuotone}
         className="relative h-full w-full"
       />

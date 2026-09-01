@@ -165,7 +165,7 @@ export const devNavItems = [
   },
   {
     href: "/dev/character-palette",
-    label: "캐릭터 배색",
+    label: "2색 배색",
     icon: "/images/sts2/characters/character_icon_ironclad.webp",
     strictDevOnly: true,
   },
