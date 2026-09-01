@@ -3,7 +3,11 @@
 import { Node, mergeAttributes, type Editor } from "@tiptap/core";
 import { NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
 import { GameAssetFigure, OgBookmarkFigure, YoutubePlayerFigure } from "./figures";
-import { findPagestormEntity, usePagestormEntities } from "./entities-context";
+import {
+  findPagestormEntity,
+  usePagestormChrome,
+  usePagestormEntities,
+} from "./entities-context";
 import { parseYouTubeVideoId } from "@/lib/youtube-reference";
 import {
   defaultAssetWidth,
@@ -69,6 +73,7 @@ const nodeViewOptions = {
 
 function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
   const entities = usePagestormEntities();
+  const mode = usePagestormChrome();
   const kind = (node.attrs.kind as MockAssetKind) || "card";
   const entityType = String(node.attrs.entityType || kind);
   const entity = findPagestormEntity(entities, entityType, String(node.attrs.assetId ?? ""));
@@ -80,7 +85,7 @@ function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
       imageUrl: entity.imageUrl ?? String(node.attrs.imageUrl ?? ""),
       href: entity.href ?? String(node.attrs.href ?? "#"),
     }
-    : findSampleAsset(String(node.attrs.assetId ?? "")) ?? {
+    : findSampleAsset(String(node.attrs.assetId ?? ""), entityType) ?? {
       id: String(node.attrs.assetId ?? ""),
       kind,
       name: String(node.attrs.name ?? ""),
@@ -102,6 +107,7 @@ function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
         <GameAssetFigure
           asset={asset}
           align={align}
+          mode={mode}
           selected={selected}
           linked={linked}
           width={width}
@@ -119,6 +125,7 @@ function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
 }
 
 function YoutubeView({ node, updateAttributes, selected }: NodeViewProps) {
+  const mode = usePagestormChrome();
   const align = asAlign(node.attrs.align);
   return (
     <NodeViewWrapper>
@@ -127,6 +134,7 @@ function YoutubeView({ node, updateAttributes, selected }: NodeViewProps) {
           videoId={String(node.attrs.videoId ?? "")}
           title={String(node.attrs.title ?? "YouTube")}
           align={align}
+          mode={mode}
           selected={selected}
           onTitle={(title) => updateAttributes({ title })}
           onUrl={(url) => {
@@ -141,6 +149,7 @@ function YoutubeView({ node, updateAttributes, selected }: NodeViewProps) {
 }
 
 function OgView({ node, updateAttributes, selected }: NodeViewProps) {
+  const mode = usePagestormChrome();
   const align = asAlign(node.attrs.align);
   const bookmark: MockOgBookmark = {
     url: String(node.attrs.url ?? ""),
@@ -155,6 +164,7 @@ function OgView({ node, updateAttributes, selected }: NodeViewProps) {
         <OgBookmarkFigure
           bookmark={bookmark}
           align={align}
+          mode={mode}
           selected={selected}
           onTitle={(title) => updateAttributes({ title })}
           onUrl={(url) => updateAttributes({ url })}
@@ -166,6 +176,7 @@ function OgView({ node, updateAttributes, selected }: NodeViewProps) {
 }
 
 function ToyboxView({ node, updateAttributes, selected }: NodeViewProps) {
+  const mode = usePagestormChrome();
   const align = asAlign(node.attrs.align);
   const linked = asBool(node.attrs.linked);
   const width = asWidth(node.attrs.width, defaultPlayerWidth());
@@ -176,6 +187,7 @@ function ToyboxView({ node, updateAttributes, selected }: NodeViewProps) {
         <ToyboxEmbedFigure
           postId={String(node.attrs.postId ?? "")}
           align={align}
+          mode={mode}
           selected={selected}
           linked={linked}
           width={width}

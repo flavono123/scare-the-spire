@@ -83,16 +83,12 @@ function DiagonalResizeHandle({
   height,
   clampWidth,
   clampHeight,
-  lockAspect,
-  axis = "xy",
   onResize,
 }: {
   width: number;
   height: number;
   clampWidth: (width: number) => number;
   clampHeight: (height: number) => number;
-  lockAspect?: boolean;
-  axis?: "xy" | "x";
   onResize: (size: { width: number; height: number }) => void;
 }) {
   const copy = serviceMessages[useServiceLocale()].pagestorm;
@@ -111,28 +107,9 @@ function DiagonalResizeHandle({
           event.stopPropagation();
           origin.current = { x: event.clientX, y: event.clientY, width, height };
           const move = (next: MouseEvent) => {
-            const dx = next.clientX - origin.current.x;
-            const dy = axis === "x" ? 0 : next.clientY - origin.current.y;
-            if (axis === "x") {
-              onResize({
-                width: clampWidth(origin.current.width + dx),
-                height: origin.current.height,
-              });
-              return;
-            }
-            if (lockAspect) {
-              const delta = Math.abs(dx) >= Math.abs(dy) ? dx : dy;
-              const nextWidth = clampWidth(origin.current.width + delta);
-              const ratio = origin.current.height / Math.max(origin.current.width, 1);
-              onResize({
-                width: nextWidth,
-                height: clampHeight(nextWidth * ratio),
-              });
-              return;
-            }
             onResize({
-              width: clampWidth(origin.current.width + dx),
-              height: clampHeight(origin.current.height + dy),
+              width: clampWidth(origin.current.width + (next.clientX - origin.current.x)),
+              height: clampHeight(origin.current.height + (next.clientY - origin.current.y)),
             });
           };
           const up = () => {
@@ -208,8 +185,6 @@ export function AssetCornerHandles({
   height,
   clampWidth,
   clampHeight,
-  lockAspect,
-  axis = "xy",
   onResize,
 }: {
   linked?: boolean;
@@ -218,8 +193,6 @@ export function AssetCornerHandles({
   height: number;
   clampWidth: (width: number) => number;
   clampHeight: (height: number) => number;
-  lockAspect?: boolean;
-  axis?: "xy" | "x";
   onResize?: (size: { width: number; height: number }) => void;
 }) {
   if (onLinked == null && !onResize) return null;
@@ -245,8 +218,6 @@ export function AssetCornerHandles({
             height={height}
             clampWidth={clampWidth}
             clampHeight={clampHeight}
-            lockAspect={lockAspect}
-            axis={axis}
             onResize={onResize}
           />
         </div>
@@ -448,9 +419,12 @@ export function GameAssetFigure({
 }) {
   const px = width ?? defaultAssetWidth(asset.kind);
   const py = height ?? (asset.kind === "card" ? Math.round(px * 1.56) : px);
-  const freeSize = asset.kind === "card";
   const figure = (
-    <figure className="relative overflow-hidden" style={{ width: px, height: py }}>
+    <figure
+      className="relative overflow-hidden"
+      style={{ width: px, height: py }}
+      aria-label={asset.name}
+    >
       <AssetBody
         asset={asset}
         presentation={presentation}
@@ -463,21 +437,13 @@ export function GameAssetFigure({
   );
 
   if (mode === "preview") {
-    const previewBody = (
-      <div style={{ width: px }}>
-        {figure}
-        <figcaption className="mt-1 text-center font-game-title text-xs spire-gold">
-          {asset.name}
-        </figcaption>
-      </div>
-    );
     return (
       <div className={alignRowClass(align)}>
         {linked ? (
           <a href={asset.href} className="block no-underline" target="_blank" rel="noreferrer">
-            {previewBody}
+            {figure}
           </a>
-        ) : previewBody}
+        ) : figure}
       </div>
     );
   }
@@ -495,14 +461,10 @@ export function GameAssetFigure({
               height={py}
               clampWidth={(next) => clampAssetWidth(asset.kind, next)}
               clampHeight={(next) => clampAssetHeight(asset.kind, next)}
-              lockAspect={!freeSize}
               onResize={onResize}
             />
           ) : null}
         </div>
-        <figcaption className="mt-1 text-center font-game-title text-xs spire-gold">
-          {asset.name}
-        </figcaption>
         {mode === "edit" ? (
           <AssetFocusChrome
             selected={selected}

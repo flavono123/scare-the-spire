@@ -30,7 +30,7 @@ export const PrefixMenu = forwardRef<
     command: (item: MockGameAsset) => void;
   }
 >(function PrefixMenu({ items, command }, ref) {
-  const itemKey = items.map((item) => item.id).join("|");
+  const itemKey = items.map((item) => `${item.kind}:${item.id}`).join("|");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [seenKey, setSeenKey] = useState(itemKey);
   if (seenKey !== itemKey) {

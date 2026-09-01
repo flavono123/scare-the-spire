@@ -123,7 +123,7 @@ export function CompendiumPickerModal({
 
   return (
     <ServiceModalFrame
-      title={copy.compendiumPickerTitle}
+      title={copy.imageInsert}
       titleId="pagestorm-compendium-picker"
       closeLabel={copy.close}
       onClose={onClose}
@@ -196,7 +196,7 @@ export function ToyboxPickerModal({
 
   return (
     <ServiceModalFrame
-      title={copy.toyboxPickerTitle}
+      title={copy.imageInsert}
       titleId="pagestorm-toybox-picker"
       closeLabel={copy.close}
       onClose={onClose}

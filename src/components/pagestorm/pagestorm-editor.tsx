@@ -25,7 +25,7 @@ import {
   type CompendiumInsertPayload,
 } from "./pickers";
 import { createPagestormBraceSuggestion, pagestormBracePluginKey } from "./prefix-menu";
-import { assetFromEntity, pagestormLoremDoc, resolvePastedUrl } from "./sample";
+import { assetFromEntity, PAGESTORM_EMPTY_DOC, pagestormLoremDoc, resolvePastedUrl } from "./sample";
 import {
   GameAssetNode,
   OgBookmarkNode,
@@ -43,7 +43,11 @@ type PendingCard = {
   range?: { from: number; to: number };
 };
 
-export function PagestormEditor() {
+export function PagestormEditor({
+  mode = "edit",
+}: {
+  mode?: "edit" | "preview";
+}) {
   const { entities } = useCommentEntities();
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].pagestorm;
@@ -77,7 +81,8 @@ export function PagestormEditor() {
 
   const editor = useEditor({
     immediatelyRender: false,
-    content: pagestormLoremDoc(copy),
+    editable: mode === "edit",
+    content: mode === "preview" ? pagestormLoremDoc(copy) : PAGESTORM_EMPTY_DOC,
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3] },
@@ -98,6 +103,7 @@ export function PagestormEditor() {
         class: "pagestorm-mock-editor",
       },
       handlePaste: (_view, event) => {
+        if (mode !== "edit") return false;
         const pastedText = event.clipboardData?.getData("text/plain").trim() ?? "";
         const resolved = resolvePastedUrl(pastedText);
         if (!resolved) return false;
@@ -204,19 +210,23 @@ export function PagestormEditor() {
   }
 
   return (
-    <PagestormEntitiesProvider entities={entities}>
+    <PagestormEntitiesProvider entities={entities} mode={mode}>
       <div className="overflow-visible rounded-lg border border-border bg-card">
-        <PagestormStickyToolbar
-          editor={editor}
-          onCompendium={onCompendium}
-          onToybox={onToybox}
-        />
+        {mode === "edit" ? (
+          <PagestormStickyToolbar
+            editor={editor}
+            onCompendium={onCompendium}
+            onToybox={onToybox}
+          />
+        ) : null}
         <EditorContent editor={editor} />
-        <p className="border-t border-border px-3 py-2 text-[11px] text-muted-foreground">
-          {copy.braceHint}
-        </p>
+        {mode === "edit" ? (
+          <p className="border-t border-border px-3 py-2 text-[11px] text-muted-foreground">
+            {copy.braceHint}
+          </p>
+        ) : null}
       </div>
-      {compendiumMajor !== "closed" ? (
+      {mode === "edit" && compendiumMajor !== "closed" ? (
         <CompendiumPickerModal
           entities={entities}
           initialMajor={compendiumMajor}
@@ -227,7 +237,7 @@ export function PagestormEditor() {
           }}
         />
       ) : null}
-      {toyboxHref !== "closed" ? (
+      {mode === "edit" && toyboxHref !== "closed" ? (
         <ToyboxPickerModal
           initialServiceHref={toyboxHref}
           onClose={() => setToyboxHref("closed")}
@@ -237,7 +247,7 @@ export function PagestormEditor() {
           }}
         />
       ) : null}
-      {pendingCard ? (
+      {mode === "edit" && pendingCard ? (
         <CardBraceConfirmModal
           entity={pendingCard.entity}
           onClose={() => setPendingCard(null)}

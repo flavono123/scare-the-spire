@@ -25,6 +25,7 @@ import {
   PAGESTORM_SPIRE_COLOR_KEYS,
   type PagestormColorKey,
 } from "./color-marks";
+import { togglePagestormBlockquote } from "./blockquote";
 import { AlignButtons, IconTipButton } from "./figures";
 import { PickerNavDropdown } from "./nav-tokens";
 import { useCompendiumNavItems, useToyboxNavItems } from "./pickers";
@@ -137,8 +138,7 @@ export function PagestormFormatChrome({
     selector: ({ editor: current }) => editorChromeSnapshot(current),
   });
   const serviceLocale = useServiceLocale();
-  const copy = serviceMessages[serviceLocale];
-  const editorCopy = copy.pagestorm;
+  const editorCopy = serviceMessages[serviceLocale].pagestorm;
   const compendiumItems = useCompendiumNavItems();
   const toyboxItems = useToyboxNavItems();
 
@@ -183,7 +183,7 @@ export function PagestormFormatChrome({
         <IconTipButton
           label={editorCopy.blockquote}
           active={chrome.blockquote}
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+          onClick={() => togglePagestormBlockquote(editor)}
         >
           <Quote className="h-3.5 w-3.5" aria-hidden />
         </IconTipButton>
@@ -232,13 +232,13 @@ export function PagestormFormatChrome({
       <div className="flex flex-wrap items-center gap-2">
         <PickerNavDropdown
           icon="/images/sts2/icons/app_icon.png"
-          alt={copy.games.sts2Codex}
+          alt={editorCopy.imageInsert}
           items={compendiumItems}
           onPick={onCompendium}
         />
         <PickerNavDropdown
           icon="/images/sts2/relics/toy_box.webp"
-          alt={editorCopy.toyboxSection}
+          alt={editorCopy.imageInsert}
           items={toyboxItems}
           variant="toyBox"
           onPick={onToybox}

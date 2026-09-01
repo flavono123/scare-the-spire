@@ -136,7 +136,7 @@ export function ToyboxEmbedFigure({
   const card = (
     <div
       className="relative overflow-hidden rounded-md border border-border bg-card/40"
-      style={{ width: px, maxWidth: "100%" }}
+      style={{ width: px, maxWidth: "100%", height: py }}
     >
       {inner}
       {mode === "edit" ? (
@@ -145,7 +145,7 @@ export function ToyboxEmbedFigure({
     </div>
   );
   const body = (
-    <div className="relative" style={{ width: px, maxWidth: "100%" }}>
+    <div className="relative" style={{ width: px, maxWidth: "100%", height: py }}>
       {card}
       {mode === "edit" ? (
         <>
@@ -156,7 +156,6 @@ export function ToyboxEmbedFigure({
             height={py}
             clampWidth={clampPlayerWidth}
             clampHeight={(next) => Math.min(480, Math.max(160, Math.round(next)))}
-            axis="x"
             onResize={onResize}
           />
           <AssetFocusChrome

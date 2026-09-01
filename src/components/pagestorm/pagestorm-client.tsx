@@ -11,6 +11,8 @@ import type { PagestormGameCopy } from "@/lib/borrowed-game-copy";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import {
   PAGESTORM_HREF,
+  PAGESTORM_LOREM_HREF,
+  PAGESTORM_LOREM_SNIPPET,
   PAGESTORM_TOKEN_SRC,
   PAGESTORM_WRITE_HREF,
 } from "@/lib/pagestorm";
@@ -39,6 +41,11 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
   const copy = serviceMessages[serviceLocale].pagestorm;
   const writeHref = localizeHrefWithGameLocale(
     PAGESTORM_WRITE_HREF,
+    serviceLocale,
+    gameLocale,
+  );
+  const loremHref = localizeHrefWithGameLocale(
+    PAGESTORM_LOREM_HREF,
     serviceLocale,
     gameLocale,
   );
@@ -79,12 +86,40 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
           heroRich
         />
       </header>
-      <p className="py-8 text-center text-sm text-zinc-500">{copy.empty}</p>
+      <div className="space-y-3">
+        <p className="text-xs text-gray-500">
+          {copy.count.replace("{count}", "1")}
+        </p>
+        <Link
+          href={loremHref}
+          className="block rounded-lg border border-border bg-card/30 px-4 py-3 transition-colors hover:border-primary/20 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
+        >
+          <article data-pagestorm-post="lorem">
+            <div className="mb-1.5 flex items-center justify-between">
+              <span className="truncate text-sm font-semibold text-gray-300">
+                {copy.defaultNickname}
+              </span>
+            </div>
+            <h2 className="font-game-title text-base text-foreground">
+              {copy.sampleHeading}
+            </h2>
+            <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+              {PAGESTORM_LOREM_SNIPPET}
+            </p>
+          </article>
+        </Link>
+      </div>
     </div>
   );
 }
 
-export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
+function PagestormDocumentClient({
+  gameCopy,
+  surface,
+}: {
+  gameCopy: PagestormGameCopy;
+  surface: "write" | "lorem";
+}) {
   const serviceLocale = useServiceLocale();
   const gameLocale = useGameLocale();
   const copy = serviceMessages[serviceLocale].pagestorm;
@@ -115,7 +150,15 @@ export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy
           <h1 className="font-service text-xl font-bold text-primary">{gameCopy.title}</h1>
         </div>
       </header>
-      <Editor />
+      <Editor mode={surface === "lorem" ? "preview" : "edit"} />
     </div>
   );
+}
+
+export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
+  return <PagestormDocumentClient gameCopy={gameCopy} surface="write" />;
+}
+
+export function PagestormLoremClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
+  return <PagestormDocumentClient gameCopy={gameCopy} surface="lorem" />;
 }

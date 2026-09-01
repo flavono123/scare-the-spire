@@ -1,0 +1,44 @@
+import type { Metadata } from "next";
+import { PagestormLoremClient } from "@/components/pagestorm/pagestorm-client";
+import { ServiceBackground } from "@/components/service-background";
+import { getPagestormGameCopy } from "@/lib/borrowed-game-copy";
+import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
+import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
+import { PAGESTORM_PAGE_OG_IMAGE } from "@/lib/page-og-images";
+import { PAGESTORM_BACKGROUND_SRC, PAGESTORM_LOREM_HREF } from "@/lib/pagestorm";
+import { composeToyBoxIndexOgDescription, getServiceOgMetadata } from "@/lib/service-metadata";
+import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
+import { serviceMessages } from "@/messages/service";
+
+export async function generatePagestormLoremMetadata(
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+): Promise<Metadata> {
+  const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
+  const gameCopy = await getPagestormGameCopy(gameLocale);
+  const copy = serviceMessages[serviceLocale].pagestorm;
+  return getServiceOgMetadata({
+    serviceLocale,
+    title: `${copy.sampleHeading} · ${gameCopy.title}`,
+    description: composeToyBoxIndexOgDescription(serviceLocale, copy.subtitle),
+    image: PAGESTORM_PAGE_OG_IMAGE,
+    canonicalPath: PAGESTORM_LOREM_HREF,
+  });
+}
+
+export async function renderPagestormLoremPage(
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+) {
+  const gameCopy = await getPagestormGameCopy(gameLocale);
+
+  return (
+    <div className="relative isolate min-h-[calc(100svh-3rem)]" data-pagestorm-page="lorem">
+      <ServiceBackground
+        src={PAGESTORM_BACKGROUND_SRC}
+        imageClassName="object-[42%_center] sm:object-center"
+      />
+      <div className={TOYBOX_WIDE_SHELL_CLASS}>
+        <PagestormLoremClient gameCopy={gameCopy} />
+      </div>
+    </div>
+  );
+}

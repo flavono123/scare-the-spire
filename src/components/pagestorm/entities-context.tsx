@@ -5,19 +5,28 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 
 const PagestormEntitiesContext = createContext<EntityInfo[]>([]);
+const PagestormChromeContext = createContext<"edit" | "preview">("edit");
 
 export function PagestormEntitiesProvider({
   entities,
+  mode = "edit",
   children,
 }: {
   entities: EntityInfo[];
+  mode?: "edit" | "preview";
   children: ReactNode;
 }) {
   return (
-    <PagestormEntitiesContext.Provider value={entities}>
-      {children}
-    </PagestormEntitiesContext.Provider>
+    <PagestormChromeContext.Provider value={mode}>
+      <PagestormEntitiesContext.Provider value={entities}>
+        {children}
+      </PagestormEntitiesContext.Provider>
+    </PagestormChromeContext.Provider>
   );
+}
+
+export function usePagestormChrome(): "edit" | "preview" {
+  return useContext(PagestormChromeContext);
 }
 
 export function usePagestormEntities(): EntityInfo[] {
