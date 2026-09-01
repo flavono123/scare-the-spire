@@ -4,6 +4,7 @@ import {
   buildPaletteSubjects,
   paletteActionIds,
   paletteActionLabel,
+  paletteNicknameIconUrl,
   subjectsForKind,
   type PaletteAncientSource,
   type PaletteCharacterSource,
@@ -312,6 +313,11 @@ const elite = subjects.find((subject) => subject.id === "LAGAVULIN");
 assert.equal(elite?.kind, "elite");
 assert.equal(elite?.tokenUrl, null);
 assert.equal(elite?.pickerImageUrl, "/render/lagavulin.webp");
+assert.equal(elite ? paletteNicknameIconUrl(elite) : "missing", null);
+
+const ironclad = subjects.find((subject) => subject.id === "IRONCLAD");
+assert.equal(ironclad ? paletteNicknameIconUrl(ironclad) : "missing", "/icons/ironclad.webp");
+assert.equal(queen ? paletteNicknameIconUrl(queen) : "missing", "/images/sts2/bosses/queen_boss.webp");
 
 assert.equal(subjects.some((subject) => subject.id === "AEONGLASS_BOSS" && subject.kind === "boss"), true);
 assert.equal(subjects.some((subject) => subject.id === "AEONGLASS"), false);
@@ -322,6 +328,7 @@ const darv = subjects.find((subject) => subject.id === "DARV");
 assert.equal(darv?.kind, "ancient");
 assert.equal(darv?.tokenUrl, "/ancients/darv.webp");
 assert.equal(darv?.spineAsset, null);
+assert.equal(darv ? paletteNicknameIconUrl(darv) : "missing", "/ancients/darv.webp");
 
 const neow = subjects.find((subject) => subject.id === "NEOW");
 assert.ok(neow?.spineAsset);

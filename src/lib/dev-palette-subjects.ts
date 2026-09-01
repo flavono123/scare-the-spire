@@ -56,31 +56,27 @@ export type PaletteAncientSource = Pick<CodexAncient, "id" | "name" | "imageUrl"
 
 export const PALETTE_KIND_COPY: Record<
   PaletteKind,
-  { title: string; tokenHeading: string; tokenHint: string; emptySpine: string }
+  { title: string; tokenHeading: string; tokenHint: string }
 > = {
   character: {
     title: "캐릭터",
     tokenHeading: "얼굴 토큰",
-    tokenHint: "원본 / 배색. 클릭하면 Spine이 바뀐다.",
-    emptySpine: "이 캐릭터는 추출된 스파인이 없습니다.",
+    tokenHint: "원본 / 배색. 클릭하면 아래 닉네임 자리 아이콘이 바뀐다.",
   },
   boss: {
     title: "보스",
     tokenHeading: "보스 토큰",
-    tokenHint: "보스 전투 토큰 원본 / 배색. 스파인은 전투 배치 아틀라스다.",
-    emptySpine: "이 보스는 추출된 전투 스파인이 없습니다.",
+    tokenHint: "보스 전투 토큰 원본 / 배색. 닉네임 앞 아이콘으로 쓴다.",
   },
   elite: {
     title: "엘리트",
     tokenHeading: "초상",
-    tokenHint: "엘리트는 게임 토큰이 없다. 초상은 고르기용이며 배색하지 않는다.",
-    emptySpine: "이 엘리트는 추출된 스파인이 없습니다.",
+    tokenHint: "엘리트는 게임 토큰이 없다. 초상은 고르기용이며 닉네임 아이콘으로 쓰지 않는다.",
   },
   ancient: {
     title: "고대의 존재",
     tokenHeading: "토큰",
-    tokenHint: "원본 / 배색. 스파인은 니오우·테즈카타라만 추출되어 있다.",
-    emptySpine: "이 고대의 존재는 추출된 스파인이 없습니다.",
+    tokenHint: "원본 / 배색. 클릭하면 아래 닉네임 자리 아이콘이 바뀐다.",
   },
 };
 
@@ -263,4 +259,13 @@ export function subjectsForKind(
   kind: PaletteKind,
 ): PaletteSubject[] {
   return subjects.filter((subject) => subject.kind === kind);
+}
+
+/** Compact nickname-row icon. Elites have no game token; do not remap portraits. */
+export function paletteNicknameIconUrl(
+  subject: Pick<PaletteSubject, "kind" | "tokenUrl" | "pickerImageUrl">,
+): string | null {
+  if (subject.tokenUrl) return subject.tokenUrl;
+  if (subject.kind === "elite") return null;
+  return subject.pickerImageUrl;
 }
