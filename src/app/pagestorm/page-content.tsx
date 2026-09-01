@@ -10,7 +10,7 @@ import {
   PAGESTORM_HREF,
 } from "@/lib/pagestorm";
 import { composeToyBoxIndexOgDescription, getServiceOgMetadata } from "@/lib/service-metadata";
-import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
+import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 
 export async function generatePagestormMetadata(
@@ -41,7 +41,7 @@ export async function renderPagestormPage(
         src={PAGESTORM_BACKGROUND_SRC}
         imageClassName="object-[42%_center] sm:object-center"
       />
-      <div className={TOYBOX_WIDE_SHELL_CLASS}>
+      <div className={TOYBOX_NARROW_SHELL_CLASS}>
         <PagestormClient gameCopy={gameCopy} />
       </div>
     </div>
