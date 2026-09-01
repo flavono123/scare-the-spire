@@ -6,14 +6,18 @@ import type {
   AncientSceneAsset,
   CodexAncient,
   CodexCharacter,
+  CodexEncounter,
   CodexMonster,
   MonsterSpineAsset,
 } from "@/lib/codex-types";
 import { CHARACTER_ORDER } from "@/lib/codex-types";
+import { getEncounterMonsterIds } from "@/lib/encounter-compositions";
 
 export const PALETTE_KINDS = ["character", "boss", "elite", "ancient"] as const;
 
 export type PaletteKind = (typeof PALETTE_KINDS)[number];
+
+export type PaletteSpinePreview = "monster" | "encounter" | "static";
 
 export type PaletteSubject = {
   kind: PaletteKind;
@@ -24,6 +28,9 @@ export type PaletteSubject = {
   fallbackImageUrl: string | null;
   spineAsset: MonsterSpineAsset | null;
   actionIds: string[];
+  encounterId: string | null;
+  spinePreview: PaletteSpinePreview;
+  staticPreviewUrl: string | null;
 };
 
 export type PaletteCharacterSource = Pick<
@@ -35,6 +42,13 @@ export type PaletteMonsterSource = Pick<
   CodexMonster,
   "id" | "name" | "type" | "showInCompendium" | "imageUrl" | "bossImageUrl" | "spineAsset"
 >;
+
+export type PaletteEncounterSource = Pick<
+  CodexEncounter,
+  "id" | "name" | "roomType" | "imageUrl" | "monsters" | "compositions"
+> & {
+  scene: Pick<NonNullable<CodexEncounter["scene"]>, "backgroundSpineAsset"> | null;
+};
 
 export type PaletteAncientSource = Pick<CodexAncient, "id" | "name" | "imageUrl" | "spineAsset"> & {
   sceneAsset: Pick<AncientSceneAsset, "token" | "fallback">;
@@ -53,8 +67,8 @@ export const PALETTE_KIND_COPY: Record<
   boss: {
     title: "보스",
     tokenHeading: "보스 토큰",
-    tokenHint: "토큰이 있으면 원본 / 배색. 없으면 초상만 고르기용이다.",
-    emptySpine: "이 보스는 추출된 스파인이 없습니다.",
+    tokenHint: "보스 전투 토큰 원본 / 배색. 스파인은 전투 배치 아틀라스다.",
+    emptySpine: "이 보스는 추출된 전투 스파인이 없습니다.",
   },
   elite: {
     title: "엘리트",
@@ -105,8 +119,24 @@ export function paletteActionLabel(actionId: string): string {
   return actionId.replaceAll("_", " ");
 }
 
+export function bossEncounterTokenUrl(encounterId: string): string {
+  return `/images/sts2/bosses/${encounterId.toLowerCase()}.webp`;
+}
+
 function compareName(left: PaletteSubject, right: PaletteSubject): number {
   return left.name.localeCompare(right.name, "ko");
+}
+
+function monsterPreviewFields(
+  kind: PaletteKind,
+  spineAsset: MonsterSpineAsset | null,
+): Pick<PaletteSubject, "actionIds" | "encounterId" | "spinePreview" | "staticPreviewUrl"> {
+  return {
+    actionIds: paletteActionIds(kind, spineAsset),
+    encounterId: null,
+    spinePreview: "monster",
+    staticPreviewUrl: null,
+  };
 }
 
 function mapCharacter(character: PaletteCharacterSource): PaletteSubject {
@@ -118,23 +148,22 @@ function mapCharacter(character: PaletteCharacterSource): PaletteSubject {
     pickerImageUrl: character.iconUrl,
     fallbackImageUrl: character.combatImageUrl,
     spineAsset: character.spineAsset,
-    actionIds: paletteActionIds("character", character.spineAsset),
+    ...monsterPreviewFields("character", character.spineAsset),
   };
 }
 
-function mapMonster(monster: PaletteMonsterSource, kind: "boss" | "elite"): PaletteSubject | null {
-  const tokenUrl = kind === "boss" ? monster.bossImageUrl : null;
-  const pickerImageUrl = tokenUrl ?? monster.imageUrl;
+function mapElite(monster: PaletteMonsterSource): PaletteSubject | null {
+  const pickerImageUrl = monster.imageUrl;
   if (!pickerImageUrl && !monster.spineAsset) return null;
   return {
-    kind,
+    kind: "elite",
     id: monster.id,
     name: monster.name,
-    tokenUrl,
+    tokenUrl: null,
     pickerImageUrl,
     fallbackImageUrl: monster.imageUrl,
     spineAsset: monster.spineAsset,
-    actionIds: paletteActionIds(kind, monster.spineAsset),
+    ...monsterPreviewFields("elite", monster.spineAsset),
   };
 }
 
@@ -148,7 +177,55 @@ function mapAncient(ancient: PaletteAncientSource): PaletteSubject {
     pickerImageUrl: tokenUrl,
     fallbackImageUrl: ancient.sceneAsset.fallback.path,
     spineAsset: ancient.spineAsset,
-    actionIds: paletteActionIds("ancient", ancient.spineAsset),
+    ...monsterPreviewFields("ancient", ancient.spineAsset),
+  };
+}
+
+function resolveBossSpinePreview(
+  encounter: PaletteEncounterSource,
+  parts: readonly PaletteMonsterSource[],
+): Pick<PaletteSubject, "spinePreview" | "spineAsset" | "actionIds"> {
+  const crusher = parts.find((part) => part.id === "CRUSHER");
+  const hasKaiserActor = encounter.id === "KAISER_CRAB_BOSS" && Boolean(crusher?.spineAsset);
+  const hasBackgroundSpine = Boolean(encounter.scene?.backgroundSpineAsset);
+  const spineParts = parts.filter((part) => part.spineAsset);
+  if (!hasKaiserActor && !hasBackgroundSpine && spineParts.length === 0) {
+    return { spinePreview: "static", spineAsset: null, actionIds: [] };
+  }
+  return {
+    spinePreview: "encounter",
+    spineAsset: spineParts[0]?.spineAsset ?? crusher?.spineAsset ?? null,
+    actionIds: uniqueIds(
+      spineParts.flatMap((part) => paletteActionIds("boss", part.spineAsset)),
+    ).slice(0, 8),
+  };
+}
+
+function mapBossEncounter(
+  encounter: PaletteEncounterSource,
+  monsterById: Map<string, PaletteMonsterSource>,
+): PaletteSubject {
+  const tokenUrl = bossEncounterTokenUrl(encounter.id);
+  const parts = getEncounterMonsterIds(encounter)
+    .map((id) => monsterById.get(id))
+    .filter((part): part is PaletteMonsterSource => Boolean(part));
+  const preview = resolveBossSpinePreview(encounter, parts);
+  const fallbackImageUrl =
+    parts.find((part) => part.imageUrl)?.imageUrl
+    ?? encounter.imageUrl
+    ?? tokenUrl;
+  return {
+    kind: "boss",
+    id: encounter.id,
+    name: encounter.name,
+    tokenUrl,
+    pickerImageUrl: tokenUrl,
+    fallbackImageUrl,
+    spineAsset: preview.spineAsset,
+    actionIds: preview.actionIds,
+    encounterId: encounter.id,
+    spinePreview: preview.spinePreview,
+    staticPreviewUrl: preview.spinePreview === "static" ? tokenUrl : null,
   };
 }
 
@@ -156,23 +233,25 @@ export function buildPaletteSubjects(input: {
   characters: readonly PaletteCharacterSource[];
   monsters: readonly PaletteMonsterSource[];
   ancients: readonly PaletteAncientSource[];
+  encounters?: readonly PaletteEncounterSource[];
 }): PaletteSubject[] {
   const characters = [...input.characters]
     .sort((left, right) => CHARACTER_ORDER.indexOf(left.id) - CHARACTER_ORDER.indexOf(right.id))
     .map(mapCharacter);
 
-  const bosses: PaletteSubject[] = [];
+  const monsterById = new Map(input.monsters.map((monster) => [monster.id, monster]));
+  const bosses = (input.encounters ?? [])
+    .filter((encounter) => encounter.roomType === "Boss")
+    .map((encounter) => mapBossEncounter(encounter, monsterById))
+    .sort(compareName);
+
   const elites: PaletteSubject[] = [];
   for (const monster of input.monsters) {
     if (!monster.showInCompendium || !isPublicBestiaryMonster(monster.id)) continue;
-    const displayType = getBestiaryDisplayMonsterType(monster.id, monster.type);
-    if (displayType !== "Boss" && displayType !== "Elite") continue;
-    const subject = mapMonster(monster, displayType === "Boss" ? "boss" : "elite");
-    if (!subject) continue;
-    if (subject.kind === "boss") bosses.push(subject);
-    else elites.push(subject);
+    if (getBestiaryDisplayMonsterType(monster.id, monster.type) !== "Elite") continue;
+    const subject = mapElite(monster);
+    if (subject) elites.push(subject);
   }
-  bosses.sort(compareName);
   elites.sort(compareName);
 
   const ancients = input.ancients.map(mapAncient);

@@ -3,10 +3,12 @@
 import { useMemo, useState } from "react";
 import { ArrowLeftRight } from "lucide-react";
 import { CHARACTER_STAGE_VIEWPORT_PADDING } from "@/components/codex/character-spine-stage";
+import { EncounterSceneStage } from "@/components/codex/encounter-scene-stage";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import { DuotoneCharacterToken } from "@/components/dev/duotone-character-token";
 import Image from "@/components/ui/static-image";
+import type { CodexEncounter, CodexMonster } from "@/lib/codex-types";
 import {
   CHARACTER_PALETTE_PAIRS,
   CHARACTER_PALETTE_SOURCE,
@@ -34,8 +36,12 @@ const MONSTER_LAB_VIEWPORT_PADDING = {
 
 export default function CharacterPaletteDevPage({
   subjects,
+  encounters,
+  monsters,
 }: {
   subjects: PaletteSubject[];
+  encounters: CodexEncounter[];
+  monsters: CodexMonster[];
 }) {
   const firstPair = CHARACTER_PALETTE_PAIRS[0];
   const [colorAInput, setColorAInput] = useState(firstPair.colorA);
@@ -54,6 +60,10 @@ export default function CharacterPaletteDevPage({
   const colorB = normalizeHex(colorBInput);
   const colorsReady = Boolean(colorA && colorB);
   const kindSubjects = useMemo(() => subjectsForKind(subjects, kind), [kind, subjects]);
+  const encounterById = useMemo(
+    () => new Map(encounters.map((encounter) => [encounter.id, encounter])),
+    [encounters],
+  );
   const subject = kindSubjects.find((entry) => entry.id === subjectId) ?? kindSubjects[0];
   const tokenMap = colorA && colorB
     ? resolveDuotoneColors(colorA, colorB, tokenCrossed)
@@ -111,7 +121,8 @@ export default function CharacterPaletteDevPage({
         </p>
         <h1 className="text-3xl font-bold text-zinc-100">2색 배색</h1>
         <p className="max-w-3xl text-sm leading-relaxed text-zinc-400">
-          토큰이 있으면 원본 명암·알파로, 스파인이 있으면 아틀라스 픽셀로 두 색을 다시 칠한다. 프리셋은{" "}
+          토큰이 있으면 원본 명암·알파로, 스파인이 있으면 아틀라스 픽셀로 두 색을 다시 칠한다. 보스는 전투
+          토큰과 전투 배치 아틀라스를 쓴다. 프리셋은{" "}
           <a
             href={CHARACTER_PALETTE_SOURCE.url}
             target="_blank"
@@ -274,6 +285,8 @@ export default function CharacterPaletteDevPage({
           </div>
           <SpinePreview
             subject={subject}
+            encounter={subject.encounterId ? encounterById.get(subject.encounterId) ?? null : null}
+            monsters={monsters}
             atlasDuotone={spineMap}
             selectedMoveId={selectedActionId}
             selectedMoveNonce={action.nonce}
@@ -443,21 +456,85 @@ function SubjectPreviewCard({
 
 function SpinePreview({
   subject,
+  encounter,
+  monsters,
   atlasDuotone,
   selectedMoveId,
   selectedMoveNonce,
   emptyLabel,
 }: {
   subject: PaletteSubject;
+  encounter: CodexEncounter | null;
+  monsters: CodexMonster[];
   atlasDuotone: { shadow: string; highlight: string } | null;
   selectedMoveId: string;
   selectedMoveNonce: number;
   emptyLabel: string;
 }) {
+  if (subject.spinePreview === "encounter" && encounter?.scene) {
+    return (
+      <div
+        data-spine-subject-id={subject.id}
+        data-spine-preview="encounter"
+        className="overflow-hidden rounded-lg border border-white/10 bg-[#120f18]"
+      >
+        <EncounterSceneStage
+          encounter={encounter}
+          character={null}
+          monsters={monsters}
+          serviceLocale="ko"
+          interactive={false}
+          atlasDuotone={atlasDuotone}
+          selectedMoveId={selectedMoveId}
+          selectedMoveNonce={selectedMoveNonce}
+        />
+      </div>
+    );
+  }
+
+  if (subject.spinePreview === "static" && subject.staticPreviewUrl) {
+    return (
+      <div
+        data-spine-subject-id={subject.id}
+        data-spine-preview="static"
+        className="relative aspect-video overflow-hidden rounded-lg border border-white/10 bg-[#120f18]"
+      >
+        {encounter?.scene ? (
+          <Image
+            src={encounter.scene.backgroundUrl}
+            alt=""
+            fill
+            className="object-cover"
+          />
+        ) : null}
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
+          {atlasDuotone ? (
+            <DuotoneCharacterToken
+              iconUrl={subject.staticPreviewUrl}
+              shadowHex={atlasDuotone.shadow}
+              highlightHex={atlasDuotone.highlight}
+              size={288}
+              className="h-72 w-72"
+            />
+          ) : (
+            <Image
+              src={subject.staticPreviewUrl}
+              alt={subject.name}
+              width={288}
+              height={288}
+              className="h-72 w-72 object-contain"
+            />
+          )}
+        </div>
+      </div>
+    );
+  }
+
   if (!subject.spineAsset) {
     return (
       <div
         data-spine-subject-id={subject.id}
+        data-spine-preview="empty"
         className="flex h-[12rem] items-center justify-center rounded-lg border border-white/10 bg-[#120f18] text-sm text-zinc-500 sm:h-[16rem]"
       >
         {emptyLabel}
@@ -468,6 +545,7 @@ function SpinePreview({
   return (
     <div
       data-spine-subject-id={subject.id}
+      data-spine-preview="monster"
       className="relative h-[22rem] overflow-hidden rounded-lg border border-white/10 bg-[#120f18] sm:h-[28rem]"
     >
       <MonsterSpineStage

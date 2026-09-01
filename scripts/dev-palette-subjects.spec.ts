@@ -7,6 +7,7 @@ import {
   subjectsForKind,
   type PaletteAncientSource,
   type PaletteCharacterSource,
+  type PaletteEncounterSource,
   type PaletteMonsterSource,
 } from "../src/lib/dev-palette-subjects";
 
@@ -29,6 +30,22 @@ function fakeSpine(
     idleAnimation: "idle_loop",
     moveAnimations: { IDLE: ["idle_loop"] },
     moveEffects: {},
+    ...extra,
+  };
+}
+
+function monsterRef(id: string, name: string): PaletteEncounterSource["monsters"][number] {
+  return { id, name, nameEn: id };
+}
+
+function bossEncounter(
+  extra: Pick<PaletteEncounterSource, "id" | "name" | "monsters" | "compositions"> &
+    Partial<Pick<PaletteEncounterSource, "imageUrl" | "scene">>,
+): PaletteEncounterSource {
+  return {
+    roomType: "Boss",
+    imageUrl: `/images/sts2/bosses/${extra.id.toLowerCase()}.webp`,
+    scene: extra.scene ?? { backgroundSpineAsset: null },
     ...extra,
   };
 }
@@ -73,6 +90,15 @@ const monsters: PaletteMonsterSource[] = [
     spineAsset: fakeSpine("QUEEN"),
   },
   {
+    id: "TORCH_HEAD_AMALGAM",
+    name: "횃불머리 융합체",
+    type: "Boss",
+    showInCompendium: true,
+    imageUrl: "/render/amalgam.webp",
+    bossImageUrl: null,
+    spineAsset: fakeSpine("TORCH_HEAD_AMALGAM"),
+  },
+  {
     id: "CRUSHER",
     name: "분쇄자",
     type: "Boss",
@@ -80,6 +106,33 @@ const monsters: PaletteMonsterSource[] = [
     imageUrl: "/render/crusher.webp",
     bossImageUrl: null,
     spineAsset: fakeSpine("CRUSHER"),
+  },
+  {
+    id: "ROCKET",
+    name: "로켓",
+    type: "Boss",
+    showInCompendium: true,
+    imageUrl: "/render/rocket.webp",
+    bossImageUrl: null,
+    spineAsset: fakeSpine("ROCKET"),
+  },
+  {
+    id: "KIN_FOLLOWER",
+    name: "혈족 추종자",
+    type: "Boss",
+    showInCompendium: true,
+    imageUrl: "/render/kin_follower.webp",
+    bossImageUrl: null,
+    spineAsset: fakeSpine("KIN_FOLLOWER"),
+  },
+  {
+    id: "KIN_PRIEST",
+    name: "혈족 사제",
+    type: "Boss",
+    showInCompendium: true,
+    imageUrl: "/render/kin_priest.webp",
+    bossImageUrl: null,
+    spineAsset: fakeSpine("KIN_PRIEST"),
   },
   {
     id: "DOORMAKER",
@@ -128,6 +181,71 @@ const monsters: PaletteMonsterSource[] = [
   },
 ];
 
+const encounters: PaletteEncounterSource[] = [
+  bossEncounter({
+    id: "AEONGLASS_BOSS",
+    name: "영겁의 모래시계",
+    monsters: [monsterRef("AEONGLASS", "영겁의 모래시계")],
+    compositions: [{
+      id: "FIXED",
+      weight: 1,
+      slots: [[monsterRef("AEONGLASS", "영겁의 모래시계")]],
+      slotNames: [null],
+    }],
+  }),
+  bossEncounter({
+    id: "KAISER_CRAB_BOSS",
+    name: "황제 게",
+    imageUrl: "/images/sts2/monsters-render/kaiser_crab.webp",
+    monsters: [monsterRef("CRUSHER", "분쇄자"), monsterRef("ROCKET", "로켓")],
+    compositions: [{
+      id: "FIXED",
+      weight: 1,
+      slots: [
+        [monsterRef("CRUSHER", "분쇄자")],
+        [monsterRef("ROCKET", "로켓")],
+      ],
+      slotNames: ["crusher", "rocket"],
+    }],
+  }),
+  bossEncounter({
+    id: "THE_KIN_BOSS",
+    name: "혈족",
+    monsters: [monsterRef("KIN_FOLLOWER", "혈족 추종자"), monsterRef("KIN_PRIEST", "혈족 사제")],
+    compositions: [{
+      id: "FIXED",
+      weight: 1,
+      slots: [
+        [monsterRef("KIN_FOLLOWER", "혈족 추종자")],
+        [monsterRef("KIN_FOLLOWER", "혈족 추종자")],
+        [monsterRef("KIN_PRIEST", "혈족 사제")],
+      ],
+      slotNames: ["slot1", "slot2", "leaderSlot"],
+    }],
+  }),
+  bossEncounter({
+    id: "QUEEN_BOSS",
+    name: "여왕",
+    monsters: [monsterRef("QUEEN", "여왕"), monsterRef("TORCH_HEAD_AMALGAM", "횃불머리 융합체")],
+    compositions: [{
+      id: "FIXED",
+      weight: 1,
+      slots: [
+        [monsterRef("TORCH_HEAD_AMALGAM", "횃불머리 융합체")],
+        [monsterRef("QUEEN", "여왕")],
+      ],
+      slotNames: ["amalgam", "queen"],
+    }],
+    scene: { backgroundSpineAsset: fakeSpine("QUEEN_BOSS_CAGES") },
+  }),
+  bossEncounter({
+    id: "DOORMAKER_BOSS",
+    name: "문을 만드는 자",
+    monsters: [monsterRef("DOORMAKER", "문을 만드는 자")],
+    compositions: null,
+  }),
+];
+
 const ancients: PaletteAncientSource[] = [
   {
     id: "DARV",
@@ -151,33 +269,52 @@ const ancients: PaletteAncientSource[] = [
   },
 ];
 
-const subjects = buildPaletteSubjects({ characters, monsters, ancients });
+const subjects = buildPaletteSubjects({ characters, monsters, ancients, encounters });
 
 assert.deepEqual(
   subjectsForKind(subjects, "character").map((subject) => subject.id),
   ["IRONCLAD", "DEFECT"],
 );
 
-const queen = subjects.find((subject) => subject.id === "QUEEN");
+const queen = subjects.find((subject) => subject.id === "QUEEN_BOSS");
 assert.equal(queen?.kind, "boss");
-assert.equal(queen?.tokenUrl, "/bosses/queen_boss.webp");
+assert.equal(queen?.name, "여왕");
+assert.equal(queen?.tokenUrl, "/images/sts2/bosses/queen_boss.webp");
+assert.equal(queen?.spinePreview, "encounter");
+assert.equal(subjects.some((subject) => subject.id === "QUEEN"), false);
+assert.equal(subjects.some((subject) => subject.id === "TORCH_HEAD_AMALGAM"), false);
 
-const crusher = subjects.find((subject) => subject.id === "CRUSHER");
-assert.equal(crusher?.kind, "boss");
-assert.equal(crusher?.tokenUrl, null);
-assert.equal(crusher?.pickerImageUrl, "/render/crusher.webp");
+const kaiser = subjects.find((subject) => subject.id === "KAISER_CRAB_BOSS");
+assert.equal(kaiser?.kind, "boss");
+assert.equal(kaiser?.name, "황제 게");
+assert.equal(kaiser?.tokenUrl, "/images/sts2/bosses/kaiser_crab_boss.webp");
+assert.equal(kaiser?.spinePreview, "encounter");
+assert.equal(subjects.some((subject) => subject.id === "CRUSHER"), false);
+assert.equal(subjects.some((subject) => subject.id === "ROCKET"), false);
 
-const doormaker = subjects.find((subject) => subject.id === "DOORMAKER");
+const kin = subjects.find((subject) => subject.id === "THE_KIN_BOSS");
+assert.equal(kin?.kind, "boss");
+assert.equal(kin?.name, "혈족");
+assert.equal(kin?.tokenUrl, "/images/sts2/bosses/the_kin_boss.webp");
+assert.equal(kin?.spinePreview, "encounter");
+assert.equal(subjects.some((subject) => subject.id === "KIN_FOLLOWER"), false);
+assert.equal(subjects.some((subject) => subject.id === "KIN_PRIEST"), false);
+
+const doormaker = subjects.find((subject) => subject.id === "DOORMAKER_BOSS");
 assert.equal(doormaker?.spineAsset, null);
-assert.equal(doormaker?.tokenUrl, "/bosses/doormaker_boss.webp");
+assert.equal(doormaker?.spinePreview, "static");
+assert.equal(doormaker?.tokenUrl, "/images/sts2/bosses/doormaker_boss.webp");
+assert.equal(doormaker?.staticPreviewUrl, "/images/sts2/bosses/doormaker_boss.webp");
 assert.deepEqual(doormaker?.actionIds, []);
+assert.equal(subjects.some((subject) => subject.id === "DOORMAKER"), false);
 
 const elite = subjects.find((subject) => subject.id === "LAGAVULIN");
 assert.equal(elite?.kind, "elite");
 assert.equal(elite?.tokenUrl, null);
 assert.equal(elite?.pickerImageUrl, "/render/lagavulin.webp");
 
-assert.equal(subjects.some((subject) => subject.id === "AEONGLASS" && subject.kind === "boss"), true);
+assert.equal(subjects.some((subject) => subject.id === "AEONGLASS_BOSS" && subject.kind === "boss"), true);
+assert.equal(subjects.some((subject) => subject.id === "AEONGLASS"), false);
 assert.equal(subjects.some((subject) => subject.id === "JAW_WORM"), false);
 assert.equal(subjects.some((subject) => subject.id === "THE_DREAMER"), false);
 

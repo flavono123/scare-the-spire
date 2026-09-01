@@ -1,6 +1,12 @@
 import { notFound } from "next/navigation";
-import { getCodexAncients, getCodexCharacters, getCodexMonsters } from "@/lib/codex-data";
+import {
+  getCodexAncients,
+  getCodexCharacters,
+  getCodexEncounters,
+  getCodexMonsters,
+} from "@/lib/codex-data";
 import { buildPaletteSubjects } from "@/lib/dev-palette-subjects";
+import { getEncounterMonsterIds } from "@/lib/encounter-compositions";
 
 export const metadata = {
   title: "2색 배색 — DEV",
@@ -18,12 +24,26 @@ export default async function CharacterPalettePage() {
     notFound();
   }
 
-  const [characters, monsters, ancients] = await Promise.all([
+  const [characters, monsters, ancients, encounters] = await Promise.all([
     getCodexCharacters({ gameLocale: "kor" }),
     getCodexMonsters({ gameLocale: "kor" }),
     getCodexAncients({ gameLocale: "kor" }),
+    getCodexEncounters({ gameLocale: "kor" }),
   ]);
-  const subjects = buildPaletteSubjects({ characters, monsters, ancients });
+  const bossEncounters = encounters.filter((encounter) => encounter.roomType === "Boss");
+  const bossMonsterIds = new Set(bossEncounters.flatMap(getEncounterMonsterIds));
+  const subjects = buildPaletteSubjects({
+    characters,
+    monsters,
+    ancients,
+    encounters: bossEncounters,
+  });
   const { default: CharacterPaletteDevPage } = await import("./character-palette-dev-page");
-  return <CharacterPaletteDevPage subjects={subjects} />;
+  return (
+    <CharacterPaletteDevPage
+      subjects={subjects}
+      encounters={bossEncounters}
+      monsters={monsters.filter((monster) => bossMonsterIds.has(monster.id))}
+    />
+  );
 }

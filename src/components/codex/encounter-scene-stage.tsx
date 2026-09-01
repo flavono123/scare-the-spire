@@ -18,6 +18,7 @@ import type {
   EncounterSceneMonsterSlot,
   MonsterSpineViewport,
 } from "@/lib/codex-types";
+import type { SpineAtlasDuotone } from "@/lib/spine-atlas-duotone";
 import { serviceMessages } from "@/messages/service";
 import { DecimillipedeSpineStage } from "./decimillipede-spine-stage";
 import { FakeMerchantEncounterSpineLayer } from "./fake-merchant-spine-stage";
@@ -30,6 +31,10 @@ interface EncounterSceneStageProps {
   character: CodexCharacter | null;
   monsters: CodexMonster[];
   serviceLocale: ServiceLocale;
+  atlasDuotone?: SpineAtlasDuotone | null;
+  interactive?: boolean;
+  selectedMoveId?: string | null;
+  selectedMoveNonce?: number;
 }
 
 interface PositionedMonster {
@@ -89,6 +94,10 @@ export function EncounterSceneStage({
   character,
   monsters,
   serviceLocale,
+  atlasDuotone,
+  interactive = true,
+  selectedMoveId = null,
+  selectedMoveNonce = 0,
 }: EncounterSceneStageProps) {
   const formations = useMemo(() => expandEncounterFormations(encounter), [encounter]);
   const monsterById = useMemo(
@@ -186,6 +195,7 @@ export function EncounterSceneStage({
               imagePriority={false}
               showLoadingLabel={false}
               viewportTransitionTime={0}
+              atlasDuotone={atlasDuotone}
             />
           </div>
         )}
@@ -223,29 +233,35 @@ export function EncounterSceneStage({
                 asset={crusher.spineAsset}
                 fallbackImageUrl={encounter.imageUrl}
                 monsterName={encounter.name}
-                selectedMoveId={null}
+                selectedMoveId={selectedMoveId}
+                selectedMoveNonce={selectedMoveNonce}
                 className="absolute inset-0"
                 fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.75)]"
                 imagePriority
                 showLoadingLabel={false}
                 viewportTransitionTime={0}
                 viewportOverride={KAISER_CRAB_ENCOUNTER_VIEWPORT}
+                atlasDuotone={atlasDuotone}
               />
             </div>
-            <EncounterMonsterHotspot
-              monster={crusher}
-              serviceLocale={serviceLocale}
-              style={{ left: "1%", top: "30%", width: "32%", height: "52%" }}
-            />
-            <EncounterMonsterHotspot
-              monster={rocket}
-              serviceLocale={serviceLocale}
-              style={{ right: "1%", top: "30%", width: "32%", height: "52%" }}
-            />
+            {interactive ? (
+              <>
+                <EncounterMonsterHotspot
+                  monster={crusher}
+                  serviceLocale={serviceLocale}
+                  style={{ left: "1%", top: "30%", width: "32%", height: "52%" }}
+                />
+                <EncounterMonsterHotspot
+                  monster={rocket}
+                  serviceLocale={serviceLocale}
+                  style={{ right: "1%", top: "30%", width: "32%", height: "52%" }}
+                />
+              </>
+            ) : null}
           </>
         )}
 
-        {character && (
+        {interactive && character && (
           <Link
             href={localizeHref("/profile", serviceLocale)}
             aria-label={character.name}
@@ -268,35 +284,21 @@ export function EncounterSceneStage({
         )}
 
         {!usesSharedEncounterActor && positionedMonsters.map(({ monster, style, viewportOverride }, index) => (
-          <Link
+          <EncounterMonsterActor
             key={`${formation.id}:${index}:${monster.id}`}
-            href={localizeHref(
-              buildCompendiumResourceHref("monster", monster.id),
-              serviceLocale,
-            )}
-            aria-label={monster.name}
-            className="group absolute z-20 block after:absolute after:-inset-2 after:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+            monster={monster}
+            serviceLocale={serviceLocale}
             style={style}
-          >
-            <MonsterSpineStage
-              asset={monster.spineAsset}
-              fallbackImageUrl={usesFakeMerchantBackground
-                ? null
-                : monster.imageUrl ?? monster.bossImageUrl}
-              monsterName={monster.name}
-              selectedMoveId={null}
-              className="absolute inset-0 transition-transform duration-200 group-hover:scale-[1.03]"
-              fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.75)]"
-              imagePriority={index < 2}
-              showLoadingLabel={false}
-              viewportTransitionTime={0}
-              viewportOverride={viewportOverride}
-              viewportPadding={{ padLeft: "0%", padRight: "0%", padTop: "0%", padBottom: "0%" }}
-            />
-            <span className="absolute bottom-0 left-1/2 z-40 -translate-x-1/2 translate-y-1/2 whitespace-nowrap rounded-full border border-white/15 bg-black/75 px-2 py-0.5 font-game-title text-[9px] font-bold text-gray-100 opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 sm:text-[11px]">
-              {monster.name}
-            </span>
-          </Link>
+            viewportOverride={viewportOverride}
+            fallbackImageUrl={usesFakeMerchantBackground
+              ? null
+              : monster.imageUrl ?? monster.bossImageUrl}
+            imagePriority={index < 2}
+            interactive={interactive}
+            selectedMoveId={selectedMoveId}
+            selectedMoveNonce={selectedMoveNonce}
+            atlasDuotone={atlasDuotone}
+          />
         ))}
 
         {usesFakeMerchantBackground && (
@@ -306,7 +308,7 @@ export function EncounterSceneStage({
           />
         )}
 
-        {formations.length > 1 && (
+        {interactive && formations.length > 1 && (
           <div
             className="absolute bottom-2 left-1/2 z-40 w-[min(42rem,calc(100%-1rem))] -translate-x-1/2 sm:bottom-3"
             data-encounter-formation-controls
@@ -417,6 +419,73 @@ export function EncounterSceneStage({
         )}
       </div>
     </div>
+  );
+}
+
+function EncounterMonsterActor({
+  monster,
+  serviceLocale,
+  style,
+  viewportOverride,
+  fallbackImageUrl,
+  imagePriority,
+  interactive,
+  selectedMoveId,
+  selectedMoveNonce,
+  atlasDuotone,
+}: {
+  monster: CodexMonster;
+  serviceLocale: ServiceLocale;
+  style: CSSProperties;
+  viewportOverride: MonsterSpineViewport | null;
+  fallbackImageUrl: string | null;
+  imagePriority: boolean;
+  interactive: boolean;
+  selectedMoveId: string | null;
+  selectedMoveNonce: number;
+  atlasDuotone?: SpineAtlasDuotone | null;
+}) {
+  const stage = (
+    <MonsterSpineStage
+      asset={monster.spineAsset}
+      fallbackImageUrl={fallbackImageUrl}
+      monsterName={monster.name}
+      selectedMoveId={selectedMoveId}
+      selectedMoveNonce={selectedMoveNonce}
+      className={`absolute inset-0 ${interactive ? "transition-transform duration-200 group-hover:scale-[1.03]" : ""}`}
+      fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.75)]"
+      imagePriority={imagePriority}
+      showLoadingLabel={false}
+      viewportTransitionTime={0}
+      viewportOverride={viewportOverride}
+      viewportPadding={{ padLeft: "0%", padRight: "0%", padTop: "0%", padBottom: "0%" }}
+      atlasDuotone={atlasDuotone}
+    />
+  );
+
+  if (!interactive) {
+    return (
+      <div className="absolute z-20" style={style} data-encounter-monster={monster.id}>
+        {stage}
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      href={localizeHref(
+        buildCompendiumResourceHref("monster", monster.id),
+        serviceLocale,
+      )}
+      aria-label={monster.name}
+      className="group absolute z-20 block after:absolute after:-inset-2 after:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+      style={style}
+    >
+      {stage}
+      <span className="absolute bottom-0 left-1/2 z-40 -translate-x-1/2 translate-y-1/2 whitespace-nowrap rounded-full border border-white/15 bg-black/75 px-2 py-0.5 font-game-title text-[9px] font-bold text-gray-100 opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 sm:text-[11px]">
+        {monster.name}
+      </span>
+    </Link>
   );
 }
 
