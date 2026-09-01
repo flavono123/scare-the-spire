@@ -751,6 +751,23 @@
 .dark .spire-pink { color: #f472b6; }
 .dark .spire-aqua { color: #22d3ee; }
 
+/* Character identity text. Distinct from buff [green] / nerf [red] tags. */
+.character-ironclad { color: #f87171; }
+.character-silent { color: #34d399; }
+.character-regent { color: #fb923c; }
+.character-necrobinder { color: #f472b6; }
+.character-defect { color: #22d3ee; }
+.light .character-ironclad { color: #dc2626; }
+.light .character-silent { color: #047857; }
+.light .character-regent { color: #c2410c; }
+.light .character-necrobinder { color: #be185d; }
+.light .character-defect { color: #0e7490; }
+.dark .character-ironclad { color: #f87171; }
+.dark .character-silent { color: #34d399; }
+.dark .character-regent { color: #fb923c; }
+.dark .character-necrobinder { color: #f472b6; }
+.dark .character-defect { color: #22d3ee; }
+
 /* History Course YouTube-style cover phrase */
 .cover-phrase-outline {
   -webkit-text-stroke: 3px #fff;

@@ -1,21 +1,23 @@
 "use client";
 
-import { Extension } from "@tiptap/core";
 import { PluginKey } from "@tiptap/pm/state";
-import type { ResolvedPos } from "@tiptap/pm/model";
 import { ReactRenderer } from "@tiptap/react";
-import Suggestion, {
-  type SuggestionMatch,
-  type SuggestionOptions,
-} from "@tiptap/suggestion";
+import type { SuggestionKeyDownProps, SuggestionProps } from "@tiptap/suggestion";
 import {
   forwardRef,
   useImperativeHandle,
   useState,
 } from "react";
+import {
+  BraceKeywordSuggestion,
+  findBracePortraitMatch,
+} from "@/components/chemicalx/brace-keyword-suggestion";
+import { MentionList, type MentionListRef } from "@/components/chemicalx/mention-list";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
-import { filterPrefixItems, type MockGameAsset } from "./sample";
-import { gameAssetAttrs } from "./tiptap-nodes";
+import { matchEntities } from "@/lib/chemical-utils";
+import { findPagestormEntity } from "./entities-context";
+import type { MockGameAsset } from "./sample";
 
 export type PrefixMenuRef = {
   onKeyDown: (props: { event: KeyboardEvent }) => boolean;
@@ -103,49 +105,39 @@ export const PrefixMenu = forwardRef<
   );
 });
 
-const braceAssetPluginKey = new PluginKey("pagestorm-brace-asset");
+export const pagestormBracePluginKey = new PluginKey("pagestorm-brace-portrait");
 
-function findBraceAssetMatch(config: { $position: ResolvedPos }): SuggestionMatch | null {
-  const nodeBefore = config.$position.nodeBefore;
-  if (!nodeBefore?.isText) return null;
-  const text = nodeBefore.text ?? "";
-  const match = text.match(/\{([^{}\n]*)$/);
-  if (!match) return null;
-  return {
-    range: {
-      from: config.$position.pos - match[0].length,
-      to: config.$position.pos,
-    },
-    query: match[1] ?? "",
-    text: match[0],
-  };
-}
-
-export const BraceAssetSuggestion = Extension.create({
-  name: "pagestorm-brace-asset",
-  addProseMirrorPlugins() {
-    const suggestion: Omit<SuggestionOptions<MockGameAsset>, "editor"> = {
-      pluginKey: braceAssetPluginKey,
-      // Empty trigger + custom matcher: `{` is regex-special in the default
-      // finder, and Chemical X already uses this pattern for `{query`.
+export function createPagestormBraceSuggestion(options: {
+  getEntities: () => EntityInfo[];
+  onPick: (payload: { entity: EntityInfo; range: { from: number; to: number } }) => void;
+}) {
+  return BraceKeywordSuggestion.configure({
+    suggestion: {
+      pluginKey: pagestormBracePluginKey,
       char: "",
       allowSpaces: false,
       allowedPrefixes: null,
-      findSuggestionMatch: findBraceAssetMatch,
-      items: ({ query }) => filterPrefixItems(query).slice(0, 8),
-      command: ({ editor, range, props }) => {
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .insertContent([
-            { type: "gameAsset", attrs: gameAssetAttrs(props) },
-            { type: "paragraph" },
-          ])
-          .run();
+      findSuggestionMatch: findBracePortraitMatch,
+      items: ({ query }) => {
+        const entities = options.getEntities();
+        const trimmed = query.trim();
+        if (!trimmed) {
+          return entities.filter((entity) => entity.imageUrl).slice(0, 8);
+        }
+        return matchEntities(trimmed, entities);
+      },
+      command: ({ range, props }) => {
+        const item = props as unknown as EntityInfo;
+        const entity = findPagestormEntity(
+          options.getEntities(),
+          item.type ?? (item as { entityType?: EntityInfo["type"] }).entityType,
+          String(item.id ?? ""),
+        ) ?? item;
+        if (!entity?.id) return;
+        options.onPick({ entity, range });
       },
       render: () => {
-        let renderer: ReactRenderer<PrefixMenuRef> | null = null;
+        let renderer: ReactRenderer<MentionListRef> | null = null;
         let popup: HTMLDivElement | null = null;
         const place = (clientRect?: (() => DOMRect | null) | null) => {
           const rect = clientRect?.();
@@ -160,8 +152,8 @@ export const BraceAssetSuggestion = Extension.create({
           renderer = null;
         };
         return {
-          onStart: (props) => {
-            renderer = new ReactRenderer(PrefixMenu, {
+          onStart: (props: SuggestionProps) => {
+            renderer = new ReactRenderer(MentionList, {
               props: {
                 items: props.items,
                 command: props.command,
@@ -169,21 +161,21 @@ export const BraceAssetSuggestion = Extension.create({
               editor: props.editor,
             });
             popup = document.createElement("div");
-            popup.dataset.pagestormPrefixMenu = "true";
             popup.style.position = "fixed";
             popup.style.zIndex = "100";
+            popup.dataset.pagestormPrefixMenu = "true";
             popup.appendChild(renderer.element);
             document.body.appendChild(popup);
             place(props.clientRect);
           },
-          onUpdate: (props) => {
+          onUpdate: (props: SuggestionProps) => {
             renderer?.updateProps({
               items: props.items,
               command: props.command,
             });
             place(props.clientRect);
           },
-          onKeyDown: (props) => {
+          onKeyDown: (props: SuggestionKeyDownProps) => {
             if (props.event.key === "Escape") {
               dismiss();
               return true;
@@ -195,12 +187,6 @@ export const BraceAssetSuggestion = Extension.create({
           },
         };
       },
-    };
-    return [
-      Suggestion({
-        editor: this.editor,
-        ...suggestion,
-      }),
-    ];
-  },
-});
+    },
+  });
+}

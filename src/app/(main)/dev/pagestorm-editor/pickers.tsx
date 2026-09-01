@@ -1,0 +1,309 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import type { EntityInfo } from "@/components/patch-note-renderer";
+import { VersionSelector } from "@/components/codex/version-selector";
+import { DecisionsDecisionsPoolPicker } from "@/components/decisions-decisions/decisions-decisions-pool-picker";
+import { GameScrollArea } from "@/components/game-scroll-area";
+import { OwnPostMark } from "@/components/own-post-mark";
+import { ServiceModalFrame } from "@/components/service-modal-frame";
+import { useGameLocale } from "@/hooks/use-game-locale";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import {
+  cloneFilterDims,
+  DECISIONS_DECISIONS_GAME_VERSION,
+  emptyFilterDims,
+  filterStateFromPresetKey,
+  toggleFilterDim,
+  type DecisionsFilterDim,
+  type DecisionsFilterDims,
+  type DecisionsPoolMajor,
+} from "@/lib/decisions-decisions";
+import type { CodexLabelKey, NavDropdownItem } from "@/lib/site-nav-items";
+import {
+  getToyBoxNavItems,
+  localizeCodexNavItems,
+  sts2NavItems,
+} from "@/lib/site-nav-items";
+import { serviceMessages } from "@/messages/service";
+import { CardPresentationPicker, GameAssetFigure, mockButtonClass } from "./figures";
+import { NavTokenChip } from "./nav-tokens";
+import { assetFromEntity, type CardPresentation } from "./sample";
+import {
+  filterToyboxPosts,
+  type PagestormToyboxPost,
+} from "./toybox-samples";
+
+const LABEL_TO_MAJOR: Partial<Record<CodexLabelKey, DecisionsPoolMajor>> = {
+  characters: "character",
+  cards: "card",
+  relics: "relic",
+  potions: "potion",
+  powers: "power",
+  enchantments: "enchantment",
+  monsters: "monster",
+  events: "event",
+  ancients: "ancient",
+  epochs: "epoch",
+  keywords: "keyword",
+  ascensions: "ascension",
+  modifiers: "modifier",
+};
+
+export function majorFromCodexHref(href: string): DecisionsPoolMajor | null {
+  const path = href.replace(/^\/(?:en)(?=\/)/, "");
+  const item = sts2NavItems.find((nav) => nav.href === path);
+  if (!item) return null;
+  return LABEL_TO_MAJOR[item.labelKey] ?? null;
+}
+
+export type CompendiumInsertPayload = {
+  entity: EntityInfo;
+  presentation: CardPresentation;
+  beta: boolean;
+};
+
+function CardConfirmStep({
+  entity,
+  onInsert,
+}: {
+  entity: EntityInfo;
+  onInsert: (payload: CompendiumInsertPayload) => void;
+}) {
+  const serviceLocale = useServiceLocale();
+  const copy = serviceMessages[serviceLocale].pagestormEditor;
+  const [presentation, setPresentation] = useState<CardPresentation>("art");
+  const [beta, setBeta] = useState(false);
+  return (
+    <div className="space-y-3 rounded-lg border border-border p-3">
+      <p className="font-game-title text-sm">{copy.presentationTitle}</p>
+      <GameAssetFigure
+        asset={assetFromEntity(entity)}
+        align="center"
+        presentation={presentation}
+        beta={beta}
+        card={entity.cardData}
+        mode="preview"
+        linked={false}
+      />
+      <CardPresentationPicker
+        value={presentation}
+        beta={beta}
+        onChange={setPresentation}
+        onBeta={setBeta}
+      />
+      <button
+        type="button"
+        className={mockButtonClass(true)}
+        onClick={() => onInsert({ entity, presentation, beta: presentation === "tiny" ? false : beta })}
+      >
+        {copy.insert}
+      </button>
+    </div>
+  );
+}
+
+export function CompendiumPickerModal({
+  entities,
+  initialMajor,
+  onClose,
+  onInsert,
+}: {
+  entities: EntityInfo[];
+  initialMajor: DecisionsPoolMajor | null;
+  onClose: () => void;
+  onInsert: (payload: CompendiumInsertPayload) => void;
+}) {
+  const serviceLocale = useServiceLocale();
+  const copy = serviceMessages[serviceLocale];
+  const [major, setMajor] = useState<DecisionsPoolMajor | null>(initialMajor);
+  const [dims, setDims] = useState<DecisionsFilterDims>(() => emptyFilterDims());
+  const [pendingCard, setPendingCard] = useState<EntityInfo | null>(null);
+  const [selectedVersion, setSelectedVersion] = useState(DECISIONS_DECISIONS_GAME_VERSION);
+  const entityMap = useMemo(
+    () => new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity])),
+    [entities],
+  );
+
+  return (
+    <ServiceModalFrame
+      title={copy.pagestormEditor.compendiumPickerTitle}
+      titleId="pagestorm-compendium-picker"
+      closeLabel={copy.pagestormEditor.close}
+      onClose={onClose}
+      headerTrailing={(
+        <VersionSelector
+          versions={[DECISIONS_DECISIONS_GAME_VERSION]}
+          currentVersion={DECISIONS_DECISIONS_GAME_VERSION}
+          selectedVersion={selectedVersion}
+          onChange={setSelectedVersion}
+        />
+      )}
+      panelClassName="max-h-[min(92dvh,52rem)] w-full max-w-3xl"
+    >
+      <GameScrollArea className="max-h-[min(78dvh,44rem)] pr-1">
+        {pendingCard ? (
+          <CardConfirmStep
+            entity={pendingCard}
+            onInsert={onInsert}
+          />
+        ) : (
+          <DecisionsDecisionsPoolPicker
+            entities={entities}
+            entityMap={entityMap}
+            serviceLocale={serviceLocale}
+            presetLabels={{}}
+            major={major}
+            dims={dims}
+            onMajor={(next) => {
+              setMajor(next);
+              setDims(emptyFilterDims());
+            }}
+            onToggleDim={(dim: DecisionsFilterDim, key: string) => {
+              setDims((current) => toggleFilterDim(current, dim, key));
+            }}
+            onPreset={(key) => {
+              const next = filterStateFromPresetKey(key);
+              setMajor(next.major);
+              setDims(cloneFilterDims(next.dims));
+            }}
+            onAdd={(entity) => {
+              if (entity.type === "card") {
+                setPendingCard(entity);
+                return;
+              }
+              onInsert({ entity, presentation: "art", beta: false });
+            }}
+          />
+        )}
+      </GameScrollArea>
+    </ServiceModalFrame>
+  );
+}
+
+export function ToyboxPickerModal({
+  initialServiceHref,
+  onClose,
+  onInsert,
+}: {
+  initialServiceHref: string | null;
+  onClose: () => void;
+  onInsert: (post: PagestormToyboxPost) => void;
+}) {
+  const serviceLocale = useServiceLocale();
+  const gameLocale = useGameLocale();
+  const copy = serviceMessages[serviceLocale].pagestormEditor;
+  const toyboxItems = useMemo(
+    () => getToyBoxNavItems({ serviceLocale, gameLocale }).filter((item) => !item.href.startsWith("/dev")),
+    [gameLocale, serviceLocale],
+  );
+  const [serviceHref, setServiceHref] = useState<string | null>(initialServiceHref);
+  const [query, setQuery] = useState("");
+  const [mineOnly, setMineOnly] = useState(false);
+  const posts = useMemo(() => {
+    const matched = filterToyboxPosts({ serviceHref, query });
+    return mineOnly ? matched.filter((post) => post.own) : matched;
+  }, [mineOnly, query, serviceHref]);
+
+  return (
+    <ServiceModalFrame
+      title={copy.toyboxPickerTitle}
+      titleId="pagestorm-toybox-picker"
+      closeLabel={copy.close}
+      onClose={onClose}
+      panelClassName="max-h-[min(92dvh,52rem)] w-full max-w-2xl"
+    >
+      <div className="flex flex-wrap gap-1.5 pb-3">
+        {toyboxItems.map((item) => (
+          <NavTokenChip
+            key={item.href}
+            item={item}
+            pressed={serviceHref === item.href}
+            onClick={() => setServiceHref(serviceHref === item.href ? null : item.href)}
+          />
+        ))}
+      </div>
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <input
+          type="search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder={copy.searchPosts}
+          className="min-w-0 flex-1 rounded-md border border-border bg-transparent px-2 py-1.5 text-sm"
+        />
+        <button
+          type="button"
+          className={mockButtonClass(mineOnly)}
+          onClick={() => setMineOnly((current) => !current)}
+        >
+          {copy.ownFirst}
+        </button>
+      </div>
+      <GameScrollArea className="max-h-[min(60dvh,32rem)]">
+        {posts.length === 0 ? (
+          <p className="px-2 py-8 text-center text-sm text-muted-foreground">{copy.emptyToybox}</p>
+        ) : (
+          <ul className="space-y-2">
+            {posts.map((post) => (
+              <li key={post.id}>
+                <button
+                  type="button"
+                  className="flex w-full flex-col gap-1 rounded-lg border border-border px-3 py-2 text-left hover:border-primary/50"
+                  onClick={() => onInsert(post)}
+                >
+                  <span className="flex items-center gap-2">
+                    <span className="font-game-title text-sm">{post.title}</span>
+                    {post.own ? <OwnPostMark /> : null}
+                  </span>
+                  <span className="line-clamp-2 text-xs text-muted-foreground">{post.body}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </GameScrollArea>
+    </ServiceModalFrame>
+  );
+}
+
+export function CardBraceConfirmModal({
+  entity,
+  onClose,
+  onInsert,
+}: {
+  entity: EntityInfo;
+  onClose: () => void;
+  onInsert: (payload: CompendiumInsertPayload) => void;
+}) {
+  const serviceLocale = useServiceLocale();
+  const copy = serviceMessages[serviceLocale].pagestormEditor;
+  return (
+    <ServiceModalFrame
+      title={copy.presentationTitle}
+      titleId="pagestorm-card-presentation"
+      closeLabel={copy.close}
+      onClose={onClose}
+      panelClassName="w-full max-w-md"
+    >
+      <CardConfirmStep entity={entity} onInsert={onInsert} />
+    </ServiceModalFrame>
+  );
+}
+
+export function useCompendiumNavItems(): NavDropdownItem[] {
+  const serviceLocale = useServiceLocale();
+  const gameLocale = useGameLocale();
+  return useMemo(
+    () => localizeCodexNavItems(sts2NavItems, serviceLocale, gameLocale, { useGameLabels: true }),
+    [gameLocale, serviceLocale],
+  );
+}
+
+export function useToyboxNavItems(): NavDropdownItem[] {
+  const serviceLocale = useServiceLocale();
+  const gameLocale = useGameLocale();
+  return useMemo(
+    () => getToyBoxNavItems({ serviceLocale, gameLocale }).filter((item) => !item.href.startsWith("/dev")),
+    [gameLocale, serviceLocale],
+  );
+}

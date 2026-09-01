@@ -70,4 +70,27 @@ export const BraceKeywordSuggestion = Extension.create<{
   },
 });
 
+/**
+ * `{query` with the brace still open. Used by 서류 작성기 so suggestion does
+ * not fire on plain typing (unlike Chemical X no-trigger mention).
+ */
+export function findBracePortraitMatch(config: {
+  $position: ResolvedPos;
+}): SuggestionMatch | null {
+  const { $position } = config;
+  const nodeBefore = $position.nodeBefore;
+  if (!nodeBefore?.isText) return null;
+  const text = nodeBefore.text ?? "";
+  const match = text.match(/\{([^{}\n]*)$/);
+  if (!match) return null;
+  return {
+    range: {
+      from: $position.pos - match[0].length,
+      to: $position.pos,
+    },
+    query: match[1] ?? "",
+    text: match[0],
+  };
+}
+
 export { findBraceKeywordMatch };

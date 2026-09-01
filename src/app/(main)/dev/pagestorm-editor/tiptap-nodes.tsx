@@ -8,15 +8,18 @@ import {
   OgBookmarkFigure,
   YoutubePlayerFigure,
 } from "./figures";
+import { findPagestormEntity, usePagestormEntities } from "./entities-context";
 import {
   defaultAssetWidth,
   defaultPlayerWidth,
   findSampleAsset,
+  type CardPresentation,
   type MockAlign,
   type MockAssetKind,
   type MockGameAsset,
   type MockOgBookmark,
 } from "./sample";
+import { ToyboxEmbedFigure } from "./toybox-embed";
 
 function asAlign(value: unknown): MockAlign {
   return value === "center" || value === "right" ? value : "left";
@@ -31,6 +34,10 @@ function asBool(value: unknown, fallback = true): boolean {
 function asWidth(value: unknown, fallback: number): number {
   const n = Number(value);
   return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
+function asPresentation(value: unknown): CardPresentation {
+  return value === "tile" || value === "tiny" ? value : "art";
 }
 
 function atomKeyboard(name: string) {
@@ -58,17 +65,35 @@ const nodeViewOptions = {
 };
 
 function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
+  const entities = usePagestormEntities();
   const kind = (node.attrs.kind as MockAssetKind) || "card";
-  const asset = findSampleAsset(String(node.attrs.assetId ?? "")) ?? {
-    id: String(node.attrs.assetId ?? ""),
-    kind,
-    name: String(node.attrs.name ?? ""),
-    imageUrl: String(node.attrs.imageUrl ?? ""),
-    href: String(node.attrs.href ?? "#"),
-  };
+  const entityType = String(node.attrs.entityType || kind);
+  const entity = findPagestormEntity(entities, entityType, String(node.attrs.assetId ?? ""));
+  const asset: MockGameAsset = entity
+    ? {
+      id: entity.id,
+      kind: entity.type,
+      name: entity.nameKo,
+      imageUrl: entity.imageUrl ?? String(node.attrs.imageUrl ?? ""),
+      href: entity.href ?? String(node.attrs.href ?? "#"),
+    }
+    : findSampleAsset(String(node.attrs.assetId ?? "")) ?? {
+      id: String(node.attrs.assetId ?? ""),
+      kind,
+      name: String(node.attrs.name ?? ""),
+      imageUrl: String(node.attrs.imageUrl ?? ""),
+      href: String(node.attrs.href ?? "#"),
+    };
   const align = asAlign(node.attrs.align);
   const linked = asBool(node.attrs.linked);
-  const width = asWidth(node.attrs.width, defaultAssetWidth(kind));
+  const presentation = asPresentation(node.attrs.presentation);
+  const beta = asBool(node.attrs.beta, false);
+  const width = asWidth(node.attrs.width, defaultAssetWidth(asset.kind));
+  const height = asWidth(
+    node.attrs.height,
+    asset.kind === "card" && presentation !== "tiny" ? Math.round(width * 1.56) : width,
+  );
+  const showCardChrome = asset.kind === "card";
   return (
     <NodeViewWrapper>
       <div className={selected ? "rounded-md ring-1 ring-primary/70" : undefined}>
@@ -77,13 +102,20 @@ function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
           align={align}
           linked={linked}
           width={width}
-          onResize={(next) => updateAttributes({ width: next })}
+          height={height}
+          presentation={presentation}
+          beta={beta}
+          card={entity?.cardData}
+          onResize={(size) => updateAttributes({ width: size.width, height: size.height })}
+          onLinked={(next) => updateAttributes({ linked: next })}
         />
         <EditBlockChrome
           align={align}
           onAlign={(next) => updateAttributes({ align: next })}
-          linked={linked}
-          onLinked={(next) => updateAttributes({ linked: next })}
+          presentation={showCardChrome ? presentation : undefined}
+          beta={showCardChrome ? beta : undefined}
+          onPresentation={showCardChrome ? (next) => updateAttributes({ presentation: next }) : undefined}
+          onBeta={showCardChrome ? (next) => updateAttributes({ beta: next }) : undefined}
         />
       </div>
     </NodeViewWrapper>
@@ -93,6 +125,7 @@ function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
 function YoutubeView({ node, updateAttributes, selected }: NodeViewProps) {
   const align = asAlign(node.attrs.align);
   const width = asWidth(node.attrs.width, defaultPlayerWidth());
+  const height = asWidth(node.attrs.height, Math.round(width * 9 / 16));
   return (
     <NodeViewWrapper>
       <div className={selected ? "rounded-md ring-1 ring-primary/70" : undefined}>
@@ -101,7 +134,8 @@ function YoutubeView({ node, updateAttributes, selected }: NodeViewProps) {
           title={String(node.attrs.title ?? "YouTube")}
           align={align}
           width={width}
-          onResize={(next) => updateAttributes({ width: next })}
+          height={height}
+          onResize={(size) => updateAttributes({ width: size.width, height: size.height })}
         />
         <EditBlockChrome
           align={align}
@@ -116,6 +150,7 @@ function OgView({ node, updateAttributes, selected }: NodeViewProps) {
   const align = asAlign(node.attrs.align);
   const linked = asBool(node.attrs.linked);
   const width = asWidth(node.attrs.width, defaultPlayerWidth());
+  const height = asWidth(node.attrs.height, 96);
   const bookmark: MockOgBookmark = {
     url: String(node.attrs.url ?? ""),
     title: String(node.attrs.title ?? ""),
@@ -131,13 +166,39 @@ function OgView({ node, updateAttributes, selected }: NodeViewProps) {
           align={align}
           linked={linked}
           width={width}
-          onResize={(next) => updateAttributes({ width: next })}
+          height={height}
+          onResize={(size) => updateAttributes({ width: size.width, height: size.height })}
+          onLinked={(next) => updateAttributes({ linked: next })}
         />
         <EditBlockChrome
           align={align}
           onAlign={(next) => updateAttributes({ align: next })}
+        />
+      </div>
+    </NodeViewWrapper>
+  );
+}
+
+function ToyboxView({ node, updateAttributes, selected }: NodeViewProps) {
+  const align = asAlign(node.attrs.align);
+  const linked = asBool(node.attrs.linked);
+  const width = asWidth(node.attrs.width, defaultPlayerWidth());
+  const height = asWidth(node.attrs.height, 240);
+  return (
+    <NodeViewWrapper>
+      <div className={selected ? "rounded-md ring-1 ring-primary/70" : undefined}>
+        <ToyboxEmbedFigure
+          postId={String(node.attrs.postId ?? "")}
+          align={align}
           linked={linked}
+          width={width}
+          height={height}
+          onResize={(size) => updateAttributes({ width: size.width, height: size.height })}
           onLinked={(next) => updateAttributes({ linked: next })}
+        />
+        <EditBlockChrome
+          align={align}
+          onAlign={(next) => updateAttributes({ align: next })}
         />
       </div>
     </NodeViewWrapper>
@@ -154,12 +215,16 @@ export const GameAssetNode = Node.create({
     return {
       assetId: { default: "" },
       kind: { default: "card" },
+      entityType: { default: "card" },
       name: { default: "" },
       imageUrl: { default: "" },
       href: { default: "" },
       align: { default: "center" },
       linked: { default: true },
       width: { default: 128 },
+      height: { default: 200 },
+      presentation: { default: "art" },
+      beta: { default: false },
     };
   },
   parseHTML() {
@@ -188,6 +253,7 @@ export const YoutubePlayerNode = Node.create({
       title: { default: "YouTube" },
       align: { default: "center" },
       width: { default: 576 },
+      height: { default: 324 },
     };
   },
   parseHTML() {
@@ -220,6 +286,7 @@ export const OgBookmarkNode = Node.create({
       align: { default: "center" },
       linked: { default: true },
       width: { default: 576 },
+      height: { default: 96 },
     };
   },
   parseHTML() {
@@ -236,15 +303,59 @@ export const OgBookmarkNode = Node.create({
   },
 });
 
-export function gameAssetAttrs(asset: MockGameAsset, align: MockAlign = "center") {
+export const ToyboxEmbedNode = Node.create({
+  name: "toyboxEmbed",
+  group: "block",
+  atom: true,
+  selectable: true,
+  draggable: true,
+  addAttributes() {
+    return {
+      postId: { default: "" },
+      service: { default: "" },
+      align: { default: "center" },
+      linked: { default: true },
+      width: { default: 576 },
+      height: { default: 240 },
+    };
+  },
+  parseHTML() {
+    return [{ tag: "div[data-pagestorm-toybox]" }];
+  },
+  renderHTML({ HTMLAttributes }) {
+    return ["div", mergeAttributes(HTMLAttributes, { "data-pagestorm-toybox": "" })];
+  },
+  addKeyboardShortcuts() {
+    return atomKeyboard(this.name);
+  },
+  addNodeView() {
+    return ReactNodeViewRenderer(ToyboxView, nodeViewOptions);
+  },
+});
+
+export function gameAssetAttrs(
+  asset: MockGameAsset,
+  options: {
+    align?: MockAlign;
+    presentation?: CardPresentation;
+    beta?: boolean;
+    linked?: boolean;
+  } = {},
+) {
+  const presentation = options.presentation ?? "art";
+  const width = presentation === "tiny" ? 72 : defaultAssetWidth(asset.kind);
   return {
     assetId: asset.id,
     kind: asset.kind,
+    entityType: asset.kind,
     name: asset.name,
     imageUrl: asset.imageUrl,
     href: asset.href,
-    align,
-    linked: true,
-    width: defaultAssetWidth(asset.kind),
+    align: options.align ?? "center",
+    linked: options.linked ?? true,
+    width,
+    height: asset.kind === "card" && presentation !== "tiny" ? Math.round(width * 1.56) : width,
+    presentation,
+    beta: options.beta ?? false,
   };
 }

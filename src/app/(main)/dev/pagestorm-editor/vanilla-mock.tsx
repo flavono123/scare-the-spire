@@ -334,13 +334,12 @@ export function VanillaPagestormMock() {
                   align={block.align}
                   linked={block.linked}
                   width={block.width}
-                  onResize={(width) => update(block.id, { width })}
+                  onResize={(size) => update(block.id, { width: size.width })}
+                  onLinked={(linked) => update(block.id, { linked })}
                 />
                 <EditBlockChrome
                   align={block.align}
                   onAlign={(align) => update(block.id, { align })}
-                  linked={block.linked}
-                  onLinked={(linked) => update(block.id, { linked })}
                 />
               </div>
             );
@@ -353,7 +352,7 @@ export function VanillaPagestormMock() {
                   title={block.title}
                   align={block.align}
                   width={block.width}
-                  onResize={(width) => update(block.id, { width })}
+                  onResize={(size) => update(block.id, { width: size.width })}
                 />
                 <EditBlockChrome
                   align={block.align}
@@ -369,13 +368,12 @@ export function VanillaPagestormMock() {
                 align={block.align}
                 linked={block.linked}
                 width={block.width}
-                onResize={(width) => update(block.id, { width })}
+                onResize={(size) => update(block.id, { width: size.width })}
+                onLinked={(linked) => update(block.id, { linked })}
               />
               <EditBlockChrome
                 align={block.align}
                 onAlign={(align) => update(block.id, { align })}
-                linked={block.linked}
-                onLinked={(linked) => update(block.id, { linked })}
               />
             </div>
           );

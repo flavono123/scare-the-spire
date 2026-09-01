@@ -1,45 +1,16 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { mockButtonClass } from "./figures";
 import {
   SAMPLE_ASSETS,
   SAMPLE_URL_PLACEHOLDER,
   resolvePastedUrl,
-  type MockAlign,
   type MockGameAsset,
   type MockOgBookmark,
 } from "./sample";
 
-export function mockButtonClass(active?: boolean): string {
-  return `rounded px-2 py-1 text-xs ${
-    active
-      ? "bg-primary/20 text-primary"
-      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-  }`;
-}
-
-export function AlignButtons({
-  value,
-  onChange,
-}: {
-  value?: MockAlign;
-  onChange: (align: MockAlign) => void;
-}) {
-  return (
-    <>
-      {(["left", "center", "right"] as const).map((align) => (
-        <button
-          key={align}
-          type="button"
-          className={mockButtonClass(value === align)}
-          onClick={() => onChange(align)}
-        >
-          {align === "left" ? "좌" : align === "center" ? "중" : "우"}
-        </button>
-      ))}
-    </>
-  );
-}
+export { mockButtonClass, AlignButtons } from "./figures";
 
 export function InsertBar({
   onInsertAsset,

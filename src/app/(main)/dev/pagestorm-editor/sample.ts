@@ -1,8 +1,11 @@
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import { parseYouTubeVideoId, youtubeThumbnailUrl } from "@/lib/youtube-reference";
 
 export type MockAlign = "left" | "center" | "right";
 
-export type MockAssetKind = "card" | "relic" | "power";
+export type MockAssetKind = string;
+
+export type CardPresentation = "art" | "tile" | "tiny";
 
 export type MockGameAsset = {
   id: string;
@@ -96,6 +99,16 @@ const CANNED_BOOKMARKS: readonly MockOgBookmark[] = [
 
 export function findSampleAsset(id: string): MockGameAsset | undefined {
   return SAMPLE_ASSETS.find((asset) => asset.id === id);
+}
+
+export function assetFromEntity(entity: EntityInfo): MockGameAsset {
+  return {
+    id: entity.id,
+    kind: entity.type,
+    name: entity.nameKo,
+    imageUrl: entity.imageUrl ?? "",
+    href: entity.href ?? "#",
+  };
 }
 
 export function defaultAssetWidth(kind: MockAssetKind): number {

@@ -72,13 +72,12 @@ const gameAssetSpec = createReactBlockSpec(
             align={align}
             linked={linked}
             width={width}
-            onResize={(next) => editor.updateBlock(block, { props: { width: next } })}
+            onResize={(size) => editor.updateBlock(block, { props: { width: size.width } })}
+            onLinked={(next) => editor.updateBlock(block, { props: { linked: next } })}
           />
           <EditBlockChrome
             align={align}
             onAlign={(next) => editor.updateBlock(block, { props: { align: next } })}
-            linked={linked}
-            onLinked={(next) => editor.updateBlock(block, { props: { linked: next } })}
           />
         </div>
       );
@@ -108,7 +107,7 @@ const youtubeSpec = createReactBlockSpec(
             title={block.props.title}
             align={align}
             width={width}
-            onResize={(next) => editor.updateBlock(block, { props: { width: next } })}
+            onResize={(size) => editor.updateBlock(block, { props: { width: size.width } })}
           />
           <EditBlockChrome
             align={align}
@@ -154,13 +153,12 @@ const ogSpec = createReactBlockSpec(
             align={align}
             linked={linked}
             width={width}
-            onResize={(next) => editor.updateBlock(block, { props: { width: next } })}
+            onResize={(size) => editor.updateBlock(block, { props: { width: size.width } })}
+            onLinked={(next) => editor.updateBlock(block, { props: { linked: next } })}
           />
           <EditBlockChrome
             align={align}
             onAlign={(next) => editor.updateBlock(block, { props: { align: next } })}
-            linked={linked}
-            onLinked={(next) => editor.updateBlock(block, { props: { linked: next } })}
           />
         </div>
       );

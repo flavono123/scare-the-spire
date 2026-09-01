@@ -1,15 +1,15 @@
 export const PAGESTORM_EDITOR_VARIANTS = [
   {
     id: "tiptap-toolbar",
-    label: "Tiptap · 상단 툴바",
+    label: "Tiptap · 상단바 + 버블",
     engine: "이미 있는 Tiptap 3",
-    chrome: "문서 위 고정 GUI. `{` 로 초상 자동완성. Word/블로그 글쓰기 기본형.",
+    chrome: "스크롤해도 따라오는 상단바 + 선택 버블 + 빈 줄 플로팅. `{` 초상, 백과사전/장난감 상자 토큰.",
   },
   {
     id: "tiptap-bubble",
-    label: "Tiptap · 버블/플로팅",
+    label: "Tiptap · 같은 에디터",
     engine: "이미 있는 Tiptap 3",
-    chrome: "선택하면 버블, 빈 줄에서 플로팅. `{` 자동완성은 툴바와 동일.",
+    chrome: "상단바 변이와 동일. 버블/플로팅이 항상 같이 붙어 있다.",
   },
   {
     id: "blocknote",

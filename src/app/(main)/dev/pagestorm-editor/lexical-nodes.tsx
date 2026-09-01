@@ -49,8 +49,6 @@ function BlockDecorator({
       <EditBlockChrome
         align={align}
         onAlign={(next) => patch((node) => node.setAlign(next))}
-        linked={linked}
-        onLinked={showLink ? (next) => patch((node) => node.setLinked(next)) : undefined}
       />
     </div>
   );
@@ -93,10 +91,16 @@ function GameAssetDecorate({
         align={align}
         linked={linked}
         width={width}
-        onResize={(next) => {
+        onResize={(size) => {
           editor.update(() => {
             const node = $getNodeByKey(nodeKey);
-            if (node instanceof GameAssetLexicalNode) node.setWidth(next);
+            if (node instanceof GameAssetLexicalNode) node.setWidth(size.width);
+          });
+        }}
+        onLinked={(next) => {
+          editor.update(() => {
+            const node = $getNodeByKey(nodeKey);
+            if (node instanceof GameAssetLexicalNode) node.setLinked(next);
           });
         }}
       />
@@ -125,10 +129,10 @@ function YoutubeDecorate({
         title={title}
         align={align}
         width={width}
-        onResize={(next) => {
+        onResize={(size) => {
           editor.update(() => {
             const node = $getNodeByKey(nodeKey);
-            if (node instanceof YoutubeLexicalNode) node.setWidth(next);
+            if (node instanceof YoutubeLexicalNode) node.setWidth(size.width);
           });
         }}
       />
@@ -157,10 +161,16 @@ function OgDecorate({
         align={align}
         linked={linked}
         width={width}
-        onResize={(next) => {
+        onResize={(size) => {
           editor.update(() => {
             const node = $getNodeByKey(nodeKey);
-            if (node instanceof OgLexicalNode) node.setWidth(next);
+            if (node instanceof OgLexicalNode) node.setWidth(size.width);
+          });
+        }}
+        onLinked={(next) => {
+          editor.update(() => {
+            const node = $getNodeByKey(nodeKey);
+            if (node instanceof OgLexicalNode) node.setLinked(next);
           });
         }}
       />

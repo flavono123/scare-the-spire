@@ -1,92 +1,74 @@
 "use client";
 
+import { useMemo, useRef, useState } from "react";
 import TextAlign from "@tiptap/extension-text-align";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { BubbleMenu, FloatingMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
+import { exitSuggestion } from "@tiptap/suggestion";
+import type { EntityInfo } from "@/components/patch-note-renderer";
+import { useCommentEntities } from "@/hooks/use-comment-entities";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import type { NavDropdownItem } from "@/lib/site-nav-items";
+import { serviceMessages } from "@/messages/service";
 import {
-  AlignButtons,
-  InsertBar,
-  MarkToolbar,
-  mockButtonClass,
-} from "./insert-bar";
-import { BraceAssetSuggestion } from "./prefix-menu";
+  PagestormColor,
+  PagestormJitter,
+  PagestormSine,
+} from "./color-marks";
+import { PagestormEntitiesProvider } from "./entities-context";
+import {
+  CardBraceConfirmModal,
+  CompendiumPickerModal,
+  ToyboxPickerModal,
+  majorFromCodexHref,
+  type CompendiumInsertPayload,
+} from "./pickers";
+import { createPagestormBraceSuggestion, pagestormBracePluginKey } from "./prefix-menu";
+import { assetFromEntity } from "./sample";
+import { TIPTAP_SEED } from "./tiptap-seed";
 import {
   GameAssetNode,
   OgBookmarkNode,
+  ToyboxEmbedNode,
   YoutubePlayerNode,
   gameAssetAttrs,
 } from "./tiptap-nodes";
-import { TIPTAP_SEED } from "./tiptap-seed";
+import { PagestormFormatChrome, PagestormStickyToolbar } from "./toolbar";
+import type { PagestormToyboxPost } from "./toybox-samples";
 import "./pagestorm-mock-editor.css";
 
-function MarkButtons({ editor }: { editor: NonNullable<ReturnType<typeof useEditor>> }) {
-  return (
-    <>
-      <button
-        type="button"
-        className={mockButtonClass(editor.isActive("bold"))}
-        onClick={() => editor.chain().focus().toggleBold().run()}
-      >
-        B
-      </button>
-      <button
-        type="button"
-        className={mockButtonClass(editor.isActive("italic"))}
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-      >
-        I
-      </button>
-      <button
-        type="button"
-        className={mockButtonClass(editor.isActive("heading", { level: 2 }))}
-        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-      >
-        H2
-      </button>
-      <button
-        type="button"
-        className={mockButtonClass(editor.isActive("heading", { level: 3 }))}
-        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-      >
-        H3
-      </button>
-      <button
-        type="button"
-        className={mockButtonClass(editor.isActive("bulletList"))}
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
-      >
-        목록
-      </button>
-      <button
-        type="button"
-        className={mockButtonClass(editor.isActive("blockquote"))}
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
-      >
-        인용
-      </button>
-      <button
-        type="button"
-        className={mockButtonClass()}
-        onClick={() => editor.chain().focus().setHorizontalRule().run()}
-      >
-        구분선
-      </button>
-      <AlignButtons
-        value={
-          editor.isActive({ textAlign: "center" })
-            ? "center"
-            : editor.isActive({ textAlign: "right" })
-              ? "right"
-              : "left"
-        }
-        onChange={(align) => editor.chain().focus().setTextAlign(align).run()}
-      />
-    </>
-  );
-}
+type PendingCard = {
+  entity: EntityInfo;
+  range?: { from: number; to: number };
+};
 
-export function TiptapPagestormMock({ chrome }: { chrome: "toolbar" | "bubble" }) {
+export function TiptapPagestormMock(_props?: { chrome?: "toolbar" | "bubble" }) {
+  const { entities } = useCommentEntities();
+  const serviceLocale = useServiceLocale();
+  const copy = serviceMessages[serviceLocale].pagestormEditor;
+  const entitiesRef = useRef(entities);
+  entitiesRef.current = entities;
+  const [compendiumMajor, setCompendiumMajor] = useState<ReturnType<typeof majorFromCodexHref> | "closed">("closed");
+  const [toyboxHref, setToyboxHref] = useState<string | null | "closed">("closed");
+  const [pendingCard, setPendingCard] = useState<PendingCard | null>(null);
+
+  const brace = useMemo(
+    () => createPagestormBraceSuggestion({
+      getEntities: () => entitiesRef.current,
+      onPick: ({ entity, range }) => {
+        const current = editorRef.current;
+        if (current) exitSuggestion(current.view, pagestormBracePluginKey);
+        if (entity.type === "card") {
+          setPendingCard({ entity, range });
+          return;
+        }
+        insertEntity(entity, { presentation: "art", beta: false }, range);
+      },
+    }),
+    [],
+  );
+
   const editor = useEditor({
     immediatelyRender: false,
     content: TIPTAP_SEED,
@@ -95,10 +77,14 @@ export function TiptapPagestormMock({ chrome }: { chrome: "toolbar" | "bubble" }
         heading: { levels: [2, 3] },
       }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
+      PagestormColor,
+      PagestormSine,
+      PagestormJitter,
       GameAssetNode,
       YoutubePlayerNode,
       OgBookmarkNode,
-      BraceAssetSuggestion,
+      ToyboxEmbedNode,
+      brace,
     ],
     editorProps: {
       attributes: {
@@ -106,89 +92,113 @@ export function TiptapPagestormMock({ chrome }: { chrome: "toolbar" | "bubble" }
       },
     },
   });
+  const editorRef = useRef(editor);
+  editorRef.current = editor;
+
+  function insertEntity(
+    entity: EntityInfo,
+    options: { presentation: CompendiumInsertPayload["presentation"]; beta: boolean },
+    range?: { from: number; to: number },
+  ) {
+    const current = editorRef.current;
+    if (!current) return;
+    const chain = current.chain().focus();
+    if (range) chain.deleteRange(range);
+    chain.insertContent([
+      { type: "gameAsset", attrs: gameAssetAttrs(assetFromEntity(entity), options) },
+      { type: "paragraph" },
+    ]).run();
+  }
+
+  function insertToybox(post: PagestormToyboxPost) {
+    const current = editorRef.current;
+    if (!current) return;
+    current.chain().focus().insertContent([
+      {
+        type: "toyboxEmbed",
+        attrs: {
+          postId: post.id,
+          service: post.service,
+          align: "center",
+          linked: true,
+          width: 576,
+          height: post.service === "/this-or-that" ? 320 : 280,
+        },
+      },
+      { type: "paragraph" },
+    ]).run();
+  }
+
+  function onCompendium(item: NavDropdownItem) {
+    setCompendiumMajor(majorFromCodexHref(item.href));
+  }
+
+  function onToybox(item: NavDropdownItem) {
+    setToyboxHref(item.href.replace(/^\/(?:en)(?=\/)/, ""));
+  }
 
   if (!editor) {
     return <p className="p-4 text-sm text-muted-foreground">에디터 준비 중…</p>;
   }
 
-  const insert = {
-    onInsertAsset: (asset: Parameters<typeof gameAssetAttrs>[0]) => {
-      editor.chain().focus().insertContent([
-        { type: "gameAsset", attrs: gameAssetAttrs(asset) },
-        { type: "paragraph" },
-      ]).run();
-    },
-    onInsertYoutube: (videoId: string, title: string) => {
-      editor.chain().focus().insertContent([
-        {
-          type: "youtubePlayer",
-          attrs: { videoId, title, align: "center", width: 576 },
-        },
-        { type: "paragraph" },
-      ]).run();
-    },
-    onInsertOg: (bookmark: {
-      url: string;
-      title: string;
-      description: string;
-      image: string | null;
-      siteName: string;
-    }) => {
-      editor.chain().focus().insertContent([
-        {
-          type: "ogBookmark",
-          attrs: { ...bookmark, align: "center", linked: true, width: 576 },
-        },
-        { type: "paragraph" },
-      ]).run();
-    },
-  };
-
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-card/20">
-      {chrome === "toolbar" ? (
-        <>
-          <MarkToolbar>
-            <MarkButtons editor={editor} />
-          </MarkToolbar>
-          <InsertBar {...insert} />
-        </>
-      ) : (
-        <InsertBar {...insert} />
-      )}
-
-      {chrome === "bubble" ? (
-        <>
-          <BubbleMenu editor={editor} className="pagestorm-mock-bubble">
-            <MarkButtons editor={editor} />
-          </BubbleMenu>
-          <FloatingMenu editor={editor} className="pagestorm-mock-bubble">
-            <button
-              type="button"
-              className={mockButtonClass()}
-              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-            >
-              H2
-            </button>
-            <button
-              type="button"
-              className={mockButtonClass()}
-              onClick={() => editor.chain().focus().toggleBulletList().run()}
-            >
-              목록
-            </button>
-            <button
-              type="button"
-              className={mockButtonClass()}
-              onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            >
-              인용
-            </button>
-          </FloatingMenu>
-        </>
+    <PagestormEntitiesProvider entities={entities}>
+      <div className="rounded-lg border border-border bg-card/20">
+        <PagestormStickyToolbar
+          editor={editor}
+          onCompendium={onCompendium}
+          onToybox={onToybox}
+        />
+        <BubbleMenu editor={editor} className="pagestorm-mock-bubble">
+          <PagestormFormatChrome
+            editor={editor}
+            onCompendium={onCompendium}
+            onToybox={onToybox}
+          />
+        </BubbleMenu>
+        <FloatingMenu editor={editor} className="pagestorm-mock-bubble">
+          <PagestormFormatChrome
+            editor={editor}
+            onCompendium={onCompendium}
+            onToybox={onToybox}
+          />
+        </FloatingMenu>
+        <EditorContent editor={editor} />
+        <p className="border-t border-border px-3 py-2 text-[11px] text-muted-foreground">
+          {copy.braceHint}
+        </p>
+      </div>
+      {compendiumMajor !== "closed" ? (
+        <CompendiumPickerModal
+          entities={entities}
+          initialMajor={compendiumMajor}
+          onClose={() => setCompendiumMajor("closed")}
+          onInsert={(payload) => {
+            insertEntity(payload.entity, payload);
+            setCompendiumMajor("closed");
+          }}
+        />
       ) : null}
-
-      <EditorContent editor={editor} />
-    </div>
+      {toyboxHref !== "closed" ? (
+        <ToyboxPickerModal
+          initialServiceHref={toyboxHref}
+          onClose={() => setToyboxHref("closed")}
+          onInsert={(post) => {
+            insertToybox(post);
+            setToyboxHref("closed");
+          }}
+        />
+      ) : null}
+      {pendingCard ? (
+        <CardBraceConfirmModal
+          entity={pendingCard.entity}
+          onClose={() => setPendingCard(null)}
+          onInsert={(payload) => {
+            insertEntity(payload.entity, payload, pendingCard.range);
+            setPendingCard(null);
+          }}
+        />
+      ) : null}
+    </PagestormEntitiesProvider>
   );
 }
