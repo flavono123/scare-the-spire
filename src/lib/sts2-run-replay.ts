@@ -42,6 +42,14 @@ export interface ReplayRoom {
 export interface ReplayChoice {
   id: string;
   picked: boolean;
+  /** Loc table from the run file (`events`, `relics`, …). */
+  locTable?: string;
+  /** Full loc entry key, including a trailing `.title` when the game stored one. */
+  locKey?: string;
+  /** Dynamic vars baked into the loc string at the time of the choice. */
+  locVars?: Record<string, string | number>;
+  /** `card_choices` only — `CardModel.Title` appends `+` / `+N` from this. */
+  upgradeLevel?: number;
 }
 
 export interface ReplayCardEnchantment {
@@ -1119,8 +1127,20 @@ export function parseReplayRun(raw: string): ReplayRun {
     map_point_history: parsed.map_point_history.map((act) =>
       Array.isArray(act)
         ? act.map((entry) => {
-            type RawCardChoice = { card?: { id?: string }; was_picked?: boolean };
+            type RawCardChoice = {
+              card?: { id?: string; current_upgrade_level?: number };
+              was_picked?: boolean;
+            };
             type RawSimpleChoice = { choice?: string; was_picked?: boolean };
+            type RawLocVar = {
+              string_value?: unknown;
+              decimal_value?: unknown;
+              bool_value?: unknown;
+            };
+            type RawLocChoice = {
+              title?: { key?: string; table?: string };
+              variables?: Record<string, RawLocVar>;
+            };
             type RawPlayerStats = {
               player_id?: number;
               current_hp?: number;
@@ -1160,14 +1180,13 @@ export function parseReplayRun(raw: string): ReplayRun {
               potion_used?: string[];
               potion_discarded?: string[];
               rest_site_choices?: string[];
-              event_choices?: Array<{
-                title?: { key?: string; table?: string };
-              }>;
-              ancient_choice?: Array<{
-                TextKey?: string;
-                was_chosen?: boolean;
-                title?: { key?: string; table?: string };
-              }>;
+              event_choices?: RawLocChoice[];
+              ancient_choice?: Array<
+                RawLocChoice & {
+                  TextKey?: string;
+                  was_chosen?: boolean;
+                }
+              >;
             };
             const rawEntry = entry as Omit<Partial<ReplayHistoryEntry>, "player_stats"> & {
               player_stats?: RawPlayerStats[];
@@ -1192,10 +1211,17 @@ export function parseReplayRun(raw: string): ReplayRun {
             const pickCardChoices = (list: RawCardChoice[] | undefined): ReplayChoice[] | undefined =>
               Array.isArray(list)
                 ? list
-                    .filter((c): c is { card: { id: string }; was_picked?: boolean } =>
-                      typeof c?.card?.id === "string",
-                    )
-                    .map((c) => ({ id: c.card.id, picked: !!c.was_picked }))
+                    .filter((c): c is {
+                      card: { id: string; current_upgrade_level?: number };
+                      was_picked?: boolean;
+                    } => typeof c?.card?.id === "string")
+                    .map((c) => ({
+                      id: c.card.id,
+                      picked: !!c.was_picked,
+                      ...(typeof c.card.current_upgrade_level === "number"
+                        ? { upgradeLevel: c.card.current_upgrade_level }
+                        : {}),
+                    }))
                 : undefined;
             const pickSimpleChoices = (list: RawSimpleChoice[] | undefined): ReplayChoice[] | undefined =>
               Array.isArray(list)
@@ -1278,20 +1304,52 @@ export function parseReplayRun(raw: string): ReplayRun {
                     return [entry];
                   })
                 : undefined;
+            const pickLocVars = (
+              raw: Record<string, RawLocVar> | undefined,
+            ): Record<string, string | number> | undefined => {
+              if (!raw || typeof raw !== "object") return undefined;
+              const out: Record<string, string | number> = {};
+              for (const [name, value] of Object.entries(raw)) {
+                if (!value || typeof value !== "object") continue;
+                if (typeof value.string_value === "string" && value.string_value) {
+                  out[name] = value.string_value;
+                } else if (typeof value.decimal_value === "number") {
+                  out[name] = value.decimal_value;
+                } else if (typeof value.bool_value === "boolean") {
+                  out[name] = value.bool_value ? 1 : 0;
+                }
+              }
+              return Object.keys(out).length > 0 ? out : undefined;
+            };
+            const locChoiceFields = (
+              row: RawLocChoice | undefined,
+            ): Pick<ReplayChoice, "locTable" | "locKey" | "locVars"> => {
+              const locKey =
+                typeof row?.title?.key === "string" ? row.title.key : undefined;
+              const locTable =
+                typeof row?.title?.table === "string" ? row.title.table : undefined;
+              const locVars = pickLocVars(row?.variables);
+              return {
+                ...(locTable ? { locTable } : {}),
+                ...(locKey ? { locKey } : {}),
+                ...(locVars ? { locVars } : {}),
+              };
+            };
             const pickTitledChoices = (
               list:
-                | Array<{
-                    TextKey?: string;
-                    was_chosen?: boolean;
-                    title?: { key?: string; table?: string };
-                  }>
+                | Array<
+                    RawLocChoice & {
+                      TextKey?: string;
+                      was_chosen?: boolean;
+                    }
+                  >
                 | undefined,
             ): ReplayChoice[] | undefined =>
               Array.isArray(list)
                 ? list.flatMap((row): ReplayChoice[] => {
                     const id = row?.TextKey ?? row?.title?.key;
                     if (typeof id !== "string") return [];
-                    return [{ id, picked: !!row.was_chosen }];
+                    return [{ id, picked: !!row.was_chosen, ...locChoiceFields(row) }];
                   })
                 : undefined;
             const parseStats = (rawStats: RawPlayerStats | undefined): ReplayPlayerStats => {
@@ -1337,7 +1395,7 @@ export function parseReplayRun(raw: string): ReplayRun {
                 ? rawStats.event_choices.flatMap((row): ReplayChoice[] => {
                     const id = row?.title?.key;
                     if (typeof id !== "string") return [];
-                    return [{ id, picked: true }];
+                    return [{ id, picked: true, ...locChoiceFields(row) }];
                   })
                 : undefined;
               stats.ancient_choice = pickTitledChoices(rawStats.ancient_choice);

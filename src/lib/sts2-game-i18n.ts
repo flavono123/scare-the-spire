@@ -83,6 +83,45 @@ export function localizeGame(
   return tables[table]?.[key] ?? null;
 }
 
+const TITLE_SUFFIX = /\.title$/i;
+
+function withoutTitleSuffix(id: string): string {
+  return id.replace(TITLE_SUFFIX, "");
+}
+
+const GAME_I18N_TABLES = new Set<GameI18nTableName>([
+  "encounters",
+  "events",
+  "ancients",
+  "relics",
+  "cards",
+  "potions",
+  "acts",
+  "enchantments",
+  "characters",
+]);
+
+export function isGameI18nTableName(value: string | undefined): value is GameI18nTableName {
+  return value != null && GAME_I18N_TABLES.has(value as GameI18nTableName);
+}
+
+/** Look up a loc key without collapsing dotted event/option paths. */
+export function localizeGameKey(
+  tables: GameI18nTables,
+  table: GameI18nTableName,
+  id: string | null | undefined,
+): string | null {
+  if (!id) return null;
+  const exact = tables[table]?.[id];
+  if (exact) return exact;
+  const noTitle = withoutTitleSuffix(id);
+  if (noTitle !== id) {
+    const titled = tables[table]?.[noTitle];
+    if (titled) return titled;
+  }
+  return tables[table]?.[strip(noTitle)] ?? null;
+}
+
 export function localizeGameAny(
   tables: GameI18nTables,
   id: string | null | undefined,

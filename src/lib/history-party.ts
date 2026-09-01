@@ -1,5 +1,17 @@
 import korRestSiteUi from "../../data/sts2/localization/kor/rest_site_ui.json";
 import engRestSiteUi from "../../data/sts2/localization/eng/rest_site_ui.json";
+import zhsRestSiteUi from "../../data/sts2/localization/zhs/rest_site_ui.json";
+import jpnRestSiteUi from "../../data/sts2/localization/jpn/rest_site_ui.json";
+import deuRestSiteUi from "../../data/sts2/localization/deu/rest_site_ui.json";
+import fraRestSiteUi from "../../data/sts2/localization/fra/rest_site_ui.json";
+import itaRestSiteUi from "../../data/sts2/localization/ita/rest_site_ui.json";
+import spaRestSiteUi from "../../data/sts2/localization/spa/rest_site_ui.json";
+import espRestSiteUi from "../../data/sts2/localization/esp/rest_site_ui.json";
+import ptbRestSiteUi from "../../data/sts2/localization/ptb/rest_site_ui.json";
+import rusRestSiteUi from "../../data/sts2/localization/rus/rest_site_ui.json";
+import polRestSiteUi from "../../data/sts2/localization/pol/rest_site_ui.json";
+import thaRestSiteUi from "../../data/sts2/localization/tha/rest_site_ui.json";
+import turRestSiteUi from "../../data/sts2/localization/tur/rest_site_ui.json";
 import type { GameLocale } from "@/lib/i18n";
 import type {
   ReplayActAnalysis,
@@ -10,6 +22,7 @@ import type {
 import {
   cardWasInDeckAtFloor,
   furCoatMarkerNodeIdsForPlayer,
+  historyEntryForPlayer,
   playerHasRelic,
 } from "@/lib/sts2-run-replay";
 
@@ -113,14 +126,27 @@ export function mergePartyBadges(run: ReplayRun): ReplayBadge[] {
   return Array.from(best.values());
 }
 
+const REST_SITE_UI: Record<GameLocale, Record<string, string>> = {
+  kor: korRestSiteUi,
+  eng: engRestSiteUi,
+  zhs: zhsRestSiteUi,
+  jpn: jpnRestSiteUi,
+  deu: deuRestSiteUi,
+  fra: fraRestSiteUi,
+  ita: itaRestSiteUi,
+  spa: spaRestSiteUi,
+  esp: espRestSiteUi,
+  ptb: ptbRestSiteUi,
+  rus: rusRestSiteUi,
+  pol: polRestSiteUi,
+  tha: thaRestSiteUi,
+  tur: turRestSiteUi,
+};
+
 export function restSiteChoiceLabel(choice: string, locale: GameLocale): string {
   const option = choice.toUpperCase().replace(/^OPTION_/, "");
   const key = `OPTION_${option}.name`;
-  const table = locale === "kor" ? korRestSiteUi : engRestSiteUi;
-  const hit = (table as Record<string, string>)[key];
-  if (hit) return hit;
-  const fallback = (engRestSiteUi as Record<string, string>)[key];
-  return fallback ?? option;
+  return REST_SITE_UI[locale]?.[key] ?? REST_SITE_UI.eng[key] ?? option;
 }
 
 /** Shared path stays; quest / boots overlays follow the focused character. */
@@ -132,6 +158,7 @@ export function focusedMapAct(
   const index = clampPlayerIndex(run, playerIndex);
   return {
     ...act,
+    history: act.history.map((entry) => historyEntryForPlayer(entry, index)),
     furCoatMarkerNodeIds: furCoatMarkerNodeIdsForPlayer(
       run,
       act.actIndex,
