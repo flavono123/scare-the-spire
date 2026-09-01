@@ -128,11 +128,30 @@ export default function ProfilePage({
       >
         <header className="flex h-10 shrink-0 items-center justify-between gap-3 border-b border-border pb-2">
           <div className="flex min-w-0 items-center gap-2">
-            <ProfileAvatarToken
-              profile={draftProfile}
-              size={28}
-              className="h-7 w-7"
-            />
+            <span data-profile-avatar-edit="" className="flex shrink-0 items-center gap-1">
+              <ProfilePalettePicker
+                paletteId={draftProfile.paletteId}
+                paletteSwapped={draftProfile.paletteSwapped}
+                copy={copy.palette}
+                locale={nicknameLocale}
+                onPick={(id) => {
+                  persistProfile((current) => {
+                    if (id === null) {
+                      return { ...current, paletteId: null, paletteSwapped: false };
+                    }
+                    if (current.paletteId === id) {
+                      return { ...current, paletteSwapped: !current.paletteSwapped };
+                    }
+                    return { ...current, paletteId: id, paletteSwapped: false };
+                  });
+                }}
+              />
+              <ProfileAvatarToken
+                profile={draftProfile}
+                size={28}
+                className="h-7 w-7"
+              />
+            </span>
             <input
               type="text"
               aria-label={copy.nicknamePlaceholder}
@@ -153,23 +172,6 @@ export default function ProfilePage({
             />
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <ProfilePalettePicker
-              paletteId={draftProfile.paletteId}
-              paletteSwapped={draftProfile.paletteSwapped}
-              copy={copy.palette}
-              locale={nicknameLocale}
-              onPick={(id) => {
-                persistProfile((current) => {
-                  if (id === null) {
-                    return { ...current, paletteId: null, paletteSwapped: false };
-                  }
-                  if (current.paletteId === id) {
-                    return { ...current, paletteSwapped: !current.paletteSwapped };
-                  }
-                  return { ...current, paletteId: id, paletteSwapped: false };
-                });
-              }}
-            />
             <ColorSchemePicker copy={copy.appearance} />
             {copy.devBadge ? (
               <span className="shrink-0 rounded border border-primary/30 bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">

@@ -24,7 +24,7 @@ function palettePosition(anchor: DOMRect) {
   const height = 88;
   const viewW = window.innerWidth;
   const viewH = window.innerHeight;
-  let left = anchor.right - width;
+  let left = anchor.left;
   let top = anchor.bottom + 6;
   if (left < 8) left = 8;
   if (left + width > viewW - 8) left = Math.max(8, viewW - width - 8);
@@ -45,6 +45,7 @@ function PaletteChipFill({
     return (
       <span
         aria-hidden
+        data-profile-palette-fill=""
         className="block h-full w-full rounded-[3px] bg-zinc-700/85"
         style={{
           backgroundImage:
@@ -57,6 +58,7 @@ function PaletteChipFill({
   return (
     <span
       aria-hidden
+      data-profile-palette-fill=""
       className="block h-full w-full rounded-[3px]"
       style={profilePaletteDiagonalStyle(colorA, colorB, swapped)}
     />
@@ -107,15 +109,10 @@ export function ProfilePalettePicker({
   }, [open]);
 
   const noneLabel = `${copy.none} (${copy.noneHint})`;
-  const selectedLabel = selected
-    ? locale === "ko"
-      ? `${selected.nameKoA} · ${selected.nameKoB}`
-      : `${selected.nameEnA} · ${selected.nameEnB}`
-    : noneLabel;
 
   return (
     <>
-      <GameUiHoverTip label={`${copy.label}: ${selectedLabel}`} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
+      <GameUiHoverTip label={copy.label} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
         <button
           ref={triggerRef}
           type="button"
@@ -127,15 +124,16 @@ export function ProfilePalettePicker({
             const rect = triggerRef.current?.getBoundingClientRect();
             if (rect) setAnchor(rect);
             setOpen((current) => !current);
+            triggerRef.current?.blur();
           }}
           className={cn(
-            "flex h-8 w-8 items-center justify-center rounded-md border p-0.5 transition-colors",
+            "flex h-7 w-7 items-center justify-center rounded-md border p-0.5 transition-colors",
             open || selected
               ? "border-primary/45 bg-primary/10"
               : "border-transparent hover:border-white/20 hover:bg-white/5",
           )}
         >
-          <span className="block h-6 w-6 overflow-hidden rounded-md">
+          <span className="block h-5 w-5 overflow-hidden rounded-md">
             <PaletteChipFill
               colorA={selected?.colorA}
               colorB={selected?.colorB}
@@ -202,24 +200,31 @@ function PaletteOption({
   swapped?: boolean;
   onSelect: () => void;
 }) {
+  const chip = (
+    <button
+      type="button"
+      role="option"
+      aria-label={label}
+      aria-selected={active}
+      data-profile-palette-id={paletteId ?? ""}
+      onClick={onSelect}
+      className={cn(
+        "h-6 w-6 overflow-hidden rounded-md border p-0.5 transition-[border-color,background-color]",
+        paletteId ? "profile-palette-swap-tilt" : null,
+        active
+          ? "border-primary bg-primary/20"
+          : "border-white/10 bg-white/5 hover:border-white/35",
+      )}
+    >
+      <PaletteChipFill colorA={colorA} colorB={colorB} swapped={swapped} />
+    </button>
+  );
+
+  if (paletteId) return chip;
+
   return (
     <GameUiHoverTip label={label} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
-      <button
-        type="button"
-        role="option"
-        aria-label={label}
-        aria-selected={active}
-        data-profile-palette-id={paletteId ?? ""}
-        onClick={onSelect}
-        className={cn(
-          "h-6 w-6 overflow-hidden rounded-md border p-0.5 transition-all",
-          active
-            ? "border-primary bg-primary/20"
-            : "border-white/10 bg-white/5 hover:border-white/35",
-        )}
-      >
-        <PaletteChipFill colorA={colorA} colorB={colorB} swapped={swapped} />
-      </button>
+      {chip}
     </GameUiHoverTip>
   );
 }

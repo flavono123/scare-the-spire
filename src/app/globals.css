@@ -963,3 +963,29 @@
     animation: none;
   }
 }
+
+/* Profile palette chips: hover tilts toward a 180° swap, then back. */
+@keyframes profile-palette-swap-tilt {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  28% {
+    transform: rotate(22deg);
+  }
+  58% {
+    transform: rotate(180deg);
+  }
+}
+
+.profile-palette-swap-tilt:hover > [data-profile-palette-fill],
+.profile-palette-swap-tilt:focus-visible > [data-profile-palette-fill] {
+  animation: profile-palette-swap-tilt 720ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-palette-swap-tilt:hover > [data-profile-palette-fill],
+  .profile-palette-swap-tilt:focus-visible > [data-profile-palette-fill] {
+    animation: none;
+  }
+}
