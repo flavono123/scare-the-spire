@@ -17,6 +17,13 @@ import {
 } from "./sample";
 import { ToyboxEmbedFigure } from "./toybox-embed";
 
+export const PAGESTORM_BLOCK_NODE_NAMES = [
+  "gameAsset",
+  "youtubePlayer",
+  "ogBookmark",
+  "toyboxEmbed",
+] as const;
+
 function asAlign(value: unknown): MockAlign {
   return value === "center" || value === "right" ? value : "left";
 }
@@ -307,6 +314,27 @@ export const ToyboxEmbedNode = Node.create({
   },
   addNodeView() {
     return ReactNodeViewRenderer(ToyboxView, nodeViewOptions);
+  },
+});
+
+export const PagestormLightSection = Node.create({
+  name: "pagestormLightSection",
+  group: "block",
+  content: "block+",
+  defining: true,
+  isolating: true,
+  parseHTML() {
+    return [{ tag: "section[data-pagestorm-light]" }];
+  },
+  renderHTML({ HTMLAttributes }) {
+    return [
+      "section",
+      mergeAttributes(HTMLAttributes, {
+        "data-pagestorm-light": "",
+        class: "light pagestorm-light-section",
+      }),
+      0,
+    ];
   },
 });
 

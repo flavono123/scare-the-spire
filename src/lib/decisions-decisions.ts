@@ -1021,20 +1021,27 @@ export function poolFilterIsReady(
   return true;
 }
 
+export function listPoolEntities(
+  entities: EntityInfo[],
+  major: DecisionsPoolMajor | null,
+  dims: DecisionsFilterDims,
+): EntityInfo[] {
+  if (!major) return [];
+  const encounterActs = encounterActKeysByMonster(entities);
+  const matched = entities.filter((entity) => matchesFilter(entity, major, dims, encounterActs));
+  if (major !== "ascension") return matched;
+  return [...matched].sort((left, right) => (
+    (left.ascensionData?.level ?? 0) - (right.ascensionData?.level ?? 0)
+  ));
+}
+
 export function stampFilterIds(
   entities: EntityInfo[],
   major: DecisionsPoolMajor | null,
   dims: DecisionsFilterDims,
 ): DecisionsDecisionsResourceRef[] {
   if (!poolFilterIsReady(major, dims) || !major) return [];
-  const encounterActs = encounterActKeysByMonster(entities);
-  const matched = entities.filter((entity) => matchesFilter(entity, major, dims, encounterActs));
-  const ordered = major === "ascension"
-    ? [...matched].sort((left, right) => (
-      (left.ascensionData?.level ?? 0) - (right.ascensionData?.level ?? 0)
-    ))
-    : matched;
-  return ordered
+  return listPoolEntities(entities, major, dims)
     .map(entityToResourceRef)
     .filter((ref): ref is DecisionsDecisionsResourceRef => ref != null);
 }

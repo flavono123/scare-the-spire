@@ -12,7 +12,7 @@ import {
 import { createMissingThisOrThatEntity } from "@/lib/this-or-that";
 import { serviceMessages } from "@/messages/service";
 import { findPagestormEntity, usePagestormEntities } from "./entities-context";
-import { AssetFocusChrome, AssetSideRail, alignRowClass } from "./figures";
+import { AssetCornerHandles, AssetFocusChrome, alignRowClass } from "./figures";
 import {
   clampPlayerWidth,
   defaultPlayerWidth,
@@ -136,7 +136,7 @@ export function ToyboxEmbedFigure({
   const card = (
     <div
       className="relative overflow-hidden rounded-md border border-border bg-card/40"
-      style={{ width: px, maxWidth: "100%", minHeight: py }}
+      style={{ width: px, maxWidth: "100%" }}
     >
       {inner}
       {mode === "edit" ? (
@@ -145,27 +145,26 @@ export function ToyboxEmbedFigure({
     </div>
   );
   const body = (
-    <div className="flex items-start gap-1">
-      <div className="relative">
-        {card}
-        {mode === "edit" ? (
+    <div className="relative" style={{ width: px, maxWidth: "100%" }}>
+      {card}
+      {mode === "edit" ? (
+        <>
+          <AssetCornerHandles
+            linked={linked}
+            onLinked={onLinked}
+            width={px}
+            height={py}
+            clampWidth={clampPlayerWidth}
+            clampHeight={(next) => Math.min(480, Math.max(160, Math.round(next)))}
+            axis="x"
+            onResize={onResize}
+          />
           <AssetFocusChrome
             selected={selected}
             align={align}
             onAlign={onAlign}
           />
-        ) : null}
-      </div>
-      {mode === "edit" && (onResize || onLinked) ? (
-        <AssetSideRail
-          linked={linked}
-          onLinked={onLinked}
-          width={px}
-          height={py}
-          clampWidth={clampPlayerWidth}
-          clampHeight={(next) => Math.min(480, Math.max(160, Math.round(next)))}
-          onResize={onResize}
-        />
+        </>
       ) : null}
     </div>
   );

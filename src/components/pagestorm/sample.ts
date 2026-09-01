@@ -1,3 +1,4 @@
+import type { JSONContent } from "@tiptap/core";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { parseYouTubeVideoId, youtubeThumbnailUrl } from "@/lib/youtube-reference";
 
@@ -120,6 +121,11 @@ export function clampAssetWidth(kind: MockAssetKind, width: number): number {
   return Math.min(128, Math.max(40, Math.round(width)));
 }
 
+export function clampAssetHeight(kind: MockAssetKind, height: number): number {
+  if (kind === "card") return Math.min(400, Math.max(64, Math.round(height)));
+  return clampAssetWidth(kind, height);
+}
+
 export function defaultPlayerWidth(): number {
   return 576;
 }
@@ -178,3 +184,118 @@ export function resolvePastedUrl(raw: string):
 
 export const SAMPLE_URL_PLACEHOLDER =
   "유튜브 또는 https://store.steampowered.com/app/2868840/Slay_the_Spire_2/";
+
+const LOREM_P1 =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+const LOREM_P2 =
+  "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+const LOREM_LIGHT =
+  "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.";
+
+function sampleAssetNode(id: string, align: MockAlign = "center"): JSONContent {
+  const asset = findSampleAsset(id);
+  if (!asset) {
+    return { type: "paragraph" };
+  }
+  const width = defaultAssetWidth(asset.kind);
+  return {
+    type: "gameAsset",
+    attrs: {
+      assetId: asset.id,
+      kind: asset.kind,
+      entityType: asset.kind,
+      name: asset.name,
+      imageUrl: asset.imageUrl,
+      href: asset.href,
+      align,
+      linked: true,
+      width,
+      height: asset.kind === "card" ? Math.round(width * 1.56) : width,
+      presentation: "art",
+      beta: false,
+    },
+  };
+}
+
+function text(value: string, marks?: JSONContent["marks"]): JSONContent {
+  return marks ? { type: "text", text: value, marks } : { type: "text", text: value };
+}
+
+export function pagestormLoremDoc(copy: {
+  sampleHeading: string;
+  sampleLightHeading: string;
+  sampleLightHint: string;
+}): JSONContent {
+  return {
+    type: "doc",
+    content: [
+      {
+        type: "heading",
+        attrs: { level: 2, textAlign: "left" },
+        content: [text(copy.sampleHeading)],
+      },
+      {
+        type: "paragraph",
+        content: [
+          text("Lorem ipsum dolor sit amet, "),
+          text("consectetur", [{ type: "bold" }]),
+          text(" adipiscing elit. "),
+          text("Ut enim ad minim", [
+            { type: "pagestormColor", attrs: { colorKey: "spire-gold" } },
+          ]),
+          text(" veniam, quis nostrud "),
+          text("exercitation", [{ type: "sine" }]),
+          text(" ullamco."),
+        ],
+      },
+      {
+        type: "paragraph",
+        content: [text(LOREM_P1)],
+      },
+      sampleAssetNode("CHEMICAL_X", "center"),
+      {
+        type: "paragraph",
+        attrs: { textAlign: "right" },
+        content: [text(LOREM_P2)],
+      },
+      sampleAssetNode("STARDUST", "right"),
+      {
+        type: "pagestormLightSection",
+        content: [
+          {
+            type: "heading",
+            attrs: { level: 3 },
+            content: [text(copy.sampleLightHeading)],
+          },
+          {
+            type: "paragraph",
+            content: [text(copy.sampleLightHint)],
+          },
+          {
+            type: "paragraph",
+            content: [
+              text(LOREM_LIGHT.slice(0, 48)),
+              text(" magna aliqua", [
+                { type: "pagestormColor", attrs: { colorKey: "spire-gold" } },
+                { type: "sine" },
+              ]),
+              text(`. ${LOREM_LIGHT.slice(48)}`),
+            ],
+          },
+          sampleAssetNode("PAGESTORM", "left"),
+        ],
+      },
+      {
+        type: "toyboxEmbed",
+        attrs: {
+          postId: "mock-dd-regent",
+          service: "/decisions-decisions",
+          align: "center",
+          linked: true,
+          width: 576,
+          height: 280,
+        },
+      },
+    ],
+  };
+}

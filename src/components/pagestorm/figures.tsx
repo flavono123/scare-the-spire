@@ -23,6 +23,7 @@ import type { CodexCard } from "@/lib/codex-types";
 import { youtubeThumbnailUrl, youtubeWatchUrl } from "@/lib/youtube-reference";
 import { serviceMessages } from "@/messages/service";
 import {
+  clampAssetHeight,
   clampAssetWidth,
   defaultAssetWidth,
   type CardPresentation,
@@ -83,6 +84,7 @@ function DiagonalResizeHandle({
   clampWidth,
   clampHeight,
   lockAspect,
+  axis = "xy",
   onResize,
 }: {
   width: number;
@@ -90,6 +92,7 @@ function DiagonalResizeHandle({
   clampWidth: (width: number) => number;
   clampHeight: (height: number) => number;
   lockAspect?: boolean;
+  axis?: "xy" | "x";
   onResize: (size: { width: number; height: number }) => void;
 }) {
   const copy = serviceMessages[useServiceLocale()].pagestorm;
@@ -100,6 +103,7 @@ function DiagonalResizeHandle({
       <button
         type="button"
         data-asset-chrome
+        data-pagestorm-resize="se"
         aria-label={copy.resize}
         className="flex h-6 w-6 items-center justify-center rounded-sm border border-primary bg-background text-primary"
         onMouseDown={(event) => {
@@ -108,7 +112,14 @@ function DiagonalResizeHandle({
           origin.current = { x: event.clientX, y: event.clientY, width, height };
           const move = (next: MouseEvent) => {
             const dx = next.clientX - origin.current.x;
-            const dy = next.clientY - origin.current.y;
+            const dy = axis === "x" ? 0 : next.clientY - origin.current.y;
+            if (axis === "x") {
+              onResize({
+                width: clampWidth(origin.current.width + dx),
+                height: origin.current.height,
+              });
+              return;
+            }
             if (lockAspect) {
               const delta = Math.abs(dx) >= Math.abs(dy) ? dx : dy;
               const nextWidth = clampWidth(origin.current.width + delta);
@@ -190,7 +201,7 @@ export function PublishLinkButton({
   );
 }
 
-export function AssetSideRail({
+export function AssetCornerHandles({
   linked,
   onLinked,
   width,
@@ -198,6 +209,7 @@ export function AssetSideRail({
   clampWidth,
   clampHeight,
   lockAspect,
+  axis = "xy",
   onResize,
 }: {
   linked?: boolean;
@@ -207,28 +219,39 @@ export function AssetSideRail({
   clampWidth: (width: number) => number;
   clampHeight: (height: number) => number;
   lockAspect?: boolean;
+  axis?: "xy" | "x";
   onResize?: (size: { width: number; height: number }) => void;
 }) {
+  if (onLinked == null && !onResize) return null;
   return (
-    <div
-      className="flex shrink-0 flex-col items-center gap-1 self-start"
-      data-asset-chrome
-      onMouseDown={(event) => event.stopPropagation()}
-    >
+    <>
       {onLinked != null && linked != null ? (
-        <PublishLinkButton linked={linked} onLinked={onLinked} />
+        <div
+          className="absolute right-0 top-0 z-20 -translate-y-1/3 translate-x-1/3"
+          data-asset-chrome
+          onMouseDown={(event) => event.stopPropagation()}
+        >
+          <PublishLinkButton linked={linked} onLinked={onLinked} />
+        </div>
       ) : null}
       {onResize ? (
-        <DiagonalResizeHandle
-          width={width}
-          height={height}
-          clampWidth={clampWidth}
-          clampHeight={clampHeight}
-          lockAspect={lockAspect}
-          onResize={onResize}
-        />
+        <div
+          className="absolute bottom-0 right-0 z-20 translate-x-1/3 translate-y-1/3"
+          data-asset-chrome
+          onMouseDown={(event) => event.stopPropagation()}
+        >
+          <DiagonalResizeHandle
+            width={width}
+            height={height}
+            clampWidth={clampWidth}
+            clampHeight={clampHeight}
+            lockAspect={lockAspect}
+            axis={axis}
+            onResize={onResize}
+          />
+        </div>
       ) : null}
-    </div>
+    </>
   );
 }
 
@@ -347,12 +370,14 @@ function AssetBody({
   beta,
   card,
   width,
+  height,
 }: {
   asset: MockGameAsset;
   presentation: CardPresentation;
   beta: boolean;
   card?: CodexCard | null;
   width: number;
+  height: number;
 }) {
   if (presentation === "tiny" && card) {
     return (
@@ -363,37 +388,32 @@ function AssetBody({
           rarity: card.rarity,
           type: card.type,
         }}
-        width={Math.max(32, Math.round(width * 0.35))}
+        width={Math.max(24, Math.min(width, height))}
       />
     );
   }
   if (presentation === "tile" && card) {
+    const tileWidth = Math.max(48, Math.min(width, Math.round(height * (300 / 422))));
     return (
       <CardTile
         card={card}
         showUpgrade={false}
         showBeta={beta}
-        width={width}
+        width={tileWidth}
         interactive={false}
       />
     );
   }
   const src = beta && card?.betaImageUrl ? card.betaImageUrl : asset.imageUrl;
-  const portrait = asset.kind === "card";
   return (
-    <>
-      <Image
-        src={src}
-        alt={asset.name}
-        width={width}
-        height={portrait ? Math.round(width * 1.56) : width}
-        className="pointer-events-none h-auto w-full select-none"
-        draggable={false}
-      />
-      <figcaption className="mt-1 text-center font-game-title text-xs spire-gold">
-        {asset.name}
-      </figcaption>
-    </>
+    <Image
+      src={src}
+      alt={asset.name}
+      width={width}
+      height={height}
+      className="pointer-events-none h-full w-full select-none object-contain"
+      draggable={false}
+    />
   );
 }
 
@@ -428,51 +448,66 @@ export function GameAssetFigure({
 }) {
   const px = width ?? defaultAssetWidth(asset.kind);
   const py = height ?? (asset.kind === "card" ? Math.round(px * 1.56) : px);
+  const freeSize = asset.kind === "card";
   const figure = (
-    <figure className="relative" style={{ width: px }}>
+    <figure className="relative overflow-hidden" style={{ width: px, height: py }}>
       <AssetBody
         asset={asset}
         presentation={presentation}
         beta={beta}
         card={card}
         width={px}
+        height={py}
       />
     </figure>
   );
 
-  if (mode === "preview" && linked) {
+  if (mode === "preview") {
+    const previewBody = (
+      <div style={{ width: px }}>
+        {figure}
+        <figcaption className="mt-1 text-center font-game-title text-xs spire-gold">
+          {asset.name}
+        </figcaption>
+      </div>
+    );
     return (
       <div className={alignRowClass(align)}>
-        <a href={asset.href} className="block no-underline" target="_blank" rel="noreferrer">
-          {figure}
-        </a>
+        {linked ? (
+          <a href={asset.href} className="block no-underline" target="_blank" rel="noreferrer">
+            {previewBody}
+          </a>
+        ) : previewBody}
       </div>
     );
   }
 
   return (
     <div className={alignRowClass(align)}>
-      <div className="flex items-start gap-1">
+      <div className="relative inline-block" style={{ width: px }}>
         <div className="relative">
           {figure}
           {mode === "edit" ? (
-            <AssetFocusChrome
-              selected={selected}
-              align={align}
-              onAlign={onAlign}
+            <AssetCornerHandles
+              linked={linked}
+              onLinked={onLinked}
+              width={px}
+              height={py}
+              clampWidth={(next) => clampAssetWidth(asset.kind, next)}
+              clampHeight={(next) => clampAssetHeight(asset.kind, next)}
+              lockAspect={!freeSize}
+              onResize={onResize}
             />
           ) : null}
         </div>
-        {mode === "edit" && (onResize || onLinked) ? (
-          <AssetSideRail
-            linked={linked}
-            onLinked={onLinked}
-            width={px}
-            height={py}
-            clampWidth={(next) => clampAssetWidth(asset.kind, next)}
-            clampHeight={(next) => clampAssetWidth(asset.kind, next)}
-            lockAspect
-            onResize={onResize}
+        <figcaption className="mt-1 text-center font-game-title text-xs spire-gold">
+          {asset.name}
+        </figcaption>
+        {mode === "edit" ? (
+          <AssetFocusChrome
+            selected={selected}
+            align={align}
+            onAlign={onAlign}
           />
         ) : null}
       </div>

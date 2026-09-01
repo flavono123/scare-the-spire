@@ -25,10 +25,11 @@ import {
   type CompendiumInsertPayload,
 } from "./pickers";
 import { createPagestormBraceSuggestion, pagestormBracePluginKey } from "./prefix-menu";
-import { assetFromEntity, resolvePastedUrl } from "./sample";
+import { assetFromEntity, pagestormLoremDoc, resolvePastedUrl } from "./sample";
 import {
   GameAssetNode,
   OgBookmarkNode,
+  PagestormLightSection,
   ToyboxEmbedNode,
   YoutubePlayerNode,
   gameAssetAttrs,
@@ -40,11 +41,6 @@ import "./pagestorm-editor.css";
 type PendingCard = {
   entity: EntityInfo;
   range?: { from: number; to: number };
-};
-
-const EMPTY_DOC = {
-  type: "doc" as const,
-  content: [{ type: "paragraph" as const }],
 };
 
 export function PagestormEditor() {
@@ -81,7 +77,7 @@ export function PagestormEditor() {
 
   const editor = useEditor({
     immediatelyRender: false,
-    content: EMPTY_DOC,
+    content: pagestormLoremDoc(copy),
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3] },
@@ -94,6 +90,7 @@ export function PagestormEditor() {
       YoutubePlayerNode,
       OgBookmarkNode,
       ToyboxEmbedNode,
+      PagestormLightSection,
       brace,
     ],
     editorProps: {

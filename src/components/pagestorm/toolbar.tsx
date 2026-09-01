@@ -1,6 +1,7 @@
 "use client";
 
 import type { Editor } from "@tiptap/react";
+import { useEditorState } from "@tiptap/react";
 import {
   Bold,
   Heading2,
@@ -27,7 +28,55 @@ import {
 import { AlignButtons, IconTipButton } from "./figures";
 import { PickerNavDropdown } from "./nav-tokens";
 import { useCompendiumNavItems, useToyboxNavItems } from "./pickers";
+import type { MockAlign } from "./sample";
+import { PAGESTORM_BLOCK_NODE_NAMES } from "./tiptap-nodes";
 import type { NavDropdownItem } from "@/lib/site-nav-items";
+
+function asAlign(value: unknown): MockAlign {
+  return value === "center" || value === "right" ? value : "left";
+}
+
+function selectedBlockAlign(editor: Editor): MockAlign | null {
+  for (const name of PAGESTORM_BLOCK_NODE_NAMES) {
+    if (editor.isActive(name)) {
+      return asAlign(editor.getAttributes(name).align);
+    }
+  }
+  return null;
+}
+
+function applyAlign(editor: Editor, align: MockAlign) {
+  for (const name of PAGESTORM_BLOCK_NODE_NAMES) {
+    if (editor.isActive(name)) {
+      editor.chain().updateAttributes(name, { align }).run();
+      return;
+    }
+  }
+  editor.chain().focus().setTextAlign(align).run();
+}
+
+function currentTextAlign(editor: Editor): MockAlign {
+  const blockAlign = selectedBlockAlign(editor);
+  if (blockAlign) return blockAlign;
+  if (editor.isActive({ textAlign: "center" })) return "center";
+  if (editor.isActive({ textAlign: "right" })) return "right";
+  return "left";
+}
+
+function editorChromeSnapshot(editor: Editor) {
+  return {
+    bold: editor.isActive("bold"),
+    italic: editor.isActive("italic"),
+    heading2: editor.isActive("heading", { level: 2 }),
+    heading3: editor.isActive("heading", { level: 3 }),
+    bulletList: editor.isActive("bulletList"),
+    blockquote: editor.isActive("blockquote"),
+    sine: editor.isActive("sine"),
+    jitter: editor.isActive("jitter"),
+    colorKey: editor.getAttributes("pagestormColor").colorKey as string | undefined,
+    align: currentTextAlign(editor),
+  };
+}
 
 function applyColor(editor: Editor, colorKey: PagestormColorKey) {
   const current = editor.getAttributes("pagestormColor").colorKey;
@@ -43,13 +92,14 @@ function ColorSwatches({
   keys,
   prefix,
   labels,
+  active,
 }: {
   editor: Editor;
   keys: readonly string[];
   prefix: "spire" | "character";
   labels: Record<string, string>;
+  active?: string;
 }) {
-  const active = editor.getAttributes("pagestormColor").colorKey as string | undefined;
   return (
     <span className="inline-flex flex-wrap items-center gap-1">
       {keys.map((key) => {
@@ -82,58 +132,57 @@ export function PagestormFormatChrome({
   onCompendium: (item: NavDropdownItem) => void;
   onToybox: (item: NavDropdownItem) => void;
 }) {
+  const chrome = useEditorState({
+    editor,
+    selector: ({ editor: current }) => editorChromeSnapshot(current),
+  });
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale];
   const editorCopy = copy.pagestorm;
   const compendiumItems = useCompendiumNavItems();
   const toyboxItems = useToyboxNavItems();
-  const textAlign = editor.isActive({ textAlign: "center" })
-    ? "center"
-    : editor.isActive({ textAlign: "right" })
-      ? "right"
-      : "left";
 
   return (
     <div className="flex h-full flex-col justify-center gap-2">
       <div className="flex flex-wrap items-center gap-1">
         <IconTipButton
           label={editorCopy.bold}
-          active={editor.isActive("bold")}
+          active={chrome.bold}
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
           <Bold className="h-3.5 w-3.5" aria-hidden />
         </IconTipButton>
         <IconTipButton
           label={editorCopy.italic}
-          active={editor.isActive("italic")}
+          active={chrome.italic}
           onClick={() => editor.chain().focus().toggleItalic().run()}
         >
           <Italic className="h-3.5 w-3.5" aria-hidden />
         </IconTipButton>
         <IconTipButton
           label={editorCopy.heading2}
-          active={editor.isActive("heading", { level: 2 })}
+          active={chrome.heading2}
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         >
           <Heading2 className="h-3.5 w-3.5" aria-hidden />
         </IconTipButton>
         <IconTipButton
           label={editorCopy.heading3}
-          active={editor.isActive("heading", { level: 3 })}
+          active={chrome.heading3}
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         >
           <Heading3 className="h-3.5 w-3.5" aria-hidden />
         </IconTipButton>
         <IconTipButton
           label={editorCopy.bulletList}
-          active={editor.isActive("bulletList")}
+          active={chrome.bulletList}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
           <List className="h-3.5 w-3.5" aria-hidden />
         </IconTipButton>
         <IconTipButton
           label={editorCopy.blockquote}
-          active={editor.isActive("blockquote")}
+          active={chrome.blockquote}
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
         >
           <Quote className="h-3.5 w-3.5" aria-hidden />
@@ -145,8 +194,8 @@ export function PagestormFormatChrome({
           <Minus className="h-3.5 w-3.5" aria-hidden />
         </IconTipButton>
         <AlignButtons
-          value={textAlign}
-          onChange={(align) => editor.chain().focus().setTextAlign(align).run()}
+          value={chrome.align}
+          onChange={(align) => applyAlign(editor, align)}
         />
         <span className="mx-1 h-4 w-px bg-border" aria-hidden />
         <ColorSwatches
@@ -154,6 +203,7 @@ export function PagestormFormatChrome({
           keys={PAGESTORM_SPIRE_COLOR_KEYS}
           prefix="spire"
           labels={editorCopy.spireColors}
+          active={chrome.colorKey}
         />
         <span className="mx-1 h-4 w-px bg-border" aria-hidden />
         <ColorSwatches
@@ -161,17 +211,18 @@ export function PagestormFormatChrome({
           keys={PAGESTORM_CHARACTER_COLOR_KEYS}
           prefix="character"
           labels={editorCopy.characterColors}
+          active={chrome.colorKey}
         />
         <IconTipButton
           label={`${editorCopy.sine} · ${editorCopy.sineHint}`}
-          active={editor.isActive("sine")}
+          active={chrome.sine}
           onClick={() => editor.chain().focus().toggleMark("sine").run()}
         >
           <Waves className="h-3.5 w-3.5" aria-hidden />
         </IconTipButton>
         <IconTipButton
           label={`${editorCopy.jitter} · ${editorCopy.jitterHint}`}
-          active={editor.isActive("jitter")}
+          active={chrome.jitter}
           onClick={() => editor.chain().focus().toggleMark("jitter").run()}
         >
           <Zap className="h-3.5 w-3.5" aria-hidden />

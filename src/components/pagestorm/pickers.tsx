@@ -141,6 +141,9 @@ export function CompendiumPickerModal({
           serviceLocale={serviceLocale}
           presetLabels={{}}
           showPresets={false}
+          showCatalog
+          catalogNeedTypeLabel={copy.pickerNeedType}
+          catalogEmptyLabel={copy.pickerEmpty}
           searchPlacement="top"
           major={major}
           dims={dims}

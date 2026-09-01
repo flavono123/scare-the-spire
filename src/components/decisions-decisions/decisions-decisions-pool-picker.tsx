@@ -55,6 +55,7 @@ import {
   RELIC_AFFILIATION_MINORS,
   RELIC_RARITY_MINORS,
   isDecisionsDecisionsResourceType,
+  listPoolEntities,
   type DecisionsDecisionsPresetDef,
   type DecisionsFilterDim,
   type DecisionsFilterDims,
@@ -522,6 +523,9 @@ export function DecisionsDecisionsPoolPicker({
   onPreset,
   onAdd,
   showPresets = true,
+  showCatalog = false,
+  catalogNeedTypeLabel,
+  catalogEmptyLabel,
   searchPlacement = "bottom",
 }: {
   entities: EntityInfo[];
@@ -536,6 +540,9 @@ export function DecisionsDecisionsPoolPicker({
   onPreset?: (key: string) => void;
   onAdd: (entity: EntityInfo) => void;
   showPresets?: boolean;
+  showCatalog?: boolean;
+  catalogNeedTypeLabel?: string;
+  catalogEmptyLabel?: string;
   searchPlacement?: "top" | "bottom";
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
@@ -562,6 +569,14 @@ export function DecisionsDecisionsPoolPicker({
     if (!trimmed) return [];
     return matchEntities(trimmed, catalog, SEARCH_RESULT_LIMIT);
   }, [query, catalog]);
+
+  const catalogItems = useMemo(() => {
+    if (!showCatalog || !major) return [];
+    const listed = listPoolEntities(entities, major, dims);
+    const trimmed = query.trim();
+    if (!trimmed) return listed;
+    return matchEntities(trimmed, listed, listed.length);
+  }, [dims, entities, major, query, showCatalog]);
 
   const affiliationChips = useMemo(() => {
     if (major === "card") {
@@ -673,7 +688,7 @@ export function DecisionsDecisionsPoolPicker({
           className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
         />
       </div>
-      {query.trim() && (
+      {query.trim() && !showCatalog && (
         <div className="absolute z-30 mt-1 max-h-72 w-full overflow-y-auto rounded-xl border border-border bg-popover p-2 shadow-lg">
           {matches.length === 0 ? (
             <p className="px-3 py-8 text-center text-xs text-muted-foreground">
@@ -1005,6 +1020,57 @@ export function DecisionsDecisionsPoolPicker({
       )}
       </div>
       )}
+
+        {showCatalog ? (
+          <div
+            className="max-h-[min(48dvh,24rem)] overflow-y-auto rounded-xl border border-border/70 bg-popover/40 p-1.5"
+            data-pagestorm-picker-results
+          >
+            {!major ? (
+              <p className="px-3 py-8 text-center text-xs text-muted-foreground">
+                {catalogNeedTypeLabel}
+              </p>
+            ) : catalogItems.length === 0 ? (
+              <p className="px-3 py-8 text-center text-xs text-muted-foreground">
+                {catalogEmptyLabel ?? codex.common.noResults}
+              </p>
+            ) : (
+              <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
+                {catalogItems.map((entity) => (
+                  <button
+                    key={`${entity.type}:${entity.id}`}
+                    type="button"
+                    onClick={() => onAdd(entity)}
+                    className="flex min-w-0 items-center gap-2 rounded-lg border border-transparent px-2 py-1.5 text-left transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-primary/20 hover:bg-primary/10 focus-visible:border-primary/40 focus-visible:bg-primary/10 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none"
+                  >
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-black/25">
+                      <span className="pointer-events-none origin-center scale-[0.7]">
+                        <ComboResourceAsset
+                          entity={entity}
+                          entityMap={entityMap}
+                          serviceLocale={serviceLocale}
+                        />
+                      </span>
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-xs font-semibold text-foreground">
+                        {entity.nameKo}
+                      </span>
+                      {entity.nameEn !== entity.nameKo && (
+                        <span className="block truncate text-[10px] text-muted-foreground">
+                          {entity.nameEn}
+                        </span>
+                      )}
+                    </span>
+                    <span className="shrink-0 text-[9px] text-muted-foreground">
+                      {typeLabels[entity.type] ?? entity.type}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : null}
 
         {searchPlacement === "bottom" ? searchField : null}
       </div>

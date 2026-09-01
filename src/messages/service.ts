@@ -1267,6 +1267,11 @@ export const serviceMessages = {
       emptyToybox: "이 장난감 상자 서비스에 넣을 글이 없습니다",
       allCompendium: "전체 백과사전",
       editorLoading: "작성기 준비 중…",
+      pickerNeedType: "유형을 고르면 아래에 목록이 나타납니다",
+      pickerEmpty: "이 필터에 맞는 항목이 없습니다",
+      sampleHeading: "Lorem ipsum",
+      sampleLightHeading: "라이트 모드",
+      sampleLightHint: "이 구역만 종이색 배경입니다",
       spireColors: {
         gold: "골드",
         green: "초록",
@@ -2554,6 +2559,11 @@ export const serviceMessages = {
       emptyToybox: "No Toy Box posts to insert for this service",
       allCompendium: "All Compendium",
       editorLoading: "Preparing the document editor…",
+      pickerNeedType: "Pick a type to show matching resources below",
+      pickerEmpty: "Nothing matches these filters",
+      sampleHeading: "Lorem ipsum",
+      sampleLightHeading: "Light mode",
+      sampleLightHint: "Only this section uses the paper background",
       spireColors: {
         gold: "Gold",
         green: "Green",
