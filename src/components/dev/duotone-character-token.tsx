@@ -84,7 +84,6 @@ export function DuotoneCharacterToken({
       ref={canvasRef}
       data-duotone-token
       className={cn("h-14 w-14", className)}
-      style={{ width: size, height: size }}
     />
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo, useCallback, type MouseEvent as ReactMouseEvent } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback, type CSSProperties, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
@@ -40,8 +40,8 @@ import {
   globalSearchTypeStyles,
   type GlobalSearchIndexItem,
 } from "@/lib/global-search";
+import { ProfileAvatarToken } from "@/components/profile/profile-avatar-token";
 import { useStoredUserProfile } from "@/hooks/use-user-profile";
-import { characterIconUrl } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 import { contactMessages } from "@/messages/contact";
 import { pushCodexHistoryState } from "@/components/codex/use-hydration-safe-search-param";
@@ -166,6 +166,7 @@ function writeLocalePreferenceCookies(gameLocale: GameLocale) {
 function NavIconLink({
   href,
   icon,
+  iconNode,
   label,
   iconSize = 20,
   iconClassName,
@@ -173,7 +174,8 @@ function NavIconLink({
   external,
 }: {
   href: string;
-  icon: string;
+  icon?: string;
+  iconNode?: ReactNode;
   label: string;
   iconSize?: number;
   iconClassName?: string;
@@ -185,6 +187,7 @@ function NavIconLink({
     ? { target: "_blank" as const, rel: "noopener noreferrer" }
     : {};
   const internalProps = external ? {} : { prefetch: false as const };
+  const iconClass = `h-[18px] w-[18px] object-contain brightness-90 hover:brightness-110 transition-all sm:h-[var(--nav-icon-size)] sm:w-[var(--nav-icon-size)] ${iconClassName ?? ""}`;
 
   return (
     <GameUiHoverTip
@@ -198,14 +201,16 @@ function NavIconLink({
         {...internalProps}
         className="flex items-center p-1 transition-colors sm:p-1.5"
       >
-        <Image
-          src={icon}
-          alt={label}
-          width={iconSize}
-          height={iconSize}
-          className={`h-[18px] w-[18px] object-contain brightness-90 hover:brightness-110 transition-all sm:h-[var(--nav-icon-size)] sm:w-[var(--nav-icon-size)] ${iconClassName ?? ""}`}
-          style={{ "--nav-icon-size": `${iconSize}px` } as React.CSSProperties}
-        />
+        {iconNode ?? (
+          <Image
+            src={icon ?? ""}
+            alt={label}
+            width={iconSize}
+            height={iconSize}
+            className={iconClass}
+            style={{ "--nav-icon-size": `${iconSize}px` } as CSSProperties}
+          />
+        )}
       </Tag>
     </GameUiHoverTip>
   );
@@ -798,10 +803,16 @@ export function SiteNavbar() {
           </div>
           <NavIconLink
             href={localizeHrefWithGameLocale("/profile", serviceLocale, gameLocale)}
-            icon={characterIconUrl(profile.characterId)}
+            className="group"
+            iconNode={(
+              <ProfileAvatarToken
+                profile={profile}
+                size={24}
+                className="h-[18px] w-[18px] object-contain brightness-90 transition-all hover:brightness-110 sm:h-6 sm:w-6 group-hover:scale-110"
+              />
+            )}
             label={messages.profile.navLabel}
             iconSize={24}
-            iconClassName="group-hover:scale-110"
           />
         </div>
         </div>

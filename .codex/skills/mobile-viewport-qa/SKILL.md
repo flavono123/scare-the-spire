@@ -37,7 +37,7 @@ For `/profile`, verify that:
 - The selector carousel block is above the render block on mobile.
 - The render block is visible within the viewport at every mobile preset.
 - The document has no horizontal overflow.
-- Selecting a character, pet, or Ancient in the top carousels updates the render block's reflected selection.
+- Selecting a character or boss token updates the render block's reflected selection.
 
 Run:
 
@@ -47,7 +47,7 @@ node .codex/skills/mobile-viewport-qa/scripts/check-mobile-route.mjs \
   --render-selector "[data-profile-render]" \
   --controls-selector "[data-profile-controls]" \
   --choice-selector "[data-profile-choice]" \
-  --click-types character,pet,ancient
+  --click-types character,boss
 ```
 
 If a different page lacks stable selectors, add narrowly scoped `data-*` attributes to the page before relying on this QA. Prefer assertions against real layout and state over visual-only screenshots.

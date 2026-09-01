@@ -1,18 +1,15 @@
 "use client";
 
+import { ProfileAvatarToken } from "@/components/profile/profile-avatar-token";
 import { useStoredUserProfile } from "@/hooks/use-user-profile";
-import { characterIconUrl } from "@/lib/user-profile";
-import Image from "@/components/ui/static-image";
 
 export function ByrdispatchProfileIcon({ className }: { className: string }) {
   const profile = useStoredUserProfile();
 
   return (
-    <Image
-      src={characterIconUrl(profile.characterId)}
-      alt=""
-      width={20}
-      height={20}
+    <ProfileAvatarToken
+      profile={profile}
+      size={20}
       className={className}
     />
   );

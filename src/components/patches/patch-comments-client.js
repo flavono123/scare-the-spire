@@ -12,6 +12,25 @@
     NECROBINDER: "necrobinder",
     DEFECT: "defect",
   };
+  // Keep in sync with PROFILE_PALETTE_PAIRS (excludes ivory-sky).
+  const PROFILE_PALETTES = {
+    "sage-blush": ["#719470", "#E0B3B6"],
+    "orange-teal": ["#D96629", "#0093A5"],
+    "rose-mint": ["#DA525D", "#00B49B"],
+    "coffee-olive": ["#71502F", "#788860"],
+    "magenta-blue": ["#B73F74", "#005B8D"],
+    "lime-purple": ["#C7D14F", "#501345"],
+    "lemon-olive": ["#FFEFAE", "#42533E"],
+    "amber-coffee": ["#F3A257", "#71502F"],
+    "apricot-blue": ["#FDD4BD", "#006EB8"],
+    "ochre-lavender": ["#C27544", "#B5B1D8"],
+    "terracotta-dusty-pink": ["#C55347", "#C0A9B3"],
+    "pine-navy": ["#437742", "#064F6E"],
+    "jade-lavender": ["#00978D", "#B5B1D8"],
+    "carmine-ink": ["#CC1236", "#0F1A14"],
+    "coral-midnight": ["#F48067", "#051230"],
+  };
+  const PROFILE_CHANGE_EVENT = "sts-user-profile-change";
 
   const MESSAGES = {
     ko: {
@@ -108,23 +127,89 @@
     return `/images/sts2/characters/character_icon_${slug}.webp`;
   }
 
-  function readStoredCharacterIconUrl() {
-    try {
-      const raw = window.localStorage.getItem(PROFILE_KEY);
-      const characterId = raw ? JSON.parse(raw)?.characterId : null;
-      return characterIconUrl(typeof characterId === "string" ? characterId : "NECROBINDER");
-    } catch {
-      return characterIconUrl("NECROBINDER");
+  function hexToRgb255(hex) {
+    const raw = String(hex).replace("#", "");
+    return {
+      r: Number.parseInt(raw.slice(0, 2), 16),
+      g: Number.parseInt(raw.slice(2, 4), 16),
+      b: Number.parseInt(raw.slice(4, 6), 16),
+    };
+  }
+
+  function remapDuotoneRgba(data, shadow, highlight) {
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i + 3] === 0) continue;
+      const t = (0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2]) / 255;
+      data[i] = Math.round(shadow.r + (highlight.r - shadow.r) * t);
+      data[i + 1] = Math.round(shadow.g + (highlight.g - shadow.g) * t);
+      data[i + 2] = Math.round(shadow.b + (highlight.b - shadow.b) * t);
     }
   }
 
-  function syncProfileCharacterIcon() {
-    const iconUrl = readStoredCharacterIconUrl();
-    document.querySelectorAll("[data-profile-character-icon]").forEach((image) => {
-      if (image instanceof HTMLImageElement && image.getAttribute("src") !== iconUrl) {
-        image.src = iconUrl;
-      }
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.decoding = "async";
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error(`Failed to load ${src}`));
+      image.src = src;
     });
+  }
+
+  function readStoredProfileIconState() {
+    try {
+      const raw = window.localStorage.getItem(PROFILE_KEY);
+      const parsed = raw ? JSON.parse(raw) : {};
+      const characterId = typeof parsed.characterId === "string" ? parsed.characterId : "NECROBINDER";
+      const avatarKind = parsed.avatarKind === "boss" ? "boss" : "character";
+      const avatarId = typeof parsed.avatarId === "string" && parsed.avatarId
+        ? parsed.avatarId
+        : characterId;
+      const tokenUrl = avatarKind === "boss"
+        ? `/images/sts2/bosses/${String(avatarId).toLowerCase()}.webp`
+        : characterIconUrl(avatarKind === "character" ? avatarId : characterId);
+      const pair = typeof parsed.paletteId === "string" ? PROFILE_PALETTES[parsed.paletteId] : null;
+      const swapped = Boolean(parsed.paletteSwapped);
+      return { tokenUrl, pair, swapped };
+    } catch {
+      return { tokenUrl: characterIconUrl("NECROBINDER"), pair: null, swapped: false };
+    }
+  }
+
+  async function remappedTokenDataUrl(tokenUrl, pair, swapped) {
+    const image = await loadImage(tokenUrl);
+    const width = image.naturalWidth || image.width;
+    const height = image.naturalHeight || image.height;
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx || width < 1 || height < 1) return tokenUrl;
+    ctx.drawImage(image, 0, 0);
+    const pixels = ctx.getImageData(0, 0, width, height);
+    const shadow = hexToRgb255(swapped ? pair[1] : pair[0]);
+    const highlight = hexToRgb255(swapped ? pair[0] : pair[1]);
+    remapDuotoneRgba(pixels.data, shadow, highlight);
+    ctx.putImageData(pixels, 0, 0);
+    return canvas.toDataURL();
+  }
+
+  function syncProfileCharacterIcon() {
+    const state = readStoredProfileIconState();
+    const apply = (src) => {
+      document.querySelectorAll("[data-profile-character-icon]").forEach((image) => {
+        if (image instanceof HTMLImageElement && image.getAttribute("src") !== src) {
+          image.src = src;
+        }
+      });
+    };
+    if (!state.pair) {
+      apply(state.tokenUrl);
+      return;
+    }
+    void remappedTokenDataUrl(state.tokenUrl, state.pair, state.swapped)
+      .then(apply)
+      .catch(() => apply(state.tokenUrl));
   }
 
   function timeoutFetch(operation, input, init = {}, timeoutMs = QUERY_TIMEOUT_MS) {
@@ -673,6 +758,7 @@
     window.addEventListener("storage", (event) => {
       if (event.key === null || event.key === PROFILE_KEY) syncProfileCharacterIcon();
     });
+    window.addEventListener(PROFILE_CHANGE_EVENT, syncProfileCharacterIcon);
 
     const config = readConfig();
     mountStoryActions(config);

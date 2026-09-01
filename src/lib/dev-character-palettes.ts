@@ -6,7 +6,8 @@
  * Wada Sanzo dictionary labels shown on the same cards. Left/right of
  * each title card maps to colorA/colorB.
  *
- * Local `/dev/character-palette` lab only. Not a public profile feature yet.
+ * Public profile uses these pairs except `ivory-sky` (아이보리/연하늘색).
+ * The `/dev/character-palette` lab still lists all 16.
  */
 
 export const CHARACTER_PALETTE_SOURCE = {

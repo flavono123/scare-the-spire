@@ -86,8 +86,12 @@ export const serviceMessages = {
       devBadge: "",
       selectors: {
         character: "캐릭터",
-        pet: "펫",
-        ancient: "종교",
+        boss: "보스",
+      },
+      palette: {
+        label: "배색",
+        none: "없음",
+        noneHint: "기본",
       },
       appearance: {
         label: "화면",
@@ -96,20 +100,6 @@ export const serviceMessages = {
         light: "라이트",
         system: "시스템",
         systemHint: "기기 설정을 따름",
-      },
-      actions: {
-        idle: "대기",
-        attack: "공격",
-        hurt: "피격",
-      },
-      petSkin: {
-        label: "형태 {number}",
-        byrdpipLabel: "깃{number}",
-        ariaLabel: "펫 {label}",
-      },
-      carousel: {
-        previous: "이전",
-        next: "다음",
       },
       activity: {
         inquiries: {
@@ -1221,6 +1211,9 @@ export const serviceMessages = {
       subtitle: "게임 요소로 문서 쓰기",
       defaultNickname: "휘발성",
       create: "작성",
+      edit: "수정",
+      copyLink: "링크 복사",
+      copied: "복사됨!",
       empty: "아직 작성된 서류가 없습니다",
       count: "{count}개의 서류",
       backToIndex: "서류 폭풍으로 돌아가기",
@@ -1384,8 +1377,12 @@ export const serviceMessages = {
       devBadge: "",
       selectors: {
         character: "Character",
-        pet: "Pet",
-        ancient: "Religion",
+        boss: "Boss",
+      },
+      palette: {
+        label: "Palette",
+        none: "None",
+        noneHint: "Default",
       },
       appearance: {
         label: "Appearance",
@@ -1394,20 +1391,6 @@ export const serviceMessages = {
         light: "Light",
         system: "System",
         systemHint: "match device",
-      },
-      actions: {
-        idle: "Idle",
-        attack: "Attack",
-        hurt: "Hurt",
-      },
-      petSkin: {
-        label: "Variant {number}",
-        byrdpipLabel: "Feather {number}",
-        ariaLabel: "Pet {label}",
-      },
-      carousel: {
-        previous: "Previous",
-        next: "Next",
       },
       activity: {
         inquiries: {
@@ -2519,6 +2502,9 @@ export const serviceMessages = {
       subtitle: "Write a document with game elements",
       defaultNickname: "Ethereal",
       create: "Write",
+      edit: "Edit",
+      copyLink: "Copy link",
+      copied: "Copied!",
       empty: "No documents have been written yet",
       count: "{count} documents",
       backToIndex: "Back to Pagestorm",

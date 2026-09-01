@@ -1,14 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AncientNodeRender } from "@/components/codex/ancient-node-render";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { CHARACTER_STAGE_VIEWPORT_PADDING } from "@/components/codex/character-spine-stage";
+import { EncounterSceneStage } from "@/components/codex/encounter-scene-stage";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import { ColorSchemePicker, type ColorSchemePickerCopy } from "@/components/color-scheme-picker";
 import { ProfileActivity, type ProfileActivityCopy } from "@/components/profile-activity";
+import { ProfileAvatarToken } from "@/components/profile/profile-avatar-token";
+import { ProfilePalettePicker, type ProfilePalettePickerCopy } from "@/components/profile/profile-palette-picker";
+import {
+  GAME_UI_HOVER_TIP_NAV_DELAY_MS,
+  GameUiHoverTip,
+} from "@/components/game-ui-hover-tip";
 import Image from "@/components/ui/static-image";
+import { DuotoneCharacterToken } from "@/components/dev/duotone-character-token";
 import { useUserProfile } from "@/hooks/use-user-profile";
-import type { MonsterSpineAsset } from "@/lib/codex-types";
-import type { GameLocale } from "@/lib/i18n";
+import type { CodexEncounter, CodexMonster, MonsterSpineAsset } from "@/lib/codex-types";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
+import { resolveProfileDuotone } from "@/lib/profile-palettes";
 import { normalizeUserProfile, type UserProfile } from "@/lib/user-profile";
 import { cn } from "@/lib/utils";
 
@@ -23,29 +32,13 @@ export interface CharacterChoice {
   spineAsset: MonsterSpineAsset | null;
 }
 
-export interface PetChoice {
+export interface BossChoice {
   id: string;
-  monsterId: string;
   label: string;
   iconUrl: string;
-  fallbackImageUrl: string;
-  selectedSkin: string | null;
-  selectedSkins: readonly string[] | null;
-  skinOptions: readonly PetSkinOption[];
-  spineAsset: MonsterSpineAsset | null;
-}
-
-export interface PetSkinOption {
-  id: string;
-  label: string;
-  selectedSkins: readonly string[];
-}
-
-export interface AncientChoice {
-  id: string;
-  label: string;
-  subtitle: string;
-  iconUrl: string;
+  encounter: CodexEncounter;
+  spinePreview: "encounter" | "static";
+  staticPreviewUrl: string | null;
 }
 
 type ActionId = "IDLE" | "ATTACK" | "HURT";
@@ -56,65 +49,28 @@ export interface ProfilePageCopy {
   nicknamePlaceholder: string;
   selectors: {
     character: string;
-    pet: string;
-    ancient: string;
+    boss: string;
   };
+  palette: ProfilePalettePickerCopy;
   appearance: ColorSchemePickerCopy;
-  actions: {
-    idle: string;
-    attack: string;
-    hurt: string;
-  };
-  petSkin: {
-    label: string;
-    byrdpipLabel: string;
-    ariaLabel: string;
-  };
-  carousel: {
-    previous: string;
-    next: string;
-  };
   activity: ProfileActivityCopy;
 }
 
 const DEFAULTS = {
   character: "NECROBINDER",
-  pet: "OSTY",
-  ancient: "OROBAS",
 };
-
-const PROFILE_CHARACTER_VIEWPORT_PADDING = {
-  padLeft: "2%",
-  padRight: "34%",
-  padTop: "14%",
-  padBottom: "0%",
-} as const;
-
-const PROFILE_PET_VIEWPORT_PADDING = {
-  padLeft: "8%",
-  padRight: "8%",
-  padTop: "8%",
-  padBottom: "4%",
-} as const;
-
-const PROFILE_SMALL_PET_VIEWPORT_PADDING = {
-  padLeft: "42%",
-  padRight: "42%",
-  padTop: "42%",
-  padBottom: "24%",
-} as const;
 
 export default function ProfilePage({
   characters,
-  pets,
-  ancients,
+  bosses,
+  bossMonsters,
   copy,
   nicknameLocale = "ko",
   gameLocale,
 }: {
   characters: CharacterChoice[];
-  pets: PetChoice[];
-  ancients: AncientChoice[];
+  bosses: BossChoice[];
+  bossMonsters: CodexMonster[];
   copy: ProfilePageCopy;
   nicknameLocale?: ProfileNicknameLocale;
   gameLocale: GameLocale;
@@ -123,16 +79,14 @@ export default function ProfilePage({
     () => normalizeUserProfile({
       nickname: getInitialNickname(characters, DEFAULTS.character, nicknameLocale, copy.fallbackNickname),
       characterId: DEFAULTS.character,
-      petId: DEFAULTS.pet,
-      petSkinId: null,
-      ancientId: DEFAULTS.ancient,
+      avatarKind: "character",
+      avatarId: DEFAULTS.character,
     }),
     [characters, copy.fallbackNickname, nicknameLocale],
   );
   const { profile, saveProfile } = useUserProfile(fallbackProfile);
   const [draftProfile, setDraftProfile] = useState(fallbackProfile);
   const [characterAction, setCharacterAction] = useActionState();
-  const [petAction, setPetAction] = useActionState();
 
   useEffect(() => {
     setDraftProfile(profile);
@@ -154,13 +108,14 @@ export default function ProfilePage({
   }, [draftProfile.nickname, persistProfile]);
 
   const character = findChoice(characters, draftProfile.characterId) ?? characters[0];
-  const pet = findChoice(pets, draftProfile.petId) ?? pets[0];
-  const ancient = findChoice(ancients, draftProfile.ancientId) ?? ancients[0];
-  const selectedPetSkin = pet?.skinOptions.length
-    ? pet.skinOptions.find((option) => option.id === draftProfile.petSkinId) ?? pet.skinOptions[0]
-    : undefined;
-  const selectedPetSkinId = selectedPetSkin?.id;
-  const selectedPetSkins = selectedPetSkin?.selectedSkins ?? pet?.selectedSkins ?? null;
+  const avatarCharacter = draftProfile.avatarKind === "character"
+    ? findChoice(characters, draftProfile.avatarId) ?? character
+    : null;
+  const boss = draftProfile.avatarKind === "boss"
+    ? findChoice(bosses, draftProfile.avatarId)
+    : null;
+  const duotone = resolveProfileDuotone(draftProfile);
+  const serviceLocale: ServiceLocale = nicknameLocale;
 
   return (
     <main
@@ -173,12 +128,10 @@ export default function ProfilePage({
       >
         <header className="flex h-10 shrink-0 items-center justify-between gap-3 border-b border-border pb-2">
           <div className="flex min-w-0 items-center gap-2">
-            <Image
-              src={character?.iconUrl ?? "/images/sts2/characters/character_icon_necrobinder.webp"}
-              alt=""
-              width={28}
-              height={28}
-              className="h-7 w-7 object-contain"
+            <ProfileAvatarToken
+              profile={draftProfile}
+              size={28}
+              className="h-7 w-7"
             />
             <input
               type="text"
@@ -200,6 +153,23 @@ export default function ProfilePage({
             />
           </div>
           <div className="flex shrink-0 items-center gap-2">
+            <ProfilePalettePicker
+              paletteId={draftProfile.paletteId}
+              paletteSwapped={draftProfile.paletteSwapped}
+              copy={copy.palette}
+              locale={nicknameLocale}
+              onPick={(id) => {
+                persistProfile((current) => {
+                  if (id === null) {
+                    return { ...current, paletteId: null, paletteSwapped: false };
+                  }
+                  if (current.paletteId === id) {
+                    return { ...current, paletteSwapped: !current.paletteSwapped };
+                  }
+                  return { ...current, paletteId: id, paletteSwapped: false };
+                });
+              }}
+            />
             <ColorSchemePicker copy={copy.appearance} />
             {copy.devBadge ? (
               <span className="shrink-0 rounded border border-primary/30 bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
@@ -216,17 +186,18 @@ export default function ProfilePage({
           <div data-profile-controls className="flex min-h-0 flex-col gap-1.5 self-start pt-1">
             <ProfileRow
               label={copy.selectors.character}
-              carousel={
-                <ChoiceCarousel
+              tokens={
+                <TokenPicker
                   choiceType="character"
                   items={characters}
-                  selectedId={character?.id}
-                  labels={copy.carousel}
+                  selectedId={draftProfile.avatarKind === "character" ? draftProfile.avatarId : undefined}
                   onSelect={(id) => {
                     const nextCharacter = findChoice(characters, id);
                     persistProfile((current) => ({
                       ...current,
                       characterId: id,
+                      avatarKind: "character",
+                      avatarId: id,
                       nickname: pickCharacterNickname(nextCharacter, nicknameLocale, copy.fallbackNickname),
                     }));
                     setCharacterAction("ATTACK");
@@ -236,56 +207,36 @@ export default function ProfilePage({
             />
 
             <ProfileRow
-              label={copy.selectors.pet}
-              carousel={
-                <ChoiceCarousel
-                  choiceType="pet"
-                  items={pets}
-                  selectedId={pet?.id}
-                  labels={copy.carousel}
+              label={copy.selectors.boss}
+              tokens={
+                <TokenPicker
+                  choiceType="boss"
+                  items={bosses}
+                  selectedId={draftProfile.avatarKind === "boss" ? draftProfile.avatarId : undefined}
+                  wrap
                   onSelect={(id) => {
-                    const nextPet = findChoice(pets, id);
                     persistProfile((current) => ({
                       ...current,
-                      petId: id,
-                      petSkinId: nextPet?.skinOptions[0]?.id ?? null,
+                      avatarKind: "boss",
+                      avatarId: id,
                     }));
-                    setPetAction("ATTACK");
+                    setCharacterAction("ATTACK");
                   }}
-                />
-              }
-            />
-
-            <ProfileRow
-              label={copy.selectors.ancient}
-              carousel={
-                <ChoiceCarousel
-                  choiceType="ancient"
-                  items={ancients}
-                  selectedId={ancient?.id}
-                  labels={copy.carousel}
-                  onSelect={(id) => persistProfile((current) => ({ ...current, ancientId: id }))}
                 />
               }
             />
           </div>
 
-          <DuoRender
-            character={character}
-            pet={pet}
-            ancient={ancient}
-            selectedPetSkins={selectedPetSkins}
-            selectedPetSkinId={selectedPetSkinId}
-            characterAction={characterAction.action}
-            characterActionNonce={characterAction.nonce}
-            petAction={petAction.action}
-            petActionNonce={petAction.nonce}
-            copy={copy}
-            onPetSkinSelect={(skinId) => {
-              if (!pet) return;
-              persistProfile((current) => ({ ...current, petSkinId: skinId }));
-              setPetAction("ATTACK");
-            }}
+          <AvatarRender
+            profile={draftProfile}
+            character={avatarCharacter}
+            identityCharacter={character}
+            boss={boss}
+            bossMonsters={bossMonsters}
+            duotone={duotone}
+            action={characterAction.action}
+            actionNonce={characterAction.nonce}
+            serviceLocale={serviceLocale}
           />
         </section>
       </div>
@@ -297,343 +248,201 @@ export default function ProfilePage({
 
 function ProfileRow({
   label,
-  carousel,
+  tokens,
 }: {
   label: string;
-  carousel: React.ReactNode;
+  tokens: ReactNode;
 }) {
   return (
-    <div className="grid min-h-0 grid-cols-[4rem_minmax(0,1fr)] items-center gap-2">
-      <div className="flex items-center">
+    <div className="grid min-h-0 grid-cols-[3.25rem_minmax(0,1fr)] items-start gap-2">
+      <div className="flex h-8 items-center">
         <h2 className="text-sm font-bold text-foreground">{label}</h2>
       </div>
-      <div className="min-w-0 self-center">{carousel}</div>
+      <div className="min-w-0 self-center">{tokens}</div>
     </div>
   );
 }
 
-function ChoiceCarousel<T extends { id: string; label: string; iconUrl: string; subtitle?: string }>({
+function TokenPicker<T extends { id: string; label: string; iconUrl: string }>({
   choiceType,
   items,
   selectedId,
-  labels,
+  wrap = false,
   onSelect,
 }: {
-  choiceType: "character" | "pet" | "ancient";
+  choiceType: "character" | "boss";
   items: T[];
   selectedId: string | undefined;
-  labels: ProfilePageCopy["carousel"];
+  wrap?: boolean;
   onSelect: (id: string) => void;
 }) {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  useEffect(() => {
-    const element = scrollerRef.current;
-    if (!element) return;
-
-    const update = () => {
-      setCanScrollLeft(element.scrollLeft > 4);
-      setCanScrollRight(element.scrollLeft + element.clientWidth < element.scrollWidth - 4);
-    };
-
-    update();
-    element.addEventListener("scroll", update, { passive: true });
-    const observer = new ResizeObserver(update);
-    observer.observe(element);
-    return () => {
-      element.removeEventListener("scroll", update);
-      observer.disconnect();
-    };
-  }, [items.length]);
-
-  const scrollBy = (direction: -1 | 1) => {
-    const element = scrollerRef.current;
-    if (!element) return;
-    element.scrollBy({ left: direction * element.clientWidth * 0.78, behavior: "smooth" });
-  };
-
-  const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
-    const element = event.currentTarget;
-    if (element.scrollWidth <= element.clientWidth) return;
-
-    const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY)
-      ? event.deltaX
-      : event.deltaY;
-    if (delta === 0) return;
-
-    const atStart = element.scrollLeft <= 1;
-    const atEnd = element.scrollLeft + element.clientWidth >= element.scrollWidth - 1;
-    if ((delta < 0 && atStart) || (delta > 0 && atEnd)) return;
-
-    event.preventDefault();
-    element.scrollLeft += delta;
-  };
-
   return (
-    <div className="relative">
-      {canScrollLeft && (
-        <CarouselArrow direction="left" label={labels.previous} onClick={() => scrollBy(-1)} />
-      )}
-      {canScrollRight && (
-        <CarouselArrow direction="right" label={labels.next} onClick={() => scrollBy(1)} />
-      )}
-      <div
-        ref={scrollerRef}
-        onWheel={handleWheel}
-        className="mx-7 flex gap-1.5 overflow-x-auto scroll-smooth py-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {items.map((item) => {
-          const active = item.id === selectedId;
-          return (
+    <div className={cn("flex gap-0.5", wrap ? "flex-wrap" : "flex-nowrap")}>
+      {items.map((item) => {
+        const active = item.id === selectedId;
+        return (
+          <GameUiHoverTip
+            key={item.id}
+            label={item.label}
+            delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}
+          >
             <button
-              key={item.id}
               type="button"
               data-profile-choice
               data-profile-choice-type={choiceType}
               data-profile-choice-id={item.id}
               onClick={() => onSelect(item.id)}
               aria-pressed={active}
-              aria-label={item.subtitle ? `${item.label} ${item.subtitle}` : item.label}
-              title={item.subtitle ? `${item.label} — ${item.subtitle}` : item.label}
-              className={cn(
-                "group relative flex h-16 basis-[calc((100%-0.75rem)/3)] shrink-0 items-center justify-center p-1 text-center transition-transform hover:scale-105",
-                active
-                  ? "scale-105"
-                  : "opacity-75 hover:opacity-100",
-              )}
+              aria-label={item.label}
+              className="group/index-token relative inline-flex h-8 w-8 shrink-0 items-center justify-center outline-none"
             >
               <Image
                 src={item.iconUrl}
                 alt=""
-                width={56}
-                height={56}
+                width={28}
+                height={28}
                 className={cn(
-                  "h-11 w-11 object-contain drop-shadow-lg transition-[filter,transform]",
+                  "h-7 w-7 object-contain transition-[transform,filter] duration-150 group-hover/index-token:scale-110 group-hover/index-token:brightness-125 group-hover/index-token:drop-shadow-[0_0_5px_rgba(234,179,8,0.35)]",
                   active
-                    ? "drop-shadow-[0_0_7px_rgba(251,191,36,0.72)]"
-                    : "group-hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.22)]",
+                    ? "scale-110 brightness-125 drop-shadow-[0_0_5px_rgba(234,179,8,0.35)]"
+                    : "opacity-80 hover:opacity-100",
                 )}
               />
-              <span className="pointer-events-none absolute left-1/2 top-full z-30 mt-1 hidden -translate-x-1/2 whitespace-nowrap rounded bg-black/80 px-2 py-1 text-[11px] font-semibold text-zinc-100 shadow-lg group-hover:block">
-                {item.label}
-                {item.subtitle && <span className="ml-1 text-zinc-400">{item.subtitle}</span>}
-              </span>
             </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function CarouselArrow({ direction, label, onClick }: { direction: "left" | "right"; label: string; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      onClick={onClick}
-      className={cn(
-        "absolute top-1/2 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] transition-transform hover:scale-110",
-        direction === "left" ? "left-0" : "right-0",
-      )}
-    >
-      <Image
-        src={`/images/sts2/ui/settings_tiny_${direction}_arrow.png`}
-        alt=""
-        width={28}
-        height={28}
-        className="object-contain"
-      />
-    </button>
-  );
-}
-
-function DuoRender({
-  character,
-  pet,
-  ancient,
-  selectedPetSkins,
-  selectedPetSkinId,
-  characterAction,
-  characterActionNonce,
-  petAction,
-  petActionNonce,
-  copy,
-  onPetSkinSelect,
-}: {
-  character: CharacterChoice | undefined;
-  pet: PetChoice | undefined;
-  ancient: AncientChoice | undefined;
-  selectedPetSkins: readonly string[] | null;
-  selectedPetSkinId: string | undefined;
-  characterAction: ActionId;
-  characterActionNonce: number;
-  petAction: ActionId;
-  petActionNonce: number;
-  copy: ProfilePageCopy;
-  onPetSkinSelect: (skinId: string) => void;
-}) {
-  const petPlacement = getPetPlacement(pet?.monsterId);
-  const petViewportPadding = getPetViewportPadding(pet?.monsterId);
-
-  return (
-    <div
-      data-profile-render
-      data-profile-character-id={character?.id ?? ""}
-      data-profile-pet-id={pet?.id ?? ""}
-      data-profile-ancient-id={ancient?.id ?? ""}
-      className="flex h-full min-h-[18rem] flex-col overflow-visible md:min-h-0"
-    >
-      <div className="relative min-h-0 flex-1">
-        {ancient && (
-          <div className="pointer-events-none absolute left-1/2 top-2 z-[1] aspect-[2560/1200] w-[92%] max-w-[26rem] -translate-x-1/2 overflow-hidden md:top-0 md:w-[54%] md:max-w-[30rem]">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <AncientNodeRender ancientId={ancient.id} className="h-[92%] md:h-[74%]" />
-            </div>
-          </div>
-        )}
-        <div className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-full w-[46rem] max-w-none origin-bottom -translate-x-[46%] scale-[0.6] md:left-[4%] md:w-[64rem] md:origin-bottom-left md:translate-x-0 md:scale-[0.62] lg:scale-[0.66]">
-          <MonsterSpineStage
-            key={`duo-${character?.id ?? "none"}`}
-            asset={character?.spineAsset ?? null}
-            fallbackImageUrl={null}
-            monsterName={character?.label ?? ""}
-            selectedMoveId={characterAction}
-            selectedMoveNonce={characterActionNonce}
-            imagePriority={false}
-            showLoadingLabel={false}
-            viewportTransitionTime={0}
-            viewportPadding={PROFILE_CHARACTER_VIEWPORT_PADDING}
-            className="relative h-full w-full"
-          />
-        </div>
-        <div
-          className="pointer-events-none absolute z-20 top-[var(--profile-pet-mobile-top)] bottom-[var(--profile-pet-mobile-bottom)] left-[var(--profile-pet-mobile-left)] h-[var(--profile-pet-mobile-height)] w-[var(--profile-pet-mobile-width)] md:top-[var(--profile-pet-top)] md:bottom-[var(--profile-pet-bottom)] md:left-[var(--profile-pet-left)] md:h-[var(--profile-pet-height)] md:w-[var(--profile-pet-width)]"
-          style={{
-            "--profile-pet-top": petPlacement.top,
-            "--profile-pet-bottom": petPlacement.bottom,
-            "--profile-pet-left": petPlacement.left,
-            "--profile-pet-width": petPlacement.width,
-            "--profile-pet-height": petPlacement.height,
-            "--profile-pet-mobile-top": petPlacement.mobileTop,
-            "--profile-pet-mobile-bottom": petPlacement.mobileBottom,
-            "--profile-pet-mobile-left": petPlacement.mobileLeft,
-            "--profile-pet-mobile-width": petPlacement.mobileWidth,
-            "--profile-pet-mobile-height": petPlacement.mobileHeight,
-          } as React.CSSProperties}
-        >
-          <MonsterSpineStage
-            key={`pet-${pet?.id ?? "none"}`}
-            asset={pet?.spineAsset ?? null}
-            fallbackImageUrl={null}
-            monsterName={pet?.label ?? ""}
-            selectedMoveId={petAction}
-            selectedMoveNonce={petActionNonce}
-            selectedSkin={pet?.selectedSkin}
-            selectedSkins={selectedPetSkins}
-            imagePriority={false}
-            showLoadingLabel={false}
-            viewportTransitionTime={0}
-            viewportPadding={petViewportPadding}
-            className="relative h-full w-full"
-          />
-        </div>
-      </div>
-      {pet && pet.skinOptions.length > 0 && (
-        <SkinOptionBar
-          options={pet.skinOptions}
-          selectedId={selectedPetSkinId}
-          ariaLabelTemplate={copy.petSkin.ariaLabel}
-          onSelect={onPetSkinSelect}
-        />
-      )}
-    </div>
-  );
-}
-
-function SkinOptionBar({
-  options,
-  selectedId,
-  ariaLabelTemplate,
-  onSelect,
-}: {
-  options: readonly PetSkinOption[];
-  selectedId: string | undefined;
-  ariaLabelTemplate: string;
-  onSelect: (skinId: string) => void;
-}) {
-  return (
-    <div className="relative z-30 flex shrink-0 justify-end gap-1 pr-1 pb-1">
-      {options.map((option) => {
-        const active = option.id === selectedId;
-        return (
-          <button
-            key={option.id}
-            type="button"
-            aria-pressed={active}
-            aria-label={formatTemplate(ariaLabelTemplate, { label: option.label })}
-            title={option.label}
-            onClick={() => onSelect(option.id)}
-            className={cn(
-              "h-6 rounded px-2 text-[11px] font-semibold transition-colors",
-              active
-                ? "text-primary drop-shadow-[0_0_8px_rgba(239,200,81,0.6)]"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            {option.label}
-          </button>
+          </GameUiHoverTip>
         );
       })}
     </div>
   );
 }
 
-function getPetPlacement(petId: string | undefined): {
-  top: string;
-  bottom: string;
-  left: string;
-  width: string;
-  height: string;
-  mobileTop: string;
-  mobileBottom: string;
-  mobileLeft: string;
-  mobileWidth: string;
-  mobileHeight: string;
-} {
-  if (petId === "OSTY") {
-    return {
-      top: "0%",
-      bottom: "auto",
-      left: "62%",
-      width: "24rem",
-      height: "56%",
-      mobileTop: "9%",
-      mobileBottom: "auto",
-      mobileLeft: "55%",
-      mobileWidth: "12rem",
-      mobileHeight: "38%",
-    };
-  }
-
-  return {
-    top: "auto",
-    bottom: "0%",
-    left: "58%",
-    width: petId === "PAELS_LEGION" ? "16.8rem" : "14rem",
-    height: petId === "PAELS_LEGION" ? "40.8%" : "34%",
-    mobileTop: "auto",
-    mobileBottom: "2%",
-    mobileLeft: "56%",
-    mobileWidth: petId === "PAELS_LEGION" ? "10rem" : "8.8rem",
-    mobileHeight: petId === "PAELS_LEGION" ? "31%" : "27%",
-  };
+function AvatarRender({
+  profile,
+  character,
+  identityCharacter,
+  boss,
+  bossMonsters,
+  duotone,
+  action,
+  actionNonce,
+  serviceLocale,
+}: {
+  profile: UserProfile;
+  character: CharacterChoice | null;
+  identityCharacter: CharacterChoice | undefined;
+  boss: BossChoice | undefined;
+  bossMonsters: CodexMonster[];
+  duotone: { shadow: string; highlight: string } | null;
+  action: ActionId;
+  actionNonce: number;
+  serviceLocale: ServiceLocale;
+}) {
+  return (
+    <div
+      data-profile-render
+      data-profile-character-id={identityCharacter?.id ?? ""}
+      data-profile-boss-id={profile.avatarKind === "boss" ? profile.avatarId : ""}
+      data-profile-avatar-kind={profile.avatarKind}
+      data-profile-avatar-id={profile.avatarId}
+      data-profile-palette-id={profile.paletteId ?? ""}
+      className="flex h-full min-h-[18rem] flex-col overflow-hidden md:min-h-0"
+    >
+      <div className="relative min-h-0 flex-1">
+        {profile.avatarKind === "boss" && boss ? (
+          <BossAvatarStage
+            boss={boss}
+            monsters={bossMonsters}
+            duotone={duotone}
+            action={action}
+            actionNonce={actionNonce}
+            serviceLocale={serviceLocale}
+          />
+        ) : (
+          <MonsterSpineStage
+            key={`avatar-${character?.id ?? "none"}`}
+            asset={character?.spineAsset ?? null}
+            fallbackImageUrl={character?.fallbackImageUrl ?? null}
+            monsterName={character?.label ?? ""}
+            selectedMoveId={action}
+            selectedMoveNonce={actionNonce}
+            imagePriority={false}
+            showLoadingLabel={false}
+            viewportTransitionTime={0}
+            viewportPadding={CHARACTER_STAGE_VIEWPORT_PADDING}
+            atlasDuotone={duotone}
+            className="relative h-full w-full"
+          />
+        )}
+      </div>
+    </div>
+  );
 }
 
-function getPetViewportPadding(petId: string | undefined) {
-  return petId === "OSTY" ? PROFILE_PET_VIEWPORT_PADDING : PROFILE_SMALL_PET_VIEWPORT_PADDING;
+function BossAvatarStage({
+  boss,
+  monsters,
+  duotone,
+  action,
+  actionNonce,
+  serviceLocale,
+}: {
+  boss: BossChoice;
+  monsters: CodexMonster[];
+  duotone: { shadow: string; highlight: string } | null;
+  action: ActionId;
+  actionNonce: number;
+  serviceLocale: ServiceLocale;
+}) {
+  if (boss.spinePreview === "encounter" && boss.encounter.scene) {
+    return (
+      <div className="absolute inset-0 flex items-center overflow-hidden">
+            <EncounterSceneStage
+              key={boss.id}
+              encounter={boss.encounter}
+          character={null}
+          monsters={monsters}
+          serviceLocale={serviceLocale}
+          interactive={false}
+          atlasDuotone={duotone}
+          selectedMoveId={action}
+          selectedMoveNonce={actionNonce}
+        />
+      </div>
+    );
+  }
+
+  const tokenUrl = boss.staticPreviewUrl ?? boss.iconUrl;
+  return (
+    <div className="relative h-full overflow-hidden rounded-xl border border-white/10 bg-black">
+      {boss.encounter.scene ? (
+        <Image
+          src={boss.encounter.scene.backgroundUrl}
+          alt=""
+          fill
+          className="object-cover"
+        />
+      ) : null}
+      <div className="absolute inset-0 z-10 flex items-center justify-center">
+        {duotone ? (
+          <DuotoneCharacterToken
+            iconUrl={tokenUrl}
+            shadowHex={duotone.shadow}
+            highlightHex={duotone.highlight}
+            size={192}
+            className="h-36 w-36 sm:h-48 sm:w-48"
+          />
+        ) : (
+          <Image
+            src={tokenUrl}
+            alt={boss.label}
+            width={192}
+            height={192}
+            className="h-36 w-36 object-contain sm:h-48 sm:w-48"
+          />
+        )}
+      </div>
+    </div>
+  );
 }
 
 function useActionState(): [{ action: ActionId; nonce: number }, (action: ActionId) => void] {
@@ -672,8 +481,4 @@ function pickCharacterNickname(
   const options = character.nicknameOptions[locale];
   if (!options.length) return character.label;
   return options[Math.floor(Math.random() * options.length)] ?? character.label;
-}
-
-function formatTemplate(template: string, values: Record<string, string>): string {
-  return template.replace(/\{(\w+)\}/g, (match, key) => values[key] ?? match);
 }
