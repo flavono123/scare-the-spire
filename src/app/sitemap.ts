@@ -34,6 +34,7 @@ const PUBLIC_INDEX_PATHS = [
   "/this-or-that/tournament",
   "/transfigure",
   "/decisions-decisions",
+  "/pagestorm",
 ] as const;
 
 const COMPENDIUM_INDEX_PATHS = [

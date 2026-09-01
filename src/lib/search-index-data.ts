@@ -5,7 +5,7 @@ import { getStories, getSTS2Patches, getSTS2Stories } from "@/lib/data";
 import { eventCharacterQuoteSearchParts } from "@/lib/event-character-quotes";
 import { loadAllEntities } from "@/lib/load-all-entities";
 
-export type SearchItemType = EntityType | "patch" | "story" | "historyCourse" | "thisOrThat" | "favoriteTournament" | "decisionsDecisions";
+export type SearchItemType = EntityType | "patch" | "story" | "historyCourse" | "thisOrThat" | "favoriteTournament" | "decisionsDecisions" | "pagestorm";
 
 export type SearchIndexItem = {
   id: string;
@@ -442,5 +442,16 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     href: "/decisions-decisions",
   }];
 
-  return { items: [...patchItems, ...storyItems, ...items, ...historyCourseItems, ...thisOrThatItems, ...favoriteTournamentItems, ...decisionsDecisionsItems] };
+  const pagestormItems: SearchIndexItem[] = [{
+    id: "pagestorm",
+    type: "pagestorm",
+    title: "서류 폭풍",
+    titleEn: "Pagestorm",
+    description: "게임 요소로 문서 쓰기 서류 폭풍 작성기 pagestorm paper",
+    descriptionEn: "write a document with game elements pagestorm editor",
+    imageUrl: "/images/sts2/powers/pagestorm_power.webp",
+    href: "/pagestorm",
+  }];
+
+  return { items: [...patchItems, ...storyItems, ...items, ...historyCourseItems, ...thisOrThatItems, ...favoriteTournamentItems, ...decisionsDecisionsItems, ...pagestormItems] };
 }

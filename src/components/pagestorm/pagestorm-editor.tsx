@@ -1,15 +1,15 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import TextAlign from "@tiptap/extension-text-align";
-import { EditorContent, useEditor } from "@tiptap/react";
-import { BubbleMenu, FloatingMenu } from "@tiptap/react/menus";
+import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { exitSuggestion } from "@tiptap/suggestion";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import type { NavDropdownItem } from "@/lib/site-nav-items";
+import { parseYouTubeVideoId, resolveYouTubeReference } from "@/lib/youtube-reference";
 import { serviceMessages } from "@/messages/service";
 import {
   PagestormColor,
@@ -26,7 +26,6 @@ import {
 } from "./pickers";
 import { createPagestormBraceSuggestion, pagestormBracePluginKey } from "./prefix-menu";
 import { assetFromEntity } from "./sample";
-import { TIPTAP_SEED } from "./tiptap-seed";
 import {
   GameAssetNode,
   OgBookmarkNode,
@@ -34,25 +33,35 @@ import {
   YoutubePlayerNode,
   gameAssetAttrs,
 } from "./tiptap-nodes";
-import { PagestormFormatChrome, PagestormStickyToolbar } from "./toolbar";
+import { PagestormStickyToolbar } from "./toolbar";
 import type { PagestormToyboxPost } from "./toybox-samples";
-import "./pagestorm-mock-editor.css";
+import "./pagestorm-editor.css";
 
 type PendingCard = {
   entity: EntityInfo;
   range?: { from: number; to: number };
 };
 
-export function TiptapPagestormMock(_props?: { chrome?: "toolbar" | "bubble" }) {
+const EMPTY_DOC = {
+  type: "doc" as const,
+  content: [{ type: "paragraph" as const }],
+};
+
+export function PagestormEditor() {
   const { entities } = useCommentEntities();
   const serviceLocale = useServiceLocale();
-  const copy = serviceMessages[serviceLocale].pagestormEditor;
+  const copy = serviceMessages[serviceLocale].pagestorm;
   const entitiesRef = useRef(entities);
-  entitiesRef.current = entities;
   const [compendiumMajor, setCompendiumMajor] = useState<ReturnType<typeof majorFromCodexHref> | "closed">("closed");
   const [toyboxHref, setToyboxHref] = useState<string | null | "closed">("closed");
   const [pendingCard, setPendingCard] = useState<PendingCard | null>(null);
+  const editorRef = useRef<Editor | null>(null);
 
+  useEffect(() => {
+    entitiesRef.current = entities;
+  }, [entities]);
+
+  /* eslint-disable react-hooks/refs -- suggestion getters run on keystroke, not render */
   const brace = useMemo(
     () => createPagestormBraceSuggestion({
       getEntities: () => entitiesRef.current,
@@ -68,10 +77,11 @@ export function TiptapPagestormMock(_props?: { chrome?: "toolbar" | "bubble" }) 
     }),
     [],
   );
+  /* eslint-enable react-hooks/refs */
 
   const editor = useEditor({
     immediatelyRender: false,
-    content: TIPTAP_SEED,
+    content: EMPTY_DOC,
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3] },
@@ -90,10 +100,48 @@ export function TiptapPagestormMock(_props?: { chrome?: "toolbar" | "bubble" }) 
       attributes: {
         class: "pagestorm-mock-editor",
       },
+      handlePaste: (_view, event) => {
+        const pastedText = event.clipboardData?.getData("text/plain").trim() ?? "";
+        const videoId = parseYouTubeVideoId(pastedText);
+        if (!videoId) return false;
+        const pendingLabel = copy.youtubePending;
+        event.preventDefault();
+        const current = editorRef.current;
+        if (!current) return true;
+        current.chain().focus().insertContent([
+          {
+            type: "youtubePlayer",
+            attrs: { videoId, title: pendingLabel, align: "center" },
+          },
+          { type: "paragraph" },
+        ]).run();
+        void resolveYouTubeReference(pastedText)
+          .then((reference) => {
+            const current = editorRef.current;
+            if (!current || current.isDestroyed) return;
+            current.view.state.doc.descendants((node, position) => {
+              if (
+                node.type.name === "youtubePlayer"
+                && node.attrs.videoId === videoId
+                && node.attrs.title === pendingLabel
+              ) {
+                current.view.dispatch(current.view.state.tr.setNodeMarkup(position, undefined, {
+                  ...node.attrs,
+                  videoId: reference.videoId,
+                  title: reference.title,
+                }));
+              }
+            });
+          })
+          .catch(() => undefined);
+        return true;
+      },
     },
   });
-  const editorRef = useRef(editor);
-  editorRef.current = editor;
+
+  useEffect(() => {
+    editorRef.current = editor;
+  }, [editor]);
 
   function insertEntity(
     entity: EntityInfo,
@@ -138,31 +186,17 @@ export function TiptapPagestormMock(_props?: { chrome?: "toolbar" | "bubble" }) 
   }
 
   if (!editor) {
-    return <p className="p-4 text-sm text-muted-foreground">에디터 준비 중…</p>;
+    return <p className="p-4 text-sm text-muted-foreground">{copy.editorLoading}</p>;
   }
 
   return (
     <PagestormEntitiesProvider entities={entities}>
-      <div className="rounded-lg border border-border bg-card/20">
+      <div className="overflow-visible rounded-lg border border-border bg-card">
         <PagestormStickyToolbar
           editor={editor}
           onCompendium={onCompendium}
           onToybox={onToybox}
         />
-        <BubbleMenu editor={editor} className="pagestorm-mock-bubble">
-          <PagestormFormatChrome
-            editor={editor}
-            onCompendium={onCompendium}
-            onToybox={onToybox}
-          />
-        </BubbleMenu>
-        <FloatingMenu editor={editor} className="pagestorm-mock-bubble">
-          <PagestormFormatChrome
-            editor={editor}
-            onCompendium={onCompendium}
-            onToybox={onToybox}
-          />
-        </FloatingMenu>
         <EditorContent editor={editor} />
         <p className="border-t border-border px-3 py-2 text-[11px] text-muted-foreground">
           {copy.braceHint}

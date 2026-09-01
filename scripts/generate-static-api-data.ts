@@ -80,6 +80,11 @@ interface DecisionsDecisionsGameCopy {
   presetLabels: Record<string, string>;
 }
 
+interface PagestormGameCopy {
+  title: string;
+  hero: string;
+}
+
 interface FeedbackFormGameCopy {
   title: string;
   categoryLabel: string;
@@ -116,6 +121,7 @@ interface BorrowedGameCopyPayload {
   transfigure: TransfigureGameCopy;
   defragment: DefragmentGameCopy;
   decisionsDecisions: DecisionsDecisionsGameCopy;
+  pagestorm: PagestormGameCopy;
 }
 
 interface ToyBoxNewsPayload {
@@ -706,6 +712,20 @@ async function buildDecisionsDecisionsGameCopy(
   };
 }
 
+async function buildPagestormGameCopy(
+  gameLocale: GameLocale,
+): Promise<PagestormGameCopy> {
+  const [title, hero] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "cards", "PAGESTORM.title"),
+    readGameTextWithEnglishFallback(gameLocale, "powers", "PAGESTORM_POWER.description"),
+  ]);
+
+  return {
+    title: title || "Pagestorm",
+    hero: hero || "",
+  };
+}
+
 async function buildFeedbackFormGameCopy(
   gameLocale: GameLocale,
 ): Promise<FeedbackFormGameCopy> {
@@ -751,6 +771,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         transfigure,
         defragment,
         decisionsDecisions,
+        pagestorm,
       ] = await Promise.all([
         readGameTextWithEnglishFallback(
           gameLocale,
@@ -769,6 +790,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         buildTransfigureGameCopy(gameLocale),
         buildDefragmentGameCopy(gameLocale),
         buildDecisionsDecisionsGameCopy(gameLocale),
+        buildPagestormGameCopy(gameLocale),
       ]);
       return [
         gameLocale,
@@ -782,6 +804,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
           transfigure,
           defragment,
           decisionsDecisions,
+          pagestorm,
         },
       ] as const;
     }),

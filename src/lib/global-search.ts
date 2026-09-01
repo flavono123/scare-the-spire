@@ -23,6 +23,7 @@ export const globalSearchTypeOrder = [
   "thisOrThat",
   "favoriteTournament",
   "decisionsDecisions",
+  "pagestorm",
 ] as const;
 
 export type GlobalSearchType = (typeof globalSearchTypeOrder)[number];
@@ -66,6 +67,7 @@ export const globalSearchTypeStyles: Record<GlobalSearchType, {
   thisOrThat: { icon: "/images/sts2/relics/choices_paradox.webp", color: "text-blue-200", bg: "bg-blue-500/10", border: "border-blue-400/30" },
   favoriteTournament: { icon: "/images/sts2/potions/fortifier.webp", color: "text-sky-200", bg: "bg-sky-500/10", border: "border-sky-400/30" },
   decisionsDecisions: { icon: "/images/sts2/powers/buffer_power.webp", color: "text-sky-200", bg: "bg-sky-500/10", border: "border-sky-400/30" },
+  pagestorm: { icon: "/images/sts2/powers/pagestorm_power.webp", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-400/30" },
 };
 
 function globalSearchFieldScore(value: string, query: string, weight: number): number | null {

@@ -139,11 +139,26 @@ export function createPagestormBraceSuggestion(options: {
       render: () => {
         let renderer: ReactRenderer<MentionListRef> | null = null;
         let popup: HTMLDivElement | null = null;
-        const place = (clientRect?: (() => DOMRect | null) | null) => {
-          const rect = clientRect?.();
-          if (!popup || !rect) return;
-          popup.style.left = `${rect.left}px`;
-          popup.style.top = `${rect.bottom + 6}px`;
+        const place = (props: SuggestionProps) => {
+          if (!popup) return;
+          let rect = props.clientRect?.() ?? null;
+          if (!rect) {
+            try {
+              const coords = props.editor.view.coordsAtPos(props.editor.state.selection.from);
+              rect = new DOMRect(coords.left, coords.top, 0, coords.bottom - coords.top);
+            } catch {
+              return;
+            }
+          }
+          const popupWidth = Math.max(popup.offsetWidth, 240);
+          const popupHeight = Math.max(popup.offsetHeight, 160);
+          const left = Math.min(Math.max(8, rect.left), window.innerWidth - popupWidth - 8);
+          const below = rect.bottom + 6;
+          const top = below + popupHeight > window.innerHeight - 8
+            ? Math.max(8, rect.top - popupHeight - 6)
+            : below;
+          popup.style.left = `${left}px`;
+          popup.style.top = `${top}px`;
         };
         const dismiss = () => {
           popup?.remove();
@@ -166,14 +181,14 @@ export function createPagestormBraceSuggestion(options: {
             popup.dataset.pagestormPrefixMenu = "true";
             popup.appendChild(renderer.element);
             document.body.appendChild(popup);
-            place(props.clientRect);
+            place(props);
           },
           onUpdate: (props: SuggestionProps) => {
             renderer?.updateProps({
               items: props.items,
               command: props.command,
             });
-            place(props.clientRect);
+            place(props);
           },
           onKeyDown: (props: SuggestionKeyDownProps) => {
             if (props.event.key === "Escape") {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 
 interface MenuDropdownProps {
   ariaLabel: string;
@@ -22,6 +22,7 @@ export function MenuDropdown({
   summaryClassName = "",
 }: MenuDropdownProps) {
   const ref = useRef<HTMLDetailsElement>(null);
+  const [open, setOpen] = useState(false);
   const close = useCallback(() => ref.current?.removeAttribute("open"), []);
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export function MenuDropdown({
     if (!details) return;
 
     const handleToggle = () => {
+      setOpen(details.open);
       if (!details.open) return;
       document
         .querySelectorAll<HTMLDetailsElement>("details[data-menu-dropdown][open]")
@@ -43,6 +45,7 @@ export function MenuDropdown({
       if (event.key === "Escape") close();
     };
 
+    setOpen(details.open);
     details.addEventListener("toggle", handleToggle);
     document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("keydown", handleKeyDown);
@@ -70,6 +73,7 @@ export function MenuDropdown({
       <div
         role="menu"
         aria-label={ariaLabel}
+        hidden={!open}
         onClick={(event) => {
           if (
             event.target instanceof Element

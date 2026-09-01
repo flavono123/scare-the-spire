@@ -2,13 +2,9 @@
 
 import { Node, mergeAttributes, type Editor } from "@tiptap/core";
 import { NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
-import {
-  EditBlockChrome,
-  GameAssetFigure,
-  OgBookmarkFigure,
-  YoutubePlayerFigure,
-} from "./figures";
+import { GameAssetFigure, OgBookmarkFigure, YoutubePlayerFigure } from "./figures";
 import { findPagestormEntity, usePagestormEntities } from "./entities-context";
+import { parseYouTubeVideoId } from "@/lib/youtube-reference";
 import {
   defaultAssetWidth,
   defaultPlayerWidth,
@@ -93,7 +89,6 @@ function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
     node.attrs.height,
     asset.kind === "card" && presentation !== "tiny" ? Math.round(width * 1.56) : width,
   );
-  const showCardChrome = asset.kind === "card";
   return (
     <NodeViewWrapper>
       <div className={selected ? "rounded-md ring-1 ring-primary/70" : undefined}>
@@ -109,14 +104,6 @@ function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
           onResize={(size) => updateAttributes({ width: size.width, height: size.height })}
           onLinked={(next) => updateAttributes({ linked: next })}
         />
-        <EditBlockChrome
-          align={align}
-          onAlign={(next) => updateAttributes({ align: next })}
-          presentation={showCardChrome ? presentation : undefined}
-          beta={showCardChrome ? beta : undefined}
-          onPresentation={showCardChrome ? (next) => updateAttributes({ presentation: next }) : undefined}
-          onBeta={showCardChrome ? (next) => updateAttributes({ beta: next }) : undefined}
-        />
       </div>
     </NodeViewWrapper>
   );
@@ -124,8 +111,6 @@ function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
 
 function YoutubeView({ node, updateAttributes, selected }: NodeViewProps) {
   const align = asAlign(node.attrs.align);
-  const width = asWidth(node.attrs.width, defaultPlayerWidth());
-  const height = asWidth(node.attrs.height, Math.round(width * 9 / 16));
   return (
     <NodeViewWrapper>
       <div className={selected ? "rounded-md ring-1 ring-primary/70" : undefined}>
@@ -133,13 +118,11 @@ function YoutubeView({ node, updateAttributes, selected }: NodeViewProps) {
           videoId={String(node.attrs.videoId ?? "")}
           title={String(node.attrs.title ?? "YouTube")}
           align={align}
-          width={width}
-          height={height}
-          onResize={(size) => updateAttributes({ width: size.width, height: size.height })}
-        />
-        <EditBlockChrome
-          align={align}
-          onAlign={(next) => updateAttributes({ align: next })}
+          onTitle={(title) => updateAttributes({ title })}
+          onUrl={(url) => {
+            const videoId = parseYouTubeVideoId(url);
+            if (videoId) updateAttributes({ videoId });
+          }}
         />
       </div>
     </NodeViewWrapper>
@@ -169,10 +152,8 @@ function OgView({ node, updateAttributes, selected }: NodeViewProps) {
           height={height}
           onResize={(size) => updateAttributes({ width: size.width, height: size.height })}
           onLinked={(next) => updateAttributes({ linked: next })}
-        />
-        <EditBlockChrome
-          align={align}
-          onAlign={(next) => updateAttributes({ align: next })}
+          onTitle={(title) => updateAttributes({ title })}
+          onUrl={(url) => updateAttributes({ url })}
         />
       </div>
     </NodeViewWrapper>
@@ -195,10 +176,6 @@ function ToyboxView({ node, updateAttributes, selected }: NodeViewProps) {
           height={height}
           onResize={(size) => updateAttributes({ width: size.width, height: size.height })}
           onLinked={(next) => updateAttributes({ linked: next })}
-        />
-        <EditBlockChrome
-          align={align}
-          onAlign={(next) => updateAttributes({ align: next })}
         />
       </div>
     </NodeViewWrapper>

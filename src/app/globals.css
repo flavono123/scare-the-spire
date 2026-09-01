@@ -48,6 +48,10 @@
   display: none;
 }
 
+.patch-static-dropdown:not([open]) > [role="menu"] {
+  display: none;
+}
+
 .game-inspect-cursor {
   cursor: url("/images/sts2/ui/cursor_inspect.png") 12 12, pointer !important;
 }

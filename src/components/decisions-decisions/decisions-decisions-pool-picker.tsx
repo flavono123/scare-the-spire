@@ -522,6 +522,7 @@ export function DecisionsDecisionsPoolPicker({
   onPreset,
   onAdd,
   showPresets = true,
+  searchPlacement = "bottom",
 }: {
   entities: EntityInfo[];
   entityMap: Map<string, EntityInfo>;
@@ -535,6 +536,7 @@ export function DecisionsDecisionsPoolPicker({
   onPreset?: (key: string) => void;
   onAdd: (entity: EntityInfo) => void;
   showPresets?: boolean;
+  searchPlacement?: "top" | "bottom";
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
   const codex = serviceMessages[serviceLocale].codex;
@@ -657,8 +659,72 @@ export function DecisionsDecisionsPoolPicker({
     || major === "modifier"
   );
 
+  const searchField = (
+    <div className="relative">
+      <div className="flex items-center gap-2 overflow-hidden rounded-xl border border-border bg-popover/80 p-2.5">
+        <Search className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
+        <input
+          ref={searchInputRef}
+          type="search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder={copy.searchPlaceholder}
+          aria-label={copy.searchPlaceholder}
+          className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+        />
+      </div>
+      {query.trim() && (
+        <div className="absolute z-30 mt-1 max-h-72 w-full overflow-y-auto rounded-xl border border-border bg-popover p-2 shadow-lg">
+          {matches.length === 0 ? (
+            <p className="px-3 py-8 text-center text-xs text-muted-foreground">
+              {codex.common.noResults}
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
+              {matches.map((entity) => (
+                <button
+                  key={`${entity.type}:${entity.id}`}
+                  type="button"
+                  onClick={() => {
+                    onAdd(entity);
+                    setQuery("");
+                  }}
+                  className="flex min-w-0 items-center gap-2 rounded-lg border border-transparent px-2 py-1.5 text-left transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-primary/20 hover:bg-primary/10 focus-visible:border-primary/40 focus-visible:bg-primary/10 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none"
+                >
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-black/25">
+                    <span className="pointer-events-none origin-center scale-[0.7]">
+                      <ComboResourceAsset
+                        entity={entity}
+                        entityMap={entityMap}
+                        serviceLocale={serviceLocale}
+                      />
+                    </span>
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-xs font-semibold text-foreground">
+                      {entity.nameKo}
+                    </span>
+                    {entity.nameEn !== entity.nameKo && (
+                      <span className="block truncate text-[10px] text-muted-foreground">
+                        {entity.nameEn}
+                      </span>
+                    )}
+                  </span>
+                  <span className="shrink-0 text-[9px] text-muted-foreground">
+                    {typeLabels[entity.type] ?? entity.type}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="space-y-3" data-decisions-decisions-pool-picker>
+      {searchPlacement === "top" ? searchField : null}
       {showPresets && (
       <div className="space-y-2" data-decisions-decisions-presets>
         <BlockTitle>{copy.presetSection}</BlockTitle>
@@ -940,66 +1006,7 @@ export function DecisionsDecisionsPoolPicker({
       </div>
       )}
 
-        <div className="relative">
-          <div className="flex items-center gap-2 overflow-hidden rounded-xl border border-border bg-popover/80 p-2.5">
-            <Search className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
-            <input
-              ref={searchInputRef}
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={copy.searchPlaceholder}
-              aria-label={copy.searchPlaceholder}
-              className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
-            />
-          </div>
-          {query.trim() && (
-            <div className="absolute z-20 mt-1 max-h-72 w-full overflow-y-auto rounded-xl border border-border bg-popover p-2 shadow-lg">
-            {matches.length === 0 ? (
-              <p className="px-3 py-8 text-center text-xs text-muted-foreground">
-                {codex.common.noResults}
-              </p>
-            ) : (
-              <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
-                {matches.map((entity) => (
-                  <button
-                    key={`${entity.type}:${entity.id}`}
-                    type="button"
-                    onClick={() => {
-                      onAdd(entity);
-                      setQuery("");
-                    }}
-                    className="flex min-w-0 items-center gap-2 rounded-lg border border-transparent px-2 py-1.5 text-left transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-primary/20 hover:bg-primary/10 focus-visible:border-primary/40 focus-visible:bg-primary/10 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none"
-                  >
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-black/25">
-                      <span className="pointer-events-none origin-center scale-[0.7]">
-                        <ComboResourceAsset
-                          entity={entity}
-                          entityMap={entityMap}
-                          serviceLocale={serviceLocale}
-                        />
-                      </span>
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-xs font-semibold text-foreground">
-                        {entity.nameKo}
-                      </span>
-                      {entity.nameEn !== entity.nameKo && (
-                        <span className="block truncate text-[10px] text-muted-foreground">
-                          {entity.nameEn}
-                        </span>
-                      )}
-                    </span>
-                    <span className="shrink-0 text-[9px] text-muted-foreground">
-                      {typeLabels[entity.type] ?? entity.type}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-        </div>
+        {searchPlacement === "bottom" ? searchField : null}
       </div>
     </div>
   );

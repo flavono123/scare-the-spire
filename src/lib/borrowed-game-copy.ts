@@ -34,6 +34,11 @@ export interface DecisionsDecisionsGameCopy {
   presetLabels: Record<string, string>;
 }
 
+export interface PagestormGameCopy {
+  title: string;
+  hero: string;
+}
+
 export interface FeedbackFormGameCopy {
   title: string;
   categoryLabel: string;
@@ -70,6 +75,7 @@ interface BorrowedGameCopyPayload {
   transfigure: TransfigureGameCopy;
   defragment: DefragmentGameCopy;
   decisionsDecisions: DecisionsDecisionsGameCopy;
+  pagestorm: PagestormGameCopy;
 }
 
 const borrowedGameCopy = borrowedGameCopyPayload as Record<GameLocale, BorrowedGameCopyPayload>;
@@ -142,4 +148,14 @@ export async function getDecisionsDecisionsGameCopy(
 
 export function getDecisionsDecisionsNavTitle(gameLocale: GameLocale): string {
   return getBorrowedGameCopy(gameLocale).decisionsDecisions.title;
+}
+
+export async function getPagestormGameCopy(
+  gameLocale: GameLocale,
+): Promise<PagestormGameCopy> {
+  return getBorrowedGameCopy(gameLocale).pagestorm;
+}
+
+export function getPagestormNavTitle(gameLocale: GameLocale): string {
+  return getBorrowedGameCopy(gameLocale).pagestorm.title;
 }

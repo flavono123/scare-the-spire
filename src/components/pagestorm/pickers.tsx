@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import { VersionSelector } from "@/components/codex/version-selector";
 import { DecisionsDecisionsPoolPicker } from "@/components/decisions-decisions/decisions-decisions-pool-picker";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import { OwnPostMark } from "@/components/own-post-mark";
@@ -10,10 +9,7 @@ import { ServiceModalFrame } from "@/components/service-modal-frame";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
-  cloneFilterDims,
-  DECISIONS_DECISIONS_GAME_VERSION,
   emptyFilterDims,
-  filterStateFromPresetKey,
   toggleFilterDim,
   type DecisionsFilterDim,
   type DecisionsFilterDims,
@@ -25,6 +21,7 @@ import {
   localizeCodexNavItems,
   sts2NavItems,
 } from "@/lib/site-nav-items";
+import { PAGESTORM_HREF } from "@/lib/pagestorm";
 import { serviceMessages } from "@/messages/service";
 import { CardPresentationPicker, GameAssetFigure, mockButtonClass } from "./figures";
 import { NavTokenChip } from "./nav-tokens";
@@ -71,7 +68,7 @@ function CardConfirmStep({
   onInsert: (payload: CompendiumInsertPayload) => void;
 }) {
   const serviceLocale = useServiceLocale();
-  const copy = serviceMessages[serviceLocale].pagestormEditor;
+  const copy = serviceMessages[serviceLocale].pagestorm;
   const [presentation, setPresentation] = useState<CardPresentation>("art");
   const [beta, setBeta] = useState(false);
   return (
@@ -115,11 +112,10 @@ export function CompendiumPickerModal({
   onInsert: (payload: CompendiumInsertPayload) => void;
 }) {
   const serviceLocale = useServiceLocale();
-  const copy = serviceMessages[serviceLocale];
+  const copy = serviceMessages[serviceLocale].pagestorm;
   const [major, setMajor] = useState<DecisionsPoolMajor | null>(initialMajor);
   const [dims, setDims] = useState<DecisionsFilterDims>(() => emptyFilterDims());
   const [pendingCard, setPendingCard] = useState<EntityInfo | null>(null);
-  const [selectedVersion, setSelectedVersion] = useState(DECISIONS_DECISIONS_GAME_VERSION);
   const entityMap = useMemo(
     () => new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity])),
     [entities],
@@ -127,56 +123,44 @@ export function CompendiumPickerModal({
 
   return (
     <ServiceModalFrame
-      title={copy.pagestormEditor.compendiumPickerTitle}
+      title={copy.compendiumPickerTitle}
       titleId="pagestorm-compendium-picker"
-      closeLabel={copy.pagestormEditor.close}
+      closeLabel={copy.close}
       onClose={onClose}
-      headerTrailing={(
-        <VersionSelector
-          versions={[DECISIONS_DECISIONS_GAME_VERSION]}
-          currentVersion={DECISIONS_DECISIONS_GAME_VERSION}
-          selectedVersion={selectedVersion}
-          onChange={setSelectedVersion}
-        />
-      )}
       panelClassName="max-h-[min(92dvh,52rem)] w-full max-w-3xl"
     >
-      <GameScrollArea className="max-h-[min(78dvh,44rem)] pr-1">
-        {pendingCard ? (
-          <CardConfirmStep
-            entity={pendingCard}
-            onInsert={onInsert}
-          />
-        ) : (
-          <DecisionsDecisionsPoolPicker
-            entities={entities}
-            entityMap={entityMap}
-            serviceLocale={serviceLocale}
-            presetLabels={{}}
-            major={major}
-            dims={dims}
-            onMajor={(next) => {
-              setMajor(next);
-              setDims(emptyFilterDims());
-            }}
-            onToggleDim={(dim: DecisionsFilterDim, key: string) => {
-              setDims((current) => toggleFilterDim(current, dim, key));
-            }}
-            onPreset={(key) => {
-              const next = filterStateFromPresetKey(key);
-              setMajor(next.major);
-              setDims(cloneFilterDims(next.dims));
-            }}
-            onAdd={(entity) => {
-              if (entity.type === "card") {
-                setPendingCard(entity);
-                return;
-              }
-              onInsert({ entity, presentation: "art", beta: false });
-            }}
-          />
-        )}
-      </GameScrollArea>
+      {pendingCard ? (
+        <CardConfirmStep
+          entity={pendingCard}
+          onInsert={onInsert}
+        />
+      ) : (
+        <DecisionsDecisionsPoolPicker
+          entities={entities}
+          entityMap={entityMap}
+          serviceLocale={serviceLocale}
+          presetLabels={{}}
+          showPresets={false}
+          searchPlacement="top"
+          major={major}
+          dims={dims}
+          onMajor={(next) => {
+            setMajor(next);
+            setDims(emptyFilterDims());
+          }}
+          onToggleDim={(dim: DecisionsFilterDim, key: string) => {
+            setDims((current) => toggleFilterDim(current, dim, key));
+          }}
+          onPreset={() => undefined}
+          onAdd={(entity) => {
+            if (entity.type === "card") {
+              setPendingCard(entity);
+              return;
+            }
+            onInsert({ entity, presentation: "art", beta: false });
+          }}
+        />
+      )}
     </ServiceModalFrame>
   );
 }
@@ -192,9 +176,11 @@ export function ToyboxPickerModal({
 }) {
   const serviceLocale = useServiceLocale();
   const gameLocale = useGameLocale();
-  const copy = serviceMessages[serviceLocale].pagestormEditor;
+  const copy = serviceMessages[serviceLocale].pagestorm;
   const toyboxItems = useMemo(
-    () => getToyBoxNavItems({ serviceLocale, gameLocale }).filter((item) => !item.href.startsWith("/dev")),
+    () => getToyBoxNavItems({ serviceLocale, gameLocale }).filter(
+      (item) => !item.href.startsWith("/dev") && item.href !== PAGESTORM_HREF,
+    ),
     [gameLocale, serviceLocale],
   );
   const [serviceHref, setServiceHref] = useState<string | null>(initialServiceHref);
@@ -276,7 +262,7 @@ export function CardBraceConfirmModal({
   onInsert: (payload: CompendiumInsertPayload) => void;
 }) {
   const serviceLocale = useServiceLocale();
-  const copy = serviceMessages[serviceLocale].pagestormEditor;
+  const copy = serviceMessages[serviceLocale].pagestorm;
   return (
     <ServiceModalFrame
       title={copy.presentationTitle}
@@ -303,7 +289,9 @@ export function useToyboxNavItems(): NavDropdownItem[] {
   const serviceLocale = useServiceLocale();
   const gameLocale = useGameLocale();
   return useMemo(
-    () => getToyBoxNavItems({ serviceLocale, gameLocale }).filter((item) => !item.href.startsWith("/dev")),
+    () => getToyBoxNavItems({ serviceLocale, gameLocale }).filter(
+      (item) => !item.href.startsWith("/dev") && item.href !== PAGESTORM_HREF,
+    ),
     [gameLocale, serviceLocale],
   );
 }

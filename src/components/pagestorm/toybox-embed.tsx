@@ -12,11 +12,7 @@ import {
 import { createMissingThisOrThatEntity } from "@/lib/this-or-that";
 import { serviceMessages } from "@/messages/service";
 import { findPagestormEntity, usePagestormEntities } from "./entities-context";
-import {
-  alignRowClass,
-  FourEdgeHandles,
-  PublishLinkButton,
-} from "./figures";
+import { AssetSideRail, alignRowClass } from "./figures";
 import {
   clampPlayerWidth,
   defaultPlayerWidth,
@@ -73,7 +69,7 @@ export function ToyboxEmbedFigure({
       return (
         <div className="space-y-2 p-3">
           <p className="font-game-title text-sm">{post.title}</p>
-          <p className="text-xs text-muted-foreground">{copy.pagestormEditor.toyboxThisOrThat}</p>
+          <p className="text-xs text-muted-foreground">{copy.pagestorm.toyboxThisOrThat}</p>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
               <ThisOrThatResourcePanel
@@ -114,7 +110,7 @@ export function ToyboxEmbedFigure({
     return (
       <div className="space-y-2 p-2">
         <p className="px-1 font-game-title text-sm">{post.title}</p>
-        <p className="px-1 text-xs text-muted-foreground">{copy.pagestormEditor.toyboxDecisions}</p>
+        <p className="px-1 text-xs text-muted-foreground">{copy.pagestorm.toyboxDecisions}</p>
         <DecisionsDecisionsBoard
           rows={post.rows}
           placements={post.placements}
@@ -138,15 +134,19 @@ export function ToyboxEmbedFigure({
       className="relative overflow-hidden rounded-md border border-border bg-card/40"
       style={{ width: px, maxWidth: "100%", minHeight: py }}
     >
-      {mode === "edit" && onLinked ? (
-        <PublishLinkButton linked={linked} onLinked={onLinked} />
-      ) : null}
       {inner}
       {mode === "edit" ? (
         <div className="absolute inset-0 cursor-default bg-transparent" aria-hidden />
       ) : null}
-      {mode === "edit" && onResize ? (
-        <FourEdgeHandles
+    </div>
+  );
+  const body = (
+    <div className="flex items-start gap-1">
+      {card}
+      {mode === "edit" && (onResize || onLinked) ? (
+        <AssetSideRail
+          linked={linked}
+          onLinked={onLinked}
           width={px}
           height={py}
           clampWidth={clampPlayerWidth}
@@ -167,5 +167,5 @@ export function ToyboxEmbedFigure({
     );
   }
 
-  return <div className={alignRowClass(align)}>{card}</div>;
+  return <div className={alignRowClass(align)}>{body}</div>;
 }

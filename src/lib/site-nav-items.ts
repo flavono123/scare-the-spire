@@ -2,6 +2,7 @@ import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
 import {
   getDecisionsDecisionsNavTitle,
   getDefragmentNavTitle,
+  getPagestormNavTitle,
   getTransfigureNavTitle,
 } from "@/lib/borrowed-game-copy";
 import {
@@ -20,6 +21,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
+import { PAGESTORM_HREF, PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
 import { isLatestByrdispatchNewSection } from "@/lib/toy-box-news";
 
 export type CodexLabelKey = {
@@ -119,6 +121,13 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     byrdispatchSectionTitle: "어려운 결정",
     getLabel: (_serviceLocale, gameLocale) => getDecisionsDecisionsNavTitle(gameLocale),
   },
+  {
+    href: PAGESTORM_HREF,
+    icon: PAGESTORM_TOKEN_SRC,
+    createdAt: "2026-09-01",
+    nestedUnder: "/defragment",
+    getLabel: (_serviceLocale, gameLocale) => getPagestormNavTitle(gameLocale),
+  },
 ] as const;
 
 export const sts2NavItems = [
@@ -158,12 +167,6 @@ export const devNavItems = [
     href: "/dev/character-palette",
     label: "캐릭터 배색",
     icon: "/images/sts2/characters/character_icon_ironclad.webp",
-    strictDevOnly: true,
-  },
-  {
-    href: "/dev/pagestorm-editor",
-    label: "서류 작성기 목",
-    icon: "/images/sts2/powers/pagestorm_power.webp",
     strictDevOnly: true,
   },
   { href: "/dev/text-effects", label: "텍스트 효과", icon: "/images/sts2/nav/patch_notes_icon.png" },

@@ -24,6 +24,7 @@ const STATIC_SERVICE_PAGE_SEGMENTS = new Set([
   "profile",
   "this-or-that",
   "transfigure",
+  "pagestorm",
 ]);
 
 const STATIC_LEGACY_PAGE_SEGMENTS = new Set([

@@ -6,7 +6,6 @@ import {
   Heading2,
   Heading3,
   Italic,
-  Link as LinkIcon,
   List,
   Minus,
   Quote,
@@ -27,7 +26,6 @@ import {
 } from "./color-marks";
 import { AlignButtons, IconTipButton } from "./figures";
 import { PickerNavDropdown } from "./nav-tokens";
-import { resolvePastedUrl } from "./sample";
 import { useCompendiumNavItems, useToyboxNavItems } from "./pickers";
 import type { NavDropdownItem } from "@/lib/site-nav-items";
 
@@ -86,7 +84,7 @@ export function PagestormFormatChrome({
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale];
-  const editorCopy = copy.pagestormEditor;
+  const editorCopy = copy.pagestorm;
   const compendiumItems = useCompendiumNavItems();
   const toyboxItems = useToyboxNavItems();
   const textAlign = editor.isActive({ textAlign: "center" })
@@ -96,11 +94,8 @@ export function PagestormFormatChrome({
       : "left";
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex h-full flex-col justify-center gap-2">
       <div className="flex flex-wrap items-center gap-1">
-        <span className="px-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-          {editorCopy.fontSection}
-        </span>
         <IconTipButton
           label={editorCopy.bold}
           active={editor.isActive("bold")}
@@ -184,74 +179,21 @@ export function PagestormFormatChrome({
       </div>
       <hr className="border-border" />
       <div className="flex flex-wrap items-center gap-2">
-        <span className="px-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-          {editorCopy.assetSection}
-        </span>
         <PickerNavDropdown
           icon="/images/sts2/icons/app_icon.png"
           alt={copy.games.sts2Codex}
           items={compendiumItems}
           onPick={onCompendium}
         />
-        <span className="px-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-          {editorCopy.toyboxSection}
-        </span>
         <PickerNavDropdown
           icon="/images/sts2/relics/toy_box.webp"
-          alt={serviceLocale === "ko" ? "장난감 상자" : "Toy Box"}
+          alt={editorCopy.toyboxSection}
           items={toyboxItems}
           variant="toyBox"
           onPick={onToybox}
         />
-        <UrlInsert editor={editor} />
       </div>
     </div>
-  );
-}
-
-function UrlInsert({ editor }: { editor: Editor }) {
-  const serviceLocale = useServiceLocale();
-  const copy = serviceMessages[serviceLocale].pagestormEditor;
-  return (
-    <form
-      className="flex min-w-0 flex-1 items-center gap-1"
-      onSubmit={(event) => {
-        event.preventDefault();
-        const form = event.currentTarget;
-        const input = form.elements.namedItem("url") as HTMLInputElement;
-        const resolved = resolvePastedUrl(input.value);
-        if (!resolved) return;
-        if (resolved.kind === "youtube") {
-          editor.chain().focus().insertContent([
-            {
-              type: "youtubePlayer",
-              attrs: { videoId: resolved.videoId, title: resolved.title, align: "center", width: 576, height: 324 },
-            },
-            { type: "paragraph" },
-          ]).run();
-        } else {
-          editor.chain().focus().insertContent([
-            {
-              type: "ogBookmark",
-              attrs: { ...resolved.bookmark, align: "center", linked: true, width: 576, height: 96 },
-            },
-            { type: "paragraph" },
-          ]).run();
-        }
-        input.value = "";
-      }}
-    >
-      <input
-        name="url"
-        placeholder={copy.urlPlaceholder}
-        className="min-w-0 flex-1 rounded border border-border bg-transparent px-2 py-1 text-xs"
-      />
-      <GameUiHoverTip label={`${copy.insertUrl} · ${copy.urlHint}`} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
-        <button type="submit" className="inline-flex items-center justify-center rounded px-2 py-1 text-muted-foreground hover:bg-muted hover:text-foreground" aria-label={copy.insertUrl}>
-          <LinkIcon className="h-3.5 w-3.5" aria-hidden />
-        </button>
-      </GameUiHoverTip>
-    </form>
   );
 }
 

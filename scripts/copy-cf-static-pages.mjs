@@ -51,6 +51,7 @@ const staticServicePageSegments = new Set([
   "profile",
   "this-or-that",
   "transfigure",
+  "pagestorm",
 ]);
 const staticDetailShellSegment = "__id__";
 const staticServiceDetailSegments = new Set([

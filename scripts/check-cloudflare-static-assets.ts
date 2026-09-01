@@ -66,6 +66,7 @@ const staticServicePageSegments = [
   "profile",
   "this-or-that",
   "transfigure",
+  "pagestorm",
 ] as const;
 const staticDetailShellSegment = "__id__";
 const staticServiceDetailShellSegments = [
