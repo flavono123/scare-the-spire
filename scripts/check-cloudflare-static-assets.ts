@@ -68,6 +68,9 @@ const staticServicePageSegments = [
   "transfigure",
   "pagestorm",
 ] as const;
+const staticNestedServicePages = [
+  ["pagestorm", "write"],
+] as const;
 const staticDetailShellSegment = "__id__";
 const staticServiceDetailShellSegments = [
   "chemical-x",
@@ -215,6 +218,40 @@ function checkStaticServicePages(): number {
     staticServicePageAssetPath("/history-course/run-id", "rsc") === null,
     "Dynamic History Course detail routes must stay outside the static index set.",
   );
+  assert(
+    staticServicePageAssetPath("/pagestorm/write", "html")
+      === "/_cf_static_pages/pagestorm/write.html",
+    "Pagestorm write must map to a nested static page.",
+  );
+  assert(
+    staticServicePageAssetPath("/en/pagestorm/write", "rsc")
+      === "/_cf_static_pages/en/pagestorm/write.rsc",
+    "Locale Pagestorm write must map to a nested static page.",
+  );
+  assert(
+    staticServicePageAssetPath("/pagestorm/write/extra", "html") === null,
+    "Pagestorm write must fail closed for extra path segments.",
+  );
+  assert(
+    staticServiceDetailShellAssetPath("/pagestorm/write", "html") === null,
+    "Pagestorm write must not use an unbounded ID shell.",
+  );
+
+  for (const pathPrefix of gameLocalePathPrefixes) {
+    for (const [service, nested] of staticNestedServicePages) {
+      const routePath = `/${pathPrefix ? `${pathPrefix}/` : ""}${service}/${nested}`;
+      for (const extension of ["html", "rsc"] satisfies StaticPageExtension[]) {
+        const assetPath = staticServicePageAssetPath(routePath, extension);
+        assert(assetPath, `Static routing rejected nested service page ${routePath}.${extension}`);
+        const outputPath = path.join(assetsRoot, assetPath.slice(1));
+        assert(
+          statSync(outputPath, { throwIfNoEntry: false })?.isFile(),
+          `Missing copied nested static service page: ${outputPath}`,
+        );
+        count += 1;
+      }
+    }
+  }
 
   return count;
 }

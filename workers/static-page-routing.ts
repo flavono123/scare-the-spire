@@ -27,6 +27,19 @@ const STATIC_SERVICE_PAGE_SEGMENTS = new Set([
   "pagestorm",
 ]);
 
+const STATIC_NESTED_SERVICE_PAGES: ReadonlyArray<readonly [string, string]> = [
+  ["pagestorm", "write"],
+];
+
+function isNestedStaticServicePage(parts: string[]): boolean {
+  const hasLocale = STATIC_GAME_LOCALE_PREFIXES.has(parts[0] ?? "");
+  const rest = hasLocale ? parts.slice(1) : parts;
+  if (rest.length !== 2) return false;
+  return STATIC_NESTED_SERVICE_PAGES.some(
+    ([service, nested]) => rest[0] === service && rest[1] === nested,
+  );
+}
+
 const STATIC_LEGACY_PAGE_SEGMENTS = new Set([
   "cards",
   "potions",
@@ -73,6 +86,10 @@ export function staticServicePageAssetPath(
 ): string | null {
   const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
   const parts = normalizedPathname.split("/").filter(Boolean);
+  if (isNestedStaticServicePage(parts)) {
+    return `/_cf_static_pages/${parts.join("/")}.${extension}`;
+  }
+
   const pageSegment = parts.at(-1);
   if (!pageSegment || !STATIC_SERVICE_PAGE_SEGMENTS.has(pageSegment)) return null;
 
@@ -133,6 +150,7 @@ const DEFRAGMENT_FEDERATED_SERVICES = new Set([
 ]);
 
 const THIS_OR_THAT_NESTED_SEGMENTS = new Set(["tournament", "worldcup"]);
+const PAGESTORM_NESTED_SEGMENTS = new Set(["write"]);
 
 const RECORD_ID_PATTERN = /^[A-Za-z0-9_-]{1,128}$/;
 
@@ -200,6 +218,14 @@ export function staticServiceDetailShellAssetPath(
     rest.length === 2
     && rest[0] === "this-or-that"
     && THIS_OR_THAT_NESTED_SEGMENTS.has(rest[1])
+  ) {
+    return null;
+  }
+
+  if (
+    rest.length === 2
+    && rest[0] === "pagestorm"
+    && PAGESTORM_NESTED_SEGMENTS.has(rest[1])
   ) {
     return null;
   }

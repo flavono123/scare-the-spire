@@ -8,5 +8,5 @@ export const metadata = {
 };
 
 export default function PagestormEditorDevPage() {
-  redirect("/pagestorm");
+  redirect("/pagestorm/write");
 }

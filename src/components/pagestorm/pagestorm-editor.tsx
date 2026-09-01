@@ -9,7 +9,7 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import type { NavDropdownItem } from "@/lib/site-nav-items";
-import { parseYouTubeVideoId, resolveYouTubeReference } from "@/lib/youtube-reference";
+import { resolveYouTubeReference } from "@/lib/youtube-reference";
 import { serviceMessages } from "@/messages/service";
 import {
   PagestormColor,
@@ -25,7 +25,7 @@ import {
   type CompendiumInsertPayload,
 } from "./pickers";
 import { createPagestormBraceSuggestion, pagestormBracePluginKey } from "./prefix-menu";
-import { assetFromEntity } from "./sample";
+import { assetFromEntity, resolvePastedUrl } from "./sample";
 import {
   GameAssetNode,
   OgBookmarkNode,
@@ -102,16 +102,33 @@ export function PagestormEditor() {
       },
       handlePaste: (_view, event) => {
         const pastedText = event.clipboardData?.getData("text/plain").trim() ?? "";
-        const videoId = parseYouTubeVideoId(pastedText);
-        if (!videoId) return false;
-        const pendingLabel = copy.youtubePending;
+        const resolved = resolvePastedUrl(pastedText);
+        if (!resolved) return false;
         event.preventDefault();
         const current = editorRef.current;
         if (!current) return true;
+        if (resolved.kind === "og") {
+          current.chain().focus().insertContent([
+            {
+              type: "ogBookmark",
+              attrs: {
+                url: resolved.bookmark.url,
+                title: resolved.bookmark.title,
+                description: resolved.bookmark.description,
+                image: resolved.bookmark.image,
+                siteName: resolved.bookmark.siteName,
+                align: "center",
+              },
+            },
+            { type: "paragraph" },
+          ]).run();
+          return true;
+        }
+        const pendingLabel = copy.youtubePending;
         current.chain().focus().insertContent([
           {
             type: "youtubePlayer",
-            attrs: { videoId, title: pendingLabel, align: "center" },
+            attrs: { videoId: resolved.videoId, title: pendingLabel, align: "center" },
           },
           { type: "paragraph" },
         ]).run();
@@ -122,7 +139,7 @@ export function PagestormEditor() {
             current.view.state.doc.descendants((node, position) => {
               if (
                 node.type.name === "youtubePlayer"
-                && node.attrs.videoId === videoId
+                && node.attrs.videoId === resolved.videoId
                 && node.attrs.title === pendingLabel
               ) {
                 current.view.dispatch(current.view.state.tr.setNodeMarkup(position, undefined, {

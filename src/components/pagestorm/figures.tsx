@@ -5,8 +5,9 @@ import {
   AlignCenter,
   AlignLeft,
   AlignRight,
-  GripHorizontal,
-  GripVertical,
+  Link2,
+  Link2Off,
+  MoveDiagonal2,
   Play,
 } from "lucide-react";
 import { CardTile } from "@/components/codex/card-tile";
@@ -23,9 +24,7 @@ import { youtubeThumbnailUrl, youtubeWatchUrl } from "@/lib/youtube-reference";
 import { serviceMessages } from "@/messages/service";
 import {
   clampAssetWidth,
-  clampPlayerWidth,
   defaultAssetWidth,
-  defaultPlayerWidth,
   type CardPresentation,
   type MockAlign,
   type MockGameAsset,
@@ -78,10 +77,7 @@ export function IconTipButton({
   );
 }
 
-type ResizeEdge = "n" | "s" | "e" | "w";
-
-function EdgeHandle({
-  edge,
+function DiagonalResizeHandle({
   width,
   height,
   clampWidth,
@@ -89,7 +85,6 @@ function EdgeHandle({
   lockAspect,
   onResize,
 }: {
-  edge: ResizeEdge;
   width: number;
   height: number;
   clampWidth: (width: number) => number;
@@ -99,19 +94,13 @@ function EdgeHandle({
 }) {
   const copy = serviceMessages[useServiceLocale()].pagestorm;
   const origin = useRef({ x: 0, y: 0, width: 0, height: 0 });
-  const label =
-    edge === "n" ? copy.resizeN
-    : edge === "s" ? copy.resizeS
-    : edge === "e" ? copy.resizeE
-    : copy.resizeW;
-  const vertical = edge === "n" || edge === "s";
 
   return (
-    <GameUiHoverTip label={label} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
+    <GameUiHoverTip label={copy.resize} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
       <button
         type="button"
         data-asset-chrome
-        aria-label={label}
+        aria-label={copy.resize}
         className="flex h-6 w-6 items-center justify-center rounded-sm border border-primary bg-background text-primary"
         onMouseDown={(event) => {
           event.preventDefault();
@@ -120,12 +109,10 @@ function EdgeHandle({
           const move = (next: MouseEvent) => {
             const dx = next.clientX - origin.current.x;
             const dy = next.clientY - origin.current.y;
-            const signedX = edge === "w" ? -dx : dx;
-            const signedY = edge === "n" ? -dy : dy;
             if (lockAspect) {
-              const delta = vertical ? signedY : signedX;
+              const delta = Math.abs(dx) >= Math.abs(dy) ? dx : dy;
               const nextWidth = clampWidth(origin.current.width + delta);
-              const ratio = origin.current.height / origin.current.width;
+              const ratio = origin.current.height / Math.max(origin.current.width, 1);
               onResize({
                 width: nextWidth,
                 height: clampHeight(nextWidth * ratio),
@@ -133,8 +120,8 @@ function EdgeHandle({
               return;
             }
             onResize({
-              width: vertical ? origin.current.width : clampWidth(origin.current.width + signedX),
-              height: vertical ? clampHeight(origin.current.height + signedY) : origin.current.height,
+              width: clampWidth(origin.current.width + dx),
+              height: clampHeight(origin.current.height + dy),
             });
           };
           const up = () => {
@@ -145,9 +132,7 @@ function EdgeHandle({
           window.addEventListener("mouseup", up);
         }}
       >
-        {vertical
-          ? <GripHorizontal className="h-3.5 w-3.5" aria-hidden />
-          : <GripVertical className="h-3.5 w-3.5" aria-hidden />}
+        <MoveDiagonal2 className="h-3.5 w-3.5" aria-hidden />
       </button>
     </GameUiHoverTip>
   );
@@ -190,25 +175,18 @@ export function PublishLinkButton({
   onLinked: (linked: boolean) => void;
 }) {
   const copy = serviceMessages[useServiceLocale()].pagestorm;
+  const label = linked ? copy.insertWithLink : copy.insertImageOnly;
   return (
-    <div className="flex w-[7.75rem] flex-col gap-0.5" data-asset-chrome>
-      <button
-        type="button"
-        aria-pressed={linked}
-        className={`${mockButtonClass(linked)} w-full px-1.5 py-1 text-left leading-snug`}
-        onClick={() => onLinked(true)}
-      >
-        {copy.insertWithLink}
-      </button>
-      <button
-        type="button"
-        aria-pressed={!linked}
-        className={`${mockButtonClass(!linked)} w-full px-1.5 py-1 text-left leading-snug`}
-        onClick={() => onLinked(false)}
-      >
-        {copy.insertImageOnly}
-      </button>
-    </div>
+    <IconTipButton
+      label={label}
+      active={linked}
+      className="rounded-md border border-border bg-background p-1 text-muted-foreground hover:text-foreground"
+      onClick={() => onLinked(!linked)}
+    >
+      {linked
+        ? <Link2 className="h-3.5 w-3.5" aria-hidden />
+        : <Link2Off className="h-3.5 w-3.5" aria-hidden />}
+    </IconTipButton>
   );
 }
 
@@ -241,19 +219,43 @@ export function AssetSideRail({
         <PublishLinkButton linked={linked} onLinked={onLinked} />
       ) : null}
       {onResize ? (
-        (["n", "e", "s", "w"] as const).map((edge) => (
-          <EdgeHandle
-            key={edge}
-            edge={edge}
-            width={width}
-            height={height}
-            clampWidth={clampWidth}
-            clampHeight={clampHeight}
-            lockAspect={lockAspect}
-            onResize={onResize}
-          />
-        ))
+        <DiagonalResizeHandle
+          width={width}
+          height={height}
+          clampWidth={clampWidth}
+          clampHeight={clampHeight}
+          lockAspect={lockAspect}
+          onResize={onResize}
+        />
       ) : null}
+    </div>
+  );
+}
+
+export function AssetFocusChrome({
+  selected,
+  align,
+  onAlign,
+  linkEditor,
+}: {
+  selected: boolean;
+  align?: MockAlign;
+  onAlign?: (align: MockAlign) => void;
+  linkEditor?: ReactNode;
+}) {
+  if (!selected) return null;
+  return (
+    <div
+      className="absolute left-1/2 top-full z-20 mt-1 flex -translate-x-1/2 flex-col items-center gap-1"
+      data-asset-chrome
+      onMouseDown={(event) => event.stopPropagation()}
+    >
+      {onAlign ? (
+        <div className="inline-flex items-center gap-0.5 rounded-md border border-border bg-card px-1 py-0.5 shadow-md">
+          <AlignButtons value={align} onChange={onAlign} />
+        </div>
+      ) : null}
+      {linkEditor}
     </div>
   );
 }
@@ -399,6 +401,7 @@ export function GameAssetFigure({
   asset,
   align,
   mode = "edit",
+  selected = false,
   linked = true,
   width,
   height,
@@ -407,10 +410,12 @@ export function GameAssetFigure({
   card,
   onResize,
   onLinked,
+  onAlign,
 }: {
   asset: MockGameAsset;
   align: MockAlign;
   mode?: "edit" | "preview";
+  selected?: boolean;
   linked?: boolean;
   width?: number;
   height?: number;
@@ -419,6 +424,7 @@ export function GameAssetFigure({
   card?: CodexCard | null;
   onResize?: (size: { width: number; height: number }) => void;
   onLinked?: (linked: boolean) => void;
+  onAlign?: (align: MockAlign) => void;
 }) {
   const px = width ?? defaultAssetWidth(asset.kind);
   const py = height ?? (asset.kind === "card" ? Math.round(px * 1.56) : px);
@@ -433,23 +439,6 @@ export function GameAssetFigure({
       />
     </figure>
   );
-  const body = (
-    <div className="flex items-start gap-1">
-      {figure}
-      {mode === "edit" && (onResize || onLinked) ? (
-        <AssetSideRail
-          linked={linked}
-          onLinked={onLinked}
-          width={px}
-          height={py}
-          clampWidth={(next) => clampAssetWidth(asset.kind, next)}
-          clampHeight={(next) => clampAssetWidth(asset.kind, next)}
-          lockAspect
-          onResize={onResize}
-        />
-      ) : null}
-    </div>
-  );
 
   if (mode === "preview" && linked) {
     return (
@@ -461,7 +450,34 @@ export function GameAssetFigure({
     );
   }
 
-  return <div className={alignRowClass(align)}>{body}</div>;
+  return (
+    <div className={alignRowClass(align)}>
+      <div className="flex items-start gap-1">
+        <div className="relative">
+          {figure}
+          {mode === "edit" ? (
+            <AssetFocusChrome
+              selected={selected}
+              align={align}
+              onAlign={onAlign}
+            />
+          ) : null}
+        </div>
+        {mode === "edit" && (onResize || onLinked) ? (
+          <AssetSideRail
+            linked={linked}
+            onLinked={onLinked}
+            width={px}
+            height={py}
+            clampWidth={(next) => clampAssetWidth(asset.kind, next)}
+            clampHeight={(next) => clampAssetWidth(asset.kind, next)}
+            lockAspect
+            onResize={onResize}
+          />
+        ) : null}
+      </div>
+    </div>
+  );
 }
 
 function YoutubeThumb({
@@ -500,30 +516,28 @@ export function YoutubePlayerFigure({
   title,
   align,
   mode = "edit",
+  selected = false,
   onTitle,
   onUrl,
+  onAlign,
 }: {
   videoId: string;
   title: string;
   align: MockAlign;
   mode?: "edit" | "preview";
+  selected?: boolean;
   onTitle?: (title: string) => void;
   onUrl?: (url: string) => void;
+  onAlign?: (align: MockAlign) => void;
 }) {
   const href = youtubeWatchUrl(videoId);
+  const aquaTitle = (
+    <span className="sts-text-aqua min-w-0 self-center font-semibold">{title}</span>
+  );
   const inner = (
-    <div className="flex items-start gap-2">
+    <div className="flex items-center gap-2">
       <YoutubeThumb videoId={videoId} title={title} />
-      {mode === "edit" && onTitle && onUrl ? (
-        <LinkPhraseHandle
-          title={title}
-          url={href}
-          onTitle={onTitle}
-          onUrl={onUrl}
-        />
-      ) : (
-        <span className="sts-text-aqua min-w-0 self-center font-semibold">{title}</span>
-      )}
+      {aquaTitle}
     </div>
   );
 
@@ -534,111 +548,96 @@ export function YoutubePlayerFigure({
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-start gap-2 no-underline"
+          className="flex items-center gap-2 no-underline"
         >
           <YoutubeThumb videoId={videoId} title={title} />
-          <span className="sts-text-aqua min-w-0 self-center font-semibold">{title}</span>
+          {aquaTitle}
         </a>
       </div>
     );
   }
 
-  return <div className={alignRowClass(align)}>{inner}</div>;
+  return (
+    <div className={alignRowClass(align)}>
+      <div className="relative">
+        {inner}
+        <AssetFocusChrome
+          selected={selected}
+          align={align}
+          onAlign={onAlign}
+          linkEditor={
+            selected && onTitle && onUrl ? (
+              <LinkPhraseHandle
+                title={title}
+                url={href}
+                onTitle={onTitle}
+                onUrl={onUrl}
+              />
+            ) : null
+          }
+        />
+      </div>
+    </div>
+  );
 }
 
 export function OgBookmarkFigure({
   bookmark,
   align,
   mode = "edit",
-  linked = true,
-  width,
-  height,
-  onResize,
-  onLinked,
+  selected = false,
   onTitle,
   onUrl,
+  onAlign,
 }: {
   bookmark: MockOgBookmark;
   align: MockAlign;
   mode?: "edit" | "preview";
-  linked?: boolean;
-  width?: number;
-  height?: number;
-  onResize?: (size: { width: number; height: number }) => void;
-  onLinked?: (linked: boolean) => void;
+  selected?: boolean;
   onTitle?: (title: string) => void;
   onUrl?: (url: string) => void;
+  onAlign?: (align: MockAlign) => void;
 }) {
-  const px = width ?? defaultPlayerWidth();
-  const py = height ?? 96;
-  const card = (
-    <span
-      className="relative flex overflow-hidden rounded-md border border-border bg-card/40"
-      style={{ width: px, maxWidth: "100%", minHeight: py }}
-    >
-      {bookmark.image ? (
-        <Image
-          src={bookmark.image}
-          alt=""
-          width={144}
-          height={96}
-          className="pointer-events-none h-24 w-36 shrink-0 object-cover"
-        />
-      ) : null}
-      <span className="min-w-0 flex-1 p-3">
-        <span className="block text-[11px] uppercase tracking-wide text-muted-foreground">
-          {bookmark.siteName}
-        </span>
-        <span className="mt-0.5 block font-game-title text-sm text-foreground">
-          {bookmark.title}
-        </span>
-        <span className="mt-1 line-clamp-2 block text-xs text-muted-foreground">
-          {bookmark.description}
-        </span>
-      </span>
-    </span>
-  );
-  const body = (
-    <div className="flex items-start gap-1">
-      {card}
-      {mode === "edit" ? (
-        <div className="flex flex-col gap-1">
-          {onTitle && onUrl ? (
-            <LinkPhraseHandle
-              title={bookmark.title}
-              url={bookmark.url}
-              onTitle={onTitle}
-              onUrl={onUrl}
-            />
-          ) : null}
-          <AssetSideRail
-            linked={linked}
-            onLinked={onLinked}
-            width={px}
-            height={py}
-            clampWidth={clampPlayerWidth}
-            clampHeight={(next) => Math.min(240, Math.max(72, Math.round(next)))}
-            onResize={onResize}
-          />
-        </div>
-      ) : null}
-    </div>
+  const title = bookmark.title.trim() || bookmark.url;
+  const aquaTitle = (
+    <span className="sts-text-aqua font-semibold">{title}</span>
   );
 
-  if (mode === "preview" && linked) {
+  if (mode === "preview") {
     return (
       <div className={alignRowClass(align)}>
         <a
           href={bookmark.url}
           target="_blank"
           rel="noreferrer"
-          className="block no-underline hover:border-primary/50"
+          className="no-underline"
         >
-          {card}
+          {aquaTitle}
         </a>
       </div>
     );
   }
 
-  return <div className={alignRowClass(align)}>{body}</div>;
+  return (
+    <div className={alignRowClass(align)}>
+      <div className="relative">
+        {aquaTitle}
+        <AssetFocusChrome
+          selected={selected}
+          align={align}
+          onAlign={onAlign}
+          linkEditor={
+            selected && onTitle && onUrl ? (
+              <LinkPhraseHandle
+                title={bookmark.title}
+                url={bookmark.url}
+                onTitle={onTitle}
+                onUrl={onUrl}
+              />
+            ) : null
+          }
+        />
+      </div>
+    </div>
+  );
 }

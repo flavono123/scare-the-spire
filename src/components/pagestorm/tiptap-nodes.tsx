@@ -95,6 +95,7 @@ function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
         <GameAssetFigure
           asset={asset}
           align={align}
+          selected={selected}
           linked={linked}
           width={width}
           height={height}
@@ -103,6 +104,7 @@ function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
           card={entity?.cardData}
           onResize={(size) => updateAttributes({ width: size.width, height: size.height })}
           onLinked={(next) => updateAttributes({ linked: next })}
+          onAlign={(next) => updateAttributes({ align: next })}
         />
       </div>
     </NodeViewWrapper>
@@ -118,11 +120,13 @@ function YoutubeView({ node, updateAttributes, selected }: NodeViewProps) {
           videoId={String(node.attrs.videoId ?? "")}
           title={String(node.attrs.title ?? "YouTube")}
           align={align}
+          selected={selected}
           onTitle={(title) => updateAttributes({ title })}
           onUrl={(url) => {
             const videoId = parseYouTubeVideoId(url);
             if (videoId) updateAttributes({ videoId });
           }}
+          onAlign={(next) => updateAttributes({ align: next })}
         />
       </div>
     </NodeViewWrapper>
@@ -131,9 +135,6 @@ function YoutubeView({ node, updateAttributes, selected }: NodeViewProps) {
 
 function OgView({ node, updateAttributes, selected }: NodeViewProps) {
   const align = asAlign(node.attrs.align);
-  const linked = asBool(node.attrs.linked);
-  const width = asWidth(node.attrs.width, defaultPlayerWidth());
-  const height = asWidth(node.attrs.height, 96);
   const bookmark: MockOgBookmark = {
     url: String(node.attrs.url ?? ""),
     title: String(node.attrs.title ?? ""),
@@ -147,13 +148,10 @@ function OgView({ node, updateAttributes, selected }: NodeViewProps) {
         <OgBookmarkFigure
           bookmark={bookmark}
           align={align}
-          linked={linked}
-          width={width}
-          height={height}
-          onResize={(size) => updateAttributes({ width: size.width, height: size.height })}
-          onLinked={(next) => updateAttributes({ linked: next })}
+          selected={selected}
           onTitle={(title) => updateAttributes({ title })}
           onUrl={(url) => updateAttributes({ url })}
+          onAlign={(next) => updateAttributes({ align: next })}
         />
       </div>
     </NodeViewWrapper>
@@ -171,11 +169,13 @@ function ToyboxView({ node, updateAttributes, selected }: NodeViewProps) {
         <ToyboxEmbedFigure
           postId={String(node.attrs.postId ?? "")}
           align={align}
+          selected={selected}
           linked={linked}
           width={width}
           height={height}
           onResize={(size) => updateAttributes({ width: size.width, height: size.height })}
           onLinked={(next) => updateAttributes({ linked: next })}
+          onAlign={(next) => updateAttributes({ align: next })}
         />
       </div>
     </NodeViewWrapper>

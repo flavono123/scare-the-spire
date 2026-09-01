@@ -12,7 +12,7 @@ import {
 import { createMissingThisOrThatEntity } from "@/lib/this-or-that";
 import { serviceMessages } from "@/messages/service";
 import { findPagestormEntity, usePagestormEntities } from "./entities-context";
-import { AssetSideRail, alignRowClass } from "./figures";
+import { AssetFocusChrome, AssetSideRail, alignRowClass } from "./figures";
 import {
   clampPlayerWidth,
   defaultPlayerWidth,
@@ -32,20 +32,24 @@ export function ToyboxEmbedFigure({
   postId,
   align,
   mode = "edit",
+  selected = false,
   linked = true,
   width,
   height,
   onResize,
   onLinked,
+  onAlign,
 }: {
   postId: string;
   align: MockAlign;
   mode?: "edit" | "preview";
+  selected?: boolean;
   linked?: boolean;
   width?: number;
   height?: number;
   onResize?: (size: { width: number; height: number }) => void;
   onLinked?: (linked: boolean) => void;
+  onAlign?: (align: MockAlign) => void;
 }) {
   const serviceLocale = useServiceLocale();
   const gameLocale = useGameLocale();
@@ -142,7 +146,16 @@ export function ToyboxEmbedFigure({
   );
   const body = (
     <div className="flex items-start gap-1">
-      {card}
+      <div className="relative">
+        {card}
+        {mode === "edit" ? (
+          <AssetFocusChrome
+            selected={selected}
+            align={align}
+            onAlign={onAlign}
+          />
+        ) : null}
+      </div>
       {mode === "edit" && (onResize || onLinked) ? (
         <AssetSideRail
           linked={linked}

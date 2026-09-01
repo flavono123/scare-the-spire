@@ -447,8 +447,8 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     type: "pagestorm",
     title: "서류 폭풍",
     titleEn: "Pagestorm",
-    description: "게임 요소로 문서 쓰기 서류 폭풍 작성기 pagestorm paper",
-    descriptionEn: "write a document with game elements pagestorm editor",
+    description: "게임 요소로 문서 쓰기 서류 폭풍 pagestorm paper",
+    descriptionEn: "write a document with game elements pagestorm",
     imageUrl: "/images/sts2/powers/pagestorm_power.webp",
     href: "/pagestorm",
   }];

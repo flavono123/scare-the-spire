@@ -53,6 +53,9 @@ const staticServicePageSegments = new Set([
   "transfigure",
   "pagestorm",
 ]);
+const staticNestedServicePages = [
+  ["pagestorm", "write"],
+];
 const staticDetailShellSegment = "__id__";
 const staticServiceDetailSegments = new Set([
   "chemical-x",
@@ -105,6 +108,21 @@ function staticPageRelativePath(file) {
     && gameLocalePathSegments.has(parts[0])
     && staticServicePageSegments.has(parsed.name);
   if (isDefaultLocaleServicePage || isGameLocaleServicePage) {
+    return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
+  }
+
+  const isDefaultNestedServicePage =
+    parts.length === 1
+    && staticNestedServicePages.some(([service, nested]) => (
+      parts[0] === service && parsed.name === nested
+    ));
+  const isGameLocaleNestedServicePage =
+    parts.length === 2
+    && gameLocalePathSegments.has(parts[0])
+    && staticNestedServicePages.some(([service, nested]) => (
+      parts[1] === service && parsed.name === nested
+    ));
+  if (isDefaultNestedServicePage || isGameLocaleNestedServicePage) {
     return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
   }
 

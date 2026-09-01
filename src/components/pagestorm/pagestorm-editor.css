@@ -57,6 +57,10 @@
   outline: none;
 }
 
+.pagestorm-mock-editor .react-renderer {
+  overflow: visible;
+}
+
 .pagestorm-sticky-toolbar {
   position: sticky;
   top: 3rem;

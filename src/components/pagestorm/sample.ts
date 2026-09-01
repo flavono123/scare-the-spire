@@ -169,7 +169,7 @@ export function resolvePastedUrl(raw: string):
     bookmark: {
       url: url.href,
       title: url.hostname.replace(/^www\./, ""),
-      description: "작성 시점 OG 스냅샷 (이 목은 네트워크 요청 없이 hostname만 저장한다).",
+      description: "",
       image: null,
       siteName: url.hostname,
     },
