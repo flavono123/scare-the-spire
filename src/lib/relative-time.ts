@@ -3,8 +3,16 @@ export type RelativeTimeCopy = Record<
   string
 >;
 
+export function serviceDateLocale(serviceLocale: "ko" | "en"): string {
+  return serviceLocale === "ko" ? "ko-KR" : "en-US";
+}
+
 export function formatRelativeTime(template: string, count: number): string {
   return template.replace("{count}", String(count));
+}
+
+export function formatAbsoluteDate(dateString: string, dateLocale: string): string {
+  return new Date(dateString).toLocaleDateString(dateLocale);
 }
 
 export function formatTimeAgo(
@@ -20,5 +28,5 @@ export function formatTimeAgo(
   if (hours < 24) return formatRelativeTime(copy.hoursAgo, hours);
   const days = Math.floor(hours / 24);
   if (days < 30) return formatRelativeTime(copy.daysAgo, days);
-  return new Date(dateString).toLocaleDateString(dateLocale);
+  return formatAbsoluteDate(dateString, dateLocale);
 }

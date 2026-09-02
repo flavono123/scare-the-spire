@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { DefragmentFeedItem } from "@/lib/defragment";
+import type { DefragmentFederatedService, DefragmentFeedItem } from "@/lib/defragment";
 import {
   cursorFromDefragmentItem,
   fetchDefragmentFeedPage,
@@ -28,6 +28,7 @@ export interface UseDefragmentFeedReturn {
 
 export function useDefragmentFeed(
   sort: ToyboxFeedSort = DEFAULT_TOYBOX_FEED_SORT,
+  service: DefragmentFederatedService | null = null,
 ): UseDefragmentFeedReturn {
   const [items, setItems] = useState<DefragmentFeedItem[]>([]);
   const [loading, setLoading] = useState(supabaseEnabled);
@@ -46,7 +47,7 @@ export function useDefragmentFeed(
     setLoading(true);
     setHasMore(false);
 
-    fetchDefragmentFeedPage({ sort, cursor: null })
+    fetchDefragmentFeedPage({ sort, cursor: null, service })
       .then((page) => {
         if (cancelled) return;
         setItems(page.items);
@@ -67,7 +68,7 @@ export function useDefragmentFeed(
     return () => {
       cancelled = true;
     };
-  }, [sort]);
+  }, [service, sort]);
 
   const loadMore = useCallback(async () => {
     if (!supabaseEnabled || loadingMoreRef.current || !hasMore) return;
@@ -78,7 +79,7 @@ export function useDefragmentFeed(
     setLoadingMore(true);
 
     try {
-      const page = await fetchDefragmentFeedPage({ sort, cursor });
+      const page = await fetchDefragmentFeedPage({ sort, cursor, service });
       setItems((current) => {
         const seen = new Set(current.map((item) => `${item.service}:${item.id}`));
         const appended = page.items.filter(
@@ -100,7 +101,7 @@ export function useDefragmentFeed(
       loadingMoreRef.current = false;
       setLoadingMore(false);
     }
-  }, [hasMore, sort]);
+  }, [hasMore, service, sort]);
 
   const prependItem = useCallback((item: DefragmentFeedItem) => {
     setItems((current) => {

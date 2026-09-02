@@ -20,6 +20,8 @@ import { blocksToPlainText } from "@/lib/chemical-utils";
 import { buildChemicalXCommentThreadKey } from "@/lib/comment-threads";
 import { getSiteDisplayOrigin } from "@/lib/site-origin";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
+import { PostCreatedAt } from "@/components/post-created-at";
+import { serviceDateLocale } from "@/lib/relative-time";
 
 interface PostViewProps {
   postId: string;
@@ -37,7 +39,7 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
   const siteDisplayOrigin = getSiteDisplayOrigin();
-  const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
+  const dateLocale = serviceDateLocale(serviceLocale);
   const router = useRouter();
   const { userId, ready } = useAuth();
   const [post, setPost] = useState<ChemicalPost | null>(null);
@@ -158,9 +160,13 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
         {/* Header */}
         <div className="relative flex items-center justify-between mb-4">
           <span className="text-sm font-semibold text-gray-300">{post.nickname}</span>
-          <span className="text-xs text-gray-500">
-            {new Date(post.created_at).toLocaleDateString(dateLocale)}
-          </span>
+          <PostCreatedAt
+            createdAt={post.created_at}
+            copy={copy}
+            dateLocale={dateLocale}
+            primary="absolute"
+            className="text-xs text-gray-500"
+          />
         </div>
 
         {/* Post text — adaptive size */}

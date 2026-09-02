@@ -11,7 +11,8 @@ import { buildChemicalXCommentThreadKey } from "@/lib/comment-threads";
 import { localizeHref } from "@/lib/i18n";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
-import { formatTimeAgo } from "@/lib/relative-time";
+import { PostCreatedAt } from "@/components/post-created-at";
+import { serviceDateLocale } from "@/lib/relative-time";
 
 interface PostCardProps {
   post: ChemicalPost;
@@ -38,7 +39,7 @@ export function PostCard({
 }: PostCardProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
-  const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
+  const dateLocale = serviceDateLocale(serviceLocale);
   const router = useRouter();
   const href = localizeHref(`/chemical-x/${post.id}`, serviceLocale);
   const commentsHref = `${href}#comments`;
@@ -74,9 +75,12 @@ export function PostCard({
           {isOwner && <OwnPostMark />}
         </span>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500">
-            {formatTimeAgo(post.created_at, copy, dateLocale)}
-          </span>
+          <PostCreatedAt
+            createdAt={post.created_at}
+            copy={copy}
+            dateLocale={dateLocale}
+            className="text-xs text-gray-500"
+          />
           <IndexCardEngagement
             commentsHref={commentsHref}
             commentCount={commentCount}

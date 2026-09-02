@@ -56,6 +56,8 @@ export interface DefragmentFeedItem {
   created_at: string;
   service: DefragmentFeedService;
   title: string;
+  nickname: string;
+  userId: string;
   likeCount: number;
   commentCount: number;
   recommendScore: number;
@@ -123,6 +125,8 @@ export function feedItemFromPost(
   post: {
     id: string;
     created_at: string;
+    nickname?: string | null;
+    user_id?: string | null;
     like_count?: number;
     comment_count?: number;
     title?: string | null;
@@ -147,6 +151,8 @@ export function feedItemFromPost(
     created_at: post.created_at,
     service,
     title: title.replace(/\s+/g, " ").trim().slice(0, 120),
+    nickname: (post.nickname ?? "").trim(),
+    userId: post.user_id ?? "",
     likeCount,
     commentCount,
     recommendScore: toyboxRecommendScore(likeCount),
@@ -217,3 +223,11 @@ export function defragmentFeedScore(
   if (sort === "recommended") return item.likeCount;
   return item.recommendScore;
 }
+
+export const DEFRAGMENT_BOARD_COLUMN_SORTS = {
+  created_at: "latest",
+  likes: "recommended",
+  comments: "comments",
+} as const;
+
+export type DefragmentBoardColumnSort = keyof typeof DEFRAGMENT_BOARD_COLUMN_SORTS;

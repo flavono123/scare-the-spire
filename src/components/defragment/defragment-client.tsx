@@ -4,7 +4,9 @@ import { useCallback, useMemo, useState } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import {
-  DEFRAGMENT_ENGAGE_COL_CLASS,
+  DEFRAGMENT_AUTHOR_COL_CLASS,
+  DEFRAGMENT_COUNT_COL_CLASS,
+  DEFRAGMENT_DATE_COL_CLASS,
   DEFRAGMENT_TYPE_COL_CLASS,
   DefragmentIndexRow,
 } from "@/components/defragment/defragment-index-row";
@@ -12,6 +14,7 @@ import {
   DefragmentWritePanel,
   type DefragmentWritePlaceholders,
 } from "@/components/defragment/defragment-write-panel";
+import { DefragmentTypeFilter } from "@/components/defragment/defragment-type-filter";
 import { FeedLoadMoreSentinel } from "@/components/feed-load-more-sentinel";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
@@ -29,12 +32,15 @@ import {
 } from "@/lib/borrowed-game-copy";
 import {
   DEFRAGMENT_TOKEN_SRC,
+  DEFRAGMENT_BOARD_COLUMN_SORTS,
   DEFRAGMENT_FEDERATED_SERVICES,
   type DefragmentFeedItem,
   type DefragmentFederatedService,
+  type DefragmentBoardColumnSort,
 } from "@/lib/defragment";
 import type { GameLocale } from "@/lib/i18n";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
+import { cn } from "@/lib/utils";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 
@@ -60,6 +66,7 @@ export function DefragmentClient({
   const nav = serviceMessages[serviceLocale].nav;
   const { userId, ready, ensureUser } = useAuth();
   const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
+  const [typeFilter, setTypeFilter] = useState<DefragmentFederatedService | null>(null);
   const [composerOpen, setComposerOpen] = useState(false);
   const {
     items,
@@ -70,7 +77,7 @@ export function DefragmentClient({
     loadMore,
     prependItem,
     setUnavailable,
-  } = useDefragmentFeed(sort);
+  } = useDefragmentFeed(sort, typeFilter);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
     [copy.defaultNickname],
@@ -106,9 +113,13 @@ export function DefragmentClient({
   }, [ensureUser, totLikes, userId]);
 
   const handleCreated = useCallback((item: DefragmentFeedItem) => {
-    prependItem(item);
+    if (!typeFilter || item.service === typeFilter) prependItem(item);
     setComposerOpen(false);
-  }, [prependItem]);
+  }, [prependItem, typeFilter]);
+
+  const handleColumnSort = useCallback((column: DefragmentBoardColumnSort) => {
+    setSort(DEFRAGMENT_BOARD_COLUMN_SORTS[column]);
+  }, []);
 
   return (
     <div data-defragment-page="index" className="space-y-6">
@@ -169,13 +180,19 @@ export function DefragmentClient({
       )}
 
       {!loading && !unavailable && (
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <FeedSortToggle
             sort={sort}
             onSortChange={setSort}
             labels={serviceMessages[serviceLocale].feedSort}
           />
-          <span className="text-xs text-gray-500">
+          <DefragmentTypeFilter
+            value={typeFilter}
+            onChange={setTypeFilter}
+            labels={typeLabels}
+            allLabel={copy.filterAll}
+          />
+          <span className="ml-auto text-xs text-gray-500">
             {copy.count.replace("{count}", String(items.length))}
           </span>
         </div>
@@ -190,11 +207,33 @@ export function DefragmentClient({
       ) : (
         <div className="overflow-visible">
           <div className="flex items-center gap-2 border-b border-primary/15 px-1 py-1 text-[11px] font-semibold tracking-wide text-zinc-500">
-            <span className={DEFRAGMENT_TYPE_COL_CLASS}>{copy.boardType}</span>
-            <span className="min-w-0 flex-1">{copy.boardTitle}</span>
-            <span className={`${DEFRAGMENT_ENGAGE_COL_CLASS} text-right`}>
-              {copy.boardLikes} · {copy.boardComments}
+            <span className={cn(DEFRAGMENT_TYPE_COL_CLASS, "truncate")}>
+              <span className="hidden sm:inline">{copy.boardType}</span>
+              <span className="sr-only sm:hidden">{copy.boardType}</span>
             </span>
+            <span className="min-w-0 flex-1">{copy.boardTitle}</span>
+            <span className={DEFRAGMENT_AUTHOR_COL_CLASS}>{copy.boardAuthor}</span>
+            <BoardColumnSortButton
+              label={copy.boardDate}
+              active={sort === "latest"}
+              column="created_at"
+              className={cn(DEFRAGMENT_DATE_COL_CLASS, "text-right")}
+              onClick={() => handleColumnSort("created_at")}
+            />
+            <BoardColumnSortButton
+              label={copy.boardLikes}
+              active={sort === "recommended"}
+              column="likes"
+              className={cn(DEFRAGMENT_COUNT_COL_CLASS, "text-right")}
+              onClick={() => handleColumnSort("likes")}
+            />
+            <BoardColumnSortButton
+              label={copy.boardComments}
+              active={sort === "comments"}
+              column="comments"
+              className={cn(DEFRAGMENT_COUNT_COL_CLASS, "text-right")}
+              onClick={() => handleColumnSort("comments")}
+            />
           </div>
           {items.map((item) => (
             <DefragmentIndexRow
@@ -220,12 +259,42 @@ export function DefragmentClient({
             hasMore={hasMore}
             loadingMore={loadingMore}
             disabled={unavailable}
-            extraKey={items.length}
+            extraKey={`${sort}:${typeFilter ?? "all"}:${items.length}`}
             label={copy.loadingMore}
             onLoadMore={() => { void loadMore(); }}
           />
         </div>
       )}
     </div>
+  );
+}
+
+function BoardColumnSortButton({
+  label,
+  active,
+  className,
+  column,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  className?: string;
+  column: DefragmentBoardColumnSort;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      data-defragment-sort-column={column}
+      onClick={onClick}
+      className={cn(
+        "transition-colors",
+        active ? "text-foreground underline decoration-primary/50 underline-offset-4" : "hover:text-zinc-300",
+        className,
+      )}
+    >
+      {label}
+    </button>
   );
 }

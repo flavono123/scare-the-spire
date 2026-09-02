@@ -1,13 +1,17 @@
 import {
+  feedItemFromPost,
   isDefragmentFederatedService,
+  type DefragmentFederatedService,
   type DefragmentFeedItem,
 } from "@/lib/defragment";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
   asNonNegativeInt,
+  fetchToyboxFeedPage,
   isToyboxFeedCoreSort,
   TOYBOX_FEED_PAGE_SIZE,
+  TOYBOX_FEED_TABLES,
   toyboxRecommendScore,
   type ToyboxFeedCursor,
   type ToyboxFeedSort,
@@ -36,6 +40,10 @@ function asUuid(value: unknown): string | null {
   return value;
 }
 
+function asOptionalText(value: unknown): string {
+  return typeof value === "string" ? value : "";
+}
+
 export function parseDefragmentFeedRow(row: unknown): DefragmentFeedItem | null {
   if (!row || typeof row !== "object") return null;
   const record = row as Record<string, unknown>;
@@ -55,9 +63,42 @@ export function parseDefragmentFeedRow(row: unknown): DefragmentFeedItem | null 
     created_at: createdAt,
     service,
     title,
+    nickname: asOptionalText(record.nickname).trim(),
+    userId: asUuid(record.user_id) ?? asOptionalText(record.user_id),
     likeCount,
     commentCount,
     recommendScore,
+  };
+}
+
+export function normalizeDefragmentSourcePost(raw: unknown): {
+  id: string;
+  created_at: string;
+  nickname: string;
+  user_id: string;
+  title?: string | null;
+  content_text?: string;
+  transformed_name?: string | null;
+  reason?: string;
+  note?: string;
+  like_count?: number;
+  comment_count?: number;
+} {
+  const record = raw && typeof raw === "object" ? raw as Record<string, unknown> : {};
+  return {
+    id: asUuid(record.id) ?? "",
+    created_at: asIsoTimestamp(record.created_at) ?? "",
+    nickname: asOptionalText(record.nickname),
+    user_id: asUuid(record.user_id) ?? asOptionalText(record.user_id),
+    title: typeof record.title === "string" ? record.title : null,
+    content_text: typeof record.content_text === "string" ? record.content_text : undefined,
+    transformed_name: typeof record.transformed_name === "string"
+      ? record.transformed_name
+      : null,
+    reason: typeof record.reason === "string" ? record.reason : undefined,
+    note: typeof record.note === "string" ? record.note : undefined,
+    like_count: asNonNegativeInt(record.like_count) ?? undefined,
+    comment_count: asNonNegativeInt(record.comment_count) ?? undefined,
   };
 }
 
@@ -76,13 +117,44 @@ export function cursorFromDefragmentItem(
   };
 }
 
+async function fetchFilteredDefragmentFeedPage(options: {
+  service: DefragmentFederatedService;
+  sort: ToyboxFeedSort;
+  cursor: ToyboxFeedCursor | null;
+}): Promise<DefragmentFeedPage> {
+  const page = await fetchToyboxFeedPage({
+    service: options.service,
+    table: TOYBOX_FEED_TABLES[options.service],
+    sort: options.sort,
+    cursor: options.cursor,
+    normalizePost: normalizeDefragmentSourcePost,
+  });
+  return {
+    items: page.items.map((item) => feedItemFromPost(options.service, {
+      ...item.post,
+      like_count: item.likeCount,
+      comment_count: item.commentCount,
+    })),
+    hasMore: page.hasMore,
+  };
+}
+
 export async function fetchDefragmentFeedPage(options: {
   sort: ToyboxFeedSort;
   cursor: ToyboxFeedCursor | null;
+  service?: DefragmentFederatedService | null;
 }): Promise<DefragmentFeedPage> {
   if (!supabaseEnabled) return { items: [], hasMore: false };
 
   const sort: ToyboxFeedSort = isToyboxFeedCoreSort(options.sort) ? options.sort : "latest";
+  if (options.service) {
+    return fetchFilteredDefragmentFeedPage({
+      service: options.service,
+      sort,
+      cursor: options.cursor,
+    });
+  }
+
   const { data, error } = await withSupabaseTimeout(
     "get_defragment_feed",
     supabase.rpc("get_defragment_feed", {

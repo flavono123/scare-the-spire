@@ -34,6 +34,8 @@ assert.equal(parsed.title, "Strike / Bash");
 assert.equal(parsed.likeCount, 2);
 assert.equal(parsed.commentCount, 3);
 assert.equal(parsed.recommendScore, 26);
+assert.equal(parsed.nickname, "");
+assert.equal(parsed.userId, "");
 assert.equal(
   cursorFromDefragmentItem(parsed, "comments").score,
   3,
@@ -86,6 +88,17 @@ const fromCombo = feedItemFromPost("combo", {
 });
 assert.equal(fromCombo.service, "combo");
 assert.equal(fromCombo.title, "Strike / Bash extra words");
+assert.equal(fromCombo.nickname, "");
+
+const fromComboNamed = feedItemFromPost("combo", {
+  id: parsed.id,
+  created_at: parsed.created_at,
+  content_text: "Strike / Bash extra words",
+  nickname: "밀집",
+  user_id: "bbbbbbbb-bbbb-cccc-dddd-eeeeeeeeeeee",
+});
+assert.equal(fromComboNamed.nickname, "밀집");
+assert.equal(fromComboNamed.userId, "bbbbbbbb-bbbb-cccc-dddd-eeeeeeeeeeee");
 
 const fromTournament = feedItemFromPost("favorite_tournament", {
   id: parsed.id,
@@ -117,5 +130,17 @@ const parsedDecisions = parseDefragmentFeedRow({
 });
 assert.ok(parsedDecisions);
 assert.equal(parsedDecisions.service, "decisions_decisions");
+
+const parsedAuthor = parseDefragmentFeedRow({
+  id: parsed.id,
+  created_at: parsed.created_at,
+  service: "chemical_x",
+  title: "투입",
+  nickname: "익명의 투입터리안",
+  user_id: "cccccccc-bbbb-cccc-dddd-eeeeeeeeeeee",
+});
+assert.ok(parsedAuthor);
+assert.equal(parsedAuthor.nickname, "익명의 투입터리안");
+assert.equal(parsedAuthor.userId, "cccccccc-bbbb-cccc-dddd-eeeeeeeeeeee");
 
 console.log("defragment-feed.spec.ts: ok");
