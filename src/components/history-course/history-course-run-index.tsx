@@ -2,13 +2,20 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { ComboGameElementFilter } from "@/components/combo/combo-game-element-filter";
 import { CoverEditorSheet } from "@/components/history-course/cover-editor-sheet";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useAuth } from "@/hooks/use-auth";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import type { PostBlock } from "@/lib/chemical-types";
+import type { ComboResourceRef } from "@/lib/combo-types";
 import { mergePartyBadges } from "@/lib/history-party";
+import {
+  buildHistoryCourseSearchDoc,
+  historyCourseRunMatches,
+} from "@/lib/history-course-search";
 import {
   type DonatedRunSummary,
   deleteDonatedRun,
@@ -28,8 +35,8 @@ import { RandomPickCard } from "./random-pick-card";
 import { RunCard, runCardPropsFromReplay } from "./run-card";
 
 interface Props {
+  entities: EntityInfo[];
   refreshKey?: number;
-  query?: string;
   pendingEditRunId?: string | null;
   onPendingEditConsumed?: () => void;
 }
@@ -50,12 +57,13 @@ interface MergedRun {
 }
 
 export function HistoryCourseRunIndex({
+  entities,
   refreshKey = 0,
-  query = "",
   pendingEditRunId = null,
   onPendingEditConsumed,
 }: Props) {
-  const copy = serviceMessages[useServiceLocale()].historyCourse.lists;
+  const serviceLocale = useServiceLocale();
+  const copy = serviceMessages[serviceLocale].historyCourse.lists;
   const router = useRouter();
   const { userId, ensureUser } = useAuth();
   const [localEntries, setLocalEntries] = useState<LocalEntry[] | null>(null);
@@ -64,6 +72,8 @@ export function HistoryCourseRunIndex({
   const [unavailable, setUnavailable] = useState(false);
   const [editingLocal, setEditingLocal] = useState<LocalEntry | null>(null);
   const [editingDonated, setEditingDonated] = useState<DonatedRunSummary | null>(null);
+  const [query, setQuery] = useState("");
+  const [selectedGameElements, setSelectedGameElements] = useState<ComboResourceRef[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -140,9 +150,35 @@ export function HistoryCourseRunIndex({
     () => mergeIndexRuns(localEntries ?? [], donatedRuns ?? []),
     [donatedRuns, localEntries],
   );
+  const searchDocs = useMemo(() => {
+    const docs = new Map<string, ReturnType<typeof buildHistoryCourseSearchDoc>>();
+    for (const item of merged) {
+      const run = item.local?.run ?? parseDonatedReplay(item.donated);
+      docs.set(
+        item.runId,
+        buildHistoryCourseSearchDoc({
+          runId: item.runId,
+          run,
+          donated: item.donated,
+          cover: item.local?.coverSpec ?? item.donated?.cover_spec ?? null,
+          noteBlocks: item.local?.noteBlocks ?? item.donated?.note_blocks ?? null,
+          entities,
+        }),
+      );
+    }
+    return docs;
+  }, [entities, merged]);
+  const searchItems = useMemo(
+    () => [...searchDocs.values()].map((doc) => ({ resources: doc.resources })),
+    [searchDocs],
+  );
   const filtered = useMemo(
-    () => filterMergedRuns(merged, query),
-    [merged, query],
+    () => merged.filter((item) => {
+      const doc = searchDocs.get(item.runId);
+      if (!doc) return true;
+      return historyCourseRunMatches(doc, query, selectedGameElements, entities);
+    }),
+    [entities, merged, query, searchDocs, selectedGameElements],
   );
 
   const handleSaveLocalCover = useCallback(
@@ -282,11 +318,29 @@ export function HistoryCourseRunIndex({
   const localReady = localEntries !== null;
   const sharedReady = donatedRuns !== null;
   const loading = !localReady || !sharedReady;
-  const hasQuery = query.trim().length > 0;
+  const hasQuery = query.trim().length > 0 || selectedGameElements.length > 0;
   const donatedForRandom = donatedRuns ?? [];
 
   return (
     <section>
+      <div className="mb-4 max-w-2xl">
+        <ComboGameElementFilter
+          entities={entities}
+          items={searchItems}
+          selected={selectedGameElements}
+          serviceLocale={serviceLocale}
+          onSelectedChange={setSelectedGameElements}
+          onQueryChange={setQuery}
+          labels={{
+            filterSearchPlaceholder: copy.searchPlaceholder,
+            gameElementsInPosts: copy.gameElementsInRuns,
+            noGameElementsInPosts: copy.noGameElementsInRuns,
+            popularGameElements: copy.popularGameElements,
+            applyPopularGameElement: copy.applyPopularGameElement,
+            removePopularGameElement: copy.removePopularGameElement,
+          }}
+        />
+      </div>
       <header className="mb-4 flex items-baseline justify-between gap-3">
         <p className="text-[11px] text-muted-foreground">
           {copy.minBuild.replace("{version}", MIN_SUPPORTED_BUILD.replace(/^v/, ""))}
@@ -459,32 +513,11 @@ function mergeIndexRuns(
   return [...byId.values()].sort((a, b) => b.sortTime - a.sortTime);
 }
 
-function filterMergedRuns(runs: MergedRun[], query: string): MergedRun[] {
-  const text = query.trim().toLowerCase();
-  if (!text) return runs;
-  return runs.filter((item) => {
-    const local = item.local;
-    const donated = item.donated;
-    const values = [
-      item.runId,
-      local?.run.seed,
-      local?.run.players.map((player) => player.character).join(" "),
-      local?.run.build_id,
-      local?.coverSpec.phrase,
-      ...(local?.coverSpec.elements.map((el) => el.id) ?? []),
-      donated?.id,
-      donated?.seed,
-      donated?.character,
-      donated?.build,
-      donated?.cover_spec?.phrase,
-      ...(donated?.cover_spec?.elements.map((el) => el.id) ?? []),
-      donated?.highlight_card?.nameKo,
-      donated?.highlight_card?.nameEn,
-      donated?.highlight_relic?.nameKo,
-      donated?.highlight_relic?.nameEn,
-    ];
-    return values
-      .filter(Boolean)
-      .some((value) => String(value).toLowerCase().includes(text));
-  });
+function parseDonatedReplay(donated: DonatedRunSummary | undefined): ReplayRun | null {
+  if (!donated?.raw) return null;
+  try {
+    return parseReplayRun(donated.raw);
+  } catch {
+    return null;
+  }
 }

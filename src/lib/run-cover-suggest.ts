@@ -316,6 +316,14 @@ function phraseCandidates(
   return applicable;
 }
 
+/** Every auto-cover phrase candidate for search / editor pools. */
+export function coverPhrasePool(
+  run: ReplayRun,
+  elements: CoverElement[],
+): string[] {
+  return phraseCandidates(run, elements).map((item) => item.text);
+}
+
 function pickPhrase(
   run: ReplayRun,
   elements: CoverElement[],

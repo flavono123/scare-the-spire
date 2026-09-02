@@ -30,3 +30,17 @@ export function isBuildAtLeast(build: string, minimum: string): boolean {
 export function isBuildSupported(build: string): boolean {
   return isBuildAtLeast(build, MIN_SUPPORTED_BUILD);
 }
+
+/** Collapse extra leading `v`s so `v0.111.0` never renders as `vv0.111.0`. */
+export function formatBuildLabel(build: string): string {
+  const value = build.trim();
+  if (!value) return "";
+  return `v${value.replace(/^v+/i, "")}`;
+}
+
+export function buildSearchTokens(build: string): string[] {
+  const value = build.trim();
+  if (!value) return [];
+  const compact = value.replace(/^v+/i, "");
+  return Array.from(new Set([value, compact, `v${compact}`]));
+}

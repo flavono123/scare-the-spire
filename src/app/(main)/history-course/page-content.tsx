@@ -4,6 +4,7 @@ import { HistoryCourseLanding } from "@/components/history-course/history-course
 import { ServiceBackground } from "@/components/service-background";
 import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
+import { loadAllEntities } from "@/lib/load-all-entities";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { withPageOgImage } from "@/lib/page-og-images";
 import { getHistoryCourseLandingGameCopy } from "@/lib/borrowed-game-copy";
@@ -28,7 +29,10 @@ export async function generateHistoryCourseMetadata(
 export async function renderHistoryCourseIndexPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
-  const copy = await getHistoryCourseLandingGameCopy(gameLocale);
+  const [copy, entities] = await Promise.all([
+    getHistoryCourseLandingGameCopy(gameLocale),
+    loadAllEntities({ gameLocale }),
+  ]);
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const headingCopy = serviceMessages[serviceLocale].historyCourse;
 
@@ -61,7 +65,7 @@ export async function renderHistoryCourseIndexPage(
         </header>
 
         <div className="mt-8">
-          <HistoryCourseLanding />
+          <HistoryCourseLanding entities={entities} />
         </div>
       </div>
     </div>

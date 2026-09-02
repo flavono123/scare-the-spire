@@ -13,7 +13,6 @@ import { matchEntities } from "@/lib/chemical-utils";
 import {
   comboResourceKey,
   rankPopularComboResources,
-  type ComboPost,
   type ComboResourceRef,
 } from "@/lib/combo-types";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -39,6 +38,8 @@ const GAME_ELEMENT_TYPE_ORDER = [
   "epoch",
   "character",
   "keyword",
+  "modifier",
+  "ascension",
 ] as const satisfies readonly EntityType[];
 
 function getGameElementTypeLabels(
@@ -59,25 +60,46 @@ function getGameElementTypeLabels(
     encounter: codex.encounters,
     ancient: codex.ancients,
     epoch: codex.epochs,
+    modifier: codex.modifiers,
+    ascension: codex.ascensions,
   };
 }
 
+type ComboGameElementFilterCopy = (typeof serviceMessages)["ko"]["combo"];
+
 interface ComboGameElementFilterProps {
   entities: EntityInfo[];
-  posts: ComboPost[];
+  items: Array<{ resources: ComboResourceRef[] }>;
   selected: ComboResourceRef[];
   serviceLocale: ServiceLocale;
   onSelectedChange: (selected: ComboResourceRef[]) => void;
+  onQueryChange?: (query: string) => void;
+  labels?: Partial<
+    Pick<
+      ComboGameElementFilterCopy,
+      | "filterSearchPlaceholder"
+      | "gameElementsInPosts"
+      | "noGameElementsInPosts"
+      | "popularGameElements"
+      | "applyPopularGameElement"
+      | "removePopularGameElement"
+    >
+  >;
 }
 
 export function ComboGameElementFilter({
   entities,
-  posts,
+  items,
   selected,
   serviceLocale,
   onSelectedChange,
+  onQueryChange,
+  labels,
 }: ComboGameElementFilterProps) {
-  const copy = serviceMessages[serviceLocale].combo;
+  const copy = {
+    ...serviceMessages[serviceLocale].combo,
+    ...labels,
+  };
   const commonCopy = serviceMessages[serviceLocale].codex.common;
   const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -95,12 +117,12 @@ export function ComboGameElementFilter({
     [entities],
   );
   const referencedKeys = useMemo(
-    () => new Set(posts.flatMap((post) => post.resources.map(comboResourceKey))),
-    [posts],
+    () => new Set(items.flatMap((item) => item.resources.map(comboResourceKey))),
+    [items],
   );
   const popularResources = useMemo(
-    () => rankPopularComboResources(posts, POPULAR_GAME_ELEMENT_LIMIT),
-    [posts],
+    () => rankPopularComboResources(items, POPULAR_GAME_ELEMENT_LIMIT),
+    [items],
   );
   const selectedKeys = useMemo(
     () => new Set(selected.map(comboResourceKey)),
@@ -192,7 +214,9 @@ export function ComboGameElementFilter({
           value={query}
           onFocus={() => setOpen(true)}
           onChange={(event) => {
-            setQuery(event.target.value);
+            const next = event.target.value;
+            setQuery(next);
+            onQueryChange?.(next);
             setOpen(true);
           }}
           placeholder={copy.filterSearchPlaceholder}
@@ -377,7 +401,11 @@ export function ComboGameElementFilter({
                 ref={mobileInputRef}
                 type="search"
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(event) => {
+                  const next = event.target.value;
+                  setQuery(next);
+                  onQueryChange?.(next);
+                }}
                 placeholder={copy.filterSearchPlaceholder}
                 aria-label={copy.filterSearchPlaceholder}
                 data-combo-filter-mobile-search
@@ -388,6 +416,7 @@ export function ComboGameElementFilter({
                   type="button"
                   onClick={() => {
                     setQuery("");
+                    onQueryChange?.("");
                     mobileInputRef.current?.focus();
                   }}
                   className="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"

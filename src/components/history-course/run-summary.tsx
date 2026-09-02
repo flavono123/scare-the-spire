@@ -30,6 +30,7 @@ import {
 import { buildRelicEntityInfo, lookupHistoryRelic } from "@/lib/history-relic-lookup";
 import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
 import { TEXT_CREAM, TEXT_GREEN, TEXT_PURPLE } from "@/lib/sts2-card-style";
+import { formatBuildLabel } from "@/lib/sts2-build-version";
 import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 import type { CodexCard, CodexPotion, CodexRelic } from "@/lib/codex-types";
@@ -342,7 +343,7 @@ function SummaryPanel({
               : playback.inProgress}{" "}
             · {playback.floorOnly.replace("{floor}", String(finalFloor))}
           </div>
-          <div className="text-zinc-500">v{run.build_id}</div>
+          <div className="text-zinc-500">{formatBuildLabel(run.build_id)}</div>
           <RunBadgeStrip
             badges={visibleBadges}
             serviceLocale={serviceLocale}

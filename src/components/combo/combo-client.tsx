@@ -148,7 +148,7 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
           />
           <ComboGameElementFilter
             entities={entities}
-            posts={posts}
+            items={posts}
             selected={selectedGameElements}
             serviceLocale={serviceLocale}
             onSelectedChange={setSelectedGameElements}

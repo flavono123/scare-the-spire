@@ -1,16 +1,25 @@
 "use client";
 
 import { Pencil, Share2, Trash2, Undo2 } from "lucide-react";
-import { useCallback, useState, type KeyboardEvent, type MouseEvent } from "react";
+import {
+  Children,
+  useCallback,
+  useState,
+  type KeyboardEvent,
+  type MouseEvent,
+  type ReactNode,
+} from "react";
 import {
   formatCoverRunTime,
   HistoryCourseCover,
 } from "@/components/history-course/history-course-cover";
 import { OwnPostMark } from "@/components/own-post-mark";
+import { useGameI18n } from "@/hooks/use-game-i18n";
 import type { PostBlock } from "@/lib/chemical-types";
+import { resolveCoverPhrase } from "@/lib/run-cover-phrase";
 import { ensureCoverSpec } from "@/lib/run-cover-suggest";
 import type { CoverSpec } from "@/lib/run-cover-types";
-import { isBuildSupported } from "@/lib/sts2-build-version";
+import { formatBuildLabel, isBuildSupported } from "@/lib/sts2-build-version";
 import type { ReplayBadge, ReplayRun } from "@/lib/sts2-run-replay";
 import { mergePartyBadges, partyCharacters } from "@/lib/history-party";
 import { cn } from "@/lib/utils";
@@ -89,12 +98,23 @@ export function RunCard({
   pending,
 }: RunCardProps) {
   const serviceLocale = useServiceLocale();
+  const tables = useGameI18n();
   const copy = serviceMessages[serviceLocale].historyCourse.runCard;
   const supported = isBuildSupported(build);
   const hasRunTime =
     typeof runTimeSeconds === "number" &&
     Number.isFinite(runTimeSeconds) &&
     runTimeSeconds >= 0;
+  const phrase = coverSpec
+    ? resolveCoverPhrase(
+        coverSpec,
+        { win, totalFloors, ascension },
+        serviceLocale,
+        tables,
+      )
+    : "";
+  const title = phrase || seed;
+  const versionLabel = formatBuildLabel(build);
 
   const onTrashClick = useCallback(
     (e: MouseEvent) => {
@@ -149,7 +169,7 @@ export function RunCard({
       onClick={handleClick}
       onKeyDown={onKeyDown}
       aria-disabled={pending || undefined}
-      aria-label={build}
+      aria-label={title}
       title={supported ? undefined : copy.unsupportedTitle}
       className={cn(
         "toybox-video-lockup group cursor-pointer hover:z-10 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70",
@@ -181,22 +201,22 @@ export function RunCard({
           <div className="min-w-0 flex-1">
             <div className="flex min-w-0 items-center gap-1.5">
               <h2 className="min-w-0 truncate font-service text-[15px] font-semibold leading-snug text-foreground">
-                {build}
+                {title}
               </h2>
               {isOwner && <OwnPostMark />}
             </div>
-            <p className="mt-0.5 flex min-w-0 items-baseline gap-1.5 text-xs leading-snug text-muted-foreground">
-              {hasRunTime ? (
-                <span className="shrink-0 tabular-nums">
-                  {formatCoverRunTime(runTimeSeconds)}
-                </span>
-              ) : null}
-              {hasRunTime && seed ? (
-                <span aria-hidden className="shrink-0 text-muted-foreground/50">
-                  ·
-                </span>
-              ) : null}
-              {seed ? <SeedCaptionButton seed={seed} /> : null}
+            <p className="mt-0.5 flex min-w-0 flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-xs leading-snug text-muted-foreground">
+              <LockupCaptionParts>
+                {hasRunTime ? (
+                  <span className="shrink-0 tabular-nums">
+                    {formatCoverRunTime(runTimeSeconds)}
+                  </span>
+                ) : null}
+                {seed ? <SeedCaptionButton seed={seed} /> : null}
+                {versionLabel ? (
+                  <span className="shrink-0 tabular-nums">{versionLabel}</span>
+                ) : null}
+              </LockupCaptionParts>
             </p>
           </div>
           {(onDelete || onShare || onEditCover) && (
@@ -254,6 +274,24 @@ export function RunCard({
         )}
       </div>
     </article>
+  );
+}
+
+function LockupCaptionParts({ children }: { children: ReactNode }) {
+  const parts = Children.toArray(children).filter(Boolean);
+  return (
+    <>
+      {parts.map((part, index) => (
+        <span key={index} className="contents">
+          {index > 0 ? (
+            <span aria-hidden className="shrink-0 text-muted-foreground/50">
+              ·
+            </span>
+          ) : null}
+          {part}
+        </span>
+      ))}
+    </>
   );
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { SearchBar } from "@/components/codex/search-bar";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 import { HistoryCourseRunIndex } from "./history-course-run-index";
@@ -9,12 +9,14 @@ import { ProdRunsDevSection } from "./prod-runs-dev-section";
 import { RunUploadZone } from "./run-upload-zone";
 import { UploadTutorial } from "./upload-tutorial";
 
-export function HistoryCourseLanding() {
+interface HistoryCourseLandingProps {
+  entities: EntityInfo[];
+}
+
+export function HistoryCourseLanding({ entities }: HistoryCourseLandingProps) {
   const serviceLocale = useServiceLocale();
-  const listsCopy = serviceMessages[serviceLocale].historyCourse.lists;
   const coverCopy = serviceMessages[serviceLocale].historyCourse.coverEditor;
   const [refreshKey, setRefreshKey] = useState(0);
-  const [query, setQuery] = useState("");
   const [pendingEditRunId, setPendingEditRunId] = useState<string | null>(null);
   const [polishRunId, setPolishRunId] = useState<string | null>(null);
 
@@ -51,17 +53,9 @@ export function HistoryCourseLanding() {
         )}
         <UploadTutorial />
       </div>
-      <div className="max-w-xl">
-        <SearchBar
-          value={query}
-          onChange={setQuery}
-          inputId="history-course-run-search"
-          placeholder={listsCopy.searchPlaceholder}
-        />
-      </div>
       <HistoryCourseRunIndex
+        entities={entities}
         refreshKey={refreshKey}
-        query={query}
         pendingEditRunId={pendingEditRunId}
         onPendingEditConsumed={() => setPendingEditRunId(null)}
       />
