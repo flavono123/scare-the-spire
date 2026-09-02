@@ -4,15 +4,11 @@ import { useCallback, useState } from "react";
 import { SearchBar } from "@/components/codex/search-bar";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
-import { DonatedRunsSection } from "./donated-runs-section";
-import { MyRunsList } from "./my-runs-list";
+import { HistoryCourseRunIndex } from "./history-course-run-index";
 import { ProdRunsDevSection } from "./prod-runs-dev-section";
 import { RunUploadZone } from "./run-upload-zone";
 import { UploadTutorial } from "./upload-tutorial";
 
-// Client-side composition: drop zone + tutorial sit full-width on top;
-// 내 런 and 공유된 런 sit side-by-side at lg+ widths. A refreshKey bump
-// on a successful upload re-hydrates both lists.
 export function HistoryCourseLanding() {
   const serviceLocale = useServiceLocale();
   const listsCopy = serviceMessages[serviceLocale].historyCourse.lists;
@@ -63,15 +59,12 @@ export function HistoryCourseLanding() {
           placeholder={listsCopy.searchPlaceholder}
         />
       </div>
-      <div className="grid gap-6 lg:grid-cols-2">
-        <MyRunsList
-          refreshKey={refreshKey}
-          query={query}
-          pendingEditRunId={pendingEditRunId}
-          onPendingEditConsumed={() => setPendingEditRunId(null)}
-        />
-        <DonatedRunsSection refreshKey={refreshKey} query={query} />
-      </div>
+      <HistoryCourseRunIndex
+        refreshKey={refreshKey}
+        query={query}
+        pendingEditRunId={pendingEditRunId}
+        onPendingEditConsumed={() => setPendingEditRunId(null)}
+      />
       <ProdRunsDevSection />
     </div>
   );

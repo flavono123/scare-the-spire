@@ -144,7 +144,7 @@ export async function listRuns(): Promise<StoredRun[]> {
 }
 
 // Visitor's own uploads only — excludes runs cached from visiting a
-// shared donation URL. Use this for "내 런" surfaces.
+// shared donation URL. Use this for ownership (내 글) and local library.
 export async function listOwnRuns(): Promise<StoredRun[]> {
   const all = await listRuns();
   return all.filter((r) => (r.origin ?? "upload") !== "donation-cache");

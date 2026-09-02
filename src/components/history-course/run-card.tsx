@@ -1,8 +1,12 @@
 "use client";
 
 import { Pencil, Share2, Trash2, Undo2 } from "lucide-react";
-import { useCallback, type KeyboardEvent, type ReactNode } from "react";
-import { HistoryCourseCover } from "@/components/history-course/history-course-cover";
+import { useCallback, useState, type KeyboardEvent, type MouseEvent } from "react";
+import {
+  formatCoverRunTime,
+  HistoryCourseCover,
+} from "@/components/history-course/history-course-cover";
+import { OwnPostMark } from "@/components/own-post-mark";
 import type { PostBlock } from "@/lib/chemical-types";
 import { ensureCoverSpec } from "@/lib/run-cover-suggest";
 import type { CoverSpec } from "@/lib/run-cover-types";
@@ -38,7 +42,8 @@ export interface RunCardProps {
   onShare?: () => void;
   onEditCover?: () => void;
   shareState?: "none" | "shared";
-  variant: "mine" | "shared";
+  isOwner?: boolean;
+  ownedLocally?: boolean;
   pending?: boolean;
 }
 
@@ -46,7 +51,7 @@ export function runCardPropsFromReplay(
   run: ReplayRun,
   runId: string,
   coverSpec?: CoverSpec | null,
-): Omit<RunCardProps, "onPick" | "variant"> {
+): Omit<RunCardProps, "onPick"> {
   return {
     runId,
     character: run.players[0]?.character ?? "",
@@ -79,15 +84,20 @@ export function RunCard({
   onShare,
   onEditCover,
   shareState = "none",
-  variant,
+  isOwner = false,
+  ownedLocally = false,
   pending,
 }: RunCardProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].historyCourse.runCard;
   const supported = isBuildSupported(build);
+  const hasRunTime =
+    typeof runTimeSeconds === "number" &&
+    Number.isFinite(runTimeSeconds) &&
+    runTimeSeconds >= 0;
 
   const onTrashClick = useCallback(
-    (e: React.MouseEvent) => {
+    (e: MouseEvent) => {
       e.stopPropagation();
       onDelete?.();
     },
@@ -95,7 +105,7 @@ export function RunCard({
   );
 
   const onShareClick = useCallback(
-    (e: React.MouseEvent) => {
+    (e: MouseEvent) => {
       e.stopPropagation();
       onShare?.();
     },
@@ -103,7 +113,7 @@ export function RunCard({
   );
 
   const onEditCoverClick = useCallback(
-    (e: React.MouseEvent) => {
+    (e: MouseEvent) => {
       e.stopPropagation();
       onEditCover?.();
     },
@@ -111,8 +121,9 @@ export function RunCard({
   );
 
   const onKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLDivElement>) => {
+    (e: KeyboardEvent<HTMLElement>) => {
       if (pending) return;
+      if (e.target !== e.currentTarget) return;
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         onPick();
@@ -121,87 +132,33 @@ export function RunCard({
     [onPick, pending],
   );
 
-  const topRightActions: ReactNode =
-    onDelete || onShare || onEditCover ? (
-      <>
-        {onEditCover && (
-          <button
-            type="button"
-            onClick={onEditCoverClick}
-            title={copy.editCoverTitle}
-            className={cn(
-              "inline-flex shrink-0 items-center gap-1 rounded-md bg-black/55 px-1.5 py-0.5 text-[10px] font-bold text-amber-100/85 backdrop-blur transition ring-1 ring-inset ring-amber-400/25",
-              "hover:bg-amber-500/20 hover:text-amber-50",
-            )}
-          >
-            <Pencil className="h-3 w-3" aria-hidden />
-            {copy.editCover}
-          </button>
-        )}
-        {onShare && (
-          <button
-            type="button"
-            onClick={onShareClick}
-            title={
-              shareState === "shared" ? copy.unshareTitle : copy.shareTitle
-            }
-            className={cn(
-              "inline-flex shrink-0 items-center gap-1 rounded-md bg-black/55 px-1.5 py-0.5 text-[10px] font-bold backdrop-blur transition ring-1 ring-inset",
-              shareState === "shared"
-                ? "text-emerald-200/80 ring-emerald-400/20 hover:bg-emerald-500/20 hover:text-emerald-100"
-                : "text-amber-200/80 ring-amber-400/20 hover:bg-amber-500/20 hover:text-amber-100",
-            )}
-          >
-            {shareState === "shared" ? (
-              <>
-                <Undo2 className="h-3 w-3" aria-hidden />
-                {copy.unshare}
-              </>
-            ) : (
-              <>
-                <Share2 className="h-3 w-3" aria-hidden />
-                {copy.share}
-              </>
-            )}
-          </button>
-        )}
-        {onDelete && (
-          <button
-            type="button"
-            onClick={onTrashClick}
-            title={
-              variant === "shared"
-                ? copy.unshareTitle
-                : copy.deleteLocalTitle
-            }
-            className={cn(
-              "inline-flex shrink-0 items-center gap-1 rounded-md bg-black/55 px-1.5 py-0.5 text-[10px] font-bold text-zinc-200 backdrop-blur transition ring-1 ring-inset ring-red-400/20",
-              "hover:bg-red-500/20 hover:text-red-100",
-            )}
-          >
-            <Trash2 size={12} />
-            {copy.delete}
-          </button>
-        )}
-      </>
-    ) : undefined;
+  const handleClick = useCallback(
+    (e: MouseEvent<HTMLElement>) => {
+      if (pending) return;
+      const target = e.target as HTMLElement;
+      if (target.closest("a, button, [role='button']")) return;
+      onPick();
+    },
+    [onPick, pending],
+  );
 
   return (
-    <div className="group relative">
-      <div
-        role="button"
-        tabIndex={pending ? -1 : 0}
-        onClick={pending ? undefined : onPick}
-        onKeyDown={onKeyDown}
-        aria-disabled={pending || undefined}
-        title={supported ? undefined : copy.unsupportedTitle}
-        className={cn(
-          "block w-full overflow-hidden rounded-xl text-left ring-1 ring-zinc-800 transition",
-          pending && "cursor-wait opacity-60",
-          !pending && supported && "cursor-pointer hover:-translate-y-0.5 hover:ring-amber-300/40",
-          !pending && !supported && "cursor-pointer opacity-60 hover:opacity-100 hover:ring-red-300/40",
-        )}
-      >
+    <article
+      role="link"
+      tabIndex={pending ? -1 : 0}
+      onClick={handleClick}
+      onKeyDown={onKeyDown}
+      aria-disabled={pending || undefined}
+      aria-label={build}
+      title={supported ? undefined : copy.unsupportedTitle}
+      className={cn(
+        "toybox-video-lockup group cursor-pointer hover:z-10 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70",
+        pending && "cursor-wait opacity-60",
+        !pending && !supported && "opacity-60 hover:opacity-100",
+      )}
+    >
+      <span className="toybox-video-lockup-plate" aria-hidden />
+      <div className="relative z-[1]">
         {coverSpec ? (
           <HistoryCourseCover
             cover={coverSpec}
@@ -216,17 +173,118 @@ export function RunCard({
               runTimeSeconds,
               badges,
             }}
-            topRightActions={topRightActions}
           />
         ) : (
-          <div className="aspect-[16/9] bg-zinc-950" />
+          <div className="aspect-video rounded-xl bg-zinc-950" />
         )}
+        <div className="mt-3 flex items-start gap-2">
+          <div className="min-w-0 flex-1">
+            <div className="flex min-w-0 items-center gap-1.5">
+              <h2 className="min-w-0 truncate font-service text-[15px] font-semibold leading-snug text-foreground">
+                {build}
+              </h2>
+              {isOwner && <OwnPostMark />}
+            </div>
+            <p className="mt-0.5 flex min-w-0 items-baseline gap-1.5 text-xs leading-snug text-muted-foreground">
+              {hasRunTime ? (
+                <span className="shrink-0 tabular-nums">
+                  {formatCoverRunTime(runTimeSeconds)}
+                </span>
+              ) : null}
+              {hasRunTime && seed ? (
+                <span aria-hidden className="shrink-0 text-muted-foreground/50">
+                  ·
+                </span>
+              ) : null}
+              {seed ? <SeedCaptionButton seed={seed} /> : null}
+            </p>
+          </div>
+          {(onDelete || onShare || onEditCover) && (
+            <div className="flex shrink-0 items-center gap-0.5 pt-0.5">
+              {onEditCover && (
+                <button
+                  type="button"
+                  onClick={onEditCoverClick}
+                  title={copy.editCoverTitle}
+                  className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  <Pencil className="h-3.5 w-3.5" aria-hidden />
+                  <span className="sr-only">{copy.editCover}</span>
+                </button>
+              )}
+              {onShare && (
+                <button
+                  type="button"
+                  onClick={onShareClick}
+                  title={
+                    shareState === "shared" ? copy.unshareTitle : copy.shareTitle
+                  }
+                  className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  {shareState === "shared" ? (
+                    <Undo2 className="h-3.5 w-3.5" aria-hidden />
+                  ) : (
+                    <Share2 className="h-3.5 w-3.5" aria-hidden />
+                  )}
+                  <span className="sr-only">
+                    {shareState === "shared" ? copy.unshare : copy.share}
+                  </span>
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  type="button"
+                  onClick={onTrashClick}
+                  title={
+                    ownedLocally ? copy.deleteLocalTitle : copy.unshareTitle
+                  }
+                  className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  <Trash2 className="h-3.5 w-3.5" aria-hidden />
+                  <span className="sr-only">{copy.delete}</span>
+                </button>
+              )}
+            </div>
+          )}
+        </div>
         {!supported && (
-          <p className="bg-black/70 px-3 py-1 text-[10px] text-red-300/90">
+          <p className="mt-1 text-[11px] text-muted-foreground">
             {copy.unsupportedRemove}
           </p>
         )}
       </div>
-    </div>
+    </article>
+  );
+}
+
+function SeedCaptionButton({ seed }: { seed: string }) {
+  const serviceLocale = useServiceLocale();
+  const copy = serviceMessages[serviceLocale].historyCourse.runCard;
+  const [copied, setCopied] = useState(false);
+
+  const onCopy = useCallback(
+    async (event: MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      event.stopPropagation();
+      try {
+        await navigator.clipboard.writeText(seed);
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 1500);
+      } catch {
+        // Older browsers without clipboard API.
+      }
+    },
+    [seed],
+  );
+
+  return (
+    <button
+      type="button"
+      onClick={onCopy}
+      title={copied ? copy.seedCopied : copy.copySeed}
+      className="min-w-0 truncate font-mono text-xs text-muted-foreground hover:text-foreground"
+    >
+      {copied ? copy.seedCopied : seed}
+    </button>
   );
 }

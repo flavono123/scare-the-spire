@@ -1,14 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { Check, Copy } from "lucide-react";
 import {
-  useCallback,
   useEffect,
   useRef,
   useState,
   type CSSProperties,
-  type MouseEvent,
   type ReactNode,
   type RefObject,
 } from "react";
@@ -46,7 +43,6 @@ import { CARD_ASPECT_H, CARD_ASPECT_W } from "@/lib/sts2-card-style";
 import type { ReplayBadge } from "@/lib/sts2-run-replay";
 import { PARTY_COVER_BADGE_MAX } from "@/lib/history-party";
 import { cn } from "@/lib/utils";
-import { serviceMessages } from "@/messages/service";
 
 export interface HistoryCourseCoverMeta {
   win: boolean;
@@ -65,7 +61,7 @@ interface HistoryCourseCoverProps {
   meta?: HistoryCourseCoverMeta;
   className?: string;
   size?: "index" | "compact";
-  /** Rendered above win/floor/ascension/build in the top-right stack. */
+  /** Rendered above win/floor/ascension in the top-right stack. */
   topRightActions?: ReactNode;
 }
 
@@ -175,9 +171,8 @@ export function HistoryCourseCover({
       <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/35" />
 
       {/*
-        Four zones. With action chips, right column sizes to content (max-content)
-        so half-width 13" cards never clip the left of end-aligned chips/meta.
-        Phrase cell clips its own overflow so long titles don't paint over meta.
+        Four overlay zones: phrase, win/floor/ascension, game elements, badges.
+        Version, playtime, and seed live under the thumbnail on the index card.
       */}
       <div
         className={cn(
@@ -230,14 +225,6 @@ export function HistoryCourseCover({
               {meta.ascension > 0 && (
                 <AscensionChip ascension={meta.ascension} compact={compact} />
               )}
-              <span
-                className={cn(
-                  "font-bold spire-gold drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]",
-                  "text-[11px] sm:text-xs",
-                )}
-              >
-                {meta.build}
-              </span>
             </div>
           )}
         </div>
@@ -349,7 +336,6 @@ function CoverPartyCharacterSlot({
 
 const MIN_FULL_CARD_WIDTH = 72;
 
-/** Stack badges above seed by default; collapse to one row only when zone is short. */
 function CoverBottomRightMeta({
   meta,
   compact,
@@ -359,84 +345,24 @@ function CoverBottomRightMeta({
   compact: boolean;
   serviceLocale: ServiceLocale;
 }) {
-  const zoneRef = useRef<HTMLDivElement>(null);
-  const [tight, setTight] = useState(false);
-  const hasBadges = Boolean(meta?.badges && meta.badges.length > 0);
-  const hasRunTime =
-    typeof meta?.runTimeSeconds === "number" &&
-    Number.isFinite(meta.runTimeSeconds) &&
-    meta.runTimeSeconds >= 0;
-
-  useEffect(() => {
-    const el = zoneRef.current;
-    if (!el || !meta) return;
-
-    const update = () => {
-      // Badges (~28) + playtime (~18) + seed (~22) + gaps — stack until short.
-      let needed = compact ? 24 : 28; // seed
-      if (hasRunTime) needed += compact ? 18 : 22;
-      if (hasBadges) needed += compact ? 28 : 32;
-      setTight(
-        (hasBadges || hasRunTime) &&
-          el.clientHeight > 0 &&
-          el.clientHeight < needed,
-      );
-    };
-
-    update();
-    const raf = window.requestAnimationFrame(update);
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => {
-      window.cancelAnimationFrame(raf);
-      ro.disconnect();
-    };
-  }, [compact, hasBadges, hasRunTime, meta]);
-
-  if (!meta) return <div />;
+  const badges = meta?.badges;
+  if (!badges || badges.length === 0) return <div />;
 
   return (
-    <div
-      ref={zoneRef}
-      className="flex min-h-0 min-w-0 items-end justify-end self-stretch overflow-hidden"
-    >
-      <div
-        className={cn(
-          "pointer-events-auto flex max-w-full items-end justify-end",
-          tight ? "flex-nowrap gap-1 overflow-hidden" : "flex-col gap-1",
-          compact && !tight && "gap-0.5",
-        )}
-      >
-        {hasBadges && (
-          <RunBadgeStrip
-            badges={meta.badges!}
-            serviceLocale={serviceLocale}
-            size="sm"
-            max={compact ? 3 : PARTY_COVER_BADGE_MAX}
-            tipPlacement="below-left"
-            className={cn(
-              "justify-end",
-              tight && "min-w-0 flex-nowrap overflow-hidden",
-            )}
-          />
-        )}
-        {hasRunTime && (
-          <span
-            className={cn(
-              "font-bold tabular-nums spire-gold drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]",
-              compact ? "text-[9px]" : "text-[10px] sm:text-[11px]",
-            )}
-          >
-            {formatCoverRunTime(meta.runTimeSeconds!)}
-          </span>
-        )}
-        <SeedCopyChip seed={meta.seed} compact={compact} />
-      </div>
+    <div className="pointer-events-auto flex min-h-0 min-w-0 items-end justify-end self-stretch overflow-hidden">
+      <RunBadgeStrip
+        badges={badges}
+        serviceLocale={serviceLocale}
+        size="sm"
+        max={compact ? 3 : PARTY_COVER_BADGE_MAX}
+        tipPlacement="below-left"
+        className="max-w-full justify-end"
+      />
     </div>
   );
 }
 
-function formatCoverRunTime(seconds: number): string {
+export function formatCoverRunTime(seconds: number): string {
   const total = Math.max(0, Math.floor(seconds));
   const h = Math.floor(total / 3600);
   const m = Math.floor((total % 3600) / 60);
@@ -493,60 +419,6 @@ function useCoverCardLayout(
   }, [cardSlotCount, reservedWidth, targetCardWidth, zoneRef]);
 
   return layout;
-}
-
-function SeedCopyChip({
-  seed,
-  compact,
-}: {
-  seed: string;
-  compact: boolean;
-}) {
-  const serviceLocale = useServiceLocale();
-  const copy = serviceMessages[serviceLocale].historyCourse.runCard;
-  const [copied, setCopied] = useState(false);
-
-  const onCopy = useCallback(
-    async (event: MouseEvent<HTMLButtonElement>) => {
-      event.preventDefault();
-      event.stopPropagation();
-      try {
-        await navigator.clipboard.writeText(seed);
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 1500);
-      } catch {
-        // Older browsers without clipboard API.
-      }
-    },
-    [seed],
-  );
-
-  return (
-    <button
-      type="button"
-      onClick={onCopy}
-      title={copied ? copy.seedCopied : copy.copySeed}
-      className={cn(
-        "inline-flex max-w-full items-center gap-1 rounded-md bg-black/55 px-1.5 py-0.5 font-mono font-bold backdrop-blur transition ring-1 ring-inset",
-        copied
-          ? "text-emerald-200 ring-emerald-400/30"
-          : "text-zinc-100 ring-white/15 hover:bg-white/10 hover:ring-amber-300/35 hover:text-amber-50",
-        compact ? "text-[8px]" : "text-[10px] sm:text-[11px]",
-      )}
-    >
-      {copied ? (
-        <>
-          <Check className={cn(compact ? "h-2.5 w-2.5" : "h-3 w-3")} aria-hidden />
-          <span>{copy.seedCopied}</span>
-        </>
-      ) : (
-        <>
-          <Copy className={cn("shrink-0", compact ? "h-2.5 w-2.5" : "h-3 w-3")} aria-hidden />
-          <span className="truncate">{seed}</span>
-        </>
-      )}
-    </button>
-  );
 }
 
 function OutcomeChip({

@@ -97,7 +97,7 @@ async function parseFiles(
 
 export interface RunUploadZoneProps {
   // Fired after a batch of files has been parsed and stashed. The
-  // parent uses this to bump a refreshKey for MyRunsList so the
+  // parent uses this to bump a refreshKey for the run index so the
   // newly-saved runs surface in the cards grid.
   onUploadComplete?: (payload: { count: number; latestRunId?: string }) => void;
 }
