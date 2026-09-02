@@ -12,6 +12,7 @@ import type {
 } from "@/lib/codex-types";
 import { CHARACTER_ORDER } from "@/lib/codex-types";
 import { getEncounterMonsterIds } from "@/lib/encounter-compositions";
+import { UNSET_PROFILE_TOKEN_URL } from "@/lib/user-profile";
 
 export const PALETTE_KINDS = ["character", "boss", "elite", "ancient"] as const;
 
@@ -20,7 +21,7 @@ export type PaletteKind = (typeof PALETTE_KINDS)[number];
 export type PaletteSpinePreview = "monster" | "encounter" | "static";
 
 export type PaletteSubject = {
-  kind: PaletteKind;
+  kind: PaletteKind | "unset";
   id: string;
   name: string;
   tokenUrl: string | null;
@@ -55,9 +56,14 @@ export type PaletteAncientSource = Pick<CodexAncient, "id" | "name" | "imageUrl"
 };
 
 export const PALETTE_KIND_COPY: Record<
-  PaletteKind,
+  PaletteKind | "unset",
   { title: string; tokenHeading: string; tokenHint: string }
 > = {
+  unset: {
+    title: "없음",
+    tokenHeading: "? 토큰",
+    tokenHint: "프로필을 고르지 않으면 서비스별 익명 닉네임과 이 토큰을 쓴다.",
+  },
   character: {
     title: "캐릭터",
     tokenHeading: "얼굴 토큰",
@@ -254,6 +260,26 @@ export function buildPaletteSubjects(input: {
   return [...characters, ...bosses, ...elites, ...ancients];
 }
 
+export const UNSET_PALETTE_SUBJECT_ID = "UNSET";
+
+export const UNSET_PALETTE_SUBJECT: PaletteSubject = {
+  kind: "unset",
+  id: UNSET_PALETTE_SUBJECT_ID,
+  name: "없음",
+  tokenUrl: UNSET_PROFILE_TOKEN_URL,
+  pickerImageUrl: UNSET_PROFILE_TOKEN_URL,
+  fallbackImageUrl: UNSET_PROFILE_TOKEN_URL,
+  spineAsset: null,
+  actionIds: [],
+  encounterId: null,
+  spinePreview: "static",
+  staticPreviewUrl: UNSET_PROFILE_TOKEN_URL,
+};
+
+export const LAB_PALETTE_KINDS = ["unset", ...PALETTE_KINDS] as const;
+
+export type LabPaletteKind = (typeof LAB_PALETTE_KINDS)[number];
+
 export function subjectsForKind(
   subjects: readonly PaletteSubject[],
   kind: PaletteKind,
@@ -265,6 +291,7 @@ export function subjectsForKind(
 export function paletteNicknameIconUrl(
   subject: Pick<PaletteSubject, "kind" | "tokenUrl" | "pickerImageUrl">,
 ): string | null {
+  if (subject.kind === "unset") return subject.tokenUrl;
   if (subject.tokenUrl) return subject.tokenUrl;
   if (subject.kind === "elite") return null;
   return subject.pickerImageUrl;

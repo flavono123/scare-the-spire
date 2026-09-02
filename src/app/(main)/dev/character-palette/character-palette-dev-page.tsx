@@ -15,11 +15,13 @@ import {
   type CharacterPalettePair,
 } from "@/lib/dev-character-palettes";
 import {
+  LAB_PALETTE_KINDS,
   PALETTE_KIND_COPY,
-  PALETTE_KINDS,
+  UNSET_PALETTE_SUBJECT,
+  UNSET_PALETTE_SUBJECT_ID,
   paletteNicknameIconUrl,
   subjectsForKind,
-  type PaletteKind,
+  type LabPaletteKind,
   type PaletteSubject,
 } from "@/lib/dev-palette-subjects";
 import { cn } from "@/lib/utils";
@@ -36,13 +38,16 @@ export default function CharacterPaletteDevPage({
   const [colorBInput, setColorBInput] = useState(firstPair.colorB);
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(firstPair.id);
   const [tokenCrossed, setTokenCrossed] = useState(false);
-  const [kind, setKind] = useState<PaletteKind>("character");
+  const [kind, setKind] = useState<LabPaletteKind>("character");
   const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? "IRONCLAD");
 
   const colorA = normalizeHex(colorAInput);
   const colorB = normalizeHex(colorBInput);
   const colorsReady = Boolean(colorA && colorB);
-  const kindSubjects = useMemo(() => subjectsForKind(subjects, kind), [kind, subjects]);
+  const kindSubjects = useMemo(
+    () => (kind === "unset" ? [UNSET_PALETTE_SUBJECT] : subjectsForKind(subjects, kind)),
+    [kind, subjects],
+  );
   const subject = kindSubjects.find((entry) => entry.id === subjectId) ?? kindSubjects[0];
   const tokenMap = colorA && colorB
     ? resolveDuotoneColors(colorA, colorB, tokenCrossed)
@@ -50,9 +55,13 @@ export default function CharacterPaletteDevPage({
   const nicknameIconUrl = subject ? paletteNicknameIconUrl(subject) : null;
   const copy = PALETTE_KIND_COPY[kind];
 
-  const selectKind = (nextKind: PaletteKind) => {
-    const nextSubjects = subjectsForKind(subjects, nextKind);
+  const selectKind = (nextKind: LabPaletteKind) => {
     setKind(nextKind);
+    if (nextKind === "unset") {
+      setSubjectId(UNSET_PALETTE_SUBJECT_ID);
+      return;
+    }
+    const nextSubjects = subjectsForKind(subjects, nextKind);
     setSubjectId(nextSubjects[0]?.id ?? "");
   };
 
@@ -82,7 +91,8 @@ export default function CharacterPaletteDevPage({
         <h1 className="text-3xl font-bold text-zinc-100">2색 배색</h1>
         <p className="max-w-3xl text-sm leading-relaxed text-zinc-400">
           토큰이 있으면 원본 명암·알파로 두 색을 다시 칠한다. 같은 토큰을 댓글·장난감 상자 닉네임 앞에
-          아이콘으로 붙인다. 프리셋은{" "}
+          아이콘으로 붙인다. 없음은 프로필을 고르기 전 상태이며, 서비스별 익명 닉네임과 ? 토큰을 쓴다.
+          프리셋은{" "}
           <a
             href={CHARACTER_PALETTE_SOURCE.url}
             target="_blank"
@@ -168,7 +178,7 @@ export default function CharacterPaletteDevPage({
       </section>
 
       <nav className="flex flex-wrap gap-2" aria-label="배색 대상">
-        {PALETTE_KINDS.map((entry) => (
+        {LAB_PALETTE_KINDS.map((entry) => (
           <button
             key={entry}
             type="button"
@@ -210,14 +220,16 @@ export default function CharacterPaletteDevPage({
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-semibold text-zinc-100">닉네임 자리</h2>
             <p className="text-xs text-zinc-500">
-              {subject.name} 토큰과 현재 배색. 미디어 쿼리 분기는 그리지 않는다.
+              {kind === "unset"
+                ? "프로필을 고르기 전. 각 자리의 익명 닉네임과 ? 토큰. 미디어 쿼리 분기는 그리지 않는다."
+                : `${subject.name} 토큰과 현재 배색. 미디어 쿼리 분기는 그리지 않는다.`}
             </p>
           </div>
           <PaletteNicknameSurfaceGallery
             tone={{
-              nickname: LAB_NICKNAME,
               iconUrl: nicknameIconUrl,
               duotone: tokenMap,
+              ...(kind === "unset" ? {} : { nickname: LAB_NICKNAME }),
             }}
           />
         </section>

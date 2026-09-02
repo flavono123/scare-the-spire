@@ -25,6 +25,9 @@ export interface UserProfile {
 export const USER_PROFILE_STORAGE_KEY = "sts-user-profile";
 export const USER_PROFILE_CHANGE_EVENT = "sts-user-profile-change";
 
+/** Game emote `question.png` copied for the unset-profile nickname token. */
+export const UNSET_PROFILE_TOKEN_URL = "/images/sts2/profile/unset.webp";
+
 export const DEFAULT_USER_PROFILE: UserProfile = {
   nickname: "닉",
   characterId: "NECROBINDER",
@@ -149,6 +152,11 @@ export function parseStoredUserProfile(raw: string | null, fallback = DEFAULT_US
   } catch {
     return fallback;
   }
+}
+
+/** True when `sts-user-profile` has been written. Visit-without-save does not count. */
+export function hasStoredUserProfile(raw: string | null | undefined): boolean {
+  return typeof raw === "string" && raw.trim().length > 0;
 }
 
 export function writeStoredUserProfile(profile: UserProfile) {

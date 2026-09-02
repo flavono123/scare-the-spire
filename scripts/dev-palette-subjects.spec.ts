@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import type { MonsterSpineAsset } from "../src/lib/codex-types";
 import {
+  UNSET_PALETTE_SUBJECT,
   buildPaletteSubjects,
   paletteActionIds,
   paletteActionLabel,
@@ -329,6 +330,7 @@ assert.equal(darv?.kind, "ancient");
 assert.equal(darv?.tokenUrl, "/ancients/darv.webp");
 assert.equal(darv?.spineAsset, null);
 assert.equal(darv ? paletteNicknameIconUrl(darv) : "missing", "/ancients/darv.webp");
+assert.equal(paletteNicknameIconUrl(UNSET_PALETTE_SUBJECT), "/images/sts2/profile/unset.webp");
 
 const neow = subjects.find((subject) => subject.id === "NEOW");
 assert.ok(neow?.spineAsset);

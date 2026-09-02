@@ -8,6 +8,7 @@ import {
 } from "../src/lib/profile-palettes";
 import {
   DEFAULT_USER_PROFILE,
+  hasStoredUserProfile,
   normalizeUserProfile,
   parseStoredUserProfile,
   profileAvatarTokenUrl,
@@ -66,6 +67,22 @@ assert.deepEqual(resolveProfileDuotone(swapped), {
   highlight: "#CC1236",
 });
 assert.deepEqual(resolveProfileDuotone({ paletteId: null, paletteSwapped: false }), null);
+
+assert.equal(hasStoredUserProfile(null), false);
+assert.equal(hasStoredUserProfile(""), false);
+assert.equal(hasStoredUserProfile("   "), false);
+assert.equal(hasStoredUserProfile("{}"), true);
+assert.equal(
+  parseStoredUserProfile(null, { ...DEFAULT_USER_PROFILE, nickname: "융합자" }).nickname,
+  "융합자",
+);
+assert.equal(
+  parseStoredUserProfile(
+    JSON.stringify({ nickname: "네바" }),
+    { ...DEFAULT_USER_PROFILE, nickname: "융합자" },
+  ).nickname,
+  "네바",
+);
 
 const diagonal = profilePaletteDiagonalStyle("#111111", "#EEEEEE", false);
 assert.equal(diagonal.backgroundImage, "linear-gradient(to bottom left, #111111 50%, #EEEEEE 50%)");

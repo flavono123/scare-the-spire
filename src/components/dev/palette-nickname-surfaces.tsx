@@ -2,6 +2,9 @@
 
 import { OwnPostMark } from "@/components/own-post-mark";
 import { ProfileNickname } from "@/components/profile/profile-nickname";
+import { serviceMessages } from "@/messages/service";
+
+const ko = serviceMessages.ko;
 
 export type NicknameSurfaceTone = {
   iconUrl: string | null;
@@ -10,47 +13,61 @@ export type NicknameSurfaceTone = {
 };
 
 export const PALETTE_NICKNAME_SURFACES = [
-  { id: "comment", label: "댓글", source: "comment-section.tsx" },
-  { id: "patch-comment", label: "슬서운변경 댓글", source: "patch-comments-client.js" },
-  { id: "combo-card", label: "코오오옴보 인덱스", source: "combo-post-card.tsx" },
-  { id: "chemical-card", label: "케미컬X 인덱스", source: "chemicalx/post-card.tsx" },
-  { id: "transfigure-card", label: "변형 인덱스", source: "transfigure-post-card.tsx" },
-  { id: "this-or-that-card", label: "이거 아님 저거? 인덱스", source: "this-or-that/post-card.tsx" },
-  { id: "decisions-card", label: "어려운 결정 인덱스", source: "decisions-decisions-post-card.tsx" },
-  { id: "tournament-card", label: "이아저? 월드컵 인덱스", source: "favorite-tournament-post-card.tsx" },
-  { id: "combo-detail", label: "코오오옴보 상세", source: "combo-post-view.tsx" },
-  { id: "chemical-detail", label: "케미컬X 상세", source: "chemicalx/post-view.tsx" },
-  { id: "transfigure-detail", label: "변형 상세", source: "transfigure-post-view.tsx" },
-  { id: "this-or-that-detail", label: "이거 아님 저거? 상세", source: "this-or-that/post-view.tsx" },
-  { id: "decisions-detail", label: "어려운 결정 상세", source: "decisions-decisions-post-view.tsx" },
-  { id: "tournament-detail", label: "이아저? 월드컵 상세", source: "favorite-tournament-post-view.tsx" },
-  { id: "defragment-detail", label: "조각모음 상세", source: "defragment-post-view.tsx" },
-  { id: "story-card", label: "슬서운 이야기 카드", source: "story-feed.tsx" },
-  { id: "story-detail", label: "슬서운 이야기 상세", source: "story-feed.tsx" },
+  { id: "comment", label: "댓글", source: "comment-section.tsx", defaultNickname: ko.comments.defaultNickname },
+  { id: "patch-comment", label: "슬서운변경 댓글", source: "patch-comments-client.js", defaultNickname: ko.comments.defaultNickname },
+  { id: "combo-card", label: "코오오옴보 인덱스", source: "combo-post-card.tsx", defaultNickname: ko.combo.defaultNickname },
+  { id: "chemical-card", label: "케미컬X 인덱스", source: "chemicalx/post-card.tsx", defaultNickname: ko.chemicalX.defaultNickname },
+  { id: "transfigure-card", label: "변형 인덱스", source: "transfigure-post-card.tsx", defaultNickname: ko.transfigure.defaultNickname },
+  { id: "this-or-that-card", label: "이거 아님 저거? 인덱스", source: "this-or-that/post-card.tsx", defaultNickname: ko.thisOrThat.defaultNickname },
+  { id: "decisions-card", label: "어려운 결정 인덱스", source: "decisions-decisions-post-card.tsx", defaultNickname: ko.decisionsDecisions.defaultNickname },
+  { id: "tournament-card", label: "이아저? 월드컵 인덱스", source: "favorite-tournament-post-card.tsx", defaultNickname: ko.favoriteTournament.defaultNickname },
+  { id: "combo-detail", label: "코오오옴보 상세", source: "combo-post-view.tsx", defaultNickname: ko.combo.defaultNickname },
+  { id: "chemical-detail", label: "케미컬X 상세", source: "chemicalx/post-view.tsx", defaultNickname: ko.chemicalX.defaultNickname },
+  { id: "transfigure-detail", label: "변형 상세", source: "transfigure-post-view.tsx", defaultNickname: ko.transfigure.defaultNickname },
+  { id: "this-or-that-detail", label: "이거 아님 저거? 상세", source: "this-or-that/post-view.tsx", defaultNickname: ko.thisOrThat.defaultNickname },
+  { id: "decisions-detail", label: "어려운 결정 상세", source: "decisions-decisions-post-view.tsx", defaultNickname: ko.decisionsDecisions.defaultNickname },
+  { id: "tournament-detail", label: "이아저? 월드컵 상세", source: "favorite-tournament-post-view.tsx", defaultNickname: ko.favoriteTournament.defaultNickname },
+  { id: "defragment-detail", label: "조각모음 상세", source: "defragment-post-view.tsx", defaultNickname: ko.defragment.defaultNickname },
+  { id: "defragment-index", label: "조각모음 인덱스", source: "defragment-index-row.tsx", defaultNickname: ko.defragment.defaultNickname },
+  { id: "story-card", label: "슬서운 이야기 카드", source: "story-feed.tsx", defaultNickname: ko.comments.defaultNickname },
+  { id: "story-detail", label: "슬서운 이야기 상세", source: "story-feed.tsx", defaultNickname: ko.comments.defaultNickname },
 ] as const;
 
 export type PaletteNicknameSurfaceId = (typeof PALETTE_NICKNAME_SURFACES)[number]["id"];
 
-export function PaletteNicknameSurfaceGallery({ tone }: { tone: NicknameSurfaceTone }) {
+export function PaletteNicknameSurfaceGallery({
+  tone,
+}: {
+  tone: Omit<NicknameSurfaceTone, "nickname"> & { nickname?: string };
+}) {
+  const unset = !tone.nickname;
   return (
     <div
       data-nickname-gallery
       data-nickname-icon-url={tone.iconUrl ?? ""}
+      data-nickname-mode={unset ? "unset" : "profile"}
       className="grid gap-5 sm:grid-cols-2"
     >
-      {PALETTE_NICKNAME_SURFACES.map((surface) => (
-        <section
-          key={surface.id}
-          data-nickname-surface={surface.id}
-          className="flex flex-col gap-2"
-        >
-          <div className="flex flex-col gap-0.5">
-            <h3 className="text-sm font-semibold text-zinc-200">{surface.label}</h3>
-            <p className="font-mono text-[10px] text-zinc-500">{surface.source}</p>
-          </div>
-          <PaletteNicknameSurface id={surface.id} tone={tone} />
-        </section>
-      ))}
+      {PALETTE_NICKNAME_SURFACES.map((surface) => {
+        const nickname = tone.nickname ?? surface.defaultNickname;
+        return (
+          <section
+            key={surface.id}
+            data-nickname-surface={surface.id}
+            data-nickname-value={nickname}
+            className="flex flex-col gap-2"
+          >
+            <div className="flex flex-col gap-0.5">
+              <h3 className="text-sm font-semibold text-zinc-200">{surface.label}</h3>
+              <p className="font-mono text-[10px] text-zinc-500">{surface.source}</p>
+            </div>
+            <PaletteNicknameSurface
+              id={surface.id}
+              tone={{ iconUrl: tone.iconUrl, duotone: tone.duotone, nickname }}
+            />
+          </section>
+        );
+      })}
     </div>
   );
 }
@@ -158,6 +175,20 @@ export function PaletteNicknameSurface({
               월드컵 제목
             </h2>
           </div>
+        </article>
+      );
+    case "defragment-index":
+      return (
+        <article className="flex items-center gap-2 border-b border-border px-1 py-1.5">
+          <span className="min-w-0 flex-1 truncate text-sm text-foreground">제목</span>
+          <ProfileNickname
+            nickname={tone.nickname}
+            iconUrl={tone.iconUrl}
+            duotone={tone.duotone}
+            size={14}
+            tokenClassName="h-3.5 w-3.5"
+            nicknameClassName="text-[11px] leading-none text-muted-foreground"
+          />
         </article>
       );
     case "combo-detail":
