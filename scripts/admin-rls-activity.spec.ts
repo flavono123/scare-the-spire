@@ -106,7 +106,6 @@ const chart = layoutAdminActivityChart([
   { day: "2026-08-14", users: 2, newUsers: 1, writes: 4 },
   { day: "2026-08-15", users: 1, newUsers: 0, writes: 1 },
 ]);
-assert.ok(chart.spikeX != null);
 assert.ok(chart.usersPath.startsWith("M"));
 assert.ok(chart.writesPath.startsWith("M"));
 

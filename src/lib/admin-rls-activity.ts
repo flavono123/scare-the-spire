@@ -189,9 +189,6 @@ export type RlsActivityDailyPoint = {
   writes: number;
 };
 
-/** Launch-week traffic spike the user compares against CF page views. */
-export const ADMIN_CF_TRAFFIC_SPIKE_DAY = "2026-08-14";
-
 export type AdminActivityChartLayout = {
   width: number;
   height: number;
@@ -212,7 +209,6 @@ export type AdminActivityChartLayout = {
     yWrites: number;
   }>;
   xTicks: Array<{ day: string; x: number; label: string }>;
-  spikeX: number | null;
 };
 
 function formatChartTick(day: string): string {
@@ -256,8 +252,6 @@ export function layoutAdminActivityChart(
     return [{ day: point.day, x: point.x, label: formatChartTick(point.day) }];
   });
 
-  const spike = points.find((point) => point.day === ADMIN_CF_TRAFFIC_SPIKE_DAY);
-
   return {
     width,
     height,
@@ -270,7 +264,6 @@ export function layoutAdminActivityChart(
     writesPath: polylinePath(points.map((point) => ({ x: point.x, y: point.yWrites }))),
     points,
     xTicks,
-    spikeX: spike?.x ?? null,
   };
 }
 

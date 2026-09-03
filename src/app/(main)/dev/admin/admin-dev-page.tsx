@@ -802,52 +802,46 @@ export default async function SupabaseAdminPage({
       ) : (
         <>
           <Section
-            title="RLS 쓰기 활동 · 재참여"
+            title="작성률 · 재작성률"
             count={snapshot.metrics.note}
             error={snapshot.metrics.error}
           >
-            <div className="rounded-md border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-xs leading-relaxed text-amber-100">
-              <strong className="text-amber-50">방문율이 아닙니다.</strong>
-              {" "}글·댓글·좋아요·투표·플레이·문의처럼 Supabase에 행이 남는 행동의 사용자 수입니다.
-              8/14처럼 CF Web Analytics에만 보이는 트래픽 피크는 페이지뷰라서, 저장해 둔 방문 로그가 없어 backfill할 수 없습니다.
-              부족한 복원이 아니라 <strong>측정 대상이 방문이 아닙니다</strong>.
-            </div>
             {metrics ? (
               <>
-                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   <StatTile
-                    label="쓴 사람 (전체)"
+                    label="작성률 (전체)"
                     value={metrics.site.identifiedUsers.toLocaleString("ko-KR")}
                     detail={`30일 ${metrics.site.users30d.toLocaleString("ko-KR")} · 7일 ${metrics.site.users7d.toLocaleString("ko-KR")}`}
                   />
                   <StatTile
-                    label="재참여율"
+                    label="재작성률"
                     value={formatRate(metrics.site.activityReturnRate)}
-                    detail={`2일 이상 쓴 사람 ${metrics.site.users2plusDays.toLocaleString("ko-KR")}명`}
+                    detail={`2일 이상 작성 ${metrics.site.users2plusDays.toLocaleString("ko-KR")}명`}
                   />
                   <StatTile
-                    label="하루만 씀"
+                    label="하루만 작성"
                     value={formatRate(
                       metrics.site.identifiedUsers > 0
                         ? metrics.site.singleDayUsers / metrics.site.identifiedUsers
                         : null,
                     )}
-                    detail="방문 bounce가 아님"
+                    detail={`하루만 작성 ${metrics.site.singleDayUsers.toLocaleString("ko-KR")}명`}
                   />
                   <StatTile
-                    label="세션 재등장"
+                    label="세션 재작성률"
                     value={formatRate(metrics.site.authReturnRate)}
-                    detail={`JWT last_sign_in이 첫 쓰기일보다 뒤 · ${metrics.site.authReturned.toLocaleString("ko-KR")}/${metrics.site.authUsers.toLocaleString("ko-KR")}`}
+                    detail={`JWT last_sign_in이 첫 작성일보다 뒤 · ${metrics.site.authReturned.toLocaleString("ko-KR")}/${metrics.site.authUsers.toLocaleString("ko-KR")}`}
                   />
                   <StatTile
-                    label="D1 재참여"
+                    label="D1 재작성률"
                     value={formatRate(metrics.site.d1Rate)}
-                    detail={`다음날 또 씀 ${metrics.site.d1Retained.toLocaleString("ko-KR")} / 코호트 ${metrics.site.d1Cohort.toLocaleString("ko-KR")}`}
+                    detail={`다음날 또 작성 ${metrics.site.d1Retained.toLocaleString("ko-KR")} / 코호트 ${metrics.site.d1Cohort.toLocaleString("ko-KR")}`}
                   />
                   <StatTile
-                    label="D7 재참여"
+                    label="D7 재작성률"
                     value={formatRate(metrics.site.d7Rate)}
-                    detail={`7일 후 또 씀 ${metrics.site.d7Retained.toLocaleString("ko-KR")} / 코호트 ${metrics.site.d7Cohort.toLocaleString("ko-KR")}`}
+                    detail={`7일 후 또 작성 ${metrics.site.d7Retained.toLocaleString("ko-KR")} / 코호트 ${metrics.site.d7Cohort.toLocaleString("ko-KR")}`}
                   />
                 </div>
                 <div className="mt-4">
@@ -862,7 +856,7 @@ export default async function SupabaseAdminPage({
                         <th className="px-3 py-2 text-right">30일</th>
                         <th className="px-3 py-2 text-right">7일</th>
                         <th className="px-3 py-2 text-right">30일 점유</th>
-                        <th className="px-3 py-2 text-right">재참여율</th>
+                        <th className="px-3 py-2 text-right">재작성률</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -884,9 +878,9 @@ export default async function SupabaseAdminPage({
                     <thead className="sticky top-0 bg-muted/90 text-xs text-muted-foreground backdrop-blur">
                       <tr>
                         <th className="px-3 py-2">날짜 (KST)</th>
-                        <th className="px-3 py-2 text-right">쓴 사람</th>
+                        <th className="px-3 py-2 text-right">작성</th>
                         <th className="px-3 py-2 text-right">신규</th>
-                        <th className="px-3 py-2 text-right">쓰기</th>
+                        <th className="px-3 py-2 text-right">작성 횟수</th>
                       </tr>
                     </thead>
                     <tbody>
