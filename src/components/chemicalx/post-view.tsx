@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "@/components/ui/static-image";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { PostDetailActions } from "@/components/post-detail-actions";
 import { CommentSection } from "@/components/comment-section";
 import { useAuth } from "@/hooks/use-auth";
@@ -159,7 +160,13 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
 
         {/* Header */}
         <div className="relative flex items-center justify-between mb-4">
-          <span className="text-sm font-semibold text-gray-300">{post.nickname}</span>
+          <DisplayedProfileNickname
+            nickname={post.nickname}
+            isOwner={Boolean(ready && userId && userId === post.user_id)}
+            size={18}
+            tokenClassName="h-[18px] w-[18px]"
+            nicknameClassName="text-sm font-semibold text-gray-300"
+          />
           <PostCreatedAt
             createdAt={post.created_at}
             copy={copy}

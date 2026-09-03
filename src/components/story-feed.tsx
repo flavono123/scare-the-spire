@@ -16,6 +16,7 @@ import { EngagementSummary } from "@/components/engagement-summary";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { LikeButton } from "@/components/like-button";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { PatchLineReferenceBlock } from "@/components/patch-line-reference";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { StoryComposerModal } from "@/components/story-composer-modal";
@@ -686,10 +687,14 @@ function StoryCard({
             </button>
             {story.community && (
               <div className="mt-1 flex items-center justify-center gap-2 text-[11px] text-muted-foreground">
-                <span>
-                  {story.authorName}
-                  {publishedLabel ? ` · ${publishedLabel}` : ""}
-                </span>
+                <DisplayedProfileNickname
+                  nickname={story.authorName ?? ""}
+                  isOwner={Boolean(userId && story.authorUserId === userId)}
+                  size={14}
+                  tokenClassName="h-3.5 w-3.5"
+                  nicknameClassName="text-[11px] text-muted-foreground"
+                />
+                {publishedLabel ? <span>· {publishedLabel}</span> : null}
                 {canDelete && (
                   <button
                     type="button"
@@ -825,9 +830,15 @@ function StoryDetailModal({
                 />
               </p>
               {story.community && (
-                <p className="mt-1 text-[11px] text-muted-foreground">
-                  {story.authorName}
-                  {publishedLabel ? ` · ${publishedLabel}` : ""}
+                <p className="mt-1 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
+                  <DisplayedProfileNickname
+                    nickname={story.authorName ?? ""}
+                    isOwner={Boolean(userId && story.authorUserId === userId)}
+                    size={14}
+                    tokenClassName="h-3.5 w-3.5"
+                    nicknameClassName="text-[11px] text-muted-foreground"
+                  />
+                  {publishedLabel ? <span>· {publishedLabel}</span> : null}
                 </p>
               )}
             </div>

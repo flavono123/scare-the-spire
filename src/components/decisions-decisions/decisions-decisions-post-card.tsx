@@ -2,6 +2,7 @@
 
 import { useCallback, type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { IndexCardEngagement } from "@/components/index-card-engagement";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
@@ -85,7 +86,13 @@ export function DecisionsDecisionsPostCard({
             {post.title}
           </h2>
           <span className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-            {post.nickname}
+            <DisplayedProfileNickname
+              nickname={post.nickname}
+              isOwner={isOwner}
+              size={14}
+              tokenClassName="h-3.5 w-3.5"
+              nicknameClassName="text-xs text-muted-foreground"
+            />
             {isOwner && <OwnPostMark />}
             <span>{formatTimeAgo(post.created_at, copy, dateLocale)}</span>
           </span>

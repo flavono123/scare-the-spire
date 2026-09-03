@@ -13,6 +13,7 @@ import {
   parseStoredUserProfile,
   profileAvatarTokenUrl,
 } from "../src/lib/user-profile";
+import { resolveDisplayedNicknameIcon } from "../src/lib/profile-nickname-icon";
 
 assert.equal(PROFILE_EXCLUDED_PALETTE_ID, "ivory-sky");
 assert.equal(PROFILE_PALETTE_PAIRS.length, 15);
@@ -83,6 +84,52 @@ assert.equal(
   ).nickname,
   "네바",
 );
+
+const storedProfile = normalizeUserProfile({
+  nickname: "네바",
+  characterId: "SILENT",
+  avatarKind: "character",
+  avatarId: "SILENT",
+  paletteId: "carmine-ink",
+  paletteSwapped: false,
+});
+const ownerMatch = resolveDisplayedNicknameIcon({
+  stored: true,
+  profile: storedProfile,
+  isOwner: true,
+  nickname: "네바",
+});
+assert.equal(ownerMatch.kind, "profile");
+assert.equal(ownerMatch.iconUrl, "/images/sts2/characters/character_icon_silent.webp");
+assert.deepEqual(ownerMatch.duotone, { shadow: "#CC1236", highlight: "#0F1A14" });
+
+const oldAnonymousNick = resolveDisplayedNicknameIcon({
+  stored: true,
+  profile: storedProfile,
+  isOwner: true,
+  nickname: "융합자",
+});
+assert.equal(oldAnonymousNick.kind, "unset");
+assert.equal(oldAnonymousNick.iconUrl, "/images/sts2/profile/unset.webp");
+assert.equal(oldAnonymousNick.duotone, null);
+
+const otherAuthor = resolveDisplayedNicknameIcon({
+  stored: true,
+  profile: storedProfile,
+  isOwner: false,
+  nickname: "네바",
+});
+assert.equal(otherAuthor.kind, "unset");
+assert.equal(otherAuthor.iconUrl, "/images/sts2/profile/unset.webp");
+
+const anonymousViewer = resolveDisplayedNicknameIcon({
+  stored: false,
+  profile: DEFAULT_USER_PROFILE,
+  isOwner: true,
+  nickname: "닉",
+});
+assert.equal(anonymousViewer.kind, "unset");
+assert.equal(anonymousViewer.iconUrl, "/images/sts2/profile/unset.webp");
 
 const diagonal = profilePaletteDiagonalStyle("#111111", "#EEEEEE", false);
 assert.equal(diagonal.backgroundImage, "linear-gradient(to bottom left, #111111 50%, #EEEEEE 50%)");

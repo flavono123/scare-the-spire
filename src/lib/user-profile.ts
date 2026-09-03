@@ -24,6 +24,8 @@ export interface UserProfile {
 
 export const USER_PROFILE_STORAGE_KEY = "sts-user-profile";
 export const USER_PROFILE_CHANGE_EVENT = "sts-user-profile-change";
+/** Local-dev stash while toggling anonymous vs stored profile. */
+export const USER_PROFILE_DEV_BACKUP_KEY = "sts-user-profile-dev-backup";
 
 /** Game emote `question.png` copied for the unset-profile nickname token. */
 export const UNSET_PROFILE_TOKEN_URL = "/images/sts2/profile/unset.webp";
@@ -159,12 +161,50 @@ export function hasStoredUserProfile(raw: string | null | undefined): boolean {
   return typeof raw === "string" && raw.trim().length > 0;
 }
 
+function dispatchUserProfileChange(detail?: UserProfile) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(
+    detail
+      ? new CustomEvent<UserProfile>(USER_PROFILE_CHANGE_EVENT, { detail })
+      : new CustomEvent(USER_PROFILE_CHANGE_EVENT),
+  );
+}
+
 export function writeStoredUserProfile(profile: UserProfile) {
   if (typeof window === "undefined") return;
 
   const normalized = normalizeUserProfile(profile);
   window.localStorage.setItem(USER_PROFILE_STORAGE_KEY, JSON.stringify(normalized));
-  window.dispatchEvent(new CustomEvent<UserProfile>(USER_PROFILE_CHANGE_EVENT, { detail: normalized }));
+  dispatchUserProfileChange(normalized);
+}
+
+export function clearStoredUserProfile() {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(USER_PROFILE_STORAGE_KEY);
+  dispatchUserProfileChange();
+}
+
+export function backupAndClearStoredUserProfile() {
+  if (typeof window === "undefined") return;
+  const raw = window.localStorage.getItem(USER_PROFILE_STORAGE_KEY);
+  if (hasStoredUserProfile(raw) && raw) {
+    window.localStorage.setItem(USER_PROFILE_DEV_BACKUP_KEY, raw);
+  }
+  clearStoredUserProfile();
+}
+
+export function restoreStoredUserProfileBackup(): boolean {
+  if (typeof window === "undefined") return false;
+  const backup = window.localStorage.getItem(USER_PROFILE_DEV_BACKUP_KEY);
+  if (!hasStoredUserProfile(backup) || !backup) return false;
+  window.localStorage.setItem(USER_PROFILE_STORAGE_KEY, backup);
+  dispatchUserProfileChange(parseStoredUserProfile(backup));
+  return true;
+}
+
+export function hasStoredUserProfileBackup(): boolean {
+  if (typeof window === "undefined") return false;
+  return hasStoredUserProfile(window.localStorage.getItem(USER_PROFILE_DEV_BACKUP_KEY));
 }
 
 function cleanNickname(nickname: string, fallback = DEFAULT_USER_PROFILE.nickname): string {

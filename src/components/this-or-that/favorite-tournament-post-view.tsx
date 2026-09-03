@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { LikeButton } from "@/components/like-button";
 import { PostDetailActions } from "@/components/post-detail-actions";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
@@ -159,7 +160,15 @@ export function FavoriteTournamentPostView({
               {worldcupPostTitle(post, serviceLocale, presetLabels, catalog.entityMap)}
             </h1>
             <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
-              {!builtin && <span>{post.nickname}</span>}
+              {!builtin && (
+                <DisplayedProfileNickname
+                  nickname={post.nickname}
+                  isOwner={isAuthor}
+                  size={14}
+                  tokenClassName="h-3.5 w-3.5"
+                  nicknameClassName="text-xs text-muted-foreground"
+                />
+              )}
               {!builtin && <span>{formatTimeAgo(post.created_at, copy, dateLocale)}</span>}
               <span>{formatBracketRoundLabel(post.pool.length, copy)}</span>
               <span>{copy.playCount.replace("{count}", String(post.play_count ?? 0))}</span>

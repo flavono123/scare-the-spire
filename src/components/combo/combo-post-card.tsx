@@ -18,6 +18,7 @@ import {
 } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
 import { formatTimeAgo } from "@/lib/relative-time";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { ComboPostRenderer } from "./combo-post-renderer";
 import { ComboResourceStack } from "./combo-resource-stack";
 import { ComboYouTubeThumbnail } from "./combo-youtube-reference";
@@ -81,7 +82,13 @@ export function ComboPostCard({
     >
       <div className="mb-1.5 flex items-center justify-between">
         <span className="inline-flex min-w-0 items-center gap-1.5">
-          <span className="truncate text-sm font-semibold text-gray-300">{post.nickname}</span>
+          <DisplayedProfileNickname
+            nickname={post.nickname}
+            isOwner={isOwner}
+            size={18}
+            tokenClassName="h-[18px] w-[18px]"
+            nicknameClassName="truncate text-sm font-semibold text-gray-300"
+          />
           {isOwner && <OwnPostMark />}
         </span>
         <div className="flex items-center gap-2">

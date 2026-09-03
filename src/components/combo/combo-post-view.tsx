@@ -8,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { PostDetailActions } from "@/components/post-detail-actions";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { useAuth } from "@/hooks/use-auth";
@@ -146,7 +147,13 @@ export function ComboPostView({ postId, gameLocale, placeholder, variant = "page
         />
 
         <div className="relative mb-4 flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-300">{post.nickname}</span>
+          <DisplayedProfileNickname
+            nickname={post.nickname}
+            isOwner={Boolean(ready && userId === post.user_id)}
+            size={18}
+            tokenClassName="h-[18px] w-[18px]"
+            nicknameClassName="text-sm font-semibold text-gray-300"
+          />
           <span className="text-xs text-gray-500">
             {new Date(post.created_at).toLocaleDateString(dateLocale)}
           </span>

@@ -9,6 +9,7 @@ import {
 import { GameHoverTip } from "@/components/codex/hover-tip";
 import { PatchLineReferenceBlock } from "@/components/patch-line-reference";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { StoryComposerModal } from "@/components/story-composer-modal";
 import {
   STORY_WRITE_ICON_SRC,
@@ -167,6 +168,7 @@ export function PatchLineStoriesPanel({
   patchArt,
   communityLoading = false,
   communityUnavailable,
+  userId = null,
   onClose,
   onWrite,
 }: {
@@ -178,6 +180,7 @@ export function PatchLineStoriesPanel({
   patchArt?: ResolvedPatchArt;
   communityLoading?: boolean;
   communityUnavailable: boolean;
+  userId?: string | null;
   onClose: () => void;
   onWrite: () => void;
 }) {
@@ -245,7 +248,15 @@ export function PatchLineStoriesPanel({
                   <p className="text-sm leading-relaxed text-foreground">{story.sentence}</p>
                   <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted-foreground">
                     <span>{story.community ? copy.communityStory : copy.staticStory}</span>
-                    {story.authorName && <span>{story.authorName}</span>}
+                    {story.authorName && (
+                      <DisplayedProfileNickname
+                        nickname={story.authorName}
+                        isOwner={Boolean(userId && story.authorUserId === userId)}
+                        size={14}
+                        tokenClassName="h-3.5 w-3.5"
+                        nicknameClassName="text-[11px] text-muted-foreground"
+                      />
+                    )}
                     {story.publishedAt && <span>{story.publishedAt}</span>}
                   </p>
                 </article>
@@ -356,6 +367,7 @@ export function PatchNoteWithStoryActions({
           entities={rendererProps.entities ?? rendererProps.cards}
           communityLoading={communityStories.loading}
           communityUnavailable={communityStories.unavailable}
+          userId={userId}
           onClose={() => setActivePatchLineId(null)}
           onWrite={() => {
             setComposerPatchLineId(activePatchLine.id);

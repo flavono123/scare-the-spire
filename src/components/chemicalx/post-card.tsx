@@ -4,6 +4,7 @@ import { useCallback, type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { ChemicalPost } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { IndexCardEngagement } from "@/components/index-card-engagement";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { PostRenderer } from "./post-renderer";
@@ -69,9 +70,13 @@ export function PostCard({
     >
       <div className="mb-1.5 flex items-center justify-between">
         <span className="inline-flex min-w-0 items-center gap-1.5">
-          <span className="truncate text-sm font-semibold text-gray-300">
-            {post.nickname}
-          </span>
+          <DisplayedProfileNickname
+            nickname={post.nickname}
+            isOwner={isOwner}
+            size={18}
+            tokenClassName="h-[18px] w-[18px]"
+            nicknameClassName="truncate text-sm font-semibold text-gray-300"
+          />
           {isOwner && <OwnPostMark />}
         </span>
         <div className="flex items-center gap-2">

@@ -41,7 +41,7 @@ import {
   type GlobalSearchIndexItem,
 } from "@/lib/global-search";
 import { ProfileAvatarToken } from "@/components/profile/profile-avatar-token";
-import { useStoredUserProfile } from "@/hooks/use-user-profile";
+import { useStoredProfileSnapshot } from "@/hooks/use-user-profile";
 import { serviceMessages } from "@/messages/service";
 import { contactMessages } from "@/messages/contact";
 import { pushCodexHistoryState } from "@/components/codex/use-hydration-safe-search-param";
@@ -732,7 +732,7 @@ export function SiteNavbar() {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const messages = serviceMessages[serviceLocale];
   const contactCopy = contactMessages[serviceLocale];
-  const profile = useStoredUserProfile();
+  const { stored, profile } = useStoredProfileSnapshot();
   const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale });
   const contactHref = getContactHref(pathname, serviceLocale, gameLocale);
   const isContactPage = stripGameLocaleFromPath(pathname) === "/contact";
@@ -807,6 +807,7 @@ export function SiteNavbar() {
             iconNode={(
               <ProfileAvatarToken
                 profile={profile}
+                stored={stored}
                 size={24}
                 className="h-[18px] w-[18px] object-contain brightness-90 transition-all hover:brightness-110 sm:h-6 sm:w-6 group-hover:scale-110"
               />

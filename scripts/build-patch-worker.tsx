@@ -30,7 +30,7 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
-import { DEFAULT_USER_PROFILE, characterIconUrl } from "@/lib/user-profile";
+import { UNSET_PROFILE_TOKEN_URL } from "@/lib/user-profile";
 import { getContactHref } from "@/lib/contact-routing";
 import { COLOR_SCHEME_BOOT_SCRIPT, THEME_COLOR_DARK } from "@/lib/color-scheme";
 import { getSTS2Patches } from "@/lib/data";
@@ -430,7 +430,7 @@ function StaticPatchHeader({
           </div>
           <StaticNavIconLink
             href={profileHref}
-            icon={characterIconUrl(DEFAULT_USER_PROFILE.characterId)}
+            icon={UNSET_PROFILE_TOKEN_URL}
             label={messages.profile.navLabel}
             iconSize={24}
             profileCharacterIcon

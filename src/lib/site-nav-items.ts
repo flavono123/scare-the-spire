@@ -169,6 +169,12 @@ export const devNavItems = [
     icon: "/images/sts2/characters/character_icon_ironclad.webp",
     strictDevOnly: true,
   },
+  {
+    href: "/dev/profile",
+    label: "프로필 저장 전환",
+    icon: "/images/sts2/profile/unset.webp",
+    strictDevOnly: true,
+  },
   { href: "/dev/text-effects", label: "텍스트 효과", icon: "/images/sts2/nav/patch_notes_icon.png" },
   { href: "/dev/reference", label: "레퍼런스", icon: "/images/sts2/nav/stats_cards.png" },
 ] as const;

@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { OwnPostMark } from "@/components/own-post-mark";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { PostDetailActions } from "@/components/post-detail-actions";
 import Image from "@/components/ui/static-image";
 import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
@@ -100,9 +101,13 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
           <article data-pagestorm-post="lorem">
             <div className="mb-1.5 flex items-center justify-between">
               <span className="inline-flex min-w-0 items-center gap-1.5">
-                <span className="truncate text-sm font-semibold text-gray-300">
-                  {copy.defaultNickname}
-                </span>
+                <DisplayedProfileNickname
+                  nickname={copy.defaultNickname}
+                  isOwner
+                  size={18}
+                  tokenClassName="h-[18px] w-[18px]"
+                  nicknameClassName="truncate text-sm font-semibold text-gray-300"
+                />
                 <OwnPostMark />
               </span>
             </div>
@@ -168,9 +173,13 @@ function PagestormDocumentClient({
         </div>
         {surface === "lorem" ? (
           <div className="flex items-center gap-1.5">
-            <span className="text-sm font-semibold text-gray-300">
-              {copy.defaultNickname}
-            </span>
+            <DisplayedProfileNickname
+              nickname={copy.defaultNickname}
+              isOwner
+              size={18}
+              tokenClassName="h-[18px] w-[18px]"
+              nicknameClassName="text-sm font-semibold text-gray-300"
+            />
             <OwnPostMark />
           </div>
         ) : null}

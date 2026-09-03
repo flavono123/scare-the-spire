@@ -8,6 +8,7 @@ import { ArrowLeft, Sparkles } from "lucide-react";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { PostDetailActions } from "@/components/post-detail-actions";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import Image from "@/components/ui/static-image";
@@ -179,11 +180,19 @@ export function TransfigurePostView({
               <span className="block truncate text-lg font-semibold text-zinc-100">
                 {post.title?.trim() || resource?.nameKo || post.resource_id}
               </span>
-              <span className="block truncate text-xs text-zinc-500">
-                {post.transformed_name?.trim() || resource?.nameKo || post.resource_id}
-                {post.show_upgrade && resource?.type === "card" ? "+" : ""}
-                {" · "}
-                {post.nickname}
+              <span className="mt-0.5 flex min-w-0 items-center gap-1.5 text-xs text-zinc-500">
+                <span className="truncate">
+                  {post.transformed_name?.trim() || resource?.nameKo || post.resource_id}
+                  {post.show_upgrade && resource?.type === "card" ? "+" : ""}
+                </span>
+                <span>·</span>
+                <DisplayedProfileNickname
+                  nickname={post.nickname}
+                  isOwner={Boolean(ready && userId === post.user_id)}
+                  size={14}
+                  tokenClassName="h-3.5 w-3.5"
+                  nicknameClassName="text-xs text-zinc-500"
+                />
               </span>
             </span>
           </div>

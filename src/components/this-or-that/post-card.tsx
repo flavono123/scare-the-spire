@@ -10,6 +10,7 @@ import type { ThisOrThatResolvedPost } from "@/lib/this-or-that";
 import { serviceMessages } from "@/messages/service";
 import { formatTimeAgo } from "@/lib/relative-time";
 import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { OwnPostMark } from "@/components/own-post-mark";
 import {
   INDEX_LUCIDE_ICON_CLASS,
@@ -202,9 +203,14 @@ export function ThisOrThatPostCard({
 
       <div className="mt-auto flex items-center justify-end gap-1.5 pt-2">
         {isOwner && <OwnPostMark />}
-        <span className="max-w-[70%] truncate text-[11px] text-muted-foreground/80">
-          {post.nickname}
-        </span>
+        <DisplayedProfileNickname
+          nickname={post.nickname}
+          isOwner={isOwner}
+          size={14}
+          className="max-w-[70%]"
+          tokenClassName="h-3.5 w-3.5"
+          nicknameClassName="text-[11px] text-muted-foreground/80"
+        />
       </div>
     </article>
   );

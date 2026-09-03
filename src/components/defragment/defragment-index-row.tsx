@@ -4,10 +4,10 @@ import { useCallback, type KeyboardEvent, type MouseEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MessageCircle } from "lucide-react";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { LikeButton } from "@/components/like-button";
 import { PostCreatedAt } from "@/components/post-created-at";
-import { ProfileNickname } from "@/components/profile/profile-nickname";
 import {
   INDEX_LUCIDE_ICON_CLASS,
   SPIRE_ACTION_CONTROL_CLASS,
@@ -31,7 +31,7 @@ import { serviceMessages } from "@/messages/service";
 export const DEFRAGMENT_TYPE_COL_CLASS =
   "w-5 min-w-0 shrink-0 overflow-hidden sm:w-[4.75rem] md:w-20";
 export const DEFRAGMENT_AUTHOR_COL_CLASS =
-  "w-[4.25rem] min-w-0 shrink-0 sm:w-[5.75rem]";
+  "w-[5.25rem] min-w-0 shrink-0 sm:w-[6.5rem]";
 export const DEFRAGMENT_DATE_COL_CLASS = "w-[4.5rem] shrink-0 sm:w-[5.5rem]";
 export const DEFRAGMENT_COUNT_COL_CLASS = "w-10 shrink-0 sm:w-11";
 
@@ -47,8 +47,6 @@ export function DefragmentIndexRow({
   totLikesUnavailable,
   totLikeCount,
   onToggleTotLike,
-  authorIconUrl = null,
-  authorDuotone = null,
 }: {
   item: DefragmentFeedItem;
   typeLabel: string;
@@ -61,9 +59,6 @@ export function DefragmentIndexRow({
   totLikesUnavailable?: boolean;
   totLikeCount?: number;
   onToggleTotLike?: (postId: string) => void;
-  /** Reserved for the profile-token session; idle rows stay nickname-only. */
-  authorIconUrl?: string | null;
-  authorDuotone?: { shadow: string; highlight: string } | null;
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].defragment;
@@ -116,10 +111,9 @@ export function DefragmentIndexRow({
         {item.title}
       </span>
       <span className={cn(DEFRAGMENT_AUTHOR_COL_CLASS, "min-w-0")}>
-        <ProfileNickname
+        <DisplayedProfileNickname
           nickname={item.nickname}
-          iconUrl={authorIconUrl}
-          duotone={authorDuotone}
+          isOwner={Boolean(userId && item.userId === userId)}
           size={14}
           className="w-full"
           tokenClassName="h-3.5 w-3.5"

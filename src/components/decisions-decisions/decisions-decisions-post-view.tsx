@@ -9,6 +9,7 @@ import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
 import { LikeButton } from "@/components/like-button";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { PostDetailActions } from "@/components/post-detail-actions";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { TransfigureImageCopyButton } from "@/components/transfigure/transfigure-image-copy-button";
@@ -133,8 +134,15 @@ export function DecisionsDecisionsPostView({
         />
         <div className="min-w-0">
           <h1 className="font-service text-xl font-bold spire-gold">{post.title}</h1>
-          <p className="text-xs text-muted-foreground">
-            {post.nickname} · {formatTimeAgo(post.created_at, copy, dateLocale)} · {copy.version.replace("{version}", post.game_version)}
+          <p className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+            <DisplayedProfileNickname
+              nickname={post.nickname}
+              isOwner={isAuthor}
+              size={14}
+              tokenClassName="h-3.5 w-3.5"
+              nicknameClassName="text-xs text-muted-foreground"
+            />
+            <span>· {formatTimeAgo(post.created_at, copy, dateLocale)} · {copy.version.replace("{version}", post.game_version)}</span>
           </p>
         </div>
       </header>

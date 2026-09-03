@@ -5,6 +5,7 @@ import {
   DEFAULT_USER_PROFILE,
   USER_PROFILE_CHANGE_EVENT,
   USER_PROFILE_STORAGE_KEY,
+  hasStoredUserProfile,
   parseStoredUserProfile,
   writeStoredUserProfile,
   type UserProfile,
@@ -38,14 +39,27 @@ function getStoredUserProfileServerSnapshot() {
   return "";
 }
 
-export function useStoredUserProfile(fallback = DEFAULT_USER_PROFILE): UserProfile {
+export function useStoredProfileSnapshot(fallback = DEFAULT_USER_PROFILE): {
+  stored: boolean;
+  profile: UserProfile;
+} {
   const snapshot = useSyncExternalStore(
     subscribeStoredUserProfile,
     getStoredUserProfileSnapshot,
     getStoredUserProfileServerSnapshot,
   );
 
-  return useMemo(() => parseStoredUserProfile(snapshot, fallback), [fallback, snapshot]);
+  return useMemo(
+    () => ({
+      stored: hasStoredUserProfile(snapshot),
+      profile: parseStoredUserProfile(snapshot, fallback),
+    }),
+    [fallback, snapshot],
+  );
+}
+
+export function useStoredUserProfile(fallback = DEFAULT_USER_PROFILE): UserProfile {
+  return useStoredProfileSnapshot(fallback).profile;
 }
 
 export function useUserProfile(fallback = DEFAULT_USER_PROFILE): UseUserProfileReturn {

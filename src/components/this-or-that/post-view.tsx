@@ -22,6 +22,7 @@ import {
   resolveThisOrThatPost,
 } from "@/lib/this-or-that";
 import { serviceMessages } from "@/messages/service";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { ThisOrThatLikeButton } from "@/components/this-or-that/like-button";
 import { ThisOrThatResourcePanel } from "@/components/this-or-that/resource-panel";
 import {
@@ -153,7 +154,13 @@ export function ThisOrThatPostView({
               {resolvedPost.post.reason}
             </h1>
             <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
-              <span className="truncate">{resolvedPost.post.nickname}</span>
+              <DisplayedProfileNickname
+                nickname={resolvedPost.post.nickname}
+                isOwner={Boolean(authReady && userId === resolvedPost.post.user_id)}
+                size={14}
+                tokenClassName="h-3.5 w-3.5"
+                nicknameClassName="text-xs text-muted-foreground"
+              />
               <span aria-hidden="true">·</span>
               <span>
                 {new Date(resolvedPost.post.created_at).toLocaleDateString(serviceLocale === "ko" ? "ko-KR" : "en-US")}

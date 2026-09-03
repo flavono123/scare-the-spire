@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { Trash2 } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { RichContentEditorProps } from "@/components/rich-content-editor";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
 import {
   blocksToPlainText,
@@ -121,7 +122,13 @@ export function CommentSection({
           {comments.map((comment) => (
             <li key={comment.id} className="rounded-lg border border-border/50 bg-card/20 px-3 py-2.5 text-sm">
               <div className="flex items-center gap-2">
-                <span className="font-medium text-primary">{comment.nickname}</span>
+                <DisplayedProfileNickname
+                  nickname={comment.nickname}
+                  isOwner={Boolean(userId && userId === comment.user_id)}
+                  size={16}
+                  tokenClassName="h-4 w-4"
+                  nicknameClassName="font-medium text-primary"
+                />
                 <span className="text-[10px] text-muted-foreground">
                   {new Date(comment.created_at).toLocaleDateString(dateLocale)}
                 </span>

@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, type KeyboardEvent, type MouseEvent, type PointerEvent } from "react";
 import { useRouter } from "next/navigation";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { IndexCardEngagement } from "@/components/index-card-engagement";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
@@ -172,8 +173,15 @@ export function FavoriteTournamentPostCard({
           </div>
         ) : (
           <>
-            <span className="w-16 shrink-0 truncate pt-0.5 text-xs text-muted-foreground">
-              {post.nickname}
+            <span className="flex min-w-0 w-[5.5rem] shrink-0 items-center gap-1 pt-0.5 sm:w-24">
+              <DisplayedProfileNickname
+                nickname={post.nickname}
+                isOwner={isOwner}
+                size={14}
+                className="min-w-0"
+                tokenClassName="h-3.5 w-3.5"
+                nicknameClassName="text-xs text-muted-foreground"
+              />
               {isOwner && <OwnPostMark />}
             </span>
             <h2 className="min-w-0 flex-1 line-clamp-2 font-service text-[15px] font-semibold leading-snug text-foreground">

@@ -9,6 +9,7 @@ import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { DefragmentComposer } from "@/components/defragment/defragment-composer";
 import { LikeButton } from "@/components/like-button";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { PostDetailActions } from "@/components/post-detail-actions";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import Image from "@/components/ui/static-image";
@@ -168,9 +169,13 @@ export function DefragmentPostView({
 
       <article className="rounded-lg border border-border bg-card/30 px-4 py-4">
         <div className="mb-3 flex items-center justify-between gap-3">
-          <span className="truncate text-sm font-semibold text-gray-300">
-            {post.nickname}
-          </span>
+          <DisplayedProfileNickname
+            nickname={post.nickname}
+            isOwner={isAuthor}
+            size={18}
+            tokenClassName="h-[18px] w-[18px]"
+            nicknameClassName="truncate text-sm font-semibold text-gray-300"
+          />
           <span className="text-xs text-gray-500">
             {formatTimeAgo(post.created_at, copy, dateLocale)}
           </span>

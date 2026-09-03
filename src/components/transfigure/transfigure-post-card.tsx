@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Sparkles } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { PostRenderer } from "@/components/chemicalx/post-renderer";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { IndexCardEngagement } from "@/components/index-card-engagement";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { TransfigureResourcePreview } from "@/components/transfigure/transfigure-resource-preview";
@@ -155,9 +156,14 @@ export function TransfigurePostCard({
 
       <div className="mt-auto flex items-center justify-end gap-1.5 pt-2">
         {isOwner && <OwnPostMark />}
-        <span className="max-w-[70%] truncate text-[11px] text-muted-foreground/80">
-          {post.nickname}
-        </span>
+        <DisplayedProfileNickname
+          nickname={post.nickname}
+          isOwner={isOwner}
+          size={14}
+          className="max-w-[70%]"
+          tokenClassName="h-3.5 w-3.5"
+          nicknameClassName="text-[11px] text-muted-foreground/80"
+        />
       </div>
     </article>
   );

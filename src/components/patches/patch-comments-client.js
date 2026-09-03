@@ -31,6 +31,7 @@
     "coral-midnight": ["#F48067", "#051230"],
   };
   const PROFILE_CHANGE_EVENT = "sts-user-profile-change";
+  const UNSET_PROFILE_TOKEN_URL = "/images/sts2/profile/unset.webp";
 
   const MESSAGES = {
     ko: {
@@ -156,10 +157,23 @@
     });
   }
 
+  function hasStoredUserProfile(raw) {
+    return typeof raw === "string" && raw.trim().length > 0;
+  }
+
   function readStoredProfileIconState() {
     try {
       const raw = window.localStorage.getItem(PROFILE_KEY);
-      const parsed = raw ? JSON.parse(raw) : {};
+      if (!hasStoredUserProfile(raw)) {
+        return {
+          stored: false,
+          tokenUrl: UNSET_PROFILE_TOKEN_URL,
+          pair: null,
+          swapped: false,
+          nickname: "",
+        };
+      }
+      const parsed = JSON.parse(raw);
       const characterId = typeof parsed.characterId === "string" ? parsed.characterId : "NECROBINDER";
       const avatarKind = parsed.avatarKind === "boss" ? "boss" : "character";
       const avatarId = typeof parsed.avatarId === "string" && parsed.avatarId
@@ -170,10 +184,86 @@
         : characterIconUrl(avatarKind === "character" ? avatarId : characterId);
       const pair = typeof parsed.paletteId === "string" ? PROFILE_PALETTES[parsed.paletteId] : null;
       const swapped = Boolean(parsed.paletteSwapped);
-      return { tokenUrl, pair, swapped };
+      const nickname = typeof parsed.nickname === "string" ? parsed.nickname.trim() : "";
+      return { stored: true, tokenUrl, pair, swapped, nickname };
     } catch {
-      return { tokenUrl: characterIconUrl("NECROBINDER"), pair: null, swapped: false };
+      return {
+        stored: false,
+        tokenUrl: UNSET_PROFILE_TOKEN_URL,
+        pair: null,
+        swapped: false,
+        nickname: "",
+      };
     }
+  }
+
+  function displayedCommentNickIcon(state, comment) {
+    const profile = readStoredProfileIconState();
+    const isOwner = Boolean(state.userId && state.userId === comment.user_id);
+    const nickMatch = String(comment.nickname ?? "").trim() === profile.nickname;
+    if (profile.stored && isOwner && nickMatch) {
+      return { kind: "profile", tokenUrl: profile.tokenUrl };
+    }
+    return { kind: "unset", tokenUrl: UNSET_PROFILE_TOKEN_URL };
+  }
+
+  function commentNickTokenHtml(state, comment) {
+    const icon = displayedCommentNickIcon(state, comment);
+    return `
+      <span class="inline-flex min-w-0 items-center gap-1.5" data-displayed-profile-nickname data-profile-nick-kind="${icon.kind}">
+        <img
+          data-comment-nick-token
+          data-icon-url="${escapeHtml(icon.tokenUrl)}"
+          src="${escapeHtml(icon.tokenUrl)}"
+          alt=""
+          width="16"
+          height="16"
+          class="h-4 w-4 shrink-0 object-contain"
+        />
+        <span class="truncate font-medium text-primary">${escapeHtml(comment.nickname)}</span>
+      </span>
+    `;
+  }
+
+  async function remapCommentNickTokens(root) {
+    const profile = readStoredProfileIconState();
+    if (!profile.stored || !profile.pair) return;
+    let remapped;
+    try {
+      remapped = await remappedTokenDataUrl(profile.tokenUrl, profile.pair, profile.swapped);
+    } catch {
+      return;
+    }
+    root.querySelectorAll('[data-profile-nick-kind="profile"] [data-comment-nick-token]').forEach((image) => {
+      if (image instanceof HTMLImageElement) image.src = remapped;
+    });
+  }
+
+  function syncCommentNickIcons(root) {
+    const state = root._stsCommentState;
+    if (!state) return;
+    const profile = readStoredProfileIconState();
+    root.querySelectorAll("[data-patch-comment-row]").forEach((row) => {
+      const commentUserId = row.dataset.commentUserId;
+      const nickname = row.dataset.commentNickname ?? "";
+      const wrap = row.querySelector("[data-displayed-profile-nickname]");
+      const img = row.querySelector("[data-comment-nick-token]");
+      if (!wrap || !(img instanceof HTMLImageElement)) return;
+      const isOwner = Boolean(state.userId && state.userId === commentUserId);
+      const nickMatch = nickname.trim() === profile.nickname;
+      const kind = profile.stored && isOwner && nickMatch ? "profile" : "unset";
+      const tokenUrl = kind === "profile" ? profile.tokenUrl : UNSET_PROFILE_TOKEN_URL;
+      wrap.dataset.profileNickKind = kind;
+      img.dataset.iconUrl = tokenUrl;
+      img.src = tokenUrl;
+    });
+    void remapCommentNickTokens(root);
+  }
+
+  function refreshAllCommentNickIcons() {
+    document.querySelectorAll("[data-patch-comment-root]").forEach((root) => {
+      syncCommentNickIcons(root);
+    });
   }
 
   async function remappedTokenDataUrl(tokenUrl, pair, swapped) {
@@ -555,6 +645,7 @@
   }
 
   function renderComments(root, state) {
+    root._stsCommentState = state;
     const text = copy();
     const commentsHtml = state.comments.length === 0
       ? `<p class="text-xs text-muted-foreground">${escapeHtml(text.empty)}</p>`
@@ -565,9 +656,14 @@
             const liked = state.liked.has(comment.id);
             const canDelete = state.userId && state.userId === comment.user_id;
             return `
-              <li class="rounded-lg border border-border/50 bg-card/20 px-3 py-2.5 text-sm">
+              <li
+                class="rounded-lg border border-border/50 bg-card/20 px-3 py-2.5 text-sm"
+                data-patch-comment-row
+                data-comment-user-id="${escapeHtml(comment.user_id ?? "")}"
+                data-comment-nickname="${escapeHtml(comment.nickname ?? "")}"
+              >
                 <div class="flex items-center gap-2">
-                  <span class="font-medium text-primary">${escapeHtml(comment.nickname)}</span>
+                  ${commentNickTokenHtml(state, comment)}
                   <span class="text-[10px] text-muted-foreground">${new Date(comment.created_at).toLocaleDateString(serviceLocale() === "ko" ? "ko-KR" : "en-US")}</span>
                   <button data-comment-like="${escapeHtml(comment.id)}" class="flex items-center gap-0.5 text-[10px] text-muted-foreground transition-all">
                     <img src="/images/relics/runic-dodecahedron.webp" alt="${escapeHtml(text.likeAlt)}" width="14" height="14" class="transition-all ${liked ? "" : "opacity-40 grayscale"}" />
@@ -612,6 +708,7 @@
         </div>
       </form>
     `;
+    void remapCommentNickTokens(root);
   }
 
   async function loadState(config, threadKey) {
@@ -754,11 +851,15 @@
   }
 
   function main() {
-    syncProfileCharacterIcon();
+    const onProfileIconChange = () => {
+      syncProfileCharacterIcon();
+      refreshAllCommentNickIcons();
+    };
+    onProfileIconChange();
     window.addEventListener("storage", (event) => {
-      if (event.key === null || event.key === PROFILE_KEY) syncProfileCharacterIcon();
+      if (event.key === null || event.key === PROFILE_KEY) onProfileIconChange();
     });
-    window.addEventListener(PROFILE_CHANGE_EVENT, syncProfileCharacterIcon);
+    window.addEventListener(PROFILE_CHANGE_EVENT, onProfileIconChange);
 
     const config = readConfig();
     mountStoryActions(config);
