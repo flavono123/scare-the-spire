@@ -92,6 +92,8 @@ export function ComboPostRenderer({
 
         if (block.type === "history-run") return null;
 
+        if (block.type === "history-run-floor") return null;
+
         if (block.type === "cost-token") {
           const text = block.kind === "energy"
             ? "@".repeat(Math.max(1, block.count))

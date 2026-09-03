@@ -9,6 +9,7 @@ import type {
   CardTypeKo,
   CodexCard,
 } from "@/lib/codex-types";
+import { historyRunFloorPlainText } from "@/lib/history-run-floor";
 import { historyRunPlainText } from "@/lib/history-run-reference";
 import {
   buildEntityKeywordIndex,
@@ -398,6 +399,7 @@ export function transfigureBlocksToGameDescription(blocks: PostBlock[]): string 
     if (block.type === "keyword") return `[gold]${block.text}[/gold]`;
     if (block.type === "entity") return `[gold]${block.displayText}[/gold]`;
     if (block.type === "history-run") return historyRunPlainText(block);
+    if (block.type === "history-run-floor") return historyRunFloorPlainText(block);
     return block.title;
   }).join(""));
 }
@@ -687,6 +689,10 @@ export function transfigureBlocksSignature(items: PostBlock[]): string {
       );
     } else if (block.type === "history-run") {
       tokens.push(`history-run:${block.runId}:${JSON.stringify(block.snapshot)}`);
+    } else if (block.type === "history-run-floor") {
+      tokens.push(
+        `history-run-floor:${block.actIndex}:${block.step}:${block.floor}:${block.mapPointType}`,
+      );
     } else {
       tokens.push(`youtube:${block.videoId}:${block.title}`);
     }
@@ -712,6 +718,7 @@ export function isTransfiguredContent(
       if (block.type === "keyword") return block.text;
       if (block.type === "entity") return block.displayText;
       if (block.type === "history-run") return historyRunPlainText(block);
+      if (block.type === "history-run-floor") return historyRunFloorPlainText(block);
       return block.title;
     })
     .join("")

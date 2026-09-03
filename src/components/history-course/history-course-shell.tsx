@@ -15,6 +15,7 @@ import {
   type NodeStackItemKind,
 } from "@/components/history-course/node-action-stack";
 import { RunSummary } from "@/components/history-course/run-summary";
+import { HistoryCourseComments } from "@/components/history-course/history-course-comments";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import { TopBar } from "@/components/history-course/topbar";
 import { buildTopbarState } from "@/components/history-course/topbar-state";
@@ -26,6 +27,7 @@ import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 import { lookupHistoryCard } from "@/lib/history-card-lookup";
+import { commentMentionsHistoryFloor, historyMapCommentMarksForAct } from "@/lib/history-run-floor";
 import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
 import {
   analyzeReplayRun,
@@ -58,12 +60,13 @@ import {
   type RunTimeline,
 } from "@/lib/sts2-run-timeline";
 import { cn } from "@/lib/utils";
+import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
+import type { Comment } from "@/hooks/use-comments";
 
 type Analysis = ReturnType<typeof analyzeReplayRun>;
 type Act = Analysis["acts"][number];
 
-const NAV_OFFSET_PX = 49;
-const STAGE_WIDTH = `min(100vw, calc((100dvh - ${NAV_OFFSET_PX}px) * 16 / 9), 1600px)` as const;
+const STAGE_WIDTH = "100%";
 const PLAYBACK_RATES = [1, 2, 4, 8, 16] as const;
 type Rate = (typeof PLAYBACK_RATES)[number];
 
@@ -700,11 +703,13 @@ function focusedNodeEntry(
 }
 
 export function HistoryCourseShell({
+  runId,
   run,
   cardsById,
   relicsById,
   potionsById,
 }: {
+  runId: string;
   run: ReplayRun;
   cardsById: Record<string, CodexCard>;
   relicsById: Record<string, CodexRelic>;
@@ -752,6 +757,7 @@ export function HistoryCourseShell({
   const [introToken, setIntroToken] = useState(0);
   const [introActive, setIntroActive] = useState(false);
   const [replayReady, setReplayReady] = useState(false);
+  const [comments, setComments] = useState<Comment[]>([]);
   // Per-act window-entry tracker. wasInIntroWindowRef[i] = true while
   // globalMs is inside act i's intro window; we only fire on the
   // false→true edge. Jumping inside the window fires; jumping outside
@@ -1067,6 +1073,32 @@ export function HistoryCourseShell({
     [runTimeline],
   );
 
+  const nodeCommentMarks = useMemo(
+    () => (act ? historyMapCommentMarksForAct(comments, actIndex, step) : []),
+    [act, actIndex, comments, step],
+  );
+
+  const onCommentChipClick = useCallback((targetStep: number) => {
+    if (!act) return;
+    onJumpToStep(actIndex, targetStep);
+    const first = comments.find((comment) =>
+      commentMentionsHistoryFloor(comment.content_blocks, actIndex, targetStep),
+    );
+    window.setTimeout(() => {
+      if (first) {
+        document.getElementById(`history-comment-${first.id}`)?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+        return;
+      }
+      document.getElementById("comments")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 50);
+  }, [act, actIndex, comments, onJumpToStep]);
+
 
   if (!act) {
     return (
@@ -1077,11 +1109,13 @@ export function HistoryCourseShell({
   }
 
   return (
-    <div className="relative isolate overflow-hidden bg-black">
-      <SceneBackdrop actId={act.actId} />
-
-      <div className="relative z-10 flex h-[calc(100dvh-49px)] w-full items-center justify-center">
-        <Stage
+    <div className="relative isolate min-h-[calc(100dvh-49px)] bg-black">
+      <div className={`${TOYBOX_WIDE_MAX_CLASS} px-4 pb-16 pt-3`}>
+        <div className="relative flex justify-center">
+          <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl opacity-50">
+            <SceneBackdrop actId={act.actId} />
+          </div>
+          <Stage
           run={run}
           act={act}
           actIndex={actIndex}
@@ -1123,7 +1157,20 @@ export function HistoryCourseShell({
           onOpenInfo={onToggleSummary}
           focusedPlayerIndex={playerIndex}
           onFocusPlayer={onFocusPlayer}
+          nodeCommentMarks={nodeCommentMarks}
+          onCommentChipClick={onCommentChipClick}
         />
+        </div>
+        <div className="relative z-10 mt-6 w-full">
+          <HistoryCourseComments
+            runId={runId}
+            act={act}
+            actIndex={actIndex}
+            step={step}
+            onJumpToStep={onJumpToStep}
+            onCommentsChange={setComments}
+          />
+        </div>
       </div>
 
       <DeckModal
@@ -1196,6 +1243,8 @@ function Stage({
   onOpenInfo,
   focusedPlayerIndex,
   onFocusPlayer,
+  nodeCommentMarks,
+  onCommentChipClick,
 }: {
   run: ReplayRun;
   act: Act;
@@ -1235,6 +1284,8 @@ function Stage({
   onOpenInfo: () => void;
   focusedPlayerIndex: number;
   onFocusPlayer: (index: number) => void;
+  nodeCommentMarks: ReadonlyArray<{ step: number; count: number; current: boolean }>;
+  onCommentChipClick: (step: number) => void;
 }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const mapBoxRef = useRef<HTMLDivElement>(null);
@@ -1337,7 +1388,8 @@ function Stage({
   return (
     <div
       ref={stageRef}
-      className="relative overflow-hidden ring-1 ring-white/10 shadow-[0_30px_120px_-30px_rgba(0,0,0,0.9)]"
+      className="relative w-full overflow-hidden ring-1 ring-white/10 shadow-[0_30px_120px_-30px_rgba(0,0,0,0.9)]"
+      data-history-course-stage=""
       style={{ width: STAGE_WIDTH, aspectRatio: "16 / 9" }}
     >
       <TopBar
@@ -1378,6 +1430,8 @@ function Stage({
             transitEdgeIds={transitEdgeIds}
             characterMarkerSrc={mapCharacterMarkerSrc}
             characterMarkerOutlineSrc={mapCharacterMarkerOutlineSrc}
+            nodeCommentMarks={nodeCommentMarks}
+            onCommentChipClick={onCommentChipClick}
           />
         </div>
       </GameScrollArea>

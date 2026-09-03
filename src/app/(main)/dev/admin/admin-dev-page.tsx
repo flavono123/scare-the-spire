@@ -35,6 +35,7 @@ import {
   type CommentThreadService,
 } from "@/lib/comment-threads";
 import { COMMENT_MAX_CHARS } from "@/lib/content-limits";
+import { historyRunFloorPlainText } from "@/lib/history-run-floor";
 import { historyRunPlainText } from "@/lib/history-run-reference";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import { getSiteOrigin } from "@/lib/site-origin";
@@ -552,6 +553,7 @@ function blockText(blocks: PostBlock[] | null | undefined): string {
     }
     if (block.type === "youtube") return block.title;
     if (block.type === "history-run") return historyRunPlainText(block);
+    if (block.type === "history-run-floor") return historyRunFloorPlainText(block);
     return block.text;
   }).join("");
 }

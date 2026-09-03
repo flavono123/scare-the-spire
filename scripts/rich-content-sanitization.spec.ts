@@ -95,9 +95,10 @@ assert.deepEqual(blocks, [
       win: true,
       totalFloors: 52,
       runTime: 3_600,
-      build: "v0.109.0",
-      seed: "ABC123",
-    },
+        build: "v0.109.0",
+        seed: "ABC123",
+        coverSpec: null,
+      },
   },
 ]);
 assert.equal(blocksToPlainText(blocks).includes("\u0000"), false);

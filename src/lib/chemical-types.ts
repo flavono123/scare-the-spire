@@ -68,13 +68,30 @@ export interface HistoryRunBlock {
   snapshot: HistoryRunReferenceSnapshot;
 }
 
+/**
+ * A floor/node stamp on a History Course comment.
+ *
+ * `step` is 1-based within the act (same as replay seek). `floor` is the
+ * 1-based global floor shown in run history. `spriteSrc` is a snapshot of
+ * the run-history icon at stamp time.
+ */
+export interface HistoryRunFloorBlock {
+  type: "history-run-floor";
+  floor: number;
+  actIndex: number;
+  step: number;
+  mapPointType: string;
+  spriteSrc?: string;
+}
+
 export type PostBlock =
   | TextBlock
   | EntityBlock
   | KeywordBlock
   | CostTokenBlock
   | YouTubeBlock
-  | HistoryRunBlock;
+  | HistoryRunBlock
+  | HistoryRunFloorBlock;
 
 export interface ChemicalPost {
   id: string;

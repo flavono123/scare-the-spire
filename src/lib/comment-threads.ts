@@ -45,6 +45,10 @@ export function buildFavoriteTournamentCommentThreadKey(postId: string): string 
   return `favorite-tournament:${postId}`;
 }
 
+export function buildHistoryCourseCommentThreadKey(runId: string): string {
+  return `history-course:${runId}`;
+}
+
 export const COMMENT_THREAD_SERVICES = [
   "patches",
   "compendium",
@@ -120,5 +124,6 @@ export function commentThreadHref(storyId: string): string {
     ?? prefixedResourceCommentsHref(storyId, "defragment:", "/defragment")
     ?? prefixedResourceCommentsHref(storyId, "decisions-decisions:", "/decisions-decisions")
     ?? prefixedResourceCommentsHref(storyId, "favorite-tournament:", "/this-or-that/tournament")
+    ?? prefixedResourceCommentsHref(storyId, "history-course:", "/history-course")
     ?? (storyId === "byrdispatch" ? `/byrdispatch${COMMENTS_ANCHOR}` : `/#${storyId}`);
 }

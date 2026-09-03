@@ -735,6 +735,9 @@ export const serviceMessages = {
         missingTitle: "런을 찾을 수 없습니다",
         missingMessage: "이 브라우저에 저장된 런 중에 일치하는 것이 없습니다. 처음 올린 브라우저에서만 접근 가능하며, 공유 기능은 곧 추가됩니다.",
         backToIndex: "역사 강의서 처음으로",
+        comments: "댓글",
+        stampFloor: "이 층",
+        atThisFloor: "이 층의 댓글 {count}",
         playback: {
           noActs: "분석 가능한 막이 없습니다.",
           play: "재생",
@@ -2032,6 +2035,9 @@ export const serviceMessages = {
         missingTitle: "Run not found",
         missingMessage: "No matching saved run exists in this browser. Open it in the browser where it was first uploaded, or use a shared URL.",
         backToIndex: "Back to History Course",
+        comments: "Comments",
+        stampFloor: "This floor",
+        atThisFloor: "{count} comments on this floor",
         playback: {
           noActs: "No acts could be reconstructed.",
           play: "Play",

@@ -45,6 +45,7 @@ import {
   getMadScienceVariantPartsFromId,
 } from "@/lib/tinker-time";
 import type { TopbarState } from "@/components/history-course/topbar-state";
+import { historyRunHistorySpriteSrc } from "@/lib/history-run-history-sprite";
 import { visibleRunBadgesAtFloor } from "@/lib/run-badge-timing";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
@@ -63,62 +64,6 @@ import { PartyPortraitStack } from "@/components/history-course/party-portrait-s
 //     animation in front. The user can dismiss the panel via the back
 //     button and keep scrubbing the playback at the final node.
 // ============================================================================
-
-const ANCIENT_KEYS = new Set([
-  "NEOW",
-  "TEZCATARA",
-  "VAKUU",
-  "OROBAS",
-  "PAEL",
-  "DARV",
-  "NONUPEIPE",
-  "TANX",
-]);
-
-function ancientSpriteSrc(modelId: string | null): string | null {
-  if (!modelId) return null;
-  const m = modelId.match(/^EVENT\.(.+)$/);
-  if (!m) return null;
-  if (!ANCIENT_KEYS.has(m[1])) return null;
-  return `/images/sts2/run-history/${m[1].toLowerCase()}.png`;
-}
-
-function bossKeyFromEntry(entry: ReplayHistoryEntry): string | null {
-  const id = entry.rooms?.[0]?.model_id;
-  if (!id) return null;
-  const match = id.match(/^ENCOUNTER\.(.+_BOSS)$/);
-  return match ? match[1] : null;
-}
-
-function nodeSpriteSrc(entry: ReplayHistoryEntry): string {
-  const modelId = entry.rooms?.[0]?.model_id ?? null;
-  if (entry.map_point_type === "ancient") {
-    return ancientSpriteSrc(modelId) ?? "/images/sts2/run-history/ancient.png";
-  }
-  if (modelId === "EVENT.NEOW") return "/images/sts2/run-history/neow.png";
-  if (modelId === "ROOM.ANCIENT") return "/images/sts2/run-history/ancient.png";
-  if (entry.map_point_type === "boss") {
-    const bossKey = bossKeyFromEntry(entry);
-    if (bossKey) return `/images/sts2/bosses/${bossKey.toLowerCase()}.webp`;
-    return "/images/sts2/run-history/monster.png";
-  }
-  switch (entry.map_point_type) {
-    case "monster":
-      return "/images/sts2/run-history/monster.png";
-    case "elite":
-      return "/images/sts2/run-history/elite.png";
-    case "rest_site":
-      return "/images/sts2/run-history/rest_site.png";
-    case "treasure":
-      return "/images/sts2/run-history/treasure.png";
-    case "shop":
-      return "/images/sts2/run-history/shop.png";
-    case "unknown":
-      return "/images/sts2/run-history/event.png";
-    default:
-      return "/images/sts2/run-history/monster.png";
-  }
-}
 
 function relicIconSrc(id: string): string {
   const slug = id.replace(/^RELIC\./, "").toLowerCase();
@@ -638,7 +583,7 @@ function ActNode({
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={nodeSpriteSrc(entry)}
+          src={historyRunHistorySpriteSrc(entry)}
           alt=""
           className="h-full w-full select-none object-contain"
           draggable={false}

@@ -242,6 +242,7 @@ function LocalizedRunDetail({
         enchantments={catalog.allEnchantments}
       >
         <HistoryCourseShell
+          runId={runId}
           run={run}
           cardsById={cardsById}
           relicsById={relicsById}

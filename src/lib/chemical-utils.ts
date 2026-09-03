@@ -2,6 +2,10 @@ import type { JSONContent } from "@tiptap/react";
 import { getChoseong } from "es-hangul";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
+import {
+  historyRunFloorPlainText,
+  isHistoryRunFloorBlock,
+} from "@/lib/history-run-floor";
 import { historyRunPlainText } from "@/lib/history-run-reference";
 import { isCoverSpec, type CoverSpec } from "@/lib/run-cover-types";
 import { isYouTubeVideoId } from "@/lib/youtube-reference";
@@ -60,6 +64,10 @@ function nodeString(value: unknown): string {
 
 function nodeNumber(value: unknown): number | null {
   if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && value.trim()) {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) return parsed;
+  }
   return null;
 }
 
@@ -207,6 +215,16 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
             coverSpec: coverSpecFromUnknown(node.attrs?.coverSpec),
           },
         });
+      } else if (node.type === "history-run-floor") {
+        const candidate = {
+          type: "history-run-floor" as const,
+          floor: nodeNumber(node.attrs?.floor) ?? 0,
+          actIndex: nodeNumber(node.attrs?.actIndex) ?? -1,
+          step: nodeNumber(node.attrs?.step) ?? 0,
+          mapPointType: nodeString(node.attrs?.mapPointType).trim() || "unknown",
+          spriteSrc: nodeString(node.attrs?.spriteSrc).trim() || undefined,
+        };
+        if (isHistoryRunFloorBlock(candidate)) blocks.push(candidate);
       }
     }
   }
@@ -260,6 +278,18 @@ export function blocksToTiptapDocument(blocks: PostBlock[]): JSONContent {
         },
       }];
     }
+    if (block.type === "history-run-floor") {
+      return [{
+        type: "history-run-floor",
+        attrs: {
+          floor: block.floor,
+          actIndex: block.actIndex,
+          step: block.step,
+          mapPointType: block.mapPointType,
+          spriteSrc: block.spriteSrc ?? "",
+        },
+      }];
+    }
     return [{
       type: "history-run-reference",
       attrs: {
@@ -298,6 +328,7 @@ export function blocksToPlainText(blocks: PostBlock[]): string {
       if (b.type === "cost-token") return costTokenPlainText(b.kind, b.count);
       if (b.type === "youtube") return stripNullCharacters(b.title);
       if (b.type === "history-run") return historyRunPlainText(b);
+      if (b.type === "history-run-floor") return historyRunFloorPlainText(b);
       return stripNullCharacters(b.displayText);
     })
     .join("");
@@ -319,6 +350,7 @@ export function blocksToStorageText(blocks: PostBlock[]): string {
       if (b.type === "cost-token") return costTokenPlainText(b.kind, b.count);
       if (b.type === "youtube") return stripNullCharacters(b.title);
       if (b.type === "history-run") return historyRunPlainText(b);
+      if (b.type === "history-run-floor") return historyRunFloorPlainText(b);
 
       const text = stripNullCharacters(b.text);
       const keyword = stripNullCharacters(b.keyword ?? "").trim();

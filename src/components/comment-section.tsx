@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 import { Trash2 } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -11,9 +11,9 @@ import {
   blocksToPlainText,
   blocksToStorageText,
 } from "@/lib/chemical-utils";
-import type { PostBlock } from "@/lib/chemical-types";
+import type { HistoryRunFloorBlock, PostBlock } from "@/lib/chemical-types";
 import { useAuth } from "@/hooks/use-auth";
-import { useComments } from "@/hooks/use-comments";
+import { useComments, type Comment } from "@/hooks/use-comments";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useCommentLikes } from "@/hooks/use-comment-likes";
 import { useUserProfile } from "@/hooks/use-user-profile";
@@ -24,10 +24,12 @@ import { LikeControl } from "@/components/like-control";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { buildRichContentIndexes, resolveRichContentBlocks } from "@/lib/rich-content-blocks";
+import { commentMentionsHistoryFloor } from "@/lib/history-run-floor";
 import {
   COMMENT_MAX_CHARS,
   COMMENT_MIN_CHARS,
 } from "@/lib/content-limits";
+import { cn } from "@/lib/utils";
 
 const RichContentEditor = dynamic<RichContentEditorProps>(
   () => import("@/components/rich-content-editor").then((mod) => mod.RichContentEditor),
@@ -42,10 +44,23 @@ export function CommentSection({
   threadKey,
   initialEntities,
   onCountChange,
+  onCommentsChange,
+  onHistoryFloorClick,
+  activeHistoryFloor,
+  historyFloorInsertRequest,
+  toolbarStart,
 }: {
   threadKey: string;
   initialEntities?: EntityInfo[];
   onCountChange?: (count: number) => void;
+  onCommentsChange?: (comments: Comment[]) => void;
+  onHistoryFloorClick?: (block: HistoryRunFloorBlock) => void;
+  activeHistoryFloor?: { actIndex: number; step: number } | null;
+  historyFloorInsertRequest?: {
+    requestId: number;
+    block: HistoryRunFloorBlock;
+  } | null;
+  toolbarStart?: ReactNode;
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].comments;
@@ -68,6 +83,11 @@ export function CommentSection({
       onCountChange?.(comments.length);
     }
   }, [comments.length, loading, onCountChange]);
+
+  useEffect(() => {
+    if (loading) return;
+    onCommentsChange?.(comments);
+  }, [comments, loading, onCommentsChange]);
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -119,8 +139,26 @@ export function CommentSection({
         <p className="text-xs text-muted-foreground">{copy.empty}</p>
       ) : (
         <ul className="space-y-3">
-          {comments.map((comment) => (
-            <li key={comment.id} className="rounded-lg border border-border/50 bg-card/20 px-3 py-2.5 text-sm">
+          {comments.map((comment) => {
+            const active = Boolean(
+              activeHistoryFloor
+              && commentMentionsHistoryFloor(
+                comment.content_blocks,
+                activeHistoryFloor.actIndex,
+                activeHistoryFloor.step,
+              ),
+            );
+            return (
+            <li
+              key={comment.id}
+              id={`history-comment-${comment.id}`}
+              className={cn(
+                "rounded-lg border bg-card/20 px-3 py-2.5 text-sm",
+                active
+                  ? "border-amber-400/50 bg-amber-400/5"
+                  : "border-border/50",
+              )}
+            >
               <div className="flex items-center gap-2">
                 <DisplayedProfileNickname
                   nickname={comment.nickname}
@@ -159,10 +197,12 @@ export function CommentSection({
                 <PostRenderer
                   blocks={resolveRichContentBlocks(comment.content, comment.content_blocks, richContentIndexes)}
                   entityMap={entityMap}
+                  onHistoryFloorClick={onHistoryFloorClick}
                 />
               </div>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
 
@@ -192,6 +232,8 @@ export function CommentSection({
               minChars={COMMENT_MIN_CHARS}
               maxChars={COMMENT_MAX_CHARS}
               allowLineBreaks
+              historyFloorInsertRequest={historyFloorInsertRequest}
+              toolbarStart={toolbarStart}
             />
           )}
         </div>

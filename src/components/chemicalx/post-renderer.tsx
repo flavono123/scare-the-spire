@@ -18,6 +18,8 @@ import {
   youtubeWatchUrl,
 } from "@/lib/youtube-reference";
 import { historyRunPlainText } from "@/lib/history-run-reference";
+import { HistoryRunFloorChip } from "@/components/history-course/history-run-floor-chip";
+import type { HistoryRunFloorBlock } from "@/lib/chemical-types";
 import { SERVICE_LINK_CLASS } from "@/lib/service-link-classes";
 
 const STAR_ICON_SRC = "/images/game-assets/card-misc/star_icon.png";
@@ -30,6 +32,7 @@ interface PostRendererProps {
   gameLocale?: GameLocale;
   /** Energy orb art for in-description cost tokens. Defaults to colorless. */
   energyIconSrc?: string;
+  onHistoryFloorClick?: (block: HistoryRunFloorBlock) => void;
 }
 
 function CostTokenIcons({
@@ -69,6 +72,7 @@ export function PostRenderer({
   serviceLocale,
   gameLocale,
   energyIconSrc = resolveSts2EnergyIcon("colorless"),
+  onHistoryFloorClick,
 }: PostRendererProps) {
   const keywordEntityIndex = useMemo(
     () => buildEntityKeywordIndex(Array.from(entityMap.values())),
@@ -185,6 +189,16 @@ export function PostRenderer({
               <span key={i} className="font-semibold text-amber-100">
                 {historyRunPlainText(block, serviceLocale)}
               </span>
+            );
+          }
+
+          if (block.type === "history-run-floor") {
+            return (
+              <HistoryRunFloorChip
+                key={i}
+                block={block}
+                onClick={onHistoryFloorClick}
+              />
             );
           }
 

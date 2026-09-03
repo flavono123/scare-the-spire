@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef, useMemo } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo, type ReactNode } from "react";
 import Image from "@/components/ui/static-image";
 import { RichText } from "@/components/rich-text";
 import { useEditor, EditorContent, ReactRenderer } from "@tiptap/react";
@@ -29,6 +29,7 @@ import { EntityMapProvider } from "@/components/chemicalx/entity-context";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { YouTubeReferenceExtension } from "@/components/editor/youtube-reference-extension";
 import { HistoryRunReferenceExtension } from "@/components/editor/history-run-reference-extension";
+import { HistoryRunFloorExtension } from "@/components/editor/history-run-floor-extension";
 import { CostTokenExtension } from "@/components/transfigure/cost-token-extension";
 import { keywordsFromCoverSpec } from "@/lib/history-run-reference";
 import { isCoverSpec } from "@/lib/run-cover-types";
@@ -52,8 +53,7 @@ import {
 } from "@/lib/chemical-utils";
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
 import { GameScrollArea } from "@/components/game-scroll-area";
-import type { PostBlock } from "@/lib/chemical-types";
-import type { HistoryRunBlock } from "@/lib/chemical-types";
+import type { HistoryRunBlock, HistoryRunFloorBlock, PostBlock } from "@/lib/chemical-types";
 import {
   parseYouTubeVideoId,
   resolveYouTubeReference,
@@ -365,6 +365,11 @@ export interface RichContentEditorProps {
     } | null;
     slashCommands: SlashCommandItem[];
   };
+  historyFloorInsertRequest?: {
+    requestId: number;
+    block: HistoryRunFloorBlock;
+  } | null;
+  toolbarStart?: ReactNode;
   /** Enable @ / * → in-description energy / star icon atoms (Transfigure). */
   costTokens?: {
     energyIconSrc: string;
@@ -398,6 +403,8 @@ export function RichContentEditor({
   contentReplaceRequest,
   youtubeExtension,
   historyRunReferences,
+  historyFloorInsertRequest = null,
+  toolbarStart,
   costTokens = null,
   hideSubmitButton = false,
 }: RichContentEditorProps) {
@@ -423,6 +430,7 @@ export function RichContentEditor({
   const lastEntityInsertRequestIdRef = useRef<number | null>(null);
   const lastContentReplaceRequestIdRef = useRef<number | null>(null);
   const lastHistoryRunInsertRequestIdRef = useRef<number | null>(null);
+  const lastHistoryFloorInsertRequestIdRef = useRef<number | null>(null);
   const lastSubmitRequestIdRef = useRef(submitRequestId);
   const historyRunInsertRequest = historyRunReferences?.insertRequest ?? null;
   const historyRunSlashCommands = historyRunReferences?.slashCommands ?? null;
@@ -506,6 +514,7 @@ export function RichContentEditor({
         : []),
       ...(youtubeExtension ? [YouTubeReferenceExtension] : []),
       ...(historyRunSlashCommands ? [HistoryRunReferenceExtension] : []),
+      HistoryRunFloorExtension,
       EntityMention.configure({
         HTMLAttributes: {
           class: "spire-gold font-semibold",
@@ -1141,6 +1150,47 @@ export function RichContentEditor({
     }, 0);
   }, [editor, historyRunInsertRequest, resolveKeyword]);
 
+  useEffect(() => {
+    const request = historyFloorInsertRequest;
+    if (
+      !editor
+      || !request
+      || lastHistoryFloorInsertRequestIdRef.current === request.requestId
+    ) {
+      return;
+    }
+
+    const { block } = request;
+    window.setTimeout(() => {
+      if (editor.isDestroyed || !editor.schema.nodes["history-run-floor"]) return;
+
+      lastHistoryFloorInsertRequestIdRef.current = request.requestId;
+      const { $from } = editor.state.selection;
+      const textBefore = $from.parent.textBetween(
+        Math.max(0, $from.parentOffset - 1),
+        $from.parentOffset,
+        undefined,
+        "\uFFFC",
+      );
+      const needsLeadingSpace = textBefore.length > 0 && !/\s/.test(textBefore);
+
+      editor.chain().focus().insertContent([
+        ...(needsLeadingSpace ? [{ type: "text", text: " " }] : []),
+        {
+          type: "history-run-floor",
+          attrs: {
+            floor: block.floor,
+            actIndex: block.actIndex,
+            step: block.step,
+            mapPointType: block.mapPointType,
+            spriteSrc: block.spriteSrc ?? "",
+          },
+        },
+        { type: "text", text: " " },
+      ]).run();
+    }, 0);
+  }, [editor, historyFloorInsertRequest]);
+
   const handleSubmit = useCallback(async () => {
     if (!editor || submitting) return;
     const blocks = tiptapToBlocks(sanitizeRichTextJson(editor.getJSON()));
@@ -1247,6 +1297,7 @@ export function RichContentEditor({
 
       {!embedded && (
         <div className="flex items-center gap-3 border-t border-border px-3 py-2">
+          {toolbarStart}
           {maxChars != null && (
             <span
               className={`shrink-0 font-mono text-xs tabular-nums ${charCountColor}`}

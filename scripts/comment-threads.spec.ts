@@ -19,6 +19,11 @@ assert.equal(
   "/c-c-c-combo/aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee#comments",
 );
 assert.equal(commentThreadHref("byrdispatch"), "/byrdispatch#comments");
+assert.equal(
+  commentThreadHref("history-course:174nxe7x9zfpgm1t"),
+  "/history-course/174nxe7x9zfpgm1t#comments",
+);
+assert.equal(commentThreadService("history-course:174nxe7x9zfpgm1t"), "other");
 
 assert.equal(commentThreadService("sts2-patch:0.111.0"), "patches");
 assert.equal(commentThreadService("sts2-codex:card:STRIKE"), "compendium");

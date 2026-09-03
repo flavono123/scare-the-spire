@@ -879,6 +879,8 @@ export function SeededMapView({
   transitEdgeIds,
   characterMarkerSrc,
   characterMarkerOutlineSrc,
+  nodeCommentMarks,
+  onCommentChipClick,
 }: {
   act: ReplayActAnalysis;
   step: number;
@@ -900,6 +902,8 @@ export function SeededMapView({
    *  portrait reads against any map backdrop without needing a manual
    *  disc/ring frame. */
   characterMarkerOutlineSrc?: string;
+  nodeCommentMarks?: ReadonlyArray<{ step: number; count: number; current: boolean }>;
+  onCommentChipClick?: (step: number) => void;
 }) {
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const meta = actMapMeta(act.actId);
@@ -917,6 +921,11 @@ export function SeededMapView({
     () => new Set(act.flightArrivalNodeIds),
     [act],
   );
+  const commentMarkByStep = useMemo(() => {
+    const map = new Map<number, { step: number; count: number; current: boolean }>();
+    for (const mark of nodeCommentMarks ?? []) map.set(mark.step, mark);
+    return map;
+  }, [nodeCommentMarks]);
   const nodeStepIndex = useMemo(() => {
     const map = new Map<string, number>();
     for (let i = 0; i < act.candidateNodeIdsByStep.length; i++) {
@@ -1094,6 +1103,9 @@ export function SeededMapView({
           const isHovered = hoveredNodeId === node.id;
 
           const seekable = onSeekToStep != null && visited;
+          const commentMark = stepIndex != null
+            ? commentMarkByStep.get(stepIndex + 1)
+            : undefined;
           return (
             <div
               key={node.id}
@@ -1160,6 +1172,24 @@ export function SeededMapView({
                   stepIndex={stepIndex}
                   entry={revealEntry}
                 />
+              )}
+              {commentMark && stepIndex != null && (
+                <button
+                  type="button"
+                  className={cn(
+                    "absolute left-full top-1/2 z-20 ml-1 flex h-5 min-w-5 -translate-y-1/2 items-center justify-center rounded-full px-1 text-[10px] font-bold",
+                    commentMark.current
+                      ? "bg-amber-400 text-black ring-1 ring-amber-200"
+                      : "bg-black/85 text-amber-100 ring-1 ring-amber-400/40",
+                  )}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onSeekToStep?.(stepIndex + 1);
+                    onCommentChipClick?.(stepIndex + 1);
+                  }}
+                >
+                  {commentMark.count}
+                </button>
               )}
               {showQuestMarker && (
                 <Image
