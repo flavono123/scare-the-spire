@@ -391,7 +391,6 @@ export function pagestormLoremDoc(copy: PagestormCopy): JSONContent {
   return {
     type: "doc",
     content: [
-      heading(2, copy.sampleHeading),
       paragraph([text(LOREM_P1)]),
       paragraph([text(LOREM_P2)], "right"),
       heading(2, copy.sampleStylesSection),

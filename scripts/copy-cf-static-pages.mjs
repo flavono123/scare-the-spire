@@ -66,6 +66,7 @@ const staticServiceDetailSegments = new Set([
   "history-course",
   "decisions-decisions",
   "defragment",
+  "pagestorm",
 ]);
 const defragmentFederatedServices = new Set([
   "combo",

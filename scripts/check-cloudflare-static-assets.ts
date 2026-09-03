@@ -80,6 +80,7 @@ const staticServiceDetailShellSegments = [
   "transfigure",
   "history-course",
   "decisions-decisions",
+  "pagestorm",
 ] as const;
 const defragmentFederatedServices = [
   "combo",
@@ -236,6 +237,11 @@ function checkStaticServicePages(): number {
   assert(
     staticServiceDetailShellAssetPath("/pagestorm/write", "html") === null,
     "Pagestorm write must not use an unbounded ID shell.",
+  );
+  assert(
+    staticServiceDetailShellAssetPath("/pagestorm/post-id", "html")
+      === `/_cf_static_pages/pagestorm/${staticDetailShellSegment}.html`,
+    "Pagestorm details must rewrite to the static shell.",
   );
   assert(
     staticServicePageAssetPath("/pagestorm/lorem", "html")

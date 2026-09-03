@@ -157,6 +157,8 @@ function mainCases() {
     ...page(`/this-or-that/tournament/${MISSING_UUID}`, "shell"),
     ...page(`/transfigure/${MISSING_UUID}`, "shell"),
     ...page(`/decisions-decisions/${MISSING_UUID}`, "shell"),
+    ...page(`/pagestorm/${MISSING_UUID}`, "shell"),
+    ...page(`/en/pagestorm/${MISSING_UUID}`, "shell"),
     ...page(`/history-course/${HISTORY_RUN_ID}`, "shell"),
     ...page(`/en/defragment/transfigure/${MISSING_UUID}`, "shell"),
     ...missingPage(`/chemical-x/${MISSING_UUID}/extra`),
@@ -188,6 +190,7 @@ function mainCases() {
       location: `/en/this-or-that/tournament/${MISSING_UUID}`,
     },
     ...missingPage(`/transfigure/${MISSING_UUID}/extra`),
+    ...missingPage(`/pagestorm/${MISSING_UUID}/extra`),
     ...missingPage(`/history-course/${HISTORY_RUN_ID}/extra`),
     {
       name: "Search index asset",

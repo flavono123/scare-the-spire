@@ -4,7 +4,7 @@ import { resolveAuthentication, workerNames } from "./cloudflare-auth.mjs";
 
 const DEFAULT_OUTCOMES = ["exceededCpu", "exceededMemory"];
 const UNBOUNDED_ID_PREFIXES = [
-  /^(\/(?:[a-z]{2}(?:-[0-9]+)?\/)?(?:this-or-that|transfigure|chemical-x|c-c-c-combo|history-course))\/[^/]+$/i,
+  /^(\/(?:[a-z]{2}(?:-[0-9]+)?\/)?(?:this-or-that|transfigure|chemical-x|c-c-c-combo|history-course|decisions-decisions|pagestorm))\/[^/]+$/i,
   /^(\/defragment\/(?:chemical_x|combo|transfigure|this_or_that))\/[^/]+$/i,
 ];
 

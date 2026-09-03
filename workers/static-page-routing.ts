@@ -139,6 +139,7 @@ const STATIC_SERVICE_DETAIL_SEGMENTS = new Set([
   "transfigure",
   "history-course",
   "decisions-decisions",
+  "pagestorm",
 ]);
 
 const DEFRAGMENT_FEDERATED_SERVICES = new Set([

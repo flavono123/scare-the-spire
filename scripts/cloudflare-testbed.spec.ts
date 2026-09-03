@@ -168,6 +168,7 @@ test("dynamic service routes refresh directly and invalid nesting fails closed",
     `/this-or-that/tournament/${MISSING_UUID}`,
     `/transfigure/${MISSING_UUID}`,
     `/decisions-decisions/${MISSING_UUID}`,
+    `/pagestorm/${MISSING_UUID}`,
     "/history-course/1testbedmissingrun",
   ];
   for (const path of validShapes) {
