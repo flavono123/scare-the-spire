@@ -10,6 +10,7 @@ import engRelics from "../data/sts2/localization/eng/relics.json";
 import { furCoatHistoryEntryText } from "../src/lib/history-run-history-loc";
 import {
   buildMapPointHistoryHover,
+  historyHoverArtSrc,
   historyHoverColumnSize,
   splitHistoryHoverColumns,
 } from "../src/lib/history-map-point-hover";
@@ -114,12 +115,28 @@ function main() {
     "gold gained uses gold sprite-font token",
   );
   assert(
+    rewards.rewardLines[0]?.art == null,
+    "gold gained keeps the token, not card/relic/potion art",
+  );
+  assert(
     rewards.rewardLines.some((line) => line.icon === "card" && line.text.includes("+")),
     "gained upgraded cards append +",
   );
   assert(
+    rewards.rewardLines.some(
+      (line) => line.art?.kind === "card" && line.art.id === "CARD.STRIKE_IRONCLAD",
+    ),
+    "gained cards keep portrait art refs",
+  );
+  assert(
     rewards.rewardLines.some((line) => line.icon === "chest" && line.text.includes("닻")),
     "picked relics use chest token",
+  );
+  assert(
+    rewards.rewardLines.some(
+      (line) => line.art?.kind === "relic" && line.art.id === "ANCHOR",
+    ),
+    "picked relics keep relic art refs",
   );
   assert(
     rewards.rewardLines.some((line) => line.text.includes("강화")),
@@ -144,6 +161,27 @@ function main() {
   assert(
     rewards.skippedLines.some((line) => line.icon === "potion"),
     "skipped potions use potion token",
+  );
+  assert(
+    rewards.skippedLines.some(
+      (line) => line.art?.kind === "potion" && line.art.id === "BLOCK_POTION",
+    ),
+    "skipped potions keep potion art refs",
+  );
+  assert(
+    historyHoverArtSrc({ kind: "card", id: "CARD.STRIKE_IRONCLAD" })
+      === "/images/sts2/cards/strike_ironclad.webp",
+    "card art strips CARD. prefix",
+  );
+  assert(
+    historyHoverArtSrc({ kind: "relic", id: "ANCHOR" })
+      === "/images/sts2/relics/anchor.webp",
+    "relic art uses catalog slug",
+  );
+  assert(
+    historyHoverArtSrc({ kind: "potion", id: "BLOCK_POTION" })
+      === "/images/sts2/potions/block_potion.webp",
+    "potion art uses catalog slug",
   );
   assert(
     !rewards.skippedLines.some((line) => line.text.includes("넘기기")),
@@ -178,6 +216,12 @@ function main() {
   assert(
     potions.actionLines.some((line) => line.icon === "potion" && line.text.includes("사용")),
     "potion used is an action row with potion token",
+  );
+  assert(
+    potions.actionLines.some(
+      (line) => line.art?.kind === "potion" && line.art.id === "STRENGTH_POTION",
+    ),
+    "potion used keeps potion art",
   );
   assert(
     potions.actionLines.some((line) => line.icon === "potion" && line.text.includes("제거")),

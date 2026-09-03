@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "@/components/ui/static-image";
 import { PortaledHoverTipLayer } from "@/components/codex/portaled-hover-tip-layer";
 import { RichText } from "@/components/rich-text";
@@ -7,8 +8,10 @@ import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import {
   HISTORY_HOVER_ICON_SRC,
+  historyHoverArtSrc,
   buildMapPointHistoryHover,
   splitHistoryHoverColumns,
+  type HistoryHoverArt,
   type HistoryHoverIcon,
   type HistoryHoverLine,
 } from "@/lib/history-map-point-hover";
@@ -106,12 +109,53 @@ function HoverLineList({ lines }: { lines: HistoryHoverLine[] }) {
   return (
     <ul className="ml-3 space-y-0.5">
       {lines.map((row, index) => (
-        <li key={`${row.icon ?? "none"}-${row.text}-${index}`} className="flex items-start gap-0.5">
-          {row.icon ? <HoverTokenIcon icon={row.icon} /> : null}
+        <li
+          key={`${row.icon ?? "none"}-${row.art?.id ?? ""}-${row.text}-${index}`}
+          className="flex items-start gap-0.5"
+        >
+          <HoverLineLead icon={row.icon} art={row.art} />
           <RichText text={row.text} />
         </li>
       ))}
     </ul>
+  );
+}
+
+function HoverLineLead({
+  icon,
+  art,
+}: {
+  icon: HistoryHoverIcon | null;
+  art?: HistoryHoverArt;
+}) {
+  if (art) return <HoverArtThumb art={art} fallback={icon} />;
+  if (icon) return <HoverTokenIcon icon={icon} />;
+  return null;
+}
+
+function HoverArtThumb({
+  art,
+  fallback,
+}: {
+  art: HistoryHoverArt;
+  fallback: HistoryHoverIcon | null;
+}) {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    return fallback ? <HoverTokenIcon icon={fallback} /> : null;
+  }
+  return (
+    <Image
+      src={historyHoverArtSrc(art)}
+      alt=""
+      width={16}
+      height={16}
+      className="mt-px inline-block shrink-0 object-contain"
+      style={{ width: 16, height: 16 }}
+      data-history-hover-art={`${art.kind}:${art.id}`}
+      onError={() => setFailed(true)}
+      aria-hidden
+    />
   );
 }
 

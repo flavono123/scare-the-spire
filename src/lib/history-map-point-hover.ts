@@ -14,6 +14,10 @@ import {
   type GameI18nTableName,
   type GameI18nTables,
 } from "@/lib/sts2-game-i18n";
+import {
+  getMadScienceVariantPartsFromId,
+  TINKER_CARD_IMAGE_BY_TYPE,
+} from "@/lib/tinker-time";
 import type {
   ReplayCardRef,
   ReplayChoice,
@@ -29,10 +33,34 @@ export const HISTORY_HOVER_ICON_SRC = {
 
 export type HistoryHoverIcon = keyof typeof HISTORY_HOVER_ICON_SRC;
 
+export type HistoryHoverArt = {
+  kind: "card" | "relic" | "potion";
+  id: string;
+};
+
 export type HistoryHoverLine = {
   text: string;
   icon: HistoryHoverIcon | null;
+  /** Game art for card/relic/potion rows. Gold stays on the sprite-font token. */
+  art?: HistoryHoverArt;
 };
+
+function resourceSlug(id: string): string {
+  return id.replace(/^(CARD|RELIC|POTION)\./i, "").toLowerCase();
+}
+
+/** Static `/images/sts2/*` portrait for a hover art ref. */
+export function historyHoverArtSrc(art: HistoryHoverArt): string {
+  if (art.kind === "card") {
+    const parts = getMadScienceVariantPartsFromId(art.id);
+    if (parts) return TINKER_CARD_IMAGE_BY_TYPE[parts.cardType];
+    return `/images/sts2/cards/${resourceSlug(art.id)}.webp`;
+  }
+  if (art.kind === "relic") {
+    return `/images/sts2/relics/${resourceSlug(art.id)}.webp`;
+  }
+  return `/images/sts2/potions/${resourceSlug(art.id)}.webp`;
+}
 
 export type HistoryHoverModel = {
   floorTitle: string;
@@ -76,8 +104,24 @@ function loc(
   return bakeDescription(template, vars);
 }
 
-function line(text: string, icon: HistoryHoverIcon | null = null): HistoryHoverLine {
-  return { text: text.replace(/\{Icon\}/g, ""), icon };
+function line(
+  text: string,
+  icon: HistoryHoverIcon | null = null,
+  art?: HistoryHoverArt,
+): HistoryHoverLine {
+  return { text: text.replace(/\{Icon\}/g, ""), icon, art };
+}
+
+function cardArt(id: string | undefined): HistoryHoverArt | undefined {
+  return id ? { kind: "card", id } : undefined;
+}
+
+function relicArt(id: string | undefined): HistoryHoverArt | undefined {
+  return id ? { kind: "relic", id } : undefined;
+}
+
+function potionArt(id: string | undefined): HistoryHoverArt | undefined {
+  return id ? { kind: "potion", id } : undefined;
 }
 
 function cardPlusName(
@@ -317,6 +361,7 @@ function buildActionLines(
           Icon: "",
         }),
         "potion",
+        potionArt(id),
       ),
     );
   }
@@ -328,6 +373,7 @@ function buildActionLines(
           Icon: "",
         }),
         "potion",
+        potionArt(id),
       ),
     );
   }
@@ -365,10 +411,12 @@ function obtained(
   locale: GameLocale,
   title: string,
   icon: HistoryHoverIcon,
+  art?: HistoryHoverArt,
 ): HistoryHoverLine {
   return line(
     loc(locale, "HISTORY_ENTRY.obtained", "{Icon}{Title}", { Title: title, Icon: "" }),
     icon,
+    art,
   );
 }
 
@@ -392,7 +440,7 @@ function buildRewardAndSkipped(
     );
   }
   for (const card of entry.cards_gained ?? []) {
-    rewards.push(obtained(locale, cardRefName(card, tables), "card"));
+    rewards.push(obtained(locale, cardRefName(card, tables), "card", cardArt(card.id)));
   }
   for (const choice of entry.card_choices ?? []) {
     if (choice.picked) continue;
@@ -401,18 +449,19 @@ function buildRewardAndSkipped(
         locale,
         cardPlusName(choice.id, tables, choice.upgradeLevel ?? 0),
         "card",
+        cardArt(choice.id),
       ),
     );
   }
   for (const choice of entry.relic_choices ?? []) {
     const named = resourceName(tables, "relics", choice.id);
-    const row = obtained(locale, named, "chest");
+    const row = obtained(locale, named, "chest", relicArt(choice.id));
     if (choice.picked) rewards.push(row);
     else skipped.push(row);
   }
   for (const choice of entry.potion_choices ?? []) {
     const named = resourceName(tables, "potions", choice.id);
-    const row = obtained(locale, named, "potion");
+    const row = obtained(locale, named, "potion", potionArt(choice.id));
     if (choice.picked) rewards.push(row);
     else skipped.push(row);
   }
@@ -424,6 +473,7 @@ function buildRewardAndSkipped(
           Icon: "",
         }),
         "card",
+        cardArt(card.id),
       ),
     );
   }
@@ -435,6 +485,7 @@ function buildRewardAndSkipped(
           Icon: "",
         }),
         "chest",
+        relicArt(id),
       ),
     );
   }
@@ -446,6 +497,7 @@ function buildRewardAndSkipped(
           Icon: "",
         }),
         "card",
+        cardArt(id),
       ),
     );
   }
@@ -457,6 +509,7 @@ function buildRewardAndSkipped(
           Icon: "",
         }),
         "card",
+        cardArt(id),
       ),
     );
   }
@@ -474,6 +527,7 @@ function buildRewardAndSkipped(
           },
         ),
         "card",
+        cardArt(enchant.cardId),
       ),
     );
   }
@@ -486,6 +540,7 @@ function buildRewardAndSkipped(
           Icon: "",
         }),
         "card",
+        cardArt(transform.final.id),
       ),
     );
   }
