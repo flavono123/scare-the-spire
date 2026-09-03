@@ -32,6 +32,7 @@ import {
 import {
   listRankedCoverBackgroundCards,
   listRankedCoverElements,
+  pickCoverPhrasePair,
   suggestCoverPhrases,
   suggestCovers,
   suggestDefaultCover,
@@ -248,9 +249,17 @@ export function CoverEditorSheet({
   const handleSave = async () => {
     setSaving(true);
     try {
+      const overlay = draft.phrase.trim();
+      const pair = pickCoverPhrasePair(
+        run,
+        draft.elements,
+        `${runId}:phrase:${phraseSeed}`,
+        overlay,
+      );
       const payload = withAutoFalse({
         ...draft,
-        phrase: draft.phrase.trim() || suggested.covers[0]!.phrase,
+        phrase: pair.phrase,
+        titlePhrase: pair.titlePhrase,
         elements: draft.elements.slice(0, 3),
       });
       await onSave(payload);

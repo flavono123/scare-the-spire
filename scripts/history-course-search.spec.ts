@@ -64,6 +64,7 @@ function makeRun(character: string, extras?: Partial<ReplayRun>): ReplayRun {
 const cover: CoverSpec = {
   background: { kind: "character" },
   phrase: "커스텀 제목",
+  titlePhrase: "락업 제목",
   elements: [{ kind: "card", id: "STRIKE" }],
   auto: false,
   suggestSeed: "seed",
@@ -92,6 +93,7 @@ assert.equal(historyCourseRunMatchesKeyword(regentDoc, "0.111", entities), true)
 assert.equal(historyCourseRunMatchesKeyword(regentDoc, "v0.111.0", entities), true);
 assert.equal(historyCourseRunMatchesKeyword(regentDoc, "ABC123", entities), true);
 assert.equal(historyCourseRunMatchesKeyword(regentDoc, "커스텀 제목", entities), true);
+assert.equal(historyCourseRunMatchesKeyword(regentDoc, "락업 제목", entities), true);
 assert.equal(
   historyCourseRunMatches(regentDoc, "", [{ type: "character", id: "REGENT" }], entities),
   true,

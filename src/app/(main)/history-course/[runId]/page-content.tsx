@@ -37,10 +37,13 @@ export async function generateHistoryCourseRunMetadata(
   // Bounded single-row lookup (cover_spec + character only). No raw parse /
   // image generation — CF Free-safe. Private IDB-only runs keep the fallback.
   const ogFields = recordId ? await getDonatedRunOgFields(recordId) : null;
-  const phrase = isCoverSpec(ogFields?.coverSpec) ? ogFields.coverSpec.phrase.trim() : "";
-  // Exact share title shape: "{phrase} - 슬서운 이야기 역사 강의서"
-  const title = phrase
-    ? `${phrase} - ${brand} ${landing.title}`
+  const cover = isCoverSpec(ogFields?.coverSpec) ? ogFields.coverSpec : null;
+  const runTitle = cover
+    ? (cover.titlePhrase?.trim() || cover.phrase.trim())
+    : "";
+  // Share title is the lockup title, not the thumbnail overlay hook.
+  const title = runTitle
+    ? `${runTitle} - ${brand} ${landing.title}`
     : fallbackTitle;
   const imageSource = ogFields ? coverOgImageFromFields(ogFields) : HISTORY_COURSE_PAGE_OG_IMAGE;
   const image = {

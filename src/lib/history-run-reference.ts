@@ -189,6 +189,7 @@ export function historyRunSearchText(
     historyRunPrimaryLabel(block, serviceLocale),
     historyRunSecondaryLabel(block, serviceLocale),
     cover?.phrase,
+    cover?.titlePhrase,
     ...(cover?.elements.map((el) => el.id) ?? []),
     isoDate,
     block.runId,
@@ -203,9 +204,11 @@ export function historyRunSearchText(
 export function keywordsFromCoverSpec(cover: CoverSpec | null | undefined): string[] {
   if (!cover) return [];
   const tokens: string[] = [];
-  for (const part of cover.phrase.split(/\s+/)) {
-    const trimmed = part.trim();
-    if (trimmed) tokens.push(trimmed);
+  for (const source of [cover.phrase, cover.titlePhrase ?? ""]) {
+    for (const part of source.split(/\s+/)) {
+      const trimmed = part.trim();
+      if (trimmed) tokens.push(trimmed);
+    }
   }
   if (cover.background.kind === "card-beta") {
     const cardName = displayNameForCoverElement({

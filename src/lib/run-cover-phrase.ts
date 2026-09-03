@@ -131,3 +131,18 @@ export function resolveCoverPhrase(
   if (!matched) return cover.phrase;
   return renderPhrase(matched, cover, meta, tables, serviceLocale);
 }
+
+/** Lockup title: recommendation list[1], localized like the overlay phrase. */
+export function resolveCoverCaptionTitle(
+  cover: CoverSpec,
+  meta: CoverPhraseMeta | undefined,
+  serviceLocale: ServiceLocale,
+  tables: GameI18nTables,
+  titlePhrase: string,
+): string {
+  const stored = titlePhrase.trim();
+  if (!stored) return resolveCoverPhrase(cover, meta, serviceLocale, tables);
+  const matched = matchStoredPhrase(stored, cover, meta);
+  if (!matched) return stored;
+  return renderPhrase(matched, cover, meta, tables, serviceLocale);
+}

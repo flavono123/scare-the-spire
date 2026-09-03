@@ -16,8 +16,8 @@ import {
 import { OwnPostMark } from "@/components/own-post-mark";
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import type { PostBlock } from "@/lib/chemical-types";
-import { resolveCoverPhrase } from "@/lib/run-cover-phrase";
-import { ensureCoverSpec } from "@/lib/run-cover-suggest";
+import { resolveCoverCaptionTitle } from "@/lib/run-cover-phrase";
+import { ensureCoverSpec, fallbackCoverTitlePhrase } from "@/lib/run-cover-suggest";
 import type { CoverSpec } from "@/lib/run-cover-types";
 import { formatBuildLabel, isBuildSupported } from "@/lib/sts2-build-version";
 import type { ReplayBadge, ReplayRun } from "@/lib/sts2-run-replay";
@@ -105,15 +105,19 @@ export function RunCard({
     typeof runTimeSeconds === "number" &&
     Number.isFinite(runTimeSeconds) &&
     runTimeSeconds >= 0;
-  const phrase = coverSpec
-    ? resolveCoverPhrase(
+  const title = coverSpec
+    ? resolveCoverCaptionTitle(
         coverSpec,
         { win, totalFloors, ascension },
         serviceLocale,
         tables,
+        fallbackCoverTitlePhrase(coverSpec, {
+          win,
+          totalFloors,
+          ascension,
+        }),
       )
-    : "";
-  const title = phrase || seed;
+    : seed;
   const versionLabel = formatBuildLabel(build);
 
   const onTrashClick = useCallback(

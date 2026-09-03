@@ -12,8 +12,8 @@ import {
 } from "@/lib/combo-types";
 import { historyRunCharacterLabel } from "@/lib/history-run-reference";
 import { displayNameForCoverElement } from "@/lib/run-cover-display";
-import { resolveCoverPhrase } from "@/lib/run-cover-phrase";
-import { coverPhrasePool } from "@/lib/run-cover-suggest";
+import { resolveCoverCaptionTitle, resolveCoverPhrase } from "@/lib/run-cover-phrase";
+import { coverPhrasePool, fallbackCoverTitlePhrase } from "@/lib/run-cover-suggest";
 import type { CoverSpec } from "@/lib/run-cover-types";
 import type { DonatedRunSummary } from "@/lib/run-donation";
 import { buildSearchTokens } from "@/lib/sts2-build-version";
@@ -312,6 +312,7 @@ export function buildHistoryCourseSearchDoc(input: {
   }
   if (cover) {
     addHaystackValue(parts, cover.phrase);
+    if (cover.titlePhrase) addHaystackValue(parts, cover.titlePhrase);
     const meta = {
       win: Boolean(win),
       totalFloors: floors ?? 0,
@@ -324,6 +325,26 @@ export function buildHistoryCourseSearchDoc(input: {
     addHaystackValue(
       parts,
       resolveCoverPhrase(cover, meta, "en", engTables as GameI18nTables),
+    );
+    addHaystackValue(
+      parts,
+      resolveCoverCaptionTitle(
+        cover,
+        meta,
+        "ko",
+        korTables as GameI18nTables,
+        fallbackCoverTitlePhrase(cover, meta),
+      ),
+    );
+    addHaystackValue(
+      parts,
+      resolveCoverCaptionTitle(
+        cover,
+        meta,
+        "en",
+        engTables as GameI18nTables,
+        fallbackCoverTitlePhrase(cover, meta),
+      ),
     );
     for (const element of cover.elements) {
       addHaystackValue(parts, displayNameForCoverElement(element));

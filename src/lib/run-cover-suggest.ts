@@ -103,6 +103,30 @@ function totalFloors(run: ReplayRun): number {
   return total;
 }
 
+type PhraseFacts = {
+  win: boolean;
+  totalFloors: number;
+  ascension: number;
+  relicCount: number;
+  deckSize: number;
+};
+
+function factsFromRun(run: ReplayRun): PhraseFacts {
+  return {
+    win: run.win,
+    totalFloors: totalFloors(run),
+    ascension: run.ascension,
+    relicCount: run.players.reduce(
+      (max, player) => Math.max(max, player.relics.length),
+      0,
+    ),
+    deckSize: run.players.reduce(
+      (max, player) => Math.max(max, player.deck.length),
+      0,
+    ),
+  };
+}
+
 function buildWeightedPool(
   run: ReplayRun,
   rarityById?: SuggestCoversInput["rarityById"],
@@ -249,18 +273,12 @@ function subjectParticle(name: string): "이" | "가" {
 }
 
 function phraseCandidates(
-  run: ReplayRun,
+  facts: PhraseFacts,
   elements: CoverElement[],
 ): Array<{ id: string; text: string; weight: number }> {
-  const floors = totalFloors(run);
-  const deckSize = run.players.reduce(
-    (max, player) => Math.max(max, player.deck.length),
-    0,
-  );
-  const relicCount = run.players.reduce(
-    (max, player) => Math.max(max, player.relics.length),
-    0,
-  );
+  const floors = facts.totalFloors;
+  const deckSize = facts.deckSize;
+  const relicCount = facts.relicCount;
   const e0 = elements[0];
   const e1 = elements[1];
   const e0Name = e0 ? displayName(e0.kind, e0.id) : "";
@@ -295,13 +313,13 @@ function phraseCandidates(
   if (deckSize >= 40 || deckSize <= 8) {
     applicable.push({ id: "hook_deck", text: `덱 ${deckSize}장`, weight: 2 });
   }
-  if (!run.win && floors >= 40) {
+  if (!facts.win && floors >= 40) {
     applicable.push({ id: "hook_floor", text: `${floors}층까지`, weight: 2 });
   }
-  if (run.win) {
+  if (facts.win) {
     applicable.push({
       id: "hook_win",
-      text: `A${run.ascension} 클리어`,
+      text: `A${facts.ascension} 클리어`,
       weight: 2,
     });
   }
@@ -309,44 +327,34 @@ function phraseCandidates(
   if (applicable.length === 0) {
     applicable.push({
       id: "hook_fallback",
-      text: run.win ? `A${run.ascension} 클리어` : `${floors}층`,
+      text: facts.win ? `A${facts.ascension} 클리어` : `${floors}층`,
       weight: 1,
     });
   }
   return applicable;
 }
 
-/** Every auto-cover phrase candidate for search / editor pools. */
-export function coverPhrasePool(
-  run: ReplayRun,
-  elements: CoverElement[],
-): string[] {
-  return phraseCandidates(run, elements).map((item) => item.text);
+function pairFromPhraseList(
+  list: string[],
+  overlayPhrase?: string,
+): { phrase: string; titlePhrase: string } {
+  const overlay = overlayPhrase?.trim();
+  const phrase = overlay || list[0] || "";
+  const titlePhrase = list.find((text) => text !== phrase) ?? list[0] ?? phrase;
+  return { phrase, titlePhrase };
 }
 
-function pickPhrase(
-  run: ReplayRun,
-  elements: CoverElement[],
-  phraseSeed: string,
-): string {
-  const applicable = phraseCandidates(run, elements);
-  const picked = weightedPick(applicable, phraseSeed);
-  return (picked?.text ?? applicable[0]!.text).slice(0, 40);
-}
-
-/** Phrase chips for the cover editor (template/seed based, not pool-ranked). */
-export function suggestCoverPhrases(
-  run: ReplayRun,
+function suggestCoverPhrasesFromFacts(
+  facts: PhraseFacts,
   elements: CoverElement[],
   seed: string,
   count = 5,
 ): string[] {
-  const applicable = [...phraseCandidates(run, elements)].sort(
+  const applicable = [...phraseCandidates(facts, elements)].sort(
     (a, b) => b.weight - a.weight,
   );
   const out: string[] = [];
   const seen = new Set<string>();
-  // Prefer a seeded pick first, then fill by weight.
   const first = weightedPick(applicable, seed);
   if (first) {
     seen.add(first.text);
@@ -358,7 +366,6 @@ export function suggestCoverPhrases(
     seen.add(item.text);
     out.push(item.text.slice(0, 40));
   }
-  // Extra rolls for "다시 굴리기" variety without changing elements.
   let i = 0;
   while (out.length < count && i < applicable.length * 2) {
     const roll = weightedPick(applicable, `${seed}:extra:${i}`);
@@ -368,6 +375,59 @@ export function suggestCoverPhrases(
     out.push(roll.text.slice(0, 40));
   }
   return out;
+}
+
+/** Every auto-cover phrase candidate for search / editor pools. */
+export function coverPhrasePool(
+  run: ReplayRun,
+  elements: CoverElement[],
+): string[] {
+  return phraseCandidates(factsFromRun(run), elements).map((item) => item.text);
+}
+
+/** Thumbnail overlay = list[0], lockup title = first later distinct item. */
+export function pickCoverPhrasePair(
+  run: ReplayRun,
+  elements: CoverElement[],
+  seed: string,
+  overlayPhrase?: string,
+): { phrase: string; titlePhrase: string } {
+  const list = suggestCoverPhrases(run, elements, seed, 5);
+  return pairFromPhraseList(list, overlayPhrase);
+}
+
+/**
+ * Caption title when `titlePhrase` was never stored. Same recommendation
+ * list as the overlay, skipping the overlay string.
+ */
+export function fallbackCoverTitlePhrase(
+  cover: CoverSpec,
+  meta: { win: boolean; totalFloors: number; ascension: number },
+): string {
+  const stored = cover.titlePhrase?.trim();
+  if (stored) return stored;
+  const list = suggestCoverPhrasesFromFacts(
+    {
+      win: meta.win,
+      totalFloors: meta.totalFloors,
+      ascension: meta.ascension,
+      relicCount: 0,
+      deckSize: 0,
+    },
+    cover.elements,
+    cover.suggestSeed,
+  );
+  return pairFromPhraseList(list, cover.phrase).titlePhrase;
+}
+
+/** Phrase chips for the cover editor (template/seed based, not pool-ranked). */
+export function suggestCoverPhrases(
+  run: ReplayRun,
+  elements: CoverElement[],
+  seed: string,
+  count = 5,
+): string[] {
+  return suggestCoverPhrasesFromFacts(factsFromRun(run), elements, seed, count);
 }
 
 function toPoolItem(item: Weighted): CoverPoolItem {
@@ -455,8 +515,8 @@ export function suggestCovers(input: SuggestCoversInput): SuggestCoversResult {
     cooccurrence,
   });
 
-  const phraseA = pickPhrase(input.run, elementsA, `${seedBase}:phA`);
-  const phraseB = pickPhrase(
+  const pairA = pickCoverPhrasePair(input.run, elementsA, `${seedBase}:phA`);
+  const pairB = pickCoverPhrasePair(
     input.run,
     elementsB.length > 0 ? elementsB : elementsA,
     `${seedBase}:phB`,
@@ -464,7 +524,8 @@ export function suggestCovers(input: SuggestCoversInput): SuggestCoversResult {
 
   const coverA: CoverSpec = {
     background: { kind: "character" },
-    phrase: phraseA,
+    phrase: pairA.phrase,
+    titlePhrase: pairA.titlePhrase,
     elements: elementsA,
     auto: true,
     suggestSeed: `${seedBase}:A`,
@@ -474,7 +535,8 @@ export function suggestCovers(input: SuggestCoversInput): SuggestCoversResult {
     background: focusCard
       ? { kind: "card-beta", cardId: focusCard.id }
       : { kind: "character" },
-    phrase: phraseB,
+    phrase: pairB.phrase,
+    titlePhrase: pairB.titlePhrase,
     elements: elementsB,
     auto: true,
     suggestSeed: `${seedBase}:B`,

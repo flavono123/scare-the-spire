@@ -44,9 +44,16 @@ async function main() {
   assert(b.elements.length >= 1 && b.elements.length <= 3, "elements B 1..3");
   assert(a.phrase.length > 0 && a.phrase.length <= 40, "phrase A length");
   assert(b.phrase.length > 0 && b.phrase.length <= 40, "phrase B length");
+  assert(a.titlePhrase && a.titlePhrase.length > 0, "titlePhrase A");
+  assert(b.titlePhrase && b.titlePhrase.length > 0, "titlePhrase B");
+  const overlayPhrases = suggestCoverPhrases(run, a.elements, `${runId}:phA`, 5);
+  if (overlayPhrases.length >= 2) {
+    assert(a.phrase !== a.titlePhrase, "overlay and title phrases must differ");
+  }
 
   const again = suggestCovers({ runId, run }).covers[0]!;
   assert(again.phrase === a.phrase, "stable seed must repeat phrase");
+  assert(again.titlePhrase === a.titlePhrase, "stable seed must repeat titlePhrase");
   assert(
     JSON.stringify(again.elements) === JSON.stringify(a.elements),
     "stable seed must repeat elements",

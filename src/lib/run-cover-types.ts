@@ -12,7 +12,13 @@ export type CoverElement = {
 
 export type CoverSpec = {
   background: CoverBackground;
+  /** Thumbnail overlay hook. */
   phrase: string;
+  /**
+   * YouTube-lockup title under the thumbnail. Distinct from `phrase` when
+   * the recommendation list has at least two candidates (list[0] / list[1]).
+   */
+  titlePhrase?: string;
   elements: CoverElement[];
   auto: boolean;
   suggestSeed: string;
@@ -31,6 +37,9 @@ export function isCoverSpec(value: unknown): value is CoverSpec {
   } else if (v.background.kind === "card-beta" && typeof v.background.cardId === "string") {
     // ok
   } else {
+    return false;
+  }
+  if (v.titlePhrase !== undefined && typeof v.titlePhrase !== "string") {
     return false;
   }
   return (

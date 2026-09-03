@@ -126,11 +126,12 @@ function ComboHistoryRunThumbnail({
   );
   const primary = historyRunPrimaryLabel(block, serviceLocale);
   const cover = useResolvedCoverSpec(block);
+  const lockupTitle = cover?.titlePhrase?.trim() || cover?.phrase || primary;
 
   return (
     <Link
       href={href}
-      title={cover?.phrase || primary}
+      title={lockupTitle}
       className={cn(
         "group/run relative block w-24 shrink-0 overflow-hidden rounded-md outline-none ring-1 ring-amber-300/20",
         "transition-[transform,filter,box-shadow] duration-200",
@@ -193,6 +194,7 @@ function HistoryRunDetailLink({
   );
   const primary = historyRunPrimaryLabel(block, serviceLocale);
   const cover = useResolvedCoverSpec(block);
+  const lockupTitle = cover?.titlePhrase?.trim() || cover?.phrase || primary;
 
   return (
     <Link
@@ -237,7 +239,7 @@ function HistoryRunDetailLink({
       )}
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-semibold text-amber-50">
-          {cover?.phrase || primary}
+          {lockupTitle}
         </span>
         <span className="mt-1 block truncate text-[11px] text-zinc-500">
           {historyRunSecondaryLabel(block, serviceLocale)}
