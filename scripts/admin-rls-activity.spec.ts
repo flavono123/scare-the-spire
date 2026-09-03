@@ -6,8 +6,10 @@ import {
   formatRate,
   isAdminCommentService,
   isAdminPostService,
+  layoutAdminActivityChart,
   mergeAdminServicePosts,
   parseRlsActivityMetrics,
+  polylinePath,
   type AdminServicePostRow,
 } from "../src/lib/admin-rls-activity";
 import { commentThreadService } from "../src/lib/comment-threads";
@@ -92,8 +94,20 @@ assert.equal(parsed.site.authReturnRate, 2 / 12);
 assert.equal(parsed.services.length, 1);
 assert.equal(parsed.services[0]?.service, "combo");
 assert.equal(parsed.services[0]?.returnRate, 1 / 6);
-assert.deepEqual(parsed.daily, [{ day: "2026-09-01", users: 3, newUsers: 1 }]);
+assert.deepEqual(parsed.daily, [{ day: "2026-09-01", users: 3, newUsers: 1, writes: 0 }]);
 assert.equal(formatRate(0.1234), "12.3%");
 assert.equal(formatRate(null), "-");
+
+assert.equal(polylinePath([]), "");
+assert.equal(polylinePath([{ x: 0, y: 10 }, { x: 4, y: 2 }]), "M0.0 10.0 L4.0 2.0");
+
+const chart = layoutAdminActivityChart([
+  { day: "2026-08-13", users: 1, newUsers: 1, writes: 2 },
+  { day: "2026-08-14", users: 2, newUsers: 1, writes: 4 },
+  { day: "2026-08-15", users: 1, newUsers: 0, writes: 1 },
+]);
+assert.ok(chart.spikeX != null);
+assert.ok(chart.usersPath.startsWith("M"));
+assert.ok(chart.writesPath.startsWith("M"));
 
 console.log("admin-rls-activity.spec.ts ok");

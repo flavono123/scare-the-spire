@@ -186,7 +186,93 @@ export type RlsActivityDailyPoint = {
   day: string;
   users: number;
   newUsers: number;
+  writes: number;
 };
+
+/** Launch-week traffic spike the user compares against CF page views. */
+export const ADMIN_CF_TRAFFIC_SPIKE_DAY = "2026-08-14";
+
+export type AdminActivityChartLayout = {
+  width: number;
+  height: number;
+  pad: { l: number; r: number; t: number; b: number };
+  innerW: number;
+  innerH: number;
+  maxUsers: number;
+  maxWrites: number;
+  usersPath: string;
+  writesPath: string;
+  points: Array<{
+    day: string;
+    users: number;
+    newUsers: number;
+    writes: number;
+    x: number;
+    yUsers: number;
+    yWrites: number;
+  }>;
+  xTicks: Array<{ day: string; x: number; label: string }>;
+  spikeX: number | null;
+};
+
+function formatChartTick(day: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(day);
+  if (!match) return day;
+  return `${Number(match[2])}/${Number(match[3])}`;
+}
+
+export function polylinePath(coords: Array<{ x: number; y: number }>): string {
+  if (coords.length === 0) return "";
+  return coords
+    .map((point, index) => `${index === 0 ? "M" : "L"}${point.x.toFixed(1)} ${point.y.toFixed(1)}`)
+    .join(" ");
+}
+
+export function layoutAdminActivityChart(
+  daily: RlsActivityDailyPoint[],
+  width = 720,
+  height = 240,
+): AdminActivityChartLayout {
+  const pad = { l: 36, r: 44, t: 18, b: 36 };
+  const innerW = width - pad.l - pad.r;
+  const innerH = height - pad.t - pad.b;
+  const maxUsers = Math.max(1, ...daily.map((point) => point.users));
+  const maxWrites = Math.max(1, ...daily.map((point) => point.writes));
+  const last = Math.max(daily.length - 1, 1);
+  const xAt = (index: number) => pad.l + (daily.length <= 1 ? innerW / 2 : (index / last) * innerW);
+  const yAt = (value: number, max: number) => pad.t + innerH - (value / max) * innerH;
+
+  const points = daily.map((point, index) => ({
+    ...point,
+    x: xAt(index),
+    yUsers: yAt(point.users, maxUsers),
+    yWrites: yAt(point.writes, maxWrites),
+  }));
+
+  const tickEvery = Math.max(1, Math.ceil(daily.length / 8));
+  const xTicks = points.flatMap((point, index) => {
+    const isEdge = index === 0 || index === points.length - 1;
+    if (!isEdge && index % tickEvery !== 0) return [];
+    return [{ day: point.day, x: point.x, label: formatChartTick(point.day) }];
+  });
+
+  const spike = points.find((point) => point.day === ADMIN_CF_TRAFFIC_SPIKE_DAY);
+
+  return {
+    width,
+    height,
+    pad,
+    innerW,
+    innerH,
+    maxUsers,
+    maxWrites,
+    usersPath: polylinePath(points.map((point) => ({ x: point.x, y: point.yUsers }))),
+    writesPath: polylinePath(points.map((point) => ({ x: point.x, y: point.yWrites }))),
+    points,
+    xTicks,
+    spikeX: spike?.x ?? null,
+  };
+}
 
 export type RlsActivityMetrics = {
   site: RlsActivitySiteMetrics;
@@ -285,6 +371,7 @@ export function parseRlsActivityMetrics(value: unknown): RlsActivityMetrics | nu
       day,
       users: asNonNegativeInt(item.users),
       newUsers: asNonNegativeInt(item.new_users),
+      writes: asNonNegativeInt(item.writes),
     }];
   });
 
