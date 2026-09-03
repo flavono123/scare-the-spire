@@ -45,6 +45,55 @@ export function buildFavoriteTournamentCommentThreadKey(postId: string): string 
   return `favorite-tournament:${postId}`;
 }
 
+export const COMMENT_THREAD_SERVICES = [
+  "patches",
+  "compendium",
+  "byrdispatch",
+  "combo",
+  "transfigure",
+  "this_or_that",
+  "chemical_x",
+  "defragment",
+  "decisions_decisions",
+  "favorite_tournament",
+  "stories",
+  "other",
+] as const;
+
+export type CommentThreadService = (typeof COMMENT_THREAD_SERVICES)[number];
+
+/** Keep in sync with `public.admin_story_service`. */
+export function commentThreadService(storyId: string): CommentThreadService {
+  if (storyId.startsWith("sts2-patch:")) return "patches";
+  if (storyId.startsWith("sts2-codex:")) return "compendium";
+  if (storyId === "byrdispatch") return "byrdispatch";
+  if (storyId.startsWith("c-c-c-combo:")) return "combo";
+  if (storyId.startsWith("transfigure:")) return "transfigure";
+  if (storyId.startsWith("this-or-that:")) return "this_or_that";
+  if (storyId.startsWith("chemical-x:")) return "chemical_x";
+  if (storyId.startsWith("defragment:")) return "defragment";
+  if (storyId.startsWith("decisions-decisions:")) return "decisions_decisions";
+  if (storyId.startsWith("favorite-tournament:")) return "favorite_tournament";
+  if (storyId.startsWith("community:")) return "stories";
+  return "other";
+}
+
+export const COMMENT_THREAD_SERVICE_PREFIX: Record<
+  Exclude<CommentThreadService, "byrdispatch" | "other">,
+  string
+> = {
+  patches: "sts2-patch:",
+  compendium: "sts2-codex:",
+  combo: "c-c-c-combo:",
+  transfigure: "transfigure:",
+  this_or_that: "this-or-that:",
+  chemical_x: "chemical-x:",
+  defragment: "defragment:",
+  decisions_decisions: "decisions-decisions:",
+  favorite_tournament: "favorite-tournament:",
+  stories: "community:",
+};
+
 function prefixedResourceCommentsHref(storyId: string, prefix: string, pathname: string): string | null {
   if (!storyId.startsWith(prefix)) return null;
   const id = storyId.slice(prefix.length);

@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
-import { commentThreadHref } from "../src/lib/comment-threads";
+import {
+  commentThreadHref,
+  commentThreadService,
+} from "../src/lib/comment-threads";
 
 assert.equal(
   commentThreadHref("community:11111111-2222-4333-8333-444444444444"),
@@ -16,5 +19,18 @@ assert.equal(
   "/c-c-c-combo/aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee#comments",
 );
 assert.equal(commentThreadHref("byrdispatch"), "/byrdispatch#comments");
+
+assert.equal(commentThreadService("sts2-patch:0.111.0"), "patches");
+assert.equal(commentThreadService("sts2-codex:card:STRIKE"), "compendium");
+assert.equal(commentThreadService("byrdispatch"), "byrdispatch");
+assert.equal(
+  commentThreadService("c-c-c-combo:aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee"),
+  "combo",
+);
+assert.equal(
+  commentThreadService("community:11111111-2222-4333-8333-444444444444"),
+  "stories",
+);
+assert.equal(commentThreadService("blade-dance-shivs"), "other");
 
 console.log("comment-threads.spec.ts ok");

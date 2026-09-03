@@ -1,4 +1,8 @@
 import { notFound } from "next/navigation";
+import {
+  isAdminCommentService,
+  isAdminPostService,
+} from "@/lib/admin-rls-activity";
 import { devToolsEnabled } from "@/lib/dev-tools";
 
 export const dynamic = "force-dynamic";
@@ -22,10 +26,19 @@ export default async function SupabaseAdminPage({ searchParams }: SupabaseAdminP
     notFound();
   }
 
-  const contactSave = (await searchParams).contactSave;
+  const params = await searchParams;
+  const contactSave = params.contactSave;
   const contactSaveResult = contactSave === "saved" || contactSave === "error"
     ? contactSave
     : undefined;
+  const posts = typeof params.posts === "string" ? params.posts : undefined;
+  const comments = typeof params.comments === "string" ? params.comments : undefined;
   const { default: SupabaseAdminDevPage } = await import("./admin-dev-page");
-  return <SupabaseAdminDevPage contactSaveResult={contactSaveResult} />;
+  return (
+    <SupabaseAdminDevPage
+      contactSaveResult={contactSaveResult}
+      postService={isAdminPostService(posts) ? posts : null}
+      commentService={isAdminCommentService(comments) ? comments : null}
+    />
+  );
 }
