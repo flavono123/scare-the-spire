@@ -213,6 +213,7 @@ export function PagestormEditor({
       { type: "gameAsset", attrs: gameAssetAttrs(assetFromEntity(entity), options) },
       { type: "paragraph" },
     ]).run();
+    current.chain().selectNodeBackward().run();
   }
 
   function insertToybox(post: PagestormToyboxPost) {
