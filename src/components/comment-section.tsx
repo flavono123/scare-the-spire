@@ -24,7 +24,7 @@ import { LikeControl } from "@/components/like-control";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { buildRichContentIndexes, resolveRichContentBlocks } from "@/lib/rich-content-blocks";
-import { commentMentionsHistoryFloor, materializeHistoryFloorMentions } from "@/lib/history-run-floor";
+import { commentMentionsHistoryFloor, keepLastHistoryFloorMention, materializeHistoryFloorMentions } from "@/lib/history-run-floor";
 import {
   COMMENT_MAX_CHARS,
   COMMENT_MIN_CHARS,
@@ -68,7 +68,11 @@ export function CommentSection({
     currentFloor?: number;
   } | null;
   placeholder?: string;
-  floorHashTip?: string;
+  floorHashTip?: {
+    token: string;
+    text: string;
+    example: string;
+  };
   toolbarStart?: ReactNode;
 }) {
   const serviceLocale = useServiceLocale();
@@ -107,9 +111,11 @@ export function CommentSection({
   const nicknameInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (blocks: PostBlock[]) => {
-    const resolved = historyFloorMentions?.catalog.length
-      ? materializeHistoryFloorMentions(blocks, historyFloorMentions.catalog)
-      : blocks;
+    const resolved = keepLastHistoryFloorMention(
+      historyFloorMentions?.catalog.length
+        ? materializeHistoryFloorMentions(blocks, historyFloorMentions.catalog)
+        : blocks,
+    );
     const trimmed = blocksToPlainText(resolved).trim();
     const storedContent = blocksToStorageText(resolved);
     const nick = nicknameInputRef.current?.value.trim() || profile.nickname.trim() || profileFallback.nickname;
@@ -246,7 +252,7 @@ export function CommentSection({
               allowLineBreaks
               historyFloorInsertRequest={historyFloorInsertRequest}
               historyFloorMentions={historyFloorMentions}
-              charCountTip={floorHashTip}
+              floorHashTip={floorHashTip}
               toolbarStart={toolbarStart}
             />
           )}

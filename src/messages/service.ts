@@ -737,8 +737,11 @@ export const serviceMessages = {
         missingMessage: "이 브라우저에 저장된 런 중에 일치하는 것이 없습니다. 처음 올린 브라우저에서만 접근 가능하며, 공유 기능은 곧 추가됩니다.",
         backToIndex: "역사 강의서 처음으로",
         comments: "댓글",
-        commentPlaceholder: "댓글을 입력하세요. #45",
-        floorHashTip: "#45처럼 쓰면 그 층을 멘션합니다",
+        floorHashTip: {
+          token: "#{층수}",
+          text: "로 해당 층의 노드를 멘션합니다 예) ",
+          example: "#14",
+        },
         atThisFloor: "이 층의 댓글 {count}",
         playback: {
           noActs: "분석 가능한 막이 없습니다.",
@@ -2050,8 +2053,11 @@ export const serviceMessages = {
         missingMessage: "No matching saved run exists in this browser. Open it in the browser where it was first uploaded, or use a shared URL.",
         backToIndex: "Back to History Course",
         comments: "Comments",
-        commentPlaceholder: "Write a comment. #45",
-        floorHashTip: "Type #45 to mention that floor",
+        floorHashTip: {
+          token: "#{floor}",
+          text: " mentions that floor's node, e.g. ",
+          example: "#14",
+        },
         atThisFloor: "{count} comments on this floor",
         playback: {
           noActs: "No acts could be reconstructed.",

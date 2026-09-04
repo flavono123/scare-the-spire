@@ -90,7 +90,6 @@ export function HistoryCourseComments({
       )}
       <CommentSection
         threadKey={threadKey}
-        placeholder={copy.commentPlaceholder}
         floorHashTip={copy.floorHashTip}
         onCommentsChange={handleCommentsChange}
         onHistoryFloorClick={handleFloorClick}

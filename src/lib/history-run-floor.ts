@@ -168,7 +168,18 @@ export function materializeHistoryFloorMentions(
       next.push({ type: "text", text: block.text.slice(cursor) });
     }
   }
-  return next;
+  return keepLastHistoryFloorMention(next);
+}
+
+export function keepLastHistoryFloorMention(blocks: PostBlock[]): PostBlock[] {
+  let lastIndex = -1;
+  for (let index = 0; index < blocks.length; index += 1) {
+    if (isHistoryRunFloorBlock(blocks[index])) lastIndex = index;
+  }
+  if (lastIndex < 0) return blocks;
+  return blocks.filter((block, index) => (
+    !isHistoryRunFloorBlock(block) || index === lastIndex
+  ));
 }
 
 export type HistoryMapCommentMark = {

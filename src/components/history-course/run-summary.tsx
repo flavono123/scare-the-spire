@@ -176,8 +176,8 @@ export function RunSummary({
         focusedPlayerIndex={focusedPlayerIndex}
         onFocusPlayer={onFocusPlayer}
       />
-      <BackButton onClose={onClose} />
       </GameScrollArea>
+      <BackButton onClose={onClose} />
     </div>
   );
 }
@@ -898,16 +898,15 @@ function formatRunDate(
 
 // ----- Back button -----------------------------------------------------------
 
-/** Mirrors the codex back button so the replay panel feels like a fellow
- *  destination on the site, not a modal. Stays pinned to the bottom-left
- *  even as the panel scrolls. */
+/** Mirrors the Codex back button. Pinned to the replay stage's bottom-left
+ *  so it does not float over the rest of the page. */
 function BackButton({ onClose }: { onClose: () => void }) {
   const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   return (
     <button
       type="button"
       onClick={onClose}
-      className="group fixed bottom-8 left-0 z-[60]"
+      className="group absolute bottom-3 left-0 z-[1]"
       aria-label={playback.backToReplay}
     >
       <div className="relative h-[80px] w-[160px]">

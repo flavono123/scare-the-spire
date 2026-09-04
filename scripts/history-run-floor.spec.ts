@@ -12,6 +12,7 @@ import {
   isHistoryRunFloorBlock,
   matchHistoryFloorMentions,
   materializeHistoryFloorMentions,
+  keepLastHistoryFloorMention,
 } from "../src/lib/history-run-floor";
 
 const floor: HistoryRunFloorBlock = {
@@ -87,11 +88,19 @@ assert.deepEqual(
   ),
   [
     { type: "text", text: "this " },
-    catalog[2],
     { type: "text", text: " was spicy, #99 skipped, " },
     catalog[1],
     { type: "text", text: " elite" },
   ],
+);
+
+assert.deepEqual(
+  keepLastHistoryFloorMention([
+    catalog[0],
+    { type: "text", text: " then " },
+    catalog[1],
+  ]),
+  [{ type: "text", text: " then " }, catalog[1]],
 );
 
 console.log("history-run-floor.spec.ts ok");

@@ -1,6 +1,6 @@
 "use client";
 
-import { Node, mergeAttributes } from "@tiptap/core";
+import { Node, mergeAttributes, type Editor } from "@tiptap/core";
 import {
   NodeViewWrapper,
   ReactNodeViewRenderer,
@@ -12,6 +12,59 @@ import {
   historyRunFloorPlainText,
   isHistoryRunFloorBlock,
 } from "@/lib/history-run-floor";
+
+export function replaceExclusiveHistoryFloor(
+  editor: Editor,
+  block: HistoryRunFloorBlock,
+  replaceRange?: { from: number; to: number },
+) {
+  const type = editor.schema.nodes["history-run-floor"];
+  if (!type) return;
+
+  const { state } = editor;
+  const tr = state.tr;
+  const deletions: Array<{ from: number; to: number }> = [];
+  state.doc.descendants((node, pos) => {
+    if (node.type.name === "history-run-floor") {
+      deletions.push({ from: pos, to: pos + node.nodeSize });
+    }
+  });
+  for (const range of [...deletions].sort((left, right) => right.from - left.from)) {
+    tr.delete(range.from, range.to);
+  }
+
+  const from = replaceRange
+    ? tr.mapping.map(replaceRange.from)
+    : tr.mapping.map(state.selection.from);
+  const to = replaceRange
+    ? tr.mapping.map(replaceRange.to)
+    : tr.mapping.map(state.selection.to);
+  if (to > from) tr.delete(from, to);
+
+  const insertPos = from;
+  const $insert = tr.doc.resolve(insertPos);
+  const textBefore = $insert.parent.textBetween(
+    Math.max(0, $insert.parentOffset - 1),
+    $insert.parentOffset,
+    undefined,
+    "\uFFFC",
+  );
+  const nodes = [];
+  if (textBefore.length > 0 && !/\s/.test(textBefore)) {
+    nodes.push(state.schema.text(" "));
+  }
+  nodes.push(type.create({
+    floor: block.floor,
+    actIndex: block.actIndex,
+    step: block.step,
+    mapPointType: block.mapPointType,
+    spriteSrc: block.spriteSrc ?? "",
+  }));
+  nodes.push(state.schema.text(" "));
+  tr.insert(insertPos, nodes);
+  editor.view.dispatch(tr.scrollIntoView());
+  editor.commands.focus();
+}
 
 function numberAttr(value: unknown, fallback: number): number {
   if (typeof value === "number" && Number.isFinite(value)) return value;

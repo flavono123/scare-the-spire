@@ -29,7 +29,7 @@ import { EntityMapProvider } from "@/components/chemicalx/entity-context";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { YouTubeReferenceExtension } from "@/components/editor/youtube-reference-extension";
 import { HistoryRunReferenceExtension } from "@/components/editor/history-run-reference-extension";
-import { HistoryRunFloorExtension } from "@/components/editor/history-run-floor-extension";
+import { HistoryRunFloorExtension, replaceExclusiveHistoryFloor } from "@/components/editor/history-run-floor-extension";
 import { CostTokenExtension } from "@/components/transfigure/cost-token-extension";
 import { keywordsFromCoverSpec } from "@/lib/history-run-reference";
 import { isCoverSpec } from "@/lib/run-cover-types";
@@ -58,7 +58,6 @@ import {
 } from "@/lib/chemical-utils";
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
 import { GameScrollArea } from "@/components/game-scroll-area";
-import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import type { HistoryRunBlock, HistoryRunFloorBlock, PostBlock } from "@/lib/chemical-types";
 import {
   isHistoryRunFloorBlock,
@@ -384,8 +383,11 @@ export interface RichContentEditorProps {
     currentFloor?: number;
   } | null;
   toolbarStart?: ReactNode;
-  /** Hover tip immediately left of the character counter. */
-  charCountTip?: string;
+  floorHashTip?: {
+    token: string;
+    text: string;
+    example: string;
+  };
   /** Enable @ / * → in-description energy / star icon atoms (Transfigure). */
   costTokens?: {
     energyIconSrc: string;
@@ -422,7 +424,7 @@ export function RichContentEditor({
   historyFloorInsertRequest = null,
   historyFloorMentions = null,
   toolbarStart,
-  charCountTip,
+  floorHashTip,
   costTokens = null,
   hideSubmitButton = false,
 }: RichContentEditorProps) {
@@ -553,19 +555,7 @@ export function RichContentEditor({
             ),
             command: ({ editor: ed, range, props }) => {
               if (!isHistoryRunFloorBlock(props)) return;
-              ed.chain().focus().deleteRange(range).insertContent([
-                {
-                  type: "history-run-floor",
-                  attrs: {
-                    floor: props.floor,
-                    actIndex: props.actIndex,
-                    step: props.step,
-                    mapPointType: props.mapPointType,
-                    spriteSrc: props.spriteSrc ?? "",
-                  },
-                },
-                { type: "text", text: " " },
-              ]).run();
+              replaceExclusiveHistoryFloor(ed, props, range);
             },
             render: () => {
               let renderer: ReactRenderer<FloorMentionListRef> | null = null;
@@ -1285,29 +1275,7 @@ export function RichContentEditor({
       if (editor.isDestroyed || !editor.schema.nodes["history-run-floor"]) return;
 
       lastHistoryFloorInsertRequestIdRef.current = request.requestId;
-      const { $from } = editor.state.selection;
-      const textBefore = $from.parent.textBetween(
-        Math.max(0, $from.parentOffset - 1),
-        $from.parentOffset,
-        undefined,
-        "\uFFFC",
-      );
-      const needsLeadingSpace = textBefore.length > 0 && !/\s/.test(textBefore);
-
-      editor.chain().focus().insertContent([
-        ...(needsLeadingSpace ? [{ type: "text", text: " " }] : []),
-        {
-          type: "history-run-floor",
-          attrs: {
-            floor: block.floor,
-            actIndex: block.actIndex,
-            step: block.step,
-            mapPointType: block.mapPointType,
-            spriteSrc: block.spriteSrc ?? "",
-          },
-        },
-        { type: "text", text: " " },
-      ]).run();
+      replaceExclusiveHistoryFloor(editor, block);
     }, 0);
   }, [editor, historyFloorInsertRequest]);
 
@@ -1418,23 +1386,19 @@ export function RichContentEditor({
       {!embedded && (
         <div className="flex items-center gap-3 border-t border-border px-3 py-2">
           {toolbarStart}
-          {charCountTip && maxChars != null && (
-            <GameUiHoverTip label={charCountTip}>
-              <button
-                type="button"
-                className="shrink-0 px-0.5 font-mono text-xs font-bold leading-none text-[#EFC851] hover:text-amber-200"
-                aria-label={charCountTip}
-              >
-                #
-              </button>
-            </GameUiHoverTip>
-          )}
           {maxChars != null && (
             <span
               className={`shrink-0 font-mono text-xs tabular-nums ${charCountColor}`}
               aria-live="polite"
             >
               {charCount}/{maxChars}
+            </span>
+          )}
+          {floorHashTip && (
+            <span className="hidden min-w-0 flex-1 truncate text-[11px] text-gray-500 opacity-70 sm:block">
+              <span className="spire-gold">{floorHashTip.token}</span>
+              {floorHashTip.text}
+              <span className="spire-gold">{floorHashTip.example}</span>
             </span>
           )}
           {showKeywordTip && keywordTip && (
