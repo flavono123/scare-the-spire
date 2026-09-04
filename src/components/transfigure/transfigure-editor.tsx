@@ -13,6 +13,10 @@ import { FilterSection } from "@/components/codex/codex-filters";
 import { TinyCardIcon } from "@/components/history-course/card-action-icon";
 import { MenuDropdown } from "@/components/menu-dropdown";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import {
+  GAME_UI_HOVER_TIP_NAV_DELAY_MS,
+  GameUiHoverTip,
+} from "@/components/game-ui-hover-tip";
 import Image from "@/components/ui/static-image";
 import type { PostBlock } from "@/lib/chemical-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
@@ -20,7 +24,6 @@ import type { SaveTransfigurePostInput } from "@/hooks/use-transfigure-posts";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
   canTransfigureCardMetadata,
-  canSubmitTransfigure,
   findTransfigureEntity,
   getTransfigureCardRarityLabel,
   getTransfigureCardKeywords,
@@ -53,6 +56,7 @@ import {
   type TransfigureTokenWax,
 } from "@/lib/transfigure-types";
 import { getCodexServiceMessages } from "@/lib/codex-service";
+import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
 import { TransfigureAssetEditor } from "./transfigure-asset-editor";
 import { TransfigureResourcePicker } from "./transfigure-resource-picker";
@@ -310,6 +314,7 @@ export function TransfigureEditor({
     message: string;
     tone: "error" | "status";
   } | null>(null);
+  const [submitTipPinned, setSubmitTipPinned] = useState(false);
 
   useEffect(() => {
     removeTransfigureDrafts(LEGACY_TRANSFIGURE_DRAFT_PREFIXES);
@@ -553,10 +558,6 @@ export function TransfigureEditor({
   ) => {
     const gateMessage = writeGateMessage(blocks, upgradedBlocks);
     if (gateMessage) {
-      setSaveFeedback({
-        message: gateMessage,
-        tone: "error",
-      });
       throw new Error("transfigure write validation failed");
     }
     if (!selected || !sourceText || !isTransfigureResourceType(selected.type)) {
@@ -571,7 +572,6 @@ export function TransfigureEditor({
         || profileNickname
         || copy.defaultNickname);
     if (!hasUpdateDiff(blocks, upgradedBlocks, title, nickname)) {
-      setSaveFeedback({ message: copy.noChanges, tone: "error" });
       throw new Error("transfigure post is unchanged");
     }
     setSaveFeedback(null);
@@ -611,7 +611,6 @@ export function TransfigureEditor({
   }, [
     copy.defaultNickname,
     copy.defaultTitle,
-    copy.noChanges,
     gameLocale,
     hasUpdateDiff,
     hideNickname,
@@ -645,17 +644,6 @@ export function TransfigureEditor({
     tokenWax,
     writeGateMessage,
   ]);
-  const canSubmitBlocks = useCallback(
-    (blocks: PostBlock[], upgradedBlocks: PostBlock[] | null) => {
-      const changeCheck = buildChangeCheck(blocks, upgradedBlocks);
-      return changeCheck != null && canSubmitTransfigure(changeCheck);
-    },
-    [buildChangeCheck],
-  );
-  const hasChanges = canSubmitBlocks(
-    previewBlocks,
-    previewUpgradeBlocks,
-  );
   const descriptionsValid = (
     blocksToPlainText(previewBlocks).trim().length >= 2
     && (
@@ -663,37 +651,60 @@ export function TransfigureEditor({
       || blocksToPlainText(previewUpgradeBlocks).trim().length >= 2
     )
   );
-  const requestSubmit = useCallback(async () => {
-    if (!descriptionsValid) {
-      setSaveFeedback({ message: copy.invalidDescription, tone: "error" });
-      return;
-    }
+  const readNickname = useCallback(() => (
+    hideNickname
+      ? (profileNickname.trim() || copy.defaultNickname)
+      : (nicknameInputRef.current?.value.trim()
+        || profileNickname
+        || copy.defaultNickname)
+  ), [copy.defaultNickname, hideNickname, profileNickname]);
+  const submitBlockMessage = (() => {
+    if (submitting) return null;
+    if (!descriptionsValid) return copy.invalidDescription;
     const gateMessage = writeGateMessage(previewBlocks, previewUpgradeBlocks);
-    if (gateMessage) {
-      setSaveFeedback({
-        message: gateMessage,
-        tone: "error",
-      });
+    if (gateMessage) return gateMessage;
+    const title = postTitle.trim()
+      || (selected
+        ? copy.defaultTitle.replace("{name}", selected.nameKo)
+        : "");
+    if (!hasUpdateDiff(
+      previewBlocks,
+      previewUpgradeBlocks,
+      title,
+      readNickname(),
+    )) {
+      return copy.noChanges;
+    }
+    return null;
+  })();
+
+  useEffect(() => {
+    if (!submitBlockMessage) setSubmitTipPinned(false);
+  }, [submitBlockMessage]);
+
+  const requestSubmit = useCallback(async () => {
+    const blockMessage = !descriptionsValid
+      ? copy.invalidDescription
+      : writeGateMessage(previewBlocks, previewUpgradeBlocks);
+    if (blockMessage) {
+      setSubmitTipPinned(true);
       return;
     }
     const title = postTitle.trim()
       || (selected
         ? copy.defaultTitle.replace("{name}", selected.nameKo)
         : "");
-    const nickname = hideNickname
-      ? (profileNickname.trim() || copy.defaultNickname)
-      : (nicknameInputRef.current?.value.trim()
-        || profileNickname
-        || copy.defaultNickname);
+    const nickname = readNickname();
     if (!hasUpdateDiff(
       previewBlocks,
       previewUpgradeBlocks,
       title,
       nickname,
     )) {
-      setSaveFeedback({ message: copy.noChanges, tone: "error" });
+      setSubmitTipPinned(true);
       return;
     }
+    setSubmitTipPinned(false);
     setSaveFeedback({ message: copy.saving, tone: "status" });
     setSubmitting(true);
     try {
@@ -704,20 +715,17 @@ export function TransfigureEditor({
       setSubmitting(false);
     }
   }, [
-    copy.defaultNickname,
     copy.defaultTitle,
     copy.invalidDescription,
-    copy.noChanges,
     copy.saveFailed,
     copy.saving,
     descriptionsValid,
     handleSubmit,
     hasUpdateDiff,
-    hideNickname,
     postTitle,
     previewBlocks,
     previewUpgradeBlocks,
-    profileNickname,
+    readNickname,
     selected,
     writeGateMessage,
   ]);
@@ -972,25 +980,48 @@ export function TransfigureEditor({
               }}
               onSubmit={handleSubmit}
             />
-            <button
-              type="button"
-              onClick={requestSubmit}
-              disabled={submitting || !descriptionsValid || !hasChanges}
-              className="mx-auto mt-4 flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/15 px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/25 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {submitting
-                ? copy.saving
-                : initialPost
-                  ? copy.saveChanges
-                  : copy.submit}
-              <Image
-                src="/images/sts2/relics/astrolabe.webp"
-                alt=""
-                width={16}
-                height={16}
-                className="object-contain"
-              />
-            </button>
+            {(() => {
+              const submitButton = (
+                <button
+                  type="button"
+                  onClick={() => { void requestSubmit(); }}
+                  disabled={submitting}
+                  aria-disabled={submitBlockMessage ? true : undefined}
+                  data-transfigure-submit=""
+                  className={cn(
+                    "flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/15 px-4 py-2 text-sm font-semibold text-primary transition-colors",
+                    submitting || submitBlockMessage
+                      ? "cursor-not-allowed opacity-40"
+                      : "hover:bg-primary/25",
+                    submitBlockMessage ? undefined : "mx-auto mt-4",
+                  )}
+                >
+                  {submitting
+                    ? copy.saving
+                    : initialPost
+                      ? copy.saveChanges
+                      : copy.submit}
+                  <Image
+                    src="/images/sts2/relics/astrolabe.webp"
+                    alt=""
+                    width={16}
+                    height={16}
+                    className="object-contain"
+                  />
+                </button>
+              );
+              if (!submitBlockMessage) return submitButton;
+              return (
+                <GameUiHoverTip
+                  className="mx-auto mt-4"
+                  delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}
+                  open={submitTipPinned}
+                  label={submitBlockMessage}
+                >
+                  {submitButton}
+                </GameUiHoverTip>
+              );
+            })()}
           </section>
         </div>
       )}

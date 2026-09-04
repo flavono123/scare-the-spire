@@ -22,14 +22,18 @@ export function GameUiHoverTip({
   delayMs = 350,
   className,
   children,
+  open = false,
 }: {
   label: ReactNode;
   delayMs?: number;
   children: ReactNode;
   className?: string;
+  /** Keep the tip visible, e.g. after a click on a blocked control. */
+  open?: boolean;
 }) {
   const triggerRef = useRef<HTMLSpanElement>(null);
-  const [visible, setVisible] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const visible = open || hovered;
   const [placement, setPlacement] = useState<{
     left: number;
     top: number;
@@ -48,7 +52,9 @@ export function GameUiHoverTip({
     const el = triggerRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const estimatedHeight = typeof label === "string" ? 36 : 88;
+    const estimatedHeight = typeof label === "string" && label.length <= 24
+      ? 36
+      : 88;
     const spaceBelow = window.innerHeight - rect.bottom;
     const above = spaceBelow < estimatedHeight + 8 && rect.top > estimatedHeight + 8;
     setPlacement({
@@ -73,18 +79,19 @@ export function GameUiHoverTip({
   const show = () => {
     if (timerRef.current !== null) window.clearTimeout(timerRef.current);
     if (delayMs <= 0) {
-      setVisible(true);
+      setHovered(true);
       return;
     }
-    timerRef.current = window.setTimeout(() => setVisible(true), delayMs);
+    timerRef.current = window.setTimeout(() => setHovered(true), delayMs);
   };
 
   const hide = () => {
     if (timerRef.current !== null) window.clearTimeout(timerRef.current);
     timerRef.current = null;
-    setVisible(false);
+    setHovered(false);
   };
 
+  const wrapLabel = typeof label !== "string" || label.length > 24;
   const tip = visible && placement && portalRoot
     ? createPortal(
       <div
@@ -101,7 +108,9 @@ export function GameUiHoverTip({
         <div
           className={cn(
             "relative text-xs font-bold",
-            typeof label === "string" ? "whitespace-nowrap" : "max-w-[22rem] whitespace-normal break-keep leading-snug",
+            wrapLabel
+              ? "max-w-[22rem] whitespace-normal break-keep leading-snug"
+              : "whitespace-nowrap",
           )}
           style={{
             borderImage: `url('${HOVER_TIP_SRC.default}') ${HOVER_TIP_SLICE.top} ${HOVER_TIP_SLICE.right} ${HOVER_TIP_SLICE.bottom} ${HOVER_TIP_SLICE.left} fill`,
