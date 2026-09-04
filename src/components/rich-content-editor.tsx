@@ -58,6 +58,7 @@ import {
 } from "@/lib/chemical-utils";
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
 import { GameScrollArea } from "@/components/game-scroll-area";
+import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import type { HistoryRunBlock, HistoryRunFloorBlock, PostBlock } from "@/lib/chemical-types";
 import {
   isHistoryRunFloorBlock,
@@ -383,6 +384,8 @@ export interface RichContentEditorProps {
     currentFloor?: number;
   } | null;
   toolbarStart?: ReactNode;
+  /** Hover tip immediately left of the character counter. */
+  charCountTip?: string;
   /** Enable @ / * → in-description energy / star icon atoms (Transfigure). */
   costTokens?: {
     energyIconSrc: string;
@@ -419,6 +422,7 @@ export function RichContentEditor({
   historyFloorInsertRequest = null,
   historyFloorMentions = null,
   toolbarStart,
+  charCountTip,
   costTokens = null,
   hideSubmitButton = false,
 }: RichContentEditorProps) {
@@ -1414,6 +1418,17 @@ export function RichContentEditor({
       {!embedded && (
         <div className="flex items-center gap-3 border-t border-border px-3 py-2">
           {toolbarStart}
+          {charCountTip && maxChars != null && (
+            <GameUiHoverTip label={charCountTip}>
+              <button
+                type="button"
+                className="shrink-0 px-0.5 font-mono text-xs font-bold leading-none text-[#EFC851] hover:text-amber-200"
+                aria-label={charCountTip}
+              >
+                #
+              </button>
+            </GameUiHoverTip>
+          )}
           {maxChars != null && (
             <span
               className={`shrink-0 font-mono text-xs tabular-nums ${charCountColor}`}

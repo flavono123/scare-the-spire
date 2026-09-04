@@ -17,6 +17,7 @@ import {
 import { RunSummary } from "@/components/history-course/run-summary";
 import { HistoryCourseComments } from "@/components/history-course/history-course-comments";
 import { GameScrollArea } from "@/components/game-scroll-area";
+import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { TopBar } from "@/components/history-course/topbar";
 import { buildTopbarState } from "@/components/history-course/topbar-state";
 import type { CodexCard, CodexPotion, CodexRelic } from "@/lib/codex-types";
@@ -1744,6 +1745,10 @@ function Track({
   const safeMax = Math.max(1, runTimeline.totalMs);
   const containerRef = useRef<HTMLDivElement>(null);
   const [trackWidth, setTrackWidth] = useState(0);
+  const floorLongPressRef = useRef<{ timer: number | null; stamped: boolean }>({
+    timer: null,
+    stamped: false,
+  });
 
   useEffect(() => {
     const el = containerRef.current;
@@ -1830,54 +1835,94 @@ function Track({
             return null;
           }
           return (
-            <button
+            <span
               key={`${rowIdx}-${stepNum}`}
-              type="button"
-              data-history-floor-marker={`${rowIdx}:${stepNum}`}
-              data-current={isCurrent ? "true" : undefined}
-              onClick={() => {
-                if (isCurrent) {
-                  onStampFloor(rowIdx, stepNum);
-                  return;
-                }
-                onJumpToStep(rowIdx, stepNum);
-              }}
-              className={cn(
-                "group absolute z-10 flex -translate-x-1/2 items-center justify-center transition",
-                isPast
-                  ? "opacity-95"
-                  : isCurrent
-                    ? "opacity-100"
-                    : "opacity-70 hover:opacity-100",
-              )}
+              className="absolute z-10 -translate-x-1/2 [-webkit-touch-callout:none]"
               style={{
                 left: `${leftPct}%`,
                 bottom: `${TRACK_BASELINE_PX - NODE_SPRITE_PX / 2}px`,
                 width: `${NODE_SPRITE_PX}px`,
                 height: `${NODE_SPRITE_PX}px`,
               }}
-              aria-label={
-                isCurrent
-                  ? playback.stampFloor
-                  : playback.floorStep
-                    .replace("{act}", actIntroLabel(tables, rowIdx))
-                    .replace(
-                      "{floor}",
-                      formatGameTemplate(gameUi(tables, "floor", "Floor {FloorNum}"), {
-                        FloorNum: stepNum,
-                      }),
-                    )
-              }
-              aria-current={isCurrent ? "true" : undefined}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={nodeSpriteSrc(entry)}
-                alt=""
-                draggable={false}
-                className="h-full w-full select-none object-contain transition-transform duration-150 group-hover:scale-[1.6]"
-              />
-            </button>
+              <GameUiHoverTip label={playback.stampFloor} className="h-full w-full">
+                <button
+                  type="button"
+                  data-history-floor-marker={`${rowIdx}:${stepNum}`}
+                  data-current={isCurrent ? "true" : undefined}
+                  onClick={() => {
+                    if (floorLongPressRef.current.stamped) {
+                      floorLongPressRef.current.stamped = false;
+                      return;
+                    }
+                    onJumpToStep(rowIdx, stepNum);
+                  }}
+                  onPointerDown={(event) => {
+                    if (event.pointerType !== "touch") return;
+                    floorLongPressRef.current.stamped = false;
+                    if (floorLongPressRef.current.timer != null) {
+                      window.clearTimeout(floorLongPressRef.current.timer);
+                    }
+                    floorLongPressRef.current.timer = window.setTimeout(() => {
+                      floorLongPressRef.current.timer = null;
+                      floorLongPressRef.current.stamped = true;
+                      onStampFloor(rowIdx, stepNum);
+                    }, 500);
+                  }}
+                  onPointerUp={() => {
+                    if (floorLongPressRef.current.timer != null) {
+                      window.clearTimeout(floorLongPressRef.current.timer);
+                      floorLongPressRef.current.timer = null;
+                    }
+                  }}
+                  onPointerCancel={() => {
+                    if (floorLongPressRef.current.timer != null) {
+                      window.clearTimeout(floorLongPressRef.current.timer);
+                      floorLongPressRef.current.timer = null;
+                    }
+                  }}
+                  onContextMenu={(event) => {
+                    event.preventDefault();
+                    if (floorLongPressRef.current.timer != null) {
+                      window.clearTimeout(floorLongPressRef.current.timer);
+                      floorLongPressRef.current.timer = null;
+                    }
+                    if (floorLongPressRef.current.stamped) {
+                      floorLongPressRef.current.stamped = false;
+                      return;
+                    }
+                    onStampFloor(rowIdx, stepNum);
+                  }}
+                  className={cn(
+                    "group flex h-full w-full items-center justify-center transition",
+                    isPast
+                      ? "opacity-95"
+                      : isCurrent
+                        ? "opacity-100"
+                        : "opacity-70 hover:opacity-100",
+                  )}
+                  aria-label={`${
+                    playback.floorStep
+                      .replace("{act}", actIntroLabel(tables, rowIdx))
+                      .replace(
+                        "{floor}",
+                        formatGameTemplate(gameUi(tables, "floor", "Floor {FloorNum}"), {
+                          FloorNum: stepNum,
+                        }),
+                      )
+                  }. ${playback.stampFloor}`}
+                  aria-current={isCurrent ? "true" : undefined}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={nodeSpriteSrc(entry)}
+                    alt=""
+                    draggable={false}
+                    className="h-full w-full select-none object-contain transition-transform duration-150 group-hover:scale-[1.6]"
+                  />
+                </button>
+              </GameUiHoverTip>
+            </span>
           );
         });
       })}

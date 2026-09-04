@@ -50,6 +50,7 @@ export function CommentSection({
   historyFloorInsertRequest,
   historyFloorMentions,
   placeholder,
+  floorHashTip,
   toolbarStart,
 }: {
   threadKey: string;
@@ -67,6 +68,7 @@ export function CommentSection({
     currentFloor?: number;
   } | null;
   placeholder?: string;
+  floorHashTip?: string;
   toolbarStart?: ReactNode;
 }) {
   const serviceLocale = useServiceLocale();
@@ -244,6 +246,7 @@ export function CommentSection({
               allowLineBreaks
               historyFloorInsertRequest={historyFloorInsertRequest}
               historyFloorMentions={historyFloorMentions}
+              charCountTip={floorHashTip}
               toolbarStart={toolbarStart}
             />
           )}
