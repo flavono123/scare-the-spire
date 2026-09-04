@@ -151,8 +151,10 @@ const LANDSCAPE_ART_ASPECT: Record<"event" | "epoch", number> = {
   epoch: 810 / 500,
 };
 
-/** Height / width for card portrait art boxes. Matches existing Pagestorm card-art inserts. */
-export const CARD_ART_BOX_ASPECT = 1.56;
+/** Width / height of extracted STS2 card art (`pagestorm.webp` 1000×760). */
+export const CARD_ART_IMAGE_ASPECT = 1000 / 760;
+/** Height / width of the in-game card tile frame. */
+export const CARD_TILE_ASPECT = 422 / 300;
 export const WIDE_ART_MAX_WIDTH = 1080;
 export const WIDE_ART_MIN_WIDTH = 200;
 
@@ -168,18 +170,23 @@ export function landscapeArtAspect(kind: MockAssetKind): number {
   return isLandscapeArtKind(kind) ? LANDSCAPE_ART_ASPECT[kind] : 1;
 }
 
+export function cardArtAspect(imageAspect?: number): number {
+  return imageAspect && imageAspect > 0 ? imageAspect : CARD_ART_IMAGE_ASPECT;
+}
+
 export function defaultAssetBox(
   kind: MockAssetKind,
   presentation: CardPresentation = "art",
+  imageAspect?: number,
 ): { width: number; height: number } {
   if (kind === "card") {
     if (presentation === "tiny") return { width: 72, height: 72 };
     if (presentation === "tile") {
       const width = 150;
-      return { width, height: Math.round(width * (422 / 300)) };
+      return { width, height: Math.round(width * CARD_TILE_ASPECT) };
     }
-    const width = 128;
-    return { width, height: Math.round(width * CARD_ART_BOX_ASPECT) };
+    const width = WIDE_ART_MIN_WIDTH;
+    return { width, height: Math.round(width / cardArtAspect(imageAspect)) };
   }
   if (isLandscapeArtKind(kind)) {
     const width = 720;
@@ -211,7 +218,7 @@ export function clampAssetWidth(
   if (kind === "card") {
     if (presentation === "tiny") return clampPx(width, 24, 96);
     if (presentation === "tile") return clampPx(width, 72, 380);
-    return clampPx(width, 72, WIDE_ART_MAX_WIDTH);
+    return clampPx(width, WIDE_ART_MIN_WIDTH, WIDE_ART_MAX_WIDTH);
   }
   if (isLandscapeArtKind(kind)) return clampPx(width, WIDE_ART_MIN_WIDTH, WIDE_ART_MAX_WIDTH);
   return clampPx(width, 40, 128);
@@ -221,14 +228,16 @@ export function clampAssetHeight(
   kind: MockAssetKind,
   height: number,
   presentation: CardPresentation = "art",
+  imageAspect?: number,
 ): number {
   if (kind === "card") {
     if (presentation === "tiny") return clampPx(height, 24, 96);
     if (presentation === "tile") return clampPx(height, 96, 534);
+    const aspect = cardArtAspect(imageAspect);
     return clampPx(
       height,
-      Math.round(72 * CARD_ART_BOX_ASPECT),
-      Math.round(WIDE_ART_MAX_WIDTH * CARD_ART_BOX_ASPECT),
+      Math.round(WIDE_ART_MIN_WIDTH / aspect),
+      Math.round(WIDE_ART_MAX_WIDTH / aspect),
     );
   }
   if (isLandscapeArtKind(kind)) {
@@ -247,6 +256,7 @@ export function sizedAssetBox(
   width: number,
   height: number,
   presentation: CardPresentation = "art",
+  imageAspect?: number,
 ): { width: number; height: number } {
   const nextWidth = clampAssetWidth(kind, width, presentation);
   if (isLandscapeArtKind(kind)) {
@@ -256,14 +266,15 @@ export function sizedAssetBox(
     };
   }
   if (kind === "card" && presentation === "art") {
+    const aspect = cardArtAspect(imageAspect);
     return {
       width: nextWidth,
-      height: Math.round(nextWidth * CARD_ART_BOX_ASPECT),
+      height: Math.round(nextWidth / aspect),
     };
   }
   return {
     width: nextWidth,
-    height: clampAssetHeight(kind, height, presentation),
+    height: clampAssetHeight(kind, height, presentation, imageAspect),
   };
 }
 

@@ -1,4 +1,5 @@
 .pagestorm-mock-editor {
+  position: relative;
   min-height: 28rem;
   padding: 0.75rem 1rem;
   font-family: var(--font-game-text, inherit);
@@ -81,6 +82,15 @@
   overflow: visible;
 }
 
+.pagestorm-asset-row > .react-renderer {
+  overflow: hidden;
+}
+
+.pagestorm-asset-row .react-renderer,
+.pagestorm-asset-row .react-renderer > * {
+  max-width: 100%;
+}
+
 .pagestorm-sticky-toolbar {
   position: sticky;
   top: 3rem;
@@ -98,4 +108,69 @@
 
 .pagestorm-sticky-toolbar details:not([open]) > [role="menu"] {
   display: none;
+}
+
+.pagestorm-asset-row {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.pagestorm-asset-row > * {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.pagestorm-asset-row .pagestorm-asset-align {
+  margin-top: 0;
+  margin-bottom: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 40rem) {
+  .pagestorm-asset-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pagestorm-asset-row > * {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .pagestorm-asset-row .pagestorm-asset-align {
+    width: 100%;
+  }
+}
+
+.pagestorm-drop-hint {
+  position: absolute;
+  pointer-events: none;
+  z-index: 30;
+  box-sizing: border-box;
+  border-radius: 0.4rem;
+}
+
+.pagestorm-drop-hint[data-zone="before"] {
+  box-shadow: inset 0 3px 0 0 hsl(var(--primary));
+}
+
+.pagestorm-drop-hint[data-zone="after"] {
+  box-shadow: inset 0 -3px 0 0 hsl(var(--primary));
+}
+
+.pagestorm-drop-hint[data-zone="left"] {
+  background: linear-gradient(to right, hsl(var(--primary) / 0.28) 50%, transparent 50%);
+}
+
+.pagestorm-drop-hint[data-zone="right"] {
+  background: linear-gradient(to left, hsl(var(--primary) / 0.28) 50%, transparent 50%);
 }

@@ -423,6 +423,7 @@ function AssetBody({
   card,
   width,
   height,
+  onArtAspect,
 }: {
   asset: MockGameAsset;
   presentation: CardPresentation;
@@ -430,6 +431,7 @@ function AssetBody({
   card?: CodexCard | null;
   width: number;
   height: number;
+  onArtAspect?: (aspect: number) => void;
 }) {
   if (presentation === "tiny" && card) {
     return (
@@ -462,8 +464,16 @@ function AssetBody({
       alt={asset.name}
       width={width}
       height={height}
-      className="pointer-events-none h-full w-full select-none object-contain"
+      className={`pointer-events-none absolute inset-0 h-full w-full select-none ${
+        asset.kind === "card" && presentation === "art" ? "object-cover" : "object-contain"
+      }`}
       draggable={false}
+      onLoad={(event) => {
+        if (asset.kind !== "card" || presentation !== "art" || !onArtAspect) return;
+        const image = event.currentTarget;
+        if (image.naturalWidth < 1 || image.naturalHeight < 1) return;
+        onArtAspect(image.naturalWidth / image.naturalHeight);
+      }}
     />
   );
 }
@@ -478,6 +488,7 @@ export function GameAssetFigure({
   height,
   presentation = "art",
   beta = false,
+  imageAspect,
   card,
   entity,
   onResize,
@@ -495,22 +506,24 @@ export function GameAssetFigure({
   height?: number;
   presentation?: CardPresentation;
   beta?: boolean;
+  imageAspect?: number;
   card?: CodexCard | null;
   entity?: EntityInfo;
-  onResize?: (size: { width: number; height: number }) => void;
+  onResize?: (size: { width: number; height: number; imageAspect?: number }) => void;
   onLinked?: (linked: boolean) => void;
   onAlign?: (align: MockAlign) => void;
   onPresentation?: (presentation: CardPresentation) => void;
   onBeta?: (beta: boolean) => void;
 }) {
-  const fallback = defaultAssetBox(asset.kind, presentation);
+  const fallback = defaultAssetBox(asset.kind, presentation, imageAspect);
   const px = width ?? fallback.width;
   const py = height ?? fallback.height;
   const figure = (
     <figure
       className="relative max-w-full overflow-hidden"
-      style={{ width: px, aspectRatio: `${px} / ${py}` }}
+      style={{ width: px, aspectRatio: `${px} / ${py}`, height: "auto" }}
       aria-label={asset.name}
+      data-pagestorm-asset-box=""
     >
       <AssetBody
         asset={asset}
@@ -519,13 +532,18 @@ export function GameAssetFigure({
         card={card}
         width={px}
         height={py}
+        onArtAspect={(aspect) => {
+          const next = sizedAssetBox(asset.kind, px, py, presentation, aspect);
+          if (Math.abs(next.height - py) <= 1 && Math.abs(next.width - px) <= 1) return;
+          onResize?.({ ...next, imageAspect: aspect });
+        }}
       />
     </figure>
   );
 
   if (mode === "preview") {
     return (
-      <div className={alignRowClass(align)}>
+      <div className={`${alignRowClass(align)} pagestorm-asset-align`} data-pagestorm-asset-align="">
         <PreviewCompendiumAssetWrap linked={linked} entity={entity} asset={asset}>
           {figure}
         </PreviewCompendiumAssetWrap>
@@ -534,7 +552,7 @@ export function GameAssetFigure({
   }
 
   return (
-    <div className={alignRowClass(align)}>
+    <div className={`${alignRowClass(align)} pagestorm-asset-align`} data-pagestorm-asset-align="">
       <div
         className={`relative inline-block max-w-full overflow-visible ${
           selected ? "rounded-md ring-1 ring-primary/70" : ""
@@ -549,10 +567,10 @@ export function GameAssetFigure({
               onLinked={onLinked}
               width={px}
               height={py}
-              clampWidth={(next) => sizedAssetBox(asset.kind, next, py, presentation).width}
-              clampHeight={(next) => sizedAssetBox(asset.kind, px, next, presentation).height}
+              clampWidth={(next) => sizedAssetBox(asset.kind, next, py, presentation, imageAspect).width}
+              clampHeight={(next) => sizedAssetBox(asset.kind, px, next, presentation, imageAspect).height}
               onResize={(size) => {
-                onResize?.(sizedAssetBox(asset.kind, size.width, size.height, presentation));
+                onResize?.(sizedAssetBox(asset.kind, size.width, size.height, presentation, imageAspect));
               }}
             />
           ) : null}
@@ -644,7 +662,7 @@ export function YoutubePlayerFigure({
 
   if (mode === "preview") {
     return (
-      <div className={alignRowClass(align)}>
+      <div className={`${alignRowClass(align)} pagestorm-asset-align`} data-pagestorm-asset-align="">
         <a
           href={href}
           target="_blank"
@@ -659,7 +677,7 @@ export function YoutubePlayerFigure({
   }
 
   return (
-    <div className={alignRowClass(align)}>
+    <div className={`${alignRowClass(align)} pagestorm-asset-align`} data-pagestorm-asset-align="">
       <div className="relative">
         {inner}
         <AssetFocusChrome
@@ -706,7 +724,7 @@ export function OgBookmarkFigure({
 
   if (mode === "preview") {
     return (
-      <div className={alignRowClass(align)}>
+      <div className={`${alignRowClass(align)} pagestorm-asset-align`} data-pagestorm-asset-align="">
         <a
           href={bookmark.url}
           target="_blank"
@@ -720,7 +738,7 @@ export function OgBookmarkFigure({
   }
 
   return (
-    <div className={alignRowClass(align)}>
+    <div className={`${alignRowClass(align)} pagestorm-asset-align`} data-pagestorm-asset-align="">
       <div className="relative">
         {aquaTitle}
         <AssetFocusChrome

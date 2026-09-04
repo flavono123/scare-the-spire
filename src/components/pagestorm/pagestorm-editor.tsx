@@ -39,6 +39,7 @@ import {
   YoutubePlayerNode,
   gameAssetAttrs,
 } from "./tiptap-nodes";
+import { AssetRowNode, PagestormAssetLayout } from "./asset-layout";
 import { PagestormStickyToolbar } from "./toolbar";
 import type { PagestormToyboxPost } from "./toybox-samples";
 import "./pagestorm-editor.css";
@@ -119,6 +120,8 @@ export function PagestormEditor({
       YoutubePlayerNode,
       OgBookmarkNode,
       ToyboxEmbedNode,
+      AssetRowNode,
+      PagestormAssetLayout,
       PagestormLightSection,
       brace,
     ],
@@ -300,7 +303,7 @@ export function PagestormEditor({
             />
           </div>
         ) : null}
-        <div className="overflow-visible rounded-lg border border-border bg-card">
+        <div className="pagestorm-editor-frame relative overflow-visible rounded-lg border border-border bg-card">
         {editing && editor ? (
           <PagestormStickyToolbar
             editor={editor}

@@ -20,13 +20,9 @@ import {
   type MockOgBookmark,
 } from "./sample";
 import { ToyboxEmbedFigure } from "./toybox-embed";
+import { PAGESTORM_EMBED_NODE_NAMES } from "./asset-layout";
 
-export const PAGESTORM_BLOCK_NODE_NAMES = [
-  "gameAsset",
-  "youtubePlayer",
-  "ogBookmark",
-  "toyboxEmbed",
-] as const;
+export const PAGESTORM_BLOCK_NODE_NAMES = PAGESTORM_EMBED_NODE_NAMES;
 
 function asAlign(value: unknown): MockAlign {
   return value === "center" || value === "right" ? value : "left";
@@ -96,11 +92,16 @@ function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
   const linked = asBool(node.attrs.linked);
   const presentation = asPresentation(node.attrs.presentation);
   const beta = asBool(node.attrs.beta, false);
-  const fallback = defaultAssetBox(asset.kind, presentation);
+  const imageAspect = Number(node.attrs.imageAspect);
+  const fallback = defaultAssetBox(
+    asset.kind,
+    presentation,
+    Number.isFinite(imageAspect) && imageAspect > 0 ? imageAspect : undefined,
+  );
   const width = asWidth(node.attrs.width, fallback.width);
   const height = asWidth(node.attrs.height, fallback.height);
   return (
-    <NodeViewWrapper>
+    <NodeViewWrapper className="max-w-full" data-pagestorm-asset-box="" data-drag-handle="">
       <GameAssetFigure
         asset={asset}
         align={align}
@@ -111,13 +112,22 @@ function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
         height={height}
         presentation={presentation}
         beta={beta}
+        imageAspect={Number.isFinite(imageAspect) && imageAspect > 0 ? imageAspect : undefined}
         card={entity?.cardData}
         entity={entity}
-        onResize={(size) => updateAttributes({ width: size.width, height: size.height })}
+        onResize={(size) => updateAttributes({
+          width: size.width,
+          height: size.height,
+          ...(size.imageAspect ? { imageAspect: size.imageAspect } : {}),
+        })}
         onLinked={(next) => updateAttributes({ linked: next })}
         onAlign={(next) => updateAttributes({ align: next })}
         onPresentation={(next) => {
-          const box = defaultAssetBox(asset.kind, next);
+          const box = defaultAssetBox(
+            asset.kind,
+            next,
+            Number.isFinite(imageAspect) && imageAspect > 0 ? imageAspect : undefined,
+          );
           updateAttributes({
             presentation: next,
             width: box.width,
@@ -135,7 +145,7 @@ function YoutubeView({ node, updateAttributes, selected }: NodeViewProps) {
   const mode = usePagestormChrome();
   const align = asAlign(node.attrs.align);
   return (
-    <NodeViewWrapper>
+    <NodeViewWrapper className="max-w-full" data-pagestorm-asset-box="" data-drag-handle="">
       <div className={selected ? "rounded-md ring-1 ring-primary/70" : undefined}>
         <YoutubePlayerFigure
           videoId={String(node.attrs.videoId ?? "")}
@@ -166,7 +176,7 @@ function OgView({ node, updateAttributes, selected }: NodeViewProps) {
     siteName: String(node.attrs.siteName ?? ""),
   };
   return (
-    <NodeViewWrapper>
+    <NodeViewWrapper className="max-w-full" data-pagestorm-asset-box="" data-drag-handle="">
       <div className={selected ? "rounded-md ring-1 ring-primary/70" : undefined}>
         <OgBookmarkFigure
           bookmark={bookmark}
@@ -189,7 +199,7 @@ function ToyboxView({ node, updateAttributes, selected }: NodeViewProps) {
   const width = asWidth(node.attrs.width, defaultPlayerWidth());
   const height = asWidth(node.attrs.height, 240);
   return (
-    <NodeViewWrapper>
+    <NodeViewWrapper className="max-w-full" data-pagestorm-asset-box="" data-drag-handle="">
       <div className={selected ? "rounded-md ring-1 ring-primary/70" : undefined}>
         <ToyboxEmbedFigure
           postId={String(node.attrs.postId ?? "")}
@@ -224,10 +234,11 @@ export const GameAssetNode = Node.create({
       href: { default: "" },
       align: { default: "center" },
       linked: { default: true },
-      width: { default: 128 },
-      height: { default: 200 },
+      width: { default: 200 },
+      height: { default: 152 },
       presentation: { default: "art" },
       beta: { default: false },
+      imageAspect: { default: null },
     };
   },
   parseHTML() {
@@ -382,5 +393,6 @@ export function gameAssetAttrs(
     height: box.height,
     presentation,
     beta: options.beta ?? false,
+    imageAspect: null,
   };
 }
