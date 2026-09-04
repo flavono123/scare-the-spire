@@ -9,6 +9,21 @@ import {
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { PAGESTORM_HREF } from "@/lib/pagestorm";
 
+export const PAGESTORM_TOYBOX_EMBED_SERVICES = [
+  "transfigure",
+  "this_or_that",
+  "decisions_decisions",
+] as const;
+
+export type PagestormToyboxEmbedService =
+  (typeof PAGESTORM_TOYBOX_EMBED_SERVICES)[number];
+
+export function isPagestormToyboxEmbedService(
+  service: string,
+): service is PagestormToyboxEmbedService {
+  return (PAGESTORM_TOYBOX_EMBED_SERVICES as readonly string[]).includes(service);
+}
+
 export type PagestormToyboxPick = {
   id: string;
   service: string;
@@ -64,21 +79,32 @@ export function pagestormToyboxPickerMode(
 ): PagestormToyboxPickerMode {
   if (!href) return "all";
   const path = stripPagestormToyboxHref(href);
-  if (path === DEFRAGMENT_HREF) return "all";
-  return pagestormToyboxFederatedFromHref(path) ?? "unsupported";
+  const federated = pagestormToyboxFederatedFromHref(path);
+  if (federated && isPagestormToyboxEmbedService(federated)) return federated;
+  return "unsupported";
 }
 
 export function isPagestormToyboxPickerHref(href: string): boolean {
   const path = stripPagestormToyboxHref(href);
-  if (path === PAGESTORM_HREF || path.startsWith("/dev")) return false;
-  if (path === DEFRAGMENT_HREF) return true;
-  return pagestormToyboxFederatedFromHref(path) != null;
+  if (path === PAGESTORM_HREF || path.startsWith("/dev") || path === DEFRAGMENT_HREF) {
+    return false;
+  }
+  const federated = pagestormToyboxFederatedFromHref(path);
+  return federated != null && isPagestormToyboxEmbedService(federated);
 }
 
-export function pagestormToyboxEmbedHeight(service: string): number {
+export function pagestormToyboxDefaultPickerHref(): string {
+  return DEFRAGMENT_FEED_SERVICE_META.this_or_that.hrefBase;
+}
+
+export function pagestormToyboxEmbedHeight(
+  service: string,
+  resourceType = "",
+): number {
   const href = pagestormToyboxServiceHref(service);
-  if (href === "/this-or-that") return 320;
-  if (href === "/decisions-decisions") return 280;
+  if (href === "/this-or-that") return 248;
+  if (href === "/decisions-decisions") return 260;
+  if (href === "/transfigure") return resourceType === "card" ? 236 : 140;
   return 148;
 }
 
@@ -124,7 +150,7 @@ export function pagestormToyboxNodeAttrs(snapshot: PagestormToyboxSnapshot) {
     align: "center" as const,
     linked: true,
     width: 576,
-    height: pagestormToyboxEmbedHeight(snapshot.service),
+    height: pagestormToyboxEmbedHeight(snapshot.service, snapshot.leftType),
   };
 }
 

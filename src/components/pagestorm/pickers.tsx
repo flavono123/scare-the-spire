@@ -30,6 +30,7 @@ import {
 } from "@/lib/site-nav-items";
 import {
   isPagestormToyboxPickerHref,
+  pagestormToyboxDefaultPickerHref,
   stripPagestormToyboxHref,
   type PagestormToyboxPick,
   type PagestormToyboxSnapshot,
@@ -141,7 +142,11 @@ export function ToyboxPickerModal({
   const { userId } = useAuth();
   const copy = serviceMessages[serviceLocale].pagestorm;
   const toyboxItems = useToyboxNavItems();
-  const [serviceHref, setServiceHref] = useState<string | null>(initialServiceHref);
+  const [serviceHref, setServiceHref] = useState<string>(() => (
+    initialServiceHref && isPagestormToyboxPickerHref(initialServiceHref)
+      ? stripPagestormToyboxHref(initialServiceHref)
+      : pagestormToyboxDefaultPickerHref()
+  ));
   const [query, setQuery] = useState("");
   const [mineOnly, setMineOnly] = useState(false);
   const [pickingId, setPickingId] = useState<string | null>(null);
@@ -193,7 +198,7 @@ export function ToyboxPickerModal({
               key={path}
               item={item}
               pressed={serviceHref === path}
-              onClick={() => setServiceHref(serviceHref === path ? null : path)}
+              onClick={() => setServiceHref(path)}
             />
           );
         })}

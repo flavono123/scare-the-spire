@@ -1,10 +1,11 @@
 "use client";
 
+import { CardTile } from "@/components/codex/card-tile";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
-import { ThisOrThatVoteChoiceFrame } from "@/components/this-or-that/vote-display";
 import Image from "@/components/ui/static-image";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { COMBO_KEYWORD_IMAGE_URL } from "@/lib/combo-resource-visuals";
 import {
   isDecisionsDecisionsResourceType,
   resourceKey,
@@ -17,12 +18,6 @@ import {
   pagestormToyboxPostHref,
   pagestormToyboxServiceHref,
 } from "@/lib/pagestorm-toybox";
-import {
-  createMissingThisOrThatEntity,
-  isThisOrThatResourceType,
-  type ThisOrThatResourceType,
-} from "@/lib/this-or-that";
-import { serviceMessages } from "@/messages/service";
 import { findPagestormEntity, usePagestormEntities } from "./entities-context";
 import { AssetCornerHandles, AssetFocusChrome, alignRowClass } from "./figures";
 import {
@@ -32,50 +27,72 @@ import {
 } from "./sample";
 import { findToyboxPost } from "./toybox-samples";
 
-function findByTypeId(
-  entities: ReturnType<typeof usePagestormEntities>,
-  type: string,
-  id: string,
-) {
-  return findPagestormEntity(entities, type, id);
+const CARD_TILE_WIDTH = 140;
+const ICON_SIZE = 96;
+
+function resourceImageSrc(
+  entity: NonNullable<ReturnType<typeof findPagestormEntity>>,
+): string | null {
+  if (entity.type === "character") {
+    return entity.characterData?.iconUrl || entity.imageUrl;
+  }
+  if (entity.type === "monster") {
+    return entity.monsterData?.imageUrl
+      || entity.monsterData?.bossImageUrl
+      || entity.imageUrl;
+  }
+  if (entity.type === "keyword") {
+    return entity.imageUrl || COMBO_KEYWORD_IMAGE_URL;
+  }
+  return entity.imageUrl;
 }
 
-function totType(type: string): ThisOrThatResourceType {
-  return isThisOrThatResourceType(type) ? type : "card";
-}
-
-function TotSide({
+function ToyboxResourceVisual({
   type,
   id,
-  side,
-  sideLabel,
 }: {
   type: string;
   id: string;
-  side: "left" | "right";
-  sideLabel: string;
 }) {
+  const serviceLocale = useServiceLocale();
   const entities = usePagestormEntities();
-  const entity = findByTypeId(entities, type, id)
-    ?? createMissingThisOrThatEntity(totType(type), id);
-  const src = entity.imageUrl;
+  const entity = findPagestormEntity(entities, type, id);
+  if (!entity) {
+    return (
+      <span className="px-2 text-center text-xs text-muted-foreground">{id}</span>
+    );
+  }
+  if (entity.cardData) {
+    return (
+      <CardTile
+        card={entity.cardData}
+        serviceLocale={serviceLocale}
+        showUpgrade={false}
+        showBeta={false}
+        width={CARD_TILE_WIDTH}
+        interactive={false}
+      />
+    );
+  }
+  const src = resourceImageSrc(entity);
+  if (!src) {
+    return (
+      <span className="px-2 text-center text-xs text-muted-foreground">{entity.nameKo}</span>
+    );
+  }
+  const landscape = entity.type === "event" || entity.type === "epoch";
   return (
-    <div className="space-y-2">
-      <div className="flex h-28 items-center justify-center overflow-hidden rounded-md bg-black/25">
-        {src ? (
-          <Image
-            src={src}
-            alt=""
-            width={112}
-            height={112}
-            className="max-h-28 max-w-full object-contain"
-          />
-        ) : (
-          <span className="px-2 text-center text-xs text-muted-foreground">{entity.nameKo}</span>
-        )}
-      </div>
-      <ThisOrThatVoteChoiceFrame side={side} label={sideLabel} />
-    </div>
+    <Image
+      src={src}
+      alt={entity.nameKo}
+      width={landscape ? 220 : ICON_SIZE}
+      height={landscape ? 120 : ICON_SIZE}
+      className={
+        landscape
+          ? "max-h-28 max-w-[13rem] object-contain"
+          : "h-24 w-24 object-contain"
+      }
+    />
   );
 }
 
@@ -84,41 +101,31 @@ function ThisOrThatPreview({
   leftId,
   rightType,
   rightId,
-  title,
-  label,
 }: {
   leftType: string;
   leftId: string;
   rightType: string;
   rightId: string;
-  title: string;
-  label: string;
 }) {
-  const serviceLocale = useServiceLocale();
-  const copy = serviceMessages[serviceLocale];
   return (
-    <div className="space-y-2 p-3">
-      <p className="font-game-title text-sm">{title}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <div className="grid grid-cols-2 gap-2">
-        <TotSide type={leftType} id={leftId} side="left" sideLabel={copy.thisOrThat.leftLabel} />
-        <TotSide type={rightType} id={rightId} side="right" sideLabel={copy.thisOrThat.rightLabel} />
-      </div>
+    <div className="flex h-full items-center justify-center gap-4 px-4">
+      <ToyboxResourceVisual type={leftType} id={leftId} />
+      <span className="shrink-0 font-game-title text-xl font-black text-primary/80">
+        VS
+      </span>
+      <ToyboxResourceVisual type={rightType} id={rightId} />
     </div>
   );
 }
 
 function DecisionsPreview({
   post,
-  label,
 }: {
   post: {
-    title: string;
     rows: TierRow[];
     placements: TierPlacement[];
     pool: DecisionsDecisionsResourceRef[];
   };
-  label: string;
 }) {
   const serviceLocale = useServiceLocale();
   const gameLocale = useGameLocale();
@@ -131,9 +138,7 @@ function DecisionsPreview({
     )),
   );
   return (
-    <div className="space-y-2 p-2">
-      <p className="px-1 font-game-title text-sm">{post.title}</p>
-      <p className="px-1 text-xs text-muted-foreground">{label}</p>
+    <div className="h-full p-2">
       <DecisionsDecisionsBoard
         rows={post.rows}
         placements={post.placements}
@@ -152,43 +157,9 @@ function DecisionsPreview({
   );
 }
 
-function GenericPreview({
-  title,
-  nickname,
-  tokenSrc,
-}: {
-  title: string;
-  nickname: string;
-  tokenSrc: string;
-}) {
-  return (
-    <div className="flex h-full items-center gap-3 p-3">
-      {tokenSrc ? (
-        <Image
-          src={tokenSrc}
-          alt=""
-          width={40}
-          height={40}
-          className="h-10 w-10 shrink-0 object-contain"
-        />
-      ) : (
-        <div className="h-10 w-10 shrink-0 rounded-md bg-black/25" aria-hidden />
-      )}
-      <div className="min-w-0">
-        <p className="line-clamp-2 font-game-title text-sm">{title || nickname}</p>
-        {nickname ? (
-          <p className="truncate text-xs text-muted-foreground">{nickname}</p>
-        ) : null}
-      </div>
-    </div>
-  );
-}
-
 export function ToyboxEmbedFigure({
   postId,
   service,
-  title = "",
-  nickname = "",
   leftType = "",
   leftId = "",
   rightType = "",
@@ -196,7 +167,6 @@ export function ToyboxEmbedFigure({
   rows,
   placements,
   pool,
-  tokenSrc = "",
   align,
   mode = "edit",
   selected = false,
@@ -231,7 +201,6 @@ export function ToyboxEmbedFigure({
 }) {
   const serviceLocale = useServiceLocale();
   const gameLocale = useGameLocale();
-  const copy = serviceMessages[serviceLocale];
   const mock = findToyboxPost(postId);
   const px = width ?? defaultPlayerWidth();
   const py = height ?? 240;
@@ -245,10 +214,9 @@ export function ToyboxEmbedFigure({
         leftId: mock.leftId,
         rightType: mock.rightType,
         rightId: mock.rightId,
-        title: mock.title,
       }
       : leftType && leftId && rightType && rightId
-        ? { leftType, leftId, rightType, rightId, title }
+        ? { leftType, leftId, rightType, rightId }
         : null
     : null;
   const dd = serviceHref === "/decisions-decisions"
@@ -256,12 +224,14 @@ export function ToyboxEmbedFigure({
       ? mock
       : Array.isArray(rows) && Array.isArray(placements)
         ? {
-          title,
           rows: rows as TierRow[],
           placements: placements as TierPlacement[],
           pool: (Array.isArray(pool) ? pool : []) as DecisionsDecisionsResourceRef[],
         }
         : null
+    : null;
+  const transfigure = serviceHref === "/transfigure" && leftType && leftId
+    ? { type: leftType, id: leftId }
     : null;
 
   const inner = (() => {
@@ -272,26 +242,20 @@ export function ToyboxEmbedFigure({
           leftId={tot.leftId}
           rightType={tot.rightType}
           rightId={tot.rightId}
-          title={tot.title}
-          label={copy.pagestorm.toyboxThisOrThat}
         />
       );
     }
     if (dd) {
+      return <DecisionsPreview post={dd} />;
+    }
+    if (transfigure) {
       return (
-        <DecisionsPreview
-          post={dd}
-          label={copy.pagestorm.toyboxDecisions}
-        />
+        <div className="flex h-full items-center justify-center p-3">
+          <ToyboxResourceVisual type={transfigure.type} id={transfigure.id} />
+        </div>
       );
     }
-    return (
-      <GenericPreview
-        title={mock?.title || title}
-        nickname={mock?.body || nickname}
-        tokenSrc={tokenSrc}
-      />
-    );
+    return null;
   })();
 
   const card = (

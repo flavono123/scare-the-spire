@@ -11,12 +11,14 @@ import { normalizeDefragmentSourcePost } from "@/lib/defragment-feed";
 import { normalizeDecisionsDecisionsPost } from "@/lib/decisions-decisions";
 import { normalizeFavoriteTournamentPost } from "@/lib/favorite-tournament";
 import {
+  isPagestormToyboxEmbedService,
   pagestormToyboxFederatedFromHref,
   pagestormToyboxPickFromFeedItem,
   pagestormToyboxPickerMode,
   type PagestormToyboxPick,
   type PagestormToyboxSnapshot,
 } from "@/lib/pagestorm-toybox";
+import type { TransfigurePost } from "@/lib/transfigure-types";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import type { ThisOrThatPost } from "@/lib/this-or-that";
@@ -35,7 +37,9 @@ export function usePagestormToyboxPicker(serviceHref: string | null): {
   const service = mode === "all" || mode === "unsupported" ? null : mode;
   const feed = useDefragmentFeed("latest", service, enabled);
   const picks = useMemo(
-    () => feed.items.map(pagestormToyboxPickFromFeedItem),
+    () => feed.items
+      .filter((item) => isPagestormToyboxEmbedService(item.service))
+      .map(pagestormToyboxPickFromFeedItem),
     [feed.items],
   );
   return {
@@ -106,6 +110,16 @@ export async function loadPagestormToyboxSnapshot(
       rows: post.rows,
       placements: post.placements,
       pool: post.extra_ids,
+    };
+  }
+  if (federated === "transfigure") {
+    const post = row as TransfigurePost;
+    return {
+      ...base,
+      title: post.title?.trim() || pick.title,
+      nickname: post.nickname || pick.nickname,
+      leftType: post.resource_type,
+      leftId: post.resource_id,
     };
   }
   const source = federated === "favorite_tournament"

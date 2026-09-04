@@ -173,14 +173,19 @@ assert.equal(pagestormToyboxFederatedFromHref("/this-or-that"), "this_or_that");
 assert.equal(pagestormToyboxFederatedFromHref("/en/decisions-decisions"), "decisions_decisions");
 assert.equal(pagestormToyboxFederatedFromHref("/history-course"), null);
 assert.equal(pagestormToyboxPickerMode(null), "all");
-assert.equal(pagestormToyboxPickerMode("/defragment"), "all");
+assert.equal(pagestormToyboxPickerMode("/defragment"), "unsupported");
 assert.equal(pagestormToyboxPickerMode("/history-course"), "unsupported");
-assert.equal(isPagestormToyboxPickerHref("/chemical-x"), true);
+assert.equal(isPagestormToyboxPickerHref("/chemical-x"), false);
+assert.equal(isPagestormToyboxPickerHref("/c-c-c-combo"), false);
+assert.equal(isPagestormToyboxPickerHref("/defragment"), false);
+assert.equal(isPagestormToyboxPickerHref("/transfigure"), true);
+assert.equal(isPagestormToyboxPickerHref("/this-or-that"), true);
 assert.equal(isPagestormToyboxPickerHref("/history-course"), false);
 assert.equal(isPagestormToyboxPickerHref("/pagestorm"), false);
 assert.equal(pagestormToyboxServiceHref("this_or_that"), "/this-or-that");
-assert.equal(pagestormToyboxEmbedHeight("/this-or-that"), 320);
-assert.equal(pagestormToyboxEmbedHeight("/chemical-x"), 148);
+assert.equal(pagestormToyboxEmbedHeight("/this-or-that"), 248);
+assert.equal(pagestormToyboxEmbedHeight("/transfigure", "card"), 236);
+assert.equal(pagestormToyboxEmbedHeight("/transfigure", "relic"), 140);
 assert.equal(
   pagestormToyboxPostHref("this_or_that", "post-1", "ko", "kor"),
   "/this-or-that/post-1",
@@ -210,7 +215,7 @@ const snapshotAttrs = pagestormToyboxNodeAttrs({
 });
 assert.equal(snapshotAttrs.postId, "live-1");
 assert.equal(snapshotAttrs.leftType, "card");
-assert.equal(snapshotAttrs.height, 320);
+assert.equal(snapshotAttrs.height, 248);
 assert.equal(snapshotAttrs.rowsJson, "[]");
 
 console.log("pagestorm.spec.ts: ok");
