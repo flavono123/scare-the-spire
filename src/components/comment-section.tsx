@@ -24,7 +24,7 @@ import { LikeControl } from "@/components/like-control";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { buildRichContentIndexes, resolveRichContentBlocks } from "@/lib/rich-content-blocks";
-import { commentMentionsHistoryFloor } from "@/lib/history-run-floor";
+import { commentMentionsHistoryFloor, materializeHistoryFloorMentions } from "@/lib/history-run-floor";
 import {
   COMMENT_MAX_CHARS,
   COMMENT_MIN_CHARS,
@@ -48,6 +48,8 @@ export function CommentSection({
   onHistoryFloorClick,
   activeHistoryFloor,
   historyFloorInsertRequest,
+  historyFloorMentions,
+  placeholder,
   toolbarStart,
 }: {
   threadKey: string;
@@ -60,6 +62,11 @@ export function CommentSection({
     requestId: number;
     block: HistoryRunFloorBlock;
   } | null;
+  historyFloorMentions?: {
+    catalog: HistoryRunFloorBlock[];
+    currentFloor?: number;
+  } | null;
+  placeholder?: string;
   toolbarStart?: ReactNode;
 }) {
   const serviceLocale = useServiceLocale();
@@ -98,8 +105,11 @@ export function CommentSection({
   const nicknameInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (blocks: PostBlock[]) => {
-    const trimmed = blocksToPlainText(blocks).trim();
-    const storedContent = blocksToStorageText(blocks);
+    const resolved = historyFloorMentions?.catalog.length
+      ? materializeHistoryFloorMentions(blocks, historyFloorMentions.catalog)
+      : blocks;
+    const trimmed = blocksToPlainText(resolved).trim();
+    const storedContent = blocksToStorageText(resolved);
     const nick = nicknameInputRef.current?.value.trim() || profile.nickname.trim() || profileFallback.nickname;
     if (
       !nick
@@ -111,7 +121,7 @@ export function CommentSection({
     try {
       const activeUserId = userId ?? await ensureUser();
       if (!activeUserId) return;
-      await add(nick, storedContent, blocks, activeUserId);
+      await add(nick, storedContent, resolved, activeUserId);
     } finally {
       setSubmitting(false);
     }
@@ -226,13 +236,14 @@ export function CommentSection({
             <RichContentEditor
               entities={entities}
               onSubmit={handleSubmit}
-              placeholder={copy.placeholder}
+              placeholder={placeholder ?? copy.placeholder}
               draftKey={getDraftKey(threadKey)}
               submitLabel={submitting ? "..." : copy.submit}
               minChars={COMMENT_MIN_CHARS}
               maxChars={COMMENT_MAX_CHARS}
               allowLineBreaks
               historyFloorInsertRequest={historyFloorInsertRequest}
+              historyFloorMentions={historyFloorMentions}
               toolbarStart={toolbarStart}
             />
           )}

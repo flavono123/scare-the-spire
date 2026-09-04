@@ -39,6 +39,11 @@ import {
   type SlashCommandListRef,
 } from "@/components/editor/slash-command-list";
 import { SlashCommandSuggestion } from "@/components/editor/slash-command-suggestion";
+import { findFloorHashMatch, FloorHashSuggestion, floorHashPluginKey } from "@/components/editor/floor-hash-suggestion";
+import {
+  FloorMentionList,
+  type FloorMentionListRef,
+} from "@/components/history-course/floor-mention-list";
 import {
   buildEntityKeywordIndex,
   blocksToTiptapDocument,
@@ -54,6 +59,10 @@ import {
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import type { HistoryRunBlock, HistoryRunFloorBlock, PostBlock } from "@/lib/chemical-types";
+import {
+  isHistoryRunFloorBlock,
+  matchHistoryFloorMentions,
+} from "@/lib/history-run-floor";
 import {
   parseYouTubeVideoId,
   resolveYouTubeReference,
@@ -369,6 +378,10 @@ export interface RichContentEditorProps {
     requestId: number;
     block: HistoryRunFloorBlock;
   } | null;
+  historyFloorMentions?: {
+    catalog: HistoryRunFloorBlock[];
+    currentFloor?: number;
+  } | null;
   toolbarStart?: ReactNode;
   /** Enable @ / * → in-description energy / star icon atoms (Transfigure). */
   costTokens?: {
@@ -404,6 +417,7 @@ export function RichContentEditor({
   youtubeExtension,
   historyRunReferences,
   historyFloorInsertRequest = null,
+  historyFloorMentions = null,
   toolbarStart,
   costTokens = null,
   hideSubmitButton = false,
@@ -434,6 +448,12 @@ export function RichContentEditor({
   const lastSubmitRequestIdRef = useRef(submitRequestId);
   const historyRunInsertRequest = historyRunReferences?.insertRequest ?? null;
   const historyRunSlashCommands = historyRunReferences?.slashCommands ?? null;
+  const historyFloorCatalog = historyFloorMentions?.catalog ?? [];
+  const enableFloorHash = historyFloorCatalog.length > 0;
+  const floorCatalogRef = useRef(historyFloorCatalog);
+  floorCatalogRef.current = historyFloorCatalog;
+  const currentFloorRef = useRef(historyFloorMentions?.currentFloor);
+  currentFloorRef.current = historyFloorMentions?.currentFloor;
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
   const keywordEntityIndex = useMemo(() => buildEntityKeywordIndex(entities), [entities]);
   const keywordDescriptionMap = useMemo(() => {
@@ -515,6 +535,101 @@ export function RichContentEditor({
       ...(youtubeExtension ? [YouTubeReferenceExtension] : []),
       ...(historyRunSlashCommands ? [HistoryRunReferenceExtension] : []),
       HistoryRunFloorExtension,
+      ...(enableFloorHash ? [
+        FloorHashSuggestion.configure({
+          suggestion: {
+            pluginKey: floorHashPluginKey,
+            char: "#",
+            allowSpaces: false,
+            findSuggestionMatch: findFloorHashMatch,
+            items: ({ query }: { query: string }) => matchHistoryFloorMentions(
+              query,
+              floorCatalogRef.current,
+              currentFloorRef.current,
+            ),
+            command: ({ editor: ed, range, props }) => {
+              if (!isHistoryRunFloorBlock(props)) return;
+              ed.chain().focus().deleteRange(range).insertContent([
+                {
+                  type: "history-run-floor",
+                  attrs: {
+                    floor: props.floor,
+                    actIndex: props.actIndex,
+                    step: props.step,
+                    mapPointType: props.mapPointType,
+                    spriteSrc: props.spriteSrc ?? "",
+                  },
+                },
+                { type: "text", text: " " },
+              ]).run();
+            },
+            render: () => {
+              let renderer: ReactRenderer<FloorMentionListRef> | null = null;
+              let popup: HTMLDivElement | null = null;
+              const buildCommand = (props: SuggestionProps) => (
+                item: HistoryRunFloorBlock,
+              ) => {
+                props.command(item as unknown as Record<string, unknown>);
+              };
+              return {
+                onStart: (props: SuggestionProps) => {
+                  suggestionOpenRef.current = true;
+                  renderer = new ReactRenderer(FloorMentionList, {
+                    props: {
+                      items: props.items as HistoryRunFloorBlock[],
+                      command: buildCommand(props),
+                    },
+                    editor: props.editor,
+                  });
+                  popup = document.createElement("div");
+                  popup.style.position = "fixed";
+                  popup.style.zIndex = "130";
+                  popup.dataset.richEditorSuggestionPopup = "history-floor";
+                  popup.appendChild(renderer.element);
+                  document.body.appendChild(popup);
+                  if (props.clientRect) {
+                    const rect = props.clientRect();
+                    if (rect) {
+                      popup.style.left = `${rect.left}px`;
+                      popup.style.top = `${rect.bottom + 4}px`;
+                    }
+                  }
+                },
+                onUpdate: (props: SuggestionProps) => {
+                  renderer?.updateProps({
+                    items: props.items as HistoryRunFloorBlock[],
+                    command: buildCommand(props),
+                  });
+                  if (popup && props.clientRect) {
+                    const rect = props.clientRect();
+                    if (rect) {
+                      popup.style.left = `${rect.left}px`;
+                      popup.style.top = `${rect.bottom + 4}px`;
+                    }
+                  }
+                },
+                onKeyDown: (props: SuggestionKeyDownProps) => {
+                  if (props.event.key === "Escape") {
+                    popup?.remove();
+                    renderer?.destroy();
+                    popup = null;
+                    renderer = null;
+                    return true;
+                  }
+                  return renderer?.ref?.onKeyDown(props) ?? false;
+                },
+                onExit: () => {
+                  suggestionOpenRef.current = false;
+                  popup?.remove();
+                  renderer?.destroy();
+                  popup = null;
+                  renderer = null;
+                },
+              };
+            },
+          },
+        }),
+      ] : []),
       EntityMention.configure({
         HTMLAttributes: {
           class: "spire-gold font-semibold",
@@ -1003,6 +1118,7 @@ export function RichContentEditor({
     submitOnEnter,
     youtubeExtension,
     historyRunSlashCommands,
+    enableFloorHash,
   ]);
 
   useEffect(() => {

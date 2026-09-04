@@ -92,6 +92,85 @@ export function commentMentionsHistoryFloor(
   );
 }
 
+export function historyFloorCatalogFromActs(
+  acts: Array<Pick<ReplayActAnalysis, "baseFloor" | "history">>,
+): HistoryRunFloorBlock[] {
+  const catalog: HistoryRunFloorBlock[] = [];
+  for (let actIndex = 0; actIndex < acts.length; actIndex += 1) {
+    const act = acts[actIndex];
+    for (let step = 1; step <= act.history.length; step += 1) {
+      const block = buildHistoryRunFloorBlock({ ...act, actIndex }, step);
+      if (block) catalog.push(block);
+    }
+  }
+  return catalog;
+}
+
+export function matchHistoryFloorMentions(
+  query: string,
+  catalog: HistoryRunFloorBlock[],
+  currentFloor?: number,
+): HistoryRunFloorBlock[] {
+  const digits = query.replace(/\D/g, "");
+  const filtered = digits
+    ? catalog.filter((block) => String(block.floor).startsWith(digits))
+    : catalog;
+  return [...filtered]
+    .sort((left, right) => {
+      if (currentFloor != null) {
+        const leftDistance = Math.abs(left.floor - currentFloor);
+        const rightDistance = Math.abs(right.floor - currentFloor);
+        if (leftDistance !== rightDistance) return leftDistance - rightDistance;
+      }
+      return left.floor - right.floor;
+    })
+    .slice(0, 12);
+}
+
+const HASH_FLOOR_RE = /#(\d+)/g;
+
+export function materializeHistoryFloorMentions(
+  blocks: PostBlock[],
+  catalog: HistoryRunFloorBlock[],
+): PostBlock[] {
+  if (!catalog.length) return blocks;
+  const byFloor = new Map(catalog.map((block) => [block.floor, block]));
+  const next: PostBlock[] = [];
+  for (const block of blocks) {
+    if (block.type !== "text") {
+      next.push(block);
+      continue;
+    }
+    HASH_FLOOR_RE.lastIndex = 0;
+    let cursor = 0;
+    let matched = false;
+    let match: RegExpExecArray | null = HASH_FLOOR_RE.exec(block.text);
+    while (match) {
+      const floor = Number(match[1]);
+      const hit = Number.isFinite(floor) ? byFloor.get(floor) : undefined;
+      if (!hit) {
+        match = HASH_FLOOR_RE.exec(block.text);
+        continue;
+      }
+      matched = true;
+      if (match.index > cursor) {
+        next.push({ type: "text", text: block.text.slice(cursor, match.index) });
+      }
+      next.push(hit);
+      cursor = match.index + match[0].length;
+      match = HASH_FLOOR_RE.exec(block.text);
+    }
+    if (!matched) {
+      next.push(block);
+      continue;
+    }
+    if (cursor < block.text.length) {
+      next.push({ type: "text", text: block.text.slice(cursor) });
+    }
+  }
+  return next;
+}
+
 export type HistoryMapCommentMark = {
   step: number;
   count: number;

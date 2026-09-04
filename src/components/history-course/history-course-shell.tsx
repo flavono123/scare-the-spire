@@ -26,8 +26,13 @@ import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
+import type { HistoryRunFloorBlock } from "@/lib/chemical-types";
 import { lookupHistoryCard } from "@/lib/history-card-lookup";
-import { commentMentionsHistoryFloor, historyMapCommentMarksForAct } from "@/lib/history-run-floor";
+import {
+  buildHistoryRunFloorBlock,
+  commentMentionsHistoryFloor,
+  historyMapCommentMarksForAct,
+} from "@/lib/history-run-floor";
 import { lookupHistoryCardVisual } from "@/lib/history-card-visuals";
 import {
   analyzeReplayRun,
@@ -758,6 +763,10 @@ export function HistoryCourseShell({
   const [introActive, setIntroActive] = useState(false);
   const [replayReady, setReplayReady] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
+  const [floorInsertRequest, setFloorInsertRequest] = useState<{
+    requestId: number;
+    block: HistoryRunFloorBlock;
+  } | null>(null);
   // Per-act window-entry tracker. wasInIntroWindowRef[i] = true while
   // globalMs is inside act i's intro window; we only fire on the
   // false→true edge. Jumping inside the window fires; jumping outside
@@ -1073,6 +1082,20 @@ export function HistoryCourseShell({
     [runTimeline],
   );
 
+  const stampFloor = useCallback((targetActIndex: number, targetStep: number) => {
+    const targetAct = sanitizedActs[targetActIndex];
+    if (!targetAct) return;
+    const block = buildHistoryRunFloorBlock(
+      { ...targetAct, actIndex: targetActIndex },
+      targetStep,
+    );
+    if (!block) return;
+    setFloorInsertRequest((prev) => ({
+      requestId: (prev?.requestId ?? 0) + 1,
+      block,
+    }));
+  }, [sanitizedActs]);
+
   const nodeCommentMarks = useMemo(
     () => (act ? historyMapCommentMarksForAct(comments, actIndex, step) : []),
     [act, actIndex, comments, step],
@@ -1159,14 +1182,17 @@ export function HistoryCourseShell({
           onFocusPlayer={onFocusPlayer}
           nodeCommentMarks={nodeCommentMarks}
           onCommentChipClick={onCommentChipClick}
+          onStampFloor={stampFloor}
         />
         </div>
         <div className="relative z-10 mt-6 w-full">
           <HistoryCourseComments
             runId={runId}
+            acts={sanitizedActs}
             act={act}
             actIndex={actIndex}
             step={step}
+            floorInsertRequest={floorInsertRequest}
             onJumpToStep={onJumpToStep}
             onCommentsChange={setComments}
           />
@@ -1245,6 +1271,7 @@ function Stage({
   onFocusPlayer,
   nodeCommentMarks,
   onCommentChipClick,
+  onStampFloor,
 }: {
   run: ReplayRun;
   act: Act;
@@ -1286,6 +1313,7 @@ function Stage({
   onFocusPlayer: (index: number) => void;
   nodeCommentMarks: ReadonlyArray<{ step: number; count: number; current: boolean }>;
   onCommentChipClick: (step: number) => void;
+  onStampFloor: (actIndex: number, step: number) => void;
 }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const mapBoxRef = useRef<HTMLDivElement>(null);
@@ -1466,6 +1494,7 @@ function Stage({
         onChangeRate={onChangeRate}
         onScrubGlobalMs={onScrubGlobalMs}
         onJumpToStep={onJumpToStep}
+        onStampFloor={onStampFloor}
       />
 
       <RunSummary
@@ -1596,6 +1625,7 @@ function PlaybackBar({
   onChangeRate,
   onScrubGlobalMs,
   onJumpToStep,
+  onStampFloor,
 }: {
   character: string;
   runTimeline: RunTimeline;
@@ -1609,6 +1639,7 @@ function PlaybackBar({
   onChangeRate: (rate: Rate) => void;
   onScrubGlobalMs: (ms: number) => void;
   onJumpToStep: (actIndex: number, step: number) => void;
+  onStampFloor: (actIndex: number, step: number) => void;
 }) {
   const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
   const safeMax = Math.max(1, runTimeline.totalMs);
@@ -1634,6 +1665,7 @@ function PlaybackBar({
         markerSrc={markerSrc}
         onScrubGlobalMs={onScrubGlobalMs}
         onJumpToStep={onJumpToStep}
+        onStampFloor={onStampFloor}
       />
       <div className="flex items-center justify-between text-xs">
         <div className="flex items-center gap-2">
@@ -1694,6 +1726,7 @@ function Track({
   markerSrc,
   onScrubGlobalMs,
   onJumpToStep,
+  onStampFloor,
 }: {
   runTimeline: RunTimeline;
   sanitizedActs: Act[];
@@ -1704,6 +1737,7 @@ function Track({
   markerSrc: string;
   onScrubGlobalMs: (ms: number) => void;
   onJumpToStep: (actIndex: number, step: number) => void;
+  onStampFloor: (actIndex: number, step: number) => void;
 }) {
   const tables = useGameI18n();
   const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
@@ -1799,7 +1833,15 @@ function Track({
             <button
               key={`${rowIdx}-${stepNum}`}
               type="button"
-              onClick={() => onJumpToStep(rowIdx, stepNum)}
+              data-history-floor-marker={`${rowIdx}:${stepNum}`}
+              data-current={isCurrent ? "true" : undefined}
+              onClick={() => {
+                if (isCurrent) {
+                  onStampFloor(rowIdx, stepNum);
+                  return;
+                }
+                onJumpToStep(rowIdx, stepNum);
+              }}
               className={cn(
                 "group absolute z-10 flex -translate-x-1/2 items-center justify-center transition",
                 isPast
@@ -1814,14 +1856,18 @@ function Track({
                 width: `${NODE_SPRITE_PX}px`,
                 height: `${NODE_SPRITE_PX}px`,
               }}
-              aria-label={playback.floorStep
-                .replace("{act}", actIntroLabel(tables, rowIdx))
-                .replace(
-                  "{floor}",
-                  formatGameTemplate(gameUi(tables, "floor", "Floor {FloorNum}"), {
-                    FloorNum: stepNum,
-                  }),
-                )}
+              aria-label={
+                isCurrent
+                  ? playback.stampFloor
+                  : playback.floorStep
+                    .replace("{act}", actIntroLabel(tables, rowIdx))
+                    .replace(
+                      "{floor}",
+                      formatGameTemplate(gameUi(tables, "floor", "Floor {FloorNum}"), {
+                        FloorNum: stepNum,
+                      }),
+                    )
+              }
               aria-current={isCurrent ? "true" : undefined}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}

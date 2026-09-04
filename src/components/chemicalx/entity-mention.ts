@@ -34,6 +34,8 @@ function findSuggestionMatch(config: {
 
   const query = match[1];
   if (query.includes("{") || query.includes("}")) return null;
+  // History Course floor mentions own `#45`. Leave that trigger alone.
+  if (query.startsWith("#")) return null;
 
   return {
     range: {
