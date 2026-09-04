@@ -309,14 +309,15 @@ export function AssetFocusChrome({
   if (!selected) return null;
   return (
     <div
-      className="absolute left-1/2 top-full z-20 mt-1 flex -translate-x-1/2 flex-col items-center gap-1"
+      className="absolute left-1/2 top-full z-20 mt-1 flex w-max max-w-[calc(100vw-1.5rem)] -translate-x-1/2 flex-col items-center gap-1"
       data-asset-chrome
+      data-pagestorm-asset-chrome
       onMouseDown={(event) => event.stopPropagation()}
     >
       {onAlign || extra ? (
-        <div className="flex flex-wrap items-center justify-center gap-1">
+        <div className="flex w-max max-w-full flex-wrap items-center justify-center gap-1 sm:flex-nowrap">
           {onAlign ? (
-            <div className="inline-flex items-center gap-0.5 rounded-md border border-border bg-card px-1 py-0.5 shadow-md">
+            <div className="inline-flex shrink-0 items-center gap-0.5 whitespace-nowrap rounded-md border border-border bg-card px-1 py-0.5 shadow-md">
               <AlignButtons value={align} onChange={onAlign} />
             </div>
           ) : null}
@@ -381,7 +382,11 @@ export function CardPresentationPicker({
   const copy = serviceMessages[serviceLocale].pagestorm;
   const betaLabel = serviceMessages[serviceLocale].codex.cardsView.toggles.betaArt;
   return (
-    <div className="flex flex-wrap items-center justify-center gap-1" data-asset-chrome>
+    <div
+      className="flex flex-nowrap items-center justify-center gap-1 max-sm:flex-wrap"
+      data-asset-chrome
+      data-pagestorm-presentation
+    >
       {([
         ["art", copy.presentationArt],
         ["tile", copy.presentationTile],
@@ -390,7 +395,7 @@ export function CardPresentationPicker({
         <GameUiHoverTip key={id} label={label} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
           <button
             type="button"
-            className={mockButtonClass(value === id)}
+            className={`${mockButtonClass(value === id)} whitespace-nowrap`}
             onClick={() => onChange(id)}
           >
             {label}
@@ -403,6 +408,8 @@ export function CardPresentationPicker({
           onCheckedChange={onBeta}
           label={betaLabel}
           size="sm"
+          className="max-w-none shrink-0"
+          labelClassName="min-w-max whitespace-nowrap"
         />
       ) : null}
     </div>
@@ -528,7 +535,10 @@ export function GameAssetFigure({
 
   return (
     <div className={alignRowClass(align)}>
-      <div className="relative inline-block max-w-full" style={{ width: px, maxWidth: "100%" }}>
+      <div
+        className="relative inline-block max-w-full overflow-visible"
+        style={{ width: px, maxWidth: "100%" }}
+      >
         <div className="relative max-w-full">
           {figure}
           {mode === "edit" ? (
@@ -552,7 +562,7 @@ export function GameAssetFigure({
             onAlign={onAlign}
             extra={
               asset.kind === "card" && onPresentation && onBeta ? (
-                <div className="inline-flex items-center gap-0.5 rounded-md border border-border bg-card px-1 py-0.5 shadow-md">
+                <div className="inline-flex max-w-full items-center gap-0.5 rounded-md border border-border bg-card px-1 py-0.5 shadow-md sm:shrink-0">
                   <CardPresentationPicker
                     value={presentation}
                     beta={beta}

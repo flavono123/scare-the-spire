@@ -151,6 +151,11 @@ const LANDSCAPE_ART_ASPECT: Record<"event" | "epoch", number> = {
   epoch: 810 / 500,
 };
 
+/** Height / width for card portrait art boxes. Matches existing Pagestorm card-art inserts. */
+export const CARD_ART_BOX_ASPECT = 1.56;
+export const WIDE_ART_MAX_WIDTH = 1080;
+export const WIDE_ART_MIN_WIDTH = 200;
+
 export function isLandscapeArtKind(kind: MockAssetKind): kind is "event" | "epoch" {
   return kind === "event" || kind === "epoch";
 }
@@ -174,7 +179,7 @@ export function defaultAssetBox(
       return { width, height: Math.round(width * (422 / 300)) };
     }
     const width = 128;
-    return { width, height: Math.round(width * 1.56) };
+    return { width, height: Math.round(width * CARD_ART_BOX_ASPECT) };
   }
   if (isLandscapeArtKind(kind)) {
     const width = 720;
@@ -206,9 +211,9 @@ export function clampAssetWidth(
   if (kind === "card") {
     if (presentation === "tiny") return clampPx(width, 24, 96);
     if (presentation === "tile") return clampPx(width, 72, 380);
-    return clampPx(width, 72, 240);
+    return clampPx(width, 72, WIDE_ART_MAX_WIDTH);
   }
-  if (isLandscapeArtKind(kind)) return clampPx(width, 200, 1080);
+  if (isLandscapeArtKind(kind)) return clampPx(width, WIDE_ART_MIN_WIDTH, WIDE_ART_MAX_WIDTH);
   return clampPx(width, 40, 128);
 }
 
@@ -220,11 +225,19 @@ export function clampAssetHeight(
   if (kind === "card") {
     if (presentation === "tiny") return clampPx(height, 24, 96);
     if (presentation === "tile") return clampPx(height, 96, 534);
-    return clampPx(height, 64, 400);
+    return clampPx(
+      height,
+      Math.round(72 * CARD_ART_BOX_ASPECT),
+      Math.round(WIDE_ART_MAX_WIDTH * CARD_ART_BOX_ASPECT),
+    );
   }
   if (isLandscapeArtKind(kind)) {
     const aspect = LANDSCAPE_ART_ASPECT[kind];
-    return clampPx(height, Math.round(200 / aspect), Math.round(1080 / aspect));
+    return clampPx(
+      height,
+      Math.round(WIDE_ART_MIN_WIDTH / aspect),
+      Math.round(WIDE_ART_MAX_WIDTH / aspect),
+    );
   }
   return clampAssetWidth(kind, height, presentation);
 }
@@ -240,6 +253,12 @@ export function sizedAssetBox(
     return {
       width: nextWidth,
       height: Math.round(nextWidth / LANDSCAPE_ART_ASPECT[kind]),
+    };
+  }
+  if (kind === "card" && presentation === "art") {
+    return {
+      width: nextWidth,
+      height: Math.round(nextWidth * CARD_ART_BOX_ASPECT),
     };
   }
   return {

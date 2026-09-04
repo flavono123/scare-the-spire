@@ -1,4 +1,10 @@
 import assert from "node:assert/strict";
+import {
+  CARD_ART_BOX_ASPECT,
+  clampAssetWidth,
+  sizedAssetBox,
+  WIDE_ART_MAX_WIDTH,
+} from "../src/components/pagestorm/sample";
 import { pagestormFirstAssetThumb, type PagestormDoc } from "../src/lib/pagestorm";
 
 const doc: PagestormDoc = {
@@ -38,5 +44,14 @@ assert.ok(tileOnly);
 assert.equal(tileOnly.kind, "card");
 
 assert.equal(pagestormFirstAssetThumb({ type: "doc", content: [] }), null);
+
+assert.equal(clampAssetWidth("card", 2000, "art"), WIDE_ART_MAX_WIDTH);
+assert.equal(clampAssetWidth("event", 2000, "art"), WIDE_ART_MAX_WIDTH);
+assert.equal(clampAssetWidth("epoch", 2000, "art"), WIDE_ART_MAX_WIDTH);
+assert.equal(clampAssetWidth("card", 2000, "tile"), 380);
+
+const wideCardArt = sizedAssetBox("card", 1080, 10, "art");
+assert.equal(wideCardArt.width, WIDE_ART_MAX_WIDTH);
+assert.equal(wideCardArt.height, Math.round(WIDE_ART_MAX_WIDTH * CARD_ART_BOX_ASPECT));
 
 console.log("pagestorm.spec.ts: ok");
