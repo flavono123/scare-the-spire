@@ -1,12 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { DecisionsDecisionsPoolPicker } from "@/components/decisions-decisions/decisions-decisions-pool-picker";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { ServiceModalFrame } from "@/components/service-modal-frame";
+import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
+import { useAuth } from "@/hooks/use-auth";
 import { useGameLocale } from "@/hooks/use-game-locale";
+import {
+  loadPagestormToyboxSnapshot,
+  usePagestormToyboxPicker,
+} from "@/hooks/use-pagestorm-toybox";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
   emptyFilterDims,
@@ -21,15 +28,16 @@ import {
   localizeCodexNavItems,
   sts2NavItems,
 } from "@/lib/site-nav-items";
-import { PAGESTORM_HREF } from "@/lib/pagestorm";
+import {
+  isPagestormToyboxPickerHref,
+  stripPagestormToyboxHref,
+  type PagestormToyboxPick,
+  type PagestormToyboxSnapshot,
+} from "@/lib/pagestorm-toybox";
 import { serviceMessages } from "@/messages/service";
 import { mockButtonClass } from "./figures";
 import { NavTokenChip } from "./nav-tokens";
 import type { CardPresentation } from "./sample";
-import {
-  filterToyboxPosts,
-  type PagestormToyboxPost,
-} from "./toybox-samples";
 
 const LABEL_TO_MAJOR: Partial<Record<CodexLabelKey, DecisionsPoolMajor>> = {
   characters: "character",
@@ -127,24 +135,47 @@ export function ToyboxPickerModal({
 }: {
   initialServiceHref: string | null;
   onClose: () => void;
-  onInsert: (post: PagestormToyboxPost) => void;
+  onInsert: (post: PagestormToyboxSnapshot) => void;
 }) {
   const serviceLocale = useServiceLocale();
-  const gameLocale = useGameLocale();
+  const { userId } = useAuth();
   const copy = serviceMessages[serviceLocale].pagestorm;
-  const toyboxItems = useMemo(
-    () => getToyBoxNavItems({ serviceLocale, gameLocale }).filter(
-      (item) => !item.href.startsWith("/dev") && item.href !== PAGESTORM_HREF,
-    ),
-    [gameLocale, serviceLocale],
-  );
+  const toyboxItems = useToyboxNavItems();
   const [serviceHref, setServiceHref] = useState<string | null>(initialServiceHref);
   const [query, setQuery] = useState("");
   const [mineOnly, setMineOnly] = useState(false);
+  const [pickingId, setPickingId] = useState<string | null>(null);
+  const [insertFailed, setInsertFailed] = useState(false);
+  const pickingRef = useRef(false);
+  const { picks, loading, loadingMore, hasMore, unavailable, loadMore } =
+    usePagestormToyboxPicker(serviceHref);
   const posts = useMemo(() => {
-    const matched = filterToyboxPosts({ serviceHref, query });
-    return mineOnly ? matched.filter((post) => post.own) : matched;
-  }, [mineOnly, query, serviceHref]);
+    const needle = query.trim().toLowerCase();
+    return picks.filter((post) => {
+      if (mineOnly && (!userId || post.userId !== userId)) return false;
+      if (!needle) return true;
+      return (
+        post.title.toLowerCase().includes(needle)
+        || post.nickname.toLowerCase().includes(needle)
+      );
+    });
+  }, [mineOnly, picks, query, userId]);
+
+  async function insertLivePost(post: PagestormToyboxPick) {
+    const key = `${post.service}:${post.id}`;
+    if (pickingRef.current) return;
+    pickingRef.current = true;
+    setPickingId(key);
+    setInsertFailed(false);
+    try {
+      onInsert(await loadPagestormToyboxSnapshot(post));
+    } catch {
+      setInsertFailed(true);
+    } finally {
+      pickingRef.current = false;
+      setPickingId(null);
+    }
+  }
 
   return (
     <ServiceModalFrame
@@ -155,14 +186,17 @@ export function ToyboxPickerModal({
       panelClassName="max-h-[min(92dvh,52rem)] w-full max-w-2xl"
     >
       <div className="flex flex-wrap gap-1.5 pb-3">
-        {toyboxItems.map((item) => (
-          <NavTokenChip
-            key={item.href}
-            item={item}
-            pressed={serviceHref === item.href}
-            onClick={() => setServiceHref(serviceHref === item.href ? null : item.href)}
-          />
-        ))}
+        {toyboxItems.map((item) => {
+          const path = stripPagestormToyboxHref(item.href);
+          return (
+            <NavTokenChip
+              key={path}
+              item={item}
+              pressed={serviceHref === path}
+              onClick={() => setServiceHref(serviceHref === path ? null : path)}
+            />
+          );
+        })}
       </div>
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <input
@@ -181,25 +215,47 @@ export function ToyboxPickerModal({
         </button>
       </div>
       <GameScrollArea className="max-h-[min(60dvh,32rem)]">
-        {posts.length === 0 ? (
+        {insertFailed ? (
+          <StorageUnavailableNotice title={copy.unavailableTitle} compact className="mb-3" />
+        ) : null}
+        {unavailable ? (
+          <StorageUnavailableNotice title={copy.unavailableTitle} />
+        ) : loading ? (
+          <ContentLoadingNotice label={copy.loading} />
+        ) : posts.length === 0 ? (
           <p className="px-2 py-8 text-center text-sm text-muted-foreground">{copy.emptyToybox}</p>
         ) : (
           <ul className="space-y-2">
             {posts.map((post) => (
-              <li key={post.id}>
+              <li key={`${post.service}:${post.id}`}>
                 <button
                   type="button"
                   className="flex w-full flex-col gap-1 rounded-lg border border-border px-3 py-2 text-left hover:border-primary/50"
-                  onClick={() => onInsert(post)}
+                  disabled={pickingId !== null}
+                  onClick={() => { void insertLivePost(post); }}
                 >
                   <span className="flex items-center gap-2">
-                    <span className="font-game-title text-sm">{post.title}</span>
-                    {post.own ? <OwnPostMark /> : null}
+                    <span className="font-game-title text-sm">{post.title || post.nickname}</span>
+                    {userId && post.userId === userId ? <OwnPostMark /> : null}
                   </span>
-                  <span className="line-clamp-2 text-xs text-muted-foreground">{post.body}</span>
+                  {post.nickname ? (
+                    <span className="line-clamp-2 text-xs text-muted-foreground">{post.nickname}</span>
+                  ) : null}
                 </button>
               </li>
             ))}
+            {hasMore ? (
+              <li>
+                <button
+                  type="button"
+                  className="w-full rounded-md border border-border px-3 py-2 text-xs text-muted-foreground hover:border-primary/40"
+                  disabled={loadingMore}
+                  onClick={() => { void loadMore(); }}
+                >
+                  {loadingMore ? copy.loadingMore : copy.loadMore}
+                </button>
+              </li>
+            ) : null}
           </ul>
         )}
       </GameScrollArea>
@@ -221,7 +277,7 @@ export function useToyboxNavItems(): NavDropdownItem[] {
   const gameLocale = useGameLocale();
   return useMemo(
     () => getToyBoxNavItems({ serviceLocale, gameLocale }).filter(
-      (item) => !item.href.startsWith("/dev") && item.href !== PAGESTORM_HREF,
+      (item) => isPagestormToyboxPickerHref(item.href),
     ),
     [gameLocale, serviceLocale],
   );

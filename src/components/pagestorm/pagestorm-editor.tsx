@@ -41,7 +41,10 @@ import {
 } from "./tiptap-nodes";
 import { AssetRowNode, PagestormAssetLayout } from "./asset-layout";
 import { PagestormStickyToolbar } from "./toolbar";
-import type { PagestormToyboxPost } from "./toybox-samples";
+import {
+  pagestormToyboxNodeAttrs,
+  type PagestormToyboxSnapshot,
+} from "@/lib/pagestorm-toybox";
 import "./pagestorm-editor.css";
 
 export type PagestormEditorSaveInput = {
@@ -219,20 +222,13 @@ export function PagestormEditor({
     current.chain().selectNodeBackward().run();
   }
 
-  function insertToybox(post: PagestormToyboxPost) {
+  function insertToybox(snapshot: PagestormToyboxSnapshot) {
     const current = editorRef.current;
     if (!current) return;
     current.chain().focus().insertContent([
       {
         type: "toyboxEmbed",
-        attrs: {
-          postId: post.id,
-          service: post.service,
-          align: "center",
-          linked: true,
-          width: 576,
-          height: post.service === "/this-or-that" ? 320 : 280,
-        },
+        attrs: pagestormToyboxNodeAttrs(snapshot),
       },
       { type: "paragraph" },
     ]).run();

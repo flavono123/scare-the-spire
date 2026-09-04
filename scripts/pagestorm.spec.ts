@@ -18,6 +18,16 @@ import {
   pagestormIndexThumb,
   type PagestormDoc,
 } from "../src/lib/pagestorm";
+import {
+  isPagestormToyboxPickerHref,
+  pagestormToyboxEmbedHeight,
+  pagestormToyboxFederatedFromHref,
+  pagestormToyboxPickerMode,
+  pagestormToyboxJsonArray,
+  pagestormToyboxNodeAttrs,
+  pagestormToyboxPostHref,
+  pagestormToyboxServiceHref,
+} from "../src/lib/pagestorm-toybox";
 
 const doc: PagestormDoc = {
   type: "doc",
@@ -158,5 +168,49 @@ const nestedArt = pagestormFirstAssetThumb({
 assert.ok(nestedArt);
 assert.equal(nestedArt.presentation, "art");
 assert.equal(nestedArt.imageUrl, PAGESTORM_BACKGROUND_SRC);
+
+assert.equal(pagestormToyboxFederatedFromHref("/this-or-that"), "this_or_that");
+assert.equal(pagestormToyboxFederatedFromHref("/en/decisions-decisions"), "decisions_decisions");
+assert.equal(pagestormToyboxFederatedFromHref("/history-course"), null);
+assert.equal(pagestormToyboxPickerMode(null), "all");
+assert.equal(pagestormToyboxPickerMode("/defragment"), "all");
+assert.equal(pagestormToyboxPickerMode("/history-course"), "unsupported");
+assert.equal(isPagestormToyboxPickerHref("/chemical-x"), true);
+assert.equal(isPagestormToyboxPickerHref("/history-course"), false);
+assert.equal(isPagestormToyboxPickerHref("/pagestorm"), false);
+assert.equal(pagestormToyboxServiceHref("this_or_that"), "/this-or-that");
+assert.equal(pagestormToyboxEmbedHeight("/this-or-that"), 320);
+assert.equal(pagestormToyboxEmbedHeight("/chemical-x"), 148);
+assert.equal(
+  pagestormToyboxPostHref("this_or_that", "post-1", "ko", "kor"),
+  "/this-or-that/post-1",
+);
+assert.equal(
+  pagestormToyboxPostHref("/this-or-that", "post-1", "ko", "kor"),
+  "/this-or-that/post-1",
+);
+assert.deepEqual(
+  pagestormToyboxJsonArray('[{"id":"a"}]'),
+  [{ id: "a" }],
+);
+const snapshotAttrs = pagestormToyboxNodeAttrs({
+  id: "live-1",
+  service: "/this-or-that",
+  userId: "u1",
+  title: "높이맞음?",
+  nickname: "디황",
+  leftType: "card",
+  leftId: "strike",
+  rightType: "card",
+  rightId: "defend",
+  rows: [],
+  placements: [],
+  pool: [],
+  tokenSrc: "/images/sts2/relics/choices_paradox.webp",
+});
+assert.equal(snapshotAttrs.postId, "live-1");
+assert.equal(snapshotAttrs.leftType, "card");
+assert.equal(snapshotAttrs.height, 320);
+assert.equal(snapshotAttrs.rowsJson, "[]");
 
 console.log("pagestorm.spec.ts: ok");

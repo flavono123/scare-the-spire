@@ -87,23 +87,3 @@ export const PAGESTORM_TOYBOX_POSTS: readonly PagestormToyboxPost[] = [
 export function findToyboxPost(id: string): PagestormToyboxPost | undefined {
   return PAGESTORM_TOYBOX_POSTS.find((post) => post.id === id);
 }
-
-export function filterToyboxPosts(options: {
-  serviceHref?: string | null;
-  query: string;
-}): PagestormToyboxPost[] {
-  const needle = options.query.trim().toLowerCase();
-  const servicePath = options.serviceHref
-    ? options.serviceHref.replace(/^\/(?:en)(?=\/)/, "")
-    : null;
-  return [...PAGESTORM_TOYBOX_POSTS]
-    .filter((post) => {
-      if (servicePath && post.service !== servicePath) return false;
-      if (!needle) return true;
-      return (
-        post.title.toLowerCase().includes(needle)
-        || post.body.toLowerCase().includes(needle)
-      );
-    })
-    .sort((left, right) => Number(right.own) - Number(left.own));
-}

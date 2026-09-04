@@ -19,6 +19,7 @@ import {
   type MockGameAsset,
   type MockOgBookmark,
 } from "./sample";
+import { pagestormToyboxJsonArray } from "@/lib/pagestorm-toybox";
 import { ToyboxEmbedFigure } from "./toybox-embed";
 import { PAGESTORM_EMBED_NODE_NAMES } from "./asset-layout";
 
@@ -203,6 +204,17 @@ function ToyboxView({ node, updateAttributes, selected }: NodeViewProps) {
       <div className={selected ? "rounded-md ring-1 ring-primary/70" : undefined}>
         <ToyboxEmbedFigure
           postId={String(node.attrs.postId ?? "")}
+          service={String(node.attrs.service ?? "")}
+          title={String(node.attrs.title ?? "")}
+          nickname={String(node.attrs.nickname ?? "")}
+          leftType={String(node.attrs.leftType ?? "")}
+          leftId={String(node.attrs.leftId ?? "")}
+          rightType={String(node.attrs.rightType ?? "")}
+          rightId={String(node.attrs.rightId ?? "")}
+          rows={pagestormToyboxJsonArray(node.attrs.rowsJson ?? node.attrs.rows)}
+          placements={pagestormToyboxJsonArray(node.attrs.placementsJson ?? node.attrs.placements)}
+          pool={pagestormToyboxJsonArray(node.attrs.poolJson ?? node.attrs.pool)}
+          tokenSrc={String(node.attrs.tokenSrc ?? "")}
           align={align}
           mode={mode}
           selected={selected}
@@ -327,6 +339,16 @@ export const ToyboxEmbedNode = Node.create({
     return {
       postId: { default: "" },
       service: { default: "" },
+      title: { default: "" },
+      nickname: { default: "" },
+      leftType: { default: "" },
+      leftId: { default: "" },
+      rightType: { default: "" },
+      rightId: { default: "" },
+      rowsJson: { default: "[]" },
+      placementsJson: { default: "[]" },
+      poolJson: { default: "[]" },
+      tokenSrc: { default: "" },
       align: { default: "center" },
       linked: { default: true },
       width: { default: 576 },

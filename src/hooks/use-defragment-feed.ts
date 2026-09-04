@@ -29,9 +29,10 @@ export interface UseDefragmentFeedReturn {
 export function useDefragmentFeed(
   sort: ToyboxFeedSort = DEFAULT_TOYBOX_FEED_SORT,
   service: DefragmentFederatedService | null = null,
+  enabled = true,
 ): UseDefragmentFeedReturn {
   const [items, setItems] = useState<DefragmentFeedItem[]>([]);
-  const [loading, setLoading] = useState(supabaseEnabled);
+  const [loading, setLoading] = useState(supabaseEnabled && enabled);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [unavailable, setUnavailable] = useState(!supabaseEnabled);
@@ -39,7 +40,16 @@ export function useDefragmentFeed(
   const cursorRef = useRef<ToyboxFeedCursor | null>(null);
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
+    if (!supabaseEnabled || !enabled) {
+      cursorRef.current = null;
+      loadingMoreRef.current = false;
+      setItems([]);
+      setHasMore(false);
+      setLoadingMore(false);
+      setLoading(false);
+      setUnavailable(!supabaseEnabled);
+      return;
+    }
     let cancelled = false;
     cursorRef.current = null;
     loadingMoreRef.current = false;
@@ -68,10 +78,10 @@ export function useDefragmentFeed(
     return () => {
       cancelled = true;
     };
-  }, [service, sort]);
+  }, [enabled, service, sort]);
 
   const loadMore = useCallback(async () => {
-    if (!supabaseEnabled || loadingMoreRef.current || !hasMore) return;
+    if (!enabled || !supabaseEnabled || loadingMoreRef.current || !hasMore) return;
     const cursor = cursorRef.current;
     if (!cursor) return;
 
@@ -101,7 +111,7 @@ export function useDefragmentFeed(
       loadingMoreRef.current = false;
       setLoadingMore(false);
     }
-  }, [hasMore, service, sort]);
+  }, [enabled, hasMore, service, sort]);
 
   const prependItem = useCallback((item: DefragmentFeedItem) => {
     setItems((current) => {
