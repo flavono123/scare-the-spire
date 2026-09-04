@@ -317,12 +317,15 @@ export const PagestormAssetLayout = Extension.create({
             const boxEl = (dom.querySelector("[data-pagestorm-asset-box]") ?? dom);
             const rect = boxEl.getBoundingClientRect();
             const host = hostEl.getBoundingClientRect();
+            const pad = 10;
             hint.dataset.zone = state.zone;
             hint.style.display = "block";
-            hint.style.top = `${rect.top - host.top + hostEl.scrollTop}px`;
-            hint.style.left = `${rect.left - host.left + hostEl.scrollLeft}px`;
-            hint.style.width = `${rect.width}px`;
-            hint.style.height = `${rect.height}px`;
+            hint.style.overflow = "visible";
+            hint.style.padding = `${pad}px`;
+            hint.style.top = `${rect.top - host.top + hostEl.scrollTop - pad}px`;
+            hint.style.left = `${rect.left - host.left + hostEl.scrollLeft - pad}px`;
+            hint.style.width = `${rect.width + pad * 2}px`;
+            hint.style.height = `${rect.height + pad * 2}px`;
           };
           return {
             update: paint,

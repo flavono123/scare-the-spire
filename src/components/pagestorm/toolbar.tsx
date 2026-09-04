@@ -232,13 +232,13 @@ export function PagestormFormatChrome({
       <div className="flex flex-wrap items-center gap-2">
         <PickerNavDropdown
           icon="/images/sts2/icons/app_icon.png"
-          alt={editorCopy.imageInsert}
+          alt={editorCopy.imageInsert.replace("{name}", editorCopy.assetSection)}
           items={compendiumItems}
           onPick={onCompendium}
         />
         <PickerNavDropdown
           icon="/images/sts2/relics/toy_box.webp"
-          alt={editorCopy.imageInsert}
+          alt={editorCopy.imageInsert.replace("{name}", editorCopy.toyboxSection)}
           items={toyboxItems}
           variant="toyBox"
           onPick={onToybox}
