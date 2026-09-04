@@ -383,7 +383,7 @@ export function CardPresentationPicker({
   const betaLabel = serviceMessages[serviceLocale].codex.cardsView.toggles.betaArt;
   return (
     <div
-      className="flex flex-nowrap items-center justify-center gap-1 max-sm:flex-wrap"
+      className="flex flex-nowrap items-center justify-center gap-1 whitespace-nowrap"
       data-asset-chrome
       data-pagestorm-presentation
     >
@@ -536,7 +536,9 @@ export function GameAssetFigure({
   return (
     <div className={alignRowClass(align)}>
       <div
-        className="relative inline-block max-w-full overflow-visible"
+        className={`relative inline-block max-w-full overflow-visible ${
+          selected ? "rounded-md ring-1 ring-primary/70" : ""
+        }`}
         style={{ width: px, maxWidth: "100%" }}
       >
         <div className="relative max-w-full">

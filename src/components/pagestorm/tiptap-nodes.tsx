@@ -101,34 +101,32 @@ function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
   const height = asWidth(node.attrs.height, fallback.height);
   return (
     <NodeViewWrapper>
-      <div className={selected ? "rounded-md ring-1 ring-primary/70" : undefined}>
-        <GameAssetFigure
-          asset={asset}
-          align={align}
-          mode={mode}
-          selected={selected}
-          linked={linked}
-          width={width}
-          height={height}
-          presentation={presentation}
-          beta={beta}
-          card={entity?.cardData}
-          entity={entity}
-          onResize={(size) => updateAttributes({ width: size.width, height: size.height })}
-          onLinked={(next) => updateAttributes({ linked: next })}
-          onAlign={(next) => updateAttributes({ align: next })}
-          onPresentation={(next) => {
-            const box = defaultAssetBox(asset.kind, next);
-            updateAttributes({
-              presentation: next,
-              width: box.width,
-              height: box.height,
-              beta: next === "tiny" ? false : beta,
-            });
-          }}
-          onBeta={(next) => updateAttributes({ beta: next })}
-        />
-      </div>
+      <GameAssetFigure
+        asset={asset}
+        align={align}
+        mode={mode}
+        selected={selected}
+        linked={linked}
+        width={width}
+        height={height}
+        presentation={presentation}
+        beta={beta}
+        card={entity?.cardData}
+        entity={entity}
+        onResize={(size) => updateAttributes({ width: size.width, height: size.height })}
+        onLinked={(next) => updateAttributes({ linked: next })}
+        onAlign={(next) => updateAttributes({ align: next })}
+        onPresentation={(next) => {
+          const box = defaultAssetBox(asset.kind, next);
+          updateAttributes({
+            presentation: next,
+            width: box.width,
+            height: box.height,
+            beta: next === "tiny" ? false : beta,
+          });
+        }}
+        onBeta={(next) => updateAttributes({ beta: next })}
+      />
     </NodeViewWrapper>
   );
 }
