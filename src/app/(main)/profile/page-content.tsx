@@ -9,11 +9,14 @@ import { buildPaletteSubjects, subjectsForKind } from "@/lib/dev-palette-subject
 import { getEncounterMonsterIds } from "@/lib/encounter-compositions";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
+import {
+  DEFAULT_PROFILE_CHARACTER_NICKNAMES,
+  isProfileCharacterNicknameId,
+} from "@/lib/profile-character-nicknames";
 import { serviceMessages } from "@/messages/service";
 import ProfilePage, {
   type BossChoice,
   type CharacterChoice,
-  type ProfileNicknameLocale,
 } from "./profile-page";
 
 export async function generateProfileMetadata(
@@ -31,29 +34,6 @@ export async function generateProfileMetadata(
     },
   };
 }
-
-const CHARACTER_NICKNAMES: Record<string, Record<ProfileNicknameLocale, readonly string[]>> = {
-  IRONCLAD: {
-    ko: ["아클단", "아평", "아이언클래스", "아이언클레임", "아이돌클라스", "아장연"],
-    en: ["Clad", "The Clad", "Ironclad"],
-  },
-  SILENT: {
-    ko: ["사일단", "사평", "사장연"],
-    en: ["Silent", "The Silent", "Shiv Silent"],
-  },
-  REGENT: {
-    ko: ["리황", "리평"],
-    en: ["Regent", "Reggie", "King Reggie"],
-  },
-  NECROBINDER: {
-    ko: ["네바", "네크로맨서", "네평", "골골맘", "네크단"],
-    en: ["Necro", "Necrobinder", "Necro Binder"],
-  },
-  DEFECT: {
-    ko: ["디평", "디펙터", "디황"],
-    en: ["Defect", "The Defect", "Orb Defect"],
-  },
-};
 
 export async function renderProfilePage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
@@ -111,10 +91,12 @@ function mapCharacter(character: CodexCharacter): CharacterChoice {
     label: character.name,
     iconUrl: character.iconUrl,
     fallbackImageUrl: character.combatImageUrl,
-    nicknameOptions: CHARACTER_NICKNAMES[character.id] ?? {
-      ko: [character.name],
-      en: [character.id],
-    },
+    nicknameOptions: isProfileCharacterNicknameId(character.id)
+      ? DEFAULT_PROFILE_CHARACTER_NICKNAMES[character.id]
+      : {
+          ko: [character.name],
+          en: [character.id],
+        },
     spineAsset: character.spineAsset,
   };
 }

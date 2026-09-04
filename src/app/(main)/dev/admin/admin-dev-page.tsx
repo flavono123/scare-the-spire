@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { AdminActivityChart } from "@/components/dev/admin-activity-chart";
+import { AdminProfileNicknames } from "@/components/dev/admin-profile-nicknames";
 import { AdminServiceFilter } from "@/components/dev/admin-service-filter";
 import type { PostBlock } from "@/lib/chemical-types";
 import type {
@@ -38,6 +39,16 @@ import { COMMENT_MAX_CHARS } from "@/lib/content-limits";
 import { historyRunFloorPlainText } from "@/lib/history-run-floor";
 import { historyRunPlainText } from "@/lib/history-run-reference";
 import { devToolsEnabled } from "@/lib/dev-tools";
+import {
+  DEFAULT_PROFILE_CHARACTER_NICKNAMES,
+  PROFILE_CHARACTER_NICKNAME_POOLS_TABLE,
+  isMissingProfileCharacterNicknamePoolsTable,
+  mergeNicknamePools,
+  nicknamePoolRowsFromPools,
+  parseNicknamePoolRows,
+  parseNicknamePoolsFromFormData,
+  type ProfileCharacterNicknamePools,
+} from "@/lib/profile-character-nicknames";
 import { getSiteOrigin } from "@/lib/site-origin";
 import { supabase, supabaseEnabled } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
@@ -101,6 +112,13 @@ interface SupabaseResult<T> {
   data: T | null;
   error: { code?: string; message: string } | null;
   count?: number | null;
+}
+
+interface NicknamePoolState {
+  pools: ProfileCharacterNicknamePools;
+  source: "stored" | "defaults";
+  canEdit: boolean;
+  error?: string;
 }
 
 interface AdminSnapshot {
@@ -488,6 +506,106 @@ async function loadAdminSnapshot(
   return { comments, posts, metrics };
 }
 
+async function readNicknamePools(): Promise<NicknamePoolState> {
+  const admin = createInquiryAdminClient();
+  if (!admin) {
+    return {
+      pools: DEFAULT_PROFILE_CHARACTER_NICKNAMES,
+      source: "defaults",
+      canEdit: false,
+    };
+  }
+
+  try {
+    const { data, error } = await withSupabaseTimeout(
+      "admin.profile_character_nickname_pools",
+      admin
+        .from(PROFILE_CHARACTER_NICKNAME_POOLS_TABLE)
+        .select("character_id, locale, nicknames"),
+    );
+    if (error) {
+      return {
+        pools: DEFAULT_PROFILE_CHARACTER_NICKNAMES,
+        source: "defaults",
+        canEdit: true,
+        error: isMissingProfileCharacterNicknamePoolsTable(error)
+          ? "profile_character_nickname_pools 마이그레이션이 필요합니다."
+          : error.message,
+      };
+    }
+    const parsed = parseNicknamePoolRows(data);
+    return {
+      pools: mergeNicknamePools(parsed),
+      source: Object.keys(parsed).length > 0 ? "stored" : "defaults",
+      canEdit: true,
+    };
+  } catch (error) {
+    return {
+      pools: DEFAULT_PROFILE_CHARACTER_NICKNAMES,
+      source: "defaults",
+      canEdit: true,
+      error: error instanceof Error ? error.message : "Unknown Supabase error",
+    };
+  }
+}
+
+async function writeNicknamePools(pools: ProfileCharacterNicknamePools): Promise<void> {
+  const admin = createInquiryAdminClient();
+  if (!admin) throw new Error("SUPABASE_SECRET_KEY is not configured");
+
+  const { error } = await withSupabaseTimeout(
+    "admin.profile_character_nickname_pools.upsert",
+    admin
+      .from(PROFILE_CHARACTER_NICKNAME_POOLS_TABLE)
+      .upsert(
+        nicknamePoolRowsFromPools(pools).map((row) => ({
+          ...row,
+          updated_at: new Date().toISOString(),
+        })),
+        { onConflict: "character_id,locale" },
+      ),
+  );
+  if (error) throw error;
+}
+
+async function saveProfileCharacterNicknames(formData: FormData) {
+  "use server";
+
+  let result: "saved" | "error" | "invalid" = "saved";
+  try {
+    if (!devToolsEnabled()) throw new Error("Dev tools are disabled");
+    const pools = parseNicknamePoolsFromFormData(formData);
+    if (!pools) {
+      result = "invalid";
+    } else {
+      await writeNicknamePools(pools);
+      revalidatePath("/dev/admin");
+    }
+  } catch (error) {
+    console.error("Failed to save profile character nicknames", error);
+    result = "error";
+  }
+
+  redirect(`/dev/admin?nicksSave=${result}#nicks-save-result`);
+}
+
+async function resetProfileCharacterNicknames(formData: FormData) {
+  "use server";
+  void formData;
+
+  let result: "saved" | "error" = "saved";
+  try {
+    if (!devToolsEnabled()) throw new Error("Dev tools are disabled");
+    await writeNicknamePools(DEFAULT_PROFILE_CHARACTER_NICKNAMES);
+    revalidatePath("/dev/admin");
+  } catch (error) {
+    console.error("Failed to reset profile character nicknames", error);
+    result = "error";
+  }
+
+  redirect(`/dev/admin?nicksSave=${result}#nicks-save-result`);
+}
+
 async function respondToContactInquiry(formData: FormData) {
   "use server";
 
@@ -647,10 +765,12 @@ export const metadata = {
 
 export default async function SupabaseAdminPage({
   contactSaveResult,
+  nicksSaveResult,
   postService,
   commentService,
 }: {
   contactSaveResult?: "saved" | "error";
+  nicksSaveResult?: "saved" | "error" | "invalid";
   postService: AdminPostService | null;
   commentService: CommentThreadService | null;
 }) {
@@ -658,9 +778,10 @@ export default async function SupabaseAdminPage({
     notFound();
   }
 
-  const [snapshot, contactInquiries] = await Promise.all([
+  const [snapshot, contactInquiries, nicknamePools] = await Promise.all([
     loadAdminSnapshot(postService, commentService),
     readContactInquiries(),
+    readNicknamePools(),
   ]);
   const contactRows = contactInquiries?.data ?? [];
   const metrics = snapshot?.metrics.data ?? null;
@@ -679,6 +800,16 @@ export default async function SupabaseAdminPage({
           </div>
         </div>
       </div>
+
+      <AdminProfileNicknames
+        pools={nicknamePools.pools}
+        source={nicknamePools.source}
+        canEdit={nicknamePools.canEdit}
+        saveResult={nicksSaveResult}
+        error={nicknamePools.error}
+        onSave={saveProfileCharacterNicknames}
+        onReset={resetProfileCharacterNicknames}
+      />
 
       <Section
         title="문의 우편함"

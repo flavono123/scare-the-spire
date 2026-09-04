@@ -31,12 +31,17 @@ export default async function SupabaseAdminPage({ searchParams }: SupabaseAdminP
   const contactSaveResult = contactSave === "saved" || contactSave === "error"
     ? contactSave
     : undefined;
+  const nicksSave = params.nicksSave;
+  const nicksSaveResult = nicksSave === "saved" || nicksSave === "error" || nicksSave === "invalid"
+    ? nicksSave
+    : undefined;
   const posts = typeof params.posts === "string" ? params.posts : undefined;
   const comments = typeof params.comments === "string" ? params.comments : undefined;
   const { default: SupabaseAdminDevPage } = await import("./admin-dev-page");
   return (
     <SupabaseAdminDevPage
       contactSaveResult={contactSaveResult}
+      nicksSaveResult={nicksSaveResult}
       postService={isAdminPostService(posts) ? posts : null}
       commentService={isAdminCommentService(comments) ? comments : null}
     />

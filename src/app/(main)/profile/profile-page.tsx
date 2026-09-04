@@ -14,14 +14,19 @@ import {
 } from "@/components/game-ui-hover-tip";
 import Image from "@/components/ui/static-image";
 import { DuotoneCharacterToken } from "@/components/dev/duotone-character-token";
+import { useProfileCharacterNicknamePools } from "@/hooks/use-profile-character-nicknames";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import type { CodexEncounter, CodexMonster, MonsterSpineAsset } from "@/lib/codex-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
+import {
+  applyNicknamePools,
+  type ProfileNicknameLocale,
+} from "@/lib/profile-character-nicknames";
 import { resolveProfileDuotone } from "@/lib/profile-palettes";
 import { normalizeUserProfile, type UserProfile } from "@/lib/user-profile";
 import { cn } from "@/lib/utils";
 
-export type ProfileNicknameLocale = "ko" | "en";
+export type { ProfileNicknameLocale };
 
 export interface CharacterChoice {
   id: string;
@@ -75,14 +80,19 @@ export default function ProfilePage({
   nicknameLocale?: ProfileNicknameLocale;
   gameLocale: GameLocale;
 }) {
+  const liveNicknamePools = useProfileCharacterNicknamePools();
+  const charactersWithNicknames = useMemo(
+    () => liveNicknamePools ? applyNicknamePools(characters, liveNicknamePools) : characters,
+    [characters, liveNicknamePools],
+  );
   const fallbackProfile = useMemo(
     () => normalizeUserProfile({
-      nickname: getInitialNickname(characters, DEFAULTS.character, nicknameLocale, copy.fallbackNickname),
+      nickname: getInitialNickname(charactersWithNicknames, DEFAULTS.character, nicknameLocale, copy.fallbackNickname),
       characterId: DEFAULTS.character,
       avatarKind: "character",
       avatarId: DEFAULTS.character,
     }),
-    [characters, copy.fallbackNickname, nicknameLocale],
+    [charactersWithNicknames, copy.fallbackNickname, nicknameLocale],
   );
   const { profile, saveProfile } = useUserProfile(fallbackProfile);
   const [draftProfile, setDraftProfile] = useState(fallbackProfile);
@@ -107,9 +117,9 @@ export default function ProfilePage({
     }));
   }, [draftProfile.nickname, persistProfile]);
 
-  const character = findChoice(characters, draftProfile.characterId) ?? characters[0];
+  const character = findChoice(charactersWithNicknames, draftProfile.characterId) ?? charactersWithNicknames[0];
   const avatarCharacter = draftProfile.avatarKind === "character"
-    ? findChoice(characters, draftProfile.avatarId) ?? character
+    ? findChoice(charactersWithNicknames, draftProfile.avatarId) ?? character
     : null;
   const boss = draftProfile.avatarKind === "boss"
     ? findChoice(bosses, draftProfile.avatarId)
@@ -191,10 +201,10 @@ export default function ProfilePage({
               tokens={
                 <TokenPicker
                   choiceType="character"
-                  items={characters}
+                  items={charactersWithNicknames}
                   selectedId={draftProfile.avatarKind === "character" ? draftProfile.avatarId : undefined}
                   onSelect={(id) => {
-                    const nextCharacter = findChoice(characters, id);
+                    const nextCharacter = findChoice(charactersWithNicknames, id);
                     persistProfile((current) => ({
                       ...current,
                       characterId: id,
