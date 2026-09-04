@@ -3,15 +3,16 @@ import Suggestion from "@tiptap/suggestion";
 import type { SuggestionMatch, SuggestionOptions } from "@tiptap/suggestion";
 import type { ResolvedPos } from "@tiptap/pm/model";
 import { PluginKey } from "@tiptap/pm/state";
+import { matchOpenBraceKeyword } from "@/lib/rich-keyword-plain-text";
 
 export const braceKeywordSuggestionPluginKey = new PluginKey(
   "brace-keyword-suggestion",
 );
 
 /**
- * Detect the current `<displayText>{<query>` being typed (brace still open,
- * no closing `}` yet). The range covers the displayText + `{` + query so the
- * commit handler can replace the whole thing with a custom-keyword node.
+ * Detect `{<query>` or `<displayText>{<query>` while the brace is still open.
+ * The range covers the optional display text + `{` + query so the commit
+ * handler can replace the whole thing with a custom-keyword node.
  */
 function findBraceKeywordMatch(config: {
   $position: ResolvedPos;
@@ -19,29 +20,24 @@ function findBraceKeywordMatch(config: {
   const { $position } = config;
   const nodeBefore = $position.nodeBefore;
   if (!nodeBefore?.isText) return null;
-  const text = nodeBefore.text ?? "";
-
-  const m = text.match(/(\S+)\{([^{}\n]*)$/);
-  if (!m) return null;
-
-  const full = m[0] ?? "";
-  const query = (m[2] ?? "").trim();
+  const match = matchOpenBraceKeyword(nodeBefore.text ?? "");
+  if (!match) return null;
 
   return {
     range: {
-      from: $position.pos - full.length,
+      from: $position.pos - match.full.length,
       to: $position.pos,
     },
-    query,
-    text: full,
+    query: match.query,
+    text: match.full,
   };
 }
 
 /**
- * Suggestion plugin that opens a popup when the author types
- * `<displayText>{` — allowing them to pick which entity (card vs power etc.)
- * should resolve the keyword when the pattern is ambiguous. Selecting from
- * the popup (or typing `}`) commits the node with the selected type.
+ * Suggestion plugin that opens a popup when the author types `{query` or
+ * `<displayText>{query` — allowing them to pick which entity (card vs power
+ * etc.) should resolve the keyword when the pattern is ambiguous. Selecting
+ * from the popup (or typing `}`) commits the node with the selected type.
  */
 export const BraceKeywordSuggestion = Extension.create<{
   suggestion: Omit<SuggestionOptions, "editor">;
@@ -72,7 +68,7 @@ export const BraceKeywordSuggestion = Extension.create<{
 
 /**
  * `{query` with the brace still open. Used by 서류 작성기 so suggestion does
- * not fire on plain typing (unlike Chemical X no-trigger mention).
+ * not fire on plain typing.
  */
 export function findBracePortraitMatch(config: {
   $position: ResolvedPos;

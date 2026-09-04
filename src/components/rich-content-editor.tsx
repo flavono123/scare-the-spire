@@ -16,7 +16,6 @@ import {
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import {
   EntityMention,
-  entityMentionSuggestionPluginKey,
   entitySuggestionBase,
 } from "@/components/chemicalx/entity-mention";
 import {
@@ -48,6 +47,7 @@ import {
   buildEntityKeywordIndex,
   blocksToTiptapDocument,
   blocksToPlainText,
+  entityDisplayNames,
   entityKeywordDescription,
   matchEntities,
   normalizeKeywordLookupKey,
@@ -56,6 +56,13 @@ import {
   stripNullCharacters,
   tiptapToBlocks,
 } from "@/lib/chemical-utils";
+import {
+  buildExactKeywordIndex,
+  buildExactKeywordLabels,
+  findExactKeywordRanges,
+  inProgressKeywordRange,
+  type ExactKeywordLabel,
+} from "@/lib/rich-keyword-plain-text";
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import type { HistoryRunBlock, HistoryRunFloorBlock, PostBlock } from "@/lib/chemical-types";
@@ -78,7 +85,9 @@ import {
 // suggestion popup can handle disambiguation. Removing the padding triggers
 // the regex-based activation for unambiguous names.
 const KEYWORD_RE_SOURCE = /(\S+)\{(\S(?:[^{}\n]*\S)?)\}/.source;
+const BARE_KEYWORD_RE_SOURCE = /\{(\S(?:[^{}\n]*\S)?)\}/.source;
 const KEYWORD_AT_CURSOR_RE = /(\S+)\{(\S(?:[^{}\n]*\S)?)\}$/;
+const BARE_KEYWORD_AT_CURSOR_RE = /\{(\S(?:[^{}\n]*\S)?)\}$/;
 
 function cleanTooltipText(text: string): string {
   return text
@@ -109,11 +118,13 @@ function replaceKeywordAtCursor(
   if (!empty) return false;
 
   const textBefore = $from.parent.textBetween(0, $from.parentOffset, undefined, "\uFFFC");
-  const m = textBefore.match(KEYWORD_AT_CURSOR_RE);
+  const wrapMatch = textBefore.match(KEYWORD_AT_CURSOR_RE);
+  const bareMatch = wrapMatch ? null : textBefore.match(BARE_KEYWORD_AT_CURSOR_RE);
+  const m = wrapMatch ?? bareMatch;
   if (!m) return false;
 
   const text = sanitizeKeywordPart(m[1] ?? "");
-  const keyword = sanitizeKeywordPart(m[2] ?? "");
+  const keyword = sanitizeKeywordPart((wrapMatch ? m[2] : m[1]) ?? "");
   if (!text || !keyword) return false;
 
   const resolved = resolveKeyword(keyword);
@@ -223,6 +234,8 @@ function replaceKeywordsInEditor(
   editor.state.doc.descendants((node, pos) => {
     if (!node.isText || !node.text) return;
     const keywordRe = new RegExp(KEYWORD_RE_SOURCE, "g");
+    const bareKeywordRe = new RegExp(BARE_KEYWORD_RE_SOURCE, "g");
+    const covered = new Set<number>();
 
     for (const m of node.text.matchAll(keywordRe)) {
       if (m.index == null) continue;
@@ -234,10 +247,30 @@ function replaceKeywordsInEditor(
 
       const from = pos + m.index;
       const to = from + m[0].length;
+      for (let index = m.index; index < m.index + m[0].length; index++) {
+        covered.add(index);
+      }
       replacements.push({
         from,
         to,
         text: keywordText,
+        keyword: resolved.keyword,
+        description: resolved.description,
+        entityId: resolved.entityId,
+        entityType: resolved.entityType,
+      });
+    }
+
+    for (const m of node.text.matchAll(bareKeywordRe)) {
+      if (m.index == null || covered.has(m.index)) continue;
+
+      const keyword = sanitizeKeywordPart(m[1] ?? "");
+      if (!keyword) continue;
+      const resolved = resolveKeyword(keyword);
+      replacements.push({
+        from: pos + m.index,
+        to: pos + m.index + m[0].length,
+        text: keyword,
         keyword: resolved.keyword,
         description: resolved.description,
         entityId: resolved.entityId,
@@ -260,6 +293,66 @@ function replaceKeywordsInEditor(
     }));
   }
 
+  editor.view.dispatch(tr);
+  return true;
+}
+
+function replaceExactKeywordsInEditor(
+  editor: Editor,
+  labelsByFirst: Map<string, ExactKeywordLabel[]>,
+  resolveKeyword: (keyword: string) => KeywordResolution,
+  commitCursorToken: boolean,
+): boolean {
+  const keywordNode = editor.schema.nodes["custom-keyword"];
+  if (!keywordNode || labelsByFirst.size === 0) return false;
+
+  const cursor = editor.state.selection.from;
+  const replacements: Array<{
+    from: number;
+    to: number;
+    text: string;
+    keyword: string;
+    description: string;
+    entityId?: string;
+    entityType?: EntityType;
+  }> = [];
+
+  editor.state.doc.descendants((node, pos) => {
+    if (!node.isText || !node.text) return;
+    const skip = cursor >= pos && cursor <= pos + node.nodeSize
+      ? inProgressKeywordRange(
+        node.text,
+        cursor - pos,
+        commitCursorToken,
+      )
+      : null;
+    for (const range of findExactKeywordRanges(node.text, labelsByFirst, skip)) {
+      const resolved = resolveKeyword(range.label);
+      replacements.push({
+        from: pos + range.from,
+        to: pos + range.to,
+        text: range.label,
+        keyword: resolved.keyword,
+        description: resolved.description,
+        entityId: resolved.entityId,
+        entityType: resolved.entityType,
+      });
+    }
+  });
+
+  if (!replacements.length) return false;
+
+  const tr = editor.state.tr;
+  for (let i = replacements.length - 1; i >= 0; i--) {
+    const { from, to, text, keyword, description, entityId, entityType } = replacements[i]!;
+    tr.replaceWith(from, to, keywordNode.create({
+      text,
+      keyword,
+      description,
+      entityId: entityId ?? "",
+      entityType: entityType ?? "",
+    }));
+  }
   editor.view.dispatch(tr);
   return true;
 }
@@ -462,6 +555,11 @@ export function RichContentEditor({
   currentFloorRef.current = historyFloorMentions?.currentFloor;
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
   const keywordEntityIndex = useMemo(() => buildEntityKeywordIndex(entities), [entities]);
+  const exactKeywordIndex = useMemo(() => buildExactKeywordIndex(buildExactKeywordLabels([
+    ...entities.flatMap(entityDisplayNames),
+    ...Object.keys(KEYWORD_DESC),
+    ...Object.keys(GOLD_TERM_DESC),
+  ])), [entities]);
   const keywordDescriptionMap = useMemo(() => {
     const map = new Map<string, string>();
 
@@ -510,8 +608,11 @@ export function RichContentEditor({
     if (replaceKeywordsInEditor(editor, resolveKeyword)) {
       return;
     }
+    if (replaceExactKeywordsInEditor(editor, exactKeywordIndex, resolveKeyword, false)) {
+      return;
+    }
     syncEditorState(editor);
-  }, [resolveKeyword, syncEditorState]);
+  }, [exactKeywordIndex, resolveKeyword, syncEditorState]);
   const processEditorUpdateRef = useRef(processEditorUpdate);
   processEditorUpdateRef.current = processEditorUpdate;
 
@@ -628,111 +729,24 @@ export function RichContentEditor({
         HTMLAttributes: {
           class: "spire-gold font-semibold",
         },
-        suggestion: {
-          ...entitySuggestionBase,
-          items: ({ query }: { query: string }) => matchEntities(query, entities),
-          render: () => {
-            let renderer: ReactRenderer<MentionListRef> | null = null;
-            let popup: HTMLDivElement | null = null;
-            let stopOutsidePressListener: (() => void) | null = null;
-            const dismissPopup = () => {
-              suggestionOpenRef.current = false;
-              stopOutsidePressListener?.();
-              stopOutsidePressListener = null;
-              popup?.remove();
-              renderer?.destroy();
-              popup = null;
-              renderer = null;
-            };
-
-            return {
-              onStart: (props: SuggestionProps) => {
-                suggestionOpenRef.current = true;
-                renderer = new ReactRenderer(MentionList, {
-                  props: {
-                    items: props.items,
-                    command: (item: EntityInfo) => {
-                      props.command({
-                        id: item.id,
-                        label: item.nameKo,
-                        entityType: item.type,
-                      });
-                    },
-                  },
-                  editor: props.editor,
-                });
-
-                popup = document.createElement("div");
-                popup.style.position = "fixed";
-                popup.style.zIndex = "100";
-                popup.dataset.richEditorSuggestionPopup = "entity";
-                popup.appendChild(renderer.element);
-                document.body.appendChild(popup);
-                stopOutsidePressListener = listenForSuggestionOutsidePress(
-                  popup,
-                  () => exitSuggestion(
-                    props.editor.view,
-                    entityMentionSuggestionPluginKey,
-                  ),
-                );
-
-                if (props.clientRect) {
-                  const rect = props.clientRect();
-                  if (rect) {
-                    popup.style.left = `${rect.left}px`;
-                    popup.style.top = `${rect.bottom + 4}px`;
-                  }
-                }
-              },
-
-              onUpdate: (props: SuggestionProps) => {
-                renderer?.updateProps({
-                  items: props.items,
-                  command: (item: EntityInfo) => {
-                    props.command({
-                      id: item.id,
-                      label: item.nameKo,
-                      entityType: item.type,
-                    });
-                  },
-                });
-
-                if (popup && props.clientRect) {
-                  const rect = props.clientRect();
-                  if (rect) {
-                    popup.style.left = `${rect.left}px`;
-                    popup.style.top = `${rect.bottom + 4}px`;
-                  }
-                }
-              },
-
-              onKeyDown: (props: SuggestionKeyDownProps) => {
-                if (props.event.key === "Escape") {
-                  dismissPopup();
-                  return true;
-                }
-                return renderer?.ref?.onKeyDown(props) ?? false;
-              },
-
-              onExit: () => {
-                dismissPopup();
-              },
-            };
-          },
-        },
+        suggestion: entitySuggestionBase,
       }),
       BraceKeywordSuggestion.configure({
         suggestion: {
           char: "",
           allowSpaces: true,
-          items: ({ query }: { query: string }) => matchEntities(query, entities),
+          items: ({ query }: { query: string }) => {
+            const trimmed = query.trim();
+            if (!trimmed) return entities.slice(0, 8);
+            return matchEntities(trimmed, entities);
+          },
           command: ({ editor: ed, range, props }) => {
             const keywordNode = ed.schema.nodes["custom-keyword"];
             if (!keywordNode) return;
             const item = props as unknown as EntityInfo;
             const rangeText = ed.state.doc.textBetween(range.from, range.to);
             const braceIdx = rangeText.indexOf("{");
-            const display = braceIdx > 0 ? rangeText.slice(0, braceIdx) : rangeText;
+            const display = braceIdx > 0 ? rangeText.slice(0, braceIdx) : item.nameKo;
             const resolved = resolveKeyword(item.nameKo);
             ed.chain().focus()
               .insertContentAt(range, {
@@ -1281,6 +1295,7 @@ export function RichContentEditor({
 
   const handleSubmit = useCallback(async () => {
     if (!editor || submitting) return;
+    replaceExactKeywordsInEditor(editor, exactKeywordIndex, resolveKeyword, true);
     const blocks = tiptapToBlocks(sanitizeRichTextJson(editor.getJSON()));
     const text = blocksToPlainText(blocks);
 
@@ -1299,7 +1314,7 @@ export function RichContentEditor({
     } finally {
       setSubmitting(false);
     }
-  }, [draftKey, editor, maxChars, minChars, onSubmit, submitting]);
+  }, [draftKey, editor, exactKeywordIndex, maxChars, minChars, onSubmit, resolveKeyword, submitting]);
 
   submitRef.current = handleSubmit;
 

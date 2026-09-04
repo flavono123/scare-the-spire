@@ -1,7 +1,6 @@
 import Mention from "@tiptap/extension-mention";
 import { ReactNodeViewRenderer } from "@tiptap/react";
 import type { SuggestionMatch } from "@tiptap/suggestion";
-import type { ResolvedPos } from "@tiptap/pm/model";
 import { PluginKey } from "@tiptap/pm/state";
 import { MentionNodeView } from "./mention-node-view";
 
@@ -10,46 +9,16 @@ export const entityMentionSuggestionPluginKey = new PluginKey(
 );
 
 /**
- * Custom findSuggestionMatch: detects the current word (2+ chars) being typed
- * without requiring a trigger character like @.
+ * Entity mentions are inserted from pickers, not from typing. Keyword
+ * suggestions open only on `{` via BraceKeywordSuggestion.
  */
-function findSuggestionMatch(config: {
-  char: string;
-  allowSpaces: boolean;
-  allowedPrefixes: string[] | null;
-  startOfLine: boolean;
-  $position: ResolvedPos;
-}): SuggestionMatch | null {
-  const { $position } = config;
-  const nodeBefore = $position.nodeBefore;
-
-  // Only match within text nodes
-  if (!nodeBefore?.isText) return null;
-
-  const text = nodeBefore.text ?? "";
-
-  // Find the last non-space word at the end of the text (trigger from 1 char, including jamo)
-  const match = text.match(/(\S+)$/);
-  if (!match) return null;
-
-  const query = match[1];
-  if (query.includes("{") || query.includes("}")) return null;
-  // History Course floor mentions own `#45`. Leave that trigger alone.
-  if (query.startsWith("#")) return null;
-
-  return {
-    range: {
-      from: $position.pos - query.length,
-      to: $position.pos,
-    },
-    query,
-    text: query,
-  };
+function findSuggestionMatch(): SuggestionMatch | null {
+  return null;
 }
 
 /**
  * Extended Mention node with entityType and entityId attrs.
- * Uses no-trigger-char suggestion matching.
+ * Typing does not open a suggestion popup.
  */
 export const EntityMention = Mention.extend({
   name: "entity-mention",
@@ -81,12 +50,9 @@ export const EntityMention = Mention.extend({
 });
 
 /**
- * Default suggestion config override with custom findSuggestionMatch.
- * The `items` and `render` must be provided by the consumer.
+ * Disable TipTap Mention's default `@` trigger without matching plain words.
  */
 export const entitySuggestionBase = {
-  // The custom matcher does not need a trigger character. An empty value also
-  // prevents TipTap Mention from persisting an invisible prefix in the node.
   pluginKey: entityMentionSuggestionPluginKey,
   char: "",
   findSuggestionMatch,
