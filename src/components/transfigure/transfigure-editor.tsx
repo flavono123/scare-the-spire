@@ -20,6 +20,7 @@ import type { SaveTransfigurePostInput } from "@/hooks/use-transfigure-posts";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
   canTransfigureCardMetadata,
+  canSubmitTransfigure,
   findTransfigureEntity,
   getTransfigureCardRarityLabel,
   getTransfigureCardKeywords,
@@ -35,6 +36,8 @@ import {
   getTransfigureUpgradeSourceText,
   isTransfigureChanged,
   isTransfigureResourceType,
+  transfigureHasExistingRefsOrDiff,
+  type TransfigureChangeCheck,
   isTransfigureTokenResourceType,
   normalizeTransfigureCardRarity,
   normalizeTransfigureCardType,
@@ -434,6 +437,94 @@ export function TransfigureEditor({
     upgradedCardKeywords,
   ]);
 
+  const buildChangeCheck = useCallback((
+    blocks: PostBlock[],
+    upgradedBlocks: PostBlock[] | null,
+  ): TransfigureChangeCheck | null => {
+    if (!selected || !sourceText || !isTransfigureResourceType(selected.type)) {
+      return null;
+    }
+    return {
+      blocks,
+      sourceText,
+      sourceBlocks,
+      transformedName,
+      sourceName: selected.nameKo,
+      transformedCost,
+      sourceCost,
+      transformedStarCost,
+      sourceStarCost,
+      transformedCardType,
+      sourceCardType,
+      transformedCardRarity,
+      sourceCardRarity,
+      upgradedBlocks,
+      sourceUpgradeText,
+      sourceUpgradeBlocks,
+      transformedUpgradeCost,
+      sourceUpgradeCost,
+      transformedUpgradeStarCost,
+      sourceUpgradeStarCost,
+      cardKeywords,
+      sourceCardKeywords,
+      upgradedCardKeywords,
+      sourceUpgradedCardKeywords,
+      showUpgrade,
+      resourceType: selected.type,
+      tokenColor,
+      tokenWax,
+    };
+  }, [
+    selected,
+    cardKeywords,
+    sourceBlocks,
+    sourceCost,
+    sourceStarCost,
+    sourceCardRarity,
+    sourceCardType,
+    sourceText,
+    sourceUpgradeBlocks,
+    sourceUpgradeCost,
+    sourceUpgradeStarCost,
+    sourceUpgradeText,
+    sourceCardKeywords,
+    sourceUpgradedCardKeywords,
+    transformedCost,
+    transformedStarCost,
+    transformedCardRarity,
+    transformedCardType,
+    transformedName,
+    transformedUpgradeCost,
+    transformedUpgradeStarCost,
+    upgradedCardKeywords,
+    showUpgrade,
+    tokenColor,
+    tokenWax,
+  ]);
+
+  const writeGateMessage = useCallback((
+    blocks: PostBlock[],
+    upgradedBlocks: PostBlock[] | null,
+  ): string | null => {
+    const changeCheck = buildChangeCheck(blocks, upgradedBlocks);
+    if (!changeCheck) {
+      return initialPost ? copy.noChanges : copy.changeRequired;
+    }
+    if (!isTransfigureChanged(changeCheck)) {
+      return initialPost ? copy.noChanges : copy.changeRequired;
+    }
+    if (!transfigureHasExistingRefsOrDiff(changeCheck)) {
+      return copy.anchorOrDiffRequired;
+    }
+    return null;
+  }, [
+    buildChangeCheck,
+    copy.anchorOrDiffRequired,
+    copy.changeRequired,
+    copy.noChanges,
+    initialPost,
+  ]);
+
   const handleSelect = useCallback((entity: EntityInfo) => {
     setSelected(entity);
     setPostTitle(copy.defaultTitle.replace("{name}", entity.nameKo));
@@ -460,46 +551,16 @@ export function TransfigureEditor({
     blocks: PostBlock[],
     upgradedBlocks: PostBlock[] | null,
   ) => {
-    if (
-      !selected
-      || !sourceText
-      || !isTransfigureResourceType(selected.type)
-      || !isTransfigureChanged({
-        blocks,
-        sourceText,
-        sourceBlocks,
-        transformedName,
-        sourceName: selected.nameKo,
-        transformedCost,
-        sourceCost,
-        transformedStarCost,
-        sourceStarCost,
-        transformedCardType,
-        sourceCardType,
-        transformedCardRarity,
-        sourceCardRarity,
-        upgradedBlocks,
-        sourceUpgradeText,
-        sourceUpgradeBlocks,
-        transformedUpgradeCost,
-        sourceUpgradeCost,
-        transformedUpgradeStarCost,
-        sourceUpgradeStarCost,
-        cardKeywords,
-        sourceCardKeywords,
-        upgradedCardKeywords,
-        sourceUpgradedCardKeywords,
-        showUpgrade,
-        resourceType: selected.type,
-        tokenColor,
-        tokenWax,
-      })
-    ) {
+    const gateMessage = writeGateMessage(blocks, upgradedBlocks);
+    if (gateMessage) {
       setSaveFeedback({
-        message: initialPost ? copy.noChanges : copy.changeRequired,
+        message: gateMessage,
         tone: "error",
       });
-      throw new Error("transfigure content is unchanged");
+      throw new Error("transfigure write validation failed");
+    }
+    if (!selected || !sourceText || !isTransfigureResourceType(selected.type)) {
+      throw new Error("transfigure write validation failed");
     }
 
     const title = postTitle.trim()
@@ -548,14 +609,12 @@ export function TransfigureEditor({
       tokenWax,
     });
   }, [
-    copy.changeRequired,
     copy.defaultNickname,
     copy.defaultTitle,
     copy.noChanges,
     gameLocale,
     hasUpdateDiff,
     hideNickname,
-    initialPost,
     onSubmit,
     postTitle,
     profileNickname,
@@ -584,69 +643,14 @@ export function TransfigureEditor({
     showUpgrade,
     tokenColor,
     tokenWax,
+    writeGateMessage,
   ]);
   const canSubmitBlocks = useCallback(
-    (blocks: PostBlock[], upgradedBlocks: PostBlock[] | null) => (
-      sourceText != null
-      && selected != null
-      && isTransfigureChanged({
-        blocks,
-        sourceText,
-        sourceBlocks,
-        transformedName,
-        sourceName: selected.nameKo,
-        transformedCost,
-        sourceCost,
-        transformedStarCost,
-        sourceStarCost,
-        transformedCardType,
-        sourceCardType,
-        transformedCardRarity,
-        sourceCardRarity,
-        upgradedBlocks,
-        sourceUpgradeText,
-        sourceUpgradeBlocks,
-        transformedUpgradeCost,
-        sourceUpgradeCost,
-        transformedUpgradeStarCost,
-        sourceUpgradeStarCost,
-        cardKeywords,
-        sourceCardKeywords,
-        upgradedCardKeywords,
-        sourceUpgradedCardKeywords,
-        showUpgrade,
-        resourceType: selected.type,
-        tokenColor,
-        tokenWax,
-      })
-    ),
-    [
-      selected,
-      cardKeywords,
-      sourceBlocks,
-      sourceCost,
-      sourceStarCost,
-      sourceCardRarity,
-      sourceCardType,
-      sourceText,
-      sourceUpgradeBlocks,
-      sourceUpgradeCost,
-      sourceUpgradeStarCost,
-      sourceUpgradeText,
-      sourceCardKeywords,
-      sourceUpgradedCardKeywords,
-      transformedCost,
-      transformedStarCost,
-      transformedCardRarity,
-      transformedCardType,
-      transformedName,
-      transformedUpgradeCost,
-      transformedUpgradeStarCost,
-      upgradedCardKeywords,
-      showUpgrade,
-      tokenColor,
-      tokenWax,
-    ],
+    (blocks: PostBlock[], upgradedBlocks: PostBlock[] | null) => {
+      const changeCheck = buildChangeCheck(blocks, upgradedBlocks);
+      return changeCheck != null && canSubmitTransfigure(changeCheck);
+    },
+    [buildChangeCheck],
   );
   const hasChanges = canSubmitBlocks(
     previewBlocks,
@@ -664,9 +668,10 @@ export function TransfigureEditor({
       setSaveFeedback({ message: copy.invalidDescription, tone: "error" });
       return;
     }
-    if (!hasChanges) {
+    const gateMessage = writeGateMessage(previewBlocks, previewUpgradeBlocks);
+    if (gateMessage) {
       setSaveFeedback({
-        message: initialPost ? copy.noChanges : copy.changeRequired,
+        message: gateMessage,
         tone: "error",
       });
       return;
@@ -699,7 +704,6 @@ export function TransfigureEditor({
       setSubmitting(false);
     }
   }, [
-    copy.changeRequired,
     copy.defaultNickname,
     copy.defaultTitle,
     copy.invalidDescription,
@@ -708,15 +712,14 @@ export function TransfigureEditor({
     copy.saving,
     descriptionsValid,
     handleSubmit,
-    hasChanges,
     hasUpdateDiff,
     hideNickname,
-    initialPost,
     postTitle,
     previewBlocks,
     previewUpgradeBlocks,
     profileNickname,
     selected,
+    writeGateMessage,
   ]);
   const selectedCardData = selected?.type === "card" ? selected.cardData : undefined;
 
@@ -972,7 +975,7 @@ export function TransfigureEditor({
             <button
               type="button"
               onClick={requestSubmit}
-              disabled={submitting}
+              disabled={submitting || !descriptionsValid || !hasChanges}
               className="mx-auto mt-4 flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/15 px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/25 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {submitting

@@ -13,7 +13,7 @@ import {
   canTransfigureCardMetadata,
   isTransfigureCardRarity,
   isTransfigureCardType,
-  isTransfigureChanged,
+  canSubmitTransfigure,
   isTransfigureTokenColor,
   isTransfigureTokenWax,
   normalizeTransfigureCardRarity,
@@ -245,7 +245,7 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     || !cardKeywordInputValid
     || !cardMetadataInputValid
     || (transformedName?.length ?? 0) > 80
-    || !isTransfigureChanged({
+    || !canSubmitTransfigure({
       blocks: input.blocks,
       sourceText,
       sourceBlocks: input.sourceBlocks,

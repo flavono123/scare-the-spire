@@ -542,6 +542,68 @@ export function applyTransfigureCardMetadata(
   };
 }
 
+export type TransfigureChangeCheck = {
+  blocks: PostBlock[];
+  sourceText: string;
+  sourceBlocks: PostBlock[];
+  transformedName: string;
+  sourceName: string;
+  transformedCost: string;
+  sourceCost: string | null;
+  transformedStarCost?: string;
+  sourceStarCost?: string | null;
+  upgradedBlocks?: PostBlock[] | null;
+  sourceUpgradeText?: string | null;
+  sourceUpgradeBlocks?: PostBlock[] | null;
+  transformedUpgradeCost?: string;
+  sourceUpgradeCost?: string | null;
+  transformedUpgradeStarCost?: string;
+  sourceUpgradeStarCost?: string | null;
+  showUpgrade?: boolean;
+  cardKeywords?: TransfigureCardKeywords | null;
+  sourceCardKeywords?: TransfigureCardKeywords | null;
+  upgradedCardKeywords?: TransfigureCardKeywords | null;
+  sourceUpgradedCardKeywords?: TransfigureCardKeywords | null;
+  transformedCardType?: string;
+  sourceCardType?: CardTypeKo | null;
+  transformedCardRarity?: string;
+  sourceCardRarity?: CardRarityKo | null;
+  tokenColor?: string | null;
+  tokenWax?: string | null;
+  resourceType?: EntityType;
+};
+
+/** Compendium-linked mentions in rewritten text, not custom `{word{label}}` keywords. */
+export function transfigureHasExistingGameElementRefs(
+  blocks: PostBlock[] | null | undefined,
+): boolean {
+  if (!blocks) return false;
+  return blocks.some((block) => (
+    (block.type === "entity" && Boolean(block.entityId))
+    || (block.type === "keyword" && Boolean(block.entityId))
+  ));
+}
+
+function transfigureHasAuthorDiff(input: TransfigureChangeCheck): boolean {
+  return isTransfigureChanged({ ...input, showUpgrade: false });
+}
+
+/**
+ * Write-form gate: keep at least one existing game-element reference, or
+ * actually transfigure something. Toggling upgrade view alone is not a diff.
+ */
+export function transfigureHasExistingRefsOrDiff(
+  input: TransfigureChangeCheck,
+): boolean {
+  return transfigureHasExistingGameElementRefs(input.blocks)
+    || transfigureHasExistingGameElementRefs(input.upgradedBlocks)
+    || transfigureHasAuthorDiff(input);
+}
+
+export function canSubmitTransfigure(input: TransfigureChangeCheck): boolean {
+  return isTransfigureChanged(input) && transfigureHasExistingRefsOrDiff(input);
+}
+
 export function isTransfigureChanged({
   blocks,
   sourceText,
@@ -571,36 +633,7 @@ export function isTransfigureChanged({
   tokenColor = null,
   tokenWax = "off",
   resourceType,
-}: {
-  blocks: PostBlock[];
-  sourceText: string;
-  sourceBlocks: PostBlock[];
-  transformedName: string;
-  sourceName: string;
-  transformedCost: string;
-  sourceCost: string | null;
-  transformedStarCost?: string;
-  sourceStarCost?: string | null;
-  upgradedBlocks?: PostBlock[] | null;
-  sourceUpgradeText?: string | null;
-  sourceUpgradeBlocks?: PostBlock[] | null;
-  transformedUpgradeCost?: string;
-  sourceUpgradeCost?: string | null;
-  transformedUpgradeStarCost?: string;
-  sourceUpgradeStarCost?: string | null;
-  showUpgrade?: boolean;
-  cardKeywords?: TransfigureCardKeywords | null;
-  sourceCardKeywords?: TransfigureCardKeywords | null;
-  upgradedCardKeywords?: TransfigureCardKeywords | null;
-  sourceUpgradedCardKeywords?: TransfigureCardKeywords | null;
-  transformedCardType?: string;
-  sourceCardType?: CardTypeKo | null;
-  transformedCardRarity?: string;
-  sourceCardRarity?: CardRarityKo | null;
-  tokenColor?: string | null;
-  tokenWax?: string | null;
-  resourceType?: EntityType;
-}): boolean {
+}: TransfigureChangeCheck): boolean {
   const canChangeCardMetadata = canTransfigureCardMetadata(
     sourceCardType,
     sourceCardRarity,

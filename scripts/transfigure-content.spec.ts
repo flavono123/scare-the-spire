@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import type { EntityInfo } from "../src/components/patch-note-renderer";
 import {
   applyTransfigureCardMetadata,
+  canSubmitTransfigure,
   canTransfigureCardMetadata,
   getTransfigureInitialBlocks,
   getTransfigureSourceCost,
@@ -19,6 +20,8 @@ import {
   normalizeTransfigureTokenColor,
   normalizeTransfigureTokenWax,
   transfigureBlocksToGameDescription,
+  transfigureHasExistingGameElementRefs,
+  transfigureHasExistingRefsOrDiff,
 } from "../src/lib/transfigure-types";
 import { serviceMessages } from "../src/messages/service";
 
@@ -352,5 +355,69 @@ assert.equal(normalizeTransfigureTokenWax("wax", "power"), "wax");
 assert.equal(normalizeTransfigureTokenWax("melted", "relic"), "melted");
 assert.equal(normalizeTransfigureTokenWax("off", "relic"), null);
 assert.equal(normalizeTransfigureTokenWax("wax", "card"), null);
+
+const plainBlocks = [{ type: "text" as const, text: "피해를 6 줍니다." }];
+const plainRewrite = [{ type: "text" as const, text: "피해를 8 줍니다." }];
+const customKeywordOnly = [{
+  type: "keyword" as const,
+  text: "농담",
+  keyword: "농담",
+  description: "없는 키워드",
+}];
+const unchangedPlain = {
+  blocks: plainBlocks,
+  sourceText: "피해를 6 줍니다.",
+  sourceBlocks: plainBlocks,
+  transformedName: "",
+  sourceName: "타격",
+  transformedCost: "",
+  sourceCost: "1",
+};
+
+assert.equal(transfigureHasExistingGameElementRefs(sourceBlocks), true);
+assert.equal(transfigureHasExistingGameElementRefs(plainBlocks), false);
+assert.equal(transfigureHasExistingGameElementRefs(customKeywordOnly), false);
+
+assert.equal(
+  transfigureHasExistingRefsOrDiff({
+    ...unchangedPlain,
+    showUpgrade: true,
+  }),
+  false,
+);
+assert.equal(
+  canSubmitTransfigure({
+    ...unchangedPlain,
+    showUpgrade: true,
+  }),
+  false,
+);
+assert.equal(
+  canSubmitTransfigure({
+    blocks: sourceBlocks,
+    sourceText: sourceText ?? "",
+    sourceBlocks,
+    transformedName: "",
+    sourceName: "전문성",
+    transformedCost: "",
+    sourceCost: "1",
+    showUpgrade: true,
+  }),
+  true,
+);
+assert.equal(
+  canSubmitTransfigure({
+    ...unchangedPlain,
+    blocks: plainRewrite,
+  }),
+  true,
+);
+assert.equal(
+  canSubmitTransfigure({
+    ...unchangedPlain,
+    transformedName: "강타",
+  }),
+  true,
+);
 
 console.log("Transfigure rich keyword preservation: ok");
