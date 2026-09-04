@@ -36,7 +36,46 @@ export type PagestormPost = {
   created_at: string;
 };
 
-export type PagestormPostCard = Omit<PagestormPost, "content">;
+export type PagestormPostCard = Omit<PagestormPost, "content"> & {
+  thumbnailUrl: string | null;
+  thumbnailKind: string | null;
+};
+
+export type PagestormAssetThumb = {
+  imageUrl: string;
+  kind: string;
+  presentation: string;
+  name: string;
+};
+
+function isArtPresentation(presentation: unknown, kind: string): boolean {
+  if (kind !== "card") return true;
+  return presentation !== "tile" && presentation !== "tiny";
+}
+
+export function pagestormFirstAssetThumb(
+  node: PagestormDocNode | null | undefined,
+): PagestormAssetThumb | null {
+  const assets: PagestormAssetThumb[] = [];
+  const walk = (current: PagestormDocNode) => {
+    if (current.type === "gameAsset") {
+      const imageUrl = String(current.attrs?.imageUrl ?? "").trim();
+      if (imageUrl) {
+        assets.push({
+          imageUrl,
+          kind: String(current.attrs?.kind ?? current.attrs?.entityType ?? ""),
+          presentation: String(current.attrs?.presentation ?? "art"),
+          name: String(current.attrs?.name ?? ""),
+        });
+      }
+    }
+    current.content?.forEach(walk);
+  };
+  if (node) walk(node);
+  return assets.find((asset) => isArtPresentation(asset.presentation, asset.kind))
+    ?? assets[0]
+    ?? null;
+}
 
 export function pagestormContentText(node: PagestormDocNode | null | undefined): string {
   if (!node) return "";
@@ -78,10 +117,11 @@ export function normalizePagestormPost(row: unknown): PagestormPost {
 }
 
 export function normalizePagestormPostCard(row: unknown): PagestormPostCard {
-  const post = normalizePagestormPost({
-    ...(row as Record<string, unknown>),
-    content: { type: "doc" },
-  });
+  const record = row as Record<string, unknown>;
+  const post = normalizePagestormPost(record);
+  const thumb = pagestormFirstAssetThumb(
+    isPagestormDoc(record.content) ? record.content : post.content,
+  );
   return {
     id: post.id,
     user_id: post.user_id,
@@ -90,6 +130,8 @@ export function normalizePagestormPostCard(row: unknown): PagestormPostCard {
     content_text: post.content_text,
     env: post.env,
     created_at: post.created_at,
+    thumbnailUrl: thumb?.imageUrl ?? null,
+    thumbnailKind: thumb?.kind || null,
   };
 }
 

@@ -28,9 +28,8 @@ import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import { youtubeThumbnailUrl, youtubeWatchUrl } from "@/lib/youtube-reference";
 import { serviceMessages } from "@/messages/service";
 import {
-  clampAssetHeight,
-  clampAssetWidth,
-  defaultAssetWidth,
+  defaultAssetBox,
+  sizedAssetBox,
   type CardPresentation,
   type MockAlign,
   type MockGameAsset,
@@ -298,11 +297,13 @@ export function AssetFocusChrome({
   selected,
   align,
   onAlign,
+  extra,
   linkEditor,
 }: {
   selected: boolean;
   align?: MockAlign;
   onAlign?: (align: MockAlign) => void;
+  extra?: ReactNode;
   linkEditor?: ReactNode;
 }) {
   if (!selected) return null;
@@ -312,9 +313,14 @@ export function AssetFocusChrome({
       data-asset-chrome
       onMouseDown={(event) => event.stopPropagation()}
     >
-      {onAlign ? (
-        <div className="inline-flex items-center gap-0.5 rounded-md border border-border bg-card px-1 py-0.5 shadow-md">
-          <AlignButtons value={align} onChange={onAlign} />
+      {onAlign || extra ? (
+        <div className="flex flex-wrap items-center justify-center gap-1">
+          {onAlign ? (
+            <div className="inline-flex items-center gap-0.5 rounded-md border border-border bg-card px-1 py-0.5 shadow-md">
+              <AlignButtons value={align} onChange={onAlign} />
+            </div>
+          ) : null}
+          {extra}
         </div>
       ) : null}
       {linkEditor}
@@ -432,13 +438,12 @@ function AssetBody({
     );
   }
   if (presentation === "tile" && card) {
-    const tileWidth = Math.max(48, Math.min(width, Math.round(height * (300 / 422))));
     return (
       <CardTile
         card={card}
         showUpgrade={false}
         showBeta={beta}
-        width={tileWidth}
+        width={Math.max(48, width)}
         interactive={false}
       />
     );
@@ -471,6 +476,8 @@ export function GameAssetFigure({
   onResize,
   onLinked,
   onAlign,
+  onPresentation,
+  onBeta,
 }: {
   asset: MockGameAsset;
   align: MockAlign;
@@ -486,13 +493,16 @@ export function GameAssetFigure({
   onResize?: (size: { width: number; height: number }) => void;
   onLinked?: (linked: boolean) => void;
   onAlign?: (align: MockAlign) => void;
+  onPresentation?: (presentation: CardPresentation) => void;
+  onBeta?: (beta: boolean) => void;
 }) {
-  const px = width ?? defaultAssetWidth(asset.kind);
-  const py = height ?? (asset.kind === "card" ? Math.round(px * 1.56) : px);
+  const fallback = defaultAssetBox(asset.kind, presentation);
+  const px = width ?? fallback.width;
+  const py = height ?? fallback.height;
   const figure = (
     <figure
-      className="relative overflow-hidden"
-      style={{ width: px, height: py }}
+      className="relative max-w-full overflow-hidden"
+      style={{ width: px, aspectRatio: `${px} / ${py}` }}
       aria-label={asset.name}
     >
       <AssetBody
@@ -518,8 +528,8 @@ export function GameAssetFigure({
 
   return (
     <div className={alignRowClass(align)}>
-      <div className="relative inline-block" style={{ width: px }}>
-        <div className="relative">
+      <div className="relative inline-block max-w-full" style={{ width: px, maxWidth: "100%" }}>
+        <div className="relative max-w-full">
           {figure}
           {mode === "edit" ? (
             <AssetCornerHandles
@@ -527,9 +537,11 @@ export function GameAssetFigure({
               onLinked={onLinked}
               width={px}
               height={py}
-              clampWidth={(next) => clampAssetWidth(asset.kind, next)}
-              clampHeight={(next) => clampAssetHeight(asset.kind, next)}
-              onResize={onResize}
+              clampWidth={(next) => sizedAssetBox(asset.kind, next, py, presentation).width}
+              clampHeight={(next) => sizedAssetBox(asset.kind, px, next, presentation).height}
+              onResize={(size) => {
+                onResize?.(sizedAssetBox(asset.kind, size.width, size.height, presentation));
+              }}
             />
           ) : null}
         </div>
@@ -538,6 +550,18 @@ export function GameAssetFigure({
             selected={selected}
             align={align}
             onAlign={onAlign}
+            extra={
+              asset.kind === "card" && onPresentation && onBeta ? (
+                <div className="inline-flex items-center gap-0.5 rounded-md border border-border bg-card px-1 py-0.5 shadow-md">
+                  <CardPresentationPicker
+                    value={presentation}
+                    beta={beta}
+                    onChange={onPresentation}
+                    onBeta={onBeta}
+                  />
+                </div>
+              ) : null
+            }
           />
         ) : null}
       </div>

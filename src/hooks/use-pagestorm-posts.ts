@@ -107,7 +107,7 @@ export function usePagestormPosts() {
       "pagestorm_posts.list",
       supabase
         .from(PAGESTORM_TABLE)
-        .select("id, user_id, nickname, title, content_text, env, created_at")
+        .select("id, user_id, nickname, title, content, content_text, env, created_at")
         .eq("env", supabaseEnv)
         .order("created_at", { ascending: false })
         .limit(50),

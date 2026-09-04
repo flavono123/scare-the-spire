@@ -145,18 +145,107 @@ export function assetFromEntity(entity: EntityInfo): MockGameAsset {
   };
 }
 
-export function defaultAssetWidth(kind: MockAssetKind): number {
-  return kind === "card" ? 128 : 64;
+/** Extracted event art (`abyssal_baths.webp` 3440×1616) and epoch art (`colorless1_epoch.webp` 810×500). */
+const LANDSCAPE_ART_ASPECT: Record<"event" | "epoch", number> = {
+  event: 3440 / 1616,
+  epoch: 810 / 500,
+};
+
+export function isLandscapeArtKind(kind: MockAssetKind): kind is "event" | "epoch" {
+  return kind === "event" || kind === "epoch";
 }
 
-export function clampAssetWidth(kind: MockAssetKind, width: number): number {
-  if (kind === "card") return Math.min(240, Math.max(72, Math.round(width)));
-  return Math.min(128, Math.max(40, Math.round(width)));
+function clampPx(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, Math.round(value)));
 }
 
-export function clampAssetHeight(kind: MockAssetKind, height: number): number {
-  if (kind === "card") return Math.min(400, Math.max(64, Math.round(height)));
-  return clampAssetWidth(kind, height);
+export function landscapeArtAspect(kind: MockAssetKind): number {
+  return isLandscapeArtKind(kind) ? LANDSCAPE_ART_ASPECT[kind] : 1;
+}
+
+export function defaultAssetBox(
+  kind: MockAssetKind,
+  presentation: CardPresentation = "art",
+): { width: number; height: number } {
+  if (kind === "card") {
+    if (presentation === "tiny") return { width: 72, height: 72 };
+    if (presentation === "tile") {
+      const width = 150;
+      return { width, height: Math.round(width * (422 / 300)) };
+    }
+    const width = 128;
+    return { width, height: Math.round(width * 1.56) };
+  }
+  if (isLandscapeArtKind(kind)) {
+    const width = 720;
+    return { width, height: Math.round(width / LANDSCAPE_ART_ASPECT[kind]) };
+  }
+  const width = 64;
+  return { width, height: width };
+}
+
+export function defaultAssetWidth(
+  kind: MockAssetKind,
+  presentation: CardPresentation = "art",
+): number {
+  return defaultAssetBox(kind, presentation).width;
+}
+
+export function defaultAssetHeight(
+  kind: MockAssetKind,
+  presentation: CardPresentation = "art",
+): number {
+  return defaultAssetBox(kind, presentation).height;
+}
+
+export function clampAssetWidth(
+  kind: MockAssetKind,
+  width: number,
+  presentation: CardPresentation = "art",
+): number {
+  if (kind === "card") {
+    if (presentation === "tiny") return clampPx(width, 24, 96);
+    if (presentation === "tile") return clampPx(width, 72, 380);
+    return clampPx(width, 72, 240);
+  }
+  if (isLandscapeArtKind(kind)) return clampPx(width, 200, 1080);
+  return clampPx(width, 40, 128);
+}
+
+export function clampAssetHeight(
+  kind: MockAssetKind,
+  height: number,
+  presentation: CardPresentation = "art",
+): number {
+  if (kind === "card") {
+    if (presentation === "tiny") return clampPx(height, 24, 96);
+    if (presentation === "tile") return clampPx(height, 96, 534);
+    return clampPx(height, 64, 400);
+  }
+  if (isLandscapeArtKind(kind)) {
+    const aspect = LANDSCAPE_ART_ASPECT[kind];
+    return clampPx(height, Math.round(200 / aspect), Math.round(1080 / aspect));
+  }
+  return clampAssetWidth(kind, height, presentation);
+}
+
+export function sizedAssetBox(
+  kind: MockAssetKind,
+  width: number,
+  height: number,
+  presentation: CardPresentation = "art",
+): { width: number; height: number } {
+  const nextWidth = clampAssetWidth(kind, width, presentation);
+  if (isLandscapeArtKind(kind)) {
+    return {
+      width: nextWidth,
+      height: Math.round(nextWidth / LANDSCAPE_ART_ASPECT[kind]),
+    };
+  }
+  return {
+    width: nextWidth,
+    height: clampAssetHeight(kind, height, presentation),
+  };
 }
 
 export function defaultPlayerWidth(): number {
@@ -236,7 +325,7 @@ function sampleAssetNode(
   if (!found) {
     return { type: "paragraph" };
   }
-  const width = defaultAssetWidth(found.kind);
+  const box = defaultAssetBox(found.kind, "art");
   return {
     type: "gameAsset",
     attrs: {
@@ -248,8 +337,8 @@ function sampleAssetNode(
       href: found.href,
       align,
       linked,
-      width,
-      height: found.kind === "card" ? Math.round(width * 1.56) : width,
+      width: box.width,
+      height: box.height,
       presentation: "art",
       beta: false,
     },

@@ -23,9 +23,9 @@ import {
 } from "@/lib/site-nav-items";
 import { PAGESTORM_HREF } from "@/lib/pagestorm";
 import { serviceMessages } from "@/messages/service";
-import { CardPresentationPicker, GameAssetFigure, mockButtonClass } from "./figures";
+import { mockButtonClass } from "./figures";
 import { NavTokenChip } from "./nav-tokens";
-import { assetFromEntity, type CardPresentation } from "./sample";
+import type { CardPresentation } from "./sample";
 import {
   filterToyboxPosts,
   type PagestormToyboxPost,
@@ -60,46 +60,6 @@ export type CompendiumInsertPayload = {
   beta: boolean;
 };
 
-function CardConfirmStep({
-  entity,
-  onInsert,
-}: {
-  entity: EntityInfo;
-  onInsert: (payload: CompendiumInsertPayload) => void;
-}) {
-  const serviceLocale = useServiceLocale();
-  const copy = serviceMessages[serviceLocale].pagestorm;
-  const [presentation, setPresentation] = useState<CardPresentation>("art");
-  const [beta, setBeta] = useState(false);
-  return (
-    <div className="space-y-3 rounded-lg border border-border p-3">
-      <p className="font-game-title text-sm">{copy.presentationTitle}</p>
-      <GameAssetFigure
-        asset={assetFromEntity(entity)}
-        align="center"
-        presentation={presentation}
-        beta={beta}
-        card={entity.cardData}
-        mode="preview"
-        linked={false}
-      />
-      <CardPresentationPicker
-        value={presentation}
-        beta={beta}
-        onChange={setPresentation}
-        onBeta={setBeta}
-      />
-      <button
-        type="button"
-        className={mockButtonClass(true)}
-        onClick={() => onInsert({ entity, presentation, beta: presentation === "tiny" ? false : beta })}
-      >
-        {copy.insert}
-      </button>
-    </div>
-  );
-}
-
 export function CompendiumPickerModal({
   entities,
   initialMajor,
@@ -115,7 +75,6 @@ export function CompendiumPickerModal({
   const copy = serviceMessages[serviceLocale].pagestorm;
   const [major, setMajor] = useState<DecisionsPoolMajor | null>(initialMajor);
   const [dims, setDims] = useState<DecisionsFilterDims>(() => emptyFilterDims());
-  const [pendingCard, setPendingCard] = useState<EntityInfo | null>(null);
   const entityMap = useMemo(
     () => new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity])),
     [entities],
@@ -129,41 +88,34 @@ export function CompendiumPickerModal({
       onClose={onClose}
       panelClassName="max-h-[min(92dvh,52rem)] w-full max-w-3xl"
     >
-      {pendingCard ? (
-        <CardConfirmStep
-          entity={pendingCard}
-          onInsert={onInsert}
-        />
-      ) : (
-        <DecisionsDecisionsPoolPicker
-          entities={entities}
-          entityMap={entityMap}
-          serviceLocale={serviceLocale}
-          presetLabels={{}}
-          showPresets={false}
-          showCatalog
-          catalogNeedTypeLabel={copy.pickerNeedType}
-          catalogEmptyLabel={copy.pickerEmpty}
-          searchPlacement="top"
-          major={major}
-          dims={dims}
-          onMajor={(next) => {
-            setMajor(next);
-            setDims(emptyFilterDims());
-          }}
-          onToggleDim={(dim: DecisionsFilterDim, key: string) => {
-            setDims((current) => toggleFilterDim(current, dim, key));
-          }}
-          onPreset={() => undefined}
-          onAdd={(entity) => {
-            if (entity.type === "card") {
-              setPendingCard(entity);
-              return;
-            }
-            onInsert({ entity, presentation: "art", beta: false });
-          }}
-        />
-      )}
+      <DecisionsDecisionsPoolPicker
+        entities={entities}
+        entityMap={entityMap}
+        serviceLocale={serviceLocale}
+        presetLabels={{}}
+        showPresets={false}
+        showCatalog
+        catalogNeedTypeLabel={copy.pickerNeedType}
+        catalogEmptyLabel={copy.pickerEmpty}
+        searchPlacement="top"
+        major={major}
+        dims={dims}
+        onMajor={(next) => {
+          setMajor(next);
+          setDims(emptyFilterDims());
+        }}
+        onToggleDim={(dim: DecisionsFilterDim, key: string) => {
+          setDims((current) => toggleFilterDim(current, dim, key));
+        }}
+        onPreset={() => undefined}
+        onAdd={(entity) => {
+          onInsert({
+            entity,
+            presentation: entity.type === "card" ? "tile" : "art",
+            beta: false,
+          });
+        }}
+      />
     </ServiceModalFrame>
   );
 }
@@ -251,30 +203,6 @@ export function ToyboxPickerModal({
           </ul>
         )}
       </GameScrollArea>
-    </ServiceModalFrame>
-  );
-}
-
-export function CardBraceConfirmModal({
-  entity,
-  onClose,
-  onInsert,
-}: {
-  entity: EntityInfo;
-  onClose: () => void;
-  onInsert: (payload: CompendiumInsertPayload) => void;
-}) {
-  const serviceLocale = useServiceLocale();
-  const copy = serviceMessages[serviceLocale].pagestorm;
-  return (
-    <ServiceModalFrame
-      title={copy.presentationTitle}
-      titleId="pagestorm-card-presentation"
-      closeLabel={copy.close}
-      onClose={onClose}
-      panelClassName="w-full max-w-md"
-    >
-      <CardConfirmStep entity={entity} onInsert={onInsert} />
     </ServiceModalFrame>
   );
 }

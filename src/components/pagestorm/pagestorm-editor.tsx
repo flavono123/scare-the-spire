@@ -18,7 +18,6 @@ import {
 } from "./color-marks";
 import { PagestormEntitiesProvider } from "./entities-context";
 import {
-  CardBraceConfirmModal,
   CompendiumPickerModal,
   ToyboxPickerModal,
   majorFromCodexHref,
@@ -43,11 +42,6 @@ import {
 import { PagestormStickyToolbar } from "./toolbar";
 import type { PagestormToyboxPost } from "./toybox-samples";
 import "./pagestorm-editor.css";
-
-type PendingCard = {
-  entity: EntityInfo;
-  range?: { from: number; to: number };
-};
 
 export type PagestormEditorSaveInput = {
   title: string;
@@ -85,7 +79,6 @@ export function PagestormEditor({
   const entitiesRef = useRef(entities);
   const [compendiumMajor, setCompendiumMajor] = useState<ReturnType<typeof majorFromCodexHref> | "closed">("closed");
   const [toyboxHref, setToyboxHref] = useState<string | null | "closed">("closed");
-  const [pendingCard, setPendingCard] = useState<PendingCard | null>(null);
   const editorRef = useRef<Editor | null>(null);
 
   useEffect(() => {
@@ -99,11 +92,10 @@ export function PagestormEditor({
       onPick: ({ entity, range }) => {
         const current = editorRef.current;
         if (current) exitSuggestion(current.view, pagestormBracePluginKey);
-        if (entity.type === "card") {
-          setPendingCard({ entity, range });
-          return;
-        }
-        insertEntity(entity, { presentation: "art", beta: false }, range);
+        insertEntity(entity, {
+          presentation: entity.type === "card" ? "tile" : "art",
+          beta: false,
+        }, range);
       },
     }),
     [],
@@ -357,16 +349,6 @@ export function PagestormEditor({
           onInsert={(post) => {
             insertToybox(post);
             setToyboxHref("closed");
-          }}
-        />
-      ) : null}
-      {mode === "edit" && pendingCard ? (
-        <CardBraceConfirmModal
-          entity={pendingCard.entity}
-          onClose={() => setPendingCard(null)}
-          onInsert={(payload) => {
-            insertEntity(payload.entity, payload, pendingCard.range);
-            setPendingCard(null);
           }}
         />
       ) : null}

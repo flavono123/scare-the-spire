@@ -4,8 +4,9 @@ import { useCallback, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LayoutGrid, List } from "lucide-react";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { GAME_UI_HOVER_TIP_NAV_DELAY_MS, GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { PostDetailActions } from "@/components/post-detail-actions";
@@ -26,11 +27,15 @@ import {
   PAGESTORM_TOKEN_SRC,
   PAGESTORM_WRITE_HREF,
   pagestormDetailHref,
+  pagestormFirstAssetThumb,
   pagestormSnippet,
+  type PagestormPostCard,
 } from "@/lib/pagestorm";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
+import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
 import type { PagestormEditorSaveInput } from "./pagestorm-editor";
+import { pagestormLoremDoc } from "./sample";
 
 function EditorLoading() {
   const serviceLocale = useServiceLocale();
@@ -49,12 +54,132 @@ const Editor = dynamic(
   },
 );
 
+type PagestormIndexView = "gallery" | "list";
+
+function PagestormIndexThumb({
+  imageUrl,
+  kind,
+  name,
+  view,
+}: {
+  imageUrl: string | null;
+  kind: string | null;
+  name: string;
+  view: PagestormIndexView;
+}) {
+  return (
+    <div
+      className={cn(
+        "overflow-hidden bg-black/25",
+        view === "gallery" ? "aspect-[16/10] w-full rounded-t-lg" : "h-[4.5rem] w-20 shrink-0 rounded-md",
+      )}
+    >
+      {imageUrl ? (
+        <Image
+          src={imageUrl}
+          alt=""
+          width={kind === "card" ? 150 : 320}
+          height={kind === "card" ? 211 : 160}
+          className="h-full w-full object-contain"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center">
+          <Image
+            src={PAGESTORM_TOKEN_SRC}
+            alt={name}
+            width={32}
+            height={32}
+            className="object-contain opacity-70"
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PagestormIndexCard({
+  href,
+  view,
+  nickname,
+  isOwner,
+  title,
+  snippet,
+  thumbnailUrl,
+  thumbnailKind,
+  postKey,
+}: {
+  href: string;
+  view: PagestormIndexView;
+  nickname: string;
+  isOwner: boolean;
+  title: string;
+  snippet: string;
+  thumbnailUrl: string | null;
+  thumbnailKind: string | null;
+  postKey: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "block rounded-lg border border-border bg-card/30 transition-colors hover:border-primary/20 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70",
+        view === "list" ? "px-4 py-3" : "overflow-hidden",
+      )}
+    >
+      <article
+        data-pagestorm-post={postKey}
+        className={view === "list" ? undefined : "flex h-full flex-col"}
+      >
+        {view === "gallery" ? (
+          <PagestormIndexThumb
+            imageUrl={thumbnailUrl}
+            kind={thumbnailKind}
+            name={title}
+            view={view}
+          />
+        ) : null}
+        <div className={cn(view === "gallery" ? "px-3 py-3" : "flex items-start gap-3")}>
+          {view === "list" ? (
+            <PagestormIndexThumb
+              imageUrl={thumbnailUrl}
+              kind={thumbnailKind}
+              name={title}
+              view={view}
+            />
+          ) : null}
+          <div className="min-w-0 flex-1">
+            <div className="mb-1.5 flex items-center justify-between">
+              <span className="inline-flex min-w-0 items-center gap-1.5">
+                <DisplayedProfileNickname
+                  nickname={nickname}
+                  isOwner={isOwner}
+                  size={18}
+                  tokenClassName="h-[18px] w-[18px]"
+                  nicknameClassName="truncate text-sm font-semibold text-gray-300"
+                />
+                {isOwner ? <OwnPostMark /> : null}
+              </span>
+            </div>
+            <h2 className="font-game-title text-base text-foreground">
+              {title}
+            </h2>
+            <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+              {snippet}
+            </p>
+          </div>
+        </div>
+      </article>
+    </Link>
+  );
+}
+
 export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
   const serviceLocale = useServiceLocale();
   const gameLocale = useGameLocale();
   const copy = serviceMessages[serviceLocale].pagestorm;
   const { userId } = useAuth();
   const { posts, loading, unavailable } = usePagestormPosts();
+  const [view, setView] = useState<PagestormIndexView>("gallery");
   const writeHref = localizeHrefWithGameLocale(
     PAGESTORM_WRITE_HREF,
     serviceLocale,
@@ -64,6 +189,10 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
     PAGESTORM_LOREM_HREF,
     serviceLocale,
     gameLocale,
+  );
+  const loremThumb = useMemo(
+    () => pagestormFirstAssetThumb(pagestormLoremDoc(copy)),
+    [copy],
   );
   const count = 1 + posts.length;
 
@@ -107,72 +236,91 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
         <StorageUnavailableNotice title={copy.unavailableTitle} />
       ) : null}
       <div className="space-y-3">
-        <p className="text-xs text-gray-500">
-          {copy.count.replace("{count}", String(count))}
-        </p>
-        <Link
-          href={loremHref}
-          className="block rounded-lg border border-border bg-card/30 px-4 py-3 transition-colors hover:border-primary/20 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
-        >
-          <article data-pagestorm-post="lorem">
-            <div className="mb-1.5 flex items-center justify-between">
-              <span className="inline-flex min-w-0 items-center gap-1.5">
-                <DisplayedProfileNickname
-                  nickname={copy.defaultNickname}
-                  isOwner
-                  size={18}
-                  tokenClassName="h-[18px] w-[18px]"
-                  nicknameClassName="truncate text-sm font-semibold text-gray-300"
-                />
-                <OwnPostMark />
-              </span>
-            </div>
-            <h2 className="font-game-title text-base text-foreground">
-              {copy.sampleHeading}
-            </h2>
-            <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-              {PAGESTORM_LOREM_SNIPPET}
-            </p>
-          </article>
-        </Link>
-        {unavailable ? null : loading ? (
-          <ContentLoadingNotice label={copy.loading} />
-        ) : posts.map((post) => {
-            const href = localizeHrefWithGameLocale(
-              pagestormDetailHref(post.id),
-              serviceLocale,
-              gameLocale,
-            );
-            const isOwner = Boolean(userId && post.user_id === userId);
-            return (
-              <Link
-                key={post.id}
-                href={href}
-                className="block rounded-lg border border-border bg-card/30 px-4 py-3 transition-colors hover:border-primary/20 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-xs text-gray-500">
+            {copy.count.replace("{count}", String(count))}
+          </p>
+          <div
+            className="inline-flex overflow-hidden rounded-md border border-border/70 bg-background/40"
+            role="group"
+            aria-label={`${copy.viewGallery} / ${copy.viewList}`}
+            data-pagestorm-index-view={view}
+          >
+            <GameUiHoverTip label={copy.viewGallery} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
+              <button
+                type="button"
+                aria-pressed={view === "gallery"}
+                aria-label={copy.viewGallery}
+                className={cn(
+                  "inline-flex h-8 w-8 items-center justify-center",
+                  view === "gallery"
+                    ? "bg-white/10 text-foreground"
+                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
+                )}
+                onClick={() => setView("gallery")}
               >
-                <article data-pagestorm-post={post.id}>
-                  <div className="mb-1.5 flex items-center justify-between">
-                    <span className="inline-flex min-w-0 items-center gap-1.5">
-                      <DisplayedProfileNickname
-                        nickname={post.nickname}
-                        isOwner={isOwner}
-                        size={18}
-                        tokenClassName="h-[18px] w-[18px]"
-                        nicknameClassName="truncate text-sm font-semibold text-gray-300"
-                      />
-                      {isOwner ? <OwnPostMark /> : null}
-                    </span>
-                  </div>
-                  <h2 className="font-game-title text-base text-foreground">
-                    {post.title}
-                  </h2>
-                  <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-                    {pagestormSnippet(post.content_text)}
-                  </p>
-                </article>
-              </Link>
-            );
-          })}
+                <LayoutGrid className="h-3.5 w-3.5" aria-hidden />
+              </button>
+            </GameUiHoverTip>
+            <GameUiHoverTip label={copy.viewList} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
+              <button
+                type="button"
+                aria-pressed={view === "list"}
+                aria-label={copy.viewList}
+                className={cn(
+                  "inline-flex h-8 w-8 items-center justify-center",
+                  view === "list"
+                    ? "bg-white/10 text-foreground"
+                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
+                )}
+                onClick={() => setView("list")}
+              >
+                <List className="h-3.5 w-3.5" aria-hidden />
+              </button>
+            </GameUiHoverTip>
+          </div>
+        </div>
+        <div
+          className={
+            view === "gallery"
+              ? "grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"
+              : "space-y-3"
+          }
+        >
+          <PagestormIndexCard
+            href={loremHref}
+            view={view}
+            nickname={copy.defaultNickname}
+            isOwner
+            title={copy.sampleHeading}
+            snippet={PAGESTORM_LOREM_SNIPPET}
+            thumbnailUrl={loremThumb?.imageUrl ?? null}
+            thumbnailKind={loremThumb?.kind ?? null}
+            postKey="lorem"
+          />
+          {unavailable ? null : loading ? (
+            <div className={view === "gallery" ? "col-span-full" : undefined}>
+              <ContentLoadingNotice label={copy.loading} />
+            </div>
+          ) : posts.map((post: PagestormPostCard) => (
+            <PagestormIndexCard
+              key={post.id}
+              href={localizeHrefWithGameLocale(
+                pagestormDetailHref(post.id),
+                serviceLocale,
+                gameLocale,
+              )}
+              view={view}
+              nickname={post.nickname}
+              isOwner={Boolean(userId && post.user_id === userId)}
+              title={post.title}
+              snippet={pagestormSnippet(post.content_text)}
+              thumbnailUrl={post.thumbnailUrl}
+              thumbnailKind={post.thumbnailKind}
+              postKey={post.id}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
