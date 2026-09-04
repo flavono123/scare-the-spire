@@ -992,7 +992,6 @@ export function TransfigureEditor({
                     submitting || submitBlockMessage
                       ? "cursor-not-allowed opacity-40"
                       : "hover:bg-primary/25",
-                    submitBlockMessage ? undefined : "mx-auto mt-4",
                   )}
                 >
                   {submitting
@@ -1009,16 +1008,18 @@ export function TransfigureEditor({
                   />
                 </button>
               );
-              if (!submitBlockMessage) return submitButton;
               return (
-                <GameUiHoverTip
-                  className="mx-auto mt-4"
-                  delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}
-                  open={submitTipPinned}
-                  label={submitBlockMessage}
-                >
-                  {submitButton}
-                </GameUiHoverTip>
+                <div className="mt-4 flex justify-center">
+                  {submitBlockMessage ? (
+                    <GameUiHoverTip
+                      delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}
+                      open={submitTipPinned}
+                      label={submitBlockMessage}
+                    >
+                      {submitButton}
+                    </GameUiHoverTip>
+                  ) : submitButton}
+                </div>
               );
             })()}
           </section>
