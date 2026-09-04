@@ -513,10 +513,10 @@ export function TransfigureEditor({
   ): string | null => {
     const changeCheck = buildChangeCheck(blocks, upgradedBlocks);
     if (!changeCheck) {
-      return initialPost ? copy.noChanges : copy.changeRequired;
+      return initialPost ? copy.noChanges : copy.anchorOrDiffRequired;
     }
     if (!isTransfigureChanged(changeCheck)) {
-      return initialPost ? copy.noChanges : copy.changeRequired;
+      return initialPost ? copy.noChanges : copy.anchorOrDiffRequired;
     }
     if (!transfigureHasExistingRefsOrDiff(changeCheck)) {
       return copy.anchorOrDiffRequired;
@@ -525,7 +525,6 @@ export function TransfigureEditor({
   }, [
     buildChangeCheck,
     copy.anchorOrDiffRequired,
-    copy.changeRequired,
     copy.noChanges,
     initialPost,
   ]);
