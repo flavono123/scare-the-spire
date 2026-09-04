@@ -5,7 +5,13 @@ import {
   sizedAssetBox,
   WIDE_ART_MAX_WIDTH,
 } from "../src/components/pagestorm/sample";
-import { pagestormFirstAssetThumb, type PagestormDoc } from "../src/lib/pagestorm";
+import {
+  PAGESTORM_BACKGROUND_SRC,
+  PAGESTORM_BETA_ART_SRC,
+  pagestormFirstAssetThumb,
+  pagestormIndexThumb,
+  type PagestormDoc,
+} from "../src/lib/pagestorm";
 
 const doc: PagestormDoc = {
   type: "doc",
@@ -44,6 +50,53 @@ assert.ok(tileOnly);
 assert.equal(tileOnly.kind, "card");
 
 assert.equal(pagestormFirstAssetThumb({ type: "doc", content: [] }), null);
+
+const characterThenCard: PagestormDoc = {
+  type: "doc",
+  content: [
+    {
+      type: "gameAsset",
+      attrs: {
+        kind: "character",
+        presentation: "art",
+        imageUrl: "/images/sts2/characters/char_select_ironclad.webp",
+        name: "아이언클래드",
+      },
+    },
+    {
+      type: "gameAsset",
+      attrs: {
+        kind: "card",
+        presentation: "art",
+        imageUrl: PAGESTORM_BACKGROUND_SRC,
+        name: "서류 폭풍",
+      },
+    },
+  ],
+};
+const artOverPortrait = pagestormFirstAssetThumb(characterThenCard);
+assert.ok(artOverPortrait);
+assert.equal(artOverPortrait.kind, "card");
+assert.equal(artOverPortrait.imageUrl, PAGESTORM_BACKGROUND_SRC);
+
+const relicOnly = pagestormFirstAssetThumb({
+  type: "doc",
+  content: [{
+    type: "gameAsset",
+    attrs: {
+      kind: "relic",
+      presentation: "art",
+      imageUrl: "/images/sts2/relics/chemical_x.webp",
+      name: "케미컬 X",
+    },
+  }],
+});
+assert.ok(relicOnly);
+assert.equal(relicOnly.kind, "relic");
+
+const emptyIndex = pagestormIndexThumb({ type: "doc", content: [] });
+assert.equal(emptyIndex.imageUrl, PAGESTORM_BETA_ART_SRC);
+assert.equal(emptyIndex.kind, "card");
 
 assert.equal(clampAssetWidth("card", 2000, "art"), WIDE_ART_MAX_WIDTH);
 assert.equal(clampAssetWidth("event", 2000, "art"), WIDE_ART_MAX_WIDTH);

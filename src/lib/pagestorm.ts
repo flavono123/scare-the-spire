@@ -3,6 +3,7 @@ export const PAGESTORM_WRITE_HREF = "/pagestorm/write";
 export const PAGESTORM_LOREM_HREF = "/pagestorm/lorem";
 export const PAGESTORM_TOKEN_SRC = "/images/sts2/powers/pagestorm_power.webp";
 export const PAGESTORM_BACKGROUND_SRC = "/images/sts2/cards/pagestorm.webp";
+export const PAGESTORM_BETA_ART_SRC = "/images/sts2/cards-beta/pagestorm.webp";
 export const PAGESTORM_TABLE = "pagestorm_posts";
 export const PAGESTORM_TITLE_MIN_CHARS = 1;
 export const PAGESTORM_TITLE_MAX_CHARS = 80;
@@ -48,9 +49,18 @@ export type PagestormAssetThumb = {
   name: string;
 };
 
-function isArtPresentation(presentation: unknown, kind: string): boolean {
-  if (kind !== "card") return true;
-  return presentation !== "tile" && presentation !== "tiny";
+const PAGESTORM_FALLBACK_THUMB: PagestormAssetThumb = {
+  imageUrl: PAGESTORM_BETA_ART_SRC,
+  kind: "card",
+  presentation: "art",
+  name: "",
+};
+
+/** Card / event / epoch art boxes. Tile, tiny, relics, portraits, and tokens are not art. */
+function isArtAsset(kind: string, presentation: unknown): boolean {
+  if (kind === "event" || kind === "epoch") return true;
+  if (kind === "card") return presentation !== "tile" && presentation !== "tiny";
+  return false;
 }
 
 export function pagestormFirstAssetThumb(
@@ -72,9 +82,15 @@ export function pagestormFirstAssetThumb(
     current.content?.forEach(walk);
   };
   if (node) walk(node);
-  return assets.find((asset) => isArtPresentation(asset.presentation, asset.kind))
+  return assets.find((asset) => isArtAsset(asset.kind, asset.presentation))
     ?? assets[0]
     ?? null;
+}
+
+export function pagestormIndexThumb(
+  node: PagestormDocNode | null | undefined,
+): PagestormAssetThumb {
+  return pagestormFirstAssetThumb(node) ?? PAGESTORM_FALLBACK_THUMB;
 }
 
 export function pagestormContentText(node: PagestormDocNode | null | undefined): string {
@@ -119,7 +135,7 @@ export function normalizePagestormPost(row: unknown): PagestormPost {
 export function normalizePagestormPostCard(row: unknown): PagestormPostCard {
   const record = row as Record<string, unknown>;
   const post = normalizePagestormPost(record);
-  const thumb = pagestormFirstAssetThumb(
+  const thumb = pagestormIndexThumb(
     isPagestormDoc(record.content) ? record.content : post.content,
   );
   return {
@@ -130,8 +146,8 @@ export function normalizePagestormPostCard(row: unknown): PagestormPostCard {
     content_text: post.content_text,
     env: post.env,
     created_at: post.created_at,
-    thumbnailUrl: thumb?.imageUrl ?? null,
-    thumbnailKind: thumb?.kind || null,
+    thumbnailUrl: thumb.imageUrl,
+    thumbnailKind: thumb.kind,
   };
 }
 

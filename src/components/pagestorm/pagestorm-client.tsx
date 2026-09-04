@@ -21,13 +21,14 @@ import { useUserProfile } from "@/hooks/use-user-profile";
 import type { PagestormGameCopy } from "@/lib/borrowed-game-copy";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import {
+  PAGESTORM_BETA_ART_SRC,
   PAGESTORM_HREF,
   PAGESTORM_LOREM_HREF,
   PAGESTORM_LOREM_SNIPPET,
   PAGESTORM_TOKEN_SRC,
   PAGESTORM_WRITE_HREF,
   pagestormDetailHref,
-  pagestormFirstAssetThumb,
+  pagestormIndexThumb,
   pagestormSnippet,
   type PagestormPostCard,
 } from "@/lib/pagestorm";
@@ -59,14 +60,14 @@ type PagestormIndexView = "gallery" | "list";
 function PagestormIndexThumb({
   imageUrl,
   kind,
-  name,
   view,
 }: {
   imageUrl: string | null;
   kind: string | null;
-  name: string;
   view: PagestormIndexView;
 }) {
+  const src = imageUrl ?? PAGESTORM_BETA_ART_SRC;
+  const cardArt = kind === "card" || !imageUrl;
   return (
     <div
       className={cn(
@@ -74,25 +75,13 @@ function PagestormIndexThumb({
         view === "gallery" ? "aspect-[16/10] w-full rounded-t-lg" : "h-[4.5rem] w-20 shrink-0 rounded-md",
       )}
     >
-      {imageUrl ? (
-        <Image
-          src={imageUrl}
-          alt=""
-          width={kind === "card" ? 150 : 320}
-          height={kind === "card" ? 211 : 160}
-          className="h-full w-full object-contain"
-        />
-      ) : (
-        <div className="flex h-full w-full items-center justify-center">
-          <Image
-            src={PAGESTORM_TOKEN_SRC}
-            alt={name}
-            width={32}
-            height={32}
-            className="object-contain opacity-70"
-          />
-        </div>
-      )}
+      <Image
+        src={src}
+        alt=""
+        width={cardArt ? 150 : 320}
+        height={cardArt ? 211 : 160}
+        className="h-full w-full object-contain"
+      />
     </div>
   );
 }
@@ -134,7 +123,6 @@ function PagestormIndexCard({
           <PagestormIndexThumb
             imageUrl={thumbnailUrl}
             kind={thumbnailKind}
-            name={title}
             view={view}
           />
         ) : null}
@@ -143,7 +131,6 @@ function PagestormIndexCard({
             <PagestormIndexThumb
               imageUrl={thumbnailUrl}
               kind={thumbnailKind}
-              name={title}
               view={view}
             />
           ) : null}
@@ -191,7 +178,7 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
     gameLocale,
   );
   const loremThumb = useMemo(
-    () => pagestormFirstAssetThumb(pagestormLoremDoc(copy)),
+    () => pagestormIndexThumb(pagestormLoremDoc(copy)),
     [copy],
   );
   const count = 1 + posts.length;
@@ -294,8 +281,8 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
             isOwner
             title={copy.sampleHeading}
             snippet={PAGESTORM_LOREM_SNIPPET}
-            thumbnailUrl={loremThumb?.imageUrl ?? null}
-            thumbnailKind={loremThumb?.kind ?? null}
+            thumbnailUrl={loremThumb.imageUrl}
+            thumbnailKind={loremThumb.kind}
             postKey="lorem"
           />
           {unavailable ? null : loading ? (
