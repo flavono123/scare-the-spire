@@ -678,7 +678,7 @@ export function YoutubePlayerFigure({
 
   return (
     <div className={`${alignRowClass(align)} pagestorm-asset-align`} data-pagestorm-asset-align="">
-      <div className="relative">
+      <div className="relative" data-pagestorm-embed-box="">
         {inner}
         <AssetFocusChrome
           selected={selected}
@@ -739,7 +739,7 @@ export function OgBookmarkFigure({
 
   return (
     <div className={`${alignRowClass(align)} pagestorm-asset-align`} data-pagestorm-asset-align="">
-      <div className="relative">
+      <div className="relative" data-pagestorm-embed-box="">
         {aquaTitle}
         <AssetFocusChrome
           selected={selected}

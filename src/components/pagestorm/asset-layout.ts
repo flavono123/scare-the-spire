@@ -22,16 +22,59 @@ type PagestormDropHint = {
 };
 
 const EMBED_NAMES = new Set<string>(PAGESTORM_EMBED_NODE_NAMES);
+const dragOrigin = new WeakMap<EditorView, number>();
 
 export function isPagestormEmbedNode(node: PMNode | null | undefined): boolean {
   return Boolean(node && EMBED_NAMES.has(node.type.name));
 }
 
-/** Top/bottom thirds stack. The middle third splits left/right. */
+function isStubEmbed(node: PMNode): boolean {
+  if (!isPagestormEmbedNode(node)) return false;
+  if (node.type.name === "gameAsset") {
+    return !String(node.attrs.assetId ?? "") && !String(node.attrs.imageUrl ?? "");
+  }
+  if (node.type.name === "toyboxEmbed") {
+    return !String(node.attrs.postId ?? "");
+  }
+  if (node.type.name === "youtubePlayer") {
+    return !String(node.attrs.videoId ?? "");
+  }
+  if (node.type.name === "ogBookmark") {
+    return !String(node.attrs.url ?? "");
+  }
+  return false;
+}
+
+function visualAssetElement(dom: HTMLElement): HTMLElement {
+  return (
+    dom.querySelector("figure[data-pagestorm-asset-box]")
+    ?? dom.querySelector("[data-pagestorm-embed-box]")
+    ?? (dom.querySelector("[data-pagestorm-asset-box]") as HTMLElement | null)
+    ?? dom
+  );
+}
+
+/** Top/bottom fifths stack. The middle splits left/right beside the visual asset. */
 export function pagestormDropZone(relX: number, relY: number): PagestormDropZone {
-  if (relY < 1 / 3) return "before";
-  if (relY > 2 / 3) return "after";
+  if (relY < 0.2) return "before";
+  if (relY > 0.8) return "after";
   return relX < 0.5 ? "left" : "right";
+}
+
+function embedPosFromEventTarget(view: EditorView, target: EventTarget | null): number | null {
+  if (!(target instanceof Node)) return null;
+  try {
+    const pos = view.posAtDOM(target, 0);
+    const $pos = view.state.doc.resolve(
+      Math.min(Math.max(pos, 0), view.state.doc.content.size),
+    );
+    for (let depth = $pos.depth; depth > 0; depth -= 1) {
+      if (isPagestormEmbedNode($pos.node(depth))) return $pos.before(depth);
+    }
+  } catch {
+    return null;
+  }
+  return null;
 }
 
 function embedPosFromCoords(view: EditorView, event: DragEvent): number | null {
@@ -65,7 +108,7 @@ function childOffset(parent: PMNode, index: number): number {
 function relXInNode(view: EditorView, pos: number, clientX: number): number {
   const dom = view.nodeDOM(pos);
   if (!(dom instanceof HTMLElement)) return 0;
-  const rect = (dom.querySelector("[data-pagestorm-asset-box]") ?? dom).getBoundingClientRect();
+  const rect = visualAssetElement(dom).getBoundingClientRect();
   if (rect.width <= 0) return 0;
   return (clientX - rect.left) / rect.width;
 }
@@ -76,14 +119,17 @@ export function pagestormPointerZone(
   inside: boolean,
   nodeRelY: number,
 ): PagestormDropZone {
-  if (!inside) return nodeRelY < 0.5 ? "before" : "after";
+  if (!inside) {
+    if (relY >= 0.2 && relY <= 0.8) return relX < 0.5 ? "left" : "right";
+    return nodeRelY < 0.5 ? "before" : "after";
+  }
   return pagestormDropZone(relX, relY);
 }
 
 function zoneAtEvent(view: EditorView, pos: number, event: DragEvent): PagestormDropZone | null {
   const dom = view.nodeDOM(pos);
   if (!(dom instanceof HTMLElement)) return null;
-  const box = (dom.querySelector("[data-pagestorm-asset-box]") ?? dom).getBoundingClientRect();
+  const box = visualAssetElement(dom).getBoundingClientRect();
   if (box.width <= 0 || box.height <= 0) return null;
   const relX = (event.clientX - box.left) / box.width;
   const relY = (event.clientY - box.top) / box.height;
@@ -91,6 +137,16 @@ function zoneAtEvent(view: EditorView, pos: number, event: DragEvent): Pagestorm
   const nodeRect = dom.getBoundingClientRect();
   const nodeRelY = nodeRect.height > 0 ? (event.clientY - nodeRect.top) / nodeRect.height : 0.5;
   return pagestormPointerZone(relX, relY, inside, nodeRelY);
+}
+
+function embedAt(doc: PMNode, pos: number): { pos: number; node: PMNode } | null {
+  const node = doc.nodeAt(pos);
+  if (!node || !isPagestormEmbedNode(node)) return null;
+  return { pos, node };
+}
+
+function draggedEmbed(view: EditorView): { pos: number; node: PMNode } | null {
+  return selectionEmbed(view.state) ?? embedAt(view.state.doc, dragOrigin.get(view) ?? -1);
 }
 
 function selectionEmbed(state: EditorView["state"]): { pos: number; node: PMNode } | null {
@@ -192,13 +248,17 @@ function moveEmbedAround(
   return true;
 }
 
+function dropHintHost(view: EditorView): HTMLElement {
+  const frame = view.dom.closest(".pagestorm-editor-frame");
+  if (frame instanceof HTMLElement) return frame;
+  return view.dom.parentElement ?? view.dom;
+}
+
 function applyDrop(
   view: EditorView,
   event: DragEvent,
-  moved: boolean,
 ): boolean {
-  if (!moved) return false;
-  const dragged = selectionEmbed(view.state);
+  const dragged = draggedEmbed(view);
   if (!dragged) return false;
   const targetPos = embedPosFromCoords(view, event);
   if (targetPos == null) return false;
@@ -216,7 +276,7 @@ function applyDrop(
 export const AssetRowNode = Node.create({
   name: PAGESTORM_ASSET_ROW,
   group: "block",
-  content: "(gameAsset | youtubePlayer | ogBookmark | toyboxEmbed){2}",
+  content: "(gameAsset | youtubePlayer | ogBookmark | toyboxEmbed){1,2}",
   defining: true,
   isolating: true,
   parseHTML() {
@@ -250,18 +310,26 @@ export const PagestormAssetLayout = Extension.create({
         },
         props: {
           handleDOMEvents: {
+            dragstart(view, event) {
+              const pos = embedPosFromCoords(view, event)
+                ?? embedPosFromEventTarget(view, event.target);
+              if (pos != null) dragOrigin.set(view, pos);
+              else dragOrigin.delete(view);
+              return false;
+            },
             dragover(view, event) {
-              const dragged = selectionEmbed(view.state);
+              const dragged = draggedEmbed(view);
               if (!dragged) return false;
               const targetPos = embedPosFromCoords(view, event);
-              if (targetPos == null) {
+              const zone = targetPos == null || targetPos === dragged.pos
+                ? null
+                : zoneAtEvent(view, targetPos, event);
+              if (zone !== "left" && zone !== "right") {
                 if (DROP_PLUGIN_KEY.getState(view.state)) {
                   view.dispatch(view.state.tr.setMeta(DROP_PLUGIN_KEY, null));
                 }
                 return false;
               }
-              const zone = zoneAtEvent(view, targetPos, event);
-              if (!zone) return false;
               event.preventDefault();
               const current = DROP_PLUGIN_KEY.getState(view.state);
               if (current?.pos === targetPos && current.zone === zone) return true;
@@ -286,9 +354,17 @@ export const PagestormAssetLayout = Extension.create({
               }
               return false;
             },
+            dragend(view) {
+              dragOrigin.delete(view);
+              if (DROP_PLUGIN_KEY.getState(view.state)) {
+                view.dispatch(view.state.tr.setMeta(DROP_PLUGIN_KEY, null));
+              }
+              return false;
+            },
           },
-          handleDrop(view, event, _slice, moved) {
-            const handled = applyDrop(view, event, moved);
+          handleDrop(view, event) {
+            const handled = applyDrop(view, event);
+            dragOrigin.delete(view);
             if (DROP_PLUGIN_KEY.getState(view.state)) {
               view.dispatch(view.state.tr.setMeta(DROP_PLUGIN_KEY, null));
             }
@@ -300,36 +376,72 @@ export const PagestormAssetLayout = Extension.create({
           hint.className = "pagestorm-drop-hint";
           hint.setAttribute("aria-hidden", "true");
           hint.setAttribute("contenteditable", "false");
+          const keep = document.createElement("div");
+          keep.className = "pagestorm-drop-keep";
+          const rule = document.createElement("div");
+          rule.className = "pagestorm-drop-rule";
+          const guest = document.createElement("div");
+          guest.className = "pagestorm-drop-guest";
+          hint.append(keep, rule, guest);
           hint.style.display = "none";
-          const hostEl = view.dom;
+          const hostEl = dropHintHost(view);
           hostEl.appendChild(hint);
           const paint = () => {
+            const host = dropHintHost(view);
+            if (hint.parentElement !== host) host.appendChild(hint);
             const state = DROP_PLUGIN_KEY.getState(view.state);
-            if (!state) {
+            guest.replaceChildren();
+            if (!state || (state.zone !== "left" && state.zone !== "right")) {
               hint.style.display = "none";
+              delete hint.dataset.zone;
               return;
             }
             const dom = view.nodeDOM(state.pos);
             if (!(dom instanceof HTMLElement)) {
               hint.style.display = "none";
+              delete hint.dataset.zone;
               return;
             }
-            const boxEl = (dom.querySelector("[data-pagestorm-asset-box]") ?? dom);
-            const rect = boxEl.getBoundingClientRect();
-            const host = hostEl.getBoundingClientRect();
-            const pad = 10;
+            const targetVisual = visualAssetElement(dom);
+            const targetRect = targetVisual.getBoundingClientRect();
+            const hostRect = host.getBoundingClientRect();
             hint.dataset.zone = state.zone;
-            hint.style.display = "block";
-            hint.style.overflow = "visible";
-            hint.style.padding = `${pad}px`;
-            hint.style.top = `${rect.top - host.top + hostEl.scrollTop - pad}px`;
-            hint.style.left = `${rect.left - host.left + hostEl.scrollLeft - pad}px`;
-            hint.style.width = `${rect.width + pad * 2}px`;
-            hint.style.height = `${rect.height + pad * 2}px`;
+            const dragged = draggedEmbed(view);
+            const srcDom = dragged ? view.nodeDOM(dragged.pos) : null;
+            const srcVisual = srcDom instanceof HTMLElement
+              ? visualAssetElement(srcDom)
+              : null;
+            const srcRect = srcVisual?.getBoundingClientRect();
+            const guestW = Math.max(48, Math.round(srcRect?.width ?? targetRect.width));
+            const guestH = Math.max(48, Math.round(srcRect?.height ?? targetRect.height));
+            const gap = 12;
+            hint.style.display = "flex";
+            hint.style.top = `${targetRect.top - hostRect.top + host.scrollTop}px`;
+            hint.style.height = `${Math.max(targetRect.height, guestH)}px`;
+            hint.style.width = `${targetRect.width + gap + guestW}px`;
+            hint.style.left = state.zone === "right"
+              ? `${targetRect.left - hostRect.left + host.scrollLeft}px`
+              : `${targetRect.left - gap - guestW - hostRect.left + host.scrollLeft}px`;
+            keep.style.width = `${Math.round(targetRect.width)}px`;
+            keep.style.height = `${Math.round(targetRect.height)}px`;
+            guest.style.width = `${guestW}px`;
+            guest.style.height = `${guestH}px`;
+            if (srcVisual) {
+              const clone = srcVisual.cloneNode(true) as HTMLElement;
+              clone.removeAttribute("data-drag-handle");
+              clone.querySelectorAll("[data-asset-chrome], [data-pagestorm-asset-chrome]")
+                .forEach((el) => el.remove());
+              clone.style.pointerEvents = "none";
+              clone.style.width = `${guestW}px`;
+              clone.style.height = `${guestH}px`;
+              clone.style.maxWidth = "none";
+              guest.appendChild(clone);
+            }
           };
           return {
             update: paint,
             destroy() {
+              dragOrigin.delete(view);
               hint.remove();
             },
           };
@@ -342,9 +454,11 @@ export const PagestormAssetLayout = Extension.create({
     const ranges: Array<{ from: number; to: number; nodes: PMNode[] }> = [];
     newState.doc.descendants((node, pos) => {
       if (node.type.name !== PAGESTORM_ASSET_ROW) return;
-      if (node.childCount === 2) return;
       const nodes: PMNode[] = [];
-      node.forEach((child) => nodes.push(child));
+      node.forEach((child) => {
+        if (!isStubEmbed(child)) nodes.push(child);
+      });
+      if (nodes.length === 2 && node.childCount === 2) return;
       ranges.push({ from: pos, to: pos + node.nodeSize, nodes });
     });
     if (ranges.length === 0) return null;

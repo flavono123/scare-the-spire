@@ -134,10 +134,13 @@ assert.equal(artDefault.height, Math.round(WIDE_ART_MIN_WIDTH / CARD_ART_IMAGE_A
 
 assert.equal(pagestormDropZone(0.2, 0.1), "before");
 assert.equal(pagestormDropZone(0.8, 0.9), "after");
+assert.equal(pagestormDropZone(0.2, 0.25), "left");
 assert.equal(pagestormDropZone(0.2, 0.5), "left");
 assert.equal(pagestormDropZone(0.8, 0.5), "right");
-assert.equal(pagestormPointerZone(-0.2, 0.5, false, 0.2), "before");
-assert.equal(pagestormPointerZone(1.2, 0.5, false, 0.8), "after");
+assert.equal(pagestormPointerZone(0.5, -0.2, false, 0.2), "before");
+assert.equal(pagestormPointerZone(0.5, 1.2, false, 0.8), "after");
+assert.equal(pagestormPointerZone(-0.2, 0.5, false, 0.5), "left");
+assert.equal(pagestormPointerZone(1.2, 0.5, false, 0.5), "right");
 assert.equal(pagestormPointerZone(0.2, 0.5, true, 0.8), "left");
 
 const nestedArt = pagestormFirstAssetThumb({

@@ -341,6 +341,7 @@ export function ToyboxEmbedFigure({
   const card = (
     <div
       className="relative overflow-hidden rounded-md border border-border bg-card/40"
+      data-pagestorm-embed-box=""
       style={{ width: px, maxWidth: "100%", height: py }}
     >
       {inner}
