@@ -67,29 +67,22 @@ export function nicknamePoolFieldName(locale: ProfileNicknameLocale): string {
   return `nicknames__${locale}`;
 }
 
-export function parseNicknameLines(value: string): string[] | null {
+export function normalizeNicknameLines(value: string): string[] {
   const seen = new Set<string>();
   const nicknames: string[] = [];
   for (const line of value.split(/\r?\n/)) {
     const nickname = line.trim();
     if (!nickname) continue;
-    if (
-      nickname.length < PROFILE_NICKNAME_MIN_CHARS
-      || nickname.length > PROFILE_NICKNAME_MAX_CHARS
-    ) {
-      return null;
-    }
     if (seen.has(nickname)) continue;
     seen.add(nickname);
     nicknames.push(nickname);
   }
-  if (
-    nicknames.length < PROFILE_NICKNAME_POOL_MIN
-    || nicknames.length > PROFILE_NICKNAME_POOL_MAX
-  ) {
-    return null;
-  }
   return nicknames;
+}
+
+export function parseNicknameLines(value: string): string[] | null {
+  const nicknames = normalizeNicknameLines(value);
+  return isValidNicknameList(nicknames) ? nicknames : null;
 }
 
 export function serializeNicknameLines(nicknames: readonly string[]): string {

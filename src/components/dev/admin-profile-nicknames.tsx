@@ -1,8 +1,13 @@
+"use client";
+
+import { useState, type MouseEvent } from "react";
 import {
   PROFILE_NICKNAME_LOCALES,
   PROFILE_NICKNAME_MAX_CHARS,
   PROFILE_NICKNAME_POOL_MAX,
+  isValidNicknameList,
   nicknamePoolFieldName,
+  normalizeNicknameLines,
   serializeNicknameLines,
   type ProfileNicknamePools,
   type ProfileNicknameLocale,
@@ -30,6 +35,33 @@ export function AdminProfileNicknames({
   onSave: (formData: FormData) => Promise<void>;
   onReset: (formData: FormData) => Promise<void>;
 }) {
+  const [clientInvalid, setClientInvalid] = useState(false);
+  const displayedSaveResult = clientInvalid ? "invalid" : saveResult;
+
+  function handleSaveClick(event: MouseEvent<HTMLButtonElement>) {
+    const form = event.currentTarget.form;
+    if (!form) return;
+
+    let valid = true;
+    for (const locale of PROFILE_NICKNAME_LOCALES) {
+      const field = form.elements.namedItem(nicknamePoolFieldName(locale));
+      if (!(field instanceof HTMLTextAreaElement)) {
+        valid = false;
+        continue;
+      }
+      const nicknames = normalizeNicknameLines(field.value);
+      field.value = serializeNicknameLines(nicknames);
+      if (!isValidNicknameList(nicknames)) valid = false;
+    }
+
+    if (!valid) {
+      event.preventDefault();
+      setClientInvalid(true);
+      return;
+    }
+    setClientInvalid(false);
+  }
+
   return (
     <section className="mt-8">
       <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
@@ -44,19 +76,19 @@ export function AdminProfileNicknames({
         </span>
       </div>
 
-      {saveResult && (
+      {displayedSaveResult && (
         <div
           id="nicks-save-result"
-          role={saveResult === "saved" ? "status" : "alert"}
+          role={displayedSaveResult === "saved" ? "status" : "alert"}
           className={`mb-4 rounded-md border px-4 py-3 text-sm ${
-            saveResult === "saved"
+            displayedSaveResult === "saved"
               ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-200"
               : "border-red-500/30 bg-red-500/10 text-red-200"
           }`}
         >
-          {saveResult === "saved"
+          {displayedSaveResult === "saved"
             ? "저장했습니다. 프로필 토큰 선택에 바로 반영됩니다."
-            : saveResult === "invalid"
+            : displayedSaveResult === "invalid"
               ? "한 줄에 닉 하나, 1–20자, 언어당 1–50개가 필요합니다."
               : "저장하지 못했습니다. 다시 시도해 주세요."}
         </div>
@@ -105,6 +137,7 @@ export function AdminProfileNicknames({
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="submit"
+              onClick={handleSaveClick}
               className="h-9 rounded-md border border-primary/30 bg-primary/10 px-3 text-sm font-semibold text-primary hover:bg-primary/20"
             >
               저장

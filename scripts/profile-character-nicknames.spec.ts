@@ -6,6 +6,7 @@ import {
   nicknamePoolFieldName,
   nicknamePoolRowsFromPools,
   nicknamePoolsAreDefault,
+  normalizeNicknameLines,
   parseNicknameLines,
   parseNicknamePoolRows,
   parseNicknamePoolsFromFormData,
@@ -25,9 +26,14 @@ assert.equal(
   DEFAULT_PROFILE_NICKNAMES.ko.length,
 );
 
+assert.deepEqual(normalizeNicknameLines("  아평  \n아평\n\n아클단"), ["아평", "아클단"]);
+assert.deepEqual(normalizeNicknameLines("아클단\n아평\n아클단\n"), ["아클단", "아평"]);
+assert.deepEqual(parseNicknameLines("  아평  \n아평\n아클단"), ["아평", "아클단"]);
 assert.deepEqual(parseNicknameLines("아클단\n아평\n아클단\n"), ["아클단", "아평"]);
 assert.equal(parseNicknameLines(""), null);
+assert.equal(parseNicknameLines("   \n\n"), null);
 assert.equal(parseNicknameLines("x".repeat(21)), null);
+assert.equal(parseNicknameLines(`  ${"x".repeat(21)}  `), null);
 assert.equal(serializeNicknameLines(["네바", "네평"]), "네바\n네평");
 assert.equal(isValidNicknameList(["네바"]), true);
 assert.equal(isValidNicknameList([" 네바"]), false);
@@ -53,6 +59,14 @@ assert.deepEqual(parseNicknamePoolsFromFormData(formData), DEFAULT_PROFILE_NICKN
 
 formData.set(nicknamePoolFieldName("ko"), "");
 assert.equal(parseNicknamePoolsFromFormData(formData), null);
+
+const trimmedFormData = new FormData();
+trimmedFormData.set(nicknamePoolFieldName("ko"), "  아평  \n아평\n\n아클단");
+trimmedFormData.set(nicknamePoolFieldName("en"), " Clad \nClad\nSilent");
+assert.deepEqual(parseNicknamePoolsFromFormData(trimmedFormData), {
+  ko: ["아평", "아클단"],
+  en: ["Clad", "Silent"],
+});
 
 const rows = nicknamePoolRowsFromPools(DEFAULT_PROFILE_NICKNAMES);
 assert.equal(rows.length, 10);
