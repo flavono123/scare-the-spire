@@ -1,3 +1,4 @@
+import type { PostBlock } from "@/lib/chemical-types";
 import {
   DEFRAGMENT_FEED_SERVICE_META,
   DEFRAGMENT_HREF,
@@ -8,6 +9,7 @@ import {
 } from "@/lib/defragment";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { PAGESTORM_HREF } from "@/lib/pagestorm";
+import type { TransfigurePost } from "@/lib/transfigure-types";
 
 export const PAGESTORM_TOYBOX_EMBED_SERVICES = [
   "transfigure",
@@ -32,6 +34,25 @@ export type PagestormToyboxPick = {
   nickname: string;
 };
 
+export type PagestormTransfigurePreview = {
+  blocks: PostBlock[];
+  upgradedBlocks: PostBlock[] | null;
+  transformedName: string;
+  transformedCost: string;
+  transformedStarCost: string;
+  transformedCardType: string;
+  transformedCardRarity: string;
+  transformedUpgradeCost: string;
+  transformedUpgradeStarCost: string;
+  cardTopKeywords: string[];
+  cardBottomKeywords: string[];
+  upgradedCardTopKeywords: string[];
+  upgradedCardBottomKeywords: string[];
+  showUpgrade: boolean;
+  tokenColor: string;
+  tokenWax: string;
+};
+
 export type PagestormToyboxSnapshot = PagestormToyboxPick & {
   leftType: string;
   leftId: string;
@@ -41,6 +62,7 @@ export type PagestormToyboxSnapshot = PagestormToyboxPick & {
   placements: unknown[];
   pool: unknown[];
   tokenSrc: string;
+  transfigure: PagestormTransfigurePreview | null;
 };
 
 export type PagestormToyboxPickerMode =
@@ -104,7 +126,11 @@ export function pagestormToyboxEmbedHeight(
   const href = pagestormToyboxServiceHref(service);
   if (href === "/this-or-that") return 248;
   if (href === "/decisions-decisions") return 260;
-  if (href === "/transfigure") return resourceType === "card" ? 236 : 140;
+  if (href === "/transfigure") {
+    if (resourceType === "card") return 420;
+    if (resourceType === "relic") return 448;
+    return 340;
+  }
   return 148;
 }
 
@@ -133,6 +159,92 @@ export function pagestormToyboxJsonArray(value: unknown): unknown[] {
   return [];
 }
 
+function asStringList(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === "string")
+    : [];
+}
+
+function asPostBlocks(value: unknown): PostBlock[] {
+  return Array.isArray(value) ? value as PostBlock[] : [];
+}
+
+export function pagestormTransfigurePreviewFromPost(
+  post: TransfigurePost,
+): PagestormTransfigurePreview {
+  return {
+    blocks: asPostBlocks(post.content),
+    upgradedBlocks: Array.isArray(post.upgraded_content)
+      ? post.upgraded_content
+      : null,
+    transformedName: post.transformed_name ?? "",
+    transformedCost: post.transformed_cost ?? "",
+    transformedStarCost: post.transformed_star_cost ?? "",
+    transformedCardType: post.transformed_card_type ?? "",
+    transformedCardRarity: post.transformed_card_rarity ?? "",
+    transformedUpgradeCost: post.transformed_upgrade_cost ?? "",
+    transformedUpgradeStarCost: post.transformed_upgrade_star_cost ?? "",
+    cardTopKeywords: asStringList(post.card_top_keywords),
+    cardBottomKeywords: asStringList(post.card_bottom_keywords),
+    upgradedCardTopKeywords: asStringList(post.upgraded_card_top_keywords),
+    upgradedCardBottomKeywords: asStringList(post.upgraded_card_bottom_keywords),
+    showUpgrade: Boolean(post.show_upgrade),
+    tokenColor: post.token_color ?? "",
+    tokenWax: post.token_wax ?? "",
+  };
+}
+
+export function parsePagestormTransfigurePreview(
+  value: unknown,
+): PagestormTransfigurePreview | null {
+  const raw = typeof value === "string"
+    ? (() => {
+      if (!value || value === "null") return null;
+      try {
+        return JSON.parse(value) as unknown;
+      } catch {
+        return null;
+      }
+    })()
+    : value;
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const record = raw as Record<string, unknown>;
+  return {
+    blocks: asPostBlocks(record.blocks),
+    upgradedBlocks: Array.isArray(record.upgradedBlocks)
+      ? record.upgradedBlocks as PostBlock[]
+      : null,
+    transformedName: typeof record.transformedName === "string"
+      ? record.transformedName
+      : "",
+    transformedCost: typeof record.transformedCost === "string"
+      ? record.transformedCost
+      : "",
+    transformedStarCost: typeof record.transformedStarCost === "string"
+      ? record.transformedStarCost
+      : "",
+    transformedCardType: typeof record.transformedCardType === "string"
+      ? record.transformedCardType
+      : "",
+    transformedCardRarity: typeof record.transformedCardRarity === "string"
+      ? record.transformedCardRarity
+      : "",
+    transformedUpgradeCost: typeof record.transformedUpgradeCost === "string"
+      ? record.transformedUpgradeCost
+      : "",
+    transformedUpgradeStarCost: typeof record.transformedUpgradeStarCost === "string"
+      ? record.transformedUpgradeStarCost
+      : "",
+    cardTopKeywords: asStringList(record.cardTopKeywords),
+    cardBottomKeywords: asStringList(record.cardBottomKeywords),
+    upgradedCardTopKeywords: asStringList(record.upgradedCardTopKeywords),
+    upgradedCardBottomKeywords: asStringList(record.upgradedCardBottomKeywords),
+    showUpgrade: Boolean(record.showUpgrade),
+    tokenColor: typeof record.tokenColor === "string" ? record.tokenColor : "",
+    tokenWax: typeof record.tokenWax === "string" ? record.tokenWax : "",
+  };
+}
+
 export function pagestormToyboxNodeAttrs(snapshot: PagestormToyboxSnapshot) {
   return {
     postId: snapshot.id,
@@ -147,6 +259,7 @@ export function pagestormToyboxNodeAttrs(snapshot: PagestormToyboxSnapshot) {
     placementsJson: JSON.stringify(snapshot.placements ?? []),
     poolJson: JSON.stringify(snapshot.pool ?? []),
     tokenSrc: snapshot.tokenSrc,
+    transfigureJson: JSON.stringify(snapshot.transfigure ?? null),
     align: "center" as const,
     linked: true,
     width: 576,

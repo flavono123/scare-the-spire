@@ -27,6 +27,7 @@ import {
   pagestormToyboxNodeAttrs,
   pagestormToyboxPostHref,
   pagestormToyboxServiceHref,
+  parsePagestormTransfigurePreview,
 } from "../src/lib/pagestorm-toybox";
 
 const doc: PagestormDoc = {
@@ -184,8 +185,9 @@ assert.equal(isPagestormToyboxPickerHref("/history-course"), false);
 assert.equal(isPagestormToyboxPickerHref("/pagestorm"), false);
 assert.equal(pagestormToyboxServiceHref("this_or_that"), "/this-or-that");
 assert.equal(pagestormToyboxEmbedHeight("/this-or-that"), 248);
-assert.equal(pagestormToyboxEmbedHeight("/transfigure", "card"), 236);
-assert.equal(pagestormToyboxEmbedHeight("/transfigure", "relic"), 140);
+assert.equal(pagestormToyboxEmbedHeight("/transfigure", "card"), 420);
+assert.equal(pagestormToyboxEmbedHeight("/transfigure", "relic"), 448);
+assert.equal(pagestormToyboxEmbedHeight("/transfigure", "potion"), 340);
 assert.equal(
   pagestormToyboxPostHref("this_or_that", "post-1", "ko", "kor"),
   "/this-or-that/post-1",
@@ -212,10 +214,48 @@ const snapshotAttrs = pagestormToyboxNodeAttrs({
   placements: [],
   pool: [],
   tokenSrc: "/images/sts2/relics/choices_paradox.webp",
+  transfigure: null,
 });
 assert.equal(snapshotAttrs.postId, "live-1");
 assert.equal(snapshotAttrs.leftType, "card");
 assert.equal(snapshotAttrs.height, 248);
 assert.equal(snapshotAttrs.rowsJson, "[]");
+assert.equal(snapshotAttrs.transfigureJson, "null");
+
+const transfigurePreview = parsePagestormTransfigurePreview({
+  blocks: [{ type: "text", text: "장갑이 따뜻하다" }],
+  transformedName: "따뜻한 장갑",
+  cardTopKeywords: [],
+  cardBottomKeywords: [],
+  upgradedCardTopKeywords: [],
+  upgradedCardBottomKeywords: [],
+  showUpgrade: false,
+  tokenColor: "gold",
+  tokenWax: "",
+});
+assert.ok(transfigurePreview);
+assert.equal(transfigurePreview.transformedName, "따뜻한 장갑");
+assert.equal(transfigurePreview.tokenColor, "gold");
+assert.equal(parsePagestormTransfigurePreview("null"), null);
+assert.equal(parsePagestormTransfigurePreview(""), null);
+
+const transfigureAttrs = pagestormToyboxNodeAttrs({
+  id: "tf-1",
+  service: "/transfigure",
+  userId: "u1",
+  title: "따뜻한 장갑(리워크)",
+  nickname: "디황",
+  leftType: "relic",
+  leftId: "TOASTY_MITTENS",
+  rightType: "",
+  rightId: "",
+  rows: [],
+  placements: [],
+  pool: [],
+  tokenSrc: "",
+  transfigure: transfigurePreview,
+});
+assert.equal(transfigureAttrs.height, 448);
+assert.match(transfigureAttrs.transfigureJson, /따뜻한 장갑/);
 
 console.log("pagestorm.spec.ts: ok");

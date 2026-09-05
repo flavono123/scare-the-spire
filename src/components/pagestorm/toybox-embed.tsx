@@ -2,6 +2,7 @@
 
 import { CardTile } from "@/components/codex/card-tile";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
+import { TransfigureResourcePreview } from "@/components/transfigure/transfigure-resource-preview";
 import Image from "@/components/ui/static-image";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -17,7 +18,15 @@ import {
   pagestormToyboxFederatedFromHref,
   pagestormToyboxPostHref,
   pagestormToyboxServiceHref,
+  type PagestormTransfigurePreview,
 } from "@/lib/pagestorm-toybox";
+import {
+  isTransfigureCardRarity,
+  isTransfigureCardType,
+  isTransfigureTokenColor,
+  isTransfigureTokenWax,
+  type TransfigureCardKeywords,
+} from "@/lib/transfigure-types";
 import { findPagestormEntity, usePagestormEntities } from "./entities-context";
 import { AssetCornerHandles, AssetFocusChrome, alignRowClass } from "./figures";
 import {
@@ -96,6 +105,73 @@ function ToyboxResourceVisual({
   );
 }
 
+function TransfigurePreview({
+  type,
+  id,
+  preview,
+}: {
+  type: string;
+  id: string;
+  preview: PagestormTransfigurePreview | null;
+}) {
+  const serviceLocale = useServiceLocale();
+  const gameLocale = useGameLocale();
+  const entities = usePagestormEntities();
+  const entity = findPagestormEntity(entities, type, id);
+  if (!entity || !preview) {
+    return (
+      <div className="flex h-full items-center justify-center p-3">
+        <ToyboxResourceVisual type={type} id={id} />
+      </div>
+    );
+  }
+  const cardKeywords: TransfigureCardKeywords = {
+    top: preview.cardTopKeywords,
+    bottom: preview.cardBottomKeywords,
+  };
+  const upgradedCardKeywords: TransfigureCardKeywords = {
+    top: preview.upgradedCardTopKeywords,
+    bottom: preview.upgradedCardBottomKeywords,
+  };
+  return (
+    <div className="flex h-full min-h-0 justify-center overflow-y-auto p-3">
+      <div className="my-auto">
+        <TransfigureResourcePreview
+          blocks={preview.blocks}
+          entities={entities}
+          entity={entity}
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          transformedName={preview.transformedName || undefined}
+          transformedCost={preview.transformedCost || undefined}
+          transformedStarCost={preview.transformedStarCost || undefined}
+          transformedCardType={
+            isTransfigureCardType(preview.transformedCardType)
+              ? preview.transformedCardType
+              : null
+          }
+          transformedCardRarity={
+            isTransfigureCardRarity(preview.transformedCardRarity)
+              ? preview.transformedCardRarity
+              : null
+          }
+          transformedUpgradeCost={preview.transformedUpgradeCost || undefined}
+          transformedUpgradeStarCost={preview.transformedUpgradeStarCost || undefined}
+          cardKeywords={cardKeywords}
+          upgradedBlocks={preview.upgradedBlocks}
+          upgradedCardKeywords={upgradedCardKeywords}
+          upgradeLabel=""
+          initialShowUpgrade={preview.showUpgrade}
+          showImageActions={false}
+          showUpgradeToggle={false}
+          tokenColor={isTransfigureTokenColor(preview.tokenColor) ? preview.tokenColor : null}
+          tokenWax={isTransfigureTokenWax(preview.tokenWax) ? preview.tokenWax : "off"}
+        />
+      </div>
+    </div>
+  );
+}
+
 function ThisOrThatPreview({
   leftType,
   leftId,
@@ -167,6 +243,7 @@ export function ToyboxEmbedFigure({
   rows,
   placements,
   pool,
+  transfigure = null,
   align,
   mode = "edit",
   selected = false,
@@ -189,6 +266,7 @@ export function ToyboxEmbedFigure({
   placements?: unknown;
   pool?: unknown;
   tokenSrc?: string;
+  transfigure?: PagestormTransfigurePreview | null;
   align: MockAlign;
   mode?: "edit" | "preview";
   selected?: boolean;
@@ -230,7 +308,7 @@ export function ToyboxEmbedFigure({
         }
         : null
     : null;
-  const transfigure = serviceHref === "/transfigure" && leftType && leftId
+  const transfigureTarget = serviceHref === "/transfigure" && leftType && leftId
     ? { type: leftType, id: leftId }
     : null;
 
@@ -248,11 +326,13 @@ export function ToyboxEmbedFigure({
     if (dd) {
       return <DecisionsPreview post={dd} />;
     }
-    if (transfigure) {
+    if (transfigureTarget) {
       return (
-        <div className="flex h-full items-center justify-center p-3">
-          <ToyboxResourceVisual type={transfigure.type} id={transfigure.id} />
-        </div>
+        <TransfigurePreview
+          type={transfigureTarget.type}
+          id={transfigureTarget.id}
+          preview={transfigure}
+        />
       );
     }
     return null;
@@ -280,7 +360,7 @@ export function ToyboxEmbedFigure({
             width={px}
             height={py}
             clampWidth={clampPlayerWidth}
-            clampHeight={(next) => Math.min(480, Math.max(160, Math.round(next)))}
+            clampHeight={(next) => Math.min(640, Math.max(160, Math.round(next)))}
             onResize={onResize}
           />
           <AssetFocusChrome

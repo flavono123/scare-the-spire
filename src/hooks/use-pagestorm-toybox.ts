@@ -15,6 +15,7 @@ import {
   pagestormToyboxFederatedFromHref,
   pagestormToyboxPickFromFeedItem,
   pagestormToyboxPickerMode,
+  pagestormTransfigurePreviewFromPost,
   type PagestormToyboxPick,
   type PagestormToyboxSnapshot,
 } from "@/lib/pagestorm-toybox";
@@ -83,6 +84,7 @@ export async function loadPagestormToyboxSnapshot(
     placements: [],
     pool: [],
     tokenSrc: "",
+    transfigure: null,
   };
   const federated = pagestormToyboxFederatedFromHref(pick.service);
   if (!federated) return base;
@@ -120,6 +122,7 @@ export async function loadPagestormToyboxSnapshot(
       nickname: post.nickname || pick.nickname,
       leftType: post.resource_type,
       leftId: post.resource_id,
+      transfigure: pagestormTransfigurePreviewFromPost(post),
     };
   }
   const source = federated === "favorite_tournament"

@@ -19,7 +19,10 @@ import {
   type MockGameAsset,
   type MockOgBookmark,
 } from "./sample";
-import { pagestormToyboxJsonArray } from "@/lib/pagestorm-toybox";
+import {
+  pagestormToyboxJsonArray,
+  parsePagestormTransfigurePreview,
+} from "@/lib/pagestorm-toybox";
 import { ToyboxEmbedFigure } from "./toybox-embed";
 import { PAGESTORM_EMBED_NODE_NAMES } from "./asset-layout";
 
@@ -215,6 +218,9 @@ function ToyboxView({ node, updateAttributes, selected }: NodeViewProps) {
           placements={pagestormToyboxJsonArray(node.attrs.placementsJson ?? node.attrs.placements)}
           pool={pagestormToyboxJsonArray(node.attrs.poolJson ?? node.attrs.pool)}
           tokenSrc={String(node.attrs.tokenSrc ?? "")}
+          transfigure={parsePagestormTransfigurePreview(
+            node.attrs.transfigureJson ?? node.attrs.transfigure,
+          )}
           align={align}
           mode={mode}
           selected={selected}
@@ -349,6 +355,7 @@ export const ToyboxEmbedNode = Node.create({
       placementsJson: { default: "[]" },
       poolJson: { default: "[]" },
       tokenSrc: { default: "" },
+      transfigureJson: { default: "null" },
       align: { default: "center" },
       linked: { default: true },
       width: { default: 576 },
