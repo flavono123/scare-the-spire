@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type MouseEvent } from "react";
+import { useEffect, useMemo, useState, type MouseEvent } from "react";
 import {
   PROFILE_NICKNAME_LOCALES,
   PROFILE_NICKNAME_MAX_CHARS,
@@ -9,6 +9,7 @@ import {
   nicknamePoolFieldName,
   normalizeNicknameLines,
   serializeNicknameLines,
+  sortNicknameList,
   type ProfileNicknamePools,
   type ProfileNicknameLocale,
 } from "@/lib/profile-character-nicknames";
@@ -35,31 +36,54 @@ export function AdminProfileNicknames({
   onSave: (formData: FormData) => Promise<void>;
   onReset: (formData: FormData) => Promise<void>;
 }) {
+  const savedKo = serializeNicknameLines(pools.ko);
+  const savedEn = serializeNicknameLines(pools.en);
+  const saved = useMemo(
+    () => ({ ko: savedKo, en: savedEn }),
+    [savedKo, savedEn],
+  );
+  const [draft, setDraft] = useState(saved);
   const [clientInvalid, setClientInvalid] = useState(false);
   const displayedSaveResult = clientInvalid ? "invalid" : saveResult;
 
-  function handleSaveClick(event: MouseEvent<HTMLButtonElement>) {
-    const form = event.currentTarget.form;
-    if (!form) return;
+  useEffect(() => {
+    setDraft({ ko: savedKo, en: savedEn });
+    setClientInvalid(false);
+  }, [savedKo, savedEn]);
 
+  const localeState = PROFILE_NICKNAME_LOCALES.map((locale) => {
+    const savedNicknames = pools[locale];
+    const editedNicknames = normalizeNicknameLines(draft[locale]);
+    const dirty = serializeNicknameLines(editedNicknames) !== serializeNicknameLines(savedNicknames);
+    return {
+      locale,
+      savedCount: savedNicknames.length,
+      editedCount: editedNicknames.length,
+      dirty,
+    };
+  });
+  const anyDirty = localeState.some((entry) => entry.dirty);
+
+  async function handleSaveClick(event: MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    const nextDraft = { ...draft };
     let valid = true;
     for (const locale of PROFILE_NICKNAME_LOCALES) {
-      const field = form.elements.namedItem(nicknamePoolFieldName(locale));
-      if (!(field instanceof HTMLTextAreaElement)) {
-        valid = false;
-        continue;
-      }
-      const nicknames = normalizeNicknameLines(field.value);
-      field.value = serializeNicknameLines(nicknames);
+      const nicknames = sortNicknameList(normalizeNicknameLines(nextDraft[locale]), locale);
+      nextDraft[locale] = serializeNicknameLines(nicknames);
       if (!isValidNicknameList(nicknames)) valid = false;
     }
-
+    setDraft(nextDraft);
     if (!valid) {
-      event.preventDefault();
       setClientInvalid(true);
       return;
     }
     setClientInvalid(false);
+    const formData = new FormData();
+    for (const locale of PROFILE_NICKNAME_LOCALES) {
+      formData.set(nicknamePoolFieldName(locale), nextDraft[locale]);
+    }
+    await onSave(formData);
   }
 
   return (
@@ -73,6 +97,7 @@ export function AdminProfileNicknames({
         </div>
         <span className="text-xs text-muted-foreground">
           {source === "stored" ? "저장본" : "코드 기본값"}
+          {anyDirty ? " · 편집 중" : ""}
         </span>
       </div>
 
@@ -108,25 +133,46 @@ export function AdminProfileNicknames({
 
       <form action={onSave} className="space-y-4">
         <div className="grid gap-3 md:grid-cols-2">
-          {PROFILE_NICKNAME_LOCALES.map((locale) => {
+          {localeState.map(({ locale, savedCount, editedCount, dirty }) => {
             const fieldName = nicknamePoolFieldName(locale);
-            const nicknames = pools[locale];
+            const lineCount = draft[locale].split(/\r?\n/).length;
             return (
-              <div key={locale} className="rounded-md border border-border bg-card/35 p-3">
-                <label className="block text-sm font-semibold text-foreground" htmlFor={fieldName}>
-                  {LOCALE_LABELS[locale]}
-                </label>
+              <div
+                key={locale}
+                className={`rounded-md border bg-card/35 p-3 ${
+                  dirty ? "border-amber-500/40" : "border-border"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <label className="block text-sm font-semibold text-foreground" htmlFor={fieldName}>
+                    {LOCALE_LABELS[locale]}
+                  </label>
+                  {dirty && (
+                    <span className="text-[11px] font-semibold text-amber-200">미저장</span>
+                  )}
+                </div>
                 <textarea
                   id={fieldName}
                   name={fieldName}
-                  defaultValue={serializeNicknameLines(nicknames)}
-                  rows={Math.min(16, Math.max(8, nicknames.length + 1))}
+                  value={draft[locale]}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setDraft((current) => ({ ...current, [locale]: value }));
+                    setClientInvalid(false);
+                  }}
+                  rows={Math.min(16, Math.max(8, lineCount + 1))}
                   spellCheck={false}
                   disabled={!canEdit}
                   className="mt-2 w-full resize-y rounded-md border border-border bg-background/70 px-3 py-2 font-mono text-xs leading-relaxed text-foreground outline-none focus:border-primary/60 disabled:opacity-80"
                 />
-                <div className="mt-1 text-[11px] text-muted-foreground">
-                  {nicknames.length}개 · 한 줄에 하나 · {PROFILE_NICKNAME_MAX_CHARS}자 · 최대 {PROFILE_NICKNAME_POOL_MAX}개
+                <div
+                  className={`mt-1 text-[11px] ${
+                    dirty ? "text-amber-200/90" : "text-muted-foreground"
+                  }`}
+                >
+                  저장됨 {savedCount}개
+                  {dirty ? ` · 편집 ${editedCount}개` : ""}
+                  {" · "}한 줄에 하나 · {PROFILE_NICKNAME_MAX_CHARS}자 · 최대 {PROFILE_NICKNAME_POOL_MAX}개
                 </div>
               </div>
             );
@@ -136,7 +182,7 @@ export function AdminProfileNicknames({
         {canEdit && (
           <div className="flex flex-wrap items-center gap-2">
             <button
-              type="submit"
+              type="button"
               onClick={handleSaveClick}
               className="h-9 rounded-md border border-primary/30 bg-primary/10 px-3 text-sm font-semibold text-primary hover:bg-primary/20"
             >

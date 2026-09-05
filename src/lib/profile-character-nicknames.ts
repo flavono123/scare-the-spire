@@ -80,8 +80,20 @@ export function normalizeNicknameLines(value: string): string[] {
   return nicknames;
 }
 
-export function parseNicknameLines(value: string): string[] | null {
-  const nicknames = normalizeNicknameLines(value);
+export function sortNicknameList(
+  nicknames: readonly string[],
+  locale: ProfileNicknameLocale,
+): string[] {
+  return [...nicknames].sort((left, right) =>
+    left.localeCompare(right, locale, { numeric: true, sensitivity: "base" }),
+  );
+}
+
+export function parseNicknameLines(
+  value: string,
+  locale: ProfileNicknameLocale = "ko",
+): string[] | null {
+  const nicknames = sortNicknameList(normalizeNicknameLines(value), locale);
   return isValidNicknameList(nicknames) ? nicknames : null;
 }
 
@@ -128,8 +140,8 @@ export function parseNicknamePoolRows(rows: unknown): ProfileNicknamePools {
 }
 
 export function parseNicknamePoolsFromFormData(formData: FormData): ProfileNicknamePools | null {
-  const ko = parseNicknameLines(String(formData.get(nicknamePoolFieldName("ko")) ?? ""));
-  const en = parseNicknameLines(String(formData.get(nicknamePoolFieldName("en")) ?? ""));
+  const ko = parseNicknameLines(String(formData.get(nicknamePoolFieldName("ko")) ?? ""), "ko");
+  const en = parseNicknameLines(String(formData.get(nicknamePoolFieldName("en")) ?? ""), "en");
   if (!ko || !en) return null;
   return { ko, en };
 }
@@ -143,7 +155,7 @@ export function nicknamePoolRowsFromPools(pools: ProfileNicknamePools): Array<{
     PROFILE_NICKNAME_LOCALES.map((locale) => ({
       character_id: characterId,
       locale,
-      nicknames: [...pools[locale]],
+      nicknames: sortNicknameList(pools[locale], locale),
     })),
   );
 }
@@ -212,8 +224,14 @@ function mergeCharacterNicknamePools(
 
 function flattenCharacterNicknamePools(pools: ProfileCharacterNicknamePools): ProfileNicknamePools {
   return {
-    ko: uniqueNicknames(PROFILE_CHARACTER_NICKNAME_IDS.flatMap((id) => pools[id].ko)),
-    en: uniqueNicknames(PROFILE_CHARACTER_NICKNAME_IDS.flatMap((id) => pools[id].en)),
+    ko: sortNicknameList(
+      uniqueNicknames(PROFILE_CHARACTER_NICKNAME_IDS.flatMap((id) => pools[id].ko)),
+      "ko",
+    ),
+    en: sortNicknameList(
+      uniqueNicknames(PROFILE_CHARACTER_NICKNAME_IDS.flatMap((id) => pools[id].en)),
+      "en",
+    ),
   };
 }
 
