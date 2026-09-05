@@ -9,10 +9,6 @@ import { buildPaletteSubjects, subjectsForKind } from "@/lib/dev-palette-subject
 import { getEncounterMonsterIds } from "@/lib/encounter-compositions";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
-import {
-  DEFAULT_PROFILE_CHARACTER_NICKNAMES,
-  isProfileCharacterNicknameId,
-} from "@/lib/profile-character-nicknames";
 import { serviceMessages } from "@/messages/service";
 import ProfilePage, {
   type BossChoice,
@@ -91,12 +87,6 @@ function mapCharacter(character: CodexCharacter): CharacterChoice {
     label: character.name,
     iconUrl: character.iconUrl,
     fallbackImageUrl: character.combatImageUrl,
-    nicknameOptions: isProfileCharacterNicknameId(character.id)
-      ? DEFAULT_PROFILE_CHARACTER_NICKNAMES[character.id]
-      : {
-          ko: [character.name],
-          en: [character.id],
-        },
     spineAsset: character.spineAsset,
   };
 }

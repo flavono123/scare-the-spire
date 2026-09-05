@@ -32,7 +32,15 @@ assert.equal(migrated.avatarKind, "character");
 assert.equal(migrated.avatarId, "NECROBINDER");
 assert.equal(migrated.paletteId, null);
 assert.equal(migrated.paletteSwapped, false);
+assert.equal(migrated.nicknameLocked, false);
 assert.equal(profileAvatarTokenUrl(migrated), "/images/sts2/characters/character_icon_necrobinder.webp");
+
+const locked = normalizeUserProfile({
+  ...DEFAULT_USER_PROFILE,
+  nickname: "내닉",
+  nicknameLocked: true,
+});
+assert.equal(locked.nicknameLocked, true);
 
 const boss = normalizeUserProfile({
   ...DEFAULT_USER_PROFILE,

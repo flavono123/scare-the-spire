@@ -40,14 +40,13 @@ import { historyRunFloorPlainText } from "@/lib/history-run-floor";
 import { historyRunPlainText } from "@/lib/history-run-reference";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import {
-  DEFAULT_PROFILE_CHARACTER_NICKNAMES,
+  DEFAULT_PROFILE_NICKNAMES,
   PROFILE_CHARACTER_NICKNAME_POOLS_TABLE,
   isMissingProfileCharacterNicknamePoolsTable,
-  mergeNicknamePools,
   nicknamePoolRowsFromPools,
   parseNicknamePoolRows,
   parseNicknamePoolsFromFormData,
-  type ProfileCharacterNicknamePools,
+  type ProfileNicknamePools,
 } from "@/lib/profile-character-nicknames";
 import { getSiteOrigin } from "@/lib/site-origin";
 import { supabase, supabaseEnabled } from "@/lib/supabase";
@@ -115,7 +114,7 @@ interface SupabaseResult<T> {
 }
 
 interface NicknamePoolState {
-  pools: ProfileCharacterNicknamePools;
+  pools: ProfileNicknamePools;
   source: "stored" | "defaults";
   canEdit: boolean;
   error?: string;
@@ -510,7 +509,7 @@ async function readNicknamePools(): Promise<NicknamePoolState> {
   const admin = createInquiryAdminClient();
   if (!admin) {
     return {
-      pools: DEFAULT_PROFILE_CHARACTER_NICKNAMES,
+      pools: DEFAULT_PROFILE_NICKNAMES,
       source: "defaults",
       canEdit: false,
     };
@@ -525,7 +524,7 @@ async function readNicknamePools(): Promise<NicknamePoolState> {
     );
     if (error) {
       return {
-        pools: DEFAULT_PROFILE_CHARACTER_NICKNAMES,
+        pools: DEFAULT_PROFILE_NICKNAMES,
         source: "defaults",
         canEdit: true,
         error: isMissingProfileCharacterNicknamePoolsTable(error)
@@ -533,15 +532,14 @@ async function readNicknamePools(): Promise<NicknamePoolState> {
           : error.message,
       };
     }
-    const parsed = parseNicknamePoolRows(data);
     return {
-      pools: mergeNicknamePools(parsed),
-      source: Object.keys(parsed).length > 0 ? "stored" : "defaults",
+      pools: parseNicknamePoolRows(data),
+      source: Array.isArray(data) && data.length > 0 ? "stored" : "defaults",
       canEdit: true,
     };
   } catch (error) {
     return {
-      pools: DEFAULT_PROFILE_CHARACTER_NICKNAMES,
+      pools: DEFAULT_PROFILE_NICKNAMES,
       source: "defaults",
       canEdit: true,
       error: error instanceof Error ? error.message : "Unknown Supabase error",
@@ -549,7 +547,7 @@ async function readNicknamePools(): Promise<NicknamePoolState> {
   }
 }
 
-async function writeNicknamePools(pools: ProfileCharacterNicknamePools): Promise<void> {
+async function writeNicknamePools(pools: ProfileNicknamePools): Promise<void> {
   const admin = createInquiryAdminClient();
   if (!admin) throw new Error("SUPABASE_SECRET_KEY is not configured");
 
@@ -596,7 +594,7 @@ async function resetProfileCharacterNicknames(formData: FormData) {
   let result: "saved" | "error" = "saved";
   try {
     if (!devToolsEnabled()) throw new Error("Dev tools are disabled");
-    await writeNicknamePools(DEFAULT_PROFILE_CHARACTER_NICKNAMES);
+    await writeNicknamePools(DEFAULT_PROFILE_NICKNAMES);
     revalidatePath("/dev/admin");
   } catch (error) {
     console.error("Failed to reset profile character nicknames", error);

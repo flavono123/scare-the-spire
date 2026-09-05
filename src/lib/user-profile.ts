@@ -12,6 +12,7 @@ export type ProfileAvatarKind = "character" | "boss";
 
 export interface UserProfile {
   nickname: string;
+  nicknameLocked: boolean;
   characterId: string;
   avatarKind: ProfileAvatarKind;
   avatarId: string;
@@ -32,6 +33,7 @@ export const UNSET_PROFILE_TOKEN_URL = "/images/sts2/profile/unset.webp";
 
 export const DEFAULT_USER_PROFILE: UserProfile = {
   nickname: "닉",
+  nicknameLocked: false,
   characterId: "NECROBINDER",
   avatarKind: "character",
   avatarId: "NECROBINDER",
@@ -129,6 +131,7 @@ export function normalizeUserProfile(profile: Partial<UserProfile> | null | unde
   const paletteId = isProfilePaletteId(profile?.paletteId) ? profile.paletteId : null;
   return {
     nickname: cleanNickname(profile?.nickname ?? fallback.nickname, fallback.nickname),
+    nicknameLocked: Boolean(profile?.nicknameLocked ?? fallback.nicknameLocked),
     characterId,
     avatarKind: avatar.avatarKind,
     avatarId: avatar.avatarId,

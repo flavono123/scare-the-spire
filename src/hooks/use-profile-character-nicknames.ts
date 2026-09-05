@@ -4,14 +4,13 @@ import { useEffect, useState } from "react";
 import {
   PROFILE_CHARACTER_NICKNAME_POOLS_TABLE,
   isMissingProfileCharacterNicknamePoolsTable,
-  mergeNicknamePools,
   parseNicknamePoolRows,
-  type ProfileCharacterNicknamePools,
+  type ProfileNicknamePools,
 } from "@/lib/profile-character-nicknames";
 import { supabase, supabaseEnabled } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
-export async function fetchProfileCharacterNicknamePools(): Promise<ProfileCharacterNicknamePools | null> {
+export async function fetchProfileCharacterNicknamePools(): Promise<ProfileNicknamePools | null> {
   if (!supabaseEnabled) return null;
 
   try {
@@ -27,7 +26,7 @@ export async function fetchProfileCharacterNicknamePools(): Promise<ProfileChara
       }
       return null;
     }
-    return mergeNicknamePools(parseNicknamePoolRows(data));
+    return parseNicknamePoolRows(data);
   } catch (error) {
     console.warn(
       "Failed to load profile character nicknames",
@@ -37,8 +36,8 @@ export async function fetchProfileCharacterNicknamePools(): Promise<ProfileChara
   }
 }
 
-export function useProfileCharacterNicknamePools(): ProfileCharacterNicknamePools | null {
-  const [pools, setPools] = useState<ProfileCharacterNicknamePools | null>(null);
+export function useProfileCharacterNicknamePools(): ProfileNicknamePools | null {
+  const [pools, setPools] = useState<ProfileNicknamePools | null>(null);
 
   useEffect(() => {
     let cancelled = false;

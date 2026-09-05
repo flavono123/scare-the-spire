@@ -17,6 +17,7 @@ export const PROFILE_NICKNAME_MAX_CHARS = 20;
 export const PROFILE_NICKNAME_POOL_MIN = 1;
 export const PROFILE_NICKNAME_POOL_MAX = 50;
 
+export type ProfileNicknamePools = Record<ProfileNicknameLocale, readonly string[]>;
 export type ProfileCharacterNicknamePools = Record<
   ProfileCharacterNicknameId,
   Record<ProfileNicknameLocale, readonly string[]>
@@ -25,7 +26,7 @@ export type PartialProfileCharacterNicknamePools = Partial<
   Record<ProfileCharacterNicknameId, Partial<Record<ProfileNicknameLocale, readonly string[]>>>
 >;
 
-export const DEFAULT_PROFILE_CHARACTER_NICKNAMES: ProfileCharacterNicknamePools = {
+const DEFAULT_PROFILE_CHARACTER_NICKNAMES: ProfileCharacterNicknamePools = {
   IRONCLAD: {
     ko: ["아클단", "아평", "아이언클래스", "아이언클레임", "아이돌클라스", "아장연"],
     en: ["Clad", "The Clad", "Ironclad"],
@@ -48,6 +49,10 @@ export const DEFAULT_PROFILE_CHARACTER_NICKNAMES: ProfileCharacterNicknamePools 
   },
 };
 
+export const DEFAULT_PROFILE_NICKNAMES: ProfileNicknamePools = flattenCharacterNicknamePools(
+  DEFAULT_PROFILE_CHARACTER_NICKNAMES,
+);
+
 export function isProfileNicknameLocale(value: string | null | undefined): value is ProfileNicknameLocale {
   return value === "ko" || value === "en";
 }
@@ -58,11 +63,8 @@ export function isProfileCharacterNicknameId(
   return PROFILE_CHARACTER_NICKNAME_IDS.some((id) => id === value);
 }
 
-export function nicknamePoolFieldName(
-  characterId: ProfileCharacterNicknameId,
-  locale: ProfileNicknameLocale,
-): string {
-  return `nicknames__${characterId}__${locale}`;
+export function nicknamePoolFieldName(locale: ProfileNicknameLocale): string {
+  return `nicknames__${locale}`;
 }
 
 export function parseNicknameLines(value: string): string[] | null {
@@ -115,8 +117,8 @@ export function isValidNicknameList(value: unknown): value is readonly string[] 
   return true;
 }
 
-export function parseNicknamePoolRows(rows: unknown): PartialProfileCharacterNicknamePools {
-  if (!Array.isArray(rows)) return {};
+export function parseNicknamePoolRows(rows: unknown): ProfileNicknamePools {
+  if (!Array.isArray(rows)) return DEFAULT_PROFILE_NICKNAMES;
   const parsed: PartialProfileCharacterNicknamePools = {};
   for (const row of rows) {
     if (!row || typeof row !== "object") continue;
@@ -128,10 +130,77 @@ export function parseNicknamePoolRows(rows: unknown): PartialProfileCharacterNic
     const current = parsed[characterId] ?? {};
     parsed[characterId] = { ...current, [locale]: record.nicknames };
   }
-  return parsed;
+  if (Object.keys(parsed).length === 0) return DEFAULT_PROFILE_NICKNAMES;
+  return flattenCharacterNicknamePools(mergeCharacterNicknamePools(parsed));
 }
 
-export function mergeNicknamePools(
+export function parseNicknamePoolsFromFormData(formData: FormData): ProfileNicknamePools | null {
+  const ko = parseNicknameLines(String(formData.get(nicknamePoolFieldName("ko")) ?? ""));
+  const en = parseNicknameLines(String(formData.get(nicknamePoolFieldName("en")) ?? ""));
+  if (!ko || !en) return null;
+  return { ko, en };
+}
+
+export function nicknamePoolRowsFromPools(pools: ProfileNicknamePools): Array<{
+  character_id: ProfileCharacterNicknameId;
+  locale: ProfileNicknameLocale;
+  nicknames: string[];
+}> {
+  return PROFILE_CHARACTER_NICKNAME_IDS.flatMap((characterId) =>
+    PROFILE_NICKNAME_LOCALES.map((locale) => ({
+      character_id: characterId,
+      locale,
+      nicknames: [...pools[locale]],
+    })),
+  );
+}
+
+export function nicknamePoolsAreDefault(pools: ProfileNicknamePools): boolean {
+  return PROFILE_NICKNAME_LOCALES.every((locale) =>
+    listsEqual(pools[locale], DEFAULT_PROFILE_NICKNAMES[locale]),
+  );
+}
+
+export function pickRandomNickname(
+  pool: readonly string[],
+  fallback: string,
+  exclude?: string,
+): string {
+  if (!pool.length) return fallback;
+  const candidates = exclude && pool.length > 1
+    ? pool.filter((nickname) => nickname !== exclude)
+    : pool;
+  const pickFrom = candidates.length ? candidates : pool;
+  return pickFrom[Math.floor(Math.random() * pickFrom.length)] ?? fallback;
+}
+
+export function shouldRerollProfileNickname(options: {
+  nicknameLocked: boolean;
+  nickname: string;
+  pool: readonly string[];
+  currentKind: string;
+  currentId: string;
+  nextKind: string;
+  nextId: string;
+}): boolean {
+  if (options.nextKind === options.currentKind && options.nextId === options.currentId) {
+    return false;
+  }
+  if (options.nicknameLocked) return false;
+  const nickname = options.nickname.trim();
+  if (nickname && !options.pool.includes(nickname)) return false;
+  return true;
+}
+
+export function isMissingProfileCharacterNicknamePoolsTable(
+  error: { code?: string; message?: string } | null | undefined,
+): boolean {
+  if (!error) return false;
+  if (error.code === "PGRST205" || error.code === "42P01") return true;
+  return /profile_character_nickname_pools/i.test(error.message ?? "");
+}
+
+function mergeCharacterNicknamePools(
   overrides: PartialProfileCharacterNicknamePools = {},
   base: ProfileCharacterNicknamePools = DEFAULT_PROFILE_CHARACTER_NICKNAMES,
 ): ProfileCharacterNicknamePools {
@@ -148,58 +217,22 @@ export function mergeNicknamePools(
   return merged;
 }
 
-export function parseNicknamePoolsFromFormData(formData: FormData): ProfileCharacterNicknamePools | null {
-  const parsed: PartialProfileCharacterNicknamePools = {};
-  for (const characterId of PROFILE_CHARACTER_NICKNAME_IDS) {
-    const ko = parseNicknameLines(String(formData.get(nicknamePoolFieldName(characterId, "ko")) ?? ""));
-    const en = parseNicknameLines(String(formData.get(nicknamePoolFieldName(characterId, "en")) ?? ""));
-    if (!ko || !en) return null;
-    parsed[characterId] = { ko, en };
+function flattenCharacterNicknamePools(pools: ProfileCharacterNicknamePools): ProfileNicknamePools {
+  return {
+    ko: uniqueNicknames(PROFILE_CHARACTER_NICKNAME_IDS.flatMap((id) => pools[id].ko)),
+    en: uniqueNicknames(PROFILE_CHARACTER_NICKNAME_IDS.flatMap((id) => pools[id].en)),
+  };
+}
+
+function uniqueNicknames(nicknames: readonly string[]): string[] {
+  const seen = new Set<string>();
+  const unique: string[] = [];
+  for (const nickname of nicknames) {
+    if (seen.has(nickname)) continue;
+    seen.add(nickname);
+    unique.push(nickname);
   }
-  return mergeNicknamePools(parsed);
-}
-
-export function nicknamePoolRowsFromPools(pools: ProfileCharacterNicknamePools): Array<{
-  character_id: ProfileCharacterNicknameId;
-  locale: ProfileNicknameLocale;
-  nicknames: string[];
-}> {
-  return PROFILE_CHARACTER_NICKNAME_IDS.flatMap((characterId) =>
-    PROFILE_NICKNAME_LOCALES.map((locale) => ({
-      character_id: characterId,
-      locale,
-      nicknames: [...pools[characterId][locale]],
-    })),
-  );
-}
-
-export function nicknamePoolsAreDefault(pools: ProfileCharacterNicknamePools): boolean {
-  return PROFILE_CHARACTER_NICKNAME_IDS.every((characterId) =>
-    PROFILE_NICKNAME_LOCALES.every((locale) =>
-      listsEqual(pools[characterId][locale], DEFAULT_PROFILE_CHARACTER_NICKNAMES[characterId][locale]),
-    ),
-  );
-}
-
-export function applyNicknamePools<T extends {
-  id: string;
-  nicknameOptions: Record<ProfileNicknameLocale, readonly string[]>;
-}>(characters: T[], pools: ProfileCharacterNicknamePools): T[] {
-  return characters.map((character) => {
-    if (!isProfileCharacterNicknameId(character.id)) return character;
-    return {
-      ...character,
-      nicknameOptions: pools[character.id],
-    };
-  });
-}
-
-export function isMissingProfileCharacterNicknamePoolsTable(
-  error: { code?: string; message?: string } | null | undefined,
-): boolean {
-  if (!error) return false;
-  if (error.code === "PGRST205" || error.code === "42P01") return true;
-  return /profile_character_nickname_pools/i.test(error.message ?? "");
+  return unique;
 }
 
 function listsEqual(left: readonly string[], right: readonly string[]): boolean {

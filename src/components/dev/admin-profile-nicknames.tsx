@@ -1,15 +1,12 @@
-import Image from "@/components/ui/static-image";
 import {
-  PROFILE_CHARACTER_NICKNAME_IDS,
   PROFILE_NICKNAME_LOCALES,
   PROFILE_NICKNAME_MAX_CHARS,
   PROFILE_NICKNAME_POOL_MAX,
   nicknamePoolFieldName,
   serializeNicknameLines,
-  type ProfileCharacterNicknamePools,
+  type ProfileNicknamePools,
   type ProfileNicknameLocale,
 } from "@/lib/profile-character-nicknames";
-import { characterIconUrl } from "@/lib/user-profile";
 
 const LOCALE_LABELS: Record<ProfileNicknameLocale, string> = {
   ko: "한글",
@@ -25,7 +22,7 @@ export function AdminProfileNicknames({
   onSave,
   onReset,
 }: {
-  pools: ProfileCharacterNicknamePools;
+  pools: ProfileNicknamePools;
   source: "stored" | "defaults";
   canEdit: boolean;
   saveResult?: "saved" | "error" | "invalid";
@@ -39,7 +36,7 @@ export function AdminProfileNicknames({
         <div>
           <h2 className="text-lg font-semibold text-primary">프로필 랜덤 닉</h2>
           <p className="mt-1 text-xs text-muted-foreground">
-            서비스 익명 닉은 제외합니다. 프로필에서 캐릭터를 고를 때 쓰는 한글/영어 풀입니다.
+            서비스 익명 닉은 제외합니다. 캐릭터·보스 토큰을 고를 때 쓰는 하나의 한글/영어 풀입니다.
           </p>
         </div>
         <span className="text-xs text-muted-foreground">
@@ -58,9 +55,9 @@ export function AdminProfileNicknames({
           }`}
         >
           {saveResult === "saved"
-            ? "저장했습니다. 프로필 캐릭터 선택에 바로 반영됩니다."
+            ? "저장했습니다. 프로필 토큰 선택에 바로 반영됩니다."
             : saveResult === "invalid"
-              ? "한 줄에 닉 하나, 1–20자, 캐릭터·언어당 1–50개가 필요합니다."
+              ? "한 줄에 닉 하나, 1–20자, 언어당 1–50개가 필요합니다."
               : "저장하지 못했습니다. 다시 시도해 주세요."}
         </div>
       )}
@@ -78,58 +75,30 @@ export function AdminProfileNicknames({
       )}
 
       <form action={onSave} className="space-y-4">
-        <div className="overflow-x-auto rounded-md border border-border">
-          <table className="w-full min-w-[720px] text-left text-sm">
-            <thead className="bg-muted/40 text-xs text-muted-foreground">
-              <tr>
-                <th className="px-3 py-2">캐릭터</th>
-                {PROFILE_NICKNAME_LOCALES.map((locale) => (
-                  <th key={locale} className="px-3 py-2">{LOCALE_LABELS[locale]}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {PROFILE_CHARACTER_NICKNAME_IDS.map((characterId) => (
-                <tr key={characterId} className="border-t border-border/70 align-top">
-                  <td className="px-3 py-3">
-                    <span className="inline-flex items-center gap-2">
-                      <Image
-                        src={characterIconUrl(characterId)}
-                        alt=""
-                        width={20}
-                        height={20}
-                        className="h-5 w-5 object-contain"
-                      />
-                      <code className="text-xs text-foreground">{characterId}</code>
-                    </span>
-                  </td>
-                  {PROFILE_NICKNAME_LOCALES.map((locale) => {
-                    const fieldName = nicknamePoolFieldName(characterId, locale);
-                    const nicknames = pools[characterId][locale];
-                    return (
-                      <td key={locale} className="px-3 py-3">
-                        <label className="sr-only" htmlFor={fieldName}>
-                          {characterId} {LOCALE_LABELS[locale]}
-                        </label>
-                        <textarea
-                          id={fieldName}
-                          name={fieldName}
-                          defaultValue={serializeNicknameLines(nicknames)}
-                          rows={Math.min(8, Math.max(3, nicknames.length + 1))}
-                          spellCheck={false}
-                          disabled={!canEdit}
-                          className="w-full resize-y rounded-md border border-border bg-background/70 px-3 py-2 font-mono text-xs leading-relaxed text-foreground outline-none focus:border-primary/60 disabled:opacity-80"
-                        />
-                        <div className="mt-1 text-[11px] text-muted-foreground">
-                          {nicknames.length}개 · 한 줄에 하나 · {PROFILE_NICKNAME_MAX_CHARS}자 · 최대 {PROFILE_NICKNAME_POOL_MAX}개
-                        </div>
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="grid gap-3 md:grid-cols-2">
+          {PROFILE_NICKNAME_LOCALES.map((locale) => {
+            const fieldName = nicknamePoolFieldName(locale);
+            const nicknames = pools[locale];
+            return (
+              <div key={locale} className="rounded-md border border-border bg-card/35 p-3">
+                <label className="block text-sm font-semibold text-foreground" htmlFor={fieldName}>
+                  {LOCALE_LABELS[locale]}
+                </label>
+                <textarea
+                  id={fieldName}
+                  name={fieldName}
+                  defaultValue={serializeNicknameLines(nicknames)}
+                  rows={Math.min(16, Math.max(8, nicknames.length + 1))}
+                  spellCheck={false}
+                  disabled={!canEdit}
+                  className="mt-2 w-full resize-y rounded-md border border-border bg-background/70 px-3 py-2 font-mono text-xs leading-relaxed text-foreground outline-none focus:border-primary/60 disabled:opacity-80"
+                />
+                <div className="mt-1 text-[11px] text-muted-foreground">
+                  {nicknames.length}개 · 한 줄에 하나 · {PROFILE_NICKNAME_MAX_CHARS}자 · 최대 {PROFILE_NICKNAME_POOL_MAX}개
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {canEdit && (

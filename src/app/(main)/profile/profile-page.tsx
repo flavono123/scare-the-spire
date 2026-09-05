@@ -19,7 +19,9 @@ import { useUserProfile } from "@/hooks/use-user-profile";
 import type { CodexEncounter, CodexMonster, MonsterSpineAsset } from "@/lib/codex-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
-  applyNicknamePools,
+  DEFAULT_PROFILE_NICKNAMES,
+  pickRandomNickname,
+  shouldRerollProfileNickname,
   type ProfileNicknameLocale,
 } from "@/lib/profile-character-nicknames";
 import { resolveProfileDuotone } from "@/lib/profile-palettes";
@@ -33,7 +35,6 @@ export interface CharacterChoice {
   label: string;
   iconUrl: string;
   fallbackImageUrl: string;
-  nicknameOptions: Record<ProfileNicknameLocale, readonly string[]>;
   spineAsset: MonsterSpineAsset | null;
 }
 
@@ -81,18 +82,17 @@ export default function ProfilePage({
   gameLocale: GameLocale;
 }) {
   const liveNicknamePools = useProfileCharacterNicknamePools();
-  const charactersWithNicknames = useMemo(
-    () => liveNicknamePools ? applyNicknamePools(characters, liveNicknamePools) : characters,
-    [characters, liveNicknamePools],
-  );
+  const nicknamePools = liveNicknamePools ?? DEFAULT_PROFILE_NICKNAMES;
+  const nicknamePool = nicknamePools[nicknameLocale];
   const fallbackProfile = useMemo(
     () => normalizeUserProfile({
-      nickname: getInitialNickname(charactersWithNicknames, DEFAULTS.character, nicknameLocale, copy.fallbackNickname),
+      nickname: nicknamePool[0] ?? copy.fallbackNickname,
+      nicknameLocked: false,
       characterId: DEFAULTS.character,
       avatarKind: "character",
       avatarId: DEFAULTS.character,
     }),
-    [charactersWithNicknames, copy.fallbackNickname, nicknameLocale],
+    [copy.fallbackNickname, nicknamePool],
   );
   const { profile, saveProfile } = useUserProfile(fallbackProfile);
   const [draftProfile, setDraftProfile] = useState(fallbackProfile);
@@ -110,16 +110,43 @@ export default function ProfilePage({
     },
     [draftProfile, fallbackProfile, saveProfile],
   );
+  const nicknameAfterTokenChange = useCallback(
+    (current: UserProfile, nextKind: "character" | "boss", nextId: string) => {
+      const nicknameLocked = current.nicknameLocked
+        || current.nickname.trim() !== profile.nickname.trim();
+      const reroll = shouldRerollProfileNickname({
+        nicknameLocked,
+        nickname: current.nickname,
+        pool: nicknamePool,
+        currentKind: current.avatarKind,
+        currentId: current.avatarId,
+        nextKind,
+        nextId,
+      });
+      return {
+        nickname: reroll
+          ? pickRandomNickname(nicknamePool, copy.fallbackNickname, current.nickname)
+          : current.nickname,
+        nicknameLocked: reroll ? false : nicknameLocked,
+      };
+    },
+    [copy.fallbackNickname, nicknamePool, profile.nickname],
+  );
   const persistNickname = useCallback(() => {
-    persistProfile((current) => ({
-      ...current,
-      nickname: draftProfile.nickname,
-    }));
-  }, [draftProfile.nickname, persistProfile]);
+    persistProfile((current) => {
+      const nextNickname = draftProfile.nickname;
+      const edited = nextNickname.trim() !== profile.nickname.trim();
+      return {
+        ...current,
+        nickname: nextNickname,
+        nicknameLocked: current.nicknameLocked || edited,
+      };
+    });
+  }, [draftProfile.nickname, persistProfile, profile.nickname]);
 
-  const character = findChoice(charactersWithNicknames, draftProfile.characterId) ?? charactersWithNicknames[0];
+  const character = findChoice(characters, draftProfile.characterId) ?? characters[0];
   const avatarCharacter = draftProfile.avatarKind === "character"
-    ? findChoice(charactersWithNicknames, draftProfile.avatarId) ?? character
+    ? findChoice(characters, draftProfile.avatarId) ?? character
     : null;
   const boss = draftProfile.avatarKind === "boss"
     ? findChoice(bosses, draftProfile.avatarId)
@@ -201,16 +228,15 @@ export default function ProfilePage({
               tokens={
                 <TokenPicker
                   choiceType="character"
-                  items={charactersWithNicknames}
+                  items={characters}
                   selectedId={draftProfile.avatarKind === "character" ? draftProfile.avatarId : undefined}
                   onSelect={(id) => {
-                    const nextCharacter = findChoice(charactersWithNicknames, id);
                     persistProfile((current) => ({
                       ...current,
                       characterId: id,
                       avatarKind: "character",
                       avatarId: id,
-                      nickname: pickCharacterNickname(nextCharacter, nicknameLocale, copy.fallbackNickname),
+                      ...nicknameAfterTokenChange(current, "character", id),
                     }));
                     setCharacterAction("ATTACK");
                   }}
@@ -231,6 +257,7 @@ export default function ProfilePage({
                       ...current,
                       avatarKind: "boss",
                       avatarId: id,
+                      ...nicknameAfterTokenChange(current, "boss", id),
                     }));
                     setCharacterAction("ATTACK");
                   }}
@@ -472,25 +499,4 @@ function useActionState(): [{ action: ActionId; nonce: number }, (action: Action
 
 function findChoice<T extends { id: string }>(items: T[], id: string): T | undefined {
   return items.find((item) => item.id === id);
-}
-
-function getInitialNickname(
-  characters: CharacterChoice[],
-  characterId: string,
-  locale: ProfileNicknameLocale,
-  fallback: string,
-): string {
-  const character = findChoice(characters, characterId) ?? characters[0];
-  return character?.nicknameOptions[locale]?.[0] ?? character?.label ?? fallback;
-}
-
-function pickCharacterNickname(
-  character: CharacterChoice | undefined,
-  locale: ProfileNicknameLocale,
-  fallback: string,
-): string {
-  if (!character) return fallback;
-  const options = character.nicknameOptions[locale];
-  if (!options.length) return character.label;
-  return options[Math.floor(Math.random() * options.length)] ?? character.label;
 }
