@@ -20,6 +20,7 @@ import { buildFavoriteTournamentCommentThreadKey } from "@/lib/comment-threads";
 import { sortPoolRefs } from "@/lib/decisions-decisions";
 import {
   FAVORITE_TOURNAMENT_HREF,
+  formatBracketRoundLabel,
   isFavoriteTournamentBuiltinKey,
   type FavoriteTournamentPost,
 } from "@/lib/favorite-tournament";
@@ -154,6 +155,12 @@ export function FavoriteTournamentPostCard({
             />
         </GameScrollArea>
       </div>
+      <div className="mt-1.5 flex items-center justify-between gap-2 font-game-text text-xs font-bold tabular-nums text-muted-foreground">
+        <span>{formatBracketRoundLabel(post.pool.length, copy)}</span>
+        <span data-favorite-tournament-play-count>
+          {copy.playCount.replace("{count}", String(post.play_count ?? 0))}
+        </span>
+      </div>
       <div className="mt-3 flex items-start gap-3">
         {builtin ? (
           <div
@@ -189,20 +196,16 @@ export function FavoriteTournamentPostCard({
             </h2>
           </>
         )}
-        <div className="flex shrink-0 flex-col items-end gap-1">
-          <IndexCardEngagement
-            commentsHref={commentsHref}
-            commentCount={commentCount}
-            likeStoryId={threadKey}
-            likeCount={likeCount}
-            userId={userId}
-            authReady={authReady}
-            ensureUser={ensureUser}
-          />
-          <span className="text-[11px] tabular-nums text-muted-foreground">
-            {copy.playCount.replace("{count}", String(post.play_count ?? 0))}
-          </span>
-        </div>
+        <IndexCardEngagement
+          commentsHref={commentsHref}
+          commentCount={commentCount}
+          likeStoryId={threadKey}
+          likeCount={likeCount}
+          userId={userId}
+          authReady={authReady}
+          ensureUser={ensureUser}
+          className="shrink-0"
+        />
       </div>
       </div>
     </article>

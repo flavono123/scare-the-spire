@@ -14,7 +14,9 @@ import {
   openingAutoAdvances,
   openingPlayablePairs,
   pairNextRound,
+  normalizeFavoriteTournamentPost,
   playRoundOptions,
+  previewMatchupPairs,
   samplePool,
 } from "../src/lib/favorite-tournament";
 
@@ -108,5 +110,59 @@ assert.equal(pairNextRound(winners).length, 8);
 assert.equal(championshipRate(3, 10), 0.3);
 assert.equal(matchWinRate(8, 10), 0.8);
 assert.equal(championshipRate(1, 0), 0);
+
+assert.deepEqual(
+  previewMatchupPairs([{ type: "card", id: "only" }]),
+  [],
+);
+const twoUp = previewMatchupPairs(
+  [{ type: "card", id: "a" }, { type: "card", id: "b" }],
+  () => true,
+  () => 0,
+);
+assert.equal(twoUp.length, 1);
+assert.equal(twoUp[0]?.left.id === "a" || twoUp[0]?.right.id === "a", true);
+assert.equal(twoUp[0]?.left.id === "b" || twoUp[0]?.right.id === "b", true);
+
+const threeUp = previewMatchupPairs(
+  [
+    { type: "card", id: "a" },
+    { type: "card", id: "b" },
+    { type: "card", id: "c" },
+  ],
+  () => true,
+  () => 0,
+);
+assert.equal(threeUp.length, 2);
+assert.equal(threeUp[1]?.right.id, threeUp[0]?.left.id);
+
+const missingB = previewMatchupPairs(
+  [
+    { type: "card", id: "a" },
+    { type: "card", id: "b" },
+    { type: "card", id: "c" },
+  ],
+  (ref) => ref.id !== "b",
+  () => 0,
+);
+assert.equal(missingB.length, 1);
+
+const parsedPlayCount = normalizeFavoriteTournamentPost({
+  id: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+  nickname: "세 번째 손",
+  title: "t",
+  note: "n",
+  preset_key: "custom",
+  game_version: "x",
+  pool: [],
+  env: "production",
+  play_count: "12",
+  like_count: 3,
+  comment_count: "4",
+  created_at: "2026-09-06T00:00:00.000Z",
+});
+assert.equal(parsedPlayCount.play_count, 12);
+assert.equal(parsedPlayCount.like_count, 3);
+assert.equal(parsedPlayCount.comment_count, 4);
 
 console.log("Favorite tournament bracket tests passed.");

@@ -88,6 +88,11 @@ export type FavoriteTournamentMatchRecord = {
   winner: "left" | "right";
 };
 
+export type FavoriteTournamentMatchup = {
+  left: FavoriteTournamentResourceRef;
+  right: FavoriteTournamentResourceRef;
+};
+
 export type PlayContestant = FavoriteTournamentResourceRef | "bye";
 
 export type FavoriteTournamentPlayRound = {
@@ -226,6 +231,36 @@ export function samplePool(
 }
 
 /**
+ * Sequential 2-pick matchups for the detail asset preview. Shuffles unique
+ * present candidates, then pairs them in order. An odd leftover rematches
+ * the first contestant so the roster still reads as VS.
+ */
+export function previewMatchupPairs(
+  pool: FavoriteTournamentResourceRef[],
+  isPresent: (ref: FavoriteTournamentResourceRef) => boolean = () => true,
+  random: () => number = Math.random,
+): FavoriteTournamentMatchup[] {
+  const filtered = pool.filter(isPresent);
+  const contestants = samplePool(filtered, filtered.length, random);
+  if (contestants.length < FAVORITE_TOURNAMENT_MIN_POOL) return [];
+  const pairs: FavoriteTournamentMatchup[] = [];
+  for (let i = 0; i + 1 < contestants.length; i += 2) {
+    pairs.push({
+      left: contestants[i]!,
+      right: contestants[i + 1]!,
+    });
+  }
+  if (contestants.length % 2 === 1) {
+    const leftover = contestants[contestants.length - 1]!;
+    const first = contestants[0]!;
+    if (resourceKey(leftover) !== resourceKey(first)) {
+      pairs.push({ left: leftover, right: first });
+    }
+  }
+  return pairs;
+}
+
+/**
  * First round of a single-elim bracket. Non-2^n sizes get byes, matching PIKU:
  * some candidates skip the opening matches and wait in the next power-of-two round.
  */
@@ -348,6 +383,17 @@ export function rankedCandidateStats(
   });
 }
 
+function nonNegativeCount(value: unknown): number {
+  if (typeof value === "number" && Number.isFinite(value) && value >= 0) {
+    return Math.trunc(value);
+  }
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed) && parsed >= 0) return Math.trunc(parsed);
+  }
+  return 0;
+}
+
 export function normalizeFavoriteTournamentPost(row: unknown): FavoriteTournamentPost {
   const record = (row ?? {}) as Record<string, unknown>;
   const pool = Array.isArray(record.pool)
@@ -363,9 +409,9 @@ export function normalizeFavoriteTournamentPost(row: unknown): FavoriteTournamen
     game_version: String(record.game_version ?? FAVORITE_TOURNAMENT_GAME_VERSION),
     pool,
     env: String(record.env ?? ""),
-    like_count: typeof record.like_count === "number" ? record.like_count : 0,
-    comment_count: typeof record.comment_count === "number" ? record.comment_count : 0,
-    play_count: typeof record.play_count === "number" ? record.play_count : 0,
+    like_count: nonNegativeCount(record.like_count),
+    comment_count: nonNegativeCount(record.comment_count),
+    play_count: nonNegativeCount(record.play_count),
     created_at: String(record.created_at ?? ""),
   };
 }

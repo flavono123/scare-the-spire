@@ -10,6 +10,7 @@ import { DisplayedProfileNickname } from "@/components/profile/displayed-profile
 import { LikeButton } from "@/components/like-button";
 import { PostDetailActions } from "@/components/post-detail-actions";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
+import { FavoriteTournamentAssetPreview } from "@/components/this-or-that/favorite-tournament-asset-preview";
 import { FavoriteTournamentPlay } from "@/components/this-or-that/favorite-tournament-play";
 import { FavoriteTournamentRanking } from "@/components/this-or-that/favorite-tournament-ranking";
 import { ThisOrThatResourcePanel } from "@/components/this-or-that/resource-panel";
@@ -171,7 +172,6 @@ export function FavoriteTournamentPostView({
               )}
               {!builtin && <span>{formatTimeAgo(post.created_at, copy, dateLocale)}</span>}
               <span>{formatBracketRoundLabel(post.pool.length, copy)}</span>
-              <span>{copy.playCount.replace("{count}", String(post.play_count ?? 0))}</span>
             </div>
             {post.note ? (
               <p className="mt-2 font-game-text text-sm text-muted-foreground">{post.note}</p>
@@ -202,6 +202,13 @@ export function FavoriteTournamentPostView({
         />
       ) : (
         <section className="space-y-5 rounded-xl border border-primary/25 bg-card/30 p-5 sm:p-6">
+          <FavoriteTournamentAssetPreview
+            pool={post.pool}
+            playCount={post.play_count ?? 0}
+            entityMap={catalog.entityMap}
+            serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
+          />
           <p className="font-game-title text-lg font-semibold text-foreground">{copy.roundPrompt}</p>
           <div className="flex flex-wrap gap-2">
             {roundOptions.map((size) => (
