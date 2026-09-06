@@ -428,6 +428,32 @@ async function readOneServicePosts(
         })),
       };
     }
+    case "pagestorm": {
+      const result = await readSupabase<Array<{
+        id: string;
+        user_id: string;
+        nickname: string;
+        title: string;
+        content_text: string;
+        created_at: string;
+      }>>(
+        "admin.pagestorm_posts",
+        supabase
+          .from("pagestorm_posts")
+          .select("id, user_id, nickname, title, content_text, created_at", { count: "exact" })
+          .eq("env", ADMIN_DATA_ENV)
+          .order("created_at", { ascending: false })
+          .limit(ROW_LIMIT),
+        [],
+      );
+      return {
+        ...result,
+        data: result.data.map((row) => asPostRow(service, {
+          ...row,
+          summary: truncate(row.title.trim() || row.content_text, 100),
+        })),
+      };
+    }
     case "history_course": {
       const result = await readSupabase<Array<{
         id: string;

@@ -13,6 +13,7 @@ import { PostDetailActions } from "@/components/post-detail-actions";
 import { ThisOrThatPostView } from "@/components/this-or-that/post-view";
 import { FavoriteTournamentPostView } from "@/components/this-or-that/favorite-tournament-post-view";
 import { TransfigurePostView } from "@/components/transfigure/transfigure-post-view";
+import { PagestormPostView } from "@/components/pagestorm/pagestorm-post-view";
 import Image from "@/components/ui/static-image";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
@@ -167,6 +168,9 @@ export function DefragmentFederatedPostView({
           presetLabels={decisionsCopy.presetLabels}
           variant="embed"
         />
+      )}
+      {service === "pagestorm" && (
+        <PagestormPostView postId={postId} variant="embed" />
       )}
 
       {service !== "this_or_that" && threadKey && (

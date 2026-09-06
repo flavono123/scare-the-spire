@@ -75,6 +75,7 @@ const defragmentFederatedServices = new Set([
   "chemical_x",
   "decisions_decisions",
   "favorite_tournament",
+  "pagestorm",
 ]);
 const staticLegacyPageSegments = new Set([
   "cards",

@@ -4,6 +4,7 @@ import {
   buildComboCommentThreadKey,
   buildDecisionsDecisionsCommentThreadKey,
   buildFavoriteTournamentCommentThreadKey,
+  buildPagestormCommentThreadKey,
   buildThisOrThatCommentThreadKey,
   buildTransfigureCommentThreadKey,
 } from "@/lib/comment-threads";
@@ -17,6 +18,7 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
+import { PAGESTORM_HREF, PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
 import { toyboxRecommendScore, type ToyboxFeedSort } from "@/lib/toybox-feed";
 
 export const DEFRAGMENT_HREF = "/defragment";
@@ -30,6 +32,7 @@ export const DEFRAGMENT_FEDERATED_SERVICES = [
   "favorite_tournament",
   "chemical_x",
   "decisions_decisions",
+  "pagestorm",
 ] as const;
 
 export const DEFRAGMENT_FEED_SERVICES = DEFRAGMENT_FEDERATED_SERVICES;
@@ -91,6 +94,10 @@ export const DEFRAGMENT_FEED_SERVICE_META: Record<
     hrefBase: FAVORITE_TOURNAMENT_HREF,
     tokenSrc: FAVORITE_TOURNAMENT_TOKEN_SRC,
   },
+  pagestorm: {
+    hrefBase: PAGESTORM_HREF,
+    tokenSrc: PAGESTORM_TOKEN_SRC,
+  },
 };
 
 const UNKNOWN_SERVICE_META = {
@@ -144,6 +151,8 @@ export function feedItemFromPost(
     title = post.title?.trim() || post.transformed_name?.trim() || post.content_text || "";
   } else if (service === "decisions_decisions" || service === "favorite_tournament") {
     title = post.title?.trim() || post.note?.trim() || "";
+  } else if (service === "pagestorm") {
+    title = post.title?.trim() || post.content_text || "";
   } else title = post.content_text ?? "";
 
   return {
@@ -210,6 +219,8 @@ export function defragmentItemThreadKey(
       return buildDecisionsDecisionsCommentThreadKey(item.id);
     case "favorite_tournament":
       return buildFavoriteTournamentCommentThreadKey(item.id);
+    case "pagestorm":
+      return buildPagestormCommentThreadKey(item.id);
     default:
       return null;
   }

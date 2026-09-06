@@ -16,6 +16,7 @@ import {
 import { insertDecisionsDecisionsPost } from "@/hooks/use-decisions-decisions-posts";
 import { insertFavoriteTournamentPost } from "@/hooks/use-favorite-tournament-posts";
 import { useDecisionsDecisionsCatalog } from "@/hooks/use-decisions-decisions-catalog";
+import { insertPagestormPost } from "@/hooks/use-pagestorm-posts";
 import { insertThisOrThatPost } from "@/hooks/use-this-or-that-posts";
 import { useThisOrThatEntities } from "@/hooks/use-this-or-that-entities";
 import {
@@ -36,6 +37,7 @@ import type { ThisOrThatResourceRef } from "@/lib/this-or-that";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import type { PagestormEditorSaveInput } from "@/components/pagestorm/pagestorm-editor";
 
 const ComboEditor = dynamic(
   () => import("@/components/combo/combo-editor").then((mod) => mod.ComboEditor),
@@ -65,6 +67,10 @@ const FavoriteTournamentComposer = dynamic(
   () => import("@/components/this-or-that/favorite-tournament-composer").then(
     (mod) => mod.FavoriteTournamentComposer,
   ),
+  { ssr: false },
+);
+const PagestormEditor = dynamic(
+  () => import("@/components/pagestorm/pagestorm-editor").then((mod) => mod.PagestormEditor),
   { ssr: false },
 );
 
@@ -109,6 +115,7 @@ export function DefragmentWritePanel({
   const [overlayBlocks, setOverlayBlocks] = useState<PostBlock[]>([]);
   const [transfigureOpen, setTransfigureOpen] = useState(false);
   const [totSubmitting, setTotSubmitting] = useState(false);
+  const [pagestormTitle, setPagestormTitle] = useState("");
   const totResources = useThisOrThatEntities(gameLocale);
   const decisionsCatalog = useDecisionsDecisionsCatalog(gameLocale);
 
@@ -271,6 +278,31 @@ export function DefragmentWritePanel({
     }
   }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
 
+  const handlePagestormSubmit = useCallback(async (
+    input: PagestormEditorSaveInput,
+  ) => {
+    const activeUserId = userId ?? await ensureUser();
+    if (!activeUserId) throw new Error("anonymous auth unavailable");
+    const nickname = readNickname();
+    if (overlayBodyForSave(overlayBlocks) === "invalid") {
+      throw new Error("defragment overlay body invalid");
+    }
+    try {
+      const post = await insertPagestormPost({
+        ...input,
+        nickname,
+        activeUserId,
+      });
+      if (!post) return;
+      await saveOverlay("pagestorm", post.id, nickname, activeUserId);
+      onCreated(feedItemFromPost("pagestorm", post));
+      setPagestormTitle("");
+    } catch (error) {
+      onUnavailable();
+      throw error;
+    }
+  }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
+
   const overlay = (
     <DefragmentOverlayBodyEditor
       key={writeType}
@@ -293,6 +325,7 @@ export function DefragmentWritePanel({
           setWriteType(service);
           setOverlayBlocks([]);
           setTransfigureOpen(false);
+          setPagestormTitle("");
         }}
         className={cn(
           "inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-semibold transition-colors",
@@ -436,6 +469,21 @@ export function DefragmentWritePanel({
             profileNickname={readNickname()}
             hideNickname
             onSubmit={handleFavoriteTournamentSubmit}
+          />
+          {overlay}
+        </>
+      )}
+
+      {writeType === "pagestorm" && (
+        <>
+          <PagestormEditor
+            mode="edit"
+            seed="empty"
+            title={pagestormTitle}
+            onTitleChange={setPagestormTitle}
+            nickname={readNickname()}
+            submitLabel={serviceMessages[serviceLocale].pagestorm.submit}
+            onSubmit={handlePagestormSubmit}
           />
           {overlay}
         </>

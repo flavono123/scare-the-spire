@@ -45,6 +45,10 @@ assert.deepEqual(
   [...toyboxFeedSortOptionsFor("favorite_tournament")],
   ["latest", "recommended", "comments", "play_count"],
 );
+assert.deepEqual(
+  [...toyboxFeedSortOptionsFor("pagestorm")],
+  ["latest", "recommended", "comments"],
+);
 assert.equal(resolveToyboxFeedSort("combo", "vote_rate_high"), "latest");
 assert.equal(resolveToyboxFeedSort("this_or_that", "vote_rate_low"), "vote_rate_low");
 assert.equal(resolveToyboxFeedSort("favorite_tournament", "play_count"), "play_count");

@@ -175,10 +175,12 @@ assert.equal(nestedArt.imageUrl, PAGESTORM_BACKGROUND_SRC);
 
 assert.equal(pagestormToyboxFederatedFromHref("/this-or-that"), "this_or_that");
 assert.equal(pagestormToyboxFederatedFromHref("/en/decisions-decisions"), "decisions_decisions");
+assert.equal(pagestormToyboxFederatedFromHref("/pagestorm"), "pagestorm");
 assert.equal(pagestormToyboxFederatedFromHref("/history-course"), null);
 assert.equal(pagestormToyboxPickerMode(null), "all");
 assert.equal(pagestormToyboxPickerMode("/defragment"), "unsupported");
 assert.equal(pagestormToyboxPickerMode("/history-course"), "unsupported");
+assert.equal(pagestormToyboxPickerMode("/pagestorm"), "unsupported");
 assert.equal(isPagestormToyboxPickerHref("/chemical-x"), false);
 assert.equal(isPagestormToyboxPickerHref("/c-c-c-combo"), false);
 assert.equal(isPagestormToyboxPickerHref("/defragment"), false);

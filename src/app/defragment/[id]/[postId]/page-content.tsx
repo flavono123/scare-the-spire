@@ -8,6 +8,7 @@ import {
   getDecisionsDecisionsGameCopy,
   getDecisionsDecisionsNavTitle,
   getDefragmentGameCopy,
+  getPagestormNavTitle,
   getThisOrThatGameCopy,
   getTransfigureGameCopy,
   getTransfigureNavTitle,
@@ -73,6 +74,7 @@ export async function renderDefragmentFederatedPostPage(
     chemical_x: nav.chemicalX,
     decisions_decisions: getDecisionsDecisionsNavTitle(gameLocale),
     favorite_tournament: nav.favoriteTournament,
+    pagestorm: getPagestormNavTitle(gameLocale),
   } as const;
 
   return (

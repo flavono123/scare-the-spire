@@ -10,6 +10,7 @@ export const TOYBOX_FEED_SERVICES = [
   "chemical_x",
   "decisions_decisions",
   "favorite_tournament",
+  "pagestorm",
 ] as const;
 
 export const TOYBOX_FEED_TABLES = {
@@ -19,6 +20,7 @@ export const TOYBOX_FEED_TABLES = {
   chemical_x: "chemical_posts",
   decisions_decisions: "decisions_decisions_posts",
   favorite_tournament: "favorite_tournament_posts",
+  pagestorm: "pagestorm_posts",
 } as const;
 
 export type ToyboxFeedService = (typeof TOYBOX_FEED_SERVICES)[number];

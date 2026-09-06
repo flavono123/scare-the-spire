@@ -89,6 +89,7 @@ const defragmentFederatedServices = [
   "chemical_x",
   "decisions_decisions",
   "favorite_tournament",
+  "pagestorm",
 ] as const;
 const staticLegacyPageSegments = ["cards", "potions", "relics"] as const;
 const staticMetadataAssets = ["robots.txt", "sitemap.xml"] as const;

@@ -78,6 +78,14 @@ assert.equal(
   defragmentBoardPath({ id: parsed.id, service: "favorite_tournament" }),
   `/defragment/favorite_tournament/${parsed.id}`,
 );
+assert.equal(
+  defragmentOriginalHref({ id: parsed.id, service: "pagestorm" }, "ko", "kor"),
+  `/pagestorm/${parsed.id}`,
+);
+assert.equal(
+  defragmentBoardPath({ id: parsed.id, service: "pagestorm" }),
+  `/defragment/pagestorm/${parsed.id}`,
+);
 
 const fromCombo = feedItemFromPost("combo", {
   id: parsed.id,
@@ -121,6 +129,28 @@ const parsedTournament = parseDefragmentFeedRow({
 });
 assert.ok(parsedTournament);
 assert.equal(parsedTournament.service, "favorite_tournament");
+
+const fromPagestorm = feedItemFromPost("pagestorm", {
+  id: parsed.id,
+  created_at: parsed.created_at,
+  title: "사일런트는 강하다",
+  content_text: "본문",
+  like_count: 0,
+  comment_count: 1,
+});
+assert.equal(fromPagestorm.service, "pagestorm");
+assert.equal(fromPagestorm.title, "사일런트는 강하다");
+
+const parsedPagestorm = parseDefragmentFeedRow({
+  id: parsed.id,
+  created_at: parsed.created_at,
+  like_count: 0,
+  comment_count: 0,
+  service: "pagestorm",
+  title: "사일런트는 강하다",
+});
+assert.ok(parsedPagestorm);
+assert.equal(parsedPagestorm.service, "pagestorm");
 
 const parsedDecisions = parseDefragmentFeedRow({
   id: parsed.id,

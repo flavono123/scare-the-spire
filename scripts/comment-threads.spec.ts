@@ -18,6 +18,10 @@ assert.equal(
   commentThreadHref("c-c-c-combo:aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee"),
   "/c-c-c-combo/aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee#comments",
 );
+assert.equal(
+  commentThreadHref("pagestorm:aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee"),
+  "/pagestorm/aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee#comments",
+);
 assert.equal(commentThreadHref("byrdispatch"), "/byrdispatch#comments");
 assert.equal(
   commentThreadHref("history-course:174nxe7x9zfpgm1t"),
@@ -31,6 +35,10 @@ assert.equal(commentThreadService("byrdispatch"), "byrdispatch");
 assert.equal(
   commentThreadService("c-c-c-combo:aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee"),
   "combo",
+);
+assert.equal(
+  commentThreadService("pagestorm:aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee"),
+  "pagestorm",
 );
 assert.equal(
   commentThreadService("community:11111111-2222-4333-8333-444444444444"),

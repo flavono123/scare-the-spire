@@ -27,6 +27,7 @@ import { useThisOrThatLikes } from "@/hooks/use-this-or-that-likes";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import {
   getDecisionsDecisionsNavTitle,
+  getPagestormNavTitle,
   getTransfigureNavTitle,
   type DecisionsDecisionsGameCopy,
 } from "@/lib/borrowed-game-copy";
@@ -91,6 +92,7 @@ export function DefragmentClient({
     chemical_x: nav.chemicalX,
     decisions_decisions: getDecisionsDecisionsNavTitle(gameLocale),
     favorite_tournament: nav.favoriteTournament,
+    pagestorm: getPagestormNavTitle(gameLocale),
   }), [gameLocale, nav.chemicalX, nav.combo, nav.favoriteTournament, nav.thisOrThat]);
 
   const totIds = useMemo(

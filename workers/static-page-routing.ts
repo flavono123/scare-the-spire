@@ -149,6 +149,7 @@ const DEFRAGMENT_FEDERATED_SERVICES = new Set([
   "chemical_x",
   "decisions_decisions",
   "favorite_tournament",
+  "pagestorm",
 ]);
 
 const THIS_OR_THAT_NESTED_SEGMENTS = new Set(["tournament", "worldcup"]);

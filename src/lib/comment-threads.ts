@@ -45,6 +45,10 @@ export function buildFavoriteTournamentCommentThreadKey(postId: string): string 
   return `favorite-tournament:${postId}`;
 }
 
+export function buildPagestormCommentThreadKey(postId: string): string {
+  return `pagestorm:${postId}`;
+}
+
 export function buildHistoryCourseCommentThreadKey(runId: string): string {
   return `history-course:${runId}`;
 }
@@ -60,6 +64,7 @@ export const COMMENT_THREAD_SERVICES = [
   "defragment",
   "decisions_decisions",
   "favorite_tournament",
+  "pagestorm",
   "stories",
   "other",
 ] as const;
@@ -78,6 +83,7 @@ export function commentThreadService(storyId: string): CommentThreadService {
   if (storyId.startsWith("defragment:")) return "defragment";
   if (storyId.startsWith("decisions-decisions:")) return "decisions_decisions";
   if (storyId.startsWith("favorite-tournament:")) return "favorite_tournament";
+  if (storyId.startsWith("pagestorm:")) return "pagestorm";
   if (storyId.startsWith("community:")) return "stories";
   return "other";
 }
@@ -95,6 +101,7 @@ export const COMMENT_THREAD_SERVICE_PREFIX: Record<
   defragment: "defragment:",
   decisions_decisions: "decisions-decisions:",
   favorite_tournament: "favorite-tournament:",
+  pagestorm: "pagestorm:",
   stories: "community:",
 };
 
@@ -124,6 +131,7 @@ export function commentThreadHref(storyId: string): string {
     ?? prefixedResourceCommentsHref(storyId, "defragment:", "/defragment")
     ?? prefixedResourceCommentsHref(storyId, "decisions-decisions:", "/decisions-decisions")
     ?? prefixedResourceCommentsHref(storyId, "favorite-tournament:", "/this-or-that/tournament")
+    ?? prefixedResourceCommentsHref(storyId, "pagestorm:", "/pagestorm")
     ?? prefixedResourceCommentsHref(storyId, "history-course:", "/history-course")
     ?? (storyId === "byrdispatch" ? `/byrdispatch${COMMENTS_ANCHOR}` : `/#${storyId}`);
 }
