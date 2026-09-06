@@ -107,6 +107,7 @@ export function HistoryCourseRunIndex({
 
   useEffect(() => {
     if (!supabaseEnabled) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- empty donated list when storage is off
       setDonatedRuns([]);
       return;
     }
@@ -141,6 +142,7 @@ export function HistoryCourseRunIndex({
     if (!pendingEditRunId || !localEntries) return;
     const hit = localEntries.find((entry) => entry.runId === pendingEditRunId);
     if (hit) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- open cover editor from a pending run id
       setEditingLocal(hit);
       onPendingEditConsumed?.();
     }

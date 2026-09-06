@@ -29,6 +29,8 @@ export function PostCreatedAt({
 }) {
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
+    // Relative time is client-only so SSR/hydration can keep the absolute date.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate relative time after mount
     setNow(Date.now());
   }, []);
 

@@ -47,6 +47,8 @@ export function AdminProfileNicknames({
   const displayedSaveResult = clientInvalid ? "invalid" : saveResult;
 
   useEffect(() => {
+    // Reset the editor when the stored pools change after save/reset.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- sync draft from saved server props
     setDraft({ ko: savedKo, en: savedEn });
     setClientInvalid(false);
   }, [savedKo, savedEn]);
