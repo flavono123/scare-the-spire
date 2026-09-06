@@ -478,7 +478,6 @@ export function DefragmentWritePanel({
         <>
           <PagestormEditor
             mode="edit"
-            seed="empty"
             title={pagestormTitle}
             onTitleChange={setPagestormTitle}
             nickname={readNickname()}

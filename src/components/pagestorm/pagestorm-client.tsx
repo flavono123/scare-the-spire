@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,6 @@ import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { GAME_UI_HOVER_TIP_NAV_DELAY_MS, GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
-import { PostDetailActions } from "@/components/post-detail-actions";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import Image from "@/components/ui/static-image";
 import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
@@ -23,12 +22,9 @@ import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import {
   PAGESTORM_BETA_ART_SRC,
   PAGESTORM_HREF,
-  PAGESTORM_LOREM_HREF,
-  PAGESTORM_LOREM_SNIPPET,
   PAGESTORM_TOKEN_SRC,
   PAGESTORM_WRITE_HREF,
   pagestormDetailHref,
-  pagestormIndexThumb,
   pagestormSnippet,
   type PagestormPostCard,
 } from "@/lib/pagestorm";
@@ -36,7 +32,6 @@ import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
 import type { PagestormEditorSaveInput } from "./pagestorm-editor";
-import { pagestormLoremDoc } from "./sample";
 
 function EditorLoading() {
   const serviceLocale = useServiceLocale();
@@ -172,16 +167,7 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
     serviceLocale,
     gameLocale,
   );
-  const loremHref = localizeHrefWithGameLocale(
-    PAGESTORM_LOREM_HREF,
-    serviceLocale,
-    gameLocale,
-  );
-  const loremThumb = useMemo(
-    () => pagestormIndexThumb(pagestormLoremDoc(copy)),
-    [copy],
-  );
-  const count = 1 + posts.length;
+  const count = posts.length;
 
   return (
     <div className="space-y-6">
@@ -274,17 +260,6 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
               : "space-y-3"
           }
         >
-          <PagestormIndexCard
-            href={loremHref}
-            view={view}
-            nickname={copy.defaultNickname}
-            isOwner
-            title={copy.sampleHeading}
-            snippet={PAGESTORM_LOREM_SNIPPET}
-            thumbnailUrl={loremThumb.imageUrl}
-            thumbnailKind={loremThumb.kind}
-            postKey="lorem"
-          />
           {unavailable ? null : loading ? (
             <div className={view === "gallery" ? "col-span-full" : undefined}>
               <ContentLoadingNotice label={copy.loading} />
@@ -313,42 +288,26 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
   );
 }
 
-function PagestormDocumentClient({
-  gameCopy,
-  surface,
-}: {
-  gameCopy: PagestormGameCopy;
-  surface: "write" | "lorem";
-}) {
+export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
   const serviceLocale = useServiceLocale();
   const gameLocale = useGameLocale();
   const copy = serviceMessages[serviceLocale].pagestorm;
   const router = useRouter();
   const { userId, ensureUser } = useAuth();
-  const profileFallback = useMemo(
-    () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
-    [copy.defaultNickname],
-  );
+  const profileFallback = {
+    ...DEFAULT_USER_PROFILE,
+    nickname: copy.defaultNickname,
+  };
   const { profile } = useUserProfile(profileFallback);
   const indexHref = localizeHrefWithGameLocale(
     PAGESTORM_HREF,
     serviceLocale,
     gameLocale,
   );
-  const [editing, setEditing] = useState(surface === "write");
-  const [copied, setCopied] = useState(false);
-  const [title, setTitle] = useState(surface === "lorem" ? copy.sampleHeading : "");
-  const [nickname, setNickname] = useState(
-    surface === "lorem" ? copy.defaultNickname : profile.nickname,
-  );
+  const [title, setTitle] = useState("");
+  const [nickname, setNickname] = useState(profile.nickname);
   const [submitting, setSubmitting] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
-  const mode = surface === "write" || editing ? "edit" : "preview";
-  const handleCopyUrl = useCallback(() => {
-    navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 2000);
-  }, []);
 
   const handleRegister = useCallback(async (input: PagestormEditorSaveInput) => {
     setSubmitting(true);
@@ -389,70 +348,31 @@ function PagestormDocumentClient({
             <ArrowLeft size={16} />
             {copy.backToIndex}
           </Link>
-          {surface === "lorem" ? (
-            <PostDetailActions
-              copied={copied}
-              copyLabel={copy.copyLink}
-              copiedLabel={copy.copied}
-              onCopy={handleCopyUrl}
-              isAuthor
-              editLabel={mode === "preview" ? copy.edit : undefined}
-              onEdit={mode === "preview" ? () => setEditing(true) : undefined}
-            />
-          ) : null}
         </div>
-        {surface === "lorem" && mode === "preview" ? (
-          <div className="space-y-2">
-            <div className="flex items-center gap-1.5">
-              <DisplayedProfileNickname
-                nickname={copy.defaultNickname}
-                isOwner
-                size={18}
-                tokenClassName="h-[18px] w-[18px]"
-                nicknameClassName="text-sm font-semibold text-gray-300"
-              />
-              <OwnPostMark />
-            </div>
-            <h2 className="font-game-title text-2xl text-foreground">
-              {title}
-            </h2>
-          </div>
-        ) : null}
-        {surface === "write" ? (
-          <div className="flex items-center gap-3">
-            <Image
-              src={PAGESTORM_TOKEN_SRC}
-              alt={gameCopy.title}
-              width={32}
-              height={32}
-              className="object-contain"
-            />
-            <h1 className="font-service text-xl font-bold text-primary">{gameCopy.title}</h1>
-          </div>
-        ) : null}
+        <div className="flex items-center gap-3">
+          <Image
+            src={PAGESTORM_TOKEN_SRC}
+            alt={gameCopy.title}
+            width={32}
+            height={32}
+            className="object-contain"
+          />
+          <h1 className="font-service text-xl font-bold text-primary">{gameCopy.title}</h1>
+        </div>
       </header>
       {unavailable ? (
         <StorageUnavailableNotice title={copy.unavailableTitle} />
       ) : null}
       <Editor
-        mode={mode}
-        seed={surface === "lorem" ? "lorem" : "empty"}
+        mode="edit"
         title={title}
-        onTitleChange={mode === "edit" ? setTitle : undefined}
+        onTitleChange={setTitle}
         nickname={nickname}
-        onNicknameChange={mode === "edit" ? setNickname : undefined}
+        onNicknameChange={setNickname}
         submitLabel={copy.submit}
         submitting={submitting}
-        onSubmit={mode === "edit" ? handleRegister : undefined}
+        onSubmit={handleRegister}
       />
     </div>
   );
-}
-
-export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
-  return <PagestormDocumentClient gameCopy={gameCopy} surface="write" />;
-}
-
-export function PagestormLoremClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
-  return <PagestormDocumentClient gameCopy={gameCopy} surface="lorem" />;
 }

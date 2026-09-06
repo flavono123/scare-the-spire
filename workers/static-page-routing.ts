@@ -29,7 +29,6 @@ const STATIC_SERVICE_PAGE_SEGMENTS = new Set([
 
 const STATIC_NESTED_SERVICE_PAGES: ReadonlyArray<readonly [string, string]> = [
   ["pagestorm", "write"],
-  ["pagestorm", "lorem"],
 ];
 
 function isNestedStaticServicePage(parts: string[]): boolean {
@@ -153,7 +152,7 @@ const DEFRAGMENT_FEDERATED_SERVICES = new Set([
 ]);
 
 const THIS_OR_THAT_NESTED_SEGMENTS = new Set(["tournament", "worldcup"]);
-const PAGESTORM_NESTED_SEGMENTS = new Set(["write", "lorem"]);
+const PAGESTORM_NESTED_SEGMENTS = new Set(["write"]);
 
 const RECORD_ID_PATTERN = /^[A-Za-z0-9_-]{1,128}$/;
 

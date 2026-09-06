@@ -214,7 +214,6 @@ export function PagestormPostView({
       <Editor
         key={`${post.id}:${mode}`}
         mode={mode}
-        seed="empty"
         initialContent={post.content}
         title={editing ? title : post.title}
         onTitleChange={editing ? setTitle : undefined}

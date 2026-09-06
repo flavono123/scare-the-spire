@@ -55,7 +55,6 @@ const staticServicePageSegments = new Set([
 ]);
 const staticNestedServicePages = [
   ["pagestorm", "write"],
-  ["pagestorm", "lorem"],
 ];
 const staticDetailShellSegment = "__id__";
 const staticServiceDetailSegments = new Set([

@@ -6,7 +6,6 @@ import {
   isCompendiumResourceLinkType,
 } from "@/lib/compendium-resource-links";
 import { ASCENSION_TOKEN_IMAGE_URL } from "@/lib/codex-types";
-import { PAGESTORM_LOREM_SNIPPET } from "@/lib/pagestorm";
 import { parseYouTubeVideoId, youtubeThumbnailUrl } from "@/lib/youtube-reference";
 import type { ServiceMessages } from "@/messages/service";
 import {
@@ -337,7 +336,8 @@ export function resolvePastedUrl(raw: string):
 export const SAMPLE_URL_PLACEHOLDER =
   "유튜브 또는 https://store.steampowered.com/app/2868840/Slay_the_Spire_2/";
 
-const LOREM_P1 = PAGESTORM_LOREM_SNIPPET;
+const LOREM_P1 =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 const LOREM_P2 =
   "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
 const LOREM_LIGHT =

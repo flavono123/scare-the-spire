@@ -70,7 +70,6 @@ const staticServicePageSegments = [
 ] as const;
 const staticNestedServicePages = [
   ["pagestorm", "write"],
-  ["pagestorm", "lorem"],
 ] as const;
 const staticDetailShellSegment = "__id__";
 const staticServiceDetailShellSegments = [
@@ -243,24 +242,6 @@ function checkStaticServicePages(): number {
     staticServiceDetailShellAssetPath("/pagestorm/post-id", "html")
       === `/_cf_static_pages/pagestorm/${staticDetailShellSegment}.html`,
     "Pagestorm details must rewrite to the static shell.",
-  );
-  assert(
-    staticServicePageAssetPath("/pagestorm/lorem", "html")
-      === "/_cf_static_pages/pagestorm/lorem.html",
-    "Pagestorm lorem must map to a nested static page.",
-  );
-  assert(
-    staticServicePageAssetPath("/en/pagestorm/lorem", "rsc")
-      === "/_cf_static_pages/en/pagestorm/lorem.rsc",
-    "Locale Pagestorm lorem must map to a nested static page.",
-  );
-  assert(
-    staticServicePageAssetPath("/pagestorm/lorem/extra", "html") === null,
-    "Pagestorm lorem must fail closed for extra path segments.",
-  );
-  assert(
-    staticServiceDetailShellAssetPath("/pagestorm/lorem", "html") === null,
-    "Pagestorm lorem must not use an unbounded ID shell.",
   );
 
   for (const pathPrefix of gameLocalePathPrefixes) {

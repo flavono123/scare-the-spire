@@ -31,7 +31,7 @@ import {
   pagestormContentText,
   type PagestormDoc,
 } from "@/lib/pagestorm";
-import { assetFromEntity, PAGESTORM_EMPTY_DOC, pagestormLoremDoc, resolvePastedUrl } from "./sample";
+import { assetFromEntity, PAGESTORM_EMPTY_DOC, resolvePastedUrl } from "./sample";
 import {
   GameAssetNode,
   OgBookmarkNode,
@@ -57,7 +57,6 @@ export type PagestormEditorSaveInput = {
 
 export function PagestormEditor({
   mode = "edit",
-  seed = "empty",
   initialContent,
   title,
   onTitleChange,
@@ -68,7 +67,6 @@ export function PagestormEditor({
   onSubmit,
 }: {
   mode?: "edit" | "preview";
-  seed?: "empty" | "lorem";
   initialContent?: PagestormDoc;
   title?: string;
   onTitleChange?: (title: string) => void;
@@ -111,7 +109,7 @@ export function PagestormEditor({
   const editor = useEditor({
     immediatelyRender: false,
     editable: mode === "edit",
-    content: (initialContent ?? (seed === "lorem" ? pagestormLoremDoc(copy) : PAGESTORM_EMPTY_DOC)) as JSONContent,
+    content: (initialContent ?? PAGESTORM_EMPTY_DOC) as JSONContent,
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3] },
