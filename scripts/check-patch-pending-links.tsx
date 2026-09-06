@@ -12,6 +12,9 @@ import {
   PatchLineStoryAction,
 } from "@/components/patches/patch-note-with-story-actions";
 import { ByrdispatchRichText } from "@/app/(main)/byrdispatch/page-content";
+import { MenuDropdown } from "@/components/menu-dropdown";
+import { SiteNavDropdown } from "@/components/site-nav-dropdown";
+import { getToyBoxNavItems } from "@/lib/site-nav-items";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { STS2Patch, STS2PatchLine } from "@/lib/types";
 
@@ -249,5 +252,38 @@ const storyPanelHtml = renderToStaticMarkup(
 );
 assert.match(storyPanelHtml, /\/images\/sts2\/cards\/constellation\.webp/);
 assert.doesNotMatch(storyPanelHtml, /\/images\/sts2\/nav\/patch_notes_icon\.png/);
+
+function menuHasHiddenAttribute(html: string): boolean {
+  return /<div(?=[^>]*\brole="menu")[^>]*\bhidden\b/.test(html);
+}
+
+const staticNavMenuHtml = renderToStaticMarkup(
+  <MenuDropdown ariaLabel="장난감 상자" staticNav summary="toy">
+    <button type="button" role="menuitem">역사 강의서</button>
+  </MenuDropdown>,
+);
+assert.match(staticNavMenuHtml, /data-static-nav-dropdown/);
+assert.match(staticNavMenuHtml, /역사 강의서/);
+assert.equal(menuHasHiddenAttribute(staticNavMenuHtml), false);
+
+const hydratedNavMenuHtml = renderToStaticMarkup(
+  <MenuDropdown ariaLabel="select" summary="pick">
+    <button type="button" role="menuitem">one</button>
+  </MenuDropdown>,
+);
+assert.equal(menuHasHiddenAttribute(hydratedNavMenuHtml), true);
+
+const toyBoxNavHtml = renderToStaticMarkup(
+  <SiteNavDropdown
+    icon="/images/sts2/relics/toy_box.webp"
+    alt="장난감 상자"
+    items={getToyBoxNavItems({ serviceLocale: "ko", gameLocale: "kor" })}
+    align="left"
+    variant="toyBox"
+  />,
+);
+assert.match(toyBoxNavHtml, /data-static-nav-dropdown/);
+assert.match(toyBoxNavHtml, /href="\/defragment"/);
+assert.equal(menuHasHiddenAttribute(toyBoxNavHtml), false);
 
 console.log("patch Worker regressions passed");

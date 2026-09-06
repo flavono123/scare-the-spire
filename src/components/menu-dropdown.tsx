@@ -70,10 +70,13 @@ export function MenuDropdown({
       >
         {summary}
       </summary>
+      {/* Static patch HTML does not hydrate. Native <details open> plus
+          `.patch-static-dropdown:not([open]) > [role="menu"]` owns visibility.
+          `hidden={!open}` would freeze those menus closed. */}
       <div
         role="menu"
         aria-label={ariaLabel}
-        hidden={!open}
+        hidden={staticNav ? undefined : !open}
         onClick={(event) => {
           if (
             event.target instanceof Element
