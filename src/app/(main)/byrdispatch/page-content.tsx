@@ -55,6 +55,7 @@ import {
   ASCENSION_TOKEN_IMAGE_URL,
   CHARACTER_CARDS_MODIFIER_IMAGE_URL,
 } from "@/lib/codex-types";
+import { PAGESTORM_HREF, PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
 
 export function generateByrdispatchMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
@@ -89,6 +90,8 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   "General": { href: null, icon: BYRDISPATCH_ICON },
   "장난감 상자": { href: null, icon: "/images/sts2/relics/toy_box.webp" },
   "Toy Box": { href: null, icon: "/images/sts2/relics/toy_box.webp" },
+  "서류 폭풍": { href: PAGESTORM_HREF, icon: PAGESTORM_TOKEN_SRC },
+  Pagestorm: { href: PAGESTORM_HREF, icon: PAGESTORM_TOKEN_SRC },
   "슬서운 이야기": { href: "/", icon: "/images/sts2/relics/bone_tea.webp" },
   "Stories": { href: "/", icon: "/images/sts2/relics/bone_tea.webp" },
   "섀소식": { href: "/byrdispatch", icon: BYRDISPATCH_ICON },
@@ -139,7 +142,9 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   "C-C-C-Combo": { href: "/c-c-c-combo", icon: "/images/sts2/badges/ccccombo.webp" },
   "케미컬X": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
   "케미컬엑스": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
+  "케미컬X/댓글": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
   "Chemical X": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
+  "Chemical X / Comments": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
   "역사 강의서": { href: "/history-course", icon: "/images/sts2/relics/history_course.webp" },
   "History Course": { href: "/history-course", icon: "/images/sts2/relics/history_course.webp" },
   "이거 아님 저거?": { href: "/this-or-that", icon: "/images/sts2/relics/choices_paradox.webp" },
@@ -186,7 +191,11 @@ const SERVICE_REFERENCE_LINKS: Record<string, string> = {
   "C-C-C-Combo": "/c-c-c-combo",
   "케미컬X": "/chemical-x",
   "케미컬엑스": "/chemical-x",
+  "케미컬X/댓글": "/chemical-x",
   "Chemical X": "/chemical-x",
+  "Chemical X / Comments": "/chemical-x",
+  "서류 폭풍": PAGESTORM_HREF,
+  Pagestorm: PAGESTORM_HREF,
   "프로필": "/profile",
   Profile: "/profile",
   "작은 우편함": "/contact",
