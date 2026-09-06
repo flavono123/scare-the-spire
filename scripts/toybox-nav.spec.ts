@@ -11,10 +11,18 @@ assert.equal(hrefs.includes("/defragment"), true);
 
 const thisOrThat = items.find((item) => item.href === "/this-or-that");
 assert.ok(thisOrThat);
-assert.equal(thisOrThat.isNew, true);
+assert.equal(thisOrThat.isNew, false);
 
 const decisions = items.find((item) => item.href === "/decisions-decisions");
 assert.ok(decisions);
-assert.equal(decisions.isNew, true);
+assert.equal(decisions.isNew, false);
+
+const pagestorm = items.find((item) => item.href === "/pagestorm");
+assert.ok(pagestorm);
+assert.equal(pagestorm.isNew, true);
+
+const defragment = items.find((item) => item.href === "/defragment");
+assert.ok(defragment);
+assert.equal(defragment.isNew, false);
 
 console.log("toybox-nav.spec.ts: ok");

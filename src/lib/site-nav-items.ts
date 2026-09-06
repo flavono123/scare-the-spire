@@ -126,6 +126,7 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     icon: PAGESTORM_TOKEN_SRC,
     createdAt: "2026-09-01",
     nestedUnder: "/defragment",
+    byrdispatchSectionTitle: "서류 폭풍",
     getLabel: (_serviceLocale, gameLocale) => getPagestormNavTitle(gameLocale),
   },
 ] as const;
