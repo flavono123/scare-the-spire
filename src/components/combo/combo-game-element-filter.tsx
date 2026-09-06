@@ -65,8 +65,6 @@ function getGameElementTypeLabels(
   };
 }
 
-type ComboGameElementFilterCopy = (typeof serviceMessages)["ko"]["combo"];
-
 interface ComboGameElementFilterProps {
   entities: EntityInfo[];
   items: Array<{ resources: ComboResourceRef[] }>;
@@ -75,14 +73,14 @@ interface ComboGameElementFilterProps {
   onSelectedChange: (selected: ComboResourceRef[]) => void;
   onQueryChange?: (query: string) => void;
   labels?: Partial<
-    Pick<
-      ComboGameElementFilterCopy,
+    Record<
       | "filterSearchPlaceholder"
       | "gameElementsInPosts"
       | "noGameElementsInPosts"
       | "popularGameElements"
       | "applyPopularGameElement"
-      | "removePopularGameElement"
+      | "removePopularGameElement",
+      string
     >
   >;
 }

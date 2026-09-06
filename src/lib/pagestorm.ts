@@ -119,7 +119,7 @@ export function normalizePagestormPost(row: unknown): PagestormPost {
   const record = row as Record<string, unknown>;
   const content = isPagestormDoc(record.content)
     ? record.content
-    : { type: "doc", content: [{ type: "paragraph" }] };
+    : { type: "doc" as const, content: [{ type: "paragraph" }] };
   return {
     id: String(record.id ?? ""),
     user_id: String(record.user_id ?? ""),

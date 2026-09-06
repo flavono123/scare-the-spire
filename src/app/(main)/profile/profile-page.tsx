@@ -270,7 +270,7 @@ export default function ProfilePage({
             profile={draftProfile}
             character={avatarCharacter}
             identityCharacter={character}
-            boss={boss}
+            boss={boss ?? undefined}
             bossMonsters={bossMonsters}
             duotone={duotone}
             action={characterAction.action}

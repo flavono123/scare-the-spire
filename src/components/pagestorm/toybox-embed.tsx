@@ -286,7 +286,7 @@ export function ToyboxEmbedFigure({
   const federated = pagestormToyboxFederatedFromHref(service);
   const serviceHref = pagestormToyboxServiceHref(mock?.service || service);
   const tot = serviceHref === "/this-or-that"
-    ? mock
+    ? mock && mock.service === "/this-or-that"
       ? {
         leftType: mock.leftType,
         leftId: mock.leftId,
@@ -298,7 +298,7 @@ export function ToyboxEmbedFigure({
         : null
     : null;
   const dd = serviceHref === "/decisions-decisions"
-    ? mock
+    ? mock && mock.service === "/decisions-decisions"
       ? mock
       : Array.isArray(rows) && Array.isArray(placements)
         ? {

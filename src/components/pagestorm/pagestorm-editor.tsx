@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import TextAlign from "@tiptap/extension-text-align";
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
+import type { JSONContent } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import { exitSuggestion } from "@tiptap/suggestion";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -110,7 +111,7 @@ export function PagestormEditor({
   const editor = useEditor({
     immediatelyRender: false,
     editable: mode === "edit",
-    content: initialContent ?? (seed === "lorem" ? pagestormLoremDoc(copy) : PAGESTORM_EMPTY_DOC),
+    content: (initialContent ?? (seed === "lorem" ? pagestormLoremDoc(copy) : PAGESTORM_EMPTY_DOC)) as JSONContent,
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3] },

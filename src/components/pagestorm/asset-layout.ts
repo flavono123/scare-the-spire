@@ -62,7 +62,7 @@ export function pagestormDropZone(relX: number, relY: number): PagestormDropZone
 }
 
 function embedPosFromEventTarget(view: EditorView, target: EventTarget | null): number | null {
-  if (!(target instanceof Node)) return null;
+  if (!(target instanceof globalThis.Node)) return null;
   try {
     const pos = view.posAtDOM(target, 0);
     const $pos = view.state.doc.resolve(
@@ -95,7 +95,7 @@ function embedPosFromCoords(view: EditorView, event: DragEvent): number | null {
   const after = $pos.nodeAfter;
   if (isPagestormEmbedNode(after)) return $pos.pos;
   const before = $pos.nodeBefore;
-  if (isPagestormEmbedNode(before)) return $pos.pos - before.nodeSize;
+  if (before && isPagestormEmbedNode(before)) return $pos.pos - before.nodeSize;
   return null;
 }
 
@@ -446,26 +446,26 @@ export const PagestormAssetLayout = Extension.create({
             },
           };
         },
+        appendTransaction(transactions, _oldState, newState) {
+          if (!transactions.some((tr) => tr.docChanged)) return null;
+          const ranges: Array<{ from: number; to: number; nodes: PMNode[] }> = [];
+          newState.doc.descendants((node, pos) => {
+            if (node.type.name !== PAGESTORM_ASSET_ROW) return;
+            const nodes: PMNode[] = [];
+            node.forEach((child) => {
+              if (!isStubEmbed(child)) nodes.push(child);
+            });
+            if (nodes.length === 2 && node.childCount === 2) return;
+            ranges.push({ from: pos, to: pos + node.nodeSize, nodes });
+          });
+          if (ranges.length === 0) return null;
+          let tr: Transaction | null = null;
+          for (const range of ranges.sort((a, b) => b.from - a.from)) {
+            tr = (tr ?? newState.tr).replaceWith(range.from, range.to, range.nodes);
+          }
+          return tr;
+        },
       }),
     ];
-  },
-  appendTransaction(transactions, _oldState, newState) {
-    if (!transactions.some((tr) => tr.docChanged)) return null;
-    const ranges: Array<{ from: number; to: number; nodes: PMNode[] }> = [];
-    newState.doc.descendants((node, pos) => {
-      if (node.type.name !== PAGESTORM_ASSET_ROW) return;
-      const nodes: PMNode[] = [];
-      node.forEach((child) => {
-        if (!isStubEmbed(child)) nodes.push(child);
-      });
-      if (nodes.length === 2 && node.childCount === 2) return;
-      ranges.push({ from: pos, to: pos + node.nodeSize, nodes });
-    });
-    if (ranges.length === 0) return null;
-    let tr: Transaction | null = null;
-    for (const range of ranges.sort((a, b) => b.from - a.from)) {
-      tr = (tr ?? newState.tr).replaceWith(range.from, range.to, range.nodes);
-    }
-    return tr;
   },
 });
