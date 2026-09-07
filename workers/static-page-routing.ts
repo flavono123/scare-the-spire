@@ -40,7 +40,7 @@ function isNestedStaticServicePage(parts: string[]): boolean {
   );
 }
 
-const STATIC_LEGACY_PAGE_SEGMENTS = new Set([
+const STATIC_STS1_COMPENDIUM_SEGMENTS = new Set([
   "cards",
   "potions",
   "relics",
@@ -67,17 +67,33 @@ const STATIC_COMPENDIUM_SEGMENTS = new Set([
 
 export type StaticPageExtension = "html" | "rsc";
 
+export function sts1LegacyAliasPath(pathname: string): string | null {
+  const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
+  const parts = normalizedPathname.split("/").filter(Boolean);
+  if (parts.length < 1 || parts.length > 2 || !STATIC_STS1_COMPENDIUM_SEGMENTS.has(parts[0])) {
+    return null;
+  }
+  return `/compendium/sts1/${parts.join("/")}`;
+}
+
+export function sts2CompendiumAliasPath(pathname: string): string | null {
+  const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
+  const parts = normalizedPathname.split("/").filter(Boolean);
+  const compendiumIndex = parts.indexOf("compendium");
+  if (compendiumIndex < 0 || compendiumIndex > 1) return null;
+  if (compendiumIndex === 1 && !STATIC_GAME_LOCALE_PREFIXES.has(parts[0])) return null;
+  if (parts[compendiumIndex + 1] !== "sts2") return null;
+  const rewritten = [...parts.slice(0, compendiumIndex + 1), ...parts.slice(compendiumIndex + 2)];
+  if (rewritten.length === compendiumIndex + 1) return null;
+  return `/${rewritten.join("/")}`;
+}
+
 export function staticLegacyPageAssetPath(
   pathname: string,
   extension: StaticPageExtension,
 ): string | null {
-  const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
-  const parts = normalizedPathname.split("/").filter(Boolean);
-  if (parts.length < 1 || parts.length > 2 || !STATIC_LEGACY_PAGE_SEGMENTS.has(parts[0])) {
-    return null;
-  }
-
-  return `/_cf_static_pages/${parts.join("/")}.${extension}`;
+  const alias = sts1LegacyAliasPath(pathname);
+  return alias ? staticCompendiumAssetPath(alias, extension) : null;
 }
 
 export function staticServicePageAssetPath(
@@ -116,6 +132,16 @@ export function staticCompendiumAssetPath(
   }
 
   const segment = parts[compendiumIndex + 1];
+  if (segment === "sts1") {
+    const type = parts[compendiumIndex + 2];
+    if (!type || !STATIC_STS1_COMPENDIUM_SEGMENTS.has(type)) return null;
+    const isIndex = relativeDepth === 3;
+    const isDetail = relativeDepth === 4;
+    if (!isIndex && !isDetail) return null;
+    if (isDetail && compendiumIndex === 1 && parts[0] !== "en") return null;
+    return `/_cf_static_pages/${parts.join("/")}.${extension}`;
+  }
+
   if (!STATIC_COMPENDIUM_SEGMENTS.has(segment)) return null;
 
   const isIndex = relativeDepth === 2;

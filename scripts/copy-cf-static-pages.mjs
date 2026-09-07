@@ -76,7 +76,7 @@ const defragmentFederatedServices = new Set([
   "favorite_tournament",
   "pagestorm",
 ]);
-const staticLegacyPageSegments = new Set([
+const sts1CompendiumSegments = new Set([
   "cards",
   "potions",
   "relics",
@@ -170,12 +170,6 @@ function staticPageRelativePath(file) {
     return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
   }
 
-  const isLegacyIndex = parts.length === 0 && staticLegacyPageSegments.has(parsed.name);
-  const isLegacyDetail = parts.length === 1 && staticLegacyPageSegments.has(parts[0]);
-  if (isLegacyIndex || isLegacyDetail) {
-    return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
-  }
-
   const isDefaultCompendiumRoot = parts.length === 0 && parsed.name === "compendium";
   const isGameLocaleCompendiumRoot =
     parts.length === 1
@@ -193,7 +187,16 @@ function staticPageRelativePath(file) {
     parts.length === compendiumIndex + 2
     && compendiumSegments.has(parts[compendiumIndex + 1])
     && (compendiumIndex === 0 || parts[0] === "en");
-  if (!isIndex && !isServiceLocaleDetail) return null;
+  const isSts1Index =
+    parts.length === compendiumIndex + 2
+    && parts[compendiumIndex + 1] === "sts1"
+    && sts1CompendiumSegments.has(parsed.name);
+  const isSts1Detail =
+    parts.length === compendiumIndex + 3
+    && parts[compendiumIndex + 1] === "sts1"
+    && sts1CompendiumSegments.has(parts[compendiumIndex + 2])
+    && (compendiumIndex === 0 || parts[0] === "en");
+  if (!isIndex && !isServiceLocaleDetail && !isSts1Index && !isSts1Detail) return null;
 
   return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
 }

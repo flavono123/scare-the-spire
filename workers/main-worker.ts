@@ -27,6 +27,7 @@ import {
   staticLegacyPageAssetPath,
   staticServiceDetailShellAssetPath,
   staticServicePageAssetPath,
+  sts2CompendiumAliasPath,
 } from "./static-page-routing";
 
 function isPatchWorkerPath(pathname: string): boolean {
@@ -219,7 +220,8 @@ async function maybeServeStaticHomePage(request: Request, env: Env, url: URL): P
 
 async function maybeServeStaticCompendiumPage(request: Request, env: Env, url: URL): Promise<Response | null> {
   const extension = isRscRequest(request, url) ? "rsc" : "html";
-  const assetPath = staticCompendiumAssetPath(url.pathname, extension);
+  const pathname = sts2CompendiumAliasPath(url.pathname) ?? url.pathname;
+  const assetPath = staticCompendiumAssetPath(pathname, extension);
   return assetPath ? fetchStaticPageAsset(request, env, assetPath, "compendium") : null;
 }
 

@@ -7,6 +7,8 @@ import {
   staticLegacyPageAssetPath,
   staticServiceDetailShellAssetPath,
   staticServicePageAssetPath,
+  sts1LegacyAliasPath,
+  sts2CompendiumAliasPath,
   type StaticPageExtension,
 } from "../workers/static-page-routing";
 
@@ -424,46 +426,24 @@ function checkStaticCompendiumRoots(): number {
 }
 
 function checkStaticLegacyPages(): number {
-  let count = 0;
-
-  for (const segment of staticLegacyPageSegments) {
-    const routeExtensions = new Map<string, Set<StaticPageExtension>>();
-    const sourceFiles = [
-      path.join(nextAppRoot, `${segment}.html`),
-      path.join(nextAppRoot, `${segment}.rsc`),
-      ...readdirSync(path.join(nextAppRoot, segment), { withFileTypes: true })
-        .filter((entry) => entry.isFile())
-        .map((entry) => path.join(nextAppRoot, segment, entry.name)),
-    ];
-
-    for (const sourceFile of sourceFiles) {
-      const extension = path.extname(sourceFile).slice(1);
-      if (extension !== "html" && extension !== "rsc") continue;
-
-      const id = path.basename(sourceFile, `.${extension}`);
-      const routePath = id === segment ? `/${segment}` : `/${segment}/${id}`;
-      const extensions = routeExtensions.get(routePath) ?? new Set<StaticPageExtension>();
-      extensions.add(extension);
-      routeExtensions.set(routePath, extensions);
-
-      const assetPath = staticLegacyPageAssetPath(routePath, extension);
-      assert(assetPath, `Static routing rejected legacy page ${routePath}.${extension}`);
-      const outputPath = path.join(assetsRoot, assetPath.slice(1));
-      assert(
-        statSync(outputPath, { throwIfNoEntry: false })?.isFile(),
-        `Missing copied legacy page: ${outputPath}`,
-      );
-    }
-
-    for (const [routePath, extensions] of routeExtensions) {
-      assert(extensions.has("html"), `Missing generated HTML for ${routePath}`);
-      assert(extensions.has("rsc"), `Missing generated RSC for ${routePath}`);
-    }
-
-    assert(routeExtensions.size > 0, `No legacy ${segment} routes were found.`);
-    count += routeExtensions.size * 2;
-  }
-
+  assert(
+    sts1LegacyAliasPath("/cards") === "/compendium/sts1/cards",
+    "STS1 /cards must alias to /compendium/sts1/cards",
+  );
+  assert(
+    sts1LegacyAliasPath("/cards/bash") === "/compendium/sts1/cards/bash",
+    "STS1 /cards/:id must alias to /compendium/sts1/cards/:id",
+  );
+  assert(
+    staticLegacyPageAssetPath("/cards", "html")
+      === "/_cf_static_pages/compendium/sts1/cards.html",
+    "Legacy /cards must serve the STS1 Compendium index asset.",
+  );
+  assert(
+    staticLegacyPageAssetPath("/cards/bash", "rsc")
+      === "/_cf_static_pages/compendium/sts1/cards/bash.rsc",
+    "Legacy /cards/:id must serve the STS1 Compendium detail asset.",
+  );
   assert(
     staticLegacyPageAssetPath("/en/cards/bash", "html") === null,
     "Legacy routes must not accept a game-locale prefix.",
@@ -472,6 +452,102 @@ function checkStaticLegacyPages(): number {
     staticLegacyPageAssetPath("/cards/bash/extra", "rsc") === null,
     "Legacy routes must fail closed for nested paths.",
   );
+  assert(
+    sts2CompendiumAliasPath("/compendium/sts2/cards") === "/compendium/cards",
+    "STS2 alias indexes must strip the sts2 segment.",
+  );
+  assert(
+    sts2CompendiumAliasPath("/en/compendium/sts2/relics/anchor") === "/en/compendium/relics/anchor",
+    "STS2 alias details must strip the sts2 segment.",
+  );
+  assert(
+    staticCompendiumAssetPath("/compendium/sts1/cards", "html")
+      === "/_cf_static_pages/compendium/sts1/cards.html",
+    "STS1 indexes must be direct static pages.",
+  );
+  assert(
+    staticCompendiumAssetPath("/en/compendium/sts1/cards/bash", "rsc")
+      === "/_cf_static_pages/en/compendium/sts1/cards/bash.rsc",
+    "English STS1 details must be direct static pages.",
+  );
+  assert(
+    staticCompendiumAssetPath("/zh/compendium/sts1/cards/bash", "html") === null,
+    "Game-only locale STS1 details must stay outside the direct static detail set.",
+  );
+  assert(
+    staticCompendiumAssetPath("/zh/compendium/sts1/cards", "html")
+      === "/_cf_static_pages/zh/compendium/sts1/cards.html",
+    "Game-locale STS1 indexes must remain direct static pages.",
+  );
+
+  let count = 0;
+  for (const localePrefix of ["", "en"]) {
+    const sourceRoot = localePrefix
+      ? path.join(nextAppRoot, localePrefix, "compendium", "sts1")
+      : path.join(nextAppRoot, "compendium", "sts1");
+    assert(
+      statSync(sourceRoot, { throwIfNoEntry: false })?.isDirectory(),
+      `Missing generated STS1 Compendium directory: ${sourceRoot}`,
+    );
+
+    for (const segment of staticLegacyPageSegments) {
+      const indexHtml = path.join(sourceRoot, `${segment}.html`);
+      const indexRsc = path.join(sourceRoot, `${segment}.rsc`);
+      assert(statSync(indexHtml, { throwIfNoEntry: false })?.isFile(), `Missing ${indexHtml}`);
+      assert(statSync(indexRsc, { throwIfNoEntry: false })?.isFile(), `Missing ${indexRsc}`);
+      const indexRoute = `${localePrefix ? `/${localePrefix}` : ""}/compendium/sts1/${segment}`;
+      for (const extension of ["html", "rsc"] as const) {
+        const assetPath = staticCompendiumAssetPath(indexRoute, extension);
+        assert(assetPath, `Static routing rejected STS1 index ${indexRoute}.${extension}`);
+        assert(
+          statSync(path.join(assetsRoot, assetPath.slice(1)), { throwIfNoEntry: false })?.isFile(),
+          `Missing copied STS1 index: ${assetPath}`,
+        );
+      }
+      count += 2;
+
+      const detailRoot = path.join(sourceRoot, segment);
+      const detailFiles = readdirSync(detailRoot, { withFileTypes: true })
+        .filter((entry) => entry.isFile());
+      const routeExtensions = new Map<string, Set<StaticPageExtension>>();
+      for (const fileEntry of detailFiles) {
+        const extension = path.extname(fileEntry.name).slice(1);
+        if (extension !== "html" && extension !== "rsc") continue;
+        const id = path.basename(fileEntry.name, `.${extension}`);
+        const routePath = `${indexRoute}/${id}`;
+        const extensions = routeExtensions.get(routePath) ?? new Set<StaticPageExtension>();
+        extensions.add(extension);
+        routeExtensions.set(routePath, extensions);
+        const assetPath = staticCompendiumAssetPath(routePath, extension);
+        assert(assetPath, `Static routing rejected STS1 detail ${routePath}.${extension}`);
+        assert(
+          statSync(path.join(assetsRoot, assetPath.slice(1)), { throwIfNoEntry: false })?.isFile(),
+          `Missing copied STS1 detail: ${assetPath}`,
+        );
+      }
+      for (const [routePath, extensions] of routeExtensions) {
+        assert(extensions.has("html"), `Missing generated HTML for ${routePath}`);
+        assert(extensions.has("rsc"), `Missing generated RSC for ${routePath}`);
+      }
+      assert(routeExtensions.size > 0, `No STS1 ${segment} detail routes were found.`);
+      count += routeExtensions.size * 2;
+    }
+  }
+
+  for (const segment of staticLegacyPageSegments) {
+    const zhIndex = path.join(nextAppRoot, "zh", "compendium", "sts1", `${segment}.html`);
+    assert(
+      statSync(zhIndex, { throwIfNoEntry: false })?.isFile(),
+      `Missing game-locale STS1 index: ${zhIndex}`,
+    );
+    const zhAsset = staticCompendiumAssetPath(`/zh/compendium/sts1/${segment}`, "html");
+    assert(zhAsset, `Static routing rejected game-locale STS1 index /zh/compendium/sts1/${segment}`);
+    assert(
+      statSync(path.join(assetsRoot, zhAsset.slice(1)), { throwIfNoEntry: false })?.isFile(),
+      `Missing copied game-locale STS1 index: ${zhAsset}`,
+    );
+    count += 1;
+  }
 
   return count;
 }

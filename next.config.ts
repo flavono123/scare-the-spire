@@ -33,6 +33,20 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      { source: "/cards", destination: "/compendium/sts1/cards" },
+      { source: "/cards/:id", destination: "/compendium/sts1/cards/:id" },
+      { source: "/relics", destination: "/compendium/sts1/relics" },
+      { source: "/relics/:id", destination: "/compendium/sts1/relics/:id" },
+      { source: "/potions", destination: "/compendium/sts1/potions" },
+      { source: "/potions/:id", destination: "/compendium/sts1/potions/:id" },
+      { source: "/compendium/sts2/:type", destination: "/compendium/:type" },
+      { source: "/compendium/sts2/:type/:id", destination: "/compendium/:type/:id" },
+      { source: "/:locale/compendium/sts2/:type", destination: "/:locale/compendium/:type" },
+      { source: "/:locale/compendium/sts2/:type/:id", destination: "/:locale/compendium/:type/:id" },
+    ];
+  },
   images: {
     // Keep Vercel image transformations at zero on the free tier.
     unoptimized: true,
