@@ -1,14 +1,18 @@
 import http from "node:http";
+import net from "node:net";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { createReadStream } from "node:fs";
 import { execFileSync, spawn, spawnSync } from "node:child_process";
 
 const root = process.cwd();
-const mainPort = Number(process.env.MAIN_DEV_PORT ?? 3001);
-const proxyPort = Number(process.env.PORT ?? 3000);
+const preferredProxyPort = Number(process.env.PORT ?? 3000);
+const preferredMainPort = Number(process.env.MAIN_DEV_PORT ?? 3001);
+let proxyPort = preferredProxyPort;
+let mainPort = preferredMainPort;
 const patchAssetsDir = path.join(root, ".patch-worker/assets");
 const portReclaimTimeoutMs = Number(process.env.DEV_PORT_RECLAIM_TIMEOUT_MS ?? 4000);
+const portSearchLimit = 50;
 
 function listeningPids(port) {
   try {
@@ -92,22 +96,9 @@ function waitUntilPortFree(port, timeoutMs) {
   return listeningPids(port).length === 0;
 }
 
-function reclaimPort(port) {
-  const pids = listeningPids(port);
-  if (pids.length === 0) return;
-
-  const ours = pids.filter(isThisProjectListener);
-  const others = pids.filter((pid) => !ours.includes(pid));
-  if (others.length > 0) {
-    const details = others
-      .map((pid) => `${pid} (${processCommand(pid) || "unknown"})`)
-      .join(", ");
-    throw new Error(
-      `Port ${port} is already in use by another process: ${details}. Stop that process or set ${
-        port === proxyPort ? "PORT" : "MAIN_DEV_PORT"
-      }.`,
-    );
-  }
+function reclaimOurListener(port) {
+  const ours = listeningPids(port).filter(isThisProjectListener);
+  if (ours.length === 0) return false;
 
   console.log(
     `Reclaiming leftover scare-the-spire listener on port ${port} (pid ${ours.join(", ")})`,
@@ -115,14 +106,51 @@ function reclaimPort(port) {
   for (const pid of ours) {
     killProcessTree(pid, "SIGTERM");
   }
-  if (waitUntilPortFree(port, portReclaimTimeoutMs)) return;
+  if (waitUntilPortFree(port, portReclaimTimeoutMs)) return true;
 
   for (const pid of listeningPids(port).filter(isThisProjectListener)) {
     killProcessTree(pid, "SIGKILL");
   }
-  if (!waitUntilPortFree(port, 1000)) {
-    throw new Error(`Port ${port} is still in use after reclaiming leftover processes.`);
+  return waitUntilPortFree(port, 1000);
+}
+
+function canBindPort(port) {
+  return new Promise((resolve, reject) => {
+    const tester = net.createServer();
+    tester.once("error", (error) => {
+      if (error.code === "EADDRINUSE" || error.code === "EACCES") {
+        resolve(false);
+        return;
+      }
+      reject(error);
+    });
+    tester.once("listening", () => {
+      tester.close(() => resolve(true));
+    });
+    tester.listen(port);
+  });
+}
+
+async function allocatePort(preferred, reserved) {
+  reclaimOurListener(preferred);
+  for (let offset = 0; offset < portSearchLimit; offset += 1) {
+    const port = preferred + offset;
+    if (reserved.has(port)) continue;
+    if (await canBindPort(port)) {
+      if (port !== preferred) {
+        console.log(`Port ${preferred} is in use; using ${port} instead`);
+      }
+      return port;
+    }
+    reclaimOurListener(port);
+    if (!reserved.has(port) && (await canBindPort(port))) {
+      if (port !== preferred) {
+        console.log(`Port ${preferred} is in use; using ${port} instead`);
+      }
+      return port;
+    }
   }
+  throw new Error(`No free TCP port found in ${preferred}–${preferred + portSearchLimit - 1}`);
 }
 
 function runInitialPatchBuild() {
@@ -285,25 +313,11 @@ function proxyUpgradeToMain(req, socket, head) {
   upstreamReq.end();
 }
 
-try {
-  reclaimPort(proxyPort);
-  reclaimPort(mainPort);
-} catch (error) {
-  console.error(error instanceof Error ? error.message : error);
-  process.exit(1);
-}
-
+reclaimOurListener(preferredProxyPort);
+reclaimOurListener(preferredMainPort);
 runInitialPatchBuild();
 
-try {
-  reclaimPort(proxyPort);
-  reclaimPort(mainPort);
-} catch (error) {
-  console.error(error instanceof Error ? error.message : error);
-  process.exit(1);
-}
-
-const mainDev = startMainDev();
+let mainDev;
 let shuttingDown = false;
 
 const server = http.createServer((req, res) => {
@@ -315,30 +329,55 @@ const server = http.createServer((req, res) => {
   proxyToMain(req, res);
 });
 
+function listenProxy(port) {
+  proxyPort = port;
+  server.listen(port);
+}
+
 server.on("error", (error) => {
+  if (error.code === "EADDRINUSE") {
+    const nextPort = proxyPort + 1 === mainPort ? proxyPort + 2 : proxyPort + 1;
+    if (nextPort < preferredProxyPort + portSearchLimit) {
+      console.log(`Port ${proxyPort} is in use; trying ${nextPort}`);
+      setImmediate(() => listenProxy(nextPort));
+      return;
+    }
+  }
   console.error(`Failed to bind patch/main dev proxy on port ${proxyPort}: ${error.message}`);
   shutdown(1);
 });
 
-server.listen(proxyPort, () => {
+server.on("listening", () => {
   console.log(`Patch/main dev proxy listening on http://localhost:${proxyPort}`);
   console.log(`Main Next dev server listening on http://localhost:${mainPort}`);
 });
 
-mainDev.on("error", (error) => {
-  console.error(`Failed to start main Next dev server: ${error.message}`);
-  shutdown(1);
-});
-mainDev.on("exit", (code, signal) => {
-  if (shuttingDown) return;
-  console.error(`Main Next dev server exited: ${signal ?? code ?? "unknown"}`);
-  shutdown(code ?? 1);
-});
+void (async () => {
+  try {
+    proxyPort = await allocatePort(preferredProxyPort, new Set());
+    mainPort = await allocatePort(preferredMainPort, new Set([proxyPort]));
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
+    process.exit(1);
+  }
+
+  mainDev = startMainDev();
+  mainDev.on("error", (error) => {
+    console.error(`Failed to start main Next dev server: ${error.message}`);
+    shutdown(1);
+  });
+  mainDev.on("exit", (code, signal) => {
+    if (shuttingDown) return;
+    console.error(`Main Next dev server exited: ${signal ?? code ?? "unknown"}`);
+    shutdown(code ?? 1);
+  });
+  listenProxy(proxyPort);
+})();
 
 server.on("upgrade", proxyUpgradeToMain);
 
 function killMainDev(signal) {
-  if (!mainDev.pid) return;
+  if (!mainDev?.pid) return;
   try {
     process.kill(-mainDev.pid, signal);
   } catch {
