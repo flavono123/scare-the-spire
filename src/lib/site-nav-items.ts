@@ -171,6 +171,12 @@ export const devNavItems = [
     strictDevOnly: true,
   },
   {
+    href: "/dev/toybox-preview",
+    label: "장난감 상자 미리보기",
+    icon: "/images/sts2/powers/focus_power.webp",
+    strictDevOnly: true,
+  },
+  {
     href: "/dev/profile",
     label: "프로필 저장 전환",
     icon: "/images/sts2/profile/unset.webp",
