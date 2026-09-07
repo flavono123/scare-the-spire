@@ -1,4 +1,6 @@
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
+import { getSts1NavLabel } from "@/lib/sts1/nav-labels";
+import type { Sts1ResourceType } from "@/lib/sts1/types";
 import {
   getDecisionsDecisionsNavTitle,
   getDefragmentNavTitle,
@@ -149,10 +151,14 @@ export const sts2NavItems = [
 ] as const;
 
 export const sts1NavItems = [
-  { href: "/cards", labelKey: "cards", icon: "/images/sts2/nav/stats_cards.png" },
-  { href: "/relics", labelKey: "relics", icon: "/images/sts2/relics/snecko_eye.webp" },
-  { href: "/potions", labelKey: "potions", icon: "/images/sts2/nav/stats_potions.png" },
-] as const;
+  { href: "/cards", type: "cards", icon: "/images/sts1/card-library/redTab.webp" },
+  { href: "/relics", type: "relics", icon: "/images/sts1/relics/burning-blood.webp" },
+  { href: "/potions", type: "potions", icon: "/images/sts1/potions/bloodpotion.webp" },
+] as const satisfies readonly {
+  href: string;
+  type: Sts1ResourceType;
+  icon: string;
+}[];
 
 export const devNavItems = [
   { href: "/dev/admin", label: "어드민", icon: "/images/sts2/nav/question_mark.png" },
@@ -249,14 +255,10 @@ export function localizePlainNavItems<
   }));
 }
 
-export function legacySts1NavItems<T extends { href: string; labelKey: CodexLabelKey; icon: string }>(
-  items: readonly T[],
-  serviceLocale: ServiceLocale,
-): NavDropdownItem[] {
-  const messages = serviceMessages[serviceLocale];
-  return items.map((item) => ({
+export function sts1NavDropdownItems(gameLocale: GameLocale): NavDropdownItem[] {
+  return sts1NavItems.map((item) => ({
     href: item.href,
-    label: messages.codex[item.labelKey],
+    label: getSts1NavLabel(gameLocale, item.type),
     icon: item.icon,
   }));
 }

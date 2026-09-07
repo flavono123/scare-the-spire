@@ -40,10 +40,9 @@ import { contactMessages } from "@/messages/contact";
 import {
   gameOnlyLanguageNavLocales,
   getToyBoxNavItems,
-  legacySts1NavItems,
   localizeCodexNavItems,
   serviceLanguageNavLocales,
-  sts1NavItems,
+  sts1NavDropdownItems,
   sts2NavItems,
 } from "@/lib/site-nav-items";
 
@@ -345,7 +344,7 @@ function StaticPatchHeader({
   const toyBoxLabel = serviceLocale === "ko" ? "장난감 상자" : "Toy Box";
   const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale });
   const sts2Items = localizeCodexNavItems(sts2NavItems, serviceLocale, gameLocale, { useGameLabels: true });
-  const sts1Items = legacySts1NavItems(sts1NavItems, serviceLocale);
+  const sts1Items = sts1NavDropdownItems(gameLocale);
 
   return (
     <>

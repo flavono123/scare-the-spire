@@ -48,10 +48,9 @@ import { pushCodexHistoryState } from "@/components/codex/use-hydration-safe-sea
 import {
   getToyBoxNavItems,
   gameOnlyLanguageNavLocales,
-  legacySts1NavItems,
   localizeCodexNavItems,
   serviceLanguageNavLocales,
-  sts1NavItems,
+  sts1NavDropdownItems,
   sts2NavItems,
 } from "@/lib/site-nav-items";
 
@@ -789,7 +788,7 @@ export function SiteNavbar() {
           <SiteNavDropdown
             icon="/images/sts1_app_icon.png"
             alt={messages.games.sts1}
-            items={legacySts1NavItems(sts1NavItems, serviceLocale)}
+            items={sts1NavDropdownItems(gameLocale)}
             align="right"
           />
           <div className="hidden border-l border-border pl-1 xl:block">

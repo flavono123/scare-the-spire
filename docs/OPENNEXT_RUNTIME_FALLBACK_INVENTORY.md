@@ -21,7 +21,7 @@
 | 정적 home | 14 | `/`, `/en`, `/zh` |
 | 정적 서비스 index | 84 | `/chemical-x`, `/en/c-c-c-combo`, `/zh/profile` |
 | 정적 Compendium | 3,312 | `/compendium`, `/compendium/cards/abrasive`, `/zh/compendium/cards` |
-| 정적 STS1 legacy | 603 | `/cards/bash`, `/relics/anchor`, `/potions/fairy-potion` |
+| 정적 STS1 Compendium | 별칭 포함 | `/compendium/sts1/cards/bash`, `/cards/bash` → 같은 `_cf_static_pages/compendium/sts1/...` asset |
 | patch Worker binding | 336 | `/patches/0.100.0`, `/en/patches/changes` |
 | 정적 metadata | 4 | `/robots.txt`, `/sitemap.xml`, `/favicon.ico`, `/apple-icon.png` |
 | 아직 OpenNext가 필요한 prerender route | 11 | dev 9, framework error 2 |
@@ -43,7 +43,7 @@ KiB를 108.87 KiB 초과했다. 정적 asset 수와 별개로 OpenNext runtime i
 
 대표:
 
-- STS1 legacy: `/cards`, `/cards/bash`, `/relics/anchor`, `/potions/fairy-potion`
+- STS1 Compendium: `/compendium/sts1/cards`, `/compendium/sts1/cards/bash`, plus grace aliases `/cards`, `/cards/bash`
 - 서비스 index: `/c-c-c-combo`, `/this-or-that`, `/profile`, `/byrdispatch`와 locale variant
 - Compendium root: `/compendium`, `/en/compendium`, `/zh/compendium`
 
