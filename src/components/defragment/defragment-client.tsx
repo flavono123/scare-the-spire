@@ -3,13 +3,14 @@
 import { useCallback, useMemo, useState } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { DefragmentIndexRow } from "@/components/defragment/defragment-index-row";
 import {
   DEFRAGMENT_AUTHOR_COL_CLASS,
+  DEFRAGMENT_BOARD_CONTAINER_CLASS,
   DEFRAGMENT_COUNT_COL_CLASS,
   DEFRAGMENT_DATE_COL_CLASS,
   DEFRAGMENT_TYPE_COL_CLASS,
-  DefragmentIndexRow,
-} from "@/components/defragment/defragment-index-row";
+} from "@/lib/defragment-board";
 import {
   DefragmentWritePanel,
   type DefragmentWritePlaceholders,
@@ -207,11 +208,14 @@ export function DefragmentClient({
       ) : items.length === 0 ? (
         <p className="py-8 text-center text-sm text-muted-foreground">{copy.empty}</p>
       ) : (
-        <div className="overflow-visible">
+        <div
+          data-defragment-board
+          className={cn(DEFRAGMENT_BOARD_CONTAINER_CLASS, "overflow-visible")}
+        >
           <div className="flex items-center gap-2 border-b border-primary/15 px-1 py-1 text-[11px] font-semibold tracking-wide text-zinc-500">
             <span className={cn(DEFRAGMENT_TYPE_COL_CLASS, "truncate")}>
-              <span className="hidden sm:inline">{copy.boardType}</span>
-              <span className="sr-only sm:hidden">{copy.boardType}</span>
+              <span className="hidden @xl:inline">{copy.boardType}</span>
+              <span className="sr-only @xl:hidden">{copy.boardType}</span>
             </span>
             <span className="min-w-0 flex-1">{copy.boardTitle}</span>
             <span className={DEFRAGMENT_AUTHOR_COL_CLASS}>{copy.boardAuthor}</span>

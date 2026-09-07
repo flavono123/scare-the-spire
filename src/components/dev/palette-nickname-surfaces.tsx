@@ -179,16 +179,25 @@ export function PaletteNicknameSurface({
       );
     case "defragment-index":
       return (
-        <article className="flex items-center gap-2 border-b border-border px-1 py-1.5">
-          <span className="min-w-0 flex-1 truncate text-sm text-foreground">제목</span>
-          <ProfileNickname
-            nickname={tone.nickname}
-            iconUrl={tone.iconUrl}
-            duotone={tone.duotone}
-            size={14}
-            tokenClassName="h-3.5 w-3.5"
-            nicknameClassName="text-[11px] leading-none text-muted-foreground"
-          />
+        <article className="border-b border-border px-1 py-2">
+          <div className="flex min-w-0 items-start gap-2">
+            <span className="min-w-0 flex-1 line-clamp-2 text-sm font-medium leading-snug text-foreground">
+              제목이 두 줄까지 보인다
+            </span>
+            <span className="w-10 shrink-0 text-right text-[11px] tabular-nums text-muted-foreground">3</span>
+            <span className="w-10 shrink-0 text-right text-[11px] tabular-nums text-muted-foreground">5</span>
+          </div>
+          <p className="mt-0.5 flex items-center gap-1.5 pl-0">
+            <ProfileNickname
+              nickname={tone.nickname}
+              iconUrl={tone.iconUrl}
+              duotone={tone.duotone}
+              size={14}
+              tokenClassName="h-3.5 w-3.5"
+              nicknameClassName="text-[11px] leading-none text-muted-foreground"
+            />
+            <span className="text-[11px] text-zinc-500">· 3분 전</span>
+          </p>
         </article>
       );
     case "combo-detail":

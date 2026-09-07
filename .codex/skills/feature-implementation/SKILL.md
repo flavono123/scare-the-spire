@@ -287,13 +287,19 @@ client list and does not call `get_toybox_feed`.
   then merges and returns at most 20. Do not `UNION` full tables and do not
   issue unbounded browser queries per source. There is no native title+body
   조각모음 post type; optional overlay bodies live on `defragment_bodies`.
-- 조각모음 index is a dense mixed board (유형 / 제목 / 추천 · 댓글), not gapped
-  per-row cards and not a DC/Zeroboard clone. Type uses a narrow token with no
-  raised or inset chip box; long names may truncate on phone widths. Idle type
-  tokens use `SpireIcon` ghost wax; row hover/focus reveals original asset
-  colors via `SpireGhostRevealIcon` (not a spire-* tint). Do not add a left
-  accent bar / vertical accent rail on the list. Other Toy Box indexes keep
-  their card layouts until they are explicitly redesigned.
+- 조각모음 index is a dense mixed board, not gapped per-row cards and not a
+  DC/Zeroboard clone. Desktop/wide container (`@xl`, ~576px) keeps type /
+  title / author / date / likes / comments columns; title is single-line
+  truncate. Phone/narrow container stacks: type token + 2-line title +
+  likes/comments on the first row, author · relative time on a quieter
+  second row. Do not keep fixed author/date columns beside the title on
+  phone widths — that is what truncates titles. Type labels may hide below
+  `@xl`; tokens stay visible. Use `@container` on the board list so a 390px
+  lab frame stacks even on a desktop window. Idle type tokens use `SpireIcon`
+  ghost wax; row hover/focus reveals original asset colors via
+  `SpireGhostRevealIcon` (not a spire-* tint). Do not add a left accent bar /
+  vertical accent rail on the list. Other Toy Box indexes keep their card
+  layouts until they are explicitly redesigned.
 - Index rows open **조각모음 detail**, not the original service URL:
   `/defragment/{service}/{id}`. Detail embeds that type's content (combo
   renderer/gallery, transfigure preview, This or That full vote UI, Chemical X

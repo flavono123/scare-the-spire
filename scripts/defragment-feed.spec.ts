@@ -9,6 +9,12 @@ import {
   defragmentOriginalHref,
   feedItemFromPost,
 } from "../src/lib/defragment";
+import {
+  DEFRAGMENT_AUTHOR_COL_CLASS,
+  DEFRAGMENT_BOARD_CONTAINER_CLASS,
+  DEFRAGMENT_DATE_COL_CLASS,
+  DEFRAGMENT_TITLE_CLASS,
+} from "../src/lib/defragment-board";
 import { TOYBOX_FEED_PAGE_SIZE, TOYBOX_FEED_SORT_OPTIONS } from "../src/lib/toybox-feed";
 import { serviceMessages } from "../src/messages/service";
 
@@ -172,5 +178,13 @@ const parsedAuthor = parseDefragmentFeedRow({
 assert.ok(parsedAuthor);
 assert.equal(parsedAuthor.nickname, "익명의 투입터리안");
 assert.equal(parsedAuthor.userId, "cccccccc-bbbb-cccc-dddd-eeeeeeeeeeee");
+
+assert.equal(DEFRAGMENT_BOARD_CONTAINER_CLASS.includes("@container"), true);
+assert.equal(DEFRAGMENT_TITLE_CLASS.includes("line-clamp-2"), true);
+assert.equal(DEFRAGMENT_TITLE_CLASS.includes("@xl:truncate"), true);
+assert.equal(DEFRAGMENT_AUTHOR_COL_CLASS.includes("hidden"), true);
+assert.equal(DEFRAGMENT_AUTHOR_COL_CLASS.includes("@xl:block"), true);
+assert.equal(DEFRAGMENT_DATE_COL_CLASS.includes("hidden"), true);
+assert.equal(DEFRAGMENT_DATE_COL_CLASS.includes("@xl:block"), true);
 
 console.log("defragment-feed.spec.ts: ok");
