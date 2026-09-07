@@ -2,12 +2,128 @@ import http from "node:http";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { createReadStream } from "node:fs";
-import { spawn, spawnSync } from "node:child_process";
+import { execFileSync, spawn, spawnSync } from "node:child_process";
 
 const root = process.cwd();
 const mainPort = Number(process.env.MAIN_DEV_PORT ?? 3001);
 const proxyPort = Number(process.env.PORT ?? 3000);
 const patchAssetsDir = path.join(root, ".patch-worker/assets");
+const portReclaimTimeoutMs = Number(process.env.DEV_PORT_RECLAIM_TIMEOUT_MS ?? 4000);
+
+function listeningPids(port) {
+  try {
+    const output = execFileSync("lsof", ["-nP", `-iTCP:${port}`, "-sTCP:LISTEN", "-t"], {
+      encoding: "utf8",
+    }).trim();
+    if (!output) return [];
+    return [...new Set(output.split(/\s+/).map(Number).filter(Boolean))];
+  } catch {
+    return [];
+  }
+}
+
+function processCwd(pid) {
+  try {
+    const output = execFileSync("lsof", ["-a", "-p", String(pid), "-d", "cwd", "-Fn"], {
+      encoding: "utf8",
+    });
+    const line = output.split("\n").find((entry) => entry.startsWith("n"));
+    return line ? line.slice(1) : "";
+  } catch {
+    return "";
+  }
+}
+
+function processCommand(pid) {
+  try {
+    return execFileSync("ps", ["-p", String(pid), "-o", "command="], {
+      encoding: "utf8",
+    }).trim();
+  } catch {
+    return "";
+  }
+}
+
+function isThisProjectListener(pid) {
+  const cwd = processCwd(pid);
+  if (cwd === root || cwd.startsWith(`${root}/`)) return true;
+
+  const command = processCommand(pid);
+  return command.includes(root);
+}
+
+function childPids(pid) {
+  try {
+    const output = execFileSync("pgrep", ["-P", String(pid)], {
+      encoding: "utf8",
+    }).trim();
+    if (!output) return [];
+    return output.split(/\s+/).map(Number).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+function killPid(pid, signal) {
+  try {
+    process.kill(pid, signal);
+  } catch {
+    // Already gone.
+  }
+}
+
+function killProcessTree(pid, signal) {
+  for (const child of childPids(pid)) {
+    killProcessTree(child, signal);
+  }
+  killPid(pid, signal);
+}
+
+function sleepSync(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function waitUntilPortFree(port, timeoutMs) {
+  const started = Date.now();
+  while (Date.now() - started < timeoutMs) {
+    if (listeningPids(port).length === 0) return true;
+    sleepSync(100);
+  }
+  return listeningPids(port).length === 0;
+}
+
+function reclaimPort(port) {
+  const pids = listeningPids(port);
+  if (pids.length === 0) return;
+
+  const ours = pids.filter(isThisProjectListener);
+  const others = pids.filter((pid) => !ours.includes(pid));
+  if (others.length > 0) {
+    const details = others
+      .map((pid) => `${pid} (${processCommand(pid) || "unknown"})`)
+      .join(", ");
+    throw new Error(
+      `Port ${port} is already in use by another process: ${details}. Stop that process or set ${
+        port === proxyPort ? "PORT" : "MAIN_DEV_PORT"
+      }.`,
+    );
+  }
+
+  console.log(
+    `Reclaiming leftover scare-the-spire listener on port ${port} (pid ${ours.join(", ")})`,
+  );
+  for (const pid of ours) {
+    killProcessTree(pid, "SIGTERM");
+  }
+  if (waitUntilPortFree(port, portReclaimTimeoutMs)) return;
+
+  for (const pid of listeningPids(port).filter(isThisProjectListener)) {
+    killProcessTree(pid, "SIGKILL");
+  }
+  if (!waitUntilPortFree(port, 1000)) {
+    throw new Error(`Port ${port} is still in use after reclaiming leftover processes.`);
+  }
+}
 
 function runInitialPatchBuild() {
   const result = spawnSync("pnpm", ["patch:build"], {
@@ -25,6 +141,7 @@ function startMainDev() {
   return spawn("pnpm", ["exec", "next", "dev", "--port", String(mainPort)], {
     cwd: root,
     stdio: "inherit",
+    detached: true,
     env: {
       ...process.env,
       PORT: String(mainPort),
@@ -168,8 +285,26 @@ function proxyUpgradeToMain(req, socket, head) {
   upstreamReq.end();
 }
 
+try {
+  reclaimPort(proxyPort);
+  reclaimPort(mainPort);
+} catch (error) {
+  console.error(error instanceof Error ? error.message : error);
+  process.exit(1);
+}
+
 runInitialPatchBuild();
+
+try {
+  reclaimPort(proxyPort);
+  reclaimPort(mainPort);
+} catch (error) {
+  console.error(error instanceof Error ? error.message : error);
+  process.exit(1);
+}
+
 const mainDev = startMainDev();
+let shuttingDown = false;
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url ?? "/", `http://${req.headers.host ?? `localhost:${proxyPort}`}`);
@@ -180,6 +315,11 @@ const server = http.createServer((req, res) => {
   proxyToMain(req, res);
 });
 
+server.on("error", (error) => {
+  console.error(`Failed to bind patch/main dev proxy on port ${proxyPort}: ${error.message}`);
+  shutdown(1);
+});
+
 server.listen(proxyPort, () => {
   console.log(`Patch/main dev proxy listening on http://localhost:${proxyPort}`);
   console.log(`Main Next dev server listening on http://localhost:${mainPort}`);
@@ -187,19 +327,36 @@ server.listen(proxyPort, () => {
 
 mainDev.on("error", (error) => {
   console.error(`Failed to start main Next dev server: ${error.message}`);
-  process.exit(1);
+  shutdown(1);
 });
 mainDev.on("exit", (code, signal) => {
+  if (shuttingDown) return;
   console.error(`Main Next dev server exited: ${signal ?? code ?? "unknown"}`);
-  process.exit(code ?? 1);
+  shutdown(code ?? 1);
 });
 
 server.on("upgrade", proxyUpgradeToMain);
 
-function shutdown() {
-  server.close();
-  mainDev.kill("SIGTERM");
+function killMainDev(signal) {
+  if (!mainDev.pid) return;
+  try {
+    process.kill(-mainDev.pid, signal);
+  } catch {
+    killProcessTree(mainDev.pid, signal);
+  }
 }
 
-process.on("SIGINT", shutdown);
-process.on("SIGTERM", shutdown);
+function shutdown(exitCode = 0) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  server.close();
+  killMainDev("SIGTERM");
+  process.exitCode = exitCode;
+  setTimeout(() => {
+    killMainDev("SIGKILL");
+    process.exit(exitCode);
+  }, 1500).unref();
+}
+
+process.on("SIGINT", () => shutdown(0));
+process.on("SIGTERM", () => shutdown(0));
