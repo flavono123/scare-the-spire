@@ -982,6 +982,1159 @@
     ]
   },
   {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "bygone-effigy-v100-nerf",
+    "entityType": "monster",
+    "entityId": "BYGONE_EFFIGY",
+    "summary": "Bygone Effigy Slashes damage decreased from 15(17) to 13(15). Still attacks with 10 Strength.",
+    "summaryKo": "옛 시대의 우상 참격 피해가 15(17)에서 13(15)로 감소했습니다. 여전히 힘 10을 얻은 뒤 공격합니다.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Slashes",
+        "displayNameKo": "참격",
+        "before": "15(17)",
+        "after": "13(15)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "damageValues",
+        "before": {
+          "Slash": {
+            "normal": 15,
+            "ascension": 17
+          }
+        },
+        "after": {
+          "Slash": {
+            "normal": 13,
+            "ascension": 15
+          }
+        }
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "byrdonis-v100-swoop-buff",
+    "entityType": "monster",
+    "entityId": "BYRDONIS",
+    "summary": "Byrdonis Swoop damage increased from 16(18) to 17(19).",
+    "summaryKo": "섀도니스 급강하 피해가 16(18)에서 17(19)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Swoop",
+        "displayNameKo": "급강하",
+        "before": "16(18)",
+        "after": "17(19)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "damageValues",
+        "before": {
+          "Peck": {
+            "normal": 3,
+            "ascension": 4
+          },
+          "Swoop": {
+            "normal": 16,
+            "ascension": 18
+          }
+        },
+        "after": {
+          "Peck": {
+            "normal": 3,
+            "ascension": 4
+          },
+          "Swoop": {
+            "normal": 17,
+            "ascension": 19
+          }
+        }
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "seapunk-normal-v100-composition",
+    "entityType": "encounter",
+    "entityId": "SEAPUNK_NORMAL",
+    "summary": "Calcified Cultist + Toadpole encounter changed to Calcified Cultist + Seapunk.",
+    "summaryKo": "석회화된 광신자 + 올챙이 조우가 석회화된 광신자 + 불량 해초로 변경되었습니다.",
+    "diffs": [
+      {
+        "attribute": "composition",
+        "displayName": "Enemies",
+        "displayNameKo": "등장 적",
+        "before": "Calcified Cultist + Toadpole",
+        "beforeKo": "석회화된 광신자 + 올챙이",
+        "after": "Calcified Cultist + Seapunk",
+        "afterKo": "석회화된 광신자 + 불량 해초",
+        "diffType": "text"
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "CALCIFIED_CULTIST"
+      },
+      {
+        "type": "monster",
+        "id": "SEAPUNK"
+      },
+      {
+        "type": "monster",
+        "id": "TOADPOLE"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "rocket-v100-buff",
+    "entityType": "monster",
+    "entityId": "ROCKET",
+    "summary": "Rocket HP increased from 189(199) to 199(209). Charge Up Strength now scales 2(3), and Crab Rage Strength increased from 5 to 6.",
+    "summaryKo": "로켓 HP가 189(199)에서 199(209)로 증가했습니다. 충전 힘 획득이 2(3)으로 승천 스케일되고, 꽃게의 격노 힘이 5에서 6으로 올랐습니다.",
+    "diffs": [
+      {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "HP",
+        "before": "189(199)",
+        "after": "199(209)",
+        "diffType": "number"
+      },
+      {
+        "attribute": "chargeUp",
+        "displayName": "Charge Up Strength",
+        "displayNameKo": "충전 힘",
+        "before": "2(2)",
+        "after": "2(3)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHp",
+        "before": 189,
+        "after": 199
+      },
+      {
+        "field": "minHpAscension",
+        "before": 199,
+        "after": 209
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "power",
+        "id": "CRAB_RAGE"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "crusher-v100-buff",
+    "entityType": "monster",
+    "entityId": "CRUSHER",
+    "summary": "Crusher HP increased from 199(209) to 209(219). Adapt Strength now scales 2(3), and Crab Rage Strength increased from 5 to 6.",
+    "summaryKo": "분쇄자 HP가 199(209)에서 209(219)로 증가했습니다. 적응 힘 획득이 2(3)으로 승천 스케일되고, 꽃게의 격노 힘이 5에서 6으로 올랐습니다.",
+    "diffs": [
+      {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "HP",
+        "before": "199(209)",
+        "after": "209(219)",
+        "diffType": "number"
+      },
+      {
+        "attribute": "adapt",
+        "displayName": "Adapt Strength",
+        "displayNameKo": "적응 힘",
+        "before": "2(2)",
+        "after": "2(3)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHp",
+        "before": 199,
+        "after": 209
+      },
+      {
+        "field": "minHpAscension",
+        "before": 209,
+        "after": 219
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "power",
+        "id": "CRAB_RAGE"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "crab-rage-v100-strength",
+    "entityType": "power",
+    "entityId": "CRAB_RAGE",
+    "summary": "Crab Rage Strength increased from 5 to 6.",
+    "summaryKo": "꽃게의 격노 힘이 5에서 6으로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "strength",
+        "displayName": "Strength",
+        "displayNameKo": "힘",
+        "before": 5,
+        "after": 6,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "vars.StrengthPower",
+        "before": 5,
+        "after": 6
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "decimillipede-v100-nerf",
+    "entityType": "monster",
+    "entityId": "DECIMILLIPEDE_SEGMENT",
+    "summary": "Decimillipede segment HP decreased from 42(48)-48(56) to 40(46)-46(52).",
+    "summaryKo": "만각지네 체절 HP가 42(48)-48(56)에서 40(46)-46(52)로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "HP",
+        "before": "42(48)-48(56)",
+        "after": "40(46)-46(52)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHp",
+        "before": 42,
+        "after": 40
+      },
+      {
+        "field": "maxHp",
+        "before": 48,
+        "after": 46
+      },
+      {
+        "field": "minHpAscension",
+        "before": 48,
+        "after": 46
+      },
+      {
+        "field": "maxHpAscension",
+        "before": 56,
+        "after": 52
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "fabricator-v100-bot-hp",
+    "entityType": "monster",
+    "entityId": "FABRICATOR",
+    "summary": "Fabricator bot HP decreased by 5.",
+    "summaryKo": "조립 전문가의 봇 HP가 5 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "botHp",
+        "displayName": "Bot HP",
+        "displayNameKo": "봇 HP",
+        "before": "Previous bot HP",
+        "beforeKo": "이전 봇 HP",
+        "after": "-5",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "tunneler-normal-v100-chomper",
+    "entityType": "encounter",
+    "entityId": "TUNNELER_NORMAL",
+    "summary": "Tunneler normal encounter: Bowlbug replaced by a Chomper that applies Dazed on turn 1.",
+    "summaryKo": "땅굴 2인조 일반 조우: 그릇벌레가 1턴에 멍해짐을 부여하는 먹깨비로 교체되었습니다.",
+    "diffs": [
+      {
+        "attribute": "composition",
+        "displayName": "Enemies",
+        "displayNameKo": "등장 적",
+        "before": "Tunneler + Bowlbug",
+        "beforeKo": "땅굴충 + 그릇벌레",
+        "after": "Tunneler + Chomper",
+        "afterKo": "땅굴충 + 먹깨비",
+        "diffType": "text"
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "TUNNELER"
+      },
+      {
+        "type": "monster",
+        "id": "CHOMPER"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "gas-bomb-v100-nerf",
+    "entityType": "monster",
+    "entityId": "GAS_BOMB",
+    "summary": "Living Fog encounter Gas Bomb HP decreased from 10(12) to 7(8).",
+    "summaryKo": "살아있는 안개 조우의 가스 폭탄 HP가 10(12)에서 7(8)로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "HP",
+        "before": "10(12)",
+        "after": "7(8)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHp",
+        "before": 10,
+        "after": 7
+      },
+      {
+        "field": "minHpAscension",
+        "before": 12,
+        "after": 8
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "LIVING_FOG"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "the-lost-v100-stat-steal",
+    "entityType": "monster",
+    "entityId": "THE_LOST",
+    "summary": "The Lost stat stealing now scales with Ascension: 2 -> 3 of the stolen stat at A9.",
+    "summaryKo": "사라진 자의 능력치 강탈이 승천에 따라 스케일됩니다. A9에서 강탈량이 2에서 3으로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "statSteal",
+        "displayName": "Stat steal",
+        "displayNameKo": "능력치 강탈",
+        "before": "2",
+        "after": "2(3) at A9",
+        "afterKo": "2(3) (승천 9)",
+        "diffType": "text"
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "THE_FORGOTTEN"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "the-forgotten-v100-dex-damage",
+    "entityType": "monster",
+    "entityId": "THE_FORGOTTEN",
+    "summary": "The Forgotten now deals an additional point of damage for every Dexterity it has. Stat stealing scales 2 -> 3 at A9.",
+    "summaryKo": "잊힌 자가 자신이 가진 민첩마다 피해를 1 추가로 줍니다. 능력치 강탈이 A9에서 2에서 3으로 스케일됩니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Dexterity damage",
+        "displayNameKo": "민첩 피해",
+        "before": "No bonus damage from stolen Dexterity",
+        "beforeKo": "강탈한 민첩으로 추가 피해 없음",
+        "after": "+1 damage per Dexterity",
+        "afterKo": "민첩당 피해 +1",
+        "diffType": "text"
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "THE_LOST"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "nibbit-v100-ascension-scaling",
+    "entityType": "monster",
+    "entityId": "NIBBIT",
+    "summary": "Nibbit now scales with Ascension: Hiss Strength 2 -> 3 at A9, Slice damage 6 -> 7 at A9, Slice Block 5 -> 6 at A8.",
+    "summaryKo": "깨작이가 승천에 맞게 스케일됩니다. 쉿 힘 2->3 (승천 9), 베기 피해 6->7 (승천 9), 베기 방어도 5->6 (승천 8).",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Slice",
+        "displayNameKo": "베기",
+        "before": "6(6)",
+        "after": "6(7)",
+        "diffType": "number"
+      },
+      {
+        "attribute": "block",
+        "displayName": "Slice Block",
+        "displayNameKo": "베기 방어도",
+        "before": "5(5)",
+        "after": "5(6)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "damageValues",
+        "before": {
+          "Butt": {
+            "normal": 12,
+            "ascension": 13
+          },
+          "Slice": {
+            "normal": 6,
+            "ascension": 6
+          }
+        },
+        "after": {
+          "Butt": {
+            "normal": 12,
+            "ascension": 13
+          },
+          "Slice": {
+            "normal": 6,
+            "ascension": 7
+          }
+        }
+      },
+      {
+        "field": "blockValues",
+        "before": {
+          "Slice": {
+            "normal": 5,
+            "ascension": 5
+          }
+        },
+        "after": {
+          "Slice": {
+            "normal": 5,
+            "ascension": 6
+          }
+        }
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "phantasmal-gardener-v100-nerf",
+    "entityType": "monster",
+    "entityId": "PHANTASMAL_GARDENER",
+    "summary": "Phantasmal Gardener HP decreased from 28(29)-32(33) to 26(27)-31(32).",
+    "summaryKo": "허깨비 정원사 HP가 28(29)-32(33)에서 26(27)-31(32)로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "HP",
+        "before": "28(29)-32(33)",
+        "after": "26(27)-31(32)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHp",
+        "before": 28,
+        "after": 26
+      },
+      {
+        "field": "maxHp",
+        "before": 32,
+        "after": 31
+      },
+      {
+        "field": "minHpAscension",
+        "before": 29,
+        "after": 27
+      },
+      {
+        "field": "maxHpAscension",
+        "before": 33,
+        "after": 32
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "seapunk-v100-sea-kick",
+    "entityType": "monster",
+    "entityId": "SEAPUNK",
+    "summary": "Seapunk Sea Kick damage increased from 11(12) to 11(13).",
+    "summaryKo": "불량 해초 바다 발차기 피해가 11(12)에서 11(13)으로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Sea Kick",
+        "displayNameKo": "바다 발차기",
+        "before": "11(12)",
+        "after": "11(13)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "damageValues",
+        "before": {
+          "SeaKick": {
+            "normal": 11,
+            "ascension": 12
+          },
+          "SpinningKick": {
+            "normal": 2,
+            "ascension": null
+          }
+        },
+        "after": {
+          "SeaKick": {
+            "normal": 11,
+            "ascension": 13
+          },
+          "SpinningKick": {
+            "normal": 2,
+            "ascension": null
+          }
+        }
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "terror-eel-v100-nerf",
+    "entityType": "monster",
+    "entityId": "TERROR_EEL",
+    "summary": "Terror Eel Crash damage decreased from 17(19) to 16(18), and Thrash Vigor decreased from 7 to 6.",
+    "summaryKo": "공포 장어 충돌 피해가 17(19)에서 16(18)로, 몸부림 활력이 7에서 6으로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Crash",
+        "displayNameKo": "충돌",
+        "before": "17(19)",
+        "after": "16(18)",
+        "diffType": "number"
+      },
+      {
+        "attribute": "vigor",
+        "displayName": "Thrash Vigor",
+        "displayNameKo": "몸부림 활력",
+        "before": 7,
+        "after": 6,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "damageValues",
+        "before": {
+          "Crash": {
+            "normal": 17,
+            "ascension": 19
+          },
+          "Thrash": {
+            "normal": 3,
+            "ascension": 4
+          }
+        },
+        "after": {
+          "Crash": {
+            "normal": 16,
+            "ascension": 18
+          },
+          "Thrash": {
+            "normal": 3,
+            "ascension": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "test-subject-v100-phase2",
+    "entityType": "monster",
+    "entityId": "TEST_SUBJECT",
+    "summary": "Test Subject phase 2 no longer uses Pounce; it repeats Multi-Claw every turn instead.",
+    "summaryKo": "실험체 2페이즈가 더 이상 뛰어들기를 쓰지 않고, 매 턴 연속 할퀴기를 반복합니다.",
+    "diffs": [
+      {
+        "attribute": "moveset",
+        "displayName": "Phase 2",
+        "displayNameKo": "2페이즈",
+        "before": "Includes Pounce",
+        "beforeKo": "뛰어들기 포함",
+        "after": "Repeats Multi-Claw every turn",
+        "afterKo": "매 턴 연속 할퀴기 반복",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "amethyst-aubergine-v100-buff",
+    "entityType": "relic",
+    "entityId": "AMETHYST_AUBERGINE",
+    "summary": "Amethyst Aubergine Gold gain increased from 10 to 15.",
+    "summaryKo": "자수정 가지의 골드 획득량이 10에서 15로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "gold",
+        "displayName": "Gold",
+        "displayNameKo": "골드",
+        "before": 10,
+        "after": 15,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "적이 보상으로 주는 [gold]골드[/gold]가 [blue]10[/blue] 증가합니다.",
+        "after": "적이 보상으로 주는 [gold]골드[/gold]가 [blue]15[/blue] 증가합니다."
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "book-of-five-rings-v100-buff",
+    "entityType": "relic",
+    "entityId": "BOOK_OF_FIVE_RINGS",
+    "summary": "Book of Five Rings healing increased from 15 to 20.",
+    "summaryKo": "오륜서의 회복량이 15에서 20으로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "heal",
+        "displayName": "Heal",
+        "displayNameKo": "회복",
+        "before": 15,
+        "after": 20,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]덱[/gold]에 카드를 [blue]5[/blue]장 추가할 때마다, 체력을 [green]15[/green] 회복합니다.",
+        "after": "[gold]덱[/gold]에 카드를 [blue]5[/blue]장 추가할 때마다, 체력을 [green]20[/green] 회복합니다."
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "bowler-hat-v100-buff",
+    "entityType": "relic",
+    "entityId": "BOWLER_HAT",
+    "summary": "Bowler Hat Gold gain increased from 20% to 25%.",
+    "summaryKo": "중절모의 골드 추가 획득량이 20%에서 25%로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "gold",
+        "displayName": "Gold",
+        "displayNameKo": "골드",
+        "before": "20%",
+        "after": "25%",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]골드[/gold]를 [blue]20%[/blue] 추가로 획득합니다.",
+        "after": "[gold]골드[/gold]를 [blue]25%[/blue] 추가로 획득합니다."
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "permafrost-v100-block",
+    "entityType": "relic",
+    "entityId": "PERMAFROST",
+    "summary": "Permafrost Block gain increased from 6 to 7.",
+    "summaryKo": "영원한 얼음의 방어도 획득량이 6에서 7로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": 6,
+        "after": 7,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "매 전투마다 처음으로 파워 카드를 사용 시, [gold]방어도[/gold]를 [blue]6[/blue] 얻습니다.",
+        "after": "매 전투마다 처음으로 파워 카드를 사용 시, [gold]방어도[/gold]를 [blue]7[/blue] 얻습니다."
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "planisphere-v100-buff",
+    "entityType": "relic",
+    "entityId": "PLANISPHERE",
+    "summary": "Planisphere HP gain increased from 4 to 5.",
+    "summaryKo": "별자리판의 체력 회복량이 4에서 5로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "heal",
+        "displayName": "Heal",
+        "displayNameKo": "회복",
+        "before": 4,
+        "after": 5,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]?[/gold] 방에 진입할 때마다, 체력을 [green]4[/green] 회복합니다.",
+        "after": "[gold]?[/gold] 방에 진입할 때마다, 체력을 [green]5[/green] 회복합니다."
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "stone-cracker-v100-change",
+    "entityType": "relic",
+    "entityId": "STONE_CRACKER",
+    "summary": "Stone Cracker now works in all combats but only upgrades 2 cards.",
+    "summaryKo": "착암기가 이제 모든 전투에서 발동하지만, 강화하는 카드는 2장입니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Did not upgrade in every combat / upgraded more cards",
+        "beforeKo": "모든 전투에서 발동하지 않거나 강화 매수가 다름",
+        "after": "At the start of each combat, upgrade 2 random cards in the draw pile for the rest of combat.",
+        "afterKo": "매 전투 시작 시 뽑을 카드 더미의 무작위 카드 2장을 남은 전투 동안 강화합니다.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "leafy-poultice-v100-nerf",
+    "entityType": "relic",
+    "entityId": "LEAFY_POULTICE",
+    "summary": "Neow's Leafy Poultice max HP loss increased from 10 to 12.",
+    "summaryKo": "나뭇잎 습포의 최대 체력 손실이 10에서 12로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "maxHp",
+        "displayName": "Max HP loss",
+        "displayNameKo": "최대 체력 손실",
+        "before": 10,
+        "after": 12,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "획득 시, [gold]타격[/gold] [blue]1[/blue]장과 [gold]수비[/gold] [blue]1[/blue]장을 [gold]변화[/gold]시킵니다. 최대 체력을 [blue]10[/blue] 잃습니다.",
+        "after": "획득 시, [gold]타격[/gold] [blue]1[/blue]장과 [gold]수비[/gold] [blue]1[/blue]장을 [gold]변화[/gold]시킵니다. 최대 체력을 [blue]12[/blue] 잃습니다."
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "precarious-shears-v100-nerf",
+    "entityType": "relic",
+    "entityId": "PRECARIOUS_SHEARS",
+    "summary": "Neow's Precarious Shears self-damage increased from 13 to 16.",
+    "summaryKo": "불안정한 가위의 자가 피해가 13에서 16으로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "HP loss",
+        "displayNameKo": "체력 손실",
+        "before": 13,
+        "after": 16,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "획득 시, [gold]덱[/gold]에서 카드를 [blue]2[/blue]장 제거하고 체력을 [blue]13[/blue] 잃습니다.",
+        "after": "획득 시, [gold]덱[/gold]에서 카드를 [blue]2[/blue]장 제거하고 체력을 [blue]16[/blue] 잃습니다."
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "tri-boomerang-v100-instinct",
+    "entityType": "relic",
+    "entityId": "TRI_BOOMERANG",
+    "summary": "Tanx's Tri-Boomerang Instinct enchantment no longer reduces cost; it doubles damage on enchanted Attacks.",
+    "summaryKo": "삼단 부메랑의 본능 인챈트가 더 이상 비용을 줄이지 않고, 인챈트된 공격의 피해를 2배로 만듭니다.",
+    "diffs": [
+      {
+        "attribute": "enchantment",
+        "displayName": "Instinct",
+        "displayNameKo": "본능",
+        "before": "Reduced cost",
+        "beforeKo": "비용 감소",
+        "after": "Doubles damage on enchanted Attacks",
+        "afterKo": "인챈트된 공격 피해 2배",
+        "diffType": "rework"
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "enchantment",
+        "id": "INSTINCT"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "instinct-v100-double-damage",
+    "entityType": "enchantment",
+    "entityId": "INSTINCT",
+    "summary": "Instinct no longer reduces cost; it doubles damage on enchanted Attacks.",
+    "summaryKo": "본능이 더 이상 비용을 줄이지 않고, 인챈트된 공격의 피해를 2배로 만듭니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Reduced cost",
+        "beforeKo": "비용 감소",
+        "after": "Doubles attack damage",
+        "afterKo": "공격 피해 2배",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "preserved-fog-v100-change",
+    "entityType": "relic",
+    "entityId": "PRESERVED_FOG",
+    "summary": "Vakuu's Preserved Fog cards removed decreased from 5 to 3. Folly curse is now Ethereal.",
+    "summaryKo": "보존된 안개의 카드 제거 수가 5에서 3으로 줄었습니다. 어리석음 저주가 영묘가 되었습니다.",
+    "diffs": [
+      {
+        "attribute": "cards",
+        "displayName": "Cards removed",
+        "displayNameKo": "제거 카드",
+        "before": 5,
+        "after": 3,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "획득 시, [gold]덱[/gold]에서 카드를 [blue]5[/blue]장 제거합니다. [gold]덱[/gold]에 [red]어리석음[/red]을 추가합니다.",
+        "after": "획득 시, [gold]덱[/gold]에서 카드를 [blue]3[/blue]장 제거합니다. [gold]덱[/gold]에 [red]어리석음[/red]을 추가합니다."
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "card",
+        "id": "FOLLY"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "skulking-colony-v100-buff",
+    "entityType": "monster",
+    "entityId": "SKULKING_COLONY",
+    "summary": "Skulking Colony reworked to have a deadlier moveset.",
+    "summaryKo": "잠행 군체가 더 치명적인 행동 패턴으로 리워크되었습니다.",
+    "diffs": [
+      {
+        "attribute": "moveset",
+        "displayName": "Moveset",
+        "displayNameKo": "행동 패턴",
+        "before": "Previous moveset",
+        "beforeKo": "이전 행동 패턴",
+        "after": "Deadlier moveset",
+        "afterKo": "더 치명적인 행동 패턴",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "colorless",
+    "id": "discovery-v100-free-to-play",
+    "entityType": "card",
+    "entityId": "DISCOVERY",
+    "summary": "Discovery wording changed from \"It costs 0 Energy this turn\" to \"It's free to play this turn\", so Star costs are also reduced to 0.",
+    "summaryKo": "발견의 문구가 \"이번 턴 비용 0\"에서 \"이번 턴 동안 비용 없이 사용\"으로 바뀌어, 별 비용도 0이 됩니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Wording",
+        "displayNameKo": "문구",
+        "before": "It costs 0 Energy this turn.",
+        "beforeKo": "이번 턴에 에너지 비용이 0입니다.",
+        "after": "It's free to play this turn (including Star costs).",
+        "afterKo": "이번 턴 동안 비용 없이 사용할 수 있습니다 (별 비용 포함).",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "defect",
+    "id": "rocket-punch-v100-until-played",
+    "entityType": "card",
+    "entityId": "ROCKET_PUNCH",
+    "summary": "Rocket Punch cost reduction now lasts until the card is played, instead of only until the end of the turn.",
+    "summaryKo": "로켓 펀치의 비용 감소가 턴 종료가 아니라, 그 카드를 사용할 때까지 유지됩니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Cost reduction",
+        "displayNameKo": "비용 감소",
+        "before": "Lasts until end of turn",
+        "beforeKo": "턴 종료까지",
+        "after": "Lasts until played",
+        "afterKo": "사용할 때까지",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "dense-vegetation-v100-trudge",
+    "entityType": "event",
+    "entityId": "DENSE_VEGETATION",
+    "summary": "Dense Vegetation Trudge On option became \"Lose 8 HP. Gain 61-99 Gold.\"",
+    "summaryKo": "울창한 초목의 \"묵묵히 나아간다\" 선택지가 \"체력 8 손실. 골드 61-99 획득\"으로 변경되었습니다.",
+    "diffs": [
+      {
+        "attribute": "option",
+        "displayName": "Trudge On",
+        "displayNameKo": "묵묵히 나아간다",
+        "before": "Previous option",
+        "beforeKo": "이전 선택지",
+        "after": "Lose 8 HP. Gain 61-99 Gold.",
+        "afterKo": "체력 8 손실. 골드 61-99 획득.",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "endless-conveyor-v100-gold",
+    "entityType": "event",
+    "entityId": "ENDLESS_CONVEYOR",
+    "summary": "Endless Conveyor requires 120 Gold to spawn (up from 105). Grab off the Belt cost increased from 35 to 40 Gold.",
+    "summaryKo": "무한의 컨베이어가 등장하려면 골드 120이 필요합니다 (이전 105). 벨트에서 집기 비용이 35에서 40 골드로 올랐습니다.",
+    "diffs": [
+      {
+        "attribute": "spawn",
+        "displayName": "Spawn gold",
+        "displayNameKo": "등장 골드",
+        "before": 105,
+        "after": 120,
+        "diffType": "number"
+      },
+      {
+        "attribute": "cost",
+        "displayName": "Grab cost",
+        "displayNameKo": "집기 비용",
+        "before": 35,
+        "after": 40,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "grave-of-the-forgotten-v100-exhaust",
+    "entityType": "event",
+    "entityId": "GRAVE_OF_THE_FORGOTTEN",
+    "summary": "Grave of the Forgotten can no longer spawn unless every player has a card with Exhaust in their deck.",
+    "summaryKo": "잊힌 자의 무덤은 모든 플레이어가 소멸 카드를 가지고 있을 때만 등장합니다.",
+    "diffs": [
+      {
+        "attribute": "spawn",
+        "displayName": "Spawn condition",
+        "displayNameKo": "등장 조건",
+        "before": "No Exhaust requirement",
+        "beforeKo": "소멸 카드 조건 없음",
+        "after": "Every player must have an Exhaust card",
+        "afterKo": "모든 플레이어가 소멸 카드를 보유",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "morphic-grove-v100-change",
+    "entityType": "event",
+    "entityId": "MORPHIC_GROVE",
+    "summary": "Morphic Grove requires 2+ transformable cards, the Group option costs all Gold, and it is collaborative in multiplayer.",
+    "summaryKo": "변성체의 숲은 변화 가능한 카드 2장 이상이 필요하고, 무리 선택지가 골드를 전부 쓰며, 멀티에서는 협동 이벤트가 됩니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Requirements",
+        "displayNameKo": "조건",
+        "before": "Previous spawn and Group cost",
+        "beforeKo": "이전 등장 조건과 무리 비용",
+        "after": "2+ transformable cards; Group costs all Gold; collaborative in MP",
+        "afterKo": "변화 가능 카드 2장 이상, 무리 선택지는 골드 전부, 멀티 협동",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "spirit-grafter-v100-rejection",
+    "entityType": "event",
+    "entityId": "SPIRIT_GRAFTER",
+    "summary": "Spirit Grafter Rejection option became \"Lose 10 HP. Upgrade a card.\"",
+    "summaryKo": "정령 접합자의 \"거부한다\" 선택지가 \"체력 10 손실. 카드 1장 강화\"로 변경되었습니다.",
+    "diffs": [
+      {
+        "attribute": "option",
+        "displayName": "Rejection",
+        "displayNameKo": "거부한다",
+        "before": "Previous option",
+        "beforeKo": "이전 선택지",
+        "after": "Lose 10 HP. Upgrade a card.",
+        "afterKo": "체력 10 손실. 카드 1장 강화.",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "id": "round-tea-party-v100-hp",
+    "entityType": "event",
+    "entityId": "ROUND_TEA_PARTY",
+    "summary": "The Round Tea Party can no longer spawn unless all players have at least 12 HP.",
+    "summaryKo": "원탁의 다과회는 모든 플레이어의 체력이 12 이상일 때만 등장합니다.",
+    "diffs": [
+      {
+        "attribute": "spawn",
+        "displayName": "Spawn HP",
+        "displayNameKo": "등장 체력",
+        "before": "No 12 HP requirement",
+        "beforeKo": "체력 12 조건 없음",
+        "after": "All players must have at least 12 HP",
+        "afterKo": "모든 플레이어 체력 12 이상",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
     "id": "hp-cap-v99",
     "entityType": "monster",
     "entityId": "_GLOBAL",

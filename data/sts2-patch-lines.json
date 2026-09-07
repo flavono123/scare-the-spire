@@ -561,493 +561,4056 @@
     "searchText": "v0.99.1:line-002-text-fn7v3 v0.99.1 0.99.1 버그 수정 정면 돌파 카드 자가 hp 손실 mp 수정 breakthrough card self-hp-loss mp fix."
   },
   {
-    "id": "v0.100.0:line-001-text-qgkkr7",
+    "id": "v0.100.0:line-001-text-s6c13",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 사일런트"
+      "콘텐츠",
+      "일반"
     ],
-    "markdownKo": "[gold]예비[/gold] -> [gold]준비[/gold] (리워크): 0코스트 \"1장 뽑기, 1장 버리기\"에서 1코스트 스킬로 변경. 2장 버리기, 다음 턴 [gold]에너지[/gold] 2(업그레이드 시 3) 획득.",
-    "markdownEn": "**Prepared -> Prepare** (rework): Was 0-cost \"Draw 1, Discard 1\"; now 1-cost Skill. Discard 2 cards, gain 2 Energy next turn (3 upgraded).",
-    "textKo": "예비 -> 준비 (리워크): 0코스트 \"1장 뽑기, 1장 버리기\"에서 1코스트 스킬로 변경. 2장 버리기, 다음 턴 에너지 2(업그레이드 시 3) 획득.",
-    "textEn": "Prepared -> Prepare (rework): Was 0-cost \"Draw 1, Discard 1\"; now 1-cost Skill. Discard 2 cards, gain 2 Energy next turn (3 upgraded).",
+    "markdownKo": "Deprecated Card 자리 표시자를 추가했습니다. 상태이상 - \"카드를 1장 뽑습니다. 이 카드를 [gold]덱[/gold]에서 제거합니다. 소멸.\"",
+    "markdownEn": "Added a Deprecated Card placeholder: Status - \"Draw 1 card. Remove this from your Deck. Exhaust.\"",
+    "textKo": "Deprecated Card 자리 표시자를 추가했습니다. 상태이상 - \"카드를 1장 뽑습니다. 이 카드를 덱에서 제거합니다. 소멸.\"",
+    "textEn": "Added a Deprecated Card placeholder: Status - \"Draw 1 card. Remove this from your Deck. Exhaust.\"",
     "entityRefs": [],
-    "searchText": "v0.100.0:line-001-text-qgkkr7 v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 사일런트 예비 -> 준비 (리워크): 0코스트 \"1장 뽑기, 1장 버리기\"에서 1코스트 스킬로 변경. 2장 버리기, 다음 턴 에너지 2(업그레이드 시 3) 획득. prepared -> prepare (rework): was 0-cost \"draw 1, discard 1\"; now 1-cost skill. discard 2 cards, gain 2 energy next turn (3 upgraded)."
+    "searchText": "v0.100.0:line-001-text-s6c13 v0.100.0 0.100.0 콘텐츠 일반 deprecated card 자리 표시자를 추가했습니다. 상태이상 - \"카드를 1장 뽑습니다. 이 카드를 덱에서 제거합니다. 소멸.\" added a deprecated card placeholder: status - \"draw 1 card. remove this from your deck. exhaust.\""
   },
   {
-    "id": "v0.100.0:line-002-text-3znl16",
+    "id": "v0.100.0:line-002-text-bkjcg7",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 아이언클래드"
+      "콘텐츠",
+      "일반"
     ],
-    "markdownKo": "[gold]제압[/gold] (리워크): 1코스트 언커먼 스킬. [gold]취약[/gold] 1(2) 부여, 적의 [gold]취약[/gold]당 [gold]힘[/gold] 1 획득. 소멸.",
-    "markdownEn": "**Dominate** (rework): Now a 1-cost Uncommon Skill. Apply 1 (2) Vulnerable, gain 1 Strength per Vulnerable on enemy. Exhaust.",
-    "textKo": "제압 (리워크): 1코스트 언커먼 스킬. 취약 1(2) 부여, 적의 취약당 힘 1 획득. 소멸.",
-    "textEn": "Dominate (rework): Now a 1-cost Uncommon Skill. Apply 1 (2) Vulnerable, gain 1 Strength per Vulnerable on enemy. Exhaust.",
+    "markdownKo": "진행 중인 런의 카드가 업데이트로 게임에서 제거되면 \"Deprecated Card\"로 바뀝니다.",
+    "markdownEn": "If you have an in-progress run and a card in your deck is removed from the game due to a recent update, it will be replaced with \"Deprecated Card\".",
+    "textKo": "진행 중인 런의 카드가 업데이트로 게임에서 제거되면 \"Deprecated Card\"로 바뀝니다.",
+    "textEn": "If you have an in-progress run and a card in your deck is removed from the game due to a recent update, it will be replaced with \"Deprecated Card\".",
     "entityRefs": [],
-    "searchText": "v0.100.0:line-002-text-3znl16 v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 아이언클래드 제압 (리워크): 1코스트 언커먼 스킬. 취약 1(2) 부여, 적의 취약당 힘 1 획득. 소멸. dominate (rework): now a 1-cost uncommon skill. apply 1 (2) vulnerable, gain 1 strength per vulnerable on enemy. exhaust."
+    "searchText": "v0.100.0:line-002-text-bkjcg7 v0.100.0 0.100.0 콘텐츠 일반 진행 중인 런의 카드가 업데이트로 게임에서 제거되면 \"deprecated card\"로 바뀝니다. if you have an in-progress run and a card in your deck is removed from the game due to a recent update, it will be replaced with \"deprecated card\"."
   },
   {
-    "id": "v0.100.0:line-003-text-r8u8rk",
+    "id": "v0.100.0:line-003-card-dominate",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 아이언클래드"
+      "콘텐츠",
+      "아이언클래드"
     ],
-    "markdownKo": "[gold]악의[/gold] (리워크): 0코스트 언커먼 공격. 5 피해, 이번 턴 HP를 잃었으면 2(3)회 타격. 카드 뽑기 제거.",
-    "markdownEn": "**Spite** (rework): Now a 0-cost Uncommon Attack. 5 damage, hits 2 (3) times if you lost HP this turn. Removed card draw.",
-    "textKo": "악의 (리워크): 0코스트 언커먼 공격. 5 피해, 이번 턴 HP를 잃었으면 2(3)회 타격. 카드 뽑기 제거.",
-    "textEn": "Spite (rework): Now a 0-cost Uncommon Attack. 5 damage, hits 2 (3) times if you lost HP this turn. Removed card draw.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-003-text-r8u8rk v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 아이언클래드 악의 (리워크): 0코스트 언커먼 공격. 5 피해, 이번 턴 hp를 잃었으면 2(3)회 타격. 카드 뽑기 제거. spite (rework): now a 0-cost uncommon attack. 5 damage, hits 2 (3) times if you lost hp this turn. removed card draw."
+    "markdownKo": "[gold:card]제압[/gold] 리워크: 스킬 - 코스트 1 - 언커먼 - \"[gold]취약[/gold] 1(2) 부여. 적의 [gold]취약[/gold]마다 [gold]힘[/gold] 1 획득. 소멸.\"",
+    "markdownEn": "Reworked [gold:card]Dominate[/gold]: Skill - Cost 1 - Uncommon - \"Apply 1(2) [gold]Vulnerable[/gold]. Gain 1 [gold]Strength[/gold] for each [gold]Vulnerable[/gold] on the enemy. Exhaust.\"",
+    "textKo": "제압 리워크: 스킬 - 코스트 1 - 언커먼 - \"취약 1(2) 부여. 적의 취약마다 힘 1 획득. 소멸.\"",
+    "textEn": "Reworked Dominate: Skill - Cost 1 - Uncommon - \"Apply 1(2) Vulnerable. Gain 1 Strength for each Vulnerable on the enemy. Exhaust.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "DOMINATE",
+        "label": "제압"
+      }
+    ],
+    "searchText": "v0.100.0:line-003-card-dominate v0.100.0 0.100.0 콘텐츠 아이언클래드 제압 리워크: 스킬 - 코스트 1 - 언커먼 - \"취약 1(2) 부여. 적의 취약마다 힘 1 획득. 소멸.\" reworked dominate: skill - cost 1 - uncommon - \"apply 1(2) vulnerable. gain 1 strength for each vulnerable on the enemy. exhaust.\" card dominate 제압 제압 dominate"
   },
   {
-    "id": "v0.100.0:line-004-text-yvc2f7",
+    "id": "v0.100.0:line-004-card-expect-a-fight",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 아이언클래드"
+      "콘텐츠",
+      "아이언클래드"
     ],
-    "markdownKo": "[gold]싸움 준비[/gold]: 여전히 손패의 공격당 [gold]에너지[/gold] 1 획득하나, 해당 턴 추가 [gold]에너지[/gold] 획득 불가.",
-    "markdownEn": "**Expect a Fight**: Still grants 1 energy per attack in hand but prevents additional energy gain that turn.",
-    "textKo": "싸움 준비: 여전히 손패의 공격당 에너지 1 획득하나, 해당 턴 추가 에너지 획득 불가.",
-    "textEn": "Expect a Fight: Still grants 1 energy per attack in hand but prevents additional energy gain that turn.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-004-text-yvc2f7 v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 아이언클래드 싸움 준비: 여전히 손패의 공격당 에너지 1 획득하나, 해당 턴 추가 에너지 획득 불가. expect a fight: still grants 1 energy per attack in hand but prevents additional energy gain that turn."
+    "markdownKo": "[gold:card]싸움 준비[/gold] 리워크: 스킬 - 코스트 2(1) - 언커먼 - \"손의 공격마다 [energy:1] 획득. 이번 턴에 추가로 [energy:1]를 얻을 수 없습니다.\"",
+    "markdownEn": "Reworked [gold:card]Expect a Fight[/gold]: Skill - Cost 2(1) - Uncommon - \"Gain [energy:1] for each Attack in your Hand. You cannot gain additional [energy:1] this turn.\"",
+    "textKo": "싸움 준비 리워크: 스킬 - 코스트 2(1) - 언커먼 - \"손의 공격마다 획득. 이번 턴에 추가로 를 얻을 수 없습니다.\"",
+    "textEn": "Reworked Expect a Fight: Skill - Cost 2(1) - Uncommon - \"Gain for each Attack in your Hand. You cannot gain additional this turn.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "EXPECT_A_FIGHT",
+        "label": "싸움 준비"
+      }
+    ],
+    "searchText": "v0.100.0:line-004-card-expect-a-fight v0.100.0 0.100.0 콘텐츠 아이언클래드 싸움 준비 리워크: 스킬 - 코스트 2(1) - 언커먼 - \"손의 공격마다 획득. 이번 턴에 추가로 를 얻을 수 없습니다.\" reworked expect a fight: skill - cost 2(1) - uncommon - \"gain for each attack in your hand. you cannot gain additional this turn.\" card expect_a_fight 싸움 준비 싸움 준비 expect a fight"
   },
   {
-    "id": "v0.100.0:line-005-text-7cdba0",
+    "id": "v0.100.0:line-005-card-spite",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 아이언클래드"
+      "콘텐츠",
+      "아이언클래드"
     ],
-    "markdownKo": "[gold]화력 증폭[/gold]: 더 이상 카드를 뽑지 않음; 무작위 카드 추가 (업그레이드 시 업그레이드된 카드 추가).",
-    "markdownEn": "**Stoke**: No longer draws cards; adds random card (upgraded gives upgraded cards).",
-    "textKo": "화력 증폭: 더 이상 카드를 뽑지 않음; 무작위 카드 추가 (업그레이드 시 업그레이드된 카드 추가).",
-    "textEn": "Stoke: No longer draws cards; adds random card (upgraded gives upgraded cards).",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-005-text-7cdba0 v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 아이언클래드 화력 증폭: 더 이상 카드를 뽑지 않음; 무작위 카드 추가 (업그레이드 시 업그레이드된 카드 추가). stoke: no longer draws cards; adds random card (upgraded gives upgraded cards)."
+    "markdownKo": "[gold:card]악의[/gold] 리워크: 코스트 0 - 공격 - 언커먼 - \"피해 5. 이번 턴에 HP를 잃었으면 2(3)회 타격.\"",
+    "markdownEn": "Reworked [gold:card]Spite[/gold]: Cost 0 - Attack - Uncommon - \"Deal 5 damage. If you lost HP this turn, hits 2(3) times.\"",
+    "textKo": "악의 리워크: 코스트 0 - 공격 - 언커먼 - \"피해 5. 이번 턴에 HP를 잃었으면 2(3)회 타격.\"",
+    "textEn": "Reworked Spite: Cost 0 - Attack - Uncommon - \"Deal 5 damage. If you lost HP this turn, hits 2(3) times.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SPITE",
+        "label": "악의"
+      }
+    ],
+    "searchText": "v0.100.0:line-005-card-spite v0.100.0 0.100.0 콘텐츠 아이언클래드 악의 리워크: 코스트 0 - 공격 - 언커먼 - \"피해 5. 이번 턴에 hp를 잃었으면 2(3)회 타격.\" reworked spite: cost 0 - attack - uncommon - \"deal 5 damage. if you lost hp this turn, hits 2(3) times.\" card spite 악의 악의 spite"
   },
   {
-    "id": "v0.100.0:line-006-text-1aec79o",
+    "id": "v0.100.0:line-006-card-stoke",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 디펙트"
+      "콘텐츠",
+      "아이언클래드"
     ],
-    "markdownKo": "[gold]핫픽스[/gold]: 업그레이드하지 않으면 소멸; 추가 [gold]집중[/gold] 제거.",
-    "markdownEn": "**Hotfix**: Now Exhausts unless upgraded; no longer adds extra Focus.",
-    "textKo": "핫픽스: 업그레이드하지 않으면 소멸; 추가 집중 제거.",
-    "textEn": "Hotfix: Now Exhausts unless upgraded; no longer adds extra Focus.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-006-text-1aec79o v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 디펙트 핫픽스: 업그레이드하지 않으면 소멸; 추가 집중 제거. hotfix: now exhausts unless upgraded; no longer adds extra focus."
+    "markdownKo": "[gold:card]화력 증폭[/gold] 리워크: 스킬 - 코스트 1 - 레어 - \"손을 소멸. 소멸한 카드마다 무작위 (강화된) 카드 1장을 손으로 가져옵니다.\"",
+    "markdownEn": "Reworked [gold:card]Stoke[/gold]: Skill - Cost 1 - Rare - \"Exhaust your Hand. Add 1 random (Upgraded) card into your Hand for each card Exhausted.\"",
+    "textKo": "화력 증폭 리워크: 스킬 - 코스트 1 - 레어 - \"손을 소멸. 소멸한 카드마다 무작위 (강화된) 카드 1장을 손으로 가져옵니다.\"",
+    "textEn": "Reworked Stoke: Skill - Cost 1 - Rare - \"Exhaust your Hand. Add 1 random (Upgraded) card into your Hand for each card Exhausted.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "STOKE",
+        "label": "화력 증폭"
+      }
+    ],
+    "searchText": "v0.100.0:line-006-card-stoke v0.100.0 0.100.0 콘텐츠 아이언클래드 화력 증폭 리워크: 스킬 - 코스트 1 - 레어 - \"손을 소멸. 소멸한 카드마다 무작위 (강화된) 카드 1장을 손으로 가져옵니다.\" reworked stoke: skill - cost 1 - rare - \"exhaust your hand. add 1 random (upgraded) card into your hand for each card exhausted.\" card stoke 화력 증폭 화력 증폭 stoke"
   },
   {
-    "id": "v0.100.0:line-007-text-15n84wx",
+    "id": "v0.100.0:line-007-card-prepared",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 리젠트"
+      "콘텐츠",
+      "사일런트"
     ],
-    "markdownKo": "[gold]광채[/gold] (리워크): [gold]별[/gold] 1(2) 획득, 카드 1장 즉시 뽑기, 다음 턴 카드 1장 뽑기 (이전: 둘 다 즉시).",
-    "markdownEn": "**Glow** (rework): Gain 1 (2) Stars, draw 1 card now, draw 1 card next turn (was both immediately).",
-    "textKo": "광채 (리워크): 별 1(2) 획득, 카드 1장 즉시 뽑기, 다음 턴 카드 1장 뽑기 (이전: 둘 다 즉시).",
-    "textEn": "Glow (rework): Gain 1 (2) Stars, draw 1 card now, draw 1 card next turn (was both immediately).",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-007-text-15n84wx v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 리젠트 광채 (리워크): 별 1(2) 획득, 카드 1장 즉시 뽑기, 다음 턴 카드 1장 뽑기 (이전: 둘 다 즉시). glow (rework): gain 1 (2) stars, draw 1 card now, draw 1 card next turn (was both immediately)."
+    "markdownKo": "[gold:card]예비[/gold]를 준비로 리워크: 스킬 - 코스트 1 - 일반 - \"카드 2장 버리기. 다음 턴에 에너지 2(3) 획득.\"",
+    "markdownEn": "Reworked [gold:card]Prepared[/gold] into Prepare: Skill - Cost 1 - Common - \"Discard 2 cards. Next turn, gain 2(3) Energy.\"",
+    "textKo": "예비를 준비로 리워크: 스킬 - 코스트 1 - 일반 - \"카드 2장 버리기. 다음 턴에 에너지 2(3) 획득.\"",
+    "textEn": "Reworked Prepared into Prepare: Skill - Cost 1 - Common - \"Discard 2 cards. Next turn, gain 2(3) Energy.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "PREPARED",
+        "label": "예비"
+      }
+    ],
+    "searchText": "v0.100.0:line-007-card-prepared v0.100.0 0.100.0 콘텐츠 사일런트 예비를 준비로 리워크: 스킬 - 코스트 1 - 일반 - \"카드 2장 버리기. 다음 턴에 에너지 2(3) 획득.\" reworked prepared into prepare: skill - cost 1 - common - \"discard 2 cards. next turn, gain 2(3) energy.\" card prepared 예비 예비 prepared"
   },
   {
-    "id": "v0.100.0:line-008-text-1i7a24l",
+    "id": "v0.100.0:line-008-card-glow",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 리젠트"
+      "콘텐츠",
+      "리젠트"
     ],
-    "markdownKo": "[gold]정렬[/gold] ([red][jitter]너프[/jitter][/red]): 코스트 별 2 -> 3으로 증가.",
-    "markdownEn": "**Alignment**: Cost increased from 2 to 3 stars.",
-    "textKo": "정렬 (너프): 코스트 별 2 -> 3으로 증가.",
-    "textEn": "Alignment: Cost increased from 2 to 3 stars.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-008-text-1i7a24l v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 리젠트 정렬 (너프): 코스트 별 2 -> 3으로 증가. alignment: cost increased from 2 to 3 stars."
+    "markdownKo": "[gold:card]광채[/gold] 리워크: 스킬 - 코스트 1 - 일반 - \"[gold]별[/gold] 1(2) 획득. 카드 1장 뽑기. 다음 턴에 카드 1장 뽑기.\"",
+    "markdownEn": "Reworked [gold:card]Glow[/gold]: Skill - Cost 1 - Common - \"Gain 1(2) Stars. Draw 1 card. Next turn, draw 1 card.\"",
+    "textKo": "광채 리워크: 스킬 - 코스트 1 - 일반 - \"별 1(2) 획득. 카드 1장 뽑기. 다음 턴에 카드 1장 뽑기.\"",
+    "textEn": "Reworked Glow: Skill - Cost 1 - Common - \"Gain 1(2) Stars. Draw 1 card. Next turn, draw 1 card.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "GLOW",
+        "label": "광채"
+      }
+    ],
+    "searchText": "v0.100.0:line-008-card-glow v0.100.0 0.100.0 콘텐츠 리젠트 광채 리워크: 스킬 - 코스트 1 - 일반 - \"별 1(2) 획득. 카드 1장 뽑기. 다음 턴에 카드 1장 뽑기.\" reworked glow: skill - cost 1 - common - \"gain 1(2) stars. draw 1 card. next turn, draw 1 card.\" card glow 광채 광채 glow"
   },
   {
-    "id": "v0.100.0:line-009-text-y3pit5",
+    "id": "v0.100.0:line-009-card-hidden-gem",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 리젠트"
+      "콘텐츠",
+      "무색"
     ],
-    "markdownKo": "[gold]물렀거라![/gold] & [gold]돌격!![/gold]: 소환수가 카드 간에 교체 ([gold]물렀거라![/gold] [green][sine]버프[/sine][/green], [gold]돌격!![/gold] [red][jitter]너프[/jitter][/red]).",
-    "markdownEn": "**Begone** & **Charge**: Summoned minions flipped between cards (buffs Begone, nerfs Charge).",
-    "textKo": "물렀거라! & 돌격!!: 소환수가 카드 간에 교체 (물렀거라! 버프, 돌격!! 너프).",
-    "textEn": "Begone & Charge: Summoned minions flipped between cards (buffs Begone, nerfs Charge).",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-009-text-y3pit5 v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 리젠트 물렀거라! & 돌격!!: 소환수가 카드 간에 교체 (물렀거라! 버프, 돌격!! 너프). begone & charge: summoned minions flipped between cards (buffs begone, nerfs charge)."
+    "markdownKo": "[gold:card]숨겨진 보석[/gold] 리워크: 스킬 - 코스트 1 - \"[gold]뽑을 카드 더미[/gold]의 재생이 없는 무작위 카드가 재생 2(3)을 얻습니다.\"",
+    "markdownEn": "Reworked [gold:card]Hidden Gem[/gold]: Skill - Cost 1 - \"A random card in your Draw Pile without Replay gains Replay 2(3).\"",
+    "textKo": "숨겨진 보석 리워크: 스킬 - 코스트 1 - \"뽑을 카드 더미의 재생이 없는 무작위 카드가 재생 2(3)을 얻습니다.\"",
+    "textEn": "Reworked Hidden Gem: Skill - Cost 1 - \"A random card in your Draw Pile without Replay gains Replay 2(3).\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "HIDDEN_GEM",
+        "label": "숨겨진 보석"
+      }
+    ],
+    "searchText": "v0.100.0:line-009-card-hidden-gem v0.100.0 0.100.0 콘텐츠 무색 숨겨진 보석 리워크: 스킬 - 코스트 1 - \"뽑을 카드 더미의 재생이 없는 무작위 카드가 재생 2(3)을 얻습니다.\" reworked hidden gem: skill - cost 1 - \"a random card in your draw pile without replay gains replay 2(3).\" card hidden_gem 숨겨진 보석 숨겨진 보석 hidden gem"
   },
   {
-    "id": "v0.100.0:line-010-text-1uxfgcs",
+    "id": "v0.100.0:line-010-monster-doormaker",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 리젠트"
+      "콘텐츠",
+      "적"
     ],
-    "markdownKo": "[gold]공허의 형상[/gold]: 이제 영묘.",
-    "markdownEn": "**Void Form**: Now Ethereal.",
-    "textKo": "공허의 형상: 이제 영묘.",
-    "textEn": "Void Form: Now Ethereal.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-010-text-1uxfgcs v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 리젠트 공허의 형상: 이제 영묘. void form: now ethereal."
+    "markdownKo": "[gold:monster]문을 만드는 자[/gold] 리워크. 조심하세요.",
+    "markdownEn": "Reworked [gold:monster]Doormaker[/gold]. Beware.",
+    "textKo": "문을 만드는 자 리워크. 조심하세요.",
+    "textEn": "Reworked Doormaker. Beware.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "DOORMAKER",
+        "label": "문을 만드는 자"
+      }
+    ],
+    "searchText": "v0.100.0:line-010-monster-doormaker v0.100.0 0.100.0 콘텐츠 적 문을 만드는 자 리워크. 조심하세요. reworked doormaker. beware. monster doormaker 문을 만드는 자 문을 만드는 자 doormaker"
   },
   {
-    "id": "v0.100.0:line-011-text-1g4okye",
+    "id": "v0.100.0:line-011-monster-skulking-colony",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 네크로바인더"
+      "콘텐츠",
+      "적"
     ],
-    "markdownKo": "[gold]반항[/gold] 업그레이드: 추가 [gold]약화[/gold] 턴 제거; 대신 [gold]방어도[/gold] 증가.",
-    "markdownEn": "**Defy** upgrade: Removed extra Weak turn; grants more block instead.",
-    "textKo": "반항 업그레이드: 추가 약화 턴 제거; 대신 방어도 증가.",
-    "textEn": "Defy upgrade: Removed extra Weak turn; grants more block instead.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-011-text-1g4okye v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 네크로바인더 반항 업그레이드: 추가 약화 턴 제거; 대신 방어도 증가. defy upgrade: removed extra weak turn; grants more block instead."
+    "markdownKo": "[gold:monster]잠행 군체[/gold]가 더 치명적인 행동 패턴으로 리워크되었습니다.",
+    "markdownEn": "Reworked [gold:monster]Skulking Colony[/gold] to have a deadlier moveset.",
+    "textKo": "잠행 군체가 더 치명적인 행동 패턴으로 리워크되었습니다.",
+    "textEn": "Reworked Skulking Colony to have a deadlier moveset.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "SKULKING_COLONY",
+        "label": "잠행 군체"
+      }
+    ],
+    "searchText": "v0.100.0:line-011-monster-skulking-colony v0.100.0 0.100.0 콘텐츠 적 잠행 군체가 더 치명적인 행동 패턴으로 리워크되었습니다. reworked skulking colony to have a deadlier moveset. monster skulking_colony 잠행 군체 잠행 군체 skulking colony"
   },
   {
-    "id": "v0.100.0:line-012-text-hvitp0",
+    "id": "v0.100.0:line-012-ancient-neow",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 네크로바인더"
+      "콘텐츠",
+      "고대의 존재"
     ],
-    "markdownKo": "[gold]장송가[/gold]: 이제 소멸.",
-    "markdownEn": "**Dirge**: Now Exhausts.",
-    "textKo": "장송가: 이제 소멸.",
-    "textEn": "Dirge: Now Exhausts.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-012-text-hvitp0 v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 네크로바인더 장송가: 이제 소멸. dirge: now exhausts."
+    "markdownKo": "새 [gold:ancient]니오우[/gold] 축복: [gold:relic]무거운 석판[/gold] - \"레어 카드 3장 중 1장을 [gold]덱[/gold]에 추가합니다. [gold]덱[/gold]에 부상 1장을 추가합니다.\"",
+    "markdownEn": "Added new [gold:ancient]Neow[/gold] blessing: [gold:relic]Hefty Tablet[/gold] - \"Choose 1 of 3 Rare cards to add to your Deck. Add 1 Injury to your Deck.\"",
+    "textKo": "새 니오우 축복: 무거운 석판 - \"레어 카드 3장 중 1장을 덱에 추가합니다. 덱에 부상 1장을 추가합니다.\"",
+    "textEn": "Added new Neow blessing: Hefty Tablet - \"Choose 1 of 3 Rare cards to add to your Deck. Add 1 Injury to your Deck.\"",
+    "entityRefs": [
+      {
+        "type": "ancient",
+        "id": "NEOW",
+        "label": "니오우"
+      }
+    ],
+    "searchText": "v0.100.0:line-012-ancient-neow v0.100.0 0.100.0 콘텐츠 고대의 존재 새 니오우 축복: 무거운 석판 - \"레어 카드 3장 중 1장을 덱에 추가합니다. 덱에 부상 1장을 추가합니다.\" added new neow blessing: hefty tablet - \"choose 1 of 3 rare cards to add to your deck. add 1 injury to your deck.\" ancient neow 니오우 니오우 neow"
   },
   {
-    "id": "v0.100.0:line-013-text-4roxvv",
+    "id": "v0.100.0:line-013-ancient-neow",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 네크로바인더"
+      "콘텐츠",
+      "고대의 존재"
     ],
-    "markdownKo": "[gold]무덤지기[/gold] & [gold]강령회[/gold]: 더 이상 생성된 [gold]영혼[/gold] 카드를 업그레이드하지 않음.",
-    "markdownEn": "**Grave Warden** & **Seance**: No longer upgrade Soul cards generated.",
-    "textKo": "무덤지기 & 강령회: 더 이상 생성된 영혼 카드를 업그레이드하지 않음.",
-    "textEn": "Grave Warden & Seance: No longer upgrade Soul cards generated.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-013-text-4roxvv v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 네크로바인더 무덤지기 & 강령회: 더 이상 생성된 영혼 카드를 업그레이드하지 않음. grave warden & seance: no longer upgrade soul cards generated."
+    "markdownKo": "새 [gold:ancient]니오우[/gold] 축복: [gold:relic]니오우의 부적[/gold] - \"[gold]타격[/gold] 1장과 [gold]수비[/gold] 1장을 강화합니다.\"",
+    "markdownEn": "Added new [gold:ancient]Neow[/gold] blessing: [gold:relic]Neow's Talisman[/gold] - \"Upgrade 1 of your Strikes and 1 of your Defends.\"",
+    "textKo": "새 니오우 축복: 니오우의 부적 - \"타격 1장과 수비 1장을 강화합니다.\"",
+    "textEn": "Added new Neow blessing: Neow's Talisman - \"Upgrade 1 of your Strikes and 1 of your Defends.\"",
+    "entityRefs": [
+      {
+        "type": "ancient",
+        "id": "NEOW",
+        "label": "니오우"
+      }
+    ],
+    "searchText": "v0.100.0:line-013-ancient-neow v0.100.0 0.100.0 콘텐츠 고대의 존재 새 니오우 축복: 니오우의 부적 - \"타격 1장과 수비 1장을 강화합니다.\" added new neow blessing: neow's talisman - \"upgrade 1 of your strikes and 1 of your defends.\" ancient neow 니오우 니오우 neow"
   },
   {
-    "id": "v0.100.0:line-014-text-1n4r6iq",
+    "id": "v0.100.0:line-014-text-13y9z0k",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 네크로바인더"
+      "밸런스",
+      "일반"
     ],
-    "markdownKo": "[gold]연명[/gold]: 자가 [gold]종말[/gold] 증가 (업그레이드 시 감소); [gold]에너지[/gold] 획득 제거.",
-    "markdownEn": "**Borrowed Time**: Grants more self-Doom (less when upgraded); removed energy gain.",
-    "textKo": "연명: 자가 종말 증가 (업그레이드 시 감소); 에너지 획득 제거.",
-    "textEn": "Borrowed Time: Grants more self-Doom (less when upgraded); removed energy gain.",
+    "markdownKo": "상점의 모든 유물 가격이 25 골드 인하되었습니다.",
+    "markdownEn": "All relics in the shop now cost 25 Gold less.",
+    "textKo": "상점의 모든 유물 가격이 25 골드 인하되었습니다.",
+    "textEn": "All relics in the shop now cost 25 Gold less.",
     "entityRefs": [],
-    "searchText": "v0.100.0:line-014-text-1n4r6iq v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 네크로바인더 연명: 자가 종말 증가 (업그레이드 시 감소); 에너지 획득 제거. borrowed time: grants more self-doom (less when upgraded); removed energy gain."
+    "searchText": "v0.100.0:line-014-text-13y9z0k v0.100.0 0.100.0 밸런스 일반 상점의 모든 유물 가격이 25 골드 인하되었습니다. all relics in the shop now cost 25 gold less."
   },
   {
-    "id": "v0.100.0:line-015-text-14bla6z",
+    "id": "v0.100.0:line-015-relic-bowler-hat-relic-amethyst-aubergine",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 무색"
+      "밸런스",
+      "일반"
     ],
-    "markdownKo": "[gold]숨겨진 보석[/gold]: 이미 재생을 가진 카드에 재생 부여 불가.",
-    "markdownEn": "**Hidden Gem**: Cannot grant Replay to cards already possessing it.",
-    "textKo": "숨겨진 보석: 이미 재생을 가진 카드에 재생 부여 불가.",
-    "textEn": "Hidden Gem: Cannot grant Replay to cards already possessing it.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-015-text-14bla6z v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 무색 숨겨진 보석: 이미 재생을 가진 카드에 재생 부여 불가. hidden gem: cannot grant replay to cards already possessing it."
+    "markdownKo": "골드를 생성하는 유물([gold:relic]중절모[/gold], [gold:relic]자수정 가지[/gold] 등)이 더 이상 상인에게 등장하지 않습니다.",
+    "markdownEn": "Relics that generate Gold (such as [gold:relic]Bowler Hat[/gold] and [gold:relic]Amethyst Aubergine[/gold]) no longer appear at the Merchant.",
+    "textKo": "골드를 생성하는 유물(중절모, 자수정 가지 등)이 더 이상 상인에게 등장하지 않습니다.",
+    "textEn": "Relics that generate Gold (such as Bowler Hat and Amethyst Aubergine) no longer appear at the Merchant.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "BOWLER_HAT",
+        "label": "중절모"
+      },
+      {
+        "type": "relic",
+        "id": "AMETHYST_AUBERGINE",
+        "label": "자수정 가지"
+      }
+    ],
+    "searchText": "v0.100.0:line-015-relic-bowler-hat-relic-amethyst-aubergine v0.100.0 0.100.0 밸런스 일반 골드를 생성하는 유물(중절모, 자수정 가지 등)이 더 이상 상인에게 등장하지 않습니다. relics that generate gold (such as bowler hat and amethyst aubergine) no longer appear at the merchant. relic bowler_hat 중절모 중절모 bowler hat relic amethyst_aubergine 자수정 가지 자수정 가지 amethyst aubergine"
   },
   {
-    "id": "v0.100.0:line-016-text-1hfv5wx",
+    "id": "v0.100.0:line-016-ascension-level-06",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 멀티플레이어"
+      "밸런스",
+      "일반"
     ],
-    "markdownKo": "[gold]똘똘 뭉치기[/gold]: 이제 소멸.",
-    "markdownEn": "**Huddle Up**: Now Exhausts.",
-    "textKo": "똘똘 뭉치기: 이제 소멸.",
-    "textEn": "Huddle Up: Now Exhausts.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-016-text-1hfv5wx v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 멀티플레이어 똘똘 뭉치기: 이제 소멸. huddle up: now exhausts."
-  },
-  {
-    "id": "v0.100.0:line-017-text-p1ku17",
-    "patch": "v0.100.0",
-    "version": "0.100.0",
-    "date": "2026-03-20",
-    "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 멀티플레이어"
-    ],
-    "markdownKo": "[gold]희망의 등불[/gold]: [gold]방어도[/gold] 공유가 더 이상 중첩되지 않음.",
-    "markdownEn": "**Beacon of Hope**: Block-sharing no longer stacks.",
-    "textKo": "희망의 등불: 방어도 공유가 더 이상 중첩되지 않음.",
-    "textEn": "Beacon of Hope: Block-sharing no longer stacks.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-017-text-p1ku17 v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 멀티플레이어 희망의 등불: 방어도 공유가 더 이상 중첩되지 않음. beacon of hope: block-sharing no longer stacks."
-  },
-  {
-    "id": "v0.100.0:line-018-text-42bctg",
-    "patch": "v0.100.0",
-    "version": "0.100.0",
-    "date": "2026-03-20",
-    "section": [
-      "무한 콤보 견제",
-      "카드 변경 - 멀티플레이어"
-    ],
-    "markdownKo": "[gold]너만 믿는다[/gold] ([red][jitter]너프[/jitter][/red]): [gold]에너지[/gold] 1 감소 (기본 2, 업그레이드 3).",
-    "markdownEn": "**Believe in You**: Energy reduced by 1 (now 2 base, 3 upgraded).",
-    "textKo": "너만 믿는다 (너프): 에너지 1 감소 (기본 2, 업그레이드 3).",
-    "textEn": "Believe in You: Energy reduced by 1 (now 2 base, 3 upgraded).",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-018-text-42bctg v0.100.0 0.100.0 무한 콤보 견제 카드 변경 - 멀티플레이어 너만 믿는다 (너프): 에너지 1 감소 (기본 2, 업그레이드 3). believe in you: energy reduced by 1 (now 2 base, 3 upgraded)."
-  },
-  {
-    "id": "v0.100.0:line-019-text-18g4zhf",
-    "patch": "v0.100.0",
-    "version": "0.100.0",
-    "date": "2026-03-20",
-    "section": [
-      "유물 변경"
-    ],
-    "markdownKo": "모든 상점 유물 가격 25 골드 인하.",
-    "markdownEn": "All shop relic costs reduced by 25 Gold.",
-    "textKo": "모든 상점 유물 가격 25 골드 인하.",
-    "textEn": "All shop relic costs reduced by 25 Gold.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-019-text-18g4zhf v0.100.0 0.100.0 유물 변경 모든 상점 유물 가격 25 골드 인하. all shop relic costs reduced by 25 gold."
-  },
-  {
-    "id": "v0.100.0:line-020-text-1r8giot",
-    "patch": "v0.100.0",
-    "version": "0.100.0",
-    "date": "2026-03-20",
-    "section": [
-      "유물 변경"
-    ],
-    "markdownKo": "골드 생성 유물이 상점 풀에서 제거.",
-    "markdownEn": "Gold-generating relics removed from shop pool.",
-    "textKo": "골드 생성 유물이 상점 풀에서 제거.",
-    "textEn": "Gold-generating relics removed from shop pool.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-020-text-1r8giot v0.100.0 0.100.0 유물 변경 골드 생성 유물이 상점 풀에서 제거. gold-generating relics removed from shop pool."
-  },
-  {
-    "id": "v0.100.0:line-021-text-1pnums8",
-    "patch": "v0.100.0",
-    "version": "0.100.0",
-    "date": "2026-03-20",
-    "section": [
-      "네오의 축복"
-    ],
-    "markdownKo": "[gold]무거운 석판[/gold] (신규): 레어 카드 3장 중 1장 선택; 부상 저주 부여.",
-    "markdownEn": "**Hefty Tablet** (new): Choose 1 of 3 rare cards; grants Injury curse.",
-    "textKo": "무거운 석판 (신규): 레어 카드 3장 중 1장 선택; 부상 저주 부여.",
-    "textEn": "Hefty Tablet (new): Choose 1 of 3 rare cards; grants Injury curse.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-021-text-1pnums8 v0.100.0 0.100.0 네오의 축복 무거운 석판 (신규): 레어 카드 3장 중 1장 선택; 부상 저주 부여. hefty tablet (new): choose 1 of 3 rare cards; grants injury curse."
-  },
-  {
-    "id": "v0.100.0:line-022-text-1h0t2s6",
-    "patch": "v0.100.0",
-    "version": "0.100.0",
-    "date": "2026-03-20",
-    "section": [
-      "네오의 축복"
-    ],
-    "markdownKo": "[gold]네오의 부적[/gold] (신규): 강타 하나와 수비 하나를 업그레이드.",
-    "markdownEn": "**Neow's Talisman** (new): Upgrades one Strike and one Defend.",
-    "textKo": "네오의 부적 (신규): 강타 하나와 수비 하나를 업그레이드.",
-    "textEn": "Neow's Talisman (new): Upgrades one Strike and one Defend.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-022-text-1h0t2s6 v0.100.0 0.100.0 네오의 축복 네오의 부적 (신규): 강타 하나와 수비 하나를 업그레이드. neow's talisman (new): upgrades one strike and one defend."
-  },
-  {
-    "id": "v0.100.0:line-023-text-wf6v47",
-    "patch": "v0.100.0",
-    "version": "0.100.0",
-    "date": "2026-03-20",
-    "section": [
-      "네오의 축복"
-    ],
-    "markdownKo": "[gold]니오우의 격분[/gold]: 이제 카드 3장 반환 (이전: 2장).",
-    "markdownEn": "**Neow's Fury**: Now returns 3 cards (was 2).",
-    "textKo": "니오우의 격분: 이제 카드 3장 반환 (이전: 2장).",
-    "textEn": "Neow's Fury: Now returns 3 cards (was 2).",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-023-text-wf6v47 v0.100.0 0.100.0 네오의 축복 니오우의 격분: 이제 카드 3장 반환 (이전: 2장). neow's fury: now returns 3 cards (was 2)."
-  },
-  {
-    "id": "v0.100.0:line-024-text-1hcu2lj",
-    "patch": "v0.100.0",
-    "version": "0.100.0",
-    "date": "2026-03-20",
-    "section": [
-      "적 / 승천 변경"
-    ],
-    "markdownKo": "[gold]문을 만드는 자[/gold]: 이제 10번째 뽑은 카드를 영구 제거; 제거 시 [gold]힘[/gold] 1 획득.",
-    "markdownEn": "**Doormaker**: Now permanently removes every 10th drawn card; gains 1 Strength when it does.",
-    "textKo": "문을 만드는 자: 이제 10번째 뽑은 카드를 영구 제거; 제거 시 힘 1 획득.",
-    "textEn": "Doormaker: Now permanently removes every 10th drawn card; gains 1 Strength when it does.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-024-text-1hcu2lj v0.100.0 0.100.0 적 / 승천 변경 문을 만드는 자: 이제 10번째 뽑은 카드를 영구 제거; 제거 시 힘 1 획득. doormaker: now permanently removes every 10th drawn card; gains 1 strength when it does."
-  },
-  {
-    "id": "v0.100.0:line-025-ascension-level-06",
-    "patch": "v0.100.0",
-    "version": "0.100.0",
-    "date": "2026-03-20",
-    "section": [
-      "적 / 승천 변경"
-    ],
-    "markdownKo": "비관: 이제 미스터리 방 유물 발견 확률에 영향.",
-    "markdownEn": "**Gloom**: Now impacts mystery room relic find chances.",
-    "textKo": "비관: 이제 미스터리 방 유물 발견 확률에 영향.",
-    "textEn": "Gloom: Now impacts mystery room relic find chances.",
+    "markdownKo": "[gold]비관[/gold] [gold]승천[/gold]이 이제 ? 방에도 영향을 줍니다.",
+    "markdownEn": "[gold]Gloom[/gold] [gold]Ascension[/gold] now also affects ? rooms.",
+    "textKo": "비관 승천이 이제 ? 방에도 영향을 줍니다.",
+    "textEn": "Gloom Ascension now also affects ? rooms.",
     "entityRefs": [
       {
         "type": "ascension",
         "id": "LEVEL_06",
-        "label": "인플레이션"
+        "label": "비관"
       }
     ],
-    "searchText": "v0.100.0:line-025-ascension-level-06 v0.100.0 0.100.0 적 / 승천 변경 비관: 이제 미스터리 방 유물 발견 확률에 영향. gloom: now impacts mystery room relic find chances. ascension level_06 인플레이션 인플레이션 inflation 승천 6 a6 비관 침울 ascension 6 a6 gloom"
+    "searchText": "v0.100.0:line-016-ascension-level-06 v0.100.0 0.100.0 밸런스 일반 비관 승천이 이제 ? 방에도 영향을 줍니다. gloom ascension now also affects ? rooms. ascension level_06 비관 인플레이션 inflation 승천 6 a6 비관 침울 ascension 6 a6 gloom"
   },
   {
-    "id": "v0.100.0:line-026-text-1ej0uct",
+    "id": "v0.100.0:line-017-text-13rrmif",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "적 / 승천 변경"
+      "밸런스",
+      "일반"
     ],
-    "markdownKo": "[gold]잠행 군체[/gold] ([green][sine]버프[/sine][/green]): 더 치명적으로 변경.",
-    "markdownEn": "**Skulking Colony**: Made deadlier.",
-    "textKo": "잠행 군체 (버프): 더 치명적으로 변경.",
-    "textEn": "Skulking Colony: Made deadlier.",
+    "markdownKo": "파워 수치가 더 이상 999,999,999를 초과해 중첩되지 않습니다.",
+    "markdownEn": "Power values can no longer stack above 999,999,999.",
+    "textKo": "파워 수치가 더 이상 999,999,999를 초과해 중첩되지 않습니다.",
+    "textEn": "Power values can no longer stack above 999,999,999.",
     "entityRefs": [],
-    "searchText": "v0.100.0:line-026-text-1ej0uct v0.100.0 0.100.0 적 / 승천 변경 잠행 군체 (버프): 더 치명적으로 변경. skulking colony: made deadlier."
+    "searchText": "v0.100.0:line-017-text-13rrmif v0.100.0 0.100.0 밸런스 일반 파워 수치가 더 이상 999,999,999를 초과해 중첩되지 않습니다. power values can no longer stack above 999,999,999."
   },
   {
-    "id": "v0.100.0:line-027-text-1qiduj",
+    "id": "v0.100.0:line-018-text-cnwhp5",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "적 / 승천 변경"
+      "밸런스",
+      "일반"
     ],
-    "markdownKo": "[gold]공포 장어[/gold] ([red][jitter]너프[/jitter][/red]): 약간 덜 위협적으로 변경.",
-    "markdownEn": "**Terror Eel**: Slightly less threatening.",
-    "textKo": "공포 장어 (너프): 약간 덜 위협적으로 변경.",
-    "textEn": "Terror Eel: Slightly less threatening.",
+    "markdownKo": "일일 런과 커스텀 런에서 더 이상 [gold]역사[/gold]를 획득할 수 없습니다.",
+    "markdownEn": "You can no longer acquire [gold]Epochs[/gold] in Daily or Custom runs.",
+    "textKo": "일일 런과 커스텀 런에서 더 이상 역사를 획득할 수 없습니다.",
+    "textEn": "You can no longer acquire Epochs in Daily or Custom runs.",
     "entityRefs": [],
-    "searchText": "v0.100.0:line-027-text-1qiduj v0.100.0 0.100.0 적 / 승천 변경 공포 장어 (너프): 약간 덜 위협적으로 변경. terror eel: slightly less threatening."
+    "searchText": "v0.100.0:line-018-text-cnwhp5 v0.100.0 0.100.0 밸런스 일반 일일 런과 커스텀 런에서 더 이상 역사를 획득할 수 없습니다. you can no longer acquire epochs in daily or custom runs."
   },
   {
-    "id": "v0.100.0:line-028-text-1536651",
+    "id": "v0.100.0:line-019-text-1kcrj4t",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "적 / 승천 변경"
+      "밸런스",
+      "일반"
     ],
-    "markdownKo": "[gold]만각지네[/gold] ([red][jitter]너프[/jitter][/red]): 세그먼트 체력 감소.",
-    "markdownEn": "**Decimillipede**: Segment health reduced.",
-    "textKo": "만각지네 (너프): 세그먼트 체력 감소.",
-    "textEn": "Decimillipede: Segment health reduced.",
+    "markdownKo": "일일 런과 커스텀 런에서 일부 캐릭터 스탯이 더 이상 갱신되지 않습니다.",
+    "markdownEn": "Certain character stats no longer update in Daily or Custom runs.",
+    "textKo": "일일 런과 커스텀 런에서 일부 캐릭터 스탯이 더 이상 갱신되지 않습니다.",
+    "textEn": "Certain character stats no longer update in Daily or Custom runs.",
     "entityRefs": [],
-    "searchText": "v0.100.0:line-028-text-1536651 v0.100.0 0.100.0 적 / 승천 변경 만각지네 (너프): 세그먼트 체력 감소. decimillipede: segment health reduced."
+    "searchText": "v0.100.0:line-019-text-1kcrj4t v0.100.0 0.100.0 밸런스 일반 일일 런과 커스텀 런에서 일부 캐릭터 스탯이 더 이상 갱신되지 않습니다. certain character stats no longer update in daily or custom runs."
   },
   {
-    "id": "v0.100.0:line-029-text-1rpeyzm",
+    "id": "v0.100.0:line-020-card-break",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "기능"
+      "밸런스",
+      "아이언클래드"
     ],
-    "markdownKo": "공포증 모드: 감염 오버레이, 벌집 배경, [gold]탐[/gold], [gold]게구리 기생체[/gold], 꿈틀이, [gold]공포 장어[/gold], [gold]곤충술사[/gold] 대체 아트.",
-    "markdownEn": "Phobia Mode: Alternate art for Infection overlay, hive backgrounds, The Insatiable, Phrog Parasite, Wrigglers, Terror Eel, Entomancer.",
-    "textKo": "공포증 모드: 감염 오버레이, 벌집 배경, 탐, 게구리 기생체, 꿈틀이, 공포 장어, 곤충술사 대체 아트.",
-    "textEn": "Phobia Mode: Alternate art for Infection overlay, hive backgrounds, The Insatiable, Phrog Parasite, Wrigglers, Terror Eel, Entomancer.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-029-text-1rpeyzm v0.100.0 0.100.0 기능 공포증 모드: 감염 오버레이, 벌집 배경, 탐, 게구리 기생체, 꿈틀이, 공포 장어, 곤충술사 대체 아트. phobia mode: alternate art for infection overlay, hive backgrounds, the insatiable, phrog parasite, wrigglers, terror eel, entomancer."
+    "markdownKo": "[gold:card]박살[/gold] ([green][sine]버프[/sine][/green]): 에너지 비용 2 -> 1. 피해 20(25) -> 20(30).",
+    "markdownEn": "[gold:card]Break[/gold] (buff): Energy cost decreased from 2 -> 1. Damage increased from 20(25) -> 20(30).",
+    "textKo": "박살 (버프): 에너지 비용 2 -> 1. 피해 20(25) -> 20(30).",
+    "textEn": "Break (buff): Energy cost decreased from 2 -> 1. Damage increased from 20(25) -> 20(30).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "BREAK",
+        "label": "박살"
+      }
+    ],
+    "searchText": "v0.100.0:line-020-card-break v0.100.0 0.100.0 밸런스 아이언클래드 박살 (버프): 에너지 비용 2 -> 1. 피해 20(25) -> 20(30). break (buff): energy cost decreased from 2 -> 1. damage increased from 20(25) -> 20(30). card break 박살 박살 break"
   },
   {
-    "id": "v0.100.0:line-030-text-o8bji4",
+    "id": "v0.100.0:line-021-card-cinder",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "기능"
+      "밸런스",
+      "아이언클래드"
     ],
-    "markdownKo": "새 카드 초상화 (다수).",
-    "markdownEn": "New card portrait art (various).",
-    "textKo": "새 카드 초상화 (다수).",
-    "textEn": "New card portrait art (various).",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-030-text-o8bji4 v0.100.0 0.100.0 기능 새 카드 초상화 (다수). new card portrait art (various)."
+    "markdownKo": "[gold:card]잿불[/gold] ([green][sine]버프[/sine][/green]): 피해 17(22) -> 18(24).",
+    "markdownEn": "[gold:card]Cinder[/gold] (buff): Damage increased from 17(22) -> 18(24).",
+    "textKo": "잿불 (버프): 피해 17(22) -> 18(24).",
+    "textEn": "Cinder (buff): Damage increased from 17(22) -> 18(24).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "CINDER",
+        "label": "잿불"
+      }
+    ],
+    "searchText": "v0.100.0:line-021-card-cinder v0.100.0 0.100.0 밸런스 아이언클래드 잿불 (버프): 피해 17(22) -> 18(24). cinder (buff): damage increased from 17(22) -> 18(24). card cinder 잿불 잿불 cinder"
   },
   {
-    "id": "v0.100.0:line-031-text-kcjje7",
+    "id": "v0.100.0:line-022-card-fight-me",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
     "section": [
-      "기능"
+      "밸런스",
+      "아이언클래드"
     ],
-    "markdownKo": "캐릭터별 [gold]에너지[/gold] 획득 VFX.",
-    "markdownEn": "Character-specific VFX for energy gain.",
-    "textKo": "캐릭터별 에너지 획득 VFX.",
-    "textEn": "Character-specific VFX for energy gain.",
+    "markdownKo": "[gold:card]덤벼라![/gold] ([green][sine]버프[/sine][/green]): 자가 [gold]힘[/gold] 획득 2(3) -> 3(4).",
+    "markdownEn": "[gold:card]Fight Me![/gold] (buff): self-[gold]Strength[/gold] gain from 2(3) -> 3(4).",
+    "textKo": "덤벼라! (버프): 자가 힘 획득 2(3) -> 3(4).",
+    "textEn": "Fight Me! (buff): self-Strength gain from 2(3) -> 3(4).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "FIGHT_ME",
+        "label": "덤벼라!"
+      }
+    ],
+    "searchText": "v0.100.0:line-022-card-fight-me v0.100.0 0.100.0 밸런스 아이언클래드 덤벼라! (버프): 자가 힘 획득 2(3) -> 3(4). fight me! (buff): self-strength gain from 2(3) -> 3(4). card fight_me 덤벼라! 덤벼라! fight me!"
+  },
+  {
+    "id": "v0.100.0:line-023-card-forgotten-ritual",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "아이언클래드"
+    ],
+    "markdownKo": "[gold:card]잊힌 의식[/gold] ([red][jitter]너프[/jitter][/red]): 이제 소멸.",
+    "markdownEn": "[gold:card]Forgotten Ritual[/gold] (nerf): now Exhausts.",
+    "textKo": "잊힌 의식 (너프): 이제 소멸.",
+    "textEn": "Forgotten Ritual (nerf): now Exhausts.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "FORGOTTEN_RITUAL",
+        "label": "잊힌 의식"
+      }
+    ],
+    "searchText": "v0.100.0:line-023-card-forgotten-ritual v0.100.0 0.100.0 밸런스 아이언클래드 잊힌 의식 (너프): 이제 소멸. forgotten ritual (nerf): now exhausts. card forgotten_ritual 잊힌 의식 잊힌 의식 forgotten ritual"
+  },
+  {
+    "id": "v0.100.0:line-024-card-hemokinesis",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "아이언클래드"
+    ],
+    "markdownKo": "[gold:card]혈류[/gold] ([green][sine]버프[/sine][/green]): 피해 14(19) -> 15(20).",
+    "markdownEn": "[gold:card]Hemokinesis[/gold] (buff): Damage increased from 14(19) -> 15(20).",
+    "textKo": "혈류 (버프): 피해 14(19) -> 15(20).",
+    "textEn": "Hemokinesis (buff): Damage increased from 14(19) -> 15(20).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "HEMOKINESIS",
+        "label": "혈류"
+      }
+    ],
+    "searchText": "v0.100.0:line-024-card-hemokinesis v0.100.0 0.100.0 밸런스 아이언클래드 혈류 (버프): 피해 14(19) -> 15(20). hemokinesis (buff): damage increased from 14(19) -> 15(20). card hemokinesis 혈류 혈류 hemokinesis"
+  },
+  {
+    "id": "v0.100.0:line-025-card-tremble",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "아이언클래드"
+    ],
+    "markdownKo": "[gold:card]떨림[/gold] ([green][sine]버프[/sine][/green]): [gold]취약[/gold] 2(3) -> 3(4).",
+    "markdownEn": "[gold:card]Tremble[/gold] (buff): [gold]Vulnerable[/gold] increased from 2(3) -> 3(4).",
+    "textKo": "떨림 (버프): 취약 2(3) -> 3(4).",
+    "textEn": "Tremble (buff): Vulnerable increased from 2(3) -> 3(4).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "TREMBLE",
+        "label": "떨림"
+      }
+    ],
+    "searchText": "v0.100.0:line-025-card-tremble v0.100.0 0.100.0 밸런스 아이언클래드 떨림 (버프): 취약 2(3) -> 3(4). tremble (buff): vulnerable increased from 2(3) -> 3(4). card tremble 떨림 떨림 tremble"
+  },
+  {
+    "id": "v0.100.0:line-026-card-anticipate",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "사일런트"
+    ],
+    "markdownKo": "[gold:card]예측[/gold] ([red][jitter]너프[/jitter][/red]): [gold]민첩[/gold] 3(5) -> 2(3).",
+    "markdownEn": "[gold:card]Anticipate[/gold] (nerf): [gold]Dexterity[/gold] decreased from 3(5) -> 2(3).",
+    "textKo": "예측 (너프): 민첩 3(5) -> 2(3).",
+    "textEn": "Anticipate (nerf): Dexterity decreased from 3(5) -> 2(3).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "ANTICIPATE",
+        "label": "예측"
+      }
+    ],
+    "searchText": "v0.100.0:line-026-card-anticipate v0.100.0 0.100.0 밸런스 사일런트 예측 (너프): 민첩 3(5) -> 2(3). anticipate (nerf): dexterity decreased from 3(5) -> 2(3). card anticipate 예측 예측 anticipate"
+  },
+  {
+    "id": "v0.100.0:line-027-card-corrosive-wave",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "사일런트"
+    ],
+    "markdownKo": "[gold:card]부식성 파도[/gold] ([red][jitter]너프[/jitter][/red]): [gold]중독[/gold] 3(4) -> 2(3).",
+    "markdownEn": "[gold:card]Corrosive Wave[/gold] (nerf): [gold]Poison[/gold] decreased from 3(4) -> 2(3).",
+    "textKo": "부식성 파도 (너프): 중독 3(4) -> 2(3).",
+    "textEn": "Corrosive Wave (nerf): Poison decreased from 3(4) -> 2(3).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "CORROSIVE_WAVE",
+        "label": "부식성 파도"
+      }
+    ],
+    "searchText": "v0.100.0:line-027-card-corrosive-wave v0.100.0 0.100.0 밸런스 사일런트 부식성 파도 (너프): 중독 3(4) -> 2(3). corrosive wave (nerf): poison decreased from 3(4) -> 2(3). card corrosive_wave 부식성 파도 부식성 파도 corrosive wave"
+  },
+  {
+    "id": "v0.100.0:line-028-card-flick-flack",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "사일런트"
+    ],
+    "markdownKo": "[gold:card]재주넘기[/gold] ([red][jitter]너프[/jitter][/red]): 피해 7(9) -> 6(8).",
+    "markdownEn": "[gold:card]Flick-Flack[/gold] (nerf): Damage decreased from 7(9) -> 6(8).",
+    "textKo": "재주넘기 (너프): 피해 7(9) -> 6(8).",
+    "textEn": "Flick-Flack (nerf): Damage decreased from 7(9) -> 6(8).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "FLICK_FLACK",
+        "label": "재주넘기"
+      }
+    ],
+    "searchText": "v0.100.0:line-028-card-flick-flack v0.100.0 0.100.0 밸런스 사일런트 재주넘기 (너프): 피해 7(9) -> 6(8). flick-flack (nerf): damage decreased from 7(9) -> 6(8). card flick_flack 재주넘기 재주넘기 flick-flack"
+  },
+  {
+    "id": "v0.100.0:line-029-card-grand-finale",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "사일런트"
+    ],
+    "markdownKo": "[gold:card]대단원의 막[/gold] ([green][sine]버프[/sine][/green]): 피해 50(60) -> 60(75).",
+    "markdownEn": "[gold:card]Grand Finale[/gold] (buff): Damage increased from 50(60) -> 60(75).",
+    "textKo": "대단원의 막 (버프): 피해 50(60) -> 60(75).",
+    "textEn": "Grand Finale (buff): Damage increased from 50(60) -> 60(75).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "GRAND_FINALE",
+        "label": "대단원의 막"
+      }
+    ],
+    "searchText": "v0.100.0:line-029-card-grand-finale v0.100.0 0.100.0 밸런스 사일런트 대단원의 막 (버프): 피해 50(60) -> 60(75). grand finale (buff): damage increased from 50(60) -> 60(75). card grand_finale 대단원의 막 대단원의 막 grand finale"
+  },
+  {
+    "id": "v0.100.0:line-030-card-pinpoint",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "사일런트"
+    ],
+    "markdownKo": "[gold:card]정밀 사격[/gold] ([red][jitter]너프[/jitter][/red]): 피해 17(22) -> 15(19).",
+    "markdownEn": "[gold:card]Pinpoint[/gold] (nerf): Damage decreased from 17(22) -> 15(19).",
+    "textKo": "정밀 사격 (너프): 피해 17(22) -> 15(19).",
+    "textEn": "Pinpoint (nerf): Damage decreased from 17(22) -> 15(19).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "PINPOINT",
+        "label": "정밀 사격"
+      }
+    ],
+    "searchText": "v0.100.0:line-030-card-pinpoint v0.100.0 0.100.0 밸런스 사일런트 정밀 사격 (너프): 피해 17(22) -> 15(19). pinpoint (nerf): damage decreased from 17(22) -> 15(19). card pinpoint 정밀 사격 정밀 사격 pinpoint"
+  },
+  {
+    "id": "v0.100.0:line-031-card-skewer",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "사일런트"
+    ],
+    "markdownKo": "[gold:card]꼬챙이[/gold] ([green][sine]버프[/sine][/green]): 피해 7(10) -> 8(11).",
+    "markdownEn": "[gold:card]Skewer[/gold] (buff): Damage increased from 7(10) -> 8(11).",
+    "textKo": "꼬챙이 (버프): 피해 7(10) -> 8(11).",
+    "textEn": "Skewer (buff): Damage increased from 7(10) -> 8(11).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SKEWER",
+        "label": "꼬챙이"
+      }
+    ],
+    "searchText": "v0.100.0:line-031-card-skewer v0.100.0 0.100.0 밸런스 사일런트 꼬챙이 (버프): 피해 7(10) -> 8(11). skewer (buff): damage increased from 7(10) -> 8(11). card skewer 꼬챙이 꼬챙이 skewer"
+  },
+  {
+    "id": "v0.100.0:line-032-card-untouchable",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "사일런트"
+    ],
+    "markdownKo": "[gold:card]범접 불가[/gold] ([red][jitter]너프[/jitter][/red]): [gold]방어도[/gold] 획득 9(12) -> 7(9).",
+    "markdownEn": "[gold:card]Untouchable[/gold] (nerf): [gold]Block[/gold] gain decreased from 9(12) -> 7(9).",
+    "textKo": "범접 불가 (너프): 방어도 획득 9(12) -> 7(9).",
+    "textEn": "Untouchable (nerf): Block gain decreased from 9(12) -> 7(9).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "UNTOUCHABLE",
+        "label": "범접 불가"
+      }
+    ],
+    "searchText": "v0.100.0:line-032-card-untouchable v0.100.0 0.100.0 밸런스 사일런트 범접 불가 (너프): 방어도 획득 9(12) -> 7(9). untouchable (nerf): block gain decreased from 9(12) -> 7(9). card untouchable 범접 불가 범접 불가 untouchable"
+  },
+  {
+    "id": "v0.100.0:line-033-card-alignment",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]정렬[/gold] ([red][jitter]너프[/jitter][/red]): [gold]별[/gold] 비용 2 -> 3.",
+    "markdownEn": "[gold:card]Alignment[/gold] (nerf): Star cost increased from 2 -> 3.",
+    "textKo": "정렬 (너프): 별 비용 2 -> 3.",
+    "textEn": "Alignment (nerf): Star cost increased from 2 -> 3.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "ALIGNMENT",
+        "label": "정렬"
+      }
+    ],
+    "searchText": "v0.100.0:line-033-card-alignment v0.100.0 0.100.0 밸런스 리젠트 정렬 (너프): 별 비용 2 -> 3. alignment (nerf): star cost increased from 2 -> 3. card alignment 정렬 정렬 alignment"
+  },
+  {
+    "id": "v0.100.0:line-034-card-begone",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]물렀거라![/gold] 변경:\n• 이제 피해를 주지 않는 스킬입니다.\n• [gold:card]하수인 투하[/gold] 대신 [gold:card]하수인 타격[/gold]을 생성합니다.",
+    "markdownEn": "Changed [gold:card]BEGONE![/gold]:\n• Now a Skill that no longer deals damage.\n• Now creates [gold:card]Minion Strike[/gold] instead of [gold:card]Minion Dive Bomb[/gold].",
+    "summaryMarkdownKo": "[gold:card]물렀거라![/gold] 변경:",
+    "summaryMarkdownEn": "Changed [gold:card]BEGONE![/gold]:",
+    "textKo": "물렀거라! 변경:\n• 이제 피해를 주지 않는 스킬입니다.\n• 하수인 투하 대신 하수인 타격을 생성합니다.",
+    "textEn": "Changed BEGONE!:\n• Now a Skill that no longer deals damage.\n• Now creates Minion Strike instead of Minion Dive Bomb.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "BEGONE",
+        "label": "물렀거라!"
+      }
+    ],
+    "searchText": "v0.100.0:line-034-card-begone v0.100.0 0.100.0 밸런스 리젠트 물렀거라! 변경: • 이제 피해를 주지 않는 스킬입니다. • 하수인 투하 대신 하수인 타격을 생성합니다. changed begone!: • now a skill that no longer deals damage. • now creates minion strike instead of minion dive bomb. card begone 물렀거라! 물렀거라! begone!"
+  },
+  {
+    "id": "v0.100.0:line-035-text-5631kz",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "이제 피해를 주지 않는 스킬입니다.",
+    "markdownEn": "Now a Skill that no longer deals damage.",
+    "textKo": "이제 피해를 주지 않는 스킬입니다.",
+    "textEn": "Now a Skill that no longer deals damage.",
     "entityRefs": [],
-    "searchText": "v0.100.0:line-031-text-kcjje7 v0.100.0 0.100.0 기능 캐릭터별 에너지 획득 vfx. character-specific vfx for energy gain."
+    "searchText": "v0.100.0:line-035-text-5631kz v0.100.0 0.100.0 밸런스 리젠트 이제 피해를 주지 않는 스킬입니다. now a skill that no longer deals damage."
+  },
+  {
+    "id": "v0.100.0:line-036-card-minion-dive-bomb-card-minion-strike",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]하수인 투하[/gold] 대신 [gold:card]하수인 타격[/gold]을 생성합니다.",
+    "markdownEn": "Now creates [gold:card]Minion Strike[/gold] instead of [gold:card]Minion Dive Bomb[/gold].",
+    "textKo": "하수인 투하 대신 하수인 타격을 생성합니다.",
+    "textEn": "Now creates Minion Strike instead of Minion Dive Bomb.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "MINION_DIVE_BOMB",
+        "label": "하수인 투하"
+      },
+      {
+        "type": "card",
+        "id": "MINION_STRIKE",
+        "label": "하수인 타격"
+      }
+    ],
+    "searchText": "v0.100.0:line-036-card-minion-dive-bomb-card-minion-strike v0.100.0 0.100.0 밸런스 리젠트 하수인 투하 대신 하수인 타격을 생성합니다. now creates minion strike instead of minion dive bomb. card minion_dive_bomb 하수인 투하 하수인 투하 minion dive bomb card minion_strike 하수인 타격 하수인 타격 minion strike"
+  },
+  {
+    "id": "v0.100.0:line-037-card-bundle-of-joy",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]기쁨의 선물[/gold] ([green][sine]버프[/sine][/green]): 에너지 비용 2 -> 1.",
+    "markdownEn": "[gold:card]Bundle of Joy[/gold] (buff): Energy cost lowered from 2 -> 1.",
+    "textKo": "기쁨의 선물 (버프): 에너지 비용 2 -> 1.",
+    "textEn": "Bundle of Joy (buff): Energy cost lowered from 2 -> 1.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "BUNDLE_OF_JOY",
+        "label": "기쁨의 선물"
+      }
+    ],
+    "searchText": "v0.100.0:line-037-card-bundle-of-joy v0.100.0 0.100.0 밸런스 리젠트 기쁨의 선물 (버프): 에너지 비용 2 -> 1. bundle of joy (buff): energy cost lowered from 2 -> 1. card bundle_of_joy 기쁨의 선물 기쁨의 선물 bundle of joy"
+  },
+  {
+    "id": "v0.100.0:line-038-card-charge-card-minion-strike",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]돌격!![/gold] 변경: [gold:card]하수인 타격[/gold] 대신 [gold:card]하수인 투하[/gold]를 생성합니다.",
+    "markdownEn": "Changed [gold:card]CHARGE!![/gold]: now creates [gold:card]Minion Dive Bomb[/gold] cards instead of [gold:card]Minion Strike[/gold] cards.",
+    "textKo": "돌격!! 변경: 하수인 타격 대신 하수인 투하를 생성합니다.",
+    "textEn": "Changed CHARGE!!: now creates Minion Dive Bomb cards instead of Minion Strike cards.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "CHARGE",
+        "label": "돌격!!"
+      },
+      {
+        "type": "card",
+        "id": "MINION_STRIKE",
+        "label": "하수인 타격"
+      },
+      {
+        "type": "card",
+        "id": "MINION_DIVE_BOMB",
+        "label": "하수인 투하"
+      }
+    ],
+    "searchText": "v0.100.0:line-038-card-charge-card-minion-strike v0.100.0 0.100.0 밸런스 리젠트 돌격!! 변경: 하수인 타격 대신 하수인 투하를 생성합니다. changed charge!!: now creates minion dive bomb cards instead of minion strike cards. card charge 돌격!! 돌격!! charge!! card minion_strike 하수인 타격 하수인 타격 minion strike card minion_dive_bomb 하수인 투하 하수인 투하 minion dive bomb"
+  },
+  {
+    "id": "v0.100.0:line-039-card-collision-course",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]불가피한 충돌[/gold] ([green][sine]버프[/sine][/green]): 피해 9(12) -> 11(15).",
+    "markdownEn": "[gold:card]Collision Course[/gold] (buff): Damage increased from 9(12) -> 11(15).",
+    "textKo": "불가피한 충돌 (버프): 피해 9(12) -> 11(15).",
+    "textEn": "Collision Course (buff): Damage increased from 9(12) -> 11(15).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "COLLISION_COURSE",
+        "label": "불가피한 충돌"
+      }
+    ],
+    "searchText": "v0.100.0:line-039-card-collision-course v0.100.0 0.100.0 밸런스 리젠트 불가피한 충돌 (버프): 피해 9(12) -> 11(15). collision course (buff): damage increased from 9(12) -> 11(15). card collision_course 불가피한 충돌 불가피한 충돌 collision course"
+  },
+  {
+    "id": "v0.100.0:line-040-card-gather-light",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]빛 거두기[/gold] ([green][sine]버프[/sine][/green]): [gold]방어도[/gold] 7(10) -> 8(11).",
+    "markdownEn": "[gold:card]Gather Light[/gold] (buff): [gold]Block[/gold] increased from 7(10) -> 8(11).",
+    "textKo": "빛 거두기 (버프): 방어도 7(10) -> 8(11).",
+    "textEn": "Gather Light (buff): Block increased from 7(10) -> 8(11).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "GATHER_LIGHT",
+        "label": "빛 거두기"
+      }
+    ],
+    "searchText": "v0.100.0:line-040-card-gather-light v0.100.0 0.100.0 밸런스 리젠트 빛 거두기 (버프): 방어도 7(10) -> 8(11). gather light (buff): block increased from 7(10) -> 8(11). card gather_light 빛 거두기 빛 거두기 gather light"
+  },
+  {
+    "id": "v0.100.0:line-041-card-heirloom-hammer",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]선조의 망치[/gold] ([green][sine]버프[/sine][/green]): 피해 17(22) -> 20(25).",
+    "markdownEn": "[gold:card]Heirloom Hammer[/gold] (buff): Damage increased from 17(22) -> 20(25).",
+    "textKo": "선조의 망치 (버프): 피해 17(22) -> 20(25).",
+    "textEn": "Heirloom Hammer (buff): Damage increased from 17(22) -> 20(25).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "HEIRLOOM_HAMMER",
+        "label": "선조의 망치"
+      }
+    ],
+    "searchText": "v0.100.0:line-041-card-heirloom-hammer v0.100.0 0.100.0 밸런스 리젠트 선조의 망치 (버프): 피해 17(22) -> 20(25). heirloom hammer (buff): damage increased from 17(22) -> 20(25). card heirloom_hammer 선조의 망치 선조의 망치 heirloom hammer"
+  },
+  {
+    "id": "v0.100.0:line-042-card-i-am-invincible",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]나는 무적이다[/gold] ([green][sine]버프[/sine][/green]): [gold]방어도[/gold] 9(12) -> 10(13).",
+    "markdownEn": "[gold:card]I Am Invincible[/gold] (buff): [gold]Block[/gold] increased from 9(12) -> 10(13).",
+    "textKo": "나는 무적이다 (버프): 방어도 9(12) -> 10(13).",
+    "textEn": "I Am Invincible (buff): Block increased from 9(12) -> 10(13).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "I_AM_INVINCIBLE",
+        "label": "나는 무적이다"
+      }
+    ],
+    "searchText": "v0.100.0:line-042-card-i-am-invincible v0.100.0 0.100.0 밸런스 리젠트 나는 무적이다 (버프): 방어도 9(12) -> 10(13). i am invincible (buff): block increased from 9(12) -> 10(13). card i_am_invincible 나는 무적이다 나는 무적이다 i am invincible"
+  },
+  {
+    "id": "v0.100.0:line-043-card-kingly-kick",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]왕의 발차기[/gold] ([green][sine]버프[/sine][/green]): 피해 24(30) -> 27(35).",
+    "markdownEn": "[gold:card]Kingly Kick[/gold] (buff): Damage increased from 24(30) -> 27(35).",
+    "textKo": "왕의 발차기 (버프): 피해 24(30) -> 27(35).",
+    "textEn": "Kingly Kick (buff): Damage increased from 24(30) -> 27(35).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "KINGLY_KICK",
+        "label": "왕의 발차기"
+      }
+    ],
+    "searchText": "v0.100.0:line-043-card-kingly-kick v0.100.0 0.100.0 밸런스 리젠트 왕의 발차기 (버프): 피해 24(30) -> 27(35). kingly kick (buff): damage increased from 24(30) -> 27(35). card kingly_kick 왕의 발차기 왕의 발차기 kingly kick"
+  },
+  {
+    "id": "v0.100.0:line-044-card-kingly-punch",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]왕의 주먹[/gold] ([green][sine]버프[/sine][/green]):\n• 기본 피해 8(8) -> 8(10).\n• 스케일 피해 3(5) -> 4(6).",
+    "markdownEn": "[gold:card]Kingly Punch[/gold] (buff):\n• Base damage increased from 8(8) -> 8(10).\n• Scaling damage increased from 3(5) -> 4(6).",
+    "summaryMarkdownKo": "[gold:card]왕의 주먹[/gold] ([green][sine]버프[/sine][/green]):",
+    "summaryMarkdownEn": "[gold:card]Kingly Punch[/gold] (buff):",
+    "textKo": "왕의 주먹 (버프):\n• 기본 피해 8(8) -> 8(10).\n• 스케일 피해 3(5) -> 4(6).",
+    "textEn": "Kingly Punch (buff):\n• Base damage increased from 8(8) -> 8(10).\n• Scaling damage increased from 3(5) -> 4(6).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "KINGLY_PUNCH",
+        "label": "왕의 주먹"
+      }
+    ],
+    "searchText": "v0.100.0:line-044-card-kingly-punch v0.100.0 0.100.0 밸런스 리젠트 왕의 주먹 (버프): • 기본 피해 8(8) -> 8(10). • 스케일 피해 3(5) -> 4(6). kingly punch (buff): • base damage increased from 8(8) -> 8(10). • scaling damage increased from 3(5) -> 4(6). card kingly_punch 왕의 주먹 왕의 주먹 kingly punch"
+  },
+  {
+    "id": "v0.100.0:line-045-text-q9a82c",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "기본 피해 8(8) -> 8(10).",
+    "markdownEn": "Base damage increased from 8(8) -> 8(10).",
+    "textKo": "기본 피해 8(8) -> 8(10).",
+    "textEn": "Base damage increased from 8(8) -> 8(10).",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-045-text-q9a82c v0.100.0 0.100.0 밸런스 리젠트 기본 피해 8(8) -> 8(10). base damage increased from 8(8) -> 8(10)."
+  },
+  {
+    "id": "v0.100.0:line-046-text-1glsp9j",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "스케일 피해 3(5) -> 4(6).",
+    "markdownEn": "Scaling damage increased from 3(5) -> 4(6).",
+    "textKo": "스케일 피해 3(5) -> 4(6).",
+    "textEn": "Scaling damage increased from 3(5) -> 4(6).",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-046-text-1glsp9j v0.100.0 0.100.0 밸런스 리젠트 스케일 피해 3(5) -> 4(6). scaling damage increased from 3(5) -> 4(6)."
+  },
+  {
+    "id": "v0.100.0:line-047-card-minion-dive-bomb",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]하수인 투하[/gold] ([green][sine]버프[/sine][/green]): 에너지 비용 1 -> 0.",
+    "markdownEn": "[gold:card]Minion Dive Bomb[/gold] (buff): Energy cost decreased from 1 -> 0.",
+    "textKo": "하수인 투하 (버프): 에너지 비용 1 -> 0.",
+    "textEn": "Minion Dive Bomb (buff): Energy cost decreased from 1 -> 0.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "MINION_DIVE_BOMB",
+        "label": "하수인 투하"
+      }
+    ],
+    "searchText": "v0.100.0:line-047-card-minion-dive-bomb v0.100.0 0.100.0 밸런스 리젠트 하수인 투하 (버프): 에너지 비용 1 -> 0. minion dive bomb (buff): energy cost decreased from 1 -> 0. card minion_dive_bomb 하수인 투하 하수인 투하 minion dive bomb"
+  },
+  {
+    "id": "v0.100.0:line-048-card-minion-strike",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]하수인 타격[/gold] ([red][jitter]너프[/jitter][/red]): 피해 7(10) -> 6(9).",
+    "markdownEn": "[gold:card]Minion Strike[/gold] (nerf): Damage decreased from 7(10) -> 6(9).",
+    "textKo": "하수인 타격 (너프): 피해 7(10) -> 6(9).",
+    "textEn": "Minion Strike (nerf): Damage decreased from 7(10) -> 6(9).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "MINION_STRIKE",
+        "label": "하수인 타격"
+      }
+    ],
+    "searchText": "v0.100.0:line-048-card-minion-strike v0.100.0 0.100.0 밸런스 리젠트 하수인 타격 (너프): 피해 7(10) -> 6(9). minion strike (nerf): damage decreased from 7(10) -> 6(9). card minion_strike 하수인 타격 하수인 타격 minion strike"
+  },
+  {
+    "id": "v0.100.0:line-049-card-parry",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]쳐내기[/gold] ([green][sine]버프[/sine][/green]): [gold]방어도[/gold] 6(9) -> 8(11).",
+    "markdownEn": "[gold:card]Parry[/gold] (buff): [gold]Block[/gold] increased from 6(9) -> 8(11).",
+    "textKo": "쳐내기 (버프): 방어도 6(9) -> 8(11).",
+    "textEn": "Parry (buff): Block increased from 6(9) -> 8(11).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "PARRY",
+        "label": "쳐내기"
+      }
+    ],
+    "searchText": "v0.100.0:line-049-card-parry v0.100.0 0.100.0 밸런스 리젠트 쳐내기 (버프): 방어도 6(9) -> 8(11). parry (buff): block increased from 6(9) -> 8(11). card parry 쳐내기 쳐내기 parry"
+  },
+  {
+    "id": "v0.100.0:line-050-card-patter",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]별무리[/gold] ([green][sine]버프[/sine][/green]): [gold]방어도[/gold] 8(10) -> 9(11).",
+    "markdownEn": "[gold:card]Patter[/gold] (buff): [gold]Block[/gold] increased from 8(10) -> 9(11).",
+    "textKo": "별무리 (버프): 방어도 8(10) -> 9(11).",
+    "textEn": "Patter (buff): Block increased from 8(10) -> 9(11).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "PATTER",
+        "label": "별무리"
+      }
+    ],
+    "searchText": "v0.100.0:line-050-card-patter v0.100.0 0.100.0 밸런스 리젠트 별무리 (버프): 방어도 8(10) -> 9(11). patter (buff): block increased from 8(10) -> 9(11). card patter 별무리 별무리 patter"
+  },
+  {
+    "id": "v0.100.0:line-051-card-solar-strike",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]태양의 타격[/gold] ([green][sine]버프[/sine][/green]): 피해 8(9) -> 9(10).",
+    "markdownEn": "[gold:card]Solar Strike[/gold] (buff): damage increased from 8(9) -> 9(10).",
+    "textKo": "태양의 타격 (버프): 피해 8(9) -> 9(10).",
+    "textEn": "Solar Strike (buff): damage increased from 8(9) -> 9(10).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SOLAR_STRIKE",
+        "label": "태양의 타격"
+      }
+    ],
+    "searchText": "v0.100.0:line-051-card-solar-strike v0.100.0 0.100.0 밸런스 리젠트 태양의 타격 (버프): 피해 8(9) -> 9(10). solar strike (buff): damage increased from 8(9) -> 9(10). card solar_strike 태양의 타격 태양의 타격 solar strike"
+  },
+  {
+    "id": "v0.100.0:line-052-card-spoils-of-battle",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]전투의 성과[/gold] ([green][sine]버프[/sine][/green]): [gold]단조[/gold] 10(15) -> 12(17).",
+    "markdownEn": "[gold:card]Spoils of Battle[/gold] (buff): [gold]Forge[/gold] increased from 10(15) -> 12(17).",
+    "textKo": "전투의 성과 (버프): 단조 10(15) -> 12(17).",
+    "textEn": "Spoils of Battle (buff): Forge increased from 10(15) -> 12(17).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SPOILS_OF_BATTLE",
+        "label": "전투의 성과"
+      }
+    ],
+    "searchText": "v0.100.0:line-052-card-spoils-of-battle v0.100.0 0.100.0 밸런스 리젠트 전투의 성과 (버프): 단조 10(15) -> 12(17). spoils of battle (buff): forge increased from 10(15) -> 12(17). card spoils_of_battle 전투의 성과 전투의 성과 spoils of battle"
+  },
+  {
+    "id": "v0.100.0:line-053-card-void-form",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]공허의 형상[/gold] ([red][jitter]너프[/jitter][/red]):\n• 이제 영묘입니다.\n• 강화가 +1장에서 영묘 제거로 변경되었습니다.",
+    "markdownEn": "[gold:card]Void Form[/gold] (nerf):\n• Is now Ethereal.\n• Upgrade changed from +1 card -> losing Ethereal.",
+    "summaryMarkdownKo": "[gold:card]공허의 형상[/gold] ([red][jitter]너프[/jitter][/red]):",
+    "summaryMarkdownEn": "[gold:card]Void Form[/gold] (nerf):",
+    "textKo": "공허의 형상 (너프):\n• 이제 영묘입니다.\n• 강화가 +1장에서 영묘 제거로 변경되었습니다.",
+    "textEn": "Void Form (nerf):\n• Is now Ethereal.\n• Upgrade changed from +1 card -> losing Ethereal.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "VOID_FORM",
+        "label": "공허의 형상"
+      }
+    ],
+    "searchText": "v0.100.0:line-053-card-void-form v0.100.0 0.100.0 밸런스 리젠트 공허의 형상 (너프): • 이제 영묘입니다. • 강화가 +1장에서 영묘 제거로 변경되었습니다. void form (nerf): • is now ethereal. • upgrade changed from +1 card -> losing ethereal. card void_form 공허의 형상 공허의 형상 void form"
+  },
+  {
+    "id": "v0.100.0:line-054-text-1lynyxo",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "이제 영묘입니다.",
+    "markdownEn": "Is now Ethereal.",
+    "textKo": "이제 영묘입니다.",
+    "textEn": "Is now Ethereal.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-054-text-1lynyxo v0.100.0 0.100.0 밸런스 리젠트 이제 영묘입니다. is now ethereal."
+  },
+  {
+    "id": "v0.100.0:line-055-text-7a3a1j",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "강화가 +1장에서 영묘 제거로 변경되었습니다.",
+    "markdownEn": "Upgrade changed from +1 card -> losing Ethereal.",
+    "textKo": "강화가 +1장에서 영묘 제거로 변경되었습니다.",
+    "textEn": "Upgrade changed from +1 card -> losing Ethereal.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-055-text-7a3a1j v0.100.0 0.100.0 밸런스 리젠트 강화가 +1장에서 영묘 제거로 변경되었습니다. upgrade changed from +1 card -> losing ethereal."
+  },
+  {
+    "id": "v0.100.0:line-056-card-wrought-in-war",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "리젠트"
+    ],
+    "markdownKo": "[gold:card]전장의 생존자[/gold] ([green][sine]버프[/sine][/green]): [gold]단조[/gold] 5(7) -> 7(9).",
+    "markdownEn": "[gold:card]Wrought in War[/gold] (buff): [gold]Forge[/gold] increased from 5(7) -> 7(9).",
+    "textKo": "전장의 생존자 (버프): 단조 5(7) -> 7(9).",
+    "textEn": "Wrought in War (buff): Forge increased from 5(7) -> 7(9).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "WROUGHT_IN_WAR",
+        "label": "전장의 생존자"
+      }
+    ],
+    "searchText": "v0.100.0:line-056-card-wrought-in-war v0.100.0 0.100.0 밸런스 리젠트 전장의 생존자 (버프): 단조 5(7) -> 7(9). wrought in war (buff): forge increased from 5(7) -> 7(9). card wrought_in_war 전장의 생존자 전장의 생존자 wrought in war"
+  },
+  {
+    "id": "v0.100.0:line-057-card-banshees-cry",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "[gold:card]밴시의 외침[/gold] ([red][jitter]너프[/jitter][/red]):\n• 비용 6 -> 9(7).\n• 강화가 더 이상 피해를 올리지 않습니다.",
+    "markdownEn": "[gold:card]Banshee's Cry[/gold] (nerf):\n• Cost increased from 6 -> 9(7).\n• Upgrade no longer increases damage.",
+    "summaryMarkdownKo": "[gold:card]밴시의 외침[/gold] ([red][jitter]너프[/jitter][/red]):",
+    "summaryMarkdownEn": "[gold:card]Banshee's Cry[/gold] (nerf):",
+    "textKo": "밴시의 외침 (너프):\n• 비용 6 -> 9(7).\n• 강화가 더 이상 피해를 올리지 않습니다.",
+    "textEn": "Banshee's Cry (nerf):\n• Cost increased from 6 -> 9(7).\n• Upgrade no longer increases damage.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "BANSHEES_CRY",
+        "label": "밴시의 외침"
+      }
+    ],
+    "searchText": "v0.100.0:line-057-card-banshees-cry v0.100.0 0.100.0 밸런스 네크로바인더 밴시의 외침 (너프): • 비용 6 -> 9(7). • 강화가 더 이상 피해를 올리지 않습니다. banshee's cry (nerf): • cost increased from 6 -> 9(7). • upgrade no longer increases damage. card banshees_cry 밴시의 외침 밴시의 외침 banshee's cry"
+  },
+  {
+    "id": "v0.100.0:line-058-text-3hv3r7",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "비용 6 -> 9(7).",
+    "markdownEn": "Cost increased from 6 -> 9(7).",
+    "textKo": "비용 6 -> 9(7).",
+    "textEn": "Cost increased from 6 -> 9(7).",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-058-text-3hv3r7 v0.100.0 0.100.0 밸런스 네크로바인더 비용 6 -> 9(7). cost increased from 6 -> 9(7)."
+  },
+  {
+    "id": "v0.100.0:line-059-text-1ycrjlv",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "강화가 더 이상 피해를 올리지 않습니다.",
+    "markdownEn": "Upgrade no longer increases damage.",
+    "textKo": "강화가 더 이상 피해를 올리지 않습니다.",
+    "textEn": "Upgrade no longer increases damage.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-059-text-1ycrjlv v0.100.0 0.100.0 밸런스 네크로바인더 강화가 더 이상 피해를 올리지 않습니다. upgrade no longer increases damage."
+  },
+  {
+    "id": "v0.100.0:line-060-card-borrowed-time",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "[gold:card]연명[/gold] ([red][jitter]너프[/jitter][/red]):\n• 자가 [gold]종말[/gold] 3(3) -> 6(3).\n• 강화가 더 이상 에너지 획득을 늘리지 않습니다.",
+    "markdownEn": "[gold:card]Borrowed Time[/gold] (nerf):\n• Self-[gold]Doom[/gold] increased from 3(3) -> 6(3).\n• Energy gain no longer increases on Upgrade.",
+    "summaryMarkdownKo": "[gold:card]연명[/gold] ([red][jitter]너프[/jitter][/red]):",
+    "summaryMarkdownEn": "[gold:card]Borrowed Time[/gold] (nerf):",
+    "textKo": "연명 (너프):\n• 자가 종말 3(3) -> 6(3).\n• 강화가 더 이상 에너지 획득을 늘리지 않습니다.",
+    "textEn": "Borrowed Time (nerf):\n• Self-Doom increased from 3(3) -> 6(3).\n• Energy gain no longer increases on Upgrade.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "BORROWED_TIME",
+        "label": "연명"
+      }
+    ],
+    "searchText": "v0.100.0:line-060-card-borrowed-time v0.100.0 0.100.0 밸런스 네크로바인더 연명 (너프): • 자가 종말 3(3) -> 6(3). • 강화가 더 이상 에너지 획득을 늘리지 않습니다. borrowed time (nerf): • self-doom increased from 3(3) -> 6(3). • energy gain no longer increases on upgrade. card borrowed_time 연명 연명 borrowed time"
+  },
+  {
+    "id": "v0.100.0:line-061-text-10sp41z",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "자가 [gold]종말[/gold] 3(3) -> 6(3).",
+    "markdownEn": "Self-[gold]Doom[/gold] increased from 3(3) -> 6(3).",
+    "textKo": "자가 종말 3(3) -> 6(3).",
+    "textEn": "Self-Doom increased from 3(3) -> 6(3).",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-061-text-10sp41z v0.100.0 0.100.0 밸런스 네크로바인더 자가 종말 3(3) -> 6(3). self-doom increased from 3(3) -> 6(3)."
+  },
+  {
+    "id": "v0.100.0:line-062-text-j1dnr",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "강화가 더 이상 에너지 획득을 늘리지 않습니다.",
+    "markdownEn": "Energy gain no longer increases on Upgrade.",
+    "textKo": "강화가 더 이상 에너지 획득을 늘리지 않습니다.",
+    "textEn": "Energy gain no longer increases on Upgrade.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-062-text-j1dnr v0.100.0 0.100.0 밸런스 네크로바인더 강화가 더 이상 에너지 획득을 늘리지 않습니다. energy gain no longer increases on upgrade."
+  },
+  {
+    "id": "v0.100.0:line-063-card-capture-spirit",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "[gold:card]혼령 포획[/gold] ([red][jitter]너프[/jitter][/red]):\n• HP 감소 3(4) -> 2(3).\n• 생성되는 [gold]영혼[/gold] 3(4) -> 2(3).",
+    "markdownEn": "[gold:card]Capture Spirit[/gold] (nerf):\n• HP loss decreased from 3(4) -> 2(3).\n• Souls generated decreased from 3(4) -> 2(3).",
+    "summaryMarkdownKo": "[gold:card]혼령 포획[/gold] ([red][jitter]너프[/jitter][/red]):",
+    "summaryMarkdownEn": "[gold:card]Capture Spirit[/gold] (nerf):",
+    "textKo": "혼령 포획 (너프):\n• HP 감소 3(4) -> 2(3).\n• 생성되는 영혼 3(4) -> 2(3).",
+    "textEn": "Capture Spirit (nerf):\n• HP loss decreased from 3(4) -> 2(3).\n• Souls generated decreased from 3(4) -> 2(3).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "CAPTURE_SPIRIT",
+        "label": "혼령 포획"
+      }
+    ],
+    "searchText": "v0.100.0:line-063-card-capture-spirit v0.100.0 0.100.0 밸런스 네크로바인더 혼령 포획 (너프): • hp 감소 3(4) -> 2(3). • 생성되는 영혼 3(4) -> 2(3). capture spirit (nerf): • hp loss decreased from 3(4) -> 2(3). • souls generated decreased from 3(4) -> 2(3). card capture_spirit 혼령 포획 혼령 포획 capture spirit"
+  },
+  {
+    "id": "v0.100.0:line-064-text-bp20u5",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "HP 감소 3(4) -> 2(3).",
+    "markdownEn": "HP loss decreased from 3(4) -> 2(3).",
+    "textKo": "HP 감소 3(4) -> 2(3).",
+    "textEn": "HP loss decreased from 3(4) -> 2(3).",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-064-text-bp20u5 v0.100.0 0.100.0 밸런스 네크로바인더 hp 감소 3(4) -> 2(3). hp loss decreased from 3(4) -> 2(3)."
+  },
+  {
+    "id": "v0.100.0:line-065-text-100pn90",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "생성되는 [gold]영혼[/gold] 3(4) -> 2(3).",
+    "markdownEn": "Souls generated decreased from 3(4) -> 2(3).",
+    "textKo": "생성되는 영혼 3(4) -> 2(3).",
+    "textEn": "Souls generated decreased from 3(4) -> 2(3).",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-065-text-100pn90 v0.100.0 0.100.0 밸런스 네크로바인더 생성되는 영혼 3(4) -> 2(3). souls generated decreased from 3(4) -> 2(3)."
+  },
+  {
+    "id": "v0.100.0:line-066-card-danse-macabre",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "[gold:card]죽음의 무도[/gold] ([green][sine]버프[/sine][/green]): [gold]방어도[/gold] 3(4) -> 4(6).",
+    "markdownEn": "[gold:card]Danse Macabre[/gold] (buff): [gold]Block[/gold] increased from 3(4) -> 4(6).",
+    "textKo": "죽음의 무도 (버프): 방어도 3(4) -> 4(6).",
+    "textEn": "Danse Macabre (buff): Block increased from 3(4) -> 4(6).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "DANSE_MACABRE",
+        "label": "죽음의 무도"
+      }
+    ],
+    "searchText": "v0.100.0:line-066-card-danse-macabre v0.100.0 0.100.0 밸런스 네크로바인더 죽음의 무도 (버프): 방어도 3(4) -> 4(6). danse macabre (buff): block increased from 3(4) -> 4(6). card danse_macabre 죽음의 무도 죽음의 무도 danse macabre"
+  },
+  {
+    "id": "v0.100.0:line-067-card-debilitate",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "[gold:card]쇠락[/gold] ([green][sine]버프[/sine][/green]): 피해 7(9) -> 10(12).",
+    "markdownEn": "[gold:card]Debilitate[/gold] (buff): Damage increased from 7(9) -> 10(12).",
+    "textKo": "쇠락 (버프): 피해 7(9) -> 10(12).",
+    "textEn": "Debilitate (buff): Damage increased from 7(9) -> 10(12).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "DEBILITATE",
+        "label": "쇠락"
+      }
+    ],
+    "searchText": "v0.100.0:line-067-card-debilitate v0.100.0 0.100.0 밸런스 네크로바인더 쇠락 (버프): 피해 7(9) -> 10(12). debilitate (buff): damage increased from 7(9) -> 10(12). card debilitate 쇠락 쇠락 debilitate"
+  },
+  {
+    "id": "v0.100.0:line-068-card-defy",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "[gold:card]반항[/gold] 변경: 강화가 더 이상 [gold]약화[/gold]를 늘리지 않고, [gold]방어도[/gold]를 +1 대신 +3 늘립니다.",
+    "markdownEn": "Changed [gold:card]Defy[/gold]: upgrade no longer increases [gold]Weak[/gold], but increases [gold]Block[/gold] by +3 instead of +1.",
+    "textKo": "반항 변경: 강화가 더 이상 약화를 늘리지 않고, 방어도를 +1 대신 +3 늘립니다.",
+    "textEn": "Changed Defy: upgrade no longer increases Weak, but increases Block by +3 instead of +1.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "DEFY",
+        "label": "반항"
+      }
+    ],
+    "searchText": "v0.100.0:line-068-card-defy v0.100.0 0.100.0 밸런스 네크로바인더 반항 변경: 강화가 더 이상 약화를 늘리지 않고, 방어도를 +1 대신 +3 늘립니다. changed defy: upgrade no longer increases weak, but increases block by +3 instead of +1. card defy 반항 반항 defy"
+  },
+  {
+    "id": "v0.100.0:line-069-card-dirge",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "[gold:card]장송가[/gold] ([red][jitter]너프[/jitter][/red]): 이제 소멸.",
+    "markdownEn": "[gold:card]Dirge[/gold] (nerf): now Exhausts.",
+    "textKo": "장송가 (너프): 이제 소멸.",
+    "textEn": "Dirge (nerf): now Exhausts.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "DIRGE",
+        "label": "장송가"
+      }
+    ],
+    "searchText": "v0.100.0:line-069-card-dirge v0.100.0 0.100.0 밸런스 네크로바인더 장송가 (너프): 이제 소멸. dirge (nerf): now exhausts. card dirge 장송가 장송가 dirge"
+  },
+  {
+    "id": "v0.100.0:line-070-card-grave-warden",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "[gold:card]무덤지기[/gold] 변경: 강화가 8(10) [gold]방어도[/gold] -> 8(11) [gold]방어도[/gold]로 바뀌고, 더 이상 [gold]영혼[/gold]을 강화하지 않습니다.",
+    "markdownEn": "Changed [gold:card]Grave Warden[/gold]: upgrade changed from 8(10) [gold]Block[/gold] -> 8(11) [gold]Block[/gold] and no longer upgrades the Soul.",
+    "textKo": "무덤지기 변경: 강화가 8(10) 방어도 -> 8(11) 방어도로 바뀌고, 더 이상 영혼을 강화하지 않습니다.",
+    "textEn": "Changed Grave Warden: upgrade changed from 8(10) Block -> 8(11) Block and no longer upgrades the Soul.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "GRAVE_WARDEN",
+        "label": "무덤지기"
+      }
+    ],
+    "searchText": "v0.100.0:line-070-card-grave-warden v0.100.0 0.100.0 밸런스 네크로바인더 무덤지기 변경: 강화가 8(10) 방어도 -> 8(11) 방어도로 바뀌고, 더 이상 영혼을 강화하지 않습니다. changed grave warden: upgrade changed from 8(10) block -> 8(11) block and no longer upgrades the soul. card grave_warden 무덤지기 무덤지기 grave warden"
+  },
+  {
+    "id": "v0.100.0:line-071-card-sculpting-strike",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "[gold:card]조각 타격[/gold] ([green][sine]버프[/sine][/green]): 피해 8(11) -> 9(12).",
+    "markdownEn": "[gold:card]Sculpting Strike[/gold] (buff): Damage increased from 8(11) -> 9(12).",
+    "textKo": "조각 타격 (버프): 피해 8(11) -> 9(12).",
+    "textEn": "Sculpting Strike (buff): Damage increased from 8(11) -> 9(12).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SCULPTING_STRIKE",
+        "label": "조각 타격"
+      }
+    ],
+    "searchText": "v0.100.0:line-071-card-sculpting-strike v0.100.0 0.100.0 밸런스 네크로바인더 조각 타격 (버프): 피해 8(11) -> 9(12). sculpting strike (buff): damage increased from 8(11) -> 9(12). card sculpting_strike 조각 타격 조각 타격 sculpting strike"
+  },
+  {
+    "id": "v0.100.0:line-072-card-seance",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "[gold:card]강령회[/gold] ([red][jitter]너프[/jitter][/red]):\n• 비용 0 -> 1(0).\n• 강화가 더 이상 영혼+를 만들지 않습니다.",
+    "markdownEn": "[gold:card]Seance[/gold] (nerf):\n• Cost increased from 0 -> 1(0).\n• Upgrade no longer makes a Soul+.",
+    "summaryMarkdownKo": "[gold:card]강령회[/gold] ([red][jitter]너프[/jitter][/red]):",
+    "summaryMarkdownEn": "[gold:card]Seance[/gold] (nerf):",
+    "textKo": "강령회 (너프):\n• 비용 0 -> 1(0).\n• 강화가 더 이상 영혼+를 만들지 않습니다.",
+    "textEn": "Seance (nerf):\n• Cost increased from 0 -> 1(0).\n• Upgrade no longer makes a Soul+.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SEANCE",
+        "label": "강령회"
+      }
+    ],
+    "searchText": "v0.100.0:line-072-card-seance v0.100.0 0.100.0 밸런스 네크로바인더 강령회 (너프): • 비용 0 -> 1(0). • 강화가 더 이상 영혼+를 만들지 않습니다. seance (nerf): • cost increased from 0 -> 1(0). • upgrade no longer makes a soul+. card seance 강령회 강령회 seance"
+  },
+  {
+    "id": "v0.100.0:line-073-text-mvgeka",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "비용 0 -> 1(0).",
+    "markdownEn": "Cost increased from 0 -> 1(0).",
+    "textKo": "비용 0 -> 1(0).",
+    "textEn": "Cost increased from 0 -> 1(0).",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-073-text-mvgeka v0.100.0 0.100.0 밸런스 네크로바인더 비용 0 -> 1(0). cost increased from 0 -> 1(0)."
+  },
+  {
+    "id": "v0.100.0:line-074-text-1u06ooz",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "네크로바인더"
+    ],
+    "markdownKo": "강화가 더 이상 영혼+를 만들지 않습니다.",
+    "markdownEn": "Upgrade no longer makes a Soul+.",
+    "textKo": "강화가 더 이상 영혼+를 만들지 않습니다.",
+    "textEn": "Upgrade no longer makes a Soul+.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-074-text-1u06ooz v0.100.0 0.100.0 밸런스 네크로바인더 강화가 더 이상 영혼+를 만들지 않습니다. upgrade no longer makes a soul+."
+  },
+  {
+    "id": "v0.100.0:line-075-card-hotfix",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "디펙트"
+    ],
+    "markdownKo": "[gold:card]핫픽스[/gold] ([red][jitter]너프[/jitter][/red]):\n• 이제 소멸이 있습니다.\n• 강화가 [gold]집중[/gold] 증가 대신 소멸을 제거합니다.",
+    "markdownEn": "[gold:card]Hotfix[/gold] (nerf):\n• Now has Exhaust.\n• Upgrade now removes Exhaust instead of increasing [gold]Focus[/gold].",
+    "summaryMarkdownKo": "[gold:card]핫픽스[/gold] ([red][jitter]너프[/jitter][/red]):",
+    "summaryMarkdownEn": "[gold:card]Hotfix[/gold] (nerf):",
+    "textKo": "핫픽스 (너프):\n• 이제 소멸이 있습니다.\n• 강화가 집중 증가 대신 소멸을 제거합니다.",
+    "textEn": "Hotfix (nerf):\n• Now has Exhaust.\n• Upgrade now removes Exhaust instead of increasing Focus.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "HOTFIX",
+        "label": "핫픽스"
+      }
+    ],
+    "searchText": "v0.100.0:line-075-card-hotfix v0.100.0 0.100.0 밸런스 디펙트 핫픽스 (너프): • 이제 소멸이 있습니다. • 강화가 집중 증가 대신 소멸을 제거합니다. hotfix (nerf): • now has exhaust. • upgrade now removes exhaust instead of increasing focus. card hotfix 핫픽스 핫픽스 hotfix"
+  },
+  {
+    "id": "v0.100.0:line-076-text-121mkz9",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "디펙트"
+    ],
+    "markdownKo": "이제 소멸이 있습니다.",
+    "markdownEn": "Now has Exhaust.",
+    "textKo": "이제 소멸이 있습니다.",
+    "textEn": "Now has Exhaust.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-076-text-121mkz9 v0.100.0 0.100.0 밸런스 디펙트 이제 소멸이 있습니다. now has exhaust."
+  },
+  {
+    "id": "v0.100.0:line-077-text-lra695",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "디펙트"
+    ],
+    "markdownKo": "강화가 [gold]집중[/gold] 증가 대신 소멸을 제거합니다.",
+    "markdownEn": "Upgrade now removes Exhaust instead of increasing [gold]Focus[/gold].",
+    "textKo": "강화가 집중 증가 대신 소멸을 제거합니다.",
+    "textEn": "Upgrade now removes Exhaust instead of increasing Focus.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-077-text-lra695 v0.100.0 0.100.0 밸런스 디펙트 강화가 집중 증가 대신 소멸을 제거합니다. upgrade now removes exhaust instead of increasing focus."
+  },
+  {
+    "id": "v0.100.0:line-078-card-rocket-punch",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "디펙트"
+    ],
+    "markdownKo": "[gold:card]로켓 펀치[/gold] ([green][sine]버프[/sine][/green]): 비용 감소가 턴 종료가 아니라, 그 카드를 사용할 때까지 유지됩니다.",
+    "markdownEn": "[gold:card]Rocket Punch[/gold] (buff): cost reduction effect now lasts until it is played, instead of just until the end of the turn.",
+    "textKo": "로켓 펀치 (버프): 비용 감소가 턴 종료가 아니라, 그 카드를 사용할 때까지 유지됩니다.",
+    "textEn": "Rocket Punch (buff): cost reduction effect now lasts until it is played, instead of just until the end of the turn.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "ROCKET_PUNCH",
+        "label": "로켓 펀치"
+      }
+    ],
+    "searchText": "v0.100.0:line-078-card-rocket-punch v0.100.0 0.100.0 밸런스 디펙트 로켓 펀치 (버프): 비용 감소가 턴 종료가 아니라, 그 카드를 사용할 때까지 유지됩니다. rocket punch (buff): cost reduction effect now lasts until it is played, instead of just until the end of the turn. card rocket_punch 로켓 펀치 로켓 펀치 rocket punch"
+  },
+  {
+    "id": "v0.100.0:line-079-card-seeker-strike",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "무색"
+    ],
+    "markdownKo": "[gold:card]탐색 타격[/gold] ([green][sine]버프[/sine][/green]): 피해 6(9) -> 9(12).",
+    "markdownEn": "[gold:card]Seeker Strike[/gold] (buff): Damage increased from 6(9) -> 9(12).",
+    "textKo": "탐색 타격 (버프): 피해 6(9) -> 9(12).",
+    "textEn": "Seeker Strike (buff): Damage increased from 6(9) -> 9(12).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SEEKER_STRIKE",
+        "label": "탐색 타격"
+      }
+    ],
+    "searchText": "v0.100.0:line-079-card-seeker-strike v0.100.0 0.100.0 밸런스 무색 탐색 타격 (버프): 피해 6(9) -> 9(12). seeker strike (buff): damage increased from 6(9) -> 9(12). card seeker_strike 탐색 타격 탐색 타격 seeker strike"
+  },
+  {
+    "id": "v0.100.0:line-080-card-discovery",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "무색"
+    ],
+    "markdownKo": "[gold:card]발견[/gold] 변경: \"이번 턴에 비용이 0 [energy:1]입니다.\" -> \"이번 턴 동안 비용 없이 사용할 수 있습니다.\"\n• 생성된 카드에 [gold]별[/gold] 비용이 있어도, 이번 턴에는 그 비용도 0이 됩니다.",
+    "markdownEn": "Changed [gold:card]Discovery[/gold]: \"It costs 0 [energy:1] this turn.\" -> \"It's free to play this turn.\"\n• This means that, if the card it generates has a Star cost, this cost is now also reduced to 0 this turn.",
+    "summaryMarkdownKo": "[gold:card]발견[/gold] 변경: \"이번 턴에 비용이 0 [energy:1]입니다.\" -> \"이번 턴 동안 비용 없이 사용할 수 있습니다.\"",
+    "summaryMarkdownEn": "Changed [gold:card]Discovery[/gold]: \"It costs 0 [energy:1] this turn.\" -> \"It's free to play this turn.\"",
+    "textKo": "발견 변경: \"이번 턴에 비용이 0 입니다.\" -> \"이번 턴 동안 비용 없이 사용할 수 있습니다.\"\n• 생성된 카드에 별 비용이 있어도, 이번 턴에는 그 비용도 0이 됩니다.",
+    "textEn": "Changed Discovery: \"It costs 0 this turn.\" -> \"It's free to play this turn.\"\n• This means that, if the card it generates has a Star cost, this cost is now also reduced to 0 this turn.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "DISCOVERY",
+        "label": "발견"
+      }
+    ],
+    "searchText": "v0.100.0:line-080-card-discovery v0.100.0 0.100.0 밸런스 무색 발견 변경: \"이번 턴에 비용이 0 입니다.\" -> \"이번 턴 동안 비용 없이 사용할 수 있습니다.\" • 생성된 카드에 별 비용이 있어도, 이번 턴에는 그 비용도 0이 됩니다. changed discovery: \"it costs 0 this turn.\" -> \"it's free to play this turn.\" • this means that, if the card it generates has a star cost, this cost is now also reduced to 0 this turn. card discovery 발견 발견 discovery"
+  },
+  {
+    "id": "v0.100.0:line-081-text-wp57xz",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "무색"
+    ],
+    "markdownKo": "생성된 카드에 [gold]별[/gold] 비용이 있어도, 이번 턴에는 그 비용도 0이 됩니다.",
+    "markdownEn": "This means that, if the card it generates has a Star cost, this cost is now also reduced to 0 this turn.",
+    "textKo": "생성된 카드에 별 비용이 있어도, 이번 턴에는 그 비용도 0이 됩니다.",
+    "textEn": "This means that, if the card it generates has a Star cost, this cost is now also reduced to 0 this turn.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-081-text-wp57xz v0.100.0 0.100.0 밸런스 무색 생성된 카드에 별 비용이 있어도, 이번 턴에는 그 비용도 0이 됩니다. this means that, if the card it generates has a star cost, this cost is now also reduced to 0 this turn."
+  },
+  {
+    "id": "v0.100.0:line-082-card-eternal-armor",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "무색"
+    ],
+    "markdownKo": "[gold:card]영원의 갑옷[/gold] ([green][sine]버프[/sine][/green]): [gold]판금[/gold] 7(9) -> 9(12).",
+    "markdownEn": "[gold:card]Eternal Armor[/gold] (buff): [gold]Plating[/gold] increased from 7(9) -> 9(12).",
+    "textKo": "영원의 갑옷 (버프): 판금 7(9) -> 9(12).",
+    "textEn": "Eternal Armor (buff): Plating increased from 7(9) -> 9(12).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "ETERNAL_ARMOR",
+        "label": "영원의 갑옷"
+      }
+    ],
+    "searchText": "v0.100.0:line-082-card-eternal-armor v0.100.0 0.100.0 밸런스 무색 영원의 갑옷 (버프): 판금 7(9) -> 9(12). eternal armor (buff): plating increased from 7(9) -> 9(12). card eternal_armor 영원의 갑옷 영원의 갑옷 eternal armor"
+  },
+  {
+    "id": "v0.100.0:line-083-card-hidden-gem",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "무색"
+    ],
+    "markdownKo": "[gold:card]숨겨진 보석[/gold] 변경: 스킬 포션 같은 효과로 전투 중 생성되지 않습니다.",
+    "markdownEn": "Changed [gold:card]Hidden Gem[/gold]: can no longer be generated in combat by effects like Skill Potion.",
+    "textKo": "숨겨진 보석 변경: 스킬 포션 같은 효과로 전투 중 생성되지 않습니다.",
+    "textEn": "Changed Hidden Gem: can no longer be generated in combat by effects like Skill Potion.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "HIDDEN_GEM",
+        "label": "숨겨진 보석"
+      }
+    ],
+    "searchText": "v0.100.0:line-083-card-hidden-gem v0.100.0 0.100.0 밸런스 무색 숨겨진 보석 변경: 스킬 포션 같은 효과로 전투 중 생성되지 않습니다. changed hidden gem: can no longer be generated in combat by effects like skill potion. card hidden_gem 숨겨진 보석 숨겨진 보석 hidden gem"
+  },
+  {
+    "id": "v0.100.0:line-084-card-production",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "무색"
+    ],
+    "markdownKo": "[gold:card]생산[/gold] 변경: 강화가 소멸 제거에서 추가 에너지 +1로 바뀌었습니다.",
+    "markdownEn": "Changed [gold:card]Production[/gold]: upgrade changed from losing Exhaust -> +1 additional Energy.",
+    "textKo": "생산 변경: 강화가 소멸 제거에서 추가 에너지 +1로 바뀌었습니다.",
+    "textEn": "Changed Production: upgrade changed from losing Exhaust -> +1 additional Energy.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "PRODUCTION",
+        "label": "생산"
+      }
+    ],
+    "searchText": "v0.100.0:line-084-card-production v0.100.0 0.100.0 밸런스 무색 생산 변경: 강화가 소멸 제거에서 추가 에너지 +1로 바뀌었습니다. changed production: upgrade changed from losing exhaust -> +1 additional energy. card production 생산 생산 production"
+  },
+  {
+    "id": "v0.100.0:line-085-relic-amethyst-aubergine",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "포션 및 유물"
+    ],
+    "markdownKo": "[gold:relic]자수정 가지[/gold] ([green][sine]버프[/sine][/green]): 골드 획득 10 -> 15.",
+    "markdownEn": "[gold:relic]Amethyst Aubergine[/gold] (buff): Gold gain increased from 10 -> 15.",
+    "textKo": "자수정 가지 (버프): 골드 획득 10 -> 15.",
+    "textEn": "Amethyst Aubergine (buff): Gold gain increased from 10 -> 15.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "AMETHYST_AUBERGINE",
+        "label": "자수정 가지"
+      }
+    ],
+    "searchText": "v0.100.0:line-085-relic-amethyst-aubergine v0.100.0 0.100.0 밸런스 포션 및 유물 자수정 가지 (버프): 골드 획득 10 -> 15. amethyst aubergine (buff): gold gain increased from 10 -> 15. relic amethyst_aubergine 자수정 가지 자수정 가지 amethyst aubergine"
+  },
+  {
+    "id": "v0.100.0:line-086-relic-book-of-five-rings",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "포션 및 유물"
+    ],
+    "markdownKo": "[gold:relic]오륜서[/gold] ([green][sine]버프[/sine][/green]): 회복 15 -> 20.",
+    "markdownEn": "[gold:relic]Book of Five Rings[/gold] (buff): healing increased from 15 -> 20.",
+    "textKo": "오륜서 (버프): 회복 15 -> 20.",
+    "textEn": "Book of Five Rings (buff): healing increased from 15 -> 20.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "BOOK_OF_FIVE_RINGS",
+        "label": "오륜서"
+      }
+    ],
+    "searchText": "v0.100.0:line-086-relic-book-of-five-rings v0.100.0 0.100.0 밸런스 포션 및 유물 오륜서 (버프): 회복 15 -> 20. book of five rings (buff): healing increased from 15 -> 20. relic book_of_five_rings 오륜서 오륜서 book of five rings"
+  },
+  {
+    "id": "v0.100.0:line-087-relic-bowler-hat",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "포션 및 유물"
+    ],
+    "markdownKo": "[gold:relic]중절모[/gold] ([green][sine]버프[/sine][/green]): 골드 획득 20% -> 25%.",
+    "markdownEn": "[gold:relic]Bowler Hat[/gold] (buff): Gold gain increased from 20% -> 25%.",
+    "textKo": "중절모 (버프): 골드 획득 20% -> 25%.",
+    "textEn": "Bowler Hat (buff): Gold gain increased from 20% -> 25%.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "BOWLER_HAT",
+        "label": "중절모"
+      }
+    ],
+    "searchText": "v0.100.0:line-087-relic-bowler-hat v0.100.0 0.100.0 밸런스 포션 및 유물 중절모 (버프): 골드 획득 20% -> 25%. bowler hat (buff): gold gain increased from 20% -> 25%. relic bowler_hat 중절모 중절모 bowler hat"
+  },
+  {
+    "id": "v0.100.0:line-088-relic-permafrost",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "포션 및 유물"
+    ],
+    "markdownKo": "[gold:relic]영원한 얼음[/gold] ([green][sine]버프[/sine][/green]): [gold]방어도[/gold] 획득 6 -> 7.",
+    "markdownEn": "[gold:relic]Permafrost[/gold] (buff): [gold]Block[/gold] gain increased from 6 -> 7.",
+    "textKo": "영원한 얼음 (버프): 방어도 획득 6 -> 7.",
+    "textEn": "Permafrost (buff): Block gain increased from 6 -> 7.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "PERMAFROST",
+        "label": "영원한 얼음"
+      }
+    ],
+    "searchText": "v0.100.0:line-088-relic-permafrost v0.100.0 0.100.0 밸런스 포션 및 유물 영원한 얼음 (버프): 방어도 획득 6 -> 7. permafrost (buff): block gain increased from 6 -> 7. relic permafrost 영원한 얼음 영원한 얼음 permafrost"
+  },
+  {
+    "id": "v0.100.0:line-089-relic-planisphere",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "포션 및 유물"
+    ],
+    "markdownKo": "[gold:relic]별자리판[/gold] ([green][sine]버프[/sine][/green]): HP 회복 4 -> 5.",
+    "markdownEn": "[gold:relic]Planisphere[/gold] (buff): HP gain increased from 4 -> 5.",
+    "textKo": "별자리판 (버프): HP 회복 4 -> 5.",
+    "textEn": "Planisphere (buff): HP gain increased from 4 -> 5.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "PLANISPHERE",
+        "label": "별자리판"
+      }
+    ],
+    "searchText": "v0.100.0:line-089-relic-planisphere v0.100.0 0.100.0 밸런스 포션 및 유물 별자리판 (버프): hp 회복 4 -> 5. planisphere (buff): hp gain increased from 4 -> 5. relic planisphere 별자리판 별자리판 planisphere"
+  },
+  {
+    "id": "v0.100.0:line-090-relic-stone-cracker",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "포션 및 유물"
+    ],
+    "markdownKo": "[gold:relic]착암기[/gold]: 이제 모든 전투에서 발동하지만, 강화하는 카드는 2장입니다.",
+    "markdownEn": "[gold:relic]Stone Cracker[/gold]: now works in ALL combats but only upgrades 2 cards.",
+    "textKo": "착암기: 이제 모든 전투에서 발동하지만, 강화하는 카드는 2장입니다.",
+    "textEn": "Stone Cracker: now works in ALL combats but only upgrades 2 cards.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "STONE_CRACKER",
+        "label": "착암기"
+      }
+    ],
+    "searchText": "v0.100.0:line-090-relic-stone-cracker v0.100.0 0.100.0 밸런스 포션 및 유물 착암기: 이제 모든 전투에서 발동하지만, 강화하는 카드는 2장입니다. stone cracker: now works in all combats but only upgrades 2 cards. relic stone_cracker 착암기 착암기 stone cracker"
+  },
+  {
+    "id": "v0.100.0:line-091-monster-bygone-effigy",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]옛 시대의 우상[/gold] ([red][jitter]너프[/jitter][/red]): 피해 15(17) -> 13(15) (여전히 [gold]힘[/gold] 10을 얻은 뒤 공격합니다).",
+    "markdownEn": "[gold:monster]Bygone Effigy[/gold] (nerf): Damage decreased from 15(17) -> 13(15) (still attacks with 10 [gold]Strength[/gold]).",
+    "textKo": "옛 시대의 우상 (너프): 피해 15(17) -> 13(15) (여전히 힘 10을 얻은 뒤 공격합니다).",
+    "textEn": "Bygone Effigy (nerf): Damage decreased from 15(17) -> 13(15) (still attacks with 10 Strength).",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "BYGONE_EFFIGY",
+        "label": "옛 시대의 우상"
+      }
+    ],
+    "searchText": "v0.100.0:line-091-monster-bygone-effigy v0.100.0 0.100.0 밸런스 적 옛 시대의 우상 (너프): 피해 15(17) -> 13(15) (여전히 힘 10을 얻은 뒤 공격합니다). bygone effigy (nerf): damage decreased from 15(17) -> 13(15) (still attacks with 10 strength). monster bygone_effigy 옛 시대의 우상 옛 시대의 우상 bygone effigy"
+  },
+  {
+    "id": "v0.100.0:line-092-monster-byrdonis",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]섀도니스[/gold] ([green][sine]버프[/sine][/green]): 급강하 피해 16(18) -> 17(19).",
+    "markdownEn": "[gold:monster]Byrdonis[/gold] (buff): Swoop attack damage increased from 16(18) -> 17(19).",
+    "textKo": "섀도니스 (버프): 급강하 피해 16(18) -> 17(19).",
+    "textEn": "Byrdonis (buff): Swoop attack damage increased from 16(18) -> 17(19).",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "BYRDONIS",
+        "label": "섀도니스"
+      }
+    ],
+    "searchText": "v0.100.0:line-092-monster-byrdonis v0.100.0 0.100.0 밸런스 적 섀도니스 (버프): 급강하 피해 16(18) -> 17(19). byrdonis (buff): swoop attack damage increased from 16(18) -> 17(19). monster byrdonis 섀도니스 섀도니스 byrdonis"
+  },
+  {
+    "id": "v0.100.0:line-093-monster-calcified-cultist-monster-toadpole",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]석회화된 광신자[/gold] + [gold:monster]올챙이[/gold] 조우 변경: 이제 [gold:monster]석회화된 광신자[/gold] + [gold:monster]불량 해초[/gold].",
+    "markdownEn": "Changed [gold:monster]Calcified Cultist[/gold] + [gold:monster]Toadpole[/gold] encounter: now [gold:monster]Calcified Cultist[/gold] + [gold:monster]Seapunk[/gold].",
+    "textKo": "석회화된 광신자 + 올챙이 조우 변경: 이제 석회화된 광신자 + 불량 해초.",
+    "textEn": "Changed Calcified Cultist + Toadpole encounter: now Calcified Cultist + Seapunk.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "CALCIFIED_CULTIST",
+        "label": "석회화된 광신자"
+      },
+      {
+        "type": "monster",
+        "id": "TOADPOLE",
+        "label": "올챙이"
+      },
+      {
+        "type": "monster",
+        "id": "SEAPUNK",
+        "label": "불량 해초"
+      }
+    ],
+    "searchText": "v0.100.0:line-093-monster-calcified-cultist-monster-toadpole v0.100.0 0.100.0 밸런스 적 석회화된 광신자 + 올챙이 조우 변경: 이제 석회화된 광신자 + 불량 해초. changed calcified cultist + toadpole encounter: now calcified cultist + seapunk. monster calcified_cultist 석회화된 광신자 석회화된 광신자 calcified cultist monster toadpole 올챙이 올챙이 toadpole monster seapunk 불량 해초 불량 해초 seapunk"
+  },
+  {
+    "id": "v0.100.0:line-094-monster-rocket-ascension-level-08",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]로켓[/gold] ([green][sine]버프[/sine][/green]):\n• 충전 행동의 [gold]힘[/gold] 획득이 [gold]승천[/gold]에 따라 2(2) -> 2(3)으로 스케일됩니다.\n• HP 189(199) -> 199(209).\n• [gold:power]꽃게의 격노[/gold] [gold]힘[/gold] 5 -> 6.",
+    "markdownEn": "[gold:monster]Rocket[/gold] (buff):\n• Charge Up move [gold]Strength[/gold] gain now scales with [gold]Ascension[/gold] from 2(2) -> 2(3).\n• HP increased from 189(199) -> 199(209).\n• [gold:power]Crab Rage[/gold] [gold]Strength[/gold] buffed from 5 -> 6.",
+    "summaryMarkdownKo": "[gold:monster]로켓[/gold] ([green][sine]버프[/sine][/green]):",
+    "summaryMarkdownEn": "[gold:monster]Rocket[/gold] (buff):",
+    "textKo": "로켓 (버프):\n• 충전 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다.\n• HP 189(199) -> 199(209).\n• 꽃게의 격노 힘 5 -> 6.",
+    "textEn": "Rocket (buff):\n• Charge Up move Strength gain now scales with Ascension from 2(2) -> 2(3).\n• HP increased from 189(199) -> 199(209).\n• Crab Rage Strength buffed from 5 -> 6.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "ROCKET",
+        "label": "로켓"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_08",
+        "label": "승천 8"
+      }
+    ],
+    "searchText": "v0.100.0:line-094-monster-rocket-ascension-level-08 v0.100.0 0.100.0 밸런스 적 로켓 (버프): • 충전 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다. • hp 189(199) -> 199(209). • 꽃게의 격노 힘 5 -> 6. rocket (buff): • charge up move strength gain now scales with ascension from 2(2) -> 2(3). • hp increased from 189(199) -> 199(209). • crab rage strength buffed from 5 -> 6. monster rocket 로켓 로켓 rocket ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+  },
+  {
+    "id": "v0.100.0:line-095-text-1e9369d",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "충전 행동의 [gold]힘[/gold] 획득이 [gold]승천[/gold]에 따라 2(2) -> 2(3)으로 스케일됩니다.",
+    "markdownEn": "Charge Up move [gold]Strength[/gold] gain now scales with [gold]Ascension[/gold] from 2(2) -> 2(3).",
+    "textKo": "충전 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다.",
+    "textEn": "Charge Up move Strength gain now scales with Ascension from 2(2) -> 2(3).",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-095-text-1e9369d v0.100.0 0.100.0 밸런스 적 충전 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다. charge up move strength gain now scales with ascension from 2(2) -> 2(3)."
+  },
+  {
+    "id": "v0.100.0:line-096-text-19a5kms",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "HP 189(199) -> 199(209).",
+    "markdownEn": "HP increased from 189(199) -> 199(209).",
+    "textKo": "HP 189(199) -> 199(209).",
+    "textEn": "HP increased from 189(199) -> 199(209).",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-096-text-19a5kms v0.100.0 0.100.0 밸런스 적 hp 189(199) -> 199(209). hp increased from 189(199) -> 199(209)."
+  },
+  {
+    "id": "v0.100.0:line-097-power-crab-rage",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:power]꽃게의 격노[/gold] [gold]힘[/gold] 5 -> 6.",
+    "markdownEn": "[gold:power]Crab Rage[/gold] [gold]Strength[/gold] buffed from 5 -> 6.",
+    "textKo": "꽃게의 격노 힘 5 -> 6.",
+    "textEn": "Crab Rage Strength buffed from 5 -> 6.",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "CRAB_RAGE",
+        "label": "꽃게의 격노"
+      }
+    ],
+    "searchText": "v0.100.0:line-097-power-crab-rage v0.100.0 0.100.0 밸런스 적 꽃게의 격노 힘 5 -> 6. crab rage strength buffed from 5 -> 6. power crab_rage 꽃게의 격노 꽃게의 격노 crab rage"
+  },
+  {
+    "id": "v0.100.0:line-098-monster-crusher-ascension-level-08",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]분쇄자[/gold] ([green][sine]버프[/sine][/green]):\n• 적응 행동의 [gold]힘[/gold] 획득이 [gold]승천[/gold]에 따라 2(2) -> 2(3)으로 스케일됩니다.\n• HP 199(209) -> 209(219).\n• [gold:power]꽃게의 격노[/gold] [gold]힘[/gold] 5 -> 6.",
+    "markdownEn": "[gold:monster]Crusher[/gold] (buff):\n• Adapt move [gold]Strength[/gold] gain now scales with [gold]Ascension[/gold] from 2(2) -> 2(3).\n• HP increased from 199(209) -> 209(219).\n• [gold:power]Crab Rage[/gold] [gold]Strength[/gold] buffed from 5 -> 6.",
+    "summaryMarkdownKo": "[gold:monster]분쇄자[/gold] ([green][sine]버프[/sine][/green]):",
+    "summaryMarkdownEn": "[gold:monster]Crusher[/gold] (buff):",
+    "textKo": "분쇄자 (버프):\n• 적응 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다.\n• HP 199(209) -> 209(219).\n• 꽃게의 격노 힘 5 -> 6.",
+    "textEn": "Crusher (buff):\n• Adapt move Strength gain now scales with Ascension from 2(2) -> 2(3).\n• HP increased from 199(209) -> 209(219).\n• Crab Rage Strength buffed from 5 -> 6.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "CRUSHER",
+        "label": "분쇄자"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_08",
+        "label": "승천 8"
+      }
+    ],
+    "searchText": "v0.100.0:line-098-monster-crusher-ascension-level-08 v0.100.0 0.100.0 밸런스 적 분쇄자 (버프): • 적응 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다. • hp 199(209) -> 209(219). • 꽃게의 격노 힘 5 -> 6. crusher (buff): • adapt move strength gain now scales with ascension from 2(2) -> 2(3). • hp increased from 199(209) -> 209(219). • crab rage strength buffed from 5 -> 6. monster crusher 분쇄자 분쇄자 crusher ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+  },
+  {
+    "id": "v0.100.0:line-099-text-1312j52",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "적응 행동의 [gold]힘[/gold] 획득이 [gold]승천[/gold]에 따라 2(2) -> 2(3)으로 스케일됩니다.",
+    "markdownEn": "Adapt move [gold]Strength[/gold] gain now scales with [gold]Ascension[/gold] from 2(2) -> 2(3).",
+    "textKo": "적응 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다.",
+    "textEn": "Adapt move Strength gain now scales with Ascension from 2(2) -> 2(3).",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-099-text-1312j52 v0.100.0 0.100.0 밸런스 적 적응 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다. adapt move strength gain now scales with ascension from 2(2) -> 2(3)."
+  },
+  {
+    "id": "v0.100.0:line-100-text-1ooqd3a",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "HP 199(209) -> 209(219).",
+    "markdownEn": "HP increased from 199(209) -> 209(219).",
+    "textKo": "HP 199(209) -> 209(219).",
+    "textEn": "HP increased from 199(209) -> 209(219).",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-100-text-1ooqd3a v0.100.0 0.100.0 밸런스 적 hp 199(209) -> 209(219). hp increased from 199(209) -> 209(219)."
+  },
+  {
+    "id": "v0.100.0:line-101-power-crab-rage",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:power]꽃게의 격노[/gold] [gold]힘[/gold] 5 -> 6.",
+    "markdownEn": "[gold:power]Crab Rage[/gold] [gold]Strength[/gold] buffed from 5 -> 6.",
+    "textKo": "꽃게의 격노 힘 5 -> 6.",
+    "textEn": "Crab Rage Strength buffed from 5 -> 6.",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "CRAB_RAGE",
+        "label": "꽃게의 격노"
+      }
+    ],
+    "searchText": "v0.100.0:line-101-power-crab-rage v0.100.0 0.100.0 밸런스 적 꽃게의 격노 힘 5 -> 6. crab rage strength buffed from 5 -> 6. power crab_rage 꽃게의 격노 꽃게의 격노 crab rage"
+  },
+  {
+    "id": "v0.100.0:line-102-monster-decimillipede-segment-ascension-level-08",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]만각지네[/gold] ([red][jitter]너프[/jitter][/red]): HP 42(48)-48(56) -> 40(46)-46(52).",
+    "markdownEn": "[gold:monster]Decimillipede[/gold] (nerf): HP decreased from 42(48)-48(56) to 40(46)-46(52).",
+    "textKo": "만각지네 (너프): HP 42(48)-48(56) -> 40(46)-46(52).",
+    "textEn": "Decimillipede (nerf): HP decreased from 42(48)-48(56) to 40(46)-46(52).",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "DECIMILLIPEDE_SEGMENT",
+        "label": "만각지네"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_08",
+        "label": "승천 8"
+      }
+    ],
+    "searchText": "v0.100.0:line-102-monster-decimillipede-segment-ascension-level-08 v0.100.0 0.100.0 밸런스 적 만각지네 (너프): hp 42(48)-48(56) -> 40(46)-46(52). decimillipede (nerf): hp decreased from 42(48)-48(56) to 40(46)-46(52). monster decimillipede_segment 만각지네 만각지네 decimillipede ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+  },
+  {
+    "id": "v0.100.0:line-103-monster-fabricator",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]조립 전문가[/gold] ([red][jitter]너프[/jitter][/red]): 모든 봇의 HP가 5 감소했습니다.",
+    "markdownEn": "[gold:monster]Fabricator[/gold] (nerf): HP value of all bots decreased by 5.",
+    "textKo": "조립 전문가 (너프): 모든 봇의 HP가 5 감소했습니다.",
+    "textEn": "Fabricator (nerf): HP value of all bots decreased by 5.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "FABRICATOR",
+        "label": "조립 전문가"
+      }
+    ],
+    "searchText": "v0.100.0:line-103-monster-fabricator v0.100.0 0.100.0 밸런스 적 조립 전문가 (너프): 모든 봇의 hp가 5 감소했습니다. fabricator (nerf): hp value of all bots decreased by 5. monster fabricator 조립 전문가 조립 전문가 fabricator"
+  },
+  {
+    "id": "v0.100.0:line-104-encounter-tunneler-normal-monster-chomper",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:encounter]땅굴 2인조[/gold] 조우 변경: 그릇벌레가 1턴에 멍해짐을 부여하는 [gold:monster]먹깨비[/gold]로 교체되었습니다.",
+    "markdownEn": "Changed the [gold:encounter]Tunneling Twosome[/gold] encounter: the Bowlbug is now replaced by a [gold:monster]Chomper[/gold] that gives Dazed status cards on turn 1.",
+    "textKo": "땅굴 2인조 조우 변경: 그릇벌레가 1턴에 멍해짐을 부여하는 먹깨비로 교체되었습니다.",
+    "textEn": "Changed the Tunneling Twosome encounter: the Bowlbug is now replaced by a Chomper that gives Dazed status cards on turn 1.",
+    "entityRefs": [
+      {
+        "type": "encounter",
+        "id": "TUNNELER_NORMAL",
+        "label": "땅굴 2인조"
+      },
+      {
+        "type": "monster",
+        "id": "CHOMPER",
+        "label": "먹깨비"
+      }
+    ],
+    "searchText": "v0.100.0:line-104-encounter-tunneler-normal-monster-chomper v0.100.0 0.100.0 밸런스 적 땅굴 2인조 조우 변경: 그릇벌레가 1턴에 멍해짐을 부여하는 먹깨비로 교체되었습니다. changed the tunneling twosome encounter: the bowlbug is now replaced by a chomper that gives dazed status cards on turn 1. encounter tunneler_normal 땅굴 2인조 땅굴 2인조 tunneling twosome monster chomper 먹깨비 먹깨비 chomper"
+  },
+  {
+    "id": "v0.100.0:line-105-monster-living-fog-monster-gas-bomb",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]살아있는 안개[/gold] 조우 ([red][jitter]너프[/jitter][/red]): [gold:monster]가스 폭탄[/gold] HP 10(12) -> 7(8).",
+    "markdownEn": "[gold:monster]Living Fog[/gold] encounter (nerf): [gold:monster]Gas Bomb[/gold] HP decreased from 10(12) -> 7(8).",
+    "textKo": "살아있는 안개 조우 (너프): 가스 폭탄 HP 10(12) -> 7(8).",
+    "textEn": "Living Fog encounter (nerf): Gas Bomb HP decreased from 10(12) -> 7(8).",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "LIVING_FOG",
+        "label": "살아있는 안개"
+      },
+      {
+        "type": "monster",
+        "id": "GAS_BOMB",
+        "label": "가스 폭탄"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_08",
+        "label": "승천 8"
+      }
+    ],
+    "searchText": "v0.100.0:line-105-monster-living-fog-monster-gas-bomb v0.100.0 0.100.0 밸런스 적 살아있는 안개 조우 (너프): 가스 폭탄 hp 10(12) -> 7(8). living fog encounter (nerf): gas bomb hp decreased from 10(12) -> 7(8). monster living_fog 살아있는 안개 살아있는 안개 living fog monster gas_bomb 가스 폭탄 가스 폭탄 gas bomb ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+  },
+  {
+    "id": "v0.100.0:line-106-encounter-the-lost-and-forgotten-normal-ascension-level-09",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:encounter]사라진 자와 잊힌 자[/gold] ([green][sine]버프[/sine][/green]):\n• 능력치 강탈이 [gold]승천[/gold]에 따라 스케일됩니다. [gold:ascension]승천 9[/gold]에서 각각 2 -> 3.\n• [gold:monster]잊힌 자[/gold]가 자신이 가진 [gold]민첩[/gold]마다 피해를 1 추가로 줍니다.",
+    "markdownEn": "[gold:encounter]The Lost and The Forgotten[/gold] (buff):\n• Stat stealing now scales with [gold]Ascension[/gold]; increased from 2 -> 3 of their respective stat at [gold:ascension]A9[/gold].\n• [gold:monster]The Forgotten[/gold] now deals an additional point of damage for every [gold]Dexterity[/gold] it has.",
+    "summaryMarkdownKo": "[gold:encounter]사라진 자와 잊힌 자[/gold] ([green][sine]버프[/sine][/green]):",
+    "summaryMarkdownEn": "[gold:encounter]The Lost and The Forgotten[/gold] (buff):",
+    "textKo": "사라진 자와 잊힌 자 (버프):\n• 능력치 강탈이 승천에 따라 스케일됩니다. 승천 9에서 각각 2 -> 3.\n• 잊힌 자가 자신이 가진 민첩마다 피해를 1 추가로 줍니다.",
+    "textEn": "The Lost and The Forgotten (buff):\n• Stat stealing now scales with Ascension; increased from 2 -> 3 of their respective stat at A9.\n• The Forgotten now deals an additional point of damage for every Dexterity it has.",
+    "entityRefs": [
+      {
+        "type": "encounter",
+        "id": "THE_LOST_AND_FORGOTTEN_NORMAL",
+        "label": "사라진 자와 잊힌 자"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
+      }
+    ],
+    "searchText": "v0.100.0:line-106-encounter-the-lost-and-forgotten-normal-ascension-level-09 v0.100.0 0.100.0 밸런스 적 사라진 자와 잊힌 자 (버프): • 능력치 강탈이 승천에 따라 스케일됩니다. 승천 9에서 각각 2 -> 3. • 잊힌 자가 자신이 가진 민첩마다 피해를 1 추가로 줍니다. the lost and the forgotten (buff): • stat stealing now scales with ascension; increased from 2 -> 3 of their respective stat at a9. • the forgotten now deals an additional point of damage for every dexterity it has. encounter the_lost_and_forgotten_normal 사라진 자와 잊힌 자 사라진 자와 잊힌 자 lost and forgotten ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+  },
+  {
+    "id": "v0.100.0:line-107-ascension-level-09",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "능력치 강탈이 [gold]승천[/gold]에 따라 스케일됩니다. [gold:ascension]승천 9[/gold]에서 각각 2 -> 3.",
+    "markdownEn": "Stat stealing now scales with [gold]Ascension[/gold]; increased from 2 -> 3 of their respective stat at [gold:ascension]A9[/gold].",
+    "textKo": "능력치 강탈이 승천에 따라 스케일됩니다. 승천 9에서 각각 2 -> 3.",
+    "textEn": "Stat stealing now scales with Ascension; increased from 2 -> 3 of their respective stat at A9.",
+    "entityRefs": [
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
+      }
+    ],
+    "searchText": "v0.100.0:line-107-ascension-level-09 v0.100.0 0.100.0 밸런스 적 능력치 강탈이 승천에 따라 스케일됩니다. 승천 9에서 각각 2 -> 3. stat stealing now scales with ascension; increased from 2 -> 3 of their respective stat at a9. ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+  },
+  {
+    "id": "v0.100.0:line-108-monster-the-forgotten",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]잊힌 자[/gold]가 자신이 가진 [gold]민첩[/gold]마다 피해를 1 추가로 줍니다.",
+    "markdownEn": "[gold:monster]The Forgotten[/gold] now deals an additional point of damage for every [gold]Dexterity[/gold] it has.",
+    "textKo": "잊힌 자가 자신이 가진 민첩마다 피해를 1 추가로 줍니다.",
+    "textEn": "The Forgotten now deals an additional point of damage for every Dexterity it has.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "THE_FORGOTTEN",
+        "label": "잊힌 자"
+      }
+    ],
+    "searchText": "v0.100.0:line-108-monster-the-forgotten v0.100.0 0.100.0 밸런스 적 잊힌 자가 자신이 가진 민첩마다 피해를 1 추가로 줍니다. the forgotten now deals an additional point of damage for every dexterity it has. monster the_forgotten 잊힌 자 잊힌 자 the forgotten"
+  },
+  {
+    "id": "v0.100.0:line-109-monster-nibbit-ascension-level-09",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]깨작이[/gold] 변경: 이제 [gold]승천[/gold]에 맞게 스케일됩니다.\n• 쉿 행동의 [gold]힘[/gold]이 [gold:ascension]승천 9[/gold]에서 2 -> 3.\n• 베기 피해가 [gold:ascension]승천 9[/gold]에서 6 -> 7.\n• 베기 [gold]방어도[/gold]가 [gold:ascension]승천 8[/gold]에서 5 -> 6.",
+    "markdownEn": "Changed [gold:monster]Nibbit[/gold]: now properly scales with [gold]Ascension[/gold].\n• Hiss move now scales from 2 -> 3 [gold]Strength[/gold] on [gold:ascension]A9[/gold].\n• Slice move damage now scales from 6 -> 7 on [gold:ascension]A9[/gold].\n• Slice move [gold]Block[/gold] now scales from 5 -> 6 on [gold:ascension]A8[/gold].",
+    "summaryMarkdownKo": "[gold:monster]깨작이[/gold] 변경: 이제 [gold]승천[/gold]에 맞게 스케일됩니다.",
+    "summaryMarkdownEn": "Changed [gold:monster]Nibbit[/gold]: now properly scales with [gold]Ascension[/gold].",
+    "textKo": "깨작이 변경: 이제 승천에 맞게 스케일됩니다.\n• 쉿 행동의 힘이 승천 9에서 2 -> 3.\n• 베기 피해가 승천 9에서 6 -> 7.\n• 베기 방어도가 승천 8에서 5 -> 6.",
+    "textEn": "Changed Nibbit: now properly scales with Ascension.\n• Hiss move now scales from 2 -> 3 Strength on A9.\n• Slice move damage now scales from 6 -> 7 on A9.\n• Slice move Block now scales from 5 -> 6 on A8.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "NIBBIT",
+        "label": "깨작이"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_08",
+        "label": "승천 8"
+      }
+    ],
+    "searchText": "v0.100.0:line-109-monster-nibbit-ascension-level-09 v0.100.0 0.100.0 밸런스 적 깨작이 변경: 이제 승천에 맞게 스케일됩니다. • 쉿 행동의 힘이 승천 9에서 2 -> 3. • 베기 피해가 승천 9에서 6 -> 7. • 베기 방어도가 승천 8에서 5 -> 6. changed nibbit: now properly scales with ascension. • hiss move now scales from 2 -> 3 strength on a9. • slice move damage now scales from 6 -> 7 on a9. • slice move block now scales from 5 -> 6 on a8. monster nibbit 깨작이 깨작이 nibbit ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9 ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+  },
+  {
+    "id": "v0.100.0:line-110-ascension-level-09",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "쉿 행동의 [gold]힘[/gold]이 [gold:ascension]승천 9[/gold]에서 2 -> 3.",
+    "markdownEn": "Hiss move now scales from 2 -> 3 [gold]Strength[/gold] on [gold:ascension]A9[/gold].",
+    "textKo": "쉿 행동의 힘이 승천 9에서 2 -> 3.",
+    "textEn": "Hiss move now scales from 2 -> 3 Strength on A9.",
+    "entityRefs": [
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
+      }
+    ],
+    "searchText": "v0.100.0:line-110-ascension-level-09 v0.100.0 0.100.0 밸런스 적 쉿 행동의 힘이 승천 9에서 2 -> 3. hiss move now scales from 2 -> 3 strength on a9. ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+  },
+  {
+    "id": "v0.100.0:line-111-ascension-level-09",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "베기 피해가 [gold:ascension]승천 9[/gold]에서 6 -> 7.",
+    "markdownEn": "Slice move damage now scales from 6 -> 7 on [gold:ascension]A9[/gold].",
+    "textKo": "베기 피해가 승천 9에서 6 -> 7.",
+    "textEn": "Slice move damage now scales from 6 -> 7 on A9.",
+    "entityRefs": [
+      {
+        "type": "ascension",
+        "id": "LEVEL_09",
+        "label": "승천 9"
+      }
+    ],
+    "searchText": "v0.100.0:line-111-ascension-level-09 v0.100.0 0.100.0 밸런스 적 베기 피해가 승천 9에서 6 -> 7. slice move damage now scales from 6 -> 7 on a9. ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+  },
+  {
+    "id": "v0.100.0:line-112-ascension-level-08",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "베기 [gold]방어도[/gold]가 [gold:ascension]승천 8[/gold]에서 5 -> 6.",
+    "markdownEn": "Slice move [gold]Block[/gold] now scales from 5 -> 6 on [gold:ascension]A8[/gold].",
+    "textKo": "베기 방어도가 승천 8에서 5 -> 6.",
+    "textEn": "Slice move Block now scales from 5 -> 6 on A8.",
+    "entityRefs": [
+      {
+        "type": "ascension",
+        "id": "LEVEL_08",
+        "label": "승천 8"
+      }
+    ],
+    "searchText": "v0.100.0:line-112-ascension-level-08 v0.100.0 0.100.0 밸런스 적 베기 방어도가 승천 8에서 5 -> 6. slice move block now scales from 5 -> 6 on a8. ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+  },
+  {
+    "id": "v0.100.0:line-113-monster-phantasmal-gardener-ascension-level-08",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]허깨비 정원사[/gold] ([red][jitter]너프[/jitter][/red]): HP 28(29)-32(33) -> 26(27)-31(32).",
+    "markdownEn": "[gold:monster]Phantasmal Gardener[/gold] (nerf): HP decreased from 28(29)-32(33) -> 26(27)-31(32).",
+    "textKo": "허깨비 정원사 (너프): HP 28(29)-32(33) -> 26(27)-31(32).",
+    "textEn": "Phantasmal Gardener (nerf): HP decreased from 28(29)-32(33) -> 26(27)-31(32).",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "PHANTASMAL_GARDENER",
+        "label": "허깨비 정원사"
+      },
+      {
+        "type": "ascension",
+        "id": "LEVEL_08",
+        "label": "승천 8"
+      }
+    ],
+    "searchText": "v0.100.0:line-113-monster-phantasmal-gardener-ascension-level-08 v0.100.0 0.100.0 밸런스 적 허깨비 정원사 (너프): hp 28(29)-32(33) -> 26(27)-31(32). phantasmal gardener (nerf): hp decreased from 28(29)-32(33) -> 26(27)-31(32). monster phantasmal_gardener 허깨비 정원사 허깨비 정원사 phantasmal gardener ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+  },
+  {
+    "id": "v0.100.0:line-114-monster-seapunk",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]불량 해초[/gold] ([green][sine]버프[/sine][/green]): 바다 발차기 피해 11(12) -> 11(13).",
+    "markdownEn": "[gold:monster]Seapunk[/gold] (buff): Sea Kick move damage increased from 11(12) -> 11(13).",
+    "textKo": "불량 해초 (버프): 바다 발차기 피해 11(12) -> 11(13).",
+    "textEn": "Seapunk (buff): Sea Kick move damage increased from 11(12) -> 11(13).",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "SEAPUNK",
+        "label": "불량 해초"
+      }
+    ],
+    "searchText": "v0.100.0:line-114-monster-seapunk v0.100.0 0.100.0 밸런스 적 불량 해초 (버프): 바다 발차기 피해 11(12) -> 11(13). seapunk (buff): sea kick move damage increased from 11(12) -> 11(13). monster seapunk 불량 해초 불량 해초 seapunk"
+  },
+  {
+    "id": "v0.100.0:line-115-monster-terror-eel",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]공포 장어[/gold] ([red][jitter]너프[/jitter][/red]):\n• 충돌 피해 17(19) -> 16(18).\n• 몸부림 [gold]활력[/gold] 7 -> 6.",
+    "markdownEn": "[gold:monster]Terror Eel[/gold] (nerf):\n• Crash damage now scales from 17(19) -> 16(18).\n• Thrash [gold]Vigor[/gold] now scales from 7 -> 6.",
+    "summaryMarkdownKo": "[gold:monster]공포 장어[/gold] ([red][jitter]너프[/jitter][/red]):",
+    "summaryMarkdownEn": "[gold:monster]Terror Eel[/gold] (nerf):",
+    "textKo": "공포 장어 (너프):\n• 충돌 피해 17(19) -> 16(18).\n• 몸부림 활력 7 -> 6.",
+    "textEn": "Terror Eel (nerf):\n• Crash damage now scales from 17(19) -> 16(18).\n• Thrash Vigor now scales from 7 -> 6.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "TERROR_EEL",
+        "label": "공포 장어"
+      }
+    ],
+    "searchText": "v0.100.0:line-115-monster-terror-eel v0.100.0 0.100.0 밸런스 적 공포 장어 (너프): • 충돌 피해 17(19) -> 16(18). • 몸부림 활력 7 -> 6. terror eel (nerf): • crash damage now scales from 17(19) -> 16(18). • thrash vigor now scales from 7 -> 6. monster terror_eel 공포 장어 공포 장어 terror eel"
+  },
+  {
+    "id": "v0.100.0:line-116-text-1rpuvdi",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "충돌 피해 17(19) -> 16(18).",
+    "markdownEn": "Crash damage now scales from 17(19) -> 16(18).",
+    "textKo": "충돌 피해 17(19) -> 16(18).",
+    "textEn": "Crash damage now scales from 17(19) -> 16(18).",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-116-text-1rpuvdi v0.100.0 0.100.0 밸런스 적 충돌 피해 17(19) -> 16(18). crash damage now scales from 17(19) -> 16(18)."
+  },
+  {
+    "id": "v0.100.0:line-117-text-ygml9v",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "몸부림 [gold]활력[/gold] 7 -> 6.",
+    "markdownEn": "Thrash [gold]Vigor[/gold] now scales from 7 -> 6.",
+    "textKo": "몸부림 활력 7 -> 6.",
+    "textEn": "Thrash Vigor now scales from 7 -> 6.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-117-text-ygml9v v0.100.0 0.100.0 밸런스 적 몸부림 활력 7 -> 6. thrash vigor now scales from 7 -> 6."
+  },
+  {
+    "id": "v0.100.0:line-118-monster-test-subject",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "적"
+    ],
+    "markdownKo": "[gold:monster]실험체 #C{Count}[/gold] 변경: 2페이즈가 더 이상 뛰어들기를 쓰지 않고, 매 턴 연속 할퀴기를 반복합니다.",
+    "markdownEn": "Changed [gold:monster]Test Subject[/gold]: Phase 2 no longer has the Pounce move, instead will repeat Multi Claw move every turn.",
+    "textKo": "실험체 #C{Count} 변경: 2페이즈가 더 이상 뛰어들기를 쓰지 않고, 매 턴 연속 할퀴기를 반복합니다.",
+    "textEn": "Changed Test Subject: Phase 2 no longer has the Pounce move, instead will repeat Multi Claw move every turn.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "TEST_SUBJECT",
+        "label": "실험체 #C{Count}"
+      }
+    ],
+    "searchText": "v0.100.0:line-118-monster-test-subject v0.100.0 0.100.0 밸런스 적 실험체 #c{count} 변경: 2페이즈가 더 이상 뛰어들기를 쓰지 않고, 매 턴 연속 할퀴기를 반복합니다. changed test subject: phase 2 no longer has the pounce move, instead will repeat multi claw move every turn. monster test_subject 실험체 #c{count} 실험체 #c{count} test subject #c{count}"
+  },
+  {
+    "id": "v0.100.0:line-119-card-neows-fury",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:card]니오우의 격분[/gold] ([green][sine]버프[/sine][/green]): 손으로 되돌리는 카드 수가 강화 시 2 -> 3.",
+    "markdownEn": "[gold:card]Neow's Fury[/gold] (buff): the number of cards returned to your hand now upgrades from 2 -> 3.",
+    "textKo": "니오우의 격분 (버프): 손으로 되돌리는 카드 수가 강화 시 2 -> 3.",
+    "textEn": "Neow's Fury (buff): the number of cards returned to your hand now upgrades from 2 -> 3.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "NEOWS_FURY",
+        "label": "니오우의 격분"
+      }
+    ],
+    "searchText": "v0.100.0:line-119-card-neows-fury v0.100.0 0.100.0 밸런스 고대의 존재 니오우의 격분 (버프): 손으로 되돌리는 카드 수가 강화 시 2 -> 3. neow's fury (buff): the number of cards returned to your hand now upgrades from 2 -> 3. card neows_fury 니오우의 격분 니오우의 격분 neow's fury"
+  },
+  {
+    "id": "v0.100.0:line-120-relic-leafy-poultice",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:relic]나뭇잎 습포[/gold] ([red][jitter]너프[/jitter][/red]): 축복의 최대 체력 손실 10 -> 12.",
+    "markdownEn": "[gold:relic]Leafy Poultice[/gold] (nerf): blessing's max HP loss increased from 10 -> 12.",
+    "textKo": "나뭇잎 습포 (너프): 축복의 최대 체력 손실 10 -> 12.",
+    "textEn": "Leafy Poultice (nerf): blessing's max HP loss increased from 10 -> 12.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "LEAFY_POULTICE",
+        "label": "나뭇잎 습포"
+      }
+    ],
+    "searchText": "v0.100.0:line-120-relic-leafy-poultice v0.100.0 0.100.0 밸런스 고대의 존재 나뭇잎 습포 (너프): 축복의 최대 체력 손실 10 -> 12. leafy poultice (nerf): blessing's max hp loss increased from 10 -> 12. relic leafy_poultice 나뭇잎 습포 나뭇잎 습포 leafy poultice"
+  },
+  {
+    "id": "v0.100.0:line-121-relic-precarious-shears",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:relic]불안정한 가위[/gold] ([red][jitter]너프[/jitter][/red]): 축복의 자가 피해 13 -> 16.",
+    "markdownEn": "[gold:relic]Precarious Shears[/gold] (nerf): blessing's self-damage increased from 13 -> 16.",
+    "textKo": "불안정한 가위 (너프): 축복의 자가 피해 13 -> 16.",
+    "textEn": "Precarious Shears (nerf): blessing's self-damage increased from 13 -> 16.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "PRECARIOUS_SHEARS",
+        "label": "불안정한 가위"
+      }
+    ],
+    "searchText": "v0.100.0:line-121-relic-precarious-shears v0.100.0 0.100.0 밸런스 고대의 존재 불안정한 가위 (너프): 축복의 자가 피해 13 -> 16. precarious shears (nerf): blessing's self-damage increased from 13 -> 16. relic precarious_shears 불안정한 가위 불안정한 가위 precarious shears"
+  },
+  {
+    "id": "v0.100.0:line-122-relic-tri-boomerang-enchantment-instinct",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:relic]삼단 부메랑[/gold] 변경: [gold:enchantment]본능[/gold] 인챈트가 더 이상 비용을 줄이지 않고, 인챈트된 공격의 피해를 2배로 만듭니다.",
+    "markdownEn": "Changed [gold:relic]Tri-Boomerang[/gold]: [gold:enchantment]Instinct[/gold] enchantment no longer reduces cost, instead doubles damage on enchanted Attacks.",
+    "textKo": "삼단 부메랑 변경: 본능 인챈트가 더 이상 비용을 줄이지 않고, 인챈트된 공격의 피해를 2배로 만듭니다.",
+    "textEn": "Changed Tri-Boomerang: Instinct enchantment no longer reduces cost, instead doubles damage on enchanted Attacks.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "TRI_BOOMERANG",
+        "label": "삼단 부메랑"
+      },
+      {
+        "type": "enchantment",
+        "id": "INSTINCT",
+        "label": "본능"
+      }
+    ],
+    "searchText": "v0.100.0:line-122-relic-tri-boomerang-enchantment-instinct v0.100.0 0.100.0 밸런스 고대의 존재 삼단 부메랑 변경: 본능 인챈트가 더 이상 비용을 줄이지 않고, 인챈트된 공격의 피해를 2배로 만듭니다. changed tri-boomerang: instinct enchantment no longer reduces cost, instead doubles damage on enchanted attacks. relic tri_boomerang 삼단 부메랑 삼단 부메랑 tri-boomerang enchantment instinct 본능 본능 instinct"
+  },
+  {
+    "id": "v0.100.0:line-123-relic-preserved-fog",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:relic]보존된 안개[/gold] 변경:\n• 제거하는 카드 수 5 -> 3.\n• [gold:card]어리석음[/gold] 저주가 이제 영묘입니다.",
+    "markdownEn": "Changed [gold:relic]Preserved Fog[/gold]:\n• Cards removed decreased from 5 -> 3.\n• [gold:card]Folly[/gold] curse is now Ethereal.",
+    "summaryMarkdownKo": "[gold:relic]보존된 안개[/gold] 변경:",
+    "summaryMarkdownEn": "Changed [gold:relic]Preserved Fog[/gold]:",
+    "textKo": "보존된 안개 변경:\n• 제거하는 카드 수 5 -> 3.\n• 어리석음 저주가 이제 영묘입니다.",
+    "textEn": "Changed Preserved Fog:\n• Cards removed decreased from 5 -> 3.\n• Folly curse is now Ethereal.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "PRESERVED_FOG",
+        "label": "보존된 안개"
+      }
+    ],
+    "searchText": "v0.100.0:line-123-relic-preserved-fog v0.100.0 0.100.0 밸런스 고대의 존재 보존된 안개 변경: • 제거하는 카드 수 5 -> 3. • 어리석음 저주가 이제 영묘입니다. changed preserved fog: • cards removed decreased from 5 -> 3. • folly curse is now ethereal. relic preserved_fog 보존된 안개 보존된 안개 preserved fog"
+  },
+  {
+    "id": "v0.100.0:line-124-text-1trq6of",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "제거하는 카드 수 5 -> 3.",
+    "markdownEn": "Cards removed decreased from 5 -> 3.",
+    "textKo": "제거하는 카드 수 5 -> 3.",
+    "textEn": "Cards removed decreased from 5 -> 3.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-124-text-1trq6of v0.100.0 0.100.0 밸런스 고대의 존재 제거하는 카드 수 5 -> 3. cards removed decreased from 5 -> 3."
+  },
+  {
+    "id": "v0.100.0:line-125-card-folly",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:card]어리석음[/gold] 저주가 이제 영묘입니다.",
+    "markdownEn": "[gold:card]Folly[/gold] curse is now Ethereal.",
+    "textKo": "어리석음 저주가 이제 영묘입니다.",
+    "textEn": "Folly curse is now Ethereal.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "FOLLY",
+        "label": "어리석음"
+      }
+    ],
+    "searchText": "v0.100.0:line-125-card-folly v0.100.0 0.100.0 밸런스 고대의 존재 어리석음 저주가 이제 영묘입니다. folly curse is now ethereal. card folly 어리석음 어리석음 folly"
+  },
+  {
+    "id": "v0.100.0:line-126-event-dense-vegetation",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "이벤트"
+    ],
+    "markdownKo": "[gold:event]울창한 초목[/gold] 변경: 묵묵히 나아간다 선택지가 이제 \"체력 8 손실. 골드 61-99 획득\"입니다.",
+    "markdownEn": "Changed [gold:event]Dense Vegetation[/gold]: Trudge On option is now \"Lose 8 HP. Gain 61-99 Gold.\"",
+    "textKo": "울창한 초목 변경: 묵묵히 나아간다 선택지가 이제 \"체력 8 손실. 골드 61-99 획득\"입니다.",
+    "textEn": "Changed Dense Vegetation: Trudge On option is now \"Lose 8 HP. Gain 61-99 Gold.\"",
+    "entityRefs": [
+      {
+        "type": "event",
+        "id": "DENSE_VEGETATION",
+        "label": "울창한 초목"
+      }
+    ],
+    "searchText": "v0.100.0:line-126-event-dense-vegetation v0.100.0 0.100.0 밸런스 이벤트 울창한 초목 변경: 묵묵히 나아간다 선택지가 이제 \"체력 8 손실. 골드 61-99 획득\"입니다. changed dense vegetation: trudge on option is now \"lose 8 hp. gain 61-99 gold.\" event dense_vegetation 울창한 초목 울창한 초목 dense vegetation"
+  },
+  {
+    "id": "v0.100.0:line-127-event-endless-conveyor",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "이벤트"
+    ],
+    "markdownKo": "[gold:event]무한의 컨베이어[/gold] 변경:\n• 모든 플레이어가 골드 120 이상이어야 등장합니다 (이전 105).\n• \"벨트에서 집기\" 비용이 35 -> 40 골드.",
+    "markdownEn": "Changed [gold:event]Endless Conveyor[/gold]:\n• Can no longer spawn unless all players have at least 120 Gold (up from 105).\n• \"Grab off the Belt\" option cost increased from 35 -> 40 Gold.",
+    "summaryMarkdownKo": "[gold:event]무한의 컨베이어[/gold] 변경:",
+    "summaryMarkdownEn": "Changed [gold:event]Endless Conveyor[/gold]:",
+    "textKo": "무한의 컨베이어 변경:\n• 모든 플레이어가 골드 120 이상이어야 등장합니다 (이전 105).\n• \"벨트에서 집기\" 비용이 35 -> 40 골드.",
+    "textEn": "Changed Endless Conveyor:\n• Can no longer spawn unless all players have at least 120 Gold (up from 105).\n• \"Grab off the Belt\" option cost increased from 35 -> 40 Gold.",
+    "entityRefs": [
+      {
+        "type": "event",
+        "id": "ENDLESS_CONVEYOR",
+        "label": "무한의 컨베이어"
+      }
+    ],
+    "searchText": "v0.100.0:line-127-event-endless-conveyor v0.100.0 0.100.0 밸런스 이벤트 무한의 컨베이어 변경: • 모든 플레이어가 골드 120 이상이어야 등장합니다 (이전 105). • \"벨트에서 집기\" 비용이 35 -> 40 골드. changed endless conveyor: • can no longer spawn unless all players have at least 120 gold (up from 105). • \"grab off the belt\" option cost increased from 35 -> 40 gold. event endless_conveyor 무한의 컨베이어 무한의 컨베이어 endless conveyor"
+  },
+  {
+    "id": "v0.100.0:line-128-text-68v2e2",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "이벤트"
+    ],
+    "markdownKo": "모든 플레이어가 골드 120 이상이어야 등장합니다 (이전 105).",
+    "markdownEn": "Can no longer spawn unless all players have at least 120 Gold (up from 105).",
+    "textKo": "모든 플레이어가 골드 120 이상이어야 등장합니다 (이전 105).",
+    "textEn": "Can no longer spawn unless all players have at least 120 Gold (up from 105).",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-128-text-68v2e2 v0.100.0 0.100.0 밸런스 이벤트 모든 플레이어가 골드 120 이상이어야 등장합니다 (이전 105). can no longer spawn unless all players have at least 120 gold (up from 105)."
+  },
+  {
+    "id": "v0.100.0:line-129-text-1mzizb",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "이벤트"
+    ],
+    "markdownKo": "\"벨트에서 집기\" 비용이 35 -> 40 골드.",
+    "markdownEn": "\"Grab off the Belt\" option cost increased from 35 -> 40 Gold.",
+    "textKo": "\"벨트에서 집기\" 비용이 35 -> 40 골드.",
+    "textEn": "\"Grab off the Belt\" option cost increased from 35 -> 40 Gold.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-129-text-1mzizb v0.100.0 0.100.0 밸런스 이벤트 \"벨트에서 집기\" 비용이 35 -> 40 골드. \"grab off the belt\" option cost increased from 35 -> 40 gold."
+  },
+  {
+    "id": "v0.100.0:line-130-event-grave-of-the-forgotten",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "이벤트"
+    ],
+    "markdownKo": "[gold:event]잊힌 자의 무덤[/gold] 변경: 모든 플레이어가 [gold]소멸[/gold] 카드를 가지고 있을 때만 등장합니다.",
+    "markdownEn": "Changed [gold:event]Grave of the Forgotten[/gold]: can no longer spawn unless every player has a card with Exhaust in their deck.",
+    "textKo": "잊힌 자의 무덤 변경: 모든 플레이어가 소멸 카드를 가지고 있을 때만 등장합니다.",
+    "textEn": "Changed Grave of the Forgotten: can no longer spawn unless every player has a card with Exhaust in their deck.",
+    "entityRefs": [
+      {
+        "type": "event",
+        "id": "GRAVE_OF_THE_FORGOTTEN",
+        "label": "잊힌 자의 무덤"
+      }
+    ],
+    "searchText": "v0.100.0:line-130-event-grave-of-the-forgotten v0.100.0 0.100.0 밸런스 이벤트 잊힌 자의 무덤 변경: 모든 플레이어가 소멸 카드를 가지고 있을 때만 등장합니다. changed grave of the forgotten: can no longer spawn unless every player has a card with exhaust in their deck. event grave_of_the_forgotten 잊힌 자의 무덤 잊힌 자의 무덤 grave of the forgotten"
+  },
+  {
+    "id": "v0.100.0:line-131-event-morphic-grove",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "이벤트"
+    ],
+    "markdownKo": "[gold:event]변성체의 숲[/gold] 변경:\n• 모든 플레이어가 변화 가능한 카드를 2장 이상 가지고 있을 때만 등장합니다.\n• 무리 선택지가 플레이어의 골드를 전부 사용합니다.\n• 멀티플레이에서는 협동 이벤트가 됩니다.",
+    "markdownEn": "Changed [gold:event]Morphic Grove[/gold]:\n• Can no longer spawn unless all players have at least 2 transformable cards in their decks.\n• Group option now costs ALL of the player's gold.\n• In multiplayer, is now a collaborative event.",
+    "summaryMarkdownKo": "[gold:event]변성체의 숲[/gold] 변경:",
+    "summaryMarkdownEn": "Changed [gold:event]Morphic Grove[/gold]:",
+    "textKo": "변성체의 숲 변경:\n• 모든 플레이어가 변화 가능한 카드를 2장 이상 가지고 있을 때만 등장합니다.\n• 무리 선택지가 플레이어의 골드를 전부 사용합니다.\n• 멀티플레이에서는 협동 이벤트가 됩니다.",
+    "textEn": "Changed Morphic Grove:\n• Can no longer spawn unless all players have at least 2 transformable cards in their decks.\n• Group option now costs ALL of the player's gold.\n• In multiplayer, is now a collaborative event.",
+    "entityRefs": [
+      {
+        "type": "event",
+        "id": "MORPHIC_GROVE",
+        "label": "변성체의 숲"
+      }
+    ],
+    "searchText": "v0.100.0:line-131-event-morphic-grove v0.100.0 0.100.0 밸런스 이벤트 변성체의 숲 변경: • 모든 플레이어가 변화 가능한 카드를 2장 이상 가지고 있을 때만 등장합니다. • 무리 선택지가 플레이어의 골드를 전부 사용합니다. • 멀티플레이에서는 협동 이벤트가 됩니다. changed morphic grove: • can no longer spawn unless all players have at least 2 transformable cards in their decks. • group option now costs all of the player's gold. • in multiplayer, is now a collaborative event. event morphic_grove 변성체의 숲 변성체의 숲 morphic grove"
+  },
+  {
+    "id": "v0.100.0:line-132-text-1qdknw",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "이벤트"
+    ],
+    "markdownKo": "모든 플레이어가 변화 가능한 카드를 2장 이상 가지고 있을 때만 등장합니다.",
+    "markdownEn": "Can no longer spawn unless all players have at least 2 transformable cards in their decks.",
+    "textKo": "모든 플레이어가 변화 가능한 카드를 2장 이상 가지고 있을 때만 등장합니다.",
+    "textEn": "Can no longer spawn unless all players have at least 2 transformable cards in their decks.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-132-text-1qdknw v0.100.0 0.100.0 밸런스 이벤트 모든 플레이어가 변화 가능한 카드를 2장 이상 가지고 있을 때만 등장합니다. can no longer spawn unless all players have at least 2 transformable cards in their decks."
+  },
+  {
+    "id": "v0.100.0:line-133-text-b0kkib",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "이벤트"
+    ],
+    "markdownKo": "무리 선택지가 플레이어의 골드를 전부 사용합니다.",
+    "markdownEn": "Group option now costs ALL of the player's gold.",
+    "textKo": "무리 선택지가 플레이어의 골드를 전부 사용합니다.",
+    "textEn": "Group option now costs ALL of the player's gold.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-133-text-b0kkib v0.100.0 0.100.0 밸런스 이벤트 무리 선택지가 플레이어의 골드를 전부 사용합니다. group option now costs all of the player's gold."
+  },
+  {
+    "id": "v0.100.0:line-134-text-hznra1",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "이벤트"
+    ],
+    "markdownKo": "멀티플레이에서는 협동 이벤트가 됩니다.",
+    "markdownEn": "In multiplayer, is now a collaborative event.",
+    "textKo": "멀티플레이에서는 협동 이벤트가 됩니다.",
+    "textEn": "In multiplayer, is now a collaborative event.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-134-text-hznra1 v0.100.0 0.100.0 밸런스 이벤트 멀티플레이에서는 협동 이벤트가 됩니다. in multiplayer, is now a collaborative event."
+  },
+  {
+    "id": "v0.100.0:line-135-event-spirit-grafter",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "이벤트"
+    ],
+    "markdownKo": "[gold:event]정령 접합자[/gold] 변경: 거부한다 선택지가 이제 \"체력 10 손실. 카드 1장 강화\"입니다.",
+    "markdownEn": "Changed [gold:event]Spirit Grafter[/gold]: Rejection option is now \"Lose 10 HP. Upgrade a card.\"",
+    "textKo": "정령 접합자 변경: 거부한다 선택지가 이제 \"체력 10 손실. 카드 1장 강화\"입니다.",
+    "textEn": "Changed Spirit Grafter: Rejection option is now \"Lose 10 HP. Upgrade a card.\"",
+    "entityRefs": [
+      {
+        "type": "event",
+        "id": "SPIRIT_GRAFTER",
+        "label": "정령 접합자"
+      }
+    ],
+    "searchText": "v0.100.0:line-135-event-spirit-grafter v0.100.0 0.100.0 밸런스 이벤트 정령 접합자 변경: 거부한다 선택지가 이제 \"체력 10 손실. 카드 1장 강화\"입니다. changed spirit grafter: rejection option is now \"lose 10 hp. upgrade a card.\" event spirit_grafter 정령 접합자 정령 접합자 spirit grafter"
+  },
+  {
+    "id": "v0.100.0:line-136-event-round-tea-party",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "이벤트"
+    ],
+    "markdownKo": "[gold:event]원탁의 다과회[/gold] 변경: 모든 플레이어의 체력이 12 이상일 때만 등장합니다.",
+    "markdownEn": "Changed [gold:event]The Round Tea Party[/gold]: can no longer spawn unless all players have at least 12 HP.",
+    "textKo": "원탁의 다과회 변경: 모든 플레이어의 체력이 12 이상일 때만 등장합니다.",
+    "textEn": "Changed The Round Tea Party: can no longer spawn unless all players have at least 12 HP.",
+    "entityRefs": [
+      {
+        "type": "event",
+        "id": "ROUND_TEA_PARTY",
+        "label": "원탁의 다과회"
+      }
+    ],
+    "searchText": "v0.100.0:line-136-event-round-tea-party v0.100.0 0.100.0 밸런스 이벤트 원탁의 다과회 변경: 모든 플레이어의 체력이 12 이상일 때만 등장합니다. changed the round tea party: can no longer spawn unless all players have at least 12 hp. event round_tea_party 원탁의 다과회 원탁의 다과회 the round tea party"
+  },
+  {
+    "id": "v0.100.0:line-137-card-beacon-of-hope",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "멀티플레이어"
+    ],
+    "markdownKo": "[gold:card]희망의 등불[/gold] ([red][jitter]너프[/jitter][/red]): 더 이상 중첩되지 않습니다.",
+    "markdownEn": "[gold:card]Beacon of Hope[/gold] (nerf): can no longer be stacked.",
+    "textKo": "희망의 등불 (너프): 더 이상 중첩되지 않습니다.",
+    "textEn": "Beacon of Hope (nerf): can no longer be stacked.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "BEACON_OF_HOPE",
+        "label": "희망의 등불"
+      }
+    ],
+    "searchText": "v0.100.0:line-137-card-beacon-of-hope v0.100.0 0.100.0 밸런스 멀티플레이어 희망의 등불 (너프): 더 이상 중첩되지 않습니다. beacon of hope (nerf): can no longer be stacked. card beacon_of_hope 희망의 등불 희망의 등불 beacon of hope"
+  },
+  {
+    "id": "v0.100.0:line-138-card-believe-in-you",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "멀티플레이어"
+    ],
+    "markdownKo": "[gold:card]너만 믿는다[/gold] ([red][jitter]너프[/jitter][/red]): 에너지 3(4) -> 2(3).",
+    "markdownEn": "[gold:card]Believe in You[/gold] (nerf): Energy decreased from 3(4) -> 2(3).",
+    "textKo": "너만 믿는다 (너프): 에너지 3(4) -> 2(3).",
+    "textEn": "Believe in You (nerf): Energy decreased from 3(4) -> 2(3).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "BELIEVE_IN_YOU",
+        "label": "너만 믿는다"
+      }
+    ],
+    "searchText": "v0.100.0:line-138-card-believe-in-you v0.100.0 0.100.0 밸런스 멀티플레이어 너만 믿는다 (너프): 에너지 3(4) -> 2(3). believe in you (nerf): energy decreased from 3(4) -> 2(3). card believe_in_you 너만 믿는다 너만 믿는다 believe in you"
+  },
+  {
+    "id": "v0.100.0:line-139-card-huddle-up",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "밸런스",
+      "멀티플레이어"
+    ],
+    "markdownKo": "[gold:card]똘똘 뭉치기[/gold] ([red][jitter]너프[/jitter][/red]): 이제 소멸.",
+    "markdownEn": "[gold:card]Huddle Up[/gold] (nerf): now Exhausts.",
+    "textKo": "똘똘 뭉치기 (너프): 이제 소멸.",
+    "textEn": "Huddle Up (nerf): now Exhausts.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "HUDDLE_UP",
+        "label": "똘똘 뭉치기"
+      }
+    ],
+    "searchText": "v0.100.0:line-139-card-huddle-up v0.100.0 0.100.0 밸런스 멀티플레이어 똘똘 뭉치기 (너프): 이제 소멸. huddle up (nerf): now exhausts. card huddle_up 똘똘 뭉치기 똘똘 뭉치기 huddle up"
+  },
+  {
+    "id": "v0.100.0:line-140-card-infection",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "공포증 모드가 켜져 있으면 [gold:card]감염[/gold] 상태이상 카드 오버레이가 더 이상 움직이지 않습니다.",
+    "markdownEn": "[gold:card]Infection[/gold] affliction card overlay is no longer animated when Phobia Mode is turned on.",
+    "textKo": "공포증 모드가 켜져 있으면 감염 상태이상 카드 오버레이가 더 이상 움직이지 않습니다.",
+    "textEn": "Infection affliction card overlay is no longer animated when Phobia Mode is turned on.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "INFECTION",
+        "label": "감염"
+      }
+    ],
+    "searchText": "v0.100.0:line-140-card-infection v0.100.0 0.100.0 아트 공포증 모드가 켜져 있으면 감염 상태이상 카드 오버레이가 더 이상 움직이지 않습니다. infection affliction card overlay is no longer animated when phobia mode is turned on. card infection 감염 감염 infection"
+  },
+  {
+    "id": "v0.100.0:line-141-text-i4lfud",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "다음 대상에 공포증 모드 대체 시각 효과를 추가했습니다:",
+    "markdownEn": "Added alternate Phobia Mode visuals for:",
+    "textKo": "다음 대상에 공포증 모드 대체 시각 효과를 추가했습니다:",
+    "textEn": "Added alternate Phobia Mode visuals for:",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-141-text-i4lfud v0.100.0 0.100.0 아트 다음 대상에 공포증 모드 대체 시각 효과를 추가했습니다: added alternate phobia mode visuals for:"
+  },
+  {
+    "id": "v0.100.0:line-142-text-1gdvs94",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "벌집 배경",
+    "markdownEn": "Hive backgrounds",
+    "textKo": "벌집 배경",
+    "textEn": "Hive backgrounds",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-142-text-1gdvs94 v0.100.0 0.100.0 아트 벌집 배경 hive backgrounds"
+  },
+  {
+    "id": "v0.100.0:line-143-monster-the-insatiable",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:monster]탐[/gold]",
+    "markdownEn": "[gold:monster]The Insatiable[/gold]",
+    "textKo": "탐",
+    "textEn": "The Insatiable",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "THE_INSATIABLE",
+        "label": "탐"
+      }
+    ],
+    "searchText": "v0.100.0:line-143-monster-the-insatiable v0.100.0 0.100.0 아트 탐 the insatiable monster the_insatiable 탐 탐 the insatiable"
+  },
+  {
+    "id": "v0.100.0:line-144-monster-phrog-parasite",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:monster]게구리 기생체[/gold]",
+    "markdownEn": "[gold:monster]Phrog Parasite[/gold]",
+    "textKo": "게구리 기생체",
+    "textEn": "Phrog Parasite",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "PHROG_PARASITE",
+        "label": "게구리 기생체"
+      }
+    ],
+    "searchText": "v0.100.0:line-144-monster-phrog-parasite v0.100.0 0.100.0 아트 게구리 기생체 phrog parasite monster phrog_parasite 게구리 기생체 게구리 기생체 phrog parasite"
+  },
+  {
+    "id": "v0.100.0:line-145-monster-wriggler",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:monster]꿈틀벌레[/gold]",
+    "markdownEn": "[gold:monster]Wriggler[/gold]",
+    "textKo": "꿈틀벌레",
+    "textEn": "Wriggler",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "WRIGGLER",
+        "label": "꿈틀벌레"
+      }
+    ],
+    "searchText": "v0.100.0:line-145-monster-wriggler v0.100.0 0.100.0 아트 꿈틀벌레 wriggler monster wriggler 꿈틀벌레 꿈틀벌레 wriggler"
+  },
+  {
+    "id": "v0.100.0:line-146-monster-terror-eel",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:monster]공포 장어[/gold]",
+    "markdownEn": "[gold:monster]Terror Eel[/gold]",
+    "textKo": "공포 장어",
+    "textEn": "Terror Eel",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "TERROR_EEL",
+        "label": "공포 장어"
+      }
+    ],
+    "searchText": "v0.100.0:line-146-monster-terror-eel v0.100.0 0.100.0 아트 공포 장어 terror eel monster terror_eel 공포 장어 공포 장어 terror eel"
+  },
+  {
+    "id": "v0.100.0:line-147-monster-entomancer",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:monster]곤충술사[/gold]",
+    "markdownEn": "[gold:monster]Entomancer[/gold]",
+    "textKo": "곤충술사",
+    "textEn": "Entomancer",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "ENTOMANCER",
+        "label": "곤충술사"
+      }
+    ],
+    "searchText": "v0.100.0:line-147-monster-entomancer v0.100.0 0.100.0 아트 곤충술사 entomancer monster entomancer 곤충술사 곤충술사 entomancer"
+  },
+  {
+    "id": "v0.100.0:line-148-text-4sgeku",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "다음 카드의 초상화를 추가했습니다:",
+    "markdownEn": "Added portrait for the following cards:",
+    "textKo": "다음 카드의 초상화를 추가했습니다:",
+    "textEn": "Added portrait for the following cards:",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-148-text-4sgeku v0.100.0 0.100.0 아트 다음 카드의 초상화를 추가했습니다: added portrait for the following cards:"
+  },
+  {
+    "id": "v0.100.0:line-149-card-gang-up",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:card]집단 공격[/gold]",
+    "markdownEn": "[gold:card]Gang Up[/gold]",
+    "textKo": "집단 공격",
+    "textEn": "Gang Up",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "GANG_UP",
+        "label": "집단 공격"
+      }
+    ],
+    "searchText": "v0.100.0:line-149-card-gang-up v0.100.0 0.100.0 아트 집단 공격 gang up card gang_up 집단 공격 집단 공격 gang up"
+  },
+  {
+    "id": "v0.100.0:line-150-card-seeker-strike",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:card]탐색 타격[/gold]",
+    "markdownEn": "[gold:card]Seeker Strike[/gold]",
+    "textKo": "탐색 타격",
+    "textEn": "Seeker Strike",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SEEKER_STRIKE",
+        "label": "탐색 타격"
+      }
+    ],
+    "searchText": "v0.100.0:line-150-card-seeker-strike v0.100.0 0.100.0 아트 탐색 타격 seeker strike card seeker_strike 탐색 타격 탐색 타격 seeker strike"
+  },
+  {
+    "id": "v0.100.0:line-151-card-spinner",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:card]스피너[/gold]",
+    "markdownEn": "[gold:card]Spinner[/gold]",
+    "textKo": "스피너",
+    "textEn": "Spinner",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SPINNER",
+        "label": "스피너"
+      }
+    ],
+    "searchText": "v0.100.0:line-151-card-spinner v0.100.0 0.100.0 아트 스피너 spinner card spinner 스피너 스피너 spinner"
+  },
+  {
+    "id": "v0.100.0:line-152-card-volley",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:card]난사[/gold]",
+    "markdownEn": "[gold:card]Volley[/gold]",
+    "textKo": "난사",
+    "textEn": "Volley",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "VOLLEY",
+        "label": "난사"
+      }
+    ],
+    "searchText": "v0.100.0:line-152-card-volley v0.100.0 0.100.0 아트 난사 volley card volley 난사 난사 volley"
+  },
+  {
+    "id": "v0.100.0:line-153-card-knockdown",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:card]때려눕히기[/gold]",
+    "markdownEn": "[gold:card]Knockdown[/gold]",
+    "textKo": "때려눕히기",
+    "textEn": "Knockdown",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "KNOCKDOWN",
+        "label": "때려눕히기"
+      }
+    ],
+    "searchText": "v0.100.0:line-153-card-knockdown v0.100.0 0.100.0 아트 때려눕히기 knockdown card knockdown 때려눕히기 때려눕히기 knockdown"
+  },
+  {
+    "id": "v0.100.0:line-154-card-lift",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:card]부양[/gold]",
+    "markdownEn": "[gold:card]Lift[/gold]",
+    "textKo": "부양",
+    "textEn": "Lift",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "LIFT",
+        "label": "부양"
+      }
+    ],
+    "searchText": "v0.100.0:line-154-card-lift v0.100.0 0.100.0 아트 부양 lift card lift 부양 부양 lift"
+  },
+  {
+    "id": "v0.100.0:line-155-relic-kifuda",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:relic]목패[/gold] 유물 에셋을 갱신했습니다.",
+    "markdownEn": "Updated asset for [gold:relic]Kifuda[/gold] relic.",
+    "textKo": "목패 유물 에셋을 갱신했습니다.",
+    "textEn": "Updated asset for Kifuda relic.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "KIFUDA",
+        "label": "목패"
+      }
+    ],
+    "searchText": "v0.100.0:line-155-relic-kifuda v0.100.0 0.100.0 아트 목패 유물 에셋을 갱신했습니다. updated asset for kifuda relic. relic kifuda 목패 목패 kifuda"
+  },
+  {
+    "id": "v0.100.0:line-156-text-6yaoeq",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "에너지 획득 불가 파워 에셋을 추가했습니다.",
+    "markdownEn": "Added asset for No Energy Gain power.",
+    "textKo": "에너지 획득 불가 파워 에셋을 추가했습니다.",
+    "textEn": "Added asset for No Energy Gain power.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-156-text-6yaoeq v0.100.0 0.100.0 아트 에너지 획득 불가 파워 에셋을 추가했습니다. added asset for no energy gain power."
+  },
+  {
+    "id": "v0.100.0:line-157-monster-ovicopter",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:monster]산란비충[/gold] 버프 애니메이션을 추가했습니다.",
+    "markdownEn": "Added animation for [gold:monster]Ovicopter[/gold] buff.",
+    "textKo": "산란비충 버프 애니메이션을 추가했습니다.",
+    "textEn": "Added animation for Ovicopter buff.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "OVICOPTER",
+        "label": "산란비충"
+      }
+    ],
+    "searchText": "v0.100.0:line-157-monster-ovicopter v0.100.0 0.100.0 아트 산란비충 버프 애니메이션을 추가했습니다. added animation for ovicopter buff. monster ovicopter 산란비충 산란비충 ovicopter"
+  },
+  {
+    "id": "v0.100.0:line-158-text-14dli4p",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "다음 유물의 플레이스홀더 스케치를 추가했습니다:",
+    "markdownEn": "Added placeholder sketches for the following relics:",
+    "textKo": "다음 유물의 플레이스홀더 스케치를 추가했습니다:",
+    "textEn": "Added placeholder sketches for the following relics:",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-158-text-14dli4p v0.100.0 0.100.0 아트 다음 유물의 플레이스홀더 스케치를 추가했습니다: added placeholder sketches for the following relics:"
+  },
+  {
+    "id": "v0.100.0:line-159-text-1lvur6l",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:relic]니오우의 부적[/gold]",
+    "markdownEn": "[gold:relic]Neow's Talisman[/gold]",
+    "textKo": "니오우의 부적",
+    "textEn": "Neow's Talisman",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-159-text-1lvur6l v0.100.0 0.100.0 아트 니오우의 부적 neow's talisman"
+  },
+  {
+    "id": "v0.100.0:line-160-text-kwmo8r",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "아트"
+    ],
+    "markdownKo": "[gold:relic]무거운 석판[/gold]",
+    "markdownEn": "[gold:relic]Hefty Tablet[/gold]",
+    "textKo": "무거운 석판",
+    "textEn": "Hefty Tablet",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-160-text-kwmo8r v0.100.0 0.100.0 아트 무거운 석판 hefty tablet"
+  },
+  {
+    "id": "v0.100.0:line-161-text-u9z1dp",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "사용자 인터페이스 및 경험"
+    ],
+    "markdownKo": "설정에 공포증 모드 체크박스를 추가했습니다.",
+    "markdownEn": "Added Phobia Mode tickbox in the Settings.",
+    "textKo": "설정에 공포증 모드 체크박스를 추가했습니다.",
+    "textEn": "Added Phobia Mode tickbox in the Settings.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-161-text-u9z1dp v0.100.0 0.100.0 사용자 인터페이스 및 경험 설정에 공포증 모드 체크박스를 추가했습니다. added phobia mode tickbox in the settings."
+  },
+  {
+    "id": "v0.100.0:line-162-text-1o8njyz",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "사용자 인터페이스 및 경험"
+    ],
+    "markdownKo": "보물 상자에서 받은 유물을 건너뛸 수 있습니다.",
+    "markdownEn": "You can now skip relics received at treasure chests.",
+    "textKo": "보물 상자에서 받은 유물을 건너뛸 수 있습니다.",
+    "textEn": "You can now skip relics received at treasure chests.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-162-text-1o8njyz v0.100.0 0.100.0 사용자 인터페이스 및 경험 보물 상자에서 받은 유물을 건너뛸 수 있습니다. you can now skip relics received at treasure chests."
+  },
+  {
+    "id": "v0.100.0:line-163-text-to7ezo",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "사용자 인터페이스 및 경험"
+    ],
+    "markdownKo": "일일 런과 커스텀 런에서는 [gold]역사[/gold]와 업적을 해제할 수 없다는 안내를 추가했습니다.",
+    "markdownEn": "Added disclaimers for Daily and Custom runs that you cannot unlock [gold]Epochs[/gold] and Achievements with them anymore.",
+    "textKo": "일일 런과 커스텀 런에서는 역사와 업적을 해제할 수 없다는 안내를 추가했습니다.",
+    "textEn": "Added disclaimers for Daily and Custom runs that you cannot unlock Epochs and Achievements with them anymore.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-163-text-to7ezo v0.100.0 0.100.0 사용자 인터페이스 및 경험 일일 런과 커스텀 런에서는 역사와 업적을 해제할 수 없다는 안내를 추가했습니다. added disclaimers for daily and custom runs that you cannot unlock epochs and achievements with them anymore."
+  },
+  {
+    "id": "v0.100.0:line-164-text-181drk7",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "사용자 인터페이스 및 경험"
+    ],
+    "markdownKo": "런에서 역사/업적을 얻을 수 없을 때 상단 바에 아이콘을 표시합니다.",
+    "markdownEn": "Added icon in top bar if player is unable to obtain epochs, achievements in a run.",
+    "textKo": "런에서 역사/업적을 얻을 수 없을 때 상단 바에 아이콘을 표시합니다.",
+    "textEn": "Added icon in top bar if player is unable to obtain epochs, achievements in a run.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-164-text-181drk7 v0.100.0 0.100.0 사용자 인터페이스 및 경험 런에서 역사/업적을 얻을 수 없을 때 상단 바에 아이콘을 표시합니다. added icon in top bar if player is unable to obtain epochs, achievements in a run."
+  },
+  {
+    "id": "v0.100.0:line-165-text-1o8f9j",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "사용자 인터페이스 및 경험"
+    ],
+    "markdownKo": "캐릭터 아이콘에 커서를 올리면 업적이나 역사를 얻을 수 없는지 설명합니다.",
+    "markdownEn": "Hovering over the character icon now explains if you can't get achievements or epochs.",
+    "textKo": "캐릭터 아이콘에 커서를 올리면 업적이나 역사를 얻을 수 없는지 설명합니다.",
+    "textEn": "Hovering over the character icon now explains if you can't get achievements or epochs.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-165-text-1o8f9j v0.100.0 0.100.0 사용자 인터페이스 및 경험 캐릭터 아이콘에 커서를 올리면 업적이나 역사를 얻을 수 없는지 설명합니다. hovering over the character icon now explains if you can't get achievements or epochs."
+  },
+  {
+    "id": "v0.100.0:line-166-text-1txj3f1",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "사용자 인터페이스 및 경험"
+    ],
+    "markdownKo": "멀티플레이어에서 지도 그림을 끌 수 있는 방법을 추가했습니다.",
+    "markdownEn": "Added a way to disable map drawings in multiplayer.",
+    "textKo": "멀티플레이어에서 지도 그림을 끌 수 있는 방법을 추가했습니다.",
+    "textEn": "Added a way to disable map drawings in multiplayer.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-166-text-1txj3f1 v0.100.0 0.100.0 사용자 인터페이스 및 경험 멀티플레이어에서 지도 그림을 끌 수 있는 방법을 추가했습니다. added a way to disable map drawings in multiplayer."
+  },
+  {
+    "id": "v0.100.0:line-167-text-1qgwyz1",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "사용자 인터페이스 및 경험"
+    ],
+    "markdownKo": "컨트롤러에서 초대 버튼이 수동 이동 대신 단축키를 사용합니다.",
+    "markdownEn": "The invite button now uses a hotkey on controller instead of manual navigation.",
+    "textKo": "컨트롤러에서 초대 버튼이 수동 이동 대신 단축키를 사용합니다.",
+    "textEn": "The invite button now uses a hotkey on controller instead of manual navigation.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-167-text-1qgwyz1 v0.100.0 0.100.0 사용자 인터페이스 및 경험 컨트롤러에서 초대 버튼이 수동 이동 대신 단축키를 사용합니다. the invite button now uses a hotkey on controller instead of manual navigation."
+  },
+  {
+    "id": "v0.100.0:line-168-card-huddle-up",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "문구"
+    ],
+    "markdownKo": "[gold:card]똘똘 뭉치기[/gold]가 이제 \"모든 아군\" 대신 \"모든 플레이어\"라고 말합니다.",
+    "markdownEn": "[gold:card]Huddle Up[/gold] card now says \"ALL players\" instead of \"ALL allies\".",
+    "textKo": "똘똘 뭉치기가 이제 \"모든 아군\" 대신 \"모든 플레이어\"라고 말합니다.",
+    "textEn": "Huddle Up card now says \"ALL players\" instead of \"ALL allies\".",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "HUDDLE_UP",
+        "label": "똘똘 뭉치기"
+      }
+    ],
+    "searchText": "v0.100.0:line-168-card-huddle-up v0.100.0 0.100.0 문구 똘똘 뭉치기가 이제 \"모든 아군\" 대신 \"모든 플레이어\"라고 말합니다. huddle up card now says \"all players\" instead of \"all allies\". card huddle_up 똘똘 뭉치기 똘똘 뭉치기 huddle up"
+  },
+  {
+    "id": "v0.100.0:line-169-card-bombardment-card-howl-from-beyond",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "문구"
+    ],
+    "markdownKo": "[gold:card]포격[/gold]과 [gold:card]저편의 울음소리[/gold]의 문구를 더 분명하게 다듬었습니다.",
+    "markdownEn": "Improved wording clarity for [gold:card]Bombardment[/gold] and [gold:card]Howl from Beyond[/gold] cards.",
+    "textKo": "포격과 저편의 울음소리의 문구를 더 분명하게 다듬었습니다.",
+    "textEn": "Improved wording clarity for Bombardment and Howl from Beyond cards.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "BOMBARDMENT",
+        "label": "포격"
+      },
+      {
+        "type": "card",
+        "id": "HOWL_FROM_BEYOND",
+        "label": "저편의 울음소리"
+      }
+    ],
+    "searchText": "v0.100.0:line-169-card-bombardment-card-howl-from-beyond v0.100.0 0.100.0 문구 포격과 저편의 울음소리의 문구를 더 분명하게 다듬었습니다. improved wording clarity for bombardment and howl from beyond cards. card bombardment 포격 포격 bombardment card howl_from_beyond 저편의 울음소리 저편의 울음소리 howl from beyond"
+  },
+  {
+    "id": "v0.100.0:line-170-potion-fairy-in-a-bottle-relic-lizard-tail",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "문구"
+    ],
+    "markdownKo": "[gold:potion]병 속의 요정[/gold] 포션과 [gold:relic]도마뱀 꼬리[/gold] 유물 설명이, 어떤 방식으로든 죽을 때가 아니라 체력이 0이 될 때 발동한다고 명시합니다.",
+    "markdownEn": "The descriptions for [gold:potion]Fairy in a Bottle[/gold] potion and [gold:relic]Lizard Tail[/gold] relic now specify that they trigger specifically when you reach 0 HP, rather than when you die in any manner.",
+    "textKo": "병 속의 요정 포션과 도마뱀 꼬리 유물 설명이, 어떤 방식으로든 죽을 때가 아니라 체력이 0이 될 때 발동한다고 명시합니다.",
+    "textEn": "The descriptions for Fairy in a Bottle potion and Lizard Tail relic now specify that they trigger specifically when you reach 0 HP, rather than when you die in any manner.",
+    "entityRefs": [
+      {
+        "type": "potion",
+        "id": "FAIRY_IN_A_BOTTLE",
+        "label": "병 속의 요정"
+      },
+      {
+        "type": "relic",
+        "id": "LIZARD_TAIL",
+        "label": "도마뱀 꼬리"
+      }
+    ],
+    "searchText": "v0.100.0:line-170-potion-fairy-in-a-bottle-relic-lizard-tail v0.100.0 0.100.0 문구 병 속의 요정 포션과 도마뱀 꼬리 유물 설명이, 어떤 방식으로든 죽을 때가 아니라 체력이 0이 될 때 발동한다고 명시합니다. the descriptions for fairy in a bottle potion and lizard tail relic now specify that they trigger specifically when you reach 0 hp, rather than when you die in any manner. potion fairy_in_a_bottle 병 속의 요정 병 속의 요정 fairy in a bottle relic lizard_tail 도마뱀 꼬리 도마뱀 꼬리 lizard tail"
+  },
+  {
+    "id": "v0.100.0:line-171-monster-the-insatiable-power-sandpit",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "문구"
+    ],
+    "markdownKo": "[gold:monster]탐[/gold] 보스의 [gold:power]모래 구덩이[/gold] 파워가, 잡아먹는 턴의 문구를 더 분명하게 바꿨습니다.",
+    "markdownEn": "[gold:monster]The Insatiable[/gold] boss's [gold:power]Sandpit[/gold] power is now worded more clearly on the turn that it will eat you.",
+    "textKo": "탐 보스의 모래 구덩이 파워가, 잡아먹는 턴의 문구를 더 분명하게 바꿨습니다.",
+    "textEn": "The Insatiable boss's Sandpit power is now worded more clearly on the turn that it will eat you.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "THE_INSATIABLE",
+        "label": "탐"
+      },
+      {
+        "type": "power",
+        "id": "SANDPIT",
+        "label": "모래 구덩이"
+      }
+    ],
+    "searchText": "v0.100.0:line-171-monster-the-insatiable-power-sandpit v0.100.0 0.100.0 문구 탐 보스의 모래 구덩이 파워가, 잡아먹는 턴의 문구를 더 분명하게 바꿨습니다. the insatiable boss's sandpit power is now worded more clearly on the turn that it will eat you. monster the_insatiable 탐 탐 the insatiable power sandpit 모래 구덩이 모래 구덩이 sandpit"
+  },
+  {
+    "id": "v0.100.0:line-172-text-1tzsuoh",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "번역"
+    ],
+    "markdownKo": "여러 언어의 번역을 갱신했습니다.",
+    "markdownEn": "Updated translations for various languages.",
+    "textKo": "여러 언어의 번역을 갱신했습니다.",
+    "textEn": "Updated translations for various languages.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-172-text-1tzsuoh v0.100.0 0.100.0 번역 여러 언어의 번역을 갱신했습니다. updated translations for various languages."
+  },
+  {
+    "id": "v0.100.0:line-173-text-1b6imvk",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "번역"
+    ],
+    "markdownKo": "한국어 글자 간격을 조금 더 좁혔습니다.",
+    "markdownEn": "Updated Korean text spacing to be a little bit closer.",
+    "textKo": "한국어 글자 간격을 조금 더 좁혔습니다.",
+    "textEn": "Updated Korean text spacing to be a little bit closer.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-173-text-1b6imvk v0.100.0 0.100.0 번역 한국어 글자 간격을 조금 더 좁혔습니다. updated korean text spacing to be a little bit closer."
+  },
+  {
+    "id": "v0.100.0:line-174-text-rnmek9",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "번역"
+    ],
+    "markdownKo": "멀티플레이어 보물 방의 \"Fight\" 메시지를 번역할 수 있게 했습니다.",
+    "markdownEn": "The \"Fight\" message in multiplayer treasure room is now translatable.",
+    "textKo": "멀티플레이어 보물 방의 \"Fight\" 메시지를 번역할 수 있게 했습니다.",
+    "textEn": "The \"Fight\" message in multiplayer treasure room is now translatable.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-174-text-rnmek9 v0.100.0 0.100.0 번역 멀티플레이어 보물 방의 \"fight\" 메시지를 번역할 수 있게 했습니다. the \"fight\" message in multiplayer treasure room is now translatable."
+  },
+  {
+    "id": "v0.100.0:line-175-text-r66y5h",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "Steam 클라우드 세이브 동기화 중 드물게 발생하던 Fatal Error를 수정했습니다.",
+    "markdownEn": "Fixed rare Fatal Error when syncing Steam cloud saves.",
+    "textKo": "Steam 클라우드 세이브 동기화 중 드물게 발생하던 Fatal Error를 수정했습니다.",
+    "textEn": "Fixed rare Fatal Error when syncing Steam cloud saves.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-175-text-r66y5h v0.100.0 0.100.0 버그 수정 일반 steam 클라우드 세이브 동기화 중 드물게 발생하던 fatal error를 수정했습니다. fixed rare fatal error when syncing steam cloud saves."
+  },
+  {
+    "id": "v0.100.0:line-176-text-1j7ny8o",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "세이브가 초기화될 수 있던 드문 버그를 수정했습니다.",
+    "markdownEn": "Fixed rare bug where save could be reset.",
+    "textKo": "세이브가 초기화될 수 있던 드문 버그를 수정했습니다.",
+    "textEn": "Fixed rare bug where save could be reset.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-176-text-1j7ny8o v0.100.0 0.100.0 버그 수정 일반 세이브가 초기화될 수 있던 드문 버그를 수정했습니다. fixed rare bug where save could be reset."
+  },
+  {
+    "id": "v0.100.0:line-177-text-11ias7g",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "강화/제거/인챈트/변화 미리보기 화면이 열린 동안 컨트롤러로 카드 격자에 들어갈 수 있던 악용을 수정했습니다.",
+    "markdownEn": "Fixed exploit where players could controller navigate to card grid when the upgrade/remove/enchant/transform preview screen is open.",
+    "textKo": "강화/제거/인챈트/변화 미리보기 화면이 열린 동안 컨트롤러로 카드 격자에 들어갈 수 있던 악용을 수정했습니다.",
+    "textEn": "Fixed exploit where players could controller navigate to card grid when the upgrade/remove/enchant/transform preview screen is open.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-177-text-11ias7g v0.100.0 0.100.0 버그 수정 일반 강화/제거/인챈트/변화 미리보기 화면이 열린 동안 컨트롤러로 카드 격자에 들어갈 수 있던 악용을 수정했습니다. fixed exploit where players could controller navigate to card grid when the upgrade/remove/enchant/transform preview screen is open."
+  },
+  {
+    "id": "v0.100.0:line-178-text-kjf3i2",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "얇게 베기 시각 효과 발동 시 발생할 수 있던 크래시를 수정했습니다.",
+    "markdownEn": "Fixed a crash that could occur when triggering the thin slice visual effect.",
+    "textKo": "얇게 베기 시각 효과 발동 시 발생할 수 있던 크래시를 수정했습니다.",
+    "textEn": "Fixed a crash that could occur when triggering the thin slice visual effect.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-178-text-kjf3i2 v0.100.0 0.100.0 버그 수정 일반 얇게 베기 시각 효과 발동 시 발생할 수 있던 크래시를 수정했습니다. fixed a crash that could occur when triggering the thin slice visual effect."
+  },
+  {
+    "id": "v0.100.0:line-179-text-1dsp97y",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "화면 전환, 로고 애니메이션, 생물 사망 관련 크래시를 수정했습니다.",
+    "markdownEn": "Fixed crashes related to screen transitions, logo animation, and creature deaths.",
+    "textKo": "화면 전환, 로고 애니메이션, 생물 사망 관련 크래시를 수정했습니다.",
+    "textEn": "Fixed crashes related to screen transitions, logo animation, and creature deaths.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-179-text-1dsp97y v0.100.0 0.100.0 버그 수정 일반 화면 전환, 로고 애니메이션, 생물 사망 관련 크래시를 수정했습니다. fixed crashes related to screen transitions, logo animation, and creature deaths."
+  },
+  {
+    "id": "v0.100.0:line-180-text-1uhxqxo",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "피해, 방어도 등 수치가 매우 커진 카드나 파워 텍스트를 볼 때 발생하던 문제를 수정했습니다.",
+    "markdownEn": "Fixed an issue when viewing the text of a card or power which has numerical values (damage, block, etc.) that have grown very large.",
+    "textKo": "피해, 방어도 등 수치가 매우 커진 카드나 파워 텍스트를 볼 때 발생하던 문제를 수정했습니다.",
+    "textEn": "Fixed an issue when viewing the text of a card or power which has numerical values (damage, block, etc.) that have grown very large.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-180-text-1uhxqxo v0.100.0 0.100.0 버그 수정 일반 피해, 방어도 등 수치가 매우 커진 카드나 파워 텍스트를 볼 때 발생하던 문제를 수정했습니다. fixed an issue when viewing the text of a card or power which has numerical values (damage, block, etc.) that have grown very large."
+  },
+  {
+    "id": "v0.100.0:line-181-text-yt54aw",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "정해진 유물이 보상인 전투를 이긴 뒤 저장하고 종료하면, 이어서 할 때 유물 보상이 무작위로 바뀌던 문제를 수정했습니다.",
+    "markdownEn": "Fixed an issue where, if you saved and quit after winning a combat that rewards a predetermined relic, the relic reward would be randomized when continuing the run later.",
+    "textKo": "정해진 유물이 보상인 전투를 이긴 뒤 저장하고 종료하면, 이어서 할 때 유물 보상이 무작위로 바뀌던 문제를 수정했습니다.",
+    "textEn": "Fixed an issue where, if you saved and quit after winning a combat that rewards a predetermined relic, the relic reward would be randomized when continuing the run later.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-181-text-yt54aw v0.100.0 0.100.0 버그 수정 일반 정해진 유물이 보상인 전투를 이긴 뒤 저장하고 종료하면, 이어서 할 때 유물 보상이 무작위로 바뀌던 문제를 수정했습니다. fixed an issue where, if you saved and quit after winning a combat that rewards a predetermined relic, the relic reward would be randomized when continuing the run later."
+  },
+  {
+    "id": "v0.100.0:line-182-text-10jrfr5",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "\"강화 보기\"가 켜진 채 덱을 보다가 정렬을 바꾸면 화면이 깨지던 문제를 수정했습니다.",
+    "markdownEn": "Fixed an issue where, when a player would view their deck with \"View Upgrades\" enabled, changing the sort order would cause the screen to break.",
+    "textKo": "\"강화 보기\"가 켜진 채 덱을 보다가 정렬을 바꾸면 화면이 깨지던 문제를 수정했습니다.",
+    "textEn": "Fixed an issue where, when a player would view their deck with \"View Upgrades\" enabled, changing the sort order would cause the screen to break.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-182-text-10jrfr5 v0.100.0 0.100.0 버그 수정 일반 \"강화 보기\"가 켜진 채 덱을 보다가 정렬을 바꾸면 화면이 깨지던 문제를 수정했습니다. fixed an issue where, when a player would view their deck with \"view upgrades\" enabled, changing the sort order would cause the screen to break."
+  },
+  {
+    "id": "v0.100.0:line-183-text-yii0qx",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "카드 선택 화면이 선택지를 0개 보여줄 때 소프트락되던 문제를 수정했습니다.",
+    "markdownEn": "Fixed softlock when card selection screen would show 0 options.",
+    "textKo": "카드 선택 화면이 선택지를 0개 보여줄 때 소프트락되던 문제를 수정했습니다.",
+    "textEn": "Fixed softlock when card selection screen would show 0 options.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-183-text-yii0qx v0.100.0 0.100.0 버그 수정 일반 카드 선택 화면이 선택지를 0개 보여줄 때 소프트락되던 문제를 수정했습니다. fixed softlock when card selection screen would show 0 options."
+  },
+  {
+    "id": "v0.100.0:line-184-card-call-of-the-void",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "markdownKo": "카스티야 스페인어로 [gold:card]공허의 부름[/gold] 호버팁이 잘못 나오던 문제를 수정했습니다.",
+    "markdownEn": "Fixed an issue with [gold:card]Call of the Void[/gold] card's hovertips when playing in Castilian Spanish.",
+    "textKo": "카스티야 스페인어로 공허의 부름 호버팁이 잘못 나오던 문제를 수정했습니다.",
+    "textEn": "Fixed an issue with Call of the Void card's hovertips when playing in Castilian Spanish.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "CALL_OF_THE_VOID",
+        "label": "공허의 부름"
+      }
+    ],
+    "searchText": "v0.100.0:line-184-card-call-of-the-void v0.100.0 0.100.0 버그 수정 일반 카스티야 스페인어로 공허의 부름 호버팁이 잘못 나오던 문제를 수정했습니다. fixed an issue with call of the void card's hovertips when playing in castilian spanish. card call_of_the_void 공허의 부름 공허의 부름 call of the void"
+  },
+  {
+    "id": "v0.100.0:line-185-text-1rs6hd0",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "리젠트"
+    ],
+    "markdownKo": "[gold]리젠트[/gold] 캐릭터 선택 화면의 별 배경에 모든 별자리가 제대로 표시됩니다.",
+    "markdownEn": "The [gold]Regent[/gold]'s character select screen now properly displays all constellations among the stars in the background.",
+    "textKo": "리젠트 캐릭터 선택 화면의 별 배경에 모든 별자리가 제대로 표시됩니다.",
+    "textEn": "The Regent's character select screen now properly displays all constellations among the stars in the background.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-185-text-1rs6hd0 v0.100.0 0.100.0 버그 수정 리젠트 리젠트 캐릭터 선택 화면의 별 배경에 모든 별자리가 제대로 표시됩니다. the regent's character select screen now properly displays all constellations among the stars in the background."
+  },
+  {
+    "id": "v0.100.0:line-186-card-rip-and-tear",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "디펙트"
+    ],
+    "markdownKo": "[gold:card]날뛰기[/gold]를 변화시키려 할 때 소프트락되던 문제를 수정했습니다.",
+    "markdownEn": "Fixed softlock when trying to transform [gold:card]Rip and Tear[/gold] card.",
+    "textKo": "날뛰기를 변화시키려 할 때 소프트락되던 문제를 수정했습니다.",
+    "textEn": "Fixed softlock when trying to transform Rip and Tear card.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "RIP_AND_TEAR",
+        "label": "날뛰기"
+      }
+    ],
+    "searchText": "v0.100.0:line-186-card-rip-and-tear v0.100.0 0.100.0 버그 수정 디펙트 날뛰기를 변화시키려 할 때 소프트락되던 문제를 수정했습니다. fixed softlock when trying to transform rip and tear card. card rip_and_tear 날뛰기 날뛰기 rip and tear"
+  },
+  {
+    "id": "v0.100.0:line-187-relic-whispering-earring",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:relic]속삭이는 귀걸이[/gold]가 있는 런 이후 카드 선택이 입력 없이 자동 선택되던 문제를 수정했습니다.",
+    "markdownEn": "Fixed card prompts auto-selecting without player input after a run with [gold:relic]Whispering Earring[/gold] relic.",
+    "textKo": "속삭이는 귀걸이가 있는 런 이후 카드 선택이 입력 없이 자동 선택되던 문제를 수정했습니다.",
+    "textEn": "Fixed card prompts auto-selecting without player input after a run with Whispering Earring relic.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "WHISPERING_EARRING",
+        "label": "속삭이는 귀걸이"
+      }
+    ],
+    "searchText": "v0.100.0:line-187-relic-whispering-earring v0.100.0 0.100.0 버그 수정 고대의 존재 속삭이는 귀걸이가 있는 런 이후 카드 선택이 입력 없이 자동 선택되던 문제를 수정했습니다. fixed card prompts auto-selecting without player input after a run with whispering earring relic. relic whispering_earring 속삭이는 귀걸이 속삭이는 귀걸이 whispering earring"
+  },
+  {
+    "id": "v0.100.0:line-188-relic-whispering-earring-card-hand-trick",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "고대의 존재"
+    ],
+    "markdownKo": "[gold:relic]속삭이는 귀걸이[/gold]가 대상 스킬이 2장 이상일 때 [gold:card]손기술[/gold]을 자동 사용하며 소프트락되던 문제를 수정했습니다.",
+    "markdownEn": "Fixed softlock when [gold:relic]Whispering Earring[/gold] relic would auto-play [gold:card]Hand Trick[/gold] card with 2+ eligible Skills.",
+    "textKo": "속삭이는 귀걸이가 대상 스킬이 2장 이상일 때 손기술을 자동 사용하며 소프트락되던 문제를 수정했습니다.",
+    "textEn": "Fixed softlock when Whispering Earring relic would auto-play Hand Trick card with 2+ eligible Skills.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "WHISPERING_EARRING",
+        "label": "속삭이는 귀걸이"
+      },
+      {
+        "type": "card",
+        "id": "HAND_TRICK",
+        "label": "손기술"
+      }
+    ],
+    "searchText": "v0.100.0:line-188-relic-whispering-earring-card-hand-trick v0.100.0 0.100.0 버그 수정 고대의 존재 속삭이는 귀걸이가 대상 스킬이 2장 이상일 때 손기술을 자동 사용하며 소프트락되던 문제를 수정했습니다. fixed softlock when whispering earring relic would auto-play hand trick card with 2+ eligible skills. relic whispering_earring 속삭이는 귀걸이 속삭이는 귀걸이 whispering earring card hand_trick 손기술 손기술 hand trick"
+  },
+  {
+    "id": "v0.100.0:line-189-event-sunken-treasury-card-greed",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "이벤트"
+    ],
+    "markdownKo": "[gold:event]가라앉은 보물[/gold] 이벤트에서 [gold:card]탐욕[/gold] 저주 미리보기에 영구 호버팁이 없던 문제를 수정했습니다.",
+    "markdownEn": "Fixed missing Eternal hovertip when showing card preview for [gold:card]Greed[/gold] curse in [gold:event]Sunken Treasury[/gold] event.",
+    "textKo": "가라앉은 보물 이벤트에서 탐욕 저주 미리보기에 영구 호버팁이 없던 문제를 수정했습니다.",
+    "textEn": "Fixed missing Eternal hovertip when showing card preview for Greed curse in Sunken Treasury event.",
+    "entityRefs": [
+      {
+        "type": "event",
+        "id": "SUNKEN_TREASURY",
+        "label": "가라앉은 보물"
+      },
+      {
+        "type": "card",
+        "id": "GREED",
+        "label": "탐욕"
+      }
+    ],
+    "searchText": "v0.100.0:line-189-event-sunken-treasury-card-greed v0.100.0 0.100.0 버그 수정 이벤트 가라앉은 보물 이벤트에서 탐욕 저주 미리보기에 영구 호버팁이 없던 문제를 수정했습니다. fixed missing eternal hovertip when showing card preview for greed curse in sunken treasury event. event sunken_treasury 가라앉은 보물 가라앉은 보물 sunken treasury card greed 탐욕 탐욕 greed"
+  },
+  {
+    "id": "v0.100.0:line-190-text-1c3d2sb",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "markdownKo": "멀티플레이어 참가를 빠르게 재시도할 때 발생할 수 있던 크래시를 수정했습니다.",
+    "markdownEn": "Fixed a crash that could occur when rapidly retrying multiplayer joins.",
+    "textKo": "멀티플레이어 참가를 빠르게 재시도할 때 발생할 수 있던 크래시를 수정했습니다.",
+    "textEn": "Fixed a crash that could occur when rapidly retrying multiplayer joins.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-190-text-1c3d2sb v0.100.0 0.100.0 버그 수정 멀티플레이어 멀티플레이어 참가를 빠르게 재시도할 때 발생할 수 있던 크래시를 수정했습니다. fixed a crash that could occur when rapidly retrying multiplayer joins."
+  },
+  {
+    "id": "v0.100.0:line-191-text-skhxmw",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "markdownKo": "OS 언어가 다를 때 생기던 멀티플레이어 동기화 문제를 수정했습니다.",
+    "markdownEn": "Fixed a multiplayer sync issue that occurred when players used different OS languages.",
+    "textKo": "OS 언어가 다를 때 생기던 멀티플레이어 동기화 문제를 수정했습니다.",
+    "textEn": "Fixed a multiplayer sync issue that occurred when players used different OS languages.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-191-text-skhxmw v0.100.0 0.100.0 버그 수정 멀티플레이어 os 언어가 다를 때 생기던 멀티플레이어 동기화 문제를 수정했습니다. fixed a multiplayer sync issue that occurred when players used different os languages."
+  },
+  {
+    "id": "v0.100.0:line-192-card-breakthrough",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "markdownKo": "[gold:card]정면 돌파[/gold]의 자가 HP 손실로 플레이어가 죽으면 소프트락되던 문제를 수정했습니다.",
+    "markdownEn": "Fixed a softlock that could occur when a player would die to [gold:card]Breakthrough[/gold] card's self-HP loss in multiplayer.",
+    "textKo": "정면 돌파의 자가 HP 손실로 플레이어가 죽으면 소프트락되던 문제를 수정했습니다.",
+    "textEn": "Fixed a softlock that could occur when a player would die to Breakthrough card's self-HP loss in multiplayer.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "BREAKTHROUGH",
+        "label": "정면 돌파"
+      }
+    ],
+    "searchText": "v0.100.0:line-192-card-breakthrough v0.100.0 0.100.0 버그 수정 멀티플레이어 정면 돌파의 자가 hp 손실로 플레이어가 죽으면 소프트락되던 문제를 수정했습니다. fixed a softlock that could occur when a player would die to breakthrough card's self-hp loss in multiplayer. card breakthrough 정면 돌파 정면 돌파 breakthrough"
+  },
+  {
+    "id": "v0.100.0:line-193-text-tf845d",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "markdownKo": "[gold:monster]아키텍트[/gold] 이벤트 끝에서 소프트락되던 문제를 수정했습니다.",
+    "markdownEn": "Fixed softlock at the end of the [gold:monster]Architect[/gold] event in multiplayer.",
+    "textKo": "아키텍트 이벤트 끝에서 소프트락되던 문제를 수정했습니다.",
+    "textEn": "Fixed softlock at the end of the Architect event in multiplayer.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-193-text-tf845d v0.100.0 0.100.0 버그 수정 멀티플레이어 아키텍트 이벤트 끝에서 소프트락되던 문제를 수정했습니다. fixed softlock at the end of the architect event in multiplayer."
+  },
+  {
+    "id": "v0.100.0:line-194-text-1hoz3kx",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "markdownKo": "만료된 초대를 수락할 때 적절한 오류가 표시됩니다.",
+    "markdownEn": "A proper error is now displayed when trying to accept a stale invite.",
+    "textKo": "만료된 초대를 수락할 때 적절한 오류가 표시됩니다.",
+    "textEn": "A proper error is now displayed when trying to accept a stale invite.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-194-text-1hoz3kx v0.100.0 0.100.0 버그 수정 멀티플레이어 만료된 초대를 수락할 때 적절한 오류가 표시됩니다. a proper error is now displayed when trying to accept a stale invite."
+  },
+  {
+    "id": "v0.100.0:line-195-enchantment-imbued-relic-letter-opener",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "markdownKo": "[gold:enchantment]주입[/gold] 인챈트와 [gold:relic]편지 칼[/gold] 유물의 상태 불일치를 수정했습니다.",
+    "markdownEn": "Fixed state divergence related to [gold:enchantment]Imbued[/gold] enchantment and [gold:relic]Letter Opener[/gold] relic.",
+    "textKo": "주입 인챈트와 편지 칼 유물의 상태 불일치를 수정했습니다.",
+    "textEn": "Fixed state divergence related to Imbued enchantment and Letter Opener relic.",
+    "entityRefs": [
+      {
+        "type": "enchantment",
+        "id": "IMBUED",
+        "label": "주입"
+      },
+      {
+        "type": "relic",
+        "id": "LETTER_OPENER",
+        "label": "편지 칼"
+      }
+    ],
+    "searchText": "v0.100.0:line-195-enchantment-imbued-relic-letter-opener v0.100.0 0.100.0 버그 수정 멀티플레이어 주입 인챈트와 편지 칼 유물의 상태 불일치를 수정했습니다. fixed state divergence related to imbued enchantment and letter opener relic. enchantment imbued 주입 주입 imbued relic letter_opener 편지 칼 편지 칼 letter opener"
+  },
+  {
+    "id": "v0.100.0:line-196-text-wjx5kt",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "markdownKo": "플레이어 선택 중 [gold]디펙트[/gold] 오브 패시브가 발동하던 상태 불일치를 수정했습니다.",
+    "markdownEn": "Fixed state divergence related to [gold]Defect[/gold] orb passives triggering during a player choice.",
+    "textKo": "플레이어 선택 중 디펙트 오브 패시브가 발동하던 상태 불일치를 수정했습니다.",
+    "textEn": "Fixed state divergence related to Defect orb passives triggering during a player choice.",
+    "entityRefs": [],
+    "searchText": "v0.100.0:line-196-text-wjx5kt v0.100.0 0.100.0 버그 수정 멀티플레이어 플레이어 선택 중 디펙트 오브 패시브가 발동하던 상태 불일치를 수정했습니다. fixed state divergence related to defect orb passives triggering during a player choice."
+  },
+  {
+    "id": "v0.100.0:line-197-card-cascade",
+    "patch": "v0.100.0",
+    "version": "0.100.0",
+    "date": "2026-03-20",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "markdownKo": "[gold:card]연쇄[/gold] 등으로 여러 장을 자동 사용하는 도중 마지막 카드 전에 죽으면 소프트락되던 문제를 수정했습니다.",
+    "markdownEn": "Fixed a multiplayer softlock caused by auto-playing a sequence of multiple cards (via [gold:card]Cascade[/gold] card or another similar effect) and dying before the last card in the sequence has been played.",
+    "textKo": "연쇄 등으로 여러 장을 자동 사용하는 도중 마지막 카드 전에 죽으면 소프트락되던 문제를 수정했습니다.",
+    "textEn": "Fixed a multiplayer softlock caused by auto-playing a sequence of multiple cards (via Cascade card or another similar effect) and dying before the last card in the sequence has been played.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "CASCADE",
+        "label": "연쇄"
+      }
+    ],
+    "searchText": "v0.100.0:line-197-card-cascade v0.100.0 0.100.0 버그 수정 멀티플레이어 연쇄 등으로 여러 장을 자동 사용하는 도중 마지막 카드 전에 죽으면 소프트락되던 문제를 수정했습니다. fixed a multiplayer softlock caused by auto-playing a sequence of multiple cards (via cascade card or another similar effect) and dying before the last card in the sequence has been played. card cascade 연쇄 연쇄 cascade"
   },
   {
     "id": "v0.101.0:line-001-text-1d3z53i",

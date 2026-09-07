@@ -112,18 +112,19 @@
     "title": "Beta Patch Notes - v0.100.0",
     "titleKo": "베타 패치 노트 - v0.100.0",
     "type": "beta",
-    "steamUrl": null,
-    "summary": "Anti-infinite pass, Phobia Mode, card reworks, relic shop price cuts, Neow blessings.",
-    "summaryKo": "무한 콤보 견제, 공포증 모드, 카드 리워크, 유물 상점 가격 인하, 네오의 축복 추가.",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/1827626365756213",
+    "summary": "Anti-infinite pass, Phobia Mode, card reworks, relic shop price cuts, Neow blessings, and the first large enemy balance pass including Bygone Effigy.",
+    "summaryKo": "무한 콤보 견제, 공포증 모드, 카드 리워크, 유물 상점 가격 인하, 니오우 축복, 옛 시대의 우상을 포함한 첫 대규모 적 밸런스.",
     "hasBalanceChanges": true,
     "featuredEntities": [
       { "type": "card", "id": "PREPARED" },
-      { "type": "card", "id": "SUPPRESS" },
+      { "type": "card", "id": "DOMINATE" },
       { "type": "card", "id": "SPITE" },
       { "type": "card", "id": "STOKE" },
       { "type": "card", "id": "BORROWED_TIME" },
       { "type": "card", "id": "HIDDEN_GEM" },
       { "type": "relic", "id": "HEFTY_TABLET" },
+      { "type": "monster", "id": "BYGONE_EFFIGY" },
       { "type": "monster", "id": "DOORMAKER" }
     ]
   },
