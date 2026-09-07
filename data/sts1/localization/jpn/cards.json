@@ -1,0 +1,2277 @@
+{
+  "Anger": {
+    "name": "怒り",
+    "description": "!D! ダメージを与える。 NL このカードの複製を NL 捨て札に加える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Armaments": {
+    "name": "武装",
+    "description": "!B! ブロック を得る。 NL 戦闘終了まで手札の NL カード1枚を NL アップグレード する。",
+    "upgradeDescription": "!B! ブロック を得る。 NL 戦闘終了まで手札の NL カードすべてを NL アップグレード する。",
+    "extendedDescription": []
+  },
+  "Barricade": {
+    "name": "バリケード",
+    "description": "ターン開始時に NL ブロック を失わない。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bash": {
+    "name": "強打",
+    "description": "!D! ダメージを与える。 NL 弱体化 !M! を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Battle Trance": {
+    "name": "戦闘ハイ",
+    "description": "カードを !M! 枚引く。 NL このターン、追加で NL カードを引くことが NL できない。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Berserk": {
+    "name": "狂戦士",
+    "description": "弱体化 !M! を得る。 NL ターン開始時に [R] を NL 得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blood for Blood": {
+    "name": "血には血を",
+    "description": "戦闘でHPを失うたび、 NL [R] 消費-1。 NL !D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bloodletting": {
+    "name": "瀉血",
+    "description": "HPを3失う。 NL [R] [R] を得る。",
+    "upgradeDescription": "HPを3失う。 NL [R] [R] [R] を得る。",
+    "extendedDescription": []
+  },
+  "Bludgeon": {
+    "name": "脳天割り",
+    "description": "!D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Body Slam": {
+    "name": "ボディスラム",
+    "description": "自分の ブロック 値に NL 等しいダメージを NL 与える。",
+    "upgradeDescription": " NL ( !D! ダメージを与える)",
+    "extendedDescription": []
+  },
+  "Brutality": {
+    "name": "残虐",
+    "description": "ターン開始時、HPを NL 1失い、カードを1枚 NL 引く。",
+    "upgradeDescription": "天賦 。ターン開始時、 NL HPを1失い、カードを NL 1枚引く。",
+    "extendedDescription": []
+  },
+  "Burning Pact": {
+    "name": "焦熱の契約",
+    "description": "カードを1枚 廃棄 する。 NL カードを !M! 枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Carnage": {
+    "name": "大虐殺",
+    "description": "エーテリアル 。 NL !D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clash": {
+    "name": "クラッシュ",
+    "description": "手札がすべて NL アタックの場合に NL のみ使用できる。 NL !D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "手札にアタック以外のカードがある。"
+    ]
+  },
+  "Cleave": {
+    "name": "なぎ払い",
+    "description": "敵全体に !D! ダメージを NL 与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clothesline": {
+    "name": "ラリアット",
+    "description": "!D! ダメージを与える。 NL 脱力 !M! を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Combust": {
+    "name": "燃焼",
+    "description": "ターン終了時、HPを NL 1失い、敵全体に NL !M! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Corruption": {
+    "name": "堕落",
+    "description": "スキルのコストが 0 NL になる。使用した NL スキルは 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dark Embrace": {
+    "name": "闇の抱擁",
+    "description": "カードを 廃棄 するたび、 NL カードを1枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_R": {
+    "name": "防御",
+    "description": "!B! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Demon Form": {
+    "name": "悪魔化",
+    "description": "ターン開始時、 筋力 NL !M! を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Disarm": {
+    "name": "武装解除",
+    "description": "敵が 筋力 !M! を失う。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Double Tap": {
+    "name": "ダブルタップ",
+    "description": "このターン、次に NL 使用するアタックの NL 効果を2回分発動する。",
+    "upgradeDescription": "このターン、次に NL 使用する !M! 枚の NL アタックの効果を NL 2回分発動する。",
+    "extendedDescription": []
+  },
+  "Dropkick": {
+    "name": "ドロップキック",
+    "description": "!D! ダメージを与える。 NL 敵が 弱体化 を NL 受けている場合は、 NL [R] を得て、カードを NL 1枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dual Wield": {
+    "name": "二刀流",
+    "description": "アタックまたはパワー NL カードを1枚選ぶ。 NL そのカードの複製を NL 手札に加える。",
+    "upgradeDescription": "アタックまたはパワー NL カードを1枚選ぶ。 NL そのカードの複製を NL 2枚手札に加える。",
+    "extendedDescription": []
+  },
+  "Entrench": {
+    "name": "塹壕",
+    "description": "ブロック 値を NL 2倍にする。",
+    "upgradeDescription": "ブロック 値を NL 2倍にする。",
+    "extendedDescription": []
+  },
+  "Evolve": {
+    "name": "進化",
+    "description": "状態異常 カードを NL 引くたび、カードを NL !M! 枚引く。",
+    "upgradeDescription": "状態異常 カードを NL 引くたび、カードを NL !M! 枚引く。",
+    "extendedDescription": []
+  },
+  "Exhume": {
+    "name": "墓起こし",
+    "description": "廃棄札のカードを NL 1枚手札に加える。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Feed": {
+    "name": "かぶりつき",
+    "description": "!D! ダメージを与える。 NL このアタックで NL ミニオン以外の敵を NL 倒すと最大HP+ !M! 。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Feel No Pain": {
+    "name": "無痛",
+    "description": "カードを 廃棄 するたび NL !M! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fiend Fire": {
+    "name": "鬼火",
+    "description": "手札をすべて 廃棄 する。 NL この時 廃棄 した枚数 NL × !D! ダメージを与える。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fire Breathing": {
+    "name": "炎の息",
+    "description": "状態異常 か 呪い NL カードを引くたび、 NL 敵全体に !M! ダメージを NL 与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flame Barrier": {
+    "name": "炎の障壁",
+    "description": "!B! ブロック を得る。 NL このターン、アタック NL を受けるたび、 NL !M! ダメージ反撃する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flex": {
+    "name": "筋収縮",
+    "description": "筋力 !M! を得る。 NL このターン終了時に NL 筋力 !M! を失う。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ghostly Armor": {
+    "name": "ゴーストアーマー",
+    "description": "エーテリアル 。 NL !B! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Havoc": {
+    "name": "荒廃",
+    "description": "山札の一番上にある NL カードを使用し、 NL 廃棄 する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Headbutt": {
+    "name": "頭突き",
+    "description": "!D! ダメージを与える。 NL 捨て札のカードを1枚、 NL 山札の一番上に置く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Heavy Blade": {
+    "name": "ヘビーブレード",
+    "description": "!D! ダメージを与える。 NL さらに 筋力 値× !M! の NL 追加ダメージ。",
+    "upgradeDescription": "!D! ダメージを与える。 NL さらに 筋力 値× !M! の NL 追加ダメージ。",
+    "extendedDescription": []
+  },
+  "Hemokinesis": {
+    "name": "ヘモキネシス",
+    "description": "HPを !M! 失う。 NL !D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Immolate": {
+    "name": "生け贄",
+    "description": "敵全体に !D! ダメージを NL 与える。 火傷 を1枚 NL 捨て札に加える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Impervious": {
+    "name": "不浸透",
+    "description": "!B! ブロック を得る。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Infernal Blade": {
+    "name": "非道の刃",
+    "description": "ランダムなアタックを NL 1枚手札に加える。 NL このターン、その NL コストは0。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Inflame": {
+    "name": "発火",
+    "description": "筋力 !M! を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Intimidate": {
+    "name": "威嚇",
+    "description": "敵全体に 脱力 !M! NL を与える。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Iron Wave": {
+    "name": "アイアンウェーブ",
+    "description": "!B! ブロック を得る。 NL !D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Juggernaut": {
+    "name": "ジャガーノート",
+    "description": "ブロック を得るたび、 NL ランダムな敵に NL !M! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Limit Break": {
+    "name": "リミットブレイク",
+    "description": "筋力 を2倍にする。 NL 廃棄 される。",
+    "upgradeDescription": "筋力 を2倍にする。",
+    "extendedDescription": []
+  },
+  "Metallicize": {
+    "name": "金属化",
+    "description": "ターン終了時に NL !M! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Offering": {
+    "name": "供物",
+    "description": "HPを6失う。 NL [R] [R] を得る。 NL カードを !M! 枚引く。 NL 廃棄 される。",
+    "upgradeDescription": "HPを6失う。 NL [R] [R] を得る。 NL カードを !M! 枚引く。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Perfected Strike": {
+    "name": "フルストライク",
+    "description": "!D! ダメージを与える。 NL さらに「 ストライク 」 NL と名前に付くデッキの NL カードの枚数×2の NL 追加ダメージ。",
+    "upgradeDescription": "!D! ダメージを与える。 NL さらに「 ストライク 」 NL と名前に付くデッキの NL カードの枚数×3の NL 追加ダメージ。",
+    "extendedDescription": []
+  },
+  "Pommel Strike": {
+    "name": "ポンメルストライク",
+    "description": "!D! ダメージを与える。 NL カードを !M! 枚引く。",
+    "upgradeDescription": "!D! ダメージを与える。 NL カードを !M! 枚引く。",
+    "extendedDescription": []
+  },
+  "Power Through": {
+    "name": "やせ我慢",
+    "description": "負傷 を 2 枚手札 NL に加える。 NL !B! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pummel": {
+    "name": "猛撃",
+    "description": "!D! ダメージを !M! 回 NL 与える。 廃棄 される。",
+    "upgradeDescription": "!D! ダメージを !M! 回 NL 与える。 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Rage": {
+    "name": "憤怒",
+    "description": "このターンでアタック NL を使用するたび NL !M! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rampage": {
+    "name": "大暴れ",
+    "description": "!D! ダメージを与える。 NL この戦闘中のこの NL カードのダメージを NL !M! ずつ増加する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reaper": {
+    "name": "死神",
+    "description": "敵全体に !D! ダメージを NL 与える。 ブロック され NL ずに与えたダメージ NL に等しいHPを回復 NL する。 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reckless Charge": {
+    "name": "無謀なる突進",
+    "description": "!D! ダメージを与える。 NL めまい が1枚山札 NL に混ぜられる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rupture": {
+    "name": "決裂",
+    "description": "カードの効果によって NL HPを失うたび、 NL 筋力 !M! を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Searing Blow": {
+    "name": "灼熱の一撃",
+    "description": "!D! ダメージを与える。 NL このカードは何度でも NL アップグレード できる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Second Wind": {
+    "name": "セカンドウィンド",
+    "description": "アタック 以外の手札を NL すべて 廃棄 し、その時 NL 廃棄 されたカードの NL 枚数× !B! ブロック NL を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Seeing Red": {
+    "name": "激昂",
+    "description": "[R] [R] を得る。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sentinel": {
+    "name": "見張り",
+    "description": "!B! ブロック を得る。 NL このカードの 廃棄 時に NL [R] [R] を得る。",
+    "upgradeDescription": "!B! ブロック を得る。 NL このカードの 廃棄 時に NL [R] [R] [R] を得る。",
+    "extendedDescription": []
+  },
+  "Sever Soul": {
+    "name": "霊魂切断",
+    "description": "アタック 以外の手札を NL すべて 廃棄 する。 NL !D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shockwave": {
+    "name": "衝撃波",
+    "description": "敵全体に 脱力 !M! と NL 弱体化 !M! を与える。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shrug It Off": {
+    "name": "受け流し",
+    "description": "!B! ブロック を得る。 NL カードを1枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Spot Weakness": {
+    "name": "弱点検出",
+    "description": "対象の敵がアタック NL を予定している場合、 NL 筋力 !M! を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Strike_R": {
+    "name": "ストライク",
+    "description": "!D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sword Boomerang": {
+    "name": "ソードブーメラン",
+    "description": "ランダムな敵に NL !D! ダメージを !M! 回与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Thunderclap": {
+    "name": "雷鳴",
+    "description": "敵全体に !D! ダメージと NL 弱体化 1を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "True Grit": {
+    "name": "不屈の闘志",
+    "description": "!B! ブロック を得る。 NL ランダムな手札を NL 1枚 廃棄 する。",
+    "upgradeDescription": "!B! ブロック を得る。 NL 手札を1枚 廃棄 する。",
+    "extendedDescription": []
+  },
+  "Twin Strike": {
+    "name": "ツインストライク",
+    "description": "!D! ダメージを NL 2回与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Uppercut": {
+    "name": "アッパーカット",
+    "description": "!D! ダメージを与える。 NL 脱力 !M! と 弱体化 !M! NL を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Warcry": {
+    "name": "雄叫び",
+    "description": "カードを !M! 枚引く。 NL 手札のカード1枚を NL 山札の一番上に置く。 NL 廃棄 される。",
+    "upgradeDescription": "カードを !M! 枚引く。 NL 手札のカード1枚を NL 山札の一番上に置く。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Whirlwind": {
+    "name": "旋風刃",
+    "description": "敵全体に !D! ダメージを NL X回与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wild Strike": {
+    "name": "ワイルドストライク",
+    "description": "!D! ダメージを与える。 NL 負傷 が1枚山札に NL 混ぜられる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Accuracy": {
+    "name": "精度上昇",
+    "description": "ナイフ のダメージが NL !M! 増加する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Acrobatics": {
+    "name": "アクロバット",
+    "description": "カードを !M! 枚引く。 NL カードを1枚捨てる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Adrenaline": {
+    "name": "アドレナリン",
+    "description": "[G] を得る。 NL カードを2枚引く。 NL 廃棄 される。",
+    "upgradeDescription": "[G] [G] を得る。 NL カードを2枚引く。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "After Image": {
+    "name": "残像",
+    "description": "カードを1枚使用する NL たび、1 ブロック NL を得る。",
+    "upgradeDescription": "天賦 。 NL カードを1枚使用する NL たび、1 ブロック NL を得る。",
+    "extendedDescription": []
+  },
+  "Venomology": {
+    "name": "錬金術",
+    "description": "ランダムなポーション NL を1個入手する。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "All Out Attack": {
+    "name": "フルアタック",
+    "description": "敵全体に !D! ダメージを NL 与える。手札を NL ランダムに1枚捨てる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "A Thousand Cuts": {
+    "name": "メッタ切り",
+    "description": "カードを使用するたび NL 敵全体に !M! ダメージを NL 与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Backflip": {
+    "name": "バックフリップ",
+    "description": "!B! ブロック を得る。 NL カードを2枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Backstab": {
+    "name": "騙し討ち",
+    "description": "天賦 。 NL !D! ダメージを与える。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bane": {
+    "name": "破滅",
+    "description": "!D! ダメージを与える。 NL 敵が 毒 を受けている NL 場合、さらに NL !D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blade Dance": {
+    "name": "剣の舞",
+    "description": "ナイフ を !M! 枚手札に NL 加える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blur": {
+    "name": "かすみ",
+    "description": "!B! ブロック を得る。 NL 次のターン開始時に NL ブロック を失わない。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bouncing Flask": {
+    "name": "跳ねるフラスコ",
+    "description": "ランダムな敵に 毒 3を NL !M! 回与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bullet Time": {
+    "name": "バレットタイム",
+    "description": "このターン、カードを NL 追加で引けなくなるが NL 手札のカードの NL コストが0になる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Burst": {
+    "name": "バースト",
+    "description": "このターン、次に NL 使用するスキルの NL 効果を2回分 NL 発動する。",
+    "upgradeDescription": "このターン、次に NL 使用する !M! 枚の NL スキルの効果を NL 2回分発動する。",
+    "extendedDescription": []
+  },
+  "Calculated Gamble": {
+    "name": "賭けの勘定",
+    "description": "手札を捨て、同じ枚数 NL だけカードを引く。 NL 廃棄 される。",
+    "upgradeDescription": "手札を捨て、同じ枚数 NL だけカードを引く。",
+    "extendedDescription": []
+  },
+  "Caltrops": {
+    "name": "まきびし",
+    "description": "アタックを受けるたび、 NL アタックした敵に NL !M! ダメージを反撃する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Catalyst": {
+    "name": "触媒",
+    "description": "敵の 毒 を2倍にする。 NL 廃棄 される。",
+    "upgradeDescription": "敵の 毒 を3倍にする。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Choke": {
+    "name": "窒息",
+    "description": "!D! ダメージを与える。 NL このターン、カードを NL 使用するたび、 NL 対象の敵はHPを NL !M! 失う。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Cloak And Dagger": {
+    "name": "外套とダガー",
+    "description": "!B! ブロック を得る。 NL ナイフ を !M! 枚手札に NL 加える。",
+    "upgradeDescription": "!B! ブロック を得る。 NL ナイフ を !M! 枚手札に NL 加える。",
+    "extendedDescription": []
+  },
+  "Concentrate": {
+    "name": "集中",
+    "description": "カードを !M! 枚捨てる。 NL [G] [G] を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Corpse Explosion": {
+    "name": "死体爆発",
+    "description": "毒 !M! を与える。対象の NL 敵が死亡すると、 NL その最大HPに等しい NL ダメージを敵全体に NL 与える。",
+    "upgradeDescription": "未使用",
+    "extendedDescription": [
+      "未使用"
+    ]
+  },
+  "Crippling Poison": {
+    "name": "死を呼ぶ雲",
+    "description": "敵全体に 毒 !M! と 脱力 2 NL を与える。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dagger Spray": {
+    "name": "五月雨ダガー",
+    "description": "敵全体に !D! ダメージを NL 2回与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dagger Throw": {
+    "name": "ダガースロー",
+    "description": "!D! ダメージを与える。 NL カードを1枚引き、 NL 1枚捨てる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dash": {
+    "name": "ダッシュ",
+    "description": "!B! ブロック を得る。 NL !D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deadly Poison": {
+    "name": "致死毒",
+    "description": "毒 !M! を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_G": {
+    "name": "防御",
+    "description": "!B! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deflect": {
+    "name": "ディフレクト",
+    "description": "!B! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Die Die Die": {
+    "name": "ダイ！ダイ！ダイ！",
+    "description": "敵全体に !D! ダメージを NL 与える。 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Distraction": {
+    "name": "ごまかし",
+    "description": "ランダムなスキルを NL 1枚手札に加える。 NL このターン、その NL コストは0。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dodge and Roll": {
+    "name": "ドッジロール",
+    "description": "!B! ブロック を得る。 NL 次のターンで NL !B! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doppelganger": {
+    "name": "ドッペルゲンガー",
+    "description": "次のターンでX枚の NL カードを引き、 [G] ×X NL を得る。 廃棄 される。",
+    "upgradeDescription": "次のターンでカードを NL X+1枚引き、 [G] × (X+1) NL を得る。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Endless Agony": {
+    "name": "終わりなき苦痛",
+    "description": "このカードを引くたび NL その複製が手札に加え NL られる。 NL !D! ダメージを与える。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Envenom": {
+    "name": "猛毒仕込み",
+    "description": "アタックダメージを NL ブロック されずに NL 与えた時、 毒 1も NL 与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Escape Plan": {
+    "name": "脱出計画",
+    "description": "カードを1枚引く。 NL 引いたカードが NL スキルの場合、 NL !B! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Eviscerate": {
+    "name": "腹裂き",
+    "description": "このターンで捨てた NL カード1枚につき [G] NL 消費-1。 !D! ダメージを NL 3回与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Expertise": {
+    "name": "職人技",
+    "description": "手札が !M! 枚になるまで NL カードを引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Finisher": {
+    "name": "とどめの一撃",
+    "description": "このターンで使用した NL アタックの枚数 NL × !D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (アタック",
+      " 枚使用済み)",
+      " 枚使用済み)"
+    ]
+  },
+  "Flechettes": {
+    "name": "フレシェット",
+    "description": "手札にあるスキルの NL 枚数× !D! ダメージを NL 与える。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (所持しているスキル ",
+      " 枚)",
+      " 枚)"
+    ]
+  },
+  "Flying Knee": {
+    "name": "飛び膝蹴り",
+    "description": "!D! ダメージを与える。 NL 次のターンで [G] を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Footwork": {
+    "name": "フットワーク",
+    "description": "敏捷性 !M! を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Glass Knife": {
+    "name": "ガラスのナイフ",
+    "description": "!D! ダメージを2回 NL 与える。この戦闘中、 NL このカードのダメージ NL 2ずつ減少。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Grand Finale": {
+    "name": "フィナーレ",
+    "description": "山札にカードがない NL 時だけ使用できる。 NL 敵全体に !D! ダメージを NL 与える。",
+    "upgradeDescription": "山札が #r空 でないと NL だめだ。",
+    "extendedDescription": []
+  },
+  "Heel Hook": {
+    "name": "ヒールホールド",
+    "description": "!D! ダメージを与える。 NL 敵が 脱力 を受けている NL 場合は [G] を得て、 NL カードを1枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Infinite Blades": {
+    "name": "無限の刃",
+    "description": "ターン開始時、 NL ナイフ を1枚手札に NL 加える。",
+    "upgradeDescription": "天賦 。 NL ターン開始時、 NL ナイフ を1枚手札に NL 加える。",
+    "extendedDescription": []
+  },
+  "Leg Sweep": {
+    "name": "足払い",
+    "description": "脱力 !M! を与える。 NL !B! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Malaise": {
+    "name": "不快感",
+    "description": "敵は 筋力 Xを失う。 NL 脱力 Xを与える。 NL 廃棄 される。",
+    "upgradeDescription": "敵は 筋力 X+1を失う。 NL 脱力 X+1を与える。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Masterful Stab": {
+    "name": "一撃必殺",
+    "description": "この戦闘中、HPを失 NL うたび、このカードの NL [G] が1増加。 NL !D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Neutralize": {
+    "name": "無力化",
+    "description": "!D! ダメージを与える。 NL 脱力 !M! を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Night Terror": {
+    "name": "悪夢",
+    "description": "カードを1枚選ぶ。 NL 次のターン、 NL そのカードの複製を NL !M! 枚手札に加える。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "1ターンに1回しか NL ",
+      " NL 使えない。"
+    ]
+  },
+  "Noxious Fumes": {
+    "name": "有毒ガス",
+    "description": "ターン開始時、 NL 敵全体に 毒 !M! を NL 与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Outmaneuver": {
+    "name": "先読み",
+    "description": "次のターンで NL [G] [G] を得る。",
+    "upgradeDescription": "次のターンで NL [G] [G] [G] を得る。",
+    "extendedDescription": []
+  },
+  "Phantasmal Killer": {
+    "name": "幻影の暗殺者",
+    "description": "次のターンで NL アタックダメージが NL 2倍になる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PiercingWail": {
+    "name": "金切り声",
+    "description": "このターン、敵全体 NL が 筋力 !M! を失う。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Poisoned Stab": {
+    "name": "毒の一刺し",
+    "description": "!D! ダメージを与える。 NL 毒 !M! を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Predator": {
+    "name": "捕食者",
+    "description": "!D! ダメージを与える。 NL 次のターンでカード NL を2枚追加で引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Prepared": {
+    "name": "準備万端",
+    "description": "カードを !M! 枚引き、 NL !M! 枚捨てる。",
+    "upgradeDescription": "カードを !M! 枚引き、 NL !M! 枚捨てる。",
+    "extendedDescription": []
+  },
+  "Quick Slash": {
+    "name": "はやぶさ斬り",
+    "description": "!D! ダメージを与える。 NL カードを1枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reflex": {
+    "name": "反射",
+    "description": "使用不可 。 NL このカードが手札から NL 捨てられた時、 NL カードを !M! 枚引ける。",
+    "upgradeDescription": "使用不可 。 NL このカードが手札から NL 捨てられた時、 NL カードを !M! 枚引ける。",
+    "extendedDescription": [
+      "このカードは NL 使用できない。"
+    ]
+  },
+  "Riddle With Holes": {
+    "name": "ハチの巣",
+    "description": "!D! ダメージを NL 5回与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Setup": {
+    "name": "段取り",
+    "description": "手札のカード1枚を NL 山札の一番上に置く。 NL 使用時までそのカード NL のコストは0になる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Skewer": {
+    "name": "串刺し",
+    "description": "!D! ダメージをX回 NL 与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Slice": {
+    "name": "スライス",
+    "description": "!D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Storm of Steel": {
+    "name": "鋼の嵐",
+    "description": "手札をすべて捨てる。 NL 捨てたカード1枚に NL つき、 ナイフ を1枚 NL 手札に加える。",
+    "upgradeDescription": "手札をすべて捨てる。 NL 捨てたカード1枚に NL つき、 ナイフ+ を1枚 NL 手札に加える。",
+    "extendedDescription": []
+  },
+  "Strike_G": {
+    "name": "ストライク",
+    "description": "!D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sucker Punch": {
+    "name": "不意打ち",
+    "description": "!D! ダメージを与える。 NL 脱力 !M! を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Survivor": {
+    "name": "サバイバー",
+    "description": "!B! ブロック を得る。 NL カードを1枚捨てる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tactician": {
+    "name": "策士",
+    "description": "使用不可 。 NL このカードが手札から NL 捨てられると、 [G] を NL 得る。",
+    "upgradeDescription": "使用不可 。 NL このカードが手札から NL 捨てられると、 [G] [G] を NL 得る。",
+    "extendedDescription": [
+      "このカードは NL 使用できない。"
+    ]
+  },
+  "Terror": {
+    "name": "恐怖",
+    "description": "弱体化 99を与える。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tools of the Trade": {
+    "name": "商売道具",
+    "description": "ターン開始時、 NL カードを1枚引いて、 NL 1枚捨てる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Underhanded Strike": {
+    "name": "スニークストライク",
+    "description": "!D! ダメージを与える。 NL このターンでカードを NL 捨てていた場合、 NL [G] [G] を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "このカードは NL 使用できない。"
+    ]
+  },
+  "Unload": {
+    "name": "一斉処分",
+    "description": "!D! ダメージを与える。 NL 手札のアタック NL 以外のカードを NL すべて捨てる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Well Laid Plans": {
+    "name": "用意周到",
+    "description": "ターン終了時、 NL 最大 !M! 枚のカードを NL 保留 する。",
+    "upgradeDescription": "ターン終了時、 NL 最大 !M! 枚のカードを NL 保留 する。",
+    "extendedDescription": []
+  },
+  "Wraith Form v2": {
+    "name": "幽体化",
+    "description": "無形 !M! を得る。 NL 自分のターン終了 NL 時、 敏捷性1を失う。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Aggregate": {
+    "name": "集計",
+    "description": "山札のカード !M! 枚に NL つき [B] を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "All For One": {
+    "name": "オールフォーワン",
+    "description": "!D! ダメージを与える。 NL 捨て札にある0コスト NL のカードをすべて手札 NL にする。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Amplify": {
+    "name": "増幅",
+    "description": "このターン、次に使用 NL するパワーカードの NL 効果を2回分発動する。",
+    "upgradeDescription": "このターン、次に使用 NL する !M! 枚のパワー NL カードの効果を2回分 NL 発動する。",
+    "extendedDescription": []
+  },
+  "Auto Shields": {
+    "name": "自動防御盾",
+    "description": "ブロック がない時、 NL !B! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ball Lightning": {
+    "name": "ボールライトニング",
+    "description": "!D! ダメージを与える。 NL ライトニング を !M! 個 NL 生成 する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Barrage": {
+    "name": "集中砲火",
+    "description": "生成 しているオーブ NL 1個につき !D! ダメージを NL 与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Beam Cell": {
+    "name": "ビームセル",
+    "description": "!D! ダメージを与える。 NL 弱体化 !M! を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Biased Cognition": {
+    "name": "偏向認識",
+    "description": "集中力 !M! を得る。 NL ターン開始時に 集中力 NL 1を失う。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blizzard": {
+    "name": "ブリザード",
+    "description": "この戦闘で 生成 した NL フロスト の数の !M! 倍に NL 等しいダメージを NL 敵全体に与える。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL ( !D! ダメージを与える)",
+      ""
+    ]
+  },
+  "BootSequence": {
+    "name": "起動シーケンス",
+    "description": "天賦 。 NL !B! ブロック を得る。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Buffer": {
+    "name": "バッファー",
+    "description": "次のHPの喪失を防ぐ。",
+    "upgradeDescription": "次のHPの喪失を !M! 回 NL 防ぐ。",
+    "extendedDescription": []
+  },
+  "Capacitor": {
+    "name": "コンデンサ",
+    "description": "オーブスロットを !M! 個 NL 得る。",
+    "upgradeDescription": "オーブスロットを !M! 個 NL 得る。",
+    "extendedDescription": []
+  },
+  "Chaos": {
+    "name": "混沌",
+    "description": "ランダムなオーブを NL !M! 個 生成 する。",
+    "upgradeDescription": "ランダムなオーブを NL !M! 個 生成 する。",
+    "extendedDescription": []
+  },
+  "Chill": {
+    "name": "寒気",
+    "description": "敵1体につき フロスト NL を !M! 個 生成 する。 NL 廃棄 される。",
+    "upgradeDescription": "天賦 。 NL 敵1体につき フロスト NL を !M! 個 生成 する。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Gash": {
+    "name": "鋭い爪",
+    "description": "!D! ダメージを与える。 NL この戦闘中、すべての NL 鋭い爪カードの NL ダメージが !M! 増える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Cold Snap": {
+    "name": "寒波",
+    "description": "!D! ダメージを与える。 NL フロスト を !M! 個 NL 生成 する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Compile Driver": {
+    "name": "コンパイラ",
+    "description": "!D! ダメージを与える。 NL 生成 しているオーブ NL 1種につき !M! 枚のカード NL を引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Conserve Battery": {
+    "name": "充電",
+    "description": "!B! ブロック を得る。 NL 次のターンで [B] を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Consume": {
+    "name": "消費",
+    "description": "集中力 !M! を得る。 NL オーブスロットを1個 NL 失う。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Coolheaded": {
+    "name": "冷静沈着",
+    "description": "フロスト を1個 生成 NL する。カードを !M! 枚 NL 引く。",
+    "upgradeDescription": "フロスト を1個 生成 NL する。カードを !M! 枚 NL 引く。",
+    "extendedDescription": []
+  },
+  "Core Surge": {
+    "name": "コアサージ",
+    "description": "!D! ダメージを与える。 NL 人の作りし物 !M! を得る。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Creative AI": {
+    "name": "クリエイティブAI",
+    "description": "ターン開始時、 NL ランダムなパワー NL カードを1枚手札に NL 加える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Darkness": {
+    "name": "暗黒",
+    "description": "ダーク を !M! 個 生成 する。",
+    "upgradeDescription": "ダーク を !M! 個 生成 する。 NL すべての ダーク NL オーブの自動効果を NL 発動する。",
+    "extendedDescription": []
+  },
+  "Defend_B": {
+    "name": "防御",
+    "description": "!B! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defragment": {
+    "name": "デフラグ",
+    "description": "集中力 !M! を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doom and Gloom": {
+    "name": "自暴自棄",
+    "description": "敵全体に !D! ダメージを NL 与える。ダーク を NL !M! 個 生成 する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Double Energy": {
+    "name": "ダブルエナジー",
+    "description": "エナジーを2倍にする。 NL 廃棄 される。",
+    "upgradeDescription": "エナジーを2倍にする。",
+    "extendedDescription": []
+  },
+  "Dualcast": {
+    "name": "二連解放",
+    "description": "先頭のオーブを2回 NL 解放 する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Echo Form": {
+    "name": "反響化",
+    "description": "エーテリアル 。 NL ターンの最初に使用 NL するカードの効果を NL 2回分発動する。",
+    "upgradeDescription": "ターンの最初に使用 NL するカードの効果を NL 2回分発動する。",
+    "extendedDescription": []
+  },
+  "Electrodynamics": {
+    "name": "電気力学",
+    "description": "ライトニング が敵全体 NL を攻撃するように NL 変わる。ライトニング NL を !M! 個 生成 する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fission": {
+    "name": "核分裂",
+    "description": "すべてのオーブを取り NL 除く。取り除かれた NL オーブ1個につき、 NL [B] を得て、カードを NL !M! 枚引く。 廃棄 される。",
+    "upgradeDescription": "すべてのオーブを 解放 NL する。 解放 したオーブ NL 1個につき、 [B] を得て、 NL カードを !M! 枚引く。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Force Field": {
+    "name": "力場",
+    "description": "この戦闘で使用した NL パワーカード1枚に NL つき [B] 消費-1。 NL !B! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FTL": {
+    "name": "超光速航法",
+    "description": "!D! ダメージを与える。 NL このターンで使用 NL したカードが !M! 枚 NL 未満の場合、 NL カードを1枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (",
+      " 枚使用済み)",
+      " 枚使用済み)"
+    ]
+  },
+  "Fusion": {
+    "name": "融合",
+    "description": "プラズマ を !M! 個 生成 NL する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Genetic Algorithm": {
+    "name": "遺伝的アルゴリズム",
+    "description": "!B! ブロック を得る。 NL このカードの ブロック NL 値を永続的に NL !M! 増加する。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Glacier": {
+    "name": "氷河",
+    "description": "!B! ブロック を得る。 NL フロスト を !M! 個 生成 NL する。",
+    "upgradeDescription": "!B! ブロック を得る。 NL フロスト を !M! 個 生成 NL する。",
+    "extendedDescription": []
+  },
+  "Go for the Eyes": {
+    "name": "目潰し",
+    "description": "!D! ダメージを与える。 NL 敵がアタックを予定 NL している場合、 脱力 NL !M! を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Heatsinks": {
+    "name": "ヒートシンク",
+    "description": "パワーカードを使用 NL するたび、カードを NL !M! 枚引く。",
+    "upgradeDescription": "パワーカードを使用 NL するたび、カードを NL !M! 枚引く。",
+    "extendedDescription": []
+  },
+  "Hello World": {
+    "name": "ハロー・ワールド",
+    "description": "ターン開始時、 NL ランダムなコモン NL カードを1枚手札に NL 加える。",
+    "upgradeDescription": "天賦 。 NL ターン開始時、 NL ランダムなコモン NL カードを1枚手札に NL 加える。",
+    "extendedDescription": []
+  },
+  "Hologram": {
+    "name": "ホログラム",
+    "description": "!B! ブロック を得る。 NL 捨て札のカードを1枚 NL 手札に加える。 NL 廃棄 される。",
+    "upgradeDescription": "!B! ブロック を得る。 NL 捨て札のカードを1枚 NL 手札に加える。",
+    "extendedDescription": []
+  },
+  "Hyperbeam": {
+    "name": "ハイパービーム",
+    "description": "敵全体に !D! ダメージを NL 与える。 集中力 !M! を NL 失う。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Leap": {
+    "name": "跳躍",
+    "description": "!B! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Lockon": {
+    "name": "ブルズアイ",
+    "description": "!D! ダメージを与える。 NL ロックオン !M! を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Loop": {
+    "name": "ループ",
+    "description": "ターン開始時、先頭の NL オーブの自動効果を NL 発動する。",
+    "upgradeDescription": "ターン開始時、先頭の NL オーブの自動効果を NL !M! 回分発動する。",
+    "extendedDescription": []
+  },
+  "Machine Learning": {
+    "name": "機械学習",
+    "description": "ターン開始時に !M! 枚の NL カードを追加で引く。",
+    "upgradeDescription": "天賦 。 NL ターン開始時に !M! 枚の NL カードを追加で引く。",
+    "extendedDescription": []
+  },
+  "Melter": {
+    "name": "溶解炉",
+    "description": "敵の ブロック をすべて NL 取り除く。 !D! ダメージ NL を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Meteor Strike": {
+    "name": "メテオストライク",
+    "description": "!D! ダメージを与える。 NL プラズマ を !M! 個 生成 NL する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Multi-Cast": {
+    "name": "重連解放",
+    "description": "先頭のオーブをX回分 NL 解放 する。",
+    "upgradeDescription": "先頭のオーブを NL X+1回分 解放 する。",
+    "extendedDescription": []
+  },
+  "Steam Power": {
+    "name": "オーバークロック",
+    "description": "カードを !M! 枚引く。 NL 火傷 を1枚捨て札に NL 加える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rainbow": {
+    "name": "レインボー",
+    "description": "ライトニング 、 フロスト 、 ダーク を NL 1個ずつ 生成 する。 NL 廃棄 される。",
+    "upgradeDescription": "ライトニング 、 フロスト 、 ダーク を NL 1個ずつ 生成 する。",
+    "extendedDescription": []
+  },
+  "Reboot": {
+    "name": "再起動",
+    "description": "すべてのカードを NL シャッフルして山札に NL 戻す。 カードを NL !M! 枚引く。 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rebound": {
+    "name": "跳ね返し",
+    "description": "!D! ダメージを与える。 NL 次に使用するカードは NL 山札の一番上に NL 置かれる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Redo": {
+    "name": "再帰",
+    "description": "先頭のオーブを 解放 NL する。その 解放 した NL オーブを 生成 する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Recycle": {
+    "name": "リサイクル",
+    "description": "カードを1枚 廃棄 する。 NL そのコストに等しい NL [B] を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reinforced Body": {
+    "name": "強化ボディ",
+    "description": "!B! ブロック をX回得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reprogram": {
+    "name": "再構成",
+    "description": "集中力 !M! を失う。 NL 筋力 !M!を得る。 NL 敏捷性 !M!を得る。",
+    "upgradeDescription": "集中力 !M! を失う。 NL 筋力 1を得る。 NL 敏捷性 1を得る。",
+    "extendedDescription": []
+  },
+  "Rip and Tear": {
+    "name": "狂奔",
+    "description": "ランダムな敵に NL !D! ダメージを2回与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Scrape": {
+    "name": "切り裂き",
+    "description": "!D! ダメージを与える。 NL カードを !M! 枚引く。 NL この時引いた、 NL 0コスト以外のカード NL をすべて捨てる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Seek": {
+    "name": "検索",
+    "description": "山札からカードを !M! 枚 NL 手札に加える。 NL 廃棄 される。",
+    "upgradeDescription": "山札からカードを !M! 枚 NL 手札に加える。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Self Repair": {
+    "name": "自己修復",
+    "description": "戦闘終了時、HPを NL !M! 回復する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Skim": {
+    "name": "スキミング",
+    "description": "カードを !M! 枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Stack": {
+    "name": "スタック",
+    "description": "捨て札の枚数に等しい NL ブロック を得る。",
+    "upgradeDescription": "捨て札の枚数+3に NL 等しい ブロック を NL 得る。",
+    "extendedDescription": [
+      " NL ( !B! ブロック を得る)"
+    ]
+  },
+  "Static Discharge": {
+    "name": "静電気放電",
+    "description": "アタックダメージを NL 受けるたび、 NL ライトニング を !M! 個 NL 生成 する。",
+    "upgradeDescription": "アタックダメージを NL 受けるたび、 NL ライトニング を !M! 個 NL 生成 する。",
+    "extendedDescription": []
+  },
+  "Steam": {
+    "name": "スチームバリア",
+    "description": "!B! ブロック を得る。 NL この戦闘中、この NL カードの ブロック 値は NL 1ずつ減少する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Storm": {
+    "name": "嵐",
+    "description": "パワーカードを使用 NL するたびライトニング NL を1個 生成 する。",
+    "upgradeDescription": "天賦 。 NL パワーカードを使用 NL するたびライトニング NL を1個 生成 する。",
+    "extendedDescription": []
+  },
+  "Streamline": {
+    "name": "効率化",
+    "description": "!D! ダメージを与える。 NL この戦闘中のこの NL カードのコストを !M! NL ずつ減少する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Strike_B": {
+    "name": "ストライク",
+    "description": "!D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sunder": {
+    "name": "切断",
+    "description": "!D! ダメージを与える。 NL このアタックで敵を NL 倒すと、 [B] [B] [B] を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sweeping Beam": {
+    "name": "ビーム一掃",
+    "description": "敵全体に !D! ダメージを NL 与える。カードを !M! 枚 NL 引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tempest": {
+    "name": "テンペスト",
+    "description": "ライトニング をX個 NL 生成 する。 NL 廃棄 される。",
+    "upgradeDescription": "ライトニング をX+1個 NL 生成 する。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Thunder Strike": {
+    "name": "サンダーストライク",
+    "description": "この戦闘で 生成 した NL ライトニング の個数分、 NL ランダムな敵に NL !D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " ( ライトニング !M! 個 生成 )"
+    ]
+  },
+  "Turbo": {
+    "name": "ターボ",
+    "description": "[B] [B] を得る。 NL 虚無 を1枚捨て札に NL 加える。",
+    "upgradeDescription": "[B] [B] [B] を得る。 NL 虚無 を1枚捨て札に NL 加える。",
+    "extendedDescription": []
+  },
+  "Undo": {
+    "name": "均衡",
+    "description": "!B! ブロック を得る。 NL このターン、手札を NL 保留 する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "White Noise": {
+    "name": "ホワイトノイズ",
+    "description": "ランダムなパワーを NL 1枚手札に加える。 NL このターン、その NL コストは0。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Zap": {
+    "name": "消去プログラム",
+    "description": "ライトニング を !M! 個 生成 する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Alpha": {
+    "name": "アルファ",
+    "description": "*ベータ を1枚 NL 山札に混ぜる。 NL 廃棄 される。",
+    "upgradeDescription": "天賦 。 NL *ベータ を1枚 NL 山札に混ぜる。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "BattleHymn": {
+    "name": "闘争賛歌",
+    "description": "ターン開始時、 NL *スマイト を1枚 NL 手札に加える。",
+    "upgradeDescription": "天賦 。 NL ターン開始時、 NL *スマイト を1枚 NL 手札に加える。",
+    "extendedDescription": []
+  },
+  "Blasphemy": {
+    "name": "冒涜",
+    "description": "神聖 に移行する。 NL 次のターン、 NL プレイヤーは死ぬ。 NL 廃棄 される。",
+    "upgradeDescription": "保留 される。 NL 神聖 に移行する。 NL 次のターン、 NL プレイヤーは死ぬ。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "BowlingBash": {
+    "name": "ボウリングバッシュ",
+    "description": "戦闘中の敵1体 NL につき !D! ダメージ NL を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Brilliance": {
+    "name": "神光",
+    "description": "!D! ダメージを与える。 NL この戦闘で得た NL マントラ の数値分、 NL 追加ダメージを NL 与える。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "",
+      ""
+    ]
+  },
+  "CarveReality": {
+    "name": "彫り刻む現実",
+    "description": "!D! ダメージを与える。 NL *スマイト を1枚 NL 手札に加える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Collect": {
+    "name": "採集",
+    "description": "Xターンの間、 NL ターン開始時に NL *奇跡+ を1枚、 NL 手札に加える。 NL 廃棄 される。",
+    "upgradeDescription": "X+1ターンの間、 NL ターン開始時に NL *奇跡+ を1枚、 NL 手札に加える。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Conclude": {
+    "name": "終幕",
+    "description": "敵全体に !D! ダメージを NL 与える。 NL ターンを終了する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ConjureBlade": {
+    "name": "刀剣召喚",
+    "description": "*抹殺の剣 を1枚 NL 山札に混ぜる。 NL 廃棄 される。",
+    "upgradeDescription": "*抹殺の剣 をX+1 NL にして山札に混ぜる。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Consecrate": {
+    "name": "聖別",
+    "description": "敵全体に !D! ダメージを NL 与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Crescendo": {
+    "name": "奮激",
+    "description": "保留 される。 NL 憤怒 に移行する。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CrushJoints": {
+    "name": "関節粉砕",
+    "description": "!D! ダメージを与える。 NL 直前にプレイした NL カードがスキルの NL 場合、 弱体化 !M! NL を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CutThroughFate": {
+    "name": "切り開く運命",
+    "description": "!D! ダメージを与える。 NL 占術 !M! 。 NL カードを1枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DeceiveReality": {
+    "name": "欺かれる現実",
+    "description": "!B! ブロック を得る。 NL *退避 を1枚 NL 手札に加える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_P": {
+    "name": "防御",
+    "description": "!B! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DeusExMachina": {
+    "name": "デウスエウスマキナ",
+    "description": "使用不可 。 NL このカードを引いた NL とき、 *奇跡 を !M! 枚 NL 手札に加え、この NL カードを 廃棄 する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DevaForm": {
+    "name": "神体化",
+    "description": "エーテリアル 。 NL ターン開始時、 [W] NL を得る。この効果は NL ターンごとに !M! NL 増加する。",
+    "upgradeDescription": "ターン開始時、 [W] NL を得る。この効果は NL ターンごとに !M! NL 増加する。           ",
+    "extendedDescription": []
+  },
+  "Devotion": {
+    "name": "献身",
+    "description": "ターン開始時、 !M! NL マントラ を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyBody": {
+    "name": "空虚なる体",
+    "description": "!B! ブロック を得る。 NL スタンス を解除する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyFist": {
+    "name": "空虚なる拳",
+    "description": "!D! ダメージを与える。 NL スタンス を解除する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyMind": {
+    "name": "空虚なる頭",
+    "description": "カードを !M! 枚引く。 NL スタンス を解除する。",
+    "upgradeDescription": "カードを !M! 枚引く。 NL スタンス を解除する。",
+    "extendedDescription": []
+  },
+  "Eruption": {
+    "name": "噴火",
+    "description": "!D! ダメージを与える。 NL 憤怒 に移行する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Establishment": {
+    "name": "制定",
+    "description": "カードが 保留 される NL たび、この戦闘中 NL そのカードのコストは NL !M! 下がる。",
+    "upgradeDescription": "天賦 。 NL カードが 保留 される NL たび、この戦闘中 NL そのカードのコストは NL !M! 下がる。",
+    "extendedDescription": []
+  },
+  "Evaluate": {
+    "name": "評価",
+    "description": "!B! ブロック を得る。 NL 山札に *洞察 を NL 1枚混ぜる。",
+    "upgradeDescription": "!B! ブロック を得る。 NL 山札に *洞察+ を NL 1枚混ぜる。",
+    "extendedDescription": []
+  },
+  "Fasting2": {
+    "name": "断食",
+    "description": "筋力 !M! を得る。 NL 敏捷性 !M! を得る。 NL ターン開始時に NL 得られる [W] が NL 1つ減少する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FearNoEvil": {
+    "name": "悪を恐れず",
+    "description": "!D! ダメージを与える。 NL 敵が攻撃を予定 NL している場合、 NL 平静 に移行する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FlurryOfBlows": {
+    "name": "連撃",
+    "description": "!D! ダメージを与える。 NL スタンス を変更 NL するたび、この NL カードを捨て札から NL 手札に戻す。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FlyingSleeves": {
+    "name": "迅速の袖",
+    "description": "保留 される。 NL !D! ダメージを2回 NL 与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FollowUp": {
+    "name": "追撃",
+    "description": "!D! ダメージを与える。 NL 直前にプレイした NL カードがアタックの NL 場合、 [W] を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ForeignInfluence": {
+    "name": "外なる影響",
+    "description": "色を問わず選出される NL 3枚のアタックから NL 1枚選び手札に NL 加える。 NL 廃棄 される。",
+    "upgradeDescription": "色を問わず選出される NL 3枚のアタックから1 NL 枚選び手札に加える。 NL このターンそのコス NL トは0。 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Wireheading": {
+    "name": "未来予見",
+    "description": "ターン開始時、 NL 占術 !M! 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Halt": {
+    "name": "停止命令",
+    "description": "!B! ブロック を得る。 NL 憤怒 スタンス の場合、 NL 追加で !M! ブロック NL を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Indignation": {
+    "name": "憤激",
+    "description": "憤怒 スタンス の場合、 NL 敵全体に 弱体化 !M! NL を与える。そうでない NL 場合は 憤怒 に NL 移行する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "InnerPeace": {
+    "name": "内なる平和",
+    "description": "平静 スタンス の場合、 NL カードを !M! 枚引く。 NL そうでない場合は NL 平静 に移行する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Judgement": {
+    "name": "審判",
+    "description": "敵のHPが !M! NL 以下の場合、 NL 敵のHPを0にする。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "JUDGED"
+    ]
+  },
+  "JustLucky": {
+    "name": "ただの幸運",
+    "description": "占術 !M! 。 NL !B! ブロック を得る。 NL !D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LessonLearned": {
+    "name": "教訓",
+    "description": "!D! ダメージを与える。 NL 致命 の場合、デッキの NL ランダムなカード1枚を NL アップグレード する。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LikeWater": {
+    "name": "水の如く",
+    "description": "ターン終了時に 平静 NL スタンス の場合、 NL !M! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "MasterReality": {
+    "name": "現実掌握",
+    "description": "この戦闘中、カードが NL 作られるたびにそれを NL アップグレード する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Meditate": {
+    "name": "瞑想",
+    "description": "捨て札からカードを NL 1枚手札に戻し、 NL それを 保留 する。 NL 平静 に移行する。 NL ターンを終了する。",
+    "upgradeDescription": "捨て札からカードを NL 2枚手札に戻し、 NL それらを 保留 する。 NL 平静 に移行する。 NL ターンを終了する。",
+    "extendedDescription": []
+  },
+  "MentalFortress": {
+    "name": "精神要塞",
+    "description": "スタンス を変更する NL たび、 !M! ブロック NL を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Nirvana": {
+    "name": "涅槃",
+    "description": "占術 を行うたび、 NL !M! ブロックを得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Omniscience": {
+    "name": "全知",
+    "description": "山札からカードを NL 1枚選ぶ。その NL カードを2回プレイ NL して、 廃棄 する。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Perseverance": {
+    "name": "忍耐",
+    "description": "保留 される。 NL !B! ブロック を得る。 NL 保留 されるたび、この NL 戦闘におけるブロック NL 値が !M! 増加する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pray": {
+    "name": "祈り",
+    "description": "!M! マントラ を得る。 NL 山札に *洞察 を NL 1枚混ぜる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PathToVictory": {
+    "name": "経穴殺法",
+    "description": "!M! *急所 を与える。 NL 敵全体はそれぞれの NL *急所 に等しい NL HPを失う。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Prostrate": {
+    "name": "拝跪",
+    "description": "!M! マントラ を得る。 NL !B! ブロック を得る。",
+    "upgradeDescription": "DEPRECATED",
+    "extendedDescription": []
+  },
+  "Protect": {
+    "name": "護身",
+    "description": "保留 される。 NL !B! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ragnarok": {
+    "name": "ラグナロク",
+    "description": "ランダムな敵に NL !D! ダメージを NL !M! 回与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ReachHeaven": {
+    "name": "天への導き",
+    "description": "!D! ダメージ を与える。 NL *暴力による救済 を NL 1枚山札に混ぜる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Adaptation": {
+    "name": "急襲",
+    "description": "憤怒に 移行するたび、 NL カードを !M! 枚引く。",
+    "upgradeDescription": "DEPRECATED",
+    "extendedDescription": []
+  },
+  "Sanctity": {
+    "name": "尊厳",
+    "description": "!B! ブロック を得る。 NL 直前にプレイした NL カードがスキルの NL 場合、カードを NL !M! 枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SandsOfTime": {
+    "name": "時の砂",
+    "description": "保留 される。 NL !D! ダメージを与える。 NL 保留 されるたび、 NL この戦闘における NL コストが1減少する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SashWhip": {
+    "name": "鞭打つ帯",
+    "description": "!D! ダメージを与える。 NL 直前にプレイした NL カードがアタックの NL 場合、 脱力 !M! NL を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Scrawl": {
+    "name": "走り書き",
+    "description": "手札がいっぱいに NL なるまで、山札から NL カードを引く。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SignatureMove": {
+    "name": "フィニッシャー",
+    "description": "手札のアタックが NL このカードだけの NL 場合にのみ使用可能。 NL !D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vengeance": {
+    "name": "一触即発",
+    "description": "次のターン開始時、 NL 憤怒 に移行して NL カードを !M! 枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SpiritShield": {
+    "name": "精神障壁",
+    "description": "手札のカード1枚に NL つき !M! ブロック NL を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL ( !B! ブロック を得る)"
+    ]
+  },
+  "Strike_P": {
+    "name": "ストライク",
+    "description": "!D! ダメージを与える。 ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Study": {
+    "name": "学習",
+    "description": "ターン終了時、 NL *洞察 を1枚山札に NL 混ぜる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Swivel": {
+    "name": "旋回",
+    "description": "!B! ブロック を得る。 NL 次にプレイする NL アタックのコストが NL 0になる。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "TalkToTheHand": {
+    "name": "この手に言いな",
+    "description": "!D! ダメージを与える。 NL この敵に攻撃するたび NL !M! ブロック を得る。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tantrum": {
+    "name": "かんしゃく",
+    "description": "!D! ダメージを NL !M! 回与える。 NL 憤怒 に移行する。 NL このカードを山札に NL 加える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ThirdEye": {
+    "name": "第三の目",
+    "description": "!B! ブロック を得る。 NL 占術 !M! 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ClearTheMind": {
+    "name": "精神の平穏",
+    "description": "保留 される。 NL 平静 に移行する。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vault": {
+    "name": "飛躍",
+    "description": "このターン終了後に NL 追加で1ターン NL 続けて行動する。 NL ターンを終了する。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vigilance": {
+    "name": "警戒",
+    "description": "!B! ブロック を得る。 NL 平静 に移行する。",
+    "upgradeDescription": "Deprecated.",
+    "extendedDescription": []
+  },
+  "Wallop": {
+    "name": "殴打",
+    "description": "!D! ダメージを与える。 NL ブロック されずに NL 与えたダメージ分の NL ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WaveOfTheHand": {
+    "name": "波打つ手",
+    "description": "このターン、 NL ブロック を得るたび NL 敵全体に 脱力 !M! NL を与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Weave": {
+    "name": "編み上げ",
+    "description": "!D! ダメージを与える。 NL 占術 を行うたび、 NL このカードを捨て札 NL から手札に戻す。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WheelKick": {
+    "name": "回し蹴り",
+    "description": "!D! ダメージを与える。 NL カードを !M! 枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WindmillStrike": {
+    "name": "ウィンドストライク",
+    "description": "保留 される。 NL !D! ダメージを与える。 NL 保留 されるたび、 NL この戦闘における NL ダメージが !M! 増加する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wish": {
+    "name": "願いごと",
+    "description": "プレートアーマー !B! 、 NL 筋力 !D! 、 !M! ゴールド NL のうちから1つ選び、 NL それを得る。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Worship": {
+    "name": "崇拝",
+    "description": "!M! マントラ を得る。",
+    "upgradeDescription": "保留 される。 NL !M! マントラ を得る。",
+    "extendedDescription": []
+  },
+  "WreathOfFlame": {
+    "name": "炎の輪冠",
+    "description": "次のアタックが追加で NL !M! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Apotheosis": {
+    "name": "神格化",
+    "description": "戦闘終了まですべての NL カードをアップグレー NL ドする。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bandage Up": {
+    "name": "包帯",
+    "description": "HPを !M! 回復する。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blind": {
+    "name": "目くらまし",
+    "description": "脱力 !M! を与える。",
+    "upgradeDescription": "敵全体に 脱力 !M! NL を与える。",
+    "extendedDescription": []
+  },
+  "Chrysalis": {
+    "name": "サナギ",
+    "description": "ランダムなスキルを NL !M! 枚山札に混ぜる。 NL この戦闘中、それらの NL コストは0。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dark Shackles": {
+    "name": "闇の足枷",
+    "description": "このターン、敵は NL 筋力 !M! を失う。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deep Breath": {
+    "name": "深呼吸",
+    "description": "捨て札をシャッフル NL して山札に戻す。 NL カードを !M! 枚引く。",
+    "upgradeDescription": "捨て札をシャッフル NL して山札に戻す。 NL カードを !M! 枚引く。",
+    "extendedDescription": []
+  },
+  "Discovery": {
+    "name": "発見",
+    "description": "3枚のランダムなカー NL ドから1枚を選び、手 NL 札に加える。このター NL ン、そのコストは0。 NL 廃棄 される。",
+    "upgradeDescription": "3枚のランダムなカー NL ドから1枚を選び、手 NL 札に加える。このター NL ン、そのコストは0。",
+    "extendedDescription": []
+  },
+  "Dramatic Entrance": {
+    "name": "ドラマチックな登場",
+    "description": "天賦 。 NL 敵全体に !D! ダメージを NL 与える。 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Enlightenment": {
+    "name": "啓発",
+    "description": "このターン、手札の NL すべてのカードの NL コストを1に減少する。",
+    "upgradeDescription": "この戦闘中、手札の NL すべてのカードの NL コストを1に減少する。",
+    "extendedDescription": []
+  },
+  "Finesse": {
+    "name": "トリック",
+    "description": "!B! ブロック を得る。 NL カードを1枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flash of Steel": {
+    "name": "剣の一閃",
+    "description": "!D! ダメージを与える。 NL カードを1枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Forethought": {
+    "name": "先見の明",
+    "description": "手札のカード1枚を NL 山札の一番下に置く。 NL 使用時までその NL カードのコストは0に NL なる。",
+    "upgradeDescription": "手札のカードを好きな NL 枚数山札の底に置く。 NL 使用時までそれらの NL カードのコストは0に NL なる。",
+    "extendedDescription": []
+  },
+  "Good Instincts": {
+    "name": "直感",
+    "description": "!B! ブロック を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "HandOfGreed": {
+    "name": "強欲の手",
+    "description": "!D! ダメージを与える。 NL このアタックで NL ミニオン以外の敵を NL 倒すと、 !M! ゴールドを NL 得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Impatience": {
+    "name": "焦燥",
+    "description": "手札にアタックが NL 1枚もない場合、 NL カードを !M! 枚引く。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Jack Of All Trades": {
+    "name": "よろず屋",
+    "description": "ランダムな無色カード NL を !M! 枚手札に加える。 NL 廃棄 される。",
+    "upgradeDescription": "ランダムな無色カード NL を !M! 枚手札に加える。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Madness": {
+    "name": "狂気",
+    "description": "この戦闘中、手札の NL ランダムなカード1枚 NL のコストを0に減少 NL する。 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Magnetism": {
+    "name": "磁性",
+    "description": "ターン開始時、 NL ランダムな無色カード NL を1枚手札に加える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Master of Strategy": {
+    "name": "戦略家",
+    "description": "カードを !M! 枚引く。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Mayhem": {
+    "name": "騒乱",
+    "description": "ターン開始時、山札の NL 一番上のカードを NL 使用する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Metamorphosis": {
+    "name": "メタモルフォーゼ",
+    "description": "ランダムなアタックを NL !M! 枚山札に混ぜる。 NL この戦闘中それらの NL コストは0。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Mind Blast": {
+    "name": "マインドブラスト",
+    "description": "天賦 。 NL 山札にあるカードの NL 枚数に等しい NL ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL ( !D! ダメージを与える)"
+    ]
+  },
+  "Panacea": {
+    "name": "万能薬",
+    "description": "人の作りし物 !M! を得る。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Panache": {
+    "name": "威風堂々",
+    "description": "1回のターンでカード NL を5枚使用するたび、 NL 敵全体に !M! ダメージを NL 与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PanicButton": {
+    "name": "非常ボタン",
+    "description": "!B! ブロック を得る。 NL !M! ターンの間、 NL カードから ブロック を NL 得られない。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Purity": {
+    "name": "純潔",
+    "description": "手札のカードを最大 NL !M! 枚 廃棄 する。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sadistic Nature": {
+    "name": "加虐性",
+    "description": "敵にデバフを与えるた NL び、その敵に NL !M! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Secret Technique": {
+    "name": "秘密のテクニック",
+    "description": "山札のスキルを1枚 NL 手札に加える。 NL 廃棄 される。",
+    "upgradeDescription": "山札のスキルを1枚 NL 手札に加える。",
+    "extendedDescription": [
+      "山札にスキルがない。"
+    ]
+  },
+  "Secret Weapon": {
+    "name": "秘密の装備",
+    "description": "山札のアタックを NL 1枚手札に NL 加える。 廃棄 される。",
+    "upgradeDescription": "山札のアタックを NL 1枚手札に NL 加える。",
+    "extendedDescription": [
+      "山札にアタックがない。"
+    ]
+  },
+  "Swift Strike": {
+    "name": "スイフトストライク",
+    "description": "!D! ダメージを与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "The Bomb": {
+    "name": "爆弾",
+    "description": "3ターン経過後、 NL 敵全体に !M! ダメージを NL 与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Thinking Ahead": {
+    "name": "予測",
+    "description": "カードを2枚引く。 NL 手札のカード1枚を NL 山札の一番上に置く。 NL 廃棄 される。",
+    "upgradeDescription": "カードを2枚引く。 NL 手札のカード1枚を NL 山札の一番上に置く。",
+    "extendedDescription": []
+  },
+  "Transmutation": {
+    "name": "変性",
+    "description": "ランダムな無色カード NL をX枚手札に加える。 NL このターン、それらの NL コストは0。 NL 廃棄 される。",
+    "upgradeDescription": "アップグレード 済みの NL 無色カードをランダム NL にX枚手札に加える。 NL このターン、それらの NL コストは0。 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Trip": {
+    "name": "つまずき",
+    "description": "弱体化 !M! を与える。",
+    "upgradeDescription": "敵全体に 弱体化 !M! を NL 与える。",
+    "extendedDescription": []
+  },
+  "Violence": {
+    "name": "暴力",
+    "description": "山札から !M! 枚の NL ランダムなアタックを NL 手札に加える。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Burn": {
+    "name": "火傷",
+    "description": "使用不可 。 NL ターン終了時に NL 2ダメージを受ける。",
+    "upgradeDescription": "使用不可 。 NL ターン終了時に NL 4ダメージを受ける。",
+    "extendedDescription": []
+  },
+  "Dazed": {
+    "name": "めまい",
+    "description": "使用不可 。 NL エーテリアル 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Slimed": {
+    "name": "粘液",
+    "description": "廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Void": {
+    "name": "虚無",
+    "description": "使用不可 。 NL エーテリアル 。 NL このカードを引くたび、 NL エナジーを1失う。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wound": {
+    "name": "負傷",
+    "description": "使用不可 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ghostly": {
+    "name": "幻姿",
+    "description": "エーテリアル 。 NL 無形 1を得る。 NL 廃棄 される。",
+    "upgradeDescription": "無形 1を得る。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Beta": {
+    "name": "ベータ",
+    "description": "*オメガ を1枚 NL 山札に混ぜる。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bite": {
+    "name": "牙",
+    "description": "!D! ダメージを与える。 NL HPを !M! 回復する。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "J.A.X.": {
+    "name": "ビッグJAX",
+    "description": "HPを3失う。 NL 筋力 !M! を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Insight": {
+    "name": "洞察",
+    "description": "保留 される。 NL カードを !M! 枚引く。 NL 廃棄 される。",
+    "upgradeDescription": "保留 される。 NL カードを !M! 枚引く。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Miracle": {
+    "name": "奇跡",
+    "description": "保留 される。 NL [W] を得る。 NL 廃棄 される。",
+    "upgradeDescription": "保留 される。 NL [W] [W] を得る。 NL 廃棄 される。",
+    "extendedDescription": []
+  },
+  "Omega": {
+    "name": "オメガ",
+    "description": "ターン終了時、 NL 敵全体に !M! ダメージを NL 与える。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "RitualDagger": {
+    "name": "儀式用ダガー",
+    "description": "!D! ダメージを与える。 NL それで敵を倒すと、 NL 永続的なダメージ値は NL !M! ずつ増加する。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Safety": {
+    "name": "退避",
+    "description": "保留 される。 NL !B! ブロック を得る。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shiv": {
+    "name": "ナイフ",
+    "description": "!D! ダメージを与える。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Smite": {
+    "name": "スマイト",
+    "description": "保留 される。 NL !D! ダメージを与える。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ThroughViolence": {
+    "name": "暴力による救済",
+    "description": "保留 される。 NL !D! ダメージを与える。 NL 廃棄 される。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "BecomeAlmighty": {
+    "name": "完全無欠",
+    "description": "筋力 !M! を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FameAndFortune": {
+    "name": "名声と幸運",
+    "description": "!M! ゴールド を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LiveForever": {
+    "name": "永遠の命",
+    "description": "*プレートアーマー !M! NL を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Expunger": {
+    "name": "抹殺の剣",
+    "description": "!D! ダメージを X 回 NL 与える。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "!D! ダメージを !M! 回 NL 与える。",
+      "!D! ダメージを !M! 回 NL 与える。"
+    ]
+  },
+  "AscendersBane": {
+    "name": "登塔者の災厄",
+    "description": "使用不可 。 NL エーテリアル 。 NL デッキから取り除け NL ない。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CurseOfTheBell": {
+    "name": "鐘の呪い",
+    "description": "使用不可 。 NL デッキから NL 削除できない。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clumsy": {
+    "name": "不器用",
+    "description": "使用不可 。 NL エーテリアル 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Decay": {
+    "name": "腐敗",
+    "description": "使用不可 。 NL ターン終了時に NL 2ダメージを受ける。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doubt": {
+    "name": "疑念",
+    "description": "使用不可 。 NL ターン終了時に 脱力 NL 1を得る。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Injury": {
+    "name": "怪我",
+    "description": "使用不可 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Necronomicurse": {
+    "name": "死霊の呪い",
+    "description": "使用不可 。 NL この 呪い から逃れる NL すべはない。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Normality": {
+    "name": "平静",
+    "description": "使用不可 。 NL 手札にある限り、 NL このターン、カードを NL 3枚までしか使用 NL できない。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "このターン、使用できるカードは NL 最大 #r3 枚。",
+      "使用不可 。 NL 1ターンでカードを ",
+      " 枚までしか使用できない。",
+      " 枚までしか使用できない。 NL 既に ",
+      " 枚使用した。",
+      " 枚使用した。"
+    ]
+  },
+  "Pain": {
+    "name": "苦痛",
+    "description": "使用不可 。 NL これが手札にある NL 状態で他のカードを NL 使用すると、HPを NL 1失う。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Parasite": {
+    "name": "寄生",
+    "description": "使用不可 。 NL 変化 させたりデッキ NL から取り除いたりする NL と最大HP-3。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pride": {
+    "name": "傲慢",
+    "description": "天賦 。 NL ターン終了時、この NL カードの複製が山札の NL 一番上に置かれる。 NL 廃棄 される。 ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Regret": {
+    "name": "後悔",
+    "description": "使用不可 。 NL ターン終了時、手札の NL カード1枚につきHPを NL 1失う。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shame": {
+    "name": "羞恥",
+    "description": "使用不可 。 NL ターン終了時、 NL 脆弱化 1を受ける。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Writhe": {
+    "name": "ゆがみ",
+    "description": "使用不可 。 NL 天賦 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  }
+}

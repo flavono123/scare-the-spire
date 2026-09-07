@@ -1,0 +1,160 @@
+{
+  "CardLibraryScreen": {
+    "TEXT": [
+      "Regresar",
+      "Rojo",
+      "Verde",
+      "Azul",
+      "Incolora",
+      "Maldiciones",
+      "Condiciones",
+      "Ver Mejora",
+      "Morado"
+    ]
+  },
+  "CardLibSortHeader": {
+    "TEXT": [
+      "Rareza",
+      "Tipo",
+      "A-Z",
+      "Coste",
+      "Saltar a:",
+      "Obtenida"
+    ]
+  },
+  "RelicViewScreen": {
+    "TEXT": [
+      "Regresar",
+      "Básica:",
+      "Los personajes pueden empezar con estas reliquias.",
+      "Común:",
+      "Reliquias débiles que se encuentran a menudo.",
+      "Poco Común:",
+      "Reliquias más fuertes que aparecen con menos frecuencia que las reliquias comunes.",
+      "Rara:",
+      "Reliquias poderosas y únicas que raramente se ven.",
+      "Jefe:",
+      "Reliquias encontradas solo en los Cofres de Jefes.",
+      "Evento:",
+      "Reliquias que solo pueden ser obtenidas a través de eventos.",
+      "Tienda:",
+      "Reliquias que solo pueden ser compradas con el Comerciante."
+    ]
+  },
+  "PotionViewScreen": {
+    "TEXT": [
+      "Volver",
+      "Común:",
+      "Las pociones más comunes encontradas en la Aguja.",
+      "Poco común:",
+      "Pociones más poderosas que aparecen menos a menudo que las pociones comunes.",
+      "Rara:",
+      "Pociones únicas y poderosas que raramente se ven."
+    ]
+  },
+  "SingleCardViewPopup": {
+    "TEXT": [
+      "Ataque",
+      "Habilidad",
+      "Poder",
+      "Maldicion",
+      "Bloqueada",
+      "Desconocida",
+      "Ver Mejora",
+      "Estado",
+      "Munición",
+      "Solo puedo jugar cartas en mi turno.",
+      "Estoy #rEnredado! NL No puedo jugar Ataques",
+      "#rEnergía Insuficiente.",
+      "#rCarga Insuficiente.",
+      "No puedo jugar NL esta carta",
+      "Arte Beta"
+    ]
+  },
+  "MenuButton": {
+    "TEXT": [
+      "",
+      "Jugar",
+      "",
+      "",
+      "Continuar",
+      "",
+      "Estadísticas",
+      "",
+      "Salir",
+      "Notas del Parche",
+      "Abandonar Partida",
+      "",
+      "Opciones",
+      "",
+      "Compendio"
+    ]
+  },
+  "MenuPanels": {
+    "TEXT": [
+      "Estándar",
+      "",
+      "Embárcate en una misión para vencer a la Torre.",
+      "Ascenso Diario",
+      "",
+      "Cada día hay un nuevo reto disponible.\n\n¡Compite con otros jugadores por la mayor puntuación!",
+      "Ascensión",
+      "",
+      "La torre se vuelve más poderosa con cada victoria.\n\nPrueba los límites de tus mejores estrategias.",
+      "Biblioteca de Cartas",
+      "",
+      "Consulta todas las cartas que has descubierto en la Torre.",
+      "Colección de Reliquias",
+      "",
+      "Examina cada una de las reliquias que has descubierto en la Torre.",
+      "Bestiario",
+      "",
+      "Esta opción no está disponible por el momento.",
+      "Estadísticas de Personajes",
+      "",
+      "El progreso y estadísticas de cada personaje se encuentran aquí.",
+      "Puntuación",
+      "",
+      "Mira y compara tus puntuaciones con tus amigos y otros jugadores.",
+      "Historial de Partidas",
+      "",
+      "Historial de tus intentos pasados de escalar la Torre.",
+      "Opciones de Juego",
+      "",
+      "Cambia tu resolución y activa/desactiva varias opciones.",
+      "Opciones de Control",
+      "",
+      "Cambia la distribución y configuración de los controles.",
+      "Créditos",
+      "",
+      "¡Mira todas las personas que contribuyeron en Slay the Spire!",
+      "Desconocido",
+      "",
+      "Esta opción no está disponible por el momento.",
+      "Partida Personalizada",
+      "Juega una partida personalizada con los modificadores que quieras.",
+      "Cambia tus controles.",
+      "Cambia tus configuraciones gráficas, de audio y de juego.",
+      "Laboratorio de Pociones",
+      "Observa las numerosas pociones encontradas al escalar la Aguja."
+    ]
+  },
+  "SingleRelicViewPopup": null,
+  "SingleViewRelicPopup": {
+    "TEXT": [
+      "Reliquia de Jefe",
+      "Reliquia Común",
+      "Deprecated",
+      "Reliquia Rara",
+      "Reliquia de Tienda",
+      "Reliquia de Evento",
+      "Reliquia Inicial",
+      "Reliquia Poco Común",
+      "Reliquia Bloqueada",
+      "Reliquia Desconocida",
+      "",
+      "Esta reliquia aún no ha sido desbloqueada.",
+      "Esta reliquia aún no se ha visto."
+    ]
+  }
+}

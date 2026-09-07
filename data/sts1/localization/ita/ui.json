@@ -1,0 +1,160 @@
+{
+  "CardLibraryScreen": {
+    "TEXT": [
+      "Indietro",
+      "Rosso",
+      "Verde",
+      "Blu",
+      "Incolore",
+      "Maledizioni",
+      "Stati",
+      "Mostra Potenziamento",
+      "Viola"
+    ]
+  },
+  "CardLibSortHeader": {
+    "TEXT": [
+      "Rarità",
+      "Tipo",
+      "A-Z",
+      "Costo",
+      "Vai a:",
+      "Ottenute"
+    ]
+  },
+  "RelicViewScreen": {
+    "TEXT": [
+      "Indietro",
+      "Iniziale:",
+      "Ciascun personaggio inizia con una di queste reliquie.",
+      "Comune:",
+      "Reliquie meno potenti, le più facili da trovare.",
+      "Non Comune:",
+      "Reliquie più potenti che appaiono meno di quelle comuni.",
+      "Rara:",
+      "Reliquie uniche e potenti, piuttosto rare.",
+      "Boss:",
+      "Reliquie che puoi trovare solo negli scrigni dei Boss.",
+      "Eventi:",
+      "Reliquie che puoi ottenere solo tramite eventi.",
+      "Negozio:",
+      "Reliquie che puoi acquistare solo nei Negozi."
+    ]
+  },
+  "PotionViewScreen": {
+    "TEXT": [
+      "Esci",
+      "Comune:",
+      "Le pozioni trovate più spesso nella Guglia.",
+      "Non Comune:",
+      "Pozioni più forti, che appaiono meno frequentemente.",
+      "Rare:",
+      "Pozioni uniche e potenti, trovate di rado."
+    ]
+  },
+  "SingleCardViewPopup": {
+    "TEXT": [
+      "Attacco",
+      "Abilità",
+      "Potere",
+      "Maledizione",
+      "Bloccata",
+      "Sconosciuta",
+      "Visualizza Potenziamento",
+      "Stato",
+      "Ammo",
+      "Posso giocare solo durante il mio turno.",
+      "Sono stato #rIntrappolato! NL Non posso Attaccare!",
+      "Ho bisogno di più #rEnergia.",
+      "Not enough #rCharge.",
+      "Non posso giocare NL questa carta",
+      "Arte Beta"
+    ]
+  },
+  "MenuButton": {
+    "TEXT": [
+      "",
+      "Gioca",
+      "",
+      "",
+      "Continua",
+      "",
+      "Statistiche",
+      "",
+      "Esci",
+      "Patch Notes",
+      "Abbandona Partita",
+      "",
+      "Opzioni",
+      "",
+      "Compendio"
+    ]
+  },
+  "MenuPanels": {
+    "TEXT": [
+      "Gioca",
+      "",
+      "Comincia una nuova avventura: Slay the Spire!",
+      "Sfida del Giorno",
+      "",
+      "Partecipa ad una nuova sfida ogni giorno! \n\nCompeti con gli altri giocatori per ottenere il punteggio più alto!",
+      "Ascensione",
+      "",
+      "In questa modalità scalare la Guglia diventa più difficile dopo ogni vittoria.\n\nTesta i limiti delle tue strategie più forti.",
+      "Libreria",
+      "",
+      "Esamina le carte trovate nella Guglia.",
+      "Reliquiario",
+      "",
+      "Esamina i vari artefatti raccolti nella Guglia.",
+      "Bestiario",
+      "",
+      "Questa opzione non è ancora disponibile.",
+      "Statistiche",
+      "",
+      "Controlla il progresso e le statistiche di ogni personaggio.",
+      "Leaderboards",
+      "",
+      "Esamina e compara i tuoi punteggi con quelli dei tuoi amici o di altri giocatori.",
+      "Ultime Partite",
+      "",
+      "Rivisita le storia e le statistiche delle partite precedenti.",
+      "Opzioni di Gioco",
+      "",
+      "Cambia la risoluzione e le opzioni di gioco.",
+      "Opzioni Input",
+      "",
+      "Imposta i comandi e le scorciatoie da tastiera.",
+      "Crediti",
+      "",
+      "La lista delle persone che hanno contribuito a creare Slay the Spire!",
+      "Sconosciuto",
+      "Partecipa ad una Sfida del Giorno per sbloccare questa opzione.",
+      "Questa opzione non è ancora disponibile.",
+      "Partita Personalizzata",
+      "Scegli le caratteristiche della sfida.",
+      "Cambia i comandi.",
+      "Imposta le preferenze audio, grafiche e di gioco.",
+      "Laboratorio Pozioni",
+      "Esamina le potenti pozioni della Guglia."
+    ]
+  },
+  "SingleRelicViewPopup": null,
+  "SingleViewRelicPopup": {
+    "TEXT": [
+      "Reliquia Boss",
+      "Reliquia Comune",
+      "Deprecated",
+      "Reliquia Rara",
+      "Reliquia Acquistata",
+      "Reliquia da Evento",
+      "Reliquia Iniziale",
+      "Reliquia Non Comune",
+      "Bloccata",
+      "Sconosciuta",
+      "",
+      "Non hai ancora sbloccato questa reliquia.",
+      "Non hai ancora trovato questa reliquia."
+    ]
+  }
+}

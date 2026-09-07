@@ -1,0 +1,160 @@
+{
+  "CardLibraryScreen": {
+    "TEXT": [
+      "Zurückkehren",
+      "Rot",
+      "Grün",
+      "Blau",
+      "Farblos",
+      "Flüche",
+      "Status",
+      "Verbesserung ansehen",
+      "Lila"
+    ]
+  },
+  "CardLibSortHeader": {
+    "TEXT": [
+      "Seltenheit",
+      "Typ",
+      "A–Z",
+      "Kosten",
+      "Springe zu:",
+      "Erhalten"
+    ]
+  },
+  "RelicViewScreen": {
+    "TEXT": [
+      "Zurückkehren",
+      "Start:",
+      "Mit diesen Relikten können Charaktere beginnen.",
+      "Gewöhnlich:",
+      "Schwache Relikte, die desöfteren zu finden sind.",
+      "Ungewöhnlich:",
+      "Stärkere Relikte, die nicht so oft auftauchen wie gewöhnliche Relikte.",
+      "Selten:",
+      "Einzigartige und mächtige Relikte, die man nur selten sieht.",
+      "Boss:",
+      "Nur in Bosstruhen auffindbare Relikte.",
+      "Ereignis:",
+      "Nur durch Ereignisse zu entdeckende Relikte.",
+      "Laden:",
+      "Nur beim Händler erhältliche Relikte."
+    ]
+  },
+  "PotionViewScreen": {
+    "TEXT": [
+      "Zurück",
+      "Gewöhnlich:",
+      "Im Spire findet man diese Tränke am häufigsten.",
+      "Ungewöhnlich:",
+      "Stärkere Tränke, die seltener auftauchen als gewöhnliche Tränke.",
+      "Selten:",
+      "Einzigartige und mächtige Tränke, welche man selten sieht."
+    ]
+  },
+  "SingleCardViewPopup": {
+    "TEXT": [
+      "Angriff",
+      "Fertigkeit",
+      "Macht",
+      "Fluch",
+      "Gesperrt",
+      "Unbekannt",
+      "Verbesserung",
+      "Status",
+      "",
+      "Ich kann Karten nur während meines Zuges spielen.",
+      "Ich bin #rVerwickelt ! NL Ich kann keine Angriffskarten spielen.",
+      "Nicht genug #rEnergie.",
+      "Nicht genug #rLadung.",
+      "Diese Karte kann NL ich nicht spielen.",
+      "Beta-Grafik"
+    ]
+  },
+  "MenuButton": {
+    "TEXT": [
+      "",
+      "Spielen",
+      "",
+      "",
+      "Fortsetzen",
+      "",
+      "Statistiken",
+      "",
+      "Verlassen",
+      "Patchnotizen",
+      "Run abbrechen",
+      "",
+      "Einstellungen",
+      "",
+      "Kompendium"
+    ]
+  },
+  "MenuPanels": {
+    "TEXT": [
+      "Standard",
+      "",
+      "Brich auf zu einer Quest in den Spire! Kämpfe dich an die Spitze des mysteriösen Turmes.",
+      "Run des Tages",
+      "",
+      "Jeden Tag gibt es eine neue Herausforderung.\nMiss dich mit anderen Spielern um die höchste Punktzahl!",
+      "Aufstiegsmodus",
+      "",
+      "Der Spire wird mit jedem Sieg stärker.\nTeste die Grenzen deiner stärksten Strategien.",
+      "Kartenbibliothek",
+      "",
+      "Sieh dir alle Karten an, denen du bisher im Spire begegnet bist.",
+      "Reliktsammlung",
+      "",
+      "Untersuche die Schmuckstücke und Artefakte, die du in deinen Runs erhalten hast.",
+      "Bestiarium",
+      "",
+      "Dieses Feature ist noch nicht verfügbar.",
+      "Charakter- Statistiken",
+      "",
+      "Fortschritte und Statistiken jedes Charakters können hier eingesehen werden.",
+      "Ranglisten",
+      "",
+      "Erfahre deine Punktzahl und vergleiche sie mit Freunden und anderen Spielern.",
+      "Run-Historie",
+      "",
+      "Wirf einen Blick auf deine vergangenen Versuche, den Spire zu erschlagen.",
+      "Spiel- Einstellungen",
+      "",
+      "Ändere deine Auflösung und wähle weitere Optionen für das Spiel.",
+      "Eingabeoptionen",
+      "",
+      "Ändere deine Steuerung und Tastenbelegungen.",
+      "Credits",
+      "",
+      "Schau dir an, welche Leute an Slay the Spire mitgewirkt haben!",
+      "Unbekannt",
+      "Gewinne einen Run des Tages, um diesen Spielmodus freizuschalten.",
+      "Dieses Feature ist noch nicht verfügbar.",
+      "Spezialmodus",
+      "Stelle deinen individuellen Run mit eigenen Sonderregeln zusammen.",
+      "Ändere deine Steuerung.",
+      "Ändere deine Optionen für das Spiel.",
+      "Tranklabor",
+      "Studiere die zahlreichen Tränke, die beim Erklimmen des Spire zu finden sind."
+    ]
+  },
+  "SingleRelicViewPopup": null,
+  "SingleViewRelicPopup": {
+    "TEXT": [
+      "Boss-",
+      "Gewöhnliches ",
+      "Veraltetes ",
+      "Seltenes ",
+      "Laden-",
+      "Ereignis-",
+      "Start-",
+      "Ungewöhnliches ",
+      "Gesperrt",
+      "Unbekannt",
+      "Relikt",
+      "Dieses Relikt muss noch freigeschaltet werden.",
+      "Dieses Relikt muss noch entdeckt werden."
+    ]
+  }
+}

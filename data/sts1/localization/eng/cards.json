@@ -1,0 +1,2277 @@
+{
+  "Anger": {
+    "name": "Anger",
+    "description": "Deal !D! damage. NL Add a copy of this card into your discard pile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Armaments": {
+    "name": "Armaments",
+    "description": "Gain !B! Block. NL Upgrade a card in your hand for the rest of combat.",
+    "upgradeDescription": "Gain !B! Block. NL Upgrade all cards in your hand for the rest of combat.",
+    "extendedDescription": []
+  },
+  "Barricade": {
+    "name": "Barricade",
+    "description": "Block is not removed at the start of your turn.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bash": {
+    "name": "Bash",
+    "description": "Deal !D! damage. NL Apply !M! Vulnerable.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Battle Trance": {
+    "name": "Battle Trance",
+    "description": "Draw !M! cards. NL You cannot draw additional cards this turn.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Berserk": {
+    "name": "Berserk",
+    "description": "Gain !M! Vulnerable. NL At the start of your turn, gain [R].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blood for Blood": {
+    "name": "Blood for Blood",
+    "description": "Costs 1 less [R] NL for each time you lose HP this combat. NL Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bloodletting": {
+    "name": "Bloodletting",
+    "description": "Lose 3 HP. NL Gain [R] [R].",
+    "upgradeDescription": "Lose 3 HP. NL Gain [R] [R] [R].",
+    "extendedDescription": []
+  },
+  "Bludgeon": {
+    "name": "Bludgeon",
+    "description": "Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Body Slam": {
+    "name": "Body Slam",
+    "description": "Deal damage equal to your Block.",
+    "upgradeDescription": " NL (Deals !D! damage.)",
+    "extendedDescription": []
+  },
+  "Brutality": {
+    "name": "Brutality",
+    "description": "At the start of your turn, lose 1 HP and draw 1 card.",
+    "upgradeDescription": "Innate. NL At the start of your turn, lose 1 HP and draw 1 card.",
+    "extendedDescription": []
+  },
+  "Burning Pact": {
+    "name": "Burning Pact",
+    "description": "Exhaust 1 card. NL Draw !M! cards.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Carnage": {
+    "name": "Carnage",
+    "description": "Ethereal. NL Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clash": {
+    "name": "Clash",
+    "description": "Can only be played if every card in your hand is an Attack. NL Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "I have non-Attack cards in my hand."
+    ]
+  },
+  "Cleave": {
+    "name": "Cleave",
+    "description": "Deal !D! damage to ALL enemies.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clothesline": {
+    "name": "Clothesline",
+    "description": "Deal !D! damage. NL Apply !M! Weak.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Combust": {
+    "name": "Combust",
+    "description": "At the end of your turn, lose 1 HP and deal !M! damage to ALL enemies.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Corruption": {
+    "name": "Corruption",
+    "description": "Skills cost 0. NL Whenever you play a Skill, Exhaust it.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dark Embrace": {
+    "name": "Dark Embrace",
+    "description": "Whenever a card is Exhausted, NL draw 1 card.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_R": {
+    "name": "Defend",
+    "description": "Gain !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Demon Form": {
+    "name": "Demon Form",
+    "description": "At the start of your turn, gain !M! Strength.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Disarm": {
+    "name": "Disarm",
+    "description": "Enemy loses !M! Strength. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Double Tap": {
+    "name": "Double Tap",
+    "description": "This turn, your next Attack is played twice.",
+    "upgradeDescription": "This turn, your next !M! Attacks are played twice.",
+    "extendedDescription": []
+  },
+  "Dropkick": {
+    "name": "Dropkick",
+    "description": "Deal !D! damage. NL If the enemy has Vulnerable, NL gain [R] and NL draw 1 card.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dual Wield": {
+    "name": "Dual Wield",
+    "description": "Choose an Attack or Power card. Add a copy of that card into your hand.",
+    "upgradeDescription": "Choose an Attack or Power card. Add 2 copies of that card into your hand.",
+    "extendedDescription": []
+  },
+  "Entrench": {
+    "name": "Entrench",
+    "description": "Double your Block.",
+    "upgradeDescription": "Double your Block.",
+    "extendedDescription": []
+  },
+  "Evolve": {
+    "name": "Evolve",
+    "description": "Whenever you draw a Status card, draw !M! card.",
+    "upgradeDescription": "Whenever you draw a Status card, draw !M! cards.",
+    "extendedDescription": []
+  },
+  "Exhume": {
+    "name": "Exhume",
+    "description": "Put a card from your exhaust pile into your hand. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Feed": {
+    "name": "Feed",
+    "description": "Deal !D! damage. NL If Fatal, raise your Max HP by !M!. Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Feel No Pain": {
+    "name": "Feel No Pain",
+    "description": "Whenever a card is Exhausted, NL gain !M! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fiend Fire": {
+    "name": "Fiend Fire",
+    "description": "Exhaust your hand. NL Deal !D! damage for each card Exhausted. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fire Breathing": {
+    "name": "Fire Breathing",
+    "description": "Whenever you draw a Status or Curse card, deal !M! damage to ALL enemies.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flame Barrier": {
+    "name": "Flame Barrier",
+    "description": "Gain !B! Block. NL Whenever you are attacked this turn, deal !M! damage back.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flex": {
+    "name": "Flex",
+    "description": "Gain !M! Strength. NL At the end of this turn, lose !M! Strength.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ghostly Armor": {
+    "name": "Ghostly Armor",
+    "description": "Ethereal. NL Gain !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Havoc": {
+    "name": "Havoc",
+    "description": "Play the top card of your draw pile and Exhaust it.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Headbutt": {
+    "name": "Headbutt",
+    "description": "Deal !D! damage. NL Put a card from your discard pile on top of your draw pile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Heavy Blade": {
+    "name": "Heavy Blade",
+    "description": "Deal !D! damage. NL Strength affects this card !M! times.",
+    "upgradeDescription": "Deal !D! damage. NL Strength affects this card !M! times.",
+    "extendedDescription": []
+  },
+  "Hemokinesis": {
+    "name": "Hemokinesis",
+    "description": "Lose !M! HP. NL Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Immolate": {
+    "name": "Immolate",
+    "description": "Deal !D! damage to ALL enemies. NL Add a *Burn into your discard pile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Impervious": {
+    "name": "Impervious",
+    "description": "Gain !B! Block. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Infernal Blade": {
+    "name": "Infernal Blade",
+    "description": "Add a random Attack into your hand. NL It costs 0 this turn. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Inflame": {
+    "name": "Inflame",
+    "description": "Gain !M! Strength.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Intimidate": {
+    "name": "Intimidate",
+    "description": "Apply !M! Weak to ALL enemies. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Iron Wave": {
+    "name": "Iron Wave",
+    "description": "Gain !B! Block. NL Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Juggernaut": {
+    "name": "Juggernaut",
+    "description": "Whenever you gain Block, deal !M! damage to a random enemy.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Limit Break": {
+    "name": "Limit Break",
+    "description": "Double your Strength. NL Exhaust.",
+    "upgradeDescription": "Double your Strength.",
+    "extendedDescription": []
+  },
+  "Metallicize": {
+    "name": "Metallicize",
+    "description": "At the end of your turn, gain !M! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Offering": {
+    "name": "Offering",
+    "description": "Lose 6 HP. NL Gain [R] [R]. NL Draw !M! cards. NL Exhaust.",
+    "upgradeDescription": "Lose 6 HP. NL Gain [R] [R]. NL Draw !M! cards. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Perfected Strike": {
+    "name": "Perfected Strike",
+    "description": "Deal !D! damage. NL Deals !M! additional damage for ALL your cards containing \"Strike\".",
+    "upgradeDescription": "Deal !D! damage. NL Deals !M! additional damage for ALL your cards containing \"Strike\".",
+    "extendedDescription": []
+  },
+  "Pommel Strike": {
+    "name": "Pommel Strike",
+    "description": "Deal !D! damage. NL Draw !M! card.",
+    "upgradeDescription": "Deal !D! damage. NL Draw !M! cards.",
+    "extendedDescription": []
+  },
+  "Power Through": {
+    "name": "Power Through",
+    "description": "Add 2 *Wounds into your hand. NL Gain !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pummel": {
+    "name": "Pummel",
+    "description": "Deal !D! damage !M! times. NL Exhaust.",
+    "upgradeDescription": "Deal !D! damage !M! times. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Rage": {
+    "name": "Rage",
+    "description": "Whenever you play an Attack this turn, gain !M! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rampage": {
+    "name": "Rampage",
+    "description": "Deal !D! damage. NL Increase this card's damage by !M! this combat.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reaper": {
+    "name": "Reaper",
+    "description": "Deal !D! damage to ALL enemies. Heal HP equal to unblocked damage. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reckless Charge": {
+    "name": "Reckless Charge",
+    "description": "Deal !D! damage. NL Shuffle a *Dazed into your draw pile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rupture": {
+    "name": "Rupture",
+    "description": "Whenever you lose HP from a card, NL gain !M! Strength.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Searing Blow": {
+    "name": "Searing Blow",
+    "description": "Deal !D! damage. NL Can be Upgraded any number of times.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Second Wind": {
+    "name": "Second Wind",
+    "description": "Exhaust all non-Attack cards in your hand. Gain !B! Block for each card Exhausted.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Seeing Red": {
+    "name": "Seeing Red",
+    "description": "Gain [R] [R]. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sentinel": {
+    "name": "Sentinel",
+    "description": "Gain !B! Block. NL If this card is Exhausted, NL gain [R] [R].",
+    "upgradeDescription": "Gain !B! Block. NL If this card is Exhausted, NL gain [R] [R] [R].",
+    "extendedDescription": []
+  },
+  "Sever Soul": {
+    "name": "Sever Soul",
+    "description": "Exhaust all non-Attack cards in your hand. NL Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shockwave": {
+    "name": "Shockwave",
+    "description": "Apply !M! Weak and Vulnerable to ALL enemies. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shrug It Off": {
+    "name": "Shrug It Off",
+    "description": "Gain !B! Block. NL Draw 1 card.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Spot Weakness": {
+    "name": "Spot Weakness",
+    "description": "If the enemy intends to attack, gain !M! Strength.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Strike_R": {
+    "name": "Strike",
+    "description": "Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sword Boomerang": {
+    "name": "Sword Boomerang",
+    "description": "Deal !D! damage to a random enemy !M! times.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Thunderclap": {
+    "name": "Thunderclap",
+    "description": "Deal !D! damage and apply 1 Vulnerable to ALL enemies.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "True Grit": {
+    "name": "True Grit",
+    "description": "Gain !B! Block. NL Exhaust 1 card at random.",
+    "upgradeDescription": "Gain !B! Block. NL Exhaust 1 card.",
+    "extendedDescription": []
+  },
+  "Twin Strike": {
+    "name": "Twin Strike",
+    "description": "Deal !D! damage twice.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Uppercut": {
+    "name": "Uppercut",
+    "description": "Deal !D! damage. NL Apply !M! Weak. NL Apply !M! Vulnerable.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Warcry": {
+    "name": "Warcry",
+    "description": "Draw !M! card. NL Put a card from your hand onto the top of your draw pile. NL Exhaust.",
+    "upgradeDescription": "Draw !M! cards. NL Put a card from your hand onto the top of your draw pile. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Whirlwind": {
+    "name": "Whirlwind",
+    "description": "Deal !D! damage to ALL enemies X times.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wild Strike": {
+    "name": "Wild Strike",
+    "description": "Deal !D! damage. NL Shuffle a *Wound into your draw pile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Accuracy": {
+    "name": "Accuracy",
+    "description": "*Shivs deal !M! additional damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Acrobatics": {
+    "name": "Acrobatics",
+    "description": "Draw !M! cards. NL Discard 1 card.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Adrenaline": {
+    "name": "Adrenaline",
+    "description": "Gain [G]. NL Draw 2 cards. NL Exhaust.",
+    "upgradeDescription": "Gain [G] [G]. NL Draw 2 cards. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "After Image": {
+    "name": "After Image",
+    "description": "Whenever you play a card, gain 1 Block.",
+    "upgradeDescription": "Innate. NL Whenever you play a card, gain 1 Block.",
+    "extendedDescription": []
+  },
+  "Venomology": {
+    "name": "Alchemize",
+    "description": "Obtain a random potion. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "All Out Attack": {
+    "name": "All-Out Attack",
+    "description": "Deal !D! damage to ALL enemies. NL Discard 1 card at random.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "A Thousand Cuts": {
+    "name": "A Thousand Cuts",
+    "description": "Whenever you play a card, deal !M! damage to ALL enemies.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Backflip": {
+    "name": "Backflip",
+    "description": "Gain !B! Block. NL Draw 2 cards.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Backstab": {
+    "name": "Backstab",
+    "description": "Innate. NL Deal !D! damage. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bane": {
+    "name": "Bane",
+    "description": "Deal !D! damage. NL If the enemy has Poison, deal !D! damage again.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blade Dance": {
+    "name": "Blade Dance",
+    "description": "Add !M! *Shivs into your hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blur": {
+    "name": "Blur",
+    "description": "Gain !B! Block. NL Block is not removed at the start of your next turn.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bouncing Flask": {
+    "name": "Bouncing Flask",
+    "description": "Apply 3 Poison to a random enemy !M! times.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bullet Time": {
+    "name": "Bullet Time",
+    "description": "You cannot draw additional cards this turn. Reduce the cost of all cards in your hand to 0 this turn.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Burst": {
+    "name": "Burst",
+    "description": "This turn, your next Skill is played twice.",
+    "upgradeDescription": "This turn, your next !M! Skills are played twice.",
+    "extendedDescription": []
+  },
+  "Calculated Gamble": {
+    "name": "Calculated Gamble",
+    "description": "Discard your hand, NL then draw that many cards. NL Exhaust.",
+    "upgradeDescription": "Discard your hand, NL then draw that many cards.",
+    "extendedDescription": []
+  },
+  "Caltrops": {
+    "name": "Caltrops",
+    "description": "Whenever you are attacked, deal !M! damage back.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Catalyst": {
+    "name": "Catalyst",
+    "description": "Double the enemy's Poison. NL Exhaust.",
+    "upgradeDescription": "Triple the enemy's Poison. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Choke": {
+    "name": "Choke",
+    "description": "Deal !D! damage. NL Whenever you play a card this turn, the enemy loses !M! HP.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Cloak And Dagger": {
+    "name": "Cloak and Dagger",
+    "description": "Gain !B! Block. NL Add !M! *Shiv into your hand.",
+    "upgradeDescription": "Gain !B! Block. NL Add !M! *Shivs into your hand.",
+    "extendedDescription": []
+  },
+  "Concentrate": {
+    "name": "Concentrate",
+    "description": "Discard !M! cards. NL Gain [G] [G].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Corpse Explosion": {
+    "name": "Corpse Explosion",
+    "description": "Apply !M! Poison. NL When the enemy dies, deal damage equal to its Max HP to ALL enemies.",
+    "upgradeDescription": "deprecated",
+    "extendedDescription": [
+      "deprecated"
+    ]
+  },
+  "Crippling Poison": {
+    "name": "Crippling Cloud",
+    "description": "Apply !M! Poison and 2 Weak to ALL enemies. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dagger Spray": {
+    "name": "Dagger Spray",
+    "description": "Deal !D! damage to ALL enemies twice.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dagger Throw": {
+    "name": "Dagger Throw",
+    "description": "Deal !D! damage. NL Draw 1 card. NL Discard 1 card.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dash": {
+    "name": "Dash",
+    "description": "Gain !B! Block. NL Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deadly Poison": {
+    "name": "Deadly Poison",
+    "description": "Apply !M! Poison.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_G": {
+    "name": "Defend",
+    "description": "Gain !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deflect": {
+    "name": "Deflect",
+    "description": "Gain !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Die Die Die": {
+    "name": "Die Die Die",
+    "description": "Deal !D! damage to ALL enemies. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Distraction": {
+    "name": "Distraction",
+    "description": "Add a random Skill into your hand. NL It costs 0 this turn. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dodge and Roll": {
+    "name": "Dodge and Roll",
+    "description": "Gain !B! Block. NL Next turn, gain !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doppelganger": {
+    "name": "Doppelganger",
+    "description": "Next turn, draw X cards and gain X [G]. NL Exhaust.",
+    "upgradeDescription": "Next turn, draw X+1 cards and gain X+1 [G]. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Endless Agony": {
+    "name": "Endless Agony",
+    "description": "Deal !D! damage. NL Whenever you draw this card, add a copy of it into your hand. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Envenom": {
+    "name": "Envenom",
+    "description": "Whenever an Attack deals unblocked damage, apply 1 Poison.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Escape Plan": {
+    "name": "Escape Plan",
+    "description": "Draw 1 card. NL If you draw a Skill, gain !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Eviscerate": {
+    "name": "Eviscerate",
+    "description": "Costs 1 less [G] NL for each card discarded this turn. NL Deal !D! damage 3 times.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Expertise": {
+    "name": "Expertise",
+    "description": "Draw cards until you have !M! in your hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Finisher": {
+    "name": "Finisher",
+    "description": "Deal !D! damage for each Attack played this turn.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (",
+      " Attack played.)",
+      " Attacks played.)"
+    ]
+  },
+  "Flechettes": {
+    "name": "Flechettes",
+    "description": "Deal !D! damage for each Skill in your hand.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (You have ",
+      " Skill).",
+      " Skills)."
+    ]
+  },
+  "Flying Knee": {
+    "name": "Flying Knee",
+    "description": "Deal !D! damage. NL Next turn, gain [G].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Footwork": {
+    "name": "Footwork",
+    "description": "Gain !M! Dexterity.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Glass Knife": {
+    "name": "Glass Knife",
+    "description": "Deal !D! damage twice. Decrease the damage of this card by 2 this combat.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Grand Finale": {
+    "name": "Grand Finale",
+    "description": "Can only be played if there are no cards in your draw pile. NL Deal !D! damage to ALL enemies.",
+    "upgradeDescription": "My draw pile NL must be #rEmpty.",
+    "extendedDescription": []
+  },
+  "Heel Hook": {
+    "name": "Heel Hook",
+    "description": "Deal !D! damage. NL If the enemy has Weak, NL gain [G] and NL draw 1 card.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Infinite Blades": {
+    "name": "Infinite Blades",
+    "description": "At the start of your turn, add a *Shiv into your hand.",
+    "upgradeDescription": "Innate. NL At the start of your turn, add a *Shiv into your hand.",
+    "extendedDescription": []
+  },
+  "Leg Sweep": {
+    "name": "Leg Sweep",
+    "description": "Apply !M! Weak. NL Gain !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Malaise": {
+    "name": "Malaise",
+    "description": "Enemy loses X Strength. Apply X Weak. NL Exhaust.",
+    "upgradeDescription": "Enemy loses X+1 Strength. Apply X+1 Weak. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Masterful Stab": {
+    "name": "Masterful Stab",
+    "description": "Costs 1 additional [G] NL for each time you lose HP this combat. NL Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Neutralize": {
+    "name": "Neutralize",
+    "description": "Deal !D! damage. NL Apply !M! Weak.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Night Terror": {
+    "name": "Nightmare",
+    "description": "Choose a card. NL Next turn, add !M! copies of that card into your hand. Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "I can only use NL ",
+      " NL once per turn."
+    ]
+  },
+  "Noxious Fumes": {
+    "name": "Noxious Fumes",
+    "description": "At the start of your turn, apply !M! Poison to ALL enemies.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Outmaneuver": {
+    "name": "Outmaneuver",
+    "description": "Next turn, NL gain [G] [G].",
+    "upgradeDescription": "Next turn, NL gain [G] [G] [G].",
+    "extendedDescription": []
+  },
+  "Phantasmal Killer": {
+    "name": "Phantasmal Killer",
+    "description": "Next turn, your Attacks deal double damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PiercingWail": {
+    "name": "Piercing Wail",
+    "description": "ALL enemies lose !M! Strength this turn. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Poisoned Stab": {
+    "name": "Poisoned Stab",
+    "description": "Deal !D! damage. NL Apply !M! Poison.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Predator": {
+    "name": "Predator",
+    "description": "Deal !D! damage. NL Next turn, draw 2 additional cards.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Prepared": {
+    "name": "Prepared",
+    "description": "Draw !M! card. NL Discard !M! card.",
+    "upgradeDescription": "Draw !M! cards. NL Discard !M! cards.",
+    "extendedDescription": []
+  },
+  "Quick Slash": {
+    "name": "Quick Slash",
+    "description": "Deal !D! damage. NL Draw 1 card.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reflex": {
+    "name": "Reflex",
+    "description": "Unplayable. NL If this card is discarded from your hand, draw !M! cards.",
+    "upgradeDescription": "Unplayable. NL If this card is discarded from your hand, draw !M! cards.",
+    "extendedDescription": [
+      "I can't play this card."
+    ]
+  },
+  "Riddle With Holes": {
+    "name": "Riddle with Holes",
+    "description": "Deal !D! damage 5 times.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Setup": {
+    "name": "Setup",
+    "description": "Put a card from your hand on top of your draw pile. NL It costs 0 until played.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Skewer": {
+    "name": "Skewer",
+    "description": "Deal !D! damage X times.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Slice": {
+    "name": "Slice",
+    "description": "Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Storm of Steel": {
+    "name": "Storm of Steel",
+    "description": "Discard your hand. NL Add 1 *Shiv into your hand for each card discarded.",
+    "upgradeDescription": "Discard your hand. NL Add 1 *Shiv+ into your hand for each card discarded.",
+    "extendedDescription": []
+  },
+  "Strike_G": {
+    "name": "Strike",
+    "description": "Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sucker Punch": {
+    "name": "Sucker Punch",
+    "description": "Deal !D! damage. NL Apply !M! Weak.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Survivor": {
+    "name": "Survivor",
+    "description": "Gain !B! Block. NL Discard 1 card.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tactician": {
+    "name": "Tactician",
+    "description": "Unplayable. NL If this card is discarded from your hand, gain [G].",
+    "upgradeDescription": "Unplayable. NL If this card is discarded from your hand, gain [G] [G].",
+    "extendedDescription": [
+      "I can't play this card."
+    ]
+  },
+  "Terror": {
+    "name": "Terror",
+    "description": "Apply 99 Vulnerable. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tools of the Trade": {
+    "name": "Tools of the Trade",
+    "description": "At the start of your turn, draw 1 card and discard 1 card.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Underhanded Strike": {
+    "name": "Sneaky Strike",
+    "description": "Deal !D! damage. NL If you have discarded a card this turn, NL gain [G] [G].",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "I can't play this card."
+    ]
+  },
+  "Unload": {
+    "name": "Unload",
+    "description": "Deal !D! damage. NL Discard all non-Attack cards in your hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Well Laid Plans": {
+    "name": "Well-Laid Plans",
+    "description": "At the end of your turn, Retain up to !M! card.",
+    "upgradeDescription": "At the end of your turn, Retain up to !M! cards.",
+    "extendedDescription": []
+  },
+  "Wraith Form v2": {
+    "name": "Wraith Form",
+    "description": "Gain !M! Intangible. NL At the end of your turn, lose 1 Dexterity.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Aggregate": {
+    "name": "Aggregate",
+    "description": "Gain [B] for every !M! cards in your draw pile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "All For One": {
+    "name": "All for One",
+    "description": "Deal !D! damage. NL Put all cost 0 cards from your discard pile into your hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Amplify": {
+    "name": "Amplify",
+    "description": "This turn, your next Power card is played twice.",
+    "upgradeDescription": "This turn, your next !M! Power cards are played twice.",
+    "extendedDescription": []
+  },
+  "Auto Shields": {
+    "name": "Auto-Shields",
+    "description": "If you have no Block, gain !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ball Lightning": {
+    "name": "Ball Lightning",
+    "description": "Deal !D! damage. Channel !M! Lightning.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Barrage": {
+    "name": "Barrage",
+    "description": "Deal !D! damage for each Channeled Orb.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Beam Cell": {
+    "name": "Beam Cell",
+    "description": "Deal !D! damage. NL Apply !M! Vulnerable.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Biased Cognition": {
+    "name": "Biased Cognition",
+    "description": "Gain !M! Focus. NL At the start of your turn, lose 1 Focus.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blizzard": {
+    "name": "Blizzard",
+    "description": "Deal damage equal to !M! times the number of Frost Channeled this combat to ALL enemies.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (Deals !D! damage.)",
+      ""
+    ]
+  },
+  "BootSequence": {
+    "name": "Boot Sequence",
+    "description": "Innate. NL Gain !B! Block. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Buffer": {
+    "name": "Buffer",
+    "description": "Prevent the next time you would lose HP.",
+    "upgradeDescription": "Prevent the next !M! times you would lose HP.",
+    "extendedDescription": []
+  },
+  "Capacitor": {
+    "name": "Capacitor",
+    "description": "Gain !M! Orb slots.",
+    "upgradeDescription": "Gain !M! Orb slots.",
+    "extendedDescription": []
+  },
+  "Chaos": {
+    "name": "Chaos",
+    "description": "Channel !M! random Orb.",
+    "upgradeDescription": "Channel !M! random Orbs.",
+    "extendedDescription": []
+  },
+  "Chill": {
+    "name": "Chill",
+    "description": "Channel !M! Frost for each enemy in combat. NL Exhaust.",
+    "upgradeDescription": "Innate. NL Channel !M! Frost for each enemy in combat. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Gash": {
+    "name": "Claw",
+    "description": "Deal !D! damage. NL Increase the damage of ALL Claw cards by !M! this combat.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Cold Snap": {
+    "name": "Cold Snap",
+    "description": "Deal !D! damage. Channel !M! Frost.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Compile Driver": {
+    "name": "Compile Driver",
+    "description": "Deal !D! damage. NL Draw !M! card for each unique Orb you have.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Conserve Battery": {
+    "name": "Charge Battery",
+    "description": "Gain !B! Block. NL Next turn, gain [B].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Consume": {
+    "name": "Consume",
+    "description": "Gain !M! Focus. NL Lose 1 Orb slot.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Coolheaded": {
+    "name": "Coolheaded",
+    "description": "Channel 1 Frost. NL Draw !M! card.",
+    "upgradeDescription": "Channel 1 Frost. NL Draw !M! cards.",
+    "extendedDescription": []
+  },
+  "Core Surge": {
+    "name": "Core Surge",
+    "description": "Deal !D! damage. NL Gain !M! Artifact. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Creative AI": {
+    "name": "Creative AI",
+    "description": "At the start of your turn, add a random Power card into your hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Darkness": {
+    "name": "Darkness",
+    "description": "Channel !M! Dark.",
+    "upgradeDescription": "Channel !M! Dark. NL Trigger the passive ability of all Dark orbs.",
+    "extendedDescription": []
+  },
+  "Defend_B": {
+    "name": "Defend",
+    "description": "Gain !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defragment": {
+    "name": "Defragment",
+    "description": "Gain !M! Focus.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doom and Gloom": {
+    "name": "Doom and Gloom",
+    "description": "Deal !D! damage to ALL enemies. NL Channel !M! Dark.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Double Energy": {
+    "name": "Double Energy",
+    "description": "Double your Energy. NL Exhaust.",
+    "upgradeDescription": "Double your Energy.",
+    "extendedDescription": []
+  },
+  "Dualcast": {
+    "name": "Dualcast",
+    "description": "Evoke your next Orb twice.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Echo Form": {
+    "name": "Echo Form",
+    "description": "Ethereal. NL The first card you play each turn is played twice.",
+    "upgradeDescription": "The first card you play each turn is played twice.",
+    "extendedDescription": []
+  },
+  "Electrodynamics": {
+    "name": "Electrodynamics",
+    "description": "Lightning now hits ALL enemies. NL Channel !M! Lightning.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fission": {
+    "name": "Fission",
+    "description": "Remove all your Orbs. Gain [B] and draw !M! card for each Orb removed. NL Exhaust.",
+    "upgradeDescription": "Evoke all your Orbs. Gain [B] and draw !M! card for each Orb Evoked. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Force Field": {
+    "name": "Force Field",
+    "description": "Costs 1 less [B] for each Power card played this combat. NL Gain !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FTL": {
+    "name": "FTL",
+    "description": "Deal !D! damage. If you have played less than !M! cards this turn, draw 1 card.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (",
+      " card played.)",
+      " cards played.)"
+    ]
+  },
+  "Fusion": {
+    "name": "Fusion",
+    "description": "Channel !M! Plasma.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Genetic Algorithm": {
+    "name": "Genetic Algorithm",
+    "description": "Gain !B! Block. Permanently increase this card's Block by !M!. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Glacier": {
+    "name": "Glacier",
+    "description": "Gain !B! Block. NL Channel !M! Frost.",
+    "upgradeDescription": "Gain !B! Block. NL Channel !M! Frost.",
+    "extendedDescription": []
+  },
+  "Go for the Eyes": {
+    "name": "Go for the Eyes",
+    "description": "Deal !D! damage. NL If the enemy intends to attack, apply !M! Weak.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Heatsinks": {
+    "name": "Heatsinks",
+    "description": "Whenever you play a Power card, draw !M! card.",
+    "upgradeDescription": "Whenever you play a Power card, draw !M! cards.",
+    "extendedDescription": []
+  },
+  "Hello World": {
+    "name": "Hello World",
+    "description": "At the start of your turn, add a random Common card into your hand.",
+    "upgradeDescription": "Innate. NL At the start of your turn, add a random Common card into your hand.",
+    "extendedDescription": []
+  },
+  "Hologram": {
+    "name": "Hologram",
+    "description": "Gain !B! Block. NL Put a card from your discard pile into your hand. NL Exhaust.",
+    "upgradeDescription": "Gain !B! Block. NL Put a card from your discard pile into your hand.",
+    "extendedDescription": []
+  },
+  "Hyperbeam": {
+    "name": "Hyperbeam",
+    "description": "Deal !D! damage to ALL enemies. NL Lose !M! Focus.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Leap": {
+    "name": "Leap",
+    "description": "Gain !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Lockon": {
+    "name": "Bullseye",
+    "description": "Deal !D! damage. NL Apply !M! Lock-On.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Loop": {
+    "name": "Loop",
+    "description": "At the start of your turn, trigger the passive ability of your next Orb.",
+    "upgradeDescription": "At the start of your turn, trigger the passive ability of your next Orb !M! times.",
+    "extendedDescription": []
+  },
+  "Machine Learning": {
+    "name": "Machine Learning",
+    "description": "At the start of your turn, draw !M! additional card.",
+    "upgradeDescription": "Innate. NL At the start of your turn, draw !M! additional card.",
+    "extendedDescription": []
+  },
+  "Melter": {
+    "name": "Melter",
+    "description": "Remove all Block from the enemy. NL Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Meteor Strike": {
+    "name": "Meteor Strike",
+    "description": "Deal !D! damage. NL Channel !M! Plasma.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Multi-Cast": {
+    "name": "Multi-Cast",
+    "description": "Evoke your next Orb X times.",
+    "upgradeDescription": "Evoke your next Orb X+1 times.",
+    "extendedDescription": []
+  },
+  "Steam Power": {
+    "name": "Overclock",
+    "description": "Draw !M! cards. NL Add a *Burn into your discard pile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rainbow": {
+    "name": "Rainbow",
+    "description": "Channel 1 Lightning. NL Channel 1 Frost. NL Channel 1 Dark. NL Exhaust.",
+    "upgradeDescription": "Channel 1 Lightning. NL Channel 1 Frost. NL Channel 1 Dark.",
+    "extendedDescription": []
+  },
+  "Reboot": {
+    "name": "Reboot",
+    "description": "Shuffle ALL your cards into your draw pile. NL Draw !M! cards. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rebound": {
+    "name": "Rebound",
+    "description": "Deal !D! damage. NL Put the next card you play this turn on top of your draw pile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Redo": {
+    "name": "Recursion",
+    "description": "Evoke your next Orb. NL Channel the Orb that was just Evoked.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Recycle": {
+    "name": "Recycle",
+    "description": "Exhaust a card. NL Gain [B] equal to its cost.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reinforced Body": {
+    "name": "Reinforced Body",
+    "description": "Gain !B! Block X times.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reprogram": {
+    "name": "Reprogram",
+    "description": "Lose !M! Focus. NL Gain !M! Strength. NL Gain !M! Dexterity.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rip and Tear": {
+    "name": "Rip and Tear",
+    "description": "Deal !D! damage to a random enemy twice.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Scrape": {
+    "name": "Scrape",
+    "description": "Deal !D! damage. NL Draw !M! cards. NL Discard all cards drawn this way that do not cost 0.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Seek": {
+    "name": "Seek",
+    "description": "Put !M! card from your draw pile into your hand. NL Exhaust.",
+    "upgradeDescription": "Put !M! cards from your draw pile into your hand. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Self Repair": {
+    "name": "Self Repair",
+    "description": "At the end of combat, heal !M! HP.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Skim": {
+    "name": "Skim",
+    "description": "Draw !M! cards.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Stack": {
+    "name": "Stack",
+    "description": "Gain Block equal to the number of cards in your discard pile.",
+    "upgradeDescription": "Gain Block equal to the number of cards in your discard pile +3.",
+    "extendedDescription": [
+      " NL (Gains !B! Block.)"
+    ]
+  },
+  "Static Discharge": {
+    "name": "Static Discharge",
+    "description": "Whenever you receive unblocked attack damage, Channel !M! Lightning.",
+    "upgradeDescription": "Whenever you receive unblocked attack damage, Channel !M! Lightning.",
+    "extendedDescription": []
+  },
+  "Steam": {
+    "name": "Steam Barrier",
+    "description": "Gain !B! Block. Decrease this card's Block by 1 this combat.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Storm": {
+    "name": "Storm",
+    "description": "Whenever you play a Power card, Channel 1 Lightning.",
+    "upgradeDescription": "Innate. NL Whenever you play a Power card, Channel 1 Lightning.",
+    "extendedDescription": []
+  },
+  "Streamline": {
+    "name": "Streamline",
+    "description": "Deal !D! damage. NL Reduce this card's cost by !M! this combat.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Strike_B": {
+    "name": "Strike",
+    "description": "Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sunder": {
+    "name": "Sunder",
+    "description": "Deal !D! damage. NL If this kills an enemy, gain [B] [B] [B].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sweeping Beam": {
+    "name": "Sweeping Beam",
+    "description": "Deal !D! damage to ALL enemies. NL Draw !M! card.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tempest": {
+    "name": "Tempest",
+    "description": "Channel X Lightning. NL Exhaust.",
+    "upgradeDescription": "Channel X+1 Lightning. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Thunder Strike": {
+    "name": "Thunder Strike",
+    "description": "Deal !D! damage to a random enemy for each Lightning Channeled this combat.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " (Channeled !M! Lightning.)"
+    ]
+  },
+  "Turbo": {
+    "name": "TURBO",
+    "description": "Gain [B] [B]. NL Add a *Void into your discard pile.",
+    "upgradeDescription": "Gain [B] [B] [B]. NL Add a *Void into your discard pile.",
+    "extendedDescription": []
+  },
+  "Undo": {
+    "name": "Equilibrium",
+    "description": "Gain !B! Block. NL Retain your hand this turn.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "White Noise": {
+    "name": "White Noise",
+    "description": "Add a random Power card into your hand. NL It costs 0 this turn. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Zap": {
+    "name": "Zap",
+    "description": "Channel !M! Lightning.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Alpha": {
+    "name": "Alpha",
+    "description": "Shuffle a *Beta into your draw pile. NL Exhaust.",
+    "upgradeDescription": "Innate. NL Shuffle a *Beta into your draw pile. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "BattleHymn": {
+    "name": "Battle Hymn",
+    "description": "At the start of each turn, add a *Smite into your hand.",
+    "upgradeDescription": "Innate. NL At the start of each turn, add a *Smite into your hand.",
+    "extendedDescription": []
+  },
+  "Blasphemy": {
+    "name": "Blasphemy",
+    "description": "Enter Divinity. NL Die next turn. NL Exhaust.",
+    "upgradeDescription": "Retain. NL Enter Divinity. NL Die next turn. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "BowlingBash": {
+    "name": "Bowling Bash",
+    "description": "Deal !D! damage for each enemy in combat.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Brilliance": {
+    "name": "Brilliance",
+    "description": "Deal !D! damage. NL Deals additional damage equal to Mantra gained this combat.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "",
+      ""
+    ]
+  },
+  "CarveReality": {
+    "name": "Carve Reality",
+    "description": "Deal !D! damage. NL Add a *Smite into your hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Collect": {
+    "name": "Collect",
+    "description": "Put a *Miracle+ into your hand at the start of your next X turns. NL Exhaust.",
+    "upgradeDescription": "Put a *Miracle+ into your hand at the start of your next X+1 turns. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Conclude": {
+    "name": "Conclude",
+    "description": "Deal !D! damage to ALL enemies. NL End your turn.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ConjureBlade": {
+    "name": "Conjure Blade",
+    "description": "Shuffle an *Expunger into your draw pile. NL Exhaust.",
+    "upgradeDescription": "Shuffle an *Expunger with X+1 into your draw pile. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Consecrate": {
+    "name": "Consecrate",
+    "description": "Deal !D! damage to ALL enemies.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Crescendo": {
+    "name": "Crescendo",
+    "description": "Retain. NL Enter Wrath. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CrushJoints": {
+    "name": "Crush Joints",
+    "description": "Deal !D! damage. NL If the last card played this combat was a Skill, apply !M! Vulnerable.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CutThroughFate": {
+    "name": "Cut Through Fate",
+    "description": "Deal !D! damage. NL Scry !M!. NL Draw 1 card.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DeceiveReality": {
+    "name": "Deceive Reality",
+    "description": "Gain !B! Block. NL Add a *Safety into NL your hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_P": {
+    "name": "Defend",
+    "description": "Gain !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DeusExMachina": {
+    "name": "Deus Ex Machina",
+    "description": "Unplayable. NL When you draw this card, add !M! *Miracles to your hand and Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DevaForm": {
+    "name": "Deva Form",
+    "description": "Ethereal. NL At the start of your turn, gain [W] NL and increase this gain by !M!.",
+    "upgradeDescription": "At the start of your turn, gain [W] NL and increase this gain by !M!.",
+    "extendedDescription": []
+  },
+  "Devotion": {
+    "name": "Devotion",
+    "description": "At the start of your turn, gain !M! Mantra.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyBody": {
+    "name": "Empty Body",
+    "description": "Gain !B! Block. NL Exit your Stance.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyFist": {
+    "name": "Empty Fist",
+    "description": "Deal !D! damage. NL Exit your Stance.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyMind": {
+    "name": "Empty Mind",
+    "description": "Draw !M! cards. NL Exit your Stance.",
+    "upgradeDescription": "Draw !M! cards. NL Exit your Stance.",
+    "extendedDescription": []
+  },
+  "Eruption": {
+    "name": "Eruption",
+    "description": "Deal !D! damage. NL Enter Wrath.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Establishment": {
+    "name": "Establishment",
+    "description": "Whenever a card is Retained, reduce its cost by !M! this combat.",
+    "upgradeDescription": "Innate. NL Whenever a card is Retained, reduce its cost by !M! this combat.",
+    "extendedDescription": []
+  },
+  "Evaluate": {
+    "name": "Evaluate",
+    "description": "Gain !B! Block. NL Shuffle an *Insight into your draw pile.",
+    "upgradeDescription": "Gain !B! Block. NL Shuffle an *Insight+ into your draw pile.",
+    "extendedDescription": []
+  },
+  "Fasting2": {
+    "name": "Fasting",
+    "description": "Gain !M! Strength. NL Gain !M! Dexterity. NL Gain 1 less [W] at the start of each turn.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FearNoEvil": {
+    "name": "Fear No Evil",
+    "description": "Deal !D! damage. NL If the enemy intends to Attack, enter Calm.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FlurryOfBlows": {
+    "name": "Flurry of Blows",
+    "description": "Deal !D! damage. NL Whenever you change Stances, return this from the discard pile to your hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FlyingSleeves": {
+    "name": "Flying Sleeves",
+    "description": "Retain. NL Deal !D! damage twice.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FollowUp": {
+    "name": "Follow-Up",
+    "description": "Deal !D! damage. NL If the last card played this combat was an Attack, gain [W].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ForeignInfluence": {
+    "name": "Foreign Influence",
+    "description": "Choose 1 of 3 Attacks of any color to add into your hand. NL Exhaust.",
+    "upgradeDescription": "Choose 1 of 3 Attacks of any color to add into your hand. NL It costs 0 this turn. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Wireheading": {
+    "name": "Foresight",
+    "description": "At the start of your turn, Scry !M!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Halt": {
+    "name": "Halt",
+    "description": "Gain !B! Block. NL If you are in Wrath, gain !M! additional Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Indignation": {
+    "name": "Indignation",
+    "description": "If you are in Wrath, apply !M! Vulnerable to ALL enemies, otherwise enter Wrath.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "InnerPeace": {
+    "name": "Inner Peace",
+    "description": "If you are in Calm, draw !M! cards, otherwise enter Calm.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Judgement": {
+    "name": "Judgment",
+    "description": "If the enemy has !M! or less HP, set their NL HP to 0.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "JUDGED"
+    ]
+  },
+  "JustLucky": {
+    "name": "Just Lucky",
+    "description": "Scry !M!. NL Gain !B! Block. NL Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LessonLearned": {
+    "name": "Lesson Learned",
+    "description": "Deal !D! damage. NL If Fatal, Upgrade a random card in your deck. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LikeWater": {
+    "name": "Like Water",
+    "description": "At the end of your turn, if you are in Calm, gain !M! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "MasterReality": {
+    "name": "Master Reality",
+    "description": "Whenever a card is created during combat, Upgrade it.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Meditate": {
+    "name": "Meditate",
+    "description": "Put a card from your discard pile into your hand and Retain it. NL Enter Calm. NL End your turn.",
+    "upgradeDescription": "Put 2 cards from your discard pile into your hand and Retain them. NL Enter Calm. NL End your turn.",
+    "extendedDescription": []
+  },
+  "MentalFortress": {
+    "name": "Mental Fortress",
+    "description": "Whenever you change Stances, gain !M! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Nirvana": {
+    "name": "Nirvana",
+    "description": "Whenever you Scry, gain !M! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Omniscience": {
+    "name": "Omniscience",
+    "description": "Choose a card in your draw pile. NL Play the chosen card twice and exhaust it. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Perseverance": {
+    "name": "Perseverance",
+    "description": "Retain. NL Gain !B! Block. NL When Retained, increase its Block by !M! this combat.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pray": {
+    "name": "Pray",
+    "description": "Gain !M! Mantra. NL Shuffle an *Insight into your draw pile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PathToVictory": {
+    "name": "Pressure Points",
+    "description": "Apply !M! *Mark. NL ALL enemies lose HP equal to their *Mark.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Prostrate": {
+    "name": "Prostrate",
+    "description": "Gain !M! Mantra. NL Gain !B! Block.",
+    "upgradeDescription": "DEPRECATED",
+    "extendedDescription": []
+  },
+  "Protect": {
+    "name": "Protect",
+    "description": "Retain. NL Gain !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ragnarok": {
+    "name": "Ragnarok",
+    "description": "Deal !D! damage to a random enemy !M! times.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ReachHeaven": {
+    "name": "Reach Heaven",
+    "description": "Deal !D! damage. NL Shuffle a NL *Through *Violence into your draw pile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Adaptation": {
+    "name": "Rushdown",
+    "description": "Whenever you enter Wrath, draw !M! cards.",
+    "upgradeDescription": "DEPRECATED",
+    "extendedDescription": []
+  },
+  "Sanctity": {
+    "name": "Sanctity",
+    "description": "Gain !B! Block. NL If the last card played this combat was a Skill, draw !M! cards.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SandsOfTime": {
+    "name": "Sands of Time",
+    "description": "Retain. NL Deal !D! damage. NL When Retained, lower its cost by 1 this combat.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SashWhip": {
+    "name": "Sash Whip",
+    "description": "Deal !D! damage. NL If the last card played this combat was an Attack, apply !M! Weak.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Scrawl": {
+    "name": "Scrawl",
+    "description": "Draw cards until your hand is full. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SignatureMove": {
+    "name": "Signature Move",
+    "description": "Can only be played if this is the only Attack in your hand. NL Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vengeance": {
+    "name": "Simmering Fury",
+    "description": "At the start of your next turn, enter Wrath and draw !M! cards.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SpiritShield": {
+    "name": "Spirit Shield",
+    "description": "Gain !M! Block for each card in your hand.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (Gain !B! Block.)"
+    ]
+  },
+  "Strike_P": {
+    "name": "Strike",
+    "description": "Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Study": {
+    "name": "Study",
+    "description": "At the end of your turn, shuffle an *Insight into your draw pile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Swivel": {
+    "name": "Swivel",
+    "description": "Gain !B! Block. NL The next Attack you play costs 0.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "TalkToTheHand": {
+    "name": "Talk to the Hand",
+    "description": "Deal !D! damage. NL Whenever you attack this enemy, gain !M! Block. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tantrum": {
+    "name": "Tantrum",
+    "description": "Deal !D! damage NL !M! times. NL Enter Wrath. NL Shuffle this card into your draw pile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ThirdEye": {
+    "name": "Third Eye",
+    "description": "Gain !B! Block. NL Scry !M!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ClearTheMind": {
+    "name": "Tranquility",
+    "description": "Retain. NL Enter Calm. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vault": {
+    "name": "Vault",
+    "description": "Take an extra turn after this one. NL End your turn. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vigilance": {
+    "name": "Vigilance",
+    "description": "Gain !B! Block. NL Enter Calm.",
+    "upgradeDescription": "Deprecated.",
+    "extendedDescription": []
+  },
+  "Wallop": {
+    "name": "Wallop",
+    "description": "Deal !D! damage. NL Gain Block equal to unblocked damage dealt.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WaveOfTheHand": {
+    "name": "Wave of the Hand",
+    "description": "Whenever you gain Block this turn, apply !M! Weak to ALL enemies.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Weave": {
+    "name": "Weave",
+    "description": "Deal !D! damage. NL Whenever you Scry, return this from the discard pile to your Hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WheelKick": {
+    "name": "Wheel Kick",
+    "description": "Deal !D! damage. NL Draw !M! cards.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WindmillStrike": {
+    "name": "Windmill Strike",
+    "description": "Retain. NL Deal !D! damage. NL When Retained, increase its damage by !M! this combat.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wish": {
+    "name": "Wish",
+    "description": "Choose one: NL Gain !B! Plated Armor, !D! Strength, or !M! Gold. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Worship": {
+    "name": "Worship",
+    "description": "Gain !M! Mantra.",
+    "upgradeDescription": "Retain. NL Gain !M! Mantra.",
+    "extendedDescription": []
+  },
+  "WreathOfFlame": {
+    "name": "Wreath of Flame",
+    "description": "Your next Attack deals !M! additional damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Apotheosis": {
+    "name": "Apotheosis",
+    "description": "Upgrade ALL your cards for the rest of combat. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bandage Up": {
+    "name": "Bandage Up",
+    "description": "Heal !M! HP. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blind": {
+    "name": "Blind",
+    "description": "Apply !M! Weak.",
+    "upgradeDescription": "Apply !M! Weak to ALL enemies.",
+    "extendedDescription": []
+  },
+  "Chrysalis": {
+    "name": "Chrysalis",
+    "description": "Shuffle !M! random Skills into your draw pile. They cost 0 this combat. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dark Shackles": {
+    "name": "Dark Shackles",
+    "description": "Enemy loses !M! Strength this turn. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deep Breath": {
+    "name": "Deep Breath",
+    "description": "Shuffle your discard pile into your draw pile. NL Draw !M! card.",
+    "upgradeDescription": "Shuffle your discard pile into your draw pile. NL Draw !M! cards.",
+    "extendedDescription": []
+  },
+  "Discovery": {
+    "name": "Discovery",
+    "description": "Choose 1 of 3 random cards to add into your hand. It costs 0 this turn. NL Exhaust.",
+    "upgradeDescription": "Choose 1 of 3 random cards to add into your hand. It costs 0 this turn.",
+    "extendedDescription": []
+  },
+  "Dramatic Entrance": {
+    "name": "Dramatic Entrance",
+    "description": "Innate. NL Deal !D! damage to ALL enemies. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Enlightenment": {
+    "name": "Enlightenment",
+    "description": "Reduce the cost of all cards in your hand to 1 this turn.",
+    "upgradeDescription": "Reduce the cost of all cards in your hand to 1 this combat.",
+    "extendedDescription": []
+  },
+  "Finesse": {
+    "name": "Finesse",
+    "description": "Gain !B! Block. NL Draw 1 card.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flash of Steel": {
+    "name": "Flash of Steel",
+    "description": "Deal !D! damage. NL Draw 1 card.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Forethought": {
+    "name": "Forethought",
+    "description": "Put a card from your hand to the bottom of your draw pile. It costs 0 until played.",
+    "upgradeDescription": "Put any number of cards from your hand to the bottom of your draw pile. They cost 0 until played.",
+    "extendedDescription": []
+  },
+  "Good Instincts": {
+    "name": "Good Instincts",
+    "description": "Gain !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "HandOfGreed": {
+    "name": "Hand of Greed",
+    "description": "Deal !D! damage. NL If Fatal, gain !M! Gold.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Impatience": {
+    "name": "Impatience",
+    "description": "If you have no Attacks in your hand, draw !M! cards.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Jack Of All Trades": {
+    "name": "Jack of All Trades",
+    "description": "Add !M! random Colorless card into your hand. NL Exhaust.",
+    "upgradeDescription": "Add !M! random Colorless cards into your hand. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Madness": {
+    "name": "Madness",
+    "description": "Reduce the cost of a random card in your hand to 0 this combat. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Magnetism": {
+    "name": "Magnetism",
+    "description": "At the start of your turn, add a random Colorless card into your hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Master of Strategy": {
+    "name": "Master of Strategy",
+    "description": "Draw !M! cards. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Mayhem": {
+    "name": "Mayhem",
+    "description": "At the start of your turn, play the top card of your draw pile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Metamorphosis": {
+    "name": "Metamorphosis",
+    "description": "Shuffle !M! random Attacks into your draw pile. They cost 0 this combat. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Mind Blast": {
+    "name": "Mind Blast",
+    "description": "Innate. NL Deal damage equal to the number of cards in your draw pile.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (Deals !D! damage.)"
+    ]
+  },
+  "Panacea": {
+    "name": "Panacea",
+    "description": "Gain !M! Artifact. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Panache": {
+    "name": "Panache",
+    "description": "Every time you play 5 cards in a single turn, deal !M! damage to ALL enemies.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PanicButton": {
+    "name": "Panic Button",
+    "description": "Gain !B! Block. You cannot gain Block from cards for !M! turns. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Purity": {
+    "name": "Purity",
+    "description": "Exhaust up to !M! cards in your hand. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sadistic Nature": {
+    "name": "Sadistic Nature",
+    "description": "Whenever you apply a debuff to an enemy, they take !M! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Secret Technique": {
+    "name": "Secret Technique",
+    "description": "Put a Skill from your draw pile into your hand. NL Exhaust.",
+    "upgradeDescription": "Put a Skill from your draw pile into your hand.",
+    "extendedDescription": [
+      "There are no Skills NL in my draw pile."
+    ]
+  },
+  "Secret Weapon": {
+    "name": "Secret Weapon",
+    "description": "Put an Attack from your draw pile into your hand. NL Exhaust.",
+    "upgradeDescription": "Put an Attack from your draw pile into your hand.",
+    "extendedDescription": [
+      "There are no Attacks NL in my draw pile."
+    ]
+  },
+  "Swift Strike": {
+    "name": "Swift Strike",
+    "description": "Deal !D! damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "The Bomb": {
+    "name": "The Bomb",
+    "description": "At the end of 3 turns, deal !M! damage to ALL enemies.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Thinking Ahead": {
+    "name": "Thinking Ahead",
+    "description": "Draw 2 cards. NL Put a card from your hand on top of your draw pile. NL Exhaust.",
+    "upgradeDescription": "Draw 2 cards. NL Put a card from your hand on top of your draw pile.",
+    "extendedDescription": []
+  },
+  "Transmutation": {
+    "name": "Transmutation",
+    "description": "Add X random Colorless cards into your hand. They cost 0 this turn. NL Exhaust.",
+    "upgradeDescription": "Add X random Upgraded Colorless cards into your hand. They cost 0 this turn. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Trip": {
+    "name": "Trip",
+    "description": "Apply !M! Vulnerable.",
+    "upgradeDescription": "Apply !M! Vulnerable to ALL enemies.",
+    "extendedDescription": []
+  },
+  "Violence": {
+    "name": "Violence",
+    "description": "Put !M! random Attacks from your draw pile into your hand. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Burn": {
+    "name": "Burn",
+    "description": "Unplayable. NL At the end of your turn, take 2 damage.",
+    "upgradeDescription": "Unplayable. NL At the end of your turn, take 4 damage.",
+    "extendedDescription": []
+  },
+  "Dazed": {
+    "name": "Dazed",
+    "description": "Unplayable. NL Ethereal.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Slimed": {
+    "name": "Slimed",
+    "description": "Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Void": {
+    "name": "Void",
+    "description": "Unplayable. NL Ethereal. NL Whenever this card is drawn, lose 1 Energy.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wound": {
+    "name": "Wound",
+    "description": "Unplayable.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ghostly": {
+    "name": "Apparition",
+    "description": "Ethereal. NL Gain 1 Intangible. NL Exhaust.",
+    "upgradeDescription": "Gain 1 Intangible. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Beta": {
+    "name": "Beta",
+    "description": "Shuffle an *Omega into your draw pile. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bite": {
+    "name": "Bite",
+    "description": "Deal !D! damage. NL Heal !M! HP.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "J.A.X.": {
+    "name": "J.A.X.",
+    "description": "Lose 3 HP. NL Gain !M! Strength.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Insight": {
+    "name": "Insight",
+    "description": "Retain. NL Draw !M! cards. NL Exhaust.",
+    "upgradeDescription": "Retain. NL Draw !M! cards. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Miracle": {
+    "name": "Miracle",
+    "description": "Retain. NL Gain [W]. NL Exhaust.",
+    "upgradeDescription": "Retain. NL Gain [W] [W]. NL Exhaust.",
+    "extendedDescription": []
+  },
+  "Omega": {
+    "name": "Omega",
+    "description": "At the end of your turn, deal !M! damage to ALL enemies.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "RitualDagger": {
+    "name": "Ritual Dagger",
+    "description": "Deal !D! damage. NL If Fatal, permanently increase this card's damage by !M!. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Safety": {
+    "name": "Safety",
+    "description": "Retain. NL Gain !B! Block. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shiv": {
+    "name": "Shiv",
+    "description": "Deal !D! damage. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Smite": {
+    "name": "Smite",
+    "description": "Retain. NL Deal !D! damage. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ThroughViolence": {
+    "name": "Through Violence",
+    "description": "Retain. NL Deal !D! damage. NL Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "BecomeAlmighty": {
+    "name": "Become Almighty",
+    "description": "Gain !M! Strength.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FameAndFortune": {
+    "name": "Fame and Fortune",
+    "description": "Gain !M! Gold.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LiveForever": {
+    "name": "Live Forever",
+    "description": "Gain !M! *Plated *Armor.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Expunger": {
+    "name": "Expunger",
+    "description": "Deal !D! damage X times.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "Deal !D! damage !M! times.",
+      "Deal !D! damage !M! time."
+    ]
+  },
+  "AscendersBane": {
+    "name": "Ascender's Bane",
+    "description": "Unplayable. NL Ethereal. NL Cannot be removed from your deck.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CurseOfTheBell": {
+    "name": "Curse of the Bell",
+    "description": "Unplayable. NL Cannot be removed from your deck.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clumsy": {
+    "name": "Clumsy",
+    "description": "Unplayable. NL Ethereal.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Decay": {
+    "name": "Decay",
+    "description": "Unplayable. NL At the end of your turn, take 2 damage.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doubt": {
+    "name": "Doubt",
+    "description": "Unplayable. NL At the end of your turn, gain 1 Weak.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Injury": {
+    "name": "Injury",
+    "description": "Unplayable.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Necronomicurse": {
+    "name": "Necronomicurse",
+    "description": "Unplayable. NL There is no escape from this Curse.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Normality": {
+    "name": "Normality",
+    "description": "Unplayable. NL While in hand, you cannot play more than 3 cards this turn.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "I can only play up to NL #r3 cards this turn.",
+      "Unplayable. NL You cannot play more than ",
+      " cards per turn.",
+      " cards per turn. NL You have played ",
+      " card this turn.",
+      " cards this turn."
+    ]
+  },
+  "Pain": {
+    "name": "Pain",
+    "description": "Unplayable. NL While in hand, NL lose 1 HP whenever you play another card.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Parasite": {
+    "name": "Parasite",
+    "description": "Unplayable. NL If transformed or removed from your deck, lose 3 Max HP.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pride": {
+    "name": "Pride",
+    "description": "Innate. NL At the end of your turn, put a copy of this card on top of your draw pile. Exhaust.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Regret": {
+    "name": "Regret",
+    "description": "Unplayable. NL At the end of your turn, lose HP equal to the number of cards in your hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shame": {
+    "name": "Shame",
+    "description": "Unplayable. NL At the end of your turn, gain 1 Frail.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Writhe": {
+    "name": "Writhe",
+    "description": "Unplayable. NL Innate.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  }
+}

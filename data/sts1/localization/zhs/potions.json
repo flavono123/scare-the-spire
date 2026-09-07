@@ -1,0 +1,338 @@
+{
+  "Regen Potion": {
+    "name": "再生药水",
+    "description": "获得 #b5 层 #y再生 。",
+    "descriptions": [
+      "获得 #b",
+      " 层 #y再生 。",
+      ""
+    ]
+  },
+  "SmokeBomb": {
+    "name": "烟雾弹",
+    "description": "从一场非Boss战斗中逃离，不获得任何奖励。0我被夹击了，无法逃脱！",
+    "descriptions": [
+      "从一场非Boss战斗中逃离，不获得任何奖励。",
+      "我被夹击了，无法逃脱！"
+    ]
+  },
+  "Weak Potion": {
+    "name": "虚弱药水",
+    "description": "给予 #b3 层 #y虚弱 。",
+    "descriptions": [
+      "给予 #b",
+      " 层 #y虚弱 。"
+    ]
+  },
+  "SteroidPotion": {
+    "name": "类固醇药水",
+    "description": "获得 #b5 点 力量 。在你的回合结束时，失去 #b 点 力量 。",
+    "descriptions": [
+      "获得 #b",
+      " 点 力量 。在你的回合结束时，失去 #b",
+      " 点 力量 。"
+    ]
+  },
+  "SpeedPotion": {
+    "name": "速度药水",
+    "description": "获得 #b5 点 敏捷 。在你的回合结束时，失去 #b 点 敏捷 。",
+    "descriptions": [
+      "获得 #b",
+      " 点 敏捷 。在你的回合结束时，失去 #b",
+      " 点 敏捷 。"
+    ]
+  },
+  "Ancient Potion": {
+    "name": "先古药水",
+    "description": "获得 #b1 层 #y人工制品 。",
+    "descriptions": [
+      "获得 #b",
+      " 层 #y人工制品 。"
+    ]
+  },
+  "Poison Potion": {
+    "name": "毒药水",
+    "description": "给予 #b6 层 #y中毒 。",
+    "descriptions": [
+      "给予 #b",
+      " 层 #y中毒 。"
+    ]
+  },
+  "LiquidMemories": {
+    "name": "液态记忆",
+    "description": "选择弃牌堆中的一张牌放入你的手牌。这张牌在本回合的耗能变为 #b0 。1选择弃牌堆中的 #b  张牌放入你的手牌。它们在本回合的耗能变为 #b0 。",
+    "descriptions": [
+      "选择弃牌堆中的一张牌放入你的手牌。这张牌在本回合的耗能变为 #b0 。",
+      "选择弃牌堆中的 #b ",
+      " 张牌放入你的手牌。它们在本回合的耗能变为 #b0 。"
+    ]
+  },
+  "Fire Potion": {
+    "name": "火焰药水",
+    "description": "造成 #b20 点伤害。",
+    "descriptions": [
+      "造成 #b",
+      " 点伤害。"
+    ]
+  },
+  "CunningPotion": {
+    "name": "狡诈药水",
+    "description": "增加 #b3 张 #y小刀+ 到你的手牌。",
+    "descriptions": [
+      "增加 #b",
+      " 张 #y小刀+ 到你的手牌。"
+    ]
+  },
+  "PowerPotion": {
+    "name": "能力药水",
+    "description": "从 #b3 张随机能力牌中选择 #b1 张加入你的手牌。这张牌在本回合耗能变为 #b0 。1从 #b3 张随机能力牌中选择 #b1 张，将其加入你的手牌 #b2 次。这两张牌在本回合耗能变为 #b0 。",
+    "descriptions": [
+      "从 #b3 张随机能力牌中选择 #b1 张加入你的手牌。这张牌在本回合耗能变为 #b0 。",
+      "从 #b3 张随机能力牌中选择 #b1 张，将其加入你的手牌 #b2 次。这两张牌在本回合耗能变为 #b0 。"
+    ]
+  },
+  "Swift Potion": {
+    "name": "迅捷药水",
+    "description": "3抽 #b 张牌。",
+    "descriptions": [
+      "",
+      "抽 #b",
+      " 张牌。"
+    ]
+  },
+  "SkillPotion": {
+    "name": "技能药水",
+    "description": "从 #b3 张随机技能牌中选择 #b1 张加入你的手牌。这张牌在本回合耗能变为 #b0 。1从 #b3 张随机技能牌中选择 #b1 张，将其加入你的手牌 #b2 次。这两张牌在本回合耗能变为 #b0 。",
+    "descriptions": [
+      "从 #b3 张随机技能牌中选择 #b1 张加入你的手牌。这张牌在本回合耗能变为 #b0 。",
+      "从 #b3 张随机技能牌中选择 #b1 张，将其加入你的手牌 #b2 次。这两张牌在本回合耗能变为 #b0 。"
+    ]
+  },
+  "Dexterity Potion": {
+    "name": "敏捷药水",
+    "description": "获得 #b2 点 #y敏捷 。",
+    "descriptions": [
+      "获得 #b",
+      " 点 #y敏捷 。"
+    ]
+  },
+  "DuplicationPotion": {
+    "name": "复制药水",
+    "description": "本回合你的下一张牌将被打出两次。1本回合你的下两张牌将被打出两次。",
+    "descriptions": [
+      "本回合你的下一张牌将被打出两次。",
+      "本回合你的下两张牌将被打出两次。"
+    ]
+  },
+  "Strength Potion": {
+    "name": "力量药水",
+    "description": "获得 #b2 点 #y力量 。",
+    "descriptions": [
+      "获得 #b",
+      " 点 #y力量 。"
+    ]
+  },
+  "GhostInAJar": {
+    "name": "罐装幽灵",
+    "description": "获得 #b1 层 #y无实体 。",
+    "descriptions": [
+      "获得 #b",
+      " 层 #y无实体 。"
+    ]
+  },
+  "BlessingOfTheForge": {
+    "name": "熔炉的祝福",
+    "description": "在本场战斗中升级手牌中的所有牌。",
+    "descriptions": [
+      "在本场战斗中升级手牌中的所有牌。"
+    ]
+  },
+  "FocusPotion": {
+    "name": "集中药水",
+    "description": "获得 #b2 点 #y集中 。",
+    "descriptions": [
+      "获得 #b",
+      " 点 #y集中 。"
+    ]
+  },
+  "HeartOfIron": {
+    "name": "铁之心",
+    "description": "获得 #b6 层 #y金属化 。",
+    "descriptions": [
+      "获得 #b",
+      " 层 #y金属化 。"
+    ]
+  },
+  "FairyPotion": {
+    "name": "瓶中精灵",
+    "description": "当你要被杀死时，免死并回复到最大生命值的 #b30% ，丢弃这瓶药水。",
+    "descriptions": [
+      "当你要被杀死时，免死并回复到最大生命值的 #b",
+      "% ，丢弃这瓶药水。"
+    ]
+  },
+  "PotionOfCapacity": {
+    "name": "扩容药水",
+    "description": "获得 #b2 个充能球栏位。",
+    "descriptions": [
+      "获得 #b",
+      " 个充能球栏位。"
+    ]
+  },
+  "Block Potion": {
+    "name": "格挡药水",
+    "description": "获得 #b12 点 #y格挡 。",
+    "descriptions": [
+      "获得 #b",
+      " 点 #y格挡 。"
+    ]
+  },
+  "FearPotion": {
+    "name": "恐惧药水",
+    "description": "给予 #b3 层 #y易伤 。",
+    "descriptions": [
+      "给予 #b",
+      " 层 #y易伤 。"
+    ]
+  },
+  "GamblersBrew": {
+    "name": "赌徒特酿",
+    "description": "丢弃任意张牌，然后抽相同数量的牌。",
+    "descriptions": [
+      "丢弃任意张牌，然后抽相同数量的牌。"
+    ]
+  },
+  "BloodPotion": {
+    "name": "鲜血药水",
+    "description": "回复最大生命值的 #b20% 。",
+    "descriptions": [
+      "回复最大生命值的 #b",
+      "% 。"
+    ]
+  },
+  "EssenceOfDarkness": {
+    "name": "暗之精华",
+    "description": "每个充能球栏位 #y生成 #b1 个 #y黑暗 充能球。",
+    "descriptions": [
+      "每个充能球栏位 #y生成 #b",
+      " 个 #y黑暗 充能球。"
+    ]
+  },
+  "Fruit Juice": {
+    "name": "果汁",
+    "description": "获得 #b5 点最大生命。",
+    "descriptions": [
+      "获得 #b",
+      " 点最大生命。"
+    ]
+  },
+  "Energy Potion": {
+    "name": "能量药水",
+    "description": "获得 #b2 点能量。",
+    "descriptions": [
+      "获得 #b",
+      " 点能量。"
+    ]
+  },
+  "Ambrosia": {
+    "name": "仙馔密酒",
+    "description": "进入 #y神格 #y姿态 。",
+    "descriptions": [
+      "进入 #y神格 #y姿态 。"
+    ]
+  },
+  "ElixirPotion": {
+    "name": "万灵药水",
+    "description": "#y消耗 任意张手牌。",
+    "descriptions": [
+      "#y消耗 任意张手牌。"
+    ]
+  },
+  "DistilledChaos": {
+    "name": "精炼混沌",
+    "description": "打出你抽牌堆顶部的 #b3 张牌。",
+    "descriptions": [
+      "打出你抽牌堆顶部的 #b",
+      " 张牌。"
+    ]
+  },
+  "LiquidBronze": {
+    "name": "流动铜液",
+    "description": "获得 #b3 点 #y荆棘 。",
+    "descriptions": [
+      "获得 #b",
+      " 点 #y荆棘 。"
+    ]
+  },
+  "AttackPotion": {
+    "name": "攻击药水",
+    "description": "从 #b3 张随机攻击牌中选择 #b1 张加入你的手牌。这张牌在本回合耗能变为 #b0 。1从 #b3 张随机攻击牌中选择 #b1 张，将其加入你的手牌 #b2 次。这两张牌在本回合耗能变为 #b0 。",
+    "descriptions": [
+      "从 #b3 张随机攻击牌中选择 #b1 张加入你的手牌。这张牌在本回合耗能变为 #b0 。",
+      "从 #b3 张随机攻击牌中选择 #b1 张，将其加入你的手牌 #b2 次。这两张牌在本回合耗能变为 #b0 。"
+    ]
+  },
+  "SneckoOil": {
+    "name": "异蛇之油",
+    "description": "抽 #b5 张牌。随机化你手牌的耗能。",
+    "descriptions": [
+      "抽 #b",
+      " 张牌。随机化你手牌的耗能。",
+      ""
+    ]
+  },
+  "StancePotion": {
+    "name": "姿态药水",
+    "description": "进入 #y平静 或 #y愤怒 。",
+    "descriptions": [
+      "进入 #y平静 或 #y愤怒 。"
+    ]
+  },
+  "Explosive Potion": {
+    "name": "爆炸药水",
+    "description": "对所有敌人造成 #b10 点伤害。",
+    "descriptions": [
+      "对所有敌人造成 #b",
+      " 点伤害。"
+    ]
+  },
+  "EssenceOfSteel": {
+    "name": "钢之精华",
+    "description": "获得 #b4 层 #y多层护甲 。",
+    "descriptions": [
+      "获得 #b",
+      " 层 #y多层护甲 。"
+    ]
+  },
+  "BottledMiracle": {
+    "name": "瓶装奇迹",
+    "description": "增加 #b2 张 #y奇迹 到你的手牌。",
+    "descriptions": [
+      "增加 #b",
+      " 张 #y奇迹 到你的手牌。"
+    ]
+  },
+  "ColorlessPotion": {
+    "name": "无色药水",
+    "description": "从 #b3 张随机 #y无色 牌中选择 #b1 张加入你的手牌。这张牌在本回合耗能变为 #b0 。1从 #b3 张随机 #y无色 牌中选择 #b1 张，将其加入你的手牌 #b2 次。这两张牌在本回合耗能变为 #b0 。",
+    "descriptions": [
+      "从 #b3 张随机 #y无色 牌中选择 #b1 张加入你的手牌。这张牌在本回合耗能变为 #b0 。",
+      "从 #b3 张随机 #y无色 牌中选择 #b1 张，将其加入你的手牌 #b2 次。这两张牌在本回合耗能变为 #b0 。"
+    ]
+  },
+  "EntropicBrew": {
+    "name": "混沌药水",
+    "description": "在所有空药水栏位中获得随机药水。",
+    "descriptions": [
+      "在所有空药水栏位中获得随机药水。"
+    ]
+  },
+  "CultistPotion": {
+    "name": "邪教徒药水",
+    "description": "获得 #b1 层 #y仪式 。",
+    "descriptions": [
+      "获得 #b",
+      " 层 #y仪式 。"
+    ]
+  }
+}

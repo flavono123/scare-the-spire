@@ -1,0 +1,619 @@
+[
+  {
+    "id": "Regen Potion",
+    "slug": "regen-potion",
+    "className": "com.megacrit.cardcrawl.potions.RegenPotion",
+    "rarity": "uncommon",
+    "size": "heart",
+    "potionColor": "white",
+    "potency": 5,
+    "thrown": false,
+    "legacySlugs": [
+      "regen-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "SmokeBomb",
+    "slug": "smokebomb",
+    "className": "com.megacrit.cardcrawl.potions.SmokeBomb",
+    "rarity": "rare",
+    "size": "sphere",
+    "potionColor": "smoke",
+    "potency": 0,
+    "thrown": true,
+    "legacySlugs": [
+      "smokebomb",
+      "smoke-bomb"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "Weak Potion",
+    "slug": "weak-potion",
+    "className": "com.megacrit.cardcrawl.potions.WeakenPotion",
+    "rarity": "common",
+    "size": "h",
+    "potionColor": "weak",
+    "potency": 3,
+    "thrown": true,
+    "legacySlugs": [
+      "weak-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "SteroidPotion",
+    "slug": "steroidpotion",
+    "className": "com.megacrit.cardcrawl.potions.SteroidPotion",
+    "rarity": "common",
+    "size": "fairy",
+    "potionColor": "steroid",
+    "potency": 5,
+    "thrown": false,
+    "legacySlugs": [
+      "steroidpotion",
+      "flex-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "SpeedPotion",
+    "slug": "speedpotion",
+    "className": "com.megacrit.cardcrawl.potions.SpeedPotion",
+    "rarity": "common",
+    "size": "bolt",
+    "potionColor": "skill",
+    "potency": 5,
+    "thrown": false,
+    "legacySlugs": [
+      "speedpotion",
+      "speed-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "Ancient Potion",
+    "slug": "ancient-potion",
+    "className": "com.megacrit.cardcrawl.potions.AncientPotion",
+    "rarity": "uncommon",
+    "size": "fairy",
+    "potionColor": "ancient",
+    "potency": 1,
+    "thrown": false,
+    "legacySlugs": [
+      "ancient-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "Poison Potion",
+    "slug": "poison-potion",
+    "className": "com.megacrit.cardcrawl.potions.PoisonPotion",
+    "rarity": "common",
+    "size": "m",
+    "potionColor": "poison",
+    "potency": 6,
+    "thrown": true,
+    "legacySlugs": [
+      "poison-potion"
+    ],
+    "pool": "silent"
+  },
+  {
+    "id": "LiquidMemories",
+    "slug": "liquidmemories",
+    "className": "com.megacrit.cardcrawl.potions.LiquidMemories",
+    "rarity": "uncommon",
+    "size": "eye",
+    "potionColor": "none",
+    "potency": 1,
+    "thrown": false,
+    "legacySlugs": [
+      "liquidmemories",
+      "liquid-memories"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "Fire Potion",
+    "slug": "fire-potion",
+    "className": "com.megacrit.cardcrawl.potions.FirePotion",
+    "rarity": "common",
+    "size": "sphere",
+    "potionColor": "fire",
+    "potency": 20,
+    "thrown": true,
+    "legacySlugs": [
+      "fire-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "CunningPotion",
+    "slug": "cunningpotion",
+    "className": "com.megacrit.cardcrawl.potions.CunningPotion",
+    "rarity": "uncommon",
+    "size": "spiky",
+    "potionColor": "none",
+    "potency": 3,
+    "thrown": false,
+    "legacySlugs": [
+      "cunningpotion",
+      "cunning-potion"
+    ],
+    "pool": "silent"
+  },
+  {
+    "id": "PowerPotion",
+    "slug": "powerpotion",
+    "className": "com.megacrit.cardcrawl.potions.PowerPotion",
+    "rarity": "common",
+    "size": "card",
+    "potionColor": "blue",
+    "potency": 1,
+    "thrown": false,
+    "legacySlugs": [
+      "powerpotion",
+      "power-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "Swift Potion",
+    "slug": "swift-potion",
+    "className": "com.megacrit.cardcrawl.potions.SwiftPotion",
+    "rarity": "common",
+    "size": "h",
+    "potionColor": "swift",
+    "potency": 3,
+    "thrown": false,
+    "legacySlugs": [
+      "swift-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "SkillPotion",
+    "slug": "skillpotion",
+    "className": "com.megacrit.cardcrawl.potions.SkillPotion",
+    "rarity": "common",
+    "size": "card",
+    "potionColor": "green",
+    "potency": 1,
+    "thrown": false,
+    "legacySlugs": [
+      "skillpotion",
+      "skill-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "Dexterity Potion",
+    "slug": "dexterity-potion",
+    "className": "com.megacrit.cardcrawl.potions.DexterityPotion",
+    "rarity": "common",
+    "size": "s",
+    "potionColor": "green",
+    "potency": 2,
+    "thrown": false,
+    "legacySlugs": [
+      "dexterity-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "DuplicationPotion",
+    "slug": "duplicationpotion",
+    "className": "com.megacrit.cardcrawl.potions.DuplicationPotion",
+    "rarity": "uncommon",
+    "size": "card",
+    "potionColor": "rainbow",
+    "potency": 1,
+    "thrown": false,
+    "legacySlugs": [
+      "duplicationpotion",
+      "duplication-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "Strength Potion",
+    "slug": "strength-potion",
+    "className": "com.megacrit.cardcrawl.potions.StrengthPotion",
+    "rarity": "common",
+    "size": "s",
+    "potionColor": "strength",
+    "potency": 2,
+    "thrown": false,
+    "legacySlugs": [
+      "strength-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "GhostInAJar",
+    "slug": "ghostinajar",
+    "className": "com.megacrit.cardcrawl.potions.GhostInAJar",
+    "rarity": "rare",
+    "size": "ghost",
+    "potionColor": "white",
+    "potency": 1,
+    "thrown": false,
+    "legacySlugs": [
+      "ghostinajar",
+      "ghost-in-a-jar"
+    ],
+    "pool": "silent"
+  },
+  {
+    "id": "BlessingOfTheForge",
+    "slug": "blessingoftheforge",
+    "className": "com.megacrit.cardcrawl.potions.BlessingOfTheForge",
+    "rarity": "common",
+    "size": "anvil",
+    "potionColor": "fire",
+    "potency": 0,
+    "thrown": false,
+    "legacySlugs": [
+      "blessingoftheforge",
+      "blessing-of-the-forge"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "FocusPotion",
+    "slug": "focuspotion",
+    "className": "com.megacrit.cardcrawl.potions.FocusPotion",
+    "rarity": "common",
+    "size": "s",
+    "potionColor": "swift",
+    "potency": 2,
+    "thrown": false,
+    "legacySlugs": [
+      "focuspotion",
+      "focus-potion"
+    ],
+    "pool": "defect"
+  },
+  {
+    "id": "HeartOfIron",
+    "slug": "heartofiron",
+    "className": "com.megacrit.cardcrawl.potions.HeartOfIron",
+    "rarity": "rare",
+    "size": "heart",
+    "potionColor": "swift",
+    "potency": 6,
+    "thrown": false,
+    "legacySlugs": [
+      "heartofiron",
+      "heart-of-iron"
+    ],
+    "pool": "ironclad"
+  },
+  {
+    "id": "FairyPotion",
+    "slug": "fairypotion",
+    "className": "com.megacrit.cardcrawl.potions.FairyPotion",
+    "rarity": "rare",
+    "size": "fairy",
+    "potionColor": "fairy",
+    "potency": 30,
+    "thrown": false,
+    "legacySlugs": [
+      "fairypotion",
+      "fairy-in-a-bottle"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "PotionOfCapacity",
+    "slug": "potionofcapacity",
+    "className": "com.megacrit.cardcrawl.potions.PotionOfCapacity",
+    "rarity": "uncommon",
+    "size": "sphere",
+    "potionColor": "blue",
+    "potency": 2,
+    "thrown": false,
+    "legacySlugs": [
+      "potionofcapacity",
+      "potion-of-capacity"
+    ],
+    "pool": "defect"
+  },
+  {
+    "id": "Block Potion",
+    "slug": "block-potion",
+    "className": "com.megacrit.cardcrawl.potions.BlockPotion",
+    "rarity": "common",
+    "size": "s",
+    "potionColor": "blue",
+    "potency": 12,
+    "thrown": false,
+    "legacySlugs": [
+      "block-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "FearPotion",
+    "slug": "fearpotion",
+    "className": "com.megacrit.cardcrawl.potions.FearPotion",
+    "rarity": "common",
+    "size": "h",
+    "potionColor": "fear",
+    "potency": 3,
+    "thrown": true,
+    "legacySlugs": [
+      "fearpotion",
+      "fear-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "GamblersBrew",
+    "slug": "gamblersbrew",
+    "className": "com.megacrit.cardcrawl.potions.GamblersBrew",
+    "rarity": "uncommon",
+    "size": "s",
+    "potionColor": "smoke",
+    "potency": 0,
+    "thrown": false,
+    "legacySlugs": [
+      "gamblersbrew",
+      "gamblers-brew"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "BloodPotion",
+    "slug": "bloodpotion",
+    "className": "com.megacrit.cardcrawl.potions.BloodPotion",
+    "rarity": "common",
+    "size": "h",
+    "potionColor": "white",
+    "potency": 20,
+    "thrown": false,
+    "legacySlugs": [
+      "bloodpotion",
+      "blood-potion"
+    ],
+    "pool": "ironclad"
+  },
+  {
+    "id": "EssenceOfDarkness",
+    "slug": "essenceofdarkness",
+    "className": "com.megacrit.cardcrawl.potions.EssenceOfDarkness",
+    "rarity": "rare",
+    "size": "moon",
+    "potionColor": "smoke",
+    "potency": 1,
+    "thrown": false,
+    "legacySlugs": [
+      "essenceofdarkness",
+      "essence-of-darkness"
+    ],
+    "pool": "defect"
+  },
+  {
+    "id": "Fruit Juice",
+    "slug": "fruit-juice",
+    "className": "com.megacrit.cardcrawl.potions.FruitJuice",
+    "rarity": "rare",
+    "size": "heart",
+    "potionColor": "fruit",
+    "potency": 5,
+    "thrown": false,
+    "legacySlugs": [
+      "fruit-juice"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "Energy Potion",
+    "slug": "energy-potion",
+    "className": "com.megacrit.cardcrawl.potions.EnergyPotion",
+    "rarity": "common",
+    "size": "bolt",
+    "potionColor": "energy",
+    "potency": 2,
+    "thrown": false,
+    "legacySlugs": [
+      "energy-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "Ambrosia",
+    "slug": "ambrosia",
+    "className": "com.megacrit.cardcrawl.potions.Ambrosia",
+    "rarity": "rare",
+    "size": "eye",
+    "potionColor": "weak",
+    "potency": 2,
+    "thrown": false,
+    "legacySlugs": [
+      "ambrosia"
+    ],
+    "pool": "watcher"
+  },
+  {
+    "id": "ElixirPotion",
+    "slug": "elixirpotion",
+    "className": "com.megacrit.cardcrawl.potions.Elixir",
+    "rarity": "uncommon",
+    "size": "t",
+    "potionColor": "white",
+    "potency": 0,
+    "thrown": false,
+    "legacySlugs": [
+      "elixirpotion",
+      "elixir"
+    ],
+    "pool": "ironclad"
+  },
+  {
+    "id": "DistilledChaos",
+    "slug": "distilledchaos",
+    "className": "com.megacrit.cardcrawl.potions.DistilledChaosPotion",
+    "rarity": "uncommon",
+    "size": "t",
+    "potionColor": "rainbow",
+    "potency": 3,
+    "thrown": false,
+    "legacySlugs": [
+      "distilledchaos",
+      "distilled-chaos"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "LiquidBronze",
+    "slug": "liquidbronze",
+    "className": "com.megacrit.cardcrawl.potions.LiquidBronze",
+    "rarity": "uncommon",
+    "size": "spiky",
+    "potionColor": "none",
+    "potency": 3,
+    "thrown": false,
+    "legacySlugs": [
+      "liquidbronze",
+      "liquid-bronze"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "AttackPotion",
+    "slug": "attackpotion",
+    "className": "com.megacrit.cardcrawl.potions.AttackPotion",
+    "rarity": "common",
+    "size": "card",
+    "potionColor": "fire",
+    "potency": 1,
+    "thrown": false,
+    "legacySlugs": [
+      "attackpotion",
+      "attack-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "SneckoOil",
+    "slug": "sneckooil",
+    "className": "com.megacrit.cardcrawl.potions.SneckoOil",
+    "rarity": "rare",
+    "size": "snecko",
+    "potionColor": "snecko",
+    "potency": 5,
+    "thrown": false,
+    "legacySlugs": [
+      "sneckooil",
+      "snecko-oil"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "StancePotion",
+    "slug": "stancepotion",
+    "className": "com.megacrit.cardcrawl.potions.StancePotion",
+    "rarity": "uncommon",
+    "size": "sphere",
+    "potionColor": "weak",
+    "potency": 0,
+    "thrown": false,
+    "legacySlugs": [
+      "stancepotion",
+      "stance-potion"
+    ],
+    "pool": "watcher"
+  },
+  {
+    "id": "Explosive Potion",
+    "slug": "explosive-potion",
+    "className": "com.megacrit.cardcrawl.potions.ExplosivePotion",
+    "rarity": "common",
+    "size": "h",
+    "potionColor": "explosive",
+    "potency": 10,
+    "thrown": true,
+    "legacySlugs": [
+      "explosive-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "EssenceOfSteel",
+    "slug": "essenceofsteel",
+    "className": "com.megacrit.cardcrawl.potions.EssenceOfSteel",
+    "rarity": "uncommon",
+    "size": "anvil",
+    "potionColor": "none",
+    "potency": 4,
+    "thrown": false,
+    "legacySlugs": [
+      "essenceofsteel",
+      "essence-of-steel"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "BottledMiracle",
+    "slug": "bottledmiracle",
+    "className": "com.megacrit.cardcrawl.potions.BottledMiracle",
+    "rarity": "common",
+    "size": "bottle",
+    "potionColor": "energy",
+    "potency": 2,
+    "thrown": false,
+    "legacySlugs": [
+      "bottledmiracle",
+      "bottled-miracle"
+    ],
+    "pool": "watcher"
+  },
+  {
+    "id": "ColorlessPotion",
+    "slug": "colorlesspotion",
+    "className": "com.megacrit.cardcrawl.potions.ColorlessPotion",
+    "rarity": "common",
+    "size": "card",
+    "potionColor": "white",
+    "potency": 1,
+    "thrown": false,
+    "legacySlugs": [
+      "colorlesspotion",
+      "colorless-potion"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "EntropicBrew",
+    "slug": "entropicbrew",
+    "className": "com.megacrit.cardcrawl.potions.EntropicBrew",
+    "rarity": "rare",
+    "size": "m",
+    "potionColor": "rainbow",
+    "potency": null,
+    "thrown": false,
+    "legacySlugs": [
+      "entropicbrew",
+      "entropic-brew"
+    ],
+    "pool": "shared"
+  },
+  {
+    "id": "CultistPotion",
+    "slug": "cultistpotion",
+    "className": "com.megacrit.cardcrawl.potions.CultistPotion",
+    "rarity": "rare",
+    "size": "moon",
+    "potionColor": "none",
+    "potency": 1,
+    "thrown": false,
+    "legacySlugs": [
+      "cultistpotion",
+      "cultist-potion"
+    ],
+    "pool": "shared"
+  }
+]

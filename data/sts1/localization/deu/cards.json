@@ -1,0 +1,2277 @@
+{
+  "Anger": {
+    "name": "Zorn",
+    "description": "Füge !D! Schaden zu. NL Nimm eine Kopie dieser Karte auf den Abwurfstapel.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Armaments": {
+    "name": "Aufrüsten",
+    "description": "Erhalte !B! Block. NL Verbessere eine Handkarte bis zum Ende des Kampfes.",
+    "upgradeDescription": "Erhalte !B! Block. NL Verbessere alle Handkarten bis zum Ende des Kampfes.",
+    "extendedDescription": []
+  },
+  "Barricade": {
+    "name": "Barrikade",
+    "description": "Dein Block verfällt nicht mehr zu Beginn deines Zuges.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bash": {
+    "name": "Schmettern",
+    "description": "Füge !D! Schaden zu. NL Wende !M! Verwundbar an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Battle Trance": {
+    "name": "Kampftrance",
+    "description": "Ziehe !M! Karten. NL Du kannst in diesem Zug keine weiteren Karten ziehen.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Berserk": {
+    "name": "Berserker",
+    "description": "Erhalte NL !M! Verwundbar. NL Erhalte immer zu Beginn deines Zuges [R].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blood for Blood": {
+    "name": "Blut um Blut",
+    "description": "Kostet 1 [R] weniger für jeden deiner TP-Verluste diesen Kampf. NL Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bloodletting": {
+    "name": "Aderlass",
+    "description": "Erhalte [R] [R]. NL Verliere 3 TP.",
+    "upgradeDescription": "Erhalte [R] [R] [R]. NL Verliere 3 TP.",
+    "extendedDescription": []
+  },
+  "Bludgeon": {
+    "name": "Knüppeln",
+    "description": "Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Body Slam": {
+    "name": "Bodyslam",
+    "description": "Füge Schaden in Höhe deines aktuellen Blocks zu.",
+    "upgradeDescription": " NL (Fügt !D! Schaden zu.)",
+    "extendedDescription": []
+  },
+  "Brutality": {
+    "name": "Brutalität",
+    "description": "Verliere immer zu Beginn deines Zuges NL 1 TP und ziehe 1 Karte.",
+    "upgradeDescription": "Angeboren. NL Verliere immer zu Beginn deines Zuges NL 1 TP und ziehe 1 Karte.",
+    "extendedDescription": []
+  },
+  "Burning Pact": {
+    "name": "Feuerpakt",
+    "description": "Erschöpfe 1 Karte. NL Ziehe !M! Karten.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Carnage": {
+    "name": "Blutbad",
+    "description": "Flüchtig. NL Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clash": {
+    "name": "Zusammenstoß",
+    "description": "Nur spielbar, wenn alle Handkarten Angriffe sind. NL Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "Ich habe andere Karten als Angriffe auf der Hand."
+    ]
+  },
+  "Cleave": {
+    "name": "Spalten",
+    "description": "Füge ALLEN Gegnern !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clothesline": {
+    "name": "Niederreißen",
+    "description": "Füge !D! Schaden zu. NL Wende !M! Schwach an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Combust": {
+    "name": "Verbrennen",
+    "description": "Verliere immer am Ende deines Zuges 1 TP und füge ALLEN Gegnern !M! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Corruption": {
+    "name": "Verderbnis",
+    "description": "Fertigkeiten kosten 0. NL Immer wenn du eine Fertigkeit ausspielst, erschöpfe sie.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dark Embrace": {
+    "name": "Dunkle Hingabe",
+    "description": "Immer wenn eine Karte erschöpft wird, NL ziehe 1 Karte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_R": {
+    "name": "Verteidigen",
+    "description": "Erhalte !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Demon Form": {
+    "name": "Dämonenform",
+    "description": "Erhalte immer zu Beginn deines Zuges NL !M! Stärke.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Disarm": {
+    "name": "Entwaffnen",
+    "description": "Dein Gegner verliert für den Rest dieses Kampfes !M! Stärke. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Double Tap": {
+    "name": "Doppeltreffer",
+    "description": "Dein nächster Angriff in diesem Zug wird zweimal ausgespielt.",
+    "upgradeDescription": "Deine nächsten NL !M! Angriffe in diesem Zug werden zweimal ausgespielt.",
+    "extendedDescription": []
+  },
+  "Dropkick": {
+    "name": "Sprungtritt",
+    "description": "Füge !D! Schaden zu. NL Ist der Gegner Verwundbar, NL erhalte [R] und NL ziehe 1 Karte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dual Wield": {
+    "name": "Zweiwaffenkampf",
+    "description": "Erzeuge eine Kopie einer Angriffs- oder Machtkarte auf deiner Hand.",
+    "upgradeDescription": "Erzeuge 2 Kopien einer Angriffs- oder Machtkarte auf deiner Hand.",
+    "extendedDescription": []
+  },
+  "Entrench": {
+    "name": "Verschanzen",
+    "description": "Verdopple dein aktuelles Block.",
+    "upgradeDescription": "Verdopple dein aktuelles Block.",
+    "extendedDescription": []
+  },
+  "Evolve": {
+    "name": "Entwickeln",
+    "description": "Immer wenn du einen Status ziehst, NL ziehe !M! Karte.",
+    "upgradeDescription": "Immer wenn du einen Status ziehst, NL ziehe !M! Karten.",
+    "extendedDescription": []
+  },
+  "Exhume": {
+    "name": "Exhumieren",
+    "description": "Wähle eine erschöpfte Karte und nimm sie zurück auf die Hand. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Feed": {
+    "name": "Verschlingen",
+    "description": "Füge !D! Schaden zu. NL Falls tödlich, erhöhe deine max. TP um !M!. Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Feel No Pain": {
+    "name": "Schmerzfrei",
+    "description": "Immer wenn eine Karte erschöpft wird, NL erhalte !M! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fiend Fire": {
+    "name": "Teufelsfeuer",
+    "description": "Erschöpfe deine Hand. Füge pro erschöpfter Karte !D! Schaden zu. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fire Breathing": {
+    "name": "Feueratem",
+    "description": "Immer wenn du eine Status- oder Fluchkarte ziehst, NL füge ALLEN Gegnern NL !M! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flame Barrier": {
+    "name": "Flammenwall",
+    "description": "Erhalte !B! Block. NL Immer wenn dich in diesem Zug ein Gegner angreift, füge ihm NL !M! Schaden zu. ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flex": {
+    "name": "Muskelspiel",
+    "description": "Erhalte !M! Stärke. NL Verliere am Ende deines Zuges !M! Stärke.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ghostly Armor": {
+    "name": "Geisterrüstung",
+    "description": "Erhalte !B! Block. NL Flüchtig.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Havoc": {
+    "name": "Verwüstung",
+    "description": "Spiele die oberste Karte des Nachziehstapels aus und erschöpfe sie.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Headbutt": {
+    "name": "Kopfnuss",
+    "description": "Füge !D! Schaden zu. NL Lege eine Karte aus dem Abwurfstapel auf den Nachziehstapel.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Heavy Blade": {
+    "name": "Schweres Schwert",
+    "description": "Füge !D! Schaden zu. NL Stärke beeinflusst Schweres Schwert NL !M! mal.",
+    "upgradeDescription": "Füge !D! Schaden zu. NL Stärke beeinflusst Schweres Schwert NL !M! mal.",
+    "extendedDescription": []
+  },
+  "Hemokinesis": {
+    "name": "Hämokinese",
+    "description": "Verliere !M! TP. NL Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Immolate": {
+    "name": "Feueropfer",
+    "description": "Füge ALLEN Gegnern !D! Schaden zu. NL Nimm ein *Brennen auf den Abwurfstapel.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Impervious": {
+    "name": "Unempfindlich",
+    "description": "Erhalte !B! Block. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Infernal Blade": {
+    "name": "Teuflische Klinge",
+    "description": "Nimm einen zufälligen Angriff auf die Hand. Dieser kostet für diesen Zug 0. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Inflame": {
+    "name": "Entflammen",
+    "description": "Erhalte !M! Stärke.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Intimidate": {
+    "name": "Einschüchtern",
+    "description": "Wende !M! Schwach NL auf ALLE Gegner an. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Iron Wave": {
+    "name": "Eisenwelle",
+    "description": "Erhalte !B! Block. NL Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Juggernaut": {
+    "name": "Moloch",
+    "description": "Immer wenn du Block erhältst, füge einem zufälligen Gegner NL !M! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Limit Break": {
+    "name": "Ekstase",
+    "description": "Verdoppele deine Stärke. NL Erschöpft.",
+    "upgradeDescription": "Verdoppele deine Stärke.",
+    "extendedDescription": []
+  },
+  "Metallicize": {
+    "name": "Metallschicht",
+    "description": "Erhalte immer am Ende deines Zuges NL !M! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Offering": {
+    "name": "Opfergabe",
+    "description": "Verliere 6 TP. NL Erhalte [R] [R]. NL Ziehe !M! Karten. NL Erschöpft.",
+    "upgradeDescription": "Verliere 6 TP. NL Erhalte [R] [R]. NL Ziehe !M! Karten. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Perfected Strike": {
+    "name": "Perfekter Schlag",
+    "description": "Füge !D! Schaden zu. NL Fügt für JEDE deiner \"Schlag\" beinhaltenden Karten +2 Schaden zu.",
+    "upgradeDescription": "Füge !D! Schaden zu. NL Fügt für JEDE deiner \"Schlag\" beinhaltenden Karten +3 Schaden zu.",
+    "extendedDescription": []
+  },
+  "Pommel Strike": {
+    "name": "Knaufschlag",
+    "description": "Füge !D! Schaden zu. NL Ziehe !M! Karte.",
+    "upgradeDescription": "Füge !D! Schaden zu. NL Ziehe !M! Karten.",
+    "extendedDescription": []
+  },
+  "Power Through": {
+    "name": "Durchkämpfen",
+    "description": "Nimm 2 *Wunden NL auf die Hand. NL Erhalte !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pummel": {
+    "name": "Prügeln",
+    "description": "Füge !M! mal NL !D! Schaden zu. NL Erschöpft.",
+    "upgradeDescription": "Füge !M! mal NL !D! Schaden zu. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Rage": {
+    "name": "Wut",
+    "description": "Immer wenn du in diesem Zug einen Angriff ausspielst, erhalte !M! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rampage": {
+    "name": "Toben",
+    "description": "Füge !D! Schaden zu. NL Mit jedem Spielen dieser Karte erhöht sich ihr Schaden diesen Kampf um !M!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reaper": {
+    "name": "Schnitter",
+    "description": "Füge ALLEN Gegnern !D! Schaden zu. NL Heile um die TP, die sie verloren haben. Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reckless Charge": {
+    "name": "Gewagter Ansturm",
+    "description": "Füge !D! Schaden zu. NL Mische ein *Benommen in den Nachziehstapel.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rupture": {
+    "name": "Blutriss",
+    "description": "Immer wenn du durch eine Karte TP verlierst, erhalte !M! Stärke.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Searing Blow": {
+    "name": "Flammender Hieb",
+    "description": "Füge !D! Schaden zu. NL Kann beliebig oft verbessert werden.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Second Wind": {
+    "name": "Kräfte bündeln",
+    "description": "Erschöpfe alle Handkarten außer Angriffen und erhalte !B! Block für jede.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Seeing Red": {
+    "name": "Durchdrehen",
+    "description": "Erhalte [R] [R]. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sentinel": {
+    "name": "Wächter",
+    "description": "Erhalte !B! Block. NL Wird diese Karte erschöpft, NL erhalte [R] [R].",
+    "upgradeDescription": "Erhalte !B! Block. NL Wird diese Karte erschöpft, NL erhalte [R] [R] [R].",
+    "extendedDescription": []
+  },
+  "Sever Soul": {
+    "name": "Seele trennen",
+    "description": "Erschöpfe alle Handkarten außer Angriffen. NL Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shockwave": {
+    "name": "Schockwelle",
+    "description": "Wende !M! Schwach und Verwundbar auf ALLE Gegner an. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shrug It Off": {
+    "name": "Nimm's gelassen",
+    "description": "Erhalte !B! Block. NL Ziehe 1 Karte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Spot Weakness": {
+    "name": "Schwäche erkennen",
+    "description": "Falls der Gegner angreifen will, NL erhalte !M! Stärke.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Strike_R": {
+    "name": "Schlag",
+    "description": "Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sword Boomerang": {
+    "name": "Bumerangschwert",
+    "description": "Füge !M! mal einem zufälligen Gegner NL !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Thunderclap": {
+    "name": "Blitz und Donner",
+    "description": "Füge ALLEN Gegnern !D! Schaden zu und wende 1 Verwundbar auf sie an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "True Grit": {
+    "name": "Standhaft",
+    "description": "Erhalte !B! Block. NL Erschöpfe eine zufällige Handkarte.",
+    "upgradeDescription": "Erhalte !B! Block. NL Erschöpfe eine Handkarte.",
+    "extendedDescription": []
+  },
+  "Twin Strike": {
+    "name": "Doppelschlag",
+    "description": "Füge zweimal NL !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Uppercut": {
+    "name": "Kinnhaken",
+    "description": "Füge !D! Schaden zu. NL Wende !M! Schwach und !M! Verwundbar an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Warcry": {
+    "name": "Schlachtruf",
+    "description": "Ziehe !M! Karte. NL Lege eine Handkarte auf den Nachziehstapel. NL Erschöpft.",
+    "upgradeDescription": "Ziehe !M! Karten. NL Lege eine Handkarte auf den Nachziehstapel. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Whirlwind": {
+    "name": "Wirbelwind",
+    "description": "Füge ALLEN Gegnern X mal !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wild Strike": {
+    "name": "Wilder Schlag",
+    "description": "Füge !D! Schaden zu. NL Mische eine *Wunde in den Nachziehstapel.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Accuracy": {
+    "name": "Genauigkeit",
+    "description": "*Messer fügen !M! Schaden mehr zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Acrobatics": {
+    "name": "Akrobatik",
+    "description": "Ziehe !M! Karten. NL Wirf 1 Karte ab.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Adrenaline": {
+    "name": "Adrenalin",
+    "description": "Erhalte [G]. NL Ziehe 2 Karten. NL Erschöpft.",
+    "upgradeDescription": "Erhalte [G] [G]. NL Ziehe 2 Karten. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "After Image": {
+    "name": "Nachbild",
+    "description": "Immer wenn du eine Karte ausspielst, erhalte 1 Block.",
+    "upgradeDescription": "Angeboren. NL Immer wenn du eine Karte ausspielst, erhalte 1 Block.",
+    "extendedDescription": []
+  },
+  "Venomology": {
+    "name": "Alchemisieren",
+    "description": "Erhalte einen NL zufälligen Trank. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "All Out Attack": {
+    "name": "Großangriff",
+    "description": "Füge ALLEN Gegnern !D! Schaden zu. NL Wirf 1 zufällige Karte ab.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "A Thousand Cuts": {
+    "name": "Tausend Schnitte",
+    "description": "Immer wenn du eine Karte ausspielst, NL füge ALLEN Gegnern !M! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Backflip": {
+    "name": "Rückwärtssalto",
+    "description": "Erhalte !B! Block. NL Ziehe 2 Karten.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Backstab": {
+    "name": "Meucheln",
+    "description": "Angeboren. NL Füge !D! Schaden zu. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bane": {
+    "name": "Unheil",
+    "description": "Füge !D! Schaden zu. NL Ist dein Gegner vergiftet, füge nochmal !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blade Dance": {
+    "name": "Messertanz",
+    "description": "Nimm !M! *Messer auf die Hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blur": {
+    "name": "Verschwimmen",
+    "description": "Erhalte !B! Block. NL Dein Block wird zu Beginn deines nächsten Zuges nicht entfernt.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bouncing Flask": {
+    "name": "Springende Flasche",
+    "description": "Wende !M! mal 3 Gift auf einen zufälligen Gegner an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bullet Time": {
+    "name": "Zeitlupe",
+    "description": "Du kannst in diesem Zug keine Karten ziehen. Deine Handkarten kosten für diesen Zug 0.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Burst": {
+    "name": "Sprint",
+    "description": "Deine nächste Fertigkeit in diesem Zug wird zweimal ausgespielt.",
+    "upgradeDescription": "Deine nächsten !M! Fertigkeiten in diesem Zug werden zweimal ausgespielt.",
+    "extendedDescription": []
+  },
+  "Calculated Gamble": {
+    "name": "Kalkuliertes Risiko",
+    "description": "Wirf deine Hand ab und ziehe genauso viele Karten. NL Erschöpft.",
+    "upgradeDescription": "Wirf deine Hand ab und ziehe genauso viele Karten.",
+    "extendedDescription": []
+  },
+  "Caltrops": {
+    "name": "Krähenfüße",
+    "description": "Immer wenn du angegriffen wirst, NL füge dem Angreifer NL !M! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Catalyst": {
+    "name": "Katalysator",
+    "description": "Verdoppele das Gift auf einem Gegner. NL Erschöpft.",
+    "upgradeDescription": "Verdreifache das Gift auf einem Gegner. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Choke": {
+    "name": "Würgen",
+    "description": "Füge !D! Schaden zu. Immer wenn du in diesem Zug eine Karte spielst, verliert das Ziel !M! TP.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Cloak And Dagger": {
+    "name": "Dolch und Mantel",
+    "description": "Erhalte !B! Block. NL Nimm !M! *Messer auf die Hand.",
+    "upgradeDescription": "Erhalte !B! Block. NL Nimm !M! *Messer auf die Hand.",
+    "extendedDescription": []
+  },
+  "Concentrate": {
+    "name": "Konzentrieren",
+    "description": "Wirf !M! Karten ab. NL Erhalte [G] [G].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Corpse Explosion": {
+    "name": "Leichenexplosion",
+    "description": "Wende !M! Gift an. NL Sobald dieser Gegner stirbt, erleiden ALLE Gegner Schaden in Höhe seiner max. TP.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      ""
+    ]
+  },
+  "Crippling Poison": {
+    "name": "Lähmende Wolke",
+    "description": "Wende an ALLEN Gegnern !M! Gift und NL 2 Schwach an. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dagger Spray": {
+    "name": "Dolchfächer",
+    "description": "Füge ALLEN Gegnern zweimal !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dagger Throw": {
+    "name": "Dolchwurf",
+    "description": "Füge !D! Schaden zu. NL Ziehe 1 Karte. NL Wirf 1 Karte ab.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dash": {
+    "name": "Vorpreschen",
+    "description": "Erhalte !B! Block. NL Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deadly Poison": {
+    "name": "Tödliches Gift",
+    "description": "Wende !M! Gift an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_G": {
+    "name": "Verteidigen",
+    "description": "Erhalte !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deflect": {
+    "name": "Abwehr",
+    "description": "Erhalte !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Die Die Die": {
+    "name": "Stirb, stirb, stirb",
+    "description": "Füge ALLEN Gegnern !D! Schaden zu. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Distraction": {
+    "name": "Ablenkung",
+    "description": "Nimm eine zufällige Fertigkeit auf die Hand. Diese kostet für diesen Zug 0. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dodge and Roll": {
+    "name": "Ausweichrolle",
+    "description": "Erhalte !B! Block. NL Im nächsten Zug erhalte !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doppelganger": {
+    "name": "Doppelgänger",
+    "description": "Im nächsten Zug NL ziehe X Karten und erhalte X [G]. NL Erschöpft.",
+    "upgradeDescription": "Im nächsten Zug NL ziehe X+1 Karten und erhalte X+1 [G]. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Endless Agony": {
+    "name": "Endlose Qual",
+    "description": "Füge !D! Schaden zu. NL Immer wenn du diese Karte ziehst, nimm eine Kopie von ihr auf die Hand. Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Envenom": {
+    "name": "Klinge vergiften",
+    "description": "Immer wenn ein Angriff ungeblockten Schaden zufügt, NL wende 1 Gift an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Escape Plan": {
+    "name": "Fluchtplan",
+    "description": "Ziehe 1 Karte. NL Ist die Karte eine Fertigkeit, NL erhalte !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Eviscerate": {
+    "name": "Ausweiden",
+    "description": "Kostet 1 [G] weniger pro in diesem Zug abgeworfener Karte. NL Füge dreimal NL !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Expertise": {
+    "name": "Expertise",
+    "description": "Ziehe Karten, bis du NL !M! Handkarten hast.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Finisher": {
+    "name": "Vollstrecken",
+    "description": "Füge pro in diesem Zug gespieltem Angriff NL !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (",
+      " Angriff gespielt.)",
+      " Angriffe gespielt.)"
+    ]
+  },
+  "Flechettes": {
+    "name": "Wurfpfeile",
+    "description": "Füge pro Fertigkeit auf deiner Hand NL !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (Du hast ",
+      " Fertigkeit).",
+      " Fertigkeiten)."
+    ]
+  },
+  "Flying Knee": {
+    "name": "Kniestoß",
+    "description": "Füge !D! Schaden zu. NL Erhalte im nächsten Zug [G].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Footwork": {
+    "name": "Beinarbeit",
+    "description": "Erhalte NL !M! Geschicklichkeit.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Glass Knife": {
+    "name": "Glasmesser",
+    "description": "Füge zweimal NL !D! Schaden zu. NL Der Schaden dieser Karte verringert sich für diesen Kampf um 2.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Grand Finale": {
+    "name": "Großes Finale",
+    "description": "Nur spielbar, wenn keine Karten im Nachziehstapel sind. NL Füge ALLEN Gegnern !D! Schaden zu.",
+    "upgradeDescription": "Mein Nachziehstapel NL muss #rleer sein.",
+    "extendedDescription": []
+  },
+  "Heel Hook": {
+    "name": "Fersenklemme",
+    "description": "Füge !D! Schaden zu. NL Ist der Gegner Schwach, erhalte [G] und ziehe 1 Karte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Infinite Blades": {
+    "name": "Zahllose Klingen",
+    "description": "Nimm immer zu Beginn deines Zuges ein *Messer auf die Hand.",
+    "upgradeDescription": "Angeboren. NL Nimm immer zu Beginn deines Zuges ein *Messer auf die Hand.",
+    "extendedDescription": []
+  },
+  "Leg Sweep": {
+    "name": "Fußfeger",
+    "description": "Wende !M! Schwach an. NL Erhalte !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Malaise": {
+    "name": "Unwohlsein",
+    "description": "Das Ziel verliert NL X Stärke. NL Wende X Schwach an. NL Erschöpft.",
+    "upgradeDescription": "Das Ziel verliert NL X+1 Stärke. Wende X+1 Schwach an. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Masterful Stab": {
+    "name": "Meisterstich",
+    "description": "Füge !D! Schaden zu. NL Immer wenn du Schaden erleidest, steigen die Kosten dieser Karte um 1.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Neutralize": {
+    "name": "Neutralisieren",
+    "description": "Füge !D! Schaden zu. NL Wende !M! Schwach an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Night Terror": {
+    "name": "Albtraum",
+    "description": "Wähle eine Handkarte. NL Nimm im nächsten Zug !M! Kopien dieser Karte auf die Hand. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "Ich kann NL ",
+      " NL nur einmal pro Zug verwenden."
+    ]
+  },
+  "Noxious Fumes": {
+    "name": "Giftige Dämpfe",
+    "description": "Wende immer zu Beginn deines Zuges auf ALLE Gegner NL !M! Gift an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Outmaneuver": {
+    "name": "Ausmanövrieren",
+    "description": "Im nächsten Zug erhalte [G] [G].",
+    "upgradeDescription": "Im nächsten Zug erhalte [G] [G] [G].",
+    "extendedDescription": []
+  },
+  "Phantasmal Killer": {
+    "name": "Phantomkiller",
+    "description": "In deinem nächsten Zug wird dein Angriffsschaden verdoppelt.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PiercingWail": {
+    "name": "Schrilles Heulen",
+    "description": "ALLE Gegner verlieren 1 Zug lang !M! Stärke. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Poisoned Stab": {
+    "name": "Giftiger Stich",
+    "description": "Füge !D! Schaden zu und wende !M! Gift an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Predator": {
+    "name": "Jagd",
+    "description": "Füge !D! Schaden zu. NL Ziehe im nächsten Zug 2 Karten mehr.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Prepared": {
+    "name": "Vorbereitet",
+    "description": "Ziehe !M! Karte. NL Wirf !M! Karte ab.",
+    "upgradeDescription": "Ziehe !M! Karten. NL Wirf !M! Karten ab.",
+    "extendedDescription": []
+  },
+  "Quick Slash": {
+    "name": "Schneller Hieb",
+    "description": "Füge !D! Schaden zu. NL Ziehe 1 Karte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reflex": {
+    "name": "Reflex",
+    "description": "Unspielbar. NL Wenn du diese Karte abwirfst, NL ziehe !M! Karten.",
+    "upgradeDescription": "Unspielbar. NL Wenn du diese Karte abwirfst, NL ziehe !M! Karten.",
+    "extendedDescription": [
+      "Ich kann diese Karte nicht ausspielen."
+    ]
+  },
+  "Riddle With Holes": {
+    "name": "Zerlöchern",
+    "description": "Füge 5 mal NL !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Setup": {
+    "name": "Abgekartet",
+    "description": "Lege eine Handkarte auf den Nachziehstapel. NL Sie kostet 0, bis sie gespielt wird.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Skewer": {
+    "name": "Aufspießen",
+    "description": "Füge X mal NL !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Slice": {
+    "name": "Schnitt",
+    "description": "Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Storm of Steel": {
+    "name": "Stahlsturm",
+    "description": "Wirf deine Hand ab. NL Nimm pro abgeworfener Karte 1 *Messer auf die Hand.",
+    "upgradeDescription": "Wirf deine Hand ab. NL Nimm pro abgeworfener Karte 1 *Messer+ auf die Hand.",
+    "extendedDescription": []
+  },
+  "Strike_G": {
+    "name": "Schlag",
+    "description": "Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sucker Punch": {
+    "name": "Unerwarteter Hieb",
+    "description": "Füge !D! Schaden zu. NL Wende !M! Schwach an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Survivor": {
+    "name": "Überlebenskünstlerin",
+    "description": "Erhalte !B! Block. NL Wirf eine Karte ab.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tactician": {
+    "name": "Taktikerin",
+    "description": "Unspielbar. NL Wenn du diese Karte abwirfst, erhalte [G].",
+    "upgradeDescription": "Unspielbar. NL Wenn du diese Karte abwirfst, erhalte [G] [G].",
+    "extendedDescription": [
+      "Ich kann diese Karte nicht ausspielen."
+    ]
+  },
+  "Terror": {
+    "name": "Terror",
+    "description": "Wende NL 99 Verwundbar an. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tools of the Trade": {
+    "name": "Handwerkszeug",
+    "description": "Ziehe immer zu Beginn deines Zuges 1 Karte und wirf 1 Karte ab.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Underhanded Strike": {
+    "name": "Tückischer Schlag",
+    "description": "Füge !D! Schaden zu. NL Hast du in diesem Zug eine Karte abgeworfen, NL erhalte [G] [G].",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "Ich kann diese Karte nicht ausspielen."
+    ]
+  },
+  "Unload": {
+    "name": "Alles Abwerfen",
+    "description": "Füge !D! Schaden zu. NL Wirf alle Karten außer Angriffen ab.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Well Laid Plans": {
+    "name": "Gut ausgeklügelt",
+    "description": "Behalte immer NL am Ende deines Zuges bis zu !M! Karte.",
+    "upgradeDescription": "Behalte immer NL am Ende deines Zuges bis zu !M! Karten.",
+    "extendedDescription": []
+  },
+  "Wraith Form v2": {
+    "name": "Geistform",
+    "description": "Erhalte !M! Immateriell. NL Verliere immer am Ende deines Zuges NL 1 Geschicklichkeit.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Aggregate": {
+    "name": "Ansammeln",
+    "description": "Erhalte [B] für NL jede !M!. Karte im Nachziehstapel.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "All For One": {
+    "name": "Alle für Einen",
+    "description": "Füge !D! Schaden zu. Nimm alle Karten mit Kosten 0 vom Abwurfstapel auf die Hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Amplify": {
+    "name": "Verstärken",
+    "description": "Deine nächste Macht in diesem Zug wird zweimal gespielt.",
+    "upgradeDescription": "Deine nächsten !M! Mächte in diesem Zug werden zweimal gespielt.",
+    "extendedDescription": []
+  },
+  "Auto Shields": {
+    "name": "Schilde hoch!",
+    "description": "Falls du 0 Block hast, erhalte !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ball Lightning": {
+    "name": "Kugelblitz",
+    "description": "Füge !D! Schaden zu. Erschaffe !M! Blitz.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Barrage": {
+    "name": "Sperrfeuer",
+    "description": "Füge pro Orb NL !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Beam Cell": {
+    "name": "Strahlenzelle",
+    "description": "Füge !D! Schaden zu und wende !M! Verwundbar an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Biased Cognition": {
+    "name": "Verzerrter Fokus",
+    "description": "Erhalte !M! Fokus. NL Verliere immer zu Beginn deines Zuges NL 1 Fokus.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blizzard": {
+    "name": "Schneesturm",
+    "description": "Füge ALLEN Gegnern Schaden zu in Höhe !M! mal des diesen Kampf erschaffenen Frosts.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (Fügt !D! Schaden zu.)",
+      ""
+    ]
+  },
+  "BootSequence": {
+    "name": "Systemstart",
+    "description": "Angeboren. NL Erhalte !B! Block. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Buffer": {
+    "name": "Puffer",
+    "description": "Verhindere den nächsten TP-Verlust.",
+    "upgradeDescription": "Verhindere die nächsten NL !M! TP-Verluste.",
+    "extendedDescription": []
+  },
+  "Capacitor": {
+    "name": "Kapazität",
+    "description": "Erhalte !M! Orb-Slots.",
+    "upgradeDescription": "Erhalte !M! Orb-Slots.",
+    "extendedDescription": []
+  },
+  "Chaos": {
+    "name": "Chaos",
+    "description": "Erschaffe !M! zufälligen Orb.",
+    "upgradeDescription": "Erschaffe !M! zufällige Orbs.",
+    "extendedDescription": []
+  },
+  "Chill": {
+    "name": "Kälte",
+    "description": "Erschaffe !M! Frost NL pro Gegner. NL Erschöpft.",
+    "upgradeDescription": "Angeboren. NL Erschaffe !M! Frost NL pro Gegner. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Gash": {
+    "name": "Kralle",
+    "description": "Füge !D! Schaden zu. NL Alle Krallen fügen diesen Kampf NL !M! Schaden mehr zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Cold Snap": {
+    "name": "Kälteeinbruch",
+    "description": "Füge !D! Schaden zu. Erschaffe !M! Frost.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Compile Driver": {
+    "name": "Kompilieren",
+    "description": "Füge !D! Schaden zu. NL Ziehe !M! Karte pro unterschiedlichem Orb.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Conserve Battery": {
+    "name": "Batterie laden",
+    "description": "Erhalte !B! Block. NL Im nächsten Zug erhalte [B].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Consume": {
+    "name": "Konsumieren",
+    "description": "Erhalte !M! Fokus. NL Verliere 1 Orb-Slot.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Coolheaded": {
+    "name": "Kühler Kopf",
+    "description": "Erschaffe 1 Frost. NL Ziehe !M! Karte.",
+    "upgradeDescription": "Erschaffe 1 Frost. NL Ziehe !M! Karten.",
+    "extendedDescription": []
+  },
+  "Core Surge": {
+    "name": "Kraft des Kerns",
+    "description": "Füge !D! Schaden zu. NL Erhalte !M! Artefakt. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Creative AI": {
+    "name": "Kreative KI",
+    "description": "Nimm immer zu Beginn deines Zuges eine zufällige Macht auf die Hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Darkness": {
+    "name": "Dunkelheit",
+    "description": "Erschaffe NL !M! Schatten.",
+    "upgradeDescription": "Erschaffe NL !M! Schatten. NL Löse den passiven Effekt aller Schattenorbs aus.",
+    "extendedDescription": []
+  },
+  "Defend_B": {
+    "name": "Verteidigen",
+    "description": "Erhalte !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defragment": {
+    "name": "Defragmentieren",
+    "description": "Erhalte !M! Fokus.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doom and Gloom": {
+    "name": "Dunkles Schicksal",
+    "description": "Füge ALLEN Gegnern !D! Schaden zu. NL Erschaffe NL !M! Schatten.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Double Energy": {
+    "name": "Doppelte Energie",
+    "description": "Verdopple deine Energie. NL Erschöpft.",
+    "upgradeDescription": "Verdopple deine Energie.",
+    "extendedDescription": []
+  },
+  "Dualcast": {
+    "name": "Doppelentladung",
+    "description": "Entlade deinen vordersten Orb zweimal.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Echo Form": {
+    "name": "Echoform",
+    "description": "Flüchtig. NL In jedem Zug wird die erste gespielte Karte zweimal gespielt.",
+    "upgradeDescription": "In jedem Zug wird die erste gespielte Karte zweimal gespielt.",
+    "extendedDescription": []
+  },
+  "Electrodynamics": {
+    "name": "Elektrodynamik",
+    "description": "Blitze treffen jetzt NL ALLE Gegner. NL Erschaffe !M! Blitze.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fission": {
+    "name": "Spaltung",
+    "description": "Entferne alle deine Orbs. Erhalte [B] und ziehe !M! Karte pro entferntem Orb. NL Erschöpft.",
+    "upgradeDescription": "Entlade alle deine Orbs. Erhalte [B] und ziehe !M! Karte pro entladenem Orb. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Force Field": {
+    "name": "Kraftfeld",
+    "description": "Kostet 1 [B] weniger pro diesen Kampf gespielter Machtkarte. NL Erhalte !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FTL": {
+    "name": "FTL",
+    "description": "Füge !D! Schaden zu. Hast du diesen Zug weniger als !M! Karten ausgepielt, NL ziehe 1 Karte.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (",
+      " Karte gespielt.)",
+      " Karten gespielt.)"
+    ]
+  },
+  "Fusion": {
+    "name": "Fusion",
+    "description": "Erschaffe !M! Plasma.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Genetic Algorithm": {
+    "name": "Gen-Algorithmus",
+    "description": "Erhalte !B! Block. NL Erhöhe den Block dieser Karte permanent um !M!. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Glacier": {
+    "name": "Gletscher",
+    "description": "Erhalte !B! Block. NL Erschaffe !M! Frost.",
+    "upgradeDescription": "Erhalte !B! Block. NL Erschaffe !M! Frost.",
+    "extendedDescription": []
+  },
+  "Go for the Eyes": {
+    "name": "In die Augen",
+    "description": "Füge !D! Schaden zu. NL Falls der Gegner angreifen will, NL wende !M! Schwach an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Heatsinks": {
+    "name": "Wärmetauscher",
+    "description": "Immer wenn du eine Macht ausspielst, ziehe !M! Karte.",
+    "upgradeDescription": "Immer wenn du eine Macht ausspielst, ziehe !M! Karten.",
+    "extendedDescription": []
+  },
+  "Hello World": {
+    "name": "Hallo Welt",
+    "description": "Nimm immer zu Beginn deines Zuges eine zufällige gewöhnliche Karte auf die Hand.",
+    "upgradeDescription": "Angeboren. Nimm immer zu Beginn deines Zuges eine zufällige gewöhnliche Karte auf die Hand.",
+    "extendedDescription": []
+  },
+  "Hologram": {
+    "name": "Hologramm",
+    "description": "Erhalte !B! Block. NL Nimm eine Karte aus dem Abwurfstapel zurück auf die Hand. NL Erschöpft.",
+    "upgradeDescription": "Erhalte !B! Block. NL Nimm eine Karte aus dem Abwurfstapel zurück auf die Hand.",
+    "extendedDescription": []
+  },
+  "Hyperbeam": {
+    "name": "Hyperstrahl",
+    "description": "Füge ALLEN Gegnern !D! Schaden zu. NL Verliere !M! Fokus.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Leap": {
+    "name": "Sprung",
+    "description": "Erhalte !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Lockon": {
+    "name": "Ins Schwarze",
+    "description": "Füge !D! Schaden zu. NL Wende !M! Anvisieren an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Loop": {
+    "name": "Schleife",
+    "description": "Löse immer zu Beginn deines Zuges die passive Fähigkeit deines vordersten Orbs aus.",
+    "upgradeDescription": "Löse immer zu Beginn deines Zuges die passive Fähigkeit deines vordersten Orbs !M! mal aus.",
+    "extendedDescription": []
+  },
+  "Machine Learning": {
+    "name": "Lernende Maschine",
+    "description": "Ziehe immer zu Beginn deines Zuges !M! Karte mehr.",
+    "upgradeDescription": "Angeboren. NL Ziehe immer zu Beginn deines Zuges !M! Karte mehr.",
+    "extendedDescription": []
+  },
+  "Melter": {
+    "name": "Schmelzen",
+    "description": "Entferne allen Block von einem Gegner. NL Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Meteor Strike": {
+    "name": "Meteorschlag",
+    "description": "Füge !D! Schaden zu. NL Erschaffe !M! Plasma.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Multi-Cast": {
+    "name": "Multi-Entladung",
+    "description": "Entlade deinen vordersten Orb X mal.",
+    "upgradeDescription": "Entlade deinen vordersten Orb X+1 mal.",
+    "extendedDescription": []
+  },
+  "Steam Power": {
+    "name": "Übertakten",
+    "description": "Ziehe !M! Karten. NL Nimm ein *Brennen auf den Abwurfstapel.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rainbow": {
+    "name": "Regenbogen",
+    "description": "Erschaffe 1 Blitz, NL 1 Frost und NL 1 Schatten. NL Erschöpft.",
+    "upgradeDescription": "Erschaffe 1 Blitz, NL 1 Frost und NL 1 Schatten.",
+    "extendedDescription": []
+  },
+  "Reboot": {
+    "name": "Neustart",
+    "description": "Mische alle Karten in den Nachziehstapel. NL Ziehe !M! Karten. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rebound": {
+    "name": "Rückstoß",
+    "description": "Füge !D! Schaden zu. NL Lege die nächste in diesem Zug gespielte Karte auf den Nachziehstapel.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Redo": {
+    "name": "Rekursion",
+    "description": "Entlade deinen vordersten Orb. NL Erschaffe den Orb, NL der gerade entladen wurde.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Recycle": {
+    "name": "Recyclen",
+    "description": "Erschöpfe eine Karte. NL Erhalte [B] in Höhe ihrer Kosten.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reinforced Body": {
+    "name": "Verstärkte Hülle",
+    "description": "Erhalte X mal !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reprogram": {
+    "name": "Umprogrammieren",
+    "description": "Verliere !M! Fokus. NL Erhalte !M! Stärke. NL Erhalte NL !M! Geschicklichkeit.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rip and Tear": {
+    "name": "Zerfetzen",
+    "description": "Füge !M! mal einem zufälligen Gegner NL !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Scrape": {
+    "name": "Ausschlachten",
+    "description": "Füge !D! Schaden zu. NL Ziehe !M! Karten. NL Wirf jede so gezogene Karte ab, die nicht 0 kostet.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Seek": {
+    "name": "Suchen",
+    "description": "Wähle !M! Karte aus dem Nachziehstapel. Nimm sie auf die Hand. NL Erschöpft.",
+    "upgradeDescription": "Wähle !M! Karten aus dem Nachziehstapel. Nimm sie auf die Hand. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Self Repair": {
+    "name": "Selbstreparatur",
+    "description": "Heile am Ende des Kampfes !M! TP.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Skim": {
+    "name": "Abschöpfen",
+    "description": "Ziehe !M! Karten.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Stack": {
+    "name": "Stapel",
+    "description": "Erhalte Block in Höhe der Kartenzahl im Abwurfstapel.",
+    "upgradeDescription": "Erhalte Block in Höhe der Kartenzahl im Abwurfstapel +3.",
+    "extendedDescription": [
+      " NL (Erhalte !B! Block.)"
+    ]
+  },
+  "Static Discharge": {
+    "name": "Statische Entladung",
+    "description": "Immer wenn du ungeblockten Angriffsschaden erleidest, NL erschaffe !M! Blitz.",
+    "upgradeDescription": "Immer wenn du ungeblockten Angriffsschaden erleidest, NL erschaffe !M! Blitze.",
+    "extendedDescription": []
+  },
+  "Steam": {
+    "name": "Dampfwall",
+    "description": "Erhalte !B! Block. NL Der Block dieser Karte wird für diesen Kampf um 1 verringert.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Storm": {
+    "name": "Sturm",
+    "description": "Immer wenn du eine Macht ausspielst, erschaffe 1 Blitz.",
+    "upgradeDescription": "Angeboren. NL Immer wenn du eine Macht ausspielst, erschaffe 1 Blitz.",
+    "extendedDescription": []
+  },
+  "Streamline": {
+    "name": "Optimieren",
+    "description": "Füge !D! Schaden zu. NL Immer wenn du diese Karte spielst, senke ihre Kosten für diesen Kampf um !M! .",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Strike_B": {
+    "name": "Schlag",
+    "description": "Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sunder": {
+    "name": "Trennen",
+    "description": "Füge !D! Schaden zu. NL Falls der Gegner dadurch stirbt, erhalte [B] [B] [B].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sweeping Beam": {
+    "name": "Breiter Strahl",
+    "description": "Füge ALLEN Gegnern !D! Schaden zu. NL Ziehe !M! Karte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tempest": {
+    "name": "Gewitter",
+    "description": "Erschaffe X Blitze. NL Erschöpft.",
+    "upgradeDescription": "Erschaffe X+1 Blitze. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Thunder Strike": {
+    "name": "Donnerschlag",
+    "description": "Füge pro diesen Kampf erschaffenem Blitz einem zufälligen Gegner !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " (Greift !M! mal an.)"
+    ]
+  },
+  "Turbo": {
+    "name": "TURBO",
+    "description": "Erhalte [B] [B]. NL Nimm eine *Leere auf den Abwurfstapel.",
+    "upgradeDescription": "Erhalte [B] [B] [B]. NL Nimm eine *Leere auf den Abwurfstapel.",
+    "extendedDescription": []
+  },
+  "Undo": {
+    "name": "Ausgeglichenheit",
+    "description": "Erhalte !B! Block. NL Behalte deine Hand in diesem Zug.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "White Noise": {
+    "name": "Rauschen",
+    "description": "Nimm eine zufällige Macht auf die Hand. Diese kostet für diesen Zug 0. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Zap": {
+    "name": "Blitz",
+    "description": "Erschaffe !M! Blitz.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Alpha": {
+    "name": "Alpha",
+    "description": "Mische ein *Beta in den Nachziehstapel. NL Erschöpft.",
+    "upgradeDescription": "Angeboren. NL Mische ein *Beta in den Nachziehstapel. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "BattleHymn": {
+    "name": "Kampfhymne",
+    "description": "Nimm immer zu Beginn deines Zuges ein *Zertrümmern auf die Hand.",
+    "upgradeDescription": "Angeboren. NL Nimm immer zu Beginn deines Zuges ein *Zertrümmern auf die Hand.",
+    "extendedDescription": []
+  },
+  "Blasphemy": {
+    "name": "Blasphemie",
+    "description": "Nimm Göttlichkeit an. NL Stirb nächsten Zug. NL Erschöpft.",
+    "upgradeDescription": "Behalten. NL Nimm Göttlichkeit an. NL Stirb nächsten Zug. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "BowlingBash": {
+    "name": "Kegeln",
+    "description": "Füge pro Gegner im Kampf !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Brilliance": {
+    "name": "Brillanz",
+    "description": "Füge !D! Schaden zu. NL Fügt mehr Schaden zu pro diesen Kampf erhaltenem Mantra.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "",
+      ""
+    ]
+  },
+  "CarveReality": {
+    "name": "Realität prägen",
+    "description": "Füge !D! Schaden zu. NL Nimm ein *Zertrümmern auf die Hand.",
+    "upgradeDescription": "Füge !D! Schaden zu. NL Nimm ein *Zertrümmern+ auf die Hand.",
+    "extendedDescription": []
+  },
+  "Collect": {
+    "name": "Sammeln",
+    "description": "Nimm zu Beginn deiner nächsten X Züge ein *Wunder+ auf die Hand. NL Erschöpft.",
+    "upgradeDescription": "Nimm zu Beginn deiner nächsten X+1 Züge ein *Wunder+ auf die Hand. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Conclude": {
+    "name": "Abschließen",
+    "description": "Füge ALLEN Gegnern !D! Schaden zu. NL Beende deinen Zug.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ConjureBlade": {
+    "name": "Klinge beschwören",
+    "description": "Mische einen *Vernichter in den Nachziehstapel. NL Erschöpft.",
+    "upgradeDescription": "Mische einen *Vernichter mit X+1 in den Nachziehstapel. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Consecrate": {
+    "name": "Einsegnen",
+    "description": "Füge ALLEN Gegnern !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Crescendo": {
+    "name": "Crescendo",
+    "description": "Behalten. NL Nimm Zorn an. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CrushJoints": {
+    "name": "Gelenke brechen",
+    "description": "Füge !D! Schaden zu. NL Hast du diesen Kampf zuletzt eine Fertigkeit gespielt, wende NL !M! Verwundbar an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CutThroughFate": {
+    "name": "Schicksalsschnitt",
+    "description": "Füge !D! Schaden zu. NL Spähe !M!. NL Ziehe 1 Karte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DeceiveReality": {
+    "name": "Realität trügen",
+    "description": "Erhalte !B! Block. NL Nimm eine *Geborgenheit auf die Hand.",
+    "upgradeDescription": "Erhalte !B! Block. NL Nimm eine *Geborgenheit+ auf die Hand.",
+    "extendedDescription": []
+  },
+  "Defend_P": {
+    "name": "Verteidigen",
+    "description": "Erhalte !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DeusExMachina": {
+    "name": "Deus ex Machina",
+    "description": "Unspielbar. NL Wenn du diese Karte ziehst, erschöpfe sie und nimm !M! *Wunder auf die Hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DevaForm": {
+    "name": "Devaform",
+    "description": "Flüchtig. NL Erhalte immer zu Beginn deines Zuges [W] und erhöhe diesen Wert um !M! [W].",
+    "upgradeDescription": "Erhalte immer zu Beginn deines Zuges [W] und erhöhe diesen Wert um !M! [W].",
+    "extendedDescription": []
+  },
+  "Devotion": {
+    "name": "Hingabe",
+    "description": "Erhalte immer zu Beginn deines Zuges NL !M! Mantra.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyBody": {
+    "name": "Leerer Körper",
+    "description": "Erhalte !B! Block. NL Verlasse deine Haltung.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyFist": {
+    "name": "Leere Faust",
+    "description": "Füge !D! Schaden zu. NL Verlasse deine Haltung.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyMind": {
+    "name": "Leerer Kopf",
+    "description": "Ziehe !M! Karten. NL Verlasse deine Haltung.",
+    "upgradeDescription": "Ziehe !M! Karten. NL Verlasse deine Haltung.",
+    "extendedDescription": []
+  },
+  "Eruption": {
+    "name": "Ausbruch",
+    "description": "Füge !D! Schaden zu. NL Nimm Zorn an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Establishment": {
+    "name": "Etablierung",
+    "description": "Immer wenn eine Karte behalten wird, senke ihre Kosten für diesen Kampf um !M!.",
+    "upgradeDescription": "Angeboren. NL Immer wenn eine Karte behalten wird, senke ihre Kosten für diesen Kampf um !M!.",
+    "extendedDescription": []
+  },
+  "Evaluate": {
+    "name": "Auswerten",
+    "description": "Erhalte !B! Block. NL Mische eine *Einsicht in den Nachziehstapel.",
+    "upgradeDescription": "Erhalte !B! Block. NL Mische eine *Einsicht+ in den Nachziehstapel.",
+    "extendedDescription": []
+  },
+  "Fasting2": {
+    "name": "Fasten",
+    "description": "Erhalte !M! Stärke und NL !M! Geschicklichkeit. NL Erhalte jeden Zug NL 1 [W] weniger.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FearNoEvil": {
+    "name": "Fürchte kein Böses",
+    "description": "Füge !D! Schaden zu. NL Falls der Gegner angreifen will, NL nimm Ruhe an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FlurryOfBlows": {
+    "name": "Hiebregen",
+    "description": "Füge !D! Schaden zu. NL Änderst du Haltungen, nimm diese Karte vom Abwurfstapel auf die Hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FlyingSleeves": {
+    "name": "Fliegende Ärmel",
+    "description": "Behalten. NL Füge zweimal NL !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FollowUp": {
+    "name": "Anschlusshieb",
+    "description": "Füge !D! Schaden zu. NL Hast du diesen Kampf zuletzt einen Angriff gespielt, erhalte [W].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ForeignInfluence": {
+    "name": "Fremder Einfluss",
+    "description": "Wähle 1 aus 3 Angriffen aller Farben. Nimm ihn auf die Hand. NL Erschöpft.",
+    "upgradeDescription": "Wähle 1 aus 3 Angriffen aller Farben. Nimm ihn auf die Hand, er kostet diesen Zug 0. Erschöpft.",
+    "extendedDescription": []
+  },
+  "Wireheading": {
+    "name": "Voraussicht",
+    "description": "Immer zu Beginn deines Zuges NL Spähe !M!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Halt": {
+    "name": "Halt",
+    "description": "Erhalte !B! Block. NL Falls du in Zorn bist, erhalte !M! Block mehr.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Indignation": {
+    "name": "Empörung",
+    "description": "Falls du in Zorn bist, wende !M! Verwundbar an ALLEN Gegnern an, sonst nimm Zorn an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "InnerPeace": {
+    "name": "Innerer Friede",
+    "description": "Falls du in Ruhe bist, ziehe !M! Karten, NL sonst nimm Ruhe an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Judgement": {
+    "name": "Urteil",
+    "description": "Falls der Gegner !M! oder weniger TP hat, setze seine TP auf 0.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "VERURTEILT"
+    ]
+  },
+  "JustLucky": {
+    "name": "Einfach Glück",
+    "description": "Spähe !M!. NL Erhalte !B! Block. NL Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LessonLearned": {
+    "name": "Lektion gelernt",
+    "description": "Füge !D! Schaden zu. NL Falls tödlich, verbessere 1 zufällige Karte in deinem Deck. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LikeWater": {
+    "name": "Wie Wasser",
+    "description": "Erhalte immer am Ende deines Zuges NL !M! Block, falls du in Ruhe bist.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "MasterReality": {
+    "name": "Realität meistern",
+    "description": "Jede Karte, die du im Kampf erhältst, ist verbessert.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Meditate": {
+    "name": "Meditieren",
+    "description": "Nimm eine Karte vom Abwurfstapel auf die Hand und behalte sie. NL Nimm Ruhe an. NL Beende deinen Zug.",
+    "upgradeDescription": "Nimm 2 Karten vom Abwurfstapel auf die Hand und behalte sie. NL Nimm Ruhe an. NL Beende deinen Zug.",
+    "extendedDescription": []
+  },
+  "MentalFortress": {
+    "name": "Mentale Festung",
+    "description": "Immer wenn du deine Haltungen änderst, erhalte !M! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Nirvana": {
+    "name": "Nirvana",
+    "description": "Immer wenn du Spähst, NL erhalte !M! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Omniscience": {
+    "name": "Allwissenheit",
+    "description": "Wähle eine Karte im Nachziehstapel. NL Spiele sie zweimal und erschöpfe sie. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Perseverance": {
+    "name": "Beharrlichkeit",
+    "description": "Behalten. NL Erhalte !B! Block. NL Beim Behalten erhöhe den Block für diesen Kampf um !M!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pray": {
+    "name": "Beten",
+    "description": "Erhalte !M! Mantra. NL Mische eine *Einsicht in den Nachziehstapel.",
+    "upgradeDescription": "Erhalte !M! Mantra. NL Mische eine *Einsicht+ in den Nachziehstapel.",
+    "extendedDescription": []
+  },
+  "PathToVictory": {
+    "name": "Schwachpunkte",
+    "description": "Wende !M! Markierung an. NL ALLE Gegner verlieren TP in Höhe ihrer Markierung.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Prostrate": {
+    "name": "Niederknien",
+    "description": "Erhalte !M! Mantra. NL Erhalte !B! Block.",
+    "upgradeDescription": "Veraltet.",
+    "extendedDescription": []
+  },
+  "Protect": {
+    "name": "Schützen",
+    "description": "Behalten. NL Erhalte !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ragnarok": {
+    "name": "Ragnarök",
+    "description": "Füge !M! mal einem zufälligen Gegner NL !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ReachHeaven": {
+    "name": "Den Himmel erreichen",
+    "description": "Füge !D! Schaden zu. NL Mische ein NL *Durch *Gewalt in den Nachziehstapel.",
+    "upgradeDescription": "Füge !D! Schaden zu. NL Mische ein *Durch *Gewalt+ in den Nachziehstapel.",
+    "extendedDescription": []
+  },
+  "Adaptation": {
+    "name": "Eile",
+    "description": "Immer wenn du Zorn annimmst, NL ziehe !M! Karten.",
+    "upgradeDescription": "Veraltet.",
+    "extendedDescription": []
+  },
+  "Sanctity": {
+    "name": "Heiligkeit",
+    "description": "Erhalte !B! Block. NL Hast du diesen Kampf zuletzt eine Fertigkeit gespielt, NL ziehe !M! Karten.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SandsOfTime": {
+    "name": "Sand der Zeit",
+    "description": "Behalten. NL Füge !D! Schaden zu. NL Beim Behalten verringere die Kosten für diesen Kampf um 1.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SashWhip": {
+    "name": "Schärpenknall",
+    "description": "Füge !D! Schaden zu. NL Hast du diesen Kampf zuletzt einen Angriff gespielt, NL wende !M! Schwach an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Scrawl": {
+    "name": "Gesudel",
+    "description": "Ziehe Karten, bis NL deine Hand voll ist. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SignatureMove": {
+    "name": "Spezialmanöver",
+    "description": "Nur spielbar, wenn dies dein einziger Angriff auf der Hand ist. NL Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vengeance": {
+    "name": "Kochende Wut",
+    "description": "Nimm zu Beginn deines nächsten Zuges Zorn an und ziehe NL !M! Karten.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SpiritShield": {
+    "name": "Geistesschild",
+    "description": "Erhalte !M! Block NL pro Handkarte.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (Erhalte !B! Block.)"
+    ]
+  },
+  "Strike_P": {
+    "name": "Schlag",
+    "description": "Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Study": {
+    "name": "Studieren",
+    "description": "Mische immer am Ende deines Zuges eine *Einsicht in deinen Nachziehstapel.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Swivel": {
+    "name": "Drehen",
+    "description": "Erhalte !B! Block. NL Der nächste gespielte Angriff kostet 0.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "TalkToTheHand": {
+    "name": "Sprich zur Hand",
+    "description": "Füge !D! Schaden zu. NL Immer wenn du diesen Gegner angreifst, erhalte !M! Block. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tantrum": {
+    "name": "Wutanfall",
+    "description": "Füge !M! mal !D! Schaden zu. Nimm Zorn an. NL Mische diese Karte in den Nachziehstapel.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ThirdEye": {
+    "name": "Drittes Auge",
+    "description": "Erhalte !B! Block. NL Spähe !M!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ClearTheMind": {
+    "name": "Entspannen",
+    "description": "Behalten. NL Nimm Ruhe an. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vault": {
+    "name": "Überspringen",
+    "description": "Du hast einen weiteren Zug nach diesem. NL Beende deinen Zug. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vigilance": {
+    "name": "Wachsamkeit",
+    "description": "Erhalte !B! Block. NL Nimm Ruhe an.",
+    "upgradeDescription": "Veraltet.",
+    "extendedDescription": []
+  },
+  "Wallop": {
+    "name": "Verhauen",
+    "description": "Füge !D! Schaden zu. NL Erhalte soviel Block, wie du ungeblockten Schaden zugefügt hast.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WaveOfTheHand": {
+    "name": "Wink mit der Hand",
+    "description": "Immer wenn du diesen Zug Block erhältst, wende !M! Schwach auf ALLE Gegner an.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Weave": {
+    "name": "Einflechten",
+    "description": "Füge !D! Schaden zu. NL Wenn du Spähst, NL nimm diese Karte vom Abwurfstapel auf die Hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WheelKick": {
+    "name": "Wirbeltritt",
+    "description": "Füge !D! Schaden zu. NL Ziehe !M! Karten.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WindmillStrike": {
+    "name": "Windmühlschlag",
+    "description": "Behalten. NL Füge !D! Schaden zu. NL Beim Behalten erhöhe den Schaden für diesen Kampf um !M!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wish": {
+    "name": "Wünschen",
+    "description": "Wähle eins: NL Erhalte NL !B! Panzerrüstung, NL !D! Stärke oder !M! Gold. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Worship": {
+    "name": "Verehren",
+    "description": "Erhalte !M! Mantra.",
+    "upgradeDescription": "Behalten. NL Erhalte !M! Mantra.",
+    "extendedDescription": []
+  },
+  "WreathOfFlame": {
+    "name": "Flammenkranz",
+    "description": "Dein nächster Angriff fügt !M! Schaden mehr zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Apotheosis": {
+    "name": "Apotheose",
+    "description": "Verbessere ALLE deine Karten für den Rest des Kampfes. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bandage Up": {
+    "name": "Bandagieren",
+    "description": "Heile !M! TP. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blind": {
+    "name": "Blenden",
+    "description": "Wende !M! Schwach an.",
+    "upgradeDescription": "Wende !M! Schwach auf ALLE Gegner an.",
+    "extendedDescription": []
+  },
+  "Chrysalis": {
+    "name": "Eingepuppt",
+    "description": "Mische !M! zufällige Fertigkeiten in den Nachziehstapel. Sie kosten diesen Kampf 0. Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dark Shackles": {
+    "name": "Dunkle Fesseln",
+    "description": "Dein Gegner verliert für den Rest dieses Zuges !M! Stärke. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deep Breath": {
+    "name": "Tiefer Atemzug",
+    "description": "Mische den Abwurfstapel in den Nachziehstapel. NL Ziehe !M! Karte.",
+    "upgradeDescription": "Mische den Abwurfstapel in den Nachziehstapel. NL Ziehe !M! Karten.",
+    "extendedDescription": []
+  },
+  "Discovery": {
+    "name": "Entdeckung",
+    "description": "Wähle 1 aus 3 zufälligen Karten und nimm sie auf die Hand. Sie kostet für diesen Zug 0. Erschöpft.",
+    "upgradeDescription": "Wähle 1 aus 3 zufälligen Karten und nimm sie auf die Hand. Sie kostet für diesen Zug 0.",
+    "extendedDescription": []
+  },
+  "Dramatic Entrance": {
+    "name": "Dramatischer Auftritt",
+    "description": "Angeboren. NL Füge ALLEN Gegnern !D! Schaden zu. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Enlightenment": {
+    "name": "Erleuchtung",
+    "description": "Senke die Kosten deiner Handkarten für diesen Zug auf 1.",
+    "upgradeDescription": "Senke die Kosten deiner Handkarten für diesen Kampf auf 1.",
+    "extendedDescription": []
+  },
+  "Finesse": {
+    "name": "Ass im Ärmel",
+    "description": "Erhalte !B! Block. NL Ziehe 1 Karte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flash of Steel": {
+    "name": "Stahlblitz",
+    "description": "Füge !D! Schaden zu. NL Ziehe 1 Karte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Forethought": {
+    "name": "Planung",
+    "description": "Lege eine Handkarte unter den Nachziehstapel. NL Sie kostet 0, NL bis du sie spielst.",
+    "upgradeDescription": "Lege beliebig viele Handkarten unter den Nachziehstapel. NL Sie kosten 0, NL bis du sie spielst.",
+    "extendedDescription": []
+  },
+  "Good Instincts": {
+    "name": "Gute Instinkte",
+    "description": "Erhalte !B! Block.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "HandOfGreed": {
+    "name": "Arm der Gier",
+    "description": "Füge !D! Schaden zu. NL Falls tödlich, NL erhalte !M! Gold.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Impatience": {
+    "name": "Ungeduld",
+    "description": "Falls du keine Angriffe auf der Hand hast, ziehe !M! Karten.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Jack Of All Trades": {
+    "name": "Alleskönner",
+    "description": "Nimm !M! zufällige farblose Karte auf die Hand. NL Erschöpft.",
+    "upgradeDescription": "Nimm !M! zufällige farblose Karten auf die Hand. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Madness": {
+    "name": "Wahnsinn",
+    "description": "Eine zufällige Handkarte kostet für den Rest des Kampfes 0. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Magnetism": {
+    "name": "Magnetismus",
+    "description": "Nimm immer zu Beginn deines Zuges eine zufällige farblose Karte auf die Hand.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Master of Strategy": {
+    "name": "Meisterstratege",
+    "description": "Ziehe !M! Karten. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Mayhem": {
+    "name": "Wilder Kampf",
+    "description": "Spiele immer zu Beginn deines Zuges die oberste Karte des Nachziehstapels.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Metamorphosis": {
+    "name": "Metamorphose",
+    "description": "Mische !M! zufällige Angriffe in den Nachziehstapel. Sie kosten diesen Kampf 0. Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Mind Blast": {
+    "name": "Gedankenstrahl",
+    "description": "Angeboren. NL Füge Schaden zu in Höhe der Kartenzahl im Nachziehstapel.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (Fügt !D! Schaden zu.)"
+    ]
+  },
+  "Panacea": {
+    "name": "Allheilmittel",
+    "description": "Erhalte !M! Artefakt. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Panache": {
+    "name": "Elan",
+    "description": "Immer wenn du in einem einzigen Zug NL 5 Karten ausspielst, NL füge ALLEN Gegnern !M! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PanicButton": {
+    "name": "Panikknopf",
+    "description": "Erhalte !B! Block. NL Karten geben für die nächsten !M! Züge keinen Block. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Purity": {
+    "name": "Reinheit",
+    "description": "Erschöpfe bis zu NL !M! Karten deiner Wahl aus deiner Hand. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sadistic Nature": {
+    "name": "Sadistische Natur",
+    "description": "Immer wenn du einen Debuff auf einen Gegner anwendest, erleidet er !M! Schaden.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Secret Technique": {
+    "name": "Geheime Technik",
+    "description": "Wähle eine Fertigkeit aus dem Nachziehstapel und nimm sie auf die Hand. NL Erschöpft.",
+    "upgradeDescription": "Wähle eine Fertigkeit aus dem Nachziehstapel und nimm sie auf die Hand.",
+    "extendedDescription": [
+      "Es befinden sich keine Fertigkeiten NL in meinem Nachziehstapel."
+    ]
+  },
+  "Secret Weapon": {
+    "name": "Geheimwaffe",
+    "description": "Wähle einen Angriff aus dem Nachziehstapel und nimm ihn auf die Hand. Erschöpft.",
+    "upgradeDescription": "Wähle einen Angriff aus dem Nachziehstapel und nimm ihn auf die Hand.",
+    "extendedDescription": [
+      "Es befinden sich keine Angriffe NL in meinem Nachziehstapel."
+    ]
+  },
+  "Swift Strike": {
+    "name": "Schneller Schlag",
+    "description": "Füge !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "The Bomb": {
+    "name": "Die Bombe",
+    "description": "Füge nach 3 Zügen ALLEN Gegnern NL !M! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Thinking Ahead": {
+    "name": "Vorausdenken",
+    "description": "Ziehe 2 Karten. NL Lege eine Handkarte auf den Nachziehstapel. NL Erschöpft.",
+    "upgradeDescription": "Ziehe 2 Karten. NL Lege eine Handkarte auf den Nachziehstapel.",
+    "extendedDescription": []
+  },
+  "Transmutation": {
+    "name": "Umwandlung",
+    "description": "Nimm X zufällige farblose Karten auf die Hand. Sie kosten für diesen Zug 0. NL Erschöpft.",
+    "upgradeDescription": "Nimm X zufällige verbesserte farblose Karten auf die Hand. Sie kosten für diesen Zug 0. Erschöpft.",
+    "extendedDescription": []
+  },
+  "Trip": {
+    "name": "Straucheln",
+    "description": "Wende !M! Verwundbar an.",
+    "upgradeDescription": "Wende !M! Verwundbar auf ALLE Gegner an.",
+    "extendedDescription": []
+  },
+  "Violence": {
+    "name": "Gewalt",
+    "description": "Nimm !M! zufällige Angriffskarten aus dem Nachziehstapel auf die Hand. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Burn": {
+    "name": "Brennen",
+    "description": "Unspielbar. NL Erleide am Ende deines Zuges 2 Schaden.",
+    "upgradeDescription": "Unspielbar. NL Erleide am Ende deines Zuges 4 Schaden.",
+    "extendedDescription": []
+  },
+  "Dazed": {
+    "name": "Benommen",
+    "description": "Unspielbar. NL Flüchtig.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Slimed": {
+    "name": "Verschleimt",
+    "description": "Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Void": {
+    "name": "Leere",
+    "description": "Unspielbar. NL Flüchtig. NL Wenn diese Karte gezogen wird, NL verliere 1 Energie.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wound": {
+    "name": "Wunde",
+    "description": "Unspielbar.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ghostly": {
+    "name": "Apparieren",
+    "description": "Flüchtig. NL Erhalte 1 Immateriell. NL Erschöpft.",
+    "upgradeDescription": "Erhalte 1 Immateriell. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Beta": {
+    "name": "Beta",
+    "description": "Mische ein *Omega in den Nachziehstapel. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bite": {
+    "name": "Biss",
+    "description": "Füge !D! Schaden zu. NL Heile !M! TP.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "J.A.X.": {
+    "name": "J.A.X.",
+    "description": "Verliere 3 TP. NL Erhalte !M! Stärke.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Insight": {
+    "name": "Einsicht",
+    "description": "Behalten. NL Ziehe !M! Karten. NL Erschöpft.",
+    "upgradeDescription": "Behalten. NL Ziehe !M! Karten. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Miracle": {
+    "name": "Wunder",
+    "description": "Behalten. NL Erhalte [W]. NL Erschöpft.",
+    "upgradeDescription": "Behalten. NL Erhalte [W] [W]. NL Erschöpft.",
+    "extendedDescription": []
+  },
+  "Omega": {
+    "name": "Omega",
+    "description": "Füge immer am Ende deines Zuges ALLEN Gegnern !M! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "RitualDagger": {
+    "name": "Ritualdolch",
+    "description": "Füge !D! Schaden zu. NL Falls tödlich, erhöhe den Schaden dieser Karte permanent um !M!. Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Safety": {
+    "name": "Geborgenheit",
+    "description": "Behalten. NL Erhalte !B! Block. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shiv": {
+    "name": "Messer",
+    "description": "Füge !D! Schaden zu. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Smite": {
+    "name": "Zertrümmern",
+    "description": "Behalten. NL Füge !D! Schaden zu. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ThroughViolence": {
+    "name": "Durch Gewalt",
+    "description": "Behalten. NL Füge !D! Schaden zu. NL Erschöpft.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "BecomeAlmighty": {
+    "name": "Allmächtig werden",
+    "description": "Erhalte !M! Stärke.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FameAndFortune": {
+    "name": "Ruhm und Reichtum",
+    "description": "Erhalte !M! Gold.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LiveForever": {
+    "name": "Ewiges Leben",
+    "description": "Erhalte NL !M! *Panzerrüstung.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Expunger": {
+    "name": "Vernichter",
+    "description": "Füge X mal NL !D! Schaden zu.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "Füge !M! mal NL !D! Schaden zu.",
+      "Füge !M! mal NL !D! Schaden zu."
+    ]
+  },
+  "AscendersBane": {
+    "name": "Aufstiegsfluch",
+    "description": "Unspielbar. NL Flüchtig. NL Kann nicht aus dem Deck entfernt werden.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CurseOfTheBell": {
+    "name": "Fluch der Glocke",
+    "description": "Unspielbar. NL Kann nicht aus dem Deck entfernt werden.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clumsy": {
+    "name": "Ungeschickt",
+    "description": "Unspielbar. NL Flüchtig.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Decay": {
+    "name": "Verfall",
+    "description": "Unspielbar. NL Erleide am Ende deines Zuges 2 Schaden.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doubt": {
+    "name": "Zweifel",
+    "description": "Unspielbar. NL Erhalte am Ende deines Zuges NL 1 Schwach.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Injury": {
+    "name": "Verletzung",
+    "description": "Unspielbar.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Necronomicurse": {
+    "name": "Necronomischer Fluch",
+    "description": "Unspielbar. NL Du kannst diesem Fluch nicht entgehen.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Normality": {
+    "name": "Normalität",
+    "description": "Unspielbar. NL Du kannst in diesem Zug nicht mehr als NL 3 Karten ausspielen.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "Ich kann diesen Zug nur NL #r3 Karten spielen.",
+      "Unspielbar. NL Du kannst nicht mehr als ",
+      " Karten pro Zug spielen.",
+      " Karten pro Zug spielen. NL Du hast in diesem Zug ",
+      " Karte gespielt.",
+      " Karten gespielt."
+    ]
+  },
+  "Pain": {
+    "name": "Schmerz",
+    "description": "Unspielbar. NL Ist diese Karte auf der Hand, verliere beim Ausspielen anderer Karten 1 TP.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Parasite": {
+    "name": "Parasit",
+    "description": "Unspielbar. NL Wird diese Karte transformiert oder aus dem Deck entfernt, verliere 3 max. TP.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pride": {
+    "name": "Stolz",
+    "description": "Angeboren. Erschöpft. NL Lege am Ende deines Zuges eine Kopie dieser Karte auf den Nachziehstapel.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Regret": {
+    "name": "Reue",
+    "description": "Unspielbar. NL Verliere am Ende deines Zuges pro Handkarte 1 TP.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shame": {
+    "name": "Scham",
+    "description": "Unspielbar. NL Erhalte am Ende deines Zuges NL 1 Gebrechlich.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Writhe": {
+    "name": "Leid",
+    "description": "Unspielbar. NL Angeboren.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  }
+}

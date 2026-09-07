@@ -1,0 +1,338 @@
+{
+  "Regen Potion": {
+    "name": "Erholungstrank",
+    "description": "Erhalte #b5 #yErholen.",
+    "descriptions": [
+      "Erhalte #b",
+      " #yErholen.",
+      ""
+    ]
+  },
+  "SmokeBomb": {
+    "name": "Rauchbombe",
+    "description": "Fliehe aus einem Kampf (außer Bosskämpfen), ohne Belohnungen zu erhalten.0Ich bin umzingelt!",
+    "descriptions": [
+      "Fliehe aus einem Kampf (außer Bosskämpfen), ohne Belohnungen zu erhalten.",
+      "Ich bin umzingelt!"
+    ]
+  },
+  "Weak Potion": {
+    "name": "Schwächetrank",
+    "description": "Wende #b3 #ySchwach an.",
+    "descriptions": [
+      "Wende #b",
+      " #ySchwach an."
+    ]
+  },
+  "SteroidPotion": {
+    "name": "Steroidetrank",
+    "description": "Erhalte #b5 Stärke. Verliere am Ende deines Zuges #b Stärke.",
+    "descriptions": [
+      "Erhalte #b",
+      " Stärke. Verliere am Ende deines Zuges #b",
+      " Stärke."
+    ]
+  },
+  "SpeedPotion": {
+    "name": "Flinkheitstrank",
+    "description": "Erhalte #b5 Geschicklichkeit. Verliere am Ende deines Zuges #b Geschicklichkeit.",
+    "descriptions": [
+      "Erhalte #b",
+      " Geschicklichkeit. Verliere am Ende deines Zuges #b",
+      " Geschicklichkeit."
+    ]
+  },
+  "Ancient Potion": {
+    "name": "Uralter Trank",
+    "description": "Erhalte #b1 #yArtefakt.",
+    "descriptions": [
+      "Erhalte #b",
+      " #yArtefakt."
+    ]
+  },
+  "Poison Potion": {
+    "name": "Gifttrank",
+    "description": "Wende #b6 #yGift an.",
+    "descriptions": [
+      "Wende #b",
+      " #yGift an."
+    ]
+  },
+  "LiquidMemories": {
+    "name": "Flüssige Erinnerungen",
+    "description": "Wähle eine Karte aus deinem Abwurfstapel und nimm sie auf die Hand. Sie kostet diesen Zug #b0.1Wähle #b Karten aus deinem Abwurfstapel und nimm sie auf die Hand. Sie kosten diesen Zug #b0.",
+    "descriptions": [
+      "Wähle eine Karte aus deinem Abwurfstapel und nimm sie auf die Hand. Sie kostet diesen Zug #b0.",
+      "Wähle #b",
+      " Karten aus deinem Abwurfstapel und nimm sie auf die Hand. Sie kosten diesen Zug #b0."
+    ]
+  },
+  "Fire Potion": {
+    "name": "Feuertrank",
+    "description": "Füge #b20 Schaden zu.",
+    "descriptions": [
+      "Füge #b",
+      " Schaden zu."
+    ]
+  },
+  "CunningPotion": {
+    "name": "Listigkeitstrank",
+    "description": "Erhalte #b3 #yMesser+ auf die Hand.",
+    "descriptions": [
+      "Erhalte #b",
+      " #yMesser+ auf die Hand."
+    ]
+  },
+  "PowerPotion": {
+    "name": "Machttrank",
+    "description": "Wähle #b1 von #b3 zufälligen #yMachtkarten. Nimm sie auf die Hand, sie kostet diesen Zug #b0.1Wähle #b1 von #b3 zufälligen #yMachtkarten. Nimm #b2 Kopien auf die Hand, sie kosten diesen Zug #b0.",
+    "descriptions": [
+      "Wähle #b1 von #b3 zufälligen #yMachtkarten. Nimm sie auf die Hand, sie kostet diesen Zug #b0.",
+      "Wähle #b1 von #b3 zufälligen #yMachtkarten. Nimm #b2 Kopien auf die Hand, sie kosten diesen Zug #b0."
+    ]
+  },
+  "Swift Potion": {
+    "name": "Schnelligkeitstrank",
+    "description": "3Ziehe #b Karten.",
+    "descriptions": [
+      "",
+      "Ziehe #b",
+      " Karten."
+    ]
+  },
+  "SkillPotion": {
+    "name": "Fertigkeitstrank",
+    "description": "Wähle #b1 von #b3 zufälligen #yFertigkeitskarten. Nimm sie auf die Hand, sie kostet diesen Zug #b0.1Wähle #b1 von #b3 zufälligen #yFertigkeitskarten. Nimm #b2 Kopien auf die Hand, sie kosten diesen Zug #b0.",
+    "descriptions": [
+      "Wähle #b1 von #b3 zufälligen #yFertigkeitskarten. Nimm sie auf die Hand, sie kostet diesen Zug #b0.",
+      "Wähle #b1 von #b3 zufälligen #yFertigkeitskarten. Nimm #b2 Kopien auf die Hand, sie kosten diesen Zug #b0."
+    ]
+  },
+  "Dexterity Potion": {
+    "name": "Geschicklichkeitstrank",
+    "description": "Erhalte #b2 #yGeschicklichkeit.",
+    "descriptions": [
+      "Erhalte #b",
+      " #yGeschicklichkeit."
+    ]
+  },
+  "DuplicationPotion": {
+    "name": "Verdopplungstrank",
+    "description": "Deine nächste Karte in diesem Zug wird zweimal gespielt.1Deine nächsten #b2 Karten in diesem Zug werden zweimal gespielt.",
+    "descriptions": [
+      "Deine nächste Karte in diesem Zug wird zweimal gespielt.",
+      "Deine nächsten #b2 Karten in diesem Zug werden zweimal gespielt."
+    ]
+  },
+  "Strength Potion": {
+    "name": "Stärketrank",
+    "description": "Erhalte #b2 #yStärke.",
+    "descriptions": [
+      "Erhalte #b",
+      " #yStärke."
+    ]
+  },
+  "GhostInAJar": {
+    "name": "Flaschengeist",
+    "description": "Erhalte #b1 #yImmateriell.",
+    "descriptions": [
+      "Erhalte #b",
+      " #yImmateriell."
+    ]
+  },
+  "BlessingOfTheForge": {
+    "name": "Gunst der Schmiede",
+    "description": "Verbessere deine Handkarten bis zum Ende des Kampfes.",
+    "descriptions": [
+      "Verbessere deine Handkarten bis zum Ende des Kampfes."
+    ]
+  },
+  "FocusPotion": {
+    "name": "Fokustrank",
+    "description": "Erhalte #b2 #yFokus.",
+    "descriptions": [
+      "Erhalte #b",
+      " #yFokus."
+    ]
+  },
+  "HeartOfIron": {
+    "name": "Eisernes Herz",
+    "description": "Erhalte #b6 #yMetallisieren.",
+    "descriptions": [
+      "Erhalte #b",
+      " #yMetallisieren."
+    ]
+  },
+  "FairyPotion": {
+    "name": "Feenflasche",
+    "description": "Anstatt zu sterben, wird dieser Trank abgeworfen und heile auf #b30% deiner max. TP.",
+    "descriptions": [
+      "Anstatt zu sterben, wird dieser Trank abgeworfen und heile auf #b",
+      "% deiner max. TP."
+    ]
+  },
+  "PotionOfCapacity": {
+    "name": "Kapazitätstrank",
+    "description": "Erhalte #b2 Orb-Slots.",
+    "descriptions": [
+      "Erhalte #b",
+      " Orb-Slots."
+    ]
+  },
+  "Block Potion": {
+    "name": "Blocktrank",
+    "description": "Erhalte #b12 #yBlock.",
+    "descriptions": [
+      "Erhalte #b",
+      " #yBlock."
+    ]
+  },
+  "FearPotion": {
+    "name": "Angsttrank",
+    "description": "Wende #b3 #yVerwundbar an.",
+    "descriptions": [
+      "Wende #b",
+      " #yVerwundbar an."
+    ]
+  },
+  "GamblersBrew": {
+    "name": "Zocker-Gebräu",
+    "description": "Wirf beliebig viele Karten ab, dann ziehe genauso viele.",
+    "descriptions": [
+      "Wirf beliebig viele Karten ab, dann ziehe genauso viele."
+    ]
+  },
+  "BloodPotion": {
+    "name": "Bluttrank",
+    "description": "Heile #b20% deiner max. TP.",
+    "descriptions": [
+      "Heile #b",
+      "% deiner max. TP."
+    ]
+  },
+  "EssenceOfDarkness": {
+    "name": "Schatten-Essenz",
+    "description": "#yErschaffe #b1 #ySchatten pro Orb-Slot.",
+    "descriptions": [
+      "#yErschaffe #b",
+      " #ySchatten pro Orb-Slot."
+    ]
+  },
+  "Fruit Juice": {
+    "name": "Fruchtsaft",
+    "description": "Erhalte #b5 max. TP.",
+    "descriptions": [
+      "Erhalte #b",
+      " max. TP."
+    ]
+  },
+  "Energy Potion": {
+    "name": "Energietrank",
+    "description": "Erhalte #b2 Energie.",
+    "descriptions": [
+      "Erhalte #b",
+      " Energie."
+    ]
+  },
+  "Ambrosia": {
+    "name": "Ambrosia",
+    "description": "Nimm die #yHaltung #yGöttlichkeit an.",
+    "descriptions": [
+      "Nimm die #yHaltung #yGöttlichkeit an."
+    ]
+  },
+  "ElixirPotion": {
+    "name": "Elixier",
+    "description": "#yErschöpfe beliebig viele Handkarten.",
+    "descriptions": [
+      "#yErschöpfe beliebig viele Handkarten."
+    ]
+  },
+  "DistilledChaos": {
+    "name": "Chaos-Destillat",
+    "description": "Spiele die obersten #b3 Karten deines Nachziehstapels.",
+    "descriptions": [
+      "Spiele die obersten #b",
+      " Karten deines Nachziehstapels."
+    ]
+  },
+  "LiquidBronze": {
+    "name": "Flüssige Bronze",
+    "description": "Erhalte #b3 #yStacheln.",
+    "descriptions": [
+      "Erhalte #b",
+      " #yStacheln."
+    ]
+  },
+  "AttackPotion": {
+    "name": "Angriffstrank",
+    "description": "Wähle #b1 von #b3 zufälligen #yAngriffskarten. Nimm sie auf die Hand, sie kostet diesen Zug #b0.1Wähle #b1 von #b3 zufälligen #yAngriffskarten. Nimm #b2 Kopien auf die Hand, sie kosten diesen Zug #b0.",
+    "descriptions": [
+      "Wähle #b1 von #b3 zufälligen #yAngriffskarten. Nimm sie auf die Hand, sie kostet diesen Zug #b0.",
+      "Wähle #b1 von #b3 zufälligen #yAngriffskarten. Nimm #b2 Kopien auf die Hand, sie kosten diesen Zug #b0."
+    ]
+  },
+  "SneckoOil": {
+    "name": "Snecko-Öl",
+    "description": "Ziehe #b5 Karten. Ändere die Kosten deiner Handkarten zufällig.",
+    "descriptions": [
+      "Ziehe #b",
+      " Karten. Ändere die Kosten deiner Handkarten zufällig.",
+      ""
+    ]
+  },
+  "StancePotion": {
+    "name": "Haltungstrank",
+    "description": "Nimm #yRuhe oder #yZorn an.",
+    "descriptions": [
+      "Nimm #yRuhe oder #yZorn an."
+    ]
+  },
+  "Explosive Potion": {
+    "name": "Explosivtrank",
+    "description": "Füge ALLEN Gegnern #b10 Schaden zu.",
+    "descriptions": [
+      "Füge ALLEN Gegnern #b",
+      " Schaden zu."
+    ]
+  },
+  "EssenceOfSteel": {
+    "name": "Stahlessenz",
+    "description": "Erhalte #b4 #yPanzerrüstung.",
+    "descriptions": [
+      "Erhalte #b",
+      " #yPanzerrüstung."
+    ]
+  },
+  "BottledMiracle": {
+    "name": "Wunder in der Flasche",
+    "description": "Erhalte #b2 #yWunder auf die Hand.",
+    "descriptions": [
+      "Erhalte #b",
+      " #yWunder auf die Hand."
+    ]
+  },
+  "ColorlessPotion": {
+    "name": "Farbloser Trank",
+    "description": "Wähle #b1 von #b3 zufälligen #yfarblosen Karten. Nimm sie auf die Hand, sie kostet diesen Zug #b0.1Wähle #b1 von #b3 zufälligen #yfarblosen Karten. Nimm #b2 Kopien auf die Hand, sie kosten diesen Zug #b0.",
+    "descriptions": [
+      "Wähle #b1 von #b3 zufälligen #yfarblosen Karten. Nimm sie auf die Hand, sie kostet diesen Zug #b0.",
+      "Wähle #b1 von #b3 zufälligen #yfarblosen Karten. Nimm #b2 Kopien auf die Hand, sie kosten diesen Zug #b0."
+    ]
+  },
+  "EntropicBrew": {
+    "name": "Entropisches Gebräu",
+    "description": "Fülle deine leeren Trankslots mit zufälligen Tränken auf.",
+    "descriptions": [
+      "Fülle deine leeren Trankslots mit zufälligen Tränken auf."
+    ]
+  },
+  "CultistPotion": {
+    "name": "Kultistentrank",
+    "description": "Erhalte #b1 #yRitual.",
+    "descriptions": [
+      "Erhalte #b",
+      " #yRitual."
+    ]
+  }
+}

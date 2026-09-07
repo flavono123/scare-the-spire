@@ -1,0 +1,2277 @@
+{
+  "Anger": {
+    "name": "愤怒",
+    "description": "造成 !D! 点伤害。 NL 在弃牌堆放入一张此牌的复制品。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Armaments": {
+    "name": "武装",
+    "description": "获得 !B! 点 格挡 。 NL 在本场战斗中 升级 手牌中的一张牌。",
+    "upgradeDescription": "获得 !B! 点 格挡 。 NL 在本场战斗中 升级 手牌中的所有牌。",
+    "extendedDescription": []
+  },
+  "Barricade": {
+    "name": "壁垒",
+    "description": " 格挡 不再在你的回合开始时消失。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bash": {
+    "name": "痛击",
+    "description": "造成 !D! 点伤害。 NL 给予 !M! 层 易伤 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Battle Trance": {
+    "name": "战斗专注",
+    "description": "抽 !M! 张牌。 NL 你在这个回合内不能再抽任何牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Berserk": {
+    "name": "狂暴",
+    "description": "获得 !M! 层 易伤 。 NL 在每回合开始时获得 [R] 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blood for Blood": {
+    "name": "以血还血",
+    "description": "你每在战斗中失去生命一次，这张牌的耗能就减少1 [R] 。 NL 造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bloodletting": {
+    "name": "放血",
+    "description": "获得 [R] [R] 。 NL 失去 3 点生命。",
+    "upgradeDescription": "获得 [R] [R] [R] 。 NL 失去 3 点生命。",
+    "extendedDescription": []
+  },
+  "Bludgeon": {
+    "name": "重锤",
+    "description": "造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Body Slam": {
+    "name": "全身撞击",
+    "description": "造成你当前 格挡 值的伤害。",
+    "upgradeDescription": " NL （造成 !D! 点伤害。）",
+    "extendedDescription": []
+  },
+  "Brutality": {
+    "name": "残暴",
+    "description": "在你的回合开始时，你失去1点生命，抽1张牌。",
+    "upgradeDescription": " 固有 。 NL 在你的回合开始时，你失去1点生命，抽1张牌。",
+    "extendedDescription": []
+  },
+  "Burning Pact": {
+    "name": "燃烧契约",
+    "description": " 消耗 1张牌。 NL 抽 !M! 张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Carnage": {
+    "name": "残杀",
+    "description": " 虚无 。 NL 造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clash": {
+    "name": "交锋",
+    "description": "只有在手牌每一张牌都是攻击牌时才能被打出。 NL 造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "我的手牌中还有非攻击牌。"
+    ]
+  },
+  "Cleave": {
+    "name": "顺劈斩",
+    "description": "对所有敌人造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clothesline": {
+    "name": "金刚臂",
+    "description": "造成 !D! 点伤害。 NL 给予 !M! 层 虚弱 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Combust": {
+    "name": "自燃",
+    "description": "在你的回合结束时，你失去1点生命，对所有敌人造成 !M! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Corruption": {
+    "name": "腐化",
+    "description": "所有技能牌耗能变为0。 NL 所有技能牌在被打出时被 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dark Embrace": {
+    "name": "黑暗之拥",
+    "description": "每当有一张牌被 消耗 时， 抽1张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_R": {
+    "name": "防御",
+    "description": "获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Demon Form": {
+    "name": "恶魔形态",
+    "description": "在每回合开始时获得 NL !M! 点 力量 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Disarm": {
+    "name": "缴械",
+    "description": "使敌人失去 !M! 点 力量 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Double Tap": {
+    "name": "双发",
+    "description": "在这个回合，你打出的下一张攻击牌会打出两次。",
+    "upgradeDescription": "在这个回合，你打出的下 !M! 张攻击牌会打出两次。",
+    "extendedDescription": []
+  },
+  "Dropkick": {
+    "name": "飞身踢",
+    "description": "造成 !D! 点伤害。 NL 如果敌人有 易伤 状态 ， NL 获得 [R] 并且 NL 抽1张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dual Wield": {
+    "name": "双持",
+    "description": "将你手牌中的一张 攻击 或 能力 牌复制一张。",
+    "upgradeDescription": "将你手牌中的一张 攻击 或 能力 牌复制两张。",
+    "extendedDescription": []
+  },
+  "Entrench": {
+    "name": "巩固",
+    "description": "将你当前的 格挡 翻倍。",
+    "upgradeDescription": "将你当前的 格挡 翻倍。",
+    "extendedDescription": []
+  },
+  "Evolve": {
+    "name": "进化",
+    "description": "每当你抽到一张 状态牌 时，抽 !M! 张牌。",
+    "upgradeDescription": "每当你抽到一张 状态牌 时，抽 !M! 张牌。",
+    "extendedDescription": []
+  },
+  "Exhume": {
+    "name": "发掘",
+    "description": "选择一张已 消耗 的牌，将其放入你的手牌。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Feed": {
+    "name": "狂宴",
+    "description": "造成 !D! 点伤害。 NL 斩杀 时，永久获得 !M! 点最大生命。 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Feel No Pain": {
+    "name": "无惧疼痛",
+    "description": "每当有一张牌被 消耗 时， 获得 !M! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fiend Fire": {
+    "name": "恶魔之焰",
+    "description": " 消耗 所有手牌。 NL 每张被 消耗 的牌造成 !D! 点伤害。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fire Breathing": {
+    "name": "火焰吐息",
+    "description": "每当你抽到一张 状态牌 或 诅咒 牌时，对所有敌人造成 !M! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flame Barrier": {
+    "name": "火焰屏障",
+    "description": "获得 !B! 点 格挡 。 NL 你在这个回合每受到一次攻击，都对攻击者造成 !M! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flex": {
+    "name": "活动肌肉",
+    "description": "获得 !M! 点 力量 。 NL 你的回合结束时，失去 !M! 点 力量 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ghostly Armor": {
+    "name": "幽灵铠甲",
+    "description": " 虚无 。 NL 获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Havoc": {
+    "name": "破灭",
+    "description": "打出抽牌堆顶部的牌，将其 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Headbutt": {
+    "name": "头槌",
+    "description": "造成 !D! 点伤害。 NL 将弃牌堆中的一张牌放到抽牌堆的顶部。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Heavy Blade": {
+    "name": "重刃",
+    "description": "造成 !D! 点伤害。 NL 力量 在 重刃 上发挥 !M! 倍效果。",
+    "upgradeDescription": "造成 !D! 点伤害。 NL 力量 在 重刃 上发挥 !M! 倍效果。",
+    "extendedDescription": []
+  },
+  "Hemokinesis": {
+    "name": "御血术",
+    "description": "失去 !M! 点生命。 NL 造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Immolate": {
+    "name": "燔祭",
+    "description": "对所有敌人造成 !D! 点伤害。 NL 将一张 *灼伤 放入你的弃牌堆中。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Impervious": {
+    "name": "岿然不动",
+    "description": "获得 !B! 点 格挡 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Infernal Blade": {
+    "name": "地狱之刃",
+    "description": "增加一张随机攻击牌到你的手牌。 NL 这张牌在本回合耗能变为0。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Inflame": {
+    "name": "燃烧",
+    "description": "获得 !M! 点 力量 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Intimidate": {
+    "name": "威吓",
+    "description": "给予所有敌人 !M! 层 虚弱 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Iron Wave": {
+    "name": "铁斩波",
+    "description": "获得 !B! 点 格挡 。 NL 造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Juggernaut": {
+    "name": "势不可当",
+    "description": "每当你获得 格挡 时， NL 对随机一名敌人造成 NL !M! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Limit Break": {
+    "name": "突破极限",
+    "description": "将你的 力量 翻倍。 NL 消耗 。",
+    "upgradeDescription": "将你的 力量 翻倍。",
+    "extendedDescription": []
+  },
+  "Metallicize": {
+    "name": "金属化",
+    "description": "在你的回合结束时，获得 !M! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Offering": {
+    "name": "祭品",
+    "description": "失去 6 点生命。 NL 获得 [R] [R] 。 NL 抽 !M! 张牌。 NL 消耗 。",
+    "upgradeDescription": "失去 6 点生命。 NL 获得 [R] [R] 。 NL 抽 !M! 张牌。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Perfected Strike": {
+    "name": "完美打击",
+    "description": "造成 !D! 点伤害。 NL 你每有一张名字中有 打击 的牌，伤害+2。",
+    "upgradeDescription": "造成 !D! 点伤害。 NL 你每有一张名字中有 打击 的牌，伤害+3。",
+    "extendedDescription": []
+  },
+  "Pommel Strike": {
+    "name": "剑柄打击",
+    "description": "造成 !D! 点伤害。 NL 抽 !M! 张牌。",
+    "upgradeDescription": "造成 !D! 点伤害。 NL 抽 !M! 张牌。",
+    "extendedDescription": []
+  },
+  "Power Through": {
+    "name": "硬撑",
+    "description": "增加2张 *伤口 到你的手牌。 NL 获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pummel": {
+    "name": "连续拳",
+    "description": "造成 !D! 点伤害 !M! 次。 NL 消耗 。",
+    "upgradeDescription": "造成 !D! 点伤害 !M! 次。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Rage": {
+    "name": "狂怒",
+    "description": "打出此牌后，你在这个回合内每打出一张攻击牌，获得 !M! 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rampage": {
+    "name": "暴走",
+    "description": "造成 !D! 点伤害。 NL 这张牌每被打出一次，在本场战斗中其伤害增加 !M! 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reaper": {
+    "name": "死亡收割",
+    "description": "对所有敌人造成 !D! 点伤害。未被 格挡 的伤害将回复你的生命。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reckless Charge": {
+    "name": "无谋冲锋",
+    "description": "造成 !D! 点伤害。 NL 将一张 *晕眩 放入你的抽牌堆中。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rupture": {
+    "name": "撕裂",
+    "description": "每当你从一张牌中失去生命时，获得 !M! 点 力量 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Searing Blow": {
+    "name": "灼热攻击",
+    "description": "造成 !D! 点伤害。 NL 能被多次 升级 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Second Wind": {
+    "name": "重振精神",
+    "description": "消耗 手牌中所有非攻击牌，每张获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Seeing Red": {
+    "name": "盛怒",
+    "description": "获得 [R] [R] 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sentinel": {
+    "name": "哨卫",
+    "description": "获得 !B! 点 格挡 。 NL 如果这张牌被 消耗 ， NL 获得 [R] [R] 。",
+    "upgradeDescription": "获得 !B! 点 格挡 。 NL 如果这张牌被 消耗 ， NL 获得 [R] [R] [R] 。",
+    "extendedDescription": []
+  },
+  "Sever Soul": {
+    "name": "断魂斩",
+    "description": " 消耗 手牌中所有非攻击牌。 NL 造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shockwave": {
+    "name": "震荡波",
+    "description": "给予所有敌人 !M! 层 虚弱 和 易伤 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shrug It Off": {
+    "name": "耸肩无视",
+    "description": "获得 !B! 点 格挡 。 NL 抽1张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Spot Weakness": {
+    "name": "观察弱点",
+    "description": "如果一名敌人的意图是攻击，你获得 !M! 点 力量 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Strike_R": {
+    "name": "打击",
+    "description": "造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sword Boomerang": {
+    "name": "飞剑回旋镖",
+    "description": "随机对敌人造成 !D! 点伤害 !M! 次。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Thunderclap": {
+    "name": "闪电霹雳",
+    "description": "对所有敌人造成 !D! 点伤害，给予1层 易伤 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "True Grit": {
+    "name": "坚毅",
+    "description": "获得 !B! 点 格挡 。 NL 消耗 一张随机手牌。",
+    "upgradeDescription": "获得 !B! 点 格挡 。 NL 消耗 一张手牌。",
+    "extendedDescription": []
+  },
+  "Twin Strike": {
+    "name": "双重打击",
+    "description": "造成 !D! 点伤害两次。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Uppercut": {
+    "name": "上勾拳",
+    "description": "造成 !D! 点伤害。 NL 给予 !M! 层 虚弱 。 NL 给予 !M! 层 易伤 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Warcry": {
+    "name": "战吼",
+    "description": "抽 !M! 张牌。 NL 将手牌中的一张牌放到你的抽牌堆顶部。 NL 消耗 。",
+    "upgradeDescription": "抽 !M! 张牌。 NL 将手牌中的一张牌放到你的抽牌堆顶部。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Whirlwind": {
+    "name": "旋风斩",
+    "description": "对所有敌人造成 !D! 点伤害X次。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wild Strike": {
+    "name": "狂野打击",
+    "description": "造成 !D! 点伤害。 NL 将一张 *伤口 放入你的抽牌堆中。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Accuracy": {
+    "name": "精准",
+    "description": "*小刀 造成的伤害增加 !M! 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Acrobatics": {
+    "name": "杂技",
+    "description": "抽 !M! 张牌。 NL 丢弃 1 张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Adrenaline": {
+    "name": "肾上腺素",
+    "description": "获得 [G] 。 NL 抽2张牌。 NL 消耗 。",
+    "upgradeDescription": "获得 [G] [G] 。 NL NL 抽2张牌。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "After Image": {
+    "name": "余像",
+    "description": "你每打出一张牌，都获得1点 格挡 。",
+    "upgradeDescription": " 固有 。 NL 你每打出一张牌，都获得1点 格挡 。",
+    "extendedDescription": []
+  },
+  "Venomology": {
+    "name": "炼制药水",
+    "description": "获得一瓶随机药水。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "All Out Attack": {
+    "name": "全力攻击",
+    "description": "对所有敌人造成 !D! 点伤害。 NL 丢弃一张随机手牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "A Thousand Cuts": {
+    "name": "凌迟",
+    "description": "你每打出一张牌，就对所有敌人造成 !M! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Backflip": {
+    "name": "后空翻",
+    "description": "获得 !B! 点 格挡 。 NL 抽2张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Backstab": {
+    "name": "背刺",
+    "description": "造成 !D! 点伤害。 NL 固有 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bane": {
+    "name": "灾祸",
+    "description": "造成 !D! 点伤害。 NL 如果敌人有 中毒 状态 ，则再次造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blade Dance": {
+    "name": "刀刃之舞",
+    "description": "增加 !M! 张 *小刀 到你的手牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blur": {
+    "name": "残影",
+    "description": "获得 !B! 点 格挡 。 NL 你的下一回合开始时 格挡 不会消失。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bouncing Flask": {
+    "name": "弹跳药瓶",
+    "description": "随机给予敌人3层 中毒  !M! 次。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bullet Time": {
+    "name": "子弹时间",
+    "description": "你在本回合内不能再抽牌。你手牌中的所有牌在本回合的耗能变为0点。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Burst": {
+    "name": "爆发",
+    "description": "在这个回合，你打出的下一张技能牌会打出两次。",
+    "upgradeDescription": "在这个回合，你打出的下 !M! 张技能牌会打出两次。",
+    "extendedDescription": []
+  },
+  "Calculated Gamble": {
+    "name": "计算下注",
+    "description": "丢弃所有手牌。 NL 然后抽相同数量张牌。 NL 消耗 。",
+    "upgradeDescription": "丢弃所有手牌。 NL 然后抽相同数量张牌。",
+    "extendedDescription": []
+  },
+  "Caltrops": {
+    "name": "铁蒺藜",
+    "description": "每当你被攻击时，对攻击者造成 !M! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Catalyst": {
+    "name": "催化剂",
+    "description": "将一名敌人的 中毒 层数翻倍。 NL 消耗 。",
+    "upgradeDescription": "将一名敌人的 中毒 层数变为三倍。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Choke": {
+    "name": "勒脖",
+    "description": "造成 !D! 点伤害。 NL 你在这个回合内每打出一张牌，该名敌人都会失去 !M! 点生命。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Cloak And Dagger": {
+    "name": "斗篷与匕首",
+    "description": "获得 !B! 点 格挡 。 NL 增加 !M! 张 *小刀 到你的手牌。",
+    "upgradeDescription": "获得 !B! 点 格挡 。 NL 增加 !M! 张 *小刀 到你的手牌。",
+    "extendedDescription": []
+  },
+  "Concentrate": {
+    "name": "全神贯注",
+    "description": "丢弃 !M! 张牌。 NL 获得 [G] [G] 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Corpse Explosion": {
+    "name": "尸爆术",
+    "description": "给予 !M! 层 中毒 。 NL 当这名敌人死亡时，对所有敌人造成等于其最大生命值的伤害。",
+    "upgradeDescription": "deprecated",
+    "extendedDescription": [
+      "deprecated"
+    ]
+  },
+  "Crippling Poison": {
+    "name": "致残毒云",
+    "description": "给予所有敌人 !M! 层 中毒 和2层 虚弱 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dagger Spray": {
+    "name": "匕首雨",
+    "description": "对所有敌人造成 !D! 点伤害两次。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dagger Throw": {
+    "name": "投掷匕首",
+    "description": "造成 !D! 点伤害。 NL 抽一张牌。 NL 丢弃一张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dash": {
+    "name": "冲刺",
+    "description": "获得 !B! 点 格挡 。 NL 造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deadly Poison": {
+    "name": "致命毒药",
+    "description": "给予 !M! 层 中毒 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_G": {
+    "name": "防御",
+    "description": "获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deflect": {
+    "name": "偏折",
+    "description": "获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Die Die Die": {
+    "name": "死吧死吧死吧",
+    "description": "对所有敌人造成 !D! 点伤害。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Distraction": {
+    "name": "声东击西",
+    "description": "增加一张随机技能牌到你的手牌。 NL 这张牌在本回合耗能变为0。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dodge and Roll": {
+    "name": "闪躲翻滚",
+    "description": "获得 !B! 点 格挡 。 NL 在下一回合获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doppelganger": {
+    "name": "双重存在",
+    "description": "下一回合，抽X张牌，获得X [G] 。 NL 消耗 。",
+    "upgradeDescription": "下一回合，抽X+1张牌，获得X+1 [G] 。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Endless Agony": {
+    "name": "无尽苦痛",
+    "description": "造成 !D! 点伤害。 NL 每当你抽到这张牌，都增加一张其复制品到你的手牌。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Envenom": {
+    "name": "涂毒",
+    "description": "每有一次攻击造成未被格挡的伤害，就给予1层 中毒 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Escape Plan": {
+    "name": "逃脱计划",
+    "description": "抽1张牌。 NL 如果抽到的是技能牌，获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Eviscerate": {
+    "name": "内脏切除",
+    "description": "你在这个回合内每丢弃一张牌，耗能就减少1 [G] 。 NL 造成 !D! 点伤害三次。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Expertise": {
+    "name": "独门技术",
+    "description": "抽牌直到你的手牌有 !M! 张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Finisher": {
+    "name": "终结技",
+    "description": "你在这个回合内每打出过一张攻击牌，就造成一次 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL （你本回合打出过",
+      " 张攻击牌。）",
+      " 张攻击牌。）"
+    ]
+  },
+  "Flechettes": {
+    "name": "飞镖",
+    "description": "手牌中每有一张技能牌，造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL （你有",
+      " 张技能牌。）",
+      " 张技能牌。）"
+    ]
+  },
+  "Flying Knee": {
+    "name": "飞膝",
+    "description": "造成 !D! 点伤害。 NL 在下一回合获得 [G] 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Footwork": {
+    "name": "灵动步法",
+    "description": "获得 !M! 点 敏捷 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Glass Knife": {
+    "name": "玻璃刀刃",
+    "description": "造成 !D! 点伤害两次。 NL 这张牌每被打出一次，在本场战斗中其基础伤害减少2。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Grand Finale": {
+    "name": "华丽收场",
+    "description": "只有当抽牌堆中没有牌时才能打出。 NL 对所有敌人造成 !D! 点伤害。",
+    "upgradeDescription": "我的抽牌堆必须是 #r空的。 ",
+    "extendedDescription": []
+  },
+  "Heel Hook": {
+    "name": "足跟勾",
+    "description": "造成 !D! 点伤害。 NL 如果敌人有 虚弱 状态 ， NL 获得 [G] 并且 NL 抽1张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Infinite Blades": {
+    "name": "无限刀刃",
+    "description": "在你的回合开始时，增加一张 *小刀 到你的手牌。",
+    "upgradeDescription": " 固有 。 NL 在你的回合开始时，增加一张 *小刀 到你的手牌。",
+    "extendedDescription": []
+  },
+  "Leg Sweep": {
+    "name": "扫腿",
+    "description": "给予 !M! 层 虚弱 . NL 获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Malaise": {
+    "name": "萎靡",
+    "description": "敌人失去X点 力量 ，给予X层 虚弱 。 NL 消耗 。",
+    "upgradeDescription": "敌人失去X+1点 力量 ，给予X+1层 虚弱 。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Masterful Stab": {
+    "name": "精巧刺击",
+    "description": "造成 !D! 点伤害。 NL 你每次受到伤害，这张牌的耗能增加1。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Neutralize": {
+    "name": "中和",
+    "description": "造成 !D! 点伤害。 NL 给予 !M! 层 虚弱 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Night Terror": {
+    "name": "夜魇",
+    "description": "选择一张牌， NL 在下一回合，将 !M! 份这张牌的复制品放入你的手牌中。 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "我每回合只能使用 NL ",
+      " NL 一次。"
+    ]
+  },
+  "Noxious Fumes": {
+    "name": "毒雾",
+    "description": "在你的回合开始时，给予所有敌人 !M! 层 中毒 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Outmaneuver": {
+    "name": "抢占先机",
+    "description": "下一回合 NL 获得 [G] [G] 。",
+    "upgradeDescription": "下一回合 NL 获得 [G] [G] [G] 。",
+    "extendedDescription": []
+  },
+  "Phantasmal Killer": {
+    "name": "幻影杀手",
+    "description": "在你的下个回合，你所有的攻击伤害翻倍。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PiercingWail": {
+    "name": "尖啸",
+    "description": "所有敌人失去 !M! 力量 1回合。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Poisoned Stab": {
+    "name": "带毒刺击",
+    "description": "造成 !D! 点伤害。 NL 给予 !M! 层 中毒 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Predator": {
+    "name": "猎杀者",
+    "description": "造成 !D! 点伤害。 NL 在下一回合多抽2张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Prepared": {
+    "name": "早有准备",
+    "description": "抽 !M! 张牌。 NL 丢弃 !M! 张牌。",
+    "upgradeDescription": "抽 !M! 张牌。 NL 丢弃 !M! 张牌。",
+    "extendedDescription": []
+  },
+  "Quick Slash": {
+    "name": "快斩",
+    "description": "造成 !D! 点伤害。 NL 抽 1 张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reflex": {
+    "name": "本能反应",
+    "description": " 不能被打出 。 NL 如果这张牌从你的手牌中被丢弃，抽 !M! 张牌。",
+    "upgradeDescription": " 不能被打出 。 NL 如果这张牌从你的手牌中被丢弃，抽 !M! 张牌。",
+    "extendedDescription": [
+      "这张牌不能被打出。"
+    ]
+  },
+  "Riddle With Holes": {
+    "name": "千穿百刺",
+    "description": "造成 !D! 点伤害5次。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Setup": {
+    "name": "部署",
+    "description": "将手牌中的一张牌放到抽牌堆的顶部。 NL 并且在其被打出之前，其耗能变为0。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Skewer": {
+    "name": "串刺",
+    "description": "造成 !D! 点伤害X次。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Slice": {
+    "name": "切割",
+    "description": "造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Storm of Steel": {
+    "name": "钢铁风暴",
+    "description": "丢弃所有手牌。 NL 每丢弃一张牌，在你的手牌中增加一张 *小刀 。",
+    "upgradeDescription": "丢弃所有手牌。 NL 每丢弃一张牌，在你的手牌中增加一张 *小刀+ 。",
+    "extendedDescription": []
+  },
+  "Strike_G": {
+    "name": "打击",
+    "description": "造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sucker Punch": {
+    "name": "突然一拳",
+    "description": "造成 !D! 点伤害。 NL 给予 !M! 层 虚弱 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Survivor": {
+    "name": "生存者",
+    "description": "获得 !B! 点 格挡 。 NL 丢弃一张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tactician": {
+    "name": "战术大师",
+    "description": " 不能被打出 。 NL 如果这张牌从你的手牌中被丢弃，获得 [G] 。",
+    "upgradeDescription": " 不能被打出 。 NL 如果这张牌从你的手牌中被丢弃，获得 [G] [G] 。",
+    "extendedDescription": [
+      "这张牌不能被打出。"
+    ]
+  },
+  "Terror": {
+    "name": "恐怖",
+    "description": "给予99层 易伤 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tools of the Trade": {
+    "name": "必备工具",
+    "description": "在你的回合开始时，抽1张牌，丢弃1张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Underhanded Strike": {
+    "name": "隐秘打击",
+    "description": " 造成 !D! 点伤害。 NL 如果你在这回合丢弃过牌，获得 [G] [G] 。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "这张牌不能被打出。"
+    ]
+  },
+  "Unload": {
+    "name": "乾坤一掷",
+    "description": "造成 !D! 点伤害。 NL 丢弃所有非攻击牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Well Laid Plans": {
+    "name": "计划妥当",
+    "description": "在你的回合结束时， 保留 最多 !M! 张牌。",
+    "upgradeDescription": "在你的回合结束时， 保留 最多 !M! 张牌。",
+    "extendedDescription": []
+  },
+  "Wraith Form v2": {
+    "name": "幽魂形态",
+    "description": "获得 !M! 层 无实体 。 NL 在每回合结束时失去1点 敏捷 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Aggregate": {
+    "name": "汇集",
+    "description": "你的抽牌堆中每有 !M! 张牌，获得一点 [B] 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "All For One": {
+    "name": "万物一心",
+    "description": "造成 !D! 点伤害。 NL 将弃牌堆中所有0耗能的牌放入你的手牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Amplify": {
+    "name": "增幅",
+    "description": "在这个回合，你的下一张 能力牌 会打出两次。",
+    "upgradeDescription": "在这个回合，你的下 !M! 张 能力牌 会打出两次。",
+    "extendedDescription": []
+  },
+  "Auto Shields": {
+    "name": "自动护盾",
+    "description": "如果你没有格挡，获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ball Lightning": {
+    "name": "球状闪电",
+    "description": "造成 !D! 点伤害。 生成 !M! 个 闪电 充能球。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Barrage": {
+    "name": "弹幕齐射",
+    "description": "你每拥有一个充能球，造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Beam Cell": {
+    "name": "光束射线",
+    "description": "造成 !D! 点伤害。 NL 给予 !M! 层 易伤 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Biased Cognition": {
+    "name": "偏差认知",
+    "description": "获得 !M! 点 集中。 NL 在每回合开始时，失去 1 点 集中 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blizzard": {
+    "name": "暴雪",
+    "description": "对所有敌人造成你在本场战斗中 生成 过的 冰霜 充能球总数 !M! 倍的伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL （造成 !D! 点伤害。）",
+      ""
+    ]
+  },
+  "BootSequence": {
+    "name": "启动流程",
+    "description": "获得 !B! 点 格挡 。 NL 固有 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Buffer": {
+    "name": "缓冲",
+    "description": "阻止下一次你受到的生命值损伤。",
+    "upgradeDescription": "阻止下 !M! 次你受到的生命值损伤。",
+    "extendedDescription": []
+  },
+  "Capacitor": {
+    "name": "扩容",
+    "description": "获得 !M! 个充能球栏位。",
+    "upgradeDescription": "获得 !M! 个充能球栏位。",
+    "extendedDescription": []
+  },
+  "Chaos": {
+    "name": "混沌",
+    "description": " 生成 !M! 个随机充能球。",
+    "upgradeDescription": " 生成 !M! 个随机充能球。",
+    "extendedDescription": []
+  },
+  "Chill": {
+    "name": "冰寒",
+    "description": "当前每有一名敌人，生成 !M! 个 冰霜 充能球。 NL 消耗 。",
+    "upgradeDescription": "固有 。 NL 当前每有一名敌人，生成 !M! 个 冰霜 充能球。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Gash": {
+    "name": "爪击",
+    "description": "造成 !D! 点伤害。 NL 在本场战斗中所有 爪击 牌的伤害增加 !M! 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Cold Snap": {
+    "name": "寒流",
+    "description": "造成 !D! 点伤害。 生成 !M! 个 冰霜 充能球。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Compile Driver": {
+    "name": "编译冲击",
+    "description": "造成 !D! 点伤害。 NL 你每有一种不同的 充能球 ，抽 !M! 张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Conserve Battery": {
+    "name": "充电",
+    "description": "获得 !B! 点 格挡 。 NL 在下一回合获得 [B] 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Consume": {
+    "name": "耗尽",
+    "description": "获得 !M! 点 集中 。 NL 失去 1 个充能球栏位。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Coolheaded": {
+    "name": "冷静头脑",
+    "description": "生成 1 个 冰霜 充能球。 NL 抽 !M! 张牌。",
+    "upgradeDescription": "生成 1 个 冰霜 充能球。 NL 抽 !M! 张牌。",
+    "extendedDescription": []
+  },
+  "Core Surge": {
+    "name": "核心电涌",
+    "description": "造成 !D! 点伤害。 NL 获得 !M! 层 人工制品 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Creative AI": {
+    "name": "创造性AI",
+    "description": "在每回合开始时，增加一张随机 能力 牌到你的手牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Darkness": {
+    "name": "漆黑",
+    "description": "生成 !M! 个 黑暗 充能球。",
+    "upgradeDescription": "生成 !M! 个 黑暗 充能球。 NL 使用所有 黑暗 充能球 的被动能力。",
+    "extendedDescription": []
+  },
+  "Defend_B": {
+    "name": "防御",
+    "description": "获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defragment": {
+    "name": "碎片整理",
+    "description": "获得 !M! 点 集中 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doom and Gloom": {
+    "name": "愁云惨淡",
+    "description": "对所有敌人造成 !D! 点伤害。 NL 生成 !M! 个 黑暗 充能球。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Double Energy": {
+    "name": "双倍能量",
+    "description": "将你的 能量 翻倍。 NL 消耗 。",
+    "upgradeDescription": "将你的 能量 翻倍。",
+    "extendedDescription": []
+  },
+  "Dualcast": {
+    "name": "双重释放",
+    "description": "激发 你最右侧的充能球2次。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Echo Form": {
+    "name": "回响形态",
+    "description": "你每回合打出的第一张牌会打出两次。 NL 虚无 。",
+    "upgradeDescription": "你每回合打出的第一张牌会打出两次。",
+    "extendedDescription": []
+  },
+  "Electrodynamics": {
+    "name": "电动力学",
+    "description": "闪电 充能球现在会击中所有敌人。 NL 生成 !M! 个 闪电 充能球。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fission": {
+    "name": "裂变",
+    "description": "移除所有 充能球 ，每移除一个充能球获得 [B] 并抽 !M! 张牌 。 NL 消耗 。",
+    "upgradeDescription": "激发 所有 充能球 ，每激发一个充能球获得 [B] 并抽 !M! 张牌 。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Force Field": {
+    "name": "力场",
+    "description": "你在本场战斗中每打出一张能力牌，耗能就减少1 [B] 。 NL 获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FTL": {
+    "name": "超越光速",
+    "description": "造成 !D! 点伤害。 NL 如果你在这回合打出的牌数少于 !M! 张，抽一张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL （已打出",
+      " 张牌。）",
+      " 张牌。）"
+    ]
+  },
+  "Fusion": {
+    "name": "聚变",
+    "description": "生成 !M! 个 等离子 充能球。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Genetic Algorithm": {
+    "name": "遗传算法",
+    "description": "获得 !B! 点 格挡 。 NL 每打出一次，这张牌在本局游戏中的格挡值永久性增加 !M! 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Glacier": {
+    "name": "冰川",
+    "description": "获得 !B! 点 格挡 。 NL 生成 !M! 个 冰霜 充能球。",
+    "upgradeDescription": "获得 !B! 点 格挡 。 NL 生成 !M! 个 冰霜 充能球。",
+    "extendedDescription": []
+  },
+  "Go for the Eyes": {
+    "name": "眼部攻击",
+    "description": "造成 !D! 点伤害。 NL 如果目标敌人的意图是攻击，则给予其 !M! 层 虚弱 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Heatsinks": {
+    "name": "散热片",
+    "description": "你每打出一张能力牌，抽 !M! 张牌。",
+    "upgradeDescription": "你每打出一张能力牌，抽 !M! 张牌。",
+    "extendedDescription": []
+  },
+  "Hello World": {
+    "name": "你好，世界",
+    "description": "在你的回合开始时，增加一张随机普通牌到你的手牌。",
+    "upgradeDescription": "固有 。 NL 在你的回合开始时，增加一张随机普通牌到你的手牌。",
+    "extendedDescription": []
+  },
+  "Hologram": {
+    "name": "全息影像",
+    "description": "获得 !B! 点 格挡 。 NL 将弃牌堆中的一张牌放入你的手牌。 NL 消耗 。",
+    "upgradeDescription": "获得 !B! 点 格挡 。 NL 将弃牌堆中的一张牌放入你的手牌。",
+    "extendedDescription": []
+  },
+  "Hyperbeam": {
+    "name": "超能光束",
+    "description": "对所有敌人造成 !D! 点伤害。 NL 失去 !M! 点 集中 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Leap": {
+    "name": "飞跃",
+    "description": "获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Lockon": {
+    "name": "瞄准靶心",
+    "description": "造成 !D! 点伤害。 NL 给予敌人 !M! 回合 跟踪锁定 效果。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Loop": {
+    "name": "循环",
+    "description": "在你的回合开始时，使用你最右侧的1个充能球的被动能力。",
+    "upgradeDescription": "在你的回合开始时，使用你最右侧的1个充能球的被动能力 !M! 次。",
+    "extendedDescription": []
+  },
+  "Machine Learning": {
+    "name": "机器学习",
+    "description": "在每回合开始时额外抽 !M! 张牌。",
+    "upgradeDescription": "固有 。 NL 在每回合开始时额外抽 !M! 张牌。",
+    "extendedDescription": []
+  },
+  "Melter": {
+    "name": "熔化",
+    "description": "去除一名敌人的所有 格挡 值。 NL 造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Meteor Strike": {
+    "name": "陨石打击",
+    "description": "造成 !D! 点伤害。 NL 生成 !M! 个 等离子 充能球。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Multi-Cast": {
+    "name": "多重释放",
+    "description": "激发 你最右侧的充能球X次。",
+    "upgradeDescription": "激发 你最右侧的充能球X+1次。",
+    "extendedDescription": []
+  },
+  "Steam Power": {
+    "name": "超频",
+    "description": "抽 !M! 张牌。 NL 将一张 *灼伤 放入你的弃牌堆中。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rainbow": {
+    "name": "彩虹",
+    "description": "生成 闪电 、 冰霜 、 黑暗 充能球各一个。 NL 消耗 。",
+    "upgradeDescription": "生成 闪电 、 冰霜 、 黑暗 充能球各一个。",
+    "extendedDescription": []
+  },
+  "Reboot": {
+    "name": "重启",
+    "description": "将你所有未消耗的牌重新洗牌放入抽牌堆。 NL 抽 !M! 张牌。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rebound": {
+    "name": "弹回",
+    "description": "造成 !D! 点伤害。 NL 你在这个回合打出的下一张牌将会被放置到抽牌堆的顶部。 （只限会移入弃牌堆的牌）",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Redo": {
+    "name": "递归",
+    "description": "激发 你最右侧的充能球。 NL 然后 生成 一个刚才被 激发 的充能球。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Recycle": {
+    "name": "回收",
+    "description": "消耗 一张牌。 NL 获得与其耗能相等的 [B] 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reinforced Body": {
+    "name": "硬化机体",
+    "description": "获得 !B! 点 格挡 X 次。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reprogram": {
+    "name": "重编程",
+    "description": "失去 !M! 点 集中 。 NL 获得!M!点 力量 。 NL 获得!M!点 敏捷 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rip and Tear": {
+    "name": "狂乱撕扯",
+    "description": "随机对敌人造成 !D! 点伤害 !M! 次。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Scrape": {
+    "name": "刮削",
+    "description": "造成 !D! 伤害。 NL 抽 !M! 张牌。 NL 丢弃抽到的牌中耗能不为0的牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Seek": {
+    "name": "搜寻",
+    "description": "从抽牌堆中选择 !M! 张牌放入你的手牌。 NL 消耗 。",
+    "upgradeDescription": "从抽牌堆中选择 !M! 张牌放入你的手牌。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Self Repair": {
+    "name": "自我修复",
+    "description": "在战斗结束时，回复 !M! 点生命。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Skim": {
+    "name": "快速检索",
+    "description": "抽 !M! 张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Stack": {
+    "name": "堆栈",
+    "description": "获得与你当前弃牌堆中牌数相等的 格挡 值。",
+    "upgradeDescription": "获得你当前弃牌堆中牌数+3的 格挡 值。",
+    "extendedDescription": [
+      " NL （获得 !B! 点 格挡 。）"
+    ]
+  },
+  "Static Discharge": {
+    "name": "静电释放",
+    "description": "每当你受到未被格挡的攻击伤害时， 生成 !M! 个 闪电 充能球。",
+    "upgradeDescription": "每当你受到未被格挡的攻击伤害时， 生成 !M! 个 闪电 充能球。",
+    "extendedDescription": []
+  },
+  "Steam": {
+    "name": "蒸汽护壁",
+    "description": "获得 !B! 点 格挡 。 NL 这张牌每被打出一次，它在本场战斗中的基础 格挡 下降1。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Storm": {
+    "name": "雷暴",
+    "description": "你每打出一张能力牌， 生成 1 个 闪电 充能球。",
+    "upgradeDescription": "固有 。 NL 你每打出一张能力牌，生成 1 个 闪电 充能球。",
+    "extendedDescription": []
+  },
+  "Streamline": {
+    "name": "精简改良",
+    "description": "造成 !D! 点伤害。 NL 这张牌每被打出一次，它在本场战斗中的耗能减少 !M! 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Strike_B": {
+    "name": "打击",
+    "description": "造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sunder": {
+    "name": "分离",
+    "description": "造成 !D! 点伤害。 NL 如果这张牌杀死了敌人，则获得 [B] [B] [B] 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sweeping Beam": {
+    "name": "扫荡射线",
+    "description": "对所有敌人造成 !D! 点伤害。 NL 抽 !M! 张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tempest": {
+    "name": "暴风雨",
+    "description": "生成 X 个 闪电 充能球。 NL 消耗 。",
+    "upgradeDescription": "生成 X+1 个 闪电 充能球。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Thunder Strike": {
+    "name": "雷霆打击",
+    "description": "你在本场战斗中每 生成 过 一个 闪电 充能球，随机造成一次 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "（共 !M! 次。）"
+    ]
+  },
+  "Turbo": {
+    "name": "内核加速",
+    "description": "获得 [B] [B] 。 NL 将一张 *虚空 放入你的弃牌堆中。",
+    "upgradeDescription": "获得 [B] [B] [B] 。 NL 将一张 *虚空 放入你的弃牌堆中。",
+    "extendedDescription": []
+  },
+  "Undo": {
+    "name": "均衡",
+    "description": "获得 !B! 点 格挡 。 NL 在本回合 保留 你的手牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "White Noise": {
+    "name": "白噪声",
+    "description": "增加一张随机能力牌到你的手牌。 NL 这张牌在本回合耗能变为0。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Zap": {
+    "name": "电击",
+    "description": "生成 !M! 个 闪电 充能球。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Alpha": {
+    "name": "阿尔法",
+    "description": "将一张 *贝塔 放入你的抽牌堆中。 NL 消耗 。",
+    "upgradeDescription": " 固有 。 NL 将一张 *贝塔 放入你的抽牌堆中。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "BattleHymn": {
+    "name": "战歌",
+    "description": "在每回合开始时，将一张 *惩恶 加入你的手牌。",
+    "upgradeDescription": " 固有 。 在每回合开始时，将一张 *惩恶 加入你的手牌。",
+    "extendedDescription": []
+  },
+  "Blasphemy": {
+    "name": "渎神",
+    "description": "进入 神格 。 NL 在下回合死亡。 NL 消耗 。",
+    "upgradeDescription": "保留 。 NL 进入 神格 。 NL 在下回合死亡。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "BowlingBash": {
+    "name": "碰撞连击",
+    "description": "当前每有一名敌人，造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Brilliance": {
+    "name": "光辉",
+    "description": "造成 !D! 点伤害。 NL 额外造成本场战斗中获得的 真言 总层数的伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL （共获得过 !M! 层 真言 。）",
+      ""
+    ]
+  },
+  "CarveReality": {
+    "name": "改造现实",
+    "description": "造成 !D! 点伤害。 NL 将一张 *惩恶 加入你的手牌。",
+    "upgradeDescription": "造成 !D! 点伤害。 将一张 *惩恶+ 加入你的手牌。",
+    "extendedDescription": []
+  },
+  "Collect": {
+    "name": "收集",
+    "description": "在你的下X个回合开始时，增加一张 *奇迹+ 到你的手牌。 NL 消耗 。",
+    "upgradeDescription": "在你的下X+1个回合开始时，增加一张 *奇迹+ 到你的手牌。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Conclude": {
+    "name": "结末",
+    "description": "对所有敌人造成 !D! 点伤害。 NL 结束你的回合。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ConjureBlade": {
+    "name": "聚能成刃",
+    "description": "将一张 *灭除之刃 放入你的抽牌堆中。 NL 消耗 。",
+    "upgradeDescription": "将一张X数值+1的 *灭除之刃 放入你的抽牌堆中。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Consecrate": {
+    "name": "供奉",
+    "description": "对所有敌人造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Crescendo": {
+    "name": "渐强",
+    "description": " 保留 。 NL 进入 愤怒 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CrushJoints": {
+    "name": "粉碎关节",
+    "description": "造成 !D! 点伤害。 NL 如果本场战斗中打出的上一张牌是技能牌，给予 !M! 层 易伤 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CutThroughFate": {
+    "name": "斩破命运",
+    "description": "造成 !D! 点伤害。 NL 预见 !M! 。 NL 抽1张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DeceiveReality": {
+    "name": "欺瞒现实",
+    "description": "获得 !B! 点 格挡 。 NL 将一张 *平安 加入你的手牌。",
+    "upgradeDescription": "获得 !B! 点 格挡 。 将一张 *平安+ 加入你的手牌。",
+    "extendedDescription": []
+  },
+  "Defend_P": {
+    "name": "防御",
+    "description": "获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DeusExMachina": {
+    "name": "机械降神",
+    "description": " 不能被打出 。 NL 当你抽到这张牌时，在你的手牌中加入 !M! 张 *奇迹 ，然后 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DevaForm": {
+    "name": "天人形态",
+    "description": " 虚无 。 NL 在你的回合开始时获得 [W] ，每回合增加 !M! 。",
+    "upgradeDescription": "在你的回合开始时获得 [W] ，每回合增加 !M! 。",
+    "extendedDescription": []
+  },
+  "Devotion": {
+    "name": "虔信",
+    "description": "在你的回合开始时，获得 !M! 层 真言 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyBody": {
+    "name": "化体为空",
+    "description": "获得 !B! 点 格挡 。 NL 退出当前 姿态 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyFist": {
+    "name": "化拳为空",
+    "description": "造成 !D! 点伤害。 NL 退出当前 姿态 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyMind": {
+    "name": "化智为空",
+    "description": "抽 !M! 张牌。 NL 退出当前 姿态 。",
+    "upgradeDescription": "抽 !M! 张牌。 NL 退出当前 姿态 。",
+    "extendedDescription": []
+  },
+  "Eruption": {
+    "name": "暴怒",
+    "description": "造成 !D! 点伤害。 NL 进入 愤怒 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Establishment": {
+    "name": "确立基础",
+    "description": "每当有卡牌被 保留 时，将其在本场战斗的耗能减少 !M! 。",
+    "upgradeDescription": " 固有 。 NL 每当有卡牌被 保留 时，将其在本场战斗的耗能减少 !M! 。",
+    "extendedDescription": []
+  },
+  "Evaluate": {
+    "name": "评估",
+    "description": "获得 !B! 点 格挡 。 NL 在你的抽牌堆中加入一张 *洞见 。",
+    "upgradeDescription": "获得 !B! 点 格挡 。 NL 在你的抽牌堆中加入一张 *洞见+ 。",
+    "extendedDescription": []
+  },
+  "Fasting2": {
+    "name": "斋戒",
+    "description": "获得 !M! 点 力量 。 NL 获得 !M! 敏捷 。 NL 每回合开始时少获得1 [W] 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FearNoEvil": {
+    "name": "不惧妖邪",
+    "description": "造成 !D! 点伤害。 NL 如果目标敌人的意图是攻击，则进入 平静 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FlurryOfBlows": {
+    "name": "疾风连击",
+    "description": "造成 !D! 点伤害。 NL 你每次转换 姿态 时，将这张牌从弃牌堆放回你的手牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FlyingSleeves": {
+    "name": "流云飞袖",
+    "description": " 保留 。 NL 造成 !D! 点伤害两次。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FollowUp": {
+    "name": "追击",
+    "description": "造成 !D! 点伤害。 NL 如果本场战斗中打出的上一张牌是攻击牌，获得 [W] 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ForeignInfluence": {
+    "name": "他山之石",
+    "description": "从3张任意颜色的攻击牌中选择1张加入你的手牌。 NL 消耗 。",
+    "upgradeDescription": "从3张任意颜色的攻击牌中选择1张加入你的手牌。 这张牌在本回合耗能变为0。 消耗 。",
+    "extendedDescription": []
+  },
+  "Wireheading": {
+    "name": "先见之明",
+    "description": "在你的回合开始时， 预见 !M! 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Halt": {
+    "name": "停顿",
+    "description": "获得 !B! 点 格挡 。 NL 愤怒 ：获得 !M! 点额外格挡。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Indignation": {
+    "name": "义愤填膺",
+    "description": " 愤怒 ：给予所有敌人 !M! 层 易伤 。 NL 否则，进入 愤怒 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "InnerPeace": {
+    "name": "内心宁静",
+    "description": "平静 ： 抽 !M! 张牌。 NL 否则，进入 平静 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Judgement": {
+    "name": "审判",
+    "description": "如果目标敌人的生命值小于等于 !M! 点， NL 则将其生命值变为0。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "审判"
+    ]
+  },
+  "JustLucky": {
+    "name": "幸运一击",
+    "description": "预见 !M! 。 NL 获得 !B! 点 格挡 。 NL 造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LessonLearned": {
+    "name": "勤学精进",
+    "description": "造成 !D! 点伤害。 NL 斩杀 时， 升级 你牌组中的一张随机牌。 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LikeWater": {
+    "name": "如水",
+    "description": "在你的回合结束时，如果你处于 平静 ， 则获得 !M! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "MasterReality": {
+    "name": "操控现实",
+    "description": "所有在战斗中临时增加的牌将被 升级 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Meditate": {
+    "name": "冥想",
+    "description": "将弃牌堆中的一张牌放入你的手牌，并将其 保留 。 NL 进入 平静 。 NL 结束你的回合。",
+    "upgradeDescription": "将弃牌堆中的2张牌放入你的手牌，并将它们 保留 。 NL 进入 平静 。 NL 结束你的回合。",
+    "extendedDescription": []
+  },
+  "MentalFortress": {
+    "name": "心灵堡垒",
+    "description": "每当你转换 姿态 时，获得 !M! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Nirvana": {
+    "name": "涅槃",
+    "description": "你每次 预见 时，获得 !M! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Omniscience": {
+    "name": "通晓万物",
+    "description": "选择你抽牌堆中的一张牌。 将这张牌打出两次然后将其 消耗 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Perseverance": {
+    "name": "坚韧",
+    "description": " 保留 。 NL 获得 !B! 点 格挡 。 NL 每当这张牌被 保留 时，将其在本场战斗的格挡增加 !M! 点。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pray": {
+    "name": "祈祷",
+    "description": "获得 !M! 层 真言 。 NL 在你的抽牌堆中加入1张 *洞见 。",
+    "upgradeDescription": "获得 !M! 层 真言 。 NL 在你的抽牌堆中加入1张 *洞见+ 。",
+    "extendedDescription": []
+  },
+  "PathToVictory": {
+    "name": "点穴",
+    "description": "给予 !M! 层 *印记 。 NL 所有拥有 *印记 的敌人，失去与层数相等的生命。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Prostrate": {
+    "name": "五体投地",
+    "description": "获得 !M! 层 真言 。 NL 获得 !B! 点 格挡 。",
+    "upgradeDescription": "DEPRECATED",
+    "extendedDescription": []
+  },
+  "Protect": {
+    "name": "护身",
+    "description": " 保留 。 NL 获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ragnarok": {
+    "name": "诸神之黄昏",
+    "description": "随机对敌人造成 !D! 点伤害 !M! 次。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ReachHeaven": {
+    "name": "立地升天",
+    "description": "造成 !D! 点伤害。 在你的抽牌堆中加入1张 NL *以暴易暴 。",
+    "upgradeDescription": "造成 !D! 点伤害。 在你的抽牌堆中加入1张 *以暴易暴+ 。",
+    "extendedDescription": []
+  },
+  "Adaptation": {
+    "name": "猛虎下山",
+    "description": "每当你进入 愤怒 时，抽 !M! 张牌。",
+    "upgradeDescription": "DEPRECATED.",
+    "extendedDescription": []
+  },
+  "Sanctity": {
+    "name": "圣洁",
+    "description": "获得 !B! 点 格挡 。 NL 如果本场战斗中打出的上一张牌是技能牌，抽 !M! 张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SandsOfTime": {
+    "name": "时之沙",
+    "description": " 保留 。 NL 造成 !D! 点伤害。 NL 每当这张牌被 保留 时，将其在本场战斗的耗能减少1。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SashWhip": {
+    "name": "腰带抽打",
+    "description": "造成 !D! 点伤害。 NL 如果本场战斗中打出的上一张牌是攻击牌，给予 !M! 层 虚弱 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Scrawl": {
+    "name": "潦草急就",
+    "description": "抽牌直到将手牌抽满。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SignatureMove": {
+    "name": "招牌技",
+    "description": "只有当这张牌是你手中唯一的一张攻击牌时才可以被打出。 造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vengeance": {
+    "name": "怒火中烧",
+    "description": "在你的下个回合开始时，进入 愤怒 并抽 !M! 张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SpiritShield": {
+    "name": "精神护盾",
+    "description": "你每有一张手牌，获得 !M! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL （获得 !B! 点 格挡 。）"
+    ]
+  },
+  "Strike_P": {
+    "name": "打击",
+    "description": "造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Study": {
+    "name": "研习",
+    "description": "在你的回合结束时，在你的抽牌堆中加入一张 *洞见 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Swivel": {
+    "name": "旋身",
+    "description": "获得 !B! 点 格挡 。 NL 你打出的下一张攻击牌耗能变为0。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "TalkToTheHand": {
+    "name": "以手拒之",
+    "description": "造成 !D! 点伤害。 NL 每当目标敌人受到攻击时，你获得 !M! 点格挡。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tantrum": {
+    "name": "发泄",
+    "description": "造成 !D! 点伤害 !M! 次。 NL 进入 愤怒 。 NL 将这张牌放入你的抽牌堆。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ThirdEye": {
+    "name": "天眼",
+    "description": "获得 !B! 点 格挡 。 NL 预见 !M! 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ClearTheMind": {
+    "name": "安宁",
+    "description": "保留 。 进入 平静 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vault": {
+    "name": "腾跃",
+    "description": "在本回合结束后，额外获得一回合。 NL 结束你的回合。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vigilance": {
+    "name": "警惕",
+    "description": "获得 !B! 点 格挡 。 NL 进入 平静 。",
+    "upgradeDescription": "DEPRECATED",
+    "extendedDescription": []
+  },
+  "Wallop": {
+    "name": "当头棒喝",
+    "description": "造成 !D! 点伤害。 NL 获得与所造成的未被格挡的伤害相等的 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WaveOfTheHand": {
+    "name": "摆手",
+    "description": "在本回合，你每次获得 格挡 时，给予所有敌人 !M! 层 虚弱 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Weave": {
+    "name": "迂回",
+    "description": "造成 !D! 点伤害。 NL 你每次 预见 时，将这张牌从弃牌堆放回你的手牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WheelKick": {
+    "name": "回环踢",
+    "description": "造成 !D! 点伤害。 NL 抽 !M! 张牌。",
+    "upgradeDescription": "造成 !D! 点伤害。 NL 抽 !M! 张牌。",
+    "extendedDescription": []
+  },
+  "WindmillStrike": {
+    "name": "旋转打击",
+    "description": " 保留 。 NL 造成 !D! 点伤害。 NL 每当这张牌被 保留 时，将其在本场战斗的伤害增加 !M! 点。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wish": {
+    "name": "许愿",
+    "description": "选择：获得 !B! 层 多层护甲 、 !D! 点 力量 、 或 !M! 金币 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Worship": {
+    "name": "敬拜",
+    "description": "获得 !M! 层 真言 。",
+    "upgradeDescription": " 保留 。 NL 获得 !M! 层 真言 。",
+    "extendedDescription": []
+  },
+  "WreathOfFlame": {
+    "name": "火焰纹",
+    "description": "你的下一张攻击牌造成 !M! 点额外伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Apotheosis": {
+    "name": "神化",
+    "description": "在本场战斗中 升级 你的所有牌。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bandage Up": {
+    "name": "包扎",
+    "description": "回复 !M! 生命。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blind": {
+    "name": "致盲",
+    "description": "给予 !M! 层 虚弱 。",
+    "upgradeDescription": "给予所有敌人 !M! 层 虚弱 。",
+    "extendedDescription": []
+  },
+  "Chrysalis": {
+    "name": "结茧",
+    "description": "在你的抽牌堆中加入 NL !M! 张随机技能牌。 他们 NL 在本场战斗中耗能为0。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dark Shackles": {
+    "name": "黑暗镣铐",
+    "description": "让一名敌人在本回合内失去 !M! 点 力量 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deep Breath": {
+    "name": "深呼吸",
+    "description": "将你的弃牌堆洗牌后放入你的抽牌堆。 NL 抽 !M! 张牌。",
+    "upgradeDescription": "将你的弃牌堆洗牌后放入你的抽牌堆。 NL 抽 !M! 张牌。",
+    "extendedDescription": []
+  },
+  "Discovery": {
+    "name": "发现",
+    "description": "从3张随机牌中选择1张加入你的手牌。这张牌在本回合耗能变为0。 NL 消耗 。",
+    "upgradeDescription": "从3张随机牌中选择1张加入你的手牌。这张牌在本回合耗能变为0。",
+    "extendedDescription": []
+  },
+  "Dramatic Entrance": {
+    "name": "闪亮登场",
+    "description": " 固有 。 NL 对所有敌人造成 !D! 点伤害。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Enlightenment": {
+    "name": "开悟",
+    "description": "在这个回合，你当前手牌中所有牌的耗能降低到1。",
+    "upgradeDescription": "在本场战斗，你当前手牌中所有牌的耗能降低到1。",
+    "extendedDescription": []
+  },
+  "Finesse": {
+    "name": "妙计",
+    "description": "获得 !B! 点 格挡 。 NL 抽1张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flash of Steel": {
+    "name": "亮剑",
+    "description": "造成 !D! 点伤害。 NL 抽1张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Forethought": {
+    "name": "预谋",
+    "description": "将手牌中的一张牌放到抽牌堆的底部。 NL 并且这张牌在被打出之前，耗能变为0。",
+    "upgradeDescription": "将手牌中的任意张牌放到抽牌堆的底部。 NL 并且它们在被打出之前，耗能变为0。",
+    "extendedDescription": []
+  },
+  "Good Instincts": {
+    "name": "优秀直觉",
+    "description": "获得 !B! 点 格挡 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "HandOfGreed": {
+    "name": "贪婪之手",
+    "description": "造成 !D! 点伤害。 NL 斩杀 时，获得 !M! 金币。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Impatience": {
+    "name": "急躁",
+    "description": "如果你的手牌中没有攻击牌，抽 !M! 张牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Jack Of All Trades": {
+    "name": "花样百出",
+    "description": "增加 !M! 张随机无色牌到你的手牌。 NL 消耗 。",
+    "upgradeDescription": "增加 !M! 张随机无色牌到你的手牌。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Madness": {
+    "name": "疯狂",
+    "description": "你手牌中一张随机牌在本场战斗中耗能变为0。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Magnetism": {
+    "name": "磁力",
+    "description": "在每回合开始时，增加一张随机无色牌到你的手牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Master of Strategy": {
+    "name": "战略大师",
+    "description": "抽 !M! 张牌。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Mayhem": {
+    "name": "乱战",
+    "description": "在你的回合开始时，打出你抽牌堆顶部的牌。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Metamorphosis": {
+    "name": "羽化",
+    "description": "在你的抽牌堆中加入 NL !M! 张随机攻击牌。 他们 NL 在本场战斗中耗能为0。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Mind Blast": {
+    "name": "心灵震慑",
+    "description": " 固有 。 NL 造成你抽牌堆中剩余牌数的伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL （造成 !D! 点伤害。）"
+    ]
+  },
+  "Panacea": {
+    "name": "万能药",
+    "description": "获得 !M! 层 人工制品 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Panache": {
+    "name": "神气制胜",
+    "description": "你每在同个回合内打出5张牌，就对所有敌人造成 !M! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PanicButton": {
+    "name": "应急按钮",
+    "description": "获得 !B! 点 格挡 。 NL 你在接下来 !M! 回合内无法再从卡牌中获得格挡。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Purity": {
+    "name": "净化",
+    "description": "从手牌中选择最多 !M! 张牌 消耗 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sadistic Nature": {
+    "name": "残虐天性",
+    "description": "每当你对一名敌人造成负面 状态 ，使对方受到 !M! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Secret Technique": {
+    "name": "秘密技法",
+    "description": "从抽牌堆中选择一张技能牌放入你的手牌。 NL 消耗 。",
+    "upgradeDescription": "从抽牌堆中选择一张技能牌放入你的手牌。",
+    "extendedDescription": [
+      "我的抽牌堆中 NL 没有技能牌。"
+    ]
+  },
+  "Secret Weapon": {
+    "name": "秘密武器",
+    "description": "从抽牌堆中选择一张攻击牌放入你的手牌。 NL 消耗 。",
+    "upgradeDescription": "从抽牌堆中选择一张攻击牌放入你的手牌。",
+    "extendedDescription": [
+      "我的抽牌堆中 NL 没有攻击牌。"
+    ]
+  },
+  "Swift Strike": {
+    "name": "迅捷打击",
+    "description": "造成 !D! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "The Bomb": {
+    "name": "炸弹",
+    "description": "在3回合结束后，对所有敌人造成 !M! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Thinking Ahead": {
+    "name": "深谋远虑",
+    "description": "抽2张牌，然后将手牌中的一张牌放到你抽牌堆的顶端。 消耗 。",
+    "upgradeDescription": "抽2张牌，然后将手牌中的一张牌放到你抽牌堆的顶端。",
+    "extendedDescription": []
+  },
+  "Transmutation": {
+    "name": "转化",
+    "description": "在你的手牌中加入 X 张随机无色牌。 它们在本回合的耗能变为0。 NL 消耗 。",
+    "upgradeDescription": "在你的手牌中加入 X 张 升级 过的随机无色牌。 它们在本回合的耗能变为0。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Trip": {
+    "name": "绊倒",
+    "description": "给予 !M! 层 易伤 。",
+    "upgradeDescription": "给予所有敌人 !M! 层 易伤 。",
+    "extendedDescription": []
+  },
+  "Violence": {
+    "name": "暴力",
+    "description": "随机将你抽牌堆中 !M! 张攻击牌加入你的手牌。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Burn": {
+    "name": "灼伤",
+    "description": " 不能被打出 。 NL 在你的回合结束时，你受到2点伤害。",
+    "upgradeDescription": " 不能被打出 。 NL 在你的回合结束时，你受到4点伤害。",
+    "extendedDescription": []
+  },
+  "Dazed": {
+    "name": "晕眩",
+    "description": " 不能被打出 。 NL 虚无 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Slimed": {
+    "name": "黏液",
+    "description": "消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Void": {
+    "name": "虚空",
+    "description": "不能被打出 。 NL 抽到这张牌时失去1点能量。 NL 虚无 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wound": {
+    "name": "伤口",
+    "description": " 不能被打出 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ghostly": {
+    "name": "灵体",
+    "description": "获得1层 无实体 。 NL 消耗 。 NL 虚无 。",
+    "upgradeDescription": "获得1层 无实体 。 NL 消耗 。 ",
+    "extendedDescription": []
+  },
+  "Beta": {
+    "name": "贝塔",
+    "description": "将一张 *欧米伽 放入你的抽牌堆中。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bite": {
+    "name": "噬咬",
+    "description": "造成 !D! 点伤害。 NL 回复 !M! 点生命。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "J.A.X.": {
+    "name": "J.A.X.",
+    "description": "失去 3 点生命。 NL 获得 !M! 点 力量 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Insight": {
+    "name": "洞见",
+    "description": " 保留 。 NL 抽 !M! 张牌。 NL 消耗 。",
+    "upgradeDescription": " 保留 。 NL 抽 !M! 张牌。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Miracle": {
+    "name": "奇迹",
+    "description": " 保留 。 NL 获得 [W] 。 NL 消耗 。",
+    "upgradeDescription": " 保留 。 NL 获得 [W] [W] 。 NL 消耗 。",
+    "extendedDescription": []
+  },
+  "Omega": {
+    "name": "欧米伽",
+    "description": "在你的回合结束时，对所有敌人造成 !M! 点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "RitualDagger": {
+    "name": "仪式匕首",
+    "description": "造成 !D! 点伤害。 NL 斩杀 时，它在本局游戏中的伤害永久性增加 !M! 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Safety": {
+    "name": "平安",
+    "description": " 保留 。 NL 获得 !B! 点 格挡 。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shiv": {
+    "name": "小刀",
+    "description": "造成 !D! 点伤害。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Smite": {
+    "name": "惩恶",
+    "description": " 保留 。 NL 造成 !D! 点伤害。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ThroughViolence": {
+    "name": "以暴易暴",
+    "description": " 保留 。 NL 造成 !D! 点伤害。 NL 消耗 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "BecomeAlmighty": {
+    "name": "力大无穷",
+    "description": "获得 !M! 点 力量 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FameAndFortune": {
+    "name": "名利双收",
+    "description": "获得 !M! 金币。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LiveForever": {
+    "name": "永生不死",
+    "description": "获得 !M! 层 *多层护甲 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Expunger": {
+    "name": "灭除之刃",
+    "description": "造成 !D! 点伤害 X 次。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "造成 !D! 点伤害 !M! 次。",
+      "造成 !D! 点伤害 !M! 次。"
+    ]
+  },
+  "AscendersBane": {
+    "name": "进阶之灾",
+    "description": "不能被打出 。 NL 虚无 。 NL 不能从牌组中移除。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CurseOfTheBell": {
+    "name": "铃铛的诅咒",
+    "description": " 不能被打出 。 NL 不能从牌组中移除。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clumsy": {
+    "name": "笨拙",
+    "description": " 不能被打出 。 NL 虚无 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Decay": {
+    "name": "腐朽",
+    "description": " 不能被打出 。 NL 在你的回合结束时，受到2点伤害。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doubt": {
+    "name": "疑虑",
+    "description": " 不能被打出 。 NL 在你的回合结束时，获得1层 虚弱 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Injury": {
+    "name": "受伤",
+    "description": " 不能被打出 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Necronomicurse": {
+    "name": "死灵诅咒",
+    "description": " 不能被打出 。 NL 这个 诅咒 无法逃脱。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Normality": {
+    "name": "凡庸",
+    "description": " 不能被打出 。 NL 在手牌中时，你在此回合无法打出3张以上牌。",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "我这回合最多 NL 只能打出 #r3 张牌。",
+      "不能被打出 。 NL 在手牌中时，你在此回合无法打出 ",
+      " 张以上牌。",
+      " 张以上牌。 NL 你本回合已经打出 ",
+      " 张牌。",
+      " 张牌。"
+    ]
+  },
+  "Pain": {
+    "name": "疼痛",
+    "description": " 不能被打出 。 NL 当在手牌中时，每打出一张其他牌，失去1生命。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Parasite": {
+    "name": "寄生",
+    "description": " 不能被打出 。 NL 如果这张牌在你的牌组中被转化或移除，你失去3点最大生命。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pride": {
+    "name": "傲慢",
+    "description": "固有 。 消耗 。 NL 你的回合结束时，在抽牌堆顶部加入一张这张牌的复制品。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Regret": {
+    "name": "悔恨",
+    "description": " 不能被打出 。 NL 在你的回合结束时，失去相当于手牌数量的生命。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shame": {
+    "name": "羞耻",
+    "description": "不能被打出 。 NL 在你的回合结束时，获得1层 脆弱 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Writhe": {
+    "name": "苦恼",
+    "description": " 不能被打出 。 NL 固有 。",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  }
+}

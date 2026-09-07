@@ -1,0 +1,2277 @@
+{
+  "Anger": {
+    "name": "Rabbia",
+    "description": "Infliggi !D! danni. NL Aggiungi un'altra Rabbia agli scarti.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Armaments": {
+    "name": "Armamenti",
+    "description": "Blocchi !B!. NL Potenzi una carta dalla Mano per questo combattimento.",
+    "upgradeDescription": "Blocchi !B!. NL Potenzi TUTTE le carte della Mano per questo combattimento.",
+    "extendedDescription": []
+  },
+  "Barricade": {
+    "name": "Barricata",
+    "description": "Il tuo Blocco non svanisce ad inizio turno.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bash": {
+    "name": "Mazzata",
+    "description": "Infliggi !D! danni. NL Applichi !M! Vulnerabile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Battle Trance": {
+    "name": "Trance Omicida",
+    "description": "Peschi !M! carte. NL Non puoi pescare altre carte questo turno.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Berserk": {
+    "name": "Berserk",
+    "description": "Ricevi !M! Vulnerabile. NL Ottieni [R] all'inizio di ogni turno.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blood for Blood": {
+    "name": "Occhio per Occhio",
+    "description": "Costa [R] in meno per ogni perdita di PV in combattimento. NL Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bloodletting": {
+    "name": "Salasso",
+    "description": "Perdi 3 PV. NL Ottieni [R] [R]. ",
+    "upgradeDescription": "Perdi 3 PV. NL Ottieni [R] [R] [R].",
+    "extendedDescription": []
+  },
+  "Bludgeon": {
+    "name": "Randellata",
+    "description": "Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Body Slam": {
+    "name": "Spanciata",
+    "description": "Infliggi danno pari al Blocco accumulato.",
+    "upgradeDescription": " NL (Infligge !D! danni.)",
+    "extendedDescription": []
+  },
+  "Brutality": {
+    "name": "Brutale",
+    "description": "Ad inizio turno perdi 1 PV e peschi 1 carta.",
+    "upgradeDescription": "Innata. NL Ad inizio turno perdi 1 PV e peschi 1 carta.",
+    "extendedDescription": []
+  },
+  "Burning Pact": {
+    "name": "Patto di Fuoco",
+    "description": "Esaurisci 1 carta. NL Peschi !M! carte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Carnage": {
+    "name": "Carneficina",
+    "description": "Eterea. NL Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clash": {
+    "name": "Conflitto",
+    "description": "Giocabile se hai solo Attacchi in Mano. NL Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "Ho in Mano carte che non sono Attacchi."
+    ]
+  },
+  "Cleave": {
+    "name": "Fendente",
+    "description": "Infliggi !D! danni a TUTTI i nemici.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clothesline": {
+    "name": "Braccio Teso",
+    "description": "Infliggi !D! danni. NL Applichi !M! Debole.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Combust": {
+    "name": "Combustione",
+    "description": "A fine turno perdi 1 PV e infliggi !M! danni a TUTTI i nemici.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Corruption": {
+    "name": "Corruzione",
+    "description": "Le Abilità costano 0. NL Quando giochi un'Abilità la Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dark Embrace": {
+    "name": "Abbraccio Oscuro",
+    "description": "Quando esaurisci una carta NL peschi 1 carta.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_R": {
+    "name": "Difendi",
+    "description": "Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Demon Form": {
+    "name": "Forma Demoniaca",
+    "description": "Ad inizio turno ottieni !M! Forza.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Disarm": {
+    "name": "Disarma",
+    "description": "Il nemico perde !M! Forza. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Double Tap": {
+    "name": "Doppio Attacco",
+    "description": "Questo turno il prossimo Attacco viene giocato due volte.",
+    "upgradeDescription": "Questo turno i prossimi !M! Attacchi sono giocati due volte.",
+    "extendedDescription": []
+  },
+  "Dropkick": {
+    "name": "Calcio Volante",
+    "description": "Infliggi !D! danni. NL Se il nemico è Vulnerabile NL Ottieni [R] NL e Peschi 1 carta.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dual Wield": {
+    "name": "A Due Mani",
+    "description": "Duplica un Attacco o Potere in Mano.",
+    "upgradeDescription": "Triplica un Attacco o Potere in Mano.",
+    "extendedDescription": []
+  },
+  "Entrench": {
+    "name": "In Trincea!",
+    "description": "Raddoppi il Blocco.",
+    "upgradeDescription": "Raddoppi il Blocco.",
+    "extendedDescription": []
+  },
+  "Evolve": {
+    "name": "Evoluzione",
+    "description": "Quando peschi uno Stato Peschi !M! carta.",
+    "upgradeDescription": "Quando peschi uno Stato Peschi altre !M! carte.",
+    "extendedDescription": []
+  },
+  "Exhume": {
+    "name": "Riesuma",
+    "description": "Scegli una carta esaurita e mettila in Mano. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Feed": {
+    "name": "Banchetto",
+    "description": "Infliggi !D! danni. NL Se è Letale ottieni !M! PV Massimi. Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Feel No Pain": {
+    "name": "Nessun Dolore",
+    "description": "Quando Esaurisci una carta NL Blocchi !M!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fiend Fire": {
+    "name": "Fuoco Demoniaco",
+    "description": "Esaurisci la Mano. NL Infliggi !D! danni per carta esaurita. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fire Breathing": {
+    "name": "Sputafuoco",
+    "description": "Quando peschi uno Stato o una Maledizione infliggi !M! danni a TUTTI i nemici.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flame Barrier": {
+    "name": "Muro di Fiamme",
+    "description": "Blocchi !B!. NL Chi ti attacca questo turno riceve !M! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flex": {
+    "name": "Flessione",
+    "description": "Ottieni !M! Forza. NL A fine turno perdi !M! Forza.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ghostly Armor": {
+    "name": "Armatura Spettrale",
+    "description": "Eterea. NL Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Havoc": {
+    "name": "Baraonda",
+    "description": "Giochi la carta in cima alla pila e la Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Headbutt": {
+    "name": "Testata",
+    "description": "Infliggi !D! danni. NL Metti una carta dagli scarti in cima alla pila.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Heavy Blade": {
+    "name": "Lama Pesante",
+    "description": "Infliggi !D! danni. NL La Forza influisce sulla Lama Pesante !M! volte.",
+    "upgradeDescription": "Infliggi !D! danni. NL La Forza influisce sulla Lama Pesante !M! volte.",
+    "extendedDescription": []
+  },
+  "Hemokinesis": {
+    "name": "Emocinesi",
+    "description": "Perdi !M! PV. NL Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Immolate": {
+    "name": "Immolazione",
+    "description": "Infliggi !D! danni a TUTTI i nemici. NL Mescola una *Ustione nella pila.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Impervious": {
+    "name": "Impenetrabile",
+    "description": "Blocchi !B!. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Infernal Blade": {
+    "name": "Lama Infernale",
+    "description": "Metti in Mano un Attacco casuale. NL Costa 0 questo turno. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Inflame": {
+    "name": "Animo Ardente",
+    "description": "Ottieni !M! Forza.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Intimidate": {
+    "name": "Minaccia",
+    "description": "Applichi !M! Debole a TUTTI i nemici. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Iron Wave": {
+    "name": "Onda di Ferro",
+    "description": "Blocchi !B!. NL Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Juggernaut": {
+    "name": "Colosso",
+    "description": "Quando Blocchi infliggi !M! danni ad un nemico casuale.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Limit Break": {
+    "name": "Oltre il Limite",
+    "description": "Raddoppi la tua Forza. NL Esaurisci.",
+    "upgradeDescription": "Raddoppi la tua Forza.",
+    "extendedDescription": []
+  },
+  "Metallicize": {
+    "name": "Metallizzato",
+    "description": "A fine turno Blocchi !M!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Offering": {
+    "name": "Sacrificio",
+    "description": "Perdi 6 PV. NL Ottieni [R] [R]. NL Peschi !M! carte. NL Esaurisci.",
+    "upgradeDescription": "Perdi 6 PV. NL Ottieni [R] [R]. NL Peschi !M! carte. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Perfected Strike": {
+    "name": "Colpo Perfetto",
+    "description": "Infliggi !D! danni, 2 in più per OGNI altra carta del mazzo con \"Colpo\" nel nome.",
+    "upgradeDescription": "Infliggi !D! danni, 3 in più per OGNI altra carta del mazzo con \"Colpo\" nel nome.",
+    "extendedDescription": []
+  },
+  "Pommel Strike": {
+    "name": "Colpo d'Elsa",
+    "description": "Infliggi !D! danni. NL Peschi !M! carta.",
+    "upgradeDescription": "Infliggi !D! danni. NL Peschi !M! carte.",
+    "extendedDescription": []
+  },
+  "Power Through": {
+    "name": "Ad Ogni Costo",
+    "description": "Metti in Mano 2 Ferite. NL Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pummel": {
+    "name": "Pioggia di Pugni",
+    "description": "Infliggi !D! danni !M! volte. NL Esaurisci.",
+    "upgradeDescription": "Infliggi !D! danni !M! volte. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Rage": {
+    "name": "Collera",
+    "description": "Quando giochi un Attacco questo turno Blocchi !M!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rampage": {
+    "name": "Massacro",
+    "description": "Infliggi !D! danni, infligge !M! in più questo combattimento.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reaper": {
+    "name": "Mietitore",
+    "description": "Infliggi !D! danni a TUTTI i nemici. Ti curi per PV pari al danno non Bloccato. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reckless Charge": {
+    "name": "Carica Selvaggia",
+    "description": "Infliggi !D! danni.  NL Mescola un Disorientato nella pila.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rupture": {
+    "name": "Squarcio",
+    "description": "Quando una carta ti fa perdere PV NL ottieni !M! Forza.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Searing Blow": {
+    "name": "Stoccata Ustionante",
+    "description": "Infliggi !D! danni. NL Può essere Potenziata un qualsiasi numero di volte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Second Wind": {
+    "name": "Ripresa",
+    "description": "Esaurisci tutte le carte non Attacco in Mano e Blocchi !B! per ciascuna.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Seeing Red": {
+    "name": "Visioni di Sangue",
+    "description": "Ottieni [R] [R]. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sentinel": {
+    "name": "Sentinella",
+    "description": "Blocchi !B!. NL Se esaurisci questa carta NL ottieni [R] [R].",
+    "upgradeDescription": "Blocchi !B!. NL Se esaurisci questa carta  NL ottieni [R] [R] [R].",
+    "extendedDescription": []
+  },
+  "Sever Soul": {
+    "name": "Sradica Anima",
+    "description": "Esaurisci tutte le carte non Attacco in Mano. NL Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shockwave": {
+    "name": "Onda d'Urto",
+    "description": "Applichi !M! Debole e !M! Vulnerabile a TUTTI i nemici. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shrug It Off": {
+    "name": "Spallucce",
+    "description": "Blocchi !B!. NL Peschi 1 carta.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Spot Weakness": {
+    "name": "Punto Debole",
+    "description": "Se il nemico scelto intende attaccare NL ottieni !M! Forza.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Strike_R": {
+    "name": "Colpo",
+    "description": "Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sword Boomerang": {
+    "name": "Spada Boomerang",
+    "description": "Infliggi !D! danni ad un nemico casuale !M! volte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Thunderclap": {
+    "name": "Tuono",
+    "description": "Infliggi !D! danni e applichi 1 Vulnerabile a TUTTI i nemici.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "True Grit": {
+    "name": "Osso Duro",
+    "description": "Blocchi !B!. NL Esaurisci una carta casuale.",
+    "upgradeDescription": "Blocchi !B!. NL Esaurisci una carta.",
+    "extendedDescription": []
+  },
+  "Twin Strike": {
+    "name": "Colpo Gemello",
+    "description": "Infliggi !D! danni due volte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Uppercut": {
+    "name": "Montante",
+    "description": "Infliggi !D! danni. NL Applichi !M! Debole. NL Applichi !M! Vulnerabile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Warcry": {
+    "name": "Grido di Battaglia",
+    "description": "Peschi !M! carta. NL Metti una carta dalla Mano in cima alla pila. NL Esaurisci.",
+    "upgradeDescription": "Peschi !M! carte. NL Metti una carta dalla Mano in cima alla pila. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Whirlwind": {
+    "name": "Turbine",
+    "description": "Infliggi !D! danni a TUTTI i nemici X volte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wild Strike": {
+    "name": "Colpo Selvaggio",
+    "description": "Infliggi !D! danni. NL Mescola una *Ferita nella pila.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Accuracy": {
+    "name": "Precisione",
+    "description": "I Pugnali infliggono !M! danni in più.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Acrobatics": {
+    "name": "Acrobazie",
+    "description": "Peschi !M! carte. NL scarti 1 carta.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Adrenaline": {
+    "name": "Adrenalina",
+    "description": "Ottieni [G]. NL Peschi 2 carte. NL Esaurisci.",
+    "upgradeDescription": "Ottieni [G] [G]. NL Peschi 2 carte. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "After Image": {
+    "name": "Immagine Residua",
+    "description": "Quando giochi una carta Blocchi 1.",
+    "upgradeDescription": "Innata. NL Quando giochi una carta Blocchi 1.",
+    "extendedDescription": []
+  },
+  "Venomology": {
+    "name": "Alchimia",
+    "description": "Ottieni una pozione casuale. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "All Out Attack": {
+    "name": "Attacco Sfrenato",
+    "description": "Infliggi !D! danni a TUTTI i nemici. NL scarti 1 carta casuale.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "A Thousand Cuts": {
+    "name": "Mille Tagli",
+    "description": "Quando giochi una carta infliggi !M! danni a TUTTI i nemici.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Backflip": {
+    "name": "Salto Mortale",
+    "description": "Blocchi !B!. NL Peschi 2 carte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Backstab": {
+    "name": "Pugnalata alle Spalle",
+    "description": "Innata. NL Infliggi !D! danni. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bane": {
+    "name": "Tormento",
+    "description": "Infliggi !D! danni. NL Se il nemico è Avvelenato infliggi altri !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blade Dance": {
+    "name": "Lame Danzanti",
+    "description": "Metti in Mano !M! Pugnali.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blur": {
+    "name": "Fuori Fuoco",
+    "description": "Blocchi !B!. NL Il tuo Blocco persiste fino al prossimo turno.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bouncing Flask": {
+    "name": "Veleno a Rimbalzo",
+    "description": "Applichi 3 Veleno ad un nemico casuale !M! volte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bullet Time": {
+    "name": "Tempo Dilatato",
+    "description": "Per questo turno le carte in Mano costano 0 e non puoi pescare.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Burst": {
+    "name": "Guizzo",
+    "description": "Questo turno la prossima Abilità verrà giocata due volte.",
+    "upgradeDescription": "Questo turno le prossime !M! Abilità verranno giocate due volte.",
+    "extendedDescription": []
+  },
+  "Calculated Gamble": {
+    "name": "Rischio Calcolato",
+    "description": "Scarti la Mano NL e Peschi altrettante carte. NL Esaurisci.",
+    "upgradeDescription": "Scarti la Mano NL e Peschi altrettante carte.",
+    "extendedDescription": []
+  },
+  "Caltrops": {
+    "name": "Triboli",
+    "description": "Quando vieni attaccato infliggi !M! danni all'attaccante.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Catalyst": {
+    "name": "Catalizzatore",
+    "description": "Raddoppi il Veleno accumulato su un nemico. NL Esaurisci.",
+    "upgradeDescription": "Triplichi il Veleno accumulato su un nemico. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Choke": {
+    "name": "Soffocamento",
+    "description": "Infliggi !D! danni. NL Ogni carta giocata questo turno fa perdere !M! PV al nemico.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Cloak And Dagger": {
+    "name": "Cappa e Spada",
+    "description": "Blocchi !B!. NL Metti in Mano !M! *Pugnale.",
+    "upgradeDescription": "Blocchi !B!. NL Metti in Mano !M! Pugnali.",
+    "extendedDescription": []
+  },
+  "Concentrate": {
+    "name": "Concentrazione",
+    "description": "Scarti !M! carte. NL Ottieni [G] [G].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Corpse Explosion": {
+    "name": "Cadavere Bomba",
+    "description": "Applica !M! veleno ad un nemico. NL Quando muore infliggi i suoi PV massimi a TUTTI i nemici.",
+    "upgradeDescription": "DEPRECATED.",
+    "extendedDescription": [
+      "DEPRECATED."
+    ]
+  },
+  "Crippling Poison": {
+    "name": "Nube Paralizzante",
+    "description": "Applichi !M! Veleno NL e 2 Debole a TUTTI i nemici. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dagger Spray": {
+    "name": "Pioggia d'Acciaio",
+    "description": "Infliggi !D! danni a TUTTI i nemici due volte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dagger Throw": {
+    "name": "Coltello da Lancio",
+    "description": "Infliggi !D! danni. NL Peschi 1 carta. NL scarti 1 carta.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dash": {
+    "name": "Scatto",
+    "description": "Blocchi !B!. NL Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deadly Poison": {
+    "name": "Veleno Letale",
+    "description": "Applichi !M! Veleno.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_G": {
+    "name": "Difendi",
+    "description": "Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deflect": {
+    "name": "Parata",
+    "description": "Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Die Die Die": {
+    "name": "Muori Muori Muori",
+    "description": "Infliggi !D! danni a TUTTI i nemici. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Distraction": {
+    "name": "Distrazione",
+    "description": "Metti in Mano un'Abilità casuale. NL Costa 0 questo turno. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dodge and Roll": {
+    "name": "Schivata Rapida",
+    "description": "Blocchi !B!. NL Il prossimo turno Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doppelganger": {
+    "name": "Sosia",
+    "description": "Il prossimo turno peschi X carte e ottieni X [G]. NL Esaurisci.",
+    "upgradeDescription": "Il prossimo turno peschi X+1 carte e ottieni X+1 [G]. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Endless Agony": {
+    "name": "Eterna Agonia",
+    "description": "Infliggi !D! danni. NL Quando peschi questa carta si duplica in Mano. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Envenom": {
+    "name": "Velenoso",
+    "description": "Quando infliggi danno da Attacco ad un nemico gli applichi 1 Veleno.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Escape Plan": {
+    "name": "Piano di Fuga",
+    "description": "Peschi 1 carta. NL Se è un'Abilità NL Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Eviscerate": {
+    "name": "Sventra",
+    "description": "Costa [G] in meno NL per carta scartata questo turno. NL Infliggi !D! danni tre volte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Expertise": {
+    "name": "Competenza",
+    "description": "Peschi fino ad avere !M! carte in Mano.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Finisher": {
+    "name": "Attacco Finale",
+    "description": "Infliggi !D! danni per Attacco giocato questo turno.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (",
+      " Attacco giocato.)",
+      " Attacchi giocati.)"
+    ]
+  },
+  "Flechettes": {
+    "name": "Dardi",
+    "description": "Infliggi !D! danni per Abilità in Mano.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (Hai ",
+      " Abilità).",
+      " Abilità)."
+    ]
+  },
+  "Flying Knee": {
+    "name": "Ginocchiata Volante",
+    "description": "Infliggi !D! danni. NL Il prossimo turno ottieni [G].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Footwork": {
+    "name": "Gioco di Gambe",
+    "description": "Ottieni !M! Destrezza.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Glass Knife": {
+    "name": "Coltello di Vetro",
+    "description": "Infliggi !D! danni due volte. Questo valore si riduce di 2 questo combattimento.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Grand Finale": {
+    "name": "Gran Finale",
+    "description": "Giocabile se la pila è vuota. NL Infliggi !D! danni a TUTTI i nemici.",
+    "upgradeDescription": "La pila NL deve essere #rVuota.",
+    "extendedDescription": []
+  },
+  "Heel Hook": {
+    "name": "Sottomissione",
+    "description": "Infliggi !D! danni. NL Se il nemico è Debole NL Ottieni [G] e NL Peschi 1 carta.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Infinite Blades": {
+    "name": "Lame Infinite",
+    "description": "Ad inizio turno Metti in Mano un *Pugnale.",
+    "upgradeDescription": "Innata. NL Ad inizio turno Metti in Mano un *Pugnale.",
+    "extendedDescription": []
+  },
+  "Leg Sweep": {
+    "name": "Sgambetto",
+    "description": "Applichi !M! Debole. NL Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Malaise": {
+    "name": "Malessere",
+    "description": "Il nemico perde X Forza. Applichi X Debole. NL Esaurisci.",
+    "upgradeDescription": "Il nemico perde X+1 Forza. Applichi X+1 Debole. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Masterful Stab": {
+    "name": "Affondo da Maestro",
+    "description": "Infliggi !D! danni. NL Quando subisci danno costa 1 in più questo combattimento.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Neutralize": {
+    "name": "Neutralizza",
+    "description": "Infliggi !D! danni. NL Applichi !M! Debole.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Night Terror": {
+    "name": "Incubo",
+    "description": "Scegli una carta. NL Il prossimo turno metti in Mano !M! copie di quella carta. Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "Posso usare NL ",
+      " NL una volta per turno."
+    ]
+  },
+  "Noxious Fumes": {
+    "name": "Miasma",
+    "description": "Ad inizio turno applichi !M! Veleno a TUTTI i nemici.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Outmaneuver": {
+    "name": "Manovra Evasiva",
+    "description": "Il prossimo turno NL ottieni [G] [G].",
+    "upgradeDescription": "Il prossimo turno NL ottieni [G] [G] [G].",
+    "extendedDescription": []
+  },
+  "Phantasmal Killer": {
+    "name": "Sicario Etereo",
+    "description": "Il prossimo turno il tuo danno da Attacco è raddoppiato.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PiercingWail": {
+    "name": "Lamento Straziante",
+    "description": "TUTTI i nemici perdono !M! Forza per 1 turno. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Poisoned Stab": {
+    "name": "Lama Avvelenata",
+    "description": "Infliggi !D! danni. NL Applichi !M! Veleno.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Predator": {
+    "name": "Predatore",
+    "description": "Infliggi !D! danni. NL Peschi 2 carte in più il prossimo turno.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Prepared": {
+    "name": "Preparativi",
+    "description": "Peschi !M! carta. NL scarti !M! carta.",
+    "upgradeDescription": "Peschi !M! carte. NL scarti !M! carte.",
+    "extendedDescription": []
+  },
+  "Quick Slash": {
+    "name": "Fendente Rapido",
+    "description": "Infliggi !D! danni. NL Peschi 1 carta.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reflex": {
+    "name": "Riflessi",
+    "description": "Ingiocabile. NL Se scarti questa carta peschi !M! carte.",
+    "upgradeDescription": "Ingiocabile. NL Se scarti questa carta peschi !M! carte.",
+    "extendedDescription": [
+      "Non posso giocare questa carta."
+    ]
+  },
+  "Riddle With Holes": {
+    "name": "Crivella di Colpi",
+    "description": "Infliggi !D! danni 5 volte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Setup": {
+    "name": "Trappola",
+    "description": "Metti una carta dalla Mano in cima alla pila. NL Finché non la giochi costa 0.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Skewer": {
+    "name": "Stoccata",
+    "description": "Infliggi !D! danni X volte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Slice": {
+    "name": "Taglio",
+    "description": "Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Storm of Steel": {
+    "name": "Tempesta d'Acciaio",
+    "description": "Scarti la Mano. NL Metti in Mano 1 *Pugnale per carta scartata.",
+    "upgradeDescription": "Scarti la Mano. NL Metti in Mano  1 *Pugnale+ per carta scartata.",
+    "extendedDescription": []
+  },
+  "Strike_G": {
+    "name": "Colpo",
+    "description": "Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sucker Punch": {
+    "name": "Pugno a Tradimento",
+    "description": "Infliggi !D! danni. NL Applichi !M! Debole.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Survivor": {
+    "name": "Sopravvissuto",
+    "description": "Blocchi !B!. NL scarti una carta.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tactician": {
+    "name": "Stratega",
+    "description": "Ingiocabile. NL Se scarti questa carta ottieni [G].",
+    "upgradeDescription": "Ingiocabile. NL Se scarti questa carta ottieni [G] [G].",
+    "extendedDescription": [
+      "Non posso giocare questa carta."
+    ]
+  },
+  "Terror": {
+    "name": "Terrore",
+    "description": "Applichi 99 Vulnerabile. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tools of the Trade": {
+    "name": "Ferri del Mestiere",
+    "description": "Ad inizio turno peschi 1 carta e scarti 1 carta.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Underhanded Strike": {
+    "name": "Colpo a Sorpresa",
+    "description": "Infliggi !D! danni. NL Se hai scartato questo turno NL ottieni [G] [G].",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "Non posso giocare questa carta."
+    ]
+  },
+  "Unload": {
+    "name": "Raffica",
+    "description": "Infliggi !D! danni. NL scarti TUTTE le carte non Attacco.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Well Laid Plans": {
+    "name": "Piani Perfetti",
+    "description": "A fine turno Conservi fino a !M! carta.",
+    "upgradeDescription": "A fine turno Conservi fino a !M! carte.",
+    "extendedDescription": []
+  },
+  "Wraith Form v2": {
+    "name": "Forma Spettrale",
+    "description": "Ottieni !M! Intangibile. NL A fine turno perdi 1 Destrezza.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Aggregate": {
+    "name": "Accumulo",
+    "description": "Ottieni [B] per ogni !M! carte nella pila.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "All For One": {
+    "name": "Tutti per Uno",
+    "description": "Infliggi !D! danni. Metti in Mano tutte le carte a costo 0 negli scarti.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Amplify": {
+    "name": "Amplifica",
+    "description": "Questo turno il prossimo Potere giocato viene giocato due volte.",
+    "upgradeDescription": "Questo turno i prossimo !M! Poteri giocato viene giocato due volte.",
+    "extendedDescription": []
+  },
+  "Auto Shields": {
+    "name": "Scudi Automatizzati",
+    "description": "Se non hai Blocco Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ball Lightning": {
+    "name": "Fulmine Globulare",
+    "description": "Infliggi !D! danni. Crei !M! Fulmine.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Barrage": {
+    "name": "Fuoco di Sbarramento",
+    "description": "Infliggi !D! danni per Globo che possiedi.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Beam Cell": {
+    "name": "Raggio Laser",
+    "description": "Infliggi !D! danni ed applichi !M! Vulnerabile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Biased Cognition": {
+    "name": "Bias Cognitivo",
+    "description": "Ottieni !M! Focus. NL Ad inizio turno perdi 1 Focus.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blizzard": {
+    "name": "Tormenta",
+    "description": "Infliggi a TUTTI i nemici danno pari a !M! volte il Ghiaccio Creato in combattimento.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (Infliggi !D! danni.)",
+      ""
+    ]
+  },
+  "BootSequence": {
+    "name": "Sequenza D'Avvio",
+    "description": "Innata. NL Blocchi !B!. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Buffer": {
+    "name": "Buffer",
+    "description": "Previene la prossima perdita di PV.",
+    "upgradeDescription": "Previene le prossime NL !M! perdite di PV.",
+    "extendedDescription": []
+  },
+  "Capacitor": {
+    "name": "Condensatore",
+    "description": "Ottieni !M! Spazi Globi.",
+    "upgradeDescription": "Ottieni !M! Spazi Globi.",
+    "extendedDescription": []
+  },
+  "Chaos": {
+    "name": "Caos",
+    "description": "Crei !M! Globo casuale.",
+    "upgradeDescription": "Crei !M! Globi casuali.",
+    "extendedDescription": []
+  },
+  "Chill": {
+    "name": "Brivido",
+    "description": "Crei !M! Ghiaccio per nemico. NL Esaurisci",
+    "upgradeDescription": "Innata. NL Crei !M! Ghiaccio per nemico. NL Esaurisci",
+    "extendedDescription": []
+  },
+  "Gash": {
+    "name": "Artiglio",
+    "description": "Infliggi !D! danni. NL TUTTI gli Artiglio infliggono !M! danni in più questo combattimento.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Cold Snap": {
+    "name": "Onda Gelida",
+    "description": "Infliggi !D! danni. NL Crei !M! Ghiaccio.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Compile Driver": {
+    "name": "Nuovi Driver",
+    "description": "Infliggi !D! danni. NL Peschi !M! carta per tipo di Globo che possiedi.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Conserve Battery": {
+    "name": "Batteria Carica",
+    "description": "Blocchi !B!. NL il prossimo turno ottieni [B].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Consume": {
+    "name": "Assimilazione",
+    "description": "Ottieni !M! Focus. NL Perdi 1 Spazio Globi.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Coolheaded": {
+    "name": "Mente Fredda",
+    "description": "Crei 1 Ghiaccio. NL Peschi !M! carta.",
+    "upgradeDescription": "Crei 1 Ghiaccio. NL Peschi !M! carte.",
+    "extendedDescription": []
+  },
+  "Core Surge": {
+    "name": "Sovraccarico",
+    "description": "Infliggi !D! danni. NL Ottieni !M! Artefatto. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Creative AI": {
+    "name": "IA Creativa",
+    "description": "Ad inizio turno metti in Mano un Potere casuale.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Darkness": {
+    "name": "Oscurità",
+    "description": "Crei !M! Oscurità.",
+    "upgradeDescription": "Crei !M! Oscurità. NL Attivi l'abilità passiva di tutte le Oscurità.",
+    "extendedDescription": []
+  },
+  "Defend_B": {
+    "name": "Difendi",
+    "description": "Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defragment": {
+    "name": "Deframmentazione",
+    "description": "Ottieni !M! Focus.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doom and Gloom": {
+    "name": "Malinconia",
+    "description": "Infliggi !D! danni a TUTTI i nemici. NL Crei !M! Oscurità.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Double Energy": {
+    "name": "Energia Doppia",
+    "description": "Raddoppi l'Energia. NL Esaurisci.",
+    "upgradeDescription": "Raddoppi l'Energia.",
+    "extendedDescription": []
+  },
+  "Dualcast": {
+    "name": "Lancio Doppio",
+    "description": "Evochi il primo Globo 2 volte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Echo Form": {
+    "name": "Forma Ricorsiva",
+    "description": "La prima carta che giochi ogni turno è giocata due volte. NL Eterea.",
+    "upgradeDescription": "La prima carta che giochi ogni turno è giocata due volte.",
+    "extendedDescription": []
+  },
+  "Electrodynamics": {
+    "name": "Elettrodinamica",
+    "description": "I Fulmini colpiscono TUTTI i nemici. NL Crei !M! Fulmini",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fission": {
+    "name": "Fissione",
+    "description": "Rimuovi tutti i Globi, ottieni [B] e Peschi !M! carta per Globo rimosso. NL Esaurisci.",
+    "upgradeDescription": "Evochi tutti i Globi, ottieni [B] e Peschi !M! carta per Globo evocato. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Force Field": {
+    "name": "Campo di Forza",
+    "description": "Costa [B] in meno per Potere giocato in combattimento. Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FTL": {
+    "name": "FTL",
+    "description": "Infliggi !D! danni. Se hai giocato meno di !M! carte questo turno NL  peschi 1 carta.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (",
+      " carta giocata.)",
+      " carte giocate.)"
+    ]
+  },
+  "Fusion": {
+    "name": "Fusione",
+    "description": "Crei !M! Plasma.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Genetic Algorithm": {
+    "name": "Algoritmo Genetico",
+    "description": "Blocchi !B!. NL Blocca !M! in più questa partita. NL Esaurisci",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Glacier": {
+    "name": "Ghiacciaio",
+    "description": "Blocchi !B!. NL Crei !M! Ghiaccio.",
+    "upgradeDescription": "Blocchi !B!. NL Crei !M! Ghiaccio.",
+    "extendedDescription": []
+  },
+  "Go for the Eyes": {
+    "name": "Agli Occhi!",
+    "description": "Infliggi !D! danni. Se il nemico intende attaccare applichi !M! Debole.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Heatsinks": {
+    "name": "Dissipatore",
+    "description": "Dopo aver giocato un Potere peschi !M! Carta.",
+    "upgradeDescription": "Dopo aver giocato un Potere peschi !M! Carte.",
+    "extendedDescription": []
+  },
+  "Hello World": {
+    "name": "Buongiorno Mondo",
+    "description": "Ad inizio turno metti in Mano una carta Comune casuale.",
+    "upgradeDescription": "Innata. NL Ad inizio turno metti in Mano una carta Comune casuale.",
+    "extendedDescription": []
+  },
+  "Hologram": {
+    "name": "Ologramma",
+    "description": "Blocchi !B!. NL Metti in Mano una carta dagli scarti. NL Esaurisci.",
+    "upgradeDescription": "Blocchi !B!. NL Metti in Mano una carta dagli scarti.",
+    "extendedDescription": []
+  },
+  "Hyperbeam": {
+    "name": "Iper-Raggio",
+    "description": "Infliggi !D! danni a TUTTI i nemici. NL Perdi !M! Focus.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Leap": {
+    "name": "Balzo",
+    "description": "Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Lockon": {
+    "name": "Centro Perfetto",
+    "description": "Infliggi !D! danni. NL Applichi !M! Mirino al nemico.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Loop": {
+    "name": "Ciclo",
+    "description": "Ad inizio turno attivi l'abilità passiva del primo Globo.",
+    "upgradeDescription": "Ad inizio turno attivi l'abilità passiva del primo Globo !M! volte.",
+    "extendedDescription": []
+  },
+  "Machine Learning": {
+    "name": "Auto-Apprendimento",
+    "description": "Peschi !M! carta in più ogni turno.",
+    "upgradeDescription": "Innata. NL Peschi !M! carta in più ogni turno.",
+    "extendedDescription": []
+  },
+  "Melter": {
+    "name": "Scioglimento",
+    "description": "Rimuovi tutto il Blocco di un nemico. NL Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Meteor Strike": {
+    "name": "Colpo a Meteora",
+    "description": "Infliggi !D! danni. NL Crei !M! Plasma.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Multi-Cast": {
+    "name": "Lancio Multiplo",
+    "description": "Evochi il primo Globo X volte.",
+    "upgradeDescription": "Evochi il primo Globo X+1 volte.",
+    "extendedDescription": []
+  },
+  "Steam Power": {
+    "name": "Overclock",
+    "description": "Peschi !M! carte. NL Metti negli scarti una *Ustione.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rainbow": {
+    "name": "Arcobaleno",
+    "description": "Crei 1 Fulmine, 1 Ghiaccio ed 1 Oscurità. NL Esaurisci.",
+    "upgradeDescription": "Crei 1 Fulmine, 1 Ghiaccio ed 1 Oscurità.",
+    "extendedDescription": []
+  },
+  "Reboot": {
+    "name": "Riavvio",
+    "description": "Mescoli gli scarti e la Mano nella pila. Peschi !M! carte. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rebound": {
+    "name": "Recupero",
+    "description": "Infliggi !D! danni. NL Metti la prossima carta che giochi questo turno in cima alla pila.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Redo": {
+    "name": "Ripeti",
+    "description": "Evochi il primo Globo. NL Crei il Globo appena Evocato.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Recycle": {
+    "name": "Riciclo",
+    "description": "Esaurisci una carta. NL Ottieni [B] pari al suo costo.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reinforced Body": {
+    "name": "Corpo Rinforzato",
+    "description": "Blocchi !B! X volte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reprogram": {
+    "name": "Riprogramma",
+    "description": "Perdi !M! focus. Ottieni !M! forza. Ottieni !M! destrezza.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rip and Tear": {
+    "name": "Doppio Strappo",
+    "description": "Infliggi !D! danni NL ad un nemico casuale !M! volte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Scrape": {
+    "name": "Graffio",
+    "description": "Infliggi !D! Danni. NL Peschi !M! carte. NL scarti ogni carta con costo diverso da 0 pescata così.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Seek": {
+    "name": "Ricerca",
+    "description": "Scegli !M! carta dalla pila e mettila in Mano. NL Esaurisci.",
+    "upgradeDescription": "Scegli !M! carte dalla pila e mettile in Mano. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Self Repair": {
+    "name": "Auto-Riparante",
+    "description": "A fine combattimento ti curi di !M! PV.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Skim": {
+    "name": "Scorrimento",
+    "description": "Peschi !M! carte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Stack": {
+    "name": "Stack",
+    "description": "Blocchi pari al numero di carte negli scarti.",
+    "upgradeDescription": "Blocchi pari al numero di carte negli scarti +3.",
+    "extendedDescription": [
+      " NL (Blocchi !B!)"
+    ]
+  },
+  "Static Discharge": {
+    "name": "Elettrostatica",
+    "description": "Quando ricevi danno da attacco  NL Crei !M! Fulmine.",
+    "upgradeDescription": "Quando ricevi danno da attacco NL Crei !M! Fulmini.",
+    "extendedDescription": []
+  },
+  "Steam": {
+    "name": "Barriera di Vapore",
+    "description": "Blocchi !B!, poi questa carta blocca 1 in meno questo combattimento.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Storm": {
+    "name": "Tempesta",
+    "description": "Quando giochi un Potere Crei 1 Fulmine.",
+    "upgradeDescription": "Innata. NL Quando giochi un Potere Crei 1 Fulmine.",
+    "extendedDescription": []
+  },
+  "Streamline": {
+    "name": "Addestramento",
+    "description": "Infliggi !D! danni. NL Costa !M! in meno questo combattimento.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Strike_B": {
+    "name": "Colpo",
+    "description": "Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sunder": {
+    "name": "In Pezzi",
+    "description": "Infliggi !D! danni. NL Se è letale NL ottieni [B] [B] [B].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sweeping Beam": {
+    "name": "Laser ad Arco",
+    "description": "Infliggi !D! danni a TUTTI i nemici. NL Peschi !M! carta.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tempest": {
+    "name": "Temporale",
+    "description": "Crei X Fulmini. NL Esaurisci.",
+    "upgradeDescription": "Crei X+1 Fulmini. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Thunder Strike": {
+    "name": "Colpo di Tuono",
+    "description": "Infliggi !D! danni a un nemico casuale per Fulmine Creato in combattimento.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " ( !M! Fulmini Creati.)"
+    ]
+  },
+  "Turbo": {
+    "name": "Turbo",
+    "description": "Ottieni [B] [B]. Metti un *Vuoto negli scarti.",
+    "upgradeDescription": "Ottieni [B] [B] [B]. Metti un *Vuoto negli scarti.",
+    "extendedDescription": []
+  },
+  "Undo": {
+    "name": "Equilibrio",
+    "description": "Blocchi !B!. NL Conservi la Mano per il prossimo turno.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "White Noise": {
+    "name": "Rumore Bianco",
+    "description": "Metti in Mano un Potere casuale. NL Costa 0 questo turno. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Zap": {
+    "name": "Scossa",
+    "description": "Crei !M! Fulmine.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Alpha": {
+    "name": "Alfa",
+    "description": "Mescola una *Beta nella pila. NL Esaurisci.",
+    "upgradeDescription": "Innata. NL Mescola una *Beta nella pila. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "BattleHymn": {
+    "name": "Inno di Battaglia",
+    "description": "Ad inizio turno metti in Mano una *Punizione.",
+    "upgradeDescription": "Innata. Ad inizio turno metti in Mano una *Punizione.",
+    "extendedDescription": []
+  },
+  "Blasphemy": {
+    "name": "Blasfemia",
+    "description": "Diventa Divino. NL Il prossimo turno muori. NL Esaurisci.",
+    "upgradeDescription": "Permanente. NL Diventa Divino. NL Il prossimo turno muori. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "BowlingBash": {
+    "name": "Effetto Bowling",
+    "description": "Infliggi !D! danni per ciascun nemico in combattimento.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Brilliance": {
+    "name": "Genio",
+    "description": "Infliggi !D! danni, NL 1 in più per Mantra ottenuto nel combattimento.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (!M! Mantra ottenuto.)",
+      ""
+    ]
+  },
+  "CarveReality": {
+    "name": "Svuota Realtà",
+    "description": "Infliggi !D! danni. NL Metti in Mano una *Punizione.",
+    "upgradeDescription": "Infliggi !D! danni. NL Metti in Mano una *Punizione+.",
+    "extendedDescription": []
+  },
+  "Collect": {
+    "name": "Raccoglimento",
+    "description": "Metti in Mano un *Miracolo+ all'inizio dei prossimi X turni. NL Esaurisci.",
+    "upgradeDescription": "Metti in Mano un *Miracolo+ all'inizio dei prossimi X+1 turni. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Conclude": {
+    "name": "Epilogo",
+    "description": "Infliggi !D! danni a TUTTI i nemici. NL Finisci il turno.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ConjureBlade": {
+    "name": "Invoca Spada",
+    "description": "Metti una NL *Lama *Purificatrice nella pila. NL Infligge 9 danni X volte. NL Esaurisci.",
+    "upgradeDescription": "Metti una NL *Lama *Purificatrice nella pila. NL Infligge 9 danni X+1 volte. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Consecrate": {
+    "name": "Consacrazione",
+    "description": "Infliggi !D! danni a TUTTI i nemici.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Crescendo": {
+    "name": "Crescendo",
+    "description": "Permanente. NL Entri in Furia. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CrushJoints": {
+    "name": "Spezza Gomiti",
+    "description": "Infliggi !D! danni. NL Se giocata dopo un'abilità applichi !M! Vulnerabile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CutThroughFate": {
+    "name": "Fendente della Fede",
+    "description": "Infliggi !D! danni. NL Profetizzi !M!. NL Peschi 1 carta.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DeceiveReality": {
+    "name": "Illusione",
+    "description": "Blocchi !B!. NL Metti in Mano una *Salvezza.",
+    "upgradeDescription": "Blocchi !B!. Metti in Mano una *Salvezza+.",
+    "extendedDescription": []
+  },
+  "Defend_P": {
+    "name": "Difendi",
+    "description": "Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DeusExMachina": {
+    "name": "Deus Ex Machina",
+    "description": "Ingiocabile. NL Quando peschi questa carta Metti in Mano !M! *Miracoli e Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DevaForm": {
+    "name": "Forma del Deva",
+    "description": "Eterea. NL Ad inizio turno ottieni [W]. NL L'energia ottenuta così aumenta di [W] ogni turno.",
+    "upgradeDescription": "Ad inizio turno ottieni [W]. NL L'energia ottenuta così aumenta di [W] ogni turno.",
+    "extendedDescription": []
+  },
+  "Devotion": {
+    "name": "Devozione",
+    "description": "Ad inizio turno ottieni !M! Mantra.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyBody": {
+    "name": "Corpo vuoto",
+    "description": "Blocchi !B!. NL Abbandona ogni Aspetto.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyFist": {
+    "name": "Mano Vuota",
+    "description": "Infliggi !D! danni. NL Abbandona ogni Aspetto.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyMind": {
+    "name": "Mente Vuota",
+    "description": "Peschi !M! carte. Abbandona ogni Aspetto.",
+    "upgradeDescription": "Peschi !M! carte. Abbandona ogni Aspetto.",
+    "extendedDescription": []
+  },
+  "Eruption": {
+    "name": "Eruzione",
+    "description": "Infliggi !D! danni. Entri in Furia.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Establishment": {
+    "name": "Prestabilito",
+    "description": "Ogni carta che conservi costa !M! in meno questo combattimento.",
+    "upgradeDescription": "Innata. NL Ogni carta che conservi costa !M! in meno questo combattimento.",
+    "extendedDescription": []
+  },
+  "Evaluate": {
+    "name": "Valutazione",
+    "description": "Blocchi !B!. NL Mescola una *Visione nella pila.",
+    "upgradeDescription": "Blocchi !B!. NL Mescola una *Visione+ nella pila.",
+    "extendedDescription": []
+  },
+  "Fasting2": {
+    "name": "Digiuno",
+    "description": "Ottieni !M! Forza e !M! Destrezza. NL Ottieni [W] in meno ad inizio turno.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FearNoEvil": {
+    "name": "Non Temere",
+    "description": "Infliggi !D! danni. NL Se il nemico intende attaccare NL entri in Quiete.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FlurryOfBlows": {
+    "name": "Pugni Infiniti",
+    "description": "Infliggi !D! danni. Ritorna in Mano dagli scarti quando cambi Aspetto.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FlyingSleeves": {
+    "name": "Manrovescio",
+    "description": "Permanente. NL Infliggi !D! danni due volte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FollowUp": {
+    "name": "Seguito",
+    "description": "Infliggi !D! danni. NL Se giocata dopo un Attacco ottieni [W].",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ForeignInfluence": {
+    "name": "Manipolazione",
+    "description": "Scegli 1 fra 3 Attacchi di qualunque colore e mettilo in Mano. NL Esaurisci.",
+    "upgradeDescription": "Scegli 1 fra 3 Attacchi di qualunque colore e mettilo in Mano. NL Costa 0 questo turno. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Wireheading": {
+    "name": "Chiaroveggenza",
+    "description": "Ad inizio turno Profetizzi !M!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Halt": {
+    "name": "Ferma",
+    "description": "Blocchi !B!. NL In Furia: Blocchi !M! aggiuntivo.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Indignation": {
+    "name": "Indignazione",
+    "description": "In Furia: applichi !M! vulnerabile a TUTTI i nemici. NL Entri in Furia.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "InnerPeace": {
+    "name": "Pace Interiore",
+    "description": "In Quiete: Peschi !M! carte. Entri in Quiete.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Judgement": {
+    "name": "Giudizio",
+    "description": "Se il nemico ha !M! NL o meno PV riduci i suoi PV a 0.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "GIUDICATO"
+    ]
+  },
+  "JustLucky": {
+    "name": "Solo Fortuna",
+    "description": "Profetizzi !M!. NL Blocchi !B!. NL Infliggi !D! Danni",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LessonLearned": {
+    "name": "Lezioni di Vita",
+    "description": "Infliggi !D! danni. NL Se è letale Potenzi una carta nel mazzo. Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LikeWater": {
+    "name": "Forma Fluida",
+    "description": "A fine turno Blocchi !M! se sei in Quiete.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "MasterReality": {
+    "name": "Supremazia",
+    "description": "Le carte generate in combattimento vengono Potenziate.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Meditate": {
+    "name": "Meditazione",
+    "description": "Metti in Mano una carta dagli scarti e la Conservi. NL Entri in Quiete. NL Finisci il turno.",
+    "upgradeDescription": "Metti in Mano due carte dagli scarti e le Conservi. NL Entri in Quiete. NL Finisci il turno.",
+    "extendedDescription": []
+  },
+  "MentalFortress": {
+    "name": "Mente d'Acciaio",
+    "description": "Quando cambi Aspetto Blocchi !M!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Nirvana": {
+    "name": "Nirvana",
+    "description": "Quando Profetizzi Blocchi !M!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Omniscience": {
+    "name": "Onniscienza",
+    "description": "Scegli una carta nella pila, la giochi due volte e la Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Perseverance": {
+    "name": "Perseveranza",
+    "description": "Permanente. NL Blocchi !B!. NL Se la conservi Blocca !M! in più questo combattimento.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pray": {
+    "name": "Preghiera",
+    "description": "Ottieni !M! Mantra. NL Mescola una *Visione nella pila.",
+    "upgradeDescription": "Ottieni !M! Mantra. NL Mescola un *Visione+ nella pila.",
+    "extendedDescription": []
+  },
+  "PathToVictory": {
+    "name": "Punto di Pressione",
+    "description": "Applica !M! *Marchio. NL Ogni nemico perde PV pari al proprio *Marchio.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Prostrate": {
+    "name": "Prostrazione",
+    "description": "Ottieni !M! Mantra. NL Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Protect": {
+    "name": "Protezione",
+    "description": "Permanente. NL Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ragnarok": {
+    "name": "Apocalisse",
+    "description": "Infliggi !D! danni a un nemico casuale !M! volte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ReachHeaven": {
+    "name": "Ascesa al Cielo",
+    "description": "Infliggi !D! danni. NL Mescola un *Con *la *Violenza nella pila.",
+    "upgradeDescription": "Infliggi !D! danni. NL Mescola un *Con *la *Violenza+ nella pila.",
+    "extendedDescription": []
+  },
+  "Adaptation": {
+    "name": "Alla Carica",
+    "description": "Quando entri in Furia peschi !M! carte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sanctity": {
+    "name": "Santità",
+    "description": "Blocchi !B!. NL Se giocata dopo un'Abilità peschi !M! carte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SandsOfTime": {
+    "name": "Sabbie del Tempo",
+    "description": "Permanente. NL Infliggi !D! danni. NL Se la Conservi costa 1 in meno questo combattimento.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SashWhip": {
+    "name": "Schiocco di Frusta",
+    "description": "Infliggi !D! danni. NL Se giocata dopo un Attacco applichi !M! Debole.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Scrawl": {
+    "name": "Ghirigoro",
+    "description": "Peschi fino a riempire la Mano. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SignatureMove": {
+    "name": "Mossa Finale",
+    "description": "Giocabile se è l'unico Attacco in Mano. NL Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vengeance": {
+    "name": "Vendetta",
+    "description": "All'inizio del prossimo turno entri in Furia e peschi !M! carte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SpiritShield": {
+    "name": "Scudo Spirituale",
+    "description": "Blocchi !M! per carta in Mano.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (Blocchi !B! )"
+    ]
+  },
+  "Strike_P": {
+    "name": "Colpo",
+    "description": "Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Study": {
+    "name": "Studio",
+    "description": "A fine turno mescola una *Visione nella pila.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Swivel": {
+    "name": "Saetta",
+    "description": "Blocchi !B!. NL Il prossimo Attacco che giochi costa 0.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "TalkToTheHand": {
+    "name": "Diniego",
+    "description": "Infliggi !D! danni. NL Per questo combattimento se attacchi il nemico scelto Blocchi !M!. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tantrum": {
+    "name": "Delirio",
+    "description": "Infliggi !D! danni !M! volte. NL Entri in Furia. NL Mescola questa carta nella pila.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ThirdEye": {
+    "name": "Premonizione",
+    "description": "Blocchi !B!. NL Profetizzi !M!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ClearTheMind": {
+    "name": "Catarsi",
+    "description": "Permanente. Entri in Quiete. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vault": {
+    "name": "Valico",
+    "description": "Ottieni un turno Extra dopo questo. NL Finisci il turno. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vigilance": {
+    "name": "Vigilanza",
+    "description": "Blocchi !B!. Entri in Quiete.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wallop": {
+    "name": "Zuffa",
+    "description": "Infliggi !D! danni. NL Blocchi pari al danno inflitto.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WaveOfTheHand": {
+    "name": "Prestigio",
+    "description": "Quando Blocchi questo turno NL applichi !M! Debole a TUTTI i nemici.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Weave": {
+    "name": "Trama",
+    "description": "Infliggi !D! danni. NL Quando Profetizzi torna in Mano dagli scarti.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WheelKick": {
+    "name": "Calcio Circolare",
+    "description": "Infliggi !D! danni. NL Peschi !M! carte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WindmillStrike": {
+    "name": "Colpo Rotante",
+    "description": "Permanente. NL Infliggi !D! danni, che aumentano di !M! per questo combattimento se la Conservi.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wish": {
+    "name": "Desiderio",
+    "description": "Scegli di ottenere: NL !B! Armatura a Piastre, !D! Forza o !M! Oro. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Worship": {
+    "name": "Adorazione",
+    "description": "Ottieni !M! Mantra.",
+    "upgradeDescription": "Permanente. NL Ottieni !M! Mantra.",
+    "extendedDescription": []
+  },
+  "WreathOfFlame": {
+    "name": "Corona di Fiamme",
+    "description": "Il prossimo Attacco infligge !M! danni addizionali.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Apotheosis": {
+    "name": "Apoteosi",
+    "description": "Potenzi TUTTO il mazzo per questo combattimento. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bandage Up": {
+    "name": "Bende",
+    "description": "Ti curi di !M! PV. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blind": {
+    "name": "Accecante",
+    "description": "Applichi !M! Debole.",
+    "upgradeDescription": "Applichi !M! Debole a TUTTI i nemici.",
+    "extendedDescription": []
+  },
+  "Chrysalis": {
+    "name": "Crisalide",
+    "description": "Metti !M! Abilità nella pila. Costano 0 questo combattimento. Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dark Shackles": {
+    "name": "Catene Oscure",
+    "description": "Il nemico perde !M! Forza per questo turno. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deep Breath": {
+    "name": "Respiro Profondo",
+    "description": "Mescola gli scarti nella pila. NL Peschi !M! carta.",
+    "upgradeDescription": "Mescola gli scarti nella pila. NL Peschi !M! carte.",
+    "extendedDescription": []
+  },
+  "Discovery": {
+    "name": "Scoperta",
+    "description": "Scegli 1 carta fra 3 casuali e mettila in Mano. Costa 0 questo turno. NL Esaurisci.",
+    "upgradeDescription": "Scegli 1 carta fra 3 casuali e mettila in Mano. Costa 0 questo turno.",
+    "extendedDescription": []
+  },
+  "Dramatic Entrance": {
+    "name": "Entrata ad Effetto",
+    "description": "Innata. NL Infliggi !D! danni a TUTTI i nemici. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Enlightenment": {
+    "name": "Illuminazione",
+    "description": "Riduci il costo delle carte in Mano a 1 per questo turno.",
+    "upgradeDescription": "Riduci il costo delle carte in Mano a 1 questo combattimento.",
+    "extendedDescription": []
+  },
+  "Finesse": {
+    "name": "Finezza",
+    "description": "Blocchi !B!. NL Peschi 1 carta.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flash of Steel": {
+    "name": "Lampo d'Acciaio",
+    "description": "Infliggi !D! danni. NL Peschi 1 carta.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Forethought": {
+    "name": "Previdenza",
+    "description": "Metti una carta NL in fondo alla pila. NL Costa 0 finché non la giochi.",
+    "upgradeDescription": "Metti un qualsiasi numero di carte NL in fondo alla pila. NL Costano 0 finché non le giochi.",
+    "extendedDescription": []
+  },
+  "Good Instincts": {
+    "name": "Buon Istinto",
+    "description": "Blocchi !B!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "HandOfGreed": {
+    "name": "Mano della Cupidigia",
+    "description": "Infliggi !D! danni. NL Se è letale guadagni !M! Oro.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Impatience": {
+    "name": "Impazienza",
+    "description": "Se non hai Attacchi in Mano Peschi !M! carte.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Jack Of All Trades": {
+    "name": "Jack Tuttofare",
+    "description": "Metti in Mano !M! carta incolore casuale. NL Esaurisci.",
+    "upgradeDescription": "Metti in Mano !M! carte incolori casuali. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Madness": {
+    "name": "Follia",
+    "description": "Una carta casuale in Mano costa 0 questo combattimento. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Magnetism": {
+    "name": "Magnetismo",
+    "description": "Ad inizio turno metti in Mano una carta incolore casuale.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Master of Strategy": {
+    "name": "Maestro di Strategia",
+    "description": "Peschi !M! carte. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Mayhem": {
+    "name": "Tumulto",
+    "description": "Ad inizio turno giochi la prima carta della pila.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Metamorphosis": {
+    "name": "Metamorfosi",
+    "description": "Metti nella pila !M! Attacchi casuali. Costano 0 questo combattimento. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Mind Blast": {
+    "name": "Scoppio Mentale",
+    "description": "Innata. NL Infliggi danni pari al numero di carte nella pila.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (Infliggi !D! danni.)"
+    ]
+  },
+  "Panacea": {
+    "name": "Panacea",
+    "description": "Ottieni !M! Artefatto. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Panache": {
+    "name": "Portamento",
+    "description": "Quando giochi 5 carte in un solo turno NL infliggi !M! danni a TUTTI i nemici.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PanicButton": {
+    "name": "Pulsante Antipanico",
+    "description": "Blocchi !B!. NL Le tue carte non Bloccano per i prossimi !M! turni. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Purity": {
+    "name": "Purezza",
+    "description": "Esaurisci fino a !M! carte in Mano. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sadistic Nature": {
+    "name": "Sadico per Natura",
+    "description": "Quando applichi Debuff infliggi anche !M! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Secret Technique": {
+    "name": "Tecnica Segreta",
+    "description": "Scegli un'Abilità dalla pila e mettila in Mano. NL Esaurisci.",
+    "upgradeDescription": "Scegli un'Abilità dalla pila e mettila in Mano.",
+    "extendedDescription": [
+      "Non ci sono Abilità NL nella pila."
+    ]
+  },
+  "Secret Weapon": {
+    "name": "Arma Segreta",
+    "description": "Scegli un Attacco dalla pila e mettilo in Mano. NL Esaurisci.",
+    "upgradeDescription": "Scegli un Attacco dalla pila e mettilo in Mano.",
+    "extendedDescription": [
+      "Non ci sono Attacchi NL nella pila."
+    ]
+  },
+  "Swift Strike": {
+    "name": "Colpo Rapido",
+    "description": "Infliggi !D! danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "The Bomb": {
+    "name": "La Bomba",
+    "description": "Fra 3 turni infliggi !M! danni a TUTTI i nemici.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Thinking Ahead": {
+    "name": "Lungimiranza",
+    "description": "Peschi 2 carte. NL Metti una carta dalla Mano in cima alla pila. NL Esaurisci.",
+    "upgradeDescription": "Peschi 2 carte. NL Metti una carta dalla Mano in cima alla pila.",
+    "extendedDescription": []
+  },
+  "Transmutation": {
+    "name": "Trasmutazione",
+    "description": "Metti in Mano NL X carte incolore casuali. Costano 0 questo turno. NL Esaurisci.",
+    "upgradeDescription": "Metti in Mano NL X carte incolore Potenziate casuali. Costano 0 questo turno. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Trip": {
+    "name": "Scivolone",
+    "description": "Applichi !M! Vulnerabile.",
+    "upgradeDescription": "Applichi !M! Vulnerabile a TUTTI i nemici.",
+    "extendedDescription": []
+  },
+  "Violence": {
+    "name": "Violenza",
+    "description": "Metti in Mano !M! Attacchi casuali dalla pila. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Burn": {
+    "name": "Ustione",
+    "description": "Ingiocabile. NL A fine turno ricevi 2 danni.",
+    "upgradeDescription": "Ingiocabile. NL A fine turno ricevi 4 danni.",
+    "extendedDescription": []
+  },
+  "Dazed": {
+    "name": "Disorientato",
+    "description": "Ingiocabile. NL Eterea.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Slimed": {
+    "name": "Inzaccherato",
+    "description": "Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Void": {
+    "name": "Vuoto",
+    "description": "Ingiocabile. NL Quando peschi questa carta perdi 1 Energia. NL Eterea.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wound": {
+    "name": "Ferita",
+    "description": "Ingiocabile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ghostly": {
+    "name": "Spettro",
+    "description": "Ottieni 1 Intangibile. NL Esaurisci. NL Eterea.",
+    "upgradeDescription": "Ottieni 1 Intangibile. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Beta": {
+    "name": "Beta",
+    "description": "Mescola un *Omega nella pila. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bite": {
+    "name": "Morso",
+    "description": "Infliggi !D! danni. NL Ti curi di !M! PV.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "J.A.X.": {
+    "name": "J.A.X.",
+    "description": "Perdi 3 PV. NL Ottieni !M! Forza.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Insight": {
+    "name": "Visione",
+    "description": "Permanente. NL Peschi !M! carte. NL Esaurisci.",
+    "upgradeDescription": "Permanente. NL Peschi !M! carte. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Miracle": {
+    "name": "Miracolo",
+    "description": "Permanente. NL Ottieni [W]. NL Esaurisci.",
+    "upgradeDescription": "Permanente. NL Ottieni [W] [W]. NL Esaurisci.",
+    "extendedDescription": []
+  },
+  "Omega": {
+    "name": "Omega",
+    "description": "A fine turno infliggi !M! danni a TUTTI i nemici.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "RitualDagger": {
+    "name": "Lama Rituale",
+    "description": "Infliggi !D! danni. NL Se è letale il danno di questa carta aumenta di !M!. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Safety": {
+    "name": "Salvezza",
+    "description": "Permanente. NL Blocchi !B!. NL Esaurisci",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shiv": {
+    "name": "Pugnale",
+    "description": "Infliggi !D! danni. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Smite": {
+    "name": "Punizione",
+    "description": "Permanente. NL Infliggi !D! danni. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ThroughViolence": {
+    "name": "Con La Violenza",
+    "description": "Permanente. Infliggi !D! danni. NL Esaurisci.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "BecomeAlmighty": {
+    "name": "Onnipotenza",
+    "description": "Ottieni !M! Forza.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FameAndFortune": {
+    "name": "Lode e Gloria",
+    "description": "Ottieni !M! Oro.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LiveForever": {
+    "name": "Vita Eterna",
+    "description": "A fine turno ottieni !M! *Armatura *a *Piastre.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Expunger": {
+    "name": "Lama Purificatrice",
+    "description": "Infliggi !D! danni X volte.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "Infliggi !D! danno !M! volte.",
+      "Infliggi !D! danno."
+    ]
+  },
+  "AscendersBane": {
+    "name": "Cruccio dell'Asceso",
+    "description": "Ingiocabile. NL Eterea. NL Non può essere rimossa dal mazzo.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CurseOfTheBell": {
+    "name": "Campanella Maledetta",
+    "description": "Ingiocabile. NL Non può essere rimossa dal mazzo.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clumsy": {
+    "name": "Impacciato",
+    "description": "Ingiocabile. NL Eterea.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Decay": {
+    "name": "Rovina",
+    "description": "Ingiocabile. NL Finito il turno ricevi 2 danni.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doubt": {
+    "name": "Dubbio",
+    "description": "Ingiocabile. NL A fine turno ottieni 1 Debole.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Injury": {
+    "name": "Lesione",
+    "description": "Ingiocabile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Necronomicurse": {
+    "name": "Necromaledizione",
+    "description": "Ingiocabile. NL È implacabile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Normality": {
+    "name": "Normalità",
+    "description": "Ingiocabile. NL Non puoi giocare più di 3 carte questo turno.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "Posso giocare al massimo NL #r3 carte questo turno.",
+      "Ingiocabile. NL Non puoi giocare più di ",
+      " carte per turno.",
+      " carte per turno. NL Hai giocato ",
+      " carta questo turno.",
+      " carte questo turno,"
+    ]
+  },
+  "Pain": {
+    "name": "Dolore",
+    "description": "Ingiocabile. NL Se è in mano NL perdi 1 PV quando giochi una carta.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Parasite": {
+    "name": "Parassita",
+    "description": "Ingiocabile. NL Se la trasformi o la rimuovi dal mazzo perdi 3 PV Massimi.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pride": {
+    "name": "Orgoglio",
+    "description": "Innata. Esaurisci. NL A fine turno metti in cima alla pila una copia di questa carta.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Regret": {
+    "name": "Rimorso",
+    "description": "Ingiocabile. NL A fine turno perdi PV pari al numero di carte in Mano.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shame": {
+    "name": "Vergogna",
+    "description": "Ingiocabile. NL A fine turno ottieni 1 Fragile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Writhe": {
+    "name": "Convulsioni",
+    "description": "Innata. NL Ingiocabile.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  }
+}

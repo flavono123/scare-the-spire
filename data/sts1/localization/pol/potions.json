@@ -1,0 +1,338 @@
+{
+  "Regen Potion": {
+    "name": "Mikstura regeneracji",
+    "description": "Zyskaj #b5 pkt. #yRegeneracji.",
+    "descriptions": [
+      "Zyskaj #b",
+      " pkt. #yRegeneracji.",
+      ""
+    ]
+  },
+  "SmokeBomb": {
+    "name": "Bomba dymna",
+    "description": "Ucieknij z walki (nie działa na bossów). Nie zyskujesz łupów.0Otoczono mnie!",
+    "descriptions": [
+      "Ucieknij z walki (nie działa na bossów). Nie zyskujesz łupów.",
+      "Otoczono mnie!"
+    ]
+  },
+  "Weak Potion": {
+    "name": "Mikstura osłabienia",
+    "description": "Nakłada #b3 pkt. #ySłabości.",
+    "descriptions": [
+      "Nakłada #b",
+      " pkt. #ySłabości."
+    ]
+  },
+  "SteroidPotion": {
+    "name": "Sterydy",
+    "description": "Zyskaj #b5 pkt. #ySiły. Na koniec tury utrać #b pkt. #ySiły.",
+    "descriptions": [
+      "Zyskaj #b",
+      " pkt. #ySiły. Na koniec tury utrać #b",
+      " pkt. #ySiły."
+    ]
+  },
+  "SpeedPotion": {
+    "name": "Mikstura chyżości",
+    "description": "Zyskaj #b5 pkt. #yZręczności. NL Na koniec tury utrać NL #b pkt. #yZręczności.",
+    "descriptions": [
+      "Zyskaj #b",
+      " pkt. #yZręczności. NL Na koniec tury utrać NL #b",
+      " pkt. #yZręczności."
+    ]
+  },
+  "Ancient Potion": {
+    "name": "Mikstura hartu",
+    "description": "Otrzymujesz #b1 pkt. #yHartu.",
+    "descriptions": [
+      "Otrzymujesz #b",
+      " pkt. #yHartu."
+    ]
+  },
+  "Poison Potion": {
+    "name": "Fiolka trucizny",
+    "description": "Nakłada #b6 pkt. #yTrucizny.",
+    "descriptions": [
+      "Nakłada #b",
+      " pkt. #yTrucizny."
+    ]
+  },
+  "LiquidMemories": {
+    "name": "Płynne wspomnienia",
+    "description": "Wybierz kartę ze stosu kart odrzuconych i przywróć ją do ręki. Kosztuje #b0 w tej turze.1Wybierz #b karty ze stosu kart odrzuconych i przywróć je do ręki. Kosztują #b0 w tej turze.",
+    "descriptions": [
+      "Wybierz kartę ze stosu kart odrzuconych i przywróć ją do ręki. Kosztuje #b0 w tej turze.",
+      "Wybierz #b",
+      " karty ze stosu kart odrzuconych i przywróć je do ręki. Kosztują #b0 w tej turze."
+    ]
+  },
+  "Fire Potion": {
+    "name": "Płynny ogień",
+    "description": "Zadaj #b20 pkt. obrażeń.",
+    "descriptions": [
+      "Zadaj #b",
+      " pkt. obrażeń."
+    ]
+  },
+  "CunningPotion": {
+    "name": "Mikstura sprytu",
+    "description": "Dodaj #b3 #yNoże+ do swojej ręki.",
+    "descriptions": [
+      "Dodaj #b",
+      " #yNoże+ do swojej ręki."
+    ]
+  },
+  "PowerPotion": {
+    "name": "Mikstura mocy",
+    "description": "Wybierz #b1 z #b3 kart #yMocy i dodaj ją do ręki. W tej turze kosztuje #b0.1Wybierz #b1 z #b3 kart #yMocy i dodaj jej #b2 kopie do ręki. W tej turze kosztują #b0.",
+    "descriptions": [
+      "Wybierz #b1 z #b3 kart #yMocy i dodaj ją do ręki. W tej turze kosztuje #b0.",
+      "Wybierz #b1 z #b3 kart #yMocy i dodaj jej #b2 kopie do ręki. W tej turze kosztują #b0."
+    ]
+  },
+  "Swift Potion": {
+    "name": "Mikstura szybkości",
+    "description": "3Dobierz #b kart(y).",
+    "descriptions": [
+      "",
+      "Dobierz #b",
+      " kart(y)."
+    ]
+  },
+  "SkillPotion": {
+    "name": "Mikstura umiejętności",
+    "description": "Wybierz #b1 z #b3 kart #yUmiejętności i dodaj ją do ręki. W tej turze kosztuje #b0.1Wybierz #b1 z #b3 kart #yUmiejętności i dodaj jej #b2 kopie do ręki. W tej turze kosztują #b0.",
+    "descriptions": [
+      "Wybierz #b1 z #b3 kart #yUmiejętności i dodaj ją do ręki. W tej turze kosztuje #b0.",
+      "Wybierz #b1 z #b3 kart #yUmiejętności i dodaj jej #b2 kopie do ręki. W tej turze kosztują #b0."
+    ]
+  },
+  "Dexterity Potion": {
+    "name": "Mikstura zręczności",
+    "description": "Dodaje #b2 pkt. #yZręczności.",
+    "descriptions": [
+      "Dodaje #b",
+      " pkt. #yZręczności."
+    ]
+  },
+  "DuplicationPotion": {
+    "name": "Mikstura powielenia",
+    "description": "W tej turze twoja następna karta zostanie zagrana dwukrotnie.1W tej turze twoje #b2 następne karty zostaną zagrane dwukrotnie.",
+    "descriptions": [
+      "W tej turze twoja następna karta zostanie zagrana dwukrotnie.",
+      "W tej turze twoje #b2 następne karty zostaną zagrane dwukrotnie."
+    ]
+  },
+  "Strength Potion": {
+    "name": "Mikstura siły",
+    "description": "Zyskaj #b2 pkt. #ySiły.",
+    "descriptions": [
+      "Zyskaj #b",
+      " pkt. #ySiły."
+    ]
+  },
+  "GhostInAJar": {
+    "name": "Duszek w słoiku",
+    "description": "Zyskaj #b1 pkt. #yNieuchwytności.",
+    "descriptions": [
+      "Zyskaj #b",
+      " pkt. #yNieuchwytności."
+    ]
+  },
+  "BlessingOfTheForge": {
+    "name": "Błogosławieństwo kuźni",
+    "description": "Ulepsz wszystkie karty w swojej ręce do końca walki.",
+    "descriptions": [
+      "Ulepsz wszystkie karty w swojej ręce do końca walki."
+    ]
+  },
+  "FocusPotion": {
+    "name": "Roztwór NZT-48",
+    "description": "Zyskaj #b2 pkt. #ySkupienia.",
+    "descriptions": [
+      "Zyskaj #b",
+      " pkt. #ySkupienia."
+    ]
+  },
+  "HeartOfIron": {
+    "name": "Żelazne serce",
+    "description": "Zyskaj #b6 pkt. #yOpancerzenia.",
+    "descriptions": [
+      "Zyskaj #b",
+      " pkt. #yOpancerzenia."
+    ]
+  },
+  "FairyPotion": {
+    "name": "Wróżka w butelce",
+    "description": "Po otrzymaniu śmiertelnych obrażeń, przywraca #b30% twoich Maksymalnych PŻ i zostaje usunięta.",
+    "descriptions": [
+      "Po otrzymaniu śmiertelnych obrażeń, przywraca #b",
+      "% twoich Maksymalnych PŻ i zostaje usunięta."
+    ]
+  },
+  "PotionOfCapacity": {
+    "name": "Mikstura pojemności",
+    "description": "Zyskaj #b2 miejsca na Sfery.",
+    "descriptions": [
+      "Zyskaj #b",
+      " miejsca na Sfery."
+    ]
+  },
+  "Block Potion": {
+    "name": "Mikstura bloku",
+    "description": "Dodaje #b12 pkt. #yBloku.",
+    "descriptions": [
+      "Dodaje #b",
+      " pkt. #yBloku."
+    ]
+  },
+  "FearPotion": {
+    "name": "Płynny strach",
+    "description": "Nakłada #b3 pkt. #yWrażliwości.",
+    "descriptions": [
+      "Nakłada #b",
+      " pkt. #yWrażliwości."
+    ]
+  },
+  "GamblersBrew": {
+    "name": "Wywar hazardzisty",
+    "description": "Odrzuć wybraną ilość kart i dobierz ich tyle samo.",
+    "descriptions": [
+      "Odrzuć wybraną ilość kart i dobierz ich tyle samo."
+    ]
+  },
+  "BloodPotion": {
+    "name": "Mikstura krwi",
+    "description": "Przywraca #b20% twoich Maksymalnych PŻ.",
+    "descriptions": [
+      "Przywraca #b",
+      "% twoich Maksymalnych PŻ."
+    ]
+  },
+  "EssenceOfDarkness": {
+    "name": "Esencja ciemności",
+    "description": "#yPrzywołaj #b1 #ySferę #yCiemności w każde miejsce na Sferę.",
+    "descriptions": [
+      "#yPrzywołaj #b",
+      " #ySferę #yCiemności w każde miejsce na Sferę."
+    ]
+  },
+  "Fruit Juice": {
+    "name": "Multiwitamina",
+    "description": "Zyskaj #b5 maksymalnych PŻ.",
+    "descriptions": [
+      "Zyskaj #b",
+      " maksymalnych PŻ."
+    ]
+  },
+  "Energy Potion": {
+    "name": "Mikstura energii",
+    "description": "Zyskaj #b2 pkt. #yEnergii.",
+    "descriptions": [
+      "Zyskaj #b",
+      " pkt. #yEnergii."
+    ]
+  },
+  "Ambrosia": {
+    "name": "Ambrozja",
+    "description": "Przyjmij #yPostawę #yBoskości.",
+    "descriptions": [
+      "Przyjmij #yPostawę #yBoskości."
+    ]
+  },
+  "ElixirPotion": {
+    "name": "Eliksir",
+    "description": "#yWyklucz dowolną liczbę kart ze swojej ręki.",
+    "descriptions": [
+      "#yWyklucz dowolną liczbę kart ze swojej ręki."
+    ]
+  },
+  "DistilledChaos": {
+    "name": "Destylowany chaos",
+    "description": "Zagraj #b3 kart(y) ze szczytu stosu rozgrywającego.",
+    "descriptions": [
+      "Zagraj #b",
+      " kart(y) ze szczytu stosu rozgrywającego."
+    ]
+  },
+  "LiquidBronze": {
+    "name": "Płynny Brąz",
+    "description": "Zyskaj #b3 pkt. #yCierni.",
+    "descriptions": [
+      "Zyskaj #b",
+      " pkt. #yCierni."
+    ]
+  },
+  "AttackPotion": {
+    "name": "Mikstura ataku",
+    "description": "Wybierz #b1 z #b3 kart #yAtaku i dodaj ją do ręki. W tej turze kosztuje #b0.1Wybierz #b1 z #b3 kart #yAtaku i dodaj jej #b2 kopie do ręki. W tej turze kosztują #b0.",
+    "descriptions": [
+      "Wybierz #b1 z #b3 kart #yAtaku i dodaj ją do ręki. W tej turze kosztuje #b0.",
+      "Wybierz #b1 z #b3 kart #yAtaku i dodaj jej #b2 kopie do ręki. W tej turze kosztują #b0."
+    ]
+  },
+  "SneckoOil": {
+    "name": "Olej Wonsza",
+    "description": "Dobierz #b5 kart. Losowo zmień koszt kart w swojej ręce.",
+    "descriptions": [
+      "Dobierz #b",
+      " kart. Losowo zmień koszt kart w swojej ręce.",
+      ""
+    ]
+  },
+  "StancePotion": {
+    "name": "Mikstura postawy",
+    "description": "Przyjmij postawę #ySpokoju lub #yGniewu.",
+    "descriptions": [
+      "Przyjmij postawę #ySpokoju lub #yGniewu."
+    ]
+  },
+  "Explosive Potion": {
+    "name": "Mieszanka wybuchowa",
+    "description": "Zadaj #b10 pkt. obrażeń WSZYSTKIM przeciwnikom.",
+    "descriptions": [
+      "Zadaj #b",
+      " pkt. obrażeń WSZYSTKIM przeciwnikom."
+    ]
+  },
+  "EssenceOfSteel": {
+    "name": "Esencja stali",
+    "description": "Zyskaj #b4 pkt. #yPancerza.",
+    "descriptions": [
+      "Zyskaj #b",
+      " pkt. #yPancerza."
+    ]
+  },
+  "BottledMiracle": {
+    "name": "Zabutelkowany cud",
+    "description": "Dodaj #b2 #yCuda do swojej ręki.",
+    "descriptions": [
+      "Dodaj #b",
+      " #yCuda do swojej ręki."
+    ]
+  },
+  "ColorlessPotion": {
+    "name": "Bezbarwna mikstura",
+    "description": "Wybierz #b1 z #b3 #ybezbarwnych kart i dodaj ją do ręki. W tej turze kosztuje #b0.1Wybierz #b1 z #b3 #ybezbarwnych kart i dodaj jej #b2 kopie do ręki. W tej turze kosztują #b0.",
+    "descriptions": [
+      "Wybierz #b1 z #b3 #ybezbarwnych kart i dodaj ją do ręki. W tej turze kosztuje #b0.",
+      "Wybierz #b1 z #b3 #ybezbarwnych kart i dodaj jej #b2 kopie do ręki. W tej turze kosztują #b0."
+    ]
+  },
+  "EntropicBrew": {
+    "name": "Entropiczny napar",
+    "description": "Wypełnia wszystkie puste miejsca na mikstury losowymi miksturami.",
+    "descriptions": [
+      "Wypełnia wszystkie puste miejsca na mikstury losowymi miksturami."
+    ]
+  },
+  "CultistPotion": {
+    "name": "Mikstura kultusty",
+    "description": "Zyskaj #b1 pkt. #yRytuału.",
+    "descriptions": [
+      "Zyskaj #b",
+      " pkt. #yRytuału."
+    ]
+  }
+}

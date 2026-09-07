@@ -1,0 +1,2277 @@
+{
+  "Anger": {
+    "name": "분노",
+    "description": "피해를 !D! 줍니다. NL 이 카드를 한 장 복사해 버린 카드 더미에 섞어 넣습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Armaments": {
+    "name": "전투장비",
+    "description": "방어도를 !B! 얻습니다. NL 카드 1 장을 이번 전투 동안 강화합니다.",
+    "upgradeDescription": "방어도를 !B! 얻습니다. NL 손에 있는 모든 카드를 이번 전투 동안 강화합니다.",
+    "extendedDescription": []
+  },
+  "Barricade": {
+    "name": "바리케이드",
+    "description": "턴 시작 시 방어도가 사라지지 않습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bash": {
+    "name": "강타",
+    "description": "피해를 !D! 줍니다. NL 취약을 !M! 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Battle Trance": {
+    "name": "전투 최면",
+    "description": "카드를 !M! 장 뽑습니다. NL 이번 턴 동안 더 이상 카드를 뽑을 수 없습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Berserk": {
+    "name": "광폭화",
+    "description": "취약을 !M! 받습니다. 내 턴 시작 시마다 [R] 을 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blood for Blood": {
+    "name": "피에는 피",
+    "description": "이번 전투에서 체력을 잃을 때마다 이 카드의 비용이 [R] 감소합니다. NL 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bloodletting": {
+    "name": "사혈",
+    "description": "체력을 3 잃습니다. NL [R] [R] 을 얻습니다.",
+    "upgradeDescription": "체력을 3 잃습니다. NL [R] [R] [R] 을 얻습니다.",
+    "extendedDescription": []
+  },
+  "Bludgeon": {
+    "name": "몽둥이질",
+    "description": "피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Body Slam": {
+    "name": "몸통 박치기",
+    "description": "현재 방어도만큼 피해를 줍니다.",
+    "upgradeDescription": " NL (피해를 !D! 줍니다.)",
+    "extendedDescription": []
+  },
+  "Brutality": {
+    "name": "잔혹성",
+    "description": "내 턴 시작 시 체력을 1 잃고 카드를 1 장 뽑습니다.",
+    "upgradeDescription": "선천성. NL 내 턴 시작 시 체력을 1 잃고 카드를 1장 뽑습니다.",
+    "extendedDescription": []
+  },
+  "Burning Pact": {
+    "name": "불타는 조약",
+    "description": "카드를 1 장 소멸시킵니다. NL 카드를 !M! 장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Carnage": {
+    "name": "대학살",
+    "description": "휘발성. NL 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clash": {
+    "name": "격돌",
+    "description": "손에 있는 카드가 전부 공격 카드일 때만 사용할 수 있습니다. NL 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "공격 카드가 아닌 카드를 들고 있어."
+    ]
+  },
+  "Cleave": {
+    "name": "절단",
+    "description": "적 전체에게 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clothesline": {
+    "name": "클로스라인",
+    "description": "피해를 !D! 줍니다. NL 약화를 !M! 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Combust": {
+    "name": "연소",
+    "description": "내 턴 종료 시 체력을 1 잃고 적 전체에게 피해를 !M! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Corruption": {
+    "name": "타락",
+    "description": "스킬 카드의 비용이 0이 됩니다. NL 스킬 카드를 사용할 때마다 소멸시킵니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dark Embrace": {
+    "name": "어둠의 포옹",
+    "description": "카드가 소멸될 때마다 NL 1 장의 카드를 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_R": {
+    "name": "수비",
+    "description": "방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Demon Form": {
+    "name": "악마의 형상",
+    "description": "내 턴 시작 시 힘을 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Disarm": {
+    "name": "무장 해제",
+    "description": "적의 힘을 !M! 감소시킵니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Double Tap": {
+    "name": "연사",
+    "description": "이번 턴 동안 다음에 사용하는 공격 카드가 두 번 사용됩니다.",
+    "upgradeDescription": "이번 턴 동안 다음에 사용하는 공격 카드 !M! 장이 두 번 사용됩니다.",
+    "extendedDescription": []
+  },
+  "Dropkick": {
+    "name": "드롭킥",
+    "description": "피해를 !D! 줍니다. NL 적이 취약 상태라면 NL [R] 를 얻고 NL 카드를 1 장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dual Wield": {
+    "name": "이도류",
+    "description": "공격 또는 파워 카드를 복사합니다.",
+    "upgradeDescription": "공격 또는 파워 카드를 2 장 복사합니다.",
+    "extendedDescription": []
+  },
+  "Entrench": {
+    "name": "참호",
+    "description": "방어도를 2 배로 만듭니다.",
+    "upgradeDescription": "방어도를 2 배로 만듭니다.",
+    "extendedDescription": []
+  },
+  "Evolve": {
+    "name": "진화",
+    "description": "상태이상 카드를 뽑을 때마다 카드를 !M! 장 뽑습니다.",
+    "upgradeDescription": "상태이상 카드를 뽑을 때마다 카드를 !M! 장 뽑습니다.",
+    "extendedDescription": []
+  },
+  "Exhume": {
+    "name": "발굴",
+    "description": "소멸된 카드 더미에서 1 장을 선택하여 가져옵니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Feed": {
+    "name": "포식",
+    "description": "피해를 !D! 줍니다. NL 치명타라면 최대 체력이 !M! 증가합니다. 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Feel No Pain": {
+    "name": "무감각",
+    "description": "카드가 소멸될 때마다 NL 방어도를 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fiend Fire": {
+    "name": "지옥불",
+    "description": "카드를 전부 소멸시킵니다. NL 그 수만큼 피해를 !D! 줍니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fire Breathing": {
+    "name": "불 뿜기",
+    "description": "상태이상이나 저주 카드를 뽑을 경우 적 전체에게 피해를 !M! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flame Barrier": {
+    "name": "화염 장벽",
+    "description": "방어도를 !B! 얻습니다. NL 이번 턴에 공격을 받을 때마다 공격한 대상에게 피해를 !M! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flex": {
+    "name": "몸 풀기",
+    "description": "힘을 !M! 얻습니다. NL 이번 턴이 끝날 때 힘을 !M! 잃습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ghostly Armor": {
+    "name": "유령 갑옷",
+    "description": "휘발성. NL 방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Havoc": {
+    "name": "파괴",
+    "description": "뽑을 카드 더미 맨 위의 카드를 사용한 뒤 소멸시킵니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Headbutt": {
+    "name": "박치기",
+    "description": "피해를 !D! 줍니다. NL 버린 카드 더미에서 카드를 1 장 선택해 뽑을 카드 더미 맨 위에 놓습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Heavy Blade": {
+    "name": "대검",
+    "description": "피해를 !D! 줍니다. NL 힘의 효과가 !M! 배로 적용됩니다.",
+    "upgradeDescription": "피해를 !D! 줍니다. NL 힘의 효과가 !M! 배로 적용됩니다.",
+    "extendedDescription": []
+  },
+  "Hemokinesis": {
+    "name": "혈류",
+    "description": "체력을 !M! 잃습니다. NL 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Immolate": {
+    "name": "화형",
+    "description": "적 전체에게 피해를 !D! 줍니다. NL 버린 카드 더미에 *화상 을 넣습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Impervious": {
+    "name": "무적",
+    "description": "방어도를 !B! 얻습니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Infernal Blade": {
+    "name": "지옥검",
+    "description": "무작위 공격 카드를 1 장 얻습니다. NL 이번 턴 동안 그 카드의 비용이 0 이 됩니다. 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Inflame": {
+    "name": "발화",
+    "description": "힘을 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Intimidate": {
+    "name": "위압",
+    "description": "적 전체에게 약화를 !M! 부여합니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Iron Wave": {
+    "name": "철의 파동",
+    "description": "방어도를 !B! 얻습니다. NL 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Juggernaut": {
+    "name": "절대적인 힘",
+    "description": "방어도를 얻을 때마다 무작위 적에게 !M! 의 피해를 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Limit Break": {
+    "name": "한계 돌파",
+    "description": "힘을 2 배로 만듭니다. NL 소멸.",
+    "upgradeDescription": "힘을 2 배로 만듭니다.",
+    "extendedDescription": []
+  },
+  "Metallicize": {
+    "name": "금속화",
+    "description": "내 턴 종료 시 방어도를 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Offering": {
+    "name": "제물",
+    "description": "체력을 6 잃습니다. NL [R] [R] 를 얻습니다. NL 카드를 !M! 장 뽑습니다. NL 소멸.",
+    "upgradeDescription": "체력을 6 잃습니다. NL [R] [R] 를 얻습니다. NL 카드를 !M! 장 뽑습니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Perfected Strike": {
+    "name": "완벽한 타격",
+    "description": "피해를 !D! 줍니다. 보유 중인 카드 중 이름에 \"타격\" 이 포함된 카드 하나당 피해량이 2 증가합니다.",
+    "upgradeDescription": "피해를 !D! 줍니다. 보유 중인 카드 중 이름에 \"타격\" 이 포함된 카드 하나당 피해량이 3 증가합니다.",
+    "extendedDescription": []
+  },
+  "Pommel Strike": {
+    "name": "폼멜 타격",
+    "description": "피해를 !D! 줍니다. NL 카드를 !M! 장 뽑습니다.",
+    "upgradeDescription": "피해를 !D! 줍니다. NL 카드를 !M! 장 뽑습니다.",
+    "extendedDescription": []
+  },
+  "Power Through": {
+    "name": "난관 극복",
+    "description": "*부상 을 2 장 얻습니다. NL 방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pummel": {
+    "name": "연타",
+    "description": "피해를 !D! 만큼 !M! 번 줍니다. NL 소멸.",
+    "upgradeDescription": "피해를 !D! 만큼 !M! 번 줍니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Rage": {
+    "name": "격노",
+    "description": "이번 턴에 공격 카드를 사용할 때마다 방어도를 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rampage": {
+    "name": "광란",
+    "description": "피해를 !D! 줍니다. NL 이번 전투 동안 이 카드의 피해량이 !M! 증가합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reaper": {
+    "name": "사신",
+    "description": "적 전체에게 피해를 !D! 줍니다. 막히지 않은 피해만큼 체력을 회복합니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reckless Charge": {
+    "name": "무모한 돌진",
+    "description": "피해를 !D! 줍니다. NL 뽑을 카드 더미에 *어지러움 을 섞어 넣습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rupture": {
+    "name": "파열",
+    "description": "카드의 효과로 체력을 잃을 때마다 NL 힘을 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Searing Blow": {
+    "name": "불태우는 일격",
+    "description": "피해를 !D! 줍니다. NL 강화 횟수에 제한이 없습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Second Wind": {
+    "name": "기사회생",
+    "description": "손에 있는 공격 카드를 제외한 모든 카드를 소멸시킵니다. 소멸시킨 카드 한 장당 방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Seeing Red": {
+    "name": "혈안",
+    "description": " [R] [R] 을 얻습니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sentinel": {
+    "name": "감시병",
+    "description": "방어도를 !B! 얻습니다. NL 이 카드가 소멸되면 NL [R] [R] 를 얻습니다.",
+    "upgradeDescription": "방어도를 !B! 얻습니다. NL 이 카드가 소멸되면 NL [R] [R] [R] 를 얻습니다.",
+    "extendedDescription": []
+  },
+  "Sever Soul": {
+    "name": "영혼 절단",
+    "description": "손에 있는 공격 카드를 제외한 모든 카드를 소멸시킵니다. NL 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shockwave": {
+    "name": "충격파",
+    "description": "적 전체에게 약화와 취약을 !M! 부여합니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shrug It Off": {
+    "name": "흘려보내기",
+    "description": "방어도를 !B! 얻습니다. NL 카드를 1장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Spot Weakness": {
+    "name": "약점 분석",
+    "description": "선택한 적이 공격할 의도가 있다면 힘을 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Strike_R": {
+    "name": "타격",
+    "description": "피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sword Boomerang": {
+    "name": "부메랑 칼날",
+    "description": "무작위 적들에게 피해를 !D! 만큼 !M! 번 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Thunderclap": {
+    "name": "천둥",
+    "description": "적 전체에게 피해를 !D! 주고 취약을 1 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "True Grit": {
+    "name": "진정한 끈기",
+    "description": "방어도를 !B! 얻습니다. NL 무작위 카드를 1 장 소멸시킵니다.",
+    "upgradeDescription": "방어도를 !B! 얻습니다. NL 카드를 1 장 소멸시킵니다.",
+    "extendedDescription": []
+  },
+  "Twin Strike": {
+    "name": "이중 타격",
+    "description": "피해를 !D! 만큼 2 번 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Uppercut": {
+    "name": "어퍼컷",
+    "description": "피해를 !D! 줍니다. NL 약화를 !M! 부여합니다. NL 취약을 !M! 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Warcry": {
+    "name": "전투의 함성",
+    "description": "카드를 1 장 뽑습니다. NL 카드 1 장을 뽑을 카드 더미 맨 위에 놓습니다. NL 소멸.",
+    "upgradeDescription": "카드를 2 장 뽑습니다. NL 카드 1 장을 뽑을 카드 더미 맨 위에 놓습니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Whirlwind": {
+    "name": "소용돌이",
+    "description": "적 전체에게 피해를 !D! 만큼 X 번 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wild Strike": {
+    "name": "난폭한 타격",
+    "description": "피해를 !D! 줍니다. NL 뽑을 카드 더미에 *부상 을 섞어 넣습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Accuracy": {
+    "name": "정밀",
+    "description": "*단도 의 피해량이 !M! 증가합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Acrobatics": {
+    "name": "곡예",
+    "description": "카드를 !M! 장 뽑습니다. NL 카드를 1 장 버립니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Adrenaline": {
+    "name": "아드레날린",
+    "description": " [G] 를 얻습니다. NL 카드를 2 장 뽑습니다. NL 소멸.",
+    "upgradeDescription": " [G] [G] 를 얻습니다. NL 카드를 2 장 뽑습니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "After Image": {
+    "name": "잔상",
+    "description": "카드를 사용할 때마다 방어도를 1 얻습니다.",
+    "upgradeDescription": "선천성. NL 카드를 사용할 때마다 방어도를 1 얻습니다.",
+    "extendedDescription": []
+  },
+  "Venomology": {
+    "name": "연금",
+    "description": "무작위 포션 하나를 얻습니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "All Out Attack": {
+    "name": "총공격",
+    "description": "적 전체에게 피해를 !D! 줍니다. NL 무작위 카드를 1장 버립니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "A Thousand Cuts": {
+    "name": "능지처참",
+    "description": "카드를 사용할 때마다 적 전체에게 피해를 !M! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Backflip": {
+    "name": "공중제비",
+    "description": "방어도를 !B! 얻습니다. NL 카드를 2 장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Backstab": {
+    "name": "배신",
+    "description": "선천성. NL 피해를 !D! 줍니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bane": {
+    "name": "파멸",
+    "description": "피해를 !D! 줍니다. NL 적이 중독된 상태면 다시 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blade Dance": {
+    "name": "검무",
+    "description": "*단도 를 !M! 장 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blur": {
+    "name": "흐릿함",
+    "description": "방어도를 !B! 얻습니다. NL 한 턴간 다음 턴 시작 시에도 방어도가 사라지지 않습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bouncing Flask": {
+    "name": "탄성 플라스크",
+    "description": "무작위 적들에게 중독을 3 만큼 !M! 번 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bullet Time": {
+    "name": "불릿 타임",
+    "description": "이번 턴 동안 더 이상 카드를 뽑을 수 없습니다. 이번 턴 동안 손에 있는 모든 카드의 비용을 0 으로 바꿉니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Burst": {
+    "name": "폭주",
+    "description": "이번 턴에 사용하는 다음 스킬 카드가 두 번 사용됩니다.",
+    "upgradeDescription": "이번 턴에 사용하는 다음 스킬 카드 !M! 장이 두 번 사용됩니다.",
+    "extendedDescription": []
+  },
+  "Calculated Gamble": {
+    "name": "계산된 도박",
+    "description": "카드를 전부 버립니다. NL 그 수만큼 카드를 다시 뽑습니다. NL 소멸.",
+    "upgradeDescription": "카드를 전부 버립니다. NL 그 수만큼 카드를 다시 뽑습니다.",
+    "extendedDescription": []
+  },
+  "Caltrops": {
+    "name": "마름쇠",
+    "description": "공격을 받을 때마다 공격한 적에게 피해를 !M! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Catalyst": {
+    "name": "촉매",
+    "description": "적의 중독을 2 배로 늘립니다. NL 소멸.",
+    "upgradeDescription": "적의 중독을 3 배로 늘립니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Choke": {
+    "name": "교살",
+    "description": "피해를 !D! 줍니다. NL 이번 턴에 카드를 사용할 때마다 대상은 체력을 !M! 만큼 잃습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Cloak And Dagger": {
+    "name": "망토와 단검",
+    "description": "방어도를 !B! 얻습니다. NL *단도 를 !M! 장 얻습니다.",
+    "upgradeDescription": "방어도를 !B! 얻습니다. NL *단도 를 !M! 장 얻습니다.",
+    "extendedDescription": []
+  },
+  "Concentrate": {
+    "name": "집중",
+    "description": "카드를 !M! 장 버립니다. NL [G] [G] 를 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Corpse Explosion": {
+    "name": "시체 폭발",
+    "description": "중독을 !M! 부여합니다. NL 적이 죽을 경우 적 전체에게 대상의 최대 체력만큼 피해를 줍니다.",
+    "upgradeDescription": "deprecated",
+    "extendedDescription": [
+      "deprecated"
+    ]
+  },
+  "Crippling Poison": {
+    "name": "신경독",
+    "description": "적 전체에게 중독을 !M! 부여하고 약화를 2 부여합니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dagger Spray": {
+    "name": "단검 분사",
+    "description": " 적 전체에게 피해를 !D! 만큼 2 번 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dagger Throw": {
+    "name": "단검 투척",
+    "description": "피해를 !D! 줍니다. NL 카드를 1 장 뽑습니다. NL 카드를 1 장 버립니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dash": {
+    "name": "돌진",
+    "description": "방어도를 !B! 얻습니다. NL 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deadly Poison": {
+    "name": "맹독",
+    "description": "중독을 !M! 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_G": {
+    "name": "수비",
+    "description": "방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deflect": {
+    "name": "튕겨내기",
+    "description": "방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Die Die Die": {
+    "name": "죽어 죽어 죽어",
+    "description": "적 전체에게 피해를 !D! 줍니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Distraction": {
+    "name": "방해",
+    "description": "무작위 스킬 카드 1 장을 얻습니다. NL 이번 턴 동안 그 카드의 비용이 0이 됩니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dodge and Roll": {
+    "name": "구르기",
+    "description": "방어도를 !B! 얻습니다. NL 다음 턴에 방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doppelganger": {
+    "name": "도플갱어",
+    "description": "다음 턴에 카드를 X장 더 뽑고 X [G] 를 얻습니다. NL 소멸.",
+    "upgradeDescription": "다음 턴에 카드를 X+1장 더 뽑고 X+1 [G] 를 얻습니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Endless Agony": {
+    "name": "영원한 고통",
+    "description": "피해를 !D! 줍니다. NL 이 카드를 뽑으면 이 카드를 한 장 복사하여 얻습니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Envenom": {
+    "name": "독 바르기",
+    "description": "공격으로 막히지 않은 피해를 줄 때마다 중독을 1 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Escape Plan": {
+    "name": "탈출구",
+    "description": "카드를 1 장 뽑습니다. NL 뽑은 카드가 스킬 카드라면 방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Eviscerate": {
+    "name": "내장 해체",
+    "description": "이번 턴에 버려진 카드의 수만큼 이 카드의 비용이 [G] 감소합니다. NL 피해를 !D! 만큼 3 번 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Expertise": {
+    "name": "전문성",
+    "description": "손에 카드가 !M! 장이 될 때까지 카드를 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Finisher": {
+    "name": "마무리",
+    "description": "이번 턴에 사용한 공격 카드 1 장당 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (",
+      " 장의 공격 카드를 사용했습니다.)",
+      " 장의 공격 카드를 사용했습니다.)"
+    ]
+  },
+  "Flechettes": {
+    "name": "프레췌",
+    "description": "손에 있는 스킬 카드 1 장당 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (현재 ",
+      " 장의 스킬 카드가 있습니다).",
+      " 장의 스킬 카드가 있습니다)."
+    ]
+  },
+  "Flying Knee": {
+    "name": "플라잉 니킥",
+    "description": "피해를 !D! 줍니다. NL 다음 턴에 [G] 를 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Footwork": {
+    "name": "발놀림",
+    "description": "민첩을 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Glass Knife": {
+    "name": "유리칼",
+    "description": "피해를 !D! 만큼 2 번 줍니다. 이번 전투 동안 이 카드의 피해량이 2 감소합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Grand Finale": {
+    "name": "대단원의 막",
+    "description": "뽑을 카드 더미가 비어있을 때만 사용 가능합니다. NL 적 전체에게 피해를 !D! 줍니다.",
+    "upgradeDescription": "뽑을 카드 더미가 NL #r비어 #r있어야만 한다.",
+    "extendedDescription": []
+  },
+  "Heel Hook": {
+    "name": "다리 꺾기",
+    "description": "피해를 !D! 줍니다. NL 적이 약화 상태라면, NL [G] 를 얻고 NL 카드를 1 장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Infinite Blades": {
+    "name": "무한의 검날",
+    "description": "내 턴 시작 시 *단도 를 1 장 얻습니다.",
+    "upgradeDescription": "선천성. NL 내 턴 시작 시 *단도 를 1 장 얻습니다.",
+    "extendedDescription": []
+  },
+  "Leg Sweep": {
+    "name": "다리 걸기",
+    "description": "약화를 !M! 부여합니다. NL 방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Malaise": {
+    "name": "불쾌",
+    "description": "적의 힘을 X 감소시킵니다. 약화를 X 부여합니다. NL 소멸.",
+    "upgradeDescription": "적의 힘을 X+1 감소시킵니다. 약화를 X+1 부여합니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Masterful Stab": {
+    "name": "능숙한 찌르기",
+    "description": "이번 전투 중 체력을 잃을 때마다 이 카드의 비용이 [G] 증가합니다. NL 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Neutralize": {
+    "name": "무력화",
+    "description": "피해를 !D! 줍니다. NL 약화를 !M! 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Night Terror": {
+    "name": "악몽",
+    "description": "카드를 선택합니다. NL 다음 턴에 그 카드를 !M! 장 복사해 가져옵니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "한 턴에 NL ",
+      " NL 한 번만 사용할 수 있다."
+    ]
+  },
+  "Noxious Fumes": {
+    "name": "유독 가스",
+    "description": "내 턴 시작 시 적 전체에게 중독을 !M! 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Outmaneuver": {
+    "name": "압도",
+    "description": "다음 턴에 NL [G] [G] 를 얻습니다.",
+    "upgradeDescription": "다음 턴에 NL [G] [G] [G] 를 얻습니다.",
+    "extendedDescription": []
+  },
+  "Phantasmal Killer": {
+    "name": "환영 살인마",
+    "description": "다음 턴 동안 공격 카드가 두 배의 피해를 줍니다",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PiercingWail": {
+    "name": "귀를 찢는 비명",
+    "description": "적 전체의 힘을 이번 턴 동안 !M! 감소시킵니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Poisoned Stab": {
+    "name": "독 찌르기",
+    "description": "피해를 !D! 줍니다. NL 중독을 !M! 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Predator": {
+    "name": "천적",
+    "description": "피해를 !D! 줍니다. NL 다음 턴에 카드를 2 장 더 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Prepared": {
+    "name": "예비",
+    "description": "카드를 !M! 장 뽑습니다. NL 카드를 !M! 장 버립니다.",
+    "upgradeDescription": "카드를 !M! 장 뽑습니다. NL 카드를 !M! 장 버립니다.",
+    "extendedDescription": []
+  },
+  "Quick Slash": {
+    "name": "전광석화",
+    "description": "피해를 !D! 줍니다. NL 카드를 1 장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reflex": {
+    "name": "반사 신경",
+    "description": "사용불가. NL 이 카드가 버려지면 카드를 !M! 장 뽑습니다.",
+    "upgradeDescription": "사용불가. NL 이 카드가 버려지면 카드를 !M! 장 뽑습니다.",
+    "extendedDescription": [
+      "이 카드는 사용할 수 없어."
+    ]
+  },
+  "Riddle With Holes": {
+    "name": "벌집",
+    "description": "피해를 !D! 만큼 5 번 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Setup": {
+    "name": "설치",
+    "description": "카드 1 장을 뽑을 카드 더미 맨 위에 놓습니다. NL 사용 전까지 그 카드의 비용이 0 이 됩니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Skewer": {
+    "name": "꼬챙이",
+    "description": "피해를 !D! 만큼 X 번 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Slice": {
+    "name": "칼질",
+    "description": "피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Storm of Steel": {
+    "name": "강철의 폭풍",
+    "description": "카드를 전부 버립니다. NL 버린 카드 수만큼 *단도 를 얻습니다.",
+    "upgradeDescription": "카드를 전부 버립니다. NL 버린 카드 수만큼 *단도+ 를 얻습니다.",
+    "extendedDescription": []
+  },
+  "Strike_G": {
+    "name": "타격",
+    "description": "피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sucker Punch": {
+    "name": "불의의 일격",
+    "description": "피해를 !D! 줍니다. NL 약화를 !M! 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Survivor": {
+    "name": "생존자",
+    "description": "방어도를 !B! 얻습니다. NL 카드를 1 장 버립니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tactician": {
+    "name": "전략가",
+    "description": "사용불가. NL 이 카드가 버려지면 [G] 를 얻습니다.",
+    "upgradeDescription": "사용불가. NL 이 카드가 버려지면 [G] [G] 를 얻습니다.",
+    "extendedDescription": [
+      "이 카드는 사용할 수 없어."
+    ]
+  },
+  "Terror": {
+    "name": "공포",
+    "description": "취약을 99 부여합니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tools of the Trade": {
+    "name": "작업 도구",
+    "description": "내 턴 시작 시 카드를 1 장 뽑고 1 장 버립니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Underhanded Strike": {
+    "name": "비열한 타격",
+    "description": "피해를 !D! 줍니다. NL 이번 턴에 버린 카드가 있으면 [G] [G] 를 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "이 카드는 사용할 수 없어."
+    ]
+  },
+  "Unload": {
+    "name": "처분",
+    "description": "피해를 !D! 줍니다. NL 공격 카드를 제외한 카드를 모두 버립니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Well Laid Plans": {
+    "name": "괜찮은 전략",
+    "description": "내 턴 종료 시 !M! 장까지 카드를 보존합니다.",
+    "upgradeDescription": "내 턴 종료 시 !M! 장까지 카드를 보존합니다.",
+    "extendedDescription": []
+  },
+  "Wraith Form v2": {
+    "name": "유령의 형상",
+    "description": "불가침을 !M! 얻습니다. NL 내 턴 종료 시 민첩을 1 잃습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Aggregate": {
+    "name": "합하기",
+    "description": "뽑을 카드 더미에 있는 카드 !M! 장마다 [B] 를 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "All For One": {
+    "name": "하나를 위한 모두",
+    "description": "피해를 !D! 줍니다. 버린 카드 더미에 있는 비용이 0인 카드를 모두 손으로 가져옵니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Amplify": {
+    "name": "증폭",
+    "description": "이번 턴에 사용하는 다음 파워 카드가 두 번 사용됩니다.",
+    "upgradeDescription": "이번 턴에 사용하는 다음 파워 카드 !M! 장이 두 번 사용됩니다.",
+    "extendedDescription": []
+  },
+  "Auto Shields": {
+    "name": "자동 방패",
+    "description": "방어도가 없으면 방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ball Lightning": {
+    "name": "번개 구체",
+    "description": "피해를 !D! 줍니다. 전기를 !M! 번 영창합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Barrage": {
+    "name": "일제 사격",
+    "description": "영창된 구체 하나당 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Beam Cell": {
+    "name": "레이저 포인터",
+    "description": "피해를 !D! 줍니다. NL 취약을 !M! 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Biased Cognition": {
+    "name": "인지 편향",
+    "description": "밀집을 !M! 얻습니다. NL 내 턴 시작 시 밀집을 1 잃습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blizzard": {
+    "name": "눈보라",
+    "description": "이번 전투에서 영창된 냉기의 !M! 배만큼 적 전체에게 피해를 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (피해를 !D! 줍니다.)",
+      ""
+    ]
+  },
+  "BootSequence": {
+    "name": "부팅 과정",
+    "description": "방어도를 !B! 얻습니다. NL 선천성. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Buffer": {
+    "name": "버퍼",
+    "description": "체력을 잃는 것을 1 번 막아줍니다.",
+    "upgradeDescription": "체력을 잃는 것을 !M! 번 막아줍니다.",
+    "extendedDescription": []
+  },
+  "Capacitor": {
+    "name": "축전기",
+    "description": "구체 슬롯 !M! 개를 얻습니다.",
+    "upgradeDescription": "구체 슬롯 !M! 개를 얻습니다.",
+    "extendedDescription": []
+  },
+  "Chaos": {
+    "name": "혼돈",
+    "description": "무작위 구체를 !M! 번 영창합니다.",
+    "upgradeDescription": "무작위 구체를 !M! 번 영창합니다.",
+    "extendedDescription": []
+  },
+  "Chill": {
+    "name": "오한",
+    "description": "전투 중인 적 하나당 냉기를 !M! 번 영창합니다. NL 소멸.",
+    "upgradeDescription": "선천성. NL 전투 중인 적 하나당 냉기를 !M! 번 영창합니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Gash": {
+    "name": "후벼 파기",
+    "description": "피해를 !D! 줍니다. NL 이번 전투 동안 모든 후벼 파기 카드의 피해량이 !M! 증가합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Cold Snap": {
+    "name": "꽃샘추위",
+    "description": "피해를 !D! 줍니다. 냉기를 !M! 번 영창합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Compile Driver": {
+    "name": "컴파일 드라이버",
+    "description": "피해를 !D! 줍니다. NL 영창된 구체의 종류 하나당 카드를 !M! 장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Conserve Battery": {
+    "name": "배터리 충전",
+    "description": "방어도를 !B! 얻습니다. NL 다음 턴에 [B] 를 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Consume": {
+    "name": "소비",
+    "description": "밀집을 !M! 얻습니다. NL 구체 슬롯을 1 개 잃습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Coolheaded": {
+    "name": "냉정함",
+    "description": "냉기를 1 번 영창합니다. NL 카드를 !M! 장 뽑습니다.",
+    "upgradeDescription": "냉기를 1 번 영창합니다. NL 카드를 !M! 장 뽑습니다.",
+    "extendedDescription": []
+  },
+  "Core Surge": {
+    "name": "코어 서지",
+    "description": "피해를 !D! 줍니다. NL 인공물을 !M! 얻습니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Creative AI": {
+    "name": "창의적인 인공지능",
+    "description": "매 턴 시작 시 무작위 파워 카드를 1 장 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Darkness": {
+    "name": "어둠",
+    "description": "암흑을 !M! 번 영창합니다.",
+    "upgradeDescription": "암흑을 !M! 번 영창합니다. NL 모든 암흑의 지속 효과를 발동합니다.",
+    "extendedDescription": []
+  },
+  "Defend_B": {
+    "name": "수비",
+    "description": "방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defragment": {
+    "name": "조각모음",
+    "description": "밀집을 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doom and Gloom": {
+    "name": "암울한 전망",
+    "description": "적 전체에게 피해를 !D! 줍니다. NL 암흑을 !M! 번 영창합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Double Energy": {
+    "name": "에너자이저",
+    "description": "에너지를 2 배로 만듭니다. NL 소멸.",
+    "upgradeDescription": "에너지를 2 배로 만듭니다.",
+    "extendedDescription": []
+  },
+  "Dualcast": {
+    "name": "이중 시전",
+    "description": "가장 오른쪽의 구체를 2 번 발현합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Echo Form": {
+    "name": "메아리의 형상",
+    "description": "휘발성. NL 매 턴 처음 사용하는 카드가 두 번 사용됩니다.",
+    "upgradeDescription": "매 턴 처음 사용하는 카드가 두 번 사용됩니다.",
+    "extendedDescription": []
+  },
+  "Electrodynamics": {
+    "name": "전기 역학",
+    "description": "전기가 이제 모든 적을 대상으로 합니다. NL 전기를 !M! 번 영창합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fission": {
+    "name": "핵분열",
+    "description": "모든 구체를 제거한 후 제거된 구체 하나당 [B] 를 얻고 카드를 !M! 장 뽑습니다. NL 소멸.",
+    "upgradeDescription": "모든 구체를 발현시킨 후 발현된 구체 하나당 [B] 를 얻고 카드를 !M! 장 뽑습니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Force Field": {
+    "name": "역장",
+    "description": "이번 전투에 사용된 파워 카드의 수만큼 이 카드의 비용이 [B] 감소합니다. NL 방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FTL": {
+    "name": "FTL",
+    "description": "피해를 !D! 줍니다. 이번 턴에 카드를 !M! 장 미만으로 사용했다면 카드를 1 장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (이번 턴에 ",
+      " 장의 카드를 사용했습니다.)",
+      " 장의 카드를 사용했습니다.)"
+    ]
+  },
+  "Fusion": {
+    "name": "융합",
+    "description": "플라즈마를 !M! 번 영창합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Genetic Algorithm": {
+    "name": "유전 알고리즘",
+    "description": "방어도를 !B! 얻습니다. 영구적으로 이 카드의 방어도를 !M! 증가시킵니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Glacier": {
+    "name": "빙하",
+    "description": "방어도를 !B! 얻습니다. NL 냉기를 !M! 번 영창합니다.",
+    "upgradeDescription": "방어도를 !B! 얻습니다. NL 냉기를 !M! 번 영창합니다.",
+    "extendedDescription": []
+  },
+  "Go for the Eyes": {
+    "name": "눈 할퀴기",
+    "description": "피해를 !D! 줍니다. 적이 공격할 의도가 있다면 약화를 !M! 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Heatsinks": {
+    "name": "방열판",
+    "description": "파워 카드를 낼 때마다 카드를 !M! 장 뽑습니다.",
+    "upgradeDescription": "파워 카드를 낼 때마다 카드를 !M! 장 뽑습니다.",
+    "extendedDescription": []
+  },
+  "Hello World": {
+    "name": "Hello World",
+    "description": "턴 시작 시 무작위 일반 등급 카드를 1 장 얻습니다.",
+    "upgradeDescription": "선천성. NL 턴 시작 시 무작위 일반 등급 카드를 1 장 얻습니다.",
+    "extendedDescription": []
+  },
+  "Hologram": {
+    "name": "홀로그램",
+    "description": "방어도를 !B! 얻습니다. NL 버린 카드 더미에서 카드 한 장을 선택해서 손으로 가져옵니다. NL 소멸.",
+    "upgradeDescription": "방어도를 !B! 얻습니다. NL 버린 카드 더미에서 카드 한 장을 선택해서 손으로 가져옵니다.",
+    "extendedDescription": []
+  },
+  "Hyperbeam": {
+    "name": "파괴광선",
+    "description": "적 전체에게 피해를 !D! 줍니다. NL 밀집을 !M! 잃습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Leap": {
+    "name": "도약",
+    "description": "방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Lockon": {
+    "name": "명중",
+    "description": "피해를 !D! 줍니다. NL 조준을 !M! 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Loop": {
+    "name": "반복",
+    "description": "내 턴 시작 시 가장 오른쪽 구체의 지속 효과를 발동시킵니다.",
+    "upgradeDescription": "내 턴 시작 시 가장 오른쪽 구체의 지속 효과를 !M! 번 발동시킵니다.",
+    "extendedDescription": []
+  },
+  "Machine Learning": {
+    "name": "기계학습",
+    "description": "내 턴 시작 시 카드를 !M! 장 더 뽑습니다.",
+    "upgradeDescription": "선천성. NL 내 턴 시작 시 카드를 !M! 장 더 뽑습니다.",
+    "extendedDescription": []
+  },
+  "Melter": {
+    "name": "용해 장치",
+    "description": "적의 모든 방어도를 없앱니다. NL 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Meteor Strike": {
+    "name": "유성 타격",
+    "description": "피해를 !D! 줍니다. 플라즈마를 !M! 번 영창합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Multi-Cast": {
+    "name": "다중 시전",
+    "description": "가장 오른쪽의 구체를 X 번 발현합니다.",
+    "upgradeDescription": "가장 오른쪽의 구체를 X+1 번 발현합니다.",
+    "extendedDescription": []
+  },
+  "Steam Power": {
+    "name": "오버클럭",
+    "description": "카드를 !M! 장 뽑습니다. NL *화상 을 버린 카드 더미에 넣습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rainbow": {
+    "name": "무지개",
+    "description": "전기를 1 번, NL 냉기를 1 번, NL 암흑을 1 번 영창합니다. NL 소멸.",
+    "upgradeDescription": "전기를 1 번, NL 냉기를 1 번, NL 암흑을 1 번 영창합니다.",
+    "extendedDescription": []
+  },
+  "Reboot": {
+    "name": "다시 시작",
+    "description": "모든 카드를 뽑을 카드 더미에 섞어 넣습니다. NL 카드를 !M! 장 뽑습니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rebound": {
+    "name": "되돌리기",
+    "description": "피해를 !D! 줍니다. NL 이번 턴에 사용하는 다음 카드를 뽑을 카드 더미의 맨 위에 놓습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Redo": {
+    "name": "재귀",
+    "description": "가장 오른쪽의 구체를 발현시킵니다. NL 발현된 구체를 그대로 영창합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Recycle": {
+    "name": "재활용",
+    "description": "카드를 1 장 소멸시킵니다. NL 그 카드의 비용만큼 [B] 를 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reinforced Body": {
+    "name": "강화된 몸체",
+    "description": "방어도를 !B! 만큼 X 번 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reprogram": {
+    "name": "재구성",
+    "description": "밀집을 !M! 잃습니다. NL 힘을 !M! 얻습니다. NL 민첩을 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rip and Tear": {
+    "name": "날뛰기",
+    "description": "무작위 적들에게 피해를 !D! 만큼 !M! 번 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Scrape": {
+    "name": "긁어내기",
+    "description": "피해를 !D! 줍니다. NL 카드를 !M! 장 뽑습니다. NL 뽑아온 카드 중 비용이 0이 아닌 카드를 모두 버립니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Seek": {
+    "name": "탐색",
+    "description": "뽑을 카드 더미에서 카드 !M! 장을 골라 손으로 가져옵니다. NL 소멸.",
+    "upgradeDescription": "뽑을 카드 더미에서 카드 !M! 장을 골라 손으로 가져옵니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Self Repair": {
+    "name": "자가 수리",
+    "description": "전투 종료 시 체력을 !M! 회복합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Skim": {
+    "name": "걷어내기",
+    "description": "카드를 !M! 장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Stack": {
+    "name": "스택",
+    "description": "버린 카드 더미에 있는 카드의 수만큼 방어도를 얻습니다.",
+    "upgradeDescription": "버린 카드 더미에 있는 카드의 수에 3을 더한 만큼 방어도를 얻습니다.",
+    "extendedDescription": [
+      " NL (방어도를 !B! 얻습니다.)"
+    ]
+  },
+  "Static Discharge": {
+    "name": "정전기 방전",
+    "description": "막히지 않은 공격 피해를 받을 때마다 전기를 !M! 번 영창합니다.",
+    "upgradeDescription": "막히지 않은 공격 피해를 받을 때마다 전기를 !M! 번 영창합니다.",
+    "extendedDescription": []
+  },
+  "Steam": {
+    "name": "증기 장벽",
+    "description": "방어도를 !B! 얻습니다. 이번 전투동안 이 카드의 방어도가 1 감소합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Storm": {
+    "name": "폭풍",
+    "description": "파워 카드를 사용할 때마다 전기를 1 번 영창합니다.",
+    "upgradeDescription": "선천성. NL 파워 카드를 사용할 때마다 전기를 1 번 영창합니다.",
+    "extendedDescription": []
+  },
+  "Streamline": {
+    "name": "최적화",
+    "description": "피해를 !D! 줍니다. NL 이 카드를 사용할 때마다 이번 전투 동안 이 카드의 비용이 !M! 감소합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Strike_B": {
+    "name": "타격",
+    "description": "피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sunder": {
+    "name": "찢기",
+    "description": "피해를 !D! 줍니다. NL 이 공격으로 적이 죽으면 [B] [B] [B] 를 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sweeping Beam": {
+    "name": "광선 휩쓸기",
+    "description": "적 전체에게 피해를 !D! 줍니다. NL 카드를 !M! 장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tempest": {
+    "name": "뇌우",
+    "description": "전기를 X 번 영창합니다. NL 소멸.",
+    "upgradeDescription": "전기를 X+1 번 영창합니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Thunder Strike": {
+    "name": "전류 타격",
+    "description": "이번 전투에서 영창된 전기 하나당 무작위 적에게 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " (전기를 !M! 번 영창했습니다.)"
+    ]
+  },
+  "Turbo": {
+    "name": "터보",
+    "description": "[B] [B] 를 얻습니다. NL 버린 카드 더미에 *공허 를 섞어 넣습니다.",
+    "upgradeDescription": "[B] [B] [B] 를 얻습니다. NL 버린 카드 더미에 *공허 를 섞어 넣습니다.",
+    "extendedDescription": []
+  },
+  "Undo": {
+    "name": "평형",
+    "description": "방어도를 !B! 얻습니다. NL 이번 턴 종료 시 카드를 버리지 않습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "White Noise": {
+    "name": "백색 소음",
+    "description": "무작위 파워 카드 1 장을 얻습니다. NL 이번 턴 동안 그 카드의 비용이 0이 됩니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Zap": {
+    "name": "파지직",
+    "description": "전기를 !M! 번 영창합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Alpha": {
+    "name": "알파",
+    "description": "뽑을 카드 더미에 *베타 를 섞어 넣습니다. NL 소멸.",
+    "upgradeDescription": "선천성. NL 뽑을 카드 더미에 *베타 를 섞어 넣습니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "BattleHymn": {
+    "name": "전투 찬가",
+    "description": "매 턴 시작 시 *엄벌 을 1 장 얻습니다.",
+    "upgradeDescription": "선천성. NL 매 턴 시작 시 *엄벌 을 1 장 얻습니다.",
+    "extendedDescription": []
+  },
+  "Blasphemy": {
+    "name": "신성 모독",
+    "description": "강림합니다. NL 다음 턴에 죽습니다. NL 소멸.",
+    "upgradeDescription": "보존. NL 강림합니다. NL 다음 턴에 죽습니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "BowlingBash": {
+    "name": "충돌 강타",
+    "description": "전투 중인 적 하나당 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Brilliance": {
+    "name": "광휘",
+    "description": "피해를 !D! 줍니다. NL 이번 전투에서 얻었던 만트라만큼 추가 피해를 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "",
+      ""
+    ]
+  },
+  "CarveReality": {
+    "name": "현실 개척",
+    "description": "피해를 !D! 줍니다. *엄벌 을 1 장 얻습니다.",
+    "upgradeDescription": "피해를 !D! 줍니다. *엄벌+ 을 1 장 얻습니다.",
+    "extendedDescription": []
+  },
+  "Collect": {
+    "name": "수집",
+    "description": "다음 X 턴 동안 내 턴 시작 시 손으로 *기적+ 를 가져옵니다. NL 소멸.",
+    "upgradeDescription": "다음 X+1 턴 동안 내 턴 시작 시 손으로 *기적+ 를 가져옵니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Conclude": {
+    "name": "결론",
+    "description": "적 전체에게 피해를 !D! 줍니다. NL 턴을 종료합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ConjureBlade": {
+    "name": "마술 칼날",
+    "description": "뽑을 카드 더미에 *말살검 을 섞어 넣습니다. NL 소멸.",
+    "upgradeDescription": "뽑을 카드 더미에 X+1 된 *말살검 을 섞어 넣습니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Consecrate": {
+    "name": "축성",
+    "description": "적 전체에게 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Crescendo": {
+    "name": "백열",
+    "description": "보존. NL 진노합니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CrushJoints": {
+    "name": "관절 부수기",
+    "description": "피해를 !D! 줍니다. NL 이번 전투에서 직전에 사용한 카드가 스킬 카드일 경우 취약을 !M! 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CutThroughFate": {
+    "name": "운명 가르기",
+    "description": "피해를 !D! 줍니다. NL 예지 !M!. NL 카드를 1 장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DeceiveReality": {
+    "name": "현실 속이기",
+    "description": "방어도를 !B! 얻습니다. *안전 을 1 장 생성합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_P": {
+    "name": "수비",
+    "description": "방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DeusExMachina": {
+    "name": "데우스 엑스 마키나",
+    "description": "사용불가. NL 이 카드를 뽑으면 소멸하면서 *기적 을 !M! 장 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DevaForm": {
+    "name": "천신의 형상",
+    "description": "휘발성. NL 내 턴 시작 시 [W] 를 얻습니다. 얻는 [W] 는 매 턴 !M! 만큼 증가합니다.",
+    "upgradeDescription": "내 턴 시작 시 [W] 를 얻습니다. 얻는 [W] 는 매 턴 !M! 만큼 증가합니다.",
+    "extendedDescription": []
+  },
+  "Devotion": {
+    "name": "헌신",
+    "description": "내 턴 시작 시 만트라를 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyBody": {
+    "name": "육체 수양",
+    "description": "방어도를 !B! 얻습니다. NL 현재 경지에서 벗어납니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyFist": {
+    "name": "정권 수양",
+    "description": "피해를 !D! 줍니다. NL 현재 경지에서 벗어납니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyMind": {
+    "name": "정신 수양",
+    "description": "카드를 !M! 장 뽑습니다. NL 현재 경지에서 벗어납니다.",
+    "upgradeDescription": "카드를 !M! 장 뽑습니다. NL 현재 경지에서 벗어납니다.",
+    "extendedDescription": []
+  },
+  "Eruption": {
+    "name": "분화",
+    "description": "피해를 !D! 줍니다. NL 진노합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Establishment": {
+    "name": "지배",
+    "description": "카드가 보존될 때마다 그 카드의 비용을 이번 전투 동안 !M! 낮춥니다.",
+    "upgradeDescription": "선천성. NL 카드가 보존될 때마다 그 카드의 비용을 이번 전투 동안 !M! 낮춥니다.",
+    "extendedDescription": []
+  },
+  "Evaluate": {
+    "name": "평가",
+    "description": "방어도를 !B! 얻습니다. NL 뽑을 카드 더미에 *통찰 을 섞어 넣습니다.",
+    "upgradeDescription": "방어도를 !B! 얻습니다. NL 뽑을 카드 더미에 *통찰+ 을 섞어 넣습니다.",
+    "extendedDescription": []
+  },
+  "Fasting2": {
+    "name": "단식",
+    "description": "힘을 !M! 얻습니다. NL 민첩을 !M! 얻습니다. NL 매 턴 시작 시 [W] 를 1 적게 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FearNoEvil": {
+    "name": "무외",
+    "description": "피해를 !D! 줍니다. NL 적이 공격할 의도가 있다면 명상합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FlurryOfBlows": {
+    "name": "일진광풍",
+    "description": "피해를 !D! 줍니다. NL 경지를 바꿀 때마다 버린 카드 더미에서 손으로 가져옵니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FlyingSleeves": {
+    "name": "흩날리는 소매",
+    "description": "보존. NL 피해를 !D! 만큼 2 번 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FollowUp": {
+    "name": "뒤처리",
+    "description": "피해를 !D! 줍니다. NL 이번 전투에서 직전에 사용한 카드가 공격 카드일 경우 [W] 를 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ForeignInfluence": {
+    "name": "외세",
+    "description": "모든 직업의 공격 카드 셋 중 하나를 선택해 얻습니다. NL 소멸.",
+    "upgradeDescription": "모든 직업의 공격 카드 셋 중 하나를 선택해 얻습니다. NL 이번 턴 동안 그 카드의 비용이 0 이 됩니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Wireheading": {
+    "name": "선견지명",
+    "description": "내 턴 시작 시 예지 !M!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Halt": {
+    "name": "저지",
+    "description": "방어도를 !B! 얻습니다. NL 진노 중일 경우 방어도를 추가로 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Indignation": {
+    "name": "분개",
+    "description": "진노 중이라면 적 전체에게 취약을 !M! 부여합니다. 그렇지 않으면 진노합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "InnerPeace": {
+    "name": "내면의 평화",
+    "description": "명상 중이라면 카드를 !M! 장 뽑습니다. 그렇지 않으면 명상합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Judgement": {
+    "name": "심판",
+    "description": "적의 체력이 !M! 이하일 경우 NL 체력을 0으로 만듭니다.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "심판당함"
+    ]
+  },
+  "JustLucky": {
+    "name": "요행",
+    "description": "예지 !M!. NL 방어도를 !B! 얻습니다. NL 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LessonLearned": {
+    "name": "교훈",
+    "description": "피해를 !D! 줍니다. NL 치명타라면 덱에 있는 무작위 카드를 영구히 강화합니다. 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LikeWater": {
+    "name": "여류",
+    "description": "턴 종료 시 명상 중이라면 방어도를 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "MasterReality": {
+    "name": "현실 지배",
+    "description": "전투 중에 카드를 생성할 때마다 그 카드를 강화합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Meditate": {
+    "name": "사색",
+    "description": "버린 카드 더미에서 카드 1 장을 손으로 들고 온 뒤 보존합니다. NL 명상합니다. NL 턴을 종료합니다.",
+    "upgradeDescription": "버린 카드 더미에서 카드 2 장을 손으로 들고 온 뒤 보존합니다. NL 명상합니다. NL 턴을 종료합니다.",
+    "extendedDescription": []
+  },
+  "MentalFortress": {
+    "name": "마음의 요새",
+    "description": "경지를 바꿀 때마다, 방어도를 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Nirvana": {
+    "name": "열반",
+    "description": "예지할 때마다 방어도를 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Omniscience": {
+    "name": "전지",
+    "description": "뽑을 카드 더미에서 카드를 1 장 선택합니다. NL 선택한 카드를 두 번 사용하고 소멸시킵니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Perseverance": {
+    "name": "인내",
+    "description": "보존. NL 방어도를 !B! 얻습니다. NL 보존될 때마다 이번 전투 동안 이 카드의 방어도가 !M! 증가합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pray": {
+    "name": "기도",
+    "description": "만트라를 !M! 얻습니다. NL 뽑을 카드 더미에 *통찰 을 1 장 섞어 넣습니다.",
+    "upgradeDescription": "만트라를 !M! 얻습니다. NL 뽑을 카드 더미에 *통찰+ 을 1 장 섞어 넣습니다.",
+    "extendedDescription": []
+  },
+  "PathToVictory": {
+    "name": "급소",
+    "description": "*표식 을 !M! 부여합니다. 모든 적의 체력을 대상에게 부여된 *표식 만큼 감소시킵니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Prostrate": {
+    "name": "부복",
+    "description": "만트라를 !M! 얻습니다. NL 방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Protect": {
+    "name": "보호",
+    "description": "보존. NL 방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ragnarok": {
+    "name": "라그나로크",
+    "description": "무작위 적들에게 피해를 !D! 만큼 !M! 번 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ReachHeaven": {
+    "name": "천국의 계단",
+    "description": "피해를 !D! 줍니다. NL 뽑을 카드 더미에 *무력 *돌파 를 1 장 섞어 넣습니다.",
+    "upgradeDescription": "피해를 !D! 줍니다. NL 뽑을 카드 더미에 *무력 *돌파+ 를 1 장 섞어 넣습니다.",
+    "extendedDescription": []
+  },
+  "Adaptation": {
+    "name": "추월",
+    "description": "진노할 때마다 카드를 !M! 장 뽑습니다.",
+    "upgradeDescription": "DEPRECATED",
+    "extendedDescription": []
+  },
+  "Sanctity": {
+    "name": "존엄",
+    "description": "방어도를 !B! 얻습니다. NL 이번 전투에서 직전에 사용한 카드가 스킬 카드일 경우 카드를 !M! 장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SandsOfTime": {
+    "name": "시간의 모래",
+    "description": "보존. NL 피해를 !D! 줍니다. NL 보존될 때마다 이번 전투 동안 이 카드의 비용이 1 만큼 줄어듭니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SashWhip": {
+    "name": "벨트 휘두르기",
+    "description": "피해를 !D! 줍니다. NL 이번 전투에서 직전에 사용한 카드가 공격 카드일 경우 약화를 !M! 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Scrawl": {
+    "name": "휘갈김",
+    "description": "손이 가득 찰 때까지 카드를 뽑습니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SignatureMove": {
+    "name": "개인기",
+    "description": "이 카드가 손에 있는 유일한 공격 카드일 경우에만 사용 가능합니다. 피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vengeance": {
+    "name": "들끓는 울화",
+    "description": "다음 턴 시작 시 진노하고 카드를 !M! 장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SpiritShield": {
+    "name": "영혼 방패",
+    "description": "손에 있는 카드 한 장당 방어도를 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (방어도를 !B! 얻습니다.)"
+    ]
+  },
+  "Strike_P": {
+    "name": "타격",
+    "description": "피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Study": {
+    "name": "학습",
+    "description": "내 턴 종료 시 뽑을 카드 더미에 *통찰 을 섞어넣습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Swivel": {
+    "name": "회전",
+    "description": "방어도를 !B! 얻습니다. NL 다음에 사용하는 공격 카드의 비용이 0이 됩니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "TalkToTheHand": {
+    "name": "손절",
+    "description": "피해를 !D! 줍니다. NL 해당 적을 공격할 때마다 방어도를 !M! 얻습니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tantrum": {
+    "name": "격분",
+    "description": "피해를 !D! 만큼 NL !M! 번 줍니다. NL 진노합니다. NL 이 카드를 뽑을 카드 더미에 섞어넣습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ThirdEye": {
+    "name": "제 3의 눈",
+    "description": "방어도를 !B! 얻습니다. NL 예지 !M!.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ClearTheMind": {
+    "name": "고요함",
+    "description": "보존. NL 명상합니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vault": {
+    "name": "회피 도약",
+    "description": "이번 턴 후에 내 턴을 추가로 진행합니다. NL 턴을 종료합니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vigilance": {
+    "name": "경각",
+    "description": "방어도를 !B! 얻습니다. 명상합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wallop": {
+    "name": "맹공",
+    "description": "피해를 !D! 줍니다. NL 막히지 않은 피해량만큼 방어도를 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WaveOfTheHand": {
+    "name": "장법",
+    "description": "이번 턴 동안 방어도를 얻을 때마다 적 전체에게 약화를 !M! 만큼 부여합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Weave": {
+    "name": "횡행",
+    "description": "피해를 !D! 줍니다. NL 예지할 때마다 이 카드를 버린 카드 더미에서 손으로 들고 옵니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WheelKick": {
+    "name": "돌려차기",
+    "description": "피해를 !D! 줍니다. NL 카드를 !M! 장 뽑습니다.",
+    "upgradeDescription": "피해를 !D! 줍니다. NL 카드를 !M! 장 뽑습니다.",
+    "extendedDescription": []
+  },
+  "WindmillStrike": {
+    "name": "회오리 타격",
+    "description": "보존. NL 피해를 !D! 줍니다. NL 보존될 때마다 이번 전투 동안 이 카드의 피해량이 !M! 만큼 증가합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wish": {
+    "name": "염원",
+    "description": "하나 선택: NL 판금 갑옷을 !B! 얻거나, 힘을 !D! 얻거나, 골드를 !M! 얻습니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Worship": {
+    "name": "숭배",
+    "description": "만트라를 !M! 얻습니다.",
+    "upgradeDescription": "보존. NL 만트라를 !M! 얻습니다.",
+    "extendedDescription": []
+  },
+  "WreathOfFlame": {
+    "name": "불의 고리",
+    "description": "다음에 사용하는 공격 카드의 피해량이 !M! 증가합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Apotheosis": {
+    "name": "신성",
+    "description": "모든 카드를 이번 전투 동안 강화합니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bandage Up": {
+    "name": "붕대 감기",
+    "description": "체력을 !M! 회복합니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blind": {
+    "name": "실명",
+    "description": "약화를 !M! 부여합니다.",
+    "upgradeDescription": "적 전체에게 약화를 !M! 부여합니다.",
+    "extendedDescription": []
+  },
+  "Chrysalis": {
+    "name": "번데기",
+    "description": "무작위 스킬 카드 !M! 장을 뽑을 카드 더미에 추가합니다. 이번 전투 동안 그 카드들의 비용이 0이 됩니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dark Shackles": {
+    "name": "어둠의 족쇄",
+    "description": "이번 턴에만 힘을 !M! 감소시킵니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deep Breath": {
+    "name": "심호흡",
+    "description": "버린 카드 더미를 뽑을 카드 더미에 넣고 섞습니다. NL 카드를 !M! 장 뽑습니다.",
+    "upgradeDescription": "버린 카드 더미를 뽑을 카드 더미에 넣고 섞습니다. NL 카드를 !M! 장 뽑습니다.",
+    "extendedDescription": []
+  },
+  "Discovery": {
+    "name": "발견",
+    "description": "무작위 세 카드 중 하나를 선택해 얻습니다. 이번 턴 동안 그 카드의 비용이 0 이 됩니다. NL 소멸.",
+    "upgradeDescription": "무작위 세 카드 중 하나를 선택해 얻습니다. 이번 턴 동안 그 카드의 비용이 0 이 됩니다.",
+    "extendedDescription": []
+  },
+  "Dramatic Entrance": {
+    "name": "극적인 입장",
+    "description": "선천성. NL 적 전체에게 피해를 !D! 줍니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Enlightenment": {
+    "name": "계몽",
+    "description": "이번 턴 동안 손에 있는 모든 카드의 비용을 1로 낮춥니다.",
+    "upgradeDescription": "이번 전투 동안 손에 있는 모든 카드의 비용을 1로 낮춥니다.",
+    "extendedDescription": []
+  },
+  "Finesse": {
+    "name": "능숙",
+    "description": "방어도를 !B! 얻습니다. NL 카드를 1장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flash of Steel": {
+    "name": "강철의 섬광",
+    "description": "피해를 !D! 줍니다. NL 카드를 1 장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Forethought": {
+    "name": "대비",
+    "description": "손에 있는 카드 하나를 뽑을 카드 더미 맨 밑에 둡니다. NL 사용하기 전까지 그 카드의 비용은 0 이 됩니다.",
+    "upgradeDescription": "손에 있는 카드를 원하는 만큼 뽑을 카드 더미 맨 밑에 둡니다. NL 사용하기 전까지 그 카드의 비용은 0 이 됩니다.",
+    "extendedDescription": []
+  },
+  "Good Instincts": {
+    "name": "직감",
+    "description": "방어도를 !B! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "HandOfGreed": {
+    "name": "탐욕의 손",
+    "description": "피해를 !D! 줍니다. NL 치명타라면 골드를 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Impatience": {
+    "name": "성급함",
+    "description": "손에 공격 카드가 없다면 카드를 !M! 장 뽑습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Jack Of All Trades": {
+    "name": "팔방미인",
+    "description": "무작위 무색 카드를 !M! 장 얻습니다. NL 소멸.",
+    "upgradeDescription": "무작위 무색 카드를 !M! 장 얻습니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Madness": {
+    "name": "광기",
+    "description": "손에 있는 무작위 카드 1 장의 비용이 이번 전투 동안 0 이 됩니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Magnetism": {
+    "name": "자기력",
+    "description": "내 턴 시작 시 무작위 무색 카드를 1 장 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Master of Strategy": {
+    "name": "전략의 천재",
+    "description": "카드를 !M! 장 뽑습니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Mayhem": {
+    "name": "대혼란",
+    "description": "내 턴 시작 시 뽑을 카드 더미 맨 위에 있는 카드를 사용합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Metamorphosis": {
+    "name": "탈바꿈",
+    "description": "무작위 공격 카드 !M! 장을 뽑을 카드 더미에 섞어 넣습니다. 이번 전투 동안 그 카드들의 비용이 0 이 됩니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Mind Blast": {
+    "name": "정신 공격",
+    "description": "선천성. NL 뽑을 카드 더미에 있는 카드의 수만큼 피해를 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (피해를 !D! 줍니다.)"
+    ]
+  },
+  "Panacea": {
+    "name": "만병통치약",
+    "description": "인공물을 !M! 얻습니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Panache": {
+    "name": "위풍당당",
+    "description": "한 턴에 5 장의 카드를 사용할 때마다 적 전체에게 피해를 !M! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PanicButton": {
+    "name": "비상 단추",
+    "description": "방어도를 !B! 얻습니다. 다음 !M! 턴 동안 카드를 통해 방어도를 얻을 수 없습니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Purity": {
+    "name": "순수",
+    "description": "손에 있는 카드 중 최대 !M! 장을 선택해 소멸시킵니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sadistic Nature": {
+    "name": "가학적 본성",
+    "description": "적에게 부정적인 효과를 부여할 때마다 대상에게 피해를 !M! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Secret Technique": {
+    "name": "비밀 기술",
+    "description": "뽑을 카드 더미에서 스킬 카드를 1 장 선택해 가져옵니다. NL 소멸.",
+    "upgradeDescription": "뽑을 카드 더미에서 스킬 카드를 1 장 선택해 가져옵니다.",
+    "extendedDescription": [
+      "뽑을 카드 더미에 NL 스킬 카드가 없어."
+    ]
+  },
+  "Secret Weapon": {
+    "name": "비밀 병기",
+    "description": "뽑을 카드 더미에서 공격 카드를 1 장 선택해 가져옵니다. NL 소멸.",
+    "upgradeDescription": "뽑을 카드 더미에서 공격 카드를 1 장 선택해 가져옵니다.",
+    "extendedDescription": [
+      "뽑을 카드 더미에 NL 공격 카드가 없어."
+    ]
+  },
+  "Swift Strike": {
+    "name": "재빠른 타격",
+    "description": "피해를 !D! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "The Bomb": {
+    "name": "폭탄",
+    "description": "3 턴 후 턴 종료 시 적 전체에게 피해를 !M! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Thinking Ahead": {
+    "name": "미래 예지",
+    "description": "카드를 2 장 뽑은 뒤 카드 1 장을 뽑을 카드 더미 맨 위에 놓습니다. NL 소멸.",
+    "upgradeDescription": "카드를 2 장 뽑은 뒤 카드 1 장을 뽑을 카드 더미 맨 위에 놓습니다.",
+    "extendedDescription": []
+  },
+  "Transmutation": {
+    "name": "변성",
+    "description": "무작위 무색 카드를 X 장 얻습니다. 이번 턴 동안 그 카드들의 비용이 0 이 됩니다. NL 소멸.",
+    "upgradeDescription": "강화된 무작위 무색 카드를 X 장 얻습니다. 이번 턴 동안 그 카드들의 비용이 0 이 됩니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Trip": {
+    "name": "헛디딤",
+    "description": "취약을 !M! 부여합니다.",
+    "upgradeDescription": "적 전체에게 취약을 !M! 부여합니다.",
+    "extendedDescription": []
+  },
+  "Violence": {
+    "name": "폭력",
+    "description": "뽑을 카드 더미에서 무작위로 공격 카드 !M! 장을 손으로 가져옵니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Burn": {
+    "name": "화상",
+    "description": "사용불가. NL 내 턴 종료 시 피해를 2 받습니다.",
+    "upgradeDescription": "사용불가. NL 내 턴 종료 시 피해를 4 받습니다.",
+    "extendedDescription": []
+  },
+  "Dazed": {
+    "name": "어지러움",
+    "description": "사용불가. NL 휘발성.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Slimed": {
+    "name": "점액투성이",
+    "description": "소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Void": {
+    "name": "공허",
+    "description": "사용불가. NL 휘발성. NL 이 카드를 뽑으면, 에너지를 1 잃습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wound": {
+    "name": "부상",
+    "description": "사용불가.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ghostly": {
+    "name": "영체화",
+    "description": "휘발성. NL 불가침을 1 얻습니다. NL 소멸.",
+    "upgradeDescription": "불가침을 1 얻습니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Beta": {
+    "name": "베타",
+    "description": "뽑을 카드에 *오메가 를 섞어 넣습니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bite": {
+    "name": "흡혈",
+    "description": "피해를 !D! 줍니다. NL 체력을 !M! 회복합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "J.A.X.": {
+    "name": "J.A.X.",
+    "description": "체력을 3 잃습니다. NL 힘을 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Insight": {
+    "name": "통찰",
+    "description": "보존. NL 카드를 !M! 장 뽑습니다. NL 소멸.",
+    "upgradeDescription": "보존. NL 카드를 !M! 장 뽑습니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Miracle": {
+    "name": "기적",
+    "description": "보존. NL [W] 를 얻습니다. NL 소멸.",
+    "upgradeDescription": "보존. NL [W] [W] 를 얻습니다. NL 소멸.",
+    "extendedDescription": []
+  },
+  "Omega": {
+    "name": "오메가",
+    "description": "턴 종료 시 적 전체에게 피해를 !M! 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "RitualDagger": {
+    "name": "의식용 단검",
+    "description": "피해를 !D! 줍니다. NL 치명타라면 이 카드의 피해량이 영구적으로 !M! 만큼 증가합니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Safety": {
+    "name": "안전",
+    "description": "방어도를 !B! 얻습니다. NL 보존. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shiv": {
+    "name": "단도",
+    "description": "피해를 !D! 줍니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Smite": {
+    "name": "엄벌",
+    "description": "보존. NL 피해를 !D! 줍니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ThroughViolence": {
+    "name": "무력 돌파",
+    "description": "보존. NL 피해를 !D! 줍니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "BecomeAlmighty": {
+    "name": "전능",
+    "description": "힘을 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FameAndFortune": {
+    "name": "부와 명예",
+    "description": "골드를 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LiveForever": {
+    "name": "영생",
+    "description": "*판금 *갑옷 을 !M! 얻습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Expunger": {
+    "name": "말살검",
+    "description": "피해를 !D! 만큼 X 번 줍니다.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "피해를 !D! 만큼 !M! 번 줍니다.",
+      "피해를 !D! 만큼 !M! 번 줍니다."
+    ]
+  },
+  "AscendersBane": {
+    "name": "등반자의 골칫거리",
+    "description": "사용불가. NL 휘발성. NL 덱에서 제거할 수 없습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CurseOfTheBell": {
+    "name": "방울의 저주",
+    "description": "사용불가. NL 덱에서 제거할 수 없습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clumsy": {
+    "name": "서투름",
+    "description": "사용불가. NL 휘발성.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Decay": {
+    "name": "부패",
+    "description": "사용불가. NL 내 턴 종료 시 피해를 2 입습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doubt": {
+    "name": "의심",
+    "description": "사용불가. NL 내 턴 종료 시 약화를 1 받습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Injury": {
+    "name": "상처",
+    "description": "사용불가.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Necronomicurse": {
+    "name": "네크로노미콘의 저주",
+    "description": "사용불가. NL 이 저주에서 벗어날 수 없습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Normality": {
+    "name": "규칙 준수",
+    "description": "사용불가. NL 손에 있다면 이번 턴 동안 카드를 3 장까지만 사용할 수 있습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "이번 턴에 카드를 #r3 #r장까지만 사용할 수 있어.",
+      "사용불가. NL 한 턴에 ",
+      " 장의 카드만 사용할 수 있습니다.",
+      " 장의 카드만 사용할 수 있습니다. NL 지금까지 카드를 ",
+      " 장 사용했습니다.",
+      " 장 사용했습니다."
+    ]
+  },
+  "Pain": {
+    "name": "고통",
+    "description": "사용불가. NL 손에 있는 동안 NL 다른 카드를 사용할 때마다 체력을 1 씩 잃습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Parasite": {
+    "name": "기생충",
+    "description": "사용불가. NL 변화되거나 덱에서 제거 될 시 최대 체력이 3 감소합니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pride": {
+    "name": "긍지",
+    "description": "선천성. NL 내 턴 종료 시 이 카드를 복사해 뽑을 카드 더미 맨 위에 놓습니다. NL 소멸.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Regret": {
+    "name": "후회",
+    "description": "사용불가. NL 내 턴 종료 시 손에 있는 카드의 수만큼 체력을 잃습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shame": {
+    "name": "수치",
+    "description": "사용불가. NL 턴 종료 시 손상을 1 받습니다.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Writhe": {
+    "name": "몸부림",
+    "description": "사용불가. NL 선천성.",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  }
+}

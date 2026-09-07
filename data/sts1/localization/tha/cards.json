@@ -1,0 +1,2277 @@
+{
+  "Anger": {
+    "name": "ความโกรธ",
+    "description": "สร้างความเสียหาย !D! NL เพิ่มสำเนาการ์ดใบนี้อีก 1 ใบใส่กองทิ้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Armaments": {
+    "name": "ยุทโธปกรณ์",
+    "description": "ได้รับ !B! เกราะ NL พัฒนาการ์ดในมือ 1 ใบ จนจบการต่อสู้",
+    "upgradeDescription": "ได้รับ !B! เกราะ NL พัฒนาการ์ดในมือทุกใบ จนจบการต่อสู้",
+    "extendedDescription": []
+  },
+  "Barricade": {
+    "name": "ตรึงกำลัง",
+    "description": "เกราะ จะไม่หายไปเมื่อเริ่มต้นเทิร์น",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bash": {
+    "name": "ทุบตี",
+    "description": "สร้างความเสียหาย !D! NL เพิ่มผล !M! จุดอ่อน",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Battle Trance": {
+    "name": "หลงใหลการศึก",
+    "description": "จั่วการ์ด !M! ใบ NL ในเทิร์นนี้ คุณจะจั่วการ์ดไม่ได้อีก",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Berserk": {
+    "name": "ความบ้าระห่ำ",
+    "description": "ได้รับ !M! จุดอ่อน NL เมื่อเริ่มต้นเทิร์น ได้รับ [R]",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blood for Blood": {
+    "name": "เลือดแลกเลือด",
+    "description": "สร้างความเสียหาย !D! NL (ทุกครั้งที่คุณสูญเสีย HP ค่าร่ายลดลง [R] จนจบการต่อสู้)",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bloodletting": {
+    "name": "กรีดเลือดขับพิษ",
+    "description": "สูญเสีย 3 HP NL ได้รับ [R] [R]",
+    "upgradeDescription": "สูญเสีย 3 HP NL ได้รับ [R] [R] [R]",
+    "extendedDescription": []
+  },
+  "Bludgeon": {
+    "name": "กระบองยักษ์",
+    "description": "สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Body Slam": {
+    "name": "พุ่งเข้าชน",
+    "description": "สร้างความเสียหายเท่ากับ เกราะ ของคุณ",
+    "upgradeDescription": " NL (สร้างความเสียหาย !D!)",
+    "extendedDescription": []
+  },
+  "Brutality": {
+    "name": "ความทารุณ",
+    "description": "เมื่อเริ่มต้นเทิร์น สูญเสีย 1 HP และจั่วการ์ด 1 ใบ",
+    "upgradeDescription": "ติดตัว NL เมื่อเริ่มต้นเทิร์น สูญเสีย 1 HP และจั่วการ์ด 1 ใบ",
+    "extendedDescription": []
+  },
+  "Burning Pact": {
+    "name": "สัญญาเพลิง",
+    "description": "สลายการ์ด 1 ใบ NL จั่วการ์ด !M! ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Carnage": {
+    "name": "สังหารโหด",
+    "description": "กึ่งสลาย NL สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clash": {
+    "name": "ประดาบ",
+    "description": "จะใช้ได้ก็ต่อเมื่อการ์ดทุกใบ ในมือเป็นการ์ดโจมตี NL สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "มีการ์ดในมือ ที่ไม่ใช่การ์ดโจมตี"
+    ]
+  },
+  "Cleave": {
+    "name": "ฟันกวาด",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูทั้งหมด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clothesline": {
+    "name": "โคลสไลน์",
+    "description": "สร้างความเสียหาย !D! NL เพิ่มผล !M! ความอ่อนแอ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Combust": {
+    "name": "จุดระเบิด",
+    "description": "เมื่อจบเทิร์น สูญเสีย 1 HP และ สร้างความเสียหาย !M! ใส่ศัตรูทั้งหมด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Corruption": {
+    "name": "เปื้อนมลทิน",
+    "description": "การ์ดทักษะทั้งหมด มีค่าร่ายเหลือ 0 NL และต่อไปนี้ เมื่อใช้การ์ดทักษะ มันจะถูก สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dark Embrace": {
+    "name": "อ้าแขนรับความมืด",
+    "description": "เมื่อมีการ์ด สลาย NL จั่วการ์ด 1 ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_R": {
+    "name": "ป้องกัน",
+    "description": "ได้รับ !B! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Demon Form": {
+    "name": "ร่างปีศาจ",
+    "description": "เมื่อเริ่มต้นเทิร์น ได้รับ !M! ความแข็งแรง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Disarm": {
+    "name": "ปลดอาวุธ",
+    "description": "ศัตรูสูญเสีย !M! ความแข็งแรง NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Double Tap": {
+    "name": "ยิงสองนัดซ้อน",
+    "description": "ในเทิร์นนี้ การ์ดโจมตีใบต่อไป จะเกิดผล 2 ครั้ง",
+    "upgradeDescription": "ในเทิร์นนี้ การ์ดโจมตีอีก !M! ใบต่อไป จะเกิดผล 2 ครั้ง",
+    "extendedDescription": []
+  },
+  "Dropkick": {
+    "name": "กระโดดถีบขาคู่",
+    "description": "สร้างความเสียหาย !D! NL ถ้าศัตรูมี จุดอ่อน NL ได้รับ [R] และ NL จั่วการ์ด 1 ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dual Wield": {
+    "name": "จับดาบสองมือ",
+    "description": "เลือกการ์ดโจมตี หรือการ์ดพลังในมือ 1 ใบ เพิ่มสำเนา การ์ดใบนั้นอีก 1 ใบใส่มือ",
+    "upgradeDescription": "เลือกการ์ดโจมตี หรือการ์ดพลังในมือ 1 ใบ เพิ่มสำเนา การ์ดใบนั้นอีก 2 ใบใส่มือ",
+    "extendedDescription": []
+  },
+  "Entrench": {
+    "name": "ขุดสนามเพลาะ",
+    "description": "เพิ่ม เกราะ ของคุณเป็น 2 เท่า",
+    "upgradeDescription": "เพิ่ม เกราะ ของคุณเป็น 2 เท่า",
+    "extendedDescription": []
+  },
+  "Evolve": {
+    "name": "พัฒนาร่าง",
+    "description": "เมื่อจั่วได้การ์ดสถานะ จั่วการ์ด !M! ใบ",
+    "upgradeDescription": "เมื่อจั่วได้การ์ดสถานะ จั่วการ์ด !M! ใบ",
+    "extendedDescription": []
+  },
+  "Exhume": {
+    "name": "ขุดสุสาน",
+    "description": "นำการ์ดในกองสลาย 1 ใบ กลับขึ้นมือ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Feed": {
+    "name": "กัดกิน",
+    "description": "สร้างความเสียหาย !D! NL เมื่อ สังหาร เพิ่ม !M! HP สูงสุด สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Feel No Pain": {
+    "name": "สภาพไร้เจ็บปวด",
+    "description": "เมื่อมีการ์ด สลาย NL ได้รับ !M! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fiend Fire": {
+    "name": "เพลิงมาร",
+    "description": "สลายการ์ดในมือทั้งหมด NL สร้างความเสียหาย !D! ตามจำนวนการ์ดที่สลายไป NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fire Breathing": {
+    "name": "ลมหายใจเพลิง",
+    "description": "เมื่อจั่วได้การ์ดสถานะ หรือการ์ดคำสาป สร้างความเสียหาย !M! ใส่ศัตรูทั้งหมด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flame Barrier": {
+    "name": "กำแพงอัคคี",
+    "description": "ได้รับ !B! เกราะ NL เมื่อถูกโจมตีในเทิร์นนี้ สร้างความเสียหาย !M! กลับไป",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flex": {
+    "name": "เบ่งกล้าม",
+    "description": "ได้รับ !M! ความแข็งแรง NL เมื่อจบเทิร์นนี้ สูญเสีย !M! ความแข็งแรง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ghostly Armor": {
+    "name": "เกราะวิญญาณ",
+    "description": "กึ่งสลาย NL ได้รับ !B! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Havoc": {
+    "name": "นำพาหายนะ",
+    "description": "ใช้การ์ดใบบนสุดของกองจั่ว จากนั้น สลาย การ์ดใบนั้น",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Headbutt": {
+    "name": "โขกหัว",
+    "description": "สร้างความเสียหาย !D! NL นำการ์ด 1 ใบ จากกองทิ้ง ไปวางไว้บนสุดของกองจั่ว",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Heavy Blade": {
+    "name": "ดาบยักษ์",
+    "description": "สร้างความเสียหาย !D! NL ความแข็งแรง มีผล ต่อการ์ดนี้ !M! เท่า",
+    "upgradeDescription": "สร้างความเสียหาย !D! NL ความแข็งแรง มีผล ต่อการ์ดนี้ !M! เท่า",
+    "extendedDescription": []
+  },
+  "Hemokinesis": {
+    "name": "คาถาโลหิต",
+    "description": "สูญเสีย !M! HP NL สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Immolate": {
+    "name": "เพลิงสังเวย",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูทั้งหมด NL เพิ่มการ์ด *เผาไหม้ 1 ใบใส่กองทิ้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Impervious": {
+    "name": "ฟันแทงไม่เข้า",
+    "description": "ได้รับ !B! เกราะ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Infernal Blade": {
+    "name": "นรกศาสตรา",
+    "description": "เพิ่มการ์ดโจมตีแบบสุ่ม 1 ใบใส่มือ NL มันมีค่าร่าย 0 ในเทิร์นนี้ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Inflame": {
+    "name": "จุดไฟ",
+    "description": "ได้รับ !M! ความแข็งแรง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Intimidate": {
+    "name": "ขู่กรรโชก",
+    "description": "เพิ่มผล !M! ความอ่อนแอ ใส่ศัตรูทั้งหมด NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Iron Wave": {
+    "name": "คลื่นคมดาบ",
+    "description": "ได้รับ !B! เกราะ NL สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Juggernaut": {
+    "name": "กำลังภายใน",
+    "description": "เมื่อได้รับ เกราะ จะสร้างความเสียหาย !M! ใส่ศัตรูแบบสุ่ม",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Limit Break": {
+    "name": "ทะลุขีดจำกัด",
+    "description": "เพิ่ม ความแข็งแรง ของคุณเป็น 2 เท่า NL สลาย",
+    "upgradeDescription": "เพิ่ม ความแข็งแรง ของคุณเป็น 2 เท่า",
+    "extendedDescription": []
+  },
+  "Metallicize": {
+    "name": "เสริมสร้างโลหะ",
+    "description": "เมื่อจบเทิร์น ได้รับ !M! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Offering": {
+    "name": "เซ่นสังเวย",
+    "description": "สูญเสีย 6 HP NL ได้รับ [R] [R] NL จั่วการ์ด !M! ใบ NL สลาย",
+    "upgradeDescription": "สูญเสีย 6 HP NL ได้รับ [R] [R] NL จั่วการ์ด !M! ใบ NL สลาย",
+    "extendedDescription": []
+  },
+  "Perfected Strike": {
+    "name": "จู่โจมสมบูรณ์แบบ",
+    "description": "สร้างความเสียหาย !D! NL (ความเสียหายเพิ่มขึ้น !M! ตามจำนวนการ์ด ที่มีคำว่า \"จู่โจม\")",
+    "upgradeDescription": "สร้างความเสียหาย !D! NL (ความเสียหายเพิ่มขึ้น !M! ตามจำนวนการ์ด ที่มีคำว่า \"จู่โจม\")",
+    "extendedDescription": []
+  },
+  "Pommel Strike": {
+    "name": "จู่โจมกระแทกด้าม",
+    "description": "สร้างความเสียหาย !D! NL จั่วการ์ด !M! ใบ",
+    "upgradeDescription": "สร้างความเสียหาย !D! NL จั่วการ์ด !M! ใบ",
+    "extendedDescription": []
+  },
+  "Power Through": {
+    "name": "ใช้กำลังเข้าแลก",
+    "description": "เพิ่มการ์ด *บาดแผล 2 ใบใส่มือ NL ได้รับ !B! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pummel": {
+    "name": "รัวหมัด",
+    "description": "สร้างความเสียหาย !D! จำนวน !M! ครั้ง NL สลาย",
+    "upgradeDescription": "สร้างความเสียหาย !D! จำนวน !M! ครั้ง NL สลาย",
+    "extendedDescription": []
+  },
+  "Rage": {
+    "name": "บันดาลโทสะ",
+    "description": "ในเทิร์นนี้ เมื่อใช้การ์ดโจมตี ได้รับ !M! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rampage": {
+    "name": "ศาสตราอาละวาด",
+    "description": "สร้างความเสียหาย !D! NL เพิ่มพลังให้การ์ดนี้อีก !M! จนจบการต่อสู้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reaper": {
+    "name": "เก็บเกี่ยววิญญาณ",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูทั้งหมด ฟื้นฟู HP ตามจำนวน HP ของศัตรูที่ลดลง NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reckless Charge": {
+    "name": "บุ่มบ่ามบุก",
+    "description": "สร้างความเสียหาย !D! NL สับการ์ด *ความมึนงง 1 ใบ เข้ากองจั่ว",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rupture": {
+    "name": "กายที่แตกร้าว",
+    "description": "เมื่อคุณสูญเสีย HP จากผลของการ์ด NL ได้รับ !M! ความแข็งแรง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Searing Blow": {
+    "name": "ดาบตะวันระอุ",
+    "description": "สร้างความเสียหาย !D! NL สามารถพัฒนาการ์ดนี้ กี่ครั้งก็ได้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Second Wind": {
+    "name": "ฮึดสู้อีกครั้ง",
+    "description": "สลาย การ์ดที่ไม่ใช่ การ์ดโจมตีทั้งหมดในมือ ได้รับ !B! เกราะ ตามจำนวนการ์ดที่ถูก สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Seeing Red": {
+    "name": "เลือดเข้าตา",
+    "description": "ได้รับ [R] [R] NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sentinel": {
+    "name": "เฝ้าระวัง",
+    "description": "ได้รับ !B! เกราะ NL ถ้าการ์ดนี้ถูก สลาย NL ได้รับ [R] [R]",
+    "upgradeDescription": "ได้รับ !B! เกราะ NL ถ้าการ์ดนี้ถูก สลาย NL ได้รับ [R] [R] [R]",
+    "extendedDescription": []
+  },
+  "Sever Soul": {
+    "name": "ดาบพรากวิญญาณ",
+    "description": "สลาย การ์ดที่ไม่ใช่ การ์ดโจมตีทั้งหมดในมือ NL สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shockwave": {
+    "name": "คลื่นกระแทก",
+    "description": "เพิ่มผล !M! ความอ่อนแอ และ จุดอ่อน ใส่ศัตรูทั้งหมด NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shrug It Off": {
+    "name": "แล้วไงใครแคร์",
+    "description": "ได้รับ !B! เกราะ NL จั่วการ์ด 1 ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Spot Weakness": {
+    "name": "ค้นหาจุดอ่อน",
+    "description": "ถ้าศัตรูคิดจะโจมตี ได้รับ !M! ความแข็งแรง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Strike_R": {
+    "name": "จู่โจม",
+    "description": "สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sword Boomerang": {
+    "name": "ดาบบูมเมอแรง",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูแบบสุ่ม จำนวน !M! ครั้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Thunderclap": {
+    "name": "ฟ้าผ่า",
+    "description": "สร้างความเสียหาย !D! และเพิ่มผล 1 จุดอ่อน ใส่ศัตรูทั้งหมด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "True Grit": {
+    "name": "ใจสู้ที่แท้จริง",
+    "description": "ได้รับ !B! เกราะ NL สลาย การ์ด 1 ใบแบบสุ่ม",
+    "upgradeDescription": "ได้รับ !B! เกราะ NL สลาย การ์ด 1 ใบ",
+    "extendedDescription": []
+  },
+  "Twin Strike": {
+    "name": "จู่โจมคู่",
+    "description": "สร้างความเสียหาย !D! จำนวน 2 ครั้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Uppercut": {
+    "name": "หมัดสอยดาว",
+    "description": "สร้างความเสียหาย !D! NL เพิ่มผล !M! ความอ่อนแอ NL เพิ่มผล !M! จุดอ่อน",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Warcry": {
+    "name": "คำรามออกศึก",
+    "description": "จั่วการ์ด !M! ใบ NL นำการ์ดในมือ 1 ใบ ไปวางไว้บนสุดของกองจั่ว NL สลาย",
+    "upgradeDescription": "จั่วการ์ด !M! ใบ NL นำการ์ดในมือ 1 ใบ ไปวางไว้บนสุดของกองจั่ว NL สลาย",
+    "extendedDescription": []
+  },
+  "Whirlwind": {
+    "name": "พายุลมกรด",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูทั้งหมด จำนวน X ครั้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wild Strike": {
+    "name": "จู่โจมบ้าคลั่ง",
+    "description": "สร้างความเสียหาย !D! NL สับการ์ด *บาดแผล 1 ใบเข้ากองจั่ว",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Accuracy": {
+    "name": "ความแม่นยำ",
+    "description": "*มีดสั้น สร้างความเสียหายเพิ่มขึ้น !M!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Acrobatics": {
+    "name": "การแสดงผาดโผน",
+    "description": "จั่วการ์ด !M! ใบ NL ทิ้งการ์ด 1 ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Adrenaline": {
+    "name": "อะดรีนาลีน",
+    "description": "ได้รับ [G] NL จั่วการ์ด 2 ใบ NL สลาย",
+    "upgradeDescription": "ได้รับ [G] [G] NL จั่วการ์ด 2 ใบ NL สลาย",
+    "extendedDescription": []
+  },
+  "After Image": {
+    "name": "ภาพติดตาชั่วขณะ",
+    "description": "ทุกครั้งที่ใช้การ์ด ได้รับ 1 เกราะ",
+    "upgradeDescription": "ติดตัว NL ทุกครั้งที่ใช้การ์ด ได้รับ 1 เกราะ",
+    "extendedDescription": []
+  },
+  "Venomology": {
+    "name": "ศาสตร์ปรุงยา",
+    "description": "ได้รับขวดยาแบบสุ่ม 1 ขวด NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "All Out Attack": {
+    "name": "โจมตีหมดหน้าตัก",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูทั้งหมด NL ทิ้งการ์ด 1 ใบแบบสุ่ม",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "A Thousand Cuts": {
+    "name": "พันคมมีด",
+    "description": "ทุกครั้งที่ใช้การ์ด จะสร้างความเสียหาย !M! ใส่ศัตรูทั้งหมด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Backflip": {
+    "name": "ตีลังกากลับหลัง",
+    "description": "ได้รับ !B! เกราะ NL จั่วการ์ด 2 ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Backstab": {
+    "name": "ลอบแทงหลัง",
+    "description": "ติดตัว NL สร้างความเสียหาย !D! NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bane": {
+    "name": "หายนะแห่งพิษ",
+    "description": "สร้างความเสียหาย !D! NL ถ้าศัตรูมี พิษ สร้างความเสียหาย !D! อีกครั้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blade Dance": {
+    "name": "ระบำมีด",
+    "description": "เพิ่มการ์ด *มีดสั้น !M! ใบใส่มือ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blur": {
+    "name": "ภาพมัว",
+    "description": "ได้รับ !B! เกราะ NL สามารถสะสม เกราะ ไปยังเทิร์นต่อไปได้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bouncing Flask": {
+    "name": "กระติกเด้งดึ๋ง",
+    "description": "เพิ่มผล 3 พิษ ใส่ศัตรูแบบสุ่ม จำนวน !M! ครั้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bullet Time": {
+    "name": "วินาทีหลบกระสุน",
+    "description": "ในเทิร์นนี้ คุณจะจั่วการ์ดไม่ได้อีก NL การ์ดในมือทุกใบ มีค่าร่ายเหลือ 0 จนจบเทิร์น",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Burst": {
+    "name": "ระเบิดพลัง",
+    "description": "ในเทิร์นนี้ การ์ดทักษะใบต่อไป จะเกิดผล 2 ครั้ง",
+    "upgradeDescription": "ในเทิร์นนี้ การ์ดทักษะอีก !M! ใบต่อไป จะเกิดผล 2 ครั้ง",
+    "extendedDescription": []
+  },
+  "Calculated Gamble": {
+    "name": "เดิมพันตามสูตร",
+    "description": "ทิ้งการ์ดในมือทั้งหมด NL จั่วการ์ดตามจำนวนการ์ด ที่ถูกทิ้งไป NL สลาย",
+    "upgradeDescription": "ทิ้งการ์ดในมือทั้งหมด NL จั่วการ์ดตามจำนวนการ์ด ที่ถูกทิ้งไป",
+    "extendedDescription": []
+  },
+  "Caltrops": {
+    "name": "ขวากหนาม",
+    "description": "เมื่อถูกโจมตี สร้างความเสียหาย !M! กลับไป",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Catalyst": {
+    "name": "สารเร่งปฏิกิริยา",
+    "description": "ศัตรูมีผลพิษเป็น 2 เท่า NL สลาย",
+    "upgradeDescription": "ศัตรูมีผลพิษเป็น 3 เท่า NL สลาย",
+    "extendedDescription": []
+  },
+  "Choke": {
+    "name": "รัดคอ",
+    "description": "สร้างความเสียหาย !D! NL ทุกครั้งที่ใช้การ์ดในเทิร์นนี้ ศัตรูจะสูญเสีย !M! HP",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Cloak And Dagger": {
+    "name": "ผ้าคลุมซ่อนมีด",
+    "description": "ได้รับ !B! เกราะ NL เพิ่มการ์ด *มีดสั้น !M! ใบใส่มือ",
+    "upgradeDescription": "ได้รับ !B! เกราะ NL เพิ่มการ์ด *มีดสั้น !M! ใบใส่มือ",
+    "extendedDescription": []
+  },
+  "Concentrate": {
+    "name": "ใจจดจ่อ",
+    "description": "ทิ้งการ์ด !M! ใบ NL ได้รับ [G] [G]",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Corpse Explosion": {
+    "name": "ศพระเบิด",
+    "description": "เพิ่มผล !M! พิษ NL เมื่อศัตรูตาย สร้างความเสียหาย ใส่ศัตรูทั้งหมด ตาม HP สูงสุดของตัวที่ตาย",
+    "upgradeDescription": "deprecated",
+    "extendedDescription": [
+      "deprecated"
+    ]
+  },
+  "Crippling Poison": {
+    "name": "ละอองพิษตัดกำลัง",
+    "description": "เพิ่มผล !M! พิษ และ 2 ความอ่อนแอ ใส่ศัตรูทั้งหมด NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dagger Spray": {
+    "name": "ฝนมีดบิน",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูทั้งหมด จำนวน 2 ครั้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dagger Throw": {
+    "name": "ขว้างมีด",
+    "description": "สร้างความเสียหาย !D! NL จั่วการ์ด 1 ใบ NL ทิ้งการ์ด 1 ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dash": {
+    "name": "พุ่งเข้าใส่",
+    "description": "ได้รับ !B! เกราะ NL สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deadly Poison": {
+    "name": "พิษร้ายแรง",
+    "description": "เพิ่มผล !M! พิษ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_G": {
+    "name": "ป้องกัน",
+    "description": "ได้รับ !B! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deflect": {
+    "name": "ปัดป้อง",
+    "description": "ได้รับ !B! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Die Die Die": {
+    "name": "ตาย ตาย ตาย",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูทั้งหมด NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Distraction": {
+    "name": "เบนความสนใจ",
+    "description": "เพิ่มการ์ดทักษะแบบสุ่ม 1 ใบใส่มือ NL มันมีค่าร่าย 0 ในเทิร์นนี้ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dodge and Roll": {
+    "name": "กลิ้งหลบ",
+    "description": "ได้รับ !B! เกราะ NL จากนั้น เทิร์นต่อไป ได้รับ !B! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doppelganger": {
+    "name": "ด็อปเปิลแกงเกอร์",
+    "description": "เทิร์นต่อไป จั่วการ์ดเพิ่ม X ใบ และได้รับ X [G] NL สลาย",
+    "upgradeDescription": "เทิร์นต่อไป จั่วการ์ดเพิ่ม X+1 ใบ และได้รับ X+1 [G] NL สลาย",
+    "extendedDescription": []
+  },
+  "Endless Agony": {
+    "name": "ความทรมานไร้จุดจบ",
+    "description": "เมื่อจั่วได้การ์ดใบนี้ เพิ่มสำเนาการ์ดใบนี้อีก 1 ใบใส่มือ NL สร้างความเสียหาย !D! NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Envenom": {
+    "name": "อาบยาพิษ",
+    "description": "เมื่อศัตรู HP ลดลง จากการถูกโจมตี เพิ่มผล 1 พิษ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Escape Plan": {
+    "name": "ทางหนีทีไล่",
+    "description": "จั่วการ์ด 1 ใบ NL ถ้าจั่วได้การ์ดทักษะ ได้รับ !B! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Eviscerate": {
+    "name": "ควักไส้คว้านท้อง",
+    "description": "สร้างความเสียหาย !D! จำนวน 3 ครั้ง NL (ค่าร่ายลดลง 1 [G] NL ตามจำนวนการ์ด ที่ถูกทิ้งจนจบเทิร์น)",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Expertise": {
+    "name": "ความช่ำชอง",
+    "description": "จั่วการ์ดจนกว่าในมือจะมี !M! ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Finisher": {
+    "name": "โจมตีปิดฉาก",
+    "description": "สร้างความเสียหาย !D! ตามจำนวนการ์ดโจมตี ที่ใช้ไปในเทิร์นนี้",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (ใช้การ์ดโจมตีไปแล้ว ",
+      " ใบ)",
+      " ใบ)"
+    ]
+  },
+  "Flechettes": {
+    "name": "ลูกดอกสงคราม",
+    "description": "สร้างความเสียหาย !D! ตามจำนวนการ์ดทักษะในมือ",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (มีการ์ดทักษะ ",
+      " ใบ)",
+      " ใบ)"
+    ]
+  },
+  "Flying Knee": {
+    "name": "เข่าลอย",
+    "description": "สร้างความเสียหาย !D! NL ได้รับ [G] ในเทิร์นต่อไป",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Footwork": {
+    "name": "จังหวะก้าวเท้า",
+    "description": "ได้รับ !M! ความชำนาญ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Glass Knife": {
+    "name": "มีดแก้ว",
+    "description": "สร้างความเสียหาย !D! จำนวน 2 ครั้ง จากนั้นลดความเสียหาย ของการ์ดนี้ลง 2 จนจบการต่อสู้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Grand Finale": {
+    "name": "อวสานอลังการ",
+    "description": "จะใช้ได้ก็ต่อเมื่อ ไม่มีการ์ดในกองจั่ว NL สร้างความเสียหาย !D! ใส่ศัตรูทั้งหมด",
+    "upgradeDescription": "กองจั่วต้อง #rว่างเปล่า",
+    "extendedDescription": []
+  },
+  "Heel Hook": {
+    "name": "ล็อกขาหักข้อ",
+    "description": "สร้างความเสียหาย !D! NL ถ้าศัตรูมี ความอ่อนแอ NL ได้รับ [G] และ NL จั่วการ์ด 1 ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Infinite Blades": {
+    "name": "มีดสั้นอนันต์",
+    "description": "เมื่อเริ่มต้นเทิร์น เพิ่มการ์ด *มีดสั้น 1 ใบใส่มือ",
+    "upgradeDescription": "ติดตัว NL เมื่อเริ่มต้นเทิร์น เพิ่มการ์ด *มีดสั้น 1 ใบใส่มือ",
+    "extendedDescription": []
+  },
+  "Leg Sweep": {
+    "name": "กวาดขา",
+    "description": "เพิ่มผล !M! ความอ่อนแอ NL ได้รับ !B! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Malaise": {
+    "name": "สาปส่งโรคภัย",
+    "description": "ศัตรูสูญเสีย X ความแข็งแรง และเพิ่มผล X ความอ่อนแอ NL สลาย",
+    "upgradeDescription": "ศัตรูสูญเสีย X+1 ความแข็งแรง และเพิ่มผล X+1 ความอ่อนแอ NL สลาย",
+    "extendedDescription": []
+  },
+  "Masterful Stab": {
+    "name": "จ้วงแทงเชี่ยวชาญ",
+    "description": "ค่าร่ายเพิ่มขึ้น 1 [G] NL ทุกครั้งที่คุณสูญเสีย HP ในการต่อสู้นี้ NL สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Neutralize": {
+    "name": "ทำให้เป็นกลาง",
+    "description": "สร้างความเสียหาย !D! NL เพิ่มผล !M! ความอ่อนแอ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Night Terror": {
+    "name": "ฝันร้าย",
+    "description": "เลือกการ์ด 1 ใบ NL เทิร์นต่อไป เพิ่มสำเนาการ์ดนั้นอีก !M! ใบใส่มือ สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "เราใช้ NL ",
+      " NL ได้ 1 ครั้งต่อเทิร์น"
+    ]
+  },
+  "Noxious Fumes": {
+    "name": "รมควันพิษ",
+    "description": "เมื่อเริ่มต้นเทิร์น เพิ่มผล !M! พิษ ใส่ศัตรูทั้งหมด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Outmaneuver": {
+    "name": "ใช้เล่ห์ใช้กล",
+    "description": "เทิร์นต่อไป NL ได้รับ [G] [G]",
+    "upgradeDescription": "เทิร์นต่อไป NL ได้รับ [G] [G] [G]",
+    "extendedDescription": []
+  },
+  "Phantasmal Killer": {
+    "name": "มายาสังหาร",
+    "description": "การ์ดโจมตีทั้งหมด จะสร้างความเสียหายเป็น 2 เท่าในเทิร์นต่อไป",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PiercingWail": {
+    "name": "คำครวญกรีดโสต",
+    "description": "ศัตรูทั้งหมดสูญเสีย !M! ความแข็งแรง ในเทิร์นนี้ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Poisoned Stab": {
+    "name": "มีดอาบยาพิษ",
+    "description": "สร้างความเสียหาย !D! NL เพิ่มผล !M! พิษ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Predator": {
+    "name": "ออกล่าเหยื่อ",
+    "description": "สร้างความเสียหาย !D! NL จั่วการ์ด 2 ใบในเทิร์นต่อไป",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Prepared": {
+    "name": "เตรียมตัวอย่างดี",
+    "description": "จั่วการ์ด !M! ใบ NL ทิ้งการ์ด !M! ใบ",
+    "upgradeDescription": "จั่วการ์ด !M! ใบ NL ทิ้งการ์ด !M! ใบ",
+    "extendedDescription": []
+  },
+  "Quick Slash": {
+    "name": "เฉือนอย่างรวดเร็ว",
+    "description": "สร้างความเสียหาย !D! NL จั่วการ์ด 1 ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reflex": {
+    "name": "สัญชาตญาณตอบโต้",
+    "description": "ถูกผนึก NL ถ้าการ์ดนี้ถูกทิ้งจากมือ จั่วการ์ด !M! ใบ",
+    "upgradeDescription": "ถูกผนึก NL ถ้าการ์ดนี้ถูกทิ้งจากมือ จั่วการ์ด !M! ใบ",
+    "extendedDescription": [
+      "ใช้การ์ดนี้ไม่ได้"
+    ]
+  },
+  "Riddle With Holes": {
+    "name": "แทงจนพรุน",
+    "description": "สร้างความเสียหาย !D! จำนวน 5 ครั้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Setup": {
+    "name": "เตรียมการ",
+    "description": "นำการ์ดในมือ 1 ใบ ไปวางไว้บนสุดของกองจั่ว NL มันมีค่าร่าย 0 จนกว่าจะถูกใช้งาน",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Skewer": {
+    "name": "ระดมแทง",
+    "description": "สร้างความเสียหาย !D! จำนวน X ครั้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Slice": {
+    "name": "หั่น",
+    "description": "สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Storm of Steel": {
+    "name": "พายุมีด",
+    "description": "ทิ้งการ์ดในมือทั้งหมด NL เพิ่มการ์ด *มีดสั้น ตามจำนวนการ์ดที่ถูกทิ้งไป",
+    "upgradeDescription": "ทิ้งการ์ดในมือทั้งหมด NL เพิ่มการ์ด *มีดสั้น+ ตามจำนวนการ์ดที่ถูกทิ้งไป",
+    "extendedDescription": []
+  },
+  "Strike_G": {
+    "name": "จู่โจม",
+    "description": "สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sucker Punch": {
+    "name": "หมัดทีเผลอ",
+    "description": "สร้างความเสียหาย !D! NL เพิ่มผล !M! ความอ่อนแอ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Survivor": {
+    "name": "ผู้รอดชีวิตฮึดสู้",
+    "description": "ได้รับ !B! เกราะ NL ทิ้งการ์ด 1 ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tactician": {
+    "name": "อุบายแยบยล",
+    "description": "ถูกผนึก NL ถ้าการ์ดนี้ถูกทิ้งจากมือ ได้รับ [G]",
+    "upgradeDescription": "ถูกผนึก NL ถ้าการ์ดนี้ถูกทิ้งจากมือ ได้รับ [G] [G]",
+    "extendedDescription": [
+      "ใช้การ์ดนี้ไม่ได้"
+    ]
+  },
+  "Terror": {
+    "name": "ขู่ขวัญ",
+    "description": "เพิ่มผล 99 จุดอ่อน NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tools of the Trade": {
+    "name": "สรรพอุปกรณ์",
+    "description": "เมื่อเริ่มต้นเทิร์น จั่วการ์ด 1 ใบ และทิ้งการ์ด 1 ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Underhanded Strike": {
+    "name": "ลักลอบจู่โจม",
+    "description": "สร้างความเสียหาย !D! NL ในเทิร์นนี้ ถ้าคุณเคยทิ้งการ์ด NL ได้รับ [G] [G]",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "ใช้การ์ดนี้ไม่ได้"
+    ]
+  },
+  "Unload": {
+    "name": "ปล่อยวิชา",
+    "description": "สร้างความเสียหาย !D! NL ทิ้งการ์ดที่ไม่ใช่การ์ดโจมตี ในมือทั้งหมด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Well Laid Plans": {
+    "name": "แผนการอย่างดี",
+    "description": "เมื่อจบเทิร์น คงสภาพ การ์ดได้สูงสุด !M! ใบ",
+    "upgradeDescription": "เมื่อจบเทิร์น คงสภาพ การ์ดได้สูงสุด !M! ใบ",
+    "extendedDescription": []
+  },
+  "Wraith Form v2": {
+    "name": "ร่างมายา",
+    "description": "ได้รับ !M! ไร้ตัวตน NL เมื่อจบเทิร์น สูญเสีย 1 ความชำนาญ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Aggregate": {
+    "name": "รวมพลัง",
+    "description": "ได้รับ [B] ต่อจำนวนการ์ดทุกๆ !M! ใบในกองจั่ว",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "All For One": {
+    "name": "รวมเป็นหนึ่ง",
+    "description": "สร้างความเสียหาย !D! NL นำการ์ดค่าร่าย 0 ทั้งหมดจากกองทิ้งขึ้นมือ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Amplify": {
+    "name": "ขยายเสียง",
+    "description": "ในเทิร์นนี้ การ์ดพลังใบต่อไปจะเกิดผล 2 ครั้ง",
+    "upgradeDescription": "ในเทิร์นนี้ การ์ดพลังอีก !M! ใบต่อไปจะเกิดผล 2 ครั้ง",
+    "extendedDescription": []
+  },
+  "Auto Shields": {
+    "name": "เกราะยนต์",
+    "description": "ถ้าคุณไม่มี เกราะ ได้รับ !B! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ball Lightning": {
+    "name": "บอลสายฟ้า",
+    "description": "สร้างความเสียหาย !D! ปลุกเสก !M! สายฟ้า",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Barrage": {
+    "name": "ระดมยิง",
+    "description": "สร้างความเสียหาย !D! ตามจำนวนลูกแก้ว ที่ปลุกเสกไว้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Beam Cell": {
+    "name": "ลำแสงเปิดแผล",
+    "description": "สร้างความเสียหาย !D! NL เพิ่มผล !M! จุดอ่อน",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Biased Cognition": {
+    "name": "อคติทางการรู้คิด",
+    "description": "ได้รับ !M! โฟกัส NL เมื่อเริ่มต้นเทิร์น สูญเสีย 1 โฟกัส",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blizzard": {
+    "name": "พายุหิมะ",
+    "description": "สร้างความเสียหายเท่ากับ !M! คูณจำนวนน้ำแข็ง ที่ปลุกเสกในการต่อสู้นี้ ใส่ศัตรูทั้งหมด",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (สร้างความเสียหาย !D!)",
+      ""
+    ]
+  },
+  "BootSequence": {
+    "name": "ลำดับเดินเครื่อง",
+    "description": "ติดตัว NL ได้รับ !B! เกราะ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Buffer": {
+    "name": "ม่านกันชน",
+    "description": "ยกเลิกการสูญเสีย HP ของคุณในครั้งต่อไป",
+    "upgradeDescription": "ยกเลิกการสูญเสีย HP ของคุณในอีก !M! ครั้งต่อไป",
+    "extendedDescription": []
+  },
+  "Capacitor": {
+    "name": "ตัวเก็บประจุ",
+    "description": "ได้รับช่องเก็บลูกแก้วเพิ่ม !M! ช่อง",
+    "upgradeDescription": "ได้รับช่องเก็บลูกแก้วเพิ่ม !M! ช่อง",
+    "extendedDescription": []
+  },
+  "Chaos": {
+    "name": "ความวุ่นวาย",
+    "description": "ปลุกเสก ลูกแก้วแบบสุ่ม !M! ลูก",
+    "upgradeDescription": "ปลุกเสก ลูกแก้วแบบสุ่ม !M! ลูก",
+    "extendedDescription": []
+  },
+  "Chill": {
+    "name": "เยือกแข็ง",
+    "description": "ปลุกเสก !M! น้ำแข็ง ตามจำนวนศัตรู NL สลาย",
+    "upgradeDescription": "ติดตัว NL ปลุกเสก !M! น้ำแข็ง ตามจำนวนศัตรู NL สลาย",
+    "extendedDescription": []
+  },
+  "Gash": {
+    "name": "ข่วน",
+    "description": "สร้างความเสียหาย !D! NL เพิ่มพลังโจมตีให้การ์ด ข่วน ทุกใบอีก !M! จนจบการต่อสู้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Cold Snap": {
+    "name": "ความเย็นเข้าแทรก",
+    "description": "สร้างความเสียหาย !D! ปลุกเสก !M! น้ำแข็ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Compile Driver": {
+    "name": "ประมวลพลัง",
+    "description": "สร้างความเสียหาย !D! NL จั่วการ์ด !M! ใบ ตามจำนวนลูกแก้ว ที่ไม่ซ้ำธาตุกัน",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Conserve Battery": {
+    "name": "สะสมพลังงาน",
+    "description": "ได้รับ !B! เกราะ NL ได้รับ [B] ในเทิร์นต่อไป",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Consume": {
+    "name": "สูบพลัง",
+    "description": "ได้รับ !M! โฟกัส NL สูญเสียช่องเก็บลูกแก้ว 1 ช่อง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Coolheaded": {
+    "name": "ใจเย็น",
+    "description": "ปลุกเสก 1 น้ำแข็ง NL จั่วการ์ด !M! ใบ",
+    "upgradeDescription": "ปลุกเสก 1 น้ำแข็ง NL จั่วการ์ด !M! ใบ",
+    "extendedDescription": []
+  },
+  "Core Surge": {
+    "name": "พลังจากศูนย์กลาง",
+    "description": "สร้างความเสียหาย !D! NL ได้รับ !M! อาคม NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Creative AI": {
+    "name": "ปัญญาประดิษฐ์",
+    "description": "เมื่อเริ่มต้นเทิร์น เพิ่มการ์ดพลังแบบสุ่ม 1 ใบใส่มือ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Darkness": {
+    "name": "ความมืด",
+    "description": "ปลุกเสก !M! ความมืด",
+    "upgradeDescription": "ปลุกเสก !M! ความมืด NL ความมืดทั้งหมดจะ เกิดผลต่อเนื่องอีกครั้ง",
+    "extendedDescription": []
+  },
+  "Defend_B": {
+    "name": "ป้องกัน",
+    "description": "ได้รับ !B! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defragment": {
+    "name": "จัดเรียงข้อมูล",
+    "description": "ได้รับ !M! โฟกัส",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doom and Gloom": {
+    "name": "ความมืดมาเยือน",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูทั้งหมด NL ปลุกเสก !M! ความมืด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Double Energy": {
+    "name": "พลังงานสองเท่า",
+    "description": "พลังงานเพิ่มเป็น 2 เท่า NL สลาย",
+    "upgradeDescription": "พลังงานเพิ่มเป็น 2 เท่า",
+    "extendedDescription": []
+  },
+  "Dualcast": {
+    "name": "ร่ายซ้ำ",
+    "description": "ปล่อยพลัง ลูกแก้วลูกต่อไป 2 ครั้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Echo Form": {
+    "name": "ร่างกังวาน",
+    "description": "กึ่งสลาย NL การ์ดใบแรกที่ใช้ใน แต่ละเทิร์น จะเกิดผล 2 ครั้ง",
+    "upgradeDescription": "การ์ดใบแรกที่ใช้ใน แต่ละเทิร์น จะเกิดผล 2 ครั้ง",
+    "extendedDescription": []
+  },
+  "Electrodynamics": {
+    "name": "พลศาสตร์ไฟฟ้า",
+    "description": "ต่อไปนี้ สายฟ้าจะสร้างความเสียหาย ใส่ศัตรูทั้งหมด NL ปลุกเสก !M! สายฟ้า",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Fission": {
+    "name": "แยกปรมาณู",
+    "description": "กำจัดลูกแก้วทั้งหมด ได้รับ [B] และจั่วการ์ด !M! ใบ ตามจำนวน ลูกแก้วที่ถูกกำจัด NL สลาย",
+    "upgradeDescription": "ปล่อยพลัง ลูกแก้ว ทั้งหมด ได้รับ [B] และจั่วการ์ด !M! ใบ ตามจำนวน ลูกแก้วที่ถูกปล่อยพลัง NL สลาย",
+    "extendedDescription": []
+  },
+  "Force Field": {
+    "name": "สนามพลัง",
+    "description": "ได้รับ !B! เกราะ NL (ค่าร่ายลดลง 1 [B] ตามจำนวนการ์ดพลัง ที่ถูกใช้ไป จนจบการต่อสู้)",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FTL": {
+    "name": "เร็วเหนือแสง",
+    "description": "สร้างความเสียหาย !D! และถ้าคุณใช้การ์ดไม่เกิน !M! ใบในเทิร์นนี้ จั่วการ์ด 1 ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (ใช้การ์ดไปแล้ว ",
+      " ใบ)",
+      " ใบ)"
+    ]
+  },
+  "Fusion": {
+    "name": "รวมปรมาณู",
+    "description": "ปลุกเสก !M! พลาสมา",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Genetic Algorithm": {
+    "name": "อัลกอริทึมพันธุกรรม",
+    "description": "ได้รับ !B! เกราะ จากนั้นเพิ่มผล เกราะ ของการ์ดนี้อีก !M! ถาวร NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Glacier": {
+    "name": "ธารน้ำแข็ง",
+    "description": "ได้รับ !B! เกราะ NL ปลุกเสก !M! น้ำแข็ง",
+    "upgradeDescription": "ได้รับ !B! เกราะ NL ปลุกเสก !M! น้ำแข็ง",
+    "extendedDescription": []
+  },
+  "Go for the Eyes": {
+    "name": "พุ่งใส่ตา",
+    "description": "สร้างความเสียหาย !D! NL ถ้าศัตรูคิดจะโจมตี เพิ่มผล !M! ความอ่อนแอ ด้วย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Heatsinks": {
+    "name": "ระบายความร้อน",
+    "description": "เมื่อใช้การ์ดพลัง จั่วการ์ด !M! ใบ",
+    "upgradeDescription": "เมื่อใช้การ์ดพลัง จั่วการ์ด !M! ใบ",
+    "extendedDescription": []
+  },
+  "Hello World": {
+    "name": "สวัสดีชาวโลก",
+    "description": "เมื่อเริ่มต้นเทิร์น เพิ่มการ์ดธรรมดาแบบสุ่ม 1 ใบใส่มือ",
+    "upgradeDescription": "ติดตัว NL เมื่อเริ่มต้นเทิร์น เพิ่มการ์ดธรรมดาแบบสุ่ม 1 ใบใส่มือ",
+    "extendedDescription": []
+  },
+  "Hologram": {
+    "name": "ภาพจำลอง",
+    "description": "ได้รับ !B! เกราะ NL นำการ์ดในกองทิ้ง 1 ใบขึ้นมือ NL สลาย",
+    "upgradeDescription": "ได้รับ !B! เกราะ NL นำการ์ดในกองทิ้ง 1 ใบขึ้นมือ",
+    "extendedDescription": []
+  },
+  "Hyperbeam": {
+    "name": "ลำแสงพิฆาต",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูทั้งหมด NL สูญเสีย !M! โฟกัส",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Leap": {
+    "name": "กระโจนหลบ",
+    "description": "ได้รับ !B! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Lockon": {
+    "name": "ชี้จุดตาย",
+    "description": "สร้างความเสียหาย !D! NL เพิ่มผล !M! ล็อกเป้าหมาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Loop": {
+    "name": "คำสั่งวนซ้ำ",
+    "description": "เมื่อเริ่มต้นเทิร์น ลูกแก้วลูกต่อไปจะเกิด ผลต่อเนื่อง ของมันอีกครั้ง",
+    "upgradeDescription": "เมื่อเริ่มต้นเทิร์น ลูกแก้วลูกต่อไปจะเกิด ผลต่อเนื่อง ของมันอีก !M! ครั้ง",
+    "extendedDescription": []
+  },
+  "Machine Learning": {
+    "name": "แมชชีนเลิร์นนิ่ง",
+    "description": "เมื่อเริ่มต้นเทิร์น จั่วการ์ด !M! ใบ",
+    "upgradeDescription": "ติดตัว NL เมื่อเริ่มต้นเทิร์น จั่วการ์ด !M! ใบ",
+    "extendedDescription": []
+  },
+  "Melter": {
+    "name": "หลอมละลาย",
+    "description": "กำจัด เกราะ ของศัตรู NL สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Meteor Strike": {
+    "name": "อุกกาบาตจู่โจม",
+    "description": "สร้างความเสียหาย !D! NL ปลุกเสก !M! พลาสมา",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Multi-Cast": {
+    "name": "คาถาต่อเนื่อง",
+    "description": "ปล่อยพลัง ลูกแก้วลูกต่อไป X ครั้ง",
+    "upgradeDescription": "ปล่อยพลัง ลูกแก้วลูกต่อไป X+1 ครั้ง",
+    "extendedDescription": []
+  },
+  "Steam Power": {
+    "name": "โอเวอร์คล็อก",
+    "description": "จั่วการ์ด !M! ใบ NL เพิ่มการ์ด *เผาไหม้ 1 ใบใส่กองทิ้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rainbow": {
+    "name": "สายรุ้ง",
+    "description": "ปลุกเสก 1 สายฟ้า NL ปลุกเสก 1 น้ำแข็ง NL ปลุกเสก 1 ความมืด NL สลาย",
+    "upgradeDescription": "ปลุกเสก 1 สายฟ้า NL ปลุกเสก 1 น้ำแข็ง NL ปลุกเสก 1 ความมืด",
+    "extendedDescription": []
+  },
+  "Reboot": {
+    "name": "เปิดเครื่องใหม่",
+    "description": "สับการ์ดทั้งหมดเข้ากองจั่ว NL จั่วการ์ด !M! ใบ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rebound": {
+    "name": "ดีดกลับ",
+    "description": "สร้างความเสียหาย !D! NL นำการ์ดที่คุณจะใช้ใบต่อไป กลับไปวางไว้บนสุด ของกองจั่ว",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Redo": {
+    "name": "วนซ้ำเวียนเกิด",
+    "description": "ปล่อยพลัง ลูกแก้วลูกต่อไป NL ปลุกเสก ลูกแก้วลูกนั้นใหม่",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Recycle": {
+    "name": "สกัดพลังงาน",
+    "description": "สลาย การ์ด 1 ใบ NL ได้รับ [B] ตามค่าร่ายของการ์ดนั้น",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reinforced Body": {
+    "name": "เสริมกำลังกาย",
+    "description": "ได้รับ !B! เกราะ จำนวน X ครั้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Reprogram": {
+    "name": "เปลี่ยนชุดคำสั่ง",
+    "description": "สูญเสีย !M! โฟกัส NL ได้รับ !M! ความแข็งแรง NL ได้รับ !M! ความชำนาญ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Rip and Tear": {
+    "name": "ฉีกเป็นชิ้นๆ",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูแบบสุ่ม จำนวน 2 ครั้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Scrape": {
+    "name": "กรีด",
+    "description": "สร้างความเสียหาย !D! NL จั่วการ์ด !M! ใบ NL การ์ดที่มีค่าร่ายไม่ใช่ 0 ที่จั่วมาด้วยผลนี้จะถูกทิ้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Seek": {
+    "name": "ค้นข้อมูล",
+    "description": "เลือกนำการ์ด !M! ใบจากกองจั่วขึ้นมือ NL สลาย",
+    "upgradeDescription": "เลือกนำการ์ด !M! ใบจากกองจั่วขึ้นมือ NL สลาย",
+    "extendedDescription": []
+  },
+  "Self Repair": {
+    "name": "ซ่อมแซมตัวเอง",
+    "description": "เมื่อจบการต่อสู้ ฟื้นฟู !M! HP",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Skim": {
+    "name": "อ่านค่าอย่างเร็ว",
+    "description": "จั่วการ์ด !M! ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Stack": {
+    "name": "ซ้อนเกราะ",
+    "description": "ได้รับ เกราะ ตามจำนวนการ์ดในกองทิ้ง",
+    "upgradeDescription": "ได้รับ เกราะ ตามจำนวนการ์ดในกองทิ้ง +3",
+    "extendedDescription": [
+      " NL (ได้รับ !B! เกราะ)"
+    ]
+  },
+  "Static Discharge": {
+    "name": "ไฟฟ้าสถิต",
+    "description": "เมื่อ HP ลดลง จากการถูกโจมตี ปลุกเสก !M! สายฟ้า",
+    "upgradeDescription": "เมื่อ HP ลดลง จากการถูกโจมตี ปลุกเสก !M! สายฟ้า",
+    "extendedDescription": []
+  },
+  "Steam": {
+    "name": "ม่านไอน้ำ",
+    "description": "ได้รับ !B! เกราะ จากนั้นลดพลังของการ์ดนี้ลง 1 จนจบการต่อสู้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Storm": {
+    "name": "มรสุม",
+    "description": "เมื่อใช้การ์ดพลัง ปลุกเสก 1 สายฟ้า",
+    "upgradeDescription": "ติดตัว NL เมื่อใช้การ์ดพลัง ปลุกเสก 1 สายฟ้า",
+    "extendedDescription": []
+  },
+  "Streamline": {
+    "name": "รีดศักยภาพ",
+    "description": "สร้างความเสียหาย !D! NL ค่าร่ายลดลง !M! จนจบการต่อสู้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Strike_B": {
+    "name": "จู่โจม",
+    "description": "สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sunder": {
+    "name": "มหาวิปโยค",
+    "description": "สร้างความเสียหาย !D! NL ถ้าสังหารศัตรูได้ ได้รับ [B] [B] [B]",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sweeping Beam": {
+    "name": "กวาดลำแสง",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูทั้งหมด NL จั่วการ์ด !M! ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tempest": {
+    "name": "อสนีบาต",
+    "description": "ปลุกเสก X สายฟ้า NL สลาย",
+    "upgradeDescription": "ปลุกเสก X+1 สายฟ้า NL สลาย",
+    "extendedDescription": []
+  },
+  "Thunder Strike": {
+    "name": "จู่โจมฟ้าคำราม",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูแบบสุ่ม ตามจำนวนสายฟ้าที่ถูก ปลุกเสก ในการต่อสู้นี้",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " (ปลุกเสก สายฟ้า ทั้งหมด !M! ลูก)"
+    ]
+  },
+  "Turbo": {
+    "name": "เทอร์โบ",
+    "description": "ได้รับ [B] [B] NL เพิ่มการ์ด *ความว่างเปล่า ใส่กองทิ้ง",
+    "upgradeDescription": "ได้รับ [B] [B] [B] NL เพิ่มการ์ด *ความว่างเปล่า ใส่กองทิ้ง",
+    "extendedDescription": []
+  },
+  "Undo": {
+    "name": "ดุลยภาพ",
+    "description": "ได้รับ !B! เกราะ NL คงสภาพ การ์ดในมือทั้งหมดในเทิร์นนี้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "White Noise": {
+    "name": "คลื่นรบกวนเชิงบวก",
+    "description": "เพิ่มการ์ดพลังแบบสุ่ม 1 ใบใส่มือ NL มันมีค่าร่าย 0 ในเทิร์นนี้ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Zap": {
+    "name": "ฟ้าแลบ",
+    "description": "ปลุกเสก !M! สายฟ้า",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Alpha": {
+    "name": "อัลฟ่า",
+    "description": "สับการ์ด *เบต้า 1 ใบเข้ากองจั่ว NL สลาย",
+    "upgradeDescription": "ติดตัว NL สับการ์ด *เบต้า 1 ใบเข้ากองจั่ว NL สลาย",
+    "extendedDescription": []
+  },
+  "BattleHymn": {
+    "name": "เพลงสวดสู้ศึก",
+    "description": "เมื่อเริ่มต้นเทิร์น เพิ่ม *ลงทัณฑ์ 1 ใบใส่มือ",
+    "upgradeDescription": "ติดตัว NL เมื่อเริ่มต้นเทิร์น เพิ่ม *ลงทัณฑ์ 1 ใบใส่มือ",
+    "extendedDescription": []
+  },
+  "Blasphemy": {
+    "name": "มารศาสนา",
+    "description": "เข้าสู่ ปางเทวัญ NL ตายในเทิร์นถัดไป NL สลาย",
+    "upgradeDescription": "คงสภาพ NL เข้าสู่ ปางเทวัญ NL ตายในเทิร์นถัดไป NL สลาย",
+    "extendedDescription": []
+  },
+  "BowlingBash": {
+    "name": "กระแทกหมู่",
+    "description": "สร้างความเสียหาย !D! ตามจำนวนศัตรู ในการต่อสู้นี้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Brilliance": {
+    "name": "จิตโชติช่วง",
+    "description": "สร้างความเสียหาย !D! NL สร้างความเสียหายเพิ่มขึ้น ตาม มนตรา ที่ได้รับ ในการต่อสู้นี้",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "",
+      ""
+    ]
+  },
+  "CarveReality": {
+    "name": "สร้างความเป็นจริง",
+    "description": "สร้างความเสียหาย !D! NL เพิ่ม *ลงทัณฑ์ 1 ใบใส่มือ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Collect": {
+    "name": "เก็บหอมรอมริบ",
+    "description": "เพิ่ม *ปาฏิหาริย์+ 1 ใบใส่มือ เมื่อเริ่มต้นเทิร์น เป็นเวลาอีก X เทิร์น NL สลาย",
+    "upgradeDescription": "เพิ่ม *ปาฏิหาริย์+ 1 ใบใส่มือ เมื่อเริ่มต้นเทิร์น เป็นเวลาอีก X+1 เทิร์น NL สลาย",
+    "extendedDescription": []
+  },
+  "Conclude": {
+    "name": "แสดงธรรมส่งท้าย",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูทั้งหมด NL จบเทิร์นทันที",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ConjureBlade": {
+    "name": "อัญเชิญศาสตรา",
+    "description": "สับการ์ด *กระบี่พิชิตมาร 1 ใบเข้ากองจั่ว NL สลาย",
+    "upgradeDescription": "สับการ์ด *กระบี่พิชิตมาร+ แบบมีผล X+1 จำนวน 1 ใบเข้ากองจั่ว NL สลาย",
+    "extendedDescription": []
+  },
+  "Consecrate": {
+    "name": "ชำระบาป",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูทั้งหมด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Crescendo": {
+    "name": "กดดันสะสม",
+    "description": "คงสภาพ NL เข้าสู่ ปางโทสะ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CrushJoints": {
+    "name": "บดขยี้ข้อต่อ",
+    "description": "สร้างความเสียหาย !D! NL ถ้าการ์ดที่ถูกใช้ใบล่าสุด ของการต่อสู้นี้ เป็นการ์ดทักษะ เพิ่มผล !M! จุดอ่อน",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CutThroughFate": {
+    "name": "ตัดกรรม",
+    "description": "สร้างความเสียหาย !D! NL ปรับดวง !M! NL จั่วการ์ด 1 ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DeceiveReality": {
+    "name": "ลวงความเป็นจริง",
+    "description": "ได้รับ !B! เกราะ NL เพิ่ม *ความปลอดภัย 1 ใบใส่มือ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Defend_P": {
+    "name": "ป้องกัน",
+    "description": "ได้รับ !B! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DeusExMachina": {
+    "name": "เดอูซ เอ็กซ์ มาคีนา",
+    "description": "ใช้การ์ดนี้ไม่ได้ NL เมื่อจั่วได้การ์ดนี้ เพิ่ม *ปาฏิหาริย์ !M! ใบใส่มือ แล้ว สลาย การ์ดนี้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "DevaForm": {
+    "name": "ร่างมหาเทวี",
+    "description": "กึ่งสลาย NL เมื่อเริ่มต้นเทิร์น ได้รับ [W] และเพิ่มผลนี้อีก !M!",
+    "upgradeDescription": "เมื่อเริ่มต้นเทิร์น ได้รับ [W] และเพิ่มผลนี้อีก !M!",
+    "extendedDescription": []
+  },
+  "Devotion": {
+    "name": "อุทิศตน",
+    "description": "เมื่อเริ่มต้นเทิร์น ได้รับ !M! มนตรา",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyBody": {
+    "name": "กายว่างเปล่า",
+    "description": "ได้รับ !B! เกราะ NL ออกจาก ปาง ปัจจุบัน",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyFist": {
+    "name": "หมัดว่างเปล่า",
+    "description": "สร้างความเสียหาย !D! NL ออกจาก ปาง ปัจจุบัน",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "EmptyMind": {
+    "name": "จิตว่างเปล่า",
+    "description": "จั่วการ์ด !M! ใบ NL ออกจาก ปาง ปัจจุบัน",
+    "upgradeDescription": "จั่วการ์ด !M! ใบ NL ออกจาก ปาง ปัจจุบัน",
+    "extendedDescription": []
+  },
+  "Eruption": {
+    "name": "อารมณ์ปะทุ",
+    "description": "สร้างความเสียหาย !D! NL เข้าสู่ ปางโทสะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Establishment": {
+    "name": "ก่อร่างสร้างตัว",
+    "description": "เมื่อมีการ์ดถูก คงสภาพ ลดค่าร่ายการ์ดนั้นลง !M! จนจบการต่อสู้",
+    "upgradeDescription": "ติดตัว NL เมื่อมีการ์ดถูก คงสภาพ ลดค่าร่ายการ์ดนั้นลง !M! จนจบการต่อสู้",
+    "extendedDescription": []
+  },
+  "Evaluate": {
+    "name": "ประเมินสถานการณ์",
+    "description": "ได้รับ !B! เกราะ NL สับการ์ด *ญาณ 1 ใบเข้ากองจั่ว",
+    "upgradeDescription": "ได้รับ !B! เกราะ NL สับการ์ด *ญาณ+ 1 ใบเข้ากองจั่ว",
+    "extendedDescription": []
+  },
+  "Fasting2": {
+    "name": "ถือศีลอด",
+    "description": "ได้รับ !M! ความแข็งแรง NL ได้รับ !M! ความชำนาญ NL ได้รับ [W] น้อยลง 1 เมื่อเริ่มต้นเทิร์น ทุกเทิร์น",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FearNoEvil": {
+    "name": "ไม่กลัวมารผจญ",
+    "description": "สร้างความเสียหาย !D! NL ถ้าศัตรูคิดจะโจมตี เข้าสู่ ปางสงบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FlurryOfBlows": {
+    "name": "กระหน่ำหวด",
+    "description": "สร้างความเสียหาย !D! NL เมื่อเปลี่ยน ปาง นำการ์ดนี้จากกองทิ้งขึ้นมือ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FlyingSleeves": {
+    "name": "สะบัดแขนเสื้อ",
+    "description": "คงสภาพ NL สร้างความเสียหาย !D! จำนวน 2 ครั้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FollowUp": {
+    "name": "กระบวนท่าตาม",
+    "description": "สร้างความเสียหาย !D! NL ถ้าการ์ดที่ถูกใช้ใบล่าสุด ของการต่อสู้นี้ เป็นการ์ดโจมตี ได้รับ [W]",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ForeignInfluence": {
+    "name": "อิทธิพลต่างแดน",
+    "description": "เลือกการ์ดโจมตี (สีใดๆ) 1 จาก 3 ใบใส่มือ NL สลาย",
+    "upgradeDescription": "เลือกการ์ดโจมตี (สีใดๆ) 1 จาก 3 ใบใส่มือ NL มันมีค่าร่าย 0 ในเทิร์นนี้ NL สลาย",
+    "extendedDescription": []
+  },
+  "Wireheading": {
+    "name": "นิมิต",
+    "description": "เมื่อเริ่มต้นเทิร์น ปรับดวง !M!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Halt": {
+    "name": "ยั้งมือ",
+    "description": "ได้รับ !B! เกราะ NL ปางโทสะ: ได้รับ เกราะ เพิ่มอีก !M!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Indignation": {
+    "name": "ขุ่นข้องหมองใจ",
+    "description": "ถ้าอยู่ใน ปางโทสะ เพิ่มผล !M! จุดอ่อน ใส่ศัตรูทั้งหมด ถ้าไม่ใช่ เข้าสู่ ปางโทสะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "InnerPeace": {
+    "name": "ความสงบภายใน",
+    "description": "ถ้าอยู่ใน ปางสงบ จั่วการ์ด !M! ใบ ถ้าไม่ใช่ เข้าสู่ ปางสงบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Judgement": {
+    "name": "คำพิพากษา",
+    "description": "ถ้าเป้าหมายเหลือ HP ไม่เกิน !M! NL ให้ปรับเป็น 0",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "ถูกพิพากษา"
+    ]
+  },
+  "JustLucky": {
+    "name": "ก็แค่ดวงดี",
+    "description": "ปรับดวง !M! NL ได้รับ !B! เกราะ NL สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LessonLearned": {
+    "name": "เรียนรู้วิชา",
+    "description": "สร้างความเสียหาย !D! NL เมื่อ สังหาร สุ่ม พัฒนา การ์ด 1 ใบ ในกองการ์ด สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LikeWater": {
+    "name": "ดุจวารี",
+    "description": "เมื่อจบเทิร์น ถ้าอยู่ใน ปางสงบ ได้รับ !M! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "MasterReality": {
+    "name": "เจ้าแห่งความเป็นจริง",
+    "description": "เมื่อมีการ์ดถูกสร้าง ในระหว่างการต่อสู้ มันจะถูก พัฒนา",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Meditate": {
+    "name": "ทำสมาธิ",
+    "description": "เลือกการ์ด 1 ใบจากกองทิ้ง เพื่อนำขึ้นมือ และ คงสภาพ การ์ดนั้น NL เข้าสู่ ปางสงบ NL จบเทิร์นทันที",
+    "upgradeDescription": "เลือกการ์ด 2 ใบจากกองทิ้ง เพื่อนำขึ้นมือ และ คงสภาพ การ์ดนั้น NL เข้าสู่ ปางสงบ NL จบเทิร์นทันที",
+    "extendedDescription": []
+  },
+  "MentalFortress": {
+    "name": "ปราการจิต",
+    "description": "เมื่อเปลี่ยน ปาง ได้รับ !M! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Nirvana": {
+    "name": "นิพพาน",
+    "description": "เมื่อ ปรับดวง จะได้รับ !M! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Omniscience": {
+    "name": "สัพพัญญู",
+    "description": "เลือกการ์ด 1 ใบในกองจั่ว NL ใช้การ์ดนั้น 2 ครั้ง แล้ว สลาย การ์ดนั้น NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Perseverance": {
+    "name": "ความเพียร",
+    "description": "คงสภาพ NL ได้รับ !B! เกราะ NL เมื่อการ์ดนี้ถูก คงสภาพ เพิ่มพลังให้การ์ดนี้อีก !M! จนจบการต่อสู้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pray": {
+    "name": "ภาวนา",
+    "description": "ได้รับ !M! มนตรา NL สับการ์ด *ญาณ 1 ใบเข้ากองจั่ว",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PathToVictory": {
+    "name": "สกัดจุดตาย",
+    "description": "เพิ่มผล !M! *รอยฆาต NL ศัตรูทั้งหมด สูญเสีย HP ตาม *รอยฆาต ที่ติดอยู่",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Prostrate": {
+    "name": "หมอบกราบ",
+    "description": "ได้รับ !M! มนตรา NL ได้รับ !B! เกราะ",
+    "upgradeDescription": "DEPRECATED",
+    "extendedDescription": []
+  },
+  "Protect": {
+    "name": "ปกป้อง",
+    "description": "คงสภาพ NL ได้รับ !B! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ragnarok": {
+    "name": "โลกาวินาศ",
+    "description": "สร้างความเสียหาย !D! ใส่ศัตรูแบบสุ่ม จำนวน !M! ครั้ง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ReachHeaven": {
+    "name": "สู่สวรรค์",
+    "description": "สร้างความเสียหาย !D! NL สับการ์ด *ด้วยความรุนแรง 1 ใบเข้ากองจั่ว",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Adaptation": {
+    "name": "มุทะลุ",
+    "description": "เมื่อเข้าสู่ ปางโทสะ จั่วการ์ด !M! ใบ",
+    "upgradeDescription": "DEPRECATED",
+    "extendedDescription": []
+  },
+  "Sanctity": {
+    "name": "ความศักดิ์สิทธิ์",
+    "description": "ได้รับ !B! เกราะ NL ถ้าการ์ดที่ถูกใช้ใบล่าสุด ของการต่อสู้นี้ เป็นการ์ดทักษะ จั่วการ์ด !M! ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SandsOfTime": {
+    "name": "ทรายแห่งกาลเวลา",
+    "description": "คงสภาพ NL สร้างความเสียหาย !D! NL เมื่อการ์ดนี้ถูก คงสภาพ ลดค่าร่ายลง 1 จนจบการต่อสู้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SashWhip": {
+    "name": "สะบัดแพร",
+    "description": "สร้างความเสียหาย !D! NL ถ้าการ์ดที่ถูกใช้ใบล่าสุด ของการต่อสู้นี้ เป็นการ์ดโจมตี เพิ่มผล !M! ความอ่อนแอ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Scrawl": {
+    "name": "เร่งจารึก",
+    "description": "จั่วการ์ดจนเต็มมือ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SignatureMove": {
+    "name": "ท่าไม้ตาย",
+    "description": "จะใช้ได้ก็ต่อเมื่อการ์ดนี้ เป็นการ์ดโจมตี เพียงใบเดียวในมือ NL สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vengeance": {
+    "name": "โทสะคั่งแค้น",
+    "description": "เมื่อเริ่มต้นเทิร์นถัดไป เข้าสู่ ปางโทสะ และจั่วการ์ด !M! ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "SpiritShield": {
+    "name": "โล่วิญญาณ",
+    "description": "ได้รับ !M! เกราะ ตามจำนวนการ์ดในมือ",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (ได้รับ !B! เกราะ)"
+    ]
+  },
+  "Strike_P": {
+    "name": "จู่โจม",
+    "description": "สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Study": {
+    "name": "ศึกษาค้นคว้า",
+    "description": "เมื่อจบเทิร์น สับการ์ด *ญาณ 1 ใบใส่กองการ์ด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Swivel": {
+    "name": "หมุนตัว",
+    "description": "ได้รับ !B! เกราะ NL การโจมตีครั้งต่อไป มีค่าร่ายเป็น 0",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "TalkToTheHand": {
+    "name": "หยุดการเจรจา",
+    "description": "สร้างความเสียหาย !D! NL เมื่อเป้าหมายถูกโจมตี คุณจะได้รับ !M! เกราะ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Tantrum": {
+    "name": "ฉุนเฉียวเกรี้ยวกราด",
+    "description": "สร้างความเสียหาย !D! จำนวน !M! ครั้ง NL เข้าสู่ ปางโทสะ NL สับการ์ดนี้ กลับเข้ากองจั่ว",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ThirdEye": {
+    "name": "เนตรที่สาม",
+    "description": "ได้รับ !B! เกราะ NL ปรับดวง !M!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ClearTheMind": {
+    "name": "สันติสุข",
+    "description": "คงสภาพ NL เข้าสู่ ปางสงบ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vault": {
+    "name": "กระโดดหลบ",
+    "description": "ได้เล่นต่ออีกเทิร์น NL จบเทิร์นนี้ทันที NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Vigilance": {
+    "name": "ระแวดระวัง",
+    "description": "ได้รับ !B! เกราะ NL เข้าสู่ ปางสงบ",
+    "upgradeDescription": "Deprecated.",
+    "extendedDescription": []
+  },
+  "Wallop": {
+    "name": "เฆี่ยน",
+    "description": "สร้างความเสียหาย !D! NL ได้รับ เกราะ ตามจำนวน HP ของเป้าหมายที่ลดลง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WaveOfTheHand": {
+    "name": "คลื่นหัตถา",
+    "description": "ในเทิร์นนี้ เมื่อได้รับ เกราะ เพิ่มผล !M! ความอ่อนแอ ใส่ศัตรูทั้งหมด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Weave": {
+    "name": "ถักทอ",
+    "description": "สร้างความเสียหาย !D! NL เมื่อมีการ ปรับดวง ให้นำการ์ดนี้ จากกองทิ้งขึ้นมือ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WheelKick": {
+    "name": "จระเข้ฟาดหาง",
+    "description": "สร้างความเสียหาย !D! NL จั่วการ์ด !M! ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "WindmillStrike": {
+    "name": "ควงกระบองจู่โจม",
+    "description": "คงสภาพ NL สร้างความเสียหาย !D! NL เมื่อการ์ดนี้ถูก คงสภาพ เพิ่มพลังให้การ์ดนี้อีก !M! จนจบการต่อสู้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wish": {
+    "name": "อธิษฐาน",
+    "description": "เลือก 1 อย่าง: NL ได้รับ !B! เกราะโลหะ, !D! ความแข็งแรง, หรือ !M! ทอง NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Worship": {
+    "name": "สักการะบูชา",
+    "description": "ได้รับ !M! มนตรา",
+    "upgradeDescription": "คงสภาพ NL ได้รับ !M! มนตรา",
+    "extendedDescription": []
+  },
+  "WreathOfFlame": {
+    "name": "พวงมาลาเพลิง",
+    "description": "การโจมตีครั้งต่อไป สร้างความเสียหายเพิ่มขึ้น !M!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Apotheosis": {
+    "name": "สภาวะเทียมเทพ",
+    "description": "พัฒนาการ์ดทุกใบ จนจบการต่อสู้ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bandage Up": {
+    "name": "พันแผล",
+    "description": "ฟื้นฟู !M! HP NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Blind": {
+    "name": "ตาพร่า",
+    "description": "เพิ่มผล !M! ความอ่อนแอ",
+    "upgradeDescription": "เพิ่มผล !M! ความอ่อนแอ ใส่ศัตรูทั้งหมด",
+    "extendedDescription": []
+  },
+  "Chrysalis": {
+    "name": "ดักแด้",
+    "description": "สับการ์ดทักษะแบบสุ่ม !M! ใบเข้ากองจั่ว การ์ดเหล่านี้มีค่าร่าย 0 ในการต่อสู้นี้ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Dark Shackles": {
+    "name": "พันธนาการทมิฬ",
+    "description": "ศัตรูสูญเสีย !M! ความแข็งแรง ในเทิร์นนี้ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Deep Breath": {
+    "name": "ตั้งสติ",
+    "description": "สับกองทิ้งทั้งหมดเข้ากองจั่ว NL จั่วการ์ด !M! ใบ",
+    "upgradeDescription": "สับกองทิ้งทั้งหมดเข้ากองจั่ว NL จั่วการ์ด !M! ใบ",
+    "extendedDescription": []
+  },
+  "Discovery": {
+    "name": "การค้นพบ",
+    "description": "เลือกการ์ด 1 จาก 3 ใบที่ถูกสุ่มมาเพื่อเพิ่มใส่มือ มันมีค่าร่าย 0 ในเทิร์นนี้ NL สลาย",
+    "upgradeDescription": "เลือกการ์ด 1 จาก 3 ใบที่ถูกสุ่มมาเพื่อเพิ่มใส่มือ มันมีค่าร่าย 0 ในเทิร์นนี้",
+    "extendedDescription": []
+  },
+  "Dramatic Entrance": {
+    "name": "เปิดตัวอลังการ",
+    "description": "ติดตัว NL สร้างความเสียหาย !D! ใส่ศัตรูทั้งหมด NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Enlightenment": {
+    "name": "รู้แจ้งเห็นจริง",
+    "description": "ลดค่าร่ายการ์ดในมือทุกใบ เหลือ 1 ในเทิร์นนี้",
+    "upgradeDescription": "ลดค่าร่ายการ์ดในมือทุกใบเหลือ 1 ในการต่อสู้นี้",
+    "extendedDescription": []
+  },
+  "Finesse": {
+    "name": "ลูกเล่น",
+    "description": "ได้รับ !B! เกราะ NL จั่วการ์ด 1 ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Flash of Steel": {
+    "name": "คมเหล็กพริบตา",
+    "description": "สร้างความเสียหาย !D! NL จั่วการ์ด 1 ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Forethought": {
+    "name": "มองการณ์ไกล",
+    "description": "นำการ์ดในมือ 1 ใบ ไปวางไว้ล่างสุดของกองจั่ว มันมีค่าร่าย 0 จนกว่าจะถูกใช้งาน",
+    "upgradeDescription": "นำการ์ดในมือกี่ใบก็ได้ ไปวางไว้ล่างสุดของกองจั่ว มันมีค่าร่าย 0 จนกว่าจะถูกใช้งาน",
+    "extendedDescription": []
+  },
+  "Good Instincts": {
+    "name": "สัญชาตญาณดี",
+    "description": "ได้รับ !B! เกราะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "HandOfGreed": {
+    "name": "มือแห่งความโลภ",
+    "description": "สร้างความเสียหาย !D! NL เมื่อ สังหาร ได้รับ !M! ทอง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Impatience": {
+    "name": "ความใจร้อน",
+    "description": "ถ้าไม่มีการ์ดโจมตีในมือ จั่วการ์ด !M! ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Jack Of All Trades": {
+    "name": "รู้อย่างเป็ด",
+    "description": "เพิ่มการ์ดไม่มีสีแบบสุ่ม !M! ใบใส่มือ NL สลาย",
+    "upgradeDescription": "เพิ่มการ์ดไม่มีสีแบบสุ่ม !M! ใบใส่มือ NL สลาย",
+    "extendedDescription": []
+  },
+  "Madness": {
+    "name": "ความคุ้มคลั่ง",
+    "description": "ลดค่าร่ายการ์ดในมือ 1 ใบแบบสุ่มให้เหลือ 0 จนจบการต่อสู้ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Magnetism": {
+    "name": "พลังแม่เหล็ก",
+    "description": "เมื่อเริ่มต้นเทิร์น เพิ่มการ์ดไม่มีสีแบบสุ่ม 1 ใบใส่มือ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Master of Strategy": {
+    "name": "จอมกลยุทธ์",
+    "description": "จั่วการ์ด !M! ใบ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Mayhem": {
+    "name": "ความโกลาหล",
+    "description": "เมื่อเริ่มต้นเทิร์น ใช้การ์ดใบบนสุดของกองจั่ว 1 ใบ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Metamorphosis": {
+    "name": "แปรร่างเปลี่ยนรูป",
+    "description": "สับการ์ดโจมตีแบบสุ่ม !M! ใบเข้ากองจั่ว มันมีค่าร่าย 0 จนจบการต่อสู้ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Mind Blast": {
+    "name": "จิตสังหาร",
+    "description": "ติดตัว NL สร้างความเสียหาย ตามจำนวนการ์ดในกองจั่ว",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      " NL (สร้างความเสียหาย !D!)"
+    ]
+  },
+  "Panacea": {
+    "name": "ยาครอบจักรวาล",
+    "description": "ได้รับ !M! อาคม NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Panache": {
+    "name": "วางท่าอย่างเท่",
+    "description": "ทุกครั้งที่ใช้การ์ด 5 ใบในเทิร์นเดียว สร้างความเสียหาย !M! ใส่ศัตรูทั้งหมด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "PanicButton": {
+    "name": "ปุ่มฉุกเฉิน",
+    "description": "ได้รับ !B! เกราะ จากนั้น คุณจะไม่ได้รับผล เกราะ จากการ์ดเป็นเวลา !M! เทิร์น NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Purity": {
+    "name": "ความบริสุทธิ์",
+    "description": "สลาย การ์ดในมือ ได้สูงสุด !M! ใบ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Sadistic Nature": {
+    "name": "นิสัยซาดิสต์",
+    "description": "เมื่อคุณเพิ่มผลผิดปกติใส่ศัตรู สร้างความเสียหาย !M! ด้วย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Secret Technique": {
+    "name": "กระบวนท่าลับ",
+    "description": "เลือกนำการ์ดทักษะ 1 ใบจากกองจั่วขึ้นมือ NL สลาย",
+    "upgradeDescription": "เลือกนำการ์ดทักษะ 1 ใบจากกองจั่วขึ้นมือ",
+    "extendedDescription": [
+      "ไม่เหลือการ์ดทักษะ NL ในกองจั่ว"
+    ]
+  },
+  "Secret Weapon": {
+    "name": "อาวุธลับ",
+    "description": "เลือกนำการ์ดโจมตี 1 ใบจากกองจั่วขึ้นมือ NL สลาย",
+    "upgradeDescription": "เลือกนำการ์ดโจมตี 1 ใบจากกองจั่วขึ้นมือ",
+    "extendedDescription": [
+      "ไม่เหลือการ์ดโจมตี NL ในกองจั่ว"
+    ]
+  },
+  "Swift Strike": {
+    "name": "จู่โจมฉับพลัน",
+    "description": "สร้างความเสียหาย !D!",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "The Bomb": {
+    "name": "ระเบิด",
+    "description": "เมื่อเวลาผ่านไป 3 เทิร์น จะสร้างความเสียหาย !M! ใส่ศัตรูทั้งหมด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Thinking Ahead": {
+    "name": "คิดล่วงหน้า",
+    "description": "จั่วการ์ด 2 ใบ NL นำการ์ดในมือ 1 ใบ ไปวางไว้บนสุดของกองจั่ว NL สลาย",
+    "upgradeDescription": "จั่วการ์ด 2 ใบ NL นำการ์ดในมือ 1 ใบ ไปวางไว้บนสุดของกองจั่ว",
+    "extendedDescription": []
+  },
+  "Transmutation": {
+    "name": "เล่นแร่แปรธาตุ",
+    "description": "เพิ่มการ์ดไม่มีสี X ใบใส่มือ มันมีค่าร่าย 0 ในเทิร์นนี้ NL สลาย",
+    "upgradeDescription": "เพิ่มการ์ดไม่มีสีแบบพัฒนาแล้ว X ใบใส่มือ มันมีค่าร่าย 0 ในเทิร์นนี้ NL สลาย",
+    "extendedDescription": []
+  },
+  "Trip": {
+    "name": "สะดุดล้ม",
+    "description": "เพิ่มผล !M! จุดอ่อน",
+    "upgradeDescription": "เพิ่มผล !M! จุดอ่อน ใส่ศัตรูทั้งหมด",
+    "extendedDescription": []
+  },
+  "Violence": {
+    "name": "ความรุนแรง",
+    "description": "สุ่มนำการ์ดโจมตี !M! ใบจากกองจั่วขึ้นมือ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Burn": {
+    "name": "เผาไหม้",
+    "description": "ถูกผนึก NL เมื่อจบเทิร์น ได้รับความเสียหาย 2",
+    "upgradeDescription": "ถูกผนึก NL เมื่อจบเทิร์น ได้รับความเสียหาย 4",
+    "extendedDescription": []
+  },
+  "Dazed": {
+    "name": "ความมึนงง",
+    "description": "ถูกผนึก NL กึ่งสลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Slimed": {
+    "name": "เมือกสไลม์",
+    "description": "สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Void": {
+    "name": "ความว่างเปล่า",
+    "description": "ถูกผนึก NL กึ่งสลาย NL เมื่อจั่วได้การ์ดนี้ สูญเสีย 1 พลังงาน",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Wound": {
+    "name": "บาดแผล",
+    "description": "ถูกผนึก",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Ghostly": {
+    "name": "กายวิญญาณ",
+    "description": "กึ่งสลาย NL ได้รับ 1 ไร้ตัวตน NL สลาย",
+    "upgradeDescription": "ได้รับ 1 ไร้ตัวตน NL สลาย",
+    "extendedDescription": []
+  },
+  "Beta": {
+    "name": "เบต้า",
+    "description": "สับการ์ด *โอเมก้า 1 ใบเข้ากองจั่ว NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Bite": {
+    "name": "ดูดเลือด",
+    "description": "สร้างความเสียหาย !D! NL ฟื้นฟู !M! HP",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "J.A.X.": {
+    "name": "สารกระตุ้น",
+    "description": "สูญเสีย 3 HP NL ได้รับ !M! ความแข็งแรง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Insight": {
+    "name": "ญาณ",
+    "description": "คงสภาพ NL จั่วการ์ด !M! ใบ NL สลาย",
+    "upgradeDescription": "คงสภาพ NL จั่วการ์ด !M! ใบ NL สลาย",
+    "extendedDescription": []
+  },
+  "Miracle": {
+    "name": "ปาฏิหาริย์",
+    "description": "คงสภาพ NL ได้รับ [W] NL สลาย",
+    "upgradeDescription": "คงสภาพ NL ได้รับ [W] [W] NL สลาย",
+    "extendedDescription": []
+  },
+  "Omega": {
+    "name": "โอเมก้า",
+    "description": "เมื่อจบเทิร์น สร้างความเสียหาย !M! ใส่ศัตรูทั้งหมด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "RitualDagger": {
+    "name": "มีดปลุกเสก",
+    "description": "สร้างความเสียหาย !D! NL เมื่อ สังหาร เพิ่มพลังให้การ์ดนี้ !M! ถาวร NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Safety": {
+    "name": "ความปลอดภัย",
+    "description": "คงสภาพ NL ได้รับ !B! เกราะ NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shiv": {
+    "name": "มีดสั้น",
+    "description": "สร้างความเสียหาย !D! NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Smite": {
+    "name": "ลงทัณฑ์",
+    "description": "คงสภาพ NL สร้างความเสียหาย !D! NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "ThroughViolence": {
+    "name": "ด้วยความรุนแรง",
+    "description": "คงสภาพ NL สร้างความเสียหาย !D! NL สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "BecomeAlmighty": {
+    "name": "พระผู้เป็นเจ้า",
+    "description": "ได้รับ !M! ความแข็งแรง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "FameAndFortune": {
+    "name": "ลาภยศ",
+    "description": "ได้รับ !M! ทอง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "LiveForever": {
+    "name": "ชีวิตนิรันดร์",
+    "description": "ได้รับ !M! *เกราะโลหะ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Expunger": {
+    "name": "กระบี่พิชิตมาร",
+    "description": "สร้างความเสียหาย !D! จำนวน X ครั้ง",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "สร้างความเสียหาย !D! จำนวน !M! ครั้ง",
+      "สร้างความเสียหาย !D! จำนวน !M! ครั้ง"
+    ]
+  },
+  "AscendersBane": {
+    "name": "คำสาปผู้บรรลุ",
+    "description": "ถูกผนึก NL กึ่งสลาย NL กำจัดการ์ดนี้ ออกจากกองการ์ดไม่ได้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "CurseOfTheBell": {
+    "name": "คำสาปจากกระดิ่ง",
+    "description": "ใช้การ์ดนี้ไม่ได้ NL กำจัด ออกจากกองการ์ดไม่ได้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Clumsy": {
+    "name": "ความซุ่มซ่าม",
+    "description": "ถูกผนึก NL กึ่งสลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Decay": {
+    "name": "ความเสื่อมสลาย",
+    "description": "ถูกผนึก NL เมื่อจบเทิร์น ได้รับความเสียหาย 2",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Doubt": {
+    "name": "ความเคลือบแคลง",
+    "description": "ถูกผนึก NL เมื่อจบเทิร์น ได้รับ 1 ความอ่อนแอ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Injury": {
+    "name": "ความเสียหาย",
+    "description": "ถูกผนึก",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Necronomicurse": {
+    "name": "เนโครโนมิเคิร์ส",
+    "description": "ถูกผนึก NL ไม่มีหนทาง หลีกเลี่ยงคำสาปนี้ได้",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Normality": {
+    "name": "จำกัดฐานะ",
+    "description": "ถูกผนึก NL เมื่ออยู่ในมือ คุณจะใช้การ์ดได้ไม่เกิน 3 ใบในเทิร์นนี้",
+    "upgradeDescription": "",
+    "extendedDescription": [
+      "ใช้การ์ดได้ไม่เกิน NL #r3 ใบในเทิร์นนี้",
+      "ถูกผนึก NL คุณจะใช้การ์ดได้ไม่เกิน ",
+      " ใบต่อเทิร์น",
+      " ใบต่อเทิร์น NL คุณใช้ไปแล้ว ",
+      " ใบในเทิร์นนี้",
+      " ใบในเทิร์นนี้"
+    ]
+  },
+  "Pain": {
+    "name": "ความเจ็บปวด",
+    "description": "ถูกผนึก NL เมื่ออยู่ในมือ NL คุณจะสูญเสีย 1 HP ทุกครั้งที่ใช้การ์ด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Parasite": {
+    "name": "ปรสิต",
+    "description": "ถูกผนึก NL ถ้าถูก แปรสภาพ หรือ กำจัด ออกจากกองการ์ด สูญเสีย 3 HP สูงสุด",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Pride": {
+    "name": "ทิฐิมานะ",
+    "description": "ติดตัว NL เมื่อจบเทิร์น เพิ่มสำเนาการ์ดใบนี้อีก 1 ใบ ไปวางไว้บนสุดของกองจั่ว สลาย",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Regret": {
+    "name": "ความเศร้าโศก",
+    "description": "ถูกผนึก NL เมื่อจบเทิร์น สูญเสีย HP ตามจำนวน การ์ดในมือที่เหลือ",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Shame": {
+    "name": "ความละอาย",
+    "description": "ถูกผนึก NL เมื่อจบเทิร์น ได้รับ 1 ความบอบบาง",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  },
+  "Writhe": {
+    "name": "อาการชัก",
+    "description": "ถูกผนึก NL ติดตัว",
+    "upgradeDescription": "",
+    "extendedDescription": []
+  }
+}

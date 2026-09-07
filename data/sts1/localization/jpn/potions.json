@@ -1,0 +1,338 @@
+{
+  "Regen Potion": {
+    "name": "再生ポーション",
+    "description": "#y再生 #b5 を得る。",
+    "descriptions": [
+      "#y再生 #b",
+      " を得る。",
+      ""
+    ]
+  },
+  "SmokeBomb": {
+    "name": "煙玉",
+    "description": "ボス以外の戦闘で逃走する。報酬は得られない。0包囲されている！",
+    "descriptions": [
+      "ボス以外の戦闘で逃走する。報酬は得られない。",
+      "包囲されている！"
+    ]
+  },
+  "Weak Potion": {
+    "name": "脱力ポーション",
+    "description": "#y脱力 #b3 を与える。",
+    "descriptions": [
+      "#y脱力 #b",
+      " を与える。"
+    ]
+  },
+  "SteroidPotion": {
+    "name": "ステロイドポーション",
+    "description": "#y筋力 #b5 を得る。ターン終了時に #y筋力 #b を失う。",
+    "descriptions": [
+      "#y筋力 #b",
+      " を得る。ターン終了時に #y筋力 #b",
+      " を失う。"
+    ]
+  },
+  "SpeedPotion": {
+    "name": "スピードポーション",
+    "description": "#y敏捷性 #b5 を得る。ターン終了時に #y敏捷性 #b を失う。",
+    "descriptions": [
+      "#y敏捷性 #b",
+      " を得る。ターン終了時に #y敏捷性 #b",
+      " を失う。"
+    ]
+  },
+  "Ancient Potion": {
+    "name": "古代のポーション",
+    "description": "#y人の作りし物 #b1 を得る。",
+    "descriptions": [
+      "#y人の作りし物 #b",
+      " を得る。"
+    ]
+  },
+  "Poison Potion": {
+    "name": "毒ポーション",
+    "description": "#y毒 #b6 を与える。",
+    "descriptions": [
+      "#y毒 #b",
+      " を与える。"
+    ]
+  },
+  "LiquidMemories": {
+    "name": "記憶の液体",
+    "description": "捨て札からカードを1枚選択し、手札に戻す。そのターンに限り #b0 コストで使用できる。1捨て札からカードを #b 枚選択し、手札に戻す。そのターンに限り #b0 コストで使用できる。   ",
+    "descriptions": [
+      "捨て札からカードを1枚選択し、手札に戻す。そのターンに限り #b0 コストで使用できる。",
+      "捨て札からカードを #b",
+      " 枚選択し、手札に戻す。そのターンに限り #b0 コストで使用できる。   "
+    ]
+  },
+  "Fire Potion": {
+    "name": "炎のポーション",
+    "description": "#b20 ダメージを与える。",
+    "descriptions": [
+      "#b",
+      " ダメージを与える。"
+    ]
+  },
+  "CunningPotion": {
+    "name": "狡猾のポーション",
+    "description": "#yナイフ+ を #b3 枚手札に加える。",
+    "descriptions": [
+      "#yナイフ+ を #b",
+      " 枚手札に加える。"
+    ]
+  },
+  "PowerPotion": {
+    "name": "パワーポーション",
+    "description": "#b3 枚のランダムな #yパワー カードから #b1 枚を選択し、手札に加える。そのターンに限り #b0 コストで使用できる。1#b3 枚のランダムな #yパワー カードから #b1 枚を選択し、それを #b2 枚手札に加える。そのターンに限り #b0 コストで使用できる。",
+    "descriptions": [
+      "#b3 枚のランダムな #yパワー カードから #b1 枚を選択し、手札に加える。そのターンに限り #b0 コストで使用できる。",
+      "#b3 枚のランダムな #yパワー カードから #b1 枚を選択し、それを #b2 枚手札に加える。そのターンに限り #b0 コストで使用できる。"
+    ]
+  },
+  "Swift Potion": {
+    "name": "韋駄天のポーション",
+    "description": "3カードを #b 枚を引く。",
+    "descriptions": [
+      "",
+      "カードを #b",
+      " 枚を引く。"
+    ]
+  },
+  "SkillPotion": {
+    "name": "スキルポーション",
+    "description": "#b3 枚のランダムな #yスキル カードから #b1 枚を選択し、手札に加える。そのターンに限り #b0 コストで使用できる。1#b3 枚のランダムな #yスキル カードから #b1 枚を選択し、それを #b2 枚手札に加える。そのターンに限り #b0 コストで使用できる。",
+    "descriptions": [
+      "#b3 枚のランダムな #yスキル カードから #b1 枚を選択し、手札に加える。そのターンに限り #b0 コストで使用できる。",
+      "#b3 枚のランダムな #yスキル カードから #b1 枚を選択し、それを #b2 枚手札に加える。そのターンに限り #b0 コストで使用できる。"
+    ]
+  },
+  "Dexterity Potion": {
+    "name": "敏捷性ポーション",
+    "description": "#y敏捷性 #b2 を得る。",
+    "descriptions": [
+      "#y敏捷性 #b",
+      " を得る。"
+    ]
+  },
+  "DuplicationPotion": {
+    "name": "複製ポーション",
+    "description": "このターン、次のカードを2回プレイする。1このターン、次の #b2 枚のカードを2回プレイする。",
+    "descriptions": [
+      "このターン、次のカードを2回プレイする。",
+      "このターン、次の #b2 枚のカードを2回プレイする。"
+    ]
+  },
+  "Strength Potion": {
+    "name": "筋力ポーション",
+    "description": "#y筋力 #b2 を得る。",
+    "descriptions": [
+      "#y筋力 #b",
+      " を得る。"
+    ]
+  },
+  "GhostInAJar": {
+    "name": "幽霊の小壺",
+    "description": "#y無形 #b1 を得る。",
+    "descriptions": [
+      "#y無形 #b",
+      " を得る。"
+    ]
+  },
+  "BlessingOfTheForge": {
+    "name": "鍛冶場の祝福",
+    "description": "手札のカードすべてをこの戦闘に限りアップグレードする。",
+    "descriptions": [
+      "手札のカードすべてをこの戦闘に限りアップグレードする。"
+    ]
+  },
+  "FocusPotion": {
+    "name": "集中力ポーション",
+    "description": "#y集中力 #b2 を得る。",
+    "descriptions": [
+      "#y集中力 #b",
+      " を得る。"
+    ]
+  },
+  "HeartOfIron": {
+    "name": "鉄の心臓",
+    "description": "#y金属化 #b6 を得る。",
+    "descriptions": [
+      "#y金属化 #b",
+      " を得る。"
+    ]
+  },
+  "FairyPotion": {
+    "name": "妖精の瓶",
+    "description": "死にそうになった時、このポーションで最大HPの #b10% が回復する。使用後はなくなる。30% で復活し、このポーションを失う。",
+    "descriptions": [
+      "死にそうになった時、このポーションで最大HPの #b10% が回復する。使用後はなくなる。",
+      "% で復活し、このポーションを失う。"
+    ]
+  },
+  "PotionOfCapacity": {
+    "name": "容量ポーション",
+    "description": "オーブスロットを #b2 個得る。",
+    "descriptions": [
+      "オーブスロットを #b",
+      " 個得る。"
+    ]
+  },
+  "Block Potion": {
+    "name": "ブロックポーション",
+    "description": "#yブロック #b12 を得る。",
+    "descriptions": [
+      "#yブロック #b",
+      " を得る。"
+    ]
+  },
+  "FearPotion": {
+    "name": "畏怖のポーション",
+    "description": "#y弱体化 #b3 を与える。",
+    "descriptions": [
+      "#y弱体化 #b",
+      " を与える。"
+    ]
+  },
+  "GamblersBrew": {
+    "name": "賭博師の醸造酒",
+    "description": "好きな枚数カードを捨て、同じ枚数だけカードを引く。",
+    "descriptions": [
+      "好きな枚数カードを捨て、同じ枚数だけカードを引く。"
+    ]
+  },
+  "BloodPotion": {
+    "name": "血のポーション",
+    "description": "最大HPの #b20% を回復する。",
+    "descriptions": [
+      "最大HPの #b",
+      "% を回復する。"
+    ]
+  },
+  "EssenceOfDarkness": {
+    "name": "闇のエッセンス",
+    "description": "オーブスロット1つにつき #yダーク を #b1 #y生成 する。",
+    "descriptions": [
+      "オーブスロット1つにつき #yダーク を #b",
+      " #y生成 する。"
+    ]
+  },
+  "Fruit Juice": {
+    "name": "果汁",
+    "description": "最大HPが #b5 増える。",
+    "descriptions": [
+      "最大HPが #b",
+      " 増える。"
+    ]
+  },
+  "Energy Potion": {
+    "name": "エナジーポーション",
+    "description": "#yエナジー #b2 を得る。",
+    "descriptions": [
+      "#yエナジー #b",
+      " を得る。"
+    ]
+  },
+  "Ambrosia": {
+    "name": "神々の飲料",
+    "description": "#y神聖 #yスタンス に移行する。",
+    "descriptions": [
+      "#y神聖 #yスタンス に移行する。"
+    ]
+  },
+  "ElixirPotion": {
+    "name": "エリクサー",
+    "description": "手札のカードを好きな枚数だけ #y廃棄 する。",
+    "descriptions": [
+      "手札のカードを好きな枚数だけ #y廃棄 する。"
+    ]
+  },
+  "DistilledChaos": {
+    "name": "蒸留された混沌",
+    "description": "山札の上から #b3 枚カードをプレイする。    ",
+    "descriptions": [
+      "山札の上から #b",
+      " 枚カードをプレイする。    "
+    ]
+  },
+  "LiquidBronze": {
+    "name": "ブロンズ液",
+    "description": "#yトゲ #b3 を得る。",
+    "descriptions": [
+      "#yトゲ #b",
+      " を得る。"
+    ]
+  },
+  "AttackPotion": {
+    "name": "アタックポーション",
+    "description": "#b3 枚のランダムな #yアタック カードから #b1 枚を選択し、手札に加える。そのターンに限り #b0 コストで使用できる。1#b3 枚のランダムな #yアタック カードから #b1 枚を選択し、それを #b2 枚手札に加える。そのターンに限り #b0 コストで使用できる。",
+    "descriptions": [
+      "#b3 枚のランダムな #yアタック カードから #b1 枚を選択し、手札に加える。そのターンに限り #b0 コストで使用できる。",
+      "#b3 枚のランダムな #yアタック カードから #b1 枚を選択し、それを #b2 枚手札に加える。そのターンに限り #b0 コストで使用できる。"
+    ]
+  },
+  "SneckoOil": {
+    "name": "ヘビヤモリの油",
+    "description": "#y混乱 状態になり、カードを #b5 枚引く。 枚引く。",
+    "descriptions": [
+      "#y混乱 状態になり、カードを #b",
+      " 枚引く。",
+      " 枚引く。"
+    ]
+  },
+  "StancePotion": {
+    "name": "スタンスポーション",
+    "description": "#y平静 か #y憤怒 のスタンスに移行する。",
+    "descriptions": [
+      "#y平静 か #y憤怒 のスタンスに移行する。"
+    ]
+  },
+  "Explosive Potion": {
+    "name": "爆発のポーション",
+    "description": "敵全体に #b10 ダメージを与える。",
+    "descriptions": [
+      "敵全体に #b",
+      " ダメージを与える。"
+    ]
+  },
+  "EssenceOfSteel": {
+    "name": "鉄のエッセンス",
+    "description": "#yプレートアーマー #b4 を得る。",
+    "descriptions": [
+      "#yプレートアーマー #b",
+      " を得る。"
+    ]
+  },
+  "BottledMiracle": {
+    "name": "瓶詰の奇跡",
+    "description": "#y奇跡 を #b2 枚手札に加える。",
+    "descriptions": [
+      "#y奇跡 を #b",
+      " 枚手札に加える。"
+    ]
+  },
+  "ColorlessPotion": {
+    "name": "無色のポーション",
+    "description": "#b3 枚のランダムな #y無色 のカードから #b1 枚を選択し、手札に加える。そのターンに限り #b0 コストで使用できる。1#b3 枚のランダムな #y無色 のカードから #b1 枚を選択し、それを #b2 枚手札に加える。そのターンに限り #b0 コストで使用できる。",
+    "descriptions": [
+      "#b3 枚のランダムな #y無色 のカードから #b1 枚を選択し、手札に加える。そのターンに限り #b0 コストで使用できる。",
+      "#b3 枚のランダムな #y無色 のカードから #b1 枚を選択し、それを #b2 枚手札に加える。そのターンに限り #b0 コストで使用できる。"
+    ]
+  },
+  "EntropicBrew": {
+    "name": "エントロピー調合",
+    "description": "すべての空きポーションスロットにランダムなポーションを入れる。",
+    "descriptions": [
+      "すべての空きポーションスロットにランダムなポーションを入れる。"
+    ]
+  },
+  "CultistPotion": {
+    "name": "狂信者のポーション",
+    "description": "#y儀式 #b1を得る。",
+    "descriptions": [
+      "#y儀式 #b",
+      "を得る。"
+    ]
+  }
+}

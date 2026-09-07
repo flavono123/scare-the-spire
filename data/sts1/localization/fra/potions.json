@@ -1,0 +1,338 @@
+{
+  "Regen Potion": {
+    "name": "Potion de régénération",
+    "description": "Gagnez #b5 de #yRégénération",
+    "descriptions": [
+      "Gagnez #b",
+      " de #yRégénération",
+      ""
+    ]
+  },
+  "SmokeBomb": {
+    "name": "Fumigène",
+    "description": "Échappez-vous de n'importe quel combat qui n'est pas de boss. Ne recevez aucune récompense.0Je suis entouré !",
+    "descriptions": [
+      "Échappez-vous de n'importe quel combat qui n'est pas de boss. Ne recevez aucune récompense.",
+      "Je suis entouré !"
+    ]
+  },
+  "Weak Potion": {
+    "name": "Potion de faiblesse",
+    "description": "Applique #b3 de #yFaiblesse.",
+    "descriptions": [
+      "Applique #b",
+      " de #yFaiblesse."
+    ]
+  },
+  "SteroidPotion": {
+    "name": "Potion de vantardise",
+    "description": "Gagnez #b5 de #yForce. À la fin de votre tour, perdez #b de #yForce.",
+    "descriptions": [
+      "Gagnez #b",
+      " de #yForce. À la fin de votre tour, perdez #b",
+      " de #yForce."
+    ]
+  },
+  "SpeedPotion": {
+    "name": "Potion de vitesse",
+    "description": "Gagnez #b5 de #yDextérité. À la fin de votre tour, perdez #b de #yDextérité.",
+    "descriptions": [
+      "Gagnez #b",
+      " de #yDextérité. À la fin de votre tour, perdez #b",
+      " de #yDextérité."
+    ]
+  },
+  "Ancient Potion": {
+    "name": "Potion ancienne",
+    "description": "Gagnez #b1 #yArtefact.",
+    "descriptions": [
+      "Gagnez #b",
+      " #yArtefact."
+    ]
+  },
+  "Poison Potion": {
+    "name": "Potion de poison",
+    "description": "Applique #b6 de #yPoison.",
+    "descriptions": [
+      "Applique #b",
+      " de #yPoison."
+    ]
+  },
+  "LiquidMemories": {
+    "name": "Mémoires liquides",
+    "description": "Choisissez une carte de votre défausse et mettez la dans votre main. Elle coûte #b0 ce tour.1Choisissez #b cartes dans votre défausse et remettez les dans votre main. Elles coûtent #b0 ce tour.",
+    "descriptions": [
+      "Choisissez une carte de votre défausse et mettez la dans votre main. Elle coûte #b0 ce tour.",
+      "Choisissez #b",
+      " cartes dans votre défausse et remettez les dans votre main. Elles coûtent #b0 ce tour."
+    ]
+  },
+  "Fire Potion": {
+    "name": "Potion incendiaire",
+    "description": "Inflige #b20 dégâts.",
+    "descriptions": [
+      "Inflige #b",
+      " dégâts."
+    ]
+  },
+  "CunningPotion": {
+    "name": "Potion de ruse",
+    "description": "Ajoutez #b3 #ySurins+ à votre main.",
+    "descriptions": [
+      "Ajoutez #b",
+      " #ySurins+ à votre main."
+    ]
+  },
+  "PowerPotion": {
+    "name": "Potion de pouvoir",
+    "description": "Choisissez #b1 #yPouvoir parmi #b3 aléatoires à ajouter à votre main. Il coûte #b0 ce tour.1Choisissez #b1 #yPouvoir parmi #b3 aléatoires, et ajoutez-en #b2 copies à votre main. Elles coûtent #b0 ce tour.",
+    "descriptions": [
+      "Choisissez #b1 #yPouvoir parmi #b3 aléatoires à ajouter à votre main. Il coûte #b0 ce tour.",
+      "Choisissez #b1 #yPouvoir parmi #b3 aléatoires, et ajoutez-en #b2 copies à votre main. Elles coûtent #b0 ce tour."
+    ]
+  },
+  "Swift Potion": {
+    "name": "Potion de célérité",
+    "description": "3Piochez #b cartes.",
+    "descriptions": [
+      "",
+      "Piochez #b",
+      " cartes."
+    ]
+  },
+  "SkillPotion": {
+    "name": "Potion de compétence",
+    "description": "Choisissez #b1 #yCompétence parmi #b3 aléatoires à ajouter à votre main. Elle coûte #b0 ce tour.1Choisissez #b1 #yCompétence parmi #b3 aléatoires, et ajoutez-en #b2 copies à votre main. Elles coûtent #b0 ce tour.",
+    "descriptions": [
+      "Choisissez #b1 #yCompétence parmi #b3 aléatoires à ajouter à votre main. Elle coûte #b0 ce tour.",
+      "Choisissez #b1 #yCompétence parmi #b3 aléatoires, et ajoutez-en #b2 copies à votre main. Elles coûtent #b0 ce tour."
+    ]
+  },
+  "Dexterity Potion": {
+    "name": "Potion de dextérité",
+    "description": "Gagnez #b2 de #yDextérité.",
+    "descriptions": [
+      "Gagnez #b",
+      " de #yDextérité."
+    ]
+  },
+  "DuplicationPotion": {
+    "name": "Potion de duplication",
+    "description": "Votre prochaine carte est jouée deux fois ce tour.1Vos #b2 prochaines cartes sont jouées deux fois ce tour.",
+    "descriptions": [
+      "Votre prochaine carte est jouée deux fois ce tour.",
+      "Vos #b2 prochaines cartes sont jouées deux fois ce tour."
+    ]
+  },
+  "Strength Potion": {
+    "name": "Potion de force",
+    "description": "Gagnez #b2 de #yForce.",
+    "descriptions": [
+      "Gagnez #b",
+      " de #yForce."
+    ]
+  },
+  "GhostInAJar": {
+    "name": "Fantôme dans un bocal",
+    "description": "Gagnez #b1 #yd'Intangible.",
+    "descriptions": [
+      "Gagnez #b",
+      " #yd'Intangible."
+    ]
+  },
+  "BlessingOfTheForge": {
+    "name": "Bénédiction de la Forge",
+    "description": "Améliorez toutes les cartes dans votre main pour la durée du combat.",
+    "descriptions": [
+      "Améliorez toutes les cartes dans votre main pour la durée du combat."
+    ]
+  },
+  "FocusPotion": {
+    "name": "Potion de concentration",
+    "description": "Gagnez #b2 de #yConcentration.",
+    "descriptions": [
+      "Gagnez #b",
+      " de #yConcentration."
+    ]
+  },
+  "HeartOfIron": {
+    "name": "Cœur de fer",
+    "description": "Gagnez #b6 de #yMétallisation.",
+    "descriptions": [
+      "Gagnez #b",
+      " de #yMétallisation."
+    ]
+  },
+  "FairyPotion": {
+    "name": "Potion féerique",
+    "description": "Quand vous mourez, survivez avec #b30% de vos PV max à la place et défaussez cette potion.",
+    "descriptions": [
+      "Quand vous mourez, survivez avec #b",
+      "% de vos PV max à la place et défaussez cette potion."
+    ]
+  },
+  "PotionOfCapacity": {
+    "name": "Potion de capacité",
+    "description": "Gagnez #b2 emplacements d'Orbe.",
+    "descriptions": [
+      "Gagnez #b",
+      " emplacements d'Orbe."
+    ]
+  },
+  "Block Potion": {
+    "name": "Potion d'armure",
+    "description": "Gagnez #b12 #yd'Armure.",
+    "descriptions": [
+      "Gagnez #b",
+      " #yd'Armure."
+    ]
+  },
+  "FearPotion": {
+    "name": "Potion de peur",
+    "description": "Applique #b3 de #yVulnérabilité.",
+    "descriptions": [
+      "Applique #b",
+      " de #yVulnérabilité."
+    ]
+  },
+  "GamblersBrew": {
+    "name": "Décoction du joueur",
+    "description": "Défaussez autant de cartes que vous voulez et piochez-en autant.",
+    "descriptions": [
+      "Défaussez autant de cartes que vous voulez et piochez-en autant."
+    ]
+  },
+  "BloodPotion": {
+    "name": "Potion de sang",
+    "description": "Gagnez #b20% de vos PV max.",
+    "descriptions": [
+      "Gagnez #b",
+      "% de vos PV max."
+    ]
+  },
+  "EssenceOfDarkness": {
+    "name": "Essence de ténèbres",
+    "description": "#yCanalisez #b1 #yOrbes #yObscurs pour chaque emplacement d'Orbe.",
+    "descriptions": [
+      "#yCanalisez #b",
+      " #yOrbes #yObscurs pour chaque emplacement d'Orbe."
+    ]
+  },
+  "Fruit Juice": {
+    "name": "Jus de fruits",
+    "description": "Gagnez #b5 PV max.",
+    "descriptions": [
+      "Gagnez #b",
+      " PV max."
+    ]
+  },
+  "Energy Potion": {
+    "name": "Potion d'énergie",
+    "description": "Gagnez #b2 d'Énergie.",
+    "descriptions": [
+      "Gagnez #b",
+      " d'Énergie."
+    ]
+  },
+  "Ambrosia": {
+    "name": "Ambroisie",
+    "description": "Entrez en #yDivinité.",
+    "descriptions": [
+      "Entrez en #yDivinité."
+    ]
+  },
+  "ElixirPotion": {
+    "name": "Élixir",
+    "description": "#yÉpuisez n'importe quel nombre de cartes de votre main.",
+    "descriptions": [
+      "#yÉpuisez n'importe quel nombre de cartes de votre main."
+    ]
+  },
+  "DistilledChaos": {
+    "name": "Chaos distillé",
+    "description": "Jouez les #b3 cartes du dessus de votre pioche.",
+    "descriptions": [
+      "Jouez les #b",
+      " cartes du dessus de votre pioche."
+    ]
+  },
+  "LiquidBronze": {
+    "name": "Bronze liquide",
+    "description": "Gagnez #b3 #yd'Épines.",
+    "descriptions": [
+      "Gagnez #b",
+      " #yd'Épines."
+    ]
+  },
+  "AttackPotion": {
+    "name": "Potion d'attaque",
+    "description": "Choisissez #b1 #yAttaque parmi #b3 aléatoires à ajouter à votre main. Elle coûte #b0 ce tour.1Choisissez #b1 #yAttaque parmi #b3 aléatoires, et ajoutez-en #b2 copies à votre main. Elles coûtent #b0 ce tour.",
+    "descriptions": [
+      "Choisissez #b1 #yAttaque parmi #b3 aléatoires à ajouter à votre main. Elle coûte #b0 ce tour.",
+      "Choisissez #b1 #yAttaque parmi #b3 aléatoires, et ajoutez-en #b2 copies à votre main. Elles coûtent #b0 ce tour."
+    ]
+  },
+  "SneckoOil": {
+    "name": "Huile de geckobra",
+    "description": "Piochez #b5 cartes. Rendez le coût des cartes de votre main aléatoire.",
+    "descriptions": [
+      "Piochez #b",
+      " cartes. Rendez le coût des cartes de votre main aléatoire.",
+      ""
+    ]
+  },
+  "StancePotion": {
+    "name": "Potion de position",
+    "description": "Prenez la position #yCalme ou #yColère.",
+    "descriptions": [
+      "Prenez la position #yCalme ou #yColère."
+    ]
+  },
+  "Explosive Potion": {
+    "name": "Potion explosive",
+    "description": "Inflige #b10 dégâts à TOUS les ennemis.",
+    "descriptions": [
+      "Inflige #b",
+      " dégâts à TOUS les ennemis."
+    ]
+  },
+  "EssenceOfSteel": {
+    "name": "Essence d'acier",
+    "description": "Gagnez #b4 #yd'Armure #yPlaquée.",
+    "descriptions": [
+      "Gagnez #b",
+      " #yd'Armure #yPlaquée."
+    ]
+  },
+  "BottledMiracle": {
+    "name": "Miracle embouteillé",
+    "description": "Ajoutez #b2 #yMiracles à votre main.",
+    "descriptions": [
+      "Ajoutez #b",
+      " #yMiracles à votre main."
+    ]
+  },
+  "ColorlessPotion": {
+    "name": "Potion incolore",
+    "description": "Choisissez #b1 carte #yIncolore parmi #b3 aléatoires à ajouter dans votre main. Elle coûte #b0 ce tour.1Choisissez #b1 carte #yIncolore parmi #b3 aléatoires, et ajoutez-en #b2 copies dans votre main. Elles coûtent #b0 ce tour.",
+    "descriptions": [
+      "Choisissez #b1 carte #yIncolore parmi #b3 aléatoires à ajouter dans votre main. Elle coûte #b0 ce tour.",
+      "Choisissez #b1 carte #yIncolore parmi #b3 aléatoires, et ajoutez-en #b2 copies dans votre main. Elles coûtent #b0 ce tour."
+    ]
+  },
+  "EntropicBrew": {
+    "name": "Décoction d'entropie",
+    "description": "Remplissez tous vos emplacements de potion libres avec des potions aléatoires.",
+    "descriptions": [
+      "Remplissez tous vos emplacements de potion libres avec des potions aléatoires."
+    ]
+  },
+  "CultistPotion": {
+    "name": "Potion d'adepte",
+    "description": "Gagnez #b1 de #yRituel.",
+    "descriptions": [
+      "Gagnez #b",
+      " de #yRituel."
+    ]
+  }
+}

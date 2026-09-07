@@ -1,0 +1,338 @@
+{
+  "Regen Potion": {
+    "name": "Pozione Rigenerante",
+    "description": "Ottieni #b5 #yRigenerazione.",
+    "descriptions": [
+      "Ottieni #b",
+      " #yRigenerazione.",
+      ""
+    ]
+  },
+  "SmokeBomb": {
+    "name": "Fumogeno",
+    "description": "Fuggi da un combattimento senza ricompense. Attenzione: non permette di scappare dai boss.0Sono circondato!",
+    "descriptions": [
+      "Fuggi da un combattimento senza ricompense. Attenzione: non permette di scappare dai boss.",
+      "Sono circondato!"
+    ]
+  },
+  "Weak Potion": {
+    "name": "Pozione Debilitante",
+    "description": "Applichi #b3 #yDebole.",
+    "descriptions": [
+      "Applichi #b",
+      " #yDebole."
+    ]
+  },
+  "SteroidPotion": {
+    "name": "Steroidi Magici",
+    "description": "Ottieni #b5 #yForza. A fine turno perdi #b #yForza.",
+    "descriptions": [
+      "Ottieni #b",
+      " #yForza. A fine turno perdi #b",
+      " #yForza."
+    ]
+  },
+  "SpeedPotion": {
+    "name": "Pozione Veloce",
+    "description": "Ottieni #b5 #yDestrezza. A fine turno perdi #b #yDestrezza.",
+    "descriptions": [
+      "Ottieni #b",
+      " #yDestrezza. A fine turno perdi #b",
+      " #yDestrezza."
+    ]
+  },
+  "Ancient Potion": {
+    "name": "Pozione Antica",
+    "description": "Ottieni #b1 #yArtefatto.",
+    "descriptions": [
+      "Ottieni #b",
+      " #yArtefatto."
+    ]
+  },
+  "Poison Potion": {
+    "name": "Pozione Velenosa",
+    "description": "Applichi #b6 #yVeleno.",
+    "descriptions": [
+      "Applichi #b",
+      " #yVeleno."
+    ]
+  },
+  "LiquidMemories": {
+    "name": "Memorie Liquide",
+    "description": "Scegli una carta fra gli scarti e aggiungila alla Mano. Costa #b0 questo turno.1Scegli #b  carte fra gli scarti e aggiungile alla Mano. Costano #b0 questo turno.",
+    "descriptions": [
+      "Scegli una carta fra gli scarti e aggiungila alla Mano. Costa #b0 questo turno.",
+      "Scegli #b ",
+      " carte fra gli scarti e aggiungile alla Mano. Costano #b0 questo turno."
+    ]
+  },
+  "Fire Potion": {
+    "name": "Pozione Incendiaria",
+    "description": "Infliggi #b20 danni.",
+    "descriptions": [
+      "Infliggi #b",
+      " danni."
+    ]
+  },
+  "CunningPotion": {
+    "name": "Pozione Scaltra",
+    "description": "Aggiungi #b3 #yPugnali+ alla Mano.",
+    "descriptions": [
+      "Aggiungi #b",
+      " #yPugnali+ alla Mano."
+    ]
+  },
+  "PowerPotion": {
+    "name": "Pozione Potente",
+    "description": "Scegli #b1 fra #b3 Poteri casuali e aggiungilo alla Mano. Costa #b0 per questo turno1Scegli #b1 fra #b3 Poteri casuali e aggiungine #b2 alla Mano. Costano #b0 per questo turno",
+    "descriptions": [
+      "Scegli #b1 fra #b3 Poteri casuali e aggiungilo alla Mano. Costa #b0 per questo turno",
+      "Scegli #b1 fra #b3 Poteri casuali e aggiungine #b2 alla Mano. Costano #b0 per questo turno"
+    ]
+  },
+  "Swift Potion": {
+    "name": "Pozione Rapida",
+    "description": "3Peschi #b carte.",
+    "descriptions": [
+      "",
+      "Peschi #b",
+      " carte."
+    ]
+  },
+  "SkillPotion": {
+    "name": "Pozione Abile",
+    "description": "Scegli #b1 fra #b3 Abilità casuali e aggiungila alla Mano. Costa #b0 per questo turno1Scegli #b1 fra #b3 Abilità casuali e aggiungine #b2 alla Mano. Costano #b0 per questo turno",
+    "descriptions": [
+      "Scegli #b1 fra #b3 Abilità casuali e aggiungila alla Mano. Costa #b0 per questo turno",
+      "Scegli #b1 fra #b3 Abilità casuali e aggiungine #b2 alla Mano. Costano #b0 per questo turno"
+    ]
+  },
+  "Dexterity Potion": {
+    "name": "Destrezza Liquida",
+    "description": "Ottieni #b2 #yDestrezza.",
+    "descriptions": [
+      "Ottieni #b",
+      " #yDestrezza."
+    ]
+  },
+  "DuplicationPotion": {
+    "name": "Pozione del Raddoppio",
+    "description": "Questo turno, la prossima carta viene giocata due volte.1Questo turno, le prossime due carte vengono giocate due volte.",
+    "descriptions": [
+      "Questo turno, la prossima carta viene giocata due volte.",
+      "Questo turno, le prossime due carte vengono giocate due volte."
+    ]
+  },
+  "Strength Potion": {
+    "name": "Forza Liquida",
+    "description": "Ottieni #b2 #yForza.",
+    "descriptions": [
+      "Ottieni #b",
+      " #yForza."
+    ]
+  },
+  "GhostInAJar": {
+    "name": "Spettro in Barattolo",
+    "description": "Ottieni #b1 #yIntangibile.",
+    "descriptions": [
+      "Ottieni #b",
+      " #yIntangibile."
+    ]
+  },
+  "BlessingOfTheForge": {
+    "name": "Benedizione della Forgia",
+    "description": "Potenzia tutte le carte in Mano per un combattimento.",
+    "descriptions": [
+      "Potenzia tutte le carte in Mano per un combattimento."
+    ]
+  },
+  "FocusPotion": {
+    "name": "Concentrato di Focus",
+    "description": "Ottieni #b2 #yFocus.",
+    "descriptions": [
+      "Ottieni #b",
+      " #yFocus."
+    ]
+  },
+  "HeartOfIron": {
+    "name": "Cuore d'Acciaio",
+    "description": "Ottieni #b6 #yMetallizzato.",
+    "descriptions": [
+      "Ottieni #b",
+      " #yMetallizzato."
+    ]
+  },
+  "FairyPotion": {
+    "name": "Fata Imbottigliata",
+    "description": "Quando moriresti, invece scarti questa pozione e ti curi del #b.30% dei tuoi PV massimi.",
+    "descriptions": [
+      "Quando moriresti, invece scarti questa pozione e ti curi del #b.",
+      "% dei tuoi PV massimi."
+    ]
+  },
+  "PotionOfCapacity": {
+    "name": "Pozione Conduttiva",
+    "description": "Ottieni #b2 spazio Globi.",
+    "descriptions": [
+      "Ottieni #b",
+      " spazio Globi."
+    ]
+  },
+  "Block Potion": {
+    "name": "Blocco Istantaneo",
+    "description": "#yBlocca #b12 .",
+    "descriptions": [
+      "#yBlocca #b",
+      " ."
+    ]
+  },
+  "FearPotion": {
+    "name": "Paura Liquida",
+    "description": "Applichi #b3 #yVulnerabile.",
+    "descriptions": [
+      "Applichi #b",
+      " #yVulnerabile."
+    ]
+  },
+  "GamblersBrew": {
+    "name": "Pozione d'Azzardo",
+    "description": "Scarti un numero qualsiasi di carte poi ne peschi altrettante.",
+    "descriptions": [
+      "Scarti un numero qualsiasi di carte poi ne peschi altrettante."
+    ]
+  },
+  "BloodPotion": {
+    "name": "Essenza di Sangue",
+    "description": "Ti curi del #b20% dei tuoi PV massimi.",
+    "descriptions": [
+      "Ti curi del #b",
+      "% dei tuoi PV massimi."
+    ]
+  },
+  "EssenceOfDarkness": {
+    "name": "Essenza Oscura",
+    "description": "#yCrea #b1 #yOscurità per ogni Spazio Globi.",
+    "descriptions": [
+      "#yCrea #b",
+      " #yOscurità per ogni Spazio Globi."
+    ]
+  },
+  "Fruit Juice": {
+    "name": "Succo di Frutta",
+    "description": "Guadagni #b5 PV massimi.",
+    "descriptions": [
+      "Guadagni #b",
+      " PV massimi."
+    ]
+  },
+  "Energy Potion": {
+    "name": "Pozione Energetica",
+    "description": "Ottieni #b2 Energia.",
+    "descriptions": [
+      "Ottieni #b",
+      " Energia."
+    ]
+  },
+  "Ambrosia": {
+    "name": "Ambrosia",
+    "description": "Entra in #yAspetto #yDivino.",
+    "descriptions": [
+      "Entra in #yAspetto #yDivino."
+    ]
+  },
+  "ElixirPotion": {
+    "name": "Elisir",
+    "description": "#yEsaurisci un numero qualunque di carte nella Mano.",
+    "descriptions": [
+      "#yEsaurisci un numero qualunque di carte nella Mano."
+    ]
+  },
+  "DistilledChaos": {
+    "name": "Caos Distillato",
+    "description": "Gioca le prime #b3 carte della pila.",
+    "descriptions": [
+      "Gioca le prime #b",
+      " carte della pila."
+    ]
+  },
+  "LiquidBronze": {
+    "name": "Bronzo Liquido",
+    "description": "Guadagni #b3 #ySpine.",
+    "descriptions": [
+      "Guadagni #b",
+      " #ySpine."
+    ]
+  },
+  "AttackPotion": {
+    "name": "Pozione d'Attacco",
+    "description": "Scegli #b1 fra #b3 Attacchi casuali da aggiungere alla Mano. Costa #b0 per questo turno1Scegli #b1 fra #b3 Attacchi casuali e aggiungine #b2 alla Mano. Costano #b0 per questo turno",
+    "descriptions": [
+      "Scegli #b1 fra #b3 Attacchi casuali da aggiungere alla Mano. Costa #b0 per questo turno",
+      "Scegli #b1 fra #b3 Attacchi casuali e aggiungine #b2 alla Mano. Costano #b0 per questo turno"
+    ]
+  },
+  "SneckoOil": {
+    "name": "Olio di Snecko",
+    "description": "Pesca #b5 carte, il costo delle carte nella Mano diventa casuale.carta.",
+    "descriptions": [
+      "Pesca #b",
+      " carte, il costo delle carte nella Mano diventa casuale.",
+      "carta."
+    ]
+  },
+  "StancePotion": {
+    "name": "Decotto dell'Aspetto",
+    "description": "Cambia #yAspetto da #yQuiete a #yFuria o viceversa.",
+    "descriptions": [
+      "Cambia #yAspetto da #yQuiete a #yFuria o viceversa."
+    ]
+  },
+  "Explosive Potion": {
+    "name": "Pozione Esplosiva",
+    "description": "Infliggi #b10 danni a TUTTI i nemici.",
+    "descriptions": [
+      "Infliggi #b",
+      " danni a TUTTI i nemici."
+    ]
+  },
+  "EssenceOfSteel": {
+    "name": "Essenza d'Acciaio",
+    "description": "Guadagni #b4 #yArmatura #ya #yPiastre.",
+    "descriptions": [
+      "Guadagni #b",
+      " #yArmatura #ya #yPiastre."
+    ]
+  },
+  "BottledMiracle": {
+    "name": "Miracoli in Bottiglia",
+    "description": "Aggiungi #b2 #yMiracoli alla Mano.",
+    "descriptions": [
+      "Aggiungi #b",
+      " #yMiracoli alla Mano."
+    ]
+  },
+  "ColorlessPotion": {
+    "name": "Pozione Incolore",
+    "description": "Scegli #b1 fra #b3 carte #yIncolori casuali da aggiungere alla Mano. Costa #b0 questo turno.1Scegli #b1 fra #b3 carte #yIncolori casuali e aggiungine due copie alla Mano. Costano #b0 questo turno.",
+    "descriptions": [
+      "Scegli #b1 fra #b3 carte #yIncolori casuali da aggiungere alla Mano. Costa #b0 questo turno.",
+      "Scegli #b1 fra #b3 carte #yIncolori casuali e aggiungine due copie alla Mano. Costano #b0 questo turno."
+    ]
+  },
+  "EntropicBrew": {
+    "name": "Bevanda Entropica",
+    "description": "Riempi tutti i tuoi spazi per Pozioni con Pozioni casuali.",
+    "descriptions": [
+      "Riempi tutti i tuoi spazi per Pozioni con Pozioni casuali."
+    ]
+  },
+  "CultistPotion": {
+    "name": "Pozione del Cultista",
+    "description": "Ottieni #b1 #yRituale.",
+    "descriptions": [
+      "Ottieni #b",
+      " #yRituale."
+    ]
+  }
+}

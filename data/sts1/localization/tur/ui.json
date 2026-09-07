@@ -1,0 +1,160 @@
+{
+  "CardLibraryScreen": {
+    "TEXT": [
+      "Geri Dön",
+      "Kırmızı",
+      "Yeşil",
+      "Mavi",
+      "Renksiz",
+      "Lanetler",
+      "Durumlar",
+      "Gelişmiş Hali",
+      "Mor"
+    ]
+  },
+  "CardLibSortHeader": {
+    "TEXT": [
+      "Nadirlik",
+      "Tür",
+      "A-Z",
+      "Maliyet",
+      "Atla:",
+      "Alma Sırası"
+    ]
+  },
+  "RelicViewScreen": {
+    "TEXT": [
+      "Geri Dön",
+      "Başlangıç:",
+      "Her karakter bu kalıntılardan biriyle başlar.",
+      "Yaygın:",
+      "Güçsüz kalıntılar, yaygın olarak bulunabilir.",
+      "Az yaygın:",
+      "Daha güçlü kalıntılar, yaygın olanlara göre daha az bulunurlar.",
+      "Nadir:",
+      "Nadiren görülen, özel ve güçlü kalıntılar.",
+      "Boss:",
+      "Boss sandıklarında bulunabilen kalıntılar.",
+      "Olay:",
+      "Yalnızca olaylar sonucunda elde edilebilen kalıntılar.",
+      "Dükkan:",
+      "Yalnızca tüccardan alınabilen kalıntılar."
+    ]
+  },
+  "PotionViewScreen": {
+    "TEXT": [
+      "Dön",
+      "Yaygın:",
+      "Spire'da en çok bulunan iksirler.",
+      "Az yaygın:",
+      "Yaygın iksirlerden daha az bulunan fakat daha güçlü iksirler.",
+      "Nadir:",
+      "Nadiren görülen eşsiz ve güçlü iksirler."
+    ]
+  },
+  "SingleCardViewPopup": {
+    "TEXT": [
+      "Saldırı",
+      "Beceri",
+      "Güç",
+      "Lanet",
+      "Kilitli",
+      "Bilinmeyen",
+      "Gelişmiş Hali",
+      "Durum",
+      "",
+      "Yalnızca sıra bendeyken kart oynayabilirim.",
+      "#rElim #rAyağıma #rDolaşmış halde! NL Saldırı oynayamam",
+      "Yeterli #rEnerji yok.",
+      "Yeterli #rYük yok.",
+      "Bu kartı NL oynayamam",
+      "Beta Sanatı"
+    ]
+  },
+  "MenuButton": {
+    "TEXT": [
+      "",
+      "Oyna",
+      "",
+      "",
+      "Devam Et",
+      "",
+      "İstatistikler",
+      "",
+      "Çıkış",
+      "Yama Notları",
+      "Oyunu Terk Et",
+      "",
+      "Ayarlar",
+      "",
+      "Kılavuz"
+    ]
+  },
+  "MenuPanels": {
+    "TEXT": [
+      "Standart",
+      "",
+      "Slay the Spire'da göreve başla.",
+      "Günlük Tırmanış",
+      "",
+      "Her gün yeni bir mücadele!\n\nEn yüksek skor için diğer oyuncularla yarış!",
+      "Yükseliş",
+      "",
+      "Spire her galibiyetinle daha da zorlaşır.\n\nEn iyi stratejilerinin sınırlarını dene.",
+      "Kart Kütüphanesi",
+      "",
+      "Spire'da karşılaştığın kartların tümüne bak.",
+      "Kalıntı Koleksiyonu",
+      "",
+      "Oyunların boyunca karşılaştığın çeşitli ıvır zıvırlara ve kalıntılara bak.",
+      "Sözlük",
+      "",
+      "Bu özellik henüz kullanılabilir değil.",
+      "İstatistikler",
+      "",
+      "Her karakter için ilerleme ve istatistikler burada görülebilir.",
+      "Liderlik Tablosu",
+      "",
+      "Skorunu arkadaşların ve diğer oyuncularla karşılaştır.",
+      "Oyun Geçmişi",
+      "",
+      "Slay the Spire'daki denemelerini detaylıca gözden geçir.",
+      "Oyun Ayarları",
+      "",
+      "Çözünürlüğü değiştir ve çeşitli ayarları aç/kapa.",
+      "Girdi Ayarları",
+      "",
+      "Kontrolleri ve kısayol tuşlarını değiştir.",
+      "Emeği Geçenler",
+      "",
+      "Slay the Spire'a katkıda bulunan herkesi gör!",
+      "Bilinmiyor",
+      "Bu oyun modunu açmak için bir Günlük Tırmanış oyna.",
+      "Bu özellik henüz kullanılabilir değil.",
+      "Özel",
+      "Oyunlarını eşsiz düzenleyiciler ile keyfine göre özelleştir.",
+      "Kontrollerini değiştir.",
+      "Grafik, ses ve oyun tercihlerini değiştir.",
+      "İksir Labı",
+      "Spire'da bulunan sayısız iksire göz at."
+    ]
+  },
+  "SingleRelicViewPopup": null,
+  "SingleViewRelicPopup": {
+    "TEXT": [
+      "Boss",
+      "Yaygın",
+      "Kullanılamaz",
+      "Nadir",
+      "Dükkan",
+      "Olay",
+      "Başlangıç",
+      "Az Yaygın",
+      "Kilitli",
+      "Bilinmiyor",
+      " Kalıntı",
+      "Bu kalıntı henüz açılmadı.",
+      "Bu kalıntıyla henüz karşılaşılmadı."
+    ]
+  }
+}

@@ -1,0 +1,2015 @@
+[
+  {
+    "id": "TheAbacus",
+    "slug": "theabacus",
+    "className": "com.megacrit.cardcrawl.relics.Abacus",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "abacus",
+    "legacySlugs": [
+      "theabacus",
+      "the-abacus"
+    ]
+  },
+  {
+    "id": "Akabeko",
+    "slug": "akabeko",
+    "className": "com.megacrit.cardcrawl.relics.Akabeko",
+    "tier": "common",
+    "pool": "shared",
+    "image": "akabeko",
+    "legacySlugs": [
+      "akabeko"
+    ]
+  },
+  {
+    "id": "Anchor",
+    "slug": "anchor",
+    "className": "com.megacrit.cardcrawl.relics.Anchor",
+    "tier": "common",
+    "pool": "shared",
+    "image": "anchor",
+    "legacySlugs": [
+      "anchor"
+    ]
+  },
+  {
+    "id": "Ancient Tea Set",
+    "slug": "ancient-tea-set",
+    "className": "com.megacrit.cardcrawl.relics.AncientTeaSet",
+    "tier": "common",
+    "pool": "shared",
+    "image": "tea_set",
+    "legacySlugs": [
+      "ancient-tea-set"
+    ]
+  },
+  {
+    "id": "Art of War",
+    "slug": "art-of-war",
+    "className": "com.megacrit.cardcrawl.relics.ArtOfWar",
+    "tier": "common",
+    "pool": "shared",
+    "image": "artOfWar",
+    "legacySlugs": [
+      "art-of-war"
+    ]
+  },
+  {
+    "id": "Astrolabe",
+    "slug": "astrolabe",
+    "className": "com.megacrit.cardcrawl.relics.Astrolabe",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "astrolabe",
+    "legacySlugs": [
+      "astrolabe"
+    ]
+  },
+  {
+    "id": "Bag of Marbles",
+    "slug": "bag-of-marbles",
+    "className": "com.megacrit.cardcrawl.relics.BagOfMarbles",
+    "tier": "common",
+    "pool": "shared",
+    "image": "marbles",
+    "legacySlugs": [
+      "bag-of-marbles"
+    ]
+  },
+  {
+    "id": "Bag of Preparation",
+    "slug": "bag-of-preparation",
+    "className": "com.megacrit.cardcrawl.relics.BagOfPreparation",
+    "tier": "common",
+    "pool": "shared",
+    "image": "bag_of_prep",
+    "legacySlugs": [
+      "bag-of-preparation"
+    ]
+  },
+  {
+    "id": "Bird Faced Urn",
+    "slug": "bird-faced-urn",
+    "className": "com.megacrit.cardcrawl.relics.BirdFacedUrn",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "bird_urn",
+    "legacySlugs": [
+      "bird-faced-urn"
+    ]
+  },
+  {
+    "id": "Black Star",
+    "slug": "black-star",
+    "className": "com.megacrit.cardcrawl.relics.BlackStar",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "blackstar",
+    "legacySlugs": [
+      "black-star"
+    ]
+  },
+  {
+    "id": "Blood Vial",
+    "slug": "blood-vial",
+    "className": "com.megacrit.cardcrawl.relics.BloodVial",
+    "tier": "common",
+    "pool": "shared",
+    "image": "blood_vial",
+    "legacySlugs": [
+      "blood-vial"
+    ]
+  },
+  {
+    "id": "Bloody Idol",
+    "slug": "bloody-idol",
+    "className": "com.megacrit.cardcrawl.relics.BloodyIdol",
+    "tier": "special",
+    "pool": "shared",
+    "image": "bloodyChalice",
+    "legacySlugs": [
+      "bloody-idol"
+    ]
+  },
+  {
+    "id": "Blue Candle",
+    "slug": "blue-candle",
+    "className": "com.megacrit.cardcrawl.relics.BlueCandle",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "blueCandle",
+    "legacySlugs": [
+      "blue-candle"
+    ]
+  },
+  {
+    "id": "Boot",
+    "slug": "boot",
+    "className": "com.megacrit.cardcrawl.relics.Boot",
+    "tier": "common",
+    "pool": "shared",
+    "image": "boot",
+    "legacySlugs": [
+      "boot",
+      "the-boot"
+    ]
+  },
+  {
+    "id": "Bottled Flame",
+    "slug": "bottled-flame",
+    "className": "com.megacrit.cardcrawl.relics.BottledFlame",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "bottledFlame",
+    "legacySlugs": [
+      "bottled-flame"
+    ]
+  },
+  {
+    "id": "Bottled Lightning",
+    "slug": "bottled-lightning",
+    "className": "com.megacrit.cardcrawl.relics.BottledLightning",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "bottledLightning",
+    "legacySlugs": [
+      "bottled-lightning"
+    ]
+  },
+  {
+    "id": "Bottled Tornado",
+    "slug": "bottled-tornado",
+    "className": "com.megacrit.cardcrawl.relics.BottledTornado",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "bottledTornado",
+    "legacySlugs": [
+      "bottled-tornado"
+    ]
+  },
+  {
+    "id": "Bronze Scales",
+    "slug": "bronze-scales",
+    "className": "com.megacrit.cardcrawl.relics.BronzeScales",
+    "tier": "common",
+    "pool": "shared",
+    "image": "bronzeScales",
+    "legacySlugs": [
+      "bronze-scales"
+    ]
+  },
+  {
+    "id": "Busted Crown",
+    "slug": "busted-crown",
+    "className": "com.megacrit.cardcrawl.relics.BustedCrown",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "crown",
+    "legacySlugs": [
+      "busted-crown"
+    ]
+  },
+  {
+    "id": "Calipers",
+    "slug": "calipers",
+    "className": "com.megacrit.cardcrawl.relics.Calipers",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "calipers",
+    "legacySlugs": [
+      "calipers"
+    ]
+  },
+  {
+    "id": "Calling Bell",
+    "slug": "calling-bell",
+    "className": "com.megacrit.cardcrawl.relics.CallingBell",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "bell",
+    "legacySlugs": [
+      "calling-bell"
+    ]
+  },
+  {
+    "id": "CaptainsWheel",
+    "slug": "captainswheel",
+    "className": "com.megacrit.cardcrawl.relics.CaptainsWheel",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "captain_wheel",
+    "legacySlugs": [
+      "captainswheel",
+      "captains-wheel"
+    ]
+  },
+  {
+    "id": "Cauldron",
+    "slug": "cauldron",
+    "className": "com.megacrit.cardcrawl.relics.Cauldron",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "cauldron",
+    "legacySlugs": [
+      "cauldron"
+    ]
+  },
+  {
+    "id": "Centennial Puzzle",
+    "slug": "centennial-puzzle",
+    "className": "com.megacrit.cardcrawl.relics.CentennialPuzzle",
+    "tier": "common",
+    "pool": "shared",
+    "image": "centennialPuzzle",
+    "legacySlugs": [
+      "centennial-puzzle"
+    ]
+  },
+  {
+    "id": "CeramicFish",
+    "slug": "ceramicfish",
+    "className": "com.megacrit.cardcrawl.relics.CeramicFish",
+    "tier": "common",
+    "pool": "shared",
+    "image": "ceramic_fish",
+    "legacySlugs": [
+      "ceramicfish",
+      "ceramic-fish"
+    ]
+  },
+  {
+    "id": "Chemical X",
+    "slug": "chemical-x",
+    "className": "com.megacrit.cardcrawl.relics.ChemicalX",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "chemicalX",
+    "legacySlugs": [
+      "chemical-x"
+    ]
+  },
+  {
+    "id": "ClockworkSouvenir",
+    "slug": "clockworksouvenir",
+    "className": "com.megacrit.cardcrawl.relics.ClockworkSouvenir",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "clockwork",
+    "legacySlugs": [
+      "clockworksouvenir",
+      "clockwork-souvenir"
+    ]
+  },
+  {
+    "id": "Coffee Dripper",
+    "slug": "coffee-dripper",
+    "className": "com.megacrit.cardcrawl.relics.CoffeeDripper",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "coffeeDripper",
+    "legacySlugs": [
+      "coffee-dripper"
+    ]
+  },
+  {
+    "id": "The Courier",
+    "slug": "the-courier",
+    "className": "com.megacrit.cardcrawl.relics.Courier",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "courier",
+    "legacySlugs": [
+      "the-courier"
+    ]
+  },
+  {
+    "id": "CultistMask",
+    "slug": "cultistmask",
+    "className": "com.megacrit.cardcrawl.relics.CultistMask",
+    "tier": "special",
+    "pool": "shared",
+    "image": "cultistMask",
+    "legacySlugs": [
+      "cultistmask",
+      "cultist-headpiece"
+    ]
+  },
+  {
+    "id": "Cursed Key",
+    "slug": "cursed-key",
+    "className": "com.megacrit.cardcrawl.relics.CursedKey",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "cursedKey",
+    "legacySlugs": [
+      "cursed-key"
+    ]
+  },
+  {
+    "id": "Darkstone Periapt",
+    "slug": "darkstone-periapt",
+    "className": "com.megacrit.cardcrawl.relics.DarkstonePeriapt",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "darkstone",
+    "legacySlugs": [
+      "darkstone-periapt"
+    ]
+  },
+  {
+    "id": "Dead Branch",
+    "slug": "dead-branch",
+    "className": "com.megacrit.cardcrawl.relics.DeadBranch",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "deadBranch",
+    "legacySlugs": [
+      "dead-branch"
+    ]
+  },
+  {
+    "id": "DollysMirror",
+    "slug": "dollysmirror",
+    "className": "com.megacrit.cardcrawl.relics.DollysMirror",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "mirror",
+    "legacySlugs": [
+      "dollysmirror",
+      "dollys-mirror"
+    ]
+  },
+  {
+    "id": "Dream Catcher",
+    "slug": "dream-catcher",
+    "className": "com.megacrit.cardcrawl.relics.DreamCatcher",
+    "tier": "common",
+    "pool": "shared",
+    "image": "dreamCatcher",
+    "legacySlugs": [
+      "dream-catcher"
+    ]
+  },
+  {
+    "id": "Du-Vu Doll",
+    "slug": "du-vu-doll",
+    "className": "com.megacrit.cardcrawl.relics.DuVuDoll",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "duvuDoll",
+    "legacySlugs": [
+      "du-vu-doll"
+    ]
+  },
+  {
+    "id": "Ectoplasm",
+    "slug": "ectoplasm",
+    "className": "com.megacrit.cardcrawl.relics.Ectoplasm",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "ectoplasm",
+    "legacySlugs": [
+      "ectoplasm"
+    ]
+  },
+  {
+    "id": "Empty Cage",
+    "slug": "empty-cage",
+    "className": "com.megacrit.cardcrawl.relics.EmptyCage",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "cage",
+    "legacySlugs": [
+      "empty-cage"
+    ]
+  },
+  {
+    "id": "Enchiridion",
+    "slug": "enchiridion",
+    "className": "com.megacrit.cardcrawl.relics.Enchiridion",
+    "tier": "special",
+    "pool": "shared",
+    "image": "enchiridion",
+    "legacySlugs": [
+      "enchiridion"
+    ]
+  },
+  {
+    "id": "Eternal Feather",
+    "slug": "eternal-feather",
+    "className": "com.megacrit.cardcrawl.relics.EternalFeather",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "eternal_feather",
+    "legacySlugs": [
+      "eternal-feather"
+    ]
+  },
+  {
+    "id": "FaceOfCleric",
+    "slug": "faceofcleric",
+    "className": "com.megacrit.cardcrawl.relics.FaceOfCleric",
+    "tier": "special",
+    "pool": "shared",
+    "image": "clericFace",
+    "legacySlugs": [
+      "faceofcleric",
+      "face-of-cleric"
+    ]
+  },
+  {
+    "id": "FossilizedHelix",
+    "slug": "fossilizedhelix",
+    "className": "com.megacrit.cardcrawl.relics.FossilizedHelix",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "helix",
+    "legacySlugs": [
+      "fossilizedhelix",
+      "fossilized-helix"
+    ]
+  },
+  {
+    "id": "Frozen Egg 2",
+    "slug": "frozen-egg-2",
+    "className": "com.megacrit.cardcrawl.relics.FrozenEgg2",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "frozenEgg",
+    "legacySlugs": [
+      "frozen-egg-2",
+      "frozen-egg"
+    ]
+  },
+  {
+    "id": "Frozen Eye",
+    "slug": "frozen-eye",
+    "className": "com.megacrit.cardcrawl.relics.FrozenEye",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "frozenEye",
+    "legacySlugs": [
+      "frozen-eye"
+    ]
+  },
+  {
+    "id": "Fusion Hammer",
+    "slug": "fusion-hammer",
+    "className": "com.megacrit.cardcrawl.relics.FusionHammer",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "burnHammer",
+    "legacySlugs": [
+      "fusion-hammer"
+    ]
+  },
+  {
+    "id": "Gambling Chip",
+    "slug": "gambling-chip",
+    "className": "com.megacrit.cardcrawl.relics.GamblingChip",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "gamblingChip",
+    "legacySlugs": [
+      "gambling-chip"
+    ]
+  },
+  {
+    "id": "Ginger",
+    "slug": "ginger",
+    "className": "com.megacrit.cardcrawl.relics.Ginger",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "ginger",
+    "legacySlugs": [
+      "ginger"
+    ]
+  },
+  {
+    "id": "Girya",
+    "slug": "girya",
+    "className": "com.megacrit.cardcrawl.relics.Girya",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "kettlebell",
+    "legacySlugs": [
+      "girya"
+    ]
+  },
+  {
+    "id": "Golden Idol",
+    "slug": "golden-idol",
+    "className": "com.megacrit.cardcrawl.relics.GoldenIdol",
+    "tier": "special",
+    "pool": "shared",
+    "image": "goldenIdolRelic",
+    "legacySlugs": [
+      "golden-idol"
+    ]
+  },
+  {
+    "id": "Gremlin Horn",
+    "slug": "gremlin-horn",
+    "className": "com.megacrit.cardcrawl.relics.GremlinHorn",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "gremlin_horn",
+    "legacySlugs": [
+      "gremlin-horn"
+    ]
+  },
+  {
+    "id": "GremlinMask",
+    "slug": "gremlinmask",
+    "className": "com.megacrit.cardcrawl.relics.GremlinMask",
+    "tier": "special",
+    "pool": "shared",
+    "image": "gremlinMask",
+    "legacySlugs": [
+      "gremlinmask",
+      "gremlin-visage"
+    ]
+  },
+  {
+    "id": "HandDrill",
+    "slug": "handdrill",
+    "className": "com.megacrit.cardcrawl.relics.HandDrill",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "drill",
+    "legacySlugs": [
+      "handdrill",
+      "hand-drill"
+    ]
+  },
+  {
+    "id": "Happy Flower",
+    "slug": "happy-flower",
+    "className": "com.megacrit.cardcrawl.relics.HappyFlower",
+    "tier": "common",
+    "pool": "shared",
+    "image": "sunflower",
+    "legacySlugs": [
+      "happy-flower"
+    ]
+  },
+  {
+    "id": "HornCleat",
+    "slug": "horncleat",
+    "className": "com.megacrit.cardcrawl.relics.HornCleat",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "horn_cleat",
+    "legacySlugs": [
+      "horncleat",
+      "horn-cleat"
+    ]
+  },
+  {
+    "id": "Ice Cream",
+    "slug": "ice-cream",
+    "className": "com.megacrit.cardcrawl.relics.IceCream",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "iceCream",
+    "legacySlugs": [
+      "ice-cream"
+    ]
+  },
+  {
+    "id": "Incense Burner",
+    "slug": "incense-burner",
+    "className": "com.megacrit.cardcrawl.relics.IncenseBurner",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "incenseBurner",
+    "legacySlugs": [
+      "incense-burner"
+    ]
+  },
+  {
+    "id": "InkBottle",
+    "slug": "inkbottle",
+    "className": "com.megacrit.cardcrawl.relics.InkBottle",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "ink_bottle",
+    "legacySlugs": [
+      "inkbottle",
+      "ink-bottle"
+    ]
+  },
+  {
+    "id": "Juzu Bracelet",
+    "slug": "juzu-bracelet",
+    "className": "com.megacrit.cardcrawl.relics.JuzuBracelet",
+    "tier": "common",
+    "pool": "shared",
+    "image": "juzuBracelet",
+    "legacySlugs": [
+      "juzu-bracelet"
+    ]
+  },
+  {
+    "id": "Kunai",
+    "slug": "kunai",
+    "className": "com.megacrit.cardcrawl.relics.Kunai",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "kunai",
+    "legacySlugs": [
+      "kunai"
+    ]
+  },
+  {
+    "id": "Lantern",
+    "slug": "lantern",
+    "className": "com.megacrit.cardcrawl.relics.Lantern",
+    "tier": "common",
+    "pool": "shared",
+    "image": "lantern",
+    "legacySlugs": [
+      "lantern"
+    ]
+  },
+  {
+    "id": "Letter Opener",
+    "slug": "letter-opener",
+    "className": "com.megacrit.cardcrawl.relics.LetterOpener",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "letterOpener",
+    "legacySlugs": [
+      "letter-opener"
+    ]
+  },
+  {
+    "id": "Lizard Tail",
+    "slug": "lizard-tail",
+    "className": "com.megacrit.cardcrawl.relics.LizardTail",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "lizardTail",
+    "legacySlugs": [
+      "lizard-tail"
+    ]
+  },
+  {
+    "id": "Mango",
+    "slug": "mango",
+    "className": "com.megacrit.cardcrawl.relics.Mango",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "mango",
+    "legacySlugs": [
+      "mango"
+    ]
+  },
+  {
+    "id": "Mark of the Bloom",
+    "slug": "mark-of-the-bloom",
+    "className": "com.megacrit.cardcrawl.relics.MarkOfTheBloom",
+    "tier": "special",
+    "pool": "shared",
+    "image": "bloom",
+    "legacySlugs": [
+      "mark-of-the-bloom"
+    ]
+  },
+  {
+    "id": "Matryoshka",
+    "slug": "matryoshka",
+    "className": "com.megacrit.cardcrawl.relics.Matryoshka",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "matryoshka",
+    "legacySlugs": [
+      "matryoshka"
+    ]
+  },
+  {
+    "id": "MawBank",
+    "slug": "mawbank",
+    "className": "com.megacrit.cardcrawl.relics.MawBank",
+    "tier": "common",
+    "pool": "shared",
+    "image": "bank",
+    "legacySlugs": [
+      "mawbank",
+      "maw-bank"
+    ]
+  },
+  {
+    "id": "MealTicket",
+    "slug": "mealticket",
+    "className": "com.megacrit.cardcrawl.relics.MealTicket",
+    "tier": "common",
+    "pool": "shared",
+    "image": "mealTicket",
+    "legacySlugs": [
+      "mealticket",
+      "meal-ticket"
+    ]
+  },
+  {
+    "id": "Meat on the Bone",
+    "slug": "meat-on-the-bone",
+    "className": "com.megacrit.cardcrawl.relics.MeatOnTheBone",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "meat",
+    "legacySlugs": [
+      "meat-on-the-bone"
+    ]
+  },
+  {
+    "id": "Medical Kit",
+    "slug": "medical-kit",
+    "className": "com.megacrit.cardcrawl.relics.MedicalKit",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "medicalKit",
+    "legacySlugs": [
+      "medical-kit"
+    ]
+  },
+  {
+    "id": "Membership Card",
+    "slug": "membership-card",
+    "className": "com.megacrit.cardcrawl.relics.MembershipCard",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "membershipCard",
+    "legacySlugs": [
+      "membership-card"
+    ]
+  },
+  {
+    "id": "Mercury Hourglass",
+    "slug": "mercury-hourglass",
+    "className": "com.megacrit.cardcrawl.relics.MercuryHourglass",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "hourglass",
+    "legacySlugs": [
+      "mercury-hourglass"
+    ]
+  },
+  {
+    "id": "Molten Egg 2",
+    "slug": "molten-egg-2",
+    "className": "com.megacrit.cardcrawl.relics.MoltenEgg2",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "stoneEgg",
+    "legacySlugs": [
+      "molten-egg-2",
+      "molten-egg"
+    ]
+  },
+  {
+    "id": "Mummified Hand",
+    "slug": "mummified-hand",
+    "className": "com.megacrit.cardcrawl.relics.MummifiedHand",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "mummifiedHand",
+    "legacySlugs": [
+      "mummified-hand"
+    ]
+  },
+  {
+    "id": "MutagenicStrength",
+    "slug": "mutagenicstrength",
+    "className": "com.megacrit.cardcrawl.relics.MutagenicStrength",
+    "tier": "special",
+    "pool": "shared",
+    "image": "mutagen",
+    "legacySlugs": [
+      "mutagenicstrength",
+      "mutagenic-strength"
+    ]
+  },
+  {
+    "id": "Necronomicon",
+    "slug": "necronomicon",
+    "className": "com.megacrit.cardcrawl.relics.Necronomicon",
+    "tier": "special",
+    "pool": "shared",
+    "image": "necronomicon",
+    "legacySlugs": [
+      "necronomicon"
+    ]
+  },
+  {
+    "id": "NeowsBlessing",
+    "slug": "neowsblessing",
+    "className": "com.megacrit.cardcrawl.relics.NeowsLament",
+    "tier": "special",
+    "pool": "shared",
+    "image": "lament",
+    "legacySlugs": [
+      "neowsblessing",
+      "neows-lament"
+    ]
+  },
+  {
+    "id": "Nilry's Codex",
+    "slug": "nilry-s-codex",
+    "className": "com.megacrit.cardcrawl.relics.NilrysCodex",
+    "tier": "special",
+    "pool": "shared",
+    "image": "codex",
+    "legacySlugs": [
+      "nilry-s-codex",
+      "nilrys-codex"
+    ]
+  },
+  {
+    "id": "Nloth's Gift",
+    "slug": "nloth-s-gift",
+    "className": "com.megacrit.cardcrawl.relics.NlothsGift",
+    "tier": "special",
+    "pool": "shared",
+    "image": "nlothsGift",
+    "legacySlugs": [
+      "nloth-s-gift",
+      "nloths-gift"
+    ]
+  },
+  {
+    "id": "NlothsMask",
+    "slug": "nlothsmask",
+    "className": "com.megacrit.cardcrawl.relics.NlothsMask",
+    "tier": "special",
+    "pool": "shared",
+    "image": "nloth",
+    "legacySlugs": [
+      "nlothsmask",
+      "nloths-hungry-face"
+    ]
+  },
+  {
+    "id": "Nunchaku",
+    "slug": "nunchaku",
+    "className": "com.megacrit.cardcrawl.relics.Nunchaku",
+    "tier": "common",
+    "pool": "shared",
+    "image": "nunchaku",
+    "legacySlugs": [
+      "nunchaku"
+    ]
+  },
+  {
+    "id": "Oddly Smooth Stone",
+    "slug": "oddly-smooth-stone",
+    "className": "com.megacrit.cardcrawl.relics.OddlySmoothStone",
+    "tier": "common",
+    "pool": "shared",
+    "image": "smooth_stone",
+    "legacySlugs": [
+      "oddly-smooth-stone"
+    ]
+  },
+  {
+    "id": "Odd Mushroom",
+    "slug": "odd-mushroom",
+    "className": "com.megacrit.cardcrawl.relics.OddMushroom",
+    "tier": "special",
+    "pool": "shared",
+    "image": "mushroom",
+    "legacySlugs": [
+      "odd-mushroom"
+    ]
+  },
+  {
+    "id": "Old Coin",
+    "slug": "old-coin",
+    "className": "com.megacrit.cardcrawl.relics.OldCoin",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "oldCoin",
+    "legacySlugs": [
+      "old-coin"
+    ]
+  },
+  {
+    "id": "Omamori",
+    "slug": "omamori",
+    "className": "com.megacrit.cardcrawl.relics.Omamori",
+    "tier": "common",
+    "pool": "shared",
+    "image": "omamori",
+    "legacySlugs": [
+      "omamori"
+    ]
+  },
+  {
+    "id": "OrangePellets",
+    "slug": "orangepellets",
+    "className": "com.megacrit.cardcrawl.relics.OrangePellets",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "pellets",
+    "legacySlugs": [
+      "orangepellets",
+      "orange-pellets"
+    ]
+  },
+  {
+    "id": "Orichalcum",
+    "slug": "orichalcum",
+    "className": "com.megacrit.cardcrawl.relics.Orichalcum",
+    "tier": "common",
+    "pool": "shared",
+    "image": "orichalcum",
+    "legacySlugs": [
+      "orichalcum"
+    ]
+  },
+  {
+    "id": "Ornamental Fan",
+    "slug": "ornamental-fan",
+    "className": "com.megacrit.cardcrawl.relics.OrnamentalFan",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "ornamentalFan",
+    "legacySlugs": [
+      "ornamental-fan"
+    ]
+  },
+  {
+    "id": "Orrery",
+    "slug": "orrery",
+    "className": "com.megacrit.cardcrawl.relics.Orrery",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "orrery",
+    "legacySlugs": [
+      "orrery"
+    ]
+  },
+  {
+    "id": "Pandora's Box",
+    "slug": "pandora-s-box",
+    "className": "com.megacrit.cardcrawl.relics.PandorasBox",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "pandoras_box",
+    "legacySlugs": [
+      "pandora-s-box",
+      "pandoras-box"
+    ]
+  },
+  {
+    "id": "Pantograph",
+    "slug": "pantograph",
+    "className": "com.megacrit.cardcrawl.relics.Pantograph",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "pantograph",
+    "legacySlugs": [
+      "pantograph"
+    ]
+  },
+  {
+    "id": "Peace Pipe",
+    "slug": "peace-pipe",
+    "className": "com.megacrit.cardcrawl.relics.PeacePipe",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "peacePipe",
+    "legacySlugs": [
+      "peace-pipe"
+    ]
+  },
+  {
+    "id": "Pear",
+    "slug": "pear",
+    "className": "com.megacrit.cardcrawl.relics.Pear",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "pear",
+    "legacySlugs": [
+      "pear"
+    ]
+  },
+  {
+    "id": "Pen Nib",
+    "slug": "pen-nib",
+    "className": "com.megacrit.cardcrawl.relics.PenNib",
+    "tier": "common",
+    "pool": "shared",
+    "image": "penNib",
+    "legacySlugs": [
+      "pen-nib"
+    ]
+  },
+  {
+    "id": "Philosopher's Stone",
+    "slug": "philosopher-s-stone",
+    "className": "com.megacrit.cardcrawl.relics.PhilosopherStone",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "philosopherStone",
+    "legacySlugs": [
+      "philosopher-s-stone",
+      "philosophers-stone"
+    ]
+  },
+  {
+    "id": "Pocketwatch",
+    "slug": "pocketwatch",
+    "className": "com.megacrit.cardcrawl.relics.Pocketwatch",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "pocketwatch",
+    "legacySlugs": [
+      "pocketwatch"
+    ]
+  },
+  {
+    "id": "Potion Belt",
+    "slug": "potion-belt",
+    "className": "com.megacrit.cardcrawl.relics.PotionBelt",
+    "tier": "common",
+    "pool": "shared",
+    "image": "potion_belt",
+    "legacySlugs": [
+      "potion-belt"
+    ]
+  },
+  {
+    "id": "Prayer Wheel",
+    "slug": "prayer-wheel",
+    "className": "com.megacrit.cardcrawl.relics.PrayerWheel",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "prayerWheel",
+    "legacySlugs": [
+      "prayer-wheel"
+    ]
+  },
+  {
+    "id": "PreservedInsect",
+    "slug": "preservedinsect",
+    "className": "com.megacrit.cardcrawl.relics.PreservedInsect",
+    "tier": "common",
+    "pool": "shared",
+    "image": "insect",
+    "legacySlugs": [
+      "preservedinsect",
+      "preserved-insect"
+    ]
+  },
+  {
+    "id": "PrismaticShard",
+    "slug": "prismaticshard",
+    "className": "com.megacrit.cardcrawl.relics.PrismaticShard",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "prism",
+    "legacySlugs": [
+      "prismaticshard",
+      "prismatic-shard"
+    ]
+  },
+  {
+    "id": "Question Card",
+    "slug": "question-card",
+    "className": "com.megacrit.cardcrawl.relics.QuestionCard",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "questionCard",
+    "legacySlugs": [
+      "question-card"
+    ]
+  },
+  {
+    "id": "Red Mask",
+    "slug": "red-mask",
+    "className": "com.megacrit.cardcrawl.relics.RedMask",
+    "tier": "special",
+    "pool": "shared",
+    "image": "redMask",
+    "legacySlugs": [
+      "red-mask"
+    ]
+  },
+  {
+    "id": "Regal Pillow",
+    "slug": "regal-pillow",
+    "className": "com.megacrit.cardcrawl.relics.RegalPillow",
+    "tier": "common",
+    "pool": "shared",
+    "image": "regal_pillow",
+    "legacySlugs": [
+      "regal-pillow"
+    ]
+  },
+  {
+    "id": "Runic Dome",
+    "slug": "runic-dome",
+    "className": "com.megacrit.cardcrawl.relics.RunicDome",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "runicDome",
+    "legacySlugs": [
+      "runic-dome"
+    ]
+  },
+  {
+    "id": "Runic Pyramid",
+    "slug": "runic-pyramid",
+    "className": "com.megacrit.cardcrawl.relics.RunicPyramid",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "runicPyramid",
+    "legacySlugs": [
+      "runic-pyramid"
+    ]
+  },
+  {
+    "id": "SacredBark",
+    "slug": "sacredbark",
+    "className": "com.megacrit.cardcrawl.relics.SacredBark",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "bark",
+    "legacySlugs": [
+      "sacredbark",
+      "sacred-bark"
+    ]
+  },
+  {
+    "id": "Shovel",
+    "slug": "shovel",
+    "className": "com.megacrit.cardcrawl.relics.Shovel",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "shovel",
+    "legacySlugs": [
+      "shovel"
+    ]
+  },
+  {
+    "id": "Shuriken",
+    "slug": "shuriken",
+    "className": "com.megacrit.cardcrawl.relics.Shuriken",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "shuriken",
+    "legacySlugs": [
+      "shuriken"
+    ]
+  },
+  {
+    "id": "Singing Bowl",
+    "slug": "singing-bowl",
+    "className": "com.megacrit.cardcrawl.relics.SingingBowl",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "singingBowl",
+    "legacySlugs": [
+      "singing-bowl"
+    ]
+  },
+  {
+    "id": "SlaversCollar",
+    "slug": "slaverscollar",
+    "className": "com.megacrit.cardcrawl.relics.SlaversCollar",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "collar",
+    "legacySlugs": [
+      "slaverscollar",
+      "slavers-collar"
+    ]
+  },
+  {
+    "id": "Sling",
+    "slug": "sling",
+    "className": "com.megacrit.cardcrawl.relics.Sling",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "sling",
+    "legacySlugs": [
+      "sling",
+      "sling-of-courage"
+    ]
+  },
+  {
+    "id": "Smiling Mask",
+    "slug": "smiling-mask",
+    "className": "com.megacrit.cardcrawl.relics.SmilingMask",
+    "tier": "common",
+    "pool": "shared",
+    "image": "merchantMask",
+    "legacySlugs": [
+      "smiling-mask"
+    ]
+  },
+  {
+    "id": "Snecko Eye",
+    "slug": "snecko-eye",
+    "className": "com.megacrit.cardcrawl.relics.SneckoEye",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "sneckoEye",
+    "legacySlugs": [
+      "snecko-eye"
+    ]
+  },
+  {
+    "id": "Sozu",
+    "slug": "sozu",
+    "className": "com.megacrit.cardcrawl.relics.Sozu",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "sozu",
+    "legacySlugs": [
+      "sozu"
+    ]
+  },
+  {
+    "id": "Spirit Poop",
+    "slug": "spirit-poop",
+    "className": "com.megacrit.cardcrawl.relics.SpiritPoop",
+    "tier": "special",
+    "pool": "shared",
+    "image": "spiritPoop",
+    "legacySlugs": [
+      "spirit-poop"
+    ]
+  },
+  {
+    "id": "SsserpentHead",
+    "slug": "ssserpenthead",
+    "className": "com.megacrit.cardcrawl.relics.SsserpentHead",
+    "tier": "special",
+    "pool": "shared",
+    "image": "serpentHead",
+    "legacySlugs": [
+      "ssserpenthead",
+      "ssserpent-head"
+    ]
+  },
+  {
+    "id": "StoneCalendar",
+    "slug": "stonecalendar",
+    "className": "com.megacrit.cardcrawl.relics.StoneCalendar",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "calendar",
+    "legacySlugs": [
+      "stonecalendar",
+      "stone-calendar"
+    ]
+  },
+  {
+    "id": "Strange Spoon",
+    "slug": "strange-spoon",
+    "className": "com.megacrit.cardcrawl.relics.StrangeSpoon",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "bigSpoon",
+    "legacySlugs": [
+      "strange-spoon"
+    ]
+  },
+  {
+    "id": "Strawberry",
+    "slug": "strawberry",
+    "className": "com.megacrit.cardcrawl.relics.Strawberry",
+    "tier": "common",
+    "pool": "shared",
+    "image": "strawberry",
+    "legacySlugs": [
+      "strawberry"
+    ]
+  },
+  {
+    "id": "StrikeDummy",
+    "slug": "strikedummy",
+    "className": "com.megacrit.cardcrawl.relics.StrikeDummy",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "dummy",
+    "legacySlugs": [
+      "strikedummy",
+      "strike-dummy"
+    ]
+  },
+  {
+    "id": "Sundial",
+    "slug": "sundial",
+    "className": "com.megacrit.cardcrawl.relics.Sundial",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "sundial",
+    "legacySlugs": [
+      "sundial"
+    ]
+  },
+  {
+    "id": "Thread and Needle",
+    "slug": "thread-and-needle",
+    "className": "com.megacrit.cardcrawl.relics.ThreadAndNeedle",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "threadAndNeedle",
+    "legacySlugs": [
+      "thread-and-needle"
+    ]
+  },
+  {
+    "id": "Tiny Chest",
+    "slug": "tiny-chest",
+    "className": "com.megacrit.cardcrawl.relics.TinyChest",
+    "tier": "common",
+    "pool": "shared",
+    "image": "tinyChest",
+    "legacySlugs": [
+      "tiny-chest"
+    ]
+  },
+  {
+    "id": "Tiny House",
+    "slug": "tiny-house",
+    "className": "com.megacrit.cardcrawl.relics.TinyHouse",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "tinyHouse",
+    "legacySlugs": [
+      "tiny-house"
+    ]
+  },
+  {
+    "id": "Toolbox",
+    "slug": "toolbox",
+    "className": "com.megacrit.cardcrawl.relics.Toolbox",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "toolbox",
+    "legacySlugs": [
+      "toolbox"
+    ]
+  },
+  {
+    "id": "Torii",
+    "slug": "torii",
+    "className": "com.megacrit.cardcrawl.relics.Torii",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "torii",
+    "legacySlugs": [
+      "torii"
+    ]
+  },
+  {
+    "id": "Toxic Egg 2",
+    "slug": "toxic-egg-2",
+    "className": "com.megacrit.cardcrawl.relics.ToxicEgg2",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "toxicEgg",
+    "legacySlugs": [
+      "toxic-egg-2",
+      "toxic-egg"
+    ]
+  },
+  {
+    "id": "Toy Ornithopter",
+    "slug": "toy-ornithopter",
+    "className": "com.megacrit.cardcrawl.relics.ToyOrnithopter",
+    "tier": "common",
+    "pool": "shared",
+    "image": "ornithopter",
+    "legacySlugs": [
+      "toy-ornithopter"
+    ]
+  },
+  {
+    "id": "TungstenRod",
+    "slug": "tungstenrod",
+    "className": "com.megacrit.cardcrawl.relics.TungstenRod",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "tungsten",
+    "legacySlugs": [
+      "tungstenrod",
+      "tungsten-rod"
+    ]
+  },
+  {
+    "id": "Turnip",
+    "slug": "turnip",
+    "className": "com.megacrit.cardcrawl.relics.Turnip",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "turnip",
+    "legacySlugs": [
+      "turnip"
+    ]
+  },
+  {
+    "id": "Unceasing Top",
+    "slug": "unceasing-top",
+    "className": "com.megacrit.cardcrawl.relics.UnceasingTop",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "top",
+    "legacySlugs": [
+      "unceasing-top"
+    ]
+  },
+  {
+    "id": "Vajra",
+    "slug": "vajra",
+    "className": "com.megacrit.cardcrawl.relics.Vajra",
+    "tier": "common",
+    "pool": "shared",
+    "image": "vajra",
+    "legacySlugs": [
+      "vajra"
+    ]
+  },
+  {
+    "id": "Velvet Choker",
+    "slug": "velvet-choker",
+    "className": "com.megacrit.cardcrawl.relics.VelvetChoker",
+    "tier": "boss",
+    "pool": "shared",
+    "image": "redChoker",
+    "legacySlugs": [
+      "velvet-choker"
+    ]
+  },
+  {
+    "id": "Lee's Waffle",
+    "slug": "lee-s-waffle",
+    "className": "com.megacrit.cardcrawl.relics.Waffle",
+    "tier": "shop",
+    "pool": "shared",
+    "image": "waffle",
+    "legacySlugs": [
+      "lee-s-waffle",
+      "lees-waffle"
+    ]
+  },
+  {
+    "id": "War Paint",
+    "slug": "war-paint",
+    "className": "com.megacrit.cardcrawl.relics.WarPaint",
+    "tier": "common",
+    "pool": "shared",
+    "image": "warPaint",
+    "legacySlugs": [
+      "war-paint"
+    ]
+  },
+  {
+    "id": "WarpedTongs",
+    "slug": "warpedtongs",
+    "className": "com.megacrit.cardcrawl.relics.WarpedTongs",
+    "tier": "special",
+    "pool": "shared",
+    "image": "tongs",
+    "legacySlugs": [
+      "warpedtongs",
+      "warped-tongs"
+    ]
+  },
+  {
+    "id": "Whetstone",
+    "slug": "whetstone",
+    "className": "com.megacrit.cardcrawl.relics.Whetstone",
+    "tier": "common",
+    "pool": "shared",
+    "image": "whetstone",
+    "legacySlugs": [
+      "whetstone"
+    ]
+  },
+  {
+    "id": "White Beast Statue",
+    "slug": "white-beast-statue",
+    "className": "com.megacrit.cardcrawl.relics.WhiteBeast",
+    "tier": "uncommon",
+    "pool": "shared",
+    "image": "whiteBeast",
+    "legacySlugs": [
+      "white-beast-statue"
+    ]
+  },
+  {
+    "id": "WingedGreaves",
+    "slug": "wingedgreaves",
+    "className": "com.megacrit.cardcrawl.relics.WingBoots",
+    "tier": "rare",
+    "pool": "shared",
+    "image": "winged",
+    "legacySlugs": [
+      "wingedgreaves",
+      "wing-boots"
+    ]
+  },
+  {
+    "id": "HoveringKite",
+    "slug": "hoveringkite",
+    "className": "com.megacrit.cardcrawl.relics.HoveringKite",
+    "tier": "boss",
+    "pool": "silent",
+    "image": "kite",
+    "legacySlugs": [
+      "hoveringkite",
+      "hovering-kite"
+    ]
+  },
+  {
+    "id": "Ninja Scroll",
+    "slug": "ninja-scroll",
+    "className": "com.megacrit.cardcrawl.relics.NinjaScroll",
+    "tier": "uncommon",
+    "pool": "silent",
+    "image": "ninjaScroll",
+    "legacySlugs": [
+      "ninja-scroll"
+    ]
+  },
+  {
+    "id": "Paper Crane",
+    "slug": "paper-crane",
+    "className": "com.megacrit.cardcrawl.relics.PaperCrane",
+    "tier": "uncommon",
+    "pool": "silent",
+    "image": "paperCrane",
+    "legacySlugs": [
+      "paper-crane",
+      "paper-krane"
+    ]
+  },
+  {
+    "id": "Ring of the Serpent",
+    "slug": "ring-of-the-serpent",
+    "className": "com.megacrit.cardcrawl.relics.RingOfTheSerpent",
+    "tier": "boss",
+    "pool": "silent",
+    "image": "serpent_ring",
+    "legacySlugs": [
+      "ring-of-the-serpent"
+    ]
+  },
+  {
+    "id": "Ring of the Snake",
+    "slug": "ring-of-the-snake",
+    "className": "com.megacrit.cardcrawl.relics.SnakeRing",
+    "tier": "starter",
+    "pool": "silent",
+    "image": "snake_ring",
+    "legacySlugs": [
+      "ring-of-the-snake"
+    ]
+  },
+  {
+    "id": "Snake Skull",
+    "slug": "snake-skull",
+    "className": "com.megacrit.cardcrawl.relics.SneckoSkull",
+    "tier": "common",
+    "pool": "silent",
+    "image": "snakeSkull",
+    "legacySlugs": [
+      "snake-skull",
+      "snecko-skull"
+    ]
+  },
+  {
+    "id": "The Specimen",
+    "slug": "the-specimen",
+    "className": "com.megacrit.cardcrawl.relics.TheSpecimen",
+    "tier": "rare",
+    "pool": "silent",
+    "image": "the_specimen",
+    "legacySlugs": [
+      "the-specimen"
+    ]
+  },
+  {
+    "id": "Tingsha",
+    "slug": "tingsha",
+    "className": "com.megacrit.cardcrawl.relics.Tingsha",
+    "tier": "rare",
+    "pool": "silent",
+    "image": "tingsha",
+    "legacySlugs": [
+      "tingsha"
+    ]
+  },
+  {
+    "id": "Tough Bandages",
+    "slug": "tough-bandages",
+    "className": "com.megacrit.cardcrawl.relics.ToughBandages",
+    "tier": "rare",
+    "pool": "silent",
+    "image": "tough_bandages",
+    "legacySlugs": [
+      "tough-bandages"
+    ]
+  },
+  {
+    "id": "TwistedFunnel",
+    "slug": "twistedfunnel",
+    "className": "com.megacrit.cardcrawl.relics.TwistedFunnel",
+    "tier": "shop",
+    "pool": "silent",
+    "image": "funnel",
+    "legacySlugs": [
+      "twistedfunnel",
+      "twisted-funnel"
+    ]
+  },
+  {
+    "id": "WristBlade",
+    "slug": "wristblade",
+    "className": "com.megacrit.cardcrawl.relics.WristBlade",
+    "tier": "boss",
+    "pool": "silent",
+    "image": "wBlade",
+    "legacySlugs": [
+      "wristblade",
+      "wrist-blade"
+    ]
+  },
+  {
+    "id": "Black Blood",
+    "slug": "black-blood",
+    "className": "com.megacrit.cardcrawl.relics.BlackBlood",
+    "tier": "boss",
+    "pool": "ironclad",
+    "image": "blackBlood",
+    "legacySlugs": [
+      "black-blood"
+    ]
+  },
+  {
+    "id": "Brimstone",
+    "slug": "brimstone",
+    "className": "com.megacrit.cardcrawl.relics.Brimstone",
+    "tier": "shop",
+    "pool": "ironclad",
+    "image": "brimstone",
+    "legacySlugs": [
+      "brimstone"
+    ]
+  },
+  {
+    "id": "Burning Blood",
+    "slug": "burning-blood",
+    "className": "com.megacrit.cardcrawl.relics.BurningBlood",
+    "tier": "starter",
+    "pool": "ironclad",
+    "image": "burningBlood",
+    "legacySlugs": [
+      "burning-blood"
+    ]
+  },
+  {
+    "id": "Champion Belt",
+    "slug": "champion-belt",
+    "className": "com.megacrit.cardcrawl.relics.ChampionsBelt",
+    "tier": "rare",
+    "pool": "ironclad",
+    "image": "championBelt",
+    "legacySlugs": [
+      "champion-belt"
+    ]
+  },
+  {
+    "id": "Charon's Ashes",
+    "slug": "charon-s-ashes",
+    "className": "com.megacrit.cardcrawl.relics.CharonsAshes",
+    "tier": "rare",
+    "pool": "ironclad",
+    "image": "ashes",
+    "legacySlugs": [
+      "charon-s-ashes",
+      "charons-ashes"
+    ]
+  },
+  {
+    "id": "Magic Flower",
+    "slug": "magic-flower",
+    "className": "com.megacrit.cardcrawl.relics.MagicFlower",
+    "tier": "rare",
+    "pool": "ironclad",
+    "image": "magicFlower",
+    "legacySlugs": [
+      "magic-flower"
+    ]
+  },
+  {
+    "id": "Mark of Pain",
+    "slug": "mark-of-pain",
+    "className": "com.megacrit.cardcrawl.relics.MarkOfPain",
+    "tier": "boss",
+    "pool": "ironclad",
+    "image": "mark_of_pain",
+    "legacySlugs": [
+      "mark-of-pain"
+    ]
+  },
+  {
+    "id": "Paper Frog",
+    "slug": "paper-frog",
+    "className": "com.megacrit.cardcrawl.relics.PaperFrog",
+    "tier": "uncommon",
+    "pool": "ironclad",
+    "image": "paperFrog",
+    "legacySlugs": [
+      "paper-frog",
+      "paper-phrog"
+    ]
+  },
+  {
+    "id": "Red Skull",
+    "slug": "red-skull",
+    "className": "com.megacrit.cardcrawl.relics.RedSkull",
+    "tier": "common",
+    "pool": "ironclad",
+    "image": "red_skull",
+    "legacySlugs": [
+      "red-skull"
+    ]
+  },
+  {
+    "id": "Runic Cube",
+    "slug": "runic-cube",
+    "className": "com.megacrit.cardcrawl.relics.RunicCube",
+    "tier": "boss",
+    "pool": "ironclad",
+    "image": "runicCube",
+    "legacySlugs": [
+      "runic-cube"
+    ]
+  },
+  {
+    "id": "Self Forming Clay",
+    "slug": "self-forming-clay",
+    "className": "com.megacrit.cardcrawl.relics.SelfFormingClay",
+    "tier": "uncommon",
+    "pool": "ironclad",
+    "image": "clay",
+    "legacySlugs": [
+      "self-forming-clay"
+    ]
+  },
+  {
+    "id": "Cracked Core",
+    "slug": "cracked-core",
+    "className": "com.megacrit.cardcrawl.relics.CrackedCore",
+    "tier": "starter",
+    "pool": "defect",
+    "image": "crackedOrb",
+    "legacySlugs": [
+      "cracked-core"
+    ]
+  },
+  {
+    "id": "DataDisk",
+    "slug": "datadisk",
+    "className": "com.megacrit.cardcrawl.relics.DataDisk",
+    "tier": "common",
+    "pool": "defect",
+    "image": "dataDisk",
+    "legacySlugs": [
+      "datadisk",
+      "data-disk"
+    ]
+  },
+  {
+    "id": "Emotion Chip",
+    "slug": "emotion-chip",
+    "className": "com.megacrit.cardcrawl.relics.EmotionChip",
+    "tier": "rare",
+    "pool": "defect",
+    "image": "emotionChip",
+    "legacySlugs": [
+      "emotion-chip"
+    ]
+  },
+  {
+    "id": "FrozenCore",
+    "slug": "frozencore",
+    "className": "com.megacrit.cardcrawl.relics.FrozenCore",
+    "tier": "boss",
+    "pool": "defect",
+    "image": "frozenOrb",
+    "legacySlugs": [
+      "frozencore",
+      "frozen-core"
+    ]
+  },
+  {
+    "id": "Cables",
+    "slug": "cables",
+    "className": "com.megacrit.cardcrawl.relics.GoldPlatedCables",
+    "tier": "uncommon",
+    "pool": "defect",
+    "image": "cables",
+    "legacySlugs": [
+      "cables",
+      "gold-plated-cables"
+    ]
+  },
+  {
+    "id": "Inserter",
+    "slug": "inserter",
+    "className": "com.megacrit.cardcrawl.relics.Inserter",
+    "tier": "boss",
+    "pool": "defect",
+    "image": "inserter",
+    "legacySlugs": [
+      "inserter"
+    ]
+  },
+  {
+    "id": "Nuclear Battery",
+    "slug": "nuclear-battery",
+    "className": "com.megacrit.cardcrawl.relics.NuclearBattery",
+    "tier": "boss",
+    "pool": "defect",
+    "image": "battery",
+    "legacySlugs": [
+      "nuclear-battery"
+    ]
+  },
+  {
+    "id": "Runic Capacitor",
+    "slug": "runic-capacitor",
+    "className": "com.megacrit.cardcrawl.relics.RunicCapacitor",
+    "tier": "shop",
+    "pool": "defect",
+    "image": "runicCapacitor",
+    "legacySlugs": [
+      "runic-capacitor"
+    ]
+  },
+  {
+    "id": "Symbiotic Virus",
+    "slug": "symbiotic-virus",
+    "className": "com.megacrit.cardcrawl.relics.SymbioticVirus",
+    "tier": "uncommon",
+    "pool": "defect",
+    "image": "virus",
+    "legacySlugs": [
+      "symbiotic-virus"
+    ]
+  },
+  {
+    "id": "CloakClasp",
+    "slug": "cloakclasp",
+    "className": "com.megacrit.cardcrawl.relics.CloakClasp",
+    "tier": "rare",
+    "pool": "watcher",
+    "image": "clasp",
+    "legacySlugs": [
+      "cloakclasp",
+      "cloak-clasp"
+    ]
+  },
+  {
+    "id": "Damaru",
+    "slug": "damaru",
+    "className": "com.megacrit.cardcrawl.relics.Damaru",
+    "tier": "common",
+    "pool": "watcher",
+    "image": "damaru",
+    "legacySlugs": [
+      "damaru"
+    ]
+  },
+  {
+    "id": "GoldenEye",
+    "slug": "goldeneye",
+    "className": "com.megacrit.cardcrawl.relics.GoldenEye",
+    "tier": "rare",
+    "pool": "watcher",
+    "image": "golden_eye",
+    "legacySlugs": [
+      "goldeneye",
+      "golden-eye"
+    ]
+  },
+  {
+    "id": "HolyWater",
+    "slug": "holywater",
+    "className": "com.megacrit.cardcrawl.relics.HolyWater",
+    "tier": "boss",
+    "pool": "watcher",
+    "image": "holy_water",
+    "legacySlugs": [
+      "holywater",
+      "holy-water"
+    ]
+  },
+  {
+    "id": "Melange",
+    "slug": "melange",
+    "className": "com.megacrit.cardcrawl.relics.Melange",
+    "tier": "shop",
+    "pool": "watcher",
+    "image": "melange",
+    "legacySlugs": [
+      "melange"
+    ]
+  },
+  {
+    "id": "PureWater",
+    "slug": "purewater",
+    "className": "com.megacrit.cardcrawl.relics.PureWater",
+    "tier": "starter",
+    "pool": "watcher",
+    "image": "clean_water",
+    "legacySlugs": [
+      "purewater",
+      "pure-water"
+    ]
+  },
+  {
+    "id": "VioletLotus",
+    "slug": "violetlotus",
+    "className": "com.megacrit.cardcrawl.relics.VioletLotus",
+    "tier": "boss",
+    "pool": "watcher",
+    "image": "violet_lotus",
+    "legacySlugs": [
+      "violetlotus",
+      "violet-lotus"
+    ]
+  },
+  {
+    "id": "TeardropLocket",
+    "slug": "teardroplocket",
+    "className": "com.megacrit.cardcrawl.relics.TeardropLocket",
+    "tier": "uncommon",
+    "pool": "watcher",
+    "image": "tear_drop_locket",
+    "legacySlugs": [
+      "teardroplocket",
+      "teardrop-locket"
+    ]
+  },
+  {
+    "id": "Yang",
+    "slug": "yang",
+    "className": "com.megacrit.cardcrawl.relics.Duality",
+    "tier": "uncommon",
+    "pool": "watcher",
+    "image": "duality",
+    "legacySlugs": [
+      "yang",
+      "duality"
+    ]
+  }
+]

@@ -1,0 +1,160 @@
+{
+  "CardLibraryScreen": {
+    "TEXT": [
+      "Wróć",
+      "Czerwone",
+      "Zielone",
+      "Niebieskie",
+      "Bezbarwne",
+      "Klątwy",
+      "Stanu",
+      "Pokaż ulepszenie",
+      "Fioletowe"
+    ]
+  },
+  "CardLibSortHeader": {
+    "TEXT": [
+      "Rzadkość",
+      "Typ",
+      "A-Z",
+      "Koszt",
+      "Przejdź do:",
+      "Uzyskano"
+    ]
+  },
+  "RelicViewScreen": {
+    "TEXT": [
+      "Wróć",
+      "Początkowe:",
+      "Postać może zacząć grę z tymi artefaktami.",
+      "Pospolite:",
+      "Słabe artefakty, które znaleźć można wszędzie.",
+      "Niepospolite:",
+      "Potężniejsze, ale i rzadsze artefakty.",
+      "Rzadkie:",
+      "Bardzo potężne oraz unikalne przedmioty.",
+      "Legendarne:",
+      "Artefakty występujące jedynie w skrzyniach bossów.",
+      "Unikalne:",
+      "Te artefakty można uzyskać tylko podczas wydarzeń.",
+      "Zakupione:",
+      "Artefakty, które można zakupić u Handlarza."
+    ]
+  },
+  "PotionViewScreen": {
+    "TEXT": [
+      "Powrót",
+      "Pospolite:",
+      "Najczęstsze miktury napotykane w Iglicy.",
+      "Niepospolite:",
+      "Silniejsze mikstury, które pojawiają się rzadziej.",
+      "Rzadkie:",
+      "Unikalne i potężne mikstury, które są rzadko spotykane."
+    ]
+  },
+  "SingleCardViewPopup": {
+    "TEXT": [
+      "Atak",
+      "Umiej.",
+      "Moc",
+      "Klątwa",
+      "Zablokowane",
+      "Nieznane",
+      "Pokaż ulepszenie",
+      "Stan",
+      "",
+      "Mogę tylko zagrywać karty.",
+      "Jestem #rspętany! NL Nie mogę zagrywać kart #rAtaku.",
+      "Brak wystarczającej #rEnergii.",
+      "Brak wystarczającej ilości #rŁadunków.",
+      "Nie mogę zagrać NL tej karty.",
+      "Beta Art"
+    ]
+  },
+  "MenuButton": {
+    "TEXT": [
+      "",
+      "Graj",
+      "",
+      "",
+      "Kontynuuj",
+      "",
+      "Statystyki",
+      "",
+      "Wyjdź",
+      "Lista zmian",
+      "Porzuć wyprawę",
+      "",
+      "Ustawienia",
+      "",
+      "Kompendium"
+    ]
+  },
+  "MenuPanels": {
+    "TEXT": [
+      "Wyprawa",
+      "",
+      "Wyrusz na misję zdobycia Iglicy.",
+      "Wyzwanie Dnia",
+      "",
+      "Codziennie nowe wyzwanie.\n\nRywalizuj z innymi graczami o najwyższy wynik!",
+      "Wyniesienie",
+      "",
+      "Iglica rośnie w siłę z każdą wygraną.\n\nPoddaj próbie swoje najlepsze taktyki.",
+      "Kartoteka",
+      "",
+      "Wyświetl wszystkie karty napotkane w Iglicy.",
+      "Artefakty",
+      "",
+      "Wyświetl wszystkie artefakty napotkane w Iglicy.",
+      "Bestiariusz",
+      "",
+      "Ta funkcja nie jest jeszcze dostępna.",
+      "Statystyki",
+      "",
+      "Możesz tu zobaczyć postęp i statystyki wszystkich postaci.",
+      "Tablice wyników",
+      "",
+      "Wyświetl i porównaj swoje wyniki ze znajomymi i innymi graczami.",
+      "Historia rozgrywek",
+      "",
+      "Wyświetl poprzednie próby pokonania Iglicy.",
+      "Ustawienia gry",
+      "",
+      "Zmień rozdzielczość ekranu oraz inne opcje.",
+      "Ustawienia sterowania",
+      "",
+      "Zmień sterowanie i skróty klawiszowe.",
+      "Twórcy",
+      "",
+      "Wyświetl listę osób, które przyczyniły się do powstania Slay the Spire!",
+      "Nieznane",
+      "Zagraj w Wyzwanie Dnia, aby odblokować ten tryb.",
+      "Ta funkcja nie jest jeszcze dostępna.",
+      "Tryb Dowolny",
+      "Stwórz własną wyprawę z wybranymi przez siebie modyfikatorami.",
+      "Zmień sterowanie.",
+      "Zmień ustawienia graficzne, dźwiękowe oraz opcje rozgrywki.",
+      "Mikstury",
+      "Wyświetl wszystkie mikstury napotkane w Iglicy."
+    ]
+  },
+  "SingleRelicViewPopup": null,
+  "SingleViewRelicPopup": {
+    "TEXT": [
+      "Legendarny",
+      "Pospolity",
+      "Nieaktualny",
+      "Rzadki",
+      "Zakupiony",
+      "Unikalny",
+      "Początkowy",
+      "Niepospolity",
+      "Zablokowany",
+      "Nieznany",
+      " Artefakt",
+      "Ten Artefakt należy wcześniej odblokować.",
+      "Ten Artefakt należy wcześniej znaleźć."
+    ]
+  }
+}

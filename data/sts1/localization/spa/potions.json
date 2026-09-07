@@ -1,0 +1,338 @@
+{
+  "Regen Potion": {
+    "name": "Poción de Regeneración",
+    "description": "Gana #b5 #yRegeneración.",
+    "descriptions": [
+      "Gana #b",
+      " #yRegeneración.",
+      ""
+    ]
+  },
+  "SmokeBomb": {
+    "name": "Bomba de Humo",
+    "description": "Escapa de un combate que no sea de Jefe. No recibes recompensas.0¡Estoy rodeado!",
+    "descriptions": [
+      "Escapa de un combate que no sea de Jefe. No recibes recompensas.",
+      "¡Estoy rodeado!"
+    ]
+  },
+  "Weak Potion": {
+    "name": "Poción de Debilidad",
+    "description": "Aplica #b3 #yDébil.",
+    "descriptions": [
+      "Aplica #b",
+      " #yDébil."
+    ]
+  },
+  "SteroidPotion": {
+    "name": "Poción de Esteroides",
+    "description": "Gana #b5 Fuerza. Al final de tu turno, pierde #b Fuerza.",
+    "descriptions": [
+      "Gana #b",
+      " Fuerza. Al final de tu turno, pierde #b",
+      " Fuerza."
+    ]
+  },
+  "SpeedPotion": {
+    "name": "Poción de Velocidad",
+    "description": "Gana #b5 Destreza. Al final de tu turno, pierde #b Destreza.",
+    "descriptions": [
+      "Gana #b",
+      " Destreza. Al final de tu turno, pierde #b",
+      " Destreza."
+    ]
+  },
+  "Ancient Potion": {
+    "name": "Poción Antigua",
+    "description": "Gana #b1 #yArtefacto.",
+    "descriptions": [
+      "Gana #b",
+      " #yArtefacto."
+    ]
+  },
+  "Poison Potion": {
+    "name": "Poción de Veneno",
+    "description": "Aplica #b6 #yVeneno.",
+    "descriptions": [
+      "Aplica #b",
+      " #yVeneno."
+    ]
+  },
+  "LiquidMemories": {
+    "name": "Memorias Líquidas",
+    "description": "Elige una carta en tu pila de descartes y devuelvela a tu mano. Cuesta #b0 este turno.1Elige #b cartas en tu pila de descartes y devuelvelas a tu mano. Cuestan #b0 este turno.",
+    "descriptions": [
+      "Elige una carta en tu pila de descartes y devuelvela a tu mano. Cuesta #b0 este turno.",
+      "Elige #b",
+      " cartas en tu pila de descartes y devuelvelas a tu mano. Cuestan #b0 este turno."
+    ]
+  },
+  "Fire Potion": {
+    "name": "Poción de Fuego",
+    "description": "Haz #b20 de daño.",
+    "descriptions": [
+      "Haz #b",
+      " de daño."
+    ]
+  },
+  "CunningPotion": {
+    "name": "Poción de Astucia",
+    "description": "Añade #b3 #yNavajas+ a tu mano.",
+    "descriptions": [
+      "Añade #b",
+      " #yNavajas+ a tu mano."
+    ]
+  },
+  "PowerPotion": {
+    "name": "Poción de Poder",
+    "description": "Elige #b1 entre #b3 cartas de #yPoder aleatorias para añadir a tu mano, cuestan #b0 este turno.1Elige #b1 entre #b3 cartas de #yPoder aleatorias y añade #b2 copias a tu mano, cuestan #b0 este turno.",
+    "descriptions": [
+      "Elige #b1 entre #b3 cartas de #yPoder aleatorias para añadir a tu mano, cuestan #b0 este turno.",
+      "Elige #b1 entre #b3 cartas de #yPoder aleatorias y añade #b2 copias a tu mano, cuestan #b0 este turno."
+    ]
+  },
+  "Swift Potion": {
+    "name": "Poción de Rapidez",
+    "description": "3Roba #b cartas.",
+    "descriptions": [
+      "",
+      "Roba #b",
+      " cartas."
+    ]
+  },
+  "SkillPotion": {
+    "name": "Poción de Habilidad",
+    "description": "Elige #b1 entre #b3 cartas de #yHabilidad aleatorias para añadir a tu mano, cuestan #b0 este turno.1Elige #b1 entre #b3 cartas de #yHabilidad aleatorias y añade #b2 copias a tu mano, cuestan #b0 este turno.",
+    "descriptions": [
+      "Elige #b1 entre #b3 cartas de #yHabilidad aleatorias para añadir a tu mano, cuestan #b0 este turno.",
+      "Elige #b1 entre #b3 cartas de #yHabilidad aleatorias y añade #b2 copias a tu mano, cuestan #b0 este turno."
+    ]
+  },
+  "Dexterity Potion": {
+    "name": "Poción de Destreza",
+    "description": "Gana #b2 #yDestreza.",
+    "descriptions": [
+      "Gana #b",
+      " #yDestreza."
+    ]
+  },
+  "DuplicationPotion": {
+    "name": "Poción de Duplicación",
+    "description": "Este turno, tu próxima carta se juega dos veces.1Este turno, tu próximas #b2 cartas se juegan dos veces.",
+    "descriptions": [
+      "Este turno, tu próxima carta se juega dos veces.",
+      "Este turno, tu próximas #b2 cartas se juegan dos veces."
+    ]
+  },
+  "Strength Potion": {
+    "name": "Poción de Fuerza",
+    "description": "Gana #b2 #yFuerza.",
+    "descriptions": [
+      "Gana #b",
+      " #yFuerza."
+    ]
+  },
+  "GhostInAJar": {
+    "name": "Fantasma Enlatado",
+    "description": "Gana #b1 #yIntangible",
+    "descriptions": [
+      "Gana #b",
+      " #yIntangible"
+    ]
+  },
+  "BlessingOfTheForge": {
+    "name": "Bendición de la Forja",
+    "description": "Mejora todas las cartas de tu mano.",
+    "descriptions": [
+      "Mejora todas las cartas de tu mano."
+    ]
+  },
+  "FocusPotion": {
+    "name": "Poción de Concentración",
+    "description": "Gana #b2 #yConcentración",
+    "descriptions": [
+      "Gana #b",
+      " #yConcentración"
+    ]
+  },
+  "HeartOfIron": {
+    "name": "Corazón de Hierro",
+    "description": "Gana #b6 de #yMetalizado.",
+    "descriptions": [
+      "Gana #b",
+      " de #yMetalizado."
+    ]
+  },
+  "FairyPotion": {
+    "name": "Hada Embotellada",
+    "description": "Cuando fueras a morir, cúrate al #b30% de tus PV máximos y descarta esta poción.",
+    "descriptions": [
+      "Cuando fueras a morir, cúrate al #b",
+      "% de tus PV máximos y descarta esta poción."
+    ]
+  },
+  "PotionOfCapacity": {
+    "name": "Poción de Capacidad",
+    "description": "Gana #b2 huecos de Orbe.",
+    "descriptions": [
+      "Gana #b",
+      " huecos de Orbe."
+    ]
+  },
+  "Block Potion": {
+    "name": "Poción de Bloqueo",
+    "description": "Gana #b12 #yBloqueo.",
+    "descriptions": [
+      "Gana #b",
+      " #yBloqueo."
+    ]
+  },
+  "FearPotion": {
+    "name": "Poción de Terror",
+    "description": "Aplica #b3 #yVulnerable.",
+    "descriptions": [
+      "Aplica #b",
+      " #yVulnerable."
+    ]
+  },
+  "GamblersBrew": {
+    "name": "Brebaje de Tahúr",
+    "description": "Descarta las cartas que quieras, después roba esa misma cantidad.",
+    "descriptions": [
+      "Descarta las cartas que quieras, después roba esa misma cantidad."
+    ]
+  },
+  "BloodPotion": {
+    "name": "Poción de Sangre",
+    "description": "Cúrate un #b20% de tus PV máximos.",
+    "descriptions": [
+      "Cúrate un #b",
+      "% de tus PV máximos."
+    ]
+  },
+  "EssenceOfDarkness": {
+    "name": "Esencia de Oscuridad",
+    "description": "#yCanaliza #b1 de #yOscuridad por cada hueco de Orbe.",
+    "descriptions": [
+      "#yCanaliza #b",
+      " de #yOscuridad por cada hueco de Orbe."
+    ]
+  },
+  "Fruit Juice": {
+    "name": "Zumo de Fruta",
+    "description": "Gana #b5 PV máximos.",
+    "descriptions": [
+      "Gana #b",
+      " PV máximos."
+    ]
+  },
+  "Energy Potion": {
+    "name": "Poción de Energía",
+    "description": "Gana #b2 Energía.",
+    "descriptions": [
+      "Gana #b",
+      " Energía."
+    ]
+  },
+  "Ambrosia": {
+    "name": "Ambrosía",
+    "description": "Entra en la #yPostura #yDivinidad.",
+    "descriptions": [
+      "Entra en la #yPostura #yDivinidad."
+    ]
+  },
+  "ElixirPotion": {
+    "name": "Elixir",
+    "description": "#yAgota cualquier cantidad de cartas en tu mano.",
+    "descriptions": [
+      "#yAgota cualquier cantidad de cartas en tu mano."
+    ]
+  },
+  "DistilledChaos": {
+    "name": "Caos Destilado",
+    "description": "Juega las primeras #b3 cartas de tu pila de extracción.",
+    "descriptions": [
+      "Juega las primeras #b",
+      " cartas de tu pila de extracción."
+    ]
+  },
+  "LiquidBronze": {
+    "name": "Bronce Líquido",
+    "description": "Gana #b3 #yEspinas.",
+    "descriptions": [
+      "Gana #b",
+      " #yEspinas."
+    ]
+  },
+  "AttackPotion": {
+    "name": "Poción de Ataque",
+    "description": "Elige #b1 entre #b3 cartas de #yAtaque aleatorias para añadir a tu mano, cuestan #b0 este turno.1Elige #b1 entre #b3 cartas de #yAtaque aleatorias y añade #b2 copias a tu mano, cuestan #b0 este turno.",
+    "descriptions": [
+      "Elige #b1 entre #b3 cartas de #yAtaque aleatorias para añadir a tu mano, cuestan #b0 este turno.",
+      "Elige #b1 entre #b3 cartas de #yAtaque aleatorias y añade #b2 copias a tu mano, cuestan #b0 este turno."
+    ]
+  },
+  "SneckoOil": {
+    "name": "Aceite de Serpentija",
+    "description": "Te vuelves #yConfuso. Roba #b5 cartas. Randomiza el coste de las cartas en tu mano.",
+    "descriptions": [
+      "Te vuelves #yConfuso. Roba #b",
+      " cartas. Randomiza el coste de las cartas en tu mano.",
+      ""
+    ]
+  },
+  "StancePotion": {
+    "name": "Poción de Postura",
+    "description": "Entra en #yCalma o #yCólera.",
+    "descriptions": [
+      "Entra en #yCalma o #yCólera."
+    ]
+  },
+  "Explosive Potion": {
+    "name": "Poción Explosiva",
+    "description": "Haz #b10 de daño a TODOS los enemigos.",
+    "descriptions": [
+      "Haz #b",
+      " de daño a TODOS los enemigos."
+    ]
+  },
+  "EssenceOfSteel": {
+    "name": "Esencia de Acero",
+    "description": "Gana #b4 #yArmadura #yde #yPlacas.",
+    "descriptions": [
+      "Gana #b",
+      " #yArmadura #yde #yPlacas."
+    ]
+  },
+  "BottledMiracle": {
+    "name": "Milagro Embotellado",
+    "description": "Añade #b2 #yMilagros a tu mano.",
+    "descriptions": [
+      "Añade #b",
+      " #yMilagros a tu mano."
+    ]
+  },
+  "ColorlessPotion": {
+    "name": "Poción sin Color",
+    "description": "Elije #b1 entre #b3 cartas #yIncoloras para añadir a tu mano, cuesta #b0 este turno.1Elije #b1 entre #b3 cartas #yIncoloras para añadir a tu mano, cuestan #b0 este turno.",
+    "descriptions": [
+      "Elije #b1 entre #b3 cartas #yIncoloras para añadir a tu mano, cuesta #b0 este turno.",
+      "Elije #b1 entre #b3 cartas #yIncoloras para añadir a tu mano, cuestan #b0 este turno."
+    ]
+  },
+  "EntropicBrew": {
+    "name": "Brebaje de Entropía",
+    "description": "Llena tus espacios vacíos de poción con pociones aleatorias.",
+    "descriptions": [
+      "Llena tus espacios vacíos de poción con pociones aleatorias."
+    ]
+  },
+  "CultistPotion": {
+    "name": "Poción de Cultista",
+    "description": "Gana #b1 de #yRitual.",
+    "descriptions": [
+      "Gana #b",
+      " de #yRitual."
+    ]
+  }
+}
