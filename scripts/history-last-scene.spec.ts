@@ -22,6 +22,10 @@ import {
   lastSceneBackgroundUrl,
   lastSceneMonsterSlots,
 } from "../src/lib/history-last-scene-assets";
+import { matchEncounterFormationIndex } from "../src/lib/history-encounter-match";
+import { historyRoomChoiceCopy } from "../src/lib/history-room-choice";
+import { getGameI18nTablesSync } from "../src/lib/sts2-game-i18n";
+import type { CodexEncounter } from "../src/lib/codex-types";
 
 function entry(partial: Partial<ReplayHistoryEntry>): ReplayHistoryEntry {
   return {
@@ -224,5 +228,119 @@ assert.match(
 );
 assert.ok(lastSceneMonsterSlots("ENCOUNTER.AXEBOTS_NORMAL").length >= 1);
 assert.equal(eventArtUrl("EVENT.FAKE_MERCHANT"), "/images/sts2/events/fake_merchant.webp");
+
+assert.equal(
+  lastSceneKind(
+    entry({
+      map_point_type: "unknown",
+      ancient_choice: [{ id: "RELIC.KALEIDOSCOPE", picked: true }],
+      rooms: [{ room_type: "event", model_id: "EVENT.NEOW", turns_taken: 0 }],
+    }),
+  ),
+  "ancient",
+);
+
+const twoFormations = {
+  id: "TEST",
+  compositions: [
+    {
+      id: "pair",
+      weight: 1,
+      slots: [
+        [{ id: "AXEBOT", name: "잘라봇", nameEn: "Axebot" }],
+        [{ id: "AXEBOT", name: "잘라봇", nameEn: "Axebot" }],
+      ],
+      slotNames: [null, null],
+    },
+    {
+      id: "solo",
+      weight: 1,
+      slots: [[{ id: "TURRET", name: "포탑", nameEn: "Turret" }]],
+      slotNames: [null],
+    },
+  ],
+  monsters: [],
+} as unknown as CodexEncounter;
+
+assert.equal(
+  matchEncounterFormationIndex(twoFormations, ["MONSTER.AXEBOT", "MONSTER.AXEBOT"]),
+  0,
+);
+assert.equal(
+  matchEncounterFormationIndex(twoFormations, ["TURRET"]),
+  1,
+);
+
+const tables = getGameI18nTablesSync("kor");
+const eventCopy = historyRoomChoiceCopy(
+  {
+    id: "IMMERSE",
+    picked: true,
+    locTable: "events",
+    locKey: "ABYSSAL_BATHS.pages.INITIAL.options.IMMERSE.title",
+    locVars: { MaxHp: 2, Damage: 9 },
+  },
+  tables,
+  "events",
+  {
+    choiceLoc: {
+      events: {
+        "ABYSSAL_BATHS.pages.INITIAL.options.IMMERSE.description":
+          "최대 체력을 [green]{MaxHp}[/green] 얻습니다. 피해를 [red]{Damage}[/red] 받습니다.",
+      },
+      ancients: {},
+      relics: {},
+    },
+  },
+);
+assert.equal(eventCopy.title, "몸을 담근다");
+assert.match(eventCopy.description ?? "", /9/);
+
+const relicCopy = historyRoomChoiceCopy(
+  {
+    id: "RELIC.KALEIDOSCOPE",
+    picked: true,
+    locTable: "relics",
+    locKey: "KALEIDOSCOPE.eventDescription",
+  },
+  tables,
+  "ancients",
+  {
+    choiceLoc: {
+      events: {},
+      ancients: {},
+      relics: {
+        "KALEIDOSCOPE.eventDescription": "다른 캐릭터의 카드 보상을 2번 얻습니다.",
+      },
+    },
+  },
+);
+assert.equal(relicCopy.title, "만화경");
+assert.ok(relicCopy.description);
+
+const selfHelpCopy = historyRoomChoiceCopy(
+  {
+    id: "READ_PASSAGE",
+    picked: true,
+    locTable: "events",
+    locKey: "SELF_HELP_BOOK.pages.INITIAL.options.READ_PASSAGE.title",
+    locVars: { Enchantment2: "NIMBLE" },
+  },
+  tables,
+  "events",
+  {
+    choiceLoc: {
+      events: {
+        "SELF_HELP_BOOK.pages.INITIAL.options.READ_PASSAGE.description":
+          "스킬 카드를 1장 선택해 [purple]{Enchantment2}[/purple]을 [blue]{Enchantment2Amount}[/blue] [gold]인챈트[/gold]합니다.",
+      },
+      ancients: {},
+      relics: {},
+    },
+  },
+);
+assert.equal(selfHelpCopy.title, "무작위 문단을 읽는다");
+assert.match(selfHelpCopy.description ?? "", /기민함/);
+assert.doesNotMatch(selfHelpCopy.description ?? "", /\{Enchantment2Amount\}/);
 
 console.log("history-last-scene.spec.ts ok");

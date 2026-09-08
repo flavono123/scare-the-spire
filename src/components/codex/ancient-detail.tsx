@@ -15,15 +15,19 @@ import {
   getCodexServiceMessages,
   type CodexServiceMessages,
 } from "@/lib/codex-service";
-import type { CodexAncient, CodexCard, CodexCharacter } from "@/lib/codex-types";
+import type { CodexAncient, CodexCard, CodexCharacter, CodexRelic } from "@/lib/codex-types";
 import { EVENT_ACT_UNKNOWN } from "@/lib/codex-types";
 import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import { AncientDialogueViewer } from "./ancient-dialogue-viewer";
 import { AncientSceneStage } from "./ancient-scene-stage";
+import { GameChoiceFrame } from "./event-choice-frame";
+import { RichText } from "@/components/rich-text";
+import { GameScrollArea } from "@/components/game-scroll-area";
 import {
   getRelatedCardIdsForAncient,
 } from "@/lib/codex-references";
+import { resolveRelicDisplayImage } from "@/lib/relic-character-variant";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -125,13 +129,24 @@ export function AncientDetail({
     .map((cardId) => cardById.get(cardId))
     .filter((card): card is CodexCard => Boolean(card))
     .map(cardToReferenceTarget);
-  const rewardRelicImages = useMemo(() => {
-    const relicIds = new Set(ancient.relicIds);
-    return (entities ?? [])
-      .filter((entity) => entity.type === "relic" && relicIds.has(entity.id))
-      .map((entity) => entity.imageUrl)
-      .filter((imageUrl): imageUrl is string => Boolean(imageUrl));
+  const rewardRelics = useMemo(() => {
+    const byId = new Map(
+      (entities ?? [])
+        .filter((entity): entity is EntityInfo & { relicData: CodexRelic } =>
+          entity.type === "relic" && Boolean(entity.relicData),
+        )
+        .map((entity) => [entity.relicData.id, entity.relicData]),
+    );
+    return ancient.relicIds
+      .map((id) => byId.get(id))
+      .filter((relic): relic is CodexRelic => Boolean(relic));
   }, [ancient.relicIds, entities]);
+  const rewardRelicImages = useMemo(
+    () => rewardRelics
+      .map((relic) => resolveRelicDisplayImage(relic, relic.pool))
+      .filter((imageUrl): imageUrl is string => Boolean(imageUrl)),
+    [rewardRelics],
+  );
   const [rewardRelicImageUrl, setRewardRelicImageUrl] = useState<string | null>(null);
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -177,13 +192,7 @@ export function AncientDetail({
       <div className="space-y-5">
         <section>
           <AncientSceneStage ancient={ancient}>
-            <div className="pointer-events-none absolute bottom-3 left-3 z-50 max-w-[45%] text-left sm:bottom-5 sm:left-6">
-              <h1
-                id={`ancient-detail-title-${ancient.id.toLowerCase()}`}
-                className="font-game-title text-xl font-bold text-[#efc850] [text-shadow:0_3px_0_rgba(0,0,0,0.9),0_0_12px_rgba(0,0,0,0.8)] sm:text-3xl"
-              >
-                {ancient.name}
-              </h1>
+            <div className="pointer-events-none absolute bottom-3 left-3 z-20 max-w-[42%] text-left sm:bottom-5 sm:left-6">
               {ancient.epithet && (
                 <p className="truncate font-game-text text-xs italic text-[#fff6e2] [text-shadow:0_2px_0_rgba(0,0,0,0.95)] sm:text-base">
                   &ldquo;{ancient.epithet}&rdquo;
@@ -197,7 +206,44 @@ export function AncientDetail({
               messages={serviceText}
               entities={entities}
               excludeSelf={excludeSelf}
+              className="z-10 sm:pr-[min(32rem,48%)]"
             />
+            {rewardRelics.length > 0 ? (
+              <div className="dark pointer-events-auto absolute inset-x-4 bottom-4 top-4 z-50 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[6%] sm:right-[3.5%] sm:top-[7%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[540px]">
+                <div className="pointer-events-none absolute -inset-6 rounded-full bg-black/35 blur-2xl" />
+                <div className="relative flex min-h-0 flex-1 flex-col gap-2">
+                  <h1
+                    id={`ancient-detail-title-${ancient.id.toLowerCase()}`}
+                    className="shrink-0 font-game-title text-3xl font-bold leading-tight text-[#f3c640]"
+                    style={{ textShadow: "3px 2px 0 rgba(0,0,0,0.5), 0 0 12px rgba(0,0,0,0.75)" }}
+                  >
+                    {ancient.name}
+                  </h1>
+                  <GameScrollArea className="h-full min-h-0" size="large" scrollerClassName="flex flex-col gap-2 py-1 pr-2">
+                    {rewardRelics.map((relic) => (
+                      <GameChoiceFrame
+                        key={relic.id}
+                        backgroundImageUrl={resolveRelicDisplayImage(relic, relic.pool)}
+                      >
+                        <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
+                          <RichText text={relic.name} />
+                        </div>
+                        <div className="font-game-text text-[18px] leading-[1.08] text-[#fff6e2]">
+                          <RichText text={relic.eventDescription || relic.description} />
+                        </div>
+                      </GameChoiceFrame>
+                    ))}
+                  </GameScrollArea>
+                </div>
+              </div>
+            ) : (
+              <h1
+                id={`ancient-detail-title-${ancient.id.toLowerCase()}`}
+                className="pointer-events-none absolute bottom-3 left-3 z-20 font-game-title text-xl font-bold text-[#efc850] [text-shadow:0_3px_0_rgba(0,0,0,0.9),0_0_12px_rgba(0,0,0,0.8)] sm:bottom-5 sm:left-6 sm:text-3xl"
+              >
+                {ancient.name}
+              </h1>
+            )}
           </AncientSceneStage>
         </section>
 

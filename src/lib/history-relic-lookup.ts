@@ -2,13 +2,28 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { CodexRelic } from "@/lib/codex-types";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 
+function relicIdVariants(id: string): string[] {
+  const withoutPrefix = id.replace(/^RELIC\./i, "");
+  const stripped = withoutPrefix.replace(/\.(eventDescription|title|description)$/i, "");
+  return [...new Set([id, withoutPrefix, stripped, `RELIC.${stripped}`])];
+}
+
 export function lookupHistoryRelic(
   relicsById: Record<string, CodexRelic> | undefined,
   id: string,
 ): CodexRelic | undefined {
   if (!relicsById) return undefined;
-  const stripped = id.replace(/^RELIC\./i, "");
-  return relicsById[id] ?? relicsById[stripped] ?? relicsById[`RELIC.${stripped}`];
+  const variants = relicIdVariants(id);
+  for (const key of variants) {
+    const hit = relicsById[key];
+    if (hit) return hit;
+  }
+  const wanted = variants[variants.length - 1]?.replace(/^RELIC\./i, "").toUpperCase();
+  if (!wanted) return undefined;
+  for (const [key, relic] of Object.entries(relicsById)) {
+    if (key.replace(/^RELIC\./i, "").toUpperCase() === wanted) return relic;
+  }
+  return undefined;
 }
 
 export function indexCodexRelics(relics: CodexRelic[]): Record<string, CodexRelic> {

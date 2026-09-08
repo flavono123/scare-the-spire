@@ -894,6 +894,7 @@ function mapRelic(
     kor.description_raw ?? kor.description,
   );
   const rawEn = eng.description_raw ?? eng.description;
+  const eventRaw = gameNullableText(gameRelics, `${kor.id}.eventDescription`, null);
   return {
     id: kor.id,
     name: gameTitleText(gameRelics, `${kor.id}.title`, kor.name, eng.name, gameLocale),
@@ -902,6 +903,7 @@ function mapRelic(
     descriptionEn: bakeDescription(rawEn, varsEn),
     descriptionRaw: raw,
     descriptionRawEn: rawEn,
+    eventDescription: eventRaw ? bakeDescription(eventRaw, vars) : null,
     vars,
     flavor: gameText(gameRelics, `${kor.id}.flavor`, kor.flavor),
     rarity: kor.rarity as RelicRarityKo,

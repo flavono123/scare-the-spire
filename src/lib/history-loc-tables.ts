@@ -10,6 +10,8 @@ export const HISTORY_LOC_TABLE_SOURCES = [
   ["powers", "powers"],
   ["monsters", "monsters"],
   ["enchantments", "enchantments"],
+  ["events", "events"],
+  ["ancients", "ancients"],
   ["cardKeywords", "card_keywords"],
   ["staticHoverTips", "static_hover_tips"],
   ["gameplayUi", "gameplay_ui"],

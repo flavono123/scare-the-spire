@@ -39,6 +39,17 @@ const targets = [
     ],
   },
   {
+    output: "src/generated/history-last-scene-catalog.json",
+    flag: "--history-course-catalog-only",
+    sources: [
+      "data/sts2",
+      "src/lib/codex-data.ts",
+      "src/lib/codex-types.ts",
+      "scripts/generate-static-api-data.ts",
+      "scripts/ensure-lint-generated.mjs",
+    ],
+  },
+  {
     output: "public/generated/history-loc/eng.json",
     flag: "--history-loc-tables-only",
     sources: [

@@ -79,6 +79,7 @@ playwright-report/
 /src/generated/toy-box-news.json
 /src/generated/borrowed-game-copy.json
 /src/generated/history-course-catalog.json
+/src/generated/history-last-scene-catalog.json
 
 # codex version update backup
 data/sts2-old/

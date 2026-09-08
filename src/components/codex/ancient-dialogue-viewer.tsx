@@ -9,6 +9,7 @@ import { CHARACTER_COLORS, type CodexAncient, type CodexCharacter } from "@/lib/
 import { DescriptionText } from "./codex-description";
 import { RichDescription } from "./rich-description";
 import { GameScrollArea } from "@/components/game-scroll-area";
+import { cn } from "@/lib/utils";
 
 const DIALOGUE_BACKGROUND = "/images/sts2/ancient-dialogue/dialogue_nine_patch.webp";
 const DIALOGUE_TAIL = "/images/sts2/ancient-dialogue/dialogue_tail.webp";
@@ -21,12 +22,14 @@ export function AncientDialogueViewer({
   messages,
   entities,
   excludeSelf,
+  className,
 }: {
   ancient: CodexAncient;
   characters: CodexCharacter[];
   messages: CodexServiceMessages;
   entities?: EntityInfo[];
   excludeSelf?: ReadonlySet<string>;
+  className?: string;
 }) {
   const situationGroups = useMemo(() => SPECIAL_GROUPS.map((key) => ({
       key,
@@ -87,7 +90,7 @@ export function AncientDialogueViewer({
 
   return (
     <div
-      className="absolute inset-0 min-w-0"
+      className={cn("absolute inset-0 min-w-0", className)}
       data-ancient-dialogue-controls
       aria-label={messages.ancientsView.dialogue}
     >

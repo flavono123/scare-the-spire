@@ -305,6 +305,8 @@ export interface CodexRelic extends CodexLifecycle {
   descriptionEn: string; // English, with BBCode markup (templates baked from vars)
   descriptionRaw: string; // Korean, with {Var} templates
   descriptionRawEn: string; // English, with {Var} templates
+  /** Ancient/Neow blessing copy. Null when the relic is not offered as a blessing. */
+  eventDescription: string | null;
   vars: Record<string, number | string>; // Base variable values for description template
   flavor: string;
   rarity: RelicRarityKo;

@@ -6,7 +6,15 @@ import type { CodexAncient } from "@/lib/codex-types";
 import { EventVfxStage } from "./event-vfx-stage";
 import { MonsterSpineStage } from "./monster-spine-stage";
 
-export function AncientSceneStage({ ancient, children }: { ancient: CodexAncient; children?: ReactNode }) {
+export function AncientSceneStage({
+  ancient,
+  children,
+  fill = false,
+}: {
+  ancient: CodexAncient;
+  children?: ReactNode;
+  fill?: boolean;
+}) {
   const { sceneAsset, spineAsset } = ancient;
   const [readyBodyId, setReadyBodyId] = useState<string | null>(null);
   const bodyReady = !sceneAsset.spine || readyBodyId === ancient.id;
@@ -30,12 +38,17 @@ export function AncientSceneStage({ ancient, children }: { ancient: CodexAncient
 
   return (
     <section
-      className="relative min-h-[34rem] w-full overflow-hidden bg-[#070910] sm:min-h-[32rem] lg:aspect-[2560/1200] lg:min-h-0"
+      className={fill
+        ? "absolute inset-0 overflow-hidden bg-[#070910]"
+        : "relative min-h-[34rem] w-full overflow-hidden bg-[#070910] sm:min-h-[32rem] lg:aspect-[2560/1200] lg:min-h-0"}
       data-ancient-art-stage
       data-ancient-id={ancient.id}
       data-ancient-vfx-support={sceneAsset.vfx.support}
     >
-      <div className="absolute left-1/2 top-1/2 aspect-[2560/1200] h-full min-w-full -translate-x-1/2 -translate-y-1/2 overflow-hidden">
+      <div className={fill
+        ? "absolute left-0 top-1/2 aspect-[2560/1200] h-full -translate-y-1/2 overflow-hidden"
+        : "absolute left-1/2 top-1/2 aspect-[2560/1200] h-full min-w-full -translate-x-1/2 -translate-y-1/2 overflow-hidden"
+      }>
         {sceneAsset.baseArt && (
           <Image
             src={sceneAsset.baseArt.path}

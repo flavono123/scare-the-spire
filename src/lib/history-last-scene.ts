@@ -26,6 +26,17 @@ export type HighlightKind =
 
 const COMBAT_ROOM_TYPES = new Set(["monster", "elite", "boss"]);
 const STARTER_CARD_RE = /^(STRIKE_|DEFEND_)/i;
+const ANCIENT_MODEL_IDS = new Set([
+  "NEOW",
+  "DARV",
+  "NONUPEIPE",
+  "OROBAS",
+  "PAEL",
+  "TANX",
+  "TEZCATARA",
+  "VAKUU",
+  "THE_ARCHITECT",
+]);
 
 export function stripReplayId(id: string): string {
   return id.includes(".") ? (id.split(".").pop() ?? id) : id;
@@ -44,9 +55,17 @@ export function resolvedRoomType(entry: ReplayHistoryEntry): string {
 }
 
 export function isCombatHistoryEntry(entry: ReplayHistoryEntry): boolean {
+  if (isAncientHistoryEntry(entry)) return false;
   if (isCombatRoomType(entry.map_point_type)) return true;
   if (isCombatRoomType(resolvedRoomType(entry))) return true;
   return roomMonsterIds(entry).length > 0;
+}
+
+export function isAncientHistoryEntry(entry: ReplayHistoryEntry): boolean {
+  if (entry.map_point_type === "ancient") return true;
+  if (resolvedRoomType(entry) === "ancient") return true;
+  const model = stripReplayId(entry.rooms?.[0]?.model_id ?? "").toUpperCase();
+  return ANCIENT_MODEL_IDS.has(model);
 }
 
 export function isTerminalDeathEntry(
@@ -77,7 +96,7 @@ export function lastSceneKind(
   const mapType = entry.map_point_type;
   const roomType = resolvedRoomType(entry);
   if (mapType === "rest_site" || roomType === "rest_site") return "rest";
-  if (mapType === "ancient" || roomType === "ancient") return "ancient";
+  if (isAncientHistoryEntry(entry)) return "ancient";
   if (mapType === "treasure" || roomType === "treasure") return "treasure";
   if (mapType === "shop" || roomType === "shop") return "shop";
   if (isCombatHistoryEntry(entry)) return "combat";

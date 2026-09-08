@@ -348,6 +348,44 @@ async function buildHistoryLocTableTargets(): Promise<StaticJsonTarget[]> {
   }));
 }
 
+function pickChoiceLocEntries(table: Record<string, string>): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [key, value] of Object.entries(table)) {
+    if (key.endsWith(".description") || key.endsWith(".eventDescription")) {
+      out[key] = value;
+    }
+  }
+  return out;
+}
+
+async function buildHistoryChoiceLoc() {
+  const [events, ancients, relics] = await Promise.all([
+    readGameLocalizationTable("kor", "events"),
+    readGameLocalizationTable("kor", "ancients"),
+    readGameLocalizationTable("kor", "relics"),
+  ]);
+  return {
+    events: pickChoiceLocEntries(events),
+    ancients: pickChoiceLocEntries(ancients),
+    relics: pickChoiceLocEntries(relics),
+  };
+}
+
+async function writeHistoryLastSceneCatalog(resources: {
+  encounters: unknown;
+  characters: unknown;
+  ancients: unknown;
+  events: unknown;
+}) {
+  await writeSourceJsonCompact({
+    path: "generated/history-last-scene-catalog.json",
+    data: {
+      ...resources,
+      choiceLoc: await buildHistoryChoiceLoc(),
+    },
+  });
+}
+
 async function generateHistoryCourseCatalogOnly() {
   const {
     getCodexCards,
@@ -356,11 +394,27 @@ async function generateHistoryCourseCatalogOnly() {
     getCodexPowers,
     getCodexMonsters,
     getCodexEnchantments,
+    getCodexEncounters,
+    getCodexCharacters,
+    getCodexAncients,
+    getCodexEvents,
   } = await import("../src/lib/codex-data");
   const { loadCardSideTipCatalogSources } = await import(
     "../src/lib/card-side-tip-catalog.server"
   );
-  const [cards, relics, potions, powers, monsters, enchantments, tipSources] = await Promise.all([
+  const [
+    cards,
+    relics,
+    potions,
+    powers,
+    monsters,
+    enchantments,
+    tipSources,
+    encounters,
+    characters,
+    ancients,
+    events,
+  ] = await Promise.all([
     getCodexCards({ includeDeprecated: true }),
     getCodexRelics(),
     getCodexPotions(),
@@ -368,11 +422,16 @@ async function generateHistoryCourseCatalogOnly() {
     getCodexMonsters(),
     getCodexEnchantments(),
     loadCardSideTipCatalogSources("kor"),
+    getCodexEncounters(),
+    getCodexCharacters(),
+    getCodexAncients(),
+    getCodexEvents(),
   ]);
   await writeSourceJsonCompact({
     path: "generated/history-course-catalog.json",
     data: { cards, relics, potions, powers, monsters, enchantments, tipSources },
   });
+  await writeHistoryLastSceneCatalog({ encounters, characters, ancients, events });
 }
 
 async function copyPublicFile(sourcePath: string, publicPath: string) {
@@ -924,6 +983,12 @@ async function main() {
         enchantments: koreanCompendiumDetailPayload.resources.enchantments,
         tipSources: koreanCompendiumDetailPayload.cardSideTipSources,
       },
+    }),
+    writeHistoryLastSceneCatalog({
+      encounters: koreanCompendiumDetailPayload.resources.encounters,
+      characters: koreanCompendiumDetailPayload.resources.characters,
+      ancients: koreanCompendiumDetailPayload.resources.ancients,
+      events: koreanCompendiumDetailPayload.resources.events,
     }),
     writeJson({ path: "generated/search-index.json", data: searchIndex }),
     writeJson({ path: "generated/comment-entities-sts2.json", data: commentEntities }),

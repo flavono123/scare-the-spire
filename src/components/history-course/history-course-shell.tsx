@@ -68,6 +68,7 @@ import {
 } from "@/lib/sts2-run-timeline";
 import {
   LAST_SCENE_PICK_REVEAL,
+  stripReplayId,
   usesDedicatedLastScene,
 } from "@/lib/history-last-scene";
 import { cn } from "@/lib/utils";
@@ -300,7 +301,9 @@ function sanitizeNeowEntry(
   cardsById: Record<string, CodexCard>,
   playerIndex = 0,
 ): ReplayHistoryEntry {
-  const isNeow = (entry.rooms ?? []).some((r) => r.model_id === "EVENT.NEOW");
+  const isNeow = (entry.rooms ?? []).some(
+    (r) => stripReplayId(r.model_id ?? "").toUpperCase() === "NEOW",
+  );
   if (!isNeow) return entry;
 
   const player = run.players[playerIndex];
@@ -1540,7 +1543,9 @@ function Stage({
           hidden={transitProgress < 1 || !dedicatedScene}
           actId={act.actId}
           character={focusedCharacter}
+          cardsById={cardsById}
           relicsById={relicsById}
+          potionsById={potionsById}
         />
       ) : null}
 

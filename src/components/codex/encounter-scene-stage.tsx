@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type CSSProperties } from "react";
+import { useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
@@ -35,6 +35,10 @@ interface EncounterSceneStageProps {
   interactive?: boolean;
   selectedMoveId?: string | null;
   selectedMoveNonce?: number;
+  fill?: boolean;
+  showCharacter?: boolean;
+  lockedFormationIndex?: number | null;
+  children?: ReactNode;
 }
 
 interface PositionedMonster {
@@ -98,6 +102,10 @@ export function EncounterSceneStage({
   interactive = true,
   selectedMoveId = null,
   selectedMoveNonce = 0,
+  fill = false,
+  showCharacter,
+  lockedFormationIndex = null,
+  children,
 }: EncounterSceneStageProps) {
   const formations = useMemo(() => expandEncounterFormations(encounter), [encounter]);
   const monsterById = useMemo(
@@ -114,11 +122,14 @@ export function EncounterSceneStage({
   });
   const scene = encounter.scene;
   const labels = serviceMessages[serviceLocale].codex.encountersView;
+  const renderCharacter = showCharacter ?? interactive;
 
   if (!scene || formations.length === 0) return null;
-  const formationIndex = formationSelection.encounterId === encounter.id
-    ? Math.min(formationSelection.index, formations.length - 1)
-    : 0;
+  const formationIndex = lockedFormationIndex != null
+    ? Math.max(0, Math.min(lockedFormationIndex, formations.length - 1))
+    : formationSelection.encounterId === encounter.id
+      ? Math.min(formationSelection.index, formations.length - 1)
+      : 0;
   const formationMenuOpen = formationMenuState.encounterId === encounter.id
     ? formationMenuState.open
     : false;
@@ -161,8 +172,11 @@ export function EncounterSceneStage({
   };
 
   return (
-    <div className="w-full" data-encounter-scene>
-      <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-white/10 bg-black shadow-2xl">
+    <div className={fill ? "absolute inset-0" : "w-full"} data-encounter-scene>
+      <div className={fill
+        ? "absolute inset-0 overflow-hidden bg-black"
+        : "relative aspect-video w-full overflow-hidden rounded-xl border border-white/10 bg-black shadow-2xl"}
+      >
         {!usesFakeMerchantBackground && (
           <Image
             src={scene.backgroundUrl}
@@ -261,26 +275,42 @@ export function EncounterSceneStage({
           </>
         )}
 
-        {interactive && character && (
-          <Link
-            href={localizeHref("/profile", serviceLocale)}
-            aria-label={character.name}
-            title={character.name}
-            className="group absolute z-20 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
-            style={positionPlayerFromGameLayout(scene.combatLayout)}
-            data-encounter-character
-          >
-            <CharacterSpineStage
-              character={character}
-              selectedMoveId="IDLE"
-              imagePriority
-              className="absolute inset-0 transition-transform duration-200 group-hover:scale-[1.03]"
-              fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.75)]"
-            />
-            <span className="absolute bottom-0 left-1/2 z-40 -translate-x-1/2 translate-y-1/2 whitespace-nowrap rounded-full border border-white/15 bg-black/75 px-2 py-0.5 font-game-title text-[9px] font-bold text-gray-100 opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 sm:text-[11px]">
-              {character.name}
-            </span>
-          </Link>
+        {renderCharacter && character && (
+          interactive ? (
+            <Link
+              href={localizeHref("/profile", serviceLocale)}
+              aria-label={character.name}
+              title={character.name}
+              className="group absolute z-20 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+              style={positionPlayerFromGameLayout(scene.combatLayout)}
+              data-encounter-character
+            >
+              <CharacterSpineStage
+                character={character}
+                selectedMoveId="IDLE"
+                imagePriority
+                className="absolute inset-0 transition-transform duration-200 group-hover:scale-[1.03]"
+                fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.75)]"
+              />
+              <span className="absolute bottom-0 left-1/2 z-40 -translate-x-1/2 translate-y-1/2 whitespace-nowrap rounded-full border border-white/15 bg-black/75 px-2 py-0.5 font-game-title text-[9px] font-bold text-gray-100 opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 sm:text-[11px]">
+                {character.name}
+              </span>
+            </Link>
+          ) : (
+            <div
+              className="pointer-events-none absolute z-20"
+              style={positionPlayerFromGameLayout(scene.combatLayout)}
+              data-encounter-character
+            >
+              <CharacterSpineStage
+                character={character}
+                selectedMoveId="IDLE"
+                imagePriority
+                className="absolute inset-0"
+                fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.75)]"
+              />
+            </div>
+          )
         )}
 
         {!usesSharedEncounterActor && positionedMonsters.map(({ monster, style, viewportOverride }, index) => (
@@ -417,6 +447,7 @@ export function EncounterSceneStage({
             </div>
           </div>
         )}
+        {children ? <div className="absolute inset-0 z-50">{children}</div> : null}
       </div>
     </div>
   );

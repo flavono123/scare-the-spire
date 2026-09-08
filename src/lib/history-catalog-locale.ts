@@ -149,12 +149,14 @@ export function overlayHistoryRelic(relic: CodexRelic, tables: HistoryLocTables)
   const id = locResourceId(relic.id);
   const title = tables.relics[`${id}.title`];
   const raw = tables.relics[`${id}.description`];
+  const eventRaw = tables.relics[`${id}.eventDescription`];
   const flavor = tables.relics[`${id}.flavor`];
   return {
     ...relic,
     name: title ?? relic.nameEn,
     descriptionRaw: raw ?? relic.descriptionRawEn,
     description: raw ? bakeDescription(raw, relic.vars) : relic.descriptionEn,
+    eventDescription: eventRaw ? bakeDescription(eventRaw, relic.vars) : relic.eventDescription,
     flavor: flavor ?? relic.flavor,
   };
 }
