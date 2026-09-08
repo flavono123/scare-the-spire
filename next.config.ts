@@ -8,7 +8,7 @@ function lanDevOrigins(): string[] {
     .split(/[,\s]+/)
     .map((value) => value.trim())
     .filter(Boolean);
-  const hosts = new Set(fromEnv);
+  const hosts = new Set(["127.0.0.1", ...fromEnv]);
   for (const addrs of Object.values(os.networkInterfaces())) {
     for (const addr of addrs ?? []) {
       if (addr.internal) continue;
