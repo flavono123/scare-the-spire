@@ -8,6 +8,7 @@ import {
   STS1_CARD_ASPECT,
   sts1CardBannerRegion,
   sts1CardBackgroundRegion,
+  sts1CardBodyStyle,
   sts1CardFrameRegion,
   sts1CardOrbRegion,
   sts1EnergyCostBox,
@@ -60,9 +61,13 @@ export function Sts1CardTile({
 
   return (
     <article
-      className="relative w-full overflow-visible font-game-title"
-      style={{ aspectRatio: STS1_CARD_ASPECT, containerType: "inline-size" }}
+      className="relative w-full overflow-visible"
+      style={{ aspectRatio: STS1_CARD_ASPECT }}
     >
+      <div
+        className="absolute overflow-visible font-game-title"
+        style={{ ...sts1CardBodyStyle(), containerType: "inline-size" }}
+      >
       <AtlasLayer src={sts1CardUi512Url(sts1CardBackgroundRegion(card))} />
       <div className="absolute overflow-hidden" style={sts1PortraitBox(card)}>
         <Image
@@ -131,6 +136,7 @@ export function Sts1CardTile({
           className="font-game-text text-center leading-[1.18] text-[#f8e8c0]"
           style={{ fontSize: "5.6cqi" }}
         />
+      </div>
       </div>
     </article>
   );

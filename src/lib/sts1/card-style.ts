@@ -11,9 +11,15 @@ const FRAME_RARITY: Record<string, "common" | "uncommon" | "rare"> = {
 };
 
 /** AbstractCard RAW_W / RAW_H. Combat atlas orig is 512² with the card at (106, 46) 300×420. */
-export const STS1_CARD_ASPECT = "300 / 420";
 export const STS1_ATLAS = 512;
 export const STS1_CARD_IN_ATLAS = { left: 106, top: 46, width: 300, height: 420 } as const;
+/** 512 energy orb hangs past the 300×420 body; keep that pip inside the tile. */
+export const STS1_CARD_STAGE_PAD = { left: 20, top: 18, right: 8, bottom: 8 } as const;
+export const STS1_CARD_STAGE = {
+  width: STS1_CARD_IN_ATLAS.width + STS1_CARD_STAGE_PAD.left + STS1_CARD_STAGE_PAD.right,
+  height: STS1_CARD_IN_ATLAS.height + STS1_CARD_STAGE_PAD.top + STS1_CARD_STAGE_PAD.bottom,
+} as const;
+export const STS1_CARD_ASPECT = `${STS1_CARD_STAGE.width} / ${STS1_CARD_STAGE.height}`;
 
 export const STS1_ATLAS_LAYER_STYLE = {
   width: `${(STS1_ATLAS / STS1_CARD_IN_ATLAS.width) * 100}%`,
@@ -29,6 +35,17 @@ export const STS1_ATLAS_LAYER_STYLE = {
 export const STS1_ENERGY_TEXT_OFFSET = { x: -132, y: 192 } as const;
 /** Packed size of 512/card_red_orb; the cost glyph is centered on this pip. */
 export const STS1_ENERGY_ORB_SIZE = { width: 72, height: 71 } as const;
+
+export function sts1CardBodyStyle() {
+  const { left, top } = STS1_CARD_STAGE_PAD;
+  const { width, height } = STS1_CARD_STAGE;
+  return {
+    left: `${(left / width) * 100}%`,
+    top: `${(top / height) * 100}%`,
+    width: `${(STS1_CARD_IN_ATLAS.width / width) * 100}%`,
+    height: `${(STS1_CARD_IN_ATLAS.height / height) * 100}%`,
+  };
+}
 
 export function sts1EnergyCostBox() {
   const { width, height } = STS1_CARD_IN_ATLAS;

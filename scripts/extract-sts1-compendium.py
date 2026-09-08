@@ -702,9 +702,12 @@ def save_webp(image: Any, dest: Path, quality: int = 80, *, lossless: bool = Fal
         image.save(dest, "WEBP", quality=quality, method=4)
 
 
-def clear_transparent_rgb(image: Any):
-    """Atlas crops and lossy WebP leave white RGB on a=0 pixels; browsers bilinear-sample that into a white fringe."""
-    image.putdata([(0, 0, 0, 0) if pixel[3] == 0 else pixel for pixel in image.getdata()])
+def clear_transparent_rgb(image: Any, alpha_cutoff: int = 8):
+    """Drop dirty atlas alpha (and white RGB on a=0) so scaled layers do not fringe."""
+    image.putdata([
+        (0, 0, 0, 0) if pixel[3] < alpha_cutoff else pixel
+        for pixel in image.getdata()
+    ])
     return image
 
 

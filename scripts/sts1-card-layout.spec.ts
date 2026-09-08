@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
 import {
-  STS1_ATLAS_LAYER_STYLE,
+  STS1_CARD_ASPECT,
   STS1_CARD_IN_ATLAS,
+  STS1_CARD_STAGE,
   STS1_ENERGY_TEXT_OFFSET,
+  sts1CardBodyStyle,
   sts1EnergyCostBox,
 } from "../src/lib/sts1/card-style";
 import { STS1_IMAGE_CACHE_BUSTER } from "../src/lib/sts1/image-cache";
@@ -12,8 +14,15 @@ assert.equal(STS1_CARD_IN_ATLAS.left, 106);
 assert.equal(STS1_CARD_IN_ATLAS.top, 46);
 assert.equal(STS1_CARD_IN_ATLAS.width, 300);
 assert.equal(STS1_CARD_IN_ATLAS.height, 420);
-assert.equal(STS1_ATLAS_LAYER_STYLE.left, `${(-106 / 300) * 100}%`);
-assert.equal(STS1_ATLAS_LAYER_STYLE.top, `${(-46 / 420) * 100}%`);
+assert.equal(STS1_CARD_STAGE.width, 328);
+assert.equal(STS1_CARD_STAGE.height, 446);
+assert.equal(STS1_CARD_ASPECT, "328 / 446");
+assert.deepEqual(sts1CardBodyStyle(), {
+  left: `${(20 / 328) * 100}%`,
+  top: `${(18 / 446) * 100}%`,
+  width: `${(300 / 328) * 100}%`,
+  height: `${(420 / 446) * 100}%`,
+});
 assert.equal(STS1_ENERGY_TEXT_OFFSET.x, -132);
 assert.equal(STS1_ENERGY_TEXT_OFFSET.y, 192);
 assert.deepEqual(sts1EnergyCostBox(), {
