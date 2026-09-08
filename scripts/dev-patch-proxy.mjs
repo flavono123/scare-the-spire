@@ -1,5 +1,6 @@
 import http from "node:http";
 import net from "node:net";
+import os from "node:os";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { createReadStream } from "node:fs";
@@ -165,8 +166,29 @@ function runInitialPatchBuild() {
   if (result.status !== 0) process.exit(result.status ?? 1);
 }
 
+function lanIPv4Addresses() {
+  const hosts = [];
+  for (const addrs of Object.values(os.networkInterfaces())) {
+    for (const addr of addrs ?? []) {
+      if (addr.internal) continue;
+      if (addr.family === "IPv4" || addr.family === 4) {
+        hosts.push(addr.address);
+      }
+    }
+  }
+  return hosts;
+}
+
 function startMainDev() {
-  return spawn("pnpm", ["exec", "next", "dev", "--port", String(mainPort)], {
+  return spawn("pnpm", [
+    "exec",
+    "next",
+    "dev",
+    "--hostname",
+    "0.0.0.0",
+    "--port",
+    String(mainPort),
+  ], {
     cwd: root,
     stdio: "inherit",
     detached: true,
@@ -350,6 +372,9 @@ server.on("error", (error) => {
 server.on("listening", () => {
   console.log(`Patch/main dev proxy listening on http://localhost:${proxyPort}`);
   console.log(`Main Next dev server listening on http://localhost:${mainPort}`);
+  for (const ip of lanIPv4Addresses()) {
+    console.log(`Phone on the same Wi-Fi: http://${ip}:${proxyPort}/chemical-x`);
+  }
 });
 
 void (async () => {
