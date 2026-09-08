@@ -6,7 +6,14 @@ assert.equal(korean[0]?.href, "/cards");
 assert.equal(korean[0]?.label, "카드 모음집");
 assert.equal(korean[1]?.label, "유물 모음집");
 assert.equal(korean[2]?.label, "포션 연구실");
-assert.equal(korean.every((item) => item.icon.startsWith("/images/sts1/")), true);
+assert.deepEqual(
+  korean.map((item) => item.icon),
+  [
+    "/images/sts2/nav/stats_cards.png",
+    "/images/sts2/relics/snecko_eye.webp",
+    "/images/sts2/nav/stats_potions.png",
+  ],
+);
 
 const english = sts1NavDropdownItems("eng");
 assert.equal(english[0]?.label, "Card Library");

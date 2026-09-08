@@ -151,9 +151,9 @@ export const sts2NavItems = [
 ] as const;
 
 export const sts1NavItems = [
-  { href: "/cards", type: "cards", icon: "/images/sts1/card-library/redTab.webp" },
-  { href: "/relics", type: "relics", icon: "/images/sts1/relics/burning-blood.webp" },
-  { href: "/potions", type: "potions", icon: "/images/sts1/potions/bloodpotion.webp" },
+  { href: "/cards", type: "cards", icon: "/images/sts2/nav/stats_cards.png" },
+  { href: "/relics", type: "relics", icon: "/images/sts2/relics/snecko_eye.webp" },
+  { href: "/potions", type: "potions", icon: "/images/sts2/nav/stats_potions.png" },
 ] as const satisfies readonly {
   href: string;
   type: Sts1ResourceType;
