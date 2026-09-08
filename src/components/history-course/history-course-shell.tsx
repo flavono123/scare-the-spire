@@ -1482,7 +1482,10 @@ function Stage({
       />
 
       <GameScrollArea
-        className="absolute inset-0"
+        className={cn(
+          "absolute inset-0",
+          dedicatedScene && transitProgress >= 1 && "invisible",
+        )}
         size="large"
         scrollerRef={mapBoxRef}
         scrollerClassName="overflow-x-hidden pt-[96px]"
@@ -1506,7 +1509,7 @@ function Stage({
         </div>
       </GameScrollArea>
 
-      <NodePulse step={step} />
+      {!(dedicatedScene && transitProgress >= 1) ? <NodePulse step={step} /> : null}
 
       {introActive && introActIndex !== null && introAct && (
         <ActIntro

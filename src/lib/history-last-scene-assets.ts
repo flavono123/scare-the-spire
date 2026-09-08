@@ -2,25 +2,23 @@ import ancientScenes from "../../data/sts2/ancient-scene-assets.json";
 import encounterScenes from "../../data/sts2/encounter-scene-assets.json";
 import { stripReplayId } from "@/lib/history-last-scene";
 
-type EncounterSceneRow = { id: string; backgroundUrl: string };
+type EncounterSceneRow = {
+  id: string;
+  backgroundUrl: string;
+  monsterSlots?: { x: number; y: number }[];
+};
 type AncientSceneRow = {
   id: string;
   baseArt?: { path?: string };
   fallback?: { path?: string };
 };
 
-const ENCOUNTER_BG_BY_ID = new Map(
-  (encounterScenes as EncounterSceneRow[]).map((row) => [
-    row.id.toUpperCase(),
-    row.backgroundUrl,
-  ]),
+const ENCOUNTER_BY_ID = new Map(
+  (encounterScenes as EncounterSceneRow[]).map((row) => [row.id.toUpperCase(), row]),
 );
 
-const ANCIENT_BG_BY_ID = new Map(
-  (ancientScenes as AncientSceneRow[]).map((row) => [
-    row.id.toUpperCase(),
-    row.baseArt?.path ?? row.fallback?.path ?? "",
-  ]),
+const ANCIENT_BY_ID = new Map(
+  (ancientScenes as AncientSceneRow[]).map((row) => [row.id.toUpperCase(), row]),
 );
 
 export const ACT_ENCOUNTER_BACKGROUND: Record<string, string> = {
@@ -28,6 +26,12 @@ export const ACT_ENCOUNTER_BACKGROUND: Record<string, string> = {
   HIVE: "/images/sts2/encounter-scenes/hive-a.webp",
   GLORY: "/images/sts2/encounter-scenes/glory-a.webp",
   UNDERDOCKS: "/images/sts2/encounter-scenes/underdocks-a.webp",
+};
+
+const MONSTER_STILL_OVERRIDES: Record<string, string> = {
+  FAKE_MERCHANT_MONSTER: "/images/sts2/npcs/fake_merchant.webp",
+  DECIMILLIPEDE_SEGMENT: "/images/sts2/monsters-render/decimillipede.webp",
+  KAISER_CRAB: "/images/sts2/monsters-render/kaiser_crab.webp",
 };
 
 export function actEncounterBackgroundUrl(actId: string | null | undefined): string {
@@ -40,8 +44,22 @@ export function encounterBackgroundUrl(
   actId: string | null | undefined,
 ): string {
   const encounterId = stripReplayId(modelId ?? "").toUpperCase();
-  const custom = encounterId ? ENCOUNTER_BG_BY_ID.get(encounterId) : undefined;
+  const custom = encounterId ? ENCOUNTER_BY_ID.get(encounterId)?.backgroundUrl : undefined;
   return custom || actEncounterBackgroundUrl(actId);
+}
+
+export function lastSceneMonsterSlots(
+  modelId: string | null | undefined,
+): { leftPct: number; topPct: number }[] {
+  const encounterId = stripReplayId(modelId ?? "").toUpperCase();
+  const slots = encounterId ? ENCOUNTER_BY_ID.get(encounterId)?.monsterSlots : undefined;
+  if (!slots?.length) return [];
+  return slots.map((slot) => ({ leftPct: slot.x * 100, topPct: slot.y * 100 }));
+}
+
+export function monsterStillUrl(id: string): string {
+  const key = stripReplayId(id).toUpperCase();
+  return MONSTER_STILL_OVERRIDES[key] ?? `/images/sts2/monsters-render/${key.toLowerCase()}.webp`;
 }
 
 export function eventArtUrl(modelId: string | null | undefined): string | null {
@@ -53,8 +71,11 @@ export function eventArtUrl(modelId: string | null | undefined): string | null {
 export function ancientBackgroundUrl(modelId: string | null | undefined): string | null {
   const id = stripReplayId(modelId ?? "").toUpperCase();
   if (!id) return null;
-  const path = ANCIENT_BG_BY_ID.get(id);
-  return path || null;
+  const row = ANCIENT_BY_ID.get(id);
+  if (!row) return null;
+  // Fallback stills already composite the Ancient body; empty baseArt rooms
+  // look like a dim overlay on the map.
+  return row.fallback?.path || row.baseArt?.path || null;
 }
 
 export function lastSceneBackgroundUrl(opts: {

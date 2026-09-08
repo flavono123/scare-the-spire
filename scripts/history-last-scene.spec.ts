@@ -20,6 +20,7 @@ import {
 import {
   eventArtUrl,
   lastSceneBackgroundUrl,
+  lastSceneMonsterSlots,
 } from "../src/lib/history-last-scene-assets";
 
 function entry(partial: Partial<ReplayHistoryEntry>): ReplayHistoryEntry {
@@ -211,7 +212,7 @@ assert.match(
     modelId: "EVENT.NEOW",
     actId: "ACT.OVERGROWTH",
   }),
-  /neow_bg\.webp$/,
+  /neow_fallback\.webp$/,
 );
 assert.match(
   lastSceneBackgroundUrl({
@@ -221,6 +222,7 @@ assert.match(
   }),
   /hive-a\.webp$/,
 );
+assert.ok(lastSceneMonsterSlots("ENCOUNTER.AXEBOTS_NORMAL").length >= 1);
 assert.equal(eventArtUrl("EVENT.FAKE_MERCHANT"), "/images/sts2/events/fake_merchant.webp");
 
 console.log("history-last-scene.spec.ts ok");

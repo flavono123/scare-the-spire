@@ -13,7 +13,11 @@ import {
   stripReplayId,
   type LastSceneKind,
 } from "@/lib/history-last-scene";
-import { lastSceneBackgroundUrl } from "@/lib/history-last-scene-assets";
+import {
+  lastSceneBackgroundUrl,
+  lastSceneMonsterSlots,
+  monsterStillUrl,
+} from "@/lib/history-last-scene-assets";
 import { gameOverLoseBanner, gameOverQuote } from "@/lib/game-over-copy";
 import type { GameLocale } from "@/lib/i18n";
 import { RELIC_INSPECT_REWARD_PANEL, relicInspectFrameUrl } from "@/lib/relic-inspect-assets";
@@ -47,7 +51,7 @@ function potionIconSrc(id: string): string {
 }
 
 function monsterPortraitSrc(id: string): string {
-  return `/images/sts2/monsters-render/${stripReplayId(id).toLowerCase()}.webp`;
+  return monsterStillUrl(id);
 }
 
 function clamp01(value: number): number {
@@ -76,10 +80,12 @@ function SceneArt({
   src,
   alt = "",
   className,
+  hideOnError = true,
 }: {
   src: string;
   alt?: string;
   className?: string;
+  hideOnError?: boolean;
 }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
@@ -87,7 +93,7 @@ function SceneArt({
       src={src}
       alt={alt}
       className={className}
-      onError={hideBrokenImage}
+      onError={hideOnError ? hideBrokenImage : undefined}
     />
   );
 }
@@ -270,82 +276,83 @@ export function NodeLastScene({
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-[15] overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-[18] overflow-hidden bg-black"
       data-history-last-scene={kind}
       data-progress={t.toFixed(2)}
     >
       <SceneArt
         src={backgroundUrl}
-        className="absolute inset-0 h-full w-full object-cover"
+        hideOnError={false}
+        className={cn(
+          "absolute inset-0 h-full w-full",
+          kind === "event" ? "object-contain" : "object-cover",
+        )}
       />
       {kind === "death" ? <div className="absolute inset-0 bg-red-950/55" /> : null}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/25" />
 
-      <div className="absolute inset-x-0 bottom-20 top-24 flex flex-col items-center justify-end px-6">
-        {kind === "combat" ? (
-          <CombatScene
-            entry={entry}
-            tables={tables}
-            t={t}
-            pickReveal={pickReveal}
-            character={character}
-            relicsById={relicsById}
-          />
-        ) : null}
-        {kind === "shop" ? (
-          <ShopScene
-            entry={entry}
-            tables={tables}
-            pickReveal={pickReveal}
-            leftoverGoldLabel={leftoverGoldLabel}
-            relicsById={relicsById}
-          />
-        ) : null}
-        {kind === "event" ? (
-          <EventScene
-            entry={entry}
-            tables={tables}
-            pickReveal={pickReveal}
-            relicsById={relicsById}
-          />
-        ) : null}
-        {kind === "ancient" ? (
-          <AncientScene
-            entry={entry}
-            tables={tables}
-            pickReveal={pickReveal}
-            relicsById={relicsById}
-          />
-        ) : null}
-        {kind === "treasure" ? (
-          <TreasureScene
-            entry={entry}
-            tables={tables}
-            t={t}
-            pickReveal={pickReveal}
-            relicsById={relicsById}
-          />
-        ) : null}
-        {kind === "rest" ? (
-          <RestScene
-            entry={entry}
-            tables={tables}
-            gameLocale={gameLocale}
-            pickReveal={pickReveal}
-            relicsById={relicsById}
-          />
-        ) : null}
-        {kind === "death" ? (
-          <DeathScene
-            entry={entry}
-            run={run}
-            tables={tables}
-            gameLocale={gameLocale}
-            deathLabel={deathLabel}
-            character={character}
-          />
-        ) : null}
-      </div>
+      {kind === "combat" ? (
+        <CombatScene
+          entry={entry}
+          tables={tables}
+          t={t}
+          pickReveal={pickReveal}
+          character={character}
+          relicsById={relicsById}
+        />
+      ) : null}
+      {kind === "shop" ? (
+        <ShopScene
+          entry={entry}
+          tables={tables}
+          pickReveal={pickReveal}
+          leftoverGoldLabel={leftoverGoldLabel}
+          relicsById={relicsById}
+        />
+      ) : null}
+      {kind === "event" ? (
+        <EventScene
+          entry={entry}
+          tables={tables}
+          pickReveal={pickReveal}
+          relicsById={relicsById}
+        />
+      ) : null}
+      {kind === "ancient" ? (
+        <AncientScene
+          entry={entry}
+          tables={tables}
+          pickReveal={pickReveal}
+          relicsById={relicsById}
+        />
+      ) : null}
+      {kind === "treasure" ? (
+        <TreasureScene
+          entry={entry}
+          tables={tables}
+          t={t}
+          pickReveal={pickReveal}
+          relicsById={relicsById}
+        />
+      ) : null}
+      {kind === "rest" ? (
+        <RestScene
+          entry={entry}
+          tables={tables}
+          gameLocale={gameLocale}
+          pickReveal={pickReveal}
+          relicsById={relicsById}
+        />
+      ) : null}
+      {kind === "death" ? (
+        <DeathScene
+          entry={entry}
+          run={run}
+          tables={tables}
+          gameLocale={gameLocale}
+          deathLabel={deathLabel}
+          character={character}
+        />
+      ) : null}
     </div>
   );
 }
@@ -366,29 +373,42 @@ function CombatScene({
   relicsById?: Record<string, CodexRelic>;
 }) {
   const monsters = roomMonsterIds(entry);
+  const slots = lastSceneMonsterSlots(entry.rooms?.[0]?.model_id);
   return (
-    <div className="relative h-full w-full">
+    <div className="absolute inset-0">
       <SceneArt
         src={characterCombatArtSrc(character)}
-        className="absolute bottom-[4%] left-[2%] h-[72%] w-[30%] object-contain object-bottom drop-shadow-[0_12px_18px_rgba(0,0,0,0.65)]"
+        className="absolute bottom-[8%] left-[6%] h-[62%] w-[22%] object-contain object-bottom drop-shadow-[0_12px_18px_rgba(0,0,0,0.65)]"
       />
       {monsters.map((id, index) => {
         const dieAt = 0.12 + index * 0.08;
         const dead = t >= dieAt;
+        const slot = slots[index];
         const count = Math.max(monsters.length, 1);
-        const left = 48 + (index * 38) / count;
         return (
           <div
             key={`${id}-${index}`}
             className={cn(
-              "absolute bottom-[10%] h-[58%] w-[22%] transition-all duration-500",
+              "absolute h-[52%] w-[20%] transition-all duration-500",
               dead && "rich-jitter",
             )}
-            style={{
-              left: `${left}%`,
-              opacity: dead ? 0 : 1,
-              transform: dead ? "translateY(18px) scale(0.82)" : "none",
-            }}
+            style={
+              slot
+                ? {
+                    left: `${slot.leftPct}%`,
+                    top: `${slot.topPct}%`,
+                    opacity: dead ? 0 : 1,
+                    transform: dead
+                      ? "translate(-50%, -70%) scale(0.82)"
+                      : "translate(-50%, -100%)",
+                  }
+                : {
+                    left: `${48 + (index * 38) / count}%`,
+                    bottom: "10%",
+                    opacity: dead ? 0 : 1,
+                    transform: dead ? "translateY(18px) scale(0.82)" : "none",
+                  }
+            }
           >
             <SceneArt
               src={monsterPortraitSrc(id)}
@@ -398,14 +418,14 @@ function CombatScene({
           </div>
         );
       })}
-      <div className="absolute inset-x-0 bottom-0 flex justify-center">
+      <HudSafe>
         <RewardPicks
           entry={entry}
           tables={tables}
           pickReveal={pickReveal}
           relicsById={relicsById}
         />
-      </div>
+      </HudSafe>
     </div>
   );
 }
@@ -425,29 +445,31 @@ function ShopScene({
 }) {
   const gold = entry.current_gold;
   return (
-    <div className="relative h-full w-full">
+    <div className="absolute inset-0">
       <SceneArt
         src={MERCHANT}
-        className="absolute bottom-[8%] right-[4%] h-[70%] w-[32%] object-contain object-bottom drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]"
+        className="absolute bottom-[6%] right-[4%] h-[78%] w-[38%] object-contain object-bottom drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]"
       />
-      <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-3">
-        <RewardPicks
-          entry={entry}
-          tables={tables}
-          pickReveal={pickReveal}
-          includeRemoved
-          relicsById={relicsById}
-        />
-        {typeof gold === "number" ? (
-          <div
-            className="flex items-center gap-2 font-game-text text-sm text-amber-100"
-            data-history-leftover-gold={gold}
-          >
-            <SceneArt src={GOLD_ICON} className="h-5 w-5 object-contain" />
-            {leftoverGoldLabel.replace("{gold}", String(gold))}
-          </div>
-        ) : null}
-      </div>
+      <HudSafe>
+        <div className="flex flex-col items-center gap-3">
+          <RewardPicks
+            entry={entry}
+            tables={tables}
+            pickReveal={pickReveal}
+            includeRemoved
+            relicsById={relicsById}
+          />
+          {typeof gold === "number" ? (
+            <div
+              className="flex items-center gap-2 font-game-text text-sm text-amber-100"
+              data-history-leftover-gold={gold}
+            >
+              <SceneArt src={GOLD_ICON} className="h-5 w-5 object-contain" />
+              {leftoverGoldLabel.replace("{gold}", String(gold))}
+            </div>
+          ) : null}
+        </div>
+      </HudSafe>
     </div>
   );
 }
@@ -467,25 +489,28 @@ function EventScene({
     localizeGame(tables, "events", entry.rooms?.[0]?.model_id) ??
     prettifyId(stripReplayId(entry.rooms?.[0]?.model_id ?? "event"));
   return (
-    <div className="flex h-full w-full max-w-xl flex-col justify-end gap-3 self-end pb-2">
-      <div
-        className="font-game-title text-2xl text-[#f3c640]"
-        style={{ textShadow: "3px 2px 0 rgba(0,0,0,0.45)" }}
-      >
-        {title}
-      </div>
-      <ChoiceList
-        choices={entry.event_choices ?? []}
-        tables={tables}
-        table="events"
-        pickReveal={pickReveal}
-      />
-      <RewardPicks
-        entry={entry}
-        tables={tables}
-        pickReveal={pickReveal}
-        relicsById={relicsById}
-      />
+    <div className="absolute inset-0">
+      <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/25 to-transparent" />
+      <ChoicePanel>
+        <div
+          className="font-game-title text-3xl font-bold leading-tight text-[#f3c640]"
+          style={{ textShadow: "3px 2px 0 rgba(0,0,0,0.5), 0 0 12px rgba(0,0,0,0.75)" }}
+        >
+          {title}
+        </div>
+        <ChoiceList
+          choices={entry.event_choices ?? []}
+          tables={tables}
+          table="events"
+          pickReveal={pickReveal}
+        />
+        <RewardPicks
+          entry={entry}
+          tables={tables}
+          pickReveal={pickReveal}
+          relicsById={relicsById}
+        />
+      </ChoicePanel>
     </div>
   );
 }
@@ -501,34 +526,37 @@ function AncientScene({
   pickReveal: boolean;
   relicsById?: Record<string, CodexRelic>;
 }) {
+  const modelId = entry.rooms?.[0]?.model_id;
   const title =
-    localizeGame(tables, "ancients", entry.rooms?.[0]?.model_id) ??
-    localizeGame(tables, "events", entry.rooms?.[0]?.model_id) ??
-    prettifyId(stripReplayId(entry.rooms?.[0]?.model_id ?? "ancient"));
+    localizeGame(tables, "ancients", modelId) ??
+    localizeGame(tables, "events", modelId) ??
+    prettifyId(stripReplayId(modelId ?? "ancient"));
   return (
-    <div className="flex w-full max-w-lg flex-col items-center gap-3">
-      <div
-        className="min-w-[18rem] px-6 py-3 font-game-title text-xl text-[#f3c640]"
-        style={{
-          backgroundImage: `url(${DIALOGUE_PATCH})`,
-          backgroundSize: "100% 100%",
-          textShadow: "3px 2px 0 rgba(0,0,0,0.45)",
-        }}
-      >
-        {title}
-      </div>
-      <ChoiceList
-        choices={entry.ancient_choice ?? []}
-        tables={tables}
-        table="ancients"
-        pickReveal={pickReveal}
-      />
-      <RewardPicks
-        entry={entry}
-        tables={tables}
-        pickReveal={pickReveal}
-        relicsById={relicsById}
-      />
+    <div className="absolute inset-0">
+      <ChoicePanel>
+        <div
+          className="px-5 py-2 font-game-title text-2xl text-[#f3c640]"
+          style={{
+            backgroundImage: `url(${DIALOGUE_PATCH})`,
+            backgroundSize: "100% 100%",
+            textShadow: "3px 2px 0 rgba(0,0,0,0.45)",
+          }}
+        >
+          {title}
+        </div>
+        <ChoiceList
+          choices={entry.ancient_choice ?? []}
+          tables={tables}
+          table="ancients"
+          pickReveal={pickReveal}
+        />
+        <RewardPicks
+          entry={entry}
+          tables={tables}
+          pickReveal={pickReveal}
+          relicsById={relicsById}
+        />
+      </ChoicePanel>
     </div>
   );
 }
@@ -548,20 +576,22 @@ function TreasureScene({
 }) {
   const open = t >= 0.28;
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="absolute inset-0">
       <SceneArt
         src={CHEST}
         className={cn(
-          "h-28 w-36 object-contain drop-shadow-[0_10px_16px_rgba(0,0,0,0.75)] transition-all duration-500",
+          "absolute bottom-[22%] left-1/2 h-40 w-52 -translate-x-1/2 object-contain drop-shadow-[0_14px_20px_rgba(0,0,0,0.75)] transition-all duration-500",
           open && "scale-125 opacity-0",
         )}
       />
-      <RewardPicks
-        entry={entry}
-        tables={tables}
-        pickReveal={pickReveal}
-        relicsById={relicsById}
-      />
+      <HudSafe>
+        <RewardPicks
+          entry={entry}
+          tables={tables}
+          pickReveal={pickReveal}
+          relicsById={relicsById}
+        />
+      </HudSafe>
     </div>
   );
 }
@@ -581,28 +611,47 @@ function RestScene({
 }) {
   const choices = entry.rest_site_choices ?? [];
   return (
-    <div className="flex w-full max-w-md flex-col items-center gap-3">
+    <div className="absolute inset-0">
       <SceneArt
         src={REST_CAMP}
-        className="h-24 w-24 object-contain drop-shadow-[0_8px_12px_rgba(0,0,0,0.7)]"
+        className="absolute bottom-[18%] left-[12%] h-44 w-44 object-contain drop-shadow-[0_12px_18px_rgba(0,0,0,0.7)]"
       />
-      <div className="flex w-full flex-col gap-2">
-        {choices.map((choice) => (
-          <div key={choice} data-history-last-scene-pick={choice} data-picked="true">
-            <GameChoiceFrame active={pickReveal}>
-              <span className="font-game-text text-base text-[#f4efe2]">
-                {restSiteChoiceLabel(choice, gameLocale)}
-              </span>
-            </GameChoiceFrame>
-          </div>
-        ))}
-      </div>
-      <RewardPicks
-        entry={entry}
-        tables={tables}
-        pickReveal={pickReveal}
-        relicsById={relicsById}
-      />
+      <div className="absolute inset-0 bg-gradient-to-l from-black/70 via-transparent to-transparent" />
+      <ChoicePanel>
+        <div className="flex w-full flex-col gap-2">
+          {choices.map((choice) => (
+            <div key={choice} data-history-last-scene-pick={choice} data-picked="true">
+              <GameChoiceFrame active={pickReveal}>
+                <span className="font-game-text text-base text-[#f4efe2]">
+                  {restSiteChoiceLabel(choice, gameLocale)}
+                </span>
+              </GameChoiceFrame>
+            </div>
+          ))}
+        </div>
+        <RewardPicks
+          entry={entry}
+          tables={tables}
+          pickReveal={pickReveal}
+          relicsById={relicsById}
+        />
+      </ChoicePanel>
+    </div>
+  );
+}
+
+function HudSafe({ children }: { children: ReactNode }) {
+  return (
+    <div className="absolute inset-x-0 bottom-20 top-24 flex flex-col items-center justify-end px-6">
+      {children}
+    </div>
+  );
+}
+
+function ChoicePanel({ children }: { children: ReactNode }) {
+  return (
+    <div className="absolute inset-x-4 bottom-20 top-24 z-10 flex min-w-0 flex-col justify-end gap-3 sm:inset-x-auto sm:right-[3.5%] sm:w-[min(28rem,42%)]">
+      {children}
     </div>
   );
 }
@@ -666,27 +715,31 @@ function DeathScene({
     localizeGame(tables, "events", causeId) ??
     (causeId ? prettifyId(stripReplayId(causeId)) : deathLabel);
   return (
-    <div className="relative flex w-full max-w-sm flex-col items-center gap-3">
+    <div className="absolute inset-0">
       <SceneArt
         src={characterCombatArtSrc(character)}
-        className="rich-jitter h-40 w-32 object-contain object-bottom opacity-80"
+        className="rich-jitter absolute bottom-[8%] left-[8%] h-[55%] w-[22%] object-contain object-bottom opacity-80"
       />
-      <div
-        className="relative flex w-full flex-col items-center gap-2 px-8 py-8"
-        style={{
-          backgroundImage: `url(${CONFIRM_POPUP})`,
-          backgroundSize: "100% 100%",
-        }}
-      >
-        <SceneArt src={SKULL} className="h-10 w-10 object-contain" />
-        <div className="rich-jitter font-game-title text-2xl text-red-100">
-          {banner}
+      <HudSafe>
+        <div className="relative flex w-full max-w-sm flex-col items-center gap-3">
+          <div
+            className="relative flex w-full flex-col items-center gap-2 px-8 py-8"
+            style={{
+              backgroundImage: `url(${CONFIRM_POPUP})`,
+              backgroundSize: "100% 100%",
+            }}
+          >
+            <SceneArt src={SKULL} className="h-10 w-10 object-contain" />
+            <div className="rich-jitter font-game-title text-2xl text-red-100">
+              {banner}
+            </div>
+            <div className="font-game-text text-sm text-zinc-100">{cause}</div>
+            {quote ? (
+              <div className="font-game-text text-xs text-zinc-300">{quote}</div>
+            ) : null}
+          </div>
         </div>
-        <div className="font-game-text text-sm text-zinc-100">{cause}</div>
-        {quote ? (
-          <div className="font-game-text text-xs text-zinc-300">{quote}</div>
-        ) : null}
-      </div>
+      </HudSafe>
     </div>
   );
 }
