@@ -17,7 +17,10 @@ const portSearchLimit = 50;
 
 function listeningPids(port) {
   try {
-    const output = execFileSync("lsof", ["-nP", `-iTCP:${port}`, "-sTCP:LISTEN", "-t"], {
+    const args = port
+      ? ["-nP", `-iTCP:${port}`, "-sTCP:LISTEN", "-t"]
+      : ["-nP", "-iTCP", "-sTCP:LISTEN", "-t"];
+    const output = execFileSync("lsof", args, {
       encoding: "utf8",
     }).trim();
     if (!output) return [];
@@ -97,59 +100,72 @@ function waitUntilPortFree(port, timeoutMs) {
   return listeningPids(port).length === 0;
 }
 
+function reclaimPids(pids, label) {
+  const unique = [...new Set(pids)].filter((pid) => pid !== process.pid);
+  if (unique.length === 0) return false;
+
+  console.log(`${label} (pid ${unique.join(", ")})`);
+  for (const pid of unique) {
+    killProcessTree(pid, "SIGTERM");
+  }
+  sleepSync(200);
+  for (const pid of unique) {
+    killProcessTree(pid, "SIGKILL");
+  }
+  return true;
+}
+
 function reclaimOurListener(port) {
   const ours = listeningPids(port).filter(isThisProjectListener);
   if (ours.length === 0) return false;
-
-  console.log(
-    `Reclaiming leftover scare-the-spire listener on port ${port} (pid ${ours.join(", ")})`,
-  );
-  for (const pid of ours) {
-    killProcessTree(pid, "SIGTERM");
-  }
-  if (waitUntilPortFree(port, portReclaimTimeoutMs)) return true;
-
-  for (const pid of listeningPids(port).filter(isThisProjectListener)) {
-    killProcessTree(pid, "SIGKILL");
-  }
-  return waitUntilPortFree(port, 1000);
+  reclaimPids(ours, `Reclaiming leftover scare-the-spire listener on port ${port}`);
+  return port ? waitUntilPortFree(port, portReclaimTimeoutMs) : true;
 }
 
-function canBindPort(port) {
+function reclaimAllOurDevListeners() {
+  const start = Math.min(preferredProxyPort, preferredMainPort);
+  const end = start + portSearchLimit;
+  for (let port = start; port < end; port += 1) {
+    reclaimOurListener(port);
+  }
+}
+
+function closeServer(server) {
+  return new Promise((resolve) => {
+    if (!server) {
+      resolve();
+      return;
+    }
+    server.close(() => resolve());
+  });
+}
+
+function holdPort(port, host) {
   return new Promise((resolve, reject) => {
-    const tester = net.createServer();
-    tester.once("error", (error) => {
+    const holder = net.createServer();
+    holder.once("error", (error) => {
       if (error.code === "EADDRINUSE" || error.code === "EACCES") {
-        resolve(false);
+        resolve(null);
         return;
       }
       reject(error);
     });
-    tester.once("listening", () => {
-      tester.close(() => resolve(true));
-    });
-    tester.listen(port);
+    holder.once("listening", () => resolve(holder));
+    holder.listen({ port, host, exclusive: true });
   });
 }
 
-async function allocatePort(preferred, reserved) {
-  reclaimOurListener(preferred);
+async function allocateHeldPort(preferred, reserved, host) {
   for (let offset = 0; offset < portSearchLimit; offset += 1) {
     const port = preferred + offset;
     if (reserved.has(port)) continue;
-    if (await canBindPort(port)) {
-      if (port !== preferred) {
-        console.log(`Port ${preferred} is in use; using ${port} instead`);
-      }
-      return port;
-    }
     reclaimOurListener(port);
-    if (!reserved.has(port) && (await canBindPort(port))) {
-      if (port !== preferred) {
-        console.log(`Port ${preferred} is in use; using ${port} instead`);
-      }
-      return port;
+    const holder = await holdPort(port, host);
+    if (!holder) continue;
+    if (port !== preferred) {
+      console.log(`Port ${preferred} is in use; using ${port} instead`);
     }
+    return { port, holder };
   }
   throw new Error(`No free TCP port found in ${preferred}–${preferred + portSearchLimit - 1}`);
 }
@@ -179,7 +195,8 @@ function lanIPv4Addresses() {
   return hosts;
 }
 
-function startMainDev() {
+function startMainDev(port) {
+  mainPort = port;
   return spawn("pnpm", [
     "exec",
     "next",
@@ -187,14 +204,13 @@ function startMainDev() {
     "--hostname",
     "0.0.0.0",
     "--port",
-    String(mainPort),
+    String(port),
   ], {
     cwd: root,
     stdio: "inherit",
-    detached: true,
     env: {
       ...process.env,
-      PORT: String(mainPort),
+      PORT: String(port),
     },
   });
 }
@@ -335,12 +351,16 @@ function proxyUpgradeToMain(req, socket, head) {
   upstreamReq.end();
 }
 
-reclaimOurListener(preferredProxyPort);
-reclaimOurListener(preferredMainPort);
+reclaimAllOurDevListeners();
 runInitialPatchBuild();
+reclaimAllOurDevListeners();
 
 let mainDev;
+let mainGeneration = 0;
+let mainBindRetries = 0;
 let shuttingDown = false;
+const maxMainBindRetries = 8;
+const mainRetryWindowMs = 20_000;
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url ?? "/", `http://${req.headers.host ?? `localhost:${proxyPort}`}`);
@@ -377,37 +397,67 @@ server.on("listening", () => {
   }
 });
 
+function attachMainDev(child, startedAt) {
+  const generation = ++mainGeneration;
+  mainDev = child;
+  child.on("error", (error) => {
+    if (shuttingDown || generation !== mainGeneration) return;
+    console.error(`Failed to start main Next dev server: ${error.message}`);
+    shutdown(1);
+  });
+  child.on("exit", (code, signal) => {
+    if (shuttingDown || generation !== mainGeneration) return;
+    void onMainDevExit(code, signal, startedAt);
+  });
+}
+
+async function onMainDevExit(code, signal, startedAt) {
+  const earlyCrash = Date.now() - startedAt < mainRetryWindowMs;
+  if (earlyCrash && code && mainBindRetries < maxMainBindRetries) {
+    mainBindRetries += 1;
+    console.log(`Next failed on port ${mainPort}; trying another free IPv4 port`);
+    try {
+      const next = await allocateHeldPort(
+        mainPort + 1,
+        new Set([proxyPort]),
+        "0.0.0.0",
+      );
+      await closeServer(next.holder);
+      attachMainDev(startMainDev(next.port), Date.now());
+      return;
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : error);
+    }
+  }
+  console.error(`Main Next dev server exited: ${signal ?? code ?? "unknown"}`);
+  shutdown(code ?? 1);
+}
+
 void (async () => {
   try {
-    proxyPort = await allocatePort(preferredProxyPort, new Set());
-    mainPort = await allocatePort(preferredMainPort, new Set([proxyPort]));
+    const proxyHold = await allocateHeldPort(preferredProxyPort, new Set(), "0.0.0.0");
+    const mainHold = await allocateHeldPort(
+      preferredMainPort,
+      new Set([proxyHold.port]),
+      "0.0.0.0",
+    );
+    proxyPort = proxyHold.port;
+    mainPort = mainHold.port;
+    await closeServer(mainHold.holder);
+    attachMainDev(startMainDev(mainPort), Date.now());
+    await closeServer(proxyHold.holder);
+    listenProxy(proxyPort);
   } catch (error) {
     console.error(error instanceof Error ? error.message : error);
     process.exit(1);
   }
-
-  mainDev = startMainDev();
-  mainDev.on("error", (error) => {
-    console.error(`Failed to start main Next dev server: ${error.message}`);
-    shutdown(1);
-  });
-  mainDev.on("exit", (code, signal) => {
-    if (shuttingDown) return;
-    console.error(`Main Next dev server exited: ${signal ?? code ?? "unknown"}`);
-    shutdown(code ?? 1);
-  });
-  listenProxy(proxyPort);
 })();
 
 server.on("upgrade", proxyUpgradeToMain);
 
 function killMainDev(signal) {
   if (!mainDev?.pid) return;
-  try {
-    process.kill(-mainDev.pid, signal);
-  } catch {
-    killProcessTree(mainDev.pid, signal);
-  }
+  killProcessTree(mainDev.pid, signal);
 }
 
 function shutdown(exitCode = 0) {
