@@ -5,7 +5,7 @@
 | **Date** | 2026-09-08 |
 | **URL** | http://localhost:3002/compendium/sts1/* |
 | **Branch** | main |
-| **Commit** | `795ad95e` plus follow-up Compendium rendering fixes |
+| **Commit** | `795ad95e`, `2d556f91` |
 | **Tier** | Quick (Critical/High first), scoped |
 | **Scope** | STS1 Compendium (`/compendium/sts1/cards`, relics, potions, details, `/cards|/relics|/potions` aliases) |
 | **Pages visited** | 8 |
@@ -198,13 +198,13 @@
 
 | Issue | Fix Status | Commit | Files Changed |
 |-------|-----------|--------|---------------|
-| ISSUE-001 | verified | this session | `card-style.ts`, `card-tile.tsx`, `card-ui-512/`, extract script, layout spec |
-| ISSUE-002 | verified | this session | `detail-chrome.tsx`, relic/potion library+detail+tile, `data.ts` `nameEn` |
-| ISSUE-003 | verified | this session | extract `labOutline`, recomposed `public/images/sts1/potions/*`, `?v=` cache buster |
-| ISSUE-004 | verified | this session | atlas layers as CSS backgrounds |
-| ISSUE-005 | verified | this session | sm checkbox; Searing Blow stepper; +2 = 21 damage |
-| ISSUE-006 | verified | this session | `image-rendering: pixelated` + `sts1PoolOutline` |
-| ISSUE-007 | verified | this session | `heroLayout="icon"` drops `min-h-[22rem]` |
+| ISSUE-001 | verified | 795ad95e, 2d556f91 | `card-style.ts`, `card-tile.tsx`, `card-ui-512/`, extract script, layout spec |
+| ISSUE-002 | verified | 2d556f91 | `detail-chrome.tsx`, relic/potion library+detail+tile, `data.ts` `nameEn` |
+| ISSUE-003 | verified | 795ad95e, 2d556f91 | extract `labOutline`, recomposed `public/images/sts1/potions/*`, `?v=` cache buster |
+| ISSUE-004 | verified | 2d556f91 | atlas layers as CSS backgrounds |
+| ISSUE-005 | verified | 2d556f91 | sm checkbox; Searing Blow stepper; +2 = 21 damage |
+| ISSUE-006 | verified | 2d556f91 | `image-rendering: pixelated` + `sts1PoolOutline` |
+| ISSUE-007 | verified | 2d556f91 | `heroLayout="icon"` drops `min-h-[22rem]` |
 | ISSUE-008 | deferred | — | `site-navbar.tsx` hydration |
 | ISSUE-009 | deferred | — | remaining LibGDX pixel match |
 
