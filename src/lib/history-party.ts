@@ -57,6 +57,10 @@ export function characterIconOutlineSrc(character: string | undefined): string {
 export function characterMapMarkerSrc(character: string | undefined): string {
   return `/images/sts2/map/markers/map_marker_${characterSlug(character)}.png`;
 }
+
+export function characterCombatArtSrc(character: string | undefined): string {
+  return `/images/sts2/characters/combat_${characterSlug(character)}.webp`;
+}
 export const PARTY_COVER_BADGE_MAX = 4;
 
 /**

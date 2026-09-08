@@ -9,7 +9,7 @@
 | # | 축 | 상태 |
 | --- | --- | --- |
 | 1 | 인덱스(+ 코오오옴보 참조)에서 보이는 **유튜브형 표지** | **진행 중** |
-| 2 | 상세 리플레이 시 **재미 증대** | **계획** |
+| 2 | 상세 리플레이 시 **재미 증대** | **진행 중** |
 | 3 | 상세 리플레이 시 **복기 기능 강화** | 이후 (층 멘션·hover는 일부 적용됨) |
 
 축 1 표지 문법은 유지한다. 축 2는 맵에 머무는 슬롯머신 보상 스택을, 노드 마지막 씬 루프로 바꾼다.
@@ -86,19 +86,9 @@ AI 분석/생성, 자동 하이라이트 점수, 지속 갱신 휴리스틱 사�
 
 전투 **중** 카드 플레이·에너지·의도·몹 HP 곡선은 `.run`에 없다. 지어내지 않는다. 축 3과 같은 제약이다.
 
-### 레퍼런스 (모카계)
+### 레퍼런스
 
-채널: [모카계](https://www.youtube.com/channel/UC0qwIzPHn-T6YaYt2Qal_ew) (`@모카계`, id `UC0qwIzPHn-T6YaYt2Qal_ew`).
-
-전투를 통째로 자른 전용 “리플레이 모드” 영상은 찾지 못했다. 대신 **맵 ↔ 마지막 씬** 리듬이 스피드런에 있다. [아이언클래드 6:24](https://www.youtube.com/watch?v=BNDlw6t115Q)는 17초에 전투가 한순간 보이지만, 1:35(15층)는 상점 카드 제거 화면이다. 시청자가 기억하는 단위는 카드 한 장 한 장이 아니라 보상·상점·이벤트 화면이다.
-
-| 영상 | 왜 참고하는가 |
-| --- | --- |
-| [Ironclad Any% 6:24 KR #1](https://www.youtube.com/watch?v=BNDlw6t115Q) | 맵·상점·제거 화면이 하이라이트 속도로 이어짐. t≈1:35는 15층 카드 제거 |
-| [Regent 7:12 WR #5](https://www.youtube.com/watch?v=5ows5Y59cls), [A10 6분대 WR #2](https://www.youtube.com/watch?v=PPWNBHnW96M), [A10 9분대](https://www.youtube.com/watch?v=3_zdHpre-As) | 같은 문법, 캐릭터·승천만 다름 |
-| [첫 선택지만 A10](https://www.youtube.com/watch?v=fQU7OxpYASI), [0승천판](https://www.youtube.com/watch?v=EwhmRvPaOWY), [공격 카드 없이](https://www.youtube.com/watch?v=n-7wJeK__J0) | 보상·이벤트 선택 화면에 머무는 시간. JSON이 실제로 가진 것 |
-
-우리 제품은 스피드런의 **전투 APM을 복제하지 않는다.** 스피드런이 남기는 맵+마지막 씬만 가져오고, JSON에 없는 카드 플레이는 뺀다.
+제품 SSOT는 위 루프다. 모카계 채널에 한때 있던 **맵 선택 → 노드 마지막 씬 → 맵** 컷 영상은 내린 것으로 보고, 공개 스피드런을 그 자리의 대용 레퍼런스로 쓰지 않는다. 스피드런은 전투 APM이 본편이라 축 2와 형식이 다르다.
 
 ### 타이밍
 
@@ -115,7 +105,7 @@ AI 분석/생성, 자동 하이라이트 점수, 지속 갱신 휴리스틱 사�
 
 ### `.run`에 있고 마지막 씬 **외에** 쓸 수 있는 것
 
-로컬 Steam 히스토리 103판. 방 키는 `room_type` / `model_id` / `turns_taken` / `monster_ids`뿐. `monster_ids`는 전투 방 1551개 전부에 있고 **현재 `parseReplayRun`이 버린다.** 최상위 `killed_by_encounter` / `killed_by_event` / `was_abandoned`도 버린다(승리는 `NONE.NONE`).
+로컬 Steam 히스토리 103판. 방 키는 `room_type` / `model_id` / `turns_taken` / `monster_ids`뿐. `parseReplayRun`은 `rooms[].monster_ids`와 최상위 `killed_by_encounter` / `killed_by_event` / `was_abandoned`를 통과시킨다. 승리는 `NONE.NONE` → `null`.
 
 마지막 씬(선택·획득 연출)과 **겹치지 않는** 활용:
 

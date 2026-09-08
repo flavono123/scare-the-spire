@@ -8,6 +8,7 @@ import {
 } from "@/components/dev/run-replay-poc";
 import { HistoryTinyCardIcon } from "@/components/history-course/card-action-icon";
 import { DeckModal } from "@/components/history-course/deck-modal";
+import { NodeLastScene } from "@/components/history-course/node-last-scene";
 import {
   NodeActionStack,
   PER_ITEM_MS,
@@ -65,6 +66,10 @@ import {
   type ActTimeline,
   type RunTimeline,
 } from "@/lib/sts2-run-timeline";
+import {
+  LAST_SCENE_PICK_REVEAL,
+  usesDedicatedLastScene,
+} from "@/lib/history-last-scene";
 import { cn } from "@/lib/utils";
 import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
 import type { Comment } from "@/hooks/use-comments";
@@ -89,6 +94,7 @@ const ACT_INTRO_TOTAL_MS = ACT_INTRO_FADE_IN_MS + ACT_INTRO_HOLD_MS + ACT_INTRO_
 // leaves and re-enters.
 const INTRO_WINDOW_OFFSET_MS = 200; // before actOffset
 const INTRO_WINDOW_RADIUS_MS = 250;
+const EMPTY_ID_SET: ReadonlySet<string> = new Set();
 
 function actIntroLabel(tables: GameI18nTables, index: number) {
   return formatGameTemplate(
@@ -742,8 +748,8 @@ export function HistoryCourseShell({
     [analysis.acts, run, cardsById],
   );
   const runTimeline = useMemo(
-    () => buildRunTimeline(sanitizedActs),
-    [sanitizedActs],
+    () => buildRunTimeline(sanitizedActs, run),
+    [sanitizedActs, run],
   );
   // Continuous time model — Phase 2: single run-global axis. actIndex /
   // actLocalMs / step are derived from globalMs.
@@ -819,6 +825,17 @@ export function HistoryCourseShell({
       (actTimeline?.entries[step - 1]?.startMs ?? 0) -
       stackStartOffsetMs(),
   );
+  const currentTimelineEntry = actTimeline?.entries[step - 1];
+  const dedicatedScene = usesDedicatedLastScene(
+    currentTimelineEntry?.sceneKind ?? "stack",
+  );
+  const sceneDurationMs = Math.max(
+    1,
+    (currentTimelineEntry?.durationMs ?? NODE_BASE_MS) - NODE_BASE_MS,
+  );
+  const picksRevealed =
+    dedicatedScene &&
+    nodeStackLocalMs / sceneDurationMs >= LAST_SCENE_PICK_REVEAL;
 
   // Fire intros on window entry (false→true edge per act). Natural
   // progression sweeps through; large jumps land inside or outside the
@@ -984,14 +1001,26 @@ export function HistoryCourseShell({
     );
   }, [stepPotionIdsKey]);
 
+  const hidingRelicIds = picksRevealed ? EMPTY_ID_SET : pendingRelicIds;
+  const hidingPotionIds = picksRevealed ? EMPTY_ID_SET : pendingPotionIds;
+
   const heldPotionRemovalIds = useMemo(
     () =>
       buildHeldPotionRemovalIds(
         focusedNodeEntry(act?.history[step - 1], run, cardsById, playerIndex),
         previousTopbarState?.potions ?? [],
-        nodeStackLocalMs,
+        picksRevealed ? Number.MAX_SAFE_INTEGER : nodeStackLocalMs,
       ),
-    [act, step, run, cardsById, playerIndex, previousTopbarState?.potions, nodeStackLocalMs],
+    [
+      act,
+      step,
+      run,
+      cardsById,
+      playerIndex,
+      previousTopbarState?.potions,
+      nodeStackLocalMs,
+      picksRevealed,
+    ],
   );
 
   // Auto-open the summary panel exactly once when the run reaches its
@@ -1157,8 +1186,8 @@ export function HistoryCourseShell({
           playing={playing}
           rate={rate}
           stackItems={stepStackItems}
-          hidingRelicIds={pendingRelicIds}
-          hidingPotionIds={pendingPotionIds}
+          hidingRelicIds={hidingRelicIds}
+          hidingPotionIds={hidingPotionIds}
           heldPotionIds={heldPotionRemovalIds}
           heldPotionSlots={previousTopbarState?.potions ?? []}
           topbarState={topbarState}
@@ -1323,6 +1352,9 @@ function Stage({
   // initial step=1 view leaves the map at scrollTop=0, hiding the ancient
   // node behind subsequent rows).
   const lastStepRef = useRef<number | null>(null);
+  const tables = useGameI18n();
+  const gameLocale = useGameLocale();
+  const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
 
   // Phase 4 transit — leading NODE_BASE_MS of every node is the path-trail
   // paint window. The shell snaps globalMs to actOffset on intro fire, so
@@ -1331,6 +1363,15 @@ function Stage({
   const nodeLocalMsRaw = Math.max(
     0,
     actLocalMs - (actTimeline?.entries[step - 1]?.startMs ?? 0),
+  );
+  const timelineEntry = actTimeline?.entries[step - 1];
+  const sceneKind = timelineEntry?.sceneKind ?? "stack";
+  const dedicatedScene = usesDedicatedLastScene(sceneKind);
+  const historyEntry = act.history[step - 1];
+  const sceneLocalMs = Math.max(0, nodeLocalMsRaw - NODE_BASE_MS);
+  const sceneDurationMs = Math.max(
+    1,
+    (timelineEntry?.durationMs ?? NODE_BASE_MS) - NODE_BASE_MS,
   );
   const transitProgress = Math.max(
     0,
@@ -1479,8 +1520,26 @@ function Stage({
         stageRef={stageRef}
         items={stackItems}
         nodeLocalMs={nodeStackLocalMs}
-        hidden={transitProgress < 1}
+        hidden={transitProgress < 1 || dedicatedScene}
       />
+
+      {historyEntry ? (
+        <NodeLastScene
+          kind={sceneKind}
+          entry={historyEntry}
+          run={run}
+          sceneLocalMs={sceneLocalMs}
+          sceneDurationMs={sceneDurationMs}
+          tables={tables}
+          gameLocale={gameLocale}
+          leftoverGoldLabel={playback.leftoverGold}
+          deathLabel={playback.defeat}
+          hidden={transitProgress < 1 || !dedicatedScene}
+          actId={act.actId}
+          character={focusedCharacter}
+          relicsById={relicsById}
+        />
+      ) : null}
 
       <PlaybackBar
         character={focusedCharacter}
@@ -1825,8 +1884,10 @@ function Track({
           const isPast =
             rowIdx < currentActIndex ||
             (rowIdx === currentActIndex && stepNum < currentStep);
+          const isHighlight = (actEntries[idx]?.highlightKinds.length ?? 0) > 0;
           const isLandmark =
             isCurrent ||
+            isHighlight ||
             idx === 0 ||
             idx === lastIdx ||
             entry.map_point_type === "ancient" ||
@@ -1845,7 +1906,10 @@ function Track({
                 height: `${NODE_SPRITE_PX}px`,
               }}
             >
-              <GameUiHoverTip label={playback.stampFloor} className="h-full w-full">
+              <GameUiHoverTip
+                label={isHighlight ? playback.highlightMark : playback.stampFloor}
+                className="h-full w-full"
+              >
                 <button
                   type="button"
                   data-history-floor-marker={`${rowIdx}:${stepNum}`}
@@ -1910,7 +1974,7 @@ function Track({
                           FloorNum: stepNum,
                         }),
                       )
-                  }. ${playback.stampFloor}`}
+                  }. ${isHighlight ? playback.highlightMark : playback.stampFloor}`}
                   aria-current={isCurrent ? "true" : undefined}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -1922,6 +1986,13 @@ function Track({
                   />
                 </button>
               </GameUiHoverTip>
+              {isHighlight ? (
+                <span
+                  data-history-highlight-marker={`${rowIdx}:${stepNum}`}
+                  className="pointer-events-none absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 -translate-y-2 rotate-45 bg-amber-300"
+                  aria-hidden
+                />
+              ) : null}
             </span>
           );
         });

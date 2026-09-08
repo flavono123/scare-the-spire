@@ -1,25 +1,32 @@
 import {
+  highlightKindsForAct,
+  isTerminalDeathEntry,
+  lastSceneKind,
+  usesDedicatedLastScene,
+  type HighlightKind,
+  type LastSceneKind,
+} from "@/lib/history-last-scene";
+import {
   type ReplayActAnalysis,
   type ReplayHistoryEntry,
+  type ReplayRun,
 } from "@/lib/sts2-run-replay";
 
 // ============================================================================
-// Continuous time model — every node gets a fixed budget that scales with
-// the number of stack items at that node. The driver runs a rAF ticker over
-// elapsedMs; the displayed step is derived from cumulative startMs so the
-// progress bar / clock keep moving even mid-node.
+// Continuous time model. Dedicated last scenes use a fixed window so a shop
+// with many items is not a queue. Stack fallback still scales with items.
 //
-//  1× budget per node  =  base 2500 ms  +  500 ms × stack item count
-//  50 floors w/ avg 1.5 stack items     ≈  2 minutes
+//  transit  = NODE_BASE_MS
+//  scene    = SCENE_MS, or SCENE_HIGHLIGHT_MS when tagged
 // ============================================================================
 
-// Per-item time is fixed in NodeActionStack (PER_ITEM_MS = 2500). The node
-// duration is therefore base transit + items × PER_ITEM_MS.
 export const NODE_BASE_MS = 2500;
 export const NODE_PER_STACK_MS = 2500;
+export const SCENE_MS = 1600;
+export const SCENE_HIGHLIGHT_MS = 3600;
 
 /** Inter-act buffer so the next intro doesn't jump-cut on top of the last
- *  step's stack. */
+ *  step's scene. */
 export const ACT_TAIL_BUFFER_MS = 700;
 
 export interface ActTimelineEntry {
@@ -27,6 +34,8 @@ export interface ActTimelineEntry {
   startMs: number;
   durationMs: number;
   stackCount: number;
+  sceneKind: LastSceneKind;
+  highlightKinds: HighlightKind[];
 }
 
 export interface ActTimeline {
@@ -81,31 +90,62 @@ export function countStackItems(entry: ReplayHistoryEntry): number {
 }
 
 export function nodeDurationMs(stackCount: number): number {
-  // Stack consumes (stackCount × PER_ITEM_MS) of the node's time. We add a
-  // base on top — even empty-stack nodes hold for the base so the player
-  // sees the map advance for a beat. (Phase 4 transit/arrival animations
-  // will use this base window.)
   return NODE_BASE_MS + Math.max(0, stackCount) * NODE_PER_STACK_MS;
 }
 
-/** Offset within the node where the stack starts playing. The leading
+export function sceneDurationMs(highlight: boolean): number {
+  return highlight ? SCENE_HIGHLIGHT_MS : SCENE_MS;
+}
+
+export function nodeDurationForEntry(
+  entry: ReplayHistoryEntry,
+  opts: { sceneKind: LastSceneKind; highlight: boolean },
+): number {
+  if (!usesDedicatedLastScene(opts.sceneKind)) {
+    return nodeDurationMs(countStackItems(entry));
+  }
+  return NODE_BASE_MS + sceneDurationMs(opts.highlight);
+}
+
+/** Offset within the node where the stack / last scene starts. The leading
  *  NODE_BASE_MS is the transit phase (path tick trail painting + character
- *  arrival) — stack rewards only kick in after the character "lands" on
- *  the node. */
+ *  arrival). */
 export function stackStartOffsetMs(): number {
   return NODE_BASE_MS;
 }
 
-export function buildActTimeline(act: ReplayActAnalysis): ActTimeline {
+export function buildActTimeline(
+  act: ReplayActAnalysis,
+  ctx?: { run?: ReplayRun; acts?: ReplayActAnalysis[] },
+): ActTimeline {
+  const acts = ctx?.acts ?? [act];
+  const highlightByEntry = highlightKindsForAct(act.history, {
+    isLastAct: act.actIndex === acts.length - 1,
+    run: ctx?.run,
+    actIndex: act.actIndex,
+    acts,
+  });
   let cursor = 0;
   const entries: ActTimelineEntry[] = act.history.map((entry, idx) => {
-    const stackCount = countStackItems(entry);
-    const durationMs = nodeDurationMs(stackCount);
+    const isTerminalDeath = isTerminalDeathEntry(
+      ctx?.run,
+      acts,
+      act.actIndex,
+      idx,
+    );
+    const sceneKind = lastSceneKind(entry, { isTerminalDeath });
+    const highlightKinds = highlightByEntry[idx] ?? [];
+    const durationMs = nodeDurationForEntry(entry, {
+      sceneKind,
+      highlight: highlightKinds.length > 0,
+    });
     const out: ActTimelineEntry = {
       step: idx + 1,
       startMs: cursor,
       durationMs,
-      stackCount,
+      stackCount: countStackItems(entry),
+      sceneKind,
+      highlightKinds,
     };
     cursor += durationMs;
     return out;
@@ -115,15 +155,15 @@ export function buildActTimeline(act: ReplayActAnalysis): ActTimeline {
 
 export function buildRunTimeline(
   acts: ReplayActAnalysis[],
+  run?: ReplayRun,
 ): RunTimeline {
-  const actTimelines = acts.map(buildActTimeline);
+  const actTimelines = acts.map((act) => buildActTimeline(act, { run, acts }));
   const actOffsets: number[] = [];
   let cursor = 0;
   for (const at of actTimelines) {
     actOffsets.push(cursor);
     cursor += at.totalMs + ACT_TAIL_BUFFER_MS;
   }
-  // Trim the trailing buffer so totalMs ends at the last node's end.
   const totalMs = Math.max(0, cursor - ACT_TAIL_BUFFER_MS);
   return { acts: actTimelines, actOffsets, totalMs };
 }

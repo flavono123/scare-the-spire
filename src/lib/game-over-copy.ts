@@ -26,3 +26,32 @@ export function gameOverFalseWinLabel(gameLocale: GameLocale): string {
   const key = gameLocale === "kor" ? "kor" : "eng";
   return table?.["BANNER.falseWin"] ?? FALLBACK_FALSE_WIN[key];
 }
+
+const LOSE_BANNER_KEYS = [
+  "BANNER.lose0",
+  "BANNER.lose1",
+  "BANNER.lose2",
+  "BANNER.lose3",
+  "BANNER.lose4",
+  "BANNER.lose5",
+  "BANNER.lose6",
+  "BANNER.lose7",
+] as const;
+
+function gameOverTable(gameLocale: GameLocale): GameOverTable | undefined {
+  return GAME_OVER_BY_LOCALE[gameLocale] ?? GAME_OVER_BY_LOCALE.eng;
+}
+
+/** In-game defeat ribbon (`BANNER.lose0`–`lose7`). */
+export function gameOverLoseBanner(gameLocale: GameLocale, salt = 0): string {
+  const table = gameOverTable(gameLocale);
+  const key = LOSE_BANNER_KEYS[Math.abs(salt) % LOSE_BANNER_KEYS.length];
+  return table?.[key] ?? table?.["BANNER.lose1"] ?? "Defeat";
+}
+
+/** In-game death quote (`QUOTES.00`–`QUOTES.16`). */
+export function gameOverQuote(gameLocale: GameLocale, salt = 0): string {
+  const table = gameOverTable(gameLocale);
+  const index = String(Math.abs(salt) % 17).padStart(2, "0");
+  return table?.[`QUOTES.${index}`] ?? "";
+}

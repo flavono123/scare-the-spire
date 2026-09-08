@@ -37,6 +37,7 @@ export interface ReplayRoom {
   room_type: string;
   model_id: string | null;
   turns_taken: number;
+  monster_ids?: string[];
 }
 
 export interface ReplayChoice {
@@ -171,6 +172,10 @@ export interface ReplayRun {
   map_point_history: ReplayHistoryEntry[][];
   run_time?: number;
   start_time?: number;
+  /** Encounter id that ended the run. `NONE.NONE` in the file becomes null. */
+  killed_by_encounter?: string | null;
+  killed_by_event?: string | null;
+  was_abandoned?: boolean;
 }
 
 export interface ReplayMapNode {
@@ -1035,6 +1040,16 @@ export function parseReplayRun(raw: string): ReplayRun {
     return parsedCard;
   };
 
+  const noneToNull = (value: unknown): string | null => {
+    if (typeof value !== "string" || !value || value === "NONE.NONE") return null;
+    return value;
+  };
+  const rawRun = parsed as Partial<ReplayRun> & {
+    killed_by_encounter?: unknown;
+    killed_by_event?: unknown;
+    was_abandoned?: unknown;
+  };
+
   return {
     seed: parsed.seed,
     build_id: typeof parsed.build_id === "string" ? parsed.build_id : "unknown",
@@ -1043,6 +1058,9 @@ export function parseReplayRun(raw: string): ReplayRun {
     win: !!parsed.win,
     run_time: typeof parsed.run_time === "number" ? parsed.run_time : undefined,
     start_time: typeof parsed.start_time === "number" ? parsed.start_time : undefined,
+    killed_by_encounter: noneToNull(rawRun.killed_by_encounter),
+    killed_by_event: noneToNull(rawRun.killed_by_event),
+    was_abandoned: rawRun.was_abandoned === true,
     acts: parsed.acts.filter((act): act is string => typeof act === "string"),
     players: Array.isArray(parsed.players)
       ? parsed.players.map((player) => {
@@ -1408,11 +1426,27 @@ export function parseReplayRun(raw: string): ReplayRun {
                 typeof rawEntry.map_point_type === "string" ? rawEntry.map_point_type : "unknown",
               rooms: Array.isArray(rawEntry.rooms)
                 ? rawEntry.rooms
-                    .map((room) => ({
-                      room_type: typeof room?.room_type === "string" ? room.room_type : "unknown",
-                      model_id: typeof room?.model_id === "string" ? room.model_id : null,
-                      turns_taken: typeof room?.turns_taken === "number" ? room.turns_taken : 0,
-                    }))
+                    .map((room) => {
+                      const rawRoom = room as {
+                        room_type?: unknown;
+                        model_id?: unknown;
+                        turns_taken?: unknown;
+                        monster_ids?: unknown;
+                      };
+                      const monsterIds = Array.isArray(rawRoom.monster_ids)
+                        ? rawRoom.monster_ids.filter(
+                            (id): id is string => typeof id === "string" && id.length > 0,
+                          )
+                        : [];
+                      return {
+                        room_type:
+                          typeof rawRoom.room_type === "string" ? rawRoom.room_type : "unknown",
+                        model_id: typeof rawRoom.model_id === "string" ? rawRoom.model_id : null,
+                        turns_taken:
+                          typeof rawRoom.turns_taken === "number" ? rawRoom.turns_taken : 0,
+                        ...(monsterIds.length > 0 ? { monster_ids: monsterIds } : {}),
+                      };
+                    })
                 : [],
               player_stats: playerStats.length > 0 ? playerStats : undefined,
               current_hp: pickStat(rawEntry.current_hp, focused?.current_hp),
