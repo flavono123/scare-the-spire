@@ -11,7 +11,8 @@
     "legacySlugs": [
       "regen-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "SmokeBomb",
@@ -26,7 +27,8 @@
       "smokebomb",
       "smoke-bomb"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "Weak Potion",
@@ -40,7 +42,8 @@
     "legacySlugs": [
       "weak-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "SteroidPotion",
@@ -55,7 +58,8 @@
       "steroidpotion",
       "flex-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "SpeedPotion",
@@ -70,7 +74,8 @@
       "speedpotion",
       "speed-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "Ancient Potion",
@@ -84,7 +89,8 @@
     "legacySlugs": [
       "ancient-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "Poison Potion",
@@ -98,7 +104,8 @@
     "legacySlugs": [
       "poison-potion"
     ],
-    "pool": "silent"
+    "pool": "silent",
+    "labOutline": "GREEN_RELIC_COLOR"
   },
   {
     "id": "LiquidMemories",
@@ -113,7 +120,8 @@
       "liquidmemories",
       "liquid-memories"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "Fire Potion",
@@ -127,7 +135,8 @@
     "legacySlugs": [
       "fire-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "CunningPotion",
@@ -142,7 +151,8 @@
       "cunningpotion",
       "cunning-potion"
     ],
-    "pool": "silent"
+    "pool": "silent",
+    "labOutline": "GREEN_RELIC_COLOR"
   },
   {
     "id": "PowerPotion",
@@ -157,7 +167,8 @@
       "powerpotion",
       "power-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "Swift Potion",
@@ -171,7 +182,8 @@
     "legacySlugs": [
       "swift-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "SkillPotion",
@@ -186,7 +198,8 @@
       "skillpotion",
       "skill-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "Dexterity Potion",
@@ -200,7 +213,8 @@
     "legacySlugs": [
       "dexterity-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "DuplicationPotion",
@@ -215,7 +229,8 @@
       "duplicationpotion",
       "duplication-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "Strength Potion",
@@ -229,7 +244,8 @@
     "legacySlugs": [
       "strength-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "GhostInAJar",
@@ -244,7 +260,8 @@
       "ghostinajar",
       "ghost-in-a-jar"
     ],
-    "pool": "silent"
+    "pool": "silent",
+    "labOutline": "GREEN_RELIC_COLOR"
   },
   {
     "id": "BlessingOfTheForge",
@@ -259,7 +276,8 @@
       "blessingoftheforge",
       "blessing-of-the-forge"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "FocusPotion",
@@ -274,7 +292,8 @@
       "focuspotion",
       "focus-potion"
     ],
-    "pool": "defect"
+    "pool": "defect",
+    "labOutline": "BLUE_RELIC_COLOR"
   },
   {
     "id": "HeartOfIron",
@@ -289,7 +308,8 @@
       "heartofiron",
       "heart-of-iron"
     ],
-    "pool": "ironclad"
+    "pool": "ironclad",
+    "labOutline": "RED_RELIC_COLOR"
   },
   {
     "id": "FairyPotion",
@@ -304,7 +324,8 @@
       "fairypotion",
       "fairy-in-a-bottle"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "PotionOfCapacity",
@@ -319,7 +340,8 @@
       "potionofcapacity",
       "potion-of-capacity"
     ],
-    "pool": "defect"
+    "pool": "defect",
+    "labOutline": "BLUE_RELIC_COLOR"
   },
   {
     "id": "Block Potion",
@@ -333,7 +355,8 @@
     "legacySlugs": [
       "block-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "FearPotion",
@@ -348,7 +371,8 @@
       "fearpotion",
       "fear-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "GamblersBrew",
@@ -363,7 +387,8 @@
       "gamblersbrew",
       "gamblers-brew"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "BloodPotion",
@@ -378,7 +403,8 @@
       "bloodpotion",
       "blood-potion"
     ],
-    "pool": "ironclad"
+    "pool": "ironclad",
+    "labOutline": "RED_RELIC_COLOR"
   },
   {
     "id": "EssenceOfDarkness",
@@ -393,7 +419,8 @@
       "essenceofdarkness",
       "essence-of-darkness"
     ],
-    "pool": "defect"
+    "pool": "defect",
+    "labOutline": "BLUE_RELIC_COLOR"
   },
   {
     "id": "Fruit Juice",
@@ -407,7 +434,8 @@
     "legacySlugs": [
       "fruit-juice"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "Energy Potion",
@@ -421,7 +449,8 @@
     "legacySlugs": [
       "energy-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "Ambrosia",
@@ -435,7 +464,8 @@
     "legacySlugs": [
       "ambrosia"
     ],
-    "pool": "watcher"
+    "pool": "watcher",
+    "labOutline": "PURPLE_RELIC_COLOR"
   },
   {
     "id": "ElixirPotion",
@@ -450,7 +480,8 @@
       "elixirpotion",
       "elixir"
     ],
-    "pool": "ironclad"
+    "pool": "ironclad",
+    "labOutline": "RED_RELIC_COLOR"
   },
   {
     "id": "DistilledChaos",
@@ -465,7 +496,8 @@
       "distilledchaos",
       "distilled-chaos"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "LiquidBronze",
@@ -480,7 +512,8 @@
       "liquidbronze",
       "liquid-bronze"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "AttackPotion",
@@ -495,7 +528,8 @@
       "attackpotion",
       "attack-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "SneckoOil",
@@ -510,7 +544,8 @@
       "sneckooil",
       "snecko-oil"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "StancePotion",
@@ -525,7 +560,8 @@
       "stancepotion",
       "stance-potion"
     ],
-    "pool": "watcher"
+    "pool": "watcher",
+    "labOutline": "PURPLE_RELIC_COLOR"
   },
   {
     "id": "Explosive Potion",
@@ -539,7 +575,8 @@
     "legacySlugs": [
       "explosive-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "EssenceOfSteel",
@@ -554,7 +591,8 @@
       "essenceofsteel",
       "essence-of-steel"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "BottledMiracle",
@@ -569,7 +607,8 @@
       "bottledmiracle",
       "bottled-miracle"
     ],
-    "pool": "watcher"
+    "pool": "watcher",
+    "labOutline": "PURPLE_RELIC_COLOR"
   },
   {
     "id": "ColorlessPotion",
@@ -584,7 +623,8 @@
       "colorlesspotion",
       "colorless-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "EntropicBrew",
@@ -599,7 +639,8 @@
       "entropicbrew",
       "entropic-brew"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   },
   {
     "id": "CultistPotion",
@@ -614,6 +655,7 @@
       "cultistpotion",
       "cultist-potion"
     ],
-    "pool": "shared"
+    "pool": "shared",
+    "labOutline": "HALF_TRANSPARENT_BLACK_COLOR"
   }
 ]

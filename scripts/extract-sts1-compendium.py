@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Extract STS1 latest card / relic / potion data and assets from desktop-1.0.jar."""
+"""Extract STS1 latest card / relic / potion data and assets from desktop-1.0.jar.
+
+After regenerating `public/images/sts1`, bump `STS1_IMAGE_CACHE_BUSTER`
+in `src/lib/sts1/image-cache.ts` so immutable `/images` cache headers pick
+up the new files.
+"""
 
 from __future__ import annotations
 
@@ -135,6 +140,15 @@ GDX_COLORS: dict[str, tuple[int, int, int, int]] = {
     "PURPLE": (160, 32, 240, 255),
     "VIOLET": (238, 130, 238, 255),
     "MAROON": (176, 48, 96, 255),
+}
+
+# Settings.* colors used as potion lab outlines (packed RGBA8888 from Settings.<clinit>).
+SETTINGS_COLORS: dict[str, tuple[int, int, int, int]] = {
+    "HALF_TRANSPARENT_BLACK_COLOR": (0, 0, 0, 128),
+    "RED_RELIC_COLOR": (255, 101, 99, 191),
+    "GREEN_RELIC_COLOR": (127, 255, 0, 191),
+    "BLUE_RELIC_COLOR": (135, 206, 235, 191),
+    "PURPLE_RELIC_COLOR": (200, 60, 255, 191),
 }
 
 
@@ -490,6 +504,13 @@ def parse_potion(jar, class_name: str) -> dict[str, Any] | None:
     fields = {name: value for name, value in result["puts"]}
     if not potion_id:
         return None
+    lab_outline = "HALF_TRANSPARENT_BLACK_COLOR"
+    for name, value in result["puts"]:
+        if name != "labOutlineColor":
+            continue
+        if isinstance(value, tuple) and len(value) >= 3 and value[0] == "static":
+            lab_outline = str(value[2])
+            break
     slug = slugify(potion_id)
     potency = parse_constant_return(cls, "getPotency", "(I)I")
     if potency is None:
@@ -501,6 +522,7 @@ def parse_potion(jar, class_name: str) -> dict[str, Any] | None:
         "rarity": rarity.lower(),
         "size": size.lower(),
         "potionColor": color.lower(),
+        "labOutline": lab_outline,
         "potency": potency,
         "thrown": fields.get("isThrown") in {True, 1},
         "legacySlugs": [slug],
@@ -744,13 +766,22 @@ def compose_potion(jar, potion: dict[str, Any], color_layers: dict[str, dict[str
     paths = potion_layer_paths(potion["size"])
     names = jar.namelist()
     colors = color_layers.get(potion["potionColor"], {})
+    outline_rgba = SETTINGS_COLORS.get(
+        potion.get("labOutline") or "HALF_TRANSPARENT_BLACK_COLOR",
+        SETTINGS_COLORS["HALF_TRANSPARENT_BLACK_COLOR"],
+    )
     canvas = None
     for part in ("outline", "liquid", "hybrid", "spots", "body"):
         path = paths.get(part)
         if not path or path not in names:
             continue
         layer = extract_png(jar, path)
-        if part in {"liquid", "hybrid", "spots"}:
+        if part == "outline":
+            tinted = tint_layer(layer, outline_rgba)
+            if tinted is None:
+                continue
+            layer = tinted
+        elif part in {"liquid", "hybrid", "spots"}:
             rgba = colors.get(part)
             if not rgba:
                 continue
@@ -776,10 +807,13 @@ def extract_images(jar, cards: list[dict[str, Any]], relics: list[dict[str, Any]
     for page_name, page in atlas.items():
         sheet = extract_png(jar, f"cardui/{page_name}")
         for region_name, region in page["regions"].items():
-            if not region_name.startswith("1024/"):
-                continue
-            image = extract_atlas_region(sheet, region)
-            save_webp(image, out / "card-ui" / f"{region_name.split('/', 1)[1]}.webp")
+            prefix, _, rest = region_name.partition("/")
+            if prefix == "1024":
+                image = extract_atlas_region(sheet, region)
+                save_webp(image, out / "card-ui" / f"{rest}.webp")
+            elif prefix == "512":
+                image = extract_atlas_region(sheet, region)
+                save_webp(image, out / "card-ui-512" / f"{rest}.webp")
 
     for card in cards:
         portrait = card.get("portrait")
