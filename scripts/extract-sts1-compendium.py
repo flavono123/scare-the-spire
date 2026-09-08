@@ -694,9 +694,18 @@ def parse_potion_color_layers(jar) -> dict[str, dict[str, tuple[int, int, int, i
     return colors
 
 
-def save_webp(image: Any, dest: Path, quality: int = 80) -> None:
+def save_webp(image: Any, dest: Path, quality: int = 80, *, lossless: bool = False) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
-    image.save(dest, "WEBP", quality=quality, method=4)
+    if lossless:
+        image.save(dest, "WEBP", lossless=True, method=4)
+    else:
+        image.save(dest, "WEBP", quality=quality, method=4)
+
+
+def clear_transparent_rgb(image: Any):
+    """Atlas crops and lossy WebP leave white RGB on a=0 pixels; browsers bilinear-sample that into a white fringe."""
+    image.putdata([(0, 0, 0, 0) if pixel[3] == 0 else pixel for pixel in image.getdata()])
+    return image
 
 
 def extract_png(jar, entry: str):
@@ -717,7 +726,7 @@ def extract_atlas_region(sheet: Any, region: dict[str, Any]):
     ox, oy = offset
     paste_y = orig[1] - oy - h
     canvas.paste(crop, (ox, paste_y), crop)
-    return canvas
+    return clear_transparent_rgb(canvas)
 
 
 def tint_layer(image: Any, rgba: tuple[int, int, int, int]):
@@ -798,22 +807,26 @@ def compose_potion(jar, potion: dict[str, Any], color_layers: dict[str, dict[str
     return canvas
 
 
-def extract_images(jar, cards: list[dict[str, Any]], relics: list[dict[str, Any]], potions: list[dict[str, Any]]) -> None:
+def extract_card_ui(jar, prefixes: tuple[str, ...] = ("1024", "512")) -> None:
     out = ROOT / "public" / "images" / "sts1"
-    names = set(jar.namelist())
-
+    dest = {"1024": out / "card-ui", "512": out / "card-ui-512"}
     atlas_text = jar.read("cardui/cardui.atlas").decode("utf-8", "replace")
     atlas = parse_atlas(atlas_text)
     for page_name, page in atlas.items():
         sheet = extract_png(jar, f"cardui/{page_name}")
         for region_name, region in page["regions"].items():
             prefix, _, rest = region_name.partition("/")
-            if prefix == "1024":
-                image = extract_atlas_region(sheet, region)
-                save_webp(image, out / "card-ui" / f"{rest}.webp")
-            elif prefix == "512":
-                image = extract_atlas_region(sheet, region)
-                save_webp(image, out / "card-ui-512" / f"{rest}.webp")
+            if prefix not in prefixes:
+                continue
+            image = extract_atlas_region(sheet, region)
+            save_webp(image, dest[prefix] / f"{rest}.webp", lossless=True)
+
+
+def extract_images(jar, cards: list[dict[str, Any]], relics: list[dict[str, Any]], potions: list[dict[str, Any]]) -> None:
+    out = ROOT / "public" / "images" / "sts1"
+    names = set(jar.namelist())
+
+    extract_card_ui(jar)
 
     for card in cards:
         portrait = card.get("portrait")
@@ -870,7 +883,18 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--jar", default=default_sts1_jar_path())
     parser.add_argument("--skip-images", action="store_true")
+    parser.add_argument(
+        "--card-ui-512-only",
+        action="store_true",
+        help="Re-extract combat 512 cardui layers without rewriting JSON or portraits.",
+    )
     args = parser.parse_args()
+
+    if args.card_ui_512_only:
+        with open_sts1_jar(args.jar) as jar:
+            extract_card_ui(jar, prefixes=("512",))
+        print("extracted card-ui-512")
+        return
 
     with open_sts1_jar(args.jar) as jar:
         card_library = parse_jar_class(jar, "com.megacrit.cardcrawl.helpers.CardLibrary")

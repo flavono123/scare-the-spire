@@ -10,6 +10,7 @@ import {
   sts1CardBackgroundRegion,
   sts1CardFrameRegion,
   sts1CardOrbRegion,
+  sts1EnergyCostBox,
   sts1PortraitBox,
   sts1TypeBannerPieces,
 } from "@/lib/sts1/card-style";
@@ -62,7 +63,6 @@ export function Sts1CardTile({
       className="relative w-full overflow-visible font-game-title"
       style={{ aspectRatio: STS1_CARD_ASPECT, containerType: "inline-size" }}
     >
-      <AtlasLayer src={sts1CardUi512Url("card_shadow")} />
       <AtlasLayer src={sts1CardUi512Url(sts1CardBackgroundRegion(card))} />
       <div className="absolute overflow-hidden" style={sts1PortraitBox(card)}>
         <Image
@@ -82,12 +82,9 @@ export function Sts1CardTile({
       <AtlasLayer src={sts1CardUi512Url(sts1CardOrbRegion(card))} />
       {costLabel ? (
         <span
-          className="absolute z-10 font-bold leading-none"
+          className="absolute z-10 flex items-center justify-center font-bold leading-none"
           style={{
-            left: "2%",
-            top: "5.5%",
-            width: "18%",
-            textAlign: "center",
+            ...sts1EnergyCostBox(),
             fontSize: "10.7cqi",
             color: upgradedCost ? "#7fff00" : "#fff",
             textShadow: "0 1px 2px #000, 0 0 4px #000",

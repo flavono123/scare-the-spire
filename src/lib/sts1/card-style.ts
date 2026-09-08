@@ -22,6 +22,26 @@ export const STS1_ATLAS_LAYER_STYLE = {
   top: `${(-STS1_CARD_IN_ATLAS.top / STS1_CARD_IN_ATLAS.height) * 100}%`,
 } as const;
 
+/**
+ * AbstractCard.renderEnergy FontHelper.renderRotatedText offsets from card
+ * center (unscaled 300×420). Game Y+ is up; CSS Y+ is down.
+ */
+export const STS1_ENERGY_TEXT_OFFSET = { x: -132, y: 192 } as const;
+/** Packed size of 512/card_red_orb; the cost glyph is centered on this pip. */
+export const STS1_ENERGY_ORB_SIZE = { width: 72, height: 71 } as const;
+
+export function sts1EnergyCostBox() {
+  const { width, height } = STS1_CARD_IN_ATLAS;
+  const centerX = width / 2 + STS1_ENERGY_TEXT_OFFSET.x;
+  const centerY = height / 2 - STS1_ENERGY_TEXT_OFFSET.y;
+  return {
+    left: `${((centerX - STS1_ENERGY_ORB_SIZE.width / 2) / width) * 100}%`,
+    top: `${((centerY - STS1_ENERGY_ORB_SIZE.height / 2) / height) * 100}%`,
+    width: `${(STS1_ENERGY_ORB_SIZE.width / width) * 100}%`,
+    height: `${(STS1_ENERGY_ORB_SIZE.height / height) * 100}%`,
+  };
+}
+
 const FRAME_IN_ATLAS = {
   attack: { left: 125, top: 108, width: 262, height: 185 },
   skill: { left: 124, top: 107, width: 263, height: 183 },
