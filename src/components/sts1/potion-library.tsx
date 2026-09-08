@@ -19,7 +19,7 @@ import {
 import { formatCodexCount, getCodexServiceMessages } from "@/lib/codex-service";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
-import { STS1_FILTER_ICONS } from "@/lib/sts1/card-style";
+import { STS1_FILTER_ICONS, STS1_POTION_RARITY_COLORS } from "@/lib/sts1/card-style";
 import { sts1CardUiUrl, sts1DetailPath } from "@/lib/sts1/paths";
 import type { Sts1Potion, Sts1PotionPool, Sts1PotionRarity, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1PotionDetail } from "./potion-detail";
@@ -81,7 +81,7 @@ export function Sts1PotionLibrary({
     return potions.filter((potion) => {
       if (selectedPools.size && !selectedPools.has(potion.pool)) return false;
       if (selectedRarities.size && !selectedRarities.has(potion.rarity)) return false;
-      if (query && !fuzzyMatchCodexText(`${potion.name} ${potion.id} ${potion.description}`, query)) return false;
+      if (query && !fuzzyMatchCodexText(`${potion.name} ${potion.nameEn} ${potion.id} ${potion.description}`, query)) return false;
       return true;
     });
   }, [potions, searchQuery, selectedPools, selectedRarities]);
@@ -128,8 +128,12 @@ export function Sts1PotionLibrary({
                 <button
                   key={rarity}
                   onClick={() => toggle(selectedRarities, rarity, setSelectedRarities)}
-                  className={`rounded px-2.5 py-1 text-left text-sm ${selectedRarities.has(rarity) ? "bg-primary/20 text-primary" : "text-muted-foreground hover:bg-white/5"}`}
+                  className={`flex items-center gap-2 rounded px-2.5 py-1 text-left text-sm ${selectedRarities.has(rarity) ? "bg-primary/20 text-primary" : "text-muted-foreground hover:bg-white/5"}`}
                 >
+                  <span
+                    className="h-2 w-2 shrink-0 rounded-full"
+                    style={{ backgroundColor: STS1_POTION_RARITY_COLORS[rarity] }}
+                  />
                   {labels.potionRarities[rarity]}
                 </button>
               ))}
@@ -147,28 +151,48 @@ export function Sts1PotionLibrary({
           title={labels.potionLabTitle}
           count={formatCodexCount(filtered.length, serviceText.labels.potions, serviceLocale)}
         />
-        <CompendiumIndexScroller scrollerClassName="p-3">
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] gap-2">
-            {filtered.map((potion) => (
-              <Link
-                key={potion.slug}
-                href={localizeHref(sts1DetailPath("potions", potion.slug), serviceLocale)}
-                onClick={(event) => {
-                  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
-                  event.preventDefault();
-                  openPotion(potion);
-                }}
-              >
-                <Sts1PotionTile potion={potion} />
-              </Link>
-            ))}
-          </div>
+        <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
+          {RARITY_ORDER.filter((rarity) => filtered.some((potion) => potion.rarity === rarity)).map((rarity) => {
+            const group = filtered.filter((potion) => potion.rarity === rarity);
+            return (
+              <section key={rarity} className="mb-8 last:mb-0">
+                <div className="mb-3">
+                  <h2
+                    className="font-game-title text-lg font-bold"
+                    style={{ color: STS1_POTION_RARITY_COLORS[rarity] }}
+                  >
+                    {labels.potionRarities[rarity]}:
+                    <span className="ml-2 font-game-text text-sm font-normal text-gray-400">
+                      {labels.potionRarityDescriptions[rarity]}
+                    </span>
+                  </h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {group.map((potion) => (
+                    <Link
+                      key={potion.slug}
+                      href={localizeHref(sts1DetailPath("potions", potion.slug), serviceLocale)}
+                      className="group"
+                      title={potion.name}
+                      onClick={(event) => {
+                        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+                        event.preventDefault();
+                        openPotion(potion);
+                      }}
+                    >
+                      <Sts1PotionTile potion={potion} />
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            );
+          })}
         </CompendiumIndexScroller>
       </main>
       {selectedPotion ? (
         <CompendiumDetailOverlay onClose={closePotion} aria-label={selectedPotion.name}>
-          <div className="w-full max-w-3xl rounded-lg bg-background" onClick={(event) => event.stopPropagation()}>
-            <Sts1PotionDetail potion={selectedPotion} labels={labels} serviceLocale={serviceLocale} />
+          <div className="w-full max-w-5xl rounded-lg bg-background" onClick={(event) => event.stopPropagation()}>
+            <Sts1PotionDetail potion={selectedPotion} labels={labels} serviceLocale={serviceLocale} onClose={closePotion} />
           </div>
         </CompendiumDetailOverlay>
       ) : null}

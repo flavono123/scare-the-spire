@@ -69,12 +69,14 @@ export function GameUpgradeToggle({
   onUpgradeLevelChange,
   label,
   serviceLocale,
+  checkboxSize = "md",
 }: {
   upgradeLevel: number;
   maxUpgradeLevel: number;
   onUpgradeLevelChange: (level: number) => void;
   label: ReactNode;
   serviceLocale: ServiceLocale;
+  checkboxSize?: "sm" | "md" | "lg";
 }) {
   const maxLevel = Math.max(
     1,
@@ -100,7 +102,7 @@ export function GameUpgradeToggle({
         checked={checked}
         onCheckedChange={(nextChecked) => onUpgradeLevelChange(nextChecked ? 1 : 0)}
         label={label}
-        size="md"
+        size={checkboxSize}
       />
       {checked && (
         <div

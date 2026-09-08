@@ -19,13 +19,13 @@ import {
 import { formatCodexCount, getCodexServiceMessages } from "@/lib/codex-service";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
-import { STS1_FILTER_ICONS } from "@/lib/sts1/card-style";
+import { STS1_FILTER_ICONS, STS1_TIER_COLORS } from "@/lib/sts1/card-style";
 import { sts1CardUiUrl, sts1DetailPath } from "@/lib/sts1/paths";
 import type { Sts1Relic, Sts1RelicPool, Sts1RelicTier, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1RelicDetail } from "./relic-detail";
 import { Sts1RelicTile } from "./relic-tile";
 
-const TIER_ORDER: Sts1RelicTier[] = ["starter", "common", "uncommon", "rare", "shop", "special", "boss"];
+const TIER_ORDER: Exclude<Sts1RelicTier, "deprecated">[] = ["starter", "common", "uncommon", "rare", "shop", "special", "boss"];
 
 export function Sts1RelicLibrary({
   relics,
@@ -81,7 +81,7 @@ export function Sts1RelicLibrary({
     return relics.filter((relic) => {
       if (selectedPools.size && !selectedPools.has(relic.pool)) return false;
       if (selectedTiers.size && !selectedTiers.has(relic.tier)) return false;
-      if (query && !fuzzyMatchCodexText(`${relic.name} ${relic.id} ${relic.description}`, query)) return false;
+      if (query && !fuzzyMatchCodexText(`${relic.name} ${relic.nameEn} ${relic.id} ${relic.description}`, query)) return false;
       return true;
     });
   }, [relics, searchQuery, selectedPools, selectedTiers]);
@@ -128,8 +128,12 @@ export function Sts1RelicLibrary({
                 <button
                   key={tier}
                   onClick={() => toggle(selectedTiers, tier, setSelectedTiers)}
-                  className={`rounded px-2.5 py-1 text-left text-sm ${selectedTiers.has(tier) ? "bg-primary/20 text-primary" : "text-muted-foreground hover:bg-white/5"}`}
+                  className={`flex items-center gap-2 rounded px-2.5 py-1 text-left text-sm ${selectedTiers.has(tier) ? "bg-primary/20 text-primary" : "text-muted-foreground hover:bg-white/5"}`}
                 >
+                  <span
+                    className="h-2 w-2 shrink-0 rounded-full"
+                    style={{ backgroundColor: STS1_TIER_COLORS[tier] }}
+                  />
                   {labels.relicTiers[tier]}
                 </button>
               ))}
@@ -147,28 +151,48 @@ export function Sts1RelicLibrary({
           title={labels.relicCollectionTitle}
           count={formatCodexCount(filtered.length, serviceText.labels.relics, serviceLocale)}
         />
-        <CompendiumIndexScroller scrollerClassName="p-3">
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-2">
-            {filtered.map((relic) => (
-              <Link
-                key={relic.slug}
-                href={localizeHref(sts1DetailPath("relics", relic.slug), serviceLocale)}
-                onClick={(event) => {
-                  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
-                  event.preventDefault();
-                  openRelic(relic);
-                }}
-              >
-                <Sts1RelicTile relic={relic} />
-              </Link>
-            ))}
-          </div>
+        <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
+          {TIER_ORDER.filter((tier) => filtered.some((relic) => relic.tier === tier)).map((tier) => {
+            const group = filtered.filter((relic) => relic.tier === tier);
+            return (
+              <section key={tier} className="mb-8 last:mb-0">
+                <div className="mb-3">
+                  <h2
+                    className="font-game-title text-lg font-bold"
+                    style={{ color: STS1_TIER_COLORS[tier] }}
+                  >
+                    {labels.relicTiers[tier]}:
+                    <span className="ml-2 font-game-text text-sm font-normal text-gray-400">
+                      {labels.relicTierDescriptions[tier]}
+                    </span>
+                  </h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {group.map((relic) => (
+                    <Link
+                      key={relic.slug}
+                      href={localizeHref(sts1DetailPath("relics", relic.slug), serviceLocale)}
+                      className="group"
+                      title={relic.name}
+                      onClick={(event) => {
+                        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+                        event.preventDefault();
+                        openRelic(relic);
+                      }}
+                    >
+                      <Sts1RelicTile relic={relic} />
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            );
+          })}
         </CompendiumIndexScroller>
       </main>
       {selectedRelic ? (
         <CompendiumDetailOverlay onClose={closeRelic} aria-label={selectedRelic.name}>
-          <div className="w-full max-w-3xl rounded-lg bg-background" onClick={(event) => event.stopPropagation()}>
-            <Sts1RelicDetail relic={selectedRelic} labels={labels} serviceLocale={serviceLocale} />
+          <div className="w-full max-w-5xl rounded-lg bg-background" onClick={(event) => event.stopPropagation()}>
+            <Sts1RelicDetail relic={selectedRelic} labels={labels} serviceLocale={serviceLocale} onClose={closeRelic} />
           </div>
         </CompendiumDetailOverlay>
       ) : null}

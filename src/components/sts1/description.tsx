@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Image from "@/components/ui/static-image";
 import { parseSts1CardText, type Sts1TextSpan } from "@/lib/sts1/description";
 import { sts1CardUiUrl } from "@/lib/sts1/paths";
@@ -36,15 +37,17 @@ export function Sts1CardText({
   stats,
   keywords = [],
   className,
+  style,
 }: {
   text: string;
   stats: Sts1CardStats;
   keywords?: readonly Sts1Keyword[];
   className?: string;
+  style?: CSSProperties;
 }) {
   const spans = parseSts1CardText(text, stats, keywords);
   return (
-    <p className={className}>
+    <p className={className} style={style}>
       {spans.map((span, index) => (
         <Sts1TextSpanView key={index} span={span} />
       ))}

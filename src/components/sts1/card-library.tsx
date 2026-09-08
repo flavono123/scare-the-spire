@@ -26,7 +26,7 @@ import {
 import { formatCodexCount, getCodexServiceMessages } from "@/lib/codex-service";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
-import { STS1_FILTER_ICONS, sts1TypeFilterIcon } from "@/lib/sts1/card-style";
+import { STS1_FILTER_ICONS } from "@/lib/sts1/card-style";
 import { sts1DetailPath } from "@/lib/sts1/paths";
 import { sts1MatchesCostFilter } from "@/lib/sts1/stats";
 import type {
@@ -196,7 +196,7 @@ export function Sts1CardLibrary({
           return false;
         }
         if (!sts1MatchesCostFilter(card.cost, selectedCosts)) return false;
-        if (query && !fuzzyMatchCodexText(`${card.name} ${card.id} ${card.description}`, query)) {
+        if (query && !fuzzyMatchCodexText(`${card.name} ${card.nameEn} ${card.id} ${card.description}`, query)) {
           return false;
         }
         return true;
@@ -278,15 +278,15 @@ export function Sts1CardLibrary({
             sortDir={sortDirs.type}
             onSortToggle={() => setSortDirs((current) => ({ ...current, type: toggleFilterSortDir(current.type) }))}
           >
-            <div className="flex gap-1.5">
+            <div className="flex flex-col gap-0.5">
               {(["attack", "skill", "power"] as const).map((type) => (
-                <IconFilterButton
+                <button
                   key={type}
-                  icon={sts1TypeFilterIcon(type)}
-                  label={labels.types[type]}
-                  active={selectedTypes.has(type)}
                   onClick={() => toggle(selectedTypes, type, setSelectedTypes)}
-                />
+                  className={`rounded px-2.5 py-1 text-left text-sm ${selectedTypes.has(type) ? "bg-primary/20 text-primary" : "text-muted-foreground hover:bg-white/5"}`}
+                >
+                  {labels.types[type]}
+                </button>
               ))}
             </div>
           </FilterSection>
@@ -372,7 +372,7 @@ export function Sts1CardLibrary({
               <Link
                 key={card.slug}
                 href={localizeHref(sts1DetailPath("cards", card.slug), serviceLocale)}
-                className="block"
+                className="block transition-transform hover:z-10 hover:scale-[1.03]"
                 onClick={(event) => {
                   if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
                   event.preventDefault();
@@ -384,6 +384,12 @@ export function Sts1CardLibrary({
                   upgradeLevel={showUpgrades ? 1 : 0}
                   showBeta={showBeta}
                   keywords={keywords}
+                  typeLabel={
+                    card.type === "attack" || card.type === "skill" || card.type === "power"
+                      || card.type === "curse" || card.type === "status"
+                      ? labels.types[card.type]
+                      : card.type
+                  }
                 />
               </Link>
             ))}
@@ -392,7 +398,7 @@ export function Sts1CardLibrary({
       </main>
       {selectedCard ? (
         <CompendiumDetailOverlay onClose={closeCard} aria-label={selectedCard.name}>
-          <div className="w-full max-w-4xl rounded-lg bg-background shadow-xl" onClick={(event) => event.stopPropagation()}>
+          <div className="w-full max-w-5xl rounded-lg bg-background shadow-xl" onClick={(event) => event.stopPropagation()}>
             <Sts1CardDetail
               card={selectedCard}
               labels={labels}
@@ -400,6 +406,7 @@ export function Sts1CardLibrary({
               serviceLocale={serviceLocale}
               showBeta={showBeta}
               onBetaChange={setShowBeta}
+              onClose={closeCard}
             />
           </div>
         </CompendiumDetailOverlay>

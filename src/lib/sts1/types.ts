@@ -85,6 +85,7 @@ export interface Sts1Card {
   unlimitedUpgrade: boolean;
   hasBetaArt: boolean;
   name: string;
+  nameEn: string;
   description: string;
   upgradeDescription: string;
   extendedDescription: string[];
@@ -97,7 +98,9 @@ export interface Sts1Relic {
   tier: Sts1RelicTier;
   pool: Sts1RelicPool;
   image: string;
+  hasLargeArt: boolean;
   name: string;
+  nameEn: string;
   flavor: string;
   description: string;
   descriptions: string[];
@@ -114,6 +117,7 @@ export interface Sts1Potion {
   potency: number | null;
   thrown: boolean;
   name: string;
+  nameEn: string;
   description: string;
   descriptions: string[];
 }
@@ -133,7 +137,9 @@ export interface Sts1UiLabels {
   extras: Record<"colorless" | "curse" | "status" | "special", string>;
   sort: Record<"rarity" | "type" | "name" | "cost", string>;
   relicTiers: Record<Exclude<Sts1RelicTier, "deprecated">, string>;
+  relicTierDescriptions: Record<Exclude<Sts1RelicTier, "deprecated">, string>;
   potionRarities: Record<Sts1PotionRarity, string>;
+  potionRarityDescriptions: Record<Sts1PotionRarity, string>;
   characters: Record<"ironclad" | "silent" | "defect" | "watcher", string>;
   shared: string;
 }

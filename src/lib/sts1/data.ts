@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { existsSync } from "fs";
 import { readFile } from "fs/promises";
 import path from "path";
 import type { Metadata } from "next";
@@ -20,9 +21,9 @@ async function readJson<T>(relativePath: string): Promise<T> {
   return JSON.parse(await readFile(path.join(DATA_ROOT, relativePath), "utf8")) as T;
 }
 
-type RawCard = Omit<Sts1Card, "name" | "description" | "upgradeDescription" | "extendedDescription">;
-type RawRelic = Omit<Sts1Relic, "name" | "flavor" | "description" | "descriptions">;
-type RawPotion = Omit<Sts1Potion, "name" | "description" | "descriptions">;
+type RawCard = Omit<Sts1Card, "name" | "nameEn" | "description" | "upgradeDescription" | "extendedDescription">;
+type RawRelic = Omit<Sts1Relic, "name" | "nameEn" | "flavor" | "description" | "descriptions" | "hasLargeArt">;
+type RawPotion = Omit<Sts1Potion, "name" | "nameEn" | "description" | "descriptions">;
 
 type CardLoc = {
   name: string;
@@ -67,9 +68,12 @@ function matchesSlug(
 
 export const getSts1Cards = cache(async (gameLocale: GameLocale = "kor"): Promise<Sts1Card[]> => {
   const locale = sts1GameLocale(gameLocale);
-  const [rows, loc] = await Promise.all([
+  const [rows, loc, eng] = await Promise.all([
     readJson<RawCard[]>("cards.json"),
     readJson<Record<string, CardLoc>>(`localization/${locale}/cards.json`),
+    locale === "eng"
+      ? Promise.resolve(null)
+      : readJson<Record<string, CardLoc>>("localization/eng/cards.json"),
   ]);
   return rows.map((row) => {
     const text = loc[row.id] ?? {
@@ -78,15 +82,22 @@ export const getSts1Cards = cache(async (gameLocale: GameLocale = "kor"): Promis
       upgradeDescription: "",
       extendedDescription: [],
     };
-    return { ...row, ...text };
+    return {
+      ...row,
+      ...text,
+      nameEn: eng?.[row.id]?.name ?? text.name,
+    };
   });
 });
 
 export const getSts1Relics = cache(async (gameLocale: GameLocale = "kor"): Promise<Sts1Relic[]> => {
   const locale = sts1GameLocale(gameLocale);
-  const [rows, loc] = await Promise.all([
+  const [rows, loc, eng] = await Promise.all([
     readJson<RawRelic[]>("relics.json"),
     readJson<Record<string, RelicLoc>>(`localization/${locale}/relics.json`),
+    locale === "eng"
+      ? Promise.resolve(null)
+      : readJson<Record<string, RelicLoc>>("localization/eng/relics.json"),
   ]);
   return rows.map((row) => {
     const text = loc[row.id] ?? {
@@ -95,15 +106,23 @@ export const getSts1Relics = cache(async (gameLocale: GameLocale = "kor"): Promi
       description: "",
       descriptions: [],
     };
-    return { ...row, ...text };
+    return {
+      ...row,
+      ...text,
+      nameEn: eng?.[row.id]?.name ?? text.name,
+      hasLargeArt: existsSync(path.join(process.cwd(), "public/images/sts1/relics-large", `${row.slug}.webp`)),
+    };
   });
 });
 
 export const getSts1Potions = cache(async (gameLocale: GameLocale = "kor"): Promise<Sts1Potion[]> => {
   const locale = sts1GameLocale(gameLocale);
-  const [rows, loc] = await Promise.all([
+  const [rows, loc, eng] = await Promise.all([
     readJson<RawPotion[]>("potions.json"),
     readJson<Record<string, PotionLoc>>(`localization/${locale}/potions.json`),
+    locale === "eng"
+      ? Promise.resolve(null)
+      : readJson<Record<string, PotionLoc>>("localization/eng/potions.json"),
   ]);
   return rows.map((row) => {
     const text = loc[row.id] ?? {
@@ -111,7 +130,11 @@ export const getSts1Potions = cache(async (gameLocale: GameLocale = "kor"): Prom
       description: "",
       descriptions: [],
     };
-    return { ...row, ...text };
+    return {
+      ...row,
+      ...text,
+      nameEn: eng?.[row.id]?.name ?? text.name,
+    };
   });
 });
 
@@ -192,10 +215,24 @@ export const getSts1UiLabels = cache(async (gameLocale: GameLocale = "kor"): Pro
       special: stripColon(relics[11]) || "Event",
       shop: stripColon(relics[13]) || "Shop",
     },
+    relicTierDescriptions: {
+      starter: relics[2] || "",
+      common: relics[4] || "",
+      uncommon: relics[6] || "",
+      rare: relics[8] || "",
+      boss: relics[10] || "",
+      special: relics[12] || "",
+      shop: relics[14] || "",
+    },
     potionRarities: {
       common: stripColon(potions[1]) || "Common",
       uncommon: stripColon(potions[3]) || "Uncommon",
       rare: stripColon(potions[5]) || "Rare",
+    },
+    potionRarityDescriptions: {
+      common: potions[2] || "",
+      uncommon: potions[4] || "",
+      rare: potions[6] || "",
     },
     characters,
     shared: locale === "kor" ? "공용" : "Shared",
