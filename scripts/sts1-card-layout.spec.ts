@@ -24,6 +24,7 @@ import {
   sts1TypeBox,
 } from "../src/lib/sts1/card-style";
 import { GAME_LOCALES } from "../src/lib/i18n";
+import { EMPTY_STS1_STATS, wrapSts1DescriptionLines } from "../src/lib/sts1/description";
 import { sts1HtmlLang, sts1LineBreakViaCharacter, sts1PickerLocales } from "../src/lib/sts1/locale";
 import { STS1_IMAGE_CACHE_BUSTER } from "../src/lib/sts1/image-cache";
 import { sts1CardUi512Url, sts1PotionImageUrl } from "../src/lib/sts1/paths";
@@ -105,17 +106,39 @@ assert.equal(sts1DescBoxWidthFrac("eng"), 0.79);
 assert.equal(sts1DescBoxWidthFrac("jpn"), 0.72);
 assert.equal(sts1DescBoxWidthFrac("zhs"), 0.72);
 assert.equal(sts1DescBoxWidthFrac("esp"), 0.79);
-assert.deepEqual(sts1DescriptionBox("kor"), {
-  left: `${((1 - 0.79) / 2) * 100}%`,
-  width: "79%",
-  top: "66%",
-  bottom: "8%",
-});
+const korOneLine = sts1DescriptionBox("kor", 1);
+assert.equal(korOneLine.left, `${((1 - 0.79) / 2) * 100}%`);
+assert.equal(korOneLine.width, "79%");
+assert.ok(!("bottom" in korOneLine));
+const oneLineTop = parseFloat(korOneLine.top);
+assert.ok(oneLineTop > 66 && oneLineTop < 69, korOneLine.top);
+const clashBox = sts1DescriptionBox("kor", 4);
+const clashTop = parseFloat(clashBox.top);
+const clashBottom = clashTop + parseFloat(clashBox.height);
+assert.ok(clashTop < oneLineTop, "multi-line copy shifts up");
+assert.ok(clashBottom < 92, "four Clash lines must stay above the bottom ornament");
 assert.equal(sts1DescriptionBox("jpn").width, "72%");
 assert.equal(sts1DescriptionTextStyle("kor").fontSize, "8cqi");
 assert.equal(sts1DescriptionTextStyle("kor").wordBreak, "keep-all");
 assert.equal(sts1DescriptionTextStyle("jpn").wordBreak, "break-all");
 assert.equal(sts1DescriptionTextStyle("tha").overflowWrap, "anywhere");
+
+const clashLines = wrapSts1DescriptionLines(
+  "손에 있는 카드가 전부 공격 카드일 때만 사용할 수 있습니다. NL 피해를 !D! 줍니다.",
+  { ...EMPTY_STS1_STATS, damage: 14 },
+  "kor",
+);
+assert.equal(clashLines.length, 4);
+assert.equal(clashLines[0], "손에 있는 카드가 전부");
+assert.equal(clashLines[1], "공격 카드일 때만");
+assert.equal(clashLines[2], "사용할 수 있습니다.");
+assert.equal(clashLines[3], "피해를 GOLD:14 줍니다.");
+const bashLines = wrapSts1DescriptionLines(
+  "피해를 !D! 줍니다. NL 취약을 !M! 부여합니다.",
+  { ...EMPTY_STS1_STATS, damage: 8, magic: 2 },
+  "kor",
+);
+assert.equal(bashLines.length, 2);
 
 for (const locale of GAME_LOCALES) {
   const box = sts1DescriptionBox(locale);

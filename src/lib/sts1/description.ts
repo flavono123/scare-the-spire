@@ -1,3 +1,11 @@
+import type { GameLocale } from "@/lib/i18n";
+import {
+  STS1_CARD_IN_ATLAS,
+  STS1_DESC_ENERGY_IMG_WIDTH,
+  STS1_DESC_FONT,
+  sts1DescBoxWidthFrac,
+} from "./card-style";
+import { sts1LineBreakViaCharacter } from "./locale";
 import type { Sts1CardStats, Sts1Keyword } from "./types";
 
 export const EMPTY_STS1_STATS: Sts1CardStats = {
@@ -44,6 +52,101 @@ function replaceDynamic(text: string, stats: Sts1CardStats): string {
     .replace(/!D!/gi, stats.damage == null ? "0" : `${numberColor}:${stats.damage}`)
     .replace(/!B!/gi, stats.block == null ? "0" : `${numberColor}:${stats.block}`)
     .replace(/!M!/gi, stats.magic == null ? "0" : `${numberColor}:${stats.magic}`);
+}
+
+/**
+ * AbstractCard.initializeDescription GlyphLayout width. CJK is slightly under
+ * 1em so Korean Clash keeps "손에 있는 카드가 전부" on the first line.
+ */
+function glyphEmWidth(char: string): number {
+  const code = char.codePointAt(0) ?? 0;
+  if (char === " ") return 0.33;
+  if (code >= 0x2e80) return 0.95;
+  return 0.55;
+}
+
+function visibleTokenPx(token: string): number {
+  if (/^\[[RGBWEC]\]$/i.test(token)) return STS1_DESC_ENERGY_IMG_WIDTH;
+  const text = token
+    .replace(/^#([rgbypl])/i, "")
+    .replace(/^(GOLD|UPGRADED):/, "");
+  let em = 0;
+  for (const char of text) em += glyphEmWidth(char);
+  return em * STS1_DESC_FONT;
+}
+
+function wrapByWord(replaced: string, maxPx: number): string[] {
+  const tokens = replaced.trim().split(/\s+/).filter(Boolean);
+  const lines: string[] = [];
+  let current: string[] = [];
+  let currentPx = 0;
+  const spacePx = 0.33 * STS1_DESC_FONT;
+  const flush = () => {
+    if (current.length === 0) return;
+    lines.push(current.join(" "));
+    current = [];
+    currentPx = 0;
+  };
+
+  for (const token of tokens) {
+    if (token === "NL") {
+      flush();
+      continue;
+    }
+    const tokenPx = visibleTokenPx(token);
+    const extra = current.length > 0 ? spacePx + tokenPx : tokenPx;
+    if (current.length > 0 && currentPx + extra > maxPx) {
+      flush();
+      current = [token];
+      currentPx = tokenPx;
+      continue;
+    }
+    current.push(token);
+    currentPx += extra;
+  }
+  flush();
+  return lines.length > 0 ? lines : [""];
+}
+
+function wrapByCharacter(replaced: string, maxPx: number): string[] {
+  const lines: string[] = [];
+  let current = "";
+  let currentPx = 0;
+  const flush = () => {
+    if (!current) return;
+    lines.push(current);
+    current = "";
+    currentPx = 0;
+  };
+
+  for (const chunk of replaced.split(/(\s*NL\s*)/)) {
+    if (/^\s*NL\s*$/.test(chunk)) {
+      flush();
+      continue;
+    }
+    for (const char of chunk) {
+      if (/\s/.test(char) && currentPx === 0) continue;
+      const width = glyphEmWidth(char) * STS1_DESC_FONT;
+      if (current && currentPx + width > maxPx) flush();
+      current += char;
+      currentPx += width;
+    }
+  }
+  flush();
+  return lines.length > 0 ? lines : [""];
+}
+
+/** Mirror AbstractCard.initializeDescription / initializeDescriptionCN. */
+export function wrapSts1DescriptionLines(
+  raw: string,
+  stats: Sts1CardStats,
+  gameLocale: GameLocale,
+): string[] {
+  const replaced = replaceDynamic(raw, stats);
+  const maxPx = sts1DescBoxWidthFrac(gameLocale) * STS1_CARD_IN_ATLAS.width;
+  return sts1LineBreakViaCharacter(gameLocale)
+    ? wrapByCharacter(replaced, maxPx)
+    : wrapByWord(replaced, maxPx);
 }
 
 function keywordNames(keywords: readonly Sts1Keyword[]): string[] {

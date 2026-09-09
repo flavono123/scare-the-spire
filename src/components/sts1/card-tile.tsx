@@ -22,6 +22,7 @@ import {
 import type { GameLocale } from "@/lib/i18n";
 import { sts1HtmlLang } from "@/lib/sts1/locale";
 import { sts1CardPortraitUrl, sts1CardUi512Url } from "@/lib/sts1/paths";
+import { wrapSts1DescriptionLines } from "@/lib/sts1/description";
 import { sts1CardStats, sts1CostLabel } from "@/lib/sts1/stats";
 import type { Sts1Card, Sts1Keyword } from "@/lib/sts1/types";
 
@@ -64,6 +65,7 @@ export function Sts1CardTile({
   const description = stats.upgraded && card.upgradeDescription
     ? card.upgradeDescription
     : card.description;
+  const descriptionLines = wrapSts1DescriptionLines(description, stats, gameLocale);
   const title = `${card.name}${stats.nameSuffix}`;
   const costLabel = sts1CostLabel(stats.cost);
   const upgradedCost = stats.upgraded && card.upgrade?.cost != null;
@@ -130,14 +132,14 @@ export function Sts1CardTile({
       </div>
       <div
         className="absolute z-10 overflow-hidden"
-        style={sts1DescriptionBox(gameLocale)}
+        style={sts1DescriptionBox(gameLocale, descriptionLines.length)}
       >
         <Sts1CardText
-          text={description}
+          text={descriptionLines.join(" NL ")}
           stats={stats}
           keywords={keywords}
           className="font-game-text text-center text-[#f8e8c0]"
-          style={sts1DescriptionTextStyle(gameLocale)}
+          style={{ ...sts1DescriptionTextStyle(gameLocale), whiteSpace: "nowrap" }}
         />
       </div>
       </div>

@@ -77,13 +77,15 @@ export const STS1_DESC_BOX_WIDTH = 0.79;
 export const STS1_CN_DESC_BOX_WIDTH = 0.72;
 /** renderDescription line step is 1.45 * capHeight. */
 export const STS1_DESC_LINE_HEIGHT = 1.45;
+/** AbstractCard.CARD_ENERGY_IMG_WIDTH used while wrapping [E] tokens. */
+export const STS1_DESC_ENERGY_IMG_WIDTH = 24;
 /**
- * CSS top of the description well. Type text sits at ~55%; wiki.gg/Fandom
- * full-card composites leave a gap under the type chip, then 24px copy.
- * 1-line game baseline is ~73% of the 300×420 body.
+ * start_y += nLines * capHeight * 0.775 - capHeight * 0.375, then each line
+ * steps by 1.45 * capHeight. CSS line-box alphabetic baseline is ~0.8em.
  */
-export const STS1_DESC_BOX_TOP = 0.66;
-export const STS1_DESC_BOX_BOTTOM = 0.08;
+export const STS1_DESC_NLINE_FACTOR = 0.775;
+export const STS1_DESC_BASELINE_FACTOR = 0.375;
+export const STS1_DESC_BASELINE_IN_LINEBOX = 0.8;
 /** FontHelper.cardTypeFont = prepFont(17, true). */
 export const STS1_TYPE_FONT = 17;
 /** renderType draws at current_y - 22 (down in CSS). */
@@ -142,13 +144,23 @@ export function sts1DescBoxWidthFrac(gameLocale: GameLocale): number {
   return sts1LineBreakViaCharacter(gameLocale) ? STS1_CN_DESC_BOX_WIDTH : STS1_DESC_BOX_WIDTH;
 }
 
-export function sts1DescriptionBox(gameLocale: GameLocale) {
+export function sts1DescriptionBox(gameLocale: GameLocale, lineCount = 1) {
+  const { height } = STS1_CARD_IN_ATLAS;
   const widthFrac = sts1DescBoxWidthFrac(gameLocale);
+  const n = Math.max(1, lineCount);
+  const cap = STS1_DESC_FONT;
+  const firstBaselineFromBottom =
+    STS1_DESC_OFFSET_Y_FRAC * height
+    + n * cap * STS1_DESC_NLINE_FACTOR
+    - cap * STS1_DESC_BASELINE_FACTOR;
+  const firstLineTop =
+    height - firstBaselineFromBottom - cap * STS1_DESC_BASELINE_IN_LINEBOX;
+  const boxHeight = n * STS1_DESC_LINE_HEIGHT * cap;
   return {
     left: `${((1 - widthFrac) / 2) * 100}%`,
     width: `${widthFrac * 100}%`,
-    top: `${STS1_DESC_BOX_TOP * 100}%`,
-    bottom: `${STS1_DESC_BOX_BOTTOM * 100}%`,
+    top: `${(firstLineTop / height) * 100}%`,
+    height: `${(boxHeight / height) * 100}%`,
   };
 }
 
