@@ -2,22 +2,32 @@
 
 import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
 import dynamic from "next/dynamic";
-import { CombatRewardPicks } from "@/components/history-course/combat-reward-picks";
+import { CardRewardScreen } from "@/components/history-course/card-reward-screen";
+import { CombatLootScreen } from "@/components/history-course/combat-loot-screen";
 import { EventRoomArt } from "@/components/history-course/event-room-art";
 import {
   GameRoomChoiceList,
   GameRoomChoicePanel,
 } from "@/components/history-course/game-room-choice";
 import {
+  MerchantShopScreen,
+  splitShopCardRows,
+} from "@/components/history-course/merchant-shop-screen";
+import { RoomResultReceipt } from "@/components/history-course/room-result-receipt";
+import {
   characterCombatArtSrc,
   restSiteChoiceLabel,
 } from "@/lib/history-party";
 import {
-  LAST_SCENE_PICK_REVEAL,
   roomMonsterIds,
   stripReplayId,
   type LastSceneKind,
 } from "@/lib/history-last-scene";
+import {
+  combatLootSpecs,
+  lastScenePhase,
+  type LastScenePhase,
+} from "@/lib/history-last-scene-steps";
 import {
   lastSceneBackgroundUrl,
   lastSceneMonsterSlots,
@@ -161,8 +171,9 @@ export function NodeLastScene({
   }, []);
 
   if (hidden || kind === "stack") return null;
+  void leftoverGoldLabel;
   const t = clamp01(sceneLocalMs / Math.max(1, sceneDurationMs));
-  const pickReveal = t >= LAST_SCENE_PICK_REVEAL;
+  const phase = lastScenePhase(kind, entry, sceneLocalMs);
   const modelId = entry.rooms?.[0]?.model_id;
   const backgroundUrl = lastSceneBackgroundUrl({ kind, modelId, actId });
 
@@ -170,20 +181,21 @@ export function NodeLastScene({
     <div
       className="absolute inset-0 z-[18] overflow-hidden bg-black"
       data-history-last-scene={kind}
+      data-history-last-scene-phase={phase.kind}
       data-progress={t.toFixed(2)}
     >
       {kind === "combat" ? (
         <CombatScene
           entry={entry}
-          tables={tables}
-          t={t}
-          pickReveal={pickReveal}
+          gameLocale={gameLocale}
+          phase={phase}
           character={character}
           cardsById={cardsById}
           relicsById={relicsById}
           potionsById={potionsById}
           serviceLocale={serviceLocale}
           catalog={sceneCatalog}
+          locTables={locTables}
           monsters={monsters}
           backgroundUrl={backgroundUrl}
         />
@@ -191,9 +203,6 @@ export function NodeLastScene({
       {kind === "shop" ? (
         <ShopScene
           entry={entry}
-          tables={tables}
-          pickReveal={pickReveal}
-          leftoverGoldLabel={leftoverGoldLabel}
           cardsById={cardsById}
           relicsById={relicsById}
           potionsById={potionsById}
@@ -205,7 +214,8 @@ export function NodeLastScene({
         <EventScene
           entry={entry}
           tables={tables}
-          pickReveal={pickReveal}
+          phase={phase}
+          gameLocale={gameLocale}
           cardsById={cardsById}
           relicsById={relicsById}
           potionsById={potionsById}
@@ -220,7 +230,8 @@ export function NodeLastScene({
         <AncientScene
           entry={entry}
           tables={tables}
-          pickReveal={pickReveal}
+          phase={phase}
+          gameLocale={gameLocale}
           cardsById={cardsById}
           relicsById={relicsById}
           potionsById={potionsById}
@@ -234,22 +245,21 @@ export function NodeLastScene({
       {kind === "treasure" ? (
         <TreasureScene
           entry={entry}
-          tables={tables}
-          t={t}
-          pickReveal={pickReveal}
+          gameLocale={gameLocale}
+          phase={phase}
           cardsById={cardsById}
           relicsById={relicsById}
           potionsById={potionsById}
           serviceLocale={serviceLocale}
+          locTables={locTables}
           backgroundUrl={backgroundUrl}
         />
       ) : null}
       {kind === "rest" ? (
         <RestScene
           entry={entry}
-          tables={tables}
           gameLocale={gameLocale}
-          pickReveal={pickReveal}
+          phase={phase}
           cardsById={cardsById}
           relicsById={relicsById}
           potionsById={potionsById}
@@ -272,68 +282,30 @@ export function NodeLastScene({
   );
 }
 
-function ResultPreview({
-  entry,
-  tables,
-  pickReveal,
-  leftoverGoldLabel,
-  includeRemoved,
-  cardsById,
-  relicsById,
-  potionsById,
-  serviceLocale,
-}: {
-  entry: ReplayHistoryEntry;
-  tables: GameI18nTables;
-  pickReveal: boolean;
-  leftoverGoldLabel?: string;
-  includeRemoved?: boolean;
-  cardsById?: Record<string, CodexCard>;
-  relicsById?: Record<string, CodexRelic>;
-  potionsById?: Record<string, CodexPotion>;
-  serviceLocale: ServiceLocale;
-}) {
-  return (
-    <div className="pointer-events-auto absolute left-1/2 top-[46%] z-20 w-[min(36rem,58%)] -translate-x-1/2 -translate-y-1/2 sm:left-[27%] sm:w-[min(32rem,48%)]">
-      <CombatRewardPicks
-        entry={entry}
-        tables={tables}
-        pickReveal={pickReveal}
-        includeRemoved={includeRemoved}
-        leftoverGoldLabel={leftoverGoldLabel}
-        cardsById={cardsById}
-        relicsById={relicsById}
-        potionsById={potionsById}
-        serviceLocale={serviceLocale}
-      />
-    </div>
-  );
-}
-
 function CombatScene({
   entry,
-  tables,
-  t,
-  pickReveal,
+  gameLocale,
+  phase,
   character,
   cardsById,
   relicsById,
   potionsById,
   serviceLocale,
   catalog,
+  locTables,
   monsters,
   backgroundUrl,
 }: {
   entry: ReplayHistoryEntry;
-  tables: GameI18nTables;
-  t: number;
-  pickReveal: boolean;
+  gameLocale: GameLocale;
+  phase: LastScenePhase;
   character: string;
   cardsById?: Record<string, CodexCard>;
   relicsById?: Record<string, CodexRelic>;
   potionsById?: Record<string, CodexPotion>;
   serviceLocale: ServiceLocale;
   catalog: HistoryLastSceneCatalog | null;
+  locTables: HistoryLocTables | null;
   monsters: ReturnType<typeof getHistoryCourseCatalog>["allMonsters"];
   backgroundUrl: string;
 }) {
@@ -348,6 +320,10 @@ function CombatScene({
   const formationIndex = encounter
     ? matchEncounterFormationIndex(encounter, roomMonsters)
     : 0;
+  const dead = phase.kind !== "alive";
+  const loot = combatLootSpecs(entry);
+  const cards = entry.card_choices ?? [];
+  const skippedCards = cards.length > 0 && !cards.some((choice) => choice.picked);
 
   if (!catalog) {
     return <div className="absolute inset-0 bg-black" data-history-last-scene-loading="combat" />;
@@ -356,7 +332,7 @@ function CombatScene({
   return (
     <div className="absolute inset-0">
       {canUseEncounterStage && encounter && characterRow ? (
-        <div className={cn("absolute inset-0 transition-opacity duration-500", pickReveal && "opacity-40")}>
+        <div className="absolute inset-0">
           <EncounterSceneStage
             encounter={encounter}
             character={characterRow}
@@ -366,26 +342,38 @@ function CombatScene({
             showCharacter
             fill
             lockedFormationIndex={formationIndex}
+            selectedMoveId={dead ? "DEAD" : null}
+            loopSelectedMove={false}
           />
         </div>
       ) : (
         <CombatStillFallback
           entry={entry}
           character={character}
-          t={t}
+          dead={dead}
           backgroundUrl={backgroundUrl}
         />
       )}
-      <CombatRewardPicks
-        entry={entry}
-        tables={tables}
-        pickReveal={pickReveal}
-        cardsById={cardsById}
-        relicsById={relicsById}
-        potionsById={potionsById}
-        serviceLocale={serviceLocale}
-        layout="combat"
-      />
+      {phase.kind === "loot" ? (
+        <CombatLootScreen
+          items={loot}
+          revealedCount={phase.revealedCount}
+          gameLocale={gameLocale}
+          locTables={locTables}
+          relicsById={relicsById}
+          potionsById={potionsById}
+        />
+      ) : null}
+      {phase.kind === "cards" ? (
+        <CardRewardScreen
+          choices={cards}
+          cardsById={cardsById}
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          locTables={locTables}
+          skipped={skippedCards}
+        />
+      ) : null}
     </div>
   );
 }
@@ -393,12 +381,12 @@ function CombatScene({
 function CombatStillFallback({
   entry,
   character,
-  t,
+  dead,
   backgroundUrl,
 }: {
   entry: ReplayHistoryEntry;
   character: string;
-  t: number;
+  dead: boolean;
   backgroundUrl: string;
 }) {
   const monsters = roomMonsterIds(entry);
@@ -411,8 +399,6 @@ function CombatStillFallback({
         className="absolute bottom-[8%] left-[6%] h-[62%] w-[22%] object-contain object-bottom drop-shadow-[0_12px_18px_rgba(0,0,0,0.65)]"
       />
       {monsters.map((id, index) => {
-        const dieAt = 0.12 + index * 0.08;
-        const dead = t >= dieAt;
         const slot = slots[index];
         const count = Math.max(monsters.length, 1);
         return (
@@ -451,9 +437,6 @@ function CombatStillFallback({
 
 function ShopScene({
   entry,
-  tables,
-  pickReveal,
-  leftoverGoldLabel,
   cardsById,
   relicsById,
   potionsById,
@@ -461,33 +444,30 @@ function ShopScene({
   backgroundUrl,
 }: {
   entry: ReplayHistoryEntry;
-  tables: GameI18nTables;
-  pickReveal: boolean;
-  leftoverGoldLabel: string;
   cardsById?: Record<string, CodexCard>;
   relicsById?: Record<string, CodexRelic>;
   potionsById?: Record<string, CodexPotion>;
   serviceLocale: ServiceLocale;
   backgroundUrl: string;
 }) {
+  const rows = splitShopCardRows(entry.card_choices ?? [], cardsById);
   return (
     <div className="absolute inset-0">
       <SceneArt src={backgroundUrl} hideOnError={false} className="absolute inset-0 h-full w-full object-cover" />
       <SceneArt
         src={MERCHANT}
-        className="absolute bottom-[6%] right-[4%] h-[78%] w-[38%] object-contain object-bottom drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]"
+        className="absolute bottom-[4%] right-[2%] h-[82%] w-[42%] object-contain object-bottom drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]"
       />
-      <CombatRewardPicks
-        entry={entry}
-        tables={tables}
-        pickReveal={pickReveal}
-        includeRemoved
-        leftoverGoldLabel={leftoverGoldLabel}
+      <MerchantShopScreen
+        characterCards={rows.characterCards}
+        colorlessCards={rows.colorlessCards}
+        relics={(entry.relic_choices ?? []).filter((choice) => choice.id)}
+        potions={(entry.potion_choices ?? []).filter((choice) => choice.id)}
+        removalUsed={(entry.cards_removed ?? []).some((card) => card.id)}
         cardsById={cardsById}
         relicsById={relicsById}
         potionsById={potionsById}
         serviceLocale={serviceLocale}
-        layout="combat"
       />
     </div>
   );
@@ -496,7 +476,8 @@ function ShopScene({
 function EventScene({
   entry,
   tables,
-  pickReveal,
+  phase,
+  gameLocale,
   cardsById,
   relicsById,
   potionsById,
@@ -508,7 +489,8 @@ function EventScene({
 }: {
   entry: ReplayHistoryEntry;
   tables: GameI18nTables;
-  pickReveal: boolean;
+  phase: LastScenePhase;
+  gameLocale: GameLocale;
   cardsById?: Record<string, CodexCard>;
   relicsById?: Record<string, CodexRelic>;
   potionsById?: Record<string, CodexPotion>;
@@ -527,6 +509,7 @@ function EventScene({
   const art = event?.imageUrl ?? backgroundUrl;
   const vfxSlug = historyEventVfxSlug(event?.id);
   const fakeMerchant = event?.id === "FAKE_MERCHANT";
+  const choicePhase = phase.kind === "choice";
   return (
     <EventRoomArt
       src={art}
@@ -538,32 +521,34 @@ function EventScene({
       ) : undefined}
       viewportOverlay={vfxSlug ? <EventVfxStage sceneSlug={vfxSlug} /> : null}
     >
-      <GameRoomChoicePanel title={title} body={eventOpeningDescription(event)}>
-        <GameRoomChoiceList
-          choices={entry.event_choices ?? []}
-          revealed={pickReveal}
-          copyFor={(choice) =>
-            historyRoomChoiceCopy(choice, tables, "events", {
-              choiceLoc: catalog?.choiceLoc,
-              locTables,
-              event,
-              cardsById,
-              relicsById,
-              potionsById,
-              enchantments,
-            })
-          }
+      {choicePhase ? (
+        <GameRoomChoicePanel title={title} body={eventOpeningDescription(event)}>
+          <GameRoomChoiceList
+            choices={entry.event_choices ?? []}
+            revealed
+            copyFor={(choice) =>
+              historyRoomChoiceCopy(choice, tables, "events", {
+                choiceLoc: catalog?.choiceLoc,
+                locTables,
+                event,
+                cardsById,
+                relicsById,
+                potionsById,
+                enchantments,
+              })
+            }
+          />
+        </GameRoomChoicePanel>
+      ) : (
+        <RoomResultReceipt
+          entry={entry}
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          cardsById={cardsById}
+          relicsById={relicsById}
+          potionsById={potionsById}
         />
-      </GameRoomChoicePanel>
-      <ResultPreview
-        entry={entry}
-        tables={tables}
-        pickReveal={pickReveal}
-        cardsById={cardsById}
-        relicsById={relicsById}
-        potionsById={potionsById}
-        serviceLocale={serviceLocale}
-      />
+      )}
     </EventRoomArt>
   );
 }
@@ -571,7 +556,8 @@ function EventScene({
 function AncientScene({
   entry,
   tables,
-  pickReveal,
+  phase,
+  gameLocale,
   cardsById,
   relicsById,
   potionsById,
@@ -583,7 +569,8 @@ function AncientScene({
 }: {
   entry: ReplayHistoryEntry;
   tables: GameI18nTables;
-  pickReveal: boolean;
+  phase: LastScenePhase;
+  gameLocale: GameLocale;
   cardsById?: Record<string, CodexCard>;
   relicsById?: Record<string, CodexRelic>;
   potionsById?: Record<string, CodexPotion>;
@@ -614,38 +601,28 @@ function AncientScene({
       potionsById,
       enchantments,
     });
-
-  const panel = (
-    <GameRoomChoicePanel title={title}>
-      <GameRoomChoiceList choices={choices} revealed={pickReveal} copyFor={copyFor} />
-    </GameRoomChoicePanel>
-  );
   const blessingIds = new Set(choices.map((choice) => stripReplayId(choice.id).toUpperCase()));
-  const rewardEntry = {
-    ...entry,
-    relic_choices: (entry.relic_choices ?? []).filter(
-      (choice) => !blessingIds.has(stripReplayId(choice.id).toUpperCase()),
-    ),
-  };
-  const extraRewards = (
-    <HudSafe>
-      <CombatRewardPicks
-        entry={rewardEntry}
-        tables={tables}
-        pickReveal={pickReveal}
-        cardsById={cardsById}
-        relicsById={relicsById}
-        potionsById={potionsById}
-        serviceLocale={serviceLocale}
-      />
-    </HudSafe>
+  const overlay = phase.kind === "choice" ? (
+    <GameRoomChoicePanel title={title}>
+      <GameRoomChoiceList choices={choices} revealed copyFor={copyFor} />
+    </GameRoomChoicePanel>
+  ) : (
+    <RoomResultReceipt
+      entry={entry}
+      gameLocale={gameLocale}
+      serviceLocale={serviceLocale}
+      cardsById={cardsById}
+      relicsById={relicsById}
+      potionsById={potionsById}
+      excludeRelicIds={blessingIds}
+      includeHeal={false}
+    />
   );
 
   if (ancient) {
     return (
       <AncientSceneStage ancient={ancient} fill>
-        {panel}
-        {extraRewards}
+        {overlay}
       </AncientSceneStage>
     );
   }
@@ -653,34 +630,36 @@ function AncientScene({
   return (
     <div className="absolute inset-0">
       <SceneArt src={backgroundUrl} hideOnError={false} className="absolute inset-0 h-full w-full object-cover" />
-      {panel}
-      {extraRewards}
+      {overlay}
     </div>
   );
 }
 
 function TreasureScene({
   entry,
-  tables,
-  t,
-  pickReveal,
+  gameLocale,
+  phase,
   cardsById,
   relicsById,
   potionsById,
   serviceLocale,
+  locTables,
   backgroundUrl,
 }: {
   entry: ReplayHistoryEntry;
-  tables: GameI18nTables;
-  t: number;
-  pickReveal: boolean;
+  gameLocale: GameLocale;
+  phase: LastScenePhase;
   cardsById?: Record<string, CodexCard>;
   relicsById?: Record<string, CodexRelic>;
   potionsById?: Record<string, CodexPotion>;
   serviceLocale: ServiceLocale;
+  locTables: HistoryLocTables | null;
   backgroundUrl: string;
 }) {
-  const open = t >= 0.28;
+  const open = phase.kind !== "chest";
+  const loot = combatLootSpecs(entry);
+  const cards = entry.card_choices ?? [];
+  const skippedCards = cards.length > 0 && !cards.some((choice) => choice.picked);
   return (
     <div className="absolute inset-0">
       <SceneArt src={backgroundUrl} hideOnError={false} className="absolute inset-0 h-full w-full object-cover" />
@@ -691,25 +670,34 @@ function TreasureScene({
           open && "scale-125 opacity-0",
         )}
       />
-      <CombatRewardPicks
-        entry={entry}
-        tables={tables}
-        pickReveal={pickReveal}
-        cardsById={cardsById}
-        relicsById={relicsById}
-        potionsById={potionsById}
-        serviceLocale={serviceLocale}
-        layout="combat"
-      />
+      {phase.kind === "loot" ? (
+        <CombatLootScreen
+          items={loot}
+          revealedCount={phase.revealedCount}
+          gameLocale={gameLocale}
+          locTables={locTables}
+          relicsById={relicsById}
+          potionsById={potionsById}
+        />
+      ) : null}
+      {phase.kind === "cards" ? (
+        <CardRewardScreen
+          choices={cards}
+          cardsById={cardsById}
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          locTables={locTables}
+          skipped={skippedCards}
+        />
+      ) : null}
     </div>
   );
 }
 
 function RestScene({
   entry,
-  tables,
   gameLocale,
-  pickReveal,
+  phase,
   cardsById,
   relicsById,
   potionsById,
@@ -717,9 +705,8 @@ function RestScene({
   backgroundUrl,
 }: {
   entry: ReplayHistoryEntry;
-  tables: GameI18nTables;
   gameLocale: GameLocale;
-  pickReveal: boolean;
+  phase: LastScenePhase;
   cardsById?: Record<string, CodexCard>;
   relicsById?: Record<string, CodexRelic>;
   potionsById?: Record<string, CodexPotion>;
@@ -735,28 +722,30 @@ function RestScene({
         className="absolute bottom-[18%] left-[12%] h-44 w-44 object-contain drop-shadow-[0_12px_18px_rgba(0,0,0,0.7)]"
       />
       <div className="absolute inset-0 bg-gradient-to-l from-black/70 via-transparent to-transparent" />
-      <GameRoomChoicePanel>
-        <div className="flex w-full flex-col gap-2">
-          {choices.map((choice) => (
-            <div key={choice} data-history-last-scene-pick={choice} data-picked="true">
-              <GameChoiceFrame active={pickReveal}>
-                <span className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
-                  {restSiteChoiceLabel(choice, gameLocale)}
-                </span>
-              </GameChoiceFrame>
-            </div>
-          ))}
-        </div>
-      </GameRoomChoicePanel>
-      <ResultPreview
-        entry={entry}
-        tables={tables}
-        pickReveal={pickReveal}
-        cardsById={cardsById}
-        relicsById={relicsById}
-        potionsById={potionsById}
-        serviceLocale={serviceLocale}
-      />
+      {phase.kind === "choice" ? (
+        <GameRoomChoicePanel>
+          <div className="flex w-full flex-col gap-2">
+            {choices.map((choice) => (
+              <div key={choice} data-history-last-scene-pick={choice} data-picked="true">
+                <GameChoiceFrame active>
+                  <span className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
+                    {restSiteChoiceLabel(choice, gameLocale)}
+                  </span>
+                </GameChoiceFrame>
+              </div>
+            ))}
+          </div>
+        </GameRoomChoicePanel>
+      ) : (
+        <RoomResultReceipt
+          entry={entry}
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          cardsById={cardsById}
+          relicsById={relicsById}
+          potionsById={potionsById}
+        />
+      )}
     </div>
   );
 }

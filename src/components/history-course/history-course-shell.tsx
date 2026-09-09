@@ -67,10 +67,10 @@ import {
   type RunTimeline,
 } from "@/lib/sts2-run-timeline";
 import {
-  LAST_SCENE_PICK_REVEAL,
   stripReplayId,
   usesDedicatedLastScene,
 } from "@/lib/history-last-scene";
+import { lastScenePicksRevealed } from "@/lib/history-last-scene-steps";
 import { cn } from "@/lib/utils";
 import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
 import type { Comment } from "@/hooks/use-comments";
@@ -832,13 +832,15 @@ export function HistoryCourseShell({
   const dedicatedScene = usesDedicatedLastScene(
     currentTimelineEntry?.sceneKind ?? "stack",
   );
-  const sceneDurationMs = Math.max(
-    1,
-    (currentTimelineEntry?.durationMs ?? NODE_BASE_MS) - NODE_BASE_MS,
-  );
+  const currentHistoryEntry = act?.history[step - 1];
   const picksRevealed =
     dedicatedScene &&
-    nodeStackLocalMs / sceneDurationMs >= LAST_SCENE_PICK_REVEAL;
+    currentHistoryEntry != null &&
+    lastScenePicksRevealed(
+      currentTimelineEntry?.sceneKind ?? "stack",
+      currentHistoryEntry,
+      nodeStackLocalMs,
+    );
 
   // Fire intros on window entry (false→true edge per act). Natural
   // progression sweeps through; large jumps land inside or outside the

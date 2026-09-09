@@ -384,14 +384,30 @@ function MonsterSpineStageComponent({
     if (!asset || loadState !== "ready" || !playerRef.current || !selectedAnimation) return;
 
     const player = playerRef.current;
-    const loops = selectedAnimation === asset.idleAnimation || selectedMoveId == null || loopSelectedMove;
+    const isDeadMove = selectedMoveId === "DEAD";
+    const loops =
+      !isDeadMove &&
+      (selectedAnimation === asset.idleAnimation || selectedMoveId == null || loopSelectedMove);
     try {
       if (selectedTrackAnimations?.length) {
         restartSpineTrackAnimations(player, selectedTrackAnimations, asset.idleTracks);
       } else {
         restartSpineAnimation(player, selectedAnimation, loops);
       }
-      if (!selectedTrackAnimations?.length && !loops && asset.idleAnimation && selectedAnimation !== asset.idleAnimation) {
+      if (isDeadMove) {
+        const available = new Set(
+          availableAnimations.length > 0 ? availableAnimations : asset.animations,
+        );
+        const deadLoop =
+          (asset.moveAnimations.DEAD ?? []).find(
+            (name) => name !== selectedAnimation && name.toLowerCase().includes("dead"),
+          ) ?? (available.has("dead_loop") ? "dead_loop" : null);
+        if (deadLoop && available.has(deadLoop)) {
+          const hold = player.addAnimation(deadLoop, true, 0);
+          hold.mixDuration = 0;
+          hold.mixTime = 0;
+        }
+      } else if (!selectedTrackAnimations?.length && !loops && asset.idleAnimation && selectedAnimation !== asset.idleAnimation) {
         const idleEntry = player.addAnimation(asset.idleAnimation, true, 0);
         idleEntry.mixDuration = 0;
         idleEntry.mixTime = 0;
@@ -401,7 +417,7 @@ function MonsterSpineStageComponent({
     } catch (error) {
       console.warn(`Failed to play Spine animation ${selectedAnimation} for ${monsterName}:`, error);
     }
-  }, [asset, loadState, loopSelectedMove, monsterName, onVisualBoundsChange, selectedAnimation, selectedMoveId, selectedMoveNonce, selectedTrackAnimations]);
+  }, [asset, availableAnimations, loadState, loopSelectedMove, monsterName, onVisualBoundsChange, selectedAnimation, selectedMoveId, selectedMoveNonce, selectedTrackAnimations]);
 
   useEffect(() => {
     if (!onVisualBoundsChange) return;

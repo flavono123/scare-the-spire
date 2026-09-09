@@ -6,6 +6,7 @@ import {
   type HighlightKind,
   type LastSceneKind,
 } from "@/lib/history-last-scene";
+import { lastSceneDurationMs } from "@/lib/history-last-scene-steps";
 import {
   type ReplayActAnalysis,
   type ReplayHistoryEntry,
@@ -13,11 +14,12 @@ import {
 } from "@/lib/sts2-run-replay";
 
 // ============================================================================
-// Continuous time model. Dedicated last scenes use a fixed window so a shop
-// with many items is not a queue. Stack fallback still scales with items.
+// Continuous time model.
 //
 //  transit  = NODE_BASE_MS
-//  scene    = SCENE_MS, or SCENE_HIGHLIGHT_MS when tagged
+//  scene    = last-scene step count × 500ms (loot rows / card pick / choice)
+//             highlighted scenes use at least SCENE_HIGHLIGHT_MS
+//  stack    = NODE_BASE_MS + stackCount × NODE_PER_STACK_MS
 // ============================================================================
 
 export const NODE_BASE_MS = 2500;
@@ -104,7 +106,8 @@ export function nodeDurationForEntry(
   if (!usesDedicatedLastScene(opts.sceneKind)) {
     return nodeDurationMs(countStackItems(entry));
   }
-  return NODE_BASE_MS + sceneDurationMs(opts.highlight);
+  const sceneMs = lastSceneDurationMs(opts.sceneKind, entry);
+  return NODE_BASE_MS + (opts.highlight ? Math.max(sceneMs, SCENE_HIGHLIGHT_MS) : sceneMs);
 }
 
 /** Offset within the node where the stack / last scene starts. The leading

@@ -38,6 +38,7 @@ interface EncounterSceneStageProps {
   fill?: boolean;
   showCharacter?: boolean;
   lockedFormationIndex?: number | null;
+  loopSelectedMove?: boolean;
   children?: ReactNode;
 }
 
@@ -105,6 +106,7 @@ export function EncounterSceneStage({
   fill = false,
   showCharacter,
   lockedFormationIndex = null,
+  loopSelectedMove,
   children,
 }: EncounterSceneStageProps) {
   const formations = useMemo(() => expandEncounterFormations(encounter), [encounter]);
@@ -249,6 +251,7 @@ export function EncounterSceneStage({
                 monsterName={encounter.name}
                 selectedMoveId={selectedMoveId}
                 selectedMoveNonce={selectedMoveNonce}
+                loopSelectedMove={loopSelectedMove}
                 className="absolute inset-0"
                 fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.75)]"
                 imagePriority
@@ -327,6 +330,7 @@ export function EncounterSceneStage({
             interactive={interactive}
             selectedMoveId={selectedMoveId}
             selectedMoveNonce={selectedMoveNonce}
+            loopSelectedMove={loopSelectedMove}
             atlasDuotone={atlasDuotone}
           />
         ))}
@@ -463,6 +467,7 @@ function EncounterMonsterActor({
   interactive,
   selectedMoveId,
   selectedMoveNonce,
+  loopSelectedMove,
   atlasDuotone,
 }: {
   monster: CodexMonster;
@@ -474,6 +479,7 @@ function EncounterMonsterActor({
   interactive: boolean;
   selectedMoveId: string | null;
   selectedMoveNonce: number;
+  loopSelectedMove?: boolean;
   atlasDuotone?: SpineAtlasDuotone | null;
 }) {
   const stage = (
@@ -483,6 +489,7 @@ function EncounterMonsterActor({
       monsterName={monster.name}
       selectedMoveId={selectedMoveId}
       selectedMoveNonce={selectedMoveNonce}
+      loopSelectedMove={loopSelectedMove}
       className={`absolute inset-0 ${interactive ? "transition-transform duration-200 group-hover:scale-[1.03]" : ""}`}
       fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.75)]"
       imagePriority={imagePriority}

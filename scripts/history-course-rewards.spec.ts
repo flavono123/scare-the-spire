@@ -13,7 +13,8 @@ const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 const OUT_DIR = path.join("/tmp", "history-course-shots");
 const BOOTS_SEED = "EQNAH97QTR"; // winged-boots-eqnah-a10 — relic at step 1
 const TRANSIT_MS = 2500;
-const PICK_REVEAL_MS = TRANSIT_MS + Math.round(1600 * 0.42);
+const LAST_SCENE_STEP_MS = 500;
+const PICK_REVEAL_MS = TRANSIT_MS + 2 * LAST_SCENE_STEP_MS;
 
 async function scrubTo(page: Page, value: number) {
   await page.evaluate((ms: number) => {

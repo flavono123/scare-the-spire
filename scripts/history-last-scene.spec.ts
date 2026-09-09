@@ -13,10 +13,14 @@ import type {
 import {
   NODE_BASE_MS,
   SCENE_HIGHLIGHT_MS,
-  SCENE_MS,
   buildActTimeline,
   nodeDurationForEntry,
 } from "../src/lib/sts2-run-timeline";
+import {
+  LAST_SCENE_STEP_MS,
+  lastSceneDurationMs,
+  lastScenePhase,
+} from "../src/lib/history-last-scene-steps";
 import {
   eventArtUrl,
   lastSceneBackgroundUrl,
@@ -189,7 +193,7 @@ const mundaneCombat = entry({
 });
 assert.equal(
   nodeDurationForEntry(mundaneCombat, { sceneKind: "combat", highlight: false }),
-  NODE_BASE_MS + SCENE_MS,
+  NODE_BASE_MS + 2 * LAST_SCENE_STEP_MS,
 );
 assert.equal(
   nodeDurationForEntry(mundaneCombat, { sceneKind: "combat", highlight: true }),
@@ -342,5 +346,28 @@ const selfHelpCopy = historyRoomChoiceCopy(
 assert.equal(selfHelpCopy.title, "무작위 문단을 읽는다");
 assert.match(selfHelpCopy.description ?? "", /기민함/);
 assert.doesNotMatch(selfHelpCopy.description ?? "", /\{Enchantment2Amount\}/);
+
+const combatWithLoot = entry({
+  map_point_type: "monster",
+  gold_gained: 12,
+  potion_choices: [{ id: "POTION.EXPLOSIVE_VIAL", picked: true }],
+  card_choices: [
+    { id: "CARD.A", picked: true },
+    { id: "CARD.B", picked: false },
+    { id: "CARD.C", picked: false },
+  ],
+  rooms: [{ room_type: "monster", model_id: "ENCOUNTER.X", turns_taken: 1 }],
+});
+assert.equal(lastSceneDurationMs("combat", combatWithLoot), 5 * LAST_SCENE_STEP_MS);
+assert.equal(lastScenePhase("combat", combatWithLoot, 0).kind, "alive");
+assert.equal(lastScenePhase("combat", combatWithLoot, LAST_SCENE_STEP_MS).kind, "dying");
+assert.deepEqual(
+  lastScenePhase("combat", combatWithLoot, 2 * LAST_SCENE_STEP_MS),
+  { kind: "loot", revealedCount: 1, total: 2 },
+);
+assert.equal(lastScenePhase("combat", combatWithLoot, 4 * LAST_SCENE_STEP_MS).kind, "cards");
+assert.equal(lastScenePhase("event", combatWithLoot, 0).kind, "choice");
+assert.equal(lastScenePhase("event", combatWithLoot, LAST_SCENE_STEP_MS).kind, "receipt");
+assert.equal(lastScenePhase("shop", combatWithLoot, 0).kind, "shop");
 
 console.log("history-last-scene.spec.ts ok");

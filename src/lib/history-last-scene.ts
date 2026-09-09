@@ -85,9 +85,6 @@ export function isTerminalDeathEntry(
   return Boolean(run.killed_by_encounter || run.killed_by_event);
 }
 
-/** Scene-local progress at which picks / leftover gold / death copy appear. */
-export const LAST_SCENE_PICK_REVEAL = 0.42;
-
 export function lastSceneKind(
   entry: ReplayHistoryEntry,
   opts?: { isTerminalDeath?: boolean },
