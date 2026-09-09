@@ -12,11 +12,13 @@ import rusRestSiteUi from "../../data/sts2/localization/rus/rest_site_ui.json";
 import polRestSiteUi from "../../data/sts2/localization/pol/rest_site_ui.json";
 import thaRestSiteUi from "../../data/sts2/localization/tha/rest_site_ui.json";
 import turRestSiteUi from "../../data/sts2/localization/tur/rest_site_ui.json";
+import { bakeDescription } from "@/lib/codex-bake";
 import type { GameLocale } from "@/lib/i18n";
 import type {
   ReplayActAnalysis,
   ReplayBadge,
   ReplayBadgeRarity,
+  ReplayHistoryEntry,
   ReplayRun,
 } from "@/lib/sts2-run-replay";
 import {
@@ -151,6 +153,59 @@ export function restSiteChoiceLabel(choice: string, locale: GameLocale): string 
   const option = choice.toUpperCase().replace(/^OPTION_/, "");
   const key = `OPTION_${option}.name`;
   return REST_SITE_UI[locale]?.[key] ?? REST_SITE_UI.eng[key] ?? option;
+}
+
+export function restSiteChoiceDescription(
+  choice: string,
+  locale: GameLocale,
+  entry?: Pick<ReplayHistoryEntry, "hp_healed" | "max_hp" | "upgraded_cards">,
+): string | null {
+  const option = choice.toUpperCase().replace(/^OPTION_/, "");
+  const key = `OPTION_${option}.description`;
+  const raw = REST_SITE_UI[locale]?.[key] ?? REST_SITE_UI.eng[key] ?? null;
+  if (!raw) return null;
+  const heal =
+    (entry?.hp_healed && entry.hp_healed > 0)
+      ? entry.hp_healed
+      : Math.floor((entry?.max_hp ?? 0) * 0.3);
+  return bakeDescription(raw, {
+    Heal: heal,
+    ExtraText: "",
+    Count: entry?.upgraded_cards?.length ?? 1,
+  });
+}
+
+const REST_SITE_STANDARD = ["HEAL", "SMITH"] as const;
+
+const REST_SITE_ICONS: Record<string, string> = {
+  HEAL: "/images/sts2/ui/rest-site/option_heal.webp",
+  REST: "/images/sts2/ui/rest-site/option_heal.webp",
+  SMITH: "/images/sts2/ui/rest-site/option_smith.webp",
+  DIG: "/images/sts2/ui/rest-site/option_dig.webp",
+  LIFT: "/images/sts2/ui/rest-site/option_lift.webp",
+  COOK: "/images/sts2/ui/rest-site/option_cook.webp",
+  CLONE: "/images/sts2/ui/rest-site/option_clone.webp",
+  HATCH: "/images/sts2/ui/rest-site/option_hatch.webp",
+  KINDLE: "/images/sts2/ui/rest-site/option_kindle.webp",
+  MEND: "/images/sts2/ui/rest-site/option_mend.webp",
+  TOKE: "/images/sts2/ui/rest-site/option_toke.webp",
+};
+
+export function restSiteChoiceIconSrc(choice: string): string {
+  const option = choice.toUpperCase().replace(/^OPTION_/, "");
+  return REST_SITE_ICONS[option] ?? REST_SITE_ICONS.HEAL;
+}
+
+export function restSiteOptionsForEntry(entry: { rest_site_choices?: string[] }): string[] {
+  const picked = (entry.rest_site_choices ?? []).map((choice) =>
+    choice.toUpperCase().replace(/^OPTION_/, ""),
+  );
+  const extras = picked.filter((id) => !REST_SITE_STANDARD.includes(id as (typeof REST_SITE_STANDARD)[number]));
+  return [...REST_SITE_STANDARD, ...extras];
+}
+
+export function restSitePrompt(locale: GameLocale): string {
+  return REST_SITE_UI[locale]?.PROMPT ?? REST_SITE_UI.eng.PROMPT ?? "What to do?";
 }
 
 /** Shared path stays; quest / boots overlays follow the focused character. */

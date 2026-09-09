@@ -17,22 +17,28 @@ import {
   buildRunTimeline,
   nodeDurationForEntry,
 } from "../src/lib/sts2-run-timeline";
+import { historyRoomChoiceCopy, eventLastSceneChoices } from "../src/lib/history-room-choice";
+import { restSiteChoiceDescription, restSiteOptionsForEntry } from "../src/lib/history-party";
 import {
   LAST_SCENE_STEP_MS,
   lastSceneDurationMs,
+  lastSceneHiddenRelicIds,
+  lastSceneIdSetHas,
   lastScenePhase,
+  lootSpecTaken,
+  combatLootSpecs,
 } from "../src/lib/history-last-scene-steps";
 import {
   eventArtUrl,
   lastSceneBackgroundUrl,
   lastSceneMonsterSlots,
+  restSiteBackgroundUrl,
   treasureRoomSpineAct,
 } from "../src/lib/history-last-scene-assets";
 import { playbackSpeedMultiplier } from "../src/lib/history-playback-rate";
 import { matchEncounterFormationIndex } from "../src/lib/history-encounter-match";
-import { historyRoomChoiceCopy } from "../src/lib/history-room-choice";
 import { getGameI18nTablesSync } from "../src/lib/sts2-game-i18n";
-import type { CodexEncounter } from "../src/lib/codex-types";
+import type { CodexEncounter, CodexEvent } from "../src/lib/codex-types";
 
 function entry(partial: Partial<ReplayHistoryEntry>): ReplayHistoryEntry {
   return {
@@ -372,14 +378,14 @@ const combatWithLoot = entry({
   ],
   rooms: [{ room_type: "monster", model_id: "ENCOUNTER.X", turns_taken: 1 }],
 });
-assert.equal(lastSceneDurationMs("combat", combatWithLoot), 5 * LAST_SCENE_STEP_MS);
+assert.equal(lastSceneDurationMs("combat", combatWithLoot), 6 * LAST_SCENE_STEP_MS);
 assert.equal(lastScenePhase("combat", combatWithLoot, 0).kind, "alive");
 assert.equal(lastScenePhase("combat", combatWithLoot, LAST_SCENE_STEP_MS).kind, "dying");
 assert.deepEqual(
   lastScenePhase("combat", combatWithLoot, 2 * LAST_SCENE_STEP_MS),
-  { kind: "loot", revealedCount: 1, total: 2 },
+  { kind: "loot", resolvedCount: 0, total: 3, beatProgress: 0 },
 );
-assert.equal(lastScenePhase("combat", combatWithLoot, 4 * LAST_SCENE_STEP_MS).kind, "cards");
+assert.equal(lastScenePhase("combat", combatWithLoot, 5 * LAST_SCENE_STEP_MS).kind, "cards");
 assert.equal(lastScenePhase("event", combatWithLoot, 0).kind, "choice");
 assert.equal(lastScenePhase("event", combatWithLoot, LAST_SCENE_STEP_MS).kind, "receipt");
 assert.equal(lastScenePhase("shop", combatWithLoot, 0).kind, "shop");
@@ -387,5 +393,80 @@ assert.equal(lastScenePhase("shop", combatWithLoot, 0).kind, "shop");
 const rateTimeline = buildRunTimeline([actFromHistory([mundaneCombat])]);
 assert.equal(playbackSpeedMultiplier(rateTimeline, 0, 2), 2);
 assert.equal(playbackSpeedMultiplier(rateTimeline, NODE_BASE_MS + 1, 2), 1);
+
+assert.match(
+  lastSceneBackgroundUrl({
+    kind: "rest",
+    modelId: null,
+    actId: "ACT.OVERGROWTH",
+  }),
+  /overgrowth_rest_site_bg\.webp$/,
+);
+assert.equal(restSiteBackgroundUrl("ACT.HIVE"), "/images/sts2/rooms/rest-sites/hive_rest_site_00.webp");
+assert.deepEqual(restSiteOptionsForEntry({ rest_site_choices: ["SMITH"] }), ["HEAL", "SMITH"]);
+assert.match(
+  restSiteChoiceDescription("HEAL", "kor", { hp_healed: 23, max_hp: 76 }) ?? "",
+  /23/,
+);
+assert.doesNotMatch(
+  restSiteChoiceDescription("HEAL", "kor", { hp_healed: 23, max_hp: 76 }) ?? "",
+  /\{Heal\}|\{ExtraText\}/,
+);
+
+const cheeseEvent = {
+  id: "ROOM_FULL_OF_CHEESE",
+  pages: [
+    {
+      id: "INITIAL",
+      description: null,
+      options: [
+        { id: "GORGE", title: "잔뜩 먹는다", description: "cards" },
+        { id: "SEARCH", title: "탐색한다", description: "damage" },
+      ],
+    },
+  ],
+  options: null,
+} as unknown as CodexEvent;
+const cheeseChoices = eventLastSceneChoices(cheeseEvent, [
+  { id: "SEARCH", picked: true },
+]);
+assert.equal(cheeseChoices.length, 2);
+assert.equal(cheeseChoices.filter((choice) => !choice.picked).length, 1);
+assert.equal(cheeseChoices.find((choice) => choice.picked)?.id, "SEARCH");
+
+const skippedPotion = combatLootSpecs(entry({
+  potion_choices: [{ id: "POTION.EXPLOSIVE_VIAL", picked: false }],
+}))[0];
+assert.ok(skippedPotion);
+assert.equal(lootSpecTaken(skippedPotion, entry({ potion_choices: [{ id: "POTION.EXPLOSIVE_VIAL", picked: false }] })), false);
+
+const relicLootEntry = entry({
+  map_point_type: "monster",
+  relic_choices: [{ id: "RELIC.POMANDER", picked: true }],
+  rooms: [{ room_type: "monster", model_id: "ENCOUNTER.X", turns_taken: 1 }],
+});
+assert.ok(
+  lastSceneHiddenRelicIds("combat", relicLootEntry, 2 * LAST_SCENE_STEP_MS).has("RELIC.POMANDER"),
+);
+assert.equal(
+  lastSceneHiddenRelicIds("combat", relicLootEntry, 2 * LAST_SCENE_STEP_MS + LAST_SCENE_STEP_MS).has("RELIC.POMANDER"),
+  false,
+);
+assert.ok(
+  lastSceneIdSetHas(
+    lastSceneHiddenRelicIds("combat", relicLootEntry, 2 * LAST_SCENE_STEP_MS),
+    "POMANDER",
+  ),
+);
+
+const shopRelicEntry = entry({
+  map_point_type: "shop",
+  relic_choices: [{ id: "RELIC.POMANDER", picked: true }],
+});
+assert.ok(lastSceneHiddenRelicIds("shop", shopRelicEntry, 0).has("RELIC.POMANDER"));
+assert.equal(
+  lastSceneHiddenRelicIds("shop", shopRelicEntry, LAST_SCENE_STEP_MS).has("RELIC.POMANDER"),
+  false,
+);
 
 console.log("history-last-scene.spec.ts ok");

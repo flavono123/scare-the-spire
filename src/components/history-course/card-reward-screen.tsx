@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { FittedCardTile } from "@/components/history-course/fitted-card-tile";
+import { LastSceneObtainFly } from "@/components/history-course/last-scene-obtain-vfx";
 import { lookupHistoryCard } from "@/lib/history-card-lookup";
 import { gameplayUiText } from "@/lib/history-gameplay-ui";
 import type { CodexCard } from "@/lib/codex-types";
@@ -71,6 +72,7 @@ export function CardRewardScreen({
   serviceLocale,
   locTables,
   skipped,
+  beatProgress = 1,
 }: {
   choices: ReplayChoice[];
   cardsById?: Record<string, CodexCard>;
@@ -78,9 +80,13 @@ export function CardRewardScreen({
   serviceLocale: ServiceLocale;
   locTables?: HistoryLocTables | null;
   skipped: boolean;
+  beatProgress?: number;
 }) {
   const header = gameplayUiText(gameLocale, "CHOOSE_CARD_HEADER", "Choose a Card", locTables);
   const skipLabel = gameplayUiText(gameLocale, "CHOOSE_CARD_SKIP_BUTTON", "Skip", locTables);
+  const picked = choices.find((choice) => choice.picked && choice.id);
+  const pickedCard = picked && cardsById ? lookupHistoryCard(cardsById, picked.id) : undefined;
+  const flying = Boolean(picked && beatProgress > 0.22 && !skipped);
 
   return (
     <div
@@ -113,9 +119,10 @@ export function CardRewardScreen({
         {choices.map((choice) => {
           const card = cardsById ? lookupHistoryCard(cardsById, choice.id) : undefined;
           const upgradeLevel = choice.upgradeLevel ?? 0;
+          const hideForFly = flying && choice.picked && beatProgress > 0.22;
           return (
             <PickedRing key={choice.id} picked={choice.picked} pickId={choice.id}>
-              <div className="relative w-full">
+              <div className={cn("relative w-full", hideForFly && "opacity-0")}>
                 <RewardCardGlow rarity={card?.rarity} />
                 {card ? (
                   <FittedCardTile
@@ -157,6 +164,17 @@ export function CardRewardScreen({
           </div>
         </div>
       </div>
+      {flying && picked && pickedCard?.imageUrl ? (
+        <LastSceneObtainFly
+          active
+          progress={Math.min(1, 0.18 + Math.max(0, beatProgress - 0.15) * 0.82)}
+          sourceSelector={`[data-history-last-scene-pick="${picked.id}"]`}
+          targetSelector="[data-deck-target]"
+          iconUrl={pickedCard.imageUrl}
+          kind="card"
+          size={120}
+        />
+      ) : null}
     </div>
   );
 }

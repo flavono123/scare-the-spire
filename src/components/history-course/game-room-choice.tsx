@@ -4,7 +4,6 @@ import { GameScrollArea } from "@/components/game-scroll-area";
 import { RichText } from "@/components/rich-text";
 import { GameChoiceFrame } from "@/components/codex/event-choice-frame";
 import type { ReplayChoice } from "@/lib/sts2-run-replay";
-import { cn } from "@/lib/utils";
 
 export function GameRoomChoiceButton({
   title,
@@ -25,10 +24,8 @@ export function GameRoomChoiceButton({
     <div
       data-history-last-scene-pick={pickId}
       data-picked={picked ? "true" : "false"}
-      className={cn(
-        "transition-opacity duration-300",
-        revealed && !picked && "opacity-40",
-      )}
+      className="transition-opacity duration-300"
+      style={{ opacity: revealed && !picked ? 0.4 : 1 }}
     >
       <GameChoiceFrame
         active={revealed && picked}

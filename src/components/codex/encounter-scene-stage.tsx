@@ -39,6 +39,7 @@ interface EncounterSceneStageProps {
   showCharacter?: boolean;
   lockedFormationIndex?: number | null;
   loopSelectedMove?: boolean;
+  holdDeathPose?: boolean;
   children?: ReactNode;
 }
 
@@ -107,6 +108,7 @@ export function EncounterSceneStage({
   showCharacter,
   lockedFormationIndex = null,
   loopSelectedMove,
+  holdDeathPose = false,
   children,
 }: EncounterSceneStageProps) {
   const formations = useMemo(() => expandEncounterFormations(encounter), [encounter]);
@@ -252,6 +254,7 @@ export function EncounterSceneStage({
                 selectedMoveId={selectedMoveId}
                 selectedMoveNonce={selectedMoveNonce}
                 loopSelectedMove={loopSelectedMove}
+                holdDeathPose={holdDeathPose}
                 className="absolute inset-0"
                 fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.75)]"
                 imagePriority
@@ -331,6 +334,7 @@ export function EncounterSceneStage({
             selectedMoveId={selectedMoveId}
             selectedMoveNonce={selectedMoveNonce}
             loopSelectedMove={loopSelectedMove}
+            holdDeathPose={holdDeathPose}
             atlasDuotone={atlasDuotone}
           />
         ))}
@@ -468,6 +472,7 @@ function EncounterMonsterActor({
   selectedMoveId,
   selectedMoveNonce,
   loopSelectedMove,
+  holdDeathPose,
   atlasDuotone,
 }: {
   monster: CodexMonster;
@@ -480,6 +485,7 @@ function EncounterMonsterActor({
   selectedMoveId: string | null;
   selectedMoveNonce: number;
   loopSelectedMove?: boolean;
+  holdDeathPose?: boolean;
   atlasDuotone?: SpineAtlasDuotone | null;
 }) {
   const stage = (
@@ -490,6 +496,7 @@ function EncounterMonsterActor({
       selectedMoveId={selectedMoveId}
       selectedMoveNonce={selectedMoveNonce}
       loopSelectedMove={loopSelectedMove}
+      holdDeathPose={holdDeathPose}
       className={`absolute inset-0 ${interactive ? "transition-transform duration-200 group-hover:scale-[1.03]" : ""}`}
       fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.75)]"
       imagePriority={imagePriority}

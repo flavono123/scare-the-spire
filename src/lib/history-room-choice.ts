@@ -262,6 +262,36 @@ export function roomChoiceBackgroundImageUrl(
   return null;
 }
 
+export function eventLastSceneChoices(
+  event: CodexEvent | undefined,
+  replayChoices: ReplayChoice[] | undefined,
+): ReplayChoice[] {
+  const picks = replayChoices ?? [];
+  const pickedKey = (choice: ReplayChoice) => choiceOptionId(choice).toUpperCase();
+  const pickById = new Map(picks.map((choice) => [pickedKey(choice), choice]));
+  const pages = event?.pages ?? [];
+  let options = event?.options ?? [];
+  const matchingPage = pages.find((page) =>
+    (page.options ?? []).some((option) => pickById.has(option.id.toUpperCase())),
+  );
+  if (matchingPage?.options?.length) {
+    options = matchingPage.options;
+  } else {
+    const initial = pages.find((page) => page.id.toUpperCase() === "INITIAL") ?? pages[0];
+    if (initial?.options?.length) options = initial.options;
+  }
+  if (!options.length) return picks;
+
+  const listed = options.map((option) => pickById.get(option.id.toUpperCase()) ?? {
+    id: option.id,
+    picked: false,
+  });
+  for (const pick of picks) {
+    if (!listed.some((row) => pickedKey(row) === pickedKey(pick))) listed.push(pick);
+  }
+  return listed;
+}
+
 export function historyRoomChoiceCopy(
   choice: ReplayChoice,
   tables: GameI18nTables,

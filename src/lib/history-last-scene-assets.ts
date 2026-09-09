@@ -93,11 +93,33 @@ export function treasureRoomSpineAct(actId: string | null | undefined): 1 | 2 | 
   return TREASURE_ROOM_ACT[key] ?? 1;
 }
 
+const REST_SITE_BACKGROUND: Record<string, string> = {
+  OVERGROWTH: "/images/sts2/rooms/rest-sites/overgrowth_rest_site_bg.webp",
+  HIVE: "/images/sts2/rooms/rest-sites/hive_rest_site_00.webp",
+  GLORY: "/images/sts2/rooms/rest-sites/glory_rest_site_00.webp",
+  UNDERDOCKS: "/images/sts2/rooms/rest-sites/underdocks_rest_site_bg.webp",
+};
+
+export function restSiteBackgroundUrl(actId: string | null | undefined): string {
+  const key = stripReplayId(actId ?? "").toUpperCase();
+  return REST_SITE_BACKGROUND[key] ?? REST_SITE_BACKGROUND.OVERGROWTH;
+}
+
+export function restSiteFireUrl(actId: string | null | undefined): string | null {
+  const key = stripReplayId(actId ?? "").toUpperCase();
+  return key === "OVERGROWTH" || !key
+    ? "/images/sts2/rooms/rest-sites/overgrowth_rest_site_fire.webp"
+    : null;
+}
+
 export function lastSceneBackgroundUrl(opts: {
   kind: string;
   modelId: string | null | undefined;
   actId: string | null | undefined;
 }): string {
+  if (opts.kind === "rest") {
+    return restSiteBackgroundUrl(opts.actId);
+  }
   if (opts.kind === "treasure") {
     // Treasure rooms are a black ColorRect + chest_room Spine, not the
     // act combat cave. The stage loads the Spine actor itself.

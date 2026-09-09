@@ -1,29 +1,45 @@
 import type { LastSceneKind } from "@/lib/history-last-scene";
+import { stripReplayId } from "@/lib/history-last-scene";
 import type { ReplayChoice, ReplayHistoryEntry } from "@/lib/sts2-run-replay";
 
 /** Intra-node last-scene beat, wall-clock. Playback rate does not shorten this. */
 export const LAST_SCENE_STEP_MS = 1200;
 
+/** Relic/potion fly from `scenes/vfx/vfx_item_throw.tscn` lands near the end of the beat. */
+export const LAST_SCENE_OBTAIN_LAND = 0.82;
+
 export type CombatLootSpec =
   | { kind: "gold"; amount: number; stolen: boolean }
   | { kind: "potion"; choice: ReplayChoice }
   | { kind: "relic"; choice: ReplayChoice }
-  | { kind: "card-removal" };
+  | { kind: "card-removal" }
+  | { kind: "cards" };
 
 export type LastScenePhase =
   | { kind: "alive" }
   | { kind: "dying" }
-  | { kind: "loot"; revealedCount: number; total: number }
-  | { kind: "cards" }
-  | { kind: "choice" }
-  | { kind: "receipt" }
-  | { kind: "shop" }
+  | { kind: "loot"; resolvedCount: number; total: number; beatProgress: number }
+  | { kind: "cards"; beatProgress: number }
+  | { kind: "choice"; beatProgress: number }
+  | { kind: "receipt"; beatProgress: number }
+  | { kind: "shop"; beatProgress: number; step: number }
   | { kind: "chest" }
   | { kind: "rest" }
   | { kind: "death" };
 
+export function lastSceneBeatProgress(sceneLocalMs: number): number {
+  if (sceneLocalMs <= 0) return 0;
+  return (sceneLocalMs % LAST_SCENE_STEP_MS) / LAST_SCENE_STEP_MS;
+}
+
 export function hasCardRewardScreen(entry: ReplayHistoryEntry): boolean {
   return (entry.card_choices ?? []).some((choice) => choice.id);
+}
+
+export function lootSpecTaken(spec: CombatLootSpec, entry: ReplayHistoryEntry): boolean {
+  if (spec.kind === "gold" || spec.kind === "card-removal") return true;
+  if (spec.kind === "potion" || spec.kind === "relic") return Boolean(spec.choice.picked);
+  return (entry.card_choices ?? []).some((choice) => choice.picked);
 }
 
 export function combatLootSpecs(entry: ReplayHistoryEntry): CombatLootSpec[] {
@@ -42,7 +58,15 @@ export function combatLootSpecs(entry: ReplayHistoryEntry): CombatLootSpec[] {
   if ((entry.cards_removed ?? []).some((card) => card.id)) {
     items.push({ kind: "card-removal" });
   }
+  if (hasCardRewardScreen(entry)) {
+    items.push({ kind: "cards" });
+  }
   return items;
+}
+
+export function combatShowsCardPicker(entry: ReplayHistoryEntry): boolean {
+  const cardsRow = combatLootSpecs(entry).find((spec) => spec.kind === "cards");
+  return Boolean(cardsRow && lootSpecTaken(cardsRow, entry));
 }
 
 export function lastSceneStepCount(
@@ -52,18 +76,18 @@ export function lastSceneStepCount(
   switch (kind) {
     case "combat": {
       const loot = combatLootSpecs(entry);
-      return 2 + loot.length + (hasCardRewardScreen(entry) ? 1 : 0);
+      return 2 + loot.length + (combatShowsCardPicker(entry) ? 1 : 0);
     }
     case "treasure": {
       const loot = combatLootSpecs(entry);
-      return 1 + loot.length + (hasCardRewardScreen(entry) ? 1 : 0);
+      return 1 + loot.length + (combatShowsCardPicker(entry) ? 1 : 0);
     }
     case "event":
     case "ancient":
     case "rest":
       return 2;
     case "shop":
-      return 3;
+      return Math.max(3, shopObtainQueue(entry).length);
     case "death":
       return 3;
     default:
@@ -88,17 +112,23 @@ export function lastScenePhase(
   sceneLocalMs: number,
 ): LastScenePhase {
   const step = lastSceneStepIndex(sceneLocalMs);
+  const beatProgress = lastSceneBeatProgress(sceneLocalMs);
   if (kind === "combat") {
     if (step <= 0) return { kind: "alive" };
     if (step === 1) return { kind: "dying" };
     const loot = combatLootSpecs(entry);
     const lootStep = step - 2;
     if (loot.length > 0 && lootStep < loot.length) {
-      return { kind: "loot", revealedCount: lootStep + 1, total: loot.length };
+      return { kind: "loot", resolvedCount: lootStep, total: loot.length, beatProgress };
     }
-    if (hasCardRewardScreen(entry)) return { kind: "cards" };
+    if (combatShowsCardPicker(entry)) return { kind: "cards", beatProgress };
     if (loot.length > 0) {
-      return { kind: "loot", revealedCount: loot.length, total: loot.length };
+      return {
+        kind: "loot",
+        resolvedCount: loot.length,
+        total: loot.length,
+        beatProgress: 1,
+      };
     }
     return { kind: "dying" };
   }
@@ -107,33 +137,184 @@ export function lastScenePhase(
     const loot = combatLootSpecs(entry);
     const lootStep = step - 1;
     if (loot.length > 0 && lootStep < loot.length) {
-      return { kind: "loot", revealedCount: lootStep + 1, total: loot.length };
+      return { kind: "loot", resolvedCount: lootStep, total: loot.length, beatProgress };
     }
-    if (hasCardRewardScreen(entry)) return { kind: "cards" };
+    if (combatShowsCardPicker(entry)) return { kind: "cards", beatProgress };
     if (loot.length > 0) {
-      return { kind: "loot", revealedCount: loot.length, total: loot.length };
+      return {
+        kind: "loot",
+        resolvedCount: loot.length,
+        total: loot.length,
+        beatProgress: 1,
+      };
     }
     return { kind: "chest" };
   }
   if (kind === "event" || kind === "ancient" || kind === "rest") {
-    return step <= 0 ? { kind: "choice" } : { kind: "receipt" };
+    return step <= 0
+      ? { kind: "choice", beatProgress }
+      : { kind: "receipt", beatProgress };
   }
-  if (kind === "shop") return { kind: "shop" };
+  if (kind === "shop") return { kind: "shop", beatProgress, step };
   if (kind === "death") return { kind: "death" };
-  return { kind: "choice" };
+  return { kind: "choice", beatProgress };
 }
 
-/** Topbar relics/potions should appear once the player would have taken loot. */
+function obtainLanded(beatProgress: number): boolean {
+  return beatProgress >= LAST_SCENE_OBTAIN_LAND;
+}
+
+export type ShopObtain = {
+  kind: "relic" | "potion" | "card";
+  id: string;
+};
+
+export function shopObtainQueue(entry: ReplayHistoryEntry): ShopObtain[] {
+  const out: ShopObtain[] = [];
+  for (const choice of entry.relic_choices ?? []) {
+    if (choice.picked && choice.id) out.push({ kind: "relic", id: choice.id });
+  }
+  for (const choice of entry.potion_choices ?? []) {
+    if (choice.picked && choice.id) out.push({ kind: "potion", id: choice.id });
+  }
+  for (const choice of entry.card_choices ?? []) {
+    if (choice.picked && choice.id) out.push({ kind: "card", id: choice.id });
+  }
+  return out;
+}
+
+function shopObtainLanded(
+  entry: ReplayHistoryEntry,
+  id: string,
+  kind: ShopObtain["kind"],
+  sceneLocalMs: number,
+): boolean {
+  const queue = shopObtainQueue(entry);
+  const index = queue.findIndex((item) => item.kind === kind && item.id === id);
+  if (index < 0) return true;
+  const steps = lastSceneStepCount("shop", entry);
+  const slot = Math.min(index, steps - 1);
+  const step = lastSceneStepIndex(sceneLocalMs);
+  return step > slot || (step === slot && obtainLanded(lastSceneBeatProgress(sceneLocalMs)));
+}
+
+export function shopObtainsAtStep(entry: ReplayHistoryEntry, step: number): ShopObtain[] {
+  const queue = shopObtainQueue(entry);
+  const steps = lastSceneStepCount("shop", entry);
+  return queue.filter((_, index) => Math.min(index, steps - 1) === step);
+}
+
+export function lastSceneIdSetHas(ids: ReadonlySet<string> | undefined, id: string): boolean {
+  if (!ids || ids.size === 0) return false;
+  if (ids.has(id)) return true;
+  const key = normalizeObtainId(id);
+  for (const item of ids) {
+    if (normalizeObtainId(item) === key) return true;
+  }
+  return false;
+}
+
+function pickedRelicIds(entry: ReplayHistoryEntry): string[] {
+  return (entry.relic_choices ?? []).filter((choice) => choice.picked && choice.id).map((choice) => choice.id);
+}
+
+function pickedPotionIds(entry: ReplayHistoryEntry): string[] {
+  return (entry.potion_choices ?? []).filter((choice) => choice.picked && choice.id).map((choice) => choice.id);
+}
+
+/** Relic icons stay invisible in the topbar until their obtain fly lands. */
+export function lastSceneHiddenRelicIds(
+  kind: LastSceneKind,
+  entry: ReplayHistoryEntry,
+  sceneLocalMs: number,
+): Set<string> {
+  if (kind === "combat" || kind === "treasure") {
+    const localKind = kind === "treasure" ? "treasure" : "combat";
+    const loot = combatLootSpecs(entry);
+    const phase = lastScenePhase(localKind, entry, sceneLocalMs);
+    const hidden = new Set<string>();
+    if (phase.kind === "cards") return hidden;
+    const resolvedCount = phase.kind === "loot" ? phase.resolvedCount : -1;
+    const beatProgress = phase.kind === "loot" ? phase.beatProgress : 0;
+    loot.forEach((spec, index) => {
+      if (spec.kind !== "relic" || !spec.choice.picked || !spec.choice.id) return;
+      const landed =
+        resolvedCount > index || (resolvedCount === index && obtainLanded(beatProgress));
+      if (!landed) hidden.add(spec.choice.id);
+    });
+    return hidden;
+  }
+  if (kind === "shop") {
+    const hidden = new Set<string>();
+    for (const item of shopObtainQueue(entry)) {
+      if (item.kind !== "relic") continue;
+      if (!shopObtainLanded(entry, item.id, "relic", sceneLocalMs)) hidden.add(item.id);
+    }
+    return hidden;
+  }
+  if (kind === "event" || kind === "ancient") {
+    const phase = lastScenePhase(kind, entry, sceneLocalMs);
+    if (phase.kind !== "receipt") return new Set(pickedRelicIds(entry));
+    return obtainLanded(phase.beatProgress) ? new Set() : new Set(pickedRelicIds(entry));
+  }
+  return new Set();
+}
+
+export function lastSceneHiddenPotionIds(
+  kind: LastSceneKind,
+  entry: ReplayHistoryEntry,
+  sceneLocalMs: number,
+): Set<string> {
+  if (kind === "combat" || kind === "treasure") {
+    const localKind = kind === "treasure" ? "treasure" : "combat";
+    const loot = combatLootSpecs(entry);
+    const phase = lastScenePhase(localKind, entry, sceneLocalMs);
+    const hidden = new Set<string>();
+    if (phase.kind === "cards") return hidden;
+    const resolvedCount = phase.kind === "loot" ? phase.resolvedCount : -1;
+    const beatProgress = phase.kind === "loot" ? phase.beatProgress : 0;
+    loot.forEach((spec, index) => {
+      if (spec.kind !== "potion" || !spec.choice.picked || !spec.choice.id) return;
+      const landed =
+        resolvedCount > index || (resolvedCount === index && obtainLanded(beatProgress));
+      if (!landed) hidden.add(spec.choice.id);
+    });
+    return hidden;
+  }
+  if (kind === "shop") {
+    const hidden = new Set<string>();
+    for (const item of shopObtainQueue(entry)) {
+      if (item.kind !== "potion") continue;
+      if (!shopObtainLanded(entry, item.id, "potion", sceneLocalMs)) hidden.add(item.id);
+    }
+    return hidden;
+  }
+  if (kind === "event" || kind === "ancient") {
+    const phase = lastScenePhase(kind, entry, sceneLocalMs);
+    if (phase.kind !== "receipt") return new Set(pickedPotionIds(entry));
+    return obtainLanded(phase.beatProgress) ? new Set() : new Set(pickedPotionIds(entry));
+  }
+  return new Set();
+}
+
+/** Whether any last-scene obtain has started (used by potion-use delay). */
 export function lastScenePicksRevealed(
   kind: LastSceneKind,
   entry: ReplayHistoryEntry,
   sceneLocalMs: number,
 ): boolean {
   const phase = lastScenePhase(kind, entry, sceneLocalMs);
-  return (
-    phase.kind === "loot" ||
-    phase.kind === "cards" ||
-    phase.kind === "receipt" ||
-    phase.kind === "shop"
-  );
+  if (phase.kind === "cards") return true;
+  if (phase.kind === "shop") {
+    return phase.step > 0 || obtainLanded(phase.beatProgress);
+  }
+  if (phase.kind === "loot") {
+    return phase.resolvedCount > 0 || obtainLanded(phase.beatProgress);
+  }
+  if (phase.kind === "receipt") return obtainLanded(phase.beatProgress);
+  return false;
+}
+
+export function normalizeObtainId(id: string): string {
+  return stripReplayId(id).toUpperCase();
 }

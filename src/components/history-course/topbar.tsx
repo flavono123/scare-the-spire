@@ -25,6 +25,7 @@ import {
 } from "@/lib/history-relic-lookup";
 import { historyStaticHoverTipFromTables } from "@/lib/history-catalog-locale";
 import { historyStaticHoverTip } from "@/lib/history-static-hover-tips";
+import { lastSceneIdSetHas } from "@/lib/history-last-scene-steps";
 import type { CodexPotion, CodexRelic } from "@/lib/codex-types";
 import { serviceMessages } from "@/messages/service";
 import {
@@ -390,7 +391,7 @@ function PotionSlots({
         const isHeld = Boolean(heldPotionId && heldPotionIds?.has(heldPotionId));
         const displayedPotionId = isHeld ? heldPotionId : potionId;
         const visiblePotionId =
-          displayedPotionId && (isHeld || !hidingPotionIds?.has(displayedPotionId))
+          displayedPotionId && (isHeld || !lastSceneIdSetHas(hidingPotionIds, displayedPotionId))
             ? displayedPotionId
             : null;
         const potion = visiblePotionId
@@ -839,7 +840,7 @@ function RelicRow({
   return (
     <div className="flex flex-wrap items-center gap-1.5 pl-1" data-relic-row>
       {relics.map((relic) => {
-        const hidden = hidingRelicIds?.has(relic.id) ?? false;
+        const hidden = lastSceneIdSetHas(hidingRelicIds, relic.id);
         const catalogRelic = lookupHistoryRelic(relicsById, relic.id);
         const entity = buildRelicEntityInfo(catalogRelic);
         const label = localizeGame(tables, "relics", relic.id) ?? catalogRelic?.name ?? relic.id;

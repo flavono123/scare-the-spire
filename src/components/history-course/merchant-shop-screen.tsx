@@ -1,13 +1,20 @@
 "use client";
 
 import { FittedCardTile } from "@/components/history-course/fitted-card-tile";
+import {
+  LastSceneObtainFly,
+  bounceTranslateY,
+  cssEscapeAttr,
+  relicTargetSelector,
+} from "@/components/history-course/last-scene-obtain-vfx";
 import { lookupHistoryCard } from "@/lib/history-card-lookup";
 import { lookupHistoryPotion } from "@/lib/history-potion-lookup";
 import { lookupHistoryRelic } from "@/lib/history-relic-lookup";
 import { resolveRelicDisplayImage } from "@/lib/relic-character-variant";
+import { shopObtainsAtStep } from "@/lib/history-last-scene-steps";
 import type { CodexCard, CodexPotion, CodexRelic } from "@/lib/codex-types";
 import type { ServiceLocale } from "@/lib/i18n";
-import type { ReplayChoice } from "@/lib/sts2-run-replay";
+import type { ReplayChoice, ReplayHistoryEntry } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
 
 const RUG = "/images/sts2/ui/merchant/shop_rug.webp";
@@ -53,16 +60,22 @@ function ShopCard({
   serviceLocale,
   left,
   top,
+  flying,
+  beatProgress,
 }: {
   choice: ReplayChoice | undefined;
   cardsById?: Record<string, CodexCard>;
   serviceLocale: ServiceLocale;
   left: number;
   top: number;
+  flying?: boolean;
+  beatProgress?: number;
 }) {
   if (!choice?.id) return null;
   const card = cardsById ? lookupHistoryCard(cardsById, choice.id) : undefined;
   const upgradeLevel = choice.upgradeLevel ?? 0;
+  const hideIcon = flying && (beatProgress ?? 0) > 0.18;
+  const bounce = flying ? bounceTranslateY(beatProgress ?? 0) : 0;
   return (
     <div
       data-history-last-scene-pick={choice.id}
@@ -76,17 +89,20 @@ function ShopCard({
         top: pct(top, RUG_H),
         width: pct(CARD_W, RUG_W),
         height: pct(CARD_H, RUG_H),
+        transform: bounce ? `translateY(${bounce}px)` : undefined,
       }}
     >
       {card ? (
-        <FittedCardTile
-          card={card}
-          showUpgrade={upgradeLevel > 0}
-          upgradeLevel={upgradeLevel}
-          showBeta={false}
-          interactive={false}
-          serviceLocale={serviceLocale}
-        />
+        <div className={cn("h-full w-full", hideIcon && "opacity-0")}>
+          <FittedCardTile
+            card={card}
+            showUpgrade={upgradeLevel > 0}
+            upgradeLevel={upgradeLevel}
+            showBeta={false}
+            interactive={false}
+            serviceLocale={serviceLocale}
+          />
+        </div>
       ) : (
         <div className="font-game-text text-xs text-[#fff6e2]">{choice.id}</div>
       )}
@@ -98,14 +114,20 @@ function ShopRelic({
   choice,
   relicsById,
   index,
+  flying,
+  beatProgress,
 }: {
   choice: ReplayChoice | undefined;
   relicsById?: Record<string, CodexRelic>;
   index: number;
+  flying?: boolean;
+  beatProgress?: number;
 }) {
   if (!choice?.id) return null;
   const relic = lookupHistoryRelic(relicsById, choice.id);
   const src = relic ? resolveRelicDisplayImage(relic, relic.pool) : null;
+  const hideIcon = flying && (beatProgress ?? 0) > 0.18;
+  const bounce = flying ? bounceTranslateY(beatProgress ?? 0) : 0;
   return (
     <div
       data-history-last-scene-pick={choice.id}
@@ -119,11 +141,17 @@ function ShopRelic({
         top: pct(RELIC_ORIGIN.y, RUG_H),
         width: pct(RELIC_SLOT, RUG_W),
         height: pct(RELIC_SLOT, RUG_H),
+        transform: bounce ? `translateY(${bounce}px)` : undefined,
       }}
     >
       {src ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt={relic?.name ?? choice.id} className="h-full w-full object-contain" />
+        <img
+          src={src}
+          alt={relic?.name ?? choice.id}
+          data-history-reward-icon={choice.id}
+          className={cn("h-full w-full object-contain", hideIcon && "opacity-0")}
+        />
       ) : (
         <span className="font-game-text text-[10px] text-[#fff6e2]">{choice.id}</span>
       )}
@@ -135,13 +163,19 @@ function ShopPotion({
   choice,
   potionsById,
   index,
+  flying,
+  beatProgress,
 }: {
   choice: ReplayChoice | undefined;
   potionsById?: Record<string, CodexPotion>;
   index: number;
+  flying?: boolean;
+  beatProgress?: number;
 }) {
   if (!choice?.id) return null;
   const potion = lookupHistoryPotion(potionsById, choice.id);
+  const hideIcon = flying && (beatProgress ?? 0) > 0.18;
+  const bounce = flying ? bounceTranslateY(beatProgress ?? 0) : 0;
   return (
     <div
       data-history-last-scene-pick={choice.id}
@@ -155,11 +189,17 @@ function ShopPotion({
         top: pct(POTION_ORIGIN.y, RUG_H),
         width: pct(RELIC_SLOT, RUG_W),
         height: pct(RELIC_SLOT, RUG_H),
+        transform: bounce ? `translateY(${bounce}px)` : undefined,
       }}
     >
       {potion?.imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={potion.imageUrl} alt={potion.name} className="h-full w-full object-contain" />
+        <img
+          src={potion.imageUrl}
+          alt={potion.name}
+          data-history-reward-icon={choice.id}
+          className={cn("h-full w-full object-contain", hideIcon && "opacity-0")}
+        />
       ) : (
         <span className="font-game-text text-[10px] text-[#fff6e2]">{choice.id}</span>
       )}
@@ -204,6 +244,9 @@ export function MerchantShopScreen({
   relicsById,
   potionsById,
   serviceLocale,
+  entry,
+  beatProgress = 1,
+  step = 0,
 }: {
   characterCards: ReplayChoice[];
   colorlessCards: ReplayChoice[];
@@ -214,7 +257,12 @@ export function MerchantShopScreen({
   relicsById?: Record<string, CodexRelic>;
   potionsById?: Record<string, CodexPotion>;
   serviceLocale: ServiceLocale;
+  entry?: ReplayHistoryEntry;
+  beatProgress?: number;
+  step?: number;
 }) {
+  const flying = entry ? shopObtainsAtStep(entry, step) : [];
+  const flyingIds = new Set(flying.map((item) => item.id));
   return (
     <div className="pointer-events-none absolute inset-0 z-20" data-history-merchant-shop>
       {/* NMerchantInventory backstop modulate.a = 0.8 */}
@@ -235,6 +283,8 @@ export function MerchantShopScreen({
               serviceLocale={serviceLocale}
               left={slot.x}
               top={slot.y}
+              flying={Boolean(characterCards[index]?.id && flyingIds.has(characterCards[index]!.id))}
+              beatProgress={beatProgress}
             />
           ))}
           {COLORLESS_CARDS.map((slot, index) => (
@@ -245,6 +295,8 @@ export function MerchantShopScreen({
               serviceLocale={serviceLocale}
               left={slot.x}
               top={slot.y}
+              flying={Boolean(colorlessCards[index]?.id && flyingIds.has(colorlessCards[index]!.id))}
+              beatProgress={beatProgress}
             />
           ))}
           {Array.from({ length: 3 }, (_, index) => (
@@ -253,6 +305,8 @@ export function MerchantShopScreen({
               choice={relics[index]}
               relicsById={relicsById}
               index={index}
+              flying={Boolean(relics[index]?.id && flyingIds.has(relics[index]!.id))}
+              beatProgress={beatProgress}
             />
           ))}
           {Array.from({ length: 3 }, (_, index) => (
@@ -261,6 +315,8 @@ export function MerchantShopScreen({
               choice={potions[index]}
               potionsById={potionsById}
               index={index}
+              flying={Boolean(potions[index]?.id && flyingIds.has(potions[index]!.id))}
+              beatProgress={beatProgress}
             />
           ))}
           <div
@@ -297,6 +353,40 @@ export function MerchantShopScreen({
           </div>
         </div>
       </div>
+      {flying.map((item) => {
+        const relic = item.kind === "relic" ? lookupHistoryRelic(relicsById, item.id) : undefined;
+        const potion = item.kind === "potion" ? lookupHistoryPotion(potionsById, item.id) : undefined;
+        const card = item.kind === "card" && cardsById ? lookupHistoryCard(cardsById, item.id) : undefined;
+        const iconUrl =
+          item.kind === "relic"
+            ? (relic ? resolveRelicDisplayImage(relic, relic.pool) : null)
+            : item.kind === "potion"
+              ? potion?.imageUrl
+              : card?.imageUrl;
+        if (!iconUrl) return null;
+        return (
+          <LastSceneObtainFly
+            key={`${item.kind}:${item.id}`}
+            active
+            progress={beatProgress}
+            sourceSelector={
+              item.kind === "card"
+                ? `[data-history-last-scene-pick="${cssEscapeAttr(item.id)}"]`
+                : `[data-history-reward-icon="${cssEscapeAttr(item.id)}"]`
+            }
+            targetSelector={
+              item.kind === "relic"
+                ? relicTargetSelector(item.id)
+                : item.kind === "potion"
+                  ? "[data-potion-bay]"
+                  : "[data-deck-target]"
+            }
+            iconUrl={iconUrl}
+            kind={item.kind}
+            size={item.kind === "card" ? 120 : 56}
+          />
+        );
+      })}
     </div>
   );
 }

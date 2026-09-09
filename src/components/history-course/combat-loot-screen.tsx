@@ -2,6 +2,12 @@
 
 import { RichText } from "@/components/rich-text";
 import { HistoryEntityPreview } from "@/components/history-course/history-entity-preview";
+import {
+  LastSceneObtainFly,
+  bounceTranslateY,
+  cssEscapeAttr,
+  relicTargetSelector,
+} from "@/components/history-course/last-scene-obtain-vfx";
 import { lookupHistoryPotion, buildPotionEntityInfo } from "@/lib/history-potion-lookup";
 import { lookupHistoryRelic, buildRelicEntityInfo } from "@/lib/history-relic-lookup";
 import { resolveRelicDisplayImage } from "@/lib/relic-character-variant";
@@ -9,10 +15,14 @@ import {
   gameplayUiTemplate,
   gameplayUiText,
 } from "@/lib/history-gameplay-ui";
-import type { CombatLootSpec } from "@/lib/history-last-scene-steps";
+import {
+  lootSpecTaken,
+  type CombatLootSpec,
+} from "@/lib/history-last-scene-steps";
 import type { CodexPotion, CodexRelic } from "@/lib/codex-types";
 import type { GameLocale } from "@/lib/i18n";
 import type { HistoryLocTables } from "@/lib/history-loc-tables";
+import type { ReplayHistoryEntry } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
 
 const PANEL = "/images/sts2/ui/reward-screen/reward_panel.webp";
@@ -21,6 +31,7 @@ const ITEM = "/images/sts2/ui/reward-screen/reward_item_button.webp";
 const PROCEED = "/images/sts2/ui/reward-screen/proceed_button.webp";
 const ICON_GOLD = "/images/sts2/ui/reward-screen/reward_icon_money.webp";
 const ICON_REMOVAL = "/images/sts2/ui/reward-screen/reward_icon_card_removal.webp";
+const ICON_CARD = "/images/sts2/ui/reward-screen/reward_icon_card.webp";
 const RETICLE = "/images/sts2/ui/combat/combat_reticle.webp";
 
 function SelectionReticle() {
@@ -41,29 +52,37 @@ function SelectionReticle() {
 function LootRow({
   pickId,
   picked,
-  revealed,
   active,
+  leaving,
+  skip,
+  beatProgress,
   iconUrl,
   title,
 }: {
   pickId: string;
   picked: boolean;
-  revealed: boolean;
   active: boolean;
+  leaving: boolean;
+  skip: boolean;
+  beatProgress: number;
   iconUrl: string;
   title: string;
 }) {
+  const bounce = active && !skip ? bounceTranslateY(beatProgress) : 0;
+  const collapse = leaving ? Math.min(1, Math.max(0, (beatProgress - 0.55) / 0.45)) : 0;
+  const skipFade = skip && active ? Math.min(1, beatProgress / 0.35) : 0;
   return (
     <div
       data-history-last-scene-pick={pickId}
       data-picked={picked ? "true" : "false"}
       data-history-reward-item={pickId.split(":")[0]}
-      className={cn(
-        "relative w-full max-w-[402px] transition-all duration-300",
-        !revealed && "pointer-events-none translate-y-2 opacity-0",
-        revealed && !active && !picked && "opacity-40",
-      )}
-      style={{ aspectRatio: "910 / 196" }}
+      className="relative w-full max-w-[402px] overflow-hidden"
+      style={{
+        aspectRatio: "910 / 196",
+        maxHeight: collapse > 0 ? `${(1 - collapse) * 86}px` : undefined,
+        opacity: skip ? 1 - skipFade : leaving && beatProgress > 0.7 ? 1 - collapse : 1,
+        transform: `translateY(${bounce}px)`,
+      }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -72,12 +91,22 @@ function LootRow({
         className="absolute inset-0 h-full w-full object-fill"
         aria-hidden
       />
-      {active ? <SelectionReticle /> : null}
-      <div className="relative flex h-full items-center gap-2 pl-3 pr-3">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={iconUrl} alt="" className="h-9 w-9 shrink-0 object-contain sm:h-11 sm:w-11" />
+      {active && !skip ? <SelectionReticle /> : null}
+      <div className="relative flex h-full items-center gap-3 pl-[4.5%] pr-3">
+        <div className="flex h-[65%] w-[14%] shrink-0 items-center justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={iconUrl}
+            alt=""
+            data-history-reward-icon={pickId}
+            className={cn(
+              "h-full w-full object-contain",
+              leaving && !skip && beatProgress > 0.18 && "opacity-0",
+            )}
+          />
+        </div>
         <div
-          className="min-w-0 flex-1 font-game-text text-[17px] leading-[1.1] text-[#fff6e2] sm:text-[20px]"
+          className="min-w-0 flex-1 font-game-text text-[17px] font-normal leading-[1.1] text-[#fff6e2] sm:text-[20px]"
           style={{ textShadow: "4px 4px 0 rgba(0,0,0,0.06)", WebkitTextStroke: "0.4px #225155" }}
         >
           <RichText text={title} />
@@ -89,21 +118,51 @@ function LootRow({
 
 export function CombatLootScreen({
   items,
-  revealedCount,
+  resolvedCount,
+  beatProgress,
+  entry,
   gameLocale,
   locTables,
   relicsById,
   potionsById,
 }: {
   items: CombatLootSpec[];
-  revealedCount: number;
+  resolvedCount: number;
+  beatProgress: number;
+  entry: ReplayHistoryEntry;
   gameLocale: GameLocale;
   locTables?: HistoryLocTables | null;
   relicsById?: Record<string, CodexRelic>;
   potionsById?: Record<string, CodexPotion>;
 }) {
   const header = gameplayUiText(gameLocale, "COMBAT_REWARD_HEADER_LOOT", "Loot!", locTables);
-  const proceed = gameplayUiText(gameLocale, "PROCEED_BUTTON", "Proceed", locTables);
+  const skipLabel = gameplayUiText(gameLocale, "CHOOSE_CARD_SKIP_BUTTON", "Skip", locTables);
+  const remaining = items.slice(Math.min(resolvedCount, items.length));
+  const resolving = remaining[0];
+  const resolvingTaken = resolving ? lootSpecTaken(resolving, entry) : false;
+
+  let fly: {
+    kind: "relic" | "potion";
+    pickId: string;
+    iconUrl: string;
+  } | null = null;
+  if (resolving?.kind === "relic" && resolvingTaken) {
+    const relic = lookupHistoryRelic(relicsById, resolving.choice.id);
+    fly = {
+      kind: "relic",
+      pickId: resolving.choice.id,
+      iconUrl:
+        (relic ? resolveRelicDisplayImage(relic, relic.pool) : null)
+        ?? "/images/sts2/ui/reward-screen/reward_icon_shared_relic.webp",
+    };
+  } else if (resolving?.kind === "potion" && resolvingTaken) {
+    const potion = lookupHistoryPotion(potionsById, resolving.choice.id);
+    fly = {
+      kind: "potion",
+      pickId: resolving.choice.id,
+      iconUrl: potion?.imageUrl ?? ICON_GOLD,
+    };
+  }
 
   return (
     <div
@@ -111,7 +170,6 @@ export function CombatLootScreen({
       data-history-combat-loot
     >
       <div className="absolute inset-0 bg-black/80" />
-      {/* rewards_screen.tscn Rewards: 526×640, centered */}
       <div className="absolute left-1/2 top-[48%] w-[27.4%] min-w-[16rem] max-w-[26rem] -translate-x-1/2 -translate-y-1/2">
         <div
           className="relative aspect-[526/640] w-full px-[8%] pb-[8%] pt-[16%]"
@@ -130,19 +188,20 @@ export function CombatLootScreen({
             }}
           >
             <div
-              className="flex h-full items-center justify-center px-[18%] pb-[8%] font-game-title text-[28px] text-[#fff6e2] sm:text-[34px]"
+              className="flex h-full items-center justify-center px-[18%] pb-[10%] pt-[2%] text-center font-game-text text-[20px] font-normal tracking-wide text-[#fff6e2] sm:text-[24px]"
               style={{
                 textShadow: "6px 5px 0 rgba(0,0,0,0.12)",
-                WebkitTextStroke: "1px rgba(74,60,42,0.75)",
+                WebkitTextStroke: "0.7px rgba(74,60,42,0.75)",
               }}
             >
               {header}
             </div>
           </div>
           <div className="flex flex-col items-center gap-2.5 pt-6">
-            {items.map((item, index) => {
-              const revealed = index < revealedCount;
-              const active = index === revealedCount - 1;
+            {remaining.map((item, index) => {
+              const active = index === 0;
+              const leaving = active;
+              const skip = active && !lootSpecTaken(item, entry);
               if (item.kind === "gold") {
                 const title = gameplayUiTemplate(
                   gameLocale,
@@ -156,8 +215,10 @@ export function CombatLootScreen({
                     key={`gold:${item.amount}`}
                     pickId={`gold:${item.amount}`}
                     picked
-                    revealed={revealed}
                     active={active}
+                    leaving={leaving}
+                    skip={skip}
+                    beatProgress={beatProgress}
                     iconUrl={ICON_GOLD}
                     title={title}
                   />
@@ -169,13 +230,35 @@ export function CombatLootScreen({
                     key="card-removal"
                     pickId="card-removal"
                     picked
-                    revealed={revealed}
                     active={active}
+                    leaving={leaving}
+                    skip={skip}
+                    beatProgress={beatProgress}
                     iconUrl={ICON_REMOVAL}
                     title={gameplayUiText(
                       gameLocale,
                       "COMBAT_REWARD_CARD_REMOVAL",
                       "Remove a card from your deck.",
+                      locTables,
+                    )}
+                  />
+                );
+              }
+              if (item.kind === "cards") {
+                return (
+                  <LootRow
+                    key="cards"
+                    pickId="cards"
+                    picked={lootSpecTaken(item, entry)}
+                    active={active}
+                    leaving={leaving}
+                    skip={skip}
+                    beatProgress={beatProgress}
+                    iconUrl={ICON_CARD}
+                    title={gameplayUiText(
+                      gameLocale,
+                      "COMBAT_REWARD_ADD_CARD",
+                      "Add a card to your deck",
                       locTables,
                     )}
                   />
@@ -191,8 +274,10 @@ export function CombatLootScreen({
                   <LootRow
                     pickId={item.choice.id}
                     picked={item.choice.picked}
-                    revealed={revealed}
                     active={active}
+                    leaving={leaving}
+                    skip={skip}
+                    beatProgress={beatProgress}
                     iconUrl={iconUrl}
                     title={relic?.name ?? item.choice.id}
                   />
@@ -205,15 +290,16 @@ export function CombatLootScreen({
                   <div key={item.choice.id}>{row}</div>
                 );
               }
-              if (item.kind !== "potion") return null;
               const potion = lookupHistoryPotion(potionsById, item.choice.id);
               const entity = buildPotionEntityInfo(potion);
               const row = (
                 <LootRow
                   pickId={item.choice.id}
                   picked={item.choice.picked}
-                  revealed={revealed}
                   active={active}
+                  leaving={leaving}
+                  skip={skip}
+                  beatProgress={beatProgress}
                   iconUrl={potion?.imageUrl ?? ICON_GOLD}
                   title={potion?.name ?? item.choice.id}
                 />
@@ -237,10 +323,22 @@ export function CombatLootScreen({
             className="absolute inset-0 flex items-center justify-center pb-[6%] font-game-title text-[18px] text-[#fff6e2] sm:text-[22px]"
             style={{ WebkitTextStroke: "0.6px #56100c" }}
           >
-            {proceed}
+            {skipLabel}
           </div>
         </div>
       </div>
+      {fly ? (
+        <LastSceneObtainFly
+          active
+          progress={beatProgress}
+          sourceSelector={`[data-history-reward-icon="${cssEscapeAttr(fly.pickId)}"]`}
+          targetSelector={
+            fly.kind === "potion" ? "[data-potion-bay]" : relicTargetSelector(fly.pickId)
+          }
+          iconUrl={fly.iconUrl}
+          kind={fly.kind}
+        />
+      ) : null}
     </div>
   );
 }

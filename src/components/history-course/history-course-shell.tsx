@@ -70,7 +70,11 @@ import {
   stripReplayId,
   usesDedicatedLastScene,
 } from "@/lib/history-last-scene";
-import { lastScenePicksRevealed } from "@/lib/history-last-scene-steps";
+import {
+  lastSceneHiddenPotionIds,
+  lastSceneHiddenRelicIds,
+  lastScenePicksRevealed,
+} from "@/lib/history-last-scene-steps";
 import { playbackSpeedMultiplier } from "@/lib/history-playback-rate";
 import { HistoryLastSceneErrorBoundary } from "@/components/history-course/history-last-scene-error-boundary";
 import { cn } from "@/lib/utils";
@@ -97,7 +101,6 @@ const ACT_INTRO_TOTAL_MS = ACT_INTRO_FADE_IN_MS + ACT_INTRO_HOLD_MS + ACT_INTRO_
 // leaves and re-enters.
 const INTRO_WINDOW_OFFSET_MS = 200; // before actOffset
 const INTRO_WINDOW_RADIUS_MS = 250;
-const EMPTY_ID_SET: ReadonlySet<string> = new Set();
 
 function actIntroLabel(tables: GameI18nTables, index: number) {
   return formatGameTemplate(
@@ -1012,8 +1015,20 @@ export function HistoryCourseShell({
     );
   }, [stepPotionIdsKey]);
 
-  const hidingRelicIds = picksRevealed ? EMPTY_ID_SET : pendingRelicIds;
-  const hidingPotionIds = picksRevealed ? EMPTY_ID_SET : pendingPotionIds;
+  const hidingRelicIds = dedicatedScene && currentHistoryEntry
+    ? lastSceneHiddenRelicIds(
+        currentTimelineEntry?.sceneKind ?? "stack",
+        currentHistoryEntry,
+        nodeStackLocalMs,
+      )
+    : pendingRelicIds;
+  const hidingPotionIds = dedicatedScene && currentHistoryEntry
+    ? lastSceneHiddenPotionIds(
+        currentTimelineEntry?.sceneKind ?? "stack",
+        currentHistoryEntry,
+        nodeStackLocalMs,
+      )
+    : pendingPotionIds;
 
   const heldPotionRemovalIds = useMemo(
     () =>
