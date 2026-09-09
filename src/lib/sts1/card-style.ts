@@ -169,10 +169,15 @@ export function sts1DescriptionTextStyle(gameLocale: GameLocale): CSSProperties 
   };
 }
 
-const FRAME_IN_ATLAS = {
-  attack: { left: 125, top: 108, width: 262, height: 185 },
-  skill: { left: 124, top: 107, width: 263, height: 183 },
-  power: { left: 121, top: 52, width: 269, height: 238 },
+/**
+ * Inner transparent hole of `frame_{attack,skill,power}_common` (alpha scan
+ * inside the opaque frame bbox). The previous values used the opaque bbox, so
+ * art painted through the open pentagon under the type plaque.
+ */
+const PORTRAIT_HOLE_IN_ATLAS = {
+  attack: { left: 136, top: 108, width: 240, height: 162 },
+  skill: { left: 135, top: 108, width: 240, height: 163 },
+  power: { left: 132, top: 61, width: 248, height: 209 },
 } as const;
 
 function atlasBoxToCard(box: { left: number; top: number; width: number; height: number }) {
@@ -187,7 +192,7 @@ function atlasBoxToCard(box: { left: number; top: number; width: number; height:
 
 export function sts1PortraitBox(card: Sts1Card) {
   const type = card.type === "power" || card.type === "attack" ? card.type : "skill";
-  return atlasBoxToCard(FRAME_IN_ATLAS[type]);
+  return atlasBoxToCard(PORTRAIT_HOLE_IN_ATLAS[type]);
 }
 
 export const STS1_POOL_COLORS: Record<Exclude<Sts1RelicPool, "shared">, string> = {

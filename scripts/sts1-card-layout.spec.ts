@@ -17,6 +17,7 @@ import {
   sts1DescriptionBox,
   sts1DescriptionTextStyle,
   sts1EnergyCostBox,
+  sts1PortraitBox,
   sts1TitleBox,
   sts1TitleBoxWidthFrac,
   sts1TitleFontScale,
@@ -74,6 +75,26 @@ const type = sts1TypeBox();
 const typeCenterY = parseFloat(type.top) + parseFloat(type.height) / 2;
 assert.ok(Math.abs(typeCenterY - ((210 + 22) / 420) * 100) < 1e-6);
 assert.equal(type.fontSize, `${(17 / 300) * 100}cqi`);
+
+const attackPortrait = sts1PortraitBox({ type: "attack" } as never);
+assert.equal(attackPortrait.left, `${((136 - 106) / 300) * 100}%`);
+assert.equal(attackPortrait.top, `${((108 - 46) / 420) * 100}%`);
+assert.equal(attackPortrait.width, `${(240 / 300) * 100}%`);
+assert.equal(attackPortrait.height, `${(162 / 420) * 100}%`);
+const attackPortraitBottom =
+  parseFloat(attackPortrait.top) + parseFloat(attackPortrait.height);
+assert.ok(attackPortraitBottom < 53.4, "attack art must stop at the type plaque");
+const skillPortrait = sts1PortraitBox({ type: "skill" } as never);
+const skillPortraitBottom =
+  parseFloat(skillPortrait.top) + parseFloat(skillPortrait.height);
+assert.ok(skillPortraitBottom < 53.7);
+const powerPortrait = sts1PortraitBox({ type: "power" } as never);
+assert.equal(powerPortrait.top, `${((61 - 46) / 420) * 100}%`);
+const powerPortraitBottom =
+  parseFloat(powerPortrait.top) + parseFloat(powerPortrait.height);
+assert.ok(powerPortraitBottom < 53.4);
+assert.deepEqual(sts1PortraitBox({ type: "curse" } as never), skillPortrait);
+assert.deepEqual(sts1PortraitBox({ type: "status" } as never), skillPortrait);
 
 assert.equal(STS1_DESC_FONT, 24);
 assert.equal(STS1_DESC_OFFSET_Y_FRAC, 0.255);
