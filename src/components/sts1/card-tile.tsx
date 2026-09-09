@@ -6,6 +6,11 @@ import { Sts1CardText } from "./description";
 import {
   STS1_ATLAS_LAYER_STYLE,
   STS1_CARD_ASPECT,
+  STS1_CREAM,
+  STS1_ENERGY_FILL,
+  STS1_ENERGY_MODIFIED,
+  STS1_TITLE_BORDER,
+  STS1_TITLE_BORDER_WIDTH,
   sts1CardBannerRegion,
   sts1CardBackgroundRegion,
   sts1CardBodyStyle,
@@ -14,6 +19,8 @@ import {
   sts1DescriptionBox,
   sts1DescriptionTextStyle,
   sts1EnergyCostBox,
+  sts1EnergyCostTextStyle,
+  sts1FreeTypeStroke,
   sts1PortraitBox,
   sts1TitleBox,
   sts1TypeBannerPieces,
@@ -27,10 +34,8 @@ import { sts1CardStats, sts1CostLabel } from "@/lib/sts1/stats";
 import type { Sts1Card, Sts1Keyword } from "@/lib/sts1/types";
 
 const TITLE_STROKE: CSSProperties = {
-  color: "#f8e8c0",
-  textShadow: "0 1px 2px #000, 0 0 3px #000",
-  WebkitTextStroke: "0.04em #000",
-  paintOrder: "stroke fill",
+  color: STS1_CREAM,
+  ...sts1FreeTypeStroke(STS1_TITLE_BORDER, STS1_TITLE_BORDER_WIDTH),
 };
 
 function AtlasLayer({ src }: { src: string }) {
@@ -103,9 +108,8 @@ export function Sts1CardTile({
           className="absolute z-10 flex items-center justify-center font-bold leading-none"
           style={{
             ...sts1EnergyCostBox(),
-            fontSize: "10.7cqi",
-            color: upgradedCost ? "#7fff00" : "#fff",
-            textShadow: "0 1px 2px #000, 0 0 4px #000",
+            ...sts1EnergyCostTextStyle(),
+            color: upgradedCost ? STS1_ENERGY_MODIFIED : STS1_ENERGY_FILL,
           }}
         >
           {costLabel}
@@ -124,8 +128,7 @@ export function Sts1CardTile({
         className="absolute z-10 flex items-center justify-center font-game-text leading-none"
         style={{
           ...sts1TypeBox(),
-          color: "#f8e8c0",
-          textShadow: "0 1px 2px #000",
+          color: STS1_CREAM,
         }}
       >
         {typeLabel}
@@ -138,8 +141,13 @@ export function Sts1CardTile({
           text={descriptionLines.join(" NL ")}
           stats={stats}
           keywords={keywords}
-          className="font-game-text text-center text-[#f8e8c0]"
-          style={{ ...sts1DescriptionTextStyle(gameLocale), whiteSpace: "nowrap" }}
+          className="font-game-text text-center"
+          style={{
+            ...sts1DescriptionTextStyle(gameLocale),
+            color: STS1_CREAM,
+            textShadow: "1px 1px 0 rgba(0,0,0,0.25)",
+            whiteSpace: "nowrap",
+          }}
         />
       </div>
       </div>

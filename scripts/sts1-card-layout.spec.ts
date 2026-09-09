@@ -17,6 +17,9 @@ import {
   sts1DescriptionBox,
   sts1DescriptionTextStyle,
   sts1EnergyCostBox,
+  sts1EnergyCostTextStyle,
+  STS1_CREAM,
+  STS1_ENERGY_FONT,
   sts1PortraitBox,
   sts1TitleBox,
   sts1TitleBoxWidthFrac,
@@ -42,6 +45,10 @@ assert.deepEqual(sts1CardBodyStyle(), {
   width: `${(300 / 328) * 100}%`,
   height: `${(420 / 446) * 100}%`,
 });
+assert.equal(STS1_ENERGY_FONT, 38);
+assert.equal(STS1_CREAM, "#FFF6E2");
+assert.match(String(sts1EnergyCostTextStyle().fontSize), /^12\.6/);
+assert.match(String(sts1EnergyCostTextStyle().WebkitTextStroke), /#4D4D4D/);
 assert.equal(STS1_ENERGY_TEXT_OFFSET.x, -132);
 assert.equal(STS1_ENERGY_TEXT_OFFSET.y, 192);
 assert.deepEqual(sts1EnergyCostBox(), {

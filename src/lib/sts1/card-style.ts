@@ -91,6 +91,38 @@ export const STS1_TYPE_FONT = 17;
 /** renderType draws at current_y - 22 (down in CSS). */
 export const STS1_TYPE_OFFSET_Y = 22;
 
+/** Settings.CREAM_COLOR (rgba8888 -597249). */
+export const STS1_CREAM = "#FFF6E2";
+/** FontHelper.cardEnergyFont_L fill; renderEnergy starts from Color.WHITE. */
+export const STS1_ENERGY_FILL = "#FFFFFF";
+/** Settings.GREEN_TEXT_COLOR / ENERGY_COST_MODIFIED_COLOR. */
+export const STS1_ENERGY_MODIFIED = "#7FFF00";
+/** cardTitleFont borderColor (0.35, 0.35, 0.35). */
+export const STS1_TITLE_BORDER = "#595959";
+/** cardEnergyFont_L borderColor (0.3, 0.3, 0.3). */
+export const STS1_ENERGY_BORDER = "#4D4D4D";
+/** FontHelper.cardEnergyFont_L = prepFont(38, true). */
+export const STS1_ENERGY_FONT = 38;
+export const STS1_TITLE_BORDER_WIDTH = 2;
+export const STS1_ENERGY_BORDER_WIDTH = 4;
+
+export function sts1FreeTypeStroke(outlineColor: string, borderWidthPx: number): CSSProperties {
+  const strokeCqi = ((borderWidthPx * 0.5) / STS1_CARD_IN_ATLAS.width) * 100;
+  return {
+    WebkitTextStroke: `${strokeCqi}cqi ${outlineColor}`,
+    paintOrder: "stroke fill",
+  };
+}
+
+export function sts1EnergyCostTextStyle(): CSSProperties {
+  return {
+    fontFamily: "var(--font-kreon), \"STS Kreon\", serif",
+    fontWeight: 700,
+    fontSize: `${(STS1_ENERGY_FONT / STS1_CARD_IN_ATLAS.width) * 100}cqi`,
+    ...sts1FreeTypeStroke(STS1_ENERGY_BORDER, STS1_ENERGY_BORDER_WIDTH),
+  };
+}
+
 export function sts1TitleBoxWidthFrac(cost: number): number {
   return cost > 0 || cost === -1 ? STS1_TITLE_BOX_WIDTH : STS1_TITLE_BOX_WIDTH_NO_COST;
 }
