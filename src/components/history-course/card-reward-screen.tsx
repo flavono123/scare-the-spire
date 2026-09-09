@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { CardTile } from "@/components/codex/card-tile";
+import { FittedCardTile } from "@/components/history-course/fitted-card-tile";
 import { lookupHistoryCard } from "@/lib/history-card-lookup";
 import { gameplayUiText } from "@/lib/history-gameplay-ui";
 import type { CodexCard } from "@/lib/codex-types";
@@ -55,7 +55,7 @@ function PickedRing({
       data-history-last-scene-pick={pickId}
       data-picked={picked ? "true" : "false"}
       className={cn(
-        "relative flex flex-col items-center transition-transform duration-300",
+        "relative flex w-[12.5%] shrink-0 flex-col items-center transition-transform duration-300",
         picked && "z-10 scale-105",
       )}
     >
@@ -108,22 +108,21 @@ export function CardRewardScreen({
           {header}
         </div>
       </div>
-      {/* NCardRewardSelectionScreen spaces holders 350px at SmallScale 0.8 (240px cards). */}
-      <div className="absolute inset-x-3 top-[26%] bottom-[20%] flex items-center justify-center gap-[min(3.5rem,6%)]">
+      {/* Game: 240px cards on 1920 = 12.5% of the 16:9 stage. */}
+      <div className="absolute inset-x-0 top-[26%] bottom-[20%] flex items-center justify-center gap-[4%]">
         {choices.map((choice) => {
           const card = cardsById ? lookupHistoryCard(cardsById, choice.id) : undefined;
           const upgradeLevel = choice.upgradeLevel ?? 0;
           return (
             <PickedRing key={choice.id} picked={choice.picked} pickId={choice.id}>
-              <div className="relative w-[min(12rem,28vw)] sm:w-[240px]">
+              <div className="relative w-full">
                 <RewardCardGlow rarity={card?.rarity} />
                 {card ? (
-                  <CardTile
+                  <FittedCardTile
                     card={card}
                     showUpgrade={upgradeLevel > 0}
                     upgradeLevel={upgradeLevel}
                     showBeta={false}
-                    width={240}
                     interactive={false}
                     serviceLocale={serviceLocale}
                   />

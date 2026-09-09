@@ -1,6 +1,6 @@
 "use client";
 
-import { CardTile } from "@/components/codex/card-tile";
+import { FittedCardTile } from "@/components/history-course/fitted-card-tile";
 import { lookupHistoryCard } from "@/lib/history-card-lookup";
 import { lookupHistoryPotion } from "@/lib/history-potion-lookup";
 import { lookupHistoryRelic } from "@/lib/history-relic-lookup";
@@ -68,7 +68,7 @@ function ShopCard({
       data-history-last-scene-pick={choice.id}
       data-picked={choice.picked ? "true" : "false"}
       className={cn(
-        "absolute overflow-visible transition-all duration-300",
+        "absolute overflow-hidden transition-all duration-300",
         choice.picked ? "z-10 scale-105" : "opacity-85",
       )}
       style={{
@@ -76,31 +76,20 @@ function ShopCard({
         top: pct(top, RUG_H),
         width: pct(CARD_W, RUG_W),
         height: pct(CARD_H, RUG_H),
-        containerType: "size",
       }}
     >
-      <div
-        className="origin-top-left"
-        style={{
-          width: CARD_W,
-          height: CARD_H,
-          transform: `scale(calc(100cqw / ${CARD_W}))`,
-        }}
-      >
-        {card ? (
-          <CardTile
-            card={card}
-            showUpgrade={upgradeLevel > 0}
-            upgradeLevel={upgradeLevel}
-            showBeta={false}
-            width={CARD_W}
-            interactive={false}
-            serviceLocale={serviceLocale}
-          />
-        ) : (
-          <div className="font-game-text text-xs text-[#fff6e2]">{choice.id}</div>
-        )}
-      </div>
+      {card ? (
+        <FittedCardTile
+          card={card}
+          showUpgrade={upgradeLevel > 0}
+          upgradeLevel={upgradeLevel}
+          showBeta={false}
+          interactive={false}
+          serviceLocale={serviceLocale}
+        />
+      ) : (
+        <div className="font-game-text text-xs text-[#fff6e2]">{choice.id}</div>
+      )}
     </div>
   );
 }
