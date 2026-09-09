@@ -82,7 +82,7 @@ export const STS1_DESC_LINE_HEIGHT = 1.45;
  * full-card composites leave a gap under the type chip, then 24px copy.
  * 1-line game baseline is ~73% of the 300×420 body.
  */
-export const STS1_DESC_BOX_TOP = 0.64;
+export const STS1_DESC_BOX_TOP = 0.66;
 export const STS1_DESC_BOX_BOTTOM = 0.08;
 /** FontHelper.cardTypeFont = prepFont(17, true). */
 export const STS1_TYPE_FONT = 17;

@@ -87,7 +87,7 @@ assert.equal(sts1DescBoxWidthFrac("esp"), 0.79);
 assert.deepEqual(sts1DescriptionBox("kor"), {
   left: `${((1 - 0.79) / 2) * 100}%`,
   width: "79%",
-  top: "64%",
+  top: "66%",
   bottom: "8%",
 });
 assert.equal(sts1DescriptionBox("jpn").width, "72%");
