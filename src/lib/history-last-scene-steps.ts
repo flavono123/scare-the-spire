@@ -1,8 +1,8 @@
 import type { LastSceneKind } from "@/lib/history-last-scene";
 import type { ReplayChoice, ReplayHistoryEntry } from "@/lib/sts2-run-replay";
 
-/** Intra-node last-scene beat. Combat loot rows and card screens each get one. */
-export const LAST_SCENE_STEP_MS = 500;
+/** Intra-node last-scene beat, wall-clock. Playback rate does not shorten this. */
+export const LAST_SCENE_STEP_MS = 1200;
 
 export type CombatLootSpec =
   | { kind: "gold"; amount: number; stolen: boolean }

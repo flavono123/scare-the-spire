@@ -8,12 +8,13 @@
 
 import { test, expect, type Page } from "@playwright/test";
 import path from "node:path";
+import { LAST_SCENE_STEP_MS } from "../src/lib/history-last-scene-steps";
+import { NODE_BASE_MS } from "../src/lib/sts2-run-timeline";
 
 const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 const OUT_DIR = path.join("/tmp", "history-course-shots");
 const BOOTS_SEED = "EQNAH97QTR"; // winged-boots-eqnah-a10 — relic at step 1
-const TRANSIT_MS = 2500;
-const LAST_SCENE_STEP_MS = 500;
+const TRANSIT_MS = NODE_BASE_MS;
 const PICK_REVEAL_MS = TRANSIT_MS + 2 * LAST_SCENE_STEP_MS;
 
 async function scrubTo(page: Page, value: number) {
