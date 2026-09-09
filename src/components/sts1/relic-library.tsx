@@ -190,8 +190,8 @@ export function Sts1RelicLibrary({
         </CompendiumIndexScroller>
       </main>
       {selectedRelic ? (
-        <CompendiumDetailOverlay onClose={closeRelic} aria-label={selectedRelic.name}>
-          <div className="w-full max-w-5xl rounded-lg bg-background" onClick={(event) => event.stopPropagation()}>
+        <CompendiumDetailOverlay onClose={closeRelic} aria-label={selectedRelic.name} zClassName="z-[100]">
+          <div className="my-8 mx-4 w-full max-w-6xl">
             <Sts1RelicDetail relic={selectedRelic} labels={labels} serviceLocale={serviceLocale} onClose={closeRelic} />
           </div>
         </CompendiumDetailOverlay>

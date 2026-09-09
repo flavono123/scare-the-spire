@@ -190,8 +190,8 @@ export function Sts1PotionLibrary({
         </CompendiumIndexScroller>
       </main>
       {selectedPotion ? (
-        <CompendiumDetailOverlay onClose={closePotion} aria-label={selectedPotion.name}>
-          <div className="w-full max-w-5xl rounded-lg bg-background" onClick={(event) => event.stopPropagation()}>
+        <CompendiumDetailOverlay onClose={closePotion} aria-label={selectedPotion.name} zClassName="z-[100]">
+          <div className="my-8 mx-4 w-full max-w-6xl">
             <Sts1PotionDetail potion={selectedPotion} labels={labels} serviceLocale={serviceLocale} onClose={closePotion} />
           </div>
         </CompendiumDetailOverlay>

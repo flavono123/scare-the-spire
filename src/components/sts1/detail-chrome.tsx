@@ -43,6 +43,7 @@ export function Sts1DetailShell({
   serviceLocale,
   hero,
   heroLayout = "card",
+  stageExtra,
   children,
 }: {
   backHref: string;
@@ -51,13 +52,14 @@ export function Sts1DetailShell({
   serviceLocale: ServiceLocale;
   hero: ReactNode;
   heroLayout?: "card" | "icon";
+  stageExtra?: ReactNode;
   children: ReactNode;
 }) {
   const closeLabel = getCodexServiceMessages(serviceLocale).common.close;
   const compact = heroLayout === "icon";
   return (
-    <div className="mx-auto w-full max-w-5xl p-4 sm:p-6">
-      <div className="mb-4 flex items-center justify-between gap-3">
+    <div className="mx-auto w-full max-w-6xl min-w-0 overflow-x-hidden p-4 sm:p-6">
+      <div className="mb-4 flex w-full items-center justify-between gap-3">
         <Link
           href={localizeHref(backHref, serviceLocale)}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
@@ -80,11 +82,15 @@ export function Sts1DetailShell({
           </button>
         ) : null}
       </div>
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
-        <section className={`flex flex-col items-center justify-center gap-5 ${compact ? "py-8" : "min-h-[22rem] py-4"}`}>
+      <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
+        <section
+          {...(compact ? {} : { "data-card-detail-stage": "" })}
+          className={`flex w-full min-w-0 flex-col items-center justify-center gap-4 ${compact ? "py-8" : "min-h-[34rem] py-4"}`}
+        >
           {hero}
+          {stageExtra}
         </section>
-        <aside className="flex flex-col gap-3">{children}</aside>
+        <aside className="flex min-w-0 flex-col gap-3">{children}</aside>
       </div>
     </div>
   );

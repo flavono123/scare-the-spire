@@ -400,8 +400,8 @@ export function Sts1CardLibrary({
         </CompendiumIndexScroller>
       </main>
       {selectedCard ? (
-        <CompendiumDetailOverlay onClose={closeCard} aria-label={selectedCard.name}>
-          <div className="w-full max-w-5xl rounded-lg bg-background shadow-xl" onClick={(event) => event.stopPropagation()}>
+        <CompendiumDetailOverlay onClose={closeCard} aria-label={selectedCard.name} zClassName="z-[100]">
+          <div className="my-8 mx-4 w-full max-w-6xl">
             <Sts1CardDetail
               card={selectedCard}
               labels={labels}

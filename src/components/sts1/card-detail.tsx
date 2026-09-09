@@ -1,15 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { GameUpgradeToggle } from "@/components/codex/game-upgrade-toggle";
 import { Sts1CardTile } from "./card-tile";
-import { Sts1CardText } from "./description";
-import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
+import { Sts1DetailShell, Sts1MetaPill } from "./detail-chrome";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
+import { CARD_WIDTH_PRESET } from "@/lib/sts2-card-style";
 import { sts1PoolColor } from "@/lib/sts1/card-style";
 import { sts1IndexPath } from "@/lib/sts1/paths";
-import { sts1CardStats } from "@/lib/sts1/stats";
 import type { Sts1Card, Sts1Keyword, Sts1UiLabels } from "@/lib/sts1/types";
 
 function typeLabelFor(card: Sts1Card, labels: Sts1UiLabels): string {
@@ -49,14 +48,20 @@ export function Sts1CardDetail({
 }) {
   const [upgradeLevel, setUpgradeLevel] = useState(0);
   const [localBeta, setLocalBeta] = useState(showBeta);
+  const [isDesktop, setIsDesktop] = useState(false);
   const beta = onBetaChange ? showBeta : localBeta;
-  const stats = sts1CardStats(card, upgradeLevel);
-  const description = stats.upgraded && card.upgradeDescription
-    ? card.upgradeDescription
-    : card.description;
   const typeLabel = typeLabelFor(card, labels);
   const rarityLabel = rarityLabelFor(card, labels);
   const poolColor = sts1PoolColor(card.color);
+  const cardWidth = isDesktop ? CARD_WIDTH_PRESET.detail : CARD_WIDTH_PRESET.hover;
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   return (
     <Sts1DetailShell
@@ -65,7 +70,7 @@ export function Sts1CardDetail({
       onClose={onClose}
       serviceLocale={serviceLocale}
       hero={(
-        <div className="w-[min(100%,300px)]">
+        <div className="relative" style={{ width: cardWidth }}>
           <Sts1CardTile
             card={card}
             upgradeLevel={upgradeLevel}
@@ -76,12 +81,62 @@ export function Sts1CardDetail({
           />
         </div>
       )}
+      stageExtra={(
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {card.hasBetaArt ? (
+            <GameCheckboxToggle
+              checked={beta}
+              onCheckedChange={(checked) => {
+                setLocalBeta(checked);
+                onBetaChange?.(checked);
+              }}
+              label={labels.betaArt}
+              size="md"
+            />
+          ) : null}
+          {card.unlimitedUpgrade ? (
+            <GameUpgradeToggle
+              upgradeLevel={upgradeLevel}
+              maxUpgradeLevel={20}
+              onUpgradeLevelChange={setUpgradeLevel}
+              label={labels.viewUpgrades}
+              serviceLocale={serviceLocale}
+            />
+          ) : (
+            <GameCheckboxToggle
+              checked={upgradeLevel > 0}
+              onCheckedChange={(checked) => setUpgradeLevel(checked ? 1 : 0)}
+              label={labels.viewUpgrades}
+              size="md"
+            />
+          )}
+        </div>
+      )}
     >
-      <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-        <h1 className="font-game-title text-2xl text-primary">
-          {card.name}
-          {stats.nameSuffix}
-        </h1>
+      <section
+        className="rounded-lg border border-border bg-compendium-rail px-4 py-3"
+        data-card-detail-meta
+      >
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="w-8 shrink-0" data-card-detail-tiny-card>
+            <Sts1CardTile
+              card={card}
+              upgradeLevel={upgradeLevel}
+              showBeta={beta}
+              keywords={keywords}
+              typeLabel={typeLabel}
+              gameLocale={gameLocale}
+            />
+          </div>
+          {serviceLocale !== "en" && card.nameEn && card.nameEn !== card.name ? (
+            <span
+              className="min-w-0 truncate font-game-text text-sm text-foreground"
+              data-card-detail-english-name
+            >
+              {card.nameEn}
+            </span>
+          ) : null}
+        </div>
         <div className="mt-3 flex flex-wrap gap-2">
           <Sts1MetaPill value={typeLabel} />
           {rarityLabel ? <Sts1MetaPill value={rarityLabel} /> : null}
@@ -93,48 +148,7 @@ export function Sts1CardDetail({
             <Sts1MetaPill value={labels.types.curse} />
           ) : null}
         </div>
-        <div className="mt-3">
-          <Sts1EnglishName name={card.name} nameEn={card.nameEn} serviceLocale={serviceLocale} />
-        </div>
       </section>
-      <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-        <Sts1CardText
-          text={description}
-          stats={stats}
-          keywords={keywords}
-          className="font-game-text text-sm leading-relaxed text-foreground"
-        />
-      </section>
-      <div className="flex flex-col gap-2">
-        {card.hasBetaArt ? (
-          <GameCheckboxToggle
-            checked={beta}
-            onCheckedChange={(checked) => {
-              setLocalBeta(checked);
-              onBetaChange?.(checked);
-            }}
-            label={labels.betaArt}
-            size="sm"
-          />
-        ) : null}
-        {card.unlimitedUpgrade ? (
-          <GameUpgradeToggle
-            upgradeLevel={upgradeLevel}
-            maxUpgradeLevel={20}
-            onUpgradeLevelChange={setUpgradeLevel}
-            label={labels.viewUpgrades}
-            serviceLocale={serviceLocale}
-            checkboxSize="sm"
-          />
-        ) : (
-          <GameCheckboxToggle
-            checked={upgradeLevel > 0}
-            onCheckedChange={(checked) => setUpgradeLevel(checked ? 1 : 0)}
-            label={labels.viewUpgrades}
-            size="sm"
-          />
-        )}
-      </div>
     </Sts1DetailShell>
   );
 }
