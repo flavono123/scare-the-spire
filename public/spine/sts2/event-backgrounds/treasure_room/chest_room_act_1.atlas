@@ -1,0 +1,137 @@
+chest_room_act_1.png
+size:2922,1666
+filter:Linear,Linear
+scale:0.5
+bottom lip
+bounds:2142,20,486,130
+offsets:0,0,486,130
+bottom vines 10
+bounds:2142,499,434,136
+bottom vines 11
+bounds:2798,237,430,122
+offsets:0,0,430,122
+rotate:90
+bottom vines 12
+bounds:2080,268,430,114
+offsets:0,0,430,118
+bottom vines 13
+bounds:2142,384,431,112
+bottom vines 14
+bounds:2142,153,431,112
+bottom vines 2
+bounds:2,18,446,147
+rotate:90
+bottom vines 3
+bounds:306,29,440,150
+rotate:90
+bottom vines 4
+bounds:152,23,441,151
+rotate:90
+bottom vines 5
+bounds:800,40,436,162
+offsets:0,0,437,162
+rotate:90
+bottom vines 6
+bounds:2142,638,436,167
+offsets:0,0,438,167
+bottom vines 7
+bounds:631,38,438,166
+offsets:0,0,438,166
+rotate:90
+bottom vines 8
+bounds:458,30,439,170
+offsets:0,0,440,170
+rotate:90
+bottom vines 9
+bounds:2580,235,432,214
+rotate:90
+chest bottom
+bounds:464,723,942,324
+rotate:90
+chest shine
+bounds:998,1106,558,344
+offsets:12,0,587,344
+rotate:90
+open vfs 3
+bounds:216,472,1192,246
+rotate:90
+open vfx 1
+bounds:968,32,724,169
+offsets:0,0,724,170
+rotate:90
+open vfx 2
+bounds:792,758,906,204
+rotate:90
+open vfx 4
+bounds:2,467,1198,211
+offsets:2,4,1204,214
+rotate:90
+sparkle h 1
+bounds:176,2,10,18
+sparkle h 2
+bounds:2518,1066,60,40
+offsets:0,1,60,42
+sparkle h 3
+bounds:2518,1110,81,53
+sparkle h 4
+bounds:70,4,103,12
+offsets:0,2,104,14
+sparkle v 1
+bounds:189,2,10,18
+sparkle v 2
+bounds:2,2,14,65
+rotate:90
+sparkle v 3
+bounds:202,10,10,77
+offsets:3,0,12,77
+rotate:90
+sparkle v 4
+bounds:202,2,6,103
+rotate:90
+stroke
+bounds:1346,1142,523,368
+offsets:0,6,523,373
+rotate:90
+top 1
+bounds:2080,1161,504,217
+rotate:90
+top 10
+bounds:2012,808,504,346
+offsets:0,0,504,348
+top 11
+bounds:1504,266,507,356
+offsets:0,0,507,357
+rotate:90
+top 12
+bounds:1501,776,508,362
+top 13
+bounds:1140,258,508,362
+offsets:0,0,508,362
+rotate:90
+top 14
+bounds:1716,1157,508,362
+offsets:0,0,508,362
+rotate:90
+top 2
+bounds:1862,268,505,214
+rotate:90
+top 3
+bounds:1140,30,499,226
+top 4
+bounds:464,479,500,241
+offsets:0,0,500,242
+top 5
+bounds:1642,6,497,257
+offsets:0,0,497,258
+top 6
+bounds:2626,670,495,276
+rotate:90
+top 7
+bounds:2626,1168,497,294
+rotate:90
+top 8
+bounds:2300,1166,500,322
+rotate:90
+top 9
+bounds:998,769,500,334
+offsets:0,0,500,335

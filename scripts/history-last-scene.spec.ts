@@ -14,6 +14,7 @@ import {
   NODE_BASE_MS,
   SCENE_HIGHLIGHT_MS,
   buildActTimeline,
+  buildRunTimeline,
   nodeDurationForEntry,
 } from "../src/lib/sts2-run-timeline";
 import {
@@ -25,7 +26,9 @@ import {
   eventArtUrl,
   lastSceneBackgroundUrl,
   lastSceneMonsterSlots,
+  treasureRoomSpineAct,
 } from "../src/lib/history-last-scene-assets";
+import { playbackSpeedMultiplier } from "../src/lib/history-playback-rate";
 import { matchEncounterFormationIndex } from "../src/lib/history-encounter-match";
 import { historyRoomChoiceCopy } from "../src/lib/history-room-choice";
 import { getGameI18nTablesSync } from "../src/lib/sts2-game-i18n";
@@ -222,6 +225,17 @@ assert.match(
   }),
   /neow_fallback\.webp$/,
 );
+assert.equal(
+  lastSceneBackgroundUrl({
+    kind: "treasure",
+    modelId: "ROOM.TREASURE",
+    actId: "ACT.OVERGROWTH",
+  }),
+  "",
+);
+assert.equal(treasureRoomSpineAct("ACT.OVERGROWTH"), 1);
+assert.equal(treasureRoomSpineAct("ACT.HIVE"), 2);
+assert.equal(treasureRoomSpineAct("ACT.GLORY"), 3);
 assert.match(
   lastSceneBackgroundUrl({
     kind: "shop",
@@ -369,5 +383,9 @@ assert.equal(lastScenePhase("combat", combatWithLoot, 4 * LAST_SCENE_STEP_MS).ki
 assert.equal(lastScenePhase("event", combatWithLoot, 0).kind, "choice");
 assert.equal(lastScenePhase("event", combatWithLoot, LAST_SCENE_STEP_MS).kind, "receipt");
 assert.equal(lastScenePhase("shop", combatWithLoot, 0).kind, "shop");
+
+const rateTimeline = buildRunTimeline([actFromHistory([mundaneCombat])]);
+assert.equal(playbackSpeedMultiplier(rateTimeline, 0, 2), 2);
+assert.equal(playbackSpeedMultiplier(rateTimeline, NODE_BASE_MS + 1, 2), 1);
 
 console.log("history-last-scene.spec.ts ok");

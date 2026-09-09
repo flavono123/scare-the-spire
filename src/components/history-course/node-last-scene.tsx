@@ -73,9 +73,12 @@ const FakeMerchantSpineStage = dynamic(
   () => import("@/components/codex/fake-merchant-spine-stage").then((mod) => mod.FakeMerchantSpineStage),
   { ssr: false },
 );
+const TreasureRoomStage = dynamic(
+  () => import("@/components/history-course/treasure-room-stage").then((mod) => mod.TreasureRoomStage),
+  { ssr: false },
+);
 
 const MERCHANT = "/images/sts2/npcs/merchant.webp";
-const CHEST = "/images/sts2/map/icons/map_chest.png";
 const REST_CAMP = "/images/sts2/run-history/rest_site.png";
 const SKULL = "/images/sts2/ui/emote/skull.png";
 const CONFIRM_POPUP = "/images/sts2/ui/confirm/popup_vertical.png";
@@ -179,7 +182,7 @@ export function NodeLastScene({
 
   return (
     <div
-      className="absolute inset-0 z-[18] overflow-hidden bg-black"
+      className="pointer-events-none absolute inset-0 z-[18] overflow-hidden bg-black"
       data-history-last-scene={kind}
       data-history-last-scene-phase={phase.kind}
       data-progress={t.toFixed(2)}
@@ -252,7 +255,7 @@ export function NodeLastScene({
           potionsById={potionsById}
           serviceLocale={serviceLocale}
           locTables={locTables}
-          backgroundUrl={backgroundUrl}
+          actId={actId}
         />
       ) : null}
       {kind === "rest" ? (
@@ -644,7 +647,7 @@ function TreasureScene({
   potionsById,
   serviceLocale,
   locTables,
-  backgroundUrl,
+  actId,
 }: {
   entry: ReplayHistoryEntry;
   gameLocale: GameLocale;
@@ -654,22 +657,15 @@ function TreasureScene({
   potionsById?: Record<string, CodexPotion>;
   serviceLocale: ServiceLocale;
   locTables: HistoryLocTables | null;
-  backgroundUrl: string;
+  actId: string;
 }) {
   const open = phase.kind !== "chest";
   const loot = combatLootSpecs(entry);
   const cards = entry.card_choices ?? [];
   const skippedCards = cards.length > 0 && !cards.some((choice) => choice.picked);
   return (
-    <div className="absolute inset-0">
-      <SceneArt src={backgroundUrl} hideOnError={false} className="absolute inset-0 h-full w-full object-cover" />
-      <SceneArt
-        src={CHEST}
-        className={cn(
-          "absolute bottom-[22%] left-1/2 h-40 w-52 -translate-x-1/2 object-contain drop-shadow-[0_14px_20px_rgba(0,0,0,0.75)] transition-all duration-500",
-          open && "scale-125 opacity-0",
-        )}
-      />
+    <div className="absolute inset-0 bg-black">
+      <TreasureRoomStage actId={actId} open={open} />
       {phase.kind === "loot" ? (
         <CombatLootScreen
           items={loot}

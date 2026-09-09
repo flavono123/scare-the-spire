@@ -78,11 +78,31 @@ export function ancientBackgroundUrl(modelId: string | null | undefined): string
   return row.fallback?.path || row.baseArt?.path || null;
 }
 
+/**
+ * `animations/backgrounds/treasure_room/chest_room_act_{1,2,3}` — one Spine
+ * actor per act. There is no Underdocks chest room in the PCK.
+ */
+const TREASURE_ROOM_ACT: Record<string, 1 | 2 | 3> = {
+  OVERGROWTH: 1,
+  HIVE: 2,
+  GLORY: 3,
+};
+
+export function treasureRoomSpineAct(actId: string | null | undefined): 1 | 2 | 3 {
+  const key = stripReplayId(actId ?? "").toUpperCase();
+  return TREASURE_ROOM_ACT[key] ?? 1;
+}
+
 export function lastSceneBackgroundUrl(opts: {
   kind: string;
   modelId: string | null | undefined;
   actId: string | null | undefined;
 }): string {
+  if (opts.kind === "treasure") {
+    // Treasure rooms are a black ColorRect + chest_room Spine, not the
+    // act combat cave. The stage loads the Spine actor itself.
+    return "";
+  }
   if (opts.kind === "event") {
     return eventArtUrl(opts.modelId) ?? actEncounterBackgroundUrl(opts.actId);
   }
