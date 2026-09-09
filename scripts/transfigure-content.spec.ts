@@ -12,6 +12,7 @@ import {
   getTransfigureUpgradeSourceText,
   isTransfigureChanged,
   isTransfiguredContent,
+  normalizeTransfigureCardColor,
   normalizeTransfigureCardRarity,
   normalizeTransfigureCardType,
   normalizeTransfigureCostInput,
@@ -115,14 +116,18 @@ assert.equal(normalizeTransfigureCost("1", "1"), null);
 assert.equal(normalizeTransfigureCost("x", "1"), "X");
 assert.equal(normalizeTransfigureCardType("스킬", "스킬"), null);
 assert.equal(normalizeTransfigureCardType("공격", "스킬"), "공격");
-assert.equal(normalizeTransfigureCardType("저주", "스킬"), "저주");
+assert.equal(normalizeTransfigureCardType("저주", "스킬"), null);
 assert.equal(normalizeTransfigureCardRarity("고급", "고급"), null);
 assert.equal(normalizeTransfigureCardRarity("희귀", "고급"), "희귀");
-assert.equal(normalizeTransfigureCardRarity("토큰", "고급"), "토큰");
-assert.equal(normalizeTransfigureCardRarity("고대의 존재", "고급"), "고대의 존재");
+assert.equal(normalizeTransfigureCardRarity("토큰", "고급"), null);
+assert.equal(normalizeTransfigureCardRarity("고대의 존재", "고급"), null);
+assert.equal(normalizeTransfigureCardColor("silent", "silent"), null);
+assert.equal(normalizeTransfigureCardColor("ironclad", "silent"), "ironclad");
+assert.equal(normalizeTransfigureCardColor("curse", "silent"), "curse");
+assert.equal(normalizeTransfigureCardColor("token", "silent"), "token");
 assert.equal(canTransfigureCardMetadata("스킬", "고급"), true);
-assert.equal(canTransfigureCardMetadata("스킬", "고대의 존재"), true);
-assert.equal(canTransfigureCardMetadata("저주", "저주"), true);
+assert.equal(canTransfigureCardMetadata("스킬", "고대의 존재"), false);
+assert.equal(canTransfigureCardMetadata("저주", "저주"), false);
 const transformedCard = applyTransfigureCardMetadata(
   expertise.cardData!,
   [
@@ -152,51 +157,38 @@ assert.deepEqual(
   ["공격", "Attack", "희귀", "Rare"],
 );
 assert.equal(transformedCard.color, "silent");
-const characterCurseCard = applyTransfigureCardMetadata(
+const characterPoolCard = applyTransfigureCardMetadata(
   expertise.cardData!,
-  [
-    expertise,
-    {
-      ...expertise,
-      id: "INJURY",
-      cardData: {
-        ...expertise.cardData!,
-        type: "저주",
-        typeLabel: "저주",
-        rarity: "저주",
-        rarityLabel: "저주",
-        color: "curse",
-      },
-    } as EntityInfo,
-  ],
-  "저주",
-  "저주",
-);
-assert.deepEqual(
-  [characterCurseCard.type, characterCurseCard.rarity, characterCurseCard.color],
-  ["저주", "저주", "silent"],
-);
-const tokenCard = applyTransfigureCardMetadata(
-  expertise.cardData!,
-  [
-    expertise,
-    {
-      ...expertise,
-      id: "SHIV",
-      cardData: {
-        ...expertise.cardData!,
-        rarity: "토큰",
-        rarityLabel: "토큰",
-        color: "token",
-      },
-    } as EntityInfo,
-  ],
+  [expertise],
   null,
-  "토큰",
+  null,
+  "ironclad",
 );
 assert.deepEqual(
-  [tokenCard.rarity, tokenCard.color, tokenCard.visualColor],
-  ["토큰", "token", "token"],
+  [characterPoolCard.type, characterPoolCard.color, characterPoolCard.visualColor],
+  ["스킬", "ironclad", "ironclad"],
+);
+const cursePoolCard = applyTransfigureCardMetadata(
+  expertise.cardData!,
+  [expertise],
+  "스킬",
+  null,
+  "curse",
+);
+assert.deepEqual(
+  [cursePoolCard.type, cursePoolCard.rarity, cursePoolCard.color, cursePoolCard.visualColor],
+  ["스킬", "고급", "curse", "curse"],
+);
+const tokenPoolCard = applyTransfigureCardMetadata(
+  expertise.cardData!,
+  [expertise],
+  null,
+  null,
+  "token",
+);
+assert.deepEqual(
+  [tokenPoolCard.type, tokenPoolCard.color, tokenPoolCard.visualColor],
+  ["스킬", "token", "token"],
 );
 const transformedAncientCard = applyTransfigureCardMetadata(
   {
@@ -207,10 +199,16 @@ const transformedAncientCard = applyTransfigureCardMetadata(
   [expertise],
   "공격",
   "희귀",
+  "defect",
 );
 assert.deepEqual(
-  [transformedAncientCard.type, transformedAncientCard.rarity],
-  ["공격", "희귀"],
+  [
+    transformedAncientCard.type,
+    transformedAncientCard.rarity,
+    transformedAncientCard.color,
+    transformedAncientCard.visualColor,
+  ],
+  ["스킬", "고대의 존재", "defect", "defect"],
 );
 for (const [locale, messages] of Object.entries(serviceMessages)) {
   assert.ok(
@@ -285,12 +283,60 @@ assert.equal(
     sourceText: sourceText ?? "",
     sourceBlocks,
     transformedName: "",
+    sourceName: "전문성",
+    transformedCost: "",
+    sourceCost: "1",
+    sourceCardType: "스킬",
+    sourceCardRarity: "고급",
+    sourceCardColor: "silent",
+    transformedCardColor: "ironclad",
+  }),
+  true,
+);
+assert.equal(
+  isTransfigureChanged({
+    blocks: sourceBlocks,
+    sourceText: sourceText ?? "",
+    sourceBlocks,
+    transformedName: "",
     sourceName: "풍요",
     transformedCost: "",
     sourceCost: "1",
     transformedCardType: "공격",
     sourceCardType: "스킬",
     sourceCardRarity: "고대의 존재",
+  }),
+  false,
+);
+assert.equal(
+  isTransfigureChanged({
+    blocks: sourceBlocks,
+    sourceText: sourceText ?? "",
+    sourceBlocks,
+    transformedName: "",
+    sourceName: "풍요",
+    transformedCost: "",
+    sourceCost: "1",
+    sourceCardType: "스킬",
+    sourceCardRarity: "고대의 존재",
+    sourceCardColor: "silent",
+    transformedCardColor: "defect",
+  }),
+  true,
+);
+assert.equal(
+  isTransfigureChanged({
+    blocks: sourceBlocks,
+    sourceText: sourceText ?? "",
+    sourceBlocks,
+    transformedName: "",
+    sourceName: "상해",
+    transformedCost: "",
+    sourceCost: "",
+    sourceCardType: "저주",
+    sourceCardRarity: "저주",
+    sourceCardColor: "curse",
+    transformedCardColor: "ironclad",
   }),
   true,
 );

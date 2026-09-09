@@ -19,7 +19,6 @@ import {
 } from "@/components/game-ui-hover-tip";
 import Image from "@/components/ui/static-image";
 import type { PostBlock } from "@/lib/chemical-types";
-import type { CardColor, CardRarityKo } from "@/lib/codex-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 import type { SaveTransfigurePostInput } from "@/hooks/use-transfigure-posts";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
@@ -43,13 +42,15 @@ import {
   transfigureHasExistingRefsOrDiff,
   type TransfigureChangeCheck,
   isTransfigureTokenResourceType,
+  normalizeTransfigureCardColor,
   normalizeTransfigureCardRarity,
   normalizeTransfigureCardType,
-  transfigureCardPoolColor,
+  TRANSFIGURE_CARD_COLORS,
   TRANSFIGURE_CARD_RARITIES,
   TRANSFIGURE_CARD_TYPES,
   transfigureCardKeywordsEqual,
   transfigureBlocksSignature,
+  type TransfigureCardColor,
   type TransfigureCardKeywords,
   type TransfigureCardRarity,
   type TransfigureCardType,
@@ -92,41 +93,19 @@ function removeTransfigureDrafts(prefixes: readonly string[]) {
   }
 }
 
-function isTransfigureTypeSortIcon(
-  type: TransfigureCardType,
-): type is Extract<TransfigureCardType, "공격" | "스킬" | "파워"> {
-  return type === "공격" || type === "스킬" || type === "파워";
-}
-
-function TransfigureCardTypeOptionIcon({
-  type,
-  color,
-  visualColor,
-  rarity,
-}: {
-  type: TransfigureCardType;
-  color: CardColor;
-  visualColor?: CardColor;
-  rarity: CardRarityKo;
-}) {
-  if (isTransfigureTypeSortIcon(type)) {
-    return (
-      <Image
-        src={CARD_TYPE_FILTER_ICONS[type]}
-        alt=""
-        width={24}
-        height={24}
-        className="h-6 w-6 shrink-0 object-contain"
-      />
-    );
-  }
-
-  return (
-    <TinyCardIcon
-      card={{ color, visualColor, rarity, type }}
-      width={24}
-    />
+function transfigureCardColorLabel(
+  color: TransfigureCardColor,
+  entities: EntityInfo[],
+  serviceLocale: ServiceLocale,
+): string {
+  const character = entities.find(
+    (entity) => entity.type === "character" && entity.id.toLowerCase() === color,
   );
+  if (character) return character.nameKo;
+  const labels = getCodexServiceMessages(serviceLocale).labels;
+  if (color === "token") return labels.rarityDetails.token;
+  if (color === "quest") return labels.rarityDetails.quest;
+  return labels.pools[color as keyof typeof labels.pools] ?? color;
 }
 
 function CardAttributeChange<T extends string>({
@@ -144,7 +123,7 @@ function CardAttributeChange<T extends string>({
 }: {
   active: boolean;
   cancelLabel: string;
-  kind: "rarity" | "type";
+  kind: "rarity" | "type" | "color";
   label: string;
   options: readonly { icon: ReactNode; label: string; value: T }[];
   selectLabel: string;
@@ -298,17 +277,27 @@ export function TransfigureEditor({
       initialEntity?.cardData?.rarity ?? null,
     )
     : null;
+  const initialCardColor = normalizeTransfigureCardColor(
+    initialPost?.transformed_card_color,
+    initialEntity?.cardData?.color ?? null,
+  );
   const [transformedCardType, setTransformedCardType] = useState<
     TransfigureCardType | ""
   >(initialCardType ?? "");
   const [transformedCardRarity, setTransformedCardRarity] = useState<
     TransfigureCardRarity | ""
   >(initialCardRarity ?? "");
+  const [transformedCardColor, setTransformedCardColor] = useState<
+    TransfigureCardColor | ""
+  >(initialCardColor ?? "");
   const [showCardTypeChange, setShowCardTypeChange] = useState(
     initialCardType != null,
   );
   const [showCardRarityChange, setShowCardRarityChange] = useState(
     initialCardRarity != null,
+  );
+  const [showCardColorChange, setShowCardColorChange] = useState(
+    initialCardColor != null,
   );
   const [cardKeywords, setCardKeywords] = useState<TransfigureCardKeywords | null>(
     () => initialPost
@@ -383,6 +372,7 @@ export function TransfigureEditor({
   );
   const sourceCardType = selected?.cardData?.type ?? null;
   const sourceCardRarity = selected?.cardData?.rarity ?? null;
+  const sourceCardColor = selected?.cardData?.color ?? null;
   const canChangeCardMetadata = canTransfigureCardMetadata(
     sourceCardType,
     sourceCardRarity,
@@ -434,6 +424,7 @@ export function TransfigureEditor({
         !== (initialPost.transformed_star_cost ?? "").trim()
       || transformedCardType !== (initialPost.transformed_card_type ?? "")
       || transformedCardRarity !== (initialPost.transformed_card_rarity ?? "")
+      || transformedCardColor !== (initialPost.transformed_card_color ?? "")
       || transformedUpgradeCost.trim()
         !== (initialPost.transformed_upgrade_cost ?? "").trim()
       || transformedUpgradeStarCost.trim()
@@ -472,6 +463,7 @@ export function TransfigureEditor({
     transformedStarCost,
     transformedCardRarity,
     transformedCardType,
+    transformedCardColor,
     transformedName,
     transformedUpgradeCost,
     transformedUpgradeStarCost,
@@ -499,6 +491,8 @@ export function TransfigureEditor({
       sourceCardType,
       transformedCardRarity,
       sourceCardRarity,
+      transformedCardColor,
+      sourceCardColor,
       upgradedBlocks,
       sourceUpgradeText,
       sourceUpgradeBlocks,
@@ -523,6 +517,7 @@ export function TransfigureEditor({
     sourceStarCost,
     sourceCardRarity,
     sourceCardType,
+    sourceCardColor,
     sourceText,
     sourceUpgradeBlocks,
     sourceUpgradeCost,
@@ -534,6 +529,7 @@ export function TransfigureEditor({
     transformedStarCost,
     transformedCardRarity,
     transformedCardType,
+    transformedCardColor,
     transformedName,
     transformedUpgradeCost,
     transformedUpgradeStarCost,
@@ -575,8 +571,10 @@ export function TransfigureEditor({
     setTransformedStarCost("");
     setTransformedCardType("");
     setTransformedCardRarity("");
+    setTransformedCardColor("");
     setShowCardTypeChange(false);
     setShowCardRarityChange(false);
+    setShowCardColorChange(false);
     setTransformedUpgradeCost("");
     setTransformedUpgradeStarCost("");
     setCardKeywords(getTransfigureCardKeywords(entity));
@@ -623,6 +621,7 @@ export function TransfigureEditor({
       sourceStarCost,
       sourceCardType,
       sourceCardRarity,
+      sourceCardColor,
       sourceUpgradeText,
       sourceUpgradeBlocks,
       sourceUpgradeCost,
@@ -634,6 +633,7 @@ export function TransfigureEditor({
       transformedStarCost,
       transformedCardType,
       transformedCardRarity,
+      transformedCardColor,
       cardKeywords,
       upgradedBlocks,
       transformedUpgradeCost,
@@ -659,6 +659,7 @@ export function TransfigureEditor({
     sourceStarCost,
     sourceCardRarity,
     sourceCardType,
+    sourceCardColor,
     sourceText,
     sourceUpgradeBlocks,
     sourceUpgradeCost,
@@ -670,6 +671,7 @@ export function TransfigureEditor({
     transformedStarCost,
     transformedCardRarity,
     transformedCardType,
+    transformedCardColor,
     transformedName,
     transformedUpgradeCost,
     transformedUpgradeStarCost,
@@ -816,13 +818,60 @@ export function TransfigureEditor({
             </div>
             )}
 
-            {selectedCardData && canChangeCardMetadata && (
+            {selectedCardData && (
               <div
                 className="border-t border-border px-3 py-2"
                 data-transfigure-card-attributes
               >
                 <FilterSection label={copy.cardAttributes}>
                   <div className="space-y-2">
+                    <CardAttributeChange
+                      active={showCardColorChange}
+                      cancelLabel={copy.cancelChange}
+                      kind="color"
+                      label={copy.cardColor}
+                      options={TRANSFIGURE_CARD_COLORS
+                        .filter((color) => color !== sourceCardColor)
+                        .map((color) => ({
+                          icon: (
+                            <TinyCardIcon
+                              card={{
+                                color,
+                                visualColor: color,
+                                rarity: transformedCardRarity || selectedCardData.rarity,
+                                type: transformedCardType || selectedCardData.type,
+                              }}
+                              width={24}
+                            />
+                          ),
+                          label: transfigureCardColorLabel(
+                            color,
+                            entities,
+                            serviceLocale,
+                          ),
+                          value: color,
+                        }))}
+                      selectLabel={copy.selectCardColor}
+                      sourceLabel={transfigureCardColorLabel(
+                        selectedCardData.color,
+                        entities,
+                        serviceLocale,
+                      )}
+                      value={transformedCardColor}
+                      onCancel={() => {
+                        setTransformedCardColor("");
+                        setShowCardColorChange(false);
+                        setSaveFeedback(null);
+                      }}
+                      onChange={(value) => {
+                        setTransformedCardColor(value);
+                        setSaveFeedback(null);
+                      }}
+                      onOpen={() => setShowCardColorChange(true)}
+                    />
+
+                    {canChangeCardMetadata ? (
+                      <>
                     <CardAttributeChange
                       active={showCardRarityChange}
                       cancelLabel={copy.cancelChange}
@@ -831,10 +880,8 @@ export function TransfigureEditor({
                       options={TRANSFIGURE_CARD_RARITIES
                         .filter((rarity) => rarity !== sourceCardRarity)
                         .map((rarity) => {
-                          const previewColor = transfigureCardPoolColor(
-                            rarity,
-                            selectedCardData.color,
-                          );
+                          const previewColor = transformedCardColor
+                            || selectedCardData.color;
                           return {
                             icon: (
                               <TinyCardIcon
@@ -877,11 +924,12 @@ export function TransfigureEditor({
                         .filter((type) => type !== sourceCardType)
                         .map((type) => ({
                           icon: (
-                            <TransfigureCardTypeOptionIcon
-                              type={type}
-                              color={selectedCardData.color}
-                              visualColor={selectedCardData.visualColor}
-                              rarity={transformedCardRarity || selectedCardData.rarity}
+                            <Image
+                              src={CARD_TYPE_FILTER_ICONS[type]}
+                              alt=""
+                              width={24}
+                              height={24}
+                              className="h-6 w-6 shrink-0 object-contain"
                             />
                           ),
                           label: getTransfigureCardTypeLabel(entities, type),
@@ -901,6 +949,8 @@ export function TransfigureEditor({
                       }}
                       onOpen={() => setShowCardTypeChange(true)}
                     />
+                      </>
+                    ) : null}
                   </div>
                 </FilterSection>
               </div>
@@ -956,6 +1006,7 @@ export function TransfigureEditor({
               transformedStarCost={transformedStarCost}
               transformedCardType={transformedCardType}
               transformedCardRarity={transformedCardRarity}
+              transformedCardColor={transformedCardColor}
               cardKeywords={cardKeywords}
               transformedUpgradeCost={transformedUpgradeCost}
               transformedUpgradeStarCost={transformedUpgradeStarCost}

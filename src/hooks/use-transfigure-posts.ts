@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { PostBlock } from "@/lib/chemical-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
-import type { CardRarityKo, CardTypeKo } from "@/lib/codex-types";
+import type { CardColor, CardRarityKo, CardTypeKo } from "@/lib/codex-types";
 import { useToyboxFeed } from "@/hooks/use-toybox-feed";
 import type { GameLocale } from "@/lib/i18n";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
@@ -11,11 +11,13 @@ import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
 import {
   canTransfigureCardMetadata,
+  isTransfigureCardColor,
   isTransfigureCardRarity,
   isTransfigureCardType,
   canSubmitTransfigure,
   isTransfigureTokenColor,
   isTransfigureTokenWax,
+  normalizeTransfigureCardColor,
   normalizeTransfigureCardRarity,
   normalizeTransfigureCardType,
   normalizeTransfigureCardKeywords,
@@ -23,6 +25,7 @@ import {
   normalizeTransfigureName,
   normalizeTransfigureTokenColor,
   normalizeTransfigureTokenWax,
+  type TransfigureCardColor,
   type TransfigureCardKeywords,
   type TransfigureCardRarity,
   type TransfigureCardType,
@@ -44,6 +47,7 @@ export interface SaveTransfigurePostInput {
   sourceCost: string | null;
   sourceCardType?: CardTypeKo | null;
   sourceCardRarity?: CardRarityKo | null;
+  sourceCardColor?: CardColor | null;
   sourceUpgradeText: string | null;
   sourceUpgradeBlocks: PostBlock[] | null;
   sourceUpgradeCost: string | null;
@@ -54,6 +58,7 @@ export interface SaveTransfigurePostInput {
   transformedStarCost?: string;
   transformedCardType?: TransfigureCardType | "";
   transformedCardRarity?: TransfigureCardRarity | "";
+  transformedCardColor?: TransfigureCardColor | "";
   cardKeywords: TransfigureCardKeywords | null;
   upgradedBlocks: PostBlock[] | null;
   transformedUpgradeCost: string;
@@ -104,6 +109,9 @@ function normalizePost(row: unknown): TransfigurePost {
     transformed_card_rarity: isTransfigureCardRarity(post.transformed_card_rarity)
       ? post.transformed_card_rarity
       : null,
+    transformed_card_color: isTransfigureCardColor(post.transformed_card_color)
+      ? post.transformed_card_color
+      : null,
     card_top_keywords: post.card_top_keywords ?? [],
     card_bottom_keywords: post.card_bottom_keywords ?? [],
     upgraded_content: post.upgraded_content ?? null,
@@ -144,6 +152,10 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     input.transformedCardRarity,
     input.sourceCardRarity ?? null,
   );
+  const transformedCardColor = normalizeTransfigureCardColor(
+    input.transformedCardColor,
+    input.sourceCardColor ?? null,
+  );
   const upgradedContentText = input.upgradedBlocks
     ? blocksToPlainText(input.upgradedBlocks).trim()
     : null;
@@ -175,23 +187,31 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     );
   const cardMetadataInputValid = input.resource.type === "card"
     ? (
-      (!input.transformedCardType && !input.transformedCardRarity)
-      || (
-        canTransfigureCardMetadata(
-          input.sourceCardType,
-          input.sourceCardRarity,
-        )
-        && (
-          !input.transformedCardType
-          || isTransfigureCardType(input.transformedCardType)
-        )
-        && (
-          !input.transformedCardRarity
-          || isTransfigureCardRarity(input.transformedCardRarity)
+      (
+        (!input.transformedCardType && !input.transformedCardRarity)
+        || (
+          canTransfigureCardMetadata(
+            input.sourceCardType,
+            input.sourceCardRarity,
+          )
+          && (
+            !input.transformedCardType
+            || isTransfigureCardType(input.transformedCardType)
+          )
+          && (
+            !input.transformedCardRarity
+            || isTransfigureCardRarity(input.transformedCardRarity)
+          )
         )
       )
+      && (
+        !input.transformedCardColor
+        || isTransfigureCardColor(input.transformedCardColor)
+      )
     )
-    : !input.transformedCardType && !input.transformedCardRarity;
+    : !input.transformedCardType
+      && !input.transformedCardRarity
+      && !input.transformedCardColor;
   const validCost = transformedCost == null || /^(X|[0-9]{1,2})$/.test(transformedCost);
   const validStarCost = transformedStarCost == null
     || /^(X|[0-9]{1,2})$/.test(transformedStarCost);
@@ -259,6 +279,8 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
       sourceCardType: input.sourceCardType,
       transformedCardRarity: input.transformedCardRarity,
       sourceCardRarity: input.sourceCardRarity,
+      transformedCardColor: input.transformedCardColor,
+      sourceCardColor: input.sourceCardColor,
       upgradedBlocks: input.upgradedBlocks,
       sourceUpgradeText: input.sourceUpgradeText,
       sourceUpgradeBlocks: input.sourceUpgradeBlocks,
@@ -289,6 +311,7 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     transformedStarCost,
     transformedCardType,
     transformedCardRarity,
+    transformedCardColor,
     upgradedContentText,
     transformedUpgradeCost,
     transformedUpgradeStarCost,
@@ -322,6 +345,7 @@ async function persistTransfigurePostUpdate(
         transformed_star_cost: normalized.transformedStarCost,
         transformed_card_type: normalized.transformedCardType,
         transformed_card_rarity: normalized.transformedCardRarity,
+        transformed_card_color: normalized.transformedCardColor,
         card_top_keywords: normalized.cardKeywords.top,
         card_bottom_keywords: normalized.cardKeywords.bottom,
         upgraded_content: input.upgradedBlocks,
@@ -367,6 +391,7 @@ export async function insertTransfigurePost(
         transformed_star_cost: normalized.transformedStarCost,
         transformed_card_type: normalized.transformedCardType,
         transformed_card_rarity: normalized.transformedCardRarity,
+        transformed_card_color: normalized.transformedCardColor,
         card_top_keywords: normalized.cardKeywords.top,
         card_bottom_keywords: normalized.cardKeywords.bottom,
         upgraded_content: input.upgradedBlocks,

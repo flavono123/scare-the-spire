@@ -21,6 +21,7 @@ import {
   type PagestormTransfigurePreview,
 } from "@/lib/pagestorm-toybox";
 import {
+  isTransfigureCardColor,
   isTransfigureCardRarity,
   isTransfigureCardType,
   isTransfigureTokenColor,
@@ -153,6 +154,11 @@ function TransfigurePreview({
           transformedCardRarity={
             isTransfigureCardRarity(preview.transformedCardRarity)
               ? preview.transformedCardRarity
+              : null
+          }
+          transformedCardColor={
+            isTransfigureCardColor(preview.transformedCardColor)
+              ? preview.transformedCardColor
               : null
           }
           transformedUpgradeCost={preview.transformedUpgradeCost || undefined}

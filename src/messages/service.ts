@@ -352,8 +352,10 @@ export const serviceMessages = {
       cardAttributes: "카드 속성 변경",
       cardRarity: "희귀도",
       cardType: "유형",
+      cardColor: "캐릭터",
       selectCardRarity: "바꿀 등급",
       selectCardType: "바꿀 유형",
+      selectCardColor: "바꿀 캐릭터",
       cancelChange: "취소",
       tokenAppearance: "이미지 색상 필터",
       tokenColors: {
@@ -1672,8 +1674,10 @@ export const serviceMessages = {
       cardAttributes: "Card attribute changes",
       cardRarity: "Rarity",
       cardType: "Type",
+      cardColor: "Character",
       selectCardRarity: "Rarity to change to",
       selectCardType: "Type to change to",
+      selectCardColor: "Character to change to",
       cancelChange: "Cancel",
       tokenAppearance: "Image color filter",
       tokenColors: {

@@ -121,6 +121,7 @@ export function TransfigurePostCard({
             transformedStarCost={post.transformed_star_cost}
             transformedCardType={post.transformed_card_type}
             transformedCardRarity={post.transformed_card_rarity}
+            transformedCardColor={post.transformed_card_color}
             cardKeywords={{
               top: post.card_top_keywords,
               bottom: post.card_bottom_keywords,

@@ -23,9 +23,11 @@ import {
   getTransfigureUpgradeSourceCost,
   getTransfigureUpgradeSourceStarCost,
   isTransfigureTokenResourceType,
+  normalizeTransfigureCardColor,
   normalizeTransfigureCardRarity,
   normalizeTransfigureCardType,
   transfigureBlocksToGameDescription,
+  type TransfigureCardColor,
   type TransfigureCardKeywords,
   type TransfigureCardRarity,
   type TransfigureCardType,
@@ -51,6 +53,7 @@ interface TransfigureResourcePreviewProps {
   transformedStarCost?: string | null;
   transformedCardType?: TransfigureCardType | null;
   transformedCardRarity?: TransfigureCardRarity | null;
+  transformedCardColor?: TransfigureCardColor | null;
   transformedUpgradeCost?: string | null;
   transformedUpgradeStarCost?: string | null;
   cardKeywords?: TransfigureCardKeywords | null;
@@ -76,6 +79,7 @@ export function TransfigureResourcePreview({
   transformedStarCost,
   transformedCardType,
   transformedCardRarity,
+  transformedCardColor,
   transformedUpgradeCost,
   transformedUpgradeStarCost,
   cardKeywords,
@@ -127,6 +131,10 @@ export function TransfigureResourcePreview({
         entity.cardData.rarity,
       )
       : null;
+    const effectiveCardColor = normalizeTransfigureCardColor(
+      transformedCardColor,
+      entity.cardData.color,
+    );
     const effectiveUpgradeBlocks = upgradedBlocks ?? gameUpgradeBlocks;
     const activeBlocks = showUpgrade && effectiveUpgradeBlocks != null
       ? effectiveUpgradeBlocks
@@ -163,6 +171,7 @@ export function TransfigureResourcePreview({
         entities,
         effectiveCardType,
         effectiveCardRarity,
+        effectiveCardColor,
       ),
       name: displayName,
       description,

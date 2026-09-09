@@ -46,33 +46,32 @@ export const TRANSFIGURE_CARD_TYPES = [
   "공격",
   "스킬",
   "파워",
-  "저주",
-  "상태이상",
-  "퀘스트",
 ] as const satisfies readonly CardTypeKo[];
 
 export const TRANSFIGURE_CARD_RARITIES = [
   "일반",
   "고급",
   "희귀",
-  "고대의 존재",
-  "이벤트",
-  "토큰",
-  "저주",
-  "상태이상",
-  "퀘스트",
 ] as const satisfies readonly CardRarityKo[];
+
+/** Compendium card-library affiliation chips, excluding ancient (rarity, not color). */
+export const TRANSFIGURE_CARD_COLORS = [
+  "ironclad",
+  "silent",
+  "regent",
+  "necrobinder",
+  "defect",
+  "colorless",
+  "status",
+  "curse",
+  "event",
+  "quest",
+  "token",
+] as const satisfies readonly CardColor[];
 
 export type TransfigureCardType = (typeof TRANSFIGURE_CARD_TYPES)[number];
 export type TransfigureCardRarity = (typeof TRANSFIGURE_CARD_RARITIES)[number];
-
-/** Special rarities that use a pool tint instead of the source character color. */
-export const TRANSFIGURE_RARITY_POOL_COLOR = {
-  토큰: "token",
-  상태이상: "status",
-  퀘스트: "quest",
-  이벤트: "event",
-} as const satisfies Partial<Record<TransfigureCardRarity, CardColor>>;
+export type TransfigureCardColor = (typeof TRANSFIGURE_CARD_COLORS)[number];
 
 export const TRANSFIGURE_TOKEN_RESOURCE_TYPES = [
   "relic",
@@ -118,6 +117,7 @@ export interface TransfigurePost {
   transformed_star_cost: string | null;
   transformed_card_type: TransfigureCardType | null;
   transformed_card_rarity: TransfigureCardRarity | null;
+  transformed_card_color: TransfigureCardColor | null;
   card_top_keywords: string[];
   card_bottom_keywords: string[];
   upgraded_content: PostBlock[] | null;
@@ -501,22 +501,18 @@ export function isTransfigureCardRarity(
   return TRANSFIGURE_CARD_RARITIES.includes(value as TransfigureCardRarity);
 }
 
+export function isTransfigureCardColor(
+  value: unknown,
+): value is TransfigureCardColor {
+  return TRANSFIGURE_CARD_COLORS.includes(value as TransfigureCardColor);
+}
+
 export function canTransfigureCardMetadata(
   sourceType: CardTypeKo | null | undefined,
   sourceRarity: CardRarityKo | null | undefined,
 ): boolean {
   return isTransfigureCardType(sourceType)
     && (sourceRarity === "기본" || isTransfigureCardRarity(sourceRarity));
-}
-
-export function transfigureCardPoolColor(
-  rarity: TransfigureCardRarity | CardRarityKo | "" | null | undefined,
-  sourceColor: CardColor,
-): CardColor {
-  if (!rarity) return sourceColor;
-  return rarity in TRANSFIGURE_RARITY_POOL_COLOR
-    ? TRANSFIGURE_RARITY_POOL_COLOR[rarity as keyof typeof TRANSFIGURE_RARITY_POOL_COLOR]
-    : sourceColor;
 }
 
 export function normalizeTransfigureCardType(
@@ -531,6 +527,13 @@ export function normalizeTransfigureCardRarity(
   sourceRarity: CardRarityKo | null,
 ): TransfigureCardRarity | null {
   return isTransfigureCardRarity(value) && value !== sourceRarity ? value : null;
+}
+
+export function normalizeTransfigureCardColor(
+  value: string | null | undefined,
+  sourceColor: CardColor | null | undefined,
+): TransfigureCardColor | null {
+  return isTransfigureCardColor(value) && value !== sourceColor ? value : null;
 }
 
 export function getTransfigureCardTypeLabel(
@@ -554,26 +557,34 @@ export function applyTransfigureCardMetadata(
   entities: EntityInfo[],
   transformedCardType?: TransfigureCardType | null,
   transformedCardRarity?: TransfigureCardRarity | null,
+  transformedCardColor?: TransfigureCardColor | null,
 ): CodexCard {
-  if (!canTransfigureCardMetadata(card.type, card.rarity)) return card;
-
-  const mappedColor = transformedCardRarity
-    ? transfigureCardPoolColor(transformedCardRarity, card.color)
+  const canChangeTypeRarity = canTransfigureCardMetadata(card.type, card.rarity);
+  const nextType = canChangeTypeRarity
+    ? (transformedCardType ?? card.type)
+    : card.type;
+  const nextRarity = canChangeTypeRarity
+    ? (transformedCardRarity ?? card.rarity)
+    : card.rarity;
+  const nextColor = isTransfigureCardColor(transformedCardColor)
+    ? transformedCardColor
     : card.color;
-  const colorChanged = mappedColor !== card.color;
+  const colorChanged = nextColor !== card.color;
+
+  if (!canChangeTypeRarity && !colorChanged) return card;
 
   return {
     ...card,
-    type: transformedCardType ?? card.type,
-    typeLabel: transformedCardType
+    type: nextType,
+    typeLabel: canChangeTypeRarity && transformedCardType
       ? getTransfigureCardTypeLabel(entities, transformedCardType)
       : card.typeLabel,
-    rarity: transformedCardRarity ?? card.rarity,
-    rarityLabel: transformedCardRarity
+    rarity: nextRarity,
+    rarityLabel: canChangeTypeRarity && transformedCardRarity
       ? getTransfigureCardRarityLabel(entities, transformedCardRarity)
       : card.rarityLabel,
-    color: mappedColor,
-    visualColor: colorChanged ? mappedColor : card.visualColor,
+    color: nextColor,
+    visualColor: colorChanged ? nextColor : card.visualColor,
   };
 }
 
@@ -603,6 +614,8 @@ export type TransfigureChangeCheck = {
   sourceCardType?: CardTypeKo | null;
   transformedCardRarity?: string;
   sourceCardRarity?: CardRarityKo | null;
+  transformedCardColor?: string;
+  sourceCardColor?: CardColor | null;
   tokenColor?: string | null;
   tokenWax?: string | null;
   resourceType?: EntityType;
@@ -665,6 +678,8 @@ export function isTransfigureChanged({
   sourceCardType = null,
   transformedCardRarity = "",
   sourceCardRarity = null,
+  transformedCardColor = "",
+  sourceCardColor = null,
   tokenColor = null,
   tokenWax = "off",
   resourceType,
@@ -686,6 +701,7 @@ export function isTransfigureChanged({
         ) != null
       )
     )
+    || normalizeTransfigureCardColor(transformedCardColor, sourceCardColor) != null
     || !transfigureCardKeywordsEqual(cardKeywords, sourceCardKeywords)
     || !transfigureCardKeywordsEqual(
       upgradedCardKeywords,

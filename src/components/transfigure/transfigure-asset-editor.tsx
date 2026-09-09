@@ -31,6 +31,7 @@ import {
   getTransfigureSourceCost,
   isTransfigureTokenResourceType,
   normalizeTransfigureCostInput,
+  type TransfigureCardColor,
   type TransfigureCardKeywords,
   type TransfigureCardRarity,
   type TransfigureCardType,
@@ -76,6 +77,7 @@ interface TransfigureAssetEditorProps {
   transformedStarCost: string;
   transformedCardType: TransfigureCardType | "";
   transformedCardRarity: TransfigureCardRarity | "";
+  transformedCardColor: TransfigureCardColor | "";
   cardKeywords: TransfigureCardKeywords | null;
   transformedUpgradeCost: string;
   transformedUpgradeStarCost: string;
@@ -141,6 +143,7 @@ export function TransfigureAssetEditor({
   transformedStarCost,
   transformedCardType,
   transformedCardRarity,
+  transformedCardColor,
   cardKeywords,
   transformedUpgradeCost,
   transformedUpgradeStarCost,
@@ -172,9 +175,16 @@ export function TransfigureAssetEditor({
         entities,
         transformedCardType || null,
         transformedCardRarity || null,
+        transformedCardColor || null,
       )
       : null,
-    [entities, entity.cardData, transformedCardRarity, transformedCardType],
+    [
+      entities,
+      entity.cardData,
+      transformedCardColor,
+      transformedCardRarity,
+      transformedCardType,
+    ],
   );
   const activeInitialBlocks = showUpgrade && initialUpgradeBlocks != null
     ? initialUpgradeBlocks

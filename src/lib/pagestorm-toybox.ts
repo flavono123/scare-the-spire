@@ -42,6 +42,7 @@ export type PagestormTransfigurePreview = {
   transformedStarCost: string;
   transformedCardType: string;
   transformedCardRarity: string;
+  transformedCardColor: string;
   transformedUpgradeCost: string;
   transformedUpgradeStarCost: string;
   cardTopKeywords: string[];
@@ -182,6 +183,7 @@ export function pagestormTransfigurePreviewFromPost(
     transformedStarCost: post.transformed_star_cost ?? "",
     transformedCardType: post.transformed_card_type ?? "",
     transformedCardRarity: post.transformed_card_rarity ?? "",
+    transformedCardColor: post.transformed_card_color ?? "",
     transformedUpgradeCost: post.transformed_upgrade_cost ?? "",
     transformedUpgradeStarCost: post.transformed_upgrade_star_cost ?? "",
     cardTopKeywords: asStringList(post.card_top_keywords),
@@ -228,6 +230,9 @@ export function parsePagestormTransfigurePreview(
       : "",
     transformedCardRarity: typeof record.transformedCardRarity === "string"
       ? record.transformedCardRarity
+      : "",
+    transformedCardColor: typeof record.transformedCardColor === "string"
+      ? record.transformedCardColor
       : "",
     transformedUpgradeCost: typeof record.transformedUpgradeCost === "string"
       ? record.transformedUpgradeCost
