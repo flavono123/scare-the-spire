@@ -11,10 +11,16 @@ import {
   sts1CardBodyStyle,
   sts1CardFrameRegion,
   sts1CardOrbRegion,
+  sts1DescriptionBox,
+  sts1DescriptionTextStyle,
   sts1EnergyCostBox,
   sts1PortraitBox,
+  sts1TitleBox,
   sts1TypeBannerPieces,
+  sts1TypeBox,
 } from "@/lib/sts1/card-style";
+import type { GameLocale } from "@/lib/i18n";
+import { sts1HtmlLang } from "@/lib/sts1/locale";
 import { sts1CardPortraitUrl, sts1CardUi512Url } from "@/lib/sts1/paths";
 import { sts1CardStats, sts1CostLabel } from "@/lib/sts1/stats";
 import type { Sts1Card, Sts1Keyword } from "@/lib/sts1/types";
@@ -45,23 +51,28 @@ export function Sts1CardTile({
   showBeta = false,
   keywords = [],
   typeLabel,
+  gameLocale = "kor",
 }: {
   card: Sts1Card;
   upgradeLevel?: number;
   showBeta?: boolean;
   keywords?: readonly Sts1Keyword[];
   typeLabel: string;
+  gameLocale?: GameLocale;
 }) {
   const stats = sts1CardStats(card, upgradeLevel);
   const description = stats.upgraded && card.upgradeDescription
     ? card.upgradeDescription
     : card.description;
+  const title = `${card.name}${stats.nameSuffix}`;
   const costLabel = sts1CostLabel(stats.cost);
   const upgradedCost = stats.upgraded && card.upgrade?.cost != null;
 
   return (
     <article
       className="relative w-full overflow-visible"
+      lang={sts1HtmlLang(gameLocale)}
+      data-game-locale={gameLocale}
       style={{ aspectRatio: STS1_CARD_ASPECT }}
     >
       <div
@@ -99,26 +110,18 @@ export function Sts1CardTile({
         </span>
       ) : null}
       <h3
-        className="absolute z-10 truncate text-center font-bold leading-tight"
+        className="absolute z-10 flex items-center justify-center overflow-hidden whitespace-nowrap text-center font-bold leading-none"
         style={{
-          left: "18%",
-          right: "8%",
-          top: "6.5%",
-          fontSize: "8.2cqi",
+          ...sts1TitleBox(title, stats.cost),
           ...TITLE_STROKE,
         }}
       >
-        {card.name}
-        {stats.nameSuffix}
+        {title}
       </h3>
       <div
         className="absolute z-10 flex items-center justify-center font-game-text leading-none"
         style={{
-          left: "22%",
-          right: "22%",
-          top: "52%",
-          height: "5.5%",
-          fontSize: "5.1cqi",
+          ...sts1TypeBox(),
           color: "#f8e8c0",
           textShadow: "0 1px 2px #000",
         }}
@@ -127,14 +130,14 @@ export function Sts1CardTile({
       </div>
       <div
         className="absolute z-10 overflow-hidden"
-        style={{ left: "12%", right: "12%", top: "59%", bottom: "8%" }}
+        style={sts1DescriptionBox(gameLocale)}
       >
         <Sts1CardText
           text={description}
           stats={stats}
           keywords={keywords}
-          className="font-game-text text-center leading-[1.18] text-[#f8e8c0]"
-          style={{ fontSize: "5.6cqi" }}
+          className="font-game-text text-center text-[#f8e8c0]"
+          style={sts1DescriptionTextStyle(gameLocale)}
         />
       </div>
       </div>

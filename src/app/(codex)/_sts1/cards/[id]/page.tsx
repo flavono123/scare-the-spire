@@ -66,6 +66,7 @@ export default async function Sts1CardDetailPage({ params, searchParams }: Detai
       labels={labels}
       keywords={keywords}
       serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
     />
   );
 }

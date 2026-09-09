@@ -48,6 +48,7 @@ export default async function Sts1CardsPage({
         labels={labels}
         keywords={keywords}
         serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
       />
     </Suspense>
   );

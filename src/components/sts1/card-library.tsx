@@ -25,7 +25,7 @@ import {
 } from "@/components/codex/use-hydration-safe-search-param";
 import { formatCodexCount, getCodexServiceMessages } from "@/lib/codex-service";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { STS1_FILTER_ICONS } from "@/lib/sts1/card-style";
 import { sts1DetailPath } from "@/lib/sts1/paths";
 import { sts1MatchesCostFilter } from "@/lib/sts1/stats";
@@ -107,11 +107,13 @@ export function Sts1CardLibrary({
   labels,
   keywords,
   serviceLocale,
+  gameLocale,
 }: {
   cards: Sts1Card[];
   labels: Sts1UiLabels;
   keywords: Sts1Keyword[];
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
 }) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlCardId = useHydrationSafeSearchParam("card");
@@ -384,6 +386,7 @@ export function Sts1CardLibrary({
                   upgradeLevel={showUpgrades ? 1 : 0}
                   showBeta={showBeta}
                   keywords={keywords}
+                  gameLocale={gameLocale}
                   typeLabel={
                     card.type === "attack" || card.type === "skill" || card.type === "power"
                       || card.type === "curse" || card.type === "status"
@@ -404,6 +407,7 @@ export function Sts1CardLibrary({
               labels={labels}
               keywords={keywords}
               serviceLocale={serviceLocale}
+              gameLocale={gameLocale}
               showBeta={showBeta}
               onBetaChange={setShowBeta}
               onClose={closeCard}

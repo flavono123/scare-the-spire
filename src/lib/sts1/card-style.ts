@@ -1,3 +1,6 @@
+import type { CSSProperties } from "react";
+import type { GameLocale } from "@/lib/i18n";
+import { sts1LineBreakViaCharacter, sts1GameLocale } from "@/lib/sts1/locale";
 import type { Sts1Card, Sts1CardType, Sts1PotionRarity, Sts1RelicPool, Sts1RelicTier } from "@/lib/sts1/types";
 import { sts1CardLibraryTabUrl, sts1CardUiUrl, sts1CharacterIconUrl } from "@/lib/sts1/paths";
 
@@ -56,6 +59,113 @@ export function sts1EnergyCostBox() {
     top: `${((centerY - STS1_ENERGY_ORB_SIZE.height / 2) / height) * 100}%`,
     width: `${(STS1_ENERGY_ORB_SIZE.width / width) * 100}%`,
     height: `${(STS1_ENERGY_ORB_SIZE.height / height) * 100}%`,
+  };
+}
+
+/** AbstractCard.renderTitle: renderRotatedText(..., offsetX=0, offsetY=175). Game Y+ is up. */
+export const STS1_TITLE_OFFSET_Y = 175;
+/** FontHelper.cardTitleFont = prepFont(27, true). Long names scale to 0.85. */
+export const STS1_TITLE_FONT = 27;
+export const STS1_TITLE_SMALL_SCALE = 0.85;
+export const STS1_TITLE_BOX_WIDTH = 0.6;
+export const STS1_TITLE_BOX_WIDTH_NO_COST = 0.7;
+/** FontHelper.cardDescFont_N / _L = prepFont(24, ...). */
+export const STS1_DESC_FONT = 24;
+/** AbstractCard.DESC_OFFSET_Y = 0.255 * IMG_HEIGHT when BIG_TEXT_MODE is off. */
+export const STS1_DESC_OFFSET_Y_FRAC = 0.255;
+export const STS1_DESC_BOX_WIDTH = 0.79;
+export const STS1_CN_DESC_BOX_WIDTH = 0.72;
+/** renderDescription line step is 1.45 * capHeight. */
+export const STS1_DESC_LINE_HEIGHT = 1.45;
+/**
+ * CSS top of the description well. Type text sits at ~55%; wiki.gg/Fandom
+ * full-card composites leave a gap under the type chip, then 24px copy.
+ * 1-line game baseline is ~73% of the 300×420 body.
+ */
+export const STS1_DESC_BOX_TOP = 0.64;
+export const STS1_DESC_BOX_BOTTOM = 0.08;
+/** FontHelper.cardTypeFont = prepFont(17, true). */
+export const STS1_TYPE_FONT = 17;
+/** renderType draws at current_y - 22 (down in CSS). */
+export const STS1_TYPE_OFFSET_Y = 22;
+
+export function sts1TitleBoxWidthFrac(cost: number): number {
+  return cost > 0 || cost === -1 ? STS1_TITLE_BOX_WIDTH : STS1_TITLE_BOX_WIDTH_NO_COST;
+}
+
+function titleEmWidth(name: string): number {
+  let width = 0;
+  for (const char of name) {
+    const code = char.codePointAt(0) ?? 0;
+    if (char === " ") width += 0.33;
+    else if (code >= 0x2e80) width += 1;
+    else width += 0.55;
+  }
+  return width;
+}
+
+export function sts1TitleFontScale(name: string, cost: number): number {
+  const boxPx = sts1TitleBoxWidthFrac(cost) * STS1_CARD_IN_ATLAS.width;
+  const px = titleEmWidth(name) * STS1_TITLE_FONT;
+  return px > boxPx ? STS1_TITLE_SMALL_SCALE : 1;
+}
+
+export function sts1TitleBox(name: string, cost: number) {
+  const { width, height } = STS1_CARD_IN_ATLAS;
+  const widthFrac = sts1TitleBoxWidthFrac(cost);
+  const scale = sts1TitleFontScale(name, cost);
+  const centerY = height / 2 - STS1_TITLE_OFFSET_Y;
+  const boxHeight = STS1_TITLE_FONT * 1.15;
+  return {
+    left: `${((1 - widthFrac) / 2) * 100}%`,
+    top: `${((centerY - boxHeight / 2) / height) * 100}%`,
+    width: `${widthFrac * 100}%`,
+    height: `${(boxHeight / height) * 100}%`,
+    fontSize: `${((STS1_TITLE_FONT * scale) / width) * 100}cqi`,
+  };
+}
+
+export function sts1TypeBox() {
+  const { width, height } = STS1_CARD_IN_ATLAS;
+  const centerY = height / 2 + STS1_TYPE_OFFSET_Y;
+  const boxHeight = STS1_TYPE_FONT * 1.2;
+  return {
+    left: "22%",
+    width: "56%",
+    top: `${((centerY - boxHeight / 2) / height) * 100}%`,
+    height: `${(boxHeight / height) * 100}%`,
+    fontSize: `${(STS1_TYPE_FONT / width) * 100}cqi`,
+  };
+}
+
+export function sts1DescBoxWidthFrac(gameLocale: GameLocale): number {
+  return sts1LineBreakViaCharacter(gameLocale) ? STS1_CN_DESC_BOX_WIDTH : STS1_DESC_BOX_WIDTH;
+}
+
+export function sts1DescriptionBox(gameLocale: GameLocale) {
+  const widthFrac = sts1DescBoxWidthFrac(gameLocale);
+  return {
+    left: `${((1 - widthFrac) / 2) * 100}%`,
+    width: `${widthFrac * 100}%`,
+    top: `${STS1_DESC_BOX_TOP * 100}%`,
+    bottom: `${STS1_DESC_BOX_BOTTOM * 100}%`,
+  };
+}
+
+export function sts1DescriptionTextStyle(gameLocale: GameLocale): CSSProperties {
+  const { width } = STS1_CARD_IN_ATLAS;
+  const locale = sts1GameLocale(gameLocale);
+  const wrap: CSSProperties = sts1LineBreakViaCharacter(gameLocale)
+    ? { wordBreak: "break-all", lineBreak: "anywhere" }
+    : locale === "kor"
+      ? { wordBreak: "keep-all", overflowWrap: "break-word" }
+      : locale === "tha"
+        ? { wordBreak: "break-word", overflowWrap: "anywhere", lineBreak: "anywhere" }
+        : { overflowWrap: "break-word" };
+  return {
+    fontSize: `${(STS1_DESC_FONT / width) * 100}cqi`,
+    lineHeight: STS1_DESC_LINE_HEIGHT,
+    ...wrap,
   };
 }
 

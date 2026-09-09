@@ -6,7 +6,7 @@ import { GameUpgradeToggle } from "@/components/codex/game-upgrade-toggle";
 import { Sts1CardTile } from "./card-tile";
 import { Sts1CardText } from "./description";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
-import type { ServiceLocale } from "@/lib/i18n";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { sts1PoolColor } from "@/lib/sts1/card-style";
 import { sts1IndexPath } from "@/lib/sts1/paths";
 import { sts1CardStats } from "@/lib/sts1/stats";
@@ -33,6 +33,7 @@ export function Sts1CardDetail({
   labels,
   keywords = [],
   serviceLocale,
+  gameLocale,
   showBeta = false,
   onBetaChange,
   onClose,
@@ -41,6 +42,7 @@ export function Sts1CardDetail({
   labels: Sts1UiLabels;
   keywords?: readonly Sts1Keyword[];
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   showBeta?: boolean;
   onBetaChange?: (value: boolean) => void;
   onClose?: () => void;
@@ -70,6 +72,7 @@ export function Sts1CardDetail({
             showBeta={beta}
             keywords={keywords}
             typeLabel={typeLabel}
+            gameLocale={gameLocale}
           />
         </div>
       )}
