@@ -71,6 +71,8 @@ import {
   usesDedicatedLastScene,
 } from "@/lib/history-last-scene";
 import { lastScenePicksRevealed } from "@/lib/history-last-scene-steps";
+import { playbackSpeedMultiplier } from "@/lib/history-playback-rate";
+import { HistoryLastSceneErrorBoundary } from "@/components/history-course/history-last-scene-error-boundary";
 import { cn } from "@/lib/utils";
 import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
 import type { Comment } from "@/hooks/use-comments";
@@ -759,6 +761,10 @@ export function HistoryCourseShell({
   const [globalMs, setGlobalMs] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [rate, setRate] = useState<Rate>(2);
+  const runTimelineRef = useRef(runTimeline);
+  const rateRef = useRef(rate);
+  runTimelineRef.current = runTimeline;
+  rateRef.current = rate;
   const [deckOpen, setDeckOpen] = useState(false);
   const [focusedPlayerIndex, setFocusedPlayerIndex] = useState(0);
   // Run-summary panel — opens via the topbar cog (mid-run partial view)
@@ -1058,25 +1064,56 @@ export function HistoryCourseShell({
     setSummaryOpen(false);
   }, []);
 
-  // rAF ticker. Every animation frame nudges globalMs by `dt × rate` while
-  // playing. Step + stack + topbar all derive from globalMs, so a paused
-  // tick simply stops the time axis — no more setTimeout-per-node dance.
-  // Auto-advance across acts is implicit: globalMs crossing into the next
-  // actOffset flips actIndex via the derive in the render body.
+  const onTogglePlay = useCallback(() => {
+    setPlaying((current) => {
+      const next = !current;
+      if (next) {
+        setIntroActive(false);
+        setReplayReady(true);
+      }
+      return next;
+    });
+  }, []);
+
+  // rAF ticker. Map transit uses `rate`. Dedicated last-scene beats stay
+  // 1× wall-clock so loot / card-pick / choice screens stay readable at 2×.
+  // Timeline/rate live on refs so card-catalog identity churn cannot
+  // cancel the rAF loop and freeze playback (검슝 쳐내기 regression).
   useEffect(() => {
     if (!playing || !replayReady) return;
-    if (runTimeline.totalMs <= 0) return;
+    if (runTimelineRef.current.totalMs <= 0) return;
     let last = performance.now();
     let raf = 0;
-    const tick = (now: number) => {
-      const dt = (now - last) * rate;
+    let stopped = false;
+    const advance = (now: number) => {
+      if (stopped) return;
+      const wallDt = Math.min(now - last, 100);
       last = now;
-      setGlobalMs((prev) => Math.min(prev + dt, runTimeline.totalMs));
-      raf = window.requestAnimationFrame(tick);
+      try {
+        setGlobalMs((prev) => {
+          const tl = runTimelineRef.current;
+          if (tl.totalMs <= 0) return prev;
+          const speed = playbackSpeedMultiplier(tl, prev, rateRef.current);
+          return Math.min(prev + wallDt * speed, tl.totalMs);
+        });
+      } catch (error: unknown) {
+        console.warn("[history-course] playback tick failed", error);
+      }
     };
-    raf = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(raf);
-  }, [playing, rate, replayReady, runTimeline.totalMs]);
+    const onRaf = (now: number) => {
+      advance(now);
+      if (!stopped) raf = window.requestAnimationFrame(onRaf);
+    };
+    raf = window.requestAnimationFrame(onRaf);
+    const watchdog = window.setInterval(() => {
+      if (performance.now() - last > 80) advance(performance.now());
+    }, 50);
+    return () => {
+      stopped = true;
+      window.cancelAnimationFrame(raf);
+      window.clearInterval(watchdog);
+    };
+  }, [playing, replayReady, runTimeline.totalMs]);
 
   // Keyboard scrub — global-ms anchored: ArrowRight jumps to next entry's
   // startMs (across acts at the seam), ArrowLeft to the previous entry.
@@ -1089,7 +1126,7 @@ export function HistoryCourseShell({
       }
       if (event.code === "Space") {
         event.preventDefault();
-        setPlaying((v) => !v);
+        onTogglePlay();
       } else if (event.key === "ArrowRight") {
         event.preventDefault();
         setPlaying(false);
@@ -1102,7 +1139,7 @@ export function HistoryCourseShell({
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [runTimeline]);
+  }, [runTimeline, onTogglePlay]);
 
   const onJumpToStep = useCallback(
     (targetActIndex: number, targetStep: number) => {
@@ -1204,7 +1241,8 @@ export function HistoryCourseShell({
           currentActIndex={actIndex}
           currentStep={step}
           onCloseSummary={onCloseSummary}
-          onTogglePlay={() => setPlaying((v) => !v)}
+          onTogglePlay={onTogglePlay}
+          replayReady={replayReady}
           onChangeRate={setRate}
           onScrubGlobalMs={(value) => {
             setPlaying(false);
@@ -1281,6 +1319,7 @@ function Stage({
   introAct,
   nodeStackLocalMs,
   playing,
+  replayReady,
   rate,
   stackItems,
   hidingRelicIds,
@@ -1323,6 +1362,7 @@ function Stage({
   introAct: Act | null;
   nodeStackLocalMs: number;
   playing: boolean;
+  replayReady: boolean;
   rate: Rate;
   stackItems: NodeStackItem[];
   hidingRelicIds: ReadonlySet<string>;
@@ -1465,6 +1505,10 @@ function Stage({
       ref={stageRef}
       className="relative w-full overflow-hidden ring-1 ring-white/10 shadow-[0_30px_120px_-30px_rgba(0,0,0,0.9)]"
       data-history-course-stage=""
+      data-history-playing={playing ? "true" : "false"}
+      data-history-replay-ready={replayReady ? "true" : "false"}
+      data-history-global-ms={String(Math.round(globalMs))}
+      data-history-total-ms={String(Math.round(runTimeline.totalMs))}
       style={{ width: STAGE_WIDTH, aspectRatio: "16 / 9" }}
     >
       <TopBar
@@ -1489,7 +1533,7 @@ function Stage({
       <GameScrollArea
         className={cn(
           "absolute inset-0",
-          dedicatedScene && transitProgress >= 1 && "invisible",
+          dedicatedScene && transitProgress >= 1 && "invisible pointer-events-none",
         )}
         size="large"
         scrollerRef={mapBoxRef}
@@ -1532,7 +1576,8 @@ function Stage({
       />
 
       {historyEntry ? (
-        <NodeLastScene
+        <HistoryLastSceneErrorBoundary>
+          <NodeLastScene
           kind={sceneKind}
           entry={historyEntry}
           run={run}
@@ -1548,7 +1593,8 @@ function Stage({
           cardsById={cardsById}
           relicsById={relicsById}
           potionsById={potionsById}
-        />
+          />
+        </HistoryLastSceneErrorBoundary>
       ) : null}
 
       <PlaybackBar
@@ -1724,7 +1770,7 @@ function PlaybackBar({
     .reduce((acc, a) => acc + a.history.length, 0) + step;
 
   return (
-    <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col gap-2 bg-gradient-to-t from-black/85 to-black/0 px-4 pb-3 pt-10 text-zinc-100">
+    <div className="pointer-events-auto absolute inset-x-0 bottom-0 z-40 flex flex-col gap-2 bg-gradient-to-t from-black/85 to-black/0 px-4 pb-3 pt-10 text-zinc-100">
       <Track
         runTimeline={runTimeline}
         sanitizedActs={sanitizedActs}
@@ -1741,6 +1787,7 @@ function PlaybackBar({
         <div className="flex items-center gap-2">
           <button
             type="button"
+            data-history-play-toggle=""
             onClick={onTogglePlay}
             className="flex h-7 w-12 items-center justify-center rounded-md border border-white/20 bg-black/40 transition hover:bg-white/10"
             aria-label={playing ? playback.pause : playback.play}

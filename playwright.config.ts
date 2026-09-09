@@ -9,6 +9,7 @@ export default defineConfig({
     "monster-intent-fsm.spec.ts",
     "history-course-shell.spec.ts",
     "history-course-rewards.spec.ts",
+    "history-course-playback.spec.ts",
     "phase4-visual.spec.ts",
     "perf-probe.spec.ts",
     "card-tile-visual.spec.ts",

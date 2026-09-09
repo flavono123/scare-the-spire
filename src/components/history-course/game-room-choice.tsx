@@ -57,7 +57,7 @@ export function GameRoomChoicePanel({
   children: React.ReactNode;
 }) {
   return (
-    <div className="dark pointer-events-auto absolute inset-x-4 bottom-20 top-24 z-10 flex min-w-0 flex-col sm:inset-x-auto sm:right-[3.5%] sm:w-[45%] sm:min-w-[18rem] sm:max-w-[540px]">
+    <div className="dark pointer-events-none absolute inset-x-4 bottom-20 top-24 z-10 flex min-w-0 flex-col sm:inset-x-auto sm:right-[3.5%] sm:w-[45%] sm:min-w-[18rem] sm:max-w-[540px]">
       <div className="pointer-events-none absolute -inset-6 rounded-full bg-black/35 blur-2xl" />
       <div className="relative flex min-h-0 flex-1 flex-col gap-2">
         {title ? (

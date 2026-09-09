@@ -78,7 +78,7 @@ export function RoomResultReceipt({
 
   return (
     <div
-      className="pointer-events-auto absolute inset-x-4 bottom-20 top-24 z-20 flex flex-col items-center justify-end gap-3 sm:inset-x-auto sm:left-1/2 sm:w-[min(40rem,70%)] sm:-translate-x-1/2"
+      className="pointer-events-none absolute inset-x-4 bottom-20 top-24 z-20 flex flex-col items-center justify-end gap-3 sm:inset-x-auto sm:left-1/2 sm:w-[min(40rem,70%)] sm:-translate-x-1/2"
       data-history-room-receipt
     >
       {hasVisual ? (

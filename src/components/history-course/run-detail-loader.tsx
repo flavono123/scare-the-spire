@@ -210,26 +210,33 @@ function LocalizedRunDetail({
 
   const lookupCards = catalog.allCards;
   const lookupRelics = catalog.allRelics;
-  const cardByLookupId = new Map<string, CodexCard>();
-  for (const card of lookupCards) {
-    cardByLookupId.set(card.id, card);
-    cardByLookupId.set(`CARD.${card.id}`, card);
-  }
-  const relevantIds = collectRelevantCardIds(run);
-  const cardsById = indexCodexCards(lookupCards);
-  for (const replayId of relevantIds) {
-    const stripped = stripCardId(replayId);
-    const card =
-      cardByLookupId.get(replayId) ??
-      cardByLookupId.get(stripped) ??
-      buildRunMadScienceCard(replayId, cardByLookupId);
-    if (!card) continue;
-    cardsById[replayId] = card;
-    cardsById[stripped] = card;
-  }
-
-  const relicsById = indexCodexRelics(lookupRelics);
-  const potionsById = indexCodexPotions(catalog.allPotions);
+  const cardsById = useMemo(() => {
+    const cardByLookupId = new Map<string, CodexCard>();
+    for (const card of lookupCards) {
+      cardByLookupId.set(card.id, card);
+      cardByLookupId.set(`CARD.${card.id}`, card);
+    }
+    const indexed = indexCodexCards(lookupCards);
+    for (const replayId of collectRelevantCardIds(run)) {
+      const stripped = stripCardId(replayId);
+      const card =
+        cardByLookupId.get(replayId) ??
+        cardByLookupId.get(stripped) ??
+        buildRunMadScienceCard(replayId, cardByLookupId);
+      if (!card) continue;
+      indexed[replayId] = card;
+      indexed[stripped] = card;
+    }
+    return indexed;
+  }, [lookupCards, run]);
+  const relicsById = useMemo(
+    () => indexCodexRelics(lookupRelics),
+    [lookupRelics],
+  );
+  const potionsById = useMemo(
+    () => indexCodexPotions(catalog.allPotions),
+    [catalog.allPotions],
+  );
 
   return (
     <>
