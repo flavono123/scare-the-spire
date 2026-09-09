@@ -15,6 +15,7 @@ import type { PostBlock } from "@/lib/chemical-types";
 import { RELIC_RARITY_LABELS } from "@/lib/codex-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
+  applyTransfigureCardCosts,
   applyTransfigureCardMetadata,
   canTransfigureCardMetadata,
   getTransfigureSourceCost,
@@ -56,6 +57,7 @@ interface TransfigureResourcePreviewProps {
   transformedCardColor?: TransfigureCardColor | null;
   transformedUpgradeCost?: string | null;
   transformedUpgradeStarCost?: string | null;
+  omitEnergyCost?: boolean | null;
   cardKeywords?: TransfigureCardKeywords | null;
   upgradedBlocks?: PostBlock[] | null;
   upgradedCardKeywords?: TransfigureCardKeywords | null;
@@ -82,6 +84,7 @@ export function TransfigureResourcePreview({
   transformedCardColor,
   transformedUpgradeCost,
   transformedUpgradeStarCost,
+  omitEnergyCost = false,
   cardKeywords,
   upgradedBlocks,
   upgradedCardKeywords,
@@ -156,45 +159,42 @@ export function TransfigureResourcePreview({
     const transformedActiveStarCost = showUpgrade
       ? transformedUpgradeStarCost
       : transformedStarCost;
-    const normalizedCost = transformedActiveCost?.trim().toUpperCase()
-      || sourceCost;
-    const normalizedStarCost = transformedActiveStarCost?.trim().toUpperCase()
-      || sourceStarCost;
     const baseDescription = transfigureBlocksToGameDescription(blocks);
     const activeDescription = transfigureBlocksToGameDescription(activeBlocks);
     const description = showUpgrade && effectiveUpgradeBlocks != null
       ? markUpgradePlusGreen(baseDescription, activeDescription)
       : activeDescription;
-    const card = {
-      ...applyTransfigureCardMetadata(
-        entity.cardData,
-        entities,
-        effectiveCardType,
-        effectiveCardRarity,
-        effectiveCardColor,
-      ),
-      name: displayName,
-      description,
-      descriptionRaw: description,
-      isXCost: normalizedCost == null
-        ? entity.cardData.isXCost
-        : normalizedCost === "X",
-      isXStarCost: normalizedStarCost == null
-        ? entity.cardData.isXStarCost
-        : normalizedStarCost === "X",
-      starCost: normalizedStarCost == null || normalizedStarCost === "X"
-        ? (
-          normalizedStarCost === "X"
-            ? null
-            : entity.cardData.starCost
-        )
-        : Number(normalizedStarCost),
-    };
-    const forcedCost = normalizedCost && normalizedCost !== "X"
-      ? Number(normalizedCost)
+    const card = applyTransfigureCardCosts(
+      {
+        ...applyTransfigureCardMetadata(
+          entity.cardData,
+          entities,
+          effectiveCardType,
+          effectiveCardRarity,
+          effectiveCardColor,
+        ),
+        name: displayName,
+        description,
+        descriptionRaw: description,
+      },
+      {
+        omitEnergyCost,
+        transformedCost: transformedActiveCost,
+        sourceCost,
+        transformedStarCost: transformedActiveStarCost,
+        sourceStarCost,
+      },
+    );
+    const showsEnergy = card.cost >= 0 || card.isXCost;
+    const forcedCost = showsEnergy
+      && transformedActiveCost?.trim().toUpperCase()
+      && transformedActiveCost.trim().toUpperCase() !== "X"
+      ? Number(transformedActiveCost)
       : undefined;
-    const forcedStarCost = normalizedStarCost && normalizedStarCost !== "X"
-      ? Number(normalizedStarCost)
+    const forcedStarCost = card.starCost != null
+      && transformedActiveStarCost?.trim().toUpperCase()
+      && transformedActiveStarCost.trim().toUpperCase() !== "X"
+      ? Number(transformedActiveStarCost)
       : undefined;
     return (
       <div

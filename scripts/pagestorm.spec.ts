@@ -241,6 +241,7 @@ const transfigurePreview = parsePagestormTransfigurePreview({
 assert.ok(transfigurePreview);
 assert.equal(transfigurePreview.transformedName, "따뜻한 장갑");
 assert.equal(transfigurePreview.tokenColor, "gold");
+assert.equal(transfigurePreview.omitEnergyCost, false);
 assert.equal(parsePagestormTransfigurePreview("null"), null);
 assert.equal(parsePagestormTransfigurePreview(""), null);
 

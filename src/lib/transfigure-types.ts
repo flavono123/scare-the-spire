@@ -118,6 +118,7 @@ export interface TransfigurePost {
   transformed_card_type: TransfigureCardType | null;
   transformed_card_rarity: TransfigureCardRarity | null;
   transformed_card_color: TransfigureCardColor | null;
+  omit_energy_cost: boolean;
   card_top_keywords: string[];
   card_bottom_keywords: string[];
   upgraded_content: PostBlock[] | null;
@@ -489,6 +490,111 @@ export function normalizeTransfigureCost(
   return trimmed && trimmed !== sourceCost ? trimmed : null;
 }
 
+export function transfigureSourceHasEnergyCost(
+  sourceCost: string | null | undefined,
+): boolean {
+  return sourceCost != null && sourceCost !== "";
+}
+
+export function transfigureSourceHasStarCost(
+  sourceStarCost: string | null | undefined,
+): boolean {
+  return sourceStarCost != null && sourceStarCost !== "";
+}
+
+export function normalizeTransfigureOmitEnergyCost(
+  omitEnergyCost: boolean | null | undefined,
+  sourceCost: string | null | undefined,
+): boolean {
+  return Boolean(omitEnergyCost) && transfigureSourceHasEnergyCost(sourceCost);
+}
+
+export function transfigureShowsEnergyCost(
+  omitEnergyCost: boolean | null | undefined,
+  sourceCost: string | null | undefined,
+  transformedCost?: string | null,
+): boolean {
+  if (normalizeTransfigureOmitEnergyCost(omitEnergyCost, sourceCost)) {
+    return false;
+  }
+  return (
+    transfigureSourceHasEnergyCost(sourceCost)
+    || Boolean(transformedCost?.trim())
+  );
+}
+
+export function transfigureShowsStarCost(
+  sourceStarCost: string | null | undefined,
+  transformedStarCost?: string | null,
+): boolean {
+  return (
+    transfigureSourceHasStarCost(sourceStarCost)
+    || Boolean(transformedStarCost?.trim())
+  );
+}
+
+/** Game unplayable cards (curses, quests) store cost as -1 and hide the orb. */
+export const TRANSFIGURE_HIDDEN_ENERGY_COST = -1;
+
+/** Default orb value when the author adds energy or star cost. */
+export const TRANSFIGURE_DEFAULT_ADDED_COST = "1";
+
+export function applyTransfigureCardCosts(
+  card: CodexCard,
+  {
+    omitEnergyCost = false,
+    transformedCost = "",
+    sourceCost = null,
+    transformedStarCost = "",
+    sourceStarCost = null,
+    showStarCost,
+  }: {
+    omitEnergyCost?: boolean | null;
+    transformedCost?: string | null;
+    sourceCost?: string | null;
+    transformedStarCost?: string | null;
+    sourceStarCost?: string | null;
+    showStarCost?: boolean;
+  },
+): CodexCard {
+  const showsEnergy = transfigureShowsEnergyCost(
+    omitEnergyCost,
+    sourceCost,
+    transformedCost,
+  );
+  const showsStar = showStarCost ?? transfigureShowsStarCost(
+    sourceStarCost,
+    transformedStarCost,
+  );
+  const normalizedCost = transformedCost?.trim().toUpperCase() || sourceCost;
+  const normalizedStar = transformedStarCost?.trim().toUpperCase()
+    || sourceStarCost;
+
+  return {
+    ...card,
+    cost: showsEnergy
+      ? (
+        normalizedCost && normalizedCost !== "X"
+          ? Number(normalizedCost)
+          : card.cost
+      )
+      : TRANSFIGURE_HIDDEN_ENERGY_COST,
+    isXCost: showsEnergy
+      ? (normalizedCost == null ? card.isXCost : normalizedCost === "X")
+      : false,
+    starCost: showsStar
+      ? (
+        normalizedStar == null || normalizedStar === "X"
+          ? (normalizedStar === "X" ? null : (card.starCost ?? 1))
+          : Number(normalizedStar)
+      )
+      : null,
+    isXStarCost: showsStar
+      ? (normalizedStar == null ? card.isXStarCost : normalizedStar === "X")
+      : false,
+  };
+}
+
 export function isTransfigureCardType(
   value: unknown,
 ): value is TransfigureCardType {
@@ -616,6 +722,7 @@ export type TransfigureChangeCheck = {
   sourceCardRarity?: CardRarityKo | null;
   transformedCardColor?: string;
   sourceCardColor?: CardColor | null;
+  omitEnergyCost?: boolean;
   tokenColor?: string | null;
   tokenWax?: string | null;
   resourceType?: EntityType;
@@ -680,6 +787,7 @@ export function isTransfigureChanged({
   sourceCardRarity = null,
   transformedCardColor = "",
   sourceCardColor = null,
+  omitEnergyCost = false,
   tokenColor = null,
   tokenWax = "off",
   resourceType,
@@ -709,7 +817,11 @@ export function isTransfigureChanged({
     )
     || isTransfiguredContent(blocks, sourceText, sourceBlocks)
     || normalizeTransfigureName(transformedName, sourceName) != null
-    || normalizeTransfigureCost(transformedCost, sourceCost) != null
+    || normalizeTransfigureOmitEnergyCost(omitEnergyCost, sourceCost)
+    || (
+      transfigureShowsEnergyCost(omitEnergyCost, sourceCost, transformedCost)
+      && normalizeTransfigureCost(transformedCost, sourceCost) != null
+    )
     || normalizeTransfigureCost(transformedStarCost, sourceStarCost) != null
     || (
       upgradedBlocks != null
@@ -721,10 +833,13 @@ export function isTransfigureChanged({
         sourceUpgradeBlocks,
       )
     )
-    || normalizeTransfigureCost(
-      transformedUpgradeCost,
-      sourceUpgradeCost,
-    ) != null
+    || (
+      transfigureShowsEnergyCost(omitEnergyCost, sourceCost, transformedCost)
+      && normalizeTransfigureCost(
+        transformedUpgradeCost,
+        sourceUpgradeCost,
+      ) != null
+    )
     || normalizeTransfigureCost(
       transformedUpgradeStarCost,
       sourceUpgradeStarCost,

@@ -27,10 +27,12 @@ import {
   CARD_TOP_KEYWORD_ORDER,
 } from "@/lib/sts2-card-keywords";
 import {
+  applyTransfigureCardCosts,
   applyTransfigureCardMetadata,
   getTransfigureSourceCost,
   isTransfigureTokenResourceType,
   normalizeTransfigureCostInput,
+  TRANSFIGURE_DEFAULT_ADDED_COST,
   type TransfigureCardColor,
   type TransfigureCardKeywords,
   type TransfigureCardRarity,
@@ -86,6 +88,9 @@ interface TransfigureAssetEditorProps {
   upgradeLabel: string;
   starCostLabel: string;
   showUpgrade: boolean;
+  showEnergyCost: boolean;
+  showStarCost: boolean;
+  omitEnergyCost: boolean;
   tokenColor: TransfigureTokenColor | "";
   tokenWax: TransfigureTokenWax;
   onBlocksChange: (blocks: PostBlock[]) => void;
@@ -152,6 +157,9 @@ export function TransfigureAssetEditor({
   upgradeLabel,
   starCostLabel,
   showUpgrade,
+  showEnergyCost,
+  showStarCost,
+  omitEnergyCost,
   tokenColor,
   tokenWax,
   onBlocksChange,
@@ -170,20 +178,43 @@ export function TransfigureAssetEditor({
   const sourceCost = getTransfigureSourceCost(entity);
   const displayCard = useMemo(
     () => entity.cardData
-      ? applyTransfigureCardMetadata(
-        entity.cardData,
-        entities,
-        transformedCardType || null,
-        transformedCardRarity || null,
-        transformedCardColor || null,
+      ? applyTransfigureCardCosts(
+        applyTransfigureCardMetadata(
+          entity.cardData,
+          entities,
+          transformedCardType || null,
+          transformedCardRarity || null,
+          transformedCardColor || null,
+        ),
+        {
+          omitEnergyCost,
+          transformedCost: showUpgrade ? transformedUpgradeCost : transformedCost,
+          sourceCost: showUpgrade ? sourceUpgradeCost : sourceCost,
+          transformedStarCost: showUpgrade
+            ? transformedUpgradeStarCost
+            : transformedStarCost,
+          sourceStarCost: showUpgrade ? sourceUpgradeStarCost : sourceStarCost,
+          showStarCost,
+        },
       )
       : null,
     [
       entities,
       entity.cardData,
+      omitEnergyCost,
+      showStarCost,
+      showUpgrade,
+      sourceCost,
+      sourceStarCost,
+      sourceUpgradeCost,
+      sourceUpgradeStarCost,
       transformedCardColor,
       transformedCardRarity,
       transformedCardType,
+      transformedCost,
+      transformedStarCost,
+      transformedUpgradeCost,
+      transformedUpgradeStarCost,
     ],
   );
   const activeInitialBlocks = showUpgrade && initialUpgradeBlocks != null
@@ -458,7 +489,7 @@ export function TransfigureAssetEditor({
                 />
               </div>
             )}
-            costContent={(
+            costContent={showEnergyCost ? (
               <input
                 type="text"
                 inputMode="text"
@@ -471,7 +502,7 @@ export function TransfigureAssetEditor({
                     normalizeTransfigureCostInput(event.target.value),
                   );
                 }}
-                placeholder={activeSourceCost ?? "—"}
+                placeholder={activeSourceCost ?? TRANSFIGURE_DEFAULT_ADDED_COST}
                 aria-label={costLabel}
                 maxLength={2}
                 className={`h-full w-full bg-transparent text-center text-inherit caret-[#EFC851] outline-none placeholder:text-inherit placeholder:opacity-65 ${editFieldClass}`}
@@ -484,8 +515,8 @@ export function TransfigureAssetEditor({
                 }}
                 data-transfigure-cost-input={showUpgrade ? "upgrade" : "base"}
               />
-            )}
-            starCostContent={activeSourceStarCost != null ? (
+            ) : undefined}
+            starCostContent={showStarCost ? (
               <input
                 type="text"
                 inputMode="text"
@@ -498,7 +529,7 @@ export function TransfigureAssetEditor({
                     normalizeTransfigureCostInput(event.target.value),
                   );
                 }}
-                placeholder={activeSourceStarCost}
+                placeholder={activeSourceStarCost ?? TRANSFIGURE_DEFAULT_ADDED_COST}
                 aria-label={starCostLabel}
                 maxLength={2}
                 className={`h-full w-full bg-transparent text-center text-inherit caret-[#EFC851] outline-none placeholder:text-inherit placeholder:opacity-65 ${editFieldClass}`}

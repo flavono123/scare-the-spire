@@ -163,6 +163,7 @@ function TransfigurePreview({
           }
           transformedUpgradeCost={preview.transformedUpgradeCost || undefined}
           transformedUpgradeStarCost={preview.transformedUpgradeStarCost || undefined}
+          omitEnergyCost={preview.omitEnergyCost}
           cardKeywords={cardKeywords}
           upgradedBlocks={preview.upgradedBlocks}
           upgradedCardKeywords={upgradedCardKeywords}

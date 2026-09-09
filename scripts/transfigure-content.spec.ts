@@ -23,6 +23,10 @@ import {
   transfigureBlocksToGameDescription,
   transfigureHasExistingGameElementRefs,
   transfigureHasExistingRefsOrDiff,
+  applyTransfigureCardCosts,
+  transfigureShowsEnergyCost,
+  transfigureShowsStarCost,
+  TRANSFIGURE_HIDDEN_ENERGY_COST,
 } from "../src/lib/transfigure-types";
 import { serviceMessages } from "../src/messages/service";
 
@@ -511,6 +515,86 @@ assert.equal(
   canSubmitTransfigure({
     ...unchangedPlain,
     transformedName: "강타",
+  }),
+  true,
+);
+
+assert.equal(transfigureShowsEnergyCost(false, "1", ""), true);
+assert.equal(transfigureShowsEnergyCost(true, "1", ""), false);
+assert.equal(transfigureShowsEnergyCost(false, null, ""), false);
+assert.equal(transfigureShowsEnergyCost(false, null, "1"), true);
+assert.equal(transfigureShowsStarCost(null, ""), false);
+assert.equal(transfigureShowsStarCost(null, "1"), true);
+assert.equal(transfigureShowsStarCost("1", ""), true);
+
+const strikeLikeCard = {
+  cost: 1,
+  isXCost: false,
+  isXStarCost: false,
+  starCost: null,
+} as const;
+
+assert.equal(
+  applyTransfigureCardCosts(strikeLikeCard as never, {
+    omitEnergyCost: true,
+    sourceCost: "1",
+  }).cost,
+  TRANSFIGURE_HIDDEN_ENERGY_COST,
+);
+assert.equal(
+  applyTransfigureCardCosts(strikeLikeCard as never, {
+    transformedStarCost: "1",
+    sourceStarCost: null,
+  }).starCost,
+  1,
+);
+assert.equal(
+  applyTransfigureCardCosts({ ...strikeLikeCard, cost: -1 } as never, {
+    sourceCost: null,
+  }).cost,
+  TRANSFIGURE_HIDDEN_ENERGY_COST,
+);
+assert.equal(
+  applyTransfigureCardCosts({ ...strikeLikeCard, cost: -1 } as never, {
+    transformedCost: "1",
+    sourceCost: null,
+  }).cost,
+  1,
+);
+
+assert.equal(
+  isTransfigureChanged({
+    ...unchangedPlain,
+    omitEnergyCost: true,
+  }),
+  true,
+);
+assert.equal(
+  isTransfigureChanged({
+    ...unchangedPlain,
+    omitEnergyCost: true,
+    sourceCost: null,
+  }),
+  false,
+);
+assert.equal(
+  isTransfigureChanged({
+    ...unchangedPlain,
+    transformedStarCost: "1",
+    sourceStarCost: null,
+  }),
+  true,
+);
+assert.equal(
+  canSubmitTransfigure({
+    blocks: sourceBlocks,
+    sourceText: sourceText ?? "",
+    sourceBlocks,
+    transformedName: "",
+    sourceName: "전문성",
+    transformedCost: "",
+    sourceCost: "1",
+    omitEnergyCost: true,
   }),
   true,
 );

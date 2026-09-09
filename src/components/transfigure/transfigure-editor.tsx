@@ -45,9 +45,12 @@ import {
   normalizeTransfigureCardColor,
   normalizeTransfigureCardRarity,
   normalizeTransfigureCardType,
+  transfigureSourceHasEnergyCost,
+  transfigureSourceHasStarCost,
   TRANSFIGURE_CARD_COLORS,
   TRANSFIGURE_CARD_RARITIES,
   TRANSFIGURE_CARD_TYPES,
+  TRANSFIGURE_DEFAULT_ADDED_COST,
   transfigureCardKeywordsEqual,
   transfigureBlocksSignature,
   type TransfigureCardColor,
@@ -59,6 +62,7 @@ import {
   type TransfigureTokenWax,
 } from "@/lib/transfigure-types";
 import { getCodexServiceMessages } from "@/lib/codex-service";
+import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
 import { TransfigureAssetEditor } from "./transfigure-asset-editor";
@@ -106,6 +110,58 @@ function transfigureCardColorLabel(
   if (color === "token") return labels.rarityDetails.token;
   if (color === "quest") return labels.rarityDetails.quest;
   return labels.pools[color as keyof typeof labels.pools] ?? color;
+}
+
+function CardAttributePresence({
+  active,
+  cancelLabel,
+  icon,
+  kind,
+  label,
+  onCancel,
+  onOpen,
+}: {
+  active: boolean;
+  cancelLabel: string;
+  icon: ReactNode;
+  kind: "cost" | "star-cost";
+  label: string;
+  onCancel: () => void;
+  onOpen: () => void;
+}) {
+  if (!active) {
+    return (
+      <button
+        type="button"
+        onClick={onOpen}
+        className="flex w-full items-center gap-2 rounded-md border border-dashed border-primary/25 px-2 py-1 text-left text-xs text-primary/70 transition-colors hover:border-primary/50 hover:text-primary"
+        data-transfigure-card-attribute-add={kind}
+      >
+        {icon}
+        <span>+ {label}</span>
+      </button>
+    );
+  }
+
+  return (
+    <div
+      className="flex items-center justify-between gap-2 rounded-lg border border-primary/20 bg-black/20 px-2 py-1.5"
+      data-transfigure-card-attribute={kind}
+    >
+      <span className="flex min-w-0 items-center gap-2 text-xs text-foreground">
+        {icon}
+        <span className="truncate">{label}</span>
+      </span>
+      <button
+        type="button"
+        onClick={onCancel}
+        className="shrink-0 text-[11px] text-gray-500 hover:text-gray-200"
+        aria-label={`${cancelLabel}: ${label}`}
+      >
+        {cancelLabel}
+      </button>
+    </div>
+  );
 }
 
 function CardAttributeChange<T extends string>({
@@ -261,6 +317,26 @@ export function TransfigureEditor({
   const [transformedStarCost, setTransformedStarCost] = useState(
     initialPost?.transformed_star_cost ?? "",
   );
+  const [showEnergyCost, setShowEnergyCost] = useState(() => {
+    if (initialPost?.omit_energy_cost) return false;
+    const sourceCost = initialEntity
+      ? getTransfigureSourceCost(initialEntity)
+      : null;
+    return (
+      transfigureSourceHasEnergyCost(sourceCost)
+      || Boolean(initialPost?.transformed_cost)
+    );
+  });
+  const [showStarCost, setShowStarCost] = useState(() => {
+    const sourceStarCost = initialEntity
+      ? getTransfigureSourceStarCost(initialEntity)
+      : null;
+    return (
+      transfigureSourceHasStarCost(sourceStarCost)
+      || Boolean(initialPost?.transformed_star_cost)
+      || Boolean(initialPost?.transformed_upgrade_star_cost)
+    );
+  });
   const initialCardMetadataEditable = canTransfigureCardMetadata(
     initialEntity?.cardData?.type,
     initialEntity?.cardData?.rarity,
@@ -370,6 +446,9 @@ export function TransfigureEditor({
     () => selected ? getTransfigureSourceStarCost(selected) : null,
     [selected],
   );
+  const sourceHasEnergyCost = transfigureSourceHasEnergyCost(sourceCost);
+  const sourceHasStarCost = transfigureSourceHasStarCost(sourceStarCost);
+  const omitEnergyCost = sourceHasEnergyCost && !showEnergyCost;
   const sourceCardType = selected?.cardData?.type ?? null;
   const sourceCardRarity = selected?.cardData?.rarity ?? null;
   const sourceCardColor = selected?.cardData?.color ?? null;
@@ -422,6 +501,7 @@ export function TransfigureEditor({
       || transformedCost.trim() !== (initialPost.transformed_cost ?? "").trim()
       || transformedStarCost.trim()
         !== (initialPost.transformed_star_cost ?? "").trim()
+      || omitEnergyCost !== Boolean(initialPost.omit_energy_cost)
       || transformedCardType !== (initialPost.transformed_card_type ?? "")
       || transformedCardRarity !== (initialPost.transformed_card_rarity ?? "")
       || transformedCardColor !== (initialPost.transformed_card_color ?? "")
@@ -459,6 +539,7 @@ export function TransfigureEditor({
     sourceUpgradeBlocks,
     tokenColor,
     tokenWax,
+    omitEnergyCost,
     transformedCost,
     transformedStarCost,
     transformedCardRarity,
@@ -493,6 +574,7 @@ export function TransfigureEditor({
       sourceCardRarity,
       transformedCardColor,
       sourceCardColor,
+      omitEnergyCost,
       upgradedBlocks,
       sourceUpgradeText,
       sourceUpgradeBlocks,
@@ -518,6 +600,7 @@ export function TransfigureEditor({
     sourceCardRarity,
     sourceCardType,
     sourceCardColor,
+    omitEnergyCost,
     sourceText,
     sourceUpgradeBlocks,
     sourceUpgradeCost,
@@ -577,6 +660,12 @@ export function TransfigureEditor({
     setShowCardColorChange(false);
     setTransformedUpgradeCost("");
     setTransformedUpgradeStarCost("");
+    setShowEnergyCost(transfigureSourceHasEnergyCost(
+      getTransfigureSourceCost(entity),
+    ));
+    setShowStarCost(transfigureSourceHasStarCost(
+      getTransfigureSourceStarCost(entity),
+    ));
     setCardKeywords(getTransfigureCardKeywords(entity));
     setUpgradedCardKeywords(getTransfigureUpgradeCardKeywords(entity));
     setShowUpgrade(false);
@@ -629,15 +718,33 @@ export function TransfigureEditor({
       sourceCardKeywords,
       sourceUpgradedCardKeywords,
       transformedName,
-      transformedCost,
-      transformedStarCost,
+      transformedCost: showEnergyCost && !sourceHasEnergyCost
+        ? (transformedCost.trim() || TRANSFIGURE_DEFAULT_ADDED_COST)
+        : transformedCost,
+      transformedStarCost: showStarCost && !sourceHasStarCost
+        ? (transformedStarCost.trim() || TRANSFIGURE_DEFAULT_ADDED_COST)
+        : transformedStarCost,
       transformedCardType,
       transformedCardRarity,
       transformedCardColor,
+      omitEnergyCost,
       cardKeywords,
       upgradedBlocks,
-      transformedUpgradeCost,
-      transformedUpgradeStarCost,
+      transformedUpgradeCost: showEnergyCost && !sourceHasEnergyCost
+        && sourceUpgradeText
+        ? (
+          transformedUpgradeCost.trim()
+          || TRANSFIGURE_DEFAULT_ADDED_COST
+        )
+        : transformedUpgradeCost,
+      transformedUpgradeStarCost: showStarCost && !sourceHasStarCost
+        && sourceUpgradeText
+        ? (
+          transformedUpgradeStarCost.trim()
+          || sourceUpgradeStarCost
+          || TRANSFIGURE_DEFAULT_ADDED_COST
+        )
+        : transformedUpgradeStarCost,
       upgradedCardKeywords,
       showUpgrade,
       tokenColor,
@@ -660,6 +767,11 @@ export function TransfigureEditor({
     sourceCardRarity,
     sourceCardType,
     sourceCardColor,
+    omitEnergyCost,
+    sourceHasEnergyCost,
+    sourceHasStarCost,
+    showEnergyCost,
+    showStarCost,
     sourceText,
     sourceUpgradeBlocks,
     sourceUpgradeCost,
@@ -767,6 +879,13 @@ export function TransfigureEditor({
     writeGateMessage,
   ]);
   const selectedCardData = selected?.type === "card" ? selected.cardData : undefined;
+  const attributeVisualColor = selectedCardData
+    ? (
+      transformedCardColor && transformedCardColor !== selectedCardData.color
+        ? transformedCardColor
+        : (selectedCardData.visualColor ?? selectedCardData.color)
+    )
+    : "colorless";
 
   return (
     <div className="space-y-3" data-transfigure-editor>
@@ -825,6 +944,80 @@ export function TransfigureEditor({
               >
                 <FilterSection label={copy.cardAttributes}>
                   <div className="space-y-2">
+                    <CardAttributePresence
+                      active={showEnergyCost}
+                      cancelLabel={copy.cancelChange}
+                      icon={(
+                        <Image
+                          src={resolveSts2EnergyIcon(attributeVisualColor)}
+                          alt=""
+                          width={16}
+                          height={16}
+                          className="h-4 w-4 shrink-0 object-contain"
+                        />
+                      )}
+                      kind="cost"
+                      label={copy.costLabel}
+                      onCancel={() => {
+                        setShowEnergyCost(false);
+                        setTransformedCost("");
+                        setTransformedUpgradeCost("");
+                        setSaveFeedback(null);
+                      }}
+                      onOpen={() => {
+                        setShowEnergyCost(true);
+                        if (!sourceHasEnergyCost) {
+                          setTransformedCost((current) => (
+                            current.trim() || TRANSFIGURE_DEFAULT_ADDED_COST
+                          ));
+                          if (sourceUpgradeText) {
+                            setTransformedUpgradeCost((current) => (
+                              current.trim() || TRANSFIGURE_DEFAULT_ADDED_COST
+                            ));
+                          }
+                        }
+                        setSaveFeedback(null);
+                      }}
+                    />
+
+                    {!sourceHasStarCost && (
+                      <CardAttributePresence
+                        active={showStarCost}
+                        cancelLabel={copy.cancelChange}
+                        icon={(
+                          <Image
+                            src="/images/game-assets/card-misc/energy_star.png"
+                            alt=""
+                            width={16}
+                            height={16}
+                            className="h-4 w-4 shrink-0 object-contain"
+                          />
+                        )}
+                        kind="star-cost"
+                        label={copy.starCostLabel}
+                        onCancel={() => {
+                          setShowStarCost(false);
+                          setTransformedStarCost("");
+                          setTransformedUpgradeStarCost("");
+                          setSaveFeedback(null);
+                        }}
+                        onOpen={() => {
+                          setShowStarCost(true);
+                          setTransformedStarCost((current) => (
+                            current.trim() || TRANSFIGURE_DEFAULT_ADDED_COST
+                          ));
+                          if (sourceUpgradeText) {
+                            setTransformedUpgradeStarCost((current) => (
+                              current.trim()
+                              || sourceUpgradeStarCost
+                              || TRANSFIGURE_DEFAULT_ADDED_COST
+                            ));
+                          }
+                          setSaveFeedback(null);
+                        }}
+                      />
+                    )}
+
                     <CardAttributeChange
                       active={showCardColorChange}
                       cancelLabel={copy.cancelChange}
@@ -1016,6 +1209,9 @@ export function TransfigureEditor({
               showUpgrade={showUpgrade}
               tokenColor={tokenColor}
               tokenWax={tokenWax}
+              showEnergyCost={showEnergyCost}
+              showStarCost={showStarCost}
+              omitEnergyCost={omitEnergyCost}
               onBlocksChange={(blocks) => {
                 if (
                   transfigureBlocksSignature(blocks)

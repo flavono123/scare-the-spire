@@ -45,6 +45,7 @@ export type PagestormTransfigurePreview = {
   transformedCardColor: string;
   transformedUpgradeCost: string;
   transformedUpgradeStarCost: string;
+  omitEnergyCost: boolean;
   cardTopKeywords: string[];
   cardBottomKeywords: string[];
   upgradedCardTopKeywords: string[];
@@ -186,6 +187,7 @@ export function pagestormTransfigurePreviewFromPost(
     transformedCardColor: post.transformed_card_color ?? "",
     transformedUpgradeCost: post.transformed_upgrade_cost ?? "",
     transformedUpgradeStarCost: post.transformed_upgrade_star_cost ?? "",
+    omitEnergyCost: Boolean(post.omit_energy_cost),
     cardTopKeywords: asStringList(post.card_top_keywords),
     cardBottomKeywords: asStringList(post.card_bottom_keywords),
     upgradedCardTopKeywords: asStringList(post.upgraded_card_top_keywords),
@@ -240,6 +242,7 @@ export function parsePagestormTransfigurePreview(
     transformedUpgradeStarCost: typeof record.transformedUpgradeStarCost === "string"
       ? record.transformedUpgradeStarCost
       : "",
+    omitEnergyCost: Boolean(record.omitEnergyCost),
     cardTopKeywords: asStringList(record.cardTopKeywords),
     cardBottomKeywords: asStringList(record.cardBottomKeywords),
     upgradedCardTopKeywords: asStringList(record.upgradedCardTopKeywords),

@@ -23,6 +23,7 @@ import {
   normalizeTransfigureCardKeywords,
   normalizeTransfigureCost,
   normalizeTransfigureName,
+  normalizeTransfigureOmitEnergyCost,
   normalizeTransfigureTokenColor,
   normalizeTransfigureTokenWax,
   type TransfigureCardColor,
@@ -59,6 +60,7 @@ export interface SaveTransfigurePostInput {
   transformedCardType?: TransfigureCardType | "";
   transformedCardRarity?: TransfigureCardRarity | "";
   transformedCardColor?: TransfigureCardColor | "";
+  omitEnergyCost?: boolean;
   cardKeywords: TransfigureCardKeywords | null;
   upgradedBlocks: PostBlock[] | null;
   transformedUpgradeCost: string;
@@ -112,6 +114,7 @@ function normalizePost(row: unknown): TransfigurePost {
     transformed_card_color: isTransfigureCardColor(post.transformed_card_color)
       ? post.transformed_card_color
       : null,
+    omit_energy_cost: Boolean(post.omit_energy_cost),
     card_top_keywords: post.card_top_keywords ?? [],
     card_bottom_keywords: post.card_bottom_keywords ?? [],
     upgraded_content: post.upgraded_content ?? null,
@@ -136,10 +139,16 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     input.transformedName,
     input.sourceName,
   );
-  const transformedCost = normalizeTransfigureCost(
-    input.transformedCost,
+  const omitEnergyCost = normalizeTransfigureOmitEnergyCost(
+    input.omitEnergyCost,
     input.sourceCost,
   );
+  const transformedCost = omitEnergyCost
+    ? null
+    : normalizeTransfigureCost(
+      input.transformedCost,
+      input.sourceCost,
+    );
   const transformedStarCost = normalizeTransfigureCost(
     input.transformedStarCost ?? "",
     input.sourceStarCost ?? null,
@@ -159,10 +168,12 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
   const upgradedContentText = input.upgradedBlocks
     ? blocksToPlainText(input.upgradedBlocks).trim()
     : null;
-  const transformedUpgradeCost = normalizeTransfigureCost(
-    input.transformedUpgradeCost,
-    input.sourceUpgradeCost,
-  );
+  const transformedUpgradeCost = omitEnergyCost
+    ? null
+    : normalizeTransfigureCost(
+      input.transformedUpgradeCost,
+      input.sourceUpgradeCost,
+    );
   const transformedUpgradeStarCost = normalizeTransfigureCost(
     input.transformedUpgradeStarCost ?? "",
     input.sourceUpgradeStarCost ?? null,
@@ -281,6 +292,7 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
       sourceCardRarity: input.sourceCardRarity,
       transformedCardColor: input.transformedCardColor,
       sourceCardColor: input.sourceCardColor,
+      omitEnergyCost: input.omitEnergyCost,
       upgradedBlocks: input.upgradedBlocks,
       sourceUpgradeText: input.sourceUpgradeText,
       sourceUpgradeBlocks: input.sourceUpgradeBlocks,
@@ -312,6 +324,7 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
     transformedCardType,
     transformedCardRarity,
     transformedCardColor,
+    omitEnergyCost,
     upgradedContentText,
     transformedUpgradeCost,
     transformedUpgradeStarCost,
@@ -346,6 +359,7 @@ async function persistTransfigurePostUpdate(
         transformed_card_type: normalized.transformedCardType,
         transformed_card_rarity: normalized.transformedCardRarity,
         transformed_card_color: normalized.transformedCardColor,
+        omit_energy_cost: normalized.omitEnergyCost,
         card_top_keywords: normalized.cardKeywords.top,
         card_bottom_keywords: normalized.cardKeywords.bottom,
         upgraded_content: input.upgradedBlocks,
@@ -392,6 +406,7 @@ export async function insertTransfigurePost(
         transformed_card_type: normalized.transformedCardType,
         transformed_card_rarity: normalized.transformedCardRarity,
         transformed_card_color: normalized.transformedCardColor,
+        omit_energy_cost: normalized.omitEnergyCost,
         card_top_keywords: normalized.cardKeywords.top,
         card_bottom_keywords: normalized.cardKeywords.bottom,
         upgraded_content: input.upgradedBlocks,
