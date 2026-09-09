@@ -123,6 +123,7 @@ export interface Sts1Potion {
 }
 
 export interface Sts1Keyword {
+  id: string;
   names: string[];
   description: string;
 }

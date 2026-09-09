@@ -38,6 +38,8 @@ import type {
 } from "@/lib/sts1/types";
 import { Sts1CardDetail } from "./card-detail";
 import { Sts1CardTile } from "./card-tile";
+import { CardSideTipsAnchor } from "@/components/codex/card-keyword-tip-stack";
+import { collectSts1CardSideTips } from "@/lib/sts1/keyword-tips";
 
 type RarityFilter = "common" | "uncommon" | "rare" | "other";
 const COST_OPTIONS = [0, 1, 2, 3, "3+", "X"] as const;
@@ -381,6 +383,15 @@ export function Sts1CardLibrary({
                   openCard(card);
                 }}
               >
+                <CardSideTipsAnchor
+                  mode="hover"
+                  tips={collectSts1CardSideTips(
+                    showUpgrades && card.upgradeDescription
+                      ? card.upgradeDescription
+                      : card.description,
+                    keywords,
+                  )}
+                >
                 <Sts1CardTile
                   card={card}
                   upgradeLevel={showUpgrades ? 1 : 0}
@@ -394,6 +405,7 @@ export function Sts1CardLibrary({
                       : card.type
                   }
                 />
+                </CardSideTipsAnchor>
               </Link>
             ))}
           </div>

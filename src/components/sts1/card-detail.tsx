@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CardSideTipsAnchor } from "@/components/codex/card-keyword-tip-stack";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { GameUpgradeToggle } from "@/components/codex/game-upgrade-toggle";
 import { Sts1CardTile } from "./card-tile";
@@ -8,7 +9,9 @@ import { Sts1DetailShell, Sts1MetaPill } from "./detail-chrome";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { CARD_WIDTH_PRESET } from "@/lib/sts2-card-style";
 import { sts1PoolColor } from "@/lib/sts1/card-style";
+import { collectSts1CardSideTips } from "@/lib/sts1/keyword-tips";
 import { sts1IndexPath } from "@/lib/sts1/paths";
+import { sts1CardStats } from "@/lib/sts1/stats";
 import type { Sts1Card, Sts1Keyword, Sts1UiLabels } from "@/lib/sts1/types";
 
 function typeLabelFor(card: Sts1Card, labels: Sts1UiLabels): string {
@@ -54,6 +57,11 @@ export function Sts1CardDetail({
   const rarityLabel = rarityLabelFor(card, labels);
   const poolColor = sts1PoolColor(card.color);
   const cardWidth = isDesktop ? CARD_WIDTH_PRESET.detail : CARD_WIDTH_PRESET.hover;
+  const stats = sts1CardStats(card, upgradeLevel);
+  const description = stats.upgraded && card.upgradeDescription
+    ? card.upgradeDescription
+    : card.description;
+  const sideTips = collectSts1CardSideTips(description, keywords);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
@@ -71,14 +79,16 @@ export function Sts1CardDetail({
       serviceLocale={serviceLocale}
       hero={(
         <div className="relative" style={{ width: cardWidth }}>
-          <Sts1CardTile
-            card={card}
-            upgradeLevel={upgradeLevel}
-            showBeta={beta}
-            keywords={keywords}
-            typeLabel={typeLabel}
-            gameLocale={gameLocale}
-          />
+          <CardSideTipsAnchor mode="always" preferSide="left" tips={sideTips} style={{ width: cardWidth }}>
+            <Sts1CardTile
+              card={card}
+              upgradeLevel={upgradeLevel}
+              showBeta={beta}
+              keywords={keywords}
+              typeLabel={typeLabel}
+              gameLocale={gameLocale}
+            />
+          </CardSideTipsAnchor>
         </div>
       )}
       stageExtra={(

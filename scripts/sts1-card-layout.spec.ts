@@ -28,6 +28,7 @@ import {
 } from "../src/lib/sts1/card-style";
 import { GAME_LOCALES } from "../src/lib/i18n";
 import { EMPTY_STS1_STATS, wrapSts1DescriptionLines } from "../src/lib/sts1/description";
+import { collectSts1CardSideTips, sts1KeywordTipBody } from "../src/lib/sts1/keyword-tips";
 import { sts1HtmlLang, sts1LineBreakViaCharacter, sts1PickerLocales } from "../src/lib/sts1/locale";
 import { STS1_IMAGE_CACHE_BUSTER } from "../src/lib/sts1/image-cache";
 import { sts1CardUi512Url, sts1PotionImageUrl } from "../src/lib/sts1/paths";
@@ -146,6 +147,31 @@ const bashLines = wrapSts1DescriptionLines(
   "kor",
 );
 assert.equal(bashLines.length, 2);
+
+const bashTips = collectSts1CardSideTips(
+  "피해를 8 줍니다. NL 취약을 2 부여합니다.",
+  [{
+    id: "VULNERABLE",
+    names: ["취약", "취약을"],
+    description: "공격을 받을 시 #b50% 의 피해를 추가로 받습니다.",
+  }],
+);
+assert.equal(bashTips.length, 1);
+assert.equal(bashTips[0]?.kind, "keyword");
+if (bashTips[0]?.kind === "keyword") {
+  assert.equal(bashTips[0].id, "VULNERABLE");
+  assert.equal(bashTips[0].variant, "debuff");
+  assert.equal(bashTips[0].title, "취약");
+}
+assert.equal(
+  sts1KeywordTipBody("공격을 받을 시 #b50% 의 피해를 추가로 받습니다."),
+  "공격을 받을 시 [blue]50%[/blue] 의 피해를 추가로 받습니다.",
+);
+assert.equal(collectSts1CardSideTips("손에 있는 카드가 전부 공격 카드일 때만", [{
+  id: "VULNERABLE",
+  names: ["취약", "취약을"],
+  description: "",
+}]).length, 0);
 
 for (const locale of GAME_LOCALES) {
   const box = sts1DescriptionBox(locale);

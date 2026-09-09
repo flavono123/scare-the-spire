@@ -144,10 +144,15 @@ export const getSts1Keywords = cache(async (gameLocale: GameLocale = "kor"): Pro
     `localization/${locale}/keywords.json`,
   );
   const dictionary = raw["Game Dictionary"] ?? Object.values(raw)[0] ?? {};
-  return Object.values(dictionary).map((entry) => ({
-    names: entry?.NAMES ?? [],
-    description: entry?.DESCRIPTION ?? "",
-  }));
+  return Object.entries(dictionary)
+    .filter((entry): entry is [string, { NAMES: string[]; DESCRIPTION?: string }] => (
+      Array.isArray(entry[1]?.NAMES) && (entry[1]?.NAMES.length ?? 0) > 0 && entry[0] !== "TODO"
+    ))
+    .map(([id, entry]) => ({
+      id,
+      names: entry.NAMES,
+      description: entry.DESCRIPTION ?? "",
+    }));
 });
 
 export async function getSts1Card(id: string, gameLocale: GameLocale = "kor"): Promise<Sts1Card | undefined> {
