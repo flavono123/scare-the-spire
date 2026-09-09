@@ -19,6 +19,7 @@ import {
 } from "@/components/game-ui-hover-tip";
 import Image from "@/components/ui/static-image";
 import type { PostBlock } from "@/lib/chemical-types";
+import type { CardColor, CardRarityKo } from "@/lib/codex-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 import type { SaveTransfigurePostInput } from "@/hooks/use-transfigure-posts";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
@@ -44,6 +45,7 @@ import {
   isTransfigureTokenResourceType,
   normalizeTransfigureCardRarity,
   normalizeTransfigureCardType,
+  transfigureCardPoolColor,
   TRANSFIGURE_CARD_RARITIES,
   TRANSFIGURE_CARD_TYPES,
   transfigureCardKeywordsEqual,
@@ -88,6 +90,43 @@ function removeTransfigureDrafts(prefixes: readonly string[]) {
       sessionStorage.removeItem(key);
     }
   }
+}
+
+function isTransfigureTypeSortIcon(
+  type: TransfigureCardType,
+): type is Extract<TransfigureCardType, "공격" | "스킬" | "파워"> {
+  return type === "공격" || type === "스킬" || type === "파워";
+}
+
+function TransfigureCardTypeOptionIcon({
+  type,
+  color,
+  visualColor,
+  rarity,
+}: {
+  type: TransfigureCardType;
+  color: CardColor;
+  visualColor?: CardColor;
+  rarity: CardRarityKo;
+}) {
+  if (isTransfigureTypeSortIcon(type)) {
+    return (
+      <Image
+        src={CARD_TYPE_FILTER_ICONS[type]}
+        alt=""
+        width={24}
+        height={24}
+        className="h-6 w-6 shrink-0 object-contain"
+      />
+    );
+  }
+
+  return (
+    <TinyCardIcon
+      card={{ color, visualColor, rarity, type }}
+      width={24}
+    />
+  );
 }
 
 function CardAttributeChange<T extends string>({
@@ -155,7 +194,7 @@ function CardAttributeChange<T extends string>({
           ariaLabel={label}
           rootClassName="min-w-0"
           summaryClassName="flex h-9 cursor-pointer items-center gap-1.5 rounded-md border border-border bg-muted px-2 font-game-title text-xs text-primary outline-none transition-colors hover:border-primary/60 focus-visible:border-primary"
-          menuClassName="left-0 min-w-full overflow-hidden bg-popover"
+          menuClassName="left-0 max-h-64 min-w-full overflow-y-auto bg-popover"
           summary={(
             <>
               {selectedOption?.icon}
@@ -175,23 +214,20 @@ function CardAttributeChange<T extends string>({
             </>
           )}
         >
-          {options.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              role="menuitem"
-              aria-current={option.value === value ? "true" : undefined}
-              onClick={() => onChange(option.value)}
-              className={`flex w-full items-center gap-2.5 px-3 py-2 text-left font-game-title text-sm transition-colors ${
-                option.value === value
-                  ? "bg-primary/10 text-primary"
-                  : "text-foreground hover:bg-muted hover:text-primary"
-              }`}
-            >
-              {option.icon}
-              <span className="min-w-0 truncate">{option.label}</span>
-            </button>
-          ))}
+          {options
+            .filter((option) => option.value !== value)
+            .map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                role="menuitem"
+                onClick={() => onChange(option.value)}
+                className="flex w-full items-center gap-2.5 px-3 py-2 text-left font-game-title text-sm text-foreground transition-colors hover:bg-muted hover:text-primary"
+              >
+                {option.icon}
+                <span className="min-w-0 truncate">{option.label}</span>
+              </button>
+            ))}
         </MenuDropdown>
       </div>
     </div>
@@ -794,21 +830,29 @@ export function TransfigureEditor({
                       label={copy.cardRarity}
                       options={TRANSFIGURE_CARD_RARITIES
                         .filter((rarity) => rarity !== sourceCardRarity)
-                        .map((rarity) => ({
-                          icon: (
-                            <TinyCardIcon
-                              card={{
-                                color: selectedCardData.color,
-                                visualColor: selectedCardData.visualColor,
-                                rarity,
-                                type: transformedCardType || selectedCardData.type,
-                              }}
-                              width={24}
-                            />
-                          ),
-                          label: getTransfigureCardRarityLabel(entities, rarity),
-                          value: rarity,
-                        }))}
+                        .map((rarity) => {
+                          const previewColor = transfigureCardPoolColor(
+                            rarity,
+                            selectedCardData.color,
+                          );
+                          return {
+                            icon: (
+                              <TinyCardIcon
+                                card={{
+                                  color: previewColor,
+                                  visualColor: previewColor === selectedCardData.color
+                                    ? selectedCardData.visualColor
+                                    : previewColor,
+                                  rarity,
+                                  type: transformedCardType || selectedCardData.type,
+                                }}
+                                width={24}
+                              />
+                            ),
+                            label: getTransfigureCardRarityLabel(entities, rarity),
+                            value: rarity,
+                          };
+                        })}
                       selectLabel={copy.selectCardRarity}
                       sourceLabel={selectedCardData.rarityLabel}
                       value={transformedCardRarity}
@@ -833,12 +877,11 @@ export function TransfigureEditor({
                         .filter((type) => type !== sourceCardType)
                         .map((type) => ({
                           icon: (
-                            <Image
-                              src={CARD_TYPE_FILTER_ICONS[type]}
-                              alt=""
-                              width={24}
-                              height={24}
-                              className="h-6 w-6 shrink-0 object-contain"
+                            <TransfigureCardTypeOptionIcon
+                              type={type}
+                              color={selectedCardData.color}
+                              visualColor={selectedCardData.visualColor}
+                              rarity={transformedCardRarity || selectedCardData.rarity}
                             />
                           ),
                           label: getTransfigureCardTypeLabel(entities, type),

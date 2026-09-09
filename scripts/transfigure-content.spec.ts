@@ -39,6 +39,7 @@ const expertise = {
     typeLabel: "스킬",
     rarity: "고급",
     rarityLabel: "고급",
+    color: "silent",
     description: "카드를 {Cards:diff()}장 뽑습니다.\n그 카드가 이번 턴에\n[gold]보존[/gold]을 얻습니다.",
     descriptionRaw: "카드를 {Cards:diff()}장 뽑습니다.\n그 카드가 이번 턴에\n[gold]보존[/gold]을 얻습니다.",
     vars: { Cards: 2 },
@@ -114,13 +115,14 @@ assert.equal(normalizeTransfigureCost("1", "1"), null);
 assert.equal(normalizeTransfigureCost("x", "1"), "X");
 assert.equal(normalizeTransfigureCardType("스킬", "스킬"), null);
 assert.equal(normalizeTransfigureCardType("공격", "스킬"), "공격");
-assert.equal(normalizeTransfigureCardType("저주", "스킬"), null);
+assert.equal(normalizeTransfigureCardType("저주", "스킬"), "저주");
 assert.equal(normalizeTransfigureCardRarity("고급", "고급"), null);
 assert.equal(normalizeTransfigureCardRarity("희귀", "고급"), "희귀");
-assert.equal(normalizeTransfigureCardRarity("고대의 존재", "고급"), null);
+assert.equal(normalizeTransfigureCardRarity("토큰", "고급"), "토큰");
+assert.equal(normalizeTransfigureCardRarity("고대의 존재", "고급"), "고대의 존재");
 assert.equal(canTransfigureCardMetadata("스킬", "고급"), true);
-assert.equal(canTransfigureCardMetadata("스킬", "고대의 존재"), false);
-assert.equal(canTransfigureCardMetadata("저주", "저주"), false);
+assert.equal(canTransfigureCardMetadata("스킬", "고대의 존재"), true);
+assert.equal(canTransfigureCardMetadata("저주", "저주"), true);
 const transformedCard = applyTransfigureCardMetadata(
   expertise.cardData!,
   [
@@ -149,7 +151,54 @@ assert.deepEqual(
   ],
   ["공격", "Attack", "희귀", "Rare"],
 );
-const unchangedAncientCard = applyTransfigureCardMetadata(
+assert.equal(transformedCard.color, "silent");
+const characterCurseCard = applyTransfigureCardMetadata(
+  expertise.cardData!,
+  [
+    expertise,
+    {
+      ...expertise,
+      id: "INJURY",
+      cardData: {
+        ...expertise.cardData!,
+        type: "저주",
+        typeLabel: "저주",
+        rarity: "저주",
+        rarityLabel: "저주",
+        color: "curse",
+      },
+    } as EntityInfo,
+  ],
+  "저주",
+  "저주",
+);
+assert.deepEqual(
+  [characterCurseCard.type, characterCurseCard.rarity, characterCurseCard.color],
+  ["저주", "저주", "silent"],
+);
+const tokenCard = applyTransfigureCardMetadata(
+  expertise.cardData!,
+  [
+    expertise,
+    {
+      ...expertise,
+      id: "SHIV",
+      cardData: {
+        ...expertise.cardData!,
+        rarity: "토큰",
+        rarityLabel: "토큰",
+        color: "token",
+      },
+    } as EntityInfo,
+  ],
+  null,
+  "토큰",
+);
+assert.deepEqual(
+  [tokenCard.rarity, tokenCard.color, tokenCard.visualColor],
+  ["토큰", "token", "token"],
+);
+const transformedAncientCard = applyTransfigureCardMetadata(
   {
     ...expertise.cardData!,
     rarity: "고대의 존재",
@@ -160,8 +209,8 @@ const unchangedAncientCard = applyTransfigureCardMetadata(
   "희귀",
 );
 assert.deepEqual(
-  [unchangedAncientCard.type, unchangedAncientCard.rarity],
-  ["스킬", "고대의 존재"],
+  [transformedAncientCard.type, transformedAncientCard.rarity],
+  ["공격", "희귀"],
 );
 for (const [locale, messages] of Object.entries(serviceMessages)) {
   assert.ok(
@@ -243,7 +292,7 @@ assert.equal(
     sourceCardType: "스킬",
     sourceCardRarity: "고대의 존재",
   }),
-  false,
+  true,
 );
 assert.equal(
   isTransfigureChanged({

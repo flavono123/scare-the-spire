@@ -5,6 +5,7 @@ import {
 } from "@/components/codex/codex-description";
 import type { PostBlock } from "@/lib/chemical-types";
 import type {
+  CardColor,
   CardRarityKo,
   CardTypeKo,
   CodexCard,
@@ -45,16 +46,33 @@ export const TRANSFIGURE_CARD_TYPES = [
   "공격",
   "스킬",
   "파워",
+  "저주",
+  "상태이상",
+  "퀘스트",
 ] as const satisfies readonly CardTypeKo[];
 
 export const TRANSFIGURE_CARD_RARITIES = [
   "일반",
   "고급",
   "희귀",
+  "고대의 존재",
+  "이벤트",
+  "토큰",
+  "저주",
+  "상태이상",
+  "퀘스트",
 ] as const satisfies readonly CardRarityKo[];
 
 export type TransfigureCardType = (typeof TRANSFIGURE_CARD_TYPES)[number];
 export type TransfigureCardRarity = (typeof TRANSFIGURE_CARD_RARITIES)[number];
+
+/** Special rarities that use a pool tint instead of the source character color. */
+export const TRANSFIGURE_RARITY_POOL_COLOR = {
+  토큰: "token",
+  상태이상: "status",
+  퀘스트: "quest",
+  이벤트: "event",
+} as const satisfies Partial<Record<TransfigureCardRarity, CardColor>>;
 
 export const TRANSFIGURE_TOKEN_RESOURCE_TYPES = [
   "relic",
@@ -491,6 +509,16 @@ export function canTransfigureCardMetadata(
     && (sourceRarity === "기본" || isTransfigureCardRarity(sourceRarity));
 }
 
+export function transfigureCardPoolColor(
+  rarity: TransfigureCardRarity | CardRarityKo | "" | null | undefined,
+  sourceColor: CardColor,
+): CardColor {
+  if (!rarity) return sourceColor;
+  return rarity in TRANSFIGURE_RARITY_POOL_COLOR
+    ? TRANSFIGURE_RARITY_POOL_COLOR[rarity as keyof typeof TRANSFIGURE_RARITY_POOL_COLOR]
+    : sourceColor;
+}
+
 export function normalizeTransfigureCardType(
   value: string | null | undefined,
   sourceType: CardTypeKo | null,
@@ -529,6 +557,11 @@ export function applyTransfigureCardMetadata(
 ): CodexCard {
   if (!canTransfigureCardMetadata(card.type, card.rarity)) return card;
 
+  const mappedColor = transformedCardRarity
+    ? transfigureCardPoolColor(transformedCardRarity, card.color)
+    : card.color;
+  const colorChanged = mappedColor !== card.color;
+
   return {
     ...card,
     type: transformedCardType ?? card.type,
@@ -539,6 +572,8 @@ export function applyTransfigureCardMetadata(
     rarityLabel: transformedCardRarity
       ? getTransfigureCardRarityLabel(entities, transformedCardRarity)
       : card.rarityLabel,
+    color: mappedColor,
+    visualColor: colorChanged ? mappedColor : card.visualColor,
   };
 }
 
