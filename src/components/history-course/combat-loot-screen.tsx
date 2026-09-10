@@ -22,7 +22,6 @@ import type { CodexPotion, CodexRelic } from "@/lib/codex-types";
 import type { GameLocale } from "@/lib/i18n";
 import type { HistoryLocTables } from "@/lib/history-loc-tables";
 import type { ReplayHistoryEntry } from "@/lib/sts2-run-replay";
-import { cn } from "@/lib/utils";
 
 const PANEL = "/images/sts2/ui/reward-screen/reward_panel.webp";
 const BANNER = "/images/sts2/ui/reward-screen/reward_banner.webp";
@@ -97,10 +96,7 @@ function LootRow({
             src={iconUrl}
             alt=""
             data-history-reward-icon={pickId}
-            className={cn(
-              "h-full w-full object-contain",
-              leaving && !skip && beatProgress > 0.12 && "opacity-0",
-            )}
+            className="h-full w-full object-contain"
           />
         </div>
         <div

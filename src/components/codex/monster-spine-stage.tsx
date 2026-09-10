@@ -48,6 +48,12 @@ interface MonsterSpineStageProps {
   loopSelectedMove?: boolean;
   /** Seek to the end of a death clip and hold instead of replaying die. */
   holdDeathPose?: boolean;
+  /**
+   * Keep the still fallback visible (and the canvas hidden) until a clip has
+   * actually been applied. Last-scene combat uses this so a "ready" but blank
+   * Spine canvas cannot replace the static monster render.
+   */
+  keepFallbackUntilPlayed?: boolean;
   /** Fires once after `die` completes (or immediately if already holding a death pose). */
   onDeathAnimationComplete?: () => void;
   formAttachment?: MonsterStageFormAttachment | null;
@@ -132,6 +138,7 @@ function MonsterSpineStageComponent({
   fallbackImageStyle,
   loopSelectedMove = false,
   holdDeathPose = false,
+  keepFallbackUntilPlayed = false,
   onDeathAnimationComplete,
   formAttachment = null,
   formPlacementRef,
@@ -149,6 +156,7 @@ function MonsterSpineStageComponent({
   const vfxTimeoutRef = useRef<number | null>(null);
   const deathPlayedRef = useRef(false);
   const deathStartedRef = useRef(false);
+  const [playbackArmed, setPlaybackArmed] = useState(false);
   const onDeathAnimationCompleteRef = useRef(onDeathAnimationComplete);
   onDeathAnimationCompleteRef.current = onDeathAnimationComplete;
   const formAttachmentRef = useRef(formAttachment);
@@ -391,30 +399,61 @@ function MonsterSpineStageComponent({
   }, [loadState]);
 
   useEffect(() => {
+    setPlaybackArmed(false);
+  }, [asset?.atlasUrl, asset?.binaryUrl]);
+
+  useEffect(() => {
     deathPlayedRef.current = false;
     deathStartedRef.current = false;
   }, [selectedMoveId, selectedMoveNonce]);
 
   useEffect(() => {
-    if (!asset || loadState !== "ready" || !playerRef.current || !selectedAnimation) return;
+    if (!asset || loadState !== "ready" || !playerRef.current) return;
 
     const player = playerRef.current;
     const isDeadMove = isDeathMoveId(selectedMoveId);
+    const available = new Set(
+      availableAnimations.length > 0 ? availableAnimations : asset.animations,
+    );
+    const deathClip = isDeadMove ? deathAnimationCandidates(asset, available)[0] ?? null : null;
     const loops =
       !isDeadMove &&
+      Boolean(selectedAnimation) &&
       (selectedAnimation === asset.idleAnimation || selectedMoveId == null || loopSelectedMove);
+
+    const armPlayback = () => {
+      if (!keepFallbackUntilPlayed) return;
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => setPlaybackArmed(true));
+      });
+    };
+
     try {
-      const available = new Set(
-        availableAnimations.length > 0 ? availableAnimations : asset.animations,
-      );
       if (isDeadMove) {
-        if (deathPlayedRef.current || deathStartedRef.current) {
-          void holdDeathPose;
-          // Keep playing or holding the current death clip.
-        } else {
+        if (!deathClip) {
+          // Do not latch death onto idle. Keep the still fallback visible.
+          return;
+        }
+        if (holdDeathPose) {
+          if (!deathStartedRef.current && !deathPlayedRef.current) {
+            const entry = restartSpineAnimation(player, deathClip, false);
+            seekSpineAnimationToEnd(entry);
+            const deadLoop = resolveDeathHoldAnimation(asset, deathClip, available);
+            if (deadLoop && available.has(deadLoop)) {
+              const hold = player.addAnimation(deadLoop, true, 0);
+              hold.mixDuration = 0;
+              hold.mixTime = 0;
+              seekSpineAnimationToEnd(hold);
+            }
+            deathStartedRef.current = true;
+            deathPlayedRef.current = true;
+            onDeathAnimationCompleteRef.current?.();
+          }
+          armPlayback();
+        } else if (!deathStartedRef.current) {
           deathStartedRef.current = true;
-          const entry = restartSpineAnimation(player, selectedAnimation, false);
-          const deadLoop = resolveDeathHoldAnimation(asset, selectedAnimation, available);
+          const entry = restartSpineAnimation(player, deathClip, false);
+          const deadLoop = resolveDeathHoldAnimation(asset, deathClip, available);
           if (deadLoop && available.has(deadLoop)) {
             const hold = player.addAnimation(deadLoop, true, 0);
             hold.mixDuration = 0;
@@ -434,10 +473,12 @@ function MonsterSpineStageComponent({
               },
             };
           }
+          armPlayback();
         }
       } else if (selectedTrackAnimations?.length) {
         restartSpineTrackAnimations(player, selectedTrackAnimations, asset.idleTracks);
-      } else {
+        armPlayback();
+      } else if (selectedAnimation) {
         const entry = restartSpineAnimation(player, selectedAnimation, loops);
         if (!loops && asset.idleAnimation && selectedAnimation !== asset.idleAnimation) {
           const idleEntry = player.addAnimation(asset.idleAnimation, true, 0);
@@ -445,13 +486,32 @@ function MonsterSpineStageComponent({
           idleEntry.mixTime = 0;
         }
         void entry;
+        armPlayback();
+      } else {
+        return;
       }
       player.play();
       reportSpineVisualBounds(player, containerRef.current, onVisualBoundsChange);
     } catch (error) {
-      console.warn(`Failed to play Spine animation ${selectedAnimation} for ${monsterName}:`, error);
+      console.warn(
+        `Failed to play Spine animation ${deathClip ?? selectedAnimation} for ${monsterName}:`,
+        error,
+      );
     }
-  }, [asset, availableAnimations, loadState, loopSelectedMove, monsterName, onVisualBoundsChange, selectedAnimation, selectedMoveId, selectedMoveNonce, selectedTrackAnimations]);
+  }, [
+    asset,
+    availableAnimations,
+    holdDeathPose,
+    keepFallbackUntilPlayed,
+    loadState,
+    loopSelectedMove,
+    monsterName,
+    onVisualBoundsChange,
+    selectedAnimation,
+    selectedMoveId,
+    selectedMoveNonce,
+    selectedTrackAnimations,
+  ]);
 
   useEffect(() => {
     if (!onVisualBoundsChange) return;
@@ -538,9 +598,18 @@ function MonsterSpineStageComponent({
     };
   }, [asset, loadState, monsterName, selectedMoveId, selectedMoveNonce]);
 
+  const showStillFallback = Boolean(
+    fallbackImageUrl
+    && !showStaticPhobiaMode
+    && (loadState !== "ready" || (keepFallbackUntilPlayed && !playbackArmed)),
+  );
+  const showSpineCanvas = loadState === "ready"
+    && !showStaticPhobiaMode
+    && (!keepFallbackUntilPlayed || playbackArmed);
+
   return (
     <div className={className}>
-      {fallbackImageUrl && loadState !== "ready" && !showStaticPhobiaMode && (
+      {showStillFallback && fallbackImageUrl && (
         <Image
           ref={fallbackImageRef}
           src={fallbackImageUrl}
@@ -576,8 +645,8 @@ function MonsterSpineStageComponent({
       )}
       <div
         ref={containerRef}
-        className={`sts2-spine-stage absolute inset-0 z-20 transition-opacity duration-300 ${loadState === "ready" && !showStaticPhobiaMode ? "opacity-100" : "opacity-0"}`}
-        aria-hidden={loadState !== "ready" || showStaticPhobiaMode}
+        className={`sts2-spine-stage absolute inset-0 z-20 transition-opacity duration-300 ${showSpineCanvas ? "opacity-100" : "opacity-0"}`}
+        aria-hidden={!showSpineCanvas}
       />
       <div
         ref={vfxContainerRef}

@@ -40,6 +40,8 @@ interface EncounterSceneStageProps {
   lockedFormationIndex?: number | null;
   loopSelectedMove?: boolean;
   holdDeathPose?: boolean;
+  keepFallbackUntilPlayed?: boolean;
+  monsterFallbackUrl?: (monster: CodexMonster) => string | null;
   children?: ReactNode;
 }
 
@@ -109,6 +111,8 @@ export function EncounterSceneStage({
   lockedFormationIndex = null,
   loopSelectedMove,
   holdDeathPose = false,
+  keepFallbackUntilPlayed = false,
+  monsterFallbackUrl,
   children,
 }: EncounterSceneStageProps) {
   const formations = useMemo(() => expandEncounterFormations(encounter), [encounter]);
@@ -255,6 +259,7 @@ export function EncounterSceneStage({
                 selectedMoveNonce={selectedMoveNonce}
                 loopSelectedMove={loopSelectedMove}
                 holdDeathPose={holdDeathPose}
+                keepFallbackUntilPlayed={keepFallbackUntilPlayed}
                 className="absolute inset-0"
                 fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.75)]"
                 imagePriority
@@ -328,13 +333,16 @@ export function EncounterSceneStage({
             viewportOverride={viewportOverride}
             fallbackImageUrl={usesFakeMerchantBackground
               ? null
-              : monster.imageUrl ?? monster.bossImageUrl}
+              : monsterFallbackUrl?.(monster)
+                ?? monster.imageUrl
+                ?? monster.bossImageUrl}
             imagePriority={index < 2}
             interactive={interactive}
             selectedMoveId={selectedMoveId}
             selectedMoveNonce={selectedMoveNonce}
             loopSelectedMove={loopSelectedMove}
             holdDeathPose={holdDeathPose}
+            keepFallbackUntilPlayed={keepFallbackUntilPlayed}
             atlasDuotone={atlasDuotone}
           />
         ))}
@@ -473,6 +481,7 @@ function EncounterMonsterActor({
   selectedMoveNonce,
   loopSelectedMove,
   holdDeathPose,
+  keepFallbackUntilPlayed,
   atlasDuotone,
 }: {
   monster: CodexMonster;
@@ -486,6 +495,7 @@ function EncounterMonsterActor({
   selectedMoveNonce: number;
   loopSelectedMove?: boolean;
   holdDeathPose?: boolean;
+  keepFallbackUntilPlayed?: boolean;
   atlasDuotone?: SpineAtlasDuotone | null;
 }) {
   const stage = (
@@ -497,6 +507,7 @@ function EncounterMonsterActor({
       selectedMoveNonce={selectedMoveNonce}
       loopSelectedMove={loopSelectedMove}
       holdDeathPose={holdDeathPose}
+      keepFallbackUntilPlayed={keepFallbackUntilPlayed}
       className={`absolute inset-0 ${interactive ? "transition-transform duration-200 group-hover:scale-[1.03]" : ""}`}
       fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.75)]"
       imagePriority={imagePriority}

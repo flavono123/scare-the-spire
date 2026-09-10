@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
 import dynamic from "next/dynamic";
-import { CardRewardScreen } from "@/components/history-course/card-reward-screen";
+import { HistoryLastSceneErrorBoundary } from "@/components/history-course/history-last-scene-error-boundary";
 import { CombatLootScreen } from "@/components/history-course/combat-loot-screen";
 import { EventRoomArt } from "@/components/history-course/event-room-art";
 import {
@@ -66,7 +66,7 @@ import type { HistoryLocTables } from "@/lib/history-loc-tables";
 
 const EncounterSceneStage = dynamic(
   () => import("@/components/codex/encounter-scene-stage").then((mod) => mod.EncounterSceneStage),
-  { ssr: false },
+  { ssr: false, loading: () => null },
 );
 const MonsterSpineStage = dynamic(
   () => import("@/components/codex/monster-spine-stage").then((mod) => mod.MonsterSpineStage),
@@ -183,7 +183,7 @@ export function NodeLastScene({
     };
   }, []);
 
-  if (kind === "stack") return null;
+  if (kind === "stack" || hidden) return null;
   void leftoverGoldLabel;
   const t = clamp01(sceneLocalMs / Math.max(1, sceneDurationMs));
   const phase = lastScenePhase(kind, entry, sceneLocalMs);
@@ -192,11 +192,8 @@ export function NodeLastScene({
 
   return (
     <div
-      className={cn(
-        "pointer-events-none absolute inset-0 z-[18] overflow-hidden bg-black",
-        hidden && "invisible",
-      )}
-      aria-hidden={hidden}
+      className="pointer-events-none absolute inset-0 z-[18] overflow-hidden bg-black"
+      aria-hidden
       data-history-last-scene={kind}
       data-history-last-scene-phase={phase.kind}
       data-progress={t.toFixed(2)}
@@ -332,7 +329,7 @@ function CombatScene({
     ? lookupHistoryCharacter(catalog.characters, character)
     : undefined;
   const roomMonsters = roomMonsterIds(entry);
-  const canUseEncounterStage = Boolean(encounter?.scene && characterRow);
+  const overlayEncounter = Boolean(encounter?.scene && characterRow);
   const formationIndex = encounter
     ? matchEncounterFormationIndex(encounter, roomMonsters)
     : 0;
@@ -341,39 +338,41 @@ function CombatScene({
   const cards = entry.card_choices ?? [];
   const skippedCards = cards.length > 0 && !cards.some((choice) => choice.picked);
 
-  if (!catalog) {
-    return <div className="absolute inset-0 bg-black" data-history-last-scene-loading="combat" />;
-  }
-
   return (
     <div className="absolute inset-0">
-      {canUseEncounterStage && encounter && characterRow ? (
-        <div className="absolute inset-0">
-          <EncounterSceneStage
-            encounter={encounter}
-            character={characterRow}
-            monsters={monsters}
-            serviceLocale={serviceLocale}
-            interactive={false}
-            showCharacter
-            fill
-            lockedFormationIndex={formationIndex}
-            selectedMoveId={dead ? "DEAD" : null}
-            loopSelectedMove={false}
-            holdDeathPose={dead && phase.kind !== "dying"}
-          />
-        </div>
-      ) : (
-        <CombatStillFallback
-          entry={entry}
-          character={character}
-          dead={dead}
-          holdDeathPose={dead && phase.kind !== "dying"}
-          backgroundUrl={backgroundUrl}
-          monsters={monsters}
-          selectedMoveId={dead ? "DEAD" : null}
-        />
-      )}
+      <CombatStillFallback
+        entry={entry}
+        character={character}
+        dead={dead}
+        holdDeathPose={dead && phase.kind !== "dying"}
+        backgroundUrl={backgroundUrl}
+        monsters={monsters}
+        selectedMoveId={dead ? "DEAD" : null}
+        useSpine={!overlayEncounter}
+      />
+      {overlayEncounter && encounter && characterRow ? (
+        <HistoryLastSceneErrorBoundary key={encounter.id} fallback={null}>
+          <div className="absolute inset-0">
+            <EncounterSceneStage
+              encounter={encounter}
+              character={characterRow}
+              monsters={monsters}
+              serviceLocale={serviceLocale}
+              interactive={false}
+              showCharacter
+              fill
+              lockedFormationIndex={formationIndex}
+              selectedMoveId={dead ? "DEAD" : null}
+              loopSelectedMove={false}
+              holdDeathPose={dead && phase.kind !== "dying"}
+              keepFallbackUntilPlayed
+              monsterFallbackUrl={(monster) =>
+                monster.imageUrl ?? monster.bossImageUrl ?? monsterStillUrl(monster.id)
+              }
+            />
+          </div>
+        </HistoryLastSceneErrorBoundary>
+      ) : null}
       {phase.kind === "loot" ? (
         <CombatLootScreen
           items={loot}
@@ -417,6 +416,7 @@ function CombatStillFallback({
   backgroundUrl,
   monsters,
   selectedMoveId,
+  useSpine,
 }: {
   entry: ReplayHistoryEntry;
   character: string;
@@ -425,6 +425,7 @@ function CombatStillFallback({
   backgroundUrl: string;
   monsters: CodexMonster[];
   selectedMoveId: string | null;
+  useSpine: boolean;
 }) {
   const roomIds = roomMonsterIds(entry);
   const slots = lastSceneMonsterSlots(entry.rooms?.[0]?.model_id);
@@ -457,10 +458,13 @@ function CombatStillFallback({
         return (
           <div
             key={`${id}-${index}`}
-            className={cn("absolute h-[52%] w-[20%] transition-all duration-500", dead && !monster?.spineAsset && "grayscale contrast-125")}
+            className={cn(
+              "absolute h-[52%] w-[20%] transition-all duration-500",
+              dead && (!useSpine || !monster?.spineAsset) && "grayscale contrast-125",
+            )}
             style={style}
           >
-            {monster?.spineAsset ? (
+            {useSpine && monster?.spineAsset ? (
               <MonsterSpineStage
                 asset={monster.spineAsset}
                 fallbackImageUrl={monster.imageUrl ?? monsterStillUrl(id)}
@@ -468,8 +472,9 @@ function CombatStillFallback({
                 selectedMoveId={selectedMoveId}
                 loopSelectedMove={false}
                 holdDeathPose={holdDeathPose}
+                keepFallbackUntilPlayed
                 className="absolute inset-0"
-                fallbackImageClassName="h-full w-full object-contain object-bottom drop-shadow-[0_12px_18px_rgba(0,0,0,0.7)]"
+                fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain object-bottom drop-shadow-[0_12px_18px_rgba(0,0,0,0.7)]"
                 showLoadingLabel={false}
                 imagePriority={index < 2}
               />

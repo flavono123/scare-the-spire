@@ -3,7 +3,7 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 
 export class HistoryLastSceneErrorBoundary extends Component<
-  { children: ReactNode },
+  { children: ReactNode; fallback?: ReactNode },
   { failed: boolean }
 > {
   state = { failed: false };
@@ -18,6 +18,7 @@ export class HistoryLastSceneErrorBoundary extends Component<
 
   render() {
     if (this.state.failed) {
+      if (this.props.fallback !== undefined) return this.props.fallback;
       return (
         <div
           className="pointer-events-none absolute inset-0 bg-black"
