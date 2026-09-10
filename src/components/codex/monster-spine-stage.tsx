@@ -645,7 +645,7 @@ function MonsterSpineStageComponent({
       )}
       <div
         ref={containerRef}
-        className={`sts2-spine-stage absolute inset-0 z-20 transition-opacity duration-300 ${showSpineCanvas ? "opacity-100" : "opacity-0"}`}
+        className={`sts2-spine-stage absolute inset-0 z-20 ${keepFallbackUntilPlayed ? "" : "transition-opacity duration-300"} ${showSpineCanvas ? "opacity-100" : "opacity-0"}`}
         aria-hidden={!showSpineCanvas}
       />
       <div
