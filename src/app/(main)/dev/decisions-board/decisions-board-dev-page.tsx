@@ -52,7 +52,12 @@ export function DecisionsBoardDevPage() {
   const copy = serviceMessages.ko.decisionsDecisions;
   const rows = useMemo(() => cloneDefaultRows(), []);
 
-  const sections = useMemo(() => {
+  const sections = useMemo((): Array<{
+    id: string;
+    title: string;
+    pool: DecisionsDecisionsResourceRef[];
+    rows?: TierRow[];
+  }> => {
     if (catalog.entities.length === 0) return [];
     const cardPool = stampPresetIds(findPresetDef("cards-ironclad"), catalog.entities);
     const relicPool = stampPresetIds(findPresetDef("relics-shared"), catalog.entities);
@@ -64,6 +69,12 @@ export function DecisionsBoardDevPage() {
     }
     return [
       { id: "cards", title: "카드 (아이언클래드 스탬프)", pool: cardPool },
+      {
+        id: "cards-dense",
+        title: "카드 한 줄 · 긴 라벨",
+        pool: cardPool,
+        rows: [{ id: "s", label: "조건부 추천", color: "gold" as const }],
+      },
       { id: "relics", title: "유물 (공유 스탬프)", pool: relicPool },
       { id: "potions", title: "포션 (전체 스탬프)", pool: potionPool },
       { id: "monsters", title: "몬스터 (엘리트 스탬프)", pool: monsterPool },
@@ -93,7 +104,8 @@ export function DecisionsBoardDevPage() {
         </p>
       </header>
       {sections.map((section) => {
-        const placements = placeAcrossRows(section.pool, rows);
+        const sectionRows = section.rows ?? rows;
+        const placements = placeAcrossRows(section.pool, sectionRows);
         return (
           <section key={section.id} className="mt-10 space-y-3" data-decisions-fixture={section.id}>
             <h2 className="px-4 font-service text-sm font-semibold text-zinc-200">
@@ -106,7 +118,7 @@ export function DecisionsBoardDevPage() {
                   <p className="mb-1 font-mono text-[10px] text-zinc-500">375</p>
                   <div className="px-4">
                     <DecisionsDecisionsBoard
-                      rows={rows}
+                      rows={sectionRows}
                       placements={placements}
                       pool={section.pool}
                       entitiesByKey={catalog.entityMap}
@@ -124,7 +136,7 @@ export function DecisionsBoardDevPage() {
                 <div className="w-[640px] shrink-0" data-decisions-fixture-frame="640">
                   <p className="mb-1 font-mono text-[10px] text-zinc-500">640</p>
                   <DecisionsDecisionsBoard
-                    rows={rows}
+                    rows={sectionRows}
                     placements={placements}
                     pool={section.pool}
                     entitiesByKey={catalog.entityMap}
