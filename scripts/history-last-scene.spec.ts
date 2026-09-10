@@ -20,6 +20,13 @@ import {
 import { historyRoomChoiceCopy, eventLastSceneChoices } from "../src/lib/history-room-choice";
 import { restSiteChoiceDescription, restSiteOptionsForEntry } from "../src/lib/history-party";
 import {
+  quadraticBezier,
+  itemHopPoint,
+  cardFlyParametric,
+} from "../src/components/history-course/last-scene-obtain-vfx";
+import {
+  LAST_SCENE_ALIVE_MS,
+  LAST_SCENE_DYING_MS,
   LAST_SCENE_STEP_MS,
   lastSceneDurationMs,
   lastSceneHiddenRelicIds,
@@ -202,11 +209,11 @@ const mundaneCombat = entry({
 });
 assert.equal(
   nodeDurationForEntry(mundaneCombat, { sceneKind: "combat", highlight: false }),
-  NODE_BASE_MS + 2 * LAST_SCENE_STEP_MS,
+  NODE_BASE_MS + LAST_SCENE_ALIVE_MS + LAST_SCENE_DYING_MS,
 );
 assert.equal(
   nodeDurationForEntry(mundaneCombat, { sceneKind: "combat", highlight: true }),
-  NODE_BASE_MS + SCENE_HIGHLIGHT_MS,
+  NODE_BASE_MS + LAST_SCENE_ALIVE_MS + LAST_SCENE_DYING_MS,
 );
 
 const act = buildActTimeline(actFromHistory([mundaneCombat, tentShop]));
@@ -378,14 +385,24 @@ const combatWithLoot = entry({
   ],
   rooms: [{ room_type: "monster", model_id: "ENCOUNTER.X", turns_taken: 1 }],
 });
-assert.equal(lastSceneDurationMs("combat", combatWithLoot), 6 * LAST_SCENE_STEP_MS);
+assert.equal(
+  lastSceneDurationMs("combat", combatWithLoot),
+  LAST_SCENE_ALIVE_MS + LAST_SCENE_DYING_MS + 4 * LAST_SCENE_STEP_MS,
+);
 assert.equal(lastScenePhase("combat", combatWithLoot, 0).kind, "alive");
 assert.equal(lastScenePhase("combat", combatWithLoot, LAST_SCENE_STEP_MS).kind, "dying");
 assert.deepEqual(
-  lastScenePhase("combat", combatWithLoot, 2 * LAST_SCENE_STEP_MS),
+  lastScenePhase("combat", combatWithLoot, LAST_SCENE_ALIVE_MS + LAST_SCENE_DYING_MS),
   { kind: "loot", resolvedCount: 0, total: 3, beatProgress: 0 },
 );
-assert.equal(lastScenePhase("combat", combatWithLoot, 5 * LAST_SCENE_STEP_MS).kind, "cards");
+assert.equal(
+  lastScenePhase(
+    "combat",
+    combatWithLoot,
+    LAST_SCENE_ALIVE_MS + LAST_SCENE_DYING_MS + 3 * LAST_SCENE_STEP_MS,
+  ).kind,
+  "cards",
+);
 assert.equal(lastScenePhase("event", combatWithLoot, 0).kind, "choice");
 assert.equal(lastScenePhase("event", combatWithLoot, LAST_SCENE_STEP_MS).kind, "receipt");
 assert.equal(lastScenePhase("shop", combatWithLoot, 0).kind, "shop");
@@ -445,16 +462,17 @@ const relicLootEntry = entry({
   relic_choices: [{ id: "RELIC.POMANDER", picked: true }],
   rooms: [{ room_type: "monster", model_id: "ENCOUNTER.X", turns_taken: 1 }],
 });
+const combatLootStart = LAST_SCENE_ALIVE_MS + LAST_SCENE_DYING_MS;
 assert.ok(
-  lastSceneHiddenRelicIds("combat", relicLootEntry, 2 * LAST_SCENE_STEP_MS).has("RELIC.POMANDER"),
+  lastSceneHiddenRelicIds("combat", relicLootEntry, combatLootStart).has("RELIC.POMANDER"),
 );
 assert.equal(
-  lastSceneHiddenRelicIds("combat", relicLootEntry, 2 * LAST_SCENE_STEP_MS + LAST_SCENE_STEP_MS).has("RELIC.POMANDER"),
+  lastSceneHiddenRelicIds("combat", relicLootEntry, combatLootStart + LAST_SCENE_STEP_MS).has("RELIC.POMANDER"),
   false,
 );
 assert.ok(
   lastSceneIdSetHas(
-    lastSceneHiddenRelicIds("combat", relicLootEntry, 2 * LAST_SCENE_STEP_MS),
+    lastSceneHiddenRelicIds("combat", relicLootEntry, combatLootStart),
     "POMANDER",
   ),
 );
@@ -468,5 +486,17 @@ assert.equal(
   lastSceneHiddenRelicIds("shop", shopRelicEntry, LAST_SCENE_STEP_MS).has("RELIC.POMANDER"),
   false,
 );
+
+assert.equal(cardFlyParametric(0), 0);
+assert.ok(cardFlyParametric(1) >= 1 - 1e-9);
+const hopMid = itemHopPoint({ x: 0, y: 100 }, { x: 100, y: 0 }, 0.5);
+assert.ok(hopMid.y > -40 && hopMid.y < 60, "relic/potion hop stays a shallow arc, not a 350px throw");
+const cardMid = quadraticBezier(
+  { x: 0, y: 400 },
+  { x: 200, y: 40 },
+  { x: 100, y: 700 },
+  0.5,
+);
+assert.ok(cardMid.y > 400, "card bezier control below the midpoint dips then rises to the deck");
 
 console.log("history-last-scene.spec.ts ok");

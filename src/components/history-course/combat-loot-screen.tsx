@@ -4,7 +4,6 @@ import { RichText } from "@/components/rich-text";
 import { HistoryEntityPreview } from "@/components/history-course/history-entity-preview";
 import {
   LastSceneObtainFly,
-  bounceTranslateY,
   cssEscapeAttr,
   relicTargetSelector,
 } from "@/components/history-course/last-scene-obtain-vfx";
@@ -36,15 +35,15 @@ const RETICLE = "/images/sts2/ui/combat/combat_reticle.webp";
 
 function SelectionReticle() {
   return (
-    <div className="pointer-events-none absolute -inset-[6px]" aria-hidden>
+    <div className="pointer-events-none absolute -inset-[10px] z-20" aria-hidden>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={RETICLE} alt="" className="absolute left-0 top-0 h-5 w-5" />
+      <img src={RETICLE} alt="" className="absolute left-0 top-0 h-[30px] w-[30px]" />
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={RETICLE} alt="" className="absolute right-0 top-0 h-5 w-5 -scale-x-100" />
+      <img src={RETICLE} alt="" className="absolute right-0 top-0 h-[30px] w-[30px] -scale-x-100" />
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={RETICLE} alt="" className="absolute bottom-0 left-0 h-5 w-5 -scale-y-100" />
+      <img src={RETICLE} alt="" className="absolute bottom-0 left-0 h-[30px] w-[30px] -scale-y-100" />
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={RETICLE} alt="" className="absolute bottom-0 right-0 h-5 w-5 -scale-100" />
+      <img src={RETICLE} alt="" className="absolute bottom-0 right-0 h-[30px] w-[30px] -scale-100" />
     </div>
   );
 }
@@ -68,7 +67,6 @@ function LootRow({
   iconUrl: string;
   title: string;
 }) {
-  const bounce = active && !skip ? bounceTranslateY(beatProgress) : 0;
   const collapse = leaving ? Math.min(1, Math.max(0, (beatProgress - 0.55) / 0.45)) : 0;
   const skipFade = skip && active ? Math.min(1, beatProgress / 0.35) : 0;
   return (
@@ -76,14 +74,15 @@ function LootRow({
       data-history-last-scene-pick={pickId}
       data-picked={picked ? "true" : "false"}
       data-history-reward-item={pickId.split(":")[0]}
-      className="relative w-full max-w-[402px] overflow-hidden"
+      className="relative w-full max-w-[402px] overflow-visible"
       style={{
         aspectRatio: "910 / 196",
         maxHeight: collapse > 0 ? `${(1 - collapse) * 86}px` : undefined,
         opacity: skip ? 1 - skipFade : leaving && beatProgress > 0.7 ? 1 - collapse : 1,
-        transform: `translateY(${bounce}px)`,
       }}
     >
+      {active ? <SelectionReticle /> : null}
+      <div className="relative h-full w-full overflow-hidden">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={ITEM}
@@ -91,7 +90,6 @@ function LootRow({
         className="absolute inset-0 h-full w-full object-fill"
         aria-hidden
       />
-      {active && !skip ? <SelectionReticle /> : null}
       <div className="relative flex h-full items-center gap-3 pl-[4.5%] pr-3">
         <div className="flex h-[65%] w-[14%] shrink-0 items-center justify-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -101,7 +99,7 @@ function LootRow({
             data-history-reward-icon={pickId}
             className={cn(
               "h-full w-full object-contain",
-              leaving && !skip && beatProgress > 0.18 && "opacity-0",
+              leaving && !skip && beatProgress > 0.12 && "opacity-0",
             )}
           />
         </div>
@@ -111,6 +109,7 @@ function LootRow({
         >
           <RichText text={title} />
         </div>
+      </div>
       </div>
     </div>
   );
@@ -283,7 +282,7 @@ export function CombatLootScreen({
                   />
                 );
                 return relic && entity ? (
-                  <HistoryEntityPreview key={item.choice.id} entity={entity}>
+                  <HistoryEntityPreview key={item.choice.id} entity={entity} linkClassName="relative block w-full overflow-visible">
                     {row}
                   </HistoryEntityPreview>
                 ) : (
@@ -305,7 +304,7 @@ export function CombatLootScreen({
                 />
               );
               return potion && entity ? (
-                <HistoryEntityPreview key={item.choice.id} entity={entity}>
+                <HistoryEntityPreview key={item.choice.id} entity={entity} linkClassName="relative block w-full overflow-visible">
                   {row}
                 </HistoryEntityPreview>
               ) : (

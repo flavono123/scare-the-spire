@@ -48,6 +48,8 @@ interface MonsterSpineStageProps {
   loopSelectedMove?: boolean;
   /** Seek to the end of a death clip and hold instead of replaying die. */
   holdDeathPose?: boolean;
+  /** Fires once after `die` completes (or immediately if already holding a death pose). */
+  onDeathAnimationComplete?: () => void;
   formAttachment?: MonsterStageFormAttachment | null;
   formPlacementRef?: MutableRefObject<MonsterStageFormPlacement | null>;
   onVisualBoundsChange?: (bounds: MonsterStageVisualBounds | null) => void;
@@ -130,6 +132,7 @@ function MonsterSpineStageComponent({
   fallbackImageStyle,
   loopSelectedMove = false,
   holdDeathPose = false,
+  onDeathAnimationComplete,
   formAttachment = null,
   formPlacementRef,
   onVisualBoundsChange,
@@ -144,6 +147,10 @@ function MonsterSpineStageComponent({
   const playerRef = useRef<SpinePlayer | null>(null);
   const vfxPlayerRef = useRef<SpinePlayer | null>(null);
   const vfxTimeoutRef = useRef<number | null>(null);
+  const deathPlayedRef = useRef(false);
+  const deathStartedRef = useRef(false);
+  const onDeathAnimationCompleteRef = useRef(onDeathAnimationComplete);
+  onDeathAnimationCompleteRef.current = onDeathAnimationComplete;
   const formAttachmentRef = useRef(formAttachment);
   const formPlacementTargetRef = useRef(formPlacementRef);
   const atlasDuotoneRef = useRef(atlasDuotone);
@@ -384,6 +391,11 @@ function MonsterSpineStageComponent({
   }, [loadState]);
 
   useEffect(() => {
+    deathPlayedRef.current = false;
+    deathStartedRef.current = false;
+  }, [selectedMoveId, selectedMoveNonce]);
+
+  useEffect(() => {
     if (!asset || loadState !== "ready" || !playerRef.current || !selectedAnimation) return;
 
     const player = playerRef.current;
@@ -395,41 +407,51 @@ function MonsterSpineStageComponent({
       const available = new Set(
         availableAnimations.length > 0 ? availableAnimations : asset.animations,
       );
-      if (isDeadMove && holdDeathPose) {
-        const hold =
-          resolveDeathHoldAnimation(asset, selectedAnimation, available) ?? selectedAnimation;
-        const holdLoops = hold.toLowerCase().includes("loop");
-        const entry = restartSpineAnimation(player, hold, holdLoops);
-        if (!holdLoops) seekSpineAnimationToEnd(entry);
-      } else if (selectedTrackAnimations?.length) {
-        restartSpineTrackAnimations(player, selectedTrackAnimations, asset.idleTracks);
-      } else {
-        const entry = restartSpineAnimation(player, selectedAnimation, loops);
-        if (isDeadMove) {
+      if (isDeadMove) {
+        if (deathPlayedRef.current || deathStartedRef.current) {
+          void holdDeathPose;
+          // Keep playing or holding the current death clip.
+        } else {
+          deathStartedRef.current = true;
+          const entry = restartSpineAnimation(player, selectedAnimation, false);
           const deadLoop = resolveDeathHoldAnimation(asset, selectedAnimation, available);
           if (deadLoop && available.has(deadLoop)) {
             const hold = player.addAnimation(deadLoop, true, 0);
             hold.mixDuration = 0;
             hold.mixTime = 0;
+            entry.listener = {
+              complete: () => {
+                deathPlayedRef.current = true;
+                onDeathAnimationCompleteRef.current?.();
+              },
+            };
           } else {
             entry.listener = {
               complete: () => {
                 seekSpineAnimationToEnd(entry);
+                deathPlayedRef.current = true;
+                onDeathAnimationCompleteRef.current?.();
               },
             };
           }
-        } else if (!loops && asset.idleAnimation && selectedAnimation !== asset.idleAnimation) {
+        }
+      } else if (selectedTrackAnimations?.length) {
+        restartSpineTrackAnimations(player, selectedTrackAnimations, asset.idleTracks);
+      } else {
+        const entry = restartSpineAnimation(player, selectedAnimation, loops);
+        if (!loops && asset.idleAnimation && selectedAnimation !== asset.idleAnimation) {
           const idleEntry = player.addAnimation(asset.idleAnimation, true, 0);
           idleEntry.mixDuration = 0;
           idleEntry.mixTime = 0;
         }
+        void entry;
       }
       player.play();
       reportSpineVisualBounds(player, containerRef.current, onVisualBoundsChange);
     } catch (error) {
       console.warn(`Failed to play Spine animation ${selectedAnimation} for ${monsterName}:`, error);
     }
-  }, [asset, availableAnimations, holdDeathPose, loadState, loopSelectedMove, monsterName, onVisualBoundsChange, selectedAnimation, selectedMoveId, selectedMoveNonce, selectedTrackAnimations]);
+  }, [asset, availableAnimations, loadState, loopSelectedMove, monsterName, onVisualBoundsChange, selectedAnimation, selectedMoveId, selectedMoveNonce, selectedTrackAnimations]);
 
   useEffect(() => {
     if (!onVisualBoundsChange) return;
@@ -673,7 +695,12 @@ function resolveSpineEffect(
   asset: MonsterSpineAsset,
   moveId: string,
 ): MonsterSpineEffectAsset | null {
-  return asset.moveEffects[moveId]?.find((effect) => effect.usable !== false) ?? null;
+  const keys = isDeathMoveId(moveId) ? [moveId, "DEAD", "DIE", "die"] : [moveId];
+  for (const key of keys) {
+    const found = asset.moveEffects[key]?.find((effect) => effect.usable !== false) ?? null;
+    if (found) return found;
+  }
+  return null;
 }
 
 function restartSpineAnimation(

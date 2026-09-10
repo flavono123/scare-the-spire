@@ -3,7 +3,6 @@
 import { FittedCardTile } from "@/components/history-course/fitted-card-tile";
 import {
   LastSceneObtainFly,
-  bounceTranslateY,
   cssEscapeAttr,
   relicTargetSelector,
 } from "@/components/history-course/last-scene-obtain-vfx";
@@ -74,8 +73,7 @@ function ShopCard({
   if (!choice?.id) return null;
   const card = cardsById ? lookupHistoryCard(cardsById, choice.id) : undefined;
   const upgradeLevel = choice.upgradeLevel ?? 0;
-  const hideIcon = flying && (beatProgress ?? 0) > 0.18;
-  const bounce = flying ? bounceTranslateY(beatProgress ?? 0) : 0;
+  const hideIcon = flying && (beatProgress ?? 0) > 0.04;
   return (
     <div
       data-history-last-scene-pick={choice.id}
@@ -89,7 +87,6 @@ function ShopCard({
         top: pct(top, RUG_H),
         width: pct(CARD_W, RUG_W),
         height: pct(CARD_H, RUG_H),
-        transform: bounce ? `translateY(${bounce}px)` : undefined,
       }}
     >
       {card ? (
@@ -126,8 +123,7 @@ function ShopRelic({
   if (!choice?.id) return null;
   const relic = lookupHistoryRelic(relicsById, choice.id);
   const src = relic ? resolveRelicDisplayImage(relic, relic.pool) : null;
-  const hideIcon = flying && (beatProgress ?? 0) > 0.18;
-  const bounce = flying ? bounceTranslateY(beatProgress ?? 0) : 0;
+  const hideIcon = flying && (beatProgress ?? 0) > 0.12;
   return (
     <div
       data-history-last-scene-pick={choice.id}
@@ -141,7 +137,6 @@ function ShopRelic({
         top: pct(RELIC_ORIGIN.y, RUG_H),
         width: pct(RELIC_SLOT, RUG_W),
         height: pct(RELIC_SLOT, RUG_H),
-        transform: bounce ? `translateY(${bounce}px)` : undefined,
       }}
     >
       {src ? (
@@ -174,8 +169,7 @@ function ShopPotion({
 }) {
   if (!choice?.id) return null;
   const potion = lookupHistoryPotion(potionsById, choice.id);
-  const hideIcon = flying && (beatProgress ?? 0) > 0.18;
-  const bounce = flying ? bounceTranslateY(beatProgress ?? 0) : 0;
+  const hideIcon = flying && (beatProgress ?? 0) > 0.12;
   return (
     <div
       data-history-last-scene-pick={choice.id}
@@ -189,7 +183,6 @@ function ShopPotion({
         top: pct(POTION_ORIGIN.y, RUG_H),
         width: pct(RELIC_SLOT, RUG_W),
         height: pct(RELIC_SLOT, RUG_H),
-        transform: bounce ? `translateY(${bounce}px)` : undefined,
       }}
     >
       {potion?.imageUrl ? (
@@ -357,13 +350,16 @@ export function MerchantShopScreen({
         const relic = item.kind === "relic" ? lookupHistoryRelic(relicsById, item.id) : undefined;
         const potion = item.kind === "potion" ? lookupHistoryPotion(potionsById, item.id) : undefined;
         const card = item.kind === "card" && cardsById ? lookupHistoryCard(cardsById, item.id) : undefined;
+        const shopCard = item.kind === "card"
+          ? (entry?.card_choices ?? []).find((choice) => choice.id === item.id)
+          : undefined;
         const iconUrl =
           item.kind === "relic"
             ? (relic ? resolveRelicDisplayImage(relic, relic.pool) : null)
             : item.kind === "potion"
               ? potion?.imageUrl
               : card?.imageUrl;
-        if (!iconUrl) return null;
+        if (!iconUrl && item.kind !== "card") return null;
         return (
           <LastSceneObtainFly
             key={`${item.kind}:${item.id}`}
@@ -381,9 +377,12 @@ export function MerchantShopScreen({
                   ? "[data-potion-bay]"
                   : "[data-deck-target]"
             }
-            iconUrl={iconUrl}
+            iconUrl={iconUrl ?? ""}
             kind={item.kind}
             size={item.kind === "card" ? 120 : 56}
+            card={item.kind === "card" ? card : undefined}
+            upgradeLevel={shopCard?.upgradeLevel ?? 0}
+            serviceLocale={serviceLocale}
           />
         );
       })}

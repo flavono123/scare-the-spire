@@ -86,7 +86,7 @@ export function CardRewardScreen({
   const skipLabel = gameplayUiText(gameLocale, "CHOOSE_CARD_SKIP_BUTTON", "Skip", locTables);
   const picked = choices.find((choice) => choice.picked && choice.id);
   const pickedCard = picked && cardsById ? lookupHistoryCard(cardsById, picked.id) : undefined;
-  const flying = Boolean(picked && beatProgress > 0.22 && !skipped);
+  const flying = Boolean(picked && beatProgress > 0.04 && !skipped);
 
   return (
     <div
@@ -119,7 +119,7 @@ export function CardRewardScreen({
         {choices.map((choice) => {
           const card = cardsById ? lookupHistoryCard(cardsById, choice.id) : undefined;
           const upgradeLevel = choice.upgradeLevel ?? 0;
-          const hideForFly = flying && choice.picked && beatProgress > 0.22;
+          const hideForFly = flying && choice.picked;
           return (
             <PickedRing key={choice.id} picked={choice.picked} pickId={choice.id}>
               <div className={cn("relative w-full", hideForFly && "opacity-0")}>
@@ -164,14 +164,17 @@ export function CardRewardScreen({
           </div>
         </div>
       </div>
-      {flying && picked && pickedCard?.imageUrl ? (
+      {flying && picked && pickedCard ? (
         <LastSceneObtainFly
           active
-          progress={Math.min(1, 0.18 + Math.max(0, beatProgress - 0.15) * 0.82)}
+          progress={Math.max(0, Math.min(1, (beatProgress - 0.04) / 0.96))}
           sourceSelector={`[data-history-last-scene-pick="${picked.id}"]`}
           targetSelector="[data-deck-target]"
-          iconUrl={pickedCard.imageUrl}
+          iconUrl={pickedCard.imageUrl ?? ""}
           kind="card"
+          card={pickedCard}
+          upgradeLevel={picked.upgradeLevel ?? 0}
+          serviceLocale={serviceLocale}
           size={120}
         />
       ) : null}

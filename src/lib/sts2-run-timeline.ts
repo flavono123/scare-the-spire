@@ -17,7 +17,8 @@ import {
 // Continuous time model.
 //
 //  transit  = NODE_BASE_MS
-//  scene    = last-scene step count × LAST_SCENE_STEP_MS (loot / cards / choice)
+//  scene    = last-scene duration (combat uses a longer death window, then
+//             loot / cards beats of LAST_SCENE_STEP_MS).
 //             highlighted scenes use at least SCENE_HIGHLIGHT_MS.
 //             Last-scene beats play at 1× wall-clock even when rate is 2×.
 //  stack    = NODE_BASE_MS + stackCount × NODE_PER_STACK_MS

@@ -56,7 +56,7 @@ import { useOptionalHistoryCatalogLocale } from "@/hooks/use-history-catalog-loc
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { localizeGame, type GameI18nTables } from "@/lib/sts2-game-i18n";
 import { prettifyId } from "@/lib/sts2-i18n";
-import type { CodexCard, CodexEnchantment, CodexPotion, CodexRelic } from "@/lib/codex-types";
+import type { CodexCard, CodexEnchantment, CodexMonster, CodexPotion, CodexRelic } from "@/lib/codex-types";
 import type { ReplayChoice, ReplayHistoryEntry, ReplayRun } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
 import { lookupHistoryCard } from "@/lib/history-card-lookup";
@@ -66,6 +66,10 @@ import type { HistoryLocTables } from "@/lib/history-loc-tables";
 
 const EncounterSceneStage = dynamic(
   () => import("@/components/codex/encounter-scene-stage").then((mod) => mod.EncounterSceneStage),
+  { ssr: false },
+);
+const MonsterSpineStage = dynamic(
+  () => import("@/components/codex/monster-spine-stage").then((mod) => mod.MonsterSpineStage),
   { ssr: false },
 );
 const AncientSceneStage = dynamic(
@@ -179,7 +183,7 @@ export function NodeLastScene({
     };
   }, []);
 
-  if (hidden || kind === "stack") return null;
+  if (kind === "stack") return null;
   void leftoverGoldLabel;
   const t = clamp01(sceneLocalMs / Math.max(1, sceneDurationMs));
   const phase = lastScenePhase(kind, entry, sceneLocalMs);
@@ -188,7 +192,11 @@ export function NodeLastScene({
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-[18] overflow-hidden bg-black"
+      className={cn(
+        "pointer-events-none absolute inset-0 z-[18] overflow-hidden bg-black",
+        hidden && "invisible",
+      )}
+      aria-hidden={hidden}
       data-history-last-scene={kind}
       data-history-last-scene-phase={phase.kind}
       data-progress={t.toFixed(2)}
@@ -360,7 +368,10 @@ function CombatScene({
           entry={entry}
           character={character}
           dead={dead}
+          holdDeathPose={dead && phase.kind !== "dying"}
           backgroundUrl={backgroundUrl}
+          monsters={monsters}
+          selectedMoveId={dead ? "DEAD" : null}
         />
       )}
       {phase.kind === "loot" ? (
@@ -390,18 +401,32 @@ function CombatScene({
   );
 }
 
+function matchHistoryMonster(monsters: CodexMonster[], id: string): CodexMonster | undefined {
+  const key = stripReplayId(id).toUpperCase();
+  return monsters.find((monster) => {
+    const monsterKey = stripReplayId(monster.id).toUpperCase();
+    return monsterKey === key || monster.id.toUpperCase() === key;
+  });
+}
+
 function CombatStillFallback({
   entry,
   character,
   dead,
+  holdDeathPose,
   backgroundUrl,
+  monsters,
+  selectedMoveId,
 }: {
   entry: ReplayHistoryEntry;
   character: string;
   dead: boolean;
+  holdDeathPose: boolean;
   backgroundUrl: string;
+  monsters: CodexMonster[];
+  selectedMoveId: string | null;
 }) {
-  const monsters = roomMonsterIds(entry);
+  const roomIds = roomMonsterIds(entry);
   const slots = lastSceneMonsterSlots(entry.rooms?.[0]?.model_id);
   return (
     <div className="absolute inset-0">
@@ -410,36 +435,51 @@ function CombatStillFallback({
         src={characterCombatArtSrc(character)}
         className="absolute bottom-[8%] left-[6%] h-[62%] w-[22%] object-contain object-bottom drop-shadow-[0_12px_18px_rgba(0,0,0,0.65)]"
       />
-      {monsters.map((id, index) => {
+      {roomIds.map((id, index) => {
         const slot = slots[index];
-        const count = Math.max(monsters.length, 1);
+        const count = Math.max(roomIds.length, 1);
+        const monster = matchHistoryMonster(monsters, id);
+        const style = slot
+          ? {
+              left: `${slot.leftPct}%`,
+              top: `${slot.topPct}%`,
+              opacity: 1,
+              transform: dead
+                ? "translate(-50%, -100%) scale(0.94)"
+                : "translate(-50%, -100%)",
+            }
+          : {
+              left: `${48 + (index * 38) / count}%`,
+              bottom: "10%",
+              opacity: 1,
+              transform: dead ? "scale(0.94)" : "none",
+            };
         return (
           <div
             key={`${id}-${index}`}
-            className={cn("absolute h-[52%] w-[20%] transition-all duration-500", dead && "grayscale contrast-125")}
-            style={
-              slot
-                ? {
-                    left: `${slot.leftPct}%`,
-                    top: `${slot.topPct}%`,
-                    opacity: 1,
-                    transform: dead
-                      ? "translate(-50%, -100%) scale(0.94)"
-                      : "translate(-50%, -100%)",
-                  }
-                : {
-                    left: `${48 + (index * 38) / count}%`,
-                    bottom: "10%",
-                    opacity: 1,
-                    transform: dead ? "scale(0.94)" : "none",
-                  }
-            }
+            className={cn("absolute h-[52%] w-[20%] transition-all duration-500", dead && !monster?.spineAsset && "grayscale contrast-125")}
+            style={style}
           >
-            <SceneArt
-              src={monsterStillUrl(id)}
-              alt={prettifyId(stripReplayId(id))}
-              className="h-full w-full object-contain object-bottom drop-shadow-[0_12px_18px_rgba(0,0,0,0.7)]"
-            />
+            {monster?.spineAsset ? (
+              <MonsterSpineStage
+                asset={monster.spineAsset}
+                fallbackImageUrl={monster.imageUrl ?? monsterStillUrl(id)}
+                monsterName={monster.name}
+                selectedMoveId={selectedMoveId}
+                loopSelectedMove={false}
+                holdDeathPose={holdDeathPose}
+                className="absolute inset-0"
+                fallbackImageClassName="h-full w-full object-contain object-bottom drop-shadow-[0_12px_18px_rgba(0,0,0,0.7)]"
+                showLoadingLabel={false}
+                imagePriority={index < 2}
+              />
+            ) : (
+              <SceneArt
+                src={monsterStillUrl(id)}
+                alt={prettifyId(stripReplayId(id))}
+                className="h-full w-full object-contain object-bottom drop-shadow-[0_12px_18px_rgba(0,0,0,0.7)]"
+              />
+            )}
           </div>
         );
       })}

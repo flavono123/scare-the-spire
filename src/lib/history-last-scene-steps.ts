@@ -5,8 +5,17 @@ import type { ReplayChoice, ReplayHistoryEntry } from "@/lib/sts2-run-replay";
 /** Intra-node last-scene beat, wall-clock. Playback rate does not shorten this. */
 export const LAST_SCENE_STEP_MS = 1200;
 
-/** Relic/potion fly from `scenes/vfx/vfx_item_throw.tscn` lands near the end of the beat. */
-export const LAST_SCENE_OBTAIN_LAND = 0.82;
+/** Combat idle window so Spine can load before `die`. */
+export const LAST_SCENE_ALIVE_MS = LAST_SCENE_STEP_MS;
+
+/**
+ * Combat death window. Game waits die remaining + 0.5s (`NCreature.AnimDie`)
+ * before rewards; 1.2s was shorter than most `die` clips.
+ */
+export const LAST_SCENE_DYING_MS = 3000;
+
+/** Relic/potion hop from `NPotion`/`NRelicInventoryHolder` 0.35s tween, after a short bob. */
+export const LAST_SCENE_OBTAIN_LAND = 0.5;
 
 export type CombatLootSpec =
   | { kind: "gold"; amount: number; stolen: boolean }
@@ -18,6 +27,7 @@ export type CombatLootSpec =
 export type LastScenePhase =
   | { kind: "alive" }
   | { kind: "dying" }
+  | { kind: "dead" }
   | { kind: "loot"; resolvedCount: number; total: number; beatProgress: number }
   | { kind: "cards"; beatProgress: number }
   | { kind: "choice"; beatProgress: number }
@@ -99,6 +109,15 @@ export function lastSceneDurationMs(
   kind: LastSceneKind,
   entry: ReplayHistoryEntry,
 ): number {
+  if (kind === "combat") {
+    const loot = combatLootSpecs(entry);
+    return (
+      LAST_SCENE_ALIVE_MS
+      + LAST_SCENE_DYING_MS
+      + loot.length * LAST_SCENE_STEP_MS
+      + (combatShowsCardPicker(entry) ? LAST_SCENE_STEP_MS : 0)
+    );
+  }
   return lastSceneStepCount(kind, entry) * LAST_SCENE_STEP_MS;
 }
 
@@ -114,14 +133,22 @@ export function lastScenePhase(
   const step = lastSceneStepIndex(sceneLocalMs);
   const beatProgress = lastSceneBeatProgress(sceneLocalMs);
   if (kind === "combat") {
-    if (step <= 0) return { kind: "alive" };
-    if (step === 1) return { kind: "dying" };
+    if (sceneLocalMs < LAST_SCENE_ALIVE_MS) return { kind: "alive" };
+    if (sceneLocalMs < LAST_SCENE_ALIVE_MS + LAST_SCENE_DYING_MS) return { kind: "dying" };
     const loot = combatLootSpecs(entry);
-    const lootStep = step - 2;
+    const lootMs = sceneLocalMs - LAST_SCENE_ALIVE_MS - LAST_SCENE_DYING_MS;
+    const lootStep = Math.floor(lootMs / LAST_SCENE_STEP_MS);
+    const lootBeat = (lootMs % LAST_SCENE_STEP_MS) / LAST_SCENE_STEP_MS;
     if (loot.length > 0 && lootStep < loot.length) {
-      return { kind: "loot", resolvedCount: lootStep, total: loot.length, beatProgress };
+      return { kind: "loot", resolvedCount: lootStep, total: loot.length, beatProgress: lootBeat };
     }
-    if (combatShowsCardPicker(entry)) return { kind: "cards", beatProgress };
+    if (combatShowsCardPicker(entry)) {
+      const cardMs = lootMs - loot.length * LAST_SCENE_STEP_MS;
+      return {
+        kind: "cards",
+        beatProgress: Math.max(0, Math.min(1, (cardMs % LAST_SCENE_STEP_MS) / LAST_SCENE_STEP_MS)),
+      };
+    }
     if (loot.length > 0) {
       return {
         kind: "loot",
@@ -130,7 +157,7 @@ export function lastScenePhase(
         beatProgress: 1,
       };
     }
-    return { kind: "dying" };
+    return { kind: "dead" };
   }
   if (kind === "treasure") {
     if (step <= 0) return { kind: "chest" };
