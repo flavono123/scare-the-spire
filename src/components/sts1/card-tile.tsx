@@ -1,28 +1,32 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import { useLayoutEffect, useRef } from "react";
 import Image from "@/components/ui/static-image";
 import { Sts1CardText } from "./description";
+import {
+  CARD_DESCRIPTION_SAFE_HEIGHT_RATIO,
+  fitCardDescriptionText,
+} from "@/lib/card-description-fit";
 import {
   STS1_ATLAS_LAYER_STYLE,
   STS1_CARD_ASPECT,
   STS1_CREAM,
   STS1_ENERGY_FILL,
   STS1_ENERGY_MODIFIED,
-  STS1_TITLE_BORDER,
-  STS1_TITLE_BORDER_WIDTH,
+  STS1_DESC_MIN_FONT_SCALE,
   sts1CardBannerRegion,
   sts1CardBackgroundRegion,
   sts1CardBodyStyle,
   sts1CardFrameRegion,
   sts1CardOrbRegion,
   sts1DescriptionBox,
+  sts1DescriptionFontCqi,
   sts1DescriptionTextStyle,
   sts1EnergyCostBox,
   sts1EnergyCostTextStyle,
-  sts1FreeTypeStroke,
   sts1PortraitBox,
   sts1TitleBox,
+  sts1TitleTextStyle,
   sts1TypeBannerPieces,
   sts1TypeBox,
 } from "@/lib/sts1/card-style";
@@ -32,11 +36,6 @@ import { sts1CardPortraitUrl, sts1CardUi512Url } from "@/lib/sts1/paths";
 import { wrapSts1DescriptionLines } from "@/lib/sts1/description";
 import { sts1CardStats, sts1CostLabel } from "@/lib/sts1/stats";
 import type { Sts1Card, Sts1Keyword } from "@/lib/sts1/types";
-
-const TITLE_STROKE: CSSProperties = {
-  color: STS1_CREAM,
-  ...sts1FreeTypeStroke(STS1_TITLE_BORDER, STS1_TITLE_BORDER_WIDTH),
-};
 
 function AtlasLayer({ src }: { src: string }) {
   return (
@@ -74,6 +73,31 @@ export function Sts1CardTile({
   const title = `${card.name}${stats.nameSuffix}`;
   const costLabel = sts1CostLabel(stats.cost);
   const upgradedCost = stats.upgraded && card.upgrade?.cost != null;
+  const descriptionViewportRef = useRef<HTMLDivElement>(null);
+  const descriptionContentRef = useRef<HTMLParagraphElement>(null);
+  const descriptionFontCqi = sts1DescriptionFontCqi();
+
+  useLayoutEffect(() => {
+    const viewport = descriptionViewportRef.current;
+    const content = descriptionContentRef.current;
+    if (!viewport || !content) return;
+
+    const measure = () => {
+      fitCardDescriptionText({
+        viewport,
+        content,
+        baseFontCqi: descriptionFontCqi,
+        minimumFontScale: STS1_DESC_MIN_FONT_SCALE,
+        availableHeightRatio: CARD_DESCRIPTION_SAFE_HEIGHT_RATIO,
+      });
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(viewport);
+    void document.fonts?.ready.then(measure);
+    return () => observer.disconnect();
+  }, [descriptionFontCqi, descriptionLines, gameLocale, title]);
 
   return (
     <article
@@ -119,7 +143,7 @@ export function Sts1CardTile({
         className="absolute z-10 flex items-center justify-center overflow-hidden whitespace-nowrap text-center font-bold leading-none"
         style={{
           ...sts1TitleBox(title, stats.cost),
-          ...TITLE_STROKE,
+          ...sts1TitleTextStyle(stats.upgraded),
         }}
       >
         {title}
@@ -134,14 +158,17 @@ export function Sts1CardTile({
         {typeLabel}
       </div>
       <div
-        className="absolute z-10 overflow-hidden"
-        style={sts1DescriptionBox(gameLocale, descriptionLines.length)}
+        ref={descriptionViewportRef}
+        className="absolute z-10 flex flex-col items-center justify-center overflow-hidden"
+        data-card-description-viewport
+        style={sts1DescriptionBox(gameLocale)}
       >
         <Sts1CardText
+          ref={descriptionContentRef}
           text={descriptionLines.join(" NL ")}
           stats={stats}
           keywords={keywords}
-          className="font-game-text text-center"
+          className="font-game-text max-w-full text-center"
           style={{
             ...sts1DescriptionTextStyle(gameLocale),
             color: STS1_CREAM,

@@ -5,6 +5,7 @@ import {
   STS1_DESC_FONT,
   sts1DescBoxWidthFrac,
 } from "./card-style";
+import { sts1KeywordNameAt } from "./keyword-tips";
 import { sts1LineBreakViaCharacter } from "./locale";
 import type { Sts1CardStats, Sts1Keyword } from "./types";
 
@@ -213,9 +214,7 @@ export function parseSts1CardText(
       }
 
       const rest = line.slice(index);
-      const keyword = names.find((name) =>
-        rest.toLowerCase().startsWith(name.toLowerCase()),
-      );
+      const keyword = names.find((name) => sts1KeywordNameAt(line, index, name));
       if (keyword) {
         spans.push({ kind: "text", text: rest.slice(0, keyword.length), color: color ?? GOLD });
         index += keyword.length;

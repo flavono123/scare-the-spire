@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { forwardRef, type CSSProperties } from "react";
 import Image from "@/components/ui/static-image";
 import { parseSts1CardText, type Sts1TextSpan } from "@/lib/sts1/description";
 import { sts1CardUiUrl } from "@/lib/sts1/paths";
@@ -32,25 +32,25 @@ function Sts1TextSpanView({ span }: { span: Sts1TextSpan }) {
   );
 }
 
-export function Sts1CardText({
-  text,
-  stats,
-  keywords = [],
-  className,
-  style,
-}: {
+export const Sts1CardText = forwardRef<HTMLParagraphElement, {
   text: string;
   stats: Sts1CardStats;
   keywords?: readonly Sts1Keyword[];
   className?: string;
   style?: CSSProperties;
-}) {
+}>(function Sts1CardText({
+  text,
+  stats,
+  keywords = [],
+  className,
+  style,
+}, ref) {
   const spans = parseSts1CardText(text, stats, keywords);
   return (
-    <p className={className} style={style}>
+    <p ref={ref} className={className} style={style} data-card-description-content>
       {spans.map((span, index) => (
         <Sts1TextSpanView key={index} span={span} />
       ))}
     </p>
   );
-}
+});

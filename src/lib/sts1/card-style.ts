@@ -71,8 +71,6 @@ export const STS1_TITLE_BOX_WIDTH = 0.6;
 export const STS1_TITLE_BOX_WIDTH_NO_COST = 0.7;
 /** FontHelper.cardDescFont_N / _L = prepFont(24, ...). */
 export const STS1_DESC_FONT = 24;
-/** AbstractCard.DESC_OFFSET_Y = 0.255 * IMG_HEIGHT when BIG_TEXT_MODE is off. */
-export const STS1_DESC_OFFSET_Y_FRAC = 0.255;
 export const STS1_DESC_BOX_WIDTH = 0.79;
 export const STS1_CN_DESC_BOX_WIDTH = 0.72;
 /** renderDescription line step is 1.45 * capHeight. */
@@ -80,12 +78,14 @@ export const STS1_DESC_LINE_HEIGHT = 1.45;
 /** AbstractCard.CARD_ENERGY_IMG_WIDTH used while wrapping [E] tokens. */
 export const STS1_DESC_ENERGY_IMG_WIDTH = 24;
 /**
- * start_y += nLines * capHeight * 0.775 - capHeight * 0.375, then each line
- * steps by 1.45 * capHeight. CSS line-box alphabetic baseline is ~0.8em.
+ * Dark description well on `bg_*` (below the type plaque, above the bottom
+ * bevel). Shifting this box up with line count painted Clash into the art.
+ * Long copy stays in this well and uses `fitCardDescriptionText`.
  */
-export const STS1_DESC_NLINE_FACTOR = 0.775;
-export const STS1_DESC_BASELINE_FACTOR = 0.375;
-export const STS1_DESC_BASELINE_IN_LINEBOX = 0.8;
+export const STS1_DESC_WELL_TOP = 0.62;
+export const STS1_DESC_WELL_BOTTOM = 0.925;
+/** Floor for `fitCardDescriptionText` so 7-line Kor Omniscience still fits. */
+export const STS1_DESC_MIN_FONT_SCALE = 0.5;
 /** FontHelper.cardTypeFont = prepFont(17, true). */
 export const STS1_TYPE_FONT = 17;
 /** renderType draws at current_y - 22 (down in CSS). */
@@ -95,16 +95,24 @@ export const STS1_TYPE_OFFSET_Y = 22;
 export const STS1_CREAM = "#FFF6E2";
 /** FontHelper.cardEnergyFont_L fill; renderEnergy starts from Color.WHITE. */
 export const STS1_ENERGY_FILL = "#FFFFFF";
-/** Settings.GREEN_TEXT_COLOR / ENERGY_COST_MODIFIED_COLOR. */
-export const STS1_ENERGY_MODIFIED = "#7FFF00";
-/** cardTitleFont borderColor (0.35, 0.35, 0.35). */
+/** Settings.GREEN_TEXT_COLOR / ENERGY_COST_MODIFIED_COLOR (rgba8888 0x7FFF00FF). */
+export const STS1_GREEN_TEXT = "#7FFF00";
+export const STS1_ENERGY_MODIFIED = STS1_GREEN_TEXT;
+/** cardTitleFont / SCP_cardTitleFont_small borderColor (0.35, 0.35, 0.35). */
 export const STS1_TITLE_BORDER = "#595959";
 /** cardEnergyFont_L borderColor (0.3, 0.3, 0.3). */
 export const STS1_ENERGY_BORDER = "#4D4D4D";
 /** FontHelper.cardEnergyFont_L = prepFont(38, true). */
 export const STS1_ENERGY_FONT = 38;
-export const STS1_TITLE_BORDER_WIDTH = 2;
+/**
+ * Combat `cardTitleFont` borderWidth is 2. SingleCardViewPopup
+ * (`SCP_cardTitleFont_small`) uses 4 at 46px — that is the Compendium title.
+ * CSS stroke uses half of FreeType, so 4 here matches the energy numeral weight.
+ */
+export const STS1_TITLE_BORDER_WIDTH = 4;
 export const STS1_ENERGY_BORDER_WIDTH = 4;
+/** FontHelper.SCP_cardTitleFont_small = prepFont(46, true). Not used on the 300-wide tile. */
+export const STS1_SCP_TITLE_FONT = 46;
 
 export function sts1FreeTypeStroke(outlineColor: string, borderWidthPx: number): CSSProperties {
   const strokeCqi = ((borderWidthPx * 0.5) / STS1_CARD_IN_ATLAS.width) * 100;
@@ -120,6 +128,16 @@ export function sts1EnergyCostTextStyle(): CSSProperties {
     fontWeight: 700,
     fontSize: `${(STS1_ENERGY_FONT / STS1_CARD_IN_ATLAS.width) * 100}cqi`,
     ...sts1FreeTypeStroke(STS1_ENERGY_BORDER, STS1_ENERGY_BORDER_WIDTH),
+  };
+}
+
+/** SingleCardViewPopup.renderTitle: CREAM, or GREEN_TEXT_COLOR when viewing upgrade. */
+export function sts1TitleTextStyle(upgraded: boolean): CSSProperties {
+  const shadowCqi = (2 / STS1_CARD_IN_ATLAS.width) * 100;
+  return {
+    color: upgraded ? STS1_GREEN_TEXT : STS1_CREAM,
+    ...sts1FreeTypeStroke(STS1_TITLE_BORDER, STS1_TITLE_BORDER_WIDTH),
+    textShadow: `${shadowCqi}cqi ${shadowCqi}cqi 0 rgba(0,0,0,0.75)`,
   };
 }
 
@@ -176,24 +194,26 @@ export function sts1DescBoxWidthFrac(gameLocale: GameLocale): number {
   return sts1LineBreakViaCharacter(gameLocale) ? STS1_CN_DESC_BOX_WIDTH : STS1_DESC_BOX_WIDTH;
 }
 
-export function sts1DescriptionBox(gameLocale: GameLocale, lineCount = 1) {
-  const { height } = STS1_CARD_IN_ATLAS;
+export function sts1DescriptionFontCqi(): number {
+  return (STS1_DESC_FONT / STS1_CARD_IN_ATLAS.width) * 100;
+}
+
+export function sts1DescriptionBox(gameLocale: GameLocale) {
   const widthFrac = sts1DescBoxWidthFrac(gameLocale);
-  const n = Math.max(1, lineCount);
-  const cap = STS1_DESC_FONT;
-  const firstBaselineFromBottom =
-    STS1_DESC_OFFSET_Y_FRAC * height
-    + n * cap * STS1_DESC_NLINE_FACTOR
-    - cap * STS1_DESC_BASELINE_FACTOR;
-  const firstLineTop =
-    height - firstBaselineFromBottom - cap * STS1_DESC_BASELINE_IN_LINEBOX;
-  const boxHeight = n * STS1_DESC_LINE_HEIGHT * cap;
   return {
     left: `${((1 - widthFrac) / 2) * 100}%`,
     width: `${widthFrac * 100}%`,
-    top: `${(firstLineTop / height) * 100}%`,
-    height: `${(boxHeight / height) * 100}%`,
+    top: `${STS1_DESC_WELL_TOP * 100}%`,
+    bottom: `${(1 - STS1_DESC_WELL_BOTTOM) * 100}%`,
   };
+}
+
+export function sts1DescriptionWellHeightPx(): number {
+  return (STS1_DESC_WELL_BOTTOM - STS1_DESC_WELL_TOP) * STS1_CARD_IN_ATLAS.height;
+}
+
+export function sts1DescriptionContentHeightPx(lineCount: number, fontScale = 1): number {
+  return Math.max(1, lineCount) * STS1_DESC_LINE_HEIGHT * STS1_DESC_FONT * fontScale;
 }
 
 export function sts1DescriptionTextStyle(gameLocale: GameLocale): CSSProperties {
