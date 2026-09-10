@@ -104,6 +104,13 @@ CHAR_SELECT_ICONS = {
     "watcher": "images/ui/charSelect/watcherButton.png",
 }
 
+# Extra STS1 UI chrome used by Compendium filters / keyword tips.
+# Jar folder -> public/images/sts1/<dest>
+STS1_UI_EXTRA_FOLDERS = (
+    ("images/ui/run_mods/", "run-mods"),
+    ("images/ui/tip/", "tips"),
+)
+
 # libGDX Color packed RGBA (or float tuples) from Color.<clinit>.
 GDX_COLORS: dict[str, tuple[int, int, int, int]] = {
     "CLEAR": (0, 0, 0, 0),
@@ -825,6 +832,21 @@ def extract_card_ui(jar, prefixes: tuple[str, ...] = ("1024", "512")) -> None:
             save_webp(image, dest[prefix] / f"{rest}.webp", lossless=True)
 
 
+def extract_ui_extras(jar, out: Path, names: set[str] | None = None) -> int:
+    """Extract run-mod icons, PowerTip 9-slice, and leftover card-library chrome."""
+    names = names if names is not None else set(jar.namelist())
+    written = 0
+    for jar_prefix, dest_folder in STS1_UI_EXTRA_FOLDERS:
+        for path in sorted(name for name in names if name.startswith(jar_prefix) and name.endswith(".png")):
+            save_webp(extract_png(jar, path), out / dest_folder / f"{Path(path).stem}.webp")
+            written += 1
+    library_prefix = "images/ui/cardlibrary/"
+    for path in sorted(name for name in names if name.startswith(library_prefix) and name.endswith(".png")):
+        save_webp(extract_png(jar, path), out / "card-library" / f"{Path(path).stem}.webp")
+        written += 1
+    return written
+
+
 def extract_images(jar, cards: list[dict[str, Any]], relics: list[dict[str, Any]], potions: list[dict[str, Any]]) -> None:
     out = ROOT / "public" / "images" / "sts1"
     names = set(jar.namelist())
@@ -857,10 +879,7 @@ def extract_images(jar, cards: list[dict[str, Any]], relics: list[dict[str, Any]
         if path in names:
             save_webp(extract_png(jar, path), out / "characters" / f"{key}.webp")
 
-    for tab in ("redTab", "greenTab", "blueTab", "purpleTab", "colorlessTab", "curseTab"):
-        path = f"images/ui/cardlibrary/{tab}.png"
-        if path in names:
-            save_webp(extract_png(jar, path), out / "card-library" / f"{tab}.webp")
+    extract_ui_extras(jar, out, names)
 
     color_layers = parse_potion_color_layers(jar)
     for potion in potions:
@@ -891,12 +910,23 @@ def main() -> None:
         action="store_true",
         help="Re-extract combat 512 cardui layers without rewriting JSON or portraits.",
     )
+    parser.add_argument(
+        "--ui-extras-only",
+        action="store_true",
+        help="Extract run-mod icons, PowerTip chrome, and card-library UI without rewriting JSON or portraits.",
+    )
     args = parser.parse_args()
 
     if args.card_ui_512_only:
         with open_sts1_jar(args.jar) as jar:
             extract_card_ui(jar, prefixes=("512",))
         print("extracted card-ui-512")
+        return
+
+    if args.ui_extras_only:
+        with open_sts1_jar(args.jar) as jar:
+            written = extract_ui_extras(jar, ROOT / "public" / "images" / "sts1")
+        print(f"extracted ui-extras={written}")
         return
 
     with open_sts1_jar(args.jar) as jar:

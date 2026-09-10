@@ -48,6 +48,18 @@ export function sts1CardLibraryTabUrl(
   return sts1Asset(`${STS1_IMAGE_ROOT}/card-library/${tab}.webp`);
 }
 
+export function sts1CardLibraryUiUrl(name: string): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/card-library/${name}.webp`);
+}
+
+export function sts1RunModUrl(name: string): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/run-mods/${name}.webp`);
+}
+
+export function sts1TipUrl(part: "tipTop" | "tipMid" | "tipBot" | string): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/tips/${part}.webp`);
+}
+
 export function sts1IndexPath(type: Sts1ResourceType): string {
   return `/compendium/sts1/${type}`;
 }
