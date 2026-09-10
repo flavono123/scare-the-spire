@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import type { GameLocale } from "@/lib/i18n";
 import { sts1LineBreakViaCharacter, sts1GameLocale } from "@/lib/sts1/locale";
 import type { Sts1Card, Sts1CardType, Sts1PotionRarity, Sts1RelicPool, Sts1RelicTier } from "@/lib/sts1/types";
-import { sts1CardLibraryTabUrl, sts1CardUiUrl, sts1CharacterIconUrl } from "@/lib/sts1/paths";
+import { sts1CardUiUrl, sts1CharacterIconUrl, sts1RunModUrl } from "@/lib/sts1/paths";
 
 const FRAME_RARITY: Record<string, "common" | "uncommon" | "rare"> = {
   basic: "common",
@@ -329,8 +329,8 @@ export const STS1_FILTER_ICONS = {
   silent: sts1CharacterIconUrl("silent"),
   defect: sts1CharacterIconUrl("defect"),
   watcher: sts1CharacterIconUrl("watcher"),
-  colorless: sts1CardLibraryTabUrl("colorlessTab"),
-  curse: sts1CardLibraryTabUrl("curseTab"),
+  colorless: sts1RunModUrl("colorless"),
+  curse: sts1RunModUrl("cursed_run"),
   status: sts1CardUiUrl("bg_skill_colorless"),
   special: sts1CardUiUrl("card_colorless_orb"),
 } as const;
