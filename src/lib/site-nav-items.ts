@@ -183,6 +183,12 @@ export const devNavItems = [
     strictDevOnly: true,
   },
   {
+    href: "/dev/decisions-board",
+    label: "어려운 결정 보드",
+    icon: "/images/sts2/powers/buffer_power.webp",
+    strictDevOnly: true,
+  },
+  {
     href: "/dev/profile",
     label: "프로필 저장 전환",
     icon: "/images/sts2/profile/unset.webp",

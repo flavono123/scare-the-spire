@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import Image from "@/components/ui/static-image";
 import type { MonsterSpineAsset } from "@/lib/codex-types";
+import { cn } from "@/lib/utils";
 
 /** Cap live Spine players in a stamped pool so 100 monsters cannot open 100 WebGL contexts. */
 const MAX_LIVE_POOL_SPINE = 8;
@@ -41,16 +42,17 @@ export function DecisionsActorSprite({
   spineAsset,
   staticOnly = false,
   size = 48,
+  className,
 }: {
   name: string;
   fallbackUrl: string | null;
   spineAsset: MonsterSpineAsset | null | undefined;
   staticOnly?: boolean;
   size?: number;
+  className?: string;
 }) {
   const rootRef = useRef<HTMLSpanElement>(null);
   const [live, setLive] = useState(false);
-  const sizeClass = size === 32 ? "h-8 w-8" : "h-12 w-12";
 
   useEffect(() => {
     const node = rootRef.current;
@@ -108,7 +110,8 @@ export function DecisionsActorSprite({
     <span
       ref={rootRef}
       data-decisions-actor={spineAsset && !staticOnly ? (live ? "live" : "spine") : "static"}
-      className={`relative block overflow-hidden ${sizeClass}`}
+      className={cn("relative block overflow-hidden", className)}
+      style={className ? undefined : { width: size, height: size }}
     >
       {fallbackUrl ? (
         <Image
@@ -118,7 +121,7 @@ export function DecisionsActorSprite({
           height={size}
           draggable={false}
           data-drag-preview=""
-          className={`absolute inset-0 object-contain ${sizeClass}`}
+          className="absolute inset-0 h-full w-full object-contain"
         />
       ) : (
         <span

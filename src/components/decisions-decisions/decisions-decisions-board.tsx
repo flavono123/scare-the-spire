@@ -24,6 +24,7 @@ import {
   type TierPlacement,
   type TierRow,
 } from "@/lib/decisions-decisions";
+import { DECISIONS_BOARD_CONTAINER_CLASS, DECISIONS_BOARD_TOKEN_VARS_CLASS } from "@/lib/decisions-token-layout";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
@@ -301,6 +302,7 @@ export function DecisionsDecisionsBoard({
   onAddRow,
   disablePreview = false,
   thumbnail = false,
+  staticOnly = false,
 }: {
   rows: TierRow[];
   placements: TierPlacement[];
@@ -325,6 +327,7 @@ export function DecisionsDecisionsBoard({
   onAddRow?: () => void;
   disablePreview?: boolean;
   thumbnail?: boolean;
+  staticOnly?: boolean;
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
   const poolOnly = variant === "pool";
@@ -376,10 +379,13 @@ export function DecisionsDecisionsBoard({
     items: TierPlacement[],
     options: { removable?: boolean } = {},
   ) => (
-    <div className={cn(
-      "flex flex-wrap content-start gap-1",
-      thumbnail ? "px-1 py-1" : "min-h-16 px-2 py-1.5",
-    )}>
+    <div
+      className={cn(
+        "flex flex-wrap content-start",
+        thumbnail ? "px-1 py-1" : "min-h-0 px-[var(--dd-pad,6px)] py-1",
+      )}
+      style={{ gap: "var(--dd-gap, 4px)" }}
+    >
       {items.map((item) => {
         const entity = entitiesByKey.get(resourceKey(item));
         const key = resourceKey(item);
@@ -431,7 +437,7 @@ export function DecisionsDecisionsBoard({
               selected={selectedKey === key}
               onSelect={onSelect ? () => onSelect(item) : undefined}
               disablePreview={disablePreview}
-              staticOnly={thumbnail}
+              staticOnly={staticOnly || thumbnail}
             />
           </div>
         );
@@ -472,15 +478,17 @@ export function DecisionsDecisionsBoard({
 
   return (
     <>
-    <div
-      className={cn(
-        !thumbnail && "overflow-hidden rounded-lg border border-border bg-black/40",
-        compact && "text-[10px]",
-        poolOnly && !thumbnail && "max-h-[min(28rem,50dvh)] overflow-y-auto",
-        thumbnail && "bg-transparent",
-      )}
-    >
-      {!poolOnly && rows.map((row) => (
+      <div
+        className={cn(
+          DECISIONS_BOARD_CONTAINER_CLASS,
+          !thumbnail && "overflow-hidden rounded-lg border border-border bg-black/40",
+          compact && "text-[10px]",
+          poolOnly && !thumbnail && "max-h-[min(28rem,50dvh)] overflow-y-auto",
+          thumbnail && "bg-transparent",
+        )}
+      >
+        <div className={DECISIONS_BOARD_TOKEN_VARS_CLASS}>
+          {!poolOnly && rows.map((row) => (
         <div
           key={row.id}
           data-decisions-decisions-row={row.id}
@@ -496,10 +504,13 @@ export function DecisionsDecisionsBoard({
         >
           <div className="flex min-w-0 flex-1">
             <div
-              className="flex w-12 shrink-0 items-center justify-center px-1 sm:w-16"
+              className="flex w-[var(--dd-label,48px)] shrink-0 items-center justify-center px-0.5"
               style={{ backgroundColor: `${tierColorBar(row.color)}22` }}
             >
-              <span className={cn("font-service text-sm font-bold sm:text-base", tierColorTextClass(row.color))}>
+              <span className={cn(
+                "line-clamp-3 px-0.5 text-center font-service text-[10px] font-bold leading-tight @xl:line-clamp-none @xl:text-base",
+                tierColorTextClass(row.color),
+              )}>
                 {row.label}
               </span>
             </div>
@@ -575,7 +586,8 @@ export function DecisionsDecisionsBoard({
           </div>
         </div>
       )}
-    </div>
+        </div>
+      </div>
     {colorRow && palette && (
       <TierColorPaletteDropdown
         row={colorRow}

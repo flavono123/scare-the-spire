@@ -38,8 +38,7 @@ export const DECISIONS_DECISIONS_BACKGROUND_SRC =
 export const DECISIONS_DECISIONS_TABLE = "decisions_decisions_posts";
 export const DECISIONS_DECISIONS_FEED_SERVICE = "decisions_decisions";
 
-/** Smaller than CardTile `mini` (150px). */
-export const DECISIONS_DECISIONS_CARD_WIDTH = 72;
+export { DECISIONS_DECISIONS_CARD_WIDTH } from "@/lib/decisions-token-layout";
 
 export const DECISIONS_DECISIONS_TITLE_MIN_CHARS = 1;
 export const DECISIONS_DECISIONS_TITLE_MAX_CHARS = 80;

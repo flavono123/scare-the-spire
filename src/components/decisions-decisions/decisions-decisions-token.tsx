@@ -7,10 +7,11 @@ import { CardTile } from "@/components/codex/card-tile";
 import { AscensionToken } from "@/components/codex/ascension-token";
 import { DecisionsActorSprite } from "@/components/decisions-decisions/decisions-decisions-actor";
 import Image from "@/components/ui/static-image";
+import type { DecisionsDecisionsResourceRef } from "@/lib/decisions-decisions";
 import {
   DECISIONS_DECISIONS_CARD_WIDTH,
-  type DecisionsDecisionsResourceRef,
-} from "@/lib/decisions-decisions";
+  DECISIONS_TOKEN_CARD_ASPECT,
+} from "@/lib/decisions-token-layout";
 import { COMBO_KEYWORD_IMAGE_URL } from "@/lib/combo-resource-visuals";
 import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
@@ -127,7 +128,12 @@ export function DecisionsDecisionsToken({
           onSelect();
         }}
         className={cn(
-          "flex max-w-[5.5rem] flex-col items-center gap-0.5 rounded-sm p-0.5 text-left",
+          "flex max-w-full flex-col items-center gap-0.5 rounded-sm p-0 text-left",
+          entity.type === "card"
+            ? "w-[var(--dd-card,72px)]"
+            : isMonster
+              ? "w-[var(--dd-monster,48px)]"
+              : "w-[var(--dd-icon,40px)]",
           selected && "ring-1 ring-primary",
         )}
       >
@@ -135,31 +141,49 @@ export function DecisionsDecisionsToken({
           <span
             {...{ [TILE_ATTR]: "" }}
             data-decisions-piece=""
-            className="block [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
+            className="relative block w-full overflow-hidden [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
+            style={{ aspectRatio: DECISIONS_TOKEN_CARD_ASPECT }}
           >
-            <CardTile
-              card={entity.cardData}
-              serviceLocale={serviceLocale}
-              showUpgrade={false}
-              showBeta={false}
-              width={DECISIONS_DECISIONS_CARD_WIDTH}
-              interactive={false}
-            />
+            <span
+              className="absolute left-0 top-0 origin-top-left"
+              style={{
+                width: DECISIONS_DECISIONS_CARD_WIDTH,
+                transform: `scale(calc(var(--dd-card, ${DECISIONS_DECISIONS_CARD_WIDTH}px) / ${DECISIONS_DECISIONS_CARD_WIDTH}px))`,
+              }}
+            >
+              <CardTile
+                card={entity.cardData}
+                serviceLocale={serviceLocale}
+                showUpgrade={false}
+                showBeta={false}
+                width={DECISIONS_DECISIONS_CARD_WIDTH}
+                interactive={false}
+              />
+            </span>
           </span>
         ) : entity.type === "ascension" && entity.ascensionData ? (
           <span
             {...{ [TILE_ATTR]: "" }}
             data-decisions-piece=""
             data-drag-preview=""
-            className="flex h-10 w-10 items-center justify-center [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
+            className="relative flex size-[var(--dd-icon,40px)] items-center justify-center overflow-hidden [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
           >
-            <AscensionToken level={entity.ascensionData.level} size={40} />
+            <span
+              className="absolute left-0 top-0 origin-top-left"
+              style={{
+                width: 40,
+                height: 40,
+                transform: "scale(calc(var(--dd-icon, 40px) / 40px))",
+              }}
+            >
+              <AscensionToken level={entity.ascensionData.level} size={40} />
+            </span>
           </span>
         ) : isMonster ? (
           <span
             {...{ [TILE_ATTR]: "" }}
             data-decisions-piece=""
-            className="[&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none [&_canvas]:pointer-events-none"
+            className="block size-[var(--dd-monster,48px)] [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none [&_canvas]:pointer-events-none"
           >
             <DecisionsActorSprite
               name={label}
@@ -167,13 +191,14 @@ export function DecisionsDecisionsToken({
               spineAsset={actorSpine}
               staticOnly={staticOnly}
               size={48}
+              className="h-full w-full"
             />
           </span>
         ) : (
           <span
             {...{ [TILE_ATTR]: "" }}
             data-decisions-piece=""
-            className="flex h-10 w-10 items-center justify-center [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
+            className="flex size-[var(--dd-icon,40px)] items-center justify-center [&_*]:[-webkit-user-drag:none] [&_img]:pointer-events-none"
           >
             {tokenSrc ? (
               <Image
@@ -183,7 +208,7 @@ export function DecisionsDecisionsToken({
                 height={40}
                 draggable={false}
                 data-drag-preview=""
-                className="h-10 w-10 object-contain"
+                className="h-full w-full object-contain"
               />
             ) : (
               <span
@@ -224,7 +249,7 @@ export function DecisionsDecisionsTokenPlaceholder({
   refItem: DecisionsDecisionsResourceRef;
 }) {
   return (
-    <span className="inline-flex h-[4.5rem] min-w-12 items-center justify-center rounded-sm border border-dashed border-white/20 px-1 text-[9px] text-zinc-500">
+    <span className="inline-flex h-[var(--dd-monster,48px)] min-w-[var(--dd-icon,40px)] items-center justify-center rounded-sm border border-dashed border-white/20 px-1 text-[9px] text-zinc-500">
       {refItem.id}
     </span>
   );
