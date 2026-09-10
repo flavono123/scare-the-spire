@@ -85,3 +85,42 @@ export function loadSpinePlayerRuntime(): Promise<SpinePlayerRuntime> {
 
   return spineRuntimePromise;
 }
+
+type SpinePlayerLoadPump = {
+  drawFrame?: (requestNextFrame?: boolean) => void;
+  disposed?: boolean;
+  skeleton?: unknown;
+  error?: boolean;
+  assetManager?: { isLoadingComplete?: () => boolean } | null;
+};
+
+/**
+ * SpinePlayer only calls `loadSkeleton` from its internal `drawFrame` rAF
+ * loop. Browsers skip that rAF when the canvas is opacity 0, covered, or in a
+ * background tab — assets finish loading and the player sits at
+ * `isLoadingComplete` with no skeleton forever. Interval pumps are not
+ * throttled the same way.
+ */
+export function pumpSpinePlayerUntilSkeleton(
+  player: SpinePlayer,
+  isDisposed: () => boolean,
+): () => void {
+  const tick = (): boolean => {
+    if (isDisposed()) return true;
+    const live = player as unknown as SpinePlayerLoadPump;
+    if (live.disposed || live.skeleton || live.error) return true;
+    if (!live.assetManager?.isLoadingComplete?.()) return false;
+    try {
+      live.drawFrame?.(true);
+    } catch {
+      // Spine's drawFrame rethrows after config.error; React already recorded it.
+    }
+    return Boolean(live.skeleton || live.error || isDisposed());
+  };
+
+  if (tick()) return () => undefined;
+  const id = globalThis.setInterval(() => {
+    if (tick()) globalThis.clearInterval(id);
+  }, 32);
+  return () => globalThis.clearInterval(id);
+}

@@ -5,6 +5,7 @@ import Image from "@/components/ui/static-image";
 import {
   createSpinePlainTextDownloader,
   loadSpinePlayerRuntime,
+  pumpSpinePlayerUntilSkeleton,
   type SpinePhysics,
   type SpinePlayer,
   type SpinePlayerConfig,
@@ -49,9 +50,9 @@ interface MonsterSpineStageProps {
   /** Seek to the end of a death clip and hold instead of replaying die. */
   holdDeathPose?: boolean;
   /**
-   * Keep the still fallback visible (and the canvas hidden) until a clip has
-   * actually been applied. Last-scene combat uses this so a "ready" but blank
-   * Spine canvas cannot replace the static monster render.
+   * Keep the still fallback on top until a clip has actually been applied.
+   * Never hide the Spine canvas with opacity 0 — browsers skip that canvas's
+   * rAF, so `loadSkeleton` never runs and last-scene combat stays on stills.
    */
   keepFallbackUntilPlayed?: boolean;
   /** Fires once after `die` completes (or immediately if already holding a death pose). */
@@ -158,11 +159,14 @@ function MonsterSpineStageComponent({
   const deathStartedRef = useRef(false);
   const [playbackArmed, setPlaybackArmed] = useState(false);
   const onDeathAnimationCompleteRef = useRef(onDeathAnimationComplete);
-  onDeathAnimationCompleteRef.current = onDeathAnimationComplete;
+  const onReadyRef = useRef(onReady);
+  const onVisualBoundsChangeRef = useRef(onVisualBoundsChange);
+  const skeletonTransformRef = useRef(skeletonTransform);
   const formAttachmentRef = useRef(formAttachment);
   const formPlacementTargetRef = useRef(formPlacementRef);
   const atlasDuotoneRef = useRef(atlasDuotone);
   const [loadState, setLoadState] = useState<LoadState>(asset ? "loading" : "error");
+  const [playerEpoch, setPlayerEpoch] = useState(0);
   const showStaticPhobiaMode = showPhobiaMode && Boolean(phobiaModeImageUrl);
   const [availableAnimations, setAvailableAnimations] = useState<string[]>(asset?.animations ?? []);
   const compositeSkinNames = useMemo(
@@ -211,40 +215,64 @@ function MonsterSpineStageComponent({
     ],
   );
 
+  const viewportPadLeft = viewportPadding?.padLeft;
+  const viewportPadRight = viewportPadding?.padRight;
+  const viewportPadTop = viewportPadding?.padTop;
+  const viewportPadBottom = viewportPadding?.padBottom;
+  const stableViewportPadding = useMemo(
+    () => ({
+      padLeft: viewportPadLeft,
+      padRight: viewportPadRight,
+      padTop: viewportPadTop,
+      padBottom: viewportPadBottom,
+    }),
+    [viewportPadBottom, viewportPadLeft, viewportPadRight, viewportPadTop],
+  );
+
+  useEffect(() => {
+    onDeathAnimationCompleteRef.current = onDeathAnimationComplete;
+    onReadyRef.current = onReady;
+    onVisualBoundsChangeRef.current = onVisualBoundsChange;
+    skeletonTransformRef.current = skeletonTransform;
+    atlasDuotoneRef.current = atlasDuotone;
+  });
+
   useEffect(() => {
     formAttachmentRef.current = formAttachment;
     formPlacementTargetRef.current = formPlacementRef;
     if (formPlacementRef) formPlacementRef.current = null;
   }, [formAttachment, formPlacementRef]);
 
-  useEffect(() => {
-    atlasDuotoneRef.current = atlasDuotone;
-  }, [atlasDuotone]);
+  const compositeSkinKey = compositeSkinNames.join("\0");
 
   useEffect(() => {
     if (!asset || !containerRef.current) return;
 
     let disposed = false;
     let player: SpinePlayer | null = null;
+    let stopPump = () => {};
     const parent = containerRef.current;
+    const loadedAsset = asset;
 
     void loadSpinePlayerRuntime()
       .then((runtime) => {
         if (disposed || !containerRef.current) return;
+        setLoadState("loading");
+        setPlaybackArmed(false);
         const { SpinePlayer: SpinePlayerCtor, Skin: SpineSkinCtor, Physics } = runtime;
         const viewport = getMonsterViewport(
-          asset,
+          loadedAsset,
           viewportTransitionTime,
-          viewportPadding,
+          stableViewportPadding,
           stableViewportOverride,
         );
 
         try {
           player = new SpinePlayerCtor(parent, {
-            binaryUrl: asset.binaryUrl,
-            atlasUrl: asset.atlasUrl,
+            binaryUrl: loadedAsset.binaryUrl,
+            atlasUrl: loadedAsset.atlasUrl,
             skin: singleSkin ?? undefined,
-            skins: asset.skins,
+            skins: loadedAsset.skins,
             alpha: true,
             backgroundColor: "00000000",
             preserveDrawingBuffer: false,
@@ -254,7 +282,8 @@ function MonsterSpineStageComponent({
             downloader: createSpinePlainTextDownloader(runtime),
             viewport,
             update: (loadedPlayer) => {
-              if (skeletonTransform) applySkeletonTransform(loadedPlayer, skeletonTransform);
+              const transform = skeletonTransformRef.current;
+              if (transform) applySkeletonTransform(loadedPlayer, transform);
               if (atlasDuotoneRef.current && loadedPlayer.skeleton?.slots) {
                 try {
                   neutralizeSpineSlotTint(loadedPlayer);
@@ -293,62 +322,79 @@ function MonsterSpineStageComponent({
             },
             success: (loadedPlayer) => {
               if (disposed) return;
-              if (skeletonTransform) applySkeletonTransform(loadedPlayer, skeletonTransform);
+              stopPump();
+              const transform = skeletonTransformRef.current;
+              if (transform) applySkeletonTransform(loadedPlayer, transform);
               applyCompositeSkin(loadedPlayer, SpineSkinCtor, Physics, compositeSkinNames, monsterName);
-              applyIdleTracks(loadedPlayer, asset.idleTracks);
+              applyIdleTracks(loadedPlayer, loadedAsset.idleTracks);
               playerRef.current = loadedPlayer;
-              setAvailableAnimations(loadedPlayer.skeleton?.data.animations.map((animation) => animation.name) ?? asset.animations);
+              setAvailableAnimations(loadedPlayer.skeleton?.data.animations.map((animation) => animation.name) ?? loadedAsset.animations);
               setLoadState("ready");
+              setPlayerEpoch((epoch) => epoch + 1);
               try {
                 if (atlasDuotoneRef.current) {
-                  applySpineAtlasDuotone(loadedPlayer, atlasDuotoneRef.current, asset.atlasUrl);
+                  applySpineAtlasDuotone(loadedPlayer, atlasDuotoneRef.current, loadedAsset.atlasUrl);
                 }
               } catch (error: unknown) {
                 console.warn(`Failed to apply Spine atlas duotone for ${monsterName}:`, error);
               }
-              reportSpineVisualBounds(loadedPlayer, parent, onVisualBoundsChange);
+              reportSpineVisualBounds(loadedPlayer, parent, onVisualBoundsChangeRef.current);
               window.requestAnimationFrame(() => {
                 if (!disposed) window.requestAnimationFrame(() => {
-                  if (!disposed) onReady?.();
+                  if (!disposed) onReadyRef.current?.();
                 });
               });
             },
             error: (_loadedPlayer, message) => {
               if (disposed) return;
+              stopPump();
               console.warn(`Failed to load Spine asset for ${monsterName}: ${message}`);
               setLoadState("error");
-              reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChange);
+              reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChangeRef.current);
             },
           });
           playerRef.current = player;
+          stopPump = pumpSpinePlayerUntilSkeleton(player, () => disposed);
         } catch (error: unknown) {
           if (disposed) return;
           console.warn(`Failed to load Spine asset for ${monsterName}:`, error);
           setLoadState("error");
-          reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChange);
+          reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChangeRef.current);
         }
       })
       .catch((error: unknown) => {
         if (disposed) return;
         console.warn(`Failed to import Spine player for ${monsterName}:`, error);
         setLoadState("error");
-        reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChange);
+        reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChangeRef.current);
       });
 
     return () => {
       disposed = true;
+      stopPump();
       clearVfx(vfxPlayerRef, vfxContainerRef, vfxTimeoutRef);
       if (formPlacementTargetRef.current) formPlacementTargetRef.current.current = null;
       playerRef.current = null;
       try {
-        restoreSpineAtlasDuotone(player, asset.atlasUrl);
+        restoreSpineAtlasDuotone(player, loadedAsset.atlasUrl);
       } catch {
         // Restore is best-effort; the player is being disposed next.
       }
       releaseSpinePlayer(player);
       parent.replaceChildren();
     };
-  }, [asset, compositeSkinNames, monsterName, onReady, onVisualBoundsChange, singleSkin, skeletonTransform, stableViewportOverride, viewportPadding, viewportTransitionTime]);
+  }, [
+    asset,
+    asset?.atlasUrl,
+    asset?.binaryUrl,
+    compositeSkinKey,
+    compositeSkinNames,
+    monsterName,
+    singleSkin,
+    stableViewportOverride,
+    stableViewportPadding,
+    viewportTransitionTime,
+  ]);
 
   const duotoneShadow = atlasDuotone?.shadow ?? null;
   const duotoneHighlight = atlasDuotone?.highlight ?? null;
@@ -399,13 +445,9 @@ function MonsterSpineStageComponent({
   }, [loadState]);
 
   useEffect(() => {
-    setPlaybackArmed(false);
-  }, [asset?.atlasUrl, asset?.binaryUrl]);
-
-  useEffect(() => {
     deathPlayedRef.current = false;
     deathStartedRef.current = false;
-  }, [selectedMoveId, selectedMoveNonce]);
+  }, [playerEpoch, selectedMoveId, selectedMoveNonce]);
 
   useEffect(() => {
     if (!asset || loadState !== "ready" || !playerRef.current) return;
@@ -422,10 +464,7 @@ function MonsterSpineStageComponent({
       (selectedAnimation === asset.idleAnimation || selectedMoveId == null || loopSelectedMove);
 
     const armPlayback = () => {
-      if (!keepFallbackUntilPlayed) return;
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => setPlaybackArmed(true));
-      });
+      if (keepFallbackUntilPlayed) setPlaybackArmed(true);
     };
 
     try {
@@ -449,7 +488,6 @@ function MonsterSpineStageComponent({
             deathPlayedRef.current = true;
             onDeathAnimationCompleteRef.current?.();
           }
-          armPlayback();
         } else if (!deathStartedRef.current) {
           deathStartedRef.current = true;
           const entry = restartSpineAnimation(player, deathClip, false);
@@ -473,8 +511,8 @@ function MonsterSpineStageComponent({
               },
             };
           }
-          armPlayback();
         }
+        armPlayback();
       } else if (selectedTrackAnimations?.length) {
         restartSpineTrackAnimations(player, selectedTrackAnimations, asset.idleTracks);
         armPlayback();
@@ -491,7 +529,7 @@ function MonsterSpineStageComponent({
         return;
       }
       player.play();
-      reportSpineVisualBounds(player, containerRef.current, onVisualBoundsChange);
+      reportSpineVisualBounds(player, containerRef.current, onVisualBoundsChangeRef.current);
     } catch (error) {
       console.warn(
         `Failed to play Spine animation ${deathClip ?? selectedAnimation} for ${monsterName}:`,
@@ -506,7 +544,7 @@ function MonsterSpineStageComponent({
     loadState,
     loopSelectedMove,
     monsterName,
-    onVisualBoundsChange,
+    playerEpoch,
     selectedAnimation,
     selectedMoveId,
     selectedMoveNonce,
@@ -603,9 +641,10 @@ function MonsterSpineStageComponent({
     && !showStaticPhobiaMode
     && (loadState !== "ready" || (keepFallbackUntilPlayed && !playbackArmed)),
   );
-  const showSpineCanvas = loadState === "ready"
-    && !showStaticPhobiaMode
-    && (!keepFallbackUntilPlayed || playbackArmed);
+  const coverWithStillUntilArmed = keepFallbackUntilPlayed && loadState === "ready" && !playbackArmed;
+  // Keep the canvas compositing even while stills cover it. Opacity 0 / covered
+  // canvases lose their rAF loop, so Spine never leaves `loading`.
+  const showSpineCanvas = !showStaticPhobiaMode;
 
   return (
     <div className={className}>
@@ -617,7 +656,10 @@ function MonsterSpineStageComponent({
           width={640}
           height={640}
           className={fallbackImageClassName ?? "absolute inset-0 z-10 h-full w-full object-contain drop-shadow-2xl"}
-          style={fallbackImageStyle}
+          style={{
+            ...fallbackImageStyle,
+            ...(coverWithStillUntilArmed ? { zIndex: 30 } : null),
+          }}
           priority={imagePriority}
           onLoad={() => reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChange)}
         />
@@ -645,9 +687,10 @@ function MonsterSpineStageComponent({
       )}
       <div
         ref={containerRef}
-        className={`sts2-spine-stage absolute inset-0 z-20 ${keepFallbackUntilPlayed ? "" : "transition-opacity duration-300"} ${showSpineCanvas ? "opacity-100" : "opacity-0"}`}
-        style={keepFallbackUntilPlayed ? { opacity: showSpineCanvas ? 1 : 0, transition: "none" } : undefined}
-        aria-hidden={!showSpineCanvas}
+        className={`sts2-spine-stage absolute inset-0 z-20 ${showSpineCanvas ? "opacity-100" : "opacity-0"}`}
+        data-spine-load={loadState}
+        data-spine-armed={playbackArmed ? "true" : "false"}
+        aria-hidden
       />
       <div
         ref={vfxContainerRef}

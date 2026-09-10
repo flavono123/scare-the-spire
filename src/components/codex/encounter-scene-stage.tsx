@@ -82,6 +82,13 @@ const DECIMILLIPEDE_ENCOUNTER_FRAME: CSSProperties = {
   height: "49%",
 };
 
+const ENCOUNTER_ACTOR_VIEWPORT_PADDING = {
+  padLeft: "0%",
+  padRight: "0%",
+  padTop: "0%",
+  padBottom: "0%",
+} as const;
+
 const FIREFLIES = [
   [17, 18, 0.2], [25, 34, 1.1], [34, 15, 2.2], [43, 27, 0.7],
   [51, 39, 1.8], [58, 17, 2.8], [67, 31, 0.4], [75, 22, 1.4],
@@ -514,7 +521,7 @@ function EncounterMonsterActor({
       showLoadingLabel={false}
       viewportTransitionTime={0}
       viewportOverride={viewportOverride}
-      viewportPadding={{ padLeft: "0%", padRight: "0%", padTop: "0%", padBottom: "0%" }}
+      viewportPadding={ENCOUNTER_ACTOR_VIEWPORT_PADDING}
       atlasDuotone={atlasDuotone}
     />
   );

@@ -1591,7 +1591,7 @@ function Stage({
       />
 
       {historyEntry ? (
-        <HistoryLastSceneErrorBoundary>
+        <HistoryLastSceneErrorBoundary key={`${actIndex}:${step}:${sceneKind}`}>
           <NodeLastScene
           kind={sceneKind}
           entry={historyEntry}

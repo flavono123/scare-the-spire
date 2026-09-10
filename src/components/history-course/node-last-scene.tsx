@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
 import dynamic from "next/dynamic";
 import { HistoryLastSceneErrorBoundary } from "@/components/history-course/history-last-scene-error-boundary";
+import { CardRewardScreen } from "@/components/history-course/card-reward-screen";
 import { CombatLootScreen } from "@/components/history-course/combat-loot-screen";
 import { EventRoomArt } from "@/components/history-course/event-room-art";
 import {
@@ -67,10 +68,6 @@ import type { HistoryLocTables } from "@/lib/history-loc-tables";
 const EncounterSceneStage = dynamic(
   () => import("@/components/codex/encounter-scene-stage").then((mod) => mod.EncounterSceneStage),
   { ssr: false, loading: () => null },
-);
-const MonsterSpineStage = dynamic(
-  () => import("@/components/codex/monster-spine-stage").then((mod) => mod.MonsterSpineStage),
-  { ssr: false },
 );
 const AncientSceneStage = dynamic(
   () => import("@/components/codex/ancient-scene-stage").then((mod) => mod.AncientSceneStage),
@@ -295,6 +292,10 @@ export function NodeLastScene({
   );
 }
 
+function lastSceneMonsterFallbackUrl(monster: CodexMonster): string {
+  return monster.imageUrl ?? monster.bossImageUrl ?? monsterStillUrl(monster.id);
+}
+
 function CombatScene({
   entry,
   gameLocale,
@@ -344,11 +345,7 @@ function CombatScene({
         entry={entry}
         character={character}
         dead={dead}
-        holdDeathPose={dead && phase.kind !== "dying"}
         backgroundUrl={backgroundUrl}
-        monsters={monsters}
-        selectedMoveId={dead ? "DEAD" : null}
-        useSpine={!overlayEncounter}
       />
       {overlayEncounter && encounter && characterRow ? (
         <HistoryLastSceneErrorBoundary key={encounter.id} fallback={null}>
@@ -366,9 +363,7 @@ function CombatScene({
               loopSelectedMove={false}
               holdDeathPose={dead && phase.kind !== "dying"}
               keepFallbackUntilPlayed
-              monsterFallbackUrl={(monster) =>
-                monster.imageUrl ?? monster.bossImageUrl ?? monsterStillUrl(monster.id)
-              }
+              monsterFallbackUrl={lastSceneMonsterFallbackUrl}
             />
           </div>
         </HistoryLastSceneErrorBoundary>
@@ -400,32 +395,16 @@ function CombatScene({
   );
 }
 
-function matchHistoryMonster(monsters: CodexMonster[], id: string): CodexMonster | undefined {
-  const key = stripReplayId(id).toUpperCase();
-  return monsters.find((monster) => {
-    const monsterKey = stripReplayId(monster.id).toUpperCase();
-    return monsterKey === key || monster.id.toUpperCase() === key;
-  });
-}
-
 function CombatStillFallback({
   entry,
   character,
   dead,
-  holdDeathPose,
   backgroundUrl,
-  monsters,
-  selectedMoveId,
-  useSpine,
 }: {
   entry: ReplayHistoryEntry;
   character: string;
   dead: boolean;
-  holdDeathPose: boolean;
   backgroundUrl: string;
-  monsters: CodexMonster[];
-  selectedMoveId: string | null;
-  useSpine: boolean;
 }) {
   const roomIds = roomMonsterIds(entry);
   const slots = lastSceneMonsterSlots(entry.rooms?.[0]?.model_id);
@@ -439,7 +418,6 @@ function CombatStillFallback({
       {roomIds.map((id, index) => {
         const slot = slots[index];
         const count = Math.max(roomIds.length, 1);
-        const monster = matchHistoryMonster(monsters, id);
         const style = slot
           ? {
               left: `${slot.leftPct}%`,
@@ -460,31 +438,15 @@ function CombatStillFallback({
             key={`${id}-${index}`}
             className={cn(
               "absolute h-[52%] w-[20%] transition-all duration-500",
-              dead && (!useSpine || !monster?.spineAsset) && "grayscale contrast-125",
+              dead && "grayscale contrast-125",
             )}
             style={style}
           >
-            {useSpine && monster?.spineAsset ? (
-              <MonsterSpineStage
-                asset={monster.spineAsset}
-                fallbackImageUrl={monster.imageUrl ?? monsterStillUrl(id)}
-                monsterName={monster.name}
-                selectedMoveId={selectedMoveId}
-                loopSelectedMove={false}
-                holdDeathPose={holdDeathPose}
-                keepFallbackUntilPlayed
-                className="absolute inset-0"
-                fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain object-bottom drop-shadow-[0_12px_18px_rgba(0,0,0,0.7)]"
-                showLoadingLabel={false}
-                imagePriority={index < 2}
-              />
-            ) : (
-              <SceneArt
-                src={monsterStillUrl(id)}
-                alt={prettifyId(stripReplayId(id))}
-                className="h-full w-full object-contain object-bottom drop-shadow-[0_12px_18px_rgba(0,0,0,0.7)]"
-              />
-            )}
+            <SceneArt
+              src={monsterStillUrl(id)}
+              alt={prettifyId(stripReplayId(id))}
+              className="h-full w-full object-contain object-bottom drop-shadow-[0_12px_18px_rgba(0,0,0,0.7)]"
+            />
           </div>
         );
       })}
