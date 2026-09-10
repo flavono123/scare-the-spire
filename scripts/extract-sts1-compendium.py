@@ -915,6 +915,11 @@ def main() -> None:
         action="store_true",
         help="Extract run-mod icons, PowerTip chrome, and card-library UI without rewriting JSON or portraits.",
     )
+    parser.add_argument(
+        "--bitmap-fonts-only",
+        action="store_true",
+        help="Bake STS1 card BitmapFonts from jar TTF/OTF without rewriting JSON or portraits.",
+    )
     args = parser.parse_args()
 
     if args.card_ui_512_only:
@@ -927,6 +932,14 @@ def main() -> None:
         with open_sts1_jar(args.jar) as jar:
             written = extract_ui_extras(jar, ROOT / "public" / "images" / "sts1")
         print(f"extracted ui-extras={written}")
+        return
+
+    if args.bitmap_fonts_only:
+        from subprocess import check_call
+
+        check_call(
+            [sys.executable, str(ROOT / "scripts" / "extract-sts1-bitmap-fonts.py"), "--jar", args.jar],
+        )
         return
 
     with open_sts1_jar(args.jar) as jar:

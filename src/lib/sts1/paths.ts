@@ -60,6 +60,10 @@ export function sts1TipUrl(part: "tipTop" | "tipMid" | "tipBot" | string): strin
   return sts1Asset(`${STS1_IMAGE_ROOT}/tips/${part}.webp`);
 }
 
+export function sts1BitmapFontUrl(page: string): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/fonts/${page}`);
+}
+
 export function sts1IndexPath(type: Sts1ResourceType): string {
   return `/compendium/sts1/${type}`;
 }

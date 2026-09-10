@@ -13,7 +13,6 @@ import {
   STS1_DESC_WELL_TOP,
   STS1_ENERGY_TEXT_OFFSET,
   STS1_GREEN_TEXT,
-  STS1_TITLE_BORDER,
   STS1_TITLE_BORDER_WIDTH,
   STS1_TITLE_FONT,
   STS1_TITLE_OFFSET_Y,
@@ -37,6 +36,7 @@ import {
   sts1TypeBox,
 } from "../src/lib/sts1/card-style";
 import { GAME_LOCALES } from "../src/lib/i18n";
+import { sts1BitmapRole } from "../src/lib/sts1/bitmap-font";
 import { EMPTY_STS1_STATS, wrapSts1DescriptionLines } from "../src/lib/sts1/description";
 import { collectSts1CardSideTips, sts1KeywordTipBody } from "../src/lib/sts1/keyword-tips";
 import { sts1HtmlLang, sts1LineBreakViaCharacter, sts1PickerLocales } from "../src/lib/sts1/locale";
@@ -59,7 +59,6 @@ assert.deepEqual(sts1CardBodyStyle(), {
 assert.equal(STS1_ENERGY_FONT, 38);
 assert.equal(STS1_CREAM, "#FFF6E2");
 assert.match(String(sts1EnergyCostTextStyle().fontSize), /^12\.6/);
-assert.match(String(sts1EnergyCostTextStyle().WebkitTextStroke), /#4D4D4D/);
 assert.equal(STS1_ENERGY_TEXT_OFFSET.x, -132);
 assert.equal(STS1_ENERGY_TEXT_OFFSET.y, 192);
 assert.deepEqual(sts1EnergyCostBox(), {
@@ -139,11 +138,14 @@ assert.equal(sts1DescriptionTextStyle("kor").wordBreak, "keep-all");
 assert.equal(sts1DescriptionTextStyle("jpn").wordBreak, "break-all");
 assert.equal(sts1DescriptionTextStyle("tha").overflowWrap, "anywhere");
 
+assert.equal(STS1_TITLE_BORDER_WIDTH, 2);
 assert.equal(sts1TitleTextStyle(false).color, STS1_CREAM);
 assert.equal(sts1TitleTextStyle(true).color, STS1_GREEN_TEXT);
-assert.equal(STS1_TITLE_BORDER_WIDTH, 4);
-assert.match(String(sts1TitleTextStyle(false).WebkitTextStroke), new RegExp(STS1_TITLE_BORDER));
-assert.match(String(sts1TitleTextStyle(true).textShadow), /rgba\(0,0,0/);
+assert.equal(sts1TitleTextStyle(false).WebkitTextStroke, undefined);
+assert.equal(sts1EnergyCostTextStyle().WebkitTextStroke, undefined);
+assert.ok(sts1BitmapRole("kor", "title")?.glyphs["타"]);
+assert.ok(sts1BitmapRole("kor", "desc")?.glyphs["손"]);
+assert.equal(sts1BitmapRole("eng", "energy")?.glyphs["3"]?.xadv, sts1BitmapRole("kor", "energy")?.glyphs["3"]?.xadv);
 
 const clashLines = wrapSts1DescriptionLines(
   "손에 있는 카드가 전부 공격 카드일 때만 사용할 수 있습니다. NL 피해를 !D! 줍니다.",

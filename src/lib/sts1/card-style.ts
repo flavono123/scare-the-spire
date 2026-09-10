@@ -106,38 +106,24 @@ export const STS1_ENERGY_BORDER = "#4D4D4D";
 export const STS1_ENERGY_FONT = 38;
 /**
  * Combat `cardTitleFont` borderWidth is 2. SingleCardViewPopup
- * (`SCP_cardTitleFont_small`) uses 4 at 46px — that is the Compendium title.
- * CSS stroke uses half of FreeType, so 4 here matches the energy numeral weight.
+ * (`SCP_cardTitleFont_small`) uses 4 at 46px — that is the Compendium popup,
+ * not the 300-wide combat tile. Title/cost/body glyphs are FreeType-baked.
  */
-export const STS1_TITLE_BORDER_WIDTH = 4;
+export const STS1_TITLE_BORDER_WIDTH = 2;
 export const STS1_ENERGY_BORDER_WIDTH = 4;
 /** FontHelper.SCP_cardTitleFont_small = prepFont(46, true). Not used on the 300-wide tile. */
 export const STS1_SCP_TITLE_FONT = 46;
 
-export function sts1FreeTypeStroke(outlineColor: string, borderWidthPx: number): CSSProperties {
-  const strokeCqi = ((borderWidthPx * 0.5) / STS1_CARD_IN_ATLAS.width) * 100;
-  return {
-    WebkitTextStroke: `${strokeCqi}cqi ${outlineColor}`,
-    paintOrder: "stroke fill",
-  };
-}
-
 export function sts1EnergyCostTextStyle(): CSSProperties {
   return {
-    fontFamily: "var(--font-kreon), \"STS Kreon\", serif",
-    fontWeight: 700,
     fontSize: `${(STS1_ENERGY_FONT / STS1_CARD_IN_ATLAS.width) * 100}cqi`,
-    ...sts1FreeTypeStroke(STS1_ENERGY_BORDER, STS1_ENERGY_BORDER_WIDTH),
   };
 }
 
 /** SingleCardViewPopup.renderTitle: CREAM, or GREEN_TEXT_COLOR when viewing upgrade. */
 export function sts1TitleTextStyle(upgraded: boolean): CSSProperties {
-  const shadowCqi = (2 / STS1_CARD_IN_ATLAS.width) * 100;
   return {
     color: upgraded ? STS1_GREEN_TEXT : STS1_CREAM,
-    ...sts1FreeTypeStroke(STS1_TITLE_BORDER, STS1_TITLE_BORDER_WIDTH),
-    textShadow: `${shadowCqi}cqi ${shadowCqi}cqi 0 rgba(0,0,0,0.75)`,
   };
 }
 

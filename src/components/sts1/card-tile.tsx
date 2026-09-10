@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef } from "react";
 import Image from "@/components/ui/static-image";
+import { Sts1BitmapText } from "./bitmap-text";
 import { Sts1CardText } from "./description";
 import {
   CARD_DESCRIPTION_SAFE_HEIGHT_RATIO,
@@ -13,6 +14,7 @@ import {
   STS1_CREAM,
   STS1_ENERGY_FILL,
   STS1_ENERGY_MODIFIED,
+  STS1_GREEN_TEXT,
   STS1_DESC_MIN_FONT_SCALE,
   sts1CardBannerRegion,
   sts1CardBackgroundRegion,
@@ -129,33 +131,47 @@ export function Sts1CardTile({
       <AtlasLayer src={sts1CardUi512Url(sts1CardOrbRegion(card))} />
       {costLabel ? (
         <span
-          className="absolute z-10 flex items-center justify-center font-bold leading-none"
+          className="absolute z-10 flex items-center justify-center leading-none"
           style={{
             ...sts1EnergyCostBox(),
             ...sts1EnergyCostTextStyle(),
-            color: upgradedCost ? STS1_ENERGY_MODIFIED : STS1_ENERGY_FILL,
           }}
         >
-          {costLabel}
+          <Sts1BitmapText
+            text={costLabel}
+            role="energy"
+            gameLocale={gameLocale}
+            color={upgradedCost ? STS1_ENERGY_MODIFIED : STS1_ENERGY_FILL}
+          />
         </span>
       ) : null}
       <h3
-        className="absolute z-10 flex items-center justify-center overflow-hidden whitespace-nowrap text-center font-bold leading-none"
+        className="absolute z-10 flex items-center justify-center overflow-hidden whitespace-nowrap text-center leading-none"
+        aria-label={title}
         style={{
           ...sts1TitleBox(title, stats.cost),
           ...sts1TitleTextStyle(stats.upgraded),
         }}
       >
-        {title}
+        <Sts1BitmapText
+          text={title}
+          role="title"
+          gameLocale={gameLocale}
+          color={stats.upgraded ? STS1_GREEN_TEXT : STS1_CREAM}
+        />
       </h3>
       <div
-        className="absolute z-10 flex items-center justify-center font-game-text leading-none"
+        className="absolute z-10 flex items-center justify-center leading-none"
         style={{
           ...sts1TypeBox(),
-          color: STS1_CREAM,
         }}
       >
-        {typeLabel}
+        <Sts1BitmapText
+          text={typeLabel}
+          role="type"
+          gameLocale={gameLocale}
+          color={STS1_CREAM}
+        />
       </div>
       <div
         ref={descriptionViewportRef}
@@ -168,11 +184,10 @@ export function Sts1CardTile({
           text={descriptionLines.join(" NL ")}
           stats={stats}
           keywords={keywords}
-          className="font-game-text max-w-full text-center"
+          gameLocale={gameLocale}
+          className="max-w-full text-center"
           style={{
             ...sts1DescriptionTextStyle(gameLocale),
-            color: STS1_CREAM,
-            textShadow: "1px 1px 0 rgba(0,0,0,0.25)",
             whiteSpace: "nowrap",
           }}
         />

@@ -1,4 +1,5 @@
 import type { GameLocale } from "@/lib/i18n";
+import { sts1BitmapAdvance } from "./bitmap-font";
 import {
   STS1_CARD_IN_ATLAS,
   STS1_DESC_ENERGY_IMG_WIDTH,
@@ -66,22 +67,24 @@ function glyphEmWidth(char: string): number {
   return 0.55;
 }
 
-function visibleTokenPx(token: string): number {
+function visibleTokenPx(token: string, gameLocale: GameLocale): number {
   if (/^\[[RGBWEC]\]$/i.test(token)) return STS1_DESC_ENERGY_IMG_WIDTH;
   const text = token
     .replace(/^#([rgbypl])/i, "")
     .replace(/^(GOLD|UPGRADED):/, "");
-  let em = 0;
-  for (const char of text) em += glyphEmWidth(char);
-  return em * STS1_DESC_FONT;
+  let px = 0;
+  for (const char of text) {
+    px += sts1BitmapAdvance(gameLocale, "desc", char, glyphEmWidth(char) * STS1_DESC_FONT);
+  }
+  return px;
 }
 
-function wrapByWord(replaced: string, maxPx: number): string[] {
+function wrapByWord(replaced: string, maxPx: number, gameLocale: GameLocale): string[] {
   const tokens = replaced.trim().split(/\s+/).filter(Boolean);
   const lines: string[] = [];
   let current: string[] = [];
   let currentPx = 0;
-  const spacePx = 0.33 * STS1_DESC_FONT;
+  const spacePx = sts1BitmapAdvance(gameLocale, "desc", " ", 0.33 * STS1_DESC_FONT);
   const flush = () => {
     if (current.length === 0) return;
     lines.push(current.join(" "));
@@ -94,7 +97,7 @@ function wrapByWord(replaced: string, maxPx: number): string[] {
       flush();
       continue;
     }
-    const tokenPx = visibleTokenPx(token);
+    const tokenPx = visibleTokenPx(token, gameLocale);
     const extra = current.length > 0 ? spacePx + tokenPx : tokenPx;
     if (current.length > 0 && currentPx + extra > maxPx) {
       flush();
@@ -109,7 +112,7 @@ function wrapByWord(replaced: string, maxPx: number): string[] {
   return lines.length > 0 ? lines : [""];
 }
 
-function wrapByCharacter(replaced: string, maxPx: number): string[] {
+function wrapByCharacter(replaced: string, maxPx: number, gameLocale: GameLocale): string[] {
   const lines: string[] = [];
   let current = "";
   let currentPx = 0;
@@ -127,7 +130,12 @@ function wrapByCharacter(replaced: string, maxPx: number): string[] {
     }
     for (const char of chunk) {
       if (/\s/.test(char) && currentPx === 0) continue;
-      const width = glyphEmWidth(char) * STS1_DESC_FONT;
+      const width = sts1BitmapAdvance(
+        gameLocale,
+        "desc",
+        char,
+        glyphEmWidth(char) * STS1_DESC_FONT,
+      );
       if (current && currentPx + width > maxPx) flush();
       current += char;
       currentPx += width;
@@ -146,8 +154,8 @@ export function wrapSts1DescriptionLines(
   const replaced = replaceDynamic(raw, stats);
   const maxPx = sts1DescBoxWidthFrac(gameLocale) * STS1_CARD_IN_ATLAS.width;
   return sts1LineBreakViaCharacter(gameLocale)
-    ? wrapByCharacter(replaced, maxPx)
-    : wrapByWord(replaced, maxPx);
+    ? wrapByCharacter(replaced, maxPx, gameLocale)
+    : wrapByWord(replaced, maxPx, gameLocale);
 }
 
 function keywordNames(keywords: readonly Sts1Keyword[]): string[] {
