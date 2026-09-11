@@ -379,6 +379,11 @@ function GoldChip({ gold }: { gold: number | null }) {
     }
     const delta = gold - from;
     if (delta === 0) return;
+    if (delta < 0) {
+      setShown(gold);
+      setPopup(null);
+      return;
+    }
     let remaining = delta;
     let displayed = from;
     let popupY = 0;

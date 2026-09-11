@@ -124,18 +124,28 @@ export function TreasureRoomStage({
                 shouldRender = false;
                 return;
               }
-              const track = layer.animationState.getCurrent(0);
               if (reducedMotion) {
                 shouldRender = !renderedReducedMotionFrame;
-                if (openRef.current && track) {
-                  track.trackTime = track.animation?.duration ?? 0;
-                }
+                poseChest(layer.animationState, layer.skeleton.data, {
+                  open: openRef.current,
+                  reducedMotion: true,
+                });
+                hasStartedOpen = openRef.current;
+              } else if (!openRef.current) {
+                hasStartedOpen = false;
+                poseChest(layer.animationState, layer.skeleton.data, {
+                  open: false,
+                  reducedMotion: false,
+                });
+              } else if (!hasStartedOpen) {
+                hasStartedOpen = true;
+                poseChest(layer.animationState, layer.skeleton.data, {
+                  open: true,
+                  reducedMotion: false,
+                });
+                layer.skeleton.update(frameAccumulator);
+                layer.animationState.update(frameAccumulator);
               } else {
-                if (openRef.current && !hasStartedOpen) {
-                  hasStartedOpen = true;
-                  layer.animationState.setAnimation(0, OPEN_ANIMATION, false);
-                  layer.animationState.addAnimation(0, SHINE_ANIMATION, false, 0);
-                }
                 layer.skeleton.update(frameAccumulator);
                 layer.animationState.update(frameAccumulator);
               }
@@ -206,6 +216,27 @@ function prepareWebGl(canvas: HTMLCanvasElement) {
   );
 }
 
+function poseChest(
+  animationState: AnimationState,
+  skeletonData: { findAnimation: (name: string) => { duration: number } | null },
+  config: { open: boolean; reducedMotion: boolean },
+) {
+  animationState.clearTracks();
+  animationState.setAnimation(0, OPEN_ANIMATION, false);
+  const track = animationState.getCurrent(0);
+  if (!track) return;
+  if (!config.open) {
+    track.trackTime = 0;
+    return;
+  }
+  animationState.addAnimation(0, SHINE_ANIMATION, false, 0);
+  if (config.reducedMotion) {
+    const shine = skeletonData.findAnimation(SHINE_ANIMATION);
+    const openClip = skeletonData.findAnimation(OPEN_ANIMATION);
+    track.trackTime = (openClip?.duration ?? 0) + (shine?.duration ?? 0);
+  }
+}
+
 function createChestLayer(
   runtime: SpinePlayerRuntime,
   app: SpineCanvas,
@@ -236,18 +267,10 @@ function createChestLayer(
   skeleton.y = GAME_VIEWPORT_HEIGHT - CHEST_VISUAL.y;
 
   const animationState = new runtime.AnimationState(new runtime.AnimationStateData(skeletonData));
-  if (config.open) {
-    animationState.setAnimation(0, OPEN_ANIMATION, false);
-    animationState.addAnimation(0, SHINE_ANIMATION, false, 0);
-    if (config.reducedMotion) {
-      const shine = skeletonData.findAnimation(SHINE_ANIMATION);
-      const openClip = skeletonData.findAnimation(OPEN_ANIMATION);
-      const track = animationState.getCurrent(0);
-      if (track) {
-        track.trackTime = (openClip?.duration ?? 0) + (shine?.duration ?? 0);
-      }
-    }
-  }
+  poseChest(animationState, skeletonData, {
+    open: config.open,
+    reducedMotion: config.reducedMotion,
+  });
   animationState.apply(skeleton);
   skeleton.updateWorldTransform(runtime.Physics.update);
   return { animationState, skeleton };
