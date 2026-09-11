@@ -6,8 +6,8 @@ Outputs:
     reward_panel.webp, reward_banner.webp, reward_item_button.webp,
     reward_skip_button.webp, reward_icon_*.webp, proceed_button.webp
   public/images/sts2/ui/merchant/
-    shop_rug.webp, shop_sales_tag.webp, card_removal_00.webp, card_removal_05.webp
-  public/images/sts2/vfx/glow_card_{rare,uncommon}.webp
+    shop_rug.webp, shop_sales_tag.webp, card_removal_{00,01,02,04,05}.webp
+  public/images/sts2/vfx/glow_card_{rare,uncommon}.webp, star1.webp
   public/images/sts2/ui/combat/combat_reticle.webp
 
 Sources:
@@ -54,12 +54,16 @@ MERCHANT_IMPORTS = {
     "shop_rug": "images/rooms/merchant_room/shop_rug.png.import",
     "shop_sales_tag": "images/rooms/merchant_room/shop_sales_tag.png.import",
     "card_removal_00": "images/rooms/merchant_room/card_removal_00.png.import",
+    "card_removal_01": "images/rooms/merchant_room/card_removal_01.png.import",
+    "card_removal_02": "images/rooms/merchant_room/card_removal_02.png.import",
+    "card_removal_04": "images/rooms/merchant_room/card_removal_04.png.import",
     "card_removal_05": "images/rooms/merchant_room/card_removal_05.png.import",
 }
 
 CARD_GLOW_IMPORTS = {
     "glow_card_rare": "images/packed/vfx/generic/glow_card_rare.png.import",
     "glow_card_uncommon": "images/packed/vfx/generic/glow_card_uncommon.png.import",
+    "star1": "images/vfx/star1.png.import",
 }
 
 RETICLE_IMPORT = "images/ui/combat/combat_reticle.png.import"
