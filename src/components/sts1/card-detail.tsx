@@ -5,6 +5,7 @@ import { CardSideTipsAnchor } from "@/components/codex/card-keyword-tip-stack";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { GameUpgradeToggle } from "@/components/codex/game-upgrade-toggle";
 import { Sts1CardTile } from "./card-tile";
+import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1DetailShell, Sts1MetaPill } from "./detail-chrome";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { CARD_WIDTH_PRESET } from "@/lib/sts2-card-style";
@@ -159,6 +160,11 @@ export function Sts1CardDetail({
           ) : null}
         </div>
       </section>
+      <Sts1CommentsRail
+        resourceType="card"
+        slug={card.slug}
+        serviceLocale={serviceLocale}
+      />
     </Sts1DetailShell>
   );
 }

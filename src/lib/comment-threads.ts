@@ -2,8 +2,24 @@ import {
   buildCompendiumResourceDetailHref,
   isCompendiumResourceLinkType,
 } from "@/lib/compendium-resource-links";
+import { sts1DetailPath } from "@/lib/sts1/paths";
+import type { Sts1ResourceType } from "@/lib/sts1/types";
 
 const COMMENTS_ANCHOR = "#comments";
+
+export const STS1_COMMENT_RESOURCE_TYPES = ["card", "relic", "potion"] as const;
+
+export type Sts1CommentResourceType = (typeof STS1_COMMENT_RESOURCE_TYPES)[number];
+
+const STS1_COMMENT_RESOURCE_PATHS: Record<Sts1CommentResourceType, Sts1ResourceType> = {
+  card: "cards",
+  relic: "relics",
+  potion: "potions",
+};
+
+function isSts1CommentResourceType(value: string): value is Sts1CommentResourceType {
+  return STS1_COMMENT_RESOURCE_TYPES.includes(value as Sts1CommentResourceType);
+}
 
 export function buildPatchCommentThreadKey(version: string): string {
   return `sts2-patch:${version}`;
@@ -11,6 +27,13 @@ export function buildPatchCommentThreadKey(version: string): string {
 
 export function buildCodexCommentThreadKey(entityType: string, entityId: string): string {
   return `sts2-codex:${entityType}:${entityId}`;
+}
+
+export function buildSts1CommentThreadKey(
+  resourceType: Sts1CommentResourceType,
+  slug: string,
+): string {
+  return `sts1-codex:${resourceType}:${slug}`;
 }
 
 export function buildByrdispatchCommentThreadKey(): string {
@@ -74,7 +97,7 @@ export type CommentThreadService = (typeof COMMENT_THREAD_SERVICES)[number];
 /** Keep in sync with `public.admin_story_service`. */
 export function commentThreadService(storyId: string): CommentThreadService {
   if (storyId.startsWith("sts2-patch:")) return "patches";
-  if (storyId.startsWith("sts2-codex:")) return "compendium";
+  if (storyId.startsWith("sts2-codex:") || storyId.startsWith("sts1-codex:")) return "compendium";
   if (storyId === "byrdispatch") return "byrdispatch";
   if (storyId.startsWith("c-c-c-combo:")) return "combo";
   if (storyId.startsWith("transfigure:")) return "transfigure";
@@ -115,6 +138,14 @@ function prefixedResourceCommentsHref(storyId: string, prefix: string, pathname:
 export function commentThreadHref(storyId: string): string {
   const patchHref = prefixedResourceCommentsHref(storyId, "sts2-patch:", "/patches");
   if (patchHref) return patchHref;
+
+  const sts1Match = /^sts1-codex:([^:]+):(.+)$/.exec(storyId);
+  if (sts1Match) {
+    const [, type, slug] = sts1Match;
+    if (isSts1CommentResourceType(type) && slug) {
+      return `${sts1DetailPath(STS1_COMMENT_RESOURCE_PATHS[type], encodeURIComponent(slug))}${COMMENTS_ANCHOR}`;
+    }
+  }
 
   const codexMatch = /^sts2-codex:([^:]+):(.+)$/.exec(storyId);
   if (codexMatch) {

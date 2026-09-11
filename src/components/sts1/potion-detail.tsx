@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "@/components/ui/static-image";
+import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1CardText } from "./description";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -64,6 +65,11 @@ export function Sts1PotionDetail({
           className="font-game-text text-sm leading-relaxed text-foreground"
         />
       </section>
+      <Sts1CommentsRail
+        resourceType="potion"
+        slug={potion.slug}
+        serviceLocale={serviceLocale}
+      />
     </Sts1DetailShell>
   );
 }

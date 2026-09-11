@@ -28,8 +28,11 @@ assert.equal(
 assert.deepEqual(commentStoryFilter(null), null);
 assert.deepEqual(commentStoryFilter("byrdispatch"), { kind: "eq", value: "byrdispatch" });
 assert.deepEqual(commentStoryFilter("combo"), { kind: "like", value: "c-c-c-combo:%" });
+assert.deepEqual(commentStoryFilter("compendium"), { kind: "like", value: "sts_-codex:%" });
 assert.deepEqual(commentStoryFilter("other"), { kind: "other" });
 assert.ok(COMMENT_OTHER_PREFIXES.includes("community:"));
+assert.ok(COMMENT_OTHER_PREFIXES.includes("sts1-codex:"));
+assert.ok(COMMENT_OTHER_PREFIXES.includes("sts2-codex:"));
 assert.equal(commentThreadService("chemical-x:abc"), "chemical_x");
 
 const merged = mergeAdminServicePosts([

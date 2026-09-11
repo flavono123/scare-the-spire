@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "@/components/ui/static-image";
+import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1CardText } from "./description";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -62,6 +63,11 @@ export function Sts1RelicDetail({
           <p className="mt-3 font-game-text text-sm italic text-muted-foreground">{relic.flavor}</p>
         ) : null}
       </section>
+      <Sts1CommentsRail
+        resourceType="relic"
+        slug={relic.slug}
+        serviceLocale={serviceLocale}
+      />
     </Sts1DetailShell>
   );
 }

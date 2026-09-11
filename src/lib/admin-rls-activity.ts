@@ -143,10 +143,15 @@ export function commentStoryFilter(
   if (!service) return null;
   if (service === "byrdispatch") return { kind: "eq", value: "byrdispatch" };
   if (service === "other") return { kind: "other" };
+  // `_` is SQL LIKE's one-character wildcard, so this matches sts1-codex and sts2-codex.
+  if (service === "compendium") return { kind: "like", value: "sts_-codex:%" };
   return { kind: "like", value: `${COMMENT_THREAD_SERVICE_PREFIX[service]}%` };
 }
 
-export const COMMENT_OTHER_PREFIXES = Object.values(COMMENT_THREAD_SERVICE_PREFIX);
+export const COMMENT_OTHER_PREFIXES = [
+  ...Object.values(COMMENT_THREAD_SERVICE_PREFIX),
+  "sts1-codex:",
+];
 
 export function matchesCommentStoryFilter(
   storyId: string,
