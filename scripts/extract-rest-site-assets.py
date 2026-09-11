@@ -6,7 +6,9 @@ Outputs:
     option_outline.webp, option_{heal,smith,dig,...}.webp
   public/images/sts2/rooms/rest-sites/
     overgrowth_rest_site_bg.webp, overgrowth_rest_site_fire.webp
-    hive_rest_site_00.webp, glory_rest_site_00.webp, underdocks_rest_site_bg.webp
+    hive_rest_site_00.webp, hive_rest_site_fire.webp
+    glory_rest_site_00.webp, glory_rest_site_fire.webp
+    underdocks_rest_site_bg.webp, underdocks_rest_site_fire.webp
 
 Sources:
   images/ui/rest_site/*.png.import
@@ -39,8 +41,11 @@ CAMP_IMPORTS = {
     "overgrowth_rest_site_bg": "images/rooms/rest_sites/overgrowth/overgrowth_rest_site_bg.png.import",
     "overgrowth_rest_site_fire": "images/rooms/rest_sites/overgrowth/overgrowth_rest_site_fire.png.import",
     "hive_rest_site_00": "images/rooms/rest_sites/hive/hive_rest_site_00.png.import",
+    "hive_rest_site_fire": "images/rooms/rest_sites/hive/hive_rest_site_fire.png.import",
     "glory_rest_site_00": "images/rooms/rest_sites/glory/glory_rest_site_00.png.import",
+    "glory_rest_site_fire": "images/rooms/rest_sites/glory/glory_rest_site_fire.png.import",
     "underdocks_rest_site_bg": "images/rooms/rest_sites/underdocks/underdocks_rest_site_bg.png.import",
+    "underdocks_rest_site_fire": "images/rooms/rest_sites/underdocks/underdocks_rest_site_fire.png.import",
 }
 
 

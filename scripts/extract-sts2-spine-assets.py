@@ -37,6 +37,7 @@ AVAILABLE_KINDS = (
     "ancients",
     "event-backgrounds",
     "encounter-backgrounds",
+    "rest-site",
 )
 PCK_PREFIX_BY_KIND = {
     "ancients": "animations/backgrounds/",
@@ -45,6 +46,7 @@ PCK_PREFIX_BY_KIND = {
     "encounter-backgrounds": "scenes/backgrounds/queen_boss/",
     "event-backgrounds": "animations/backgrounds/",
     "monsters": "animations/monsters/",
+    "rest-site": "animations/rest_site/",
     "vfx": "animations/vfx/",
 }
 ANCIENT_SPINE_PREFIXES = {
