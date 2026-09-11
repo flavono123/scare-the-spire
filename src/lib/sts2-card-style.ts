@@ -120,6 +120,21 @@ export const CARD_ASPECT_W = 300;
 export const CARD_ASPECT_H = 422;
 export const CARD_ASPECT = `${CARD_ASPECT_W}/${CARD_ASPECT_H}`;
 
+/**
+ * Energy orb (`-16,-16`) and star cost (`left: -36`) sit outside the 300×422
+ * holder. Banner overhang is 9% of holder width. Pad the capture box so those
+ * pieces are not clipped by `overflow: hidden` parents or html-to-image.
+ */
+export const CARD_OVERFLOW = {
+  left: 36,
+  top: 16,
+  right: 27,
+  bottom: 0,
+} as const;
+export const CARD_FRAME_W = CARD_ASPECT_W + CARD_OVERFLOW.left + CARD_OVERFLOW.right;
+export const CARD_FRAME_H = CARD_ASPECT_H + CARD_OVERFLOW.top + CARD_OVERFLOW.bottom;
+export const CARD_FRAME_ASPECT = `${CARD_FRAME_W}/${CARD_FRAME_H}`;
+
 export const CARD_WIDTH_PRESET = {
   detail: 380,
   hover: 280,

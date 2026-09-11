@@ -206,7 +206,7 @@ export function LastSceneObtainFly({
 
   return createPortal(
     <div
-      className="pointer-events-none fixed z-[80]"
+      className="pointer-events-none fixed z-[80] overflow-visible"
       style={{
         left: pose.x,
         top: pose.y,

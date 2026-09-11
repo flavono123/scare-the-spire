@@ -44,7 +44,11 @@ export function encounterBackgroundUrl(
   actId: string | null | undefined,
 ): string {
   const encounterId = stripReplayId(modelId ?? "").toUpperCase();
-  const custom = encounterId ? ENCOUNTER_BY_ID.get(encounterId)?.backgroundUrl : undefined;
+  const custom =
+    (encounterId ? ENCOUNTER_BY_ID.get(encounterId)?.backgroundUrl : undefined)
+    ?? (encounterId && !encounterId.endsWith("_BOSS")
+      ? ENCOUNTER_BY_ID.get(`${encounterId}_BOSS`)?.backgroundUrl
+      : undefined);
   return custom || actEncounterBackgroundUrl(actId);
 }
 
@@ -52,7 +56,11 @@ export function lastSceneMonsterSlots(
   modelId: string | null | undefined,
 ): { leftPct: number; topPct: number }[] {
   const encounterId = stripReplayId(modelId ?? "").toUpperCase();
-  const slots = encounterId ? ENCOUNTER_BY_ID.get(encounterId)?.monsterSlots : undefined;
+  const slots =
+    (encounterId ? ENCOUNTER_BY_ID.get(encounterId)?.monsterSlots : undefined)
+    ?? (encounterId && !encounterId.endsWith("_BOSS")
+      ? ENCOUNTER_BY_ID.get(`${encounterId}_BOSS`)?.monsterSlots
+      : undefined);
   if (!slots?.length) return [];
   return slots.map((slot) => ({ leftPct: slot.x * 100, topPct: slot.y * 100 }));
 }
@@ -107,9 +115,34 @@ export function restSiteBackgroundUrl(actId: string | null | undefined): string 
 
 export function restSiteFireUrl(actId: string | null | undefined): string | null {
   const key = stripReplayId(actId ?? "").toUpperCase();
-  return key === "OVERGROWTH" || !key
-    ? "/images/sts2/rooms/rest-sites/overgrowth_rest_site_fire.webp"
-    : null;
+  const byAct: Record<string, string> = {
+    OVERGROWTH: "/images/sts2/rooms/rest-sites/overgrowth_rest_site_fire.webp",
+    HIVE: "/images/sts2/rooms/rest-sites/hive_rest_site_fire.webp",
+    GLORY: "/images/sts2/rooms/rest-sites/glory_rest_site_fire.webp",
+    UNDERDOCKS: "/images/sts2/rooms/rest-sites/underdocks_rest_site_fire.webp",
+  };
+  return byAct[key] ?? byAct.OVERGROWTH;
+}
+
+export function restSiteCharacterSpine(character: string | undefined): {
+  folder: string;
+  atlas: string;
+  skel: string;
+  idleByAct: Record<string, string>;
+} {
+  const slug = stripReplayId(character ?? "ironclad").toLowerCase();
+  const folder = slug === "necrobinder" ? "necrobinder" : slug;
+  return {
+    folder,
+    atlas: `/spine/sts2/rest-site/${folder}/restsite_${folder}.atlas`,
+    skel: `/spine/sts2/rest-site/${folder}/restsite_${folder}.skel`,
+    idleByAct: {
+      OVERGROWTH: "overgrowth_loop",
+      HIVE: "hive_loop",
+      GLORY: "glory_loop",
+      UNDERDOCKS: "overgrowth_loop",
+    },
+  };
 }
 
 export function lastSceneBackgroundUrl(opts: {

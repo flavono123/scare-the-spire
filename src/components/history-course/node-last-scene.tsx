@@ -22,11 +22,13 @@ import { RestSiteScreen } from "@/components/history-course/rest-site-screen";
 import { RoomResultReceipt } from "@/components/history-course/room-result-receipt";
 import {
   characterCombatArtSrc,
+  characterSlug,
   restSitePrompt,
 } from "@/lib/history-party";
 import {
   isLanternKeyFight,
   isLanternKeyHistoryEntry,
+  isSlipperyBridgeEntry,
   roomMonsterIds,
   stripReplayId,
   type LastSceneKind,
@@ -34,6 +36,9 @@ import {
 import {
   combatLootSpecs,
   lastScenePhase,
+  specialCardGains,
+  slipperyHoldCount,
+  slipperyHpLossAtHold,
   type LastScenePhase,
 } from "@/lib/history-last-scene-steps";
 import {
@@ -41,6 +46,7 @@ import {
   lastSceneMonsterSlots,
   monsterStillUrl,
   restSiteFireUrl,
+  restSiteCharacterSpine,
 } from "@/lib/history-last-scene-assets";
 import { matchEncounterFormationIndex } from "@/lib/history-encounter-match";
 import {
@@ -51,7 +57,7 @@ import {
   lookupHistoryEvent,
   type HistoryLastSceneCatalog,
 } from "@/lib/history-last-scene-catalog";
-import { historyRoomChoiceCopy, eventOpeningDescription, eventLastSceneChoices } from "@/lib/history-room-choice";
+import { historyRoomChoiceCopy, eventOpeningDescription, eventLastSceneChoices, choiceOptionId } from "@/lib/history-room-choice";
 import { historyEventVfxSlug } from "@/lib/history-event-vfx";
 import { getHistoryCourseCatalog } from "@/lib/history-course-catalog";
 import { gameOverLoseBanner, gameOverQuote } from "@/lib/game-over-copy";
@@ -115,6 +121,10 @@ const FakeMerchantSpineStage = dynamic(
 );
 const TreasureRoomStage = dynamic(
   () => import("@/components/history-course/treasure-room-stage").then((mod) => mod.TreasureRoomStage),
+  { ssr: false },
+);
+const RestSiteCharacterStage = dynamic(
+  () => import("@/components/history-course/rest-site-character-stage").then((mod) => mod.RestSiteCharacterStage),
   { ssr: false },
 );
 
@@ -221,10 +231,7 @@ export function NodeLastScene({
 
   return (
     <div
-      className={cn(
-        "pointer-events-none absolute inset-0 z-[18] bg-black",
-        kind === "shop" ? "overflow-visible" : "overflow-hidden",
-      )}
+      className="pointer-events-none absolute inset-0 z-[18] overflow-visible bg-black"
       aria-hidden
       data-history-last-scene={kind}
       data-history-last-scene-phase={phase.kind}
@@ -309,6 +316,7 @@ export function NodeLastScene({
           entry={entry}
           gameLocale={gameLocale}
           phase={phase}
+          character={character}
           cardsById={cardsById}
           relicsById={relicsById}
           potionsById={potionsById}
@@ -365,6 +373,7 @@ function CombatScene({
 }) {
   const encounter = catalog
     ? lookupHistoryEncounter(catalog.encounters, entry.rooms?.[0]?.model_id)
+      ?? lookupHistoryEncounter(catalog.encounters, roomMonsterIds(entry)[0])
       ?? (stripReplayId(entry.rooms?.[0]?.model_id ?? "").toUpperCase() === "THE_LANTERN_KEY"
         ? lookupHistoryEncounter(catalog.encounters, "MYSTERIOUS_KNIGHT_EVENT_ENCOUNTER")
         : undefined)
@@ -421,6 +430,7 @@ function CombatScene({
           locTables={locTables}
           relicsById={relicsById}
           potionsById={potionsById}
+          cardsById={cardsById}
         />
       ) : null}
       {phase.kind === "cards" ? (
@@ -595,7 +605,34 @@ function EventScene({
   const beatProgress = phase.kind === "choice" || phase.kind === "receipt" || phase.kind === "upgrade" || phase.kind === "cards" || phase.kind === "loot"
     ? phase.beatProgress
     : 1;
-  const choices = eventLastSceneChoices(event, entry.event_choices);
+  const slippery = isSlipperyBridgeEntry(entry);
+  const slipperyHolds = slipperyHoldCount(entry);
+  const slipperyOnOvercome = slippery && phase.kind === "receipt";
+  const slipperyHoldIndex = phase.kind === "choice" ? (phase.slipperyHoldIndex ?? 0) : Math.max(0, slipperyHolds - 1);
+  const slipperyRemoved = (entry.cards_removed ?? []).find((card) => card.id);
+  const slipperyRemovedCard = slipperyRemoved?.id && cardsById
+    ? lookupHistoryCard(cardsById, slipperyRemoved.id)
+    : undefined;
+  const listedChoices = eventLastSceneChoices(event, entry.event_choices);
+  const choices = slippery
+    ? listedChoices.map((choice) => {
+        const optionId = choiceOptionId(choice).toUpperCase();
+        const isHold = optionId.startsWith("HOLD_ON");
+        const isOvercome = optionId === "OVERCOME";
+        const hpLoss = slipperyHpLossAtHold(slipperyOnOvercome ? slipperyHolds : slipperyHoldIndex);
+        const randomCard = slipperyRemovedCard?.name
+          ?? String(choice.locVars?.RandomCard ?? "");
+        return {
+          ...choice,
+          picked: slipperyOnOvercome ? isOvercome : isHold,
+          locVars: {
+            ...(choice.locVars ?? {}),
+            HpLoss: hpLoss,
+            ...(randomCard ? { RandomCard: randomCard } : {}),
+          },
+        };
+      })
+    : listedChoices;
   const enchanted = entry.cards_enchanted?.[0];
   const enchantment = enchanted
     ? enchantments?.find((row) => row.id.toUpperCase() === stripReplayId(enchanted.enchantmentId).toUpperCase())
@@ -612,6 +649,10 @@ function EventScene({
   const loot = combatLootSpecs(entry);
   const cards = entry.card_choices ?? [];
   const skippedCards = cards.length > 0 && !cards.some((choice) => choice.picked);
+  const specialCards = !lanternFight ? specialCardGains(entry) : [];
+  const specialCard = specialCards[0]?.id && cardsById
+    ? lookupHistoryCard(cardsById, specialCards[0].id)
+    : undefined;
   const knightDead = lanternFight && phase.kind !== "choice";
   const choiceOverlay = showChoices ? (
     <GameRoomChoicePanel title={title} body={eventOpeningDescription(event)}>
@@ -656,6 +697,29 @@ function EventScene({
           kind="relic"
         />
       ) : null}
+      {phase.kind === "receipt" && specialCard ? (
+        <LastSceneObtainFly
+          active
+          progress={beatProgress}
+          sourceSelector={`[data-history-last-scene-pick="${pickedOption?.id ?? specialCard.id}"]`}
+          targetSelector="[data-deck-target]"
+          iconUrl={specialCard.imageUrl ?? ""}
+          kind="card"
+          card={specialCard}
+          upgradeLevel={specialCards[0]?.current_upgrade_level ?? 0}
+          serviceLocale={serviceLocale}
+          size={120}
+        />
+      ) : null}
+      {phase.kind === "receipt" && slipperyRemovedCard ? (
+        <LastSceneFocusedCard
+          card={slipperyRemovedCard}
+          progress={beatProgress}
+          serviceLocale={serviceLocale}
+          upgradeLevel={slipperyRemoved?.current_upgrade_level ?? 0}
+          removed
+        />
+      ) : null}
       {phase.kind === "upgrade" && upgradedCard ? (
         <LastSceneFocusedCard
           card={upgradedCard}
@@ -677,6 +741,7 @@ function EventScene({
           locTables={locTables}
           relicsById={relicsById}
           potionsById={potionsById}
+          cardsById={cardsById}
         />
       ) : null}
       {phase.kind === "cards" ? (
@@ -865,7 +930,7 @@ function TreasureScene({
   locTables: HistoryLocTables | null;
   actId: string;
 }) {
-  const open = phase.kind !== "chest";
+  const open = true;
   const loot = combatLootSpecs(entry);
   const cards = entry.card_choices ?? [];
   const skippedCards = cards.length > 0 && !cards.some((choice) => choice.picked);
@@ -882,6 +947,7 @@ function TreasureScene({
           locTables={locTables}
           relicsById={relicsById}
           potionsById={potionsById}
+          cardsById={cardsById}
         />
       ) : null}
       {phase.kind === "cards" ? (
@@ -904,6 +970,7 @@ function RestScene({
   entry,
   gameLocale,
   phase,
+  character,
   cardsById,
   relicsById,
   potionsById,
@@ -914,6 +981,7 @@ function RestScene({
   entry: ReplayHistoryEntry;
   gameLocale: GameLocale;
   phase: LastScenePhase;
+  character: string;
   cardsById?: Record<string, CodexCard>;
   relicsById?: Record<string, CodexRelic>;
   potionsById?: Record<string, CodexPotion>;
@@ -922,15 +990,24 @@ function RestScene({
   actId: string;
 }) {
   const fireUrl = restSiteFireUrl(actId);
+  const restSpine = restSiteCharacterSpine(characterSlug(character));
   return (
     <div className="absolute inset-0">
       <SceneArt src={backgroundUrl} hideOnError={false} className="absolute inset-0 h-full w-full object-cover" />
       {fireUrl ? (
         <SceneArt
           src={fireUrl}
-          className="absolute bottom-[18%] left-1/2 h-[22%] w-[22%] -translate-x-1/2 object-contain mix-blend-screen"
+          className="absolute left-[41.8%] top-[59.9%] h-[15.7%] w-[11.4%] object-contain object-bottom drop-shadow-[0_8px_16px_rgba(0,0,0,0.55)]"
         />
       ) : null}
+      <RestSiteCharacterStage
+        character={character}
+        actId={actId}
+        atlasUrl={restSpine.atlas}
+        binaryUrl={restSpine.skel}
+        idleName={restSpine.idleByAct[stripReplayId(actId).toUpperCase()] ?? "overgrowth_loop"}
+        fallbackUrl={characterCombatArtSrc(character)}
+      />
       {phase.kind === "choice" || phase.kind === "receipt" ? (
         <RestSiteScreen
           entry={entry}

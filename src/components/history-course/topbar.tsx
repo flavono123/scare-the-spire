@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { DescriptionText } from "@/components/codex/codex-description";
 import { HoverTip } from "@/components/codex/hover-tip";
 import { PortaledHoverTipLayer } from "@/components/codex/card-keyword-tip-stack";
@@ -130,6 +130,8 @@ interface TopBarProps {
   relicsById?: Record<string, CodexRelic>;
   onOpenDeck: () => void;
   onOpenInfo: () => void;
+  onToggleMap?: () => void;
+  mapOpen?: boolean;
   focusedPlayerIndex?: number;
   onFocusPlayer?: (index: number) => void;
 }
@@ -148,6 +150,8 @@ export function TopBar({
   relicsById,
   onOpenDeck,
   onOpenInfo,
+  onToggleMap,
+  mapOpen = false,
   focusedPlayerIndex = 0,
   onFocusPlayer,
 }: TopBarProps) {
@@ -199,6 +203,9 @@ export function TopBar({
             totalRunMs={totalRunMs}
             realRunSeconds={run.run_time ?? null}
           />
+          {onToggleMap ? (
+            <MapChip open={mapOpen} onToggle={onToggleMap} />
+          ) : null}
           <DeckChip count={state.deckCount} onOpen={onOpenDeck} />
           <HistoryListButton />
           <SettingsButton onClick={onOpenInfo} />
@@ -265,6 +272,7 @@ function Chip({
   onClick,
   className,
   as = "div",
+  buttonProps,
 }: {
   children: ReactNode;
   tip?: TipContent;
@@ -273,6 +281,7 @@ function Chip({
   onClick?: () => void;
   className?: string;
   as?: "div" | "button";
+  buttonProps?: Record<string, string>;
 }) {
   // Frameless: chips sit on the stone panel like the relics do, no
   // background or ring. Buttons get a subtle hover lift only. The
@@ -291,6 +300,7 @@ function Chip({
           baseClass,
           "transition hover:brightness-125 focus:outline-none focus-visible:brightness-125",
         )}
+        {...buttonProps}
       >
         {children}
       </button>
@@ -331,17 +341,127 @@ function HpChip({
 }
 
 function GoldChip({ gold }: { gold: number | null }) {
+  const [shown, setShown] = useState(gold);
+  const [popup, setPopup] = useState<{ text: string; opacity: number; y: number } | null>(null);
+  const goldRef = useRef(gold);
+
+  useEffect(() => {
+    if (gold == null) {
+      goldRef.current = gold;
+      setShown(null);
+      setPopup(null);
+      return;
+    }
+    const from = typeof goldRef.current === "number" ? goldRef.current : gold;
+    goldRef.current = gold;
+    if (from === gold) {
+      setShown(gold);
+      return;
+    }
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setShown(gold);
+      setPopup(null);
+      return;
+    }
+    let remaining = gold - from;
+    let cancelled = false;
+    const timers: number[] = [];
+    setPopup({
+      text: `${remaining > 0 ? "+" : ""}${remaining}`,
+      opacity: 0,
+      y: 0,
+    });
+    timers.push(window.setTimeout(() => {
+      if (!cancelled) setPopup((prev) => (prev ? { ...prev, opacity: 1, y: 30 } : prev));
+    }, 20));
+    timers.push(window.setTimeout(() => {
+      const tick = () => {
+        if (cancelled || remaining === 0) {
+          if (!cancelled) {
+            setShown(gold);
+            timers.push(window.setTimeout(() => {
+              if (!cancelled) setPopup((prev) => (prev ? { ...prev, opacity: 0, y: 0 } : prev));
+            }, 250));
+          }
+          return;
+        }
+        let step = 1;
+        if (Math.abs(remaining) > 100) step = 75;
+        else if (Math.abs(remaining) > 50) step = 10;
+        remaining = remaining > 0 ? remaining - step : remaining + step;
+        setShown(gold - remaining);
+        setPopup({
+          text: `${remaining >= 0 ? "+" : ""}${remaining}`,
+          opacity: 1,
+          y: 30,
+        });
+        timers.push(window.setTimeout(tick, 10 + 10 * Math.max(0, 10 - Math.abs(remaining))));
+      };
+      tick();
+    }, 400));
+    return () => {
+      cancelled = true;
+      for (const timer of timers) window.clearTimeout(timer);
+    };
+  }, [gold]);
+
   return (
     <Chip>
+      <span className="relative inline-flex items-center gap-1.5">
+        <Image
+          src="/images/sts2/ui/topbar/top_bar_gold.png"
+          alt=""
+          width={32}
+          height={30}
+          className="h-[30px] w-8 object-contain"
+          unoptimized
+        />
+        <span className="topbar-num topbar-num-gold tabular-nums">{shown ?? "—"}</span>
+        {popup ? (
+          <span
+            className="pointer-events-none absolute left-full top-0 ml-1 font-game-text text-[14px] tabular-nums text-[#efc851]"
+            style={{
+              opacity: popup.opacity,
+              transform: `translateY(${popup.y}px)`,
+              transition: "opacity 150ms linear, transform 250ms ease-out",
+            }}
+            aria-hidden
+          >
+            {popup.text}
+          </span>
+        ) : null}
+      </span>
+    </Chip>
+  );
+}
+
+function MapChip({ open, onToggle }: { open: boolean; onToggle: () => void }) {
+  const gameLocale = useGameLocale();
+  const tip = historyStaticHoverTip("MAP", gameLocale);
+  const title = tip.title.replace(/\{Hotkey:[^}]+\}/g, "").replace(/\s+/g, " ").trim();
+  return (
+    <Chip
+      as="button"
+      onClick={onToggle}
+      tip={{
+        title: title || tip.title,
+        body: <DescriptionText description={tip.description} />,
+      }}
+      tipPlacement="below-right"
+      buttonProps={{
+        "data-history-map-toggle": "",
+        "data-history-map-open": open ? "true" : "false",
+      }}
+    >
       <Image
-        src="/images/sts2/ui/topbar/top_bar_gold.png"
-        alt=""
-        width={32}
-        height={30}
-        className="h-[30px] w-8 object-contain"
+        src="/images/sts2/ui/topbar/top_bar_map.png"
+        alt={title || tip.title}
+        width={34}
+        height={34}
+        className={cn("h-[34px] w-[34px] object-contain", open && "brightness-125")}
         unoptimized
       />
-      <span className="topbar-num topbar-num-gold tabular-nums">{gold ?? "—"}</span>
     </Chip>
   );
 }

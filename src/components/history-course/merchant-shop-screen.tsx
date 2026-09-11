@@ -96,7 +96,7 @@ function ShopCard({
     <div
       data-history-last-scene-pick={choice.id}
       data-picked={choice.picked ? "true" : "false"}
-      className="absolute"
+      className="absolute overflow-visible"
       style={{
         left: pct(originX - CARD_W / 2, RUG_W),
         top: pct(originY - CARD_H / 2, RUG_H),
@@ -105,7 +105,7 @@ function ShopCard({
       }}
     >
       {card ? (
-        <div className={cn("h-full w-full", hidden && "opacity-0")}>
+        <div className={cn("h-full w-full overflow-visible", hidden && "opacity-0")}>
           <FittedCardTile
             card={card}
             showUpgrade={upgradeLevel > 0}

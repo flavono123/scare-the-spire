@@ -89,6 +89,14 @@ export function isLanternKeyHistoryEntry(entry: ReplayHistoryEntry): boolean {
   return stripReplayId(entry.rooms?.[0]?.model_id ?? "").toUpperCase() === "THE_LANTERN_KEY";
 }
 
+export function isSlipperyBridgeEntry(entry: ReplayHistoryEntry): boolean {
+  return stripReplayId(entry.rooms?.[0]?.model_id ?? "").toUpperCase() === "SLIPPERY_BRIDGE";
+}
+
+export function isRelicTraderEntry(entry: ReplayHistoryEntry): boolean {
+  return stripReplayId(entry.rooms?.[0]?.model_id ?? "").toUpperCase() === "RELIC_TRADER";
+}
+
 export function isLanternKeyFight(entry: ReplayHistoryEntry): boolean {
   if (!isLanternKeyHistoryEntry(entry)) return false;
   const picked = (entry.event_choices ?? [])

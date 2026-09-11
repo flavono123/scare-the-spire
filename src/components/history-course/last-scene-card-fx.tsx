@@ -72,21 +72,48 @@ export function RewardCardGlow({ rarity }: { rarity: string | undefined }) {
   const glow = rewardGlowForRarity(rarity);
   return (
     <div
-      className="pointer-events-none absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 mix-blend-screen"
+      className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 mix-blend-screen"
       aria-hidden
       data-history-card-glow={rarity ?? "none"}
     >
+      <div
+        className="absolute left-1/2 top-1/2 h-[140%] w-[140%] -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl"
+        style={{ background: glow.color, opacity: glow.opacity * 0.45 }}
+      />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={glow.src}
         alt=""
-        className={cn("max-w-none origin-center animate-[spin_12s_linear_infinite]", glow.sizeClass)}
+        className={cn("max-w-none origin-center animate-[spin_14s_linear_infinite]", glow.sizeClass)}
         style={{
           opacity: glow.opacity,
-          filter: [glow.extraFilter, `drop-shadow(0 0 18px ${glow.color})`].filter(Boolean).join(" "),
+          filter: [
+            glow.extraFilter,
+            `drop-shadow(0 0 28px ${glow.color})`,
+            "brightness(1.35) saturate(1.2)",
+          ].filter(Boolean).join(" "),
+        }}
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={glow.src}
+        alt=""
+        className={cn(
+          "absolute left-1/2 top-1/2 max-w-none origin-center -translate-x-1/2 -translate-y-1/2 animate-[spin_9s_linear_infinite_reverse]",
+          glow.sizeClass,
+        )}
+        style={{
+          opacity: glow.opacity * 0.55,
+          filter: `drop-shadow(0 0 16px ${glow.color})`,
         }}
       />
       {glow.sparkles ? <CardSparkleField density="glow" /> : null}
+      <style>{`
+        @keyframes historyRewardGlowPulse {
+          0%, 100% { opacity: 0.72; transform: translate(-50%, -50%) scale(1); }
+          50% { opacity: 1; transform: translate(-50%, -50%) scale(1.06); }
+        }
+      `}</style>
     </div>
   );
 }

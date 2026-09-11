@@ -201,7 +201,7 @@ export function TransfigureResourcePreview({
         className="flex flex-col items-center justify-center"
         data-transfigure-preview="card"
       >
-        <div ref={copyTargetRef} data-transfigure-copy-target>
+        <div ref={copyTargetRef} className="overflow-visible" data-transfigure-copy-target>
           <CardTile
             card={card}
             serviceLocale={serviceLocale}

@@ -9,7 +9,7 @@ import type {
 import { bakeDescription } from "@/lib/codex-bake";
 import { lookupHistoryCard } from "@/lib/history-card-lookup";
 import { lookupHistoryPotion } from "@/lib/history-potion-lookup";
-import { lookupHistoryRelic } from "@/lib/history-relic-lookup";
+import { lookupHistoryRelic, lookupHistoryRelicByTitle } from "@/lib/history-relic-lookup";
 import { stripReplayId } from "@/lib/history-last-scene";
 import type { HistoryChoiceLoc } from "@/lib/history-last-scene-catalog";
 import {
@@ -243,15 +243,23 @@ export function roomChoiceBackgroundImageUrl(
     relicsById?: Record<string, CodexRelic>;
     potionsById?: Record<string, CodexPotion>;
   },
+  event?: CodexEvent,
 ): string | null {
+  const traderSlot = relicTraderSlot(choiceOptionId(choice));
+  const traderName =
+    event?.id === "RELIC_TRADER" && traderSlot
+      ? String(choice.locVars?.[`${traderSlot}RelicNew`] ?? "")
+      : "";
   const ids = [
+    ...(traderName ? [traderName] : []),
     choice.id,
     ...Object.values(choice.locVars ?? {}).flatMap((value) =>
       typeof value === "string" ? [value] : [],
     ),
   ];
   for (const id of ids) {
-    const relic = lookupHistoryRelic(catalogs.relicsById, id);
+    const relic = lookupHistoryRelic(catalogs.relicsById, id)
+      ?? lookupHistoryRelicByTitle(catalogs.relicsById, id);
     const relicImage = relic ? resolveRelicDisplayImage(relic, relic.pool) : null;
     if (relicImage) return relicImage;
     const card = lookupHistoryCard(catalogs.cardsById ?? {}, id);
@@ -262,6 +270,14 @@ export function roomChoiceBackgroundImageUrl(
   return null;
 }
 
+function relicTraderSlot(optionId: string): "Top" | "Middle" | "Bottom" | null {
+  const id = optionId.toUpperCase();
+  if (id === "TOP") return "Top";
+  if (id === "MIDDLE") return "Middle";
+  if (id === "BOTTOM") return "Bottom";
+  return null;
+}
+
 export function eventLastSceneChoices(
   event: CodexEvent | undefined,
   replayChoices: ReplayChoice[] | undefined,
@@ -269,25 +285,39 @@ export function eventLastSceneChoices(
   const picks = replayChoices ?? [];
   const pickedKey = (choice: ReplayChoice) => choiceOptionId(choice).toUpperCase();
   const pickById = new Map(picks.map((choice) => [pickedKey(choice), choice]));
+  const sharedLocVars = picks.find((choice) => choice.locVars)?.locVars;
   const pages = event?.pages ?? [];
   let options = event?.options ?? [];
-  const matchingPage = pages.find((page) =>
-    (page.options ?? []).some((option) => pickById.has(option.id.toUpperCase())),
-  );
-  if (matchingPage?.options?.length) {
-    options = matchingPage.options;
-  } else {
+  if (event?.id === "SLIPPERY_BRIDGE") {
     const initial = pages.find((page) => page.id.toUpperCase() === "INITIAL") ?? pages[0];
-    if (initial?.options?.length) options = initial.options;
+    options = initial?.options?.length ? initial.options : options;
+  } else {
+    const matchingPage = pages.find((page) =>
+      (page.options ?? []).some((option) => pickById.has(option.id.toUpperCase())),
+    );
+    if (matchingPage?.options?.length) {
+      options = matchingPage.options;
+    } else {
+      const initial = pages.find((page) => page.id.toUpperCase() === "INITIAL") ?? pages[0];
+      if (initial?.options?.length) options = initial.options;
+    }
   }
   if (!options.length) return picks;
 
-  const listed = options.map((option) => pickById.get(option.id.toUpperCase()) ?? {
-    id: option.id,
-    picked: false,
+  const listed = options.map((option) => {
+    const pick = pickById.get(option.id.toUpperCase()) ?? {
+      id: option.id,
+      picked: false,
+    };
+    if (!pick.locVars && sharedLocVars) {
+      return { ...pick, locVars: sharedLocVars };
+    }
+    return pick;
   });
-  for (const pick of picks) {
-    if (!listed.some((row) => pickedKey(row) === pickedKey(pick))) listed.push(pick);
+  if (event?.id !== "SLIPPERY_BRIDGE") {
+    for (const pick of picks) {
+      if (!listed.some((row) => pickedKey(row) === pickedKey(pick))) listed.push(pick);
+    }
   }
   return listed;
 }
@@ -318,6 +348,6 @@ export function historyRoomChoiceCopy(
       opts.relicsById,
       opts.enchantments,
     ),
-    backgroundImageUrl: roomChoiceBackgroundImageUrl(choice, opts),
+    backgroundImageUrl: roomChoiceBackgroundImageUrl(choice, opts, opts.event),
   };
 }

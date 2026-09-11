@@ -71,6 +71,8 @@ import {
   usesDedicatedLastScene,
 } from "@/lib/history-last-scene";
 import {
+  lastSceneDisplayedGold,
+  lastSceneDisplayedHp,
   lastSceneHiddenPotionIds,
   lastSceneHiddenRelicIds,
   lastScenePicksRevealed,
@@ -1412,6 +1414,7 @@ function Stage({
   // initial step=1 view leaves the map at scrollTop=0, hiding the ancient
   // node behind subsequent rows).
   const lastStepRef = useRef<number | null>(null);
+  const [mapPeek, setMapPeek] = useState(false);
   const tables = useGameI18n();
   const gameLocale = useGameLocale();
   const playback = serviceMessages[useServiceLocale()].historyCourse.detail.playback;
@@ -1437,6 +1440,20 @@ function Stage({
     0,
     Math.min(1, nodeLocalMsRaw / NODE_BASE_MS),
   );
+  const lastSceneVisible = dedicatedScene && transitProgress >= 1 && !mapPeek;
+  const lastSceneRateLocked = dedicatedScene && transitProgress >= 1 && !mapPeek;
+  const sceneTopbarState = useMemo(() => {
+    if (!dedicatedScene || !historyEntry || transitProgress < 1) return topbarState;
+    return {
+      ...topbarState,
+      gold: lastSceneDisplayedGold(sceneKind, historyEntry, sceneLocalMs) ?? topbarState.gold,
+      hp: lastSceneDisplayedHp(sceneKind, historyEntry, sceneLocalMs) ?? topbarState.hp,
+    };
+  }, [dedicatedScene, historyEntry, sceneKind, sceneLocalMs, topbarState, transitProgress]);
+
+  useEffect(() => {
+    setMapPeek(false);
+  }, [actIndex, step]);
   const transitEdgeIds = useMemo(
     () => new Set(act.candidateEdgeIdsByStep[step - 1] ?? []),
     [act, step],
@@ -1529,7 +1546,7 @@ function Stage({
       <TopBar
         run={run}
         act={act}
-        state={topbarState}
+        state={sceneTopbarState}
         cumulativeElapsedMs={globalMs}
         totalRunMs={runTimeline.totalMs}
         hidingRelicIds={hidingRelicIds}
@@ -1539,6 +1556,8 @@ function Stage({
         potionsById={potionsById}
         relicsById={relicsById}
         onOpenDeck={onOpenDeck}
+        onToggleMap={() => setMapPeek((open) => !open)}
+        mapOpen={mapPeek}
         // Cog toggles the run-summary panel and auto-pauses playback.
         onOpenInfo={onOpenInfo}
         focusedPlayerIndex={focusedPlayerIndex}
@@ -1548,7 +1567,7 @@ function Stage({
       <GameScrollArea
         className={cn(
           "absolute inset-0",
-          dedicatedScene && transitProgress >= 1 && "invisible pointer-events-none",
+          dedicatedScene && transitProgress >= 1 && !mapPeek && "invisible pointer-events-none",
         )}
         size="large"
         scrollerRef={mapBoxRef}
@@ -1573,7 +1592,7 @@ function Stage({
         </div>
       </GameScrollArea>
 
-      {!(dedicatedScene && transitProgress >= 1) ? <NodePulse step={step} /> : null}
+      {!(dedicatedScene && transitProgress >= 1 && !mapPeek) ? <NodePulse step={step} /> : null}
 
       {introActive && introActIndex !== null && introAct && (
         <ActIntro
@@ -1587,7 +1606,7 @@ function Stage({
         stageRef={stageRef}
         items={stackItems}
         nodeLocalMs={nodeStackLocalMs}
-        hidden={transitProgress < 1 || dedicatedScene}
+          hidden={transitProgress < 1 || lastSceneVisible}
       />
 
       {historyEntry ? (
@@ -1602,7 +1621,7 @@ function Stage({
           gameLocale={gameLocale}
           leftoverGoldLabel={playback.leftoverGold}
           deathLabel={playback.defeat}
-          hidden={transitProgress < 1 || !dedicatedScene}
+          hidden={transitProgress < 1 || !lastSceneVisible}
           actId={act.actId}
           character={focusedCharacter}
           cardsById={cardsById}
@@ -1621,6 +1640,7 @@ function Stage({
         globalMs={globalMs}
         playing={playing}
         rate={rate}
+        rateLocked={lastSceneRateLocked}
         onTogglePlay={onTogglePlay}
         onChangeRate={onChangeRate}
         onScrubGlobalMs={onScrubGlobalMs}
@@ -1752,6 +1772,7 @@ function PlaybackBar({
   globalMs,
   playing,
   rate,
+  rateLocked = false,
   onTogglePlay,
   onChangeRate,
   onScrubGlobalMs,
@@ -1766,6 +1787,7 @@ function PlaybackBar({
   globalMs: number;
   playing: boolean;
   rate: Rate;
+  rateLocked?: boolean;
   onTogglePlay: () => void;
   onChangeRate: (rate: Rate) => void;
   onScrubGlobalMs: (ms: number) => void;
@@ -1813,22 +1835,28 @@ function PlaybackBar({
         <div className="flex items-center gap-1.5">
           <span className="text-zinc-400">{completedStepCount}/{totalStepCount}</span>
           <div className="ml-2 inline-flex overflow-hidden rounded-md border border-white/15 bg-black/30">
-            {PLAYBACK_RATES.map((r) => (
-              <button
-                key={r}
-                type="button"
-                onClick={() => onChangeRate(r)}
-                className={cn(
-                  "px-2 py-1 transition",
-                  rate === r
-                    ? "bg-amber-500/30 text-amber-100"
-                    : "text-zinc-300 hover:bg-white/10",
-                )}
-                aria-pressed={rate === r}
-              >
-                {r}×
-              </button>
-            ))}
+            {PLAYBACK_RATES.map((r) => {
+              const shownRate = rateLocked ? 1 : rate;
+              return (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => onChangeRate(r)}
+                  disabled={rateLocked && r !== 1}
+                  className={cn(
+                    "px-2 py-1 transition",
+                    shownRate === r
+                      ? "bg-amber-500/30 text-amber-100"
+                      : "text-zinc-300 hover:bg-white/10",
+                    rateLocked && r !== 1 && "cursor-not-allowed opacity-40",
+                  )}
+                  aria-pressed={shownRate === r}
+                  aria-disabled={rateLocked && r !== 1}
+                >
+                  {r}×
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -1967,6 +1995,11 @@ function Track({
           if (!isLandmark && stride > 1 && idx % stride !== 0) {
             return null;
           }
+          const floorNum = rowAct.baseFloor + stepNum - 1;
+          const floorLabel = formatGameTemplate(
+            gameUi(tables, "floor", "Floor {FloorNum}"),
+            { FloorNum: floorNum },
+          );
           return (
             <span
               key={`${rowIdx}-${stepNum}`}
@@ -1979,7 +2012,14 @@ function Track({
               }}
             >
               <GameUiHoverTip
-                label={isHighlight ? playback.highlightMark : playback.stampFloor}
+                label={(
+                  <span className="block">
+                    <span className="block">{floorLabel}</span>
+                    <span className="mt-0.5 block font-normal leading-snug opacity-90">
+                      {isHighlight ? playback.highlightMark : playback.stampFloor}
+                    </span>
+                  </span>
+                )}
                 className="h-full w-full"
               >
                 <button
@@ -2037,16 +2077,7 @@ function Track({
                         ? "opacity-100"
                         : "opacity-70 hover:opacity-100",
                   )}
-                  aria-label={`${
-                    playback.floorStep
-                      .replace("{act}", actIntroLabel(tables, rowIdx))
-                      .replace(
-                        "{floor}",
-                        formatGameTemplate(gameUi(tables, "floor", "Floor {FloorNum}"), {
-                          FloorNum: stepNum,
-                        }),
-                      )
-                  }. ${isHighlight ? playback.highlightMark : playback.stampFloor}`}
+                  aria-label={`${floorLabel}. ${isHighlight ? playback.highlightMark : playback.stampFloor}`}
                   aria-current={isCurrent ? "true" : undefined}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}

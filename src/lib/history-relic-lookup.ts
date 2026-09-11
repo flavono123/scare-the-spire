@@ -8,6 +8,20 @@ function relicIdVariants(id: string): string[] {
   return [...new Set([id, withoutPrefix, stripped, `RELIC.${stripped}`])];
 }
 
+export function lookupHistoryRelicByTitle(
+  relicsById: Record<string, CodexRelic> | undefined,
+  title: string,
+): CodexRelic | undefined {
+  if (!relicsById || !title) return undefined;
+  const wanted = title.trim().toLowerCase();
+  if (!wanted) return undefined;
+  for (const relic of Object.values(relicsById)) {
+    if (relic.name.trim().toLowerCase() === wanted) return relic;
+    if (relic.nameEn.trim().toLowerCase() === wanted) return relic;
+  }
+  return undefined;
+}
+
 export function lookupHistoryRelic(
   relicsById: Record<string, CodexRelic> | undefined,
   id: string,

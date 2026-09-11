@@ -36,7 +36,8 @@ import {
   ANCIENT_BANNER_HSV,
   hsvToFilter,
   gameStroke,
-  CARD_ASPECT,
+  CARD_ASPECT_H,
+  CARD_OVERFLOW,
   CARD_WIDTH_PRESET,
   FONT_CQI,
 } from "@/lib/sts2-card-style";
@@ -963,15 +964,35 @@ export const CardTile = memo(function CardTile({
     </div>
   ) : null;
 
-  // 카드 컨테이너 인라인 스타일: 고정 픽셀 + cqi 베이스
+  const overflowScale = cardWidth / HOLDER_W;
+  const overflowPad = {
+    left: CARD_OVERFLOW.left * overflowScale,
+    top: CARD_OVERFLOW.top * overflowScale,
+    right: CARD_OVERFLOW.right * overflowScale,
+    bottom: CARD_OVERFLOW.bottom * overflowScale,
+  };
+  const holderHeight = CARD_ASPECT_H * overflowScale;
+  // Outer box includes energy/star overhang so parents and html-to-image
+  // capture the full tile. `cqi` stays relative to the inner holder.
   const cardContainerStyle: CSSProperties = {
+    width: cardWidth + overflowPad.left + overflowPad.right,
+    height: holderHeight + overflowPad.top + overflowPad.bottom,
+    marginLeft: -overflowPad.left,
+    marginRight: -overflowPad.right,
+    marginTop: -overflowPad.top,
+    marginBottom: -overflowPad.bottom,
+  };
+  const cardHolderStyle: CSSProperties = {
+    position: "absolute",
+    left: overflowPad.left,
+    top: overflowPad.top,
     width: cardWidth,
-    aspectRatio: CARD_ASPECT,
+    height: holderHeight,
     containerType: "inline-size",
   };
   const cardRootClassName = interactive
-    ? "group relative cursor-pointer select-none transition-transform hover:scale-[1.03] hover:z-10"
-    : `group relative ${editableContent ? "select-text" : "select-none"}`;
+    ? "group relative cursor-pointer select-none overflow-visible transition-transform hover:scale-[1.03] hover:z-10"
+    : `group relative overflow-visible ${editableContent ? "select-text" : "select-none"}`;
   const lifecycleClassName = card.deprecated ? " opacity-50 grayscale saturate-0" : "";
 
   // =====================================================================
@@ -985,9 +1006,10 @@ export const CardTile = memo(function CardTile({
       <div
         className={`${cardRootClassName}${lifecycleClassName}`}
         style={cardContainerStyle}
+        data-card-tile=""
         onClick={onClick}
       >
-        <div className="relative w-full h-full">
+        <div className="relative h-full w-full overflow-visible" style={cardHolderStyle}>
           <div className="absolute inset-0 overflow-hidden rounded-[3%]">
             {imageSrc && !imgError ? (
               <Image
@@ -1168,9 +1190,10 @@ export const CardTile = memo(function CardTile({
     <div
       className={`${cardRootClassName}${lifecycleClassName}`}
       style={cardContainerStyle}
+      data-card-tile=""
       onClick={onClick}
     >
-      <div className="relative w-full h-full">
+      <div className="relative h-full w-full overflow-visible" style={cardHolderStyle}>
         <div
           className="absolute overflow-hidden"
           style={{

@@ -99,12 +99,17 @@ async function renderTargetPng(target: HTMLElement): Promise<Blob> {
     import("html-to-image"),
     document.fonts?.ready ?? Promise.resolve(),
   ]);
-  const restoreBorderImages = await inlineTargetBorderImages(target);
+  const captureTarget =
+    target.matches("[data-card-tile]")
+      ? target
+      : target.querySelector<HTMLElement>("[data-card-tile]") ?? target;
+  const restoreBorderImages = await inlineTargetBorderImages(captureTarget);
   try {
-    const blob = await toBlob(target, {
+    const blob = await toBlob(captureTarget, {
       cacheBust: true,
       pixelRatio: Math.min(3, Math.max(2, window.devicePixelRatio || 1)),
       preferredFontFormat: "woff2",
+      style: { overflow: "visible" },
     });
     if (!blob) throw new Error("PNG rendering returned no data");
     return blob;

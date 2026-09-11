@@ -28,16 +28,22 @@ import {
 import {
   LAST_SCENE_ALIVE_MS,
   LAST_SCENE_DYING_MS,
+  LAST_SCENE_OBTAIN_LAND,
   LAST_SCENE_STEP_MS,
   lastSceneDurationMs,
+  lastSceneDisplayedGold,
   lastSceneHiddenRelicIds,
   lastSceneIdSetHas,
   lastScenePhase,
   lootSpecTaken,
   combatLootSpecs,
+  cardRewardTokenKind,
   shopMatItemHidden,
   shopObtainQueue,
   shopRemovalFlipProgress,
+  specialCardGains,
+  slipperyHoldCount,
+  slipperyHpLossAtHold,
 } from "../src/lib/history-last-scene-steps";
 import {
   eventArtUrl,
@@ -408,7 +414,7 @@ assert.equal(
   "cards",
 );
 assert.equal(lastScenePhase("event", combatWithLoot, 0).kind, "choice");
-assert.equal(lastScenePhase("event", combatWithLoot, LAST_SCENE_STEP_MS).kind, "receipt");
+assert.equal(lastScenePhase("event", combatWithLoot, LAST_SCENE_STEP_MS).kind, "loot");
 assert.equal(lastScenePhase("shop", combatWithLoot, 0).kind, "shop");
 
 const rateTimeline = buildRunTimeline([actFromHistory([mundaneCombat])]);
@@ -488,10 +494,29 @@ const shopRelicEntry = entry({
 assert.ok(lastSceneHiddenRelicIds("shop", shopRelicEntry, 0).has("RELIC.POMANDER"));
 assert.equal(
   lastSceneHiddenRelicIds("shop", shopRelicEntry, LAST_SCENE_STEP_MS).has("RELIC.POMANDER"),
+  true,
+  "browse beat keeps bought relics off the topbar",
+);
+assert.equal(
+  lastSceneHiddenRelicIds(
+    "shop",
+    shopRelicEntry,
+    LAST_SCENE_STEP_MS + LAST_SCENE_OBTAIN_LAND * LAST_SCENE_STEP_MS,
+  ).has("RELIC.POMANDER"),
   false,
 );
 assert.equal(
+  shopMatItemHidden(shopRelicEntry, "RELIC.POMANDER", "relic", 0, 1),
+  false,
+  "shop browse beat shows the full stock",
+);
+assert.equal(
   shopMatItemHidden(shopRelicEntry, "RELIC.POMANDER", "relic", 1, 0),
+  false,
+  "the purchased relic stays on the mat until the buy fly starts",
+);
+assert.equal(
+  shopMatItemHidden(shopRelicEntry, "RELIC.POMANDER", "relic", 2, 0),
   true,
   "bought relics stay off the shop mat after their obtain beat",
 );
@@ -503,8 +528,9 @@ const shopRemovalEntry = entry({
 });
 assert.equal(shopObtainQueue(shopRemovalEntry).at(-1)?.kind, "removal");
 assert.equal(shopRemovalFlipProgress(shopRemovalEntry, 0, 1), 0);
-assert.ok(shopRemovalFlipProgress(shopRemovalEntry, 1, 0.9) > 0.7);
-assert.equal(shopRemovalFlipProgress(shopRemovalEntry, 2, 0), 1);
+assert.equal(shopRemovalFlipProgress(shopRemovalEntry, 1, 0.9), 0);
+assert.ok(shopRemovalFlipProgress(shopRemovalEntry, 2, 0.9) > 0.7);
+assert.equal(shopRemovalFlipProgress(shopRemovalEntry, 3, 0), 1);
 
 const lanternKeyFight = entry({
   map_point_type: "unknown",
@@ -538,6 +564,116 @@ const pomanderNeow = entry({
 });
 assert.equal(lastSceneDurationMs("ancient", pomanderNeow), 3 * LAST_SCENE_STEP_MS);
 assert.equal(lastScenePhase("ancient", pomanderNeow, 2 * LAST_SCENE_STEP_MS).kind, "upgrade");
+
+assert.match(
+  lastSceneBackgroundUrl({
+    kind: "combat",
+    modelId: "ENCOUNTER.THE_INSATIABLE",
+    actId: "ACT.HIVE",
+  }),
+  /the-insatiable-boss-a\.webp$/,
+);
+
+const lanternKeySpecial = entry({
+  map_point_type: "unknown",
+  event_choices: [{ id: "FIGHT", picked: true }],
+  cards_gained: [{ id: "CARD.LANTERN_KEY" }],
+  card_choices: [
+    { id: "CARD.STRIKE", picked: true },
+    { id: "CARD.DEFEND", picked: false },
+    { id: "CARD.BASH", picked: false },
+  ],
+  rooms: [{
+    room_type: "event",
+    model_id: "EVENT.THE_LANTERN_KEY",
+    turns_taken: 1,
+    monster_ids: ["MONSTER.MYSTERIOUS_KNIGHT"],
+  }],
+});
+assert.equal(specialCardGains(lanternKeySpecial)[0]?.id, "CARD.LANTERN_KEY");
+assert.equal(
+  combatLootSpecs(lanternKeySpecial).some((spec) => spec.kind === "special-card"),
+  true,
+);
+
+const slipperyBridge = entry({
+  map_point_type: "unknown",
+  event_choices: [
+    { id: "HOLD_ON_0", picked: true },
+    { id: "HOLD_ON_1", picked: true },
+    { id: "OVERCOME", picked: true, locVars: { RandomCard: "타격", HpLoss: 5 } },
+  ],
+  cards_removed: [{ id: "CARD.STRIKE_IRONCLAD" }],
+  damage_taken: 7,
+  current_hp: 20,
+  rooms: [{ room_type: "event", model_id: "EVENT.SLIPPERY_BRIDGE", turns_taken: 0 }],
+});
+assert.equal(slipperyHoldCount(slipperyBridge), 2);
+assert.equal(slipperyHpLossAtHold(0), 3);
+assert.equal(slipperyHpLossAtHold(1), 4);
+assert.equal(lastSceneDurationMs("event", slipperyBridge), 3 * LAST_SCENE_STEP_MS);
+assert.equal(lastScenePhase("event", slipperyBridge, 0).kind, "choice");
+assert.equal(lastScenePhase("event", slipperyBridge, 2 * LAST_SCENE_STEP_MS).kind, "receipt");
+const slipperyEvent: CodexEvent = {
+  id: "SLIPPERY_BRIDGE",
+  name: "미끄러운 다리",
+  nameEn: "Slippery Bridge",
+  description: "",
+  descriptionEn: "",
+  act: null,
+  acts: null,
+  imageUrl: null,
+  options: [
+    { id: "OVERCOME", title: "헤쳐 나간다", description: "" },
+    { id: "HOLD_ON_0", title: "버틴다", description: "" },
+  ],
+  pages: [{
+    id: "INITIAL",
+    description: null,
+    options: [
+      { id: "OVERCOME", title: "헤쳐 나간다", description: "" },
+      { id: "HOLD_ON_0", title: "버틴다", description: "" },
+    ],
+  }],
+};
+assert.deepEqual(
+  eventLastSceneChoices(slipperyEvent, slipperyBridge.event_choices).map((choice) => choice.id),
+  ["OVERCOME", "HOLD_ON_0"],
+);
+
+const colorfulPhilosophers = entry({
+  map_point_type: "unknown",
+  card_choices: [
+    { id: "CARD.POMMEL_STRIKE", picked: true },
+    { id: "CARD.SHRUG_IT_OFF", picked: false },
+    { id: "CARD.TWINTAIL", picked: false },
+  ],
+  rooms: [{ room_type: "event", model_id: "EVENT.COLORFUL_PHILOSOPHERS", turns_taken: 0 }],
+});
+assert.equal(lastSceneDurationMs("event", colorfulPhilosophers), 3 * LAST_SCENE_STEP_MS);
+assert.equal(lastScenePhase("event", colorfulPhilosophers, 0).kind, "choice");
+assert.equal(lastScenePhase("event", colorfulPhilosophers, LAST_SCENE_STEP_MS).kind, "loot");
+assert.equal(lastScenePhase("event", colorfulPhilosophers, 2 * LAST_SCENE_STEP_MS).kind, "cards");
+assert.equal(cardRewardTokenKind("unknown", ["고급", "고급", "고급"]), "uncommon");
+assert.equal(cardRewardTokenKind("unknown", ["희귀", "희귀"]), "rare");
+
+const goldLoot = entry({
+  map_point_type: "monster",
+  current_gold: 140,
+  gold_gained: 25,
+});
+assert.equal(lastSceneDisplayedGold("combat", goldLoot, 0), 115);
+assert.equal(
+  lastSceneDisplayedGold(
+    "combat",
+    goldLoot,
+    LAST_SCENE_ALIVE_MS + LAST_SCENE_DYING_MS + LAST_SCENE_OBTAIN_LAND * LAST_SCENE_STEP_MS,
+  ),
+  140,
+);
+assert.equal(cardRewardTokenKind("boss", ["일반", "고급", "희귀"]), "rare");
+assert.equal(cardRewardTokenKind("monster", ["고급", "고급", "고급"]), "uncommon");
+assert.equal(cardRewardTokenKind("monster", ["일반", "고급"]), "common");
 
 assert.equal(cardFlyParametric(0), 0);
 assert.ok(cardFlyParametric(1) >= 1 - 1e-9);
