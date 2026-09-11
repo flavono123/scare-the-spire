@@ -161,6 +161,7 @@ const staticRelic: EntityInfo = {
     descriptionEn: "Your first Attack each combat deals 8 additional damage.",
     descriptionRaw: "첫 번째 공격의 피해량이 {Damage} 증가합니다.",
     descriptionRawEn: "Your first Attack each combat deals {Damage} additional damage.",
+    eventDescription: null,
     vars: { Damage: 8 },
     flavor: "Moo.",
     rarity: "일반 유물",

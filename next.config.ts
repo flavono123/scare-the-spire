@@ -3,6 +3,10 @@ import type { NextConfig } from "next";
 
 const configuredBuildId = process.env.NEXT_BUILD_ID?.trim();
 
+function isIpv4Family(family: string | number): boolean {
+  return family === "IPv4" || family === 4;
+}
+
 function lanDevOrigins(): string[] {
   const fromEnv = (process.env.NEXT_DEV_ALLOWED_ORIGINS ?? "")
     .split(/[,\s]+/)
@@ -12,7 +16,7 @@ function lanDevOrigins(): string[] {
   for (const addrs of Object.values(os.networkInterfaces())) {
     for (const addr of addrs ?? []) {
       if (addr.internal) continue;
-      if (addr.family === "IPv4" || addr.family === 4) {
+      if (isIpv4Family(addr.family)) {
         hosts.add(addr.address);
       }
     }
