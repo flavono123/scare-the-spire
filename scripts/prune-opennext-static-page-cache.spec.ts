@@ -31,7 +31,7 @@ const cacheDir = path.join(root, "cache");
 const assetCacheDir = path.join(root, "assets", "cdn-cgi", "_next_cache");
 const buildId = "test-build";
 
-function write(file, contents = "x") {
+function write(file: string, contents = "x") {
   mkdirSync(path.dirname(file), { recursive: true });
   writeFileSync(file, contents);
 }
