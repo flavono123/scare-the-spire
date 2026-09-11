@@ -51,6 +51,7 @@ export function RestSiteCharacterStage({
   const spine = restSiteCharacterSpine(characterSlug(character));
   const animation = restSiteCharacterAnimation(actId);
 
+  /* eslint-disable react-hooks/set-state-in-effect -- Spine host remount resets load state with the canvas */
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
@@ -191,6 +192,7 @@ export function RestSiteCharacterStage({
       canvasElement.remove();
     };
   }, [animation, spine.atlasUrl, spine.ostyAtlasUrl, spine.ostySkelUrl, spine.skelUrl]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   return (
     <div

@@ -1469,9 +1469,11 @@ function Stage({
     ? lastSceneDisplayedHp(sceneKind, historyEntry, sceneLocalMs)
     : topbarState.hp;
 
+  /* eslint-disable react-hooks/set-state-in-effect -- close map peek when the replay floor changes */
   useEffect(() => {
     setMapPeek(false);
   }, [actIndex, step]);
+  /* eslint-enable react-hooks/set-state-in-effect */
   const scrollToStep = useCallback(() => {
     const box = mapBoxRef.current;
     if (!box) return;

@@ -364,7 +364,9 @@ function GoldChip({ gold }: { gold: number | null }) {
     opacity: number;
   } | null>(null);
   const shownRef = useRef(gold);
+  /* eslint-disable react-hooks/refs -- gold tween reads the latest shown value from rAF */
   shownRef.current = shown;
+  /* eslint-enable react-hooks/refs */
 
   useEffect(() => {
     if (gold == null) {
