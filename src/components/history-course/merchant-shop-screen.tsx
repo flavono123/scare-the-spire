@@ -105,7 +105,7 @@ function ShopCard({
       }}
     >
       {card ? (
-        <div className={cn("h-full w-full", hidden && "opacity-0")}>
+        <div className={cn("h-full w-full overflow-visible", hidden && "opacity-0")}>
           <FittedCardTile
             card={card}
             showUpgrade={upgradeLevel > 0}

@@ -6,7 +6,7 @@ import { CARD_ASPECT } from "@/lib/sts2-card-style";
 
 type FittedCardTileProps = Omit<ComponentProps<typeof CardTile>, "width">;
 
-/** Size a CardTile to its parent's width instead of a fixed game-pixel width. */
+/** Size a CardTile to its parent's layout width instead of a fixed game-pixel width. */
 export function FittedCardTile(props: FittedCardTileProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
@@ -15,8 +15,12 @@ export function FittedCardTile(props: FittedCardTileProps) {
     const el = ref.current;
     if (!el) return;
     const update = () => {
-      const next = Math.round(el.getBoundingClientRect().width);
-      if (next > 0) setWidth(next);
+      // `clientWidth` ignores CSS transforms, so appear-from-zero `scale(0)`
+      // still measures the layout slot. `getBoundingClientRect()` would be 0.
+      const next = Math.round(el.clientWidth);
+      if (next > 0) {
+        setWidth((prev) => (prev === next ? prev : next));
+      }
     };
     update();
     const observer = new ResizeObserver(update);
@@ -25,7 +29,7 @@ export function FittedCardTile(props: FittedCardTileProps) {
   }, []);
 
   return (
-    <div ref={ref} className="h-full w-full overflow-hidden" style={{ aspectRatio: CARD_ASPECT }}>
+    <div ref={ref} className="h-full w-full overflow-visible" style={{ aspectRatio: CARD_ASPECT }}>
       {width > 0 ? <CardTile {...props} width={width} /> : null}
     </div>
   );

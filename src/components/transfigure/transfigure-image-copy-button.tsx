@@ -94,14 +94,21 @@ async function inlineTargetBorderImages(target: HTMLElement): Promise<() => void
   };
 }
 
+function captureNode(target: HTMLElement): HTMLElement {
+  return target.querySelector<HTMLElement>("[data-card-tile]") ?? target;
+}
+
 async function renderTargetPng(target: HTMLElement): Promise<Blob> {
   const [{ toBlob }] = await Promise.all([
     import("html-to-image"),
     document.fonts?.ready ?? Promise.resolve(),
   ]);
-  const restoreBorderImages = await inlineTargetBorderImages(target);
+  const node = captureNode(target);
+  const previousOverflow = node.style.overflow;
+  node.style.overflow = "visible";
+  const restoreBorderImages = await inlineTargetBorderImages(node);
   try {
-    const blob = await toBlob(target, {
+    const blob = await toBlob(node, {
       cacheBust: true,
       pixelRatio: Math.min(3, Math.max(2, window.devicePixelRatio || 1)),
       preferredFontFormat: "woff2",
@@ -110,6 +117,7 @@ async function renderTargetPng(target: HTMLElement): Promise<Blob> {
     return blob;
   } finally {
     restoreBorderImages();
+    node.style.overflow = previousOverflow;
   }
 }
 

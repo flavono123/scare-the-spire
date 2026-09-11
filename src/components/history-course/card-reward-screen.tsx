@@ -68,7 +68,6 @@ function PickedRing({
       )}
       style={{
         transform: `translateX(${(1 - appearT) * fromCenter}%) scale(${picked && appearT > 0.95 ? 1.05 : 1})`,
-        filter: `brightness(${Math.max(0.08, fadeT)})`,
         opacity: fadeT,
       }}
     >

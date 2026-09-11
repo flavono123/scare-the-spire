@@ -72,15 +72,19 @@ export function RewardCardGlow({ rarity }: { rarity: string | undefined }) {
   const glow = rewardGlowForRarity(rarity);
   return (
     <div
-      className="pointer-events-none absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 mix-blend-screen"
+      className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 mix-blend-screen"
       aria-hidden
       data-history-card-glow={rarity ?? "none"}
     >
+      <div
+        className="absolute left-1/2 top-1/2 h-[70%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl"
+        style={{ background: glow.color, opacity: 0.35 }}
+      />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={glow.src}
         alt=""
-        className={cn("max-w-none origin-center animate-[spin_12s_linear_infinite]", glow.sizeClass)}
+        className={cn("relative max-w-none origin-center animate-[spin_12s_linear_infinite]", glow.sizeClass)}
         style={{
           opacity: glow.opacity,
           filter: [glow.extraFilter, `drop-shadow(0 0 18px ${glow.color})`].filter(Boolean).join(" "),

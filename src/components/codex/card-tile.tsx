@@ -37,6 +37,9 @@ import {
   hsvToFilter,
   gameStroke,
   CARD_ASPECT,
+  CARD_ASPECT_H,
+  CARD_ASPECT_W,
+  CARD_OVERFLOW,
   CARD_WIDTH_PRESET,
   FONT_CQI,
 } from "@/lib/sts2-card-style";
@@ -968,7 +971,34 @@ export const CardTile = memo(function CardTile({
     width: cardWidth,
     aspectRatio: CARD_ASPECT,
     containerType: "inline-size",
+    overflow: "visible",
   };
+  const holderHeight = cardWidth * (CARD_ASPECT_H / CARD_ASPECT_W);
+  const overflowPad = {
+    left: (CARD_OVERFLOW.left / CARD_ASPECT_W) * cardWidth,
+    top: (CARD_OVERFLOW.top / CARD_ASPECT_H) * holderHeight,
+    right: (CARD_OVERFLOW.right / CARD_ASPECT_W) * cardWidth,
+    bottom: (CARD_OVERFLOW.bottom / CARD_ASPECT_H) * holderHeight,
+  };
+  const wrapCardRoot = (node: ReactNode) => (
+    <div
+      data-card-tile=""
+      className="relative overflow-visible"
+      style={{
+        width: cardWidth + overflowPad.left + overflowPad.right,
+        marginLeft: -overflowPad.left,
+        marginRight: -overflowPad.right,
+        marginTop: -overflowPad.top,
+        marginBottom: -overflowPad.bottom,
+        paddingLeft: overflowPad.left,
+        paddingTop: overflowPad.top,
+        paddingRight: overflowPad.right,
+        paddingBottom: overflowPad.bottom,
+      }}
+    >
+      {node}
+    </div>
+  );
   const cardRootClassName = interactive
     ? "group relative cursor-pointer select-none transition-transform hover:scale-[1.03] hover:z-10"
     : `group relative ${editableContent ? "select-text" : "select-none"}`;
@@ -981,13 +1011,13 @@ export const CardTile = memo(function CardTile({
     const ancientTextBg = ANCIENT_TEXT_BG[card.type] ?? ANCIENT_TEXT_BG["스킬"];
     const ancientBannerFilter = hsvToFilter(ANCIENT_BANNER_HSV);
 
-    return (
+    return wrapCardRoot(
       <div
         className={`${cardRootClassName}${lifecycleClassName}`}
         style={cardContainerStyle}
         onClick={onClick}
       >
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-full overflow-visible">
           <div className="absolute inset-0 overflow-hidden rounded-[3%]">
             {imageSrc && !imgError ? (
               <Image
@@ -1164,13 +1194,13 @@ export const CardTile = memo(function CardTile({
   // =====================================================================
   // STANDARD CARD
   // =====================================================================
-  return (
+  return wrapCardRoot(
     <div
       className={`${cardRootClassName}${lifecycleClassName}`}
       style={cardContainerStyle}
       onClick={onClick}
     >
-      <div className="relative w-full h-full">
+      <div className="relative h-full w-full overflow-visible">
         <div
           className="absolute overflow-hidden"
           style={{

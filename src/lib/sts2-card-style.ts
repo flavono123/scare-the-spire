@@ -120,6 +120,18 @@ export const CARD_ASPECT_W = 300;
 export const CARD_ASPECT_H = 422;
 export const CARD_ASPECT = `${CARD_ASPECT_W}/${CARD_ASPECT_H}`;
 
+/**
+ * Extra paint box around the 300×422 holder so the energy orb, star cost,
+ * and rarity banner are not clipped by `overflow: hidden` ancestors.
+ * Values are game pixels at holder size.
+ */
+export const CARD_OVERFLOW = {
+  left: 36,
+  top: 16,
+  right: 27,
+  bottom: 0,
+} as const;
+
 export const CARD_WIDTH_PRESET = {
   detail: 380,
   hover: 280,
