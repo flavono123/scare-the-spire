@@ -41,7 +41,9 @@ export function TreasureRoomStage({
   const openRef = useRef(open);
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const act = treasureRoomSpineAct(actId);
+  /* eslint-disable react-hooks/refs -- Spine tick reads the latest chest-open flag */
   openRef.current = open;
+  /* eslint-enable react-hooks/refs */
 
   useEffect(() => {
     const host = hostRef.current;

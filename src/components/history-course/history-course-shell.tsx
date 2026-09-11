@@ -766,8 +766,10 @@ export function HistoryCourseShell({
   const [rate, setRate] = useState<Rate>(2);
   const runTimelineRef = useRef(runTimeline);
   const rateRef = useRef(rate);
+  /* eslint-disable react-hooks/refs -- rAF ticker reads latest timeline/rate, not render */
   runTimelineRef.current = runTimeline;
   rateRef.current = rate;
+  /* eslint-enable react-hooks/refs */
   const [deckOpen, setDeckOpen] = useState(false);
   const [focusedPlayerIndex, setFocusedPlayerIndex] = useState(0);
   // Run-summary panel — opens via the topbar cog (mid-run partial view)
