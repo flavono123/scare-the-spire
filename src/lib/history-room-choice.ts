@@ -326,7 +326,7 @@ export function eventLastSceneChoices(
       locTable: replay?.locTable,
       locKey: replay?.locKey,
       locVars: replay?.locVars ?? sharedVars,
-    };
+    } as ReplayChoice;
   });
   if (!forceInitial) {
     for (const pick of picks) {

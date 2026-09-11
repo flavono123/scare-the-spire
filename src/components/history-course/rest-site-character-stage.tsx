@@ -3,7 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import type { AnimationState, Skeleton, SpineCanvas } from "@esotericsoftware/spine-player";
 import { loadSpinePlayerRuntime, type SpinePlayerRuntime } from "@/lib/spine-player-runtime";
-import { treasureRoomSpineAct } from "@/lib/history-last-scene-assets";
+import {
+  restSiteCharacterAnimation,
+  restSiteCharacterSpine,
+} from "@/lib/history-last-scene-assets";
+import { characterSlug } from "@/lib/history-party";
 
 const GAME_VIEWPORT_WIDTH = 1920;
 const GAME_VIEWPORT_HEIGHT = 1080;
@@ -16,35 +20,36 @@ const WEBGL_CONFIG: WebGLContextAttributes = {
 };
 
 /**
- * `scenes/rooms/treasure_room/chest.tscn` on a 1920×1080 Control:
- * Chest is center-anchored (offsets -358,-173,442,327) → top-left (602, 367).
- * ChestVisual SpineSprite is at (-604, -301) with scale 0.4.
- * Atlas extract is 0.5 only to stay under 4096; skeleton world units stay full-res.
+ * `rest_site_room.tscn` Character_1 sits on the left of the 1920×1080 camp.
+ * `ironclad_rest_site.tscn` scales the Spine actor to 0.76.
  */
-const CHEST_VISUAL = {
-  x: 602 - 604,
-  y: 367 - 301,
-  scale: 0.4,
+const CHARACTER_VISUAL = {
+  x: 640,
+  y: 980,
+  scale: 0.76,
 } as const;
-const OPEN_ANIMATION = "animation";
-const SHINE_ANIMATION = "shine_fade";
 
 type LoadState = "loading" | "ready" | "error";
+type SpineLayer = { animationState: AnimationState; skeleton: Skeleton };
 
-export function TreasureRoomStage({
+function prepareWebGl(canvas: HTMLCanvasElement): boolean {
+  return Boolean(
+    canvas.getContext("webgl2", WEBGL_CONFIG)
+    ?? canvas.getContext("webgl", WEBGL_CONFIG),
+  );
+}
+
+export function RestSiteCharacterStage({
+  character,
   actId,
-  open,
 }: {
+  character: string;
   actId: string;
-  open: boolean;
 }) {
   const hostRef = useRef<HTMLDivElement | null>(null);
-  const openRef = useRef(open);
   const [loadState, setLoadState] = useState<LoadState>("loading");
-  const act = treasureRoomSpineAct(actId);
-  /* eslint-disable react-hooks/refs -- Spine tick reads the latest chest-open flag */
-  openRef.current = open;
-  /* eslint-enable react-hooks/refs */
+  const spine = restSiteCharacterSpine(characterSlug(character));
+  const animation = restSiteCharacterAnimation(actId);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -54,7 +59,6 @@ export function TreasureRoomStage({
     host.replaceChildren(canvasElement);
     setLoadState("loading");
     if (!prepareWebGl(canvasElement)) {
-      console.warn("Treasure room canvas could not create a WebGL context");
       setLoadState("error");
       return () => {
         canvasElement.remove();
@@ -63,18 +67,14 @@ export function TreasureRoomStage({
 
     let disposed = false;
     let spineCanvas: SpineCanvas | null = null;
-    let layer: { animationState: AnimationState; skeleton: Skeleton } | null = null;
+    let layers: SpineLayer[] = [];
     let frameAccumulator = TARGET_FRAME_SECONDS;
     let shouldRender = true;
     let renderedReducedMotionFrame = false;
     let isIntersecting = true;
     let isDocumentVisible = !document.hidden;
     let hasMarkedReady = false;
-    let hasStartedOpen = openRef.current;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const atlasUrl = `/spine/sts2/event-backgrounds/treasure_room/chest_room_act_${act}.atlas`;
-    const binaryUrl = `/spine/sts2/event-backgrounds/treasure_room/chest_room_act_${act}.skel`;
-    const skinName = `act${act}`;
 
     const intersectionObserver = new IntersectionObserver(([entry]) => {
       isIntersecting = entry?.isIntersecting ?? true;
@@ -95,28 +95,50 @@ export function TreasureRoomStage({
         spineCanvas = new runtime.SpineCanvas(canvasElement, {
           app: {
             loadAssets: (app) => {
-              app.assetManager.loadBinary(binaryUrl);
-              app.assetManager.loadTextureAtlas(atlasUrl);
+              app.assetManager.loadBinary(spine.skelUrl);
+              app.assetManager.loadTextureAtlas(spine.atlasUrl);
+              if (spine.ostySkelUrl && spine.ostyAtlasUrl) {
+                app.assetManager.loadBinary(spine.ostySkelUrl);
+                app.assetManager.loadTextureAtlas(spine.ostyAtlasUrl);
+              }
             },
             initialize: (app) => {
               if (disposed) return;
-              canvasElement.style.opacity = "1";
               try {
-                layer = createChestLayer(runtime, app, {
-                  atlasUrl,
-                  binaryUrl,
-                  skinName,
-                  reducedMotion,
-                  open: openRef.current,
-                });
+                layers = [
+                  createActorLayer(runtime, app, {
+                    atlasUrl: spine.atlasUrl,
+                    binaryUrl: spine.skelUrl,
+                    animation,
+                    reducedMotion,
+                    x: CHARACTER_VISUAL.x,
+                    y: CHARACTER_VISUAL.y,
+                    scale: CHARACTER_VISUAL.scale,
+                  }),
+                ];
+                if (spine.ostySkelUrl && spine.ostyAtlasUrl) {
+                  layers.push(createActorLayer(runtime, app, {
+                    atlasUrl: spine.ostyAtlasUrl,
+                    binaryUrl: spine.ostySkelUrl,
+                    animation,
+                    reducedMotion,
+                    x: CHARACTER_VISUAL.x + 90,
+                    y: CHARACTER_VISUAL.y,
+                    scale: CHARACTER_VISUAL.scale * 0.55,
+                  }));
+                }
               } catch (error: unknown) {
-                console.warn("Failed to initialize the treasure-room Spine scene:", error);
+                console.warn("Failed to initialize the rest-site character Spine scene:", error);
                 setLoadState("error");
               }
             },
             update: (_app, delta) => {
-              if (disposed || !isIntersecting || !isDocumentVisible || !layer) {
+              if (disposed || !isIntersecting || !isDocumentVisible || layers.length === 0) {
                 shouldRender = false;
+                return;
+              }
+              if (reducedMotion) {
+                shouldRender = !renderedReducedMotionFrame;
                 return;
               }
               frameAccumulator += Math.min(delta, 0.1);
@@ -124,29 +146,18 @@ export function TreasureRoomStage({
                 shouldRender = false;
                 return;
               }
-              const track = layer.animationState.getCurrent(0);
-              if (reducedMotion) {
-                shouldRender = !renderedReducedMotionFrame;
-                if (openRef.current && track) {
-                  track.trackTime = track.animation?.duration ?? 0;
-                }
-              } else {
-                if (openRef.current && !hasStartedOpen) {
-                  hasStartedOpen = true;
-                  layer.animationState.setAnimation(0, OPEN_ANIMATION, false);
-                  layer.animationState.addAnimation(0, SHINE_ANIMATION, false, 0);
-                }
+              for (const layer of layers) {
                 layer.skeleton.update(frameAccumulator);
                 layer.animationState.update(frameAccumulator);
+                layer.animationState.apply(layer.skeleton);
+                layer.skeleton.updateWorldTransform(runtime.Physics.update);
               }
-              layer.animationState.apply(layer.skeleton);
-              layer.skeleton.updateWorldTransform(runtime.Physics.update);
               frameAccumulator = 0;
               shouldRender = true;
             },
             render: (app) => {
-              if (disposed || !shouldRender || !layer) return;
-              renderChest(app, layer.skeleton);
+              if (disposed || !shouldRender || layers.length === 0) return;
+              renderActors(app, layers);
               shouldRender = false;
               renderedReducedMotionFrame = reducedMotion;
               if (!hasMarkedReady) {
@@ -157,20 +168,18 @@ export function TreasureRoomStage({
             },
             error: (_app, errors) => {
               if (disposed) return;
-              console.warn("Failed to load the treasure-room Spine scene:", errors);
+              console.warn("Failed to load the rest-site character Spine scene:", errors);
               setLoadState("error");
             },
             dispose: (app) => {
               app.assetManager.dispose();
-              app.renderer.dispose();
-              app.gl.getExtension("WEBGL_lose_context")?.loseContext();
             },
           },
         });
       })
       .catch((error: unknown) => {
         if (disposed) return;
-        console.warn("Failed to load the Spine runtime for the treasure room:", error);
+        console.warn("Failed to load the rest-site character Spine runtime:", error);
         setLoadState("error");
       });
 
@@ -179,73 +188,52 @@ export function TreasureRoomStage({
       intersectionObserver.disconnect();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       spineCanvas?.dispose();
-      spineCanvas = null;
-      layer = null;
       canvasElement.remove();
     };
-  }, [act]);
+  }, [animation, spine.atlasUrl, spine.ostyAtlasUrl, spine.ostySkelUrl, spine.skelUrl]);
 
   return (
     <div
       ref={hostRef}
-      className="pointer-events-none absolute inset-0 overflow-hidden bg-black"
-      data-history-treasure-room={act}
-      data-history-treasure-open={open ? "true" : "false"}
-      data-history-treasure-load={loadState}
+      className="pointer-events-none absolute inset-0"
+      data-history-rest-site-character={loadState}
       aria-hidden
     />
   );
 }
 
-function prepareWebGl(canvas: HTMLCanvasElement) {
-  return Boolean(
-    canvas.getContext("webgl2")
-    ?? canvas.getContext("webgl")
-    ?? canvas.getContext("webgl2", WEBGL_CONFIG)
-    ?? canvas.getContext("webgl", WEBGL_CONFIG),
-  );
-}
-
-function createChestLayer(
+function createActorLayer(
   runtime: SpinePlayerRuntime,
   app: SpineCanvas,
   config: {
     atlasUrl: string;
     binaryUrl: string;
-    skinName: string;
+    animation: string;
     reducedMotion: boolean;
-    open: boolean;
+    x: number;
+    y: number;
+    scale: number;
   },
-) {
+): SpineLayer {
   const atlas = app.assetManager.require(config.atlasUrl);
   const binary = app.assetManager.require(config.binaryUrl);
   const skeletonLoader = new runtime.SkeletonBinary(new runtime.AtlasAttachmentLoader(atlas));
   const skeletonData = skeletonLoader.readSkeletonData(binary);
   const skeleton = new runtime.Skeleton(skeletonData);
-  const skin =
-    skeletonData.findSkin(config.skinName)
-    ?? skeletonData.findSkin("default");
-  if (skin) {
-    skeleton.setSkin(skin);
-    skeleton.setSlotsToSetupPose();
-  }
   skeleton.setToSetupPose();
-  skeleton.scaleX = CHEST_VISUAL.scale;
-  skeleton.scaleY = CHEST_VISUAL.scale;
-  skeleton.x = CHEST_VISUAL.x;
-  skeleton.y = GAME_VIEWPORT_HEIGHT - CHEST_VISUAL.y;
+  skeleton.scaleX = config.scale;
+  skeleton.scaleY = config.scale;
+  skeleton.x = config.x;
+  skeleton.y = GAME_VIEWPORT_HEIGHT - config.y;
 
   const animationState = new runtime.AnimationState(new runtime.AnimationStateData(skeletonData));
-  if (config.open) {
-    animationState.setAnimation(0, OPEN_ANIMATION, false);
-    animationState.addAnimation(0, SHINE_ANIMATION, false, 0);
+  const clip = skeletonData.findAnimation(config.animation)
+    ?? skeletonData.findAnimation("overgrowth_loop")
+    ?? skeletonData.animations[0];
+  if (clip?.name) {
+    const track = animationState.setAnimation(0, clip.name, true);
     if (config.reducedMotion) {
-      const shine = skeletonData.findAnimation(SHINE_ANIMATION);
-      const openClip = skeletonData.findAnimation(OPEN_ANIMATION);
-      const track = animationState.getCurrent(0);
-      if (track) {
-        track.trackTime = (openClip?.duration ?? 0) + (shine?.duration ?? 0);
-      }
+      track.trackTime = (track.animation?.duration ?? 0) * 0.35;
     }
   }
   animationState.apply(skeleton);
@@ -253,15 +241,7 @@ function createChestLayer(
   return { animationState, skeleton };
 }
 
-function renderChest(app: SpineCanvas, skeleton: Skeleton) {
-  resizeCanvas(app);
-  app.clear(0, 0, 0, 1);
-  app.renderer.begin();
-  app.renderer.drawSkeleton(skeleton, false);
-  app.renderer.end();
-}
-
-function resizeCanvas(app: SpineCanvas) {
+function renderActors(app: SpineCanvas, layers: SpineLayer[]) {
   const canvas = app.htmlCanvas;
   const dpr = Math.min(window.devicePixelRatio || 1, MAX_DEVICE_PIXEL_RATIO);
   const width = Math.max(1, Math.round(canvas.clientWidth * dpr));
@@ -270,11 +250,16 @@ function resizeCanvas(app: SpineCanvas) {
     canvas.width = width;
     canvas.height = height;
   }
-
   app.gl.viewport(0, 0, width, height);
   app.renderer.camera.setViewport(GAME_VIEWPORT_WIDTH, GAME_VIEWPORT_HEIGHT);
   app.renderer.camera.position.x = GAME_VIEWPORT_WIDTH / 2;
   app.renderer.camera.position.y = GAME_VIEWPORT_HEIGHT / 2;
   app.renderer.camera.zoom = 1;
   app.renderer.camera.update();
+  app.clear(0, 0, 0, 0);
+  app.renderer.begin();
+  for (const layer of layers) {
+    app.renderer.drawSkeleton(layer.skeleton, false);
+  }
+  app.renderer.end();
 }

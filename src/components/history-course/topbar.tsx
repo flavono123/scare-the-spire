@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { DescriptionText } from "@/components/codex/codex-description";
 import { HoverTip } from "@/components/codex/hover-tip";
 import { PortaledHoverTipLayer } from "@/components/codex/card-keyword-tip-stack";
@@ -128,6 +128,10 @@ interface TopBarProps {
   heldPotionSlots?: (string | null)[];
   potionsById?: Record<string, CodexPotion>;
   relicsById?: Record<string, CodexRelic>;
+  displayedGold?: number | null;
+  displayedHp?: number | null;
+  mapPeek?: boolean;
+  onToggleMap?: () => void;
   onOpenDeck: () => void;
   onOpenInfo: () => void;
   focusedPlayerIndex?: number;
@@ -146,6 +150,10 @@ export function TopBar({
   heldPotionSlots,
   potionsById,
   relicsById,
+  displayedGold,
+  displayedHp,
+  mapPeek = false,
+  onToggleMap,
   onOpenDeck,
   onOpenInfo,
   focusedPlayerIndex = 0,
@@ -171,8 +179,8 @@ export function TopBar({
             focusedIndex={focusedPlayerIndex}
             onFocus={onFocusPlayer}
           />
-          <HpChip hp={state.hp} maxHp={state.maxHp} />
-          <GoldChip gold={state.gold} />
+          <HpChip hp={displayedHp ?? state.hp} maxHp={state.maxHp} />
+          <GoldChip gold={displayedGold ?? state.gold} />
           <PotionSlots
             count={state.potionSlots}
             potions={state.potions}
@@ -199,6 +207,9 @@ export function TopBar({
             totalRunMs={totalRunMs}
             realRunSeconds={run.run_time ?? null}
           />
+          {onToggleMap ? (
+            <MapChip pressed={mapPeek} onToggle={onToggleMap} />
+          ) : null}
           <DeckChip count={state.deckCount} onOpen={onOpenDeck} />
           <HistoryListButton />
           <SettingsButton onClick={onOpenInfo} />
@@ -265,6 +276,7 @@ function Chip({
   onClick,
   className,
   as = "div",
+  buttonProps,
 }: {
   children: ReactNode;
   tip?: TipContent;
@@ -273,6 +285,7 @@ function Chip({
   onClick?: () => void;
   className?: string;
   as?: "div" | "button";
+  buttonProps?: ButtonHTMLAttributes<HTMLButtonElement> & Record<string, string | undefined>;
 }) {
   // Frameless: chips sit on the stone panel like the relics do, no
   // background or ring. Buttons get a subtle hover lift only. The
@@ -291,6 +304,7 @@ function Chip({
           baseClass,
           "transition hover:brightness-125 focus:outline-none focus-visible:brightness-125",
         )}
+        {...buttonProps}
       >
         {children}
       </button>
@@ -330,18 +344,164 @@ function HpChip({
   );
 }
 
+function goldStep(remaining: number): number {
+  const abs = Math.abs(remaining);
+  if (abs > 100) return remaining > 0 ? 75 : -75;
+  if (abs > 50) return remaining > 0 ? 10 : -10;
+  return remaining > 0 ? 1 : -1;
+}
+
+function goldStepDelayMs(remaining: number): number {
+  const abs = Math.abs(remaining);
+  return 10 + 10 * Math.max(0, Math.min(1, (10 - abs) / 10));
+}
+
 function GoldChip({ gold }: { gold: number | null }) {
+  const [shown, setShown] = useState(gold);
+  const [popup, setPopup] = useState<{
+    amount: number;
+    y: number;
+    opacity: number;
+  } | null>(null);
+  const shownRef = useRef(gold);
+  shownRef.current = shown;
+
+  useEffect(() => {
+    if (gold == null) {
+      setShown(null);
+      setPopup(null);
+      return;
+    }
+    const from = shownRef.current;
+    if (from == null) {
+      setShown(gold);
+      return;
+    }
+    const delta = gold - from;
+    if (delta === 0) return;
+    let remaining = delta;
+    let displayed = from;
+    let popupY = 0;
+    let popupOpacity = 0;
+    let phase: "in" | "count" | "out" = "in";
+    let phaseElapsed = 0;
+    let stepWait = 0;
+    let last = performance.now();
+    let raf = 0;
+    setPopup({ amount: delta, y: 0, opacity: 0 });
+
+    const tick = (now: number) => {
+      const dt = Math.min(40, now - last);
+      last = now;
+      phaseElapsed += dt;
+      if (phase === "in") {
+        popupOpacity = Math.min(1, phaseElapsed / 150);
+        popupY = Math.min(30, (phaseElapsed / 250) * 30);
+        setPopup({ amount: delta, y: popupY, opacity: popupOpacity });
+        if (phaseElapsed >= 150 && popupY >= 30 * (150 / 250)) {
+          // Keep rising to 250ms while starting the wait+count after 150ms.
+        }
+        if (phaseElapsed >= 150 + 150) {
+          phase = "count";
+          phaseElapsed = 0;
+          stepWait = 0;
+        }
+      } else if (phase === "count") {
+        if (remaining === 0) {
+          if (phaseElapsed >= 250) {
+            phase = "out";
+            phaseElapsed = 0;
+          }
+        } else {
+          stepWait -= dt;
+          if (stepWait <= 0) {
+            const step = goldStep(remaining);
+            remaining -= step;
+            displayed += step;
+            setShown(displayed);
+            stepWait = goldStepDelayMs(remaining);
+          }
+        }
+        popupOpacity = 1;
+        popupY = 30;
+        setPopup({ amount: delta, y: popupY, opacity: popupOpacity });
+      } else {
+        popupOpacity = Math.max(0, 1 - phaseElapsed / 100);
+        popupY = 30 - Math.min(30, (phaseElapsed / 250) * 30);
+        setPopup({ amount: delta, y: popupY, opacity: popupOpacity });
+        if (phaseElapsed >= 250) {
+          setShown(gold);
+          setPopup(null);
+          return;
+        }
+      }
+      raf = window.requestAnimationFrame(tick);
+    };
+    raf = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(raf);
+  }, [gold]);
+
+  const label = shown ?? gold;
   return (
     <Chip>
+      <span className="relative inline-flex items-center gap-1.5">
+        <Image
+          src="/images/sts2/ui/topbar/top_bar_gold.png"
+          alt=""
+          width={32}
+          height={30}
+          className="h-[30px] w-8 object-contain"
+          unoptimized
+        />
+        <span className="topbar-num topbar-num-gold tabular-nums">{label ?? "—"}</span>
+        {popup ? (
+          <span
+            className="pointer-events-none absolute left-full top-0 ml-1 font-game-title text-sm tabular-nums text-amber-200"
+            style={{
+              transform: `translateY(${-popup.y}px)`,
+              opacity: popup.opacity,
+            }}
+            data-history-gold-popup={popup.amount}
+          >
+            {popup.amount > 0 ? `+${popup.amount}` : popup.amount}
+          </span>
+        ) : null}
+      </span>
+    </Chip>
+  );
+}
+
+function MapChip({
+  pressed,
+  onToggle,
+}: {
+  pressed: boolean;
+  onToggle: () => void;
+}) {
+  const gameLocale = useGameLocale();
+  const tip = historyStaticHoverTip("MAP", gameLocale);
+  return (
+    <Chip
+      as="button"
+      onClick={onToggle}
+      buttonProps={{
+        "data-history-map-toggle": "",
+        "aria-pressed": pressed ? "true" : "false",
+      }}
+      tip={{
+        title: tip.title,
+        body: <DescriptionText description={tip.description} />,
+      }}
+      tipPlacement="below-right"
+    >
       <Image
-        src="/images/sts2/ui/topbar/top_bar_gold.png"
+        src="/images/sts2/ui/topbar/top_bar_map.png"
         alt=""
         width={32}
         height={30}
         className="h-[30px] w-8 object-contain"
         unoptimized
       />
-      <span className="topbar-num topbar-num-gold tabular-nums">{gold ?? "—"}</span>
     </Chip>
   );
 }

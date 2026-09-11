@@ -20,6 +20,7 @@ import {
 } from "@/components/history-course/merchant-shop-screen";
 import { RestSiteScreen } from "@/components/history-course/rest-site-screen";
 import { RoomResultReceipt } from "@/components/history-course/room-result-receipt";
+import { lookupHistoryCard } from "@/lib/history-card-lookup";
 import {
   characterCombatArtSrc,
   restSitePrompt,
@@ -27,6 +28,7 @@ import {
 import {
   isLanternKeyFight,
   isLanternKeyHistoryEntry,
+  isSlipperyBridgeEntry,
   roomMonsterIds,
   stripReplayId,
   type LastSceneKind,
@@ -34,12 +36,16 @@ import {
 import {
   combatLootSpecs,
   lastScenePhase,
+  lastSceneStepIndex,
+  slipperyHoldCount,
+  slipperyHoldHpLoss,
   type LastScenePhase,
 } from "@/lib/history-last-scene-steps";
 import {
   lastSceneBackgroundUrl,
   lastSceneMonsterSlots,
   monsterStillUrl,
+  restSiteFireClassName,
   restSiteFireUrl,
 } from "@/lib/history-last-scene-assets";
 import { matchEncounterFormationIndex } from "@/lib/history-encounter-match";
@@ -63,7 +69,6 @@ import { prettifyId } from "@/lib/sts2-i18n";
 import type { CodexCard, CodexEnchantment, CodexMonster, CodexPotion, CodexRelic, MonsterSpineAsset } from "@/lib/codex-types";
 import type { ReplayChoice, ReplayHistoryEntry, ReplayRun } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
-import { lookupHistoryCard } from "@/lib/history-card-lookup";
 import { lookupHistoryRelic } from "@/lib/history-relic-lookup";
 import { resolveRelicDisplayImage } from "@/lib/relic-character-variant";
 import type { HistoryLocTables } from "@/lib/history-loc-tables";
@@ -115,6 +120,10 @@ const FakeMerchantSpineStage = dynamic(
 );
 const TreasureRoomStage = dynamic(
   () => import("@/components/history-course/treasure-room-stage").then((mod) => mod.TreasureRoomStage),
+  { ssr: false },
+);
+const RestSiteCharacterStage = dynamic(
+  () => import("@/components/history-course/rest-site-character-stage").then((mod) => mod.RestSiteCharacterStage),
   { ssr: false },
 );
 
@@ -222,8 +231,7 @@ export function NodeLastScene({
   return (
     <div
       className={cn(
-        "pointer-events-none absolute inset-0 z-[18] bg-black",
-        kind === "shop" ? "overflow-visible" : "overflow-hidden",
+        "pointer-events-none absolute inset-0 z-[18] overflow-visible bg-black",
       )}
       aria-hidden
       data-history-last-scene={kind}
@@ -263,6 +271,7 @@ export function NodeLastScene({
           tables={tables}
           phase={phase}
           character={character}
+          sceneLocalMs={sceneLocalMs}
           cardsById={cardsById}
           relicsById={relicsById}
           potionsById={potionsById}
@@ -309,6 +318,7 @@ export function NodeLastScene({
           entry={entry}
           gameLocale={gameLocale}
           phase={phase}
+          character={character}
           cardsById={cardsById}
           relicsById={relicsById}
           potionsById={potionsById}
@@ -421,6 +431,8 @@ function CombatScene({
           locTables={locTables}
           relicsById={relicsById}
           potionsById={potionsById}
+          cardsById={cardsById}
+          serviceLocale={serviceLocale}
         />
       ) : null}
       {phase.kind === "cards" ? (
@@ -548,6 +560,7 @@ function EventScene({
   tables,
   phase,
   character,
+  sceneLocalMs,
   cardsById,
   relicsById,
   potionsById,
@@ -562,6 +575,7 @@ function EventScene({
   tables: GameI18nTables;
   phase: LastScenePhase;
   character: string;
+  sceneLocalMs: number;
   cardsById?: Record<string, CodexCard>;
   relicsById?: Record<string, CodexRelic>;
   potionsById?: Record<string, CodexPotion>;
@@ -595,7 +609,25 @@ function EventScene({
   const beatProgress = phase.kind === "choice" || phase.kind === "receipt" || phase.kind === "upgrade" || phase.kind === "cards" || phase.kind === "loot"
     ? phase.beatProgress
     : 1;
-  const choices = eventLastSceneChoices(event, entry.event_choices);
+  const choices = eventLastSceneChoices(event, entry.event_choices, entry);
+  const slippery = isSlipperyBridgeEntry(entry);
+  const holdCount = slipperyHoldCount(entry);
+  const sceneStep = lastSceneStepIndex(sceneLocalMs);
+  const slipperyChoices = slippery
+    ? choices.map((choice) => {
+      const optionId = stripReplayId(choice.id).toUpperCase();
+      const holding = sceneStep < holdCount;
+      return {
+        ...choice,
+        picked: holding ? optionId.includes("HOLD_ON") : optionId === "OVERCOME",
+        locVars: {
+          ...choice.locVars,
+          HpLoss: slipperyHoldHpLoss(Math.min(sceneStep, Math.max(0, holdCount))),
+        },
+      };
+    })
+    : choices;
+  const displayedChoices = slippery ? slipperyChoices : choices;
   const enchanted = entry.cards_enchanted?.[0];
   const enchantment = enchanted
     ? enchantments?.find((row) => row.id.toUpperCase() === stripReplayId(enchanted.enchantmentId).toUpperCase())
@@ -608,7 +640,9 @@ function EventScene({
   const pickedRelic = (entry.relic_choices ?? []).find((choice) => choice.picked && choice.id);
   const relic = pickedRelic ? lookupHistoryRelic(relicsById, pickedRelic.id) : undefined;
   const relicIcon = relic ? resolveRelicDisplayImage(relic, relic.pool) : null;
-  const pickedOption = choices.find((choice) => choice.picked);
+  const pickedOption = displayedChoices.find((choice) => choice.picked);
+  const removedCardId = entry.cards_removed?.find((card) => card.id)?.id;
+  const removedCard = removedCardId && cardsById ? lookupHistoryCard(cardsById, removedCardId) : undefined;
   const loot = combatLootSpecs(entry);
   const cards = entry.card_choices ?? [];
   const skippedCards = cards.length > 0 && !cards.some((choice) => choice.picked);
@@ -616,7 +650,7 @@ function EventScene({
   const choiceOverlay = showChoices ? (
     <GameRoomChoicePanel title={title} body={eventOpeningDescription(event)}>
       <GameRoomChoiceList
-        choices={choices}
+        choices={displayedChoices}
         revealed={revealed}
         copyFor={(choice) =>
           historyRoomChoiceCopy(choice, tables, "events", {
@@ -667,6 +701,15 @@ function EventScene({
           appearFromZero
         />
       ) : null}
+      {phase.kind === "receipt" && slippery && removedCard ? (
+        <LastSceneFocusedCard
+          card={removedCard}
+          progress={beatProgress}
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+          removed
+        />
+      ) : null}
       {phase.kind === "loot" ? (
         <CombatLootScreen
           items={loot}
@@ -677,6 +720,8 @@ function EventScene({
           locTables={locTables}
           relicsById={relicsById}
           potionsById={potionsById}
+          cardsById={cardsById}
+          serviceLocale={serviceLocale}
         />
       ) : null}
       {phase.kind === "cards" ? (
@@ -882,6 +927,8 @@ function TreasureScene({
           locTables={locTables}
           relicsById={relicsById}
           potionsById={potionsById}
+          cardsById={cardsById}
+          serviceLocale={serviceLocale}
         />
       ) : null}
       {phase.kind === "cards" ? (
@@ -904,6 +951,7 @@ function RestScene({
   entry,
   gameLocale,
   phase,
+  character,
   cardsById,
   relicsById,
   potionsById,
@@ -914,6 +962,7 @@ function RestScene({
   entry: ReplayHistoryEntry;
   gameLocale: GameLocale;
   phase: LastScenePhase;
+  character: string;
   cardsById?: Record<string, CodexCard>;
   relicsById?: Record<string, CodexRelic>;
   potionsById?: Record<string, CodexPotion>;
@@ -925,12 +974,11 @@ function RestScene({
   return (
     <div className="absolute inset-0">
       <SceneArt src={backgroundUrl} hideOnError={false} className="absolute inset-0 h-full w-full object-cover" />
-      {fireUrl ? (
-        <SceneArt
-          src={fireUrl}
-          className="absolute bottom-[18%] left-1/2 h-[22%] w-[22%] -translate-x-1/2 object-contain mix-blend-screen"
-        />
-      ) : null}
+      <RestSiteCharacterStage character={character} actId={actId} />
+      <SceneArt
+        src={fireUrl}
+        className={restSiteFireClassName(actId)}
+      />
       {phase.kind === "choice" || phase.kind === "receipt" ? (
         <RestSiteScreen
           entry={entry}

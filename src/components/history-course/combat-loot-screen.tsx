@@ -7,6 +7,7 @@ import {
   cssEscapeAttr,
   relicTargetSelector,
 } from "@/components/history-course/last-scene-obtain-vfx";
+import { lookupHistoryCard } from "@/lib/history-card-lookup";
 import { lookupHistoryPotion, buildPotionEntityInfo } from "@/lib/history-potion-lookup";
 import { lookupHistoryRelic, buildRelicEntityInfo } from "@/lib/history-relic-lookup";
 import { resolveRelicDisplayImage } from "@/lib/relic-character-variant";
@@ -15,11 +16,13 @@ import {
   gameplayUiText,
 } from "@/lib/history-gameplay-ui";
 import {
+  cardRewardTokenKind,
   lootSpecTaken,
+  type CardRewardTokenKind,
   type CombatLootSpec,
 } from "@/lib/history-last-scene-steps";
-import type { CodexPotion, CodexRelic } from "@/lib/codex-types";
-import type { GameLocale } from "@/lib/i18n";
+import type { CodexCard, CodexPotion, CodexRelic } from "@/lib/codex-types";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import type { HistoryLocTables } from "@/lib/history-loc-tables";
 import type { ReplayHistoryEntry } from "@/lib/sts2-run-replay";
 
@@ -30,8 +33,17 @@ const PROCEED = "/images/sts2/ui/reward-screen/proceed_button.webp";
 const ICON_GOLD = "/images/sts2/ui/reward-screen/reward_icon_money.webp";
 const ICON_REMOVAL = "/images/sts2/ui/reward-screen/reward_icon_card_removal.webp";
 const ICON_CARD = "/images/sts2/ui/reward-screen/reward_icon_card.webp";
+const ICON_CARD_RARE = "/images/sts2/ui/reward-screen/reward_icon_rare.webp";
+const ICON_CARD_UNCOMMON = "/images/sts2/ui/reward-screen/reward_icon_uncommon.webp";
+const ICON_CARD_SPECIAL = "/images/sts2/ui/reward-screen/reward_icon_special_card.webp";
 const RETICLE = "/images/sts2/ui/combat/combat_reticle.webp";
 
+function cardTokenIcon(kind: CardRewardTokenKind): string {
+  if (kind === "rare") return ICON_CARD_RARE;
+  if (kind === "uncommon") return ICON_CARD_UNCOMMON;
+  if (kind === "special-card") return ICON_CARD_SPECIAL;
+  return ICON_CARD;
+}
 function SelectionReticle() {
   return (
     <div className="pointer-events-none absolute -inset-[10px] z-20" aria-hidden>
@@ -120,6 +132,8 @@ export function CombatLootScreen({
   locTables,
   relicsById,
   potionsById,
+  cardsById,
+  serviceLocale,
 }: {
   items: CombatLootSpec[];
   resolvedCount: number;
@@ -129,6 +143,8 @@ export function CombatLootScreen({
   locTables?: HistoryLocTables | null;
   relicsById?: Record<string, CodexRelic>;
   potionsById?: Record<string, CodexPotion>;
+  cardsById?: Record<string, CodexCard>;
+  serviceLocale?: ServiceLocale;
 }) {
   const header = gameplayUiText(gameLocale, "COMBAT_REWARD_HEADER_LOOT", "Loot!", locTables);
   const skipLabel = gameplayUiText(gameLocale, "CHOOSE_CARD_SKIP_BUTTON", "Skip", locTables);
@@ -137,9 +153,10 @@ export function CombatLootScreen({
   const resolvingTaken = resolving ? lootSpecTaken(resolving, entry) : false;
 
   let fly: {
-    kind: "relic" | "potion";
+    kind: "relic" | "potion" | "card";
     pickId: string;
     iconUrl: string;
+    card?: CodexCard;
   } | null = null;
   if (resolving?.kind === "relic" && resolvingTaken) {
     const relic = lookupHistoryRelic(relicsById, resolving.choice.id);
@@ -156,6 +173,14 @@ export function CombatLootScreen({
       kind: "potion",
       pickId: resolving.choice.id,
       iconUrl: potion?.imageUrl ?? ICON_GOLD,
+    };
+  } else if (resolving?.kind === "special-card" && resolvingTaken) {
+    const card = cardsById ? lookupHistoryCard(cardsById, resolving.choice.id) : undefined;
+    fly = {
+      kind: "card",
+      pickId: resolving.choice.id,
+      iconUrl: card?.imageUrl ?? ICON_CARD_SPECIAL,
+      card,
     };
   }
 
@@ -239,6 +264,22 @@ export function CombatLootScreen({
                   />
                 );
               }
+              if (item.kind === "special-card") {
+                const card = cardsById ? lookupHistoryCard(cardsById, item.choice.id) : undefined;
+                return (
+                  <LootRow
+                    key={`special-card:${item.choice.id}`}
+                    pickId={item.choice.id}
+                    picked
+                    active={active}
+                    leaving={leaving}
+                    skip={skip}
+                    beatProgress={beatProgress}
+                    iconUrl={ICON_CARD_SPECIAL}
+                    title={card?.name ?? item.choice.id}
+                  />
+                );
+              }
               if (item.kind === "cards") {
                 return (
                   <LootRow
@@ -249,7 +290,7 @@ export function CombatLootScreen({
                     leaving={leaving}
                     skip={skip}
                     beatProgress={beatProgress}
-                    iconUrl={ICON_CARD}
+                    iconUrl={cardTokenIcon(cardRewardTokenKind(entry, cardsById))}
                     title={gameplayUiText(
                       gameLocale,
                       "COMBAT_REWARD_ADD_CARD",
@@ -328,10 +369,16 @@ export function CombatLootScreen({
           progress={beatProgress}
           sourceSelector={`[data-history-reward-icon="${cssEscapeAttr(fly.pickId)}"]`}
           targetSelector={
-            fly.kind === "potion" ? "[data-potion-bay]" : relicTargetSelector(fly.pickId)
+            fly.kind === "potion"
+              ? "[data-potion-bay]"
+              : fly.kind === "card"
+                ? "[data-deck-target]"
+                : relicTargetSelector(fly.pickId)
           }
           iconUrl={fly.iconUrl}
           kind={fly.kind}
+          card={fly.card}
+          serviceLocale={serviceLocale}
         />
       ) : null}
     </div>

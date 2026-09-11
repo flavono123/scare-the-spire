@@ -125,6 +125,20 @@ export function restSiteFireUrl(actId: string | null | undefined): string {
   return fires[key] ?? fires.OVERGROWTH;
 }
 
+export function restSiteFireClassName(actId: string | null | undefined): string {
+  const key = stripReplayId(actId ?? "").toUpperCase();
+  if (key === "HIVE") {
+    return "absolute left-[41.8%] top-[59.9%] h-[15.7%] w-[11.4%] object-contain";
+  }
+  if (key === "GLORY") {
+    return "absolute left-[44%] top-[62%] h-[14%] w-[10%] object-contain";
+  }
+  if (key === "UNDERDOCKS") {
+    return "absolute left-[45%] top-[66%] h-[11%] w-[8%] object-contain";
+  }
+  return "absolute bottom-[18%] left-1/2 h-[22%] w-[22%] -translate-x-1/2 object-contain";
+}
+
 export type RestSiteCharacterSpine = {
   atlasUrl: string;
   skelUrl: string;

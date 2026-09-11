@@ -574,7 +574,7 @@ export function cardRewardTokenKind(
   }
   const rarities = (entry.card_choices ?? [])
     .map((choice) => cardsById ? lookupHistoryCard(cardsById, choice.id)?.rarity : undefined)
-    .filter((rarity): rarity is string => Boolean(rarity));
+    .filter((rarity) => Boolean(rarity));
   if (rarities.length > 0 && rarities.every((rarity) => rarity === "희귀")) return "rare";
   if (rarities.length > 0 && rarities.every((rarity) => rarity === "고급")) return "uncommon";
   return "common";
