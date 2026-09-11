@@ -34,10 +34,13 @@ import {
   sts1TitleFontScale,
   sts1TitleTextStyle,
   sts1TypeBox,
+  sts1CardBackgroundRegion,
+  sts1CardOrbRegion,
 } from "../src/lib/sts1/card-style";
 import { GAME_LOCALES } from "../src/lib/i18n";
 import { sts1BitmapRole } from "../src/lib/sts1/bitmap-font";
 import { EMPTY_STS1_STATS, wrapSts1DescriptionLines } from "../src/lib/sts1/description";
+import { sts1CostLabel, sts1ShowsEnergyOrb } from "../src/lib/sts1/stats";
 import { collectSts1CardSideTips, sts1KeywordTipBody } from "../src/lib/sts1/keyword-tips";
 import { sts1HtmlLang, sts1LineBreakViaCharacter, sts1PickerLocales } from "../src/lib/sts1/locale";
 import { STS1_IMAGE_CACHE_BUSTER } from "../src/lib/sts1/image-cache";
@@ -67,6 +70,23 @@ assert.deepEqual(sts1EnergyCostBox(), {
   width: `${(72 / 300) * 100}%`,
   height: `${(71 / 420) * 100}%`,
 });
+assert.equal(sts1ShowsEnergyOrb(0), true);
+assert.equal(sts1ShowsEnergyOrb(1), true);
+assert.equal(sts1ShowsEnergyOrb(-1), true);
+assert.equal(sts1ShowsEnergyOrb(-2), false);
+assert.equal(sts1CostLabel(-2), "");
+assert.equal(
+  sts1CardBackgroundRegion({ type: "curse", cardColor: "curse" } as never),
+  "bg_skill_black",
+);
+assert.equal(
+  sts1CardBackgroundRegion({ type: "status", cardColor: "colorless" } as never),
+  "bg_skill_gray",
+);
+assert.equal(
+  sts1CardOrbRegion({ cardColor: "curse" } as never),
+  "card_colorless_orb",
+);
 assert.equal(sts1CardUi512Url("bg_attack_red"), `/images/sts1/card-ui-512/bg_attack_red.webp?v=${STS1_IMAGE_CACHE_BUSTER}`);
 assert.equal(
   sts1PotionImageUrl({ slug: "bloodpotion" } as never),

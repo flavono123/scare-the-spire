@@ -36,7 +36,7 @@ import type { GameLocale } from "@/lib/i18n";
 import { sts1HtmlLang } from "@/lib/sts1/locale";
 import { sts1CardPortraitUrl, sts1CardUi512Url } from "@/lib/sts1/paths";
 import { wrapSts1DescriptionLines } from "@/lib/sts1/description";
-import { sts1CardStats, sts1CostLabel } from "@/lib/sts1/stats";
+import { sts1CardStats, sts1CostLabel, sts1ShowsEnergyOrb } from "@/lib/sts1/stats";
 import type { Sts1Card, Sts1Keyword } from "@/lib/sts1/types";
 
 function AtlasLayer({ src }: { src: string }) {
@@ -74,6 +74,7 @@ export function Sts1CardTile({
   const descriptionLines = wrapSts1DescriptionLines(description, stats, gameLocale);
   const title = `${card.name}${stats.nameSuffix}`;
   const costLabel = sts1CostLabel(stats.cost);
+  const showEnergyOrb = sts1ShowsEnergyOrb(stats.cost);
   const upgradedCost = stats.upgraded && card.upgrade?.cost != null;
   const descriptionViewportRef = useRef<HTMLDivElement>(null);
   const descriptionContentRef = useRef<HTMLParagraphElement>(null);
@@ -128,22 +129,26 @@ export function Sts1CardTile({
       {sts1TypeBannerPieces(card).map(([piece, region]) => (
         <AtlasLayer key={piece} src={sts1CardUi512Url(region)} />
       ))}
-      <AtlasLayer src={sts1CardUi512Url(sts1CardOrbRegion(card))} />
-      {costLabel ? (
-        <span
-          className="absolute z-10 flex items-center justify-center leading-none"
-          style={{
-            ...sts1EnergyCostBox(),
-            ...sts1EnergyCostTextStyle(),
-          }}
-        >
-          <Sts1BitmapText
-            text={costLabel}
-            role="energy"
-            gameLocale={gameLocale}
-            color={upgradedCost ? STS1_ENERGY_MODIFIED : STS1_ENERGY_FILL}
-          />
-        </span>
+      {showEnergyOrb ? (
+        <>
+          <AtlasLayer src={sts1CardUi512Url(sts1CardOrbRegion(card))} />
+          {costLabel ? (
+            <span
+              className="absolute z-10 flex items-center justify-center leading-none"
+              style={{
+                ...sts1EnergyCostBox(),
+                ...sts1EnergyCostTextStyle(),
+              }}
+            >
+              <Sts1BitmapText
+                text={costLabel}
+                role="energy"
+                gameLocale={gameLocale}
+                color={upgradedCost ? STS1_ENERGY_MODIFIED : STS1_ENERGY_FILL}
+              />
+            </span>
+          ) : null}
+        </>
       ) : null}
       <h3
         className="absolute z-10 flex items-center justify-center overflow-hidden whitespace-nowrap text-center leading-none"

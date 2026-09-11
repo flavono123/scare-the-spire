@@ -47,6 +47,11 @@ export function sts1CostLabel(cost: number): string {
   return String(cost);
 }
 
+/** AbstractCard.renderEnergy returns before drawing the pip when cost <= COST_UNPLAYABLE. */
+export function sts1ShowsEnergyOrb(cost: number): boolean {
+  return cost > -2;
+}
+
 export function sts1MatchesCostFilter(cost: number, selected: Set<string>): boolean {
   if (selected.size === 0) return true;
   if (cost === -1) return selected.has("X");
