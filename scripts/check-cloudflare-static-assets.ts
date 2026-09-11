@@ -1,4 +1,4 @@
-import { readdirSync, statSync } from "node:fs";
+import { existsSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 
 import {
@@ -602,7 +602,14 @@ console.log(`Cloudflare static detail shell assets: ${staticDetailShellCount}`);
 console.log(`Cloudflare static Compendium root assets: ${staticCompendiumRootCount}`);
 console.log(`Cloudflare static legacy page assets: ${staticLegacyPageCount}`);
 console.log(`Cloudflare static metadata assets: ${staticMetadataAssetCount}`);
+const incrementalCacheRoot = path.join(assetsRoot, "cdn-cgi", "_next_cache");
+const incrementalCacheCount = existsSync(incrementalCacheRoot)
+  ? walkFiles(incrementalCacheRoot).length
+  : 0;
 console.log(`Cloudflare static assets: ${assetStats.count}/${maxAssetFiles}`);
+console.log(
+  `OpenNext incremental cache assets: ${incrementalCacheCount} (page routes already in _cf_static_pages are omitted)`,
+);
 console.log(
   `Largest Cloudflare static asset: ${(assetStats.largestBytes / 1024 / 1024).toFixed(2)} MiB (${assetStats.largestPath})`,
 );
