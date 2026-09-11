@@ -180,7 +180,7 @@ export function TopBar({
             onFocus={onFocusPlayer}
           />
           <HpChip hp={displayedHp ?? state.hp} maxHp={state.maxHp} />
-          <GoldChip gold={displayedGold ?? state.gold} />
+          <GoldChip key={state.currentFloor} gold={displayedGold ?? state.gold} />
           <PotionSlots
             count={state.potionSlots}
             potions={state.potions}
