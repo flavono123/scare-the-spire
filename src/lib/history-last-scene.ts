@@ -108,6 +108,18 @@ export function isLanternKeyFight(entry: ReplayHistoryEntry): boolean {
   return (entry.damage_taken ?? 0) > 0;
 }
 
+export function historyEventModelId(entry: ReplayHistoryEntry): string {
+  return stripReplayId(entry.rooms?.[0]?.model_id ?? "").toUpperCase();
+}
+
+export function isSlipperyBridgeEntry(entry: ReplayHistoryEntry): boolean {
+  return historyEventModelId(entry) === "SLIPPERY_BRIDGE";
+}
+
+export function isRelicTraderEntry(entry: ReplayHistoryEntry): boolean {
+  return historyEventModelId(entry) === "RELIC_TRADER";
+}
+
 export function lastSceneKind(
   entry: ReplayHistoryEntry,
   opts?: { isTerminalDeath?: boolean },

@@ -39,11 +39,20 @@ export function actEncounterBackgroundUrl(actId: string | null | undefined): str
   return ACT_ENCOUNTER_BACKGROUND[key] ?? ACT_ENCOUNTER_BACKGROUND.OVERGROWTH;
 }
 
+export function encounterLookupId(modelId: string | null | undefined): string {
+  const encounterId = stripReplayId(modelId ?? "").toUpperCase();
+  if (!encounterId) return "";
+  if (ENCOUNTER_BY_ID.has(encounterId)) return encounterId;
+  const bossId = `${encounterId}_BOSS`;
+  if (ENCOUNTER_BY_ID.has(bossId)) return bossId;
+  return encounterId;
+}
+
 export function encounterBackgroundUrl(
   modelId: string | null | undefined,
   actId: string | null | undefined,
 ): string {
-  const encounterId = stripReplayId(modelId ?? "").toUpperCase();
+  const encounterId = encounterLookupId(modelId);
   const custom = encounterId ? ENCOUNTER_BY_ID.get(encounterId)?.backgroundUrl : undefined;
   return custom || actEncounterBackgroundUrl(actId);
 }
@@ -51,7 +60,7 @@ export function encounterBackgroundUrl(
 export function lastSceneMonsterSlots(
   modelId: string | null | undefined,
 ): { leftPct: number; topPct: number }[] {
-  const encounterId = stripReplayId(modelId ?? "").toUpperCase();
+  const encounterId = encounterLookupId(modelId);
   const slots = encounterId ? ENCOUNTER_BY_ID.get(encounterId)?.monsterSlots : undefined;
   if (!slots?.length) return [];
   return slots.map((slot) => ({ leftPct: slot.x * 100, topPct: slot.y * 100 }));
@@ -105,11 +114,44 @@ export function restSiteBackgroundUrl(actId: string | null | undefined): string 
   return REST_SITE_BACKGROUND[key] ?? REST_SITE_BACKGROUND.OVERGROWTH;
 }
 
-export function restSiteFireUrl(actId: string | null | undefined): string | null {
+export function restSiteFireUrl(actId: string | null | undefined): string {
   const key = stripReplayId(actId ?? "").toUpperCase();
-  return key === "OVERGROWTH" || !key
-    ? "/images/sts2/rooms/rest-sites/overgrowth_rest_site_fire.webp"
-    : null;
+  const fires: Record<string, string> = {
+    OVERGROWTH: "/images/sts2/rooms/rest-sites/overgrowth_rest_site_fire.webp",
+    HIVE: "/images/sts2/rooms/rest-sites/hive_rest_site_fire.webp",
+    GLORY: "/images/sts2/rooms/rest-sites/glory_rest_site_fire.webp",
+    UNDERDOCKS: "/images/sts2/rooms/rest-sites/underdocks_rest_site_fire.webp",
+  };
+  return fires[key] ?? fires.OVERGROWTH;
+}
+
+export type RestSiteCharacterSpine = {
+  atlasUrl: string;
+  skelUrl: string;
+  ostyAtlasUrl?: string;
+  ostySkelUrl?: string;
+};
+
+export function restSiteCharacterSpine(character: string | undefined): RestSiteCharacterSpine {
+  const slug = stripReplayId(character ?? "ironclad").toLowerCase() || "ironclad";
+  const folder = `/spine/sts2/rest-site/${slug}`;
+  const file = `restsite_${slug}`;
+  const spine: RestSiteCharacterSpine = {
+    atlasUrl: `${folder}/${file}.atlas`,
+    skelUrl: `${folder}/${file}.skel`,
+  };
+  if (slug === "necrobinder") {
+    spine.ostyAtlasUrl = `${folder}/restsite_osty.atlas`;
+    spine.ostySkelUrl = `${folder}/restsite_osty.skel`;
+  }
+  return spine;
+}
+
+export function restSiteCharacterAnimation(actId: string | null | undefined): string {
+  const key = stripReplayId(actId ?? "").toUpperCase();
+  if (key === "HIVE") return "hive_loop";
+  if (key === "GLORY") return "glory_loop";
+  return "overgrowth_loop";
 }
 
 export function lastSceneBackgroundUrl(opts: {

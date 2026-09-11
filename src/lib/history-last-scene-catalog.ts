@@ -46,7 +46,8 @@ export function lookupHistoryEncounter(
 ): CodexEncounter | undefined {
   const id = stripReplayId(modelId ?? "").toUpperCase();
   if (!id) return undefined;
-  return encounters.find((encounter) => encounter.id.toUpperCase() === id);
+  return encounters.find((encounter) => encounter.id.toUpperCase() === id)
+    ?? encounters.find((encounter) => encounter.id.toUpperCase() === `${id}_BOSS`);
 }
 
 export function lookupHistoryCharacter(

@@ -26,6 +26,24 @@ export function lookupHistoryRelic(
   return undefined;
 }
 
+export function lookupHistoryRelicByTitle(
+  relicsById: Record<string, CodexRelic> | undefined,
+  title: string | null | undefined,
+): CodexRelic | undefined {
+  const wanted = title?.trim();
+  if (!relicsById || !wanted) return undefined;
+  const folded = wanted.toLowerCase();
+  for (const relic of Object.values(relicsById)) {
+    if (relic.name === wanted || relic.nameEn === wanted) return relic;
+  }
+  for (const relic of Object.values(relicsById)) {
+    if (relic.name.toLowerCase() === folded || relic.nameEn.toLowerCase() === folded) {
+      return relic;
+    }
+  }
+  return undefined;
+}
+
 export function indexCodexRelics(relics: CodexRelic[]): Record<string, CodexRelic> {
   const out: Record<string, CodexRelic> = {};
   for (const relic of relics) {

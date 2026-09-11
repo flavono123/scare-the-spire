@@ -1,5 +1,12 @@
+import type { CodexCard } from "@/lib/codex-types";
+import { lookupHistoryCard } from "@/lib/history-card-lookup";
 import type { LastSceneKind } from "@/lib/history-last-scene";
-import { isLanternKeyFight, stripReplayId } from "@/lib/history-last-scene";
+import {
+  isLanternKeyFight,
+  isSlipperyBridgeEntry,
+  resolvedRoomType,
+  stripReplayId,
+} from "@/lib/history-last-scene";
 import type { ReplayChoice, ReplayHistoryEntry } from "@/lib/sts2-run-replay";
 
 /** Intra-node last-scene beat, wall-clock. Playback rate does not shorten this. */
@@ -22,7 +29,10 @@ export type CombatLootSpec =
   | { kind: "potion"; choice: ReplayChoice }
   | { kind: "relic"; choice: ReplayChoice }
   | { kind: "card-removal" }
+  | { kind: "special-card"; choice: ReplayChoice }
   | { kind: "cards" };
+
+export type CardRewardTokenKind = "rare" | "uncommon" | "common" | "special-card";
 
 export type LastScenePhase =
   | { kind: "alive" }
@@ -48,9 +58,44 @@ export function hasCardRewardScreen(entry: ReplayHistoryEntry): boolean {
 }
 
 export function lootSpecTaken(spec: CombatLootSpec, entry: ReplayHistoryEntry): boolean {
-  if (spec.kind === "gold" || spec.kind === "card-removal") return true;
+  if (spec.kind === "gold" || spec.kind === "card-removal" || spec.kind === "special-card") return true;
   if (spec.kind === "potion" || spec.kind === "relic") return Boolean(spec.choice.picked);
   return (entry.card_choices ?? []).some((choice) => choice.picked);
+}
+
+function specialCardGains(entry: ReplayHistoryEntry): ReplayChoice[] {
+  const choiceIds = new Set(
+    (entry.card_choices ?? [])
+      .map((choice) => normalizeObtainId(choice.id))
+      .filter(Boolean),
+  );
+  const out: ReplayChoice[] = [];
+  const seen = new Set<string>();
+  for (const card of entry.cards_gained ?? []) {
+    if (!card.id) continue;
+    const key = normalizeObtainId(card.id);
+    if (!key || choiceIds.has(key) || seen.has(key)) continue;
+    seen.add(key);
+    out.push({ id: card.id, picked: true });
+  }
+  return out;
+}
+
+export function slipperyHoldCount(entry: ReplayHistoryEntry): number {
+  return (entry.event_choices ?? []).filter((choice) => {
+    if (!choice.picked) return false;
+    return /HOLD_ON/i.test(stripReplayId(choice.id));
+  }).length;
+}
+
+export function slipperyOvercome(entry: ReplayHistoryEntry): boolean {
+  return (entry.event_choices ?? []).some((choice) =>
+    choice.picked && stripReplayId(choice.id).toUpperCase() === "OVERCOME",
+  );
+}
+
+export function slipperyHoldHpLoss(holdIndex: number): number {
+  return 3 + holdIndex;
 }
 
 export function combatLootSpecs(entry: ReplayHistoryEntry): CombatLootSpec[] {
@@ -68,6 +113,9 @@ export function combatLootSpecs(entry: ReplayHistoryEntry): CombatLootSpec[] {
   }
   if ((entry.cards_removed ?? []).some((card) => card.id)) {
     items.push({ kind: "card-removal" });
+  }
+  for (const choice of specialCardGains(entry)) {
+    items.push({ kind: "special-card", choice });
   }
   if (hasCardRewardScreen(entry)) {
     items.push({ kind: "cards" });
@@ -98,13 +146,21 @@ export function lastSceneStepCount(
         const loot = combatLootSpecs(entry);
         return 1 + 1 + loot.length + (combatShowsCardPicker(entry) ? 1 : 0);
       }
+      if (isSlipperyBridgeEntry(entry)) {
+        return Math.max(2, slipperyHoldCount(entry) + (slipperyOvercome(entry) ? 1 : 0));
+      }
+      if (eventUsesLootSequence(entry)) {
+        const loot = combatLootSpecs(entry);
+        return 1 + loot.length + (combatShowsCardPicker(entry) ? 1 : 0)
+          + (hasCenteredUpgradeFollowUp(entry) ? 1 : 0);
+      }
       return 2 + (hasCenteredUpgradeFollowUp(entry) ? 1 : 0);
     case "ancient":
       return 2 + (hasCenteredUpgradeFollowUp(entry) ? 1 : 0);
     case "rest":
       return 2;
     case "shop":
-      return Math.max(3, shopObtainQueue(entry).length);
+      return Math.max(3, shopObtainQueue(entry).length + 1);
     case "death":
       return 3;
     default:
@@ -133,6 +189,9 @@ export function lastSceneDurationMs(
       + loot.length * LAST_SCENE_STEP_MS
       + (combatShowsCardPicker(entry) ? LAST_SCENE_STEP_MS : 0)
     );
+  }
+  if (kind === "event" && eventUsesLootSequence(entry) && !isSlipperyBridgeEntry(entry)) {
+    return lastSceneStepCount(kind, entry) * LAST_SCENE_STEP_MS;
   }
   return lastSceneStepCount(kind, entry) * LAST_SCENE_STEP_MS;
 }
@@ -222,6 +281,36 @@ export function lastScenePhase(
     }
     return { kind: "dead" };
   }
+  if (kind === "event" && isSlipperyBridgeEntry(entry)) {
+    const steps = lastSceneStepCount("event", entry);
+    if (step < steps - 1) return { kind: "choice", beatProgress };
+    return { kind: "receipt", beatProgress };
+  }
+  if (kind === "event" && eventUsesLootSequence(entry)) {
+    if (step <= 0) return { kind: "choice", beatProgress };
+    const loot = combatLootSpecs(entry);
+    const lootStep = step - 1;
+    if (loot.length > 0 && lootStep < loot.length) {
+      return { kind: "loot", resolvedCount: lootStep, total: loot.length, beatProgress };
+    }
+    let cursor = 1 + loot.length;
+    if (combatShowsCardPicker(entry)) {
+      if (step === cursor) return { kind: "cards", beatProgress };
+      cursor += 1;
+    }
+    if (hasCenteredUpgradeFollowUp(entry) && step >= cursor) {
+      return { kind: "upgrade", beatProgress };
+    }
+    if (loot.length > 0) {
+      return {
+        kind: "loot",
+        resolvedCount: loot.length,
+        total: loot.length,
+        beatProgress: 1,
+      };
+    }
+    return { kind: "receipt", beatProgress };
+  }
   if (kind === "event" || kind === "ancient" || kind === "rest") {
     if (step <= 0) return { kind: "choice", beatProgress };
     if (kind !== "rest" && hasCenteredUpgradeFollowUp(entry) && step >= 2) {
@@ -232,6 +321,16 @@ export function lastScenePhase(
   if (kind === "shop") return { kind: "shop", beatProgress, step };
   if (kind === "death") return { kind: "death" };
   return { kind: "choice", beatProgress };
+}
+
+function eventUsesLootSequence(entry: ReplayHistoryEntry): boolean {
+  if (isSlipperyBridgeEntry(entry)) return false;
+  const eventRoom =
+    entry.map_point_type === "unknown"
+    || resolvedRoomType(entry) === "event";
+  if (!eventRoom) return false;
+  const loot = combatLootSpecs(entry);
+  return loot.some((spec) => spec.kind !== "relic") || combatShowsCardPicker(entry);
 }
 
 function hasCenteredUpgradeFollowUp(entry: ReplayHistoryEntry): boolean {
@@ -272,9 +371,10 @@ export function shopMatItemHidden(
   const queue = shopObtainQueue(entry);
   const index = queue.findIndex((item) => item.kind === kind && item.id === id);
   if (index < 0) return false;
-  if (step > index) return true;
+  const slot = index + 1;
+  if (step > slot) return true;
   const hideAfter = kind === "card" ? 0.04 : 0.12;
-  return step === index && beatProgress > hideAfter;
+  return step === slot && beatProgress > hideAfter;
 }
 
 /** `merchant_card_removal.tscn` Used clip: 00 → 01 → 02 → 04 → 05. */
@@ -288,8 +388,9 @@ export function shopRemovalFlipProgress(
   if (index < 0) {
     return (entry.cards_removed ?? []).some((card) => card.id) ? 1 : 0;
   }
-  if (step < index) return 0;
-  if (step > index) return 1;
+  const slot = index + 1;
+  if (step < slot) return 0;
+  if (step > slot) return 1;
   if (beatProgress < 0.45) return 0;
   return Math.max(0, Math.min(1, (beatProgress - 0.45) / 0.55));
 }
@@ -302,7 +403,7 @@ export function shopRemovalPickVisible(
   const queue = shopObtainQueue(entry);
   const index = queue.findIndex((item) => item.kind === "removal");
   if (index < 0) return false;
-  if (step !== index) return false;
+  if (step !== index + 1) return false;
   return beatProgress < 0.72;
 }
 
@@ -315,16 +416,14 @@ function shopObtainLanded(
   const queue = shopObtainQueue(entry);
   const index = queue.findIndex((item) => item.kind === kind && item.id === id);
   if (index < 0) return true;
-  const steps = lastSceneStepCount("shop", entry);
-  const slot = Math.min(index, steps - 1);
+  const slot = index + 1;
   const step = lastSceneStepIndex(sceneLocalMs);
   return step > slot || (step === slot && obtainLanded(lastSceneBeatProgress(sceneLocalMs)));
 }
 
 export function shopObtainsAtStep(entry: ReplayHistoryEntry, step: number): ShopObtain[] {
   const queue = shopObtainQueue(entry);
-  const steps = lastSceneStepCount("shop", entry);
-  return queue.filter((_, index) => Math.min(index, steps - 1) === step);
+  return queue.filter((_, index) => index + 1 === step);
 }
 
 export function lastSceneIdSetHas(ids: ReadonlySet<string> | undefined, id: string): boolean {
@@ -453,7 +552,7 @@ export function lastScenePicksRevealed(
   const phase = lastScenePhase(kind, entry, sceneLocalMs);
   if (phase.kind === "cards" || phase.kind === "upgrade") return true;
   if (phase.kind === "shop") {
-    return phase.step > 0 || obtainLanded(phase.beatProgress);
+    return phase.step > 1 || (phase.step === 1 && obtainLanded(phase.beatProgress));
   }
   if (phase.kind === "loot") {
     return phase.resolvedCount > 0 || obtainLanded(phase.beatProgress);
@@ -464,4 +563,101 @@ export function lastScenePicksRevealed(
 
 export function normalizeObtainId(id: string): string {
   return stripReplayId(id).toUpperCase();
+}
+
+export function cardRewardTokenKind(
+  entry: ReplayHistoryEntry,
+  cardsById?: Record<string, CodexCard>,
+): CardRewardTokenKind {
+  if (entry.map_point_type === "boss" || resolvedRoomType(entry) === "boss") {
+    return "rare";
+  }
+  const rarities = (entry.card_choices ?? [])
+    .map((choice) => cardsById ? lookupHistoryCard(cardsById, choice.id)?.rarity : undefined)
+    .filter((rarity): rarity is string => Boolean(rarity));
+  if (rarities.length > 0 && rarities.every((rarity) => rarity === "희귀")) return "rare";
+  if (rarities.length > 0 && rarities.every((rarity) => rarity === "고급")) return "uncommon";
+  return "common";
+}
+
+export function entryGoldBeforeFloor(entry: ReplayHistoryEntry): number {
+  return (entry.current_gold ?? 0)
+    - (entry.gold_gained ?? 0)
+    + (entry.gold_spent ?? 0)
+    + (entry.gold_lost ?? 0);
+}
+
+function goldLootLanded(
+  kind: LastSceneKind,
+  entry: ReplayHistoryEntry,
+  sceneLocalMs: number,
+): boolean {
+  const loot = combatLootSpecs(entry);
+  const goldIndex = loot.findIndex((spec) => spec.kind === "gold");
+  if (goldIndex < 0) return false;
+  const phase = lastScenePhase(kind, entry, sceneLocalMs);
+  if (phase.kind === "cards" || phase.kind === "upgrade" || phase.kind === "dead") return true;
+  if (phase.kind !== "loot") return false;
+  return phase.resolvedCount > goldIndex
+    || (phase.resolvedCount === goldIndex && obtainLanded(phase.beatProgress));
+}
+
+export function lastSceneGoldRevealed(
+  kind: LastSceneKind,
+  entry: ReplayHistoryEntry,
+  sceneLocalMs: number,
+): boolean {
+  if (kind === "combat" || kind === "treasure") {
+    if ((entry.gold_gained ?? 0) <= 0 && (entry.gold_stolen ?? 0) <= 0) return true;
+    return goldLootLanded(kind, entry, sceneLocalMs);
+  }
+  if (kind === "shop") {
+    if ((entry.gold_spent ?? 0) <= 0 && (entry.gold_gained ?? 0) <= 0) return true;
+    return lastScenePicksRevealed(kind, entry, sceneLocalMs);
+  }
+  if (kind === "event" || kind === "ancient" || kind === "rest") {
+    if (
+      (entry.gold_gained ?? 0) <= 0
+      && (entry.gold_spent ?? 0) <= 0
+      && (entry.gold_lost ?? 0) <= 0
+    ) {
+      return true;
+    }
+    if (goldLootLanded(kind, entry, sceneLocalMs)) return true;
+    const phase = lastScenePhase(kind, entry, sceneLocalMs);
+    return phase.kind === "receipt" && obtainLanded(phase.beatProgress);
+  }
+  return true;
+}
+
+export function lastSceneDisplayedGold(
+  kind: LastSceneKind,
+  entry: ReplayHistoryEntry,
+  sceneLocalMs: number,
+): number {
+  if (!lastSceneGoldRevealed(kind, entry, sceneLocalMs)) {
+    return entryGoldBeforeFloor(entry);
+  }
+  return entry.current_gold ?? entryGoldBeforeFloor(entry);
+}
+
+export function lastSceneDisplayedHp(
+  kind: LastSceneKind,
+  entry: ReplayHistoryEntry,
+  sceneLocalMs: number,
+): number | null {
+  if (kind === "event" && isSlipperyBridgeEntry(entry)) {
+    const start = (entry.current_hp ?? 0) + (entry.damage_taken ?? 0);
+    const holdCount = slipperyHoldCount(entry);
+    const step = lastSceneStepIndex(sceneLocalMs);
+    const beat = lastSceneBeatProgress(sceneLocalMs);
+    let holdsLanded = 0;
+    for (let i = 0; i < holdCount; i++) {
+      if (step > i || (step === i && obtainLanded(beat))) holdsLanded += 1;
+    }
+    let hp = start;
+    for (let i = 0; i < holdsLanded; i++) hp -= slipperyHoldHpLoss(i);
+    return hp;
+  }
+  return entry.current_hp ?? null;
 }

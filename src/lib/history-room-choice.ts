@@ -9,8 +9,12 @@ import type {
 import { bakeDescription } from "@/lib/codex-bake";
 import { lookupHistoryCard } from "@/lib/history-card-lookup";
 import { lookupHistoryPotion } from "@/lib/history-potion-lookup";
-import { lookupHistoryRelic } from "@/lib/history-relic-lookup";
-import { stripReplayId } from "@/lib/history-last-scene";
+import { lookupHistoryRelic, lookupHistoryRelicByTitle } from "@/lib/history-relic-lookup";
+import {
+  isRelicTraderEntry,
+  isSlipperyBridgeEntry,
+  stripReplayId,
+} from "@/lib/history-last-scene";
 import type { HistoryChoiceLoc } from "@/lib/history-last-scene-catalog";
 import {
   isGameI18nTableName,
@@ -19,7 +23,7 @@ import {
   type GameI18nTables,
 } from "@/lib/sts2-game-i18n";
 import { prettifyId } from "@/lib/sts2-i18n";
-import type { ReplayChoice } from "@/lib/sts2-run-replay";
+import type { ReplayChoice, ReplayHistoryEntry } from "@/lib/sts2-run-replay";
 import type { HistoryLocTables } from "@/lib/history-loc-tables";
 import { resolveRelicDisplayImage } from "@/lib/relic-character-variant";
 
@@ -262,18 +266,49 @@ export function roomChoiceBackgroundImageUrl(
   return null;
 }
 
+export function relicTraderSlotKey(choice: ReplayChoice): "TOP" | "MIDDLE" | "BOTTOM" | null {
+  const id = choiceOptionId(choice).toUpperCase();
+  if (id === "TOP" || id === "MIDDLE" || id === "BOTTOM") return id;
+  return null;
+}
+
+function relicTraderNewTitle(choice: ReplayChoice): string | null {
+  const slot = relicTraderSlotKey(choice);
+  if (!slot) return null;
+  const key = `${slot[0]}${slot.slice(1).toLowerCase()}RelicNew`;
+  const alt = `${slot}RelicNew`;
+  const vars = choice.locVars ?? {};
+  const value = vars[key] ?? vars[alt] ?? vars[`${slot}RelicNew`];
+  return typeof value === "string" && value.trim() ? value : null;
+}
+
+export function relicTraderChoiceImage(
+  choice: ReplayChoice,
+  relicsById?: Record<string, CodexRelic>,
+): string | null {
+  const title = relicTraderNewTitle(choice);
+  const relic = lookupHistoryRelicByTitle(relicsById, title);
+  return relic ? resolveRelicDisplayImage(relic, relic.pool) : null;
+}
+
 export function eventLastSceneChoices(
   event: CodexEvent | undefined,
   replayChoices: ReplayChoice[] | undefined,
+  entry?: ReplayHistoryEntry,
 ): ReplayChoice[] {
   const picks = replayChoices ?? [];
   const pickedKey = (choice: ReplayChoice) => choiceOptionId(choice).toUpperCase();
   const pickById = new Map(picks.map((choice) => [pickedKey(choice), choice]));
   const pages = event?.pages ?? [];
   let options = event?.options ?? [];
-  const matchingPage = pages.find((page) =>
-    (page.options ?? []).some((option) => pickById.has(option.id.toUpperCase())),
+  const forceInitial = Boolean(
+    entry && (isSlipperyBridgeEntry(entry) || isRelicTraderEntry(entry)),
   );
+  const matchingPage = forceInitial
+    ? undefined
+    : pages.find((page) =>
+      (page.options ?? []).some((option) => pickById.has(option.id.toUpperCase())),
+    );
   if (matchingPage?.options?.length) {
     options = matchingPage.options;
   } else {
@@ -282,12 +317,21 @@ export function eventLastSceneChoices(
   }
   if (!options.length) return picks;
 
-  const listed = options.map((option) => pickById.get(option.id.toUpperCase()) ?? {
-    id: option.id,
-    picked: false,
+  const sharedVars = picks.find((choice) => choice.locVars && Object.keys(choice.locVars).length > 0)?.locVars;
+  const listed = options.map((option) => {
+    const replay = pickById.get(option.id.toUpperCase());
+    return {
+      id: replay?.id ?? option.id,
+      picked: replay?.picked ?? false,
+      locTable: replay?.locTable,
+      locKey: replay?.locKey,
+      locVars: replay?.locVars ?? sharedVars,
+    };
   });
-  for (const pick of picks) {
-    if (!listed.some((row) => pickedKey(row) === pickedKey(pick))) listed.push(pick);
+  if (!forceInitial) {
+    for (const pick of picks) {
+      if (!listed.some((row) => pickedKey(row) === pickedKey(pick))) listed.push(pick);
+    }
   }
   return listed;
 }
@@ -318,6 +362,7 @@ export function historyRoomChoiceCopy(
       opts.relicsById,
       opts.enchantments,
     ),
-    backgroundImageUrl: roomChoiceBackgroundImageUrl(choice, opts),
+    backgroundImageUrl: relicTraderChoiceImage(choice, opts.relicsById)
+      ?? roomChoiceBackgroundImageUrl(choice, opts),
   };
 }
