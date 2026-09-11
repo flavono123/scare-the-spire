@@ -1,6 +1,7 @@
 "use client";
 
 import { FittedCardTile } from "@/components/history-course/fitted-card-tile";
+import { EnchantAppearSparkles } from "@/components/history-course/last-scene-card-fx";
 import type { CodexCard, CodexEnchantment } from "@/lib/codex-types";
 import type { ServiceLocale } from "@/lib/i18n";
 
@@ -28,10 +29,11 @@ export function LastSceneEnchantAttach({
 
   return (
     <div
-      className="pointer-events-none absolute inset-x-0 bottom-[12%] z-30 flex justify-center"
+      className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center"
       data-history-enchant-attach={enchantment.id}
     >
-      <div className="relative w-[12.5%]">
+      <div className="absolute inset-0 bg-black/78" />
+      <div className="relative w-[min(18rem,22%)]">
         <FittedCardTile
           card={card}
           showUpgrade={false}
@@ -41,6 +43,7 @@ export function LastSceneEnchantAttach({
           enchantmentImageUrl={landed ? enchantment.imageUrl : null}
           enchantmentLabel={enchantment.name}
         />
+        <EnchantAppearSparkles progress={progress} />
         {enchantment.imageUrl && !landed ? (
           <div
             className="absolute left-[11%] top-[18%] z-10 h-[12%] w-[16%]"

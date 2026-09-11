@@ -85,6 +85,29 @@ export function isTerminalDeathEntry(
   return Boolean(run.killed_by_encounter || run.killed_by_event);
 }
 
+export function isLanternKeyHistoryEntry(entry: ReplayHistoryEntry): boolean {
+  return stripReplayId(entry.rooms?.[0]?.model_id ?? "").toUpperCase() === "THE_LANTERN_KEY";
+}
+
+export function isLanternKeyFight(entry: ReplayHistoryEntry): boolean {
+  if (!isLanternKeyHistoryEntry(entry)) return false;
+  const picked = (entry.event_choices ?? [])
+    .filter((choice) => choice.picked)
+    .map((choice) => stripReplayId(choice.id).toUpperCase());
+  if (picked.some((id) => id === "KEEP_THE_KEY" || id === "FIGHT")) return true;
+  if ((entry.card_choices ?? []).some((choice) => stripReplayId(choice.id).toUpperCase() === "LANTERN_KEY")) {
+    return true;
+  }
+  if (
+    (entry.rooms ?? []).some((room) =>
+      (room.monster_ids ?? []).some((id) => /MYSTERIOUS_KNIGHT|FLAIL_KNIGHT/i.test(id)),
+    )
+  ) {
+    return true;
+  }
+  return (entry.damage_taken ?? 0) > 0;
+}
+
 export function lastSceneKind(
   entry: ReplayHistoryEntry,
   opts?: { isTerminalDeath?: boolean },
@@ -96,6 +119,8 @@ export function lastSceneKind(
   if (isAncientHistoryEntry(entry)) return "ancient";
   if (mapType === "treasure" || roomType === "treasure") return "treasure";
   if (mapType === "shop" || roomType === "shop") return "shop";
+  // Combat-layout events keep the event last scene (knight + choices + death).
+  if (isLanternKeyHistoryEntry(entry)) return "event";
   if (isCombatHistoryEntry(entry)) return "combat";
   const hasEventBits =
     (entry.event_choices ?? []).length > 0 ||

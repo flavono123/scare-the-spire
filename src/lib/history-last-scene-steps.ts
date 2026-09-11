@@ -1,5 +1,5 @@
 import type { LastSceneKind } from "@/lib/history-last-scene";
-import { stripReplayId } from "@/lib/history-last-scene";
+import { isLanternKeyFight, stripReplayId } from "@/lib/history-last-scene";
 import type { ReplayChoice, ReplayHistoryEntry } from "@/lib/sts2-run-replay";
 
 /** Intra-node last-scene beat, wall-clock. Playback rate does not shorten this. */
@@ -33,6 +33,7 @@ export type LastScenePhase =
   | { kind: "choice"; beatProgress: number }
   | { kind: "receipt"; beatProgress: number }
   | { kind: "shop"; beatProgress: number; step: number }
+  | { kind: "upgrade"; beatProgress: number }
   | { kind: "chest" }
   | { kind: "rest" }
   | { kind: "death" };
@@ -93,7 +94,13 @@ export function lastSceneStepCount(
       return 1 + loot.length + (combatShowsCardPicker(entry) ? 1 : 0);
     }
     case "event":
+      if (isLanternKeyFight(entry)) {
+        const loot = combatLootSpecs(entry);
+        return 1 + 1 + loot.length + (combatShowsCardPicker(entry) ? 1 : 0);
+      }
+      return 2 + (hasCenteredUpgradeFollowUp(entry) ? 1 : 0);
     case "ancient":
+      return 2 + (hasCenteredUpgradeFollowUp(entry) ? 1 : 0);
     case "rest":
       return 2;
     case "shop":
@@ -113,6 +120,15 @@ export function lastSceneDurationMs(
     const loot = combatLootSpecs(entry);
     return (
       LAST_SCENE_ALIVE_MS
+      + LAST_SCENE_DYING_MS
+      + loot.length * LAST_SCENE_STEP_MS
+      + (combatShowsCardPicker(entry) ? LAST_SCENE_STEP_MS : 0)
+    );
+  }
+  if (kind === "event" && isLanternKeyFight(entry)) {
+    const loot = combatLootSpecs(entry);
+    return (
+      LAST_SCENE_STEP_MS
       + LAST_SCENE_DYING_MS
       + loot.length * LAST_SCENE_STEP_MS
       + (combatShowsCardPicker(entry) ? LAST_SCENE_STEP_MS : 0)
@@ -177,24 +193,58 @@ export function lastScenePhase(
     }
     return { kind: "chest" };
   }
+  if (kind === "event" && isLanternKeyFight(entry)) {
+    if (sceneLocalMs < LAST_SCENE_STEP_MS) {
+      return { kind: "choice", beatProgress };
+    }
+    if (sceneLocalMs < LAST_SCENE_STEP_MS + LAST_SCENE_DYING_MS) return { kind: "dying" };
+    const loot = combatLootSpecs(entry);
+    const lootMs = sceneLocalMs - LAST_SCENE_STEP_MS - LAST_SCENE_DYING_MS;
+    const lootStep = Math.floor(lootMs / LAST_SCENE_STEP_MS);
+    const lootBeat = (lootMs % LAST_SCENE_STEP_MS) / LAST_SCENE_STEP_MS;
+    if (loot.length > 0 && lootStep < loot.length) {
+      return { kind: "loot", resolvedCount: lootStep, total: loot.length, beatProgress: lootBeat };
+    }
+    if (combatShowsCardPicker(entry)) {
+      const cardMs = lootMs - loot.length * LAST_SCENE_STEP_MS;
+      return {
+        kind: "cards",
+        beatProgress: Math.max(0, Math.min(1, (cardMs % LAST_SCENE_STEP_MS) / LAST_SCENE_STEP_MS)),
+      };
+    }
+    if (loot.length > 0) {
+      return {
+        kind: "loot",
+        resolvedCount: loot.length,
+        total: loot.length,
+        beatProgress: 1,
+      };
+    }
+    return { kind: "dead" };
+  }
   if (kind === "event" || kind === "ancient" || kind === "rest") {
-    return step <= 0
-      ? { kind: "choice", beatProgress }
-      : { kind: "receipt", beatProgress };
+    if (step <= 0) return { kind: "choice", beatProgress };
+    if (kind !== "rest" && hasCenteredUpgradeFollowUp(entry) && step >= 2) {
+      return { kind: "upgrade", beatProgress };
+    }
+    return { kind: "receipt", beatProgress };
   }
   if (kind === "shop") return { kind: "shop", beatProgress, step };
   if (kind === "death") return { kind: "death" };
   return { kind: "choice", beatProgress };
 }
 
+function hasCenteredUpgradeFollowUp(entry: ReplayHistoryEntry): boolean {
+  return (entry.upgraded_cards ?? []).some((id) => Boolean(id));
+}
+
 function obtainLanded(beatProgress: number): boolean {
   return beatProgress >= LAST_SCENE_OBTAIN_LAND;
 }
 
-export type ShopObtain = {
-  kind: "relic" | "potion" | "card";
-  id: string;
-};
+export type ShopObtain =
+  | { kind: "relic" | "potion" | "card"; id: string }
+  | { kind: "removal"; id: string };
 
 export function shopObtainQueue(entry: ReplayHistoryEntry): ShopObtain[] {
   const out: ShopObtain[] = [];
@@ -207,7 +257,53 @@ export function shopObtainQueue(entry: ReplayHistoryEntry): ShopObtain[] {
   for (const choice of entry.card_choices ?? []) {
     if (choice.picked && choice.id) out.push({ kind: "card", id: choice.id });
   }
+  const removed = (entry.cards_removed ?? []).find((card) => card.id);
+  if (removed?.id) out.push({ kind: "removal", id: removed.id });
   return out;
+}
+
+export function shopMatItemHidden(
+  entry: ReplayHistoryEntry,
+  id: string,
+  kind: "relic" | "potion" | "card",
+  step: number,
+  beatProgress: number,
+): boolean {
+  const queue = shopObtainQueue(entry);
+  const index = queue.findIndex((item) => item.kind === kind && item.id === id);
+  if (index < 0) return false;
+  if (step > index) return true;
+  const hideAfter = kind === "card" ? 0.04 : 0.12;
+  return step === index && beatProgress > hideAfter;
+}
+
+/** `merchant_card_removal.tscn` Used clip: 00 → 01 → 02 → 04 → 05. */
+export function shopRemovalFlipProgress(
+  entry: ReplayHistoryEntry,
+  step: number,
+  beatProgress: number,
+): number {
+  const queue = shopObtainQueue(entry);
+  const index = queue.findIndex((item) => item.kind === "removal");
+  if (index < 0) {
+    return (entry.cards_removed ?? []).some((card) => card.id) ? 1 : 0;
+  }
+  if (step < index) return 0;
+  if (step > index) return 1;
+  if (beatProgress < 0.45) return 0;
+  return Math.max(0, Math.min(1, (beatProgress - 0.45) / 0.55));
+}
+
+export function shopRemovalPickVisible(
+  entry: ReplayHistoryEntry,
+  step: number,
+  beatProgress: number,
+): boolean {
+  const queue = shopObtainQueue(entry);
+  const index = queue.findIndex((item) => item.kind === "removal");
+  if (index < 0) return false;
+  if (step !== index) return false;
+  return beatProgress < 0.72;
 }
 
 function shopObtainLanded(
@@ -281,6 +377,18 @@ export function lastSceneHiddenRelicIds(
   }
   if (kind === "event" || kind === "ancient") {
     const phase = lastScenePhase(kind, entry, sceneLocalMs);
+    if (phase.kind === "loot") {
+      const loot = combatLootSpecs(entry);
+      const hidden = new Set<string>();
+      loot.forEach((spec, index) => {
+        if (spec.kind !== "relic" || !spec.choice.picked || !spec.choice.id) return;
+        const landed =
+          phase.resolvedCount > index || (phase.resolvedCount === index && obtainLanded(phase.beatProgress));
+        if (!landed) hidden.add(spec.choice.id);
+      });
+      return hidden;
+    }
+    if (phase.kind === "cards" || phase.kind === "upgrade" || phase.kind === "dead") return new Set();
     if (phase.kind !== "receipt") return new Set(pickedRelicIds(entry));
     return obtainLanded(phase.beatProgress) ? new Set() : new Set(pickedRelicIds(entry));
   }
@@ -318,6 +426,18 @@ export function lastSceneHiddenPotionIds(
   }
   if (kind === "event" || kind === "ancient") {
     const phase = lastScenePhase(kind, entry, sceneLocalMs);
+    if (phase.kind === "loot") {
+      const loot = combatLootSpecs(entry);
+      const hidden = new Set<string>();
+      loot.forEach((spec, index) => {
+        if (spec.kind !== "potion" || !spec.choice.picked || !spec.choice.id) return;
+        const landed =
+          phase.resolvedCount > index || (phase.resolvedCount === index && obtainLanded(phase.beatProgress));
+        if (!landed) hidden.add(spec.choice.id);
+      });
+      return hidden;
+    }
+    if (phase.kind === "cards" || phase.kind === "upgrade" || phase.kind === "dead") return new Set();
     if (phase.kind !== "receipt") return new Set(pickedPotionIds(entry));
     return obtainLanded(phase.beatProgress) ? new Set() : new Set(pickedPotionIds(entry));
   }
@@ -331,7 +451,7 @@ export function lastScenePicksRevealed(
   sceneLocalMs: number,
 ): boolean {
   const phase = lastScenePhase(kind, entry, sceneLocalMs);
-  if (phase.kind === "cards") return true;
+  if (phase.kind === "cards" || phase.kind === "upgrade") return true;
   if (phase.kind === "shop") {
     return phase.step > 0 || obtainLanded(phase.beatProgress);
   }

@@ -2,63 +2,75 @@
 
 import type { ReactNode } from "react";
 import { FittedCardTile } from "@/components/history-course/fitted-card-tile";
+import {
+  CARD_REWARD_APPEAR_FADE,
+  CARD_REWARD_APPEAR_POS,
+  CARD_REWARD_PICK_START,
+  EnchantAppearSparkles,
+  RewardCardGlow,
+  cubicOut,
+  expoOut,
+} from "@/components/history-course/last-scene-card-fx";
 import { LastSceneObtainFly } from "@/components/history-course/last-scene-obtain-vfx";
 import { lookupHistoryCard } from "@/lib/history-card-lookup";
+import { historyCardEnchantmentTileProps } from "@/lib/history-enchantments";
 import { gameplayUiText } from "@/lib/history-gameplay-ui";
+import { stripReplayId } from "@/lib/history-last-scene";
 import type { CodexCard } from "@/lib/codex-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import type { HistoryLocTables } from "@/lib/history-loc-tables";
-import type { ReplayChoice } from "@/lib/sts2-run-replay";
+import type { ReplayChoice, ReplayEnchantment } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
 
 const BANNER = "/images/sts2/ui/reward-screen/reward_banner.webp";
 const SKIP = "/images/sts2/ui/reward-screen/reward_skip_button.webp";
-const GLOW_RARE = "/images/sts2/vfx/glow_card_rare.webp";
-const GLOW_UNCOMMON = "/images/sts2/vfx/glow_card_uncommon.webp";
 
-function glowForRarity(rarity: string | undefined): string {
-  if (rarity === "희귀") return GLOW_RARE;
-  return GLOW_UNCOMMON;
-}
-
-function RewardCardGlow({ rarity }: { rarity: string | undefined }) {
-  const src = glowForRarity(rarity);
-  const rare = rarity === "희귀";
-  return (
-    <div
-      className="pointer-events-none absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 mix-blend-screen"
-      aria-hidden
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt=""
-        className={cn(
-          "max-w-none origin-center animate-[spin_12s_linear_infinite]",
-          rare ? "h-[220%] w-[220%] opacity-90" : "h-[190%] w-[190%] opacity-70",
-        )}
-      />
-    </div>
+function enchantmentOnChoice(
+  choice: ReplayChoice,
+  enchantedCards?: ReplayEnchantment[],
+): { enchantmentId: string; amount?: number } | null {
+  if (choice.enchantmentId) {
+    return { enchantmentId: choice.enchantmentId, amount: choice.enchantmentAmount };
+  }
+  const key = stripReplayId(choice.id).toUpperCase();
+  const row = enchantedCards?.find(
+    (entry) => stripReplayId(entry.cardId).toUpperCase() === key,
   );
+  if (!row?.enchantmentId) return null;
+  return { enchantmentId: row.enchantmentId, amount: row.amount };
 }
 
 function PickedRing({
   picked,
   pickId,
+  appearT,
+  fadeT,
+  index,
+  count,
   children,
 }: {
   picked: boolean;
   pickId: string;
+  appearT: number;
+  fadeT: number;
+  index: number;
+  count: number;
   children: ReactNode;
 }) {
+  const fromCenter = (index - (count - 1) / 2) * -42;
   return (
     <div
       data-history-last-scene-pick={pickId}
       data-picked={picked ? "true" : "false"}
       className={cn(
-        "relative flex w-[12.5%] shrink-0 flex-col items-center transition-transform duration-300",
-        picked && "z-10 scale-105",
+        "relative flex w-[12.5%] shrink-0 flex-col items-center overflow-visible",
+        picked && "z-10",
       )}
+      style={{
+        transform: `translateX(${(1 - appearT) * fromCenter}%) scale(${picked && appearT > 0.95 ? 1.05 : 1})`,
+        filter: `brightness(${Math.max(0.08, fadeT)})`,
+        opacity: fadeT,
+      }}
     >
       {children}
     </div>
@@ -73,6 +85,7 @@ export function CardRewardScreen({
   locTables,
   skipped,
   beatProgress = 1,
+  enchantedCards,
 }: {
   choices: ReplayChoice[];
   cardsById?: Record<string, CodexCard>;
@@ -81,19 +94,21 @@ export function CardRewardScreen({
   locTables?: HistoryLocTables | null;
   skipped: boolean;
   beatProgress?: number;
+  enchantedCards?: ReplayEnchantment[];
 }) {
   const header = gameplayUiText(gameLocale, "CHOOSE_CARD_HEADER", "Choose a Card", locTables);
   const skipLabel = gameplayUiText(gameLocale, "CHOOSE_CARD_SKIP_BUTTON", "Skip", locTables);
   const picked = choices.find((choice) => choice.picked && choice.id);
   const pickedCard = picked && cardsById ? lookupHistoryCard(cardsById, picked.id) : undefined;
-  const flying = Boolean(picked && beatProgress > 0.04 && !skipped);
+  const appearT = expoOut(beatProgress / CARD_REWARD_APPEAR_POS);
+  const fadeT = cubicOut(beatProgress / CARD_REWARD_APPEAR_FADE);
+  const flying = Boolean(picked && beatProgress > CARD_REWARD_PICK_START && !skipped);
 
   return (
     <div
       className="pointer-events-none absolute inset-0 z-30"
       data-history-card-reward
     >
-      {/* NOverlayStack shared backstop under the card-pick overlay */}
       <div className="absolute inset-0 bg-black/80" />
       <div
         className="absolute left-1/2 top-[8%] w-[min(34rem,70%)] -translate-x-1/2"
@@ -114,14 +129,29 @@ export function CardRewardScreen({
           {header}
         </div>
       </div>
-      {/* Game: 240px cards on 1920 = 12.5% of the 16:9 stage. */}
       <div className="absolute inset-x-0 top-[26%] bottom-[20%] flex items-center justify-center gap-[4%]">
-        {choices.map((choice) => {
+        {choices.map((choice, index) => {
           const card = cardsById ? lookupHistoryCard(cardsById, choice.id) : undefined;
           const upgradeLevel = choice.upgradeLevel ?? 0;
           const hideForFly = flying && choice.picked;
+          const enchantment = enchantmentOnChoice(choice, enchantedCards);
+          const enchant = enchantment
+            ? historyCardEnchantmentTileProps(
+                enchantment.enchantmentId,
+                enchantment.amount,
+                gameLocale,
+              )
+            : null;
           return (
-            <PickedRing key={choice.id} picked={choice.picked} pickId={choice.id}>
+            <PickedRing
+              key={choice.id}
+              picked={choice.picked}
+              pickId={choice.id}
+              appearT={appearT}
+              fadeT={fadeT}
+              index={index}
+              count={choices.length}
+            >
               <div className={cn("relative w-full", hideForFly && "opacity-0")}>
                 <RewardCardGlow rarity={card?.rarity} />
                 {card ? (
@@ -132,16 +162,24 @@ export function CardRewardScreen({
                     showBeta={false}
                     interactive={false}
                     serviceLocale={serviceLocale}
+                    enchantmentImageUrl={enchant?.enchantmentImageUrl}
+                    enchantmentLabel={enchant?.enchantmentLabel}
+                    enchantmentAmount={enchant?.enchantmentAmount}
+                    forcedCost={enchant?.forcedCost}
+                    enchantAddedKeywords={enchant?.enchantAddedKeywords}
+                    enchantRemovedKeywords={enchant?.enchantRemovedKeywords}
+                    descriptionSuffix={enchant?.descriptionSuffix}
+                    enchantStatMod={enchant?.enchantStatMod}
                   />
                 ) : (
                   <div className="font-game-text text-sm text-[#fff6e2]">{choice.id}</div>
                 )}
+                {enchant ? <EnchantAppearSparkles progress={beatProgress} /> : null}
               </div>
             </PickedRing>
           );
         })}
       </div>
-      {/* card_reward_alternative_button.tscn — 276×73 hex skip */}
       <div
         className={cn(
           "absolute bottom-[8%] left-1/2 w-[min(17.25rem,38%)] -translate-x-1/2 transition-transform duration-300",
@@ -167,7 +205,7 @@ export function CardRewardScreen({
       {flying && picked && pickedCard ? (
         <LastSceneObtainFly
           active
-          progress={Math.max(0, Math.min(1, (beatProgress - 0.04) / 0.96))}
+          progress={Math.max(0, Math.min(1, (beatProgress - CARD_REWARD_PICK_START) / (1 - CARD_REWARD_PICK_START)))}
           sourceSelector={`[data-history-last-scene-pick="${picked.id}"]`}
           targetSelector="[data-deck-target]"
           iconUrl={pickedCard.imageUrl ?? ""}

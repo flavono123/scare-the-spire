@@ -51,6 +51,9 @@ export interface ReplayChoice {
   locVars?: Record<string, string | number>;
   /** `card_choices` only — `CardModel.Title` appends `+` / `+N` from this. */
   upgradeLevel?: number;
+  /** `card_choices` only — reward already enchanted (Fresnel Lens, etc.). */
+  enchantmentId?: string;
+  enchantmentAmount?: number;
 }
 
 export interface ReplayCardEnchantment {
@@ -1146,7 +1149,11 @@ export function parseReplayRun(raw: string): ReplayRun {
       Array.isArray(act)
         ? act.map((entry) => {
             type RawCardChoice = {
-              card?: { id?: string; current_upgrade_level?: number };
+              card?: {
+                id?: string;
+                current_upgrade_level?: number;
+                enchantment?: { id?: string; amount?: number };
+              };
               was_picked?: boolean;
             };
             type RawSimpleChoice = { choice?: string; was_picked?: boolean };
@@ -1230,7 +1237,11 @@ export function parseReplayRun(raw: string): ReplayRun {
               Array.isArray(list)
                 ? list
                     .filter((c): c is {
-                      card: { id: string; current_upgrade_level?: number };
+                      card: {
+                        id: string;
+                        current_upgrade_level?: number;
+                        enchantment?: { id?: string; amount?: number };
+                      };
                       was_picked?: boolean;
                     } => typeof c?.card?.id === "string")
                     .map((c) => ({
@@ -1238,6 +1249,14 @@ export function parseReplayRun(raw: string): ReplayRun {
                       picked: !!c.was_picked,
                       ...(typeof c.card.current_upgrade_level === "number"
                         ? { upgradeLevel: c.card.current_upgrade_level }
+                        : {}),
+                      ...(typeof c.card.enchantment?.id === "string"
+                        ? {
+                            enchantmentId: c.card.enchantment.id,
+                            ...(typeof c.card.enchantment.amount === "number"
+                              ? { enchantmentAmount: c.card.enchantment.amount }
+                              : {}),
+                          }
                         : {}),
                     }))
                 : undefined;

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import {
   highlightKindsForEntry,
   isCombatHistoryEntry,
+  isLanternKeyHistoryEntry,
   lastSceneKind,
   usesDedicatedLastScene,
 } from "../src/lib/history-last-scene";
@@ -34,6 +35,9 @@ import {
   lastScenePhase,
   lootSpecTaken,
   combatLootSpecs,
+  shopMatItemHidden,
+  shopObtainQueue,
+  shopRemovalFlipProgress,
 } from "../src/lib/history-last-scene-steps";
 import {
   eventArtUrl,
@@ -486,6 +490,54 @@ assert.equal(
   lastSceneHiddenRelicIds("shop", shopRelicEntry, LAST_SCENE_STEP_MS).has("RELIC.POMANDER"),
   false,
 );
+assert.equal(
+  shopMatItemHidden(shopRelicEntry, "RELIC.POMANDER", "relic", 1, 0),
+  true,
+  "bought relics stay off the shop mat after their obtain beat",
+);
+
+const shopRemovalEntry = entry({
+  map_point_type: "shop",
+  cards_removed: [{ id: "CARD.STRIKE" }],
+  relic_choices: [{ id: "RELIC.POMANDER", picked: true }],
+});
+assert.equal(shopObtainQueue(shopRemovalEntry).at(-1)?.kind, "removal");
+assert.equal(shopRemovalFlipProgress(shopRemovalEntry, 0, 1), 0);
+assert.ok(shopRemovalFlipProgress(shopRemovalEntry, 1, 0.9) > 0.7);
+assert.equal(shopRemovalFlipProgress(shopRemovalEntry, 2, 0), 1);
+
+const lanternKeyFight = entry({
+  map_point_type: "unknown",
+  event_choices: [{ id: "FIGHT", picked: true }],
+  card_choices: [
+    { id: "CARD.LANTERN_KEY", picked: true },
+    { id: "CARD.STRIKE", picked: false },
+  ],
+  rooms: [{
+    room_type: "event",
+    model_id: "EVENT.THE_LANTERN_KEY",
+    turns_taken: 1,
+    monster_ids: ["MONSTER.MYSTERIOUS_KNIGHT"],
+  }],
+});
+assert.equal(isLanternKeyHistoryEntry(lanternKeyFight), true);
+assert.equal(lastSceneKind(lanternKeyFight), "event");
+assert.equal(lastScenePhase("event", lanternKeyFight, 0).kind, "choice");
+assert.equal(lastScenePhase("event", lanternKeyFight, LAST_SCENE_STEP_MS).kind, "dying");
+assert.equal(
+  lastSceneDurationMs("event", lanternKeyFight),
+  LAST_SCENE_STEP_MS + LAST_SCENE_DYING_MS + 2 * LAST_SCENE_STEP_MS,
+);
+
+const pomanderNeow = entry({
+  map_point_type: "ancient",
+  ancient_choice: [{ id: "RELIC.POMANDER", picked: true }],
+  relic_choices: [{ id: "RELIC.POMANDER", picked: true }],
+  upgraded_cards: ["CARD.ADORATION"],
+  rooms: [{ room_type: "ancient", model_id: "EVENT.NEOW", turns_taken: 0 }],
+});
+assert.equal(lastSceneDurationMs("ancient", pomanderNeow), 3 * LAST_SCENE_STEP_MS);
+assert.equal(lastScenePhase("ancient", pomanderNeow, 2 * LAST_SCENE_STEP_MS).kind, "upgrade");
 
 assert.equal(cardFlyParametric(0), 0);
 assert.ok(cardFlyParametric(1) >= 1 - 1e-9);

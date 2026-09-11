@@ -12,6 +12,7 @@ import {
 } from "@/components/history-course/game-room-choice";
 import { LastSceneDamageVignette } from "@/components/history-course/last-scene-damage-vignette";
 import { LastSceneEnchantAttach } from "@/components/history-course/last-scene-enchant-attach";
+import { LastSceneFocusedCard } from "@/components/history-course/last-scene-focused-card";
 import { LastSceneObtainFly, relicTargetSelector } from "@/components/history-course/last-scene-obtain-vfx";
 import {
   MerchantShopScreen,
@@ -24,6 +25,8 @@ import {
   restSitePrompt,
 } from "@/lib/history-party";
 import {
+  isLanternKeyFight,
+  isLanternKeyHistoryEntry,
   roomMonsterIds,
   stripReplayId,
   type LastSceneKind,
@@ -57,7 +60,7 @@ import { useOptionalHistoryCatalogLocale } from "@/hooks/use-history-catalog-loc
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { localizeGame, type GameI18nTables } from "@/lib/sts2-game-i18n";
 import { prettifyId } from "@/lib/sts2-i18n";
-import type { CodexCard, CodexEnchantment, CodexMonster, CodexPotion, CodexRelic } from "@/lib/codex-types";
+import type { CodexCard, CodexEnchantment, CodexMonster, CodexPotion, CodexRelic, MonsterSpineAsset } from "@/lib/codex-types";
 import type { ReplayChoice, ReplayHistoryEntry, ReplayRun } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
 import { lookupHistoryCard } from "@/lib/history-card-lookup";
@@ -77,6 +80,35 @@ const EventVfxStage = dynamic(
   () => import("@/components/codex/event-vfx-stage").then((mod) => mod.EventVfxStage),
   { ssr: false },
 );
+const MonsterSpineStage = dynamic(
+  () => import("@/components/codex/monster-spine-stage").then((mod) => mod.MonsterSpineStage),
+  { ssr: false, loading: () => null },
+);
+
+const LANTERN_KNIGHT_SPINE: MonsterSpineAsset = {
+  id: "MYSTERIOUS_KNIGHT",
+  source: "animations/monsters/flail_knight/flailknight",
+  renderStatus: "spine",
+  renderTags: ["event-background"],
+  atlasUrl: "/spine/sts2/monsters/flail_knight/flailknight.atlas",
+  binaryUrl: "/spine/sts2/monsters/flail_knight/flailknight.skel",
+  textureUrls: ["/spine/sts2/monsters/flail_knight/flailknight.png"],
+  skin: null,
+  skins: ["default"],
+  animations: [
+    "attack_breaker",
+    "attack_flail",
+    "attack_ram",
+    "buff",
+    "die",
+    "hurt",
+    "idle_loop",
+  ],
+  bestiaryAnimations: ["hurt", "die"],
+  idleAnimation: "idle_loop",
+  moveAnimations: {},
+  moveEffects: {},
+};
 const FakeMerchantSpineStage = dynamic(
   () => import("@/components/codex/fake-merchant-spine-stage").then((mod) => mod.FakeMerchantSpineStage),
   { ssr: false },
@@ -189,7 +221,10 @@ export function NodeLastScene({
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-[18] overflow-hidden bg-black"
+      className={cn(
+        "pointer-events-none absolute inset-0 z-[18] bg-black",
+        kind === "shop" ? "overflow-visible" : "overflow-hidden",
+      )}
       aria-hidden
       data-history-last-scene={kind}
       data-history-last-scene-phase={phase.kind}
@@ -227,13 +262,16 @@ export function NodeLastScene({
           entry={entry}
           tables={tables}
           phase={phase}
+          character={character}
           cardsById={cardsById}
           relicsById={relicsById}
           potionsById={potionsById}
           enchantments={enchantments}
           serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
           catalog={sceneCatalog}
           locTables={locTables}
+          monsters={monsters}
           backgroundUrl={backgroundUrl}
         />
       ) : null}
@@ -249,6 +287,8 @@ export function NodeLastScene({
           catalog={sceneCatalog}
           locTables={locTables}
           backgroundUrl={backgroundUrl}
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
         />
       ) : null}
       {kind === "treasure" ? (
@@ -325,6 +365,9 @@ function CombatScene({
 }) {
   const encounter = catalog
     ? lookupHistoryEncounter(catalog.encounters, entry.rooms?.[0]?.model_id)
+      ?? (stripReplayId(entry.rooms?.[0]?.model_id ?? "").toUpperCase() === "THE_LANTERN_KEY"
+        ? lookupHistoryEncounter(catalog.encounters, "MYSTERIOUS_KNIGHT_EVENT_ENCOUNTER")
+        : undefined)
     : undefined;
   const characterRow = catalog
     ? lookupHistoryCharacter(catalog.characters, character)
@@ -389,6 +432,7 @@ function CombatScene({
           locTables={locTables}
           skipped={skippedCards}
           beatProgress={phase.beatProgress}
+          enchantedCards={entry.cards_enchanted}
         />
       ) : null}
     </div>
@@ -503,11 +547,13 @@ function EventScene({
   entry,
   tables,
   phase,
+  character,
   cardsById,
   relicsById,
   potionsById,
   enchantments,
   serviceLocale,
+  gameLocale,
   catalog,
   locTables,
   backgroundUrl,
@@ -515,13 +561,16 @@ function EventScene({
   entry: ReplayHistoryEntry;
   tables: GameI18nTables;
   phase: LastScenePhase;
+  character: string;
   cardsById?: Record<string, CodexCard>;
   relicsById?: Record<string, CodexRelic>;
   potionsById?: Record<string, CodexPotion>;
   enchantments?: CodexEnchantment[];
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   catalog: HistoryLastSceneCatalog | null;
   locTables: HistoryLocTables | null;
+  monsters: CodexMonster[];
   backgroundUrl: string;
 }) {
   const modelId = entry.rooms?.[0]?.model_id;
@@ -533,8 +582,19 @@ function EventScene({
   const art = event?.imageUrl ?? backgroundUrl;
   const vfxSlug = historyEventVfxSlug(event?.id);
   const fakeMerchant = event?.id === "FAKE_MERCHANT";
-  const revealed = phase.kind === "receipt";
-  const beatProgress = phase.kind === "choice" || phase.kind === "receipt" ? phase.beatProgress : 0;
+  const lanternEvent = isLanternKeyHistoryEntry(entry);
+  const lanternFight = isLanternKeyFight(entry);
+  const lanternEncounter = catalog
+    ? lookupHistoryEncounter(catalog.encounters, "MYSTERIOUS_KNIGHT_EVENT_ENCOUNTER")
+    : undefined;
+  const revealed = phase.kind === "receipt" || phase.kind === "dying" || phase.kind === "dead"
+    || phase.kind === "loot" || phase.kind === "cards" || phase.kind === "upgrade";
+  const showChoices = lanternFight
+    ? phase.kind === "choice"
+    : phase.kind === "choice" || phase.kind === "receipt";
+  const beatProgress = phase.kind === "choice" || phase.kind === "receipt" || phase.kind === "upgrade" || phase.kind === "cards" || phase.kind === "loot"
+    ? phase.beatProgress
+    : 1;
   const choices = eventLastSceneChoices(event, entry.event_choices);
   const enchanted = entry.cards_enchanted?.[0];
   const enchantment = enchanted
@@ -543,10 +603,128 @@ function EventScene({
   const enchantedCard = enchanted && cardsById
     ? lookupHistoryCard(cardsById, enchanted.cardId)
     : undefined;
+  const upgradedId = entry.upgraded_cards?.[0];
+  const upgradedCard = upgradedId && cardsById ? lookupHistoryCard(cardsById, upgradedId) : undefined;
   const pickedRelic = (entry.relic_choices ?? []).find((choice) => choice.picked && choice.id);
   const relic = pickedRelic ? lookupHistoryRelic(relicsById, pickedRelic.id) : undefined;
   const relicIcon = relic ? resolveRelicDisplayImage(relic, relic.pool) : null;
   const pickedOption = choices.find((choice) => choice.picked);
+  const loot = combatLootSpecs(entry);
+  const cards = entry.card_choices ?? [];
+  const skippedCards = cards.length > 0 && !cards.some((choice) => choice.picked);
+  const knightDead = lanternFight && phase.kind !== "choice";
+  const choiceOverlay = showChoices ? (
+    <GameRoomChoicePanel title={title} body={eventOpeningDescription(event)}>
+      <GameRoomChoiceList
+        choices={choices}
+        revealed={revealed}
+        copyFor={(choice) =>
+          historyRoomChoiceCopy(choice, tables, "events", {
+            choiceLoc: catalog?.choiceLoc,
+            locTables,
+            event,
+            cardsById,
+            relicsById,
+            potionsById,
+            enchantments,
+          })
+        }
+      />
+    </GameRoomChoicePanel>
+  ) : null;
+  const followUps = (
+    <>
+      <LastSceneDamageVignette
+        active={revealed && (entry.damage_taken ?? 0) > 0 && phase.kind !== "loot" && phase.kind !== "cards"}
+        progress={beatProgress}
+      />
+      {phase.kind === "receipt" && enchantedCard && enchantment ? (
+        <LastSceneEnchantAttach
+          card={enchantedCard}
+          enchantment={enchantment}
+          progress={beatProgress}
+          serviceLocale={serviceLocale}
+        />
+      ) : null}
+      {phase.kind === "receipt" && pickedRelic && relicIcon ? (
+        <LastSceneObtainFly
+          active
+          progress={beatProgress}
+          sourceSelector={`[data-history-last-scene-pick="${pickedOption?.id ?? pickedRelic.id}"]`}
+          targetSelector={relicTargetSelector(pickedRelic.id)}
+          iconUrl={relicIcon}
+          kind="relic"
+        />
+      ) : null}
+      {phase.kind === "upgrade" && upgradedCard ? (
+        <LastSceneFocusedCard
+          card={upgradedCard}
+          progress={beatProgress}
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+          upgradeLevel={1}
+          burst
+          appearFromZero
+        />
+      ) : null}
+      {phase.kind === "loot" ? (
+        <CombatLootScreen
+          items={loot}
+          resolvedCount={phase.resolvedCount}
+          beatProgress={phase.beatProgress}
+          entry={entry}
+          gameLocale={gameLocale}
+          locTables={locTables}
+          relicsById={relicsById}
+          potionsById={potionsById}
+        />
+      ) : null}
+      {phase.kind === "cards" ? (
+        <CardRewardScreen
+          choices={cards}
+          cardsById={cardsById}
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          locTables={locTables}
+          skipped={skippedCards}
+          beatProgress={phase.beatProgress}
+          enchantedCards={entry.cards_enchanted}
+        />
+      ) : null}
+    </>
+  );
+
+  if (lanternEvent) {
+    return (
+      <div className="absolute inset-0" data-history-lantern-key>
+        <CombatStillFallback
+          entry={entry}
+          character={character}
+          dead={knightDead}
+          backgroundUrl={lanternEncounter?.scene?.backgroundUrl ?? backgroundUrl}
+        />
+        <div className="pointer-events-none absolute left-[5%] top-[9%] z-10 h-[84%] w-[44%] opacity-95 drop-shadow-[0_24px_34px_rgba(0,0,0,0.62)]">
+          <MonsterSpineStage
+            asset={LANTERN_KNIGHT_SPINE}
+            fallbackImageUrl="/images/sts2/monsters-render/flail_knight.webp"
+            fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-2xl"
+            imagePriority={false}
+            monsterName="철퇴 기사"
+            selectedMoveId={knightDead ? "DEAD" : null}
+            loopSelectedMove={false}
+            holdDeathPose={knightDead && phase.kind !== "dying"}
+            keepFallbackUntilPlayed
+            showLoadingLabel={false}
+            viewportTransitionTime={0}
+            className="relative h-full w-full"
+          />
+        </div>
+        {choiceOverlay}
+        {followUps}
+      </div>
+    );
+  }
+
   return (
     <EventRoomArt
       src={art}
@@ -558,45 +736,8 @@ function EventScene({
       ) : undefined}
       viewportOverlay={vfxSlug ? <EventVfxStage sceneSlug={vfxSlug} /> : null}
     >
-      <GameRoomChoicePanel title={title} body={eventOpeningDescription(event)}>
-        <GameRoomChoiceList
-          choices={choices}
-          revealed={revealed}
-          copyFor={(choice) =>
-            historyRoomChoiceCopy(choice, tables, "events", {
-              choiceLoc: catalog?.choiceLoc,
-              locTables,
-              event,
-              cardsById,
-              relicsById,
-              potionsById,
-              enchantments,
-            })
-          }
-        />
-      </GameRoomChoicePanel>
-      <LastSceneDamageVignette
-        active={revealed && (entry.damage_taken ?? 0) > 0}
-        progress={beatProgress}
-      />
-      {revealed && enchantedCard && enchantment ? (
-        <LastSceneEnchantAttach
-          card={enchantedCard}
-          enchantment={enchantment}
-          progress={beatProgress}
-          serviceLocale={serviceLocale}
-        />
-      ) : null}
-      {revealed && pickedRelic && relicIcon ? (
-        <LastSceneObtainFly
-          active
-          progress={beatProgress}
-          sourceSelector={`[data-history-last-scene-pick="${pickedOption?.id ?? pickedRelic.id}"]`}
-          targetSelector={relicTargetSelector(pickedRelic.id)}
-          iconUrl={relicIcon}
-          kind="relic"
-        />
-      ) : null}
+      {choiceOverlay}
+      {followUps}
     </EventRoomArt>
   );
 }
@@ -612,6 +753,8 @@ function AncientScene({
   catalog,
   locTables,
   backgroundUrl,
+  serviceLocale,
+  gameLocale,
 }: {
   entry: ReplayHistoryEntry;
   tables: GameI18nTables;
@@ -623,6 +766,8 @@ function AncientScene({
   catalog: HistoryLastSceneCatalog | null;
   locTables: HistoryLocTables | null;
   backgroundUrl: string;
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
 }) {
   if (!catalog) {
     return <div className="absolute inset-0 bg-black" data-history-last-scene-loading="ancient" />;
@@ -652,6 +797,8 @@ function AncientScene({
   const ancientRelicIcon = ancientRelic
     ? resolveRelicDisplayImage(ancientRelic, ancientRelic.pool)
     : null;
+  const upgradedId = entry.upgraded_cards?.[0];
+  const upgradedCard = upgradedId && cardsById ? lookupHistoryCard(cardsById, upgradedId) : undefined;
   const overlay = (
     <>
       <GameRoomChoicePanel title={title}>
@@ -665,6 +812,17 @@ function AncientScene({
           targetSelector={relicTargetSelector(pickedAncientRelic.id)}
           iconUrl={ancientRelicIcon}
           kind="relic"
+        />
+      ) : null}
+      {phase.kind === "upgrade" && upgradedCard ? (
+        <LastSceneFocusedCard
+          card={upgradedCard}
+          progress={phase.beatProgress}
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+          upgradeLevel={1}
+          burst
+          appearFromZero
         />
       ) : null}
     </>
@@ -735,6 +893,7 @@ function TreasureScene({
           locTables={locTables}
           skipped={skippedCards}
           beatProgress={phase.beatProgress}
+          enchantedCards={entry.cards_enchanted}
         />
       ) : null}
     </div>

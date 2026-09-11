@@ -1,6 +1,7 @@
 "use client";
 
 import { FittedCardTile } from "@/components/history-course/fitted-card-tile";
+import { LastSceneFocusedCard } from "@/components/history-course/last-scene-focused-card";
 import {
   LastSceneObtainFly,
   cssEscapeAttr,
@@ -10,15 +11,26 @@ import { lookupHistoryCard } from "@/lib/history-card-lookup";
 import { lookupHistoryPotion } from "@/lib/history-potion-lookup";
 import { lookupHistoryRelic } from "@/lib/history-relic-lookup";
 import { resolveRelicDisplayImage } from "@/lib/relic-character-variant";
-import { shopObtainsAtStep } from "@/lib/history-last-scene-steps";
+import {
+  shopMatItemHidden,
+  shopObtainsAtStep,
+  shopRemovalFlipProgress,
+  shopRemovalPickVisible,
+  type ShopObtain,
+} from "@/lib/history-last-scene-steps";
 import type { CodexCard, CodexPotion, CodexRelic } from "@/lib/codex-types";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { ReplayChoice, ReplayHistoryEntry } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
 
 const RUG = "/images/sts2/ui/merchant/shop_rug.webp";
-const REMOVAL_AVAILABLE = "/images/sts2/ui/merchant/card_removal_00.webp";
-const REMOVAL_USED = "/images/sts2/ui/merchant/card_removal_05.webp";
+const REMOVAL_FRAMES = [
+  "/images/sts2/ui/merchant/card_removal_00.webp",
+  "/images/sts2/ui/merchant/card_removal_01.webp",
+  "/images/sts2/ui/merchant/card_removal_02.webp",
+  "/images/sts2/ui/merchant/card_removal_04.webp",
+  "/images/sts2/ui/merchant/card_removal_05.webp",
+] as const;
 const BACK = "/images/sts2/ui/back_button.png";
 const BACK_ARROW = "/images/sts2/ui/back_button_arrow.png";
 
@@ -53,44 +65,47 @@ function pct(value: number, total: number): string {
   return `${(value / total) * 100}%`;
 }
 
+function removalFrameSrc(progress: number): string {
+  if (progress <= 0) return REMOVAL_FRAMES[0];
+  if (progress < 0.64) return REMOVAL_FRAMES[0];
+  if (progress < 0.73) return REMOVAL_FRAMES[1];
+  if (progress < 0.82) return REMOVAL_FRAMES[2];
+  if (progress < 0.91) return REMOVAL_FRAMES[3];
+  return REMOVAL_FRAMES[4];
+}
+
 function ShopCard({
   choice,
   cardsById,
   serviceLocale,
-  left,
-  top,
-  flying,
-  beatProgress,
+  originX,
+  originY,
+  hidden,
 }: {
   choice: ReplayChoice | undefined;
   cardsById?: Record<string, CodexCard>;
   serviceLocale: ServiceLocale;
-  left: number;
-  top: number;
-  flying?: boolean;
-  beatProgress?: number;
+  originX: number;
+  originY: number;
+  hidden?: boolean;
 }) {
   if (!choice?.id) return null;
   const card = cardsById ? lookupHistoryCard(cardsById, choice.id) : undefined;
   const upgradeLevel = choice.upgradeLevel ?? 0;
-  const hideIcon = flying && (beatProgress ?? 0) > 0.04;
   return (
     <div
       data-history-last-scene-pick={choice.id}
       data-picked={choice.picked ? "true" : "false"}
-      className={cn(
-        "absolute overflow-hidden transition-all duration-300",
-        choice.picked ? "z-10 scale-105" : "opacity-85",
-      )}
+      className="absolute"
       style={{
-        left: pct(left, RUG_W),
-        top: pct(top, RUG_H),
+        left: pct(originX - CARD_W / 2, RUG_W),
+        top: pct(originY - CARD_H / 2, RUG_H),
         width: pct(CARD_W, RUG_W),
         height: pct(CARD_H, RUG_H),
       }}
     >
       {card ? (
-        <div className={cn("h-full w-full", hideIcon && "opacity-0")}>
+        <div className={cn("h-full w-full", hidden && "opacity-0")}>
           <FittedCardTile
             card={card}
             showUpgrade={upgradeLevel > 0}
@@ -111,27 +126,21 @@ function ShopRelic({
   choice,
   relicsById,
   index,
-  flying,
-  beatProgress,
+  hidden,
 }: {
   choice: ReplayChoice | undefined;
   relicsById?: Record<string, CodexRelic>;
   index: number;
-  flying?: boolean;
-  beatProgress?: number;
+  hidden?: boolean;
 }) {
   if (!choice?.id) return null;
   const relic = lookupHistoryRelic(relicsById, choice.id);
   const src = relic ? resolveRelicDisplayImage(relic, relic.pool) : null;
-  const hideIcon = flying && (beatProgress ?? 0) > 0.12;
   return (
     <div
       data-history-last-scene-pick={choice.id}
       data-picked={choice.picked ? "true" : "false"}
-      className={cn(
-        "absolute flex items-center justify-center transition-all duration-300",
-        choice.picked ? "z-10 scale-110" : "opacity-85",
-      )}
+      className="absolute flex items-center justify-center"
       style={{
         left: pct(RELIC_ORIGIN.x + index * SLOT_GAP, RUG_W),
         top: pct(RELIC_ORIGIN.y, RUG_H),
@@ -145,7 +154,7 @@ function ShopRelic({
           src={src}
           alt={relic?.name ?? choice.id}
           data-history-reward-icon={choice.id}
-          className={cn("h-full w-full object-contain", hideIcon && "opacity-0")}
+          className={cn("h-full w-full object-contain", hidden && "opacity-0")}
         />
       ) : (
         <span className="font-game-text text-[10px] text-[#fff6e2]">{choice.id}</span>
@@ -158,26 +167,20 @@ function ShopPotion({
   choice,
   potionsById,
   index,
-  flying,
-  beatProgress,
+  hidden,
 }: {
   choice: ReplayChoice | undefined;
   potionsById?: Record<string, CodexPotion>;
   index: number;
-  flying?: boolean;
-  beatProgress?: number;
+  hidden?: boolean;
 }) {
   if (!choice?.id) return null;
   const potion = lookupHistoryPotion(potionsById, choice.id);
-  const hideIcon = flying && (beatProgress ?? 0) > 0.12;
   return (
     <div
       data-history-last-scene-pick={choice.id}
       data-picked={choice.picked ? "true" : "false"}
-      className={cn(
-        "absolute flex items-center justify-center transition-all duration-300",
-        choice.picked ? "z-10 scale-110" : "opacity-85",
-      )}
+      className="absolute flex items-center justify-center"
       style={{
         left: pct(POTION_ORIGIN.x + index * SLOT_GAP, RUG_W),
         top: pct(POTION_ORIGIN.y, RUG_H),
@@ -191,7 +194,7 @@ function ShopPotion({
           src={potion.imageUrl}
           alt={potion.name}
           data-history-reward-icon={choice.id}
-          className={cn("h-full w-full object-contain", hideIcon && "opacity-0")}
+          className={cn("h-full w-full object-contain", hidden && "opacity-0")}
         />
       ) : (
         <span className="font-game-text text-[10px] text-[#fff6e2]">{choice.id}</span>
@@ -201,6 +204,12 @@ function ShopPotion({
 }
 
 const COLORLESS_CARD_COLORS = new Set(["colorless", "curse", "status", "event", "token"]);
+
+function isShopFlyItem(
+  item: ShopObtain,
+): item is Extract<ShopObtain, { kind: "relic" | "potion" | "card" }> {
+  return item.kind !== "removal";
+}
 
 export function splitShopCardRows(
   choices: ReplayChoice[],
@@ -254,8 +263,17 @@ export function MerchantShopScreen({
   beatProgress?: number;
   step?: number;
 }) {
-  const flying = entry ? shopObtainsAtStep(entry, step) : [];
-  const flyingIds = new Set(flying.map((item) => item.id));
+  const flying = entry ? shopObtainsAtStep(entry, step).filter(isShopFlyItem) : [];
+  const removalFlip = entry ? shopRemovalFlipProgress(entry, step, beatProgress) : (removalUsed ? 1 : 0);
+  const removedCard = (entry?.cards_removed ?? []).find((card) => card.id);
+  const removedTile = removedCard?.id && cardsById
+    ? lookupHistoryCard(cardsById, removedCard.id)
+    : undefined;
+  const showRemovalPick = Boolean(
+    entry && removedTile && shopRemovalPickVisible(entry, step, beatProgress),
+  );
+  const itemHidden = (id: string | undefined, kind: "relic" | "potion" | "card") =>
+    Boolean(entry && id && shopMatItemHidden(entry, id, kind, step, beatProgress));
   return (
     <div className="pointer-events-none absolute inset-0 z-20" data-history-merchant-shop>
       {/* NMerchantInventory backstop modulate.a = 0.8 */}
@@ -274,10 +292,9 @@ export function MerchantShopScreen({
               choice={characterCards[index]}
               cardsById={cardsById}
               serviceLocale={serviceLocale}
-              left={slot.x}
-              top={slot.y}
-              flying={Boolean(characterCards[index]?.id && flyingIds.has(characterCards[index]!.id))}
-              beatProgress={beatProgress}
+              originX={slot.x}
+              originY={slot.y}
+              hidden={itemHidden(characterCards[index]?.id, "card")}
             />
           ))}
           {COLORLESS_CARDS.map((slot, index) => (
@@ -286,10 +303,9 @@ export function MerchantShopScreen({
               choice={colorlessCards[index]}
               cardsById={cardsById}
               serviceLocale={serviceLocale}
-              left={slot.x}
-              top={slot.y}
-              flying={Boolean(colorlessCards[index]?.id && flyingIds.has(colorlessCards[index]!.id))}
-              beatProgress={beatProgress}
+              originX={slot.x}
+              originY={slot.y}
+              hidden={itemHidden(colorlessCards[index]?.id, "card")}
             />
           ))}
           {Array.from({ length: 3 }, (_, index) => (
@@ -298,8 +314,7 @@ export function MerchantShopScreen({
               choice={relics[index]}
               relicsById={relicsById}
               index={index}
-              flying={Boolean(relics[index]?.id && flyingIds.has(relics[index]!.id))}
-              beatProgress={beatProgress}
+              hidden={itemHidden(relics[index]?.id, "relic")}
             />
           ))}
           {Array.from({ length: 3 }, (_, index) => (
@@ -308,8 +323,7 @@ export function MerchantShopScreen({
               choice={potions[index]}
               potionsById={potionsById}
               index={index}
-              flying={Boolean(potions[index]?.id && flyingIds.has(potions[index]!.id))}
-              beatProgress={beatProgress}
+              hidden={itemHidden(potions[index]?.id, "potion")}
             />
           ))}
           <div
@@ -321,11 +335,11 @@ export function MerchantShopScreen({
               height: pct(REMOVAL.h, RUG_H),
             }}
             data-history-last-scene-pick="card-removal"
-            data-picked={removalUsed ? "true" : "false"}
+            data-picked={removalFlip > 0 ? "true" : "false"}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={removalUsed ? REMOVAL_USED : REMOVAL_AVAILABLE}
+              src={removalFrameSrc(removalFlip)}
               alt=""
               className="h-full w-full object-contain"
             />
@@ -386,6 +400,15 @@ export function MerchantShopScreen({
           />
         );
       })}
+      {showRemovalPick && removedTile ? (
+        <LastSceneFocusedCard
+          card={removedTile}
+          progress={beatProgress}
+          serviceLocale={serviceLocale}
+          upgradeLevel={removedCard?.current_upgrade_level ?? 0}
+          removed
+        />
+      ) : null}
     </div>
   );
 }
