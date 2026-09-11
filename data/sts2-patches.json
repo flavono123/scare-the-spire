@@ -598,6 +598,7 @@
     "art": {
       "type": "card",
       "id": "BACKSTAB",
+      "imageUrl": "/images/sts2/cards/backstab.webp",
       "alt": "Backstab card art",
       "altKo": "배신 카드 아트"
     }

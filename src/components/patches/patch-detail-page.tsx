@@ -769,9 +769,16 @@ export async function getPatchDetailMetadata({
   const title = getPatchSeoTitle(patch, serviceLocale);
   const summary = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
   const description = truncateOgDescription(`${title}. ${summary}`);
-  const entities = await loadAllEntities({ gameLocale: serviceLocale === "ko" ? "kor" : "eng" });
-  const entitiesByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
-  const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
+  const patchArt = isBackstabPatch(patch)
+    ? resolvePatchArt(patch, new Map(), serviceLocale)
+    : resolvePatchArt(
+        patch,
+        new Map(
+          (await loadAllEntities({ gameLocale: serviceLocale === "ko" ? "kor" : "eng" }))
+            .map((entity) => [`${entity.type}:${entity.id}`, entity]),
+        ),
+        serviceLocale,
+      );
 
   const metadata = getServiceOgMetadata({
     serviceLocale,
@@ -807,8 +814,80 @@ export async function PatchDetailPage({
   staticHoverPreviews?: boolean;
 }) {
   const copy = PATCH_COPY[serviceLocale];
-  const [patches, versionDiffs, codexMeta, codexCards, codexCharacters, codexRelics, codexPotions, codexPowers, codexKeywords, codexModifiers, codexAscensions, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder, patchStageCopy] = await Promise.all([
-    getSTS2Patches(),
+  const patches = await getSTS2Patches();
+  const patch = patches.find((p) => p.version === version);
+  if (!patch) notFound();
+
+  if (isBackstabPatch(patch)) {
+    const patchBackstabCopy = await getPatchBackstabGameCopy(gameLocale);
+    const patchArt = resolvePatchArt(patch, new Map(), serviceLocale);
+    const sortedPatches = [...patches].sort((a, b) => a.date.localeCompare(b.date));
+    const idx = sortedPatches.findIndex((p) => p.id === patch.id);
+    const prevPatch = idx > 0 ? sortedPatches[idx - 1] : null;
+    const nextPatch = idx < sortedPatches.length - 1 ? sortedPatches[idx + 1] : null;
+
+    return (
+      <div className={TOYBOX_WIDE_SHELL_CLASS}>
+        <Link
+          href={localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale)}
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          &larr; {copy.backToList}
+        </Link>
+
+        <div className="mt-4">
+          <div className="flex flex-wrap items-start gap-2">
+            <h1 className="text-2xl font-bold text-rose-100">{patchBackstabCopy.title}</h1>
+            <PatchTypeChip
+              type={patch.type}
+              label={copy.types[patch.type]}
+              serviceLocale={serviceLocale}
+            />
+          </div>
+          <p className="mt-3 text-base font-medium leading-relaxed text-rose-50/90">
+            <RichText text={patchBackstabCopy.emptyDraw} />
+          </p>
+          <div className="mt-1 flex items-center gap-3 text-sm text-muted-foreground">
+            <span>{patch.date}</span>
+          </div>
+        </div>
+
+        <PatchArtHero art={patchArt} backstab />
+
+        <section id="comments" className="mt-8 rounded-lg border border-border bg-card/20 p-4">
+          <h2 className="mb-3 text-sm font-bold text-foreground">{copy.comments}</h2>
+          <DeferredCommentSection
+            threadKey={buildPatchCommentThreadKey(patch.version)}
+          />
+        </section>
+
+        <div className="mt-8 flex items-center justify-between border-t border-border pt-4">
+          {prevPatch ? (
+            <Link
+              href={localizeHrefWithGameLocale(`/patches/${prevPatch.version}`, serviceLocale, gameLocale)}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              &larr; {getPatchVersionLabel(prevPatch, serviceLocale)}
+            </Link>
+          ) : (
+            <span />
+          )}
+          {nextPatch ? (
+            <Link
+              href={localizeHrefWithGameLocale(`/patches/${nextPatch.version}`, serviceLocale, gameLocale)}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {getPatchVersionLabel(nextPatch, serviceLocale)} &rarr;
+            </Link>
+          ) : (
+            <span />
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  const [versionDiffs, codexMeta, codexCards, codexCharacters, codexRelics, codexPotions, codexPowers, codexKeywords, codexModifiers, codexAscensions, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder, patchStageCopy] = await Promise.all([
     getEntityVersionDiffs(),
     getCodexMeta(),
     getCodexCards({ includeDeprecated: true, gameLocale }),
@@ -835,8 +914,6 @@ export async function PatchDetailPage({
     getPatchStageGameCopy(gameLocale),
   ]);
 
-  const patch = patches.find((p) => p.version === version);
-  if (!patch) notFound();
   const patchId = patch.id;
   const patchLines = allPatchLines.filter((line) => line.patch === patchId);
   const patchLineIds = new Set(patchLines.map((line) => line.id));
@@ -1064,8 +1141,6 @@ export async function PatchDetailPage({
   const isWatching = patch.status === "watching";
   const isBuilding = patch.status === "building";
   const draft = isPatchDraft(patch);
-  const backstab = isBackstabPatch(patch);
-  const patchBackstabCopy = backstab ? await getPatchBackstabGameCopy(gameLocale) : null;
   const entitiesByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
   const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
 
@@ -1093,9 +1168,7 @@ export async function PatchDetailPage({
 
       <div className="mt-4">
         <div className="flex flex-wrap items-start gap-2">
-          <h1 className={cn("text-2xl font-bold", backstab && "text-rose-100")}>
-            {backstab && patchBackstabCopy ? patchBackstabCopy.title : title}
-          </h1>
+          <h1 className="text-2xl font-bold">{title}</h1>
           <PatchTypeChip
             type={patch.type}
             label={copy.types[patch.type]}
@@ -1112,21 +1185,13 @@ export async function PatchDetailPage({
             </Badge>
           )}
         </div>
-        {backstab && patchBackstabCopy ? (
-          <p className="mt-3 text-base font-medium leading-relaxed text-rose-50/90">
-            <RichText text={patchBackstabCopy.emptyDraw} />
-          </p>
-        ) : (
-          <>
-            <p className="mt-3 text-base font-medium leading-relaxed text-foreground/90">{summary}</p>
-            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-              {serviceMessages[serviceLocale].patchNotes.richDetails}
-            </p>
-          </>
-        )}
+        <p className="mt-3 text-base font-medium leading-relaxed text-foreground/90">{summary}</p>
+        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+          {serviceMessages[serviceLocale].patchNotes.richDetails}
+        </p>
         <div className="mt-1 flex items-center gap-3 text-sm text-muted-foreground">
           <span>{patch.date}</span>
-          {patch.steamUrl && !isBuilding && !isWatching && !backstab && (
+          {patch.steamUrl && !isBuilding && !isWatching && (
             <a
               href={patch.steamUrl}
               target="_blank"
@@ -1139,10 +1204,10 @@ export async function PatchDetailPage({
         </div>
       </div>
 
-      <PatchArtHero art={patchArt} backstab={backstab} />
+      <PatchArtHero art={patchArt} />
 
       {/* Patch notes body */}
-      {backstab ? null : markdown ? (
+      {markdown ? (
         <section className="mt-6">
           <PatchNoteWithStoryActions
             markdown={markdown}
