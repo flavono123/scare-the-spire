@@ -111,12 +111,19 @@ interface PatchStageGameCopy {
   };
 }
 
+interface PatchBackstabGameCopy {
+  title: string;
+  description: string;
+  emptyDraw: string;
+}
+
 interface BorrowedGameCopyPayload {
   chemicalXPlaceholder: string;
   comboPlaceholder: string;
   feedbackForm: FeedbackFormGameCopy;
   historyCourseLanding: HistoryCourseLandingGameCopy;
   patchStage: PatchStageGameCopy;
+  patchBackstab: PatchBackstabGameCopy;
   thisOrThat: ThisOrThatGameCopy;
   transfigure: TransfigureGameCopy;
   defragment: DefragmentGameCopy;
@@ -249,6 +256,65 @@ const PATCH_DRAFT_NOTICE_REPLACEMENTS: Partial<Record<GameLocale, LocalizedPhras
   zhs: {
     from: "这意味着游戏还没有完全完成！",
     to: "这意味着这篇补丁说明还没有完全完成！",
+  },
+};
+
+const PATCH_BACKSTAB_DESCRIPTION_REPLACEMENTS: Partial<Record<GameLocale, LocalizedPhraseReplacement>> = {
+  deu: {
+    from: "dieser Kreatur",
+    to: "dem heutigen Patch",
+  },
+  eng: {
+    from: "this creature",
+    to: "today's patch",
+  },
+  esp: {
+    from: "Esta criatura",
+    to: "El parche de hoy",
+  },
+  fra: {
+    from: "cette créature",
+    to: "le patch du jour",
+  },
+  ita: {
+    from: "questa creatura",
+    to: "la patch di oggi",
+  },
+  jpn: {
+    from: "このモンスター",
+    to: "今日のパッチ",
+  },
+  kor: {
+    from: "이 생물은",
+    to: "오늘의 패치는",
+  },
+  pol: {
+    from: "tym stworzeniem",
+    to: "dzisiejszym patchem",
+  },
+  ptb: {
+    from: "esta criatura",
+    to: "o patch de hoje",
+  },
+  rus: {
+    from: "этим врагом",
+    to: "сегодняшним патчем",
+  },
+  spa: {
+    from: "Esta criatura",
+    to: "El parche de hoy",
+  },
+  tha: {
+    from: "สิ่งมีชีวิตนี้",
+    to: "แพตช์วันนี้",
+  },
+  tur: {
+    from: "Bu yaratıkta",
+    to: "Bugünün yamasında",
+  },
+  zhs: {
+    from: "这个生物",
+    to: "今天的补丁",
   },
 };
 
@@ -563,6 +629,20 @@ function patchDelayDescription(
   return bestiaryPlaceholder.replace(replacement.from, replacement.to);
 }
 
+function patchBackstabDescription(
+  gameLocale: GameLocale,
+  surpriseDescription: string,
+): string {
+  const replacement = PATCH_BACKSTAB_DESCRIPTION_REPLACEMENTS[gameLocale];
+  if (!replacement) return "Something is off about today's patch...";
+  if (!surpriseDescription.includes(replacement.from)) {
+    return gameLocale === "eng"
+      ? "Something is off about today's patch..."
+      : replacement.to;
+  }
+  return surpriseDescription.replace(replacement.from, replacement.to);
+}
+
 function patchDraftNotice(
   gameLocale: GameLocale,
   earlyAccessDisclaimer: string,
@@ -634,6 +714,33 @@ async function buildPatchStageGameCopy(gameLocale: GameLocale): Promise<PatchSta
         ?? "Beat into Shape",
       notice: patchDraftNotice(gameLocale, earlyAccessDisclaimer),
     },
+  };
+}
+
+async function buildPatchBackstabGameCopy(gameLocale: GameLocale): Promise<PatchBackstabGameCopy> {
+  const [cards, powers, combatMessages] = await Promise.all([
+    readGameLocalizationTable(gameLocale, "cards"),
+    readGameLocalizationTable(gameLocale, "powers"),
+    readGameLocalizationTable(gameLocale, "combat_messages"),
+  ]);
+  const [englishCards, englishPowers, englishCombatMessages] = gameLocale === ENGLISH_GAME_LOCALE
+    ? [cards, powers, combatMessages]
+    : await Promise.all([
+        readGameLocalizationTable(ENGLISH_GAME_LOCALE, "cards"),
+        readGameLocalizationTable(ENGLISH_GAME_LOCALE, "powers"),
+        readGameLocalizationTable(ENGLISH_GAME_LOCALE, "combat_messages"),
+      ]);
+
+  const surpriseDescription = powers["SURPRISE_POWER.description"]
+    ?? englishPowers["SURPRISE_POWER.description"]
+    ?? "";
+
+  return {
+    title: cards["BACKSTAB.title"] ?? englishCards["BACKSTAB.title"] ?? "Backstab",
+    description: patchBackstabDescription(gameLocale, surpriseDescription),
+    emptyDraw: combatMessages.OPEN_EMPTY_DRAW
+      ?? englishCombatMessages.OPEN_EMPTY_DRAW
+      ?? "My Draw Pile is [red]empty[/red].",
   };
 }
 
@@ -826,6 +933,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         feedbackForm,
         historyCourseLanding,
         patchStage,
+        patchBackstab,
         thisOrThat,
         transfigure,
         defragment,
@@ -845,6 +953,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         buildFeedbackFormGameCopy(gameLocale),
         buildHistoryCourseLandingGameCopy(gameLocale),
         buildPatchStageGameCopy(gameLocale),
+        buildPatchBackstabGameCopy(gameLocale),
         buildThisOrThatGameCopy(gameLocale),
         buildTransfigureGameCopy(gameLocale),
         buildDefragmentGameCopy(gameLocale),
@@ -859,6 +968,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
           feedbackForm,
           historyCourseLanding,
           patchStage,
+          patchBackstab,
           thisOrThat,
           transfigure,
           defragment,

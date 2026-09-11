@@ -581,5 +581,25 @@
       { "type": "card", "id": "THUNDER" },
       { "type": "card", "id": "ONE_FOR_ALL" }
     ]
+  },
+  {
+    "id": "backstab-2026-09-11",
+    "version": "2026-09-11",
+    "versionLabel": "Backstab",
+    "versionLabelKo": "배신",
+    "date": "2026-09-11",
+    "title": "Backstab",
+    "titleKo": "배신",
+    "type": "backstab",
+    "steamUrl": null,
+    "summary": "Something is off about today's patch...",
+    "summaryKo": "오늘의 패치는 뭔가 이상해 보입니다...",
+    "hasBalanceChanges": false,
+    "art": {
+      "type": "card",
+      "id": "BACKSTAB",
+      "alt": "Backstab card art",
+      "altKo": "배신 카드 아트"
+    }
   }
 ]

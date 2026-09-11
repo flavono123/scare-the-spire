@@ -13,3 +13,7 @@ export function isPatchDraft(patch: STS2Patch): boolean {
   if (patch.draft !== true) return false;
   return !patch.status || patch.status === "ready";
 }
+
+export function isBackstabPatch(patch: STS2Patch): boolean {
+  return patch.type === "backstab";
+}

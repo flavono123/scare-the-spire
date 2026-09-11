@@ -136,6 +136,44 @@
     ]
   },
   {
+    "id": "patchBackstab.description.ko",
+    "mode": "serviceText",
+    "sourceLang": "kor",
+    "sourceTable": "powers",
+    "sourceKey": "SURPRISE_POWER.description",
+    "sourceText": "이 생물은 뭔가 이상해 보입니다...",
+    "serviceText": "오늘의 패치는 뭔가 이상해 보입니다...",
+    "serviceFiles": [
+      "src/generated/borrowed-game-copy.json"
+    ],
+    "replacements": [
+      {
+        "from": "이 생물은",
+        "to": "오늘의 패치는",
+        "reason": "Backstab patch copy borrows Surprise and replaces the creature subject with today's patch."
+      }
+    ]
+  },
+  {
+    "id": "patchBackstab.description.en",
+    "mode": "serviceText",
+    "sourceLang": "eng",
+    "sourceTable": "powers",
+    "sourceKey": "SURPRISE_POWER.description",
+    "sourceText": "Something is off about this creature...",
+    "serviceText": "Something is off about today's patch...",
+    "serviceFiles": [
+      "src/generated/borrowed-game-copy.json"
+    ],
+    "replacements": [
+      {
+        "from": "this creature",
+        "to": "today's patch",
+        "reason": "Backstab patch copy borrows Surprise and replaces the creature subject with today's patch."
+      }
+    ]
+  },
+  {
     "id": "defragment.composerPlaceholder.ko",
     "mode": "serviceText",
     "sourceLang": "kor",

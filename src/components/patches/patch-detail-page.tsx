@@ -26,11 +26,11 @@ import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
 import {
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
-import { getPatchVersionLabel, isPatchDraft } from "@/lib/sts2-patch-labels";
+import { getPatchVersionLabel, isBackstabPatch, isPatchDraft } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType, STS2Patch } from "@/lib/types";
 import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
-import { getPatchStageGameCopy } from "@/lib/borrowed-game-copy";
+import { getPatchStageGameCopy, getPatchBackstabGameCopy } from "@/lib/borrowed-game-copy";
 import { serviceMessages } from "@/messages/service";
 import type { CodexMonster, DamageValue, MonsterActionType, MonsterMove } from "@/lib/codex-types";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
@@ -44,6 +44,7 @@ import {
   loadPatchLocalEntities,
 } from "@/lib/patch-local-resources";
 import { PatchDraftNotice } from "@/components/patches/patch-draft-chrome";
+import { RichText } from "@/components/rich-text";
 import { cn } from "@/lib/utils";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 
@@ -76,6 +77,7 @@ const PATCH_COPY: Record<ServiceLocale, {
       beta: "베타",
       stable: "안정",
       hotfix: "핫픽스",
+      backstab: "배신",
     },
   },
   en: {
@@ -94,13 +96,17 @@ const PATCH_COPY: Record<ServiceLocale, {
       beta: "Beta",
       stable: "Stable",
       hotfix: "Hotfix",
+      backstab: "Backstab",
     },
   },
 };
 
-function PatchArtHero({ art }: { art: ResolvedPatchArt }) {
+function PatchArtHero({ art, backstab = false }: { art: ResolvedPatchArt; backstab?: boolean }) {
   return (
-    <div className="mt-6 aspect-[16/7] overflow-hidden rounded-lg border border-border/70 bg-zinc-950">
+    <div className={cn(
+      "mt-6 aspect-[16/7] overflow-hidden rounded-lg bg-zinc-950",
+      backstab ? "border border-rose-500/30" : "border border-border/70",
+    )}>
       <Image
         src={art.imageUrl}
         alt={art.alt}
@@ -736,6 +742,13 @@ export function getPatchSeoTitle(
   patch: STS2Patch,
   serviceLocale: ServiceLocale,
 ): string {
+  if (isBackstabPatch(patch)) {
+    const version = getPatchVersionLabel(patch, serviceLocale);
+    return serviceLocale === "ko"
+      ? `슬레이 더 스파이어 2 ${version}`
+      : `Slay the Spire 2 ${version}`;
+  }
+
   const template = serviceMessages[serviceLocale].patchNotes.detailTitle;
   return template
     .replace("{version}", getPatchVersionLabel(patch, serviceLocale))
@@ -1051,6 +1064,8 @@ export async function PatchDetailPage({
   const isWatching = patch.status === "watching";
   const isBuilding = patch.status === "building";
   const draft = isPatchDraft(patch);
+  const backstab = isBackstabPatch(patch);
+  const patchBackstabCopy = backstab ? await getPatchBackstabGameCopy(gameLocale) : null;
   const entitiesByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
   const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
 
@@ -1078,7 +1093,9 @@ export async function PatchDetailPage({
 
       <div className="mt-4">
         <div className="flex flex-wrap items-start gap-2">
-          <h1 className="text-2xl font-bold">{title}</h1>
+          <h1 className={cn("text-2xl font-bold", backstab && "text-rose-100")}>
+            {backstab && patchBackstabCopy ? patchBackstabCopy.title : title}
+          </h1>
           <PatchTypeChip
             type={patch.type}
             label={copy.types[patch.type]}
@@ -1095,13 +1112,21 @@ export async function PatchDetailPage({
             </Badge>
           )}
         </div>
-        <p className="mt-3 text-base font-medium leading-relaxed text-foreground/90">{summary}</p>
-        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-          {serviceMessages[serviceLocale].patchNotes.richDetails}
-        </p>
+        {backstab && patchBackstabCopy ? (
+          <p className="mt-3 text-base font-medium leading-relaxed text-rose-50/90">
+            <RichText text={patchBackstabCopy.emptyDraw} />
+          </p>
+        ) : (
+          <>
+            <p className="mt-3 text-base font-medium leading-relaxed text-foreground/90">{summary}</p>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              {serviceMessages[serviceLocale].patchNotes.richDetails}
+            </p>
+          </>
+        )}
         <div className="mt-1 flex items-center gap-3 text-sm text-muted-foreground">
           <span>{patch.date}</span>
-          {patch.steamUrl && !isBuilding && !isWatching && (
+          {patch.steamUrl && !isBuilding && !isWatching && !backstab && (
             <a
               href={patch.steamUrl}
               target="_blank"
@@ -1114,10 +1139,10 @@ export async function PatchDetailPage({
         </div>
       </div>
 
-      <PatchArtHero art={patchArt} />
+      <PatchArtHero art={patchArt} backstab={backstab} />
 
       {/* Patch notes body */}
-      {markdown ? (
+      {backstab ? null : markdown ? (
         <section className="mt-6">
           <PatchNoteWithStoryActions
             markdown={markdown}
@@ -1157,7 +1182,7 @@ export async function PatchDetailPage({
         </div>
       )}
 
-      <section className="mt-8 rounded-lg border border-border bg-card/20 p-4">
+      <section id="comments" className="mt-8 rounded-lg border border-border bg-card/20 p-4">
         <h2 className="mb-3 text-sm font-bold text-foreground">{copy.comments}</h2>
         <DeferredCommentSection
           threadKey={buildPatchCommentThreadKey(patch.version)}

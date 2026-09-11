@@ -13,10 +13,10 @@ import {
   getServiceMetadataCopy,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
-import { getPatchVersionLabel, isPatchDraft } from "@/lib/sts2-patch-labels";
+import { getPatchVersionLabel, isBackstabPatch, isPatchDraft } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType, STS2Patch } from "@/lib/types";
-import { getPatchStageGameCopy } from "@/lib/borrowed-game-copy";
+import { getPatchStageGameCopy, getPatchBackstabGameCopy } from "@/lib/borrowed-game-copy";
 import { serviceMessages } from "@/messages/service";
 import { PatchArtPreview } from "@/components/patches/patch-art";
 import { PatchBalanceChip, PatchTypeChip } from "@/components/patches/patch-chips";
@@ -39,6 +39,7 @@ const PATCH_COPY: Record<ServiceLocale, {
       beta: "베타",
       stable: "안정",
       hotfix: "핫픽스",
+      backstab: "배신",
     },
   },
   en: {
@@ -50,6 +51,7 @@ const PATCH_COPY: Record<ServiceLocale, {
       beta: "Beta",
       stable: "Stable",
       hotfix: "Hotfix",
+      backstab: "Backstab",
     },
   },
 };
@@ -137,10 +139,11 @@ export async function PatchListPage({
   gameLocale: GameLocale;
 }) {
   const copy = PATCH_COPY[serviceLocale];
-  const [patches, entities, patchStageCopy] = await Promise.all([
+  const [patches, entities, patchStageCopy, patchBackstabCopy] = await Promise.all([
     getSTS2Patches(),
     loadAllEntities({ gameLocale }),
     getPatchStageGameCopy(gameLocale),
+    getPatchBackstabGameCopy(gameLocale),
   ]);
   const entitiesByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
 
@@ -166,6 +169,7 @@ export async function PatchListPage({
           const watchStage = isWatching ? patchWatchStage(patch) : null;
           const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
           const draft = isPatchDraft(patch);
+          const backstab = isBackstabPatch(patch);
 
           if (isWatching) {
             const isDelay = watchStage === "delay";
@@ -259,6 +263,34 @@ export async function PatchListPage({
                 <p className="mt-2 text-xs text-zinc-600">{patch.date}</p>
                 <PatchArtPreview art={patchArt} priority={index === 0} tone="building" />
               </article>
+            );
+          }
+
+          if (backstab) {
+            return (
+              <Link
+                key={patch.id}
+                href={localizeHrefWithGameLocale(`/patches/${patch.version}`, serviceLocale, gameLocale)}
+                prefetch={false}
+                className="block rounded-lg border border-rose-500/30 bg-rose-950/15 p-4 shadow-[0_0_24px_rgba(244,63,94,0.08)] transition-colors hover:border-rose-400/50 hover:bg-rose-950/25"
+              >
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                  <PatchStageTitle
+                    stage="ready"
+                    text={patchBackstabCopy.title}
+                    serviceLocale={serviceLocale}
+                    className="text-lg font-semibold text-rose-100"
+                  />
+                  <PatchTypeChip
+                    type={patch.type}
+                    label={copy.types[patch.type]}
+                    serviceLocale={serviceLocale}
+                  />
+                </div>
+                <p className="mt-1 text-sm font-medium text-rose-100/80">{patchBackstabCopy.description}</p>
+                <p className="mt-0.5 text-xs text-rose-100/45">{patch.date}</p>
+                {patchArt && <PatchArtPreview art={patchArt} priority={index === 0} />}
+              </Link>
             );
           }
 

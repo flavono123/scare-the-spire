@@ -65,12 +65,19 @@ export interface PatchStageGameCopy {
   };
 }
 
+export interface PatchBackstabGameCopy {
+  title: string;
+  description: string;
+  emptyDraw: string;
+}
+
 interface BorrowedGameCopyPayload {
   chemicalXPlaceholder: string;
   comboPlaceholder: string;
   feedbackForm: FeedbackFormGameCopy;
   historyCourseLanding: HistoryCourseLandingGameCopy;
   patchStage: PatchStageGameCopy;
+  patchBackstab: PatchBackstabGameCopy;
   thisOrThat: ThisOrThatGameCopy;
   transfigure: TransfigureGameCopy;
   defragment: DefragmentGameCopy;
@@ -106,6 +113,12 @@ export async function getPatchStageGameCopy(
   gameLocale: GameLocale,
 ): Promise<PatchStageGameCopy> {
   return getBorrowedGameCopy(gameLocale).patchStage;
+}
+
+export async function getPatchBackstabGameCopy(
+  gameLocale: GameLocale,
+): Promise<PatchBackstabGameCopy> {
+  return getBorrowedGameCopy(gameLocale).patchBackstab;
 }
 
 export async function getHistoryCourseLandingGameCopy(

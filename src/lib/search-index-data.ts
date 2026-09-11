@@ -2,6 +2,7 @@ import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { stripCodexMarkup } from "@/lib/codex-search";
 import { buildCompendiumResourceHref, type CompendiumResourceLinkType } from "@/lib/compendium-resource-links";
 import { getStories, getSTS2Patches, getSTS2Stories } from "@/lib/data";
+import { isBackstabPatch } from "@/lib/sts2-patch-labels";
 import { eventCharacterQuoteSearchParts } from "@/lib/event-character-quotes";
 import { loadAllEntities } from "@/lib/load-all-entities";
 
@@ -368,16 +369,21 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     getSTS2Stories(),
   ]);
 
-  const patchItems: SearchIndexItem[] = patches.map((patch) => ({
-    id: patch.id,
-    type: "patch",
-    title: `${patch.versionLabelKo ?? patch.id} ${patch.titleKo}`,
-    titleEn: `${patch.versionLabel ?? patch.id} ${patch.title}`,
-    description: [patch.summaryKo, patch.date, patch.version, patch.type].filter(Boolean).join(" "),
-    descriptionEn: [patch.summary, patch.date, patch.version, patch.type].filter(Boolean).join(" "),
-    imageUrl: "/images/sts2/nav/patch_notes_icon.png",
-    href: `/patches/${patch.version}`,
-  }));
+  const patchItems: SearchIndexItem[] = patches.map((patch) => {
+    const backstab = isBackstabPatch(patch);
+    return {
+      id: patch.id,
+      type: "patch",
+      title: backstab ? patch.titleKo : `${patch.versionLabelKo ?? patch.id} ${patch.titleKo}`,
+      titleEn: backstab ? patch.title : `${patch.versionLabel ?? patch.id} ${patch.title}`,
+      description: [patch.summaryKo, patch.date, patch.version, patch.type].filter(Boolean).join(" "),
+      descriptionEn: [patch.summary, patch.date, patch.version, patch.type].filter(Boolean).join(" "),
+      imageUrl: backstab
+        ? "/images/sts2/cards/backstab.webp"
+        : "/images/sts2/nav/patch_notes_icon.png",
+      href: `/patches/${patch.version}`,
+    };
+  });
 
   const storyItems: SearchIndexItem[] = [...stories, ...sts2Stories].map((story) => ({
     id: story.id,
