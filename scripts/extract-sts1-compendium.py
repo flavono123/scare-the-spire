@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 import struct
 import sys
@@ -150,6 +151,7 @@ GDX_COLORS: dict[str, tuple[int, int, int, int]] = {
 }
 
 # Settings.* colors used as potion lab outlines (packed RGBA8888 from Settings.<clinit>).
+# Float-constructed entries stay here; int/hex fields are filled from Settings.<clinit>.
 SETTINGS_COLORS: dict[str, tuple[int, int, int, int]] = {
     "HALF_TRANSPARENT_BLACK_COLOR": (0, 0, 0, 128),
     "RED_RELIC_COLOR": (255, 101, 99, 191),
@@ -157,6 +159,118 @@ SETTINGS_COLORS: dict[str, tuple[int, int, int, int]] = {
     "BLUE_RELIC_COLOR": (135, 206, 235, 191),
     "PURPLE_RELIC_COLOR": (200, 60, 255, 191),
 }
+
+_SETTINGS_COLOR_CACHE: dict[str, tuple[int, int, int, int]] | None = None
+
+
+def rgba8888_tuple(value: int) -> tuple[int, int, int, int]:
+    packed = value & 0xFFFFFFFF
+    return (
+        (packed >> 24) & 255,
+        (packed >> 16) & 255,
+        (packed >> 8) & 255,
+        packed & 255,
+    )
+
+
+def gdx_value_of(hex_str: str) -> tuple[int, int, int, int]:
+    """libGDX Color.valueOf: RRGGBB or RRGGBBAA, optional leading #."""
+    text = hex_str[1:] if hex_str.startswith("#") else hex_str
+    red = int(text[0:2], 16)
+    green = int(text[2:4], 16)
+    blue = int(text[4:6], 16)
+    alpha = int(text[6:8], 16) if len(text) >= 8 else 255
+    return (red, green, blue, alpha)
+
+
+def rainbow_liquid_rgba(millis: int = 0) -> tuple[int, int, int, int]:
+    """One frame of AbstractPotion.updateEffect RAINBOW (case 3).
+
+    liquidColor.{r,g,b} = (cosDeg(((millis + offset) / 10) % 360) + 1.25) / 2.3
+    with offsets 0 / 1000 / 2000. Epoch 0 is a deterministic in-game frame.
+    """
+
+    def channel(offset: int) -> int:
+        degrees = ((millis + offset) // 10) % 360
+        value = (math.cos(math.radians(degrees)) + 1.25) / 2.3
+        return max(0, min(255, int(round(value * 255))))
+
+    return (channel(0), channel(1000), channel(2000), 255)
+
+
+def parse_settings_colors(jar) -> dict[str, tuple[int, int, int, int]]:
+    cls = parse_jar_class(jar, "com.megacrit.cardcrawl.core.Settings")
+    clinit = cls.method("<clinit>")
+    colors = dict(SETTINGS_COLORS)
+    if not clinit or not clinit.code:
+        return colors
+    pending: tuple[int, int, int, int] | None = None
+    last_int: int | None = None
+    last_hex: str | None = None
+    for _start, op, arg in iter_opcodes(clinit.code):
+        if op == 18:
+            value = cls.ldc_value(arg[0])
+            if isinstance(value, int):
+                last_int = value
+            elif isinstance(value, str):
+                last_hex = value
+        elif op in {19, 20}:
+            value = cls.ldc_value(u2_from(arg))
+            if isinstance(value, int):
+                last_int = value
+            elif isinstance(value, str):
+                last_hex = value
+        elif op in {183, 184}:
+            owner, name, _desc = cls.methodref(u2_from(arg))
+            if not owner.endswith("graphics.Color"):
+                continue
+            if name == "<init>" and last_int is not None:
+                pending = rgba8888_tuple(last_int)
+            elif name == "valueOf" and last_hex:
+                pending = gdx_value_of(last_hex)
+            last_int = None
+            last_hex = None
+        elif op == 179:
+            _owner, name, desc = cls.fieldref(u2_from(arg))
+            if pending and desc.endswith("graphics/Color;"):
+                colors[name] = pending
+            pending = None
+            last_int = None
+            last_hex = None
+    return colors
+
+
+def settings_colors(jar) -> dict[str, tuple[int, int, int, int]]:
+    global _SETTINGS_COLOR_CACHE
+    if _SETTINGS_COLOR_CACHE is None:
+        _SETTINGS_COLOR_CACHE = parse_settings_colors(jar)
+    return _SETTINGS_COLOR_CACHE
+
+
+def color_from_name(name: str, extra: dict[str, tuple[int, int, int, int]] | None = None) -> tuple[int, int, int, int] | None:
+    if name in GDX_COLORS:
+        return GDX_COLORS[name]
+    if extra and name in extra:
+        return extra[name]
+    return SETTINGS_COLORS.get(name)
+
+
+def resolve_color_value(value: Any, extra: dict[str, tuple[int, int, int, int]] | None = None) -> tuple[int, int, int, int] | None:
+    if value is None:
+        return None
+    if isinstance(value, tuple) and len(value) == 4 and all(isinstance(part, int) for part in value):
+        return value
+    if isinstance(value, tuple) and value:
+        tag = value[0]
+        if tag == "rgba" and len(value) == 2 and isinstance(value[1], tuple):
+            return resolve_color_value(value[1], extra)
+        if tag == "rgba8888" and len(value) == 2 and isinstance(value[1], int):
+            return rgba8888_tuple(value[1])
+        if tag == "static" and len(value) >= 3:
+            return color_from_name(str(value[2]), extra)
+    if isinstance(value, str):
+        return color_from_name(value, extra)
+    return None
 
 
 def slugify(value: str) -> str:
@@ -295,13 +409,23 @@ def walk_code(cls: JavaClass, code: bytes) -> dict[str, Any]:
             owner, name, desc = cls.methodref(u2_from(arg))
             argc = descriptor_arg_count(desc)
             extra = 0 if op == 184 else 1
-            args: list[Any] = []
+            raw: list[Any] = []
             for _ in range(argc + extra):
-                args.insert(0, stack.pop() if stack else None)
-            if extra:
-                args = args[1:]
-            if not desc.endswith(")V"):
-                stack.append(("call", name))
+                raw.insert(0, stack.pop() if stack else None)
+            receiver = raw[0] if extra and raw else None
+            args = raw[extra:]
+            result_value: Any | None = None
+            if owner.endswith("graphics.Color") and name == "<init>" and op == 183:
+                if len(args) == 1 and isinstance(args[0], int) and stack:
+                    stack[-1] = ("rgba8888", args[0])
+            elif owner.endswith("graphics.Color") and name == "valueOf" and args and isinstance(args[0], str):
+                result_value = ("rgba", gdx_value_of(args[0]))
+            elif owner.endswith("graphics.Color") and name == "cpy":
+                result_value = receiver
+            elif not desc.endswith(")V"):
+                result_value = ("call", name)
+            if result_value is not None:
+                stack.append(result_value)
             if op == 183:
                 supers.append((owner, name, args))
             elif op == 184:
@@ -501,8 +625,24 @@ def parse_potion(jar, class_name: str) -> dict[str, Any] | None:
     rarity = "COMMON"
     size = "M"
     color = "NONE"
+    potion_effect: str | None = None
+    layers: dict[str, tuple[int, int, int, int]] = {}
+    extra_colors = settings_colors(jar)
     for owner, name, args in result["supers"]:
-        if owner.endswith("AbstractPotion") and name == "<init>" and len(args) >= 5:
+        if not owner.endswith("AbstractPotion") or name != "<init>":
+            continue
+        if len(args) >= 8:
+            potion_id = args[1] if isinstance(args[1], str) else None
+            rarity = enum_name(args[2]) or "COMMON"
+            size = enum_name(args[3]) or "M"
+            potion_effect = enum_name(args[4])
+            color = potion_effect or "NONE"
+            for key, value in zip(("liquid", "hybrid", "spots"), args[5:8]):
+                rgba = resolve_color_value(value, extra_colors)
+                if rgba:
+                    layers[key] = rgba
+            break
+        if len(args) >= 5:
             potion_id = args[1] if isinstance(args[1], str) else None
             rarity = enum_name(args[2]) or "COMMON"
             size = enum_name(args[3]) or "M"
@@ -522,7 +662,7 @@ def parse_potion(jar, class_name: str) -> dict[str, Any] | None:
     potency = parse_constant_return(cls, "getPotency", "(I)I")
     if potency is None:
         potency = parse_constant_return(cls, "getPotency", "()I")
-    return {
+    parsed: dict[str, Any] = {
         "id": potion_id,
         "slug": slug,
         "className": class_name,
@@ -534,6 +674,49 @@ def parse_potion(jar, class_name: str) -> dict[str, Any] | None:
         "thrown": fields.get("isThrown") in {True, 1},
         "legacySlugs": [slug],
     }
+    if potion_effect:
+        parsed["_potionEffect"] = potion_effect.lower()
+    if layers:
+        parsed["_layers"] = layers
+    return parsed
+
+
+def load_visible_potions(jar) -> list[dict[str, Any]]:
+    potion_classes = [
+        name.replace("/", ".").removesuffix(".class")
+        for name in jar.namelist()
+        if name.startswith("com/megacrit/cardcrawl/potions/")
+        and name.endswith(".class")
+        and "$" not in name
+        and not name.endswith("AbstractPotion.class")
+    ]
+    potions: list[dict[str, Any]] = []
+    for class_name in potion_classes:
+        try:
+            potion = parse_potion(jar, class_name)
+        except Exception as error:  # noqa: BLE001
+            print(f"skip potion {class_name}: {error}")
+            continue
+        if potion:
+            potions.append(potion)
+    id_to_pool = {
+        potion_id: pool
+        for pool, ids in CHARACTER_POTION_IDS.items()
+        for potion_id in ids
+    }
+    visible: list[dict[str, Any]] = []
+    for potion in potions:
+        if potion["rarity"] == "placeholder":
+            continue
+        potion["pool"] = id_to_pool.get(potion["id"], "shared")
+        visible.append(potion)
+    return visible
+
+
+def strip_potion_extract_fields(potion: dict[str, Any]) -> dict[str, Any]:
+    potion.pop("_layers", None)
+    potion.pop("_potionEffect", None)
+    return potion
 
 
 def load_loc_table(jar, locale: str, filename: str) -> dict[str, Any]:
@@ -668,6 +851,7 @@ def parse_tableswitch_cases(code: bytes) -> list[tuple[int, int, int]] | None:
 
 def parse_potion_color_layers(jar) -> dict[str, dict[str, tuple[int, int, int, int]]]:
     switch_map = parse_switch_map(jar, "AbstractPotion$PotionColor")
+    extra_colors = settings_colors(jar)
     ap = parse_jar_class(jar, "com.megacrit.cardcrawl.potions.AbstractPotion")
     initialize = ap.method("initializeColor")
     colors: dict[str, dict[str, tuple[int, int, int, int]]] = {}
@@ -677,23 +861,36 @@ def parse_potion_color_layers(jar) -> dict[str, dict[str, tuple[int, int, int, i
     if not cases:
         return colors
     case_to_enum = {index: name for name, index in switch_map.items()}
-    last_color: str | None = None
     for value, begin, end in cases:
         enum_name_value = case_to_enum.get(value)
         if not enum_name_value:
             continue
         layers: dict[str, tuple[int, int, int, int]] = {}
-        last_color = None
+        last: Any = None
+        pending_hex: str | None = None
         for start, op, arg in iter_opcodes(initialize.code):
             if start < begin or start >= end:
                 continue
-            if op == 178:
+            if op == 18:
+                loaded = ap.ldc_value(arg[0])
+                if isinstance(loaded, str):
+                    pending_hex = loaded
+            elif op in {19, 20}:
+                loaded = ap.ldc_value(u2_from(arg))
+                if isinstance(loaded, str):
+                    pending_hex = loaded
+            elif op == 178:
                 owner, name, _desc = ap.fieldref(u2_from(arg))
-                if owner.endswith("graphics.Color"):
-                    last_color = name
-            elif op == 181 and last_color:
+                if owner.endswith("graphics.Color") or owner.endswith("core.Settings"):
+                    last = name
+            elif op == 184:
+                owner, name, _desc = ap.methodref(u2_from(arg))
+                if name == "valueOf" and owner.endswith("graphics.Color") and pending_hex:
+                    last = gdx_value_of(pending_hex)
+                    pending_hex = None
+            elif op == 181 and last is not None:
                 _owner, field, _desc = ap.fieldref(u2_from(arg))
-                rgba = GDX_COLORS.get(last_color)
+                rgba = last if isinstance(last, tuple) else color_from_name(str(last), extra_colors)
                 if rgba and field in {"liquidColor", "hybridColor", "spotsColor"}:
                     key = field.replace("Color", "")
                     layers[key] = rgba
@@ -784,8 +981,13 @@ def compose_potion(jar, potion: dict[str, Any], color_layers: dict[str, dict[str
 
     paths = potion_layer_paths(potion["size"])
     names = jar.namelist()
-    colors = color_layers.get(potion["potionColor"], {})
-    outline_rgba = SETTINGS_COLORS.get(
+    colors = dict(potion.get("_layers") or {})
+    if not colors:
+        colors = dict(color_layers.get(potion["potionColor"], {}))
+    effect = potion.get("_potionEffect") or potion.get("potionColor")
+    if effect == "rainbow":
+        colors["liquid"] = rainbow_liquid_rgba()
+    outline_rgba = settings_colors(jar).get(
         potion.get("labOutline") or "HALF_TRANSPARENT_BLACK_COLOR",
         SETTINGS_COLORS["HALF_TRANSPARENT_BLACK_COLOR"],
     )
@@ -882,10 +1084,23 @@ def extract_images(jar, cards: list[dict[str, Any]], relics: list[dict[str, Any]
     extract_ui_extras(jar, out, names)
 
     color_layers = parse_potion_color_layers(jar)
+    extract_potion_images(jar, potions, color_layers, out)
+
+
+def extract_potion_images(
+    jar,
+    potions: list[dict[str, Any]],
+    color_layers: dict[str, dict[str, tuple[int, int, int, int]]],
+    out: Path,
+) -> int:
+    written = 0
+    dest = out / "potions"
     for potion in potions:
         composed = compose_potion(jar, potion, color_layers)
         if composed is not None:
-            save_webp(composed, out / "potions" / f"{potion['slug']}.webp")
+            save_webp(composed, dest / f"{potion['slug']}.webp")
+            written += 1
+    return written
 
 
 def attach_legacy_slugs(rows: list[dict[str, Any]], loc: dict[str, Any], kind: str) -> None:
@@ -920,6 +1135,11 @@ def main() -> None:
         action="store_true",
         help="Bake STS1 card BitmapFonts from jar TTF/OTF without rewriting JSON or portraits.",
     )
+    parser.add_argument(
+        "--potions-images-only",
+        action="store_true",
+        help="Re-compose STS1 potion lab sprites without rewriting JSON or portraits.",
+    )
     args = parser.parse_args()
 
     if args.card_ui_512_only:
@@ -940,6 +1160,18 @@ def main() -> None:
         check_call(
             [sys.executable, str(ROOT / "scripts" / "extract-sts1-bitmap-fonts.py"), "--jar", args.jar],
         )
+        return
+
+    if args.potions_images_only:
+        with open_sts1_jar(args.jar) as jar:
+            visible_potions = load_visible_potions(jar)
+            written = extract_potion_images(
+                jar,
+                visible_potions,
+                parse_potion_color_layers(jar),
+                ROOT / "public" / "images" / "sts1",
+            )
+        print(f"extracted potion-images={written}")
         return
 
     with open_sts1_jar(args.jar) as jar:
@@ -976,35 +1208,7 @@ def main() -> None:
                             relics.append(relic)
                     pending_class = None
 
-        potion_classes = [
-            name.replace("/", ".").removesuffix(".class")
-            for name in jar.namelist()
-            if name.startswith("com/megacrit/cardcrawl/potions/")
-            and name.endswith(".class")
-            and "$" not in name
-            and not name.endswith("AbstractPotion.class")
-        ]
-        potions: list[dict[str, Any]] = []
-        for class_name in potion_classes:
-            try:
-                potion = parse_potion(jar, class_name)
-            except Exception as error:  # noqa: BLE001
-                print(f"skip potion {class_name}: {error}")
-                continue
-            if potion:
-                potions.append(potion)
-
-        id_to_pool = {
-            potion_id: pool
-            for pool, ids in CHARACTER_POTION_IDS.items()
-            for potion_id in ids
-        }
-        visible_potions: list[dict[str, Any]] = []
-        for potion in potions:
-            if potion["rarity"] == "placeholder":
-                continue
-            potion["pool"] = id_to_pool.get(potion["id"], "shared")
-            visible_potions.append(potion)
+        visible_potions = load_visible_potions(jar)
 
         eng_cards = load_loc_table(jar, "eng", "cards.json")
         eng_relics = load_loc_table(jar, "eng", "relics.json")
@@ -1031,6 +1235,9 @@ def main() -> None:
             beta_dir = ROOT / "public" / "images" / "sts1" / "cards-beta"
             for card in cards:
                 card["hasBetaArt"] = (beta_dir / f"{card['slug']}.webp").exists()
+
+        for potion in visible_potions:
+            strip_potion_extract_fields(potion)
 
         data_root = ROOT / "data" / "sts1"
         write_json(data_root / "cards.json", cards)
