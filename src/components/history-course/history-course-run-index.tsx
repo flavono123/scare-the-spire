@@ -193,18 +193,30 @@ export function HistoryCourseRunIndex({
         ) ?? null,
       );
       setEditingLocal((prev) => (prev ? { ...prev, coverSpec: cover } : null));
-      if (supabaseEnabled && donatedIds.has(editingLocal.runId)) {
+      const isShared =
+        donatedIds.has(editingLocal.runId) ||
+        Boolean(donatedRuns?.some((d) => d.id === editingLocal.runId));
+      if (supabaseEnabled && isShared) {
         const activeUserId = userId ?? (await ensureUser());
         if (activeUserId) {
-          await updateDonatedRunCoverSpec({
+          const result = await updateDonatedRunCoverSpec({
             runId: editingLocal.runId,
             donorUserId: activeUserId,
             coverSpec: cover,
           });
+          if (result.ok) {
+            setDonatedRuns((prev) =>
+              prev?.map((entry) =>
+                entry.id === editingLocal.runId
+                  ? { ...entry, cover_spec: cover }
+                  : entry,
+              ) ?? null,
+            );
+          }
         }
       }
     },
-    [donatedIds, editingLocal, ensureUser, userId],
+    [donatedIds, donatedRuns, editingLocal, ensureUser, userId],
   );
 
   const handleSaveDonatedCover = useCallback(

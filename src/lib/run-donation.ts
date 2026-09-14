@@ -443,8 +443,9 @@ export async function updateDonatedRunCoverSpec(input: {
       .update({ cover_spec: input.coverSpec })
       .eq("id", input.runId)
       .eq("env", supabaseEnv)
-      .eq("donor_user_id", input.donorUserId),
-  ).catch(() => ({ error: new Error("timeout") }));
+      .eq("donor_user_id", input.donorUserId)
+      .select("id"),
+  ).catch(() => ({ data: null, error: new Error("timeout") }));
 
   if (result.error) {
     if (isMissingCoverSpecColumn(result.error)) {
@@ -457,6 +458,9 @@ export async function updateDonatedRunCoverSpec(input: {
           ? String((result.error as { message?: unknown }).message ?? "update failed")
           : "update failed";
     return { ok: false, message };
+  }
+  if (!result.data || result.data.length === 0) {
+    return { ok: false, message: "수정 권한이 없거나 대상 런을 찾을 수 없습니다." };
   }
   return { ok: true };
 }
