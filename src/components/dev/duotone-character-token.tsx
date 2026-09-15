@@ -29,13 +29,14 @@ export function DuotoneCharacterToken({
   className?: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [ready, setReady] = useState(false);
+  const currentKey = `${iconUrl}:${shadowHex}:${highlightHex}:${size}`;
+  const [composedKey, setComposedKey] = useState<string | null>(null);
+  const ready = composedKey === currentKey;
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     let cancelled = false;
-    setReady(false);
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     const pixelSize = Math.round(size * dpr);
     canvas.width = pixelSize;
@@ -73,7 +74,7 @@ export function DuotoneCharacterToken({
           drawHeight,
         );
         if (!cancelled) {
-          setReady(true);
+          setComposedKey(currentKey);
         }
       })
       .catch((error: unknown) => {
@@ -83,7 +84,7 @@ export function DuotoneCharacterToken({
     return () => {
       cancelled = true;
     };
-  }, [highlightHex, iconUrl, shadowHex, size]);
+  }, [currentKey, highlightHex, iconUrl, shadowHex, size]);
 
   return (
     <span
