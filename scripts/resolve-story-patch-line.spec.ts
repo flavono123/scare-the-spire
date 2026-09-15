@@ -122,4 +122,17 @@ const counts = countStoriesByPatchLine([shiftedBladeStory], map);
 assert.equal(counts.get(bladeCurrent.id), 1);
 assert.equal(counts.get(rampageNested.id), undefined);
 
+const preparedLine = line("v0.100.0:line-007-card-prepared", [
+  { type: "card", id: "PREPARED", label: "예비" },
+]);
+const aliasMap = indexPatchLines([preparedLine]);
+assert.equal(
+  resolveStoryPatchLine(
+    { patchLineId: "v0.100.0:line-001-text-qgkkr7" },
+    aliasMap,
+  )?.id,
+  preparedLine.id,
+  "aliased legacy text-hash patch line resolves to rewritten entity line",
+);
+
 console.log("resolve-story-patch-line.spec.ts passed");

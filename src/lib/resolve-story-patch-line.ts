@@ -17,16 +17,23 @@ export function indexPatchLines(lines: Iterable<STS2PatchLine>): Map<string, STS
   return new Map(Array.from(lines, (line) => [line.id, line]));
 }
 
+export const PATCH_LINE_ALIASES: Record<string, string> = {
+  // v0.100.0 initial abbreviated note was replaced with full Steam patch notes in commit caf38da0.
+  // The 'Prepared -> Prepare' rework moved from line-001 (text-qgkkr7) to line-007 (card-prepared).
+  "v0.100.0:line-001-text-qgkkr7": "v0.100.0:line-007-card-prepared",
+};
+
 export function resolveStoryPatchLine(
   story: StoryPatchLineRef,
   patchLineMap: Map<string, STS2PatchLine>,
 ): STS2PatchLine | undefined {
   if (!story.patchLineId) return undefined;
 
-  const exact = patchLineMap.get(story.patchLineId);
+  const aliasedId = PATCH_LINE_ALIASES[story.patchLineId] ?? story.patchLineId;
+  const exact = patchLineMap.get(aliasedId);
   if (exact) return exact;
 
-  const parsed = parsePatchLineId(story.patchLineId);
+  const parsed = parsePatchLineId(aliasedId);
   if (parsed) {
     const slugMatches: STS2PatchLine[] = [];
     for (const line of patchLineMap.values()) {
