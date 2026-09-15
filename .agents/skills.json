@@ -1,0 +1,10 @@
+{
+  "entries": [
+    {
+      "path": ".codex/skills"
+    },
+    {
+      "path": ".claude/skills"
+    }
+  ]
+}
