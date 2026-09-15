@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {
   adminFilterHref,
+  aggregateAdminAuthors,
   commentStoryFilter,
   COMMENT_OTHER_PREFIXES,
   formatRate,
@@ -111,5 +112,41 @@ const chart = layoutAdminActivityChart([
 ]);
 assert.ok(chart.usersPath.startsWith("M"));
 assert.ok(chart.writesPath.startsWith("M"));
+
+const authors = aggregateAdminAuthors({
+  comments: [
+    { user_id: "u1", nickname: "패치아조씨", created_at: "2026-09-10T10:00:00.000Z" },
+    { user_id: "u1", nickname: "패치아조씨2", created_at: "2026-09-12T10:00:00.000Z" },
+    { user_id: "u2", nickname: "리황", created_at: "2026-09-11T10:00:00.000Z" },
+  ],
+  posts: [
+    {
+      userId: "u1",
+      nickname: "패치아조씨2",
+      createdAt: "2026-09-13T10:00:00.000Z",
+      service: "combo",
+    },
+    {
+      userId: "u3",
+      nickname: "익명",
+      createdAt: "2026-09-09T10:00:00.000Z",
+      service: "stories",
+    },
+  ],
+});
+assert.equal(authors.length, 3);
+// u1 is the most recent (2026-09-13)
+assert.equal(authors[0]?.userId, "u1");
+assert.equal(authors[0]?.latestNickname, "패치아조씨2");
+assert.deepEqual(authors[0]?.nicknames.sort(), ["패치아조씨", "패치아조씨2"].sort());
+assert.equal(authors[0]?.commentCount, 2);
+assert.equal(authors[0]?.postCount, 1);
+assert.ok(authors[0]?.services.includes("comments"));
+assert.ok(authors[0]?.services.includes("combo"));
+// u2 is second (2026-09-11)
+assert.equal(authors[1]?.userId, "u2");
+assert.equal(authors[1]?.latestNickname, "리황");
+// u3 is third (2026-09-09)
+assert.equal(authors[2]?.userId, "u3");
 
 console.log("admin-rls-activity.spec.ts ok");
