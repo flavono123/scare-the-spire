@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { AdminActivityChart } from "@/components/dev/admin-activity-chart";
+import { AdminAuthorTable } from "@/components/dev/admin-author-table";
 import { AdminProfileNicknames } from "@/components/dev/admin-profile-nicknames";
 import { AdminServiceFilter } from "@/components/dev/admin-service-filter";
 import type { PostBlock } from "@/lib/chemical-types";
@@ -20,6 +21,7 @@ import {
   ADMIN_SERVICE_TOKEN_SRC,
   adminFilterHref,
   adminServicePostHref,
+  aggregateAdminAuthors,
   COMMENT_OTHER_PREFIXES,
   commentStoryFilter,
   formatRate,
@@ -809,6 +811,12 @@ export default async function SupabaseAdminPage({
   ]);
   const contactRows = contactInquiries?.data ?? [];
   const metrics = snapshot?.metrics.data ?? null;
+  const authors = snapshot
+    ? aggregateAdminAuthors({
+        comments: snapshot.comments.data,
+        posts: snapshot.posts.data,
+      })
+    : [];
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-6">
@@ -1058,6 +1066,13 @@ export default async function SupabaseAdminPage({
                 {snapshot.metrics.note ?? "지표를 표시할 수 없습니다."}
               </div>
             )}
+          </Section>
+
+          <Section
+            title="작성자 RLS 식별자 (UUID) 및 프로필 토큰"
+            count={`${authors.length.toLocaleString("ko-KR")}명 식별`}
+          >
+            <AdminAuthorTable authors={authors} />
           </Section>
 
           <div className="mt-10 border-t border-border/70 pt-6">

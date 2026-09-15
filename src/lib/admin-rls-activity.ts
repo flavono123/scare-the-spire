@@ -132,6 +132,101 @@ export function adminFilterHref(options: {
   return query ? `/dev/admin?${query}` : "/dev/admin";
 }
 
+export type AdminAuthorRow = {
+  userId: string;
+  latestNickname: string;
+  nicknames: string[];
+  commentCount: number;
+  postCount: number;
+  services: Array<AdminPostService | "comments">;
+  lastActiveAt: string;
+};
+
+export function aggregateAdminAuthors({
+  comments,
+  posts,
+}: {
+  comments: Array<{ user_id: string; nickname: string; created_at: string }>;
+  posts: Array<{ userId: string; nickname: string; createdAt: string; service: AdminPostService }>;
+}): AdminAuthorRow[] {
+  const map = new Map<
+    string,
+    {
+      userId: string;
+      latestNickname: string;
+      nicknamesSet: Set<string>;
+      commentCount: number;
+      postCount: number;
+      servicesSet: Set<AdminPostService | "comments">;
+      lastActiveAt: string;
+    }
+  >();
+
+  for (const c of comments) {
+    const uid = c.user_id?.trim();
+    if (!uid || uid === "-") continue;
+    const nick = c.nickname?.trim() || "-";
+    const existing = map.get(uid);
+    if (!existing) {
+      map.set(uid, {
+        userId: uid,
+        latestNickname: nick,
+        nicknamesSet: new Set([nick]),
+        commentCount: 1,
+        postCount: 0,
+        servicesSet: new Set(["comments"]),
+        lastActiveAt: c.created_at,
+      });
+    } else {
+      existing.commentCount += 1;
+      existing.nicknamesSet.add(nick);
+      existing.servicesSet.add("comments");
+      if (c.created_at > existing.lastActiveAt) {
+        existing.lastActiveAt = c.created_at;
+        existing.latestNickname = nick;
+      }
+    }
+  }
+
+  for (const p of posts) {
+    const uid = p.userId?.trim();
+    if (!uid || uid === "-") continue;
+    const nick = p.nickname?.trim() || "-";
+    const existing = map.get(uid);
+    if (!existing) {
+      map.set(uid, {
+        userId: uid,
+        latestNickname: nick,
+        nicknamesSet: new Set([nick]),
+        commentCount: 0,
+        postCount: 1,
+        servicesSet: new Set([p.service]),
+        lastActiveAt: p.createdAt,
+      });
+    } else {
+      existing.postCount += 1;
+      existing.nicknamesSet.add(nick);
+      existing.servicesSet.add(p.service);
+      if (p.createdAt > existing.lastActiveAt) {
+        existing.lastActiveAt = p.createdAt;
+        existing.latestNickname = nick;
+      }
+    }
+  }
+
+  return Array.from(map.values())
+    .map((item) => ({
+      userId: item.userId,
+      latestNickname: item.latestNickname,
+      nicknames: Array.from(item.nicknamesSet),
+      commentCount: item.commentCount,
+      postCount: item.postCount,
+      services: Array.from(item.servicesSet),
+      lastActiveAt: item.lastActiveAt,
+    }))
+    .sort((a, b) => b.lastActiveAt.localeCompare(a.lastActiveAt));
+}
+
 export type CommentStoryFilter =
   | { kind: "eq"; value: string }
   | { kind: "like"; value: string }
