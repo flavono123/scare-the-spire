@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import Image from "@/components/ui/static-image";
 import { hexToRgb255, remapDuotoneRgba } from "@/lib/duotone-pixels";
 import { cn } from "@/lib/utils";
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
-    const image = new Image();
+    const image = new window.Image();
     image.decoding = "async";
     image.onload = () => resolve(image);
     image.onerror = () => reject(new Error(`Failed to load ${src}`));
@@ -28,11 +29,13 @@ export function DuotoneCharacterToken({
   className?: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     let cancelled = false;
+    setReady(false);
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     const pixelSize = Math.round(size * dpr);
     canvas.width = pixelSize;
@@ -69,6 +72,9 @@ export function DuotoneCharacterToken({
           drawWidth,
           drawHeight,
         );
+        if (!cancelled) {
+          setReady(true);
+        }
       })
       .catch((error: unknown) => {
         if (!cancelled) console.warn("Failed to compose duotone token:", error);
@@ -80,10 +86,25 @@ export function DuotoneCharacterToken({
   }, [highlightHex, iconUrl, shadowHex, size]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      data-duotone-token
-      className={cn("h-14 w-14", className)}
-    />
+    <span
+      className={cn("relative inline-block shrink-0 overflow-hidden", className)}
+      style={className ? undefined : { width: size, height: size }}
+    >
+      {!ready && (
+        <Image
+          src={iconUrl}
+          alt=""
+          width={size}
+          height={size}
+          className="h-full w-full object-contain"
+        />
+      )}
+      <canvas
+        ref={canvasRef}
+        data-duotone-token
+        data-ready={ready ? "true" : "false"}
+        className={cn("h-full w-full object-contain", !ready && "hidden")}
+      />
+    </span>
   );
 }

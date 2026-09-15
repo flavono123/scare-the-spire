@@ -149,7 +149,7 @@ export function ComboPostView({ postId, gameLocale, placeholder, variant = "page
         <div className="relative mb-4 flex items-center justify-between">
           <DisplayedProfileNickname
             nickname={post.nickname}
-            isOwner={Boolean(ready && userId === post.user_id)}
+            isOwner={Boolean(ready && userId && userId === post.user_id)}
             size={18}
             tokenClassName="h-[18px] w-[18px]"
             nicknameClassName="text-sm font-semibold text-gray-300"

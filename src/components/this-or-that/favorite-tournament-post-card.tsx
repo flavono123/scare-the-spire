@@ -180,7 +180,7 @@ export function FavoriteTournamentPostCard({
           </div>
         ) : (
           <>
-            <span className="flex min-w-0 w-[5.5rem] shrink-0 items-center gap-1 pt-0.5 sm:w-24">
+            <span className="flex min-w-0 max-w-[45%] shrink-0 items-center gap-1 pt-0.5 sm:w-28 sm:max-w-none">
               <DisplayedProfileNickname
                 nickname={post.nickname}
                 isOwner={isOwner}
