@@ -48,6 +48,10 @@ domain being changed.
   `scripts/check-cloudflare-static-assets.ts`, and the route-smoke/testbed
   allowlists in the same change. Allowlists do not auto-discover `[id]`
   routes; an unlisted UUID path falls through to OpenNext and can 1102.
+  Record-specific OG metadata (custom runner titles, descriptions, cover images)
+  is injected at the Worker edge via streaming `HTMLRewriter` with edge caching
+  (`workers/detail-shell-og.ts`) rather than falling back to generic shell text
+  or invoking OpenNext SSR.
   Removing the OpenNext fallback itself stays on `docs/OPENNEXT_EXIT_PLAN.md`
   Phases 5–6, not incidental feature work.
 - Patch Worker: separate static Worker. Patch HTML, CSS, fonts, images, and

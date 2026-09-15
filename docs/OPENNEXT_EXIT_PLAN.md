@@ -147,9 +147,12 @@ resource data is fetched as immutable or long-lived static JSON.
   so the legacy alias never invokes OpenNext.
 - Teach the thin Worker to rewrite only the validated route shapes to those
   shells for both document and RSC navigation.
-- Preserve generic metadata at build time. The browser updates the canonical URL
-  from `window.location` after mount. Record-specific OG rendering is a
-  separate design and must not reintroduce request-time Next rendering by default.
+- Preserve generic metadata at build time for static shells. Record-specific
+  OG metadata (custom titles, descriptions, and thumbnail images for shared links)
+  is enriched at the Cloudflare Worker edge via streaming `HTMLRewriter` and
+  cached in `caches.default` (`workers/detail-shell-og.ts`). This avoids degrading
+  public link sharing to generic fallbacks without reintroducing request-time
+  Next.js OpenNext SSR.
 - New Toy Box / UUID detail routes added after this phase reuse the same
   helpers (`src/lib/static-detail-shell.ts`, `StaticDetailShell`) and must be
   registered in the Worker and copy/check/smoke allowlists in the same change.

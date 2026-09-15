@@ -9,6 +9,12 @@ type AssetsBinding = {
 type Env = {
   ASSETS?: AssetsBinding;
   PATCH_WORKER?: PatchWorkerBinding;
+  NEXT_PUBLIC_SUPABASE_URL?: string;
+  NEXT_PUBLIC_SUPABASE_ANON_KEY?: string;
+  NEXT_PUBLIC_SUPABASE_ENV?: string;
+  SUPABASE_URL?: string;
+  SUPABASE_ANON_KEY?: string;
+  SUPABASE_ENV?: string;
 };
 
 type ExecutionContextLike = {
@@ -21,6 +27,7 @@ type ExecutionContextLike = {
 // @ts-ignore
 import openNextWorker from "../.open-next/worker.js";
 import { getLegacyCompendiumDetailRedirectPath } from "../src/lib/compendium-resource-links";
+import { maybeEnrichServiceDetailShell } from "./detail-shell-og";
 import {
   legacyWorldcupDetailRedirectPath,
   staticCompendiumAssetPath,
@@ -231,10 +238,22 @@ async function maybeServeStaticServicePage(request: Request, env: Env, url: URL)
   return assetPath ? fetchStaticPageAsset(request, env, assetPath, "service") : null;
 }
 
-async function maybeServeStaticServiceDetailShell(request: Request, env: Env, url: URL): Promise<Response | null> {
+async function maybeServeStaticServiceDetailShell(
+  request: Request,
+  env: Env,
+  ctx: ExecutionContextLike,
+  url: URL,
+): Promise<Response | null> {
   const extension = isRscRequest(request, url) ? "rsc" : "html";
   const assetPath = staticServiceDetailShellAssetPath(url.pathname, extension);
-  return assetPath ? fetchStaticPageAsset(request, env, assetPath, "shell") : null;
+  if (!assetPath) return null;
+
+  const baseResponse = await fetchStaticPageAsset(request, env, assetPath, "shell");
+  if (!baseResponse || baseResponse.status !== 200 || extension === "rsc") {
+    return baseResponse;
+  }
+
+  return maybeEnrichServiceDetailShell(request, env, ctx, url, baseResponse);
 }
 
 async function maybeServeStaticLegacyPage(request: Request, env: Env, url: URL): Promise<Response | null> {
@@ -274,7 +293,7 @@ const mainWorker = {
     const staticServiceResponse = await maybeServeStaticServicePage(request, env, url);
     if (staticServiceResponse) return staticServiceResponse;
 
-    const staticServiceDetailShellResponse = await maybeServeStaticServiceDetailShell(request, env, url);
+    const staticServiceDetailShellResponse = await maybeServeStaticServiceDetailShell(request, env, ctx, url);
     if (staticServiceDetailShellResponse) return staticServiceDetailShellResponse;
 
     const staticLegacyResponse = await maybeServeStaticLegacyPage(request, env, url);
