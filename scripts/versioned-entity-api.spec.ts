@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
 import {
   getVersionedEntity,
   getVersionedEntities,
   resolveVersionedEntity,
 } from "../src/lib/versioned-entity-api";
+import { normalizeVersionedEntityType } from "../src/lib/codex-versioning";
 import type { CodexCard } from "../src/lib/codex-types";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "../src/lib/types";
 
@@ -273,6 +276,46 @@ async function runTests() {
   // NOT_YET was introduced in v0.103.0, so it must not be available in v0.100.0
   const notYetIn100 = cardsAt100.find((c) => c.entityId === "NOT_YET");
   assert.equal(notYetIn100, undefined, "NOT_YET must not be included in available cards at v0.100.0");
+
+  // -------------------------------------------------------------------------
+  // 6. Exhaustive validation of all structured changes across all versions
+  // -------------------------------------------------------------------------
+  console.log("\n[Test 6] Exhaustive validation of all structured changes across all versions");
+  const changesRaw = fs.readFileSync(path.join(process.cwd(), "data/sts2-changes.json"), "utf-8");
+  const allChanges: STS2Change[] = JSON.parse(changesRaw);
+  let verifiedDiffCount = 0;
+
+  for (const change of allChanges) {
+    const entityType = normalizeVersionedEntityType(change.entityType);
+    if (!entityType || !change.fieldDiffs?.length) continue;
+
+    const res = await getVersionedEntity({
+      entityType,
+      entityId: change.entityId,
+      version: change.patch,
+      locale: "kor",
+    });
+
+    assert.ok(res.isAvailable, `${entityType}:${change.entityId} should be available at ${change.patch}`);
+    assert.ok(res.entity, `${entityType}:${change.entityId} entity should exist at ${change.patch}`);
+
+    for (const fd of change.fieldDiffs) {
+      if (fd.upgraded) continue;
+      verifiedDiffCount++;
+      const parts = fd.field.split(".");
+      let val: unknown = res.entity;
+      for (const p of parts) {
+        val = (val as Record<string, unknown> | null | undefined)?.[p];
+      }
+
+      assert.deepEqual(
+        val,
+        fd.after,
+        `Mismatch in ${change.patch} ${entityType}:${change.entityId} (${change.id}) .${fd.field}`
+      );
+    }
+  }
+  console.log(`Exhaustively verified ${verifiedDiffCount} fieldDiffs across all patches!`);
 
   console.log("\nAll Versioned Entity API tests PASSED successfully!");
 }

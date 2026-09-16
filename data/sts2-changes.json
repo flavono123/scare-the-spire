@@ -392,10 +392,8 @@
       },
       {
         "field": "vars",
-        "before": {
-          "Damage": 4
-        },
-        "after": null
+        "before": {},
+        "after": {}
       },
       {
         "field": "upgrade",
@@ -2672,22 +2670,46 @@
           {
             "id": "DRAMATIC_OPEN",
             "name": "극적인 개방",
-            "nameEn": "Dramatic Open"
+            "nameEn": "Dramatic Open",
+            "kind": "move",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
           },
           {
             "id": "HUNGER",
             "name": "굶주림",
-            "nameEn": "Hunger"
+            "nameEn": "Hunger",
+            "kind": "move",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
           },
           {
             "id": "SCRUTINY",
             "name": "감시",
-            "nameEn": "Scrutiny"
+            "nameEn": "Scrutiny",
+            "kind": "move",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
           },
           {
             "id": "GRASP",
             "name": "움켜쥐기",
-            "nameEn": "Grasp"
+            "nameEn": "Grasp",
+            "kind": "move",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
           }
         ]
       },
@@ -3510,10 +3532,18 @@
             ],
             "intentDetails": [
               {
-                "type": "DefendIntent"
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
               },
               {
-                "type": "BuffIntent"
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
               }
             ],
             "powerApplications": [
@@ -3544,10 +3574,12 @@
               {
                 "type": "MultiAttackIntent",
                 "damageKey": "OneTwo",
+                "blockKey": null,
                 "repeat": {
                   "normal": 2,
                   "ascension": null
-                }
+                },
+                "repeatExpression": null
               }
             ],
             "powerApplications": [],
@@ -3570,13 +3602,19 @@
               {
                 "type": "SingleAttackIntent",
                 "damageKey": "HammerUppercut",
+                "blockKey": null,
                 "repeat": {
                   "normal": 1,
                   "ascension": null
-                }
+                },
+                "repeatExpression": null
               },
               {
-                "type": "DebuffIntent"
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
               }
             ],
             "powerApplications": [
@@ -3649,10 +3687,18 @@
             ],
             "intentDetails": [
               {
-                "type": "DefendIntent"
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
               },
               {
-                "type": "BuffIntent"
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
               }
             ],
             "powerApplications": [
@@ -3683,10 +3729,12 @@
               {
                 "type": "MultiAttackIntent",
                 "damageKey": "OneTwo",
+                "blockKey": null,
                 "repeat": {
                   "normal": 2,
                   "ascension": null
-                }
+                },
+                "repeatExpression": null
               }
             ],
             "powerApplications": [],
@@ -3709,13 +3757,19 @@
               {
                 "type": "SingleAttackIntent",
                 "damageKey": "HammerUppercut",
+                "blockKey": null,
                 "repeat": {
                   "normal": 1,
                   "ascension": null
-                }
+                },
+                "repeatExpression": null
               },
               {
-                "type": "DebuffIntent"
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
               }
             ],
             "powerApplications": [
@@ -3744,6 +3798,30 @@
                 "imageUrl": "/images/sts2/powers/frail_power.webp"
               }
             ],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
             "cardApplications": []
           }
         ]
@@ -4129,7 +4207,7 @@
       {
         "field": "description",
         "before": "모든 적에게 피해를 14 줍니다.",
-        "after": "모든 적에게 피해를 6만큼 2번 줍니다."
+        "after": "모든 적에게\n피해를 6만큼 2번 줍니다."
       },
       {
         "field": "descriptionRaw",
@@ -4448,12 +4526,12 @@
       {
         "field": "description",
         "before": "처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다.",
-        "after": "획득 시, 모든 [gold]골드[/gold]를 잃습니다. 처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다."
+        "after": "획득 시, 모든 [gold]골드[/gold]를 잃습니다. 내 처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다."
       },
       {
         "field": "descriptionRaw",
         "before": "처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다.",
-        "after": "획득 시, 모든 [gold]골드[/gold]를 잃습니다. 처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다."
+        "after": "획득 시, 모든 [gold]골드[/gold]를 잃습니다. 내 처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다."
       }
     ]
   },
@@ -5161,6 +5239,7 @@
         "field": "vars",
         "before": {},
         "after": {
+          "AfflictionTitle": "훼손됨",
           "Amount": 2
         }
       }
@@ -6310,12 +6389,12 @@
       {
         "field": "description",
         "before": "[gold]뽑을 카드 더미[/gold]를 섞을 때마다, 카드를 1장 뽑습니다.",
-        "after": "3턴마다, 카드를 1장 뽑습니다."
+        "after": "[blue]3[/blue]턴마다, 카드를 [blue]1[/blue]장 뽑습니다."
       },
       {
         "field": "descriptionRaw",
         "before": "[gold]뽑을 카드 더미[/gold]를 섞을 때마다, 카드를 1장 뽑습니다.",
-        "after": "3턴마다, 카드를 1장 뽑습니다."
+        "after": "[blue]{Turns}[/blue]턴마다, 카드를 [blue]{Cards}[/blue]장 뽑습니다."
       }
     ]
   },
@@ -6335,12 +6414,12 @@
       {
         "field": "description",
         "before": "[gold]휴식[/gold]을 취할 때마다, 무작위 포션을 1개 생성합니다.",
-        "after": "[gold]휴식[/gold]을 취할 때마다, 무작위 포션을 2개 생성합니다."
+        "after": "[gold]휴식[/gold]을 취할 때마다, 무작위 [gold]포션[/gold]을 [blue]2[/blue]개 생성합니다."
       },
       {
         "field": "descriptionRaw",
         "before": "[gold]휴식[/gold]을 취할 때마다, 무작위 포션을 1개 생성합니다.",
-        "after": "[gold]휴식[/gold]을 취할 때마다, 무작위 포션을 {Potions}개 생성합니다."
+        "after": "[gold]휴식[/gold]을 취할 때마다, 무작위 [gold]포션[/gold]을 [blue]2[/blue]개 생성합니다."
       }
     ]
   },
@@ -6472,7 +6551,7 @@
       {
         "field": "descriptionRaw",
         "before": "[gold]단조[/gold] {Forge:diff()}.",
-        "after": "카드를 {Cards:diff()}장 뽑습니다.\n[gold]단조[/gold] {Forge:diff()}."
+        "after": "[gold]단조[/gold] {Forge:diff()}.\n카드를 {Cards:diff()}장 뽑습니다."
       }
     ]
   },
@@ -6527,12 +6606,12 @@
       {
         "field": "description",
         "before": "피해를 18 줍니다.\n[gold]뽑을 카드 더미[/gold] 맨 위의 카드를 [gold]소멸[/gold]시킵니다.",
-        "after": "피해를 18 줍니다.\n[gold]손[/gold]에 있는 무작위 카드를 [gold]소멸[/gold]시킵니다."
+        "after": "피해를 18 줍니다.\n무작위 카드를\n1장 [gold]소멸[/gold] 시킵니다."
       },
       {
         "field": "descriptionRaw",
         "before": "피해를 {Damage:diff()} 줍니다.\n[gold]뽑을 카드 더미[/gold] 맨 위의 카드를 [gold]소멸[/gold]시킵니다.",
-        "after": "피해를 {Damage:diff()} 줍니다.\n[gold]손[/gold]에 있는 무작위 카드를 [gold]소멸[/gold]시킵니다."
+        "after": "피해를 {Damage:diff()} 줍니다.\n무작위 카드를\n1장 [gold]소멸[/gold] 시킵니다."
       }
     ]
   },
@@ -6567,7 +6646,28 @@
       {
         "field": "description",
         "before": "자신에게 [gold]종말[/gold]을 3 부여합니다.\n[energy:1]를 얻습니다.",
-        "after": "[energy:4]를 얻습니다.\n이번 턴 카드 비용이 1 증가합니다."
+        "after": "[energy:4]를 얻습니다.\n이번 턴 동안 카드의 비용이\n[energy:1] 증가합니다."
+      },
+      {
+        "field": "vars",
+        "before": {
+          "DoomPower": 3,
+          "Doom": 3,
+          "Energy": 1
+        },
+        "after": {
+          "ExtraCost": 1,
+          "Energy": 4
+        }
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "energy": "+1"
+        },
+        "after": {
+          "energy": "+2"
+        }
       }
     ]
   },
@@ -6637,12 +6737,12 @@
       {
         "field": "description",
         "before": "내 턴 시작 시, 무작위 [gold]공격[/gold] 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴에 그 카드의 비용이 [blue]0[/blue][energy:1]이 됩니다.",
-        "after": "내 턴 시작 시, 무작위 [gold]공격[/gold] 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴에 비용 없이 사용할 수 있습니다."
+        "after": "내 턴 시작 시, 무작위 [gold]공격[/gold] 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다."
       },
       {
         "field": "descriptionRaw",
         "before": "내 턴 시작 시, 무작위 [gold]공격[/gold] 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴에 그 카드의 비용이 [blue]0[/blue]{energyPrefix:energyIcons(1)}이 됩니다.",
-        "after": "내 턴 시작 시, 무작위 [gold]공격[/gold] 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴에 비용 없이 사용할 수 있습니다."
+        "after": "내 턴 시작 시, 무작위 [gold]공격[/gold] 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다."
       }
     ]
   },
@@ -6657,12 +6757,12 @@
       {
         "field": "description",
         "before": "매 전투 시작 시, 무작위 카드를 1장 [gold]손[/gold]으로 가져옵니다. 그 카드의 비용이 [blue]0[/blue][energy:1]이 됩니다.",
-        "after": "매 전투 시작 시, 무작위 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴에 비용 없이 사용할 수 있습니다."
+        "after": "매 전투 시작 시, 무작위 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다."
       },
       {
         "field": "descriptionRaw",
         "before": "매 전투 시작 시, 무작위 카드를 1장 [gold]손[/gold]으로 가져옵니다. 그 카드의 비용이 [blue]0[/blue]{energyPrefix:energyIcons(1)}이 됩니다.",
-        "after": "매 전투 시작 시, 무작위 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴에 비용 없이 사용할 수 있습니다."
+        "after": "매 전투 시작 시, 무작위 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다."
       }
     ]
   },
@@ -6677,12 +6777,12 @@
       {
         "field": "description",
         "before": "[gold]버린 카드 더미[/gold]에서 카드를 1장 선택해 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드의 비용이 [blue]0[/blue] [energy:1]이 됩니다.",
-        "after": "[gold]버린 카드 더미[/gold]에서 카드를 1장 선택해 [gold]손[/gold]으로 가져옵니다. 이번 턴에 비용 없이 사용할 수 있습니다."
+        "after": "[gold]버린 카드 더미[/gold]에서 카드를 1장 선택해 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다."
       },
       {
         "field": "descriptionRaw",
         "before": "[gold]버린 카드 더미[/gold]에서 카드를 1장 선택해 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드의 비용이 [blue]0[/blue] {energyPrefix:energyIcons(1)}이 됩니다.",
-        "after": "[gold]버린 카드 더미[/gold]에서 카드를 1장 선택해 [gold]손[/gold]으로 가져옵니다. 이번 턴에 비용 없이 사용할 수 있습니다."
+        "after": "[gold]버린 카드 더미[/gold]에서 카드를 1장 선택해 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다."
       }
     ]
   },
@@ -6935,7 +7035,7 @@
       {
         "field": "description",
         "before": "매 전투 시작 시, [gold]전기[/gold]를 [blue]{Lightning}[/blue]번 [gold]영창[/gold]합니다.",
-        "after": "매 전투 시작 시, [gold]전기[/gold]를 [blue]{Lightning}[/blue]번 [gold]영창[/gold]합니다. [gold]전기[/gold]의 피해량이 [blue]{ExtraDamage}[/blue] 증가합니다."
+        "after": "매 전투 시작 시, [gold]전기[/gold]를 [blue]3[/blue]번 [gold]영창[/gold]합니다. [gold]전기[/gold]의 피해량이 [blue]1[/blue] 증가합니다."
       },
       {
         "field": "descriptionRaw",
@@ -6955,7 +7055,7 @@
       {
         "field": "description",
         "before": "매 턴 시작 시, {Energy:energyIcons()}를 얻습니다. [blue]3[/blue][gold]막[/gold] 시작 시 소멸합니다.",
-        "after": "매 턴 시작 시, {Energy:energyIcons()}를 얻습니다. [blue]{CombatCount}[/blue]번의 전투 후에 불이 꺼집니다. [gold]휴식 장소[/gold]에서 다시 [gold]불을 붙일[/gold] 수 있습니다."
+        "after": "매 턴 시작 시, [energy:1]를 얻습니다. [blue]5[/blue]번의 전투 후에 불이 꺼집니다. [gold]휴식 장소[/gold]에서 다시 [gold]불을 붙일[/gold] 수 있습니다."
       },
       {
         "field": "descriptionRaw",
@@ -6987,7 +7087,7 @@
       {
         "field": "description",
         "before": "[gold]방어도[/gold]를 얻을 때마다, 무작위 적에게 피해를 5 줍니다.",
-        "after": "[gold]방어도[/gold]를 얻을 때마다, 무작위 적에게 피해를 6 줍니다."
+        "after": "[gold]방어도[/gold]를 얻을 때마다,\n무작위 적에게\n피해를 6 줍니다."
       },
       {
         "field": "vars.JuggernautPower",
@@ -7056,7 +7156,7 @@
       {
         "field": "description",
         "before": "[gold]방어도[/gold]를 16 얻습니다.\n이번 턴에 막은 공격 피해는 공격한 적에게 반사됩니다.",
-        "after": "[gold]방어도[/gold]를 15 얻습니다.\n이번 턴에 막은 공격 피해는 공격한 적에게 반사됩니다."
+        "after": "[gold]방어도[/gold]를 15 얻습니다.\n이번 턴에 막은 공격 피해는\n공격한 적에게 반사됩니다."
       },
       {
         "field": "block",
@@ -7098,7 +7198,7 @@
       {
         "field": "description",
         "before": "[gold]골골이[/gold]가 피해를 5 줍니다.\n이번 턴에 [gold]골골이[/gold]가 이 적을 공격할 때마다, [gold]소환[/gold] 2.",
-        "after": "[gold]골골이[/gold]가 피해를 5 줍니다.\n이번 턴에 [gold]골골이[/gold]가 이 적을 공격할 때마다, [gold]소환[/gold] 3."
+        "after": "[gold]골골이[/gold]가 피해를 5 줍니다.\n이번 턴에 [gold]골골이[/gold]가\n이 적을 공격할 때마다,\n[gold]소환[/gold] 3."
       },
       {
         "field": "vars.SicEmPower",
@@ -7462,7 +7562,7 @@
             "cardApplications": [
               {
                 "cardId": "WITHER",
-                "cardName": "침체",
+                "cardName": "시듦",
                 "cardNameEn": "Wither",
                 "cardType": "상태이상",
                 "cardRarity": "상태이상",
@@ -7472,7 +7572,7 @@
                   "normal": 1,
                   "ascension": 2
                 },
-                "imageUrl": "/images/sts2/cards/wither.webp"
+                "imageUrl": "/images/sts2/cards/wither1.webp"
               }
             ]
           }
@@ -7727,7 +7827,7 @@
             "cardApplications": [
               {
                 "cardId": "WITHER",
-                "cardName": "침체",
+                "cardName": "시듦",
                 "cardNameEn": "Wither",
                 "cardType": "상태이상",
                 "cardRarity": "상태이상",
@@ -7737,9 +7837,33 @@
                   "normal": 1,
                   "ascension": 2
                 },
-                "imageUrl": "/images/sts2/cards/wither.webp"
+                "imageUrl": "/images/sts2/cards/wither1.webp"
               }
             ]
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
           }
         ]
       }
@@ -9924,7 +10048,7 @@
         "before": [
           "소멸"
         ],
-        "after": null
+        "after": []
       },
       {
         "field": "upgrade.cost",
@@ -10213,12 +10337,12 @@
       {
         "field": "description",
         "before": "내 턴 종료 시, 카드를\n최대 1장까지 [gold]보존[/gold]합니다.",
-        "after": "내 턴 종료 시, 더 이상 [gold]손[/gold]에 있는 카드를 버리지 않습니다."
+        "after": "내 턴 종료 시, 더 이상\n[gold]손[/gold]에 있는 카드를\n버리지 않습니다."
       },
       {
         "field": "descriptionRaw",
         "before": "내 턴 종료 시, 카드를\n최대 {RetainAmount:diff()}장까지 [gold]보존[/gold]합니다.",
-        "after": "내 턴 종료 시, 더 이상 [gold]손[/gold]에 있는 카드를 버리지 않습니다."
+        "after": "내 턴 종료 시, 더 이상\n[gold]손[/gold]에 있는 카드를\n버리지 않습니다."
       },
       {
         "field": "vars.RetainAmount",
@@ -10304,12 +10428,12 @@
       {
         "field": "description",
         "before": "내 턴 동안 카드를 [blue]2[/blue]장 이하로 사용했다면, 적으로부터 받는 피해량이 절반이 됩니다.",
-        "after": "매 전투 시작 시 [gold]방어도[/gold]를 [blue]20[/blue] 얻습니다. 그 다음 턴 시작 시 [gold]방어도[/gold]가 사라지지 않습니다."
+        "after": "매 전투 시작 시 [gold]방어도[/gold]를 [blue]20[/blue] 얻습니다. [blue]두 번째[/blue] 턴 시작 시 [gold]방어도[/gold]가 사라지지 않습니다."
       },
       {
         "field": "descriptionRaw",
         "before": "내 턴 동안 카드를 [blue]{CardThreshold}[/blue]장 이하로 사용했다면, 적으로부터 받는 피해량이 절반이 됩니다.",
-        "after": "매 전투 시작 시 [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다. 그 다음 턴 시작 시 [gold]방어도[/gold]가 사라지지 않습니다."
+        "after": "매 전투 시작 시 [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다. [blue]두 번째[/blue] 턴 시작 시 [gold]방어도[/gold]가 사라지지 않습니다."
       }
     ],
     "date": "2026-07-17",
@@ -11431,12 +11555,12 @@
       {
         "field": "description",
         "before": "무작위 [gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다.",
-        "after": "무작위 [gold]강화된[/gold] [gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다."
+        "after": "무작위 [gold]강화[/gold]된 [gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다."
       },
       {
         "field": "descriptionRaw",
         "before": "무작위 {IfUpgraded:show:강화된 |}[gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다.",
-        "after": "무작위 [gold]강화된[/gold] [gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다."
+        "after": "무작위 [gold]강화[/gold]된 [gold]파워[/gold] 카드\n3장 중 1장을 선택해\n[gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다."
       },
       {
         "field": "upgrade",
@@ -11773,12 +11897,12 @@
       {
         "field": "description",
         "before": "[gold]중독[/gold]을 부여할 때마다,\n모든 적에게\n피해를 4 줍니다.",
-        "after": "모든 적에게\n[gold]중독[/gold]을 9 부여합니다.\n[gold]중독[/gold]이 즉시 발동합니다."
+        "after": "모든 적에게 \n[gold]중독[/gold]을 9 부여합니다.\n[gold]중독[/gold]이 즉시 발동합니다."
       },
       {
         "field": "descriptionRaw",
         "before": "[gold]중독[/gold]을 부여할 때마다,\n모든 적에게\n피해를 {OutbreakPower:diff()} 줍니다.",
-        "after": "모든 적에게\n[gold]중독[/gold]을 {PoisonPower:diff()} 부여합니다.\n[gold]중독[/gold]이 즉시 발동합니다."
+        "after": "모든 적에게 \n[gold]중독[/gold]을 {PoisonPower:diff()} 부여합니다.\n[gold]중독[/gold]이 즉시 발동합니다."
       },
       {
         "field": "vars.OutbreakPower",
@@ -12138,7 +12262,7 @@
       {
         "field": "description",
         "before": "피해를 13 줍니다.\n이 카드의 피해량이 영구적으로 4 증가합니다.",
-        "after": "피해를 13 줍니다.\n이 카드의 피해량이 영구적으로 5 증가합니다."
+        "after": "피해를 13 줍니다.\n이 카드의 피해량이\n영구적으로 5 증가합니다."
       },
       {
         "field": "vars.Increase",
@@ -12324,12 +12448,12 @@
       {
         "field": "description",
         "before": "카드를 생성할 때마다, [gold]방어도[/gold]를 [blue]2[/blue] 얻습니다.",
-        "after": "매 턴마다 처음으로 카드를 생성할 때, [gold]방어도[/gold]를 [blue]6[/blue] 얻습니다."
+        "after": "매 턴마다 처음으로 카드를 생성할 때마다, [gold]방어도[/gold]를 [blue]6[/blue] 얻습니다."
       },
       {
         "field": "descriptionRaw",
         "before": "카드를 생성할 때마다, [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다.",
-        "after": "매 턴마다 처음으로 카드를 생성할 때, [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다."
+        "after": "매 턴마다 처음으로 카드를 생성할 때마다, [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다."
       }
     ]
   },
@@ -13034,7 +13158,7 @@
       {
         "field": "description",
         "before": "피해를 20 줍니다.\n적이 보유한 해로운 효과의\n종류 하나당 피해량이\n5 증가합니다.",
-        "after": "피해를 {CalculatedDamage:diff()} 줍니다.\n적이 보유한 해로운 효과의\n종류 하나당 피해량이\n5 증가합니다."
+        "after": "피해를 X 줍니다.\n적이 보유한 해로운 효과의\n종류 하나당 피해량이\n5 증가합니다."
       },
       {
         "field": "vars.CalculationBase",
@@ -13287,7 +13411,7 @@
         "before": [
           "소멸"
         ],
-        "after": null
+        "after": []
       }
     ],
     "date": "2026-08-14",
@@ -13671,7 +13795,22 @@
               }
             ],
             "powerApplications": [],
-            "cardApplications": []
+            "cardApplications": [
+              {
+                "cardId": "BURN",
+                "cardName": "화상",
+                "cardNameEn": "Burn",
+                "cardType": "상태이상",
+                "cardRarity": "상태이상",
+                "cardColor": "status",
+                "applicationKind": "add",
+                "amount": {
+                  "normal": 4,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/cards/burn.webp"
+              }
+            ]
           },
           {
             "id": "WINDUP",
@@ -13705,9 +13844,9 @@
             "powerApplications": [
               {
                 "powerId": "STRENGTH",
-                "powerName": "STRENGTH",
-                "powerNameEn": "STRENGTH",
-                "powerType": "None",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
                 "target": "self",
                 "amount": {
                   "normal": 5,
@@ -14021,9 +14160,9 @@
             "powerApplications": [
               {
                 "powerId": "FRAIL",
-                "powerName": "FRAIL",
-                "powerNameEn": "FRAIL",
-                "powerType": "None",
+                "powerName": "손상",
+                "powerNameEn": "Frail",
+                "powerType": "Debuff",
                 "target": "player",
                 "amount": {
                   "normal": 2,
@@ -14092,9 +14231,9 @@
             "powerApplications": [
               {
                 "powerId": "STRENGTH",
-                "powerName": "STRENGTH",
-                "powerNameEn": "STRENGTH",
-                "powerType": "None",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
                 "target": "self",
                 "amount": {
                   "normal": 5,
@@ -14190,8 +14329,8 @@
     "fieldDiffs": [
       {
         "field": "description",
-        "before": "매 턴마다 처음으로 카드를 생성할 때, [gold]방어도[/gold]를 [blue]6[/blue] 얻습니다.",
-        "after": "매 턴마다 처음으로 카드를 생성할 때, [gold]방어도[/gold]를 [blue]4[/blue] 얻습니다."
+        "before": "매 턴마다 처음으로 카드를 생성할 때마다, [gold]방어도[/gold]를 [blue]6[/blue] 얻습니다.",
+        "after": "매 턴마다 처음으로 카드를 생성할 때마다, [gold]방어도[/gold]를 [blue]4[/blue] 얻습니다."
       }
     ]
   },
@@ -14884,6 +15023,45 @@
         "beforeKo": "추가 턴 전 감소",
         "afterKo": "감소하지 않음",
         "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "glow-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "GLOW",
+    "patch": "v0.109.0",
+    "character": "regent",
+    "summary": "Glow draws 2 cards now and 2 cards next turn.",
+    "summaryKo": "빛이 이제 즉시 2장 뽑고 다음 턴에 2장 뽑도록 상향되었습니다.",
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[star:1]을 얻습니다.\n카드를 1장 뽑습니다.\n다음 턴에, 카드를 1장 뽑습니다.",
+        "after": "[star:1]을 얻습니다.\n카드를 2장 뽑습니다.\n다음 턴에,\n카드를 2장 뽑습니다."
+      },
+      {
+        "field": "vars.Cards",
+        "before": 1,
+        "after": 2
+      }
+    ]
+  },
+  {
+    "id": "wrought-in-war-v0-109-0-field-diff",
+    "entityType": "card",
+    "entityId": "WROUGHT_IN_WAR",
+    "patch": "v0.109.0",
+    "character": "regent",
+    "summary": "Wrought in War Forge adjusted to 5.",
+    "summaryKo": "전장의 생존자 단조 수치가 5로 조정되었습니다.",
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "vars.Forge",
+        "before": 7,
+        "after": 5
       }
     ]
   }

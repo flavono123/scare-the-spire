@@ -222,16 +222,13 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlVersion = useHydrationSafeSearchParam("version");
   const normalizedUrlVersion = urlVersion ? urlVersion.replace(/^v/, "") : null;
-  const initialVersion = normalizedUrlVersion && versions.includes(normalizedUrlVersion)
-    ? normalizedUrlVersion
-    : currentVersion;
-  const [selectedVersion, setSelectedVersion] = useState(initialVersion);
-
-  useEffect(() => {
-    if (normalizedUrlVersion && versions.includes(normalizedUrlVersion)) {
-      setSelectedVersion(normalizedUrlVersion);
-    }
-  }, [normalizedUrlVersion, versions]);
+  const [userSelectedVersion, setUserSelectedVersion] = useState<string | null>(null);
+  const selectedVersion = userSelectedVersion ?? (
+    normalizedUrlVersion && versions.includes(normalizedUrlVersion)
+      ? normalizedUrlVersion
+      : currentVersion
+  );
+  const setSelectedVersion = (v: string) => setUserSelectedVersion(v);
   const [selectedColors, setSelectedColors] = useState<Set<CardFilterCategory>>(
     new Set()
   );

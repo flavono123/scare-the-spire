@@ -1997,6 +1997,12 @@ function eventDisplayVars(eventId: string, gameLocale: GameLocale): EventDisplay
         Gold: 35,
         HpLoss: 9,
       };
+    case "WATERLOGGED_SCRIPTORIUM":
+      return {
+        Gold: 55,
+        PricklySpongeGold: 99,
+        Cards: 2,
+      };
     case "WELCOME_TO_WONGOS":
       return {
         BargainBinCost: 100,

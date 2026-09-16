@@ -14818,7 +14818,7 @@
   {
     "id": "REND",
     "name": "쥐어뜯기",
-    "description": "피해를 {CalculatedDamage:diff()} 줍니다.\n적이 보유한 해로운 효과의\n종류 하나당 피해량이\n5 증가합니다.",
+    "description": "피해를 X 줍니다.\n적이 보유한 해로운 효과의\n종류 하나당 피해량이\n5 증가합니다.",
     "description_raw": "피해를 {CalculatedDamage:diff()} 줍니다.\n적이 보유한 해로운 효과의\n종류 하나당 피해량이\n{ExtraDamage:diff()} 증가합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -19059,7 +19059,7 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [],
     "tags": null,
     "spawns_cards": null,
     "vars": {
