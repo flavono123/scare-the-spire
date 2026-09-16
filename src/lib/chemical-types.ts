@@ -84,6 +84,14 @@ export interface HistoryRunFloorBlock {
   spriteSrc?: string;
 }
 
+/** A text sticker / text-con styled with theme/character colors and high-contrast text. */
+export interface TextConBlock {
+  type: "text-con";
+  text: string;
+  bgColor: string;
+  textColor: string;
+}
+
 export type PostBlock =
   | TextBlock
   | EntityBlock
@@ -91,7 +99,8 @@ export type PostBlock =
   | CostTokenBlock
   | YouTubeBlock
   | HistoryRunBlock
-  | HistoryRunFloorBlock;
+  | HistoryRunFloorBlock
+  | TextConBlock;
 
 export interface ChemicalPost {
   id: string;

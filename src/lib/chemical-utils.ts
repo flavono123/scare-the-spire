@@ -225,6 +225,16 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
           spriteSrc: nodeString(node.attrs?.spriteSrc).trim() || undefined,
         };
         if (isHistoryRunFloorBlock(candidate)) blocks.push(candidate);
+      } else if (node.type === "text-con") {
+        const text = nodeString(node.attrs?.text).trim();
+        if (text) {
+          blocks.push({
+            type: "text-con",
+            text,
+            bgColor: nodeString(node.attrs?.bgColor) || "gold",
+            textColor: nodeString(node.attrs?.textColor) || "dark",
+          });
+        }
       }
     }
   }
@@ -290,6 +300,16 @@ export function blocksToTiptapDocument(blocks: PostBlock[]): JSONContent {
         },
       }];
     }
+    if (block.type === "text-con") {
+      return [{
+        type: "text-con",
+        attrs: {
+          text: block.text,
+          bgColor: block.bgColor,
+          textColor: block.textColor,
+        },
+      }];
+    }
     return [{
       type: "history-run-reference",
       attrs: {
@@ -329,6 +349,7 @@ export function blocksToPlainText(blocks: PostBlock[]): string {
       if (b.type === "youtube") return stripNullCharacters(b.title);
       if (b.type === "history-run") return historyRunPlainText(b);
       if (b.type === "history-run-floor") return historyRunFloorPlainText(b);
+      if (b.type === "text-con") return stripNullCharacters(b.text);
       return stripNullCharacters(b.displayText);
     })
     .join("");
@@ -351,6 +372,7 @@ export function blocksToStorageText(blocks: PostBlock[]): string {
       if (b.type === "youtube") return stripNullCharacters(b.title);
       if (b.type === "history-run") return historyRunPlainText(b);
       if (b.type === "history-run-floor") return historyRunFloorPlainText(b);
+      if (b.type === "text-con") return `[글자콘:${stripNullCharacters(b.text)}]`;
 
       const text = stripNullCharacters(b.text);
       const keyword = stripNullCharacters(b.keyword ?? "").trim();
