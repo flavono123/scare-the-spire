@@ -13,7 +13,7 @@ const BYRDISPATCH_DIR = path.join(process.cwd(), "data/byrdispatch");
 const BYRDISPATCH_FILE_RE = /^\d{4}-\d{2}-\d{2}\.md$/;
 const BYRDISPATCH_NOTICE_SECTIONS = new Set(["공지", "Notice"]);
 const BYRDISPATCH_STATUS_RE =
-  /\s*\((new|적용됨|예정|개발 중|버그|제보 감사|제보감사|already|planned|in progress|bug|thanks for the report)\)\s*$/i;
+  /\s*\((new|적용됨|예정|개발 중|버그|제보 감사|제보감사|제보|already|planned|in progress|bug|thanks for the report)\)\s*$/i;
 const BYRDISPATCH_MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
 const BYRDISPATCH_IMAGE_RE = /^!\[([^\]\n]*)\]\(([^)\s]+)(?:\s+"([^"]+)")?\)$/;
 const BYRDISPATCH_DETAILS_OPEN_RE = /^<details>$/i;
@@ -79,6 +79,7 @@ function normalizeStatus(value: string): ByrdispatchStatus {
   if (
     value === "제보 감사"
     || value === "제보감사"
+    || value === "제보"
     || normalizedValue === "thanks for the report"
   ) {
     return "reportThanks";
