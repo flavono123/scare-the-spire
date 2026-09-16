@@ -43,6 +43,7 @@
     "codex:diff": "tsx scripts/generate-entity-diffs.ts",
     "codex:validate": "tsx scripts/validate-entity-versions.ts",
     "codex:validate-references": "tsx scripts/validate-codex-references.ts",
+    "test:version-api": "tsx scripts/versioned-entity-api.spec.ts",
     "sts2:patch-lines": "tsx scripts/generate-sts2-patch-lines.ts && tsx scripts/generate-resource-patch-index.ts",
     "sts2:resource-changes": "tsx scripts/generate-resource-patch-index.ts",
     "sts2:index-images": "node scripts/build-sts2-public-image-file-index.mjs",

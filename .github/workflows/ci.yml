@@ -30,6 +30,10 @@ jobs:
 
       - run: npx tsx scripts/resolve-story-patch-line.spec.ts
 
+      - run: pnpm codex:validate
+
+      - run: pnpm test:version-api
+
       - run: pnpm lint
 
       - run: pnpm build
