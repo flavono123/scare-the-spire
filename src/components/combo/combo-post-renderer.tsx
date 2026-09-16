@@ -13,6 +13,7 @@ import {
   isYouTubeVideoId,
   youtubeWatchUrl,
 } from "@/lib/youtube-reference";
+import { TextConChip } from "@/components/text-con/text-con-chip";
 import { SERVICE_LINK_CLASS } from "@/lib/service-link-classes";
 
 interface ComboPostRendererProps {
@@ -99,6 +100,19 @@ export function ComboPostRenderer({
             ? "@".repeat(Math.max(1, block.count))
             : "*".repeat(Math.max(1, block.count));
           return <span key={index}>{text}</span>;
+        }
+
+        if (block.type === "text-con") {
+          return (
+            <span key={index} className="my-1.5 inline-block align-middle">
+              <TextConChip
+                text={block.text}
+                bgColor={block.bgColor}
+                textColor={block.textColor}
+                size="sm"
+              />
+            </span>
+          );
         }
 
         const entity = entityMap.get(`${block.entityType}:${block.entityId}`);

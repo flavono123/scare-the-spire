@@ -419,6 +419,7 @@ export function transfigureBlocksToGameDescription(blocks: PostBlock[]): string 
     if (block.type === "entity") return `[gold]${block.displayText}[/gold]`;
     if (block.type === "history-run") return historyRunPlainText(block);
     if (block.type === "history-run-floor") return historyRunFloorPlainText(block);
+    if (block.type === "text-con") return block.text;
     return block.title;
   }).join(""));
 }
@@ -892,6 +893,8 @@ export function transfigureBlocksSignature(items: PostBlock[]): string {
       tokens.push(
         `history-run-floor:${block.actIndex}:${block.step}:${block.floor}:${block.mapPointType}`,
       );
+    } else if (block.type === "text-con") {
+      tokens.push(`text-con:${block.bgColor}:${block.textColor}:${block.text}`);
     } else {
       tokens.push(`youtube:${block.videoId}:${block.title}`);
     }
@@ -918,6 +921,7 @@ export function isTransfiguredContent(
       if (block.type === "entity") return block.displayText;
       if (block.type === "history-run") return historyRunPlainText(block);
       if (block.type === "history-run-floor") return historyRunFloorPlainText(block);
+      if (block.type === "text-con") return block.text;
       return block.title;
     })
     .join("")

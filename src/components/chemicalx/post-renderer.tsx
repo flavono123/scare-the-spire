@@ -19,6 +19,7 @@ import {
 } from "@/lib/youtube-reference";
 import { historyRunPlainText } from "@/lib/history-run-reference";
 import { HistoryRunFloorChip } from "@/components/history-course/history-run-floor-chip";
+import { TextConChip } from "@/components/text-con/text-con-chip";
 import type { HistoryRunFloorBlock } from "@/lib/chemical-types";
 import { SERVICE_LINK_CLASS } from "@/lib/service-link-classes";
 
@@ -199,6 +200,19 @@ export function PostRenderer({
                 block={block}
                 onClick={onHistoryFloorClick}
               />
+            );
+          }
+
+          if (block.type === "text-con") {
+            return (
+              <span key={i} className="my-1.5 inline-block align-middle">
+                <TextConChip
+                  text={block.text}
+                  bgColor={block.bgColor}
+                  textColor={block.textColor}
+                  size="md"
+                />
+              </span>
             );
           }
 

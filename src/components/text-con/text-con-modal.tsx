@@ -22,32 +22,27 @@ export interface TextConModalProps {
   initialTextColor?: string;
 }
 
-export function TextConModal({
-  open,
+export function TextConModal(props: TextConModalProps) {
+  if (!props.open) return null;
+  return <TextConModalInner {...props} />;
+}
+
+function TextConModalInner({
   onClose,
   onInsert,
   initialText = "",
   initialBgColor = DEFAULT_TEXTCON_BG,
   initialTextColor = DEFAULT_TEXTCON_TEXT,
-}: TextConModalProps) {
+}: Omit<TextConModalProps, "open">) {
   const [text, setText] = useState(initialText);
   const [bgColor, setBgColor] = useState(initialBgColor);
   const [textColor, setTextColor] = useState(initialTextColor);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (open) {
-      setText(initialText);
-      setBgColor(initialBgColor);
-      setTextColor(initialTextColor);
-      window.setTimeout(() => {
-        textareaRef.current?.focus();
-        textareaRef.current?.select();
-      }, 50);
-    }
-  }, [open, initialText, initialBgColor, initialTextColor]);
-
-  if (!open) return null;
+    textareaRef.current?.focus();
+    textareaRef.current?.select();
+  }, []);
 
   const handleBgChange = (nextBg: string) => {
     setBgColor(nextBg);

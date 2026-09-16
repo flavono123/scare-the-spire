@@ -5,7 +5,7 @@ import {
   blocksToTiptapDocument,
   tiptapToBlocks,
 } from "../src/lib/chemical-utils";
-import type { PostBlock, TextConBlock } from "../src/lib/chemical-types";
+import type { TextConBlock } from "../src/lib/chemical-types";
 import {
   resolveTextConBg,
   resolveTextConText,
