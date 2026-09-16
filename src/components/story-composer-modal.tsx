@@ -16,6 +16,7 @@ import type { ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import { cn } from "@/lib/utils";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import { serviceMessages } from "@/messages/service";
+import { resolveCanonicalPatchLineId } from "@/lib/resolve-story-patch-line";
 
 const STORY_DRAFT_MAX_LENGTH = 120;
 
@@ -112,10 +113,10 @@ export function StoryComposerModal({
     () => ({ ...DEFAULT_USER_PROFILE, nickname: serviceLocale === "ko" ? "닉" : "Nick" }),
     [serviceLocale],
   );
-  const initialPatchLine = useMemo(
-    () => patchLines.find((patchLine) => patchLine.id === initialPatchLineId) ?? null,
-    [initialPatchLineId, patchLines],
-  );
+  const initialPatchLine = useMemo(() => {
+    const canonicalId = resolveCanonicalPatchLineId(initialPatchLineId) ?? initialPatchLineId;
+    return patchLines.find((patchLine) => patchLine.id === canonicalId) ?? null;
+  }, [initialPatchLineId, patchLines]);
   const { profile } = useUserProfile(profileFallback);
   const [sentence, setSentence] = useState("");
   const [nickname, setNickname] = useState(profile.nickname);

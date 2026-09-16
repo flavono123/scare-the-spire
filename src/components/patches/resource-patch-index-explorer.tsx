@@ -59,6 +59,7 @@ import {
 import {
   countStoriesByPatchLine,
   indexPatchLines,
+  resolveCanonicalPatchLineId,
   storyMatchesPatchLine,
 } from "@/lib/resolve-story-patch-line";
 import { sts2NavItems } from "@/lib/site-nav-items";
@@ -749,8 +750,10 @@ export function ResourcePatchIndexExplorer({
     selectedLines,
     staticStoryCounts,
   ]);
-  const activePatchLine = activePatchLineId ? data.lines[activePatchLineId] ?? null : null;
-  const composerPatchLine = composerPatchLineId ? data.lines[composerPatchLineId] ?? null : null;
+  const activeCanonicalId = resolveCanonicalPatchLineId(activePatchLineId) ?? activePatchLineId;
+  const composerCanonicalId = resolveCanonicalPatchLineId(composerPatchLineId) ?? composerPatchLineId;
+  const activePatchLine = activeCanonicalId ? data.lines[activeCanonicalId] ?? null : null;
+  const composerPatchLine = composerCanonicalId ? data.lines[composerCanonicalId] ?? null : null;
   const activeStories = useMemo(() => {
     if (!activePatchLine) return [];
     const matches = [...data.staticStories, ...communityStories.stories]

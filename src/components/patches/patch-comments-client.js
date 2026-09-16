@@ -490,9 +490,18 @@
     }
   }
 
+  const PATCH_LINE_ID_ALIASES = {
+    "v0.100.0:line-001-text-qgkkr7": "v0.100.0:line-007-card-prepared",
+  };
+
+  const PATCH_LINE_ANCHOR_ALIASES = {
+    "patch-line-v0-100-0-line-001-text-qgkkr7": "patch-line-v0-100-0-line-007-card-prepared",
+  };
+
   function openStoryComposer(action, config) {
     const text = copy();
-    const patchLineId = action.dataset.patchLineId;
+    const rawPatchLineId = action.dataset.patchLineId;
+    const patchLineId = PATCH_LINE_ID_ALIASES[rawPatchLineId] ?? rawPatchLineId;
     const patchId = action.dataset.patchId;
     if (!patchLineId || !patchId) return;
 
@@ -863,6 +872,16 @@
 
     const config = readConfig();
     mountStoryActions(config);
+
+    const rawHash = window.location.hash.replace(/^#/, "");
+    if (rawHash && PATCH_LINE_ANCHOR_ALIASES[rawHash]) {
+      const canonicalAnchor = PATCH_LINE_ANCHOR_ALIASES[rawHash];
+      window.history.replaceState(null, "", `#${canonicalAnchor}`);
+      const targetEl = document.getElementById(canonicalAnchor);
+      if (targetEl) {
+        setTimeout(() => targetEl.scrollIntoView({ behavior: "smooth", block: "center" }), 80);
+      }
+    }
 
     const roots = Array.from(document.querySelectorAll("[data-patch-comment-root]"))
       .filter((root) => !("richCommentMounted" in root.dataset));

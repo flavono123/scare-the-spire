@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { resolveCanonicalPatchLineId } from "@/lib/resolve-story-patch-line";
 import type { LinkedEntity, STS2PatchLine, Story, StoryEntityType, StoryGame } from "@/lib/types";
 
 const COMMUNITY_STORY_ID_PREFIX = "community:";
@@ -188,7 +189,7 @@ export function useCommunityStories(
             game: "sts2",
             entity_type: primaryRef?.type ?? null,
             entity_id: primaryRef?.id ?? null,
-            patch_line_id: patchLine.id,
+            patch_line_id: resolveCanonicalPatchLineId(patchLine.id) ?? patchLine.id,
             source: patchLine.patch,
             tags: [],
             linked_entities: linkedEntities,

@@ -26,6 +26,11 @@ jobs:
 
       - run: pnpm i18n:validate
 
+      - run: pnpm patch:test
+
+      - run: npx tsx scripts/resolve-story-patch-line.spec.ts
+
       - run: pnpm lint
 
       - run: pnpm build
+

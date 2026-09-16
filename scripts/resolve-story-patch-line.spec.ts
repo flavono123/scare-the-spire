@@ -135,4 +135,47 @@ assert.equal(
   "aliased legacy text-hash patch line resolves to rewritten entity line",
 );
 
+import {
+  patchLineAnchorId,
+  patchLineHref,
+  resolveCanonicalAnchorId,
+} from "../src/lib/patch-line-links";
+import { resolveCanonicalPatchLineId } from "../src/lib/resolve-story-patch-line";
+
+assert.equal(
+  resolveCanonicalPatchLineId("v0.100.0:line-001-text-qgkkr7"),
+  "v0.100.0:line-007-card-prepared",
+  "resolveCanonicalPatchLineId transforms legacy ID",
+);
+assert.equal(
+  resolveCanonicalPatchLineId("v0.111.0:line-022-card-blade"),
+  "v0.111.0:line-022-card-blade",
+  "resolveCanonicalPatchLineId preserves canonical ID",
+);
+assert.equal(
+  patchLineAnchorId("v0.100.0:line-001-text-qgkkr7"),
+  "patch-line-v0-100-0-line-007-card-prepared",
+  "patchLineAnchorId transforms legacy ID to canonical anchor",
+);
+assert.equal(
+  resolveCanonicalAnchorId("patch-line-v0-100-0-line-001-text-qgkkr7"),
+  "patch-line-v0-100-0-line-007-card-prepared",
+  "resolveCanonicalAnchorId transforms legacy anchor to canonical anchor",
+);
+assert.equal(
+  patchLineHref({
+    id: "v0.100.0:line-001-text-qgkkr7",
+    patch: "v0.100.0",
+    version: "0.100.0",
+    date: "2026-03-20",
+    section: ["콘텐츠"],
+    markdownKo: "",
+    textKo: "",
+    entityRefs: [],
+    searchText: "",
+  }),
+  "/patches/0.100.0#patch-line-v0-100-0-line-007-card-prepared",
+  "patchLineHref outputs canonical anchor link for aliased patch line",
+);
+
 console.log("resolve-story-patch-line.spec.ts passed");

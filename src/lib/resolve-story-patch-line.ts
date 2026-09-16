@@ -23,13 +23,18 @@ export const PATCH_LINE_ALIASES: Record<string, string> = {
   "v0.100.0:line-001-text-qgkkr7": "v0.100.0:line-007-card-prepared",
 };
 
+export function resolveCanonicalPatchLineId(id: string | null | undefined): string | undefined {
+  if (!id) return undefined;
+  return PATCH_LINE_ALIASES[id] ?? id;
+}
+
 export function resolveStoryPatchLine(
   story: StoryPatchLineRef,
   patchLineMap: Map<string, STS2PatchLine>,
 ): STS2PatchLine | undefined {
   if (!story.patchLineId) return undefined;
 
-  const aliasedId = PATCH_LINE_ALIASES[story.patchLineId] ?? story.patchLineId;
+  const aliasedId = resolveCanonicalPatchLineId(story.patchLineId) ?? story.patchLineId;
   const exact = patchLineMap.get(aliasedId);
   if (exact) return exact;
 
