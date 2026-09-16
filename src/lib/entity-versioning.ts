@@ -28,7 +28,12 @@ function applyReverseDiff(entity: Record<string, unknown>, diff: EntityFieldDiff
   const parts = diff.field.split(".");
   if (parts.length === 1) {
     // Simple field — full replacement with "before" value
-    entity[parts[0]] = diff.before;
+    entity[parts[0]] =
+      diff.before && typeof diff.before === "object"
+        ? Array.isArray(diff.before)
+          ? [...diff.before]
+          : { ...(diff.before as Record<string, unknown>) }
+        : diff.before;
   } else {
     // Nested field (e.g. "vars.Damage")
     const parent = entity[parts[0]];
@@ -117,6 +122,9 @@ export function reconstructRelicAtVersion(
 
   const patchesToRevert = getPatchesBetween(targetVersion, currentVersion, patches);
   const result: Record<string, unknown> = { ...relic };
+  if (relic.vars && typeof relic.vars === "object") {
+    result.vars = { ...(relic.vars as Record<string, unknown>) };
+  }
 
   for (const patch of patchesToRevert) {
     const diffs = versionDiffs.filter(
@@ -148,6 +156,9 @@ export function reconstructPotionAtVersion(
 
   const patchesToRevert = getPatchesBetween(targetVersion, currentVersion, patches);
   const result: Record<string, unknown> = { ...potion };
+  if (potion.vars && typeof potion.vars === "object") {
+    result.vars = { ...(potion.vars as Record<string, unknown>) };
+  }
 
   for (const patch of patchesToRevert) {
     const diffs = versionDiffs.filter(
