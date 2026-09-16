@@ -56,4 +56,13 @@ assert.equal(plainText, "슬서운\n이야기");
 const storageText = blocksToStorageText([textConBlock]);
 assert.equal(storageText, "[글자콘:슬서운\n이야기]");
 
-console.log("text-con serialization: ok");
+// 4. Tight text-filling font calculation
+import { calculateTextConFontSize } from "../src/lib/text-con";
+
+const singleCharSize = calculateTextConFontSize("헐", 100);
+assert.ok(singleCharSize >= 70, `Single character must fill tightly (expected >= 70, got ${singleCharSize})`);
+
+const multiLineSize = calculateTextConFontSize("슬서운\n이야기", 100);
+assert.ok(multiLineSize >= 25 && multiLineSize <= 35, `Multi-line must fit nicely (got ${multiLineSize})`);
+
+console.log("text-con serialization & font scaling: ok");

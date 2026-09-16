@@ -171,3 +171,29 @@ export function isHexBright(hex: string): boolean {
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
   return luminance > 0.6;
 }
+
+/**
+ * Calculates optimal font size (in px) so text fills the square box tightly
+ * in all 4 directions with minimal padding, scaling dynamically from 1 character
+ * up to multi-line text.
+ */
+export function calculateTextConFontSize(text: string, baseSize: number): number {
+  const clean = text.trim() || "슬서운\n이야기";
+  const lines = clean.split("\n");
+  const lineCount = Math.max(1, lines.length);
+  const maxLineLen = Math.max(1, ...lines.map((l) => l.length));
+
+  // Small 4-direction padding (~4% of box size)
+  const padding = baseSize * 0.04;
+  const available = baseSize - padding * 2;
+
+  // Korean characters have ~1:1 aspect ratio. Line-height multiplier is ~1.08.
+  const widthLimit = (available / maxLineLen) * 0.98;
+  const heightLimit = (available / (lineCount * 1.08)) * 0.98;
+
+  const rawSize = Math.min(widthLimit, heightLimit);
+  // Cap at 76% of baseSize for single character so it fills almost the entire box, min 10px
+  const maxSize = baseSize * 0.76;
+  return Math.max(10, Math.min(maxSize, Math.floor(rawSize)));
+}
+

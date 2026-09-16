@@ -30,7 +30,7 @@ import { YouTubeReferenceExtension } from "@/components/editor/youtube-reference
 import { HistoryRunReferenceExtension } from "@/components/editor/history-run-reference-extension";
 import { HistoryRunFloorExtension, replaceExclusiveHistoryFloor } from "@/components/editor/history-run-floor-extension";
 import { TextConExtension } from "@/components/editor/text-con-extension";
-import { TextConModal } from "@/components/text-con/text-con-modal";
+import { TextConPopup } from "@/components/text-con/text-con-popup";
 import {
   GAME_UI_HOVER_TIP_NAV_DELAY_MS,
   GameUiHoverTip,
@@ -532,6 +532,8 @@ export function RichContentEditor({
 }: RichContentEditorProps) {
   const [submitting, setSubmitting] = useState(false);
   const [textConModalOpen, setTextConModalOpen] = useState(false);
+  const [textConAnchor, setTextConAnchor] = useState<DOMRect | null>(null);
+  const textConTriggerRef = useRef<HTMLButtonElement>(null);
   const [youtubeResolving, setYoutubeResolving] = useState(false);
   const [youtubeFeedback, setYoutubeFeedback] = useState<{
     tone: "aqua" | "error";
@@ -1437,10 +1439,20 @@ export function RichContentEditor({
           {enableTextCon && (
             <GameUiHoverTip label="글자콘 만들기" delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
               <button
+                ref={textConTriggerRef}
                 type="button"
-                onClick={() => setTextConModalOpen(true)}
-                className="flex shrink-0 items-center gap-1 rounded border border-border/80 bg-card/50 px-2 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
+                onClick={() => {
+                  const rect = textConTriggerRef.current?.getBoundingClientRect();
+                  if (rect) setTextConAnchor(rect);
+                  setTextConModalOpen((prev) => !prev);
+                }}
+                className={`flex shrink-0 items-center gap-1 rounded border px-2 py-1 text-xs transition-colors ${
+                  textConModalOpen
+                    ? "border-primary bg-primary/20 text-primary"
+                    : "border-border/80 bg-card/50 text-muted-foreground hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
+                }`}
                 aria-label="글자콘"
+                aria-expanded={textConModalOpen}
               >
                 <Type size={13} className="shrink-0" />
                 <span>글자콘</span>
@@ -1495,8 +1507,10 @@ export function RichContentEditor({
       )}
 
       {enableTextCon && (
-        <TextConModal
+        <TextConPopup
           open={textConModalOpen}
+          anchor={textConAnchor}
+          triggerRef={textConTriggerRef}
           onClose={() => setTextConModalOpen(false)}
           onInsert={handleInsertTextCon}
         />

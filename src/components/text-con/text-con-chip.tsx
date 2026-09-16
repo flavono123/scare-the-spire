@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  calculateTextConFontSize,
   isHexBright,
   resolveTextConBg,
   resolveTextConText,
@@ -26,22 +27,13 @@ export function TextConChip({
   const textClr = resolveTextConText(textColor);
   const isBright = isHexBright(bg.hex);
 
-  // Dynamic text size based on length
-  const charCount = text.length;
-  let textScaleClass = "text-sm sm:text-base";
-  if (size === "preview") {
-    textScaleClass = charCount <= 6 ? "text-2xl sm:text-3xl" : charCount <= 12 ? "text-xl sm:text-2xl" : "text-base sm:text-lg";
-  } else if (size === "sm") {
-    textScaleClass = charCount <= 6 ? "text-xs font-bold" : "text-[10px]";
-  } else {
-    // "md" (standard comment sticker)
-    textScaleClass = charCount <= 6 ? "text-base sm:text-lg" : charCount <= 14 ? "text-sm sm:text-base" : "text-xs sm:text-sm";
-  }
+  const basePx = size === "preview" ? 144 : size === "sm" ? 64 : 100;
+  const fontSizePx = calculateTextConFontSize(text, basePx);
 
   const sizeClass = {
-    sm: "h-16 w-16 rounded-lg p-1.5",
-    md: "h-24 w-24 sm:h-28 sm:w-28 rounded-xl sm:rounded-2xl p-2 sm:p-2.5",
-    preview: "h-36 w-36 sm:h-44 sm:w-44 rounded-2xl p-3 sm:p-4",
+    sm: "h-16 w-16 rounded-lg p-0.5",
+    md: "h-24 w-24 sm:h-28 sm:w-28 rounded-xl sm:rounded-2xl p-1",
+    preview: "h-36 w-36 sm:h-40 sm:w-40 rounded-2xl p-1.5",
   }[size];
 
   return (
@@ -61,10 +53,11 @@ export function TextConChip({
       }}
     >
       <span
-        className={cn(
-          "font-game-title font-extrabold tracking-tight leading-snug whitespace-pre-wrap break-keep",
-          textScaleClass,
-        )}
+        className="flex flex-col items-center justify-center font-game-title font-black tracking-tight whitespace-pre-wrap break-keep"
+        style={{
+          fontSize: `${fontSizePx}px`,
+          lineHeight: 1.05,
+        }}
       >
         {text}
       </span>
