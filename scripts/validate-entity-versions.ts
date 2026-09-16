@@ -414,11 +414,11 @@ function main() {
     ...lifecycleFields,
   ]);
   const validRelicFields = new Set([
-    "description", "descriptionRaw", "rarity", "pool", "flavor",
+    "description", "descriptionRaw", "rarity", "pool", "flavor", "vars",
     ...lifecycleFields,
   ]);
   const validPotionFields = new Set([
-    "description", "descriptionRaw", "rarity", "pool",
+    "description", "descriptionRaw", "rarity", "pool", "vars",
     ...lifecycleFields,
   ]);
   const validPowerFields = new Set([
