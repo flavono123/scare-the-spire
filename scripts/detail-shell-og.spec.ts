@@ -79,8 +79,8 @@ assert.equal(parseDetailShellTarget("/patches/0.100.0"), null);
 
 // Test enrichShellHtml handler registrations and attribute updates
 interface MockElement {
-  setInnerContent(content: string): void;
-  setAttribute(name: string, value: string): void;
+  setInnerContent?(content: string): void;
+  setAttribute?(name: string, value: string): void;
 }
 
 const registeredSelectors: string[] = [];

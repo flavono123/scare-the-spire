@@ -6,6 +6,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { AdminActivityChart } from "@/components/dev/admin-activity-chart";
 import { AdminAuthorTable } from "@/components/dev/admin-author-table";
+import { AdminAuthorTimelineChart } from "@/components/dev/admin-author-timeline-chart";
 import { AdminProfileNicknames } from "@/components/dev/admin-profile-nicknames";
 import { AdminServiceFilter } from "@/components/dev/admin-service-filter";
 import type { PostBlock } from "@/lib/chemical-types";
@@ -22,6 +23,7 @@ import {
   adminFilterHref,
   adminServicePostHref,
   aggregateAdminAuthors,
+  buildAuthorTimeSeries,
   COMMENT_OTHER_PREFIXES,
   commentStoryFilter,
   formatRate,
@@ -817,6 +819,12 @@ export default async function SupabaseAdminPage({
         posts: snapshot.posts.data,
       })
     : [];
+  const authorTimeSeries = snapshot
+    ? buildAuthorTimeSeries({
+        comments: snapshot.comments.data,
+        posts: snapshot.posts.data,
+      })
+    : null;
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-6">
@@ -1072,6 +1080,11 @@ export default async function SupabaseAdminPage({
             title="작성자 RLS 식별자 (UUID) 및 프로필 토큰"
             count={`${authors.length.toLocaleString("ko-KR")}명 식별`}
           >
+            {authorTimeSeries && authorTimeSeries.days.length > 0 && (
+              <div className="mb-4">
+                <AdminAuthorTimelineChart timeSeries={authorTimeSeries} />
+              </div>
+            )}
             <AdminAuthorTable authors={authors} />
           </Section>
 
