@@ -178,7 +178,8 @@ export function isHexBright(hex: string): boolean {
  * up to multi-line text.
  */
 export function calculateTextConFontSize(text: string, baseSize: number): number {
-  const clean = text.trim() || "슬서운\n이야기";
+  const clean = text.trim();
+  if (!clean) return Math.floor(baseSize * 0.76);
   const lines = clean.split("\n");
   const lineCount = Math.max(1, lines.length);
   const maxLineLen = Math.max(1, ...lines.map((l) => l.length));

@@ -138,7 +138,7 @@ function TextConPopupInner({
     }
   };
 
-  const previewText = text.trim() || "슬서운\n이야기";
+  const previewText = text;
 
   if (typeof document === "undefined") return null;
 
@@ -224,7 +224,6 @@ function TextConPopupInner({
               value={text}
               onChange={(e) => setText(e.target.value.slice(0, TEXTCON_MAX_CHARS))}
               onKeyDown={handleKeyDown}
-              placeholder="슬서운&#10;이야기"
               className="w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             />
             <span className="absolute bottom-2 right-2 text-[10px] font-mono text-muted-foreground">
