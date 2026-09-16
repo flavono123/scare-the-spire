@@ -227,6 +227,115 @@ export function aggregateAdminAuthors({
     .sort((a, b) => b.lastActiveAt.localeCompare(a.lastActiveAt));
 }
 
+export type AuthorDailyStat = {
+  day: string; // "YYYY-MM-DD"
+  total: number;
+  userCounts: Record<string, number>;
+};
+
+export type AuthorTimeSeries = {
+  days: AuthorDailyStat[];
+  maxTotal: number;
+  totalWrites: number;
+  authors: Array<{
+    userId: string;
+    latestNickname: string;
+    total: number;
+  }>;
+};
+
+export function toKstDateString(iso: string): string {
+  try {
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return "";
+    return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(d);
+  } catch {
+    return "";
+  }
+}
+
+export function buildAuthorTimeSeries({
+  comments,
+  posts,
+}: {
+  comments: Array<{ user_id: string; nickname: string; created_at: string }>;
+  posts: Array<{ userId: string; nickname: string; createdAt: string }>;
+}): AuthorTimeSeries {
+  const dayMap = new Map<string, { total: number; userCounts: Record<string, number> }>();
+  const userTotals = new Map<string, { latestNickname: string; total: number; lastActive: string }>();
+
+  function record(userId: string, nick: string, createdAt: string) {
+    const uid = userId?.trim();
+    if (!uid || uid === "-") return;
+    const day = toKstDateString(createdAt);
+    if (!day) return;
+
+    let dayStat = dayMap.get(day);
+    if (!dayStat) {
+      dayStat = { total: 0, userCounts: {} };
+      dayMap.set(day, dayStat);
+    }
+    dayStat.total += 1;
+    dayStat.userCounts[uid] = (dayStat.userCounts[uid] ?? 0) + 1;
+
+    let uStat = userTotals.get(uid);
+    if (!uStat) {
+      uStat = { latestNickname: nick.trim() || "-", total: 0, lastActive: createdAt };
+      userTotals.set(uid, uStat);
+    }
+    uStat.total += 1;
+    if (createdAt > uStat.lastActive) {
+      uStat.lastActive = createdAt;
+      uStat.latestNickname = nick.trim() || "-";
+    }
+  }
+
+  for (const c of comments) record(c.user_id, c.nickname, c.created_at);
+  for (const p of posts) record(p.userId, p.nickname, p.createdAt);
+
+  const rawDays = Array.from(dayMap.keys()).sort();
+  const filledDays: string[] = [];
+
+  if (rawDays.length > 0) {
+    const first = new Date(`${rawDays[0]}T00:00:00+09:00`);
+    const last = new Date(`${rawDays[rawDays.length - 1]}T00:00:00+09:00`);
+    const diffDays = Math.round((last.getTime() - first.getTime()) / (24 * 60 * 60 * 1000));
+
+    if (diffDays >= 0 && diffDays <= 90) {
+      const cur = new Date(first);
+      while (cur <= last) {
+        filledDays.push(new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(cur));
+        cur.setDate(cur.getDate() + 1);
+      }
+    } else {
+      for (const d of rawDays) filledDays.push(d);
+    }
+  }
+
+  let maxTotal = 1;
+  let totalWrites = 0;
+  const days: AuthorDailyStat[] = filledDays.map((day) => {
+    const stat = dayMap.get(day) ?? { total: 0, userCounts: {} };
+    if (stat.total > maxTotal) maxTotal = stat.total;
+    totalWrites += stat.total;
+    return {
+      day,
+      total: stat.total,
+      userCounts: stat.userCounts,
+    };
+  });
+
+  const authors = Array.from(userTotals.entries())
+    .map(([userId, val]) => ({
+      userId,
+      latestNickname: val.latestNickname,
+      total: val.total,
+    }))
+    .sort((a, b) => b.total - a.total);
+
+  return { days, maxTotal, totalWrites, authors };
+}
+
 export type CommentStoryFilter =
   | { kind: "eq"; value: string }
   | { kind: "like"; value: string }

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import {
   adminFilterHref,
   aggregateAdminAuthors,
+  buildAuthorTimeSeries,
   commentStoryFilter,
   COMMENT_OTHER_PREFIXES,
   formatRate,
@@ -148,5 +149,40 @@ assert.equal(authors[1]?.userId, "u2");
 assert.equal(authors[1]?.latestNickname, "리황");
 // u3 is third (2026-09-09)
 assert.equal(authors[2]?.userId, "u3");
+
+const timeSeries = buildAuthorTimeSeries({
+  comments: [
+    { user_id: "u1", nickname: "패치아조씨", created_at: "2026-09-10T10:00:00.000Z" },
+    { user_id: "u1", nickname: "패치아조씨2", created_at: "2026-09-12T10:00:00.000Z" },
+    { user_id: "u2", nickname: "리황", created_at: "2026-09-11T10:00:00.000Z" },
+  ],
+  posts: [
+    {
+      userId: "u1",
+      nickname: "패치아조씨2",
+      createdAt: "2026-09-13T10:00:00.000Z",
+    },
+    {
+      userId: "u3",
+      nickname: "익명",
+      createdAt: "2026-09-09T10:00:00.000Z",
+    },
+  ],
+});
+assert.equal(timeSeries.totalWrites, 5);
+assert.equal(timeSeries.authors.length, 3);
+assert.equal(timeSeries.authors[0]?.userId, "u1");
+assert.equal(timeSeries.authors[0]?.total, 3);
+assert.ok(timeSeries.days.length >= 5); // 2026-09-09 through 2026-09-13
+
+const day09 = timeSeries.days.find((d) => d.day === "2026-09-09");
+assert.ok(day09);
+assert.equal(day09.total, 1);
+assert.equal(day09.userCounts["u3"], 1);
+
+const day10 = timeSeries.days.find((d) => d.day === "2026-09-10");
+assert.ok(day10);
+assert.equal(day10.total, 1);
+assert.equal(day10.userCounts["u1"], 1);
 
 console.log("admin-rls-activity.spec.ts ok");
