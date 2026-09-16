@@ -49,6 +49,10 @@ Patch release work is speed-first:
    patch notes. Delete `draft` (do not add a new status). Ready/complete does
    **not** mean the notes can never change again; it only means the in-progress
    keyword and notice come off.
+6. Post-release housekeeping (low priority): after the patch notes and Compendium
+   are live, regenerate static data (`pnpm static:data`) and add the new patch's
+   reworked/new entities to the CI version test matrix (`scripts/versioned-entity-api.spec.ts`),
+   verifying boundary integrity with `pnpm test:version-api`.
 
 ## Draft Chrome
 
@@ -397,6 +401,28 @@ node .codex/skills/mobile-viewport-qa/scripts/check-mobile-route.mjs \
   --render-selector main \
   --controls-selector "[data-mobile-qa-none]"
 ```
+
+## Post-Release: Version API & CI Matrix Sync (Low Priority)
+
+Patch-note deployment and user-facing rich notes are speed-first and top priority. After the patch notes are live, Compendium sync is finished, and draft chrome is removed, perform these lower-priority stability tasks:
+
+1. **Regenerate Static API & Search Indexes**:
+   ```bash
+   pnpm static:data
+   ```
+   Ensures updated search indexes, resource patch lines, and compendium manifests are generated.
+
+2. **Extend Version API CI Regression Matrix**:
+   - In `scripts/versioned-entity-api.spec.ts`, add test cases for the newly released patch version and any changed, reworked, new, or deprecated entities.
+   - Verify that:
+     - The newly modified entity stats and descriptions accurately reflect when querying the new version via `getVersionedEntity` / `getVersionedEntities`.
+     - Boundary versions (e.g. the version right before the patch or the rollback boundary) do not leak new values.
+     - New or deprecated entity lifecycle statuses are accurately reported.
+   - Run the validation and CI gate:
+     ```bash
+     pnpm codex:validate
+     pnpm test:version-api
+     ```
 
 ## Developer Notes
 

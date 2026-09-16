@@ -291,6 +291,13 @@ Per CLAUDE.md rules, commit after each meaningful edit:
 - Commit sts2-changes.json
 - Commit meta.json
 
+### Step 9: Post-Release Version API & CI Matrix Sync (후반부 작업 / 낮은 우선순위)
+
+패치노트 배포가 최우선이므로, 패치노트 발행과 백과사전 데이터 반영이 완료된 후 후반부에 진행:
+1. `pnpm static:data` 실행하여 정적 검색 색인 및 패치라인 색인 갱신.
+2. `scripts/versioned-entity-api.spec.ts`에 새 버전의 리워크/신규/소멸 엔티티에 대한 검증 케이스를 추가하여 특정 버전에서만 변경 사항이 나타나고 이전 경계 및 롤백 버전으로 누출되지 않는지 CI 단위 테스트 매트릭스 확장.
+3. `pnpm test:version-api` 및 `pnpm codex:validate` 통과 확인 후 커밋.
+
 ## Output Files
 
 | File | Content |
