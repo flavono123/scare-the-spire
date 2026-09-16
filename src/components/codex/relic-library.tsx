@@ -119,13 +119,35 @@ export function RelicLibrary({
   const [selectedPools, setSelectedPools] = useState<Set<RelicPoolFilter>>(new Set());
   const [selectedRarities, setSelectedRarities] = useState<Set<RelicRarityKo>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
+  const urlVersion = useHydrationSafeSearchParam("version");
+  const normalizedUrlVersion = urlVersion ? urlVersion.replace(/^v/, "") : null;
+  const initialVersion = normalizedUrlVersion && versions.includes(normalizedUrlVersion)
+    ? normalizedUrlVersion
+    : (currentVersion ?? "");
+  const [selectedVersion, setSelectedVersion] = useState(initialVersion);
+
+  useEffect(() => {
+    if (normalizedUrlVersion && versions.includes(normalizedUrlVersion)) {
+      setSelectedVersion(normalizedUrlVersion);
+    }
+  }, [normalizedUrlVersion, versions]);
+
   const [showBeta, setShowBeta] = useState(false);
   const [sortDirs, setSortDirs] = useState<Record<RelicSortKey, FilterSortDir>>({
     pool: "asc",
     rarity: "asc",
   });
   const hasBetaArt = relics.some((relic) => relic.betaImageUrl);
+
+  const versionedRelics = useMemo(() => {
+    return versionCodexEntities(relics, "relic", {
+      selectedVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
+  }, [relics, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
   // Relic detail modal
   const [selectedRelicOverride, setSelectedRelicOverride] = useState<CodexRelic | null>(null);
@@ -134,9 +156,9 @@ export function RelicLibrary({
 
   const urlSelectedRelic = useMemo(() => (
     urlRelicId
-      ? relics.find((r) => r.id.toLowerCase() === urlRelicId.toLowerCase()) ?? null
+      ? versionedRelics.find((r) => r.id.toLowerCase() === urlRelicId.toLowerCase()) ?? null
       : null
-  ), [relics, urlRelicId]);
+  ), [versionedRelics, urlRelicId]);
   const selectedRelic = useUrlSelection ? urlSelectedRelic : selectedRelicOverride;
 
   const selectRelic = useCallback((relic: CodexRelic, variantPool?: RelicPool) => {
@@ -183,16 +205,6 @@ export function RelicLibrary({
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [closeSelectedRelic, selectedRelic]);
-
-  const versionedRelics = useMemo(() => {
-    return versionCodexEntities(relics, "relic", {
-      selectedVersion,
-      currentVersion,
-      versionDiffs,
-      patches,
-      changes,
-    });
-  }, [relics, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
   // Character filters for pool
   const poolLabels = useMemo(() => {

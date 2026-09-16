@@ -78,9 +78,21 @@ interface PowerLibraryProps {
 export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [], relics = [], potions = [], enchantments = [], events = [], monsters = [], afflictions = [], tipCatalogSources, versions, currentVersion, patches, changes, versionDiffs, entities }: PowerLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlPowerId = useHydrationSafeSearchParam("power");
+  const urlVersion = useHydrationSafeSearchParam("version");
+  const normalizedUrlVersion = urlVersion ? urlVersion.replace(/^v/, "") : null;
+  const initialVersion = normalizedUrlVersion && versions.includes(normalizedUrlVersion)
+    ? normalizedUrlVersion
+    : (currentVersion ?? "");
+  const [selectedVersion, setSelectedVersion] = useState(initialVersion);
+
+  useEffect(() => {
+    if (normalizedUrlVersion && versions.includes(normalizedUrlVersion)) {
+      setSelectedVersion(normalizedUrlVersion);
+    }
+  }, [normalizedUrlVersion, versions]);
+
   const [selectedTypes, setSelectedTypes] = useState<Set<PowerType>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
   const [showBeta, setShowBeta] = useState(false);
   const [typeSortDir, setTypeSortDir] = useState<FilterSortDir>("asc");
   const hasBetaArt = powers.some((power) => power.betaImageUrl);

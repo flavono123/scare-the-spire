@@ -161,8 +161,29 @@ export function PotionLibrary({
   const [selectedFutureOutcomes, setSelectedFutureOutcomes] = useState<Set<FuturePotionOutcomeId>>(
     new Set()
   );
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
+  const urlVersion = useHydrationSafeSearchParam("version");
+  const normalizedUrlVersion = urlVersion ? urlVersion.replace(/^v/, "") : null;
+  const initialVersion = normalizedUrlVersion && versions.includes(normalizedUrlVersion)
+    ? normalizedUrlVersion
+    : (currentVersion ?? "");
+  const [selectedVersion, setSelectedVersion] = useState(initialVersion);
+
+  useEffect(() => {
+    if (normalizedUrlVersion && versions.includes(normalizedUrlVersion)) {
+      setSelectedVersion(normalizedUrlVersion);
+    }
+  }, [normalizedUrlVersion, versions]);
+
+  const versionedPotions = useMemo(() => {
+    return versionCodexEntities(potions, "potion", {
+      selectedVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
+  }, [potions, selectedVersion, currentVersion, versionDiffs, patches, changes]);
+
   const [sortDirs, setSortDirs] = useState<Record<PotionSortKey, FilterSortDir>>({
     pool: "asc",
     rarity: "asc",
@@ -174,9 +195,9 @@ export function PotionLibrary({
   const [useUrlSelection, setUseUrlSelection] = useState(true);
   const urlSelectedPotion = useMemo(() => (
     urlPotionId
-      ? potions.find((p) => p.id.toLowerCase() === urlPotionId.toLowerCase()) ?? null
+      ? versionedPotions.find((p) => p.id.toLowerCase() === urlPotionId.toLowerCase()) ?? null
       : null
-  ), [potions, urlPotionId]);
+  ), [versionedPotions, urlPotionId]);
   const selectedPotion = useUrlSelection ? urlSelectedPotion : selectedPotionOverride;
 
   const selectPotion = useCallback((potion: CodexPotion) => {
@@ -220,16 +241,6 @@ export function PotionLibrary({
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [closeSelectedPotion, selectedPotion]);
-
-  const versionedPotions = useMemo(() => {
-    return versionCodexEntities(potions, "potion", {
-      selectedVersion,
-      currentVersion,
-      versionDiffs,
-      patches,
-      changes,
-    });
-  }, [potions, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
   const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 

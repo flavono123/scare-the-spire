@@ -220,7 +220,18 @@ interface CardLibraryProps {
 
 export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, changes, versionDiffs, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], tipCatalogSources, initialCardId = null, initialShowBeta = false }: CardLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const [selectedVersion, setSelectedVersion] = useState(currentVersion);
+  const urlVersion = useHydrationSafeSearchParam("version");
+  const normalizedUrlVersion = urlVersion ? urlVersion.replace(/^v/, "") : null;
+  const initialVersion = normalizedUrlVersion && versions.includes(normalizedUrlVersion)
+    ? normalizedUrlVersion
+    : currentVersion;
+  const [selectedVersion, setSelectedVersion] = useState(initialVersion);
+
+  useEffect(() => {
+    if (normalizedUrlVersion && versions.includes(normalizedUrlVersion)) {
+      setSelectedVersion(normalizedUrlVersion);
+    }
+  }, [normalizedUrlVersion, versions]);
   const [selectedColors, setSelectedColors] = useState<Set<CardFilterCategory>>(
     new Set()
   );
@@ -576,8 +587,8 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   const activeShowBeta = useUrlSelection && urlBetaArt !== null ? urlBetaArtEnabled : showBeta;
   const selectedCard = useMemo(() => {
     const activeCardId = useUrlSelection ? urlCardId : selectedCardId;
-    return activeCardId ? findCardByListId(cards, activeCardId) : null;
-  }, [cards, selectedCardId, useUrlSelection, urlCardId]);
+    return activeCardId ? findCardByListId(versionedCards, activeCardId) : null;
+  }, [versionedCards, selectedCardId, useUrlSelection, urlCardId]);
 
   const openSelectedCard = useCallback((card: CodexCard) => {
     setUseUrlSelection(false);

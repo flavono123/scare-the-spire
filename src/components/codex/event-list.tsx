@@ -227,7 +227,29 @@ export function EventList({
   const urlEventId = useHydrationSafeSearchParam("event");
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedVersion, setSelectedVersion] = useState(currentVersion);
+  const urlVersion = useHydrationSafeSearchParam("version");
+  const normalizedUrlVersion = urlVersion ? urlVersion.replace(/^v/, "") : null;
+  const initialVersion = normalizedUrlVersion && versions.includes(normalizedUrlVersion)
+    ? normalizedUrlVersion
+    : currentVersion;
+  const [selectedVersion, setSelectedVersion] = useState(initialVersion);
+
+  useEffect(() => {
+    if (normalizedUrlVersion && versions.includes(normalizedUrlVersion)) {
+      setSelectedVersion(normalizedUrlVersion);
+    }
+  }, [normalizedUrlVersion, versions]);
+
+  const versionedEvents = useMemo(() => {
+    return versionCodexEntities(events, "event", {
+      selectedVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
+  }, [events, selectedVersion, currentVersion, versionDiffs, patches, changes]);
+
   const [actSortDir, setActSortDir] = useState<FilterSortDir>("asc");
 
   // Event detail modal
@@ -235,9 +257,9 @@ export function EventList({
   const [useUrlSelection, setUseUrlSelection] = useState(true);
   const urlSelectedEvent = useMemo(() => (
     urlEventId
-      ? events.find((e) => e.id.toLowerCase() === urlEventId.toLowerCase()) ?? null
+      ? versionedEvents.find((e) => e.id.toLowerCase() === urlEventId.toLowerCase()) ?? null
       : null
-  ), [events, urlEventId]);
+  ), [versionedEvents, urlEventId]);
   const selectedEvent = useUrlSelection ? urlSelectedEvent : selectedEventOverride;
 
   const selectEvent = useCallback((event: CodexEvent) => {
@@ -276,16 +298,6 @@ export function EventList({
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [closeSelectedEvent, selectedEvent]);
-
-  const versionedEvents = useMemo(() => {
-    return versionCodexEntities(events, "event", {
-      selectedVersion,
-      currentVersion,
-      versionDiffs,
-      patches,
-      changes,
-    });
-  }, [events, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
   const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
