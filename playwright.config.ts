@@ -17,6 +17,7 @@ export default defineConfig({
     "codex-filter-search.spec.ts",
     "compendium-index-localization.spec.ts",
     "mobile-ux.spec.ts",
+    "text-con-mobile.spec.ts",
     "cloudflare-testbed.spec.ts",
     "contact.spec.ts",
   ],
