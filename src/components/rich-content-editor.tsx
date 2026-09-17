@@ -30,6 +30,7 @@ import { YouTubeReferenceExtension } from "@/components/editor/youtube-reference
 import { HistoryRunReferenceExtension } from "@/components/editor/history-run-reference-extension";
 import { HistoryRunFloorExtension, replaceExclusiveHistoryFloor } from "@/components/editor/history-run-floor-extension";
 import { TextConExtension } from "@/components/editor/text-con-extension";
+import { TextConPanel } from "@/components/text-con/text-con-panel";
 import { TextConPopup } from "@/components/text-con/text-con-popup";
 import {
   GAME_UI_HOVER_TIP_NAV_DELAY_MS,
@@ -534,6 +535,25 @@ export function RichContentEditor({
   const [textConModalOpen, setTextConModalOpen] = useState(false);
   const [textConAnchor, setTextConAnchor] = useState<DOMRect | null>(null);
   const textConTriggerRef = useRef<HTMLButtonElement>(null);
+  const textConSheetRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 639px)");
+    const onChange = () => setIsMobile(mql.matches);
+    onChange();
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    if (textConModalOpen && isMobile && textConSheetRef.current) {
+      const rect = textConSheetRef.current.getBoundingClientRect();
+      if (rect.bottom > window.innerHeight) {
+        textConSheetRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+  }, [textConModalOpen, isMobile]);
   const [youtubeResolving, setYoutubeResolving] = useState(false);
   const [youtubeFeedback, setYoutubeFeedback] = useState<{
     tone: "aqua" | "error";
@@ -1324,6 +1344,7 @@ export function RichContentEditor({
           },
         })
         .run();
+      setTextConModalOpen(false);
     },
     [editor],
   );
@@ -1441,9 +1462,12 @@ export function RichContentEditor({
               <button
                 ref={textConTriggerRef}
                 type="button"
+                data-text-con-trigger=""
                 onClick={() => {
-                  const rect = textConTriggerRef.current?.getBoundingClientRect();
-                  if (rect) setTextConAnchor(rect);
+                  if (!textConModalOpen) {
+                    const rect = textConTriggerRef.current?.getBoundingClientRect();
+                    if (rect) setTextConAnchor(rect);
+                  }
                   setTextConModalOpen((prev) => !prev);
                 }}
                 className={`flex shrink-0 items-center gap-1 rounded border px-2 py-1 text-xs transition-colors ${
@@ -1506,13 +1530,28 @@ export function RichContentEditor({
         </div>
       )}
 
-      {enableTextCon && (
+      {enableTextCon && textConModalOpen && isMobile && (
+        <div
+          ref={textConSheetRef}
+          data-text-con-sheet=""
+          className="border-t border-border/70 bg-zinc-950/98 p-3.5 animate-in slide-in-from-top-2 duration-150 sm:p-4"
+        >
+          <TextConPanel
+            onClose={() => setTextConModalOpen(false)}
+            onInsert={handleInsertTextCon}
+            autoFocus={false}
+          />
+        </div>
+      )}
+
+      {enableTextCon && textConModalOpen && !isMobile && (
         <TextConPopup
           open={textConModalOpen}
           anchor={textConAnchor}
           triggerRef={textConTriggerRef}
           onClose={() => setTextConModalOpen(false)}
           onInsert={handleInsertTextCon}
+          autoFocus={true}
         />
       )}
     </div>
