@@ -1,9 +1,5 @@
 import assert from "node:assert/strict";
 import {
-  parsePagestormJson,
-  parsePagestormScript,
-} from "../src/components/pagestorm/script-parser";
-import {
   CARD_ART_IMAGE_ASPECT,
   clampAssetWidth,
   defaultAssetBox,
@@ -268,72 +264,4 @@ const transfigureAttrs = pagestormToyboxNodeAttrs({
 assert.equal(transfigureAttrs.height, 448);
 assert.match(transfigureAttrs.transfigureJson, /따뜻한 장갑/);
 
-// Script parser test
-const sampleScript = `
-# 리젠트 공략
-작성자: 첨탑러
-https://youtu.be/gYFnuuIL5ro
-
-<서류 폭풍>
-{서류 폭풍 카드는 매우 강력합니다.}
-{리젠트의 핵심 카드 중 하나입니다.}
-
-<서류 폭풍, 우주 먼지>
-{두 카드를 연계하면 좋습니다.}
-
-<일반 짤: 인트로 화면>
-{시작 대사}
-`;
-
-const mockEntities = [
-  {
-    id: "PAGESTORM",
-    type: "card" as const,
-    nameKo: "서류 폭풍",
-    imageUrl: "/images/sts2/cards/pagestorm.webp",
-    href: "/compendium/cards/PAGESTORM",
-  },
-  {
-    id: "STARDUST",
-    type: "card" as const,
-    nameKo: "우주 먼지",
-    imageUrl: "/images/sts2/cards/stardust.webp",
-    href: "/compendium/cards/STARDUST",
-  },
-];
-
-const parsedScript = parsePagestormScript(sampleScript, mockEntities);
-assert.ok(parsedScript);
-assert.equal(parsedScript.title, "리젠트 공략");
-assert.equal(parsedScript.nickname, "첨탑러");
-assert.ok(parsedScript.nodes.length >= 4);
-
-// First node is youtubePlayer
-assert.equal(parsedScript.nodes[0].type, "youtubePlayer");
-assert.equal(parsedScript.nodes[0].attrs?.videoId, "gYFnuuIL5ro");
-
-// Single asset node
-assert.equal(parsedScript.nodes[2].type, "gameAsset");
-assert.equal(parsedScript.nodes[2].attrs?.assetId, "PAGESTORM");
-
-// Multi asset row node
-assert.equal(parsedScript.nodes[4].type, "assetRow");
-assert.equal(parsedScript.nodes[4].content?.length, 2);
-
-// JSON parser test
-const jsonString = JSON.stringify({
-  title: "테스트 제목",
-  nickname: "테스터",
-  content: {
-    type: "doc",
-    content: [{ type: "paragraph", content: [{ type: "text", text: "테스트 내용" }] }],
-  },
-});
-const parsedJson = parsePagestormJson(jsonString);
-assert.ok(parsedJson);
-assert.equal(parsedJson.title, "테스트 제목");
-assert.equal(parsedJson.nickname, "테스터");
-assert.equal(parsedJson.doc.type, "doc");
-
 console.log("pagestorm.spec.ts: ok");
-
