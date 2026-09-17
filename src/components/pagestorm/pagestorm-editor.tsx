@@ -42,6 +42,7 @@ import {
 } from "./tiptap-nodes";
 import { AssetRowNode, PagestormAssetLayout } from "./asset-layout";
 import { PagestormStickyToolbar } from "./toolbar";
+import { parsePagestormJson, parsePagestormScript } from "./script-parser";
 import {
   pagestormToyboxNodeAttrs,
   type PagestormToyboxSnapshot,
@@ -134,11 +135,34 @@ export function PagestormEditor({
       handlePaste: (_view, event) => {
         if (mode !== "edit") return false;
         const pastedText = event.clipboardData?.getData("text/plain").trim() ?? "";
+        if (!pastedText) return false;
+        const current = editorRef.current;
+        if (!current) return false;
+
+        // 1. Pagestorm JSON document paste
+        const parsedJson = parsePagestormJson(pastedText);
+        if (parsedJson) {
+          event.preventDefault();
+          if (parsedJson.title && onTitleChange) onTitleChange(parsedJson.title);
+          if (parsedJson.nickname && onNicknameChange) onNicknameChange(parsedJson.nickname);
+          current.commands.setContent(parsedJson.doc);
+          return true;
+        }
+
+        // 2. Pagestorm Script format paste (<애셋>\n{대사})
+        const parsedScript = parsePagestormScript(pastedText, entitiesRef.current);
+        if (parsedScript && parsedScript.nodes.length > 0) {
+          event.preventDefault();
+          if (parsedScript.title && onTitleChange) onTitleChange(parsedScript.title);
+          if (parsedScript.nickname && onNicknameChange) onNicknameChange(parsedScript.nickname);
+          current.chain().focus().insertContent(parsedScript.nodes).run();
+          return true;
+        }
+
+        // 3. Pasted URL (YouTube or OG bookmark)
         const resolved = resolvePastedUrl(pastedText);
         if (!resolved) return false;
         event.preventDefault();
-        const current = editorRef.current;
-        if (!current) return true;
         if (resolved.kind === "og") {
           current.chain().focus().insertContent([
             {
@@ -190,6 +214,14 @@ export function PagestormEditor({
 
   useEffect(() => {
     editorRef.current = editor;
+    if (typeof window !== "undefined" && editor) {
+      (window as unknown as { __pagestormEditor?: Editor }).__pagestormEditor = editor;
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        delete (window as unknown as { __pagestormEditor?: Editor }).__pagestormEditor;
+      }
+    };
   }, [editor]);
 
   useEffect(() => {
