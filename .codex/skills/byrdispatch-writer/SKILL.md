@@ -55,9 +55,11 @@ Compare against published entries the user already corrected (`2026-07-09`, `202
    - If unsure, keep plain text.
 7. Handle media conservatively. Follow **Capture Rules** below. Default to no screenshots.
 8. Commit every meaningful edit separately, following repository `AGENTS.md`.
-9. Run focused validation:
-   - Always run `pnpm i18n:validate` and verify that every Korean date file has a same-date `.en.md` partner.
-   - Run `pnpm lint` when React, TypeScript, markdown parsing, or rendering code changed.
+9. Run pre-push gate verification and fix any blockers:
+   - Do not directly run `git push`; the user triggers the deployment push.
+   - To guarantee that the user's push succeeds, directly execute the repository pre-push hook (`./.githooks/pre-push`, which runs `pnpm i18n:validate`, `pnpm lint`, and `pnpm tsc --noEmit`).
+   - Verify that every Korean date file has a same-date `.en.md` partner.
+   - If any step fails (such as `tsc` typecheck failures or lint errors introduced by recent edits or parallel sessions), diagnose and fix the issues immediately, commit the fixes, and verify that `./.githooks/pre-push` passes cleanly (`[pre-push] ok`).
    - Do not run `pnpm build` for copy-only byrdispatch markdown.
    - Do not add a QA/browser pass to the byrdispatch write itself. Capture with headless Playwright only when media is actually required.
 
