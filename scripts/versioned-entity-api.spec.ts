@@ -23,7 +23,7 @@ async function runTests() {
   // -------------------------------------------------------------------------
   console.log("\n[Test 1] PREPARED Card - Target v0.100.0 rework vs boundaries");
 
-  const preparedAt100 = await getVersionedEntity({
+  const preparedAt100 = await getVersionedEntity<CodexCard>({
     entityType: "card",
     entityId: "PREPARED",
     version: "v0.100.0",
@@ -47,7 +47,7 @@ async function runTests() {
 
   // Boundary check: v0.99.0 (prior to rework)
   console.log("[Test 1b] PREPARED Card - Boundary v0.99.0 (pre-rework)");
-  const preparedAt099 = await getVersionedEntity({
+  const preparedAt099 = await getVersionedEntity<CodexCard>({
     entityType: "card",
     entityId: "PREPARED",
     version: "v0.99.0",
@@ -68,7 +68,7 @@ async function runTests() {
 
   // Boundary check: v0.101.0 (rollback immediately following rework)
   console.log("[Test 1c] PREPARED Card - Boundary v0.101.0 (post-rollback)");
-  const preparedAt101 = await getVersionedEntity({
+  const preparedAt101 = await getVersionedEntity<CodexCard>({
     entityType: "card",
     entityId: "PREPARED",
     version: "v0.101.0",
@@ -90,7 +90,7 @@ async function runTests() {
   // Subsequent version checks: v0.102.0 and latest v0.111.0
   console.log("[Test 1d] PREPARED Card - Later versions v0.102.0 and v0.111.0");
   for (const ver of ["v0.102.0", "v0.111.0"]) {
-    const res = await getVersionedEntity({
+    const res = await getVersionedEntity<CodexCard>({
       entityType: "card",
       entityId: "PREPARED",
       version: ver,
@@ -181,10 +181,9 @@ async function runTests() {
   // -------------------------------------------------------------------------
   console.log("\n[Test 4] Pure resolveVersionedEntity without disk access");
 
-  const mockCard: CodexCard = {
+  const mockCard = {
     id: "MOCK_CARD",
     name: "Mock Card",
-    nameKo: "모의 카드",
     cost: 0,
     type: "스킬",
     rarity: "일반",
@@ -197,8 +196,8 @@ async function runTests() {
   };
 
   const mockPatches: STS2Patch[] = [
-    { id: "v0.100.0", version: "0.100.0", date: "2026-03-20", title: "Patch 100", titleKo: "패치 100", type: "patch", hasBalanceChanges: true, majorChanges: [] },
-    { id: "v0.101.0", version: "0.101.0", date: "2026-03-27", title: "Patch 101", titleKo: "패치 101", type: "patch", hasBalanceChanges: true, majorChanges: [] },
+    { id: "v0.100.0", version: "0.100.0", date: "2026-03-20", title: "Patch 100", titleKo: "패치 100", type: "release", hasBalanceChanges: true, steamUrl: null, summary: "", summaryKo: "" },
+    { id: "v0.101.0", version: "0.101.0", date: "2026-03-27", title: "Patch 101", titleKo: "패치 101", type: "release", hasBalanceChanges: true, steamUrl: null, summary: "", summaryKo: "" },
   ];
 
   const mockDiffs: EntityVersionDiff[] = [
@@ -223,8 +222,8 @@ async function runTests() {
   ];
 
   const mockChanges: STS2Change[] = [
-    { id: "c1", patch: "v0.100.0", entityType: "card", entityId: "MOCK_CARD", diffs: [] },
-    { id: "c2", patch: "v0.101.0", entityType: "card", entityId: "MOCK_CARD", diffs: [] },
+    { id: "c1", patch: "v0.100.0", entityType: "card", entityId: "MOCK_CARD", character: "ironclad", diffs: [] },
+    { id: "c2", patch: "v0.101.0", entityType: "card", entityId: "MOCK_CARD", character: "ironclad", diffs: [] },
   ];
 
   // Target v0.100.0 from current v0.101.0
@@ -261,7 +260,7 @@ async function runTests() {
   // -------------------------------------------------------------------------
   console.log("\n[Test 5] getVersionedEntities collection query");
 
-  const cardsAt100 = await getVersionedEntities({
+  const cardsAt100 = await getVersionedEntities<CodexCard>({
     entityType: "card",
     version: "v0.100.0",
     locale: "kor",

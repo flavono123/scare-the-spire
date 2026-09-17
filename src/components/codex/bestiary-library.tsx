@@ -60,7 +60,7 @@ export function BestiaryLibrary({
   const normalizedUrlVersion = urlVersion ? urlVersion.replace(/^v/, "") : null;
   const [userSelectedVersion, setUserSelectedVersion] = useState<string | null>(null);
   const selectedVersion = userSelectedVersion ?? (
-    normalizedUrlVersion && versions.includes(normalizedUrlVersion)
+    normalizedUrlVersion && versions?.includes(normalizedUrlVersion)
       ? normalizedUrlVersion
       : (currentVersion ?? "")
   );

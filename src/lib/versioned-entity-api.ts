@@ -224,7 +224,7 @@ async function loadRawEntities(
       entities = await getCodexCards({ includeDeprecated: true, gameLocale: locale });
       break;
     case "relic":
-      entities = await getCodexRelics({ includeDeprecated: true, gameLocale: locale });
+      entities = await getCodexRelics({ gameLocale: locale });
       break;
     case "potion":
       entities = await getCodexPotions({ gameLocale: locale });
@@ -274,7 +274,7 @@ export async function getVersionedEntity<T extends { id: string } = Record<strin
 
   if (!found) {
     return {
-      version: normalizeVersion(query.version),
+      version: query.version ?? currentVersion,
       entityType: query.entityType,
       entityId: query.entityId,
       isAvailable: false,
@@ -287,7 +287,7 @@ export async function getVersionedEntity<T extends { id: string } = Record<strin
   return resolveVersionedEntity<T>({
     entity: found as T,
     entityType: query.entityType,
-    targetVersion: query.version,
+    targetVersion: query.version ?? currentVersion,
     currentVersion,
     versionDiffs,
     patches,
@@ -296,7 +296,7 @@ export async function getVersionedEntity<T extends { id: string } = Record<strin
 }
 
 /**
- * High-level API to retrieve all entities of a given type at a specific version.
+ * High-level API to retrieve a list of game entities at a specific version.
  */
 export async function getVersionedEntities<T extends { id: string } = Record<string, unknown> & { id: string }>(
   query: GetVersionedEntitiesQuery,
