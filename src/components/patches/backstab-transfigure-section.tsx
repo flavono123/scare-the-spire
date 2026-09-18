@@ -189,6 +189,7 @@ export function BackstabTransfigureSection({
                   userId={null}
                   commentCount={post.comment_count ?? 0}
                   likeCount={post.like_count ?? 0}
+                  readOnlyEngagement
                 />
               </div>
             );

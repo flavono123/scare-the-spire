@@ -34,6 +34,7 @@ interface TransfigurePostCardProps {
   commentCount: number;
   likeCount: number;
   className?: string;
+  readOnlyEngagement?: boolean;
 }
 
 export function TransfigurePostCard({
@@ -50,6 +51,7 @@ export function TransfigurePostCard({
   commentCount,
   likeCount,
   className,
+  readOnlyEngagement = false,
 }: TransfigurePostCardProps) {
   const copy = serviceMessages[serviceLocale].transfigure;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
@@ -116,6 +118,7 @@ export function TransfigurePostCard({
             userId={userId}
             authReady={authReady}
             ensureUser={ensureUser}
+            readOnly={readOnlyEngagement}
           />
         </div>
       </div>
