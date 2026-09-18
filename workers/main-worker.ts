@@ -38,6 +38,7 @@ import {
 } from "./static-page-routing";
 
 function isPatchWorkerPath(pathname: string): boolean {
+  if (pathname === "/dev" || pathname.startsWith("/dev/")) return false;
   return (
     pathname === "/patches" ||
     pathname.startsWith("/patches/") ||

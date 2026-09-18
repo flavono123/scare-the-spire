@@ -220,6 +220,7 @@ function isResourcePatchHistoryRoute(pathname) {
 }
 
 function isPatchRoute(pathname) {
+  if (pathname === "/dev" || pathname.startsWith("/dev/")) return false;
   if (isResourcePatchHistoryRoute(pathname)) return false;
 
   return (
