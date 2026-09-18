@@ -269,8 +269,7 @@ async function servePatchAsset(req, res, pathname) {
     });
     createReadStream(filePath).pipe(res);
   } catch {
-    res.writeHead(404, { "content-type": "text/plain; charset=utf-8" });
-    res.end("Not found");
+    proxyToMain(req, res);
   }
 }
 

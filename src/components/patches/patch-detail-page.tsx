@@ -883,8 +883,8 @@ export async function PatchDetailPage({
           entityMap={entityMap}
           serviceLocale={serviceLocale}
           gameLocale={gameLocale}
+          transfigureTitle={patchBackstabCopy.transfigureTitle}
           transfigureLead={patchBackstabCopy.transfigureLead}
-          transfigureTryNew={patchBackstabCopy.transfigureTryNew}
           transfigureCta={patchBackstabCopy.transfigureCta}
         />
 

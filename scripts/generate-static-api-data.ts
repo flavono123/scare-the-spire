@@ -742,17 +742,15 @@ async function buildPatchBackstabGameCopy(gameLocale: GameLocale): Promise<Patch
     ? "3번의 패치가 [gold]베타[/gold] 상태로 등장합니다. 다음으로 여는 큰 패치가 [red]비어 있습니다[/red]."
     : "The next 3 patches you see are in [gold]Beta[/gold]. The next big patch you open is [red]empty[/red].";
 
-  const transfigureLead = gameLocale === "kor"
-    ? "“제 다음 [green]패치[/green]의 테스터가 필요했거든요! 이렇게 나오면 어떨까요?”"
-    : "“I needed a tester for my next [green]patch[/green]! How about something like this?”";
+  const transfigureTitle = gameLocale === "kor" ? "변형" : "Transfigure";
 
-  const transfigureTryNew = gameLocale === "kor"
-    ? "가끔은 직접 패치해보는 것도 나쁘지 않을지도 모릅니다."
-    : "Perhaps it's good to try patching it yourself?";
+  const transfigureLead = gameLocale === "kor"
+    ? "어. 네, 안녕하세요! 꽤 실력이 있는 전사이신 것 같네요... 제 다음 [green]패치[/green]의 테스터가 필요했거든요!"
+    : "“Yes. Hi, hello! You look like a capable fighter... I need a tester for my next [green]patch[/green]!”";
 
   const transfigureCta = gameLocale === "kor"
-    ? "나만의 변형 만들기"
-    : "Create your own Transfigure";
+    ? "한 번 어때요?"
+    : "How about it?";
 
   const surpriseDescription = powers["SURPRISE_POWER.description"]
     ?? englishPowers["SURPRISE_POWER.description"]
@@ -765,8 +763,8 @@ async function buildPatchBackstabGameCopy(gameLocale: GameLocale): Promise<Patch
       ?? englishCombatMessages.OPEN_EMPTY_DRAW
       ?? "My Draw Pile is [red]empty[/red].",
     hero,
+    transfigureTitle,
     transfigureLead,
-    transfigureTryNew,
     transfigureCta,
   };
 }

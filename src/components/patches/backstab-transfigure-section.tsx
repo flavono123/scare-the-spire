@@ -2,20 +2,23 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import Image from "@/components/ui/static-image";
+import { Heart, MessageSquare, Sparkles } from "lucide-react";
 import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { RichText } from "@/components/rich-text";
-import { ThisOrThatResourcePanel } from "@/components/this-or-that/resource-panel";
+import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
+import { PostRenderer } from "@/components/chemicalx/post-renderer";
 import { TransfigureResourcePreview } from "@/components/transfigure/transfigure-resource-preview";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useTransfigurePosts } from "@/hooks/use-transfigure-posts";
+import { useStoredProfileSnapshot } from "@/hooks/use-user-profile";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
 import type { TransfigurePost } from "@/lib/transfigure-types";
+import { serviceMessages } from "@/messages/service";
+import { formatTimeAgo } from "@/lib/relative-time";
 import { cn } from "@/lib/utils";
 
 const PREVIEW_INTERVAL_MS = 2800;
@@ -141,20 +144,20 @@ export function BackstabTransfigureSection({
   entityMap,
   serviceLocale,
   gameLocale,
+  transfigureTitle,
   transfigureLead,
-  transfigureTryNew,
   transfigureCta,
 }: {
   entities: EntityInfo[];
   entityMap: Map<string, EntityInfo>;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
+  transfigureTitle: string;
   transfigureLead: string;
-  transfigureTryNew: string;
   transfigureCta: string;
 }) {
-  const router = useRouter();
-  const { posts: livePosts } = useTransfigurePosts(null, "recommended");
+  const { posts: livePosts, likeCounts, commentCounts } = useTransfigurePosts(null, "recommended");
+  const { profile } = useStoredProfileSnapshot();
 
   const posts = useMemo(() => {
     if (livePosts.length > 0) return livePosts;
@@ -176,175 +179,174 @@ export function BackstabTransfigureSection({
         setFading(false);
       }, PREVIEW_FADE_MS);
     }, PREVIEW_INTERVAL_MS);
+
     return () => {
       window.clearInterval(interval);
       window.clearTimeout(fadeTimer);
     };
   }, [posts.length]);
 
-  const currentPost = posts.length > 0 ? posts[postIndex % posts.length] : null;
-  const currentEntity = currentPost
-    ? entityMap.get(`${currentPost.resource_type}:${currentPost.resource_id}`)
-    : undefined;
+  const activePost = posts[postIndex % posts.length] ?? posts[0];
+  if (!activePost) return null;
 
-  const hoverTipText = serviceLocale === "ko" ? "변형으로 이동하기" : "Go to Transfigure";
-  const transfigureIndexHref = localizeHrefWithGameLocale(
+  const resource = entityMap.get(
+    `${activePost.resource_type}:${activePost.resource_id}`,
+  );
+  const copy = serviceMessages[serviceLocale].transfigure;
+  const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
+  const upgradeLabel = serviceLocale === "ko" ? "강화" : "Upgrade";
+  const postHref = localizeHrefWithGameLocale(
+    `/transfigure/${activePost.id}`,
+    serviceLocale,
+    gameLocale,
+  );
+  const transfigureRootHref = localizeHrefWithGameLocale(
     "/transfigure",
     serviceLocale,
     gameLocale,
   );
-  const currentPostHref = currentPost
-    ? localizeHrefWithGameLocale(
-        `/transfigure/${currentPost.id}`,
-        serviceLocale,
-        gameLocale,
-      )
-    : transfigureIndexHref;
 
-  const handleMatchupClick = () => {
-    router.push(currentPostHref);
-  };
+  const isOwner = Boolean(
+    profile.userId && activePost.user_id && profile.userId === activePost.user_id,
+  );
+  const likeCount = likeCounts[activePost.id] ?? 0;
+  const commentCount = commentCounts[activePost.id] ?? 0;
 
   return (
-    <section
-      data-backstab-transfigure-section=""
-      className="mt-8 rounded-xl border border-amber-500/25 bg-amber-950/10 p-5 shadow-[0_0_32px_rgba(245,158,11,0.06)]"
-    >
-      {/* Header with gamelocale borrowed quotes */}
-      <div className="flex flex-col gap-1.5 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <Image
-              src="/images/sts2/relics/astrolabe.webp"
-              alt="변형"
-              width={22}
-              height={22}
-              className="h-5.5 w-5.5 shrink-0 object-contain"
-            />
-            <span className="font-game-title text-base font-bold text-amber-200">
-              {transfigureTryNew}
-            </span>
-          </div>
-          <p className="mt-1 font-service text-sm font-medium leading-relaxed text-amber-100/80">
-            <RichText text={transfigureLead} />
-          </p>
-        </div>
-
+    <div className="mt-10">
+      {/* Header with Title and CTA link */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="font-game-title text-xl font-bold tracking-wide text-foreground">
+          {transfigureTitle}
+        </h2>
         <Link
-          href={transfigureIndexHref}
-          className="mt-2 inline-flex shrink-0 items-center gap-1.5 self-start rounded-lg border border-amber-400/40 bg-amber-500/15 px-3.5 py-1.5 text-xs font-semibold text-amber-200 transition-colors hover:border-amber-300/60 hover:bg-amber-500/25 hover:text-amber-100 sm:mt-0"
+          href={transfigureRootHref}
+          className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
         >
           <span>{transfigureCta}</span>
-          <span aria-hidden>&rarr;</span>
+          <span aria-hidden="true">&rarr;</span>
         </Link>
       </div>
 
-      {/* VS Matchup preview with animation */}
-      {currentPost && currentEntity ? (
-        <div className="mt-5">
-          <GameUiHoverTip label={hoverTipText} className="block w-full">
+      {/* Hero Tinker Time lead quote */}
+      <div className="mt-2 text-sm font-medium leading-relaxed text-rose-50/90">
+        <RichText text={transfigureLead} />
+      </div>
+
+      {/* Transfigure Index Card Asset Preview */}
+      <div className="mt-6 flex justify-center">
+        <Link
+          href={postHref}
+          className="block w-full max-w-sm sm:max-w-md group"
+          aria-label={`${activePost.title || resource?.nameKo || activePost.resource_id} - ${serviceLocale === "ko" ? "변형으로 이동하기" : "Go to Transfigure"}`}
+        >
+          <GameUiHoverTip
+            content={serviceLocale === "ko" ? "변형으로 이동하기" : "Go to Transfigure"}
+          >
             <div
-              role="button"
-              tabIndex={0}
-              onClick={handleMatchupClick}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleMatchupClick();
-                }
-              }}
-              aria-label={`${currentPost.title || currentEntity.nameKo}. ${hoverTipText}`}
               className={cn(
-                "group/matchup relative cursor-pointer overflow-hidden rounded-xl border border-border/80 bg-zinc-950/70 p-3.5 transition-[border-color,box-shadow] duration-200 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary",
+                "transition-opacity duration-200",
+                fading ? "opacity-0" : "opacity-100",
               )}
             >
-              <div
-                className={cn(
-                  "grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 transition-opacity duration-200 motion-reduce:transition-none sm:gap-4",
-                  fading && "opacity-0",
-                )}
-              >
-                {/* Left: Original resource */}
-                <div className="min-w-0">
-                  <div className="mb-1 text-center font-game-text text-[11px] font-bold text-muted-foreground">
-                    {serviceLocale === "ko" ? "원래 게임 요소" : "Original"}
+              <article className="flex h-full flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-[border-color,background-color,box-shadow,transform] duration-200 group-hover:-translate-y-0.5 group-hover:border-primary/40 group-hover:bg-card/35 group-hover:shadow-lg group-hover:shadow-black/25 motion-reduce:transform-none">
+                {/* Card Top: Title, Date, Engagement */}
+                <div className="mb-4 flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="line-clamp-2 font-game-title text-base font-semibold leading-snug spire-gold">
+                      {activePost.title?.trim() || resource?.nameKo || activePost.resource_id}
+                    </h3>
+                    <span className="mt-1 block text-xs text-muted-foreground">
+                      {formatTimeAgo(activePost.created_at, copy, dateLocale)}
+                    </span>
                   </div>
-                  <div className="flex justify-center">
-                    <ThisOrThatResourcePanel
-                      entity={currentEntity}
-                      sideLabel=""
-                      serviceLocale={serviceLocale}
-                      gameLocale={gameLocale}
-                      assetOnly
-                    />
+                  <div className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground">
+                    <span className="inline-flex items-center gap-1">
+                      <MessageSquare className="h-3.5 w-3.5 text-muted-foreground/80" aria-hidden="true" />
+                      <span>{commentCount}</span>
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <Heart className="h-3.5 w-3.5 text-rose-400/80" aria-hidden="true" />
+                      <span>{likeCount}</span>
+                    </span>
                   </div>
                 </div>
 
-                {/* Center: VS Animation badge */}
-                <div className="flex flex-col items-center justify-center px-1">
-                  <div className="font-game-title text-base font-black tracking-wider text-primary/90 transition-transform duration-200 group-hover/matchup:scale-110 sm:text-xl md:text-2xl">
-                    VS
-                  </div>
-                  <span className="mt-0.5 text-[10px] font-bold text-muted-foreground/70">
-                    {serviceLocale === "ko" ? "변형" : "Mod"}
-                  </span>
-                </div>
-
-                {/* Right: Transfigured resource */}
-                <div className="min-w-0">
-                  <div className="mb-1 text-center font-game-text text-[11px] font-bold text-amber-300/80">
-                    {currentPost.title || (serviceLocale === "ko" ? "변형 제안" : "Transfigured")}
-                  </div>
-                  <div className="flex justify-center">
+                {/* Card Center: Transfigure Asset Preview */}
+                <div
+                  className="flex min-h-[22rem] sm:min-h-[26rem] flex-1 items-center justify-center overflow-hidden rounded-md bg-black/15 px-2 py-3"
+                  data-transfigure-post-asset
+                >
+                  {resource ? (
                     <TransfigureResourcePreview
-                      blocks={currentPost.content}
+                      blocks={activePost.content}
                       entities={entities}
                       entityMap={entityMap}
-                      entity={currentEntity}
+                      entity={resource}
                       gameLocale={gameLocale}
                       serviceLocale={serviceLocale}
-                      transformedName={currentPost.transformed_name}
-                      transformedCost={currentPost.transformed_cost}
-                      transformedStarCost={currentPost.transformed_star_cost}
-                      transformedCardType={currentPost.transformed_card_type}
-                      transformedCardRarity={currentPost.transformed_card_rarity}
-                      transformedCardColor={currentPost.transformed_card_color}
+                      transformedName={activePost.transformed_name}
+                      transformedCost={activePost.transformed_cost}
+                      transformedStarCost={activePost.transformed_star_cost}
+                      transformedCardType={activePost.transformed_card_type}
+                      transformedCardRarity={activePost.transformed_card_rarity}
+                      transformedCardColor={activePost.transformed_card_color}
                       cardKeywords={{
-                        top: currentPost.card_top_keywords,
-                        bottom: currentPost.card_bottom_keywords,
+                        top: activePost.card_top_keywords,
+                        bottom: activePost.card_bottom_keywords,
                       }}
-                      transformedUpgradeCost={currentPost.transformed_upgrade_cost}
-                      transformedUpgradeStarCost={currentPost.transformed_upgrade_star_cost}
-                      omitEnergyCost={currentPost.omit_energy_cost}
-                      upgradedBlocks={currentPost.upgraded_content}
+                      transformedUpgradeCost={activePost.transformed_upgrade_cost}
+                      transformedUpgradeStarCost={activePost.transformed_upgrade_star_cost}
+                      omitEnergyCost={activePost.omit_energy_cost}
+                      upgradedBlocks={activePost.upgraded_content}
                       upgradedCardKeywords={{
-                        top: currentPost.upgraded_card_top_keywords,
-                        bottom: currentPost.upgraded_card_bottom_keywords,
+                        top: activePost.upgraded_card_top_keywords,
+                        bottom: activePost.upgraded_card_bottom_keywords,
                       }}
-                      upgradeLabel={serviceLocale === "ko" ? "강화" : "Upgrade"}
-                      initialShowUpgrade={currentPost.show_upgrade}
+                      upgradeLabel={upgradeLabel}
+                      initialShowUpgrade={activePost.show_upgrade}
                       showImageActions={false}
                       showUpgradeToggle={false}
-                      tokenColor={currentPost.token_color}
-                      tokenWax={currentPost.token_wax}
+                      tokenColor={activePost.token_color}
+                      tokenWax={activePost.token_wax}
                     />
-                  </div>
+                  ) : (
+                    <div className="flex max-w-full flex-col items-center gap-3 text-sm leading-relaxed text-[#f0e6d2]">
+                      <Sparkles className="h-8 w-8 text-primary/70" aria-hidden="true" />
+                      <PostRenderer
+                        blocks={activePost.show_upgrade && activePost.upgraded_content
+                          ? activePost.upgraded_content
+                          : activePost.content}
+                        entityMap={entityMap}
+                        serviceLocale={serviceLocale}
+                        gameLocale={gameLocale}
+                      />
+                    </div>
+                  )}
                 </div>
-              </div>
 
-              {/* Bottom footer bar */}
-              <div className="mt-3 flex items-center justify-between border-t border-border/40 pt-2 text-[11px] text-muted-foreground">
-                <span className="flex items-center gap-1.5 font-medium text-foreground/80">
-                  <span>작성자: {currentPost.nickname}</span>
-                </span>
-                <span className="text-primary/90 group-hover/matchup:underline">
-                  {hoverTipText} &rarr;
-                </span>
-              </div>
+                {/* Card Footer: Own post chip & author nickname */}
+                <div className="mt-3 flex items-center justify-end gap-1.5 pt-1">
+                  {isOwner && (
+                    <span className="inline-flex shrink-0 items-center rounded border border-[#efc851]/35 px-1.5 py-px text-[10px] font-semibold leading-none text-[#efc851]/90">
+                      {serviceLocale === "ko" ? "내 글" : "My Post"}
+                    </span>
+                  )}
+                  <DisplayedProfileNickname
+                    nickname={activePost.nickname}
+                    isOwner={isOwner}
+                    authorToken={activePost}
+                    size={14}
+                    className="max-w-[70%]"
+                    tokenClassName="h-3.5 w-3.5"
+                    nicknameClassName="text-[11px] text-muted-foreground/80"
+                  />
+                </div>
+              </article>
             </div>
           </GameUiHoverTip>
-        </div>
-      ) : null}
-    </section>
+        </Link>
+      </div>
+    </div>
   );
 }
