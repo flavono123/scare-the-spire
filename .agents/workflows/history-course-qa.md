@@ -1,0 +1,1 @@
+../skills/history-course-qa/SKILL.md

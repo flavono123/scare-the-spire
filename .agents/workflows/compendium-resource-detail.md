@@ -1,0 +1,1 @@
+../skills/compendium-resource-detail/SKILL.md

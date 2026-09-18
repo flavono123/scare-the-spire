@@ -1,0 +1,1 @@
+../skills/monster-intent-graph/SKILL.md

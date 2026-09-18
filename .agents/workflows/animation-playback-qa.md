@@ -1,0 +1,1 @@
+../skills/animation-playback-qa/SKILL.md

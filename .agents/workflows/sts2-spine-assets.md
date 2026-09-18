@@ -1,0 +1,1 @@
+../skills/sts2-spine-assets/SKILL.md

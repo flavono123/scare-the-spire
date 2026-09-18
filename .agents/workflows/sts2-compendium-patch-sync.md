@@ -1,0 +1,1 @@
+../skills/sts2-compendium-patch-sync/SKILL.md

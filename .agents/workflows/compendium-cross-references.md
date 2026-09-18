@@ -1,0 +1,1 @@
+../skills/compendium-cross-references/SKILL.md

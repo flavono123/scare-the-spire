@@ -1,0 +1,1 @@
+../skills/patch-note-revision/SKILL.md

@@ -1,0 +1,1 @@
+../skills/mobile-viewport-qa/SKILL.md

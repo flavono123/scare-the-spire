@@ -1,0 +1,1 @@
+../skills/sts2-compendium-patch-qa/SKILL.md

@@ -1,0 +1,1 @@
+../skills/update-game-assets/SKILL.md
