@@ -69,6 +69,10 @@ export interface PatchBackstabGameCopy {
   title: string;
   description: string;
   emptyDraw: string;
+  hero: string;
+  transfigureLead: string;
+  transfigureTryNew: string;
+  transfigureCta: string;
 }
 
 interface BorrowedGameCopyPayload {

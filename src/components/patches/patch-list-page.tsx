@@ -22,6 +22,8 @@ import { PatchArtPreview } from "@/components/patches/patch-art";
 import { PatchBalanceChip, PatchTypeChip } from "@/components/patches/patch-chips";
 import { PatchDraftChip } from "@/components/patches/patch-draft-chrome";
 import { PatchSectionTabs } from "@/components/patches/patch-section-tabs";
+import { RichText } from "@/components/rich-text";
+import { TEXT_GREEN } from "@/lib/sts2-card-style";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 
 const PATCH_COPY: Record<ServiceLocale, {
@@ -275,19 +277,33 @@ export async function PatchListPage({
                 className="block rounded-lg border border-rose-500/30 bg-rose-950/15 p-4 shadow-[0_0_24px_rgba(244,63,94,0.08)] transition-colors hover:border-rose-400/50 hover:bg-rose-950/25"
               >
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                  <PatchStageTitle
-                    stage="ready"
-                    text={patchBackstabCopy.title}
-                    serviceLocale={serviceLocale}
-                    className="text-lg font-semibold text-rose-100"
-                  />
+                  <span className="inline-flex min-w-0 items-center gap-2">
+                    <Image
+                      src="/images/sts2/relics/silver_crucible.webp"
+                      alt={serviceLocale === "ko" ? "은 도가니" : "Silver Crucible"}
+                      width={24}
+                      height={24}
+                      className="h-6 w-6 shrink-0 object-contain"
+                    />
+                    <span
+                      className="font-game-title text-lg font-bold min-w-0"
+                      style={{
+                        color: TEXT_GREEN,
+                        textShadow: "-1px -1px 0 #1B6131, 1px -1px 0 #1B6131, -1px 1px 0 #1B6131, 1px 1px 0 #1B6131",
+                      }}
+                    >
+                      {patchBackstabCopy.title}
+                    </span>
+                  </span>
                   <PatchTypeChip
                     type={patch.type}
                     label={copy.types[patch.type]}
                     serviceLocale={serviceLocale}
                   />
                 </div>
-                <p className="mt-1 text-sm font-medium text-rose-100/80">{patchBackstabCopy.description}</p>
+                <div className="mt-1 text-sm font-medium text-rose-100/90">
+                  <RichText text={patchBackstabCopy.hero} />
+                </div>
                 <p className="mt-0.5 text-xs text-rose-100/45">{patch.date}</p>
                 {patchArt && <PatchArtPreview art={patchArt} priority={index === 0} />}
               </Link>

@@ -22,6 +22,8 @@ import {
 } from "@/components/patch-note-renderer";
 import { PatchNoteWithStoryActions } from "@/components/patches/patch-note-with-story-actions";
 import { DeferredCommentSection } from "@/components/patches/deferred-comment-section";
+import { BackstabTransfigureSection } from "@/components/patches/backstab-transfigure-section";
+import { TEXT_GREEN } from "@/lib/sts2-card-style";
 import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
 import {
   getServiceOgMetadata,
@@ -819,8 +821,12 @@ export async function PatchDetailPage({
   if (!patch) notFound();
 
   if (isBackstabPatch(patch)) {
-    const patchBackstabCopy = await getPatchBackstabGameCopy(gameLocale);
-    const patchArt = resolvePatchArt(patch, new Map(), serviceLocale);
+    const [patchBackstabCopy, entities] = await Promise.all([
+      getPatchBackstabGameCopy(gameLocale),
+      loadAllEntities({ gameLocale }),
+    ]);
+    const entityMap = new Map(entities.map((e) => [`${e.type}:${e.id}`, e]));
+    const patchArt = resolvePatchArt(patch, entityMap, serviceLocale);
     const sortedPatches = [...patches].sort((a, b) => a.date.localeCompare(b.date));
     const idx = sortedPatches.findIndex((p) => p.id === patch.id);
     const prevPatch = idx > 0 ? sortedPatches[idx - 1] : null;
@@ -836,23 +842,51 @@ export async function PatchDetailPage({
         </Link>
 
         <div className="mt-4">
-          <div className="flex flex-wrap items-start gap-2">
-            <h1 className="text-2xl font-bold text-rose-100">{patchBackstabCopy.title}</h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-2">
+              <Image
+                src="/images/sts2/relics/silver_crucible.webp"
+                alt={serviceLocale === "ko" ? "은 도가니" : "Silver Crucible"}
+                width={28}
+                height={28}
+                className="h-7 w-7 shrink-0 object-contain"
+              />
+              <h1
+                className="font-game-title text-2xl font-bold"
+                style={{
+                  color: TEXT_GREEN,
+                  textShadow: "-1px -1px 0 #1B6131, 1px -1px 0 #1B6131, -1px 1px 0 #1B6131, 1px 1px 0 #1B6131",
+                }}
+              >
+                {patchBackstabCopy.title}
+              </h1>
+            </span>
             <PatchTypeChip
               type={patch.type}
               label={copy.types[patch.type]}
               serviceLocale={serviceLocale}
             />
           </div>
-          <p className="mt-3 text-base font-medium leading-relaxed text-rose-50/90">
-            <RichText text={patchBackstabCopy.emptyDraw} />
-          </p>
+          <div className="mt-3 text-base font-medium leading-relaxed text-rose-50/90">
+            <RichText text={patchBackstabCopy.hero} />
+          </div>
           <div className="mt-1 flex items-center gap-3 text-sm text-muted-foreground">
             <span>{patch.date}</span>
           </div>
         </div>
 
         <PatchArtHero art={patchArt} backstab />
+
+        {/* Transfigure service exposure & creation prompt */}
+        <BackstabTransfigureSection
+          entities={entities}
+          entityMap={entityMap}
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+          transfigureLead={patchBackstabCopy.transfigureLead}
+          transfigureTryNew={patchBackstabCopy.transfigureTryNew}
+          transfigureCta={patchBackstabCopy.transfigureCta}
+        />
 
         <section id="comments" className="mt-8 rounded-lg border border-border bg-card/20 p-4">
           <h2 className="mb-3 text-sm font-bold text-foreground">{copy.comments}</h2>

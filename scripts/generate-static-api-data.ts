@@ -115,6 +115,10 @@ interface PatchBackstabGameCopy {
   title: string;
   description: string;
   emptyDraw: string;
+  hero: string;
+  transfigureLead: string;
+  transfigureTryNew: string;
+  transfigureCta: string;
 }
 
 interface BorrowedGameCopyPayload {
@@ -731,16 +735,39 @@ async function buildPatchBackstabGameCopy(gameLocale: GameLocale): Promise<Patch
         readGameLocalizationTable(ENGLISH_GAME_LOCALE, "combat_messages"),
       ]);
 
+  const baseTitle = cards["BACKSTAB.title"] ?? englishCards["BACKSTAB.title"] ?? "Backstab";
+  const title = `${baseTitle}+`;
+
+  const hero = gameLocale === "kor"
+    ? "3번의 패치가 [gold]베타[/gold] 상태로 등장합니다. 다음으로 여는 큰 패치가 [red]비어 있습니다[/red]."
+    : "The next 3 patches you see are in [gold]Beta[/gold]. The next big patch you open is [red]empty[/red].";
+
+  const transfigureLead = gameLocale === "kor"
+    ? "“제 다음 [green]패치[/green]의 테스터가 필요했거든요! 이렇게 나오면 어떨까요?”"
+    : "“I needed a tester for my next [green]patch[/green]! How about something like this?”";
+
+  const transfigureTryNew = gameLocale === "kor"
+    ? "가끔은 직접 패치해보는 것도 나쁘지 않을지도 모릅니다."
+    : "Perhaps it's good to try patching it yourself?";
+
+  const transfigureCta = gameLocale === "kor"
+    ? "나만의 변형 만들기"
+    : "Create your own Transfigure";
+
   const surpriseDescription = powers["SURPRISE_POWER.description"]
     ?? englishPowers["SURPRISE_POWER.description"]
     ?? "";
 
   return {
-    title: cards["BACKSTAB.title"] ?? englishCards["BACKSTAB.title"] ?? "Backstab",
+    title,
     description: patchBackstabDescription(gameLocale, surpriseDescription),
     emptyDraw: combatMessages.OPEN_EMPTY_DRAW
       ?? englishCombatMessages.OPEN_EMPTY_DRAW
       ?? "My Draw Pile is [red]empty[/red].",
+    hero,
+    transfigureLead,
+    transfigureTryNew,
+    transfigureCta,
   };
 }
 

@@ -56,6 +56,7 @@ export function parseDefragmentFeedRow(row: unknown): DefragmentFeedItem | null 
   const commentCount = asNonNegativeInt(record.comment_count) ?? 0;
   const recommendScore = asNonNegativeInt(record.recommend_score)
     ?? toyboxRecommendScore(likeCount);
+  const title = typeof record.title === "string" ? record.title : "";
   const avatarId = asOptionalText(record.avatar_id).trim() || null;
   const avatarKind = asOptionalText(record.avatar_kind).trim() || null;
   const paletteId = asOptionalText(record.palette_id).trim() || null;

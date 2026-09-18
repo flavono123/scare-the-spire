@@ -248,5 +248,53 @@
         "reason": "Default nickname uses the singular noun from the card title so it is not the full service title."
       }
     ]
+  },
+  {
+    "id": "patchBackstab.hero.ko",
+    "mode": "serviceText",
+    "sourceLang": "kor",
+    "sourceTable": "relics",
+    "sourceKey": "SILVER_CRUCIBLE.description",
+    "sourceText": "처음 [blue]{Cards}[/blue]번의 카드 보상이 [gold]강화[/gold]된 상태로 등장합니다. 처음으로 여는 보물 상자가 [red]비어 있습니다[/red].",
+    "serviceText": "3번의 패치가 [gold]베타[/gold] 상태로 등장합니다. 다음으로 여는 큰 패치가 [red]비어 있습니다[/red].",
+    "serviceFiles": [
+      "src/generated/borrowed-game-copy.json"
+    ],
+    "replacements": [
+      {
+        "from": "처음 [blue]{Cards}[/blue]번의 카드 보상이 [gold]강화[/gold]된 상태로",
+        "to": "3번의 패치가 [gold]베타[/gold] 상태로",
+        "reason": "Silver Crucible parody: replaces card rewards with beta patches."
+      },
+      {
+        "from": "처음으로 여는 보물 상자가",
+        "to": "다음으로 여는 큰 패치가",
+        "reason": "Silver Crucible parody: replaces first treasure chest with next big patch."
+      }
+    ]
+  },
+  {
+    "id": "patchBackstab.hero.en",
+    "mode": "serviceText",
+    "sourceLang": "eng",
+    "sourceTable": "relics",
+    "sourceKey": "SILVER_CRUCIBLE.description",
+    "sourceText": "The first [blue]{Cards}[/blue] card rewards you see are [gold]Upgraded[/gold]. The first Treasure Chest you open is [red]empty[/red].",
+    "serviceText": "The next 3 patches you see are in [gold]Beta[/gold]. The next big patch you open is [red]empty[/red].",
+    "serviceFiles": [
+      "src/generated/borrowed-game-copy.json"
+    ],
+    "replacements": [
+      {
+        "from": "The first [blue]{Cards}[/blue] card rewards you see are [gold]Upgraded[/gold].",
+        "to": "The next 3 patches you see are in [gold]Beta[/gold].",
+        "reason": "Silver Crucible parody: replaces card rewards with beta patches."
+      },
+      {
+        "from": "The first Treasure Chest you open",
+        "to": "The next big patch you open",
+        "reason": "Silver Crucible parody: replaces first treasure chest with next big patch."
+      }
+    ]
   }
 ]
