@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import { KeywordHoverTip } from "@/components/keyword-hover-tip";
+import { RichText } from "@/components/rich-text";
 import type { PostBlock } from "@/lib/chemical-types";
 import {
   buildEntityKeywordIndex,
@@ -48,7 +49,7 @@ export function ComboPostRenderer({
     <span>
       {blocks.map((block, index) => {
         if (block.type === "text") {
-          return <span key={index}>{block.text}</span>;
+          return <RichText key={index} text={block.text} />;
         }
 
         if (block.type === "keyword") {

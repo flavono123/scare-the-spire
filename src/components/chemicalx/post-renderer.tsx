@@ -6,6 +6,7 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { EntityPreview } from "@/components/patch-note-renderer";
 import { KeywordHoverTip } from "@/components/keyword-hover-tip";
 import { GameHoverTip } from "@/components/codex/hover-tip";
+import { RichText } from "@/components/rich-text";
 import Image from "@/components/ui/static-image";
 import {
   buildEntityKeywordIndex,
@@ -129,12 +130,7 @@ export function PostRenderer({
           if (block.type === "text") {
             return (
               <span key={i}>
-                {block.text.split("\n").map((line, lineIndex) => (
-                  <Fragment key={lineIndex}>
-                    {lineIndex > 0 && <br />}
-                    {line}
-                  </Fragment>
-                ))}
+                <RichText text={block.text} />
               </span>
             );
           }
