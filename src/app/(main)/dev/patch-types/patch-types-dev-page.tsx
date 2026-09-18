@@ -439,7 +439,7 @@ export default async function PatchesDevPage() {
       <section className="space-y-4">
         <div className="flex items-center justify-between border-b border-border pb-2">
           <h2 className="text-lg font-bold text-foreground">
-            4. 배신+ 본문: 변형 서비스 연동 &amp; VS 애니메이션 쇼케이스
+            4. 배신+ 본문: 변형 서비스 연동 &amp; 인덱스 카드 애셋 쇼케이스
           </h2>
           <span className="text-xs text-muted-foreground">
             이아저? 월드컵 VS 애니메이션 코드 재사용·확장
@@ -448,7 +448,7 @@ export default async function PatchesDevPage() {
 
         <p className="text-xs text-muted-foreground leading-relaxed">
           실제 배신+ 패치 상세 페이지(<code>/patches/2026-09-11</code>) 본문에 렌더링되는 컴포넌트입니다.
-          좌측(원본 게임 요소)과 우측(커스텀 변형 요소)을 <code>VS</code>로 대조하며, 2.8초 주기로 부드럽게 페이드 전환됩니다.
+          변형 인덱스 카드 애셋(제목, 시간, 댓글·좋아요, 리소스 프리뷰, 작성자, 내 글 칩)이 2.8초 주기로 부드럽게 페이드 전환됩니다.
           호버 시 &quot;변형으로 이동하기&quot; 팁이 노출되고, 클릭 시 해당 변형 게시글로 라우팅됩니다.
         </p>
 
@@ -457,8 +457,8 @@ export default async function PatchesDevPage() {
           entityMap={entityMap}
           serviceLocale="ko"
           gameLocale="kor"
+          transfigureTitle={patchBackstabCopy.transfigureTitle}
           transfigureLead={patchBackstabCopy.transfigureLead}
-          transfigureTryNew={patchBackstabCopy.transfigureTryNew}
           transfigureCta={patchBackstabCopy.transfigureCta}
         />
       </section>

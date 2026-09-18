@@ -162,6 +162,7 @@ export const sts1NavItems = [
 
 export const devNavItems = [
   { href: "/dev/admin", label: "어드민", icon: "/images/sts2/nav/question_mark.png" },
+  { href: "/dev/patch-types", label: "패치노트 타입", icon: "/images/sts2/nav/patch_notes_icon.png" },
   { href: "/dev/monsters", label: "몬스터 정리", icon: "/images/sts2/nav/happy_cultist.png" },
   { href: "/dev/og-images", label: "OG 이미지 프리뷰", icon: "/images/sts2/nav/patch_notes_icon.png" },
   {
