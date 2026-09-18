@@ -1,138 +1,23 @@
 "use client";
 
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
-import { Heart, MessageSquare, Sparkles } from "lucide-react";
-import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { RichText } from "@/components/rich-text";
-import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
-import { PostRenderer } from "@/components/chemicalx/post-renderer";
-import { TransfigureResourcePreview } from "@/components/transfigure/transfigure-resource-preview";
+import { TransfigurePostCard } from "@/components/transfigure/transfigure-post-card";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
-import type { TransfigurePost } from "@/lib/transfigure-types";
-import { serviceMessages } from "@/messages/service";
-import { formatTimeAgo } from "@/lib/relative-time";
+import {
+  normalizeTransfigurePost,
+  type TransfigurePost,
+} from "@/lib/transfigure-types";
+import { BUILTIN_SAMPLE_TRANSFIGURES } from "@/lib/transfigure-builtins";
+import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
-
-// Curated built-in sample transfigure posts (featured in Byrdispatch)
-const BUILTIN_SAMPLE_TRANSFIGURES: readonly TransfigurePost[] = [
-  {
-    id: "ab3f946e-c6c8-4eb2-9092-e244b891b0fe",
-    user_id: "system",
-    nickname: "기가크릿",
-    title: "허상 (메가크릿 정상화)",
-    resource_type: "card",
-    resource_id: "EIDOLON",
-    source_text: "모든 적에게 [gold]약화[/gold]를 1 부여합니다. 턴 종료 시까지 [gold]무형[/gold]을 1 얻습니다.",
-    source_game_locale: "kor",
-    transformed_name: "허상",
-    transformed_cost: "1",
-    transformed_star_cost: null,
-    transformed_card_type: "스킬",
-    transformed_card_rarity: "희귀",
-    transformed_card_color: "defect",
-    omit_energy_cost: false,
-    card_top_keywords: [],
-    card_bottom_keywords: [],
-    upgraded_content: null,
-    upgraded_content_text: null,
-    transformed_upgrade_cost: null,
-    transformed_upgrade_star_cost: null,
-    upgraded_card_top_keywords: [],
-    upgraded_card_bottom_keywords: [],
-    show_upgrade: false,
-    token_color: null,
-    token_wax: null,
-    content: [
-      {
-        type: "text",
-        text: "턴 종료 시까지 [gold]무형[/gold]을 1 얻습니다. [gold]소멸[/gold].",
-      },
-    ],
-    content_text: "턴 종료 시까지 [gold]무형[/gold]을 1 얻습니다. [gold]소멸[/gold].",
-    env: "production",
-    created_at: "2026-07-26T00:00:00Z",
-  },
-  {
-    id: "0b2e7754-39a4-48a3-ad0e-7abcd0030cbb",
-    user_id: "system",
-    nickname: "밸런스장인",
-    title: "기리야 (휴식 강화)",
-    resource_type: "relic",
-    resource_id: "GIRYA",
-    source_text: "[gold]휴식 장소[/gold]에서 최대 3번 [gold]힘[/gold]을 1 올릴 수 있습니다.",
-    source_game_locale: "kor",
-    transformed_name: "기리야",
-    transformed_cost: null,
-    transformed_star_cost: null,
-    transformed_card_type: null,
-    transformed_card_rarity: null,
-    transformed_card_color: null,
-    omit_energy_cost: false,
-    card_top_keywords: [],
-    card_bottom_keywords: [],
-    upgraded_content: null,
-    upgraded_content_text: null,
-    transformed_upgrade_cost: null,
-    transformed_upgrade_star_cost: null,
-    upgraded_card_top_keywords: [],
-    upgraded_card_bottom_keywords: [],
-    show_upgrade: false,
-    token_color: null,
-    token_wax: null,
-    content: [
-      {
-        type: "text",
-        text: "획득 시 및 [gold]휴식 장소[/gold]에서 최대 3번 [gold]힘[/gold]을 1 올릴 수 있습니다.",
-      },
-    ],
-    content_text: "획득 시 및 [gold]휴식 장소[/gold]에서 최대 3번 [gold]힘[/gold]을 1 올릴 수 있습니다.",
-    env: "production",
-    created_at: "2026-07-26T00:00:00Z",
-  },
-  {
-    id: "sample-cold-mittens",
-    user_id: "system",
-    nickname: "첨탑대장장이",
-    title: "따뜻한 벙어리장갑 (냉기 버전)",
-    resource_type: "relic",
-    resource_id: "TOASTY_MITTENS",
-    source_text: "전투 시작 시, [gold]화염 장벽[/gold]을 1장 손으로 가져옵니다.",
-    source_game_locale: "kor",
-    transformed_name: "시린 벙어리장갑",
-    transformed_cost: null,
-    transformed_star_cost: null,
-    transformed_card_type: null,
-    transformed_card_rarity: null,
-    transformed_card_color: null,
-    omit_energy_cost: false,
-    card_top_keywords: [],
-    card_bottom_keywords: [],
-    upgraded_content: null,
-    upgraded_content_text: null,
-    transformed_upgrade_cost: null,
-    transformed_upgrade_star_cost: null,
-    upgraded_card_top_keywords: [],
-    upgraded_card_bottom_keywords: [],
-    show_upgrade: false,
-    token_color: null,
-    token_wax: null,
-    content: [
-      {
-        type: "text",
-        text: "전투 시작 시, [gold]빙하[/gold]를 1장 손으로 가져옵니다.",
-      },
-    ],
-    content_text: "전투 시작 시, [gold]빙하[/gold]를 1장 손으로 가져옵니다.",
-    env: "production",
-    created_at: "2026-08-20T00:00:00Z",
-  },
-];
 
 export function BackstabTransfigureSection({
   entities,
@@ -142,6 +27,7 @@ export function BackstabTransfigureSection({
   transfigureTitle,
   transfigureLead,
   transfigureCta,
+  initialPosts,
 }: {
   entities: EntityInfo[];
   entityMap: Map<string, EntityInfo>;
@@ -150,16 +36,88 @@ export function BackstabTransfigureSection({
   transfigureTitle: string;
   transfigureLead: string;
   transfigureCta: string;
+  initialPosts?: TransfigurePost[];
 }) {
-  const copy = serviceMessages[serviceLocale].transfigure;
-  const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const upgradeLabel = serviceLocale === "ko" ? "강화" : "Upgrade";
-  const hoverTipText = serviceLocale === "ko" ? "변형으로 이동하기" : "Go to Transfigure";
   const transfigureRootHref = localizeHrefWithGameLocale(
     "/transfigure",
     serviceLocale,
     gameLocale,
   );
+
+  const stackRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const [posts, setPosts] = useState<readonly TransfigurePost[]>(() => {
+    return initialPosts && initialPosts.length > 0
+      ? initialPosts
+      : BUILTIN_SAMPLE_TRANSFIGURES;
+  });
+
+  // Client-side: request real transfigures once upon entering page
+  useEffect(() => {
+    if (!supabaseEnabled) return;
+    let cancelled = false;
+    supabase
+      .from("transfigure_posts")
+      .select("*")
+      .eq("env", supabaseEnv)
+      .order("created_at", { ascending: false })
+      .limit(15)
+      .then(({ data, error }) => {
+        if (error || !data || cancelled || data.length === 0) return;
+        const normalized = data.map(normalizeTransfigurePost).filter(Boolean);
+        if (normalized.length > 0) {
+          setPosts(normalized);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const displayPosts = useMemo(() => {
+    const valid = posts.filter((p) =>
+      entityMap.has(`${p.resource_type}:${p.resource_id}`),
+    );
+    return valid.length > 0 ? valid : BUILTIN_SAMPLE_TRANSFIGURES;
+  }, [posts, entityMap]);
+
+  // Mark stack as React-managed on client mount
+  useEffect(() => {
+    if (stackRef.current) {
+      stackRef.current.setAttribute("data-react-managed", "true");
+    }
+  }, []);
+
+  // Randomize active card on mount and whenever posts update
+  useEffect(() => {
+    if (displayPosts.length > 1) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- randomize initial active card on client mount
+      setActiveIndex(Math.floor(Math.random() * displayPosts.length));
+    }
+  }, [displayPosts]);
+
+  // Periodic cycling between real transfigures with hover pause
+  useEffect(() => {
+    if (displayPosts.length <= 1 || isHovered) return;
+
+    const timer = setInterval(() => {
+      if (document.hidden) return;
+      setActiveIndex((current) => {
+        let next = Math.floor(Math.random() * displayPosts.length);
+        while (next === current && displayPosts.length > 1) {
+          next = Math.floor(Math.random() * displayPosts.length);
+        }
+        return next;
+      });
+    }, 3200);
+
+    return () => clearInterval(timer);
+  }, [displayPosts.length, isHovered]);
 
   return (
     <div className="mt-10">
@@ -195,132 +153,49 @@ export function BackstabTransfigureSection({
       {/* Transfigure Index Card Asset Preview Stack with Random Crossfade Animation */}
       <div className="mt-6 flex justify-center">
         <div
+          ref={stackRef}
           data-transfigure-preview-stack=""
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
           className="relative w-full max-w-sm sm:max-w-md"
         >
-          {BUILTIN_SAMPLE_TRANSFIGURES.map((post, index) => {
-            const resource = entityMap.get(
-              `${post.resource_type}:${post.resource_id}`,
-            );
+          {displayPosts.map((post, index) => {
             const postHref = localizeHrefWithGameLocale(
               `/transfigure/${post.id}`,
               serviceLocale,
               gameLocale,
             );
-            const isFirst = index === 0;
+            const isActive = index === activeIndex;
 
             return (
               <div
                 key={post.id}
                 data-transfigure-card=""
+                data-href={postHref}
                 className={cn(
                   "w-full transition-opacity duration-300",
-                  isFirst
+                  isActive
                     ? "relative opacity-100 pointer-events-auto"
                     : "absolute inset-0 opacity-0 pointer-events-none",
                 )}
               >
-                <Link
-                  href={postHref}
-                  className="block w-full group"
-                  aria-label={`${post.title || resource?.nameKo || post.resource_id} - ${hoverTipText}`}
-                >
-                  <GameUiHoverTip content={hoverTipText}>
-                    <article className="flex h-full flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-[border-color,background-color,box-shadow,transform] duration-200 group-hover:-translate-y-0.5 group-hover:border-primary/40 group-hover:bg-card/35 group-hover:shadow-lg group-hover:shadow-black/25 motion-reduce:transform-none">
-                      {/* Card Top: Title, Date, Engagement */}
-                      <div className="mb-4 flex items-start justify-between gap-3">
-                        <div className="min-w-0 flex-1">
-                          <h3 className="line-clamp-2 font-game-title text-base font-semibold leading-snug spire-gold">
-                            {post.title?.trim() || resource?.nameKo || post.resource_id}
-                          </h3>
-                          <span className="mt-1 block text-xs text-muted-foreground">
-                            {formatTimeAgo(post.created_at, copy, dateLocale)}
-                          </span>
-                        </div>
-                        <div className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground">
-                          <span className="inline-flex items-center gap-1">
-                            <MessageSquare className="h-3.5 w-3.5 text-muted-foreground/80" aria-hidden="true" />
-                            <span>1</span>
-                          </span>
-                          <span className="inline-flex items-center gap-1">
-                            <Heart className="h-3.5 w-3.5 text-rose-400/80" aria-hidden="true" />
-                            <span>3</span>
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Card Center: Transfigure Asset Preview */}
-                      <div
-                        className="flex min-h-[22rem] sm:min-h-[26rem] flex-1 items-center justify-center overflow-hidden rounded-md bg-black/15 px-2 py-3"
-                        data-transfigure-post-asset=""
-                      >
-                        {resource ? (
-                          <TransfigureResourcePreview
-                            blocks={post.content}
-                            entities={entities}
-                            entityMap={entityMap}
-                            entity={resource}
-                            gameLocale={gameLocale}
-                            serviceLocale={serviceLocale}
-                            transformedName={post.transformed_name}
-                            transformedCost={post.transformed_cost}
-                            transformedStarCost={post.transformed_star_cost}
-                            transformedCardType={post.transformed_card_type}
-                            transformedCardRarity={post.transformed_card_rarity}
-                            transformedCardColor={post.transformed_card_color}
-                            cardKeywords={{
-                              top: post.card_top_keywords,
-                              bottom: post.card_bottom_keywords,
-                            }}
-                            transformedUpgradeCost={post.transformed_upgrade_cost}
-                            transformedUpgradeStarCost={post.transformed_upgrade_star_cost}
-                            omitEnergyCost={post.omit_energy_cost}
-                            upgradedBlocks={post.upgraded_content}
-                            upgradedCardKeywords={{
-                              top: post.upgraded_card_top_keywords,
-                              bottom: post.upgraded_card_bottom_keywords,
-                            }}
-                            upgradeLabel={upgradeLabel}
-                            initialShowUpgrade={post.show_upgrade}
-                            showImageActions={false}
-                            showUpgradeToggle={false}
-                            tokenColor={post.token_color}
-                            tokenWax={post.token_wax}
-                          />
-                        ) : (
-                          <div className="flex max-w-full flex-col items-center gap-3 text-sm leading-relaxed text-[#f0e6d2]">
-                            <Sparkles className="h-8 w-8 text-primary/70" aria-hidden="true" />
-                            <PostRenderer
-                              blocks={post.content}
-                              entityMap={entityMap}
-                              serviceLocale={serviceLocale}
-                              gameLocale={gameLocale}
-                            />
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Card Footer: Author nickname */}
-                      <div className="mt-3 flex items-center justify-end gap-1.5 pt-1">
-                        <DisplayedProfileNickname
-                          nickname={post.nickname}
-                          isOwner={false}
-                          authorToken={post}
-                          size={14}
-                          className="max-w-[70%]"
-                          tokenClassName="h-3.5 w-3.5"
-                          nicknameClassName="text-[11px] text-muted-foreground/80"
-                        />
-                      </div>
-                    </article>
-                  </GameUiHoverTip>
-                </Link>
+                <TransfigurePostCard
+                  post={post}
+                  entities={entities}
+                  entityMap={entityMap}
+                  serviceLocale={serviceLocale}
+                  gameLocale={gameLocale}
+                  upgradeLabel={upgradeLabel}
+                  userId={null}
+                  commentCount={post.comment_count ?? 0}
+                  likeCount={post.like_count ?? 0}
+                />
               </div>
             );
           })}
         </div>
 
-        {/* Self-contained client animation script: works in both Next.js and static patch worker */}
+        {/* Self-contained client animation script: works in static patch worker without React */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -330,9 +205,35 @@ export function BackstabTransfigureSection({
   var cards = stack.querySelectorAll("[data-transfigure-card]");
   if (cards.length < 2) return;
   if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  var current = 0;
-  setInterval(function() {
-    if (document.hidden) return;
+  if (stack.getAttribute("data-react-managed") === "true") return;
+
+  var current = Math.floor(Math.random() * cards.length);
+  if (current !== 0) {
+    cards[0].classList.remove("opacity-100", "pointer-events-auto", "relative");
+    cards[0].classList.add("opacity-0", "pointer-events-none", "absolute", "inset-0");
+    cards[current].classList.remove("opacity-0", "pointer-events-none", "absolute", "inset-0");
+    cards[current].classList.add("opacity-100", "pointer-events-auto", "relative");
+  }
+
+  var isHovered = false;
+  stack.addEventListener("mouseenter", function() { isHovered = true; });
+  stack.addEventListener("mouseleave", function() { isHovered = false; });
+
+  // Static click delegation for patch worker
+  stack.addEventListener("click", function(e) {
+    if (e.target.closest("a, button, [role='button']")) return;
+    var card = e.target.closest("[data-transfigure-card]");
+    if (!card) return;
+    var href = card.getAttribute("data-href");
+    if (href) window.location.href = href;
+  });
+
+  var timer = setInterval(function() {
+    if (stack.getAttribute("data-react-managed") === "true") {
+      clearInterval(timer);
+      return;
+    }
+    if (document.hidden || isHovered) return;
     var next = Math.floor(Math.random() * cards.length);
     while (next === current && cards.length > 1) {
       next = Math.floor(Math.random() * cards.length);
@@ -342,7 +243,7 @@ export function BackstabTransfigureSection({
     cards[next].classList.remove("opacity-0", "pointer-events-none", "absolute", "inset-0");
     cards[next].classList.add("opacity-100", "pointer-events-auto", "relative");
     current = next;
-  }, 2800);
+  }, 3200);
 })();
 `,
           }}

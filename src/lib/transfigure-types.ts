@@ -950,3 +950,33 @@ export function findTransfigureEntity(
     (entity) => entity.type === resource.type && entity.id === resource.id,
   );
 }
+
+export function normalizeTransfigurePost(row: unknown): TransfigurePost {
+  const post = row as TransfigurePost;
+  return {
+    ...post,
+    transformed_card_type: isTransfigureCardType(post.transformed_card_type)
+      ? post.transformed_card_type
+      : null,
+    transformed_card_rarity: isTransfigureCardRarity(post.transformed_card_rarity)
+      ? post.transformed_card_rarity
+      : null,
+    transformed_card_color: isTransfigureCardColor(post.transformed_card_color)
+      ? post.transformed_card_color
+      : null,
+    omit_energy_cost: Boolean(post.omit_energy_cost),
+    card_top_keywords: post.card_top_keywords ?? [],
+    card_bottom_keywords: post.card_bottom_keywords ?? [],
+    upgraded_content: post.upgraded_content ?? null,
+    upgraded_content_text: post.upgraded_content_text ?? null,
+    transformed_upgrade_cost: post.transformed_upgrade_cost ?? null,
+    transformed_star_cost: post.transformed_star_cost ?? null,
+    transformed_upgrade_star_cost: post.transformed_upgrade_star_cost ?? null,
+    upgraded_card_top_keywords: post.upgraded_card_top_keywords ?? [],
+    upgraded_card_bottom_keywords: post.upgraded_card_bottom_keywords ?? [],
+    show_upgrade: post.show_upgrade ?? false,
+    token_color: isTransfigureTokenColor(post.token_color) ? post.token_color : null,
+    token_wax: isTransfigureTokenWax(post.token_wax) ? post.token_wax : null,
+  };
+}
+

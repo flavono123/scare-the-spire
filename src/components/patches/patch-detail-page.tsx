@@ -23,6 +23,7 @@ import {
 import { PatchNoteWithStoryActions } from "@/components/patches/patch-note-with-story-actions";
 import { DeferredCommentSection } from "@/components/patches/deferred-comment-section";
 import { BackstabTransfigureSection } from "@/components/patches/backstab-transfigure-section";
+import { getRecentTransfigurePosts } from "@/lib/transfigure-data";
 import { TEXT_GREEN } from "@/lib/sts2-card-style";
 import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
 import {
@@ -821,9 +822,10 @@ export async function PatchDetailPage({
   if (!patch) notFound();
 
   if (isBackstabPatch(patch)) {
-    const [patchBackstabCopy, entities] = await Promise.all([
+    const [patchBackstabCopy, entities, initialTransfigures] = await Promise.all([
       getPatchBackstabGameCopy(gameLocale),
       loadAllEntities({ gameLocale }),
+      getRecentTransfigurePosts(15),
     ]);
     const entityMap = new Map(entities.map((e) => [`${e.type}:${e.id}`, e]));
     const patchArt = resolvePatchArt(patch, entityMap, serviceLocale);
@@ -886,6 +888,7 @@ export async function PatchDetailPage({
           transfigureTitle={patchBackstabCopy.transfigureTitle}
           transfigureLead={patchBackstabCopy.transfigureLead}
           transfigureCta={patchBackstabCopy.transfigureCta}
+          initialPosts={initialTransfigures}
         />
 
         <section id="comments" className="mt-8 rounded-lg border border-border bg-card/20 p-4">

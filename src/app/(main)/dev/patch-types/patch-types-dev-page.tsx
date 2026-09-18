@@ -10,8 +10,12 @@ import {
 } from "@/components/patches/patch-chips";
 import { PatchDraftChip, PATCH_DRAFT_TOKEN } from "@/components/patches/patch-draft-chrome";
 import { BackstabTransfigureSection } from "@/components/patches/backstab-transfigure-section";
+import { PatchArtPreview } from "@/components/patches/patch-art";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getPatchBackstabGameCopy, getPatchStageGameCopy } from "@/lib/borrowed-game-copy";
+import { getRecentTransfigurePosts } from "@/lib/transfigure-data";
+import { getSTS2Patches } from "@/lib/data";
+import { resolvePatchArt } from "@/lib/sts2-patch-art";
 import { TEXT_GREEN } from "@/lib/sts2-card-style";
 import type { PatchType } from "@/lib/types";
 
@@ -107,12 +111,33 @@ const VISUAL_STAGES = [
 ];
 
 export default async function PatchesDevPage() {
-  const [entities, patchStageCopy, patchBackstabCopy] = await Promise.all([
+  const [entities, patchStageCopy, patchBackstabCopy, initialTransfigures, patches] = await Promise.all([
     loadAllEntities({ gameLocale: "kor" }),
     getPatchStageGameCopy("kor"),
     getPatchBackstabGameCopy("kor"),
+    getRecentTransfigurePosts(15),
+    getSTS2Patches(),
   ]);
   const entityMap = new Map(entities.map((e) => [`${e.type}:${e.id}`, e]));
+
+  const backstabPatch = patches.find((p) => p.version === "2026-09-11" || p.id === "2026-09-11") ?? {
+    id: "2026-09-11",
+    version: "2026-09-11",
+    type: "backstab" as const,
+    date: "2026-09-11",
+    hasBalanceChanges: false,
+    title: "배신+",
+    art: { type: "card" as const, id: "BACKSTAB" },
+  };
+  const patch111 = patches.find((p) => p.version === "0.111.0") ?? patches[0];
+  const patch100 = patches.find((p) => p.version === "0.100.0") ?? patches[patches.length - 1];
+  const patch112 = patches.find((p) => p.version === "0.112.0") ?? patches[0];
+
+  const backstabArt = resolvePatchArt(backstabPatch, entityMap, "ko");
+  const art111 = resolvePatchArt(patch111, entityMap, "ko");
+  const art100 = resolvePatchArt(patch100, entityMap, "ko");
+  const art112 = resolvePatchArt(patch112, entityMap, "ko");
+  const artWatch = resolvePatchArt(patches[0], entityMap, "ko");
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 space-y-12">
@@ -312,6 +337,7 @@ export default async function PatchesDevPage() {
                 <RichText text={patchBackstabCopy.hero} />
               </div>
               <p className="mt-0.5 text-xs text-rose-100/45">2026-09-11</p>
+              {backstabArt && <PatchArtPreview art={backstabArt} />}
             </div>
           </div>
 
@@ -342,6 +368,7 @@ export default async function PatchesDevPage() {
                 싸움 준비·파괴광선 리워크, 고대의 존재 너프, 적 버프, 캐릭터 밸런스 등.
               </p>
               <p className="mt-0.5 text-xs text-muted-foreground">2026-08-14</p>
+              {art111 && <PatchArtPreview art={art111} />}
             </div>
           </div>
 
@@ -374,6 +401,7 @@ export default async function PatchesDevPage() {
               </div>
               <p className="mt-1 text-sm font-medium">베타 패치 노트 - v0.100.0</p>
               <p className="mt-0.5 text-xs text-muted-foreground">2026-04-10</p>
+              {art100 && <PatchArtPreview art={art100} />}
             </div>
           </div>
 
@@ -404,6 +432,7 @@ export default async function PatchesDevPage() {
                 슬서운변경을 만드는 중입니다.
               </p>
               <p className="mt-2 text-xs text-zinc-600">2026-09-18</p>
+              {art112 && <PatchArtPreview art={art112} tone="building" />}
             </div>
           </div>
 
@@ -430,6 +459,7 @@ export default async function PatchesDevPage() {
                 오늘의 패치가 드러나기를 기다리고 있습니다 ...
               </p>
               <p className="mt-2 text-xs text-amber-100/45">2026-09-18</p>
+              {artWatch && <PatchArtPreview art={artWatch} tone="watching" />}
             </div>
           </div>
         </div>
@@ -448,8 +478,8 @@ export default async function PatchesDevPage() {
 
         <p className="text-xs text-muted-foreground leading-relaxed">
           실제 배신+ 패치 상세 페이지(<code>/patches/2026-09-11</code>) 본문에 렌더링되는 컴포넌트입니다.
-          변형 인덱스 카드 애셋(제목, 시간, 댓글·좋아요, 리소스 프리뷰, 작성자, 내 글 칩)이 2.8초 주기로 부드럽게 페이드 전환됩니다.
-          호버 시 &quot;변형으로 이동하기&quot; 팁이 노출되고, 클릭 시 해당 변형 게시글로 라우팅됩니다.
+          실제 커뮤니티 변형 인덱스 카드 애셋(제목, 시간, 댓글·좋아요, 리소스 프리뷰, 작성자)이 진입 즉시 무작위로 선택되며 3.2초 주기로 부드럽게 페이드 전환됩니다.
+          호버 시 전환이 일시 정지되고 &quot;변형으로 이동하기&quot; 팁이 노출되며, 클릭 시 해당 변형 상세로 라우팅됩니다.
         </p>
 
         <BackstabTransfigureSection
@@ -460,6 +490,7 @@ export default async function PatchesDevPage() {
           transfigureTitle={patchBackstabCopy.transfigureTitle}
           transfigureLead={patchBackstabCopy.transfigureLead}
           transfigureCta={patchBackstabCopy.transfigureCta}
+          initialPosts={initialTransfigures}
         />
       </section>
 

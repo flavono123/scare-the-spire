@@ -18,6 +18,7 @@ import {
 import type { TransfigurePost } from "@/lib/transfigure-types";
 import { serviceMessages } from "@/messages/service";
 import { formatTimeAgo } from "@/lib/relative-time";
+import { cn } from "@/lib/utils";
 
 interface TransfigurePostCardProps {
   post: TransfigurePost;
@@ -32,6 +33,7 @@ interface TransfigurePostCardProps {
   ensureUser?: () => Promise<string | null>;
   commentCount: number;
   likeCount: number;
+  className?: string;
 }
 
 export function TransfigurePostCard({
@@ -47,11 +49,18 @@ export function TransfigurePostCard({
   ensureUser,
   commentCount,
   likeCount,
+  className,
 }: TransfigurePostCardProps) {
   const copy = serviceMessages[serviceLocale].transfigure;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const resource = entityMap.get(`${post.resource_type}:${post.resource_id}`);
-  const router = useRouter();
+  let router: ReturnType<typeof useRouter> | null = null;
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    router = useRouter();
+  } catch {
+    router = null;
+  }
   const href = localizeHrefWithGameLocale(
     `/transfigure/${post.id}`,
     serviceLocale,
@@ -60,7 +69,11 @@ export function TransfigurePostCard({
   const commentsHref = `${href}#comments`;
   const threadKey = buildTransfigureCommentThreadKey(post.id);
   const openPost = useCallback(() => {
-    router.push(href);
+    if (router) {
+      router.push(href);
+    } else if (typeof window !== "undefined") {
+      window.location.href = href;
+    }
   }, [href, router]);
   const handleClick = useCallback((event: MouseEvent<HTMLElement>) => {
     const target = event.target as HTMLElement;
@@ -80,7 +93,10 @@ export function TransfigurePostCard({
       tabIndex={0}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/25 hover:bg-card/35 hover:shadow-lg hover:shadow-black/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 active:translate-y-0 motion-reduce:transform-none"
+      className={cn(
+        "flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/25 hover:bg-card/35 hover:shadow-lg hover:shadow-black/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 active:translate-y-0 motion-reduce:transform-none",
+        className,
+      )}
     >
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
