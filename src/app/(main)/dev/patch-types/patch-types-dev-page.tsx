@@ -17,7 +17,7 @@ import { getRecentTransfigurePosts } from "@/lib/transfigure-data";
 import { getSTS2Patches } from "@/lib/data";
 import { resolvePatchArt } from "@/lib/sts2-patch-art";
 import { TEXT_GREEN } from "@/lib/sts2-card-style";
-import type { PatchType } from "@/lib/types";
+import type { PatchType, STS2Patch } from "@/lib/types";
 
 const PATCH_TYPES: readonly {
   type: PatchType;
@@ -120,14 +120,18 @@ export default async function PatchesDevPage() {
   ]);
   const entityMap = new Map(entities.map((e) => [`${e.type}:${e.id}`, e]));
 
-  const backstabPatch = patches.find((p) => p.version === "2026-09-11" || p.id === "2026-09-11") ?? {
+  const backstabPatch: STS2Patch = patches.find((p) => p.version === "2026-09-11" || p.id === "2026-09-11") ?? {
     id: "2026-09-11",
     version: "2026-09-11",
-    type: "backstab" as const,
+    type: "backstab",
     date: "2026-09-11",
     hasBalanceChanges: false,
     title: "배신+",
-    art: { type: "card" as const, id: "BACKSTAB" },
+    titleKo: "배신+",
+    steamUrl: null,
+    summary: "",
+    summaryKo: "",
+    art: { type: "card", id: "BACKSTAB" },
   };
   const patch111 = patches.find((p) => p.version === "0.111.0") ?? patches[0];
   const patch100 = patches.find((p) => p.version === "0.100.0") ?? patches[patches.length - 1];

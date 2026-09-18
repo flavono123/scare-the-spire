@@ -65,14 +65,16 @@ export function BackstabTransfigureSection({
       .eq("env", supabaseEnv)
       .order("created_at", { ascending: false })
       .limit(15)
-      .then(({ data, error }) => {
-        if (error || !data || cancelled || data.length === 0) return;
-        const normalized = data.map(normalizeTransfigurePost).filter(Boolean);
-        if (normalized.length > 0) {
-          setPosts(normalized);
-        }
-      })
-      .catch(() => {});
+      .then(
+        ({ data, error }) => {
+          if (error || !data || cancelled || data.length === 0) return;
+          const normalized = data.map(normalizeTransfigurePost).filter(Boolean);
+          if (normalized.length > 0) {
+            setPosts(normalized);
+          }
+        },
+        () => {},
+      );
 
     return () => {
       cancelled = true;

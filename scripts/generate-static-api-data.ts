@@ -116,8 +116,8 @@ interface PatchBackstabGameCopy {
   description: string;
   emptyDraw: string;
   hero: string;
+  transfigureTitle: string;
   transfigureLead: string;
-  transfigureTryNew: string;
   transfigureCta: string;
 }
 
