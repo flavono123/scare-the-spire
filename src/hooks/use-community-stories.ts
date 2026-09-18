@@ -7,6 +7,11 @@ import { resolveCanonicalPatchLineId } from "@/lib/resolve-story-patch-line";
 import type { LinkedEntity, STS2PatchLine, Story, StoryEntityType, StoryGame } from "@/lib/types";
 
 const COMMUNITY_STORY_ID_PREFIX = "community:";
+import {
+  currentAuthorProfileToken,
+  type AuthorProfileTokenPayload,
+} from "@/lib/user-profile";
+
 const COMMUNITY_STORY_LIMIT = 100;
 
 interface CommunityStoryRow {
@@ -25,13 +30,23 @@ interface CommunityStoryRow {
   linked_entities: unknown;
   created_at: string;
   env: string;
+  avatar_id?: string | null;
+  avatar_kind?: string | null;
+  palette_id?: string | null;
+  palette_swapped?: boolean | null;
 }
 
 interface UseCommunityStoriesReturn {
   stories: Story[];
   loading: boolean;
   unavailable: boolean;
-  add: (sentence: string, nickname: string, patchLine: STS2PatchLine, activeUserId?: string) => Promise<void>;
+  add: (
+    sentence: string,
+    nickname: string,
+    patchLine: STS2PatchLine,
+    activeUserId?: string,
+    authorToken?: AuthorProfileTokenPayload | null,
+  ) => Promise<void>;
   remove: (storyId: string, activeUserId?: string) => Promise<void>;
 }
 
@@ -89,6 +104,10 @@ function rowToStory(row: CommunityStoryRow): Story {
     source: row.source ?? undefined,
     tags: parseTags(row.tags),
     linkedEntities: parseLinkedEntities(row.linked_entities),
+    avatarId: row.avatar_id ?? undefined,
+    avatarKind: row.avatar_kind ?? undefined,
+    paletteId: row.palette_id ?? undefined,
+    paletteSwapped: row.palette_swapped ?? undefined,
   };
 }
 
@@ -118,7 +137,7 @@ export function useCommunityStories(
     let cancelled = false;
     let query = supabase
       .from("community_stories")
-      .select("id,user_id,static_story_id,nickname,sentence,game,entity_type,entity_id,change_id,patch_line_id,source,tags,linked_entities,created_at,env")
+      .select("id,user_id,static_story_id,nickname,sentence,game,entity_type,entity_id,change_id,patch_line_id,source,tags,linked_entities,created_at,env,avatar_id,avatar_kind,palette_id,palette_swapped")
       .eq("env", supabaseEnv)
       .order("created_at", { ascending: false })
       .limit(limit);
@@ -166,7 +185,13 @@ export function useCommunityStories(
   }, [limit, source]);
 
   const add = useCallback(
-    async (sentence: string, nickname: string, patchLine: STS2PatchLine, activeUserId = userId) => {
+    async (
+      sentence: string,
+      nickname: string,
+      patchLine: STS2PatchLine,
+      activeUserId = userId,
+      authorToken?: AuthorProfileTokenPayload | null,
+    ) => {
       const trimmedSentence = sentence.trim();
       const trimmedNickname = nickname.trim();
       if (!activeUserId || !supabaseEnabled || !trimmedSentence || !trimmedNickname || !patchLine.id) return;
@@ -178,6 +203,7 @@ export function useCommunityStories(
         label: ref.label,
       }));
 
+      const token = authorToken !== undefined ? authorToken : currentAuthorProfileToken();
       const { data, error } = await withSupabaseTimeout(
         "community_stories.insert",
         supabase
@@ -194,8 +220,14 @@ export function useCommunityStories(
             tags: [],
             linked_entities: linkedEntities,
             env: supabaseEnv,
+            ...(token ? {
+              avatar_id: token.avatar_id,
+              avatar_kind: token.avatar_kind,
+              palette_id: token.palette_id,
+              palette_swapped: token.palette_swapped,
+            } : {}),
           })
-          .select("id,user_id,static_story_id,nickname,sentence,game,entity_type,entity_id,change_id,patch_line_id,source,tags,linked_entities,created_at,env")
+          .select("id,user_id,static_story_id,nickname,sentence,game,entity_type,entity_id,change_id,patch_line_id,source,tags,linked_entities,created_at,env,avatar_id,avatar_kind,palette_id,palette_swapped")
           .single(),
       ).catch(() => ({ data: null, error: new Error("timeout") }));
 

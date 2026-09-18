@@ -138,6 +138,7 @@ export function DecisionsDecisionsPostView({
             <DisplayedProfileNickname
               nickname={post.nickname}
               isOwner={isAuthor}
+              authorToken={post}
               size={14}
               tokenClassName="h-3.5 w-3.5"
               nicknameClassName="text-xs text-muted-foreground"

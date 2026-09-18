@@ -32,6 +32,10 @@ export type PagestormPost = {
   content_text: string;
   env: string;
   created_at: string;
+  avatar_id?: string | null;
+  avatar_kind?: string | null;
+  palette_id?: string | null;
+  palette_swapped?: boolean | null;
 };
 
 export type PagestormPostCard = Omit<PagestormPost, "content"> & {
@@ -126,6 +130,10 @@ export function normalizePagestormPost(row: unknown): PagestormPost {
     content_text: String(record.content_text ?? pagestormContentText(content)),
     env: String(record.env ?? ""),
     created_at: String(record.created_at ?? ""),
+    avatar_id: typeof record.avatar_id === "string" ? record.avatar_id : (typeof record.avatarId === "string" ? record.avatarId : null),
+    avatar_kind: typeof record.avatar_kind === "string" ? record.avatar_kind : (typeof record.avatarKind === "string" ? record.avatarKind : null),
+    palette_id: typeof record.palette_id === "string" ? record.palette_id : (typeof record.paletteId === "string" ? record.paletteId : null),
+    palette_swapped: typeof record.palette_swapped === "boolean" ? record.palette_swapped : (typeof record.paletteSwapped === "boolean" ? record.paletteSwapped : false),
   };
 }
 
@@ -143,6 +151,10 @@ export function normalizePagestormPostCard(row: unknown): PagestormPostCard {
     content_text: post.content_text,
     env: post.env,
     created_at: post.created_at,
+    avatar_id: post.avatar_id,
+    avatar_kind: post.avatar_kind,
+    palette_id: post.palette_id,
+    palette_swapped: post.palette_swapped,
     thumbnailUrl: thumb.imageUrl,
     thumbnailKind: thumb.kind,
   };

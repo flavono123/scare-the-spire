@@ -9,6 +9,7 @@ import type { GameLocale } from "@/lib/i18n";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
+import { currentAuthorProfileToken } from "@/lib/user-profile";
 import {
   canTransfigureCardMetadata,
   isTransfigureCardColor,
@@ -371,6 +372,12 @@ async function persistTransfigurePostUpdate(
         show_upgrade: input.showUpgrade,
         token_color: normalized.tokenColor,
         token_wax: normalized.tokenWax,
+        ...(currentAuthorProfileToken() ? {
+          avatar_id: currentAuthorProfileToken().avatar_id,
+          avatar_kind: currentAuthorProfileToken().avatar_kind,
+          palette_id: currentAuthorProfileToken().palette_id,
+          palette_swapped: currentAuthorProfileToken().palette_swapped,
+        } : {}),
       })
       .eq("id", postId)
       .eq("user_id", input.activeUserId)
@@ -386,6 +393,7 @@ export async function insertTransfigurePost(
   const normalized = validateSaveInput(input);
   if (!normalized || !input.activeUserId) return null;
 
+  const token = currentAuthorProfileToken();
   const { data, error } = await withSupabaseTimeout(
     "transfigure_posts.insert",
     supabase
@@ -419,6 +427,12 @@ export async function insertTransfigurePost(
         token_color: normalized.tokenColor,
         token_wax: normalized.tokenWax,
         env: supabaseEnv,
+        ...(token ? {
+          avatar_id: token.avatar_id,
+          avatar_kind: token.avatar_kind,
+          palette_id: token.palette_id,
+          palette_swapped: token.palette_swapped,
+        } : {}),
       })
       .select()
       .single(),

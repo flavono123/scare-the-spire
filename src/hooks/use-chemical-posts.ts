@@ -6,6 +6,7 @@ import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import type { ChemicalPost, PostBlock } from "@/lib/chemical-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { currentAuthorProfileToken } from "@/lib/user-profile";
 import {
   CHEMICAL_POST_MAX_CHARS,
   CHEMICAL_POST_MIN_CHARS,
@@ -46,6 +47,7 @@ export async function insertChemicalPost(
     return null;
   }
 
+  const token = currentAuthorProfileToken();
   const { data, error } = await withSupabaseTimeout(
     "chemical_posts.insert",
     supabase
@@ -56,6 +58,12 @@ export async function insertChemicalPost(
         content: blocks,
         content_text: contentText,
         env: supabaseEnv,
+        ...(token ? {
+          avatar_id: token.avatar_id,
+          avatar_kind: token.avatar_kind,
+          palette_id: token.palette_id,
+          palette_swapped: token.palette_swapped,
+        } : {}),
       })
       .select()
       .single(),

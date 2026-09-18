@@ -189,6 +189,7 @@ export function TransfigurePostView({
                 <DisplayedProfileNickname
                   nickname={post.nickname}
                   isOwner={Boolean(ready && userId && userId === post.user_id)}
+                  authorToken={post}
                   size={14}
                   tokenClassName="h-3.5 w-3.5"
                   nicknameClassName="text-xs text-zinc-500"

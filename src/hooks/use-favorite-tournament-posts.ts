@@ -23,6 +23,7 @@ import {
 } from "@/lib/favorite-tournament";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { currentAuthorProfileToken } from "@/lib/user-profile";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
 
 export type SaveFavoriteTournamentInput = {
@@ -55,6 +56,7 @@ export async function insertFavoriteTournamentPost(
 ): Promise<FavoriteTournamentPost | null> {
   if (!isValidSave(input)) return null;
 
+  const authorToken = currentAuthorProfileToken();
   const { data, error } = await withSupabaseTimeout(
     "favorite_tournament_posts.insert",
     supabase
@@ -68,6 +70,10 @@ export async function insertFavoriteTournamentPost(
         game_version: FAVORITE_TOURNAMENT_GAME_VERSION,
         pool: input.pool,
         env: supabaseEnv,
+        avatar_id: authorToken.avatar_id,
+        avatar_kind: authorToken.avatar_kind,
+        palette_id: authorToken.palette_id,
+        palette_swapped: authorToken.palette_swapped,
       })
       .select()
       .single(),

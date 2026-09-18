@@ -185,7 +185,16 @@
       const pair = typeof parsed.paletteId === "string" ? PROFILE_PALETTES[parsed.paletteId] : null;
       const swapped = Boolean(parsed.paletteSwapped);
       const nickname = typeof parsed.nickname === "string" ? parsed.nickname.trim() : "";
-      return { stored: true, tokenUrl, pair, swapped, nickname };
+      return {
+        stored: true,
+        tokenUrl,
+        pair,
+        swapped,
+        nickname,
+        avatarId: typeof avatarId === "string" ? avatarId : null,
+        avatarKind,
+        paletteId: typeof parsed.paletteId === "string" ? parsed.paletteId : null,
+      };
     } catch {
       return {
         stored: false,
@@ -193,27 +202,47 @@
         pair: null,
         swapped: false,
         nickname: "",
+        avatarId: null,
+        avatarKind: null,
+        paletteId: null,
       };
     }
   }
 
   function displayedCommentNickIcon(state, comment) {
+    if (typeof comment.avatar_id === "string" && comment.avatar_id.trim()) {
+      const trimmed = comment.avatar_id.trim();
+      const isBoss = comment.avatar_kind === "boss";
+      const tokenUrl = isBoss
+        ? `/images/sts2/bosses/${trimmed.toLowerCase()}.webp`
+        : characterIconUrl(trimmed);
+      const pair = typeof comment.palette_id === "string" ? PROFILE_PALETTES[comment.palette_id] : null;
+      const swapped = Boolean(comment.palette_swapped);
+      return { kind: "profile", tokenUrl, pair, swapped, paletteId: comment.palette_id ?? null };
+    }
+    if (comment.avatar_id === null) {
+      return { kind: "unset", tokenUrl: UNSET_PROFILE_TOKEN_URL, pair: null, swapped: false, paletteId: null };
+    }
     const profile = readStoredProfileIconState();
     const isOwner = Boolean(state.userId && state.userId === comment.user_id);
     const nickMatch = String(comment.nickname ?? "").trim() === profile.nickname;
     if (profile.stored && isOwner && nickMatch) {
-      return { kind: "profile", tokenUrl: profile.tokenUrl };
+      return { kind: "profile", tokenUrl: profile.tokenUrl, pair: profile.pair, swapped: profile.swapped, paletteId: profile.paletteId };
     }
-    return { kind: "unset", tokenUrl: UNSET_PROFILE_TOKEN_URL };
+    return { kind: "unset", tokenUrl: UNSET_PROFILE_TOKEN_URL, pair: null, swapped: false, paletteId: null };
   }
 
   function commentNickTokenHtml(state, comment) {
     const icon = displayedCommentNickIcon(state, comment);
+    const paletteAttr = icon.pair && icon.paletteId ? ` data-palette-id="${escapeHtml(icon.paletteId)}"` : "";
+    const swappedAttr = icon.pair && icon.swapped ? ` data-palette-swapped="true"` : "";
     return `
       <span class="inline-flex min-w-0 items-center gap-1.5" data-displayed-profile-nickname data-profile-nick-kind="${icon.kind}">
         <img
           data-comment-nick-token
           data-icon-url="${escapeHtml(icon.tokenUrl)}"
+          ${paletteAttr}
+          ${swappedAttr}
           src="${escapeHtml(icon.tokenUrl)}"
           alt=""
           width="16"
@@ -227,16 +256,22 @@
 
   async function remapCommentNickTokens(root) {
     const profile = readStoredProfileIconState();
-    if (!profile.stored || !profile.pair) return;
-    let remapped;
-    try {
-      remapped = await remappedTokenDataUrl(profile.tokenUrl, profile.pair, profile.swapped);
-    } catch {
-      return;
+    const images = root.querySelectorAll('[data-profile-nick-kind="profile"] [data-comment-nick-token]');
+    for (const image of images) {
+      if (!(image instanceof HTMLImageElement)) continue;
+      const paletteId = image.dataset.paletteId;
+      const pair = paletteId ? PROFILE_PALETTES[paletteId] : (profile.stored ? profile.pair : null);
+      if (!pair) continue;
+      const swapped = image.dataset.paletteSwapped === "true" || (image.dataset.paletteSwapped !== "false" && profile.swapped);
+      const tokenUrl = image.dataset.iconUrl;
+      if (!tokenUrl) continue;
+      try {
+        const remapped = await remappedTokenDataUrl(tokenUrl, pair, swapped);
+        image.src = remapped;
+      } catch {
+        // Fallback to unmodified src
+      }
     }
-    root.querySelectorAll('[data-profile-nick-kind="profile"] [data-comment-nick-token]').forEach((image) => {
-      if (image instanceof HTMLImageElement) image.src = remapped;
-    });
   }
 
   function syncCommentNickIcons(root) {
@@ -246,15 +281,53 @@
     root.querySelectorAll("[data-patch-comment-row]").forEach((row) => {
       const commentUserId = row.dataset.commentUserId;
       const nickname = row.dataset.commentNickname ?? "";
+      const avatarId = row.dataset.commentAvatarId;
+      const avatarKind = row.dataset.commentAvatarKind;
+      const paletteId = row.dataset.commentPaletteId;
+      const paletteSwapped = row.dataset.commentPaletteSwapped === "true";
       const wrap = row.querySelector("[data-displayed-profile-nickname]");
       const img = row.querySelector("[data-comment-nick-token]");
       if (!wrap || !(img instanceof HTMLImageElement)) return;
+
+      if (avatarId && avatarId.trim()) {
+        const isBoss = avatarKind === "boss";
+        const tokenUrl = isBoss
+          ? `/images/sts2/bosses/${avatarId.toLowerCase()}.webp`
+          : characterIconUrl(avatarId);
+        wrap.dataset.profileNickKind = "profile";
+        img.dataset.iconUrl = tokenUrl;
+        if (paletteId) {
+          img.dataset.paletteId = paletteId;
+          img.dataset.paletteSwapped = String(paletteSwapped);
+        } else {
+          delete img.dataset.paletteId;
+          delete img.dataset.paletteSwapped;
+        }
+        img.src = tokenUrl;
+        return;
+      }
+      if (avatarId === "null") {
+        wrap.dataset.profileNickKind = "unset";
+        img.dataset.iconUrl = UNSET_PROFILE_TOKEN_URL;
+        delete img.dataset.paletteId;
+        delete img.dataset.paletteSwapped;
+        img.src = UNSET_PROFILE_TOKEN_URL;
+        return;
+      }
+
       const isOwner = Boolean(state.userId && state.userId === commentUserId);
       const nickMatch = nickname.trim() === profile.nickname;
       const kind = profile.stored && isOwner && nickMatch ? "profile" : "unset";
       const tokenUrl = kind === "profile" ? profile.tokenUrl : UNSET_PROFILE_TOKEN_URL;
       wrap.dataset.profileNickKind = kind;
       img.dataset.iconUrl = tokenUrl;
+      if (kind === "profile" && profile.stored && profile.paletteId) {
+        img.dataset.paletteId = profile.paletteId;
+        img.dataset.paletteSwapped = String(profile.swapped);
+      } else {
+        delete img.dataset.paletteId;
+        delete img.dataset.paletteSwapped;
+      }
       img.src = tokenUrl;
     });
     void remapCommentNickTokens(root);
@@ -573,6 +646,18 @@
           entityId: ref.id,
           label: ref.label,
         }));
+        const profileState = readStoredProfileIconState();
+        const authorToken = profileState.stored ? {
+          avatar_id: profileState.avatarId,
+          avatar_kind: profileState.avatarKind,
+          palette_id: profileState.paletteId,
+          palette_swapped: profileState.swapped,
+        } : {
+          avatar_id: null,
+          avatar_kind: null,
+          palette_id: null,
+          palette_swapped: false,
+        };
         await restRequest(config, "community_stories?select=*", {
           method: "POST",
           token: session.access_token,
@@ -589,6 +674,7 @@
             tags: [],
             linked_entities: linkedEntities,
             env: config.supabaseEnv ?? "production",
+            ...authorToken,
           },
         });
         close();
@@ -670,6 +756,10 @@
                 data-patch-comment-row
                 data-comment-user-id="${escapeHtml(comment.user_id ?? "")}"
                 data-comment-nickname="${escapeHtml(comment.nickname ?? "")}"
+                data-comment-avatar-id="${escapeHtml(comment.avatar_id ?? "")}"
+                data-comment-avatar-kind="${escapeHtml(comment.avatar_kind ?? "")}"
+                data-comment-palette-id="${escapeHtml(comment.palette_id ?? "")}"
+                data-comment-palette-swapped="${Boolean(comment.palette_swapped)}"
               >
                 <div class="flex items-center gap-2">
                   ${commentNickTokenHtml(state, comment)}
@@ -790,6 +880,18 @@
 
       try {
         const session = await ensureSession(config);
+        const profileState = readStoredProfileIconState();
+        const authorToken = profileState.stored ? {
+          avatar_id: profileState.avatarId,
+          avatar_kind: profileState.avatarKind,
+          palette_id: profileState.paletteId,
+          palette_swapped: profileState.swapped,
+        } : {
+          avatar_id: null,
+          avatar_kind: null,
+          palette_id: null,
+          palette_swapped: false,
+        };
         await restRequest(config, "comments?select=*", {
           method: "POST",
           token: session.access_token,
@@ -800,6 +902,7 @@
             nickname,
             content,
             env: config.supabaseEnv ?? "production",
+            ...authorToken,
           },
         });
         await reload();

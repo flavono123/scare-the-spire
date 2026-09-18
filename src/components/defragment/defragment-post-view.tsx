@@ -172,6 +172,7 @@ export function DefragmentPostView({
           <DisplayedProfileNickname
             nickname={post.nickname}
             isOwner={isAuthor}
+            authorToken={post}
             size={18}
             tokenClassName="h-[18px] w-[18px]"
             nicknameClassName="truncate text-sm font-semibold text-gray-300"

@@ -9,6 +9,7 @@ import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { GAME_UI_HOVER_TIP_NAV_DELAY_MS, GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
+import type { AuthorProfileTokenInput } from "@/lib/profile-nickname-icon";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import Image from "@/components/ui/static-image";
 import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
@@ -91,6 +92,7 @@ function PagestormIndexCard({
   thumbnailUrl,
   thumbnailKind,
   postKey,
+  authorToken,
 }: {
   href: string;
   view: PagestormIndexView;
@@ -101,6 +103,7 @@ function PagestormIndexCard({
   thumbnailUrl: string | null;
   thumbnailKind: string | null;
   postKey: string;
+  authorToken?: AuthorProfileTokenInput | null;
 }) {
   return (
     <Link
@@ -135,6 +138,7 @@ function PagestormIndexCard({
                 <DisplayedProfileNickname
                   nickname={nickname}
                   isOwner={isOwner}
+                  authorToken={authorToken}
                   size={18}
                   tokenClassName="h-[18px] w-[18px]"
                   nicknameClassName="truncate text-sm font-semibold text-gray-300"
@@ -280,6 +284,7 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
               thumbnailUrl={post.thumbnailUrl}
               thumbnailKind={post.thumbnailKind}
               postKey={post.id}
+              authorToken={post}
             />
           ))}
         </div>

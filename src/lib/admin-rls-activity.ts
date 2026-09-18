@@ -109,6 +109,10 @@ export type AdminServicePostRow = {
   summary: string;
   href: string;
   userId: string;
+  avatar_id?: string | null;
+  avatar_kind?: string | null;
+  palette_id?: string | null;
+  palette_swapped?: boolean | null;
 };
 
 export function mergeAdminServicePosts(
@@ -140,14 +144,35 @@ export type AdminAuthorRow = {
   postCount: number;
   services: Array<AdminPostService | "comments">;
   lastActiveAt: string;
+  latestAvatarId?: string | null;
+  latestAvatarKind?: string | null;
+  latestPaletteId?: string | null;
+  latestPaletteSwapped?: boolean | null;
 };
 
 export function aggregateAdminAuthors({
   comments,
   posts,
 }: {
-  comments: Array<{ user_id: string; nickname: string; created_at: string }>;
-  posts: Array<{ userId: string; nickname: string; createdAt: string; service: AdminPostService }>;
+  comments: Array<{
+    user_id: string;
+    nickname: string;
+    created_at: string;
+    avatar_id?: string | null;
+    avatar_kind?: string | null;
+    palette_id?: string | null;
+    palette_swapped?: boolean | null;
+  }>;
+  posts: Array<{
+    userId: string;
+    nickname: string;
+    createdAt: string;
+    service: AdminPostService;
+    avatar_id?: string | null;
+    avatar_kind?: string | null;
+    palette_id?: string | null;
+    palette_swapped?: boolean | null;
+  }>;
 }): AdminAuthorRow[] {
   const map = new Map<
     string,
@@ -159,6 +184,10 @@ export function aggregateAdminAuthors({
       postCount: number;
       servicesSet: Set<AdminPostService | "comments">;
       lastActiveAt: string;
+      latestAvatarId: string | null;
+      latestAvatarKind: string | null;
+      latestPaletteId: string | null;
+      latestPaletteSwapped: boolean | null;
     }
   >();
 
@@ -176,6 +205,10 @@ export function aggregateAdminAuthors({
         postCount: 0,
         servicesSet: new Set(["comments"]),
         lastActiveAt: c.created_at,
+        latestAvatarId: c.avatar_id ?? null,
+        latestAvatarKind: c.avatar_kind ?? null,
+        latestPaletteId: c.palette_id ?? null,
+        latestPaletteSwapped: c.palette_swapped ?? null,
       });
     } else {
       existing.commentCount += 1;
@@ -184,6 +217,17 @@ export function aggregateAdminAuthors({
       if (c.created_at > existing.lastActiveAt) {
         existing.lastActiveAt = c.created_at;
         existing.latestNickname = nick;
+        if (c.avatar_id != null) {
+          existing.latestAvatarId = c.avatar_id;
+          existing.latestAvatarKind = c.avatar_kind ?? null;
+          existing.latestPaletteId = c.palette_id ?? null;
+          existing.latestPaletteSwapped = c.palette_swapped ?? null;
+        }
+      } else if (existing.latestAvatarId == null && c.avatar_id != null) {
+        existing.latestAvatarId = c.avatar_id;
+        existing.latestAvatarKind = c.avatar_kind ?? null;
+        existing.latestPaletteId = c.palette_id ?? null;
+        existing.latestPaletteSwapped = c.palette_swapped ?? null;
       }
     }
   }
@@ -202,6 +246,10 @@ export function aggregateAdminAuthors({
         postCount: 1,
         servicesSet: new Set([p.service]),
         lastActiveAt: p.createdAt,
+        latestAvatarId: p.avatar_id ?? null,
+        latestAvatarKind: p.avatar_kind ?? null,
+        latestPaletteId: p.palette_id ?? null,
+        latestPaletteSwapped: p.palette_swapped ?? null,
       });
     } else {
       existing.postCount += 1;
@@ -210,6 +258,17 @@ export function aggregateAdminAuthors({
       if (p.createdAt > existing.lastActiveAt) {
         existing.lastActiveAt = p.createdAt;
         existing.latestNickname = nick;
+        if (p.avatar_id != null) {
+          existing.latestAvatarId = p.avatar_id;
+          existing.latestAvatarKind = p.avatar_kind ?? null;
+          existing.latestPaletteId = p.palette_id ?? null;
+          existing.latestPaletteSwapped = p.palette_swapped ?? null;
+        }
+      } else if (existing.latestAvatarId == null && p.avatar_id != null) {
+        existing.latestAvatarId = p.avatar_id;
+        existing.latestAvatarKind = p.avatar_kind ?? null;
+        existing.latestPaletteId = p.palette_id ?? null;
+        existing.latestPaletteSwapped = p.palette_swapped ?? null;
       }
     }
   }
@@ -223,6 +282,10 @@ export function aggregateAdminAuthors({
       postCount: item.postCount,
       services: Array.from(item.servicesSet),
       lastActiveAt: item.lastActiveAt,
+      latestAvatarId: item.latestAvatarId,
+      latestAvatarKind: item.latestAvatarKind,
+      latestPaletteId: item.latestPaletteId,
+      latestPaletteSwapped: item.latestPaletteSwapped,
     }))
     .sort((a, b) => b.lastActiveAt.localeCompare(a.lastActiveAt));
 }

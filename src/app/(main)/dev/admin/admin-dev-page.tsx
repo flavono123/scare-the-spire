@@ -102,6 +102,10 @@ interface CommentRow {
   content_blocks: PostBlock[] | null;
   env: string;
   created_at: string;
+  avatar_id?: string | null;
+  avatar_kind?: string | null;
+  palette_id?: string | null;
+  palette_swapped?: boolean | null;
 }
 
 interface QueryState<T> {
@@ -180,7 +184,7 @@ async function readComments(
 ): Promise<QueryState<CommentRow[]>> {
   let query = supabase
     .from("comments")
-    .select("id, story_id, user_id, nickname, content, content_blocks, env, created_at", { count: "exact" })
+    .select("id, story_id, user_id, nickname, content, content_blocks, env, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
     .eq("env", ADMIN_DATA_ENV)
     .order("created_at", { ascending: false })
     .limit(ROW_LIMIT);
@@ -206,6 +210,10 @@ function asPostRow(
     nickname?: string | null;
     user_id?: string | null;
     summary: string;
+    avatar_id?: string | null;
+    avatar_kind?: string | null;
+    palette_id?: string | null;
+    palette_swapped?: boolean | null;
   },
 ): AdminServicePostRow {
   return {
@@ -216,6 +224,10 @@ function asPostRow(
     summary: row.summary,
     href: productionHref(adminServicePostHref(service, row.id)),
     userId: row.user_id ?? "-",
+    avatar_id: row.avatar_id,
+    avatar_kind: row.avatar_kind,
+    palette_id: row.palette_id,
+    palette_swapped: row.palette_swapped,
   };
 }
 
@@ -243,11 +255,15 @@ async function readOneServicePosts(
         nickname: string;
         sentence: string;
         created_at: string;
+        avatar_id?: string | null;
+        avatar_kind?: string | null;
+        palette_id?: string | null;
+        palette_swapped?: boolean | null;
       }>>(
         "admin.community_stories",
         supabase
           .from("community_stories")
-          .select("id, user_id, nickname, sentence, created_at", { count: "exact" })
+          .select("id, user_id, nickname, sentence, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
           .eq("env", ADMIN_DATA_ENV)
           .is("static_story_id", null)
           .order("created_at", { ascending: false })
@@ -270,11 +286,15 @@ async function readOneServicePosts(
         content: PostBlock[];
         content_text: string;
         created_at: string;
+        avatar_id?: string | null;
+        avatar_kind?: string | null;
+        palette_id?: string | null;
+        palette_swapped?: boolean | null;
       }>>(
         "admin.combo_posts",
         supabase
           .from("combo_posts")
-          .select("id, user_id, nickname, content, content_text, created_at", { count: "exact" })
+          .select("id, user_id, nickname, content, content_text, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
           .eq("env", ADMIN_DATA_ENV)
           .order("created_at", { ascending: false })
           .limit(ROW_LIMIT),
@@ -300,11 +320,15 @@ async function readOneServicePosts(
         title: string | null;
         transformed_name: string | null;
         created_at: string;
+        avatar_id?: string | null;
+        avatar_kind?: string | null;
+        palette_id?: string | null;
+        palette_swapped?: boolean | null;
       }>>(
         "admin.transfigure_posts",
         supabase
           .from("transfigure_posts")
-          .select("id, user_id, nickname, resource_type, resource_id, content, content_text, title, transformed_name, created_at", { count: "exact" })
+          .select("id, user_id, nickname, resource_type, resource_id, content, content_text, title, transformed_name, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
           .eq("env", ADMIN_DATA_ENV)
           .order("created_at", { ascending: false })
           .limit(ROW_LIMIT),
@@ -336,11 +360,15 @@ async function readOneServicePosts(
         right_id: string;
         reason: string;
         created_at: string;
+        avatar_id?: string | null;
+        avatar_kind?: string | null;
+        palette_id?: string | null;
+        palette_swapped?: boolean | null;
       }>>(
         "admin.this_or_that_posts",
         supabase
           .from("this_or_that_posts")
-          .select("id, user_id, nickname, left_type, left_id, right_type, right_id, reason, created_at", { count: "exact" })
+          .select("id, user_id, nickname, left_type, left_id, right_type, right_id, reason, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
           .eq("env", ADMIN_DATA_ENV)
           .order("created_at", { ascending: false })
           .limit(ROW_LIMIT),
@@ -362,11 +390,15 @@ async function readOneServicePosts(
         content: PostBlock[];
         content_text: string;
         created_at: string;
+        avatar_id?: string | null;
+        avatar_kind?: string | null;
+        palette_id?: string | null;
+        palette_swapped?: boolean | null;
       }>>(
         "admin.chemical_posts",
         supabase
           .from("chemical_posts")
-          .select("id, user_id, nickname, content, content_text, created_at", { count: "exact" })
+          .select("id, user_id, nickname, content, content_text, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
           .eq("env", ADMIN_DATA_ENV)
           .order("created_at", { ascending: false })
           .limit(ROW_LIMIT),
@@ -388,11 +420,15 @@ async function readOneServicePosts(
         title: string;
         note: string;
         created_at: string;
+        avatar_id?: string | null;
+        avatar_kind?: string | null;
+        palette_id?: string | null;
+        palette_swapped?: boolean | null;
       }>>(
         "admin.decisions_decisions_posts",
         supabase
           .from("decisions_decisions_posts")
-          .select("id, user_id, nickname, title, note, created_at", { count: "exact" })
+          .select("id, user_id, nickname, title, note, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
           .eq("env", ADMIN_DATA_ENV)
           .order("created_at", { ascending: false })
           .limit(ROW_LIMIT),
@@ -414,11 +450,15 @@ async function readOneServicePosts(
         title: string;
         note: string;
         created_at: string;
+        avatar_id?: string | null;
+        avatar_kind?: string | null;
+        palette_id?: string | null;
+        palette_swapped?: boolean | null;
       }>>(
         "admin.favorite_tournament_posts",
         supabase
           .from("favorite_tournament_posts")
-          .select("id, user_id, nickname, title, note, created_at", { count: "exact" })
+          .select("id, user_id, nickname, title, note, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
           .eq("env", ADMIN_DATA_ENV)
           .order("created_at", { ascending: false })
           .limit(ROW_LIMIT),
@@ -440,11 +480,15 @@ async function readOneServicePosts(
         title: string;
         content_text: string;
         created_at: string;
+        avatar_id?: string | null;
+        avatar_kind?: string | null;
+        palette_id?: string | null;
+        palette_swapped?: boolean | null;
       }>>(
         "admin.pagestorm_posts",
         supabase
           .from("pagestorm_posts")
-          .select("id, user_id, nickname, title, content_text, created_at", { count: "exact" })
+          .select("id, user_id, nickname, title, content_text, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
           .eq("env", ADMIN_DATA_ENV)
           .order("created_at", { ascending: false })
           .limit(ROW_LIMIT),

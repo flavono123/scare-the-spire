@@ -27,6 +27,10 @@ export interface ThisOrThatPost {
   left_vote_count?: number;
   right_vote_count?: number;
   vote_rate_bps?: number;
+  avatar_id?: string | null;
+  avatar_kind?: string | null;
+  palette_id?: string | null;
+  palette_swapped?: boolean | null;
 }
 
 export interface ThisOrThatResolvedPost {

@@ -112,4 +112,8 @@ export interface ChemicalPost {
   created_at: string;
   like_count?: number;
   comment_count?: number;
+  avatar_id?: string | null;
+  avatar_kind?: string | null;
+  palette_id?: string | null;
+  palette_swapped?: boolean | null;
 }

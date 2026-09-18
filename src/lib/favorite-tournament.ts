@@ -65,6 +65,10 @@ export type FavoriteTournamentPost = {
   comment_count?: number;
   play_count?: number;
   created_at: string;
+  avatar_id?: string | null;
+  avatar_kind?: string | null;
+  palette_id?: string | null;
+  palette_swapped?: boolean | null;
 };
 
 export type FavoriteTournamentRankSnapshot = {
@@ -413,6 +417,10 @@ export function normalizeFavoriteTournamentPost(row: unknown): FavoriteTournamen
     comment_count: nonNegativeCount(record.comment_count),
     play_count: nonNegativeCount(record.play_count),
     created_at: String(record.created_at ?? ""),
+    avatar_id: typeof record.avatar_id === "string" ? record.avatar_id : (typeof record.avatarId === "string" ? record.avatarId : null),
+    avatar_kind: typeof record.avatar_kind === "string" ? record.avatar_kind : (typeof record.avatarKind === "string" ? record.avatarKind : null),
+    palette_id: typeof record.palette_id === "string" ? record.palette_id : (typeof record.paletteId === "string" ? record.paletteId : null),
+    palette_swapped: typeof record.palette_swapped === "boolean" ? record.palette_swapped : (typeof record.paletteSwapped === "boolean" ? record.paletteSwapped : false),
   };
 }
 

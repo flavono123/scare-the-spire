@@ -87,7 +87,7 @@ export function isBossAvatarId(id: string | null | undefined): id is string {
 }
 
 export function characterPoolSlug(characterId: string): CharacterPoolSlug {
-  return CHARACTER_ICON_SLUGS[characterId] ?? "necrobinder";
+  return CHARACTER_ICON_SLUGS[characterId.toUpperCase()] ?? "necrobinder";
 }
 
 export function characterIconUrl(characterId: string): string {
@@ -102,10 +102,53 @@ export function bossAvatarTokenUrl(encounterId: string): string {
 export function profileAvatarTokenUrl(
   profile: Pick<UserProfile, "avatarKind" | "avatarId" | "characterId">,
 ): string {
-  if (profile.avatarKind === "boss") {
+  if (profile.avatarKind === "boss" || isBossAvatarId(profile.avatarId)) {
     return bossAvatarTokenUrl(profile.avatarId);
   }
   return characterIconUrl(profile.avatarId || profile.characterId);
+}
+
+export interface AuthorProfileTokenPayload {
+  avatar_id: string | null;
+  avatar_kind: ProfileAvatarKind | null;
+  palette_id: string | null;
+  palette_swapped: boolean;
+}
+
+export function currentAuthorProfileToken(): AuthorProfileTokenPayload {
+  if (typeof window === "undefined") {
+    return {
+      avatar_id: null,
+      avatar_kind: null,
+      palette_id: null,
+      palette_swapped: false,
+    };
+  }
+  try {
+    const raw = window.localStorage.getItem(USER_PROFILE_STORAGE_KEY);
+    if (!hasStoredUserProfile(raw)) {
+      return {
+        avatar_id: null,
+        avatar_kind: null,
+        palette_id: null,
+        palette_swapped: false,
+      };
+    }
+    const profile = parseStoredUserProfile(raw, DEFAULT_USER_PROFILE);
+    return {
+      avatar_id: profile.avatarId,
+      avatar_kind: profile.avatarKind,
+      palette_id: profile.paletteId,
+      palette_swapped: Boolean(profile.paletteSwapped),
+    };
+  } catch {
+    return {
+      avatar_id: null,
+      avatar_kind: null,
+      palette_id: null,
+      palette_swapped: false,
+    };
+  }
 }
 
 function knownCharacterId(id: string | null | undefined, fallback: string): string {

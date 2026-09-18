@@ -184,6 +184,7 @@ export function FavoriteTournamentPostCard({
               <DisplayedProfileNickname
                 nickname={post.nickname}
                 isOwner={isOwner}
+                authorToken={post}
                 size={14}
                 className="min-w-0"
                 tokenClassName="h-3.5 w-3.5"

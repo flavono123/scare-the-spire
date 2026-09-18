@@ -13,6 +13,7 @@ import {
 import type { DefragmentPost } from "@/lib/defragment";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { currentAuthorProfileToken } from "@/lib/user-profile";
 
 export interface SaveDefragmentPostInput {
   title: string;
@@ -36,6 +37,10 @@ function normalizePost(row: unknown): DefragmentPost | null {
     content_text: typeof record.content_text === "string" ? record.content_text : "",
     env: typeof record.env === "string" ? record.env : supabaseEnv,
     created_at: record.created_at,
+    avatar_id: typeof record.avatar_id === "string" ? record.avatar_id : (typeof record.avatarId === "string" ? record.avatarId : null),
+    avatar_kind: typeof record.avatar_kind === "string" ? record.avatar_kind : (typeof record.avatarKind === "string" ? record.avatarKind : null),
+    palette_id: typeof record.palette_id === "string" ? record.palette_id : (typeof record.paletteId === "string" ? record.paletteId : null),
+    palette_swapped: typeof record.palette_swapped === "boolean" ? record.palette_swapped : (typeof record.paletteSwapped === "boolean" ? record.paletteSwapped : false),
     like_count: typeof record.like_count === "number" ? record.like_count : 0,
     comment_count: typeof record.comment_count === "number" ? record.comment_count : 0,
   };
@@ -72,6 +77,7 @@ export async function insertDefragmentPost(
   const parsed = validateSaveInput(input);
   if (!parsed) return null;
 
+  const authorToken = currentAuthorProfileToken();
   const { data, error } = await withSupabaseTimeout(
     "defragment_posts.insert",
     supabase
@@ -83,6 +89,10 @@ export async function insertDefragmentPost(
         content: input.blocks,
         content_text: parsed.contentText,
         env: supabaseEnv,
+        avatar_id: authorToken.avatar_id,
+        avatar_kind: authorToken.avatar_kind,
+        palette_id: authorToken.palette_id,
+        palette_swapped: authorToken.palette_swapped,
       })
       .select()
       .single(),
@@ -99,6 +109,7 @@ export async function updateDefragmentPost(
   const parsed = validateSaveInput(input);
   if (!parsed) return null;
 
+  const authorToken = currentAuthorProfileToken();
   const { data, error } = await withSupabaseTimeout(
     "defragment_posts.update",
     supabase
@@ -108,6 +119,10 @@ export async function updateDefragmentPost(
         title: parsed.title,
         content: input.blocks,
         content_text: parsed.contentText,
+        avatar_id: authorToken.avatar_id,
+        avatar_kind: authorToken.avatar_kind,
+        palette_id: authorToken.palette_id,
+        palette_swapped: authorToken.palette_swapped,
       })
       .eq("id", postId)
       .eq("user_id", input.activeUserId)

@@ -16,6 +16,7 @@ import {
 } from "@/lib/pagestorm";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { currentAuthorProfileToken } from "@/lib/user-profile";
 
 export type SavePagestormPostInput = {
   nickname: string;
@@ -47,6 +48,7 @@ export async function insertPagestormPost(
 ): Promise<PagestormPost | null> {
   if (!isValidSave(input)) return null;
 
+  const authorToken = currentAuthorProfileToken();
   const { data, error } = await withSupabaseTimeout(
     "pagestorm_posts.insert",
     supabase
@@ -58,6 +60,10 @@ export async function insertPagestormPost(
         content: input.content,
         content_text: input.contentText.trim(),
         env: supabaseEnv,
+        avatar_id: authorToken.avatar_id,
+        avatar_kind: authorToken.avatar_kind,
+        palette_id: authorToken.palette_id,
+        palette_swapped: authorToken.palette_swapped,
       })
       .select()
       .single(),
@@ -73,6 +79,7 @@ export async function updatePagestormPost(
 ): Promise<PagestormPost | null> {
   if (!isValidSave(input)) return null;
 
+  const authorToken = currentAuthorProfileToken();
   const { data, error } = await withSupabaseTimeout(
     "pagestorm_posts.update",
     supabase
@@ -82,6 +89,10 @@ export async function updatePagestormPost(
         title: input.title.trim(),
         content: input.content,
         content_text: input.contentText.trim(),
+        avatar_id: authorToken.avatar_id,
+        avatar_kind: authorToken.avatar_kind,
+        palette_id: authorToken.palette_id,
+        palette_swapped: authorToken.palette_swapped,
       })
       .eq("id", postId)
       .eq("user_id", input.activeUserId)
@@ -107,7 +118,7 @@ export function usePagestormPosts() {
       "pagestorm_posts.list",
       supabase
         .from(PAGESTORM_TABLE)
-        .select("id, user_id, nickname, title, content, content_text, env, created_at")
+        .select("id, user_id, nickname, title, content, content_text, env, created_at, avatar_id, avatar_kind, palette_id, palette_swapped")
         .eq("env", supabaseEnv)
         .order("created_at", { ascending: false })
         .limit(50),

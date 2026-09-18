@@ -35,6 +35,12 @@ export function AdminAuthorTable({ authors }: { authors: AdminAuthorRow[] }) {
         profile,
         isOwner,
         nickname: author.latestNickname,
+        authorToken: {
+          avatar_id: author.latestAvatarId,
+          avatar_kind: author.latestAvatarKind,
+          palette_id: author.latestPaletteId,
+          palette_swapped: author.latestPaletteSwapped,
+        },
       });
       return { author, isOwner, icon };
     });
@@ -43,24 +49,21 @@ export function AdminAuthorTable({ authors }: { authors: AdminAuthorRow[] }) {
   return (
     <div className="space-y-4">
       {/* Explanation Banner */}
-      <div className="rounded-lg border border-amber-400/30 bg-amber-400/5 p-4 text-xs text-amber-200/90">
-        <h3 className="font-semibold text-amber-300">💡 프로필 토큰 동작 원리 및 RLS UUID 안내</h3>
+      <div className="rounded-lg border border-emerald-400/30 bg-emerald-400/5 p-4 text-xs text-emerald-200/90">
+        <h3 className="font-semibold text-emerald-300">💡 프로필 토큰 동작 원리 및 RLS UUID 안내</h3>
         <ul className="mt-2 list-inside list-disc space-y-1 text-zinc-300">
           <li>
-            <strong className="text-zinc-100">로컬 스토리지 전용 프로필</strong>: 현재 프로필(캐릭터/보스/배색)은 서버 DB에 저장되지 않고 각 사용자의 브라우저 LocalStorage(<code className="text-amber-200">sts-user-profile</code>)에만 보관됩니다.
+            <strong className="text-zinc-100">작성 시점 프로필 토큰 영구 저장</strong>: 글/댓글 작성 및 수정 시 작성자의 프로필 토큰(<code className="text-emerald-200">avatar_id</code>, <code className="text-emerald-200">avatar_kind</code>, <code className="text-emerald-200">palette_id</code>, <code className="text-emerald-200">palette_swapped</code>)이 DB에 스냅샷으로 저장됩니다.
           </li>
           <li>
-            <strong className="text-zinc-100">타인 글의 fallback(?) 토큰</strong>: 글/댓글 테이블에는 오직 RLS 익명 <code className="text-amber-200">user_id</code>와 <code className="text-amber-200">nickname</code>만 저장되므로, 다른 사용자의 글이나 다른 기기에서 쓴 글은 프로필을 알 수 없어 무조건 <code className="text-amber-200">?</code>(미지정 fallback)로 렌더링됩니다.
+            <strong className="text-zinc-100">기기/브라우저/타인 무관 렌더링</strong>: DB에 저장된 토큰이 있는 글은 모바일/PC/타인 구분 없이 누구나 작성자가 설정한 캐릭터 및 배색 토큰으로 표시됩니다.
           </li>
           <li>
-            <strong className="text-zinc-100">PC vs 모바일 UUID 분리</strong>: Supabase 익명 세션은 브라우저마다 별도 발급됩니다. PC에서 작성한 글(예: 패치아조씨)은 PC의 UUID를 가지므로, 모바일 기기에서는 본인 글로 인식되지 않아 <code className="text-amber-200">?</code>로 표시됩니다.
-          </li>
-          <li>
-            <strong className="text-zinc-100">모바일에서 일부만 보이는 현상</strong>: 모바일 브라우저에서 프로필 저장을 누르지 않았거나(<code className="text-amber-200">stored: false</code>), Safari ITP/시크릿 탭 등으로 세션이 갱신된 경우 과거 글의 UUID와 현재 UUID가 달라져 <code className="text-amber-200">?</code>가 됩니다.
+            <strong className="text-zinc-100">이전 작성 글 및 프로필 미설정 fallback(?)</strong>: 본 기능 적용 이전의 레거시 글이거나 프로필을 저장하지 않은 사용자의 글은 미지정 fallback인 <code className="text-emerald-200">?</code> 토큰으로 표시됩니다 (단, 본인 브라우저에서 볼 때는 로컬 프로필로 fallback).
           </li>
         </ul>
         {userId && (
-          <div className="mt-3 inline-flex items-center gap-2 rounded border border-amber-400/40 bg-amber-400/10 px-2.5 py-1 text-[11px] font-mono text-amber-100">
+          <div className="mt-3 inline-flex items-center gap-2 rounded border border-emerald-400/40 bg-emerald-400/10 px-2.5 py-1 text-[11px] font-mono text-emerald-100">
             <span>내 현재 브라우저 RLS UUID:</span>
             <span className="font-bold">{userId}</span>
             {stored ? (

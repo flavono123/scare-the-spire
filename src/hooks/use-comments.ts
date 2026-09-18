@@ -10,6 +10,11 @@ import {
   COMMENT_STORAGE_MAX_CHARS,
 } from "@/lib/content-limits";
 import { blocksToPlainText } from "@/lib/chemical-utils";
+import {
+  currentAuthorProfileToken,
+  type AuthorProfileTokenPayload,
+  type ProfileAvatarKind,
+} from "@/lib/user-profile";
 
 export interface Comment {
   id: string;
@@ -19,13 +24,23 @@ export interface Comment {
   content: string;
   content_blocks?: PostBlock[] | null;
   created_at: string;
+  avatar_id?: string | null;
+  avatar_kind?: ProfileAvatarKind | string | null;
+  palette_id?: string | null;
+  palette_swapped?: boolean | null;
 }
 
 interface UseCommentsReturn {
   comments: Comment[];
   loading: boolean;
   unavailable: boolean;
-  add: (nickname: string, content: string, contentBlocks?: PostBlock[], activeUserId?: string) => Promise<void>;
+  add: (
+    nickname: string,
+    content: string,
+    contentBlocks?: PostBlock[],
+    activeUserId?: string,
+    authorToken?: AuthorProfileTokenPayload | null,
+  ) => Promise<void>;
   remove: (commentId: string) => Promise<void>;
 }
 
@@ -65,7 +80,13 @@ export function useComments(storyId: string, userId: string | null): UseComments
   }, [storyId]);
 
   const add = useCallback(
-    async (nickname: string, content: string, contentBlocks?: PostBlock[], activeUserId = userId) => {
+    async (
+      nickname: string,
+      content: string,
+      contentBlocks?: PostBlock[],
+      activeUserId = userId,
+      authorToken?: AuthorProfileTokenPayload | null,
+    ) => {
       if (!activeUserId || !supabaseEnabled) return;
 
       const plainText = (contentBlocks ? blocksToPlainText(contentBlocks) : content).trim();
@@ -78,6 +99,7 @@ export function useComments(storyId: string, userId: string | null): UseComments
         return;
       }
 
+      const token = authorToken !== undefined ? authorToken : currentAuthorProfileToken();
       const basePayload = {
         story_id: storyId,
         user_id: activeUserId,
@@ -85,6 +107,12 @@ export function useComments(storyId: string, userId: string | null): UseComments
         content,
         content_blocks: contentBlocks ?? null,
         env: supabaseEnv,
+        ...(token ? {
+          avatar_id: token.avatar_id,
+          avatar_kind: token.avatar_kind,
+          palette_id: token.palette_id,
+          palette_swapped: token.palette_swapped,
+        } : {}),
       };
 
       const result = await withSupabaseTimeout(

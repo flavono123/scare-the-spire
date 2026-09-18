@@ -206,6 +206,7 @@ export function ThisOrThatPostCard({
         <DisplayedProfileNickname
           nickname={post.nickname}
           isOwner={isOwner}
+          authorToken={post}
           size={14}
           className="max-w-[70%]"
           tokenClassName="h-3.5 w-3.5"

@@ -18,6 +18,7 @@ import {
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
+import { currentAuthorProfileToken } from "@/lib/user-profile";
 
 export type SaveDecisionsDecisionsPostInput = {
   nickname: string;
@@ -50,6 +51,7 @@ export async function insertDecisionsDecisionsPost(
 ): Promise<DecisionsDecisionsPost | null> {
   if (!isValidSave(input)) return null;
 
+  const authorToken = currentAuthorProfileToken();
   const { data, error } = await withSupabaseTimeout(
     "decisions_decisions_posts.insert",
     supabase
@@ -65,6 +67,10 @@ export async function insertDecisionsDecisionsPost(
         placements: input.placements,
         extra_ids: input.extraIds,
         env: supabaseEnv,
+        avatar_id: authorToken.avatar_id,
+        avatar_kind: authorToken.avatar_kind,
+        palette_id: authorToken.palette_id,
+        palette_swapped: authorToken.palette_swapped,
       })
       .select()
       .single(),
@@ -80,6 +86,7 @@ export async function updateDecisionsDecisionsPost(
 ): Promise<DecisionsDecisionsPost | null> {
   if (!isValidSave(input)) return null;
 
+  const authorToken = currentAuthorProfileToken();
   const { data, error } = await withSupabaseTimeout(
     "decisions_decisions_posts.update",
     supabase
@@ -93,6 +100,10 @@ export async function updateDecisionsDecisionsPost(
         rows: input.rows,
         placements: input.placements,
         extra_ids: input.extraIds,
+        avatar_id: authorToken.avatar_id,
+        avatar_kind: authorToken.avatar_kind,
+        palette_id: authorToken.palette_id,
+        palette_swapped: authorToken.palette_swapped,
       })
       .eq("id", postId)
       .eq("user_id", input.activeUserId)

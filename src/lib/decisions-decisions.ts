@@ -123,6 +123,10 @@ export interface DecisionsDecisionsPost {
   extra_ids: DecisionsDecisionsResourceRef[];
   env: string;
   created_at: string;
+  avatar_id?: string | null;
+  avatar_kind?: string | null;
+  palette_id?: string | null;
+  palette_swapped?: boolean | null;
   like_count?: number;
   comment_count?: number;
 }
@@ -655,6 +659,10 @@ export function normalizeDecisionsDecisionsPost(raw: unknown): DecisionsDecision
     extra_ids: extraIds,
     env: asString(record.env) ?? "",
     created_at: asString(record.created_at) ?? "",
+    avatar_id: typeof record.avatar_id === "string" ? record.avatar_id : (typeof record.avatarId === "string" ? record.avatarId : null),
+    avatar_kind: typeof record.avatar_kind === "string" ? record.avatar_kind : (typeof record.avatarKind === "string" ? record.avatarKind : null),
+    palette_id: typeof record.palette_id === "string" ? record.palette_id : (typeof record.paletteId === "string" ? record.paletteId : null),
+    palette_swapped: typeof record.palette_swapped === "boolean" ? record.palette_swapped : (typeof record.paletteSwapped === "boolean" ? record.paletteSwapped : false),
     like_count: typeof record.like_count === "number" ? record.like_count : undefined,
     comment_count: typeof record.comment_count === "number"
       ? record.comment_count

@@ -117,8 +117,8 @@ assert.ok(chart.writesPath.startsWith("M"));
 const authors = aggregateAdminAuthors({
   comments: [
     { user_id: "u1", nickname: "패치아조씨", created_at: "2026-09-10T10:00:00.000Z" },
-    { user_id: "u1", nickname: "패치아조씨2", created_at: "2026-09-12T10:00:00.000Z" },
-    { user_id: "u2", nickname: "리황", created_at: "2026-09-11T10:00:00.000Z" },
+    { user_id: "u1", nickname: "패치아조씨2", created_at: "2026-09-12T10:00:00.000Z", avatar_id: "ironclad", avatar_kind: "character", palette_id: "ironclad", palette_swapped: false },
+    { user_id: "u2", nickname: "리황", created_at: "2026-09-11T10:00:00.000Z", avatar_id: "regent", avatar_kind: "character", palette_id: "regent", palette_swapped: false },
   ],
   posts: [
     {
@@ -126,6 +126,10 @@ const authors = aggregateAdminAuthors({
       nickname: "패치아조씨2",
       createdAt: "2026-09-13T10:00:00.000Z",
       service: "combo",
+      avatar_id: "the_silent",
+      avatar_kind: "character",
+      palette_id: "silent",
+      palette_swapped: true,
     },
     {
       userId: "u3",
@@ -144,11 +148,16 @@ assert.equal(authors[0]?.commentCount, 2);
 assert.equal(authors[0]?.postCount, 1);
 assert.ok(authors[0]?.services.includes("comments"));
 assert.ok(authors[0]?.services.includes("combo"));
+assert.equal(authors[0]?.latestAvatarId, "the_silent");
+assert.equal(authors[0]?.latestPaletteId, "silent");
+assert.equal(authors[0]?.latestPaletteSwapped, true);
 // u2 is second (2026-09-11)
 assert.equal(authors[1]?.userId, "u2");
 assert.equal(authors[1]?.latestNickname, "리황");
+assert.equal(authors[1]?.latestAvatarId, "regent");
 // u3 is third (2026-09-09)
 assert.equal(authors[2]?.userId, "u3");
+assert.equal(authors[2]?.latestAvatarId, null);
 
 const timeSeries = buildAuthorTimeSeries({
   comments: [

@@ -157,6 +157,7 @@ export function ThisOrThatPostView({
               <DisplayedProfileNickname
                 nickname={resolvedPost.post.nickname}
                 isOwner={Boolean(authReady && userId === resolvedPost.post.user_id)}
+                authorToken={resolvedPost.post}
                 size={14}
                 tokenClassName="h-3.5 w-3.5"
                 nicknameClassName="text-xs text-muted-foreground"

@@ -85,6 +85,7 @@ export function ComboPostCard({
           <DisplayedProfileNickname
             nickname={post.nickname}
             isOwner={isOwner}
+            authorToken={post}
             size={18}
             tokenClassName="h-[18px] w-[18px]"
             nicknameClassName="truncate text-sm font-semibold text-gray-300"

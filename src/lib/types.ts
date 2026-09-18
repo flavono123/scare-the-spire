@@ -255,4 +255,9 @@ export interface Story {
   tags?: string[];
   /** Patch reference for text-only stories without entity links */
   source?: string;
+  avatarId?: string | null;
+  avatarKind?: string | null;
+  paletteId?: string | null;
+  paletteSwapped?: boolean | null;
 }
+

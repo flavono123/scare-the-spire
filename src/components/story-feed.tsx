@@ -690,6 +690,7 @@ function StoryCard({
                 <DisplayedProfileNickname
                   nickname={story.authorName ?? ""}
                   isOwner={Boolean(userId && story.authorUserId === userId)}
+                  authorToken={story}
                   size={14}
                   tokenClassName="h-3.5 w-3.5"
                   nicknameClassName="text-[11px] text-muted-foreground"
@@ -834,6 +835,7 @@ function StoryDetailModal({
                   <DisplayedProfileNickname
                     nickname={story.authorName ?? ""}
                     isOwner={Boolean(userId && story.authorUserId === userId)}
+                    authorToken={story}
                     size={14}
                     tokenClassName="h-3.5 w-3.5"
                     nicknameClassName="text-[11px] text-muted-foreground"

@@ -52,6 +52,10 @@ export interface DefragmentPost {
   created_at: string;
   like_count?: number;
   comment_count?: number;
+  avatar_id?: string | null;
+  avatar_kind?: string | null;
+  palette_id?: string | null;
+  palette_swapped?: boolean | null;
 }
 
 export interface DefragmentFeedItem {
@@ -64,6 +68,10 @@ export interface DefragmentFeedItem {
   likeCount: number;
   commentCount: number;
   recommendScore: number;
+  avatarId?: string | null;
+  avatarKind?: string | null;
+  paletteId?: string | null;
+  paletteSwapped?: boolean | null;
 }
 
 export const DEFRAGMENT_FEED_SERVICE_META: Record<

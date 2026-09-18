@@ -12,6 +12,7 @@ import { useToyboxFeed } from "@/hooks/use-toybox-feed";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
+import { currentAuthorProfileToken } from "@/lib/user-profile";
 
 export interface SaveComboPostInput {
   blocks: PostBlock[];
@@ -73,6 +74,7 @@ export async function insertComboPost(
   const normalized = validateSaveInput(input);
   if (!normalized || !input.activeUserId) return null;
 
+  const token = currentAuthorProfileToken();
   const { data, error } = await withSupabaseTimeout(
     "combo_posts.insert",
     supabase
@@ -84,6 +86,12 @@ export async function insertComboPost(
         content_text: normalized.contentText,
         resources: normalized.resources,
         env: supabaseEnv,
+        ...(token ? {
+          avatar_id: token.avatar_id,
+          avatar_kind: token.avatar_kind,
+          palette_id: token.palette_id,
+          palette_swapped: token.palette_swapped,
+        } : {}),
       })
       .select()
       .single(),
@@ -102,6 +110,7 @@ async function persistComboPostUpdate(
     return { data: null, error: null };
   }
 
+  const token = currentAuthorProfileToken();
   return withSupabaseTimeout(
     "combo_posts.update",
     supabase
@@ -111,6 +120,12 @@ async function persistComboPostUpdate(
         content: input.blocks,
         content_text: normalized.contentText,
         resources: normalized.resources,
+        ...(token ? {
+          avatar_id: token.avatar_id,
+          avatar_kind: token.avatar_kind,
+          palette_id: token.palette_id,
+          palette_swapped: token.palette_swapped,
+        } : {}),
       })
       .eq("id", postId)
       .eq("user_id", input.activeUserId)

@@ -181,6 +181,7 @@ export function CommentSection({
                 <DisplayedProfileNickname
                   nickname={comment.nickname}
                   isOwner={Boolean(userId && userId === comment.user_id)}
+                  authorToken={comment}
                   size={16}
                   tokenClassName="h-4 w-4"
                   nicknameClassName="font-medium text-primary"

@@ -157,6 +157,7 @@ export function DefragmentIndexRow({
             <DisplayedProfileNickname
               nickname={item.nickname}
               isOwner={Boolean(userId && item.userId === userId)}
+              authorToken={item}
               size={14}
               className="min-w-0 max-w-[60%]"
               tokenClassName="h-3.5 w-3.5"
@@ -176,6 +177,7 @@ export function DefragmentIndexRow({
           <DisplayedProfileNickname
             nickname={item.nickname}
             isOwner={Boolean(userId && item.userId === userId)}
+            authorToken={item}
             size={14}
             className="w-full"
             tokenClassName="h-3.5 w-3.5"

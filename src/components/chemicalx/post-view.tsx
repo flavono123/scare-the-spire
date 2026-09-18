@@ -163,6 +163,7 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
           <DisplayedProfileNickname
             nickname={post.nickname}
             isOwner={Boolean(ready && userId && userId === post.user_id)}
+            authorToken={post}
             size={18}
             tokenClassName="h-[18px] w-[18px]"
             nicknameClassName="text-sm font-semibold text-gray-300"
