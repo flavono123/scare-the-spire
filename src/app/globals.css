@@ -994,3 +994,31 @@
     animation: none;
   }
 }
+
+/* Navbar attention pip. StsColors TEXT_GOLD, sine scale like rich-sine. */
+@keyframes nav-attention-sine {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow:
+      0 0 0 1px #1a1208,
+      0 0 0 0 rgba(239, 200, 81, 0.55);
+  }
+  50% {
+    transform: scale(1.18);
+    box-shadow:
+      0 0 0 1px #1a1208,
+      0 0 0 3px rgba(239, 200, 81, 0);
+  }
+}
+
+.nav-attention-dot {
+  background: #efc851;
+  animation: nav-attention-sine 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-attention-dot {
+    animation: none;
+    box-shadow: 0 0 0 1px #1a1208;
+  }
+}

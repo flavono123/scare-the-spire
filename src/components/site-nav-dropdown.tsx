@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { MenuDropdown } from "@/components/menu-dropdown";
+import { NavAttentionDot } from "@/components/nav-attention-dot";
 import Image from "@/components/ui/static-image";
 import type { NavDropdownItem } from "@/lib/site-nav-items";
 
@@ -11,6 +12,7 @@ type SiteNavDropdownProps = {
   items: NavDropdownItem[];
   align?: "left" | "right";
   variant?: "default" | "toyBox";
+  attention?: boolean;
 };
 
 export function SiteNavDropdown({
@@ -19,6 +21,7 @@ export function SiteNavDropdown({
   items,
   align = "right",
   variant = "default",
+  attention = false,
 }: SiteNavDropdownProps) {
   const isToyBox = variant === "toyBox";
 
@@ -32,13 +35,16 @@ export function SiteNavDropdown({
       } max-h-[min(24rem,calc(100svh-4.5rem))] overflow-y-auto ${align === "right" ? "right-0" : "left-0"}`}
       summary={(
         <>
-          <Image
-            src={icon}
-            alt={alt}
-            width={28}
-            height={28}
-            className="h-6 w-6 rounded-sm object-contain brightness-90 transition-all group-open:brightness-125 hover:brightness-110 sm:h-7 sm:w-7"
-          />
+          <span className="relative inline-flex">
+            <Image
+              src={icon}
+              alt={alt}
+              width={28}
+              height={28}
+              className="h-6 w-6 rounded-sm object-contain brightness-90 transition-all group-open:brightness-125 hover:brightness-110 sm:h-7 sm:w-7"
+            />
+            {attention && <NavAttentionDot />}
+          </span>
           <svg
             className="hidden h-3 w-3 text-muted-foreground transition-transform group-open:rotate-180 sm:block"
             fill="none"

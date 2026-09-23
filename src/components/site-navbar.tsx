@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useMemo, useCallback, type CSSProperties, 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
+import { NavAttentionDot } from "@/components/nav-attention-dot";
 import { SiteNavDropdown } from "@/components/site-nav-dropdown";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import {
@@ -11,6 +12,7 @@ import {
   GameUiHoverTip,
 } from "@/components/game-ui-hover-tip";
 import Image from "@/components/ui/static-image";
+import { useNavIndicators } from "@/hooks/use-nav-indicators";
 import {
   DEFAULT_GAME_LOCALE_BY_SERVICE,
   GAME_LOCALE_NATIVE_LABELS,
@@ -171,6 +173,7 @@ function NavIconLink({
   iconClassName,
   className,
   external,
+  attention = false,
 }: {
   href: string;
   icon?: string;
@@ -180,6 +183,7 @@ function NavIconLink({
   iconClassName?: string;
   className?: string;
   external?: boolean;
+  attention?: boolean;
 }) {
   const Tag = external ? "a" : Link;
   const extraProps = external
@@ -200,16 +204,19 @@ function NavIconLink({
         {...internalProps}
         className="flex items-center p-1 transition-colors sm:p-1.5"
       >
-        {iconNode ?? (
-          <Image
-            src={icon ?? ""}
-            alt={label}
-            width={iconSize}
-            height={iconSize}
-            className={iconClass}
-            style={{ "--nav-icon-size": `${iconSize}px` } as CSSProperties}
-          />
-        )}
+        <span className="relative inline-flex">
+          {iconNode ?? (
+            <Image
+              src={icon ?? ""}
+              alt={label}
+              width={iconSize}
+              height={iconSize}
+              className={iconClass}
+              style={{ "--nav-icon-size": `${iconSize}px` } as CSSProperties}
+            />
+          )}
+          {attention && <NavAttentionDot />}
+        </span>
       </Tag>
     </GameUiHoverTip>
   );
@@ -733,6 +740,7 @@ export function SiteNavbar() {
   const contactCopy = contactMessages[serviceLocale];
   const { stored, profile } = useStoredProfileSnapshot();
   const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale });
+  const navIndicators = useNavIndicators();
   const contactHref = getContactHref(pathname, serviceLocale, gameLocale);
   const isContactPage = stripGameLocaleFromPath(pathname) === "/contact";
 
@@ -763,6 +771,7 @@ export function SiteNavbar() {
             icon="/images/sts2/nav/patch_notes_icon.png"
             label={messages.nav.patches}
             iconSize={22}
+            attention={navIndicators.patchNotes}
           />
 
           <SiteNavDropdown
@@ -771,6 +780,7 @@ export function SiteNavbar() {
             items={toyBoxItems}
             align="left"
             variant="toyBox"
+            attention={navIndicators.toyBox}
           />
         </div>
 
