@@ -456,6 +456,7 @@ export interface RichContentEditorProps {
   canSubmitBlocks?: (blocks: PostBlock[]) => boolean;
   embedded?: boolean;
   allowLineBreaks?: boolean;
+  density?: "default" | "inline";
   submitOnEnter?: boolean;
   submitRequestId?: number;
   onValidityChange?: (valid: boolean) => void;
@@ -527,6 +528,7 @@ export function RichContentEditor({
   canSubmitBlocks,
   embedded = false,
   allowLineBreaks = false,
+  density = "default",
   submitOnEnter = true,
   submitRequestId,
   onValidityChange,
@@ -1054,6 +1056,8 @@ export function RichContentEditor({
       attributes: {
         class: embedded
           ? "h-full min-h-full w-full cursor-text px-1 py-1 text-center leading-[1.18] text-inherit outline-none"
+          : density === "inline"
+            ? "min-h-[1.25rem] px-1.5 py-0.5 text-xs leading-5 text-gray-200 outline-none"
           : `${
             allowLineBreaks || (maxChars != null && maxChars > 80)
               ? "min-h-[6.5rem]"
@@ -1183,6 +1187,7 @@ export function RichContentEditor({
   }, [
     draftKey,
     allowLineBreaks,
+    density,
     embedded,
     entities,
     initialBlocks,
@@ -1462,14 +1467,18 @@ export function RichContentEditor({
     return "text-gray-400";
   }, [charCount, maxChars, minChars]);
 
+  const inline = density === "inline";
+
   return (
     <div
       className={embedded
         ? "h-full w-full overflow-visible"
-        : "overflow-visible rounded-lg border border-border bg-card/30"}
-      data-rich-editor-surface={embedded ? "embedded" : "default"}
+        : inline
+          ? "flex min-w-0 items-center gap-1 overflow-visible rounded border border-white/15 bg-black/25"
+          : "overflow-visible rounded-lg border border-border bg-card/30"}
+      data-rich-editor-surface={embedded ? "embedded" : inline ? "inline" : "default"}
     >
-      <div className={`relative overflow-visible ${embedded ? "h-full" : ""}`}>
+      <div className={`relative overflow-visible ${embedded ? "h-full" : inline ? "min-w-0 flex-1" : ""}`}>
         {richPlaceholder && charCount === 0 && (
           <div
             aria-hidden="true"
@@ -1487,7 +1496,9 @@ export function RichContentEditor({
           ) : (
             <GameScrollArea
               className={
-                allowLineBreaks || (maxChars != null && maxChars > 80)
+                inline
+                  ? undefined
+                  : allowLineBreaks || (maxChars != null && maxChars > 80)
                   ? "max-h-[12rem]"
                   : undefined
               }
@@ -1515,7 +1526,7 @@ export function RichContentEditor({
       )}
 
       {!embedded && (
-        <div className="flex flex-wrap items-center gap-2 border-t border-border px-3 py-2 sm:gap-3">
+        <div className={`flex flex-wrap items-center gap-1 ${inline ? "shrink-0 px-1 py-0.5" : "gap-2 border-t border-border px-3 py-2 sm:gap-3"}`}>
           {toolbarStart}
           {enableTextCon && (
             <GameUiHoverTip label={textConCopy.make} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
@@ -1540,7 +1551,7 @@ export function RichContentEditor({
                 aria-expanded={textConModalOpen}
               >
                 <Type size={13} className="shrink-0" />
-                <span>{textConCopy.label}</span>
+                <span className={inline ? "sr-only" : undefined}>{textConCopy.label}</span>
               </button>
             </GameUiHoverTip>
           )}
@@ -1567,11 +1578,11 @@ export function RichContentEditor({
                 aria-expanded={cardConModalOpen}
               >
                 <TinyCardToken width={13} />
-                <span>{cardConCopy.label}</span>
+                <span className={inline ? "sr-only" : undefined}>{cardConCopy.label}</span>
               </button>
             </GameUiHoverTip>
           )}
-          {maxChars != null && (
+          {maxChars != null && !inline && (
             <span
               className={`shrink-0 font-mono text-xs tabular-nums ${charCountColor}`}
               aria-live="polite"
@@ -1601,7 +1612,7 @@ export function RichContentEditor({
             type="button"
             onClick={handleSubmit}
             disabled={!isValid || submitting}
-            className="ml-auto flex shrink-0 items-center gap-1.5 rounded bg-primary/20 px-3 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary/30 disabled:cursor-not-allowed disabled:opacity-40"
+            className={`${inline ? "px-1.5 py-0.5 text-[11px]" : "ml-auto px-3 py-1 text-xs"} flex shrink-0 items-center gap-1.5 rounded bg-primary/20 font-semibold text-primary transition-colors hover:bg-primary/30 disabled:cursor-not-allowed disabled:opacity-40`}
           >
             {submitting ? "..." : submitLabel}
             {submitIconSrc && (

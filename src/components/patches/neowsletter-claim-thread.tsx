@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { DeferredCommentSection } from "@/components/patches/deferred-comment-section";
+import Image from "@/components/ui/static-image";
+import { CommentSection } from "@/components/comment-section";
 
 export function NeowsletterClaimThread({
   threadKey,
@@ -19,16 +20,27 @@ export function NeowsletterClaimThread({
         setOpen(event.currentTarget.open);
       }}
     >
-      <summary className="inline cursor-pointer list-none text-xs text-muted-foreground marker:content-none hover:text-foreground [&::-webkit-details-marker]:hidden">
-        {label}
+      <summary className="inline-flex cursor-pointer list-none items-center gap-1 rounded-full border border-primary/35 bg-primary/10 px-1.5 py-0.5 text-[11px] leading-none text-primary marker:content-none hover:bg-primary/20 [&::-webkit-details-marker]:hidden">
+        <Image
+          src="/images/sts2/ui/emote/exclaim.png"
+          alt=""
+          width={14}
+          height={14}
+          className="h-3.5 w-3.5 object-contain"
+        />
+        <span>{label}</span>
       </summary>
-      {open ? (
-        <div className="mt-2 max-w-xl">
-          <DeferredCommentSection threadKey={threadKey} />
-        </div>
-      ) : (
-        <div className="mt-2" data-patch-comment-root data-thread-key={threadKey} />
-      )}
+      <div className="mt-1">
+        {open ? (
+          <CommentSection threadKey={threadKey} density="inline" />
+        ) : (
+          <div
+            data-patch-comment-root
+            data-thread-key={threadKey}
+            data-comment-density="inline"
+          />
+        )}
+      </div>
     </details>
   );
 }

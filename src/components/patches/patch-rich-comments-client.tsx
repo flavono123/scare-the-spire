@@ -192,10 +192,11 @@ function mountRichPatchComments() {
 
     root.dataset.richCommentMounted = "";
     const render = () => {
-      createRoot(root).render(React.createElement(CommentSection, { threadKey }));
+      const density = root.dataset.commentDensity === "inline" ? "inline" : undefined;
+      createRoot(root).render(React.createElement(CommentSection, { threadKey, density }));
     };
 
-    if (typeof IntersectionObserver === "undefined") {
+    if (root.dataset.commentDensity === "inline" || typeof IntersectionObserver === "undefined") {
       window.setTimeout(render, 0);
       continue;
     }

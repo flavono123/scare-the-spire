@@ -52,6 +52,7 @@ export function CommentSection({
   placeholder,
   floorHashTip,
   toolbarStart,
+  density = "default",
 }: {
   threadKey: string;
   initialEntities?: EntityInfo[];
@@ -74,6 +75,7 @@ export function CommentSection({
     example: string;
   };
   toolbarStart?: ReactNode;
+  density?: "default" | "inline";
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].comments;
@@ -141,8 +143,10 @@ export function CommentSection({
     toggleLike(commentId, activeUserId);
   };
 
+  const inline = density === "inline";
+
   return (
-    <div className="space-y-3">
+    <div className={inline ? "space-y-1" : "space-y-3"}>
       {storageUnavailable ? (
         <StorageUnavailableNotice
           compact
@@ -154,9 +158,9 @@ export function CommentSection({
           <span>{copy.loading}</span>
         </div>
       ) : comments.length === 0 ? (
-        <p className="text-xs text-muted-foreground">{copy.empty}</p>
+        inline ? null : <p className="text-xs text-muted-foreground">{copy.empty}</p>
       ) : (
-        <ul className="space-y-3">
+        <ul className={inline ? "space-y-0.5" : "space-y-3"}>
           {comments.map((comment) => {
             const active = Boolean(
               activeHistoryFloor
@@ -166,6 +170,58 @@ export function CommentSection({
                 activeHistoryFloor.step,
               ),
             );
+            if (inline) {
+              return (
+                <li
+                  key={comment.id}
+                  id={`history-comment-${comment.id}`}
+                  className="flex items-center gap-2 py-0.5 text-xs leading-5"
+                >
+                  <div className="min-w-0 flex-1 break-words text-xs leading-5 text-foreground/90 [&_p]:m-0">
+                    <PostRenderer
+                      blocks={resolveRichContentBlocks(comment.content, comment.content_blocks, richContentIndexes)}
+                      entityMap={entityMap}
+                      onHistoryFloorClick={onHistoryFloorClick}
+                    />
+                  </div>
+                  <div className="flex shrink-0 items-center gap-1 text-[10px] text-muted-foreground">
+                    <DisplayedProfileNickname
+                      nickname={comment.nickname}
+                      isOwner={Boolean(userId && userId === comment.user_id)}
+                      authorToken={comment}
+                      size={12}
+                      tokenClassName="h-3 w-3"
+                      nicknameClassName="max-w-16 truncate text-[10px] text-primary"
+                    />
+                    <span className="tabular-nums">
+                      {new Date(comment.created_at).toLocaleDateString(dateLocale)}
+                    </span>
+                    <LikeControl
+                      count={likeCounts.get(comment.id) ?? 0}
+                      liked={likedSet.has(comment.id)}
+                      disabled={!ready || storageUnavailable}
+                      onToggle={() => {
+                        void handleCommentLike(comment.id);
+                      }}
+                      tipLabel={tips.like}
+                      tipLabelActive={tips.unlike}
+                      size={12}
+                    />
+                    {userId === comment.user_id && (
+                      <button
+                        type="button"
+                        onClick={() => remove(comment.id)}
+                        className="inline-flex text-muted-foreground transition-colors hover:text-red-300"
+                        title={copy.delete}
+                        aria-label={copy.delete}
+                      >
+                        <Trash2 size={11} />
+                      </button>
+                    )}
+                  </div>
+                </li>
+              );
+            }
             return (
             <li
               key={comment.id}
@@ -226,7 +282,8 @@ export function CommentSection({
       )}
 
       {ready && !storageUnavailable && (
-        <div className="space-y-2">
+        <div className={inline ? "" : "space-y-2"}>
+          {!inline && (
           <input
             key={profile.nickname}
             ref={nicknameInputRef}
@@ -236,6 +293,7 @@ export function CommentSection({
             maxLength={20}
             className="service-input"
           />
+          )}
           {entitiesLoading ? (
             <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card/30 px-3 py-2 text-xs text-muted-foreground">
               <EngagementSpinner size={14} />
@@ -251,6 +309,7 @@ export function CommentSection({
               minChars={COMMENT_MIN_CHARS}
               maxChars={COMMENT_MAX_CHARS}
               allowLineBreaks
+              density={inline ? "inline" : "default"}
               historyFloorInsertRequest={historyFloorInsertRequest}
               historyFloorMentions={historyFloorMentions}
               floorHashTip={floorHashTip}

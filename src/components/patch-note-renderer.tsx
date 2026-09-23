@@ -594,7 +594,9 @@ export function EntityPreview({
     ? "relative z-50 mt-1"
     : pendingStaticPreview
       ? [
-          "fixed left-3 right-3 top-16 z-50 pointer-events-none opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100",
+          "invisible fixed left-3 right-3 top-16 z-50 h-0 overflow-hidden opacity-0 pointer-events-none transition-opacity",
+          "group-hover:visible group-hover:h-auto group-hover:overflow-visible group-hover:opacity-100",
+          "group-focus-within:visible group-focus-within:h-auto group-focus-within:overflow-visible group-focus-within:opacity-100",
           staticPreviewDesktopClass(placement),
         ].join(" ")
       : `absolute ${previewHorizontalClass(placement.horizontal)} z-50 pointer-events-none ${placement.vertical === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;
@@ -745,7 +747,7 @@ export function EntityPreview({
       )}
       {showResolvedPreview && previewEntity.type === "character" && previewEntity.characterData && (
         renderTooltip(
-          characterHasLowHealthIdle(previewEntity.characterData) ? (
+          !staticHoverPreviews && characterHasLowHealthIdle(previewEntity.characterData) ? (
             <CharacterLowHpHoverPreview
               character={previewEntity.characterData}
               serviceLocale={serviceLocale ?? "ko"}
