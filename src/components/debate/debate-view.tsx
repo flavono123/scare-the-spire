@@ -1,4 +1,5 @@
 import Image from "@/components/ui/static-image";
+import { DebateStage } from "@/components/debate/debate-stage";
 import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
 import { DEBATE_TOKEN_SRC } from "@/lib/debate";
 
@@ -7,11 +8,15 @@ export function DebateView({
   subtitle,
   hero,
   emptyLabel,
+  loadingLabel,
+  unavailableTitle,
 }: {
   title: string;
   subtitle: string;
   hero: string;
   emptyLabel: string;
+  loadingLabel: string;
+  unavailableTitle: string;
 }) {
   return (
     <div className="space-y-6" data-debate-view="">
@@ -28,19 +33,11 @@ export function DebateView({
         </div>
         <ToyBoxIndexHeading subtitle={subtitle} hero={hero} />
       </header>
-      <section
-        className="flex flex-col items-center gap-4 rounded-xl border border-white/10 bg-black/35 px-4 py-10 text-center"
-        data-debate-stage=""
-      >
-        <Image
-          src={DEBATE_TOKEN_SRC}
-          alt=""
-          width={72}
-          height={72}
-          className="object-contain"
-        />
-        <p className="font-service text-sm text-zinc-300">{emptyLabel}</p>
-      </section>
+      <DebateStage
+        emptyLabel={emptyLabel}
+        loadingLabel={loadingLabel}
+        unavailableTitle={unavailableTitle}
+      />
     </div>
   );
 }

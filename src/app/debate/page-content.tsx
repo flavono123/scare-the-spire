@@ -44,6 +44,8 @@ export async function renderDebatePage(
           subtitle={copy.subtitle}
           hero={gameCopy.hero}
           emptyLabel={copy.empty}
+          loadingLabel={copy.loading}
+          unavailableTitle={copy.unavailableTitle}
         />
       </div>
     </div>

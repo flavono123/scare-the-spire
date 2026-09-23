@@ -193,6 +193,12 @@ export const devNavItems = [
     strictDevOnly: true,
   },
   {
+    href: "/dev/debate",
+    label: "이번 주 토론 대상",
+    icon: DEBATE_TOKEN_SRC,
+    strictDevOnly: true,
+  },
+  {
     href: "/dev/decisions-board",
     label: "어려운 결정 보드",
     icon: "/images/sts2/powers/buffer_power.webp",
