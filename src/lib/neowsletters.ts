@@ -8,6 +8,9 @@ export interface NeowsletterIssue {
   title: string;
   titleKo: string;
   sourceUrl: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  imageAltKo?: string;
   summary: string;
   summaryKo: string;
 }
@@ -25,6 +28,17 @@ export interface NeowsletterDocument {
 const DATA_PATH = path.join(process.cwd(), "data/sts2-neowsletters.json");
 const NOTES_DIR = path.join(process.cwd(), "data/sts2-neowsletters");
 const CLAIM_MARKER = /^<!--\s*claim:([a-z0-9-]+)\s*-->$/;
+
+export function neowsletterArt(
+  issue: NeowsletterIssue,
+  serviceLocale: "ko" | "en",
+): { imageUrl: string; alt: string; objectPosition: string } | null {
+  if (!issue.imageUrl) return null;
+  const alt = serviceLocale === "ko"
+    ? issue.imageAltKo ?? issue.imageAlt ?? issue.titleKo
+    : issue.imageAlt ?? issue.imageAltKo ?? issue.title;
+  return { imageUrl: issue.imageUrl, alt, objectPosition: "center" };
+}
 
 export async function getNeowsletters(): Promise<NeowsletterIssue[]> {
   const raw = JSON.parse(await fs.readFile(DATA_PATH, "utf8")) as NeowsletterIssue[];

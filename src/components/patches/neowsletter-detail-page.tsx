@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PatchNoteRenderer } from "@/components/patch-note-renderer";
-import { DeferredCommentSection } from "@/components/patches/deferred-comment-section";
+import { PatchArtPreview } from "@/components/patches/patch-art";
+import { NeowsletterClaimThread } from "@/components/patches/neowsletter-claim-thread";
 import { PatchSectionTabs } from "@/components/patches/patch-section-tabs";
 import { buildNeowsletterCommentThreadKey } from "@/lib/comment-threads";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -15,6 +16,7 @@ import { loadAllEntities } from "@/lib/load-all-entities";
 import {
   getNeowsletter,
   getNeowsletters,
+  neowsletterArt,
   readNeowsletterDocument,
 } from "@/lib/neowsletters";
 import { PATCH_NOTES_PAGE_OG_IMAGE } from "@/lib/page-og-images";
@@ -73,6 +75,7 @@ export async function NeowsletterDetailPage({
   const copy = serviceMessages[serviceLocale].neowsletters;
   const title = serviceLocale === "ko" ? issue.titleKo : issue.title;
   const listHref = localizeHrefWithGameLocale("/patches/neowsletters", serviceLocale, gameLocale);
+  const art = neowsletterArt(issue, serviceLocale);
   const authoredGameLocale = serviceLocale === "ko" ? "kor" : "eng";
   const rendererProps = {
     entities,
@@ -105,24 +108,17 @@ export async function NeowsletterDetailPage({
           {copy.source}
         </a>
       </p>
-      {document.intro ? (
-        <div className="mt-6">
-          <PatchNoteRenderer
-            markdown={document.intro}
-            {...rendererProps}
-          />
-        </div>
-      ) : null}
+      {art ? <PatchArtPreview art={art} priority /> : null}
       {document.claims.map((claim) => (
-        <section key={claim.id} id={`claim-${claim.id}`} data-neowsletter-claim={claim.id} className="mt-8">
+        <section key={claim.id} id={`claim-${claim.id}`} data-neowsletter-claim={claim.id} className="mt-6">
           <PatchNoteRenderer
             markdown={claim.markdown}
             {...rendererProps}
           />
-          <h2 className="mt-4 font-game-title text-sm text-primary">{copy.comments}</h2>
-          <div className="mt-2">
-            <DeferredCommentSection threadKey={buildNeowsletterCommentThreadKey(issue.id, claim.id)} />
-          </div>
+          <NeowsletterClaimThread
+            threadKey={buildNeowsletterCommentThreadKey(issue.id, claim.id)}
+            label={copy.comments}
+          />
         </section>
       ))}
     </div>

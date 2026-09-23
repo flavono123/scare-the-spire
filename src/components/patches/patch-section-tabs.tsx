@@ -34,7 +34,7 @@ export function PatchSectionTabs({
       id: "neowsletters" as const,
       label: copy.neowsletters,
       href: "/patches/neowsletters",
-      icon: "/images/sts2/ancient-nodes/ancient_node_neow.webp",
+      icon: "/images/sts2/ancients/neow.webp",
     },
   ];
 
