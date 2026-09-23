@@ -424,6 +424,7 @@ export function transfigureBlocksToGameDescription(blocks: PostBlock[]): string 
     if (block.type === "history-run") return historyRunPlainText(block);
     if (block.type === "history-run-floor") return historyRunFloorPlainText(block);
     if (block.type === "text-con") return block.text;
+    if (block.type === "card-con") return block.displayText;
     return block.title;
   }).join(""));
 }
@@ -899,6 +900,8 @@ export function transfigureBlocksSignature(items: PostBlock[]): string {
       );
     } else if (block.type === "text-con") {
       tokens.push(`text-con:${block.bgColor}:${block.textColor}:${block.text}`);
+    } else if (block.type === "card-con") {
+      tokens.push(`card-con:${block.cardId}:${block.displayText}`);
     } else {
       tokens.push(`youtube:${block.videoId}:${block.title}`);
     }
@@ -926,6 +929,7 @@ export function isTransfiguredContent(
       if (block.type === "history-run") return historyRunPlainText(block);
       if (block.type === "history-run-floor") return historyRunFloorPlainText(block);
       if (block.type === "text-con") return block.text;
+      if (block.type === "card-con") return block.displayText;
       return block.title;
     })
     .join("")

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, type Ref } from "react";
 import type { CodexSearchTriggerGroup } from "@/lib/codex-search";
 
 export type TriggerGroup = CodexSearchTriggerGroup;
@@ -11,17 +11,42 @@ interface SearchBarProps {
   inputId?: string;
   triggerGroups?: TriggerGroup[];
   placeholder?: string;
+  inputRef?: Ref<HTMLInputElement>;
+  autoFocus?: boolean;
+  ariaLabel?: string;
 }
 
-export function SearchBar({ value, onChange, inputId, placeholder = "검색" }: SearchBarProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
+function assignInputRef(ref: Ref<HTMLInputElement> | undefined, node: HTMLInputElement | null) {
+  if (!ref) return;
+  if (typeof ref === "function") ref(node);
+  else ref.current = node;
+}
+
+export function SearchBar({
+  value,
+  onChange,
+  inputId,
+  placeholder = "검색",
+  inputRef,
+  autoFocus = false,
+  ariaLabel,
+}: SearchBarProps) {
+  const localRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (autoFocus) localRef.current?.focus();
+  }, [autoFocus]);
 
   return (
     <div className="relative h-9 rounded-md border border-border bg-card shadow-sm dark:border-black/70 dark:bg-[#171c1f] dark:shadow-[inset_0_-2px_0_rgba(0,0,0,0.45),0_1px_0_rgba(255,255,255,0.06)]">
       <input
-        ref={inputRef}
+        ref={(node) => {
+          localRef.current = node;
+          assignInputRef(inputRef, node);
+        }}
         id={inputId}
         type="text"
+        aria-label={ariaLabel ?? placeholder}
         inputMode="search"
         autoCapitalize="none"
         autoCorrect="off"
@@ -33,7 +58,7 @@ export function SearchBar({ value, onChange, inputId, placeholder = "검색" }: 
             if (value) {
               onChange("");
             } else {
-              inputRef.current?.blur();
+              localRef.current?.blur();
             }
           }
         }}
@@ -45,7 +70,7 @@ export function SearchBar({ value, onChange, inputId, placeholder = "검색" }: 
           type="button"
           onClick={() => {
             onChange("");
-            inputRef.current?.focus();
+            localRef.current?.focus();
           }}
           aria-label="검색어 지우기"
           className="absolute right-1.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center text-muted-foreground transition-transform hover:scale-105 dark:text-[#f1eadc] dark:drop-shadow-[2px_2px_0_rgba(0,0,0,0.85)]"

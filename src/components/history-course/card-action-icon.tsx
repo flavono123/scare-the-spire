@@ -128,6 +128,21 @@ function multiplyColors(left: string, right: string): string {
   return `#${channels.join("")}`.toUpperCase();
 }
 
+/** Colorless skill silhouette for toolbar tokens. Uses the same tiny-card masks. */
+export function TinyCardToken({ width = 14 }: { width?: number }) {
+  return (
+    <div
+      className="relative shrink-0 select-none"
+      style={{ width, height: width, imageRendering: "pixelated" }}
+      aria-hidden="true"
+    >
+      <div style={maskLayer(`${TINY}/card_back.png`, POOL_COLOR.colorless)} />
+      <div style={maskLayer(`${TINY}/desc_box.png`, "#000000", 64 / 255)} />
+      <div style={maskLayer(`${TINY}/banner.png`, BANNER_COLOR["일반"] ?? "#9C9C9C")} />
+    </div>
+  );
+}
+
 export function TinyCardIcon({ card, width }: TinyCardIconProps) {
   const cardBackColor = POOL_COLOR[card.color];
   const frameBrightness = FRAME_BRIGHTNESS[card.visualColor ?? card.color];

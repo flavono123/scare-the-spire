@@ -15,6 +15,7 @@ import {
   youtubeWatchUrl,
 } from "@/lib/youtube-reference";
 import { TextConChip } from "@/components/text-con/text-con-chip";
+import { CardConTile } from "@/components/card-con/card-con-tile";
 import { SERVICE_LINK_CLASS } from "@/lib/service-link-classes";
 
 interface ComboPostRendererProps {
@@ -111,6 +112,19 @@ export function ComboPostRenderer({
                 bgColor={block.bgColor}
                 textColor={block.textColor}
                 size="sm"
+              />
+            </span>
+          );
+        }
+
+        if (block.type === "card-con") {
+          const card = entityMap.get(`card:${block.cardId}`)?.cardData ?? null;
+          return (
+            <span key={index} className="my-1.5 inline-block align-middle">
+              <CardConTile
+                card={card}
+                displayText={block.displayText}
+                linked
               />
             </span>
           );

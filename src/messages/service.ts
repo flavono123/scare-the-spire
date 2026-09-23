@@ -156,6 +156,12 @@ export const serviceMessages = {
       submit: "작성",
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
     },
+    cardCon: {
+      label: "카드콘",
+      make: "카드콘 만들기",
+      hint: "카드를 검색해 넣으세요.",
+      searchPlaceholder: "카드 검색",
+    },
     engagementTips: {
       commentFirst: "첫 댓글 쓰기",
       commentCount: "{count}개의 댓글",
@@ -1479,6 +1485,12 @@ export const serviceMessages = {
       placeholder: "Write a comment",
       submit: "Post",
       unavailableTitle: "No responses from database",
+    },
+    cardCon: {
+      label: "Card con",
+      make: "Make a card con",
+      hint: "Search for a card to insert.",
+      searchPlaceholder: "Search cards",
     },
     engagementTips: {
       commentFirst: "Write the first comment",

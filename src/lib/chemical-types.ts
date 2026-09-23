@@ -92,6 +92,13 @@ export interface TextConBlock {
   textColor: string;
 }
 
+/** A searched card tile inserted into a comment or post. */
+export interface CardConBlock {
+  type: "card-con";
+  cardId: string;
+  displayText: string;
+}
+
 export type PostBlock =
   | TextBlock
   | EntityBlock
@@ -100,7 +107,8 @@ export type PostBlock =
   | YouTubeBlock
   | HistoryRunBlock
   | HistoryRunFloorBlock
-  | TextConBlock;
+  | TextConBlock
+  | CardConBlock;
 
 export interface ChemicalPost {
   id: string;

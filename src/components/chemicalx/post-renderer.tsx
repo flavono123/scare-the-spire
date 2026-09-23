@@ -21,6 +21,7 @@ import {
 import { historyRunPlainText } from "@/lib/history-run-reference";
 import { HistoryRunFloorChip } from "@/components/history-course/history-run-floor-chip";
 import { TextConChip } from "@/components/text-con/text-con-chip";
+import { CardConTile } from "@/components/card-con/card-con-tile";
 import type { HistoryRunFloorBlock } from "@/lib/chemical-types";
 import { SERVICE_LINK_CLASS } from "@/lib/service-link-classes";
 
@@ -207,6 +208,19 @@ export function PostRenderer({
                   bgColor={block.bgColor}
                   textColor={block.textColor}
                   size="md"
+                />
+              </span>
+            );
+          }
+
+          if (block.type === "card-con") {
+            const card = entityMap.get(`card:${block.cardId}`)?.cardData ?? null;
+            return (
+              <span key={i} className="my-1.5 inline-block align-middle">
+                <CardConTile
+                  card={card}
+                  displayText={block.displayText}
+                  linked
                 />
               </span>
             );

@@ -32,6 +32,16 @@ import { HistoryRunFloorExtension, replaceExclusiveHistoryFloor } from "@/compon
 import { TextConExtension } from "@/components/editor/text-con-extension";
 import { TextConPanel } from "@/components/text-con/text-con-panel";
 import { TextConPopup } from "@/components/text-con/text-con-popup";
+import { CardConExtension } from "@/components/editor/card-con-extension";
+import { CardConPanel } from "@/components/card-con/card-con-panel";
+import { AnchoredConPopup } from "@/components/editor/anchored-con-popup";
+import { TinyCardToken } from "@/components/history-course/card-action-icon";
+import {
+  CARD_CON_POPUP_HEIGHT,
+  CARD_CON_POPUP_WIDTH,
+} from "@/lib/card-con";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 import {
   GAME_UI_HOVER_TIP_NAV_DELAY_MS,
   GameUiHoverTip,
@@ -496,6 +506,7 @@ export interface RichContentEditorProps {
   } | null;
   hideSubmitButton?: boolean;
   enableTextCon?: boolean;
+  enableCardCon?: boolean;
 }
 
 export function RichContentEditor({
@@ -530,12 +541,19 @@ export function RichContentEditor({
   costTokens = null,
   hideSubmitButton = false,
   enableTextCon = true,
+  enableCardCon = true,
 }: RichContentEditorProps) {
+  const serviceLocale = useServiceLocale();
+  const cardConCopy = serviceMessages[serviceLocale].cardCon;
   const [submitting, setSubmitting] = useState(false);
   const [textConModalOpen, setTextConModalOpen] = useState(false);
   const [textConAnchor, setTextConAnchor] = useState<DOMRect | null>(null);
   const textConTriggerRef = useRef<HTMLButtonElement>(null);
   const textConSheetRef = useRef<HTMLDivElement>(null);
+  const [cardConModalOpen, setCardConModalOpen] = useState(false);
+  const [cardConAnchor, setCardConAnchor] = useState<DOMRect | null>(null);
+  const cardConTriggerRef = useRef<HTMLButtonElement>(null);
+  const cardConSheetRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -554,6 +572,15 @@ export function RichContentEditor({
       }
     }
   }, [textConModalOpen, isMobile]);
+
+  useEffect(() => {
+    if (cardConModalOpen && isMobile && cardConSheetRef.current) {
+      const rect = cardConSheetRef.current.getBoundingClientRect();
+      if (rect.bottom > window.innerHeight) {
+        cardConSheetRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+  }, [cardConModalOpen, isMobile]);
   const [youtubeResolving, setYoutubeResolving] = useState(false);
   const [youtubeFeedback, setYoutubeFeedback] = useState<{
     tone: "aqua" | "error";
@@ -675,6 +702,7 @@ export function RichContentEditor({
       ...(historyRunSlashCommands ? [HistoryRunReferenceExtension] : []),
       HistoryRunFloorExtension,
       ...(enableTextCon ? [TextConExtension] : []),
+      ...(enableCardCon ? [CardConExtension] : []),
       ...(enableFloorHash ? [
         FloorHashSuggestion.configure({
           suggestion: {
@@ -1349,6 +1377,28 @@ export function RichContentEditor({
     [editor],
   );
 
+  const handleInsertCardCon = useCallback(
+    (entity: EntityInfo) => {
+      if (!editor || entity.type !== "card") return;
+      const type = editor.schema.nodes["card-con"];
+      if (!type) return;
+
+      editor
+        .chain()
+        .focus()
+        .insertContent({
+          type: "card-con",
+          attrs: {
+            cardId: entity.id,
+            displayText: entity.nameKo,
+          },
+        })
+        .run();
+      setCardConModalOpen(false);
+    },
+    [editor],
+  );
+
   const handleSubmit = useCallback(async () => {
     if (!editor || submitting) return;
     replaceExactKeywordsInEditor(editor, exactKeywordIndex, resolveKeyword, true);
@@ -1455,7 +1505,7 @@ export function RichContentEditor({
       )}
 
       {!embedded && (
-        <div className="flex items-center gap-3 border-t border-border px-3 py-2">
+        <div className="flex flex-wrap items-center gap-2 border-t border-border px-3 py-2 sm:gap-3">
           {toolbarStart}
           {enableTextCon && (
             <GameUiHoverTip label="글자콘 만들기" delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
@@ -1468,6 +1518,7 @@ export function RichContentEditor({
                     const rect = textConTriggerRef.current?.getBoundingClientRect();
                     if (rect) setTextConAnchor(rect);
                   }
+                  setCardConModalOpen(false);
                   setTextConModalOpen((prev) => !prev);
                 }}
                 className={`flex shrink-0 items-center gap-1 rounded border px-2 py-1 text-xs transition-colors ${
@@ -1480,6 +1531,33 @@ export function RichContentEditor({
               >
                 <Type size={13} className="shrink-0" />
                 <span>글자콘</span>
+              </button>
+            </GameUiHoverTip>
+          )}
+          {enableCardCon && (
+            <GameUiHoverTip label={cardConCopy.make} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
+              <button
+                ref={cardConTriggerRef}
+                type="button"
+                data-card-con-trigger=""
+                onClick={() => {
+                  if (!cardConModalOpen) {
+                    const rect = cardConTriggerRef.current?.getBoundingClientRect();
+                    if (rect) setCardConAnchor(rect);
+                  }
+                  setTextConModalOpen(false);
+                  setCardConModalOpen((prev) => !prev);
+                }}
+                className={`flex shrink-0 items-center gap-1 rounded border px-2 py-1 text-xs transition-colors ${
+                  cardConModalOpen
+                    ? "border-primary bg-primary/20 text-primary"
+                    : "border-border/80 bg-card/50 text-muted-foreground hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
+                }`}
+                aria-label={cardConCopy.label}
+                aria-expanded={cardConModalOpen}
+              >
+                <TinyCardToken width={13} />
+                <span>{cardConCopy.label}</span>
               </button>
             </GameUiHoverTip>
           )}
@@ -1553,6 +1631,38 @@ export function RichContentEditor({
           onInsert={handleInsertTextCon}
           autoFocus={true}
         />
+      )}
+
+      {enableCardCon && cardConModalOpen && isMobile && (
+        <div
+          ref={cardConSheetRef}
+          data-card-con-sheet=""
+          className="border-t border-border/70 bg-zinc-950/98 p-3.5 animate-in slide-in-from-top-2 duration-150"
+        >
+          <CardConPanel
+            entities={entities}
+            onClose={() => setCardConModalOpen(false)}
+            onInsert={handleInsertCardCon}
+          />
+        </div>
+      )}
+
+      {enableCardCon && cardConModalOpen && !isMobile && (
+        <AnchoredConPopup
+          anchor={cardConAnchor}
+          triggerRef={cardConTriggerRef}
+          onClose={() => setCardConModalOpen(false)}
+          ariaLabel={cardConCopy.make}
+          dataAttribute="data-card-con-popup"
+          width={CARD_CON_POPUP_WIDTH}
+          height={CARD_CON_POPUP_HEIGHT}
+        >
+          <CardConPanel
+            entities={entities}
+            onClose={() => setCardConModalOpen(false)}
+            onInsert={handleInsertCardCon}
+          />
+        </AnchoredConPopup>
       )}
     </div>
   );

@@ -235,6 +235,16 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
             textColor: nodeString(node.attrs?.textColor) || "dark",
           });
         }
+      } else if (node.type === "card-con") {
+        const cardId = nodeString(node.attrs?.cardId).trim();
+        const displayText = nodeString(node.attrs?.displayText).trim();
+        if (cardId && displayText) {
+          blocks.push({
+            type: "card-con",
+            cardId,
+            displayText,
+          });
+        }
       }
     }
   }
@@ -310,6 +320,15 @@ export function blocksToTiptapDocument(blocks: PostBlock[]): JSONContent {
         },
       }];
     }
+    if (block.type === "card-con") {
+      return [{
+        type: "card-con",
+        attrs: {
+          cardId: block.cardId,
+          displayText: block.displayText,
+        },
+      }];
+    }
     return [{
       type: "history-run-reference",
       attrs: {
@@ -350,6 +369,7 @@ export function blocksToPlainText(blocks: PostBlock[]): string {
       if (b.type === "history-run") return historyRunPlainText(b);
       if (b.type === "history-run-floor") return historyRunFloorPlainText(b);
       if (b.type === "text-con") return stripNullCharacters(b.text);
+      if (b.type === "card-con") return stripNullCharacters(b.displayText);
       return stripNullCharacters(b.displayText);
     })
     .join("");
@@ -373,6 +393,7 @@ export function blocksToStorageText(blocks: PostBlock[]): string {
       if (b.type === "history-run") return historyRunPlainText(b);
       if (b.type === "history-run-floor") return historyRunFloorPlainText(b);
       if (b.type === "text-con") return `[글자콘:${stripNullCharacters(b.text)}]`;
+      if (b.type === "card-con") return `[카드콘:${stripNullCharacters(b.displayText)}]`;
 
       const text = stripNullCharacters(b.text);
       const keyword = stripNullCharacters(b.keyword ?? "").trim();

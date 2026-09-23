@@ -16,6 +16,13 @@ import type { ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import { KeywordHoverTip } from "@/components/keyword-hover-tip";
+import { SearchBar } from "@/components/codex/search-bar";
+import { FittedCardTile } from "@/components/history-course/fitted-card-tile";
+import {
+  CARD_CON_BROWSE_LIMIT,
+  CARD_CON_PICKER_TILE_CLASS,
+  CARD_CON_SEARCH_LIMIT,
+} from "@/lib/card-con";
 import { serviceMessages } from "@/messages/service";
 
 const PICKER_TYPE_ORDER = [
@@ -42,6 +49,12 @@ interface ComboResourcePickerProps {
   serviceLocale: ServiceLocale;
   onSelect: (entity: EntityInfo) => void;
   secondaryAction?: ReactNode;
+  /** Paint card matches as CardTiles and hide the type chips. */
+  cardTiles?: boolean;
+  /** Always show the result panel. Hides the combo trigger row. */
+  embedded?: boolean;
+  searchPlaceholder?: string;
+  panelLabel?: string;
 }
 
 export function ComboResourcePicker({
@@ -49,11 +62,17 @@ export function ComboResourcePicker({
   serviceLocale,
   onSelect,
   secondaryAction,
+  cardTiles = false,
+  embedded = false,
+  searchPlaceholder,
+  panelLabel,
 }: ComboResourcePickerProps) {
   const copy = serviceMessages[serviceLocale].combo;
   const commonCopy = serviceMessages[serviceLocale].codex.common;
   const typeLabels = compendiumTypeLabels(serviceLocale);
-  const [open, setOpen] = useState(false);
+  const [openState, setOpenState] = useState(false);
+  const open = embedded || openState;
+  const setOpen = setOpenState;
   const [query, setQuery] = useState("");
   const [activeType, setActiveType] = useState<EntityType | null>(null);
   const [recentlyAdded, setRecentlyAdded] = useState<EntityInfo | null>(null);
@@ -61,24 +80,33 @@ export function ComboResourcePicker({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const feedbackTimeoutRef = useRef<number | null>(null);
 
+  const sourceEntities = useMemo(
+    () => cardTiles
+      ? entities.filter((entity) => entity.type === "card" && entity.cardData)
+      : entities,
+    [cardTiles, entities],
+  );
+
   const availableTypes = useMemo(() => {
-    const types = new Set(entities.map((entity) => entity.type));
+    const types = new Set(sourceEntities.map((entity) => entity.type));
     return PICKER_TYPE_ORDER.filter((type) => types.has(type));
-  }, [entities]);
+  }, [sourceEntities]);
 
   const scopedEntities = useMemo(() => {
-    const scoped = activeType
-      ? entities.filter((entity) => entity.type === activeType)
-      : entities;
+    const scoped = !cardTiles && activeType
+      ? sourceEntities.filter((entity) => entity.type === activeType)
+      : sourceEntities;
     return [...scoped].sort((left, right) => left.nameKo.localeCompare(right.nameKo));
-  }, [activeType, entities]);
+  }, [activeType, cardTiles, sourceEntities]);
 
+  const browseLimit = cardTiles ? CARD_CON_BROWSE_LIMIT : BROWSE_RESULT_LIMIT;
+  const searchLimit = cardTiles ? CARD_CON_SEARCH_LIMIT : SEARCH_RESULT_LIMIT;
   const normalizedQuery = query.trim();
   const results = useMemo(
     () => normalizedQuery
-      ? matchEntities(normalizedQuery, scopedEntities, SEARCH_RESULT_LIMIT)
-      : scopedEntities.slice(0, BROWSE_RESULT_LIMIT),
-    [normalizedQuery, scopedEntities],
+      ? matchEntities(normalizedQuery, scopedEntities, searchLimit)
+      : scopedEntities.slice(0, browseLimit),
+    [browseLimit, normalizedQuery, scopedEntities, searchLimit],
   );
   const hasMoreBrowseResults = !normalizedQuery && scopedEntities.length > results.length;
   const [hintBeforeKeyword, hintAfterKeyword] = copy.composerHint.split("{keyword}");
@@ -89,11 +117,13 @@ export function ComboResourcePicker({
     searchInputRef.current?.focus();
 
     const handlePointerDown = (event: PointerEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+      if (!rootRef.current?.contains(event.target as Node)) setOpenState(false);
     };
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") setOpenState(false);
     };
+
+    if (embedded) return;
 
     document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("keydown", handleKeyDown);
@@ -101,7 +131,7 @@ export function ComboResourcePicker({
       document.removeEventListener("pointerdown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [open]);
+  }, [embedded, open]);
 
   useEffect(() => () => {
     if (feedbackTimeoutRef.current != null) {
@@ -123,8 +153,11 @@ export function ComboResourcePicker({
     window.requestAnimationFrame(() => searchInputRef.current?.focus());
   };
 
+  const resolvedSearchPlaceholder = searchPlaceholder ?? copy.resourceSearchPlaceholder;
+
   return (
-    <div ref={rootRef} className="min-w-0 flex-1" data-combo-resource-picker>
+    <div ref={rootRef} className={cn("min-w-0 flex-1", embedded && "flex min-h-0 flex-col")} data-combo-resource-picker>
+      {!embedded && (
       <div className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2 gap-y-1.5 sm:grid-cols-[auto_minmax(0,1fr)_auto]">
         <div className="flex flex-wrap items-center gap-1.5">
           <button
@@ -169,15 +202,35 @@ export function ComboResourcePicker({
           )}
         </span>
       </div>
+      )}
 
       {open && (
         <div
-          id="combo-resource-picker-panel"
-          role="dialog"
-          aria-label={copy.resourcePickerLabel}
-          data-combo-picker-panel
-          className="mt-2 flex max-h-72 w-full flex-col overflow-hidden rounded-xl border border-border bg-popover shadow-lg"
+          id={embedded ? undefined : "combo-resource-picker-panel"}
+          role={embedded ? undefined : "dialog"}
+          aria-label={panelLabel ?? copy.resourcePickerLabel}
+          data-combo-picker-panel={embedded ? undefined : ""}
+          data-card-con-picker={cardTiles ? "" : undefined}
+          className={cn(
+            "flex w-full min-h-0 flex-col overflow-hidden",
+            cardTiles
+              ? "h-[min(22rem,52dvh)]"
+              : "mt-2 max-h-72 rounded-xl border border-border bg-popover shadow-lg",
+            embedded ? "mt-3" : "",
+          )}
         >
+          {cardTiles ? (
+            <div className="shrink-0 pb-2">
+              <SearchBar
+                value={query}
+                onChange={setQuery}
+                placeholder={resolvedSearchPlaceholder}
+                ariaLabel={resolvedSearchPlaceholder}
+                inputRef={searchInputRef}
+                autoFocus={open}
+              />
+            </div>
+          ) : (
           <div className="flex items-center gap-2 border-b border-border p-2.5">
             <Search className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
             <input
@@ -185,8 +238,8 @@ export function ComboResourcePicker({
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder={copy.resourceSearchPlaceholder}
-              aria-label={copy.resourceSearchPlaceholder}
+              placeholder={resolvedSearchPlaceholder}
+              aria-label={resolvedSearchPlaceholder}
               data-combo-picker-search
               className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
             />
@@ -199,7 +252,9 @@ export function ComboResourcePicker({
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
+          )}
 
+          {!cardTiles && (
           <div className="flex shrink-0 gap-1 overflow-x-auto border-b border-border px-2.5 py-2">
             <button
               type="button"
@@ -237,13 +292,40 @@ export function ComboResourcePicker({
               </button>
             ))}
           </div>
+          )}
 
-          <GameScrollArea className="min-h-0 flex-1" size="small" scrollerClassName="p-2">
+          <GameScrollArea className="min-h-0 flex-1" size="small" scrollerClassName={cardTiles ? "px-1 py-1" : "p-2"}>
             <div role="list">
             {results.length === 0 ? (
               <p className="px-3 py-8 text-center text-xs text-muted-foreground">
                 {commonCopy.noResults}
               </p>
+            ) : cardTiles ? (
+              <div className="grid grid-cols-3 gap-x-3 gap-y-4">
+                {results.map((entity) => (
+                  entity.cardData ? (
+                    <button
+                      key={entity.id}
+                      type="button"
+                      role="listitem"
+                      data-card-con-result={entity.id}
+                      aria-label={entity.nameKo}
+                      onClick={() => selectEntity(entity)}
+                      className="mx-auto w-full max-w-[7.5rem] rounded-md p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      <span className={cn("block", CARD_CON_PICKER_TILE_CLASS)}>
+                        <FittedCardTile
+                          card={entity.cardData}
+                          serviceLocale={serviceLocale}
+                          showUpgrade={false}
+                          showBeta={false}
+                          interactive={false}
+                        />
+                      </span>
+                    </button>
+                  ) : null
+                ))}
+              </div>
             ) : (
               <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
                 {results.map((entity) => (
