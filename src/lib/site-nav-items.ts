@@ -326,14 +326,18 @@ export function getToyBoxNavItems({
       ];
     });
 
+  const devItems = showDevMenu
+    ? devNavItems.filter(
+        (item) => !("strictDevOnly" in item) || process.env.NODE_ENV === "development",
+      )
+    : [];
+  const navIndicatorItem = devItems.find((item) => item.href === "/dev/nav-indicators");
+
   return localizePlainNavItems(
     [
+      ...(navIndicatorItem ? [navIndicatorItem] : []),
       ...serviceItems,
-      ...(showDevMenu
-        ? devNavItems.filter(
-            (item) => !("strictDevOnly" in item) || process.env.NODE_ENV === "development",
-          )
-        : []),
+      ...devItems.filter((item) => item.href !== "/dev/nav-indicators"),
     ],
     serviceLocale,
     gameLocale,
