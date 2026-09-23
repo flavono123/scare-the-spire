@@ -170,6 +170,7 @@ export const serviceMessages = {
       vote_rate_high: "투표율 높은 순",
       vote_rate_low: "투표율 낮은 순",
       play_count: "인기",
+      run_start: "도전 시각",
     },
     deleteConfirm: {
       title: "이 글을 삭제할까요?",
@@ -1493,6 +1494,7 @@ export const serviceMessages = {
       vote_rate_high: "High vote rate",
       vote_rate_low: "Low vote rate",
       play_count: "Popular",
+      run_start: "Run start",
     },
     deleteConfirm: {
       title: "Delete this post?",

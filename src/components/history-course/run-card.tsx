@@ -13,9 +13,11 @@ import {
   formatCoverRunTime,
   HistoryCourseCover,
 } from "@/components/history-course/history-course-cover";
+import { IndexCardEngagement } from "@/components/index-card-engagement";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import type { PostBlock } from "@/lib/chemical-types";
+import { buildHistoryCourseCommentThreadKey } from "@/lib/comment-threads";
 import { resolveCoverCaptionTitle } from "@/lib/run-cover-phrase";
 import { ensureCoverSpec, fallbackCoverTitlePhrase } from "@/lib/run-cover-suggest";
 import type { CoverSpec } from "@/lib/run-cover-types";
@@ -54,6 +56,12 @@ export interface RunCardProps {
   isOwner?: boolean;
   ownedLocally?: boolean;
   pending?: boolean;
+  commentCount?: number;
+  likeCount?: number;
+  commentsHref?: string;
+  userId?: string | null;
+  authReady?: boolean;
+  ensureUser?: () => Promise<string | null>;
 }
 
 export function runCardPropsFromReplay(
@@ -96,6 +104,13 @@ export function RunCard({
   isOwner = false,
   ownedLocally = false,
   pending,
+  runId,
+  commentCount = 0,
+  likeCount = 0,
+  commentsHref,
+  userId = null,
+  authReady = true,
+  ensureUser,
 }: RunCardProps) {
   const serviceLocale = useServiceLocale();
   const tables = useGameI18n();
@@ -222,6 +237,19 @@ export function RunCard({
                 ) : null}
               </LockupCaptionParts>
             </p>
+            {commentsHref ? (
+              <div className="mt-1.5">
+                <IndexCardEngagement
+                  commentsHref={commentsHref}
+                  commentCount={commentCount}
+                  likeStoryId={buildHistoryCourseCommentThreadKey(runId)}
+                  likeCount={likeCount}
+                  userId={userId}
+                  authReady={authReady}
+                  ensureUser={ensureUser}
+                />
+              </div>
+            ) : null}
           </div>
           {(onDelete || onShare || onEditCover) && (
             <div className="flex shrink-0 items-center gap-0.5 pt-0.5">

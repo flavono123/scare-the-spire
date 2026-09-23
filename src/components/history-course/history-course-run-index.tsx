@@ -3,19 +3,31 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ComboGameElementFilter } from "@/components/combo/combo-game-element-filter";
+import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { CoverEditorSheet } from "@/components/history-course/cover-editor-sheet";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useAuth } from "@/hooks/use-auth";
+import { useHistoryCourseEngagement } from "@/hooks/use-history-course-engagement";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import type { PostBlock } from "@/lib/chemical-types";
 import type { ComboResourceRef } from "@/lib/combo-types";
 import { mergePartyBadges } from "@/lib/history-party";
 import {
+  HISTORY_COURSE_INDEX_SORTS,
+  sortHistoryCourseIndexRuns,
+  type HistoryCourseIndexSort,
+} from "@/lib/history-course-index-sort";
+import {
   buildHistoryCourseSearchDoc,
   historyCourseRunMatches,
 } from "@/lib/history-course-search";
+import {
+  buildHistoryCourseCommentThreadKey,
+  commentThreadHref,
+} from "@/lib/comment-threads";
+import { localizeHref } from "@/lib/i18n";
 import {
   type DonatedRunSummary,
   deleteDonatedRun,
@@ -45,6 +57,7 @@ interface LocalEntry {
   runId: string;
   raw: string;
   run: ReplayRun;
+  savedAt: number;
   noteBlocks?: PostBlock[] | null;
   coverSpec: CoverSpec;
 }
@@ -53,7 +66,6 @@ interface MergedRun {
   runId: string;
   local?: LocalEntry;
   donated?: DonatedRunSummary;
-  sortTime: number;
 }
 
 export function HistoryCourseRunIndex({
@@ -65,7 +77,7 @@ export function HistoryCourseRunIndex({
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].historyCourse.lists;
   const router = useRouter();
-  const { userId, ensureUser } = useAuth();
+  const { userId, ready: authReady, ensureUser } = useAuth();
   const [localEntries, setLocalEntries] = useState<LocalEntry[] | null>(null);
   const [donatedRuns, setDonatedRuns] = useState<DonatedRunSummary[] | null>(null);
   const [donatedIds, setDonatedIds] = useState<Set<string>>(new Set());
@@ -74,6 +86,7 @@ export function HistoryCourseRunIndex({
   const [editingDonated, setEditingDonated] = useState<DonatedRunSummary | null>(null);
   const [query, setQuery] = useState("");
   const [selectedGameElements, setSelectedGameElements] = useState<ComboResourceRef[]>([]);
+  const [sort, setSort] = useState<HistoryCourseIndexSort>("latest");
 
   useEffect(() => {
     let cancelled = false;
@@ -91,6 +104,7 @@ export function HistoryCourseRunIndex({
             runId: rec.runId,
             raw: rec.raw,
             run,
+            savedAt: rec.savedAt,
             noteBlocks: rec.noteBlocks ?? null,
             coverSpec,
           });
@@ -152,6 +166,20 @@ export function HistoryCourseRunIndex({
     () => mergeIndexRuns(localEntries ?? [], donatedRuns ?? []),
     [donatedRuns, localEntries],
   );
+  const engagement = useHistoryCourseEngagement(merged.map((item) => item.runId));
+  const ordered = useMemo(
+    () => sortHistoryCourseIndexRuns(
+      merged.map((item) => ({
+        ...item,
+        createdAtMs: indexCreatedAtMs(item),
+        startTime: indexStartTime(item),
+        likeCount: engagement.counts[item.runId]?.likes ?? 0,
+        commentCount: engagement.counts[item.runId]?.comments ?? 0,
+      })),
+      sort,
+    ),
+    [engagement.counts, merged, sort],
+  );
   const searchDocs = useMemo(() => {
     const docs = new Map<string, ReturnType<typeof buildHistoryCourseSearchDoc>>();
     for (const item of merged) {
@@ -175,12 +203,12 @@ export function HistoryCourseRunIndex({
     [searchDocs],
   );
   const filtered = useMemo(
-    () => merged.filter((item) => {
+    () => ordered.filter((item) => {
       const doc = searchDocs.get(item.runId);
       if (!doc) return true;
       return historyCourseRunMatches(doc, query, selectedGameElements, entities);
     }),
-    [entities, merged, query, searchDocs, selectedGameElements],
+    [entities, ordered, query, searchDocs, selectedGameElements],
   );
 
   const handleSaveLocalCover = useCallback(
@@ -337,7 +365,19 @@ export function HistoryCourseRunIndex({
 
   return (
     <section>
-      <div className="mb-4 max-w-2xl">
+      <div className="mb-4 max-w-2xl space-y-3">
+        {!loading && !unavailable ? (
+          <FeedSortToggle
+            sort={sort}
+            onSortChange={(next) => {
+              if ((HISTORY_COURSE_INDEX_SORTS as readonly string[]).includes(next)) {
+                setSort(next as HistoryCourseIndexSort);
+              }
+            }}
+            labels={serviceMessages[serviceLocale].feedSort}
+            options={HISTORY_COURSE_INDEX_SORTS}
+          />
+        ) : null}
         <ComboGameElementFilter
           entities={entities}
           items={searchItems}
@@ -400,6 +440,15 @@ export function HistoryCourseRunIndex({
                   <RunCard
                     {...runCardPropsFromReplay(local.run, local.runId, local.coverSpec)}
                     noteBlocks={local.noteBlocks}
+                    commentCount={engagement.counts[item.runId]?.comments ?? 0}
+                    likeCount={engagement.counts[item.runId]?.likes ?? 0}
+                    userId={userId}
+                    authReady={authReady}
+                    ensureUser={ensureUser}
+                    commentsHref={localizeHref(
+                      commentThreadHref(buildHistoryCourseCommentThreadKey(item.runId)),
+                      serviceLocale,
+                    )}
                     isOwner={isOwner}
                     ownedLocally
                     onPick={() => handlePickLocal(local)}
@@ -427,6 +476,15 @@ export function HistoryCourseRunIndex({
                     badges={donated.badges ?? []}
                     coverSpec={donated.cover_spec}
                     noteBlocks={donated.note_blocks}
+                    commentCount={engagement.counts[item.runId]?.comments ?? 0}
+                    likeCount={engagement.counts[item.runId]?.likes ?? 0}
+                    userId={userId}
+                    authReady={authReady}
+                    ensureUser={ensureUser}
+                    commentsHref={localizeHref(
+                      commentThreadHref(buildHistoryCourseCommentThreadKey(donated.id)),
+                      serviceLocale,
+                    )}
                     isOwner={isOwner}
                     ownedLocally={false}
                     onPick={() => router.push(`/history-course/${donated.id}`)}
@@ -507,24 +565,34 @@ function mergeIndexRuns(
     byId.set(local.runId, {
       runId: local.runId,
       local,
-      sortTime: local.run.start_time ?? 0,
     });
   }
   for (const donated of donatedRuns) {
     const existing = byId.get(donated.id);
-    const donatedTime = (donated.start_time ?? Date.parse(donated.created_at)) || 0;
     if (existing) {
       existing.donated = donated;
-      existing.sortTime = Math.max(existing.sortTime, donatedTime);
     } else {
       byId.set(donated.id, {
         runId: donated.id,
         donated,
-        sortTime: donatedTime,
       });
     }
   }
-  return [...byId.values()].sort((a, b) => b.sortTime - a.sortTime);
+  return [...byId.values()];
+}
+
+function indexCreatedAtMs(item: MergedRun): number {
+  if (item.donated?.created_at) {
+    const parsed = Date.parse(item.donated.created_at);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  return item.local?.savedAt ?? 0;
+}
+
+function indexStartTime(item: MergedRun): number {
+  const localStart = item.local?.run.start_time;
+  if (typeof localStart === "number" && localStart > 0) return localStart;
+  return item.donated?.start_time ?? 0;
 }
 
 function parseDonatedReplay(donated: DonatedRunSummary | undefined): ReplayRun | null {
