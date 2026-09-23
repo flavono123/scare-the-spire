@@ -102,6 +102,7 @@ const DEFRAGMENT_FEDERATED_SERVICES = new Set([
   "decisions_decisions",
   "favorite_tournament",
   "pagestorm",
+  "history_course",
 ]);
 
 const RECORD_ID_PATTERN = /^[A-Za-z0-9_-]{1,128}$/;

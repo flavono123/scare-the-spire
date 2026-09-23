@@ -50,6 +50,30 @@ assert.equal(cursorFromDefragmentItem(parsed, "recommended").score, 2);
 
 assert.equal(parseDefragmentFeedRow({ service: "history_course" }), null);
 assert.equal(parseDefragmentFeedRow({
+  id: "12jr8pfwzycbewd9",
+  created_at: "2026-09-01T00:00:00.000Z",
+  service: "history_course",
+  title: "SEED",
+  history_meta: {
+    cover_spec: null,
+    win: true,
+    ascension: 10,
+    total_floors: 49,
+  },
+})?.service, "history_course");
+assert.equal(parseDefragmentFeedRow({
+  id: "12jr8pfwzycbewd9",
+  created_at: "2026-09-01T00:00:00.000Z",
+  service: "history_course",
+  title: "SEED",
+  history_meta: {
+    cover_spec: null,
+    win: true,
+    ascension: 10,
+    total_floors: 49,
+  },
+})?.historyMeta?.totalFloors, 49);
+assert.equal(parseDefragmentFeedRow({
   id: parsed.id,
   created_at: parsed.created_at,
   service: "defragment",

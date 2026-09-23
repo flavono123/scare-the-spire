@@ -26,11 +26,11 @@ import {
 import type { DecisionsDecisionsGameCopy } from "@/lib/borrowed-game-copy";
 import type { PostBlock } from "@/lib/chemical-types";
 import {
-  DEFRAGMENT_FEDERATED_SERVICES,
   DEFRAGMENT_FEED_SERVICE_META,
+  DEFRAGMENT_WRITE_SERVICES,
   feedItemFromPost,
   type DefragmentFeedItem,
-  type DefragmentFederatedService,
+  type DefragmentWriteService,
 } from "@/lib/defragment";
 import type { GameLocale } from "@/lib/i18n";
 import type { ThisOrThatResourceRef } from "@/lib/this-or-that";
@@ -100,7 +100,7 @@ export function DefragmentWritePanel({
   placeholders: DefragmentWritePlaceholders;
   upgradeLabel: string;
   profileNickname: string;
-  typeLabels: Record<DefragmentFederatedService, string>;
+  typeLabels: Record<DefragmentWriteService, string>;
   decisionsCopy: DecisionsDecisionsGameCopy;
   onCreated: (item: DefragmentFeedItem) => void;
   onUnavailable: () => void;
@@ -111,7 +111,7 @@ export function DefragmentWritePanel({
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].defragment;
   const nicknameInputRef = useRef<HTMLInputElement>(null);
-  const [writeType, setWriteType] = useState<DefragmentFederatedService>("combo");
+  const [writeType, setWriteType] = useState<DefragmentWriteService>("combo");
   const [overlayBlocks, setOverlayBlocks] = useState<PostBlock[]>([]);
   const [transfigureOpen, setTransfigureOpen] = useState(false);
   const [totSubmitting, setTotSubmitting] = useState(false);
@@ -126,7 +126,7 @@ export function DefragmentWritePanel({
   }, [copy.defaultNickname, profileNickname]);
 
   const saveOverlay = useCallback(async (
-    service: DefragmentFederatedService,
+    service: DefragmentWriteService,
     sourceId: string,
     nickname: string,
     activeUserId: string,
@@ -313,7 +313,7 @@ export function DefragmentWritePanel({
     />
   );
 
-  const typeChips = useMemo(() => DEFRAGMENT_FEDERATED_SERVICES.map((service) => {
+  const typeChips = useMemo(() => DEFRAGMENT_WRITE_SERVICES.map((service) => {
     const selected = writeType === service;
     return (
       <button

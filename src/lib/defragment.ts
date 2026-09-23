@@ -4,6 +4,7 @@ import {
   buildComboCommentThreadKey,
   buildDecisionsDecisionsCommentThreadKey,
   buildFavoriteTournamentCommentThreadKey,
+  buildHistoryCourseCommentThreadKey,
   buildPagestormCommentThreadKey,
   buildThisOrThatCommentThreadKey,
   buildTransfigureCommentThreadKey,
@@ -19,6 +20,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { PAGESTORM_HREF, PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
+import type { CoverSpec } from "@/lib/run-cover-types";
 import { toyboxRecommendScore, type ToyboxFeedSort } from "@/lib/toybox-feed";
 
 export const DEFRAGMENT_HREF = "/defragment";
@@ -33,12 +35,32 @@ export const DEFRAGMENT_FEDERATED_SERVICES = [
   "chemical_x",
   "decisions_decisions",
   "pagestorm",
+  "history_course",
+] as const;
+
+/** Board sources that are written from 조각모음. History Course is a donated run, not a post. */
+export const DEFRAGMENT_WRITE_SERVICES = [
+  "combo",
+  "transfigure",
+  "this_or_that",
+  "favorite_tournament",
+  "chemical_x",
+  "decisions_decisions",
+  "pagestorm",
 ] as const;
 
 export const DEFRAGMENT_FEED_SERVICES = DEFRAGMENT_FEDERATED_SERVICES;
 
 export type DefragmentFederatedService =
   (typeof DEFRAGMENT_FEDERATED_SERVICES)[number];
+export type DefragmentWriteService = (typeof DEFRAGMENT_WRITE_SERVICES)[number];
+
+export interface HistoryCourseFeedMeta {
+  coverSpec: CoverSpec | null;
+  win: boolean;
+  ascension: number;
+  totalFloors: number;
+}
 export type DefragmentFeedService = string;
 
 export interface DefragmentPost {
@@ -72,6 +94,7 @@ export interface DefragmentFeedItem {
   avatarKind?: string | null;
   paletteId?: string | null;
   paletteSwapped?: boolean | null;
+  historyMeta?: HistoryCourseFeedMeta | null;
 }
 
 export const DEFRAGMENT_FEED_SERVICE_META: Record<
@@ -105,6 +128,10 @@ export const DEFRAGMENT_FEED_SERVICE_META: Record<
   pagestorm: {
     hrefBase: PAGESTORM_HREF,
     tokenSrc: PAGESTORM_TOKEN_SRC,
+  },
+  history_course: {
+    hrefBase: "/history-course",
+    tokenSrc: "/images/sts2/relics/history_course.webp",
   },
 };
 
@@ -229,6 +256,8 @@ export function defragmentItemThreadKey(
       return buildFavoriteTournamentCommentThreadKey(item.id);
     case "pagestorm":
       return buildPagestormCommentThreadKey(item.id);
+    case "history_course":
+      return buildHistoryCourseCommentThreadKey(item.id);
     default:
       return null;
   }

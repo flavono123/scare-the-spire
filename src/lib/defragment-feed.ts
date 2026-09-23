@@ -3,11 +3,14 @@ import {
   isDefragmentFederatedService,
   type DefragmentFederatedService,
   type DefragmentFeedItem,
+  type HistoryCourseFeedMeta,
 } from "@/lib/defragment";
+import { isCoverSpec } from "@/lib/run-cover-types";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
   asNonNegativeInt,
+  buildLatestFeedKeysetFilter,
   fetchToyboxFeedPage,
   isToyboxFeedCoreSort,
   TOYBOX_FEED_PAGE_SIZE,
@@ -44,6 +47,17 @@ function asOptionalText(value: unknown): string {
   return typeof value === "string" ? value : "";
 }
 
+function parseHistoryMeta(value: unknown): HistoryCourseFeedMeta | null {
+  if (!value || typeof value !== "object") return null;
+  const record = value as Record<string, unknown>;
+  return {
+    coverSpec: isCoverSpec(record.cover_spec) ? record.cover_spec : null,
+    win: record.win === true,
+    ascension: asNonNegativeInt(record.ascension) ?? 0,
+    totalFloors: asNonNegativeInt(record.total_floors) ?? 0,
+  };
+}
+
 export function parseDefragmentFeedRow(row: unknown): DefragmentFeedItem | null {
   if (!row || typeof row !== "object") return null;
   const record = row as Record<string, unknown>;
@@ -76,6 +90,7 @@ export function parseDefragmentFeedRow(row: unknown): DefragmentFeedItem | null 
     avatarKind,
     paletteId,
     paletteSwapped,
+    historyMeta: parseHistoryMeta(record.history_meta),
   };
 }
 
@@ -147,6 +162,71 @@ async function fetchFilteredDefragmentFeedPage(options: {
   };
 }
 
+async function fetchHistoryCourseDefragmentPage(options: {
+  sort: ToyboxFeedSort;
+  cursor: ToyboxFeedCursor | null;
+}): Promise<DefragmentFeedPage> {
+  const sort = options.sort === "comments" || options.sort === "recommended"
+    ? options.sort
+    : "latest";
+  const scoreColumn = sort === "comments" ? "comment_count" : "like_count";
+  let query = supabase
+    .from("runs")
+    .select("id, created_at, like_count, comment_count, seed, donor_user_id, cover_spec, win, ascension, total_floors")
+    .eq("env", supabaseEnv)
+    .order(sort === "latest" ? "created_at" : scoreColumn, { ascending: false })
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false })
+    .limit(TOYBOX_FEED_PAGE_SIZE);
+
+  if (options.cursor && sort === "latest") {
+    query = query.or(buildLatestFeedKeysetFilter(options.cursor));
+  } else if (options.cursor) {
+    const score = String(Math.trunc(options.cursor.score));
+    const createdAt = options.cursor.createdAt.replaceAll('"', "");
+    const id = options.cursor.id.replaceAll('"', "");
+    query = query.or(
+      `${scoreColumn}.lt.${score},and(${scoreColumn}.eq.${score},created_at.lt."${createdAt}"),and(${scoreColumn}.eq.${score},created_at.eq."${createdAt}",id.lt."${id}")`,
+    );
+  }
+
+  const { data, error } = await withSupabaseTimeout(
+    "runs.feed.history_course",
+    query,
+  );
+  if (error) {
+    if (error.code === "42703") return { items: [], hasMore: false };
+    throw error;
+  }
+
+  const items = (data ?? [])
+    .map((row) => {
+      const record = row as Record<string, unknown>;
+      return parseDefragmentFeedRow({
+        id: record.id,
+        created_at: record.created_at,
+        like_count: record.like_count,
+        comment_count: record.comment_count,
+        recommend_score: record.like_count,
+        service: "history_course",
+        title: typeof record.seed === "string" && record.seed.trim()
+          ? record.seed
+          : record.id,
+        nickname: "",
+        user_id: record.donor_user_id,
+        history_meta: {
+          cover_spec: record.cover_spec,
+          win: record.win,
+          ascension: record.ascension,
+          total_floors: record.total_floors,
+        },
+      });
+    })
+    .filter((item): item is DefragmentFeedItem => item != null);
+
+  return { items, hasMore: items.length >= TOYBOX_FEED_PAGE_SIZE };
+}
+
 export async function fetchDefragmentFeedPage(options: {
   sort: ToyboxFeedSort;
   cursor: ToyboxFeedCursor | null;
@@ -155,6 +235,9 @@ export async function fetchDefragmentFeedPage(options: {
   if (!supabaseEnabled) return { items: [], hasMore: false };
 
   const sort: ToyboxFeedSort = isToyboxFeedCoreSort(options.sort) ? options.sort : "latest";
+  if (options.service === "history_course") {
+    return fetchHistoryCourseDefragmentPage({ sort, cursor: options.cursor });
+  }
   if (options.service) {
     return fetchFilteredDefragmentFeedPage({
       service: options.service,
@@ -163,9 +246,9 @@ export async function fetchDefragmentFeedPage(options: {
     });
   }
 
-  const { data, error } = await withSupabaseTimeout(
-    "get_defragment_feed",
-    supabase.rpc("get_defragment_feed", {
+  const v2 = await withSupabaseTimeout(
+    "get_defragment_feed_v2",
+    supabase.rpc("get_defragment_feed_v2", {
       p_env: supabaseEnv,
       p_sort: sort,
       p_limit: TOYBOX_FEED_PAGE_SIZE,
@@ -175,13 +258,27 @@ export async function fetchDefragmentFeedPage(options: {
     }),
   );
 
-  if (!error) {
-    const items = ((data ?? []) as unknown[])
+  const result = !v2.error || !isMissingDefragmentFeedRpc(v2.error)
+    ? v2
+    : await withSupabaseTimeout(
+      "get_defragment_feed",
+      supabase.rpc("get_defragment_feed", {
+        p_env: supabaseEnv,
+        p_sort: sort,
+        p_limit: TOYBOX_FEED_PAGE_SIZE,
+        p_cursor_score: options.cursor?.score ?? null,
+        p_cursor_created_at: options.cursor?.createdAt ?? null,
+        p_cursor_id: options.cursor?.id ?? null,
+      }),
+    );
+
+  if (!result.error) {
+    const items = ((result.data ?? []) as unknown[])
       .map(parseDefragmentFeedRow)
       .filter((item): item is DefragmentFeedItem => item != null);
     return { items, hasMore: items.length >= TOYBOX_FEED_PAGE_SIZE };
   }
 
-  if (!isMissingDefragmentFeedRpc(error)) throw error;
+  if (!isMissingDefragmentFeedRpc(result.error)) throw result.error;
   return { items: [], hasMore: false };
 }

@@ -23,6 +23,7 @@ import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
 import Image from "@/components/ui/static-image";
 import { useAuth } from "@/hooks/use-auth";
 import { useDefragmentFeed } from "@/hooks/use-defragment-feed";
+import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { useThisOrThatLikes } from "@/hooks/use-this-or-that-likes";
 import { useUserProfile } from "@/hooks/use-user-profile";
@@ -42,6 +43,7 @@ import {
 } from "@/lib/defragment";
 import type { GameLocale } from "@/lib/i18n";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
+import { resolveCoverCaptionTitle } from "@/lib/run-cover-phrase";
 import { cn } from "@/lib/utils";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
@@ -86,6 +88,26 @@ export function DefragmentClient({
   );
   const { profile } = useUserProfile(profileFallback);
 
+  const tables = useGameI18n();
+  const displayItems = useMemo(
+    () => items.map((item) => {
+      const meta = item.historyMeta;
+      if (item.service !== "history_course" || !meta?.coverSpec) return item;
+      const title = resolveCoverCaptionTitle(
+        meta.coverSpec,
+        {
+          win: meta.win,
+          totalFloors: meta.totalFloors,
+          ascension: meta.ascension,
+        },
+        serviceLocale,
+        tables,
+        meta.coverSpec.titlePhrase ?? meta.coverSpec.phrase,
+      ).replace(/\s+/g, " ").trim();
+      return title ? { ...item, title: title.slice(0, 120) } : item;
+    }),
+    [items, serviceLocale, tables],
+  );
   const typeLabels = useMemo<Record<DefragmentFederatedService, string>>(() => ({
     combo: nav.combo,
     transfigure: getTransfigureNavTitle(gameLocale),
@@ -94,7 +116,8 @@ export function DefragmentClient({
     decisions_decisions: getDecisionsDecisionsNavTitle(gameLocale),
     favorite_tournament: nav.favoriteTournament,
     pagestorm: getPagestormNavTitle(gameLocale),
-  }), [gameLocale, nav.chemicalX, nav.combo, nav.favoriteTournament, nav.thisOrThat]);
+    history_course: nav.historyCourse,
+  }), [gameLocale, nav.chemicalX, nav.combo, nav.favoriteTournament, nav.historyCourse, nav.thisOrThat]);
 
   const totIds = useMemo(
     () => items.filter((item) => item.service === "this_or_that").map((item) => item.id),
@@ -241,7 +264,7 @@ export function DefragmentClient({
               onClick={() => handleColumnSort("comments")}
             />
           </div>
-          {items.map((item) => (
+          {displayItems.map((item) => (
             <DefragmentIndexRow
               key={`${item.service}:${item.id}`}
               item={item}

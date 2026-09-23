@@ -75,6 +75,7 @@ export async function renderDefragmentFederatedPostPage(
     decisions_decisions: getDecisionsDecisionsNavTitle(gameLocale),
     favorite_tournament: nav.favoriteTournament,
     pagestorm: getPagestormNavTitle(gameLocale),
+    history_course: nav.historyCourse,
   } as const;
 
   return (

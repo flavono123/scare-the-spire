@@ -76,6 +76,7 @@ const defragmentFederatedServices = new Set([
   "decisions_decisions",
   "favorite_tournament",
   "pagestorm",
+  "history_course",
 ]);
 const sts1CompendiumSegments = new Set([
   "cards",

@@ -14,6 +14,7 @@ import { ThisOrThatPostView } from "@/components/this-or-that/post-view";
 import { FavoriteTournamentPostView } from "@/components/this-or-that/favorite-tournament-post-view";
 import { TransfigurePostView } from "@/components/transfigure/transfigure-post-view";
 import { PagestormPostView } from "@/components/pagestorm/pagestorm-post-view";
+import { DeferredRunDetailLoader } from "@/components/history-course/deferred-run-detail-loader";
 import Image from "@/components/ui/static-image";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
@@ -172,6 +173,9 @@ export function DefragmentFederatedPostView({
       {service === "pagestorm" && (
         <PagestormPostView postId={postId} variant="embed" />
       )}
+      {service === "history_course" && (
+        <DeferredRunDetailLoader runId={postId} />
+      )}
 
       {service !== "this_or_that" && threadKey && (
         <LikeButton
@@ -186,7 +190,7 @@ export function DefragmentFederatedPostView({
         />
       )}
 
-      {threadKey && (
+      {threadKey && service !== "history_course" && (
         <section
           id="comments"
           className="scroll-mt-16 rounded-lg border border-border bg-card/20 p-4"
