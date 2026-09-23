@@ -18,6 +18,7 @@ export default defineConfig({
     "compendium-index-localization.spec.ts",
     "mobile-ux.spec.ts",
     "text-con-mobile.spec.ts",
+    "card-con-mobile.spec.ts",
     "cloudflare-testbed.spec.ts",
     "contact.spec.ts",
   ],

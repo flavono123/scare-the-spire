@@ -35,6 +35,7 @@ export function CardConPanel({
         <button
           type="button"
           onClick={onClose}
+          data-card-con-close=""
           aria-label={commonCopy.close}
           className="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
