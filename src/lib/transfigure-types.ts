@@ -901,7 +901,7 @@ export function transfigureBlocksSignature(items: PostBlock[]): string {
     } else if (block.type === "text-con") {
       tokens.push(`text-con:${block.bgColor}:${block.textColor}:${block.text}`);
     } else if (block.type === "card-con") {
-      tokens.push(`card-con:${block.cardId}:${block.displayText}`);
+      tokens.push(`card-con:${block.cardId}:${block.gameLocale}:${block.displayText}`);
     } else {
       tokens.push(`youtube:${block.videoId}:${block.title}`);
     }

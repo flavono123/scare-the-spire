@@ -1,4 +1,5 @@
 import type { EntityType } from "@/components/patch-note-renderer";
+import type { GameLocale } from "@/lib/i18n";
 import type { CoverSpec } from "@/lib/run-cover-types";
 
 /** A segment of plain text */
@@ -92,11 +93,16 @@ export interface TextConBlock {
   textColor: string;
 }
 
-/** A searched card tile inserted into a comment or post. */
+/**
+ * A card tile inserted from search.
+ * `gameLocale` is the composer's game locale at insert time. The tile stays
+ * in that locale even when a later reader uses a different game locale.
+ */
 export interface CardConBlock {
   type: "card-con";
   cardId: string;
   displayText: string;
+  gameLocale: GameLocale;
 }
 
 export type PostBlock =

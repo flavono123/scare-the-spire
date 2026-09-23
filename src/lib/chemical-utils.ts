@@ -2,6 +2,7 @@ import type { JSONContent } from "@tiptap/react";
 import { getChoseong } from "es-hangul";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
+import { isGameLocale } from "@/lib/i18n";
 import {
   historyRunFloorPlainText,
   isHistoryRunFloorBlock,
@@ -238,11 +239,13 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
       } else if (node.type === "card-con") {
         const cardId = nodeString(node.attrs?.cardId).trim();
         const displayText = nodeString(node.attrs?.displayText).trim();
+        const gameLocale = nodeString(node.attrs?.gameLocale).trim();
         if (cardId && displayText) {
           blocks.push({
             type: "card-con",
             cardId,
             displayText,
+            gameLocale: isGameLocale(gameLocale) ? gameLocale : "kor",
           });
         }
       }
@@ -326,6 +329,7 @@ export function blocksToTiptapDocument(blocks: PostBlock[]): JSONContent {
         attrs: {
           cardId: block.cardId,
           displayText: block.displayText,
+          gameLocale: block.gameLocale,
         },
       }];
     }

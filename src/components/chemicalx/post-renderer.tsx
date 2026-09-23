@@ -220,6 +220,7 @@ export function PostRenderer({
                 <CardConTile
                   card={card}
                   displayText={block.displayText}
+                  gameLocale={block.gameLocale}
                   linked
                 />
               </span>

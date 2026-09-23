@@ -1522,15 +1522,15 @@ export const serviceMessages = {
       unavailableTitle: "No responses from database",
     },
     cardCon: {
-      label: "🃏",
-      make: "🃏",
+      label: "card emoji",
+      make: "card emoji",
       hint: "Search for a card to insert.",
       searchPlaceholder: "Search cards",
     },
     textCon: {
-      label: "🔤",
-      make: "🔤",
-      hint: "Type to make 🔤 and add it.",
+      label: "text emoji",
+      make: "text emoji",
+      hint: "Type to make text emoji and add it.",
     },
     engagementTips: {
       commentFirst: "Write the first comment",

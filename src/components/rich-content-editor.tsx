@@ -40,7 +40,10 @@ import {
   CARD_CON_POPUP_HEIGHT,
   CARD_CON_POPUP_WIDTH,
 } from "@/lib/card-con";
+import { useCardConLocale } from "@/hooks/use-card-con-locale";
+import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { applyCardConLocale } from "@/lib/card-con-locale";
 import { serviceMessages } from "@/messages/service";
 import {
   GAME_UI_HOVER_TIP_NAV_DELAY_MS,
@@ -544,6 +547,8 @@ export function RichContentEditor({
   enableCardCon = true,
 }: RichContentEditorProps) {
   const serviceLocale = useServiceLocale();
+  const gameLocale = useGameLocale();
+  const cardConLocale = useCardConLocale(gameLocale);
   const cardConCopy = serviceMessages[serviceLocale].cardCon;
   const textConCopy = serviceMessages[serviceLocale].textCon;
   const [submitting, setSubmitting] = useState(false);
@@ -1384,6 +1389,9 @@ export function RichContentEditor({
       const type = editor.schema.nodes["card-con"];
       if (!type) return;
 
+      const savedCard = entity.cardData
+        ? applyCardConLocale(entity.cardData, cardConLocale?.[entity.id])
+        : null;
       editor
         .chain()
         .focus()
@@ -1391,13 +1399,14 @@ export function RichContentEditor({
           type: "card-con",
           attrs: {
             cardId: entity.id,
-            displayText: entity.nameKo,
+            displayText: savedCard?.name || entity.nameKo,
+            gameLocale,
           },
         })
         .run();
       setCardConModalOpen(false);
     },
-    [editor],
+    [cardConLocale, editor, gameLocale],
   );
 
   const handleSubmit = useCallback(async () => {

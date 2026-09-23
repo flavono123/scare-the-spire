@@ -124,6 +124,7 @@ export function ComboPostRenderer({
               <CardConTile
                 card={card}
                 displayText={block.displayText}
+                gameLocale={block.gameLocale}
                 linked
               />
             </span>

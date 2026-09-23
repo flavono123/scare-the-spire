@@ -8,12 +8,15 @@ import {
 } from "@tiptap/react";
 import { CardConTile } from "@/components/card-con/card-con-tile";
 import { useEntityMap } from "@/components/chemicalx/entity-context";
+import { isGameLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 function CardConNodeView({ node, selected }: NodeViewProps) {
   const entityMap = useEntityMap();
   const cardId = String(node.attrs.cardId || "");
   const displayText = String(node.attrs.displayText || "");
+  const rawGameLocale = String(node.attrs.gameLocale || "kor");
+  const gameLocale = isGameLocale(rawGameLocale) ? rawGameLocale : "kor";
   const entity = entityMap.get(`card:${cardId}`);
 
   return (
@@ -29,6 +32,7 @@ function CardConNodeView({ node, selected }: NodeViewProps) {
       <CardConTile
         card={entity?.cardData ?? null}
         displayText={displayText}
+        gameLocale={gameLocale}
       />
     </NodeViewWrapper>
   );
@@ -45,6 +49,7 @@ export const CardConExtension = Node.create({
     return {
       cardId: { default: "" },
       displayText: { default: "" },
+      gameLocale: { default: "kor" },
     };
   },
 
@@ -59,6 +64,7 @@ export const CardConExtension = Node.create({
         "data-card-con-node": "",
         "data-card-id": String(node.attrs.cardId ?? ""),
         "data-display-text": String(node.attrs.displayText ?? ""),
+        "data-game-locale": String(node.attrs.gameLocale ?? "kor"),
       }),
       String(node.attrs.displayText ?? ""),
     ];
