@@ -5,6 +5,7 @@ import {
   type DefragmentFeedItem,
   type HistoryCourseFeedMeta,
 } from "@/lib/defragment";
+import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { isCoverSpec } from "@/lib/run-cover-types";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
@@ -172,7 +173,7 @@ async function fetchHistoryCourseDefragmentPage(options: {
   const scoreColumn = sort === "comments" ? "comment_count" : "like_count";
   let query = supabase
     .from("runs")
-    .select("id, created_at, like_count, comment_count, seed, donor_user_id, cover_spec, win, ascension, total_floors")
+    .select("id, created_at, like_count, comment_count, seed, donor_user_id, donor_nickname, cover_spec, win, ascension, total_floors")
     .eq("env", supabaseEnv)
     .order(sort === "latest" ? "created_at" : scoreColumn, { ascending: false })
     .order("created_at", { ascending: false })
@@ -212,7 +213,9 @@ async function fetchHistoryCourseDefragmentPage(options: {
         title: typeof record.seed === "string" && record.seed.trim()
           ? record.seed
           : record.id,
-        nickname: "",
+        nickname: typeof record.donor_nickname === "string" && record.donor_nickname.trim()
+          ? record.donor_nickname.trim()
+          : DEFAULT_USER_PROFILE.nickname,
         user_id: record.donor_user_id,
         history_meta: {
           cover_spec: record.cover_spec,

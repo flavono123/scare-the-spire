@@ -186,6 +186,10 @@ export function normalizeUserProfile(profile: Partial<UserProfile> | null | unde
   };
 }
 
+export function resolveHistoryCourseDonorNickname(storedRaw: string | null): string {
+  return parseStoredUserProfile(storedRaw).nickname;
+}
+
 export function readStoredUserProfile(fallback = DEFAULT_USER_PROFILE): UserProfile {
   if (typeof window === "undefined") return fallback;
 

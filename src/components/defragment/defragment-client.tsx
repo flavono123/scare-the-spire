@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { DefragmentIndexRow } from "@/components/defragment/defragment-index-row";
@@ -42,6 +42,7 @@ import {
   type DefragmentBoardColumnSort,
 } from "@/lib/defragment";
 import type { GameLocale } from "@/lib/i18n";
+import { syncDonatedRunNicknames } from "@/lib/run-donation";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { resolveCoverCaptionTitle } from "@/lib/run-cover-phrase";
 import { cn } from "@/lib/utils";
@@ -69,6 +70,22 @@ export function DefragmentClient({
   const copy = serviceMessages[serviceLocale].defragment;
   const nav = serviceMessages[serviceLocale].nav;
   const { userId, ready, ensureUser } = useAuth();
+  const [donorNicknamesReady, setDonorNicknamesReady] = useState(false);
+  useEffect(() => {
+    if (!ready) return;
+    if (!userId) {
+      setDonorNicknamesReady(true);
+      return;
+    }
+    let cancelled = false;
+    setDonorNicknamesReady(false);
+    void syncDonatedRunNicknames(userId).finally(() => {
+      if (!cancelled) setDonorNicknamesReady(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [ready, userId]);
   const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
   const [typeFilter, setTypeFilter] = useState<DefragmentFederatedService | null>(null);
   const [composerOpen, setComposerOpen] = useState(false);
@@ -81,7 +98,7 @@ export function DefragmentClient({
     loadMore,
     prependItem,
     setUnavailable,
-  } = useDefragmentFeed(sort, typeFilter);
+  } = useDefragmentFeed(sort, typeFilter, donorNicknamesReady);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
     [copy.defaultNickname],

@@ -34,6 +34,7 @@ import {
   donateRun,
   listMyDonatedRunIds,
   listRecentDonatedRuns,
+  syncDonatedRunNicknames,
   updateDonatedRunCoverSpec,
 } from "@/lib/run-donation";
 import { ensureCoverSpec } from "@/lib/run-cover-suggest";
@@ -140,6 +141,11 @@ export function HistoryCourseRunIndex({
       cancelled = true;
     };
   }, [refreshKey]);
+
+  useEffect(() => {
+    if (!userId) return;
+    void syncDonatedRunNicknames(userId);
+  }, [userId]);
 
   useEffect(() => {
     if (!supabaseEnabled || !userId) return;

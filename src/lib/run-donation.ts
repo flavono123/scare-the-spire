@@ -6,6 +6,7 @@ import { buildRunHighlights, type RunHighlightResource } from "./run-highlights"
 import { pickAlternatingCover, suggestDefaultCover } from "./run-cover-suggest";
 import { isCoverSpec, type CoverSpec } from "./run-cover-types";
 import { parseReplayRun, type ReplayBadge, type ReplayRun } from "./sts2-run-replay";
+import { readStoredUserProfile } from "./user-profile";
 import { mergePartyBadges, partyCharacters } from "./history-party";
 
 export interface DonatedRun {
@@ -167,6 +168,17 @@ function isMissingCoverSpecColumn(error: unknown): boolean {
   return /cover_spec/i.test(message) && /column/i.test(message);
 }
 
+function isMissingDonorNicknameColumn(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  const message = "message" in error ? String(error.message ?? "") : "";
+  return /donor_nickname/i.test(message) && /column/i.test(message);
+}
+
+function withoutDonorNickname(row: Record<string, unknown>): Record<string, unknown> {
+  const { donor_nickname: _nickname, ...rest } = row;
+  return rest;
+}
+
 async function selectDonatedRunForEnv(
   runId: string,
   env: string,
@@ -287,6 +299,9 @@ async function insertDonatedRunRow(row: Record<string, unknown>) {
     "runs.insert",
     supabase.from("runs").insert(row),
   ).catch(() => ({ error: new Error("timeout") }));
+  if (first.error && isMissingDonorNicknameColumn(first.error)) {
+    return insertDonatedRunRow(withoutDonorNickname(row));
+  }
   if (!first.error || !isMissingCoverSpecColumn(first.error)) return first;
   const { cover_spec: _cover, ...legacyRow } = row;
   return withSupabaseTimeout(
@@ -311,6 +326,7 @@ export async function donateRun(input: {
     id: input.runId,
     raw: input.raw,
     donor_user_id: input.donorUserId,
+    donor_nickname: readStoredUserProfile().nickname,
     env: supabaseEnv,
     ...meta,
   });
@@ -364,6 +380,7 @@ export async function donateRunsBatch(input: {
       id: r.runId,
       raw: r.raw,
       donor_user_id: input.donorUserId,
+      donor_nickname: readStoredUserProfile().nickname,
       env: supabaseEnv,
       ...meta,
     };
@@ -379,8 +396,22 @@ export async function donateRunsBatch(input: {
       .select("id"),
   ).catch(() => ({ data: null, error: new Error("timeout") }));
 
+  if (result.error && isMissingDonorNicknameColumn(result.error)) {
+    const stripped = rows.map(withoutDonorNickname);
+    result = await withSupabaseTimeout(
+      "runs.upsert.legacy-nickname",
+      supabase
+        .from("runs")
+        .upsert(stripped, { onConflict: "id,env", ignoreDuplicates: true })
+        .select("id"),
+    ).catch(() => ({ data: null, error: new Error("timeout") }));
+  }
+
   if (result.error && isMissingCoverSpecColumn(result.error)) {
-    const legacyRows = rows.map(({ cover_spec: _c, ...rest }) => rest);
+    const legacyRows = rows.map((row) => {
+      const { cover_spec: _cover, donor_nickname: _nickname, ...rest } = row;
+      return rest;
+    });
     result = await withSupabaseTimeout(
       "runs.upsert.legacy",
       supabase
@@ -610,6 +641,20 @@ export async function listMyDonatedRunIds(
   if (error || !data) return ids;
   for (const row of data) ids.add(row.id as string);
   return ids;
+}
+
+export async function syncDonatedRunNicknames(userId: string): Promise<void> {
+  if (!supabaseEnabled || !userId) return;
+  const nickname = readStoredUserProfile().nickname;
+  await withSupabaseTimeout(
+    "runs.update.donor-nickname",
+    supabase
+      .from("runs")
+      .update({ donor_nickname: nickname })
+      .eq("env", supabaseEnv)
+      .eq("donor_user_id", userId)
+      .neq("donor_nickname", nickname),
+  ).catch(() => undefined);
 }
 
 const RECENT_DONATED_RUNS_LIMIT = 100;
