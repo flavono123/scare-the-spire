@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { MenuDropdown } from "@/components/menu-dropdown";
-import { NavAttentionDot } from "@/components/nav-attention-dot";
+import { NAV_ATTENTION_SLOT_CLASS, NavAttentionDot } from "@/components/nav-attention-dot";
 import Image from "@/components/ui/static-image";
 import type { NavDropdownItem } from "@/lib/site-nav-items";
 
@@ -35,13 +35,13 @@ export function SiteNavDropdown({
       } max-h-[min(24rem,calc(100svh-4.5rem))] overflow-y-auto ${align === "right" ? "right-0" : "left-0"}`}
       summary={(
         <>
-          <span className="relative inline-flex">
+          <span className={NAV_ATTENTION_SLOT_CLASS}>
             <Image
               src={icon}
               alt={alt}
               width={28}
               height={28}
-              className="h-6 w-6 rounded-sm object-contain brightness-90 transition-all group-open:brightness-125 hover:brightness-110 sm:h-7 sm:w-7"
+              className="h-full w-full rounded-sm object-contain brightness-90 transition-all hover:brightness-110 group-open:brightness-125"
             />
             {attention && <NavAttentionDot />}
           </span>

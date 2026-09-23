@@ -995,24 +995,33 @@
   }
 }
 
-/* Navbar attention pip. StsColors TEXT_GOLD, sine scale like rich-sine. */
+/* Navbar attention pip. Anchored to the shared token slot. StsColors TEXT_RED. */
 @keyframes nav-attention-sine {
   0%, 100% {
     transform: scale(1);
     box-shadow:
       0 0 0 1px #1a1208,
-      0 0 0 0 rgba(239, 200, 81, 0.55);
+      0 0 0 0 rgba(255, 85, 85, 0.55);
   }
   50% {
     transform: scale(1.18);
     box-shadow:
       0 0 0 1px #1a1208,
-      0 0 0 3px rgba(239, 200, 81, 0);
+      0 0 0 3px rgba(255, 85, 85, 0);
   }
 }
 
 .nav-attention-dot {
-  background: #efc851;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-top: -0.25rem;
+  margin-right: -0.25rem;
+  border-radius: 9999px;
+  pointer-events: none;
+  background: #ff5555;
   animation: nav-attention-sine 1.8s ease-in-out infinite;
 }
 

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useMemo, useCallback, type CSSProperties, 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
-import { NavAttentionDot } from "@/components/nav-attention-dot";
+import { NAV_ATTENTION_SLOT_CLASS, NavAttentionDot } from "@/components/nav-attention-dot";
 import { SiteNavDropdown } from "@/components/site-nav-dropdown";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import {
@@ -174,6 +174,7 @@ function NavIconLink({
   className,
   external,
   attention = false,
+  tokenSlot = false,
 }: {
   href: string;
   icon?: string;
@@ -184,13 +185,16 @@ function NavIconLink({
   className?: string;
   external?: boolean;
   attention?: boolean;
+  tokenSlot?: boolean;
 }) {
   const Tag = external ? "a" : Link;
   const extraProps = external
     ? { target: "_blank" as const, rel: "noopener noreferrer" }
     : {};
   const internalProps = external ? {} : { prefetch: false as const };
-  const iconClass = `h-[18px] w-[18px] object-contain brightness-90 hover:brightness-110 transition-all sm:h-[var(--nav-icon-size)] sm:w-[var(--nav-icon-size)] ${iconClassName ?? ""}`;
+  const iconClass = tokenSlot
+    ? `h-full w-full object-contain brightness-90 transition-all hover:brightness-110 ${iconClassName ?? ""}`
+    : `h-[18px] w-[18px] object-contain brightness-90 hover:brightness-110 transition-all sm:h-[var(--nav-icon-size)] sm:w-[var(--nav-icon-size)] ${iconClassName ?? ""}`;
 
   return (
     <GameUiHoverTip
@@ -204,7 +208,7 @@ function NavIconLink({
         {...internalProps}
         className="flex items-center p-1 transition-colors sm:p-1.5"
       >
-        <span className="relative inline-flex">
+        <span className={tokenSlot ? NAV_ATTENTION_SLOT_CLASS : "relative inline-flex"}>
           {iconNode ?? (
             <Image
               src={icon ?? ""}
@@ -771,6 +775,7 @@ export function SiteNavbar() {
             icon="/images/sts2/nav/patch_notes_icon.png"
             label={messages.nav.patches}
             iconSize={22}
+            tokenSlot
             attention={navIndicators.patchNotes}
           />
 
