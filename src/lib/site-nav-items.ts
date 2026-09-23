@@ -2,6 +2,7 @@ import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
 import { getSts1NavLabel } from "@/lib/sts1/nav-labels";
 import type { Sts1ResourceType } from "@/lib/sts1/types";
 import {
+  getDebateNavTitle,
   getDecisionsDecisionsNavTitle,
   getDefragmentNavTitle,
   getPagestormNavTitle,
@@ -137,7 +138,7 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     icon: DEBATE_TOKEN_SRC,
     createdAt: "2026-09-23",
     nestedUnder: "/defragment",
-    getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.debate,
+    getLabel: (_serviceLocale, gameLocale) => getDebateNavTitle(gameLocale),
   },
 ] as const;
 

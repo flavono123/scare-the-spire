@@ -15,9 +15,10 @@ export async function generateDebateMetadata(
 ): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const copy = serviceMessages[serviceLocale].debate;
+  const gameCopy = await getDebateGameCopy(gameLocale);
   return getServiceOgMetadata({
     serviceLocale,
-    title: copy.title,
+    title: gameCopy.title,
     description: composeToyBoxIndexOgDescription(serviceLocale, copy.subtitle),
     image: DEBATE_PAGE_OG_IMAGE,
     canonicalPath: DEBATE_HREF,
@@ -39,7 +40,7 @@ export async function renderDebatePage(
       />
       <div className={TOYBOX_NARROW_SHELL_CLASS}>
         <DebateView
-          title={copy.title}
+          title={gameCopy.title}
           subtitle={copy.subtitle}
           hero={gameCopy.hero}
           emptyLabel={copy.empty}

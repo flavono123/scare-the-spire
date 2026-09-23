@@ -1,4 +1,4 @@
-/** Standalone 토론 index. Daily-run Draft modifier art, not a card portrait. */
+/** Standalone Colorful Philosophers index. Daily-run Draft modifier art, not a card portrait. */
 export const DEBATE_HREF = "/debate";
 
 export const DEBATE_TOKEN_SRC = "/images/sts2/modifiers/draft.webp";

@@ -32,6 +32,6 @@ assert.deepEqual(hrefs.slice(defragmentIndex, defragmentIndex + 4), [
   "/pagestorm",
   "/decisions-decisions",
 ]);
-assert.equal(items.find((item) => item.href === "/debate")?.label, "토론");
+assert.equal(items.find((item) => item.href === "/debate")?.label, "다채로운 철학자들");
 
 console.log("toybox-nav.spec.ts: ok");

@@ -15,7 +15,7 @@ export const serviceMessages = {
       defragment: "조각모음",
       decisionsDecisions: "어려운 결정",
       pagestorm: "서류 폭풍",
-      debate: "토론",
+      debate: "다채로운 철학자들",
     },
     patchNotes: {
       indexTitle: "패치 노트",
@@ -51,7 +51,7 @@ export const serviceMessages = {
         favoriteTournament: "이아저? 월드컵",
         decisionsDecisions: "어려운 결정",
         pagestorm: "서류 폭풍",
-        debate: "토론",
+        debate: "다채로운 철학자들",
       },
     },
     byrdispatch: {
@@ -78,7 +78,6 @@ export const serviceMessages = {
       sts1: "STS1",
     },
     debate: {
-      title: "토론",
       subtitle: "이번 주 게임 요소 토론하기",
       empty: "이번 주 토론 대상이 아직 없습니다",
     },
@@ -1351,7 +1350,7 @@ export const serviceMessages = {
       defragment: "Defragment",
       decisionsDecisions: "Decisions, Decisions",
       pagestorm: "Pagestorm",
-      debate: "Debate",
+      debate: "Colorful Philosophers",
     },
     patchNotes: {
       indexTitle: "Patch Notes",
@@ -1387,7 +1386,7 @@ export const serviceMessages = {
         favoriteTournament: "thisorthat? tournament",
         decisionsDecisions: "Decisions, Decisions",
         pagestorm: "Pagestorm",
-        debate: "Debate",
+        debate: "Colorful Philosophers",
       },
     },
     byrdispatch: {
@@ -1414,7 +1413,6 @@ export const serviceMessages = {
       sts1: "STS1",
     },
     debate: {
-      title: "Debate",
       subtitle: "Discuss a game element this week",
       empty: "No game element is up for debate this week",
     },

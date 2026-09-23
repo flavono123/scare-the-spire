@@ -451,10 +451,10 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
   const debateItems: SearchIndexItem[] = [{
     id: "debate",
     type: "debate",
-    title: "토론",
-    titleEn: "Debate",
-    description: "이번 주 게임 요소 토론하기 토론 드래프트",
-    descriptionEn: "discuss a game element this week debate draft",
+    title: "다채로운 철학자들",
+    titleEn: "Colorful Philosophers",
+    description: "이번 주 게임 요소 토론하기 다채로운 철학자들 드래프트",
+    descriptionEn: "discuss a game element this week colorful philosophers draft",
     imageUrl: "/images/sts2/modifiers/draft.webp",
     href: "/debate",
   }];

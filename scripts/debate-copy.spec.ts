@@ -34,4 +34,12 @@ assert.equal(
   englishHero,
 );
 
+function titleFromLocale(file: string): string {
+  const table = JSON.parse(readFileSync(file, "utf8")) as Record<string, string>;
+  return table["COLORFUL_PHILOSOPHERS.title"] ?? "";
+}
+
+assert.equal(titleFromLocale("data/sts2/localization/kor/events.json"), "다채로운 철학자들");
+assert.equal(titleFromLocale("data/sts2/localization/eng/events.json"), "Colorful Philosophers");
+
 console.log("debate copy ok");

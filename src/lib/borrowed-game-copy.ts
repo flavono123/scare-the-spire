@@ -40,6 +40,7 @@ export interface PagestormGameCopy {
 }
 
 export interface DebateGameCopy {
+  title: string;
   hero: string;
 }
 
@@ -186,4 +187,8 @@ export async function getDebateGameCopy(
   gameLocale: GameLocale,
 ): Promise<DebateGameCopy> {
   return getBorrowedGameCopy(gameLocale).debate;
+}
+
+export function getDebateNavTitle(gameLocale: GameLocale): string {
+  return getBorrowedGameCopy(gameLocale).debate.title;
 }

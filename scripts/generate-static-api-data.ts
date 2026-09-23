@@ -122,6 +122,7 @@ interface PatchBackstabGameCopy {
 }
 
 interface DebateGameCopy {
+  title: string;
   hero: string;
 }
 
@@ -911,12 +912,16 @@ async function buildDecisionsDecisionsGameCopy(
 async function buildDebateGameCopy(
   gameLocale: GameLocale,
 ): Promise<DebateGameCopy> {
-  const description = await readGameTextWithEnglishFallback(
-    gameLocale,
-    "events",
-    "COLORFUL_PHILOSOPHERS.pages.INITIAL.description",
-  );
+  const [title, description] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "events", "COLORFUL_PHILOSOPHERS.title"),
+    readGameTextWithEnglishFallback(
+      gameLocale,
+      "events",
+      "COLORFUL_PHILOSOPHERS.pages.INITIAL.description",
+    ),
+  ]);
   return {
+    title: title || "Colorful Philosophers",
     hero: stripGameMarkup(lastNonEmptyLine(description)),
   };
 }

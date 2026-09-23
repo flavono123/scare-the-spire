@@ -83,7 +83,7 @@ export const DEBATE_PAGE_OG_IMAGE: PageOgImage = {
   url: "/images/sts2/events/colorful_philosophers.webp",
   width: 3440,
   height: 1616,
-  alt: "토론 — 다채로운 철학자들",
+  alt: "다채로운 철학자들 — Colorful Philosophers",
 };
 
 export const PAGESTORM_PAGE_OG_IMAGE: PageOgImage = {
@@ -188,7 +188,7 @@ export const PAGE_OG_IMAGE_RULES = [
   },
   {
     pattern: "/debate",
-    label: "토론",
+    label: "다채로운 철학자들",
     image: DEBATE_PAGE_OG_IMAGE,
   },
   {
