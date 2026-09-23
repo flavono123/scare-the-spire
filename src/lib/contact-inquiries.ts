@@ -25,6 +25,8 @@ export interface ContactInquiryHistoryItem {
   env: ContactInquiryEnv;
   status: ContactInquiryStatus;
   adminResponse: string | null;
+  /** Null when a reply exists and has not been opened. Omitted when the column is not deployed yet. */
+  replySeenAt?: string | null;
   createdAt: string;
 }
 
@@ -35,7 +37,28 @@ interface ContactInquiryHistoryRow {
   env: ContactInquiryEnv;
   status: ContactInquiryStatus;
   admin_response: string | null;
+  reply_seen_at?: string | null;
   created_at: string;
+}
+
+const CONTACT_INQUIRY_HISTORY_COLUMNS = "id,category,message,env,status,admin_response,reply_seen_at,created_at";
+const CONTACT_INQUIRY_HISTORY_COLUMNS_LEGACY = "id,category,message,env,status,admin_response,created_at";
+
+export function contactReplyIsUnseen(row: {
+  admin_response?: unknown;
+  reply_seen_at?: unknown;
+}): boolean {
+  return typeof row.admin_response === "string"
+    && row.admin_response.length > 0
+    && (row.reply_seen_at === null || row.reply_seen_at === undefined);
+}
+
+export function isMissingContactReplySeenColumn(
+  error: { code?: string; message?: string } | null | undefined,
+): boolean {
+  if (!error) return false;
+  if (error.code === "PGRST204" || error.code === "42703") return true;
+  return /reply_seen_at/i.test(error.message ?? "");
 }
 
 export interface ContactInquiryInput {
@@ -94,24 +117,76 @@ export async function submitContactInquiry(input: ContactInquiryInput): Promise<
 export async function listOwnContactInquiries(): Promise<ContactInquiryHistoryItem[]> {
   if (!supabaseEnabled) throw new Error("Supabase is not configured");
 
-  const { data, error } = await withSupabaseTimeout(
+  const first = await withSupabaseTimeout(
     "contact_inquiries.select",
     supabase
       .from("contact_inquiries")
-      .select("id,category,message,env,status,admin_response,created_at")
+      .select(CONTACT_INQUIRY_HISTORY_COLUMNS)
       .order("created_at", { ascending: false })
       // ponytail: cap the first version at 50; add pagination if real users outgrow it.
       .limit(50),
   );
+  const result = first.error && isMissingContactReplySeenColumn(first.error)
+    ? await withSupabaseTimeout(
+      "contact_inquiries.select",
+      supabase
+        .from("contact_inquiries")
+        .select(CONTACT_INQUIRY_HISTORY_COLUMNS_LEGACY)
+        .order("created_at", { ascending: false })
+        .limit(50),
+    )
+    : first;
 
-  if (error) throw error;
-  return ((data ?? []) as ContactInquiryHistoryRow[]).map((row) => ({
+  if (result.error) throw result.error;
+  return ((result.data ?? []) as ContactInquiryHistoryRow[]).map((row) => ({
     id: row.id,
     category: row.category,
     message: row.message,
     env: row.env,
     status: row.status,
     adminResponse: row.admin_response,
+    replySeenAt: "reply_seen_at" in row ? row.reply_seen_at ?? null : undefined,
     createdAt: row.created_at,
   }));
+}
+
+export async function hasUnseenContactReply(): Promise<boolean | null> {
+  if (!supabaseEnabled) return null;
+
+  try {
+    const { data, error } = await withSupabaseTimeout(
+      "contact_inquiries.unseen_reply",
+      supabase
+        .from("contact_inquiries")
+        .select("id")
+        .eq("env", supabaseEnv)
+        .not("admin_response", "is", null)
+        .is("reply_seen_at", null)
+        .limit(1),
+    );
+    if (error) {
+      if (isMissingContactReplySeenColumn(error)) return false;
+      return null;
+    }
+    return (data?.length ?? 0) > 0;
+  } catch {
+    return null;
+  }
+}
+
+export async function markOwnContactRepliesSeen(): Promise<void> {
+  if (!supabaseEnabled) return;
+
+  const { error } = await withSupabaseTimeout(
+    "contact_inquiries.reply_seen",
+    supabase
+      .from("contact_inquiries")
+      .update({ reply_seen_at: new Date().toISOString() })
+      .eq("env", supabaseEnv)
+      .not("admin_response", "is", null)
+      .is("reply_seen_at", null),
+  );
+  if (error && !isMissingContactReplySeenColumn(error)) {
+    console.warn("Failed to mark contact replies seen", error.message);
+  }
 }

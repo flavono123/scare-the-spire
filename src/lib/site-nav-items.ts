@@ -171,12 +171,6 @@ export const sts1NavItems = [
 
 export const devNavItems = [
   { href: "/dev/admin", label: "어드민", icon: "/images/sts2/nav/question_mark.png" },
-  {
-    href: "/dev/nav-indicators",
-    label: "상단바 인디케이터",
-    icon: "/images/sts2/nav/patch_notes_icon.png",
-    strictDevOnly: true,
-  },
   { href: "/dev/patch-types", label: "패치노트 타입", icon: "/images/sts2/nav/patch_notes_icon.png" },
   { href: "/dev/monsters", label: "몬스터 정리", icon: "/images/sts2/nav/happy_cultist.png" },
   { href: "/dev/og-images", label: "OG 이미지 프리뷰", icon: "/images/sts2/nav/patch_notes_icon.png" },
@@ -212,6 +206,12 @@ export const devNavItems = [
   },
   { href: "/dev/text-effects", label: "텍스트 효과", icon: "/images/sts2/nav/patch_notes_icon.png" },
   { href: "/dev/reference", label: "레퍼런스", icon: "/images/sts2/nav/stats_cards.png" },
+  {
+    href: "/dev/nav-indicators",
+    label: "상단바 인디케이터",
+    icon: "/images/sts2/nav/patch_notes_icon.png",
+    strictDevOnly: true,
+  },
 ] as const;
 
 export const serviceLanguageNavLocales = ["kor", "eng"] as const satisfies readonly GameLocale[];
@@ -327,18 +327,14 @@ export function getToyBoxNavItems({
       ];
     });
 
-  const devItems = showDevMenu
-    ? devNavItems.filter(
-        (item) => !("strictDevOnly" in item) || process.env.NODE_ENV === "development",
-      )
-    : [];
-  const navIndicatorItem = devItems.find((item) => item.href === "/dev/nav-indicators");
-
   return localizePlainNavItems(
     [
-      ...(navIndicatorItem ? [navIndicatorItem] : []),
       ...serviceItems,
-      ...devItems.filter((item) => item.href !== "/dev/nav-indicators"),
+      ...(showDevMenu
+        ? devNavItems.filter(
+            (item) => !("strictDevOnly" in item) || process.env.NODE_ENV === "development",
+          )
+        : []),
     ],
     serviceLocale,
     gameLocale,

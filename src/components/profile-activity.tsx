@@ -8,6 +8,7 @@ import { StorageUnavailableNotice } from "@/components/storage-unavailable-notic
 import { SpireLikeIcon } from "@/components/spire-icon";
 import Image from "@/components/ui/static-image";
 import { useAuth } from "@/hooks/use-auth";
+import { publishMailboxReply } from "@/hooks/use-mailbox-reply";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import {
   PROFILE_ACTIVITY_CATEGORIES,
@@ -19,6 +20,7 @@ import {
 } from "@/hooks/use-profile-activity";
 import {
   listOwnContactInquiries,
+  markOwnContactRepliesSeen,
   type ContactInquiryHistoryItem,
   type ContactInquiryStatus,
 } from "@/lib/contact-inquiries";
@@ -159,6 +161,15 @@ export function ProfileActivity({
   const inquiries = activeInquiryResult?.items ?? [];
   const inquiriesLoading = Boolean(userId) && !activeInquiryResult;
   const inquiriesUnavailable = !supabaseEnabled || activeInquiryResult?.unavailable === true;
+
+  useEffect(() => {
+    if (!userId || !activeInquiryResult) return;
+    const hasUnseen = activeInquiryResult.items.some(
+      (item) => item.adminResponse && item.replySeenAt === null,
+    );
+    if (!hasUnseen) return;
+    void markOwnContactRepliesSeen().then(() => publishMailboxReply(userId, false));
+  }, [activeInquiryResult, userId]);
 
   return (
     <>

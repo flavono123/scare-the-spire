@@ -12,6 +12,7 @@ import {
   GameUiHoverTip,
 } from "@/components/game-ui-hover-tip";
 import Image from "@/components/ui/static-image";
+import { useMailboxReply } from "@/hooks/use-mailbox-reply";
 import { useNavIndicators } from "@/hooks/use-nav-indicators";
 import {
   DEFAULT_GAME_LOCALE_BY_SERVICE,
@@ -745,6 +746,7 @@ export function SiteNavbar() {
   const { stored, profile } = useStoredProfileSnapshot();
   const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale });
   const navIndicators = useNavIndicators();
+  const mailboxReply = useMailboxReply();
   const contactHref = getContactHref(pathname, serviceLocale, gameLocale);
   const isContactPage = stripGameLocaleFromPath(pathname) === "/contact";
 
@@ -813,6 +815,8 @@ export function SiteNavbar() {
               label={contactCopy.navLabel}
               iconSize={24}
               iconClassName="group-hover:scale-110"
+              tokenSlot
+              attention={mailboxReply}
             />
           </div>
           <NavIconLink
@@ -841,13 +845,16 @@ export function SiteNavbar() {
           data-contact-launcher="mobile"
           className="group fixed right-3 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background/90 shadow-[0_8px_28px_rgba(0,0,0,0.18)] backdrop-blur-sm transition-[border-color,background-color,transform] bottom-[calc(0.75rem+env(safe-area-inset-bottom))] hover:-translate-y-0.5 hover:border-primary/45 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 xl:hidden motion-reduce:transform-none"
         >
-          <Image
-            src="/images/sts2/relics/tiny_mailbox.webp"
-            alt=""
-            width={34}
-            height={34}
-            className="h-8 w-8 object-contain drop-shadow-md transition-transform group-hover:scale-110"
-          />
+          <span className="relative inline-flex h-8 w-8 items-center justify-center">
+            <Image
+              src="/images/sts2/relics/tiny_mailbox.webp"
+              alt=""
+              width={34}
+              height={34}
+              className="h-full w-full object-contain drop-shadow-md transition-transform group-hover:scale-110"
+            />
+            {mailboxReply && <NavAttentionDot />}
+          </span>
           <span className="pointer-events-none absolute bottom-full right-0 mb-2 whitespace-nowrap rounded-md border border-border bg-popover px-2 py-1 text-xs font-bold text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
             {contactCopy.navLabel}
           </span>
