@@ -70,22 +70,18 @@ export function DefragmentClient({
   const copy = serviceMessages[serviceLocale].defragment;
   const nav = serviceMessages[serviceLocale].nav;
   const { userId, ready, ensureUser } = useAuth();
-  const [donorNicknamesReady, setDonorNicknamesReady] = useState(false);
+  const [syncedDonorId, setSyncedDonorId] = useState<string | null>(null);
   useEffect(() => {
-    if (!ready) return;
-    if (!userId) {
-      setDonorNicknamesReady(true);
-      return;
-    }
+    if (!ready || !userId) return;
     let cancelled = false;
-    setDonorNicknamesReady(false);
     void syncDonatedRunNicknames(userId).finally(() => {
-      if (!cancelled) setDonorNicknamesReady(true);
+      if (!cancelled) setSyncedDonorId(userId);
     });
     return () => {
       cancelled = true;
     };
   }, [ready, userId]);
+  const donorNicknamesReady = ready && (!userId || syncedDonorId === userId);
   const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
   const [typeFilter, setTypeFilter] = useState<DefragmentFederatedService | null>(null);
   const [composerOpen, setComposerOpen] = useState(false);

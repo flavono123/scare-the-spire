@@ -174,8 +174,12 @@ function isMissingDonorNicknameColumn(error: unknown): boolean {
   return /donor_nickname/i.test(message) && /column/i.test(message);
 }
 
-function withoutDonorNickname(row: Record<string, unknown>): Record<string, unknown> {
-  const { donor_nickname: _nickname, ...rest } = row;
+function omitRunColumns(
+  row: Record<string, unknown>,
+  keys: string[],
+): Record<string, unknown> {
+  const rest = { ...row };
+  for (const key of keys) delete rest[key];
   return rest;
 }
 
@@ -300,10 +304,10 @@ async function insertDonatedRunRow(row: Record<string, unknown>) {
     supabase.from("runs").insert(row),
   ).catch(() => ({ error: new Error("timeout") }));
   if (first.error && isMissingDonorNicknameColumn(first.error)) {
-    return insertDonatedRunRow(withoutDonorNickname(row));
+    return insertDonatedRunRow(omitRunColumns(row, ["donor_nickname"]));
   }
   if (!first.error || !isMissingCoverSpecColumn(first.error)) return first;
-  const { cover_spec: _cover, ...legacyRow } = row;
+  const legacyRow = omitRunColumns(row, ["cover_spec"]);
   return withSupabaseTimeout(
     "runs.insert.legacy",
     supabase.from("runs").insert(legacyRow),
@@ -397,7 +401,7 @@ export async function donateRunsBatch(input: {
   ).catch(() => ({ data: null, error: new Error("timeout") }));
 
   if (result.error && isMissingDonorNicknameColumn(result.error)) {
-    const stripped = rows.map(withoutDonorNickname);
+    const stripped = rows.map((row) => omitRunColumns(row, ["donor_nickname"]));
     result = await withSupabaseTimeout(
       "runs.upsert.legacy-nickname",
       supabase
@@ -408,10 +412,7 @@ export async function donateRunsBatch(input: {
   }
 
   if (result.error && isMissingCoverSpecColumn(result.error)) {
-    const legacyRows = rows.map((row) => {
-      const { cover_spec: _cover, donor_nickname: _nickname, ...rest } = row;
-      return rest;
-    });
+    const legacyRows = rows.map((row) => omitRunColumns(row, ["cover_spec", "donor_nickname"]));
     result = await withSupabaseTimeout(
       "runs.upsert.legacy",
       supabase
