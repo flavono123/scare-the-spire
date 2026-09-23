@@ -5,8 +5,12 @@ import { loadAllEntities } from "@/lib/load-all-entities";
 import {
   DEBATE_CYCLES_TABLE,
   DEBATE_GAME_VERSION,
+  debatePoolAllows,
+  debatePoolForWeek,
   debateSubjectFromRow,
   debateSubjectHref,
+  debateWeekStart,
+  isDebateMonday,
   isDebateResourceType,
   isMissingDebateCyclesTable,
   type DebateSubject,
@@ -66,15 +70,20 @@ function debateEntityLookup() {
   return entityLookup;
 }
 
-export async function openDebateCycle(input: {
+export async function scheduleDebateCycle(input: {
+  weekStart: string;
   resourceType: string;
   resourceId: string;
 }): Promise<OpenDebateCycleResult> {
   if (process.env.NODE_ENV !== "development") {
     return { ok: false, error: "개발 서버에서만 지목할 수 있습니다." };
   }
-  if (!isDebateResourceType(input.resourceType)) {
-    return { ok: false, error: "이 종류의 백과사전 요소는 지목할 수 없습니다." };
+  if (!isDebateMonday(input.weekStart) || input.weekStart < debateWeekStart()) {
+    return { ok: false, error: "지난 주에는 예약할 수 없습니다." };
+  }
+  const pool = debatePoolForWeek(input.weekStart);
+  if (!pool || !debatePoolAllows(pool, input.resourceType) || !isDebateResourceType(input.resourceType)) {
+    return { ok: false, error: "이 주에는 그 종류의 요소를 지목할 수 없습니다." };
   }
 
   const resourceId = input.resourceId.trim();
@@ -96,29 +105,15 @@ export async function openDebateCycle(input: {
     return { ok: false, error: "백과사전에서 그 요소를 찾지 못했습니다." };
   }
 
-  const openedAt = new Date().toISOString();
   try {
-    const closed = await withSupabaseTimeout(
-      "dev.debate_cycles.close",
+    const saved = await withSupabaseTimeout(
+      "dev.debate_cycles.schedule",
       admin
         .from(DEBATE_CYCLES_TABLE)
-        .update({ closed_at: openedAt })
-        .eq("env", supabaseEnv)
-        .is("closed_at", null),
-    );
-    if (closed.error) {
-      if (isMissingDebateCyclesTable(closed.error)) {
-        return { ok: false, error: "debate_cycles 마이그레이션이 필요합니다." };
-      }
-      return { ok: false, error: closed.error.message };
-    }
-
-    const inserted = await withSupabaseTimeout(
-      "dev.debate_cycles.insert",
-      admin
-        .from(DEBATE_CYCLES_TABLE)
-        .insert({
+        .upsert({
           env: supabaseEnv,
+          week_start: input.weekStart,
+          pool,
           resource_type: input.resourceType,
           resource_id: entity.id,
           name_ko: entity.nameKo,
@@ -126,18 +121,20 @@ export async function openDebateCycle(input: {
           image_url: entity.imageUrl,
           href,
           game_version: DEBATE_GAME_VERSION,
-        })
-        .select("id, resource_type, resource_id, name_ko, name_en, image_url, href, game_version, opened_at")
+          closed_at: null,
+          opened_at: new Date().toISOString(),
+        }, { onConflict: "env,week_start" })
+        .select("id, resource_type, resource_id, name_ko, name_en, image_url, href, game_version, opened_at, week_start, pool")
         .single(),
     );
-    if (inserted.error) {
-      if (isMissingDebateCyclesTable(inserted.error)) {
+    if (saved.error) {
+      if (isMissingDebateCyclesTable(saved.error)) {
         return { ok: false, error: "debate_cycles 마이그레이션이 필요합니다." };
       }
-      return { ok: false, error: inserted.error.message };
+      return { ok: false, error: saved.error.message };
     }
 
-    const subject = debateSubjectFromRow(inserted.data);
+    const subject = debateSubjectFromRow(saved.data);
     if (!subject) return { ok: false, error: "지목한 대상을 읽지 못했습니다." };
     return { ok: true, subject };
   } catch (error) {

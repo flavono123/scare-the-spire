@@ -194,7 +194,7 @@ export const devNavItems = [
   },
   {
     href: "/dev/debate",
-    label: "이번 주 토론 대상",
+    label: "토론 주차 예약",
     icon: DEBATE_TOKEN_SRC,
     strictDevOnly: true,
   },

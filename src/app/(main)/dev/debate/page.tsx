@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 
 export const metadata = {
-  title: "이번 주 토론 대상 — DEV",
-  description: "개발 전용: 다채로운 철학자들의 이번 주 백과사전 대상을 지목합니다",
+  title: "토론 주차 예약 — DEV",
+  description: "개발 전용: 다가올 주의 다채로운 철학자 토론 대상을 예약합니다",
   robots: { index: false, follow: false },
 };
 
