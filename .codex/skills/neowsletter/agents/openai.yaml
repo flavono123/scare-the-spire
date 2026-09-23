@@ -1,0 +1,4 @@
+interface:
+  display_name: "Neowsletter"
+  short_description: "Build Neowsletter claim pages from Mega Crit"
+  default_prompt: "Use $neowsletter to add a Mega Crit Neowsletter issue to the patch-notes tab."
