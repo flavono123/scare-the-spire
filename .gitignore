@@ -62,6 +62,7 @@ test-results/
 playwright-report/
 /public/generated/compendium-detail-*.json
 /public/generated/comment-entities-sts2.json
+/public/generated/card-con-locale-*.json
 /public/comment-entities/sts2
 
 # CI/local static:data outputs (regenerate; do not commit fallout)

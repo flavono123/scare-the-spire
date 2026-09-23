@@ -2,6 +2,8 @@ import fs from "fs/promises";
 import path from "path";
 import { buildSearchIndexPayload } from "../src/lib/search-index-data";
 import { loadAllEntities } from "../src/lib/load-all-entities";
+import { getCodexCards } from "../src/lib/codex-data";
+import { cardConLocaleText } from "../src/lib/card-con-locale";
 import { buildCompendiumDetailPayload } from "../src/lib/compendium-detail-payload-builder";
 import { buildCompendiumResourceManifest } from "../src/lib/compendium-resource-manifest";
 import {
@@ -1043,6 +1045,21 @@ async function buildToyBoxNewsPayload(): Promise<ToyBoxNewsPayload> {
   };
 }
 
+async function cardConLocaleTargets(): Promise<StaticJsonTarget[]> {
+  const locales = GAME_LOCALES.filter((gameLocale) => gameLocale !== "kor");
+  const targets: StaticJsonTarget[] = [];
+  for (const gameLocale of locales) {
+    const cards = await getCodexCards({ includeDeprecated: true, gameLocale });
+    const data: Record<string, ReturnType<typeof cardConLocaleText>> = {};
+    for (const card of cards) data[card.id] = cardConLocaleText(card);
+    targets.push({
+      path: `generated/card-con-locale-${gameLocale}.json`,
+      data,
+    });
+  }
+  return targets;
+}
+
 async function generateCommentEntitiesOnly() {
   const commentEntities = await loadAllEntities();
   await Promise.all([
@@ -1060,6 +1077,10 @@ async function generateSearchIndexOnly() {
 }
 
 async function main() {
+  if (process.argv.includes("--card-con-locales-only")) {
+    await Promise.all((await cardConLocaleTargets()).map(writeJson));
+    return;
+  }
   if (process.argv.includes("--comment-entities-only")) {
     await generateCommentEntitiesOnly();
     return;
@@ -1102,6 +1123,7 @@ async function main() {
     return;
   }
 
+  const cardConLocales = await cardConLocaleTargets();
   const [
     searchIndex,
     commentEntities,
@@ -1153,6 +1175,7 @@ async function main() {
     }),
     writeJson({ path: "generated/search-index.json", data: searchIndex }),
     writeJson({ path: "generated/comment-entities-sts2.json", data: commentEntities }),
+    ...cardConLocales.map(writeJson),
     writeJson({ path: "generated/compendium-detail-kor.json", data: koreanCompendiumDetailPayload }),
     writeJson({ path: "generated/compendium-detail-eng.json", data: englishCompendiumDetailPayload }),
     writeJson({ path: "generated/compendium-resource-manifest.json", data: compendiumResourceManifest }),

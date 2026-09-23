@@ -545,6 +545,7 @@ export function RichContentEditor({
 }: RichContentEditorProps) {
   const serviceLocale = useServiceLocale();
   const cardConCopy = serviceMessages[serviceLocale].cardCon;
+  const textConCopy = serviceMessages[serviceLocale].textCon;
   const [submitting, setSubmitting] = useState(false);
   const [textConModalOpen, setTextConModalOpen] = useState(false);
   const [textConAnchor, setTextConAnchor] = useState<DOMRect | null>(null);
@@ -1508,7 +1509,7 @@ export function RichContentEditor({
         <div className="flex flex-wrap items-center gap-2 border-t border-border px-3 py-2 sm:gap-3">
           {toolbarStart}
           {enableTextCon && (
-            <GameUiHoverTip label="글자콘 만들기" delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
+            <GameUiHoverTip label={textConCopy.make} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
               <button
                 ref={textConTriggerRef}
                 type="button"
@@ -1526,11 +1527,11 @@ export function RichContentEditor({
                     ? "border-primary bg-primary/20 text-primary"
                     : "border-border/80 bg-card/50 text-muted-foreground hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
                 }`}
-                aria-label="글자콘"
+                aria-label={textConCopy.label}
                 aria-expanded={textConModalOpen}
               >
                 <Type size={13} className="shrink-0" />
-                <span>글자콘</span>
+                <span>{textConCopy.label}</span>
               </button>
             </GameUiHoverTip>
           )}

@@ -2,10 +2,12 @@
 
 import { TextConPanel } from "@/components/text-con/text-con-panel";
 import { AnchoredConPopup } from "@/components/editor/anchored-con-popup";
+import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
   DEFAULT_TEXTCON_BG,
   DEFAULT_TEXTCON_TEXT,
 } from "@/lib/text-con";
+import { serviceMessages } from "@/messages/service";
 
 const TEXT_CON_POPUP_WIDTH = 360;
 const TEXT_CON_POPUP_HEIGHT = 475;
@@ -37,12 +39,15 @@ function TextConPopupInner({
   initialTextColor = DEFAULT_TEXTCON_TEXT,
   autoFocus = true,
 }: Omit<TextConPopupProps, "open">) {
+  const serviceLocale = useServiceLocale();
+  const copy = serviceMessages[serviceLocale].textCon;
+
   return (
     <AnchoredConPopup
       anchor={anchor}
       triggerRef={triggerRef}
       onClose={onClose}
-      ariaLabel="글자콘 만들기"
+      ariaLabel={copy.make}
       dataAttribute="data-text-con-popup"
       width={TEXT_CON_POPUP_WIDTH}
       height={TEXT_CON_POPUP_HEIGHT}

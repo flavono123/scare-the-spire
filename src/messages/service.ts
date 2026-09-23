@@ -22,6 +22,13 @@ export const serviceMessages = {
       detailTitle: "슬레이 더 스파이어 2 {version} {type} 패치 노트",
       richDetails: "변경된 카드·유물 이름을 선택하면 상세 정보와 버전별 변경 이력을 확인할 수 있습니다.",
     },
+    neowsletters: {
+      indexTitle: "니오우스레터",
+      metadataDescription: "메가 크릿 니오우스레터에서 패치, 로드맵, 질문 답을 카드와 유물에 연결합니다.",
+      backToList: "니오우스레터 목록",
+      source: "원문",
+      comments: "이 항목 댓글",
+    },
     globalSearch: {
       placeholder: "통합 검색",
       empty: "검색어를 입력하세요",
@@ -80,6 +87,8 @@ export const serviceMessages = {
     debate: {
       subtitle: "이번 주 게임 요소 토론하기",
       empty: "이번 주 토론 대상이 아직 없습니다",
+      loading: "이번 주 대상을 불러오는 중...",
+      unavailableTitle: "데이터베이스가 응답하지 않습니다",
     },
     profile: {
       navLabel: "프로필",
@@ -168,6 +177,11 @@ export const serviceMessages = {
       hint: "카드를 검색해 넣으세요.",
       searchPlaceholder: "카드 검색",
     },
+    textCon: {
+      label: "글자콘",
+      make: "글자콘 만들기",
+      hint: "글자로 글자콘을 만들어 등록해 보세요.",
+    },
     engagementTips: {
       commentFirst: "첫 댓글 쓰기",
       commentCount: "{count}개의 댓글",
@@ -206,6 +220,7 @@ export const serviceMessages = {
       tabs: {
         notes: "패치 노트",
         changes: "슬서운 변경",
+        neowsletters: "니오우스레터",
       },
       searchPlaceholder: "카드, 유물, 몬스터 이름 검색",
       noResults: "일치하는 변경 기록이 없습니다",
@@ -1352,6 +1367,13 @@ export const serviceMessages = {
       pagestorm: "Pagestorm",
       debate: "Colorful Philosophers",
     },
+    neowsletters: {
+      indexTitle: "Neowsletter",
+      metadataDescription: "Mega Crit Neowsletter claims linked to cards, relics, and the compendium.",
+      backToList: "Neowsletter list",
+      source: "Original",
+      comments: "Comments on this claim",
+    },
     patchNotes: {
       indexTitle: "Patch Notes",
       detailTitle: "Slay the Spire 2 {version} {type} Patch Notes",
@@ -1415,6 +1437,8 @@ export const serviceMessages = {
     debate: {
       subtitle: "Discuss a game element this week",
       empty: "No game element is up for debate this week",
+      loading: "Loading this week's subject...",
+      unavailableTitle: "No responses from database",
     },
     profile: {
       navLabel: "Profile",
@@ -1498,10 +1522,15 @@ export const serviceMessages = {
       unavailableTitle: "No responses from database",
     },
     cardCon: {
-      label: "Card con",
-      make: "Make a card con",
+      label: "🃏",
+      make: "🃏",
       hint: "Search for a card to insert.",
       searchPlaceholder: "Search cards",
+    },
+    textCon: {
+      label: "🔤",
+      make: "🔤",
+      hint: "Type to make 🔤 and add it.",
     },
     engagementTips: {
       commentFirst: "Write the first comment",
@@ -1541,6 +1570,7 @@ export const serviceMessages = {
       tabs: {
         notes: "Patch Notes",
         changes: "scare-the-changes",
+        neowsletters: "Neowsletter",
       },
       searchPlaceholder: "Search cards, relics, or monsters",
       noResults: "No matching change history",

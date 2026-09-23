@@ -18,6 +18,9 @@ import { GameScrollArea } from "@/components/game-scroll-area";
 import { KeywordHoverTip } from "@/components/keyword-hover-tip";
 import { SearchBar } from "@/components/codex/search-bar";
 import { FittedCardTile } from "@/components/history-course/fitted-card-tile";
+import { useCardConLocale } from "@/hooks/use-card-con-locale";
+import { useGameLocale } from "@/hooks/use-game-locale";
+import { applyCardConLocale } from "@/lib/card-con-locale";
 import {
   CARD_CON_BROWSE_LIMIT,
   CARD_CON_PICKER_TILE_CLASS,
@@ -68,6 +71,8 @@ export function ComboResourcePicker({
   panelLabel,
 }: ComboResourcePickerProps) {
   const copy = serviceMessages[serviceLocale].combo;
+  const gameLocale = useGameLocale();
+  const cardLocale = useCardConLocale(cardTiles ? gameLocale : "kor");
   const commonCopy = serviceMessages[serviceLocale].codex.common;
   const typeLabels = compendiumTypeLabels(serviceLocale);
   const [openState, setOpenState] = useState(false);
@@ -309,13 +314,13 @@ export function ComboResourcePicker({
                       type="button"
                       role="listitem"
                       data-card-con-result={entity.id}
-                      aria-label={entity.nameKo}
+                      aria-label={applyCardConLocale(entity.cardData, cardLocale?.[entity.id]).name}
                       onClick={() => selectEntity(entity)}
                       className="mx-auto w-full max-w-[7.5rem] rounded-md p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     >
                       <span className={cn("block", CARD_CON_PICKER_TILE_CLASS)}>
                         <FittedCardTile
-                          card={entity.cardData}
+                          card={applyCardConLocale(entity.cardData, cardLocale?.[entity.id])}
                           serviceLocale={serviceLocale}
                           showUpgrade={false}
                           showBeta={false}

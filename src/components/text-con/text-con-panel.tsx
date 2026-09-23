@@ -12,6 +12,8 @@ import {
   TEXTCON_MAX_CHARS,
   TEXTCON_TEXT_COLORS,
 } from "@/lib/text-con";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 import { cn } from "@/lib/utils";
 
 export interface TextConPanelProps {
@@ -71,6 +73,9 @@ export function TextConPanel({
   };
 
   const previewText = text;
+  const serviceLocale = useServiceLocale();
+  const copy = serviceMessages[serviceLocale].textCon;
+  const closeLabel = serviceMessages[serviceLocale].codex.common.close;
 
   return (
     <div className={cn("flex flex-col", className)}>
@@ -80,16 +85,16 @@ export function TextConPanel({
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1 rounded-md border border-primary/40 bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
               <Type size={12} />
-              <span>글자콘</span>
+              <span>{copy.label}</span>
             </span>
             <span className="text-[11px] text-muted-foreground">
-              글자로 글자콘을 만들어 등록해 보세요.
+              {copy.hint}
             </span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="닫기"
+            aria-label={closeLabel}
             className="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
             <X size={14} />

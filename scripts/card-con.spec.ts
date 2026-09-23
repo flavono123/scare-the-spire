@@ -10,6 +10,8 @@ import {
   CARD_CON_COMMENT_WIDTH_CLASS,
   CARD_CON_PICKER_TILE_CLASS,
 } from "../src/lib/card-con";
+import { applyCardConLocale } from "../src/lib/card-con-locale";
+import type { CodexCard } from "../src/lib/codex-types";
 
 const cardConBlock: CardConBlock = {
   type: "card-con",
@@ -32,5 +34,27 @@ assert.match(CARD_CON_COMMENT_WIDTH_CLASS, /w-\[5\.25rem\]/);
 assert.match(CARD_CON_COMMENT_WIDTH_CLASS, /sm:w-24/);
 assert.match(CARD_CON_COMMENT_WIDTH_CLASS, /lg:w-28/);
 assert.match(CARD_CON_PICKER_TILE_CLASS, /max-w-\[7\.5rem\]/);
+
+const baseCard = {
+  id: "STRIKE_IRONCLAD",
+  name: "타격",
+  description: "피해를 줍니다.",
+  descriptionRaw: "피해를 줍니다.",
+  typeLabel: "공격",
+  rarityLabel: "기본",
+  keywordLabels: { 공격: "공격" },
+} as CodexCard;
+
+const localized = applyCardConLocale(baseCard, {
+  name: "Strike",
+  description: "Deal damage.",
+  descriptionRaw: "Deal damage.",
+  typeLabel: "Attack",
+  rarityLabel: "Starter",
+  keywordLabels: { 공격: "Attack" },
+});
+assert.equal(localized.name, "Strike");
+assert.equal(localized.typeLabel, "Attack");
+assert.equal(applyCardConLocale(baseCard, undefined).name, "타격");
 
 console.log("card-con serialization: ok");
