@@ -25,6 +25,7 @@ const STATIC_SERVICE_PAGE_SEGMENTS = new Set([
   "this-or-that",
   "transfigure",
   "pagestorm",
+  "debate",
 ]);
 
 const STATIC_NESTED_SERVICE_PAGES: ReadonlyArray<readonly [string, string]> = [

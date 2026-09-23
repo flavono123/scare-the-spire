@@ -23,6 +23,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
+import { DEBATE_HREF, DEBATE_TOKEN_SRC } from "@/lib/debate";
 import { PAGESTORM_HREF, PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
 import { isLatestByrdispatchNewSection } from "@/lib/toy-box-news";
 
@@ -130,6 +131,13 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     nestedUnder: "/defragment",
     byrdispatchSectionTitle: "서류 폭풍",
     getLabel: (_serviceLocale, gameLocale) => getPagestormNavTitle(gameLocale),
+  },
+  {
+    href: DEBATE_HREF,
+    icon: DEBATE_TOKEN_SRC,
+    createdAt: "2026-09-23",
+    nestedUnder: "/defragment",
+    getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.debate,
   },
 ] as const;
 

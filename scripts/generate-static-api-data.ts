@@ -121,6 +121,10 @@ interface PatchBackstabGameCopy {
   transfigureCta: string;
 }
 
+interface DebateGameCopy {
+  hero: string;
+}
+
 interface BorrowedGameCopyPayload {
   chemicalXPlaceholder: string;
   comboPlaceholder: string;
@@ -133,6 +137,7 @@ interface BorrowedGameCopyPayload {
   defragment: DefragmentGameCopy;
   decisionsDecisions: DecisionsDecisionsGameCopy;
   pagestorm: PagestormGameCopy;
+  debate: DebateGameCopy;
 }
 
 interface ToyBoxNewsPayload {
@@ -903,6 +908,19 @@ async function buildDecisionsDecisionsGameCopy(
   };
 }
 
+async function buildDebateGameCopy(
+  gameLocale: GameLocale,
+): Promise<DebateGameCopy> {
+  const description = await readGameTextWithEnglishFallback(
+    gameLocale,
+    "events",
+    "COLORFUL_PHILOSOPHERS.pages.INITIAL.description",
+  );
+  return {
+    hero: stripGameMarkup(lastNonEmptyLine(description)),
+  };
+}
+
 async function buildPagestormGameCopy(
   gameLocale: GameLocale,
 ): Promise<PagestormGameCopy> {
@@ -964,6 +982,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         defragment,
         decisionsDecisions,
         pagestorm,
+        debate,
       ] = await Promise.all([
         readGameTextWithEnglishFallback(
           gameLocale,
@@ -984,6 +1003,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         buildDefragmentGameCopy(gameLocale),
         buildDecisionsDecisionsGameCopy(gameLocale),
         buildPagestormGameCopy(gameLocale),
+        buildDebateGameCopy(gameLocale),
       ]);
       return [
         gameLocale,
@@ -999,6 +1019,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
           defragment,
           decisionsDecisions,
           pagestorm,
+          debate,
         },
       ] as const;
     }),

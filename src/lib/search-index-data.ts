@@ -6,7 +6,7 @@ import { isBackstabPatch } from "@/lib/sts2-patch-labels";
 import { eventCharacterQuoteSearchParts } from "@/lib/event-character-quotes";
 import { loadAllEntities } from "@/lib/load-all-entities";
 
-export type SearchItemType = EntityType | "patch" | "story" | "historyCourse" | "thisOrThat" | "favoriteTournament" | "decisionsDecisions" | "pagestorm";
+export type SearchItemType = EntityType | "patch" | "story" | "historyCourse" | "thisOrThat" | "favoriteTournament" | "decisionsDecisions" | "pagestorm" | "debate";
 
 export type SearchIndexItem = {
   id: string;
@@ -448,6 +448,17 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     href: "/decisions-decisions",
   }];
 
+  const debateItems: SearchIndexItem[] = [{
+    id: "debate",
+    type: "debate",
+    title: "토론",
+    titleEn: "Debate",
+    description: "이번 주 게임 요소 토론하기 토론 드래프트",
+    descriptionEn: "discuss a game element this week debate draft",
+    imageUrl: "/images/sts2/modifiers/draft.webp",
+    href: "/debate",
+  }];
+
   const pagestormItems: SearchIndexItem[] = [{
     id: "pagestorm",
     type: "pagestorm",
@@ -459,5 +470,5 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     href: "/pagestorm",
   }];
 
-  return { items: [...patchItems, ...storyItems, ...items, ...historyCourseItems, ...thisOrThatItems, ...favoriteTournamentItems, ...decisionsDecisionsItems, ...pagestormItems] };
+  return { items: [...patchItems, ...storyItems, ...items, ...historyCourseItems, ...thisOrThatItems, ...favoriteTournamentItems, ...decisionsDecisionsItems, ...pagestormItems, ...debateItems] };
 }

@@ -19,10 +19,19 @@ assert.equal(decisions.isNew, false);
 
 const pagestorm = items.find((item) => item.href === "/pagestorm");
 assert.ok(pagestorm);
-assert.equal(pagestorm.isNew, true);
+assert.equal(pagestorm.isNew, false);
 
 const defragment = items.find((item) => item.href === "/defragment");
 assert.ok(defragment);
 assert.equal(defragment.isNew, false);
+
+const defragmentIndex = hrefs.indexOf("/defragment");
+assert.deepEqual(hrefs.slice(defragmentIndex, defragmentIndex + 4), [
+  "/defragment",
+  "/debate",
+  "/pagestorm",
+  "/decisions-decisions",
+]);
+assert.equal(items.find((item) => item.href === "/debate")?.label, "토론");
 
 console.log("toybox-nav.spec.ts: ok");

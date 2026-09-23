@@ -79,6 +79,13 @@ export const DECISIONS_DECISIONS_PAGE_OG_IMAGE: PageOgImage = {
   alt: "어려운 결정 — Decisions, Decisions",
 };
 
+export const DEBATE_PAGE_OG_IMAGE: PageOgImage = {
+  url: "/images/sts2/events/colorful_philosophers.webp",
+  width: 3440,
+  height: 1616,
+  alt: "토론 — 다채로운 철학자들",
+};
+
 export const PAGESTORM_PAGE_OG_IMAGE: PageOgImage = {
   url: "/images/sts2/cards/pagestorm.webp",
   width: 1000,
@@ -178,6 +185,11 @@ export const PAGE_OG_IMAGE_RULES = [
     pattern: "/pagestorm",
     label: "서류 폭풍",
     image: PAGESTORM_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/debate",
+    label: "토론",
+    image: DEBATE_PAGE_OG_IMAGE,
   },
   {
     pattern: "/patches",

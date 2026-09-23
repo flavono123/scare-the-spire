@@ -296,5 +296,31 @@
         "reason": "Silver Crucible parody: replaces first treasure chest with next big patch."
       }
     ]
+  },
+  {
+    "id": "debate.hero.ko",
+    "mode": "serviceText",
+    "sourceLang": "kor",
+    "sourceTable": "events",
+    "sourceKey": "COLORFUL_PHILOSOPHERS.pages.INITIAL.description",
+    "sourceText": "당신도 스스로 생각하는 바를 그들에게 말합니다.",
+    "serviceText": "당신도 스스로 생각하는 바를 그들에게 말합니다.",
+    "serviceFiles": [
+      "scripts/debate-copy.spec.ts"
+    ],
+    "replacements": []
+  },
+  {
+    "id": "debate.hero.en",
+    "mode": "serviceText",
+    "sourceLang": "eng",
+    "sourceTable": "events",
+    "sourceKey": "COLORFUL_PHILOSOPHERS.pages.INITIAL.description",
+    "sourceText": "You chime in with your thoughts.",
+    "serviceText": "You chime in with your thoughts.",
+    "serviceFiles": [
+      "scripts/debate-copy.spec.ts"
+    ],
+    "replacements": []
   }
 ]

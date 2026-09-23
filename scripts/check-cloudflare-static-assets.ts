@@ -69,6 +69,7 @@ const staticServicePageSegments = [
   "this-or-that",
   "transfigure",
   "pagestorm",
+  "debate",
 ] as const;
 const staticNestedServicePages = [
   ["pagestorm", "write"],

@@ -52,6 +52,7 @@ const staticServicePageSegments = new Set([
   "this-or-that",
   "transfigure",
   "pagestorm",
+  "debate",
 ]);
 const staticNestedServicePages = [
   ["pagestorm", "write"],

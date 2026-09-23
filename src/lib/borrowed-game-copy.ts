@@ -39,6 +39,10 @@ export interface PagestormGameCopy {
   hero: string;
 }
 
+export interface DebateGameCopy {
+  hero: string;
+}
+
 export interface FeedbackFormGameCopy {
   title: string;
   categoryLabel: string;
@@ -87,6 +91,7 @@ interface BorrowedGameCopyPayload {
   defragment: DefragmentGameCopy;
   decisionsDecisions: DecisionsDecisionsGameCopy;
   pagestorm: PagestormGameCopy;
+  debate: DebateGameCopy;
 }
 
 const borrowedGameCopy = borrowedGameCopyPayload as Record<GameLocale, BorrowedGameCopyPayload>;
@@ -175,4 +180,10 @@ export async function getPagestormGameCopy(
 
 export function getPagestormNavTitle(gameLocale: GameLocale): string {
   return getBorrowedGameCopy(gameLocale).pagestorm.title;
+}
+
+export async function getDebateGameCopy(
+  gameLocale: GameLocale,
+): Promise<DebateGameCopy> {
+  return getBorrowedGameCopy(gameLocale).debate;
 }
