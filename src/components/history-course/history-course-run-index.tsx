@@ -15,10 +15,10 @@ import type { PostBlock } from "@/lib/chemical-types";
 import type { ComboResourceRef } from "@/lib/combo-types";
 import { mergePartyBadges } from "@/lib/history-party";
 import {
-  HISTORY_COURSE_INDEX_SORTS,
   sortHistoryCourseIndexRuns,
   type HistoryCourseIndexSort,
 } from "@/lib/history-course-index-sort";
+import { isToyboxFeedCoreSort } from "@/lib/toybox-feed";
 import {
   buildHistoryCourseSearchDoc,
   historyCourseRunMatches,
@@ -172,7 +172,6 @@ export function HistoryCourseRunIndex({
       merged.map((item) => ({
         ...item,
         createdAtMs: indexCreatedAtMs(item),
-        startTime: indexStartTime(item),
         likeCount: engagement.counts[item.runId]?.likes ?? 0,
         commentCount: engagement.counts[item.runId]?.comments ?? 0,
       })),
@@ -370,12 +369,9 @@ export function HistoryCourseRunIndex({
           <FeedSortToggle
             sort={sort}
             onSortChange={(next) => {
-              if ((HISTORY_COURSE_INDEX_SORTS as readonly string[]).includes(next)) {
-                setSort(next as HistoryCourseIndexSort);
-              }
+              if (isToyboxFeedCoreSort(next)) setSort(next);
             }}
             labels={serviceMessages[serviceLocale].feedSort}
-            options={HISTORY_COURSE_INDEX_SORTS}
           />
         ) : null}
         <ComboGameElementFilter
@@ -587,12 +583,6 @@ function indexCreatedAtMs(item: MergedRun): number {
     if (Number.isFinite(parsed)) return parsed;
   }
   return item.local?.savedAt ?? 0;
-}
-
-function indexStartTime(item: MergedRun): number {
-  const localStart = item.local?.run.start_time;
-  if (typeof localStart === "number" && localStart > 0) return localStart;
-  return item.donated?.start_time ?? 0;
 }
 
 function parseDonatedReplay(donated: DonatedRunSummary | undefined): ReplayRun | null {

@@ -31,12 +31,7 @@ export const TOYBOX_FEED_CORE_SORTS = ["latest", "recommended", "comments"] as c
 export type ToyboxFeedCoreSort = (typeof TOYBOX_FEED_CORE_SORTS)[number];
 
 /** Registered extra sorts. Append via `TOYBOX_FEED_EXTRA_SORTS_BY_SERVICE`. */
-export const TOYBOX_FEED_EXTRA_SORTS = [
-  "vote_rate_high",
-  "vote_rate_low",
-  "play_count",
-  "run_start",
-] as const;
+export const TOYBOX_FEED_EXTRA_SORTS = ["vote_rate_high", "vote_rate_low", "play_count"] as const;
 export type ToyboxFeedExtraSort = (typeof TOYBOX_FEED_EXTRA_SORTS)[number];
 
 export const TOYBOX_FEED_SORTS = [
@@ -221,7 +216,6 @@ const EXTRA_SORT_CURSOR_SCORE: Record<
   play_count: (item) => asNonNegativeInt(
     (item.post as PostIdentity & Record<string, unknown>).play_count,
   ) ?? 0,
-  run_start: () => 0,
 };
 
 export function toyboxFeedCursorScore<T extends PostIdentity>(

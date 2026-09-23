@@ -29,8 +29,6 @@ assert.equal(isToyboxFeedSort("recommended"), true);
 assert.equal(isToyboxFeedCoreSort("recommended"), true);
 assert.equal(isToyboxFeedSort("vote_rate_high"), true);
 assert.equal(isToyboxFeedSort("play_count"), true);
-assert.equal(isToyboxFeedSort("run_start"), true);
-assert.equal(isToyboxFeedCoreSort("run_start"), false);
 assert.equal(isToyboxFeedCoreSort("vote_rate_high"), false);
 assert.equal(isToyboxFeedCoreSort("play_count"), false);
 assert.equal(isToyboxFeedSort("hot"), false);
@@ -134,7 +132,5 @@ assert.equal(serviceMessages.ko.feedSort.play_count, "인기");
 assert.equal(serviceMessages.en.feedSort.vote_rate_high, "High vote rate");
 assert.equal(serviceMessages.en.feedSort.vote_rate_low, "Low vote rate");
 assert.equal(serviceMessages.en.feedSort.play_count, "Popular");
-assert.equal(serviceMessages.ko.feedSort.run_start, "도전 시각");
-assert.equal(serviceMessages.en.feedSort.run_start, "Run start");
 
 console.log("toybox-feed.spec.ts: ok");
