@@ -16,7 +16,7 @@ Build 니오우스레터 pages from the Mega Crit original. The page is a claim 
 - Use official names from `data/sts2/{kor,eng}`. Do not invent a name for an unrevealed character, act, or monster. A teaser image stays an image.
 - Host an image only when it depicts game content and `public/images/sts2/**` does not already have it. Save it at `public/images/neowsletters/{id}/`. Skip `srcset` derivatives. Fan art stays on the source URL.
 - Comment anchors are stable claim ids. Thread key is `neowsletter:{id}:{claimId}`. Do not insert these lines into `data/sts2-patch-lines.json` or the 슬서운 변경 explorer.
-- `serviceLocale` selects `data/sts2-neowsletters/{id}.ko.md` or `{id}.md`. `gameLocale` selects Codex hover labels, same as patch notes.
+- `serviceLocale` selects `data/sts2-neowsletters/{id}.ko.md` or `{id}.md`. `gameLocale` selects Codex hover labels. Keep the written name on screen when the game locale matches the file (`kor` / `eng`). Swap the visible label only for other game locales, so `[gold:ascension]Ascension 10[/gold]` does not become the level title `Double Boss`.
 - Pages are finite static routes under `/patches/neowsletters`. Register them in `scripts/build-patch-worker.tsx` in the same change. Do not render markdown in the Worker.
 - Load `.codex/skills/cf-guardrails/SKILL.md` before adding routes or images. One newsletter image also occupies a main Worker public-asset slot.
 - Every meaningful edit gets its own speculative commit, following `AGENTS.md`.

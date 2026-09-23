@@ -12,7 +12,7 @@ export function PatchSectionTabs({
   serviceLocale,
   gameLocale,
 }: {
-  active: "notes" | "changes";
+  active: "notes" | "changes" | "neowsletters";
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
@@ -30,10 +30,16 @@ export function PatchSectionTabs({
       href: "/patches/changes",
       icon: "/images/sts2/relics/bookmark.webp",
     },
+    {
+      id: "neowsletters" as const,
+      label: copy.neowsletters,
+      href: "/patches/neowsletters",
+      icon: "/images/sts2/ancient-nodes/ancient_node_neow.webp",
+    },
   ];
 
   return (
-    <nav className="mt-4 flex items-center gap-5 border-b border-white/10" aria-label={copy.notes}>
+    <nav className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-white/10" aria-label={copy.notes}>
       {items.map((item) => {
         const selected = item.id === active;
         return (

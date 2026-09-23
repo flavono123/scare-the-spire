@@ -19,6 +19,14 @@ import {
   getResourcePatchIndexMetadata,
   ResourcePatchIndexPage,
 } from "@/components/patches/resource-patch-index-page";
+import {
+  getNeowsletterDetailMetadata,
+  NeowsletterDetailPage,
+} from "@/components/patches/neowsletter-detail-page";
+import {
+  getNeowsletterListMetadata,
+  NeowsletterListPage,
+} from "@/components/patches/neowsletter-list-page";
 import { SiteNavDropdown } from "@/components/site-nav-dropdown";
 import {
   GAME_LOCALE_PATH_SEGMENTS,
@@ -34,6 +42,7 @@ import { UNSET_PROFILE_TOKEN_URL } from "@/lib/user-profile";
 import { getContactHref } from "@/lib/contact-routing";
 import { COLOR_SCHEME_BOOT_SCRIPT, THEME_COLOR_DARK } from "@/lib/color-scheme";
 import { getSTS2Patches } from "@/lib/data";
+import { getNeowsletters } from "@/lib/neowsletters";
 import { getSiteOrigin } from "@/lib/site-origin";
 import { serviceMessages } from "@/messages/service";
 import { contactMessages } from "@/messages/contact";
@@ -753,6 +762,70 @@ async function main() {
       }),
       clientScripts: ["/_patches/resource-patch-index.js"],
     });
+  }
+
+  const neowsletters = await getNeowsletters();
+  routes.push({
+    pathname: "/patches/neowsletters",
+    serviceLocale: "ko",
+    gameLocale: "kor",
+    metadata: getNeowsletterListMetadata("ko"),
+    element: await NeowsletterListPage({ serviceLocale: "ko", gameLocale: "kor" }),
+  });
+
+  for (const route of await localizedPatchRoutes("neowsletters")) {
+    routes.push({
+      ...route,
+      metadata: getNeowsletterListMetadata(route.serviceLocale),
+      element: await NeowsletterListPage({
+        serviceLocale: route.serviceLocale,
+        gameLocale: route.gameLocale,
+      }),
+    });
+  }
+
+  for (const issue of neowsletters) {
+    routes.push({
+      pathname: `/patches/neowsletters/${issue.id}`,
+      serviceLocale: "ko",
+      gameLocale: "kor",
+      metadata: await getNeowsletterDetailMetadata({
+        issueId: issue.id,
+        serviceLocale: "ko",
+      }),
+      element: await NeowsletterDetailPage({
+        issueId: issue.id,
+        serviceLocale: "ko",
+        gameLocale: "kor",
+        staticHoverPreviews: true,
+      }),
+      article: {
+        headline: issue.titleKo,
+        datePublished: issue.date,
+        sourceUrl: issue.sourceUrl,
+      },
+    });
+
+    for (const route of await localizedPatchRoutes(`neowsletters/${issue.id}`)) {
+      routes.push({
+        ...route,
+        metadata: await getNeowsletterDetailMetadata({
+          issueId: issue.id,
+          serviceLocale: route.serviceLocale,
+        }),
+        element: await NeowsletterDetailPage({
+          issueId: issue.id,
+          serviceLocale: route.serviceLocale,
+          gameLocale: route.gameLocale,
+          staticHoverPreviews: true,
+        }),
+        article: {
+          headline: route.serviceLocale === "ko" ? issue.titleKo : issue.title,
+          datePublished: issue.date,
+          sourceUrl: issue.sourceUrl,
+        },
+      });
+    }
   }
 
   for (const patch of patches) {

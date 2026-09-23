@@ -16,6 +16,7 @@ import {
   generateRelicStaticParams,
 } from "@/lib/codex-static-params";
 import { getSTS2Patches } from "@/lib/data";
+import { getNeowsletters } from "@/lib/neowsletters";
 import { getActiveRunBadgeCatalog } from "@/lib/run-badge-catalog";
 import { absoluteSiteUrl } from "@/lib/site-origin";
 import {
@@ -35,6 +36,7 @@ const PUBLIC_INDEX_PATHS = [
   "/history-course",
   "/patches",
   "/patches/changes",
+  "/patches/neowsletters",
   "/this-or-that",
   "/this-or-that/tournament",
   "/transfigure",
@@ -83,11 +85,12 @@ const COMPENDIUM_DETAIL_ROUTES = [
 ] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [detailParamGroups, patches, sts1Cards, sts1Relics, sts1Potions] = await Promise.all([
+  const [detailParamGroups, patches, neowsletters, sts1Cards, sts1Relics, sts1Potions] = await Promise.all([
     Promise.all(
       COMPENDIUM_DETAIL_ROUTES.map(([, generateParams]) => generateParams()),
     ),
     getSTS2Patches(),
+    getNeowsletters(),
     getSts1Cards(),
     getSts1Relics(),
     getSts1Potions(),
@@ -104,6 +107,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...sts1Potions.map((potion) => `/compendium/sts1/potions/${potion.slug}`),
   ];
   const latestPatchDate = patches.map(({ date }) => date).sort().at(-1);
+  const latestNeowsletterDate = neowsletters.map(({ date }) => date).sort().at(-1);
 
   return [
     ...paths.map((path) => ({
@@ -111,9 +115,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...((path === "/patches" || path === "/patches/changes") && latestPatchDate
         ? { lastModified: latestPatchDate }
         : {}),
+      ...(path === "/patches/neowsletters" && latestNeowsletterDate
+        ? { lastModified: latestNeowsletterDate }
+        : {}),
     })),
     ...patches.map(({ version, date }) => ({
       url: absoluteSiteUrl(`/patches/${version}`),
+      lastModified: date,
+    })),
+    ...neowsletters.map(({ id, date }) => ({
+      url: absoluteSiteUrl(`/patches/neowsletters/${id}`),
       lastModified: date,
     })),
   ];

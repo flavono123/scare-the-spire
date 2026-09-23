@@ -25,6 +25,10 @@ export function buildPatchCommentThreadKey(version: string): string {
   return `sts2-patch:${version}`;
 }
 
+export function buildNeowsletterCommentThreadKey(issueId: string, claimId: string): string {
+  return `neowsletter:${issueId}:${claimId}`;
+}
+
 export function buildCodexCommentThreadKey(entityType: string, entityId: string): string {
   return `sts2-codex:${entityType}:${entityId}`;
 }
@@ -138,6 +142,11 @@ function prefixedResourceCommentsHref(storyId: string, prefix: string, pathname:
 export function commentThreadHref(storyId: string): string {
   const patchHref = prefixedResourceCommentsHref(storyId, "sts2-patch:", "/patches");
   if (patchHref) return patchHref;
+
+  const neowsletterMatch = /^neowsletter:(\d{4}-\d{2}):([a-z0-9-]+)$/.exec(storyId);
+  if (neowsletterMatch) {
+    return `/patches/neowsletters/${neowsletterMatch[1]}#claim-${neowsletterMatch[2]}`;
+  }
 
   const sts1Match = /^sts1-codex:([^:]+):(.+)$/.exec(storyId);
   if (sts1Match) {

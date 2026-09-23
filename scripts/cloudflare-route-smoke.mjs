@@ -256,6 +256,27 @@ function patchCases() {
       bodyIncludes: "data-resource-patch-line",
     },
     {
+      name: "Neowsletter index",
+      path: "/patches/neowsletters",
+      headers: { Accept: "text/html" },
+      contentType: "text/html",
+      bodyIncludes: "니오우스레터",
+    },
+    {
+      name: "August 2026 Neowsletter",
+      path: "/patches/neowsletters/2026-08",
+      headers: { Accept: "text/html" },
+      contentType: "text/html",
+      bodyIncludes: "data-neowsletter-issue=\"2026-08\"",
+    },
+    {
+      name: "English August 2026 Neowsletter",
+      path: "/en/patches/neowsletters/2026-08",
+      headers: { Accept: "text/html" },
+      contentType: "text/html",
+      bodyIncludes: "data-neowsletter-issue=\"2026-08\"",
+    },
+    {
       name: "Latest Korean patch",
       path: `/patches/${latest.version}`,
       headers: { Accept: "text/html" },

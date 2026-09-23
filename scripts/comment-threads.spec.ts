@@ -12,6 +12,10 @@ assert.equal(
 assert.equal(commentThreadHref("blade-dance-shivs"), "/#blade-dance-shivs");
 assert.equal(commentThreadHref("sts2-patch:0.111.0"), "/patches/0.111.0#comments");
 assert.equal(
+  commentThreadHref("neowsletter:2026-08:ascension-10"),
+  "/patches/neowsletters/2026-08#claim-ascension-10",
+);
+assert.equal(
   commentThreadHref("sts2-codex:card:STRIKE"),
   "/compendium/cards/strike#comments",
 );
