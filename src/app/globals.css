@@ -1011,6 +1011,10 @@
   }
 }
 
+.nav-attention-dot[hidden] {
+  display: none;
+}
+
 .nav-attention-dot {
   position: absolute;
   top: 0;

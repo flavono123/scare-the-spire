@@ -27,6 +27,7 @@ import {
   getNeowsletterListMetadata,
   NeowsletterListPage,
 } from "@/components/patches/neowsletter-list-page";
+import { NAV_ATTENTION_SLOT_CLASS } from "@/components/nav-attention-dot";
 import { SiteNavDropdown } from "@/components/site-nav-dropdown";
 import {
   GAME_LOCALE_PATH_SEGMENTS,
@@ -75,6 +76,10 @@ const outDir = path.join(process.cwd(), ".patch-worker/assets");
 const patchCommentsClientPath = path.join(
   process.cwd(),
   "src/components/patches/patch-comments-client.js",
+);
+const patchNavIndicatorsClientPath = path.join(
+  process.cwd(),
+  "src/components/patches/patch-nav-indicators.js",
 );
 const patchRichCommentsClientPath = path.join(
   process.cwd(),
@@ -234,6 +239,7 @@ function StaticNavIconLink({
   active = false,
   iconSize = 22,
   profileCharacterIcon = false,
+  attentionMarker,
 }: {
   href: string;
   icon: string;
@@ -241,7 +247,22 @@ function StaticNavIconLink({
   active?: boolean;
   iconSize?: number;
   profileCharacterIcon?: boolean;
+  attentionMarker?: string;
 }) {
+  const iconImage = (
+    <img
+      src={icon}
+      alt=""
+      width={iconSize}
+      height={iconSize}
+      data-profile-character-icon={profileCharacterIcon ? "" : undefined}
+      className={attentionMarker
+        ? "h-full w-full object-contain transition-transform group-hover:scale-110"
+        : "object-contain transition-transform group-hover:scale-110"}
+      style={attentionMarker ? undefined : { width: iconSize, height: iconSize }}
+    />
+  );
+
   return (
     <a
       href={href}
@@ -253,15 +274,12 @@ function StaticNavIconLink({
           : "border-transparent hover:border-primary/25 hover:bg-white/[0.05]"
       }`}
     >
-      <img
-        src={icon}
-        alt=""
-        width={iconSize}
-        height={iconSize}
-        data-profile-character-icon={profileCharacterIcon ? "" : undefined}
-        className="object-contain transition-transform group-hover:scale-110"
-        style={{ width: iconSize, height: iconSize }}
-      />
+      {attentionMarker ? (
+        <span className={NAV_ATTENTION_SLOT_CLASS}>
+          {iconImage}
+          <span hidden data-nav-attention={attentionMarker} className="nav-attention-dot" />
+        </span>
+      ) : iconImage}
     </a>
   );
 }
@@ -379,6 +397,7 @@ function StaticPatchHeader({
             icon="/images/sts2/nav/patch_notes_icon.png"
             label={messages.nav.patches}
             active
+            attentionMarker="patch-notes"
           />
 
           <SiteNavDropdown
@@ -387,6 +406,7 @@ function StaticPatchHeader({
             items={toyBoxItems}
             align="left"
             variant="toyBox"
+            attentionMarker="toy-box"
           />
         </div>
 
@@ -434,6 +454,7 @@ function StaticPatchHeader({
               icon="/images/sts2/relics/tiny_mailbox.webp"
               label={contactCopy.navLabel}
               iconSize={24}
+              attentionMarker="mailbox"
             />
           </div>
           <StaticNavIconLink
@@ -617,7 +638,7 @@ function renderShell(route: StaticPatchRoute): string {
             supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
             supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
             supabaseEnv: process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production",
-          })}</script><script src="/_patches/patch-global-search.js" defer></script><script src="/_patches/patch-static-card-preview.js" defer></script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-rich-comments.js" defer></script><script src="/_patches/patch-comments.js" defer></script>${routeClientScripts}${cloudflareWebAnalytics}`,
+          })}</script><script src="/_patches/patch-nav-indicators.js" defer></script><script src="/_patches/patch-global-search.js" defer></script><script src="/_patches/patch-static-card-preview.js" defer></script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-rich-comments.js" defer></script><script src="/_patches/patch-comments.js" defer></script>${routeClientScripts}${cloudflareWebAnalytics}`,
         }}
       />
     </html>,
@@ -627,6 +648,7 @@ function renderShell(route: StaticPatchRoute): string {
 async function writePatchClientAssets() {
   const clientAssets = [
     [patchCommentsClientPath, path.join(outDir, "_patches/patch-comments.js")],
+    [patchNavIndicatorsClientPath, path.join(outDir, "_patches/patch-nav-indicators.js")],
     [patchStaticSpineClientPath, path.join(outDir, "_patches/patch-static-spine.js")],
     [spinePlayerClientPath, path.join(outDir, "_patches/spine-player.min.js")],
   ] as const;

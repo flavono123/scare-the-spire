@@ -2,6 +2,19 @@
 export const NAV_ATTENTION_SLOT_CLASS =
   "relative inline-flex h-6 w-6 shrink-0 items-center justify-center sm:h-7 sm:w-7";
 
-export function NavAttentionDot() {
-  return <span aria-hidden className="nav-attention-dot" />;
+export function NavAttentionDot({
+  marker,
+  dormant = false,
+}: {
+  marker?: string;
+  dormant?: boolean;
+}) {
+  return (
+    <span
+      aria-hidden
+      hidden={dormant}
+      data-nav-attention={marker}
+      className="nav-attention-dot"
+    />
+  );
 }

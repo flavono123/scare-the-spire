@@ -13,6 +13,8 @@ type SiteNavDropdownProps = {
   align?: "left" | "right";
   variant?: "default" | "toyBox";
   attention?: boolean;
+  /** Static patch HTML renders a hidden dot; patch-nav-indicators.js reveals it. */
+  attentionMarker?: string;
 };
 
 export function SiteNavDropdown({
@@ -22,6 +24,7 @@ export function SiteNavDropdown({
   align = "right",
   variant = "default",
   attention = false,
+  attentionMarker,
 }: SiteNavDropdownProps) {
   const isToyBox = variant === "toyBox";
 
@@ -43,7 +46,9 @@ export function SiteNavDropdown({
               height={28}
               className="h-full w-full rounded-sm object-contain brightness-90 transition-all hover:brightness-110 group-open:brightness-125"
             />
-            {attention && <NavAttentionDot />}
+            {(attention || attentionMarker) && (
+              <NavAttentionDot marker={attentionMarker} dormant={Boolean(attentionMarker) && !attention} />
+            )}
           </span>
           <svg
             className="hidden h-3 w-3 text-muted-foreground transition-transform group-open:rotate-180 sm:block"
