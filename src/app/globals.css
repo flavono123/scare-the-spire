@@ -1013,19 +1013,19 @@
   }
 }
 
-/* Navbar attention pip. Anchored to the shared token slot. StsColors TEXT_AQUA. */
+/* Navbar attention pip. Anchored to the shared token slot. StsColors TEXT_GOLD. */
 @keyframes nav-attention-sine {
   0%, 100% {
     transform: scale(1);
     box-shadow:
       0 0 0 1px #1a1208,
-      0 0 0 0 rgba(42, 235, 190, 0.55);
+      0 0 0 0 rgba(239, 200, 81, 0.55);
   }
   50% {
     transform: scale(1.18);
     box-shadow:
       0 0 0 1px #1a1208,
-      0 0 0 3px rgba(42, 235, 190, 0);
+      0 0 0 3px rgba(239, 200, 81, 0);
   }
 }
 
@@ -1043,7 +1043,7 @@
   margin-right: -0.25rem;
   border-radius: 9999px;
   pointer-events: none;
-  background: #2aebbe;
+  background: #efc851;
   animation: nav-attention-sine 1.8s ease-in-out infinite;
 }
 
