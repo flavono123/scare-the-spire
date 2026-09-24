@@ -12,7 +12,6 @@ import {
   isMissingColorfulPhilosopherPosts,
   type ColorfulPhilosopherPost,
 } from "@/lib/colorful-philosophers";
-import { supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
 type SaveResult =
@@ -49,6 +48,7 @@ function entityLookup() {
 }
 
 export async function saveColorfulPhilosopherPost(input: {
+  env: "development" | "production";
   weekStart: string;
   slot: string;
   resourceId: string;
@@ -69,7 +69,7 @@ export async function saveColorfulPhilosopherPost(input: {
   }
   const admin = adminClient();
   if (!admin) return { ok: false, error: "SUPABASE_SECRET_KEY가 없습니다." };
-  if (supabaseEnv !== "production" && supabaseEnv !== "development") {
+  if (input.env !== "production" && input.env !== "development") {
     return { ok: false, error: "알 수 없는 Supabase 환경입니다." };
   }
 
@@ -80,7 +80,7 @@ export async function saveColorfulPhilosopherPost(input: {
     const saved = await withSupabaseTimeout(
       "dev.colorful_philosopher_posts.save",
       admin.from(COLORFUL_PHILOSOPHERS_POSTS_TABLE).upsert({
-        env: supabaseEnv,
+        env: input.env,
         week_start: input.weekStart,
         slot: input.slot,
         resource_type: input.slot,

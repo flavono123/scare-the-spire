@@ -17,7 +17,7 @@ import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
 const POST_COLUMNS = "id, week_start, slot, resource_id, name_ko, name_en, image_url, body, game_version, buff_count, nerf_count, rework_count";
 
-export function useColorfulPhilosopherWeek() {
+export function useColorfulPhilosopherWeek(env = supabaseEnv) {
   const [posts, setPosts] = useState<ColorfulPhilosopherPost[]>([]);
   const [loading, setLoading] = useState(supabaseEnabled);
   const [unavailable, setUnavailable] = useState(false);
@@ -36,7 +36,7 @@ export function useColorfulPhilosopherWeek() {
     withSupabaseTimeout(
       "colorful_philosopher_posts.week",
       supabase.from(COLORFUL_PHILOSOPHERS_POSTS_TABLE).select(POST_COLUMNS)
-        .eq("env", supabaseEnv)
+        .eq("env", env)
         .order("week_start", { ascending: false })
         .limit(100),
     ).then(({ data, error }) => {
@@ -63,7 +63,7 @@ export function useColorfulPhilosopherWeek() {
     return () => {
       cancelled = true;
     };
-  }, [reloadKey]);
+  }, [env, reloadKey]);
 
   return { posts, loading, unavailable, missing, reload };
 }

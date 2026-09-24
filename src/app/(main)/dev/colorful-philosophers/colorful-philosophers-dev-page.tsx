@@ -27,10 +27,13 @@ export function ColorfulPhilosophersDevPage() {
   const [selected, setSelected] = useState<EntityInfo | null>(null);
   const [body, setBody] = useState("");
   const [bodyTouched, setBodyTouched] = useState(false);
+  const [targetEnv, setTargetEnv] = useState<"development" | "production">(
+    supabaseEnv === "production" ? "production" : "development",
+  );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { entities, loading } = useCommentEntities();
-  const weekPosts = useColorfulPhilosopherWeek();
+  const weekPosts = useColorfulPhilosopherWeek(targetEnv);
   const typeLabels = compendiumTypeLabels("ko");
   const pool = useMemo(
     () => entities.filter((entity) => entity.type === slot),
@@ -57,6 +60,7 @@ export function ColorfulPhilosophersDevPage() {
     setSaving(true);
     setError(null);
     const result = await saveColorfulPhilosopherPost({
+      env: targetEnv,
       weekStart,
       slot,
       resourceId: selected.id,
@@ -76,8 +80,24 @@ export function ColorfulPhilosophersDevPage() {
     <div className="mx-auto w-full max-w-2xl space-y-5 px-4 py-6">
       <header>
         <h1 className="font-service text-xl font-bold text-primary">다채로운 철학자들 글</h1>
-        <p className="text-sm text-zinc-400">{`개발 서버 전용. 환경 ${supabaseEnv}. v${COLORFUL_PHILOSOPHERS_GAME_VERSION}`}</p>
+        <p className="text-sm text-zinc-400">{`개발 서버에서 개발·운영 글을 고릅니다. v${COLORFUL_PHILOSOPHERS_GAME_VERSION}`}</p>
       </header>
+      <div className="flex gap-2">
+        {(["development", "production"] as const).map((env) => (
+          <button
+            key={env}
+            type="button"
+            onClick={() => {
+              setTargetEnv(env);
+              setSelected(null);
+              setBodyTouched(false);
+            }}
+            className={`rounded-full border px-3 py-1 text-xs ${env === targetEnv ? "border-primary bg-primary/15 text-primary" : "border-white/10 text-zinc-400"}`}
+          >
+            {env === "production" ? "운영" : "개발"}
+          </button>
+        ))}
+      </div>
       <div className="flex flex-wrap gap-2">
         {weeks.map((week) => (
           <button
@@ -110,9 +130,7 @@ export function ColorfulPhilosophersDevPage() {
         ))}
       </div>
       <p className="text-sm text-zinc-300">
-        {weekStart === weeks[0]
-          ? (weekPosts.posts.find((post) => post.slot === slot)?.nameKo ?? "이 주의 이 칸은 비어 있습니다")
-          : "선택한 주에 올립니다"}
+        {existing?.nameKo ?? "이 주의 이 칸은 비어 있습니다"}
       </p>
       <input
         value={query}
