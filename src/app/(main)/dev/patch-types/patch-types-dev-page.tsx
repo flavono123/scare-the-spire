@@ -9,7 +9,9 @@ import {
   PATCH_BALANCE_TOKEN,
 } from "@/components/patches/patch-chips";
 import { PatchDraftChip, PATCH_DRAFT_TOKEN } from "@/components/patches/patch-draft-chrome";
+import { BackstabColorfulPhilosophersSection } from "@/components/patches/backstab-colorful-philosophers-section";
 import { BackstabTransfigureSection } from "@/components/patches/backstab-transfigure-section";
+import { getColorfulPhilosopherGalleryPosts } from "@/lib/colorful-philosophers-gallery";
 import { PatchArtPreview } from "@/components/patches/patch-art";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getPatchBackstabGameCopy, getPatchStageGameCopy } from "@/lib/borrowed-game-copy";
@@ -111,11 +113,12 @@ const VISUAL_STAGES = [
 ];
 
 export default async function PatchesDevPage() {
-  const [entities, patchStageCopy, patchBackstabCopy, initialTransfigures, patches] = await Promise.all([
+  const [entities, patchStageCopy, patchBackstabCopy, initialTransfigures, colorfulPhilosopherPosts, patches] = await Promise.all([
     loadAllEntities({ gameLocale: "kor" }),
     getPatchStageGameCopy("kor"),
     getPatchBackstabGameCopy("kor"),
     getRecentTransfigurePosts(15),
+    getColorfulPhilosopherGalleryPosts(12),
     getSTS2Patches(),
   ]);
   const entityMap = new Map(entities.map((e) => [`${e.type}:${e.id}`, e]));
@@ -495,6 +498,12 @@ export default async function PatchesDevPage() {
           transfigureLead={patchBackstabCopy.transfigureLead}
           transfigureCta={patchBackstabCopy.transfigureCta}
           initialPosts={initialTransfigures}
+        />
+        <BackstabColorfulPhilosophersSection
+          entityMap={entityMap}
+          serviceLocale="ko"
+          gameLocale="kor"
+          initialPosts={colorfulPhilosopherPosts}
         />
       </section>
 
