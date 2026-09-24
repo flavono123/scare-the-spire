@@ -15,8 +15,10 @@ const CommentSection = dynamic(
 
 export function DeferredCommentSection({
   threadKey,
+  density = "default",
 }: {
   threadKey: string;
+  density?: "default" | "inline";
 }) {
   const [shouldLoad, setShouldLoad] = useState(false);
   const mountRef = useRef<HTMLDivElement | null>(null);
@@ -60,6 +62,7 @@ export function DeferredCommentSection({
         ref={mountRef}
         data-patch-comment-root
         data-thread-key={threadKey}
+        data-comment-density={density}
         className="space-y-3"
       >
         <div
@@ -70,5 +73,5 @@ export function DeferredCommentSection({
     );
   }
 
-  return <CommentSection threadKey={threadKey} />;
+  return <CommentSection threadKey={threadKey} density={density} />;
 }

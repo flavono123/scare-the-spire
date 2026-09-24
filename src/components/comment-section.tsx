@@ -18,6 +18,9 @@ import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useCommentLikes } from "@/hooks/use-comment-likes";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { ColorfulPhilosopherResourceThread } from "@/components/colorful-philosophers/resource-thread";
+import { ResourceReactionBar } from "@/components/resource-reaction-bar";
+import { COLORFUL_PHILOSOPHERS_GAME_VERSION } from "@/lib/colorful-philosophers";
 import { serviceMessages } from "@/messages/service";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 import { LikeControl } from "@/components/like-control";
@@ -144,9 +147,23 @@ export function CommentSection({
   };
 
   const inline = density === "inline";
+  const codexThread = /^sts2-codex:([^:]+):(.+)$/.exec(threadKey);
 
   return (
     <div className={inline ? "mt-1 space-y-1 rounded-md border border-white/10 border-l-2 border-l-zinc-500 bg-zinc-950/70 px-2 py-1" : "space-y-3"}>
+      {!inline && codexThread ? (
+        <>
+          <ResourceReactionBar
+            resourceType={codexThread[1]}
+            resourceId={codexThread[2]}
+            gameVersion={COLORFUL_PHILOSOPHERS_GAME_VERSION}
+          />
+          <ColorfulPhilosopherResourceThread
+            resourceType={codexThread[1]}
+            resourceId={codexThread[2]}
+          />
+        </>
+      ) : null}
       {storageUnavailable ? (
         <StorageUnavailableNotice
           compact

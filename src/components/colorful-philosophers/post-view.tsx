@@ -3,7 +3,7 @@
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, type CSSProperties } from "react";
+import { type CSSProperties } from "react";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { ColorfulPhilosopherReactionIcon } from "@/components/colorful-philosophers/reaction-icon";
@@ -12,7 +12,8 @@ import { SPIRE_ACTION_CONTROL_CLASS } from "@/components/spire-icon";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { ColorfulPhilosopherSubjectArt } from "@/components/colorful-philosophers/subject-art";
-import { useColorfulPhilosopherPost, useColorfulPhilosopherReaction } from "@/hooks/use-colorful-philosopher-posts";
+import { useColorfulPhilosopherPost } from "@/hooks/use-colorful-philosopher-posts";
+import { useResourceReactions } from "@/hooks/use-resource-reactions";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
   COLORFUL_PHILOSOPHER_REACTIONS,
@@ -49,7 +50,7 @@ function ReactionWords({
   if (kind === "nerf") {
     return <span className="rich-jitter font-semibold text-[#f87171]">{label}</span>;
   }
-  return <span className="font-semibold text-[#c084fc]">{label}</span>;
+  return <span className="font-semibold text-[#EFC851]">{label}</span>;
 }
 
 export function ColorfulPhilosopherPostView({ postId }: { postId: string }) {
@@ -59,13 +60,7 @@ export function ColorfulPhilosopherPostView({ postId }: { postId: string }) {
   const copy = serviceMessages[serviceLocale].colorfulPhilosophers;
   const { post, loading, unavailable } = useColorfulPhilosopherPost(id);
   const { userId, ensureUser } = useAuth();
-  const reaction = useColorfulPhilosopherReaction(id, userId);
-  const [counts, setCounts] = useState({ buff: 0, nerf: 0, rework: 0 });
-
-  useEffect(() => {
-    if (!post) return;
-    setCounts({ buff: post.buffCount, nerf: post.nerfCount, rework: post.reworkCount });
-  }, [post]);
+  const resource = useResourceReactions(post?.resourceType ?? "", post?.resourceId ?? "", post?.gameVersion ?? "");
 
   if (!id) return null;
   if (loading) return <ContentLoadingNotice label={copy.loading} />;
@@ -73,24 +68,10 @@ export function ColorfulPhilosopherPostView({ postId }: { postId: string }) {
   if (!post) return <p className="text-sm text-zinc-400">{copy.notFound}</p>;
 
   const choose = (kind: ColorfulPhilosopherReaction) => {
-    const previousKind = reaction.kind;
-    const nextKind = previousKind === kind ? null : kind;
-    setCounts((current) => {
-      const next = { ...current };
-      if (previousKind) next[previousKind] = Math.max(0, next[previousKind] - 1);
-      if (nextKind) next[nextKind] += 1;
-      return next;
-    });
     void (async () => {
       const activeUserId = userId ?? await ensureUser();
-      if (!activeUserId) {
-        setCounts({ buff: post.buffCount, nerf: post.nerfCount, rework: post.reworkCount });
-        return;
-      }
-      const result = await reaction.choose(kind);
-      if (!result.ok) {
-        setCounts({ buff: post.buffCount, nerf: post.nerfCount, rework: post.reworkCount });
-      }
+      if (!activeUserId) return;
+      await resource.choose(kind, activeUserId);
     })();
   };
 
@@ -111,7 +92,7 @@ export function ColorfulPhilosopherPostView({ postId }: { postId: string }) {
       <p className="font-game-text text-base leading-7 text-zinc-100">{post.body}</p>
       <div className="flex flex-wrap gap-2">
         {COLORFUL_PHILOSOPHER_REACTIONS.map((kind) => {
-          const active = reaction.kind === kind;
+          const active = resource.kind === kind;
           const tip = active ? copy.reactionClear[kind] : copy.reactions[kind];
           return (
             <GameUiHoverTip key={kind} label={tip}>
@@ -130,7 +111,7 @@ export function ColorfulPhilosopherPostView({ postId }: { postId: string }) {
               >
                 <ColorfulPhilosopherReactionIcon kind={kind} active={active} lift size={18} />
                 <ReactionWords kind={kind} label={copy.reactions[kind]} />
-                <span className="tabular-nums text-zinc-400">{counts[kind]}</span>
+                <span className="tabular-nums text-zinc-400">{resource.counts[kind]}</span>
               </button>
             </GameUiHoverTip>
           );

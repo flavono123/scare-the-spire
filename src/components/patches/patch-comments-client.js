@@ -742,6 +742,23 @@
   function renderComments(root, state) {
     root._stsCommentState = state;
     const text = copy();
+    if (root.dataset.commentDensity === "inline") {
+      const rows = state.comments.map((comment) => `
+        <li data-patch-comment-row class="flex items-center gap-2 py-0.5 text-xs leading-5">
+          <span class="min-w-0 flex-1 break-words text-foreground/90">${renderText(commentContent(comment))}</span>
+          <span class="shrink-0 text-[10px] text-primary">${escapeHtml(comment.nickname ?? "")}</span>
+        </li>
+      `).join("");
+      root.innerHTML = `
+        ${rows ? `<ul class="space-y-0.5">${rows}</ul>` : ""}
+        <form data-comment-form class="mt-1 flex items-center gap-2">
+          <input data-comment-nickname type="hidden" value="${escapeHtml(state.nickname)}" />
+          <input data-comment-content type="text" maxlength="${COMMENT_MAX_CHARS}" placeholder="${escapeHtml(text.placeholder)}" class="min-w-0 flex-1 bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground" />
+          <button type="submit" class="shrink-0 text-[10px] font-semibold text-primary">${escapeHtml(text.submit)}</button>
+        </form>
+      `;
+      return;
+    }
     const commentsHtml = state.comments.length === 0
       ? `<p class="text-xs text-muted-foreground">${escapeHtml(text.empty)}</p>`
       : `
@@ -1031,23 +1048,26 @@
 
   async function applyStaticReaction(config, button) {
     const postId = button.dataset.cpPost;
+    const resourceType = button.dataset.cpType;
+    const resourceId = button.dataset.cpResource;
+    const gameVersion = button.dataset.cpVersion;
     const kind = button.dataset.cpKind;
-    if (!postId || !kind) return;
+    if (!postId || !resourceType || !resourceId || !gameVersion || !kind) return;
     const session = await ensureSession(config);
     const userId = sessionUserId(session);
     if (!userId) return;
-    const key = `sts-cp-reaction:${postId}`;
+    const key = `sts-resource-reaction:${resourceType}:${resourceId}:${gameVersion}`;
     const stored = window.localStorage.getItem(key);
     const previous = stored === "buff" || stored === "nerf" || stored === "rework" ? stored : null;
     const next = previous === kind ? null : kind;
-    const filter = `post_id=eq.${postId}&user_id=eq.${userId}&env=eq.${config.supabaseEnv}`;
+    const filter = `env=eq.${config.supabaseEnv}&resource_type=eq.${resourceType}&resource_id=eq.${resourceId}&game_version=eq.${gameVersion}&user_id=eq.${userId}`;
     try {
       if (next === null) {
-        await restRequest(config, `colorful_philosopher_reactions?${filter}`, { method: "DELETE", token: session.access_token, headers: { Prefer: "return=minimal" } });
+        await restRequest(config, `resource_reactions?${filter}`, { method: "DELETE", token: session.access_token, headers: { Prefer: "return=minimal" } });
       } else if (previous) {
-        await restRequest(config, `colorful_philosopher_reactions?${filter}`, { method: "PATCH", token: session.access_token, body: { kind: next }, headers: { Prefer: "return=minimal" } });
+        await restRequest(config, `resource_reactions?${filter}`, { method: "PATCH", token: session.access_token, body: { kind: next }, headers: { Prefer: "return=minimal" } });
       } else {
-        await restRequest(config, "colorful_philosopher_reactions", { method: "POST", token: session.access_token, body: { post_id: postId, user_id: userId, env: config.supabaseEnv, kind: next }, headers: { Prefer: "return=minimal" } });
+        await restRequest(config, "resource_reactions", { method: "POST", token: session.access_token, body: { env: config.supabaseEnv, resource_type: resourceType, resource_id: resourceId, game_version: gameVersion, user_id: userId, kind: next }, headers: { Prefer: "return=minimal" } });
       }
     } catch {
       return;

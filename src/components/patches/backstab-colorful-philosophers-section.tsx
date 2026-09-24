@@ -10,10 +10,8 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { SPIRE_ACTION_CONTROL_CLASS } from "@/components/spire-icon";
 import { useAuth } from "@/hooks/use-auth";
-import {
-  readColorfulPhilosopherReaction,
-  saveColorfulPhilosopherReaction,
-} from "@/hooks/use-colorful-philosopher-posts";
+import { readColorfulPhilosopherReaction } from "@/hooks/use-colorful-philosopher-posts";
+import { saveResourceReaction } from "@/hooks/use-resource-reactions";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -45,7 +43,7 @@ function ReactionWords({ kind, label }: { kind: ColorfulPhilosopherReaction; lab
     );
   }
   if (kind === "nerf") return <span className="rich-jitter font-semibold text-[#f87171]">{label}</span>;
-  return <span className="font-semibold text-[#c084fc]">{label}</span>;
+  return <span className="font-semibold text-[#EFC851]">{label}</span>;
 }
 
 export function BackstabColorfulPhilosophersSection({
@@ -128,7 +126,14 @@ export function BackstabColorfulPhilosophersSection({
         setCounts((current) => ({ ...current, [post.id]: { buff: post.buffCount, nerf: post.nerfCount, rework: post.reworkCount } }));
         return;
       }
-      const result = await saveColorfulPhilosopherReaction({ postId: post.id, userId: activeUserId, previous, next });
+      const result = await saveResourceReaction({
+        resourceType: post.resourceType,
+        resourceId: post.resourceId,
+        gameVersion: post.gameVersion,
+        userId: activeUserId,
+        previous,
+        next,
+      });
       if (!result.ok) {
         setKinds((current) => ({ ...current, [post.id]: previous }));
         setCounts((current) => ({ ...current, [post.id]: { buff: post.buffCount, nerf: post.nerfCount, rework: post.reworkCount } }));
@@ -208,6 +213,9 @@ export function BackstabColorfulPhilosophersSection({
                             type="button"
                             data-cp-reaction=""
                             data-cp-post={post.id}
+                            data-cp-type={post.resourceType}
+                            data-cp-resource={post.resourceId}
+                            data-cp-version={post.gameVersion}
                             data-cp-kind={kind}
                             aria-pressed={pressed}
                             aria-label={tip}
@@ -230,7 +238,10 @@ export function BackstabColorfulPhilosophersSection({
                     })}
                   </div>
                   <div className="mt-4">
-                    <DeferredCommentSection threadKey={colorfulPhilosophersCommentThreadKey(post.id)} />
+                    <DeferredCommentSection
+                      threadKey={colorfulPhilosophersCommentThreadKey(post.id)}
+                      density="inline"
+                    />
                   </div>
                 </div>
               </div>
