@@ -58,7 +58,7 @@ const baseCard = {
   typeLabel: "공격",
   rarityLabel: "기본",
   keywordLabels: { 공격: "공격" },
-} as CodexCard;
+} as unknown as CodexCard;
 
 const localized = applyCardConLocale(baseCard, {
   name: "Strike",

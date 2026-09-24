@@ -126,6 +126,7 @@ interface PatchBackstabGameCopy {
 interface DebateGameCopy {
   title: string;
   hero: string;
+  invite: string;
 }
 
 interface BorrowedGameCopyPayload {

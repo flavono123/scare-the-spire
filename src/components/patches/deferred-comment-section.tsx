@@ -34,7 +34,7 @@ export function DeferredCommentSection({
 
     const card = target.closest("[data-colorful-philosophers-card]");
     const cardShown = () => !card || card.classList.contains("pointer-events-auto");
-    if (!cardShown()) {
+    if (card && !cardShown()) {
       const classObserver = new MutationObserver(() => {
         if (!cardShown()) return;
         setShouldLoad(true);

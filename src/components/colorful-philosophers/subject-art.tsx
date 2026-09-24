@@ -21,7 +21,7 @@ export function ColorfulPhilosopherSubjectArt({
     if (card) {
       return (
         <div style={{ width }} className="shrink-0">
-          <CardTile card={card} serviceLocale={serviceLocale} width={width} />
+          <CardTile card={card} serviceLocale={serviceLocale} width={width} showUpgrade={false} showBeta={false} />
         </div>
       );
     }

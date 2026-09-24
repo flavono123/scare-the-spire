@@ -41,6 +41,7 @@ export type NavDropdownItem = {
   iconClassName?: string;
   isNew?: boolean;
   attentionId?: string;
+  attention?: boolean;
   children?: NavDropdownItem[];
 };
 

@@ -20,7 +20,7 @@ export type ColorfulPhilosopherReaction = (typeof COLORFUL_PHILOSOPHER_REACTIONS
 
 export const COLORFUL_PHILOSOPHER_REACTION_TOKENS: Record<
   ColorfulPhilosopherReaction,
-  { src: string; variant: "green" | "red" | "purple" }
+  { src: string; variant: "green" | "red" | "pink" }
 > = {
   buff: { src: "/images/sts2/powers/dexterity_power.webp", variant: "green" },
   nerf: { src: "/images/sts2/powers/vulnerable_power.webp", variant: "red" },

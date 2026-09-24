@@ -190,7 +190,7 @@ export function BackstabColorfulPhilosophersSection({
                   <div className="flex items-center gap-4">
                     {(post.slot === "card" || post.resourceType === "card") && entity?.cardData ? (
                       <div className="w-24 shrink-0">
-                        <CardTile card={entity.cardData} serviceLocale={serviceLocale} width={96} />
+                        <CardTile card={entity.cardData} serviceLocale={serviceLocale} width={96} showUpgrade={false} showBeta={false} />
                       </div>
                     ) : (
                       <Image src={post.imageUrl ?? COLORFUL_PHILOSOPHERS_TOKEN_SRC} alt="" width={72} height={72} className="object-contain" />

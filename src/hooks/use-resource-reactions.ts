@@ -142,16 +142,17 @@ export function useResourceReactions(
     const key = storageKey(resourceType, resourceId, gameVersion);
     if (nextKind) window.localStorage.setItem(key, nextKind);
     else window.localStorage.removeItem(key);
-    const scoped = supabase.from("resource_reactions")
-      .eq("env", supabaseEnv)
-      .eq("resource_type", resourceType)
-      .eq("resource_id", resourceId)
-      .eq("game_version", gameVersion)
-      .eq("user_id", userId);
+    const match = {
+      env: supabaseEnv,
+      resource_type: resourceType,
+      resource_id: resourceId,
+      game_version: gameVersion,
+      user_id: userId,
+    };
     const write = nextKind === null
-      ? scoped.delete()
+      ? supabase.from("resource_reactions").delete().match(match)
       : previous
-        ? scoped.update({ kind: nextKind })
+        ? supabase.from("resource_reactions").update({ kind: nextKind }).match(match)
         : supabase.from("resource_reactions").insert({
           env: supabaseEnv,
           resource_type: resourceType,

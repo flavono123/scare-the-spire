@@ -60,6 +60,10 @@ export interface ProfilePageCopy {
   };
   palette: ProfilePalettePickerCopy;
   appearance: ColorSchemePickerCopy;
+  courier: {
+    show: string;
+    hide: string;
+  };
   activity: ProfileActivityCopy;
 }
 

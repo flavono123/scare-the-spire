@@ -57,7 +57,7 @@ async function fetchToyboxRow(
   service: DefragmentFederatedService,
   postId: string,
 ): Promise<unknown | null> {
-  if (!supabaseEnabled) return null;
+  if (!supabaseEnabled || service === "history_course") return null;
   const { data, error } = await withSupabaseTimeout(
     `pagestorm.toybox.${service}.detail`,
     supabase

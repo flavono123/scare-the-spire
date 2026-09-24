@@ -142,7 +142,7 @@ export function cursorFromDefragmentItem(
 }
 
 async function fetchFilteredDefragmentFeedPage(options: {
-  service: DefragmentFederatedService;
+  service: Exclude<DefragmentFederatedService, "history_course">;
   sort: ToyboxFeedSort;
   cursor: ToyboxFeedCursor | null;
 }): Promise<DefragmentFeedPage> {

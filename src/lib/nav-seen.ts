@@ -111,7 +111,8 @@ export function readNavForce(storage: Pick<Storage, "getItem">): NavForceMap {
     const parsed = JSON.parse(raw) as Record<string, unknown>;
     const force: NavForceMap = {};
     for (const surface of NAV_SEEN_SURFACES) {
-      if (parsed[surface.id] === true || parsed[surface.id] === false) force[surface.id] = parsed[surface.id];
+      const value = parsed[surface.id];
+      if (value === true || value === false) force[surface.id] = value;
     }
     return force;
   } catch {
