@@ -5,16 +5,18 @@ export const NAV_ATTENTION_SLOT_CLASS =
 export function NavAttentionDot({
   marker,
   dormant = false,
+  placement = "corner",
 }: {
   marker?: string;
   dormant?: boolean;
+  placement?: "corner" | "trail";
 }) {
   return (
     <span
       aria-hidden
       hidden={dormant}
       data-nav-attention={marker}
-      className="nav-attention-dot"
+      className={placement === "trail" ? "nav-attention-dot nav-attention-dot-trail" : "nav-attention-dot"}
     />
   );
 }

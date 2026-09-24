@@ -1033,6 +1033,14 @@
   display: none;
 }
 
+.nav-attention-dot-trail {
+  position: static;
+  top: auto;
+  right: auto;
+  margin: 0;
+  flex-shrink: 0;
+}
+
 .nav-attention-dot {
   position: absolute;
   top: 0;

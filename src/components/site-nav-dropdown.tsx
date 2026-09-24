@@ -6,6 +6,55 @@ import { NAV_ATTENTION_SLOT_CLASS, NavAttentionDot } from "@/components/nav-atte
 import Image from "@/components/ui/static-image";
 import type { NavDropdownItem } from "@/lib/site-nav-items";
 
+function MenuRow({
+  item,
+  isToyBox,
+  nested = false,
+}: {
+  item: NavDropdownItem;
+  isToyBox: boolean;
+  nested?: boolean;
+}) {
+  const showMarker = Boolean(item.attention || item.attentionId);
+  return (
+    <Link
+      href={item.href}
+      prefetch={false}
+      role="menuitem"
+      className={`flex items-center gap-2.5 px-3 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground ${
+        nested ? "ml-3 border-l border-border/60" : ""
+      } ${isToyBox ? "py-2 font-service" : "py-1.5"}`}
+    >
+      <Image
+        src={item.icon}
+        alt=""
+        width={isToyBox ? 24 : 18}
+        height={isToyBox ? 24 : 18}
+        className={`${
+          isToyBox ? "h-6 w-6" : item.iconClassName ?? "h-[18px] w-[18px]"
+        } shrink-0 object-contain`}
+      />
+      <span className="min-w-0 flex-1 truncate">{item.label}</span>
+      {(item.isNew || showMarker) && (
+        <span className="ml-auto flex shrink-0 items-center gap-2">
+          {item.isNew && (
+            <span className="rounded-full border border-emerald-700/35 bg-emerald-600/10 px-1.5 py-0.5 text-[9px] font-bold tracking-[0.08em] text-emerald-800 dark:border-emerald-300/30 dark:bg-emerald-400/10 dark:text-emerald-200">
+              NEW
+            </span>
+          )}
+          {showMarker && (
+            <NavAttentionDot
+              placement="trail"
+              marker={item.attentionId}
+              dormant={Boolean(item.attentionId) && !item.attention}
+            />
+          )}
+        </span>
+      )}
+    </Link>
+  );
+}
+
 type SiteNavDropdownProps = {
   icon: string;
   alt: string;
@@ -71,72 +120,9 @@ export function SiteNavDropdown({
         )}
         {items.map((item) => (
           <div key={item.href}>
-            <Link
-              href={item.href}
-              prefetch={false}
-              role="menuitem"
-              className={`flex items-center gap-2.5 px-3 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground ${
-                isToyBox ? "py-2 font-service" : "py-1.5"
-              }`}
-            >
-              <span className={`relative inline-flex shrink-0 items-center justify-center ${isToyBox ? "h-6 w-6" : "h-[18px] w-[18px]"}`}>
-                <Image
-                  src={item.icon}
-                  alt=""
-                  width={isToyBox ? 24 : 18}
-                  height={isToyBox ? 24 : 18}
-                  className={`${
-                    isToyBox ? "h-6 w-6" : item.iconClassName ?? "h-[18px] w-[18px]"
-                  } object-contain`}
-                />
-                {(item.attention || item.attentionId) && (
-                  <NavAttentionDot
-                    marker={item.attentionId}
-                    dormant={Boolean(item.attentionId) && !item.attention}
-                  />
-                )}
-              </span>
-              <span className="min-w-0 truncate">{item.label}</span>
-              {item.isNew && (
-                <span className="ml-auto shrink-0 rounded-full border border-emerald-700/35 bg-emerald-600/10 px-1.5 py-0.5 text-[9px] font-bold tracking-[0.08em] text-emerald-800 dark:border-emerald-300/30 dark:bg-emerald-400/10 dark:text-emerald-200">
-                  NEW
-                </span>
-              )}
-            </Link>
+            <MenuRow item={item} isToyBox={isToyBox} />
             {item.children?.map((child) => (
-              <Link
-                key={child.href}
-                href={child.href}
-                prefetch={false}
-                role="menuitem"
-                className={`ml-3 flex items-center gap-2.5 border-l border-border/60 px-3 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground ${
-                  isToyBox ? "py-2 font-service" : "py-1.5"
-                }`}
-              >
-                <span className={`relative inline-flex shrink-0 items-center justify-center ${isToyBox ? "h-6 w-6" : "h-[18px] w-[18px]"}`}>
-                  <Image
-                    src={child.icon}
-                    alt=""
-                    width={isToyBox ? 24 : 18}
-                    height={isToyBox ? 24 : 18}
-                    className={`${
-                      isToyBox ? "h-6 w-6" : child.iconClassName ?? "h-[18px] w-[18px]"
-                    } object-contain`}
-                  />
-                  {(child.attention || child.attentionId) && (
-                    <NavAttentionDot
-                      marker={child.attentionId}
-                      dormant={Boolean(child.attentionId) && !child.attention}
-                    />
-                  )}
-                </span>
-                <span className="min-w-0 truncate">{child.label}</span>
-                {child.isNew && (
-                  <span className="ml-auto shrink-0 rounded-full border border-emerald-700/35 bg-emerald-600/10 px-1.5 py-0.5 text-[9px] font-bold tracking-[0.08em] text-emerald-800 dark:border-emerald-300/30 dark:bg-emerald-400/10 dark:text-emerald-200">
-                    NEW
-                  </span>
-                )}
-              </Link>
+              <MenuRow key={child.href} item={child} isToyBox={isToyBox} nested />
             ))}
           </div>
         ))}
