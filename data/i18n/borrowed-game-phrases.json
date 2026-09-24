@@ -302,9 +302,9 @@
     "mode": "serviceText",
     "sourceLang": "kor",
     "sourceTable": "events",
-    "sourceKey": "COLORFUL_PHILOSOPHERS.pages.INITIAL.description",
-    "sourceText": "당신도 스스로 생각하는 바를 그들에게 말합니다.",
-    "serviceText": "당신도 스스로 생각하는 바를 그들에게 말합니다.",
+    "sourceKey": "COLORFUL_PHILOSOPHERS.pages.DONE.description",
+    "sourceText": "당신의 의견은 받아들여지지 않는 것으로 보이며, 동상들은 끝없는 논쟁을 이어 나갑니다.",
+    "serviceText": "당신의 의견은 받아들여지지 않는 것으로 보이며, 동상들은 끝없는 논쟁을 이어 나갑니다.",
     "serviceFiles": [
       "scripts/debate-copy.spec.ts"
     ],
@@ -315,9 +315,9 @@
     "mode": "serviceText",
     "sourceLang": "eng",
     "sourceTable": "events",
-    "sourceKey": "COLORFUL_PHILOSOPHERS.pages.INITIAL.description",
-    "sourceText": "You chime in with your thoughts.",
-    "serviceText": "You chime in with your thoughts.",
+    "sourceKey": "COLORFUL_PHILOSOPHERS.pages.DONE.description",
+    "sourceText": "Your opinion doesn't seem welcome, and the statues resume their unending debate.",
+    "serviceText": "Your opinion doesn't seem welcome, and the statues resume their unending debate.",
     "serviceFiles": [
       "scripts/debate-copy.spec.ts"
     ],

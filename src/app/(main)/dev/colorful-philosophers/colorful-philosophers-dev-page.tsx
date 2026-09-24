@@ -10,7 +10,6 @@ import { matchEntities } from "@/lib/chemical-utils";
 import {
   COLORFUL_PHILOSOPHER_SLOTS,
   COLORFUL_PHILOSOPHERS_GAME_VERSION,
-  isColorfulPhilosopherSlot,
   upcomingColorfulPhilosopherWeeks,
   type ColorfulPhilosopherSlot,
 } from "@/lib/colorful-philosophers";
@@ -22,7 +21,7 @@ export function ColorfulPhilosophersDevPage() {
   const copy = serviceMessages.ko.colorfulPhilosophers;
   const weeks = useMemo(() => upcomingColorfulPhilosopherWeeks(), []);
   const [weekStart, setWeekStart] = useState(weeks[0] ?? "");
-  const [slot, setSlot] = useState<ColorfulPhilosopherSlot>("card");
+  const [slot, setSlot] = useState<ColorfulPhilosopherSlot>("topic");
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<EntityInfo | null>(null);
   const [body, setBody] = useState("");
@@ -36,7 +35,7 @@ export function ColorfulPhilosophersDevPage() {
   const weekPosts = useColorfulPhilosopherWeek(targetEnv);
   const typeLabels = compendiumTypeLabels("ko");
   const pool = useMemo(
-    () => entities.filter((entity) => entity.type === slot),
+    () => slot === "topic" ? entities : entities.filter((entity) => entity.type === slot),
     [entities, slot],
   );
   const results = useMemo(() => {
@@ -56,13 +55,14 @@ export function ColorfulPhilosophersDevPage() {
   }, [existing, bodyTouched]);
 
   const save = async () => {
-    if (!selected || !isColorfulPhilosopherSlot(selected.type)) return;
+    if (!selected) return;
     setSaving(true);
     setError(null);
     const result = await saveColorfulPhilosopherPost({
       env: targetEnv,
       weekStart,
       slot,
+      resourceType: selected.type,
       resourceId: selected.id,
       body,
     });
@@ -135,7 +135,7 @@ export function ColorfulPhilosophersDevPage() {
       <input
         value={query}
         onChange={(event) => setQuery(event.target.value)}
-        placeholder={`${typeLabels[slot]} 검색`}
+        placeholder={slot === "topic" ? "요소 검색" : `${typeLabels[slot]} 검색`}
         className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm"
       />
       {loading ? <p className="text-sm text-zinc-500">백과사전을 불러오는 중...</p> : (

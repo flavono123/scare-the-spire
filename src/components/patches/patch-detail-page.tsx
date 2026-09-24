@@ -899,7 +899,7 @@ export async function PatchDetailPage({
           entityMap={entityMap}
           serviceLocale={serviceLocale}
           gameLocale={gameLocale}
-          cta={debateCopy.hero}
+          cta={debateCopy.invite}
           initialPosts={colorfulPhilosopherPosts}
         />
 

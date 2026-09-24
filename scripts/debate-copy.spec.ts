@@ -1,14 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-function lastNonEmptyLine(text: string): string {
-  const lines = text
-    .split(/\n+/)
-    .map((line) => line.trim())
-    .filter(Boolean);
-  return lines.at(-1) ?? "";
-}
-
 function stripGameMarkup(text: string): string {
   return text
     .replace(/\[\/?[a-z_]+(?:=[^\]]+)?(?::[^\]]+)?\]/gi, "")
@@ -18,12 +10,12 @@ function stripGameMarkup(text: string): string {
 
 function heroFromLocale(file: string): string {
   const table = JSON.parse(readFileSync(file, "utf8")) as Record<string, string>;
-  const description = table["COLORFUL_PHILOSOPHERS.pages.INITIAL.description"] ?? "";
-  return stripGameMarkup(lastNonEmptyLine(description));
+  const description = table["COLORFUL_PHILOSOPHERS.pages.DONE.description"] ?? "";
+  return stripGameMarkup(description);
 }
 
-const koreanHero = "당신도 스스로 생각하는 바를 그들에게 말합니다.";
-const englishHero = "You chime in with your thoughts.";
+const koreanHero = "당신의 의견은 받아들여지지 않는 것으로 보이며, 동상들은 끝없는 논쟁을 이어 나갑니다.";
+const englishHero = "Your opinion doesn't seem welcome, and the statues resume their unending debate.";
 
 assert.equal(
   heroFromLocale("data/sts2/localization/kor/events.json"),

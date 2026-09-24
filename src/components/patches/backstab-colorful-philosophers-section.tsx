@@ -24,6 +24,7 @@ import {
   COLORFUL_PHILOSOPHERS_HREF,
   COLORFUL_PHILOSOPHERS_TOKEN_SRC,
   addColorfulPhilosophersDays,
+  colorfulPhilosophersWeekNumber,
   colorfulPhilosophersCommentThreadKey,
   type ColorfulPhilosopherPost,
   type ColorfulPhilosopherReaction,
@@ -167,7 +168,7 @@ export function BackstabColorfulPhilosophersSection({
         >
           {posts.map((post, index) => {
             const active = index === activeIndex;
-            const entity = entityMap.get(`${post.slot}:${post.resourceId}`);
+            const entity = entityMap.get(`${post.resourceType}:${post.resourceId}`);
             const weekEnd = addColorfulPhilosophersDays(post.weekStart, 6);
             const row = counts[post.id] ?? { buff: post.buffCount, nerf: post.nerfCount, rework: post.reworkCount };
             return (
@@ -181,7 +182,7 @@ export function BackstabColorfulPhilosophersSection({
               >
                 <div className="rounded-xl border border-white/10 bg-black/35 px-4 py-4">
                   <div className="flex items-center gap-4">
-                    {post.slot === "card" && entity?.cardData ? (
+                    {(post.slot === "card" || post.resourceType === "card") && entity?.cardData ? (
                       <div className="w-24 shrink-0">
                         <CardTile card={entity.cardData} serviceLocale={serviceLocale} width={96} />
                       </div>
@@ -189,7 +190,10 @@ export function BackstabColorfulPhilosophersSection({
                       <Image src={post.imageUrl ?? COLORFUL_PHILOSOPHERS_TOKEN_SRC} alt="" width={72} height={72} className="object-contain" />
                     )}
                     <span className="min-w-0">
-                      <span className="block font-service text-xs text-zinc-500">{`${post.weekStart.slice(5)} – ${weekEnd.slice(5)}`}</span>
+                      <span className="block font-service text-sm text-zinc-200">
+                        {copy.weekNumber.replace("{week}", String(colorfulPhilosophersWeekNumber(post.weekStart)))}
+                      </span>
+                      <span className="block text-xs text-zinc-500">{`${post.weekStart.slice(5)} – ${weekEnd.slice(5)}`}</span>
                       <span className="block truncate font-service text-lg font-semibold text-primary">{post.nameKo}</span>
                       <span className="mt-1 line-clamp-3 block text-sm text-zinc-300">{post.body}</span>
                     </span>
@@ -207,11 +211,14 @@ export function BackstabColorfulPhilosophersSection({
                             data-cp-kind={kind}
                             aria-pressed={pressed}
                             aria-label={tip}
+                            onMouseEnter={() => setPaused(true)}
                             onClick={() => choose(post, kind)}
                             className={cn(
                               SPIRE_ACTION_CONTROL_CLASS,
-                              "gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors hover:border-primary/40",
-                              pressed ? "border-primary/60 bg-primary/15" : "border-white/10",
+                              "gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors",
+                              kind === "buff" && (pressed ? "border-[#34d399] bg-[#34d399]/15" : "border-white/10 hover:border-[#34d399]/70"),
+                              kind === "nerf" && (pressed ? "border-[#f87171] bg-[#f87171]/15" : "border-white/10 hover:border-[#f87171]/70"),
+                              kind === "rework" && (pressed ? "border-[#EFC851] bg-[#EFC851]/15" : "border-white/10 hover:border-[#EFC851]/70"),
                             )}
                           >
                             <ColorfulPhilosopherReactionIcon kind={kind} active={pressed} lift size={18} />
@@ -250,8 +257,16 @@ export function BackstabColorfulPhilosophersSection({
     document.dispatchEvent(new Event("cp-reel-show"));
   }
   if(current!==0)show(current);
+  stack.addEventListener("mouseover",function(event){
+    var target=event.target&&event.target.closest&&event.target.closest("[data-cp-reaction],[data-patch-comment-root],textarea,input,button");
+    if(target)paused=true;
+  });
   stack.addEventListener("mouseenter",function(){paused=true;});
-  stack.addEventListener("mouseleave",function(){if(!stack.contains(document.activeElement))paused=false;});
+  stack.addEventListener("mouseleave",function(event){
+    var next=event.relatedTarget;
+    if(next&&next.closest&&next.closest("[data-cp-reaction],[data-hover-tip-layer]"))return;
+    if(!stack.contains(document.activeElement))paused=false;
+  });
   stack.addEventListener("focusin",function(){paused=true;});
   stack.addEventListener("focusout",function(){setTimeout(function(){if(!stack.contains(document.activeElement))paused=false;},0);});
   var timer=setInterval(function(){

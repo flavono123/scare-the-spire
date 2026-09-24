@@ -15,10 +15,12 @@ import {
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { localizeHref } from "@/lib/i18n";
 import {
+  COLORFUL_PHILOSOPHER_LEGACY_SLOTS,
   COLORFUL_PHILOSOPHER_SLOTS,
   COLORFUL_PHILOSOPHERS_HREF,
   COLORFUL_PHILOSOPHERS_TOKEN_SRC,
   addColorfulPhilosophersDays,
+  colorfulPhilosophersWeekNumber,
   colorfulPhilosophersWeekStart,
   type ColorfulPhilosopherPost,
 } from "@/lib/colorful-philosophers";
@@ -65,13 +67,19 @@ export function ColorfulPhilosophersIndex({
             const weekPosts = visiblePosts.filter((post) => post.weekStart === weekStart);
             const bySlot = new Map(weekPosts.map((post) => [post.slot, post]));
             const slots = weekStart === currentWeek
-              ? COLORFUL_PHILOSOPHER_SLOTS
-              : COLORFUL_PHILOSOPHER_SLOTS.filter((slot) => bySlot.has(slot));
+              ? [
+                ...COLORFUL_PHILOSOPHER_SLOTS,
+                ...COLORFUL_PHILOSOPHER_LEGACY_SLOTS.filter((slot) => bySlot.has(slot)),
+              ]
+              : [...COLORFUL_PHILOSOPHER_SLOTS, ...COLORFUL_PHILOSOPHER_LEGACY_SLOTS].filter((slot) => bySlot.has(slot));
             return (
               <section key={weekStart} className="space-y-3">
-                <h2 className="font-service text-sm text-zinc-300">
-                  {`${weekStart.slice(5)} – ${addColorfulPhilosophersDays(weekStart, 6).slice(5)}`}
+                <h2 className="font-service text-sm text-zinc-200">
+                  {copy.weekNumber.replace("{week}", String(colorfulPhilosophersWeekNumber(weekStart)))}
                 </h2>
+                <p className="text-xs text-zinc-500">
+                  {`${weekStart.slice(5)} – ${addColorfulPhilosophersDays(weekStart, 6).slice(5)}`}
+                </p>
                 {slots.map((slot) => {
                   const post = bySlot.get(slot);
                   if (!post || missing) {

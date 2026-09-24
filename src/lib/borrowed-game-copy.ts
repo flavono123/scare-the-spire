@@ -42,6 +42,7 @@ export interface PagestormGameCopy {
 export interface DebateGameCopy {
   title: string;
   hero: string;
+  invite: string;
 }
 
 export interface FeedbackFormGameCopy {

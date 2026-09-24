@@ -16,7 +16,7 @@ export function ColorfulPhilosopherSubjectArt({
   width?: number;
 }) {
   const { entities } = useCommentEntities();
-  if (post.slot === "card") {
+  if (post.slot === "card" || post.resourceType === "card") {
     const card = entities.find((entity) => entity.type === "card" && entity.id === post.resourceId)?.cardData;
     if (card) {
       return (

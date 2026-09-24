@@ -914,8 +914,13 @@ async function buildDecisionsDecisionsGameCopy(
 async function buildDebateGameCopy(
   gameLocale: GameLocale,
 ): Promise<DebateGameCopy> {
-  const [title, description] = await Promise.all([
+  const [title, done, initial] = await Promise.all([
     readGameTextWithEnglishFallback(gameLocale, "events", "COLORFUL_PHILOSOPHERS.title"),
+    readGameTextWithEnglishFallback(
+      gameLocale,
+      "events",
+      "COLORFUL_PHILOSOPHERS.pages.DONE.description",
+    ),
     readGameTextWithEnglishFallback(
       gameLocale,
       "events",
@@ -924,7 +929,8 @@ async function buildDebateGameCopy(
   ]);
   return {
     title: title || "Colorful Philosophers",
-    hero: stripGameMarkup(lastNonEmptyLine(description)),
+    hero: stripGameMarkup(done),
+    invite: stripGameMarkup(lastNonEmptyLine(initial)),
   };
 }
 

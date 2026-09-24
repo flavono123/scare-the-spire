@@ -8,8 +8,12 @@ export const COLORFUL_PHILOSOPHERS_REACTIONS_TABLE = "colorful_philosopher_react
 export const COLORFUL_PHILOSOPHERS_GAME_VERSION = sts2Meta.version;
 export const COLORFUL_PHILOSOPHERS_SCHEDULE_WEEKS = 8;
 
-export const COLORFUL_PHILOSOPHER_SLOTS = ["card", "relic", "power"] as const;
-export type ColorfulPhilosopherSlot = (typeof COLORFUL_PHILOSOPHER_SLOTS)[number];
+export const COLORFUL_PHILOSOPHERS_EPOCH = "2026-09-21";
+export const COLORFUL_PHILOSOPHER_SLOTS = ["topic", "card", "relic"] as const;
+export const COLORFUL_PHILOSOPHER_LEGACY_SLOTS = ["power"] as const;
+export type ColorfulPhilosopherSlot =
+  | (typeof COLORFUL_PHILOSOPHER_SLOTS)[number]
+  | (typeof COLORFUL_PHILOSOPHER_LEGACY_SLOTS)[number];
 
 export const COLORFUL_PHILOSOPHER_REACTIONS = ["buff", "nerf", "rework"] as const;
 export type ColorfulPhilosopherReaction = (typeof COLORFUL_PHILOSOPHER_REACTIONS)[number];
@@ -20,13 +24,14 @@ export const COLORFUL_PHILOSOPHER_REACTION_TOKENS: Record<
 > = {
   buff: { src: "/images/sts2/powers/dexterity_power.webp", variant: "green" },
   nerf: { src: "/images/sts2/powers/vulnerable_power.webp", variant: "red" },
-  rework: { src: "/images/sts2/relics/pandoras_box.webp", variant: "purple" },
+  rework: { src: "/images/sts2/relics/touch_of_orobas.webp", variant: "gold" },
 };
 
 export interface ColorfulPhilosopherPost {
   id: string;
   weekStart: string;
   slot: ColorfulPhilosopherSlot;
+  resourceType: string;
   resourceId: string;
   nameKo: string;
   nameEn: string;
@@ -47,7 +52,15 @@ export function colorfulPhilosopherReactionStorageKey(postId: string): string {
 }
 
 export function isColorfulPhilosopherSlot(value: string): value is ColorfulPhilosopherSlot {
-  return (COLORFUL_PHILOSOPHER_SLOTS as readonly string[]).includes(value);
+  return (COLORFUL_PHILOSOPHER_SLOTS as readonly string[]).includes(value)
+    || (COLORFUL_PHILOSOPHER_LEGACY_SLOTS as readonly string[]).includes(value);
+}
+
+export function colorfulPhilosophersWeekNumber(weekStart: string): number {
+  const epoch = Date.parse(`${COLORFUL_PHILOSOPHERS_EPOCH}T00:00:00Z`);
+  const start = Date.parse(`${weekStart}T00:00:00Z`);
+  if (!Number.isFinite(epoch) || !Number.isFinite(start)) return 1;
+  return Math.floor((start - epoch) / (7 * 24 * 60 * 60 * 1000)) + 1;
 }
 
 export function isColorfulPhilosopherReaction(value: string): value is ColorfulPhilosopherReaction {
@@ -93,6 +106,7 @@ export function colorfulPhilosopherPostFromRow(row: {
   id?: unknown;
   week_start?: unknown;
   slot?: unknown;
+  resource_type?: unknown;
   resource_id?: unknown;
   name_ko?: unknown;
   name_en?: unknown;
@@ -117,6 +131,7 @@ export function colorfulPhilosopherPostFromRow(row: {
     id: row.id,
     weekStart,
     slot: row.slot,
+    resourceType: typeof row.resource_type === "string" && row.resource_type ? row.resource_type : row.slot,
     resourceId: row.resource_id,
     nameKo: row.name_ko,
     nameEn: row.name_en,

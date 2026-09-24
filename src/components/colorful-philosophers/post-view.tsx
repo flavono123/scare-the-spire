@@ -122,8 +122,10 @@ export function ColorfulPhilosopherPostView({ postId }: { postId: string }) {
                 aria-label={tip}
                 className={cn(
                   SPIRE_ACTION_CONTROL_CLASS,
-                  "gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors hover:border-primary/40",
-                  active ? "border-primary/60 bg-primary/15" : "border-white/10",
+                  "gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors",
+                  kind === "buff" && (active ? "border-[#34d399] bg-[#34d399]/15" : "border-white/10 hover:border-[#34d399]/70"),
+                  kind === "nerf" && (active ? "border-[#f87171] bg-[#f87171]/15" : "border-white/10 hover:border-[#f87171]/70"),
+                  kind === "rework" && (active ? "border-[#EFC851] bg-[#EFC851]/15" : "border-white/10 hover:border-[#EFC851]/70"),
                 )}
               >
                 <ColorfulPhilosopherReactionIcon kind={kind} active={active} lift size={18} />

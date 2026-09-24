@@ -7,7 +7,6 @@ import {
   COLORFUL_PHILOSOPHERS_POSTS_TABLE,
   colorfulPhilosopherPostFromRow,
   colorfulPhilosophersWeekStart,
-  isColorfulPhilosopherSlot,
   isColorfulPhilosophersMonday,
   isMissingColorfulPhilosopherPosts,
   type ColorfulPhilosopherPost,
@@ -28,15 +27,15 @@ function adminClient() {
   });
 }
 
-let lookupPromise: Promise<Map<string, { id: string; nameKo: string; nameEn: string; imageUrl: string | null }>> | null = null;
+let lookupPromise: Promise<Map<string, { id: string; type: string; nameKo: string; nameEn: string; imageUrl: string | null }>> | null = null;
 
 function entityLookup() {
   lookupPromise ??= loadAllEntities({ gameLocale: "kor" }).then((entities) => {
-    const map = new Map<string, { id: string; nameKo: string; nameEn: string; imageUrl: string | null }>();
+    const map = new Map<string, { id: string; type: string; nameKo: string; nameEn: string; imageUrl: string | null }>();
     for (const entity of entities) {
-      if (!isColorfulPhilosopherSlot(entity.type)) continue;
       map.set(`${entity.type}:${entity.id.toLowerCase()}`, {
         id: entity.id,
+        type: entity.type,
         nameKo: entity.nameKo,
         nameEn: entity.nameEn,
         imageUrl: entity.imageUrl,
@@ -51,6 +50,7 @@ export async function saveColorfulPhilosopherPost(input: {
   env: "development" | "production";
   weekStart: string;
   slot: string;
+  resourceType: string;
   resourceId: string;
   body: string;
 }): Promise<SaveResult> {
@@ -64,8 +64,8 @@ export async function saveColorfulPhilosopherPost(input: {
   if (!isColorfulPhilosophersMonday(input.weekStart) || input.weekStart < colorfulPhilosophersWeekStart()) {
     return { ok: false, error: "지난 주에는 예약할 수 없습니다." };
   }
-  if (!isColorfulPhilosopherSlot(input.slot)) {
-    return { ok: false, error: "카드, 유물, 파워 글만 만들 수 있습니다." };
+  if (!(["topic", "card", "relic"] as readonly string[]).includes(input.slot)) {
+    return { ok: false, error: "이 주의 토론, 카드, 유물 글만 만들 수 있습니다." };
   }
   const admin = adminClient();
   if (!admin) return { ok: false, error: "SUPABASE_SECRET_KEY가 없습니다." };
@@ -73,7 +73,10 @@ export async function saveColorfulPhilosopherPost(input: {
     return { ok: false, error: "알 수 없는 Supabase 환경입니다." };
   }
 
-  const entity = (await entityLookup()).get(`${input.slot}:${input.resourceId.trim().toLowerCase()}`);
+  const entity = (await entityLookup()).get(`${input.resourceType}:${input.resourceId.trim().toLowerCase()}`);
+  if (input.slot !== "topic" && entity && entity.type !== input.slot) {
+    return { ok: false, error: "그 칸에 맞는 요소가 아닙니다." };
+  }
   if (!entity) return { ok: false, error: "백과사전에서 그 요소를 찾지 못했습니다." };
 
   try {
@@ -83,7 +86,7 @@ export async function saveColorfulPhilosopherPost(input: {
         env: input.env,
         week_start: input.weekStart,
         slot: input.slot,
-        resource_type: input.slot,
+        resource_type: entity.type,
         resource_id: entity.id,
         name_ko: entity.nameKo,
         name_en: entity.nameEn,
@@ -91,7 +94,7 @@ export async function saveColorfulPhilosopherPost(input: {
         body,
         game_version: COLORFUL_PHILOSOPHERS_GAME_VERSION,
       }, { onConflict: "env,week_start,slot" }).select(
-        "id, week_start, slot, resource_id, name_ko, name_en, image_url, body, game_version, buff_count, nerf_count, rework_count",
+        "id, week_start, slot, resource_type, resource_id, name_ko, name_en, image_url, body, game_version, buff_count, nerf_count, rework_count",
       ).single(),
     );
     if (saved.error) {

@@ -15,7 +15,7 @@ import {
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
-const POST_COLUMNS = "id, week_start, slot, resource_id, name_ko, name_en, image_url, body, game_version, buff_count, nerf_count, rework_count";
+const POST_COLUMNS = "id, week_start, slot, resource_type, resource_id, name_ko, name_en, image_url, body, game_version, buff_count, nerf_count, rework_count";
 
 export function useColorfulPhilosopherWeek(env = supabaseEnv) {
   const [posts, setPosts] = useState<ColorfulPhilosopherPost[]>([]);
