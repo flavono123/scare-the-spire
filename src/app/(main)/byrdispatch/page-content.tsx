@@ -56,6 +56,10 @@ import {
   CHARACTER_CARDS_MODIFIER_IMAGE_URL,
 } from "@/lib/codex-types";
 import { PAGESTORM_HREF, PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
+import {
+  COLORFUL_PHILOSOPHERS_HREF,
+  COLORFUL_PHILOSOPHERS_TOKEN_SRC,
+} from "@/lib/colorful-philosophers";
 
 export function generateByrdispatchMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
@@ -96,6 +100,12 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   "Stories": { href: "/", icon: "/images/sts2/relics/bone_tea.webp" },
   "섀소식": { href: "/byrdispatch", icon: BYRDISPATCH_ICON },
   "byrdispatch": { href: "/byrdispatch", icon: BYRDISPATCH_ICON },
+  "니오우스레터": { href: "/patches/neowsletters", icon: "/images/sts2/ancients/neow.webp" },
+  Neowsletter: { href: "/patches/neowsletters", icon: "/images/sts2/ancients/neow.webp" },
+  "다채로운 철학자들": { href: COLORFUL_PHILOSOPHERS_HREF, icon: COLORFUL_PHILOSOPHERS_TOKEN_SRC },
+  "Colorful Philosophers": { href: COLORFUL_PHILOSOPHERS_HREF, icon: COLORFUL_PHILOSOPHERS_TOKEN_SRC },
+  "배달원": { href: null, icon: "/images/sts2/relics/the_courier.webp" },
+  "The Courier": { href: null, icon: "/images/sts2/relics/the_courier.webp" },
   "패치노트": { href: "/patches", icon: "/images/sts2/nav/patch_notes_icon.png" },
   "패치 노트": { href: "/patches", icon: "/images/sts2/nav/patch_notes_icon.png" },
   "Patch Notes": { href: "/patches", icon: "/images/sts2/nav/patch_notes_icon.png" },
@@ -143,8 +153,10 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   "케미컬X": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
   "케미컬엑스": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
   "케미컬X/댓글": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
+  "댓글/케미컬X": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
   "Chemical X": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
   "Chemical X / Comments": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
+  "Comments / Chemical X": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
   "역사 강의서": { href: "/history-course", icon: "/images/sts2/relics/history_course.webp" },
   "History Course": { href: "/history-course", icon: "/images/sts2/relics/history_course.webp" },
   "이거 아님 저거?": { href: "/this-or-that", icon: "/images/sts2/relics/choices_paradox.webp" },
@@ -192,8 +204,16 @@ const SERVICE_REFERENCE_LINKS: Record<string, string> = {
   "케미컬X": "/chemical-x",
   "케미컬엑스": "/chemical-x",
   "케미컬X/댓글": "/chemical-x",
+  "댓글/케미컬X": "/chemical-x",
   "Chemical X": "/chemical-x",
   "Chemical X / Comments": "/chemical-x",
+  "Comments / Chemical X": "/chemical-x",
+  "니오우스레터": "/patches/neowsletters",
+  Neowsletter: "/patches/neowsletters",
+  "다채로운 철학자들": COLORFUL_PHILOSOPHERS_HREF,
+  "Colorful Philosophers": COLORFUL_PHILOSOPHERS_HREF,
+  "배달원": "/profile",
+  "The Courier": "/profile",
   "서류 폭풍": PAGESTORM_HREF,
   Pagestorm: PAGESTORM_HREF,
   "프로필": "/profile",
