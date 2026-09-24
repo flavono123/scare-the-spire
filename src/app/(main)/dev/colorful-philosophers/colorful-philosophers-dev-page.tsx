@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { saveColorfulPhilosopherPost } from "@/app/(main)/dev/colorful-philosophers/actions";
@@ -26,6 +26,7 @@ export function ColorfulPhilosophersDevPage() {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<EntityInfo | null>(null);
   const [body, setBody] = useState("");
+  const [bodyTouched, setBodyTouched] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { entities, loading } = useCommentEntities();
@@ -40,6 +41,16 @@ export function ColorfulPhilosophersDevPage() {
     if (!normalized) return [...pool].sort((a, b) => a.nameKo.localeCompare(b.nameKo, "ko")).slice(0, 30);
     return matchEntities(normalized, pool, 30);
   }, [pool, query]);
+  const existing = weekPosts.posts.find((post) => post.weekStart === weekStart && post.slot === slot);
+
+  useEffect(() => {
+    setBodyTouched(false);
+  }, [weekStart, slot]);
+
+  useEffect(() => {
+    if (bodyTouched) return;
+    setBody(existing?.body ?? "");
+  }, [existing, bodyTouched]);
 
   const save = async () => {
     if (!selected || !isColorfulPhilosopherSlot(selected.type)) return;
@@ -72,7 +83,10 @@ export function ColorfulPhilosophersDevPage() {
           <button
             key={week}
             type="button"
-            onClick={() => setWeekStart(week)}
+            onClick={() => {
+              setWeekStart(week);
+              setBodyTouched(false);
+            }}
             className={`rounded-full border px-3 py-1 text-xs ${week === weekStart ? "border-primary bg-primary/15 text-primary" : "border-white/10 text-zinc-400"}`}
           >
             {week.slice(5)}
@@ -85,8 +99,9 @@ export function ColorfulPhilosophersDevPage() {
             key={item}
             type="button"
             onClick={() => {
-              setSlot(item);
-              setSelected(null);
+            setSlot(item);
+            setSelected(null);
+            setBodyTouched(false);
             }}
             className={`rounded-full border px-3 py-1 text-xs ${item === slot ? "border-primary bg-primary/15 text-primary" : "border-white/10 text-zinc-400"}`}
           >
@@ -123,7 +138,10 @@ export function ColorfulPhilosophersDevPage() {
       )}
       <textarea
         value={body}
-        onChange={(event) => setBody(event.target.value)}
+        onChange={(event) => {
+          setBodyTouched(true);
+          setBody(event.target.value);
+        }}
         maxLength={500}
         placeholder="이 요소에 대한 화두"
         className="min-h-28 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm"

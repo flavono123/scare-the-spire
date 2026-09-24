@@ -5,7 +5,6 @@ import {
   COLORFUL_PHILOSOPHERS_POSTS_TABLE,
   COLORFUL_PHILOSOPHERS_REACTIONS_TABLE,
   colorfulPhilosopherPostFromRow,
-  colorfulPhilosophersWeekStart,
   isColorfulPhilosopherReaction,
   isMissingColorfulPhilosopherPosts,
   type ColorfulPhilosopherPost,
@@ -36,7 +35,8 @@ export function useColorfulPhilosopherWeek() {
       "colorful_philosopher_posts.week",
       supabase.from(COLORFUL_PHILOSOPHERS_POSTS_TABLE).select(POST_COLUMNS)
         .eq("env", supabaseEnv)
-        .eq("week_start", colorfulPhilosophersWeekStart()),
+        .order("week_start", { ascending: false })
+        .limit(100),
     ).then(({ data, error }) => {
       if (cancelled) return;
       if (error) {
@@ -115,10 +115,13 @@ export function useColorfulPhilosopherReaction(postId: string, userId: string | 
   const [kind, setKind] = useState<ColorfulPhilosopherReaction | null>(null);
 
   useEffect(() => {
-    if (!postId || !userId || !supabaseEnabled) {
-      setKind(null);
-      return;
-    }
+    if (!postId || typeof window === "undefined") return;
+    const cached = window.localStorage.getItem(`sts-cp-reaction:${postId}`);
+    if (cached && isColorfulPhilosopherReaction(cached)) setKind(cached);
+  }, [postId]);
+
+  useEffect(() => {
+    if (!postId || !userId || !supabaseEnabled) return;
     let cancelled = false;
     supabase.from(COLORFUL_PHILOSOPHERS_REACTIONS_TABLE)
       .select("kind")
@@ -138,7 +141,13 @@ export function useColorfulPhilosopherReaction(postId: string, userId: string | 
   const choose = useCallback(async (next: ColorfulPhilosopherReaction) => {
     if (!userId || !supabaseEnabled) return { ok: false as const, error: "로그인이 필요합니다." };
     const previous = kind;
-    setKind(next === previous ? null : next);
+    const nextKind = next === previous ? null : next;
+    setKind(nextKind);
+    if (typeof window !== "undefined") {
+      const key = `sts-cp-reaction:${postId}`;
+      if (nextKind) window.localStorage.setItem(key, nextKind);
+      else window.localStorage.removeItem(key);
+    }
     const query = next === previous
       ? supabase.from(COLORFUL_PHILOSOPHERS_REACTIONS_TABLE).delete()
         .eq("post_id", postId).eq("user_id", userId).eq("env", supabaseEnv)
