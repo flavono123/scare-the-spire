@@ -520,9 +520,11 @@ export function EntityPreview({
   const staticPreview = staticHoverPreviews && !useTapPreview && !forceShow;
   const pendingStaticPreview = (isPendingCompendium || staticPreview) && !useTapPreview && !forceShow;
   const showResolvedPreview = (visible || staticPreview) && !isPendingCompendium;
-  const staticCardPreviewKey = staticPreview && previewEntity.type === "card" && previewEntity.cardData
-    ? `${previewEntity.id}:${previewEntity.cardPreviewUpgradeLevel ?? 0}`
-    : undefined;
+  const staticPreviewKey = !staticPreview
+    ? undefined
+    : previewEntity.type === "card" && previewEntity.cardData
+      ? `${previewEntity.id}:${previewEntity.cardPreviewUpgradeLevel ?? 0}`
+      : `${previewEntity.type}:${previewEntity.id}`;
 
   const handleMouseEnter = useCallback(() => {
     setPreviewNonce((value) => value + 1);
@@ -635,6 +637,18 @@ export function EntityPreview({
       );
     }
 
+    // Static patch HTML has no React hover state. A <template> is not rendered,
+    // so the relic slab cannot sit in the sentence even if CSS fails to load.
+    if (staticPreviewKey) {
+      return (
+        <template data-static-card-preview-template={staticPreviewKey}>
+          <div hidden data-static-card-preview={staticPreviewKey}>
+            {body}
+          </div>
+        </template>
+      );
+    }
+
     return (
       <span className={tooltipPos}>
         {body}
@@ -650,7 +664,7 @@ export function EntityPreview({
     <span
       ref={ref}
       className={forceShow ? "inline-block" : pendingStaticPreview ? "group relative inline-flex max-w-full items-center" : "relative inline-flex max-w-full items-center"}
-      data-static-card-trigger={staticCardPreviewKey}
+      data-static-card-trigger={staticPreviewKey}
       onMouseEnter={() => {
         if (!useTapPreview) handleMouseEnter();
       }}
@@ -718,21 +732,15 @@ export function EntityPreview({
       {showResolvedPreview && previewEntity.type === "card" && previewEntity.cardData && (
         renderTooltip(
           staticHoverPreviews ? (
-            <template data-static-card-preview-template={staticCardPreviewKey}>
-              <div
-                hidden
-                data-static-card-preview={staticCardPreviewKey}
-                className="w-36 drop-shadow-2xl"
-              >
-                <CardTile
-                  card={previewEntity.cardData}
-                  showUpgrade={Boolean(previewEntity.cardPreviewUpgradeLevel)}
-                  upgradeLevel={previewEntity.cardPreviewUpgradeLevel}
-                  showBeta={false}
-                  interactive={false}
-                />
-              </div>
-            </template>
+            <div className="w-36 drop-shadow-2xl">
+              <CardTile
+                card={previewEntity.cardData}
+                showUpgrade={Boolean(previewEntity.cardPreviewUpgradeLevel)}
+                upgradeLevel={previewEntity.cardPreviewUpgradeLevel}
+                showBeta={false}
+                interactive={false}
+              />
+            </div>
           ) : (
             <EntityCardHoverPreview
               entity={previewEntity}
