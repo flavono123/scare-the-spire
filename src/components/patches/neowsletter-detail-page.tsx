@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { PatchNoteRenderer } from "@/components/patch-note-renderer";
 import { PatchArtPreview } from "@/components/patches/patch-art";
+import { PatchNoteRenderer } from "@/components/patch-note-renderer";
 import { NeowsletterClaimThread } from "@/components/patches/neowsletter-claim-thread";
 import { PatchSectionTabs } from "@/components/patches/patch-section-tabs";
 import { buildNeowsletterCommentThreadKey } from "@/lib/comment-threads";
@@ -131,6 +131,14 @@ export async function NeowsletterDetailPage({
           />
         </section>
       ))}
+      <section id="comments" className="mt-10 border-t border-white/10 pt-6">
+        <h2 className="font-game-title text-lg text-primary">{copy.pageComments}</h2>
+        <div
+          className="mt-3"
+          data-patch-comment-root
+          data-thread-key={buildNeowsletterCommentThreadKey(issue.id, "page")}
+        />
+      </section>
     </div>
   );
 }

@@ -594,9 +594,9 @@ export function EntityPreview({
     ? "relative z-50 mt-1"
     : pendingStaticPreview
       ? [
-          "invisible fixed left-3 right-3 top-16 z-50 h-0 overflow-hidden opacity-0 pointer-events-none transition-opacity",
-          "group-hover:visible group-hover:h-auto group-hover:overflow-visible group-hover:opacity-100",
-          "group-focus-within:visible group-focus-within:h-auto group-focus-within:overflow-visible group-focus-within:opacity-100",
+          "absolute z-50 hidden h-0 w-0 overflow-hidden pointer-events-none",
+          "group-hover:block group-hover:h-auto group-hover:w-max group-hover:overflow-visible",
+          "group-focus-within:block group-focus-within:h-auto group-focus-within:w-max group-focus-within:overflow-visible",
           staticPreviewDesktopClass(placement),
         ].join(" ")
       : `absolute ${previewHorizontalClass(placement.horizontal)} z-50 pointer-events-none ${placement.vertical === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;
