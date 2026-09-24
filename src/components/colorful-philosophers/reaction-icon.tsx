@@ -34,7 +34,7 @@ export function ColorfulPhilosopherReactionIcon({
         size={size}
         variant="ghost"
         className={cn(
-          "absolute inset-0 transition-opacity duration-200 ease-out motion-reduce:transition-none",
+          "absolute inset-0 grayscale transition-opacity duration-200 ease-out motion-reduce:transition-none",
           active
             ? "opacity-0"
             : "opacity-100 group-hover/spire:opacity-0 group-focus-visible/spire:opacity-0",

@@ -36,11 +36,13 @@ export function ResourceReactionBar({
   resourceId,
   gameVersion,
   variant = "chips",
+  size = 15,
 }: {
   resourceType: string;
   resourceId: string;
   gameVersion: string;
   variant?: "chips" | "icons" | "readonly";
+  size?: number;
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].colorfulPhilosophers;
@@ -86,7 +88,7 @@ export function ResourceReactionBar({
                 ) : resource.loading || resource.pendingKind === kind ? (
                   <EngagementSpinner size={15} />
                 ) : (
-                  <ColorfulPhilosopherReactionIcon kind={kind} active={active} lift size={15} />
+                  <ColorfulPhilosopherReactionIcon kind={kind} active={active} lift size={size} />
                 )}
                 {resource.loading ? null : <span className="tabular-nums">{resource.counts[kind]}</span>}
               </button>

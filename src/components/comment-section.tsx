@@ -160,12 +160,14 @@ export function CommentSection({
               userId={userId}
               authReady={ready}
               ensureUser={ensureUser}
+              size={15}
             />
             <ResourceReactionBar
               resourceType={codexThread[1]}
               resourceId={codexThread[2]}
               gameVersion={COLORFUL_PHILOSOPHERS_GAME_VERSION}
               variant="icons"
+              size={15}
             />
           </div>
           <ColorfulPhilosopherResourceThread
