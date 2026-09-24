@@ -94,6 +94,7 @@ export const serviceMessages = {
       notFound: "글을 찾을 수 없습니다",
       slots: { card: "이 주의 토론 카드", relic: "이 주의 토론 유물", power: "이 주의 토론 파워" },
       reactions: { buff: "버프 필요", nerf: "너프 필요", rework: "리워크 필요" },
+      reactionClear: { buff: "버프 필요 취소", nerf: "너프 필요 취소", rework: "리워크 필요 취소" },
     },
     profile: {
       navLabel: "프로필",
@@ -1449,6 +1450,7 @@ export const serviceMessages = {
       notFound: "Post not found",
       slots: { card: "This week's debate card", relic: "This week's debate relic", power: "This week's debate power" },
       reactions: { buff: "Needs a buff", nerf: "Needs a nerf", rework: "Needs a rework" },
+      reactionClear: { buff: "Undo needs a buff", nerf: "Undo needs a nerf", rework: "Undo needs a rework" },
     },
     profile: {
       navLabel: "Profile",

@@ -42,6 +42,10 @@ export function colorfulPhilosophersCommentThreadKey(postId: string): string {
   return `colorful-philosophers:${postId}`;
 }
 
+export function colorfulPhilosopherReactionStorageKey(postId: string): string {
+  return `sts-cp-reaction:${postId}`;
+}
+
 export function isColorfulPhilosopherSlot(value: string): value is ColorfulPhilosopherSlot {
   return (COLORFUL_PHILOSOPHER_SLOTS as readonly string[]).includes(value);
 }

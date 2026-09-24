@@ -1,10 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   COLORFUL_PHILOSOPHERS_POSTS_TABLE,
   COLORFUL_PHILOSOPHERS_REACTIONS_TABLE,
   colorfulPhilosopherPostFromRow,
+  colorfulPhilosopherReactionStorageKey,
+  colorfulPhilosophersCommentThreadKey,
   isColorfulPhilosopherReaction,
   isMissingColorfulPhilosopherPosts,
   type ColorfulPhilosopherPost,
@@ -111,13 +113,51 @@ export function useColorfulPhilosopherPost(postId: string) {
   return { post, loading, unavailable, reload };
 }
 
+export function readColorfulPhilosopherReaction(postId: string): ColorfulPhilosopherReaction | null {
+  if (!postId || typeof window === "undefined") return null;
+  const cached = window.localStorage.getItem(colorfulPhilosopherReactionStorageKey(postId));
+  return cached && isColorfulPhilosopherReaction(cached) ? cached : null;
+}
+
+function writeColorfulPhilosopherReaction(postId: string, kind: ColorfulPhilosopherReaction | null) {
+  const key = colorfulPhilosopherReactionStorageKey(postId);
+  if (kind) window.localStorage.setItem(key, kind);
+  else window.localStorage.removeItem(key);
+}
+
+export async function saveColorfulPhilosopherReaction(input: {
+  postId: string;
+  userId: string;
+  previous: ColorfulPhilosopherReaction | null;
+  next: ColorfulPhilosopherReaction;
+}): Promise<{ ok: true; kind: ColorfulPhilosopherReaction | null } | { ok: false; error: string }> {
+  const nextKind = input.next === input.previous ? null : input.next;
+  writeColorfulPhilosopherReaction(input.postId, nextKind);
+  const query = nextKind === null
+    ? supabase.from(COLORFUL_PHILOSOPHERS_REACTIONS_TABLE).delete()
+      .eq("post_id", input.postId).eq("user_id", input.userId).eq("env", supabaseEnv)
+    : input.previous
+      ? supabase.from(COLORFUL_PHILOSOPHERS_REACTIONS_TABLE).update({ kind: nextKind })
+        .eq("post_id", input.postId).eq("user_id", input.userId).eq("env", supabaseEnv)
+      : supabase.from(COLORFUL_PHILOSOPHERS_REACTIONS_TABLE).insert({
+        post_id: input.postId,
+        user_id: input.userId,
+        env: supabaseEnv,
+        kind: nextKind,
+      });
+  const { error } = await query;
+  if (error) {
+    writeColorfulPhilosopherReaction(input.postId, input.previous);
+    return { ok: false, error: error.message };
+  }
+  return { ok: true, kind: nextKind };
+}
+
 export function useColorfulPhilosopherReaction(postId: string, userId: string | null) {
   const [kind, setKind] = useState<ColorfulPhilosopherReaction | null>(null);
 
   useEffect(() => {
-    if (!postId || typeof window === "undefined") return;
-    const cached = window.localStorage.getItem(`sts-cp-reaction:${postId}`);
-    if (cached && isColorfulPhilosopherReaction(cached)) setKind(cached);
+    setKind(readColorfulPhilosopherReaction(postId));
   }, [postId]);
 
   useEffect(() => {
@@ -131,7 +171,9 @@ export function useColorfulPhilosopherReaction(postId: string, userId: string | 
       .maybeSingle()
       .then(({ data }) => {
         if (cancelled) return;
-        setKind(data && isColorfulPhilosopherReaction(data.kind) ? data.kind : null);
+        const next = data && isColorfulPhilosopherReaction(data.kind) ? data.kind : null;
+        setKind(next);
+        writeColorfulPhilosopherReaction(postId, next);
       });
     return () => {
       cancelled = true;
@@ -141,32 +183,50 @@ export function useColorfulPhilosopherReaction(postId: string, userId: string | 
   const choose = useCallback(async (next: ColorfulPhilosopherReaction) => {
     if (!userId || !supabaseEnabled) return { ok: false as const, error: "로그인이 필요합니다." };
     const previous = kind;
-    const nextKind = next === previous ? null : next;
-    setKind(nextKind);
-    if (typeof window !== "undefined") {
-      const key = `sts-cp-reaction:${postId}`;
-      if (nextKind) window.localStorage.setItem(key, nextKind);
-      else window.localStorage.removeItem(key);
-    }
-    const query = next === previous
-      ? supabase.from(COLORFUL_PHILOSOPHERS_REACTIONS_TABLE).delete()
-        .eq("post_id", postId).eq("user_id", userId).eq("env", supabaseEnv)
-      : previous
-        ? supabase.from(COLORFUL_PHILOSOPHERS_REACTIONS_TABLE).update({ kind: next })
-          .eq("post_id", postId).eq("user_id", userId).eq("env", supabaseEnv)
-        : supabase.from(COLORFUL_PHILOSOPHERS_REACTIONS_TABLE).insert({
-          post_id: postId,
-          user_id: userId,
-          env: supabaseEnv,
-          kind: next,
-        });
-    const { error } = await query;
-    if (error) {
-      setKind(previous);
-      return { ok: false as const, error: error.message };
-    }
-    return { ok: true as const };
+    const optimistic = next === previous ? null : next;
+    setKind(optimistic);
+    const result = await saveColorfulPhilosopherReaction({ postId, userId, previous, next });
+    if (!result.ok) setKind(previous);
+    return result.ok ? { ok: true as const } : result;
   }, [kind, postId, userId]);
 
   return { kind, choose };
+}
+
+const EMPTY_COMMENT_COUNTS: Record<string, number> = {};
+
+export function useColorfulPhilosopherCommentCounts(postIds: string[]) {
+  const [counts, setCounts] = useState<Record<string, number>>(EMPTY_COMMENT_COUNTS);
+  const [loadedKey, setLoadedKey] = useState("");
+  const key = useMemo(() => [...postIds].sort().join(":"), [postIds]);
+
+  useEffect(() => {
+    if (!supabaseEnabled || postIds.length === 0) return;
+    let cancelled = false;
+    const threadKeys = postIds.map(colorfulPhilosophersCommentThreadKey);
+    withSupabaseTimeout(
+      "colorful_philosopher_comment_counts.select",
+      supabase.from("comments").select("story_id").eq("env", supabaseEnv).in("story_id", threadKeys).limit(1000),
+    ).then(({ data, error }) => {
+      if (cancelled) return;
+      if (error) throw error;
+      const next: Record<string, number> = {};
+      for (const row of data ?? []) {
+        const storyId = String((row as { story_id: unknown }).story_id ?? "");
+        const prefix = "colorful-philosophers:";
+        if (!storyId.startsWith(prefix)) continue;
+        const postId = storyId.slice(prefix.length);
+        next[postId] = (next[postId] ?? 0) + 1;
+      }
+      setCounts(next);
+      setLoadedKey(key);
+    }).catch(() => {
+      if (!cancelled) setLoadedKey(key);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return postIds.length > 0 && loadedKey === key ? counts : EMPTY_COMMENT_COUNTS;
 }

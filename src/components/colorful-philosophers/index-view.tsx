@@ -1,19 +1,26 @@
 "use client";
 
 import Image from "@/components/ui/static-image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useMemo, type KeyboardEvent, type MouseEvent } from "react";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
+import { ColorfulPhilosopherIndexEngagement } from "@/components/colorful-philosophers/index-engagement";
 import { ColorfulPhilosopherSubjectArt } from "@/components/colorful-philosophers/subject-art";
-import { useColorfulPhilosopherWeek } from "@/hooks/use-colorful-philosopher-posts";
+import {
+  useColorfulPhilosopherCommentCounts,
+  useColorfulPhilosopherWeek,
+} from "@/hooks/use-colorful-philosopher-posts";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { localizeHref } from "@/lib/i18n";
 import {
   COLORFUL_PHILOSOPHER_SLOTS,
   COLORFUL_PHILOSOPHERS_HREF,
   COLORFUL_PHILOSOPHERS_TOKEN_SRC,
   addColorfulPhilosophersDays,
   colorfulPhilosophersWeekStart,
+  type ColorfulPhilosopherPost,
 } from "@/lib/colorful-philosophers";
 import { serviceMessages } from "@/messages/service";
 
@@ -30,7 +37,12 @@ export function ColorfulPhilosophersIndex({
   const copy = serviceMessages[serviceLocale].colorfulPhilosophers;
   const { posts, loading, unavailable, missing } = useColorfulPhilosopherWeek();
   const currentWeek = colorfulPhilosophersWeekStart();
-  const visiblePosts = posts.filter((post) => post.weekStart <= currentWeek);
+  const visiblePosts = useMemo(
+    () => posts.filter((post) => post.weekStart <= currentWeek),
+    [posts, currentWeek],
+  );
+  const postIds = useMemo(() => visiblePosts.map((post) => post.id), [visiblePosts]);
+  const commentCounts = useColorfulPhilosopherCommentCounts(postIds);
   const weekStarts = Array.from(new Set([
     currentWeek,
     ...visiblePosts.map((post) => post.weekStart),
@@ -71,18 +83,12 @@ export function ColorfulPhilosophersIndex({
                     );
                   }
                   return (
-                    <Link
+                    <WeekPostCard
                       key={slot}
-                      href={`${COLORFUL_PHILOSOPHERS_HREF}/${post.id}`}
-                      className="flex items-center gap-4 rounded-xl border border-white/10 bg-black/35 px-4 py-4"
-                    >
-                      <ColorfulPhilosopherSubjectArt post={post} serviceLocale={serviceLocale} width={96} />
-                      <span className="min-w-0">
-                        <span className="block font-service text-xs text-zinc-500">{copy.slots[slot]}</span>
-                        <span className="block truncate font-service text-lg font-semibold text-primary">{post.nameKo}</span>
-                        <span className="mt-1 line-clamp-2 block text-sm text-zinc-300">{post.body}</span>
-                      </span>
-                    </Link>
+                      post={post}
+                      slotLabel={copy.slots[slot]}
+                      commentCount={commentCounts[post.id] ?? 0}
+                    />
                   );
                 })}
               </section>
@@ -91,5 +97,55 @@ export function ColorfulPhilosophersIndex({
         </div>
       ) : null}
     </div>
+  );
+}
+
+function WeekPostCard({
+  post,
+  slotLabel,
+  commentCount,
+}: {
+  post: ColorfulPhilosopherPost;
+  slotLabel: string;
+  commentCount: number;
+}) {
+  const serviceLocale = useServiceLocale();
+  const router = useRouter();
+  const href = localizeHref(`${COLORFUL_PHILOSOPHERS_HREF}/${post.id}`, serviceLocale);
+  const openPost = () => router.push(href);
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement;
+    if (target.closest("a, button")) return;
+    openPost();
+  };
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.target !== event.currentTarget) return;
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    openPost();
+  };
+
+  return (
+    <article
+      role="link"
+      tabIndex={0}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      className="group cursor-pointer rounded-xl border border-white/10 bg-black/35 px-4 py-4 transition-colors hover:border-primary/20 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
+    >
+      <div className="flex items-center gap-4">
+        <ColorfulPhilosopherSubjectArt post={post} serviceLocale={serviceLocale} width={96} />
+        <span className="min-w-0 flex-1">
+          <span className="block font-service text-xs text-zinc-500">{slotLabel}</span>
+          <span className="block truncate font-service text-lg font-semibold text-primary">{post.nameKo}</span>
+          <span className="mt-1 line-clamp-2 block text-sm text-zinc-300">{post.body}</span>
+        </span>
+        <ColorfulPhilosopherIndexEngagement
+          post={post}
+          commentsHref={`${href}#comments`}
+          commentCount={commentCount}
+        />
+      </div>
+    </article>
   );
 }

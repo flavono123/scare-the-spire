@@ -6,7 +6,9 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState, type CSSProperties } from "react";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
-import { SpireIcon } from "@/components/spire-icon";
+import { ColorfulPhilosopherReactionIcon } from "@/components/colorful-philosophers/reaction-icon";
+import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
+import { SPIRE_ACTION_CONTROL_CLASS } from "@/components/spire-icon";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { ColorfulPhilosopherSubjectArt } from "@/components/colorful-philosophers/subject-art";
@@ -14,13 +16,13 @@ import { useColorfulPhilosopherPost, useColorfulPhilosopherReaction } from "@/ho
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
   COLORFUL_PHILOSOPHER_REACTIONS,
-  COLORFUL_PHILOSOPHER_REACTION_TOKENS,
   COLORFUL_PHILOSOPHERS_HREF,
   COLORFUL_PHILOSOPHERS_TOKEN_SRC,
   colorfulPhilosophersCommentThreadKey,
   type ColorfulPhilosopherReaction,
 } from "@/lib/colorful-philosophers";
 import { serviceMessages } from "@/messages/service";
+import { cn } from "@/lib/utils";
 
 function ReactionWords({
   kind,
@@ -109,20 +111,26 @@ export function ColorfulPhilosopherPostView({ postId }: { postId: string }) {
       <p className="font-game-text text-base leading-7 text-zinc-100">{post.body}</p>
       <div className="flex flex-wrap gap-2">
         {COLORFUL_PHILOSOPHER_REACTIONS.map((kind) => {
-          const token = COLORFUL_PHILOSOPHER_REACTION_TOKENS[kind];
           const active = reaction.kind === kind;
+          const tip = active ? copy.reactionClear[kind] : copy.reactions[kind];
           return (
-            <button
-              key={kind}
-              type="button"
-              onClick={() => choose(kind)}
-              aria-pressed={active}
-              className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm ${active ? "border-primary/60 bg-primary/15" : "border-white/10"}`}
-            >
-              <SpireIcon src={token.src} size={18} variant={active ? token.variant : "ghost"} label={copy.reactions[kind]} />
-              <ReactionWords kind={kind} label={copy.reactions[kind]} />
-              <span className="tabular-nums text-zinc-400">{counts[kind]}</span>
-            </button>
+            <GameUiHoverTip key={kind} label={tip}>
+              <button
+                type="button"
+                onClick={() => choose(kind)}
+                aria-pressed={active}
+                aria-label={tip}
+                className={cn(
+                  SPIRE_ACTION_CONTROL_CLASS,
+                  "gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors hover:border-primary/40",
+                  active ? "border-primary/60 bg-primary/15" : "border-white/10",
+                )}
+              >
+                <ColorfulPhilosopherReactionIcon kind={kind} active={active} lift size={18} />
+                <ReactionWords kind={kind} label={copy.reactions[kind]} />
+                <span className="tabular-nums text-zinc-400">{counts[kind]}</span>
+              </button>
+            </GameUiHoverTip>
           );
         })}
       </div>
