@@ -1,8 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Image from "@/components/ui/static-image";
+import { MessageCircle } from "lucide-react";
 import { CommentSection } from "@/components/comment-section";
+import {
+  INDEX_LUCIDE_ICON_CLASS,
+  SPIRE_ACTION_CONTROL_CLASS,
+} from "@/components/spire-icon";
 
 export function NeowsletterClaimThread({
   threadKey,
@@ -20,14 +24,10 @@ export function NeowsletterClaimThread({
         setOpen(event.currentTarget.open);
       }}
     >
-      <summary className="inline-flex cursor-pointer list-none items-center gap-1 rounded-full border border-primary/35 bg-primary/10 px-1.5 py-0.5 text-[11px] leading-none text-primary marker:content-none hover:bg-primary/20 [&::-webkit-details-marker]:hidden">
-        <Image
-          src="/images/sts2/ui/emote/exclaim.png"
-          alt=""
-          width={14}
-          height={14}
-          className="h-3.5 w-3.5 object-contain"
-        />
+      <summary
+        className={`${SPIRE_ACTION_CONTROL_CLASS} cursor-pointer list-none gap-1 text-xs text-muted-foreground marker:content-none [&::-webkit-details-marker]:hidden`}
+      >
+        <MessageCircle size={15} className={INDEX_LUCIDE_ICON_CLASS} aria-hidden />
         <span>{label}</span>
       </summary>
       <div className="mt-1">

@@ -146,7 +146,7 @@ export function CommentSection({
   const inline = density === "inline";
 
   return (
-    <div className={inline ? "space-y-1" : "space-y-3"}>
+    <div className={inline ? "mt-1 space-y-1 rounded-md border border-white/10 border-l-2 border-l-zinc-500 bg-zinc-950/70 px-2 py-1" : "space-y-3"}>
       {storageUnavailable ? (
         <StorageUnavailableNotice
           compact

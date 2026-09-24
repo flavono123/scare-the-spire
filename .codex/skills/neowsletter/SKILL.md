@@ -17,7 +17,7 @@ Build 니오우스레터 pages from the Mega Crit original. The page is a claim 
 - Do not insert newsletter claims into `data/sts2-patch-lines.json`.
 - The issue cover is the thumbnail. Save it at `public/images/neowsletters/{id}/cover.png` and set `imageUrl` / `imageAlt` / `imageAltKo`. Show it on the index card and at the top of the detail page, using the patch art frame.
 - Other fan art, map drawings, Connections, and merch stay on the source URL.
-- Each claim has one collapsed comment affordance: a small token chip, not body text. Opening it shows a one-line composer and one-line comments. Token, nickname, time, like, and delete sit on the right. Thread key is `neowsletter:{id}:{claimId}`.
+- Each claim has one collapsed comment affordance, idle greyscale and colored on hover, matching index like/comment controls. Opening it shows a one-line composer. Written comments sit in their own inset thread, still one line, with token, nickname, time, like, and delete on the right. Thread key is `neowsletter:{id}:{claimId}`.
 - The tab token is `/images/sts2/ancients/neow.webp`. Do not use the map node `ancient_node_neow`.
 - `serviceLocale` selects `data/sts2-neowsletters/{id}.ko.md` or `{id}.md`. `gameLocale` selects Codex hover labels. Keep the written name on screen when the game locale matches the file (`kor` / `eng`). Swap the visible label only for other game locales, so `[gold:ascension]Ascension 10[/gold]` does not become the level title `Double Boss`.
 - Pages are finite static routes under `/patches/neowsletters`. Register them in `scripts/build-patch-worker.tsx` in the same change. Do not render markdown in the Worker.
