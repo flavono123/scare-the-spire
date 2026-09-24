@@ -125,8 +125,8 @@ export const serviceMessages = {
       },
       courier: {
         label: "배달원",
-        hint: "최근 댓글 한 줄",
-        hide: "숨기기",
+        show: "최신 댓글 보기 켜기",
+        hide: "최신 댓글 보기 끄기",
       },
       activity: {
         inquiries: {
@@ -1487,8 +1487,8 @@ export const serviceMessages = {
       },
       courier: {
         label: "The Courier",
-        hint: "One line of recent comments",
-        hide: "Hide",
+        show: "Show recent comments",
+        hide: "Hide recent comments",
       },
       activity: {
         inquiries: {

@@ -201,6 +201,12 @@ export const devNavItems = [
     strictDevOnly: true,
   },
   {
+    href: "/dev/courier-tokens",
+    label: "배달원 토큰",
+    icon: "/images/sts2/relics/the_courier.webp",
+    strictDevOnly: true,
+  },
+  {
     href: "/dev/decisions-board",
     label: "어려운 결정 보드",
     icon: "/images/sts2/powers/buffer_power.webp",

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
+import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { commentThreadHref } from "@/lib/comment-threads";
 import { COLORFUL_PHILOSOPHERS_TOKEN_SRC } from "@/lib/colorful-philosophers";
@@ -16,7 +17,7 @@ import { serviceMessages } from "@/messages/service";
 
 const STORAGE_KEY = "sts-courier-enabled";
 const CHANGE_EVENT = "sts-courier-change";
-const WINDOW_MS = 6 * 60 * 60 * 1000;
+const WINDOW_MS = 14 * 24 * 60 * 60 * 1000;
 const LIMIT = 12;
 const ROTATE_MS = 8000;
 
@@ -25,8 +26,25 @@ type CourierItem = {
   storyId: string;
   text: string;
   source: string;
-  token: string | null;
+  token: string;
   href: string;
+};
+
+export const COURIER_TOKEN_SRC = "/images/sts2/relics/the_courier.webp";
+
+const CODEX_TOKENS: Record<string, { ko: string; en: string; token: string }> = {
+  card: { ko: "카드", en: "Card", token: "/images/sts2/nav/stats_cards.png" },
+  relic: { ko: "유물", en: "Relic", token: "/images/sts2/relics/bing_bong.webp" },
+  potion: { ko: "물약", en: "Potion", token: "/images/sts2/potions/potion_shaped_rock.webp" },
+  power: { ko: "파워", en: "Power", token: "/images/sts2/nav/unmovable_power_beta.webp" },
+  enchantment: { ko: "인챈트", en: "Enchantment", token: "/images/sts2/enchantments/souls_power.webp" },
+  monster: { ko: "몬스터", en: "Monster", token: "/images/sts2/nav/happy_cultist.png" },
+  event: { ko: "이벤트", en: "Event", token: "/images/sts2/nav/question_mark.png" },
+  ancient: { ko: "고대", en: "Ancient", token: "/images/sts2/nav/stats_ancients.png" },
+  epoch: { ko: "시대", en: "Epoch", token: "/images/sts2/relics/planisphere.webp" },
+  character: { ko: "캐릭터", en: "Character", token: "/images/sts2/characters/character_icon_ironclad.webp" },
+  keyword: { ko: "키워드", en: "Keyword", token: "/images/sts2/ui/topbar/submenu_history_icon.png" },
+  badge: { ko: "배지", en: "Badge", token: "/images/sts2/badges/double_snecko.webp" },
 };
 
 const SERVICE_TOKENS: Record<string, { ko: string; en: string; token: string }> = {
@@ -39,7 +57,27 @@ const SERVICE_TOKENS: Record<string, { ko: string; en: string; token: string }> 
   "decisions-decisions:": { ko: "어려운 결정", en: "Decisions, Decisions", token: DECISIONS_DECISIONS_TOKEN_SRC },
   "pagestorm:": { ko: "페이지스톰", en: "Pagestorm", token: PAGESTORM_TOKEN_SRC },
   "defragment:": { ko: "조각모음", en: "Defragment", token: DEFRAGMENT_TOKEN_SRC },
+  "history-course:": { ko: "역사 강의서", en: "History Course", token: "/images/sts2/relics/history_course.webp" },
 };
+
+export function courierSourceCatalog(locale: "ko" | "en") {
+  const fixed = [
+    { id: "stories", label: locale === "ko" ? "슬서운이야기" : "Stories", token: "/images/bone_tea.png" },
+    { id: "patch", label: locale === "ko" ? "패치노트" : "Patch notes", token: "/images/sts2/nav/patch_notes_icon.png" },
+    { id: "neowsletter", label: locale === "ko" ? "니오우스레터" : "Neowsletter", token: "/images/sts2/ancients/neow.webp" },
+  ];
+  const services = Object.entries(SERVICE_TOKENS).map(([id, meta]) => ({
+    id,
+    label: locale === "ko" ? meta.ko : meta.en,
+    token: meta.token,
+  }));
+  const codex = Object.entries(CODEX_TOKENS).map(([id, meta]) => ({
+    id: `codex:${id}`,
+    label: locale === "ko" ? meta.ko : meta.en,
+    token: meta.token,
+  }));
+  return [...fixed, ...services, ...codex];
+}
 
 export function readCourierEnabled(): boolean {
   if (typeof window === "undefined") return true;
@@ -55,23 +93,25 @@ function plainComment(content: string): string {
   return content.replace(/\[[^\]]+\]/g, " ").replace(/\s+/g, " ").trim();
 }
 
-function describe(storyId: string, locale: "ko" | "en"): { source: string; token: string | null } {
+function describe(storyId: string, locale: "ko" | "en"): { source: string; token: string } {
   if (storyId.startsWith("community:") || storyId.startsWith("story:")) {
-    return { source: locale === "ko" ? "슬서운이야기" : "Stories", token: null };
+    return { source: locale === "ko" ? "슬서운이야기" : "Stories", token: "/images/bone_tea.png" };
   }
   if (storyId.startsWith("neowsletter:")) {
-    return { source: locale === "ko" ? "니오우스레터" : "Neowsletter", token: null };
+    return { source: locale === "ko" ? "니오우스레터" : "Neowsletter", token: "/images/sts2/ancients/neow.webp" };
   }
   if (storyId.startsWith("sts2-patch:")) {
-    return { source: locale === "ko" ? "패치노트" : "Patch notes", token: null };
+    return { source: locale === "ko" ? "패치노트" : "Patch notes", token: "/images/sts2/nav/patch_notes_icon.png" };
   }
-  if (storyId.startsWith("sts2-codex:") || storyId.startsWith("sts1-codex:")) {
-    return { source: locale === "ko" ? "백과사전" : "Compendium", token: null };
+  const codex = /^(?:sts2-codex|sts1-codex):([^:]+):/.exec(storyId);
+  if (codex) {
+    const meta = CODEX_TOKENS[codex[1]] ?? CODEX_TOKENS.card;
+    return { source: locale === "ko" ? meta.ko : meta.en, token: meta.token };
   }
   for (const [prefix, meta] of Object.entries(SERVICE_TOKENS)) {
     if (storyId.startsWith(prefix)) return { source: locale === "ko" ? meta.ko : meta.en, token: meta.token };
   }
-  return { source: locale === "ko" ? "댓글" : "Comment", token: null };
+  return { source: locale === "ko" ? "댓글" : "Comment", token: COURIER_TOKEN_SRC };
 }
 
 function commentHref(storyId: string, commentId: string): string {
@@ -173,8 +213,9 @@ export function CommentCourier() {
       onBlurCapture={() => setPaused(false)}
     >
       <Link href={item.href} className="flex min-w-0 items-center gap-1.5">
-        <span className="shrink-0 text-[10px] text-zinc-500">{item.source}</span>
-        {item.token ? <Image src={item.token} alt="" width={14} height={14} className="h-3.5 w-3.5 object-contain" /> : null}
+        <GameUiHoverTip label={item.source}>
+          <Image src={item.token} alt={item.source} width={16} height={16} className="h-4 w-4 object-contain" />
+        </GameUiHoverTip>
         <span className="truncate">{item.text}</span>
       </Link>
       <button
