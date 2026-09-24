@@ -30,6 +30,18 @@ export function DeferredCommentSection({
       return () => clearTimeout(timeoutId);
     }
 
+    const card = target.closest("[data-colorful-philosophers-card]");
+    const cardShown = () => !card || card.classList.contains("pointer-events-auto");
+    if (!cardShown()) {
+      const classObserver = new MutationObserver(() => {
+        if (!cardShown()) return;
+        setShouldLoad(true);
+        classObserver.disconnect();
+      });
+      classObserver.observe(card, { attributes: true, attributeFilter: ["class"] });
+      return () => classObserver.disconnect();
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry?.isIntersecting) return;

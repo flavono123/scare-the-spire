@@ -988,15 +988,82 @@
 
     const roots = Array.from(document.querySelectorAll("[data-patch-comment-root]"))
       .filter((root) => !("richCommentMounted" in root.dataset));
-    if (roots.length === 0) return;
+    const pageRoots = roots.filter((root) => !root.closest("[data-colorful-philosophers-card]"));
+    const reelRoots = roots.filter((root) => root.closest("[data-colorful-philosophers-card]"));
 
     if (!config) {
-      roots.forEach(renderUnavailable);
+      pageRoots.forEach(renderUnavailable);
+      bindReelReactions(null);
       return;
     }
 
-    roots.forEach((root) => {
+    pageRoots.forEach((root) => {
       mountRoot(root, config);
+    });
+
+    const mountVisibleReel = () => {
+      reelRoots.forEach((root) => {
+        const card = root.closest("[data-colorful-philosophers-card]");
+        if (!card?.classList.contains("pointer-events-auto")) return;
+        if (root.dataset.cpCommentMounted === "true") return;
+        root.dataset.cpCommentMounted = "true";
+        mountRoot(root, config);
+      });
+    };
+    mountVisibleReel();
+    document.addEventListener("cp-reel-show", mountVisibleReel);
+    bindReelReactions(config);
+  }
+
+  function bindReelReactions(config) {
+    document.querySelectorAll("[data-cp-reaction]").forEach((button) => {
+      if (button.dataset.cpBound === "true") return;
+      button.dataset.cpBound = "true";
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const stack = button.closest("[data-colorful-philosophers-preview-stack]");
+        if (!config || stack?.getAttribute("data-react-managed") === "true") return;
+        void applyStaticReaction(config, button);
+      });
+    });
+  }
+
+  async function applyStaticReaction(config, button) {
+    const postId = button.dataset.cpPost;
+    const kind = button.dataset.cpKind;
+    if (!postId || !kind) return;
+    const session = await ensureSession(config);
+    const userId = sessionUserId(session);
+    if (!userId) return;
+    const key = `sts-cp-reaction:${postId}`;
+    const stored = window.localStorage.getItem(key);
+    const previous = stored === "buff" || stored === "nerf" || stored === "rework" ? stored : null;
+    const next = previous === kind ? null : kind;
+    const filter = `post_id=eq.${postId}&user_id=eq.${userId}&env=eq.${config.supabaseEnv}`;
+    try {
+      if (next === null) {
+        await restRequest(config, `colorful_philosopher_reactions?${filter}`, { method: "DELETE", token: session.access_token, headers: { Prefer: "return=minimal" } });
+      } else if (previous) {
+        await restRequest(config, `colorful_philosopher_reactions?${filter}`, { method: "PATCH", token: session.access_token, body: { kind: next }, headers: { Prefer: "return=minimal" } });
+      } else {
+        await restRequest(config, "colorful_philosopher_reactions", { method: "POST", token: session.access_token, body: { post_id: postId, user_id: userId, env: config.supabaseEnv, kind: next }, headers: { Prefer: "return=minimal" } });
+      }
+    } catch {
+      return;
+    }
+    if (next) window.localStorage.setItem(key, next);
+    else window.localStorage.removeItem(key);
+    const card = button.closest("[data-colorful-philosophers-card]");
+    card?.querySelectorAll("[data-cp-reaction]").forEach((other) => {
+      const count = other.querySelector("[data-cp-count]");
+      const otherKind = other.dataset.cpKind;
+      if (!count || !otherKind) return;
+      let value = Number(count.textContent) || 0;
+      if (previous === otherKind) value = Math.max(0, value - 1);
+      if (next === otherKind) value += 1;
+      count.textContent = String(value);
+      other.setAttribute("aria-pressed", next === otherKind ? "true" : "false");
     });
   }
 

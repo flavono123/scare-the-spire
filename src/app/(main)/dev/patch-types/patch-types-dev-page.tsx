@@ -14,7 +14,7 @@ import { BackstabTransfigureSection } from "@/components/patches/backstab-transf
 import { getColorfulPhilosopherGalleryPosts } from "@/lib/colorful-philosophers-gallery";
 import { PatchArtPreview } from "@/components/patches/patch-art";
 import { loadAllEntities } from "@/lib/load-all-entities";
-import { getPatchBackstabGameCopy, getPatchStageGameCopy } from "@/lib/borrowed-game-copy";
+import { getDebateGameCopy, getPatchBackstabGameCopy, getPatchStageGameCopy } from "@/lib/borrowed-game-copy";
 import { getRecentTransfigurePosts } from "@/lib/transfigure-data";
 import { getSTS2Patches } from "@/lib/data";
 import { resolvePatchArt } from "@/lib/sts2-patch-art";
@@ -113,12 +113,13 @@ const VISUAL_STAGES = [
 ];
 
 export default async function PatchesDevPage() {
-  const [entities, patchStageCopy, patchBackstabCopy, initialTransfigures, colorfulPhilosopherPosts, patches] = await Promise.all([
+  const [entities, patchStageCopy, patchBackstabCopy, debateCopy, initialTransfigures, colorfulPhilosopherPosts, patches] = await Promise.all([
     loadAllEntities({ gameLocale: "kor" }),
     getPatchStageGameCopy("kor"),
     getPatchBackstabGameCopy("kor"),
+    getDebateGameCopy("kor"),
     getRecentTransfigurePosts(15),
-    getColorfulPhilosopherGalleryPosts(12),
+    getColorfulPhilosopherGalleryPosts(),
     getSTS2Patches(),
   ]);
   const entityMap = new Map(entities.map((e) => [`${e.type}:${e.id}`, e]));
@@ -503,6 +504,7 @@ export default async function PatchesDevPage() {
           entityMap={entityMap}
           serviceLocale="ko"
           gameLocale="kor"
+          cta={debateCopy.hero}
           initialPosts={colorfulPhilosopherPosts}
         />
       </section>

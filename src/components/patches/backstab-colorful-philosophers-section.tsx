@@ -1,11 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { CardTile } from "@/components/codex/card-tile";
+import { ColorfulPhilosopherReactionIcon } from "@/components/colorful-philosophers/reaction-icon";
+import { DeferredCommentSection } from "@/components/patches/deferred-comment-section";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import { SpireIcon } from "@/components/spire-icon";
+import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
+import { SPIRE_ACTION_CONTROL_CLASS } from "@/components/spire-icon";
+import { useAuth } from "@/hooks/use-auth";
+import {
+  readColorfulPhilosopherReaction,
+  saveColorfulPhilosopherReaction,
+} from "@/hooks/use-colorful-philosopher-posts";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -13,31 +21,59 @@ import {
 } from "@/lib/i18n";
 import {
   COLORFUL_PHILOSOPHER_REACTIONS,
-  COLORFUL_PHILOSOPHER_REACTION_TOKENS,
   COLORFUL_PHILOSOPHERS_HREF,
   COLORFUL_PHILOSOPHERS_TOKEN_SRC,
   addColorfulPhilosophersDays,
+  colorfulPhilosophersCommentThreadKey,
   type ColorfulPhilosopherPost,
+  type ColorfulPhilosopherReaction,
 } from "@/lib/colorful-philosophers";
 import { serviceMessages } from "@/messages/service";
 import { cn } from "@/lib/utils";
+
+function ReactionWords({ kind, label }: { kind: ColorfulPhilosopherReaction; label: string }) {
+  if (kind === "buff") {
+    return (
+      <span className="rich-sine font-semibold text-[#34d399]">
+        {Array.from(label).map((letter, index) => (
+          <span key={`${letter}-${index}`} className="rich-sine-letter" style={{ "--rich-sine-index": index } as CSSProperties}>
+            {letter}
+          </span>
+        ))}
+      </span>
+    );
+  }
+  if (kind === "nerf") return <span className="rich-jitter font-semibold text-[#f87171]">{label}</span>;
+  return <span className="font-semibold text-[#c084fc]">{label}</span>;
+}
 
 export function BackstabColorfulPhilosophersSection({
   entityMap,
   serviceLocale,
   gameLocale,
+  cta,
   initialPosts,
 }: {
   entityMap: Map<string, EntityInfo>;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
+  cta: string;
   initialPosts: ColorfulPhilosopherPost[];
 }) {
   const copy = serviceMessages[serviceLocale].colorfulPhilosophers;
   const indexHref = localizeHrefWithGameLocale(COLORFUL_PHILOSOPHERS_HREF, serviceLocale, gameLocale);
+  const { userId, ensureUser } = useAuth();
   const stackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [kinds, setKinds] = useState<Record<string, ColorfulPhilosopherReaction | null>>({});
+  const [counts, setCounts] = useState<Record<string, { buff: number; nerf: number; rework: number }>>(() =>
+    Object.fromEntries(initialPosts.map((post) => [post.id, {
+      buff: post.buffCount,
+      nerf: post.nerfCount,
+      rework: post.reworkCount,
+    }])),
+  );
   const posts = initialPosts;
 
   useEffect(() => {
@@ -45,14 +81,18 @@ export function BackstabColorfulPhilosophersSection({
   }, []);
 
   useEffect(() => {
+    setKinds(Object.fromEntries(posts.map((post) => [post.id, readColorfulPhilosopherReaction(post.id)])));
+  }, [posts]);
+
+  useEffect(() => {
     if (posts.length > 1) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- randomize the first card after paint
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- pick the opening card after paint
       setActiveIndex(Math.floor(Math.random() * posts.length));
     }
   }, [posts]);
 
   useEffect(() => {
-    if (posts.length <= 1 || isHovered) return;
+    if (posts.length <= 1 || paused) return;
     const timer = setInterval(() => {
       if (document.hidden) return;
       setActiveIndex((current) => {
@@ -62,7 +102,38 @@ export function BackstabColorfulPhilosophersSection({
       });
     }, 3200);
     return () => clearInterval(timer);
-  }, [posts.length, isHovered]);
+  }, [paused, posts.length]);
+
+  const releasePause = () => {
+    const stack = stackRef.current;
+    if (stack?.contains(document.activeElement) || stack?.matches(":hover")) return;
+    setPaused(false);
+  };
+
+  const choose = (post: ColorfulPhilosopherPost, next: ColorfulPhilosopherReaction) => {
+    const previous = kinds[post.id] ?? null;
+    const nextKind = previous === next ? null : next;
+    setKinds((current) => ({ ...current, [post.id]: nextKind }));
+    setCounts((current) => {
+      const row = { ...(current[post.id] ?? { buff: post.buffCount, nerf: post.nerfCount, rework: post.reworkCount }) };
+      if (previous) row[previous] = Math.max(0, row[previous] - 1);
+      if (nextKind) row[nextKind] += 1;
+      return { ...current, [post.id]: row };
+    });
+    void (async () => {
+      const activeUserId = userId ?? await ensureUser();
+      if (!activeUserId) {
+        setKinds((current) => ({ ...current, [post.id]: previous }));
+        setCounts((current) => ({ ...current, [post.id]: { buff: post.buffCount, nerf: post.nerfCount, rework: post.reworkCount } }));
+        return;
+      }
+      const result = await saveColorfulPhilosopherReaction({ postId: post.id, userId: activeUserId, previous, next });
+      if (!result.ok) {
+        setKinds((current) => ({ ...current, [post.id]: previous }));
+        setCounts((current) => ({ ...current, [post.id]: { buff: post.buffCount, nerf: post.nerfCount, rework: post.reworkCount } }));
+      }
+    })();
+  };
 
   if (posts.length === 0) return null;
 
@@ -75,9 +146,9 @@ export function BackstabColorfulPhilosophersSection({
         </div>
         <Link
           href={indexHref}
-          className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-lg border border-amber-400/40 bg-amber-500/15 px-3.5 py-1.5 text-xs font-semibold text-amber-200 transition-colors hover:border-amber-300/60 hover:bg-amber-500/25 hover:text-amber-100"
+          className="inline-flex max-w-full shrink items-center gap-1.5 self-start rounded-lg border border-amber-400/40 bg-amber-500/15 px-3.5 py-1.5 text-xs font-semibold text-amber-200 transition-colors hover:border-amber-300/60 hover:bg-amber-500/25 hover:text-amber-100"
         >
-          <span>{copy.galleryCta}</span>
+          <span>{cta}</span>
           <span aria-hidden="true">&rarr;</span>
         </Link>
       </div>
@@ -86,26 +157,29 @@ export function BackstabColorfulPhilosophersSection({
         <div
           ref={stackRef}
           data-colorful-philosophers-preview-stack=""
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={releasePause}
+          onFocusCapture={() => setPaused(true)}
+          onBlurCapture={() => {
+            window.setTimeout(releasePause, 0);
+          }}
           className="relative w-full max-w-sm sm:max-w-md"
         >
           {posts.map((post, index) => {
-            const href = localizeHrefWithGameLocale(`${COLORFUL_PHILOSOPHERS_HREF}/${post.id}`, serviceLocale, gameLocale);
             const active = index === activeIndex;
             const entity = entityMap.get(`${post.slot}:${post.resourceId}`);
             const weekEnd = addColorfulPhilosophersDays(post.weekStart, 6);
+            const row = counts[post.id] ?? { buff: post.buffCount, nerf: post.nerfCount, rework: post.reworkCount };
             return (
               <div
                 key={post.id}
                 data-colorful-philosophers-card=""
-                data-href={href}
                 className={cn(
-                  "w-full cursor-pointer transition-opacity duration-300",
+                  "w-full transition-opacity duration-300",
                   active ? "relative opacity-100 pointer-events-auto" : "absolute inset-0 opacity-0 pointer-events-none",
                 )}
               >
-                <Link href={href} className="block rounded-xl border border-white/10 bg-black/35 px-4 py-4">
+                <div className="rounded-xl border border-white/10 bg-black/35 px-4 py-4">
                   <div className="flex items-center gap-4">
                     {post.slot === "card" && entity?.cardData ? (
                       <div className="w-24 shrink-0">
@@ -120,15 +194,38 @@ export function BackstabColorfulPhilosophersSection({
                       <span className="mt-1 line-clamp-3 block text-sm text-zinc-300">{post.body}</span>
                     </span>
                   </div>
-                  <span className="mt-3 flex gap-3 text-xs text-muted-foreground">
-                    {COLORFUL_PHILOSOPHER_REACTIONS.map((kind) => (
-                      <span key={kind} className="inline-flex items-center gap-1">
-                        <SpireIcon src={COLORFUL_PHILOSOPHER_REACTION_TOKENS[kind].src} size={14} variant={COLORFUL_PHILOSOPHER_REACTION_TOKENS[kind].variant} />
-                        <span className="tabular-nums">{post[`${kind}Count`]}</span>
-                      </span>
-                    ))}
-                  </span>
-                </Link>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {COLORFUL_PHILOSOPHER_REACTIONS.map((kind) => {
+                      const pressed = kinds[post.id] === kind;
+                      const tip = pressed ? copy.reactionClear[kind] : copy.reactions[kind];
+                      return (
+                        <GameUiHoverTip key={kind} label={tip}>
+                          <button
+                            type="button"
+                            data-cp-reaction=""
+                            data-cp-post={post.id}
+                            data-cp-kind={kind}
+                            aria-pressed={pressed}
+                            aria-label={tip}
+                            onClick={() => choose(post, kind)}
+                            className={cn(
+                              SPIRE_ACTION_CONTROL_CLASS,
+                              "gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors hover:border-primary/40",
+                              pressed ? "border-primary/60 bg-primary/15" : "border-white/10",
+                            )}
+                          >
+                            <ColorfulPhilosopherReactionIcon kind={kind} active={pressed} lift size={18} />
+                            <ReactionWords kind={kind} label={copy.reactions[kind]} />
+                            <span data-cp-count="" className="tabular-nums text-zinc-400">{row[kind]}</span>
+                          </button>
+                        </GameUiHoverTip>
+                      );
+                    })}
+                  </div>
+                  <div className="mt-4">
+                    <DeferredCommentSection threadKey={colorfulPhilosophersCommentThreadKey(post.id)} />
+                  </div>
+                </div>
               </div>
             );
           })}
@@ -143,26 +240,23 @@ export function BackstabColorfulPhilosophersSection({
   if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
   if(stack.getAttribute("data-react-managed")==="true")return;
   var current=Math.floor(Math.random()*cards.length);
+  var paused=false;
   function show(next){
     cards[current].classList.remove("opacity-100","pointer-events-auto","relative");
     cards[current].classList.add("opacity-0","pointer-events-none","absolute","inset-0");
     cards[next].classList.remove("opacity-0","pointer-events-none","absolute","inset-0");
     cards[next].classList.add("opacity-100","pointer-events-auto","relative");
     current=next;
+    document.dispatchEvent(new Event("cp-reel-show"));
   }
   if(current!==0)show(current);
-  var hovered=false;
-  stack.addEventListener("mouseenter",function(){hovered=true;});
-  stack.addEventListener("mouseleave",function(){hovered=false;});
-  stack.addEventListener("click",function(event){
-    if(event.target.closest("a,button"))return;
-    var card=event.target.closest("[data-colorful-philosophers-card]");
-    var href=card&&card.getAttribute("data-href");
-    if(href)window.location.href=href;
-  });
+  stack.addEventListener("mouseenter",function(){paused=true;});
+  stack.addEventListener("mouseleave",function(){if(!stack.contains(document.activeElement))paused=false;});
+  stack.addEventListener("focusin",function(){paused=true;});
+  stack.addEventListener("focusout",function(){setTimeout(function(){if(!stack.contains(document.activeElement))paused=false;},0);});
   var timer=setInterval(function(){
     if(stack.getAttribute("data-react-managed")==="true"){clearInterval(timer);return;}
-    if(document.hidden||hovered)return;
+    if(document.hidden||paused)return;
     var next=Math.floor(Math.random()*cards.length);
     while(next===current&&cards.length>1)next=Math.floor(Math.random()*cards.length);
     show(next);

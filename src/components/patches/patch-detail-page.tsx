@@ -35,7 +35,7 @@ import { getPatchVersionLabel, isBackstabPatch, isPatchDraft } from "@/lib/sts2-
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType, STS2Patch } from "@/lib/types";
 import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
-import { getPatchStageGameCopy, getPatchBackstabGameCopy } from "@/lib/borrowed-game-copy";
+import { getDebateGameCopy, getPatchStageGameCopy, getPatchBackstabGameCopy } from "@/lib/borrowed-game-copy";
 import { serviceMessages } from "@/messages/service";
 import type { CodexMonster, DamageValue, MonsterActionType, MonsterMove } from "@/lib/codex-types";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
@@ -824,11 +824,12 @@ export async function PatchDetailPage({
   if (!patch) notFound();
 
   if (isBackstabPatch(patch)) {
-    const [patchBackstabCopy, entities, initialTransfigures, colorfulPhilosopherPosts] = await Promise.all([
+    const [patchBackstabCopy, debateCopy, entities, initialTransfigures, colorfulPhilosopherPosts] = await Promise.all([
       getPatchBackstabGameCopy(gameLocale),
+      getDebateGameCopy(gameLocale),
       loadAllEntities({ gameLocale }),
       getRecentTransfigurePosts(15),
-      getColorfulPhilosopherGalleryPosts(12),
+      getColorfulPhilosopherGalleryPosts(),
     ]);
     const entityMap = new Map(entities.map((e) => [`${e.type}:${e.id}`, e]));
     const patchArt = resolvePatchArt(patch, entityMap, serviceLocale);
@@ -898,6 +899,7 @@ export async function PatchDetailPage({
           entityMap={entityMap}
           serviceLocale={serviceLocale}
           gameLocale={gameLocale}
+          cta={debateCopy.hero}
           initialPosts={colorfulPhilosopherPosts}
         />
 

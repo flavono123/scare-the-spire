@@ -95,7 +95,6 @@ export const serviceMessages = {
       slots: { card: "이 주의 토론 카드", relic: "이 주의 토론 유물", power: "이 주의 토론 파워" },
       reactions: { buff: "버프 필요", nerf: "너프 필요", rework: "리워크 필요" },
       reactionClear: { buff: "버프 필요 취소", nerf: "너프 필요 취소", rework: "리워크 필요 취소" },
-      galleryCta: "토론 보러 가기",
     },
     profile: {
       navLabel: "프로필",
@@ -1452,7 +1451,6 @@ export const serviceMessages = {
       slots: { card: "This week's debate card", relic: "This week's debate relic", power: "This week's debate power" },
       reactions: { buff: "Needs a buff", nerf: "Needs a nerf", rework: "Needs a rework" },
       reactionClear: { buff: "Undo needs a buff", nerf: "Undo needs a nerf", rework: "Undo needs a rework" },
-      galleryCta: "Open the discussions",
     },
     profile: {
       navLabel: "Profile",
