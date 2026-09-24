@@ -172,6 +172,7 @@ export function commentThreadHref(storyId: string): string {
     ?? prefixedResourceCommentsHref(storyId, "decisions-decisions:", "/decisions-decisions")
     ?? prefixedResourceCommentsHref(storyId, "favorite-tournament:", "/this-or-that/tournament")
     ?? prefixedResourceCommentsHref(storyId, "pagestorm:", "/pagestorm")
+    ?? prefixedResourceCommentsHref(storyId, "colorful-philosophers:", "/colorful-philosophers")
     ?? prefixedResourceCommentsHref(storyId, "history-course:", "/history-course")
     ?? (storyId === "byrdispatch" ? `/byrdispatch${COMMENTS_ANCHOR}` : `/#${storyId}`);
 }

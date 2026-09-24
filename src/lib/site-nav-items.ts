@@ -195,7 +195,7 @@ export const devNavItems = [
     strictDevOnly: true,
   },
   {
-    href: "/dev/debate",
+    href: "/dev/colorful-philosophers",
     label: "토론 주차 예약",
     icon: DEBATE_TOKEN_SRC,
     strictDevOnly: true,

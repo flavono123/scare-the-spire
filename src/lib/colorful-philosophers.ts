@@ -1,0 +1,134 @@
+import sts2Meta from "../../data/sts2/meta.json";
+
+export const COLORFUL_PHILOSOPHERS_HREF = "/colorful-philosophers";
+export const COLORFUL_PHILOSOPHERS_TOKEN_SRC = "/images/sts2/modifiers/draft.webp";
+export const COLORFUL_PHILOSOPHERS_BACKGROUND_SRC = "/images/sts2/events/colorful_philosophers.webp";
+export const COLORFUL_PHILOSOPHERS_POSTS_TABLE = "colorful_philosopher_posts";
+export const COLORFUL_PHILOSOPHERS_REACTIONS_TABLE = "colorful_philosopher_reactions";
+export const COLORFUL_PHILOSOPHERS_GAME_VERSION = sts2Meta.version;
+export const COLORFUL_PHILOSOPHERS_SCHEDULE_WEEKS = 8;
+
+export const COLORFUL_PHILOSOPHER_SLOTS = ["card", "relic", "power"] as const;
+export type ColorfulPhilosopherSlot = (typeof COLORFUL_PHILOSOPHER_SLOTS)[number];
+
+export const COLORFUL_PHILOSOPHER_REACTIONS = ["buff", "nerf", "rework"] as const;
+export type ColorfulPhilosopherReaction = (typeof COLORFUL_PHILOSOPHER_REACTIONS)[number];
+
+export const COLORFUL_PHILOSOPHER_REACTION_TOKENS: Record<
+  ColorfulPhilosopherReaction,
+  { src: string; variant: "green" | "red" | "purple" }
+> = {
+  buff: { src: "/images/sts2/powers/dexterity_power.webp", variant: "green" },
+  nerf: { src: "/images/sts2/powers/vulnerable_power.webp", variant: "red" },
+  rework: { src: "/images/sts2/relics/pandoras_box.webp", variant: "purple" },
+};
+
+export interface ColorfulPhilosopherPost {
+  id: string;
+  weekStart: string;
+  slot: ColorfulPhilosopherSlot;
+  resourceId: string;
+  nameKo: string;
+  nameEn: string;
+  imageUrl: string | null;
+  body: string;
+  gameVersion: string;
+  buffCount: number;
+  nerfCount: number;
+  reworkCount: number;
+}
+
+export function colorfulPhilosophersCommentThreadKey(postId: string): string {
+  return `colorful-philosophers:${postId}`;
+}
+
+export function isColorfulPhilosopherSlot(value: string): value is ColorfulPhilosopherSlot {
+  return (COLORFUL_PHILOSOPHER_SLOTS as readonly string[]).includes(value);
+}
+
+export function isColorfulPhilosopherReaction(value: string): value is ColorfulPhilosopherReaction {
+  return (COLORFUL_PHILOSOPHER_REACTIONS as readonly string[]).includes(value);
+}
+
+const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
+
+export function colorfulPhilosophersWeekStart(now = new Date()): string {
+  const kst = new Date(now.getTime() + KST_OFFSET_MS);
+  const mondayOffset = (kst.getUTCDay() + 6) % 7;
+  const monday = new Date(Date.UTC(
+    kst.getUTCFullYear(),
+    kst.getUTCMonth(),
+    kst.getUTCDate() - mondayOffset,
+  ));
+  return monday.toISOString().slice(0, 10);
+}
+
+export function addColorfulPhilosophersDays(value: string, days: number): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return value;
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+export function isColorfulPhilosophersMonday(value: string): boolean {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return false;
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
+  return date.toISOString().slice(0, 10) === value && date.getUTCDay() === 1;
+}
+
+export function upcomingColorfulPhilosopherWeeks(now = new Date()): string[] {
+  const start = colorfulPhilosophersWeekStart(now);
+  return Array.from({ length: COLORFUL_PHILOSOPHERS_SCHEDULE_WEEKS }, (_, index) => (
+    addColorfulPhilosophersDays(start, index * 7)
+  ));
+}
+
+export function colorfulPhilosopherPostFromRow(row: {
+  id?: unknown;
+  week_start?: unknown;
+  slot?: unknown;
+  resource_id?: unknown;
+  name_ko?: unknown;
+  name_en?: unknown;
+  image_url?: unknown;
+  body?: unknown;
+  game_version?: unknown;
+  buff_count?: unknown;
+  nerf_count?: unknown;
+  rework_count?: unknown;
+}): ColorfulPhilosopherPost | null {
+  if (typeof row.id !== "string" || !row.id) return null;
+  if (typeof row.week_start !== "string") return null;
+  const weekStart = row.week_start.slice(0, 10);
+  if (!isColorfulPhilosophersMonday(weekStart)) return null;
+  if (typeof row.slot !== "string" || !isColorfulPhilosopherSlot(row.slot)) return null;
+  if (typeof row.resource_id !== "string" || !row.resource_id) return null;
+  if (typeof row.name_ko !== "string" || !row.name_ko) return null;
+  if (typeof row.name_en !== "string" || !row.name_en) return null;
+  if (typeof row.body !== "string" || !row.body.trim()) return null;
+  if (typeof row.game_version !== "string" || !row.game_version) return null;
+  return {
+    id: row.id,
+    weekStart,
+    slot: row.slot,
+    resourceId: row.resource_id,
+    nameKo: row.name_ko,
+    nameEn: row.name_en,
+    imageUrl: typeof row.image_url === "string" && row.image_url ? row.image_url : null,
+    body: row.body,
+    gameVersion: row.game_version,
+    buffCount: typeof row.buff_count === "number" ? row.buff_count : 0,
+    nerfCount: typeof row.nerf_count === "number" ? row.nerf_count : 0,
+    reworkCount: typeof row.rework_count === "number" ? row.rework_count : 0,
+  };
+}
+
+export function isMissingColorfulPhilosopherPosts(
+  error: { code?: string; message?: string } | null | undefined,
+): boolean {
+  if (!error) return false;
+  if (error.code === "PGRST205" || error.code === "42P01" || error.code === "42703") return true;
+  return /colorful_philosopher_posts/i.test(error.message ?? "");
+}

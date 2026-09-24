@@ -25,7 +25,7 @@ const STATIC_SERVICE_PAGE_SEGMENTS = new Set([
   "this-or-that",
   "transfigure",
   "pagestorm",
-  "debate",
+  "colorful-philosophers",
 ]);
 
 const STATIC_NESTED_SERVICE_PAGES: ReadonlyArray<readonly [string, string]> = [
@@ -166,6 +166,7 @@ const STATIC_SERVICE_DETAIL_SEGMENTS = new Set([
   "history-course",
   "decisions-decisions",
   "pagestorm",
+  "colorful-philosophers",
 ]);
 
 const DEFRAGMENT_FEDERATED_SERVICES = new Set([

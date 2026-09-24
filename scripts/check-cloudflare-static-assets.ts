@@ -69,7 +69,7 @@ const staticServicePageSegments = [
   "this-or-that",
   "transfigure",
   "pagestorm",
-  "debate",
+  "colorful-philosophers",
 ] as const;
 const staticNestedServicePages = [
   ["pagestorm", "write"],
@@ -83,6 +83,7 @@ const staticServiceDetailShellSegments = [
   "history-course",
   "decisions-decisions",
   "pagestorm",
+  "colorful-philosophers",
 ] as const;
 const defragmentFederatedServices = [
   "combo",

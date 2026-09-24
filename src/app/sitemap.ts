@@ -42,7 +42,7 @@ const PUBLIC_INDEX_PATHS = [
   "/transfigure",
   "/decisions-decisions",
   "/pagestorm",
-  "/debate",
+  "/colorful-philosophers",
 ] as const;
 
 const COMPENDIUM_INDEX_PATHS = [

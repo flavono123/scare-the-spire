@@ -84,11 +84,15 @@ export const serviceMessages = {
       sts2Codex: "STS2 백과사전",
       sts1: "STS1",
     },
-    debate: {
+    colorfulPhilosophers: {
+      title: "다채로운 철학자들",
       subtitle: "이번 주 게임 요소 토론하기",
-      empty: "이번 주 토론 대상이 아직 없습니다",
-      loading: "이번 주 대상을 불러오는 중...",
+      emptySlot: "아직 이 주의 글이 없습니다",
+      loading: "글을 불러오는 중...",
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
+      notFound: "글을 찾을 수 없습니다",
+      slots: { card: "이 주의 토론 카드", relic: "이 주의 토론 유물", power: "이 주의 토론 파워" },
+      reactions: { buff: "버프 필요", nerf: "너프 필요", rework: "리워크 필요" },
     },
     profile: {
       navLabel: "프로필",
@@ -1434,11 +1438,15 @@ export const serviceMessages = {
       sts2Codex: "STS2 Codex",
       sts1: "STS1",
     },
-    debate: {
+    colorfulPhilosophers: {
+      title: "Colorful Philosophers",
       subtitle: "Discuss a game element this week",
-      empty: "No game element is up for debate this week",
-      loading: "Loading this week's subject...",
+      emptySlot: "No post for this week yet",
+      loading: "Loading posts...",
       unavailableTitle: "No responses from database",
+      notFound: "Post not found",
+      slots: { card: "This week's debate card", relic: "This week's debate relic", power: "This week's debate power" },
+      reactions: { buff: "Needs a buff", nerf: "Needs a nerf", rework: "Needs a rework" },
     },
     profile: {
       navLabel: "Profile",

@@ -79,7 +79,7 @@ export const DECISIONS_DECISIONS_PAGE_OG_IMAGE: PageOgImage = {
   alt: "어려운 결정 — Decisions, Decisions",
 };
 
-export const DEBATE_PAGE_OG_IMAGE: PageOgImage = {
+export const COLORFUL_PHILOSOPHERS_PAGE_OG_IMAGE: PageOgImage = {
   url: "/images/sts2/events/colorful_philosophers.webp",
   width: 3440,
   height: 1616,
@@ -187,9 +187,14 @@ export const PAGE_OG_IMAGE_RULES = [
     image: PAGESTORM_PAGE_OG_IMAGE,
   },
   {
-    pattern: "/debate",
+    pattern: "/colorful-philosophers",
     label: "다채로운 철학자들",
-    image: DEBATE_PAGE_OG_IMAGE,
+    image: COLORFUL_PHILOSOPHERS_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/colorful-philosophers/*",
+    label: "다채로운 철학자들 글",
+    image: COLORFUL_PHILOSOPHERS_PAGE_OG_IMAGE,
   },
   {
     pattern: "/patches",

@@ -52,7 +52,7 @@ const staticServicePageSegments = new Set([
   "this-or-that",
   "transfigure",
   "pagestorm",
-  "debate",
+  "colorful-philosophers",
 ]);
 const staticNestedServicePages = [
   ["pagestorm", "write"],
@@ -67,6 +67,7 @@ const staticServiceDetailSegments = new Set([
   "decisions-decisions",
   "defragment",
   "pagestorm",
+  "colorful-philosophers",
 ]);
 const defragmentFederatedServices = new Set([
   "combo",
