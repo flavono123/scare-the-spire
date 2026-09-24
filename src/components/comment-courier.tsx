@@ -191,13 +191,16 @@ export function CommentCourier() {
 
   if (!enabled) {
     return (
-      <button
-        type="button"
-        onClick={() => writeCourierEnabled(true)}
-        className="fixed bottom-3 left-3 z-40 rounded-full border border-white/10 bg-black/70 px-2 py-1 text-[10px] text-zinc-400"
-      >
-        {copy.label}
-      </button>
+      <GameUiHoverTip label={copy.show}>
+        <button
+          type="button"
+          aria-label={copy.show}
+          onClick={() => writeCourierEnabled(true)}
+          className="fixed bottom-3 left-3 z-40 rounded-full border border-white/10 bg-black/70 p-1 opacity-60 hover:opacity-100"
+        >
+          <Image src={COURIER_TOKEN_SRC} alt="" width={18} height={18} className="h-[18px] w-[18px] object-contain" />
+        </button>
+      </GameUiHoverTip>
     );
   }
 
