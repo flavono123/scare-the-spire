@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { CloudflareWebAnalytics } from "@/components/cloudflare-web-analytics";
 import { ColorSchemeScript } from "@/components/color-scheme-script";
 import { LocaleDocumentAttributes } from "@/components/locale-document-attributes";
+import { CommentCourier } from "@/components/comment-courier";
 import { SiteNavbar } from "@/components/site-navbar";
 import { ColorSchemeDocumentAttributes } from "@/hooks/use-color-scheme";
 import { getDefaultServiceMetadata } from "@/lib/service-metadata";
@@ -72,6 +73,7 @@ export default function RootLayout({
           <SiteNavbar />
         </Suspense>
         {children}
+        <CommentCourier />
         <div
           id="hover-tip-root"
           className="pointer-events-none fixed inset-0 z-[10050] overflow-visible"

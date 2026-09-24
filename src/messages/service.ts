@@ -123,6 +123,11 @@ export const serviceMessages = {
         system: "시스템",
         systemHint: "기기 설정을 따름",
       },
+      courier: {
+        label: "배달원",
+        hint: "최근 댓글 한 줄",
+        hide: "숨기기",
+      },
       activity: {
         inquiries: {
           title: "내 1:1 문의",
@@ -1479,6 +1484,11 @@ export const serviceMessages = {
         light: "Light",
         system: "System",
         systemHint: "match device",
+      },
+      courier: {
+        label: "The Courier",
+        hint: "One line of recent comments",
+        hide: "Hide",
       },
       activity: {
         inquiries: {

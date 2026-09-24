@@ -5,6 +5,7 @@ import { CHARACTER_STAGE_VIEWPORT_PADDING } from "@/components/codex/character-s
 import { EncounterSceneStage } from "@/components/codex/encounter-scene-stage";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import { ColorSchemePicker, type ColorSchemePickerCopy } from "@/components/color-scheme-picker";
+import { readCourierEnabled, writeCourierEnabled } from "@/components/comment-courier";
 import { ProfileActivity, type ProfileActivityCopy } from "@/components/profile-activity";
 import { ProfileAvatarToken } from "@/components/profile/profile-avatar-token";
 import { ProfilePalettePicker, type ProfilePalettePickerCopy } from "@/components/profile/profile-palette-picker";
@@ -210,6 +211,7 @@ export default function ProfilePage({
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <ColorSchemePicker copy={copy.appearance} />
+            <CourierToggle label={copy.courier.label} hint={copy.courier.hint} />
             {copy.devBadge ? (
               <span className="shrink-0 rounded border border-primary/30 bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
                 {copy.devBadge}
@@ -481,6 +483,28 @@ function BossAvatarStage({
         )}
       </div>
     </div>
+  );
+}
+
+function CourierToggle({ label, hint }: { label: string; hint: string }) {
+  const [enabled, setEnabled] = useState(true);
+  useEffect(() => {
+    setEnabled(readCourierEnabled());
+  }, []);
+  return (
+    <button
+      type="button"
+      aria-pressed={enabled}
+      title={hint}
+      onClick={() => {
+        const next = !readCourierEnabled();
+        writeCourierEnabled(next);
+        setEnabled(next);
+      }}
+      className={`rounded border px-2 py-0.5 text-[11px] font-semibold ${enabled ? "border-primary/40 text-primary" : "border-white/15 text-zinc-500"}`}
+    >
+      {label}
+    </button>
   );
 }
 
