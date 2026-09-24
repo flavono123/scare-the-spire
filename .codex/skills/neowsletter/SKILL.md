@@ -21,7 +21,10 @@ Build 니오우스레터 pages from the Mega Crit original. The page is a claim 
 - The letter-wide comment block matches a patch detail comment section: heading `댓글` / `Comments`, not a separate “전체 댓글” title.
 - Include the map-drawing, Connections, and community fan-art sections. Save those images under `public/images/neowsletters/{id}/`.
 - Record both originals: Mega Crit `sourceUrl` and the real Steam store `steamUrl` (`/news/app/2868840/view/{id}`). Do not build that URL from an API `gid`.
-- Each claim has one collapsed comment affordance, idle greyscale and colored on hover, matching index like/comment controls. Opening it shows a one-line composer. Written comments sit in their own inset thread, still one line, with token, nickname, time, like, and delete on the right. Thread key is `neowsletter:{id}:{claimId}`.
+- Each claim has one comment affordance: Lucide `MessageCircle` with the index like/comment classes, grey until hover, then gold. An empty claim stays collapsed. A claim that already has comments opens by default, shows the count beside the label, and can still be collapsed. Opening it shows a one-line composer. Written comments sit in their own inset thread, still one line, with token, nickname, time, like, and delete on the right. Thread key is `neowsletter:{id}:{claimId}`. The letter-wide thread is `neowsletter:{id}:page`.
+- Keep a `[gold]` tag inside its sentence. Do not break the line to move a relic or card out of the paragraph. Static hovers are `<template>` previews, not slabs rendered in the line. Do not use the low-HP character hover on these pages.
+- Do not wrap asker names or sentences in `**bold**`. The patch renderer paints that as a gold entity. Use `###` for a subsection title.
+- Leave an ambiguous name untagged when several cards share it, such as Defend / 수비. Osty is `[gold]골골이[/gold]`, not a card link.
 - The tab token is `/images/sts2/ancients/neow.webp`. Do not use the map node `ancient_node_neow`.
 - `serviceLocale` selects `data/sts2-neowsletters/{id}.ko.md` or `{id}.md`. `gameLocale` selects Codex hover labels. Keep the written name on screen when the game locale matches the file (`kor` / `eng`). Swap the visible label only for other game locales, so `[gold:ascension]Ascension 10[/gold]` does not become the level title `Double Boss`.
 - Pages are finite static routes under `/patches/neowsletters`. Register them in `scripts/build-patch-worker.tsx` in the same change. Do not render markdown in the Worker.
@@ -31,7 +34,7 @@ Build 니오우스레터 pages from the Mega Crit original. The page is a claim 
 ## Workflow
 
 1. Find the post URL in the Mega Crit sitemap. Record issue number, publication date, and URL.
-2. Read the HTML. Split it into claims a player would answer: schedule, roadmap bullets, each Q&A answer, and a community event with rules. Drop the rest.
+2. Read the HTML. Split it into claims a player would answer: schedule, roadmap bullets, the next heading level under a roadmap, each Q&A answer, and each map drawing, Connections puzzle, and community image with its caption. Keep those sections. Do not drop fan art.
 3. Add or update `data/sts2-neowsletters.json` (`id`, `issue`, `date`, `title`, `titleKo`, `sourceUrl`, `summary`, `summaryKo`).
 4. Write paired notes:
    - `data/sts2-neowsletters/{id}.ko.md`
@@ -43,7 +46,7 @@ Build 니오우스레터 pages from the Mega Crit original. The page is a claim 
    - Put a game image on its own line: `![alt](/images/neowsletters/{id}/file.png)`.
 5. Keep the third tab label `니오우스레터` / `Neowsletter` and the routes `/patches/neowsletters` and `/patches/neowsletters/{id}`.
 6. Rebuild patch HTML (`pnpm patch:html`) and copy assets (`pnpm patch:assets`) so `/patches` serves the new tab from the patch Worker.
-7. Verify the Korean list, the Korean issue, and `/en/patches/neowsletters/{id}`: cover thumbnail, official link, gold hovers, and a collapsed comment control under each claim.
+7. Verify the Korean list, the Korean issue, and `/en/patches/neowsletters/{id}`: cover thumbnail, `spire-blue` source links with icons and arrows, gold names that stay inside the sentence, a comment control under each claim, and an open control with a count only where comments already exist.
 
 ## Claim shape
 
@@ -51,7 +54,7 @@ A claim follows the original section or one Q&A answer. Translate the sentences.
 
 ```markdown
 <!-- claim:ascension-10 -->
-**Clapah이 묻습니다:** 슬레이 더 스파이어 2가 너무 좋습니다. [gold:ascension]승천 10[/gold]의 밸런스를 생각하고 있었는데, 1편의 승천 20보다 꽤 쉽다는 걸 알고 있습니다.
+Clapah이 묻습니다: 슬레이 더 스파이어 2가 너무 좋습니다. [gold:ascension]승천 10[/gold]의 밸런스를 생각하고 있었는데, 1편의 승천 20보다 꽤 쉽다는 걸 알고 있습니다.
 
 Casey: 대체로 [gold:ascension]승천 10[/gold]이 이 게임에서 둘 가장 높은 난이도에 가깝다고 생각해 왔습니다.
 ```
