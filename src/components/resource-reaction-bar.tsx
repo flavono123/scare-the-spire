@@ -90,7 +90,17 @@ export function ResourceReactionBar({
                 ) : (
                   <ColorfulPhilosopherReactionIcon kind={kind} active={active} lift size={size} />
                 )}
-                {resource.loading ? null : <span className="tabular-nums">{resource.counts[kind]}</span>}
+                {resource.loading ? null : (
+                  <span className={cn(
+                    "tabular-nums",
+                    active && kind === "buff" && "text-[#34d399]",
+                    active && kind === "nerf" && "text-[#f87171]",
+                    active && kind === "rework" && "text-[#f472b6]",
+                  )}
+                  >
+                    {resource.counts[kind]}
+                  </span>
+                )}
               </button>
             </GameUiHoverTip>
           );
@@ -133,7 +143,17 @@ export function ResourceReactionBar({
                 <ColorfulPhilosopherReactionIcon kind={kind} active={active} lift size={18} />
               )}
               <ReactionWords kind={kind} label={copy.reactions[kind]} />
-              {resource.loading ? null : <span className="tabular-nums text-zinc-400">{resource.counts[kind]}</span>}
+              {resource.loading ? null : (
+                <span className={cn(
+                  "tabular-nums",
+                  active ? (
+                    kind === "buff" ? "text-[#34d399]" : kind === "nerf" ? "text-[#f87171]" : "text-[#f472b6]"
+                  ) : "text-zinc-400"
+                )}
+                >
+                  {resource.counts[kind]}
+                </span>
+              )}
             </button>
           </GameUiHoverTip>
         );

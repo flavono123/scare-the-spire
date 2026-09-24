@@ -231,7 +231,15 @@ export function BackstabColorfulPhilosophersSection({
                           >
                             <ColorfulPhilosopherReactionIcon kind={kind} active={pressed} lift size={18} />
                             <ReactionWords kind={kind} label={copy.reactions[kind]} />
-                            <span data-cp-count="" className="tabular-nums text-zinc-400">{row[kind]}</span>
+                            <span
+                              data-cp-count=""
+                              className={cn(
+                                "tabular-nums",
+                                pressed ? (kind === "buff" ? "text-[#34d399]" : kind === "nerf" ? "text-[#f87171]" : "text-[#f472b6]") : "text-zinc-400",
+                              )}
+                            >
+                              {row[kind]}
+                            </span>
                           </button>
                         </GameUiHoverTip>
                       );

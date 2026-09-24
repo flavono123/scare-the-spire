@@ -111,7 +111,13 @@ export function ColorfulPhilosopherPostView({ postId }: { postId: string }) {
               >
                 <ColorfulPhilosopherReactionIcon kind={kind} active={active} lift size={18} />
                 <ReactionWords kind={kind} label={copy.reactions[kind]} />
-                <span className="tabular-nums text-zinc-400">{resource.counts[kind]}</span>
+                <span className={cn(
+                  "tabular-nums",
+                  active ? (kind === "buff" ? "text-[#34d399]" : kind === "nerf" ? "text-[#f87171]" : "text-[#f472b6]") : "text-zinc-400",
+                )}
+                >
+                  {resource.counts[kind]}
+                </span>
               </button>
             </GameUiHoverTip>
           );
