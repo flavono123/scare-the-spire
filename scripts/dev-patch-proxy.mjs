@@ -3,7 +3,7 @@ import net from "node:net";
 import os from "node:os";
 import path from "node:path";
 import fs from "node:fs/promises";
-import { createReadStream } from "node:fs";
+import { createReadStream, watch } from "node:fs";
 import { execFileSync, spawn, spawnSync } from "node:child_process";
 
 const root = process.cwd();
@@ -182,6 +182,76 @@ function runInitialPatchBuild() {
   if (result.status !== 0) process.exit(result.status ?? 1);
 }
 
+const patchReloadJobs = [
+  {
+    paths: ["src/app/globals.css"],
+    args: ["patch:css"],
+  },
+  {
+    paths: [
+      "src/components/patches/patch-nav-indicators-client.ts",
+      "src/lib/nav-seen.ts",
+      "src/hooks/use-nav-seen.ts",
+    ],
+    args: ["exec", "tsx", "scripts/build-patch-worker.tsx", "--clients-only"],
+  },
+  {
+    paths: [
+      "src/components/site-navbar.tsx",
+      "src/components/site-nav-dropdown.tsx",
+      "src/components/nav-attention-dot.tsx",
+      "scripts/build-patch-worker.tsx",
+    ],
+    args: ["exec", "tsx", "scripts/build-patch-worker.tsx"],
+  },
+];
+
+let patchReloadTimer = null;
+let patchReloadRunning = false;
+const patchReloadQueue = new Set();
+
+function enqueuePatchReload(args) {
+  patchReloadQueue.add(args.join(" "));
+  if (patchReloadTimer) clearTimeout(patchReloadTimer);
+  patchReloadTimer = setTimeout(runQueuedPatchReloads, 400);
+}
+
+function runQueuedPatchReloads() {
+  patchReloadTimer = null;
+  if (patchReloadRunning || patchReloadQueue.size === 0) return;
+  patchReloadRunning = true;
+  const jobs = [...patchReloadQueue];
+  patchReloadQueue.clear();
+  const next = () => {
+    const command = jobs.shift();
+    if (!command) {
+      patchReloadRunning = false;
+      if (patchReloadQueue.size > 0) runQueuedPatchReloads();
+      return;
+    }
+    console.log(`patch reload: pnpm ${command}`);
+    const child = spawn("pnpm", command.split(" "), {
+      cwd: root,
+      stdio: "inherit",
+      env: {
+        ...process.env,
+        NEXT_PUBLIC_ENABLE_DEV_TOOLS: "1",
+      },
+    });
+    child.on("exit", next);
+  };
+  next();
+}
+
+function watchPatchSources() {
+  for (const job of patchReloadJobs) {
+    for (const relativePath of job.paths) {
+      watch(path.join(root, relativePath), () => enqueuePatchReload(job.args));
+    }
+  }
+  console.log("Watching navbar sources to reload the patch worker");
+}
+
 function lanIPv4Addresses() {
   const hosts = [];
   for (const addrs of Object.values(os.networkInterfaces())) {
@@ -266,6 +336,7 @@ async function servePatchAsset(req, res, pathname) {
     res.writeHead(200, {
       "content-type": contentType(filePath),
       "content-length": stat.size,
+      "cache-control": "no-store",
     });
     createReadStream(filePath).pipe(res);
   } catch {
@@ -353,6 +424,7 @@ function proxyUpgradeToMain(req, socket, head) {
 
 reclaimAllOurDevListeners();
 runInitialPatchBuild();
+watchPatchSources();
 reclaimAllOurDevListeners();
 
 let mainDev;
