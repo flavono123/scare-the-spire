@@ -26,7 +26,8 @@ export const serviceMessages = {
       indexTitle: "니오우스레터",
       metadataDescription: "메가 크릿 니오우스레터에서 패치, 로드맵, 질문 답을 카드와 유물에 연결합니다.",
       backToList: "니오우스레터 목록",
-      source: "원문",
+      source: "메가 크릿",
+      steam: "Steam",
       comments: "댓글",
     },
     globalSearch: {
@@ -1375,7 +1376,8 @@ export const serviceMessages = {
       indexTitle: "Neowsletter",
       metadataDescription: "Mega Crit Neowsletter claims linked to cards, relics, and the compendium.",
       backToList: "Neowsletter list",
-      source: "Original",
+      source: "Mega Crit",
+      steam: "Steam",
       comments: "Comments",
     },
     patchNotes: {

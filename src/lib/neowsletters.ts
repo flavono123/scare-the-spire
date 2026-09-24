@@ -8,6 +8,7 @@ export interface NeowsletterIssue {
   title: string;
   titleKo: string;
   sourceUrl: string;
+  steamUrl?: string;
   imageUrl?: string;
   imageAlt?: string;
   imageAltKo?: string;

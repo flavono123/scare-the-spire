@@ -107,6 +107,16 @@ export async function NeowsletterDetailPage({
         >
           {copy.source}
         </a>
+        {issue.steamUrl ? (
+          <a
+            href={issue.steamUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-primary hover:underline"
+          >
+            {copy.steam}
+          </a>
+        ) : null}
       </p>
       {art ? <PatchArtPreview art={art} priority /> : null}
       {document.claims.map((claim) => (
