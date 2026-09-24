@@ -31,6 +31,7 @@ export function ColorfulPhilosophersDevPage() {
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [savedLabel, setSavedLabel] = useState<string | null>(null);
   const { entities, loading } = useCommentEntities();
   const weekPosts = useColorfulPhilosopherWeek(targetEnv);
   const typeLabels = compendiumTypeLabels("ko");
@@ -58,6 +59,7 @@ export function ColorfulPhilosophersDevPage() {
     if (!selected) return;
     setSaving(true);
     setError(null);
+    setSavedLabel(null);
     const result = await saveColorfulPhilosopherPost({
       env: targetEnv,
       weekStart,
@@ -71,6 +73,7 @@ export function ColorfulPhilosophersDevPage() {
       setError(result.error);
       return;
     }
+    setSavedLabel(`${typeLabels[selected.type] ?? selected.type} · ${selected.nameKo}`);
     setBody("");
     setSelected(null);
     weekPosts.reload();
@@ -138,20 +141,35 @@ export function ColorfulPhilosophersDevPage() {
         placeholder={slot === "topic" ? "요소 검색" : `${typeLabels[slot]} 검색`}
         className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm"
       />
+      {selected ? (
+        <div className="flex items-center gap-3 rounded-lg border border-primary/50 bg-primary/10 px-3 py-2">
+          {selected.imageUrl ? <Image src={selected.imageUrl} alt="" width={36} height={36} className="object-contain" /> : null}
+          <span>
+            <span className="block text-[10px] text-primary">{typeLabels[selected.type] ?? selected.type}</span>
+            <span className="block text-sm font-semibold text-foreground">{selected.nameKo}</span>
+          </span>
+        </div>
+      ) : (
+        <p className="text-sm text-zinc-500">아직 고른 요소가 없습니다</p>
+      )}
       {loading ? <p className="text-sm text-zinc-500">백과사전을 불러오는 중...</p> : (
         <ul className="max-h-64 space-y-1 overflow-y-auto">
-          {results.map((entity) => (
-            <li key={entity.id}>
-              <button
-                type="button"
-                onClick={() => setSelected(entity)}
-                className={`flex w-full items-center gap-2 rounded px-2 py-1 text-left text-sm ${selected?.id === entity.id ? "bg-primary/15" : ""}`}
-              >
-                {entity.imageUrl ? <Image src={entity.imageUrl} alt="" width={28} height={28} /> : null}
-                {entity.nameKo}
-              </button>
-            </li>
-          ))}
+          {results.map((entity) => {
+            const picked = selected?.type === entity.type && selected.id === entity.id;
+            return (
+              <li key={`${entity.type}:${entity.id}`}>
+                <button
+                  type="button"
+                  onClick={() => setSelected(entity)}
+                  className={`flex w-full items-center gap-2 rounded px-2 py-1 text-left text-sm ${picked ? "bg-primary/20 ring-1 ring-primary/50" : "hover:bg-white/5"}`}
+                >
+                  {entity.imageUrl ? <Image src={entity.imageUrl} alt="" width={28} height={28} className="object-contain" /> : null}
+                  <span className="w-12 shrink-0 text-[10px] text-zinc-500">{typeLabels[entity.type] ?? entity.type}</span>
+                  <span>{entity.nameKo}</span>
+                </button>
+              </li>
+            );
+          })}
         </ul>
       )}
       <textarea
@@ -173,6 +191,7 @@ export function ColorfulPhilosophersDevPage() {
         이 주에 올리기
       </button>
       {error ? <p className="text-sm text-red-300">{error}</p> : null}
+      {savedLabel ? <p className="text-sm text-primary">{`${savedLabel}을 이 주에 올렸습니다`}</p> : null}
     </div>
   );
 }
