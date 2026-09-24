@@ -22,7 +22,6 @@ import {
 import { PATCH_NOTES_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import { getServiceOgMetadata } from "@/lib/service-metadata";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
-import { SERVICE_LINK_CLASS } from "@/lib/service-link-classes";
 import { serviceMessages } from "@/messages/service";
 
 export async function generateNeowsletterStaticParams() {
@@ -104,7 +103,7 @@ export async function NeowsletterDetailPage({
           href={issue.sourceUrl}
           target="_blank"
           rel="noreferrer"
-          className={`inline-flex items-center gap-1 ${SERVICE_LINK_CLASS}`}
+          className="inline-flex items-center gap-1 spire-blue transition-colors hover:text-blue-300"
         >
           <img
             src="/images/neowsletters/source/megacrit.jpg"
@@ -113,14 +112,14 @@ export async function NeowsletterDetailPage({
             height={16}
             className="h-4 w-4 rounded-sm"
           />
-          {copy.source}
+          {copy.source} &rarr;
         </a>
         {issue.steamUrl ? (
           <a
             href={issue.steamUrl}
             target="_blank"
             rel="noreferrer"
-            className={`inline-flex items-center gap-1 ${SERVICE_LINK_CLASS}`}
+            className="inline-flex items-center gap-1 spire-blue transition-colors hover:text-blue-300"
           >
             <img
               src="/images/neowsletters/source/steam.png"
@@ -129,7 +128,7 @@ export async function NeowsletterDetailPage({
               height={16}
               className="h-4 w-4"
             />
-            {copy.steam}
+            {copy.steam} &rarr;
           </a>
         ) : null}
       </p>
