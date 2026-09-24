@@ -7,6 +7,7 @@ import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 export const NAV_SEEN_EVENT = "sts-nav-seen";
 
 const STORAGE_PREFIX = "sts-nav-seen:";
+const FORCE_PREFIX = "sts-nav-force:";
 const UNREAD_CACHE_PREFIX = "sts-nav-unread:";
 const UNREAD_CACHE_MS = 60_000;
 
@@ -39,9 +40,14 @@ export const NAV_SEEN_SURFACES: readonly NavSeenSurface[] = [
 ];
 
 export type NavSeenMap = Record<string, string>;
+export type NavForceMap = Record<string, boolean>;
 
 export function navSeenStorageKey(env = supabaseEnv): string {
   return `${STORAGE_PREFIX}${env}`;
+}
+
+export function navForceStorageKey(env = supabaseEnv): string {
+  return `${FORCE_PREFIX}${env}`;
 }
 
 function emptySeen(now: string): NavSeenMap {
@@ -96,6 +102,34 @@ export function displayedUnreadIds(unreadIds: readonly string[]): string[] {
 
 export function toyBoxHasUnread(unreadIds: readonly string[]): boolean {
   return unreadIds.some((id) => id !== "patches");
+}
+
+export function readNavForce(storage: Pick<Storage, "getItem">): NavForceMap {
+  try {
+    const raw = storage.getItem(navForceStorageKey());
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    const force: NavForceMap = {};
+    for (const surface of NAV_SEEN_SURFACES) {
+      if (parsed[surface.id] === true || parsed[surface.id] === false) force[surface.id] = parsed[surface.id];
+    }
+    return force;
+  } catch {
+    return {};
+  }
+}
+
+export function writeNavForce(storage: Pick<Storage, "setItem">, force: NavForceMap): void {
+  storage.setItem(navForceStorageKey(), JSON.stringify(force));
+}
+
+export function effectiveUnreadIds(realIds: readonly string[], force: NavForceMap): string[] {
+  const ids = new Set(realIds);
+  for (const surface of NAV_SEEN_SURFACES) {
+    if (force[surface.id] === true) ids.add(surface.id);
+    if (force[surface.id] === false) ids.delete(surface.id);
+  }
+  return displayedUnreadIds([...ids]);
 }
 
 type UnreadCache = { at: number; stamp: string; ids: string[] };

@@ -1,35 +1,66 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { replaceNavSeen } from "@/hooks/use-nav-seen";
+import { usePathname } from "next/navigation";
+import { NavAttentionDot } from "@/components/nav-attention-dot";
+import { replaceNavForce, useNavSeen } from "@/hooks/use-nav-seen";
 import {
   NAV_SEEN_SURFACES,
-  readNavSeen,
-  type NavSeenMap,
+  readNavForce,
+  type NavForceMap,
+  type NavSeenSurface,
 } from "@/lib/nav-seen";
 import { supabaseEnv } from "@/lib/supabase";
 
-function shiftHours(iso: string, hours: number): string {
-  const time = new Date(iso).getTime();
-  if (!Number.isFinite(time)) return new Date().toISOString();
-  return new Date(time + hours * 60 * 60 * 1000).toISOString();
+function IndicatorChip({
+  surface,
+  on,
+  onToggle,
+}: {
+  surface: NavSeenSurface;
+  on: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={on}
+      onClick={onToggle}
+      className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 text-left text-xs font-semibold transition-colors ${
+        on ? "border-[#2AEBBE] bg-[#2AEBBE]/15 text-foreground" : "border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground"
+      }`}
+    >
+      <span className="relative inline-flex h-4 w-4 shrink-0 items-center justify-center">
+        <span className={`h-2.5 w-2.5 rounded-full ${on ? "bg-[#2AEBBE]" : "bg-muted-foreground/30"}`} />
+        {on && <NavAttentionDot />}
+      </span>
+      <span>{surface.label}</span>
+      <span className={on ? "text-[#14997a]" : "text-muted-foreground"}>{on ? "켜짐" : "꺼짐"}</span>
+    </button>
+  );
 }
 
 export default function NavIndicatorsDevPage() {
-  const [seen, setSeen] = useState<NavSeenMap | null>(null);
+  const pathname = usePathname();
+  const navSeen = useNavSeen(pathname);
+  const [force, setForce] = useState<NavForceMap>({});
+  const toySurfaces = NAV_SEEN_SURFACES.filter((surface) => surface.id !== "patches");
+  const patchSurface = NAV_SEEN_SURFACES.find((surface) => surface.id === "patches");
+  const litToy = toySurfaces.filter((surface) => navSeen.unreadIds.includes(surface.id));
 
   useEffect(() => {
-    setSeen(readNavSeen(window.localStorage));
-  }, []);
+    setForce(readNavForce(window.localStorage));
+  }, [navSeen.unreadIds]);
 
-  function save(next: NavSeenMap) {
-    setSeen(next);
-    replaceNavSeen(next);
+  function toggle(id: string) {
+    const next = { ...readNavForce(window.localStorage), [id]: !navSeen.unreadIds.includes(id) };
+    setForce(next);
+    replaceNavForce(next);
   }
 
-  function update(id: string, value: string) {
-    if (!seen) return;
-    save({ ...seen, [id]: value });
+  function clearForces() {
+    setForce({});
+    replaceNavForce({});
   }
 
   return (
@@ -37,52 +68,52 @@ export default function NavIndicatorsDevPage() {
       <header className="flex flex-col gap-2">
         <h1 className="font-service text-xl font-bold">상단바 안 읽음</h1>
         <p className="text-sm text-muted-foreground">
-          이 브라우저의 {supabaseEnv} 읽음 시각이다. 그 시각 이후의 글만 점으로 표시한다.
-          시각을 되돌리면 그 사이 글이 다시 안 읽음이 된다.
+          이 브라우저의 {supabaseEnv} 표시를 강제한다. 칩을 누르면 상단바 점이 바로 바뀐다.
         </p>
       </header>
-      {seen && (
-        <>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              className="rounded-full border border-border px-3 py-1 text-xs font-semibold"
-              onClick={() => save(Object.fromEntries(NAV_SEEN_SURFACES.map((surface) => [surface.id, new Date().toISOString()])))}
-            >
-              모두 읽음
-            </button>
-            <button
-              type="button"
-              className="rounded-full border border-border px-3 py-1 text-xs font-semibold"
-              onClick={() => save(Object.fromEntries(NAV_SEEN_SURFACES.map((surface) => [surface.id, shiftHours(seen[surface.id] ?? new Date().toISOString(), -24)])))}
-            >
-              모두 하루 전으로
-            </button>
-          </div>
-          {NAV_SEEN_SURFACES.map((surface) => (
-            <section key={surface.id} className="flex flex-col gap-2 rounded-md border border-border p-4">
-              <h2 className="font-service text-sm font-semibold">{surface.label}</h2>
-              <p className="font-mono text-xs text-muted-foreground">{seen[surface.id]}</p>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  className="rounded-full border border-border px-3 py-1 text-xs font-semibold"
-                  onClick={() => update(surface.id, new Date().toISOString())}
-                >
-                  읽음
-                </button>
-                <button
-                  type="button"
-                  className="rounded-full border border-border px-3 py-1 text-xs font-semibold"
-                  onClick={() => update(surface.id, shiftHours(seen[surface.id] ?? new Date().toISOString(), -24))}
-                >
-                  하루 전
-                </button>
-              </div>
-            </section>
+
+      <section className="flex flex-col gap-3 rounded-md border border-border p-4">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-service text-sm font-semibold">패치노트</h2>
+          <span className="text-xs text-muted-foreground">{navSeen.patches ? "켜짐" : "꺼짐"}</span>
+        </div>
+        {patchSurface && (
+          <IndicatorChip surface={patchSurface} on={navSeen.patches} onToggle={() => toggle(patchSurface.id)} />
+        )}
+      </section>
+
+      <section className="flex flex-col gap-3 rounded-md border border-border p-4">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-service text-sm font-semibold">장난감 상자</h2>
+          <span className={`text-xs font-semibold ${navSeen.toyBox ? "text-[#14997a]" : "text-muted-foreground"}`}>
+            {navSeen.toyBox ? "켜짐" : "꺼짐"}
+          </span>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          {navSeen.toyBox
+            ? `하위 점이 켜져 있다: ${litToy.map((surface) => surface.label).join(", ")}`
+            : "하위가 모두 꺼지면 상자 점도 꺼진다."}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {toySurfaces.map((surface) => (
+            <IndicatorChip
+              key={surface.id}
+              surface={surface}
+              on={navSeen.unreadIds.includes(surface.id)}
+              onToggle={() => toggle(surface.id)}
+            />
           ))}
-        </>
-      )}
+        </div>
+      </section>
+
+      <button
+        type="button"
+        onClick={clearForces}
+        disabled={Object.keys(force).length === 0}
+        className="w-fit cursor-pointer rounded-full border border-border px-3 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        강제 표시 지우기
+      </button>
     </main>
   );
 }

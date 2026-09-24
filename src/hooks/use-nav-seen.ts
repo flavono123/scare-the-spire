@@ -2,16 +2,19 @@
 
 import { useEffect, useState } from "react";
 import {
-  displayedUnreadIds,
+  effectiveUnreadIds,
   fetchUnreadSurfaceIds,
   publishNavSeen,
+  readNavForce,
   readNavSeen,
   readUnreadCache,
   seenStamp,
   surfaceIdForPath,
   toyBoxHasUnread,
+  writeNavForce,
   writeNavSeen,
   writeUnreadCache,
+  type NavForceMap,
   NAV_SEEN_EVENT,
   type NavSeenMap,
 } from "@/lib/nav-seen";
@@ -29,7 +32,7 @@ export function useNavSeen(pathname: string): { unreadIds: string[]; toyBox: boo
 
     let cancelled = false;
     const apply = (ids: readonly string[]) => {
-      if (!cancelled) setUnreadIds(displayedUnreadIds(ids));
+      if (!cancelled) setUnreadIds(effectiveUnreadIds(ids, readNavForce(window.localStorage)));
     };
 
     const load = () => {
@@ -65,5 +68,10 @@ export function useNavSeen(pathname: string): { unreadIds: string[]; toyBox: boo
 
 export function replaceNavSeen(next: NavSeenMap): void {
   writeNavSeen(window.localStorage, next);
+  publishNavSeen();
+}
+
+export function replaceNavForce(next: NavForceMap): void {
+  writeNavForce(window.localStorage, next);
   publishNavSeen();
 }

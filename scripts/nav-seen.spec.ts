@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {
   displayedUnreadIds,
+  effectiveUnreadIds,
   navSeenIdForHref,
   navSeenStorageKey,
   readNavSeen,
@@ -36,5 +37,7 @@ assert.equal(navSeenIdForHref("/this-or-that/tournament"), null);
 assert.deepEqual(displayedUnreadIds(["favorite-tournament"]), ["favorite-tournament", "this-or-that"]);
 assert.equal(toyBoxHasUnread(["patches"]), false);
 assert.equal(toyBoxHasUnread(["combo"]), true);
+assert.equal(toyBoxHasUnread(effectiveUnreadIds([], { combo: true })), true);
+assert.equal(toyBoxHasUnread(effectiveUnreadIds(["combo", "transfigure"], { combo: false, transfigure: false })), false);
 
 console.log("nav-seen.spec.ts: ok");
