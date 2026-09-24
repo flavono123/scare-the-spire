@@ -27,6 +27,7 @@ import { serviceMessages } from "@/messages/service";
 import { DEBATE_HREF, DEBATE_TOKEN_SRC } from "@/lib/debate";
 import { PAGESTORM_HREF, PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
 import { isLatestByrdispatchNewSection } from "@/lib/toy-box-news";
+import { navSeenIdForHref } from "@/lib/nav-seen";
 
 export type CodexLabelKey = {
   [Key in keyof typeof serviceMessages.ko.codex]:
@@ -39,6 +40,7 @@ export type NavDropdownItem = {
   icon: string;
   iconClassName?: string;
   isNew?: boolean;
+  attentionId?: string;
   children?: NavDropdownItem[];
 };
 
@@ -260,11 +262,13 @@ export function localizePlainNavItems<
     label: string;
     icon: string;
     isNew?: boolean;
+    attentionId?: string;
     children?: readonly {
       href: string;
       label: string;
       icon: string;
       isNew?: boolean;
+      attentionId?: string;
     }[];
   },
 >(
@@ -277,6 +281,7 @@ export function localizePlainNavItems<
     label: item.label,
     icon: item.icon,
     isNew: item.isNew,
+    attentionId: item.attentionId,
     children: item.children
       ? localizePlainNavItems(item.children, serviceLocale, gameLocale)
       : undefined,
@@ -323,12 +328,14 @@ export function getToyBoxNavItems({
           icon: service.icon,
           isNew: toyBoxServiceIsNew(service)
             || nested.some((child) => child.dropdownHidden && toyBoxServiceIsNew(child)),
+          attentionId: navSeenIdForHref(service.href) ?? undefined,
         },
         ...dropdownChildren.map((child) => ({
           href: child.href,
           label: child.getLabel(serviceLocale, gameLocale),
           icon: child.icon,
           isNew: toyBoxServiceIsNew(child),
+          attentionId: navSeenIdForHref(child.href) ?? undefined,
         })),
       ];
     });

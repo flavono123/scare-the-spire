@@ -13,7 +13,7 @@ import {
 } from "@/components/game-ui-hover-tip";
 import Image from "@/components/ui/static-image";
 import { useMailboxReply } from "@/hooks/use-mailbox-reply";
-import { useNavIndicators } from "@/hooks/use-nav-indicators";
+import { useNavSeen } from "@/hooks/use-nav-seen";
 import {
   DEFAULT_GAME_LOCALE_BY_SERVICE,
   GAME_LOCALE_NATIVE_LABELS,
@@ -744,8 +744,11 @@ export function SiteNavbar() {
   const messages = serviceMessages[serviceLocale];
   const contactCopy = contactMessages[serviceLocale];
   const { stored, profile } = useStoredProfileSnapshot();
-  const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale });
-  const navIndicators = useNavIndicators();
+  const navSeen = useNavSeen(pathname);
+  const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale }).map((item) => ({
+    ...item,
+    attention: item.attentionId ? navSeen.unreadIds.includes(item.attentionId) : item.attention,
+  }));
   const mailboxReply = useMailboxReply();
   const contactHref = getContactHref(pathname, serviceLocale, gameLocale);
   const isContactPage = stripGameLocaleFromPath(pathname) === "/contact";
@@ -778,7 +781,7 @@ export function SiteNavbar() {
             label={messages.nav.patches}
             iconSize={22}
             tokenSlot
-            attention={navIndicators.patchNotes}
+            attention={navSeen.patches}
           />
 
           <SiteNavDropdown
@@ -787,7 +790,7 @@ export function SiteNavbar() {
             items={toyBoxItems}
             align="left"
             variant="toyBox"
-            attention={navIndicators.toyBox}
+            attention={navSeen.toyBox}
           />
         </div>
 

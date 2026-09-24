@@ -79,7 +79,7 @@ const patchCommentsClientPath = path.join(
 );
 const patchNavIndicatorsClientPath = path.join(
   process.cwd(),
-  "src/components/patches/patch-nav-indicators.js",
+  "src/components/patches/patch-nav-indicators-client.ts",
 );
 const patchRichCommentsClientPath = path.join(
   process.cwd(),
@@ -397,7 +397,7 @@ function StaticPatchHeader({
             icon="/images/sts2/nav/patch_notes_icon.png"
             label={messages.nav.patches}
             active
-            attentionMarker="patch-notes"
+            attentionMarker="patches"
           />
 
           <SiteNavDropdown
@@ -648,7 +648,6 @@ function renderShell(route: StaticPatchRoute): string {
 async function writePatchClientAssets() {
   const clientAssets = [
     [patchCommentsClientPath, path.join(outDir, "_patches/patch-comments.js")],
-    [patchNavIndicatorsClientPath, path.join(outDir, "_patches/patch-nav-indicators.js")],
     [patchStaticSpineClientPath, path.join(outDir, "_patches/patch-static-spine.js")],
     [spinePlayerClientPath, path.join(outDir, "_patches/spine-player.min.js")],
   ] as const;
@@ -683,6 +682,18 @@ async function writePatchClientAssets() {
   await buildClientBundle({
     entryPoints: [patchRichCommentsClientPath],
     outfile: path.join(outDir, "_patches/patch-rich-comments.js"),
+    bundle: true,
+    minify: true,
+    platform: "browser",
+    format: "iife",
+    target: ["es2022"],
+    plugins: [patchClientNextShims],
+    define: patchClientEnvDefines,
+  });
+
+  await buildClientBundle({
+    entryPoints: [patchNavIndicatorsClientPath],
+    outfile: path.join(outDir, "_patches/patch-nav-indicators.js"),
     bundle: true,
     minify: true,
     platform: "browser",

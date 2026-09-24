@@ -79,15 +79,23 @@ export function SiteNavDropdown({
                 isToyBox ? "py-2 font-service" : "py-1.5"
               }`}
             >
-              <Image
-                src={item.icon}
-                alt=""
-                width={isToyBox ? 24 : 18}
-                height={isToyBox ? 24 : 18}
-                className={`${
-                  isToyBox ? "h-6 w-6" : item.iconClassName ?? "h-[18px] w-[18px]"
-                } shrink-0 object-contain`}
-              />
+              <span className={`relative inline-flex shrink-0 items-center justify-center ${isToyBox ? "h-6 w-6" : "h-[18px] w-[18px]"}`}>
+                <Image
+                  src={item.icon}
+                  alt=""
+                  width={isToyBox ? 24 : 18}
+                  height={isToyBox ? 24 : 18}
+                  className={`${
+                    isToyBox ? "h-6 w-6" : item.iconClassName ?? "h-[18px] w-[18px]"
+                  } object-contain`}
+                />
+                {(item.attention || item.attentionId) && (
+                  <NavAttentionDot
+                    marker={item.attentionId}
+                    dormant={Boolean(item.attentionId) && !item.attention}
+                  />
+                )}
+              </span>
               <span className="min-w-0 truncate">{item.label}</span>
               {item.isNew && (
                 <span className="ml-auto shrink-0 rounded-full border border-emerald-700/35 bg-emerald-600/10 px-1.5 py-0.5 text-[9px] font-bold tracking-[0.08em] text-emerald-800 dark:border-emerald-300/30 dark:bg-emerald-400/10 dark:text-emerald-200">
@@ -105,15 +113,23 @@ export function SiteNavDropdown({
                   isToyBox ? "py-2 font-service" : "py-1.5"
                 }`}
               >
-                <Image
-                  src={child.icon}
-                  alt=""
-                  width={isToyBox ? 24 : 18}
-                  height={isToyBox ? 24 : 18}
-                  className={`${
-                    isToyBox ? "h-6 w-6" : child.iconClassName ?? "h-[18px] w-[18px]"
-                  } shrink-0 object-contain`}
-                />
+                <span className={`relative inline-flex shrink-0 items-center justify-center ${isToyBox ? "h-6 w-6" : "h-[18px] w-[18px]"}`}>
+                  <Image
+                    src={child.icon}
+                    alt=""
+                    width={isToyBox ? 24 : 18}
+                    height={isToyBox ? 24 : 18}
+                    className={`${
+                      isToyBox ? "h-6 w-6" : child.iconClassName ?? "h-[18px] w-[18px]"
+                    } object-contain`}
+                  />
+                  {(child.attention || child.attentionId) && (
+                    <NavAttentionDot
+                      marker={child.attentionId}
+                      dormant={Boolean(child.attentionId) && !child.attention}
+                    />
+                  )}
+                </span>
                 <span className="min-w-0 truncate">{child.label}</span>
                 {child.isNew && (
                   <span className="ml-auto shrink-0 rounded-full border border-emerald-700/35 bg-emerald-600/10 px-1.5 py-0.5 text-[9px] font-bold tracking-[0.08em] text-emerald-800 dark:border-emerald-300/30 dark:bg-emerald-400/10 dark:text-emerald-200">
