@@ -20,6 +20,7 @@ export function NeowsletterClaimThread({
   return (
     <details
       className="mt-1"
+      data-neowsletter-claim-thread=""
       onToggle={(event) => {
         setOpen(event.currentTarget.open);
       }}
@@ -29,6 +30,7 @@ export function NeowsletterClaimThread({
       >
         <MessageCircle size={15} className={INDEX_LUCIDE_ICON_CLASS} aria-hidden />
         <span>{label}</span>
+        <span data-neowsletter-comment-count className="tabular-nums" hidden />
       </summary>
       <div className="mt-1">
         {open ? (

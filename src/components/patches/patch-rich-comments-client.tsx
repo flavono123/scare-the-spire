@@ -213,5 +213,33 @@ function mountRichPatchComments() {
   }
 }
 
+function bindNeowsletterClaimThreads() {
+  document.querySelectorAll<HTMLDetailsElement>("[data-neowsletter-claim-thread]").forEach((details) => {
+    const countEl = details.querySelector<HTMLElement>("[data-neowsletter-comment-count]");
+    const root = details.querySelector<HTMLElement>("[data-patch-comment-root]");
+    if (!countEl || !root) return;
+
+    details.querySelector("summary")?.addEventListener("click", () => {
+      details.dataset.claimThreadToggled = "";
+    });
+
+    const sync = () => {
+      const count = root.querySelectorAll("[data-comment-entry]").length;
+      if (count > 0) {
+        countEl.hidden = false;
+        countEl.textContent = String(count);
+        if (!("claimThreadToggled" in details.dataset)) details.open = true;
+        return;
+      }
+      countEl.hidden = true;
+      countEl.textContent = "";
+    };
+
+    new MutationObserver(sync).observe(root, { childList: true, subtree: true });
+    sync();
+  });
+}
+
 mountRichPatchComments();
+bindNeowsletterClaimThreads();
 mountRichPatchStorySurface();

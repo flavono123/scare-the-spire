@@ -175,6 +175,7 @@ export function CommentSection({
                 <li
                   key={comment.id}
                   id={`history-comment-${comment.id}`}
+                  data-comment-entry=""
                   className="flex items-center gap-2 py-0.5 text-xs leading-5"
                 >
                   <div className="min-w-0 flex-1 break-words text-xs leading-5 text-foreground/90 [&_p]:m-0">
