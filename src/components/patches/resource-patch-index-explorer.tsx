@@ -23,6 +23,8 @@ import {
   type ReactNode,
 } from "react";
 import { CommentSection } from "@/components/comment-section";
+import { LikeButton } from "@/components/like-button";
+import { ResourceReactionBar } from "@/components/resource-reaction-bar";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import { CharacterSpineStage } from "@/components/codex/character-spine-stage";
 import { DecimillipedeSpineStage } from "@/components/codex/decimillipede-spine-stage";
@@ -44,6 +46,7 @@ import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useCommunityStories } from "@/hooks/use-community-stories";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
+import { COLORFUL_PHILOSOPHERS_GAME_VERSION } from "@/lib/colorful-philosophers";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -569,6 +572,9 @@ function SelectedResourcePreview({
   openLabel,
   serviceLocale,
   gameLocale,
+  userId,
+  authReady,
+  ensureUser,
 }: {
   resource: ResourcePatchIndexResource;
   entity: EntityInfo;
@@ -580,6 +586,9 @@ function SelectedResourcePreview({
   openLabel: string;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
+  userId: string | null;
+  authReady: boolean;
+  ensureUser: () => Promise<string | null>;
 }) {
   const spinePreview = (
     entity.type === "character" && entity.characterData
@@ -643,6 +652,20 @@ function SelectedResourcePreview({
           <MessageCircle size={12} />
           <span>{commentLabel}</span>
         </a>
+        <LikeButton
+          storyId={buildCodexCommentThreadKey(resource.type, resource.id)}
+          userId={userId}
+          authReady={authReady}
+          ensureUser={ensureUser}
+          size={15}
+          lift
+        />
+        <ResourceReactionBar
+          resourceType={resource.type}
+          resourceId={resource.id}
+          gameVersion={COLORFUL_PHILOSOPHERS_GAME_VERSION}
+          variant="icons"
+        />
       </div>
     </div>
   );
@@ -924,6 +947,9 @@ export function ResourcePatchIndexExplorer({
               openLabel={copy.openResource}
               serviceLocale={serviceLocale}
               gameLocale={gameLocale}
+              userId={userId}
+              authReady={authReady}
+              ensureUser={ensureUser}
             />
           </div>
           <div className="min-w-0">
