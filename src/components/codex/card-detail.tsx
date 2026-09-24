@@ -4,8 +4,6 @@ import { type ReactNode, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
-import { LikeButton } from "@/components/like-button";
-import { useAuth } from "@/hooks/use-auth";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
@@ -202,7 +200,6 @@ function getRemovedUpgradePreviewCard(
 export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], tipCatalogSources, tipCatalogCards, tipCatalogKeywords = [], patches, changes, versionDiffs, initialShowBeta = false, onShowBetaChange, syncBetaSearchParam = false, onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getCardDetailLabels(serviceLocale);
-  const { userId, ready: authReady, ensureUser } = useAuth();
   const threadKey = buildCodexCommentThreadKey("card", card.id);
   const [upgradeLevel, setUpgradeLevel] = useState(0);
   const [showBeta, setShowBetaState] = useState(() => initialShowBeta && Boolean(card.betaImageUrl));
@@ -840,14 +837,6 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
           </InfoRailSection>
 
           <InfoRailSection title={`${serviceText.common.comments}${commentCount > 0 ? ` (${commentCount})` : ""}`}>
-            <div className="mb-3 flex justify-end">
-              <LikeButton
-                storyId={threadKey}
-                userId={userId}
-                authReady={authReady}
-                ensureUser={ensureUser}
-              />
-            </div>
             <CommentSection threadKey={threadKey} onCountChange={setCommentCount} />
           </InfoRailSection>
         </aside>

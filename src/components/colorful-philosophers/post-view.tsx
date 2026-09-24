@@ -50,7 +50,7 @@ function ReactionWords({
   if (kind === "nerf") {
     return <span className="rich-jitter font-semibold text-[#f87171]">{label}</span>;
   }
-  return <span className="font-semibold text-[#EFC851]">{label}</span>;
+  return <span className="font-semibold text-[#f472b6]">{label}</span>;
 }
 
 export function ColorfulPhilosopherPostView({ postId }: { postId: string }) {
@@ -106,7 +106,7 @@ export function ColorfulPhilosopherPostView({ postId }: { postId: string }) {
                   "gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors",
                   kind === "buff" && (active ? "border-[#34d399] bg-[#34d399]/15" : "border-white/10 hover:border-[#34d399]/70"),
                   kind === "nerf" && (active ? "border-[#f87171] bg-[#f87171]/15" : "border-white/10 hover:border-[#f87171]/70"),
-                  kind === "rework" && (active ? "border-[#EFC851] bg-[#EFC851]/15" : "border-white/10 hover:border-[#EFC851]/70"),
+                  kind === "rework" && (active ? "border-[#f472b6] bg-[#f472b6]/15" : "border-white/10 hover:border-[#f472b6]/70"),
                 )}
               >
                 <ColorfulPhilosopherReactionIcon kind={kind} active={active} lift size={18} />

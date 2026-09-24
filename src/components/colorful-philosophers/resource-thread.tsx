@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
+import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useComments } from "@/hooks/use-comments";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
@@ -14,18 +16,28 @@ import {
   type ColorfulPhilosopherPost,
 } from "@/lib/colorful-philosophers";
 import { localizeHref } from "@/lib/i18n";
+import { buildRichContentIndexes, resolveRichContentBlocks } from "@/lib/rich-content-blocks";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { serviceMessages } from "@/messages/service";
 import { ResourceReactionBar } from "@/components/resource-reaction-bar";
 
 function ReplyLines({ postId }: { postId: string }) {
   const { comments } = useComments(colorfulPhilosophersCommentThreadKey(postId), null);
+  const { entities } = useCommentEntities();
+  const entityMap = buildEntityMap(entities);
+  const indexes = buildRichContentIndexes(entities);
   if (comments.length === 0) return null;
   return (
-    <ul className="ml-4 space-y-0.5 border-l border-white/10 pl-3">
+    <ul className="ml-4 space-y-3 border-l border-white/10 pl-3">
       {comments.map((comment) => (
-        <li key={comment.id} className="text-xs leading-5 text-foreground/90">
-          {comment.content}
+        <li key={comment.id} className="rounded-lg border border-border/50 bg-card/20 px-3 py-2.5 text-sm">
+          <div className="text-[10px] text-primary">{comment.nickname}</div>
+          <div className="mt-1.5 leading-relaxed break-words text-muted-foreground">
+            <PostRenderer
+              blocks={resolveRichContentBlocks(comment.content, comment.content_blocks, indexes)}
+              entityMap={entityMap}
+            />
+          </div>
         </li>
       ))}
     </ul>
@@ -85,6 +97,7 @@ export function ColorfulPhilosopherResourceThread({
               resourceType={post.resourceType}
               resourceId={post.resourceId}
               gameVersion={post.gameVersion}
+              variant="readonly"
             />
             <ReplyLines postId={post.id} />
           </article>

@@ -24,7 +24,7 @@ export const COLORFUL_PHILOSOPHER_REACTION_TOKENS: Record<
 > = {
   buff: { src: "/images/sts2/powers/dexterity_power.webp", variant: "green" },
   nerf: { src: "/images/sts2/powers/vulnerable_power.webp", variant: "red" },
-  rework: { src: "/images/sts2/relics/touch_of_orobas.webp", variant: "gold" },
+  rework: { src: "/images/sts2/relics/touch_of_orobas.webp", variant: "pink" },
 };
 
 export interface ColorfulPhilosopherPost {

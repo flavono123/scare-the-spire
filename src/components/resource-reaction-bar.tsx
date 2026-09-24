@@ -27,22 +27,68 @@ function ReactionWords({ kind, label }: { kind: ColorfulPhilosopherReaction; lab
     );
   }
   if (kind === "nerf") return <span className="rich-jitter font-semibold text-[#f87171]">{label}</span>;
-  return <span className="font-semibold text-[#EFC851]">{label}</span>;
+  return <span className="font-semibold text-[#f472b6]">{label}</span>;
 }
 
 export function ResourceReactionBar({
   resourceType,
   resourceId,
   gameVersion,
+  variant = "chips",
 }: {
   resourceType: string;
   resourceId: string;
   gameVersion: string;
+  variant?: "chips" | "icons" | "readonly";
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].colorfulPhilosophers;
   const { userId, ensureUser } = useAuth();
   const resource = useResourceReactions(resourceType, resourceId, gameVersion);
+
+  if (variant === "readonly") {
+    return (
+      <span className="inline-flex items-center gap-2 text-[10px] text-zinc-500">
+        {COLORFUL_PHILOSOPHER_REACTIONS.map((kind) => (
+          <span key={kind} className="inline-flex items-center gap-0.5">
+            <ColorfulPhilosopherReactionIcon kind={kind} active size={12} />
+            <span className="tabular-nums">{resource.counts[kind]}</span>
+          </span>
+        ))}
+      </span>
+    );
+  }
+
+  if (variant === "icons") {
+    return (
+      <span className="inline-flex items-center gap-1">
+        {COLORFUL_PHILOSOPHER_REACTIONS.map((kind) => {
+          const active = resource.kind === kind;
+          const tip = active ? copy.reactionClear[kind] : copy.reactions[kind];
+          return (
+            <GameUiHoverTip key={kind} label={tip}>
+              <button
+                type="button"
+                aria-pressed={active}
+                aria-label={tip}
+                onClick={() => {
+                  void (async () => {
+                    const activeUserId = userId ?? await ensureUser();
+                    if (!activeUserId) return;
+                    await resource.choose(kind, activeUserId);
+                  })();
+                }}
+                className={cn(SPIRE_ACTION_CONTROL_CLASS, "gap-0.5 px-0.5 text-xs text-muted-foreground")}
+              >
+                <ColorfulPhilosopherReactionIcon kind={kind} active={active} lift size={15} />
+                <span className="tabular-nums">{resource.counts[kind]}</span>
+              </button>
+            </GameUiHoverTip>
+          );
+        })}
+      </span>
+    );
+  }
 
   return (
     <div className="flex flex-wrap gap-2">
@@ -67,7 +113,7 @@ export function ResourceReactionBar({
                 "gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors",
                 kind === "buff" && (active ? "border-[#34d399] bg-[#34d399]/15" : "border-white/10 hover:border-[#34d399]/70"),
                 kind === "nerf" && (active ? "border-[#f87171] bg-[#f87171]/15" : "border-white/10 hover:border-[#f87171]/70"),
-                kind === "rework" && (active ? "border-[#EFC851] bg-[#EFC851]/15" : "border-white/10 hover:border-[#EFC851]/70"),
+                kind === "rework" && (active ? "border-[#f472b6] bg-[#f472b6]/15" : "border-white/10 hover:border-[#f472b6]/70"),
               )}
             >
               <ColorfulPhilosopherReactionIcon kind={kind} active={active} lift size={18} />
