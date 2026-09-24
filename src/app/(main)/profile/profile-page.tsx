@@ -489,6 +489,7 @@ function BossAvatarStage({
 function CourierToggle({ show, hide }: { show: string; hide: string }) {
   const [enabled, setEnabled] = useState(true);
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- read the Courier preference after paint
     setEnabled(readCourierEnabled());
   }, []);
   const tip = enabled ? hide : show;

@@ -80,6 +80,7 @@ export function BackstabColorfulPhilosophersSection({
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- read this browser's reactions after paint
     setKinds(Object.fromEntries(posts.map((post) => [post.id, readColorfulPhilosopherReaction(post.id)])));
   }, [posts]);
 

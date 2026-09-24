@@ -47,11 +47,13 @@ export function ColorfulPhilosophersDevPage() {
   const existing = weekPosts.posts.find((post) => post.weekStart === weekStart && post.slot === slot);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset the editor when the week slot changes
     setBodyTouched(false);
   }, [weekStart, slot]);
 
   useEffect(() => {
     if (bodyTouched) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fill the saved body for the selected slot
     setBody(existing?.body ?? "");
   }, [existing, bodyTouched]);
 

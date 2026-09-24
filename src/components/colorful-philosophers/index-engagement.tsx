@@ -41,6 +41,7 @@ export function ColorfulPhilosopherIndexEngagement({
   const [counts, setCounts] = useState(() => countsFromPost(post));
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- read this browser's reaction after paint
     setKind(readColorfulPhilosopherReaction(post.id));
   }, [post.id]);
 

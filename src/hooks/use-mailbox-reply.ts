@@ -41,6 +41,7 @@ export function useMailboxReply(): boolean {
 
   useEffect(() => {
     if (!ready || !userId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- no signed-in mailbox to check
       setUnseen(false);
       return;
     }

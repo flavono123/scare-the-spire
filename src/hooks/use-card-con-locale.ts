@@ -37,6 +37,7 @@ export function useCardConLocale(gameLocale: GameLocale): CardConLocaleTable | n
 
   useEffect(() => {
     if (gameLocale === "kor") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Korean cards need no overlay table
       setTable({});
       return;
     }

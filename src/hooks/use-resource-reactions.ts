@@ -64,11 +64,13 @@ export function useResourceReactions(
 
   useEffect(() => {
     const cached = window.localStorage.getItem(storageKey(resourceType, resourceId, gameVersion));
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- read this browser's reaction after paint
     setKind(cached && isColorfulPhilosopherReaction(cached) ? cached : null);
   }, [resourceType, resourceId, gameVersion]);
 
   useEffect(() => {
     if (!supabaseEnabled || !resourceType || !resourceId || !gameVersion) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- there is no reaction row to query
       setLoading(false);
       return;
     }

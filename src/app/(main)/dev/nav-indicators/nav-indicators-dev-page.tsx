@@ -44,6 +44,7 @@ export default function NavIndicatorsDevPage() {
   const litToy = toySurfaces.filter((surface) => navSeen.unreadIds.includes(surface.id));
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- read the browser force flags after paint
     setForce(readNavForce(window.localStorage));
   }, [navSeen.unreadIds]);
 

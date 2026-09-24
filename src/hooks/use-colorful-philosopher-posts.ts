@@ -27,6 +27,7 @@ export function useColorfulPhilosopherWeek(env = supabaseEnv) {
 
   useEffect(() => {
     if (!supabaseEnabled) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- there is no post store to query
       setPosts([]);
       setLoading(false);
       return;
@@ -77,6 +78,7 @@ export function useColorfulPhilosopherPost(postId: string) {
 
   useEffect(() => {
     if (!postId || !supabaseEnabled) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- there is no post to query
       setPost(null);
       setLoading(false);
       return;
