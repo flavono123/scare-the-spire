@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { NavAttentionDot } from "@/components/nav-attention-dot";
 import { replaceNavForce, useNavSeen } from "@/hooks/use-nav-seen";
 import {
   NAV_SEEN_SURFACES,
@@ -30,10 +29,6 @@ function IndicatorChip({
         on ? "border-[#2AEBBE] bg-[#2AEBBE]/15 text-foreground" : "border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground"
       }`}
     >
-      <span className="relative inline-flex h-4 w-4 shrink-0 items-center justify-center">
-        <span className={`h-2.5 w-2.5 rounded-full ${on ? "bg-[#2AEBBE]" : "bg-muted-foreground/30"}`} />
-        {on && <NavAttentionDot />}
-      </span>
       <span>{surface.label}</span>
       <span className={on ? "text-[#14997a]" : "text-muted-foreground"}>{on ? "켜짐" : "꺼짐"}</span>
     </button>

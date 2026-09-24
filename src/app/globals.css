@@ -1033,14 +1033,6 @@
   display: none;
 }
 
-.nav-attention-dot-trail {
-  position: static;
-  top: auto;
-  right: auto;
-  margin: 0;
-  flex-shrink: 0;
-}
-
 .nav-attention-dot {
   position: absolute;
   top: 0;
@@ -1053,6 +1045,14 @@
   pointer-events: none;
   background: #2aebbe;
   animation: nav-attention-sine 1.8s ease-in-out infinite;
+}
+
+.nav-attention-dot.nav-attention-dot-trail {
+  position: static;
+  top: auto;
+  right: auto;
+  margin: 0;
+  flex-shrink: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
