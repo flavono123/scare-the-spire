@@ -2,6 +2,7 @@
 
 import { type CSSProperties } from "react";
 import { ColorfulPhilosopherReactionIcon } from "@/components/colorful-philosophers/reaction-icon";
+import { EngagementSpinner, EngagementUnavailableIcon } from "@/components/engagement-spinner";
 import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { SPIRE_ACTION_CONTROL_CLASS } from "@/components/spire-icon";
 import { useAuth } from "@/hooks/use-auth";
@@ -44,7 +45,7 @@ export function ResourceReactionBar({
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].colorfulPhilosophers;
   const { userId, ensureUser } = useAuth();
-  const resource = useResourceReactions(resourceType, resourceId, gameVersion);
+  const resource = useResourceReactions(resourceType, resourceId, gameVersion, userId);
 
   if (variant === "readonly") {
     return (
@@ -80,8 +81,14 @@ export function ResourceReactionBar({
                 }}
                 className={cn(SPIRE_ACTION_CONTROL_CLASS, "gap-0.5 px-0.5 text-xs text-muted-foreground")}
               >
-                <ColorfulPhilosopherReactionIcon kind={kind} active={active} lift size={15} />
-                <span className="tabular-nums">{resource.counts[kind]}</span>
+                {resource.unavailable ? (
+                  <EngagementUnavailableIcon size={15} />
+                ) : resource.loading || resource.pendingKind === kind ? (
+                  <EngagementSpinner size={15} />
+                ) : (
+                  <ColorfulPhilosopherReactionIcon kind={kind} active={active} lift size={15} />
+                )}
+                {resource.loading ? null : <span className="tabular-nums">{resource.counts[kind]}</span>}
               </button>
             </GameUiHoverTip>
           );
@@ -116,9 +123,15 @@ export function ResourceReactionBar({
                 kind === "rework" && (active ? "border-[#f472b6] bg-[#f472b6]/15" : "border-white/10 hover:border-[#f472b6]/70"),
               )}
             >
-              <ColorfulPhilosopherReactionIcon kind={kind} active={active} lift size={18} />
+              {resource.unavailable ? (
+                <EngagementUnavailableIcon size={18} />
+              ) : resource.loading || resource.pendingKind === kind ? (
+                <EngagementSpinner size={18} />
+              ) : (
+                <ColorfulPhilosopherReactionIcon kind={kind} active={active} lift size={18} />
+              )}
               <ReactionWords kind={kind} label={copy.reactions[kind]} />
-              <span className="tabular-nums text-zinc-400">{resource.counts[kind]}</span>
+              {resource.loading ? null : <span className="tabular-nums text-zinc-400">{resource.counts[kind]}</span>}
             </button>
           </GameUiHoverTip>
         );

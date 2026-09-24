@@ -54,9 +54,13 @@ export function useResourceReactions(
   resourceType: string,
   resourceId: string,
   gameVersion: string,
+  userId: string | null = null,
 ) {
   const [counts, setCounts] = useState<ResourceReactionCounts>({ buff: 0, nerf: 0, rework: 0 });
   const [kind, setKind] = useState<ColorfulPhilosopherReaction | null>(null);
+  const [loading, setLoading] = useState(supabaseEnabled && Boolean(resourceType && resourceId && gameVersion));
+  const [unavailable, setUnavailable] = useState(false);
+  const [pendingKind, setPendingKind] = useState<ColorfulPhilosopherReaction | null>(null);
 
   useEffect(() => {
     const cached = window.localStorage.getItem(storageKey(resourceType, resourceId, gameVersion));
@@ -64,8 +68,12 @@ export function useResourceReactions(
   }, [resourceType, resourceId, gameVersion]);
 
   useEffect(() => {
-    if (!supabaseEnabled || !resourceType || !resourceId || !gameVersion) return;
+    if (!supabaseEnabled || !resourceType || !resourceId || !gameVersion) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
+    setLoading(true);
     supabase.from("resource_reaction_counts")
       .select("buff_count, nerf_count, rework_count")
       .eq("env", supabaseEnv)
@@ -73,22 +81,55 @@ export function useResourceReactions(
       .eq("resource_id", resourceId)
       .eq("game_version", gameVersion)
       .maybeSingle()
-      .then(({ data }) => {
-        if (cancelled || !data) return;
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) {
+          setUnavailable(true);
+          setLoading(false);
+          return;
+        }
+        setUnavailable(false);
         setCounts({
-          buff: data.buff_count ?? 0,
-          nerf: data.nerf_count ?? 0,
-          rework: data.rework_count ?? 0,
+          buff: data?.buff_count ?? 0,
+          nerf: data?.nerf_count ?? 0,
+          rework: data?.rework_count ?? 0,
         });
+        setLoading(false);
       });
     return () => {
       cancelled = true;
     };
   }, [resourceType, resourceId, gameVersion]);
 
+  useEffect(() => {
+    if (!supabaseEnabled || !userId || !resourceType || !resourceId || !gameVersion) return;
+    let cancelled = false;
+    supabase.from("resource_reactions")
+      .select("kind")
+      .eq("env", supabaseEnv)
+      .eq("resource_type", resourceType)
+      .eq("resource_id", resourceId)
+      .eq("game_version", gameVersion)
+      .eq("user_id", userId)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (cancelled || error) return;
+        const next = data && isColorfulPhilosopherReaction(data.kind) ? data.kind : null;
+        setKind(next);
+        const key = storageKey(resourceType, resourceId, gameVersion);
+        if (next) window.localStorage.setItem(key, next);
+        else window.localStorage.removeItem(key);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, resourceType, resourceId, gameVersion]);
+
   const choose = useCallback(async (next: ColorfulPhilosopherReaction, userId: string) => {
     const previous = kind;
+    const previousCounts = counts;
     const nextKind = previous === next ? null : next;
+    setPendingKind(next);
     setKind(nextKind);
     setCounts((current) => {
       const updated = { ...current };
@@ -99,22 +140,16 @@ export function useResourceReactions(
     const key = storageKey(resourceType, resourceId, gameVersion);
     if (nextKind) window.localStorage.setItem(key, nextKind);
     else window.localStorage.removeItem(key);
-    const filter = supabase.from("resource_reactions")
-      .delete()
+    const scoped = supabase.from("resource_reactions")
       .eq("env", supabaseEnv)
       .eq("resource_type", resourceType)
       .eq("resource_id", resourceId)
       .eq("game_version", gameVersion)
       .eq("user_id", userId);
     const write = nextKind === null
-      ? filter
+      ? scoped.delete()
       : previous
-        ? supabase.from("resource_reactions").update({ kind: nextKind })
-          .eq("env", supabaseEnv)
-          .eq("resource_type", resourceType)
-          .eq("resource_id", resourceId)
-          .eq("game_version", gameVersion)
-          .eq("user_id", userId)
+        ? scoped.update({ kind: nextKind })
         : supabase.from("resource_reactions").insert({
           env: supabaseEnv,
           resource_type: resourceType,
@@ -124,14 +159,18 @@ export function useResourceReactions(
           kind: nextKind,
         });
     const { error } = await write;
+    setPendingKind(null);
     if (error) {
       setKind(previous);
+      setCounts(previousCounts);
+      setUnavailable(true);
       if (previous) window.localStorage.setItem(key, previous);
       else window.localStorage.removeItem(key);
       return { ok: false as const };
     }
+    setUnavailable(false);
     return { ok: true as const };
-  }, [gameVersion, kind, resourceId, resourceType]);
+  }, [counts, gameVersion, kind, resourceId, resourceType]);
 
-  return { counts, kind, choose };
+  return { counts, kind, loading, unavailable, pendingKind, choose };
 }
