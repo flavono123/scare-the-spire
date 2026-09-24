@@ -28,7 +28,6 @@ export const serviceMessages = {
       backToList: "니오우스레터 목록",
       source: "메가 크릿",
       steam: "Steam",
-      pageComments: "전체 댓글",
       comments: "댓글",
     },
     globalSearch: {
@@ -1381,7 +1380,6 @@ export const serviceMessages = {
       backToList: "Neowsletter list",
       source: "Mega Crit",
       steam: "Steam",
-      pageComments: "All comments",
       comments: "Comments",
     },
     patchNotes: {

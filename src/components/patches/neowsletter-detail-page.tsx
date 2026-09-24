@@ -22,6 +22,7 @@ import {
 import { PATCH_NOTES_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import { getServiceOgMetadata } from "@/lib/service-metadata";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
+import { SERVICE_LINK_CLASS } from "@/lib/service-link-classes";
 import { serviceMessages } from "@/messages/service";
 
 export async function generateNeowsletterStaticParams() {
@@ -103,8 +104,15 @@ export async function NeowsletterDetailPage({
           href={issue.sourceUrl}
           target="_blank"
           rel="noreferrer"
-          className="text-primary hover:underline"
+          className={`inline-flex items-center gap-1 ${SERVICE_LINK_CLASS}`}
         >
+          <img
+            src="/images/neowsletters/source/megacrit.jpg"
+            alt=""
+            width={16}
+            height={16}
+            className="h-4 w-4 rounded-sm"
+          />
           {copy.source}
         </a>
         {issue.steamUrl ? (
@@ -112,8 +120,15 @@ export async function NeowsletterDetailPage({
             href={issue.steamUrl}
             target="_blank"
             rel="noreferrer"
-            className="text-primary hover:underline"
+            className={`inline-flex items-center gap-1 ${SERVICE_LINK_CLASS}`}
           >
+            <img
+              src="/images/neowsletters/source/steam.png"
+              alt=""
+              width={16}
+              height={16}
+              className="h-4 w-4"
+            />
             {copy.steam}
           </a>
         ) : null}
@@ -131,10 +146,9 @@ export async function NeowsletterDetailPage({
           />
         </section>
       ))}
-      <section id="comments" className="mt-10 border-t border-white/10 pt-6">
-        <h2 className="font-game-title text-lg text-primary">{copy.pageComments}</h2>
+      <section id="comments" className="mt-8 rounded-lg border border-border bg-card/20 p-4">
+        <h2 className="mb-3 text-sm font-bold text-foreground">{copy.comments}</h2>
         <div
-          className="mt-3"
           data-patch-comment-root
           data-thread-key={buildNeowsletterCommentThreadKey(issue.id, "page")}
         />
