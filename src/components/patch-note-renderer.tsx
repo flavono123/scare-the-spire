@@ -594,9 +594,7 @@ export function EntityPreview({
     ? "relative z-50 mt-1"
     : pendingStaticPreview
       ? [
-          "absolute z-50 hidden h-0 w-0 overflow-hidden pointer-events-none",
-          "group-hover:block group-hover:h-auto group-hover:w-max group-hover:overflow-visible",
-          "group-focus-within:block group-focus-within:h-auto group-focus-within:w-max group-focus-within:overflow-visible",
+          "entity-hover-tip",
           staticPreviewDesktopClass(placement),
         ].join(" ")
       : `absolute ${previewHorizontalClass(placement.horizontal)} z-50 pointer-events-none ${placement.vertical === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;

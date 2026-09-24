@@ -56,6 +56,24 @@
   cursor: url("/images/sts2/ui/cursor_inspect.png") 12 12, pointer !important;
 }
 
+/* Static patch hovers must not occupy a line box. Utility classes were losing
+   to the inline-flex parent and leaving relic slabs in the sentence. */
+.entity-hover-tip {
+  display: none;
+  position: absolute;
+  z-index: 50;
+  width: max-content;
+  max-width: calc(100vw - 1.5rem);
+  height: auto;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.group:hover > .entity-hover-tip,
+.group:focus-within > .entity-hover-tip {
+  display: block;
+}
+
 /* Game hover tips (keywords, assets, card side tips) always paint above
    overflow-clipped chrome. Keep in sync with HOVER_TIP_LAYER_Z_INDEX. */
 :root {
