@@ -1047,9 +1047,8 @@
   animation: nav-attention-sine 1.8s ease-in-out infinite;
 }
 
-.spire-read {
-  color: #9b8cb8;
-  filter: grayscale(0.72);
+.nav-title-read {
+  filter: grayscale(0.65);
 }
 
 .nav-attention-dot.nav-attention-dot-trail {

@@ -20,7 +20,7 @@ export function indexItemIsRead(publishedAt: string, seenAt: string | null): boo
 }
 
 export function indexReadClass(read: boolean): string {
-  return read ? "spire-read" : "";
+  return read ? "spire-purple nav-title-read" : "";
 }
 
 export function IndexReadFrame({
@@ -36,5 +36,5 @@ export function IndexReadFrame({
 }) {
   const seenAt = useIndexSeenAt(surfaceId);
   const read = indexItemIsRead(publishedAt, seenAt);
-  return <span className={cn(className, read && "spire-read")}>{children}</span>;
+  return <span className={cn(className, read && "spire-purple nav-title-read")}>{children}</span>;
 }
