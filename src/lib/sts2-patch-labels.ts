@@ -14,6 +14,6 @@ export function isPatchDraft(patch: STS2Patch): boolean {
   return !patch.status || patch.status === "ready";
 }
 
-export function isBackstabPatch(patch: STS2Patch): patch is STS2Patch & { type: "backstab" } {
-  return patch.type === "backstab";
+export function isWitherPatch(patch: STS2Patch): patch is STS2Patch & { type: "wither" } {
+  return patch.type === "wither";
 }

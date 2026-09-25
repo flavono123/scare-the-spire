@@ -282,8 +282,8 @@ function patchCases() {
       path: `/patches/${latest.version}`,
       headers: { Accept: "text/html" },
       contentType: "text/html",
-      bodyIncludes: latest.type === "backstab"
-        ? ["배신", "비어있어", "application/ld+json"]
+      bodyIncludes: latest.type === "wither"
+        ? ["시듦", "손에 있다면", "application/ld+json"]
         : [
             `슬레이 더 스파이어 2 v${latest.version}`,
             latest.summaryKo,
@@ -295,8 +295,8 @@ function patchCases() {
       path: `/en/patches/${latest.version}`,
       headers: { Accept: "text/html" },
       contentType: "text/html",
-      bodyIncludes: latest.type === "backstab"
-        ? ["Backstab", "Draw Pile", "application/ld+json"]
+      bodyIncludes: latest.type === "wither"
+        ? ["Wither", "Hand", "application/ld+json"]
         : [
             `Slay the Spire 2 v${latest.version}`,
             latest.summary,

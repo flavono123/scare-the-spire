@@ -18,8 +18,16 @@ import { getDebateGameCopy, getPatchBackstabGameCopy, getPatchStageGameCopy } fr
 import { getRecentTransfigurePosts } from "@/lib/transfigure-data";
 import { getSTS2Patches } from "@/lib/data";
 import { resolvePatchArt } from "@/lib/sts2-patch-art";
-import { TEXT_GREEN } from "@/lib/sts2-card-style";
 import type { PatchType, STS2Patch } from "@/lib/types";
+import {
+  WITHER_PATCH_CARD_CLASS,
+  WITHER_PATCH_DATE_CLASS,
+  WITHER_PATCH_HERO,
+  WITHER_PATCH_HERO_CLASS,
+  WITHER_PATCH_RECOMMENDATIONS,
+  WITHER_PATCH_TITLE_CLASS,
+  WITHER_TITLE_TOKEN,
+} from "@/lib/wither-patch-shell";
 
 const PATCH_TYPES: readonly {
   type: PatchType;
@@ -52,10 +60,10 @@ const PATCH_TYPES: readonly {
     desc: "긴급 버그 수정 및 당일 픽스 패치 (핫픽스 토큰)",
   },
   {
-    type: "backstab",
-    labelKo: "배신",
-    labelEn: "Backstab",
-    desc: "스팀 패치 지연 및 만우절/특수 이벤트 패치 (약화 토큰 + jitter 애니메이션)",
+    type: "wither",
+    labelKo: "시듦",
+    labelEn: "Wither",
+    desc: "시듦 카드 제목·아트. 칩은 제거된 감쇠. 검정과 그레이스케일.",
   },
 ];
 
@@ -101,14 +109,14 @@ const VISUAL_STAGES = [
     desc: "번역·링크·호버 팁 검수가 완료된 정규 rich 패치노트",
   },
   {
-    id: "backstab_upgraded",
-    name: "배신+ (Backstab+)",
-    status: "backstab",
-    tokenSrc: "/images/sts2/relics/silver_crucible.webp",
-    tokenAlt: "은 도가니",
-    borderClass: "border-rose-500/30 bg-rose-950/15 shadow-[0_0_24px_rgba(244,63,94,0.08)]",
-    textClass: "text-[#7FFF00]",
-    desc: "3번의 패치가 [gold]베타[/gold] 상태로 등장합니다. 다음으로 여는 큰 패치가 [red]비어 있습니다[/red].",
+    id: "wither",
+    name: "시듦 (Wither)",
+    status: "wither",
+    tokenSrc: WITHER_TITLE_TOKEN.src,
+    tokenAlt: WITHER_TITLE_TOKEN.alt.ko,
+    borderClass: "border-zinc-700 bg-black",
+    textClass: "text-zinc-100",
+    desc: WITHER_PATCH_HERO.ko,
   },
 ];
 
@@ -127,15 +135,15 @@ export default async function PatchesDevPage() {
   const backstabPatch: STS2Patch = patches.find((p) => p.version === "2026-09-11" || p.id === "2026-09-11") ?? {
     id: "2026-09-11",
     version: "2026-09-11",
-    type: "backstab",
+    type: "wither",
     date: "2026-09-11",
     hasBalanceChanges: false,
-    title: "배신+",
-    titleKo: "배신+",
+    title: "Wither",
+    titleKo: "시듦",
     steamUrl: null,
     summary: "",
     summaryKo: "",
-    art: { type: "card", id: "BACKSTAB" },
+    art: { type: "card", id: "WITHER", imageUrl: "/images/sts2/cards/wither1.webp" },
   };
   const patch111 = patches.find((p) => p.version === "0.111.0") ?? patches[0];
   const patch100 = patches.find((p) => p.version === "0.100.0") ?? patches[patches.length - 1];
@@ -163,7 +171,7 @@ export default async function PatchesDevPage() {
           패치노트 카탈로그 &amp; 전 타입 쇼케이스
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          모든 패치 타입(PatchType), 시각적 단계(Visual Stage), 칩 뱃지, 상태별 목록 카드 및 배신+ 뷰를 검수합니다.
+          모든 패치 타입(PatchType), 시각적 단계(Visual Stage), 칩 뱃지, 상태별 목록 카드 및 시듦 뷰를 검수합니다.
         </p>
       </div>
 
@@ -262,7 +270,7 @@ export default async function PatchesDevPage() {
       <section className="space-y-4">
         <div className="flex items-center justify-between border-b border-border pb-2">
           <h2 className="text-lg font-bold text-foreground">2. 패치 상태 및 시각 단계 (Visual Stages)</h2>
-          <span className="text-xs text-muted-foreground">Watching &rarr; Building &rarr; Ready &amp; Backstab+</span>
+          <span className="text-xs text-muted-foreground">Watching &rarr; Building &rarr; Ready &amp; Wither</span>
         </div>
 
         <div className="space-y-3">
@@ -279,18 +287,7 @@ export default async function PatchesDevPage() {
                   height={24}
                   className="h-6 w-6 object-contain"
                 />
-                <span
-                  className={`text-base font-bold ${stage.textClass}`}
-                  style={
-                    stage.id === "backstab_upgraded"
-                      ? {
-                          color: TEXT_GREEN,
-                          textShadow:
-                            "-1px -1px 0 #1B6131, 1px -1px 0 #1B6131, -1px 1px 0 #1B6131, 1px 1px 0 #1B6131",
-                        }
-                      : undefined
-                  }
-                >
+                <span className={`text-base font-bold ${stage.textClass}`}>
                   {stage.name}
                 </span>
                 <Badge variant="outline" className="ml-auto text-[11px] font-mono">
@@ -315,37 +312,30 @@ export default async function PatchesDevPage() {
         <div className="space-y-4">
           {/* Card 1: Backstab+ Card */}
           <div>
-            <span className="text-xs font-semibold text-rose-300">
-              ▼ 배신+ 카드 (은 도가니 토큰 + 강화 텍스트 + 은 도가니 패러디 히어로 문구)
+            <span className="text-xs font-semibold text-zinc-400">
+              ▼ 시듦 카드 (시들어가는 존재 토큰 + 시듦 카드 문구 + 감쇠 칩)
             </span>
-            <div className="mt-1.5 block rounded-lg border border-rose-500/30 bg-rose-950/15 p-4 shadow-[0_0_24px_rgba(244,63,94,0.08)]">
+            <div className={`mt-1.5 ${WITHER_PATCH_CARD_CLASS}`}>
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
                 <span className="inline-flex min-w-0 items-center gap-2">
                   <Image
-                    src="/images/sts2/relics/silver_crucible.webp"
-                    alt="은 도가니"
+                    src={WITHER_TITLE_TOKEN.src}
+                    alt={WITHER_TITLE_TOKEN.alt.ko}
                     width={24}
                     height={24}
-                    className="h-6 w-6 shrink-0 object-contain"
+                    className="h-6 w-6 shrink-0 object-contain grayscale"
                   />
-                  <span
-                    className="font-game-title text-lg font-bold min-w-0"
-                    style={{
-                      color: TEXT_GREEN,
-                      textShadow:
-                        "-1px -1px 0 #1B6131, 1px -1px 0 #1B6131, -1px 1px 0 #1B6131, 1px 1px 0 #1B6131",
-                    }}
-                  >
-                    배신+
+                  <span className={`${WITHER_PATCH_TITLE_CLASS} text-lg`}>
+                    시듦
                   </span>
                 </span>
-                <PatchTypeChip type="backstab" label="배신" serviceLocale="ko" />
+                <PatchTypeChip type="wither" label="시듦" serviceLocale="ko" />
               </div>
-              <div className="mt-1 text-sm font-medium text-rose-100/90">
-                <RichText text={patchBackstabCopy.hero} />
+              <div className={`mt-1 ${WITHER_PATCH_HERO_CLASS}`}>
+                <RichText text={WITHER_PATCH_HERO.ko} />
               </div>
-              <p className="mt-0.5 text-xs text-rose-100/45">2026-09-11</p>
-              {backstabArt && <PatchArtPreview art={backstabArt} />}
+              <p className={`mt-0.5 ${WITHER_PATCH_DATE_CLASS}`}>2026-09-11</p>
+              {backstabArt && <PatchArtPreview art={backstabArt} tone="wither" />}
             </div>
           </div>
 
@@ -473,11 +463,47 @@ export default async function PatchesDevPage() {
         </div>
       </section>
 
-      {/* 4. 배신+ 본문: 변형(Transfigure) 연동 애니메이션 프리뷰 */}
+      {/* 4. 시듦 토큰·히어로 추천 */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between border-b border-border pb-2">
+          <h2 className="text-lg font-bold text-foreground">4. 시듦 토큰 · 히어로 game locale</h2>
+          <span className="text-xs text-muted-foreground">채택은 칩·타이틀·히어로 세 줄</span>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {WITHER_PATCH_RECOMMENDATIONS.map((item) => (
+            <div
+              key={`${item.role}-${item.nameEn}`}
+              className={`rounded-lg border p-4 ${item.chosen ? "border-zinc-500 bg-black" : "border-zinc-800 bg-zinc-950/40"}`}
+            >
+              <div className="flex items-center gap-3">
+                <Image
+                  src={item.src}
+                  alt={item.nameKo}
+                  width={28}
+                  height={28}
+                  className="h-7 w-7 object-contain grayscale"
+                />
+                <div>
+                  <p className="text-sm font-bold text-zinc-100">
+                    {item.nameKo}
+                    <span className="ml-2 font-normal text-zinc-500">{item.nameEn}</span>
+                  </p>
+                  <p className="text-[11px] uppercase tracking-wide text-zinc-500">
+                    {item.role}{item.chosen ? " · 사용" : ""}
+                  </p>
+                </div>
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-zinc-400">{item.locale}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. 본문: 변형과 다철 프리뷰는 그대로 */}
       <section className="space-y-4">
         <div className="flex items-center justify-between border-b border-border pb-2">
           <h2 className="text-lg font-bold text-foreground">
-            4. 배신+ 본문: 변형 서비스 연동 &amp; 인덱스 카드 애셋 쇼케이스
+            5. 시듦 본문: 변형 · 다철 프리뷰는 같은 글
           </h2>
           <span className="text-xs text-muted-foreground">
             이아저? 월드컵 VS 애니메이션 코드 재사용·확장
@@ -485,7 +511,7 @@ export default async function PatchesDevPage() {
         </div>
 
         <p className="text-xs text-muted-foreground leading-relaxed">
-          실제 배신+ 패치 상세 페이지(<code>/patches/2026-09-11</code>) 본문에 렌더링되는 컴포넌트입니다.
+          같은 글(<code>/patches/2026-09-11</code>)의 껍데기만 시듦입니다. 변형 프리뷰, 다철 프리뷰, 댓글 스레드는 그대로입니다.
           실제 커뮤니티 변형 인덱스 카드 애셋(제목, 시간, 댓글·좋아요, 리소스 프리뷰, 작성자)이 진입 즉시 무작위로 선택되며 3.2초 주기로 부드럽게 페이드 전환됩니다.
           호버 시 전환이 일시 정지되고 &quot;변형으로 이동하기&quot; 팁이 노출되며, 클릭 시 해당 변형 상세로 라우팅됩니다.
         </p>

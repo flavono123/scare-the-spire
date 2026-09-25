@@ -26,12 +26,18 @@ import { BackstabTransfigureSection } from "@/components/patches/backstab-transf
 import { BackstabColorfulPhilosophersSection } from "@/components/patches/backstab-colorful-philosophers-section";
 import { getColorfulPhilosopherGalleryPosts } from "@/lib/colorful-philosophers-gallery";
 import { getRecentTransfigurePosts } from "@/lib/transfigure-data";
-import { TEXT_GREEN } from "@/lib/sts2-card-style";
+import {
+  WITHER_PATCH_DATE_CLASS,
+  WITHER_PATCH_HERO,
+  WITHER_PATCH_HERO_CLASS,
+  WITHER_PATCH_TITLE_CLASS,
+  WITHER_TITLE_TOKEN,
+} from "@/lib/wither-patch-shell";
 import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
 import {
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
-import { getPatchVersionLabel, isBackstabPatch, isPatchDraft } from "@/lib/sts2-patch-labels";
+import { getPatchVersionLabel, isPatchDraft, isWitherPatch } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType, STS2Patch } from "@/lib/types";
 import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
@@ -82,7 +88,7 @@ const PATCH_COPY: Record<ServiceLocale, {
       beta: "베타",
       stable: "안정",
       hotfix: "핫픽스",
-      backstab: "배신",
+      wither: "시듦",
     },
   },
   en: {
@@ -101,23 +107,26 @@ const PATCH_COPY: Record<ServiceLocale, {
       beta: "Beta",
       stable: "Stable",
       hotfix: "Hotfix",
-      backstab: "Backstab",
+      wither: "Wither",
     },
   },
 };
 
-function PatchArtHero({ art, backstab = false }: { art: ResolvedPatchArt; backstab?: boolean }) {
+function PatchArtHero({ art, wither = false }: { art: ResolvedPatchArt; wither?: boolean }) {
   return (
     <div className={cn(
-      "mt-6 aspect-[16/7] overflow-hidden rounded-lg bg-zinc-950",
-      backstab ? "border border-rose-500/30" : "border border-border/70",
+      "mt-6 aspect-[16/7] overflow-hidden rounded-lg bg-black",
+      wither ? "border border-zinc-700" : "border border-border/70",
     )}>
       <Image
         src={art.imageUrl}
         alt={art.alt}
         width={1120}
         height={490}
-        className="h-full w-full object-cover"
+        className={cn(
+          "h-full w-full object-cover",
+          wither && "grayscale contrast-125 brightness-75 saturate-0",
+        )}
         style={{ objectPosition: art.objectPosition }}
       />
     </div>
@@ -747,7 +756,7 @@ export function getPatchSeoTitle(
   patch: STS2Patch,
   serviceLocale: ServiceLocale,
 ): string {
-  if (isBackstabPatch(patch)) {
+  if (isWitherPatch(patch)) {
     const version = getPatchVersionLabel(patch, serviceLocale);
     return serviceLocale === "ko"
       ? `슬레이 더 스파이어 2 ${version}`
@@ -774,7 +783,7 @@ export async function getPatchDetailMetadata({
   const title = getPatchSeoTitle(patch, serviceLocale);
   const summary = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
   const description = truncateOgDescription(`${title}. ${summary}`);
-  const patchArt = isBackstabPatch(patch)
+  const patchArt = isWitherPatch(patch)
     ? resolvePatchArt(patch, new Map(), serviceLocale)
     : resolvePatchArt(
         patch,
@@ -823,7 +832,7 @@ export async function PatchDetailPage({
   const patch = patches.find((p) => p.version === version);
   if (!patch) notFound();
 
-  if (isBackstabPatch(patch)) {
+  if (isWitherPatch(patch)) {
     const [patchBackstabCopy, debateCopy, entities, initialTransfigures, colorfulPhilosopherPosts] = await Promise.all([
       getPatchBackstabGameCopy(gameLocale),
       getDebateGameCopy(gameLocale),
@@ -851,20 +860,14 @@ export async function PatchDetailPage({
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-2">
               <Image
-                src="/images/sts2/relics/silver_crucible.webp"
-                alt={serviceLocale === "ko" ? "은 도가니" : "Silver Crucible"}
+                src={WITHER_TITLE_TOKEN.src}
+                alt={WITHER_TITLE_TOKEN.alt[serviceLocale]}
                 width={28}
                 height={28}
-                className="h-7 w-7 shrink-0 object-contain"
+                className="h-7 w-7 shrink-0 object-contain grayscale"
               />
-              <h1
-                className="font-game-title text-2xl font-bold"
-                style={{
-                  color: TEXT_GREEN,
-                  textShadow: "-1px -1px 0 #1B6131, 1px -1px 0 #1B6131, -1px 1px 0 #1B6131, 1px 1px 0 #1B6131",
-                }}
-              >
-                {patchBackstabCopy.title}
+              <h1 className={`${WITHER_PATCH_TITLE_CLASS} text-2xl`}>
+                {serviceLocale === "ko" ? patch.titleKo : patch.title}
               </h1>
             </span>
             <PatchTypeChip
@@ -873,15 +876,15 @@ export async function PatchDetailPage({
               serviceLocale={serviceLocale}
             />
           </div>
-          <div className="mt-3 text-base font-medium leading-relaxed text-rose-50/90">
-            <RichText text={patchBackstabCopy.hero} />
+          <div className={`mt-3 text-base leading-relaxed ${WITHER_PATCH_HERO_CLASS}`}>
+            <RichText text={WITHER_PATCH_HERO[serviceLocale]} />
           </div>
-          <div className="mt-1 flex items-center gap-3 text-sm text-muted-foreground">
+          <div className={`mt-1 flex items-center gap-3 ${WITHER_PATCH_DATE_CLASS}`}>
             <span>{patch.date}</span>
           </div>
         </div>
 
-        <PatchArtHero art={patchArt} backstab />
+        <PatchArtHero art={patchArt} wither />
 
         {/* Transfigure service exposure & creation prompt */}
         <BackstabTransfigureSection

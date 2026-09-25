@@ -585,22 +585,22 @@
   {
     "id": "backstab-2026-09-11",
     "version": "2026-09-11",
-    "versionLabel": "Backstab+",
-    "versionLabelKo": "배신+",
+    "versionLabel": "Wither",
+    "versionLabelKo": "시듦",
     "date": "2026-09-11",
-    "title": "Backstab+",
-    "titleKo": "배신+",
-    "type": "backstab",
+    "title": "Wither",
+    "titleKo": "시듦",
+    "type": "wither",
     "steamUrl": null,
-    "summary": "The next 3 patches you see are in [gold]Beta[/gold]. The next big patch you open is [red]empty[/red].",
-    "summaryKo": "3번의 패치가 [gold]베타[/gold] 상태로 등장합니다. 다음으로 여는 큰 패치가 [red]비어 있습니다[/red].",
+    "summary": "At the end of your turn, if this is in your Hand, take 3 damage.",
+    "summaryKo": "내 턴 종료 시 이 카드가 손에 있다면, 피해를 3 받습니다.",
     "hasBalanceChanges": false,
     "art": {
       "type": "card",
-      "id": "BACKSTAB",
-      "imageUrl": "/images/sts2/cards/backstab.webp",
-      "alt": "Backstab card art",
-      "altKo": "배신 카드 아트"
+      "id": "WITHER",
+      "imageUrl": "/images/sts2/cards/wither1.webp",
+      "alt": "Wither card art",
+      "altKo": "시듦 카드 아트"
     }
   }
 ]

@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { SpireIcon, type SpireIconColor } from "@/components/spire-icon";
+import { SpireIcon, type SpireIconVariant } from "@/components/spire-icon";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { PatchType } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 type ChipToken = {
   src: string;
   alt: Record<ServiceLocale, string>;
-  variant: SpireIconColor;
+  variant: SpireIconVariant;
   className: string;
 };
 
@@ -36,11 +36,11 @@ export const PATCH_TYPE_TOKENS: Record<PatchType, ChipToken> = {
     variant: "orange",
     className: "bg-orange-500/15 text-orange-400 border-orange-500/30",
   },
-  backstab: {
-    src: "/images/sts2/powers/weak_power.webp",
-    alt: { ko: "약화", en: "Weak" },
-    variant: "red",
-    className: "bg-rose-500/15 text-rose-300 border-rose-500/35",
+  wither: {
+    src: "/images/sts2/powers/ebb_power.webp",
+    alt: { ko: "감쇠", en: "Ebb" },
+    variant: "ghost",
+    className: "bg-zinc-950 text-zinc-300 border-zinc-600",
   },
 };
 
@@ -95,7 +95,7 @@ export function PatchTypeChip({
       className={cn(!muted && token.className, CHIP_BADGE_CLASS, className)}
     >
       <ChipIcon token={token} serviceLocale={serviceLocale} muted={muted} />
-      {type === "backstab" ? <span className="rich-jitter">{label}</span> : label}
+      {label}
     </Badge>
   );
 }

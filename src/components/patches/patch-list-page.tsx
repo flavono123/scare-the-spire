@@ -13,10 +13,10 @@ import {
   getServiceMetadataCopy,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
-import { getPatchVersionLabel, isBackstabPatch, isPatchDraft } from "@/lib/sts2-patch-labels";
+import { getPatchVersionLabel, isPatchDraft, isWitherPatch } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType, STS2Patch } from "@/lib/types";
-import { getPatchStageGameCopy, getPatchBackstabGameCopy } from "@/lib/borrowed-game-copy";
+import { getPatchStageGameCopy } from "@/lib/borrowed-game-copy";
 import { serviceMessages } from "@/messages/service";
 import { PatchArtPreview } from "@/components/patches/patch-art";
 import { PatchBalanceChip, PatchTypeChip } from "@/components/patches/patch-chips";
@@ -24,7 +24,14 @@ import { PatchDraftChip } from "@/components/patches/patch-draft-chrome";
 import { PatchSectionTabs } from "@/components/patches/patch-section-tabs";
 import { IndexReadFrame } from "@/hooks/use-index-read";
 import { RichText } from "@/components/rich-text";
-import { TEXT_GREEN } from "@/lib/sts2-card-style";
+import {
+  WITHER_PATCH_CARD_CLASS,
+  WITHER_PATCH_DATE_CLASS,
+  WITHER_PATCH_HERO,
+  WITHER_PATCH_HERO_CLASS,
+  WITHER_PATCH_TITLE_CLASS,
+  WITHER_TITLE_TOKEN,
+} from "@/lib/wither-patch-shell";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 
 const PATCH_COPY: Record<ServiceLocale, {
@@ -42,7 +49,7 @@ const PATCH_COPY: Record<ServiceLocale, {
       beta: "베타",
       stable: "안정",
       hotfix: "핫픽스",
-      backstab: "배신",
+      wither: "시듦",
     },
   },
   en: {
@@ -54,7 +61,7 @@ const PATCH_COPY: Record<ServiceLocale, {
       beta: "Beta",
       stable: "Stable",
       hotfix: "Hotfix",
-      backstab: "Backstab",
+      wither: "Wither",
     },
   },
 };
@@ -142,11 +149,10 @@ export async function PatchListPage({
   gameLocale: GameLocale;
 }) {
   const copy = PATCH_COPY[serviceLocale];
-  const [patches, entities, patchStageCopy, patchBackstabCopy] = await Promise.all([
+  const [patches, entities, patchStageCopy] = await Promise.all([
     getSTS2Patches(),
     loadAllEntities({ gameLocale }),
     getPatchStageGameCopy(gameLocale),
-    getPatchBackstabGameCopy(gameLocale),
   ]);
   const entitiesByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
 
@@ -172,7 +178,7 @@ export async function PatchListPage({
           const watchStage = isWatching ? patchWatchStage(patch) : null;
           const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
           const draft = isPatchDraft(patch);
-          const backstab = isBackstabPatch(patch);
+          const wither = isWitherPatch(patch);
 
           if (isWatching) {
             const isDelay = watchStage === "delay";
@@ -269,31 +275,25 @@ export async function PatchListPage({
             );
           }
 
-          if (backstab) {
+          if (wither) {
             return (
               <Link
                 key={patch.id}
                 href={localizeHrefWithGameLocale(`/patches/${patch.version}`, serviceLocale, gameLocale)}
                 prefetch={false}
-                className="block rounded-lg border border-rose-500/30 bg-rose-950/15 p-4 shadow-[0_0_24px_rgba(244,63,94,0.08)] transition-colors hover:border-rose-400/50 hover:bg-rose-950/25"
+                className={WITHER_PATCH_CARD_CLASS}
               >
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
                   <span className="inline-flex min-w-0 items-center gap-2">
                     <Image
-                      src="/images/sts2/relics/silver_crucible.webp"
-                      alt={serviceLocale === "ko" ? "은 도가니" : "Silver Crucible"}
+                      src={WITHER_TITLE_TOKEN.src}
+                      alt={WITHER_TITLE_TOKEN.alt[serviceLocale]}
                       width={24}
                       height={24}
-                      className="h-6 w-6 shrink-0 object-contain"
+                      className="h-6 w-6 shrink-0 object-contain grayscale"
                     />
-                    <span
-                      className="font-game-title text-lg font-bold min-w-0"
-                      style={{
-                        color: TEXT_GREEN,
-                        textShadow: "-1px -1px 0 #1B6131, 1px -1px 0 #1B6131, -1px 1px 0 #1B6131, 1px 1px 0 #1B6131",
-                      }}
-                    >
-                      {patchBackstabCopy.title}
+                    <span className={`${WITHER_PATCH_TITLE_CLASS} text-lg`}>
+                      {serviceLocale === "ko" ? patch.titleKo : patch.title}
                     </span>
                   </span>
                   <PatchTypeChip
@@ -302,11 +302,11 @@ export async function PatchListPage({
                     serviceLocale={serviceLocale}
                   />
                 </div>
-                <div className="mt-1 text-sm font-medium text-rose-100/90">
-                  <RichText text={patchBackstabCopy.hero} />
+                <div className={`mt-1 ${WITHER_PATCH_HERO_CLASS}`}>
+                  <RichText text={WITHER_PATCH_HERO[serviceLocale]} />
                 </div>
-                <p className="mt-0.5 text-xs text-rose-100/45">{patch.date}</p>
-                {patchArt && <PatchArtPreview art={patchArt} priority={index === 0} />}
+                <p className={`mt-0.5 ${WITHER_PATCH_DATE_CLASS}`}>{patch.date}</p>
+                {patchArt && <PatchArtPreview art={patchArt} priority={index === 0} tone="wither" />}
               </Link>
             );
           }
