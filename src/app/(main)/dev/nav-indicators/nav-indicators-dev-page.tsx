@@ -39,8 +39,9 @@ export default function NavIndicatorsDevPage() {
   const pathname = usePathname();
   const navSeen = useNavSeen(pathname);
   const [force, setForce] = useState<NavForceMap>({});
-  const toySurfaces = NAV_SEEN_SURFACES.filter((surface) => surface.id !== "patches");
-  const patchSurface = NAV_SEEN_SURFACES.find((surface) => surface.id === "patches");
+  const patchSurfaces = NAV_SEEN_SURFACES.filter((surface) => surface.catalog);
+  const toySurfaces = NAV_SEEN_SURFACES.filter((surface) => !surface.catalog);
+  const litPatch = patchSurfaces.filter((surface) => navSeen.unreadIds.includes(surface.id));
   const litToy = toySurfaces.filter((surface) => navSeen.unreadIds.includes(surface.id));
 
   useEffect(() => {
@@ -71,11 +72,25 @@ export default function NavIndicatorsDevPage() {
       <section className="flex flex-col gap-3 rounded-md border border-border p-4">
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-service text-sm font-semibold">패치노트</h2>
-          <span className="text-xs text-muted-foreground">{navSeen.patches ? "켜짐" : "꺼짐"}</span>
+          <span className={`text-xs font-semibold ${navSeen.patches ? "text-[#14997a]" : "text-muted-foreground"}`}>
+            {navSeen.patches ? "켜짐" : "꺼짐"}
+          </span>
         </div>
-        {patchSurface && (
-          <IndicatorChip surface={patchSurface} on={navSeen.patches} onToggle={() => toggle(patchSurface.id)} />
-        )}
+        <p className="text-xs text-muted-foreground">
+          {navSeen.patches
+            ? `탭 점이 켜져 있다: ${litPatch.map((surface) => surface.label).join(", ")}`
+            : "탭이 모두 꺼지면 상단바 패치노트 점도 꺼진다."}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {patchSurfaces.map((surface) => (
+            <IndicatorChip
+              key={surface.id}
+              surface={surface}
+              on={navSeen.unreadIds.includes(surface.id)}
+              onToggle={() => toggle(surface.id)}
+            />
+          ))}
+        </div>
       </section>
 
       <section className="flex flex-col gap-3 rounded-md border border-border p-4">
