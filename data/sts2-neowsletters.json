@@ -88,5 +88,20 @@
     "imageAltKo": "니오우스레터 — 2026년 5월",
     "summary": "Bi-weekly beta cadence, Bestiary in Compendium, Doormaker replaced by Aeonglass, 240M runs stats, and character popularity.",
     "summaryKo": "베타 격주 패치 전환, 도감 도입, 문지기 삭제 및 에온글래스 대체, 2억 4,000만 회 통계 및 캐릭터 사용률을 다룹니다."
+  },
+  {
+    "id": "2026-06",
+    "issue": 23,
+    "date": "2026-06-19",
+    "addedAt": "2026-09-25T00:00:00.000Z",
+    "title": "The Neowsletter - June 2026",
+    "titleKo": "니오우스레터 — 2026년 6월",
+    "sourceUrl": "https://megacrit.com/news/2026-6-19-neowsletter-issue-23/",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/1835871199312310",
+    "imageUrl": "/images/neowsletters/2026-06/cover.jpg",
+    "imageAlt": "The Neowsletter - June 2026",
+    "imageAltKo": "니오우스레터 — 2026년 6월",
+    "summary": "Bestiary in Compendium, Steam Workshop support enabled, Q&A on Deadlock, Nonupeipe, and Ceremonial Beast origins.",
+    "summaryKo": "백과사전 도감 도입, Steam 창작마당 지원 활성화, 데드락, 노누페이페 및 의식용 짐승 관련 Q&A를 다룹니다."
   }
 ]
