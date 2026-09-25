@@ -1030,6 +1030,58 @@
     mountVisibleReel();
     document.addEventListener("cp-reel-show", mountVisibleReel);
     bindReelReactions(config);
+    void refreshLiveReels(config);
+  }
+
+  async function refreshLiveReels(config) {
+    const today = new Date().toISOString().slice(0, 10);
+    try {
+      const posts = await restRequest(
+        config,
+        `colorful_philosopher_posts?select=id,name_ko,body,image_url,week_start&env=eq.${config.supabaseEnv}&week_start=lte.${today}&order=week_start.desc&limit=24`,
+      );
+      const stack = document.querySelector("[data-colorful-philosophers-preview-stack]");
+      if (stack && stack.getAttribute("data-react-managed") !== "true" && Array.isArray(posts)) {
+        const seen = new Set(Array.from(stack.querySelectorAll("[data-cp-id]")).map((node) => node.getAttribute("data-cp-id")));
+        posts.forEach((post) => {
+          if (!post.id || seen.has(post.id)) return;
+          const card = document.createElement("div");
+          card.setAttribute("data-colorful-philosophers-card", "");
+          card.setAttribute("data-cp-id", post.id);
+          card.className = "absolute inset-0 w-full opacity-0 pointer-events-none";
+          const image = post.image_url || "/images/sts2/modifiers/draft.webp";
+          card.innerHTML = `<div class="rounded-xl border border-white/10 bg-black/35 px-4 py-4"><div class="flex items-center gap-4"><img src="${escapeHtml(image)}" alt="" width="72" height="72" class="object-contain" /><span class="min-w-0"><span class="block truncate font-service text-lg font-semibold text-primary">${escapeHtml(post.name_ko || "")}</span><span class="mt-1 line-clamp-3 block text-sm text-zinc-300">${escapeHtml(post.body || "")}</span></span></div></div>`;
+          stack.appendChild(card);
+        });
+        document.dispatchEvent(new Event("cp-reel-show"));
+      }
+    } catch {
+      // Keep the baked reel if the browser cannot reach the database.
+    }
+
+    try {
+      const figures = await restRequest(
+        config,
+        `transfigure_posts?select=id,title,nickname&env=eq.${config.supabaseEnv}&order=created_at.desc&limit=15`,
+      );
+      const stack = document.querySelector("[data-transfigure-preview-stack]");
+      if (!stack || stack.getAttribute("data-react-managed") === "true" || !Array.isArray(figures)) return;
+      const template = stack.querySelector("[data-transfigure-card]");
+      if (!template) return;
+      const seen = new Set(Array.from(stack.querySelectorAll("[data-transfigure-id]")).map((node) => node.getAttribute("data-transfigure-id")));
+      figures.forEach((post) => {
+        if (!post.id || seen.has(post.id)) return;
+        const card = template.cloneNode(true);
+        card.setAttribute("data-transfigure-id", post.id);
+        card.setAttribute("data-href", `/transfigure/${post.id}`);
+        card.className = "absolute inset-0 w-full opacity-0 pointer-events-none";
+        const title = card.querySelector("h3, h2, .font-semibold");
+        if (title && post.title) title.textContent = post.title;
+        stack.appendChild(card);
+      });
+    } catch {
+      // Keep the baked transfigure reel.
+    }
   }
 
   function bindReelReactions(config) {

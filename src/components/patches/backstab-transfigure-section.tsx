@@ -173,6 +173,7 @@ export function BackstabTransfigureSection({
               <div
                 key={post.id}
                 data-transfigure-card=""
+                data-transfigure-id={post.id}
                 data-href={postHref}
                 className={cn(
                   "w-full transition-opacity duration-300",

@@ -12,6 +12,7 @@ import { SPIRE_ACTION_CONTROL_CLASS } from "@/components/spire-icon";
 import { useAuth } from "@/hooks/use-auth";
 import { readColorfulPhilosopherReaction } from "@/hooks/use-colorful-philosopher-posts";
 import { saveResourceReaction } from "@/hooks/use-resource-reactions";
+import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -22,6 +23,8 @@ import {
   COLORFUL_PHILOSOPHERS_HREF,
   COLORFUL_PHILOSOPHERS_TOKEN_SRC,
   addColorfulPhilosophersDays,
+  colorfulPhilosopherPostFromRow,
+  colorfulPhilosophersWeekStart,
   colorfulPhilosophersWeekNumber,
   colorfulPhilosophersCommentThreadKey,
   type ColorfulPhilosopherPost,
@@ -73,7 +76,29 @@ export function BackstabColorfulPhilosophersSection({
       rework: post.reworkCount,
     }])),
   );
-  const posts = initialPosts;
+  const [posts, setPosts] = useState(initialPosts);
+
+  useEffect(() => {
+    if (!supabaseEnabled) return;
+    let cancelled = false;
+    supabase.from("colorful_philosopher_posts")
+      .select("id, week_start, slot, resource_type, resource_id, name_ko, name_en, image_url, body, game_version, buff_count, nerf_count, rework_count")
+      .eq("env", supabaseEnv)
+      .lte("week_start", colorfulPhilosophersWeekStart())
+      .order("week_start", { ascending: false })
+      .limit(24)
+      .then(({ data }) => {
+        if (cancelled || !data?.length) return;
+        const next = data.flatMap((row) => {
+          const post = colorfulPhilosopherPostFromRow(row);
+          return post ? [post] : [];
+        });
+        if (next.length > 0) setPosts(next);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (stackRef.current) stackRef.current.setAttribute("data-react-managed", "true");
@@ -181,6 +206,7 @@ export function BackstabColorfulPhilosophersSection({
               <div
                 key={post.id}
                 data-colorful-philosophers-card=""
+                data-cp-id={post.id}
                 className={cn(
                   "w-full transition-opacity duration-300",
                   active ? "relative opacity-100 pointer-events-auto" : "absolute inset-0 opacity-0 pointer-events-none",

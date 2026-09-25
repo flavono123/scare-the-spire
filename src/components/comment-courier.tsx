@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
@@ -124,13 +124,19 @@ export function CommentCourier() {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].profile.courier;
   const [enabled, setEnabled] = useState(true);
+  const [known, setKnown] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [items, setItems] = useState<CourierItem[]>([]);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
+  useLayoutEffect(() => {
+    setEnabled(readCourierEnabled());
+    setKnown(true);
+  }, []);
+
   useEffect(() => {
     const sync = () => setEnabled(readCourierEnabled());
-    sync();
     window.addEventListener(CHANGE_EVENT, sync);
     window.addEventListener("storage", sync);
     return () => {
@@ -140,7 +146,7 @@ export function CommentCourier() {
   }, []);
 
   useEffect(() => {
-    if (!enabled || !supabaseEnabled) return;
+    if (!known || !enabled || !supabaseEnabled) return;
     let cancelled = false;
     const load = () => {
       const since = new Date(Date.now() - WINDOW_MS).toISOString();
@@ -169,6 +175,7 @@ export function CommentCourier() {
           });
           setItems(next);
           setIndex(0);
+          setLoaded(true);
         });
     };
     load();
@@ -177,7 +184,7 @@ export function CommentCourier() {
       cancelled = true;
       window.clearInterval(timer);
     };
-  }, [enabled, serviceLocale]);
+  }, [known, enabled, serviceLocale]);
 
   useEffect(() => {
     if (!enabled || paused || items.length < 2) return;
@@ -188,6 +195,15 @@ export function CommentCourier() {
     }, ROTATE_MS);
     return () => window.clearInterval(timer);
   }, [enabled, paused, items.length]);
+
+  if (!known || (enabled && !loaded)) {
+    return (
+      <div
+        aria-busy="true"
+        className="fixed bottom-3 left-3 z-40 h-8 w-56 animate-pulse rounded-full border border-white/10 bg-white/10"
+      />
+    );
+  }
 
   if (!enabled) {
     return (
