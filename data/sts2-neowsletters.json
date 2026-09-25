@@ -73,5 +73,20 @@
     "imageAltKo": "니오우스레터 — 2026년 4월",
     "summary": "145M runs milestone, detailed roadmap philosophy, event choices statistics, and Q&A covering Daegyeong Jam.",
     "summaryKo": "1억 4,500만 회 등반 돌파, 로드맵과 개발 철학, 주요 이벤트 선택 통계, 대경잼 관련 Q&A를 다룹니다."
+  },
+  {
+    "id": "2026-05",
+    "issue": 22,
+    "date": "2026-05-22",
+    "addedAt": "2026-09-25T00:00:00.000Z",
+    "title": "The Neowsletter - May 2026",
+    "titleKo": "니오우스레터 — 2026년 5월",
+    "sourceUrl": "https://megacrit.com/news/2026-5-22-neowsletter-issue-22/",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/1833334318573126",
+    "imageUrl": "/images/neowsletters/2026-05/cover.jpg",
+    "imageAlt": "The Neowsletter - May 2026",
+    "imageAltKo": "니오우스레터 — 2026년 5월",
+    "summary": "Bi-weekly beta cadence, Bestiary in Compendium, Doormaker replaced by Aeonglass, 240M runs stats, and character popularity.",
+    "summaryKo": "베타 격주 패치 전환, 도감 도입, 문지기 삭제 및 에온글래스 대체, 2억 4,000만 회 통계 및 캐릭터 사용률을 다룹니다."
   }
 ]
