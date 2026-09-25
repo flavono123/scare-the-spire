@@ -298,6 +298,59 @@
     ]
   },
   {
+    "id": "patchWither.hero.ko",
+    "mode": "serviceText",
+    "sourceLang": "kor",
+    "sourceTable": "cards",
+    "sourceKey": "WITHER.description",
+    "sourceText": "내 턴 종료 시\n이 카드가 [gold]손[/gold]에 있다면,\n피해를 {Damage:diff()} 받습니다.",
+    "serviceText": "금요일에 패치가 [gold]손[/gold]에 없다면, 피해를 3 받습니다.",
+    "serviceFiles": [
+      "src/lib/wither-patch-shell.ts"
+    ],
+    "replacements": [
+      {
+        "from": "내 턴 종료 시\n이 카드가",
+        "to": "금요일에 패치가",
+        "reason": "Wither hero borrows the status card and names Friday's patch as the subject."
+      },
+      {
+        "from": "있다면",
+        "to": "없다면",
+        "reason": "Wither hero inverts the hand check."
+      },
+      {
+        "from": "{Damage:diff()}",
+        "to": "3",
+        "reason": "Wither hero uses the extracted card's damage of 3."
+      }
+    ]
+  },
+  {
+    "id": "patchWither.hero.en",
+    "mode": "serviceText",
+    "sourceLang": "eng",
+    "sourceTable": "cards",
+    "sourceKey": "WITHER.description",
+    "sourceText": "At the end of your turn, if this is in your [gold]Hand[/gold], take {Damage:diff()} damage.",
+    "serviceText": "On Friday, if the patch is not in your [gold]Hand[/gold], take 3 damage.",
+    "serviceFiles": [
+      "src/lib/wither-patch-shell.ts"
+    ],
+    "replacements": [
+      {
+        "from": "At the end of your turn, if this is in your",
+        "to": "On Friday, if the patch is not in your",
+        "reason": "Wither hero borrows the status card, names Friday's patch, and inverts the hand check."
+      },
+      {
+        "from": "{Damage:diff()}",
+        "to": "3",
+        "reason": "Wither hero uses the extracted card's damage of 3."
+      }
+    ]
+  },
+  {
     "id": "debate.hero.ko",
     "mode": "serviceText",
     "sourceLang": "kor",

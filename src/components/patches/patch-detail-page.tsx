@@ -123,10 +123,7 @@ function PatchArtHero({ art, wither = false }: { art: ResolvedPatchArt; wither?:
         alt={art.alt}
         width={1120}
         height={490}
-        className={cn(
-          "h-full w-full object-cover",
-          wither && "grayscale contrast-125 brightness-75 saturate-0",
-        )}
+        className="h-full w-full object-cover"
         style={{ objectPosition: art.objectPosition }}
       />
     </div>

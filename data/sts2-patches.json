@@ -592,8 +592,8 @@
     "titleKo": "시듦",
     "type": "wither",
     "steamUrl": null,
-    "summary": "At the end of your turn, if this is in your Hand, take 3 damage.",
-    "summaryKo": "내 턴 종료 시 이 카드가 손에 있다면, 피해를 3 받습니다.",
+    "summary": "On Friday, if the patch is not in your Hand, take 3 damage.",
+    "summaryKo": "금요일에 패치가 손에 없다면, 피해를 3 받습니다.",
     "hasBalanceChanges": false,
     "art": {
       "type": "card",

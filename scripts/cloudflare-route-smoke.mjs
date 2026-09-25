@@ -283,7 +283,7 @@ function patchCases() {
       headers: { Accept: "text/html" },
       contentType: "text/html",
       bodyIncludes: latest.type === "wither"
-        ? ["시듦", "손에 있다면", "application/ld+json"]
+        ? ["시듦", "금요일에 패치가", "application/ld+json"]
         : [
             `슬레이 더 스파이어 2 v${latest.version}`,
             latest.summaryKo,
@@ -296,7 +296,7 @@ function patchCases() {
       headers: { Accept: "text/html" },
       contentType: "text/html",
       bodyIncludes: latest.type === "wither"
-        ? ["Wither", "Hand", "application/ld+json"]
+        ? ["Wither", "On Friday", "application/ld+json"]
         : [
             `Slay the Spire 2 v${latest.version}`,
             latest.summary,

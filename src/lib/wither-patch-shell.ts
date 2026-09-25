@@ -8,12 +8,12 @@ export const WITHER_TITLE_TOKEN = {
 } as const;
 
 /**
- * Hero is the Wither card text, damage filled from the extracted card (3).
- * Chip token is the removed Ebb power, defined on the patch type chip.
+ * Hero borrows WITHER.description: Friday's patch stands in for the card,
+ * and the hand check is inverted. Damage stays 3 from the extracted card.
  */
 export const WITHER_PATCH_HERO: Record<ServiceLocale, string> = {
-  ko: "내 턴 종료 시 이 카드가 [gold]손[/gold]에 있다면, 피해를 3 받습니다.",
-  en: "At the end of your turn, if this is in your [gold]Hand[/gold], take 3 damage.",
+  ko: "금요일에 패치가 [gold]손[/gold]에 없다면, 피해를 3 받습니다.",
+  en: "On Friday, if the patch is not in your [gold]Hand[/gold], take 3 damage.",
 };
 
 export const WITHER_PATCH_CARD_CLASS =
@@ -49,7 +49,7 @@ export const WITHER_PATCH_RECOMMENDATIONS = [
     nameKo: "시듦",
     nameEn: "Wither",
     src: "/images/sts2/cards/wither1.webp",
-    locale: "WITHER.description — 내 턴 종료 시 이 카드가 손에 있다면, 피해를 3 받습니다.",
+    locale: "WITHER.description 차용 — 금요일에 패치가 손에 없다면, 피해를 3 받습니다.",
   },
   {
     role: "후보 토큰",
