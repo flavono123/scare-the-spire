@@ -114,7 +114,6 @@ function PagestormIndexCard({
       href={href}
       className={cn(
         "block rounded-lg border border-border bg-card/30 transition-colors hover:border-primary/20 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70",
-        indexReadClass(indexItemIsRead(createdAt, seenAt)),
         view === "list" ? "px-4 py-3" : "overflow-hidden",
       )}
     >
@@ -151,7 +150,7 @@ function PagestormIndexCard({
                 {isOwner ? <OwnPostMark /> : null}
               </span>
             </div>
-            <h2 className="font-game-title text-base text-foreground">
+            <h2 className={`font-game-title text-base text-foreground ${indexReadClass(indexItemIsRead(createdAt, seenAt))}`}>
               {title}
             </h2>
             <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">

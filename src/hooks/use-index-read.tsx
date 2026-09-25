@@ -20,19 +20,21 @@ export function indexItemIsRead(publishedAt: string, seenAt: string | null): boo
 }
 
 export function indexReadClass(read: boolean): string {
-  return read ? "nav-index-read" : "";
+  return read ? "spire-read" : "";
 }
 
 export function IndexReadFrame({
   surfaceId,
   publishedAt,
   children,
+  className,
 }: {
   surfaceId: string;
   publishedAt: string;
+  className?: string;
   children: ReactNode;
 }) {
   const seenAt = useIndexSeenAt(surfaceId);
   const read = indexItemIsRead(publishedAt, seenAt);
-  return <div className={cn(read && "nav-index-read")}>{children}</div>;
+  return <span className={cn(className, read && "spire-read")}>{children}</span>;
 }

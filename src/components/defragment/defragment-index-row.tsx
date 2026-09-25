@@ -147,7 +147,7 @@ export function DefragmentIndexRow({
       data-defragment-service={item.service}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className={`group cursor-pointer border-b border-border px-1 py-2 transition-colors hover:bg-muted/50 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 @xl:flex @xl:items-center @xl:gap-2 @xl:py-1.5 ${indexReadClass(indexItemIsRead(item.created_at, seenAt))}`}
+      className="group cursor-pointer border-b border-border px-1 py-2 transition-colors hover:bg-muted/50 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 @xl:flex @xl:items-center @xl:gap-2 @xl:py-1.5"
     >
       <div className="flex min-w-0 items-start gap-2 @xl:contents">
         <GameUiHoverTip label={typeLabel} className={DEFRAGMENT_TYPE_COL_CLASS}>
@@ -159,7 +159,7 @@ export function DefragmentIndexRow({
           </span>
         </GameUiHoverTip>
         <div className="min-w-0 flex-1 @xl:contents">
-          <span data-defragment-title className={DEFRAGMENT_TITLE_CLASS}>
+          <span data-defragment-title className={`${DEFRAGMENT_TITLE_CLASS} ${indexReadClass(indexItemIsRead(item.created_at, seenAt))}`}>
             {item.title}
           </span>
           <p

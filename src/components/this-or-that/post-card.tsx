@@ -93,14 +93,14 @@ export function ThisOrThatPostCard({
   return (
     <article
       onClick={handleCardClick}
-      className={`flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-colors hover:border-primary/25 ${indexReadClass(indexItemIsRead(resolvedPost.post.created_at, seenAt))}`}
+      className="flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-colors hover:border-primary/25"
     >
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <h2>
             <Link
               href={href}
-              className="line-clamp-2 font-game-title text-base font-semibold leading-snug spire-gold focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
+              className={`line-clamp-2 font-game-title text-base font-semibold leading-snug spire-gold focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 ${indexReadClass(indexItemIsRead(resolvedPost.post.created_at, seenAt))}`}
             >
               {post.reason}
             </Link>

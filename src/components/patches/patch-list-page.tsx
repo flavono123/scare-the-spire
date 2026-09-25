@@ -191,8 +191,8 @@ export async function PatchListPage({
               : "mt-1 text-sm font-medium text-amber-100/75";
             const dateClassName = isDelay ? "mt-2 text-xs text-zinc-600" : "mt-2 text-xs text-amber-100/45";
             return (
-              <IndexReadFrame key={patch.id} surfaceId="patch-notes" publishedAt={`${patch.date}T12:00:00.000Z`}>
               <article
+                key={patch.id}
                 className={cardClassName}
               >
                 <div className="flex flex-wrap items-center gap-2">
@@ -222,14 +222,13 @@ export async function PatchListPage({
                 <p className={dateClassName}>{patch.date}</p>
                 <PatchArtPreview art={patchArt} priority={index === 0} tone={isDelay ? "building" : "watching"} />
               </article>
-              </IndexReadFrame>
             );
           }
 
           if (isBuilding) {
             return (
-              <IndexReadFrame key={patch.id} surfaceId="patch-notes" publishedAt={`${patch.date}T12:00:00.000Z`}>
               <article
+                key={patch.id}
                 className="block rounded-lg border border-zinc-800 bg-zinc-950/35 p-4 shadow-inner"
               >
                 <div className="flex flex-wrap items-center gap-2">
@@ -263,18 +262,17 @@ export async function PatchListPage({
                     </a>
                   )}
                 </div>
-                <p className="mt-1 text-sm font-medium text-zinc-500">{title}</p>
+                <IndexReadFrame surfaceId="patch-notes" publishedAt={`${patch.date}T12:00:00.000Z`} className="mt-1 block text-sm font-medium text-zinc-500">{title}</IndexReadFrame>
                 <p className="mt-2 text-xs text-zinc-600">{patch.date}</p>
                 <PatchArtPreview art={patchArt} priority={index === 0} tone="building" />
               </article>
-              </IndexReadFrame>
             );
           }
 
           if (backstab) {
             return (
-              <IndexReadFrame key={patch.id} surfaceId="patch-notes" publishedAt={`${patch.date}T12:00:00.000Z`}>
               <Link
+                key={patch.id}
                 href={localizeHrefWithGameLocale(`/patches/${patch.version}`, serviceLocale, gameLocale)}
                 prefetch={false}
                 className="block rounded-lg border border-rose-500/30 bg-rose-950/15 p-4 shadow-[0_0_24px_rgba(244,63,94,0.08)] transition-colors hover:border-rose-400/50 hover:bg-rose-950/25"
@@ -310,13 +308,12 @@ export async function PatchListPage({
                 <p className="mt-0.5 text-xs text-rose-100/45">{patch.date}</p>
                 {patchArt && <PatchArtPreview art={patchArt} priority={index === 0} />}
               </Link>
-              </IndexReadFrame>
             );
           }
 
           return (
-            <IndexReadFrame key={patch.id} surfaceId="patch-notes" publishedAt={`${patch.date}T12:00:00.000Z`}>
             <Link
+              key={patch.id}
               href={localizeHrefWithGameLocale(`/patches/${patch.version}`, serviceLocale, gameLocale)}
               prefetch={false}
               className="block rounded-lg border border-border bg-card/50 p-4 hover:border-primary/40 hover:bg-card/80 transition-colors"
@@ -354,12 +351,11 @@ export async function PatchListPage({
                   )}
                 </span>
               </div>
-              <p className="mt-1 text-sm font-medium">{title}</p>
+              <IndexReadFrame surfaceId="patch-notes" publishedAt={`${patch.date}T12:00:00.000Z`} className="mt-1 block text-sm font-medium">{title}</IndexReadFrame>
               <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{summary}</p>
               <p className="mt-0.5 text-xs text-muted-foreground">{patch.date}</p>
               {patchArt && <PatchArtPreview art={patchArt} priority={index === 0} />}
             </Link>
-            </IndexReadFrame>
           );
         })}
       </div>

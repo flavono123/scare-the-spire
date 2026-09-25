@@ -80,11 +80,11 @@ export function DecisionsDecisionsPostCard({
       tabIndex={0}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className={`flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/25 hover:bg-card/35 hover:shadow-lg hover:shadow-black/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 ${indexReadClass(indexItemIsRead(post.created_at, seenAt))}`}
+      className="flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/25 hover:bg-card/35 hover:shadow-lg hover:shadow-black/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
     >
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <h2 className="line-clamp-2 font-game-title text-base font-semibold leading-snug spire-gold">
+          <h2 className={`line-clamp-2 font-game-title text-base font-semibold leading-snug spire-gold ${indexReadClass(indexItemIsRead(post.created_at, seenAt))}`}>
             {post.title}
           </h2>
           <span className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">

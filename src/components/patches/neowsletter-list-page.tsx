@@ -49,18 +49,17 @@ export async function NeowsletterListPage({
           const summary = serviceLocale === "ko" ? issue.summaryKo : issue.summary;
           const art = neowsletterArt(issue, serviceLocale);
           return (
-            <IndexReadFrame key={issue.id} surfaceId="neowsletters" publishedAt={issue.addedAt}>
             <Link
+              key={issue.id}
               href={localizeHrefWithGameLocale(`/patches/neowsletters/${issue.id}`, serviceLocale, gameLocale)}
               prefetch={false}
               className="block rounded-lg border border-border bg-card/50 p-4 transition-colors hover:border-primary/40 hover:bg-card/80"
             >
-              <p className="font-game-title text-lg text-primary">{title}</p>
+              <IndexReadFrame surfaceId="neowsletters" publishedAt={issue.addedAt} className="block font-game-title text-lg text-primary">{title}</IndexReadFrame>
               <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{summary}</p>
               <p className="mt-0.5 text-xs text-muted-foreground">{issue.date}</p>
               {art ? <PatchArtPreview art={art} priority /> : null}
             </Link>
-            </IndexReadFrame>
           );
         })}
       </div>

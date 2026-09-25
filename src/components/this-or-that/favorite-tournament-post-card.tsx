@@ -123,7 +123,7 @@ export function FavoriteTournamentPostCard({
       aria-label={title}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className={`favorite-tournament-lockup group cursor-pointer hover:z-10 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 ${indexReadClass(indexItemIsRead(post.created_at, seenAt))}`}
+      className="favorite-tournament-lockup group cursor-pointer hover:z-10 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
     >
       <span className="favorite-tournament-lockup-plate" aria-hidden />
       <div className="relative z-[1]">
@@ -176,7 +176,7 @@ export function FavoriteTournamentPostCard({
             <span className="relative z-[1] shrink-0 pt-0.5">
               <DecisionsPresetLead presetKey={post.preset_key} entityMap={entityMap} />
             </span>
-            <h2 className="relative z-[1] min-w-0 flex-1 line-clamp-2 font-service text-[15px] font-semibold leading-snug text-foreground">
+            <h2 className={`relative z-[1] min-w-0 flex-1 line-clamp-2 font-service text-[15px] font-semibold leading-snug text-foreground ${indexReadClass(indexItemIsRead(post.created_at, seenAt))}`}>
               {title}
             </h2>
           </div>
@@ -194,7 +194,7 @@ export function FavoriteTournamentPostCard({
               />
               {isOwner && <OwnPostMark />}
             </span>
-            <h2 className="min-w-0 flex-1 line-clamp-2 font-service text-[15px] font-semibold leading-snug text-foreground">
+            <h2 className={`min-w-0 flex-1 line-clamp-2 font-service text-[15px] font-semibold leading-snug text-foreground ${indexReadClass(indexItemIsRead(post.created_at, seenAt))}`}>
               {title}
             </h2>
           </>
