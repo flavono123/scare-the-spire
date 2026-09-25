@@ -10,6 +10,7 @@ import {
   readUnreadCache,
   seenStamp,
   surfaceIdForPath,
+  topBarPatchUnread,
   toyBoxHasUnread,
   writeNavForce,
   writeNavSeen,
@@ -62,7 +63,7 @@ export function useNavSeen(pathname: string): { unreadIds: string[]; toyBox: boo
   return {
     unreadIds,
     toyBox: toyBoxHasUnread(unreadIds),
-    patches: unreadIds.includes("patches"),
+    patches: topBarPatchUnread(unreadIds),
   };
 }
 

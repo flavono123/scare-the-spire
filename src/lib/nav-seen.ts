@@ -3,6 +3,15 @@ import { stripGameLocaleFromPath } from "@/lib/i18n";
 import { PAGESTORM_HREF } from "@/lib/pagestorm";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import patchesJson from "../../data/sts2-patches.json";
+import neowslettersJson from "../../data/sts2-neowsletters.json";
+
+const PATCH_NOTE_TIMES = (patchesJson as { date: string }[]).map((patch) => `${patch.date}T12:00:00.000Z`);
+const NEOWSLETTER_ADDED_TIMES = (neowslettersJson as { addedAt: string }[]).map((issue) => issue.addedAt);
+
+export function contentIsNewerThanSeen(publishedAt: string, seenAt: string): boolean {
+  return publishedAt > seenAt;
+}
 
 export const NAV_SEEN_EVENT = "sts-nav-seen";
 
@@ -15,14 +24,15 @@ export type NavSeenSurface = {
   id: string;
   href: string;
   label: string;
-  table: "comments" | "combo_posts" | "transfigure_posts" | "this_or_that_posts" | "favorite_tournament_posts" | "chemical_posts" | "decisions_decisions_posts" | "pagestorm_posts" | "runs";
-  storyLikes?: readonly string[];
+  table?: "combo_posts" | "transfigure_posts" | "this_or_that_posts" | "favorite_tournament_posts" | "chemical_posts" | "decisions_decisions_posts" | "pagestorm_posts" | "runs";
+  catalog?: "patch-notes" | "neowsletters";
   /** Menu row that should also light when this surface is unread. */
   alsoShowOn?: string;
 };
 
 export const NAV_SEEN_SURFACES: readonly NavSeenSurface[] = [
-  { id: "patches", href: "/patches", label: "패치노트", table: "comments", storyLikes: ["sts2-patch:%", "neowsletter:%"] },
+  { id: "patch-notes", href: "/patches", label: "패치 노트", catalog: "patch-notes" },
+  { id: "neowsletters", href: "/patches/neowsletters", label: "니오우스레터", catalog: "neowsletters" },
   { id: "combo", href: "/c-c-c-combo", label: "코오오옴보", table: "combo_posts" },
   { id: "transfigure", href: "/transfigure", label: "변형", table: "transfigure_posts" },
   { id: "this-or-that", href: "/this-or-that", label: "이거 아님 저거?", table: "this_or_that_posts" },
@@ -82,10 +92,15 @@ export function writeNavSeen(storage: Pick<Storage, "setItem">, seen: NavSeenMap
 
 export function surfaceIdForPath(pathname: string): string | null {
   const path = stripGameLocaleFromPath(pathname);
+  if (path === "/patches/changes" || path.startsWith("/patches/changes/")) return null;
   const matches = NAV_SEEN_SURFACES
     .filter((surface) => path === surface.href || path.startsWith(`${surface.href}/`))
     .toSorted((left, right) => right.href.length - left.href.length);
   return matches[0]?.id ?? null;
+}
+
+export function topBarPatchUnread(unreadIds: readonly string[]): boolean {
+  return unreadIds.includes("patch-notes") || unreadIds.includes("neowsletters");
 }
 
 export function navSeenIdForHref(href: string): string | null {
@@ -101,7 +116,7 @@ export function displayedUnreadIds(unreadIds: readonly string[]): string[] {
 }
 
 export function toyBoxHasUnread(unreadIds: readonly string[]): boolean {
-  return unreadIds.some((id) => id !== "patches");
+  return unreadIds.some((id) => id !== "patch-notes" && id !== "neowsletters");
 }
 
 export function readNavForce(storage: Pick<Storage, "getItem">): NavForceMap {
@@ -168,28 +183,30 @@ export function writeUnreadCache(storage: Pick<Storage, "setItem">, stamp: strin
   }
 }
 
+function catalogTimes(surface: NavSeenSurface): readonly string[] {
+  if (surface.catalog === "patch-notes") return PATCH_NOTE_TIMES;
+  if (surface.catalog === "neowsletters") return NEOWSLETTER_ADDED_TIMES;
+  return [];
+}
+
 async function surfaceHasNewer(surface: NavSeenSurface, since: string): Promise<boolean> {
-  let query = supabase
-    .from(surface.table)
-    .select("created_at")
-    .eq("env", supabaseEnv)
-    .gt("created_at", since)
-    .order("created_at", { ascending: false })
-    .limit(1);
-  if (surface.storyLikes?.length) {
-    const filter = surface.storyLikes.map((pattern) => `story_id.like.${pattern}`).join(",");
-    query = query.or(filter);
-  }
+  if (surface.catalog) return catalogTimes(surface).some((publishedAt) => contentIsNewerThanSeen(publishedAt, since));
+  if (!surface.table || !supabaseEnabled) return false;
   const { data, error } = await withSupabaseTimeout(
     `nav-seen.${surface.id}`,
-    query,
+    supabase
+      .from(surface.table)
+      .select("created_at")
+      .eq("env", supabaseEnv)
+      .gt("created_at", since)
+      .order("created_at", { ascending: false })
+      .limit(1),
   );
   if (error) return false;
   return (data?.length ?? 0) > 0;
 }
 
 export async function fetchUnreadSurfaceIds(seen: NavSeenMap): Promise<string[]> {
-  if (!supabaseEnabled) return [];
   const flags = await Promise.all(NAV_SEEN_SURFACES.map(async (surface) => {
     const since = seen[surface.id];
     if (!since) return null;

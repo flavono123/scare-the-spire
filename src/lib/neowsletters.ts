@@ -4,7 +4,10 @@ import path from "path";
 export interface NeowsletterIssue {
   id: string;
   issue: number;
+  /** Issue date from the letter. Not used for the unread marker. */
   date: string;
+  /** When this issue was added to the site. Backfills must set this to the add time. */
+  addedAt: string;
   title: string;
   titleKo: string;
   sourceUrl: string;

@@ -5,6 +5,7 @@ import {
   readNavForce,
   readNavSeen,
   surfaceIdForPath,
+  topBarPatchUnread,
   toyBoxHasUnread,
   writeNavSeen,
 } from "@/lib/nav-seen";
@@ -13,7 +14,11 @@ function applyUnread(ids: readonly string[]) {
   const shown = new Set(effectiveUnreadIds(ids, readNavForce(window.localStorage)));
   document.querySelectorAll<HTMLElement>("[data-nav-attention]").forEach((node) => {
     const name = node.getAttribute("data-nav-attention");
-    const on = name === "toy-box" ? toyBoxHasUnread([...shown]) : Boolean(name && shown.has(name));
+    const on = name === "toy-box"
+      ? toyBoxHasUnread([...shown])
+      : name === "patches"
+        ? topBarPatchUnread([...shown])
+        : Boolean(name && shown.has(name));
     node.hidden = !on;
   });
 }

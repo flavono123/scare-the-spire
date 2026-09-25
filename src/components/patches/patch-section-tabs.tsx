@@ -1,5 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { NavAttentionDot } from "@/components/nav-attention-dot";
 import Image from "@/components/ui/static-image";
+import { useNavSeen } from "@/hooks/use-nav-seen";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -16,6 +21,8 @@ export function PatchSectionTabs({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
+  const pathname = usePathname();
+  const navSeen = useNavSeen(pathname ?? "/patches");
   const copy = serviceMessages[serviceLocale].patchChanges.tabs;
   const items = [
     {
@@ -23,18 +30,21 @@ export function PatchSectionTabs({
       label: copy.notes,
       href: "/patches",
       icon: "/images/sts2/nav/patch_notes_icon.png",
+      attentionId: "patch-notes",
     },
     {
       id: "changes" as const,
       label: copy.changes,
       href: "/patches/changes",
       icon: "/images/sts2/relics/bookmark.webp",
+      attentionId: null,
     },
     {
       id: "neowsletters" as const,
       label: copy.neowsletters,
       href: "/patches/neowsletters",
       icon: "/images/sts2/ancients/neow.webp",
+      attentionId: "neowsletters",
     },
   ];
 
@@ -52,8 +62,15 @@ export function PatchSectionTabs({
               selected ? "text-primary" : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <Image src={item.icon} alt="" width={24} height={24} className="h-6 w-6 object-contain" />
+            <Image src={item.icon} alt="" width={24} height={24} className="h-6 w-6 shrink-0 object-contain" />
             <span>{item.label}</span>
+            {item.attentionId && (
+              <NavAttentionDot
+                placement="trail"
+                marker={item.attentionId}
+                dormant={!navSeen.unreadIds.includes(item.attentionId)}
+              />
+            )}
             {selected && <span className="absolute inset-x-0 -bottom-px h-px bg-primary" />}
           </Link>
         );
