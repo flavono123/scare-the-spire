@@ -15,6 +15,7 @@ import {
   ChipAccentRail,
 } from "@/components/ui/chip-accent-rail";
 import { cn } from "@/lib/utils";
+import { indexItemIsRead, indexReadClass, useIndexSeenAt } from "@/hooks/use-index-read";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import { buildFavoriteTournamentCommentThreadKey } from "@/lib/comment-threads";
 import { sortPoolRefs } from "@/lib/decisions-decisions";
@@ -62,6 +63,7 @@ export function FavoriteTournamentPostCard({
 }) {
   const copy = serviceMessages[serviceLocale].favoriteTournament;
   const router = useRouter();
+  const seenAt = useIndexSeenAt("favorite-tournament");
   const href = localizeHrefWithGameLocale(
     `${FAVORITE_TOURNAMENT_HREF}/${post.id}`,
     serviceLocale,
@@ -121,7 +123,7 @@ export function FavoriteTournamentPostCard({
       aria-label={title}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="favorite-tournament-lockup group cursor-pointer hover:z-10 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
+      className={`favorite-tournament-lockup group cursor-pointer hover:z-10 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 ${indexReadClass(indexItemIsRead(post.created_at, seenAt))}`}
     >
       <span className="favorite-tournament-lockup-plate" aria-hidden />
       <div className="relative z-[1]">

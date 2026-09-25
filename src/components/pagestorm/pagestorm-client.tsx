@@ -31,6 +31,7 @@ import {
 } from "@/lib/pagestorm";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { cn } from "@/lib/utils";
+import { indexItemIsRead, indexReadClass, useIndexSeenAt } from "@/hooks/use-index-read";
 import { serviceMessages } from "@/messages/service";
 import type { PagestormEditorSaveInput } from "./pagestorm-editor";
 
@@ -93,6 +94,7 @@ function PagestormIndexCard({
   thumbnailKind,
   postKey,
   authorToken,
+  createdAt,
 }: {
   href: string;
   view: PagestormIndexView;
@@ -104,12 +106,15 @@ function PagestormIndexCard({
   thumbnailKind: string | null;
   postKey: string;
   authorToken?: AuthorProfileTokenInput | null;
+  createdAt: string;
 }) {
+  const seenAt = useIndexSeenAt("pagestorm");
   return (
     <Link
       href={href}
       className={cn(
         "block rounded-lg border border-border bg-card/30 transition-colors hover:border-primary/20 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70",
+        indexReadClass(indexItemIsRead(createdAt, seenAt)),
         view === "list" ? "px-4 py-3" : "overflow-hidden",
       )}
     >
@@ -284,6 +289,7 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
               thumbnailUrl={post.thumbnailUrl}
               thumbnailKind={post.thumbnailKind}
               postKey={post.id}
+              createdAt={post.created_at}
               authorToken={post}
             />
           ))}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PatchArtPreview } from "@/components/patches/patch-art";
 import { PatchSectionTabs } from "@/components/patches/patch-section-tabs";
+import { IndexReadFrame } from "@/hooks/use-index-read";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -48,8 +49,8 @@ export async function NeowsletterListPage({
           const summary = serviceLocale === "ko" ? issue.summaryKo : issue.summary;
           const art = neowsletterArt(issue, serviceLocale);
           return (
+            <IndexReadFrame key={issue.id} surfaceId="neowsletters" publishedAt={issue.addedAt}>
             <Link
-              key={issue.id}
               href={localizeHrefWithGameLocale(`/patches/neowsletters/${issue.id}`, serviceLocale, gameLocale)}
               prefetch={false}
               className="block rounded-lg border border-border bg-card/50 p-4 transition-colors hover:border-primary/40 hover:bg-card/80"
@@ -59,6 +60,7 @@ export async function NeowsletterListPage({
               <p className="mt-0.5 text-xs text-muted-foreground">{issue.date}</p>
               {art ? <PatchArtPreview art={art} priority /> : null}
             </Link>
+            </IndexReadFrame>
           );
         })}
       </div>

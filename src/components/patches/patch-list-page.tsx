@@ -22,6 +22,7 @@ import { PatchArtPreview } from "@/components/patches/patch-art";
 import { PatchBalanceChip, PatchTypeChip } from "@/components/patches/patch-chips";
 import { PatchDraftChip } from "@/components/patches/patch-draft-chrome";
 import { PatchSectionTabs } from "@/components/patches/patch-section-tabs";
+import { IndexReadFrame } from "@/hooks/use-index-read";
 import { RichText } from "@/components/rich-text";
 import { TEXT_GREEN } from "@/lib/sts2-card-style";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
@@ -190,8 +191,8 @@ export async function PatchListPage({
               : "mt-1 text-sm font-medium text-amber-100/75";
             const dateClassName = isDelay ? "mt-2 text-xs text-zinc-600" : "mt-2 text-xs text-amber-100/45";
             return (
+              <IndexReadFrame key={patch.id} surfaceId="patch-notes" publishedAt={`${patch.date}T12:00:00.000Z`}>
               <article
-                key={patch.id}
                 className={cardClassName}
               >
                 <div className="flex flex-wrap items-center gap-2">
@@ -221,13 +222,14 @@ export async function PatchListPage({
                 <p className={dateClassName}>{patch.date}</p>
                 <PatchArtPreview art={patchArt} priority={index === 0} tone={isDelay ? "building" : "watching"} />
               </article>
+              </IndexReadFrame>
             );
           }
 
           if (isBuilding) {
             return (
+              <IndexReadFrame key={patch.id} surfaceId="patch-notes" publishedAt={`${patch.date}T12:00:00.000Z`}>
               <article
-                key={patch.id}
                 className="block rounded-lg border border-zinc-800 bg-zinc-950/35 p-4 shadow-inner"
               >
                 <div className="flex flex-wrap items-center gap-2">
@@ -265,13 +267,14 @@ export async function PatchListPage({
                 <p className="mt-2 text-xs text-zinc-600">{patch.date}</p>
                 <PatchArtPreview art={patchArt} priority={index === 0} tone="building" />
               </article>
+              </IndexReadFrame>
             );
           }
 
           if (backstab) {
             return (
+              <IndexReadFrame key={patch.id} surfaceId="patch-notes" publishedAt={`${patch.date}T12:00:00.000Z`}>
               <Link
-                key={patch.id}
                 href={localizeHrefWithGameLocale(`/patches/${patch.version}`, serviceLocale, gameLocale)}
                 prefetch={false}
                 className="block rounded-lg border border-rose-500/30 bg-rose-950/15 p-4 shadow-[0_0_24px_rgba(244,63,94,0.08)] transition-colors hover:border-rose-400/50 hover:bg-rose-950/25"
@@ -307,12 +310,13 @@ export async function PatchListPage({
                 <p className="mt-0.5 text-xs text-rose-100/45">{patch.date}</p>
                 {patchArt && <PatchArtPreview art={patchArt} priority={index === 0} />}
               </Link>
+              </IndexReadFrame>
             );
           }
 
           return (
+            <IndexReadFrame key={patch.id} surfaceId="patch-notes" publishedAt={`${patch.date}T12:00:00.000Z`}>
             <Link
-              key={patch.id}
               href={localizeHrefWithGameLocale(`/patches/${patch.version}`, serviceLocale, gameLocale)}
               prefetch={false}
               className="block rounded-lg border border-border bg-card/50 p-4 hover:border-primary/40 hover:bg-card/80 transition-colors"
@@ -355,6 +359,7 @@ export async function PatchListPage({
               <p className="mt-0.5 text-xs text-muted-foreground">{patch.date}</p>
               {patchArt && <PatchArtPreview art={patchArt} priority={index === 0} />}
             </Link>
+            </IndexReadFrame>
           );
         })}
       </div>

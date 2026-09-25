@@ -25,6 +25,17 @@ import {
 import type { GameLocale } from "@/lib/i18n";
 import { serviceDateLocale } from "@/lib/relative-time";
 import { cn } from "@/lib/utils";
+import { indexItemIsRead, indexReadClass, useIndexSeenAt } from "@/hooks/use-index-read";
+
+const DEFRAGMENT_SEEN_SURFACE: Record<string, string> = {
+  combo: "combo",
+  transfigure: "transfigure",
+  this_or_that: "this-or-that",
+  favorite_tournament: "favorite-tournament",
+  chemical_x: "chemical-x",
+  decisions_decisions: "decisions-decisions",
+  pagestorm: "pagestorm",
+};
 import { serviceMessages } from "@/messages/service";
 import {
   DEFRAGMENT_AUTHOR_COL_CLASS,
@@ -69,6 +80,7 @@ export function DefragmentIndexRow({
   onToggleTotLike?: (postId: string) => void;
 }) {
   const serviceLocale = useServiceLocale();
+  const seenAt = useIndexSeenAt(DEFRAGMENT_SEEN_SURFACE[item.service] ?? "defragment");
   const copy = serviceMessages[serviceLocale].defragment;
   const tips = serviceMessages[serviceLocale].engagementTips;
   const totCopy = serviceMessages[serviceLocale].thisOrThat;
@@ -135,7 +147,7 @@ export function DefragmentIndexRow({
       data-defragment-service={item.service}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="group cursor-pointer border-b border-border px-1 py-2 transition-colors hover:bg-muted/50 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 @xl:flex @xl:items-center @xl:gap-2 @xl:py-1.5"
+      className={`group cursor-pointer border-b border-border px-1 py-2 transition-colors hover:bg-muted/50 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 @xl:flex @xl:items-center @xl:gap-2 @xl:py-1.5 ${indexReadClass(indexItemIsRead(item.created_at, seenAt))}`}
     >
       <div className="flex min-w-0 items-start gap-2 @xl:contents">
         <GameUiHoverTip label={typeLabel} className={DEFRAGMENT_TYPE_COL_CLASS}>

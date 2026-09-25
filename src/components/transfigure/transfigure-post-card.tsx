@@ -19,6 +19,7 @@ import type { TransfigurePost } from "@/lib/transfigure-types";
 import { serviceMessages } from "@/messages/service";
 import { formatTimeAgo } from "@/lib/relative-time";
 import { cn } from "@/lib/utils";
+import { indexItemIsRead, indexReadClass, useIndexSeenAt } from "@/hooks/use-index-read";
 
 interface TransfigurePostCardProps {
   post: TransfigurePost;
@@ -54,6 +55,7 @@ export function TransfigurePostCard({
   readOnlyEngagement = false,
 }: TransfigurePostCardProps) {
   const copy = serviceMessages[serviceLocale].transfigure;
+  const seenAt = useIndexSeenAt("transfigure");
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const resource = entityMap.get(`${post.resource_type}:${post.resource_id}`);
   let router: ReturnType<typeof useRouter> | null = null;
@@ -98,6 +100,7 @@ export function TransfigurePostCard({
       className={cn(
         "flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/25 hover:bg-card/35 hover:shadow-lg hover:shadow-black/25 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 active:translate-y-0 motion-reduce:transform-none",
         className,
+        indexReadClass(indexItemIsRead(post.created_at, seenAt)),
       )}
     >
       <div className="mb-4 flex items-start justify-between gap-3">

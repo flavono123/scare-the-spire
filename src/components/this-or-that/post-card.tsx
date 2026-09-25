@@ -18,6 +18,7 @@ import {
 } from "@/components/spire-icon";
 import { ThisOrThatLikeButton } from "@/components/this-or-that/like-button";
 import { ThisOrThatResourcePanel } from "@/components/this-or-that/resource-panel";
+import { indexItemIsRead, indexReadClass, useIndexSeenAt } from "@/hooks/use-index-read";
 import {
   ThisOrThatVoteChoiceFrame,
   ThisOrThatVoteStatus,
@@ -78,6 +79,7 @@ export function ThisOrThatPostCard({
   const copy = serviceMessages[serviceLocale].thisOrThat;
   const tips = serviceMessages[serviceLocale].engagementTips;
   const router = useRouter();
+  const seenAt = useIndexSeenAt("this-or-that");
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const href = localizeHrefWithGameLocale(`/this-or-that/${post.id}`, serviceLocale, gameLocale);
   const commentTip = commentCount > 0
@@ -91,7 +93,7 @@ export function ThisOrThatPostCard({
   return (
     <article
       onClick={handleCardClick}
-      className="flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-colors hover:border-primary/25"
+      className={`flex h-full cursor-pointer flex-col rounded-lg border border-border bg-card/25 px-4 py-4 transition-colors hover:border-primary/25 ${indexReadClass(indexItemIsRead(resolvedPost.post.created_at, seenAt))}`}
     >
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">

@@ -1047,6 +1047,15 @@
   animation: nav-attention-sine 1.8s ease-in-out infinite;
 }
 
+.nav-index-read {
+  filter: grayscale(1);
+  opacity: 0.72;
+}
+
+.nav-index-read:hover {
+  opacity: 0.88;
+}
+
 .nav-attention-dot.nav-attention-dot-trail {
   position: static;
   top: auto;
