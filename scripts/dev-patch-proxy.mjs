@@ -200,6 +200,7 @@ const patchReloadJobs = [
       "src/components/site-navbar.tsx",
       "src/components/site-nav-dropdown.tsx",
       "src/components/nav-attention-dot.tsx",
+      "src/components/patches/patch-section-tabs.tsx",
       "scripts/build-patch-worker.tsx",
     ],
     args: ["exec", "tsx", "scripts/build-patch-worker.tsx"],
