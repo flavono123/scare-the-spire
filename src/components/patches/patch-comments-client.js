@@ -1143,7 +1143,13 @@
     }
     const skeleton = document.createElement("div");
     skeleton.setAttribute("aria-busy", "true");
-    skeleton.style.cssText = "position:fixed;bottom:12px;left:12px;z-index:40;height:32px;width:224px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.1)";
+    skeleton.style.cssText = "position:fixed;bottom:12px;left:12px;z-index:40;height:26px;width:11rem;border-radius:999px;border:1px solid rgba(255,255,255,.1);background-image:linear-gradient(100deg,rgba(255,255,255,.05) 20%,rgba(255,255,255,.38) 50%,rgba(255,255,255,.05) 80%);background-size:220% 100%;animation:courier-shimmer 1s linear infinite";
+    if (!document.getElementById("sts-courier-motion")) {
+      const style = document.createElement("style");
+      style.id = "sts-courier-motion";
+      style.textContent = "@keyframes courier-shimmer{0%{background-position:120% 0}100%{background-position:-120% 0}}@keyframes courier-fade{from{opacity:0}to{opacity:1}}";
+      document.head.appendChild(style);
+    }
     place(skeleton);
     if (!config) {
       root.replaceChildren();
@@ -1166,7 +1172,7 @@
         const bar = document.createElement("div");
         bar.style.cssText = "position:fixed;bottom:12px;left:12px;z-index:40;display:flex;max-width:min(28rem,calc(100vw - 1.5rem));align-items:center;gap:8px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.75);padding:4px 8px;font-size:12px;color:#d4d4d8";
         const link = document.createElement("a");
-        link.style.cssText = "display:flex;min-width:0;align-items:center;gap:6px;overflow:hidden;color:inherit;text-decoration:none";
+        link.style.cssText = "display:flex;min-width:0;align-items:center;gap:6px;overflow:hidden;color:inherit;text-decoration:none;animation:courier-fade 300ms ease";
         const token = document.createElement("img");
         token.alt = "";
         token.width = 16;
@@ -1189,6 +1195,9 @@
           link.href = courierHref(String(item.storyId), item.id);
           token.src = courierToken(String(item.storyId));
           text.textContent = item.text;
+          link.style.animation = "none";
+          void link.offsetWidth;
+          link.style.animation = "courier-fade 300ms ease";
         };
         paint();
         bar.append(link, hide);

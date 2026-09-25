@@ -21,6 +21,10 @@ const WINDOW_MS = 14 * 24 * 60 * 60 * 1000;
 const LIMIT = 12;
 const ROTATE_MS = 8000;
 
+let sessionItems: CourierItem[] | null = null;
+let sessionLocale: string | null = null;
+let sessionLoad: Promise<CourierItem[]> | null = null;
+
 type CourierItem = {
   id: string;
   storyId: string;
@@ -120,13 +124,54 @@ function commentHref(storyId: string, commentId: string): string {
   return `${base.replace(/#comments$/, "")}#history-comment-${commentId}`;
 }
 
+function loadCourierSession(serviceLocale: "ko" | "en"): Promise<CourierItem[]> {
+  if (sessionItems && sessionLocale === serviceLocale) return Promise.resolve(sessionItems);
+  if (sessionLoad && sessionLocale === serviceLocale) return sessionLoad;
+  sessionLocale = serviceLocale;
+  const since = new Date(Date.now() - WINDOW_MS).toISOString();
+  sessionLoad = supabase.from("comments")
+    .select("id, story_id, content, created_at")
+    .eq("env", supabaseEnv)
+    .gte("created_at", since)
+    .order("created_at", { ascending: false })
+    .limit(LIMIT)
+    .then(({ data }) => {
+      const next = (data ?? []).flatMap((row) => {
+        const id = String(row.id ?? "");
+        const storyId = String(row.story_id ?? "");
+        const text = plainComment(String(row.content ?? ""));
+        if (!id || !storyId || !text) return [];
+        const described = describe(storyId, serviceLocale);
+        return [{
+          id,
+          storyId,
+          text,
+          source: described.source,
+          token: described.token,
+          href: localizeHref(commentHref(storyId, id), serviceLocale),
+        }];
+      });
+      sessionItems = next;
+      sessionLoad = null;
+      return next;
+    })
+    .catch(() => {
+      sessionLoad = null;
+      sessionItems = sessionItems ?? [];
+      return sessionItems;
+    });
+  return sessionLoad;
+}
+
 export function CommentCourier() {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].profile.courier;
   const [enabled, setEnabled] = useState(true);
   const [known, setKnown] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-  const [items, setItems] = useState<CourierItem[]>([]);
+  const [loaded, setLoaded] = useState(() => sessionItems != null && sessionLocale === serviceLocale);
+  const [items, setItems] = useState<CourierItem[]>(() => (
+    sessionLocale === serviceLocale ? sessionItems ?? [] : []
+  ));
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
@@ -148,41 +193,13 @@ export function CommentCourier() {
   useEffect(() => {
     if (!known || !enabled || !supabaseEnabled) return;
     let cancelled = false;
-    const load = () => {
-      const since = new Date(Date.now() - WINDOW_MS).toISOString();
-      supabase.from("comments")
-        .select("id, story_id, content, created_at")
-        .eq("env", supabaseEnv)
-        .gte("created_at", since)
-        .order("created_at", { ascending: false })
-        .limit(LIMIT)
-        .then(({ data }) => {
-          if (cancelled) return;
-          const next = (data ?? []).flatMap((row) => {
-            const id = String(row.id ?? "");
-            const storyId = String(row.story_id ?? "");
-            const text = plainComment(String(row.content ?? ""));
-            if (!id || !storyId || !text) return [];
-            const described = describe(storyId, serviceLocale);
-            return [{
-              id,
-              storyId,
-              text,
-              source: described.source,
-              token: described.token,
-              href: localizeHref(commentHref(storyId, id), serviceLocale),
-            }];
-          });
-          setItems(next);
-          setIndex(0);
-          setLoaded(true);
-        });
-    };
-    load();
-    const timer = window.setInterval(load, 3 * 60 * 1000);
+    loadCourierSession(serviceLocale).then((next) => {
+      if (cancelled) return;
+      setItems(next);
+      setLoaded(true);
+    });
     return () => {
       cancelled = true;
-      window.clearInterval(timer);
     };
   }, [known, enabled, serviceLocale]);
 
@@ -200,7 +217,7 @@ export function CommentCourier() {
     return (
       <div
         aria-busy="true"
-        className="fixed bottom-3 left-3 z-40 h-8 w-56 animate-pulse rounded-full border border-white/10 bg-white/10"
+        className="courier-skeleton fixed bottom-3 left-3 z-40 h-[26px] w-44 rounded-full border border-white/10"
       />
     );
   }
@@ -231,7 +248,7 @@ export function CommentCourier() {
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      <Link href={item.href} className="flex min-w-0 items-center gap-1.5">
+      <Link key={item.id} href={item.href} className="courier-line flex min-w-0 items-center gap-1.5">
         <GameUiHoverTip label={item.source}>
           <Image src={item.token} alt={item.source} width={16} height={16} className="h-4 w-4 object-contain" />
         </GameUiHoverTip>
