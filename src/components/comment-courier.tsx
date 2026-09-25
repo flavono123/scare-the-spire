@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
@@ -83,6 +83,19 @@ export function courierSourceCatalog(locale: "ko" | "en") {
   return [...fixed, ...services, ...codex];
 }
 
+function subscribeCourier(onChange: () => void) {
+  window.addEventListener(CHANGE_EVENT, onChange);
+  window.addEventListener("storage", onChange);
+  return () => {
+    window.removeEventListener(CHANGE_EVENT, onChange);
+    window.removeEventListener("storage", onChange);
+  };
+}
+
+function courierPreference(): "on" | "off" {
+  return readCourierEnabled() ? "on" : "off";
+}
+
 export function readCourierEnabled(): boolean {
   if (typeof window === "undefined") return true;
   return window.localStorage.getItem(STORAGE_KEY) !== "0";
@@ -129,13 +142,14 @@ function loadCourierSession(serviceLocale: "ko" | "en"): Promise<CourierItem[]> 
   if (sessionLoad && sessionLocale === serviceLocale) return sessionLoad;
   sessionLocale = serviceLocale;
   const since = new Date(Date.now() - WINDOW_MS).toISOString();
-  sessionLoad = supabase.from("comments")
-    .select("id, story_id, content, created_at")
-    .eq("env", supabaseEnv)
-    .gte("created_at", since)
-    .order("created_at", { ascending: false })
-    .limit(LIMIT)
-    .then(({ data }) => {
+  const pending = (async (): Promise<CourierItem[]> => {
+    try {
+      const { data } = await supabase.from("comments")
+        .select("id, story_id, content, created_at")
+        .eq("env", supabaseEnv)
+        .gte("created_at", since)
+        .order("created_at", { ascending: false })
+        .limit(LIMIT);
       const next = (data ?? []).flatMap((row) => {
         const id = String(row.id ?? "");
         const storyId = String(row.story_id ?? "");
@@ -152,43 +166,34 @@ function loadCourierSession(serviceLocale: "ko" | "en"): Promise<CourierItem[]> 
         }];
       });
       sessionItems = next;
-      sessionLoad = null;
       return next;
-    })
-    .catch(() => {
-      sessionLoad = null;
+    } catch {
       sessionItems = sessionItems ?? [];
       return sessionItems;
-    });
-  return sessionLoad;
+    } finally {
+      sessionLoad = null;
+    }
+  })();
+  sessionLoad = pending;
+  return pending;
 }
 
 export function CommentCourier() {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].profile.courier;
-  const [enabled, setEnabled] = useState(true);
-  const [known, setKnown] = useState(false);
+  const preference = useSyncExternalStore(
+    subscribeCourier,
+    courierPreference,
+    () => "unknown" as const,
+  );
+  const known = preference !== "unknown";
+  const enabled = preference === "on";
   const [loaded, setLoaded] = useState(() => sessionItems != null && sessionLocale === serviceLocale);
   const [items, setItems] = useState<CourierItem[]>(() => (
     sessionLocale === serviceLocale ? sessionItems ?? [] : []
   ));
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-
-  useLayoutEffect(() => {
-    setEnabled(readCourierEnabled());
-    setKnown(true);
-  }, []);
-
-  useEffect(() => {
-    const sync = () => setEnabled(readCourierEnabled());
-    window.addEventListener(CHANGE_EVENT, sync);
-    window.addEventListener("storage", sync);
-    return () => {
-      window.removeEventListener(CHANGE_EVENT, sync);
-      window.removeEventListener("storage", sync);
-    };
-  }, []);
 
   useEffect(() => {
     if (!known || !enabled || !supabaseEnabled) return;
