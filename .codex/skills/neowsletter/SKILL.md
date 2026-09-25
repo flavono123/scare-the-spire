@@ -20,6 +20,7 @@ Build 니오우스레터 pages from the Mega Crit original. The page is a claim 
 - Mega Crit and Steam source links use the patch-note original style: `spire-blue`, no underline, a trailing arrow, plus the source icons in `public/images/neowsletters/source/`.
 - The letter-wide comment block matches a patch detail comment section: heading `댓글` / `Comments`, not a separate “전체 댓글” title.
 - Include the map-drawing, Connections, and community fan-art sections. Save those images under `public/images/neowsletters/{id}/`.
+- Compress every saved image before commit. See **Image compression** below. Do not resize in the Worker.
 - Record both originals: Mega Crit `sourceUrl` and the real Steam store `steamUrl` (`/news/app/2868840/view/{id}`). Do not build that URL from an API `gid`.
 - Each claim has one comment affordance: Lucide `MessageCircle` with the index like/comment classes, grey until hover, then gold. An empty claim stays collapsed. A claim that already has comments opens by default, shows the count beside the label, and can still be collapsed. Opening it shows a one-line composer. Written comments sit in their own inset thread, still one line, with token, nickname, time, like, and delete on the right. Thread key is `neowsletter:{id}:{claimId}`. The letter-wide thread is `neowsletter:{id}:page`.
 - Keep a `[gold]` tag inside its sentence. Do not break the line to move a relic or card out of the paragraph. Static hovers are `<template>` previews, not slabs rendered in the line. Do not use the low-HP character hover on these pages.
@@ -43,10 +44,30 @@ Build 니오우스레터 pages from the Mega Crit original. The page is a claim 
    - `claimId` is lowercase `[a-z0-9-]`, stable once published.
    - Use the same claim ids and order in both files.
    - Use patch-note tags: `[gold:card]`, `[gold:relic]`, `[gold:event]`, `[gold:character]`, `[gold:ascension]승천 10[/gold]` / `[gold:ascension]Ascension 10[/gold]`.
-   - Put a game image on its own line: `![alt](/images/neowsletters/{id}/file.png)`.
+   - Put a game image on its own line: `![alt](/images/neowsletters/{id}/file.jpg)`.
+   - Compress the file first. The markdown path must match the saved extension.
 5. Keep the third tab label `니오우스레터` / `Neowsletter` and the routes `/patches/neowsletters` and `/patches/neowsletters/{id}`.
 6. Rebuild patch HTML (`pnpm patch:html`) and copy assets (`pnpm patch:assets`) so `/patches` serves the new tab from the patch Worker.
 7. Verify the Korean list, the Korean issue, and `/en/patches/neowsletters/{id}`: cover thumbnail, `spire-blue` source links with icons and arrows, gold names that stay inside the sentence, a comment control under each claim, and an open control with a count only where comments already exist.
+
+## Image compression
+
+Shrink images on the authoring machine, then commit the result. A newsletter image is a static asset on both the main Worker and the patch Worker. Request-time resize spends Worker CPU and is not the path.
+
+Cap for every file under `public/images/neowsletters/{id}/`, including `cover.png` when the download exceeds it:
+
+- Long edge at most 1600 px. Do not upscale a smaller image.
+- JPEG, quality 80.
+- File size at most 400 KB. If quality 80 is still over that, lower `formatOptions` until it fits.
+- Leave a file alone when it is already inside both caps, including a small PNG such as a screenshot or pixel drawing.
+
+macOS:
+
+```sh
+sips -Z 1600 -s format jpeg -s formatOptions 80 input.png --out output.jpg
+```
+
+If the extension changes, delete the original and point both locale markdown files at the new path. `cover.png` stays the thumbnail name when it already fits. When it does not, replace it with a JPEG only if `data/sts2-neowsletters.json` `imageUrl` is updated in the same change.
 
 ## Claim shape
 
