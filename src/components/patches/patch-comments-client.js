@@ -1008,6 +1008,7 @@
     const pageRoots = roots.filter((root) => !root.closest("[data-colorful-philosophers-card]"));
     const reelRoots = roots.filter((root) => root.closest("[data-colorful-philosophers-card]"));
 
+    mountCourier(config);
     if (!config) {
       pageRoots.forEach(renderUnavailable);
       bindReelReactions(null);
@@ -1031,6 +1032,178 @@
     document.addEventListener("cp-reel-show", mountVisibleReel);
     bindReelReactions(config);
     void refreshLiveReels(config);
+  }
+
+  function courierToken(storyId) {
+    if (storyId.startsWith("neowsletter:")) return "/images/sts2/ancients/neow.webp";
+    if (storyId.startsWith("sts2-patch:")) return "/images/sts2/nav/patch_notes_icon.png";
+    if (storyId.startsWith("community:")) return "/images/bone_tea.png";
+    const codex = storyId.split(":");
+    if (storyId.startsWith("sts2-codex:") || storyId.startsWith("sts1-codex:")) {
+      const tokens = {
+        card: "/images/sts2/nav/stats_cards.png",
+        relic: "/images/sts2/relics/bing_bong.webp",
+        potion: "/images/sts2/potions/potion_shaped_rock.webp",
+        power: "/images/sts2/nav/unmovable_power_beta.webp",
+        monster: "/images/sts2/nav/happy_cultist.png",
+        event: "/images/sts2/nav/question_mark.png",
+        ancient: "/images/sts2/nav/stats_ancients.png",
+      };
+      return tokens[codex[1]] || "/images/sts2/nav/stats_cards.png";
+    }
+    const tokens = {
+      "colorful-philosophers": "/images/sts2/modifiers/draft.webp",
+      "c-c-c-combo": "/images/sts2/badges/ccccombo.webp",
+      transfigure: "/images/sts2/relics/astrolabe.webp",
+      "chemical-x": "/images/sts2/relics/chemical_x.webp",
+      "this-or-that": "/images/sts2/relics/choices_paradox.webp",
+      "favorite-tournament": "/images/sts2/potions/fortifier.webp",
+      pagestorm: "/images/sts2/powers/pagestorm_power.webp",
+      defragment: "/images/sts2/powers/focus_power.webp",
+      "decisions-decisions": "/images/sts2/powers/buffer_power.webp",
+      "history-course": "/images/sts2/relics/history_course.webp",
+    };
+    return tokens[codex[0]] || "/images/sts2/relics/the_courier.webp";
+  }
+
+  function courierHref(storyId, commentId) {
+    const anchor = `#history-comment-${commentId}`;
+    if (storyId.startsWith("sts2-patch:")) return `/patches/${storyId.slice("sts2-patch:".length)}${anchor}`;
+    if (storyId.startsWith("neowsletter:")) {
+      const [, month, claim] = storyId.split(":");
+      return `/patches/neowsletters/${month}#claim-${claim || ""}`;
+    }
+    if (storyId.startsWith("sts2-codex:") || storyId.startsWith("sts1-codex:")) {
+      const [, type, id] = storyId.split(":");
+      const paths = {
+        card: "/compendium/cards",
+        relic: "/compendium/relics",
+        potion: "/compendium/potions",
+        power: "/compendium/powers",
+        enchantment: "/compendium/enchantments",
+        affliction: "/compendium/enchantments",
+        monster: "/compendium/monsters",
+        event: "/compendium/events",
+        ancient: "/compendium/ancients",
+        epoch: "/compendium/epochs",
+        character: "/compendium/characters",
+        keyword: "/compendium/keywords",
+        badge: "/compendium/badges",
+        modifier: "/compendium/modifiers",
+        ascension: "/compendium/ascensions",
+        encounter: "/compendium/encounters",
+      };
+      return `${paths[type] || "/compendium"}/${encodeURIComponent(String(id || "").toLowerCase())}${anchor}`;
+    }
+    const [service, id] = storyId.split(":");
+    const paths = {
+      "colorful-philosophers": "/colorful-philosophers",
+      "c-c-c-combo": "/c-c-c-combo",
+      transfigure: "/transfigure",
+      "chemical-x": "/chemical-x",
+      "this-or-that": "/this-or-that",
+      "favorite-tournament": "/this-or-that/tournament",
+      pagestorm: "/pagestorm",
+      defragment: "/defragment",
+      "decisions-decisions": "/decisions-decisions",
+      "history-course": "/history-course",
+      community: "/",
+    };
+    const path = paths[service];
+    if (!path || !id) return `/${anchor}`;
+    if (service === "community") return `/${anchor}`;
+    return `${path}/${id}${anchor}`;
+  }
+
+  function mountCourier(config) {
+    const root = document.createElement("div");
+    root.id = "sts-courier-root";
+    document.body.appendChild(root);
+    const enabled = window.localStorage.getItem("sts-courier-enabled") !== "0";
+    const token = "/images/sts2/relics/the_courier.webp";
+    const place = (node) => {
+      root.replaceChildren(node);
+    };
+    const tokenButton = (label) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.setAttribute("aria-label", label);
+      button.title = label;
+      button.style.cssText = "position:fixed;bottom:12px;left:12px;z-index:40;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.7);padding:4px;opacity:.6";
+      button.innerHTML = `<img src="${token}" alt="" width="18" height="18" style="display:block;width:18px;height:18px;object-fit:contain" />`;
+      button.addEventListener("click", () => {
+        window.localStorage.setItem("sts-courier-enabled", "1");
+        window.location.reload();
+      });
+      return button;
+    };
+    if (!enabled) {
+      place(tokenButton("최신 댓글 보기 켜기"));
+      return;
+    }
+    const skeleton = document.createElement("div");
+    skeleton.setAttribute("aria-busy", "true");
+    skeleton.style.cssText = "position:fixed;bottom:12px;left:12px;z-index:40;height:32px;width:224px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.1)";
+    place(skeleton);
+    if (!config) {
+      root.replaceChildren();
+      return;
+    }
+    const since = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
+    restRequest(config, `comments?select=id,story_id,content,created_at&env=eq.${config.supabaseEnv}&created_at=gte.${encodeURIComponent(since)}&order=created_at.desc&limit=12`)
+      .then((rows) => {
+        const items = (Array.isArray(rows) ? rows : []).flatMap((row) => {
+          const text = String(row.content || "").replace(/\[[^\]]+\]/g, " ").replace(/\s+/g, " ").trim();
+          if (!row.id || !row.story_id || !text) return [];
+          return [{ id: row.id, storyId: row.story_id, text }];
+        });
+        if (items.length === 0) {
+          root.replaceChildren();
+          return;
+        }
+        let index = 0;
+        let paused = false;
+        const bar = document.createElement("div");
+        bar.style.cssText = "position:fixed;bottom:12px;left:12px;z-index:40;display:flex;max-width:min(28rem,calc(100vw - 1.5rem));align-items:center;gap:8px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.75);padding:4px 8px;font-size:12px;color:#d4d4d8";
+        const link = document.createElement("a");
+        link.style.cssText = "display:flex;min-width:0;align-items:center;gap:6px;overflow:hidden;color:inherit;text-decoration:none";
+        const token = document.createElement("img");
+        token.alt = "";
+        token.width = 16;
+        token.height = 16;
+        token.style.cssText = "width:16px;height:16px;object-fit:contain;flex:none";
+        const text = document.createElement("span");
+        text.style.cssText = "min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap";
+        link.append(token, text);
+        const hide = document.createElement("button");
+        hide.type = "button";
+        hide.textContent = "×";
+        hide.setAttribute("aria-label", "최신 댓글 보기 끄기");
+        hide.style.cssText = "border:0;background:transparent;color:#71717a;cursor:pointer";
+        hide.addEventListener("click", () => {
+          window.localStorage.setItem("sts-courier-enabled", "0");
+          place(tokenButton("최신 댓글 보기 켜기"));
+        });
+        const paint = () => {
+          const item = items[index % items.length];
+          link.href = courierHref(String(item.storyId), item.id);
+          token.src = courierToken(String(item.storyId));
+          text.textContent = item.text;
+        };
+        paint();
+        bar.append(link, hide);
+        bar.addEventListener("mouseenter", () => { paused = true; });
+        bar.addEventListener("mouseleave", () => { paused = false; });
+        place(bar);
+        window.setInterval(() => {
+          if (paused || document.hidden || items.length < 2) return;
+          index = (index + 1) % items.length;
+          paint();
+        }, 8000);
+      })
+      .catch(() => {
+        root.replaceChildren();
+      });
   }
 
   async function refreshLiveReels(config) {
