@@ -36,7 +36,9 @@ domain being changed.
 ## Project Shape
 
 - Main Worker: `@opennextjs/cloudflare`, with static asset dispatch before
-  OpenNext fallback.
+  OpenNext fallback. Duplicate prerendered static routes (`routes: {}`) are pruned
+  from `handler.mjs` via `scripts/prune-opennext-static-page-cache.mjs` during `pnpm cf:build`
+  to keep the gzip upload size under the 3 MiB limit.
 - Prefixless Korean and `/en` service-locale Compendium detail HTML/RSC must be
   copied to `_cf_static_pages` and served before OpenNext. Game-only locale
   detail copies are excluded to stay below the Workers Free asset-count limit.
@@ -55,7 +57,8 @@ domain being changed.
   Removing the OpenNext fallback itself stays on `docs/OPENNEXT_EXIT_PLAN.md`
   Phases 5–6, not incidental feature work.
 - Patch Worker: separate static Worker. Patch HTML, CSS, fonts, images, and
-  provisional `/_patches/*` assets must be generated ahead of time.
+  provisional `/_patches/*` assets must be generated ahead of time. Requests to
+  `/images/neowsletters/*` are forwarded directly to `PATCH_WORKER` by `workers/main-worker.ts`.
 - Do not move `/patches*` back into the main OpenNext runtime as the primary
   Cloudflare production path.
 - Future custom-domain route dispatch is documented in
