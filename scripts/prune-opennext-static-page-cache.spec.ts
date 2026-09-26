@@ -4,6 +4,8 @@ import os from "node:os";
 import path from "node:path";
 
 import {
+  isPatchWorkerManifestPath,
+  manifestPathFromStaticRouteKey,
   pruneOpenNextHandlerRoutes,
   pruneOpenNextStaticPageCache,
   routeKeyFromCacheFile,
@@ -70,18 +72,37 @@ assert.equal(
   "keep-fetch",
 );
 
+assert.equal(manifestPathFromStaticRouteKey("index"), "/");
+assert.equal(manifestPathFromStaticRouteKey("en"), "/en");
+assert.equal(manifestPathFromStaticRouteKey("compendium/cards/bash"), "/compendium/cards/bash");
+assert.equal(isPatchWorkerManifestPath("/patches/0.98"), true);
+assert.equal(isPatchWorkerManifestPath("/de/patches/0.100.0"), true);
+assert.equal(isPatchWorkerManifestPath("/images/neowsletters/2026-09/cover.jpg"), true);
+assert.equal(isPatchWorkerManifestPath("/dev/patch-types"), false);
+assert.equal(isPatchWorkerManifestPath("/compendium/cards/bash"), false);
+
+const handlerStaticDir = path.join(root, "handler-static");
+write(path.join(handlerStaticDir, "compendium/cards/bash.html"));
+write(path.join(handlerStaticDir, "index.html"));
+
 const testHandlerPath = path.join(root, "handler.mjs");
 writeFileSync(
   testHandlerPath,
-  'prefix();return{version:4,routes:{"/route1":{a:1},"/route2":{b:2}},dynamicRoutes:{"/[id]":{c:3}}};suffix();',
+  'stub();return{routes:{},dynamicRoutes:{}};routesManifest:{routes:{static:[{page:"/"}]}};' +
+    'prefix();return{version:4,routes:{"/":{a:1},"/compendium/cards/bash":{note:"brace } inside"},"/zh/compendium/cards/bash":{b:2},"/patches/0.98":{c:3},"/dev/monsters":{d:4}},dynamicRoutes:{"/[id]":{e:5}}};suffix();',
 );
-const prunedBytes = pruneOpenNextHandlerRoutes(testHandlerPath);
-assert.ok(prunedBytes > 0);
+const pruned = pruneOpenNextHandlerRoutes(testHandlerPath, { staticPagesDir: handlerStaticDir });
+assert.equal(pruned.removedRoutes, 3);
+assert.ok(pruned.removedBytes > 0);
+assert.equal(pruned.keptRoutes, 2);
 assert.equal(
   readFileSync(testHandlerPath, "utf8"),
-  'prefix();return{version:4,routes:{},dynamicRoutes:{"/[id]":{c:3}}};suffix();',
+  'stub();return{routes:{},dynamicRoutes:{}};routesManifest:{routes:{static:[{page:"/"}]}};' +
+    'prefix();return{version:4,routes:{"/zh/compendium/cards/bash":{b:2},"/dev/monsters":{d:4}},dynamicRoutes:{"/[id]":{e:5}}};suffix();',
 );
-// Running again should be no-op
-assert.equal(pruneOpenNextHandlerRoutes(testHandlerPath), 0);
+const again = pruneOpenNextHandlerRoutes(testHandlerPath, { staticPagesDir: handlerStaticDir });
+assert.equal(again.removedRoutes, 0);
+assert.equal(again.removedBytes, 0);
+assert.equal(again.keptRoutes, 2);
 
 console.log("prune-opennext-static-page-cache.spec.ts ok");

@@ -36,9 +36,10 @@ domain being changed.
 ## Project Shape
 
 - Main Worker: `@opennextjs/cloudflare`, with static asset dispatch before
-  OpenNext fallback. Duplicate prerendered static routes (`routes: {}`) are pruned
-  from `handler.mjs` via `scripts/prune-opennext-static-page-cache.mjs` during `pnpm cf:build`
-  to keep the gzip upload size under the 3 MiB limit.
+  OpenNext fallback. `scripts/prune-opennext-static-page-cache.mjs` drops
+  inlined prerender `routes` entries that `_cf_static_pages` or the patch
+  Worker already serve. Entries that still fall through to OpenNext stay.
+  The first `routes:{},dynamicRoutes:{}` stub is not the real table.
 - Prefixless Korean and `/en` service-locale Compendium detail HTML/RSC must be
   copied to `_cf_static_pages` and served before OpenNext. Game-only locale
   detail copies are excluded to stay below the Workers Free asset-count limit.
