@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 
 import {
+  pruneOpenNextHandlerRoutes,
   pruneOpenNextStaticPageCache,
   routeKeyFromCacheFile,
   routeKeyFromStaticPage,
@@ -68,5 +69,19 @@ assert.equal(
   readFileSync(path.join(assetCacheDir, "__fetch", buildId, "payload"), "utf8"),
   "keep-fetch",
 );
+
+const testHandlerPath = path.join(root, "handler.mjs");
+writeFileSync(
+  testHandlerPath,
+  'prefix();return{version:4,routes:{"/route1":{a:1},"/route2":{b:2}},dynamicRoutes:{"/[id]":{c:3}}};suffix();',
+);
+const prunedBytes = pruneOpenNextHandlerRoutes(testHandlerPath);
+assert.ok(prunedBytes > 0);
+assert.equal(
+  readFileSync(testHandlerPath, "utf8"),
+  'prefix();return{version:4,routes:{},dynamicRoutes:{"/[id]":{c:3}}};suffix();',
+);
+// Running again should be no-op
+assert.equal(pruneOpenNextHandlerRoutes(testHandlerPath), 0);
 
 console.log("prune-opennext-static-page-cache.spec.ts ok");

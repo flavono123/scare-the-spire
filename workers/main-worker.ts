@@ -44,6 +44,7 @@ function isPatchWorkerPath(pathname: string): boolean {
     pathname.startsWith("/patches/") ||
     pathname === "/_patches" ||
     pathname.startsWith("/_patches/") ||
+    pathname.startsWith("/images/neowsletters/") ||
     /^\/[^/]+\/patches(?:\/|$)/.test(pathname)
   );
 }

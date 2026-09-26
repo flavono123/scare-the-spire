@@ -1,10 +1,20 @@
-import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from "node:fs";
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const STATIC_PAGES_DIR = path.join(".open-next", "assets", "_cf_static_pages");
 const CACHE_DIR = path.join(".open-next", "cache");
 const ASSET_CACHE_DIR = path.join(".open-next", "assets", "cdn-cgi", "_next_cache");
+const DEFAULT_HANDLER_PATH = path.join(".open-next", "server-functions", "default", "handler.mjs");
 
 function walkFiles(dir, files = []) {
   if (!existsSync(dir)) return files;
@@ -96,10 +106,35 @@ export function pruneOpenNextStaticPageCache({
   return { pruned, kept, staticRoutes: staticKeys.size };
 }
 
+export function pruneOpenNextHandlerRoutes(
+  handlerPath = DEFAULT_HANDLER_PATH,
+) {
+  if (!existsSync(handlerPath)) return 0;
+  const code = readFileSync(handlerPath, "utf8");
+  const dynamicStart = code.indexOf("dynamicRoutes:{");
+  if (dynamicStart === -1) return 0;
+  const routesStart = code.lastIndexOf("routes:{", dynamicStart);
+  if (routesStart === -1) return 0;
+  const routesMarker = "routes:{";
+  if (routesStart + routesMarker.length === dynamicStart - 2) {
+    return 0;
+  }
+  const originalLen = code.length;
+  const pruned = code.slice(0, routesStart + routesMarker.length) + "}," + code.slice(dynamicStart);
+  writeFileSync(handlerPath, pruned, "utf8");
+  return originalLen - pruned.length;
+}
+
 const isMain = path.resolve(process.argv[1] ?? "") === fileURLToPath(import.meta.url);
 if (isMain) {
   const result = pruneOpenNextStaticPageCache();
   console.log(
     `Pruned ${result.pruned} OpenNext cache file(s) that duplicate _cf_static_pages (${result.staticRoutes} static routes). Kept ${result.kept}.`,
   );
+  const handlerPrunedBytes = pruneOpenNextHandlerRoutes();
+  if (handlerPrunedBytes > 0) {
+    console.log(
+      `Pruned ${handlerPrunedBytes} bytes of duplicate prerender routes from OpenNext handler.`,
+    );
+  }
 }
