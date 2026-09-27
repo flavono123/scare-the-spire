@@ -328,5 +328,20 @@
     "imageAltKo": "니오우스레터 — 2024년 12월",
     "summary": "2024 retrospective, 1 million Steam wishlists milestone, Entomancer preview, and Mega Crit-mas holiday event.",
     "summaryKo": "2024년 회고, 스팀 찜 목록 100만 달성 감사, 곤충술사 몬스터 프리뷰 및 메가 크리트마스 이벤트를 다룹니다."
+  },
+  {
+    "id": "2024-11",
+    "issue": 4,
+    "date": "2024-11-07",
+    "addedAt": "2026-09-27T00:00:00.000Z",
+    "title": "The Neowsletter - November 2024",
+    "titleKo": "니오우스레터 — 2024년 11월",
+    "sourceUrl": "https://megacrit.com/news/2024-11-07-neowsletter-issue-4/",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/6148070194801609346",
+    "imageUrl": "/images/neowsletters/2024-11/cover.jpg",
+    "imageAlt": "The Neowsletter - November 2024",
+    "imageAltKo": "니오우스레터 — 2024년 11월",
+    "summary": "StS2 QoL and UI overhauls (shiny rare cards, map drawing, 80px top bar, run info panel) and Inklet reveal.",
+    "summaryKo": "희귀 카드 반짝임, 지도 그리기 기능, 80px 상단 바, 런 정보 패널 등 UI/편의성 개선과 잉클릿 몬스터 공개를 다룹니다."
   }
 ]
