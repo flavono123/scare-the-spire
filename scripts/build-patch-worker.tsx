@@ -752,18 +752,16 @@ async function main() {
   if (process.argv.includes("--clients-only")) return;
 
   const patches = await getSTS2Patches();
-  const routes: StaticPatchRoute[] = [
-    {
-      pathname: "/patches",
-      serviceLocale: "ko",
-      gameLocale: "kor",
-      metadata: getPatchListMetadata("ko"),
-      element: await PatchListPage({ serviceLocale: "ko", gameLocale: "kor" }),
-    },
-  ];
+  await writeRoute({
+    pathname: "/patches",
+    serviceLocale: "ko",
+    gameLocale: "kor",
+    metadata: getPatchListMetadata("ko"),
+    element: await PatchListPage({ serviceLocale: "ko", gameLocale: "kor" }),
+  });
 
   for (const route of await localizedPatchRoutes()) {
-    routes.push({
+    await writeRoute({
       ...route,
       metadata: getPatchListMetadata(route.serviceLocale),
       element: await PatchListPage({
@@ -773,7 +771,7 @@ async function main() {
     });
   }
 
-  routes.push({
+  await writeRoute({
     pathname: "/patches/changes",
     serviceLocale: "ko",
     gameLocale: "kor",
@@ -786,7 +784,7 @@ async function main() {
   });
 
   for (const route of await localizedPatchRoutes("changes")) {
-    routes.push({
+    await writeRoute({
       ...route,
       metadata: getResourcePatchIndexMetadata(route.serviceLocale),
       element: await ResourcePatchIndexPage({
@@ -798,7 +796,7 @@ async function main() {
   }
 
   const neowsletters = await getNeowsletters();
-  routes.push({
+  await writeRoute({
     pathname: "/patches/neowsletters",
     serviceLocale: "ko",
     gameLocale: "kor",
@@ -807,7 +805,7 @@ async function main() {
   });
 
   for (const route of await localizedPatchRoutes("neowsletters")) {
-    routes.push({
+    await writeRoute({
       ...route,
       metadata: getNeowsletterListMetadata(route.serviceLocale),
       element: await NeowsletterListPage({
@@ -818,7 +816,7 @@ async function main() {
   }
 
   for (const issue of neowsletters) {
-    routes.push({
+    await writeRoute({
       pathname: `/patches/neowsletters/${issue.id}`,
       serviceLocale: "ko",
       gameLocale: "kor",
@@ -840,7 +838,7 @@ async function main() {
     });
 
     for (const route of await localizedPatchRoutes(`neowsletters/${issue.id}`)) {
-      routes.push({
+      await writeRoute({
         ...route,
         metadata: await getNeowsletterDetailMetadata({
           issueId: issue.id,
@@ -864,7 +862,7 @@ async function main() {
   for (const patch of patches) {
     const { version } = patch;
     const isPublished = !patch.status || patch.status === "ready";
-    routes.push({
+    await writeRoute({
       pathname: `/patches/${version}`,
       serviceLocale: "ko",
       gameLocale: "kor",
@@ -883,7 +881,7 @@ async function main() {
     });
 
     for (const route of await localizedPatchRoutes(version)) {
-      routes.push({
+      await writeRoute({
         ...route,
         metadata: await getPatchDetailMetadata({
           version,
@@ -903,8 +901,6 @@ async function main() {
       });
     }
   }
-
-  await Promise.all(routes.map(writeRoute));
 }
 
 main().catch((error) => {
