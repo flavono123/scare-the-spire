@@ -193,5 +193,20 @@
     "imageAltKo": "니오우스레터 — 2025년 9월",
     "summary": "Early Access shifted to March 2026 with detailed FAQ, introduction to Alternate Acts (Overgrowth and Underdocks), and wiki.gg launch.",
     "summaryKo": "앞서 해보기의 2026년 3월 연기 및 상세 FAQ, 대체 막 시스템(과성장 및 지하 선착장) 최초 공개와 새 공식 위키(wiki.gg) 출범을 다룹니다."
+  },
+  {
+    "id": "2025-08",
+    "issue": 13,
+    "date": "2025-08-14",
+    "addedAt": "2026-09-27T00:00:00.000Z",
+    "title": "The Neowsletter - August 2025",
+    "titleKo": "니오우스레터 — 2025년 8월",
+    "sourceUrl": "https://megacrit.com/news/2025-8-14-neowsletter-issue-13/",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/1808061939354185",
+    "imageUrl": "/images/neowsletters/2025-08/cover.jpg",
+    "imageAlt": "The Neowsletter - August 2025",
+    "imageAltKo": "니오우스레터 — 2025년 8월",
+    "summary": "1-year anniversary of Neowsletter, preview of new relics and revamped potion sprites, turn counter UI, and Vine Shambler reveal.",
+    "summaryKo": "니오우스레터 1주년 기념, 신규 유물 및 개편된 포션 스프라이트 프리뷰, 턴 카운터 UI 확인 및 덩굴 섐블러 몬스터 공개를 다룹니다."
   }
 ]
