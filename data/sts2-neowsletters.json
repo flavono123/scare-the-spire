@@ -343,5 +343,20 @@
     "imageAltKo": "니오우스레터 — 2024년 11월",
     "summary": "StS2 QoL and UI overhauls (shiny rare cards, map drawing, 80px top bar, run info panel) and Inklet reveal.",
     "summaryKo": "희귀 카드 반짝임, 지도 그리기 기능, 80px 상단 바, 런 정보 패널 등 UI/편의성 개선과 잉클릿 몬스터 공개를 다룹니다."
+  },
+  {
+    "id": "2024-10",
+    "issue": 3,
+    "date": "2024-10-02",
+    "addedAt": "2026-09-27T00:00:00.000Z",
+    "title": "The Neowsletter - October 2024",
+    "titleKo": "니오우스레터 — 2024년 10월",
+    "sourceUrl": "https://megacrit.com/news/2024-10-02-neowsletter-issue-3/",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/6350729003491858002",
+    "imageUrl": "/images/neowsletters/2024-10/cover.jpg",
+    "imageAlt": "The Neowsletter - October 2024",
+    "imageAltKo": "니오우스레터 — 2024년 10월",
+    "summary": "Deep dive into StS2 art direction with Art Director Marlowe Dobbe, Ironclad/Silent origin stories, and Bygone Effigy reveal.",
+    "summaryKo": "아트 디렉터 말로우 도브의 비주얼 개발 철학, 아이언클래드와 사일런트 탄생 비화 및 옛 시대의 우상 몬스터 공개를 다룹니다."
   }
 ]
