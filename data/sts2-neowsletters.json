@@ -148,5 +148,20 @@
     "imageAltKo": "니오우스레터 — 2025년 12월",
     "summary": "Previewing The Regent mechanics (Stars, Minions, Forge, Sovereign Blade), 2D vs 3D exploration Q&A, and The Obscura monster reveal.",
     "summaryKo": "리젠트 캐릭터의 주요 메커니즘(별, 하수인, 벼리기, 군주의 칼날) 프리뷰, 2D/3D 개발 비화 Q&A 및 수수께끼의 몬스터 옵스큐라 공개를 다룹니다."
+  },
+  {
+    "id": "2025-11",
+    "issue": 16,
+    "date": "2025-11-13",
+    "addedAt": "2026-09-27T00:00:00.000Z",
+    "title": "The Neowsletter - November 2025",
+    "titleKo": "니오우스레터 — 2025년 11월",
+    "sourceUrl": "https://megacrit.com/news/2025-11-13-neowsletter-issue-16/",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/1816307528925650",
+    "imageUrl": "/images/neowsletters/2025-11/cover.jpg",
+    "imageAlt": "The Neowsletter - November 2025",
+    "imageAltKo": "니오우스레터 — 2025년 11월",
+    "summary": "Introduction to Ancients replacing boss relics, Tezcatara preview, Ancient map nodes, Punch Construct reveal, and low-spec Q&A.",
+    "summaryKo": "보스 유물을 대체하는 고대의 존재 시스템과 테즈카타라 프리뷰, 고대의 존재 지도 노드, 펀치 구조체 공개 및 저사양 지원 Q&A를 다룹니다."
   }
 ]
