@@ -358,5 +358,20 @@
     "imageAltKo": "니오우스레터 — 2024년 10월",
     "summary": "Deep dive into StS2 art direction with Art Director Marlowe Dobbe, Ironclad/Silent origin stories, and Bygone Effigy reveal.",
     "summaryKo": "아트 디렉터 말로우 도브의 비주얼 개발 철학, 아이언클래드와 사일런트 탄생 비화 및 옛 시대의 우상 몬스터 공개를 다룹니다."
+  },
+  {
+    "id": "2024-09",
+    "issue": 2,
+    "date": "2024-09-09",
+    "addedAt": "2026-09-27T00:00:00.000Z",
+    "title": "The Neowsletter - September 2024",
+    "titleKo": "니오우스레터 — 2024년 9월",
+    "sourceUrl": "https://megacrit.com/news/2024-09-09-neowsletter-issue-2/",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/6242640076612152086",
+    "imageUrl": "/images/neowsletters/2024-09/cover.jpg",
+    "imageAlt": "The Neowsletter - September 2024",
+    "imageAltKo": "니오우스레터 — 2024년 9월",
+    "summary": "Why Slay the Spire 2 is a standalone sequel rather than an expansion, private playtest and Godot engine progress, gameplay trailer plans, PAX West board game recap, and a teaser for a mystery enemy.",
+    "summaryKo": "확장팩 대신 후속작을 개발하는 이유, 비공개 플레이테스트와 고도 엔진 전환 경과, 트레일러 계획, PAX West 보드게임 부스 및 구체 머리 적 티저를 다룹니다."
   }
 ]
