@@ -1,4 +1,9 @@
 import sts2Meta from "../../data/sts2/meta.json";
+import {
+  buildCompendiumResourceDetailHref,
+  isCompendiumResourceLinkType,
+} from "@/lib/compendium-resource-links";
+import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 
 export const COLORFUL_PHILOSOPHERS_HREF = "/colorful-philosophers";
 export const COLORFUL_PHILOSOPHERS_TOKEN_SRC = "/images/sts2/modifiers/draft.webp";
@@ -100,6 +105,35 @@ export function upcomingColorfulPhilosopherWeeks(now = new Date()): string[] {
   return Array.from({ length: COLORFUL_PHILOSOPHERS_SCHEDULE_WEEKS }, (_, index) => (
     addColorfulPhilosophersDays(start, index * 7)
   ));
+}
+
+const REEL_SLOT_ORDER: readonly ColorfulPhilosopherSlot[] = [
+  ...COLORFUL_PHILOSOPHER_SLOTS,
+  ...COLORFUL_PHILOSOPHER_LEGACY_SLOTS,
+];
+
+/** The newest published week (not after `currentWeek`), in slot order. */
+export function colorfulPhilosophersReelPosts(
+  posts: readonly ColorfulPhilosopherPost[],
+  currentWeek = colorfulPhilosophersWeekStart(),
+): ColorfulPhilosopherPost[] {
+  const published = posts.filter((post) => post.weekStart <= currentWeek);
+  const week = published.reduce<string | null>(
+    (latest, post) => (!latest || post.weekStart > latest ? post.weekStart : latest),
+    null,
+  );
+  if (!week) return [];
+  return published
+    .filter((post) => post.weekStart === week)
+    .sort((left, right) => REEL_SLOT_ORDER.indexOf(left.slot) - REEL_SLOT_ORDER.indexOf(right.slot));
+}
+
+export function colorfulPhilosopherSubjectHref(
+  post: Pick<ColorfulPhilosopherPost, "resourceType" | "resourceId">,
+  serviceLocale: ServiceLocale,
+): string | null {
+  if (!isCompendiumResourceLinkType(post.resourceType)) return null;
+  return localizeHref(buildCompendiumResourceDetailHref(post.resourceType, post.resourceId), serviceLocale);
 }
 
 export function colorfulPhilosopherPostFromRow(row: {
