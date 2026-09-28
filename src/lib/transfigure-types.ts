@@ -12,6 +12,7 @@ import type {
 } from "@/lib/codex-types";
 import { historyRunFloorPlainText } from "@/lib/history-run-floor";
 import { historyRunPlainText } from "@/lib/history-run-reference";
+import { emotePlainText } from "@/lib/emote-con";
 import {
   buildEntityKeywordIndex,
   entityKeywordDescription,
@@ -103,15 +104,14 @@ export interface TransfigureResourceRef {
   id: string;
 }
 
-export interface TransfigurePost {
-  id: string;
-  user_id: string;
-  nickname: string;
-  title: string | null;
+/** Variants per post, including the representative stored in the row columns. */
+export const TRANSFIGURE_MAX_VARIANTS = 12;
+
+/** One transfigured game element. The first variant of a post is its representative. */
+export interface TransfigureVariant {
   resource_type: TransfigureResourceType;
   resource_id: string;
   source_text: string;
-  source_game_locale: GameLocale;
   transformed_name: string | null;
   transformed_cost: string | null;
   transformed_star_cost: string | null;
@@ -132,6 +132,16 @@ export interface TransfigurePost {
   token_wax: Exclude<TransfigureTokenWax, "off"> | null;
   content: PostBlock[];
   content_text: string;
+}
+
+export interface TransfigurePost extends TransfigureVariant {
+  id: string;
+  user_id: string;
+  nickname: string;
+  title: string | null;
+  source_game_locale: GameLocale;
+  /** Variants 2..N; the row columns hold the representative variant. */
+  extra_variants: TransfigureVariant[];
   env: string;
   created_at: string;
   like_count?: number;
@@ -425,6 +435,7 @@ export function transfigureBlocksToGameDescription(blocks: PostBlock[]): string 
     if (block.type === "history-run-floor") return historyRunFloorPlainText(block);
     if (block.type === "text-con") return block.text;
     if (block.type === "card-con") return block.displayText;
+    if (block.type === "emote-con") return emotePlainText(block.emoteId);
     return block.title;
   }).join(""));
 }
@@ -902,6 +913,8 @@ export function transfigureBlocksSignature(items: PostBlock[]): string {
       tokens.push(`text-con:${block.bgColor}:${block.textColor}:${block.text}`);
     } else if (block.type === "card-con") {
       tokens.push(`card-con:${block.cardId}:${block.gameLocale}:${block.displayText}`);
+    } else if (block.type === "emote-con") {
+      tokens.push(`emote-con:${block.emoteId}`);
     } else {
       tokens.push(`youtube:${block.videoId}:${block.title}`);
     }
@@ -930,6 +943,7 @@ export function isTransfiguredContent(
       if (block.type === "history-run-floor") return historyRunFloorPlainText(block);
       if (block.type === "text-con") return block.text;
       if (block.type === "card-con") return block.displayText;
+      if (block.type === "emote-con") return emotePlainText(block.emoteId);
       return block.title;
     })
     .join("")
@@ -955,32 +969,118 @@ export function findTransfigureEntity(
   );
 }
 
+function nullableString(value: unknown): string | null {
+  return typeof value === "string" ? value : null;
+}
+
+function stringList(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === "string")
+    : [];
+}
+
+function normalizeTransfigureVariantFields(
+  raw: Record<string, unknown>,
+): TransfigureVariant {
+  return {
+    resource_type: raw.resource_type as TransfigureResourceType,
+    resource_id: String(raw.resource_id ?? ""),
+    source_text: typeof raw.source_text === "string" ? raw.source_text : "",
+    transformed_name: nullableString(raw.transformed_name),
+    transformed_cost: nullableString(raw.transformed_cost),
+    transformed_star_cost: nullableString(raw.transformed_star_cost),
+    transformed_card_type: isTransfigureCardType(raw.transformed_card_type)
+      ? raw.transformed_card_type
+      : null,
+    transformed_card_rarity: isTransfigureCardRarity(raw.transformed_card_rarity)
+      ? raw.transformed_card_rarity
+      : null,
+    transformed_card_color: isTransfigureCardColor(raw.transformed_card_color)
+      ? raw.transformed_card_color
+      : null,
+    omit_energy_cost: Boolean(raw.omit_energy_cost),
+    card_top_keywords: stringList(raw.card_top_keywords),
+    card_bottom_keywords: stringList(raw.card_bottom_keywords),
+    upgraded_content: Array.isArray(raw.upgraded_content)
+      ? raw.upgraded_content as PostBlock[]
+      : null,
+    upgraded_content_text: nullableString(raw.upgraded_content_text),
+    transformed_upgrade_cost: nullableString(raw.transformed_upgrade_cost),
+    transformed_upgrade_star_cost: nullableString(raw.transformed_upgrade_star_cost),
+    upgraded_card_top_keywords: stringList(raw.upgraded_card_top_keywords),
+    upgraded_card_bottom_keywords: stringList(raw.upgraded_card_bottom_keywords),
+    show_upgrade: Boolean(raw.show_upgrade),
+    token_color: isTransfigureTokenColor(raw.token_color) ? raw.token_color : null,
+    token_wax: isTransfigureTokenWax(raw.token_wax) ? raw.token_wax : null,
+    content: Array.isArray(raw.content) ? raw.content as PostBlock[] : [],
+    content_text: typeof raw.content_text === "string" ? raw.content_text : "",
+  };
+}
+
+export function normalizeTransfigureVariant(raw: unknown): TransfigureVariant | null {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const record = raw as Record<string, unknown>;
+  if (
+    typeof record.resource_type !== "string"
+    || !isTransfigureResourceType(record.resource_type as EntityType)
+    || typeof record.resource_id !== "string"
+    || !record.resource_id
+    || !Array.isArray(record.content)
+  ) {
+    return null;
+  }
+  return normalizeTransfigureVariantFields(record);
+}
+
 export function normalizeTransfigurePost(row: unknown): TransfigurePost {
-  const post = row as TransfigurePost;
+  const post = row as TransfigurePost & { extra_variants?: unknown };
+  const extraVariants = Array.isArray(post.extra_variants)
+    ? post.extra_variants
+      .map(normalizeTransfigureVariant)
+      .filter((variant): variant is TransfigureVariant => variant != null)
+      .slice(0, TRANSFIGURE_MAX_VARIANTS - 1)
+    : [];
   return {
     ...post,
-    transformed_card_type: isTransfigureCardType(post.transformed_card_type)
-      ? post.transformed_card_type
-      : null,
-    transformed_card_rarity: isTransfigureCardRarity(post.transformed_card_rarity)
-      ? post.transformed_card_rarity
-      : null,
-    transformed_card_color: isTransfigureCardColor(post.transformed_card_color)
-      ? post.transformed_card_color
-      : null,
-    omit_energy_cost: Boolean(post.omit_energy_cost),
-    card_top_keywords: post.card_top_keywords ?? [],
-    card_bottom_keywords: post.card_bottom_keywords ?? [],
-    upgraded_content: post.upgraded_content ?? null,
-    upgraded_content_text: post.upgraded_content_text ?? null,
-    transformed_upgrade_cost: post.transformed_upgrade_cost ?? null,
-    transformed_star_cost: post.transformed_star_cost ?? null,
-    transformed_upgrade_star_cost: post.transformed_upgrade_star_cost ?? null,
-    upgraded_card_top_keywords: post.upgraded_card_top_keywords ?? [],
-    upgraded_card_bottom_keywords: post.upgraded_card_bottom_keywords ?? [],
-    show_upgrade: post.show_upgrade ?? false,
-    token_color: isTransfigureTokenColor(post.token_color) ? post.token_color : null,
-    token_wax: isTransfigureTokenWax(post.token_wax) ? post.token_wax : null,
+    ...normalizeTransfigureVariantFields(post as unknown as Record<string, unknown>),
+    extra_variants: extraVariants,
   };
+}
+
+export function transfigureVariantFromPost(post: TransfigurePost): TransfigureVariant {
+  return {
+    resource_type: post.resource_type,
+    resource_id: post.resource_id,
+    source_text: post.source_text,
+    transformed_name: post.transformed_name,
+    transformed_cost: post.transformed_cost,
+    transformed_star_cost: post.transformed_star_cost,
+    transformed_card_type: post.transformed_card_type,
+    transformed_card_rarity: post.transformed_card_rarity,
+    transformed_card_color: post.transformed_card_color,
+    omit_energy_cost: post.omit_energy_cost,
+    card_top_keywords: post.card_top_keywords,
+    card_bottom_keywords: post.card_bottom_keywords,
+    upgraded_content: post.upgraded_content,
+    upgraded_content_text: post.upgraded_content_text,
+    transformed_upgrade_cost: post.transformed_upgrade_cost,
+    transformed_upgrade_star_cost: post.transformed_upgrade_star_cost,
+    upgraded_card_top_keywords: post.upgraded_card_top_keywords,
+    upgraded_card_bottom_keywords: post.upgraded_card_bottom_keywords,
+    show_upgrade: post.show_upgrade,
+    token_color: post.token_color,
+    token_wax: post.token_wax,
+    content: post.content,
+    content_text: post.content_text,
+  };
+}
+
+/** Representative first, then the extra variants in author order. */
+export function transfigurePostVariants(post: TransfigurePost): TransfigureVariant[] {
+  return [transfigureVariantFromPost(post), ...(post.extra_variants ?? [])];
+}
+
+export function transfigureVariantEntityKey(variant: TransfigureVariant): string {
+  return `${variant.resource_type}:${variant.resource_id}`;
 }
 

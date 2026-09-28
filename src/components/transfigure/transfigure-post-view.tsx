@@ -5,14 +5,18 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Sparkles } from "lucide-react";
-import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
+import { buildEntityMap } from "@/components/chemicalx/post-renderer";
+import { BoundedCarouselFrame } from "@/components/codex/bounded-carousel";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { PostDetailActions } from "@/components/post-detail-actions";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import Image from "@/components/ui/static-image";
-import { TransfigureResourcePreview } from "@/components/transfigure/transfigure-resource-preview";
+import {
+  TransfigureVariantPreview,
+  transfigureVariantDisplayName,
+} from "@/components/transfigure/transfigure-variant-preview";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useAuth } from "@/hooks/use-auth";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -26,6 +30,11 @@ import {
   type GameLocale,
 } from "@/lib/i18n";
 import { getSiteDisplayOrigin } from "@/lib/site-origin";
+import {
+  transfigurePostVariants,
+  transfigureVariantEntityKey,
+} from "@/lib/transfigure-types";
+import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
 
 const TransfigureComposerModal = dynamic(
@@ -60,6 +69,11 @@ export function TransfigurePostView({
   const { post, loading, unavailable, update, remove } = useTransfigurePost(postId, userId);
   const { entities } = useCommentEntities(undefined, { enabled: Boolean(post) });
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
+  const variants = useMemo(
+    () => (post ? transfigurePostVariants(post) : []),
+    [post],
+  );
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const handleCopyUrl = useCallback(() => {
     navigator.clipboard.writeText(window.location.href);
@@ -111,7 +125,9 @@ export function TransfigurePostView({
     );
   }
 
-  const resource = entityMap.get(`${post.resource_type}:${post.resource_id}`);
+  const currentIndex = activeIndex < variants.length ? activeIndex : 0;
+  const activeVariant = variants[currentIndex]!;
+  const resource = entityMap.get(transfigureVariantEntityKey(activeVariant));
 
   return (
     <div data-transfigure-page={embed ? "embed" : "detail"} className="space-y-4">
@@ -182,8 +198,7 @@ export function TransfigurePostView({
               </span>
               <span className="mt-0.5 flex min-w-0 items-center gap-1.5 text-xs text-zinc-500">
                 <span className="truncate">
-                  {post.transformed_name?.trim() || resource?.nameKo || post.resource_id}
-                  {post.show_upgrade && resource?.type === "card" ? "+" : ""}
+                  {transfigureVariantDisplayName(activeVariant, entityMap)}
                 </span>
                 <span>·</span>
                 <DisplayedProfileNickname
@@ -203,51 +218,99 @@ export function TransfigurePostView({
         </div>
 
         <div className="relative rounded-xl border border-primary/10 bg-primary/5 px-3 py-4">
-          <span className="spire-gold text-[10px] font-semibold uppercase tracking-[0.12em] opacity-70">
-            {copy.resultLabel}
-          </span>
-          <div className="mt-3">
-            {resource ? (
-              <TransfigureResourcePreview
-                key={`${post.id}:${post.show_upgrade}`}
-                blocks={post.content}
-                entities={entities}
-                entity={resource}
-                gameLocale={gameLocale}
-                serviceLocale={serviceLocale}
-                transformedName={post.transformed_name}
-                transformedCost={post.transformed_cost}
-                transformedStarCost={post.transformed_star_cost}
-                transformedCardType={post.transformed_card_type}
-                transformedCardRarity={post.transformed_card_rarity}
-                transformedCardColor={post.transformed_card_color}
-                cardKeywords={{
-                  top: post.card_top_keywords,
-                  bottom: post.card_bottom_keywords,
-                }}
-                transformedUpgradeCost={post.transformed_upgrade_cost}
-                transformedUpgradeStarCost={post.transformed_upgrade_star_cost}
-                omitEnergyCost={post.omit_energy_cost}
-                upgradedBlocks={post.upgraded_content}
-                upgradedCardKeywords={{
-                  top: post.upgraded_card_top_keywords,
-                  bottom: post.upgraded_card_bottom_keywords,
-                }}
-                upgradeLabel={upgradeLabel}
-                initialShowUpgrade={post.show_upgrade}
-                tokenColor={post.token_color}
-                tokenWax={post.token_wax}
-              />
-            ) : (
-              <div className="text-lg font-bold leading-relaxed text-[#f0e6d2]">
-                <PostRenderer
-                  blocks={post.content}
-                  entityMap={entityMap}
-                  serviceLocale={serviceLocale}
-                  gameLocale={gameLocale}
-                />
-              </div>
+          <div className="flex items-center justify-between gap-2">
+            <span className="spire-gold text-[10px] font-semibold uppercase tracking-[0.12em] opacity-70">
+              {copy.resultLabel}
+            </span>
+            {variants.length > 1 && (
+              <span
+                className="font-game-title text-xs tabular-nums text-primary/70"
+                data-transfigure-variant-position=""
+              >
+                {copy.variantPosition
+                  .replace("{index}", String(currentIndex + 1))
+                  .replace("{total}", String(variants.length))}
+              </span>
             )}
+          </div>
+          {variants.length > 1 && (
+            <div
+              role="tablist"
+              aria-label={copy.variantsLabel}
+              className="mt-3 flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              data-transfigure-variant-tabs=""
+            >
+              {variants.map((variant, index) => {
+                const selected = index === currentIndex;
+                const variantResource = entityMap.get(transfigureVariantEntityKey(variant));
+                return (
+                  <button
+                    key={index}
+                    type="button"
+                    role="tab"
+                    aria-selected={selected}
+                    onClick={() => setActiveIndex(index)}
+                    className={cn(
+                      "flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-colors",
+                      selected
+                        ? "border-primary/50 bg-primary/15 text-primary"
+                        : "border-white/10 text-zinc-400 hover:border-primary/30 hover:text-zinc-200",
+                    )}
+                  >
+                    {variantResource?.imageUrl && (
+                      <Image
+                        src={variantResource.imageUrl}
+                        alt=""
+                        width={16}
+                        height={16}
+                        className="h-4 w-4 object-contain"
+                      />
+                    )}
+                    <span className="max-w-[10rem] truncate">
+                      {transfigureVariantDisplayName(variant, entityMap)}
+                    </span>
+                    {index === 0 && (
+                      <span className="rounded bg-primary/20 px-1 text-[10px] text-primary">
+                        {copy.representative}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          <div className="mt-3">
+            {(() => {
+              const preview = (
+                <TransfigureVariantPreview
+                  key={`${post.id}:${currentIndex}:${activeVariant.show_upgrade}`}
+                  variant={activeVariant}
+                  entities={entities}
+                  entityMap={entityMap}
+                  gameLocale={gameLocale}
+                  serviceLocale={serviceLocale}
+                  upgradeLabel={upgradeLabel}
+                  showImageActions
+                  showUpgradeToggle
+                  fallbackClassName="text-lg font-bold"
+                />
+              );
+              if (variants.length <= 1) return preview;
+              return (
+                <BoundedCarouselFrame
+                  canMovePrevious={currentIndex > 0}
+                  canMoveNext={currentIndex < variants.length - 1}
+                  onPrevious={() => setActiveIndex(Math.max(0, currentIndex - 1))}
+                  onNext={() => setActiveIndex(
+                    Math.min(variants.length - 1, currentIndex + 1),
+                  )}
+                  previousLabel={copy.previousVariant}
+                  nextLabel={copy.nextVariant}
+                >
+                  {preview}
+                </BoundedCarouselFrame>
+              );
+            })()}
           </div>
         </div>
 
@@ -270,7 +333,7 @@ export function TransfigurePostView({
         </div>
       </article>
 
-      {!embed && editing && resource && (
+      {!embed && editing && entities.length > 0 && (
         <TransfigureComposerModal
           entities={entities}
           gameLocale={gameLocale}

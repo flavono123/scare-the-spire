@@ -193,6 +193,7 @@ export function BackstabTransfigureSection({
                   commentCount={post.comment_count ?? 0}
                   likeCount={post.like_count ?? 0}
                   readOnlyEngagement
+                  variantDisplay="representative"
                 />
               </div>
             );

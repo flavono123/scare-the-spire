@@ -26,6 +26,7 @@ import {
   normalizeTransfigureTokenColor,
   normalizeTransfigureTokenWax,
   normalizeTransfigurePost,
+  TRANSFIGURE_MAX_VARIANTS,
   type TransfigureCardColor,
   type TransfigureCardKeywords,
   type TransfigureCardRarity,
@@ -34,16 +35,25 @@ import {
   type TransfigureResourceRef,
   type TransfigureTokenColor,
   type TransfigureTokenWax,
+  type TransfigureVariant,
 } from "@/lib/transfigure-types";
 
 export interface SaveTransfigurePostInput {
-  blocks: PostBlock[];
   nickname: string;
   title: string;
+  sourceGameLocale: GameLocale;
+  /** Representative first. At most `TRANSFIGURE_MAX_VARIANTS`. */
+  variants: SaveTransfigureVariantInput[];
+  /** Rewrite `extra_variants` even when only one variant remains. */
+  hadExtraVariants?: boolean;
+  activeUserId?: string;
+}
+
+export interface SaveTransfigureVariantInput {
+  blocks: PostBlock[];
   resource: TransfigureResourceRef;
   sourceText: string;
   sourceBlocks: PostBlock[];
-  sourceGameLocale: GameLocale;
   sourceName: string;
   sourceCost: string | null;
   sourceCardType?: CardTypeKo | null;
@@ -69,7 +79,6 @@ export interface SaveTransfigurePostInput {
   showUpgrade: boolean;
   tokenColor?: TransfigureTokenColor | "";
   tokenWax?: TransfigureTokenWax | "";
-  activeUserId?: string;
   sourceStarCost?: string | null;
   sourceUpgradeStarCost?: string | null;
 }
@@ -103,10 +112,10 @@ interface UseTransfigurePostReturn {
 
 const normalizePost = normalizeTransfigurePost;
 
-function validateSaveInput(input: SaveTransfigurePostInput) {
+function validateVariantInput(
+  input: SaveTransfigureVariantInput,
+): TransfigureVariant | null {
   const contentText = blocksToPlainText(input.blocks).trim();
-  const nickname = input.nickname.trim();
-  const title = input.title.trim();
   const sourceText = input.sourceText.trim();
   const transformedName = normalizeTransfigureName(
     input.transformedName,
@@ -231,13 +240,7 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
   );
 
   if (
-    !input.activeUserId
-    || !supabaseEnabled
-    || contentText.length < 2
-    || nickname.length < 1
-    || nickname.length > 20
-    || title.length < 1
-    || title.length > 80
+    contentText.length < 2
     || !input.resource.id
     || !sourceText
     || !validCost
@@ -287,24 +290,58 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
   }
 
   return {
-    contentText,
+    resource_type: input.resource.type,
+    resource_id: input.resource.id,
+    source_text: sourceText,
+    content: input.blocks,
+    content_text: contentText,
+    transformed_name: transformedName,
+    transformed_cost: transformedCost,
+    transformed_star_cost: transformedStarCost,
+    transformed_card_type: transformedCardType,
+    transformed_card_rarity: transformedCardRarity,
+    transformed_card_color: transformedCardColor,
+    omit_energy_cost: omitEnergyCost,
+    card_top_keywords: cardKeywords.top,
+    card_bottom_keywords: cardKeywords.bottom,
+    upgraded_content: input.upgradedBlocks,
+    upgraded_content_text: upgradedContentText,
+    transformed_upgrade_cost: transformedUpgradeCost,
+    transformed_upgrade_star_cost: transformedUpgradeStarCost,
+    upgraded_card_top_keywords: upgradedCardKeywords.top,
+    upgraded_card_bottom_keywords: upgradedCardKeywords.bottom,
+    show_upgrade: input.showUpgrade,
+    token_color: tokenColor,
+    token_wax: tokenWax,
+  };
+}
+
+function validateSaveInput(input: SaveTransfigurePostInput) {
+  const nickname = input.nickname.trim();
+  const title = input.title.trim();
+  if (
+    !input.activeUserId
+    || !supabaseEnabled
+    || nickname.length < 1
+    || nickname.length > 20
+    || title.length < 1
+    || title.length > 80
+    || input.variants.length < 1
+    || input.variants.length > TRANSFIGURE_MAX_VARIANTS
+  ) {
+    return null;
+  }
+  const variants = input.variants.map(validateVariantInput);
+  if (variants.some((variant) => variant == null)) return null;
+  const [representative, ...extraVariants] = variants as TransfigureVariant[];
+  return {
     nickname,
     title,
-    sourceText,
-    transformedName,
-    transformedCost,
-    transformedStarCost,
-    transformedCardType,
-    transformedCardRarity,
-    transformedCardColor,
-    omitEnergyCost,
-    upgradedContentText,
-    transformedUpgradeCost,
-    transformedUpgradeStarCost,
-    cardKeywords,
-    upgradedCardKeywords,
-    tokenColor,
-    tokenWax,
+    representative: representative!,
+    // Old databases lack the column; only send it when it carries data.
+    extraVariantsPatch: extraVariants.length > 0 || input.hadExtraVariants
+      ? { extra_variants: extraVariants }
+      : {},
   };
 }
 
@@ -324,26 +361,8 @@ async function persistTransfigurePostUpdate(
       .update({
         nickname: normalized.nickname,
         title: normalized.title,
-        content: input.blocks,
-        content_text: normalized.contentText,
-        transformed_name: normalized.transformedName,
-        transformed_cost: normalized.transformedCost,
-        transformed_star_cost: normalized.transformedStarCost,
-        transformed_card_type: normalized.transformedCardType,
-        transformed_card_rarity: normalized.transformedCardRarity,
-        transformed_card_color: normalized.transformedCardColor,
-        omit_energy_cost: normalized.omitEnergyCost,
-        card_top_keywords: normalized.cardKeywords.top,
-        card_bottom_keywords: normalized.cardKeywords.bottom,
-        upgraded_content: input.upgradedBlocks,
-        upgraded_content_text: normalized.upgradedContentText,
-        transformed_upgrade_cost: normalized.transformedUpgradeCost,
-        transformed_upgrade_star_cost: normalized.transformedUpgradeStarCost,
-        upgraded_card_top_keywords: normalized.upgradedCardKeywords.top,
-        upgraded_card_bottom_keywords: normalized.upgradedCardKeywords.bottom,
-        show_upgrade: input.showUpgrade,
-        token_color: normalized.tokenColor,
-        token_wax: normalized.tokenWax,
+        ...normalized.representative,
+        ...normalized.extraVariantsPatch,
         ...(currentAuthorProfileToken() ? {
           avatar_id: currentAuthorProfileToken().avatar_id,
           avatar_kind: currentAuthorProfileToken().avatar_kind,
@@ -374,30 +393,9 @@ export async function insertTransfigurePost(
         user_id: input.activeUserId,
         nickname: normalized.nickname,
         title: normalized.title,
-        resource_type: input.resource.type,
-        resource_id: input.resource.id,
-        source_text: normalized.sourceText,
         source_game_locale: input.sourceGameLocale,
-        content: input.blocks,
-        content_text: normalized.contentText,
-        transformed_name: normalized.transformedName,
-        transformed_cost: normalized.transformedCost,
-        transformed_star_cost: normalized.transformedStarCost,
-        transformed_card_type: normalized.transformedCardType,
-        transformed_card_rarity: normalized.transformedCardRarity,
-        transformed_card_color: normalized.transformedCardColor,
-        omit_energy_cost: normalized.omitEnergyCost,
-        card_top_keywords: normalized.cardKeywords.top,
-        card_bottom_keywords: normalized.cardKeywords.bottom,
-        upgraded_content: input.upgradedBlocks,
-        upgraded_content_text: normalized.upgradedContentText,
-        transformed_upgrade_cost: normalized.transformedUpgradeCost,
-        transformed_upgrade_star_cost: normalized.transformedUpgradeStarCost,
-        upgraded_card_top_keywords: normalized.upgradedCardKeywords.top,
-        upgraded_card_bottom_keywords: normalized.upgradedCardKeywords.bottom,
-        show_upgrade: input.showUpgrade,
-        token_color: normalized.tokenColor,
-        token_wax: normalized.tokenWax,
+        ...normalized.representative,
+        ...normalized.extraVariantsPatch,
         env: supabaseEnv,
         ...(token ? {
           avatar_id: token.avatar_id,

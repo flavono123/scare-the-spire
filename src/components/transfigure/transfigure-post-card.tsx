@@ -1,21 +1,23 @@
 "use client";
 
-import { useCallback, type KeyboardEvent, type MouseEvent } from "react";
+import { useCallback, useMemo, type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Sparkles } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import { PostRenderer } from "@/components/chemicalx/post-renderer";
 import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { IndexCardEngagement } from "@/components/index-card-engagement";
 import { OwnPostMark } from "@/components/own-post-mark";
-import { TransfigureResourcePreview } from "@/components/transfigure/transfigure-resource-preview";
+import { TransfigureVariantPreview } from "@/components/transfigure/transfigure-variant-preview";
+import { TransfigureVariantReel } from "@/components/transfigure/transfigure-variant-reel";
 import { buildTransfigureCommentThreadKey } from "@/lib/comment-threads";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
-import type { TransfigurePost } from "@/lib/transfigure-types";
+import {
+  transfigurePostVariants,
+  type TransfigurePost,
+} from "@/lib/transfigure-types";
 import { serviceMessages } from "@/messages/service";
 import { formatTimeAgo } from "@/lib/relative-time";
 import { cn } from "@/lib/utils";
@@ -36,6 +38,8 @@ interface TransfigurePostCardProps {
   likeCount: number;
   className?: string;
   readOnlyEngagement?: boolean;
+  /** `representative` keeps outer reels (patch previewreel) from nesting another reel. */
+  variantDisplay?: "reel" | "representative";
 }
 
 export function TransfigurePostCard({
@@ -53,11 +57,14 @@ export function TransfigurePostCard({
   likeCount,
   className,
   readOnlyEngagement = false,
+  variantDisplay = "reel",
 }: TransfigurePostCardProps) {
   const copy = serviceMessages[serviceLocale].transfigure;
   const seenAt = useIndexSeenAt("transfigure");
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const resource = entityMap.get(`${post.resource_type}:${post.resource_id}`);
+  const variants = useMemo(() => transfigurePostVariants(post), [post]);
+  const playReel = variantDisplay === "reel" && variants.length > 1;
   let router: ReturnType<typeof useRouter> | null = null;
   try {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -107,8 +114,16 @@ export function TransfigurePostCard({
           <h2 className={`line-clamp-2 font-game-title text-base font-semibold leading-snug spire-gold ${indexReadClass(indexItemIsRead(post.created_at, seenAt))}`}>
             {post.title?.trim() || resource?.nameKo || post.resource_id}
           </h2>
-          <span className="mt-1 block text-xs text-muted-foreground">
-            {formatTimeAgo(post.created_at, copy, dateLocale)}
+          <span className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+            <span>{formatTimeAgo(post.created_at, copy, dateLocale)}</span>
+            {variants.length > 1 && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span className="text-primary/70" data-transfigure-variant-badge="">
+                  {copy.variantCount.replace("{count}", String(variants.length))}
+                </span>
+              </>
+            )}
           </span>
         </div>
         <div className="flex shrink-0 items-center gap-2">
@@ -128,52 +143,35 @@ export function TransfigurePostCard({
       <div
         className="flex min-h-[24rem] flex-1 items-center justify-center overflow-hidden rounded-md bg-black/15 px-2 py-3 sm:min-h-[28rem]"
         data-transfigure-post-asset
+        data-transfigure-variant-count={variants.length}
       >
-        {resource ? (
-          <TransfigureResourcePreview
-            blocks={post.content}
-            entities={entities}
-            entityMap={entityMap}
-            entity={resource}
-            gameLocale={gameLocale}
-            serviceLocale={serviceLocale}
-            transformedName={post.transformed_name}
-            transformedCost={post.transformed_cost}
-            transformedStarCost={post.transformed_star_cost}
-            transformedCardType={post.transformed_card_type}
-            transformedCardRarity={post.transformed_card_rarity}
-            transformedCardColor={post.transformed_card_color}
-            cardKeywords={{
-              top: post.card_top_keywords,
-              bottom: post.card_bottom_keywords,
-            }}
-            transformedUpgradeCost={post.transformed_upgrade_cost}
-            transformedUpgradeStarCost={post.transformed_upgrade_star_cost}
-            omitEnergyCost={post.omit_energy_cost}
-            upgradedBlocks={post.upgraded_content}
-            upgradedCardKeywords={{
-              top: post.upgraded_card_top_keywords,
-              bottom: post.upgraded_card_bottom_keywords,
-            }}
-            upgradeLabel={upgradeLabel}
-            initialShowUpgrade={post.show_upgrade}
-            showImageActions={false}
-            showUpgradeToggle={false}
-            tokenColor={post.token_color}
-            tokenWax={post.token_wax}
+        {playReel ? (
+          <TransfigureVariantReel
+            count={variants.length}
+            slideLabel={(index) => copy.variantSlideLabel.replace(
+              "{index}",
+              String(index + 1),
+            )}
+            renderSlide={(index) => (
+              <TransfigureVariantPreview
+                variant={variants[index]!}
+                entities={entities}
+                entityMap={entityMap}
+                gameLocale={gameLocale}
+                serviceLocale={serviceLocale}
+                upgradeLabel={upgradeLabel}
+              />
+            )}
           />
         ) : (
-          <div className="flex max-w-full flex-col items-center gap-3 text-sm leading-relaxed text-[#f0e6d2]">
-            <Sparkles className="h-8 w-8 text-primary/70" aria-hidden="true" />
-            <PostRenderer
-              blocks={post.show_upgrade && post.upgraded_content
-                ? post.upgraded_content
-                : post.content}
-              entityMap={entityMap}
-              serviceLocale={serviceLocale}
-              gameLocale={gameLocale}
-            />
-          </div>
+          <TransfigureVariantPreview
+            variant={variants[0]!}
+            entities={entities}
+            entityMap={entityMap}
+            gameLocale={gameLocale}
+            serviceLocale={serviceLocale}
+            upgradeLabel={upgradeLabel}
+          />
         )}
       </div>
 
