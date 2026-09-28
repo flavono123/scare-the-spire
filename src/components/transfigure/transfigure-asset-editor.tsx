@@ -429,6 +429,7 @@ export function TransfigureAssetEditor({
           : null}
         embedded
         allowLineBreaks
+        entityLinks={false}
         submitOnEnter={false}
         costTokens={{
           energyIconSrc,

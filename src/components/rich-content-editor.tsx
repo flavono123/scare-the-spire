@@ -24,7 +24,10 @@ import {
 } from "@/components/chemicalx/brace-keyword-suggestion";
 import { CustomKeyword } from "@/components/chemicalx/custom-keyword";
 import { MentionList, type MentionListRef } from "@/components/chemicalx/mention-list";
-import { EntityMapProvider } from "@/components/chemicalx/entity-context";
+import {
+  EntityLinksProvider,
+  EntityMapProvider,
+} from "@/components/chemicalx/entity-context";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { YouTubeReferenceExtension } from "@/components/editor/youtube-reference-extension";
 import { HistoryRunReferenceExtension } from "@/components/editor/history-run-reference-extension";
@@ -517,6 +520,8 @@ export interface RichContentEditorProps {
   enableCardCon?: boolean;
   /** Multiplayer reaction-wheel icons. Comments opt in; other composers stay off. */
   enableEmote?: boolean;
+  /** Keyword/mention atoms link to the Compendium; off keeps them hover-only. */
+  entityLinks?: boolean;
 }
 
 export function RichContentEditor({
@@ -554,6 +559,7 @@ export function RichContentEditor({
   enableTextCon = true,
   enableCardCon = true,
   enableEmote = false,
+  entityLinks = true,
 }: RichContentEditorProps) {
   const serviceLocale = useServiceLocale();
   const gameLocale = useGameLocale();
@@ -1526,6 +1532,7 @@ export function RichContentEditor({
           </div>
         )}
         <EntityMapProvider value={entityMap}>
+        <EntityLinksProvider value={entityLinks}>
           {embedded ? (
             <EditorContent
               editor={editor}
@@ -1548,6 +1555,7 @@ export function RichContentEditor({
               />
             </GameScrollArea>
           )}
+        </EntityLinksProvider>
         </EntityMapProvider>
       </div>
 

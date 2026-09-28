@@ -482,6 +482,7 @@ export function EntityPreview({
   epochArtMode = "official",
   staticHoverPreviews = false,
   disablePreview = false,
+  disableLink = false,
 }: {
   entity: EntityInfo;
   children: ReactNode;
@@ -500,6 +501,8 @@ export function EntityPreview({
   epochArtMode?: HoverTipArtMode;
   staticHoverPreviews?: boolean;
   disablePreview?: boolean;
+  /** Keep the hover/tap preview but never navigate to the Compendium page. */
+  disableLink?: boolean;
 }) {
   const [show, setShow] = useState(false);
   const [previewPressed, setPreviewPressed] = useState(false);
@@ -558,7 +561,9 @@ export function EntityPreview({
     modifier: buildCompendiumResourceHref("modifier", compendiumRouteId),
     ascension: buildCompendiumResourceHref("ascension", compendiumRouteId),
   };
-  const hrefBase = isPendingCompendium ? null : entity.href === null ? null : entity.href ?? hrefMap[entity.type] ?? null;
+  const hrefBase = isPendingCompendium || disableLink
+    ? null
+    : entity.href === null ? null : entity.href ?? hrefMap[entity.type] ?? null;
   const localizedHref = hrefBase && serviceLocale && gameLocale
     ? localizeHrefWithGameLocale(hrefBase, serviceLocale, gameLocale)
     : hrefBase;
