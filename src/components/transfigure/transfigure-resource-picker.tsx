@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { Check, Search, Sparkles, X } from "lucide-react";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
@@ -23,6 +30,12 @@ interface TransfigureResourcePickerProps {
   selected: EntityInfo | null;
   serviceLocale: ServiceLocale;
   defaultOpen?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  triggerTitle?: string;
+  triggerHint?: string;
+  triggerIcon?: ReactNode;
+  disabled?: boolean;
   onSelect: (entity: EntityInfo) => void;
 }
 
@@ -31,12 +44,24 @@ export function TransfigureResourcePicker({
   selected,
   serviceLocale,
   defaultOpen = false,
+  open: controlledOpen,
+  onOpenChange,
+  triggerTitle,
+  triggerHint,
+  triggerIcon,
+  disabled = false,
   onSelect,
 }: TransfigureResourcePickerProps) {
   const copy = serviceMessages[serviceLocale].transfigure;
   const commonCopy = serviceMessages[serviceLocale].codex.common;
   const typeLabels = compendiumTypeLabels(serviceLocale);
-  const [open, setOpen] = useState(defaultOpen);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+  const open = (controlledOpen ?? uncontrolledOpen) && !disabled;
+  const setOpen = useCallback((next: boolean | ((current: boolean) => boolean)) => {
+    const resolved = typeof next === "function" ? next(open) : next;
+    if (controlledOpen == null) setUncontrolledOpen(resolved);
+    onOpenChange?.(resolved);
+  }, [controlledOpen, onOpenChange, open]);
   const [query, setQuery] = useState("");
   const [activeType, setActiveType] = useState<EntityType | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -82,7 +107,7 @@ export function TransfigureResourcePicker({
       document.removeEventListener("pointerdown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [open]);
+  }, [open, setOpen]);
 
   const selectEntity = (entity: EntityInfo) => {
     onSelect(entity);
@@ -96,11 +121,12 @@ export function TransfigureResourcePicker({
         type="button"
         aria-expanded={open}
         aria-controls="transfigure-resource-picker-panel"
+        disabled={disabled}
         onClick={() => setOpen((current) => !current)}
-        className="flex w-full items-center gap-3 rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-left transition-[border-color,background-color] hover:border-primary/40 hover:bg-primary/15 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
+        className="flex w-full items-center gap-3 rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5 text-left transition-[border-color,background-color] hover:border-primary/40 hover:bg-primary/15 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 disabled:cursor-not-allowed disabled:opacity-50"
       >
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-black/25">
-          {selected?.imageUrl ? (
+          {triggerIcon ?? (selected?.imageUrl ? (
             <Image
               src={selected.imageUrl}
               alt=""
@@ -110,16 +136,16 @@ export function TransfigureResourcePicker({
             />
           ) : (
             <Sparkles className="h-5 w-5 text-primary/80" aria-hidden="true" />
-          )}
+          ))}
         </span>
         <span className="min-w-0 flex-1">
           <span className="spire-gold block text-xs font-semibold">
-            {copy.selectResource}
+            {triggerTitle ?? copy.selectResource}
           </span>
           <span className="block truncate text-sm text-muted-foreground">
-            {selected
+            {triggerHint ?? (selected
               ? copy.reselectResource.replace("{name}", selected.nameKo)
-              : copy.searchPlaceholder}
+              : copy.searchPlaceholder)}
           </span>
         </span>
       </button>

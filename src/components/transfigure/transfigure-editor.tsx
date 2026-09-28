@@ -8,7 +8,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { Plus } from "lucide-react";
 import { CARD_TYPE_FILTER_ICONS } from "@/components/codex/codex-filter-assets";
+import { BoundedCarouselFrame } from "@/components/codex/bounded-carousel";
 import { FilterSection } from "@/components/codex/codex-filters";
 import { TinyCardIcon } from "@/components/history-course/card-action-icon";
 import { MenuDropdown } from "@/components/menu-dropdown";
@@ -18,48 +20,30 @@ import {
   GameUiHoverTip,
 } from "@/components/game-ui-hover-tip";
 import Image from "@/components/ui/static-image";
-import type { PostBlock } from "@/lib/chemical-types";
-import { blocksToPlainText } from "@/lib/chemical-utils";
-import type { SaveTransfigurePostInput } from "@/hooks/use-transfigure-posts";
+import type {
+  SaveTransfigurePostInput,
+  SaveTransfigureVariantInput,
+} from "@/hooks/use-transfigure-posts";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
   canTransfigureCardMetadata,
   findTransfigureEntity,
   getTransfigureCardRarityLabel,
-  getTransfigureCardKeywords,
   getTransfigureCardTypeLabel,
-  getTransfigureInitialBlocks,
-  getTransfigureSourceCost,
-  getTransfigureSourceStarCost,
   getTransfigureSourceText,
-  getTransfigureUpgradeCardKeywords,
-  getTransfigureUpgradeInitialBlocks,
-  getTransfigureUpgradeSourceCost,
-  getTransfigureUpgradeSourceStarCost,
-  getTransfigureUpgradeSourceText,
-  isTransfigureChanged,
   isTransfigureResourceType,
-  transfigureHasExistingRefsOrDiff,
-  type TransfigureChangeCheck,
   isTransfigureTokenResourceType,
-  normalizeTransfigureCardColor,
-  normalizeTransfigureCardRarity,
-  normalizeTransfigureCardType,
+  transfigureBlocksSignature,
+  transfigurePostVariants,
   transfigureSourceHasEnergyCost,
   transfigureSourceHasStarCost,
   TRANSFIGURE_CARD_COLORS,
   TRANSFIGURE_CARD_RARITIES,
   TRANSFIGURE_CARD_TYPES,
   TRANSFIGURE_DEFAULT_ADDED_COST,
-  transfigureCardKeywordsEqual,
-  transfigureBlocksSignature,
+  TRANSFIGURE_MAX_VARIANTS,
   type TransfigureCardColor,
-  type TransfigureCardKeywords,
-  type TransfigureCardRarity,
-  type TransfigureCardType,
   type TransfigurePost,
-  type TransfigureTokenColor,
-  type TransfigureTokenWax,
 } from "@/lib/transfigure-types";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
@@ -68,6 +52,17 @@ import { serviceMessages } from "@/messages/service";
 import { TransfigureAssetEditor } from "./transfigure-asset-editor";
 import { TransfigureResourcePicker } from "./transfigure-resource-picker";
 import { TransfigureTokenAppearanceControls } from "./transfigure-token-appearance";
+import {
+  createTransfigureVariantDraft,
+  getTransfigureVariantSource,
+  transfigureDraftOmitsEnergyCost,
+  transfigureVariantBlockReason,
+  transfigureVariantDraftSignature,
+  transfigureVariantSaveInput,
+  type TransfigureVariantDraft,
+  type TransfigureVariantSource,
+} from "./transfigure-variant-draft";
+import { TransfigureVariantPalette } from "./transfigure-variant-palette";
 
 interface TransfigureEditorProps {
   entities: EntityInfo[];
@@ -81,6 +76,12 @@ interface TransfigureEditorProps {
   ) => Promise<void>;
   hideNickname?: boolean;
 }
+
+type DraftPatch =
+  | Partial<TransfigureVariantDraft>
+  | ((draft: TransfigureVariantDraft) => Partial<TransfigureVariantDraft>);
+
+type TransfigureCopy = (typeof serviceMessages)[ServiceLocale]["transfigure"];
 
 const LEGACY_TRANSFIGURE_DRAFT_PREFIXES = [
   "sts-transfigure-draft:",
@@ -269,6 +270,242 @@ function CardAttributeChange<T extends string>({
   );
 }
 
+function TransfigureVariantAttributes({
+  copy,
+  draft,
+  entities,
+  serviceLocale,
+  source,
+  onChange,
+}: {
+  copy: TransfigureCopy;
+  draft: TransfigureVariantDraft;
+  entities: EntityInfo[];
+  serviceLocale: ServiceLocale;
+  source: TransfigureVariantSource;
+  onChange: (patch: DraftPatch) => void;
+}) {
+  const { entity } = draft;
+  const selectedCardData = entity.type === "card" ? entity.cardData : undefined;
+  const sourceHasEnergyCost = transfigureSourceHasEnergyCost(source.sourceCost);
+  const sourceHasStarCost = transfigureSourceHasStarCost(source.sourceStarCost);
+  const canChangeCardMetadata = canTransfigureCardMetadata(
+    source.sourceCardType,
+    source.sourceCardRarity,
+  );
+  const attributeVisualColor = selectedCardData
+    ? (
+      draft.transformedCardColor
+      && draft.transformedCardColor !== selectedCardData.color
+        ? draft.transformedCardColor
+        : (selectedCardData.visualColor ?? selectedCardData.color)
+    )
+    : "colorless";
+
+  return (
+    <>
+      {selectedCardData && (
+        <div
+          className="border-t border-border px-3 py-2"
+          data-transfigure-card-attributes
+        >
+          <FilterSection label={copy.cardAttributes}>
+            <div className="space-y-2">
+              <CardAttributePresence
+                active={draft.showEnergyCost}
+                cancelLabel={copy.cancelChange}
+                icon={(
+                  <Image
+                    src={resolveSts2EnergyIcon(attributeVisualColor)}
+                    alt=""
+                    width={16}
+                    height={16}
+                    className="h-4 w-4 shrink-0 object-contain"
+                  />
+                )}
+                kind="cost"
+                label={copy.costLabel}
+                onCancel={() => onChange({
+                  showEnergyCost: false,
+                  transformedCost: "",
+                  transformedUpgradeCost: "",
+                })}
+                onOpen={() => onChange((current) => ({
+                  showEnergyCost: true,
+                  ...(!sourceHasEnergyCost ? {
+                    transformedCost: current.transformedCost.trim()
+                      || TRANSFIGURE_DEFAULT_ADDED_COST,
+                    ...(source.sourceUpgradeText ? {
+                      transformedUpgradeCost: current.transformedUpgradeCost.trim()
+                        || TRANSFIGURE_DEFAULT_ADDED_COST,
+                    } : {}),
+                  } : {}),
+                }))}
+              />
+
+              {!sourceHasStarCost && (
+                <CardAttributePresence
+                  active={draft.showStarCost}
+                  cancelLabel={copy.cancelChange}
+                  icon={(
+                    <Image
+                      src="/images/game-assets/card-misc/energy_star.png"
+                      alt=""
+                      width={16}
+                      height={16}
+                      className="h-4 w-4 shrink-0 object-contain"
+                    />
+                  )}
+                  kind="star-cost"
+                  label={copy.starCostLabel}
+                  onCancel={() => onChange({
+                    showStarCost: false,
+                    transformedStarCost: "",
+                    transformedUpgradeStarCost: "",
+                  })}
+                  onOpen={() => onChange((current) => ({
+                    showStarCost: true,
+                    transformedStarCost: current.transformedStarCost.trim()
+                      || TRANSFIGURE_DEFAULT_ADDED_COST,
+                    ...(source.sourceUpgradeText ? {
+                      transformedUpgradeStarCost: current.transformedUpgradeStarCost.trim()
+                        || source.sourceUpgradeStarCost
+                        || TRANSFIGURE_DEFAULT_ADDED_COST,
+                    } : {}),
+                  }))}
+                />
+              )}
+
+              <CardAttributeChange
+                active={draft.showCardColorChange}
+                cancelLabel={copy.cancelChange}
+                kind="color"
+                label={copy.cardColor}
+                options={TRANSFIGURE_CARD_COLORS
+                  .filter((color) => color !== source.sourceCardColor)
+                  .map((color) => ({
+                    icon: (
+                      <TinyCardIcon
+                        card={{
+                          color,
+                          visualColor: color,
+                          rarity: draft.transformedCardRarity || selectedCardData.rarity,
+                          type: draft.transformedCardType || selectedCardData.type,
+                        }}
+                        width={24}
+                      />
+                    ),
+                    label: transfigureCardColorLabel(color, entities, serviceLocale),
+                    value: color,
+                  }))}
+                selectLabel={copy.selectCardColor}
+                sourceLabel={transfigureCardColorLabel(
+                  selectedCardData.color,
+                  entities,
+                  serviceLocale,
+                )}
+                value={draft.transformedCardColor}
+                onCancel={() => onChange({
+                  transformedCardColor: "",
+                  showCardColorChange: false,
+                })}
+                onChange={(value) => onChange({ transformedCardColor: value })}
+                onOpen={() => onChange({ showCardColorChange: true })}
+              />
+
+              {canChangeCardMetadata ? (
+                <>
+                  <CardAttributeChange
+                    active={draft.showCardRarityChange}
+                    cancelLabel={copy.cancelChange}
+                    kind="rarity"
+                    label={copy.cardRarity}
+                    options={TRANSFIGURE_CARD_RARITIES
+                      .filter((rarity) => rarity !== source.sourceCardRarity)
+                      .map((rarity) => {
+                        const previewColor = draft.transformedCardColor
+                          || selectedCardData.color;
+                        return {
+                          icon: (
+                            <TinyCardIcon
+                              card={{
+                                color: previewColor,
+                                visualColor: previewColor === selectedCardData.color
+                                  ? selectedCardData.visualColor
+                                  : previewColor,
+                                rarity,
+                                type: draft.transformedCardType || selectedCardData.type,
+                              }}
+                              width={24}
+                            />
+                          ),
+                          label: getTransfigureCardRarityLabel(entities, rarity),
+                          value: rarity,
+                        };
+                      })}
+                    selectLabel={copy.selectCardRarity}
+                    sourceLabel={selectedCardData.rarityLabel}
+                    value={draft.transformedCardRarity}
+                    onCancel={() => onChange({
+                      transformedCardRarity: "",
+                      showCardRarityChange: false,
+                    })}
+                    onChange={(value) => onChange({ transformedCardRarity: value })}
+                    onOpen={() => onChange({ showCardRarityChange: true })}
+                  />
+
+                  <CardAttributeChange
+                    active={draft.showCardTypeChange}
+                    cancelLabel={copy.cancelChange}
+                    kind="type"
+                    label={copy.cardType}
+                    options={TRANSFIGURE_CARD_TYPES
+                      .filter((type) => type !== source.sourceCardType)
+                      .map((type) => ({
+                        icon: (
+                          <Image
+                            src={CARD_TYPE_FILTER_ICONS[type]}
+                            alt=""
+                            width={24}
+                            height={24}
+                            className="h-6 w-6 shrink-0 object-contain"
+                          />
+                        ),
+                        label: getTransfigureCardTypeLabel(entities, type),
+                        value: type,
+                      }))}
+                    selectLabel={copy.selectCardType}
+                    sourceLabel={selectedCardData.typeLabel}
+                    value={draft.transformedCardType}
+                    onCancel={() => onChange({
+                      transformedCardType: "",
+                      showCardTypeChange: false,
+                    })}
+                    onChange={(value) => onChange({ transformedCardType: value })}
+                    onOpen={() => onChange({ showCardTypeChange: true })}
+                  />
+                </>
+              ) : null}
+            </div>
+          </FilterSection>
+        </div>
+      )}
+
+      {isTransfigureTokenResourceType(entity.type) && (
+        <TransfigureTokenAppearanceControls
+          color={draft.tokenColor}
+          wax={draft.tokenWax}
+          serviceLocale={serviceLocale}
+          waxLabel={getCodexServiceMessages(serviceLocale).relicsView.toggles.wax}
+          meltedLabel={getCodexServiceMessages(serviceLocale).relicsView.toggles.melted}
+          onColorChange={(value) => onChange({ tokenColor: value })}
+          onWaxChange={(value) => onChange({ tokenWax: value })}
+        />
+      )}
+    </>
+  );
+}
+
 export function TransfigureEditor({
   entities,
   gameLocale,
@@ -283,133 +520,35 @@ export function TransfigureEditor({
   const [draftSessionId] = useState(() => globalThis.crypto.randomUUID());
   const draftSessionPrefix = `sts-transfigure-composer:${draftSessionId}:`;
   const nicknameInputRef = useRef<HTMLInputElement>(null);
-  const initialEntity = useMemo(
-    () => initialPost
-      ? findTransfigureEntity(entities, {
-        type: initialPost.resource_type,
-        id: initialPost.resource_id,
-      }) ?? null
-      : null,
-    [entities, initialPost],
-  );
-  const [selected, setSelected] = useState<EntityInfo | null>(initialEntity);
-  const [postTitle, setPostTitle] = useState(
-    initialPost?.title
-      ?? (initialEntity
-        ? copy.defaultTitle.replace("{name}", initialEntity.nameKo)
-        : ""),
-  );
-  const [previewBlocks, setPreviewBlocks] = useState<PostBlock[]>(
-    initialPost?.content ?? [],
-  );
-  const [previewUpgradeBlocks, setPreviewUpgradeBlocks] = useState<PostBlock[] | null>(
-    initialPost?.upgraded_content
-      ?? (initialEntity
-        ? getTransfigureUpgradeInitialBlocks(initialEntity, entities)
-        : null),
-  );
-  const [transformedName, setTransformedName] = useState(
-    initialPost?.transformed_name ?? "",
-  );
-  const [transformedCost, setTransformedCost] = useState(
-    initialPost?.transformed_cost ?? "",
-  );
-  const [transformedStarCost, setTransformedStarCost] = useState(
-    initialPost?.transformed_star_cost ?? "",
-  );
-  const [showEnergyCost, setShowEnergyCost] = useState(() => {
-    if (initialPost?.omit_energy_cost) return false;
-    const sourceCost = initialEntity
-      ? getTransfigureSourceCost(initialEntity)
-      : null;
-    return (
-      transfigureSourceHasEnergyCost(sourceCost)
-      || Boolean(initialPost?.transformed_cost)
-    );
-  });
-  const [showStarCost, setShowStarCost] = useState(() => {
-    const sourceStarCost = initialEntity
-      ? getTransfigureSourceStarCost(initialEntity)
-      : null;
-    return (
-      transfigureSourceHasStarCost(sourceStarCost)
-      || Boolean(initialPost?.transformed_star_cost)
-      || Boolean(initialPost?.transformed_upgrade_star_cost)
-    );
-  });
-  const initialCardMetadataEditable = canTransfigureCardMetadata(
-    initialEntity?.cardData?.type,
-    initialEntity?.cardData?.rarity,
-  );
-  const initialCardType = initialCardMetadataEditable
-    ? normalizeTransfigureCardType(
-      initialPost?.transformed_card_type,
-      initialEntity?.cardData?.type ?? null,
-    )
-    : null;
-  const initialCardRarity = initialCardMetadataEditable
-    ? normalizeTransfigureCardRarity(
-      initialPost?.transformed_card_rarity,
-      initialEntity?.cardData?.rarity ?? null,
-    )
-    : null;
-  const initialCardColor = normalizeTransfigureCardColor(
-    initialPost?.transformed_card_color,
-    initialEntity?.cardData?.color ?? null,
-  );
-  const [transformedCardType, setTransformedCardType] = useState<
-    TransfigureCardType | ""
-  >(initialCardType ?? "");
-  const [transformedCardRarity, setTransformedCardRarity] = useState<
-    TransfigureCardRarity | ""
-  >(initialCardRarity ?? "");
-  const [transformedCardColor, setTransformedCardColor] = useState<
-    TransfigureCardColor | ""
-  >(initialCardColor ?? "");
-  const [showCardTypeChange, setShowCardTypeChange] = useState(
-    initialCardType != null,
-  );
-  const [showCardRarityChange, setShowCardRarityChange] = useState(
-    initialCardRarity != null,
-  );
-  const [showCardColorChange, setShowCardColorChange] = useState(
-    initialCardColor != null,
-  );
-  const [cardKeywords, setCardKeywords] = useState<TransfigureCardKeywords | null>(
-    () => initialPost
-      ? {
-        top: initialPost.card_top_keywords,
-        bottom: initialPost.card_bottom_keywords,
-      }
-      : (initialEntity ? getTransfigureCardKeywords(initialEntity) : null),
-  );
-  const [transformedUpgradeCost, setTransformedUpgradeCost] = useState(
-    initialPost?.transformed_upgrade_cost ?? "",
-  );
-  const [transformedUpgradeStarCost, setTransformedUpgradeStarCost] = useState(
-    initialPost?.transformed_upgrade_star_cost ?? "",
-  );
-  const [upgradedCardKeywords, setUpgradedCardKeywords] = useState<
-    TransfigureCardKeywords | null
-  >(
-    () => initialPost?.upgraded_content
-      ? {
-        top: initialPost.upgraded_card_top_keywords,
-        bottom: initialPost.upgraded_card_bottom_keywords,
-      }
-      : (initialEntity
-        ? getTransfigureUpgradeCardKeywords(initialEntity)
-        : null),
-  );
-  const [showUpgrade, setShowUpgrade] = useState(
-    initialPost?.show_upgrade ?? false,
-  );
-  const [tokenColor, setTokenColor] = useState<TransfigureTokenColor | "">(
-    initialPost?.token_color ?? "",
-  );
-  const [tokenWax, setTokenWax] = useState<TransfigureTokenWax>(
-    initialPost?.token_wax ?? "off",
-  );
+  const pickerRootRef = useRef<HTMLDivElement>(null);
+  const [initialDrafts] = useState<TransfigureVariantDraft[]>(() => (
+    initialPost
+      ? transfigurePostVariants(initialPost).flatMap((variant) => {
+        const entity = findTransfigureEntity(entities, {
+          type: variant.resource_type,
+          id: variant.resource_id,
+        });
+        return entity
+          ? [createTransfigureVariantDraft(
+            entity,
+            getTransfigureVariantSource(entity, entities),
+            variant,
+          )]
+          : [];
+      })
+      : []
+  ));
+  const [initialSignature] = useState(() => initialDrafts
+    .map((draft) => transfigureVariantDraftSignature(
+      draft,
+      getTransfigureVariantSource(draft.entity, entities),
+    ))
+    .join("\n"));
+  const [drafts, setDrafts] = useState(initialDrafts);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [pickerOpen, setPickerOpen] = useState(!initialPost);
+  const [postTitle, setPostTitle] = useState(initialPost?.title ?? "");
+  const [titleTouched, setTitleTouched] = useState(Boolean(initialPost));
   const [submitting, setSubmitting] = useState(false);
   const [saveFeedback, setSaveFeedback] = useState<{
     message: string;
@@ -426,380 +565,46 @@ export function TransfigureEditor({
     () => entities.filter((entity) => getTransfigureSourceText(entity) != null),
     [entities],
   );
-  const sourceText = useMemo(
-    () => selected ? getTransfigureSourceText(selected) : null,
-    [selected],
-  );
-  const sourceBlocks = useMemo(
-    () => selected ? getTransfigureInitialBlocks(selected, entities) : [],
-    [entities, selected],
-  );
-  const editorInitialBlocks = useMemo(
-    () => initialPost?.content ?? sourceBlocks,
-    [initialPost, sourceBlocks],
-  );
-  const sourceCost = useMemo(
-    () => selected ? getTransfigureSourceCost(selected) : null,
-    [selected],
-  );
-  const sourceStarCost = useMemo(
-    () => selected ? getTransfigureSourceStarCost(selected) : null,
-    [selected],
-  );
-  const sourceHasEnergyCost = transfigureSourceHasEnergyCost(sourceCost);
-  const sourceHasStarCost = transfigureSourceHasStarCost(sourceStarCost);
-  const omitEnergyCost = sourceHasEnergyCost && !showEnergyCost;
-  const sourceCardType = selected?.cardData?.type ?? null;
-  const sourceCardRarity = selected?.cardData?.rarity ?? null;
-  const sourceCardColor = selected?.cardData?.color ?? null;
-  const canChangeCardMetadata = canTransfigureCardMetadata(
-    sourceCardType,
-    sourceCardRarity,
-  );
-  const sourceCardKeywords = useMemo(
-    () => selected ? getTransfigureCardKeywords(selected) : null,
-    [selected],
-  );
-  const sourceUpgradeText = useMemo(
-    () => selected ? getTransfigureUpgradeSourceText(selected) : null,
-    [selected],
-  );
-  const sourceUpgradeBlocks = useMemo(
-    () => selected
-      ? getTransfigureUpgradeInitialBlocks(selected, entities)
-      : null,
-    [entities, selected],
-  );
-  const editorInitialUpgradeBlocks = useMemo(
-    () => initialPost?.upgraded_content ?? sourceUpgradeBlocks,
-    [initialPost, sourceUpgradeBlocks],
-  );
-  const sourceUpgradeCost = useMemo(
-    () => selected ? getTransfigureUpgradeSourceCost(selected) : null,
-    [selected],
-  );
-  const sourceUpgradeStarCost = useMemo(
-    () => selected ? getTransfigureUpgradeSourceStarCost(selected) : null,
-    [selected],
-  );
-  const sourceUpgradedCardKeywords = useMemo(
-    () => selected ? getTransfigureUpgradeCardKeywords(selected) : null,
-    [selected],
-  );
-  const hasUpdateDiff = useCallback((
-    blocks: PostBlock[],
-    upgradedBlocks: PostBlock[] | null,
-    title: string,
-    nickname: string,
+  const sources = drafts.map((draft) => (
+    getTransfigureVariantSource(draft.entity, entities)
+  ));
+  const currentIndex = activeIndex < drafts.length
+    ? activeIndex
+    : Math.max(0, drafts.length - 1);
+  const activeDraft = drafts[currentIndex] ?? null;
+  const activeSource = activeDraft ? sources[currentIndex]! : null;
+  const autoTitle = drafts[0]
+    ? copy.defaultTitle.replace("{name}", drafts[0].entity.nameKo)
+    : "";
+  const titleValue = titleTouched ? postTitle : autoTitle;
+  const resolvedTitle = titleValue.trim() || autoTitle;
+  const variantFull = drafts.length >= TRANSFIGURE_MAX_VARIANTS;
+
+  const updateDraft = useCallback((
+    uid: string,
+    patch: DraftPatch,
+    clearFeedback = true,
   ) => {
-    if (!initialPost) return true;
-    const initialUpgradeBlocks = initialPost.upgraded_content ?? sourceUpgradeBlocks;
-    return (
-      title !== (initialPost.title ?? "").trim()
-      || nickname !== initialPost.nickname.trim()
-      || transformedName.trim() !== (initialPost.transformed_name ?? "").trim()
-      || transformedCost.trim() !== (initialPost.transformed_cost ?? "").trim()
-      || transformedStarCost.trim()
-        !== (initialPost.transformed_star_cost ?? "").trim()
-      || omitEnergyCost !== Boolean(initialPost.omit_energy_cost)
-      || transformedCardType !== (initialPost.transformed_card_type ?? "")
-      || transformedCardRarity !== (initialPost.transformed_card_rarity ?? "")
-      || transformedCardColor !== (initialPost.transformed_card_color ?? "")
-      || transformedUpgradeCost.trim()
-        !== (initialPost.transformed_upgrade_cost ?? "").trim()
-      || transformedUpgradeStarCost.trim()
-        !== (initialPost.transformed_upgrade_star_cost ?? "").trim()
-      || !transfigureCardKeywordsEqual(cardKeywords, {
-        top: initialPost.card_top_keywords,
-        bottom: initialPost.card_bottom_keywords,
-      })
-      || !transfigureCardKeywordsEqual(upgradedCardKeywords, {
-        top: initialPost.upgraded_card_top_keywords,
-        bottom: initialPost.upgraded_card_bottom_keywords,
-      })
-      || showUpgrade !== (initialPost.show_upgrade ?? false)
-      || (tokenColor || null) !== (initialPost.token_color ?? null)
-      || (tokenWax === "off" ? null : tokenWax) !== (initialPost.token_wax ?? null)
-      || transfigureBlocksSignature(blocks)
-        !== transfigureBlocksSignature(initialPost.content)
-      || (
-        upgradedBlocks == null
-          ? initialUpgradeBlocks != null
-          : (
-            initialUpgradeBlocks == null
-            || transfigureBlocksSignature(upgradedBlocks)
-              !== transfigureBlocksSignature(initialUpgradeBlocks)
-          )
-      )
-    );
-  }, [
-    initialPost,
-    cardKeywords,
-    showUpgrade,
-    sourceUpgradeBlocks,
-    tokenColor,
-    tokenWax,
-    omitEnergyCost,
-    transformedCost,
-    transformedStarCost,
-    transformedCardRarity,
-    transformedCardType,
-    transformedCardColor,
-    transformedName,
-    transformedUpgradeCost,
-    transformedUpgradeStarCost,
-    upgradedCardKeywords,
-  ]);
+    setDrafts((current) => current.map((draft) => (
+      draft.uid === uid
+        ? { ...draft, ...(typeof patch === "function" ? patch(draft) : patch) }
+        : draft
+    )));
+    if (clearFeedback) setSaveFeedback(null);
+  }, []);
 
-  const buildChangeCheck = useCallback((
-    blocks: PostBlock[],
-    upgradedBlocks: PostBlock[] | null,
-  ): TransfigureChangeCheck | null => {
-    if (!selected || !sourceText || !isTransfigureResourceType(selected.type)) {
-      return null;
-    }
-    return {
-      blocks,
-      sourceText,
-      sourceBlocks,
-      transformedName,
-      sourceName: selected.nameKo,
-      transformedCost,
-      sourceCost,
-      transformedStarCost,
-      sourceStarCost,
-      transformedCardType,
-      sourceCardType,
-      transformedCardRarity,
-      sourceCardRarity,
-      transformedCardColor,
-      sourceCardColor,
-      omitEnergyCost,
-      upgradedBlocks,
-      sourceUpgradeText,
-      sourceUpgradeBlocks,
-      transformedUpgradeCost,
-      sourceUpgradeCost,
-      transformedUpgradeStarCost,
-      sourceUpgradeStarCost,
-      cardKeywords,
-      sourceCardKeywords,
-      upgradedCardKeywords,
-      sourceUpgradedCardKeywords,
-      showUpgrade,
-      resourceType: selected.type,
-      tokenColor,
-      tokenWax,
-    };
-  }, [
-    selected,
-    cardKeywords,
-    sourceBlocks,
-    sourceCost,
-    sourceStarCost,
-    sourceCardRarity,
-    sourceCardType,
-    sourceCardColor,
-    omitEnergyCost,
-    sourceText,
-    sourceUpgradeBlocks,
-    sourceUpgradeCost,
-    sourceUpgradeStarCost,
-    sourceUpgradeText,
-    sourceCardKeywords,
-    sourceUpgradedCardKeywords,
-    transformedCost,
-    transformedStarCost,
-    transformedCardRarity,
-    transformedCardType,
-    transformedCardColor,
-    transformedName,
-    transformedUpgradeCost,
-    transformedUpgradeStarCost,
-    upgradedCardKeywords,
-    showUpgrade,
-    tokenColor,
-    tokenWax,
-  ]);
+  const variantMessages = drafts.map((draft, index) => {
+    const reason = transfigureVariantBlockReason(draft, sources[index]!);
+    if (!reason) return null;
+    return reason === "invalidDescription"
+      ? copy.invalidDescription
+      : copy.anchorOrDiffRequired;
+  });
+  const firstInvalidIndex = variantMessages.findIndex((message) => message != null);
+  const draftsSignature = drafts
+    .map((draft, index) => transfigureVariantDraftSignature(draft, sources[index]!))
+    .join("\n");
 
-  const writeGateMessage = useCallback((
-    blocks: PostBlock[],
-    upgradedBlocks: PostBlock[] | null,
-  ): string | null => {
-    const changeCheck = buildChangeCheck(blocks, upgradedBlocks);
-    if (!changeCheck) {
-      return initialPost ? copy.noChanges : copy.anchorOrDiffRequired;
-    }
-    if (!isTransfigureChanged(changeCheck)) {
-      return initialPost ? copy.noChanges : copy.anchorOrDiffRequired;
-    }
-    if (!transfigureHasExistingRefsOrDiff(changeCheck)) {
-      return copy.anchorOrDiffRequired;
-    }
-    return null;
-  }, [
-    buildChangeCheck,
-    copy.anchorOrDiffRequired,
-    copy.noChanges,
-    initialPost,
-  ]);
-
-  const handleSelect = useCallback((entity: EntityInfo) => {
-    setSelected(entity);
-    setPostTitle(copy.defaultTitle.replace("{name}", entity.nameKo));
-    setPreviewBlocks(getTransfigureInitialBlocks(entity, entities));
-    setPreviewUpgradeBlocks(getTransfigureUpgradeInitialBlocks(entity, entities));
-    setTransformedName("");
-    setTransformedCost("");
-    setTransformedStarCost("");
-    setTransformedCardType("");
-    setTransformedCardRarity("");
-    setTransformedCardColor("");
-    setShowCardTypeChange(false);
-    setShowCardRarityChange(false);
-    setShowCardColorChange(false);
-    setTransformedUpgradeCost("");
-    setTransformedUpgradeStarCost("");
-    setShowEnergyCost(transfigureSourceHasEnergyCost(
-      getTransfigureSourceCost(entity),
-    ));
-    setShowStarCost(transfigureSourceHasStarCost(
-      getTransfigureSourceStarCost(entity),
-    ));
-    setCardKeywords(getTransfigureCardKeywords(entity));
-    setUpgradedCardKeywords(getTransfigureUpgradeCardKeywords(entity));
-    setShowUpgrade(false);
-    setTokenColor("");
-    setTokenWax("off");
-    setSaveFeedback(null);
-  }, [copy.defaultTitle, entities]);
-
-  const handleSubmit = useCallback(async (
-    blocks: PostBlock[],
-    upgradedBlocks: PostBlock[] | null,
-  ) => {
-    const gateMessage = writeGateMessage(blocks, upgradedBlocks);
-    if (gateMessage) {
-      throw new Error("transfigure write validation failed");
-    }
-    if (!selected || !sourceText || !isTransfigureResourceType(selected.type)) {
-      throw new Error("transfigure write validation failed");
-    }
-
-    const title = postTitle.trim()
-      || copy.defaultTitle.replace("{name}", selected.nameKo);
-    const nickname = hideNickname
-      ? (profileNickname.trim() || copy.defaultNickname)
-      : (nicknameInputRef.current?.value.trim()
-        || profileNickname
-        || copy.defaultNickname);
-    if (!hasUpdateDiff(blocks, upgradedBlocks, title, nickname)) {
-      throw new Error("transfigure post is unchanged");
-    }
-    setSaveFeedback(null);
-    await onSubmit({
-      title,
-      blocks,
-      nickname,
-      resource: { type: selected.type, id: selected.id },
-      sourceText,
-      sourceBlocks,
-      sourceGameLocale: gameLocale,
-      sourceName: selected.nameKo,
-      sourceCost,
-      sourceStarCost,
-      sourceCardType,
-      sourceCardRarity,
-      sourceCardColor,
-      sourceUpgradeText,
-      sourceUpgradeBlocks,
-      sourceUpgradeCost,
-      sourceUpgradeStarCost,
-      sourceCardKeywords,
-      sourceUpgradedCardKeywords,
-      transformedName,
-      transformedCost: showEnergyCost && !sourceHasEnergyCost
-        ? (transformedCost.trim() || TRANSFIGURE_DEFAULT_ADDED_COST)
-        : transformedCost,
-      transformedStarCost: showStarCost && !sourceHasStarCost
-        ? (transformedStarCost.trim() || TRANSFIGURE_DEFAULT_ADDED_COST)
-        : transformedStarCost,
-      transformedCardType,
-      transformedCardRarity,
-      transformedCardColor,
-      omitEnergyCost,
-      cardKeywords,
-      upgradedBlocks,
-      transformedUpgradeCost: showEnergyCost && !sourceHasEnergyCost
-        && sourceUpgradeText
-        ? (
-          transformedUpgradeCost.trim()
-          || TRANSFIGURE_DEFAULT_ADDED_COST
-        )
-        : transformedUpgradeCost,
-      transformedUpgradeStarCost: showStarCost && !sourceHasStarCost
-        && sourceUpgradeText
-        ? (
-          transformedUpgradeStarCost.trim()
-          || sourceUpgradeStarCost
-          || TRANSFIGURE_DEFAULT_ADDED_COST
-        )
-        : transformedUpgradeStarCost,
-      upgradedCardKeywords,
-      showUpgrade,
-      tokenColor,
-      tokenWax,
-    });
-  }, [
-    copy.defaultNickname,
-    copy.defaultTitle,
-    gameLocale,
-    hasUpdateDiff,
-    hideNickname,
-    onSubmit,
-    postTitle,
-    profileNickname,
-    selected,
-    sourceBlocks,
-    cardKeywords,
-    sourceCost,
-    sourceStarCost,
-    sourceCardRarity,
-    sourceCardType,
-    sourceCardColor,
-    omitEnergyCost,
-    sourceHasEnergyCost,
-    sourceHasStarCost,
-    showEnergyCost,
-    showStarCost,
-    sourceText,
-    sourceUpgradeBlocks,
-    sourceUpgradeCost,
-    sourceUpgradeStarCost,
-    sourceUpgradeText,
-    sourceCardKeywords,
-    sourceUpgradedCardKeywords,
-    transformedCost,
-    transformedStarCost,
-    transformedCardRarity,
-    transformedCardType,
-    transformedCardColor,
-    transformedName,
-    transformedUpgradeCost,
-    transformedUpgradeStarCost,
-    upgradedCardKeywords,
-    showUpgrade,
-    tokenColor,
-    tokenWax,
-    writeGateMessage,
-  ]);
-  const descriptionsValid = (
-    blocksToPlainText(previewBlocks).trim().length >= 2
-    && (
-      previewUpgradeBlocks == null
-      || blocksToPlainText(previewUpgradeBlocks).trim().length >= 2
-    )
-  );
   const readNickname = useCallback(() => (
     hideNickname
       ? (profileNickname.trim() || copy.defaultNickname)
@@ -807,23 +612,28 @@ export function TransfigureEditor({
         || profileNickname
         || copy.defaultNickname)
   ), [copy.defaultNickname, hideNickname, profileNickname]);
+
+  const hasUpdateDiff = (title: string, nickname: string) => {
+    if (!initialPost) return true;
+    return (
+      title !== (initialPost.title ?? "").trim()
+      || nickname !== initialPost.nickname.trim()
+      || draftsSignature !== initialSignature
+    );
+  };
+
   const submitBlockMessage = (() => {
     if (submitting) return null;
-    if (!descriptionsValid) return copy.invalidDescription;
-    const gateMessage = writeGateMessage(previewBlocks, previewUpgradeBlocks);
-    if (gateMessage) return gateMessage;
-    const title = postTitle.trim()
-      || (selected
-        ? copy.defaultTitle.replace("{name}", selected.nameKo)
-        : "");
-    if (!hasUpdateDiff(
-      previewBlocks,
-      previewUpgradeBlocks,
-      title,
-      readNickname(),
-    )) {
-      return copy.noChanges;
+    if (drafts.length === 0) return copy.selectResource;
+    if (firstInvalidIndex >= 0) {
+      const message = variantMessages[firstInvalidIndex]!;
+      return drafts.length > 1
+        ? copy.variantBlocked
+          .replace("{index}", String(firstInvalidIndex + 1))
+          .replace("{message}", message)
+        : message;
     }
+    if (!hasUpdateDiff(resolvedTitle, readNickname())) return copy.noChanges;
     return null;
   })();
 
@@ -831,25 +641,22 @@ export function TransfigureEditor({
     if (!submitBlockMessage) setSubmitTipPinned(false);
   }, [submitBlockMessage]);
 
-  const requestSubmit = useCallback(async () => {
-    const blockMessage = !descriptionsValid
-      ? copy.invalidDescription
-      : writeGateMessage(previewBlocks, previewUpgradeBlocks);
-    if (blockMessage) {
+  const requestSubmit = async () => {
+    if (submitting || drafts.length === 0) return;
+    if (firstInvalidIndex >= 0) {
+      setActiveIndex(firstInvalidIndex);
       setSubmitTipPinned(true);
       return;
     }
-    const title = postTitle.trim()
-      || (selected
-        ? copy.defaultTitle.replace("{name}", selected.nameKo)
-        : "");
     const nickname = readNickname();
-    if (!hasUpdateDiff(
-      previewBlocks,
-      previewUpgradeBlocks,
-      title,
-      nickname,
-    )) {
+    if (!hasUpdateDiff(resolvedTitle, nickname)) {
+      setSubmitTipPinned(true);
+      return;
+    }
+    const variants = drafts.map((draft, index) => (
+      transfigureVariantSaveInput(draft, sources[index]!)
+    ));
+    if (variants.some((variant) => variant == null)) {
       setSubmitTipPinned(true);
       return;
     }
@@ -857,49 +664,208 @@ export function TransfigureEditor({
     setSaveFeedback({ message: copy.saving, tone: "status" });
     setSubmitting(true);
     try {
-      await handleSubmit(previewBlocks, previewUpgradeBlocks);
+      await onSubmit({
+        title: resolvedTitle,
+        nickname,
+        sourceGameLocale: gameLocale,
+        variants: variants as SaveTransfigureVariantInput[],
+        hadExtraVariants: (initialPost?.extra_variants.length ?? 0) > 0,
+      });
     } catch {
       setSaveFeedback({ message: copy.saveFailed, tone: "error" });
     } finally {
       setSubmitting(false);
     }
-  }, [
-    copy.defaultTitle,
-    copy.invalidDescription,
-    copy.saveFailed,
-    copy.saving,
-    descriptionsValid,
-    handleSubmit,
-    hasUpdateDiff,
-    postTitle,
-    previewBlocks,
-    previewUpgradeBlocks,
-    readNickname,
-    selected,
-    writeGateMessage,
-  ]);
-  const selectedCardData = selected?.type === "card" ? selected.cardData : undefined;
-  const attributeVisualColor = selectedCardData
-    ? (
-      transformedCardColor && transformedCardColor !== selectedCardData.color
-        ? transformedCardColor
-        : (selectedCardData.visualColor ?? selectedCardData.color)
-    )
-    : "colorless";
+  };
+
+  const addVariant = (entity: EntityInfo) => {
+    if (variantFull) return;
+    const draft = createTransfigureVariantDraft(
+      entity,
+      getTransfigureVariantSource(entity, entities),
+    );
+    setDrafts((current) => [...current, draft]);
+    setActiveIndex(drafts.length);
+    setPickerOpen(false);
+    setSaveFeedback(null);
+  };
+
+  const removeVariant = (index: number) => {
+    setDrafts((current) => current.filter((_, draftIndex) => draftIndex !== index));
+    setActiveIndex(index < currentIndex
+      ? currentIndex - 1
+      : Math.max(0, Math.min(currentIndex, drafts.length - 2)));
+    if (drafts.length <= 1) setPickerOpen(true);
+    setSaveFeedback(null);
+  };
+
+  const makeRepresentative = (index: number) => {
+    setDrafts((current) => {
+      const next = [...current];
+      const [moved] = next.splice(index, 1);
+      if (moved) next.unshift(moved);
+      return next;
+    });
+    setActiveIndex(0);
+    setSaveFeedback(null);
+  };
+
+  const openPicker = () => {
+    if (variantFull) return;
+    setPickerOpen(true);
+    pickerRootRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  };
+
+  const renderAssetEditor = (
+    draft: TransfigureVariantDraft,
+    source: TransfigureVariantSource,
+  ) => (
+    <TransfigureAssetEditor
+      key={`${initialPost?.id ?? "new"}:${draft.uid}`}
+      draftKey={`${draftSessionPrefix}${gameLocale}:${draft.uid}`}
+      entities={entities}
+      entity={draft.entity}
+      gameLocale={gameLocale}
+      blocks={draft.blocks}
+      initialBlocks={draft.seedBlocks}
+      initialUpgradeBlocks={draft.seedUpgradeBlocks}
+      nameLabel={copy.nameLabel}
+      costLabel={copy.costLabel}
+      starCostLabel={copy.starCostLabel}
+      descriptionLabel={copy.descriptionLabel}
+      descriptionFrameLimit={copy.descriptionFrameLimit}
+      costTokenTip={copy.costTokenTip}
+      addTopKeywordLabel={copy.addTopKeyword}
+      addBottomKeywordLabel={copy.addBottomKeyword}
+      removeKeywordLabel={copy.removeKeyword}
+      serviceLocale={serviceLocale}
+      sourceText={source.sourceText ?? ""}
+      sourceUpgradeText={source.sourceUpgradeText}
+      sourceUpgradeCost={source.sourceUpgradeCost}
+      sourceStarCost={source.sourceStarCost}
+      sourceUpgradeStarCost={source.sourceUpgradeStarCost}
+      submitLabel={initialPost ? copy.saveChanges : copy.submit}
+      transformedName={draft.transformedName}
+      transformedCost={draft.transformedCost}
+      transformedStarCost={draft.transformedStarCost}
+      transformedCardType={draft.transformedCardType}
+      transformedCardRarity={draft.transformedCardRarity}
+      transformedCardColor={draft.transformedCardColor}
+      cardKeywords={draft.cardKeywords}
+      transformedUpgradeCost={draft.transformedUpgradeCost}
+      transformedUpgradeStarCost={draft.transformedUpgradeStarCost}
+      upgradedCardKeywords={draft.upgradedCardKeywords}
+      upgradedBlocks={draft.upgradedBlocks}
+      upgradeLabel={upgradeLabel}
+      showUpgrade={draft.showUpgrade}
+      tokenColor={draft.tokenColor}
+      tokenWax={draft.tokenWax}
+      showEnergyCost={draft.showEnergyCost}
+      showStarCost={draft.showStarCost}
+      omitEnergyCost={transfigureDraftOmitsEnergyCost(draft, source)}
+      onBlocksChange={(blocks) => {
+        updateDraft(
+          draft.uid,
+          { blocks },
+          transfigureBlocksSignature(blocks)
+            !== transfigureBlocksSignature(draft.blocks),
+        );
+      }}
+      onCardKeywordsChange={(keywords) => updateDraft(draft.uid, { cardKeywords: keywords })}
+      onCostChange={(value) => updateDraft(draft.uid, { transformedCost: value })}
+      onStarCostChange={(value) => updateDraft(draft.uid, { transformedStarCost: value })}
+      onUpgradeBlocksChange={(blocks) => {
+        updateDraft(
+          draft.uid,
+          { upgradedBlocks: blocks },
+          blocks == null
+            ? draft.upgradedBlocks != null
+            : (
+              draft.upgradedBlocks == null
+              || transfigureBlocksSignature(blocks)
+                !== transfigureBlocksSignature(draft.upgradedBlocks)
+            ),
+        );
+      }}
+      onUpgradeCardKeywordsChange={(keywords) => updateDraft(
+        draft.uid,
+        { upgradedCardKeywords: keywords },
+      )}
+      onUpgradeCostChange={(value) => updateDraft(
+        draft.uid,
+        { transformedUpgradeCost: value },
+      )}
+      onUpgradeStarCostChange={(value) => updateDraft(
+        draft.uid,
+        { transformedUpgradeStarCost: value },
+      )}
+      onShowUpgradeChange={(checked) => updateDraft(draft.uid, { showUpgrade: checked })}
+      onNameChange={(value) => updateDraft(draft.uid, { transformedName: value })}
+      onSubmit={async () => {
+        await requestSubmit();
+      }}
+    />
+  );
+
+  const submitButton = (
+    <button
+      type="button"
+      onClick={() => { void requestSubmit(); }}
+      disabled={submitting}
+      aria-disabled={submitBlockMessage ? true : undefined}
+      data-transfigure-submit=""
+      className={cn(
+        "flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/15 px-4 py-2 text-sm font-semibold text-primary transition-colors",
+        submitting || submitBlockMessage
+          ? "cursor-not-allowed opacity-40"
+          : "hover:bg-primary/25",
+      )}
+    >
+      {submitting
+        ? copy.saving
+        : initialPost
+          ? copy.saveChanges
+          : copy.submit}
+      <Image
+        src="/images/sts2/relics/astrolabe.webp"
+        alt=""
+        width={16}
+        height={16}
+        className="object-contain"
+      />
+    </button>
+  );
+
+  const pickerHint = drafts.length === 0
+    ? copy.searchPlaceholder
+    : variantFull
+      ? copy.variantLimitReached.replace("{max}", String(TRANSFIGURE_MAX_VARIANTS))
+      : copy.addVariantHint
+        .replace("{count}", String(drafts.length))
+        .replace("{max}", String(TRANSFIGURE_MAX_VARIANTS));
 
   return (
     <div className="space-y-3" data-transfigure-editor>
-      {!initialPost && (
+      <div ref={pickerRootRef} className="scroll-mt-2">
         <TransfigureResourcePicker
           entities={sourceEntities}
-          selected={selected}
+          selected={null}
           serviceLocale={serviceLocale}
-          defaultOpen
-          onSelect={handleSelect}
+          open={pickerOpen}
+          onOpenChange={setPickerOpen}
+          disabled={variantFull}
+          triggerTitle={drafts.length === 0 ? copy.selectResource : copy.addVariant}
+          triggerHint={pickerHint}
+          triggerIcon={drafts.length > 0
+            ? <Plus className="h-5 w-5 text-primary/80" aria-hidden="true" />
+            : undefined}
+          onSelect={addVariant}
         />
-      )}
+      </div>
 
-      {selected && sourceText && isTransfigureResourceType(selected.type) && (
+      {activeDraft
+        && activeSource?.sourceText
+        && isTransfigureResourceType(activeDraft.entity.type) && (
         <div className="grid items-start gap-4 lg:grid-cols-[16rem_minmax(0,1fr)]">
           <div className="rounded-xl border border-border bg-card">
             <div className="border-b border-border px-3 py-2">
@@ -909,9 +875,10 @@ export function TransfigureEditor({
                 </span>
                 <input
                   type="text"
-                  value={postTitle}
+                  value={titleValue}
                   onChange={(event) => {
                     setPostTitle(event.target.value);
+                    setTitleTouched(true);
                     setSaveFeedback(null);
                   }}
                   placeholder={copy.titlePlaceholder}
@@ -937,381 +904,86 @@ export function TransfigureEditor({
             </div>
             )}
 
-            {selectedCardData && (
-              <div
-                className="border-t border-border px-3 py-2"
-                data-transfigure-card-attributes
-              >
-                <FilterSection label={copy.cardAttributes}>
-                  <div className="space-y-2">
-                    <CardAttributePresence
-                      active={showEnergyCost}
-                      cancelLabel={copy.cancelChange}
-                      icon={(
-                        <Image
-                          src={resolveSts2EnergyIcon(attributeVisualColor)}
-                          alt=""
-                          width={16}
-                          height={16}
-                          className="h-4 w-4 shrink-0 object-contain"
-                        />
-                      )}
-                      kind="cost"
-                      label={copy.costLabel}
-                      onCancel={() => {
-                        setShowEnergyCost(false);
-                        setTransformedCost("");
-                        setTransformedUpgradeCost("");
-                        setSaveFeedback(null);
-                      }}
-                      onOpen={() => {
-                        setShowEnergyCost(true);
-                        if (!sourceHasEnergyCost) {
-                          setTransformedCost((current) => (
-                            current.trim() || TRANSFIGURE_DEFAULT_ADDED_COST
-                          ));
-                          if (sourceUpgradeText) {
-                            setTransformedUpgradeCost((current) => (
-                              current.trim() || TRANSFIGURE_DEFAULT_ADDED_COST
-                            ));
-                          }
-                        }
-                        setSaveFeedback(null);
-                      }}
-                    />
+            <TransfigureVariantPalette
+              items={drafts.map((draft, index) => ({
+                uid: draft.uid,
+                entity: draft.entity,
+                name: draft.transformedName.trim() || draft.entity.nameKo,
+                upgraded: draft.showUpgrade && draft.entity.type === "card",
+                blockMessage: variantMessages[index] ?? null,
+              }))}
+              activeIndex={currentIndex}
+              serviceLocale={serviceLocale}
+              onSelect={(index) => {
+                setActiveIndex(index);
+                setSubmitTipPinned(false);
+              }}
+              onMakeRepresentative={makeRepresentative}
+              onRemove={removeVariant}
+              onAdd={openPicker}
+            />
 
-                    {!sourceHasStarCost && (
-                      <CardAttributePresence
-                        active={showStarCost}
-                        cancelLabel={copy.cancelChange}
-                        icon={(
-                          <Image
-                            src="/images/game-assets/card-misc/energy_star.png"
-                            alt=""
-                            width={16}
-                            height={16}
-                            className="h-4 w-4 shrink-0 object-contain"
-                          />
-                        )}
-                        kind="star-cost"
-                        label={copy.starCostLabel}
-                        onCancel={() => {
-                          setShowStarCost(false);
-                          setTransformedStarCost("");
-                          setTransformedUpgradeStarCost("");
-                          setSaveFeedback(null);
-                        }}
-                        onOpen={() => {
-                          setShowStarCost(true);
-                          setTransformedStarCost((current) => (
-                            current.trim() || TRANSFIGURE_DEFAULT_ADDED_COST
-                          ));
-                          if (sourceUpgradeText) {
-                            setTransformedUpgradeStarCost((current) => (
-                              current.trim()
-                              || sourceUpgradeStarCost
-                              || TRANSFIGURE_DEFAULT_ADDED_COST
-                            ));
-                          }
-                          setSaveFeedback(null);
-                        }}
-                      />
-                    )}
-
-                    <CardAttributeChange
-                      active={showCardColorChange}
-                      cancelLabel={copy.cancelChange}
-                      kind="color"
-                      label={copy.cardColor}
-                      options={TRANSFIGURE_CARD_COLORS
-                        .filter((color) => color !== sourceCardColor)
-                        .map((color) => ({
-                          icon: (
-                            <TinyCardIcon
-                              card={{
-                                color,
-                                visualColor: color,
-                                rarity: transformedCardRarity || selectedCardData.rarity,
-                                type: transformedCardType || selectedCardData.type,
-                              }}
-                              width={24}
-                            />
-                          ),
-                          label: transfigureCardColorLabel(
-                            color,
-                            entities,
-                            serviceLocale,
-                          ),
-                          value: color,
-                        }))}
-                      selectLabel={copy.selectCardColor}
-                      sourceLabel={transfigureCardColorLabel(
-                        selectedCardData.color,
-                        entities,
-                        serviceLocale,
-                      )}
-                      value={transformedCardColor}
-                      onCancel={() => {
-                        setTransformedCardColor("");
-                        setShowCardColorChange(false);
-                        setSaveFeedback(null);
-                      }}
-                      onChange={(value) => {
-                        setTransformedCardColor(value);
-                        setSaveFeedback(null);
-                      }}
-                      onOpen={() => setShowCardColorChange(true)}
-                    />
-
-                    {canChangeCardMetadata ? (
-                      <>
-                    <CardAttributeChange
-                      active={showCardRarityChange}
-                      cancelLabel={copy.cancelChange}
-                      kind="rarity"
-                      label={copy.cardRarity}
-                      options={TRANSFIGURE_CARD_RARITIES
-                        .filter((rarity) => rarity !== sourceCardRarity)
-                        .map((rarity) => {
-                          const previewColor = transformedCardColor
-                            || selectedCardData.color;
-                          return {
-                            icon: (
-                              <TinyCardIcon
-                                card={{
-                                  color: previewColor,
-                                  visualColor: previewColor === selectedCardData.color
-                                    ? selectedCardData.visualColor
-                                    : previewColor,
-                                  rarity,
-                                  type: transformedCardType || selectedCardData.type,
-                                }}
-                                width={24}
-                              />
-                            ),
-                            label: getTransfigureCardRarityLabel(entities, rarity),
-                            value: rarity,
-                          };
-                        })}
-                      selectLabel={copy.selectCardRarity}
-                      sourceLabel={selectedCardData.rarityLabel}
-                      value={transformedCardRarity}
-                      onCancel={() => {
-                        setTransformedCardRarity("");
-                        setShowCardRarityChange(false);
-                        setSaveFeedback(null);
-                      }}
-                      onChange={(value) => {
-                        setTransformedCardRarity(value);
-                        setSaveFeedback(null);
-                      }}
-                      onOpen={() => setShowCardRarityChange(true)}
-                    />
-
-                    <CardAttributeChange
-                      active={showCardTypeChange}
-                      cancelLabel={copy.cancelChange}
-                      kind="type"
-                      label={copy.cardType}
-                      options={TRANSFIGURE_CARD_TYPES
-                        .filter((type) => type !== sourceCardType)
-                        .map((type) => ({
-                          icon: (
-                            <Image
-                              src={CARD_TYPE_FILTER_ICONS[type]}
-                              alt=""
-                              width={24}
-                              height={24}
-                              className="h-6 w-6 shrink-0 object-contain"
-                            />
-                          ),
-                          label: getTransfigureCardTypeLabel(entities, type),
-                          value: type,
-                        }))}
-                      selectLabel={copy.selectCardType}
-                      sourceLabel={selectedCardData.typeLabel}
-                      value={transformedCardType}
-                      onCancel={() => {
-                        setTransformedCardType("");
-                        setShowCardTypeChange(false);
-                        setSaveFeedback(null);
-                      }}
-                      onChange={(value) => {
-                        setTransformedCardType(value);
-                        setSaveFeedback(null);
-                      }}
-                      onOpen={() => setShowCardTypeChange(true)}
-                    />
-                      </>
-                    ) : null}
-                  </div>
-                </FilterSection>
-              </div>
-            )}
-
-            {isTransfigureTokenResourceType(selected.type) && (
-              <TransfigureTokenAppearanceControls
-                color={tokenColor}
-                wax={tokenWax}
-                serviceLocale={serviceLocale}
-                waxLabel={getCodexServiceMessages(serviceLocale).relicsView.toggles.wax}
-                meltedLabel={getCodexServiceMessages(serviceLocale).relicsView.toggles.melted}
-                onColorChange={(value) => {
-                  setTokenColor(value);
-                  setSaveFeedback(null);
-                }}
-                onWaxChange={(value) => {
-                  setTokenWax(value);
-                  setSaveFeedback(null);
-                }}
-              />
-            )}
+            <TransfigureVariantAttributes
+              key={activeDraft.uid}
+              copy={copy}
+              draft={activeDraft}
+              entities={entities}
+              serviceLocale={serviceLocale}
+              source={activeSource}
+              onChange={(patch) => updateDraft(activeDraft.uid, patch)}
+            />
           </div>
 
-          <section className="dark rounded-xl border border-primary/15 bg-black/20 p-3 lg:sticky lg:top-0">
-            <TransfigureAssetEditor
-              key={`${initialPost?.id ?? "new"}:${selected.type}:${selected.id}`}
-              draftKey={`${draftSessionPrefix}${gameLocale}:${selected.type}:${selected.id}`}
-              entities={entities}
-              entity={selected}
-              gameLocale={gameLocale}
-              blocks={previewBlocks}
-              initialBlocks={editorInitialBlocks}
-              initialUpgradeBlocks={editorInitialUpgradeBlocks}
-              nameLabel={copy.nameLabel}
-              costLabel={copy.costLabel}
-              starCostLabel={copy.starCostLabel}
-              descriptionLabel={copy.descriptionLabel}
-              descriptionFrameLimit={copy.descriptionFrameLimit}
-              costTokenTip={copy.costTokenTip}
-              addTopKeywordLabel={copy.addTopKeyword}
-              addBottomKeywordLabel={copy.addBottomKeyword}
-              removeKeywordLabel={copy.removeKeyword}
-              serviceLocale={serviceLocale}
-              sourceText={sourceText}
-              sourceUpgradeText={sourceUpgradeText}
-              sourceUpgradeCost={sourceUpgradeCost}
-              sourceStarCost={sourceStarCost}
-              sourceUpgradeStarCost={sourceUpgradeStarCost}
-              submitLabel={initialPost ? copy.saveChanges : copy.submit}
-              transformedName={transformedName}
-              transformedCost={transformedCost}
-              transformedStarCost={transformedStarCost}
-              transformedCardType={transformedCardType}
-              transformedCardRarity={transformedCardRarity}
-              transformedCardColor={transformedCardColor}
-              cardKeywords={cardKeywords}
-              transformedUpgradeCost={transformedUpgradeCost}
-              transformedUpgradeStarCost={transformedUpgradeStarCost}
-              upgradedCardKeywords={upgradedCardKeywords}
-              upgradedBlocks={previewUpgradeBlocks}
-              upgradeLabel={upgradeLabel}
-              showUpgrade={showUpgrade}
-              tokenColor={tokenColor}
-              tokenWax={tokenWax}
-              showEnergyCost={showEnergyCost}
-              showStarCost={showStarCost}
-              omitEnergyCost={omitEnergyCost}
-              onBlocksChange={(blocks) => {
-                if (
-                  transfigureBlocksSignature(blocks)
-                  !== transfigureBlocksSignature(previewBlocks)
-                ) {
-                  setSaveFeedback(null);
-                }
-                setPreviewBlocks(blocks);
-              }}
-              onCardKeywordsChange={(keywords) => {
-                setCardKeywords(keywords);
-                setSaveFeedback(null);
-              }}
-              onCostChange={(value) => {
-                setTransformedCost(value);
-                setSaveFeedback(null);
-              }}
-              onStarCostChange={(value) => {
-                setTransformedStarCost(value);
-                setSaveFeedback(null);
-              }}
-              onUpgradeBlocksChange={(blocks) => {
-                if (
-                  blocks == null
-                    ? previewUpgradeBlocks != null
-                    : (
-                      previewUpgradeBlocks == null
-                      || transfigureBlocksSignature(blocks)
-                        !== transfigureBlocksSignature(previewUpgradeBlocks)
-                    )
-                ) {
-                  setSaveFeedback(null);
-                }
-                setPreviewUpgradeBlocks(blocks);
-              }}
-              onUpgradeCardKeywordsChange={(keywords) => {
-                setUpgradedCardKeywords(keywords);
-                setSaveFeedback(null);
-              }}
-              onUpgradeCostChange={(value) => {
-                setTransformedUpgradeCost(value);
-                setSaveFeedback(null);
-              }}
-              onUpgradeStarCostChange={(value) => {
-                setTransformedUpgradeStarCost(value);
-                setSaveFeedback(null);
-              }}
-              onShowUpgradeChange={(checked) => {
-                setShowUpgrade(checked);
-                setSaveFeedback(null);
-              }}
-              onNameChange={(value) => {
-                setTransformedName(value);
-                setSaveFeedback(null);
-              }}
-              onSubmit={handleSubmit}
-            />
-            {(() => {
-              const submitButton = (
-                <button
-                  type="button"
-                  onClick={() => { void requestSubmit(); }}
-                  disabled={submitting}
-                  aria-disabled={submitBlockMessage ? true : undefined}
-                  data-transfigure-submit=""
-                  className={cn(
-                    "flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/15 px-4 py-2 text-sm font-semibold text-primary transition-colors",
-                    submitting || submitBlockMessage
-                      ? "cursor-not-allowed opacity-40"
-                      : "hover:bg-primary/25",
+          <section
+            className="dark rounded-xl border border-primary/15 bg-black/20 p-3 lg:sticky lg:top-0"
+            data-transfigure-variant-stage=""
+            data-active-variant={currentIndex}
+          >
+            {drafts.length > 1 && (
+              <div className="mb-2 flex items-center justify-between gap-2 text-xs">
+                <span className="flex min-w-0 items-center gap-1.5">
+                  {currentIndex === 0 && (
+                    <span className="shrink-0 rounded bg-primary/20 px-1 text-[10px] text-primary">
+                      {copy.representative}
+                    </span>
                   )}
+                  <span className="truncate font-game-title text-primary">
+                    {activeDraft.transformedName.trim() || activeDraft.entity.nameKo}
+                  </span>
+                </span>
+                <span
+                  className="shrink-0 font-game-title tabular-nums text-primary/70"
+                  data-transfigure-variant-position=""
                 >
-                  {submitting
-                    ? copy.saving
-                    : initialPost
-                      ? copy.saveChanges
-                      : copy.submit}
-                  <Image
-                    src="/images/sts2/relics/astrolabe.webp"
-                    alt=""
-                    width={16}
-                    height={16}
-                    className="object-contain"
-                  />
-                </button>
-              );
-              return (
-                <div className="mt-4 flex justify-center">
-                  {submitBlockMessage ? (
-                    <GameUiHoverTip
-                      delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}
-                      open={submitTipPinned}
-                      label={submitBlockMessage}
-                    >
-                      {submitButton}
-                    </GameUiHoverTip>
-                  ) : submitButton}
-                </div>
-              );
-            })()}
+                  {copy.variantPosition
+                    .replace("{index}", String(currentIndex + 1))
+                    .replace("{total}", String(drafts.length))}
+                </span>
+              </div>
+            )}
+            {drafts.length > 1 ? (
+              <BoundedCarouselFrame
+                canMovePrevious={currentIndex > 0}
+                canMoveNext={currentIndex < drafts.length - 1}
+                onPrevious={() => setActiveIndex(currentIndex - 1)}
+                onNext={() => setActiveIndex(currentIndex + 1)}
+                previousLabel={copy.previousVariant}
+                nextLabel={copy.nextVariant}
+              >
+                {renderAssetEditor(activeDraft, activeSource)}
+              </BoundedCarouselFrame>
+            ) : renderAssetEditor(activeDraft, activeSource)}
+            <div className="mt-4 flex justify-center">
+              {submitBlockMessage ? (
+                <GameUiHoverTip
+                  delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}
+                  open={submitTipPinned}
+                  label={submitBlockMessage}
+                >
+                  {submitButton}
+                </GameUiHoverTip>
+              ) : submitButton}
+            </div>
           </section>
         </div>
       )}
