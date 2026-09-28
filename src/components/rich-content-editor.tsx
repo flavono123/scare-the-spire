@@ -1637,7 +1637,7 @@ export function RichContentEditor({
                   setCardConModalOpen(false);
                   setEmoteOpen((prev) => !prev);
                 }}
-                className={`flex min-h-11 shrink-0 items-center gap-1 rounded border px-3 py-1 text-xs transition-colors sm:min-h-0 sm:px-2 ${
+                className={`flex shrink-0 items-center gap-1 rounded border px-2 py-1 text-xs transition-colors ${
                   emoteOpen
                     ? "border-primary bg-primary/20 text-primary"
                     : "border-border/80 bg-card/50 text-muted-foreground hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
@@ -1648,9 +1648,9 @@ export function RichContentEditor({
                 <Image
                   src="/images/sts2/ui/emote/heart.png"
                   alt=""
-                  width={16}
-                  height={16}
-                  className="h-4 w-4 object-contain"
+                  width={13}
+                  height={13}
+                  className="h-[13px] w-[13px] shrink-0 object-contain grayscale brightness-[0.72]"
                 />
                 <span className={inline ? "sr-only" : undefined}>{emoteCopy.label}</span>
               </button>
