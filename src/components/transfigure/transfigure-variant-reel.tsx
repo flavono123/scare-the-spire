@@ -133,7 +133,7 @@ export function TransfigureVariantReel({
                 isActive
                   ? "relative opacity-100"
                   : "pointer-events-none absolute inset-0 opacity-0",
-                fill && "h-full",
+                fill && "h-full *:w-full",
                 slideClassName,
               )}
             >

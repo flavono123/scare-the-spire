@@ -38,6 +38,7 @@ import {
   type PagestormTransfigureChoice,
 } from "@/lib/pagestorm-toybox";
 import Image from "@/components/ui/static-image";
+import { COMBO_KEYWORD_IMAGE_URL } from "@/lib/combo-resource-visuals";
 import { serviceMessages } from "@/messages/service";
 import { findPagestormEntity, usePagestormEntities } from "./entities-context";
 import { mockButtonClass } from "./figures";
@@ -301,7 +302,9 @@ function TransfigureVariantChoice({
   const rows = variants.map((variant) => {
     const entity = findPagestormEntity(entities, variant.resourceType, variant.resourceId);
     return {
-      imageUrl: entity?.imageUrl ?? null,
+      imageUrl: variant.resourceType === "keyword"
+        ? (entity?.imageUrl || COMBO_KEYWORD_IMAGE_URL)
+        : (entity?.imageUrl ?? null),
       name: variant.preview.transformedName.trim() || entity?.nameKo || variant.resourceId,
     };
   });
