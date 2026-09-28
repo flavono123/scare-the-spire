@@ -105,6 +105,12 @@ export interface CardConBlock {
   gameLocale: GameLocale;
 }
 
+/** One multiplayer reaction-wheel icon inserted into a comment. */
+export interface EmoteConBlock {
+  type: "emote-con";
+  emoteId: string;
+}
+
 export type PostBlock =
   | TextBlock
   | EntityBlock
@@ -114,7 +120,8 @@ export type PostBlock =
   | HistoryRunBlock
   | HistoryRunFloorBlock
   | TextConBlock
-  | CardConBlock;
+  | CardConBlock
+  | EmoteConBlock;
 
 export interface ChemicalPost {
   id: string;

@@ -10,6 +10,7 @@ import {
 import { historyRunPlainText } from "@/lib/history-run-reference";
 import { isCoverSpec, type CoverSpec } from "@/lib/run-cover-types";
 import { isYouTubeVideoId } from "@/lib/youtube-reference";
+import { emotePlainText, emoteStorageText, isEmoteId } from "@/lib/emote-con";
 
 function coverSpecFromUnknown(value: unknown): CoverSpec | null {
   if (typeof value === "string" && value.trim()) {
@@ -248,6 +249,11 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
             gameLocale: isGameLocale(gameLocale) ? gameLocale : "kor",
           });
         }
+      } else if (node.type === "emote-con") {
+        const emoteId = nodeString(node.attrs?.emoteId).trim();
+        if (isEmoteId(emoteId)) {
+          blocks.push({ type: "emote-con", emoteId });
+        }
       }
     }
   }
@@ -333,6 +339,12 @@ export function blocksToTiptapDocument(blocks: PostBlock[]): JSONContent {
         },
       }];
     }
+    if (block.type === "emote-con") {
+      return [{
+        type: "emote-con",
+        attrs: { emoteId: block.emoteId },
+      }];
+    }
     return [{
       type: "history-run-reference",
       attrs: {
@@ -374,6 +386,7 @@ export function blocksToPlainText(blocks: PostBlock[]): string {
       if (b.type === "history-run-floor") return historyRunFloorPlainText(b);
       if (b.type === "text-con") return stripNullCharacters(b.text);
       if (b.type === "card-con") return stripNullCharacters(b.displayText);
+      if (b.type === "emote-con") return emotePlainText(b.emoteId);
       return stripNullCharacters(b.displayText);
     })
     .join("");
@@ -398,6 +411,7 @@ export function blocksToStorageText(blocks: PostBlock[]): string {
       if (b.type === "history-run-floor") return historyRunFloorPlainText(b);
       if (b.type === "text-con") return `[글자콘:${stripNullCharacters(b.text)}]`;
       if (b.type === "card-con") return `[카드콘:${stripNullCharacters(b.displayText)}]`;
+      if (b.type === "emote-con") return isEmoteId(b.emoteId) ? emoteStorageText(b.emoteId) : "";
 
       const text = stripNullCharacters(b.text);
       const keyword = stripNullCharacters(b.keyword ?? "").trim();

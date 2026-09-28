@@ -22,6 +22,7 @@ import { historyRunPlainText } from "@/lib/history-run-reference";
 import { HistoryRunFloorChip } from "@/components/history-course/history-run-floor-chip";
 import { TextConChip } from "@/components/text-con/text-con-chip";
 import { CardConTile } from "@/components/card-con/card-con-tile";
+import { EmoteGlyph } from "@/components/emote-con/emote-glyph";
 import type { HistoryRunFloorBlock } from "@/lib/chemical-types";
 import { SERVICE_LINK_CLASS } from "@/lib/service-link-classes";
 
@@ -224,6 +225,16 @@ export function PostRenderer({
                   linked
                 />
               </span>
+            );
+          }
+
+          if (block.type === "emote-con") {
+            return (
+              <EmoteGlyph
+                key={i}
+                emoteId={block.emoteId}
+                locale={serviceLocale === "en" ? "en" : "ko"}
+              />
             );
           }
 

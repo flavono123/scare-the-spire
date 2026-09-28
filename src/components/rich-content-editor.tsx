@@ -34,12 +34,16 @@ import { TextConPanel } from "@/components/text-con/text-con-panel";
 import { TextConPopup } from "@/components/text-con/text-con-popup";
 import { CardConExtension } from "@/components/editor/card-con-extension";
 import { CardConPanel } from "@/components/card-con/card-con-panel";
+import { EmoteConExtension } from "@/components/editor/emote-con-extension";
+import { EmoteSheet } from "@/components/emote-con/emote-sheet";
+import { EmoteWheel } from "@/components/emote-con/emote-wheel";
 import { AnchoredConPopup } from "@/components/editor/anchored-con-popup";
 import { TinyCardToken } from "@/components/history-course/card-action-icon";
 import {
   CARD_CON_POPUP_HEIGHT,
   CARD_CON_POPUP_WIDTH,
 } from "@/lib/card-con";
+import { EMOTE_DESKTOP_WHEEL_PX, emotePlainText, isEmoteId, type EmoteId } from "@/lib/emote-con";
 import { useCardConLocale } from "@/hooks/use-card-con-locale";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -511,6 +515,8 @@ export interface RichContentEditorProps {
   hideSubmitButton?: boolean;
   enableTextCon?: boolean;
   enableCardCon?: boolean;
+  /** Multiplayer reaction-wheel icons. Comments opt in; other composers stay off. */
+  enableEmote?: boolean;
 }
 
 export function RichContentEditor({
@@ -547,12 +553,14 @@ export function RichContentEditor({
   hideSubmitButton = false,
   enableTextCon = true,
   enableCardCon = true,
+  enableEmote = false,
 }: RichContentEditorProps) {
   const serviceLocale = useServiceLocale();
   const gameLocale = useGameLocale();
   const cardConLocale = useCardConLocale(gameLocale);
   const cardConCopy = serviceMessages[serviceLocale].cardCon;
   const textConCopy = serviceMessages[serviceLocale].textCon;
+  const emoteCopy = serviceMessages[serviceLocale].emoteCon;
   const [submitting, setSubmitting] = useState(false);
   const [textConModalOpen, setTextConModalOpen] = useState(false);
   const [textConAnchor, setTextConAnchor] = useState<DOMRect | null>(null);
@@ -562,6 +570,9 @@ export function RichContentEditor({
   const [cardConAnchor, setCardConAnchor] = useState<DOMRect | null>(null);
   const cardConTriggerRef = useRef<HTMLButtonElement>(null);
   const cardConSheetRef = useRef<HTMLDivElement>(null);
+  const [emoteOpen, setEmoteOpen] = useState(false);
+  const [emoteAnchor, setEmoteAnchor] = useState<DOMRect | null>(null);
+  const emoteTriggerRef = useRef<HTMLButtonElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -711,6 +722,7 @@ export function RichContentEditor({
       HistoryRunFloorExtension,
       ...(enableTextCon ? [TextConExtension] : []),
       ...(enableCardCon ? [CardConExtension] : []),
+      ...(enableEmote ? [EmoteConExtension] : []),
       ...(enableFloorHash ? [
         FloorHashSuggestion.configure({
           suggestion: {
@@ -1414,6 +1426,32 @@ export function RichContentEditor({
     [cardConLocale, editor, gameLocale],
   );
 
+  const handleInsertEmote = useCallback(
+    (emoteId: EmoteId) => {
+      if (!editor || !isEmoteId(emoteId)) return;
+      const type = editor.schema.nodes["emote-con"];
+      if (!type) return;
+
+      const current = blocksToPlainText(tiptapToBlocks(sanitizeRichTextJson(editor.getJSON())));
+      const nextLength = current.length + emotePlainText(emoteId).length;
+      if (maxChars != null && nextLength > maxChars) {
+        setEmoteOpen(false);
+        return;
+      }
+
+      editor
+        .chain()
+        .focus()
+        .insertContent({
+          type: "emote-con",
+          attrs: { emoteId },
+        })
+        .run();
+      setEmoteOpen(false);
+    },
+    [editor, maxChars],
+  );
+
   const handleSubmit = useCallback(async () => {
     if (!editor || submitting) return;
     replaceExactKeywordsInEditor(editor, exactKeywordIndex, resolveKeyword, true);
@@ -1540,6 +1578,7 @@ export function RichContentEditor({
                     if (rect) setTextConAnchor(rect);
                   }
                   setCardConModalOpen(false);
+                  setEmoteOpen(false);
                   setTextConModalOpen((prev) => !prev);
                 }}
                 className={`flex shrink-0 items-center gap-1 rounded border px-2 py-1 text-xs transition-colors ${
@@ -1567,6 +1606,7 @@ export function RichContentEditor({
                     if (rect) setCardConAnchor(rect);
                   }
                   setTextConModalOpen(false);
+                  setEmoteOpen(false);
                   setCardConModalOpen((prev) => !prev);
                 }}
                 className={`flex shrink-0 items-center gap-1 rounded border px-2 py-1 text-xs transition-colors ${
@@ -1579,6 +1619,40 @@ export function RichContentEditor({
               >
                 <TinyCardToken width={13} />
                 <span className={inline ? "sr-only" : undefined}>{cardConCopy.label}</span>
+              </button>
+            </GameUiHoverTip>
+          )}
+          {enableEmote && (
+            <GameUiHoverTip label={emoteCopy.make} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
+              <button
+                ref={emoteTriggerRef}
+                type="button"
+                data-emote-con-trigger=""
+                onClick={() => {
+                  if (!emoteOpen) {
+                    const rect = emoteTriggerRef.current?.getBoundingClientRect();
+                    if (rect) setEmoteAnchor(rect);
+                  }
+                  setTextConModalOpen(false);
+                  setCardConModalOpen(false);
+                  setEmoteOpen((prev) => !prev);
+                }}
+                className={`flex min-h-11 shrink-0 items-center gap-1 rounded border px-3 py-1 text-xs transition-colors sm:min-h-0 sm:px-2 ${
+                  emoteOpen
+                    ? "border-primary bg-primary/20 text-primary"
+                    : "border-border/80 bg-card/50 text-muted-foreground hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
+                }`}
+                aria-label={emoteCopy.label}
+                aria-expanded={emoteOpen}
+              >
+                <Image
+                  src="/images/sts2/ui/emote/heart.png"
+                  alt=""
+                  width={16}
+                  height={16}
+                  className="h-4 w-4 object-contain"
+                />
+                <span className={inline ? "sr-only" : undefined}>{emoteCopy.label}</span>
               </button>
             </GameUiHoverTip>
           )}
@@ -1682,6 +1756,32 @@ export function RichContentEditor({
             entities={entities}
             onClose={() => setCardConModalOpen(false)}
             onInsert={handleInsertCardCon}
+          />
+        </AnchoredConPopup>
+      )}
+
+      {enableEmote && emoteOpen && isMobile && (
+        <EmoteSheet
+          locale={serviceLocale === "en" ? "en" : "ko"}
+          onClose={() => setEmoteOpen(false)}
+          onPick={handleInsertEmote}
+        />
+      )}
+
+      {enableEmote && emoteOpen && !isMobile && (
+        <AnchoredConPopup
+          anchor={emoteAnchor}
+          triggerRef={emoteTriggerRef}
+          onClose={() => setEmoteOpen(false)}
+          ariaLabel={emoteCopy.make}
+          dataAttribute="data-emote-con-popup"
+          width={EMOTE_DESKTOP_WHEEL_PX + 32}
+          height={EMOTE_DESKTOP_WHEEL_PX + 32}
+        >
+          <EmoteWheel
+            size={EMOTE_DESKTOP_WHEEL_PX}
+            locale={serviceLocale === "en" ? "en" : "ko"}
+            onPick={handleInsertEmote}
           />
         </AnchoredConPopup>
       )}

@@ -42,6 +42,7 @@ import {
 import { COMMENT_MAX_CHARS } from "@/lib/content-limits";
 import { historyRunFloorPlainText } from "@/lib/history-run-floor";
 import { historyRunPlainText } from "@/lib/history-run-reference";
+import { emotePlainText } from "@/lib/emote-con";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   DEFAULT_PROFILE_NICKNAMES,
@@ -745,6 +746,7 @@ function blockText(blocks: PostBlock[] | null | undefined): string {
     if (block.type === "history-run") return historyRunPlainText(block);
     if (block.type === "history-run-floor") return historyRunFloorPlainText(block);
     if (block.type === "card-con") return block.displayText;
+    if (block.type === "emote-con") return emotePlainText(block.emoteId);
     return block.text;
   }).join("");
 }

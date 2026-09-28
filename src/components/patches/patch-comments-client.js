@@ -701,16 +701,48 @@
     });
   }
 
-  function commentContent(comment) {
+  // Keep ids in sync with src/lib/emote-con.ts. Static fallback only;
+  // the rich comment client inserts these through the comment editor.
+  const EMOTE_SRC = {
+    exclaim: "/images/sts2/ui/emote/exclaim.png",
+    skull: "/images/sts2/ui/emote/skull.png",
+    thumb_down: "/images/sts2/ui/emote/thumb_down.png",
+    slime_sad: "/images/sts2/ui/emote/slime_sad.png",
+    question: "/images/sts2/ui/emote/question.png",
+    heart: "/images/sts2/ui/emote/heart.png",
+    thumb_up: "/images/sts2/ui/emote/thumb_up.png",
+    happy_cultist: "/images/sts2/ui/emote/happy_cultist.png",
+  };
+  const EMOTE_ALT = {
+    exclaim: "느낌표",
+    skull: "해골",
+    thumb_down: "별로",
+    slime_sad: "슬라임",
+    question: "물음표",
+    heart: "하트",
+    thumb_up: "엄지",
+    happy_cultist: "컬티스트",
+  };
+
+  function commentBodyHtml(comment) {
     if (Array.isArray(comment.content_blocks) && comment.content_blocks.length > 0) {
       return comment.content_blocks.map((block) => {
-        if (block.type === "text") return block.text ?? "";
-        if (block.type === "entity") return block.displayText ?? "";
-        if (block.type === "keyword") return block.text ?? "";
+        if (block.type === "text" || block.type === "keyword" || block.type === "text-con") {
+          return renderText(block.text ?? "");
+        }
+        if (block.type === "entity" || block.type === "card-con") {
+          return renderText(block.displayText ?? "");
+        }
+        if (block.type === "emote-con") {
+          const src = EMOTE_SRC[block.emoteId];
+          if (!src) return "";
+          const alt = EMOTE_ALT[block.emoteId] ?? "";
+          return `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" width="24" height="24" class="mx-0.5 inline-block h-6 w-6 align-middle object-contain" />`;
+        }
         return "";
       }).join("");
     }
-    return comment.content ?? "";
+    return renderText(comment.content ?? "");
   }
 
   function renderUnavailable(root) {
@@ -745,7 +777,7 @@
     if (root.dataset.commentDensity === "inline") {
       const rows = state.comments.map((comment) => `
         <li data-patch-comment-row class="flex items-center gap-2 py-0.5 text-xs leading-5">
-          <span class="min-w-0 flex-1 break-words text-foreground/90">${renderText(commentContent(comment))}</span>
+          <span class="min-w-0 flex-1 break-words text-foreground/90">${commentBodyHtml(comment)}</span>
           <span class="shrink-0 text-[10px] text-primary">${escapeHtml(comment.nickname ?? "")}</span>
         </li>
       `).join("");
@@ -787,7 +819,7 @@
                   </button>
                   ${canDelete ? `<button data-comment-delete="${escapeHtml(comment.id)}" class="text-[10px] text-muted-foreground hover:text-red-400">${escapeHtml(text.delete)}</button>` : ""}
                 </div>
-                <div class="mt-1.5 whitespace-pre-wrap break-words leading-relaxed text-muted-foreground">${renderText(commentContent(comment))}</div>
+                <div class="mt-1.5 whitespace-pre-wrap break-words leading-relaxed text-muted-foreground">${commentBodyHtml(comment)}</div>
               </li>
             `;
           }).join("")}

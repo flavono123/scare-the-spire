@@ -344,6 +344,7 @@ export function CommentSection({
               historyFloorMentions={historyFloorMentions}
               floorHashTip={floorHashTip}
               toolbarStart={toolbarStart}
+              enableEmote
             />
           )}
         </div>

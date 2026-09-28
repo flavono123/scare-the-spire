@@ -16,6 +16,7 @@ import {
 } from "@/lib/youtube-reference";
 import { TextConChip } from "@/components/text-con/text-con-chip";
 import { CardConTile } from "@/components/card-con/card-con-tile";
+import { EmoteGlyph } from "@/components/emote-con/emote-glyph";
 import { SERVICE_LINK_CLASS } from "@/lib/service-link-classes";
 
 interface ComboPostRendererProps {
@@ -128,6 +129,16 @@ export function ComboPostRenderer({
                 linked
               />
             </span>
+          );
+        }
+
+        if (block.type === "emote-con") {
+          return (
+            <EmoteGlyph
+              key={index}
+              emoteId={block.emoteId}
+              locale={serviceLocale === "en" ? "en" : "ko"}
+            />
           );
         }
 
