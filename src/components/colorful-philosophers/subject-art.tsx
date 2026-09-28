@@ -2,7 +2,6 @@
 
 import Image from "@/components/ui/static-image";
 import { CardTile } from "@/components/codex/card-tile";
-import { hasCardUpgrade } from "@/components/codex/codex-description";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import {
@@ -63,8 +62,6 @@ export function ColorfulPhilosopherSubjectArt({
       type: post.resourceType as EntityInfo["type"],
     }),
     href,
-    // The tile already shows the base card, so the tip recalls the upgrade.
-    ...(card && hasCardUpgrade(card) ? { cardPreviewUpgradeLevel: 1 } : {}),
   };
 
   return (
