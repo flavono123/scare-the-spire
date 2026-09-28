@@ -19,7 +19,10 @@ import {
   type PagestormDoc,
 } from "../src/lib/pagestorm";
 import {
+  applyPagestormTransfigureChoice,
   isPagestormToyboxPickerHref,
+  PAGESTORM_TRANSFIGURE_REEL_PIPS_HEIGHT,
+  parsePagestormTransfigureReel,
   pagestormToyboxEmbedHeight,
   pagestormToyboxFederatedFromHref,
   pagestormToyboxPickerMode,
@@ -176,7 +179,7 @@ assert.equal(nestedArt.imageUrl, PAGESTORM_BACKGROUND_SRC);
 assert.equal(pagestormToyboxFederatedFromHref("/this-or-that"), "this_or_that");
 assert.equal(pagestormToyboxFederatedFromHref("/en/decisions-decisions"), "decisions_decisions");
 assert.equal(pagestormToyboxFederatedFromHref("/pagestorm"), "pagestorm");
-assert.equal(pagestormToyboxFederatedFromHref("/history-course"), null);
+assert.equal(pagestormToyboxFederatedFromHref("/history-course"), "history_course");
 assert.equal(pagestormToyboxPickerMode(null), "all");
 assert.equal(pagestormToyboxPickerMode("/defragment"), "unsupported");
 assert.equal(pagestormToyboxPickerMode("/history-course"), "unsupported");
@@ -263,5 +266,44 @@ const transfigureAttrs = pagestormToyboxNodeAttrs({
 });
 assert.equal(transfigureAttrs.height, 448);
 assert.match(transfigureAttrs.transfigureJson, /따뜻한 장갑/);
+assert.equal(transfigureAttrs.transfigureReelJson, "[]");
+
+const multiVariantSnapshot = {
+  id: "tf-2",
+  service: "/transfigure",
+  userId: "u1",
+  title: "교활 리워크",
+  nickname: "디황",
+  leftType: "keyword",
+  leftId: "SLY",
+  rightType: "",
+  rightId: "",
+  rows: [],
+  placements: [],
+  pool: [],
+  tokenSrc: "",
+  transfigure: transfigurePreview,
+  transfigureVariants: [
+    { resourceType: "keyword", resourceId: "SLY", preview: transfigurePreview },
+    { resourceType: "card", resourceId: "TACTICIAN", preview: transfigurePreview },
+    { resourceType: "relic", resourceId: "TOASTY_MITTENS", preview: transfigurePreview },
+  ],
+};
+const reelSnapshot = applyPagestormTransfigureChoice(multiVariantSnapshot, "reel");
+const reelAttrs = pagestormToyboxNodeAttrs(reelSnapshot);
+assert.equal(reelAttrs.leftType, "keyword");
+assert.equal(parsePagestormTransfigureReel(reelAttrs.transfigureReelJson).length, 3);
+assert.equal(reelAttrs.height, 448 + PAGESTORM_TRANSFIGURE_REEL_PIPS_HEIGHT);
+
+const secondSnapshot = applyPagestormTransfigureChoice(multiVariantSnapshot, 1);
+const secondAttrs = pagestormToyboxNodeAttrs(secondSnapshot);
+assert.equal(secondAttrs.leftType, "card");
+assert.equal(secondAttrs.leftId, "TACTICIAN");
+assert.equal(secondAttrs.transfigureReelJson, "[]");
+assert.equal(secondAttrs.height, 420);
+
+assert.deepEqual(parsePagestormTransfigureReel("[]"), []);
+assert.deepEqual(parsePagestormTransfigureReel("not json"), []);
+assert.deepEqual(parsePagestormTransfigureReel([{ resourceType: "card" }]), []);
 
 console.log("pagestorm.spec.ts: ok");

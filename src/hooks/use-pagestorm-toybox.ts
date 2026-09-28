@@ -16,10 +16,11 @@ import {
   pagestormToyboxPickFromFeedItem,
   pagestormToyboxPickerMode,
   pagestormTransfigurePreviewFromPost,
+  pagestormTransfigureVariantsFromPost,
   type PagestormToyboxPick,
   type PagestormToyboxSnapshot,
 } from "@/lib/pagestorm-toybox";
-import type { TransfigurePost } from "@/lib/transfigure-types";
+import { normalizeTransfigurePost } from "@/lib/transfigure-types";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import type { ThisOrThatPost } from "@/lib/this-or-that";
@@ -115,7 +116,7 @@ export async function loadPagestormToyboxSnapshot(
     };
   }
   if (federated === "transfigure") {
-    const post = row as TransfigurePost;
+    const post = normalizeTransfigurePost(row);
     return {
       ...base,
       title: post.title?.trim() || pick.title,
@@ -123,6 +124,7 @@ export async function loadPagestormToyboxSnapshot(
       leftType: post.resource_type,
       leftId: post.resource_id,
       transfigure: pagestormTransfigurePreviewFromPost(post),
+      transfigureVariants: pagestormTransfigureVariantsFromPost(post),
     };
   }
   const source = federated === "favorite_tournament"

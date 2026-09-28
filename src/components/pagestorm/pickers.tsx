@@ -29,13 +29,17 @@ import {
   sts2NavItems,
 } from "@/lib/site-nav-items";
 import {
+  applyPagestormTransfigureChoice,
   isPagestormToyboxPickerHref,
   pagestormToyboxDefaultPickerHref,
   stripPagestormToyboxHref,
   type PagestormToyboxPick,
   type PagestormToyboxSnapshot,
+  type PagestormTransfigureChoice,
 } from "@/lib/pagestorm-toybox";
+import Image from "@/components/ui/static-image";
 import { serviceMessages } from "@/messages/service";
+import { findPagestormEntity, usePagestormEntities } from "./entities-context";
 import { mockButtonClass } from "./figures";
 import { NavTokenChip } from "./nav-tokens";
 import type { CardPresentation } from "./sample";
@@ -151,6 +155,7 @@ export function ToyboxPickerModal({
   const [mineOnly, setMineOnly] = useState(false);
   const [pickingId, setPickingId] = useState<string | null>(null);
   const [insertFailed, setInsertFailed] = useState(false);
+  const [choosing, setChoosing] = useState<PagestormToyboxSnapshot | null>(null);
   const pickingRef = useRef(false);
   const { picks, loading, loadingMore, hasMore, unavailable, loadMore } =
     usePagestormToyboxPicker(serviceHref);
@@ -173,7 +178,12 @@ export function ToyboxPickerModal({
     setPickingId(key);
     setInsertFailed(false);
     try {
-      onInsert(await loadPagestormToyboxSnapshot(post));
+      const snapshot = await loadPagestormToyboxSnapshot(post);
+      if ((snapshot.transfigureVariants?.length ?? 0) > 1) {
+        setChoosing(snapshot);
+      } else {
+        onInsert(snapshot);
+      }
     } catch {
       setInsertFailed(true);
     } finally {
@@ -220,10 +230,16 @@ export function ToyboxPickerModal({
         </button>
       </div>
       <GameScrollArea className="max-h-[min(60dvh,32rem)]">
-        {insertFailed ? (
+        {choosing ? (
+          <TransfigureVariantChoice
+            snapshot={choosing}
+            onBack={() => setChoosing(null)}
+            onChoose={(choice) => onInsert(applyPagestormTransfigureChoice(choosing, choice))}
+          />
+        ) : insertFailed ? (
           <StorageUnavailableNotice title={copy.unavailableTitle} compact className="mb-3" />
         ) : null}
-        {unavailable ? (
+        {choosing ? null : unavailable ? (
           <StorageUnavailableNotice title={copy.unavailableTitle} />
         ) : loading ? (
           <ContentLoadingNotice label={copy.loading} />
@@ -265,6 +281,118 @@ export function ToyboxPickerModal({
         )}
       </GameScrollArea>
     </ServiceModalFrame>
+  );
+}
+
+function TransfigureVariantChoice({
+  snapshot,
+  onBack,
+  onChoose,
+}: {
+  snapshot: PagestormToyboxSnapshot;
+  onBack: () => void;
+  onChoose: (choice: PagestormTransfigureChoice) => void;
+}) {
+  const serviceLocale = useServiceLocale();
+  const copy = serviceMessages[serviceLocale].pagestorm;
+  const transfigureCopy = serviceMessages[serviceLocale].transfigure;
+  const entities = usePagestormEntities();
+  const variants = snapshot.transfigureVariants ?? [];
+  const rows = variants.map((variant) => {
+    const entity = findPagestormEntity(entities, variant.resourceType, variant.resourceId);
+    return {
+      imageUrl: entity?.imageUrl ?? null,
+      name: variant.preview.transformedName.trim() || entity?.nameKo || variant.resourceId,
+    };
+  });
+  const optionClass = "flex w-full items-center gap-3 rounded-lg border border-border px-3 py-2 text-left transition-colors hover:border-primary/50";
+
+  return (
+    <div className="space-y-2" data-pagestorm-transfigure-variant-choice="">
+      <div className="flex items-center justify-between gap-2 px-1">
+        <p className="min-w-0 truncate font-game-title text-sm text-primary">
+          {copy.transfigureVariantChoice}
+          <span className="text-muted-foreground"> · {snapshot.title}</span>
+        </p>
+        <button
+          type="button"
+          onClick={onBack}
+          className="shrink-0 text-xs text-muted-foreground hover:text-foreground"
+        >
+          {copy.transfigureVariantBack}
+        </button>
+      </div>
+      <ul className="space-y-2">
+        <li>
+          <button
+            type="button"
+            className={optionClass}
+            onClick={() => onChoose("reel")}
+            data-pagestorm-transfigure-choice="reel"
+          >
+            <span className="flex shrink-0 -space-x-3">
+              {rows.slice(0, 4).map((row, index) => (
+                <span
+                  key={index}
+                  className="flex h-9 w-9 items-center justify-center rounded-md bg-black/40 ring-1 ring-border"
+                >
+                  {row.imageUrl ? (
+                    <Image
+                      src={row.imageUrl}
+                      alt=""
+                      width={30}
+                      height={30}
+                      className="max-h-7 max-w-7 object-contain"
+                    />
+                  ) : null}
+                </span>
+              ))}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block font-game-title text-sm">{copy.transfigureVariantReel}</span>
+              <span className="block text-xs text-muted-foreground">
+                {copy.transfigureVariantReelHint.replace("{count}", String(variants.length))}
+              </span>
+            </span>
+          </button>
+        </li>
+        {rows.map((row, index) => (
+          <li key={index}>
+            <button
+              type="button"
+              className={optionClass}
+              onClick={() => onChoose(index)}
+              data-pagestorm-transfigure-choice={index}
+            >
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-black/25">
+                {row.imageUrl ? (
+                  <Image
+                    src={row.imageUrl}
+                    alt=""
+                    width={30}
+                    height={30}
+                    className="max-h-7 max-w-7 object-contain"
+                  />
+                ) : null}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center gap-1.5">
+                  <span className="truncate font-game-title text-sm">{row.name}</span>
+                  {index === 0 ? (
+                    <span className="shrink-0 rounded bg-primary/20 px-1 text-[10px] text-primary">
+                      {transfigureCopy.representative}
+                    </span>
+                  ) : null}
+                </span>
+                <span className="block text-xs text-muted-foreground">
+                  {copy.transfigureVariantItem.replace("{index}", String(index + 1))}
+                </span>
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

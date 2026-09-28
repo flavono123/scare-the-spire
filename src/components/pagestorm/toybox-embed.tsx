@@ -3,6 +3,7 @@
 import { CardTile } from "@/components/codex/card-tile";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
 import { TransfigureResourcePreview } from "@/components/transfigure/transfigure-resource-preview";
+import { TransfigureVariantReel } from "@/components/transfigure/transfigure-variant-reel";
 import Image from "@/components/ui/static-image";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -19,6 +20,7 @@ import {
   pagestormToyboxPostHref,
   pagestormToyboxServiceHref,
   type PagestormTransfigurePreview,
+  type PagestormTransfigureReelItem,
 } from "@/lib/pagestorm-toybox";
 import {
   isTransfigureCardColor,
@@ -28,6 +30,7 @@ import {
   isTransfigureTokenWax,
   type TransfigureCardKeywords,
 } from "@/lib/transfigure-types";
+import { serviceMessages } from "@/messages/service";
 import { findPagestormEntity, usePagestormEntities } from "./entities-context";
 import { AssetCornerHandles, AssetFocusChrome, alignRowClass } from "./figures";
 import {
@@ -251,6 +254,7 @@ export function ToyboxEmbedFigure({
   placements,
   pool,
   transfigure = null,
+  transfigureReel = [],
   align,
   mode = "edit",
   selected = false,
@@ -274,6 +278,7 @@ export function ToyboxEmbedFigure({
   pool?: unknown;
   tokenSrc?: string;
   transfigure?: PagestormTransfigurePreview | null;
+  transfigureReel?: PagestormTransfigureReelItem[];
   align: MockAlign;
   mode?: "edit" | "preview";
   selected?: boolean;
@@ -286,6 +291,7 @@ export function ToyboxEmbedFigure({
 }) {
   const serviceLocale = useServiceLocale();
   const gameLocale = useGameLocale();
+  const pagestormCopy = serviceMessages[serviceLocale].pagestorm;
   const mock = findToyboxPost(postId);
   const px = width ?? defaultPlayerWidth();
   const py = height ?? 240;
@@ -332,6 +338,25 @@ export function ToyboxEmbedFigure({
     }
     if (dd) {
       return <DecisionsPreview post={dd} />;
+    }
+    if (transfigureTarget && transfigureReel.length > 1) {
+      return (
+        <TransfigureVariantReel
+          count={transfigureReel.length}
+          fill
+          slideLabel={(index) => pagestormCopy.transfigureVariantItem.replace(
+            "{index}",
+            String(index + 1),
+          )}
+          renderSlide={(index) => (
+            <TransfigurePreview
+              type={transfigureReel[index]!.resourceType}
+              id={transfigureReel[index]!.resourceId}
+              preview={transfigureReel[index]!.preview}
+            />
+          )}
+        />
+      );
     }
     if (transfigureTarget) {
       return (

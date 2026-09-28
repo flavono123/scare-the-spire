@@ -33,6 +33,8 @@ interface TransfigureVariantReelProps {
   slideClassName?: string;
   intervalMs?: number;
   showPips?: boolean;
+  /** Stretch slides to a fixed-height parent (pagestorm embeds). */
+  fill?: boolean;
 }
 
 /**
@@ -48,6 +50,7 @@ export function TransfigureVariantReel({
   slideClassName,
   intervalMs = TRANSFIGURE_VARIANT_REEL_INTERVAL_MS,
   showPips = true,
+  fill = false,
 }: TransfigureVariantReelProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef(0);
@@ -108,14 +111,14 @@ export function TransfigureVariantReel({
   return (
     <div
       ref={rootRef}
-      className={cn("relative w-full", className)}
+      className={cn("relative w-full", fill && "flex h-full flex-col", className)}
       data-transfigure-variant-reel=""
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      <div className="relative w-full">
+      <div className={cn("relative w-full", fill && "min-h-0 flex-1")}>
         {Array.from({ length: count }, (_, index) => {
           const isActive = index === safeActive;
           if (!isActive && !mounted.includes(index)) return null;
@@ -130,6 +133,7 @@ export function TransfigureVariantReel({
                 isActive
                   ? "relative opacity-100"
                   : "pointer-events-none absolute inset-0 opacity-0",
+                fill && "h-full",
                 slideClassName,
               )}
             >
@@ -140,7 +144,10 @@ export function TransfigureVariantReel({
       </div>
       {showPips && (
         <div
-          className="mt-2 flex items-center justify-center gap-1.5"
+          className={cn(
+            "flex items-center justify-center gap-1.5",
+            fill ? "h-4 shrink-0" : "mt-2",
+          )}
           data-transfigure-variant-pips=""
         >
           {Array.from({ length: count }, (_, index) => (

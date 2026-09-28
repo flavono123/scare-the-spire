@@ -9,7 +9,10 @@ import {
 } from "@/lib/defragment";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { PAGESTORM_HREF } from "@/lib/pagestorm";
-import type { TransfigurePost } from "@/lib/transfigure-types";
+import type {
+  TransfigurePost,
+  TransfigureVariant,
+} from "@/lib/transfigure-types";
 
 export const PAGESTORM_TOYBOX_EMBED_SERVICES = [
   "transfigure",
@@ -55,6 +58,15 @@ export type PagestormTransfigurePreview = {
   tokenWax: string;
 };
 
+export type PagestormTransfigureReelItem = {
+  resourceType: string;
+  resourceId: string;
+  preview: PagestormTransfigurePreview;
+};
+
+/** `reel` embeds every variant as a crossfade reel; a number embeds that variant only. */
+export type PagestormTransfigureChoice = "reel" | number;
+
 export type PagestormToyboxSnapshot = PagestormToyboxPick & {
   leftType: string;
   leftId: string;
@@ -64,7 +76,12 @@ export type PagestormToyboxSnapshot = PagestormToyboxPick & {
   placements: unknown[];
   pool: unknown[];
   tokenSrc: string;
+  /** Embedded single variant; also the reel's fallback for readers without reel support. */
   transfigure: PagestormTransfigurePreview | null;
+  /** Every variant of the source post, representative first. Picker-only. */
+  transfigureVariants?: PagestormTransfigureReelItem[];
+  /** Variants embedded as a reel. Empty unless the author chose the reel. */
+  transfigureReel?: PagestormTransfigureReelItem[];
 };
 
 export type PagestormToyboxPickerMode =
@@ -136,6 +153,8 @@ export function pagestormToyboxEmbedHeight(
   return 148;
 }
 
+export const PAGESTORM_TRANSFIGURE_REEL_PIPS_HEIGHT = 16;
+
 export function pagestormToyboxPickFromFeedItem(
   item: DefragmentFeedItem,
 ): PagestormToyboxPick {
@@ -172,7 +191,7 @@ function asPostBlocks(value: unknown): PostBlock[] {
 }
 
 export function pagestormTransfigurePreviewFromPost(
-  post: TransfigurePost,
+  post: TransfigureVariant,
 ): PagestormTransfigurePreview {
   return {
     blocks: asPostBlocks(post.content),
@@ -253,7 +272,69 @@ export function parsePagestormTransfigurePreview(
   };
 }
 
+export function pagestormTransfigureVariantsFromPost(
+  post: TransfigurePost,
+): PagestormTransfigureReelItem[] {
+  const variants: TransfigureVariant[] = [post, ...(post.extra_variants ?? [])];
+  return variants.map((variant) => ({
+    resourceType: variant.resource_type,
+    resourceId: variant.resource_id,
+    preview: pagestormTransfigurePreviewFromPost(variant),
+  }));
+}
+
+export function parsePagestormTransfigureReel(
+  value: unknown,
+): PagestormTransfigureReelItem[] {
+  return pagestormToyboxJsonArray(value).flatMap((item) => {
+    if (!item || typeof item !== "object" || Array.isArray(item)) return [];
+    const record = item as Record<string, unknown>;
+    const preview = parsePagestormTransfigurePreview(record.preview);
+    if (
+      typeof record.resourceType !== "string"
+      || typeof record.resourceId !== "string"
+      || !record.resourceType
+      || !record.resourceId
+      || !preview
+    ) {
+      return [];
+    }
+    return [{
+      resourceType: record.resourceType,
+      resourceId: record.resourceId,
+      preview,
+    }];
+  });
+}
+
+export function applyPagestormTransfigureChoice(
+  snapshot: PagestormToyboxSnapshot,
+  choice: PagestormTransfigureChoice,
+): PagestormToyboxSnapshot {
+  const variants = snapshot.transfigureVariants ?? [];
+  if (variants.length === 0) return snapshot;
+  if (choice === "reel") {
+    const representative = variants[0]!;
+    return {
+      ...snapshot,
+      leftType: representative.resourceType,
+      leftId: representative.resourceId,
+      transfigure: representative.preview,
+      transfigureReel: variants.length > 1 ? variants : [],
+    };
+  }
+  const variant = variants[choice] ?? variants[0]!;
+  return {
+    ...snapshot,
+    leftType: variant.resourceType,
+    leftId: variant.resourceId,
+    transfigure: variant.preview,
+    transfigureReel: [],
+  };
+}
+
 export function pagestormToyboxNodeAttrs(snapshot: PagestormToyboxSnapshot) {
+  const reel = snapshot.transfigureReel ?? [];
   return {
     postId: snapshot.id,
     service: snapshot.service,
@@ -268,10 +349,15 @@ export function pagestormToyboxNodeAttrs(snapshot: PagestormToyboxSnapshot) {
     poolJson: JSON.stringify(snapshot.pool ?? []),
     tokenSrc: snapshot.tokenSrc,
     transfigureJson: JSON.stringify(snapshot.transfigure ?? null),
+    transfigureReelJson: JSON.stringify(reel),
     align: "center" as const,
     linked: true,
     width: 576,
-    height: pagestormToyboxEmbedHeight(snapshot.service, snapshot.leftType),
+    height: reel.length > 1
+      ? Math.max(...reel.map((item) => (
+        pagestormToyboxEmbedHeight(snapshot.service, item.resourceType)
+      ))) + PAGESTORM_TRANSFIGURE_REEL_PIPS_HEIGHT
+      : pagestormToyboxEmbedHeight(snapshot.service, snapshot.leftType),
   };
 }
 

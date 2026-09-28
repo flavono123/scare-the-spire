@@ -22,6 +22,7 @@ import {
 import {
   pagestormToyboxJsonArray,
   parsePagestormTransfigurePreview,
+  parsePagestormTransfigureReel,
 } from "@/lib/pagestorm-toybox";
 import { ToyboxEmbedFigure } from "./toybox-embed";
 import { PAGESTORM_EMBED_NODE_NAMES } from "./asset-layout";
@@ -221,6 +222,7 @@ function ToyboxView({ node, updateAttributes, selected }: NodeViewProps) {
           transfigure={parsePagestormTransfigurePreview(
             node.attrs.transfigureJson ?? node.attrs.transfigure,
           )}
+          transfigureReel={parsePagestormTransfigureReel(node.attrs.transfigureReelJson)}
           align={align}
           mode={mode}
           selected={selected}
@@ -356,6 +358,7 @@ export const ToyboxEmbedNode = Node.create({
       poolJson: { default: "[]" },
       tokenSrc: { default: "" },
       transfigureJson: { default: "null" },
+      transfigureReelJson: { default: "[]" },
       align: { default: "center" },
       linked: { default: true },
       width: { default: 576 },
