@@ -8,6 +8,7 @@ import { ColorfulPhilosopherSubjectArt } from "@/components/colorful-philosopher
 import { DeferredCommentSection } from "@/components/patches/deferred-comment-section";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
+import { RichText } from "@/components/rich-text";
 import { SPIRE_ACTION_CONTROL_CLASS } from "@/components/spire-icon";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -122,6 +123,7 @@ export function BackstabColorfulPhilosophersSection({
   serviceLocale,
   gameLocale,
   cta,
+  hero,
   initialPosts,
   staticHoverPreviews = false,
 }: {
@@ -129,6 +131,7 @@ export function BackstabColorfulPhilosophersSection({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   cta: string;
+  hero: string;
   initialPosts: ColorfulPhilosopherPost[];
   staticHoverPreviews?: boolean;
 }) {
@@ -260,7 +263,9 @@ export function BackstabColorfulPhilosophersSection({
           <span aria-hidden="true">&rarr;</span>
         </Link>
       </div>
-      <p className="mt-2 text-sm font-medium leading-relaxed text-muted-foreground">{copy.subtitle}</p>
+      <div className="mt-2 text-sm font-medium leading-relaxed text-muted-foreground">
+        <RichText text={hero} />
+      </div>
       <div className="mt-6 flex justify-center">
         <div
           key={hydrated ? "live" : "static"}

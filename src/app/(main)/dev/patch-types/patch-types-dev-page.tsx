@@ -531,6 +531,7 @@ export default async function PatchesDevPage() {
           serviceLocale="ko"
           gameLocale="kor"
           cta={debateCopy.hero}
+          hero={debateCopy.reelHero}
           initialPosts={colorfulPhilosopherPosts}
         />
       </section>

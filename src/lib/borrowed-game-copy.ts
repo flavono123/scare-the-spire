@@ -43,6 +43,7 @@ export interface DebateGameCopy {
   title: string;
   hero: string;
   invite: string;
+  reelHero: string;
 }
 
 export interface FeedbackFormGameCopy {

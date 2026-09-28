@@ -127,6 +127,7 @@ interface DebateGameCopy {
   title: string;
   hero: string;
   invite: string;
+  reelHero: string;
 }
 
 interface BorrowedGameCopyPayload {
@@ -932,6 +933,10 @@ async function buildDebateGameCopy(
     title: title || "Colorful Philosophers",
     hero: stripGameMarkup(done),
     invite: stripGameMarkup(lastNonEmptyLine(initial)),
+    // Borrows the second INITIAL sentence: the statues now argue about this week's game elements.
+    reelHero: gameLocale === "kor"
+      ? "세 가지 색의 동상들이 이번 주 게임 요소에 관해 [jitter][red]열띤 토론[/red][/jitter]을 벌이고 있습니다."
+      : "3 different colored statues are having a [jitter][red]heated debate[/red][/jitter] over this week's game elements.",
   };
 }
 

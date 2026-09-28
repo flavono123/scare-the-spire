@@ -900,6 +900,7 @@ export async function PatchDetailPage({
           serviceLocale={serviceLocale}
           gameLocale={gameLocale}
           cta={debateCopy.invite}
+          hero={debateCopy.reelHero}
           initialPosts={colorfulPhilosopherPosts}
           staticHoverPreviews={staticHoverPreviews}
         />
