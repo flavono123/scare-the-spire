@@ -13,8 +13,54 @@ export interface ResourceReactionCounts {
   rework: number;
 }
 
+export interface ResourceReactionTarget {
+  resourceType: string;
+  resourceId: string;
+  gameVersion: string;
+}
+
 function storageKey(resourceType: string, resourceId: string, gameVersion: string) {
   return `sts-resource-reaction:${resourceType}:${resourceId}:${gameVersion}`;
+}
+
+export function resourceReactionKey(target: ResourceReactionTarget): string {
+  return `${target.resourceType}:${target.resourceId}:${target.gameVersion}`;
+}
+
+export function readResourceReaction(target: ResourceReactionTarget): ColorfulPhilosopherReaction | null {
+  if (typeof window === "undefined") return null;
+  const cached = window.localStorage.getItem(storageKey(target.resourceType, target.resourceId, target.gameVersion));
+  return cached && isColorfulPhilosopherReaction(cached) ? cached : null;
+}
+
+/** One request for a small, bounded set of resources (e.g. a week's reel). */
+export async function fetchResourceReactionCounts(
+  targets: readonly ResourceReactionTarget[],
+): Promise<Map<string, ResourceReactionCounts> | null> {
+  if (!supabaseEnabled || targets.length === 0) return null;
+  const ids = Array.from(new Set(targets.map((target) => target.resourceId)));
+  const { data, error } = await supabase.from("resource_reaction_counts")
+    .select("resource_type, resource_id, game_version, buff_count, nerf_count, rework_count")
+    .eq("env", supabaseEnv)
+    .in("resource_id", ids);
+  if (error) return null;
+  const wanted = new Set(targets.map(resourceReactionKey));
+  const counts = new Map<string, ResourceReactionCounts>();
+  for (const target of targets) counts.set(resourceReactionKey(target), { buff: 0, nerf: 0, rework: 0 });
+  for (const row of data ?? []) {
+    const key = resourceReactionKey({
+      resourceType: String(row.resource_type),
+      resourceId: String(row.resource_id),
+      gameVersion: String(row.game_version),
+    });
+    if (!wanted.has(key)) continue;
+    counts.set(key, {
+      buff: row.buff_count ?? 0,
+      nerf: row.nerf_count ?? 0,
+      rework: row.rework_count ?? 0,
+    });
+  }
+  return counts;
 }
 
 export async function saveResourceReaction(input: {

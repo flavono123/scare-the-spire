@@ -901,6 +901,7 @@ export async function PatchDetailPage({
           gameLocale={gameLocale}
           cta={debateCopy.invite}
           initialPosts={colorfulPhilosopherPosts}
+          staticHoverPreviews={staticHoverPreviews}
         />
 
         <section id="comments" className="mt-8 rounded-lg border border-border bg-card/20 p-4">

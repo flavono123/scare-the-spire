@@ -1006,7 +1006,7 @@
     const roots = Array.from(document.querySelectorAll("[data-patch-comment-root]"))
       .filter((root) => !("richCommentMounted" in root.dataset));
     const pageRoots = roots.filter((root) => !root.closest("[data-colorful-philosophers-card]"));
-    const reelRoots = roots.filter((root) => root.closest("[data-colorful-philosophers-card]"));
+    const reelTemplate = captureReelTemplate();
 
     mountCourier(config);
     if (!config) {
@@ -1019,8 +1019,10 @@
       mountRoot(root, config);
     });
 
+    // Re-query each time: refreshLiveReels swaps week cards in after load.
     const mountVisibleReel = () => {
-      reelRoots.forEach((root) => {
+      document.querySelectorAll("[data-colorful-philosophers-card] [data-patch-comment-root]").forEach((root) => {
+        if ("richCommentMounted" in root.dataset) return;
         const card = root.closest("[data-colorful-philosophers-card]");
         if (!card?.classList.contains("pointer-events-auto")) return;
         if (root.dataset.cpCommentMounted === "true") return;
@@ -1030,8 +1032,9 @@
     };
     mountVisibleReel();
     document.addEventListener("cp-reel-show", mountVisibleReel);
+    syncReelPressed();
     bindReelReactions(config);
-    void refreshLiveReels(config);
+    void refreshLiveReels(config, reelTemplate).then(mountVisibleReel);
   }
 
   function courierToken(storyId) {
@@ -1215,30 +1218,189 @@
       });
   }
 
-  async function refreshLiveReels(config) {
-    const today = new Date().toISOString().slice(0, 10);
-    try {
-      const posts = await restRequest(
-        config,
-        `colorful_philosopher_posts?select=id,name_ko,body,image_url,week_start&env=eq.${config.supabaseEnv}&week_start=lte.${today}&order=week_start.desc&limit=24`,
-      );
-      const stack = document.querySelector("[data-colorful-philosophers-preview-stack]");
-      if (stack && stack.getAttribute("data-react-managed") !== "true" && Array.isArray(posts)) {
-        const seen = new Set(Array.from(stack.querySelectorAll("[data-cp-id]")).map((node) => node.getAttribute("data-cp-id")));
-        posts.forEach((post) => {
-          if (!post.id || seen.has(post.id)) return;
-          const card = document.createElement("div");
-          card.setAttribute("data-colorful-philosophers-card", "");
-          card.setAttribute("data-cp-id", post.id);
-          card.className = "absolute inset-0 w-full opacity-0 pointer-events-none";
-          const image = post.image_url || "/images/sts2/modifiers/draft.webp";
-          card.innerHTML = `<div class="rounded-xl border border-white/10 bg-black/35 px-4 py-4"><div class="flex items-center gap-4"><img src="${escapeHtml(image)}" alt="" width="72" height="72" class="object-contain" /><span class="min-w-0"><span class="block truncate font-service text-lg font-semibold text-primary">${escapeHtml(post.name_ko || "")}</span><span class="mt-1 line-clamp-3 block text-sm text-zinc-300">${escapeHtml(post.body || "")}</span></span></div></div>`;
-          stack.appendChild(card);
-        });
-        document.dispatchEvent(new Event("cp-reel-show"));
+  const REEL_SLOT_ORDER = ["topic", "card", "relic", "power"];
+  const COMPENDIUM_DETAIL_PATHS = {
+    affliction: "/compendium/enchantments",
+    ancient: "/compendium/ancients",
+    card: "/compendium/cards",
+    character: "/compendium/characters",
+    enchantment: "/compendium/enchantments",
+    encounter: "/compendium/encounters",
+    epoch: "/compendium/epochs",
+    event: "/compendium/events",
+    keyword: "/compendium/keywords",
+    monster: "/compendium/monsters",
+    potion: "/compendium/potions",
+    power: "/compendium/powers",
+    relic: "/compendium/relics",
+  };
+
+  function reelStack() {
+    const stack = document.querySelector("[data-colorful-philosophers-preview-stack]");
+    return stack && stack.getAttribute("data-react-managed") !== "true" ? stack : null;
+  }
+
+  // Clone before any comment root mounts so fallback cards start pristine.
+  function captureReelTemplate() {
+    const card = reelStack()?.querySelector("[data-colorful-philosophers-card]");
+    return card ? card.cloneNode(true) : null;
+  }
+
+  function kstWeekStart() {
+    const kst = new Date(Date.now() + 9 * 60 * 60 * 1000);
+    const mondayOffset = (kst.getUTCDay() + 6) % 7;
+    return new Date(Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate() - mondayOffset))
+      .toISOString()
+      .slice(0, 10);
+  }
+
+  function addDays(value, days) {
+    const date = new Date(`${value}T00:00:00Z`);
+    date.setUTCDate(date.getUTCDate() + days);
+    return date.toISOString().slice(0, 10);
+  }
+
+  function reelWeekLabel(stack, weekStart) {
+    const epoch = Date.parse(`${stack.dataset.cpEpoch || weekStart}T00:00:00Z`);
+    const week = Math.floor((Date.parse(`${weekStart}T00:00:00Z`) - epoch) / (7 * 24 * 60 * 60 * 1000)) + 1;
+    return (stack.dataset.cpWeekTemplate || "{week}").replace("{week}", String(week));
+  }
+
+  function reactionStorageKey(type, id, version) {
+    return `sts-resource-reaction:${type}:${id}:${version}`;
+  }
+
+  function readStoredReaction(button) {
+    const stored = window.localStorage.getItem(
+      reactionStorageKey(button.dataset.cpType, button.dataset.cpResource, button.dataset.cpVersion),
+    );
+    return stored === "buff" || stored === "nerf" || stored === "rework" ? stored : null;
+  }
+
+  function syncReelPressed() {
+    document.querySelectorAll("[data-colorful-philosophers-card]").forEach((card) => {
+      const first = card.querySelector("[data-cp-reaction]");
+      if (!first) return;
+      const kind = readStoredReaction(first);
+      card.querySelectorAll("[data-cp-reaction]").forEach((button) => {
+        button.setAttribute("aria-pressed", kind === button.dataset.cpKind ? "true" : "false");
+      });
+    });
+  }
+
+  function buildFallbackReelCard(template, stack, post) {
+    const card = template.cloneNode(true);
+    card.setAttribute("data-cp-id", post.id);
+    card.setAttribute("data-cp-week-start", post.week_start);
+    const art = card.querySelector("[data-cp-art]");
+    if (art) {
+      const image = post.image_url || "/images/sts2/modifiers/draft.webp";
+      const detailPath = COMPENDIUM_DETAIL_PATHS[post.resource_type];
+      const imageHtml = `<img src="${escapeHtml(image)}" alt="${escapeHtml(post.name_ko || "")}" width="72" height="72" class="object-contain" />`;
+      const prefix = serviceLocale() === "en" ? "/en" : "";
+      art.innerHTML = detailPath
+        ? `<a href="${prefix}${detailPath}/${encodeURIComponent(String(post.resource_id).toLowerCase())}" class="block shrink-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary/70">${imageHtml}</a>`
+        : imageHtml;
+    }
+    const setText = (selector, value) => {
+      const node = card.querySelector(selector);
+      if (node) node.textContent = value;
+    };
+    setText("[data-cp-week]", reelWeekLabel(stack, post.week_start));
+    setText("[data-cp-dates]", `${post.week_start.slice(5)} – ${addDays(post.week_start, 6).slice(5)}`);
+    setText("[data-cp-name]", post.name_ko || "");
+    setText("[data-cp-body]", post.body || "");
+    card.querySelectorAll("[data-cp-reaction]").forEach((button) => {
+      delete button.dataset.cpBound;
+      button.dataset.cpPost = post.id;
+      button.dataset.cpType = post.resource_type;
+      button.dataset.cpResource = post.resource_id;
+      button.dataset.cpVersion = post.game_version;
+      const count = button.querySelector("[data-cp-count]");
+      if (count) count.textContent = "0";
+    });
+    const comments = card.querySelector("[data-cp-comments]");
+    if (comments) {
+      comments.innerHTML = `<div data-patch-comment-root data-thread-key="colorful-philosophers:${escapeHtml(post.id)}" data-comment-density="inline" class="space-y-3"><div class="h-4 w-24 rounded bg-muted/20" aria-hidden="true"></div></div>`;
+    }
+    card.classList.remove("opacity-100", "pointer-events-auto", "relative");
+    card.classList.add("opacity-0", "pointer-events-none", "absolute", "inset-0");
+    return card;
+  }
+
+  async function refreshReelWeek(config, template) {
+    const stack = reelStack();
+    if (!stack) return;
+    const currentWeek = kstWeekStart();
+    const rows = await restRequest(
+      config,
+      `colorful_philosopher_posts?select=id,week_start,slot,resource_type,resource_id,name_ko,image_url,body,game_version&env=eq.${config.supabaseEnv}&week_start=lte.${currentWeek}&order=week_start.desc&limit=12`,
+    );
+    const posts = (Array.isArray(rows) ? rows : [])
+      .filter((row) => row.id && row.week_start && row.resource_type && row.resource_id && row.game_version);
+    if (posts.length === 0) return;
+    const week = String(posts[0].week_start).slice(0, 10);
+    const weekPosts = posts
+      .map((post) => ({ ...post, week_start: String(post.week_start).slice(0, 10) }))
+      .filter((post) => post.week_start === week)
+      .sort((left, right) => REEL_SLOT_ORDER.indexOf(left.slot) - REEL_SLOT_ORDER.indexOf(right.slot));
+    const wanted = new Set(weekPosts.map((post) => post.id));
+    const baked = new Map(
+      Array.from(stack.querySelectorAll("[data-colorful-philosophers-card]"))
+        .map((card) => [card.getAttribute("data-cp-id"), card]),
+    );
+    baked.forEach((card, id) => {
+      if (!wanted.has(id)) card.remove();
+    });
+    weekPosts.forEach((post) => {
+      const existing = baked.get(post.id);
+      if (existing) {
+        const body = existing.querySelector("[data-cp-body]");
+        if (body && post.body) body.textContent = post.body;
+        stack.appendChild(existing);
+        return;
       }
+      if (template) stack.appendChild(buildFallbackReelCard(template, stack, post));
+    });
+    document.dispatchEvent(new Event("cp-reel-refresh"));
+  }
+
+  async function refreshReelCounts(config) {
+    const buttons = Array.from(document.querySelectorAll("[data-colorful-philosophers-card] [data-cp-reaction]"));
+    const ids = Array.from(new Set(buttons.map((button) => button.dataset.cpResource).filter(Boolean)));
+    if (ids.length === 0) return;
+    const rows = await restRequest(
+      config,
+      `resource_reaction_counts?select=resource_type,resource_id,game_version,buff_count,nerf_count,rework_count&env=eq.${config.supabaseEnv}&resource_id=in.(${ids.map(encodeURIComponent).join(",")})`,
+    );
+    const counts = new Map();
+    (Array.isArray(rows) ? rows : []).forEach((row) => {
+      counts.set(`${row.resource_type}:${row.resource_id}:${row.game_version}`, {
+        buff: row.buff_count || 0,
+        nerf: row.nerf_count || 0,
+        rework: row.rework_count || 0,
+      });
+    });
+    buttons.forEach((button) => {
+      const count = button.querySelector("[data-cp-count]");
+      if (!count) return;
+      const row = counts.get(`${button.dataset.cpType}:${button.dataset.cpResource}:${button.dataset.cpVersion}`);
+      count.textContent = String(row?.[button.dataset.cpKind] ?? 0);
+    });
+  }
+
+  async function refreshLiveReels(config, reelTemplate) {
+    try {
+      await refreshReelWeek(config, reelTemplate);
     } catch {
       // Keep the baked reel if the browser cannot reach the database.
+    }
+    syncReelPressed();
+    bindReelReactions(config);
+    try {
+      await refreshReelCounts(config);
+    } catch {
+      // Keep the baked counts.
     }
 
     try {

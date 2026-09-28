@@ -10,11 +10,14 @@ export function ColorfulPhilosopherReactionIcon({
   active = false,
   lift = false,
   size = 15,
+  pressedFromAria = false,
 }: {
   kind: ColorfulPhilosopherReaction;
   active?: boolean;
   lift?: boolean;
   size?: number;
+  /** Follow the parent control's aria-pressed so static pages can toggle it without React. */
+  pressedFromAria?: boolean;
 }) {
   const token = COLORFUL_PHILOSOPHER_REACTION_TOKENS[kind];
   return (
@@ -38,6 +41,7 @@ export function ColorfulPhilosopherReactionIcon({
           active
             ? "opacity-0"
             : "opacity-100 group-hover/spire:opacity-0 group-focus-visible/spire:opacity-0",
+          pressedFromAria && "group-aria-pressed/spire:opacity-0",
         )}
       />
       <SpireIcon
@@ -49,6 +53,7 @@ export function ColorfulPhilosopherReactionIcon({
           active
             ? "opacity-100"
             : "opacity-0 group-hover/spire:opacity-100 group-focus-visible/spire:opacity-100",
+          pressedFromAria && "group-aria-pressed/spire:opacity-100",
         )}
       />
     </span>
