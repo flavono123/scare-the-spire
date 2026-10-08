@@ -118,8 +118,13 @@ export function SiteNavDropdown({
             {alt}
           </div>
         )}
-        {items.map((item) => (
+        {items.map((item, index) => (
           <div key={item.href}>
+            {item.group && item.group !== items[index - 1]?.group && (
+              <div className="border-t border-border/60 px-3 pb-1 pt-2 text-[11px] font-semibold text-primary/80 first:border-t-0">
+                {item.group}
+              </div>
+            )}
             <MenuRow item={item} isToyBox={isToyBox} />
             {item.children?.map((child) => (
               <MenuRow key={child.href} item={child} isToyBox={isToyBox} nested />

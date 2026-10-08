@@ -42,6 +42,8 @@ export type NavDropdownItem = {
   isNew?: boolean;
   attentionId?: string;
   attention?: boolean;
+  /** Section heading rendered above the first item of each group. */
+  group?: string;
   children?: NavDropdownItem[];
 };
 
@@ -173,84 +175,98 @@ export const sts1NavItems = [
 }[];
 
 /**
- * Dev-only navbar menu, ordered by latest commit date touching each page
- * (newest first). No local access-frequency data exists in `.next/dev/logs`.
+ * Dev-only navbar menu grouped by purpose; within each group, ordered by
+ * latest commit date touching each page (newest first). No local access-frequency data exists in `.next/dev/logs`.
  */
 export const devNavItems = [
   {
-    href: "/dev/admin",
-    label: "어드민",
-    icon: "/images/sts2/nav/question_mark.png",
-  },
-  {
-    href: "/dev/patch-types",
-    label: "패치노트 타입",
-    icon: "/images/sts2/nav/patch_notes_icon.png",
-  },
-  {
+    group: "서비스 개발",
     href: "/dev/colorful-philosophers",
     label: "토론 주차 예약",
     icon: DEBATE_TOKEN_SRC,
     strictDevOnly: true,
   },
   {
-    href: "/dev/courier-tokens",
-    label: "배달원 토큰",
-    icon: "/images/sts2/relics/the_courier.webp",
-    strictDevOnly: true,
-  },
-  {
-    href: "/dev/nav-indicators",
-    label: "상단바 인디케이터",
-    icon: "/images/sts2/nav/patch_notes_icon.png",
-    strictDevOnly: true,
-  },
-  {
+    group: "서비스 개발",
     href: "/dev/decisions-board",
     label: "어려운 결정 보드",
     icon: "/images/sts2/powers/buffer_power.webp",
     strictDevOnly: true,
   },
   {
+    group: "서비스 개발",
     href: "/dev/toybox-preview",
     label: "장난감 상자 미리보기",
     icon: "/images/sts2/powers/focus_power.webp",
     strictDevOnly: true,
   },
   {
+    group: "서비스 개발",
     href: "/dev/profile",
     label: "프로필 저장 전환",
     icon: "/images/sts2/profile/unset.webp",
     strictDevOnly: true,
   },
   {
+    group: "패치/운영",
+    href: "/dev/admin",
+    label: "어드민",
+    icon: "/images/sts2/nav/question_mark.png",
+  },
+  {
+    group: "패치/운영",
+    href: "/dev/patch-types",
+    label: "패치노트 타입",
+    icon: "/images/sts2/nav/patch_notes_icon.png",
+  },
+  {
+    group: "패치/운영",
+    href: "/dev/og-images",
+    label: "OG 이미지 프리뷰",
+    icon: "/images/sts2/nav/patch_notes_icon.png",
+  },
+  {
+    group: "디자인 실험",
     href: "/dev/character-palette",
     label: "2색 배색",
     icon: "/images/sts2/characters/character_icon_ironclad.webp",
     strictDevOnly: true,
   },
   {
+    group: "디자인 실험",
     href: "/dev/spire-icons",
     label: "첨탑식 아이콘 실험실",
     icon: "/images/sts2/powers/trash_to_treasure_power.webp",
     strictDevOnly: true,
   },
   {
-    href: "/dev/monsters",
-    label: "몬스터 정리",
-    icon: "/images/sts2/nav/happy_cultist.png",
-  },
-  {
-    href: "/dev/og-images",
-    label: "OG 이미지 프리뷰",
+    group: "디자인 실험",
+    href: "/dev/nav-indicators",
+    label: "상단바 인디케이터",
     icon: "/images/sts2/nav/patch_notes_icon.png",
+    strictDevOnly: true,
   },
   {
+    group: "디자인 실험",
+    href: "/dev/courier-tokens",
+    label: "배달원 토큰",
+    icon: "/images/sts2/relics/the_courier.webp",
+    strictDevOnly: true,
+  },
+  {
+    group: "디자인 실험",
     href: "/dev/text-effects",
     label: "텍스트 효과",
     icon: "/images/sts2/nav/patch_notes_icon.png",
   },
   {
+    group: "데이터 참고",
+    href: "/dev/monsters",
+    label: "몬스터 정리",
+    icon: "/images/sts2/nav/happy_cultist.png",
+  },
+  {
+    group: "데이터 참고",
     href: "/dev/reference",
     label: "레퍼런스",
     icon: "/images/sts2/nav/stats_cards.png",
@@ -298,6 +314,7 @@ export function localizePlainNavItems<
     icon: string;
     isNew?: boolean;
     attentionId?: string;
+    group?: string;
     children?: readonly {
       href: string;
       label: string;
@@ -317,6 +334,7 @@ export function localizePlainNavItems<
     icon: item.icon,
     isNew: item.isNew,
     attentionId: item.attentionId,
+    group: item.group,
     children: item.children
       ? localizePlainNavItems(item.children, serviceLocale, gameLocale)
       : undefined,
