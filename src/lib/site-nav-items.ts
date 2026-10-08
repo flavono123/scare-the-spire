@@ -172,28 +172,20 @@ export const sts1NavItems = [
   icon: string;
 }[];
 
+/**
+ * Dev-only navbar menu, ordered by latest commit date touching each page
+ * (newest first). No local access-frequency data exists in `.next/dev/logs`.
+ */
 export const devNavItems = [
-  { href: "/dev/admin", label: "어드민", icon: "/images/sts2/nav/question_mark.png" },
-  { href: "/dev/patch-types", label: "패치노트 타입", icon: "/images/sts2/nav/patch_notes_icon.png" },
-  { href: "/dev/monsters", label: "몬스터 정리", icon: "/images/sts2/nav/happy_cultist.png" },
-  { href: "/dev/og-images", label: "OG 이미지 프리뷰", icon: "/images/sts2/nav/patch_notes_icon.png" },
   {
-    href: "/dev/spire-icons",
-    label: "첨탑식 아이콘 실험실",
-    icon: "/images/sts2/powers/trash_to_treasure_power.webp",
-    strictDevOnly: true,
+    href: "/dev/admin",
+    label: "어드민",
+    icon: "/images/sts2/nav/question_mark.png",
   },
   {
-    href: "/dev/character-palette",
-    label: "2색 배색",
-    icon: "/images/sts2/characters/character_icon_ironclad.webp",
-    strictDevOnly: true,
-  },
-  {
-    href: "/dev/toybox-preview",
-    label: "장난감 상자 미리보기",
-    icon: "/images/sts2/powers/focus_power.webp",
-    strictDevOnly: true,
+    href: "/dev/patch-types",
+    label: "패치노트 타입",
+    icon: "/images/sts2/nav/patch_notes_icon.png",
   },
   {
     href: "/dev/colorful-philosophers",
@@ -208,9 +200,21 @@ export const devNavItems = [
     strictDevOnly: true,
   },
   {
+    href: "/dev/nav-indicators",
+    label: "상단바 인디케이터",
+    icon: "/images/sts2/nav/patch_notes_icon.png",
+    strictDevOnly: true,
+  },
+  {
     href: "/dev/decisions-board",
     label: "어려운 결정 보드",
     icon: "/images/sts2/powers/buffer_power.webp",
+    strictDevOnly: true,
+  },
+  {
+    href: "/dev/toybox-preview",
+    label: "장난감 상자 미리보기",
+    icon: "/images/sts2/powers/focus_power.webp",
     strictDevOnly: true,
   },
   {
@@ -219,13 +223,37 @@ export const devNavItems = [
     icon: "/images/sts2/profile/unset.webp",
     strictDevOnly: true,
   },
-  { href: "/dev/text-effects", label: "텍스트 효과", icon: "/images/sts2/nav/patch_notes_icon.png" },
-  { href: "/dev/reference", label: "레퍼런스", icon: "/images/sts2/nav/stats_cards.png" },
   {
-    href: "/dev/nav-indicators",
-    label: "상단바 인디케이터",
-    icon: "/images/sts2/nav/patch_notes_icon.png",
+    href: "/dev/character-palette",
+    label: "2색 배색",
+    icon: "/images/sts2/characters/character_icon_ironclad.webp",
     strictDevOnly: true,
+  },
+  {
+    href: "/dev/spire-icons",
+    label: "첨탑식 아이콘 실험실",
+    icon: "/images/sts2/powers/trash_to_treasure_power.webp",
+    strictDevOnly: true,
+  },
+  {
+    href: "/dev/monsters",
+    label: "몬스터 정리",
+    icon: "/images/sts2/nav/happy_cultist.png",
+  },
+  {
+    href: "/dev/og-images",
+    label: "OG 이미지 프리뷰",
+    icon: "/images/sts2/nav/patch_notes_icon.png",
+  },
+  {
+    href: "/dev/text-effects",
+    label: "텍스트 효과",
+    icon: "/images/sts2/nav/patch_notes_icon.png",
+  },
+  {
+    href: "/dev/reference",
+    label: "레퍼런스",
+    icon: "/images/sts2/nav/stats_cards.png",
   },
 ] as const;
 
@@ -347,15 +375,22 @@ export function getToyBoxNavItems({
       ];
     });
 
+  return localizePlainNavItems(serviceItems, serviceLocale, gameLocale);
+}
+
+/** Items for the dev-only navbar menu; empty when dev tools are disabled. */
+export function getDevNavItems({
+  serviceLocale,
+  gameLocale,
+}: {
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
+}): NavDropdownItem[] {
+  if (!devToolsEnabled()) return [];
   return localizePlainNavItems(
-    [
-      ...serviceItems,
-      ...(showDevMenu
-        ? devNavItems.filter(
-            (item) => !("strictDevOnly" in item) || process.env.NODE_ENV === "development",
-          )
-        : []),
-    ],
+    devNavItems.filter(
+      (item) => !("strictDevOnly" in item) || process.env.NODE_ENV === "development",
+    ),
     serviceLocale,
     gameLocale,
   );

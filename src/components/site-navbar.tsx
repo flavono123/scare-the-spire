@@ -49,6 +49,7 @@ import { serviceMessages } from "@/messages/service";
 import { contactMessages } from "@/messages/contact";
 import { pushCodexHistoryState } from "@/components/codex/use-hydration-safe-search-param";
 import {
+  getDevNavItems,
   getToyBoxNavItems,
   gameOnlyLanguageNavLocales,
   localizeCodexNavItems,
@@ -749,6 +750,7 @@ export function SiteNavbar() {
     ...item,
     attention: item.attentionId ? navSeen.unreadIds.includes(item.attentionId) : item.attention,
   }));
+  const devItems = getDevNavItems({ serviceLocale, gameLocale });
   const mailboxReply = useMailboxReply();
   const contactHref = getContactHref(pathname, serviceLocale, gameLocale);
   const isContactPage = stripGameLocaleFromPath(pathname) === "/contact";
@@ -792,6 +794,16 @@ export function SiteNavbar() {
             variant="toyBox"
             attention={navSeen.toyBox}
           />
+
+          {devItems.length > 0 && (
+            <SiteNavDropdown
+              icon="/images/sts2/relics/toy_box.webp"
+              alt="Dev"
+              items={devItems}
+              align="left"
+              variant="toyBox"
+            />
+          )}
         </div>
 
         <div className="flex min-w-0 flex-1 items-center justify-end gap-0.5 sm:gap-1">
