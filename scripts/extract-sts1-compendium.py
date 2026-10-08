@@ -1321,6 +1321,9 @@ def extract_characters(jar, *, write_images: bool = True) -> int:
         ):
             save_webp(extract_png(jar, source), out / "char-select" / f"{dest}.webp", lossless=True)
         save_webp(compose_title_background(jar), out / "char-select" / "title-bg.webp", quality=70)
+        # FontHelper.bannerNameFont uses ENG_DRAMATIC_FONT outside CJK/RUS/THA locales.
+        font_dest = ROOT / "public" / "fonts" / "sts1-FeDPrm27C.otf"
+        font_dest.write_bytes(jar.read("font/FeDPrm27C.otf"))
 
         files = sound_files(jar)
         sound_keys = [*UI_SOUND_KEYS, *(c["selectEffect"].get("sound") for c in characters)]

@@ -27,6 +27,14 @@
 }
 
 @font-face {
+  font-family: "STS1 Banner";
+  src: url("/fonts/sts1-FeDPrm27C.otf") format("opentype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
   font-family: "STS GC Batang";
   src: url("/fonts/GyeonggiCheonnyeonBatangBold.woff2") format("woff2");
   font-display: swap;
