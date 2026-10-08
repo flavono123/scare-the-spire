@@ -1,0 +1,31 @@
+{
+  "characters": {
+    "ironclad": {
+      "name": "El Blindado",
+      "title": "El Blindado",
+      "flavor": "El último soldado de 'Los Blindados'. NL Vendió su alma para poder usar las energías demoníacas."
+    },
+    "silent": {
+      "name": "La Silenciosa",
+      "title": "La Silenciosa",
+      "flavor": "Una cazadora mortal de las tierras bajas. NL Erradica cualquier presa con dagas y veneno."
+    },
+    "defect": {
+      "name": "El Defectuoso",
+      "title": "El Defectuoso",
+      "flavor": "Un autómata de combate que tomó consciencia de sí mismo. NL La tecnología de Los Antiguos le permite manipular los Orbes."
+    },
+    "watcher": {
+      "name": "La Vigilante",
+      "title": "La Vigilante",
+      "flavor": "Una asceta ciega que ha venido a \"Evaluar\" la Aguja. NL Maestra de las Posturas divinas."
+    }
+  },
+  "ui": {
+    "choose": "Escoge tu Personaje",
+    "embark": "Embarcar",
+    "back": "Atrás",
+    "hp": "PV: ",
+    "gold": "Oro: "
+  }
+}

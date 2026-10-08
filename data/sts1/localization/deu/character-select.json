@@ -1,0 +1,31 @@
+{
+  "characters": {
+    "ironclad": {
+      "name": "Der Eiserne",
+      "title": "Der Eiserne",
+      "flavor": "Der verbliebene Soldat der Eisernen. NL Verkaufte seine Seele, um dämonische Energien nutzen zu können."
+    },
+    "silent": {
+      "name": "Die Stille",
+      "title": "Die Stille",
+      "flavor": "Eine tödliche Jägerin aus den Nebelländern. NL Beseitigt Gegner mit Dolchen und Giften."
+    },
+    "defect": {
+      "name": "Das Defekte",
+      "title": "Das Defekte",
+      "flavor": "Ein Kampf-Automaton, das Selbstbewusstsein erlangte. NL Manipuliert Orbs mithilfe vorzeitlicher Technologie."
+    },
+    "watcher": {
+      "name": "Die Seherin",
+      "title": "Die Seherin",
+      "flavor": "Eine blinde Asketin, die kam, um den Spire \"auszuwerten\". NL Meisterin der göttlichen Haltungen."
+    }
+  },
+  "ui": {
+    "choose": "Wähle deinen Charakter",
+    "embark": "Beginnen",
+    "back": "Zurück",
+    "hp": "TP: ",
+    "gold": "Gold: "
+  }
+}

@@ -30,7 +30,26 @@ from scripts.lib.java_classfile import (  # noqa: E402
     s2_from,
     u2_from,
 )
+from scripts.lib.sts1_characters import (  # noqa: E402
+    UI_SOUND_KEYS,
+    load_characters,
+    localize_characters,
+    public_character_row,
+    sound_files,
+)
+from scripts.lib.sts1_description_template import (  # noqa: E402
+    pick_template,
+    render_template,
+    replay_description_templates,
+    template_is_resolved,
+)
 from scripts.lib.sts1_jar import default_sts1_jar_path, open_sts1_jar  # noqa: E402
+from scripts.lib.sts1_powers import (  # noqa: E402
+    attach_power_sources,
+    load_powers,
+    localize_power,
+    public_power_row,
+)
 
 STS1_LOCALES = [
     "kor",
@@ -736,14 +755,49 @@ def loc_card(entry: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def loc_relic(entry: dict[str, Any]) -> dict[str, Any]:
+def loc_relic(entry: dict[str, Any], template: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     descriptions = entry.get("DESCRIPTIONS") or []
+    name = entry.get("NAME") or ""
+    if template:
+        description = render_template(template, [str(part) for part in descriptions], name=name)
+    else:
+        description = descriptions[0] if descriptions else ""
     return {
-        "name": entry.get("NAME") or "",
+        "name": name,
         "flavor": entry.get("FLAVOR") or "",
-        "description": descriptions[0] if descriptions else "",
+        "description": description,
         "descriptions": descriptions,
     }
+
+
+def relic_description_templates(jar, relics: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    """AbstractRelic.getUpdatedDescription() (or its setDescription(null) helper) per relic id."""
+    templates: dict[str, list[dict[str, Any]]] = {}
+    for relic in relics:
+        cls = parse_jar_class(jar, relic["className"])
+        template = pick_template(
+            replay_description_templates(cls, "getUpdatedDescription", sink="return", descriptor="()Ljava/lang/String;")
+        )
+        if not (template and template_is_resolved(template)):
+            helper = next((method for method in cls.methods if method.name == "setDescription"), None)
+            if helper:
+                template = pick_template(
+                    replay_description_templates(cls, "setDescription", sink="return", descriptor=helper.descriptor)
+                )
+        if template and template_is_resolved(template):
+            templates[relic["id"]] = template
+    return templates
+
+
+def write_relic_localization(jar, relics: list[dict[str, Any]]) -> None:
+    templates = relic_description_templates(jar, relics)
+    data_root = ROOT / "data" / "sts1"
+    for locale in STS1_LOCALES:
+        relic_loc = load_loc_table(jar, locale, "relics.json")
+        write_json(
+            data_root / "localization" / locale / "relics.json",
+            {relic["id"]: loc_relic(relic_loc.get(relic["id"], {}), templates.get(relic["id"])) for relic in relics},
+        )
 
 
 def loc_potion(entry: dict[str, Any], potency: int | None) -> dict[str, Any]:
@@ -1103,6 +1157,167 @@ def extract_potion_images(
     return written
 
 
+def read_data_rows(name: str) -> list[dict[str, Any]]:
+    return json.loads((ROOT / "data" / "sts1" / name).read_text(encoding="utf-8"))
+
+
+def ui_period(jar, locale: str) -> str:
+    period = (load_loc_table(jar, locale, "ui.json").get("Period") or {}).get("TEXT") or ["."]
+    return period[0] or "."
+
+
+def extract_powers(jar, *, write_images: bool = True) -> int:
+    eng = load_loc_table(jar, "eng", "powers.json")
+    powers = load_powers(jar, eng)
+    attach_power_sources(
+        jar,
+        powers,
+        {
+            "cards": read_data_rows("cards.json"),
+            "relics": read_data_rows("relics.json"),
+            "potions": read_data_rows("potions.json"),
+        },
+    )
+    if write_images:
+        out = ROOT / "public" / "images" / "sts1" / "powers"
+        atlas = parse_atlas(jar.read("powers/powers.atlas").decode("utf-8", "replace"))
+        regions = {power["image"] for power in powers if power.get("image")}
+        for page_name, page in atlas.items():
+            sheet = None
+            for region_name, region in page["regions"].items():
+                size, _, stem = region_name.partition("/")
+                if size != "128" or stem not in regions:
+                    continue
+                sheet = sheet or extract_png(jar, f"powers/{page_name}")
+                save_webp(extract_atlas_region(sheet, region), out / f"{stem}.webp")
+    data_root = ROOT / "data" / "sts1"
+    write_json(data_root / "powers.json", [public_power_row(power) for power in powers])
+    for locale in STS1_LOCALES:
+        loc = load_loc_table(jar, locale, "powers.json")
+        period = ui_period(jar, locale)
+        write_json(
+            data_root / "localization" / locale / "powers.json",
+            {
+                power["id"]: localize_power(power, loc.get(power["locKey"]) or eng.get(power["locKey"]) or {}, period)
+                for power in powers
+            },
+        )
+    return len(powers)
+
+
+def compose_title_background(jar):
+    """TitleBackground.render() at slider=0 behind the character select screen (no clouds/dust)."""
+    from PIL import Image
+
+    atlas = parse_atlas(jar.read("title/title.atlas").decode("utf-8", "replace"))
+    regions: dict[str, tuple[str, dict[str, Any]]] = {}
+    for page_name, page in atlas.items():
+        for region_name, region in page["regions"].items():
+            regions[region_name] = (page_name, region)
+    sheets: dict[str, Any] = {}
+
+    def region_image(name: str):
+        page_name, region = regions[name]
+        if page_name not in sheets:
+            sheets[page_name] = extract_png(jar, f"title/{page_name}")
+        return extract_atlas_region(sheets[page_name], region)
+
+    from PIL import ImageChops
+
+    width, height = 1920, 1080
+    canvas = Image.new("RGBA", (width, height), (0, 0, 0, 255))
+
+    def placed(name: str, y_from_bottom: int):
+        """Region on a transparent screen-sized layer; libGDX y grows upward from the bottom edge."""
+        image = region_image(name)
+        top = height - (y_from_bottom + image.height)
+        layer = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+        if top < 0:
+            image = image.crop((0, -top, image.width, image.height))
+            top = 0
+        if top < height:
+            layer.alpha_composite(image, (0, top))
+        return layer
+
+    def additive(layer, rgba: tuple[float, float, float, float]):
+        r, g, b, a = rgba
+        red, green, blue, alpha = layer.split()
+        scaled = [
+            ImageChops.multiply(channel, alpha).point(lambda value, k=k: int(value * k * a))
+            for channel, k in ((red, r), (green, g), (blue, b))
+        ]
+        return ImageChops.add(canvas.convert("RGB"), Image.merge("RGB", scaled)).convert("RGBA")
+
+    canvas.alpha_composite(placed("jpg/sky", 0))
+    canvas.alpha_composite(placed("mg3Bot", height - 2219))
+    canvas.alpha_composite(placed("mg3Top", 0))
+    # setBlendFunction(SRC_ALPHA, ONE) with Color(1, 0.2, 0.1, 0.1 + (cos + 1.25) / 5): mean alpha 0.35.
+    glow_rgba = (1.0, 0.2, 0.1, 0.35)
+    for name, y in (("mg3BotGlow", height - 2220), ("mg3TopGlow1", 0), ("mg3TopGlow2", 0)):
+        canvas = additive(placed(name, y), glow_rgba)
+    return canvas.convert("RGB")
+
+
+def extract_sound(jar, entry: str, dest: Path) -> None:
+    import subprocess
+    import tempfile
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(suffix=Path(entry).suffix) as source:
+        source.write(jar.read(entry))
+        source.flush()
+        subprocess.run(
+            ["ffmpeg", "-y", "-loglevel", "error", "-i", source.name, "-c:a", "aac", "-b:a", "96k", str(dest)],
+            check=True,
+        )
+
+
+def extract_characters(jar, *, write_images: bool = True) -> int:
+    characters = load_characters(jar)
+    relics = {relic["id"]: relic for relic in read_data_rows("relics.json")}
+    if write_images:
+        out = ROOT / "public" / "images" / "sts1"
+        names = set(jar.namelist())
+        for character in characters:
+            if character["portrait"] in names:
+                save_webp(
+                    extract_png(jar, character["portrait"]).convert("RGB"),
+                    out / "characters" / f"{character['slug']}-portrait.webp",
+                    quality=85,
+                )
+            for relic_id in character["startingRelicIds"]:
+                relic = relics.get(relic_id)
+                outline = f"images/relics/outline/{relic['image']}.png" if relic else None
+                if outline and outline in names:
+                    save_webp(extract_png(jar, outline), out / "relics-outline" / f"{relic['slug']}.webp", lossless=True)
+        for source, dest in (
+            ("images/ui/charSelect/highlightButton2.png", "highlight"),
+            ("images/ui/topPanel/panelHeart.png", "hp"),
+            ("images/ui/topPanel/panelGoldBag.png", "gold"),
+        ):
+            save_webp(extract_png(jar, source), out / "char-select" / f"{dest}.webp", lossless=True)
+        save_webp(compose_title_background(jar), out / "char-select" / "title-bg.webp", quality=70)
+
+        files = sound_files(jar)
+        sound_keys = [*UI_SOUND_KEYS, *(c["selectEffect"].get("sound") for c in characters)]
+        for key in sound_keys:
+            if key and key in files:
+                extract_sound(jar, files[key], ROOT / "public" / "audio" / "sts1" / f"{key.lower()}.m4a")
+
+    data_root = ROOT / "data" / "sts1"
+    write_json(data_root / "characters.json", [public_character_row(character) for character in characters])
+    for locale in STS1_LOCALES:
+        write_json(
+            data_root / "localization" / locale / "character-select.json",
+            localize_characters(
+                characters,
+                load_loc_table(jar, locale, "characters.json"),
+                load_loc_table(jar, locale, "ui.json"),
+            ),
+        )
+    return len(characters)
+
+
 def attach_legacy_slugs(rows: list[dict[str, Any]], loc: dict[str, Any], kind: str) -> None:
     for row in rows:
         english = (loc.get(row["id"]) or {}).get("name") or row["id"]
@@ -1140,7 +1355,28 @@ def main() -> None:
         action="store_true",
         help="Re-compose STS1 potion lab sprites without rewriting JSON or portraits.",
     )
+    parser.add_argument(
+        "--only",
+        default="",
+        help="Comma-separated sections to rebuild without touching cards/relics/potions rows: "
+        "powers, characters, relic-text.",
+    )
     args = parser.parse_args()
+
+    if args.only:
+        sections = {section.strip() for section in args.only.split(",") if section.strip()}
+        unknown = sections - {"powers", "characters", "relic-text"}
+        if unknown:
+            parser.error(f"unknown --only sections: {', '.join(sorted(unknown))}")
+        with open_sts1_jar(args.jar) as jar:
+            if "relic-text" in sections:
+                write_relic_localization(jar, read_data_rows("relics.json"))
+                print("rewrote relic localization")
+            if "powers" in sections:
+                print(f"powers={extract_powers(jar, write_images=not args.skip_images)}")
+            if "characters" in sections:
+                print(f"characters={extract_characters(jar, write_images=not args.skip_images)}")
+        return
 
     if args.card_ui_512_only:
         with open_sts1_jar(args.jar) as jar:
@@ -1244,6 +1480,7 @@ def main() -> None:
         write_json(data_root / "relics.json", relics)
         write_json(data_root / "potions.json", visible_potions)
 
+        relic_templates = relic_description_templates(jar, relics)
         for locale in STS1_LOCALES:
             card_loc = load_loc_table(jar, locale, "cards.json")
             relic_loc = load_loc_table(jar, locale, "relics.json")
@@ -1257,7 +1494,10 @@ def main() -> None:
             )
             write_json(
                 data_root / "localization" / locale / "relics.json",
-                {relic["id"]: loc_relic(relic_loc.get(relic["id"], {})) for relic in relics},
+                {
+                    relic["id"]: loc_relic(relic_loc.get(relic["id"], {}), relic_templates.get(relic["id"]))
+                    for relic in relics
+                },
             )
             write_json(
                 data_root / "localization" / locale / "potions.json",
@@ -1291,7 +1531,12 @@ def main() -> None:
                 },
             )
 
-        print(f"cards={len(cards)} relics={len(relics)} potions={len(visible_potions)}")
+        power_count = extract_powers(jar, write_images=not args.skip_images)
+        character_count = extract_characters(jar, write_images=not args.skip_images)
+        print(
+            f"cards={len(cards)} relics={len(relics)} potions={len(visible_potions)} "
+            f"powers={power_count} characters={character_count}"
+        )
 
 
 if __name__ == "__main__":

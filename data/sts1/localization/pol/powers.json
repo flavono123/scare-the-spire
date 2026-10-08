@@ -1,0 +1,1228 @@
+{
+  "Accuracy": {
+    "name": "Celność",
+    "description": "#yNoże zadają dodatkowo NL #bX pkt. obrażeń.",
+    "descriptions": [
+      "#yNoże zadają dodatkowo NL #b",
+      " pkt. obrażeń."
+    ]
+  },
+  "After Image": {
+    "name": "Powidok",
+    "description": "Kiedykolwiek zagrasz kartę, zyskaj #bX pkt. #yBloku.",
+    "descriptions": [
+      "Kiedykolwiek zagrasz kartę, zyskaj #b",
+      " pkt. #yBloku."
+    ]
+  },
+  "Amplify": {
+    "name": "Wzmocnienie",
+    "description": "W tej turze, zagraj następną kartę #yMocy dwukrotnie.",
+    "descriptions": [
+      "W tej turze, zagraj następną kartę #yMocy dwukrotnie.",
+      "W tej turze, zagraj następne ",
+      " kart(y) #yMocy dwukrotnie."
+    ]
+  },
+  "Anger": {
+    "name": "Wściekłość",
+    "description": "Kiedykolwiek zagrasz kartę #yUmiejętności, zyskuje #bX pkt. #ySiły.",
+    "descriptions": [
+      "Kiedykolwiek zagrasz kartę #yUmiejętności, zyskuje #b",
+      " pkt. #ySiły."
+    ]
+  },
+  "Angry": {
+    "name": "Gniew",
+    "description": "Po otrzymaniu obrażeń od kart #yAtaku, zyskuje #bX pkt. #ySiły.",
+    "descriptions": [
+      "",
+      "Po otrzymaniu obrażeń od kart #yAtaku, zyskuje #b",
+      " pkt. #ySiły."
+    ]
+  },
+  "Artifact": {
+    "name": "Hart",
+    "description": "Neguje #bX negatywny efekt.",
+    "descriptions": [
+      "Neguje #b",
+      " negatywny efekt.",
+      " negatywne efekty."
+    ]
+  },
+  "Attack Burn": {
+    "name": "Spalenie ataku",
+    "description": "Przez kolejną #bX turę, kiedykolwiek zagrasz kartę #yAtaku, #ywyklucz ją.",
+    "descriptions": [
+      "Przez kolejną #b",
+      " turę, kiedykolwiek zagrasz kartę #yAtaku, #ywyklucz ją.",
+      "Przez kolejne #b",
+      " tury, kiedykolwiek zagrasz kartę #yAtaku, #ywyklucz ją."
+    ]
+  },
+  "BackAttack": {
+    "name": "Atak od tyłu",
+    "description": "Zadaje #b50% więcej obrażeń, gdy atakuje cię od tyłu.",
+    "descriptions": [
+      "Zadaje #b50% więcej obrażeń, gdy atakuje cię od tyłu."
+    ]
+  },
+  "Barricade": {
+    "name": "Barykada",
+    "description": "#yBlok nie przepada z początkiem twojej tury.",
+    "descriptions": [
+      "#yBlok nie przepada z początkiem twojej tury.",
+      "#yBlok nie przepada z początkiem tury."
+    ]
+  },
+  "BeatOfDeath": {
+    "name": "Puls śmierci",
+    "description": "Kiedykolwiek zagrasz kartę, otrzymaj #bX pkt. obrażeń.",
+    "descriptions": [
+      "Kiedykolwiek zagrasz kartę, otrzymaj #b",
+      " pkt. obrażeń."
+    ]
+  },
+  "Berserk": {
+    "name": "Berserk",
+    "description": "Na początku tury zyskaj [R] .",
+    "descriptions": [
+      "Na początku tury zyskaj ",
+      ""
+    ]
+  },
+  "Bias": {
+    "name": "Błąd systemu",
+    "description": "Na początku tury utrać #bX pkt. #ySkupienia.",
+    "descriptions": [
+      "Na początku tury utrać #b",
+      " pkt. #ySkupienia."
+    ]
+  },
+  "Blur": {
+    "name": "Rozmycie",
+    "description": "#yBlok nie przepada z początkiem następnej tury.",
+    "descriptions": [
+      "#yBlok nie przepada z początkiem następnej tury.",
+      "#yBlok nie przepada z początkiem #b",
+      " następnych tur."
+    ]
+  },
+  "Brutality": {
+    "name": "Bestialstwo",
+    "description": "Na początku tury utrać #bX PŻ i dobierz #bX kartę.",
+    "descriptions": [
+      "Na początku tury utrać #b",
+      " PŻ i dobierz #b",
+      " kartę.",
+      "Na początku tury utrać #b",
+      " PŻ i dobierz #b",
+      " kart."
+    ]
+  },
+  "Buffer": {
+    "name": "Bufor",
+    "description": "Powstrzymuję następną utratę PŻ.",
+    "descriptions": [
+      "Powstrzymuję następną utratę PŻ.",
+      "Powstrzymuje następne utraty PŻ #b",
+      " razy."
+    ]
+  },
+  "Burst": {
+    "name": "Impuls",
+    "description": "W tej turze następna karta #yUmiejętności zostanie zagrana dwukrotnie",
+    "descriptions": [
+      "W tej turze następna karta #yUmiejętności zostanie zagrana dwukrotnie",
+      "W tej turze następne ",
+      " karty #yUmiejętności zostaną zagrane dwukrotnie."
+    ]
+  },
+  "Choked": {
+    "name": "Garota",
+    "description": "W tej turze traci #bX PŻ za każdą zagraną przez ciebie kartę.",
+    "descriptions": [
+      "W tej turze traci #b",
+      " PŻ za każdą zagraną przez ciebie kartę."
+    ]
+  },
+  "Collect": {
+    "name": "Kolekcjonowanie",
+    "description": "Na początku następnej tury dodaj *Cud+ do swojej ręki.",
+    "descriptions": [
+      "Na początku następnej tury dodaj *Cud+ do swojej ręki.",
+      "Na początku następnych #b",
+      " tur dodaj *Cud+ do swojej ręki."
+    ]
+  },
+  "Combust": {
+    "name": "Samozapłon",
+    "description": "Na końcu tury utrać #bX PŻ i zadaj #bX pkt. obrażeń WSZYSTKIM przeciwnikom.",
+    "descriptions": [
+      "Na końcu tury utrać #b",
+      " PŻ i zadaj #b",
+      " pkt. obrażeń WSZYSTKIM przeciwnikom."
+    ]
+  },
+  "Confusion": {
+    "name": "Dezorientacja",
+    "description": "Koszt każdej dobranej karty jest losowy.",
+    "descriptions": [
+      "Koszt każdej dobranej karty jest losowy."
+    ]
+  },
+  "Conserve": {
+    "name": "Oszczędzanie",
+    "description": "#yEnergia jest zachowywana w tej turze.",
+    "descriptions": [
+      "#yEnergia jest zachowywana w tej turze.",
+      "#yEnergia jest zachowywana przez #b",
+      " następnych tur."
+    ]
+  },
+  "Constricted": {
+    "name": "Stłamszenie",
+    "description": "Na koniec tury otrzymaj #bX pkt. obrażeń.",
+    "descriptions": [
+      "Na koniec tury otrzymaj #b",
+      " pkt. obrażeń."
+    ]
+  },
+  "CorpseExplosionPower": {
+    "name": "Eksplozja zwłok",
+    "description": "Gdy ten przeciwnik zginie, zadaj obrażenia równe jego maksymalnym PŻ WSZYSTKIM przeciwnikom.",
+    "descriptions": [
+      "Gdy ten przeciwnik zginie, zadaj obrażenia równe jego maksymalnym PŻ WSZYSTKIM przeciwnikom.",
+      "Gdy ten przeciwnik zginie, zadaj obrażenia równe #b",
+      "-krotności jego maksymalnych punktów życia WSZYSTKIM przeciwnikom."
+    ]
+  },
+  "Corruption": {
+    "name": "Zepsucie",
+    "description": "Kiedykolwiek zagrasz kartę #yUmiejętności, zostanie ona #ywykluczona.",
+    "descriptions": [
+      "Karty #yUmiejętności kosztują #b0. Kiedykolwiek zagrasz kartę #yUmiejętności, zostanie ona #ywykluczona.",
+      "Kiedykolwiek zagrasz kartę #yUmiejętności, zostanie ona #ywykluczona."
+    ]
+  },
+  "Creative AI": {
+    "name": "Kreatywna SI",
+    "description": "Na początku tury dodaj #bX losowe karty #bMocy do ręki.",
+    "descriptions": [
+      "Na początku tury dodaj #b",
+      " losową kartę #bMocy do ręki.",
+      " losowe karty #bMocy do ręki."
+    ]
+  },
+  "Curiosity": {
+    "name": "Ciekawość",
+    "description": "Kiedykolwiek zagrasz kartę #yMocy, zyskuje #bX pkt. #ySiły.",
+    "descriptions": [
+      "Kiedykolwiek zagrasz kartę #yMocy, zyskuje #b",
+      " pkt. #ySiły."
+    ]
+  },
+  "Curl Up": {
+    "name": "Skulenie",
+    "description": "Przy przyjęciu obrażeń od #yAtaku, zwija się do pozycji obronnej NL i zyskuje X pkt. #yBloku (raz na potyczkę).",
+    "descriptions": [
+      "Przy przyjęciu obrażeń od #yAtaku, zwija się do pozycji obronnej NL i zyskuje ",
+      " pkt. #yBloku (raz na potyczkę)."
+    ]
+  },
+  "Dark Embrace": {
+    "name": "Objęcia mroku",
+    "description": "Kiedykolwiek karta zostanie #ywykluczona, dobierz #b1 kartę.",
+    "descriptions": [
+      "Kiedykolwiek karta zostanie #ywykluczona, dobierz #b1 kartę.",
+      "Kiedykolwiek karta zostanie #ywykluczona, dobierz #b",
+      " karty."
+    ]
+  },
+  "Demon Form": {
+    "name": "Demoniczna forma",
+    "description": "Z początkiem tury zyskaj NL #bX pkt. #ySiły.",
+    "descriptions": [
+      "Z początkiem tury zyskaj NL #b",
+      " pkt. #ySiły."
+    ]
+  },
+  "Dexterity": {
+    "name": "Zręczność",
+    "description": "Zwiększa ilość zdobywanych NL pkt. #yBloku (z kart) o #bX.",
+    "descriptions": [
+      "Zwiększa ilość zdobywanych NL pkt. #yBloku (z kart) o #b",
+      "Zmniejsza ilość zdobywanych NL pkt. #yBloku (z kart) o #b",
+      "."
+    ]
+  },
+  "Double Damage": {
+    "name": "Podwójne obrażenia",
+    "description": "#yAtak zadaje podwójne obrażenia przez #bX turę.",
+    "descriptions": [
+      "#yAtak zadaje podwójne obrażenia przez #b",
+      " turę.",
+      " tury."
+    ]
+  },
+  "Double Tap": {
+    "name": "Podwójny atak",
+    "description": "Podczas tej tury następna karta #yAtaku zostanie zagrana dwukrotnie.",
+    "descriptions": [
+      "Podczas tej tury następna karta #yAtaku zostanie zagrana dwukrotnie.",
+      "Podczas tej tury następne ",
+      " karty #yAtaku zostaną zagrane podwójnie."
+    ]
+  },
+  "Draw Card": {
+    "name": "Dobieranie karty",
+    "description": "Dobierz #bX kart(y) w następnej turze.",
+    "descriptions": [
+      "Dobierz #b",
+      " kart(y) w następnej turze.",
+      " kartę w następnej turze."
+    ]
+  },
+  "Draw": {
+    "name": "Dobieranie",
+    "description": "Dobierz #bX dodatkową kartę na początku każdej tury.",
+    "descriptions": [
+      "Dobierz #b",
+      " dodatkową kartę na początku każdej tury.",
+      " kartę mniej na początku każdej tury.",
+      " dodatkowe karty na początku każdej tury.",
+      " karty mniej na początku każdej tury."
+    ]
+  },
+  "Draw Reduction": {
+    "name": "Rozsypana talia",
+    "description": "Dobierz #b1 kartę mniej w kolejnej turze.",
+    "descriptions": [
+      "Dobierz #b1 kartę mniej w kolejnej turze.",
+      "Dobierz #b1 kartę mniej przez #b",
+      " kolejne tury."
+    ]
+  },
+  "DuplicationPower": {
+    "name": "Powielenie",
+    "description": "W tej turze twoja następna karta zostanie zagrana dwukrotnie.",
+    "descriptions": [
+      "W tej turze twoja następna karta zostanie zagrana dwukrotnie.",
+      "W tej turze twoje #b",
+      " następne karty zostaną zagrane dwukrotnie."
+    ]
+  },
+  "Echo Form": {
+    "name": "Echo",
+    "description": "Pierwsza zagrana karta w każdej turze jest zagrywana dwukrotnie",
+    "descriptions": [
+      "Pierwsza zagrana karta w każdej turze jest zagrywana dwukrotnie",
+      "Pierwsze #b",
+      " zagrane karty w każdej turze są zagrywane dwukrotnie."
+    ]
+  },
+  "Electro": {
+    "name": "Elektro",
+    "description": "#yGrom zadaje obrażenia WSZYSTKIM przeciwnikom.",
+    "descriptions": [
+      "#yGrom zadaje obrażenia WSZYSTKIM przeciwnikom.",
+      "",
+      ""
+    ]
+  },
+  "EnergizedBlue": {
+    "name": "Pobudzenie",
+    "description": "Zyskaj #bX dodatkowy [B] w następnej turze.",
+    "descriptions": [
+      "Zyskaj #b",
+      " dodatkowy [B] w następnej turze.",
+      " dodatkowe [B] w następnej turze.",
+      " - TRANSLATOR NOTE: - The above line is for plural if needed to distinguish from singular."
+    ]
+  },
+  "Energized": {
+    "name": "Pobudzenie",
+    "description": "Zyskaj #bX dodatkowy [G] w następnej turze.",
+    "descriptions": [
+      "Zyskaj #b",
+      " dodatkowy [G] w następnej turze.",
+      " dodatkowe [G] w następnej turze.",
+      " - TRANSLATOR NOTE: - The above line is for plural if needed to distinguish from singular."
+    ]
+  },
+  "Entangled": {
+    "name": "Spętanie",
+    "description": "Nie możesz zagrywać kart #yAtaku przez jedną turę.",
+    "descriptions": [
+      "Nie możesz zagrywać kart #yAtaku przez jedną turę."
+    ]
+  },
+  "Envenom": {
+    "name": "Otrucie",
+    "description": "Kiedykolwiek zadasz niezablokowane obrażenia kartą #yAtaku, nałóż #bX pkt. #yTrucizny.",
+    "descriptions": [
+      "Kiedykolwiek zadasz niezablokowane obrażenia kartą #yAtaku, nałóż #b",
+      " pkt. #yTrucizny."
+    ]
+  },
+  "Equilibrium": {
+    "name": "Równowaga",
+    "description": "Nie odrzucasz kart w tej turze.",
+    "descriptions": [
+      "Nie odrzucasz kart w tej turze.",
+      "Nie odrzucasz kart przez #b",
+      " tur(y)."
+    ]
+  },
+  "Evolve": {
+    "name": "Ewolucja",
+    "description": "Kiedykolwiek dobierzesz kartę #yStanu, dobierz kartę.",
+    "descriptions": [
+      "Kiedykolwiek dobierzesz kartę #yStanu, dobierz kartę.",
+      "Kiedykolwiek dobierzesz kartę #yStanu, dobierz #b",
+      " karty."
+    ]
+  },
+  "Explosive": {
+    "name": "Wybuchowość",
+    "description": "Na początku swojej tury wybuchnie zadając #b30 pkt. obrażeń.",
+    "descriptions": [
+      "Za #b",
+      " tury wybuchnie zadając #b",
+      " pkt. obrażeń.",
+      "Na początku swojej tury wybuchnie zadając #b"
+    ]
+  },
+  "Fading": {
+    "name": "Przemijanie",
+    "description": "Zginie w tej turze.",
+    "descriptions": [
+      "Zginie za #b",
+      " tur(y).",
+      "Zginie w tej turze."
+    ]
+  },
+  "Feel No Pain": {
+    "name": "Niewrażliwość na ból",
+    "description": "Kiedykolwiek karta zostanie #yWykluczona, otrzymaj #bX pkt. #yBloku.",
+    "descriptions": [
+      "Kiedykolwiek karta zostanie #yWykluczona, otrzymaj #b",
+      " pkt. #yBloku."
+    ]
+  },
+  "Fire Breathing": {
+    "name": "Ognisty oddech",
+    "description": "Na końcu tury za każdą kartę #yAtaku rzuconą w tej turze zadaj #bX pkt. obrażeń WSZYSTKIM przeciwnikom.",
+    "descriptions": [
+      "Na końcu tury za każdą kartę #yAtaku rzuconą w tej turze zadaj #b",
+      " pkt. obrażeń WSZYSTKIM przeciwnikom."
+    ]
+  },
+  "Flame Barrier": {
+    "name": "Ognista osłona",
+    "description": "Kiedykolwiek otrzymasz obrażenia od #yAtaku, zadaj #bX pkt. obrażeń atakującemu.",
+    "descriptions": [
+      "Kiedykolwiek otrzymasz obrażenia od #yAtaku, zadaj #b",
+      " pkt. obrażeń atakującemu."
+    ]
+  },
+  "Flight": {
+    "name": "W powietrzu",
+    "description": "Obrażenia od kart #yAtaku są zredukowane o #b50%. NL Znika po zadaniu obrażeń kartami #yAtaku #bX razy w ciągu jednej tury.",
+    "descriptions": [
+      "Obrażenia od kart #yAtaku są zredukowane o #b50%. NL Znika po zadaniu obrażeń kartami #yAtaku #b",
+      " razy w ciągu jednej tury."
+    ]
+  },
+  "Focus": {
+    "name": "Skupienie",
+    "description": "Zwiększa efektywność Sfer o #bX.",
+    "descriptions": [
+      "Zwiększa efektywność Sfer o #b",
+      "Zmniejsza efektywność Sfer o #b",
+      "."
+    ]
+  },
+  "Nullify Attack": {
+    "name": "Anulowanie ataku",
+    "description": "Całkowicie #yBlokuje jeden #yAtak w każdej turze.",
+    "descriptions": [
+      "Całkowicie #yBlokuje jeden #yAtak w każdej turze."
+    ]
+  },
+  "Frail": {
+    "name": "Kruchość",
+    "description": "Otrzymaj #b25% mniej #yBloku z kart przez #bX turę.",
+    "descriptions": [
+      "Otrzymaj #b25% mniej #yBloku z kart przez #b",
+      " turę.",
+      " tur(y)."
+    ]
+  },
+  "Shackled": {
+    "name": "Spętanie",
+    "description": "Odzyskuje #bX pkt. #ySiły z końcem swojej tury.",
+    "descriptions": [
+      "Odzyskuje #b",
+      " pkt. #ySiły z końcem swojej tury."
+    ]
+  },
+  "Generic Strength Up Power": {
+    "name": "Generic Strength Up Power",
+    "description": "Z końcem swojej tury zyska #bX pkt. #ySiły.",
+    "descriptions": [
+      "Z końcem swojej tury zyska #b",
+      " pkt. #ySiły."
+    ]
+  },
+  "GrowthPower": {
+    "name": "Wzrost",
+    "description": "Z końcem swojej tury zyska NL #bX pkt. #ySiły.",
+    "descriptions": [
+      "Z końcem swojej tury zyska NL #b",
+      " pkt. #ySiły."
+    ]
+  },
+  "Heatsink": {
+    "name": "Radiator",
+    "description": "Kiedykolwiek zagrasz kartę #bMocy, dobierz #bX kartę.",
+    "descriptions": [
+      "Kiedykolwiek zagrasz kartę #bMocy, dobierz #b",
+      " kartę.",
+      " karty."
+    ]
+  },
+  "Hello": {
+    "name": "Hejka",
+    "description": "Na początku tury dodaj #bX losowe Pospolite karty do ręki.",
+    "descriptions": [
+      "Na początku tury dodaj #b",
+      " losowe Pospolite karty do ręki.",
+      " losową Pospolitą kartę do ręki."
+    ]
+  },
+  "Hex": {
+    "name": "Przekleństwo",
+    "description": "Kiedykolwiek zagrasz kartę nie będącą #yAtakiem, wtasuj #bX kartę #yOszołomienia do stosu rozgrywającego.",
+    "descriptions": [
+      "Kiedykolwiek zagrasz kartę nie będącą #yAtakiem, wtasuj #b",
+      " kartę #yOszołomienia do stosu rozgrywającego."
+    ]
+  },
+  "Infinite Blades": {
+    "name": "A nóż się przyda",
+    "description": "Na początku tury dodaj #bX #yNoże do ręki.",
+    "descriptions": [
+      "Na początku tury dodaj #b",
+      " #yNoże do ręki.",
+      " #yNóż do ręki."
+    ]
+  },
+  "IntangiblePlayer": {
+    "name": "Nieuchwytność",
+    "description": "Redukuje WSZYSTKIE otrzymywane obrażenia oraz utratę PŻ do #b1 pkt.",
+    "descriptions": [
+      "Redukuje WSZYSTKIE otrzymywane obrażenia oraz utratę PŻ do #b1 pkt."
+    ]
+  },
+  "Intangible": {
+    "name": "Nieuchwytność",
+    "description": "Redukuje WSZYSTKIE otrzymywane obrażenia oraz utratę PŻ do #b1 pkt. w tej turze. Efekt jest nakładany ponownie co drugą turę.",
+    "descriptions": [
+      "Redukuje WSZYSTKIE otrzymywane obrażenia oraz utratę PŻ do #b1 pkt. w tej turze. Efekt jest nakładany ponownie co drugą turę."
+    ]
+  },
+  "Invincible": {
+    "name": "Niezwyciężone",
+    "description": "Nie może już zostać zranione w tej turze.",
+    "descriptions": [
+      "Może utracić jeszcze #b",
+      " PŻ w tej turze.",
+      "Nie może już zostać zranione w tej turze."
+    ]
+  },
+  "Juggernaut": {
+    "name": "Kolos",
+    "description": "Kiedykolwiek zyskujesz pkt. #yBloku, zadasz #bX pkt. obrażeń losowemu przeciwnikowi.",
+    "descriptions": [
+      "Kiedykolwiek zyskujesz pkt. #yBloku, zadasz #b",
+      " pkt. obrażeń losowemu przeciwnikowi."
+    ]
+  },
+  "Lockon": {
+    "name": "Namierzenie",
+    "description": "Otrzymuje #b50% więcej obrażeń od Sfer przez #bX turę.",
+    "descriptions": [
+      "Otrzymuje #b",
+      "% więcej obrażeń od Sfer przez #b",
+      " turę.",
+      " tury."
+    ]
+  },
+  "Loop": {
+    "name": "Pętla",
+    "description": "Na początku tury użyj pasywnej umiejętności pierwszej Sfery.",
+    "descriptions": [
+      "Na początku tury użyj pasywnej umiejętności pierwszej Sfery.",
+      "Na początku tury użyj pasywnej umiejętności pierwszej Sfery #b",
+      " razy."
+    ]
+  },
+  "DexLoss": {
+    "name": "Dwie lewe ręce",
+    "description": "Na koniec tury utrać #bX pkt. #yZręczności.",
+    "descriptions": [
+      "Na koniec tury utrać #b",
+      " pkt. #yZręczności."
+    ]
+  },
+  "Flex": {
+    "name": "Zakwasy",
+    "description": "Na końcu tury utrać #bX pkt. #ySiły.",
+    "descriptions": [
+      "Na końcu tury utrać #b",
+      " pkt. #ySiły."
+    ]
+  },
+  "Magnetism": {
+    "name": "Magnetyzm",
+    "description": "Na początku tury dodaj #bX losowe bezbarwne karty do ręki.",
+    "descriptions": [
+      "Na początku tury dodaj #b%s losową bezbarwną kartę do ręki.",
+      "Na początku tury dodaj #b%s losowe bezbarwne karty do ręki."
+    ]
+  },
+  "Malleable": {
+    "name": "Plastyczność",
+    "description": "Po otrzymaniu obrażeń od #yAtaku, zyskuje #bX pkt. #yBloku. Otrzymywany #yBlok wzrasta po aktywacji efektu #yPlastyczność. Wartość powraca do #bX na początku tury.",
+    "descriptions": [
+      "Po otrzymaniu obrażeń od #yAtaku, zyskuje #b",
+      " pkt. #yBloku. Otrzymywany #yBlok wzrasta po aktywacji efektu #y",
+      ". Wartość powraca do #b",
+      " na początku tury."
+    ]
+  },
+  "Mayhem": {
+    "name": "Zamęt",
+    "description": "Na początku tury zagraj kartę ze szczytu stosu rozgrywającego.",
+    "descriptions": [
+      "Na początku tury zagraj kartę ze szczytu stosu rozgrywającego.",
+      "Na początku tury zagraj #b",
+      " karty ze szczytu stosu rozgrywającego."
+    ]
+  },
+  "Metallicize": {
+    "name": "Opancerzenie",
+    "description": "Zyskaj #bX pkt. #yBloku z końcem tury.",
+    "descriptions": [
+      "Zyskaj #b",
+      " pkt. #yBloku z końcem tury.",
+      "Zyskuje #b",
+      " pkt. #yBloku z końcem swojej tury."
+    ]
+  },
+  "Minion": {
+    "name": "Sługa",
+    "description": "Sługusy uciekają, gdy ich przywódca zginie.",
+    "descriptions": [
+      "Sługusy uciekają, gdy ich przywódca zginie."
+    ]
+  },
+  "Mode Shift": {
+    "name": "Zmiana trybu",
+    "description": "Po przyjęciu #bX pkt. obrażeń, zmienia tryb na defensywny.",
+    "descriptions": [
+      "Po przyjęciu #b",
+      " pkt. obrażeń, zmienia tryb na defensywny."
+    ]
+  },
+  "Next Turn Block": {
+    "name": "Blok w następnej turze",
+    "description": "Na początku następnej tury zyskaj #bX pkt. #yBloku.",
+    "descriptions": [
+      "Na początku następnej tury zyskaj #b",
+      " pkt. #yBloku."
+    ]
+  },
+  "Night Terror": {
+    "name": "Koszmar",
+    "description": "Dodaj #bX #yX do ręki na początku następnej tury.",
+    "descriptions": [
+      "Dodaj #b",
+      " do ręki na początku następnej tury."
+    ]
+  },
+  "NoBlockPower": {
+    "name": "Brak bloku",
+    "description": "Nie zyskujesz pkt. #yBloku z kart.",
+    "descriptions": [
+      "Nie zyskujesz pkt. #yBloku z kart."
+    ]
+  },
+  "No Draw": {
+    "name": "Zakaz dobierania",
+    "description": "Do końca tej tury nie możesz dobierać kart.",
+    "descriptions": [
+      "Do końca tej tury nie możesz dobierać kart."
+    ]
+  },
+  "Noxious Fumes": {
+    "name": "Trujące opary",
+    "description": "Na początku tury nałóż #bX pkt. #yTrucizny na WSZYSTKICH przeciwników.",
+    "descriptions": [
+      "Na początku tury nałóż #b",
+      " pkt. #yTrucizny na WSZYSTKICH przeciwników."
+    ]
+  },
+  "Painful Stabs": {
+    "name": "Bolesne dźgnięcia",
+    "description": "Kiedykolwiek otrzymasz obrażenia od tego przeciwnika, dodaj kartę #yRany do stosu kart odrzuconych.",
+    "descriptions": [
+      "Kiedykolwiek otrzymasz obrażenia od tego przeciwnika, dodaj kartę #yRany do stosu kart odrzuconych."
+    ]
+  },
+  "Panache": {
+    "name": "Rozmach",
+    "description": "Kiedy zagrasz #bX kartę więcej w tej turze, zadaj #bX pkt. obrażeń WSZYSTKIM przeciwnikom.",
+    "descriptions": [
+      "Kiedy zagrasz #b",
+      " kartę więcej w tej turze, zadaj #b",
+      " pkt. obrażeń WSZYSTKIM przeciwnikom.",
+      " kart(y) więcej w tej turze, zadaj #b"
+    ]
+  },
+  "Pen Nib": {
+    "name": "Stalówka",
+    "description": "Twoja następna karta #yAtaku zada podwójne obrażenia.",
+    "descriptions": [
+      "Twoja następna karta #yAtaku zada podwójne obrażenia."
+    ]
+  },
+  "Phantasmal": {
+    "name": "Widmo",
+    "description": "Zadaj #ypodwójne #yobrażenia w następnej turze.",
+    "descriptions": [
+      "Zadaj #ypodwójne #yobrażenia w następnej turze.",
+      "Zadaj #ypodwójne #yobrażenia przez następne ",
+      " tury."
+    ]
+  },
+  "Plated Armor": {
+    "name": "Pancerz",
+    "description": "Zyskaj #bX pkt. #yBloku z końcem tury. Utrata PŻ w wyniku #yAtaku zmniejsza wartość #yPancerza o #b1.",
+    "descriptions": [
+      "Zyskaj #b",
+      " pkt. #yBloku z końcem tury. Utrata PŻ w wyniku #yAtaku zmniejsza wartość #yPancerza o #b1.",
+      "Zyska #b",
+      " pkt. #yBloku z końcem swojej tury. Utrata PŻ w wyniku #yAtaku zmniejsza wartość #yPancerza o #b1."
+    ]
+  },
+  "Poison": {
+    "name": "Trucizna",
+    "description": "Na początku tury utrać #bX PŻ, następnie wartość #yTrucizny zmniejsza się o #b1.",
+    "descriptions": [
+      "Na początku tury utrać #b",
+      " PŻ, następnie wartość #yTrucizny zmniejsza się o #b1.",
+      "Na początku swojej tury utraci #b"
+    ]
+  },
+  "Rage": {
+    "name": "Szał",
+    "description": "Kiedykolwiek podczas tej tury zagrasz kartę #yAtaku, zyskasz #bX pkt. #yBloku.",
+    "descriptions": [
+      "Kiedykolwiek podczas tej tury zagrasz kartę #yAtaku, zyskasz #b",
+      " pkt. #yBloku."
+    ]
+  },
+  "Compulsive": {
+    "name": "Reaktywność",
+    "description": "Po otrzymaniu obrażeń od ataku, zmienia swój Zamiar.",
+    "descriptions": [
+      "Po otrzymaniu obrażeń od ataku, zmienia swój Zamiar."
+    ]
+  },
+  "Rebound": {
+    "name": "Rykoszet",
+    "description": "Następne #bX karty, które zagrasz w tej turze, zostaną położone na szczycie stosu rozgrywającego.",
+    "descriptions": [
+      "Następna karta, którą zagrasz w tej turze, zostaje położona na szczycie stosu rozgrywającego.",
+      "Następne #b",
+      " karty, które zagrasz w tej turze, zostaną położone na szczycie stosu rozgrywającego."
+    ]
+  },
+  "Regeneration": {
+    "name": "Regeneracja",
+    "description": "Z końcem tury przywróć #bX #yPŻ, następnie zredukuj wartość #yRegeneracji o #b1.",
+    "descriptions": [
+      "Z końcem tury przywróć #b",
+      " #yPŻ, następnie zredukuj wartość #yRegeneracji o #b1.",
+      ""
+    ]
+  },
+  "Regenerate": {
+    "name": "Regeneracja",
+    "description": "Odzyskuje #bX #yPŻ z końcem swojej tury.",
+    "descriptions": [
+      "Odzyskuje #b",
+      " #yPŻ z końcem swojej tury."
+    ]
+  },
+  "Life Link": {
+    "name": "Łącze życia",
+    "description": "Jeśli inni przeciwnicy żyją, odradza się w ciągu #b2 tur z #b50% PŻ.",
+    "descriptions": [
+      "Jeśli inni przeciwnicy żyją, odradza się w ciągu #b2 tur z #b50% PŻ."
+    ]
+  },
+  "Repair": {
+    "name": "Naprawa",
+    "description": "Na koniec potyczki, przywróć #bX PŻ.",
+    "descriptions": [
+      "Na koniec potyczki, przywróć #b",
+      " PŻ."
+    ]
+  },
+  "Retain Cards": {
+    "name": "Zachowaj karty",
+    "description": "Na końcu każdej tury możesz zachować #bX kartę.",
+    "descriptions": [
+      "Na końcu każdej tury możesz zachować #b",
+      " kartę.",
+      " kart(y)."
+    ]
+  },
+  "Ritual": {
+    "name": "Rytuał",
+    "description": "Z końcem swojej tury zyskuje NL #bX pkt. #ySiły.",
+    "descriptions": [
+      "Z końcem swojej tury zyskuje NL #b",
+      " pkt. #ySiły.",
+      "Na koniec swojej tury zyskaj NL #b"
+    ]
+  },
+  "Rupture": {
+    "name": "Masochizm",
+    "description": "Po utracie PŻ w wyniku działania karty, zyskaj #bX pkt. #ySiły.",
+    "descriptions": [
+      "Po utracie PŻ w wyniku działania karty, zyskaj #b",
+      " pkt. #ySiły."
+    ]
+  },
+  "Sadistic": {
+    "name": "Sadyzm",
+    "description": "Kiedykolwiek nałożysz negatywny efekt na przeciwnika, zadaj mu #bX pkt. obrażeń.",
+    "descriptions": [
+      "Kiedykolwiek nałożysz negatywny efekt na przeciwnika, zadaj mu #b",
+      " pkt. obrażeń."
+    ]
+  },
+  "Sharp Hide": {
+    "name": "Kłująca skóra",
+    "description": "Kiedykolwiek zagrasz kartę #yAtaku, otrzymasz #bX pkt. obrażeń.",
+    "descriptions": [
+      "Kiedykolwiek zagrasz kartę #yAtaku, otrzymasz #b",
+      " pkt. obrażeń."
+    ]
+  },
+  "Shifting": {
+    "name": "Przenikanie",
+    "description": "Kiedykolwiek otrzyma obrażenia, traci tyle samo pkt. #ySiły do końca swojej tury.",
+    "descriptions": [
+      "",
+      "Kiedykolwiek otrzyma obrażenia, traci tyle samo pkt. #ySiły do końca swojej tury."
+    ]
+  },
+  "Skill Burn": {
+    "name": "Wypalenie umiejętności",
+    "description": "Na czas #bX tury, kiedykolwiek zagrasz kartę #yUmiejętności, #Wyklucz ją.",
+    "descriptions": [
+      "Na czas #b",
+      " tury, kiedykolwiek zagrasz kartę #yUmiejętności, #Wyklucz ją.",
+      "Na czas kolejnych #b",
+      " tur, kiedykolwiek zagrasz kartę #yUmiejętności, #Wyklucz ją."
+    ]
+  },
+  "Slow": {
+    "name": "Ślamazarność",
+    "description": "Za każdą kartę zagraną podczas tej tury, #yX otrzyma #b10% więcej obrażeń od kart #yAtaku.",
+    "descriptions": [
+      "Za każdą kartę zagraną podczas tej tury, ",
+      " otrzyma #b10% więcej obrażeń od kart #yAtaku.",
+      " (Otrzyma #b",
+      "% więcej obrażeń)"
+    ]
+  },
+  "Split": {
+    "name": "Podział",
+    "description": "Gdy liczba PŻ spadnie poniżej #b50%, podzieli się na #b2 mniejsze stwory o identycznej liczbie PŻ co #yX.",
+    "descriptions": [
+      "Gdy liczba PŻ spadnie poniżej #b50%, podzieli się na #b2 mniejsze stwory o identycznej liczbie PŻ co ",
+      "."
+    ]
+  },
+  "Spore Cloud": {
+    "name": "Chmura zarodników",
+    "description": "Po śmierci, nakłada na ciebie #bX pkt. #yWrażliwości.",
+    "descriptions": [
+      "Po śmierci, nakłada na ciebie #b",
+      " pkt. #yWrażliwości."
+    ]
+  },
+  "Stasis": {
+    "name": "Zastój",
+    "description": "Po śmierci, #yX wraca do twojej ręki.",
+    "descriptions": [
+      "Po śmierci, ",
+      " wraca do twojej ręki."
+    ]
+  },
+  "StaticDischarge": {
+    "name": "Elektrostatyczność",
+    "description": "Kiedy otrzymasz obrażenia od #yAtaku, #yPrzywołaj #ySfery #yGromu w liczbie: #bX.",
+    "descriptions": [
+      "Kiedy otrzymasz obrażenia od #yAtaku, #yPrzywołaj #ySfery #yGromu w liczbie: #b",
+      "."
+    ]
+  },
+  "Storm": {
+    "name": "Burza",
+    "description": "Kiedykolwiek zagrasz kartę #bMocy, #yPrzywołaj #ySfery #yGromu w liczbie: #b X.",
+    "descriptions": [
+      "Kiedykolwiek zagrasz kartę #bMocy, #yPrzywołaj #ySfery #yGromu w liczbie: #b ",
+      "."
+    ]
+  },
+  "Strength": {
+    "name": "Siła",
+    "description": "Zwiększa obrażenia o #bX.",
+    "descriptions": [
+      "Zwiększa obrażenia o #b",
+      "Zmniejsza obrażenia o #b",
+      "."
+    ]
+  },
+  "StrikeUp": {
+    "name": "Wytrenowane ciosy",
+    "description": "Karty zawierające w nazwie #yUderzenie zadają #bX pkt. dodatkowych obrażeń.",
+    "descriptions": [
+      "Karty zawierające w nazwie #yUderzenie zadają #b",
+      " pkt. dodatkowych obrażeń."
+    ]
+  },
+  "Surrounded": {
+    "name": "Otoczenie",
+    "description": "Otrzymujesz #b50% więcej obrażeń od ataków z tyłu. Używaj kierowanych kart i mikstur, aby zmienić swoją pozycję.",
+    "descriptions": [
+      "Otrzymujesz #b50% więcej obrażeń od ataków z tyłu. Używaj kierowanych kart i mikstur, aby zmienić swoją pozycję."
+    ]
+  },
+  "TheBomb": {
+    "name": "Bomba",
+    "description": "Na koniec tej tury zadaj #bX pkt. obrażeń WSZYSTKIM przeciwnikom.",
+    "descriptions": [
+      "Na koniec #b%1$s turny zadaj #b%2$s pkt. obrażeń WSZYSTKIM przeciwnikom.",
+      "Na koniec tej tury zadaj #b%1$s pkt. obrażeń WSZYSTKIM przeciwnikom."
+    ]
+  },
+  "Thievery": {
+    "name": "Kieszonkostwo",
+    "description": "X kradnie #bX szt. #yZłota kiedy atakuje.",
+    "descriptions": [
+      " kradnie #b",
+      " szt. #yZłota kiedy atakuje."
+    ]
+  },
+  "Thorns": {
+    "name": "Ciernie",
+    "description": "Przy otrzymywaniu obrażeń zadaje #bX pkt. obrażeń atakującemu.",
+    "descriptions": [
+      "Przy otrzymywaniu obrażeń zadaje #b",
+      " pkt. obrażeń atakującemu."
+    ]
+  },
+  "Thousand Cuts": {
+    "name": "Tysiąc cięć",
+    "description": "Kiedykolwiek zagrasz kartę, zadaj #bX pkt. obrażeń WSZYSTKIM przeciwnikom.",
+    "descriptions": [
+      "Kiedykolwiek zagrasz kartę, zadaj #b",
+      " pkt. obrażeń WSZYSTKIM przeciwnikom."
+    ]
+  },
+  "TimeMazePower": {
+    "name": "Labirynt czasu",
+    "description": "Po zagraniu #bX kart, twoja tura się kończy.",
+    "descriptions": [
+      "Po zagraniu #b",
+      " kart, twoja tura się kończy."
+    ]
+  },
+  "Time Warp": {
+    "name": "Pętla czasowa",
+    "description": "Kiedykolwiek zagrasz #b12 kart, twoja tura się zakończy, a Pożeracz Czasu zyska #b2 pkt. #ySiły.",
+    "descriptions": [
+      "Kiedykolwiek zagrasz #b",
+      " kart, twoja tura się zakończy, a Pożeracz Czasu zyska #b",
+      " pkt. #ySiły."
+    ]
+  },
+  "Tools Of The Trade": {
+    "name": "Bogaty arsenał",
+    "description": "Na początku tury dobierz #bX kartę i odrzuć #bX kartę.",
+    "descriptions": [
+      "Na początku tury dobierz #b",
+      " kartę i odrzuć #b",
+      " kartę.",
+      " kart(y) i odrzuć #b",
+      " kart(y)."
+    ]
+  },
+  "Unawakened": {
+    "name": "Sen",
+    "description": "Przeciwnik jeszcze się nie obudził...",
+    "descriptions": [
+      "Przeciwnik jeszcze się nie obudził..."
+    ]
+  },
+  "Vulnerable": {
+    "name": "Wrażliwość",
+    "description": "Otrzyma #b25% więcej obrażeń od #yAtaków przez #bX turę.",
+    "descriptions": [
+      "Otrzyma #b",
+      "% więcej obrażeń od #yAtaków przez #b",
+      " turę.",
+      " tur(y)."
+    ]
+  },
+  "Weakened": {
+    "name": "Osłabienie",
+    "description": "#yAtaki zadają #b40% mniej obrażeń przez #bX turę.",
+    "descriptions": [
+      "#yAtaki zadają #b",
+      "% mniej obrażeń przez #b",
+      " turę.",
+      " tur(y)."
+    ]
+  },
+  "Wraith Form v2": {
+    "name": "Widmowa forma",
+    "description": "Z końcem tury utrać #bX pkt. #yZręczności.",
+    "descriptions": [
+      "Z końcem tury utrać #b",
+      " pkt. #yZręczności."
+    ]
+  },
+  "BattleHymn": {
+    "name": "Hymn bitewny",
+    "description": "Na początku tury dodaj #bX #yKary do swojej ręki.",
+    "descriptions": [
+      "Na początku tury dodaj #b",
+      " #yKary do swojej ręki.",
+      " #yKarę do swojej ręki."
+    ]
+  },
+  "BlockReturnPower": {
+    "name": "Zwrot bloku",
+    "description": "Gdy zostanie zaatakowany, zyskujesz #bX pkt. #yBloku.",
+    "descriptions": [
+      "Gdy zostanie zaatakowany, zyskujesz #b",
+      " pkt. #yBloku."
+    ]
+  },
+  "CannotChangeStancePower": {
+    "name": "Zakaz zmiany postawy",
+    "description": "Nie możesz zmienić postawy w tej turze.",
+    "descriptions": [
+      "Nie możesz zmienić postawy w tej turze."
+    ]
+  },
+  "DevaForm": {
+    "name": "Dewa",
+    "description": "Na początku swojej tury zyskaj [W] oraz zwiększ ten zysk o #bX.",
+    "descriptions": [
+      "Na początku swojej tury zyskaj [W] ",
+      "Na początku swojej tury zyskaj [W] #b",
+      " razy ",
+      "oraz zwiększ ten zysk o #b",
+      ".",
+      "TRANSLATE NOTE: At the start of your turn, gain [W] #b2 times and increase this by #b1."
+    ]
+  },
+  "DevotionPower": {
+    "name": "Pobożność",
+    "description": "Na początku swojej tury zyskaj NL #bX pkt. #yMantry.",
+    "descriptions": [
+      "Na początku swojej tury zyskaj NL #b",
+      " pkt. #yMantry."
+    ]
+  },
+  "EndTurnDeath": {
+    "name": "Bluźnierca",
+    "description": "Zgiń na początku swojej następnej tury.",
+    "descriptions": [
+      "Zgiń na początku swojej następnej tury."
+    ]
+  },
+  "EnergyDownPower": {
+    "name": "Post",
+    "description": "Na początku swojej tury NL utrać [E] .",
+    "descriptions": [
+      "Na początku swojej tury NL utrać ",
+      ""
+    ]
+  },
+  "EstablishmentPower": {
+    "name": "Prawo i porządek",
+    "description": "Gdy karta zostanie #yZachowana, zmniejsz jej koszt o #bX.",
+    "descriptions": [
+      "Gdy karta zostanie #yZachowana, zmniejsz jej koszt o #b",
+      "."
+    ]
+  },
+  "WireheadingPower": {
+    "name": "Przezorność",
+    "description": "Na początku swojej tury #yPrognozuj #bX.",
+    "descriptions": [
+      "Na początku swojej tury #yPrognozuj #b",
+      "."
+    ]
+  },
+  "FreeAttackPower": {
+    "name": "Większa siła ognia",
+    "description": "Zignoruj koszt następnej zagranej karty #yAtaku.",
+    "descriptions": [
+      "Zignoruj koszt następnej zagranej karty #yAtaku.",
+      "Zignoruj koszt następnych #b",
+      " zagranych kart #yAtaku."
+    ]
+  },
+  "LikeWaterPower": {
+    "name": "Jak woda",
+    "description": "Na koniec swojej tury, jeżeli jesteś w postawie #ySpokoju, zyskaj #bX pkt. #yBloku.",
+    "descriptions": [
+      "Na koniec swojej tury, jeżeli jesteś w postawie #ySpokoju, zyskaj #b",
+      " pkt. #yBloku."
+    ]
+  },
+  "AngelForm": {
+    "name": "DEPRECATED AngelForm",
+    "description": "At the end of your turn, gain #bX #yPlated #yArmor.",
+    "descriptions": [
+      "At the end of your turn, gain #b",
+      " #yPlated #yArmor."
+    ]
+  },
+  "Mantra": {
+    "name": "Mantra",
+    "description": "Gdy zdobędziesz #b10 pkt. #yMantry, przyjmij postawę #yBoskości.",
+    "descriptions": [
+      "Gdy zdobędziesz #b",
+      " pkt. #yMantry, przyjmij postawę #yBoskości."
+    ]
+  },
+  "PathToVictoryPower": {
+    "name": "Piętno",
+    "description": "Kiedykolwiek zagrasz #yPunkty #ynacisku, traci #bX PŻ.",
+    "descriptions": [
+      "Kiedykolwiek zagrasz #yPunkty #ynacisku, traci #b",
+      " PŻ."
+    ]
+  },
+  "MasterRealityPower": {
+    "name": "Władca rzeczywistości",
+    "description": "Kiedykolwiek stworzysz kartę podczas walki, ulepsz ją.",
+    "descriptions": [
+      "Kiedykolwiek stworzysz kartę podczas walki, ulepsz ją.",
+      "deprecated",
+      "deprecated",
+      "deprecated"
+    ]
+  },
+  "Controlled": {
+    "name": "Umysłowa forteca",
+    "description": "Gdy zmieniasz #yPostawę, zyskaj NL #bX pkt. #yBloku.",
+    "descriptions": [
+      "Gdy zmieniasz #yPostawę, zyskaj NL #b",
+      " pkt. #yBloku."
+    ]
+  },
+  "Nirvana": {
+    "name": "Nirwana",
+    "description": "Kiedykolwiek Prognozujesz zyskaj #bX pkt. #yBloku.",
+    "descriptions": [
+      "Kiedykolwiek Prognozujesz zyskaj #b",
+      " pkt. #yBloku."
+    ]
+  },
+  "NoSkills": {
+    "name": "Zero umiejętności",
+    "description": "Nie możesz zagrywać kart #yUmiejętności w tej turze.",
+    "descriptions": [
+      "Nie możesz zagrywać kart #yUmiejętności w tej turze."
+    ]
+  },
+  "OmegaPower": {
+    "name": "Omega",
+    "description": "Na koniec swojej tury zadaj X pkt. obrażeń WSZYSTKIM przeciwnikom.",
+    "descriptions": [
+      "Na koniec swojej tury zadaj ",
+      " pkt. obrażeń WSZYSTKIM przeciwnikom."
+    ]
+  },
+  "OmnisciencePower": {
+    "name": "Wszechwiedza",
+    "description": "DEPERCATEDXDEPRECATED",
+    "descriptions": [
+      "DEPERCATED",
+      "DEPRECATED"
+    ]
+  },
+  "Adaptation": {
+    "name": "Adaptacja",
+    "description": "Gdy przyjmujesz postawę Gniewu, dobierz #bX kart(y).",
+    "descriptions": [
+      "Gdy przyjmujesz postawę Gniewu, dobierz #b",
+      " kartę.",
+      " kart(y)."
+    ]
+  },
+  "Study": {
+    "name": "Nauka",
+    "description": "Na koniec swojej tury wtasuj NL #bX #yRozeznania do stosu rozgrywającego.",
+    "descriptions": [
+      "Na koniec swojej tury wtasuj NL #b",
+      " #yRozeznania do stosu rozgrywającego.",
+      " #yRozeznanie do stosu rozgrywającego."
+    ]
+  },
+  "Vault": {
+    "name": "Krypta",
+    "description": "Otrzyma #bX pkt. obrażeń na początku twojej następnej tury.",
+    "descriptions": [
+      "Otrzyma #b",
+      " pkt. obrażeń na początku twojej następnej tury."
+    ]
+  },
+  "Vigor": {
+    "name": "Wigor",
+    "description": "Twoja następna karta Ataku zada #bX pkt. dodatkowych obrażeń.",
+    "descriptions": [
+      "Twoja następna karta Ataku zada #b",
+      " pkt. dodatkowych obrażeń."
+    ]
+  },
+  "WaveOfTheHandPower": {
+    "name": "Podmuch dłonią",
+    "description": "Kiedykolwiek zyskasz #yBlok, nałóż #bX pkt. #ySłabości WSZYSTKIM przeciwnikom.",
+    "descriptions": [
+      "Kiedykolwiek zyskasz #yBlok, nałóż #b",
+      " pkt. #ySłabości WSZYSTKIM przeciwnikom."
+    ]
+  },
+  "WrathNextTurnPower": {
+    "name": "Skumulowana Furia",
+    "description": "Przyjmij postawę #yGniewu na początku swojej tury.",
+    "descriptions": [
+      "Przyjmij postawę #yGniewu na początku swojej tury."
+    ]
+  }
+}

@@ -2,7 +2,7 @@
   "TheAbacus": {
     "name": "El Ábaco",
     "flavor": "Uno...dos...tres...¡Muerto!",
-    "description": "Cada vez que reinices tu pila de descartes gana #b",
+    "description": "Cada vez que reinices tu pila de descartes gana #b6 de #ybloqueo ",
     "descriptions": [
       "Cada vez que reinices tu pila de descartes gana #b",
       " de #ybloqueo "
@@ -11,7 +11,7 @@
   "Akabeko": {
     "name": "Akabeko",
     "flavor": "\"Muuu~\"",
-    "description": "Tu primer Ataque en cada combate hace #b",
+    "description": "Tu primer Ataque en cada combate hace #b8 de daño adicional.",
     "descriptions": [
       "Tu primer Ataque en cada combate hace #b",
       " de daño adicional."
@@ -20,7 +20,7 @@
   "Anchor": {
     "name": "Ancla",
     "flavor": "Sujetar esta baratija diminuta te hace sentir más pesado y con más equilibrio.",
-    "description": "Comienza cada combate con #b",
+    "description": "Comienza cada combate con #b10 #yBloqueo.",
     "descriptions": [
       "Comienza cada combate con #b",
       " #yBloqueo."
@@ -37,7 +37,7 @@
   "Art of War": {
     "name": "El Arte de la Guerra",
     "flavor": "Este manuscrito antiguo contiene la sabiduría de una era pasada.",
-    "description": "Si no juegas ningún #yAtaque durante tu turno, gana un ",
+    "description": "Si no juegas ningún #yAtaque durante tu turno, gana un [E] extra el próximo turno.",
     "descriptions": [
       "Si no juegas ningún #yAtaque durante tu turno, gana un ",
       "[E] extra el próximo turno."
@@ -55,7 +55,7 @@
   "Bag of Marbles": {
     "name": "Bolsa de Canicas",
     "flavor": "De antaño un juguete popular en la Ciudad. Útil para desequilibrar a tus enemigos.",
-    "description": "Al comienzo de cada combate aplica #b",
+    "description": "Al comienzo de cada combate aplica #b1 #yvulnerable a TODOS los enemigos.",
     "descriptions": [
       "Al comienzo de cada combate aplica #b",
       " #yvulnerable a TODOS los enemigos."
@@ -64,7 +64,7 @@
   "Bag of Preparation": {
     "name": "Bolsa de Preparación",
     "flavor": "Paquete de aventurero de tamaño exagerado. Tiene abundantes bolsillos y correas.",
-    "description": "Al comienzo de cada combate roba #b",
+    "description": "Al comienzo de cada combate roba #b2 cartas adicionales.",
     "descriptions": [
       "Al comienzo de cada combate roba #b",
       " cartas adicionales."
@@ -73,7 +73,7 @@
   "Bird Faced Urn": {
     "name": "Urna con Cara de Ave",
     "flavor": "Esta urna muestra al dios cuervo Mazaleth con aspecto travieso.",
-    "description": "Cada vez que juegas un #yPoder, cura #b",
+    "description": "Cada vez que juegas un #yPoder, cura #b2 PV.",
     "descriptions": [
       "Cada vez que juegas un #yPoder, cura #b",
       " PV."
@@ -90,7 +90,7 @@
   "Blood Vial": {
     "name": "Vial de Sangre",
     "flavor": "Un frasco con la sangre de un anciano vampiro de pura raza.",
-    "description": "Al comienzo de cada combate cura #b",
+    "description": "Al comienzo de cada combate cura #b2 PV.",
     "descriptions": [
       "Al comienzo de cada combate cura #b",
       " PV."
@@ -99,7 +99,7 @@
   "Bloody Idol": {
     "name": "Ídolo Ensangrentado",
     "flavor": "El ídolo ahora llora sangre constantemente.",
-    "description": "Cada vez que ganas #yOro, cura #b",
+    "description": "Cada vez que ganas #yOro, cura #b5 PV.",
     "descriptions": [
       "Cada vez que ganas #yOro, cura #b",
       " PV."
@@ -108,7 +108,7 @@
   "Blue Candle": {
     "name": "Vela Azul",
     "flavor": "La llama se enciende cuando le envuelven las tinieblas.",
-    "description": "Las cartas de #ymaldición injugables ahora se pueden jugar. NL NL Jugar una #ymaldición te hará perder #b",
+    "description": "Las cartas de #ymaldición injugables ahora se pueden jugar. NL NL Jugar una #ymaldición te hará perder #b1 PV y la #yAgota.",
     "descriptions": [
       "Las cartas de #ymaldición injugables ahora se pueden jugar. NL NL Jugar una #ymaldición te hará perder #b",
       " PV y la #yAgota."
@@ -117,7 +117,7 @@
   "Boot": {
     "name": "La Bota",
     "flavor": "Cuando le das cuerda, la bota se hace más grande.",
-    "description": "Cuando vayas a infligir #b",
+    "description": "Cuando vayas a infligir #b4 o menos daño de #yAtaque sin bloquear, aumenta a #b5.",
     "descriptions": [
       "Cuando vayas a infligir #b",
       " o menos daño de #yAtaque sin bloquear, aumenta a #b5."
@@ -159,7 +159,7 @@
   "Bronze Scales": {
     "name": "Escamas de Bronce",
     "flavor": "Las escamas afiladas de El Guardián. Se reorganizan por sí solas para proteger a su usuario. ",
-    "description": "Cada vez que recibas un ataque, inflige #b",
+    "description": "Cada vez que recibas un ataque, inflige #b3 de daño de vuelta.",
     "descriptions": [
       "Cada vez que recibas un ataque, inflige #b",
       " de daño de vuelta."
@@ -168,7 +168,7 @@
   "Busted Crown": {
     "name": "Corona Reventada",
     "flavor": "La corona del campeón... ¿o una simple imitación?",
-    "description": "En la pantalla de recompensa de cartas, tienes #b2 #ycartas menos entre las que elegir.",
+    "description": "Gana [E] al comienzo de cada turno. En la pantalla de recompensa de cartas, tienes #b2 #ycartas menos entre las que elegir.",
     "descriptions": [
       "En la pantalla de recompensa de cartas, tienes #b2 #ycartas menos entre las que elegir.",
       "Gana [E] al comienzo de cada turno. "
@@ -177,7 +177,7 @@
   "Calipers": {
     "name": "Calibrador",
     "flavor": "\"La precisión mecánica lleva a la grandeza\" - El Arquitecto",
-    "description": "Al comienzo de tu turno pierde #b",
+    "description": "Al comienzo de tu turno pierde #b15 #yBloqueo en vez de todo tu #yBloqueo.",
     "descriptions": [
       "Al comienzo de tu turno pierde #b",
       " #yBloqueo en vez de todo tu #yBloqueo."
@@ -197,7 +197,7 @@
   "CaptainsWheel": {
     "name": "Rueda del Capitán",
     "flavor": "Baratija de madera tallada con precisión delicada. Tiene un nombre esculpido, pero está en otro idioma.",
-    "description": "Al comienzo de tu tercer turno, gana #b",
+    "description": "Al comienzo de tu tercer turno, gana #b18 de #yBloqueo.",
     "descriptions": [
       "Al comienzo de tu tercer turno, gana #b",
       " de #yBloqueo."
@@ -215,7 +215,7 @@
   "Centennial Puzzle": {
     "name": "Rompecabezas Centenario",
     "flavor": "Tras resolver el rompecabezas sientes un poderoso calor en tu pecho.",
-    "description": "La primera vez que pierdes PV cada combate roba #b",
+    "description": "La primera vez que pierdes PV cada combate roba #b3 cartas.",
     "descriptions": [
       "La primera vez que pierdes PV cada combate roba #b",
       " cartas."
@@ -224,7 +224,7 @@
   "CeramicFish": {
     "name": "Pez de Cerámica",
     "flavor": "Pintado cuidadosamente, estos peces eran adorados por traer buena suerte.",
-    "description": "Cuando añadas una carta a tu mazo, gana #b",
+    "description": "Cuando añadas una carta a tu mazo, gana #b9 #yOro.",
     "descriptions": [
       "Cuando añadas una carta a tu mazo, gana #b",
       " #yOro."
@@ -233,7 +233,7 @@
   "Chemical X": {
     "name": "Sustancia X",
     "flavor": "ADVERTENCIA: No mezclar con azucar, especias y muchas cosas bonitas.",
-    "description": "Cada vez que juegas una carta de coste #bX sus efectos incrementan por #b",
+    "description": "Cada vez que juegas una carta de coste #bX sus efectos incrementan por #b2.",
     "descriptions": [
       "Cada vez que juegas una carta de coste #bX sus efectos incrementan por #b",
       "."
@@ -250,7 +250,7 @@
   "Coffee Dripper": {
     "name": "Taza de Café",
     "flavor": "\"Si, otra taza por favor. Vuelta al trabajo. ¡Vuelta al trabajo!\" - The Architect",
-    "description": "al comienzo de cada turno. Ya no puedes descansar en las áreas de descanso.",
+    "description": "Gana [E] al comienzo de cada turno. Ya no puedes descansar en las áreas de descanso.",
     "descriptions": [
       "al comienzo de cada turno. Ya no puedes descansar en las áreas de descanso.",
       "Gana [E] "
@@ -276,7 +276,7 @@
   "Cursed Key": {
     "name": "Llave Maldita",
     "flavor": "Puedes sentir las energías maliciosas emanando de la llave. El poder viene con un precio.",
-    "description": " Cada vez que abres un cofre obtienes una #rmaldición.",
+    "description": "Gana [E] al comienzo de cada turno. Cada vez que abres un cofre obtienes una #rmaldición.",
     "descriptions": [
       " Cada vez que abres un cofre obtienes una #rmaldición.",
       "Gana [E] al comienzo de cada turno."
@@ -285,7 +285,7 @@
   "Darkstone Periapt": {
     "name": "Amuleto de Piedraoscura",
     "flavor": "La piedra obtiene poder de energía oscura, convirtiéndola en vitalidad para el que la usa.",
-    "description": "Cada vez que obtengas una #ymaldición, incrementa tus PV Máximos por #b",
+    "description": "Cada vez que obtengas una #ymaldición, incrementa tus PV Máximos por #b6.",
     "descriptions": [
       "Cada vez que obtengas una #ymaldición, incrementa tus PV Máximos por #b"
     ]
@@ -318,7 +318,7 @@
   "Du-Vu Doll": {
     "name": "Muñeco de Du-Vu",
     "flavor": "Un muñeco ideado para ganar fuerzas de la energía maliciosa.",
-    "description": "Por cada #yMaldición en tu mazo, comienza cada combate con #b",
+    "description": "Por cada #yMaldición en tu mazo, comienza cada combate con #b1 de #yfuerza adicional.",
     "descriptions": [
       "Por cada #yMaldición en tu mazo, comienza cada combate con #b",
       " de #yfuerza adicional.",
@@ -330,7 +330,7 @@
   "Ectoplasm": {
     "name": "Ectoplasma",
     "flavor": "Esta bola de baba y energía parece palpitar con vida.",
-    "description": " Ya no puedes ganar #yoro.",
+    "description": "Gana [E] al comienzo de cada turno. Ya no puedes ganar #yoro.",
     "descriptions": [
       " Ya no puedes ganar #yoro.",
       "Gana [E] al comienzo de cada turno."
@@ -356,7 +356,7 @@
   "Eternal Feather": {
     "name": "Pluma Eterna",
     "flavor": "Esta pluma parece ser completamente indestructible. ¿De que clase de ave podría venir? ",
-    "description": "Por cada #b",
+    "description": "Por cada #b5 cartas en tu mazo, cura #b3 PV cada vez que entres en una área de descanso.",
     "descriptions": [
       "Por cada #b",
       " cartas en tu mazo, cura #b",
@@ -398,7 +398,7 @@
   "Fusion Hammer": {
     "name": "Martillo de Fusión",
     "flavor": "Una vez empuñado, el dueño nunca podrá dejarlo ir.",
-    "description": "al comienzo de cada turno. Ya no puedes forjar en áreas de descanso.",
+    "description": "Gana [E] al comienzo de cada turno. Ya no puedes forjar en áreas de descanso.",
     "descriptions": [
       "al comienzo de cada turno. Ya no puedes forjar en áreas de descanso.",
       "Gana [E] "
@@ -439,7 +439,7 @@
   "Gremlin Horn": {
     "name": "Cuerno de Gremlin",
     "flavor": "\"Los Gremlins Cabecillas son capaces de crecer hasta el día en que mueren. Extraordinario.\" - Ranwid",
-    "description": "Cada vez que un enemigo muere gana ",
+    "description": "Cada vez que un enemigo muere gana [E] y roba #b1 carta.",
     "descriptions": [
       "Cada vez que un enemigo muere gana ",
       "[E] y roba #b1 carta."
@@ -464,7 +464,7 @@
   "Happy Flower": {
     "name": "Flor Alegre",
     "flavor": "Esta planta de felicidad incesante está de moda entre los nobles.",
-    "description": "Cada #b",
+    "description": "Cada #b3 turnos, gana [E] .",
     "descriptions": [
       "Cada #b",
       " turnos, gana [E] ."
@@ -473,7 +473,7 @@
   "HornCleat": {
     "name": "Cornamusa",
     "flavor": "Es agradable tenerla en tu mano. ¿Para que sirve?",
-    "description": "Al principio de tu segundo turno, gana #b",
+    "description": "Al principio de tu segundo turno, gana #b14 de #yBloqueo.",
     "descriptions": [
       "Al principio de tu segundo turno, gana #b",
       " de #yBloqueo."
@@ -514,7 +514,7 @@
   "Kunai": {
     "name": "Kunai",
     "flavor": "Cuchilla favorita de los asesinos por su letalidad a distancia.",
-    "description": "Cada vez que juegues #b",
+    "description": "Cada vez que juegues #b3 #yataques en un mismo turno gana #b1 #ydestreza.",
     "descriptions": [
       "Cada vez que juegues #b",
       " #yataques en un mismo turno gana #b",
@@ -524,7 +524,7 @@
   "Lantern": {
     "name": "Lámpara",
     "flavor": "Una lámpara misteriosa que ilumina solo para quien la sujeta.",
-    "description": "Empieza cada combate con un ",
+    "description": "Empieza cada combate con un [E] .",
     "descriptions": [
       "Empieza cada combate con un ",
       "[E] ",
@@ -534,7 +534,7 @@
   "Letter Opener": {
     "name": "Abrecartas",
     "flavor": "Extrañamente afilado.",
-    "description": "Cada vez que juegues #b3 habilidades en un mismo turno inflige #b",
+    "description": "Cada vez que juegues #b3 habilidades en un mismo turno inflige #b5 de daño a TODOS los enemigos.",
     "descriptions": [
       "Cada vez que juegues #b3 habilidades en un mismo turno inflige #b",
       " de daño a TODOS los enemigos."
@@ -551,7 +551,7 @@
   "Mango": {
     "name": "Mango",
     "flavor": "La más codiciada de las frutas olvidadas. Impecablemente preservada sin ninguna señal de la Plaga de la Torre.",
-    "description": "Aumenta tus PV Máximos por #b",
+    "description": "Aumenta tus PV Máximos por #b14.",
     "descriptions": [
       "Aumenta tus PV Máximos por #b"
     ]
@@ -577,7 +577,7 @@
   "MawBank": {
     "name": "Hucha de Maw",
     "flavor": "Sorprendentemente popular, aunque los ataques de Maw ocurran de forma regular.",
-    "description": "Cada vez que escales un piso, gana #b",
+    "description": "Cada vez que escales un piso, gana #b12 #yOro. Esta reliquia dejará de funcionar cuando gastes #yoro en la tienda.",
     "descriptions": [
       "Cada vez que escales un piso, gana #b",
       " #yOro. Esta reliquia dejará de funcionar cuando gastes #yoro en la tienda.",
@@ -587,7 +587,7 @@
   "MealTicket": {
     "name": "Vale para una Comida",
     "flavor": "\"¡Albóndigas complementarias con cada visita!\"",
-    "description": "Cada vez que entres en una tienda, cura #b",
+    "description": "Cada vez que entres en una tienda, cura #b15 PV.",
     "descriptions": [
       "Cada vez que entres en una tienda, cura #b",
       " PV."
@@ -596,7 +596,7 @@
   "Meat on the Bone": {
     "name": "Carne en un Hueso",
     "flavor": "La carne se sigue regenerando, aparentemente hasta nunca acabar.",
-    "description": "Si tus PV son iguales o inferiores al #b50% al final del combate, cura #b",
+    "description": "Si tus PV son iguales o inferiores al #b50% al final del combate, cura #b12 PV.",
     "descriptions": [
       "Si tus PV son iguales o inferiores al #b50% al final del combate, cura #b",
       " PV."
@@ -621,7 +621,7 @@
   "Mercury Hourglass": {
     "name": "Reloj de Mercurio",
     "flavor": "Un reloj de arena encantado que gotea incesantemente.",
-    "description": "Al comienzo de tu turno haz #b",
+    "description": "Al comienzo de tu turno haz #b3 de daño a TODOS los enemigos.",
     "descriptions": [
       "Al comienzo de tu turno haz #b",
       " de daño a TODOS los enemigos."
@@ -646,7 +646,7 @@
   "MutagenicStrength": {
     "name": "Fuerza Mutágena",
     "flavor": "\"Los resultados parecen fugaces, activándose cuando el sujeto esta en peligro.\" - Desconocido",
-    "description": "Empieza cada combate con #b",
+    "description": "Empieza cada combate con #b3 #yFuerza. Al final de tu primer turno, pierde 3 #yFuerza.",
     "descriptions": [
       "Empieza cada combate con #b",
       " #yFuerza. Al final de tu primer turno, pierde ",
@@ -656,7 +656,7 @@
   "Necronomicon": {
     "name": "Necronomicón",
     "flavor": "Solamente un tonto intentaría usar y dominar este poder malvado. En la noche tus sueños son embrujados por las imágenes del libro devorando tu mente.",
-    "description": "El primer #yataque jugado cada turno que cueste #b",
+    "description": "El primer #yataque jugado cada turno que cueste #b2 o más se juega dos veces. Cuando tomes esta reliquia quedas #rmaldecido.",
     "descriptions": [
       "El primer #yataque jugado cada turno que cueste #b",
       " o más se juega dos veces. Cuando tomes esta reliquia quedas #rmaldecido.",
@@ -700,7 +700,7 @@
   "Nunchaku": {
     "name": "Nunchaku",
     "flavor": "Una buena herramienta de entrenamiento. Mejora la postura y la agilidad del portador.",
-    "description": "Cada vez que juegues #b",
+    "description": "Cada vez que juegues #b10 #yataques, gana [E] .",
     "descriptions": [
       "Cada vez que juegues #b",
       " #yataques, gana [E] ."
@@ -709,7 +709,7 @@
   "Oddly Smooth Stone": {
     "name": "Piedra Inusualmente Suave",
     "flavor": "Nunca has visto algo tan suave y prístino. Esto debe ser obra de los Antiguos.",
-    "description": "Al comienzo de cada combate gana #b",
+    "description": "Al comienzo de cada combate gana #b1 #yDestreza.",
     "descriptions": [
       "Al comienzo de cada combate gana #b",
       " #yDestreza."
@@ -752,7 +752,7 @@
   "Orichalcum": {
     "name": "Oricalco",
     "flavor": "Un metal con tintes verdes de origen desconocido. Al parecer indestructible.",
-    "description": "Si terminas tu turno sin #ybloqueo, gana #b",
+    "description": "Si terminas tu turno sin #ybloqueo, gana #b6 #ybloqueo.",
     "descriptions": [
       "Si terminas tu turno sin #ybloqueo, gana #b",
       " #ybloqueo."
@@ -761,7 +761,7 @@
   "Ornamental Fan": {
     "name": "Abanico Ornamental",
     "flavor": "El abanico parece extenderse y endurecerse a medida que se derrama la sangre.",
-    "description": "Cada vez que juegues #b3 #yataques en un mismo turno, gana #b",
+    "description": "Cada vez que juegues #b3 #yataques en un mismo turno, gana #b4 #ybloqueo.",
     "descriptions": [
       "Cada vez que juegues #b3 #yataques en un mismo turno, gana #b",
       " #ybloqueo."
@@ -788,7 +788,7 @@
   "Pantograph": {
     "name": "Pantógrafo",
     "flavor": "\"Los cimientos sólidos no son accidentales. Las herramientas para planear son imprescindibles.\" - El Arquitecto",
-    "description": "Al comienzo de un combate contra jefes cura #b",
+    "description": "Al comienzo de un combate contra jefes cura #b25 PV.",
     "descriptions": [
       "Al comienzo de un combate contra jefes cura #b",
       " PV."
@@ -805,7 +805,7 @@
   "Pear": {
     "name": "Pera",
     "flavor": "Una fruta común antes de la Plaga de la Torre.",
-    "description": "Aumenta tus PV Máximos por #b",
+    "description": "Aumenta tus PV Máximos por #b10.",
     "descriptions": [
       "Aumenta tus PV Máximos por #b"
     ]
@@ -821,7 +821,7 @@
   "Philosopher's Stone": {
     "name": "Piedra Filosofal",
     "flavor": "Energía cruda emana de la piedra, dando poder a todo lo cercano.",
-    "description": "Gana [E] al inicio de tu turno. TODOS los enemigos empiezan el combate con #b",
+    "description": "Gana [E] al inicio de tu turno. TODOS los enemigos empiezan el combate con #b1 de #yFuerza.",
     "descriptions": [
       "Gana [E] al inicio de tu turno. TODOS los enemigos empiezan el combate con #b",
       " de #yFuerza."
@@ -854,7 +854,7 @@
   "PreservedInsect": {
     "name": "Insecto Preservado",
     "flavor": "El Insecto parece crear un aura que hace más pequeños a los enemigos particularmente grandes.",
-    "description": "Los enemigos en los combates Élite tienen #b",
+    "description": "Los enemigos en los combates Élite tienen #b25% menos PV.",
     "descriptions": [
       "Los enemigos en los combates Élite tienen #b",
       "% menos PV."
@@ -879,7 +879,7 @@
   "Red Mask": {
     "name": "Máscara Roja",
     "flavor": "Esta máscara con tanto estilo pertenece al líder de los Bandidos Máscaras Rojas. Técnicamente eso te convierte en su líder ahora.",
-    "description": "Al comienzo de cada combate aplica #b",
+    "description": "Al comienzo de cada combate aplica #b1 #ydébil a TODOS los enemigos.",
     "descriptions": [
       "Al comienzo de cada combate aplica #b",
       " #ydébil a TODOS los enemigos."
@@ -888,7 +888,7 @@
   "Regal Pillow": {
     "name": "Almohada Real",
     "flavor": "Ahora puedes tener un descanso nocturno apropiado.",
-    "description": "Cura #b",
+    "description": "Cura #b15 PV adicionales cuando #ydescanses.",
     "descriptions": [
       "Cura #b",
       " PV adicionales cuando #ydescanses."
@@ -897,7 +897,7 @@
   "Runic Dome": {
     "name": "Cúpula Rúnica",
     "flavor": "Las runas son indescifrables.",
-    "description": "al comienzo de cada turno. Ya no puedes ver la #bintención del enemigo.",
+    "description": "Gana [E] al comienzo de cada turno. Ya no puedes ver la #bintención del enemigo.",
     "descriptions": [
       "al comienzo de cada turno. Ya no puedes ver la #bintención del enemigo.",
       "Gana [E] "
@@ -931,7 +931,7 @@
   "Shuriken": {
     "name": "Shuriken",
     "flavor": "Arma arrojadiza ligera. Se recomienda apuntar a los ojos.",
-    "description": "Cada vez que juegues #b",
+    "description": "Cada vez que juegues #b3 #yataques en un mismo turno gana #b1 #yfuerza.",
     "descriptions": [
       "Cada vez que juegues #b",
       " #yataques en un mismo turno gana #b",
@@ -957,7 +957,7 @@
   "Sling": {
     "name": "Honda del Coraje",
     "flavor": "\"Una herramienta útil para enfrentarte a oponentes particularmente duros.\"",
-    "description": "Empieza cada combate de élite con #b",
+    "description": "Empieza cada combate de élite con #b2 #yfuerza.",
     "descriptions": [
       "Empieza cada combate de élite con #b",
       " #yfuerza."
@@ -966,7 +966,7 @@
   "Smiling Mask": {
     "name": "Máscara Sonriente",
     "flavor": "Máscara vestida por el Comerciante. Debe tener de sobra...",
-    "description": "El servicio del Comerciante de eliminar cartas ahora siempre cuesta #b",
+    "description": "El servicio del Comerciante de eliminar cartas ahora siempre cuesta #b50 de #yoro.",
     "descriptions": [
       "El servicio del Comerciante de eliminar cartas ahora siempre cuesta #b",
       " de #yoro."
@@ -983,7 +983,7 @@
   "Sozu": {
     "name": "Sozu",
     "flavor": "Te das cuenta que los líquidos mágicos parecen perder sus propiedades cuando están cerca de esta reliquia.",
-    "description": "Ya no puedes obtener pociones.",
+    "description": "Gana [E] al comienzo de cada turno.Ya no puedes obtener pociones.",
     "descriptions": [
       "Ya no puedes obtener pociones.",
       "Gana [E] al comienzo de cada turno."
@@ -1000,7 +1000,7 @@
   "SsserpentHead": {
     "name": "Cabeza de Ssserpiente",
     "flavor": "¡La más plena de las vidas es aquella en la que puedes comprar de todo!",
-    "description": "Cada vez que empiezas un evento, gana #b",
+    "description": "Cada vez que empiezas un evento, gana #b50 de #yoro.",
     "descriptions": [
       "Cada vez que empiezas un evento, gana #b",
       " de #yoro."
@@ -1009,7 +1009,7 @@
   "StoneCalendar": {
     "name": "Calendario de Piedra",
     "flavor": "El paso del tiempo es imperceptible en la Torre.",
-    "description": "Al final del turno #b",
+    "description": "Al final del turno #b7, hace #b52 daño a todos los enemigos.",
     "descriptions": [
       "Al final del turno #b",
       ", hace #b",
@@ -1027,7 +1027,7 @@
   "Strawberry": {
     "name": "Fresa",
     "flavor": "\"¡Delicioso! No he visto ninguna de estas desde la plaga.\" - Ranwid",
-    "description": "Incrementa tus PV Máximos por #b",
+    "description": "Incrementa tus PV Máximos por #b7.",
     "descriptions": [
       "Incrementa tus PV Máximos por #b"
     ]
@@ -1035,7 +1035,7 @@
   "StrikeDummy": {
     "name": "Maniquí de Pruebas",
     "flavor": "Está desgastado.",
-    "description": "Las cartas que contienen \"Golpe\" hacen #b",
+    "description": "Las cartas que contienen \"Golpe\" hacen #b3 de daño adicional.",
     "descriptions": [
       "Las cartas que contienen \"Golpe\" hacen #b",
       " de daño adicional."
@@ -1044,7 +1044,7 @@
   "Sundial": {
     "name": "Reloj de Sol",
     "flavor": "\"La absurda obsesión de los primeros hombres con el tiempo les llevó a alzar la vista al cielo en busca de guía, con la esperanza de que algo fuera permanente.\" - Zoroth",
-    "description": "Cada #b",
+    "description": "Cada #b3 veces que barajes tu mazo gana [E] [E] .",
     "descriptions": [
       "Cada #b",
       " veces que barajes tu mazo gana [E] [E] ."
@@ -1053,7 +1053,7 @@
   "Thread and Needle": {
     "name": "Hilo y Aguja",
     "flavor": "Enrollando el hilo mágico alrededor de tu cuerpo te hace sentir mas duro al tacto.",
-    "description": "Al comienzo de cada combate gana #b",
+    "description": "Al comienzo de cada combate gana #b4 #yarmadura #yde #yplacas.",
     "descriptions": [
       "Al comienzo de cada combate gana #b",
       " #yarmadura #yde #yplacas."
@@ -1062,7 +1062,7 @@
   "Tiny Chest": {
     "name": "Cofre Diminuto",
     "flavor": "\"Un buen prototipo.\" - El Arquitecto",
-    "description": "Cada #b",
+    "description": "Cada #b4º habitación #y? es una habitación de #yTesoro.",
     "descriptions": [
       "Cada #b",
       "º habitación #y? es una habitación de #yTesoro.",
@@ -1072,7 +1072,7 @@
   "Tiny House": {
     "name": "Casa Diminuta",
     "flavor": "\"Una implementación casi perfecta de miniaturización. Mi mejor trabajo hasta la fecha, pero aun asi inadecuado.\" - El Arquitecto",
-    "description": "Al recoger esta reliquia, obtén #b1 poción. NL Gana #b",
+    "description": "Al recoger esta reliquia, obtén #b1 poción. NL Gana #b50 de #yoro. NL Aumenta tus PV Máximos por #b5. NL Obtén #b1 carta. NL Mejora #b1 carta al azar",
     "descriptions": [
       "Al recoger esta reliquia, obtén #b1 poción. NL Gana #b",
       " de #yoro. NL Aumenta tus PV Máximos por #b",
@@ -1091,7 +1091,7 @@
   "Torii": {
     "name": "Torii",
     "flavor": "Sujetando la pequeña Torii, sientes un sensación de calma y seguridad flotando en tu mente.",
-    "description": "Cada vez que fueras a recibir #b",
+    "description": "Cada vez que fueras a recibir #b5 o menos daño de #yataque no bloqueado, redúcelo a #b1.",
     "descriptions": [
       "Cada vez que fueras a recibir #b",
       " o menos daño de #yataque no bloqueado, redúcelo a #b1."
@@ -1108,7 +1108,7 @@
   "Toy Ornithopter": {
     "name": "Ornitóptero de Juguete",
     "flavor": "\"Este pequeño juguete es el compañero perfecto para el aventurero solitario.\"",
-    "description": "Cada vez que uses una poción cura #b",
+    "description": "Cada vez que uses una poción cura #b5 PV.",
     "descriptions": [
       "Cada vez que uses una poción cura #b",
       " PV."
@@ -1117,7 +1117,7 @@
   "TungstenRod": {
     "name": "Barra de Tungsteno",
     "flavor": "Es muy muy pesada.",
-    "description": "Cada vez que fueras a perder PV, pierde #b",
+    "description": "Cada vez que fueras a perder PV, pierde #b1 menos.",
     "descriptions": [
       "Cada vez que fueras a perder PV, pierde #b",
       " menos."
@@ -1142,7 +1142,7 @@
   "Vajra": {
     "name": "Vajra",
     "flavor": "Una reliquia ornamental dada a los guerreros que demuestren gloria en la batalla.",
-    "description": "Al comienzo de cada combate gana #b",
+    "description": "Al comienzo de cada combate gana #b1 #yfuerza.",
     "descriptions": [
       "Al comienzo de cada combate gana #b",
       " #yfuerza."
@@ -1151,7 +1151,7 @@
   "Velvet Choker": {
     "name": "Gargantilla de Terciopelo",
     "flavor": "\"Poder inmenso, pero muy limitado.\" - Kublai el Magno",
-    "description": "No puedes jugar más de #b",
+    "description": "Gana [E] al comienzo de cada turno. No puedes jugar más de #b6 cartas por turno.",
     "descriptions": [
       "No puedes jugar más de #b",
       " cartas por turno.",
@@ -1162,7 +1162,7 @@
   "Lee's Waffle": {
     "name": "Gofre de Lee",
     "flavor": "\"¡El deleite más sabroso que encontrarás en toda la Torre! Horneado hoy solo para ti.\"",
-    "description": "Incrementa tus PV Máximos por #b",
+    "description": "Incrementa tus PV Máximos por #b7 y cura todo tus PV.",
     "descriptions": [
       "Incrementa tus PV Máximos por #b",
       " y cura todo tus PV."
@@ -1171,7 +1171,7 @@
   "War Paint": {
     "name": "Pintura de Guerra",
     "flavor": "En el pasado, los Blindados creaban runas usando pintura de guerra antes de lanzarse a una batalla",
-    "description": "Al recoger esta reliquia, #ymejora #b",
+    "description": "Al recoger esta reliquia, #ymejora #b2 #yhabilidades al azar.",
     "descriptions": [
       "Al recoger esta reliquia, #ymejora #b",
       " #yhabilidades al azar."
@@ -1188,7 +1188,7 @@
   "Whetstone": {
     "name": "Piedra de Afilar",
     "flavor": "\"La carne nunca vence al acero.\" - Kublai el Magno",
-    "description": "Al recoger, #ymejora #b",
+    "description": "Al recoger, #ymejora #b2 #yataques al azar.",
     "descriptions": [
       "Al recoger, #ymejora #b",
       " #yataques al azar."
@@ -1221,7 +1221,7 @@
   "Ninja Scroll": {
     "name": "Pergamino Ninja",
     "flavor": "Contiene los secretos del asesinato.",
-    "description": "Comienza cada combate con #b",
+    "description": "Comienza cada combate con #b3 #yNavajas en mano.",
     "descriptions": [
       "Comienza cada combate con #b",
       " #yNavajas en mano."
@@ -1238,7 +1238,7 @@
   "Ring of the Serpent": {
     "name": "Anillo de Víbora",
     "flavor": "Tu anillo ha mutado y cambiado su forma.",
-    "description": "Reemplaza #gAnillo #gserpentino. ",
+    "description": "Reemplaza #gAnillo #gserpentino. Al comienzo de cada turno, saca #b1 carta adicional",
     "descriptions": [
       "Reemplaza #gAnillo #gserpentino. ",
       "Al comienzo de cada turno, saca #b1 carta adicional"
@@ -1247,7 +1247,7 @@
   "Ring of the Snake": {
     "name": "Anillo de Serpiente",
     "flavor": "Hecho con una serpiente fosilizada. Representa una gran habilidad como cazadora.",
-    "description": "Al comienzo de cada combate roba #b",
+    "description": "Al comienzo de cada combate roba #b2 cartas adicionales.",
     "descriptions": [
       "Al comienzo de cada combate roba #b",
       " cartas adicionales."
@@ -1256,7 +1256,7 @@
   "Snake Skull": {
     "name": "Cráneo de Serpiente",
     "flavor": "Un cráneo de serpentija en condición prístina. Misteriosamente limpio y suave, la tierra y la mugre se le caen inexplicablemente.",
-    "description": "Cada vez que apliques #yveneno, aplica #b",
+    "description": "Cada vez que apliques #yveneno, aplica #b1 #yveneno adicional.",
     "descriptions": [
       "Cada vez que apliques #yveneno, aplica #b",
       " #yveneno adicional."
@@ -1273,7 +1273,7 @@
   "Tingsha": {
     "name": "Tingsha",
     "flavor": "El sonido que este instrumento genera parece ser capaz de reverberar a niveles de volumen dolorosos.",
-    "description": "Cada vez que descartas una carta durante tu turno haz #b",
+    "description": "Cada vez que descartas una carta durante tu turno haz #b3 de daño a un enemigo al azar.",
     "descriptions": [
       "Cada vez que descartas una carta durante tu turno haz #b",
       " de daño a un enemigo al azar."
@@ -1282,7 +1282,7 @@
   "Tough Bandages": {
     "name": "Vendas Fuertes",
     "flavor": "La pérdida da fuerza.",
-    "description": "Cada vez que descartas una carta durante tu turno gana #b",
+    "description": "Cada vez que descartas una carta durante tu turno gana #b3 #ybloqueo.",
     "descriptions": [
       "Cada vez que descartas una carta durante tu turno gana #b",
       " #ybloqueo."
@@ -1307,7 +1307,7 @@
   "Black Blood": {
     "name": "Sangre negra",
     "flavor": "La furia se vuelve aún más tenebrosa.",
-    "description": "Reemplaza #rSangre #rardiente. Al final del combate cura #b",
+    "description": "Reemplaza #rSangre #rardiente. Al final del combate cura #b12 PV.",
     "descriptions": [
       "Reemplaza #rSangre #rardiente. Al final del combate cura #b",
       " PV."
@@ -1316,7 +1316,7 @@
   "Brimstone": {
     "name": "Brimstone",
     "flavor": "Emana un calor infernal.",
-    "description": "Al principio de tu turno, ganas #b",
+    "description": "Al principio de tu turno, ganas #b2 #yFuerza y TODOS los enemigos ganan #b1 #yFuerza.",
     "descriptions": [
       "Al principio de tu turno, ganas #b",
       " #yFuerza y TODOS los enemigos ganan #b",
@@ -1326,7 +1326,7 @@
   "Burning Blood": {
     "name": "Sangre Ardiente",
     "flavor": "La propia sangre de tu cuerpo arde con una furia imbatible.",
-    "description": "Al final del combate cura #b",
+    "description": "Al final del combate cura #b6 PV.",
     "descriptions": [
       "Al final del combate cura #b",
       " PV."
@@ -1335,7 +1335,7 @@
   "Champion Belt": {
     "name": "Cinturón de Campeón",
     "flavor": "Solo los mejores podrán vestir este cinturón.",
-    "description": "Cada vez que apliques #yVulnerable, también aplica #b",
+    "description": "Cada vez que apliques #yVulnerable, también aplica #b1 #yDébil.",
     "descriptions": [
       "Cada vez que apliques #yVulnerable, también aplica #b",
       " #yDébil."
@@ -1344,7 +1344,7 @@
   "Charon's Ashes": {
     "name": "Cenizas de Caronte",
     "flavor": "De Caronte se decía que era el dios del renacer, eternamente muriendo y reviviendo en una ráfaga de llamas.",
-    "description": "Cada vez que #yAgotas una carta, haz #b",
+    "description": "Cada vez que #yAgotas una carta, haz #b3 de daño a TODOS los enemigos.",
     "descriptions": [
       "Cada vez que #yAgotas una carta, haz #b",
       " de daño a TODOS los enemigos."
@@ -1377,7 +1377,7 @@
   "Red Skull": {
     "name": "Calavera Roja",
     "flavor": "Un cráneo pequeño cubierto de pintura ornamental.",
-    "description": "Mientras tus PV sean iguales o inferiores al #b50%, tienes #b",
+    "description": "Mientras tus PV sean iguales o inferiores al #b50%, tienes #b3 de #yfuerza adicionales.",
     "descriptions": [
       "Mientras tus PV sean iguales o inferiores al #b50%, tienes #b",
       " de #yfuerza adicionales."
@@ -1386,7 +1386,7 @@
   "Runic Cube": {
     "name": "Cubo Rúnico",
     "flavor": "Las runas son indescifrables.",
-    "description": "Cada vez que pierdas PV, roba #b",
+    "description": "Cada vez que pierdas PV, roba #b1 carta.",
     "descriptions": [
       "Cada vez que pierdas PV, roba #b",
       " carta.",
@@ -1396,7 +1396,7 @@
   "Self Forming Clay": {
     "name": "Arcilla Autoforme",
     "flavor": "\"¡Muy curioso! ¡Parece formarse a sí misma según mis pensamientos! ¿Tele-Arcilla?\" - Ranwid",
-    "description": "Cada vez que pierdas PV en combate gana #b",
+    "description": "Cada vez que pierdas PV en combate gana #b3 #ybloqueo el próximo turno.",
     "descriptions": [
       "Cada vez que pierdas PV en combate gana #b",
       " #ybloqueo el próximo turno."
@@ -1413,7 +1413,7 @@
   "DataDisk": {
     "name": "Disco de Datos",
     "flavor": "Este disco contiene datos preciados de pájaros y serpientes.",
-    "description": "Al comienzo de cada combate, gana #b",
+    "description": "Al comienzo de cada combate, gana #b1 #yconcentración.",
     "descriptions": [
       "Al comienzo de cada combate, gana #b",
       " #yconcentración."
@@ -1478,7 +1478,7 @@
   "CloakClasp": {
     "name": "Broche de Capa",
     "flavor": "Un diseño simple pero robusto.",
-    "description": "Al final de tu turno, gana #b",
+    "description": "Al final de tu turno, gana #b1 de #yBloqueo por cada carta en tu mano.",
     "descriptions": [
       "Al final de tu turno, gana #b",
       " de #yBloqueo por cada carta en tu mano."
@@ -1487,7 +1487,7 @@
   "Damaru": {
     "name": "Damru",
     "flavor": "El sonido de un pequeño tambor te mantiene despierto, allanando el camino.",
-    "description": "Al comienzo de tu turno, gana #b",
+    "description": "Al comienzo de tu turno, gana #b1 #yMantra.",
     "descriptions": [
       "Al comienzo de tu turno, gana #b",
       " #yMantra."
@@ -1496,7 +1496,7 @@
   "GoldenEye": {
     "name": "Ojo Dorado",
     "flavor": "Observa las mentes de aquellos que están cerca, prediciendo sus futuros movimientos.",
-    "description": "Cuando #yAdivinas, #yAdivina #b",
+    "description": "Cuando #yAdivinas, #yAdivina #b2 cartas adicionales.",
     "descriptions": [
       "Cuando #yAdivinas, #yAdivina #b",
       " cartas adicionales."
@@ -1513,7 +1513,7 @@
   "Melange": {
     "name": "Mezcla",
     "flavor": "Arenas misteriosas de origen desconocido. Huele a canela.",
-    "description": "Siempre que barajes tu pila de extracción, #yAdivina #b",
+    "description": "Siempre que barajes tu pila de extracción, #yAdivina #b3.",
     "descriptions": [
       "Siempre que barajes tu pila de extracción, #yAdivina #b",
       "."

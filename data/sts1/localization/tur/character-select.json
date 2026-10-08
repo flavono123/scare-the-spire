@@ -1,0 +1,31 @@
+{
+  "characters": {
+    "ironclad": {
+      "name": "Demirkaplı",
+      "title": "Demirkaplı",
+      "flavor": "Demirkaplıların geriye kalan son askeri. NL Şeytani güçleri kullanabilmek için ruhunu sattı."
+    },
+    "silent": {
+      "name": "Sessiz",
+      "title": "Sessiz",
+      "flavor": "Sisli toprakların ölümcül kadın avcısı. NL Düşmanlarını zehir ve hançerlerle yok eder."
+    },
+    "defect": {
+      "name": "Arızalı",
+      "title": "Arızalı",
+      "flavor": "Farkındalık kazanmış bir savaş robotu. NL Asırlar öncesinden bir teknoloji ona Küre kontrolü sağlıyor."
+    },
+    "watcher": {
+      "name": "Gözlemci",
+      "title": "Gözlemci",
+      "flavor": "Spire'ı \"Değerlendirmeye\" gelmiş kör bir sofu. NL İlahi Duruşların ustası."
+    }
+  },
+  "ui": {
+    "choose": "Karakterini Seç",
+    "embark": "Başla",
+    "back": "Geri",
+    "hp": "CP: ",
+    "gold": "Altın: "
+  }
+}

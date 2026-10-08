@@ -1,0 +1,31 @@
+{
+  "characters": {
+    "ironclad": {
+      "name": "Le Soldat de fer",
+      "title": "Le Soldat de fer",
+      "flavor": "Le seul survivant des Soldats de fer. NL Il a vendu son âme pour maîtriser des énergies démoniaques."
+    },
+    "silent": {
+      "name": "La Silencieuse",
+      "title": "La Silencieuse",
+      "flavor": "Une funeste chasseresse des terres brumeuses. NL Elle annihile ses ennemis à l'aide de dagues et de poisons."
+    },
+    "defect": {
+      "name": "Le Défectueux",
+      "title": "Le Défectueux",
+      "flavor": "Un ancien robot de combat qui a développé une conscience propre. NL Une technologie antique lui permet de manipuler les Orbes."
+    },
+    "watcher": {
+      "name": "La Gardienne",
+      "title": "La gardienne",
+      "flavor": "Une ascétique aveugle qui est venue pour \"Évaluer\" la Tour. NL Maître des Positions divines."
+    }
+  },
+  "ui": {
+    "choose": "Choisissez votre personnage",
+    "embark": "Commencer",
+    "back": "Retour",
+    "hp": "PV : ",
+    "gold": "Or : "
+  }
+}

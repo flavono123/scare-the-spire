@@ -1,0 +1,2919 @@
+[
+  {
+    "id": "Accuracy",
+    "slug": "accuracy",
+    "className": "com.megacrit.cardcrawl.powers.AccuracyPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "accuracy",
+    "sources": {
+      "cards": [
+        "Accuracy"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "accuracy"
+    ]
+  },
+  {
+    "id": "After Image",
+    "slug": "after-image",
+    "className": "com.megacrit.cardcrawl.powers.AfterImagePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "afterImage",
+    "sources": {
+      "cards": [
+        "After Image"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "after-image"
+    ]
+  },
+  {
+    "id": "Amplify",
+    "slug": "amplify",
+    "className": "com.megacrit.cardcrawl.powers.AmplifyPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "amplify",
+    "sources": {
+      "cards": [
+        "Amplify"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "amplify"
+    ]
+  },
+  {
+    "id": "Anger",
+    "slug": "anger",
+    "className": "com.megacrit.cardcrawl.powers.AngerPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "anger",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "anger"
+    ]
+  },
+  {
+    "id": "Angry",
+    "slug": "angry",
+    "className": "com.megacrit.cardcrawl.powers.AngryPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "anger",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "angry"
+    ]
+  },
+  {
+    "id": "Artifact",
+    "slug": "artifact",
+    "className": "com.megacrit.cardcrawl.powers.ArtifactPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "artifact",
+    "sources": {
+      "cards": [
+        "Core Surge",
+        "Panacea"
+      ],
+      "relics": [
+        "ClockworkSouvenir"
+      ],
+      "potions": [
+        "Ancient Potion"
+      ]
+    },
+    "legacySlugs": [
+      "artifact"
+    ]
+  },
+  {
+    "id": "Attack Burn",
+    "slug": "attack-burn",
+    "className": "com.megacrit.cardcrawl.powers.AttackBurnPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "attackBurn",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "attack-burn"
+    ]
+  },
+  {
+    "id": "BackAttack",
+    "slug": "backattack",
+    "className": "com.megacrit.cardcrawl.powers.BackAttackPower",
+    "type": "buff",
+    "stackType": "single",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "backAttack",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "backattack"
+    ]
+  },
+  {
+    "id": "Barricade",
+    "slug": "barricade",
+    "className": "com.megacrit.cardcrawl.powers.BarricadePower",
+    "type": "buff",
+    "stackType": "single",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "barricade",
+    "sources": {
+      "cards": [
+        "Barricade"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "barricade"
+    ]
+  },
+  {
+    "id": "BeatOfDeath",
+    "slug": "beatofdeath",
+    "className": "com.megacrit.cardcrawl.powers.BeatOfDeathPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "beat",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "beatofdeath"
+    ]
+  },
+  {
+    "id": "Berserk",
+    "slug": "berserk",
+    "className": "com.megacrit.cardcrawl.powers.BerserkPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "berserk",
+    "sources": {
+      "cards": [
+        "Berserk"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "berserk"
+    ]
+  },
+  {
+    "id": "Bias",
+    "slug": "bias",
+    "className": "com.megacrit.cardcrawl.powers.BiasPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "bias",
+    "sources": {
+      "cards": [
+        "Biased Cognition"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "bias"
+    ]
+  },
+  {
+    "id": "Blur",
+    "slug": "blur",
+    "className": "com.megacrit.cardcrawl.powers.BlurPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "blur",
+    "sources": {
+      "cards": [
+        "Blur"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "blur"
+    ]
+  },
+  {
+    "id": "Brutality",
+    "slug": "brutality",
+    "className": "com.megacrit.cardcrawl.powers.BrutalityPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "brutality",
+    "sources": {
+      "cards": [
+        "Brutality"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "brutality"
+    ]
+  },
+  {
+    "id": "Buffer",
+    "slug": "buffer",
+    "className": "com.megacrit.cardcrawl.powers.BufferPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "buffer",
+    "sources": {
+      "cards": [
+        "Buffer"
+      ],
+      "relics": [
+        "FossilizedHelix"
+      ],
+      "potions": []
+    },
+    "legacySlugs": [
+      "buffer"
+    ]
+  },
+  {
+    "id": "Burst",
+    "slug": "burst",
+    "className": "com.megacrit.cardcrawl.powers.BurstPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "burst",
+    "sources": {
+      "cards": [
+        "Burst"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "burst"
+    ]
+  },
+  {
+    "id": "Choked",
+    "slug": "choked",
+    "className": "com.megacrit.cardcrawl.powers.ChokePower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "choke",
+    "sources": {
+      "cards": [
+        "Choke"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "choked"
+    ]
+  },
+  {
+    "id": "Collect",
+    "slug": "collect",
+    "className": "com.megacrit.cardcrawl.powers.CollectPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "energized_blue",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "collect"
+    ]
+  },
+  {
+    "id": "Combust",
+    "slug": "combust",
+    "className": "com.megacrit.cardcrawl.powers.CombustPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "combust",
+    "sources": {
+      "cards": [
+        "Combust"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "combust"
+    ]
+  },
+  {
+    "id": "Confusion",
+    "slug": "confusion",
+    "className": "com.megacrit.cardcrawl.powers.ConfusionPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "confusion",
+    "sources": {
+      "cards": [],
+      "relics": [
+        "Snecko Eye"
+      ],
+      "potions": []
+    },
+    "legacySlugs": [
+      "confusion"
+    ]
+  },
+  {
+    "id": "Conserve",
+    "slug": "conserve",
+    "className": "com.megacrit.cardcrawl.powers.ConservePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "conserve",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "conserve"
+    ]
+  },
+  {
+    "id": "Constricted",
+    "slug": "constricted",
+    "className": "com.megacrit.cardcrawl.powers.ConstrictedPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "constricted",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "constricted"
+    ]
+  },
+  {
+    "id": "CorpseExplosionPower",
+    "slug": "corpseexplosionpower",
+    "className": "com.megacrit.cardcrawl.powers.CorpseExplosionPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "cExplosion",
+    "sources": {
+      "cards": [
+        "Corpse Explosion"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "corpseexplosionpower"
+    ]
+  },
+  {
+    "id": "Corruption",
+    "slug": "corruption",
+    "className": "com.megacrit.cardcrawl.powers.CorruptionPower",
+    "type": "buff",
+    "stackType": "single",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "corruption",
+    "sources": {
+      "cards": [
+        "Corruption"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "corruption"
+    ]
+  },
+  {
+    "id": "Creative AI",
+    "slug": "creative-ai",
+    "className": "com.megacrit.cardcrawl.powers.CreativeAIPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "ai",
+    "sources": {
+      "cards": [
+        "Creative AI"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "creative-ai"
+    ]
+  },
+  {
+    "id": "Curiosity",
+    "slug": "curiosity",
+    "className": "com.megacrit.cardcrawl.powers.CuriosityPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "curiosity",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "curiosity"
+    ]
+  },
+  {
+    "id": "Curl Up",
+    "slug": "curl-up",
+    "className": "com.megacrit.cardcrawl.powers.CurlUpPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "closeUp",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "curl-up"
+    ]
+  },
+  {
+    "id": "Dark Embrace",
+    "slug": "dark-embrace",
+    "className": "com.megacrit.cardcrawl.powers.DarkEmbracePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "darkembrace",
+    "sources": {
+      "cards": [
+        "Dark Embrace"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "dark-embrace"
+    ]
+  },
+  {
+    "id": "Demon Form",
+    "slug": "demon-form",
+    "className": "com.megacrit.cardcrawl.powers.DemonFormPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "demonForm",
+    "sources": {
+      "cards": [
+        "Demon Form"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "demon-form"
+    ]
+  },
+  {
+    "id": "Dexterity",
+    "slug": "dexterity",
+    "className": "com.megacrit.cardcrawl.powers.DexterityPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": true,
+    "isTurnBased": false,
+    "image": "dexterity",
+    "sources": {
+      "cards": [
+        "Footwork",
+        "Reprogram",
+        "Fasting2"
+      ],
+      "relics": [
+        "Kunai",
+        "Oddly Smooth Stone",
+        "Yang"
+      ],
+      "potions": [
+        "SpeedPotion",
+        "Dexterity Potion"
+      ]
+    },
+    "legacySlugs": [
+      "dexterity"
+    ]
+  },
+  {
+    "id": "Double Damage",
+    "slug": "double-damage",
+    "className": "com.megacrit.cardcrawl.powers.DoubleDamagePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "doubleDamage",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "double-damage"
+    ]
+  },
+  {
+    "id": "Double Tap",
+    "slug": "double-tap",
+    "className": "com.megacrit.cardcrawl.powers.DoubleTapPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "doubleTap",
+    "sources": {
+      "cards": [
+        "Double Tap"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "double-tap"
+    ]
+  },
+  {
+    "id": "Draw Card",
+    "slug": "draw-card",
+    "className": "com.megacrit.cardcrawl.powers.DrawCardNextTurnPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "carddraw",
+    "sources": {
+      "cards": [
+        "Predator",
+        "Vengeance"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "draw-card"
+    ]
+  },
+  {
+    "id": "Draw",
+    "slug": "draw",
+    "className": "com.megacrit.cardcrawl.powers.DrawPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "draw",
+    "sources": {
+      "cards": [
+        "Machine Learning"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "draw"
+    ]
+  },
+  {
+    "id": "Draw Reduction",
+    "slug": "draw-reduction",
+    "className": "com.megacrit.cardcrawl.powers.DrawReductionPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "lessdraw",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "draw-reduction"
+    ]
+  },
+  {
+    "id": "DuplicationPower",
+    "slug": "duplicationpower",
+    "className": "com.megacrit.cardcrawl.powers.DuplicationPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "doubleTap",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": [
+        "DuplicationPotion"
+      ]
+    },
+    "legacySlugs": [
+      "duplicationpower"
+    ]
+  },
+  {
+    "id": "Echo Form",
+    "slug": "echo-form",
+    "className": "com.megacrit.cardcrawl.powers.EchoPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "echo",
+    "sources": {
+      "cards": [
+        "Echo Form"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "echo-form"
+    ]
+  },
+  {
+    "id": "Electro",
+    "slug": "electro",
+    "className": "com.megacrit.cardcrawl.powers.ElectroPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "mastery",
+    "sources": {
+      "cards": [
+        "Electrodynamics"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "electro"
+    ]
+  },
+  {
+    "id": "EnergizedBlue",
+    "slug": "energizedblue",
+    "className": "com.megacrit.cardcrawl.powers.EnergizedBluePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "energized_blue",
+    "sources": {
+      "cards": [
+        "Conserve Battery"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "energizedblue"
+    ]
+  },
+  {
+    "id": "Energized",
+    "slug": "energized",
+    "className": "com.megacrit.cardcrawl.powers.EnergizedPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "energized_green",
+    "sources": {
+      "cards": [
+        "Flying Knee",
+        "Outmaneuver"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "energized"
+    ]
+  },
+  {
+    "id": "Entangled",
+    "slug": "entangled",
+    "className": "com.megacrit.cardcrawl.powers.EntanglePower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "entangle",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "entangled"
+    ]
+  },
+  {
+    "id": "Envenom",
+    "slug": "envenom",
+    "className": "com.megacrit.cardcrawl.powers.EnvenomPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "envenom",
+    "sources": {
+      "cards": [
+        "Envenom"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "envenom"
+    ]
+  },
+  {
+    "id": "Equilibrium",
+    "slug": "equilibrium",
+    "className": "com.megacrit.cardcrawl.powers.EquilibriumPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "retain",
+    "sources": {
+      "cards": [
+        "Undo"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "equilibrium"
+    ]
+  },
+  {
+    "id": "Evolve",
+    "slug": "evolve",
+    "className": "com.megacrit.cardcrawl.powers.EvolvePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "evolve",
+    "sources": {
+      "cards": [
+        "Evolve"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "evolve"
+    ]
+  },
+  {
+    "id": "Explosive",
+    "slug": "explosive",
+    "className": "com.megacrit.cardcrawl.powers.ExplosivePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "explosive",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "explosive"
+    ]
+  },
+  {
+    "id": "Fading",
+    "slug": "fading",
+    "className": "com.megacrit.cardcrawl.powers.FadingPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "fading",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "fading"
+    ]
+  },
+  {
+    "id": "Feel No Pain",
+    "slug": "feel-no-pain",
+    "className": "com.megacrit.cardcrawl.powers.FeelNoPainPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "noPain",
+    "sources": {
+      "cards": [
+        "Feel No Pain"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "feel-no-pain"
+    ]
+  },
+  {
+    "id": "Fire Breathing",
+    "slug": "fire-breathing",
+    "className": "com.megacrit.cardcrawl.powers.FireBreathingPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "firebreathing",
+    "sources": {
+      "cards": [
+        "Fire Breathing"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "fire-breathing"
+    ]
+  },
+  {
+    "id": "Flame Barrier",
+    "slug": "flame-barrier",
+    "className": "com.megacrit.cardcrawl.powers.FlameBarrierPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "flameBarrier",
+    "sources": {
+      "cards": [
+        "Flame Barrier"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "flame-barrier"
+    ]
+  },
+  {
+    "id": "Flight",
+    "slug": "flight",
+    "className": "com.megacrit.cardcrawl.powers.FlightPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "flight",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "flight"
+    ]
+  },
+  {
+    "id": "Focus",
+    "slug": "focus",
+    "className": "com.megacrit.cardcrawl.powers.FocusPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": true,
+    "isTurnBased": false,
+    "image": "focus",
+    "sources": {
+      "cards": [
+        "Biased Cognition",
+        "Consume",
+        "Defragment",
+        "Hyperbeam",
+        "Reprogram"
+      ],
+      "relics": [
+        "DataDisk"
+      ],
+      "potions": [
+        "FocusPotion"
+      ]
+    },
+    "legacySlugs": [
+      "focus"
+    ]
+  },
+  {
+    "id": "Nullify Attack",
+    "slug": "nullify-attack",
+    "className": "com.megacrit.cardcrawl.powers.ForcefieldPower",
+    "type": "buff",
+    "stackType": "single",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "forcefield",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "nullify-attack"
+    ]
+  },
+  {
+    "id": "Frail",
+    "slug": "frail",
+    "className": "com.megacrit.cardcrawl.powers.FrailPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "frail",
+    "sources": {
+      "cards": [
+        "Shame"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "frail"
+    ]
+  },
+  {
+    "id": "Shackled",
+    "slug": "shackled",
+    "className": "com.megacrit.cardcrawl.powers.GainStrengthPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "shackle",
+    "sources": {
+      "cards": [
+        "PiercingWail",
+        "Dark Shackles"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "shackled"
+    ]
+  },
+  {
+    "id": "Generic Strength Up Power",
+    "slug": "generic-strength-up-power",
+    "className": "com.megacrit.cardcrawl.powers.GenericStrengthUpPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "stasis",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "generic-strength-up-power"
+    ]
+  },
+  {
+    "id": "GrowthPower",
+    "slug": "growthpower",
+    "className": "com.megacrit.cardcrawl.powers.GrowthPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "ritual",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "growthpower"
+    ]
+  },
+  {
+    "id": "Heatsink",
+    "slug": "heatsink",
+    "className": "com.megacrit.cardcrawl.powers.HeatsinkPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "heatsink",
+    "sources": {
+      "cards": [
+        "Heatsinks"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "heatsink"
+    ]
+  },
+  {
+    "id": "Hello",
+    "slug": "hello",
+    "className": "com.megacrit.cardcrawl.powers.HelloPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "hello",
+    "sources": {
+      "cards": [
+        "Hello World"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "hello"
+    ]
+  },
+  {
+    "id": "Hex",
+    "slug": "hex",
+    "className": "com.megacrit.cardcrawl.powers.HexPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "hex",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "hex"
+    ]
+  },
+  {
+    "id": "Infinite Blades",
+    "slug": "infinite-blades",
+    "className": "com.megacrit.cardcrawl.powers.InfiniteBladesPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "infiniteBlades",
+    "sources": {
+      "cards": [
+        "Infinite Blades"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "infinite-blades"
+    ]
+  },
+  {
+    "id": "IntangiblePlayer",
+    "slug": "intangibleplayer",
+    "className": "com.megacrit.cardcrawl.powers.IntangiblePlayerPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "intangible",
+    "sources": {
+      "cards": [
+        "Wraith Form v2",
+        "Ghostly"
+      ],
+      "relics": [
+        "Incense Burner"
+      ],
+      "potions": [
+        "GhostInAJar"
+      ]
+    },
+    "legacySlugs": [
+      "intangibleplayer"
+    ]
+  },
+  {
+    "id": "Intangible",
+    "slug": "intangible",
+    "className": "com.megacrit.cardcrawl.powers.IntangiblePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "intangible",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "intangible"
+    ]
+  },
+  {
+    "id": "Invincible",
+    "slug": "invincible",
+    "className": "com.megacrit.cardcrawl.powers.InvinciblePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "heartDef",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "invincible"
+    ]
+  },
+  {
+    "id": "Juggernaut",
+    "slug": "juggernaut",
+    "className": "com.megacrit.cardcrawl.powers.JuggernautPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "juggernaut",
+    "sources": {
+      "cards": [
+        "Juggernaut"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "juggernaut"
+    ]
+  },
+  {
+    "id": "Lockon",
+    "slug": "lockon",
+    "className": "com.megacrit.cardcrawl.powers.LockOnPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "lockon",
+    "sources": {
+      "cards": [
+        "Lockon"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "lockon"
+    ]
+  },
+  {
+    "id": "Loop",
+    "slug": "loop",
+    "className": "com.megacrit.cardcrawl.powers.LoopPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "loop",
+    "sources": {
+      "cards": [
+        "Loop"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "loop"
+    ]
+  },
+  {
+    "id": "DexLoss",
+    "slug": "dexloss",
+    "className": "com.megacrit.cardcrawl.powers.LoseDexterityPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "flex",
+    "sources": {
+      "cards": [],
+      "relics": [
+        "Yang"
+      ],
+      "potions": [
+        "SpeedPotion"
+      ]
+    },
+    "legacySlugs": [
+      "dexloss"
+    ]
+  },
+  {
+    "id": "Flex",
+    "slug": "flex",
+    "className": "com.megacrit.cardcrawl.powers.LoseStrengthPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "flex",
+    "sources": {
+      "cards": [
+        "Flex"
+      ],
+      "relics": [
+        "MutagenicStrength"
+      ],
+      "potions": [
+        "SteroidPotion"
+      ]
+    },
+    "legacySlugs": [
+      "flex"
+    ]
+  },
+  {
+    "id": "Magnetism",
+    "slug": "magnetism",
+    "className": "com.megacrit.cardcrawl.powers.MagnetismPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "magnet",
+    "sources": {
+      "cards": [
+        "Magnetism"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "magnetism"
+    ]
+  },
+  {
+    "id": "Malleable",
+    "slug": "malleable",
+    "className": "com.megacrit.cardcrawl.powers.MalleablePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "malleable",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "malleable"
+    ]
+  },
+  {
+    "id": "Mayhem",
+    "slug": "mayhem",
+    "className": "com.megacrit.cardcrawl.powers.MayhemPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "mayhem",
+    "sources": {
+      "cards": [
+        "Mayhem"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "mayhem"
+    ]
+  },
+  {
+    "id": "Metallicize",
+    "slug": "metallicize",
+    "className": "com.megacrit.cardcrawl.powers.MetallicizePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "armor",
+    "sources": {
+      "cards": [
+        "Metallicize"
+      ],
+      "relics": [],
+      "potions": [
+        "HeartOfIron"
+      ]
+    },
+    "legacySlugs": [
+      "metallicize"
+    ]
+  },
+  {
+    "id": "Minion",
+    "slug": "minion",
+    "className": "com.megacrit.cardcrawl.powers.MinionPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "minion",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "minion"
+    ]
+  },
+  {
+    "id": "Mode Shift",
+    "slug": "mode-shift",
+    "className": "com.megacrit.cardcrawl.powers.ModeShiftPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "modeShift",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "mode-shift"
+    ]
+  },
+  {
+    "id": "Next Turn Block",
+    "slug": "next-turn-block",
+    "className": "com.megacrit.cardcrawl.powers.NextTurnBlockPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "defenseNext",
+    "sources": {
+      "cards": [
+        "Dodge and Roll"
+      ],
+      "relics": [
+        "Self Forming Clay"
+      ],
+      "potions": []
+    },
+    "legacySlugs": [
+      "next-turn-block"
+    ]
+  },
+  {
+    "id": "Night Terror",
+    "slug": "night-terror",
+    "className": "com.megacrit.cardcrawl.powers.NightmarePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "nightmare",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "night-terror"
+    ]
+  },
+  {
+    "id": "NoBlockPower",
+    "slug": "noblockpower",
+    "className": "com.megacrit.cardcrawl.powers.NoBlockPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "noBlock",
+    "sources": {
+      "cards": [
+        "PanicButton"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "noblockpower"
+    ]
+  },
+  {
+    "id": "No Draw",
+    "slug": "no-draw",
+    "className": "com.megacrit.cardcrawl.powers.NoDrawPower",
+    "type": "debuff",
+    "stackType": "single",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "noDraw",
+    "sources": {
+      "cards": [
+        "Battle Trance",
+        "Bullet Time"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "no-draw"
+    ]
+  },
+  {
+    "id": "Noxious Fumes",
+    "slug": "noxious-fumes",
+    "className": "com.megacrit.cardcrawl.powers.NoxiousFumesPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "fumes",
+    "sources": {
+      "cards": [
+        "Noxious Fumes"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "noxious-fumes"
+    ]
+  },
+  {
+    "id": "Painful Stabs",
+    "slug": "painful-stabs",
+    "className": "com.megacrit.cardcrawl.powers.PainfulStabsPower",
+    "type": "buff",
+    "stackType": "single",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "painfulStabs",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "painful-stabs"
+    ]
+  },
+  {
+    "id": "Panache",
+    "slug": "panache",
+    "className": "com.megacrit.cardcrawl.powers.PanachePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "panache",
+    "sources": {
+      "cards": [
+        "Panache"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "panache"
+    ]
+  },
+  {
+    "id": "Pen Nib",
+    "slug": "pen-nib",
+    "className": "com.megacrit.cardcrawl.powers.PenNibPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "penNib",
+    "sources": {
+      "cards": [],
+      "relics": [
+        "Pen Nib"
+      ],
+      "potions": []
+    },
+    "legacySlugs": [
+      "pen-nib"
+    ]
+  },
+  {
+    "id": "Phantasmal",
+    "slug": "phantasmal",
+    "className": "com.megacrit.cardcrawl.powers.PhantasmalPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "phantasmal",
+    "sources": {
+      "cards": [
+        "Phantasmal Killer"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "phantasmal"
+    ]
+  },
+  {
+    "id": "Plated Armor",
+    "slug": "plated-armor",
+    "className": "com.megacrit.cardcrawl.powers.PlatedArmorPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "platedarmor",
+    "sources": {
+      "cards": [
+        "LiveForever"
+      ],
+      "relics": [
+        "Thread and Needle"
+      ],
+      "potions": [
+        "EssenceOfSteel"
+      ]
+    },
+    "legacySlugs": [
+      "plated-armor"
+    ]
+  },
+  {
+    "id": "Poison",
+    "slug": "poison",
+    "className": "com.megacrit.cardcrawl.powers.PoisonPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "poison",
+    "sources": {
+      "cards": [
+        "Corpse Explosion",
+        "Crippling Poison",
+        "Deadly Poison",
+        "Poisoned Stab"
+      ],
+      "relics": [
+        "The Specimen",
+        "TwistedFunnel"
+      ],
+      "potions": [
+        "Poison Potion"
+      ]
+    },
+    "legacySlugs": [
+      "poison"
+    ]
+  },
+  {
+    "id": "Rage",
+    "slug": "rage",
+    "className": "com.megacrit.cardcrawl.powers.RagePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "anger",
+    "sources": {
+      "cards": [
+        "Rage"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "rage"
+    ]
+  },
+  {
+    "id": "Compulsive",
+    "slug": "compulsive",
+    "className": "com.megacrit.cardcrawl.powers.ReactivePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "reactive",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "compulsive"
+    ]
+  },
+  {
+    "id": "Rebound",
+    "slug": "rebound",
+    "className": "com.megacrit.cardcrawl.powers.ReboundPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "rebound",
+    "sources": {
+      "cards": [
+        "Rebound"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "rebound"
+    ]
+  },
+  {
+    "id": "Regeneration",
+    "slug": "regeneration",
+    "className": "com.megacrit.cardcrawl.powers.RegenPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "regen",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": [
+        "Regen Potion"
+      ]
+    },
+    "legacySlugs": [
+      "regeneration"
+    ]
+  },
+  {
+    "id": "Regenerate",
+    "slug": "regenerate",
+    "className": "com.megacrit.cardcrawl.powers.RegenerateMonsterPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "regen",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "regenerate"
+    ]
+  },
+  {
+    "id": "Life Link",
+    "slug": "life-link",
+    "className": "com.megacrit.cardcrawl.powers.RegrowPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "regrow",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "life-link"
+    ]
+  },
+  {
+    "id": "Repair",
+    "slug": "repair",
+    "className": "com.megacrit.cardcrawl.powers.RepairPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "repair",
+    "sources": {
+      "cards": [
+        "Self Repair"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "repair"
+    ]
+  },
+  {
+    "id": "Retain Cards",
+    "slug": "retain-cards",
+    "className": "com.megacrit.cardcrawl.powers.RetainCardPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "retain",
+    "sources": {
+      "cards": [
+        "Well Laid Plans"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "retain-cards"
+    ]
+  },
+  {
+    "id": "Ritual",
+    "slug": "ritual",
+    "className": "com.megacrit.cardcrawl.powers.RitualPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "ritual",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": [
+        "CultistPotion"
+      ]
+    },
+    "legacySlugs": [
+      "ritual"
+    ]
+  },
+  {
+    "id": "Rupture",
+    "slug": "rupture",
+    "className": "com.megacrit.cardcrawl.powers.RupturePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "rupture",
+    "sources": {
+      "cards": [
+        "Rupture"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "rupture"
+    ]
+  },
+  {
+    "id": "Sadistic",
+    "slug": "sadistic",
+    "className": "com.megacrit.cardcrawl.powers.SadisticPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "sadistic",
+    "sources": {
+      "cards": [
+        "Sadistic Nature"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "sadistic"
+    ]
+  },
+  {
+    "id": "Sharp Hide",
+    "slug": "sharp-hide",
+    "className": "com.megacrit.cardcrawl.powers.SharpHidePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "sharpHide",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "sharp-hide"
+    ]
+  },
+  {
+    "id": "Shifting",
+    "slug": "shifting",
+    "className": "com.megacrit.cardcrawl.powers.ShiftingPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "shift",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "shifting"
+    ]
+  },
+  {
+    "id": "Skill Burn",
+    "slug": "skill-burn",
+    "className": "com.megacrit.cardcrawl.powers.SkillBurnPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "skillBurn",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "skill-burn"
+    ]
+  },
+  {
+    "id": "Slow",
+    "slug": "slow",
+    "className": "com.megacrit.cardcrawl.powers.SlowPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "slow",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "slow"
+    ]
+  },
+  {
+    "id": "Split",
+    "slug": "split",
+    "className": "com.megacrit.cardcrawl.powers.SplitPower",
+    "type": "buff",
+    "stackType": "single",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "split",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "split"
+    ]
+  },
+  {
+    "id": "Spore Cloud",
+    "slug": "spore-cloud",
+    "className": "com.megacrit.cardcrawl.powers.SporeCloudPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "sporeCloud",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "spore-cloud"
+    ]
+  },
+  {
+    "id": "Stasis",
+    "slug": "stasis",
+    "className": "com.megacrit.cardcrawl.powers.StasisPower",
+    "type": "buff",
+    "stackType": "single",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "stasis",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "stasis"
+    ]
+  },
+  {
+    "id": "StaticDischarge",
+    "slug": "staticdischarge",
+    "className": "com.megacrit.cardcrawl.powers.StaticDischargePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "static_discharge",
+    "sources": {
+      "cards": [
+        "Static Discharge"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "staticdischarge"
+    ]
+  },
+  {
+    "id": "Storm",
+    "slug": "storm",
+    "className": "com.megacrit.cardcrawl.powers.StormPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "storm",
+    "sources": {
+      "cards": [
+        "Storm"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "storm"
+    ]
+  },
+  {
+    "id": "Strength",
+    "slug": "strength",
+    "className": "com.megacrit.cardcrawl.powers.StrengthPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": true,
+    "isTurnBased": false,
+    "image": "strength",
+    "sources": {
+      "cards": [
+        "Disarm",
+        "Flex",
+        "Inflame",
+        "PiercingWail",
+        "Reprogram",
+        "Fasting2",
+        "Dark Shackles",
+        "J.A.X.",
+        "BecomeAlmighty"
+      ],
+      "relics": [
+        "Du-Vu Doll",
+        "Girya",
+        "MutagenicStrength",
+        "Philosopher's Stone",
+        "Shuriken",
+        "Sling",
+        "Vajra",
+        "Brimstone",
+        "Red Skull"
+      ],
+      "potions": [
+        "SteroidPotion",
+        "Strength Potion"
+      ]
+    },
+    "legacySlugs": [
+      "strength"
+    ]
+  },
+  {
+    "id": "StrikeUp",
+    "slug": "strikeup",
+    "className": "com.megacrit.cardcrawl.powers.StrikeUpPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "accuracy",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "strikeup"
+    ]
+  },
+  {
+    "id": "Surrounded",
+    "slug": "surrounded",
+    "className": "com.megacrit.cardcrawl.powers.SurroundedPower",
+    "type": "buff",
+    "stackType": "single",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "surrounded",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "surrounded"
+    ]
+  },
+  {
+    "id": "TheBomb",
+    "slug": "thebomb",
+    "className": "com.megacrit.cardcrawl.powers.TheBombPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "the_bomb",
+    "sources": {
+      "cards": [
+        "The Bomb"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "thebomb"
+    ]
+  },
+  {
+    "id": "Thievery",
+    "slug": "thievery",
+    "className": "com.megacrit.cardcrawl.powers.ThieveryPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "thievery",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "thievery"
+    ]
+  },
+  {
+    "id": "Thorns",
+    "slug": "thorns",
+    "className": "com.megacrit.cardcrawl.powers.ThornsPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "thorns",
+    "sources": {
+      "cards": [
+        "Caltrops"
+      ],
+      "relics": [
+        "Bronze Scales"
+      ],
+      "potions": [
+        "LiquidBronze"
+      ]
+    },
+    "legacySlugs": [
+      "thorns"
+    ]
+  },
+  {
+    "id": "Thousand Cuts",
+    "slug": "thousand-cuts",
+    "className": "com.megacrit.cardcrawl.powers.ThousandCutsPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "thousandCuts",
+    "sources": {
+      "cards": [
+        "A Thousand Cuts"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "thousand-cuts"
+    ]
+  },
+  {
+    "id": "TimeMazePower",
+    "slug": "timemazepower",
+    "className": "com.megacrit.cardcrawl.powers.TimeMazePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "time",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "timemazepower"
+    ]
+  },
+  {
+    "id": "Time Warp",
+    "slug": "time-warp",
+    "className": "com.megacrit.cardcrawl.powers.TimeWarpPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "time",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "time-warp"
+    ]
+  },
+  {
+    "id": "Tools Of The Trade",
+    "slug": "tools-of-the-trade",
+    "className": "com.megacrit.cardcrawl.powers.ToolsOfTheTradePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "tools",
+    "sources": {
+      "cards": [
+        "Tools of the Trade"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "tools-of-the-trade"
+    ]
+  },
+  {
+    "id": "Unawakened",
+    "slug": "unawakened",
+    "className": "com.megacrit.cardcrawl.powers.UnawakenedPower",
+    "type": "buff",
+    "stackType": "single",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "unawakened",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "unawakened"
+    ]
+  },
+  {
+    "id": "Vulnerable",
+    "slug": "vulnerable",
+    "className": "com.megacrit.cardcrawl.powers.VulnerablePower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "vulnerable",
+    "sources": {
+      "cards": [
+        "Bash",
+        "Berserk",
+        "Shockwave",
+        "Thunderclap",
+        "Uppercut",
+        "Terror",
+        "Beam Cell",
+        "Trip"
+      ],
+      "relics": [
+        "Bag of Marbles",
+        "HandDrill"
+      ],
+      "potions": [
+        "FearPotion"
+      ]
+    },
+    "legacySlugs": [
+      "vulnerable"
+    ]
+  },
+  {
+    "id": "Weakened",
+    "slug": "weakened",
+    "className": "com.megacrit.cardcrawl.powers.WeakPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "weak",
+    "sources": {
+      "cards": [
+        "Clothesline",
+        "Intimidate",
+        "Shockwave",
+        "Uppercut",
+        "Crippling Poison",
+        "Leg Sweep",
+        "Neutralize",
+        "Sucker Punch",
+        "Blind",
+        "Doubt"
+      ],
+      "relics": [
+        "GremlinMask",
+        "Red Mask",
+        "Champion Belt"
+      ],
+      "potions": [
+        "Weak Potion"
+      ]
+    },
+    "legacySlugs": [
+      "weakened"
+    ]
+  },
+  {
+    "id": "Wraith Form v2",
+    "slug": "wraith-form-v2",
+    "className": "com.megacrit.cardcrawl.powers.WraithFormPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": true,
+    "isTurnBased": false,
+    "image": "wraithForm",
+    "sources": {
+      "cards": [
+        "Wraith Form v2"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "wraith-form-v2"
+    ]
+  },
+  {
+    "id": "BattleHymn",
+    "slug": "battlehymn",
+    "className": "com.megacrit.cardcrawl.powers.watcher.BattleHymnPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "hymn",
+    "sources": {
+      "cards": [
+        "BattleHymn"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "battlehymn"
+    ]
+  },
+  {
+    "id": "BlockReturnPower",
+    "slug": "blockreturnpower",
+    "className": "com.megacrit.cardcrawl.powers.watcher.BlockReturnPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "talk_to_hand",
+    "sources": {
+      "cards": [
+        "TalkToTheHand"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "blockreturnpower"
+    ]
+  },
+  {
+    "id": "CannotChangeStancePower",
+    "slug": "cannotchangestancepower",
+    "className": "com.megacrit.cardcrawl.powers.watcher.CannotChangeStancePower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "no_stance",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "cannotchangestancepower"
+    ]
+  },
+  {
+    "id": "DevaForm",
+    "slug": "devaform",
+    "className": "com.megacrit.cardcrawl.powers.watcher.DevaPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "deva2",
+    "sources": {
+      "cards": [
+        "DevaForm"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "devaform"
+    ]
+  },
+  {
+    "id": "DevotionPower",
+    "slug": "devotionpower",
+    "className": "com.megacrit.cardcrawl.powers.watcher.DevotionPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "devotion",
+    "sources": {
+      "cards": [
+        "Devotion"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "devotionpower"
+    ]
+  },
+  {
+    "id": "EndTurnDeath",
+    "slug": "endturndeath",
+    "className": "com.megacrit.cardcrawl.powers.watcher.EndTurnDeathPower",
+    "type": "buff",
+    "stackType": "single",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "end_turn_death",
+    "sources": {
+      "cards": [
+        "Blasphemy"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "endturndeath"
+    ]
+  },
+  {
+    "id": "EnergyDownPower",
+    "slug": "energydownpower",
+    "className": "com.megacrit.cardcrawl.powers.watcher.EnergyDownPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "fasting",
+    "sources": {
+      "cards": [
+        "Fasting2"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "energydownpower"
+    ]
+  },
+  {
+    "id": "EstablishmentPower",
+    "slug": "establishmentpower",
+    "className": "com.megacrit.cardcrawl.powers.watcher.EstablishmentPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "establishment",
+    "sources": {
+      "cards": [
+        "Establishment"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "establishmentpower"
+    ]
+  },
+  {
+    "id": "WireheadingPower",
+    "slug": "wireheadingpower",
+    "className": "com.megacrit.cardcrawl.powers.watcher.ForesightPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "wireheading",
+    "sources": {
+      "cards": [
+        "Wireheading"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "wireheadingpower"
+    ]
+  },
+  {
+    "id": "FreeAttackPower",
+    "slug": "freeattackpower",
+    "className": "com.megacrit.cardcrawl.powers.watcher.FreeAttackPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "swivel",
+    "sources": {
+      "cards": [
+        "Swivel"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "freeattackpower"
+    ]
+  },
+  {
+    "id": "LikeWaterPower",
+    "slug": "likewaterpower",
+    "className": "com.megacrit.cardcrawl.powers.watcher.LikeWaterPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "like_water",
+    "sources": {
+      "cards": [
+        "LikeWater"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "likewaterpower"
+    ]
+  },
+  {
+    "id": "AngelForm",
+    "slug": "angelform",
+    "className": "com.megacrit.cardcrawl.powers.watcher.LiveForeverPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "deva",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "angelform"
+    ]
+  },
+  {
+    "id": "Mantra",
+    "slug": "mantra",
+    "className": "com.megacrit.cardcrawl.powers.watcher.MantraPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "mantra",
+    "sources": {
+      "cards": [
+        "Pray",
+        "Prostrate",
+        "Worship"
+      ],
+      "relics": [
+        "Damaru"
+      ],
+      "potions": []
+    },
+    "legacySlugs": [
+      "mantra"
+    ]
+  },
+  {
+    "id": "PathToVictoryPower",
+    "slug": "pathtovictorypower",
+    "className": "com.megacrit.cardcrawl.powers.watcher.MarkPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "pressure_points",
+    "sources": {
+      "cards": [
+        "PathToVictory"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "pathtovictorypower"
+    ]
+  },
+  {
+    "id": "MasterRealityPower",
+    "slug": "masterrealitypower",
+    "className": "com.megacrit.cardcrawl.powers.watcher.MasterRealityPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "master_reality",
+    "sources": {
+      "cards": [
+        "MasterReality"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "masterrealitypower"
+    ]
+  },
+  {
+    "id": "Controlled",
+    "slug": "controlled",
+    "className": "com.megacrit.cardcrawl.powers.watcher.MentalFortressPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "mental_fortress",
+    "sources": {
+      "cards": [
+        "MentalFortress"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "controlled"
+    ]
+  },
+  {
+    "id": "Nirvana",
+    "slug": "nirvana",
+    "className": "com.megacrit.cardcrawl.powers.watcher.NirvanaPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "nirvana",
+    "sources": {
+      "cards": [
+        "Nirvana"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "nirvana"
+    ]
+  },
+  {
+    "id": "NoSkills",
+    "slug": "noskills",
+    "className": "com.megacrit.cardcrawl.powers.watcher.NoSkillsPower",
+    "type": "debuff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": true,
+    "image": "entangle",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "noskills"
+    ]
+  },
+  {
+    "id": "OmegaPower",
+    "slug": "omegapower",
+    "className": "com.megacrit.cardcrawl.powers.watcher.OmegaPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "omega",
+    "sources": {
+      "cards": [
+        "Omega"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "omegapower"
+    ]
+  },
+  {
+    "id": "OmnisciencePower",
+    "slug": "omnisciencepower",
+    "className": "com.megacrit.cardcrawl.powers.watcher.OmnisciencePower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "devotion",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "omnisciencepower"
+    ]
+  },
+  {
+    "id": "Adaptation",
+    "slug": "adaptation",
+    "className": "com.megacrit.cardcrawl.powers.watcher.RushdownPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "rushdown",
+    "sources": {
+      "cards": [
+        "Adaptation"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "adaptation"
+    ]
+  },
+  {
+    "id": "Study",
+    "slug": "study",
+    "className": "com.megacrit.cardcrawl.powers.watcher.StudyPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "draw",
+    "sources": {
+      "cards": [
+        "Study"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "study"
+    ]
+  },
+  {
+    "id": "Vault",
+    "slug": "vault",
+    "className": "com.megacrit.cardcrawl.powers.watcher.VaultPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "carddraw",
+    "sources": {
+      "cards": [],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "vault"
+    ]
+  },
+  {
+    "id": "Vigor",
+    "slug": "vigor",
+    "className": "com.megacrit.cardcrawl.powers.watcher.VigorPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "vigor",
+    "sources": {
+      "cards": [
+        "WreathOfFlame"
+      ],
+      "relics": [
+        "Akabeko"
+      ],
+      "potions": []
+    },
+    "legacySlugs": [
+      "vigor"
+    ]
+  },
+  {
+    "id": "WaveOfTheHandPower",
+    "slug": "waveofthehandpower",
+    "className": "com.megacrit.cardcrawl.powers.watcher.WaveOfTheHandPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "wave_of_the_hand",
+    "sources": {
+      "cards": [
+        "WaveOfTheHand"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "waveofthehandpower"
+    ]
+  },
+  {
+    "id": "WrathNextTurnPower",
+    "slug": "wrathnextturnpower",
+    "className": "com.megacrit.cardcrawl.powers.watcher.WrathNextTurnPower",
+    "type": "buff",
+    "stackType": "counter",
+    "canGoNegative": false,
+    "isTurnBased": false,
+    "image": "anger",
+    "sources": {
+      "cards": [
+        "Vengeance"
+      ],
+      "relics": [],
+      "potions": []
+    },
+    "legacySlugs": [
+      "wrathnextturnpower"
+    ]
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "characters": {
+    "ironclad": {
+      "name": "Pancernik",
+      "title": "Pancernik",
+      "flavor": "Ostatni żołnierz klanu Pancerników. NL Zaprzedał duszę, aby posiąść demoniczne moce."
+    },
+    "silent": {
+      "name": "Cień",
+      "title": "Cień",
+      "flavor": "Zabójcza łowczyni z okolic mgliszczy. NL Rozprawia się z przeciwnikami przy użyciu sztyletów i trucizny."
+    },
+    "defect": {
+      "name": "Defekt",
+      "title": "Defekt",
+      "flavor": "Bojowy automaton, który zyskał świadomość. NL Antyczna technologia pozwala mu manipulować Sferami."
+    },
+    "watcher": {
+      "name": "Obserwatorka",
+      "title": "Obserwatorka",
+      "flavor": "Niewidoma ascetka, która przybyła aby \"Ocenić\" Iglicę. NL Mistrzyni boskich Postaw."
+    }
+  },
+  "ui": {
+    "choose": "Wybierz postać",
+    "embark": "W drogę",
+    "back": "Wróć",
+    "hp": "PŻ: ",
+    "gold": "Złoto: "
+  }
+}

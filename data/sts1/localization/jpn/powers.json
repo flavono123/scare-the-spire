@@ -1,0 +1,1228 @@
+{
+  "Accuracy": {
+    "name": "精度上昇",
+    "description": "#yナイフ のダメージが #bX 増加する。",
+    "descriptions": [
+      "#yナイフ のダメージが #b",
+      " 増加する。"
+    ]
+  },
+  "After Image": {
+    "name": "残像",
+    "description": "カードを使用するたび、 #bX #yブロック を得る。",
+    "descriptions": [
+      "カードを使用するたび、 #b",
+      " #yブロック を得る。"
+    ]
+  },
+  "Amplify": {
+    "name": "増幅",
+    "description": "このターン、次に使用する #yパワー の効果を2回分発動する。",
+    "descriptions": [
+      "このターン、次に使用する #yパワー の効果を2回分発動する。",
+      "このターン、次に使用する ",
+      " 枚の #yパワー の効果を2回分発動する。"
+    ]
+  },
+  "Anger": {
+    "name": "激怒",
+    "description": "#yスキル を使用するたび、 #y筋力 #bX を得る。",
+    "descriptions": [
+      "#yスキル を使用するたび、 #y筋力 #b",
+      " を得る。"
+    ]
+  },
+  "Angry": {
+    "name": "怒り",
+    "description": "アタック ダメージを受けると、 #y筋力 #bX を得る。",
+    "descriptions": [
+      "",
+      "アタック ダメージを受けると、 #y筋力 #b",
+      " を得る。"
+    ]
+  },
+  "Artifact": {
+    "name": "人の作りし物",
+    "description": "デバフを #bX 回打ち消す。",
+    "descriptions": [
+      "デバフを #b",
+      " 回打ち消す。",
+      " 回打ち消す。"
+    ]
+  },
+  "Attack Burn": {
+    "name": "アタック燃焼",
+    "description": "#bX ターン有効。 #yアタック を使用すると、 #y廃棄 される。",
+    "descriptions": [
+      "#b",
+      " ターン有効。 #yアタック を使用すると、 #y廃棄 される。",
+      "次の #b",
+      " ターン有効。 #yアタック を使用すると、 #y廃棄 される。"
+    ]
+  },
+  "BackAttack": {
+    "name": "不意打ち",
+    "description": "背後からのアタックで与えるダメージが #b50% 増加する。",
+    "descriptions": [
+      "背後からのアタックで与えるダメージが #b50% 増加する。"
+    ]
+  },
+  "Barricade": {
+    "name": "バリケード",
+    "description": "ターン開始時に #yブロック を失わない。",
+    "descriptions": [
+      "ターン開始時に #yブロック を失わない。",
+      "ターン開始時に #yブロック を失わない。"
+    ]
+  },
+  "BeatOfDeath": {
+    "name": "死の鼓動",
+    "description": "プレイヤーはカードを使用するたび、 #bX ダメージを受ける。",
+    "descriptions": [
+      "プレイヤーはカードを使用するたび、 #b",
+      " ダメージを受ける。"
+    ]
+  },
+  "Berserk": {
+    "name": "狂戦士",
+    "description": "ターン開始時に [R] 。",
+    "descriptions": [
+      "ターン開始時に ",
+      " を得る。"
+    ]
+  },
+  "Bias": {
+    "name": "偏向",
+    "description": "ターン開始時に #y集中力 #bX を失う。",
+    "descriptions": [
+      "ターン開始時に #y集中力 #b",
+      " を失う。"
+    ]
+  },
+  "Blur": {
+    "name": "かすみ",
+    "description": "次のターン開始時に #yブロック を失わない。",
+    "descriptions": [
+      "次のターン開始時に #yブロック を失わない。",
+      "ターン開始時に #yブロック を失わない。 #b",
+      " ターン有効。"
+    ]
+  },
+  "Brutality": {
+    "name": "残虐",
+    "description": "ターン開始時、HPを #bX 失い、カードを #bX 枚引く。",
+    "descriptions": [
+      "ターン開始時、HPを #b",
+      " 失い、カードを #b",
+      " 枚引く。",
+      "ターン開始時、HPを #b",
+      " 失い、カードを #b",
+      " 枚引く。"
+    ]
+  },
+  "Buffer": {
+    "name": "バッファー",
+    "description": "次のHPの喪失を防ぐ。",
+    "descriptions": [
+      "次のHPの喪失を防ぐ。",
+      "次のHPの喪失を #b",
+      " 回防ぐ。"
+    ]
+  },
+  "Burst": {
+    "name": "バースト",
+    "description": "このターン、次に使用する #yスキル の効果を2回分発動する。",
+    "descriptions": [
+      "このターン、次に使用する #yスキル の効果を2回分発動する。",
+      "このターン、次に使用する ",
+      " 枚の #yスキル の効果を2回分発動する。"
+    ]
+  },
+  "Choked": {
+    "name": "窒息",
+    "description": "このターン、カードを使用するたび、HPを #bX 失う。",
+    "descriptions": [
+      "このターン、カードを使用するたび、HPを #b",
+      " 失う。"
+    ]
+  },
+  "Collect": {
+    "name": "採集",
+    "description": "次のターン開始時、 #y奇跡+ を1枚手札に加える。",
+    "descriptions": [
+      "次のターン開始時、 #y奇跡+ を1枚手札に加える。",
+      "次の #b",
+      " ターンの間、ターン開始時に #y奇跡+ を1枚手札に加える。"
+    ]
+  },
+  "Combust": {
+    "name": "燃焼",
+    "description": "ターン終了時、HPを #bX 失い、敵全体に #bX ダメージを与える。",
+    "descriptions": [
+      "ターン終了時、HPを #b",
+      " 失い、敵全体に #b",
+      " ダメージを与える。"
+    ]
+  },
+  "Confusion": {
+    "name": "混乱",
+    "description": "カードを引くたび、コストがランダムに変化する。",
+    "descriptions": [
+      "カードを引くたび、コストがランダムに変化する。"
+    ]
+  },
+  "Conserve": {
+    "name": "節約",
+    "description": "#yエナジー を次のターンに持ち越す。",
+    "descriptions": [
+      "#yエナジー を次のターンに持ち越す。",
+      "#yエナジー を #b",
+      " ターン先まで持ち越す。"
+    ]
+  },
+  "Constricted": {
+    "name": "締め付け",
+    "description": "ターン終了時に #bX ダメージを受ける。",
+    "descriptions": [
+      "ターン終了時に #b",
+      " ダメージを受ける。"
+    ]
+  },
+  "CorpseExplosionPower": {
+    "name": "死体爆発",
+    "description": "死亡すると、その最大HPに等しいダメージを敵全体に与える。",
+    "descriptions": [
+      "死亡すると、その最大HPに等しいダメージを敵全体に与える。",
+      "死亡すると、その最大HPの #b",
+      " 倍に等しいダメージを敵全体に与える。"
+    ]
+  },
+  "Corruption": {
+    "name": "堕落",
+    "description": "使用した #yスキル は #y廃棄 される。",
+    "descriptions": [
+      "#yスキル のコストが #b0 になる。使用した #yスキル は #y廃棄 される。",
+      "使用した #yスキル は #y廃棄 される。"
+    ]
+  },
+  "Creative AI": {
+    "name": "クリエイティブAI",
+    "description": "ターン開始時、ランダムな #yパワー カードを #bX 枚手札に加える。",
+    "descriptions": [
+      "ターン開始時、ランダムな #yパワー カードを #b",
+      " 枚手札に加える。",
+      " 枚手札に加える。"
+    ]
+  },
+  "Curiosity": {
+    "name": "好奇心",
+    "description": "#yパワー カードを使用するたび、 #y筋力 #bX を得る。",
+    "descriptions": [
+      "#yパワー カードを使用するたび、 #y筋力 #b",
+      " を得る。"
+    ]
+  },
+  "Curl Up": {
+    "name": "丸くなる",
+    "description": "アタックダメージを受けた時に丸まって、 #bX #yブロック を得る (戦闘につき1回)。",
+    "descriptions": [
+      "アタックダメージを受けた時に丸まって、 #b",
+      " #yブロック を得る (戦闘につき1回)。"
+    ]
+  },
+  "Dark Embrace": {
+    "name": "闇の抱擁",
+    "description": "カードを #y廃棄 するたび、カードを #b1 枚引く。",
+    "descriptions": [
+      "カードを #y廃棄 するたび、カードを #b1 枚引く。",
+      "カードを #y廃棄 するたび、カードを #b",
+      " 枚引く。"
+    ]
+  },
+  "Demon Form": {
+    "name": "悪魔化",
+    "description": "ターン開始時、 #y筋力 #bX を得る。",
+    "descriptions": [
+      "ターン開始時、 #y筋力 #b",
+      " を得る。"
+    ]
+  },
+  "Dexterity": {
+    "name": "敏捷性",
+    "description": "カードから得られる #yブロック #b+X 。",
+    "descriptions": [
+      "カードから得られる #yブロック #b+",
+      "カードから得られる #yブロック #b-",
+      " 。"
+    ]
+  },
+  "Double Damage": {
+    "name": "ダブルダメージ",
+    "description": "#yアタック で与えるダメージが2倍になる。 #bX ターン有効。",
+    "descriptions": [
+      "#yアタック で与えるダメージが2倍になる。 #b",
+      " ターン有効。",
+      " ターン有効。"
+    ]
+  },
+  "Double Tap": {
+    "name": "ダブルタップ",
+    "description": "このターン、次に使用する #yアタック の効果を2回分発動する。",
+    "descriptions": [
+      "このターン、次に使用する #yアタック の効果を2回分発動する。",
+      "このターン、次に使用する ",
+      " 枚の #yアタック の効果を2回分発動する。"
+    ]
+  },
+  "Draw Card": {
+    "name": "ドローカード",
+    "description": "次のターンでカードを #bX 枚追加で引く。",
+    "descriptions": [
+      "次のターンでカードを #b",
+      " 枚追加で引く。",
+      " 枚追加で引く。"
+    ]
+  },
+  "Draw": {
+    "name": "ドロー",
+    "description": "ターン開始時に #bX 枚のカードを追加で引く。",
+    "descriptions": [
+      "ターン開始時に #b",
+      " 枚のカードを追加で引く。",
+      " 枚、引けるカード数が減る。",
+      " 枚のカードを追加で引く。",
+      " 枚、引けるカード数が減る。"
+    ]
+  },
+  "Draw Reduction": {
+    "name": "ドロー減少",
+    "description": "次のターン開始時に引けるカードが #b1 枚減る。",
+    "descriptions": [
+      "次のターン開始時に引けるカードが #b1 枚減る。",
+      "引けるカードが #b1 枚減る。 #b",
+      " ターン有効。"
+    ]
+  },
+  "DuplicationPower": {
+    "name": "複製",
+    "description": "このターン、次のカードを2回プレイする。",
+    "descriptions": [
+      "このターン、次のカードを2回プレイする。",
+      "このターン、次の #b",
+      " 枚のカードを2回プレイする。"
+    ]
+  },
+  "Echo Form": {
+    "name": "反響化",
+    "description": "ターンの最初に使用するカードの効果を2回分発動する。",
+    "descriptions": [
+      "ターンの最初に使用するカードの効果を2回分発動する。",
+      "ターンの最初に使用する #b",
+      " 枚のカードの効果を2回分発動する。"
+    ]
+  },
+  "Electro": {
+    "name": "エレクトロ",
+    "description": "#yライトニング が敵全体を攻撃する。",
+    "descriptions": [
+      "#yライトニング が敵全体を攻撃する。",
+      "",
+      ""
+    ]
+  },
+  "EnergizedBlue": {
+    "name": "活性化",
+    "description": "次のターン、 [B] を追加で #bX 得る。",
+    "descriptions": [
+      "次のターン、 [B] を追加で #b",
+      " 得る。",
+      " 得る。",
+      " - TRANSLATOR NOTE: - The above line is for plural if needed to distinguish from singular."
+    ]
+  },
+  "Energized": {
+    "name": "活性化",
+    "description": "次のターン、 [G] を追加で #bX 得る。",
+    "descriptions": [
+      "次のターン、 [G] を追加で #b",
+      " 得る。",
+      " 得る。",
+      " - TRANSLATOR NOTE: - The above line is for plural if needed to distinguish from singular."
+    ]
+  },
+  "Entangled": {
+    "name": "拘束",
+    "description": "このターンの間 #yアタック を使用できない。",
+    "descriptions": [
+      "このターンの間 #yアタック を使用できない。"
+    ]
+  },
+  "Envenom": {
+    "name": "猛毒仕込み",
+    "description": "アタックダメージを ブロック されずに敵に与えた時、 #y毒 #bX も与える。",
+    "descriptions": [
+      "アタックダメージを ブロック されずに敵に与えた時、 #y毒 #b",
+      " も与える。"
+    ]
+  },
+  "Equilibrium": {
+    "name": "均衡",
+    "description": "このターン、手札を #y保留 する。",
+    "descriptions": [
+      "このターン、手札を #y保留 する。",
+      "手札を #y保留 する。 #b",
+      " ターン有効。"
+    ]
+  },
+  "Evolve": {
+    "name": "進化",
+    "description": "#y状態異常 カードを引くたび、カードを #b1 枚引く。",
+    "descriptions": [
+      "#y状態異常 カードを引くたび、カードを #b1 枚引く。",
+      "#y状態異常 カードを引くたび、カードを #b",
+      " 枚引く。"
+    ]
+  },
+  "Explosive": {
+    "name": "爆発",
+    "description": "このターンで爆発して #b30 ダメージを与える。",
+    "descriptions": [
+      "残り #b",
+      " ターンで爆発して #b",
+      " ダメージを与える。",
+      "このターンで爆発して #b"
+    ]
+  },
+  "Fading": {
+    "name": "消失",
+    "description": "このターンで死亡する。",
+    "descriptions": [
+      "#b",
+      " ターン後、死亡する。",
+      "このターンで死亡する。"
+    ]
+  },
+  "Feel No Pain": {
+    "name": "無痛",
+    "description": "カードを #y廃棄 するたび、 #bX #yブロック を得る。",
+    "descriptions": [
+      "カードを #y廃棄 するたび、 #b",
+      " #yブロック を得る。"
+    ]
+  },
+  "Fire Breathing": {
+    "name": "炎の息",
+    "description": "#y状態異常 か #y呪い カードを引くたび、敵全体に #bX ダメージを与える。",
+    "descriptions": [
+      "#y状態異常 か #y呪い カードを引くたび、敵全体に #b",
+      " ダメージを与える。"
+    ]
+  },
+  "Flame Barrier": {
+    "name": "炎の障壁",
+    "description": "アタックを受けた時、 #bX ダメージ反撃する。",
+    "descriptions": [
+      "アタックを受けた時、 #b",
+      " ダメージ反撃する。"
+    ]
+  },
+  "Flight": {
+    "name": "飛行",
+    "description": "アタックによる被ダメージが 50% 減少。アタックダメージを1ターンに #bX 回受けると解除。",
+    "descriptions": [
+      "アタックによる被ダメージが 50% 減少。アタックダメージを1ターンに #b",
+      " 回受けると解除。"
+    ]
+  },
+  "Focus": {
+    "name": "集中力",
+    "description": "オーブの効果 #b+X。",
+    "descriptions": [
+      "オーブの効果 #b+",
+      "オーブの効果 #b-",
+      "。"
+    ]
+  },
+  "Nullify Attack": {
+    "name": "アタック帳消し",
+    "description": "各ターンで #yアタック を一度だけ完全に #yブロック する。",
+    "descriptions": [
+      "各ターンで #yアタック を一度だけ完全に #yブロック する。"
+    ]
+  },
+  "Frail": {
+    "name": "脆弱化",
+    "description": "カードから得られる #yブロック が #b25% 減少。 #bX ターン有効。",
+    "descriptions": [
+      "カードから得られる #yブロック が #b25% 減少。 #b",
+      " ターン有効。",
+      " ターン有効。"
+    ]
+  },
+  "Shackled": {
+    "name": "足枷",
+    "description": "ターン終了時、 #y筋力 #bX を得る。",
+    "descriptions": [
+      "ターン終了時、 #y筋力 #b",
+      " を得る。"
+    ]
+  },
+  "Generic Strength Up Power": {
+    "name": "Generic Strength Up Power",
+    "description": "ターン終了時、 #y筋力 #bX を得る。",
+    "descriptions": [
+      "ターン終了時、 #y筋力 #b",
+      " を得る。"
+    ]
+  },
+  "GrowthPower": {
+    "name": "筋力増強",
+    "description": "ターン終了時、 #y筋力 #bX を得る。",
+    "descriptions": [
+      "ターン終了時、 #y筋力 #b",
+      " を得る。"
+    ]
+  },
+  "Heatsink": {
+    "name": "ヒートシンク",
+    "description": "#yパワー カードを使用するたび、カードを #bX 枚引く。",
+    "descriptions": [
+      "#yパワー カードを使用するたび、カードを #b",
+      " 枚引く。",
+      " 枚引く。"
+    ]
+  },
+  "Hello": {
+    "name": "ハロー",
+    "description": "ターン開始時、ランダムなコモンカードを #bX 枚手札に加える。",
+    "descriptions": [
+      "ターン開始時、ランダムなコモンカードを #b",
+      " 枚手札に加える。",
+      " 枚手札に加える。"
+    ]
+  },
+  "Hex": {
+    "name": "呪詛",
+    "description": "#yアタック以外 のカードを使用するたび、 #yめまい が #bX 枚山札に混ぜられる。",
+    "descriptions": [
+      "#yアタック以外 のカードを使用するたび、 #yめまい が #b",
+      " 枚山札に混ぜられる。"
+    ]
+  },
+  "Infinite Blades": {
+    "name": "無限の刃",
+    "description": "ターン開始時、 #yナイフ を #bX 枚手札に加える。",
+    "descriptions": [
+      "ターン開始時、 #yナイフ を #b",
+      " 枚手札に加える。",
+      " 枚手札に加える。"
+    ]
+  },
+  "IntangiblePlayer": {
+    "name": "無形",
+    "description": "すべての被ダメージとHPを失う効果を #b1 に軽減。",
+    "descriptions": [
+      "すべての被ダメージとHPを失う効果を #b1 に軽減。"
+    ]
+  },
+  "Intangible": {
+    "name": "無形",
+    "description": "このターン、すべての被ダメージとHPを失う効果を #b1 に軽減。 無形 は2ターンに1回有効になる。",
+    "descriptions": [
+      "このターン、すべての被ダメージとHPを失う効果を #b1 に軽減。 無形 は2ターンに1回有効になる。"
+    ]
+  },
+  "Invincible": {
+    "name": "無敵",
+    "description": "このターン、これ以上ダメージを受けることはない。",
+    "descriptions": [
+      "このターン中に減らせるHPは残り #b",
+      "。",
+      "このターン、これ以上ダメージを受けることはない。"
+    ]
+  },
+  "Juggernaut": {
+    "name": "ジャガーノート",
+    "description": "#yブロック を得るたび、ランダムな敵に #bX ダメージを与える。",
+    "descriptions": [
+      "#yブロック を得るたび、ランダムな敵に #b",
+      " ダメージを与える。"
+    ]
+  },
+  "Lockon": {
+    "name": "ロックオン",
+    "description": "オーブから受けるダメージが #b50% 増加。 #bX ターン有効。",
+    "descriptions": [
+      "オーブから受けるダメージが #b",
+      "% 増加。 #b",
+      " ターン有効。",
+      " ターン有効。"
+    ]
+  },
+  "Loop": {
+    "name": "ループ",
+    "description": "ターン開始時、先頭のオーブの自動効果を発動する。",
+    "descriptions": [
+      "ターン開始時、先頭のオーブの自動効果を発動する。",
+      "ターン開始時、先頭のオーブの自動効果を #b",
+      " 回分発動する。"
+    ]
+  },
+  "DexLoss": {
+    "name": "敏捷性低下",
+    "description": "このターン終了時、 #y敏捷性 #bX を失う。",
+    "descriptions": [
+      "このターン終了時、 #y敏捷性 #b",
+      " を失う。"
+    ]
+  },
+  "Flex": {
+    "name": "筋力低下",
+    "description": "このターン終了時、 #y筋力 #bX を失う。",
+    "descriptions": [
+      "このターン終了時、 #y筋力 #b",
+      " を失う。"
+    ]
+  },
+  "Magnetism": {
+    "name": "磁性",
+    "description": "ターン開始時、ランダムな無色カードを #bX 枚手札に加える。",
+    "descriptions": [
+      "ターン開始時、ランダムな無色カードを #b%s 枚手札に加える。",
+      "ターン開始時、ランダムな無色カードを #b%s 枚手札に加える。"
+    ]
+  },
+  "Malleable": {
+    "name": "鍛錬",
+    "description": "アタックダメージを受けると、 #bX #yブロック を得る。 #yブロック 値は 鍛錬 発動のたびに増加する。ターン開始時に鍛錬の値は #bX に戻る。",
+    "descriptions": [
+      "アタックダメージを受けると、 #b",
+      " #yブロック を得る。 #yブロック 値は ",
+      " 発動のたびに増加する。ターン開始時に鍛錬の値は #b",
+      " に戻る。"
+    ]
+  },
+  "Mayhem": {
+    "name": "騒乱",
+    "description": "ターン開始時、山札の一番上のカードを使用する。",
+    "descriptions": [
+      "ターン開始時、山札の一番上のカードを使用する。",
+      "ターン開始時、山札の一番上から #b",
+      " 枚のカードを使用する。"
+    ]
+  },
+  "Metallicize": {
+    "name": "金属化",
+    "description": "ターン終了時、 #bX #yブロック を得る。",
+    "descriptions": [
+      "ターン終了時、 #b",
+      " #yブロック を得る。",
+      "ターン終了時、 #b",
+      " #yブロック を得る。"
+    ]
+  },
+  "Minion": {
+    "name": "ミニオン",
+    "description": "リーダーがいないと、ミニオンは戦闘から逃走する。",
+    "descriptions": [
+      "リーダーがいないと、ミニオンは戦闘から逃走する。"
+    ]
+  },
+  "Mode Shift": {
+    "name": "モード変更",
+    "description": "#bX ダメージを受けると、防御モードに入る。",
+    "descriptions": [
+      "#b",
+      " ダメージを受けると、防御モードに入る。"
+    ]
+  },
+  "Next Turn Block": {
+    "name": "次ターンブロック",
+    "description": "次のターンで #bX #yブロック を得る。",
+    "descriptions": [
+      "次のターンで #b",
+      " #yブロック を得る。"
+    ]
+  },
+  "Night Terror": {
+    "name": "悪夢",
+    "description": "次のターンでカードを #bX #yX 枚手札に加える。",
+    "descriptions": [
+      "次のターンでカードを #b",
+      " 枚手札に加える。"
+    ]
+  },
+  "NoBlockPower": {
+    "name": "ブロック不可能",
+    "description": "カードから #yブロック を得られない。",
+    "descriptions": [
+      "カードから #yブロック を得られない。"
+    ]
+  },
+  "No Draw": {
+    "name": "ノードロー",
+    "description": "このターン、カードを引けない。",
+    "descriptions": [
+      "このターン、カードを引けない。"
+    ]
+  },
+  "Noxious Fumes": {
+    "name": "有毒ガス",
+    "description": "ターン開始時、敵全体に #y毒 #bX を与える。",
+    "descriptions": [
+      "ターン開始時、敵全体に #y毒 #b",
+      " を与える。"
+    ]
+  },
+  "Painful Stabs": {
+    "name": "苦痛の刺創",
+    "description": "この敵からアタックダメージを受けるたび、 #y負傷 が1枚捨て札に加えられる。",
+    "descriptions": [
+      "この敵からアタックダメージを受けるたび、 #y負傷 が1枚捨て札に加えられる。"
+    ]
+  },
+  "Panache": {
+    "name": "威風堂々",
+    "description": "このターンでカードをあと #bX 枚使用すると、敵全体に #bX ダメージを与える。",
+    "descriptions": [
+      "このターンでカードをあと #b",
+      " 枚使用すると、敵全体に #b",
+      " ダメージを与える。",
+      " 枚使用すると、敵全体に #b"
+    ]
+  },
+  "Pen Nib": {
+    "name": "ペン先",
+    "description": "次の #yアタック のダメージが2倍になる。",
+    "descriptions": [
+      "次の #yアタック のダメージが2倍になる。"
+    ]
+  },
+  "Phantasmal": {
+    "name": "幻影",
+    "description": "次のターンで #y2倍 のダメージを与える。",
+    "descriptions": [
+      "次のターンで #y2倍 のダメージを与える。",
+      "次の ",
+      " ターンの間、 #y2倍のダメージ を与える。"
+    ]
+  },
+  "Plated Armor": {
+    "name": "プレートアーマー",
+    "description": "ターン終了時、 #bX #yブロック を得る。アタックダメージを受けるたび、 #yプレートアーマー は #b1 減少。",
+    "descriptions": [
+      "ターン終了時、 #b",
+      " #yブロック を得る。アタックダメージを受けるたび、 #yプレートアーマー は #b1 減少。",
+      "ターン終了時、 #b",
+      " #yブロック を得る。アタックダメージを受けるたび、 #yプレートアーマー は #b1 減少。"
+    ]
+  },
+  "Poison": {
+    "name": "毒",
+    "description": "ターン開始時、HPを #bX 失い、 #y毒 を #b1 減らす。",
+    "descriptions": [
+      "ターン開始時、HPを #b",
+      " 失い、 #y毒 を #b1 減らす。",
+      "ターン開始時、HPを #b"
+    ]
+  },
+  "Rage": {
+    "name": "憤怒",
+    "description": "このターンで #yアタック を使用するたび、 #bX #yブロック を得る。",
+    "descriptions": [
+      "このターンで #yアタック を使用するたび、 #b",
+      " #yブロック を得る。"
+    ]
+  },
+  "Compulsive": {
+    "name": "反応",
+    "description": "アタックダメージを受けると、行動予定を変更する。",
+    "descriptions": [
+      "アタックダメージを受けると、行動予定を変更する。"
+    ]
+  },
+  "Rebound": {
+    "name": "跳ね返し",
+    "description": "次に使用する #bX 枚のカードは山札の一番上に置かれる。",
+    "descriptions": [
+      "このターンで次に使用するカードは山札の一番上に置かれる。",
+      "次に使用する #b",
+      " 枚のカードは山札の一番上に置かれる。"
+    ]
+  },
+  "Regeneration": {
+    "name": "再生",
+    "description": "ターン終了時、 #yHP を #bX 回復し、 #y再生 を #b1 減らす。",
+    "descriptions": [
+      "ターン終了時、 #yHP を #b",
+      " 回復し、 #y再生 を #b1 減らす。",
+      ""
+    ]
+  },
+  "Regenerate": {
+    "name": "再生",
+    "description": "ターン終了時、 #yHP を #bX 回復する。",
+    "descriptions": [
+      "ターン終了時、 #yHP を #b",
+      " 回復する。"
+    ]
+  },
+  "Life Link": {
+    "name": "命のリンク",
+    "description": "他の敵が生存している場合、 #b2 ターン後に #b50% のHPで復活する。",
+    "descriptions": [
+      "他の敵が生存している場合、 #b2 ターン後に #b50% のHPで復活する。"
+    ]
+  },
+  "Repair": {
+    "name": "修復",
+    "description": "戦闘終了時、HPを #bX 回復する。",
+    "descriptions": [
+      "戦闘終了時、HPを #b",
+      " 回復する。"
+    ]
+  },
+  "Retain Cards": {
+    "name": "カード保留",
+    "description": "ターン終了時、 #bX 枚のカードを 保留 できる。",
+    "descriptions": [
+      "ターン終了時、 #b",
+      " 枚のカードを 保留 できる。",
+      " 枚のカードを 保留 できる。"
+    ]
+  },
+  "Ritual": {
+    "name": "儀式",
+    "description": "ターン終了時、 #y筋力 #bX を得る。",
+    "descriptions": [
+      "ターン終了時、 #y筋力 #b",
+      " を得る。",
+      "ターン終了時、 #y筋力 #b"
+    ]
+  },
+  "Rupture": {
+    "name": "決裂",
+    "description": "カードの効果によってHPを失うたび、 #y筋力 #bX を得る。",
+    "descriptions": [
+      "カードの効果によってHPを失うたび、 #y筋力 #b",
+      " を得る。"
+    ]
+  },
+  "Sadistic": {
+    "name": "サディスト",
+    "description": "敵にデバフを与えるたび、 #bX ダメージを与える。",
+    "descriptions": [
+      "敵にデバフを与えるたび、 #b",
+      " ダメージを与える。"
+    ]
+  },
+  "Sharp Hide": {
+    "name": "尖った殻",
+    "description": "プレイヤーは #yアタック を使用するたび、 #bX ダメージを受ける。",
+    "descriptions": [
+      "プレイヤーは #yアタック を使用するたび、 #b",
+      " ダメージを受ける。"
+    ]
+  },
+  "Shifting": {
+    "name": "変化",
+    "description": "HPを失うと、その値に等しい #y筋力 をターン終了時まで失う。",
+    "descriptions": [
+      "",
+      "HPを失うと、その値に等しい #y筋力 をターン終了時まで失う。"
+    ]
+  },
+  "Skill Burn": {
+    "name": "スキル燃焼",
+    "description": "#bX ターンの間、使用した #yスキル は #y廃棄 される。",
+    "descriptions": [
+      "#b",
+      " ターンの間、使用した #yスキル は #y廃棄 される。",
+      "次の #b",
+      " ターンの間、使用した #yスキル は #y廃棄 される。"
+    ]
+  },
+  "Slow": {
+    "name": "鈍化",
+    "description": "このターン、カードを使用するたび、 #yX が #yアタック で受けるダメージが #b10% 増加する。",
+    "descriptions": [
+      "このターン、カードを使用するたび、 ",
+      " が #yアタック で受けるダメージが #b10% 増加する。",
+      " (ダメージ #b",
+      "% 増)"
+    ]
+  },
+  "Split": {
+    "name": "分裂",
+    "description": "HPが #b50% 以下になると #b2 体の小さなスライムに分裂する (HPは #yX の現在のHPと同じ)。",
+    "descriptions": [
+      "HPが #b50% 以下になると #b2 体の小さなスライムに分裂する (HPは ",
+      " の現在のHPと同じ)。"
+    ]
+  },
+  "Spore Cloud": {
+    "name": "胞子雲",
+    "description": "死亡時、 #y弱体化 #bX を与える。",
+    "descriptions": [
+      "死亡時、 #y弱体化 #b",
+      " を与える。"
+    ]
+  },
+  "Stasis": {
+    "name": "停滞",
+    "description": "死亡時、 #yX は手札に戻る。",
+    "descriptions": [
+      "死亡時、 ",
+      " は手札に戻る。"
+    ]
+  },
+  "StaticDischarge": {
+    "name": "静電気放電",
+    "description": "アタックダメージを受けるたび、 #yライトニング を #bX 個 #y生成 する。",
+    "descriptions": [
+      "アタックダメージを受けるたび、 #yライトニング を #b",
+      " 個 #y生成 する。"
+    ]
+  },
+  "Storm": {
+    "name": "嵐",
+    "description": "#bパワー を使用するたび、 #yライトニング を #bX 個 #y生成 する。",
+    "descriptions": [
+      "#bパワー を使用するたび、 #yライトニング を #b",
+      " 個 #y生成 する。"
+    ]
+  },
+  "Strength": {
+    "name": "筋力",
+    "description": "アタックダメージ #b+X 。",
+    "descriptions": [
+      "アタックダメージ #b+",
+      "アタックダメージ #b-",
+      " 。"
+    ]
+  },
+  "StrikeUp": {
+    "name": "ストライクアップ",
+    "description": "名前に「 #yストライク 」を含むカードが追加で #bX ダメージを与える。",
+    "descriptions": [
+      "名前に「 #yストライク 」を含むカードが追加で #b",
+      " ダメージを与える。"
+    ]
+  },
+  "Surrounded": {
+    "name": "包囲",
+    "description": "背後からのアタックは被ダメージが #b50% 増加。ターゲットカードかポーションを使用して向きを変えられる。",
+    "descriptions": [
+      "背後からのアタックは被ダメージが #b50% 増加。ターゲットカードかポーションを使用して向きを変えられる。"
+    ]
+  },
+  "TheBomb": {
+    "name": "爆弾",
+    "description": "このターン終了時、敵全体に #bX ダメージを与える。",
+    "descriptions": [
+      "#b%1$s ターン経過時、敵全体に #b%2$s ダメージを与える。",
+      "このターン終了時、敵全体に #b%1$s ダメージを与える。"
+    ]
+  },
+  "Thievery": {
+    "name": "コソ泥",
+    "description": "X はアタックするたび、 #bX #yゴールド を奪う。",
+    "descriptions": [
+      " はアタックするたび、 #b",
+      " #yゴールド を奪う。"
+    ]
+  },
+  "Thorns": {
+    "name": "トゲ",
+    "description": "アタック を受けた時、 #bX ダメージ反撃する。",
+    "descriptions": [
+      "アタック を受けた時、 #b",
+      " ダメージ反撃する。"
+    ]
+  },
+  "Thousand Cuts": {
+    "name": "メッタ切り",
+    "description": "カードを使用するたび、敵全体に #bX ダメージを与える。",
+    "descriptions": [
+      "カードを使用するたび、敵全体に #b",
+      " ダメージを与える。"
+    ]
+  },
+  "TimeMazePower": {
+    "name": "時の迷宮",
+    "description": "カードを #bX 枚使用すると、ターンが強制終了する。",
+    "descriptions": [
+      "カードを #b",
+      " 枚使用すると、ターンが強制終了する。"
+    ]
+  },
+  "Time Warp": {
+    "name": "タイムワープ",
+    "description": "プレイヤーがカードを #b12 枚使用するとターンが強制終了し、 #y筋力 #b2 を得る。",
+    "descriptions": [
+      "プレイヤーがカードを #b",
+      " 枚使用するとターンが強制終了し、 #y筋力 #b",
+      " を得る。"
+    ]
+  },
+  "Tools Of The Trade": {
+    "name": "商売道具",
+    "description": "ターン開始時、カードを #bX 枚引いて、 #bX 枚捨てる。",
+    "descriptions": [
+      "ターン開始時、カードを #b",
+      " 枚引いて、 #b",
+      " 枚捨てる。",
+      " 枚引いて、 #b",
+      " 枚捨てる。"
+    ]
+  },
+  "Unawakened": {
+    "name": "目覚めの前",
+    "description": "この敵はまだ目覚めていない…。",
+    "descriptions": [
+      "この敵はまだ目覚めていない…。"
+    ]
+  },
+  "Vulnerable": {
+    "name": "弱体化",
+    "description": "#yアタック で受けるダメージが #b25% 増加。 #bX ターン有効。",
+    "descriptions": [
+      "#yアタック で受けるダメージが #b",
+      "% 増加。 #b",
+      " ターン有効。",
+      " ターン有効。"
+    ]
+  },
+  "Weakened": {
+    "name": "脱力",
+    "description": "#yアタック で与えるダメージが #b40% 減少。 #bX ターン有効。",
+    "descriptions": [
+      "#yアタック で与えるダメージが #b",
+      "% 減少。 #b",
+      " ターン有効。",
+      " ターン有効。"
+    ]
+  },
+  "Wraith Form v2": {
+    "name": "幽体化",
+    "description": "ターン終了時、 #y敏捷性 #bX を失う。",
+    "descriptions": [
+      "ターン終了時、 #y敏捷性 #b",
+      " を失う。"
+    ]
+  },
+  "BattleHymn": {
+    "name": "闘争賛歌",
+    "description": "ターン開始時、 #yスマイト を #bX 枚手札に加える。",
+    "descriptions": [
+      "ターン開始時、 #yスマイト を #b",
+      " 枚手札に加える。",
+      " 枚手札に加える。"
+    ]
+  },
+  "BlockReturnPower": {
+    "name": "ブロックリターン",
+    "description": "攻撃を受けると、プレイヤーが #bX #yブロック を得る。",
+    "descriptions": [
+      "攻撃を受けると、プレイヤーが #b",
+      " #yブロック を得る。"
+    ]
+  },
+  "CannotChangeStancePower": {
+    "name": "スタンス変更不可",
+    "description": "このターン、スタンスを変更できない。",
+    "descriptions": [
+      "このターン、スタンスを変更できない。"
+    ]
+  },
+  "DevaForm": {
+    "name": "神体",
+    "description": "ターン開始時、 [W] を得る。この効果はターンごとに #bX 増加する。",
+    "descriptions": [
+      "ターン開始時、 [W] を得る。",
+      "ターン開始時、 [W] を #b",
+      " 回得る。",
+      "この効果はターンごとに #b",
+      " 増加する。",
+      "TRANSLATE NOTE: At the start of your turn, gain [W] #b2 times and increase this by #b1."
+    ]
+  },
+  "DevotionPower": {
+    "name": "献身",
+    "description": "ターン開始時、 #bX #yマントラ を得る。",
+    "descriptions": [
+      "ターン開始時、 #b",
+      " #yマントラ を得る。"
+    ]
+  },
+  "EndTurnDeath": {
+    "name": "冒涜",
+    "description": "ターン開始時、死亡する。",
+    "descriptions": [
+      "ターン開始時、死亡する。"
+    ]
+  },
+  "EnergyDownPower": {
+    "name": "断食",
+    "description": "ターン開始時、 [E] 。を失う。",
+    "descriptions": [
+      "ターン開始時、 ",
+      "を失う。"
+    ]
+  },
+  "EstablishmentPower": {
+    "name": "制定",
+    "description": "カードが #y保留 されるたび、この戦闘中そのカードのコストは #bX 下がる。",
+    "descriptions": [
+      "カードが #y保留 されるたび、この戦闘中そのカードのコストは #b",
+      " 下がる。"
+    ]
+  },
+  "WireheadingPower": {
+    "name": "未来予見",
+    "description": "ターン開始時、 #y占術 #bX。",
+    "descriptions": [
+      "ターン開始時、 #y占術 #b",
+      "。"
+    ]
+  },
+  "FreeAttackPower": {
+    "name": "アタックコスト無視",
+    "description": "次にプレイする #yアタック のコストを無視する。",
+    "descriptions": [
+      "次にプレイする #yアタック のコストを無視する。",
+      "次にプレイする #b",
+      " 枚の #yアタック のコストを無視する。"
+    ]
+  },
+  "LikeWaterPower": {
+    "name": "水の如く",
+    "description": "ターン終了時に #y平静 スタンスの場合、 #bX #yブロック を得る。",
+    "descriptions": [
+      "ターン終了時に #y平静 スタンスの場合、 #b",
+      " #yブロック を得る。"
+    ]
+  },
+  "AngelForm": {
+    "name": "永遠の命",
+    "description": "ターン終了時、 #yプレートアーマー #bX を得る。",
+    "descriptions": [
+      "ターン終了時、 #yプレートアーマー #b",
+      " を得る。"
+    ]
+  },
+  "Mantra": {
+    "name": "マントラ",
+    "description": "#yマントラ を #b10 得ると #y神聖 スタンスに移行する。",
+    "descriptions": [
+      "#yマントラ を #b",
+      " 得ると #y神聖 スタンスに移行する。"
+    ]
+  },
+  "PathToVictoryPower": {
+    "name": "急所",
+    "description": "#y経穴殺法 をプレイするたび、 #bX HPを失う。",
+    "descriptions": [
+      "#y経穴殺法 をプレイするたび、 #b",
+      " HPを失う。"
+    ]
+  },
+  "MasterRealityPower": {
+    "name": "現実掌握",
+    "description": "カードが作られるたび、それを #yアップグレード する。",
+    "descriptions": [
+      "カードが作られるたび、それを #yアップグレード する。",
+      "deprecated",
+      "deprecated",
+      "deprecated"
+    ]
+  },
+  "Controlled": {
+    "name": "精神要塞",
+    "description": "#yスタンス を変更するたび、 #bX #yブロック を得る。",
+    "descriptions": [
+      "#yスタンス を変更するたび、 #b",
+      " #yブロック を得る。"
+    ]
+  },
+  "Nirvana": {
+    "name": "涅槃",
+    "description": "占術を行うたび、 #bX #yブロック を得る。",
+    "descriptions": [
+      "占術を行うたび、 #b",
+      " #yブロック を得る。"
+    ]
+  },
+  "NoSkills": {
+    "name": "スキル不可",
+    "description": "このターン #yスキル をプレイできない。",
+    "descriptions": [
+      "このターン #yスキル をプレイできない。"
+    ]
+  },
+  "OmegaPower": {
+    "name": "オメガ",
+    "description": "ターン終了時、敵全体に #bX ダメージを与える。",
+    "descriptions": [
+      "ターン終了時、敵全体に #b",
+      " ダメージを与える。"
+    ]
+  },
+  "OmnisciencePower": {
+    "name": "Omniscience",
+    "description": "DEPERCATEDXDEPRECATED",
+    "descriptions": [
+      "DEPERCATED",
+      "DEPRECATED"
+    ]
+  },
+  "Adaptation": {
+    "name": "急襲",
+    "description": "#y憤怒 に移行するたび、カードを #bX 枚引く。",
+    "descriptions": [
+      "#y憤怒 に移行するたび、カードを #b",
+      " 枚引く。",
+      " 枚引く。"
+    ]
+  },
+  "Study": {
+    "name": "学習",
+    "description": "ターン終了時、 #y洞察 を #bX 枚山札に混ぜる。",
+    "descriptions": [
+      "ターン終了時、 #y洞察 を #b",
+      " 枚山札に混ぜる。",
+      " 枚山札に混ぜる。"
+    ]
+  },
+  "Vault": {
+    "name": "飛躍",
+    "description": "次のターン開始時、 #bX ダメージを受ける。",
+    "descriptions": [
+      "次のターン開始時、 #b",
+      " ダメージを受ける。"
+    ]
+  },
+  "Vigor": {
+    "name": "活力",
+    "description": "次のアタックが追加で #bX ダメージを与える。",
+    "descriptions": [
+      "次のアタックが追加で #b",
+      " ダメージを与える。"
+    ]
+  },
+  "WaveOfTheHandPower": {
+    "name": "波打つ手",
+    "description": "#yブロック を得るたび、敵全体に #y脱力 #bX を与える。",
+    "descriptions": [
+      "#yブロック を得るたび、敵全体に #y脱力 #b",
+      " を与える。"
+    ]
+  },
+  "WrathNextTurnPower": {
+    "name": "一触即発",
+    "description": "ターン開始時、 #y憤怒 に移行する。",
+    "descriptions": [
+      "ターン開始時、 #y憤怒 に移行する。"
+    ]
+  }
+}

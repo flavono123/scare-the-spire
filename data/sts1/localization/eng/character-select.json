@@ -1,0 +1,31 @@
+{
+  "characters": {
+    "ironclad": {
+      "name": "The Ironclad",
+      "title": "The Ironclad",
+      "flavor": "The remaining soldier of the Ironclads. NL Sold his soul to harness demonic energies."
+    },
+    "silent": {
+      "name": "The Silent",
+      "title": "The Silent",
+      "flavor": "A deadly huntress from the foglands. NL Eradicates foes with daggers and poisons."
+    },
+    "defect": {
+      "name": "The Defect",
+      "title": "The Defect",
+      "flavor": "A combat automaton which became self-aware. NL Ancient technology allows the manipulation of Orbs."
+    },
+    "watcher": {
+      "name": "The Watcher",
+      "title": "The Watcher",
+      "flavor": "A blind ascetic who has come to \"Evaluate\" the Spire. NL Master of the divine Stances."
+    }
+  },
+  "ui": {
+    "choose": "Choose Your Character",
+    "embark": "Embark",
+    "back": "Back",
+    "hp": "HP: ",
+    "gold": "Gold: "
+  }
+}

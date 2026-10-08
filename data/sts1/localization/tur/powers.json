@@ -1,0 +1,1228 @@
+{
+  "Accuracy": {
+    "name": "İsabet",
+    "description": "#yKamalar fazladan #bX hasar verir.",
+    "descriptions": [
+      "#yKamalar fazladan #b",
+      " hasar verir."
+    ]
+  },
+  "After Image": {
+    "name": "Ardıl Görüntü",
+    "description": "Ne zaman bir kart oynarsan #bX #yBlok kazan.",
+    "descriptions": [
+      "Ne zaman bir kart oynarsan #b",
+      " #yBlok kazan."
+    ]
+  },
+  "Amplify": {
+    "name": "Güçlendirme",
+    "description": "Bu tur oynayacağın bir sonraki #yGüç kartı iki kez oynanır.",
+    "descriptions": [
+      "Bu tur oynayacağın bir sonraki #yGüç kartı iki kez oynanır.",
+      "Bu tur oynayacağın sonraki ",
+      " #yGüç kartı iki kez oynanır."
+    ]
+  },
+  "Anger": {
+    "name": "Kudurmuş",
+    "description": "Ne zaman bir #yBeceri oynarsan #bX #yKuvvet kazanır.",
+    "descriptions": [
+      "Ne zaman bir #yBeceri oynarsan #b",
+      " #yKuvvet kazanır."
+    ]
+  },
+  "Angry": {
+    "name": "Asabi",
+    "description": "Her saldırı hasarı aldığında #bX #yKuvvet kazanır.",
+    "descriptions": [
+      "",
+      "Her saldırı hasarı aldığında #b",
+      " #yKuvvet kazanır."
+    ]
+  },
+  "Artifact": {
+    "name": "Yapı",
+    "description": "Gelen #bX olumsuz etkiyi engeller.",
+    "descriptions": [
+      "Gelen #b",
+      " olumsuz etkiyi engeller.",
+      " olumsuz etkiyi engeller."
+    ]
+  },
+  "Attack Burn": {
+    "name": "Saldırı Yakıcı",
+    "description": "#bX tur, ne zaman bir #ySaldırı oynarsan onu #yTüket.",
+    "descriptions": [
+      "#b",
+      " tur, ne zaman bir #ySaldırı oynarsan onu #yTüket.",
+      "#b",
+      " tur, ne zaman bir #ySaldırı oynarsan onu #yTüket."
+    ]
+  },
+  "BackAttack": {
+    "name": "Arkadan Saldırı",
+    "description": "Arkadan saldırdığı için #b%50 daha fazla hasar verir.",
+    "descriptions": [
+      "Arkadan saldırdığı için #b%50 daha fazla hasar verir."
+    ]
+  },
+  "Barricade": {
+    "name": "Barikat",
+    "description": "#yBlok tur başlarında kalkmaz.",
+    "descriptions": [
+      "#yBlok tur başlarında kalkmaz.",
+      "#yBlok tur başlarında kalkmaz."
+    ]
+  },
+  "BeatOfDeath": {
+    "name": "Ölümün Kalp Atışı",
+    "description": "Ne zaman bir kart oynarsan #bX hasar al.",
+    "descriptions": [
+      "Ne zaman bir kart oynarsan #b",
+      " hasar al."
+    ]
+  },
+  "Berserk": {
+    "name": "Cinnet",
+    "description": "Tur başında fazladan [R] .",
+    "descriptions": [
+      "Tur başında fazladan ",
+      " kazan."
+    ]
+  },
+  "Bias": {
+    "name": "Taraflılık",
+    "description": "Tur başında #bX #yOdak kaybet.",
+    "descriptions": [
+      "Tur başında #b",
+      " #yOdak kaybet."
+    ]
+  },
+  "Blur": {
+    "name": "Bulanık",
+    "description": "#yBlok sonraki tur başında kalkmaz.",
+    "descriptions": [
+      "#yBlok sonraki tur başında kalkmaz.",
+      "#yBlok sonraki #b",
+      " tur başında kalkmaz."
+    ]
+  },
+  "Brutality": {
+    "name": "Vahşilik",
+    "description": "Tur başında #bX CP kaybet ve #bX kart çek.",
+    "descriptions": [
+      "Tur başında #b",
+      " CP kaybet ve #b",
+      " kart çek.",
+      "Tur başında #b",
+      " CP kaybet ve #b",
+      " kart çek."
+    ]
+  },
+  "Buffer": {
+    "name": "Tampon",
+    "description": "Bir sonraki CP kaybını önle.",
+    "descriptions": [
+      "Bir sonraki CP kaybını önle.",
+      "Sonraki #b",
+      " CP kaybını önle."
+    ]
+  },
+  "Burst": {
+    "name": "Atılma",
+    "description": "Bu tur oynayacağın bir sonraki #yBeceri iki kez oynanır.",
+    "descriptions": [
+      "Bu tur oynayacağın bir sonraki #yBeceri iki kez oynanır.",
+      "Bu tur oynayacağın sonraki ",
+      " #yBeceri iki kez oynanır."
+    ]
+  },
+  "Choked": {
+    "name": "Boğulma",
+    "description": "Bu tur boyunca ne zaman bir kart oynarsan #bX CP kaybeder.",
+    "descriptions": [
+      "Bu tur boyunca ne zaman bir kart oynarsan #b",
+      " CP kaybeder."
+    ]
+  },
+  "Collect": {
+    "name": "Toplama",
+    "description": "Bir sonraki tur başında eline #yMucize+ ekle.",
+    "descriptions": [
+      "Bir sonraki tur başında eline #yMucize+ ekle.",
+      "Sonraki #b",
+      " tur boyunca, tur başlarında eline #yMucize+ ekle."
+    ]
+  },
+  "Combust": {
+    "name": "İçten Yanma",
+    "description": "Tur sonunda #bX CP kaybet ve TÜM düşmanlara #bX hasar ver.",
+    "descriptions": [
+      "Tur sonunda #b",
+      " CP kaybet ve TÜM düşmanlara #b",
+      " hasar ver."
+    ]
+  },
+  "Confusion": {
+    "name": "Şaşkınlık",
+    "description": "Ne zaman kart çekersen maliyetini rastgele belirle.",
+    "descriptions": [
+      "Ne zaman kart çekersen maliyetini rastgele belirle."
+    ]
+  },
+  "Conserve": {
+    "name": "Saklama",
+    "description": "#yEnerji bu tur saklanır.",
+    "descriptions": [
+      "#yEnerji bu tur saklanır.",
+      "#yEnerji sonraki #b",
+      " tur boyunca saklanır."
+    ]
+  },
+  "Constricted": {
+    "name": "Sıkıştırılmış",
+    "description": "Turun bittiği anda #bX hasar al.",
+    "descriptions": [
+      "Turun bittiği anda #b",
+      " hasar al."
+    ]
+  },
+  "CorpseExplosionPower": {
+    "name": "Patlayan Ceset",
+    "description": "Bu düşman ölünce TÜM düşmanlara Maksimum CP'si kadar hasar ver.",
+    "descriptions": [
+      "Bu düşman ölünce TÜM düşmanlara Maksimum CP'si kadar hasar ver.",
+      "Bu düşman ölünce TÜM düşmanlara Maksimum CP'sinin #b",
+      " katı hasar ver."
+    ]
+  },
+  "Corruption": {
+    "name": "Yozlaşma",
+    "description": "#yBeceri oynadığında onu #yTüket.",
+    "descriptions": [
+      "Tüm Beceri kartları #b0 enerji olur. #yBeceri oynadığında onu #yTüket.",
+      "#yBeceri oynadığında onu #yTüket."
+    ]
+  },
+  "Creative AI": {
+    "name": "Yaratıcı AI",
+    "description": "Tur başında eline rastgele #bX #yGüç kartı ekle.",
+    "descriptions": [
+      "Tur başında eline rastgele #b",
+      " #yGüç kartı ekle.",
+      " #yGüç kartı ekle."
+    ]
+  },
+  "Curiosity": {
+    "name": "Merak",
+    "description": "Ne zaman bir #yGüç kartı oynarsan #bX #yKuvvet kazanır.",
+    "descriptions": [
+      "Ne zaman bir #yGüç kartı oynarsan #b",
+      " #yKuvvet kazanır."
+    ]
+  },
+  "Curl Up": {
+    "name": "Kıvrılma",
+    "description": "#ySaldırı hasarı aldığında kıvrılır ve #bX #yBlok kazanır (yalnızca bir sefer).",
+    "descriptions": [
+      "#ySaldırı hasarı aldığında kıvrılır ve #b",
+      " #yBlok kazanır (yalnızca bir sefer)."
+    ]
+  },
+  "Dark Embrace": {
+    "name": "Karanlık Kucak",
+    "description": "Ne zaman bir kart #yTüketilirse #b1 kart çek.",
+    "descriptions": [
+      "Ne zaman bir kart #yTüketilirse #b1 kart çek.",
+      "Ne zaman bir kart #yTüketilirse #b",
+      " kart çek."
+    ]
+  },
+  "Demon Form": {
+    "name": "İblis Formu",
+    "description": "Tur başında #bX #yKuvvet kazan.",
+    "descriptions": [
+      "Tur başında #b",
+      " #yKuvvet kazan."
+    ]
+  },
+  "Dexterity": {
+    "name": "Çeviklik",
+    "description": "Kartlardan kazanılan #yBloğu şu sayıda artır: #bX.",
+    "descriptions": [
+      "Kartlardan kazanılan #yBloğu şu sayıda artır: #b",
+      "Kartlardan kazanılan #yBloğu şu sayıda azalt: #b",
+      "."
+    ]
+  },
+  "Double Damage": {
+    "name": "Çift Hasar",
+    "description": "#ySaldırılar iki kat hasar verir: #bX tur boyunca.",
+    "descriptions": [
+      "#ySaldırılar iki kat hasar verir: #b",
+      " tur boyunca.",
+      " tur boyunca."
+    ]
+  },
+  "Double Tap": {
+    "name": "Çift Vuruş",
+    "description": "Bu tur oynayacağın bir sonraki #ySaldırı iki kez oynanır.",
+    "descriptions": [
+      "Bu tur oynayacağın bir sonraki #ySaldırı iki kez oynanır.",
+      "Bu tur oynayacağın sonraki #b",
+      " #ySaldırı iki kez oynanır."
+    ]
+  },
+  "Draw Card": {
+    "name": "Kart Çekme",
+    "description": "Sonraki tur başında #bX kart fazla çek.",
+    "descriptions": [
+      "Sonraki tur başında #b",
+      " kart fazla çek.",
+      " kart fazla çek."
+    ]
+  },
+  "Draw": {
+    "name": "Çekme",
+    "description": "Sonraki tur başında #bX kart fazla çek.",
+    "descriptions": [
+      "Sonraki tur başında #b",
+      " kart fazla çek.",
+      " kart eksik çek.",
+      " kart fazla çek.",
+      " kart eksik çek."
+    ]
+  },
+  "Draw Reduction": {
+    "name": "Kart Çekme Azalması",
+    "description": "Sonraki tur #b1 kart eksik çek.",
+    "descriptions": [
+      "Sonraki tur #b1 kart eksik çek.",
+      "#b",
+      " tur boyunca #b1 kart eksik çek."
+    ]
+  },
+  "DuplicationPower": {
+    "name": "Kopyalama",
+    "description": "Bu tur oynayacağın bir sonraki kart iki kez oynanır.",
+    "descriptions": [
+      "Bu tur oynayacağın bir sonraki kart iki kez oynanır.",
+      "Bu tur oynayacağın sonraki #b",
+      " kart iki kez oynanır."
+    ]
+  },
+  "Echo Form": {
+    "name": "Yankı Formu",
+    "description": "Tur başında oynanan ilk kart iki kez oynanır.",
+    "descriptions": [
+      "Tur başında oynanan ilk kart iki kez oynanır.",
+      "Tur başında oynanan ilk #b",
+      " kart iki kez oynanır."
+    ]
+  },
+  "Electro": {
+    "name": "Elektrodinamik",
+    "description": "#yYıldırım TÜM düşmanlara vurur.",
+    "descriptions": [
+      "#yYıldırım TÜM düşmanlara vurur.",
+      "",
+      ""
+    ]
+  },
+  "EnergizedBlue": {
+    "name": "Enerjili",
+    "description": "Sonraki tur fazladan #bX [B] kazan.",
+    "descriptions": [
+      "Sonraki tur fazladan #b",
+      " [B] kazan.",
+      " [B] kazan.",
+      " - TRANSLATOR NOTE: - The above line is for plural if needed to distinguish from singular."
+    ]
+  },
+  "Energized": {
+    "name": "Enerjik",
+    "description": "Sonraki tur fazladan #bX [G] kazan.",
+    "descriptions": [
+      "Sonraki tur fazladan #b",
+      " [G] kazan.",
+      " [G] kazan.",
+      " - TRANSLATOR NOTE: - The above line is for plural if needed to distinguish from singular."
+    ]
+  },
+  "Entangled": {
+    "name": "Eli Ayağına Dolaşmış",
+    "description": "Bu tur boyunca #ySaldırı kartı oynayamazsın.",
+    "descriptions": [
+      "Bu tur boyunca #ySaldırı kartı oynayamazsın."
+    ]
+  },
+  "Envenom": {
+    "name": "Bir Tutam Zehir",
+    "description": "Ne zaman bir #ySaldırın CP hasarı verirse #bX #yZehir uygula.",
+    "descriptions": [
+      "Ne zaman bir #ySaldırın CP hasarı verirse #b",
+      " #yZehir uygula."
+    ]
+  },
+  "Equilibrium": {
+    "name": "Saklama",
+    "description": "Tur sonunda elini sakla.",
+    "descriptions": [
+      "Tur sonunda elini sakla.",
+      "Elini #b",
+      " tur boyunca sakla."
+    ]
+  },
+  "Evolve": {
+    "name": "Evrimleşme",
+    "description": "Ne zaman bir #yDurum kartı çekersen #b1 kart çek.",
+    "descriptions": [
+      "Ne zaman bir #yDurum kartı çekersen #b1 kart çek.",
+      "Ne zaman bir #yDurum kartı çekersen #b",
+      " kart çek."
+    ]
+  },
+  "Explosive": {
+    "name": "Patlayıcı",
+    "description": "Bu tur patlayacak ve vereceği hasar: #b30 hasar verir.",
+    "descriptions": [
+      "#b",
+      " tur sonra patlar ve #b",
+      " hasar verir.",
+      "Bu tur patlayacak ve vereceği hasar: #b"
+    ]
+  },
+  "Fading": {
+    "name": "Solma",
+    "description": "Bu tur ölecek.",
+    "descriptions": [
+      "#b",
+      " tur içinde ölür.",
+      "Bu tur ölecek."
+    ]
+  },
+  "Feel No Pain": {
+    "name": "Acı Yok",
+    "description": "Ne zaman bir kart #yTüketilirse #bX #yBlok kazan.",
+    "descriptions": [
+      "Ne zaman bir kart #yTüketilirse #b",
+      " #yBlok kazan."
+    ]
+  },
+  "Fire Breathing": {
+    "name": "Ateş Püskürtme",
+    "description": "Ne zaman bir #yDurum veya #yLanet kartı çekersen TÜM düşmanlara #bX hasar ver.",
+    "descriptions": [
+      "Ne zaman bir #yDurum veya #yLanet kartı çekersen TÜM düşmanlara #b",
+      " hasar ver."
+    ]
+  },
+  "Flame Barrier": {
+    "name": "Alev Seti",
+    "description": "#ySaldırı geldiğinde saldırana geri #bX hasar ver.",
+    "descriptions": [
+      "#ySaldırı geldiğinde saldırana geri #b",
+      " hasar ver."
+    ]
+  },
+  "Flight": {
+    "name": "Uçuş",
+    "description": "Saldırılardan #b%50 daha az hasar alır. Eğer bu tur boyunca #bX kez vurursan yere düşer.",
+    "descriptions": [
+      "Saldırılardan #b%50 daha az hasar alır. Eğer bu tur boyunca #b",
+      " kez vurursan yere düşer."
+    ]
+  },
+  "Focus": {
+    "name": "Odak",
+    "description": "Kürelerinin gücünü şu sayıda artır: #bX.",
+    "descriptions": [
+      "Kürelerinin gücünü şu sayıda artır: #b",
+      "Kürelerinin gücünü şu sayıda azalt: #b",
+      "."
+    ]
+  },
+  "Nullify Attack": {
+    "name": "Boşa Saldırı",
+    "description": "Her tur bir #ySaldırıyı tamamen #yBlokla.",
+    "descriptions": [
+      "Her tur bir #ySaldırıyı tamamen #yBlokla."
+    ]
+  },
+  "Frail": {
+    "name": "Kırılgan",
+    "description": "Kartlardan #b%25 daha az #yBlok kazanırsın: #bX tur boyunca.",
+    "descriptions": [
+      "Kartlardan #b%25 daha az #yBlok kazanırsın: #b",
+      " tur boyunca.",
+      " tur boyunca."
+    ]
+  },
+  "Shackled": {
+    "name": "Zincirlenmiş",
+    "description": "Turunun sonunda geri #bX #yKuvvet kazanır.",
+    "descriptions": [
+      "Turunun sonunda geri #b",
+      " #yKuvvet kazanır."
+    ]
+  },
+  "Generic Strength Up Power": {
+    "name": "Kuvvet Artırma",
+    "description": "Turunun sonunda #bX #yKuvvet kazanır.",
+    "descriptions": [
+      "Turunun sonunda #b",
+      " #yKuvvet kazanır."
+    ]
+  },
+  "GrowthPower": {
+    "name": "Büyüme",
+    "description": "Turunun sonunda #bX #yKuvvet kazanır.",
+    "descriptions": [
+      "Turunun sonunda #b",
+      " #yKuvvet kazanır."
+    ]
+  },
+  "Heatsink": {
+    "name": "Isı Yatağı",
+    "description": "Ne zaman bir Güç kartı oynarsan #bX kart çek.",
+    "descriptions": [
+      "Ne zaman bir Güç kartı oynarsan #b",
+      " kart çek.",
+      " kart çek."
+    ]
+  },
+  "Hello": {
+    "name": "Merhaba Dünya",
+    "description": "Tur başında eline #bX yaygın kart ekle.",
+    "descriptions": [
+      "Tur başında eline #b",
+      " yaygın kart ekle.",
+      " yaygın kart ekle."
+    ]
+  },
+  "Hex": {
+    "name": "Nazar",
+    "description": "Ne zaman #ySaldırı #yharici bir kart oynarsan çekme yığınına #bX #ySersemlik karıştır.",
+    "descriptions": [
+      "Ne zaman #ySaldırı #yharici bir kart oynarsan çekme yığınına #b",
+      " #ySersemlik karıştır."
+    ]
+  },
+  "Infinite Blades": {
+    "name": "Sonsuz Bıçak",
+    "description": "Tur başında eline #bX #yKama ekle.",
+    "descriptions": [
+      "Tur başında eline #b",
+      " #yKama ekle.",
+      " #yKama ekle."
+    ]
+  },
+  "IntangiblePlayer": {
+    "name": "Soyutluk",
+    "description": "Alınan tüm hasarları ve CP kayıplarını #b1'e indir.",
+    "descriptions": [
+      "Alınan tüm hasarları ve CP kayıplarını #b1'e indir."
+    ]
+  },
+  "Intangible": {
+    "name": "Soyutluk",
+    "description": "Bu tur alınan tüm hasarları ve CP kayıplarını #b1'e indirir.",
+    "descriptions": [
+      "Bu tur alınan tüm hasarları ve CP kayıplarını #b1'e indirir."
+    ]
+  },
+  "Invincible": {
+    "name": "Dokunulmaz",
+    "description": "Bu turda artık can kaybedemez.",
+    "descriptions": [
+      "Bu tur boyunca en fazla #b",
+      " can kaybedebilir.",
+      "Bu turda artık can kaybedemez."
+    ]
+  },
+  "Juggernaut": {
+    "name": "Ezici Güç",
+    "description": "Ne zaman #yBlok kazanırsan rastgele bir düşmana #bX hasar ver.",
+    "descriptions": [
+      "Ne zaman #yBlok kazanırsan rastgele bir düşmana #b",
+      " hasar ver."
+    ]
+  },
+  "Lockon": {
+    "name": "Kilitlenme",
+    "description": "Kürelerden #b%50 daha fazla hasar alır: #bX tur boyunca.",
+    "descriptions": [
+      "Kürelerden #b%",
+      " daha fazla hasar alır: #b",
+      " tur boyunca.",
+      " tur boyunca."
+    ]
+  },
+  "Loop": {
+    "name": "Döngü",
+    "description": "Tur başında sıradaki kürenin pasif özelliğini tetikle.",
+    "descriptions": [
+      "Tur başında sıradaki kürenin pasif özelliğini tetikle.",
+      "Tur başında sıradaki kürenin pasif özelliğini #b",
+      " kez tetikle."
+    ]
+  },
+  "DexLoss": {
+    "name": "Çeviklik Kaybı",
+    "description": "Tur sonunda #bX #yÇeviklik kaybet.",
+    "descriptions": [
+      "Tur sonunda #b",
+      " #yÇeviklik kaybet."
+    ]
+  },
+  "Flex": {
+    "name": "Kasılma",
+    "description": "Tur sonunda #bX #yKuvvet kaybet.",
+    "descriptions": [
+      "Tur sonunda #b",
+      " #yKuvvet kaybet."
+    ]
+  },
+  "Magnetism": {
+    "name": "Çekim",
+    "description": "Tur başında eline #bX rastgele renksiz kart ekle.",
+    "descriptions": [
+      "Tur başında eline #b%s rastgele renksiz kart ekle.",
+      "Tur başında eline #b%s rastgele renksiz kart ekle."
+    ]
+  },
+  "Malleable": {
+    "name": "Yumuşak",
+    "description": "Saldırılardan hasar aldığında #bX #yBlok kazanır. #yBlok kazanımı Yumuşak tetiklendikçe artar. Sonraki tur başında #bX olarak tekrar başlar.",
+    "descriptions": [
+      "Saldırılardan hasar aldığında #b",
+      " #yBlok kazanır. #yBlok kazanımı ",
+      " tetiklendikçe artar. Sonraki tur başında #b",
+      " olarak tekrar başlar."
+    ]
+  },
+  "Mayhem": {
+    "name": "Kargaşa",
+    "description": "Tur başında çekme yığınının en üstündeki kartı oyna.",
+    "descriptions": [
+      "Tur başında çekme yığınının en üstündeki kartı oyna.",
+      "Tur başında çekme yığınının en üstündeki #b",
+      " kartı oyna."
+    ]
+  },
+  "Metallicize": {
+    "name": "Metalleşme",
+    "description": "Tur sonunda #bX #yBlok kazan.",
+    "descriptions": [
+      "Tur sonunda #b",
+      " #yBlok kazan.",
+      "Turunun sonunda #b",
+      " #yBlok kazanır."
+    ]
+  },
+  "Minion": {
+    "name": "Minyon",
+    "description": "Minyonlar liderleri öldüğünde kaçarlar.",
+    "descriptions": [
+      "Minyonlar liderleri öldüğünde kaçarlar."
+    ]
+  },
+  "Mode Shift": {
+    "name": "Biçim Değişimi",
+    "description": "#bX hasar aldıktan sonra savunma duruşuna geçer.",
+    "descriptions": [
+      "#b",
+      " hasar aldıktan sonra savunma duruşuna geçer."
+    ]
+  },
+  "Next Turn Block": {
+    "name": "Sonraki Tur Blok",
+    "description": "Sonraki tur başında #bX #yBlok kazan.",
+    "descriptions": [
+      "Sonraki tur başında #b",
+      " #yBlok kazan."
+    ]
+  },
+  "Night Terror": {
+    "name": "Kabus",
+    "description": "Sonraki tur başında eline #bX #yX kart ekle.",
+    "descriptions": [
+      "Sonraki tur başında eline #b",
+      " kart ekle."
+    ]
+  },
+  "NoBlockPower": {
+    "name": "Blok Yok",
+    "description": "Kartlardan #yBlok kazanamazsın.",
+    "descriptions": [
+      "Kartlardan #yBlok kazanamazsın."
+    ]
+  },
+  "No Draw": {
+    "name": "Kart Çekme Yok",
+    "description": "Tur sonuna kadar kart çekemezsin.",
+    "descriptions": [
+      "Tur sonuna kadar kart çekemezsin."
+    ]
+  },
+  "Noxious Fumes": {
+    "name": "Zehirli Gazlar",
+    "description": "Tur başında TÜM düşmanlara #bX #yZehir uygula.",
+    "descriptions": [
+      "Tur başında TÜM düşmanlara #b",
+      " #yZehir uygula."
+    ]
+  },
+  "Painful Stabs": {
+    "name": "Acılı Bıçaklama",
+    "description": "Bu düşmandan hasar aldığında atma yığınına bir #yYara eklenir.",
+    "descriptions": [
+      "Bu düşmandan hasar aldığında atma yığınına bir #yYara eklenir."
+    ]
+  },
+  "Panache": {
+    "name": "Gösteriş",
+    "description": "Eğer bu tur #bX kart daha oynarsan, TÜM düşmanlara #bX hasar ver.",
+    "descriptions": [
+      "Eğer bu tur #b",
+      " kart daha oynarsan, TÜM düşmanlara #b",
+      " hasar ver.",
+      " kart daha oynarsan, TÜM düşmanlara #b"
+    ]
+  },
+  "Pen Nib": {
+    "name": "Dolma Kalem Ucu",
+    "description": "Sıradaki #ySaldırın iki kat hasar verir.",
+    "descriptions": [
+      "Sıradaki #ySaldırın iki kat hasar verir."
+    ]
+  },
+  "Phantasmal": {
+    "name": "Hayali Katil",
+    "description": "Sonraki tur boyunca #yÇift #yHasar ver.",
+    "descriptions": [
+      "Sonraki tur boyunca #yÇift #yHasar ver.",
+      "Sonraki #b",
+      " tur boyunca #yÇift #yHasar ver."
+    ]
+  },
+  "Plated Armor": {
+    "name": "Kaplı Zırh",
+    "description": "Tur sonunda #bX #yBlok kazan. Bir saldırıdan CP kaybetmek #yKaplı #yZırhı #b1 azaltır.",
+    "descriptions": [
+      "Tur sonunda #b",
+      " #yBlok kazan. Bir saldırıdan CP kaybetmek #yKaplı #yZırhı #b1 azaltır.",
+      "Turunun sonunda #b",
+      " #yBlok kazanır. Bir saldırıdan CP kaybetmek #yKaplı #yZırhı #b1 azaltır."
+    ]
+  },
+  "Poison": {
+    "name": "Zehir",
+    "description": "Turunun başında #bX CP kaybeder ve #yZehir #b1 azalır.",
+    "descriptions": [
+      "Turunun başında #b",
+      " CP kaybeder ve #yZehir #b1 azalır.",
+      "Turunun başında #b"
+    ]
+  },
+  "Rage": {
+    "name": "Öfke",
+    "description": "Bu tur ne zaman bir #ySaldırı oynarsan #bX #yBlok kazan.",
+    "descriptions": [
+      "Bu tur ne zaman bir #ySaldırı oynarsan #b",
+      " #yBlok kazan."
+    ]
+  },
+  "Compulsive": {
+    "name": "Tepkili",
+    "description": "Saldırılardan hasar aldığında niyetini değiştirir.",
+    "descriptions": [
+      "Saldırılardan hasar aldığında niyetini değiştirir."
+    ]
+  },
+  "Rebound": {
+    "name": "Geri Tepme",
+    "description": "Bu tur oynayacağın sonraki #bX kart çekme yığınının üstüne konur.",
+    "descriptions": [
+      "Bu tur oynayacağın bir sonraki kart çekme yığınının üstüne konur.",
+      "Bu tur oynayacağın sonraki #b",
+      " kart çekme yığınının üstüne konur."
+    ]
+  },
+  "Regeneration": {
+    "name": "Yenilenme",
+    "description": "Tur sonunda #bX #yCP iyileş ve #yYenilenmeyi #b1 azalt.",
+    "descriptions": [
+      "Tur sonunda #b",
+      " #yCP iyileş ve #yYenilenmeyi #b1 azalt.",
+      ""
+    ]
+  },
+  "Regenerate": {
+    "name": "Yenileme",
+    "description": "Turunun sonunda #bX #yCP iyileşir.",
+    "descriptions": [
+      "Turunun sonunda #b",
+      " #yCP iyileşir."
+    ]
+  },
+  "Life Link": {
+    "name": "Hayat Bağı",
+    "description": "Bağlı oldukları hayattaysa #b2 tur içinde #b%50 CP ile yeniden doğar.",
+    "descriptions": [
+      "Bağlı oldukları hayattaysa #b2 tur içinde #b%50 CP ile yeniden doğar."
+    ]
+  },
+  "Repair": {
+    "name": "Onarım",
+    "description": "Dövüş sonunda #bX CP iyileş.",
+    "descriptions": [
+      "Dövüş sonunda #b",
+      " CP iyileş."
+    ]
+  },
+  "Retain Cards": {
+    "name": "Kart Saklama",
+    "description": "Tur sonunda seçtiğin #bX kartı saklayabilirsin.",
+    "descriptions": [
+      "Tur sonunda seçtiğin #b",
+      " kartı saklayabilirsin.",
+      " kartı saklayabilirsin."
+    ]
+  },
+  "Ritual": {
+    "name": "Ayin",
+    "description": "Turunun sonunda #bX #yKuvvet kazanır.",
+    "descriptions": [
+      "Turunun sonunda #b",
+      " #yKuvvet kazanır.",
+      "Tur sonunda #b"
+    ]
+  },
+  "Rupture": {
+    "name": "Yırtık",
+    "description": "Ne zaman oynadığın bir kart nedeniyle CP kaybedersen #bX #yKuvvet kazan.",
+    "descriptions": [
+      "Ne zaman oynadığın bir kart nedeniyle CP kaybedersen #b",
+      " #yKuvvet kazan."
+    ]
+  },
+  "Sadistic": {
+    "name": "Sadistik Huy",
+    "description": "Ne zaman düşmana bir olumsuz etki uygularsan #bX hasar ver.",
+    "descriptions": [
+      "Ne zaman düşmana bir olumsuz etki uygularsan #b",
+      " hasar ver."
+    ]
+  },
+  "Sharp Hide": {
+    "name": "Sivri Deri",
+    "description": "#ySaldırı kartı oynadığında #bX hasar alırsın.",
+    "descriptions": [
+      "#ySaldırı kartı oynadığında #b",
+      " hasar alırsın."
+    ]
+  },
+  "Shifting": {
+    "name": "Değişken",
+    "description": "Hasar aldığında, tur sonuna kadar, aldığı hasar kadar #yKuvvet kaybı yaşar.",
+    "descriptions": [
+      "",
+      "Hasar aldığında, tur sonuna kadar, aldığı hasar kadar #yKuvvet kaybı yaşar."
+    ]
+  },
+  "Skill Burn": {
+    "name": "Yanan Yetenek",
+    "description": "#bX tur boyunca, #yBeceri oynadığında onu #yTüket.",
+    "descriptions": [
+      "#b",
+      " tur boyunca, #yBeceri oynadığında onu #yTüket.",
+      "Sonraki #b",
+      " tur boyunca, #yBeceri oynadığında onu #yTüket."
+    ]
+  },
+  "Slow": {
+    "name": "Yavaşlık",
+    "description": "Bu tur oynadığın her bir kart için #yX, #ySaldırı kartlarından #b%10 daha fazla hasar alır.",
+    "descriptions": [
+      "Bu tur oynadığın her bir kart için ",
+      ", #ySaldırı kartlarından #b%10 daha fazla hasar alır.",
+      " (Alacağı: #b%",
+      " daha fazla hasar)"
+    ]
+  },
+  "Split": {
+    "name": "İkiye Bölünme",
+    "description": "CP'si #b%50 veya altına düştüğünde #b2 ufak parçaya bölünür ve parçalar #yX'in bölünürkenki CP'sine sahip olur.",
+    "descriptions": [
+      "CP'si #b%50 veya altına düştüğünde #b2 ufak parçaya bölünür ve parçalar ",
+      "'in bölünürkenki CP'sine sahip olur."
+    ]
+  },
+  "Spore Cloud": {
+    "name": "Spor Bulutu",
+    "description": "Öldüğünde sana #bX #ySavunmasız uygular.",
+    "descriptions": [
+      "Öldüğünde sana #b",
+      " #ySavunmasız uygular."
+    ]
+  },
+  "Stasis": {
+    "name": "Durgunluk",
+    "description": "Bu düşman öldüğünde çaldığı #yX eline geri döner.",
+    "descriptions": [
+      "Bu düşman öldüğünde çaldığı ",
+      " eline geri döner."
+    ]
+  },
+  "StaticDischarge": {
+    "name": "Statik Boşalma",
+    "description": "Ne zaman #ySaldırı hasarı alırsan #bX #yYıldırım #yAktar.",
+    "descriptions": [
+      "Ne zaman #ySaldırı hasarı alırsan #b",
+      " #yYıldırım #yAktar."
+    ]
+  },
+  "Storm": {
+    "name": "Fırtına",
+    "description": "Ne zaman bir #bGüç kartı oynarsan #bX #yYıldırım aktar.",
+    "descriptions": [
+      "Ne zaman bir #bGüç kartı oynarsan #b",
+      " #yYıldırım aktar."
+    ]
+  },
+  "Strength": {
+    "name": "Kuvvet",
+    "description": "Saldırı hasarını şu sayıda artır: #bX.",
+    "descriptions": [
+      "Saldırı hasarını şu sayıda artır: #b",
+      "Saldırı hasarını şu sayıda azalt: #b",
+      "."
+    ]
+  },
+  "StrikeUp": {
+    "name": "Güçlü Darbe",
+    "description": "Adında #yDarbe olan kartlar #bX fazla hasar verir.",
+    "descriptions": [
+      "Adında #yDarbe olan kartlar #b",
+      " fazla hasar verir."
+    ]
+  },
+  "Surrounded": {
+    "name": "Etrafın Sarıldı",
+    "description": "Arkadan gelen saldırılar #b%50 daha fazla hasar verir. Hedefli kartlar veya iksirler ile bakılan yön değiştirebilir.",
+    "descriptions": [
+      "Arkadan gelen saldırılar #b%50 daha fazla hasar verir. Hedefli kartlar veya iksirler ile bakılan yön değiştirebilir."
+    ]
+  },
+  "TheBomb": {
+    "name": "Bomba",
+    "description": "Bu tur sonunda TÜM düşmanlara #bX hasar ver.",
+    "descriptions": [
+      "#b%1$s tur sonunda TÜM düşmanlara #b%2$s hasar ver.",
+      "Bu tur sonunda TÜM düşmanlara #b%1$s hasar ver."
+    ]
+  },
+  "Thievery": {
+    "name": "Hırsızlık",
+    "description": "X her saldırısında #bX #yAltın çalar.",
+    "descriptions": [
+      " her saldırısında #b",
+      " #yAltın çalar."
+    ]
+  },
+  "Thorns": {
+    "name": "Diken",
+    "description": "#ySaldırıldığında geri #bX hasar verir.",
+    "descriptions": [
+      "#ySaldırıldığında geri #b",
+      " hasar verir."
+    ]
+  },
+  "Thousand Cuts": {
+    "name": "Binlerce Kesik",
+    "description": "Ne zaman bir kart oynarsan TÜM düşmanlara #bX hasar ver.",
+    "descriptions": [
+      "Ne zaman bir kart oynarsan TÜM düşmanlara #b",
+      " hasar ver."
+    ]
+  },
+  "TimeMazePower": {
+    "name": "Zaman Labirenti",
+    "description": "Ne zaman #bX kart oynarsan turun yarıda kesilir.",
+    "descriptions": [
+      "Ne zaman #b",
+      " kart oynarsan turun yarıda kesilir."
+    ]
+  },
+  "Time Warp": {
+    "name": "Zaman Tüneli",
+    "description": "Ne zaman #b12 kart oynarsan senin turunu yarıda keser ve #b2 #yKuvvet kazanır.",
+    "descriptions": [
+      "Ne zaman #b",
+      " kart oynarsan senin turunu yarıda keser ve #b",
+      " #yKuvvet kazanır."
+    ]
+  },
+  "Tools Of The Trade": {
+    "name": "Alet Edevat",
+    "description": "Tur başında #bX kart çek ve #bX kart at.",
+    "descriptions": [
+      "Tur başında #b",
+      " kart çek ve #b",
+      " kart at.",
+      " kart çek ve #b",
+      " kart at."
+    ]
+  },
+  "Unawakened": {
+    "name": "Uyanmamış",
+    "description": "Bu düşman henüz uyanmadı...",
+    "descriptions": [
+      "Bu düşman henüz uyanmadı..."
+    ]
+  },
+  "Vulnerable": {
+    "name": "Savunmasız",
+    "description": "#ySaldırılardan #b%25 daha fazla hasar alır: #bX tur boyunca.",
+    "descriptions": [
+      "#ySaldırılardan #b%",
+      " daha fazla hasar alır: #b",
+      " tur boyunca.",
+      " tur boyunca."
+    ]
+  },
+  "Weakened": {
+    "name": "Zayıf",
+    "description": "#ySaldırıları #b%40 daha az hasar verir: #bX tur boyunca.",
+    "descriptions": [
+      "#ySaldırıları #b%",
+      " daha az hasar verir: #b",
+      " tur boyunca.",
+      " tur boyunca."
+    ]
+  },
+  "Wraith Form v2": {
+    "name": "Hayalet Formu",
+    "description": "Tur sonunda, #bX #yÇeviklik kaybet.",
+    "descriptions": [
+      "Tur sonunda, #b",
+      " #yÇeviklik kaybet."
+    ]
+  },
+  "BattleHymn": {
+    "name": "Savaş İlahisi",
+    "description": "Tur başında eline #bX #yCeza ekle.",
+    "descriptions": [
+      "Tur başında eline #b",
+      " #yCeza ekle.",
+      " #yCeza ekle."
+    ]
+  },
+  "BlockReturnPower": {
+    "name": "Blok Dönüşü",
+    "description": "Saldırdığında #bX #yBlok kazan.",
+    "descriptions": [
+      "Saldırdığında #b",
+      " #yBlok kazan."
+    ]
+  },
+  "CannotChangeStancePower": {
+    "name": "Duruş Değişemez",
+    "description": "Bu tur duruş değişemezsin.",
+    "descriptions": [
+      "Bu tur duruş değişemezsin."
+    ]
+  },
+  "DevaForm": {
+    "name": "Deva Formu",
+    "description": "Tur başında [W] kazan ve her tur bunu #bX artır.",
+    "descriptions": [
+      "Tur başında [W] kazan",
+      "Tur başında #b",
+      " [W] kazan",
+      " ve her tur bunu #b",
+      " artır.",
+      "TRANSLATE NOTE: At the start of your turn, gain [W] #b2 times and increase this by #b1."
+    ]
+  },
+  "DevotionPower": {
+    "name": "Sadakat",
+    "description": "Tur başında #bX #yMantra kazan.",
+    "descriptions": [
+      "Tur başında #b",
+      " #yMantra kazan."
+    ]
+  },
+  "EndTurnDeath": {
+    "name": "Kafir",
+    "description": "Bir sonraki tur başında öl.",
+    "descriptions": [
+      "Bir sonraki tur başında öl."
+    ]
+  },
+  "EnergyDownPower": {
+    "name": "Oruçlu",
+    "description": "Tur başında [E] . kaybet.",
+    "descriptions": [
+      "Tur başında ",
+      " kaybet."
+    ]
+  },
+  "EstablishmentPower": {
+    "name": "Kuruluş",
+    "description": "#ySaklanan kartların maliyetini #bX azalt.",
+    "descriptions": [
+      "#ySaklanan kartların maliyetini #b",
+      " azalt."
+    ]
+  },
+  "WireheadingPower": {
+    "name": "Önsezi",
+    "description": "Tur başında #bX #yKeşif yap.",
+    "descriptions": [
+      "Tur başında #b",
+      " #yKeşif yap."
+    ]
+  },
+  "FreeAttackPower": {
+    "name": "Maliyetsiz Saldırı",
+    "description": "Bir sonraki #ySaldırı kartının maliyetini sıfırla.",
+    "descriptions": [
+      "Bir sonraki #ySaldırı kartının maliyetini sıfırla.",
+      "Sonraki #b",
+      " #ySaldırı kartının maliyetlerini sıfırla."
+    ]
+  },
+  "LikeWaterPower": {
+    "name": "Su Gibi",
+    "description": "Tur sonunda #yHuzur içindeysen #bX #yBlok kazan.",
+    "descriptions": [
+      "Tur sonunda #yHuzur içindeysen #b",
+      " #yBlok kazan."
+    ]
+  },
+  "AngelForm": {
+    "name": "Sonsuz Yaşam",
+    "description": "Tur sonunda #bX #yKaplı #yZırh kazan.",
+    "descriptions": [
+      "Tur sonunda #b",
+      " #yKaplı #yZırh kazan."
+    ]
+  },
+  "Mantra": {
+    "name": "Mantra",
+    "description": "Her #b10 #yMantra topladığında #yKutsal duruşa geçersin.",
+    "descriptions": [
+      "Her #b",
+      " #yMantra topladığında #yKutsal duruşa geçersin."
+    ]
+  },
+  "PathToVictoryPower": {
+    "name": "Damgalı",
+    "description": "Ne zaman #yHassas #yNoktalar oynarsan #bX CP kaybeder.",
+    "descriptions": [
+      "Ne zaman #yHassas #yNoktalar oynarsan #b",
+      " CP kaybeder."
+    ]
+  },
+  "MasterRealityPower": {
+    "name": "Gerçeklik Ustası",
+    "description": "Ne zaman dövüş sırasında bir kart yaratılırsa onu #yGeliştir.",
+    "descriptions": [
+      "Ne zaman dövüş sırasında bir kart yaratılırsa onu #yGeliştir.",
+      "",
+      "",
+      ""
+    ]
+  },
+  "Controlled": {
+    "name": "Zihin Kalesi",
+    "description": "Ne zaman #yDuruş değişirsen #bX #yBlok kazan.",
+    "descriptions": [
+      "Ne zaman #yDuruş değişirsen #b",
+      " #yBlok kazan."
+    ]
+  },
+  "Nirvana": {
+    "name": "Nirvana",
+    "description": "Ne zaman Keşif yaparsan #bX #yBlok kazan.",
+    "descriptions": [
+      "Ne zaman Keşif yaparsan #b",
+      " #yBlok kazan."
+    ]
+  },
+  "NoSkills": {
+    "name": "Beceri Yok",
+    "description": "Bu tur #yBeceri oynanamaz.",
+    "descriptions": [
+      "Bu tur #yBeceri oynanamaz."
+    ]
+  },
+  "OmegaPower": {
+    "name": "Omega",
+    "description": "Tur sonunda TÜM düşmanlara #bX hasar ver.",
+    "descriptions": [
+      "Tur sonunda TÜM düşmanlara #b",
+      " hasar ver."
+    ]
+  },
+  "OmnisciencePower": {
+    "name": "Omniscience",
+    "description": "DEPERCATEDXDEPERCATED",
+    "descriptions": [
+      "DEPERCATED",
+      "DEPERCATED"
+    ]
+  },
+  "Adaptation": {
+    "name": "Afallatma",
+    "description": "Ne zaman #yGazaba girersen #bX kart çek.",
+    "descriptions": [
+      "Ne zaman #yGazaba girersen #b",
+      " kart çek.",
+      " kart çek."
+    ]
+  },
+  "Study": {
+    "name": "Çalışma",
+    "description": "Tur sonunda çekme yığınına #bX #yİçgörü karıştır.",
+    "descriptions": [
+      "Tur sonunda çekme yığınına #b",
+      " #yİçgörü karıştır.",
+      " #yİçgörü karıştır."
+    ]
+  },
+  "Vault": {
+    "name": "Vault",
+    "description": "Tur başında #bX hasar alır.",
+    "descriptions": [
+      "Tur başında #b",
+      " hasar alır."
+    ]
+  },
+  "Vigor": {
+    "name": "Dinçlik",
+    "description": "Bir sonraki #ySaldırın fazladan #bX hasar verecek.",
+    "descriptions": [
+      "Bir sonraki #ySaldırın fazladan #b",
+      " hasar verecek."
+    ]
+  },
+  "WaveOfTheHandPower": {
+    "name": "El Sallama",
+    "description": "Ne zaman #yBlok kazanırsan TÜM düşmanlara #bX #yZayıf uygula.",
+    "descriptions": [
+      "Ne zaman #yBlok kazanırsan TÜM düşmanlara #b",
+      " #yZayıf uygula."
+    ]
+  },
+  "WrathNextTurnPower": {
+    "name": "Kaynayan Öfke",
+    "description": "Sonraki tur başında #yGazaba gir.",
+    "descriptions": [
+      "Sonraki tur başında #yGazaba gir."
+    ]
+  }
+}

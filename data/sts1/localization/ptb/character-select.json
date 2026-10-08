@@ -1,0 +1,31 @@
+{
+  "characters": {
+    "ironclad": {
+      "name": "O Rígido",
+      "title": "O Rígido",
+      "flavor": "O soldado remanescente dos Rígidos. NL Vendeu sua alma para se aproveitar de energias demoníacas."
+    },
+    "silent": {
+      "name": "A Sorrateira",
+      "title": "A Sorrateira",
+      "flavor": "Uma caçadora mortal das terras nebulosas. NL Elimina adversários com adagas e venenos."
+    },
+    "defect": {
+      "name": "O Defeituoso",
+      "title": "O Defeituoso",
+      "flavor": "Um automato de combate que se tornou autoconsciente. NL Tecnologia ancestral permite a manipulação de Orbes."
+    },
+    "watcher": {
+      "name": "a Observadora",
+      "title": "A Observadora",
+      "flavor": "Uma ascética cega que chegou para \"Avaliar\" o Pináculo. NL Mestra das Posturas divinas."
+    }
+  },
+  "ui": {
+    "choose": "Escolha Seu Personagem",
+    "embark": "Embarque",
+    "back": "Voltar",
+    "hp": "PV: ",
+    "gold": "Ouro: "
+  }
+}

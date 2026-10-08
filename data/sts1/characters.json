@@ -1,0 +1,152 @@
+[
+  {
+    "id": "ironclad",
+    "slug": "ironclad",
+    "className": "com.megacrit.cardcrawl.characters.Ironclad",
+    "playerClass": "IRONCLAD",
+    "hp": 80,
+    "maxHp": 80,
+    "maxOrbs": 0,
+    "gold": 99,
+    "cardDraw": 5,
+    "startingRelicIds": [
+      "Burning Blood"
+    ],
+    "startingDeckIds": [
+      "Strike_R",
+      "Strike_R",
+      "Strike_R",
+      "Strike_R",
+      "Strike_R",
+      "Defend_R",
+      "Defend_R",
+      "Defend_R",
+      "Defend_R",
+      "Bash"
+    ],
+    "selectEffect": {
+      "sound": "ATTACK_HEAVY",
+      "shakeIntensity": "MED",
+      "shakeDuration": "SHORT",
+      "shakeVertical": true,
+      "pitchMin": -0.2,
+      "pitchMax": 0.2
+    },
+    "legacySlugs": [
+      "ironclad"
+    ]
+  },
+  {
+    "id": "silent",
+    "slug": "silent",
+    "className": "com.megacrit.cardcrawl.characters.TheSilent",
+    "playerClass": "THE_SILENT",
+    "hp": 70,
+    "maxHp": 70,
+    "maxOrbs": 0,
+    "gold": 99,
+    "cardDraw": 5,
+    "startingRelicIds": [
+      "Ring of the Snake"
+    ],
+    "startingDeckIds": [
+      "Strike_G",
+      "Strike_G",
+      "Strike_G",
+      "Strike_G",
+      "Strike_G",
+      "Defend_G",
+      "Defend_G",
+      "Defend_G",
+      "Defend_G",
+      "Defend_G",
+      "Survivor",
+      "Neutralize"
+    ],
+    "selectEffect": {
+      "sound": "ATTACK_DAGGER_2",
+      "shakeIntensity": "MED",
+      "shakeDuration": "SHORT",
+      "shakeVertical": false,
+      "pitchMin": -0.2,
+      "pitchMax": 0.2
+    },
+    "legacySlugs": [
+      "silent"
+    ]
+  },
+  {
+    "id": "defect",
+    "slug": "defect",
+    "className": "com.megacrit.cardcrawl.characters.Defect",
+    "playerClass": "DEFECT",
+    "hp": 75,
+    "maxHp": 75,
+    "maxOrbs": 3,
+    "gold": 99,
+    "cardDraw": 5,
+    "startingRelicIds": [
+      "Cracked Core"
+    ],
+    "startingDeckIds": [
+      "Strike_B",
+      "Strike_B",
+      "Strike_B",
+      "Strike_B",
+      "Defend_B",
+      "Defend_B",
+      "Defend_B",
+      "Defend_B",
+      "Zap",
+      "Dualcast"
+    ],
+    "selectEffect": {
+      "sound": "ATTACK_MAGIC_BEAM_SHORT",
+      "shakeIntensity": "MED",
+      "shakeDuration": "SHORT",
+      "shakeVertical": false,
+      "pitchMin": -0.2,
+      "pitchMax": 0.2
+    },
+    "legacySlugs": [
+      "defect"
+    ]
+  },
+  {
+    "id": "watcher",
+    "slug": "watcher",
+    "className": "com.megacrit.cardcrawl.characters.Watcher",
+    "playerClass": "WATCHER",
+    "hp": 72,
+    "maxHp": 72,
+    "maxOrbs": 0,
+    "gold": 99,
+    "cardDraw": 5,
+    "startingRelicIds": [
+      "PureWater"
+    ],
+    "startingDeckIds": [
+      "Strike_P",
+      "Strike_P",
+      "Strike_P",
+      "Strike_P",
+      "Defend_P",
+      "Defend_P",
+      "Defend_P",
+      "Defend_P",
+      "Eruption",
+      "Vigilance"
+    ],
+    "selectEffect": {
+      "sound": "SELECT_WATCHER",
+      "shakeIntensity": "MED",
+      "shakeDuration": "SHORT",
+      "shakeVertical": false,
+      "pitchMin": -0.15,
+      "pitchMax": 0.15
+    },
+    "legacySlugs": [
+      "watcher"
+    ]
+  }
+]

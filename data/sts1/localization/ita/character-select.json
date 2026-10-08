@@ -1,0 +1,31 @@
+{
+  "characters": {
+    "ironclad": {
+      "name": "Ironclad",
+      "title": "Ironclad",
+      "flavor": "L'ultimo soldato Ironclad. NL Ha venduto l'anima per ottenere poteri demoniaci."
+    },
+    "silent": {
+      "name": "Silent",
+      "title": "Silent",
+      "flavor": "Una letale cacciatrice dalle terre della nebbia. NL Assassina i nemici con veleno e pugnali."
+    },
+    "defect": {
+      "name": "Defect",
+      "title": "Defect",
+      "flavor": "Un automa da combattimento divenuto senziente. NL Manipola i Globi usando antiche tecnologie."
+    },
+    "watcher": {
+      "name": "Watcher",
+      "title": "Watcher",
+      "flavor": "Un asceta cieca, venuta a \"Giudicare\" la Guglia. NL Controlla gli aspetti divini."
+    }
+  },
+  "ui": {
+    "choose": "Scegli un Personaggio",
+    "embark": "Inizia",
+    "back": "Indietro",
+    "hp": "PV: ",
+    "gold": "Oro: "
+  }
+}

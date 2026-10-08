@@ -1,0 +1,1228 @@
+{
+  "Accuracy": {
+    "name": "Précision",
+    "description": "Les #ySurins infligent #bX dégâts supplémentaires.",
+    "descriptions": [
+      "Les #ySurins infligent #b",
+      " dégâts supplémentaires."
+    ]
+  },
+  "After Image": {
+    "name": "Image rémanente",
+    "description": "Lorsque vous jouez une carte, gagnez #bX #yd'Armure.",
+    "descriptions": [
+      "Lorsque vous jouez une carte, gagnez #b",
+      " #yd'Armure."
+    ]
+  },
+  "Amplify": {
+    "name": "Amplification",
+    "description": "Votre prochaine carte #yPouvoir est joué deux fois ce tour.",
+    "descriptions": [
+      "Votre prochaine carte #yPouvoir est joué deux fois ce tour.",
+      "Vos ",
+      " prochaines cartes #yPouvoir sont joués deux fois ce tour."
+    ]
+  },
+  "Anger": {
+    "name": "Enrager",
+    "description": "Lorsque vous jouez une carte Compétence, gagne #bX de #yForce.",
+    "descriptions": [
+      "Lorsque vous jouez une carte Compétence, gagne #b",
+      " de #yForce."
+    ]
+  },
+  "Angry": {
+    "name": "Colère",
+    "description": "Lorsqu'il subit des dégâts #yd'Attaque, gagne #bX de #yForce.",
+    "descriptions": [
+      "",
+      "Lorsqu'il subit des dégâts #yd'Attaque, gagne #b",
+      " de #yForce."
+    ]
+  },
+  "Artifact": {
+    "name": "Artefact",
+    "description": "Annule #bX débuff.",
+    "descriptions": [
+      "Annule #b",
+      " débuff.",
+      " débuffs."
+    ]
+  },
+  "Attack Burn": {
+    "name": "Attaque brûlante",
+    "description": "Pendant #bX tour, lorsque vous jouez une carte #yAttaque, #ycelle-ci est Épuisée.",
+    "descriptions": [
+      "Pendant #b",
+      " tour, lorsque vous jouez une carte #yAttaque, #ycelle-ci est Épuisée.",
+      "Pendant les #b prochains",
+      " tours, lorsque vous jouez une carte #yAttaque, #ycelle-ci est Épuisée."
+    ]
+  },
+  "BackAttack": {
+    "name": "Attaque par derrière",
+    "description": "Inflige #b50% de dégâts supplémentaires quand il vous attaque par derrière.",
+    "descriptions": [
+      "Inflige #b50% de dégâts supplémentaires quand il vous attaque par derrière."
+    ]
+  },
+  "Barricade": {
+    "name": "Barricade",
+    "description": "#yL'Armure n'est pas retirée au début de chaque tour.",
+    "descriptions": [
+      "#yL'Armure n'est pas retirée au début de chaque tour.",
+      "#yL'Armure n'est pas retirée au début de son tour."
+    ]
+  },
+  "BeatOfDeath": {
+    "name": "Pulsation de la mort",
+    "description": "Chaque fois que vous jouez une carte, recevez #bX dégât(s).",
+    "descriptions": [
+      "Chaque fois que vous jouez une carte, recevez #b",
+      " dégât(s)."
+    ]
+  },
+  "Berserk": {
+    "name": "Folie furieuse",
+    "description": "Au début de chaque tour, gagnez [R] .",
+    "descriptions": [
+      "Au début de chaque tour, gagnez ",
+      ""
+    ]
+  },
+  "Bias": {
+    "name": "Biais",
+    "description": "Au début de chaque tour, perdez #bX de #yConcentration.",
+    "descriptions": [
+      "Au début de chaque tour, perdez #b",
+      " de #yConcentration."
+    ]
+  },
+  "Blur": {
+    "name": "Flou",
+    "description": "#yL'Armure n'est pas retirée au début du prochain tour.",
+    "descriptions": [
+      "#yL'Armure n'est pas retirée au début du prochain tour.",
+      "#yL'Armure n'est pas retirée au début des prochains #b",
+      " tours."
+    ]
+  },
+  "Brutality": {
+    "name": "Brutalité",
+    "description": "Au début de chaque tour, vous perdez #bX PV et piochez #bX carte.",
+    "descriptions": [
+      "Au début de chaque tour, vous perdez #b",
+      " PV et piochez #b",
+      " carte.",
+      "Au début de chaque tour, vous perdez #b",
+      " PV et piochez #b",
+      " cartes."
+    ]
+  },
+  "Buffer": {
+    "name": "Tampon",
+    "description": "Empêche votre prochaine perte de PV.",
+    "descriptions": [
+      "Empêche votre prochaine perte de PV.",
+      "Empêche vos #b",
+      " prochaines pertes de PV."
+    ]
+  },
+  "Burst": {
+    "name": "Déflagration",
+    "description": "Votre prochaine carte #yCompétence est jouée deux fois ce tour.",
+    "descriptions": [
+      "Votre prochaine carte #yCompétence est jouée deux fois ce tour.",
+      "Vos ",
+      " prochaines cartes #yCompétence sont jouées deux fois ce tour."
+    ]
+  },
+  "Choked": {
+    "name": "Étouffement",
+    "description": "Chaque fois que vous jouez une carte ce tour, perd #bX PV.",
+    "descriptions": [
+      "Chaque fois que vous jouez une carte ce tour, perd #b",
+      " PV."
+    ]
+  },
+  "Collect": {
+    "name": "Collecte",
+    "description": "Au début de votre prochain tour, ajoutez un #yMiracle+ à votre main.",
+    "descriptions": [
+      "Au début de votre prochain tour, ajoutez un #yMiracle+ à votre main.",
+      "Au début de vos #b",
+      " prochains tours, ajoutez un #yMiracle+ à votre main."
+    ]
+  },
+  "Combust": {
+    "name": "Combustion",
+    "description": "À la fin de chaque tour, perdez #bX PV et infligez #bX dégâts à TOUS les ennemis.",
+    "descriptions": [
+      "À la fin de chaque tour, perdez #b",
+      " PV et infligez #b",
+      " dégâts à TOUS les ennemis."
+    ]
+  },
+  "Confusion": {
+    "name": "Confusion",
+    "description": "Le coût des cartes que vous piochez est aléatoire.",
+    "descriptions": [
+      "Le coût des cartes que vous piochez est aléatoire."
+    ]
+  },
+  "Conserve": {
+    "name": "Économie",
+    "description": "L' #yÉnergie est conservée pour le prochain tour.",
+    "descriptions": [
+      "L' #yÉnergie est conservée pour le prochain tour.",
+      "L' #yÉnergie est conservée pour les #b",
+      " prochains tours."
+    ]
+  },
+  "Constricted": {
+    "name": "Constriction",
+    "description": "À la fin de chaque tour, subissez #bX dégâts.",
+    "descriptions": [
+      "À la fin de chaque tour, subissez #b",
+      " dégâts."
+    ]
+  },
+  "CorpseExplosionPower": {
+    "name": "Explosion morbide",
+    "description": "À la mort de cet ennemi, infligez autant de dégâts que ses PV max à TOUS les ennemis.",
+    "descriptions": [
+      "À la mort de cet ennemi, infligez autant de dégâts que ses PV max à TOUS les ennemis.",
+      "À la mort de cet ennemi, infligez autant de dégâts que #b",
+      " fois ses PV max à TOUS les ennemis."
+    ]
+  },
+  "Corruption": {
+    "name": "Corruption",
+    "description": "Lorsque vous jouez une carte #yCompétence, celle-ci est #yÉpuisée.",
+    "descriptions": [
+      "Les #yCompétence coûtent #b0. Lorsque vous jouez une #yCompétence, celle-ci est #yÉpuisée.",
+      "Lorsque vous jouez une carte #yCompétence, celle-ci est #yÉpuisée."
+    ]
+  },
+  "Creative AI": {
+    "name": "IA créative",
+    "description": "Au début de chaque tour, ajoutez #bX cartes #yPouvoir aléatoires à votre main.",
+    "descriptions": [
+      "Au début de chaque tour, ajoutez #b",
+      " cartes #yPouvoir aléatoire à votre main.",
+      " cartes #yPouvoir aléatoires à votre main."
+    ]
+  },
+  "Curiosity": {
+    "name": "Curiosité",
+    "description": "Lorsque vous jouez une carte #yPouvoir, gagne #bX de #yForce.",
+    "descriptions": [
+      "Lorsque vous jouez une carte #yPouvoir, gagne #b",
+      " de #yForce."
+    ]
+  },
+  "Curl Up": {
+    "name": "Recroquevillement",
+    "description": "Après avoir encaissé des dégâts #yd'Attaque, se roule en boule et gagne des points X #yd'Armure. (une fois par combat)",
+    "descriptions": [
+      "Après avoir encaissé des dégâts #yd'Attaque, se roule en boule et gagne des points ",
+      " #yd'Armure. (une fois par combat)"
+    ]
+  },
+  "Dark Embrace": {
+    "name": "Sombre étreinte",
+    "description": "Lorsqu'une carte est #yÉpuisée, vous piochez #b1 carte.",
+    "descriptions": [
+      "Lorsqu'une carte est #yÉpuisée, vous piochez #b1 carte.",
+      "Lorsqu'une carte est #yÉpuisée, vous piochez #b",
+      " cartes."
+    ]
+  },
+  "Demon Form": {
+    "name": "Forme démoniaque",
+    "description": "Au début de chaque tour, gagnez #bX de #yForce.",
+    "descriptions": [
+      "Au début de chaque tour, gagnez #b",
+      " de #yForce."
+    ]
+  },
+  "Dexterity": {
+    "name": "Dextérité",
+    "description": "Augmente #yl'Armure obtenu par les cartes de #b.X.",
+    "descriptions": [
+      "Augmente #yl'Armure obtenu par les cartes de #b.",
+      "Réduit #yl'Armure obtenu par les cartes de #b.",
+      "."
+    ]
+  },
+  "Double Damage": {
+    "name": "Dégâts doubles",
+    "description": "Les cartes #yAttaque infligent le double des dégâts pendant #bX tour.",
+    "descriptions": [
+      "Les cartes #yAttaque infligent le double des dégâts pendant #b",
+      " tour.",
+      " tours."
+    ]
+  },
+  "Double Tap": {
+    "name": "Attaque double",
+    "description": "Votre prochaine carte #yAttaque est jouée deux fois ce tour.",
+    "descriptions": [
+      "Votre prochaine carte #yAttaque est jouée deux fois ce tour.",
+      "Vos ",
+      " prochaines cartes #yAttaque sont jouées deux fois ce tour."
+    ]
+  },
+  "Draw Card": {
+    "name": "Bonne pioche",
+    "description": "Piochez #bX cartes supplémentaires au prochain tour.",
+    "descriptions": [
+      "Piochez #b",
+      " cartes supplémentaires au prochain tour.",
+      " carte supplémentaire au prochain tour."
+    ]
+  },
+  "Draw": {
+    "name": "Pioche",
+    "description": "Au début de chaque tour, piochez #bX carte supplémentaire.",
+    "descriptions": [
+      "Au début de chaque tour, piochez #b",
+      " carte supplémentaire.",
+      " carte en moins.",
+      " cartes supplémentaires.",
+      " cartes en moins."
+    ]
+  },
+  "Draw Reduction": {
+    "name": "Réduction de pioche",
+    "description": "Vous piochez #b1 carte en moins au prochain tour.",
+    "descriptions": [
+      "Vous piochez #b1 carte en moins au prochain tour.",
+      "Vous piochez #b1 carte en moins pendant #b",
+      " tours."
+    ]
+  },
+  "DuplicationPower": {
+    "name": "Duplication",
+    "description": "Votre prochaine carte est jouée deux fois ce tour.",
+    "descriptions": [
+      "Votre prochaine carte est jouée deux fois ce tour.",
+      "Vos #b",
+      " prochaines cartes sont jouées deux fois ce tour."
+    ]
+  },
+  "Echo Form": {
+    "name": "Forme résonnante",
+    "description": "La première carte que vous jouez chaque tour est jouée deux fois.",
+    "descriptions": [
+      "La première carte que vous jouez chaque tour est jouée deux fois.",
+      "Les #b",
+      " premières cartes que vous jouez chaque tour sont jouées deux fois."
+    ]
+  },
+  "Electro": {
+    "name": "Électro",
+    "description": "Les Orbes #yKérauniques frappent TOUS les ennemis.",
+    "descriptions": [
+      "Les Orbes #yKérauniques frappent TOUS les ennemis.",
+      "",
+      ""
+    ]
+  },
+  "EnergizedBlue": {
+    "name": "Énergétique",
+    "description": "Gagnez #bX [B] supplémentaire au prochain tour.",
+    "descriptions": [
+      "Gagnez #b",
+      " [B] supplémentaire au prochain tour.",
+      " [B] supplémentaires au prochain tour.",
+      " - TRANSLATOR NOTE: - The above line is for plural if needed to distinguish from singular."
+    ]
+  },
+  "Energized": {
+    "name": "Énergétique",
+    "description": "Gagnez #bX [G] supplémentaire au prochain tour.",
+    "descriptions": [
+      "Gagnez #b",
+      " [G] supplémentaire au prochain tour.",
+      " [G] supplémentaires au prochain tour.",
+      " - TRANSLATOR NOTE: - The above line is for plural if needed to distinguish from singular."
+    ]
+  },
+  "Entangled": {
+    "name": "Enchevêtré",
+    "description": "Vous ne pouvez pas jouer de cartes #yAttaque ce tour.",
+    "descriptions": [
+      "Vous ne pouvez pas jouer de cartes #yAttaque ce tour."
+    ]
+  },
+  "Envenom": {
+    "name": "Envenimement",
+    "description": "Quand vous infligez des dégâts d'attaque, vous appliquez #bX de #y Poison.",
+    "descriptions": [
+      "Quand vous infligez des dégâts d'attaque, vous appliquez #b",
+      " de #y Poison."
+    ]
+  },
+  "Equilibrium": {
+    "name": "Equilibrium",
+    "description": "#yConservez votre main ce tour.",
+    "descriptions": [
+      "#yConservez votre main ce tour.",
+      "#yConservez votre main pendant #b",
+      " tours."
+    ]
+  },
+  "Evolve": {
+    "name": "Évolution",
+    "description": "Lorsque vous piochez une carte #yStatut, piochez #b1 carte.",
+    "descriptions": [
+      "Lorsque vous piochez une carte #yStatut, piochez #b1 carte.",
+      "Lorsque vous piochez une carte #yStatut, piochez #b",
+      " cartes."
+    ]
+  },
+  "Explosive": {
+    "name": "Kamikaze",
+    "description": "Explose ce tour et inflige #b30 dégâts.",
+    "descriptions": [
+      "Explose dans #b",
+      " tours, infligeant #b",
+      " dégâts.",
+      "Explose ce tour et inflige #b"
+    ]
+  },
+  "Fading": {
+    "name": "Éphémère",
+    "description": "Meurt ce tour.",
+    "descriptions": [
+      "Meurt dans #b",
+      " tours.",
+      "Meurt ce tour."
+    ]
+  },
+  "Feel No Pain": {
+    "name": "Ignore la douleur",
+    "description": "Lorsqu'une carte est #yÉpuisée, gagnez #bX #yd'Armure.",
+    "descriptions": [
+      "Lorsqu'une carte est #yÉpuisée, gagnez #b",
+      " #yd'Armure."
+    ]
+  },
+  "Fire Breathing": {
+    "name": "Souffle de feu",
+    "description": "Lorsque vous piochez une carte #yStatut ou #yMalédiction, infligez #bX dégâts à TOUS les ennemis.",
+    "descriptions": [
+      "Lorsque vous piochez une carte #yStatut ou #yMalédiction, infligez #b",
+      " dégâts à TOUS les ennemis."
+    ]
+  },
+  "Flame Barrier": {
+    "name": "Barrière enflammée",
+    "description": "Lorsque vous subissez des dégâts d'attaque, inflige #bX dégâts en retour.",
+    "descriptions": [
+      "Lorsque vous subissez des dégâts d'attaque, inflige #b",
+      " dégâts en retour."
+    ]
+  },
+  "Flight": {
+    "name": "Envolée",
+    "description": "Reçoit #b50 % de dégâts en moins. Annulation si des dégâts d'attaque sont infligés à #bX reprises en un tour.",
+    "descriptions": [
+      "Reçoit #b50 % de dégâts en moins. Annulation si des dégâts d'attaque sont infligés à #b",
+      " reprises en un tour."
+    ]
+  },
+  "Focus": {
+    "name": "Concentration",
+    "description": "Accroît la puissance des Orbes de #bX.",
+    "descriptions": [
+      "Accroît la puissance des Orbes de #b",
+      "Décroît la puissance des Orbes de #b",
+      "."
+    ]
+  },
+  "Nullify Attack": {
+    "name": "Attaque annulée",
+    "description": "#yBloque entièrement une #yAttaque à chaque tour.",
+    "descriptions": [
+      "#yBloque entièrement une #yAttaque à chaque tour."
+    ]
+  },
+  "Frail": {
+    "name": "Fragilité",
+    "description": "Les cartes vous octroient #b25 % moins #yd'Armure pendant #bX tour.",
+    "descriptions": [
+      "Les cartes vous octroient #b25 % moins #yd'Armure pendant #b",
+      " tour.",
+      " tours."
+    ]
+  },
+  "Shackled": {
+    "name": "Enchaîné",
+    "description": "À la fin de son tour, regagne #bX de #yForce.",
+    "descriptions": [
+      "À la fin de son tour, regagne #b",
+      " de #yForce."
+    ]
+  },
+  "Generic Strength Up Power": {
+    "name": "Generic Strength Up Power",
+    "description": "À la fin de son tour, gagne #bX de #yForce.",
+    "descriptions": [
+      "À la fin de son tour, gagne #b",
+      " de #yForce."
+    ]
+  },
+  "GrowthPower": {
+    "name": "Croissance",
+    "description": "À la fin du tour, gagne #bX de #yForce.",
+    "descriptions": [
+      "À la fin du tour, gagne #b",
+      " de #yForce."
+    ]
+  },
+  "Heatsink": {
+    "name": "Dissipation de chaleur",
+    "description": "Quand vous jouez une carte #yPouvoir, piochez #bX carte.",
+    "descriptions": [
+      "Quand vous jouez une carte #yPouvoir, piochez #b",
+      " carte.",
+      " cartes."
+    ]
+  },
+  "Hello": {
+    "name": "Hello",
+    "description": "Au début de chaque tour, ajoutez #bX cartes Communes aléatoire à votre main.",
+    "descriptions": [
+      "Au début de chaque tour, ajoutez #b",
+      " cartes Communes aléatoire à votre main.",
+      " carte Commune aléatoire à votre main."
+    ]
+  },
+  "Hex": {
+    "name": "Maléfice",
+    "description": "Lorsque vous jouez une carte autre qu'Attaque, insèrez #bX carte #yHébétement dans votre deck.",
+    "descriptions": [
+      "Lorsque vous jouez une carte autre qu'Attaque, insèrez #b",
+      " carte #yHébétement dans votre deck."
+    ]
+  },
+  "Infinite Blades": {
+    "name": "Lames infinies",
+    "description": "Au début de chaque tour, ajoutez #bX #ySurins à votre main.",
+    "descriptions": [
+      "Au début de chaque tour, ajoutez #b",
+      " #ySurins à votre main.",
+      " #ySurin à votre main."
+    ]
+  },
+  "IntangiblePlayer": {
+    "name": "Intangible",
+    "description": "Réduit TOUS les dégâts subis et la perte de PV à #b1.",
+    "descriptions": [
+      "Réduit TOUS les dégâts subis et la perte de PV à #b1."
+    ]
+  },
+  "Intangible": {
+    "name": "Intangible",
+    "description": "Réduit TOUS les dégâts subis et la perte de PV à #b1. #yIntangible est réappliqué un tour sur deux.",
+    "descriptions": [
+      "Réduit TOUS les dégâts subis et la perte de PV à #b1. #yIntangible est réappliqué un tour sur deux."
+    ]
+  },
+  "Invincible": {
+    "name": "Invincible",
+    "description": "Ne peut plus perdre de PV ce tour.",
+    "descriptions": [
+      "Ne peut perdre que #b",
+      " PV de plus ce tour.",
+      "Ne peut plus perdre de PV ce tour."
+    ]
+  },
+  "Juggernaut": {
+    "name": "Mastodonte",
+    "description": "Lorsque vous gagnez de #yl'Armure, infligez #bX dégâts à un ennemi aléatoire.",
+    "descriptions": [
+      "Lorsque vous gagnez de #yl'Armure, infligez #b",
+      " dégâts à un ennemi aléatoire."
+    ]
+  },
+  "Lockon": {
+    "name": "Ciblage",
+    "description": "Reçoit #b50 % de dégâts supplémentaires des Orbes pendant #bX tour.",
+    "descriptions": [
+      "Reçoit #b",
+      " % de dégâts supplémentaires des Orbes pendant #b",
+      " tour.",
+      " tours."
+    ]
+  },
+  "Loop": {
+    "name": "Boucle",
+    "description": "Au début de chaque tour, déclenchez la capacité passive de votre prochain Orbe.",
+    "descriptions": [
+      "Au début de chaque tour, déclenchez la capacité passive de votre prochain Orbe.",
+      "Au début de chaque tour, déclenchez la capacité passive de vos #b",
+      " prochains Orbes."
+    ]
+  },
+  "DexLoss": {
+    "name": "Perte de Dextérité",
+    "description": "A la fin de chaque tour, perdez #bX de #yDextérité.",
+    "descriptions": [
+      "A la fin de chaque tour, perdez #b",
+      " de #yDextérité."
+    ]
+  },
+  "Flex": {
+    "name": "Perte de Force",
+    "description": "À la fin de ce tour, perdez #bX de #yForce.",
+    "descriptions": [
+      "À la fin de ce tour, perdez #b",
+      " de #yForce."
+    ]
+  },
+  "Magnetism": {
+    "name": "Magnétisme",
+    "description": "Au début de chaque tour, ajoutez #bX cartes Incolores aléatoires à votre main.",
+    "descriptions": [
+      "Au début de chaque tour, ajoutez #b%s carte Incolore aléatoire à votre main.",
+      "Au début de chaque tour, ajoutez #b%s cartes Incolores aléatoires à votre main."
+    ]
+  },
+  "Malleable": {
+    "name": "Malléable",
+    "description": "Après avoir encaissé des dégâts #yd'Attaque, gagne #bX #yd'Armure. #yL'Armure gagnée augmente Malléable avec les activations. Réinitialisation à #bX au début de votre tour.",
+    "descriptions": [
+      "Après avoir encaissé des dégâts #yd'Attaque, gagne #b",
+      " #yd'Armure. #yL'Armure gagnée augmente ",
+      " avec les activations. Réinitialisation à #b",
+      " au début de votre tour."
+    ]
+  },
+  "Mayhem": {
+    "name": "Grabuge",
+    "description": "Au début de chaque tour, jouez la première carte de votre pioche.",
+    "descriptions": [
+      "Au début de chaque tour, jouez la première carte de votre pioche.",
+      "Au début de chaque tour, jouez les #b",
+      " premières cartes de votre pioche."
+    ]
+  },
+  "Metallicize": {
+    "name": "Métallisation",
+    "description": "Gagnez #bX #yd'Armure à la fin de votre tour.",
+    "descriptions": [
+      "Gagnez #b",
+      " #yd'Armure à la fin de votre tour.",
+      "Gagne #b",
+      " #yd'Armure à la fin de son tour."
+    ]
+  },
+  "Minion": {
+    "name": "Sbire",
+    "description": "Les sbires abandonnent le combat en l'absence de leur leader.",
+    "descriptions": [
+      "Les sbires abandonnent le combat en l'absence de leur leader."
+    ]
+  },
+  "Mode Shift": {
+    "name": "Changement de mode",
+    "description": "Après avoir reçu #bX dégâts, passe en mode défensif.",
+    "descriptions": [
+      "Après avoir reçu #b",
+      " dégâts, passe en mode défensif."
+    ]
+  },
+  "Next Turn Block": {
+    "name": "Armure au prochain tour",
+    "description": "Gagnez #bX #yd'Armure au prochain tour.",
+    "descriptions": [
+      "Gagnez #b",
+      " #yd'Armure au prochain tour."
+    ]
+  },
+  "Night Terror": {
+    "name": "Cauchemar",
+    "description": "Ajoutez #bX #yX cartes à votre main au prochain tour.",
+    "descriptions": [
+      "Ajoutez #b",
+      " cartes à votre main au prochain tour."
+    ]
+  },
+  "NoBlockPower": {
+    "name": "À découvert",
+    "description": "Vous ne pouvez plus gagner #yd'Armure avec des cartes.",
+    "descriptions": [
+      "Vous ne pouvez plus gagner #yd'Armure avec des cartes."
+    ]
+  },
+  "No Draw": {
+    "name": "Pas de pioche",
+    "description": "Vous ne pouvez pas piocher de cartes ce tour.",
+    "descriptions": [
+      "Vous ne pouvez pas piocher de cartes ce tour."
+    ]
+  },
+  "Noxious Fumes": {
+    "name": "Fumées toxiques",
+    "description": "Au début de chaque tour, appliquez #bX de #yPoison à TOUS les ennemis.",
+    "descriptions": [
+      "Au début de chaque tour, appliquez #b",
+      " de #yPoison à TOUS les ennemis."
+    ]
+  },
+  "Painful Stabs": {
+    "name": "Blessures douloureuses",
+    "description": "À chaque fois que cet ennemi vous inflige des dégâts, ajoutez une #yPlaie à votre défausse.",
+    "descriptions": [
+      "À chaque fois que cet ennemi vous inflige des dégâts, ajoutez une #yPlaie à votre défausse."
+    ]
+  },
+  "Panache": {
+    "name": "Panache",
+    "description": "Si vous jouez #bX carte de plus pendant ce tour, infligez #bX dégâts à TOUS les ennemis.",
+    "descriptions": [
+      "Si vous jouez #b",
+      " carte de plus pendant ce tour, infligez #b",
+      " dégâts à TOUS les ennemis.",
+      " cartes de plus pendant ce tour, infligez #b"
+    ]
+  },
+  "Pen Nib": {
+    "name": "Pointe de stylo",
+    "description": "Votre prochaine carte #yAttaque inflige le double de dégâts.",
+    "descriptions": [
+      "Votre prochaine carte #yAttaque inflige le double de dégâts."
+    ]
+  },
+  "Phantasmal": {
+    "name": "Illusion",
+    "description": "Infligez le #ydouble des #ydégâts au prochain tour.",
+    "descriptions": [
+      "Infligez le #ydouble des #ydégâts au prochain tour.",
+      "Infligez le #ydouble des #ydégâts aux ",
+      " prochains tours."
+    ]
+  },
+  "Plated Armor": {
+    "name": "Armure plaquée",
+    "description": "À la fin de chaque tour, gagnez #bX #yd'Armure. Recevoir des dégâts d'attaque non bloqués réduit #yl'Armure #yPlaquée de #b1.",
+    "descriptions": [
+      "À la fin de chaque tour, gagnez #b",
+      " #yd'Armure. Recevoir des dégâts d'attaque non bloqués réduit #yl'Armure #yPlaquée de #b1.",
+      "À la fin de chaque tour, gagne #b",
+      " #yd'Armure. Recevoir des dégâts d'attaque non bloqués réduit #yl'Armure #yPlaquée de #b1."
+    ]
+  },
+  "Poison": {
+    "name": "Poison",
+    "description": "Au début de chaque tour, vous perdez #bX PV, puis réduit le #yPoison de #b1.",
+    "descriptions": [
+      "Au début de chaque tour, vous perdez #b",
+      " PV, puis réduit le #yPoison de #b1.",
+      "Au début de son tour, perd #b"
+    ]
+  },
+  "Rage": {
+    "name": "Rage",
+    "description": "Lorsque vous jouez une carte #yAttaque, gagne #bX #yd'Armure.",
+    "descriptions": [
+      "Lorsque vous jouez une carte #yAttaque, gagne #b",
+      " #yd'Armure."
+    ]
+  },
+  "Compulsive": {
+    "name": "Réactif",
+    "description": "Change son intention quand il reçoit des dégâts d'attaque.",
+    "descriptions": [
+      "Change son intention quand il reçoit des dégâts d'attaque."
+    ]
+  },
+  "Rebound": {
+    "name": "Rebond",
+    "description": "Les #bX prochaines cartes que vous jouez ce tour sont placées au sommet de votre pioche.",
+    "descriptions": [
+      "La prochaine carte que vous jouez ce tour est placée au sommet de votre pioche.",
+      "Les #b",
+      " prochaines cartes que vous jouez ce tour sont placées au sommet de votre pioche."
+    ]
+  },
+  "Regeneration": {
+    "name": "Régénération",
+    "description": "À la fin du tour, récupérez #bX #yPV et perdez 1 de Régénération.",
+    "descriptions": [
+      "À la fin du tour, récupérez #b",
+      " #yPV et perdez 1 de Régénération.",
+      ""
+    ]
+  },
+  "Regenerate": {
+    "name": "Régénération",
+    "description": "À la fin de son tour, récupère #bX #yPV.",
+    "descriptions": [
+      "À la fin de son tour, récupère #b",
+      " #yPV."
+    ]
+  },
+  "Life Link": {
+    "name": "Lien vital",
+    "description": "Si d'autres ennemis sont encore vivants, résurrection dans #b2 tours à #b50 % de PV.",
+    "descriptions": [
+      "Si d'autres ennemis sont encore vivants, résurrection dans #b2 tours à #b50 % de PV."
+    ]
+  },
+  "Repair": {
+    "name": "Réparation",
+    "description": "À la fin du combat, récupérez #bX PV.",
+    "descriptions": [
+      "À la fin du combat, récupérez #b",
+      " PV."
+    ]
+  },
+  "Retain Cards": {
+    "name": "Retenue de cartes",
+    "description": "À la fin de chaque tour, vous retenez #bX carte.",
+    "descriptions": [
+      "À la fin de chaque tour, vous retenez #b",
+      " carte.",
+      " cartes."
+    ]
+  },
+  "Ritual": {
+    "name": "Rituel",
+    "description": "À la fin de son tour, gagne #bX de #yForce.",
+    "descriptions": [
+      "À la fin de son tour, gagne #b",
+      " de #yForce.",
+      "At the end of your turn, gain #b"
+    ]
+  },
+  "Rupture": {
+    "name": "Rupture",
+    "description": "Quand vous perdez des PV à cause d'une carte, gagnez #bX de #yForce.",
+    "descriptions": [
+      "Quand vous perdez des PV à cause d'une carte, gagnez #b",
+      " de #yForce."
+    ]
+  },
+  "Sadistic": {
+    "name": "Sadique",
+    "description": "Lorsque vous appliquez un débuff à un ennemi, infligez #bX dégâts.",
+    "descriptions": [
+      "Lorsque vous appliquez un débuff à un ennemi, infligez #b",
+      " dégâts."
+    ]
+  },
+  "Sharp Hide": {
+    "name": "Peau dure",
+    "description": "Lorsque vous jouez une carte #yAttaque, vous subissez #bX dégâts.",
+    "descriptions": [
+      "Lorsque vous jouez une carte #yAttaque, vous subissez #b",
+      " dégâts."
+    ]
+  },
+  "Shifting": {
+    "name": "Instable",
+    "description": "Quand il perd des PV, il perd autant de #yForce jusqu'à la fin de son tour.",
+    "descriptions": [
+      "",
+      "Quand il perd des PV, il perd autant de #yForce jusqu'à la fin de son tour."
+    ]
+  },
+  "Skill Burn": {
+    "name": "Brûlure de compétences",
+    "description": "Pendant #bX tour, lorsque vous jouez une carte #yCompétence, #ycelle-ci est Épuisée.",
+    "descriptions": [
+      "Pendant #b",
+      " tour, lorsque vous jouez une carte #yCompétence, #ycelle-ci est Épuisée.",
+      "Pendant les #b prochains",
+      " tours, lorsque vous jouez une carte #yCompétence, #ycelle-ci est Épuisée."
+    ]
+  },
+  "Slow": {
+    "name": "Ralenti",
+    "description": "Chaque fois que vous jouez une carte, #yX subit #b10 % de dégâts en plus des cartes #yAttaque ce tour.",
+    "descriptions": [
+      "Chaque fois que vous jouez une carte, ",
+      " subit #b10 % de dégâts en plus des cartes #yAttaque ce tour.",
+      " (subit #b",
+      " % plus de dégâts)"
+    ]
+  },
+  "Split": {
+    "name": "Séparation",
+    "description": "Lorsque ses PV descendent en dessous de #b50 %, il se sépare en #b2 slimes plus petits avec les PV restants de #yX.",
+    "descriptions": [
+      "Lorsque ses PV descendent en dessous de #b50 %, il se sépare en #b2 slimes plus petits avec les PV restants de ",
+      "."
+    ]
+  },
+  "Spore Cloud": {
+    "name": "Nuage de spores",
+    "description": "À sa mort, vous applique #yVulnérabilité pendant #bX tours.",
+    "descriptions": [
+      "À sa mort, vous applique #yVulnérabilité pendant #b",
+      " tours."
+    ]
+  },
+  "Stasis": {
+    "name": "Stase",
+    "description": "À sa mort, #yX revient dans votre main.",
+    "descriptions": [
+      "À sa mort, ",
+      " revient dans votre main."
+    ]
+  },
+  "StaticDischarge": {
+    "name": "Décharge statique",
+    "description": "Quand vous subissez des dégâts d'attaque, #yCanalisez #bX Orbe(s) #yKéraunique(s).",
+    "descriptions": [
+      "Quand vous subissez des dégâts d'attaque, #yCanalisez #b",
+      " Orbe(s) #yKéraunique(s)."
+    ]
+  },
+  "Storm": {
+    "name": "Orage",
+    "description": "Quand vous jouez une carte #bPouvoir, #yCanalisez #bX Orbe(s) #yKéraunique(s).",
+    "descriptions": [
+      "Quand vous jouez une carte #bPouvoir, #yCanalisez #b",
+      " Orbe(s) #yKéraunique(s)."
+    ]
+  },
+  "Strength": {
+    "name": "Force",
+    "description": "Augmente les dégâts d'Attaque de #bX.",
+    "descriptions": [
+      "Augmente les dégâts d'Attaque de #b",
+      "Réduit les dégâts d'Attaque de #b",
+      "."
+    ]
+  },
+  "StrikeUp": {
+    "name": "Frappe Améliorée",
+    "description": "Les cartes contenant #yFrappe infligent #bX dégâts supplémentaires.",
+    "descriptions": [
+      "Les cartes contenant #yFrappe infligent #b",
+      " dégâts supplémentaires."
+    ]
+  },
+  "Surrounded": {
+    "name": "Entouré",
+    "description": "Recevez #b50% de dégâts supplémentaires quand vous êtes attaqué par derrière. Utilisez des cartes ou des potions pour changer votre orientation.",
+    "descriptions": [
+      "Recevez #b50% de dégâts supplémentaires quand vous êtes attaqué par derrière. Utilisez des cartes ou des potions pour changer votre orientation."
+    ]
+  },
+  "TheBomb": {
+    "name": "La Bombe",
+    "description": "À la fin de ce tour, infligez #bX dégât(s) à TOUS les ennemis",
+    "descriptions": [
+      "Dans #b%1$s tours, infligez #b%2$s dégât(s) à TOUS les ennemis.",
+      "À la fin de ce tour, infligez #b%1$s dégât(s) à TOUS les ennemis"
+    ]
+  },
+  "Thievery": {
+    "name": "Larcin",
+    "description": "X vole #bX #yd'or lors de l'attaque.",
+    "descriptions": [
+      " vole #b",
+      " #yd'or lors de l'attaque."
+    ]
+  },
+  "Thorns": {
+    "name": "Épines",
+    "description": "Quand vous subissez des dégâts #yd'Attaque, inflige #bX dégâts en retour.",
+    "descriptions": [
+      "Quand vous subissez des dégâts #yd'Attaque, inflige #b",
+      " dégâts en retour."
+    ]
+  },
+  "Thousand Cuts": {
+    "name": "Mille coupures",
+    "description": "Lorsque vous jouez une carte, infligez #bX dégâts à TOUS les ennemis.",
+    "descriptions": [
+      "Lorsque vous jouez une carte, infligez #b",
+      " dégâts à TOUS les ennemis."
+    ]
+  },
+  "TimeMazePower": {
+    "name": "Labyrinthe temporel",
+    "description": "Quand vous jouez #bX cartes, votre tour se termine.",
+    "descriptions": [
+      "Quand vous jouez #b",
+      " cartes, votre tour se termine."
+    ]
+  },
+  "Time Warp": {
+    "name": "Distorsion temporelle",
+    "description": "Lorsque vous jouez #b12 cartes, il interrompt votre tour et gagne #b2 de #yForce.",
+    "descriptions": [
+      "Lorsque vous jouez #b",
+      " cartes, il interrompt votre tour et gagne #b",
+      " de #yForce."
+    ]
+  },
+  "Tools Of The Trade": {
+    "name": "Savoir-faire",
+    "description": "Au début de chaque tour, vous piochez #bX carte et défaussez #bX carte.",
+    "descriptions": [
+      "Au début de chaque tour, vous piochez #b",
+      " carte et défaussez #b",
+      " carte.",
+      " cartes et défaussez #b",
+      " cartes."
+    ]
+  },
+  "Unawakened": {
+    "name": "Endormi",
+    "description": "Cet ennemi n'a pas encore été éveillé...",
+    "descriptions": [
+      "Cet ennemi n'a pas encore été éveillé..."
+    ]
+  },
+  "Vulnerable": {
+    "name": "Vulnérabilité",
+    "description": "Subissez #b25% de dégâts en plus des #yAttaques pendant #bX tour.",
+    "descriptions": [
+      "Subissez #b",
+      "% de dégâts en plus des #yAttaques pendant #b",
+      " tour.",
+      " tours."
+    ]
+  },
+  "Weakened": {
+    "name": "Affaibli",
+    "description": "Les #yAttaques infligent #b40% de dégâts en moins pendant #bX tour.",
+    "descriptions": [
+      "Les #yAttaques infligent #b",
+      "% de dégâts en moins pendant #b",
+      " tour.",
+      " tours."
+    ]
+  },
+  "Wraith Form v2": {
+    "name": "Forme spectrale",
+    "description": "À la fin de chaque tour, perdez #bX de #yDextérité.",
+    "descriptions": [
+      "À la fin de chaque tour, perdez #b",
+      " de #yDextérité."
+    ]
+  },
+  "BattleHymn": {
+    "name": "Hymne de bataille",
+    "description": "Au début de votre tour, ajoutez #bX #yGifles à votre main.",
+    "descriptions": [
+      "Au début de votre tour, ajoutez #b",
+      " #yGifles à votre main.",
+      " #yGifle à votre main."
+    ]
+  },
+  "BlockReturnPower": {
+    "name": "Retour d'armure",
+    "description": "Lorsqu'il est attaqué, gagnez #bX #yd'Armure.",
+    "descriptions": [
+      "Lorsqu'il est attaqué, gagnez #b",
+      " #yd'Armure."
+    ]
+  },
+  "CannotChangeStancePower": {
+    "name": "Reste en position",
+    "description": "Vous ne pouvez pas changer de position ce tour.",
+    "descriptions": [
+      "Vous ne pouvez pas changer de position ce tour."
+    ]
+  },
+  "DevaForm": {
+    "name": "Deva",
+    "description": "Au début de votre tour, gagnez [W] et augmentez ce gain de #bX.",
+    "descriptions": [
+      "Au début de votre tour, gagnez [W] ",
+      "Au début de votre tour, gagnez [W] #b",
+      " fois ",
+      "et augmentez ce gain de #b",
+      ".",
+      "TRANSLATE NOTE: At the start of your turn, gain [W] #b2 times and increase this by #b1."
+    ]
+  },
+  "DevotionPower": {
+    "name": "Dévotion",
+    "description": "Au début de votre tour, gagnez #bX de #yMantra.",
+    "descriptions": [
+      "Au début de votre tour, gagnez #b",
+      " de #yMantra."
+    ]
+  },
+  "EndTurnDeath": {
+    "name": "Blasphémateur",
+    "description": "Au début de votre tour, mourrez.",
+    "descriptions": [
+      "Au début de votre tour, mourrez."
+    ]
+  },
+  "EnergyDownPower": {
+    "name": "Jeûne",
+    "description": "Au début de votre tour, perdez [E] .",
+    "descriptions": [
+      "Au début de votre tour, perdez ",
+      ""
+    ]
+  },
+  "EstablishmentPower": {
+    "name": "Fondation",
+    "description": "Lorsqu'une carte est #yRetenue, réduit son coût de #bX.",
+    "descriptions": [
+      "Lorsqu'une carte est #yRetenue, réduit son coût de #b",
+      "."
+    ]
+  },
+  "WireheadingPower": {
+    "name": "Prévoyance",
+    "description": "Au début de votre tour, #yScrutez #bX cartes.",
+    "descriptions": [
+      "Au début de votre tour, #yScrutez #b",
+      " cartes."
+    ]
+  },
+  "FreeAttackPower": {
+    "name": "Puissance d'attaque gratuite",
+    "description": "Ignorez le coût en énergie de la prochaine #yAttaque que vous jouez.",
+    "descriptions": [
+      "Ignorez le coût en énergie de la prochaine #yAttaque que vous jouez.",
+      "Ignorez le coût en énergie des #b",
+      " prochaines #yAttaques que vous jouez."
+    ]
+  },
+  "LikeWaterPower": {
+    "name": "Fluidité",
+    "description": "À la fin de votre tour, si vous êtes en #yCalme, gagnez #bX #yd'Armure.",
+    "descriptions": [
+      "À la fin de votre tour, si vous êtes en #yCalme, gagnez #b",
+      " #yd'Armure."
+    ]
+  },
+  "AngelForm": {
+    "name": "Deva",
+    "description": "À la fin de votre tour, gagnez#bX #yd'Armure #yPlaquée.",
+    "descriptions": [
+      "À la fin de votre tour, gagnez#b",
+      " #yd'Armure #yPlaquée."
+    ]
+  },
+  "Mantra": {
+    "name": "Mantra",
+    "description": "Lorsque vous obtenez #b10 de #yMantra, entrez en #yDivinité.",
+    "descriptions": [
+      "Lorsque vous obtenez #b",
+      " de #yMantra, entrez en #yDivinité."
+    ]
+  },
+  "PathToVictoryPower": {
+    "name": "Marque",
+    "description": "Lorsque vous jouez #yPoints #yvitaux, perd #bX PV.",
+    "descriptions": [
+      "Lorsque vous jouez #yPoints #yvitaux, perd #b",
+      " PV."
+    ]
+  },
+  "MasterRealityPower": {
+    "name": "Maîtrise-réalité",
+    "description": "Lorsque vous jouez une carte avec #yRetenue, infligez #b",
+    "descriptions": [
+      "Lorsque vous jouez une carte avec #yRetenue, infligez #b",
+      " dégâts à un ennemi aléatoire.",
+      "",
+      ""
+    ]
+  },
+  "Controlled": {
+    "name": "Forteresse mentale",
+    "description": "Lorsque vous changez de #yPosition, gagnez #bX #yd'Armure.",
+    "descriptions": [
+      "Lorsque vous changez de #yPosition, gagnez #b",
+      " #yd'Armure."
+    ]
+  },
+  "Nirvana": {
+    "name": "Nirvana",
+    "description": "Lorsque vous Scrutez, gagnez #bX #yd'Armure.",
+    "descriptions": [
+      "Lorsque vous Scrutez, gagnez #b",
+      " #yd'Armure."
+    ]
+  },
+  "NoSkills": {
+    "name": "Incompétence",
+    "description": "Vous ne pouvez pas jouer de #yCompétences ce tour.",
+    "descriptions": [
+      "Vous ne pouvez pas jouer de #yCompétences ce tour."
+    ]
+  },
+  "OmegaPower": {
+    "name": "Oméga",
+    "description": "Au début de votre tour, infligez X dégâts à TOUS les ennemis.",
+    "descriptions": [
+      "Au début de votre tour, infligez ",
+      " dégâts à TOUS les ennemis."
+    ]
+  },
+  "OmnisciencePower": {
+    "name": "Omniscience",
+    "description": "Lorsque vous #yScrutez, #yScrutez #bX cartes supplémentaires.",
+    "descriptions": [
+      "Lorsque vous #yScrutez, #yScrutez #b",
+      " cartes supplémentaires."
+    ]
+  },
+  "Adaptation": {
+    "name": "Précipitation",
+    "description": "Lorsque vous entrez en #yColère, piochez #bX cartes.",
+    "descriptions": [
+      "Lorsque vous entrez en #yColère, piochez #b",
+      " carte.",
+      " cartes."
+    ]
+  },
+  "Study": {
+    "name": "Étude",
+    "description": "À la fin de votre tour, mélangez #bX #yPersicacité dans votre pioche.",
+    "descriptions": [
+      "À la fin de votre tour, mélangez #b",
+      " #yPersicacité dans votre pioche.",
+      " #yPerspicacités dans votre pioche."
+    ]
+  },
+  "Vault": {
+    "name": "Saut",
+    "description": "Reçoit #bX dégâts au début de votre prochain tour.",
+    "descriptions": [
+      "Reçoit #b",
+      " dégâts au début de votre prochain tour."
+    ]
+  },
+  "Vigor": {
+    "name": "Vigueur",
+    "description": "Votre prochaine attaque inflige #bX dégâts supplémentaires.",
+    "descriptions": [
+      "Votre prochaine attaque inflige #b",
+      " dégâts supplémentaires."
+    ]
+  },
+  "WaveOfTheHandPower": {
+    "name": "Revers de la main",
+    "description": "Lorsque vous gagnez de #yl'Armure, appliquez #bX de #yFaiblesse à TOUS les ennemis.",
+    "descriptions": [
+      "Lorsque vous gagnez de #yl'Armure, appliquez #b",
+      " de #yFaiblesse à TOUS les ennemis."
+    ]
+  },
+  "WrathNextTurnPower": {
+    "name": "Simmering Rage",
+    "description": "Au début de votre prochain tour, entrez en Colère.",
+    "descriptions": [
+      "Au début de votre prochain tour, entrez en Colère."
+    ]
+  }
+}
