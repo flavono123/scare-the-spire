@@ -797,7 +797,7 @@ export function SiteNavbar() {
 
           {devItems.length > 0 && (
             <SiteNavDropdown
-              icon="/images/sts2/relics/toy_box.webp"
+              icon="/images/sts2/nav/question_mark.png"
               alt="Dev"
               items={devItems}
               align="left"
