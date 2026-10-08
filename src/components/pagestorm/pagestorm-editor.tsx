@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { TableKit } from "@tiptap/extension-table/kit";
 import TextAlign from "@tiptap/extension-text-align";
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import type { JSONContent } from "@tiptap/core";
@@ -33,8 +34,17 @@ import {
 } from "@/lib/pagestorm";
 import { assetFromEntity, PAGESTORM_EMPTY_DOC, resolvePastedUrl } from "./sample";
 import {
+  PagestormDetails,
+  PagestormDetailsContent,
+  PagestormDetailsSummary,
+} from "./details";
+import {
+  markdownLinkBeforeCursor,
+  migratePagestormDoc,
+  pagestormPasteContent,
+} from "./markdown-blocks";
+import {
   GameAssetNode,
-  OgBookmarkNode,
   PagestormLightSection,
   ToyboxEmbedNode,
   YoutubePlayerNode,
@@ -109,18 +119,33 @@ export function PagestormEditor({
   const editor = useEditor({
     immediatelyRender: false,
     editable: mode === "edit",
-    content: (initialContent ?? PAGESTORM_EMPTY_DOC) as JSONContent,
+    content: migratePagestormDoc((initialContent ?? PAGESTORM_EMPTY_DOC) as JSONContent),
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3] },
+        link: {
+          openOnClick: "whenNotEditable",
+          autolink: true,
+          linkOnPaste: true,
+          HTMLAttributes: {
+            target: "_blank",
+            rel: "noopener noreferrer",
+            class: "pagestorm-inline-link",
+          },
+        },
       }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
+      TableKit.configure({
+        table: { resizable: true, renderWrapper: true },
+      }),
+      PagestormDetails,
+      PagestormDetailsSummary,
+      PagestormDetailsContent,
       PagestormColor,
       PagestormSine,
       PagestormJitter,
       GameAssetNode,
       YoutubePlayerNode,
-      OgBookmarkNode,
       ToyboxEmbedNode,
       AssetRowNode,
       PagestormAssetLayout,
@@ -131,29 +156,77 @@ export function PagestormEditor({
       attributes: {
         class: "pagestorm-mock-editor",
       },
+      handleKeyDown: (_view, event) => {
+        if (event.key !== "Tab" || mode !== "edit") return false;
+        const current = editorRef.current;
+        if (!current) return false;
+        const { $from } = current.state.selection;
+        let inList = false;
+        for (let depth = $from.depth; depth > 0; depth -= 1) {
+          if ($from.node(depth).type.name === "listItem") inList = true;
+        }
+        if (!inList) return false;
+        event.preventDefault();
+        if (event.shiftKey) current.commands.liftListItem("listItem");
+        else current.commands.sinkListItem("listItem");
+        return true;
+      },
+      handleTextInput: (view, from, to, text) => {
+        if (mode !== "edit") return false;
+        const $from = view.state.doc.resolve(from);
+        if (!$from.parent.isTextblock) return false;
+        const blockStart = $from.start();
+        const textBefore = $from.parent.textBetween(
+          Math.max(0, from - blockStart - 2000),
+          from - blockStart,
+          undefined,
+          "\ufffc",
+        );
+        const found = markdownLinkBeforeCursor(textBefore, text);
+        if (!found) return false;
+        const link = view.state.schema.marks.link;
+        if (!link) return false;
+        const start = from - found.fromOffset;
+        view.dispatch(view.state.tr.replaceWith(
+          start,
+          to,
+          view.state.schema.text(found.label, [link.create({
+            href: found.href,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            class: "pagestorm-inline-link",
+          })]),
+        ));
+        return true;
+      },
       handlePaste: (_view, event) => {
         if (mode !== "edit") return false;
         const pastedText = event.clipboardData?.getData("text/plain").trim() ?? "";
+        const current = editorRef.current;
+        const pastedBlocks = pagestormPasteContent(pastedText);
+        if (pastedBlocks && current) {
+          event.preventDefault();
+          current.chain().focus().insertContent(pastedBlocks).run();
+          return true;
+        }
         const resolved = resolvePastedUrl(pastedText);
         if (!resolved) return false;
         event.preventDefault();
-        const current = editorRef.current;
         if (!current) return true;
         if (resolved.kind === "og") {
-          current.chain().focus().insertContent([
-            {
-              type: "ogBookmark",
+          current.chain().focus().insertContent({
+            type: "text",
+            text: resolved.bookmark.title || resolved.bookmark.url,
+            marks: [{
+              type: "link",
               attrs: {
-                url: resolved.bookmark.url,
-                title: resolved.bookmark.title,
-                description: resolved.bookmark.description,
-                image: resolved.bookmark.image,
-                siteName: resolved.bookmark.siteName,
-                align: "center",
+                href: resolved.bookmark.url,
+                target: "_blank",
+                rel: "noopener noreferrer",
+                class: "pagestorm-inline-link",
               },
-            },
-            { type: "paragraph" },
-          ]).run();
+            }],
+          }).run();
           return true;
         }
         const pendingLabel = copy.youtubePending;
@@ -298,7 +371,7 @@ export function PagestormEditor({
             />
           </div>
         ) : null}
-        <div className="pagestorm-editor-frame relative overflow-visible rounded-lg border border-border bg-card">
+        <div className="pagestorm-editor-frame relative w-full min-w-0 max-w-full overflow-visible rounded-lg border border-border bg-card">
         {editing && editor ? (
           <PagestormStickyToolbar
             editor={editor}

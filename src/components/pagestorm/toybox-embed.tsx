@@ -32,7 +32,7 @@ import {
 } from "@/lib/transfigure-types";
 import { serviceMessages } from "@/messages/service";
 import { findPagestormEntity, usePagestormEntities } from "./entities-context";
-import { AssetCornerHandles, AssetFocusChrome, alignRowClass } from "./figures";
+import { AssetCornerHandles, AssetFitFrame, AssetFocusChrome, alignRowClass } from "./figures";
 import {
   clampPlayerWidth,
   defaultPlayerWidth,
@@ -372,9 +372,8 @@ export function ToyboxEmbedFigure({
 
   const card = (
     <div
-      className="relative overflow-hidden rounded-md border border-border bg-card/40"
+      className="relative h-full w-full overflow-hidden rounded-md border border-border bg-card/40"
       data-pagestorm-embed-box=""
-      style={{ width: px, maxWidth: "100%", height: py }}
     >
       {inner}
       {mode === "edit" ? (
@@ -382,10 +381,11 @@ export function ToyboxEmbedFigure({
       ) : null}
     </div>
   );
-  const body = (
-    <div className="relative" style={{ width: px, maxWidth: "100%", height: py }}>
-      {card}
-      {mode === "edit" ? (
+  const fitted = (
+    <AssetFitFrame
+      width={px}
+      height={py}
+      overlay={mode === "edit" ? (
         <>
           <AssetCornerHandles
             linked={linked}
@@ -403,7 +403,9 @@ export function ToyboxEmbedFigure({
           />
         </>
       ) : null}
-    </div>
+    >
+      {card}
+    </AssetFitFrame>
   );
 
   const canLink = mode === "preview" && linked && Boolean(mock || federated);
@@ -420,7 +422,7 @@ export function ToyboxEmbedFigure({
           rel="noreferrer"
           data-pagestorm-embed="linked"
         >
-          {card}
+          {fitted}
         </a>
       </div>
     );
@@ -429,10 +431,10 @@ export function ToyboxEmbedFigure({
   if (mode === "preview") {
     return (
       <div className={`${alignRowClass(align)} cursor-default`} data-pagestorm-embed="unlinked">
-        <div className="min-w-0 max-w-full">{card}</div>
+        <div className="min-w-0 max-w-full">{fitted}</div>
       </div>
     );
   }
 
-  return <div className={alignRowClass(align)}>{body}</div>;
+  return <div className={alignRowClass(align)}>{fitted}</div>;
 }

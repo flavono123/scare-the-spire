@@ -2,7 +2,7 @@
 
 import { Node, mergeAttributes, type Editor } from "@tiptap/core";
 import { NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
-import { GameAssetFigure, OgBookmarkFigure, YoutubePlayerFigure } from "./figures";
+import { GameAssetFigure, YoutubePlayerFigure } from "./figures";
 import {
   findPagestormEntity,
   usePagestormChrome,
@@ -17,7 +17,6 @@ import {
   type MockAlign,
   type MockAssetKind,
   type MockGameAsset,
-  type MockOgBookmark,
 } from "./sample";
 import {
   pagestormToyboxJsonArray,
@@ -106,7 +105,7 @@ function GameAssetView({ node, updateAttributes, selected }: NodeViewProps) {
   const width = asWidth(node.attrs.width, fallback.width);
   const height = asWidth(node.attrs.height, fallback.height);
   return (
-    <NodeViewWrapper className="max-w-full" data-pagestorm-asset-box="" data-drag-handle="">
+    <NodeViewWrapper className="block w-full min-w-0 max-w-full" data-pagestorm-asset-box="" data-drag-handle="">
       <GameAssetFigure
         asset={asset}
         align={align}
@@ -150,7 +149,7 @@ function YoutubeView({ node, updateAttributes, selected }: NodeViewProps) {
   const mode = usePagestormChrome();
   const align = asAlign(node.attrs.align);
   return (
-    <NodeViewWrapper className="max-w-full" data-pagestorm-asset-box="" data-drag-handle="">
+    <NodeViewWrapper className="block w-full min-w-0 max-w-full" data-pagestorm-asset-box="" data-drag-handle="">
       <div className={selected ? "rounded-md ring-1 ring-primary/70" : undefined}>
         <YoutubePlayerFigure
           videoId={String(node.attrs.videoId ?? "")}
@@ -170,33 +169,6 @@ function YoutubeView({ node, updateAttributes, selected }: NodeViewProps) {
   );
 }
 
-function OgView({ node, updateAttributes, selected }: NodeViewProps) {
-  const mode = usePagestormChrome();
-  const align = asAlign(node.attrs.align);
-  const bookmark: MockOgBookmark = {
-    url: String(node.attrs.url ?? ""),
-    title: String(node.attrs.title ?? ""),
-    description: String(node.attrs.description ?? ""),
-    image: (node.attrs.image as string | null) || null,
-    siteName: String(node.attrs.siteName ?? ""),
-  };
-  return (
-    <NodeViewWrapper className="max-w-full" data-pagestorm-asset-box="" data-drag-handle="">
-      <div className={selected ? "rounded-md ring-1 ring-primary/70" : undefined}>
-        <OgBookmarkFigure
-          bookmark={bookmark}
-          align={align}
-          mode={mode}
-          selected={selected}
-          onTitle={(title) => updateAttributes({ title })}
-          onUrl={(url) => updateAttributes({ url })}
-          onAlign={(next) => updateAttributes({ align: next })}
-        />
-      </div>
-    </NodeViewWrapper>
-  );
-}
-
 function ToyboxView({ node, updateAttributes, selected }: NodeViewProps) {
   const mode = usePagestormChrome();
   const align = asAlign(node.attrs.align);
@@ -204,7 +176,7 @@ function ToyboxView({ node, updateAttributes, selected }: NodeViewProps) {
   const width = asWidth(node.attrs.width, defaultPlayerWidth());
   const height = asWidth(node.attrs.height, 240);
   return (
-    <NodeViewWrapper className="max-w-full" data-pagestorm-asset-box="" data-drag-handle="">
+    <NodeViewWrapper className="block w-full min-w-0 max-w-full" data-pagestorm-asset-box="" data-drag-handle="">
       <div className={selected ? "rounded-md ring-1 ring-primary/70" : undefined}>
         <ToyboxEmbedFigure
           postId={String(node.attrs.postId ?? "")}
@@ -301,39 +273,6 @@ export const YoutubePlayerNode = Node.create({
   },
   addNodeView() {
     return ReactNodeViewRenderer(YoutubeView, nodeViewOptions);
-  },
-});
-
-export const OgBookmarkNode = Node.create({
-  name: "ogBookmark",
-  group: "block",
-  atom: true,
-  selectable: true,
-  draggable: true,
-  addAttributes() {
-    return {
-      url: { default: "" },
-      title: { default: "" },
-      description: { default: "" },
-      image: { default: null },
-      siteName: { default: "" },
-      align: { default: "center" },
-      linked: { default: true },
-      width: { default: 576 },
-      height: { default: 96 },
-    };
-  },
-  parseHTML() {
-    return [{ tag: "div[data-pagestorm-og]" }];
-  },
-  renderHTML({ HTMLAttributes }) {
-    return ["div", mergeAttributes(HTMLAttributes, { "data-pagestorm-og": "" })];
-  },
-  addKeyboardShortcuts() {
-    return atomKeyboard(this.name);
-  },
-  addNodeView() {
-    return ReactNodeViewRenderer(OgView, nodeViewOptions);
   },
 });
 

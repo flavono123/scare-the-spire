@@ -1,6 +1,13 @@
+.pagestorm-editor-frame,
+.pagestorm-editor-frame .tiptap,
+.pagestorm-mock-editor {
+  max-width: 100%;
+  min-width: 0;
+}
+
 .pagestorm-mock-editor {
   position: relative;
-  overflow: visible;
+  overflow-wrap: anywhere;
   min-height: 28rem;
   padding: 0.75rem 1rem;
   font-family: var(--font-game-text, inherit);
@@ -10,15 +17,27 @@
 .pagestorm-mock-editor h2 {
   margin: 1rem 0 0.45rem;
   font-family: var(--font-game-title, inherit);
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .pagestorm-mock-editor h3 {
-  margin: 0.85rem 0 0.35rem;
+  margin: 0.95rem 0 0.4rem;
+  padding-left: 0.55rem;
+  border-left: 3px solid var(--primary);
   font-family: var(--font-game-title, inherit);
-  font-size: 1.02rem;
-  font-weight: 650;
+  font-size: 1.12rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--primary);
+}
+
+.pagestorm-mock-editor strong {
+  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: inherit;
 }
 
 .pagestorm-mock-editor p {
@@ -26,16 +45,50 @@
   line-height: 1.65;
 }
 
-.pagestorm-mock-editor ul {
+.pagestorm-mock-editor ul,
+.pagestorm-mock-editor ol {
   margin: 0.4rem 0;
-  padding-left: 1.35rem;
-  list-style: disc;
+  padding-left: 1.5rem;
+  padding-inline-start: 1.5rem;
+}
+
+.pagestorm-mock-editor ul {
+  list-style: disc outside;
+}
+
+.pagestorm-mock-editor ul ul {
+  list-style-type: circle;
+}
+
+.pagestorm-mock-editor ul ul ul {
+  list-style-type: square;
 }
 
 .pagestorm-mock-editor ol {
-  margin: 0.4rem 0;
-  padding-left: 1.35rem;
-  list-style: decimal;
+  list-style: decimal outside;
+}
+
+.pagestorm-mock-editor ol ol {
+  list-style-type: lower-alpha;
+}
+
+.pagestorm-mock-editor ol ol ol {
+  list-style-type: lower-roman;
+}
+
+.pagestorm-mock-editor li {
+  display: list-item;
+}
+
+.pagestorm-mock-editor li > p {
+  margin: 0.12rem 0;
+}
+
+.pagestorm-mock-editor li > ul,
+.pagestorm-mock-editor li > ol {
+  margin-top: 0.15rem;
+  margin-bottom: 0.15rem;
+  margin-left: 0.35rem;
 }
 
 .pagestorm-mock-editor blockquote {
@@ -51,8 +104,23 @@
 }
 
 .pagestorm-mock-editor a {
+  display: inline;
   color: #d4a843;
   text-underline-offset: 3px;
+}
+
+.pagestorm-mock-editor a.pagestorm-inline-link {
+  display: inline;
+  color: #2aebbe;
+  font-weight: 600;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.pagestorm-mock-editor s {
+  text-decoration-line: line-through;
+  text-decoration-thickness: 2px;
 }
 
 .pagestorm-mock-editor a.game-inspect-cursor {
@@ -81,6 +149,8 @@
 
 .pagestorm-mock-editor .react-renderer {
   overflow: visible;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .pagestorm-asset-row > .react-renderer {
@@ -114,6 +184,8 @@
 .pagestorm-asset-row {
   display: flex;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   align-items: flex-start;
   justify-content: center;
   gap: 1.5rem;
@@ -136,20 +208,87 @@
   max-width: 100%;
 }
 
-@media (max-width: 40rem) {
-  .pagestorm-asset-row {
-    flex-direction: column;
-    align-items: center;
-  }
+.pagestorm-fit {
+  container-type: inline-size;
+  width: min(100%, var(--asset-w));
+  max-width: 100%;
+  min-width: 0;
+}
 
-  .pagestorm-asset-row > * {
-    flex: 0 0 auto;
-    width: 100%;
-  }
+.pagestorm-fit-slot {
+  position: relative;
+  width: 100%;
+  /* Pixel lengths are invalid in aspect-ratio, so the ratio uses unitless vars.
+     The container query keeps the slot as tall as the scaled image. */
+  height: calc(100cqw * var(--asset-rh) / var(--asset-rw));
+  overflow: hidden;
+}
 
-  .pagestorm-asset-row .pagestorm-asset-align {
-    width: 100%;
-  }
+.pagestorm-fit-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--asset-w);
+  height: var(--asset-h);
+  transform-origin: top left;
+  transform: scale(min(1, calc(100cqw / var(--asset-w))));
+}
+
+.pagestorm-mock-editor .tableWrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0.7rem 0;
+  overflow-x: auto;
+}
+
+.pagestorm-mock-editor table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.pagestorm-mock-editor th,
+.pagestorm-mock-editor td {
+  min-width: 4.5rem;
+  border: 1px solid hsl(var(--border));
+  padding: 0.35rem 0.5rem;
+  vertical-align: top;
+}
+
+.pagestorm-mock-editor th {
+  font-family: var(--font-game-title, inherit);
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.pagestorm-mock-editor .column-resize-handle {
+  background: var(--primary);
+}
+
+.pagestorm-details {
+  position: relative;
+  margin: 0.7rem 0;
+  padding: 0.4rem 0.7rem 0.45rem 1.7rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.45rem;
+}
+
+.pagestorm-details-toggle {
+  position: absolute;
+  top: 0.45rem;
+  left: 0.35rem;
+  display: inline-flex;
+  color: var(--primary);
+}
+
+.pagestorm-details [data-details-summary] {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.pagestorm-details[data-open="false"] [data-details-content] {
+  display: none;
 }
 
 .pagestorm-drop-hint {

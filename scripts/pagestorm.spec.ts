@@ -8,9 +8,18 @@ import {
   WIDE_ART_MIN_WIDTH,
 } from "../src/components/pagestorm/sample";
 import {
+  PAGESTORM_ASSET_ROW_MAX,
   pagestormDropZone,
+  pagestormEmbedMinWidth,
   pagestormPointerZone,
+  pagestormRowFits,
 } from "../src/components/pagestorm/asset-layout";
+import {
+  markdownLinkBeforeCursor,
+  migratePagestormDoc,
+  pagestormPasteContent,
+  parseIndentedList,
+} from "../src/components/pagestorm/markdown-blocks";
 import {
   PAGESTORM_BACKGROUND_SRC,
   PAGESTORM_BETA_ART_SRC,
@@ -301,6 +310,37 @@ assert.equal(secondAttrs.leftType, "card");
 assert.equal(secondAttrs.leftId, "TACTICIAN");
 assert.equal(secondAttrs.transfigureReelJson, "[]");
 assert.equal(secondAttrs.height, 420);
+
+assert.equal(pagestormRowFits(320, [140, 140]), true);
+assert.equal(pagestormRowFits(300, [140, 140]), false);
+assert.equal(pagestormRowFits(1000, [40, 40, 40, 40]), true);
+assert.equal(pagestormRowFits(4000, Array.from({ length: PAGESTORM_ASSET_ROW_MAX + 1 }, () => 40)), false);
+assert.equal(pagestormEmbedMinWidth("gameAsset", { kind: "card", presentation: "tiny" }), 40);
+assert.equal(pagestormEmbedMinWidth("toyboxEmbed", {}), 200);
+
+const nested = parseIndentedList("- alpha\n  - beta\n    - gamma\n- delta");
+assert.equal(nested?.type, "bulletList");
+assert.equal(nested?.content?.length, 2);
+const nestedBeta = nested?.content?.[0]?.content?.[1];
+assert.equal(nestedBeta?.type, "bulletList");
+assert.equal(nestedBeta?.content?.[0]?.content?.[1]?.type, "bulletList");
+const pasted = pagestormPasteContent("[글](https://example.com/a)");
+assert.equal(pasted?.[0]?.type, "paragraph");
+assert.equal(pasted?.[0]?.content?.[0]?.text, "글");
+assert.equal(pasted?.[0]?.content?.[0]?.marks?.[0]?.attrs?.href, "https://example.com/a");
+const typedLink = markdownLinkBeforeCursor("앞에 [글](https://example.com", ")");
+assert.ok(typedLink);
+assert.equal(typedLink.label, "글");
+const migrated = migratePagestormDoc({
+  type: "doc",
+  content: [{
+    type: "ogBookmark",
+    attrs: { url: "https://example.com", title: "글", align: "center" },
+  }],
+});
+assert.equal(migrated.content?.[0]?.type, "paragraph");
+assert.equal(migrated.content?.[0]?.content?.[0]?.text, "글");
+assert.equal(migrated.content?.[0]?.content?.[0]?.marks?.[0]?.type, "link");
 
 assert.deepEqual(parsePagestormTransfigureReel("[]"), []);
 assert.deepEqual(parsePagestormTransfigureReel("not json"), []);

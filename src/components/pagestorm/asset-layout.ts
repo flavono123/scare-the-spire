@@ -4,13 +4,40 @@ import { NodeSelection, Plugin, PluginKey, type Transaction } from "@tiptap/pm/s
 import type { EditorView } from "@tiptap/pm/view";
 
 export const PAGESTORM_ASSET_ROW = "assetRow";
+/** Hard cap. The live limit is however many still fit the editor width. */
+export const PAGESTORM_ASSET_ROW_MAX = 8;
+export const PAGESTORM_ASSET_ROW_GAP = 24;
 
 export const PAGESTORM_EMBED_NODE_NAMES = [
   "gameAsset",
   "youtubePlayer",
-  "ogBookmark",
   "toyboxEmbed",
 ] as const;
+
+export function pagestormEmbedMinWidth(
+  nodeName: string,
+  attrs: Record<string, unknown> | null | undefined,
+): number {
+  if (nodeName === "youtubePlayer" || nodeName === "toyboxEmbed") return 200;
+  if (nodeName !== "gameAsset") return 96;
+  const kind = String(attrs?.kind ?? "");
+  const presentation = String(attrs?.presentation ?? "art");
+  if (kind === "card" && presentation === "tiny") return 40;
+  if (kind === "card" && presentation === "tile") return 88;
+  if (kind === "card" || kind === "event" || kind === "epoch") return 140;
+  return 56;
+}
+
+export function pagestormRowFits(
+  availableWidth: number,
+  minWidths: readonly number[],
+): boolean {
+  if (minWidths.length <= 1) return true;
+  if (minWidths.length > PAGESTORM_ASSET_ROW_MAX) return false;
+  const gaps = (minWidths.length - 1) * PAGESTORM_ASSET_ROW_GAP;
+  const sum = minWidths.reduce((total, width) => total + width, 0);
+  return sum + gaps <= availableWidth;
+}
 
 export type PagestormDropZone = "before" | "after" | "left" | "right";
 
@@ -38,9 +65,6 @@ function isStubEmbed(node: PMNode): boolean {
   }
   if (node.type.name === "youtubePlayer") {
     return !String(node.attrs.videoId ?? "");
-  }
-  if (node.type.name === "ogBookmark") {
-    return !String(node.attrs.url ?? "");
   }
   return false;
 }
@@ -86,10 +110,20 @@ function embedPosFromCoords(view: EditorView, event: DragEvent): number | null {
     const node = $pos.node(depth);
     if (isPagestormEmbedNode(node)) return $pos.before(depth);
     if (node.type.name === PAGESTORM_ASSET_ROW) {
-      const child = node.childCount > 1 && relXInNode(view, $pos.before(depth), event.clientX) >= 0.5
-        ? 1
-        : 0;
-      return $pos.before(depth) + 1 + childOffset(node, child);
+      const rowPos = $pos.before(depth);
+      let chosen = 0;
+      let offset = 0;
+      for (let index = 0; index < node.childCount; index += 1) {
+        const childPos = rowPos + 1 + offset;
+        const dom = view.nodeDOM(childPos);
+        chosen = index;
+        if (dom instanceof HTMLElement) {
+          const rect = visualAssetElement(dom).getBoundingClientRect();
+          if (event.clientX <= rect.left + rect.width / 2) break;
+        }
+        offset += node.child(index).nodeSize;
+      }
+      return rowPos + 1 + childOffset(node, chosen);
     }
   }
   const after = $pos.nodeAfter;
@@ -103,14 +137,6 @@ function childOffset(parent: PMNode, index: number): number {
   let offset = 0;
   for (let i = 0; i < index; i += 1) offset += parent.child(i).nodeSize;
   return offset;
-}
-
-function relXInNode(view: EditorView, pos: number, clientX: number): number {
-  const dom = view.nodeDOM(pos);
-  if (!(dom instanceof HTMLElement)) return 0;
-  const rect = visualAssetElement(dom).getBoundingClientRect();
-  if (rect.width <= 0) return 0;
-  return (clientX - rect.left) / rect.width;
 }
 
 export function pagestormPointerZone(
@@ -174,12 +200,44 @@ function deleteEmbed(tr: Transaction, pos: number): Transaction {
     row.forEach((child, offset) => {
       if (rowPos + 1 + offset !== mapped) remaining.push(child);
     });
-    return tr.replaceWith(rowPos, rowPos + row.nodeSize, remaining);
+    const replacement = remaining.length >= 2
+      ? row.type.create(row.attrs, remaining)
+      : remaining;
+    return tr.replaceWith(rowPos, rowPos + row.nodeSize, replacement);
   }
   return tr.delete(mapped, mapped + node.nodeSize);
 }
 
-function pairEmbeds(
+function rowMembers(row: PMNode): PMNode[] {
+  const nodes: PMNode[] = [];
+  row.forEach((child) => {
+    nodes.push(child);
+  });
+  return nodes;
+}
+
+function availableRowWidth(view: EditorView): number {
+  const width = view.dom.clientWidth;
+  return width > 0 ? width : Number.POSITIVE_INFINITY;
+}
+
+function reorderRow(
+  children: PMNode[],
+  fromIndex: number,
+  targetIndex: number,
+  side: "left" | "right",
+): PMNode[] | null {
+  if (fromIndex < 0 || targetIndex < 0 || fromIndex >= children.length) return null;
+  let insertAt = side === "left" ? targetIndex : targetIndex + 1;
+  if (fromIndex < insertAt) insertAt -= 1;
+  if (insertAt === fromIndex) return null;
+  const next = children.slice();
+  const [moved] = next.splice(fromIndex, 1);
+  next.splice(insertAt, 0, moved);
+  return next;
+}
+
+function placeBeside(
   view: EditorView,
   dragged: { pos: number; node: PMNode },
   targetPos: number,
@@ -189,34 +247,54 @@ function pairEmbeds(
   const target = state.doc.nodeAt(targetPos);
   if (!target || !isPagestormEmbedNode(target) || targetPos === dragged.pos) return false;
 
-  const draggedRow = rowPosAround(state.doc, dragged.pos);
-  const targetRow = rowPosAround(state.doc, targetPos);
-  if (draggedRow != null && draggedRow === targetRow) {
-    const row = state.doc.nodeAt(draggedRow);
-    if (!row || row.childCount !== 2) return false;
-    const left = side === "left" ? dragged.node : target;
-    const right = side === "left" ? target : dragged.node;
-    if (left === row.child(0) && right === row.child(1)) return true;
-    const next = row.type.create(row.attrs, [left.copy(), right.copy()]);
-    view.dispatch(state.tr.replaceWith(draggedRow, draggedRow + row.nodeSize, next));
-    return true;
-  }
-  if (targetRow != null && draggedRow !== targetRow) return false;
-
-  const left = side === "left" ? dragged.node : target;
-  const right = side === "left" ? target : dragged.node;
+  const draggedRowPos = rowPosAround(state.doc, dragged.pos);
+  const targetRowPos = rowPosAround(state.doc, targetPos);
   const rowType = state.schema.nodes[PAGESTORM_ASSET_ROW];
   if (!rowType) return false;
-  const row = rowType.create(null, [left.copy(), right.copy()]);
 
+  if (draggedRowPos != null && draggedRowPos === targetRowPos) {
+    const row = state.doc.nodeAt(draggedRowPos);
+    if (!row) return false;
+    const next = reorderRow(
+      rowMembers(row),
+      state.doc.resolve(dragged.pos).index(),
+      state.doc.resolve(targetPos).index(),
+      side,
+    );
+    if (!next) return true;
+    view.dispatch(state.tr.replaceWith(
+      draggedRowPos,
+      draggedRowPos + row.nodeSize,
+      row.type.create(row.attrs, next.map((node) => node.copy())),
+    ));
+    return true;
+  }
+
+  const basePos = targetRowPos ?? targetPos;
+  const baseNode = state.doc.nodeAt(basePos);
+  if (!baseNode) return false;
+  const baseMembers = baseNode.type.name === PAGESTORM_ASSET_ROW
+    ? rowMembers(baseNode)
+    : [baseNode];
+  const targetIndex = baseMembers.indexOf(target);
+  if (targetIndex < 0) return false;
+  const insertAt = side === "left" ? targetIndex : targetIndex + 1;
+  const nextMembers = [
+    ...baseMembers.slice(0, insertAt),
+    dragged.node,
+    ...baseMembers.slice(insertAt),
+  ];
+  const minWidths = nextMembers.map((node) => pagestormEmbedMinWidth(node.type.name, node.attrs));
+  if (!pagestormRowFits(availableRowWidth(view), minWidths)) return false;
+
+  const row = rowType.create(null, nextMembers.map((node) => node.copy()));
   let tr = state.tr;
-  const later = Math.max(dragged.pos, targetPos);
-  const earlier = Math.min(dragged.pos, targetPos);
-  tr = deleteEmbed(tr, later);
-  tr = deleteEmbed(tr, earlier);
-  const insertAt = tr.mapping.map(targetPos, targetPos > dragged.pos ? -1 : 1);
-  const clamped = Math.max(0, Math.min(insertAt, tr.doc.content.size));
-  tr = tr.insert(clamped, row);
+  const draggedInsideBase = dragged.pos >= basePos && dragged.pos < basePos + baseNode.nodeSize;
+  if (!draggedInsideBase) tr = deleteEmbed(tr, dragged.pos);
+  const mappedBase = tr.mapping.map(basePos, dragged.pos < basePos ? -1 : 1);
+  const mappedNode = tr.doc.nodeAt(mappedBase);
+  if (!mappedNode) return false;
+  tr = tr.replaceWith(mappedBase, mappedBase + mappedNode.nodeSize, row);
   view.dispatch(tr.scrollIntoView());
   return true;
 }
@@ -266,7 +344,9 @@ function applyDrop(
   if (!zone) return false;
   event.preventDefault();
   if (zone === "left" || zone === "right") {
-    pairEmbeds(view, dragged, targetPos, zone);
+    if (!placeBeside(view, dragged, targetPos, zone)) {
+      moveEmbedAround(view, dragged, targetPos, zone === "left" ? "before" : "after");
+    }
   } else {
     moveEmbedAround(view, dragged, targetPos, zone);
   }
@@ -276,7 +356,9 @@ function applyDrop(
 export const AssetRowNode = Node.create({
   name: PAGESTORM_ASSET_ROW,
   group: "block",
-  content: "(gameAsset | youtubePlayer | ogBookmark | toyboxEmbed){1,2}",
+  content() {
+    return `(gameAsset | youtubePlayer | toyboxEmbed){1,${PAGESTORM_ASSET_ROW_MAX}}`;
+  },
   defining: true,
   isolating: true,
   parseHTML() {
@@ -455,8 +537,11 @@ export const PagestormAssetLayout = Extension.create({
             node.forEach((child) => {
               if (!isStubEmbed(child)) nodes.push(child);
             });
-            if (nodes.length === 2 && node.childCount === 2) return;
-            ranges.push({ from: pos, to: pos + node.nodeSize, nodes });
+            if (nodes.length >= 2 && nodes.length === node.childCount) return;
+            const replacement = nodes.length >= 2
+              ? [node.type.create(node.attrs, nodes)]
+              : nodes;
+            ranges.push({ from: pos, to: pos + node.nodeSize, nodes: replacement });
           });
           if (ranges.length === 0) return null;
           let tr: Transaction | null = null;

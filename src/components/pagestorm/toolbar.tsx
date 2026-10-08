@@ -1,15 +1,23 @@
 "use client";
 
+import { getMarkRange } from "@tiptap/core";
 import type { Editor } from "@tiptap/react";
 import { useEditorState } from "@tiptap/react";
+import { useState } from "react";
 import {
   Bold,
   Heading2,
   Heading3,
+  IndentDecrease,
+  IndentIncrease,
   Italic,
+  Link2,
   List,
   Minus,
   Quote,
+  Strikethrough,
+  Table,
+  UnfoldVertical,
   Waves,
   Zap,
 } from "lucide-react";
@@ -29,6 +37,7 @@ import { togglePagestormBlockquote } from "./blockquote";
 import { AlignButtons, IconTipButton } from "./figures";
 import { PickerNavDropdown } from "./nav-tokens";
 import { useCompendiumNavItems, useToyboxNavItems } from "./pickers";
+import { normalizeHttpUrl } from "./markdown-blocks";
 import type { MockAlign } from "./sample";
 import { PAGESTORM_BLOCK_NODE_NAMES } from "./tiptap-nodes";
 import type { NavDropdownItem } from "@/lib/site-nav-items";
@@ -68,15 +77,110 @@ function editorChromeSnapshot(editor: Editor) {
   return {
     bold: editor.isActive("bold"),
     italic: editor.isActive("italic"),
+    strike: editor.isActive("strike"),
     heading2: editor.isActive("heading", { level: 2 }),
     heading3: editor.isActive("heading", { level: 3 }),
     bulletList: editor.isActive("bulletList"),
     blockquote: editor.isActive("blockquote"),
+    link: editor.isActive("link"),
+    table: editor.isActive("table"),
+    details: editor.isActive("details"),
     sine: editor.isActive("sine"),
     jitter: editor.isActive("jitter"),
     colorKey: editor.getAttributes("pagestormColor").colorKey as string | undefined,
     align: currentTextAlign(editor),
   };
+}
+
+function currentLink(editor: Editor): { from: number; to: number; title: string; url: string } | null {
+  const type = editor.state.schema.marks.link;
+  if (!type) return null;
+  const { from, to, empty, $from } = editor.state.selection;
+  if (!empty && !editor.isActive("link")) {
+    return { from, to, title: editor.state.doc.textBetween(from, to, " "), url: "" };
+  }
+  const range = getMarkRange($from, type);
+  if (!range) return null;
+  const mark = type.isInSet(editor.state.doc.resolve(Math.min(range.from + 1, range.to)).marks());
+  return {
+    from: range.from,
+    to: range.to,
+    title: editor.state.doc.textBetween(range.from, range.to, " "),
+    url: String(mark?.attrs.href ?? ""),
+  };
+}
+
+function applyPagestormLink(editor: Editor, title: string, url: string) {
+  const href = normalizeHttpUrl(url);
+  const range = currentLink(editor);
+  const from = range?.from ?? editor.state.selection.from;
+  const to = range?.to ?? editor.state.selection.to;
+  if (!href) {
+    if (editor.isActive("link")) editor.chain().focus().unsetLink().run();
+    return;
+  }
+  editor.chain().focus().insertContentAt({ from, to }, {
+    type: "text",
+    text: title.trim() || href,
+    marks: [{
+      type: "link",
+      attrs: {
+        href,
+        target: "_blank",
+        rel: "noopener noreferrer",
+        class: "pagestorm-inline-link",
+      },
+    }],
+  }).run();
+}
+
+function LinkPhraseForm({ editor }: { editor: Editor }) {
+  const copy = serviceMessages[useServiceLocale()].pagestorm;
+  const snapshot = useEditorState({
+    editor,
+    selector: ({ editor: current }) => currentLink(current) ?? {
+      from: current.state.selection.from,
+      to: current.state.selection.to,
+      title: "",
+      url: "",
+    },
+  });
+  const key = `${snapshot.from}:${snapshot.to}:${snapshot.url}`;
+  const [seen, setSeen] = useState(key);
+  const [title, setTitle] = useState(snapshot.title);
+  const [url, setUrl] = useState(snapshot.url);
+  if (seen !== key) {
+    setSeen(key);
+    setTitle(snapshot.title);
+    setUrl(snapshot.url);
+  }
+  return (
+    <div
+      className="flex min-w-[12rem] max-w-full flex-col gap-1.5 rounded-md border border-border bg-card px-2 py-2 shadow-md sm:max-w-sm"
+      onBlur={(event) => {
+        const next = event.relatedTarget;
+        if (next instanceof Node && event.currentTarget.contains(next)) return;
+        applyPagestormLink(editor, title, url);
+      }}
+    >
+      <label className="block text-[10px] font-medium text-muted-foreground">
+        {copy.linkPhrase}
+        <input
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+          className="mt-0.5 w-full rounded border border-border bg-background px-1.5 py-1 text-xs text-foreground"
+        />
+      </label>
+      <label className="block text-[10px] font-medium text-muted-foreground">
+        {copy.linkUrl}
+        <input
+          value={url}
+          onChange={(event) => setUrl(event.target.value)}
+          className="mt-0.5 w-full rounded border border-border bg-background px-1.5 py-1 text-xs text-foreground"
+        />
+      </label>
+    </div>
+  );
 }
 
 function applyColor(editor: Editor, colorKey: PagestormColorKey) {
@@ -133,6 +237,7 @@ export function PagestormFormatChrome({
   onCompendium: (item: NavDropdownItem) => void;
   onToybox: (item: NavDropdownItem) => void;
 }) {
+  const [linkForm, setLinkForm] = useState(false);
   const chrome = useEditorState({
     editor,
     selector: ({ editor: current }) => editorChromeSnapshot(current),
@@ -160,6 +265,27 @@ export function PagestormFormatChrome({
           <Italic className="h-3.5 w-3.5" aria-hidden />
         </IconTipButton>
         <IconTipButton
+          label={editorCopy.strike}
+          active={chrome.strike}
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+        >
+          <Strikethrough className="h-3.5 w-3.5" aria-hidden />
+        </IconTipButton>
+        <IconTipButton
+          label={editorCopy.link}
+          active={chrome.link || linkForm}
+          onClick={() => {
+            if (chrome.link) {
+              editor.chain().focus().unsetLink().run();
+              setLinkForm(false);
+              return;
+            }
+            setLinkForm((open) => !open);
+          }}
+        >
+          <Link2 className="h-3.5 w-3.5" aria-hidden />
+        </IconTipButton>
+        <IconTipButton
           label={editorCopy.heading2}
           active={chrome.heading2}
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
@@ -181,6 +307,18 @@ export function PagestormFormatChrome({
           <List className="h-3.5 w-3.5" aria-hidden />
         </IconTipButton>
         <IconTipButton
+          label={editorCopy.sinkList}
+          onClick={() => editor.chain().focus().sinkListItem("listItem").run()}
+        >
+          <IndentIncrease className="h-3.5 w-3.5" aria-hidden />
+        </IconTipButton>
+        <IconTipButton
+          label={editorCopy.liftList}
+          onClick={() => editor.chain().focus().liftListItem("listItem").run()}
+        >
+          <IndentDecrease className="h-3.5 w-3.5" aria-hidden />
+        </IconTipButton>
+        <IconTipButton
           label={editorCopy.blockquote}
           active={chrome.blockquote}
           onClick={() => togglePagestormBlockquote(editor)}
@@ -193,6 +331,62 @@ export function PagestormFormatChrome({
         >
           <Minus className="h-3.5 w-3.5" aria-hidden />
         </IconTipButton>
+        <IconTipButton
+          label={editorCopy.table}
+          active={chrome.table}
+          onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+        >
+          <Table className="h-3.5 w-3.5" aria-hidden />
+        </IconTipButton>
+        <IconTipButton
+          label={editorCopy.details}
+          active={chrome.details}
+          onClick={() => {
+            if (chrome.details) {
+              editor.chain().focus().updateAttributes("details", {
+                open: !editor.getAttributes("details").open,
+              }).run();
+              return;
+            }
+            editor.chain().focus().insertPagestormDetails(editorCopy.detailsSummary).run();
+          }}
+        >
+          <UnfoldVertical className="h-3.5 w-3.5" aria-hidden />
+        </IconTipButton>
+        {chrome.table ? (
+          <>
+            <IconTipButton
+              label={editorCopy.tableAddRow}
+              onClick={() => editor.chain().focus().addRowAfter().run()}
+            >
+              <span className="px-0.5 text-[10px] font-semibold">+R</span>
+            </IconTipButton>
+            <IconTipButton
+              label={editorCopy.tableAddColumn}
+              onClick={() => editor.chain().focus().addColumnAfter().run()}
+            >
+              <span className="px-0.5 text-[10px] font-semibold">+C</span>
+            </IconTipButton>
+            <IconTipButton
+              label={editorCopy.tableDeleteRow}
+              onClick={() => editor.chain().focus().deleteRow().run()}
+            >
+              <span className="px-0.5 text-[10px] font-semibold">-R</span>
+            </IconTipButton>
+            <IconTipButton
+              label={editorCopy.tableDeleteColumn}
+              onClick={() => editor.chain().focus().deleteColumn().run()}
+            >
+              <span className="px-0.5 text-[10px] font-semibold">-C</span>
+            </IconTipButton>
+            <IconTipButton
+              label={editorCopy.tableDelete}
+              onClick={() => editor.chain().focus().deleteTable().run()}
+            >
+              <span className="px-0.5 text-[10px] font-semibold">×</span>
+            </IconTipButton>
+          </>
+        ) : null}
         <AlignButtons
           value={chrome.align}
           onChange={(align) => applyAlign(editor, align)}
@@ -228,6 +422,7 @@ export function PagestormFormatChrome({
           <Zap className="h-3.5 w-3.5" aria-hidden />
         </IconTipButton>
       </div>
+      {linkForm || chrome.link ? <LinkPhraseForm editor={editor} /> : null}
       <hr className="border-border" />
       <div className="flex flex-wrap items-center gap-2">
         <PickerNavDropdown

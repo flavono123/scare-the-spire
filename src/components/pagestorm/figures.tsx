@@ -33,7 +33,6 @@ import {
   type CardPresentation,
   type MockAlign,
   type MockGameAsset,
-  type MockOgBookmark,
 } from "./sample";
 
 const ALIGN_CLASS: Record<MockAlign, string> = {
@@ -43,7 +42,38 @@ const ALIGN_CLASS: Record<MockAlign, string> = {
 };
 
 export function alignRowClass(align: MockAlign): string {
-  return `my-3 flex w-full ${ALIGN_CLASS[align]}`;
+  return `my-3 flex w-full min-w-0 max-w-full ${ALIGN_CLASS[align]}`;
+}
+
+export function AssetFitFrame({
+  width,
+  height,
+  children,
+  overlay,
+  className,
+}: {
+  width: number;
+  height: number;
+  children: ReactNode;
+  overlay?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`pagestorm-fit relative ${className ?? ""}`}
+      style={{
+        ["--asset-w" as string]: `${Math.max(1, width)}px`,
+        ["--asset-h" as string]: `${Math.max(1, height)}px`,
+        ["--asset-rw" as string]: String(Math.max(1, width)),
+        ["--asset-rh" as string]: String(Math.max(1, height)),
+      }}
+    >
+      <div className="pagestorm-fit-slot">
+        <div className="pagestorm-fit-inner">{children}</div>
+      </div>
+      {overlay}
+    </div>
+  );
 }
 
 const PAGESTORM_COMPENDIUM_PREVIEW_LINK_CLASS =
@@ -520,8 +550,7 @@ export function GameAssetFigure({
   const py = height ?? fallback.height;
   const figure = (
     <figure
-      className="relative max-w-full overflow-hidden"
-      style={{ width: px, aspectRatio: `${px} / ${py}`, height: "auto" }}
+      className="relative h-full w-full overflow-hidden"
       aria-label={asset.name}
       data-pagestorm-asset-box=""
     >
@@ -541,41 +570,24 @@ export function GameAssetFigure({
     </figure>
   );
 
-  if (mode === "preview") {
-    return (
-      <div className={`${alignRowClass(align)} pagestorm-asset-align`} data-pagestorm-asset-align="">
-        <PreviewCompendiumAssetWrap linked={linked} entity={entity} asset={asset}>
-          {figure}
-        </PreviewCompendiumAssetWrap>
-      </div>
-    );
-  }
-
-  return (
-    <div className={`${alignRowClass(align)} pagestorm-asset-align`} data-pagestorm-asset-align="">
-      <div
-        className={`relative inline-block max-w-full overflow-visible ${
-          selected ? "rounded-md ring-1 ring-primary/70" : ""
-        }`}
-        style={{ width: px, maxWidth: "100%" }}
-      >
-        <div className="relative max-w-full">
-          {figure}
-          {mode === "edit" ? (
-            <AssetCornerHandles
-              linked={linked}
-              onLinked={onLinked}
-              width={px}
-              height={py}
-              clampWidth={(next) => sizedAssetBox(asset.kind, next, py, presentation, imageAspect).width}
-              clampHeight={(next) => sizedAssetBox(asset.kind, px, next, presentation, imageAspect).height}
-              onResize={(size) => {
-                onResize?.(sizedAssetBox(asset.kind, size.width, size.height, presentation, imageAspect));
-              }}
-            />
-          ) : null}
-        </div>
-        {mode === "edit" ? (
+  const fitted = (
+    <AssetFitFrame
+      width={px}
+      height={py}
+      className={selected && mode === "edit" ? "rounded-md ring-1 ring-primary/70" : undefined}
+      overlay={mode === "edit" ? (
+        <>
+          <AssetCornerHandles
+            linked={linked}
+            onLinked={onLinked}
+            width={px}
+            height={py}
+            clampWidth={(next) => sizedAssetBox(asset.kind, next, py, presentation, imageAspect).width}
+            clampHeight={(next) => sizedAssetBox(asset.kind, px, next, presentation, imageAspect).height}
+            onResize={(size) => {
+              onResize?.(sizedAssetBox(asset.kind, size.width, size.height, presentation, imageAspect));
+            }}
+          />
           <AssetFocusChrome
             selected={selected}
             align={align}
@@ -593,8 +605,26 @@ export function GameAssetFigure({
               ) : null
             }
           />
-        ) : null}
+        </>
+      ) : null}
+    >
+      {figure}
+    </AssetFitFrame>
+  );
+
+  if (mode === "preview") {
+    return (
+      <div className={`${alignRowClass(align)} pagestorm-asset-align`} data-pagestorm-asset-align="">
+        <PreviewCompendiumAssetWrap linked={linked} entity={entity} asset={asset}>
+          {fitted}
+        </PreviewCompendiumAssetWrap>
       </div>
+    );
+  }
+
+  return (
+    <div className={`${alignRowClass(align)} pagestorm-asset-align`} data-pagestorm-asset-align="">
+      {fitted}
     </div>
   );
 }
@@ -651,10 +681,10 @@ export function YoutubePlayerFigure({
 }) {
   const href = youtubeWatchUrl(videoId);
   const aquaTitle = (
-    <span className="sts-text-aqua min-w-0 self-center font-semibold">{title}</span>
+    <span className="sts-text-aqua min-w-0 self-center break-words font-semibold">{title}</span>
   );
   const inner = (
-    <div className="flex items-center gap-2">
+    <div className="flex min-w-0 max-w-full items-center gap-2">
       <YoutubeThumb videoId={videoId} title={title} />
       {aquaTitle}
     </div>
@@ -667,7 +697,7 @@ export function YoutubePlayerFigure({
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 no-underline"
+          className="flex min-w-0 max-w-full items-center gap-2 no-underline"
         >
           <YoutubeThumb videoId={videoId} title={title} />
           {aquaTitle}
@@ -689,67 +719,6 @@ export function YoutubePlayerFigure({
               <LinkPhraseHandle
                 title={title}
                 url={href}
-                onTitle={onTitle}
-                onUrl={onUrl}
-              />
-            ) : null
-          }
-        />
-      </div>
-    </div>
-  );
-}
-
-export function OgBookmarkFigure({
-  bookmark,
-  align,
-  mode = "edit",
-  selected = false,
-  onTitle,
-  onUrl,
-  onAlign,
-}: {
-  bookmark: MockOgBookmark;
-  align: MockAlign;
-  mode?: "edit" | "preview";
-  selected?: boolean;
-  onTitle?: (title: string) => void;
-  onUrl?: (url: string) => void;
-  onAlign?: (align: MockAlign) => void;
-}) {
-  const title = bookmark.title.trim() || bookmark.url;
-  const aquaTitle = (
-    <span className="sts-text-aqua font-semibold">{title}</span>
-  );
-
-  if (mode === "preview") {
-    return (
-      <div className={`${alignRowClass(align)} pagestorm-asset-align`} data-pagestorm-asset-align="">
-        <a
-          href={bookmark.url}
-          target="_blank"
-          rel="noreferrer"
-          className="no-underline"
-        >
-          {aquaTitle}
-        </a>
-      </div>
-    );
-  }
-
-  return (
-    <div className={`${alignRowClass(align)} pagestorm-asset-align`} data-pagestorm-asset-align="">
-      <div className="relative" data-pagestorm-embed-box="">
-        {aquaTitle}
-        <AssetFocusChrome
-          selected={selected}
-          align={align}
-          onAlign={onAlign}
-          linkEditor={
-            selected && onTitle && onUrl ? (
-              <LinkPhraseHandle
-                title={bookmark.title}
-                url={bookmark.url}
                 onTitle={onTitle}
                 onUrl={onUrl}
               />

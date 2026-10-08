@@ -453,15 +453,20 @@ function youtubeNode(): JSONContent {
 
 function ogNode(bookmark: MockOgBookmark): JSONContent {
   return {
-    type: "ogBookmark",
-    attrs: {
-      url: bookmark.url,
-      title: bookmark.title,
-      description: bookmark.description,
-      image: bookmark.image,
-      siteName: bookmark.siteName,
-      align: "center",
-    },
+    type: "paragraph",
+    content: [{
+      type: "text",
+      text: bookmark.title || bookmark.url,
+      marks: [{
+        type: "link",
+        attrs: {
+          href: bookmark.url,
+          target: "_blank",
+          rel: "noopener noreferrer",
+          class: "pagestorm-inline-link",
+        },
+      }],
+    }],
   };
 }
 
