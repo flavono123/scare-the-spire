@@ -1312,6 +1312,12 @@ def extract_characters(jar, *, write_images: bool = True) -> int:
             ("images/ui/charSelect/highlightButton2.png", "highlight"),
             ("images/ui/topPanel/panelHeart.png", "hp"),
             ("images/ui/topPanel/panelGoldBag.png", "gold"),
+            ("images/ui/topPanel/cancelButton.png", "cancel-button"),
+            ("images/ui/topPanel/cancelButtonShadow.png", "cancel-button-shadow"),
+            ("images/ui/topPanel/cancelButtonOutline.png", "cancel-button-outline"),
+            ("images/ui/topPanel/confirmButton.png", "confirm-button"),
+            ("images/ui/topPanel/confirmButtonShadow.png", "confirm-button-shadow"),
+            ("images/ui/topPanel/confirmButtonOutline.png", "confirm-button-outline"),
         ):
             save_webp(extract_png(jar, source), out / "char-select" / f"{dest}.webp", lossless=True)
         save_webp(compose_title_background(jar), out / "char-select" / "title-bg.webp", quality=70)

@@ -52,7 +52,19 @@ export function sts1CharacterPortraitUrl(id: Sts1CharacterId): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/characters/${id}-portrait.webp`);
 }
 
-export function sts1CharSelectUiUrl(name: "highlight" | "hp" | "gold" | "title-bg"): string {
+export type Sts1CharSelectUiImage =
+  | "highlight"
+  | "hp"
+  | "gold"
+  | "title-bg"
+  | "cancel-button"
+  | "cancel-button-shadow"
+  | "cancel-button-outline"
+  | "confirm-button"
+  | "confirm-button-shadow"
+  | "confirm-button-outline";
+
+export function sts1CharSelectUiUrl(name: Sts1CharSelectUiImage): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/char-select/${name}.webp`);
 }
 
