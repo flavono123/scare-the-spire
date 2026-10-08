@@ -21,7 +21,9 @@ import { getActiveRunBadgeCatalog } from "@/lib/run-badge-catalog";
 import { absoluteSiteUrl } from "@/lib/site-origin";
 import {
   getSts1Cards,
+  getSts1Characters,
   getSts1Potions,
+  getSts1Powers,
   getSts1Relics,
 } from "@/lib/sts1/data";
 
@@ -61,9 +63,11 @@ const COMPENDIUM_INDEX_PATHS = [
   "/compendium/potions",
   "/compendium/powers",
   "/compendium/relics",
+  "/compendium/sts1/characters",
   "/compendium/sts1/cards",
   "/compendium/sts1/relics",
   "/compendium/sts1/potions",
+  "/compendium/sts1/powers",
 ] as const;
 
 const COMPENDIUM_DETAIL_ROUTES = [
@@ -85,7 +89,16 @@ const COMPENDIUM_DETAIL_ROUTES = [
 ] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [detailParamGroups, patches, neowsletters, sts1Cards, sts1Relics, sts1Potions] = await Promise.all([
+  const [
+    detailParamGroups,
+    patches,
+    neowsletters,
+    sts1Cards,
+    sts1Relics,
+    sts1Potions,
+    sts1Powers,
+    sts1Characters,
+  ] = await Promise.all([
     Promise.all(
       COMPENDIUM_DETAIL_ROUTES.map(([, generateParams]) => generateParams()),
     ),
@@ -94,6 +107,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getSts1Cards(),
     getSts1Relics(),
     getSts1Potions(),
+    getSts1Powers(),
+    getSts1Characters(),
   ]);
   const paths = [
     ...PUBLIC_INDEX_PATHS,
@@ -105,6 +120,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...sts1Cards.map((card) => `/compendium/sts1/cards/${card.slug}`),
     ...sts1Relics.map((relic) => `/compendium/sts1/relics/${relic.slug}`),
     ...sts1Potions.map((potion) => `/compendium/sts1/potions/${potion.slug}`),
+    ...sts1Powers.map((power) => `/compendium/sts1/powers/${power.slug}`),
+    ...sts1Characters.map((character) => `/compendium/sts1/characters/${character.slug}`),
   ];
   const latestPatchDate = patches.map(({ date }) => date).sort().at(-1);
   const latestNeowsletterDate = neowsletters.map(({ date }) => date).sort().at(-1);

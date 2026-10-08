@@ -6,12 +6,20 @@ import type { Metadata } from "next";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
 import { withKoreanSearchCanonical } from "@/lib/search-canonical";
+import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
 import { sts1GameLocale } from "./locale";
+import { sts1CardPortraitUrl, sts1PotionImageUrl, sts1RelicImageUrl } from "./paths";
 import type {
   Sts1Card,
+  Sts1Character,
+  Sts1CharacterId,
+  Sts1CharacterSelectUi,
   Sts1Keyword,
   Sts1Potion,
+  Sts1Power,
+  Sts1PowerType,
   Sts1Relic,
+  Sts1ResourceRef,
   Sts1UiLabels,
 } from "./types";
 
@@ -24,6 +32,19 @@ async function readJson<T>(relativePath: string): Promise<T> {
 type RawCard = Omit<Sts1Card, "name" | "nameEn" | "description" | "upgradeDescription" | "extendedDescription">;
 type RawRelic = Omit<Sts1Relic, "name" | "nameEn" | "flavor" | "description" | "descriptions" | "hasLargeArt">;
 type RawPotion = Omit<Sts1Potion, "name" | "nameEn" | "description" | "descriptions">;
+type RawPower = Omit<Sts1Power, "name" | "nameEn" | "description" | "descriptions">;
+type RawCharacter = Omit<Sts1Character, "name" | "nameEn" | "title" | "flavor">;
+
+type PowerLoc = {
+  name: string;
+  description: string;
+  descriptions: string[];
+};
+
+type CharacterSelectLoc = {
+  characters: Record<Sts1CharacterId, { name: string; title: string; flavor: string }>;
+  ui: Sts1CharacterSelectUi;
+};
 
 type CardLoc = {
   name: string;
@@ -138,6 +159,50 @@ export const getSts1Potions = cache(async (gameLocale: GameLocale = "kor"): Prom
   });
 });
 
+export const getSts1Powers = cache(async (gameLocale: GameLocale = "kor"): Promise<Sts1Power[]> => {
+  const locale = sts1GameLocale(gameLocale);
+  const [rows, loc, eng] = await Promise.all([
+    readJson<RawPower[]>("powers.json"),
+    readJson<Record<string, PowerLoc>>(`localization/${locale}/powers.json`),
+    locale === "eng"
+      ? Promise.resolve(null)
+      : readJson<Record<string, PowerLoc>>("localization/eng/powers.json"),
+  ]);
+  return rows.map((row) => {
+    const text = loc[row.id] ?? { name: row.id, description: "", descriptions: [] };
+    return {
+      ...row,
+      ...text,
+      nameEn: eng?.[row.id]?.name ?? text.name,
+    };
+  });
+});
+
+export const getSts1CharacterSelectText = cache(async (gameLocale: GameLocale = "kor"): Promise<CharacterSelectLoc> => (
+  readJson<CharacterSelectLoc>(`localization/${sts1GameLocale(gameLocale)}/character-select.json`)
+));
+
+export const getSts1Characters = cache(async (gameLocale: GameLocale = "kor"): Promise<Sts1Character[]> => {
+  const locale = sts1GameLocale(gameLocale);
+  const [rows, loc, eng] = await Promise.all([
+    readJson<RawCharacter[]>("characters.json"),
+    getSts1CharacterSelectText(gameLocale),
+    locale === "eng" ? Promise.resolve(null) : getSts1CharacterSelectText("eng"),
+  ]);
+  return rows.map((row) => {
+    const text = loc.characters[row.id] ?? { name: row.id, title: row.id, flavor: "" };
+    return {
+      ...row,
+      ...text,
+      nameEn: eng?.characters[row.id]?.name ?? text.name,
+    };
+  });
+});
+
+export const getSts1CharacterSelectUi = cache(async (gameLocale: GameLocale = "kor"): Promise<Sts1CharacterSelectUi> => (
+  (await getSts1CharacterSelectText(gameLocale)).ui
+));
+
 export const getSts1Keywords = cache(async (gameLocale: GameLocale = "kor"): Promise<Sts1Keyword[]> => {
   const locale = sts1GameLocale(gameLocale);
   const raw = await readJson<Record<string, Record<string, { NAMES?: string[]; DESCRIPTION?: string }>>>(
@@ -170,15 +235,63 @@ export async function getSts1Potion(id: string, gameLocale: GameLocale = "kor"):
   return potions.find((potion) => matchesSlug(potion, id));
 }
 
+export async function getSts1Power(id: string, gameLocale: GameLocale = "kor"): Promise<Sts1Power | undefined> {
+  const powers = await getSts1Powers(gameLocale);
+  return powers.find((power) => matchesSlug(power, id));
+}
+
+export const getSts1PowerSourceRefs = cache(async (
+  gameLocale: GameLocale = "kor",
+): Promise<Record<string, Sts1ResourceRef[]>> => {
+  const [powers, cards, relics, potions] = await Promise.all([
+    getSts1Powers(gameLocale),
+    getSts1Cards(gameLocale),
+    getSts1Relics(gameLocale),
+    getSts1Potions(gameLocale),
+  ]);
+  const cardById = new Map(cards.map((card) => [card.id, card]));
+  const relicById = new Map(relics.map((relic) => [relic.id, relic]));
+  const potionById = new Map(potions.map((potion) => [potion.id, potion]));
+  return Object.fromEntries(powers.map((power) => [
+    power.id,
+    [
+      ...power.sources.cards.flatMap((id) => {
+        const card = cardById.get(id);
+        return card
+          ? [{ type: "cards" as const, id, slug: card.slug, name: card.name, imageUrl: sts1CardPortraitUrl(card) }]
+          : [];
+      }),
+      ...power.sources.relics.flatMap((id) => {
+        const relic = relicById.get(id);
+        return relic
+          ? [{ type: "relics" as const, id, slug: relic.slug, name: relic.name, imageUrl: sts1RelicImageUrl(relic) }]
+          : [];
+      }),
+      ...power.sources.potions.flatMap((id) => {
+        const potion = potionById.get(id);
+        return potion
+          ? [{ type: "potions" as const, id, slug: potion.slug, name: potion.name, imageUrl: sts1PotionImageUrl(potion) }]
+          : [];
+      }),
+    ],
+  ]));
+});
+
+export async function getSts1Character(id: string, gameLocale: GameLocale = "kor"): Promise<Sts1Character | undefined> {
+  const characters = await getSts1Characters(gameLocale);
+  return characters.find((character) => matchesSlug(character, id));
+}
+
 function stripColon(label: string | undefined): string {
   return (label ?? "").replace(/:$/, "");
 }
 
 export const getSts1UiLabels = cache(async (gameLocale: GameLocale = "kor"): Promise<Sts1UiLabels> => {
   const locale = sts1GameLocale(gameLocale);
-  const [ui, characters] = await Promise.all([
+  const [ui, characters, powerTypes] = await Promise.all([
     readJson<Sts1UiFile>(`localization/${locale}/ui.json`),
     readJson<Sts1UiLabels["characters"]>(`localization/${locale}/characters.json`),
+    readJson<Record<Sts1PowerType, string>>(`localization/${locale}/power-types.json`),
   ]);
   const menu = ui.MenuPanels?.TEXT ?? [];
   const library = ui.CardLibraryScreen?.TEXT ?? [];
@@ -190,6 +303,9 @@ export const getSts1UiLabels = cache(async (gameLocale: GameLocale = "kor"): Pro
     cardLibraryTitle: menu[9] || "Card Library",
     relicCollectionTitle: menu[12] || "Relic Collection",
     potionLabTitle: menu[menu.length - 2] || "Potion Lab",
+    powersTitle: getCodexNavGameLabel(gameLocale, "powers") ?? "Powers",
+    charactersTitle: getCodexNavGameLabel(gameLocale, "characters") ?? "Characters",
+    powerTypes,
     viewUpgrades: library[7] || popup[6] || "View Upgrade",
     betaArt: popup[14] || "Beta Art",
     types: {

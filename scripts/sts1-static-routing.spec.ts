@@ -11,6 +11,8 @@ assert.equal(sts1LegacyAliasPath("/cards"), "/compendium/sts1/cards");
 assert.equal(sts1LegacyAliasPath("/cards/bash"), "/compendium/sts1/cards/bash");
 assert.equal(sts1LegacyAliasPath("/cards/strike-ironclad"), "/compendium/sts1/cards/strike-ironclad");
 assert.equal(sts1LegacyAliasPath("/en/cards/bash"), null);
+assert.equal(sts1LegacyAliasPath("/powers"), null);
+assert.equal(sts1LegacyAliasPath("/characters/ironclad"), null);
 
 assert.equal(
   staticLegacyPageAssetPath("/cards", "html"),
@@ -36,6 +38,15 @@ assert.equal(
   "/_cf_static_pages/en/compendium/sts1/cards/bash.rsc",
 );
 assert.equal(staticCompendiumAssetPath("/zh/compendium/sts1/cards/bash", "html"), null);
+assert.equal(
+  staticCompendiumAssetPath("/compendium/sts1/powers/strength", "html"),
+  "/_cf_static_pages/compendium/sts1/powers/strength.html",
+);
+assert.equal(
+  staticCompendiumAssetPath("/en/compendium/sts1/characters", "rsc"),
+  "/_cf_static_pages/en/compendium/sts1/characters.rsc",
+);
+assert.equal(staticCompendiumAssetPath("/ja/compendium/sts1/characters/ironclad", "html"), null);
 assert.equal(
   staticCompendiumAssetPath("/zh/compendium/sts1/cards", "html"),
   "/_cf_static_pages/zh/compendium/sts1/cards.html",

@@ -41,10 +41,16 @@ function isNestedStaticServicePage(parts: string[]): boolean {
   );
 }
 
-const STATIC_STS1_COMPENDIUM_SEGMENTS = new Set([
+const STATIC_STS1_LEGACY_ALIAS_SEGMENTS = new Set([
   "cards",
   "potions",
   "relics",
+]);
+
+const STATIC_STS1_COMPENDIUM_SEGMENTS = new Set([
+  ...STATIC_STS1_LEGACY_ALIAS_SEGMENTS,
+  "characters",
+  "powers",
 ]);
 
 const STATIC_COMPENDIUM_SEGMENTS = new Set([
@@ -71,7 +77,7 @@ export type StaticPageExtension = "html" | "rsc";
 export function sts1LegacyAliasPath(pathname: string): string | null {
   const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
   const parts = normalizedPathname.split("/").filter(Boolean);
-  if (parts.length < 1 || parts.length > 2 || !STATIC_STS1_COMPENDIUM_SEGMENTS.has(parts[0])) {
+  if (parts.length < 1 || parts.length > 2 || !STATIC_STS1_LEGACY_ALIAS_SEGMENTS.has(parts[0])) {
     return null;
   }
   return `/compendium/sts1/${parts.join("/")}`;

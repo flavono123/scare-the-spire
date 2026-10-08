@@ -1,7 +1,14 @@
 import type { CSSProperties } from "react";
 import type { GameLocale } from "@/lib/i18n";
 import { sts1LineBreakViaCharacter, sts1GameLocale } from "@/lib/sts1/locale";
-import type { Sts1Card, Sts1CardType, Sts1PotionRarity, Sts1RelicPool, Sts1RelicTier } from "@/lib/sts1/types";
+import type {
+  Sts1Card,
+  Sts1CardType,
+  Sts1PotionRarity,
+  Sts1PowerType,
+  Sts1RelicPool,
+  Sts1RelicTier,
+} from "@/lib/sts1/types";
 import { sts1CardUiUrl, sts1CharacterIconUrl, sts1RunModUrl } from "@/lib/sts1/paths";
 
 const FRAME_RARITY: Record<string, "common" | "uncommon" | "rare"> = {
@@ -266,6 +273,12 @@ export const STS1_POTION_RARITY_COLORS: Record<Sts1PotionRarity, string> = {
   common: "#b0b0b0",
   uncommon: "#4fc3f7",
   rare: "#ffd740",
+};
+
+// Settings.GREEN_TEXT_COLOR / RED_TEXT_COLOR, as used for buff/debuff tip text.
+export const STS1_POWER_TYPE_COLORS: Record<Sts1PowerType, string> = {
+  buff: "#7fff00",
+  debuff: "#ff6563",
 };
 
 export function sts1PoolColor(pool: string): string | undefined {

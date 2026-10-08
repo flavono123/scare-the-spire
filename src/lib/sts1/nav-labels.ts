@@ -1,8 +1,17 @@
+import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
 import type { GameLocale } from "@/lib/i18n";
 import { sts1GameLocale } from "./locale";
 import type { Sts1GameLocale, Sts1ResourceType } from "./types";
 
-type Sts1NavLabels = Record<Sts1ResourceType, string>;
+type Sts1MenuPanelType = Extract<Sts1ResourceType, "cards" | "relics" | "potions">;
+
+type Sts1NavLabels = Record<Sts1MenuPanelType, string>;
+
+// STS1 has no menu panel for these; reuse the STS2 Compendium's in-game labels.
+const STS1_FALLBACK_NAV_LABELS: Record<Exclude<Sts1ResourceType, Sts1MenuPanelType>, string> = {
+  powers: "Powers",
+  characters: "Characters",
+};
 
 function flattenNavLabel(value: string): string {
   return value.replace(/\s+/g, " ").trim();
@@ -82,5 +91,8 @@ export function getSts1NavLabel(
   gameLocale: GameLocale,
   type: Sts1ResourceType,
 ): string {
+  if (type === "powers" || type === "characters") {
+    return getCodexNavGameLabel(gameLocale, type) ?? STS1_FALLBACK_NAV_LABELS[type];
+  }
   return flattenNavLabel(STS1_NAV_LABELS[sts1GameLocale(gameLocale)][type]);
 }

@@ -165,9 +165,11 @@ export const sts2NavItems = [
 ] as const;
 
 export const sts1NavItems = [
+  { href: "/compendium/sts1/characters", type: "characters", icon: "/images/sts1/characters/ironclad.webp" },
   { href: "/cards", type: "cards", icon: "/images/sts2/nav/stats_cards.png" },
   { href: "/relics", type: "relics", icon: "/images/sts2/relics/snecko_eye.webp" },
   { href: "/potions", type: "potions", icon: "/images/sts2/nav/stats_potions.png" },
+  { href: "/compendium/sts1/powers", type: "powers", icon: "/images/sts1/powers/strength.webp" },
 ] as const satisfies readonly {
   href: string;
   type: Sts1ResourceType;

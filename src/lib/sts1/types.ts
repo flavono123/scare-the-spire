@@ -50,7 +50,11 @@ export type Sts1PotionRarity = "common" | "uncommon" | "rare";
 
 export type Sts1PotionPool = Sts1RelicPool;
 
-export type Sts1ResourceType = "cards" | "relics" | "potions";
+export type Sts1PowerType = "buff" | "debuff";
+
+export type Sts1CharacterId = "ironclad" | "silent" | "defect" | "watcher";
+
+export type Sts1ResourceType = "cards" | "relics" | "potions" | "powers" | "characters";
 
 export interface Sts1CardUpgrade {
   damage?: number;
@@ -122,6 +126,73 @@ export interface Sts1Potion {
   descriptions: string[];
 }
 
+export interface Sts1PowerSources {
+  cards: string[];
+  relics: string[];
+  potions: string[];
+}
+
+export interface Sts1Power {
+  id: string;
+  slug: string;
+  legacySlugs: string[];
+  type: Sts1PowerType;
+  /** `single` when the constructor sets `amount = -1` (no stack counter). */
+  stackType: "counter" | "single";
+  canGoNegative: boolean;
+  isTurnBased: boolean;
+  image: string;
+  sources: Sts1PowerSources;
+  name: string;
+  nameEn: string;
+  description: string;
+  descriptions: string[];
+}
+
+export interface Sts1ResourceRef {
+  type: Extract<Sts1ResourceType, "cards" | "relics" | "potions">;
+  id: string;
+  slug: string;
+  name: string;
+  imageUrl: string;
+}
+
+export interface Sts1CharacterSelectEffect {
+  sound?: string;
+  shakeIntensity?: "LOW" | "MED" | "HIGH";
+  shakeDuration?: "SHORT" | "MED" | "LONG" | "XLONG";
+  shakeVertical?: boolean;
+  pitchMin?: number;
+  pitchMax?: number;
+}
+
+export interface Sts1Character {
+  id: Sts1CharacterId;
+  slug: string;
+  legacySlugs: string[];
+  playerClass: string;
+  hp: number;
+  maxHp: number;
+  maxOrbs: number;
+  gold: number;
+  cardDraw: number;
+  startingRelicIds: string[];
+  startingDeckIds: string[];
+  selectEffect: Sts1CharacterSelectEffect;
+  name: string;
+  nameEn: string;
+  title: string;
+  flavor: string;
+}
+
+export interface Sts1CharacterSelectUi {
+  choose: string;
+  embark: string;
+  back: string;
+  hp: string;
+  gold: string;
+}
+
 export interface Sts1Keyword {
   id: string;
   names: string[];
@@ -132,6 +203,9 @@ export interface Sts1UiLabels {
   cardLibraryTitle: string;
   relicCollectionTitle: string;
   potionLabTitle: string;
+  powersTitle: string;
+  charactersTitle: string;
+  powerTypes: Record<Sts1PowerType, string>;
   viewUpgrades: string;
   betaArt: string;
   types: Record<"attack" | "skill" | "power" | "curse" | "status", string>;

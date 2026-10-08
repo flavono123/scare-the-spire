@@ -81,7 +81,9 @@ const defragmentFederatedServices = new Set([
 ]);
 const sts1CompendiumSegments = new Set([
   "cards",
+  "characters",
   "potions",
+  "powers",
   "relics",
 ]);
 

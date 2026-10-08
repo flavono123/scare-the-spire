@@ -1,7 +1,15 @@
 import { STS1_IMAGE_CACHE_BUSTER } from "./image-cache";
-import type { Sts1Card, Sts1Potion, Sts1Relic, Sts1ResourceType } from "./types";
+import type {
+  Sts1Card,
+  Sts1CharacterId,
+  Sts1Potion,
+  Sts1Power,
+  Sts1Relic,
+  Sts1ResourceType,
+} from "./types";
 
 export const STS1_IMAGE_ROOT = "/images/sts1";
+export const STS1_AUDIO_ROOT = "/audio/sts1";
 
 function sts1Asset(path: string): string {
   const hashIndex = path.indexOf("#");
@@ -36,10 +44,28 @@ export function sts1CardUi512Url(region: string): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/card-ui-512/${region}.webp`);
 }
 
-export function sts1CharacterIconUrl(
-  id: "ironclad" | "silent" | "defect" | "watcher",
-): string {
+export function sts1CharacterIconUrl(id: Sts1CharacterId): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/characters/${id}.webp`);
+}
+
+export function sts1CharacterPortraitUrl(id: Sts1CharacterId): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/characters/${id}-portrait.webp`);
+}
+
+export function sts1CharSelectUiUrl(name: "highlight" | "hp" | "gold" | "title-bg"): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/char-select/${name}.webp`);
+}
+
+export function sts1RelicOutlineUrl(relic: Sts1Relic): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/relics-outline/${relic.slug}.webp`);
+}
+
+export function sts1PowerImageUrl(power: Sts1Power): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/powers/${power.image}.webp`);
+}
+
+export function sts1SoundUrl(key: string): string {
+  return sts1Asset(`${STS1_AUDIO_ROOT}/${key.toLowerCase()}.m4a`);
 }
 
 export function sts1CardLibraryTabUrl(

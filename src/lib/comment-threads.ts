@@ -7,7 +7,7 @@ import type { Sts1ResourceType } from "@/lib/sts1/types";
 
 const COMMENTS_ANCHOR = "#comments";
 
-export const STS1_COMMENT_RESOURCE_TYPES = ["card", "relic", "potion"] as const;
+export const STS1_COMMENT_RESOURCE_TYPES = ["card", "relic", "potion", "power", "character"] as const;
 
 export type Sts1CommentResourceType = (typeof STS1_COMMENT_RESOURCE_TYPES)[number];
 
@@ -15,6 +15,8 @@ const STS1_COMMENT_RESOURCE_PATHS: Record<Sts1CommentResourceType, Sts1ResourceT
   card: "cards",
   relic: "relics",
   potion: "potions",
+  power: "powers",
+  character: "characters",
 };
 
 function isSts1CommentResourceType(value: string): value is Sts1CommentResourceType {
