@@ -2,7 +2,8 @@ import "server-only";
 
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
-import { AdminTabs, type AdminTabId } from "./admin-tabs";
+import { AdminTabs } from "./admin-tabs";
+import type { AdminTabId } from "./admin-tab-ids";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { AdminActivityChart } from "@/components/dev/admin-activity-chart";

@@ -3,7 +3,7 @@ import {
   isAdminCommentService,
   isAdminPostService,
 } from "@/lib/admin-rls-activity";
-import { isAdminTabId } from "./admin-tabs";
+import { isAdminTabId } from "./admin-tab-ids";
 import { devToolsEnabled } from "@/lib/dev-tools";
 
 export const dynamic = "force-dynamic";
