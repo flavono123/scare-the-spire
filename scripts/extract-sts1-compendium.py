@@ -1166,6 +1166,23 @@ def ui_period(jar, locale: str) -> str:
     return period[0] or "."
 
 
+def gold_term(text: str) -> str:
+    """Join the #y-highlighted words of a tip body ("use a #yBuff." -> "Buff")."""
+    words = [word[2:] for word in text.split() if word.startswith("#y")]
+    if words:
+        words[-1] = words[-1].rstrip(".,:;")
+    return " ".join(words)
+
+
+def power_type_labels(jar, locale: str) -> dict[str, str]:
+    # AbstractMonster.createIntent(): BUFF -> TEXT[19], DEBUFF -> TEXT[20].
+    text = (load_loc_table(jar, locale, "ui.json").get("AbstractMonster") or {}).get("TEXT") or []
+    return {
+        "buff": gold_term(text[19]) if len(text) > 19 else "",
+        "debuff": gold_term(text[20]) if len(text) > 20 else "",
+    }
+
+
 def extract_powers(jar, *, write_images: bool = True) -> int:
     eng = load_loc_table(jar, "eng", "powers.json")
     powers = load_powers(jar, eng)
@@ -1202,6 +1219,7 @@ def extract_powers(jar, *, write_images: bool = True) -> int:
                 for power in powers
             },
         )
+        write_json(data_root / "localization" / locale / "power-types.json", power_type_labels(jar, locale))
     return len(powers)
 
 
