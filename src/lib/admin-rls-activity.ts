@@ -128,10 +128,12 @@ export function mergeAdminServicePosts(
 export function adminFilterHref(options: {
   posts?: string | null;
   comments?: string | null;
+  tab?: string | null;
 }): string {
   const params = new URLSearchParams();
   if (options.posts) params.set("posts", options.posts);
   if (options.comments) params.set("comments", options.comments);
+  if (options.tab) params.set("tab", options.tab);
   const query = params.toString();
   return query ? `/dev/admin?${query}` : "/dev/admin";
 }

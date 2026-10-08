@@ -2,6 +2,7 @@ import "server-only";
 
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
+import { AdminTabs, type AdminTabId } from "./admin-tabs";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { AdminActivityChart } from "@/components/dev/admin-activity-chart";
@@ -659,7 +660,7 @@ async function saveProfileCharacterNicknames(formData: FormData) {
     result = "error";
   }
 
-  redirect(`/dev/admin?nicksSave=${result}#nicks-save-result`);
+  redirect(`/dev/admin?nicksSave=${result}&tab=nicks#nicks-save-result`);
 }
 
 async function resetProfileCharacterNicknames(formData: FormData) {
@@ -676,7 +677,7 @@ async function resetProfileCharacterNicknames(formData: FormData) {
     result = "error";
   }
 
-  redirect(`/dev/admin?nicksSave=${result}#nicks-save-result`);
+  redirect(`/dev/admin?nicksSave=${result}&tab=nicks#nicks-save-result`);
 }
 
 async function respondToContactInquiry(formData: FormData) {
@@ -716,7 +717,7 @@ async function respondToContactInquiry(formData: FormData) {
     result = "error";
   }
 
-  redirect(`/dev/admin?contactSave=${result}#contact-save-result`);
+  redirect(`/dev/admin?contactSave=${result}&tab=contact#contact-save-result`);
 }
 
 function formatDate(value: string): string {
@@ -843,7 +844,9 @@ export default async function SupabaseAdminPage({
   nicksSaveResult,
   postService,
   commentService,
+  tab = "contact",
 }: {
+  tab?: AdminTabId;
   contactSaveResult?: "saved" | "error";
   nicksSaveResult?: "saved" | "error" | "invalid";
   postService: AdminPostService | null;
@@ -873,6 +876,23 @@ export default async function SupabaseAdminPage({
       })
     : null;
 
+  const noSnapshot = (
+        <div className="rounded-md border border-border bg-card/40 px-4 py-6">
+          <h2 className="text-base font-semibold">Supabase 연결 없음</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            `NEXT_PUBLIC_SUPABASE_URL`과 `NEXT_PUBLIC_SUPABASE_ANON_KEY`가 설정되면 이 페이지에서 production 데이터를 조회합니다.
+          </p>
+        </div>
+  );
+  const tabs = [
+    { id: "contact", label: "문의 우편함" },
+    { id: "metrics", label: "작성률" },
+    { id: "authors", label: "작성자" },
+    { id: "comments", label: "댓글" },
+    { id: "posts", label: "서비스 글" },
+    { id: "nicks", label: "프로필 닉네임" },
+  ] as const;
+
   return (
     <main className="mx-auto max-w-7xl px-4 py-6">
       <div className="mb-6 rounded-md border border-primary/30 bg-primary/5 px-4 py-3">
@@ -887,17 +907,12 @@ export default async function SupabaseAdminPage({
           </div>
         </div>
       </div>
-
-      <AdminProfileNicknames
-        pools={nicknamePools.pools}
-        source={nicknamePools.source}
-        canEdit={nicknamePools.canEdit}
-        saveResult={nicksSaveResult}
-        error={nicknamePools.error}
-        onSave={saveProfileCharacterNicknames}
-        onReset={resetProfileCharacterNicknames}
-      />
-
+      <AdminTabs
+        tabs={tabs}
+        initialTab={tab}
+        panels={{
+          contact: (
+<>
       <Section
         title="문의 우편함"
         count={contactInquiries
@@ -1011,16 +1026,9 @@ export default async function SupabaseAdminPage({
           </div>
         )}
       </Section>
-
-      {!snapshot ? (
-        <div className="rounded-md border border-border bg-card/40 px-4 py-6">
-          <h2 className="text-base font-semibold">Supabase 연결 없음</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            `NEXT_PUBLIC_SUPABASE_URL`과 `NEXT_PUBLIC_SUPABASE_ANON_KEY`가 설정되면 이 페이지에서 production 데이터를 조회합니다.
-          </p>
-        </div>
-      ) : (
-        <>
+</>
+          ),
+          metrics: snapshot ? (
           <Section
             title="작성률 · 재작성률"
             count={snapshot.metrics.note}
@@ -1122,7 +1130,8 @@ export default async function SupabaseAdminPage({
               </div>
             )}
           </Section>
-
+) : noSnapshot,
+          authors: snapshot ? (
           <Section
             title="작성자 RLS 식별자 (UUID) 및 프로필 토큰"
             count={`${authors.length.toLocaleString("ko-KR")}명 식별`}
@@ -1134,25 +1143,19 @@ export default async function SupabaseAdminPage({
             )}
             <AdminAuthorTable authors={authors} />
           </Section>
-
-          <div className="mt-10 border-t border-border/70 pt-6">
-            <h2 className="text-xl font-semibold text-primary">최신 작성</h2>
-            <p className="mt-1 text-xs text-muted-foreground">
-              production 작성글을 댓글과 서비스 글 두 축으로만 봅니다. 서비스 글은 조각모음처럼 한 테이블입니다.
-            </p>
-          </div>
-
+) : noSnapshot,
+          comments: snapshot ? (
           <Section title="댓글" count={countLabel(snapshot.comments)} error={snapshot.comments.error}>
             <div className="mb-3">
               <AdminServiceFilter
                 allLabel="전체"
-                allHref={adminFilterHref({ posts: postService, comments: null })}
+                allHref={adminFilterHref({ posts: postService, comments: null, tab: "comments" })}
                 allSelected={commentService === null}
                 chips={ADMIN_COMMENT_SERVICES.map((service) => ({
                   key: service,
                   label: ADMIN_SERVICE_LABELS[service],
                   tokenSrc: ADMIN_SERVICE_TOKEN_SRC[service],
-                  href: adminFilterHref({ posts: postService, comments: service }),
+                  href: adminFilterHref({ posts: postService, comments: service, tab: "comments" }),
                   selected: commentService === service,
                 }))}
               />
@@ -1199,18 +1202,19 @@ export default async function SupabaseAdminPage({
               </table>
             </div>
           </Section>
-
+) : noSnapshot,
+          posts: snapshot ? (
           <Section title="서비스 글" count={countLabel(snapshot.posts)} error={snapshot.posts.error}>
             <div className="mb-3">
               <AdminServiceFilter
                 allLabel="전체"
-                allHref={adminFilterHref({ posts: null, comments: commentService })}
+                allHref={adminFilterHref({ posts: null, comments: commentService, tab: "posts" })}
                 allSelected={postService === null}
                 chips={ADMIN_POST_SERVICES.map((service) => ({
                   key: service,
                   label: ADMIN_SERVICE_LABELS[service],
                   tokenSrc: ADMIN_SERVICE_TOKEN_SRC[service],
-                  href: adminFilterHref({ posts: service, comments: commentService }),
+                  href: adminFilterHref({ posts: service, comments: commentService, tab: "posts" }),
                   selected: postService === service,
                 }))}
               />
@@ -1251,8 +1255,22 @@ export default async function SupabaseAdminPage({
               </table>
             </div>
           </Section>
-        </>
-      )}
+) : noSnapshot,
+          nicks: (
+<>
+      <AdminProfileNicknames
+        pools={nicknamePools.pools}
+        source={nicknamePools.source}
+        canEdit={nicknamePools.canEdit}
+        saveResult={nicksSaveResult}
+        error={nicknamePools.error}
+        onSave={saveProfileCharacterNicknames}
+        onReset={resetProfileCharacterNicknames}
+      />
+</>
+          ),
+        }}
+      />
     </main>
   );
 }

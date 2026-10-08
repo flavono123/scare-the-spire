@@ -3,6 +3,7 @@ import {
   isAdminCommentService,
   isAdminPostService,
 } from "@/lib/admin-rls-activity";
+import { isAdminTabId } from "./admin-tabs";
 import { devToolsEnabled } from "@/lib/dev-tools";
 
 export const dynamic = "force-dynamic";
@@ -44,6 +45,7 @@ export default async function SupabaseAdminPage({ searchParams }: SupabaseAdminP
       nicksSaveResult={nicksSaveResult}
       postService={isAdminPostService(posts) ? posts : null}
       commentService={isAdminCommentService(comments) ? comments : null}
+      tab={isAdminTabId(params.tab) ? params.tab : undefined}
     />
   );
 }
