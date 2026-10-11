@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,7 +15,15 @@ import Image from "@/components/ui/static-image";
 import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
 import { useAuth } from "@/hooks/use-auth";
 import { useGameLocale } from "@/hooks/use-game-locale";
-import { insertPagestormPost, usePagestormPosts } from "@/hooks/use-pagestorm-posts";
+import {
+  deletePagestormDraft,
+  insertPagestormDraft,
+  insertPagestormPost,
+  updatePagestormDraft,
+  usePagestormDraft,
+  usePagestormDrafts,
+  usePagestormPosts,
+} from "@/hooks/use-pagestorm-posts";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import type { PagestormGameCopy } from "@/lib/borrowed-game-copy";
@@ -95,6 +103,7 @@ function PagestormIndexCard({
   postKey,
   authorToken,
   createdAt,
+  badge,
 }: {
   href: string;
   view: PagestormIndexView;
@@ -107,6 +116,7 @@ function PagestormIndexCard({
   postKey: string;
   authorToken?: AuthorProfileTokenInput | null;
   createdAt: string;
+  badge?: string;
 }) {
   const seenAt = useIndexSeenAt("pagestorm");
   return (
@@ -148,6 +158,11 @@ function PagestormIndexCard({
                   nicknameClassName="truncate text-sm font-semibold text-gray-300"
                 />
                 {isOwner ? <OwnPostMark /> : null}
+                {badge ? (
+                  <span className="rounded border border-primary/40 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
+                    {badge}
+                  </span>
+                ) : null}
               </span>
             </div>
             <h2 className={`font-game-title text-base text-foreground ${indexReadClass(indexItemIsRead(createdAt, seenAt))}`}>
@@ -169,6 +184,7 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
   const copy = serviceMessages[serviceLocale].pagestorm;
   const { userId } = useAuth();
   const { posts, loading, unavailable } = usePagestormPosts();
+  const drafts = usePagestormDrafts(userId);
   const [view, setView] = useState<PagestormIndexView>("gallery");
   const writeHref = localizeHrefWithGameLocale(
     PAGESTORM_WRITE_HREF,
@@ -272,7 +288,26 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
             <div className={view === "gallery" ? "col-span-full" : undefined}>
               <ContentLoadingNotice label={copy.loading} />
             </div>
-          ) : posts.map((post: PagestormPostCard) => (
+          ) : (
+            <>
+              {drafts.map((post: PagestormPostCard) => (
+                <PagestormIndexCard
+                  key={`draft-${post.id}`}
+                  href={`${writeHref}?draft=${post.id}`}
+                  view={view}
+                  nickname={post.nickname}
+                  isOwner
+                  title={post.title}
+                  snippet={pagestormSnippet(post.content_text)}
+                  thumbnailUrl={post.thumbnailUrl}
+                  thumbnailKind={post.thumbnailKind}
+                  postKey={post.id}
+                  createdAt={post.created_at}
+                  authorToken={post}
+                  badge={copy.draftBadge}
+                />
+              ))}
+              {posts.map((post: PagestormPostCard) => (
             <PagestormIndexCard
               key={post.id}
               href={localizeHrefWithGameLocale(
@@ -291,11 +326,19 @@ export function PagestormClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
               createdAt={post.created_at}
               authorToken={post}
             />
-          ))}
+              ))}
+            </>
+          )}
         </div>
       </div>
     </div>
   );
+}
+
+function readDraftId(): string | null {
+  if (typeof window === "undefined") return null;
+  const id = new URLSearchParams(window.location.search).get("draft");
+  return id && /^[0-9a-f-]{36}$/i.test(id) ? id : null;
 }
 
 export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy }) {
@@ -304,6 +347,11 @@ export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy
   const copy = serviceMessages[serviceLocale].pagestorm;
   const router = useRouter();
   const { userId, ensureUser } = useAuth();
+  const [draftId, setDraftId] = useState<string | null>(null);
+  useEffect(() => {
+    setDraftId(readDraftId());
+  }, []);
+  const { draft, loading: draftLoading } = usePagestormDraft(draftId);
   const profileFallback = {
     ...DEFAULT_USER_PROFILE,
     nickname: copy.defaultNickname,
@@ -318,15 +366,25 @@ export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy
   const [nickname, setNickname] = useState(profile.nickname);
   const [submitting, setSubmitting] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
+  const loadedDraftId = draft?.id ?? null;
+  const [seenDraftId, setSeenDraftId] = useState<string | null>(null);
+  if (loadedDraftId && seenDraftId !== loadedDraftId) {
+    setSeenDraftId(loadedDraftId);
+    setTitle(draft?.title ?? "");
+    setNickname(draft?.nickname || profile.nickname);
+  }
+
+  const ensureAuthor = useCallback(async () => {
+    const activeUserId = userId ?? await ensureUser();
+    if (!activeUserId) setUnavailable(true);
+    return activeUserId;
+  }, [ensureUser, userId]);
 
   const handleRegister = useCallback(async (input: PagestormEditorSaveInput) => {
     setSubmitting(true);
     try {
-      const activeUserId = userId ?? await ensureUser();
-      if (!activeUserId) {
-        setUnavailable(true);
-        return;
-      }
+      const activeUserId = await ensureAuthor();
+      if (!activeUserId) return;
       const post = await insertPagestormPost({
         ...input,
         activeUserId,
@@ -335,6 +393,7 @@ export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy
         setUnavailable(true);
         return;
       }
+      if (draftId) await deletePagestormDraft(draftId, activeUserId);
       router.push(localizeHrefWithGameLocale(
         pagestormDetailHref(post.id),
         serviceLocale,
@@ -345,7 +404,44 @@ export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy
     } finally {
       setSubmitting(false);
     }
-  }, [ensureUser, gameLocale, router, serviceLocale, userId]);
+  }, [draftId, ensureAuthor, gameLocale, router, serviceLocale]);
+
+  const handleDraft = useCallback(async (input: PagestormEditorSaveInput) => {
+    setSubmitting(true);
+    try {
+      const activeUserId = await ensureAuthor();
+      if (!activeUserId) return;
+      const saved = draftId
+        ? await updatePagestormDraft(draftId, { ...input, activeUserId })
+        : await insertPagestormDraft({ ...input, activeUserId });
+      if (!saved) {
+        setUnavailable(true);
+        return;
+      }
+      const next = `${localizeHrefWithGameLocale(PAGESTORM_WRITE_HREF, serviceLocale, gameLocale)}?draft=${saved.id}`;
+      window.history.replaceState(null, "", next);
+      setDraftId(saved.id);
+    } catch {
+      setUnavailable(true);
+    } finally {
+      setSubmitting(false);
+    }
+  }, [draftId, ensureAuthor, gameLocale, serviceLocale]);
+
+  const handleDelete = useCallback(async () => {
+    if (!draftId) return;
+    setSubmitting(true);
+    try {
+      const activeUserId = await ensureAuthor();
+      if (!activeUserId) return;
+      await deletePagestormDraft(draftId, activeUserId);
+      router.push(indexHref);
+    } catch {
+      setUnavailable(true);
+    } finally {
+      setSubmitting(false);
+    }
+  }, [draftId, ensureAuthor, indexHref, router]);
 
   return (
     <div className="space-y-4">
@@ -373,16 +469,26 @@ export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy
       {unavailable ? (
         <StorageUnavailableNotice title={copy.unavailableTitle} />
       ) : null}
-      <Editor
-        mode="edit"
-        title={title}
-        onTitleChange={setTitle}
-        nickname={nickname}
-        onNicknameChange={setNickname}
-        submitLabel={copy.submit}
-        submitting={submitting}
-        onSubmit={handleRegister}
-      />
+      {draftId && draftLoading ? (
+        <ContentLoadingNotice label={copy.loading} />
+      ) : (
+        <Editor
+          key={draft?.id ?? "new"}
+          mode="edit"
+          initialContent={draft?.content}
+          title={title}
+          onTitleChange={setTitle}
+          nickname={nickname}
+          onNicknameChange={setNickname}
+          submitLabel={copy.submit}
+          draftLabel={copy.draftSave}
+          deleteLabel={draftId ? copy.draftDelete : undefined}
+          submitting={submitting}
+          onSubmit={handleRegister}
+          onDraft={handleDraft}
+          onDelete={draftId ? handleDelete : undefined}
+        />
+      )}
     </div>
   );
 }

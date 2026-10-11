@@ -4,6 +4,7 @@ export const PAGESTORM_TOKEN_SRC = "/images/sts2/powers/pagestorm_power.webp";
 export const PAGESTORM_BACKGROUND_SRC = "/images/sts2/cards/pagestorm.webp";
 export const PAGESTORM_BETA_ART_SRC = "/images/sts2/cards-beta/pagestorm.webp";
 export const PAGESTORM_TABLE = "pagestorm_posts";
+export const PAGESTORM_DRAFT_TABLE = "pagestorm_drafts";
 export const PAGESTORM_TITLE_MIN_CHARS = 1;
 export const PAGESTORM_TITLE_MAX_CHARS = 80;
 export const PAGESTORM_BODY_MIN_CHARS = 1;

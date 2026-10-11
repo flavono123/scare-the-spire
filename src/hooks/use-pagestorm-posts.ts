@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   PAGESTORM_BODY_MAX_CHARS,
   PAGESTORM_BODY_MIN_CHARS,
+  PAGESTORM_DRAFT_TABLE,
   PAGESTORM_TABLE,
   PAGESTORM_TITLE_MAX_CHARS,
   PAGESTORM_TITLE_MIN_CHARS,
@@ -103,6 +104,149 @@ export async function updatePagestormPost(
   if (error) throw error;
   if (!data) return null;
   return normalizePagestormPost(data);
+}
+
+function draftRow(input: SavePagestormPostInput) {
+  const authorToken = currentAuthorProfileToken();
+  return {
+    user_id: input.activeUserId,
+    nickname: input.nickname.trim(),
+    title: input.title.trim(),
+    content: input.content,
+    content_text: input.contentText.trim(),
+    env: supabaseEnv,
+    updated_at: new Date().toISOString(),
+    avatar_id: authorToken.avatar_id,
+    avatar_kind: authorToken.avatar_kind,
+    palette_id: authorToken.palette_id,
+    palette_swapped: authorToken.palette_swapped,
+  };
+}
+
+export async function insertPagestormDraft(
+  input: SavePagestormPostInput,
+): Promise<PagestormPost | null> {
+  if (!isValidSave(input)) return null;
+  const { data, error } = await withSupabaseTimeout(
+    "pagestorm_drafts.insert",
+    supabase
+      .from(PAGESTORM_DRAFT_TABLE)
+      .insert(draftRow(input))
+      .select()
+      .single(),
+  );
+  if (error) throw error;
+  if (!data) return null;
+  return normalizePagestormPost(data);
+}
+
+export async function updatePagestormDraft(
+  draftId: string,
+  input: SavePagestormPostInput,
+): Promise<PagestormPost | null> {
+  if (!isValidSave(input)) return null;
+  const { data, error } = await withSupabaseTimeout(
+    "pagestorm_drafts.update",
+    supabase
+      .from(PAGESTORM_DRAFT_TABLE)
+      .update(draftRow(input))
+      .eq("id", draftId)
+      .eq("user_id", input.activeUserId)
+      .eq("env", supabaseEnv)
+      .select()
+      .single(),
+  );
+  if (error) throw error;
+  if (!data) return null;
+  return normalizePagestormPost(data);
+}
+
+export async function deletePagestormDraft(draftId: string, userId: string): Promise<boolean> {
+  if (!supabaseEnabled || !userId) return false;
+  const { error } = await withSupabaseTimeout(
+    "pagestorm_drafts.delete",
+    supabase
+      .from(PAGESTORM_DRAFT_TABLE)
+      .delete()
+      .eq("id", draftId)
+      .eq("user_id", userId)
+      .eq("env", supabaseEnv),
+  );
+  if (error) throw error;
+  return true;
+}
+
+export function usePagestormDraft(draftId: string | null) {
+  const [draft, setDraft] = useState<PagestormPost | null>(null);
+  const [loadedId, setLoadedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!draftId || !supabaseEnabled) return;
+    let cancelled = false;
+    withSupabaseTimeout(
+      "pagestorm_drafts.detail",
+      supabase
+        .from(PAGESTORM_DRAFT_TABLE)
+        .select("*")
+        .eq("id", draftId)
+        .eq("env", supabaseEnv)
+        .maybeSingle(),
+    )
+      .then(({ data, error }) => {
+        if (error) throw error;
+        if (cancelled) return;
+        setDraft(data ? normalizePagestormPost(data) : null);
+        setLoadedId(draftId);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setDraft(null);
+        setLoadedId(draftId);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [draftId]);
+
+  return {
+    draft: draftId && loadedId === draftId ? draft : null,
+    loading: Boolean(draftId) && loadedId !== draftId && supabaseEnabled,
+  };
+}
+
+export function usePagestormDrafts(userId: string | null) {
+  const [drafts, setDrafts] = useState<{ userId: string; posts: PagestormPostCard[] } | null>(null);
+
+  useEffect(() => {
+    if (!userId || !supabaseEnabled) return;
+    let cancelled = false;
+    withSupabaseTimeout(
+      "pagestorm_drafts.list",
+      supabase
+        .from(PAGESTORM_DRAFT_TABLE)
+        .select("id, user_id, nickname, title, content, content_text, env, created_at, avatar_id, avatar_kind, palette_id, palette_swapped")
+        .eq("env", supabaseEnv)
+        .eq("user_id", userId)
+        .order("updated_at", { ascending: false })
+        .limit(20),
+    )
+      .then(({ data, error }) => {
+        if (error) throw error;
+        if (cancelled) return;
+        setDrafts({
+          userId,
+          posts: (data ?? []).map((row) => normalizePagestormPostCard(row)),
+        });
+      })
+      .catch(() => {
+        if (!cancelled) setDrafts({ userId, posts: [] });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
+  return drafts?.userId === userId ? drafts.posts : [];
 }
 
 export function usePagestormPosts() {

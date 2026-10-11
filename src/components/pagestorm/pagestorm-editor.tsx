@@ -80,8 +80,12 @@ export function PagestormEditor({
   nickname,
   onNicknameChange,
   submitLabel,
+  draftLabel,
+  deleteLabel,
   submitting = false,
   onSubmit,
+  onDraft,
+  onDelete,
 }: {
   mode?: "edit" | "preview";
   initialContent?: PagestormDoc;
@@ -90,8 +94,12 @@ export function PagestormEditor({
   nickname?: string;
   onNicknameChange?: (nickname: string) => void;
   submitLabel?: string;
+  draftLabel?: string;
+  deleteLabel?: string;
   submitting?: boolean;
   onSubmit?: (input: PagestormEditorSaveInput) => Promise<void> | void;
+  onDraft?: (input: PagestormEditorSaveInput) => Promise<void> | void;
+  onDelete?: () => Promise<void> | void;
 }) {
   const { entities } = useCommentEntities();
   const { index: sts1Index } = useSts1MentionIndex();
@@ -370,16 +378,28 @@ export function PagestormEditor({
     && docTick >= 0,
   );
 
-  async function handleSubmit() {
+  function currentSaveInput(): PagestormEditorSaveInput | null {
     const current = editorRef.current;
-    if (!current || !onSubmit || !canSubmit) return;
+    if (!current) return null;
     const content = current.getJSON() as PagestormDoc;
-    await onSubmit({
+    return {
       title: titleValue.trim(),
       nickname: nicknameValue.trim(),
       content,
       contentText: pagestormContentText(content),
-    });
+    };
+  }
+
+  async function handleSubmit() {
+    const input = currentSaveInput();
+    if (!input || !onSubmit || !canSubmit) return;
+    await onSubmit(input);
+  }
+
+  async function handleDraft() {
+    const input = currentSaveInput();
+    if (!input || !onDraft || !canSubmit) return;
+    await onDraft(input);
   }
 
   return (
@@ -443,14 +463,36 @@ export function PagestormEditor({
               {copy.braceHint}
             </p>
             {onSubmit && submitLabel ? (
-              <button
-                type="button"
-                disabled={!canSubmit}
-                onClick={() => { void handleSubmit(); }}
-                className="inline-flex shrink-0 items-center rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary disabled:opacity-50"
-              >
-                {submitLabel}
-              </button>
+              <span className="inline-flex shrink-0 items-center gap-1.5">
+                {onDelete && deleteLabel ? (
+                  <button
+                    type="button"
+                    disabled={submitting}
+                    onClick={() => { void onDelete(); }}
+                    className="inline-flex items-center rounded-lg border border-red-400/40 px-3 py-2 text-xs font-semibold text-red-300 disabled:opacity-50"
+                  >
+                    {deleteLabel}
+                  </button>
+                ) : null}
+                {onDraft && draftLabel ? (
+                  <button
+                    type="button"
+                    disabled={!canSubmit}
+                    onClick={() => { void handleDraft(); }}
+                    className="inline-flex items-center rounded-lg border border-border px-3 py-2 text-xs font-semibold text-foreground disabled:opacity-50"
+                  >
+                    {draftLabel}
+                  </button>
+                ) : null}
+                <button
+                  type="button"
+                  disabled={!canSubmit}
+                  onClick={() => { void handleSubmit(); }}
+                  className="inline-flex items-center rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary disabled:opacity-50"
+                >
+                  {submitLabel}
+                </button>
+              </span>
             ) : null}
           </div>
         ) : null}
