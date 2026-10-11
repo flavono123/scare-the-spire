@@ -367,7 +367,7 @@
 }
 
 .pagestorm-details[data-open="false"] [data-details-content] {
-  display: none;
+  display: none !important;
 }
 
 .pagestorm-drop-hint {

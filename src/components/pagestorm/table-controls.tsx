@@ -6,6 +6,7 @@ import { useEffect, useState, type ReactNode, type RefObject } from "react";
 import { GameUiHoverTip, GAME_UI_HOVER_TIP_NAV_DELAY_MS } from "@/components/game-ui-hover-tip";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
+import { pagestormPosInClosedDetails } from "./details";
 
 type Grip = { x: number; y: number };
 
@@ -24,6 +25,7 @@ function clamp(value: number, min: number, max: number): number {
 function tableGrips(editor: Editor, frame: HTMLElement): TableGrips | null {
   if (!editor.isEditable || !editor.isActive("table")) return null;
   const { $from } = editor.state.selection;
+  if (pagestormPosInClosedDetails(editor.state.doc, $from.pos)) return null;
   let tableDepth = -1;
   let cellDepth = -1;
   for (let depth = $from.depth; depth > 0; depth -= 1) {
@@ -34,8 +36,10 @@ function tableGrips(editor: Editor, frame: HTMLElement): TableGrips | null {
   if (tableDepth < 0) return null;
   const tableDom = editor.view.nodeDOM($from.before(tableDepth));
   if (!(tableDom instanceof HTMLElement)) return null;
+  if (tableDom.closest(".pagestorm-details[data-open='false']")) return null;
   const frameRect = frame.getBoundingClientRect();
   const tableRect = tableDom.getBoundingClientRect();
+  if (tableRect.width < 1 || tableRect.height < 1) return null;
   const cellDom = cellDepth > 0 ? editor.view.nodeDOM($from.before(cellDepth)) : null;
   const cellRect = cellDom instanceof HTMLElement ? cellDom.getBoundingClientRect() : tableRect;
   const pad = 14;

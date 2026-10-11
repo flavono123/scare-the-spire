@@ -34,6 +34,7 @@ import {
   type PagestormColorKey,
 } from "./color-marks";
 import { togglePagestormBlockquote } from "./blockquote";
+import { setPagestormDetailsOpen } from "./details";
 import { AlignButtons, IconTipButton } from "./figures";
 import { PickerNavDropdown } from "./nav-tokens";
 import { useCompendiumNavItems, useToyboxNavItems } from "./pickers";
@@ -343,9 +344,8 @@ export function PagestormFormatChrome({
           active={chrome.details}
           onClick={() => {
             if (chrome.details) {
-              editor.chain().focus().updateAttributes("details", {
-                open: !editor.getAttributes("details").open,
-              }).run();
+              const open = editor.getAttributes("details").open !== false;
+              setPagestormDetailsOpen(editor, !open);
               return;
             }
             editor.chain().focus().insertPagestormDetails(editorCopy.detailsSummary).run();

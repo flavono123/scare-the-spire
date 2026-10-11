@@ -1,13 +1,49 @@
 "use client";
 
 import { mergeAttributes, Node } from "@tiptap/core";
-import { NodeViewContent, NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
+import type { Node as PMNode } from "@tiptap/pm/model";
+import { TextSelection } from "@tiptap/pm/state";
+import { NodeViewContent, NodeViewWrapper, ReactNodeViewRenderer, type Editor, type NodeViewProps } from "@tiptap/react";
 import { ChevronRight } from "lucide-react";
 import type { MouseEvent } from "react";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 
-function DetailsView({ node, updateAttributes, editor }: NodeViewProps) {
+export function pagestormPosInClosedDetails(doc: PMNode, pos: number): boolean {
+  const $pos = doc.resolve(Math.max(0, Math.min(pos, doc.content.size)));
+  for (let depth = $pos.depth; depth > 0; depth -= 1) {
+    const current = $pos.node(depth);
+    if (current.type.name === "details" && current.attrs.open === false) return true;
+  }
+  return false;
+}
+
+/** Close or open the details around the selection. Closing leaves the summary so hidden edit chrome unmounts. */
+export function setPagestormDetailsOpen(editor: Editor, open: boolean): boolean {
+  const { $from } = editor.state.selection;
+  let detailsDepth = -1;
+  for (let depth = $from.depth; depth > 0; depth -= 1) {
+    if ($from.node(depth).type.name === "details") {
+      detailsDepth = depth;
+      break;
+    }
+  }
+  if (detailsDepth < 0) return false;
+  const detailsPos = $from.before(detailsDepth);
+  const detailsNode = $from.node(detailsDepth);
+  const tr = editor.state.tr.setNodeMarkup(detailsPos, undefined, {
+    ...detailsNode.attrs,
+    open,
+  });
+  if (!open) {
+    const summaryPos = Math.min(detailsPos + 2, tr.doc.content.size);
+    tr.setSelection(TextSelection.near(tr.doc.resolve(summaryPos)));
+  }
+  editor.view.dispatch(tr.scrollIntoView());
+  return true;
+}
+
+function DetailsView({ node, updateAttributes, editor, getPos }: NodeViewProps) {
   const open = node.attrs.open !== false;
   const copy = serviceMessages[useServiceLocale()].pagestorm;
   return (
@@ -34,7 +70,22 @@ function DetailsView({ node, updateAttributes, editor }: NodeViewProps) {
         onClick={(event) => {
           event.preventDefault();
           event.stopPropagation();
-          updateAttributes({ open: !open });
+          const nextOpen = !open;
+          if (!nextOpen && setPagestormDetailsOpen(editor, false)) return;
+          if (nextOpen) {
+            const pos = getPos();
+            if (typeof pos === "number") {
+              const current = editor.state.doc.nodeAt(pos);
+              if (current) {
+                editor.view.dispatch(editor.state.tr.setNodeMarkup(pos, undefined, {
+                  ...current.attrs,
+                  open: true,
+                }));
+                return;
+              }
+            }
+          }
+          updateAttributes({ open: nextOpen });
         }}
       >
         <ChevronRight
