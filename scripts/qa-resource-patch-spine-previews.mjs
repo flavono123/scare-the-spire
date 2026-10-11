@@ -17,7 +17,7 @@ const chromeExecutable = defaultChromeExecutable();
 
 const [index, entities] = await Promise.all([
   readJson("public/generated/sts2-resource-patch-index.json"),
-  readJson("public/comment-entities/sts2"),
+  readJson("public/generated/comment-entities-sts2.json"),
 ]);
 const entityByKey = new Map(entities.map((entity) => [resourceKey(entity), entity]));
 const resources = index.groups

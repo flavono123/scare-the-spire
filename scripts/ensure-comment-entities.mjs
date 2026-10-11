@@ -5,7 +5,6 @@ import { spawnSync } from "node:child_process";
 const root = process.cwd();
 const outputs = [
   "public/generated/comment-entities-sts2.json",
-  "public/comment-entities/sts2",
 ];
 const sources = [
   "data/sts2",

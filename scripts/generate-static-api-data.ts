@@ -398,6 +398,14 @@ async function writeJson(target: StaticJsonTarget) {
   console.log(`Wrote ${path.relative(process.cwd(), filePath)}`);
 }
 
+const STALE_STATIC_ALIASES = ["api/search-index", "comment-entities/sts2"];
+
+async function removeStaleStaticAliases() {
+  await Promise.all(
+    STALE_STATIC_ALIASES.map((relativePath) => fs.rm(path.join(publicDir, relativePath), { force: true })),
+  );
+}
+
 async function writeSourceJson(target: StaticJsonTarget) {
   const filePath = path.join(srcDir, target.path);
   await fs.mkdir(path.dirname(filePath), { recursive: true });
@@ -1074,18 +1082,14 @@ async function cardConLocaleTargets(): Promise<StaticJsonTarget[]> {
 
 async function generateCommentEntitiesOnly() {
   const commentEntities = await loadAllEntities();
-  await Promise.all([
-    writeJson({ path: "generated/comment-entities-sts2.json", data: commentEntities }),
-    writeJson({ path: "comment-entities/sts2", data: commentEntities }),
-  ]);
+  await writeJson({ path: "generated/comment-entities-sts2.json", data: commentEntities });
+  await removeStaleStaticAliases();
 }
 
 async function generateSearchIndexOnly() {
   const searchIndex = await buildSearchIndexPayload();
-  await Promise.all([
-    writeJson({ path: "generated/search-index.json", data: searchIndex }),
-    writeJson({ path: "api/search-index", data: searchIndex }),
-  ]);
+  await writeJson({ path: "generated/search-index.json", data: searchIndex });
+  await removeStaleStaticAliases();
 }
 
 async function main() {
@@ -1193,13 +1197,12 @@ async function main() {
     writeJson({ path: "generated/compendium-resource-manifest.json", data: compendiumResourceManifest }),
     writeJson({ path: "generated/latest-byrdispatch-notice.json", data: latestByrdispatchNotice }),
     writeJson({ path: "generated/sts2-patch-lines.json", data: sts2PatchLines }),
-    writeJson({ path: "api/search-index", data: searchIndex }),
-    writeJson({ path: "comment-entities/sts2", data: commentEntities }),
     ...thisOrThatResourceTargets.map(writeJson),
     ...historyLocTableTargets.map(writeJson),
     writeJson(decisionsDecisionsPresetTarget),
     copyPublicFile(spinePlayerClientPath, "generated/spine-player.min.js"),
   ]);
+  await removeStaleStaticAliases();
 }
 
 main().catch((error) => {

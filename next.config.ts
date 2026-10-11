@@ -1,5 +1,6 @@
 import os from "node:os";
 import type { NextConfig } from "next";
+import { STATIC_ASSET_ALIAS_REDIRECTS } from "./workers/static-asset-aliases";
 
 const configuredBuildId = process.env.NEXT_BUILD_ID?.trim();
 
@@ -56,6 +57,11 @@ const nextConfig: NextConfig = {
         destination: "/:path*",
         permanent: true,
       },
+      ...Object.entries(STATIC_ASSET_ALIAS_REDIRECTS).map(([source, destination]) => ({
+        source,
+        destination,
+        permanent: true,
+      })),
     ];
   },
   async rewrites() {

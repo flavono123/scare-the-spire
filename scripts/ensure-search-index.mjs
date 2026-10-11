@@ -5,7 +5,6 @@ import { spawnSync } from "node:child_process";
 const root = process.cwd();
 const outputs = [
   "public/generated/search-index.json",
-  "public/api/search-index",
 ];
 const sources = [
   "data/sts2",
