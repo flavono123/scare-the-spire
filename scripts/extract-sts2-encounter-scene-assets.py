@@ -10,6 +10,7 @@ scene elements that materially identify the encounter stay separate.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import io
 import json
 import re
@@ -41,6 +42,14 @@ NODE_HEADER_RE = re.compile(r'^\[node\s+name="(?P<name>[^"]+)"[^\]]*\]$', re.MUL
 VECTOR2_RE_TEMPLATE = r"^{property}\s*=\s*Vector2\((?P<x>[-+\deE.]+),\s*(?P<y>[-+\deE.]+)\)$"
 FLOAT_RE_TEMPLATE = r"^{property}\s*=\s*(?P<value>[-+\deE.]+)$"
 COMBAT_COORDINATE_SIZE = {"width": 1920, "height": 1080}
+# Act composites are the stable public paths. Boss scenes that encode to the
+# same bytes reuse one of these instead of shipping a second file.
+ACT_BACKGROUND_OUTPUTS = {
+    "overgrowth-a.webp",
+    "hive-a.webp",
+    "glory-a.webp",
+    "underdocks-a.webp",
+}
 ACT_BACKGROUND_TITLES = {
     "Act 1 - Overgrowth": "overgrowth",
     "Act 2 - Hive": "hive",
@@ -277,6 +286,10 @@ def write_if_changed(path: Path, data: bytes, *, dry_run: bool, force: bool) -> 
     return True
 
 
+def background_output_rank(path: Path) -> tuple[int, str]:
+    return (0 if path.name in ACT_BACKGROUND_OUTPUTS else 1, path.name)
+
+
 def public_url(path: Path) -> str:
     return "/" + path.relative_to(ROOT / "public").as_posix()
 
@@ -455,20 +468,42 @@ def main() -> int:
 
     with PCKReader(args.pck) as reader:
         targets = build_targets(encounters_path, source_root)
-        background_outputs: dict[str, tuple[Path, list[str]]] = {}
+        rendered: dict[str, tuple[bytes, list[str], Path]] = {}
         for target in targets:
-            if target.title in background_outputs:
+            if target.title in rendered:
                 continue
             layer_paths = choose_layer_scenes(reader, target)
             output_path = output_root / target.output_name
-            if write_if_changed(
-                output_path,
+            rendered[target.title] = (
                 encode_webp(composite_scene(reader, layer_paths)),
-                dry_run=args.dry_run,
-                force=args.force,
-            ):
+                layer_paths,
+                output_path,
+            )
+
+        groups: dict[str, list[str]] = {}
+        for title, (payload, _layer_paths, _output_path) in rendered.items():
+            groups.setdefault(hashlib.sha256(payload).hexdigest(), []).append(title)
+
+        background_outputs: dict[str, tuple[Path, list[str]]] = {}
+        for titles in groups.values():
+            titles.sort(key=lambda title: background_output_rank(rendered[title][2]))
+            keeper = titles[0]
+            payload, _keeper_layers, output_path = rendered[keeper]
+            if write_if_changed(output_path, payload, dry_run=args.dry_run, force=args.force):
                 written += 1
-            background_outputs[target.title] = (output_path, layer_paths)
+            for title in titles:
+                background_outputs[title] = (output_path, rendered[title][1])
+                if title == keeper:
+                    continue
+                duplicate_path = rendered[title][2]
+                if duplicate_path == output_path:
+                    continue
+                if args.dry_run:
+                    print(f"would remove duplicate background {duplicate_path} -> {output_path}")
+                    continue
+                if duplicate_path.exists():
+                    duplicate_path.unlink()
+                    print(f"removed duplicate background {duplicate_path} -> {output_path}")
 
         for target in targets:
             output_path, layer_paths = background_outputs[target.title]

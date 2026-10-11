@@ -2441,7 +2441,7 @@
   },
   {
     "id": "KAISER_CRAB_BOSS",
-    "backgroundUrl": "/images/sts2/encounter-scenes/kaiser-crab-boss-a.webp",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
     "sourceScene": "scenes/backgrounds/kaiser_crab_boss/kaiser_crab_boss_background.tscn",
     "sourceLayers": [
       "scenes/backgrounds/kaiser_crab_boss/layers/kaiser_crab_boss_bg_00_a.tscn",
@@ -2658,7 +2658,7 @@
   },
   {
     "id": "KNOWLEDGE_DEMON_BOSS",
-    "backgroundUrl": "/images/sts2/encounter-scenes/knowledge-demon-boss-a.webp",
+    "backgroundUrl": "/images/sts2/encounter-scenes/hive-a.webp",
     "sourceScene": "scenes/backgrounds/knowledge_demon_boss/knowledge_demon_boss_background.tscn",
     "sourceLayers": [
       "scenes/backgrounds/knowledge_demon_boss/layers/knowledge_demon_boss_bg_00_a.tscn",
@@ -2713,7 +2713,7 @@
   },
   {
     "id": "LAGAVULIN_MATRIARCH_BOSS",
-    "backgroundUrl": "/images/sts2/encounter-scenes/lagavulin-matriarch-boss-a.webp",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
     "sourceScene": "scenes/backgrounds/lagavulin_matriarch_boss/lagavulin_matriarch_boss_background.tscn",
     "sourceLayers": [
       "scenes/backgrounds/lagavulin_matriarch_boss/layers/lagavulin_matriarch_boss_bg_00_a.tscn",
@@ -5226,7 +5226,7 @@
   },
   {
     "id": "SOUL_FYSH_BOSS",
-    "backgroundUrl": "/images/sts2/encounter-scenes/soul-fysh-boss-a.webp",
+    "backgroundUrl": "/images/sts2/encounter-scenes/underdocks-a.webp",
     "sourceScene": "scenes/backgrounds/soul_fysh_boss/soul_fysh_boss_background.tscn",
     "sourceLayers": [
       "scenes/backgrounds/soul_fysh_boss/layers/soul_fysh_boss_bg_00_a.tscn",
@@ -5448,7 +5448,7 @@
   },
   {
     "id": "TEST_SUBJECT_BOSS",
-    "backgroundUrl": "/images/sts2/encounter-scenes/test-subject-boss-a.webp",
+    "backgroundUrl": "/images/sts2/encounter-scenes/glory-a.webp",
     "sourceScene": "scenes/backgrounds/test_subject_boss/test_subject_boss_background.tscn",
     "sourceLayers": [
       "scenes/backgrounds/test_subject_boss/layers/test_subject_boss_bg_00_a.tscn",
@@ -5608,7 +5608,7 @@
   },
   {
     "id": "THE_KIN_BOSS",
-    "backgroundUrl": "/images/sts2/encounter-scenes/the-kin-boss-a.webp",
+    "backgroundUrl": "/images/sts2/encounter-scenes/ceremonial-beast-boss-a.webp",
     "sourceScene": "scenes/backgrounds/the_kin_boss/the_kin_boss_background.tscn",
     "sourceLayers": [
       "scenes/backgrounds/the_kin_boss/layers/the_kin_boss_bg_00_a.tscn",
