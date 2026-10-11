@@ -109,13 +109,15 @@ function lerp(from: number, to: number, amount: number): number {
   return from + (to - from) * amount;
 }
 
+const DECIMILLIPEDE_ATLAS_URL = "/spine/sts2/monsters/decimillipede_front/decimillipede_front.atlas";
+
 const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
   {
     id: "segment1-back-model",
     partId: "back",
     labelKo: "뒤쪽",
     labelEn: "Back",
-    atlasUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede_back.atlas",
+    atlasUrl: DECIMILLIPEDE_ATLAS_URL,
     binaryUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede3.skel",
     animationIds: [
       "dead_loop",
@@ -150,7 +152,7 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
     partId: "middle",
     labelKo: "가운데",
     labelEn: "Middle",
-    atlasUrl: "/spine/sts2/monsters/decimillipede_middle/decimillipede_middle.atlas",
+    atlasUrl: DECIMILLIPEDE_ATLAS_URL,
     binaryUrl: "/spine/sts2/monsters/decimillipede_middle/decimillipede2.skel",
     animationIds: [
       "dead_loop",
@@ -186,7 +188,7 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
     partId: "front",
     labelKo: "앞쪽",
     labelEn: "Front",
-    atlasUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede_front.atlas",
+    atlasUrl: DECIMILLIPEDE_ATLAS_URL,
     binaryUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede1.skel",
     animationIds: [
       "dead_loop",

@@ -86,6 +86,8 @@ class SpineActorImport:
     skel_prefix: str
     atlas_prefix: str
     output_folder: str | None = None
+    # When set, atlas/png bytes are shared with this output folder and are not copied again.
+    shared_texture_folder: str | None = None
 
 
 MANUAL_ACTOR_IMPORTS = {
@@ -104,11 +106,13 @@ MANUAL_ACTOR_IMPORTS = {
             skel_prefix="animations/monsters/decimillipede/decimillipede2",
             atlas_prefix="animations/monsters/decimillipede/decimillipede_middle",
             output_folder="decimillipede_middle",
+            shared_texture_folder="decimillipede_front",
         ),
         SpineActorImport(
             skel_prefix="animations/monsters/decimillipede/decimillipede3",
             atlas_prefix="animations/monsters/decimillipede/decimillipede_back",
             output_folder="decimillipede_back",
+            shared_texture_folder="decimillipede_front",
         ),
     ),
 }
@@ -297,6 +301,19 @@ def extract_actor(reader: PCKReader, actor: SpineActorImport, kind: str, out_roo
     atlas_base_name = Path(actor.atlas_prefix).name
     actor_dir = Path(actor.atlas_prefix).parent.as_posix()
     out_dir = output_folder_for(actor, kind, out_root)
+    if actor.shared_texture_folder:
+        out_dir.mkdir(parents=True, exist_ok=True)
+        extract_binary_import(reader, f"{actor.skel_prefix}.skel.import", out_dir / f"{skel_base_name}.skel")
+        shared_dir = out_root / kind / actor.shared_texture_folder
+        shared_payloads = {
+            path.read_bytes()
+            for path in shared_dir.iterdir()
+            if path.is_file() and path.suffix in {".atlas", ".png"}
+        } if shared_dir.is_dir() else set()
+        for path in list(out_dir.iterdir()):
+            if path.suffix in {".atlas", ".png"} and path.read_bytes() in shared_payloads:
+                path.unlink()
+        return
     atlas_path = out_dir / f"{atlas_base_name}.atlas"
     extract_binary_import(reader, f"{actor.atlas_prefix}.atlas.import", atlas_path)
     texture_scale = SPINE_TEXTURE_SCALE_BY_PREFIX.get(actor.atlas_prefix, 1.0)

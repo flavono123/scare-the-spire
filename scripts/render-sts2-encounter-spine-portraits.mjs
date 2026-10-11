@@ -40,7 +40,7 @@ const ENCOUNTER_CONFIGS = {
       {
         folder: "decimillipede_back",
         skel: "decimillipede3.skel",
-        atlas: "decimillipede_back.atlas",
+        atlasUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede_front.atlas",
         x: 1103 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET + 318,
         y: toBrowserSpineY(740 - 19),
         scaleX: DECIMILLIPEDE_SPINE_SCALE_X,
@@ -53,7 +53,7 @@ const ENCOUNTER_CONFIGS = {
       {
         folder: "decimillipede_middle",
         skel: "decimillipede2.skel",
-        atlas: "decimillipede_middle.atlas",
+        atlasUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede_front.atlas",
         x: 1451 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 54,
         y: toBrowserSpineY(740 - 43),
         scaleX: DECIMILLIPEDE_SPINE_SCALE_X,
@@ -67,7 +67,7 @@ const ENCOUNTER_CONFIGS = {
       {
         folder: "decimillipede_front",
         skel: "decimillipede1.skel",
-        atlas: "decimillipede_front.atlas",
+        atlasUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede_front.atlas",
         x: 1797 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 344,
         y: toBrowserSpineY(740 - 28),
         scaleX: DECIMILLIPEDE_SPINE_SCALE_X,
@@ -294,7 +294,7 @@ function renderHtml(config) {
       return new Promise((resolve, reject) => {
         new spine.SpinePlayer(document.getElementById("part-" + index), {
           binaryUrl: "/spine/sts2/monsters/" + part.folder + "/" + part.skel,
-          atlasUrl: "/spine/sts2/monsters/" + part.folder + "/" + part.atlas,
+          atlasUrl: part.atlasUrl,
           animation: "idle_loop",
           alpha: true,
           backgroundColor: "00000000",

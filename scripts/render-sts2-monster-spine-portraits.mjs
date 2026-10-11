@@ -40,7 +40,7 @@ const MANUAL_MONSTER_RENDER_CONFIGS = {
   DECIMILLIPEDE_SEGMENT: {
     outputSlug: "decimillipede",
     binaryUrl: "/spine/sts2/monsters/decimillipede_middle/decimillipede2.skel",
-    atlasUrl: "/spine/sts2/monsters/decimillipede_middle/decimillipede_middle.atlas",
+    atlasUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede_front.atlas",
     animation: "idle_loop",
     stageSize: 1200,
     viewport: DECIMILLIPEDE_VIEWPORT,
