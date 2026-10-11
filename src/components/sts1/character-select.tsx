@@ -12,6 +12,7 @@ import {
 } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Volume2, VolumeX } from "lucide-react";
 import Image from "@/components/ui/static-image";
 import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import {
@@ -657,11 +658,11 @@ export function Sts1CharacterSelect({
         <button
           type="button"
           onClick={sfx.toggle}
-          className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-md bg-black/40 text-sm text-gray-300 hover:bg-black/60"
+          className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-md border border-amber-300/25 bg-black/50 text-amber-100/80 transition-colors hover:border-amber-300/60 hover:bg-black/70 hover:text-amber-200"
           aria-label={serviceLocale === "ko" ? (sfx.muted ? "효과음 켜기" : "효과음 끄기") : (sfx.muted ? "Unmute sound" : "Mute sound")}
           aria-pressed={!sfx.muted}
         >
-          {sfx.muted ? "🔇" : "🔊"}
+          {sfx.muted ? <VolumeX className="h-4 w-4" aria-hidden /> : <Volume2 className="h-4 w-4" aria-hidden />}
         </button>
       </div>
 
