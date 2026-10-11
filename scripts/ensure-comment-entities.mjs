@@ -5,11 +5,14 @@ import { spawnSync } from "node:child_process";
 const root = process.cwd();
 const outputs = [
   "public/generated/comment-entities-sts2.json",
+  "public/generated/sts1-mention-index.json",
 ];
 const sources = [
   "data/sts2",
+  "data/sts1",
   "src/lib",
   "scripts/generate-static-api-data.ts",
+  "scripts/generate-sts1-mention-index.ts",
   "scripts/ensure-comment-entities.mjs",
 ];
 
@@ -66,4 +69,15 @@ const result = spawnSync(
 );
 
 if (result.error) throw result.error;
-process.exit(result.status ?? 1);
+if (result.status) process.exit(result.status);
+
+const sts1 = spawnSync(
+  "pnpm",
+  ["exec", "tsx", "scripts/generate-sts1-mention-index.ts"],
+  {
+    cwd: root,
+    stdio: "inherit",
+  },
+);
+if (sts1.error) throw sts1.error;
+process.exit(sts1.status ?? 1);

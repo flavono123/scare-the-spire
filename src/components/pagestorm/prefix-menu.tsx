@@ -15,7 +15,7 @@ import {
 import { MentionList, type MentionListRef } from "@/components/chemicalx/mention-list";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
-import { matchEntities } from "@/lib/chemical-utils";
+import { rankPagestormReferences } from "@/lib/pagestorm-reference";
 import { findPagestormEntity } from "./entities-context";
 import type { MockGameAsset } from "./sample";
 
@@ -109,6 +109,7 @@ export const pagestormBracePluginKey = new PluginKey("pagestorm-brace-portrait")
 
 export function createPagestormBraceSuggestion(options: {
   getEntities: () => EntityInfo[];
+  getSts1Entities: () => EntityInfo[];
   onPick: (payload: { entity: EntityInfo; range: { from: number; to: number } }) => void;
 }) {
   return BraceKeywordSuggestion.configure({
@@ -119,12 +120,11 @@ export function createPagestormBraceSuggestion(options: {
       allowedPrefixes: null,
       findSuggestionMatch: findBracePortraitMatch,
       items: ({ query }) => {
-        const entities = options.getEntities();
+        const sts2 = options.getEntities();
+        const sts1 = options.getSts1Entities();
         const trimmed = query.trim();
-        if (!trimmed) {
-          return entities.filter((entity) => entity.imageUrl).slice(0, 8);
-        }
-        return matchEntities(trimmed, entities);
+        if (!trimmed) return sts2.filter((entity) => entity.imageUrl).slice(0, 8);
+        return rankPagestormReferences(trimmed, sts2, sts1);
       },
       command: ({ range, props }) => {
         const item = props as unknown as EntityInfo;
@@ -194,6 +194,11 @@ export function createPagestormBraceSuggestion(options: {
             if (props.event.key === "Escape") {
               dismiss();
               return true;
+            }
+            if (props.event.key === "}") {
+              return renderer?.ref?.onKeyDown({
+                event: new KeyboardEvent("keydown", { key: "Enter" }),
+              }) ?? false;
             }
             return renderer?.ref?.onKeyDown(props) ?? false;
           },

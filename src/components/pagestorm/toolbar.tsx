@@ -1,9 +1,7 @@
 "use client";
 
-import { getMarkRange } from "@tiptap/core";
 import type { Editor } from "@tiptap/react";
 import { useEditorState } from "@tiptap/react";
-import { useState } from "react";
 import {
   Bold,
   Heading2,
@@ -37,8 +35,7 @@ import { togglePagestormBlockquote } from "./blockquote";
 import { setPagestormDetailsOpen } from "./details";
 import { AlignButtons, IconTipButton } from "./figures";
 import { PickerNavDropdown } from "./nav-tokens";
-import { useCompendiumNavItems, useToyboxNavItems } from "./pickers";
-import { normalizeHttpUrl } from "./markdown-blocks";
+import { useCompendiumNavItems, useSts1NavItems, useToyboxNavItems } from "./pickers";
 import type { MockAlign } from "./sample";
 import { PAGESTORM_BLOCK_NODE_NAMES } from "./tiptap-nodes";
 import type { NavDropdownItem } from "@/lib/site-nav-items";
@@ -93,97 +90,6 @@ function editorChromeSnapshot(editor: Editor) {
   };
 }
 
-function currentLink(editor: Editor): { from: number; to: number; title: string; url: string } | null {
-  const type = editor.state.schema.marks.link;
-  if (!type) return null;
-  const { from, to, empty, $from } = editor.state.selection;
-  if (!empty && !editor.isActive("link")) {
-    return { from, to, title: editor.state.doc.textBetween(from, to, " "), url: "" };
-  }
-  const range = getMarkRange($from, type);
-  if (!range) return null;
-  const mark = type.isInSet(editor.state.doc.resolve(Math.min(range.from + 1, range.to)).marks());
-  return {
-    from: range.from,
-    to: range.to,
-    title: editor.state.doc.textBetween(range.from, range.to, " "),
-    url: String(mark?.attrs.href ?? ""),
-  };
-}
-
-function applyPagestormLink(editor: Editor, title: string, url: string) {
-  const href = normalizeHttpUrl(url);
-  const range = currentLink(editor);
-  const from = range?.from ?? editor.state.selection.from;
-  const to = range?.to ?? editor.state.selection.to;
-  if (!href) {
-    if (editor.isActive("link")) editor.chain().focus().unsetLink().run();
-    return;
-  }
-  editor.chain().focus().insertContentAt({ from, to }, {
-    type: "text",
-    text: title.trim() || href,
-    marks: [{
-      type: "link",
-      attrs: {
-        href,
-        target: "_blank",
-        rel: "noopener noreferrer",
-        class: "pagestorm-inline-link",
-      },
-    }],
-  }).run();
-}
-
-function LinkPhraseForm({ editor }: { editor: Editor }) {
-  const copy = serviceMessages[useServiceLocale()].pagestorm;
-  const snapshot = useEditorState({
-    editor,
-    selector: ({ editor: current }) => currentLink(current) ?? {
-      from: current.state.selection.from,
-      to: current.state.selection.to,
-      title: "",
-      url: "",
-    },
-  });
-  const key = `${snapshot.from}:${snapshot.to}:${snapshot.url}`;
-  const [seen, setSeen] = useState(key);
-  const [title, setTitle] = useState(snapshot.title);
-  const [url, setUrl] = useState(snapshot.url);
-  if (seen !== key) {
-    setSeen(key);
-    setTitle(snapshot.title);
-    setUrl(snapshot.url);
-  }
-  return (
-    <div
-      className="flex min-w-[12rem] max-w-full flex-col gap-1.5 rounded-md border border-border bg-card px-2 py-2 shadow-md sm:max-w-sm"
-      onBlur={(event) => {
-        const next = event.relatedTarget;
-        if (next instanceof Node && event.currentTarget.contains(next)) return;
-        applyPagestormLink(editor, title, url);
-      }}
-    >
-      <label className="block text-[10px] font-medium text-muted-foreground">
-        {copy.linkPhrase}
-        <input
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-          className="mt-0.5 w-full rounded border border-border bg-background px-1.5 py-1 text-xs text-foreground"
-        />
-      </label>
-      <label className="block text-[10px] font-medium text-muted-foreground">
-        {copy.linkUrl}
-        <input
-          value={url}
-          onChange={(event) => setUrl(event.target.value)}
-          className="mt-0.5 w-full rounded border border-border bg-background px-1.5 py-1 text-xs text-foreground"
-        />
-      </label>
-    </div>
-  );
-}
-
 function applyColor(editor: Editor, colorKey: PagestormColorKey) {
   const current = editor.getAttributes("pagestormColor").colorKey;
   if (current === colorKey) {
@@ -231,14 +137,19 @@ function ColorSwatches({
 
 export function PagestormFormatChrome({
   editor,
+  linkArmed,
+  onEditLink,
   onCompendium,
+  onSts1,
   onToybox,
 }: {
   editor: Editor;
+  linkArmed: boolean;
+  onEditLink: () => void;
   onCompendium: (item: NavDropdownItem) => void;
+  onSts1: (item: NavDropdownItem) => void;
   onToybox: (item: NavDropdownItem) => void;
 }) {
-  const [linkForm, setLinkForm] = useState(false);
   const chrome = useEditorState({
     editor,
     selector: ({ editor: current }) => editorChromeSnapshot(current),
@@ -246,6 +157,7 @@ export function PagestormFormatChrome({
   const serviceLocale = useServiceLocale();
   const editorCopy = serviceMessages[serviceLocale].pagestorm;
   const compendiumItems = useCompendiumNavItems();
+  const sts1Items = useSts1NavItems();
   const toyboxItems = useToyboxNavItems();
 
   return (
@@ -274,14 +186,10 @@ export function PagestormFormatChrome({
         </IconTipButton>
         <IconTipButton
           label={editorCopy.link}
-          active={chrome.link || linkForm}
+          active={chrome.link || linkArmed}
           onClick={() => {
-            if (chrome.link) {
-              editor.chain().focus().unsetLink().run();
-              setLinkForm(false);
-              return;
-            }
-            setLinkForm((open) => !open);
+            editor.chain().focus().run();
+            onEditLink();
           }}
         >
           <Link2 className="h-3.5 w-3.5" aria-hidden />
@@ -388,7 +296,6 @@ export function PagestormFormatChrome({
           <Zap className="h-3.5 w-3.5" aria-hidden />
         </IconTipButton>
       </div>
-      {linkForm || chrome.link ? <LinkPhraseForm editor={editor} /> : null}
       <hr className="border-border" />
       <div className="flex flex-wrap items-center gap-2">
         <PickerNavDropdown
@@ -396,6 +303,12 @@ export function PagestormFormatChrome({
           alt={editorCopy.imageInsert.replace("{name}", editorCopy.assetSection)}
           items={compendiumItems}
           onPick={onCompendium}
+        />
+        <PickerNavDropdown
+          icon="/images/sts1_app_icon.png"
+          alt={editorCopy.imageInsert.replace("{name}", editorCopy.sts1Compendium)}
+          items={sts1Items}
+          onPick={onSts1}
         />
         <PickerNavDropdown
           icon="/images/sts2/relics/toy_box.webp"
@@ -411,11 +324,17 @@ export function PagestormFormatChrome({
 
 export function PagestormStickyToolbar({
   editor,
+  linkArmed,
+  onEditLink,
   onCompendium,
+  onSts1,
   onToybox,
 }: {
   editor: Editor;
+  linkArmed: boolean;
+  onEditLink: () => void;
   onCompendium: (item: NavDropdownItem) => void;
+  onSts1: (item: NavDropdownItem) => void;
   onToybox: (item: NavDropdownItem) => void;
 }) {
   return (
@@ -425,7 +344,10 @@ export function PagestormStickyToolbar({
     >
       <PagestormFormatChrome
         editor={editor}
+        linkArmed={linkArmed}
+        onEditLink={onEditLink}
         onCompendium={onCompendium}
+        onSts1={onSts1}
         onToybox={onToybox}
       />
     </div>

@@ -98,6 +98,10 @@ export function pagestormContentText(node: PagestormDocNode | null | undefined):
   if (!node) return "";
   const parts: string[] = [];
   const walk = (current: PagestormDocNode) => {
+    if (current.type === "pagestormMention") {
+      const label = String(current.attrs?.text ?? "").trim();
+      if (label) parts.push(label);
+    }
     if (current.type === "ogBookmark") {
       const title = String(current.attrs?.title ?? current.attrs?.url ?? "").trim();
       if (title) parts.push(title);

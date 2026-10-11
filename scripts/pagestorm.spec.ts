@@ -20,6 +20,12 @@ import {
   pagestormPasteContent,
   parseIndentedList,
 } from "../src/components/pagestorm/markdown-blocks";
+import type { EntityInfo } from "../src/components/patch-note-renderer";
+import {
+  parsePagestormReferenceQuery,
+  rankPagestormReferences,
+  resolvePagestormReference,
+} from "../src/lib/pagestorm-reference";
 import {
   PAGESTORM_BACKGROUND_SRC,
   PAGESTORM_BETA_ART_SRC,
@@ -341,6 +347,28 @@ const migrated = migratePagestormDoc({
 assert.equal(migrated.content?.[0]?.type, "paragraph");
 assert.equal(migrated.content?.[0]?.content?.[0]?.text, "글");
 assert.equal(migrated.content?.[0]?.content?.[0]?.marks?.[0]?.type, "link");
+
+function mention(id: string, nameKo: string, nameEn: string, type: EntityInfo["type"]): EntityInfo {
+  return { id, nameKo, nameEn, type, imageUrl: null, color: "", href: `/${type}/${id}` };
+}
+const sts2Strike = mention("STRIKE", "타격", "Strike", "card");
+const sts1Strike = mention("sts1:cards:strike", "타격", "Strike", "card");
+const sts2Bash = mention("BASH", "강타", "Bash", "card");
+const sts1Die = mention("sts1:cards:die-die-die", "죽어 죽어 죽어", "Die Die Die", "card");
+const sts2 = [sts2Strike, sts2Bash];
+const sts1 = [sts1Strike, sts1Die];
+assert.deepEqual(parsePagestormReferenceQuery("타격"), { name: "타격", game: "sts2", version: null });
+assert.deepEqual(parsePagestormReferenceQuery("타격#1"), { name: "타격", game: "sts1", version: null });
+assert.deepEqual(parsePagestormReferenceQuery("예비@0.99.1"), { name: "예비", game: "sts2", version: "0.99.1" });
+assert.deepEqual(parsePagestormReferenceQuery("타격#1@2.0"), { name: "타격", game: "sts1", version: "2.0" });
+assert.equal(resolvePagestormReference("타격", sts2, sts1)?.id, "STRIKE");
+assert.equal(resolvePagestormReference("타격#1", sts2, sts1)?.id, "sts1:cards:strike");
+assert.equal(resolvePagestormReference("예비@0.99.1", sts2, sts1), null);
+assert.equal(resolvePagestormReference("죽어 죽어 죽어", sts2, sts1)?.id, "sts1:cards:die-die-die");
+assert.equal(rankPagestormReferences("타격", sts2, sts1)[0]?.id, "STRIKE");
+assert.equal(rankPagestormReferences("타격#1", sts2, sts1)[0]?.id, "sts1:cards:strike");
+assert.equal(rankPagestormReferences("타#1", sts2, sts1)[0]?.id, "sts1:cards:strike");
+assert.equal(rankPagestormReferences("죽어 죽어 죽어", sts2, sts1)[0]?.id, "sts1:cards:die-die-die");
 
 assert.deepEqual(parsePagestormTransfigureReel("[]"), []);
 assert.deepEqual(parsePagestormTransfigureReel("not json"), []);

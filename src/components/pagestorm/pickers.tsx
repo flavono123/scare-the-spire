@@ -26,6 +26,7 @@ import type { CodexLabelKey, NavDropdownItem } from "@/lib/site-nav-items";
 import {
   getToyBoxNavItems,
   localizeCodexNavItems,
+  sts1NavDropdownItems,
   sts2NavItems,
 } from "@/lib/site-nav-items";
 import {
@@ -406,6 +407,11 @@ export function useCompendiumNavItems(): NavDropdownItem[] {
     () => localizeCodexNavItems(sts2NavItems, serviceLocale, gameLocale, { useGameLabels: true }),
     [gameLocale, serviceLocale],
   );
+}
+
+export function useSts1NavItems(): NavDropdownItem[] {
+  const gameLocale = useGameLocale();
+  return useMemo(() => sts1NavDropdownItems(gameLocale), [gameLocale]);
 }
 
 export function useToyboxNavItems(): NavDropdownItem[] {

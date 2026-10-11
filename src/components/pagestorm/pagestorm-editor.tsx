@@ -9,6 +9,8 @@ import StarterKit from "@tiptap/starter-kit";
 import { exitSuggestion } from "@tiptap/suggestion";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
+import { useSts1MentionIndex } from "@/hooks/use-sts1-mention-index";
+import { sts1MentionEntity, type Sts1MentionEntity } from "@/lib/sts1-mention-index";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import type { NavDropdownItem } from "@/lib/site-nav-items";
 import { resolveYouTubeReference } from "@/lib/youtube-reference";
@@ -38,6 +40,10 @@ import {
   PagestormDetailsContent,
   PagestormDetailsSummary,
 } from "./details";
+import { PagestormLinkSheet } from "./link-sheet";
+import { pagestormMentionContent, replacePagestormMentions } from "./mentions";
+import { PagestormMention } from "./mention-node";
+import { Sts1CompendiumPickerModal, sts1ResourceFromHref } from "./sts1-picker";
 import { PagestormTableControls } from "./table-controls";
 import {
   markdownLinkBeforeCursor,
@@ -88,10 +94,18 @@ export function PagestormEditor({
   onSubmit?: (input: PagestormEditorSaveInput) => Promise<void> | void;
 }) {
   const { entities } = useCommentEntities();
+  const { index: sts1Index } = useSts1MentionIndex();
+  const sts1Entities = useMemo(
+    () => (sts1Index?.entries ?? []).map(sts1MentionEntity),
+    [sts1Index],
+  );
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].pagestorm;
   const entitiesRef = useRef(entities);
+  const sts1Ref = useRef<Sts1MentionEntity[]>(sts1Entities);
   const [compendiumMajor, setCompendiumMajor] = useState<ReturnType<typeof majorFromCodexHref> | "closed">("closed");
+  const [sts1Resource, setSts1Resource] = useState<ReturnType<typeof sts1ResourceFromHref> | "closed">("closed");
+  const [linkArmed, setLinkArmed] = useState(false);
   const [toyboxHref, setToyboxHref] = useState<string | null | "closed">("closed");
   const editorRef = useRef<Editor | null>(null);
   const frameRef = useRef<HTMLDivElement>(null);
@@ -100,17 +114,21 @@ export function PagestormEditor({
     entitiesRef.current = entities;
   }, [entities]);
 
+  useEffect(() => {
+    sts1Ref.current = sts1Entities;
+  }, [sts1Entities]);
+
   /* eslint-disable react-hooks/refs -- suggestion getters run on keystroke, not render */
   const brace = useMemo(
     () => createPagestormBraceSuggestion({
       getEntities: () => entitiesRef.current,
+      getSts1Entities: () => sts1Ref.current,
       onPick: ({ entity, range }) => {
         const current = editorRef.current;
-        if (current) exitSuggestion(current.view, pagestormBracePluginKey);
-        insertEntity(entity, {
-          presentation: entity.type === "card" ? "tile" : "art",
-          beta: false,
-        }, range);
+        if (!current) return;
+        exitSuggestion(current.view, pagestormBracePluginKey);
+        const parsed = entity.nameKo;
+        current.chain().focus().insertContentAt(range, pagestormMentionContent(entity, parsed)).run();
       },
     }),
     [],
@@ -152,6 +170,7 @@ export function PagestormEditor({
       AssetRowNode,
       PagestormAssetLayout,
       PagestormLightSection,
+      PagestormMention,
       brace,
     ],
     editorProps: {
@@ -268,6 +287,17 @@ export function PagestormEditor({
   }, [editor]);
 
   useEffect(() => {
+    if (!editor) return;
+    const replace = () => {
+      replacePagestormMentions(editor, entitiesRef.current, sts1Ref.current);
+    };
+    editor.on("update", replace);
+    return () => {
+      editor.off("update", replace);
+    };
+  }, [editor]);
+
+  useEffect(() => {
     editor?.setEditable(mode === "edit");
   }, [editor, mode]);
 
@@ -312,6 +342,10 @@ export function PagestormEditor({
     setCompendiumMajor(majorFromCodexHref(item.href));
   }
 
+  function onSts1(item: NavDropdownItem) {
+    setSts1Resource(sts1ResourceFromHref(item.href));
+  }
+
   function onToybox(item: NavDropdownItem) {
     setToyboxHref(item.href.replace(/^\/(?:en)(?=\/)/, ""));
   }
@@ -349,7 +383,7 @@ export function PagestormEditor({
   }
 
   return (
-    <PagestormEntitiesProvider entities={entities} mode={mode}>
+    <PagestormEntitiesProvider entities={[...entities, ...sts1Entities]} mode={mode}>
       <div className="space-y-3">
         {editing && onTitleChange ? (
           <div className="space-y-2">
@@ -380,12 +414,23 @@ export function PagestormEditor({
         {editing && editor ? (
           <PagestormStickyToolbar
             editor={editor}
+            linkArmed={linkArmed}
+            onEditLink={() => setLinkArmed(true)}
             onCompendium={onCompendium}
+            onSts1={onSts1}
             onToybox={onToybox}
           />
         ) : null}
         {editing && editor ? (
           <PagestormTableControls editor={editor} frameRef={frameRef} />
+        ) : null}
+        {editing && editor ? (
+          <PagestormLinkSheet
+            editor={editor}
+            frameRef={frameRef}
+            armed={linkArmed}
+            onClose={() => setLinkArmed(false)}
+          />
         ) : null}
         {editor ? (
           <EditorContent editor={editor} />
@@ -419,6 +464,19 @@ export function PagestormEditor({
           onInsert={(payload) => {
             insertEntity(payload.entity, payload);
             setCompendiumMajor("closed");
+          }}
+        />
+      ) : null}
+      {mode === "edit" && sts1Resource !== "closed" ? (
+        <Sts1CompendiumPickerModal
+          initialResource={sts1Resource}
+          onClose={() => setSts1Resource("closed")}
+          onInsert={(entry) => {
+            insertEntity(sts1MentionEntity(entry), {
+              presentation: entry.entityType === "card" ? "tile" : "art",
+              beta: false,
+            });
+            setSts1Resource("closed");
           }}
         />
       ) : null}

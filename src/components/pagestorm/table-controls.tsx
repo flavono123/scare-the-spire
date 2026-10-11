@@ -1,8 +1,9 @@
 "use client";
 
 import type { Editor } from "@tiptap/react";
-import { Minus, PanelTop, Plus, Trash2 } from "lucide-react";
-import { useEffect, useState, type ReactNode, type RefObject } from "react";
+import { GripVertical, Minus, PanelTop, Plus, Trash2 } from "lucide-react";
+import { useEffect, useState, type DragEvent, type ReactNode, type RefObject } from "react";
+import { startPagestormBlockDrag } from "./block-drag";
 import { GameUiHoverTip, GAME_UI_HOVER_TIP_NAV_DELAY_MS } from "@/components/game-ui-hover-tip";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
@@ -11,6 +12,7 @@ import { pagestormPosInClosedDetails } from "./details";
 type Grip = { x: number; y: number };
 
 type TableGrips = {
+  drag: Grip;
   addRow: Grip;
   addColumn: Grip;
   deleteRow: Grip;
@@ -18,6 +20,7 @@ type TableGrips = {
   deleteTable: Grip;
   headerRow: Grip;
   headerActive: boolean;
+  tablePos: number;
 };
 
 function clamp(value: number, min: number, max: number): number {
@@ -44,6 +47,11 @@ function tableGrips(editor: Editor, frame: HTMLElement): TableGrips | null {
   if (tableRect.width < 1 || tableRect.height < 1) return null;
   const cellDom = cellDepth > 0 ? editor.view.nodeDOM($from.before(cellDepth)) : null;
   const cellRect = cellDom instanceof HTMLElement ? cellDom.getBoundingClientRect() : tableRect;
+  const headerCell = tableDom.querySelector("th");
+  const headerRowDom = headerCell?.parentElement;
+  const headerRect = headerRowDom instanceof HTMLElement
+    ? headerRowDom.getBoundingClientRect()
+    : null;
   const pad = 14;
   const maxX = Math.max(pad, frame.clientWidth - pad);
   const maxY = Math.max(pad, frame.clientHeight - pad);
@@ -51,15 +59,41 @@ function tableGrips(editor: Editor, frame: HTMLElement): TableGrips | null {
     x: clamp(x - frameRect.left, pad, maxX),
     y: clamp(y - frameRect.top, pad, maxY),
   });
+  const headerAnchor = headerRect ?? cellRect;
   return {
+    drag: point(tableRect.left, tableRect.top - 18),
     addRow: point(tableRect.left + tableRect.width / 2, tableRect.bottom),
     addColumn: point(tableRect.right, tableRect.top + tableRect.height / 2),
     deleteRow: point(tableRect.left, cellRect.top + cellRect.height / 2),
     deleteColumn: point(cellRect.left + cellRect.width / 2, tableRect.top),
     deleteTable: point(tableRect.right, tableRect.top),
-    headerRow: point(tableRect.left, cellRect.top - 16),
-    headerActive: cellDepth > 0 && $from.node(cellDepth).type.name === "tableHeader",
+    headerRow: point(tableRect.left, headerAnchor.top + headerAnchor.height / 2),
+    headerActive: Boolean(headerCell),
+    tablePos: $from.before(tableDepth),
   };
+}
+
+function togglePinnedHeader(editor: Editor) {
+  const { $from } = editor.state.selection;
+  let tableDepth = -1;
+  for (let depth = $from.depth; depth > 0; depth -= 1) {
+    if ($from.node(depth).type.name === "table") {
+      tableDepth = depth;
+      break;
+    }
+  }
+  if (tableDepth < 0) {
+    editor.chain().focus().toggleHeaderRow().run();
+    return;
+  }
+  const tableDom = editor.view.nodeDOM($from.before(tableDepth));
+  const header = tableDom instanceof HTMLElement ? tableDom.querySelector("th") : null;
+  if (header instanceof HTMLElement) {
+    const pos = editor.view.posAtDOM(header, 0);
+    editor.chain().focus().setTextSelection(pos).toggleHeaderRow().run();
+    return;
+  }
+  editor.chain().focus().toggleHeaderRow().run();
 }
 
 function GripButton({
@@ -67,12 +101,16 @@ function GripButton({
   grip,
   className,
   onClick,
+  draggable = false,
+  onDragStart,
   children,
 }: {
   label: string;
   grip: Grip;
   className: string;
   onClick: () => void;
+  draggable?: boolean;
+  onDragStart?: (event: DragEvent<HTMLButtonElement>) => void;
   children: ReactNode;
 }) {
   return (
@@ -84,8 +122,11 @@ function GripButton({
         <button
           type="button"
           aria-label={label}
+          draggable={draggable}
           className={className}
+          data-pagestorm-drag-handle={draggable ? "" : undefined}
           onMouseDown={(event) => event.preventDefault()}
+          onDragStart={onDragStart}
           onClick={onClick}
         >
           {children}
@@ -127,6 +168,16 @@ export function PagestormTableControls({
 
   return (
     <div className="pagestorm-table-controls" contentEditable={false}>
+      <GripButton
+        label={copy.dragBlock}
+        grip={grips.drag}
+        className="pagestorm-table-grip pagestorm-table-grip-drag"
+        draggable
+        onClick={() => undefined}
+        onDragStart={(event) => startPagestormBlockDrag(editor.view, grips.tablePos, event)}
+      >
+        <GripVertical aria-hidden className="h-3.5 w-3.5" />
+      </GripButton>
       <GripButton
         label={copy.tableAddRow}
         grip={grips.addRow}
@@ -171,7 +222,7 @@ export function PagestormTableControls({
         label={grips.headerActive ? copy.tableHeaderRowOff : copy.tableHeaderRow}
         grip={grips.headerRow}
         className={`pagestorm-table-grip pagestorm-table-grip-header${grips.headerActive ? " pagestorm-table-grip-add" : ""}`}
-        onClick={() => editor.chain().focus().toggleHeaderRow().run()}
+        onClick={() => togglePinnedHeader(editor)}
       >
         <PanelTop aria-hidden className="h-3.5 w-3.5" />
       </GripButton>

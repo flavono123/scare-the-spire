@@ -4,7 +4,8 @@ import { mergeAttributes, Node } from "@tiptap/core";
 import type { Node as PMNode } from "@tiptap/pm/model";
 import { TextSelection } from "@tiptap/pm/state";
 import { NodeViewContent, NodeViewWrapper, ReactNodeViewRenderer, type Editor, type NodeViewProps } from "@tiptap/react";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, GripVertical } from "lucide-react";
+import { startPagestormBlockDrag } from "./block-drag";
 import type { MouseEvent } from "react";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
@@ -60,6 +61,24 @@ function DetailsView({ node, updateAttributes, editor, getPos }: NodeViewProps) 
         updateAttributes({ open: !open });
       }}
     >
+      {editor.isEditable ? (
+        <button
+          type="button"
+          contentEditable={false}
+          draggable
+          className="pagestorm-details-drag"
+          aria-label={copy.dragBlock}
+          data-pagestorm-drag-handle=""
+          onMouseDown={(event) => event.preventDefault()}
+          onDragStart={(event) => {
+            const pos = getPos();
+            if (typeof pos !== "number") return;
+            startPagestormBlockDrag(editor.view, pos, event);
+          }}
+        >
+          <GripVertical aria-hidden className="h-3.5 w-3.5" />
+        </button>
+      ) : null}
       <button
         type="button"
         contentEditable={false}
@@ -112,6 +131,7 @@ export const PagestormDetails = Node.create({
   content: "detailsSummary detailsContent",
   defining: true,
   isolating: true,
+  draggable: true,
   addAttributes() {
     return {
       open: {
