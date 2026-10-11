@@ -181,7 +181,13 @@ def extract_targets(reader: PCKReader, targets: list[Target], force: bool, dry_r
             unchanged += 1
         else:
             data = encode_webp(image)
-            if target.output_path.exists() and target.output_path.read_bytes() == data:
+            official_path = target.output_path.parent.parent / target.kind / target.output_path.name
+            if target.beta and official_path.exists() and official_path.read_bytes() == data:
+                status = "identical-beta"
+                skipped += 1
+                if target.output_path.exists() and not dry_run:
+                    target.output_path.unlink()
+            elif target.output_path.exists() and target.output_path.read_bytes() == data:
                 status = "same"
                 unchanged += 1
             else:
@@ -197,6 +203,34 @@ def extract_targets(reader: PCKReader, targets: list[Target], force: bool, dry_r
             print(f"wrote {target.output_path}")
 
     return written, unchanged, skipped, failed
+
+
+def prune_identical_beta_copies(output_root: Path, kind_filter: str, dry_run: bool) -> int:
+    """Beta icons that match the official file byte for byte are not distinct art."""
+    kinds = ["relics", "potions", "powers"]
+    if kind_filter != "all":
+        kinds = [kind_filter]
+
+    removed = 0
+    for kind in kinds:
+        beta_dir_name = output_subdir(kind, True)
+        if beta_dir_name == kind:
+            continue
+        beta_dir = output_root / beta_dir_name
+        official_dir = output_root / kind
+        if not beta_dir.exists():
+            continue
+        for beta_path in sorted(beta_dir.glob("*.webp")):
+            official_path = official_dir / beta_path.name
+            if not official_path.is_file() or official_path.read_bytes() != beta_path.read_bytes():
+                continue
+            removed += 1
+            if dry_run:
+                print(f"would remove identical beta {beta_path}")
+            else:
+                beta_path.unlink()
+                print(f"removed identical beta {beta_path}")
+    return removed
 
 
 def prune_stale(output_root: Path, targets: list[Target], kind_filter: str, dry_run: bool) -> int:
@@ -271,7 +305,9 @@ def main() -> int:
         if args.offset or args.limit is not None:
             print(f"processing {len(targets)} targets from offset {args.offset}")
         written, unchanged, skipped, failed = extract_targets(reader, targets, args.force, args.dry_run)
+        identical = prune_identical_beta_copies(output_root, args.kind, args.dry_run)
         removed = prune_stale(output_root, all_targets, args.kind, args.dry_run) if args.prune_stale else 0
+        removed += identical
 
     prefix = "(dry-run) " if args.dry_run else ""
     print(

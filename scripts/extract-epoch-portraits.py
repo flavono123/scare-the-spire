@@ -13,6 +13,7 @@ Output:
 from __future__ import annotations
 
 import argparse
+import io
 import re
 from pathlib import Path
 
@@ -61,6 +62,18 @@ def main() -> None:
             output_root_for_import = beta_output_root if is_beta else output_root
             label = "beta" if is_beta else "official"
             output_path = output_root_for_import / f"{name}.webp"
+            official_path = output_root / f"{name}.webp"
+            if (
+                is_beta
+                and official_path.exists()
+                and output_path.exists()
+                and official_path.read_bytes() == output_path.read_bytes()
+            ):
+                if not args.dry_run:
+                    output_path.unlink()
+                print(f"pruned identical beta {output_path}")
+                skipped += 1
+                continue
             if output_path.exists() and not args.force:
                 skipped += 1
                 continue
@@ -77,11 +90,19 @@ def main() -> None:
                 skipped += 1
                 continue
 
+            encoded = io.BytesIO()
+            image.save(encoded, "WEBP", quality=95, method=6)
+            payload = encoded.getvalue()
+            if is_beta and official_path.exists() and official_path.read_bytes() == payload:
+                print(f"skip identical beta {output_path}")
+                skipped += 1
+                continue
+
             if args.dry_run:
                 print(f"would write {label} {output_path} ({image.size[0]}x{image.size[1]})")
             else:
                 output_path.parent.mkdir(parents=True, exist_ok=True)
-                image.save(output_path, "WEBP", quality=95, method=6)
+                output_path.write_bytes(payload)
                 print(f"wrote {label} {output_path} ({image.size[0]}x{image.size[1]})")
             extracted += 1
 
