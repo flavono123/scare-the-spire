@@ -1150,6 +1150,32 @@
     return `${path}/${id}${anchor}`;
   }
 
+  // Keep aligned with courierCommentText in src/lib/courier-comment-text.ts.
+  const COURIER_EMOTE_LABELS = {
+    exclaim: "느낌표",
+    skull: "해골",
+    thumb_down: "별로",
+    slime_sad: "슬라임",
+    question: "물음표",
+    heart: "하트",
+    thumb_up: "엄지",
+    happy_cultist: "컬티스트",
+  };
+
+  function courierCommentText(content) {
+    return String(content || "")
+      .replace(/\[카드콘:([^\]]*)\]/g, "$1")
+      .replace(/\[글자콘:([^\]]*)\]/g, "$1")
+      .replace(/\[감정콘:([^\]]*)\]/g, (_, id) => {
+        const label = COURIER_EMOTE_LABELS[id];
+        return label ? ` ${label} ` : " ";
+      })
+      .replace(/\{[^{}]+\}/g, "")
+      .replace(/\[[^\]]+\]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
   function mountCourier(config) {
     const root = document.createElement("div");
     root.id = "sts-courier-root";
@@ -1194,7 +1220,7 @@
     restRequest(config, `comments?select=id,story_id,content,created_at&env=eq.${config.supabaseEnv}&created_at=gte.${encodeURIComponent(since)}&order=created_at.desc&limit=12`)
       .then((rows) => {
         const items = (Array.isArray(rows) ? rows : []).flatMap((row) => {
-          const text = String(row.content || "").replace(/\[[^\]]+\]/g, " ").replace(/\s+/g, " ").trim();
+          const text = courierCommentText(row.content);
           if (!row.id || !row.story_id || !text) return [];
           return [{ id: row.id, storyId: row.story_id, text }];
         });

@@ -3,10 +3,17 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { commentThreadHref } from "@/lib/comment-threads";
 import { COLORFUL_PHILOSOPHERS_TOKEN_SRC } from "@/lib/colorful-philosophers";
+import { courierCommentText } from "@/lib/courier-comment-text";
+import {
+  COURIER_HOLD_EVENT,
+  isHistoryCourseDetailPath,
+  readCourierPlaybackHold,
+} from "@/lib/courier-playback";
 import { DECISIONS_DECISIONS_TOKEN_SRC } from "@/lib/decisions-decisions";
 import { DEFRAGMENT_TOKEN_SRC } from "@/lib/defragment";
 import { FAVORITE_TOURNAMENT_TOKEN_SRC } from "@/lib/favorite-tournament";
@@ -17,6 +24,11 @@ import { serviceMessages } from "@/messages/service";
 
 const STORAGE_KEY = "sts-courier-enabled";
 const CHANGE_EVENT = "sts-courier-change";
+const COURIER_SKELETON_CSS = `
+@keyframes courier-shimmer{0%{background-position:120% 0}100%{background-position:-120% 0}}
+.courier-skeleton{height:26px;width:11rem;border-radius:999px;border:1px solid rgba(255,255,255,.1);background-image:linear-gradient(100deg,rgba(255,255,255,.05) 20%,rgba(255,255,255,.38) 50%,rgba(255,255,255,.05) 80%);background-size:220% 100%;animation:courier-shimmer 1s linear infinite}
+@media (prefers-reduced-motion:reduce){.courier-skeleton{animation:none}}
+`;
 const WINDOW_MS = 14 * 24 * 60 * 60 * 1000;
 const LIMIT = 12;
 const ROTATE_MS = 8000;
@@ -83,6 +95,11 @@ export function courierSourceCatalog(locale: "ko" | "en") {
   return [...fixed, ...services, ...codex];
 }
 
+function subscribeCourierHold(onChange: () => void) {
+  window.addEventListener(COURIER_HOLD_EVENT, onChange);
+  return () => window.removeEventListener(COURIER_HOLD_EVENT, onChange);
+}
+
 function subscribeCourier(onChange: () => void) {
   window.addEventListener(CHANGE_EVENT, onChange);
   window.addEventListener("storage", onChange);
@@ -104,10 +121,6 @@ export function readCourierEnabled(): boolean {
 export function writeCourierEnabled(enabled: boolean) {
   window.localStorage.setItem(STORAGE_KEY, enabled ? "1" : "0");
   window.dispatchEvent(new Event(CHANGE_EVENT));
-}
-
-function plainComment(content: string): string {
-  return content.replace(/\[[^\]]+\]/g, " ").replace(/\s+/g, " ").trim();
 }
 
 function describe(storyId: string, locale: "ko" | "en"): { source: string; token: string } {
@@ -153,7 +166,7 @@ function loadCourierSession(serviceLocale: "ko" | "en"): Promise<CourierItem[]> 
       const next = (data ?? []).flatMap((row) => {
         const id = String(row.id ?? "");
         const storyId = String(row.story_id ?? "");
-        const text = plainComment(String(row.content ?? ""));
+        const text = courierCommentText(String(row.content ?? ""));
         if (!id || !storyId || !text) return [];
         const described = describe(storyId, serviceLocale);
         return [{
@@ -178,16 +191,51 @@ function loadCourierSession(serviceLocale: "ko" | "en"): Promise<CourierItem[]> 
   return pending;
 }
 
+function CourierOffButton({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <GameUiHoverTip label={label}>
+      <button
+        type="button"
+        aria-label={label}
+        onClick={onClick}
+        className="fixed bottom-3 left-3 z-40 rounded-full border border-white/10 bg-black/70 p-1 opacity-60 hover:opacity-100"
+      >
+        <Image src={COURIER_TOKEN_SRC} alt="" width={18} height={18} className="h-[18px] w-[18px] object-contain" />
+      </button>
+    </GameUiHoverTip>
+  );
+}
+
+function CourierSkeleton() {
+  return (
+    <>
+      <style>{COURIER_SKELETON_CSS}</style>
+      <div
+        aria-busy="true"
+        className="courier-skeleton fixed bottom-3 left-3 z-40"
+      />
+    </>
+  );
+}
+
 export function CommentCourier() {
   const serviceLocale = useServiceLocale();
+  const pathname = usePathname() ?? "";
   const copy = serviceMessages[serviceLocale].profile.courier;
   const preference = useSyncExternalStore(
     subscribeCourier,
     courierPreference,
     () => "unknown" as const,
   );
+  const holdFlag = useSyncExternalStore(
+    subscribeCourierHold,
+    readCourierPlaybackHold,
+    () => "" as const,
+  );
   const known = preference !== "unknown";
   const enabled = preference === "on";
+  const held = isHistoryCourseDetailPath(pathname) && holdFlag !== "0";
+  const [openedDuringHold, setOpenedDuringHold] = useState(false);
   const [loaded, setLoaded] = useState(() => sessionItems != null && sessionLocale === serviceLocale);
   const [items, setItems] = useState<CourierItem[]>(() => (
     sessionLocale === serviceLocale ? sessionItems ?? [] : []
@@ -218,28 +266,26 @@ export function CommentCourier() {
     return () => window.clearInterval(timer);
   }, [enabled, paused, items.length]);
 
-  if (!known || (enabled && !loaded)) {
+  if (!held && openedDuringHold) setOpenedDuringHold(false);
+
+  if (held && !openedDuringHold) {
     return (
-      <div
-        aria-busy="true"
-        className="courier-skeleton fixed bottom-3 left-3 z-40 h-[26px] w-44 rounded-full border border-white/10"
+      <CourierOffButton
+        label={copy.show}
+        onClick={() => {
+          writeCourierEnabled(true);
+          setOpenedDuringHold(true);
+        }}
       />
     );
   }
 
+  if (!known || (enabled && !loaded)) {
+    return <CourierSkeleton />;
+  }
+
   if (!enabled) {
-    return (
-      <GameUiHoverTip label={copy.show}>
-        <button
-          type="button"
-          aria-label={copy.show}
-          onClick={() => writeCourierEnabled(true)}
-          className="fixed bottom-3 left-3 z-40 rounded-full border border-white/10 bg-black/70 p-1 opacity-60 hover:opacity-100"
-        >
-          <Image src={COURIER_TOKEN_SRC} alt="" width={18} height={18} className="h-[18px] w-[18px] object-contain" />
-        </button>
-      </GameUiHoverTip>
-    );
+    return <CourierOffButton label={copy.show} onClick={() => writeCourierEnabled(true)} />;
   }
 
   const item = items[index];

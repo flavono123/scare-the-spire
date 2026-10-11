@@ -1083,6 +1083,10 @@
 }
 
 .courier-skeleton {
+  height: 26px;
+  width: 11rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background-image: linear-gradient(
     100deg,
     rgba(255, 255, 255, 0.05) 20%,

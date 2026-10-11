@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   MapBackdrop,
   SeededMapView,
@@ -18,6 +18,11 @@ import {
 import { RunSummary } from "@/components/history-course/run-summary";
 import { HistoryCourseComments } from "@/components/history-course/history-course-comments";
 import { GameScrollArea } from "@/components/game-scroll-area";
+import {
+  clearCourierPlaybackHold,
+  isHistoryCourseDetailPath,
+  writeCourierPlaybackHold,
+} from "@/lib/courier-playback";
 import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { TopBar } from "@/components/history-course/topbar";
 import { buildTopbarState } from "@/components/history-course/topbar-state";
@@ -765,6 +770,11 @@ export function HistoryCourseShell({
   // actLocalMs / step are derived from globalMs.
   const [globalMs, setGlobalMs] = useState(0);
   const [playing, setPlaying] = useState(true);
+  useLayoutEffect(() => {
+    if (!isHistoryCourseDetailPath(window.location.pathname)) return;
+    writeCourierPlaybackHold(playing);
+    return () => clearCourierPlaybackHold();
+  }, [playing]);
   const [rate, setRate] = useState<Rate>(2);
   const runTimelineRef = useRef(runTimeline);
   const rateRef = useRef(rate);
