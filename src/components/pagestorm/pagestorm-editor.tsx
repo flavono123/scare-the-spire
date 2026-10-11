@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TableKit } from "@tiptap/extension-table/kit";
 import TextAlign from "@tiptap/extension-text-align";
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
@@ -86,6 +86,7 @@ export function PagestormEditor({
   onSubmit,
   onDraft,
   onDelete,
+  onDocumentChange,
 }: {
   mode?: "edit" | "preview";
   initialContent?: PagestormDoc;
@@ -100,6 +101,7 @@ export function PagestormEditor({
   onSubmit?: (input: PagestormEditorSaveInput) => Promise<void> | void;
   onDraft?: (input: PagestormEditorSaveInput) => Promise<void> | void;
   onDelete?: () => Promise<void> | void;
+  onDocumentChange?: (input: PagestormEditorSaveInput) => void;
 }) {
   const { entities } = useCommentEntities();
   const { index: sts1Index } = useSts1MentionIndex();
@@ -377,8 +379,12 @@ export function PagestormEditor({
     && !submitting
     && docTick >= 0,
   );
+  const validation = [
+    titleValue.trim().length < 1 ? copy.needTitle : "",
+    contentText.trim().length < 1 ? copy.needBody : "",
+  ].filter(Boolean);
 
-  function currentSaveInput(): PagestormEditorSaveInput | null {
+  const currentSaveInput = useCallback((): PagestormEditorSaveInput | null => {
     const current = editorRef.current;
     if (!current) return null;
     const content = current.getJSON() as PagestormDoc;
@@ -388,7 +394,12 @@ export function PagestormEditor({
       content,
       contentText: pagestormContentText(content),
     };
-  }
+  }, [titleValue, nicknameValue]);
+
+  useEffect(() => {
+    const input = currentSaveInput();
+    if (input) onDocumentChange?.(input);
+  }, [contentText, currentSaveInput, onDocumentChange]);
 
   async function handleSubmit() {
     const input = currentSaveInput();
@@ -463,7 +474,12 @@ export function PagestormEditor({
               {copy.braceHint}
             </p>
             {onSubmit && submitLabel ? (
-              <span className="inline-flex shrink-0 items-center gap-1.5">
+              <span className="inline-flex shrink-0 flex-wrap items-center justify-end gap-1.5">
+                {!canSubmit && validation.length > 0 ? (
+                  <span className="text-[11px] text-muted-foreground" data-pagestorm-validation="">
+                    {validation.join(" ")}
+                  </span>
+                ) : null}
                 {onDelete && deleteLabel ? (
                   <button
                     type="button"

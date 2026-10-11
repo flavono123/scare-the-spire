@@ -1,11 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, LayoutGrid, List } from "lucide-react";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { GameConfirmModal } from "@/components/game-confirm-modal";
 import { GAME_UI_HOVER_TIP_NAV_DELAY_MS, GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
@@ -33,6 +34,7 @@ import {
   PAGESTORM_HREF,
   PAGESTORM_TOKEN_SRC,
   PAGESTORM_WRITE_HREF,
+  pagestormContentText,
   pagestormDetailHref,
   pagestormSnippet,
   type PagestormPostCard,
@@ -368,10 +370,21 @@ export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy
   const [unavailable, setUnavailable] = useState(false);
   const loadedDraftId = draft?.id ?? null;
   const [seenDraftId, setSeenDraftId] = useState<string | null>(null);
+  const baselineRef = useRef({ title: "", body: "" });
+  const latestRef = useRef<PagestormEditorSaveInput | null>(null);
+  const pendingHrefRef = useRef<string | null>(null);
+  const leavingRef = useRef(false);
+  const ignorePopRef = useRef(false);
+  const [dirty, setDirty] = useState(false);
+  const [leaveOpen, setLeaveOpen] = useState(false);
   if (loadedDraftId && seenDraftId !== loadedDraftId) {
     setSeenDraftId(loadedDraftId);
     setTitle(draft?.title ?? "");
     setNickname(draft?.nickname || profile.nickname);
+    baselineRef.current = {
+      title: (draft?.title ?? "").trim(),
+      body: draft ? pagestormContentText(draft.content).trim() : "",
+    };
   }
 
   const ensureAuthor = useCallback(async () => {
@@ -379,6 +392,20 @@ export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy
     if (!activeUserId) setUnavailable(true);
     return activeUserId;
   }, [ensureUser, userId]);
+
+  const stayAfterDraftRef = useRef(true);
+  const releaseGuard = useCallback((then?: () => void) => {
+    if (window.history.state?.pagestormGuard !== 1) {
+      then?.();
+      return;
+    }
+    ignorePopRef.current = true;
+    window.addEventListener("popstate", () => {
+      ignorePopRef.current = false;
+      then?.();
+    }, { once: true });
+    window.history.back();
+  }, []);
 
   const handleRegister = useCallback(async (input: PagestormEditorSaveInput) => {
     setSubmitting(true);
@@ -394,39 +421,54 @@ export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy
         return;
       }
       if (draftId) await deletePagestormDraft(draftId, activeUserId);
-      router.push(localizeHrefWithGameLocale(
-        pagestormDetailHref(post.id),
-        serviceLocale,
-        gameLocale,
-      ));
+      leavingRef.current = true;
+      setDirty(false);
+      releaseGuard(() => {
+        router.push(localizeHrefWithGameLocale(
+          pagestormDetailHref(post.id),
+          serviceLocale,
+          gameLocale,
+        ));
+      });
     } catch {
       setUnavailable(true);
     } finally {
       setSubmitting(false);
     }
-  }, [draftId, ensureAuthor, gameLocale, router, serviceLocale]);
+  }, [draftId, ensureAuthor, gameLocale, releaseGuard, router, serviceLocale]);
 
   const handleDraft = useCallback(async (input: PagestormEditorSaveInput) => {
     setSubmitting(true);
     try {
       const activeUserId = await ensureAuthor();
-      if (!activeUserId) return;
+      if (!activeUserId) return false;
       const saved = draftId
         ? await updatePagestormDraft(draftId, { ...input, activeUserId })
         : await insertPagestormDraft({ ...input, activeUserId });
       if (!saved) {
         setUnavailable(true);
-        return;
+        return false;
       }
-      const next = `${localizeHrefWithGameLocale(PAGESTORM_WRITE_HREF, serviceLocale, gameLocale)}?draft=${saved.id}`;
-      window.history.replaceState(null, "", next);
+      baselineRef.current = {
+        title: input.title.trim(),
+        body: input.contentText.trim(),
+      };
+      setDirty(false);
       setDraftId(saved.id);
+      if (stayAfterDraftRef.current) {
+        const next = `${localizeHrefWithGameLocale(PAGESTORM_WRITE_HREF, serviceLocale, gameLocale)}?draft=${saved.id}`;
+        releaseGuard(() => {
+          window.history.replaceState(window.history.state, "", next);
+        });
+      }
+      return true;
     } catch {
       setUnavailable(true);
+      return false;
     } finally {
       setSubmitting(false);
     }
-  }, [draftId, ensureAuthor, gameLocale, serviceLocale]);
+  }, [draftId, ensureAuthor, gameLocale, releaseGuard, serviceLocale]);
 
   const handleDelete = useCallback(async () => {
     if (!draftId) return;
@@ -435,13 +477,104 @@ export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy
       const activeUserId = await ensureAuthor();
       if (!activeUserId) return;
       await deletePagestormDraft(draftId, activeUserId);
-      router.push(indexHref);
+      leavingRef.current = true;
+      setDirty(false);
+      releaseGuard(() => router.push(indexHref));
     } catch {
       setUnavailable(true);
     } finally {
       setSubmitting(false);
     }
-  }, [draftId, ensureAuthor, indexHref, router]);
+  }, [draftId, ensureAuthor, indexHref, releaseGuard, router]);
+
+  const onDocumentChange = useCallback((input: PagestormEditorSaveInput) => {
+    latestRef.current = input;
+    if (leavingRef.current) return;
+    const nextDirty = input.title !== baselineRef.current.title
+      || input.contentText.trim() !== baselineRef.current.body;
+    setDirty((current) => (current === nextDirty ? current : nextDirty));
+  }, []);
+
+  const leaveReason = !latestRef.current?.title.trim()
+    ? copy.needTitle
+    : !latestRef.current.contentText.trim()
+      ? copy.needBody
+      : "";
+
+  const finishLeave = useCallback((href: string | null) => {
+    leavingRef.current = true;
+    setDirty(false);
+    setLeaveOpen(false);
+    releaseGuard(() => {
+      if (href) router.push(href);
+      else router.back();
+    });
+  }, [releaseGuard, router]);
+
+  const confirmLeave = useCallback(async (kind: "publish" | "draft") => {
+    const input = latestRef.current;
+    if (!input || input.title.trim().length < 1 || input.contentText.trim().length < 1) {
+      return;
+    }
+    if (kind === "publish") {
+      await handleRegister(input);
+      return;
+    }
+    stayAfterDraftRef.current = false;
+    const saved = await handleDraft(input);
+    stayAfterDraftRef.current = true;
+    if (!saved) return;
+    finishLeave(pendingHrefRef.current);
+  }, [finishLeave, handleDraft, handleRegister]);
+
+  useEffect(() => {
+    if (!dirty) return;
+    const onClick = (event: MouseEvent) => {
+      if (
+        event.defaultPrevented
+        || event.button !== 0
+        || event.metaKey
+        || event.ctrlKey
+        || event.shiftKey
+        || event.altKey
+      ) return;
+      const anchor = (event.target as HTMLElement | null)?.closest("a");
+      if (!anchor) return;
+      const href = anchor.getAttribute("href");
+      if (!href || href.startsWith("#")) return;
+      event.preventDefault();
+      event.stopPropagation();
+      pendingHrefRef.current = href;
+      setLeaveOpen(true);
+    };
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    document.addEventListener("click", onClick, true);
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => {
+      document.removeEventListener("click", onClick, true);
+      window.removeEventListener("beforeunload", onBeforeUnload);
+    };
+  }, [dirty]);
+
+  useEffect(() => {
+    if (!dirty || leavingRef.current) return;
+    if (window.history.state?.pagestormGuard !== 1) {
+      window.history.pushState({ pagestormGuard: 1 }, "", window.location.href);
+    }
+    const onPop = () => {
+      if (ignorePopRef.current) return;
+      if (window.history.state?.pagestormGuard !== 1) {
+        window.history.pushState({ pagestormGuard: 1 }, "", window.location.href);
+      }
+      pendingHrefRef.current = null;
+      setLeaveOpen(true);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [dirty]);
 
   return (
     <div className="space-y-4">
@@ -487,8 +620,19 @@ export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy
           onSubmit={handleRegister}
           onDraft={handleDraft}
           onDelete={draftId ? handleDelete : undefined}
+          onDocumentChange={onDocumentChange}
         />
       )}
+      <GameConfirmModal
+        open={leaveOpen}
+        title={copy.leaveTitle}
+        body={leaveReason ? `${copy.leaveBody} ${leaveReason}` : copy.leaveBody}
+        cancelLabel={copy.draftSave}
+        confirmLabel={copy.submit}
+        onCancel={() => { void confirmLeave("draft"); }}
+        onConfirm={() => { void confirmLeave("publish"); }}
+        onDismiss={() => setLeaveOpen(false)}
+      />
     </div>
   );
 }

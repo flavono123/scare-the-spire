@@ -112,6 +112,7 @@ export function GameConfirmModal({
   cancelLabel,
   onConfirm,
   onCancel,
+  onDismiss,
 }: {
   open: boolean;
   title: string;
@@ -120,10 +121,13 @@ export function GameConfirmModal({
   cancelLabel: string;
   onConfirm: () => void;
   onCancel: () => void;
+  /** Backdrop and Escape. Defaults to the cancel button. */
+  onDismiss?: () => void;
 }) {
   const titleId = useId();
   const bodyId = useId();
   const cancelRef = useRef<HTMLButtonElement>(null);
+  const dismiss = onDismiss ?? onCancel;
 
   useEffect(() => {
     if (!open) return;
@@ -134,7 +138,7 @@ export function GameConfirmModal({
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
-        onCancel();
+        dismiss();
       }
     };
     window.addEventListener("keydown", onKeyDown);
@@ -143,7 +147,7 @@ export function GameConfirmModal({
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [open, onCancel]);
+  }, [open, dismiss]);
 
   if (!open) return null;
 
@@ -151,7 +155,7 @@ export function GameConfirmModal({
     <div
       className="fixed inset-0 z-[80] flex items-center justify-center bg-black/75 px-4 py-6 backdrop-blur-[2px]"
       role="presentation"
-      onClick={onCancel}
+      onClick={dismiss}
     >
       <div
         role="alertdialog"
