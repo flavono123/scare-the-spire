@@ -13,6 +13,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { loadAllEntities } from "@/lib/load-all-entities";
+import { neowsletterClaimAnchorId } from "@/lib/neowsletter-anchors";
 import {
   getNeowsletter,
   getNeowsletters,
@@ -133,18 +134,35 @@ export async function NeowsletterDetailPage({
         ) : null}
       </p>
       {art ? <PatchArtPreview art={art} priority /> : null}
-      {document.claims.map((claim) => (
-        <section key={claim.id} id={`claim-${claim.id}`} data-neowsletter-claim={claim.id} className="mt-6">
-          <PatchNoteRenderer
-            markdown={claim.markdown}
-            {...rendererProps}
-          />
-          <NeowsletterClaimThread
-            threadKey={buildNeowsletterCommentThreadKey(issue.id, claim.id)}
-            label={copy.comments}
-          />
-        </section>
-      ))}
+      {document.claims.map((claim) => {
+        const claimAnchorId = neowsletterClaimAnchorId(claim.id);
+        return (
+          <section key={claim.id} data-neowsletter-claim={claim.id} className="group/claim relative mt-6">
+            <div
+              id={claimAnchorId}
+              className="scroll-mt-24 rounded-md pr-5 target:bg-primary/10"
+            >
+              <a
+                href={`#${claimAnchorId}`}
+                aria-label={copy.sectionAnchor}
+                className="absolute right-0 top-0 text-xs text-muted-foreground/45 transition-colors hover:text-primary focus-visible:text-primary group-hover/claim:text-muted-foreground"
+              >
+                #
+              </a>
+              <PatchNoteRenderer
+                markdown={claim.markdown}
+                lineAnchorClaimId={claim.id}
+                lineAnchorLabel={copy.lineAnchor}
+                {...rendererProps}
+              />
+            </div>
+            <NeowsletterClaimThread
+              threadKey={buildNeowsletterCommentThreadKey(issue.id, claim.id)}
+              label={copy.comments}
+            />
+          </section>
+        );
+      })}
       <section id="comments" className="mt-8 rounded-lg border border-border bg-card/20 p-4">
         <h2 className="mb-3 text-sm font-bold text-foreground">{copy.comments}</h2>
         <div

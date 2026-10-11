@@ -19,6 +19,7 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
+import { neowsletterLineAnchorId, neowsletterLineKind } from "@/lib/neowsletter-anchors";
 import { patchLineAnchorId } from "@/lib/patch-line-links";
 import { classNameForHref, RESOURCE_LINK_CLASS } from "@/lib/service-link-classes";
 import { patchLineSummaryMarkdownForService, withPatchChangeEffects } from "@/lib/patch-line-display";
@@ -1668,19 +1669,44 @@ function renderMarkdownLink(
   );
 }
 
+function LinePermalink({ id, label }: { id: string; label: string }) {
+  return (
+    <a
+      href={`#${id}`}
+      aria-label={label}
+      className="inline-flex text-[11px] leading-none text-muted-foreground/45 transition-colors hover:text-primary focus-visible:text-primary group-hover/anchor:text-muted-foreground"
+    >
+      #
+    </a>
+  );
+}
+
+const LINE_ANCHOR_CLASS = "group/anchor relative scroll-mt-24 pr-4 target:rounded-sm target:bg-primary/10";
+
 function renderMarkdownImage(
   key: string,
   alt: string,
   src: string,
+  anchor?: { id: string; label: string },
 ): ReactNode {
   return (
-    <figure key={key} className="my-4 overflow-hidden rounded-md border border-border/70 bg-black/30">
+    <figure
+      key={key}
+      id={anchor?.id}
+      data-neowsletter-line={anchor?.id}
+      className={`relative my-4 overflow-hidden rounded-md border border-border/70 bg-black/30 ${anchor ? LINE_ANCHOR_CLASS : ""}`}
+    >
       <Image
         src={src}
         alt={alt || "Patch note image"}
         loading="lazy"
         className="h-auto w-full object-contain"
       />
+      {anchor ? (
+        <span className="absolute right-2 top-2">
+          <LinePermalink id={anchor.id} label={anchor.label} />
+        </span>
+      ) : null}
     </figure>
   );
 }
@@ -1870,6 +1896,8 @@ function renderLine(
   options: {
     patchLineAction?: ReactNode;
     patchLineId?: string;
+    lineAnchorId?: string;
+    lineAnchorLabel?: string;
   } = {},
 ): ReactNode {
   const trimmed = line.trimStart();
@@ -1912,7 +1940,14 @@ function renderLine(
 
   const imageMatch = trimmed.match(MARKDOWN_IMAGE_RE);
   if (imageMatch) {
-    return renderMarkdownImage(key, imageMatch[1], imageMatch[2]);
+    return renderMarkdownImage(
+      key,
+      imageMatch[1],
+      imageMatch[2],
+      options.lineAnchorId && options.lineAnchorLabel
+        ? { id: options.lineAnchorId, label: options.lineAnchorLabel }
+        : undefined,
+    );
   }
 
   // Bullet points. Preserve markdown indentation visually; the renderer keeps a
@@ -1925,12 +1960,18 @@ function renderLine(
     return (
       <li
         key={key}
-        id={options.patchLineId ? patchLineAnchorId(options.patchLineId) : undefined}
+        id={options.lineAnchorId ?? (options.patchLineId ? patchLineAnchorId(options.patchLineId) : undefined)}
         data-patch-line-id={options.patchLineId}
-        className={`text-sm ${bulletClass} mb-1 list-outside`}
+        data-neowsletter-line={options.lineAnchorId}
+        className={`text-sm ${bulletClass} mb-1 list-outside ${options.lineAnchorId ? LINE_ANCHOR_CLASS : ""}`}
         style={{ marginLeft: `${1 + indentLevel * 1.25}rem` }}
       >
         {enrichLine(bulletMatch[2], lookup, key, context)}
+        {options.lineAnchorId && options.lineAnchorLabel ? (
+          <span className="absolute right-0 top-0.5">
+            <LinePermalink id={options.lineAnchorId} label={options.lineAnchorLabel} />
+          </span>
+        ) : null}
         {options.patchLineAction && (
           <span className="ml-2 inline-flex align-baseline">
             {options.patchLineAction}
@@ -1947,8 +1988,18 @@ function renderLine(
 
   // Regular paragraph
   return (
-    <p key={key} className="text-sm text-muted-foreground mb-1">
+    <p
+      key={key}
+      id={options.lineAnchorId}
+      data-neowsletter-line={options.lineAnchorId}
+      className={`text-sm text-muted-foreground mb-1 ${options.lineAnchorId ? LINE_ANCHOR_CLASS : ""}`}
+    >
       {enrichLine(trimmed, lookup, key, context)}
+      {options.lineAnchorId && options.lineAnchorLabel ? (
+        <span className="absolute right-0 top-0.5">
+          <LinePermalink id={options.lineAnchorId} label={options.lineAnchorLabel} />
+        </span>
+      ) : null}
     </p>
   );
 }
@@ -2038,6 +2089,8 @@ export function PatchNoteRenderer({
   autoLinkEntities,
   patchLines = [],
   patchLineActions,
+  lineAnchorClaimId,
+  lineAnchorLabel,
 }: {
   markdown: string;
   entities?: EntityInfo[];
@@ -2057,6 +2110,9 @@ export function PatchNoteRenderer({
   autoLinkEntities?: boolean;
   patchLines?: STS2PatchLine[];
   patchLineActions?: ReadonlyMap<string, ReactNode>;
+  /** Number body lines of this Neowsletter claim. Headings stay on the claim anchor. */
+  lineAnchorClaimId?: string;
+  lineAnchorLabel?: string;
 }) {
   const allEntities = useMemo(() => entities ?? cards ?? [], [entities, cards]);
   const lookup = useMemo(() => buildEntityLookup(allEntities), [allEntities]);
@@ -2094,6 +2150,7 @@ export function PatchNoteRenderer({
   let listKey = 0;
   let wasInList = false;
   let currentMonsterContext: string[] = [];
+  let lineAnchorIndex = 0;
 
   function flushList() {
     if (listBuffer.length > 0) {
@@ -2197,17 +2254,24 @@ export function PatchNoteRenderer({
     const lineContext = preferredMonsterIds.length > 0 ? { ...context, preferredMonsterIds } : context;
     const patchLine = patchLineByRenderedContent.get(patchLineContentKeyFromRenderedLine(lines[i]) ?? "");
     const patchLineAction = patchLine ? patchLineActions?.get(patchLine.id) : undefined;
+    const lineAnchorId = lineAnchorClaimId && neowsletterLineKind(lines[i]) === "body"
+      ? neowsletterLineAnchorId(lineAnchorClaimId, ++lineAnchorIndex)
+      : undefined;
+    const lineAnchor = lineAnchorId && lineAnchorLabel
+      ? { lineAnchorId, lineAnchorLabel }
+      : {};
 
     if (/^\s*-\s+/.test(lines[i])) {
       listBuffer.push(renderLine(lines[i], lookup, `line-${i}`, lineContext, {
         patchLineAction,
         patchLineId: patchLine?.id,
+        ...lineAnchor,
       }));
       wasInList = true;
     } else {
       flushList();
       wasInList = false;
-      const el = renderLine(lines[i], lookup, `line-${i}`, lineContext);
+      const el = renderLine(lines[i], lookup, `line-${i}`, lineContext, lineAnchor);
       if (el) elements.push(el);
     }
 

@@ -2,6 +2,7 @@ import {
   buildCompendiumResourceDetailHref,
   isCompendiumResourceLinkType,
 } from "@/lib/compendium-resource-links";
+import { neowsletterClaimHref } from "@/lib/neowsletter-anchors";
 import { sts1DetailPath } from "@/lib/sts1/paths";
 import type { Sts1ResourceType } from "@/lib/sts1/types";
 
@@ -147,7 +148,7 @@ export function commentThreadHref(storyId: string): string {
 
   const neowsletterMatch = /^neowsletter:(\d{4}-\d{2}):([a-z0-9-]+)$/.exec(storyId);
   if (neowsletterMatch) {
-    return `/patches/neowsletters/${neowsletterMatch[1]}#claim-${neowsletterMatch[2]}`;
+    return neowsletterClaimHref(neowsletterMatch[1], neowsletterMatch[2]);
   }
 
   const sts1Match = /^sts1-codex:([^:]+):(.+)$/.exec(storyId);

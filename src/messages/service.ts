@@ -29,6 +29,8 @@ export const serviceMessages = {
       source: "메가 크릿",
       steam: "Steam",
       comments: "댓글",
+      sectionAnchor: "이 섹션 링크",
+      lineAnchor: "이 줄 링크",
     },
     globalSearch: {
       placeholder: "통합 검색",
@@ -1435,6 +1437,8 @@ export const serviceMessages = {
       source: "Mega Crit",
       steam: "Steam",
       comments: "Comments",
+      sectionAnchor: "Link to this section",
+      lineAnchor: "Link to this line",
     },
     patchNotes: {
       indexTitle: "Patch Notes",
