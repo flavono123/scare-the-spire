@@ -103,6 +103,10 @@ export function pagestormContentText(node: PagestormDocNode | null | undefined):
       const label = String(current.attrs?.text ?? "").trim();
       if (label) parts.push(label);
     }
+    if (current.type === "pagestormInternalLink") {
+      const label = String(current.attrs?.label ?? "").trim();
+      if (label) parts.push(label);
+    }
     if (current.type === "ogBookmark") {
       const title = String(current.attrs?.title ?? current.attrs?.url ?? "").trim();
       if (title) parts.push(title);

@@ -9,11 +9,19 @@ import StarterKit from "@tiptap/starter-kit";
 import { exitSuggestion } from "@tiptap/suggestion";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
+import { useSitePathIndex } from "@/hooks/use-site-path-index";
 import { useSts1MentionIndex } from "@/hooks/use-sts1-mention-index";
 import { sts1MentionEntity, type Sts1MentionEntity } from "@/lib/sts1-mention-index";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import type { NavDropdownItem } from "@/lib/site-nav-items";
 import { resolveYouTubeReference } from "@/lib/youtube-reference";
+import {
+  canonicalSitePath,
+  localizedSiteHref,
+  rankSitePaths,
+  sitePathText,
+  type SitePathEntry,
+} from "@/lib/site-paths";
 import { serviceMessages } from "@/messages/service";
 import {
   PagestormColor,
@@ -27,6 +35,8 @@ import {
   majorFromCodexHref,
   type CompendiumInsertPayload,
 } from "./pickers";
+import { PagestormInternalLink, pagestormInternalLinkContent } from "./internal-link-node";
+import { createPagestormPathSuggestion, pagestormPathPluginKey } from "./path-suggestion";
 import { createPagestormBraceSuggestion, pagestormBracePluginKey } from "./prefix-menu";
 import {
   PAGESTORM_BODY_MAX_CHARS,
@@ -104,6 +114,7 @@ export function PagestormEditor({
   onDocumentChange?: (input: PagestormEditorSaveInput) => void;
 }) {
   const { entities } = useCommentEntities();
+  const { index: sitePathIndex } = useSitePathIndex();
   const { index: sts1Index } = useSts1MentionIndex();
   const sts1Entities = useMemo(
     () => (sts1Index?.entries ?? []).map(sts1MentionEntity),
@@ -113,6 +124,8 @@ export function PagestormEditor({
   const copy = serviceMessages[serviceLocale].pagestorm;
   const entitiesRef = useRef(entities);
   const sts1Ref = useRef<Sts1MentionEntity[]>(sts1Entities);
+  const localeRef = useRef(serviceLocale);
+  const pathsRef = useRef<SitePathEntry[]>([]);
   const [compendiumMajor, setCompendiumMajor] = useState<ReturnType<typeof majorFromCodexHref> | "closed">("closed");
   const [sts1Resource, setSts1Resource] = useState<ReturnType<typeof sts1ResourceFromHref> | "closed">("closed");
   const [linkArmed, setLinkArmed] = useState(false);
@@ -128,6 +141,49 @@ export function PagestormEditor({
     sts1Ref.current = sts1Entities;
   }, [sts1Entities]);
 
+  useEffect(() => {
+    localeRef.current = serviceLocale;
+  }, [serviceLocale]);
+
+  useEffect(() => {
+    const resources: SitePathEntry[] = [];
+    for (const entity of [...entities, ...sts1Entities]) {
+      if (!entity.href?.startsWith("/compendium")) continue;
+      resources.push({
+        href: entity.href,
+        kind: "page",
+        labelKo: entity.nameKo,
+        labelEn: entity.nameEn || entity.nameKo,
+        titleKo: entity.nameKo,
+        titleEn: entity.nameEn || entity.nameKo,
+        previewKo: "",
+        previewEn: "",
+      });
+    }
+    pathsRef.current = [...(sitePathIndex?.entries ?? []), ...resources];
+  }, [entities, sitePathIndex, sts1Entities]);
+
+  function internalLinkFromPath(href: string, label?: string) {
+    const locale = localeRef.current;
+    const canonical = canonicalSitePath(href) ?? href;
+    const entry = pathsRef.current.find((item) => item.href === canonical);
+    if (entry) {
+      return pagestormInternalLinkContent({
+        href: localizedSiteHref(entry.href, locale),
+        label: label?.trim() || sitePathText(entry, locale, "label"),
+        title: sitePathText(entry, locale, "title"),
+        preview: sitePathText(entry, locale, "preview"),
+      });
+    }
+    const visible = label?.trim() || canonical;
+    return pagestormInternalLinkContent({
+      href: localizedSiteHref(canonical, locale),
+      label: visible,
+      title: visible,
+      preview: "",
+    });
+  }
+
   /* eslint-disable react-hooks/refs -- suggestion getters run on keystroke, not render */
   const brace = useMemo(
     () => createPagestormBraceSuggestion({
@@ -139,6 +195,27 @@ export function PagestormEditor({
         exitSuggestion(current.view, pagestormBracePluginKey);
         const parsed = entity.nameKo;
         current.chain().focus().insertContentAt(range, pagestormMentionContent(entity, parsed)).run();
+      },
+    }),
+    [],
+  );
+  const paths = useMemo(
+    () => createPagestormPathSuggestion({
+      getEntries: () => pathsRef.current,
+      getLocale: () => localeRef.current,
+      getEmptyLabel: () => serviceMessages[localeRef.current].pagestorm.pathEmpty,
+      rank: rankSitePaths,
+      onPick: ({ entry, range }) => {
+        const current = editorRef.current;
+        if (!current) return;
+        exitSuggestion(current.view, pagestormPathPluginKey);
+        const locale = localeRef.current;
+        current.chain().focus().insertContentAt(range, pagestormInternalLinkContent({
+          href: localizedSiteHref(entry.href, locale),
+          label: sitePathText(entry, locale, "label"),
+          title: sitePathText(entry, locale, "title"),
+          preview: sitePathText(entry, locale, "preview"),
+        })).run();
       },
     }),
     [],
@@ -181,7 +258,9 @@ export function PagestormEditor({
       PagestormAssetLayout,
       PagestormLightSection,
       PagestormMention,
+      PagestormInternalLink,
       brace,
+      paths,
     ],
     editorProps: {
       attributes: {
@@ -214,6 +293,15 @@ export function PagestormEditor({
           "\ufffc",
         );
         const found = markdownLinkBeforeCursor(textBefore, text);
+        const labeled = found ? null : `${textBefore}${text}`.match(/\[([^\]\n]+)\]\((\/[^\s)]+)\)$/);
+        if (labeled?.[2] && canonicalSitePath(labeled[2])) {
+          const linkNode = view.state.schema.nodes.pagestormInternalLink;
+          if (!linkNode) return false;
+          const content = internalLinkFromPath(labeled[2], labeled[1]);
+          const start = from - (labeled[0].length - text.length);
+          view.dispatch(view.state.tr.replaceWith(start, to, linkNode.create(content.attrs)));
+          return true;
+        }
         if (!found) return false;
         const link = view.state.schema.marks.link;
         if (!link) return false;
@@ -238,6 +326,12 @@ export function PagestormEditor({
         if (pastedBlocks && current) {
           event.preventDefault();
           current.chain().focus().insertContent(pastedBlocks).run();
+          return true;
+        }
+        const pastedPath = canonicalSitePath(pastedText);
+        if (pastedPath && current) {
+          event.preventDefault();
+          current.chain().focus().insertContent(internalLinkFromPath(pastedPath)).run();
           return true;
         }
         const resolved = resolvePastedUrl(pastedText);

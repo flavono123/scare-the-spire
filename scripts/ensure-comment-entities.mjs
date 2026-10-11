@@ -6,6 +6,7 @@ const root = process.cwd();
 const outputs = [
   "public/generated/comment-entities-sts2.json",
   "public/generated/sts1-mention-index.json",
+  "public/generated/site-path-index.json",
 ];
 const sources = [
   "data/sts2",
@@ -13,6 +14,7 @@ const sources = [
   "src/lib",
   "scripts/generate-static-api-data.ts",
   "scripts/generate-sts1-mention-index.ts",
+  "scripts/generate-site-path-index.ts",
   "scripts/ensure-comment-entities.mjs",
 ];
 
@@ -80,4 +82,15 @@ const sts1 = spawnSync(
   },
 );
 if (sts1.error) throw sts1.error;
-process.exit(sts1.status ?? 1);
+if (sts1.status) process.exit(sts1.status);
+
+const sitePaths = spawnSync(
+  "pnpm",
+  ["exec", "tsx", "scripts/generate-site-path-index.ts"],
+  {
+    cwd: root,
+    stdio: "inherit",
+  },
+);
+if (sitePaths.error) throw sitePaths.error;
+process.exit(sitePaths.status ?? 1);
