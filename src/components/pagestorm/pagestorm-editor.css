@@ -315,6 +315,10 @@
   color: oklch(0.82 0.12 25);
 }
 
+.pagestorm-table-grip-header {
+  color: var(--foreground);
+}
+
 .pagestorm-details {
   position: relative;
   margin: 0.7rem 0;

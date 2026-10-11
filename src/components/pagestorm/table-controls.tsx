@@ -1,7 +1,7 @@
 "use client";
 
 import type { Editor } from "@tiptap/react";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, PanelTop, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState, type ReactNode, type RefObject } from "react";
 import { GameUiHoverTip, GAME_UI_HOVER_TIP_NAV_DELAY_MS } from "@/components/game-ui-hover-tip";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -16,6 +16,8 @@ type TableGrips = {
   deleteRow: Grip;
   deleteColumn: Grip;
   deleteTable: Grip;
+  headerRow: Grip;
+  headerActive: boolean;
 };
 
 function clamp(value: number, min: number, max: number): number {
@@ -55,6 +57,8 @@ function tableGrips(editor: Editor, frame: HTMLElement): TableGrips | null {
     deleteRow: point(tableRect.left, cellRect.top + cellRect.height / 2),
     deleteColumn: point(cellRect.left + cellRect.width / 2, tableRect.top),
     deleteTable: point(tableRect.right, tableRect.top),
+    headerRow: point(tableRect.left, cellRect.top - 16),
+    headerActive: cellDepth > 0 && $from.node(cellDepth).type.name === "tableHeader",
   };
 }
 
@@ -162,6 +166,14 @@ export function PagestormTableControls({
         onClick={() => editor.chain().focus().deleteTable().run()}
       >
         <Trash2 aria-hidden className="h-3.5 w-3.5" />
+      </GripButton>
+      <GripButton
+        label={grips.headerActive ? copy.tableHeaderRowOff : copy.tableHeaderRow}
+        grip={grips.headerRow}
+        className={`pagestorm-table-grip pagestorm-table-grip-header${grips.headerActive ? " pagestorm-table-grip-add" : ""}`}
+        onClick={() => editor.chain().focus().toggleHeaderRow().run()}
+      >
+        <PanelTop aria-hidden className="h-3.5 w-3.5" />
       </GripButton>
     </div>
   );
