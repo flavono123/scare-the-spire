@@ -176,10 +176,21 @@ export function parseSts1CardText(
 
   for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
     if (lineIndex > 0) spans.push({ kind: "break" });
-    let color: string | undefined;
+    // `[#hex]` markup persists until `[]`; `#y`-style codes color one word only.
+    let markupColor: string | undefined;
+    let wordColor: string | undefined;
     const line = lines[lineIndex];
     let index = 0;
     while (index < line.length) {
+      if (/\s/.test(line[index])) {
+        wordColor = undefined;
+        const space = line.slice(index).match(/^\s+/)![0];
+        spans.push({ kind: "text", text: space, color: markupColor });
+        index += space.length;
+        continue;
+      }
+      const color = wordColor ?? markupColor;
+
       const energy = line.slice(index).match(/^\[([RGBWEC])\]/);
       if (energy) {
         spans.push(ENERGY_CODES[energy[1]]);
@@ -201,14 +212,14 @@ export function parseSts1CardText(
       if (line[index] === "#" && index + 1 < line.length) {
         const code = line[index + 1].toLowerCase();
         if (COLOR_CODES[code]) {
-          color = COLOR_CODES[code];
+          wordColor = COLOR_CODES[code];
           index += 2;
           continue;
         }
         if (line[index + 1] === "[") {
           const hex = line.slice(index).match(/^\[#([0-9a-fA-F]{6})\]/);
           if (hex) {
-            color = `#${hex[1]}`;
+            markupColor = `#${hex[1]}`;
             index += hex[0].length;
             continue;
           }
@@ -216,7 +227,7 @@ export function parseSts1CardText(
       }
 
       if (line.startsWith("[]", index)) {
-        color = undefined;
+        markupColor = undefined;
         index += 2;
         continue;
       }
@@ -229,7 +240,7 @@ export function parseSts1CardText(
         continue;
       }
 
-      const nextBreak = rest.search(/!|#|\[|NL|GOLD:|UPGRADED:/);
+      const nextBreak = rest.search(/\s|!|#|\[|NL|GOLD:|UPGRADED:/);
       const chunk = nextBreak === -1 ? rest : rest.slice(0, Math.max(nextBreak, 1));
       const safeChunk = nextBreak === 0 ? rest[0] : chunk;
       spans.push({ kind: "text", text: safeChunk, color });
@@ -237,7 +248,21 @@ export function parseSts1CardText(
     }
   }
 
-  return spans;
+  return mergeAdjacentTextSpans(spans);
+}
+
+/** Fewer bitmap canvases: join neighbouring text spans that share a color. */
+function mergeAdjacentTextSpans(spans: Sts1TextSpan[]): Sts1TextSpan[] {
+  const merged: Sts1TextSpan[] = [];
+  for (const span of spans) {
+    const last = merged[merged.length - 1];
+    if (span.kind === "text" && last?.kind === "text" && last.color === span.color) {
+      merged[merged.length - 1] = { ...last, text: last.text + span.text };
+      continue;
+    }
+    merged.push(span);
+  }
+  return merged;
 }
 
 export function plainSts1Text(raw: string, stats?: Sts1CardStats): string {

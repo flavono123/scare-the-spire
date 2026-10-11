@@ -102,6 +102,10 @@ export function measureBitmapText(role: Sts1BitmapRole, text: string) {
   if (!sawGlyph) {
     return { width: Math.max(1, cursor), height: role.lineHeight, originX: 0, originY: 0 };
   }
+  // A span split at a color token keeps its edge spaces ("카드가 " + "소멸"); keep
+  // their advance instead of trimming to glyph ink so words do not touch.
+  if (/^\s/.test(text)) minX = Math.min(minX, 0);
+  if (/\s$/.test(text)) maxX = Math.max(maxX, cursor);
   return {
     width: Math.max(1, maxX - minX),
     height: Math.max(1, maxY - minY),
