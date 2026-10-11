@@ -24,7 +24,7 @@ test.describe("Font", () => {
     const fontFamily = await page.evaluate(() =>
       getComputedStyle(document.body).fontFamily,
     );
-    // gc-batang is loaded via Next.js localFont with a generated class name.
+    // gc-batang is the STS GC Batang face in globals.css.
     // The computed value should NOT contain the Tailwind default fallback.
     expect(fontFamily).not.toContain("ui-sans-serif");
     expect(fontFamily).not.toContain("system-ui");

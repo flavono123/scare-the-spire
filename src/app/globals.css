@@ -400,6 +400,9 @@
 
 :root {
   color-scheme: dark;
+  --font-spectral: "STS Spectral";
+  --font-kreon: "STS Kreon";
+  --font-gc-batang: "STS GC Batang";
   --radius: 0.625rem;
   --font-service-ui: var(--font-gc-batang, serif);
   --font-game-title-family: var(--font-spectral, serif), var(--font-service-ui);

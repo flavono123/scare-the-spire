@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import { Suspense } from "react";
 import { CloudflareWebAnalytics } from "@/components/cloudflare-web-analytics";
 import { ColorSchemeScript } from "@/components/color-scheme-script";
@@ -10,27 +9,6 @@ import { ColorSchemeDocumentAttributes } from "@/hooks/use-color-scheme";
 import { getDefaultServiceMetadata } from "@/lib/service-metadata";
 import { SITE_METADATA_BASE } from "@/lib/site-origin";
 import "./globals.css";
-
-// STS2 game fonts extracted from PCK
-const spectral = localFont({
-  src: "../../public/fonts/spectral_bold.ttf",
-  variable: "--font-spectral",
-  weight: "700",
-});
-
-const kreon = localFont({
-  src: [
-    { path: "../../public/fonts/kreon_regular.ttf", weight: "400" },
-    { path: "../../public/fonts/kreon_bold.ttf", weight: "700" },
-  ],
-  variable: "--font-kreon",
-});
-
-const gcBatang = localFont({
-  src: "../../public/fonts/GyeonggiCheonnyeonBatangBold.woff2",
-  variable: "--font-gc-batang",
-  weight: "700",
-});
 
 export const metadata: Metadata = {
   ...getDefaultServiceMetadata("ko"),
@@ -57,10 +35,37 @@ export default function RootLayout({
       lang="ko"
       data-service-locale="ko"
       data-game-locale="kor"
-      className={`${spectral.variable} ${kreon.variable} ${gcBatang.variable}`}
       suppressHydrationWarning
     >
       <head>
+        <link
+          rel="preload"
+          href="/fonts/GyeonggiCheonnyeonBatangBold.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/spectral_bold.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/kreon_regular.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/kreon_bold.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
         <ColorSchemeScript />
       </head>
       <body
