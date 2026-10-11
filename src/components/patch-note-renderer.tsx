@@ -225,7 +225,7 @@ function staticPreviewDesktopClass(placement: PreviewPlacement): string {
   return `sm:absolute ${horizontal} ${vertical}`;
 }
 
-function GameResourcePreview({
+export function GameResourcePreview({
   title,
   imageUrl,
   imageAlt,

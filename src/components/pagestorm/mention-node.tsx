@@ -4,6 +4,7 @@ import { Node, mergeAttributes } from "@tiptap/core";
 import { NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
 import { EntityPreview } from "@/components/patch-note-renderer";
 import { KeywordHoverTip } from "@/components/keyword-hover-tip";
+import { Sts1MentionHover } from "@/components/sts1/mention-hover";
 import { usePagestormEntityMap } from "./entities-context";
 
 function hasRichPreview(entity: { cardData?: unknown; relicData?: unknown; potionData?: unknown; powerData?: unknown; monsterData?: unknown; eventData?: unknown; characterData?: unknown; ancientData?: unknown; enchantmentData?: unknown }): boolean {
@@ -23,7 +24,15 @@ function hasRichPreview(entity: { cardData?: unknown; relicData?: unknown; potio
 function PagestormMentionView({ node }: NodeViewProps) {
   const entityMap = usePagestormEntityMap();
   const text = String(node.attrs.text ?? "");
-  const entity = entityMap.get(`${node.attrs.entityType}:${node.attrs.entityId}`);
+  const entityId = String(node.attrs.entityId ?? "");
+  if (entityId.startsWith("sts1:")) {
+    return (
+      <NodeViewWrapper as="span" className="inline">
+        <Sts1MentionHover entityId={entityId} text={text} />
+      </NodeViewWrapper>
+    );
+  }
+  const entity = entityMap.get(`${node.attrs.entityType}:${entityId}`);
   if (entity && hasRichPreview(entity)) {
     return (
       <NodeViewWrapper as="span" className="inline font-semibold spire-gold">

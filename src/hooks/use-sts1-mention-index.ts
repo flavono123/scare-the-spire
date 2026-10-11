@@ -9,7 +9,7 @@ let pendingIndex: Promise<Sts1MentionIndex> | null = null;
 function fetchIndex(): Promise<Sts1MentionIndex> {
   if (cachedIndex) return Promise.resolve(cachedIndex);
   if (!pendingIndex) {
-    pendingIndex = fetch("/generated/sts1-mention-index.json")
+    pendingIndex = fetch("/generated/sts1-mention-index.json", { cache: "no-store" })
       .then(async (response) => {
         if (!response.ok) throw new Error(`Failed to load STS1 mentions: ${response.status}`);
         return response.json() as Promise<Sts1MentionIndex>;

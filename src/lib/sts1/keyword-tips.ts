@@ -37,7 +37,10 @@ export function sts1KeywordTipVariant(id: string): CardSideTipVariant {
 function isWordInterior(text: string, index: number, length: number): boolean {
   const before = index > 0 ? text[index - 1] : "";
   const after = text[index + length] ?? "";
-  return WORD_CHAR.test(before) || WORD_CHAR.test(after);
+  if (WORD_CHAR.test(before)) return true;
+  // Korean particles stick to the keyword (힘을). The game still tips that word.
+  if (after && /[\uac00-\ud7a3]/.test(after)) return false;
+  return WORD_CHAR.test(after);
 }
 
 /** True when `name` occurs as its own token, not inside 증가시킵니다 / artifacts. */

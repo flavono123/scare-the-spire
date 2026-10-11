@@ -1,9 +1,10 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { plainSts1Text } from "../src/lib/sts1/description";
 import {
   getSts1Cards,
   getSts1Characters,
+  getSts1Keywords,
   getSts1Potions,
   getSts1Powers,
   getSts1Relics,
@@ -12,6 +13,7 @@ import {
 import {
   sts1CardPortraitUrl,
   sts1CharacterIconUrl,
+  sts1CharacterPortraitUrl,
   sts1DetailPath,
   sts1PotionImageUrl,
   sts1PowerImageUrl,
@@ -24,12 +26,13 @@ function mentionId(resource: Sts1ResourceType, slug: string): string {
 }
 
 async function buildIndex(): Promise<Sts1MentionIndex> {
-  const [cards, relics, potions, powers, characters, kor, eng] = await Promise.all([
+  const [cards, relics, potions, powers, characters, keywords, kor, eng] = await Promise.all([
     getSts1Cards("kor"),
     getSts1Relics("kor"),
     getSts1Potions("kor"),
     getSts1Powers("kor"),
     getSts1Characters("kor"),
+    getSts1Keywords("kor"),
     getSts1UiLabels("kor"),
     getSts1UiLabels("eng"),
   ]);
@@ -48,6 +51,7 @@ async function buildIndex(): Promise<Sts1MentionIndex> {
       cardType: card.type,
       rarity: card.rarity,
       cost: card.cost,
+      card,
     })),
     ...relics.map((relic): Sts1MentionEntry => ({
       id: mentionId("relics", relic.slug),
@@ -59,6 +63,8 @@ async function buildIndex(): Promise<Sts1MentionIndex> {
       imageUrl: sts1RelicImageUrl(relic),
       href: sts1DetailPath("relics", relic.slug),
       description: plainSts1Text(relic.description),
+      flavor: plainSts1Text(relic.flavor),
+      largeImageUrl: relic.hasLargeArt ? sts1RelicImageUrl(relic, true) : undefined,
       pool: relic.pool,
       tier: relic.tier,
       rarity: relic.tier,
@@ -98,9 +104,22 @@ async function buildIndex(): Promise<Sts1MentionIndex> {
       imageUrl: sts1CharacterIconUrl(character.id),
       href: sts1DetailPath("characters", character.slug),
       description: plainSts1Text(character.flavor),
+      largeImageUrl: sts1CharacterPortraitUrl(character.id),
     })),
   ];
-  return { labels: { kor, eng }, entries };
+  const suffix = async (locale: "kor" | "eng") => {
+    const ui = JSON.parse(await readFile(
+      path.join(process.cwd(), "data/sts1/localization", locale, "ui.json"),
+      "utf8",
+    )) as { SingleViewRelicPopup?: { TEXT?: string[] } };
+    return ui.SingleViewRelicPopup?.TEXT?.[10] ?? "";
+  };
+  return {
+    labels: { kor, eng },
+    keywords,
+    relicPopupSuffix: { kor: await suffix("kor"), eng: await suffix("eng") },
+    entries,
+  };
 }
 
 async function main() {
