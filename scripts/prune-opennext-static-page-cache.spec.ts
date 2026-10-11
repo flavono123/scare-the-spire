@@ -45,6 +45,11 @@ write(path.join(staticPagesDir, "index.html"));
 write(path.join(cacheDir, buildId, "compendium/cards/bash.cache"), "static-dup");
 write(path.join(cacheDir, buildId, "index.cache"), "home-dup");
 write(path.join(cacheDir, buildId, "zh/compendium/cards/bash.cache"), "keep-game-locale");
+write(path.join(cacheDir, buildId, "patches/0.98.cache"), "patch-cache");
+write(path.join(cacheDir, buildId, "de/patches/0.100.0.cache"), "locale-patch-cache");
+write(path.join(cacheDir, buildId, "patches.cache"), "patch-index-cache");
+write(path.join(cacheDir, buildId, "images/neowsletters/2026-09/cover.jpg.cache"), "neowsletter-cache");
+write(path.join(cacheDir, buildId, "dev/patch-types.cache"), "keep-dev");
 write(path.join(cacheDir, "__fetch", buildId, "payload"), "keep-fetch");
 
 const result = pruneOpenNextStaticPageCache({
@@ -54,10 +59,21 @@ const result = pruneOpenNextStaticPageCache({
   syncAssets: true,
 });
 
-assert.equal(result.pruned, 2);
-assert.equal(result.kept, 2);
+assert.equal(result.pruned, 6);
+assert.equal(result.prunedPatch, 4);
+assert.equal(result.kept, 3);
 assert.equal(existsSync(path.join(cacheDir, buildId, "compendium/cards/bash.cache")), false);
 assert.equal(existsSync(path.join(cacheDir, buildId, "index.cache")), false);
+assert.equal(existsSync(path.join(cacheDir, buildId, "patches/0.98.cache")), false);
+assert.equal(existsSync(path.join(cacheDir, buildId, "de/patches/0.100.0.cache")), false);
+assert.equal(existsSync(path.join(cacheDir, buildId, "patches.cache")), false);
+assert.equal(existsSync(path.join(cacheDir, buildId, "images/neowsletters/2026-09/cover.jpg.cache")), false);
+assert.equal(readFileSync(path.join(cacheDir, buildId, "dev/patch-types.cache"), "utf8"), "keep-dev");
+assert.equal(existsSync(path.join(assetCacheDir, buildId, "patches/0.98.cache")), false);
+assert.equal(
+  readFileSync(path.join(assetCacheDir, buildId, "dev/patch-types.cache"), "utf8"),
+  "keep-dev",
+);
 assert.equal(
   readFileSync(path.join(cacheDir, buildId, "zh/compendium/cards/bash.cache"), "utf8"),
   "keep-game-locale",

@@ -80,6 +80,7 @@ export function pruneOpenNextStaticPageCache({
 
   const staticKeys = staticPageRouteKeys(staticPagesDir);
   let pruned = 0;
+  let prunedPatch = 0;
   let kept = 0;
 
   for (const file of walkFiles(cacheDir)) {
@@ -87,6 +88,15 @@ export function pruneOpenNextStaticPageCache({
     const routeKey = routeKeyFromCacheFile(relative);
     if (!routeKey) {
       kept += 1;
+      continue;
+    }
+    // Patch routes are dispatched to the patch Worker before OpenNext, so their
+    // incremental-cache files are never read. Drop them even though they are
+    // not copied into `_cf_static_pages`.
+    if (isPatchWorkerManifestPath(manifestPathFromStaticRouteKey(routeKey))) {
+      rmSync(file);
+      pruned += 1;
+      prunedPatch += 1;
       continue;
     }
     if (staticKeys.has(routeKey)) {
@@ -103,7 +113,7 @@ export function pruneOpenNextStaticPageCache({
     cpSync(cacheDir, assetCacheDir, { recursive: true });
   }
 
-  return { pruned, kept, staticRoutes: staticKeys.size };
+  return { pruned, prunedPatch, kept, staticRoutes: staticKeys.size };
 }
 
 /**
@@ -311,7 +321,7 @@ const isMain = path.resolve(process.argv[1] ?? "") === fileURLToPath(import.meta
 if (isMain) {
   const result = pruneOpenNextStaticPageCache();
   console.log(
-    `Pruned ${result.pruned} OpenNext cache file(s) that duplicate _cf_static_pages (${result.staticRoutes} static routes). Kept ${result.kept}.`,
+    `Pruned ${result.pruned} OpenNext cache file(s) (${result.prunedPatch} patch Worker routes, the rest duplicating ${result.staticRoutes} _cf_static_pages routes). Kept ${result.kept}.`,
   );
   const handlerPruned = pruneOpenNextHandlerRoutes();
   if (handlerPruned.removedRoutes > 0) {
