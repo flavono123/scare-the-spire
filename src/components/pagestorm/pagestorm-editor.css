@@ -251,7 +251,7 @@
 .pagestorm-mock-editor th,
 .pagestorm-mock-editor td {
   min-width: 4.5rem;
-  border: 1px solid hsl(var(--border));
+  border: 1px solid color-mix(in oklch, var(--foreground) 62%, transparent);
   padding: 0.35rem 0.5rem;
   vertical-align: top;
 }
@@ -260,31 +260,110 @@
   font-family: var(--font-game-title, inherit);
   font-weight: 700;
   color: var(--primary);
+  background: color-mix(in oklch, var(--foreground) 10%, transparent);
+}
+
+.pagestorm-mock-editor .selectedCell {
+  background: color-mix(in oklch, var(--primary) 18%, transparent);
 }
 
 .pagestorm-mock-editor .column-resize-handle {
   background: var(--primary);
 }
 
+.pagestorm-table-controls {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.pagestorm-table-grip-anchor {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+}
+
+.pagestorm-table-grip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 0.3rem;
+  border: 1px solid color-mix(in oklch, var(--foreground) 62%, transparent);
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow: 0 0 0 1px oklch(0 0 0 / 45%);
+}
+
+.pagestorm-table-grip-add {
+  color: var(--primary);
+}
+
+.pagestorm-table-grip-row {
+  width: 2.4rem;
+  height: 1.15rem;
+}
+
+.pagestorm-table-grip-col {
+  width: 1.15rem;
+  height: 2.4rem;
+}
+
+.pagestorm-table-grip-delete {
+  color: oklch(0.82 0.12 25);
+}
+
 .pagestorm-details {
   position: relative;
   margin: 0.7rem 0;
-  padding: 0.4rem 0.7rem 0.45rem 1.7rem;
-  border: 1px solid hsl(var(--border));
+  padding: 0.45rem 0.7rem 0.5rem 1.75rem;
+  border: 1px solid color-mix(in oklch, var(--foreground) 58%, transparent);
   border-radius: 0.45rem;
+  background: color-mix(in oklch, var(--foreground) 5%, transparent);
 }
 
 .pagestorm-details-toggle {
   position: absolute;
-  top: 0.45rem;
-  left: 0.35rem;
+  top: 0.5rem;
+  left: 0.3rem;
   display: inline-flex;
+  list-style: none;
   color: var(--primary);
 }
 
+.pagestorm-details-toggle::marker,
+.pagestorm-details summary::marker,
+.pagestorm-details [data-details-summary]::marker {
+  content: none;
+}
+
+.pagestorm-details summary::-webkit-details-marker,
+.pagestorm-details [data-details-summary]::-webkit-details-marker {
+  display: none;
+}
+
 .pagestorm-details [data-details-summary] {
+  display: block;
+  list-style: none;
   font-weight: 700;
   color: var(--primary);
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid color-mix(in oklch, var(--foreground) 48%, transparent);
+}
+
+.pagestorm-details [data-details-content] {
+  margin-top: 0.4rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid color-mix(in oklch, var(--foreground) 42%, transparent);
+  border-radius: 0.3rem;
+  background: color-mix(in oklch, var(--background) 72%, transparent);
+}
+
+.pagestorm-details[data-open="false"] [data-details-summary] {
+  padding-bottom: 0;
+  border-bottom: 0;
 }
 
 .pagestorm-details[data-open="false"] [data-details-content] {

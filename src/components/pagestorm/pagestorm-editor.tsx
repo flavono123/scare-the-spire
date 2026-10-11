@@ -38,6 +38,7 @@ import {
   PagestormDetailsContent,
   PagestormDetailsSummary,
 } from "./details";
+import { PagestormTableControls } from "./table-controls";
 import {
   markdownLinkBeforeCursor,
   migratePagestormDoc,
@@ -93,6 +94,7 @@ export function PagestormEditor({
   const [compendiumMajor, setCompendiumMajor] = useState<ReturnType<typeof majorFromCodexHref> | "closed">("closed");
   const [toyboxHref, setToyboxHref] = useState<string | null | "closed">("closed");
   const editorRef = useRef<Editor | null>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     entitiesRef.current = entities;
@@ -371,13 +373,19 @@ export function PagestormEditor({
             />
           </div>
         ) : null}
-        <div className="pagestorm-editor-frame relative w-full min-w-0 max-w-full overflow-visible rounded-lg border border-border bg-card">
+        <div
+          ref={frameRef}
+          className="pagestorm-editor-frame relative w-full min-w-0 max-w-full overflow-visible rounded-lg border border-border bg-card"
+        >
         {editing && editor ? (
           <PagestormStickyToolbar
             editor={editor}
             onCompendium={onCompendium}
             onToybox={onToybox}
           />
+        ) : null}
+        {editing && editor ? (
+          <PagestormTableControls editor={editor} frameRef={frameRef} />
         ) : null}
         {editor ? (
           <EditorContent editor={editor} />

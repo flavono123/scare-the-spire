@@ -353,40 +353,6 @@ export function PagestormFormatChrome({
         >
           <UnfoldVertical className="h-3.5 w-3.5" aria-hidden />
         </IconTipButton>
-        {chrome.table ? (
-          <>
-            <IconTipButton
-              label={editorCopy.tableAddRow}
-              onClick={() => editor.chain().focus().addRowAfter().run()}
-            >
-              <span className="px-0.5 text-[10px] font-semibold">+R</span>
-            </IconTipButton>
-            <IconTipButton
-              label={editorCopy.tableAddColumn}
-              onClick={() => editor.chain().focus().addColumnAfter().run()}
-            >
-              <span className="px-0.5 text-[10px] font-semibold">+C</span>
-            </IconTipButton>
-            <IconTipButton
-              label={editorCopy.tableDeleteRow}
-              onClick={() => editor.chain().focus().deleteRow().run()}
-            >
-              <span className="px-0.5 text-[10px] font-semibold">-R</span>
-            </IconTipButton>
-            <IconTipButton
-              label={editorCopy.tableDeleteColumn}
-              onClick={() => editor.chain().focus().deleteColumn().run()}
-            >
-              <span className="px-0.5 text-[10px] font-semibold">-C</span>
-            </IconTipButton>
-            <IconTipButton
-              label={editorCopy.tableDelete}
-              onClick={() => editor.chain().focus().deleteTable().run()}
-            >
-              <span className="px-0.5 text-[10px] font-semibold">×</span>
-            </IconTipButton>
-          </>
-        ) : null}
         <AlignButtons
           value={chrome.align}
           onChange={(align) => applyAlign(editor, align)}
