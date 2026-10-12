@@ -1,6 +1,7 @@
 "use client";
 
 import { getMarkRange } from "@tiptap/core";
+import { NodeSelection } from "@tiptap/pm/state";
 import type { Editor } from "@tiptap/react";
 import { useEditorState } from "@tiptap/react";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
@@ -8,7 +9,20 @@ import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 import { normalizeHttpUrl } from "./markdown-blocks";
 
+export function selectionTouchesInternalLink(editor: Editor): boolean {
+  const { selection } = editor.state;
+  if (selection instanceof NodeSelection && selection.node.type.name === "pagestormInternalLink") {
+    return true;
+  }
+  let found = false;
+  editor.state.doc.nodesBetween(selection.from, selection.to, (node) => {
+    if (node.type.name === "pagestormInternalLink") found = true;
+  });
+  return found;
+}
+
 function currentLink(editor: Editor): { from: number; to: number; title: string; url: string } | null {
+  if (selectionTouchesInternalLink(editor)) return null;
   const type = editor.state.schema.marks.link;
   if (!type) return null;
   const { from, to, empty, $from } = editor.state.selection;
@@ -66,15 +80,17 @@ export function PagestormLinkSheet({
     editor,
     selector: ({ editor: current }) => ({
       link: currentLink(current),
+      internal: selectionTouchesInternalLink(current),
       from: current.state.selection.from,
     }),
   });
   const link = snapshot?.link ?? null;
+  const internal = snapshot?.internal ?? false;
   const anchorFrom = link?.from ?? snapshot?.from ?? editor.state.selection.from;
   const sheetRef = useRef<HTMLDivElement>(null);
   const appliedRef = useRef(false);
   const [hiddenFor, setHiddenFor] = useState<number | null>(null);
-  const open = (armed || link != null) && hiddenFor !== anchorFrom;
+  const open = !internal && (armed || link != null) && hiddenFor !== anchorFrom;
   const [point, setPoint] = useState<{ x: number; y: number } | null>(null);
   const source = link ?? {
     from: anchorFrom,
@@ -99,6 +115,10 @@ export function PagestormLinkSheet({
     setHiddenFor(anchorFrom);
     onClose();
   }, [anchorFrom, editor, onClose, title, url]);
+
+  useEffect(() => {
+    if (internal && armed) onClose();
+  }, [armed, internal, onClose]);
 
   useEffect(() => {
     if (!open) {

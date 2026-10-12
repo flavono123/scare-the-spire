@@ -52,7 +52,7 @@ import {
   PagestormDetailsContent,
   PagestormDetailsSummary,
 } from "./details";
-import { PagestormLinkSheet } from "./link-sheet";
+import { PagestormLinkSheet, selectionTouchesInternalLink } from "./link-sheet";
 import { pagestormMentionContent, replacePagestormMentions } from "./mentions";
 import { PagestormMention } from "./mention-node";
 import { Sts1CompendiumPickerModal, sts1ResourceFromHref } from "./sts1-picker";
@@ -590,7 +590,10 @@ export function PagestormEditor({
           <PagestormStickyToolbar
             editor={editor}
             linkArmed={linkArmed}
-            onEditLink={() => setLinkArmed(true)}
+            onEditLink={() => {
+              if (selectionTouchesInternalLink(editor)) return;
+              setLinkArmed(true);
+            }}
             onCompendium={onCompendium}
             onSts1={onSts1}
             onToybox={onToybox}
