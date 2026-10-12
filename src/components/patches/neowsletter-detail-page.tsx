@@ -13,7 +13,10 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { loadAllEntities } from "@/lib/load-all-entities";
-import { neowsletterClaimAnchorId } from "@/lib/neowsletter-anchors";
+import {
+  neowsletterClaimHeadingAnchorIds,
+  neowsletterClaimWrapperAnchorId,
+} from "@/lib/neowsletter-anchors";
 import {
   getNeowsletter,
   getNeowsletters,
@@ -137,18 +140,18 @@ export async function NeowsletterDetailPage({
         ) : null}
       </p>
       {art ? <PatchArtPreview art={art} priority /> : null}
-      {document.claims.map((claim) => {
-        const claimAnchorId = neowsletterClaimAnchorId(claim.id);
-        const hasHeading = /^#{2,6}\s/m.test(claim.markdown);
+      {document.claims.map((claim, index) => {
+        const wrapperAnchorId = neowsletterClaimWrapperAnchorId(document.claims, index);
+        const headingAnchorIds = neowsletterClaimHeadingAnchorIds(document.claims, index);
         return (
           <section key={claim.id} data-neowsletter-claim={claim.id} className="mt-6">
             <div
-              id={hasHeading ? undefined : claimAnchorId}
-              className={hasHeading ? undefined : "scroll-mt-24 target:rounded-sm target:bg-primary/10"}
+              id={wrapperAnchorId}
+              className={wrapperAnchorId ? "scroll-mt-24 target:rounded-sm target:bg-primary/10" : undefined}
             >
               <PatchNoteRenderer
                 markdown={claim.markdown}
-                sectionAnchorId={hasHeading ? claimAnchorId : undefined}
+                headingAnchorIds={headingAnchorIds}
                 sectionAnchorLabel={copy.sectionAnchor}
                 {...rendererProps}
               />

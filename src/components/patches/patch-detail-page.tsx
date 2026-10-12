@@ -21,6 +21,7 @@ import {
   type EntityInfo,
 } from "@/components/patch-note-renderer";
 import { PatchNoteWithStoryActions } from "@/components/patches/patch-note-with-story-actions";
+import { patchSectionAnchorIds } from "@/lib/patch-section-anchors";
 import { DeferredCommentSection } from "@/components/patches/deferred-comment-section";
 import { BackstabTransfigureSection } from "@/components/patches/backstab-transfigure-section";
 import { BackstabColorfulPhilosophersSection } from "@/components/patches/backstab-colorful-philosophers-section";
@@ -973,6 +974,7 @@ export async function PatchDetailPage({
   );
 
   let markdown = "";
+  let canonicalMarkdown = "";
   const koPath = path.join(NOTES_DIR, `v${patch.version}.ko.md`);
   const enPath = path.join(NOTES_DIR, `v${patch.version}.md`);
   const preferredPath = serviceLocale === "ko" ? koPath : enPath;
@@ -986,6 +988,12 @@ export async function PatchDetailPage({
       // No patch notes file yet
     }
   }
+  try {
+    canonicalMarkdown = await fs.readFile(enPath, "utf-8");
+  } catch {
+    canonicalMarkdown = markdown;
+  }
+  const headingAnchorIds = markdown ? patchSectionAnchorIds(canonicalMarkdown, markdown) : [];
 
   const ancientOwnersByRelicId = new Map<string, typeof codexAncients>();
   for (const ancient of codexAncients) {
@@ -1262,6 +1270,8 @@ export async function PatchDetailPage({
         <section className="mt-6">
           <PatchNoteWithStoryActions
             markdown={markdown}
+            headingAnchorIds={headingAnchorIds}
+            sectionAnchorLabel={serviceMessages[serviceLocale].neowsletters.sectionAnchor}
             entities={rendererEntities}
             gameUi={gameUi}
             serviceLocale={serviceLocale}

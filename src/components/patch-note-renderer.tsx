@@ -2059,6 +2059,7 @@ export function PatchNoteRenderer({
   patchLineActions,
   sectionAnchorId,
   sectionAnchorLabel,
+  headingAnchorIds,
 }: {
   markdown: string;
   entities?: EntityInfo[];
@@ -2081,6 +2082,8 @@ export function PatchNoteRenderer({
   /** First heading in this block becomes the section permalink. */
   sectionAnchorId?: string;
   sectionAnchorLabel?: string;
+  /** One id per ## heading, in order. Empty string skips that heading. */
+  headingAnchorIds?: readonly string[];
 }) {
   const allEntities = useMemo(() => entities ?? cards ?? [], [entities, cards]);
   const lookup = useMemo(() => buildEntityLookup(allEntities), [allEntities]);
@@ -2118,7 +2121,8 @@ export function PatchNoteRenderer({
   let listKey = 0;
   let wasInList = false;
   let currentMonsterContext: string[] = [];
-  let sectionAnchorPending = Boolean(sectionAnchorId);
+  let sectionAnchorPending = Boolean(sectionAnchorId) && !headingAnchorIds;
+  let headingAnchorCursor = 0;
 
   function flushList() {
     if (listBuffer.length > 0) {
@@ -2222,10 +2226,16 @@ export function PatchNoteRenderer({
     const lineContext = preferredMonsterIds.length > 0 ? { ...context, preferredMonsterIds } : context;
     const patchLine = patchLineByRenderedContent.get(patchLineContentKeyFromRenderedLine(lines[i]) ?? "");
     const patchLineAction = patchLine ? patchLineActions?.get(patchLine.id) : undefined;
-    const sectionAnchor = sectionAnchorPending && neowsletterLineKind(lines[i]) === "heading" && sectionAnchorId && sectionAnchorLabel
-      ? { sectionAnchorId, sectionAnchorLabel }
-      : {};
-    if (sectionAnchor.sectionAnchorId) sectionAnchorPending = false;
+    const isSectionHeading = /^#{2,6}\s/.test(trimmed);
+    let sectionAnchor: { sectionAnchorId?: string; sectionAnchorLabel?: string } = {};
+    if (isSectionHeading && headingAnchorIds) {
+      const id = headingAnchorIds[headingAnchorCursor] ?? "";
+      headingAnchorCursor += 1;
+      if (id && sectionAnchorLabel) sectionAnchor = { sectionAnchorId: id, sectionAnchorLabel };
+    } else if (sectionAnchorPending && isSectionHeading && sectionAnchorId && sectionAnchorLabel) {
+      sectionAnchor = { sectionAnchorId, sectionAnchorLabel };
+      sectionAnchorPending = false;
+    }
 
     if (/^\s*-\s+/.test(lines[i])) {
       listBuffer.push(renderLine(lines[i], lookup, `line-${i}`, lineContext, {

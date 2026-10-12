@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { patchSectionAnchorIds } from "../src/lib/patch-section-anchors";
 import {
   canonicalSitePath,
   openSitePathQuery,
@@ -40,8 +41,8 @@ const entries: SitePathEntry[] = [
   {
     href: "/patches/neowsletters/2026-08#roadmap",
     kind: "neowsletter-section",
-    labelKo: "니오우스레터/2026년 8월#로드맵, 다시",
-    labelEn: "Neowsletter/August#Roadmap",
+    labelKo: "니오우스레터 — 2026년 8월#로드맵, 다시",
+    labelEn: "Neowsletter — August#Roadmap",
     titleKo: "니오우스레터 — 2026년 8월",
     titleEn: "August",
     previewKo: "로드맵",
@@ -71,4 +72,64 @@ assert.equal(top[0]?.action, "drill");
 
 const anchors = rankSitePaths("/patches/neowsletters/2026-08#", entries, "ko");
 assert.equal(anchors[0]?.href, "/patches/neowsletters/2026-08#roadmap");
-assert.equal(anchors[0]?.labelKo, "니오우스레터/2026년 8월#로드맵, 다시");
+assert.equal(anchors[0]?.labelKo, "니오우스레터 — 2026년 8월#로드맵, 다시");
+
+const withPatches: SitePathEntry[] = [
+  ...entries,
+  {
+    href: "/patches",
+    kind: "page",
+    labelKo: "패치 노트",
+    labelEn: "Patch Notes",
+    titleKo: "패치 노트",
+    titleEn: "Patch Notes",
+    previewKo: "",
+    previewEn: "",
+  },
+  {
+    href: "/patches/0.111.0",
+    kind: "patch",
+    labelKo: "패치 노트 — 베타 패치 노트 - v0.111.0",
+    labelEn: "Patch Notes — Beta Patch Notes - v0.111.0",
+    titleKo: "베타 패치 노트 - v0.111.0",
+    titleEn: "Beta Patch Notes - v0.111.0",
+    previewKo: "",
+    previewEn: "",
+  },
+  {
+    href: "/patches/0.111.0#content-and-balance",
+    kind: "patch-section",
+    labelKo: "패치 노트 — 베타 패치 노트 - v0.111.0#콘텐츠 및 밸런스",
+    labelEn: "Patch Notes — Beta Patch Notes - v0.111.0#Content & Balance",
+    titleKo: "베타 패치 노트 - v0.111.0",
+    titleEn: "Beta Patch Notes - v0.111.0",
+    previewKo: "",
+    previewEn: "",
+  },
+  {
+    href: "/pagestorm",
+    kind: "page",
+    labelKo: "서류 폭풍",
+    labelEn: "Pagestorm",
+    titleKo: "서류 폭풍",
+    titleEn: "Pagestorm",
+    previewKo: "",
+    previewEn: "",
+  },
+];
+
+assert.equal(rankSitePaths("/", withPatches, "ko").some((entry) => entry.href === "/pagestorm"), false);
+const patchDrill = rankSitePaths("/patches", withPatches, "ko");
+assert.equal(patchDrill[0]?.href, "/patches/0.111.0");
+assert.equal(patchDrill[0]?.action, "commit");
+assert.equal(patchDrill.at(-1)?.href, "/patches");
+assert.equal(patchDrill.at(-1)?.action, "commit");
+const patchAnchors = rankSitePaths("/patches/0.111.0#", withPatches, "ko");
+assert.equal(patchAnchors[0]?.labelKo, "패치 노트 — 베타 패치 노트 - v0.111.0#콘텐츠 및 밸런스");
+assert.deepEqual(
+  patchSectionAnchorIds(
+    "## Content & Balance\n### Enemies\n## Bug Fixes\n### Enemies\n",
+    "## 콘텐츠\n### 적\n## 버그\n### 적\n",
+  ),
+  ["content-and-balance", "enemies", "bug-fixes", "enemies-2"],
+);

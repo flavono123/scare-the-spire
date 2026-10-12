@@ -1,9 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
-import { neowsletterBodyLines, neowsletterClaimHref } from "../src/lib/neowsletter-anchors";
+import {
+  neowsletterBodyLines,
+  neowsletterClaimHref,
+  neowsletterSectionHeading,
+} from "../src/lib/neowsletter-anchors";
 import { splitNeowsletterDocument } from "../src/lib/neowsletters";
+import { patchSectionAnchorIds, patchSectionHeadings } from "../src/lib/patch-section-anchors";
 import type { SitePathEntry, SitePathIndex } from "../src/lib/site-paths";
-import { getDefragmentNavTitle } from "../src/lib/borrowed-game-copy";
 import { serviceMessages } from "../src/messages/service";
 
 type Issue = {
@@ -23,6 +27,7 @@ type Patch = {
   titleKo: string;
   summary: string;
   summaryKo: string;
+  art?: { imageUrl?: string; alt?: string; altKo?: string };
 };
 
 const OUT = path.join(process.cwd(), "public/generated/site-path-index.json");
@@ -46,15 +51,19 @@ function shortIssueTitle(title: string): string {
   return title.replace(/^(?:니오우스레터|The Neowsletter)\s*[—-]\s*/i, "").trim() || title;
 }
 
+function seriesLabel(seriesKo: string, seriesEn: string, titleKo: string, titleEn: string, anchorKo = "", anchorEn = ""): { labelKo: string; labelEn: string } {
+  const ko = `${seriesKo} — ${titleKo}`;
+  const en = `${seriesEn} — ${titleEn}`;
+  return {
+    labelKo: anchorKo ? `${ko}#${anchorKo}` : ko,
+    labelEn: anchorEn ? `${en}#${anchorEn}` : en,
+  };
+}
+
 function clip(text: string, max = 48): string {
   const trimmed = text.replace(/\s+/g, " ").trim();
   if (trimmed.length <= max) return trimmed;
   return `${trimmed.slice(0, max - 1)}…`;
-}
-
-function heading(markdown: string): string {
-  const line = markdown.split("\n").find((item) => /^#{1,6}\s+/.test(item.trim()));
-  return line ? plain(line) : "";
 }
 
 function page(
@@ -97,19 +106,62 @@ function main() {
       "니오우의 격분",
       "Neow's Fury",
     ),
-    page("/pagestorm", ko.pagestorm.title, en.pagestorm.title, ko.pagestorm.subtitle, en.pagestorm.subtitle),
-    page("/defragment", getDefragmentNavTitle("kor"), getDefragmentNavTitle("eng"), ko.defragment.subtitle, en.defragment.subtitle),
   ];
 
+  const notesDirPatches = path.join(process.cwd(), "data/sts2-patch-notes");
   const patches = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data/sts2-patches.json"), "utf8")) as Patch[];
-  for (const patch of patches) {
-    entries.push(page(
-      `/patches/${patch.version}`,
-      patch.titleKo,
-      patch.title,
-      patch.summaryKo,
-      patch.summary,
-    ));
+  for (const patch of [...patches].reverse()) {
+    const labels = seriesLabel(ko.patchNotes.indexTitle, en.patchNotes.indexTitle, patch.titleKo, patch.title);
+    const href = `/patches/${patch.version}`;
+    entries.push({
+      href,
+      kind: "patch",
+      labelKo: labels.labelKo,
+      labelEn: labels.labelEn,
+      titleKo: patch.titleKo,
+      titleEn: patch.title,
+      previewKo: patch.summaryKo,
+      previewEn: patch.summary,
+      ogImage: patch.art?.imageUrl,
+      ogImageAltKo: patch.art?.altKo,
+      ogImageAltEn: patch.art?.alt,
+    });
+    const enPath = path.join(notesDirPatches, `v${patch.version}.md`);
+    const koPath = path.join(notesDirPatches, `v${patch.version}.ko.md`);
+    if (!fs.existsSync(enPath) && !fs.existsSync(koPath)) continue;
+    const enMarkdown = fs.existsSync(enPath) ? fs.readFileSync(enPath, "utf8") : "";
+    const koMarkdown = fs.existsSync(koPath) ? fs.readFileSync(koPath, "utf8") : enMarkdown;
+    const canonical = enMarkdown || koMarkdown;
+    const ids = patchSectionAnchorIds(canonical, koMarkdown || canonical);
+    const headingsKo = patchSectionHeadings(koMarkdown || canonical);
+    const headingsEn = patchSectionHeadings(enMarkdown || canonical);
+    const shared = Math.min(ids.length, headingsKo.length, headingsEn.length);
+    for (let index = 0; index < shared; index += 1) {
+      const anchorKo = headingsKo[index];
+      const anchorEn = headingsEn[index];
+      if (!anchorKo || !anchorEn || !ids[index]) continue;
+      const anchorLabels = seriesLabel(
+        ko.patchNotes.indexTitle,
+        en.patchNotes.indexTitle,
+        patch.titleKo,
+        patch.title,
+        anchorKo,
+        anchorEn,
+      );
+      entries.push({
+        href: `${href}#${ids[index]}`,
+        kind: "patch-section",
+        labelKo: anchorLabels.labelKo,
+        labelEn: anchorLabels.labelEn,
+        titleKo: patch.titleKo,
+        titleEn: patch.title,
+        previewKo: patch.summaryKo,
+        previewEn: patch.summary,
+        ogImage: patch.art?.imageUrl,
+        ogImageAltKo: patch.art?.altKo,
+        ogImageAltEn: patch.art?.alt,
+      });
+    }
   }
 
   const issues = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data/sts2-neowsletters.json"), "utf8")) as Issue[];
@@ -134,16 +186,25 @@ function main() {
     const enById = new Map(enDoc.claims.map((claim) => [claim.id, claim.markdown]));
     for (const claim of koDoc.claims) {
       const enMarkdown = enById.get(claim.id) ?? "";
-      const sectionKo = heading(claim.markdown);
-      const sectionEn = heading(enMarkdown);
+      const claimIndex = koDoc.claims.indexOf(claim);
+      const sectionKo = neowsletterSectionHeading(koDoc.claims, claimIndex);
+      const sectionEn = neowsletterSectionHeading(enDoc.claims, enDoc.claims.findIndex((item) => item.id === claim.id));
       if (!sectionKo && !sectionEn) continue;
       const anchorKo = sectionKo || sectionEn;
       const anchorEn = sectionEn || sectionKo;
+      const anchorLabels = seriesLabel(
+        "니오우스레터",
+        "Neowsletter",
+        shortIssueTitle(issue.titleKo),
+        shortIssueTitle(issue.title),
+        anchorKo,
+        anchorEn,
+      );
       entries.push({
         href: neowsletterClaimHref(issue.id, claim.id),
         kind: "neowsletter-section",
-        labelKo: `니오우스레터/${shortIssueTitle(issue.titleKo)}#${anchorKo}`,
-        labelEn: `Neowsletter/${shortIssueTitle(issue.title)}#${anchorEn}`,
+        labelKo: anchorLabels.labelKo,
+        labelEn: anchorLabels.labelEn,
         titleKo: issue.titleKo,
         titleEn: issue.title,
         previewKo: clip(plain(neowsletterBodyLines(claim.markdown)[0] ?? anchorKo), 140),

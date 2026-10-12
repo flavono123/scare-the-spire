@@ -4,8 +4,10 @@ import path from "node:path";
 import { commentThreadHref } from "../src/lib/comment-threads";
 import {
   neowsletterBodyLines,
+  neowsletterClaimHeadingAnchorIds,
   neowsletterClaimHref,
   neowsletterLineKind,
+  neowsletterSectionHeading,
 } from "../src/lib/neowsletter-anchors";
 import { splitNeowsletterDocument } from "../src/lib/neowsletters";
 
@@ -27,6 +29,21 @@ const en = splitNeowsletterDocument(fs.readFileSync(path.join(notesDir, "2026-08
 const ascension = ko.claims.find((claim) => claim.id === "ascension-10");
 assert.equal(neowsletterBodyLines(ascension?.markdown ?? "").length, 2);
 assert.equal(neowsletterBodyLines(ascension?.markdown ?? "")[1]?.startsWith("Casey:"), true);
+
+const september = splitNeowsletterDocument(fs.readFileSync(path.join(notesDir, "2026-09.ko.md"), "utf8"));
+const septemberEn = splitNeowsletterDocument(fs.readFileSync(path.join(notesDir, "2026-09.md"), "utf8"));
+function section(claims: typeof september.claims, id: string): string {
+  return neowsletterSectionHeading(claims, claims.findIndex((claim) => claim.id === id));
+}
+assert.equal(section(september.claims, "upcoming-content"), "");
+assert.equal(section(september.claims, "spire-spotting"), "첨탑 관측");
+assert.equal(section(september.claims, "mana-wave-nycc"), "굿즈 광기");
+assert.equal(section(september.claims, "map-knowledge-demon"), "지도 걸작선");
+assert.equal(section(septemberEn.claims, "spire-spotting"), "Spire Spotting");
+assert.equal(section(septemberEn.claims, "mana-wave-nycc"), "Merch Madness");
+const upcomingIndex = september.claims.findIndex((claim) => claim.id === "upcoming-content");
+assert.deepEqual(neowsletterClaimHeadingAnchorIds(september.claims, upcomingIndex), ["spire-spotting"]);
+assert.equal(section(ko.claims, "roadmap"), "로드맵, 다시");
 
 for (const claim of ko.claims) {
   const translated = en.claims.find((item) => item.id === claim.id);

@@ -2,7 +2,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref, stripGameLocaleFromPath, stripServiceLocaleFromPath } from "@/lib/i18n";
 import { DEFAULT_SITE_ORIGIN } from "@/lib/site-origin";
 
-export type SitePathKind = "page" | "neowsletter" | "neowsletter-section";
+export type SitePathKind = "page" | "patch" | "patch-section" | "neowsletter" | "neowsletter-section";
 
 export type SitePathEntry = {
   href: string;
@@ -22,11 +22,23 @@ export type SitePathMenuItem = SitePathEntry & {
   action: "drill" | "commit";
 };
 
+export const PATCHES_INDEX_HREF = "/patches";
 export const NEOWSLETTER_INDEX_HREF = "/patches/neowsletters";
+
+const DRILL_HREFS = new Set([PATCHES_INDEX_HREF, NEOWSLETTER_INDEX_HREF]);
 
 export function isNeowsletterIssueHref(href: string): boolean {
   const path = href.split(/[?#]/)[0].replace(/\/$/, "");
   return /^\/patches\/neowsletters\/\d{4}-\d{2}$/.test(path);
+}
+
+export function isPatchNoteHref(href: string): boolean {
+  const path = href.split(/[?#]/)[0].replace(/\/$/, "");
+  return /^\/patches\/(?!neowsletters(?:\/|$))[^/]+$/.test(path);
+}
+
+function isDrillHref(href: string): boolean {
+  return DRILL_HREFS.has(href);
 }
 
 export type SitePathIndex = {
@@ -87,8 +99,26 @@ export function openSitePathQuery(textBefore: string): string | null {
   return match?.[1] ?? null;
 }
 
+const UNLINKED_PREFIXES = [
+  "/compendium",
+  "/pagestorm",
+  "/defragment",
+  "/chemical-x",
+  "/c-c-c-combo",
+  "/transfigure",
+  "/this-or-that",
+  "/history-course",
+  "/decisions-decisions",
+  "/colorful-philosophers",
+];
+
+function isUnlinkedPath(href: string): boolean {
+  const path = href.split(/[?#]/)[0];
+  return UNLINKED_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+}
+
 function linkableSitePaths(entries: readonly SitePathEntry[]): SitePathEntry[] {
-  return entries.filter((entry) => !entry.href.startsWith("/compendium"));
+  return entries.filter((entry) => !isUnlinkedPath(entry.href));
 }
 
 function commit(entry: SitePathEntry): SitePathMenuItem {
@@ -115,31 +145,36 @@ export function rankSitePaths(
   const hashAt = q.indexOf("#");
   if (hashAt >= 0) {
     return pool
-      .filter((entry) => entry.kind === "neowsletter-section" && matchesPrefix(entry, q, locale))
+      .filter((entry) => (
+        entry.kind === "neowsletter-section" || entry.kind === "patch-section"
+      ) && matchesPrefix(entry, q, locale))
       .slice(0, limit)
       .map(commit);
   }
 
-  if (q === NEOWSLETTER_INDEX_HREF) {
-    const issues = pool
-      .filter((entry) => entry.kind === "neowsletter")
+  if (q === NEOWSLETTER_INDEX_HREF || q === PATCHES_INDEX_HREF) {
+    const childKind = q === NEOWSLETTER_INDEX_HREF ? "neowsletter" : "patch";
+    const children = pool
+      .filter((entry) => entry.kind === childKind)
       .slice(0, Math.max(0, limit - 1))
       .map(commit);
-    const index = pool.find((entry) => entry.href === NEOWSLETTER_INDEX_HREF);
-    return index ? [...issues, commit(index)] : issues;
+    const index = pool.find((entry) => entry.href === q);
+    return index ? [...children, commit(index)] : children;
   }
 
   if (q === "/") {
     return pool
       .filter((entry) => entry.kind === "page")
       .slice(0, limit)
-      .map((entry) => ({ ...entry, action: entry.href === NEOWSLETTER_INDEX_HREF ? "drill" : "commit" }));
+      .map((entry) => ({ ...entry, action: isDrillHref(entry.href) ? "drill" : "commit" }));
   }
 
   const needle = q.slice(1);
   const ranked: Array<{ entry: SitePathEntry; score: number }> = [];
   for (const entry of pool) {
-    if (entry.kind === "neowsletter-section") continue;
+    if (entry.kind === "neowsletter-section" || entry.kind === "patch-section") continue;
+    if (entry.kind === "patch" && !q.startsWith(`${PATCHES_INDEX_HREF}/`)) continue;
+    if (entry.kind === "neowsletter" && !q.startsWith(`${NEOWSLETTER_INDEX_HREF}/`)) continue;
     const href = entry.href.toLowerCase();
     const localized = localizedSiteHref(entry.href, locale).toLowerCase();
     const label = sitePathText(entry, locale, "label").toLowerCase();
@@ -152,6 +187,6 @@ export function rankSitePaths(
   ranked.sort((left, right) => left.score - right.score || left.entry.href.length - right.entry.href.length);
   return ranked.slice(0, limit).map(({ entry }) => ({
     ...entry,
-    action: entry.href === NEOWSLETTER_INDEX_HREF ? "drill" : "commit",
+    action: isDrillHref(entry.href) ? "drill" : "commit",
   }));
 }

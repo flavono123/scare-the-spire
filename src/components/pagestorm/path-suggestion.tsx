@@ -10,6 +10,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import {
   canonicalSitePath,
   isNeowsletterIssueHref,
+  isPatchNoteHref,
   localizedSiteHref,
   openSitePathQuery,
   sitePathText,
@@ -40,7 +41,7 @@ export function findSitePathMatch(config: { $position: ResolvedPos }): Suggestio
   const link = beforeHash.nodeBefore;
   if (link?.type.name !== "pagestormInternalLink") return null;
   const href = canonicalSitePath(String(link.attrs.href ?? "")) ?? "";
-  if (!isNeowsletterIssueHref(href)) return null;
+  if (!isNeowsletterIssueHref(href) && !isPatchNoteHref(href)) return null;
   return {
     range: {
       from: beforeHash.pos - link.nodeSize,
