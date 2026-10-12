@@ -6,6 +6,7 @@ import {
   neowsletterBodyLines,
   neowsletterClaimHeadingAnchorIds,
   neowsletterClaimHref,
+  neowsletterHeadingFollowsBody,
   neowsletterLineKind,
   neowsletterSectionHeading,
 } from "../src/lib/neowsletter-anchors";
@@ -38,12 +39,35 @@ function section(claims: typeof september.claims, id: string): string {
 assert.equal(section(september.claims, "upcoming-content"), "");
 assert.equal(section(september.claims, "spire-spotting"), "첨탑 관측");
 assert.equal(section(september.claims, "mana-wave-nycc"), "굿즈 광기");
+assert.equal(section(september.claims, "connections-26"), "커넥션스 코너");
 assert.equal(section(september.claims, "map-knowledge-demon"), "지도 걸작선");
+assert.equal(section(september.claims, "cover-collage"), "커뮤니티 코너");
 assert.equal(section(septemberEn.claims, "spire-spotting"), "Spire Spotting");
 assert.equal(section(septemberEn.claims, "mana-wave-nycc"), "Merch Madness");
-const upcomingIndex = september.claims.findIndex((claim) => claim.id === "upcoming-content");
-assert.deepEqual(neowsletterClaimHeadingAnchorIds(september.claims, upcomingIndex), ["spire-spotting"]);
+assert.equal(section(septemberEn.claims, "map-knowledge-demon"), "Map Masterpieces");
+const spottingIndex = september.claims.findIndex((claim) => claim.id === "spire-spotting");
+assert.deepEqual(neowsletterClaimHeadingAnchorIds(september.claims, spottingIndex), ["spire-spotting"]);
 assert.equal(section(ko.claims, "roadmap"), "로드맵, 다시");
+
+for (const fileName of fs.readdirSync(notesDir)) {
+  if (!fileName.endsWith(".ko.md")) continue;
+  const koDocument = splitNeowsletterDocument(fs.readFileSync(path.join(notesDir, fileName), "utf8"));
+  const enDocument = splitNeowsletterDocument(fs.readFileSync(path.join(notesDir, fileName.replace(/\.ko\.md$/, ".md")), "utf8"));
+  assert.deepEqual(
+    koDocument.claims.map((claim) => claim.id),
+    enDocument.claims.map((claim) => claim.id),
+    `${fileName} claim ids`,
+  );
+  for (const document of [koDocument, enDocument]) {
+    for (const claim of document.claims) {
+      assert.equal(
+        neowsletterHeadingFollowsBody(claim.markdown),
+        false,
+        `${fileName} claim ${claim.id} has a heading after body text`,
+      );
+    }
+  }
+}
 
 for (const claim of ko.claims) {
   const translated = en.claims.find((item) => item.id === claim.id);

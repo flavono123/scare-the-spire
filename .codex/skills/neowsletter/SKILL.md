@@ -16,7 +16,7 @@ Build 니오우스레터 pages from the Mega Crit original. The page is a claim 
 - Use official names from `data/sts2/{kor,eng}`. Do not invent a name for an unrevealed character, act, or monster. A teaser image stays an image.
 - Do not insert newsletter claims into `data/sts2-patch-lines.json`.
 - The issue cover is the thumbnail. Save it at `public/images/neowsletters/{id}/cover.png` and set `imageUrl` / `imageAlt` / `imageAltKo`. Show it on the index card and at the top of the detail page, using the patch art frame.
-- Put a comment claim on each `##` section and on the next heading level under it, such as `### 이미 들어간 것`. Keep one claim per Q&A answer. In map, quiz, and fan-art sections, give each image its own claim with the caption that belongs to that image.
+- Put a comment claim on each `##` section and on the next heading level under it, such as `### 이미 들어간 것`. The `<!-- claim:{id} -->` line comes immediately before the heading that titles that claim. A heading left at the end of the previous claim inherits that claim's id, so the permalink is one section early. Keep one claim per Q&A answer. In map, quiz, and fan-art sections, give each image its own claim with the caption that belongs to that image.
 - Mega Crit and Steam source links use the patch-note original style: `spire-blue`, no underline, a trailing arrow, plus the source icons in `public/images/neowsletters/source/`.
 - The letter-wide comment block matches a patch detail comment section: heading `댓글` / `Comments`, not a separate “전체 댓글” title.
 - Include the map-drawing, Connections, and community fan-art sections. Save those images under `public/images/neowsletters/{id}/`.
