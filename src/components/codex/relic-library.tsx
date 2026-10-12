@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import { resolveKnownVersion } from "@/lib/entity-versioning";
 import Image from "@/components/ui/static-image";
 import {
   addCodexUrlChangeListener,
@@ -120,13 +121,10 @@ export function RelicLibrary({
   const [selectedRarities, setSelectedRarities] = useState<Set<RelicRarityKo>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const urlVersion = useHydrationSafeSearchParam("version");
-  const normalizedUrlVersion = urlVersion ? urlVersion.replace(/^v/, "") : null;
   const [userSelectedVersion, setUserSelectedVersion] = useState<string | null>(null);
-  const selectedVersion = userSelectedVersion ?? (
-    normalizedUrlVersion && versions?.includes(normalizedUrlVersion)
-      ? normalizedUrlVersion
-      : (currentVersion ?? "")
-  );
+  const selectedVersion = userSelectedVersion
+    ?? resolveKnownVersion(urlVersion, versions ?? [])
+    ?? (currentVersion ?? "");
   const setSelectedVersion = (v: string) => setUserSelectedVersion(v);
 
   const [showBeta, setShowBeta] = useState(false);

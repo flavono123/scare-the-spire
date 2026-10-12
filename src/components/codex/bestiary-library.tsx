@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { resolveKnownVersion } from "@/lib/entity-versioning";
 import { usePathname, useRouter } from "next/navigation";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -57,13 +58,10 @@ export function BestiaryLibrary({
   const pathname = usePathname();
   const router = useRouter();
   const urlVersion = useHydrationSafeSearchParam("version");
-  const normalizedUrlVersion = urlVersion ? urlVersion.replace(/^v/, "") : null;
   const [userSelectedVersion, setUserSelectedVersion] = useState<string | null>(null);
-  const selectedVersion = userSelectedVersion ?? (
-    normalizedUrlVersion && versions?.includes(normalizedUrlVersion)
-      ? normalizedUrlVersion
-      : (currentVersion ?? "")
-  );
+  const selectedVersion = userSelectedVersion
+    ?? resolveKnownVersion(urlVersion, versions ?? [])
+    ?? (currentVersion ?? "");
   const setSelectedVersion = (v: string) => setUserSelectedVersion(v);
   const activeView: BestiaryView =
     explicitView === "encounters" || Boolean(urlEncounterId)

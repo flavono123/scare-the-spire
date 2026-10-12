@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
@@ -27,6 +27,7 @@ import {
   type RelicFilterPool,
 } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import { TransfigureImageCopyButton } from "@/components/transfigure/transfigure-image-copy-button";
 import { DescriptionText } from "./codex-description";
 import { RelatedResourceLinks } from "./entity-reference-links";
 import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
@@ -252,6 +253,18 @@ export function RelicDetail({
   };
 
   const relicToggles = serviceText.relicsView.toggles;
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
+  const assetImageLabels = {
+    copy: serviceText.common.copyAssetImage,
+    copying: serviceText.common.copyingAssetImage,
+    copied: serviceText.common.copiedAssetImage,
+    copyFailed: serviceText.common.assetImageCopyFailed,
+    copyUnsupported: serviceText.common.assetImageCopyUnsupported,
+    download: serviceText.common.downloadAssetImage,
+    downloading: serviceText.common.downloadingAssetImage,
+    downloaded: serviceText.common.downloadedAssetImage,
+    downloadFailed: serviceText.common.assetImageDownloadFailed,
+  };
 
   const tipCatalog = useMemo(
     () => tipCatalogSources
@@ -419,6 +432,7 @@ export function RelicDetail({
             tips={sideTips}
             className="w-full max-w-[28rem]"
           >
+            <div ref={assetCopyTargetRef}>
             <RelicInspectSlab
               rarity={relic.rarity}
               rarityLabel={rarityLabel}
@@ -461,7 +475,15 @@ export function RelicDetail({
                 )
               ) : undefined}
             />
+            </div>
           </CardSideTipsAnchor>
+
+          <TransfigureImageCopyButton
+            layout="icons"
+            fileName={`${relic.id}.png`}
+            targetRef={assetCopyTargetRef}
+            labels={assetImageLabels}
+          />
 
           <div className="flex flex-col items-center gap-3">
             {variantPools.length > 0 && (

@@ -65,3 +65,12 @@ export function versionCodexEntities<T extends EntityLifecycle>(
     })
     : reconstructed;
 }
+
+export function versionCodexEntity<T extends EntityLifecycle>(
+  entity: T,
+  entityType: VersionedEntityType,
+  context: CodexVersionContext,
+): T | null {
+  const [versioned] = versionCodexEntities([entity], entityType, context);
+  return versioned ?? null;
+}

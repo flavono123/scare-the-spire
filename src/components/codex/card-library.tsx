@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { resolveKnownVersion } from "@/lib/entity-versioning";
 import Link from "next/link";
 import { SPIRE_ICON_COLORS } from "@/components/spire-icon";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
@@ -221,13 +222,10 @@ interface CardLibraryProps {
 export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, changes, versionDiffs, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], tipCatalogSources, initialCardId = null, initialShowBeta = false }: CardLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlVersion = useHydrationSafeSearchParam("version");
-  const normalizedUrlVersion = urlVersion ? urlVersion.replace(/^v/, "") : null;
   const [userSelectedVersion, setUserSelectedVersion] = useState<string | null>(null);
-  const selectedVersion = userSelectedVersion ?? (
-    normalizedUrlVersion && versions.includes(normalizedUrlVersion)
-      ? normalizedUrlVersion
-      : currentVersion
-  );
+  const selectedVersion = userSelectedVersion
+    ?? resolveKnownVersion(urlVersion, versions)
+    ?? currentVersion;
   const setSelectedVersion = (v: string) => setUserSelectedVersion(v);
   const [selectedColors, setSelectedColors] = useState<Set<CardFilterCategory>>(
     new Set()

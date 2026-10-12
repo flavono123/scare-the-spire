@@ -7,6 +7,7 @@ import {
   Download,
   LoaderCircle,
 } from "lucide-react";
+import { GameUiHoverTip, GAME_UI_HOVER_TIP_NAV_DELAY_MS } from "@/components/game-ui-hover-tip";
 
 type ActionStatus = "idle" | "working" | "success";
 
@@ -17,6 +18,8 @@ const embeddedBorderImageCache = new Map<string, Promise<string>>();
 interface TransfigureImageCopyButtonProps {
   fileName: string;
   targetRef: RefObject<HTMLElement | null>;
+  /** `icons` is the compact Compendium control. `panel` is the Transfigure pair. */
+  layout?: "panel" | "icons";
   labels: {
     copy: string;
     copying: string;
@@ -95,7 +98,15 @@ async function inlineTargetBorderImages(target: HTMLElement): Promise<() => void
 }
 
 function captureNode(target: HTMLElement): HTMLElement {
-  return target.querySelector<HTMLElement>("[data-card-tile]") ?? target;
+  if (target.matches("[data-card-tile], [data-relic-inspect-slab]")) return target;
+  return target.querySelector<HTMLElement>("[data-card-tile], [data-relic-inspect-slab]") ?? target;
+}
+
+function withSelectedVersion(fileName: string): string {
+  const version = new URLSearchParams(window.location.search).get("version")?.replace(/^v/i, "");
+  if (!version || fileName.includes(version)) return fileName;
+  const stem = fileName.replace(/\.png$/i, "");
+  return `${stem}-v${version}.png`;
 }
 
 async function renderTargetPng(target: HTMLElement): Promise<Blob> {
@@ -136,6 +147,7 @@ function safeDownloadName(fileName: string): string {
 export function TransfigureImageCopyButton({
   fileName,
   targetRef,
+  layout = "panel",
   labels,
 }: TransfigureImageCopyButtonProps) {
   const [copyStatus, setCopyStatus] = useState<ActionStatus>("idle");
@@ -202,7 +214,7 @@ export function TransfigureImageCopyButton({
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = safeDownloadName(fileName);
+      anchor.download = safeDownloadName(withSelectedVersion(fileName));
       document.body.append(anchor);
       anchor.click();
       anchor.remove();
@@ -218,6 +230,70 @@ export function TransfigureImageCopyButton({
     targetRef,
   ]);
   const busy = copyStatus === "working" || downloadStatus === "working";
+  const copyLabel = copyStatus === "working"
+    ? labels.copying
+    : copyStatus === "success"
+      ? labels.copied
+      : labels.copy;
+  const downloadLabel = downloadStatus === "working"
+    ? labels.downloading
+    : downloadStatus === "success"
+      ? labels.downloaded
+      : labels.download;
+  const copyIcon = copyStatus === "working" ? (
+    <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+  ) : copyStatus === "success" ? (
+    <Check className="h-4 w-4" aria-hidden="true" />
+  ) : (
+    <ClipboardCopy className="h-4 w-4" aria-hidden="true" />
+  );
+  const downloadIcon = downloadStatus === "working" ? (
+    <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+  ) : downloadStatus === "success" ? (
+    <Check className="h-4 w-4" aria-hidden="true" />
+  ) : (
+    <Download className="h-4 w-4" aria-hidden="true" />
+  );
+
+  if (layout === "icons") {
+    return (
+      <div className="flex flex-col items-center gap-1">
+        <div className="flex items-center gap-1.5">
+          <GameUiHoverTip label={copyLabel} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
+            <button
+              type="button"
+              onClick={handleCopy}
+              disabled={busy}
+              aria-label={copyLabel}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-primary/35 bg-primary/15 text-primary transition-colors hover:border-primary/55 hover:bg-primary/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary/70 disabled:cursor-wait disabled:opacity-65"
+              data-transfigure-copy-image
+              data-compendium-copy-image
+            >
+              {copyIcon}
+            </button>
+          </GameUiHoverTip>
+          <GameUiHoverTip label={downloadLabel} delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}>
+            <button
+              type="button"
+              onClick={handleDownload}
+              disabled={busy}
+              aria-label={downloadLabel}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-primary/20 bg-black/25 text-primary/90 transition-colors hover:border-primary/40 hover:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary/70 disabled:cursor-wait disabled:opacity-65"
+              data-transfigure-download-image
+              data-compendium-download-image
+            >
+              {downloadIcon}
+            </button>
+          </GameUiHoverTip>
+        </div>
+        {errorMessage && (
+          <span role="alert" aria-live="polite" className="max-w-72 text-center text-xs text-red-300">
+            {errorMessage}
+          </span>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="mt-3 flex w-full flex-col items-center gap-1.5">

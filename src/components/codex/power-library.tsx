@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import { resolveKnownVersion } from "@/lib/entity-versioning";
 import {
   addCodexUrlChangeListener,
   pushCodexHistoryState,
@@ -79,13 +80,10 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlPowerId = useHydrationSafeSearchParam("power");
   const urlVersion = useHydrationSafeSearchParam("version");
-  const normalizedUrlVersion = urlVersion ? urlVersion.replace(/^v/, "") : null;
   const [userSelectedVersion, setUserSelectedVersion] = useState<string | null>(null);
-  const selectedVersion = userSelectedVersion ?? (
-    normalizedUrlVersion && versions?.includes(normalizedUrlVersion)
-      ? normalizedUrlVersion
-      : (currentVersion ?? "")
-  );
+  const selectedVersion = userSelectedVersion
+    ?? resolveKnownVersion(urlVersion, versions ?? [])
+    ?? (currentVersion ?? "");
   const setSelectedVersion = (v: string) => setUserSelectedVersion(v);
 
   const [selectedTypes, setSelectedTypes] = useState<Set<PowerType>>(new Set());

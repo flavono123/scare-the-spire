@@ -16,7 +16,11 @@ import { PowerDetail } from "@/components/codex/power-detail";
 import { RelicDetail } from "@/components/codex/relic-detail";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
+import { versionCodexEntity, type CodexVersionContext } from "@/lib/codex-versioning";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
+import { getVersionsWithDiffs, latestPatchVersion, resolveKnownVersion } from "@/lib/entity-versioning";
+import type { EntityLifecycle } from "@/lib/entity-lifecycle";
+import type { VersionedEntityType } from "@/lib/types";
 import {
   COMPENDIUM_DETAIL_PAYLOAD_PATH,
   type CompendiumDetailPayload,
@@ -25,6 +29,7 @@ import {
 import type { CompendiumDetailSeoSummary } from "@/lib/compendium-detail-metadata";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import { toEventCharacterQuoteSpeaker } from "@/lib/event-character-quotes";
+import { useHydrationSafeSearchParam } from "@/components/codex/use-hydration-safe-search-param";
 import type { PotionPool, RelicPool } from "@/lib/codex-types";
 
 type CompendiumDirectDetailPageProps = {
@@ -65,6 +70,15 @@ function findByRouteId<T extends { id: string }>(
   routeId: string,
 ): T | undefined {
   return rows.find((row) => row.id.toLowerCase() === routeId.toLowerCase());
+}
+
+function versionDetailEntity<T extends EntityLifecycle>(
+  entity: T | undefined,
+  entityType: VersionedEntityType,
+  context: CodexVersionContext,
+): T | null {
+  if (!entity) return null;
+  return versionCodexEntity(entity, entityType, context);
 }
 
 function isBetaSearchEnabled(): boolean {
@@ -298,6 +312,7 @@ export function CompendiumDirectDetailPage({
 }: CompendiumDirectDetailPageProps) {
   const [payload, setPayload] = useState<CompendiumDetailPayload | null>(null);
   const [error, setError] = useState<Error | null>(null);
+  const urlVersion = useHydrationSafeSearchParam("version");
 
   useEffect(() => {
     let active = true;
@@ -331,11 +346,23 @@ export function CompendiumDirectDetailPage({
   const { patches, changes, versionDiffs } = history;
   const serviceText = getCodexServiceMessages(serviceLocale);
   const showBetaArt = isBetaSearchEnabled();
+  const currentVersion = latestPatchVersion(patches);
+  const selectedVersion = resolveKnownVersion(
+    urlVersion,
+    getVersionsWithDiffs(patches, versionDiffs),
+  ) ?? currentVersion.replace(/^v/, "");
+  const versionContext: CodexVersionContext = {
+    selectedVersion,
+    currentVersion,
+    patches,
+    changes,
+    versionDiffs,
+  };
 
   let detail: ReactNode = null;
 
   if (resourceType === "cards") {
-    const card = findByRouteId(resources.cards, id);
+    const card = versionDetailEntity(findByRouteId(resources.cards, id), "card", versionContext);
     if (card) {
       detail = (
         <CardDetail
@@ -363,7 +390,7 @@ export function CompendiumDirectDetailPage({
   }
 
   if (resourceType === "relics") {
-    const relic = findByRouteId(resources.relics, id);
+    const relic = versionDetailEntity(findByRouteId(resources.relics, id), "relic", versionContext);
     if (relic) {
       detail = (
         <RelicDetail
@@ -413,7 +440,7 @@ export function CompendiumDirectDetailPage({
   }
 
   if (resourceType === "potions") {
-    const potion = findByRouteId(resources.potions, id);
+    const potion = versionDetailEntity(findByRouteId(resources.potions, id), "potion", versionContext);
     if (potion) {
       detail = (
         <PotionDetail
@@ -438,7 +465,7 @@ export function CompendiumDirectDetailPage({
   }
 
   if (resourceType === "powers") {
-    const power = findByRouteId(resources.powers, id);
+    const power = versionDetailEntity(findByRouteId(resources.powers, id), "power", versionContext);
     if (power) {
       detail = (
         <PowerDetail
@@ -462,8 +489,8 @@ export function CompendiumDirectDetailPage({
   }
 
   if (resourceType === "enchantments") {
-    const enchantment = findByRouteId(resources.enchantments, id);
-    const affliction = findByRouteId(resources.afflictions, id);
+    const enchantment = versionDetailEntity(findByRouteId(resources.enchantments, id), "enchantment", versionContext);
+    const affliction = versionDetailEntity(findByRouteId(resources.afflictions, id), "affliction", versionContext);
     if (enchantment) {
       detail = (
         <EnchantmentDetail
@@ -500,7 +527,7 @@ export function CompendiumDirectDetailPage({
   }
 
   if (resourceType === "ancients") {
-    const ancient = findByRouteId(resources.ancients, id);
+    const ancient = versionDetailEntity(findByRouteId(resources.ancients, id), "ancient", versionContext);
     if (ancient) {
       detail = (
         <AncientDetail
@@ -520,7 +547,7 @@ export function CompendiumDirectDetailPage({
   }
 
   if (resourceType === "events") {
-    const event = findByRouteId(resources.events, id);
+    const event = versionDetailEntity(findByRouteId(resources.events, id), "event", versionContext);
     if (event) {
       detail = (
         <EventDetail
@@ -559,11 +586,11 @@ export function CompendiumDirectDetailPage({
   }
 
   if (resourceType === "monsters") {
-    const monster = resources.monsters.find((candidate) => (
+    const monster = versionDetailEntity(resources.monsters.find((candidate) => (
       candidate.id.toLowerCase() === id.toLowerCase() &&
       candidate.showInCompendium &&
       isPublicBestiaryMonster(candidate.id)
-    ));
+    )), "monster", versionContext);
     if (monster) {
       detail = (
         <MonsterDetail
@@ -585,7 +612,7 @@ export function CompendiumDirectDetailPage({
   }
 
   if (resourceType === "encounters") {
-    const encounter = findByRouteId(resources.encounters, id);
+    const encounter = versionDetailEntity(findByRouteId(resources.encounters, id), "encounter", versionContext);
     if (encounter) {
       detail = (
         <EncounterDetail
@@ -603,7 +630,7 @@ export function CompendiumDirectDetailPage({
   }
 
   if (resourceType === "epochs") {
-    const epoch = findByRouteId(resources.epochs, id);
+    const epoch = versionDetailEntity(findByRouteId(resources.epochs, id), "epoch", versionContext);
     if (epoch) {
       detail = (
         <EpochDetail

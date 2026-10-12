@@ -1,5 +1,27 @@
+import { bakeDescription } from "./codex-bake";
 import type { CodexCard, CodexRelic, CodexPotion, CodexEvent } from "./codex-types";
 import type { EntityVersionDiff, EntityFieldDiff, STS2Patch, VersionedEntityType } from "./types";
+
+/** Combat-only card vars. The loader omits these when baking library text. */
+const CARD_RUNTIME_DESCRIPTION_VARS: Record<string, readonly string[]> = {
+  TIMES_UP: ["CalculatedDamage"],
+};
+
+export function resolveKnownVersion(
+  requested: string | null | undefined,
+  versions: readonly string[],
+): string | null {
+  if (!requested) return null;
+  const normalized = requested.replace(/^v/i, "");
+  const match = versions.find((version) => compareVersions(version, normalized) === 0);
+  return match ? match.replace(/^v/i, "") : null;
+}
+
+export function latestPatchVersion(patches: readonly { version: string }[]): string {
+  return patches.reduce((latest, patch) => (
+    !latest || compareVersions(patch.version, latest) > 0 ? patch.version : latest
+  ), "");
+}
 
 /**
  * Compare two version strings (e.g. "0.100.0" vs "0.101.0").
@@ -18,6 +40,47 @@ export function compareVersions(a: string, b: string): number {
 /** Normalize version string to "v0.101.0" form */
 function normalizeVersion(v: string): string {
   return v.startsWith("v") ? v : `v${v}`;
+}
+
+function isDescriptionField(field: string): boolean {
+  return field === "description" || field.startsWith("description.");
+}
+
+function varsForBake(
+  entityType: VersionedEntityType,
+  id: unknown,
+  vars: unknown,
+): Record<string, number | string> {
+  if (!vars || typeof vars !== "object" || Array.isArray(vars)) return {};
+  const baked: Record<string, number | string> = {};
+  for (const [key, value] of Object.entries(vars)) {
+    if (typeof value === "number" || typeof value === "string") baked[key] = value;
+  }
+  if (entityType === "card" && typeof id === "string") {
+    for (const key of CARD_RUNTIME_DESCRIPTION_VARS[id] ?? []) delete baked[key];
+  }
+  return baked;
+}
+
+/**
+ * Number-only patches often store `vars` without a new baked `description`.
+ * Library tiles paint `description`, so rebuild it from the historical template
+ * unless a reverted patch already supplied the description string.
+ */
+function syncBakedDescription(
+  entity: Record<string, unknown>,
+  entityType: VersionedEntityType,
+  snapshot: { descriptionRaw: unknown; varsJson: string },
+  descriptionDiffApplied: boolean,
+): void {
+  if (descriptionDiffApplied) return;
+  if (typeof entity.descriptionRaw !== "string" || entity.descriptionRaw.length === 0) return;
+  const varsJson = JSON.stringify(entity.vars ?? null);
+  if (entity.descriptionRaw === snapshot.descriptionRaw && varsJson === snapshot.varsJson) return;
+  entity.description = bakeDescription(
+    entity.descriptionRaw,
+    varsForBake(entityType, entity.id, entity.vars),
+  );
 }
 
 /**
@@ -286,6 +349,12 @@ export function reconstructEntityAtVersion<T extends { id: string }>(
     ));
   }
 
+  const bakedSnapshot = {
+    descriptionRaw: result.descriptionRaw,
+    varsJson: JSON.stringify(result.vars ?? null),
+  };
+  let descriptionDiffApplied = false;
+
   for (const patch of patchesToRevert) {
     const diffs = versionDiffs.filter(
       (d) => d.entityType === entityType && d.entityId === entity.id && d.patch === normalizeVersion(patch.version),
@@ -293,11 +362,14 @@ export function reconstructEntityAtVersion<T extends { id: string }>(
     for (const vd of diffs) {
       for (const diff of vd.diffs) {
         if (!diff.upgraded) {
+          if (isDescriptionField(diff.field)) descriptionDiffApplied = true;
           applyReverseDiff(result, diff);
         }
       }
     }
   }
+
+  syncBakedDescription(result, entityType, bakedSnapshot, descriptionDiffApplied);
 
   return result as unknown as T;
 }

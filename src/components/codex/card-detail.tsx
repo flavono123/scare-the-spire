@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useCallback, useEffect, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
@@ -22,6 +22,7 @@ import {
   CodexKeyword,
 } from "@/lib/codex-types";
 import { CardActionIcon } from "@/components/history-course/card-action-icon";
+import { TransfigureImageCopyButton } from "@/components/transfigure/transfigure-image-copy-button";
 import { CardTile } from "./card-tile";
 import { DescriptionText, getCardMaxUpgradeLevel, hasCardUpgrade, renderCardDescription } from "./codex-description";
 import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
@@ -199,6 +200,18 @@ function getRemovedUpgradePreviewCard(
 
 export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], tipCatalogSources, tipCatalogCards, tipCatalogKeywords = [], patches, changes, versionDiffs, initialShowBeta = false, onShowBetaChange, syncBetaSearchParam = false, onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
+  const assetImageLabels = {
+    copy: serviceText.common.copyAssetImage,
+    copying: serviceText.common.copyingAssetImage,
+    copied: serviceText.common.copiedAssetImage,
+    copyFailed: serviceText.common.assetImageCopyFailed,
+    copyUnsupported: serviceText.common.assetImageCopyUnsupported,
+    download: serviceText.common.downloadAssetImage,
+    downloading: serviceText.common.downloadingAssetImage,
+    downloaded: serviceText.common.downloadedAssetImage,
+    downloadFailed: serviceText.common.assetImageDownloadFailed,
+  };
   const detailLabels = getCardDetailLabels(serviceLocale);
   const threadKey = buildCodexCommentThreadKey("card", card.id);
   const [upgradeLevel, setUpgradeLevel] = useState(0);
@@ -492,6 +505,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
             }}
           >
           <CardSideTipsAnchor mode="always" preferSide="left" tips={sideTips} style={{ width: cardWidth }}>
+          <div ref={assetCopyTargetRef}>
           <CardTile
             card={upgradePreviewCard}
             serviceLocale={serviceLocale}
@@ -514,6 +528,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
               setHoveredEnchantId(null);
             }}
           />
+          </div>
           </CardSideTipsAnchor>
           {hoveredEnchant && (
             <div
@@ -570,36 +585,39 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
           )}
           </div>
 
-          {/* 강화 / 베타 토글 — 카드 바로 아래 */}
-          {(canShowUpgrade || card.betaImageUrl) && (
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              {canShowUpgrade && maxUpgradeLevel <= 1 && (
-                <GameCheckboxToggle
-                  checked={showUpgrade}
-                  onCheckedChange={(checked) => setUpgradeLevel(checked ? 1 : 0)}
-                  label={gameUi.cardLibrary.viewUpgrades}
-                  size="md"
-                />
-              )}
-              {canShowUpgrade && maxUpgradeLevel > 1 && (
-                <GameUpgradeToggle
-                  upgradeLevel={effectiveUpgradeLevel}
-                  maxUpgradeLevel={selectableMaxUpgradeLevel}
-                  onUpgradeLevelChange={setUpgradeLevel}
-                  label={gameUi.cardLibrary.viewUpgrades}
-                  serviceLocale={serviceLocale}
-                />
-              )}
-              {card.betaImageUrl && (
-                <GameCheckboxToggle
-                  checked={showBeta}
-                  onCheckedChange={setShowBeta}
-                  label={serviceText.cardsView.toggles.betaArt}
-                  size="md"
-                />
-              )}
-            </div>
-          )}
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <TransfigureImageCopyButton
+              layout="icons"
+              fileName={`${upgradePreviewCard.id}.png`}
+              targetRef={assetCopyTargetRef}
+              labels={assetImageLabels}
+            />
+            {canShowUpgrade && maxUpgradeLevel <= 1 && (
+              <GameCheckboxToggle
+                checked={showUpgrade}
+                onCheckedChange={(checked) => setUpgradeLevel(checked ? 1 : 0)}
+                label={gameUi.cardLibrary.viewUpgrades}
+                size="md"
+              />
+            )}
+            {canShowUpgrade && maxUpgradeLevel > 1 && (
+              <GameUpgradeToggle
+                upgradeLevel={effectiveUpgradeLevel}
+                maxUpgradeLevel={selectableMaxUpgradeLevel}
+                onUpgradeLevelChange={setUpgradeLevel}
+                label={gameUi.cardLibrary.viewUpgrades}
+                serviceLocale={serviceLocale}
+              />
+            )}
+            {card.betaImageUrl && (
+              <GameCheckboxToggle
+                checked={showBeta}
+                onCheckedChange={setShowBeta}
+                label={serviceText.cardsView.toggles.betaArt}
+                size="md"
+              />
+            )}
+          </div>
 
           {madScienceChoices}
 

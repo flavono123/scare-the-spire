@@ -7,6 +7,7 @@ import {
   resolveVersionedEntity,
 } from "../src/lib/versioned-entity-api";
 import { normalizeVersionedEntityType } from "../src/lib/codex-versioning";
+import { updateCompendiumResourceModalUrl } from "../src/lib/compendium-resource-links";
 import type { CodexCard } from "../src/lib/codex-types";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "../src/lib/types";
 
@@ -315,6 +316,35 @@ async function runTests() {
     }
   }
   console.log(`Exhaustively verified ${verifiedDiffCount} fieldDiffs across all patches!`);
+
+  console.log("\n[Test 7] Vars-only card text is rebaked for the library tile");
+  const believeBefore = await getVersionedEntity<CodexCard>({
+    entityType: "card",
+    entityId: "BELIEVE_IN_YOU",
+    version: "v0.99.0",
+    locale: "kor",
+  });
+  assert.equal(believeBefore.entity?.vars?.Energy, 3);
+  assert.match(believeBefore.entity?.description ?? "", /\[energy:3\]/);
+
+  const believeAfter = await getVersionedEntity<CodexCard>({
+    entityType: "card",
+    entityId: "BELIEVE_IN_YOU",
+    version: "v0.111.0",
+    locale: "kor",
+  });
+  assert.equal(believeAfter.entity?.vars?.Energy, 2);
+  assert.match(believeAfter.entity?.description ?? "", /\[energy:2\]/);
+
+  console.log("\n[Test 8] Opening a Compendium detail keeps the version query");
+  const detailUrl = new URL("http://localhost/compendium/cards?version=0.110.0&beta=true");
+  updateCompendiumResourceModalUrl(detailUrl, "card", "STRIKE");
+  assert.equal(detailUrl.pathname, "/compendium/cards/strike");
+  assert.equal(detailUrl.searchParams.get("version"), "0.110.0");
+  assert.equal(detailUrl.searchParams.get("beta"), "true");
+  updateCompendiumResourceModalUrl(detailUrl, "card", null);
+  assert.equal(detailUrl.pathname, "/compendium/cards");
+  assert.equal(detailUrl.searchParams.get("version"), "0.110.0");
 
   console.log("\nAll Versioned Entity API tests PASSED successfully!");
 }

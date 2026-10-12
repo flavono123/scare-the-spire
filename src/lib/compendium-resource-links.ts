@@ -133,6 +133,10 @@ export function updateCompendiumResourceModalUrl(
   const localePrefix = localized?.localePrefix ?? "";
 
   if (supportsDirectCompendiumDetails(localePrefix)) {
+    const preserved = ["version", "beta"].flatMap((key) => {
+      const value = url.searchParams.get(key);
+      return value ? [[key, value] as const] : [];
+    });
     url.pathname = id
       ? `${localePrefix}${buildCompendiumResourceDetailHref(type, id)}`
       : `${localePrefix}${config.path}`;
@@ -140,6 +144,7 @@ export function updateCompendiumResourceModalUrl(
     if (!id && config.search) {
       url.search = new URLSearchParams(config.search).toString();
     }
+    for (const [key, value] of preserved) url.searchParams.set(key, value);
   } else {
     url.pathname = `${localePrefix}${config.path}`;
     for (const param of COMPENDIUM_SELECTOR_PARAMS) {
