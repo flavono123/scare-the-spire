@@ -25,10 +25,8 @@ function currentLink(editor: Editor): { from: number; to: number; title: string;
   if (selectionTouchesInternalLink(editor)) return null;
   const type = editor.state.schema.marks.link;
   if (!type) return null;
-  const { from, to, empty, $from } = editor.state.selection;
-  if (!empty && !editor.isActive("link")) {
-    return { from, to, title: editor.state.doc.textBetween(from, to, " "), url: "" };
-  }
+  if (!editor.isActive("link")) return null;
+  const { $from } = editor.state.selection;
   const range = getMarkRange($from, type);
   if (!range) return null;
   const mark = type.isInSet(editor.state.doc.resolve(Math.min(range.from + 1, range.to)).marks());

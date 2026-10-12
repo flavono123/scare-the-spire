@@ -6,7 +6,7 @@ import { useState } from "react";
 import { PortaledHoverTipLayer } from "@/components/codex/portaled-hover-tip-layer";
 import { SitePathHoverTip } from "./site-path-hover-tip";
 
-function PagestormInternalLinkView({ editor, node }: NodeViewProps) {
+function PagestormInternalLinkView({ editor, node, selected }: NodeViewProps) {
   const href = String(node.attrs.href ?? "");
   const label = String(node.attrs.label ?? href);
   const title = String(node.attrs.title ?? label);
@@ -14,6 +14,7 @@ function PagestormInternalLinkView({ editor, node }: NodeViewProps) {
   const imageUrl = String(node.attrs.ogImage ?? "");
   const imageAlt = String(node.attrs.ogImageAlt ?? "");
   const [hovered, setHovered] = useState(false);
+  const showTip = hovered || selected;
 
   return (
     <NodeViewWrapper as="span" className="inline">
@@ -33,7 +34,7 @@ function PagestormInternalLinkView({ editor, node }: NodeViewProps) {
         >
           {label}
         </a>
-        {hovered && (title || preview || imageUrl) ? (
+        {showTip && (title || preview || imageUrl) ? (
           <PortaledHoverTipLayer pin="top-left">
             <SitePathHoverTip
               imageUrl={imageUrl || undefined}

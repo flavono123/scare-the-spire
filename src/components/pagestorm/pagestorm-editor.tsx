@@ -16,6 +16,7 @@ import { useSts1MentionIndex } from "@/hooks/use-sts1-mention-index";
 import { sts1MentionEntity, type Sts1MentionEntity } from "@/lib/sts1-mention-index";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import type { NavDropdownItem } from "@/lib/site-nav-items";
+import { fetchLinkPreview } from "@/lib/link-preview-client";
 import { resolveYouTubeReference } from "@/lib/youtube-reference";
 import {
   canonicalSitePath,
@@ -52,6 +53,8 @@ import {
   PagestormDetailsContent,
   PagestormDetailsSummary,
 } from "./details";
+import { replaceExternalLinkLabel } from "./external-link";
+import { ExternalLinkOgTip } from "./external-link-tip";
 import { PagestormLinkSheet, selectionTouchesInternalLink } from "./link-sheet";
 import { pagestormMentionContent, replacePagestormMentions } from "./mentions";
 import { PagestormMention } from "./mention-node";
@@ -389,19 +392,26 @@ export function PagestormEditor({
         event.preventDefault();
         if (!current) return true;
         if (resolved.kind === "og") {
+          const href = resolved.bookmark.url;
+          const fallback = resolved.bookmark.title || href;
           current.chain().focus().insertContent({
             type: "text",
-            text: resolved.bookmark.title || resolved.bookmark.url,
+            text: fallback,
             marks: [{
               type: "link",
               attrs: {
-                href: resolved.bookmark.url,
+                href,
                 target: "_blank",
                 rel: "noopener noreferrer",
                 class: "pagestorm-inline-link",
               },
             }],
           }).run();
+          void fetchLinkPreview(href).then((preview) => {
+            const live = editorRef.current;
+            if (!live || live.isDestroyed || !preview.title) return;
+            replaceExternalLinkLabel(live, href, fallback, preview);
+          }).catch(() => undefined);
           return true;
         }
         const pendingLabel = copy.youtubePending;
@@ -601,6 +611,9 @@ export function PagestormEditor({
         ) : null}
         {editing && editor ? (
           <PagestormTableControls editor={editor} frameRef={frameRef} />
+        ) : null}
+        {editor ? (
+          <ExternalLinkOgTip editor={editor} enabled={!editing} />
         ) : null}
         {editing && editor ? (
           <PagestormLinkSheet
