@@ -9,6 +9,7 @@ import {
   isOwnDonation,
   isRunDonated,
 } from "@/lib/run-donation";
+import { loadRun } from "@/lib/run-store";
 import { supabaseEnabled } from "@/lib/supabase";
 import type { ReplayRun } from "@/lib/sts2-run-replay";
 import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
@@ -79,11 +80,13 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
     if (!activeUserId) return;
     setBusy(true);
     setError(null);
+    const stored = await loadRun(runId);
     const result = await donateRun({
       runId,
       raw,
       run,
       donorUserId: activeUserId,
+      coverSpec: stored?.coverSpec ?? undefined,
     });
     setBusy(false);
     if (result.ok || result.alreadyDonated) {

@@ -19,10 +19,22 @@ export function HistoryCourseLanding({ entities }: HistoryCourseLandingProps) {
   const [refreshKey, setRefreshKey] = useState(0);
   const [pendingEditRunId, setPendingEditRunId] = useState<string | null>(null);
   const [polishRunId, setPolishRunId] = useState<string | null>(null);
+  const [sharedRunIds, setSharedRunIds] = useState<string[]>([]);
 
-  const onUploadComplete = useCallback((payload: { count: number; latestRunId?: string }) => {
+  const onUploadComplete = useCallback((payload: {
+    count: number;
+    latestRunId?: string;
+    sharedRunIds?: string[];
+  }) => {
     setRefreshKey((k) => k + 1);
     if (payload.latestRunId) setPolishRunId(payload.latestRunId);
+    if (payload.sharedRunIds && payload.sharedRunIds.length > 0) {
+      setSharedRunIds((prev) => {
+        const next = new Set(prev);
+        for (const id of payload.sharedRunIds ?? []) next.add(id);
+        return [...next];
+      });
+    }
   }, []);
 
   return (
@@ -56,6 +68,7 @@ export function HistoryCourseLanding({ entities }: HistoryCourseLandingProps) {
       <HistoryCourseRunIndex
         entities={entities}
         refreshKey={refreshKey}
+        sharedRunIds={sharedRunIds}
         pendingEditRunId={pendingEditRunId}
         onPendingEditConsumed={() => setPendingEditRunId(null)}
       />

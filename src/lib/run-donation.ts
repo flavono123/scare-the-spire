@@ -3,6 +3,7 @@ import { withSupabaseTimeout } from "./supabase-timeout";
 import type { PostBlock } from "./chemical-types";
 import { devToolsEnabled } from "./dev-tools";
 import { buildRunHighlights, type RunHighlightResource } from "./run-highlights";
+import { duplicateShareShouldUpdateCover } from "./history-course-share-state";
 import { pickAlternatingCover, suggestDefaultCover } from "./run-cover-suggest";
 import { isCoverSpec, type CoverSpec } from "./run-cover-types";
 import { parseReplayRun, type ReplayBadge, type ReplayRun } from "./sts2-run-replay";
@@ -336,8 +337,18 @@ export async function donateRun(input: {
   });
   if (!error) return { ok: true };
   // 23505 = unique_violation. The row may have been donated already
-  // (by anyone). Treat as "already shared" rather than an error.
+  // (by anyone). A manual cover still has to land on that row: the
+  // index can show the run as unshared after share-on-upload, and the
+  // follow-up click used to stop at the conflict.
   const alreadyDonated = "code" in error && error.code === "23505";
+  if (alreadyDonated && duplicateShareShouldUpdateCover(input.coverSpec)) {
+    const updated = await updateDonatedRunCoverSpec({
+      runId: input.runId,
+      donorUserId: input.donorUserId,
+      coverSpec: input.coverSpec,
+    });
+    if (updated.ok) return { ok: true };
+  }
   return {
     ok: false,
     alreadyDonated,

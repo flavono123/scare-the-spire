@@ -4,10 +4,11 @@ import { AlertCircle, FolderUp, RefreshCw, Upload } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useRef, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { donateRunsBatch } from "@/lib/run-donation";
+import { coverToPublishAfterShare } from "@/lib/history-course-share-state";
+import { donateRunsBatch, updateDonatedRunCoverSpec } from "@/lib/run-donation";
 import { suggestDefaultCover } from "@/lib/run-cover-suggest";
 import type { CoverSpec } from "@/lib/run-cover-types";
-import { saveRun } from "@/lib/run-store";
+import { loadRun, saveRun } from "@/lib/run-store";
 import { isBuildSupported } from "@/lib/sts2-build-version";
 import { computeRunHash, runRouteSlug } from "@/lib/sts2-run-hash";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
@@ -99,7 +100,11 @@ export interface RunUploadZoneProps {
   // Fired after a batch of files has been parsed and stashed. The
   // parent uses this to bump a refreshKey for the run index so the
   // newly-saved runs surface in the cards grid.
-  onUploadComplete?: (payload: { count: number; latestRunId?: string }) => void;
+  onUploadComplete?: (payload: {
+    count: number;
+    latestRunId?: string;
+    sharedRunIds?: string[];
+  }) => void;
 }
 
 export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
@@ -109,7 +114,7 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
   const [errors, setErrors] = useState<ParseError[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isParsing, setIsParsing] = useState(false);
-  const [shareOnUpload, setShareOnUpload] = useState(false);
+  const [shareOnUpload, setShareOnUpload] = useState(true);
   const [donationToast, setDonationToast] = useState<{
     message: string;
     tone: "success" | "error";
@@ -145,14 +150,14 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
           }
         }
         setErrors(result.errors);
-        if (saved > 0) {
-          onUploadComplete?.({ count: saved, latestRunId });
-        }
 
         // Phase 2 — single batched donation. The previous per-run
         // sequential donateRun lost ~70% of a 42-run batch to auth
         // race + rate limiting; one upsert with ignoreDuplicates is
-        // both faster and more durable.
+        // both faster and more durable. The index refresh waits until
+        // this insert finishes so the share control does not stay on
+        // the unshared action after a successful share.
+        let sharedRunIds: string[] | undefined;
         if (toShare.length > 0) {
           if (authUnavailable) {
             setDonationToast({
@@ -165,33 +170,54 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
             const activeUserId = userId ?? await ensureUser();
             if (!activeUserId) {
               setDonationToast({ message: copy.authNotReady, tone: "error" });
-              return;
-            }
-            const result = await donateRunsBatch({
-              runs: toShare.map((p) => ({
-                runId: p.slug,
-                raw: p.raw,
-                run: p.run,
-                coverSpec: p.coverSpec,
-              })),
-              donorUserId: activeUserId,
-            });
-            if (result.errorMessage) {
-              setDonationToast({
-                message: copy.shareFailed.replace("{message}", historyCopy.lists.unavailableTitle),
-                tone: "error",
-              });
             } else {
-              const parts: string[] = [];
-              if (result.inserted > 0) {
-                parts.push(copy.sharedCount.replace("{count}", String(result.inserted)));
+              const runs = await Promise.all(toShare.map(async (parsed) => {
+                const latest = await loadRun(parsed.slug);
+                return {
+                  runId: parsed.slug,
+                  raw: parsed.raw,
+                  run: parsed.run,
+                  coverSpec: latest?.coverSpec ?? parsed.coverSpec,
+                };
+              }));
+              const donated = await donateRunsBatch({
+                runs,
+                donorUserId: activeUserId,
+              });
+              if (donated.errorMessage) {
+                setDonationToast({
+                  message: copy.shareFailed.replace("{message}", historyCopy.lists.unavailableTitle),
+                  tone: "error",
+                });
+              } else {
+                for (const sent of runs) {
+                  const latest = await loadRun(sent.runId);
+                  const publish = coverToPublishAfterShare(
+                    sent.coverSpec,
+                    latest?.coverSpec,
+                  );
+                  if (!publish) continue;
+                  await updateDonatedRunCoverSpec({
+                    runId: sent.runId,
+                    donorUserId: activeUserId,
+                    coverSpec: publish,
+                  });
+                }
+                sharedRunIds = runs.map((sent) => sent.runId);
+                const parts: string[] = [];
+                if (donated.inserted > 0) {
+                  parts.push(copy.sharedCount.replace("{count}", String(donated.inserted)));
+                }
+                if (donated.alreadyDonated > 0)
+                  parts.push(copy.alreadySharedCount.replace("{count}", String(donated.alreadyDonated)));
+                const message = parts.join(" · ");
+                setDonationToast(message ? { message, tone: "success" } : null);
               }
-              if (result.alreadyDonated > 0)
-                parts.push(copy.alreadySharedCount.replace("{count}", String(result.alreadyDonated)));
-              const message = parts.join(" · ");
-              setDonationToast(message ? { message, tone: "success" } : null);
             }
           }
+        }
+        if (saved > 0) {
+          onUploadComplete?.({ count: saved, latestRunId, sharedRunIds });
         }
       } finally {
         setIsParsing(false);

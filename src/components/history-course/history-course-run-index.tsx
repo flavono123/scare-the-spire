@@ -13,6 +13,10 @@ import { useHistoryCourseEngagement } from "@/hooks/use-history-course-engagemen
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import type { PostBlock } from "@/lib/chemical-types";
 import type { ComboResourceRef } from "@/lib/combo-types";
+import {
+  localCoverSaveAttemptsRemoteSync,
+  unionDonatedIds,
+} from "@/lib/history-course-share-state";
 import { mergePartyBadges } from "@/lib/history-party";
 import {
   sortHistoryCourseIndexRuns,
@@ -47,9 +51,12 @@ import { serviceMessages } from "@/messages/service";
 import { RandomPickCard } from "./random-pick-card";
 import { RunCard, runCardPropsFromReplay } from "./run-card";
 
+const NO_SHARED_RUNS: readonly string[] = [];
+
 interface Props {
   entities: EntityInfo[];
   refreshKey?: number;
+  sharedRunIds?: readonly string[];
   pendingEditRunId?: string | null;
   onPendingEditConsumed?: () => void;
 }
@@ -72,6 +79,7 @@ interface MergedRun {
 export function HistoryCourseRunIndex({
   entities,
   refreshKey = 0,
+  sharedRunIds = NO_SHARED_RUNS,
   pendingEditRunId = null,
   onPendingEditConsumed,
 }: Props) {
@@ -82,6 +90,7 @@ export function HistoryCourseRunIndex({
   const [localEntries, setLocalEntries] = useState<LocalEntry[] | null>(null);
   const [donatedRuns, setDonatedRuns] = useState<DonatedRunSummary[] | null>(null);
   const [donatedIds, setDonatedIds] = useState<Set<string>>(new Set());
+  const [dismissedShareIds, setDismissedShareIds] = useState<Set<string>>(new Set());
   const [unavailable, setUnavailable] = useState(false);
   const [editingLocal, setEditingLocal] = useState<LocalEntry | null>(null);
   const [editingDonated, setEditingDonated] = useState<DonatedRunSummary | null>(null);
@@ -158,6 +167,42 @@ export function HistoryCourseRunIndex({
     };
   }, [userId, refreshKey]);
 
+  const visibleDonatedIds = useMemo(
+    () => unionDonatedIds(donatedIds, sharedRunIds, dismissedShareIds),
+    [dismissedShareIds, donatedIds, sharedRunIds],
+  );
+
+  const rememberShared = useCallback((runId: string) => {
+    setDismissedShareIds((prev) => {
+      if (!prev.has(runId)) return prev;
+      const next = new Set(prev);
+      next.delete(runId);
+      return next;
+    });
+    setDonatedIds((prev) => {
+      if (prev.has(runId)) return prev;
+      const next = new Set(prev);
+      next.add(runId);
+      return next;
+    });
+  }, []);
+
+  const rememberUnshared = useCallback((runId: string) => {
+    setDismissedShareIds((prev) => {
+      if (prev.has(runId)) return prev;
+      const next = new Set(prev);
+      next.add(runId);
+      return next;
+    });
+    setDonatedIds((prev) => {
+      if (!prev.has(runId)) return prev;
+      const next = new Set(prev);
+      next.delete(runId);
+      return next;
+    });
+    setDonatedRuns((prev) => prev?.filter((run) => run.id !== runId) ?? null);
+  }, []);
+
   useEffect(() => {
     if (!pendingEditRunId || !localEntries) return;
     const hit = localEntries.find((entry) => entry.runId === pendingEditRunId);
@@ -226,30 +271,27 @@ export function HistoryCourseRunIndex({
         ) ?? null,
       );
       setEditingLocal((prev) => (prev ? { ...prev, coverSpec: cover } : null));
-      const isShared =
-        donatedIds.has(editingLocal.runId) ||
-        Boolean(donatedRuns?.some((d) => d.id === editingLocal.runId));
-      if (supabaseEnabled && isShared) {
-        const activeUserId = userId ?? (await ensureUser());
-        if (activeUserId) {
-          const result = await updateDonatedRunCoverSpec({
-            runId: editingLocal.runId,
-            donorUserId: activeUserId,
-            coverSpec: cover,
-          });
-          if (result.ok) {
-            setDonatedRuns((prev) =>
-              prev?.map((entry) =>
-                entry.id === editingLocal.runId
-                  ? { ...entry, cover_spec: cover }
-                  : entry,
-              ) ?? null,
-            );
-          }
-        }
-      }
+      // Do not gate this on the share button. That flag lags the insert,
+      // and skipping the update is what left other devices on the auto cover.
+      if (!localCoverSaveAttemptsRemoteSync(supabaseEnabled)) return;
+      const activeUserId = userId ?? (await ensureUser());
+      if (!activeUserId) return;
+      const result = await updateDonatedRunCoverSpec({
+        runId: editingLocal.runId,
+        donorUserId: activeUserId,
+        coverSpec: cover,
+      });
+      if (!result.ok) return;
+      rememberShared(editingLocal.runId);
+      setDonatedRuns((prev) =>
+        prev?.map((entry) =>
+          entry.id === editingLocal.runId
+            ? { ...entry, cover_spec: cover }
+            : entry,
+        ) ?? null,
+      );
     },
-    [donatedIds, donatedRuns, editingLocal, ensureUser, userId],
+    [editingLocal, ensureUser, rememberShared, userId],
   );
 
   const handleSaveDonatedCover = useCallback(
@@ -288,47 +330,28 @@ export function HistoryCourseRunIndex({
   const handleDeleteLocal = useCallback(async (entry: LocalEntry) => {
     setLocalEntries((prev) => prev?.filter((e) => e.runId !== entry.runId) ?? null);
     await deleteRun(entry.runId);
-    if (donatedIds.has(entry.runId)) {
+    if (visibleDonatedIds.has(entry.runId)) {
       const ok = await deleteDonatedRun(entry.runId);
-      if (ok) {
-        setDonatedIds((prev) => {
-          const next = new Set(prev);
-          next.delete(entry.runId);
-          return next;
-        });
-        setDonatedRuns((prev) => prev?.filter((run) => run.id !== entry.runId) ?? null);
-      }
+      if (ok) rememberUnshared(entry.runId);
     }
-  }, [donatedIds]);
+  }, [rememberUnshared, visibleDonatedIds]);
 
   const handleUnshareDonated = useCallback(async (runId: string) => {
     if (!window.confirm(copy.undoConfirm)) return;
     const ok = await deleteDonatedRun(runId);
     if (!ok) return;
-    setDonatedRuns((prev) => prev?.filter((run) => run.id !== runId) ?? null);
-    setDonatedIds((prev) => {
-      const next = new Set(prev);
-      next.delete(runId);
-      return next;
-    });
-  }, [copy.undoConfirm]);
+    rememberUnshared(runId);
+  }, [copy.undoConfirm, rememberUnshared]);
 
   const handleShare = useCallback(
     async (entry: LocalEntry) => {
       if (!supabaseEnabled) return;
       const activeUserId = userId ?? await ensureUser();
       if (!activeUserId) return;
-      const wasDonated = donatedIds.has(entry.runId);
+      const wasDonated = visibleDonatedIds.has(entry.runId);
       if (wasDonated) {
         const ok = await deleteDonatedRun(entry.runId);
-        if (ok) {
-          setDonatedIds((prev) => {
-            const next = new Set(prev);
-            next.delete(entry.runId);
-            return next;
-          });
-          setDonatedRuns((prev) => prev?.filter((run) => run.id !== entry.runId) ?? null);
-        }
+        if (ok) rememberUnshared(entry.runId);
         return;
       }
       const result = await donateRun({
@@ -339,14 +362,10 @@ export function HistoryCourseRunIndex({
         coverSpec: entry.coverSpec,
       });
       if (result.ok || (!result.ok && result.alreadyDonated)) {
-        setDonatedIds((prev) => {
-          const next = new Set(prev);
-          next.add(entry.runId);
-          return next;
-        });
+        rememberShared(entry.runId);
       }
     },
-    [donatedIds, ensureUser, userId],
+    [ensureUser, rememberShared, rememberUnshared, userId, visibleDonatedIds],
   );
 
   const editingDonatedParsed = useMemo(() => {
@@ -435,7 +454,8 @@ export function HistoryCourseRunIndex({
             const isOwner =
               ownedLocally ||
               Boolean(userId && donated?.donor_user_id === userId);
-            const shared = donatedIds.has(item.runId) || Boolean(donated);
+            const shared = !dismissedShareIds.has(item.runId)
+              && (visibleDonatedIds.has(item.runId) || Boolean(donated));
             return (
               <li key={item.runId}>
                 {local ? (
