@@ -1,4 +1,5 @@
 import type { CoverElement, CoverSpec } from "@/lib/run-cover-types";
+import { fallbackCoverTitlePhrase } from "@/lib/run-cover-suggest";
 import type { ServiceLocale } from "@/lib/i18n";
 import korTables from "@/lib/sts2-game-i18n/kor.json";
 import {
@@ -141,8 +142,35 @@ export function resolveCoverCaptionTitle(
   titlePhrase: string,
 ): string {
   const stored = titlePhrase.trim();
+  // An author save freezes the lockup title. Do not re-localize it into
+  // another generated line; that title is also the watch-page title.
+  if (!cover.auto) return stored || resolveCoverPhrase(cover, meta, serviceLocale, tables);
   if (!stored) return resolveCoverPhrase(cover, meta, serviceLocale, tables);
   const matched = matchStoredPhrase(stored, cover, meta);
   if (!matched) return stored;
   return renderPhrase(matched, cover, meta, tables, serviceLocale);
+}
+
+/** Index-card title and the watch-page title. Same string in both places. */
+export function historyCourseLockupTitle(
+  cover: CoverSpec,
+  meta: CoverPhraseMeta,
+  serviceLocale: ServiceLocale,
+  tables: GameI18nTables,
+): string {
+  return resolveCoverCaptionTitle(
+    cover,
+    meta,
+    serviceLocale,
+    tables,
+    fallbackCoverTitlePhrase(cover, meta),
+  );
+}
+
+/** Keep an author-typed lockup title. Empty falls back to the generator. */
+export function lockupTitleForSave(
+  draftTitle: string | undefined,
+  generatedTitle: string,
+): string {
+  return draftTitle?.trim() || generatedTitle;
 }

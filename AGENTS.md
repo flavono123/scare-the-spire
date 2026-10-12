@@ -147,6 +147,10 @@ evaluate whether it can cause Cloudflare `exceededResources`, Error 1102, or a
   - 버프: **green + sine**
   - 너프: **red + jitter**
 
+## 역사 강의서
+
+당분간 역사 강의서 UI의 레퍼런스는 유튜브다. 인덱스는 썸네일 락업이고, 카드 하단의 락업 제목이 재생 화면 제목이다. 썸네일 위 문구와 락업 제목은 다르다. 용어는 `CONTEXT.md`.
+
 ## 코드 컨벤션
 
 - 데이터 JSON은 영어 (게임 원문 기준)

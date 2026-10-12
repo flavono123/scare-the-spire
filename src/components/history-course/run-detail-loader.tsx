@@ -13,7 +13,10 @@ import { indexCodexCards } from "@/lib/history-card-lookup";
 import { indexCodexPotions } from "@/lib/history-potion-lookup";
 import { indexCodexRelics } from "@/lib/history-relic-lookup";
 import type { CodexCard, CodexRelic } from "@/lib/codex-types";
-import { getDonatedRun } from "@/lib/run-donation";
+import { getDonatedRun, getDonatedRunOgFields } from "@/lib/run-donation";
+import { historyCourseLockupTitle } from "@/lib/run-cover-phrase";
+import { ensureCoverSpec } from "@/lib/run-cover-suggest";
+import type { CoverSpec } from "@/lib/run-cover-types";
 import { loadRun, saveRun } from "@/lib/run-store";
 import { parseRunRouteSlug } from "@/lib/sts2-run-hash";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
@@ -24,6 +27,7 @@ import {
   TINKER_RIDER_CHOICE_LABELS,
   TINKER_RIDER_CHOICE_LABELS_EN,
 } from "@/lib/tinker-time";
+import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 
@@ -85,6 +89,7 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
       : bundledLookup;
   const [run, setRun] = useState<ReplayRun | null>(null);
   const [raw, setRaw] = useState<string | null>(null);
+  const [coverSpec, setCoverSpec] = useState<CoverSpec | null>(null);
   const [source, setSource] = useState<Source | null>(null);
   const [status, setStatus] = useState<Status>("loading");
 
@@ -103,9 +108,25 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
         if (stored) {
           const parsed = parseReplayRun(stored.raw);
           if (cancelled) return;
+          let cover = stored.coverSpec ?? null;
+          if (!cover) {
+            const og = await getDonatedRunOgFields(runId);
+            if (cancelled) return;
+            cover = og?.coverSpec ?? null;
+            if (cover) {
+              void saveRun({
+                runId,
+                raw: stored.raw,
+                origin: stored.origin,
+                noteBlocks: stored.noteBlocks,
+                coverSpec: cover,
+              }).catch(() => {});
+            }
+          }
           setRun(parsed);
           setRaw(stored.raw);
-          setSource("local");
+          setCoverSpec(cover);
+          setSource(stored.origin === "donation-cache" ? "donated" : "local");
           setStatus("ok");
           return;
         }
@@ -123,9 +144,11 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
             runId,
             raw: donated.raw,
             origin: "donation-cache",
+            coverSpec: donated.cover_spec,
           }).catch(() => {});
           setRun(parsed);
           setRaw(donated.raw);
+          setCoverSpec(donated.cover_spec);
           setSource("donated");
           setStatus("ok");
           return;
@@ -186,9 +209,14 @@ export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderP
         run={run}
         raw={raw}
         source={source}
+        coverSpec={coverSpec}
       />
     </HistoryCatalogLocaleProvider>
   );
+}
+
+function totalFloorsReached(run: ReplayRun): number {
+  return run.map_point_history.reduce((sum, act) => sum + act.length, 0);
 }
 
 function LocalizedRunDetail({
@@ -196,13 +224,40 @@ function LocalizedRunDetail({
   run,
   raw,
   source,
+  coverSpec,
 }: {
   runId: string;
   run: ReplayRun;
   raw: string | null;
   source: Source | null;
+  coverSpec: CoverSpec | null;
 }) {
+  const serviceLocale = useServiceLocale();
+  const tables = useGameI18n();
+  const serviceName = serviceMessages[serviceLocale].nav.historyCourse;
   const { catalog } = useHistoryCatalogLocale();
+  const watchTitle = useMemo(() => {
+    const cover = ensureCoverSpec(runId, run, coverSpec);
+    return historyCourseLockupTitle(
+      cover,
+      {
+        win: run.win,
+        totalFloors: totalFloorsReached(run),
+        ascension: run.ascension,
+      },
+      serviceLocale,
+      tables,
+    );
+  }, [coverSpec, run, runId, serviceLocale, tables]);
+
+  useEffect(() => {
+    if (!watchTitle) return;
+    const previous = document.title;
+    document.title = `${watchTitle} - ${serviceName}`;
+    return () => {
+      document.title = previous;
+    };
+  }, [serviceName, watchTitle]);
   const sideTipCatalog = useMemo(
     () => createLocalizedHistorySideTipCatalog(catalog),
     [catalog],
@@ -239,24 +294,31 @@ function LocalizedRunDetail({
   );
 
   return (
-    <>
-      {source && raw && (
-        <DonationPanel runId={runId} run={run} raw={raw} source={source} />
-      )}
-      <CardSideTipCatalogProvider
-        catalog={sideTipCatalog}
-        potions={catalog.allPotions}
-        enchantments={catalog.allEnchantments}
-      >
-        <HistoryCourseShell
-          runId={runId}
-          run={run}
-          cardsById={cardsById}
-          relicsById={relicsById}
-          potionsById={potionsById}
-        />
-      </CardSideTipCatalogProvider>
-    </>
+    <CardSideTipCatalogProvider
+      catalog={sideTipCatalog}
+      potions={catalog.allPotions}
+      enchantments={catalog.allEnchantments}
+    >
+      <HistoryCourseShell
+        runId={runId}
+        run={run}
+        cardsById={cardsById}
+        relicsById={relicsById}
+        potionsById={potionsById}
+        watchTitle={watchTitle}
+        belowStage={
+          source && raw ? (
+            <DonationPanel
+              embedded
+              runId={runId}
+              run={run}
+              raw={raw}
+              source={source}
+            />
+          ) : null
+        }
+      />
+    </CardSideTipCatalogProvider>
   );
 }
 

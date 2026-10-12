@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   MapBackdrop,
   SeededMapView,
@@ -735,12 +735,17 @@ export function HistoryCourseShell({
   cardsById,
   relicsById,
   potionsById,
+  watchTitle = "",
+  belowStage = null,
 }: {
   runId: string;
   run: ReplayRun;
   cardsById: Record<string, CodexCard>;
   relicsById: Record<string, CodexRelic>;
   potionsById: Record<string, CodexPotion>;
+  /** Index lockup title, shown under the player the way YouTube does. */
+  watchTitle?: string;
+  belowStage?: ReactNode;
 }) {
   const tables = useGameI18n();
   const gameLocale = useGameLocale();
@@ -1287,6 +1292,19 @@ export function HistoryCourseShell({
           onStampFloor={stampFloor}
         />
         </div>
+        {watchTitle || belowStage ? (
+          <div className="relative z-10 mt-3 w-full space-y-3">
+            {watchTitle ? (
+              <h1
+                data-testid="history-course-watch-title"
+                className="font-service text-xl font-semibold leading-7 text-zinc-100"
+              >
+                {watchTitle}
+              </h1>
+            ) : null}
+            {belowStage}
+          </div>
+        ) : null}
         <div className="relative z-10 mt-6 w-full">
           <HistoryCourseComments
             runId={runId}

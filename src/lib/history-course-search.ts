@@ -12,8 +12,8 @@ import {
 } from "@/lib/combo-types";
 import { historyRunCharacterLabel } from "@/lib/history-run-reference";
 import { displayNameForCoverElement } from "@/lib/run-cover-display";
-import { resolveCoverCaptionTitle, resolveCoverPhrase } from "@/lib/run-cover-phrase";
-import { coverPhrasePool, fallbackCoverTitlePhrase } from "@/lib/run-cover-suggest";
+import { historyCourseLockupTitle, resolveCoverPhrase } from "@/lib/run-cover-phrase";
+import { coverPhrasePool } from "@/lib/run-cover-suggest";
 import type { CoverSpec } from "@/lib/run-cover-types";
 import type { DonatedRunSummary } from "@/lib/run-donation";
 import { buildSearchTokens } from "@/lib/sts2-build-version";
@@ -328,23 +328,11 @@ export function buildHistoryCourseSearchDoc(input: {
     );
     addHaystackValue(
       parts,
-      resolveCoverCaptionTitle(
-        cover,
-        meta,
-        "ko",
-        korTables as GameI18nTables,
-        fallbackCoverTitlePhrase(cover, meta),
-      ),
+      historyCourseLockupTitle(cover, meta, "ko", korTables as GameI18nTables),
     );
     addHaystackValue(
       parts,
-      resolveCoverCaptionTitle(
-        cover,
-        meta,
-        "en",
-        engTables as GameI18nTables,
-        fallbackCoverTitlePhrase(cover, meta),
-      ),
+      historyCourseLockupTitle(cover, meta, "en", engTables as GameI18nTables),
     );
     for (const element of cover.elements) {
       addHaystackValue(parts, displayNameForCoverElement(element));

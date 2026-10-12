@@ -32,6 +32,18 @@ _Avoid_: 관련 엔티티, entity
 The shared detail UI for a card, relic, potion, or other resource, whether opened from a list or loaded by direct URL.
 _Avoid_: 상세 표면
 
+**역사 강의서**:
+The run replay. For now its UI reference is YouTube: a thumbnail lockup on the index, and that lockup's title under the player while the run plays.
+_Avoid_: a patch-note page or a Compendium detail as the layout reference
+
+**락업 제목**:
+The title under a History Course thumbnail and the title of that run on the watch page. The uploader can edit it.
+_Avoid_: 썸네일 문구
+
+**썸네일 문구**:
+The short line drawn on the History Course thumbnail itself.
+_Avoid_: 락업 제목
+
 ## Relationships
 
 - **Compendium** and **백과사전** are the same concept in different languages.
@@ -39,6 +51,7 @@ _Avoid_: 상세 표면
 - **도감** may refer to the **백과사전** colloquially, but is not the canonical generic term.
 - A **관련 리소스** links one **백과사전** resource to another without introducing the generic term "entity."
 - A **상세 보기** can appear as a modal from a list or as a direct URL view without becoming a separate navigation depth.
+- A History Course **락업 제목** is the watch-page title. The **썸네일 문구** stays on the thumbnail.
 
 ## Example dialogue
 
@@ -48,9 +61,13 @@ _Avoid_: 상세 표면
 > **Dev:** "Should the STS1 card index say 카드 도서관?"
 > **Domain expert:** "No. STS1 uses the game menu **카드 모음집**. **카드 도서관** is the STS2 menu."
 
+> **Dev:** "Is the line on the History Course thumbnail the page title?"
+> **Domain expert:** "No. That is the **썸네일 문구**. The **락업 제목** under the card is the title, including while the run plays. For now the layout reference is YouTube."
+
 ## Flagged ambiguities
 
 - "Codex" was used as both a code namespace and a user-facing service term - resolved: new product language should use **백과사전** or the exact in-game menu name instead.
 - "entity" was used as a generic label for cards, relics, potions, events, and similar items - resolved: use **관련 리소스** for cross-reference surfaces and direct names like card or relic elsewhere.
 - "상세 표면" was used for the modal/page shared detail UI - resolved: use **상세 보기**.
 - "카드 도서관" was used as if it named every game's card browser - resolved: STS2 only; STS1 is **카드 모음집**.
+- The History Course thumbnail line was treated as the run title - resolved: that line is the **썸네일 문구**. The **락업 제목** is the index title and the watch-page title. YouTube is the UI reference for now.

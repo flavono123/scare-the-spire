@@ -18,8 +18,8 @@ import { OwnPostMark } from "@/components/own-post-mark";
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import type { PostBlock } from "@/lib/chemical-types";
 import { buildHistoryCourseCommentThreadKey } from "@/lib/comment-threads";
-import { resolveCoverCaptionTitle } from "@/lib/run-cover-phrase";
-import { ensureCoverSpec, fallbackCoverTitlePhrase } from "@/lib/run-cover-suggest";
+import { historyCourseLockupTitle } from "@/lib/run-cover-phrase";
+import { ensureCoverSpec } from "@/lib/run-cover-suggest";
 import type { CoverSpec } from "@/lib/run-cover-types";
 import { formatBuildLabel, isBuildSupported } from "@/lib/sts2-build-version";
 import type { ReplayBadge, ReplayRun } from "@/lib/sts2-run-replay";
@@ -121,16 +121,11 @@ export function RunCard({
     Number.isFinite(runTimeSeconds) &&
     runTimeSeconds >= 0;
   const title = coverSpec
-    ? resolveCoverCaptionTitle(
+    ? historyCourseLockupTitle(
         coverSpec,
         { win, totalFloors, ascension },
         serviceLocale,
         tables,
-        fallbackCoverTitlePhrase(coverSpec, {
-          win,
-          totalFloors,
-          ascension,
-        }),
       )
     : seed;
   const versionLabel = formatBuildLabel(build);

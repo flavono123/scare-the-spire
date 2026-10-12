@@ -18,7 +18,9 @@ import {
   coverCatalogCard,
   useCoverCardCatalog,
 } from "@/hooks/use-cover-card-catalog";
+import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { historyCourseLockupTitle, lockupTitleForSave } from "@/lib/run-cover-phrase";
 import { displayNameForCoverElement } from "@/lib/run-cover-display";
 import {
   coverCharacterArtStyle,
@@ -92,6 +94,7 @@ export function CoverEditorSheet({
   onSave,
 }: CoverEditorSheetProps) {
   const serviceLocale = useServiceLocale();
+  const tables = useGameI18n();
   const copy = serviceMessages[serviceLocale].historyCourse.coverEditor;
   const catalog = useCoverCardCatalog();
   const [reshuffle, setReshuffle] = useState(0);
@@ -111,15 +114,22 @@ export function CoverEditorSheet({
     [reshuffle, run, runId],
   );
 
+  const visibleTitle = historyCourseLockupTitle(
+    initialCover,
+    meta,
+    serviceLocale,
+    tables,
+  );
+
   useEffect(() => {
     if (!open) return;
-    setDraft(initialCover);
+    setDraft({ ...initialCover, titlePhrase: visibleTitle });
     setVariant(initialCover.background.kind === "card-beta" ? "B" : "A");
     setReshuffle(0);
     setPhraseSeed(0);
     setQuery("");
     setElementFilter("all");
-  }, [initialCover, open]);
+  }, [initialCover, open, visibleTitle]);
 
   const bgCardId = backgroundCardId(draft);
   const phraseChips = useMemo(
@@ -258,8 +268,8 @@ export function CoverEditorSheet({
       );
       const payload = withAutoFalse({
         ...draft,
-        phrase: pair.phrase,
-        titlePhrase: pair.titlePhrase,
+        phrase: overlay || pair.phrase,
+        titlePhrase: lockupTitleForSave(draft.titlePhrase, pair.titlePhrase),
         elements: draft.elements.slice(0, 3),
       });
       await onSave(payload);
@@ -444,6 +454,43 @@ export function CoverEditorSheet({
                     <RefreshCw className="h-3 w-3" aria-hidden />
                     {copy.rerollPhrases}
                   </button>
+                </div>
+              </section>
+
+              <section className="space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="text-xs font-bold text-foreground">{copy.titleLabel}</h3>
+                  <span
+                    className={cn(
+                      "text-[10px] tabular-nums",
+                      (draft.titlePhrase?.length ?? 0) > 80
+                        ? "text-primary"
+                        : "text-muted-foreground",
+                    )}
+                  >
+                    {draft.titlePhrase?.length ?? 0}/80
+                  </span>
+                </div>
+                <input
+                  value={draft.titlePhrase ?? ""}
+                  maxLength={100}
+                  onChange={(e) =>
+                    setDraft((prev) => ({ ...prev, titlePhrase: e.target.value }))
+                  }
+                  className="w-full rounded-md border border-border bg-muted/50 px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/40"
+                  placeholder={copy.titlePlaceholder}
+                />
+                <div className="flex flex-wrap gap-1.5">
+                  {phraseChips.map((chip) => (
+                    <button
+                      key={`title:${chip}`}
+                      type="button"
+                      onClick={() => setDraft((prev) => ({ ...prev, titlePhrase: chip }))}
+                      className="rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-[11px] text-primary hover:border-primary/45"
+                    >
+                      {chip}
+                    </button>
+                  ))}
                 </div>
               </section>
 

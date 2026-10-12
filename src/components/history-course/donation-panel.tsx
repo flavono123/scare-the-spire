@@ -22,9 +22,11 @@ interface Props {
   run: ReplayRun;
   raw: string;
   source: "local" | "donated";
+  /** Sit under the watch title instead of wrapping the page column. */
+  embedded?: boolean;
 }
 
-export function DonationPanel({ runId, run, raw, source }: Props) {
+export function DonationPanel({ runId, run, raw, source, embedded = false }: Props) {
   const copy = serviceMessages[useServiceLocale()].historyCourse.donation;
   const { userId, ready, ensureUser } = useAuth();
   // We know it's donated if we loaded it from Supabase. Otherwise we
@@ -125,8 +127,7 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
     }
   };
 
-  return (
-    <div className={`${TOYBOX_WIDE_MAX_CLASS} px-4 pt-4`}>
+  const panel = (
       <div
         className={cn(
           "flex flex-wrap items-center gap-3 rounded-lg px-4 py-2.5 ring-1 ring-inset",
@@ -204,6 +205,8 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
           <p className="basis-full text-xs text-red-300">{error}</p>
         )}
       </div>
-    </div>
   );
+
+  if (embedded) return panel;
+  return <div className={`${TOYBOX_WIDE_MAX_CLASS} px-4 pt-4`}>{panel}</div>;
 }

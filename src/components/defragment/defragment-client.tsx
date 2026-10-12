@@ -44,7 +44,7 @@ import {
 import type { GameLocale } from "@/lib/i18n";
 import { syncDonatedRunNicknames } from "@/lib/run-donation";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
-import { resolveCoverCaptionTitle } from "@/lib/run-cover-phrase";
+import { historyCourseLockupTitle } from "@/lib/run-cover-phrase";
 import { cn } from "@/lib/utils";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
@@ -106,7 +106,7 @@ export function DefragmentClient({
     () => items.map((item) => {
       const meta = item.historyMeta;
       if (item.service !== "history_course" || !meta?.coverSpec) return item;
-      const title = resolveCoverCaptionTitle(
+      const title = historyCourseLockupTitle(
         meta.coverSpec,
         {
           win: meta.win,
@@ -115,7 +115,6 @@ export function DefragmentClient({
         },
         serviceLocale,
         tables,
-        meta.coverSpec.titlePhrase ?? meta.coverSpec.phrase,
       ).replace(/\s+/g, " ").trim();
       return title ? { ...item, title: title.slice(0, 120) } : item;
     }),
