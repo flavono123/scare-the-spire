@@ -23,6 +23,13 @@ export const DEFAULT_PAGE_OG_IMAGE: PageOgImage = {
   alt: "슬서운 이야기 — 협력 Coordinate",
 };
 
+export const NEOWSLETTER_INDEX_OG_IMAGE: PageOgImage = {
+  url: "/images/sts2/cards/neows_fury.webp",
+  width: 606,
+  height: 852,
+  alt: "니오우스레터 — 니오우의 격분 Neow's Fury",
+};
+
 export const PATCH_NOTES_PAGE_OG_IMAGE: PageOgImage = {
   url: cacheBustSts2ImageUrl("/images/sts2/og/patch-notes.jpg"),
   width: 1200,

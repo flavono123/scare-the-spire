@@ -1,18 +1,13 @@
 /**
- * Neowsletter permalinks. A claim is the section. Body lines inside it are
- * numbered in source order, skipping headings and blank lines, the same way
- * a patch line keeps one anchor per bullet.
+ * A Neowsletter section id is unique on that page, so the hash is the id
+ * itself. Patch lines keep a `patch-line-` prefix because their ids contain
+ * colons and are shared with comments.
  *
- *   /patches/neowsletters/2026-08#claim-ascension-10
- *   /patches/neowsletters/2026-08#claim-ascension-10-line-2
+ *   /patches/neowsletters/2026-08#roadmap
  */
 
 export function neowsletterClaimAnchorId(claimId: string): string {
-  return `claim-${claimId}`;
-}
-
-export function neowsletterLineAnchorId(claimId: string, lineNumber: number): string {
-  return `${neowsletterClaimAnchorId(claimId)}-line-${lineNumber}`;
+  return claimId;
 }
 
 export function neowsletterIssuePath(issueId: string): string {
@@ -21,10 +16,6 @@ export function neowsletterIssuePath(issueId: string): string {
 
 export function neowsletterClaimHref(issueId: string, claimId: string): string {
   return `${neowsletterIssuePath(issueId)}#${neowsletterClaimAnchorId(claimId)}`;
-}
-
-export function neowsletterLineHref(issueId: string, claimId: string, lineNumber: number): string {
-  return `${neowsletterIssuePath(issueId)}#${neowsletterLineAnchorId(claimId, lineNumber)}`;
 }
 
 export function neowsletterLineKind(line: string): "heading" | "body" | "skip" {

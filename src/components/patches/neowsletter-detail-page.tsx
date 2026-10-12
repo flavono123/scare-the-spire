@@ -20,7 +20,7 @@ import {
   neowsletterArt,
   readNeowsletterDocument,
 } from "@/lib/neowsletters";
-import { PATCH_NOTES_PAGE_OG_IMAGE } from "@/lib/page-og-images";
+import { NEOWSLETTER_INDEX_OG_IMAGE } from "@/lib/page-og-images";
 import { getServiceOgMetadata } from "@/lib/service-metadata";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
@@ -45,11 +45,14 @@ export async function getNeowsletterDetailMetadata({
   const description = issue
     ? (serviceLocale === "ko" ? issue.summaryKo : issue.summary)
     : copy.metadataDescription;
+  const art = issue ? neowsletterArt(issue, serviceLocale) : null;
   return getServiceOgMetadata({
     serviceLocale,
     title,
     description,
-    image: PATCH_NOTES_PAGE_OG_IMAGE,
+    image: art
+      ? { url: art.imageUrl, alt: art.alt }
+      : NEOWSLETTER_INDEX_OG_IMAGE,
     canonicalPath: `/patches/neowsletters/${issueId}`,
   });
 }
@@ -136,23 +139,17 @@ export async function NeowsletterDetailPage({
       {art ? <PatchArtPreview art={art} priority /> : null}
       {document.claims.map((claim) => {
         const claimAnchorId = neowsletterClaimAnchorId(claim.id);
+        const hasHeading = /^#{2,6}\s/m.test(claim.markdown);
         return (
-          <section key={claim.id} data-neowsletter-claim={claim.id} className="group/claim relative mt-6">
+          <section key={claim.id} data-neowsletter-claim={claim.id} className="mt-6">
             <div
-              id={claimAnchorId}
-              className="scroll-mt-24 rounded-md pr-5 target:bg-primary/10"
+              id={hasHeading ? undefined : claimAnchorId}
+              className={hasHeading ? undefined : "scroll-mt-24 target:rounded-sm target:bg-primary/10"}
             >
-              <a
-                href={`#${claimAnchorId}`}
-                aria-label={copy.sectionAnchor}
-                className="absolute right-0 top-0 text-xs text-muted-foreground/45 transition-colors hover:text-primary focus-visible:text-primary group-hover/claim:text-muted-foreground"
-              >
-                #
-              </a>
               <PatchNoteRenderer
                 markdown={claim.markdown}
-                lineAnchorClaimId={claim.id}
-                lineAnchorLabel={copy.lineAnchor}
+                sectionAnchorId={hasHeading ? claimAnchorId : undefined}
+                sectionAnchorLabel={copy.sectionAnchor}
                 {...rendererProps}
               />
             </div>

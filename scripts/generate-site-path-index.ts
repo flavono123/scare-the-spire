@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { neowsletterBodyLines, neowsletterClaimHref, neowsletterLineHref } from "../src/lib/neowsletter-anchors";
+import { neowsletterBodyLines, neowsletterClaimHref } from "../src/lib/neowsletter-anchors";
 import { splitNeowsletterDocument } from "../src/lib/neowsletters";
 import type { SitePathEntry, SitePathIndex } from "../src/lib/site-paths";
 import { getDefragmentNavTitle } from "../src/lib/borrowed-game-copy";
@@ -12,6 +12,9 @@ type Issue = {
   titleKo: string;
   summary: string;
   summaryKo: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  imageAltKo?: string;
 };
 
 type Patch = {
@@ -39,6 +42,10 @@ function plain(raw: string): string {
     .trim();
 }
 
+function shortIssueTitle(title: string): string {
+  return title.replace(/^(?:니오우스레터|The Neowsletter)\s*[—-]\s*/i, "").trim() || title;
+}
+
 function clip(text: string, max = 48): string {
   const trimmed = text.replace(/\s+/g, " ").trim();
   if (trimmed.length <= max) return trimmed;
@@ -56,6 +63,9 @@ function page(
   labelEn: string,
   previewKo = "",
   previewEn = "",
+  ogImage = "",
+  ogImageAltKo = "",
+  ogImageAltEn = "",
 ): SitePathEntry {
   return {
     href,
@@ -66,6 +76,9 @@ function page(
     titleEn: labelEn,
     previewKo,
     previewEn,
+    ogImage,
+    ogImageAltKo,
+    ogImageAltEn,
   };
 }
 
@@ -74,22 +87,16 @@ function main() {
   const en = serviceMessages.en;
   const entries: SitePathEntry[] = [
     page("/patches", ko.patchNotes.indexTitle, en.patchNotes.indexTitle),
-    page("/patches/neowsletters", ko.neowsletters.indexTitle, en.neowsletters.indexTitle, ko.neowsletters.metadataDescription, en.neowsletters.metadataDescription),
-    page("/compendium", ko.codex.metadataGameTitle, en.codex.metadataGameTitle),
-    page("/compendium/cards", ko.codex.cards, en.codex.cards),
-    page("/compendium/relics", ko.codex.relics, en.codex.relics),
-    page("/compendium/potions", ko.codex.potions, en.codex.potions),
-    page("/compendium/powers", ko.codex.powers, en.codex.powers),
-    page("/compendium/enchantments", ko.codex.enchantments, en.codex.enchantments),
-    page("/compendium/events", ko.codex.events, en.codex.events),
-    page("/compendium/monsters", ko.codex.monsters, en.codex.monsters),
-    page("/compendium/ancients", ko.codex.ancients, en.codex.ancients),
-    page("/compendium/characters", ko.codex.characters, en.codex.characters),
-    page("/compendium/keywords", ko.codex.keywords, en.codex.keywords),
-    page("/compendium/epochs", ko.codex.epochs, en.codex.epochs),
-    page("/compendium/badges", ko.codex.badges, en.codex.badges),
-    page("/compendium/modifiers", ko.codex.modifiers, en.codex.modifiers),
-    page("/compendium/ascensions", ko.codex.ascensions, en.codex.ascensions),
+    page(
+      "/patches/neowsletters",
+      ko.neowsletters.indexTitle,
+      en.neowsletters.indexTitle,
+      ko.neowsletters.metadataDescription,
+      en.neowsletters.metadataDescription,
+      "/images/sts2/cards/neows_fury.webp",
+      "니오우의 격분",
+      "Neow's Fury",
+    ),
     page("/pagestorm", ko.pagestorm.title, en.pagestorm.title, ko.pagestorm.subtitle, en.pagestorm.subtitle),
     page("/defragment", getDefragmentNavTitle("kor"), getDefragmentNavTitle("eng"), ko.defragment.subtitle, en.defragment.subtitle),
   ];
@@ -118,42 +125,33 @@ function main() {
       titleEn: issue.title,
       previewKo: issue.summaryKo,
       previewEn: issue.summary,
+      ogImage: issue.imageUrl,
+      ogImageAltKo: issue.imageAltKo ?? issue.titleKo,
+      ogImageAltEn: issue.imageAlt ?? issue.title,
     });
     const koDoc = splitNeowsletterDocument(fs.readFileSync(path.join(notesDir, `${issue.id}.ko.md`), "utf8"));
     const enDoc = splitNeowsletterDocument(fs.readFileSync(path.join(notesDir, `${issue.id}.md`), "utf8"));
     const enById = new Map(enDoc.claims.map((claim) => [claim.id, claim.markdown]));
     for (const claim of koDoc.claims) {
       const enMarkdown = enById.get(claim.id) ?? "";
-      const sectionKo = heading(claim.markdown) || clip(plain(neowsletterBodyLines(claim.markdown)[0] ?? issue.titleKo));
-      const sectionEn = heading(enMarkdown) || clip(plain(neowsletterBodyLines(enMarkdown)[0] ?? issue.title));
+      const sectionKo = heading(claim.markdown);
+      const sectionEn = heading(enMarkdown);
+      if (!sectionKo && !sectionEn) continue;
+      const anchorKo = sectionKo || sectionEn;
+      const anchorEn = sectionEn || sectionKo;
       entries.push({
         href: neowsletterClaimHref(issue.id, claim.id),
         kind: "neowsletter-section",
-        labelKo: sectionKo,
-        labelEn: sectionEn,
-        titleKo: `${issue.titleKo} · ${sectionKo}`,
-        titleEn: `${issue.title} · ${sectionEn}`,
-        previewKo: clip(plain(neowsletterBodyLines(claim.markdown)[0] ?? ""), 140),
-        previewEn: clip(plain(neowsletterBodyLines(enMarkdown)[0] ?? ""), 140),
+        labelKo: `니오우스레터/${shortIssueTitle(issue.titleKo)}#${anchorKo}`,
+        labelEn: `Neowsletter/${shortIssueTitle(issue.title)}#${anchorEn}`,
+        titleKo: issue.titleKo,
+        titleEn: issue.title,
+        previewKo: clip(plain(neowsletterBodyLines(claim.markdown)[0] ?? anchorKo), 140),
+        previewEn: clip(plain(neowsletterBodyLines(enMarkdown)[0] ?? anchorEn), 140),
+        ogImage: issue.imageUrl,
+        ogImageAltKo: issue.imageAltKo ?? issue.titleKo,
+        ogImageAltEn: issue.imageAlt ?? issue.title,
       });
-      const koLines = neowsletterBodyLines(claim.markdown);
-      const enLines = neowsletterBodyLines(enMarkdown);
-      const count = Math.max(koLines.length, enLines.length);
-      for (let index = 0; index < count; index += 1) {
-        const koLine = plain(koLines[index] ?? "");
-        const enLine = plain(enLines[index] ?? "");
-        if (!koLine && !enLine) continue;
-        entries.push({
-          href: neowsletterLineHref(issue.id, claim.id, index + 1),
-          kind: "neowsletter-line",
-          labelKo: clip(koLine || enLine),
-          labelEn: clip(enLine || koLine),
-          titleKo: `${issue.titleKo} · ${sectionKo}`,
-          titleEn: `${issue.title} · ${sectionEn}`,
-          previewKo: koLine,
-          previewEn: enLine,
-        });
-      }
     }
   }
 

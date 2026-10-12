@@ -3,14 +3,16 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 import { NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
 import { useState } from "react";
-import { GameHoverTip } from "@/components/codex/hover-tip";
 import { PortaledHoverTipLayer } from "@/components/codex/portaled-hover-tip-layer";
+import { SitePathHoverTip } from "./site-path-hover-tip";
 
 function PagestormInternalLinkView({ editor, node }: NodeViewProps) {
   const href = String(node.attrs.href ?? "");
   const label = String(node.attrs.label ?? href);
   const title = String(node.attrs.title ?? label);
   const preview = String(node.attrs.preview ?? "");
+  const imageUrl = String(node.attrs.ogImage ?? "");
+  const imageAlt = String(node.attrs.ogImageAlt ?? "");
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -31,11 +33,14 @@ function PagestormInternalLinkView({ editor, node }: NodeViewProps) {
         >
           {label}
         </a>
-        {hovered && (title || preview) ? (
+        {hovered && (title || preview || imageUrl) ? (
           <PortaledHoverTipLayer pin="top-left">
-            <GameHoverTip title={title} style={{ minWidth: 220, maxWidth: 320 }}>
-              <span className="block text-left">{preview || href}</span>
-            </GameHoverTip>
+            <SitePathHoverTip
+              imageUrl={imageUrl || undefined}
+              imageAlt={imageAlt}
+              title={title}
+              description={preview}
+            />
           </PortaledHoverTipLayer>
         ) : null}
       </span>
@@ -48,6 +53,8 @@ export function pagestormInternalLinkContent(entry: {
   label: string;
   title: string;
   preview: string;
+  ogImage?: string;
+  ogImageAlt?: string;
 }) {
   return {
     type: "pagestormInternalLink",
@@ -56,6 +63,8 @@ export function pagestormInternalLinkContent(entry: {
       label: entry.label,
       title: entry.title,
       preview: entry.preview,
+      ogImage: entry.ogImage ?? "",
+      ogImageAlt: entry.ogImageAlt ?? "",
     },
   };
 }
@@ -73,6 +82,8 @@ export const PagestormInternalLink = Node.create({
       label: { default: "" },
       title: { default: "" },
       preview: { default: "" },
+      ogImage: { default: "" },
+      ogImageAlt: { default: "" },
     };
   },
 

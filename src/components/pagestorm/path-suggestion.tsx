@@ -8,10 +8,13 @@ import { ReactRenderer } from "@tiptap/react";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import type { ServiceLocale } from "@/lib/i18n";
 import {
+  canonicalSitePath,
+  isNeowsletterIssueHref,
   localizedSiteHref,
   openSitePathQuery,
   sitePathText,
   type SitePathEntry,
+  type SitePathMenuItem,
 } from "@/lib/site-paths";
 
 export const pagestormPathPluginKey = new PluginKey("pagestorm-site-path");
@@ -22,14 +25,29 @@ export function findSitePathMatch(config: { $position: ResolvedPos }): Suggestio
   if (!nodeBefore?.isText) return null;
   if (nodeBefore.marks.some((mark) => mark.type.name === "link")) return null;
   const query = openSitePathQuery(nodeBefore.text ?? "");
-  if (!query) return null;
+  if (query) {
+    return {
+      range: {
+        from: $position.pos - query.length,
+        to: $position.pos,
+      },
+      query,
+      text: query,
+    };
+  }
+  if (!/^#[^\s]*$/.test(nodeBefore.text ?? "")) return null;
+  const beforeHash = $position.doc.resolve($position.pos - nodeBefore.nodeSize);
+  const link = beforeHash.nodeBefore;
+  if (link?.type.name !== "pagestormInternalLink") return null;
+  const href = canonicalSitePath(String(link.attrs.href ?? "")) ?? "";
+  if (!isNeowsletterIssueHref(href)) return null;
   return {
     range: {
-      from: $position.pos - query.length,
+      from: beforeHash.pos - link.nodeSize,
       to: $position.pos,
     },
-    query,
-    text: query,
+    query: `${href}${nodeBefore.text}`,
+    text: nodeBefore.text ?? "",
   };
 }
 
@@ -67,10 +85,10 @@ type PathMenuRef = {
 const PathMenu = forwardRef<
   PathMenuRef,
   {
-    items: SitePathEntry[];
+    items: SitePathMenuItem[];
     locale: ServiceLocale;
     emptyLabel: string;
-    command: (item: SitePathEntry) => void;
+    command: (item: SitePathMenuItem) => void;
   }
 >(function PathMenu({ items, locale, emptyLabel, command }, ref) {
   const itemKey = items.map((item) => item.href).join("|");
@@ -129,7 +147,10 @@ const PathMenu = forwardRef<
           onClick={() => command(item)}
           onMouseEnter={() => setSelectedIndex(index)}
         >
-          <span className="block truncate text-sm">{sitePathText(item, locale, "label")}</span>
+          <span className="block truncate text-sm">
+            {sitePathText(item, locale, "label")}
+            {item.action === "drill" ? " ›" : ""}
+          </span>
           <span className="block truncate text-[11px] text-muted-foreground">
             {localizedSiteHref(item.href, locale)}
           </span>
@@ -143,8 +164,8 @@ export function createPagestormPathSuggestion(options: {
   getEntries: () => SitePathEntry[];
   getLocale: () => ServiceLocale;
   getEmptyLabel: () => string;
-  rank: (query: string, entries: SitePathEntry[], locale: ServiceLocale) => SitePathEntry[];
-  onPick: (payload: { entry: SitePathEntry; range: { from: number; to: number } }) => void;
+  rank: (query: string, entries: SitePathEntry[], locale: ServiceLocale) => SitePathMenuItem[];
+  onPick: (payload: { entry: SitePathMenuItem; range: { from: number; to: number } }) => void;
 }) {
   return PagestormPathSuggestion.configure({
     suggestion: {
@@ -154,7 +175,7 @@ export function createPagestormPathSuggestion(options: {
       findSuggestionMatch: findSitePathMatch,
       items: ({ query }) => options.rank(query, options.getEntries(), options.getLocale()),
       command: ({ range, props }) => {
-        const entry = props as unknown as SitePathEntry;
+        const entry = props as unknown as SitePathMenuItem;
         if (!entry?.href) return;
         options.onPick({ entry, range });
       },

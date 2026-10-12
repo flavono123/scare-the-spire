@@ -1106,7 +1106,7 @@
     if (storyId.startsWith("sts2-patch:")) return `/patches/${storyId.slice("sts2-patch:".length)}${anchor}`;
     if (storyId.startsWith("neowsletter:")) {
       const [, month, claim] = storyId.split(":");
-      return `/patches/neowsletters/${month}#claim-${claim || ""}`;
+      return `/patches/neowsletters/${month}#${claim || ""}`;
     }
     if (storyId.startsWith("sts2-codex:") || storyId.startsWith("sts1-codex:")) {
       const [, type, id] = storyId.split(":");

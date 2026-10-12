@@ -146,22 +146,8 @@ export function PagestormEditor({
   }, [serviceLocale]);
 
   useEffect(() => {
-    const resources: SitePathEntry[] = [];
-    for (const entity of [...entities, ...sts1Entities]) {
-      if (!entity.href?.startsWith("/compendium")) continue;
-      resources.push({
-        href: entity.href,
-        kind: "page",
-        labelKo: entity.nameKo,
-        labelEn: entity.nameEn || entity.nameKo,
-        titleKo: entity.nameKo,
-        titleEn: entity.nameEn || entity.nameKo,
-        previewKo: "",
-        previewEn: "",
-      });
-    }
-    pathsRef.current = [...(sitePathIndex?.entries ?? []), ...resources];
-  }, [entities, sitePathIndex, sts1Entities]);
+    pathsRef.current = sitePathIndex?.entries ?? [];
+  }, [sitePathIndex]);
 
   function internalLinkFromPath(href: string, label?: string) {
     const locale = localeRef.current;
@@ -173,6 +159,8 @@ export function PagestormEditor({
         label: label?.trim() || sitePathText(entry, locale, "label"),
         title: sitePathText(entry, locale, "title"),
         preview: sitePathText(entry, locale, "preview"),
+        ogImage: entry.ogImage,
+        ogImageAlt: locale === "en" ? entry.ogImageAltEn : entry.ogImageAltKo,
       });
     }
     const visible = label?.trim() || canonical;
@@ -208,6 +196,10 @@ export function PagestormEditor({
       onPick: ({ entry, range }) => {
         const current = editorRef.current;
         if (!current) return;
+        if (entry.action === "drill") {
+          current.chain().focus().insertContentAt(range, entry.href).run();
+          return;
+        }
         exitSuggestion(current.view, pagestormPathPluginKey);
         const locale = localeRef.current;
         current.chain().focus().insertContentAt(range, pagestormInternalLinkContent({
@@ -215,6 +207,8 @@ export function PagestormEditor({
           label: sitePathText(entry, locale, "label"),
           title: sitePathText(entry, locale, "title"),
           preview: sitePathText(entry, locale, "preview"),
+          ogImage: entry.ogImage,
+          ogImageAlt: locale === "en" ? entry.ogImageAltEn : entry.ogImageAltKo,
         })).run();
       },
     }),

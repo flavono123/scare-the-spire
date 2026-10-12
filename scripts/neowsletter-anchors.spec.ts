@@ -5,7 +5,6 @@ import { commentThreadHref } from "../src/lib/comment-threads";
 import {
   neowsletterBodyLines,
   neowsletterClaimHref,
-  neowsletterLineHref,
   neowsletterLineKind,
 } from "../src/lib/neowsletter-anchors";
 import { splitNeowsletterDocument } from "../src/lib/neowsletters";
@@ -18,8 +17,8 @@ assert.equal(
   neowsletterClaimHref("2026-08", "ascension-10"),
 );
 assert.equal(
-  neowsletterLineHref("2026-08", "ascension-10", 2),
-  "/patches/neowsletters/2026-08#claim-ascension-10-line-2",
+  neowsletterClaimHref("2026-08", "roadmap"),
+  "/patches/neowsletters/2026-08#roadmap",
 );
 
 const notesDir = path.join(process.cwd(), "data/sts2-neowsletters");

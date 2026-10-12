@@ -9,7 +9,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { getNeowsletters, neowsletterArt } from "@/lib/neowsletters";
-import { PATCH_NOTES_PAGE_OG_IMAGE } from "@/lib/page-og-images";
+import { NEOWSLETTER_INDEX_OG_IMAGE } from "@/lib/page-og-images";
 import { getServiceOgMetadata } from "@/lib/service-metadata";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
@@ -20,7 +20,7 @@ export function getNeowsletterListMetadata(serviceLocale: ServiceLocale): Metada
     serviceLocale,
     title: copy.indexTitle,
     description: copy.metadataDescription,
-    image: PATCH_NOTES_PAGE_OG_IMAGE,
+    image: NEOWSLETTER_INDEX_OG_IMAGE,
     canonicalPath: "/patches/neowsletters",
   });
 }
