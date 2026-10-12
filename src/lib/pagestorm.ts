@@ -176,3 +176,21 @@ export function normalizePagestormPostCard(row: unknown): PagestormPostCard {
 export function pagestormDetailHref(postId: string): string {
   return `${PAGESTORM_HREF}/${postId}`;
 }
+
+export function pagestormPostOgImage(content: unknown): { url: string; width: number; height: number; alt: string } {
+  const thumb = isPagestormDoc(content) ? pagestormFirstAssetThumb(content) : null;
+  if (!thumb?.imageUrl) {
+    return {
+      url: PAGESTORM_BACKGROUND_SRC,
+      width: 1000,
+      height: 760,
+      alt: "서류 폭풍 — Pagestorm",
+    };
+  }
+  return {
+    url: thumb.imageUrl,
+    width: 1000,
+    height: 760,
+    alt: thumb.name || "서류 폭풍 — Pagestorm",
+  };
+}

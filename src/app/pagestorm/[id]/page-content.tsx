@@ -6,11 +6,12 @@ import { getPagestormGameCopy } from "@/lib/borrowed-game-copy";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { PAGESTORM_PAGE_OG_IMAGE } from "@/lib/page-og-images";
-import { PAGESTORM_BACKGROUND_SRC, PAGESTORM_HREF } from "@/lib/pagestorm";
+import { PAGESTORM_BACKGROUND_SRC, PAGESTORM_HREF, pagestormPostOgImage } from "@/lib/pagestorm";
 import {
   composeToyBoxPostOgDescription,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
+import { clipOgDescription, getPagestormPostOgFields } from "@/lib/toybox-post-og";
 import { metadataRecordId } from "@/lib/static-detail-shell";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
@@ -22,17 +23,23 @@ export async function generatePagestormPostMetadata(
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const gameCopy = await getPagestormGameCopy(gameLocale);
   const copy = serviceMessages[serviceLocale].pagestorm;
-  const description = composeToyBoxPostOgDescription({
+  const fallbackDescription = composeToyBoxPostOgDescription({
     serviceLocale,
     serviceName: gameCopy.title,
     serviceDescription: copy.subtitle,
   });
   const recordId = metadataRecordId(id);
+  const fields = recordId ? await getPagestormPostOgFields(recordId) : null;
+  const title = fields?.title.trim() || gameCopy.title;
+  const description = fields
+    ? clipOgDescription(fields.contentText, fallbackDescription)
+    : fallbackDescription;
+  const image = fields ? pagestormPostOgImage(fields.content) : PAGESTORM_PAGE_OG_IMAGE;
   return getServiceOgMetadata({
     serviceLocale,
-    title: gameCopy.title,
+    title,
     description,
-    image: PAGESTORM_PAGE_OG_IMAGE,
+    image,
     canonicalPath: recordId ? `${PAGESTORM_HREF}/${recordId}` : PAGESTORM_HREF,
   });
 }

@@ -1,7 +1,14 @@
+import { pagestormPostOgImage } from "../src/lib/pagestorm";
+import {
+  DEFRAGMENT_PAGE_OG_IMAGE,
+  PAGESTORM_PAGE_OG_IMAGE,
+} from "../src/lib/page-og-images";
 import {
   chemicalPostOgImage,
+  clipOgDescription,
   comboPostOgImage,
   coverOgImageFromFields,
+  postBlockOgImage,
   toyboxResourceOgImageUrl,
   truncateOgTitle,
 } from "../src/lib/toybox-post-og";
@@ -390,6 +397,48 @@ export async function fetchDetailShellOgData(
         ? `${game} · ${brand} · Transfigure · Rewrite game element text`
         : `${game} · ${brand} · 변형 · 슬레이 더 스파이어 2 게임 요소 설명 다시 쓰기`;
 
+    return { title, description, image, url: canonicalUrl };
+  }
+
+  if (target.service === "pagestorm" || target.service === "defragment-pagestorm") {
+    const row = await fetchSupabaseRestSingleRow<{
+      title: string | null;
+      content_text: string | null;
+      content: unknown;
+    }>(config.url, config.anonKey, "pagestorm_posts", "title, content_text, content", target.recordId, config.env);
+    if (!row) return null;
+    const rawTitle = truncateOgTitle(row.title || "");
+    const fallbackServiceName = serviceLocale === "en" ? "Pagestorm" : "서류 폭풍";
+    const title = rawTitle ? `${rawTitle} - ${brand}` : `${fallbackServiceName} - ${brand}`;
+    const imageSource = row.content ? pagestormPostOgImage(row.content) : PAGESTORM_PAGE_OG_IMAGE;
+    const image = imageSource.url.startsWith("http") ? imageSource.url : `${siteOrigin}${imageSource.url}`;
+    const description = clipOgDescription(
+      row.content_text || "",
+      serviceLocale === "en"
+        ? `${game} · ${brand} · Pagestorm · Write a document with game elements`
+        : `${game} · ${brand} · 서류 폭풍 · 게임 요소로 문서 쓰기`,
+    );
+    return { title, description, image, url: canonicalUrl };
+  }
+
+  if (target.service === "defragment") {
+    const row = await fetchSupabaseRestSingleRow<{
+      title: string | null;
+      content_text: string | null;
+      content: unknown;
+    }>(config.url, config.anonKey, "defragment_posts", "title, content_text, content", target.recordId, config.env);
+    if (!row) return null;
+    const rawTitle = truncateOgTitle(row.title || "");
+    const fallbackServiceName = serviceLocale === "en" ? "Defragment" : "조각모음";
+    const title = rawTitle ? `${rawTitle} - ${brand}` : `${fallbackServiceName} - ${brand}`;
+    const imageSource = postBlockOgImage(asPostBlocks(row.content), DEFRAGMENT_PAGE_OG_IMAGE);
+    const image = imageSource.url.startsWith("http") ? imageSource.url : `${siteOrigin}${imageSource.url}`;
+    const description = clipOgDescription(
+      row.content_text || "",
+      serviceLocale === "en"
+        ? `${game} · ${brand} · Defragment · Community`
+        : `${game} · ${brand} · 조각모음 · 커뮤니티`,
+    );
     return { title, description, image, url: canonicalUrl };
   }
 

@@ -12,6 +12,7 @@ import {
   composeToyBoxPostOgDescription,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
+import { clipOgDescription, getDefragmentPostOgFields, postBlockOgImage } from "@/lib/toybox-post-og";
 import { metadataRecordId } from "@/lib/static-detail-shell";
 import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
@@ -22,17 +23,23 @@ export async function generateDefragmentPostMetadata(
 ): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const gameCopy = await getDefragmentGameCopy(gameLocale);
-  const description = composeToyBoxPostOgDescription({
+  const fallbackDescription = composeToyBoxPostOgDescription({
     serviceLocale,
     serviceName: serviceMessages[serviceLocale].nav.defragment,
     serviceDescription: serviceMessages[serviceLocale].defragment.subtitle,
   });
   const recordId = metadataRecordId(id);
+  const fields = recordId ? await getDefragmentPostOgFields(recordId) : null;
+  const title = fields?.title.trim() || gameCopy.title;
+  const description = fields
+    ? clipOgDescription(fields.contentText, fallbackDescription)
+    : fallbackDescription;
+  const image = fields ? postBlockOgImage(fields.content, DEFRAGMENT_PAGE_OG_IMAGE) : DEFRAGMENT_PAGE_OG_IMAGE;
   return getServiceOgMetadata({
     serviceLocale,
-    title: gameCopy.title,
+    title,
     description,
-    image: DEFRAGMENT_PAGE_OG_IMAGE,
+    image,
     canonicalPath: recordId ? `/defragment/${recordId}` : "/defragment",
   });
 }

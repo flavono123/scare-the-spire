@@ -194,6 +194,11 @@ export const PAGE_OG_IMAGE_RULES = [
     image: PAGESTORM_PAGE_OG_IMAGE,
   },
   {
+    pattern: "/pagestorm/*",
+    label: "서류 폭풍 글",
+    image: PAGESTORM_PAGE_OG_IMAGE,
+  },
+  {
     pattern: "/colorful-philosophers",
     label: "다채로운 철학자들",
     image: COLORFUL_PHILOSOPHERS_PAGE_OG_IMAGE,

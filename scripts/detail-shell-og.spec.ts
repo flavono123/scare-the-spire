@@ -1,4 +1,7 @@
 import assert from "node:assert/strict";
+import { pagestormPostOgImage } from "../src/lib/pagestorm";
+import { clipOgDescription, postBlockOgImage } from "../src/lib/toybox-post-og";
+import { DEFRAGMENT_PAGE_OG_IMAGE } from "../src/lib/page-og-images";
 import { parseDetailShellTarget } from "../workers/detail-shell-og";
 
 // Default locale routes
@@ -33,6 +36,38 @@ assert.deepEqual(thisOrThatTarget, {
 const transfigureTarget = parseDetailShellTarget("/transfigure/test-post-uuid");
 assert.deepEqual(transfigureTarget, {
   service: "transfigure",
+  recordId: "test-post-uuid",
+  gameLocale: "",
+});
+
+assert.equal(pagestormPostOgImage({ type: "doc", content: [] }).url, "/images/sts2/cards/pagestorm.webp");
+assert.equal(
+  pagestormPostOgImage({
+    type: "doc",
+    content: [{ type: "gameAsset", attrs: { imageUrl: "/images/sts2/cards/bash.webp", kind: "card", name: "Bash" } }],
+  }).url,
+  "/images/sts2/cards/bash.webp",
+);
+assert.equal(clipOgDescription("", "fallback"), "fallback");
+assert.equal(postBlockOgImage([], DEFRAGMENT_PAGE_OG_IMAGE).url, DEFRAGMENT_PAGE_OG_IMAGE.url);
+
+const pagestormTarget = parseDetailShellTarget("/pagestorm/test-post-uuid");
+assert.deepEqual(pagestormTarget, {
+  service: "pagestorm",
+  recordId: "test-post-uuid",
+  gameLocale: "",
+});
+
+const defragmentTarget = parseDetailShellTarget("/defragment/test-post-uuid");
+assert.deepEqual(defragmentTarget, {
+  service: "defragment",
+  recordId: "test-post-uuid",
+  gameLocale: "",
+});
+
+const defragmentPagestorm = parseDetailShellTarget("/defragment/pagestorm/test-post-uuid");
+assert.deepEqual(defragmentPagestorm, {
+  service: "defragment-pagestorm",
   recordId: "test-post-uuid",
   gameLocale: "",
 });

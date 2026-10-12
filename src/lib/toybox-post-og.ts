@@ -23,6 +23,13 @@ import { youtubeThumbnailUrl } from "@/lib/youtube-reference";
 
 export const OG_TITLE_MAX_LENGTH = 80;
 
+export function clipOgDescription(value: string, fallback = "", max = 180): string {
+  const trimmed = value.replace(/\s+/g, " ").trim();
+  if (!trimmed) return fallback;
+  if (trimmed.length <= max) return trimmed;
+  return `${trimmed.slice(0, max - 1).trimEnd()}…`;
+}
+
 export function truncateOgTitle(value: string): string {
   const trimmed = value.replace(/\s+/g, " ").trim();
   if (!trimmed) return "";
@@ -172,6 +179,25 @@ export function firstChemicalKeywordResource(
   return null;
 }
 
+export function postBlockOgImage(content: PostBlock[], fallback: PageOgImage): PageOgImage {
+  const keyword = firstChemicalKeywordResource(content);
+  const keywordUrl = keyword ? toyboxResourceOgImageUrl(keyword.type, keyword.id) : null;
+  if (keywordUrl) {
+    return { url: keywordUrl, width: 1000, height: 760, alt: keyword?.id ?? fallback.alt };
+  }
+  for (const block of content) {
+    if (block.type === "entity") {
+      const url = toyboxResourceOgImageUrl(block.entityType, block.entityId);
+      if (url) return { url, width: 1000, height: 760, alt: block.displayText || fallback.alt };
+    }
+    if (block.type === "card-con") {
+      const url = toyboxResourceOgImageUrl("card", block.cardId);
+      if (url) return { url, width: 1000, height: 760, alt: block.displayText || fallback.alt };
+    }
+  }
+  return fallback;
+}
+
 export function chemicalPostOgImage(content: PostBlock[]): PageOgImage {
   const keyword = firstChemicalKeywordResource(content);
   const url = keyword
@@ -276,6 +302,52 @@ export async function getThisOrThatPostOgFields(id: string): Promise<{
     reason: typeof row.reason === "string" ? row.reason : "",
     leftType: row.left_type,
     leftId: row.left_id,
+  };
+}
+
+export async function getPagestormPostOgFields(id: string): Promise<{
+  title: string;
+  contentText: string;
+  content: unknown;
+} | null> {
+  const row = await selectToyBoxOgRow<{
+    title: string | null;
+    content_text: string | null;
+    content: unknown;
+  }>(
+    "pagestorm_posts.select.og-fields",
+    "pagestorm_posts",
+    id,
+    "title, content_text, content",
+  );
+  if (!row) return null;
+  return {
+    title: typeof row.title === "string" ? row.title : "",
+    contentText: typeof row.content_text === "string" ? row.content_text : "",
+    content: row.content,
+  };
+}
+
+export async function getDefragmentPostOgFields(id: string): Promise<{
+  title: string;
+  contentText: string;
+  content: PostBlock[];
+} | null> {
+  const row = await selectToyBoxOgRow<{
+    title: string | null;
+    content_text: string | null;
+    content: unknown;
+  }>(
+    "defragment_posts.select.og-fields",
+    "defragment_posts",
+    id,
+    "title, content_text, content",
+  );
+  if (!row) return null;
+  return {
+    title: typeof row.title === "string" ? row.title : "",
+    contentText: typeof row.content_text === "string" ? row.content_text : "",
+    content: asPostBlocks(row.content),
   };
 }
 
