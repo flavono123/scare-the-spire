@@ -63,6 +63,11 @@ interface HistoryCourseCoverProps {
   size?: "index" | "compact";
   /** Rendered above win/floor/ascension in the top-right stack. */
   topRightActions?: ReactNode;
+  /**
+   * Replaces the thumbnail phrase. The editor uses this so the phrase is
+   * edited on the thumbnail instead of in a separate field.
+   */
+  renderPhrase?: (props: { phrase: string; className: string }) => ReactNode;
 }
 
 export function HistoryCourseCover({
@@ -73,6 +78,7 @@ export function HistoryCourseCover({
   className,
   size = "index",
   topRightActions,
+  renderPhrase,
 }: HistoryCourseCoverProps) {
   const serviceLocale = useServiceLocale();
   const tables = useGameI18n();
@@ -185,18 +191,31 @@ export function HistoryCourseCover({
         )}
       >
         <div className="min-w-0 self-start overflow-hidden">
-          <p
-            className={cn(
-              "font-game-title font-bold leading-tight cover-phrase-outline",
-              // Narrow cards: keep phrase to one line so bottom-left art fits.
-              compact
-                ? "line-clamp-3 text-[length:clamp(8px,10cqw,12px)] leading-[1.05]"
-                : "line-clamp-2 text-[length:clamp(14px,4.6cqw,36px)] leading-tight sm:line-clamp-2",
-              phraseClass,
-            )}
-          >
-            {phrase}
-          </p>
+          {renderPhrase ? (
+            renderPhrase({
+              phrase,
+              className: cn(
+                "font-game-title font-bold leading-tight cover-phrase-outline",
+                compact
+                  ? "text-[length:clamp(8px,10cqw,12px)] leading-[1.05]"
+                  : "text-[length:clamp(14px,4.6cqw,36px)] leading-tight",
+                phraseClass,
+              ),
+            })
+          ) : (
+            <p
+              className={cn(
+                "font-game-title font-bold leading-tight cover-phrase-outline",
+                // Narrow cards: keep phrase to one line so bottom-left art fits.
+                compact
+                  ? "line-clamp-3 text-[length:clamp(8px,10cqw,12px)] leading-[1.05]"
+                  : "line-clamp-2 text-[length:clamp(14px,4.6cqw,36px)] leading-tight sm:line-clamp-2",
+                phraseClass,
+              )}
+            >
+              {phrase}
+            </p>
+          )}
         </div>
 
         <div

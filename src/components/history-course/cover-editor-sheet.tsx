@@ -108,6 +108,7 @@ export function CoverEditorSheet({
   );
   const [saving, setSaving] = useState(false);
   const [query, setQuery] = useState("");
+  const [textTarget, setTextTarget] = useState<"phrase" | "title" | null>(null);
 
   const suggested = useMemo(
     () => suggestCovers({ runId, run, reshuffle }),
@@ -129,6 +130,7 @@ export function CoverEditorSheet({
     setPhraseSeed(0);
     setQuery("");
     setElementFilter("all");
+    setTextTarget(null);
   }, [initialCover, open, visibleTitle]);
 
   const bgCardId = backgroundCardId(draft);
@@ -310,7 +312,97 @@ export function CoverEditorSheet({
                 character={character}
                 characters={run.players.map((player) => player.character)}
                 meta={meta}
+                renderPhrase={({ className }) => (
+                  <textarea
+                    aria-label={copy.phraseLabel}
+                    value={draft.phrase}
+                    rows={1}
+                    onFocus={() => setTextTarget("phrase")}
+                    onClick={() => setTextTarget("phrase")}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") event.preventDefault();
+                    }}
+                    onChange={(event) =>
+                      setDraft((prev) => ({ ...prev, phrase: event.target.value }))
+                    }
+                    placeholder={copy.phrasePlaceholder}
+                    className={cn(
+                      className,
+                      "pointer-events-auto block w-fit max-w-full cursor-text resize-none overflow-hidden bg-transparent px-1 outline-none",
+                      "rounded-sm placeholder:text-white/45 [field-sizing:content]",
+                      "shadow-[inset_0_0_0_1px_rgba(255,255,255,0.28)]",
+                      "hover:bg-white/10 focus:bg-black/30 focus:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.7)]",
+                    )}
+                  />
+                )}
               />
+              <textarea
+                aria-label={copy.titleLabel}
+                value={draft.titlePhrase ?? ""}
+                rows={1}
+                maxLength={100}
+                onFocus={() => setTextTarget("title")}
+                onClick={() => setTextTarget("title")}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") event.preventDefault();
+                }}
+                onChange={(event) =>
+                  setDraft((prev) => ({ ...prev, titlePhrase: event.target.value }))
+                }
+                placeholder={copy.titlePlaceholder}
+                className={cn(
+                  "mt-3 w-full cursor-text resize-none overflow-hidden bg-transparent px-1 py-0.5 font-service text-[15px] font-semibold leading-snug text-foreground outline-none",
+                  "rounded-sm placeholder:text-zinc-500 [field-sizing:content]",
+                  "shadow-[inset_0_0_0_1px_rgba(255,255,255,0.28)]",
+                  "hover:bg-white/10 focus:bg-white/10 focus:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.7)]",
+                )}
+              />
+              {textTarget ? (
+                <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                  {phraseChips.map((chip) => (
+                    <button
+                      key={chip}
+                      type="button"
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() =>
+                        setDraft((prev) =>
+                          textTarget === "title"
+                            ? { ...prev, titlePhrase: chip }
+                            : { ...prev, phrase: chip },
+                        )
+                      }
+                      className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[11px] text-zinc-100 hover:border-white/40"
+                    >
+                      {chip}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => setPhraseSeed((n) => n + 1)}
+                    className="inline-flex items-center gap-1 rounded-full border border-white/20 px-2 py-0.5 text-[11px] text-zinc-300 hover:text-zinc-100"
+                  >
+                    <RefreshCw className="h-3 w-3" aria-hidden />
+                    {copy.rerollPhrases}
+                  </button>
+                  <span
+                    className={cn(
+                      "ml-auto text-[10px] tabular-nums",
+                      textTarget === "phrase"
+                        ? draft.phrase.length > 18
+                          ? "text-primary"
+                          : "text-zinc-400"
+                        : (draft.titlePhrase?.length ?? 0) > 80
+                          ? "text-primary"
+                          : "text-zinc-400",
+                    )}
+                  >
+                    {textTarget === "phrase"
+                      ? `${draft.phrase.length}/18`
+                      : `${draft.titlePhrase?.length ?? 0}/80`}
+                  </span>
+                </div>
+              ) : null}
             </div>
 
             <GameScrollArea
@@ -414,85 +506,6 @@ export function CoverEditorSheet({
                   </ScrollableBoundedCarousel>
                 </section>
               )}
-
-              <section className="space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-xs font-bold text-foreground">{copy.phraseLabel}</h3>
-                  <span
-                    className={cn(
-                      "text-[10px] tabular-nums",
-                      draft.phrase.length > 18 ? "text-primary" : "text-muted-foreground",
-                    )}
-                  >
-                    {draft.phrase.length}/18
-                  </span>
-                </div>
-                <input
-                  value={draft.phrase}
-                  onChange={(e) =>
-                    setDraft((prev) => ({ ...prev, phrase: e.target.value }))
-                  }
-                  className="w-full rounded-md border border-border bg-muted/50 px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/40"
-                  placeholder={copy.phrasePlaceholder}
-                />
-                <div className="flex flex-wrap gap-1.5">
-                  {phraseChips.map((chip) => (
-                    <button
-                      key={chip}
-                      type="button"
-                      onClick={() => setDraft((prev) => ({ ...prev, phrase: chip }))}
-                      className="rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-[11px] text-primary hover:border-primary/45"
-                    >
-                      {chip}
-                    </button>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => setPhraseSeed((n) => n + 1)}
-                    className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[11px] text-muted-foreground hover:text-foreground"
-                  >
-                    <RefreshCw className="h-3 w-3" aria-hidden />
-                    {copy.rerollPhrases}
-                  </button>
-                </div>
-              </section>
-
-              <section className="space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-xs font-bold text-foreground">{copy.titleLabel}</h3>
-                  <span
-                    className={cn(
-                      "text-[10px] tabular-nums",
-                      (draft.titlePhrase?.length ?? 0) > 80
-                        ? "text-primary"
-                        : "text-muted-foreground",
-                    )}
-                  >
-                    {draft.titlePhrase?.length ?? 0}/80
-                  </span>
-                </div>
-                <input
-                  value={draft.titlePhrase ?? ""}
-                  maxLength={100}
-                  onChange={(e) =>
-                    setDraft((prev) => ({ ...prev, titlePhrase: e.target.value }))
-                  }
-                  className="w-full rounded-md border border-border bg-muted/50 px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/40"
-                  placeholder={copy.titlePlaceholder}
-                />
-                <div className="flex flex-wrap gap-1.5">
-                  {phraseChips.map((chip) => (
-                    <button
-                      key={`title:${chip}`}
-                      type="button"
-                      onClick={() => setDraft((prev) => ({ ...prev, titlePhrase: chip }))}
-                      className="rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-[11px] text-primary hover:border-primary/45"
-                    >
-                      {chip}
-                    </button>
-                  ))}
-                </div>
-              </section>
 
               <section className="space-y-2">
                 <h3 className="text-xs font-bold text-foreground">{copy.elementsLabel}</h3>
