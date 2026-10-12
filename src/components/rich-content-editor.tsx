@@ -5,6 +5,11 @@ import Image from "@/components/ui/static-image";
 import { RichText } from "@/components/rich-text";
 import { useEditor, EditorContent, ReactRenderer } from "@tiptap/react";
 import type { Editor } from "@tiptap/react";
+import {
+  PagestormColor,
+  PagestormJitter,
+  PagestormSine,
+} from "@/components/pagestorm/color-marks";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
@@ -522,6 +527,9 @@ export interface RichContentEditorProps {
   enableEmote?: boolean;
   /** Keyword/mention atoms link to the Compendium; off keeps them hover-only. */
   entityLinks?: boolean;
+  /** Pagestorm color, sine, and jitter marks. Stored as RichText tags. */
+  textEffects?: boolean;
+  onEditor?: (editor: Editor | null) => void;
 }
 
 export function RichContentEditor({
@@ -560,6 +568,8 @@ export function RichContentEditor({
   enableCardCon = true,
   enableEmote = false,
   entityLinks = true,
+  textEffects = false,
+  onEditor,
 }: RichContentEditorProps) {
   const serviceLocale = useServiceLocale();
   const gameLocale = useGameLocale();
@@ -716,6 +726,7 @@ export function RichContentEditor({
       Placeholder.configure({ placeholder: richPlaceholder ? "" : placeholder }),
       CharacterCount.configure(maxChars == null ? {} : { limit: maxChars }),
       CustomKeyword,
+      ...(textEffects ? [PagestormColor, PagestormSine, PagestormJitter] : []),
       ...(costTokens
         ? [CostTokenExtension.configure({
           energyIconSrc: costTokens.energyIconSrc,
@@ -1218,6 +1229,11 @@ export function RichContentEditor({
     historyRunSlashCommands,
     enableFloorHash,
   ]);
+
+  useEffect(() => {
+    onEditor?.(editor ?? null);
+    return () => onEditor?.(null);
+  }, [editor, onEditor]);
 
   useEffect(() => {
     if (!editor || editor.isDestroyed) return;

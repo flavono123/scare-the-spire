@@ -14,7 +14,9 @@ import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { RelicInspectSlab } from "@/components/codex/relic-inspect-slab";
 import { DescriptionText } from "@/components/codex/codex-description";
 import { GameHoverTip } from "@/components/codex/hover-tip";
+import type { Editor } from "@tiptap/react";
 import type { RichContentEditorProps } from "@/components/rich-content-editor";
+import { TextEffectToolbar } from "@/components/text-effects/toolbar";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { TransfigureCardKeywordRail } from "@/components/transfigure/transfigure-card-keyword-rail";
 import { TransfigureTokenArt } from "@/components/transfigure/transfigure-token-art";
@@ -293,6 +295,10 @@ export function TransfigureAssetEditor({
   const contentReplaceRequestIdRef = useRef(0);
   const feedbackTimeoutRef = useRef<number | null>(null);
   const [descriptionLimitVisible, setDescriptionLimitVisible] = useState(false);
+  const [effectEditor, setEffectEditor] = useState<Editor | null>(null);
+  const handleEffectEditor = useCallback((editor: Editor | null) => {
+    setEffectEditor(editor);
+  }, []);
   const [contentReplaceRequest, setContentReplaceRequest] = useState<{
     requestId: number;
     mode: "base" | "upgrade";
@@ -428,6 +434,8 @@ export function TransfigureAssetEditor({
           ? contentReplaceRequest
           : null}
         embedded
+        textEffects
+        onEditor={handleEffectEditor}
         allowLineBreaks
         entityLinks={false}
         submitOnEnter={false}
@@ -440,6 +448,7 @@ export function TransfigureAssetEditor({
 
   return (
     <div className="space-y-2" data-transfigure-asset-editor>
+      <TextEffectToolbar editor={effectEditor} serviceLocale={serviceLocale} />
       {entity.type === "card" && displayCard ? (
         <div className="relative flex flex-col items-center justify-center">
           <CardTile

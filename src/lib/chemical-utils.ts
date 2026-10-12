@@ -2,6 +2,11 @@ import type { JSONContent } from "@tiptap/react";
 import { getChoseong } from "es-hangul";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
+import {
+  effectTextToContent,
+  textHasEffectTags,
+  wrapTextEffectMarks,
+} from "@/lib/text-effect-bbcode";
 import { isGameLocale } from "@/lib/i18n";
 import {
   historyRunFloorPlainText,
@@ -155,7 +160,7 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
     if (!paragraph.content) continue;
     for (const node of paragraph.content) {
       if (node.type === "text" && node.text) {
-        appendText(node.text);
+        appendText(wrapTextEffectMarks(node.text, node.marks));
       } else if (node.type === "hardBreak") {
         appendText("\n");
       } else if (node.type === "entity-mention") {
@@ -263,7 +268,13 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
 export function blocksToTiptapDocument(blocks: PostBlock[]): JSONContent {
   const content = blocks.flatMap((block): JSONContent[] => {
     if (block.type === "text") {
-      return splitTextContentWithCostTokens(block.text);
+      if (!textHasEffectTags(block.text)) return splitTextContentWithCostTokens(block.text);
+      return effectTextToContent(block.text).flatMap((node) => {
+        if (node.type === "text" && node.text && !node.marks?.length) {
+          return splitTextContentWithCostTokens(node.text);
+        }
+        return [node];
+      });
     }
     if (block.type === "cost-token") {
       return [{

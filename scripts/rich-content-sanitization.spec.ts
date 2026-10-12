@@ -153,4 +153,26 @@ assert.notEqual(
   transfigureBlocksSignature([{ type: "text", text: "첫 줄\n둘째 줄" }]),
 );
 
+const marked = tiptapToBlocks({
+  type: "doc",
+  content: [{
+    type: "paragraph",
+    content: [{
+      type: "text",
+      text: "3",
+      marks: [
+        { type: "jitter" },
+        { type: "pagestormColor", attrs: { colorKey: "spire-red" } },
+      ],
+    }],
+  }],
+});
+assert.deepEqual(marked, [{ type: "text", text: "[red][jitter]3[/jitter][/red]" }]);
+const restored = blocksToTiptapDocument(marked);
+assert.equal(restored.content?.[0]?.content?.[0]?.text, "3");
+assert.deepEqual(
+  restored.content?.[0]?.content?.[0]?.marks?.map((mark) => mark.type),
+  ["pagestormColor", "jitter"],
+);
+
 console.log("rich content NUL sanitization: ok");
