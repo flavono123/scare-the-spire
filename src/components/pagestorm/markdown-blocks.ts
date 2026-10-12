@@ -63,6 +63,23 @@ function inlineContent(text: string): JSONContent[] {
   return parts;
 }
 
+const OPENING_FENCE_RE = /^```([A-Za-z0-9_+-]*)?[ \t]*$/;
+
+export function openingCodeFence(text: string): { language: string } | null {
+  const match = text.match(OPENING_FENCE_RE);
+  if (!match) return null;
+  return { language: match[1] ?? "" };
+}
+
+function codeBlockNode(language: string, text: string): JSONContent {
+  const node: JSONContent = {
+    type: "codeBlock",
+    attrs: { language: language || null },
+  };
+  if (text.length > 0) node.content = [{ type: "text", text }];
+  return node;
+}
+
 function paragraphFromLine(line: string): JSONContent {
   const content = inlineContent(line);
   return content.length > 0 ? { type: "paragraph", content } : { type: "paragraph" };
@@ -131,9 +148,57 @@ export function parseIndentedList(raw: string): JSONContent | null {
   return root;
 }
 
+/** Markdown ``` fences become code blocks. Surrounding lines stay paragraphs. */
+export function parseFencedCodeBlocks(raw: string): JSONContent[] | null {
+  const lines = raw.replace(/\r\n/g, "\n").split("\n");
+  if (!lines.some((line) => OPENING_FENCE_RE.test(line.trim()))) return null;
+  const blocks: JSONContent[] = [];
+  const prose: string[] = [];
+  let fence: { language: string } | null = null;
+  const code: string[] = [];
+
+  const flushProse = () => {
+    const text = prose.join("\n").trim();
+    prose.length = 0;
+    if (!text) return;
+    for (const line of text.split("\n")) {
+      if (line.trim()) blocks.push(paragraphFromLine(line));
+    }
+  };
+  const flushCode = () => {
+    const text = code.join("\n").replace(/\n$/, "");
+    code.length = 0;
+    blocks.push(codeBlockNode(fence?.language ?? "", text));
+    fence = null;
+  };
+
+  for (const line of lines) {
+    if (!fence) {
+      const opening = openingCodeFence(line.trim());
+      if (opening) {
+        flushProse();
+        fence = opening;
+        continue;
+      }
+      prose.push(line);
+      continue;
+    }
+    if (line.trim() === "```") {
+      flushCode();
+      continue;
+    }
+    code.push(line);
+  }
+  if (fence) flushCode();
+  else flushProse();
+  return blocks.length > 0 ? blocks : null;
+}
+
 export function pagestormPasteContent(raw: string): JSONContent[] | null {
   const trimmed = raw.trim();
   if (!trimmed) return null;
+  const fenced = parseFencedCodeBlocks(trimmed);
+  if (fenced) return fenced;
   const list = parseIndentedList(trimmed);
   if (list) return [list];
   if (!/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/.test(trimmed)) return null;

@@ -6,6 +6,8 @@ import TextAlign from "@tiptap/extension-text-align";
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import type { JSONContent } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
+import { TextSelection } from "@tiptap/pm/state";
+import type { EditorView } from "@tiptap/pm/view";
 import { exitSuggestion } from "@tiptap/suggestion";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
@@ -58,6 +60,7 @@ import { PagestormTableControls } from "./table-controls";
 import {
   markdownLinkBeforeCursor,
   migratePagestormDoc,
+  openingCodeFence,
   pagestormPasteContent,
 } from "./markdown-blocks";
 import {
@@ -81,6 +84,54 @@ export type PagestormEditorSaveInput = {
   content: PagestormDoc;
   contentText: string;
 };
+
+function applyCodeFence(view: EditorView): boolean {
+  const { state } = view;
+  const { $from, empty } = state.selection;
+  if (!empty) return false;
+  const parent = $from.parent;
+
+  if (parent.type.name === "paragraph") {
+    const opening = openingCodeFence(parent.textContent);
+    const codeBlock = state.schema.nodes.codeBlock;
+    if (!opening || !codeBlock) return false;
+    const start = $from.before();
+    const node = codeBlock.create({ language: opening.language || null });
+    const tr = state.tr.replaceWith(start, $from.after(), node);
+    view.dispatch(tr.setSelection(TextSelection.create(tr.doc, start + 1)));
+    return true;
+  }
+
+  if (parent.type.name !== "codeBlock") return false;
+  const text = parent.textContent;
+  const offset = $from.parentOffset;
+  const lineStart = text.lastIndexOf("\n", Math.max(0, offset - 1)) + 1;
+  const nextBreak = text.indexOf("\n", offset);
+  const lineEnd = nextBreak === -1 ? text.length : nextBreak;
+  if (offset !== lineEnd || text.slice(lineStart, lineEnd) !== "```") return false;
+
+  const blockStart = $from.start();
+  const deleteFrom = blockStart + lineStart - (lineStart > 0 ? 1 : 0);
+  const deleteTo = blockStart + lineEnd;
+  let tr = state.tr.delete(deleteFrom, deleteTo);
+  const $deleted = tr.doc.resolve(deleteFrom);
+  if ($deleted.parent.type.name !== "codeBlock") {
+    view.dispatch(tr);
+    return true;
+  }
+  if ($deleted.parent.textContent.length === 0) {
+    const paragraph = state.schema.nodes.paragraph.create();
+    const from = $deleted.before();
+    tr = tr.replaceWith(from, $deleted.after(), paragraph);
+    view.dispatch(tr.setSelection(TextSelection.create(tr.doc, from + 1)));
+    return true;
+  }
+  const after = $deleted.after();
+  const paragraph = state.schema.nodes.paragraph.create();
+  tr = tr.insert(after, paragraph);
+  view.dispatch(tr.setSelection(TextSelection.create(tr.doc, after + 1)).scrollIntoView());
+  return true;
+}
 
 export function PagestormEditor({
   mode = "edit",
@@ -260,8 +311,13 @@ export function PagestormEditor({
       attributes: {
         class: "pagestorm-mock-editor",
       },
-      handleKeyDown: (_view, event) => {
-        if (event.key !== "Tab" || mode !== "edit") return false;
+      handleKeyDown: (view, event) => {
+        if (mode !== "edit") return false;
+        if (event.key === "Enter" && !event.shiftKey && applyCodeFence(view)) {
+          event.preventDefault();
+          return true;
+        }
+        if (event.key !== "Tab") return false;
         const current = editorRef.current;
         if (!current) return false;
         const { $from } = current.state.selection;
