@@ -45,15 +45,19 @@
   line-height: 1.65;
 }
 
+.pagestorm-mock-editor pre,
+.pagestorm-mock-editor :not(pre) > code {
+  background: #5a4318;
+  color: #fff4cc;
+  border: 1px solid #efc851;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
 .pagestorm-mock-editor pre {
   margin: 0.7rem 0;
   padding: 0.75rem 0.9rem;
   overflow-x: auto;
-  border: 1px solid var(--border);
   border-radius: 0.45rem;
-  background: rgb(0 0 0 / 42%);
-  color: #e7e5e4;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.84rem;
   line-height: 1.55;
   white-space: pre-wrap;
@@ -62,6 +66,7 @@
 
 .pagestorm-mock-editor pre code {
   padding: 0;
+  border: 0;
   border-radius: 0;
   background: transparent;
   color: inherit;
@@ -70,11 +75,10 @@
 }
 
 .pagestorm-mock-editor :not(pre) > code {
-  padding: 0.05rem 0.28rem;
-  border-radius: 0.25rem;
-  background: rgb(0 0 0 / 35%);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.88em;
+  padding: 0.08rem 0.38rem;
+  border-radius: 0.28rem;
+  font-size: 0.92em;
+  font-weight: 650;
 }
 
 .pagestorm-mock-editor ul,
