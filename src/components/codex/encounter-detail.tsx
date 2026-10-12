@@ -1,7 +1,8 @@
 "use client";
 
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
+import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { RichText } from "@/components/rich-text";
@@ -88,6 +89,7 @@ export function EncounterDetail({
   onClose,
 }: EncounterDetailProps) {
   const serviceText = serviceMessages[serviceLocale];
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const commonText = serviceText.codex.common;
   const encounterText = serviceText.codex.encountersView;
   const detailLabels = serviceLocale === "ko"
@@ -173,16 +175,19 @@ export function EncounterDetail({
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[28rem] flex-col items-center justify-center gap-5 py-4">
           {encounter.scene && (
+            <div ref={assetCopyTargetRef} className="w-full">
             <EncounterSceneStage
               encounter={encounter}
               character={selectedCharacter}
               monsters={monsters}
               serviceLocale={serviceLocale}
             />
+            </div>
           )}
 
           {!encounter.scene && encounter.id === "DECIMILLIPEDE_ELITE" && (
             <div
+              ref={assetCopyTargetRef}
               className="relative flex h-56 w-full max-w-4xl items-center justify-center sm:h-72 lg:h-80"
               data-encounter-detail-render
             >
@@ -202,7 +207,7 @@ export function EncounterDetail({
           )}
 
           {!encounter.scene && representativeImageUrl && encounter.id !== "DECIMILLIPEDE_ELITE" && (
-            <div className="relative flex h-48 w-full max-w-4xl items-center justify-center sm:h-64">
+            <div ref={assetCopyTargetRef} className="relative flex h-48 w-full max-w-4xl items-center justify-center sm:h-64">
               <div
                 className="absolute bottom-8 left-[14%] right-[14%] h-8 rounded-[50%] blur-xl"
                 style={{ backgroundColor: `${roomConfig.color}22` }}
@@ -219,7 +224,7 @@ export function EncounterDetail({
           )}
 
           {!encounter.scene && !representativeImageUrl && encounter.id !== "DECIMILLIPEDE_ELITE" && (
-            <div className="flex w-full flex-wrap items-end justify-center gap-x-6 gap-y-4">
+            <div ref={assetCopyTargetRef} className="flex w-full flex-wrap items-end justify-center gap-x-6 gap-y-4">
               {uniqueMonsters.map((monsterRef) => {
                 const monster = monsterById.get(monsterRef.id);
                 const imageUrl = monster?.imageUrl ?? monster?.bossImageUrl ?? null;
@@ -264,6 +269,12 @@ export function EncounterDetail({
               })}
             </div>
           )}
+
+          <CompendiumAssetImageActions
+            serviceLocale={serviceLocale}
+            fileName={`${encounter.id}.png`}
+            targetRef={assetCopyTargetRef}
+          />
 
           <div className="text-center">
             <h1

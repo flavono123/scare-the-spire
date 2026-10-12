@@ -2,6 +2,7 @@
 
 import { type CSSProperties, type PointerEvent, type ReactNode, useCallback, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
@@ -1558,6 +1559,7 @@ export function MonsterDetail({
   onClose,
 }: MonsterDetailProps) {
   const serviceText = serviceMessages[serviceLocale];
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const commonText = serviceText.codex.common;
   const monsterText = serviceText.codex.monstersView;
   const detailLabels = serviceLocale === "ko"
@@ -1772,6 +1774,7 @@ export function MonsterDetail({
         <div className="flex min-w-0 flex-col gap-4">
           <section className="flex min-h-[26rem] flex-col items-center justify-center gap-4 py-4">
             <div
+              ref={assetCopyTargetRef}
               className="relative flex min-h-[22rem] w-full max-w-2xl items-center justify-center overflow-hidden"
               data-monster-detail-render
             >
@@ -1850,6 +1853,12 @@ export function MonsterDetail({
               {monster.name}
             </h1>
           </div>
+
+          <CompendiumAssetImageActions
+            serviceLocale={serviceLocale}
+            fileName={`${monster.id}.png`}
+            targetRef={assetCopyTargetRef}
+          />
 
           {(skinParts.length > 0 || hasPhobiaMode || monster.id === "DECIMILLIPEDE_SEGMENT") && (
             <div className="flex w-full max-w-2xl flex-wrap items-center justify-center gap-x-3 gap-y-2">

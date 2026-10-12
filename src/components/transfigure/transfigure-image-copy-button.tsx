@@ -304,6 +304,7 @@ export function TransfigureImageCopyButton({
           disabled={busy}
           className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-primary/35 bg-primary/15 px-4 py-2 text-sm font-semibold text-primary shadow-[0_0_18px_rgba(239,200,81,0.08)] transition-[transform,border-color,background-color,box-shadow] hover:-translate-y-0.5 hover:border-primary/55 hover:bg-primary/25 hover:shadow-[0_6px_22px_rgba(239,200,81,0.12)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary/70 active:translate-y-0 disabled:cursor-wait disabled:opacity-65 motion-reduce:transform-none"
           data-transfigure-copy-image
+          data-compendium-copy-image
         >
           {copyStatus === "working" ? (
             <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
@@ -324,6 +325,7 @@ export function TransfigureImageCopyButton({
           disabled={busy}
           className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-primary/20 bg-black/25 px-4 py-2 text-sm font-semibold text-primary/90 transition-[transform,border-color,background-color] hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary/70 active:translate-y-0 disabled:cursor-wait disabled:opacity-65 motion-reduce:transform-none"
           data-transfigure-download-image
+          data-compendium-download-image
         >
           {downloadStatus === "working" ? (
             <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />

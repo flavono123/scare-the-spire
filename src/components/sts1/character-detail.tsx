@@ -1,6 +1,8 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
+import { CompendiumAssetImageActions } from "@/components/codex/compendium-asset-image-actions";
 import Image from "@/components/ui/static-image";
 import { Sts1CardTile } from "./card-tile";
 import { Sts1CommentsRail } from "./comments-rail";
@@ -46,6 +48,7 @@ export function Sts1CharacterDetail({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const text = detailLabels(serviceLocale);
   const color = sts1PoolColor(character.id);
   return (
@@ -53,8 +56,15 @@ export function Sts1CharacterDetail({
       backHref={sts1IndexPath("characters")}
       backLabel={labels.charactersTitle}
       serviceLocale={serviceLocale}
+      assetActions={(
+        <CompendiumAssetImageActions
+          serviceLocale={serviceLocale}
+          fileName={`${character.id}.png`}
+          targetRef={assetCopyTargetRef}
+        />
+      )}
       hero={(
-        <div className="relative w-full overflow-hidden rounded-lg border border-border" style={{ aspectRatio: "16 / 9" }}>
+        <div ref={assetCopyTargetRef} className="relative w-full overflow-hidden rounded-lg border border-border" style={{ aspectRatio: "16 / 9" }}>
           <Image
             src={sts1CharacterPortraitUrl(character.id)}
             alt={character.name}

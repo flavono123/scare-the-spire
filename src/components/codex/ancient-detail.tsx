@@ -1,8 +1,9 @@
 "use client";
 
-import { type ReactNode, type Ref, useEffect, useMemo, useState } from "react";
+import { type ReactNode, type Ref, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
+import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -118,6 +119,7 @@ export function AncientDetail({
   versionDiffs,
 }: AncientDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = getAncientDetailLabels(serviceLocale);
   const [commentCount, setCommentCount] = useState(0);
   const excludeSelf = useMemo(
@@ -190,7 +192,8 @@ export function AncientDetail({
       </div>
 
       <div className="space-y-5">
-        <section>
+        <section className="flex flex-col items-center gap-2">
+          <div ref={assetCopyTargetRef} className="w-full">
           <AncientSceneStage ancient={ancient}>
             <div className="pointer-events-none absolute bottom-3 left-3 z-20 max-w-[42%] text-left sm:bottom-5 sm:left-6">
               {ancient.epithet && (
@@ -245,6 +248,12 @@ export function AncientDetail({
               </h1>
             )}
           </AncientSceneStage>
+          </div>
+          <CompendiumAssetImageActions
+            serviceLocale={serviceLocale}
+            fileName={`${ancient.id}.png`}
+            targetRef={assetCopyTargetRef}
+          />
         </section>
 
         <aside className="grid items-start gap-3 lg:grid-cols-2">

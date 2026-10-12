@@ -27,8 +27,8 @@ import {
   type RelicFilterPool,
 } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import { TransfigureImageCopyButton } from "@/components/transfigure/transfigure-image-copy-button";
 import { DescriptionText } from "./codex-description";
+import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { RelatedResourceLinks } from "./entity-reference-links";
 import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 import { GameCheckboxToggle, GameWaxCycleToggle, type GameWaxCycleValue } from "./game-checkbox";
@@ -254,17 +254,6 @@ export function RelicDetail({
 
   const relicToggles = serviceText.relicsView.toggles;
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
-  const assetImageLabels = {
-    copy: serviceText.common.copyAssetImage,
-    copying: serviceText.common.copyingAssetImage,
-    copied: serviceText.common.copiedAssetImage,
-    copyFailed: serviceText.common.assetImageCopyFailed,
-    copyUnsupported: serviceText.common.assetImageCopyUnsupported,
-    download: serviceText.common.downloadAssetImage,
-    downloading: serviceText.common.downloadingAssetImage,
-    downloaded: serviceText.common.downloadedAssetImage,
-    downloadFailed: serviceText.common.assetImageDownloadFailed,
-  };
 
   const tipCatalog = useMemo(
     () => tipCatalogSources
@@ -478,11 +467,10 @@ export function RelicDetail({
             </div>
           </CardSideTipsAnchor>
 
-          <TransfigureImageCopyButton
-            layout="icons"
+          <CompendiumAssetImageActions
+            serviceLocale={serviceLocale}
             fileName={`${relic.id}.png`}
             targetRef={assetCopyTargetRef}
-            labels={assetImageLabels}
           />
 
           <div className="flex flex-col items-center gap-3">

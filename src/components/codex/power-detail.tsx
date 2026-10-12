@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
@@ -28,6 +28,7 @@ import {
 } from "@/lib/card-side-tip-catalog";
 import { collectPowerSideTips } from "@/lib/power-side-tips";
 import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
+import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import {
@@ -134,6 +135,7 @@ export function PowerDetail({
   onClose,
 }: PowerDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = getPowerDetailLabels(serviceLocale);
   const typeConfig = POWER_TYPE_CONFIG[power.type];
   const [showBeta, setShowBeta] = useState(initialShowBeta && Boolean(power.betaImageUrl));
@@ -236,7 +238,7 @@ export function PowerDetail({
             tips={sideTips}
             className="flex w-full max-w-[12rem] flex-col items-center gap-3"
           >
-            <div className="flex h-32 w-32 shrink-0 items-center justify-center sm:h-40 sm:w-40">
+            <div ref={assetCopyTargetRef} className="flex h-32 w-32 shrink-0 items-center justify-center sm:h-40 sm:w-40">
               {displayImageUrl ? (
                 <Image
                   src={displayImageUrl}
@@ -251,20 +253,24 @@ export function PowerDetail({
                 </div>
               )}
             </div>
-
-            {power.betaImageUrl && (
-              <button
-                onClick={() => setShowBeta((v) => !v)}
-                className={`rounded-lg border px-3 py-1 text-xs transition-all ${
-                  showBeta
-                    ? "border-purple-500/50 bg-purple-500/20 text-purple-400"
-                    : "border-white/10 bg-white/5 text-gray-400 hover:border-white/30"
-                }`}
-              >
-                {serviceText.cardsView.toggles.betaArt}
-              </button>
-            )}
           </CardSideTipsAnchor>
+          <CompendiumAssetImageActions
+            serviceLocale={serviceLocale}
+            fileName={`${power.id}.png`}
+            targetRef={assetCopyTargetRef}
+          />
+          {power.betaImageUrl && (
+            <button
+              onClick={() => setShowBeta((v) => !v)}
+              className={`rounded-lg border px-3 py-1 text-xs transition-all ${
+                showBeta
+                  ? "border-purple-500/50 bg-purple-500/20 text-purple-400"
+                  : "border-white/10 bg-white/5 text-gray-400 hover:border-white/30"
+              }`}
+            >
+              {serviceText.cardsView.toggles.betaArt}
+            </button>
+          )}
         </section>
 
         <aside data-power-detail-meta className="flex flex-col gap-3">

@@ -1,7 +1,8 @@
 "use client";
 
-import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
+import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -132,6 +133,7 @@ export function EpochDetail({
   onClose,
 }: EpochDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = getEpochDetailLabels(serviceLocale);
   const [commentCount, setCommentCount] = useState(0);
   const [uncontrolledShowBeta, setUncontrolledShowBeta] = useState(() => initialShowBeta && Boolean(epoch.betaImageUrl));
@@ -237,6 +239,7 @@ export function EpochDetail({
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] lg:items-start">
         <section className="flex min-h-[24rem] min-w-0 flex-col items-center justify-center py-2">
           <div
+            ref={assetCopyTargetRef}
             className="relative min-w-0 w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10"
             style={{ boxShadow: "inset 0 0 120px rgba(96, 165, 250, 0.08), 0 16px 60px rgba(0, 0, 0, 0.35)" }}
           >
@@ -284,6 +287,11 @@ export function EpochDetail({
               </div>
             </div>
           </div>
+          <CompendiumAssetImageActions
+            serviceLocale={serviceLocale}
+            fileName={`${epoch.id}.png`}
+            targetRef={assetCopyTargetRef}
+          />
           {epoch.betaImageUrl && (
             <div className="mt-3 flex max-w-full justify-center">
               <GameCheckboxToggle

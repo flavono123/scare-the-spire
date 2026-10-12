@@ -2,6 +2,7 @@
 
 import { type ReactNode, type WheelEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
+import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { GameScrollArea } from "@/components/game-scroll-area";
@@ -308,6 +309,7 @@ export function CharacterDetail({
   versionDiffs,
 }: CharacterDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = getCharacterDetailLabels(serviceLocale);
   const characterPool = character.id.toLowerCase();
   const characterColor = CHARACTER_COLORS[characterPool] ?? "#eab308";
@@ -430,7 +432,7 @@ export function CharacterDetail({
 
       <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[30rem] min-w-0 flex-col items-center justify-center gap-5 py-4">
-          <div data-character-stage className="relative h-[24rem] w-full max-w-full sm:h-[28rem] lg:max-w-[44rem]">
+          <div ref={assetCopyTargetRef} data-character-stage className="relative h-[24rem] w-full max-w-full sm:h-[28rem] lg:max-w-[44rem]">
             <div className="absolute left-2 top-2 z-50 sm:left-3 sm:top-3">
               <MonsterAscensionStepper
                 level={ascensionLevel}
@@ -467,6 +469,12 @@ export function CharacterDetail({
               serviceLocale={serviceLocale}
             />
           </div>
+
+          <CompendiumAssetImageActions
+            serviceLocale={serviceLocale}
+            fileName={`${character.id}.png`}
+            targetRef={assetCopyTargetRef}
+          />
 
           {hasLowHealthIdle && (
             <GameCheckboxToggle

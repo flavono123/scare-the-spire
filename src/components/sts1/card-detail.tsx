@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CardSideTipsAnchor } from "@/components/codex/card-keyword-tip-stack";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { GameUpgradeToggle } from "@/components/codex/game-upgrade-toggle";
+import { CompendiumAssetImageActions } from "@/components/codex/compendium-asset-image-actions";
 import { Sts1CardTile } from "./card-tile";
 import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1DetailShell, Sts1MetaPill } from "./detail-chrome";
@@ -50,6 +51,7 @@ export function Sts1CardDetail({
   onBetaChange?: (value: boolean) => void;
   onClose?: () => void;
 }) {
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const [upgradeLevel, setUpgradeLevel] = useState(0);
   const [localBeta, setLocalBeta] = useState(showBeta);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -79,7 +81,7 @@ export function Sts1CardDetail({
       onClose={onClose}
       serviceLocale={serviceLocale}
       hero={(
-        <div className="relative" style={{ width: cardWidth }}>
+        <div ref={assetCopyTargetRef} className="relative" style={{ width: cardWidth }}>
           <CardSideTipsAnchor mode="always" preferSide="left" tips={sideTips} style={{ width: cardWidth }}>
             <Sts1CardTile
               card={card}
@@ -91,6 +93,13 @@ export function Sts1CardDetail({
             />
           </CardSideTipsAnchor>
         </div>
+      )}
+      assetActions={(
+        <CompendiumAssetImageActions
+          serviceLocale={serviceLocale}
+          fileName={`${card.slug}.png`}
+          targetRef={assetCopyTargetRef}
+        />
       )}
       stageExtra={(
         <div className="flex flex-wrap items-center justify-center gap-2">

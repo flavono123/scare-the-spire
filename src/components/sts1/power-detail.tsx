@@ -1,6 +1,8 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "@/components/ui/static-image";
+import { CompendiumAssetImageActions } from "@/components/codex/compendium-asset-image-actions";
 import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1CardText } from "./description";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
@@ -30,6 +32,7 @@ export function Sts1PowerDetail({
   serviceLocale: ServiceLocale;
   onClose?: () => void;
 }) {
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const related = relatedLabels(serviceLocale);
   return (
     <Sts1DetailShell
@@ -38,8 +41,15 @@ export function Sts1PowerDetail({
       onClose={onClose}
       serviceLocale={serviceLocale}
       heroLayout="icon"
+      assetActions={(
+        <CompendiumAssetImageActions
+          serviceLocale={serviceLocale}
+          fileName={`${power.slug}.png`}
+          targetRef={assetCopyTargetRef}
+        />
+      )}
       hero={(
-        <div className="flex h-40 w-40 items-center justify-center sm:h-48 sm:w-48">
+        <div ref={assetCopyTargetRef} className="flex h-40 w-40 items-center justify-center sm:h-48 sm:w-48">
           <Image
             src={sts1PowerImageUrl(power)}
             alt={power.name}

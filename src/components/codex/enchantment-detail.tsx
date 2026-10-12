@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
@@ -30,6 +30,7 @@ import {
 import { collectAfflictionSideTips } from "@/lib/affliction-side-tips";
 import { collectEnchantmentSideTips } from "@/lib/enchantment-side-tips";
 import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
+import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { DescriptionText } from "./codex-description";
 import {
   getRelatedMonsterIdsForAffliction,
@@ -151,6 +152,7 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
   const resourceKind = props.affliction ? "affliction" : "enchantment";
   const resource = props.affliction ?? props.enchantment;
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = getEnchantmentDetailLabels(serviceLocale);
   const cardTypeFilter: EnchantmentCardTypeFilter = props.enchantment?.cardType ?? "Any";
   const cardTypeConfig = ENCHANTMENT_CARD_TYPE_CONFIG[cardTypeFilter];
@@ -251,7 +253,7 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
             tips={sideTips}
             className="flex w-full max-w-[12rem] flex-col items-center"
           >
-            <div className="flex h-32 w-32 shrink-0 items-center justify-center sm:h-40 sm:w-40">
+            <div ref={assetCopyTargetRef} className="flex h-32 w-32 shrink-0 items-center justify-center sm:h-40 sm:w-40">
               {resource.imageUrl ? (
                 <Image
                   src={resource.imageUrl}
@@ -267,6 +269,13 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
               )}
             </div>
           </CardSideTipsAnchor>
+          {resource ? (
+            <CompendiumAssetImageActions
+              serviceLocale={serviceLocale}
+              fileName={`${resource.id}.png`}
+              targetRef={assetCopyTargetRef}
+            />
+          ) : null}
         </section>
 
         <aside data-enchantment-detail-meta className="flex flex-col gap-3">

@@ -1,6 +1,8 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "@/components/ui/static-image";
+import { CompendiumAssetImageActions } from "@/components/codex/compendium-asset-image-actions";
 import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1CardText } from "./description";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
@@ -21,6 +23,7 @@ export function Sts1PotionDetail({
   serviceLocale: ServiceLocale;
   onClose?: () => void;
 }) {
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const poolLabel = potion.pool === "shared" ? labels.shared : labels.characters[potion.pool];
   return (
     <Sts1DetailShell
@@ -29,8 +32,15 @@ export function Sts1PotionDetail({
       onClose={onClose}
       serviceLocale={serviceLocale}
       heroLayout="icon"
+      assetActions={(
+        <CompendiumAssetImageActions
+          serviceLocale={serviceLocale}
+          fileName={`${potion.slug}.png`}
+          targetRef={assetCopyTargetRef}
+        />
+      )}
       hero={(
-        <div className="flex h-40 w-40 items-center justify-center sm:h-52 sm:w-52">
+        <div ref={assetCopyTargetRef} className="flex h-40 w-40 items-center justify-center sm:h-52 sm:w-52">
           <Image
             src={sts1PotionImageUrl(potion)}
             alt={potion.name}

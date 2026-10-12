@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect, Fragment, type ReactNode } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef, Fragment, type ReactNode } from "react";
 import type { CSSProperties } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
+import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
@@ -2163,6 +2164,7 @@ export function EventDetail({
   onClose,
 }: EventDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = serviceLocale === "ko"
     ? { englishName: "영어명", patchHistory: "패치 이력", noPatchHistory: "구조화 변경 없음" }
     : { englishName: "English name", patchHistory: "Patch History", noPatchHistory: "No structured changes" };
@@ -2198,8 +2200,8 @@ export function EventDetail({
     ? "flex flex-col gap-3 sm:gap-4"
     : "flex flex-col gap-5";
   const stageSectionClassName = isModal
-    ? "flex min-h-[22rem] min-w-0 items-center justify-center py-1"
-    : "flex min-h-[22rem] min-w-0 items-center justify-center py-2";
+    ? "flex min-h-[22rem] min-w-0 flex-col items-center justify-center gap-2 py-1"
+    : "flex min-h-[22rem] min-w-0 flex-col items-center justify-center gap-2 py-2";
   const stageFrameClassName = isModal
     ? "relative min-w-0 w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10 lg:max-w-[min(100%,calc((100vh-21rem)*16/9))]"
     : "relative min-w-0 w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10";
@@ -2309,6 +2311,7 @@ export function EventDetail({
             style={{ boxShadow: `inset 0 0 120px rgba(96, 165, 250, 0.08), 0 16px 60px rgba(0, 0, 0, 0.35)` }}
           >
             <div
+              ref={assetCopyTargetRef}
               data-event-art-stage={event.id}
               className="relative h-[34rem] w-full sm:h-auto sm:aspect-video"
             >
@@ -2384,6 +2387,11 @@ export function EventDetail({
               </div>
             </div>
           </div>
+          <CompendiumAssetImageActions
+            serviceLocale={serviceLocale}
+            fileName={`${event.id}.png`}
+            targetRef={assetCopyTargetRef}
+          />
         </section>
 
         <aside className="grid gap-3 lg:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)] xl:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)_minmax(18rem,1fr)_minmax(18rem,1fr)] xl:items-start">

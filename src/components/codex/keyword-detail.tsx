@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
@@ -9,6 +9,7 @@ import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { CodexAffliction, CodexCard, CodexEnchantment, CodexEvent, CodexKeyword, CodexPotion, CodexPower, CodexRelic } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { DescriptionText } from "./codex-description";
 import { RelatedResourceLinks, type CodexReferenceGroup, type CodexReferenceKind, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameHoverTip } from "./hover-tip";
@@ -142,6 +143,7 @@ export function KeywordDetail({
   onClose,
 }: KeywordDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const labels = keywordDetailLabels(serviceLocale);
   const sourceConfig = KEYWORD_SOURCE_CONFIG[keyword.source];
   const [commentCount, setCommentCount] = useState(0);
@@ -219,7 +221,8 @@ export function KeywordDetail({
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
-        <section className="flex min-h-[18rem] items-center justify-center py-4">
+        <section className="flex min-h-[18rem] flex-col items-center justify-center gap-2 py-4">
+          <div ref={assetCopyTargetRef}>
           <GameHoverTip
             title={keyword.name}
             className="w-full max-w-[28rem]"
@@ -237,6 +240,12 @@ export function KeywordDetail({
               <DescriptionText description={keyword.description} className="block text-left" />
             )}
           </GameHoverTip>
+          </div>
+          <CompendiumAssetImageActions
+            serviceLocale={serviceLocale}
+            fileName={`${keyword.id}.png`}
+            targetRef={assetCopyTargetRef}
+          />
         </section>
 
         <aside className="flex flex-col gap-3">

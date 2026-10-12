@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
@@ -16,6 +16,7 @@ import {
   getRunBadgeVariants,
   type RunBadgeCatalogEntry,
 } from "@/lib/run-badges";
+import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { DescriptionText } from "./codex-description";
 import { GameHoverTip } from "./hover-tip";
 
@@ -33,6 +34,7 @@ export function BadgeDetail({
   onClose?: () => void;
 }) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const variants = getRunBadgeVariants(badge);
   const [commentCount, setCommentCount] = useState(0);
 
@@ -65,6 +67,7 @@ export function BadgeDetail({
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[22rem] flex-col items-center justify-center gap-5 py-4">
+          <div ref={assetCopyTargetRef} className="flex w-full flex-col items-center gap-5">
           {variants.map((variant) => (
             <div
               key={variant.rarity}
@@ -96,6 +99,12 @@ export function BadgeDetail({
               </GameHoverTip>
             </div>
           ))}
+          </div>
+          <CompendiumAssetImageActions
+            serviceLocale={serviceLocale}
+            fileName={`${badge.id}.png`}
+            targetRef={assetCopyTargetRef}
+          />
         </section>
 
         <aside className="flex flex-col gap-3">

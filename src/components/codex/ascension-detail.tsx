@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { STS2ChangeHistory } from "@/components/codex/sts2-change-history";
@@ -11,6 +11,7 @@ import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { CodexAscension } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { AscensionToken } from "./ascension-token";
+import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { DescriptionText } from "./codex-description";
 import { GameHoverTip } from "./hover-tip";
 import { RichDescription } from "./rich-description";
@@ -101,6 +102,7 @@ export function AscensionDetail({
   onClose?: () => void;
 }) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const labels = detailLabels(serviceLocale);
   const [commentCount, setCommentCount] = useState(0);
   const backTitle = backToListTitle ?? gameUi.nav.ascensions;
@@ -133,8 +135,15 @@ export function AscensionDetail({
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
-        <section className="flex min-h-[18rem] items-center justify-center py-4">
-          <AscensionInspect ascension={ascension} entities={entities} />
+        <section className="flex min-h-[18rem] flex-col items-center justify-center gap-2 py-4">
+          <div ref={assetCopyTargetRef}>
+            <AscensionInspect ascension={ascension} entities={entities} />
+          </div>
+          <CompendiumAssetImageActions
+            serviceLocale={serviceLocale}
+            fileName={`${ascension.id}.png`}
+            targetRef={assetCopyTargetRef}
+          />
         </section>
 
         <aside className="flex flex-col gap-3">

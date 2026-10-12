@@ -43,6 +43,7 @@ export function Sts1DetailShell({
   serviceLocale,
   hero,
   heroLayout = "card",
+  assetActions,
   stageExtra,
   children,
 }: {
@@ -52,6 +53,7 @@ export function Sts1DetailShell({
   serviceLocale: ServiceLocale;
   hero: ReactNode;
   heroLayout?: "card" | "icon";
+  assetActions?: ReactNode;
   stageExtra?: ReactNode;
   children: ReactNode;
 }) {
@@ -88,6 +90,7 @@ export function Sts1DetailShell({
           className={`flex w-full min-w-0 flex-col items-center justify-center gap-4 ${compact ? "py-8" : "min-h-[34rem] py-4"}`}
         >
           {hero}
+          {assetActions}
           {stageExtra}
         </section>
         <aside className="flex min-w-0 flex-col gap-3">{children}</aside>

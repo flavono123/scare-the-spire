@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
@@ -25,6 +25,7 @@ import {
 import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameChoiceFrame } from "./event-choice-frame";
 import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
+import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import { RichText } from "@/components/rich-text";
 import {
@@ -138,6 +139,7 @@ export function PotionDetail({
   onClose,
 }: PotionDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = getPotionDetailLabels(serviceLocale);
   const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
   const poolColor = potion.pool !== "shared" && potion.pool !== "event"
@@ -246,7 +248,7 @@ export function PotionDetail({
             tips={sideTips}
             className="flex w-full max-w-[12rem] flex-col items-center"
           >
-            <div className="flex h-32 w-32 shrink-0 items-center justify-center sm:h-40 sm:w-40">
+            <div ref={assetCopyTargetRef} className="flex h-32 w-32 shrink-0 items-center justify-center sm:h-40 sm:w-40">
               <Image
                 src={potion.imageUrl}
                 alt={potion.name}
@@ -259,6 +261,11 @@ export function PotionDetail({
               />
             </div>
           </CardSideTipsAnchor>
+          <CompendiumAssetImageActions
+            serviceLocale={serviceLocale}
+            fileName={`${potion.id}.png`}
+            targetRef={assetCopyTargetRef}
+          />
         </section>
 
         <aside data-potion-detail-meta className="flex flex-col gap-3">

@@ -1,6 +1,8 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "@/components/ui/static-image";
+import { CompendiumAssetImageActions } from "@/components/codex/compendium-asset-image-actions";
 import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1CardText } from "./description";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
@@ -21,6 +23,7 @@ export function Sts1RelicDetail({
   serviceLocale: ServiceLocale;
   onClose?: () => void;
 }) {
+  const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const tier = relic.tier === "deprecated" ? "special" : relic.tier;
   const poolLabel = relic.pool === "shared" ? labels.shared : labels.characters[relic.pool];
   return (
@@ -30,8 +33,15 @@ export function Sts1RelicDetail({
       onClose={onClose}
       serviceLocale={serviceLocale}
       heroLayout="icon"
+      assetActions={(
+        <CompendiumAssetImageActions
+          serviceLocale={serviceLocale}
+          fileName={`${relic.slug}.png`}
+          targetRef={assetCopyTargetRef}
+        />
+      )}
       hero={(
-        <div className="flex h-40 w-40 items-center justify-center sm:h-48 sm:w-48">
+        <div ref={assetCopyTargetRef} className="flex h-40 w-40 items-center justify-center sm:h-48 sm:w-48">
           <Image
             src={sts1RelicImageUrl(relic, relic.hasLargeArt)}
             alt={relic.name}

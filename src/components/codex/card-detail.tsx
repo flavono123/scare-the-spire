@@ -22,8 +22,8 @@ import {
   CodexKeyword,
 } from "@/lib/codex-types";
 import { CardActionIcon } from "@/components/history-course/card-action-icon";
-import { TransfigureImageCopyButton } from "@/components/transfigure/transfigure-image-copy-button";
 import { CardTile } from "./card-tile";
+import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { DescriptionText, getCardMaxUpgradeLevel, hasCardUpgrade, renderCardDescription } from "./codex-description";
 import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 import { collectCardSideTips } from "@/lib/card-keyword-tips";
@@ -201,17 +201,6 @@ function getRemovedUpgradePreviewCard(
 export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], tipCatalogSources, tipCatalogCards, tipCatalogKeywords = [], patches, changes, versionDiffs, initialShowBeta = false, onShowBetaChange, syncBetaSearchParam = false, onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
-  const assetImageLabels = {
-    copy: serviceText.common.copyAssetImage,
-    copying: serviceText.common.copyingAssetImage,
-    copied: serviceText.common.copiedAssetImage,
-    copyFailed: serviceText.common.assetImageCopyFailed,
-    copyUnsupported: serviceText.common.assetImageCopyUnsupported,
-    download: serviceText.common.downloadAssetImage,
-    downloading: serviceText.common.downloadingAssetImage,
-    downloaded: serviceText.common.downloadedAssetImage,
-    downloadFailed: serviceText.common.assetImageDownloadFailed,
-  };
   const detailLabels = getCardDetailLabels(serviceLocale);
   const threadKey = buildCodexCommentThreadKey("card", card.id);
   const [upgradeLevel, setUpgradeLevel] = useState(0);
@@ -585,13 +574,14 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
           )}
           </div>
 
+          <CompendiumAssetImageActions
+            serviceLocale={serviceLocale}
+            fileName={`${upgradePreviewCard.id}.png`}
+            targetRef={assetCopyTargetRef}
+          />
+
+          {(canShowUpgrade || card.betaImageUrl) && (
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <TransfigureImageCopyButton
-              layout="icons"
-              fileName={`${upgradePreviewCard.id}.png`}
-              targetRef={assetCopyTargetRef}
-              labels={assetImageLabels}
-            />
             {canShowUpgrade && maxUpgradeLevel <= 1 && (
               <GameCheckboxToggle
                 checked={showUpgrade}
@@ -618,6 +608,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
               />
             )}
           </div>
+          )}
 
           {madScienceChoices}
 
