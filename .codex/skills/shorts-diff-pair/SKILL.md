@@ -9,10 +9,12 @@ Put approved before/after stills on the CapCut timeline. The frame is the brand 
 
 ## Frame
 
+Organic YouTube Shorts cover the top ~192 px, the bottom ~576 px, and the right ~130 px of a 1080×1920 frame. The brand row sits under that top band, and the still sits above the bottom band. Placement numbers and the channels they come from are in `brand-placement.md` next to this skill.
+
 - Canvas 1080×1920.
-- Top: site favicon plus `슬서운이야기`, font `경기천년바탕` (`public/fonts/GyeonggiCheonnyeonBatangBold.ttf`).
-- Under that: the version only, same font. No element index.
-- Center: one still, then the next still. Each holds 2.4 seconds.
+- Brand row: site favicon plus `슬서운이야기`, centered as one lockup, CapCut `y = 0.74`. Font `경기천년바탕` (`public/fonts/GyeonggiCheonnyeonBatangBold.ttf`).
+- Under that: the version only, same font, CapCut `y = 0.68`. No element index.
+- Center: one still, then the next still, CapCut `y = 0.10`, displayed about 920 px tall. Each holds 2.4 seconds.
 - Audio is already the STS1 Act 2 `The City` bed.
 
 Template draft:
@@ -29,12 +31,12 @@ When the user names a version, list the elements whose tile or slab actually cha
 
 ## Capture
 
-For each approved element, save two PNGs:
+For each approved element, save two PNGs by clicking the detail page's image download button (`[data-compendium-download-image]`). Do not screenshot the page. A page shot includes the side tips next to the card. The download renders only the tile or slab, with padding so the cost token is inside the image.
 
 - as-is: `/compendium/{type}/{id}?version={previous selectable version}`
 - to-be: the same page at the named patch version
 
-Use the detail page image download. The file name includes the version. Card tiles use `[data-card-tile]`. Relic slabs use `[data-relic-inspect-slab]`.
+The file name includes the version. Card tiles use `[data-card-tile]`. Relic slabs use `[data-relic-inspect-slab]`.
 
 If the copied still should show a nerf or buff in the text, make that still in Transfigure first. The description toolbar there has the Pagestorm color swatches, sine, and jitter. Copy that image. Do not add those marks again in CapCut.
 
