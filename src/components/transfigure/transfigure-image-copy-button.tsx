@@ -8,6 +8,7 @@ import {
   LoaderCircle,
 } from "lucide-react";
 import { GameUiHoverTip, GAME_UI_HOVER_TIP_NAV_DELAY_MS } from "@/components/game-ui-hover-tip";
+import { imageCaptureInsets } from "@/lib/image-capture-frame";
 
 type ActionStatus = "idle" | "working" | "success";
 
@@ -102,6 +103,61 @@ function captureNode(target: HTMLElement): HTMLElement {
   return target.querySelector<HTMLElement>("[data-card-tile], [data-relic-inspect-slab]") ?? target;
 }
 
+function isCaptureChrome(node: Node): boolean {
+  return node instanceof Element && Boolean(
+    node.closest("[data-hover-tip-layer], [data-side-tips], [data-card-side-tips]"),
+  );
+}
+
+function expandCaptureFrame(node: HTMLElement): () => void {
+  const root = node.getBoundingClientRect();
+  const descendants = Array.from(node.querySelectorAll<HTMLElement>("*"))
+    .filter((element) => !isCaptureChrome(element))
+    .map((element) => element.getBoundingClientRect());
+  const insets = imageCaptureInsets(root, descendants);
+  const computed = getComputedStyle(node);
+  const padding = (property: string) => Number.parseFloat(computed.getPropertyValue(property)) || 0;
+  const previous = {
+    boxSizing: node.style.boxSizing,
+    width: node.style.width,
+    height: node.style.height,
+    paddingTop: node.style.paddingTop,
+    paddingRight: node.style.paddingRight,
+    paddingBottom: node.style.paddingBottom,
+    paddingLeft: node.style.paddingLeft,
+    marginTop: node.style.marginTop,
+    marginRight: node.style.marginRight,
+    marginBottom: node.style.marginBottom,
+    marginLeft: node.style.marginLeft,
+  };
+  node.style.boxSizing = "border-box";
+  node.style.width = `${node.offsetWidth + insets.left + insets.right}px`;
+  node.style.height = `${node.offsetHeight + insets.top + insets.bottom}px`;
+  node.style.paddingTop = `${padding("padding-top") + insets.top}px`;
+  node.style.paddingRight = `${padding("padding-right") + insets.right}px`;
+  node.style.paddingBottom = `${padding("padding-bottom") + insets.bottom}px`;
+  node.style.paddingLeft = `${padding("padding-left") + insets.left}px`;
+  // html-to-image clips to the border box. The tile's negative margin shifts
+  // that box, which cuts off the cost orb sitting in the top-left padding.
+  node.style.marginTop = "0";
+  node.style.marginRight = "0";
+  node.style.marginBottom = "0";
+  node.style.marginLeft = "0";
+  return () => {
+    node.style.boxSizing = previous.boxSizing;
+    node.style.width = previous.width;
+    node.style.height = previous.height;
+    node.style.paddingTop = previous.paddingTop;
+    node.style.paddingRight = previous.paddingRight;
+    node.style.paddingBottom = previous.paddingBottom;
+    node.style.paddingLeft = previous.paddingLeft;
+    node.style.marginTop = previous.marginTop;
+    node.style.marginRight = previous.marginRight;
+    node.style.marginBottom = previous.marginBottom;
+    node.style.marginLeft = previous.marginLeft;
+  };
+}
+
 function withSelectedVersion(fileName: string): string {
   const version = new URLSearchParams(window.location.search).get("version")?.replace(/^v/i, "");
   if (!version || fileName.includes(version)) return fileName;
@@ -117,17 +173,20 @@ async function renderTargetPng(target: HTMLElement): Promise<Blob> {
   const node = captureNode(target);
   const previousOverflow = node.style.overflow;
   node.style.overflow = "visible";
+  const restoreFrame = expandCaptureFrame(node);
   const restoreBorderImages = await inlineTargetBorderImages(node);
   try {
     const blob = await toBlob(node, {
       cacheBust: true,
       pixelRatio: Math.min(3, Math.max(2, window.devicePixelRatio || 1)),
       preferredFontFormat: "woff2",
+      filter: (domNode) => !isCaptureChrome(domNode),
     });
     if (!blob) throw new Error("PNG rendering returned no data");
     return blob;
   } finally {
     restoreBorderImages();
+    restoreFrame();
     node.style.overflow = previousOverflow;
   }
 }

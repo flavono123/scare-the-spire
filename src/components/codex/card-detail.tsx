@@ -27,6 +27,7 @@ import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { DescriptionText, getCardMaxUpgradeLevel, hasCardUpgrade, renderCardDescription } from "./codex-description";
 import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 import { collectCardSideTips } from "@/lib/card-keyword-tips";
+import { withResolvedCardTypeLabel } from "@/lib/versioned-card-label";
 import {
   createCardSideTipCatalog,
   type CardSideTipCatalogSources,
@@ -496,7 +497,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
           <CardSideTipsAnchor mode="always" preferSide="left" tips={sideTips} style={{ width: cardWidth }}>
           <div ref={assetCopyTargetRef}>
           <CardTile
-            card={upgradePreviewCard}
+            card={withResolvedCardTypeLabel(upgradePreviewCard, gameUi.cardLibrary.types)}
             serviceLocale={serviceLocale}
             showUpgrade={showUpgrade}
             upgradeLevel={effectiveUpgradeLevel}

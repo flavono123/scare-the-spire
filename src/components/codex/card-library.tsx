@@ -32,6 +32,7 @@ import { versionCodexEntities } from "@/lib/codex-versioning";
 import {
   collectCardSideTips,
 } from "@/lib/card-keyword-tips";
+import { withResolvedCardTypeLabel } from "@/lib/versioned-card-label";
 import {
   createCardSideTipCatalog,
   type CardSideTipCatalogSources,
@@ -870,7 +871,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
                       })}
                     >
                       <CardTile
-                        card={card}
+                        card={withResolvedCardTypeLabel(card, gameUi.cardLibrary.types)}
                         serviceLocale={serviceLocale}
                         showUpgrade={showUpgrades}
                         showBeta={activeShowBeta}
