@@ -6,10 +6,11 @@ import { RichText } from "@/components/rich-text";
 import { useEditor, EditorContent, ReactRenderer } from "@tiptap/react";
 import type { Editor } from "@tiptap/react";
 import {
-  PagestormColor,
-  PagestormJitter,
-  PagestormSine,
-} from "@/components/pagestorm/color-marks";
+  TextEffectSelectionOnly,
+  TransfigureColor,
+  TransfigureJitter,
+  TransfigureSine,
+} from "@/components/text-effects/extensions";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
@@ -726,7 +727,9 @@ export function RichContentEditor({
       Placeholder.configure({ placeholder: richPlaceholder ? "" : placeholder }),
       CharacterCount.configure(maxChars == null ? {} : { limit: maxChars }),
       CustomKeyword,
-      ...(textEffects ? [PagestormColor, PagestormSine, PagestormJitter] : []),
+      ...(textEffects
+        ? [TransfigureColor, TransfigureSine, TransfigureJitter, TextEffectSelectionOnly]
+        : []),
       ...(costTokens
         ? [CostTokenExtension.configure({
           energyIconSrc: costTokens.energyIconSrc,

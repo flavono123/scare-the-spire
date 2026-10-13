@@ -415,6 +415,7 @@ export function TransfigureAssetEditor({
       aria-label={descriptionLabel}
       data-transfigure-description-input
     >
+      <TextEffectToolbar editor={effectEditor} serviceLocale={serviceLocale} />
       <RichContentEditor
         key={`${gameLocale}:${entity.type}:${entity.id}:${showUpgrade ? "upgrade" : "base"}`}
         entities={entities}
@@ -448,7 +449,6 @@ export function TransfigureAssetEditor({
 
   return (
     <div className="space-y-2" data-transfigure-asset-editor>
-      <TextEffectToolbar editor={effectEditor} serviceLocale={serviceLocale} />
       {entity.type === "card" && displayCard ? (
         <div className="relative flex flex-col items-center justify-center">
           <CardTile
