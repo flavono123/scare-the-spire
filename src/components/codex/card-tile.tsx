@@ -506,6 +506,11 @@ interface CardTileProps {
   minimumDescriptionFontScale?: number;
   /** Reports whether the complete description fits, including card keywords. */
   onDescriptionFitChange?: (fit: CardDescriptionFit) => void;
+  /** Version and game locale this tile was rendered from. Image copy waits for these. */
+  captureSnapshot?: {
+    gameLocale: string;
+    version: string;
+  };
   engagementStats?: {
     commentCount: number;
     likeCount: number;
@@ -544,6 +549,7 @@ export const CardTile = memo(function CardTile({
   minimumDescriptionFontScale = 0.55,
   onDescriptionFitChange,
   engagementStats,
+  captureSnapshot,
 }: CardTileProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const [imgError, setImgError] = useState(false);
@@ -983,6 +989,8 @@ export const CardTile = memo(function CardTile({
   const wrapCardRoot = (node: ReactNode) => (
     <div
       data-card-tile=""
+      data-game-locale={captureSnapshot?.gameLocale}
+      data-version={captureSnapshot?.version}
       className="relative overflow-visible"
       style={{
         width: cardWidth + overflowPad.left + overflowPad.right,

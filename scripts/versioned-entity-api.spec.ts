@@ -7,6 +7,7 @@ import {
   resolveVersionedEntity,
 } from "../src/lib/versioned-entity-api";
 import { normalizeVersionedEntityType } from "../src/lib/codex-versioning";
+import { latestPatchVersion } from "../src/lib/entity-versioning";
 import { updateCompendiumResourceModalUrl } from "../src/lib/compendium-resource-links";
 import type { CodexCard } from "../src/lib/codex-types";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "../src/lib/types";
@@ -402,6 +403,14 @@ async function runTests() {
   });
   assert.equal(waveAfter.entity?.vars?.CorrosiveWave, 2);
   assert.match(waveAfter.entity?.description ?? "", /중독\[\/gold\]을 2/);
+
+  console.log("\n[Test 11] current version ignores steam build ids and date slugs");
+  assert.equal(latestPatchVersion([
+    { version: "0.111.0" },
+    { version: "23478716" },
+    { version: "2026-09-11" },
+    { version: "0.99" },
+  ]), "0.111.0");
 
   console.log("\nAll Versioned Entity API tests PASSED successfully!");
 }

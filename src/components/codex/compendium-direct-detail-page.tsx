@@ -18,7 +18,7 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
 import { versionCodexEntity, type CodexVersionContext } from "@/lib/codex-versioning";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
-import { getVersionsWithDiffs, latestPatchVersion, resolveKnownVersion } from "@/lib/entity-versioning";
+import { latestPatchVersion, resolveKnownVersion } from "@/lib/entity-versioning";
 import type { EntityLifecycle } from "@/lib/entity-lifecycle";
 import type { VersionedEntityType } from "@/lib/types";
 import {
@@ -29,7 +29,8 @@ import {
 import type { CompendiumDetailSeoSummary } from "@/lib/compendium-detail-metadata";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import { toEventCharacterQuoteSpeaker } from "@/lib/event-character-quotes";
-import { useHydrationSafeSearchParam } from "@/components/codex/use-hydration-safe-search-param";
+import { useHydrationSafePathname, useHydrationSafeSearchParam } from "@/components/codex/use-hydration-safe-search-param";
+import { getGameLocaleFromPathname } from "@/lib/i18n";
 import type { PotionPool, RelicPool } from "@/lib/codex-types";
 
 type CompendiumDirectDetailPageProps = {
@@ -313,9 +314,13 @@ export function CompendiumDirectDetailPage({
   const [payload, setPayload] = useState<CompendiumDetailPayload | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const urlVersion = useHydrationSafeSearchParam("version");
+  const pathname = useHydrationSafePathname("/");
+  const urlGameLocale = getGameLocaleFromPathname(pathname);
 
   useEffect(() => {
     let active = true;
+    setPayload(null);
+    setError(null);
     fetchDetailPayload(payloadPath)
       .then((nextPayload) => {
         if (active) setPayload(nextPayload);
@@ -338,7 +343,7 @@ export function CompendiumDirectDetailPage({
     return <LoadingState label="상세 정보를 불러오지 못했습니다." summary={initialSummary} />;
   }
 
-  if (!payload) {
+  if (!payload || payload.gameLocale !== urlGameLocale) {
     return <LoadingState label="상세 정보를 불러오는 중입니다." summary={initialSummary} />;
   }
 
@@ -347,9 +352,11 @@ export function CompendiumDirectDetailPage({
   const serviceText = getCodexServiceMessages(serviceLocale);
   const showBetaArt = isBetaSearchEnabled();
   const currentVersion = latestPatchVersion(patches);
+  // Any published patch is a real point in time, including hotfixes with no
+  // field diffs. The dropdown list stays limited to versions that changed data.
   const selectedVersion = resolveKnownVersion(
     urlVersion,
-    getVersionsWithDiffs(patches, versionDiffs),
+    patches.map((patch) => patch.version),
   ) ?? currentVersion.replace(/^v/, "");
   const versionContext: CodexVersionContext = {
     selectedVersion,
@@ -384,6 +391,7 @@ export function CompendiumDirectDetailPage({
           versionDiffs={versionDiffs}
           initialShowBeta={showBetaArt}
           syncBetaSearchParam
+          captureSnapshot={{ gameLocale: payload.gameLocale, version: selectedVersion }}
         />
       );
     }

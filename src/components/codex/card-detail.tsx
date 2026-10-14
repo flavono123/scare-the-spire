@@ -146,6 +146,10 @@ interface CardDetailProps {
   onShowBetaChange?: (showBeta: boolean) => void;
   syncBetaSearchParam?: boolean;
   onClose?: () => void;
+  captureSnapshot?: {
+    gameLocale: string;
+    version: string;
+  };
 }
 
 function getCardDetailLabels(serviceLocale: ServiceLocale) {
@@ -199,7 +203,7 @@ function getRemovedUpgradePreviewCard(
   };
 }
 
-export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], tipCatalogSources, tipCatalogCards, tipCatalogKeywords = [], patches, changes, versionDiffs, initialShowBeta = false, onShowBetaChange, syncBetaSearchParam = false, onClose }: CardDetailProps) {
+export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], tipCatalogSources, tipCatalogCards, tipCatalogKeywords = [], patches, changes, versionDiffs, initialShowBeta = false, onShowBetaChange, syncBetaSearchParam = false, onClose, captureSnapshot }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = getCardDetailLabels(serviceLocale);
@@ -512,6 +516,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
             descriptionSuffix={activeDescriptionSuffix}
             enchantStatMod={activeStatMod}
             afflictionId={activeAffliction?.id ?? null}
+            captureSnapshot={captureSnapshot}
             onEnchantSlotClick={() => {
               setActiveEnchantId(null);
               setEnchantAmount(DEFAULT_ENCHANT_AMOUNT);

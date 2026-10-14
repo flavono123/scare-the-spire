@@ -9,6 +9,12 @@ import {
 } from "lucide-react";
 import { GameUiHoverTip, GAME_UI_HOVER_TIP_NAV_DELAY_MS } from "@/components/game-ui-hover-tip";
 import { imageCaptureInsets } from "@/lib/image-capture-frame";
+import {
+  elementMatchesImageCaptureSnapshot,
+  imageCaptureSnapshotFromHref,
+  imageCaptureSnapshotsEqual,
+  type ImageCaptureSnapshot,
+} from "@/lib/image-capture-snapshot";
 
 type ActionStatus = "idle" | "working" | "success";
 
@@ -98,6 +104,56 @@ async function inlineTargetBorderImages(target: HTMLElement): Promise<() => void
   };
 }
 
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+async function waitForStableCaptureSnapshot(): Promise<ImageCaptureSnapshot> {
+  const started = performance.now();
+  let previous = imageCaptureSnapshotFromHref(window.location.href);
+  let lastChange = started;
+  while (performance.now() - started < 2500) {
+    await delay(50);
+    const next = imageCaptureSnapshotFromHref(window.location.href);
+    if (!imageCaptureSnapshotsEqual(previous, next)) {
+      previous = next;
+      lastChange = performance.now();
+    }
+    const elapsed = performance.now() - started;
+    const quiet = performance.now() - lastChange;
+    // Locale detection and the version subscription can both move the URL
+    // shortly after the click. One settled read is the snapshot for every
+    // element in the tile.
+    if (elapsed >= 600 && quiet >= 200) return previous;
+  }
+  return previous;
+}
+
+function stampedTiles(): HTMLElement[] {
+  return Array.from(document.querySelectorAll<HTMLElement>("[data-card-tile][data-game-locale]"));
+}
+
+async function waitForMatchingCaptureNode(
+  target: HTMLElement,
+  snapshot: ImageCaptureSnapshot,
+): Promise<HTMLElement> {
+  const started = performance.now();
+  while (performance.now() - started < 4000) {
+    const candidates = [captureNode(target), ...stampedTiles()];
+    const match = candidates.find((node) => elementMatchesImageCaptureSnapshot(
+      node.dataset.gameLocale,
+      node.dataset.version,
+      snapshot,
+    ));
+    if (match) return match;
+    if (stampedTiles().length === 0 && !captureNode(target).dataset.gameLocale) {
+      return captureNode(target);
+    }
+    await delay(50);
+  }
+  throw new Error("Image capture snapshot did not settle");
+}
+
 function captureNode(target: HTMLElement): HTMLElement {
   if (target.matches("[data-card-tile], [data-relic-inspect-slab]")) return target;
   return target.querySelector<HTMLElement>("[data-card-tile], [data-relic-inspect-slab]") ?? target;
@@ -158,32 +214,32 @@ function expandCaptureFrame(node: HTMLElement): () => void {
   };
 }
 
-function withSelectedVersion(fileName: string): string {
-  const version = new URLSearchParams(window.location.search).get("version")?.replace(/^v/i, "");
+function withSelectedVersion(fileName: string, version: string): string {
   if (!version || fileName.includes(version)) return fileName;
   const stem = fileName.replace(/\.png$/i, "");
   return `${stem}-v${version}.png`;
 }
 
-async function renderTargetPng(target: HTMLElement): Promise<Blob> {
-  const [{ toBlob }] = await Promise.all([
+async function renderTargetPng(target: HTMLElement): Promise<{ blob: Blob; snapshot: ImageCaptureSnapshot }> {
+  const [{ toBlob }, snapshot] = await Promise.all([
     import("html-to-image"),
+    waitForStableCaptureSnapshot(),
     document.fonts?.ready ?? Promise.resolve(),
   ]);
-  const node = captureNode(target);
+  const node = await waitForMatchingCaptureNode(target, snapshot);
   const previousOverflow = node.style.overflow;
   node.style.overflow = "visible";
   const restoreFrame = expandCaptureFrame(node);
   const restoreBorderImages = await inlineTargetBorderImages(node);
   try {
     const blob = await toBlob(node, {
-      cacheBust: true,
+      cacheBust: false,
       pixelRatio: Math.min(3, Math.max(2, window.devicePixelRatio || 1)),
       preferredFontFormat: "woff2",
       filter: (domNode) => !isCaptureChrome(domNode),
     });
     if (!blob) throw new Error("PNG rendering returned no data");
-    return blob;
+    return { blob, snapshot };
   } finally {
     restoreBorderImages();
     restoreFrame();
@@ -240,7 +296,7 @@ export function TransfigureImageCopyButton({
     setCopyStatus("working");
     setDownloadStatus("idle");
     setErrorMessage(null);
-    const blobPromise = renderTargetPng(target);
+    const blobPromise = renderTargetPng(target).then((rendered) => rendered.blob);
 
     void navigator.clipboard.write([
       new ClipboardItem({ "image/png": blobPromise }),
@@ -269,11 +325,11 @@ export function TransfigureImageCopyButton({
     setDownloadStatus("working");
     setErrorMessage(null);
     try {
-      const blob = await renderTargetPng(target);
-      const url = URL.createObjectURL(blob);
+      const rendered = await renderTargetPng(target);
+      const url = URL.createObjectURL(rendered.blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = safeDownloadName(withSelectedVersion(fileName));
+      anchor.download = safeDownloadName(withSelectedVersion(fileName, rendered.snapshot.version));
       document.body.append(anchor);
       anchor.click();
       anchor.remove();

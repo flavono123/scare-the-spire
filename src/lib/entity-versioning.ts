@@ -17,10 +17,15 @@ export function resolveKnownVersion(
   return match ? match.replace(/^v/i, "") : null;
 }
 
+function isGameVersion(version: string): boolean {
+  return /^v?\d+\.\d+(?:\.\d+)*$/i.test(version);
+}
+
 export function latestPatchVersion(patches: readonly { version: string }[]): string {
-  return patches.reduce((latest, patch) => (
-    !latest || compareVersions(patch.version, latest) > 0 ? patch.version : latest
-  ), "");
+  return patches.reduce((latest, patch) => {
+    if (!isGameVersion(patch.version)) return latest;
+    return !latest || compareVersions(patch.version, latest) > 0 ? patch.version : latest;
+  }, "");
 }
 
 /**
