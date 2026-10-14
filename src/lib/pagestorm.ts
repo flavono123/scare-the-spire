@@ -1,3 +1,5 @@
+import { CARD_BETA_IMAGE_URL_BY_ID } from "@/lib/card-beta-image-urls";
+
 export const PAGESTORM_HREF = "/pagestorm";
 export const PAGESTORM_WRITE_HREF = "/pagestorm/write";
 export const PAGESTORM_TOKEN_SRC = "/images/sts2/powers/pagestorm_power.webp";
@@ -65,6 +67,17 @@ function isArtAsset(kind: string, presentation: unknown): boolean {
   return false;
 }
 
+function asBool(value: unknown): boolean {
+  return value === true || value === "true";
+}
+
+/** The portrait the editor actually paints, including beta art. */
+function displayedAssetImageUrl(attrs: Record<string, unknown>, imageUrl: string, kind: string): string {
+  if (!asBool(attrs.beta) || kind !== "card") return imageUrl;
+  const cardId = String(attrs.assetId ?? attrs.id ?? "").trim();
+  return CARD_BETA_IMAGE_URL_BY_ID[cardId] ?? imageUrl;
+}
+
 export function pagestormFirstAssetThumb(
   node: PagestormDocNode | null | undefined,
 ): PagestormAssetThumb | null {
@@ -73,9 +86,10 @@ export function pagestormFirstAssetThumb(
     if (current.type === "gameAsset") {
       const imageUrl = String(current.attrs?.imageUrl ?? "").trim();
       if (imageUrl) {
+        const kind = String(current.attrs?.kind ?? current.attrs?.entityType ?? "");
         assets.push({
-          imageUrl,
-          kind: String(current.attrs?.kind ?? current.attrs?.entityType ?? ""),
+          imageUrl: displayedAssetImageUrl(current.attrs ?? {}, imageUrl, kind),
+          kind,
           presentation: String(current.attrs?.presentation ?? "art"),
           name: String(current.attrs?.name ?? ""),
         });

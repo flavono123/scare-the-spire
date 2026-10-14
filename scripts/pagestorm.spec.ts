@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import {
   CARD_ART_IMAGE_ASPECT,
   clampAssetWidth,
@@ -113,6 +114,69 @@ const artOverPortrait = pagestormFirstAssetThumb(characterThenCard);
 assert.ok(artOverPortrait);
 assert.equal(artOverPortrait.kind, "card");
 assert.equal(artOverPortrait.imageUrl, PAGESTORM_BACKGROUND_SRC);
+
+const betaArt = pagestormFirstAssetThumb({
+  type: "doc",
+  content: [{
+    type: "gameAsset",
+    attrs: {
+      assetId: "WITHER",
+      kind: "card",
+      presentation: "art",
+      beta: true,
+      imageUrl: "/images/sts2/cards/wither1.webp",
+      name: "시듦",
+    },
+  }],
+});
+assert.equal(betaArt?.imageUrl, "/images/sts2/cards-beta/wither.webp");
+
+const baseArt = pagestormFirstAssetThumb({
+  type: "doc",
+  content: [{
+    type: "gameAsset",
+    attrs: {
+      assetId: "WITHER",
+      kind: "card",
+      presentation: "art",
+      beta: false,
+      imageUrl: "/images/sts2/cards/wither1.webp",
+      name: "시듦",
+    },
+  }],
+});
+assert.equal(baseArt?.imageUrl, "/images/sts2/cards/wither1.webp");
+
+const cardRows = JSON.parse(fs.readFileSync("data/sts2/eng/cards.json", "utf8")) as Array<{
+  id: string;
+  beta_image_url: string | null;
+}>;
+function localBeta(url: string | null): string | null {
+  if (!url) return null;
+  const marker = "/static/images/";
+  const index = url.indexOf(marker);
+  if (index < 0) return null;
+  const relative = url.slice(index + marker.length).replace(/^cards\/beta\//, "cards-beta/");
+  return `/images/sts2/${relative.replace(/\.png$/, ".webp")}`;
+}
+for (const card of cardRows) {
+  const beta = localBeta(card.beta_image_url);
+  if (!beta) continue;
+  const thumb = pagestormFirstAssetThumb({
+    type: "doc",
+    content: [{
+      type: "gameAsset",
+      attrs: {
+        assetId: card.id,
+        kind: "card",
+        presentation: "art",
+        beta: true,
+        imageUrl: "/images/sts2/cards/original.webp",
+      },
+    }],
+  });
+  assert.equal(thumb?.imageUrl, beta, card.id);
+}
 
 const relicOnly = pagestormFirstAssetThumb({
   type: "doc",
