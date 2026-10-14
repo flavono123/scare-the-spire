@@ -159,7 +159,7 @@ export function Sts1PowerLibrary({
                       key={power.slug}
                       href={localizeHref(sts1DetailPath("powers", power.slug), serviceLocale)}
                       className="group"
-                      title={power.name}
+                      aria-label={power.name}
                       onClick={(event) => {
                         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
                         event.preventDefault();
