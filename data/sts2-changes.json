@@ -86,53 +86,61 @@
     "patch": "v0.100.0",
     "date": "2026-03-20",
     "character": "ironclad",
-    "summary": "Dominate reworked: now a 1-cost Uncommon Skill. Apply 1(2) Vulnerable, gain 1 Strength per Vulnerable on enemy, Exhaust.",
-    "summaryKo": "지배 리워크: 1비용 고급 스킬로 변경. 취약 1(2) 부여, 적의 취약 수치만큼 힘 획득, 소멸.",
+    "summary": "Dominate reworked: remains a 1-cost Uncommon Skill. Now applies 1(2) Vulnerable, then gains 1 Strength for each Vulnerable on the enemy. Exhaust.",
+    "summaryKo": "제압 리워크: 1비용 고급 스킬은 그대로. 취약 1(2)을 부여한 뒤, 적의 취약마다 힘 1 획득. 소멸.",
     "diffs": [
-      {
-        "attribute": "cardType",
-        "displayName": "Type",
-        "displayNameKo": "유형",
-        "before": "Attack",
-        "after": "Skill",
-        "diffType": "enum"
-      },
-      {
-        "attribute": "rarity",
-        "displayName": "Rarity",
-        "displayNameKo": "희귀도",
-        "before": "Common",
-        "after": "Uncommon",
-        "diffType": "enum"
-      },
       {
         "attribute": "mechanic",
         "displayName": "Mechanic",
         "displayNameKo": "효과",
-        "before": "Previous effect",
-        "after": "Apply 1 Vulnerable. Gain 1 Strength for each Vulnerable on enemy. Exhaust.",
+        "before": "Gain 1 Strength for each Vulnerable on the enemy. Exhaust.",
+        "beforeKo": "대상 적이 보유한 취약마다 힘을 1 얻습니다. 소멸.",
+        "after": "Apply 1 Vulnerable. Gain 1 Strength for each Vulnerable on the enemy. Exhaust.",
+        "afterKo": "취약을 1 부여합니다. 대상 적이 보유한 취약마다 힘을 1 얻습니다. 소멸.",
         "diffType": "rework"
       },
       {
         "attribute": "mechanic",
         "displayName": "Mechanic",
         "displayNameKo": "효과",
-        "before": "Previous effect",
-        "after": "Apply 2 Vulnerable. Gain 1 Strength for each Vulnerable on enemy. Exhaust.",
+        "before": "Gain 1 Strength for each Vulnerable on the enemy. Exhaust is removed.",
+        "beforeKo": "대상 적이 보유한 취약마다 힘을 1 얻습니다. 소멸이 제거됩니다.",
+        "after": "Apply 2 Vulnerable. Gain 1 Strength for each Vulnerable on the enemy. Exhaust.",
+        "afterKo": "취약을 2 부여합니다. 대상 적이 보유한 취약마다 힘을 1 얻습니다. 소멸.",
         "diffType": "rework",
         "upgraded": true
       }
     ],
     "fieldDiffs": [
       {
-        "field": "type",
-        "before": "공격",
-        "after": "스킬"
+        "field": "description",
+        "before": "대상 적이 보유한 [gold]취약[/gold]마다\n[gold]힘[/gold]을 1 얻습니다.",
+        "after": "[gold]취약[/gold]을 1 부여합니다.\n대상 적이 보유한 [gold]취약[/gold]마다\n[gold]힘[/gold]을 1 얻습니다."
       },
       {
-        "field": "rarity",
-        "before": "일반",
-        "after": "고급"
+        "field": "descriptionRaw",
+        "before": "대상 적이 보유한 [gold]취약[/gold]마다\n[gold]힘[/gold]을 {StrengthPerVulnerable:diff()} 얻습니다.",
+        "after": "[gold]취약[/gold]을 {VulnerablePower:diff()} 부여합니다.\n대상 적이 보유한 [gold]취약[/gold]마다\n[gold]힘[/gold]을 {StrengthPerVulnerable:diff()} 얻습니다."
+      },
+      {
+        "field": "vars",
+        "before": {
+          "StrengthPerVulnerable": 1
+        },
+        "after": {
+          "VulnerablePower": 1,
+          "Vulnerable": 1,
+          "StrengthPerVulnerable": 1
+        }
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "remove_exhaust": 1
+        },
+        "after": {
+          "vulnerablepower": "+1"
+        }
       }
     ]
   },
@@ -9718,11 +9726,11 @@
         "attribute": "change",
         "displayName": "Change",
         "displayNameKo": "변경",
-        "before": "Uncommon; X Vulnerable",
-        "beforeKo": "고급; 취약 X",
-        "after": "Rare; 1(2) Vulnerable",
-        "afterKo": "희귀; 취약 1(2)",
-        "diffType": "rework"
+        "before": "Uncommon",
+        "beforeKo": "고급",
+        "after": "Rare",
+        "afterKo": "희귀",
+        "diffType": "enum"
       }
     ],
     "fieldDiffs": [
@@ -9730,32 +9738,11 @@
         "field": "rarity",
         "before": "고급",
         "after": "희귀"
-      },
-      {
-        "field": "description",
-        "before": "[gold]취약[/gold]을 X 부여합니다.\n대상 적이 보유한 [gold]취약[/gold]마다\n[gold]힘[/gold]을 1 얻습니다.",
-        "after": "[gold]취약[/gold]을 1 부여합니다.\n대상 적이 보유한 [gold]취약[/gold]마다\n[gold]힘[/gold]을 1 얻습니다."
-      },
-      {
-        "field": "vars.VulnerablePower",
-        "after": 1
-      },
-      {
-        "field": "vars.Vulnerable",
-        "after": 1
-      },
-      {
-        "field": "upgrade.remove_exhaust",
-        "before": 1
-      },
-      {
-        "field": "upgrade.vulnerablepower",
-        "after": "+1"
       }
     ],
     "date": "2026-07-17",
-    "summary": "Dominate rarity increased from Uncommon to Rare and its effect now applies 1(2) Vulnerable.",
-    "summaryKo": "제압의 등급이 고급에서 희귀로 변경되고, 취약을 1(2) 부여하도록 개편되었습니다."
+    "summary": "Dominate rarity increased from Uncommon to Rare.",
+    "summaryKo": "제압의 등급이 고급에서 희귀로 올랐습니다."
   },
   {
     "id": "eidolon-v0-109-0-field-diff",

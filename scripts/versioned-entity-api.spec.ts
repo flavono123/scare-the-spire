@@ -346,6 +346,45 @@ async function runTests() {
   assert.equal(detailUrl.pathname, "/compendium/cards");
   assert.equal(detailUrl.searchParams.get("version"), "0.110.0");
 
+  console.log("\n[Test 9] DOMINATE immediately before and after v0.100.0");
+  const dominateBefore = await getVersionedEntity<CodexCard>({
+    entityType: "card",
+    entityId: "DOMINATE",
+    version: "v0.99.0",
+    locale: "kor",
+  });
+  assert.ok(dominateBefore.entity, "DOMINATE should exist before v0.100.0");
+  assert.equal(dominateBefore.entity.type, "스킬", "DOMINATE was already a Skill before v0.100.0");
+  assert.equal(dominateBefore.entity.rarity, "고급", "DOMINATE was already Uncommon before v0.100.0");
+  assert.equal(dominateBefore.entity.cost, 1);
+  assert.equal(dominateBefore.entity.vars?.VulnerablePower, undefined);
+  assert.equal(dominateBefore.entity.vars?.StrengthPerVulnerable, 1);
+  assert.equal(dominateBefore.entity.upgrade?.remove_exhaust, 1);
+  assert.equal(dominateBefore.entity.upgrade?.vulnerablepower, undefined);
+  assert.equal(
+    dominateBefore.entity.description,
+    "대상 적이 보유한 [gold]취약[/gold]마다\n[gold]힘[/gold]을 1 얻습니다.",
+  );
+  assert.ok(dominateBefore.entity.keywords?.includes("소멸"));
+
+  const dominateAfter = await getVersionedEntity<CodexCard>({
+    entityType: "card",
+    entityId: "DOMINATE",
+    version: "v0.100.0",
+    locale: "kor",
+  });
+  assert.ok(dominateAfter.entity, "DOMINATE should exist at v0.100.0");
+  assert.equal(dominateAfter.entity.type, "스킬");
+  assert.equal(dominateAfter.entity.rarity, "고급", "DOMINATE stays Uncommon until v0.109.0");
+  assert.equal(dominateAfter.entity.cost, 1);
+  assert.equal(dominateAfter.entity.vars?.VulnerablePower, 1);
+  assert.equal(dominateAfter.entity.upgrade?.vulnerablepower, "+1");
+  assert.equal(dominateAfter.entity.upgrade?.remove_exhaust, undefined);
+  assert.equal(
+    dominateAfter.entity.description,
+    "[gold]취약[/gold]을 1 부여합니다.\n대상 적이 보유한 [gold]취약[/gold]마다\n[gold]힘[/gold]을 1 얻습니다.",
+  );
+
   console.log("\nAll Versioned Entity API tests PASSED successfully!");
 }
 
