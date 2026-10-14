@@ -16,7 +16,7 @@ Organic YouTube Shorts cover the top ~192 px, the bottom ~576 px, and the right 
 - Canvas 1080×1920, 30 fps.
 - Brand row: site favicon plus `슬서운이야기`. Font family `GyeonggiBatang` (경기천년바탕 Bold), installed in `~/Library/Fonts` from `public/fonts/GyeonggiCheonnyeonBatangBold.ttf`.
 - Under that: the version only. No element index.
-- Center: one still, then the next. Each holds 2.4 seconds. Within a pair the transition is Slide Left. Between pairs it is Circle Wipe. Both ship with Kdenlive; there is no paid set.
+- Center: one still, then the next. Each holds 2.4 seconds. Within a pair the composition is Wipe. Between pairs it is Push Down. Both ship with Kdenlive; there is no paid set.
 - Audio is the STS1 Act 2 `The City` bed at about -18 dB.
 
 The short itself is built in `/Users/flavono123/P/slseoun-shorts`. Use
@@ -25,7 +25,7 @@ this repo.
 
 ## Approval first
 
-When the user names a version, list the elements whose tile or slab actually changes in that patch. Use structured field diffs. Mark prose-only changes and portrait-only changes separately. Wait for the user to approve the list before capturing or writing a project.
+When the user names a version, list cards, relics, and potions changed in that patch. For each one print the as-is phrase and the to-be phrase as separate lines. Do not explain the diff. Next to the name, print 버프, 너프, or 리워크 from that patch note. If the note does not use one of those three, judge which of the three it is. Use reconstructed Korean text from the version API. Do not invent a phrase the data does not contain. Mark a row whose tile or slab text does not change, and leave it out of the video. Wait for the user to approve the video list before capturing or writing a project, unless they already asked to make the video from that list.
 
 ## Capture
 
