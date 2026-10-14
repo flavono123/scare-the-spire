@@ -19,9 +19,9 @@ Organic YouTube Shorts cover the top ~192 px, the bottom ~576 px, and the right 
 - Center: one still, then the next. Each holds 2.4 seconds. Within a pair the transition is Slide Left. Between pairs it is Circle Wipe. Both ship with Kdenlive; there is no paid set.
 - Audio is the STS1 Act 2 `The City` bed at about -18 dB.
 
-Working files:
-
-`/Users/flavono123/Movies/슬서운이야기-쇼츠/kdenlive/`
+The short itself is built in `/Users/flavono123/P/slseoun-shorts`. Use
+`shorts-asset-handoff` to move captured stills there. Do not store them in
+this repo.
 
 ## Approval first
 
@@ -38,7 +38,7 @@ The detail payload's `versionDiffs` must match `data/sts2-changes.json`. If a lo
 
 ## Insert
 
-From `/Users/flavono123/Movies/슬서운이야기-쇼츠/kdenlive`:
+From `/Users/flavono123/P/slseoun-shorts/kdenlive`:
 
 ```bash
 python3 build_project.py --version 0.100.0 \
