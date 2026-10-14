@@ -404,7 +404,42 @@ async function runTests() {
   assert.equal(waveAfter.entity?.vars?.CorrosiveWave, 2);
   assert.match(waveAfter.entity?.description ?? "", /중독\[\/gold\]을 2/);
 
-  console.log("\n[Test 11] current version ignores steam build ids and date slugs");
+  console.log("\n[Test 11] FLICK_FLACK damage text follows vars before v0.100.0");
+  const flickBefore = await getVersionedEntity<CodexCard>({
+    entityType: "card",
+    entityId: "FLICK_FLACK",
+    version: "v0.99.0",
+    locale: "kor",
+  });
+  assert.equal(flickBefore.entity?.vars?.Damage, 7);
+  assert.match(flickBefore.entity?.description ?? "", /피해를 7 줍니다/);
+  const flickAfter = await getVersionedEntity<CodexCard>({
+    entityType: "card",
+    entityId: "FLICK_FLACK",
+    version: "v0.100.0",
+    locale: "kor",
+  });
+  assert.equal(flickAfter.entity?.vars?.Damage, 6);
+  assert.match(flickAfter.entity?.description ?? "", /피해를 6 줍니다/);
+
+  console.log("\n[Test 12] SPITE before v0.100.0 still draws");
+  const spiteBefore = await getVersionedEntity<CodexCard>({
+    entityType: "card",
+    entityId: "SPITE",
+    version: "v0.99.0",
+    locale: "kor",
+  });
+  assert.match(spiteBefore.entity?.description ?? "", /피해를 6 줍니다/);
+  assert.match(spiteBefore.entity?.description ?? "", /카드를 1장 뽑습니다/);
+  const spiteAfter = await getVersionedEntity<CodexCard>({
+    entityType: "card",
+    entityId: "SPITE",
+    version: "v0.100.0",
+    locale: "kor",
+  });
+  assert.match(spiteAfter.entity?.description ?? "", /2번 적중합니다/);
+
+  console.log("\n[Test 13] current version ignores steam build ids and date slugs");
   assert.equal(latestPatchVersion([
     { version: "0.111.0" },
     { version: "23478716" },

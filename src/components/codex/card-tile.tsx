@@ -553,6 +553,7 @@ export const CardTile = memo(function CardTile({
 }: CardTileProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const [imgError, setImgError] = useState(false);
+  const [descriptionFontScale, setDescriptionFontScale] = useState(1);
   const descriptionViewportRef = useRef<HTMLDivElement>(null);
   const descriptionContentRef = useRef<HTMLDivElement>(null);
 
@@ -726,13 +727,17 @@ export const CardTile = memo(function CardTile({
     const content = descriptionContentRef.current;
     if (!viewport || !content) return;
 
-    onDescriptionFitChange?.(fitCardDescriptionText({
+    const fit = fitCardDescriptionText({
       viewport,
       content,
       baseFontCqi: FONT_CQI.description,
       minimumFontScale: minimumDescriptionFontScale,
       availableHeightRatio: hasCustomDescription ? 1 : CARD_DESCRIPTION_SAFE_HEIGHT_RATIO,
-    }));
+    });
+    setDescriptionFontScale((current) => (
+      Math.abs(current - fit.fontScale) < 0.001 ? current : fit.fontScale
+    ));
+    onDescriptionFitChange?.(fit);
   }, [
     hasCustomDescription,
     minimumDescriptionFontScale,
@@ -761,7 +766,7 @@ export const CardTile = memo(function CardTile({
       data-card-description-content
       style={{
         color: TEXT_CREAM,
-        fontSize: `${FONT_CQI.description}cqi`,
+        fontSize: `${FONT_CQI.description * descriptionFontScale}cqi`,
         textShadow: `${(2 / 300) * cardWidth}px ${(2 / 300) * cardWidth}px 0 rgba(0,0,0,0.45)`,
       }}
     >

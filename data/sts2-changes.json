@@ -187,6 +187,32 @@
         "field": "rarity",
         "before": "일반",
         "after": "고급"
+      },
+      {
+        "field": "damage",
+        "before": 6,
+        "after": 5
+      },
+      {
+        "field": "description",
+        "before": "피해를 6 줍니다.\n이번 턴 동안 체력을\n잃었다면, 카드를 1장 뽑습니다.",
+        "after": "피해를 5 줍니다.\n이번 턴 동안 체력을\n잃었다면, 2번 적중합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "피해를 {Damage:diff()} 줍니다.\n이번 턴 동안 체력을\n잃었다면, 카드를 {Cards:diff()}장 뽑습니다.",
+        "after": "피해를 {Damage:diff()} 줍니다.\n이번 턴 동안 체력을\n잃었다면, {Repeat:diff()}번 적중합니다."
+      },
+      {
+        "field": "vars",
+        "before": {
+          "Damage": 6,
+          "Cards": 1
+        },
+        "after": {
+          "Damage": 5,
+          "Repeat": 2
+        }
       }
     ]
   },
@@ -5808,6 +5834,11 @@
         "field": "vars.Damage",
         "before": 7,
         "after": 6
+      },
+      {
+        "field": "description",
+        "before": "모든 적에게\n피해를 7 줍니다.",
+        "after": "모든 적에게\n피해를 6 줍니다."
       }
     ]
   },

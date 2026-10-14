@@ -18,10 +18,10 @@ export function fitCardDescriptionText({
   const applyScale = (scale: number) => {
     content.style.fontSize = `${baseFontCqi * scale}cqi`;
   };
-  const overflows = () => {
+  const overflows = (heightRatio: number) => {
     const viewportRect = viewport.getBoundingClientRect();
     const contentRect = content.getBoundingClientRect();
-    const availableHeight = viewport.clientHeight * availableHeightRatio;
+    const availableHeight = viewport.clientHeight * heightRatio;
     const nestedFitContents = content.querySelectorAll<HTMLElement>(
       "[data-card-description-fit-content]",
     );
@@ -37,27 +37,42 @@ export function fitCardDescriptionText({
       ))
     );
   };
+  const largestScaleThatFits = (floor: number, ceiling: number, heightRatio: number) => {
+    let lower = floor;
+    let upper = ceiling;
+    for (let index = 0; index < 8; index += 1) {
+      const candidate = (lower + upper) / 2;
+      applyScale(candidate);
+      if (overflows(heightRatio)) upper = candidate;
+      else lower = candidate;
+    }
+    return Math.max(floor, lower - 0.002);
+  };
 
   applyScale(1);
   let fontScale = 1;
-  let fits = !overflows();
+  let fits = !overflows(availableHeightRatio);
 
   if (!fits) {
     applyScale(minimumScale);
-    fits = !overflows();
+    fits = !overflows(availableHeightRatio);
     fontScale = minimumScale;
 
     if (fits) {
-      let lower = minimumScale;
-      let upper = 1;
-      for (let index = 0; index < 8; index += 1) {
-        const candidate = (lower + upper) / 2;
-        applyScale(candidate);
-        if (overflows()) upper = candidate;
-        else lower = candidate;
-      }
-      fontScale = Math.max(minimumScale, lower - 0.002);
+      fontScale = largestScaleThatFits(minimumScale, 1, availableHeightRatio);
       applyScale(fontScale);
+    } else {
+      // The usual floor still sticks out of a centered box, so the first and
+      // last lines are both cut. Keep shrinking inside the full description well.
+      const floor = 0.28;
+      applyScale(floor);
+      fits = !overflows(1);
+      fontScale = floor;
+      if (fits) {
+        fontScale = largestScaleThatFits(floor, minimumScale, 1);
+        applyScale(fontScale);
+        fits = !overflows(1);
+      }
     }
   }
 
