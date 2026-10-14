@@ -716,6 +716,11 @@
         "after": {
           "energy": "+1"
         }
+      },
+      {
+        "field": "description",
+        "before": "자신에게 [gold]종말[/gold]을 3 부여합니다.\n[energy:1]를 얻습니다.",
+        "after": "자신에게 [gold]종말[/gold]을 6 부여합니다.\n[energy:1]를 얻습니다."
       }
     ]
   },
@@ -1999,6 +2004,18 @@
         "after": "Lasts until played",
         "afterKo": "사용할 때까지",
         "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 13 줍니다.\n카드를 1장 뽑습니다.\n상태이상 카드를 생성 시,\n이 카드의 비용이 이번 턴\n동안 0 [energy:1]으로 감소합니다.",
+        "after": "피해를 13 줍니다.\n카드를 1장 뽑습니다.\n상태이상 카드를 생성 시,\n이 카드의 비용이 사용하기\n전까지 0 [energy:1]으로 감소합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다.\n상태이상 카드를 생성 시,\n이 카드의 비용이 이번 턴\n동안 0 {energyPrefix:energyIcons(1)}으로 감소합니다.",
+        "after": "피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다.\n상태이상 카드를 생성 시,\n이 카드의 비용이 사용하기\n전까지 0 {energyPrefix:energyIcons(1)}으로 감소합니다."
       }
     ]
   },
@@ -5753,6 +5770,33 @@
     ]
   },
   {
+    "id": "corrosive-wave-v0-100-0-field-diff",
+    "entityType": "card",
+    "entityId": "CORROSIVE_WAVE",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "silent",
+    "summary": "Corrosive Wave Poison decreased from 3(4) to 2(3).",
+    "summaryKo": "부식성 파도의 중독이 3(4)에서 2(3)으로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "poison",
+        "displayName": "Poison",
+        "displayNameKo": "중독",
+        "before": "3(4)",
+        "after": "2(3)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "vars.CorrosiveWave",
+        "before": 3,
+        "after": 2
+      }
+    ]
+  },
+  {
     "id": "flick-flack-v0-100-0-field-diff",
     "entityType": "card",
     "entityId": "FLICK_FLACK",
@@ -6360,6 +6404,11 @@
     "character": null,
     "diffs": [],
     "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "자신에게 [gold]종말[/gold]을 6 부여합니다.\n[energy:1]를 얻습니다.",
+        "after": "자신에게 [gold]종말[/gold]을 3 부여합니다.\n[energy:1]를 얻습니다."
+      },
       {
         "field": "vars.DoomPower",
         "before": 6,

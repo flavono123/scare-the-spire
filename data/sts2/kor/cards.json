@@ -4018,7 +4018,7 @@
   {
     "id": "CORROSIVE_WAVE",
     "name": "부식성 파도",
-    "description": "이번 턴에 카드를 뽑을\n때마다, 모든 적에게\n[gold]중독[/gold]을 3 부여합니다.",
+    "description": "이번 턴에 카드를 뽑을\n때마다, 모든 적에게\n[gold]중독[/gold]을 2 부여합니다.",
     "description_raw": "이번 턴에 카드를 뽑을\n때마다, 모든 적에게\n[gold]중독[/gold]을 {CorrosiveWave:diff()} 부여합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -4039,7 +4039,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CorrosiveWave": 3
+      "CorrosiveWave": 2
     },
     "upgrade": {
       "corrosivewave": "+1"

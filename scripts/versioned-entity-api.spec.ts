@@ -385,6 +385,24 @@ async function runTests() {
     "[gold]취약[/gold]을 1 부여합니다.\n대상 적이 보유한 [gold]취약[/gold]마다\n[gold]힘[/gold]을 1 얻습니다.",
   );
 
+  console.log("\n[Test 10] CORROSIVE_WAVE poison nerf at v0.100.0");
+  const waveBefore = await getVersionedEntity<CodexCard>({
+    entityType: "card",
+    entityId: "CORROSIVE_WAVE",
+    version: "v0.99.0",
+    locale: "kor",
+  });
+  assert.equal(waveBefore.entity?.vars?.CorrosiveWave, 3);
+  assert.match(waveBefore.entity?.description ?? "", /중독\[\/gold\]을 3/);
+  const waveAfter = await getVersionedEntity<CodexCard>({
+    entityType: "card",
+    entityId: "CORROSIVE_WAVE",
+    version: "v0.100.0",
+    locale: "kor",
+  });
+  assert.equal(waveAfter.entity?.vars?.CorrosiveWave, 2);
+  assert.match(waveAfter.entity?.description ?? "", /중독\[\/gold\]을 2/);
+
   console.log("\nAll Versioned Entity API tests PASSED successfully!");
 }
 

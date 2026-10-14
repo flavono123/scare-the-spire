@@ -4018,7 +4018,7 @@
   {
     "id": "CORROSIVE_WAVE",
     "name": "Corrosive Wave",
-    "description": "Whenever you draw a card this turn, apply 3 [gold]Poison[/gold] to ALL enemies.",
+    "description": "Whenever you draw a card this turn, apply 2 [gold]Poison[/gold] to ALL enemies.",
     "description_raw": "Whenever you draw a card this turn, apply {CorrosiveWave:diff()} [gold]Poison[/gold] to ALL enemies.",
     "cost": 1,
     "is_x_cost": null,
@@ -4039,7 +4039,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CorrosiveWave": 3
+      "CorrosiveWave": 2
     },
     "upgrade": {
       "corrosivewave": "+1"
