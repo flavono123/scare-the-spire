@@ -40,6 +40,8 @@
     "lint": "node scripts/ensure-lint-generated.mjs && eslint",
     "test:visual": "playwright test scripts/visual-check.spec.ts",
     "og:status": "tsx scripts/report-og-images.ts",
+    "shorts:capture": "tsx scripts/shorts-capture.ts",
+    "shorts:changes": "tsx scripts/shorts-changes.ts",
     "codex:diff": "tsx scripts/generate-entity-diffs.ts",
     "codex:validate": "tsx scripts/validate-entity-versions.ts",
     "codex:validate-references": "tsx scripts/validate-codex-references.ts",
