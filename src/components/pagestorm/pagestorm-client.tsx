@@ -618,7 +618,9 @@ export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy
           deleteLabel={draftId ? copy.draftDelete : undefined}
           submitting={submitting}
           onSubmit={handleRegister}
-          onDraft={handleDraft}
+          onDraft={async (input) => {
+            await handleDraft(input);
+          }}
           onDelete={draftId ? handleDelete : undefined}
           onDocumentChange={onDocumentChange}
         />

@@ -12,7 +12,7 @@ export function startPagestormBlockDrag(
   const selection = NodeSelection.create(view.state.doc, pos);
   view.dispatch(view.state.tr.setSelection(selection));
   const slice = selection.content();
-  view.dragging = { slice, move: true, node: selection };
+  view.dragging = { slice, move: true };
   transfer.effectAllowed = "move";
   transfer.setData("text/plain", node.textContent || node.type.name);
   return true;

@@ -247,7 +247,7 @@ export function Sts1CompendiumPickerModal({
             ))}
           </div>
         ) : null}
-        {loading ? <ContentLoadingNotice /> : null}
+        {loading ? <ContentLoadingNotice label={copy.loading} /> : null}
         <GameScrollArea className="min-h-48 flex-1">
           {results.length === 0 && !loading ? (
             <p className="px-1 py-4 text-sm text-muted-foreground">{copy.pickerEmpty}</p>

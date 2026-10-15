@@ -20,6 +20,7 @@ import {
   sts1RelicImageUrl,
 } from "../src/lib/sts1/paths";
 import type { Sts1MentionEntry, Sts1MentionIndex } from "../src/lib/sts1-mention-index";
+import type { Sts1ResourceType } from "../src/lib/sts1/types";
 
 function mentionId(resource: Sts1ResourceType, slug: string): string {
   return `sts1:${resource}:${slug}`;
