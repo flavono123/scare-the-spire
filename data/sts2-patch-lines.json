@@ -7,7 +7,7 @@
     "section": [
       "캐릭터"
     ],
-    "markdownKo": "[red]아이언클래드[/red]: 영혼을 팔아넘긴 전쟁 노병.",
+    "markdownKo": "[ironclad]아이언클래드[/ironclad]: 영혼을 팔아넘긴 전쟁 노병.",
     "markdownEn": "**Ironclad**: The war veteran who sold his soul.",
     "textKo": "아이언클래드: 영혼을 팔아넘긴 전쟁 노병.",
     "textEn": "Ironclad: The war veteran who sold his soul.",
@@ -22,7 +22,7 @@
     "section": [
       "캐릭터"
     ],
-    "markdownKo": "[green]사일런트[/green]: 독과 칼날로 무장한 치명적인 사냥꾼.",
+    "markdownKo": "[silent]사일런트[/silent]: 독과 칼날로 무장한 치명적인 사냥꾼.",
     "markdownEn": "**Silent**: The deadly huntress with poison and shivs.",
     "textKo": "사일런트: 독과 칼날로 무장한 치명적인 사냥꾼.",
     "textEn": "Silent: The deadly huntress with poison and shivs.",
@@ -37,7 +37,7 @@
     "section": [
       "캐릭터"
     ],
-    "markdownKo": "[aqua]디펙트[/aqua]: 오브를 다루는 오작동 로봇.",
+    "markdownKo": "[defect]디펙트[/defect]: 오브를 다루는 오작동 로봇.",
     "markdownEn": "**Defect**: The malfunctioning robot with orbs.",
     "textKo": "디펙트: 오브를 다루는 오작동 로봇.",
     "textEn": "Defect: The malfunctioning robot with orbs.",
@@ -52,7 +52,7 @@
     "section": [
       "캐릭터"
     ],
-    "markdownKo": "[pink]네크로바인더[/pink]: 망자를 부리는 죽음의 마법사.",
+    "markdownKo": "[necrobinder]네크로바인더[/necrobinder]: 망자를 부리는 죽음의 마법사.",
     "markdownEn": "**Necrobinder**: The death mage who commands the undead.",
     "textKo": "네크로바인더: 망자를 부리는 죽음의 마법사.",
     "textEn": "Necrobinder: The death mage who commands the undead.",
@@ -67,7 +67,7 @@
     "section": [
       "캐릭터"
     ],
-    "markdownKo": "[orange]리젠트[/orange]: 별빛을 휘두르는 신성한 지배자.",
+    "markdownKo": "[regent]리젠트[/regent]: 별빛을 휘두르는 신성한 지배자.",
     "markdownEn": "**Regent**: The divine ruler who wields starlight.",
     "textKo": "리젠트: 별빛을 휘두르는 신성한 지배자.",
     "textEn": "Regent: The divine ruler who wields starlight.",
@@ -277,7 +277,7 @@
     "section": [
       "밸런스"
     ],
-    "markdownKo": "[red]아이언클래드[/red] [gold]지옥검무[/gold] 파워 수정",
+    "markdownKo": "[ironclad]아이언클래드[/ironclad] [gold]지옥검무[/gold] 파워 수정",
     "markdownEn": "Ironclad Hellraiser power corrected.",
     "textKo": "아이언클래드 지옥검무 파워 수정",
     "textEn": "Ironclad Hellraiser power corrected.",
@@ -358,7 +358,7 @@
     "section": [
       "버그 수정"
     ],
-    "markdownKo": "터키어 로케일 [red]아이언클래드[/red] 선택 크래시",
+    "markdownKo": "터키어 로케일 [ironclad]아이언클래드[/ironclad] 선택 크래시",
     "markdownEn": "Turkish locale Ironclad selection crash.",
     "textKo": "터키어 로케일 아이언클래드 선택 크래시",
     "textEn": "Turkish locale Ironclad selection crash.",
@@ -8163,7 +8163,7 @@
       "버그 수정",
       "멀티플레이어"
     ],
-    "markdownKo": "플레이어가 [red]아이언클래드[/red]만 해금한 상태에서 [gold]다채로운 철학자들[/gold] 이벤트가 더 이상 등장하지 않음",
+    "markdownKo": "플레이어가 [ironclad]아이언클래드[/ironclad]만 해금한 상태에서 [gold]다채로운 철학자들[/gold] 이벤트가 더 이상 등장하지 않음",
     "markdownEn": "**Colorful Philosophers** event can no longer be encountered if a player has only Ironclad unlocked",
     "textKo": "플레이어가 아이언클래드만 해금한 상태에서 다채로운 철학자들 이벤트가 더 이상 등장하지 않음",
     "textEn": "Colorful Philosophers event can no longer be encountered if a player has only Ironclad unlocked",
@@ -14151,7 +14151,7 @@
     "section": [
       "아트"
     ],
-    "markdownKo": "[red]아이언클래드[/red]의 새로운 강공격 애니메이션 추가.",
+    "markdownKo": "[ironclad]아이언클래드[/ironclad]의 새로운 강공격 애니메이션 추가.",
     "markdownEn": "Added new **Ironclad** heavy attack animation.",
     "textKo": "아이언클래드의 새로운 강공격 애니메이션 추가.",
     "textEn": "Added new Ironclad heavy attack animation.",
@@ -14166,7 +14166,7 @@
     "section": [
       "아트"
     ],
-    "markdownKo": "[pink]네크로바인더[/pink]의 새로운 시전 애니메이션 추가.",
+    "markdownKo": "[necrobinder]네크로바인더[/necrobinder]의 새로운 시전 애니메이션 추가.",
     "markdownEn": "Added new **Necrobinder** cast animation.",
     "textKo": "네크로바인더의 새로운 시전 애니메이션 추가.",
     "textEn": "Added new Necrobinder cast animation.",
@@ -14181,7 +14181,7 @@
     "section": [
       "아트"
     ],
-    "markdownKo": "[orange]리젠트[/orange] [gold:card]군주의 칼날[/gold] 애니메이션 추가.",
+    "markdownKo": "[regent]리젠트[/regent] [gold:card]군주의 칼날[/gold] 애니메이션 추가.",
     "markdownEn": "Added new **Regent** Sovereign Blade animation.",
     "textKo": "리젠트 군주의 칼날 애니메이션 추가.",
     "textEn": "Added new Regent Sovereign Blade animation.",
@@ -21151,7 +21151,7 @@
       "캐릭터"
     ],
     "markdownKo": "[gold:card]동기화[/gold]",
-    "markdownEn": "Added new character animations for [red]Ironclad[/red], [pink]Necrobinder[/pink], [orange]Regent[/orange], and [aqua]Defect[/aqua].",
+    "markdownEn": "Added new character animations for [ironclad]Ironclad[/ironclad], [necrobinder]Necrobinder[/necrobinder], [regent]Regent[/regent], and [defect]Defect[/defect].",
     "textKo": "동기화",
     "textEn": "Added new character animations for Ironclad, Necrobinder, Regent, and Defect.",
     "entityRefs": [
@@ -21276,7 +21276,7 @@
       "아트",
       "캐릭터"
     ],
-    "markdownKo": "[red]아이언클래드[/red] 강한 공격",
+    "markdownKo": "[ironclad]아이언클래드[/ironclad] 강한 공격",
     "markdownEn": "Added an unstun animation for [gold]Rock Bowlbug[/gold].",
     "textKo": "아이언클래드 강한 공격",
     "textEn": "Added an unstun animation for Rock Bowlbug.",
@@ -21292,7 +21292,7 @@
       "아트",
       "캐릭터"
     ],
-    "markdownKo": "[pink]네크로바인더[/pink] 시전",
+    "markdownKo": "[necrobinder]네크로바인더[/necrobinder] 시전",
     "markdownEn": "Added [gold:monster]Skulking Colony[/gold] animations.",
     "textKo": "네크로바인더 시전",
     "textEn": "Added Skulking Colony animations.",
@@ -21308,7 +21308,7 @@
       "아트",
       "캐릭터"
     ],
-    "markdownKo": "[orange]리젠트[/orange] [gold:card]군주의 칼날[/gold]",
+    "markdownKo": "[regent]리젠트[/regent] [gold:card]군주의 칼날[/gold]",
     "markdownEn": "Added new [gold:monster]Soul Nexus[/gold] VFX.",
     "textKo": "리젠트 군주의 칼날",
     "textEn": "Added new Soul Nexus VFX.",
@@ -21330,7 +21330,7 @@
       "아트",
       "캐릭터"
     ],
-    "markdownKo": "[aqua]디펙트[/aqua] 강화",
+    "markdownKo": "[defect]디펙트[/defect] 강화",
     "markdownEn": "Tweaked the [gold:monster]Vantom[/gold] explosion to look right on a shrunken [gold:monster]Vantom[/gold].",
     "textKo": "디펙트 강화",
     "textEn": "Tweaked the Vantom explosion to look right on a shrunken Vantom.",
@@ -25246,8 +25246,8 @@
       "콘텐츠 & 밸런스",
       "멀티플레이"
     ],
-    "markdownKo": "새로운 멀티플레이 [red]아이언클래드[/red] 카드가 추가되었습니다:",
-    "markdownEn": "Added new multiplayer [red]Ironclad[/red] cards:",
+    "markdownKo": "새로운 멀티플레이 [ironclad]아이언클래드[/ironclad] 카드가 추가되었습니다:",
+    "markdownEn": "Added new multiplayer [ironclad]Ironclad[/ironclad] cards:",
     "textKo": "새로운 멀티플레이 아이언클래드 카드가 추가되었습니다:",
     "textEn": "Added new multiplayer Ironclad cards:",
     "entityRefs": [],
@@ -25350,8 +25350,8 @@
       "콘텐츠 & 밸런스",
       "멀티플레이"
     ],
-    "markdownKo": "새로운 멀티플레이 [green]사일런트[/green] 카드가 추가되었습니다:",
-    "markdownEn": "Added new multiplayer [green]Silent[/green] cards:",
+    "markdownKo": "새로운 멀티플레이 [silent]사일런트[/silent] 카드가 추가되었습니다:",
+    "markdownEn": "Added new multiplayer [silent]Silent[/silent] cards:",
     "textKo": "새로운 멀티플레이 사일런트 카드가 추가되었습니다:",
     "textEn": "Added new multiplayer Silent cards:",
     "entityRefs": [],
@@ -25454,8 +25454,8 @@
       "콘텐츠 & 밸런스",
       "멀티플레이"
     ],
-    "markdownKo": "새로운 멀티플레이 [orange]리젠트[/orange] 카드가 추가되었습니다:",
-    "markdownEn": "Added new multiplayer [orange]Regent[/orange] cards:",
+    "markdownKo": "새로운 멀티플레이 [regent]리젠트[/regent] 카드가 추가되었습니다:",
+    "markdownEn": "Added new multiplayer [regent]Regent[/regent] cards:",
     "textKo": "새로운 멀티플레이 리젠트 카드가 추가되었습니다:",
     "textEn": "Added new multiplayer Regent cards:",
     "entityRefs": [],
@@ -25514,8 +25514,8 @@
       "콘텐츠 & 밸런스",
       "멀티플레이"
     ],
-    "markdownKo": "새로운 멀티플레이 [pink]네크로바인더[/pink] 카드가 추가되었습니다:",
-    "markdownEn": "Added new multiplayer [pink]Necrobinder[/pink] cards:",
+    "markdownKo": "새로운 멀티플레이 [necrobinder]네크로바인더[/necrobinder] 카드가 추가되었습니다:",
+    "markdownEn": "Added new multiplayer [necrobinder]Necrobinder[/necrobinder] cards:",
     "textKo": "새로운 멀티플레이 네크로바인더 카드가 추가되었습니다:",
     "textEn": "Added new multiplayer Necrobinder cards:",
     "entityRefs": [],
@@ -25618,8 +25618,8 @@
       "콘텐츠 & 밸런스",
       "멀티플레이"
     ],
-    "markdownKo": "새로운 멀티플레이 [aqua]디펙트[/aqua] 카드가 추가되었습니다:",
-    "markdownEn": "Added new multiplayer [aqua]Defect[/aqua] cards:",
+    "markdownKo": "새로운 멀티플레이 [defect]디펙트[/defect] 카드가 추가되었습니다:",
+    "markdownEn": "Added new multiplayer [defect]Defect[/defect] cards:",
     "textKo": "새로운 멀티플레이 디펙트 카드가 추가되었습니다:",
     "textEn": "Added new multiplayer Defect cards:",
     "entityRefs": [],
@@ -33281,8 +33281,8 @@
       "버그 수정",
       "디펙트"
     ],
-    "markdownKo": "[gold:card]메아리의 형상[/gold]을 사용하는 동안 중단되면 [aqua]디펙트[/aqua]의 파워업 애니메이션이 멈추던 문제를 수정했습니다.",
-    "markdownEn": "Fixed [aqua]Defect[/aqua]'s power-up animation freezing when interrupted while playing [gold:card]Echo Form[/gold].",
+    "markdownKo": "[gold:card]메아리의 형상[/gold]을 사용하는 동안 중단되면 [defect]디펙트[/defect]의 파워업 애니메이션이 멈추던 문제를 수정했습니다.",
+    "markdownEn": "Fixed [defect]Defect[/defect]'s power-up animation freezing when interrupted while playing [gold:card]Echo Form[/gold].",
     "textKo": "메아리의 형상을 사용하는 동안 중단되면 디펙트의 파워업 애니메이션이 멈추던 문제를 수정했습니다.",
     "textEn": "Fixed Defect's power-up animation freezing when interrupted while playing Echo Form.",
     "entityRefs": [

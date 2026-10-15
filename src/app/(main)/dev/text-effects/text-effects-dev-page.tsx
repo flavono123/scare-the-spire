@@ -69,7 +69,7 @@ const USAGE_EXAMPLES = [
   },
   {
     label: "캐릭터 섹션",
-    bbcode: "[red]아이언클래드[/red] / [green]사일런트[/green] / [aqua]디펙트[/aqua] / [orange]리젠트[/orange] / [pink]네크로바인더[/pink]",
+    bbcode: "[ironclad]아이언클래드[/ironclad] / [silent]사일런트[/silent] / [defect]디펙트[/defect] / [regent]리젠트[/regent] / [necrobinder]네크로바인더[/necrobinder]",
   },
   {
     label: "고대의 존재",

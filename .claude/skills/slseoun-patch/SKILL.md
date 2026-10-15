@@ -140,12 +140,13 @@ STS2에서는 카드와 파워가 같은 이름인 경우가 매우 많다 (굴�
   - 몬스터 **피해량** 괄호는 승천 9 (지독한 적들)
 - Steam 원문에 승천 문장이 없으면 한국어에 `승천 9`를 지어내지 않는다. 매칭은 `scripts/generate-sts2-patch-lines.ts`가 하고, 렌더러는 태그되지 않은 `승천 n`도 호버/링크로 감싼다.
 
-#### Character Colors (section headers)
-- Ironclad sections: `[red]아이언클래드[/red]`
-- Silent sections: `[green]사일런트[/green]`
-- Defect sections: `[aqua]디펙트[/aqua]`
-- Regent sections: `[orange]리젠트[/orange]`
-- Necrobinder sections: `[pink]네크로바인더[/pink]`
+#### Character Colors (section headers and name phrases)
+Character names use their own tags. Do not reuse buff `[green]`, nerf `[red]`, or text `[aqua]`.
+- Ironclad: `[ironclad]아이언클래드[/ironclad]`
+- Silent: `[silent]사일런트[/silent]`
+- Defect: `[defect]디펙트[/defect]`
+- Regent: `[regent]리젠트[/regent]`
+- Necrobinder: `[necrobinder]네크로바인더[/necrobinder]`
 
 #### Ancient references
 - Ancient names: `[blue]고대의 존재[/blue]`
@@ -173,7 +174,7 @@ Steam 원문에서 개발자의 디자인 의도, 변경 이유, 실험적 시�
 
 **예시** (v0.103.0 아이언클래드 섹션):
 ```
-### [red]아이언클래드[/red]
+### [ironclad]아이언클래드[/ironclad]
 [devnote]아이언클래드의 생존력을 크게 개선하는 데 집중한 변경. [gold:card]거상[/gold]을 고급으로 내리면서 희귀 방어 옵션 의존도를 줄이고...[/devnote]
 [devnote:en]This set of changes is directly aimed at improving Ironclad's survivability in a big way. Colossus moving to the Uncommon pool helps to lessen the need for Rare defensive options...[/devnote]
 ```

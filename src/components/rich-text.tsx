@@ -17,6 +17,12 @@ const COLOR_CLASSES: Record<string, string> = {
   aqua: "sts-text-aqua",
   orange: "spire-orange",
   pink: "spire-pink",
+  // Playable character names. Distinct from buff [green], nerf [red], and text [aqua].
+  ironclad: "character-ironclad",
+  silent: "character-silent",
+  defect: "character-defect",
+  regent: "character-regent",
+  necrobinder: "character-necrobinder",
 };
 
 const EFFECT_CLASSES: Record<string, string> = {

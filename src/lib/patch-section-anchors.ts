@@ -4,8 +4,8 @@ export function plainPatchHeading(raw: string): string {
   return raw
     .replace(/!\[[^\]]*]\([^)]*\)/g, "")
     .replace(/\[([^\]]+)]\([^)]*\)/g, "$1")
-    .replace(/\[(?:gold|blue|red|green|aqua|orange|pink|purple|silver)(?::[^\]]+)?]/g, "")
-    .replace(/\[\/(?:gold|blue|red|green|aqua|orange|pink|purple|silver)]/g, "")
+    .replace(/\[(?:gold|blue|red|green|aqua|orange|pink|purple|silver|ironclad|silent|defect|regent|necrobinder)(?::[^\]]+)?]/g, "")
+    .replace(/\[\/(?:gold|blue|red|green|aqua|orange|pink|purple|silver|ironclad|silent|defect|regent|necrobinder)]/g, "")
     .replace(/[*_`]/g, "")
     .replace(/\s+/g, " ")
     .trim();

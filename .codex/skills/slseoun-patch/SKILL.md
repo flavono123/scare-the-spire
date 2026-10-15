@@ -319,6 +319,7 @@ Patch notes follow the truth table in `docs/I18N.md`.
 - Ancients: `[blue]고대의 존재[/blue]` for the category; `[gold:ancient]니오우[/gold]` for a specific Ancient.
 - Buff label: `([green][sine]버프[/sine][/green])`
 - Nerf label: `([red][jitter]너프[/jitter][/red])`
+- Character names use their own tags, including section headings: `[ironclad]아이언클래드[/ironclad]`, `[silent]사일런트[/silent]`, `[defect]디펙트[/defect]`, `[regent]리젠트[/regent]`, `[necrobinder]네크로바인더[/necrobinder]`. English notes use the same tags around `Ironclad`, `Silent`, `Defect`, `Regent`, and `Necrobinder`. Do not color a character name with buff `[green]`, nerf `[red]`, or text `[aqua]`.
 
 When a name can be both a card and a power, always use a type hint. Patch notes usually mean cards in card-change sections, so prefer `[gold:card]` there.
 

@@ -164,11 +164,11 @@ const PATCH_EPOCH_LABEL_OVERRIDES: Record<string, {
 };
 
 const CHARACTER_HEADING_COLORS = {
-  IRONCLAD: "red",
-  SILENT: "green",
-  REGENT: "orange",
-  NECROBINDER: "pink",
-  DEFECT: "aqua",
+  IRONCLAD: "ironclad",
+  SILENT: "silent",
+  REGENT: "regent",
+  NECROBINDER: "necrobinder",
+  DEFECT: "defect",
 } as const;
 
 function ancientRelicAliases(ownerName: string, relicName: string): string[] {
