@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import { WeekPostCardPreview } from "@/components/colorful-philosophers/index-view";
 import { saveColorfulPhilosopherPost } from "@/app/(main)/dev/colorful-philosophers/actions";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useColorfulPhilosopherWeek } from "@/hooks/use-colorful-philosopher-posts";
@@ -11,6 +12,7 @@ import {
   COLORFUL_PHILOSOPHER_SLOTS,
   COLORFUL_PHILOSOPHERS_GAME_VERSION,
   upcomingColorfulPhilosopherWeeks,
+  type ColorfulPhilosopherPost,
   type ColorfulPhilosopherSlot,
 } from "@/lib/colorful-philosophers";
 import { compendiumTypeLabels } from "@/lib/compendium-type-labels";
@@ -31,7 +33,7 @@ export function ColorfulPhilosophersDevPage() {
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [savedLabel, setSavedLabel] = useState<string | null>(null);
+  const [savedPost, setSavedPost] = useState<ColorfulPhilosopherPost | null>(null);
   const { entities, loading } = useCommentEntities();
   const weekPosts = useColorfulPhilosopherWeek(targetEnv);
   const typeLabels = compendiumTypeLabels("ko");
@@ -44,7 +46,9 @@ export function ColorfulPhilosophersDevPage() {
     if (!normalized) return [...pool].sort((a, b) => a.nameKo.localeCompare(b.nameKo, "ko")).slice(0, 30);
     return matchEntities(normalized, pool, 30);
   }, [pool, query]);
-  const existing = weekPosts.posts.find((post) => post.weekStart === weekStart && post.slot === slot);
+  const fetched = weekPosts.posts.find((post) => post.weekStart === weekStart && post.slot === slot);
+  const justSaved = savedPost?.weekStart === weekStart && savedPost.slot === slot ? savedPost : null;
+  const existing = justSaved ?? fetched;
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reset the editor when the week slot changes
@@ -61,7 +65,7 @@ export function ColorfulPhilosophersDevPage() {
     if (!selected) return;
     setSaving(true);
     setError(null);
-    setSavedLabel(null);
+    setSavedPost(null);
     const result = await saveColorfulPhilosopherPost({
       env: targetEnv,
       weekStart,
@@ -75,7 +79,7 @@ export function ColorfulPhilosophersDevPage() {
       setError(result.error);
       return;
     }
-    setSavedLabel(`${typeLabels[selected.type] ?? selected.type} · ${selected.nameKo}`);
+    setSavedPost(result.post);
     setBody("");
     setSelected(null);
     weekPosts.reload();
@@ -134,9 +138,11 @@ export function ColorfulPhilosophersDevPage() {
           </button>
         ))}
       </div>
-      <p className="text-sm text-zinc-300">
-        {existing?.nameKo ?? "이 주의 이 칸은 비어 있습니다"}
-      </p>
+      {existing ? (
+        <WeekPostCardPreview post={existing} slotLabel={copy.slots[slot]} serviceLocale="ko" />
+      ) : (
+        <p className="text-sm text-zinc-400">이 주의 이 칸은 비어 있습니다</p>
+      )}
       <input
         value={query}
         onChange={(event) => setQuery(event.target.value)}
@@ -193,7 +199,7 @@ export function ColorfulPhilosophersDevPage() {
         이 주에 올리기
       </button>
       {error ? <p className="text-sm text-red-300">{error}</p> : null}
-      {savedLabel ? <p className="text-sm text-primary">{`${savedLabel}을 이 주에 올렸습니다`}</p> : null}
+      {justSaved ? <p className="text-sm text-primary">이 주에 올렸습니다 — 위 카드가 인덱스에 보이는 모습입니다</p> : null}
     </div>
   );
 }

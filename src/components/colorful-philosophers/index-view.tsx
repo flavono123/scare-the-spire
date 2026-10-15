@@ -2,7 +2,7 @@
 
 import Image from "@/components/ui/static-image";
 import { useRouter } from "next/navigation";
-import { useMemo, type KeyboardEvent, type MouseEvent } from "react";
+import { useMemo, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
@@ -13,7 +13,7 @@ import {
   useColorfulPhilosopherWeek,
 } from "@/hooks/use-colorful-philosopher-posts";
 import { useServiceLocale } from "@/hooks/use-service-locale";
-import { localizeHref } from "@/lib/i18n";
+import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import {
   COLORFUL_PHILOSOPHER_LEGACY_SLOTS,
   COLORFUL_PHILOSOPHER_SLOTS,
@@ -141,19 +141,55 @@ function WeekPostCard({
       onKeyDown={handleKeyDown}
       className="group cursor-pointer rounded-xl border border-white/10 bg-black/35 px-4 py-4 transition-colors hover:border-primary/20 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70"
     >
-      <div className="flex items-center gap-4">
-        <ColorfulPhilosopherSubjectArt post={post} serviceLocale={serviceLocale} width={96} />
-        <span className="min-w-0 flex-1">
-          <span className="block font-service text-xs text-zinc-500">{slotLabel}</span>
-          <span className="block truncate font-service text-lg font-semibold text-primary">{post.nameKo}</span>
-          <span className="mt-1 line-clamp-2 block text-sm text-zinc-300">{post.body}</span>
-        </span>
+      <WeekPostCardContent post={post} slotLabel={slotLabel} serviceLocale={serviceLocale}>
         <ColorfulPhilosopherIndexEngagement
           post={post}
           commentsHref={`${href}#comments`}
           commentCount={commentCount}
         />
-      </div>
+      </WeekPostCardContent>
+    </article>
+  );
+}
+
+/** Shared by the index card and the dev reservation preview so both render identically. */
+export function WeekPostCardContent({
+  post,
+  slotLabel,
+  serviceLocale,
+  children,
+}: {
+  post: ColorfulPhilosopherPost;
+  slotLabel: string;
+  serviceLocale: ServiceLocale;
+  children?: ReactNode;
+}) {
+  return (
+    <div className="flex items-center gap-4">
+      <ColorfulPhilosopherSubjectArt post={post} serviceLocale={serviceLocale} width={96} />
+      <span className="min-w-0 flex-1">
+        <span className="block font-service text-xs text-zinc-500">{slotLabel}</span>
+        <span className="block truncate font-service text-lg font-semibold text-primary">{post.nameKo}</span>
+        <span className="mt-1 line-clamp-2 block text-sm text-zinc-300">{post.body}</span>
+      </span>
+      {children}
+    </div>
+  );
+}
+
+/** Index-card look without navigation or engagement, for previews. */
+export function WeekPostCardPreview({
+  post,
+  slotLabel,
+  serviceLocale,
+}: {
+  post: ColorfulPhilosopherPost;
+  slotLabel: string;
+  serviceLocale: ServiceLocale;
+}) {
+  return (
+    <article className="rounded-xl border border-white/10 bg-black/35 px-4 py-4">
+      <WeekPostCardContent post={post} slotLabel={slotLabel} serviceLocale={serviceLocale} />
     </article>
   );
 }
