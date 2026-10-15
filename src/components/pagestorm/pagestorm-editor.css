@@ -255,9 +255,17 @@
 
 .pagestorm-fit {
   container-type: inline-size;
-  width: min(100%, var(--asset-w));
+  /* Size containment drops the intrinsic width, so a shrink-to-fit parent
+     (the preview link wrappers) would collapse a percentage width to 0. */
+  width: var(--asset-w);
   max-width: 100%;
   min-width: 0;
+}
+
+/* Let the preview link wrappers around a fitted asset shrink with the row. */
+[data-pagestorm-asset] :has(.pagestorm-fit) {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .pagestorm-fit-slot {
