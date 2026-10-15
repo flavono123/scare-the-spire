@@ -40,7 +40,7 @@ import {
   GameUiHoverTip,
 } from "@/components/game-ui-hover-tip";
 import { OwnPostMark } from "@/components/own-post-mark";
-import { SERVICE_ACCENT_CLASS } from "@/lib/service-link-classes";
+import { SERVICE_ACCENT_CLASS, INTERNAL_PROSE_LINK_CLASS, EXTERNAL_PROSE_LINK_CLASS } from "@/lib/service-link-classes";
 import { serviceMessages } from "@/messages/service";
 import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
 import {
@@ -234,9 +234,9 @@ const SERVICE_REFERENCE_LINKS: Record<string, string> = {
 };
 
 const BYRDISPATCH_INTERNAL_LINK_CLASS =
-  "inline-flex items-center gap-1 align-[-0.2em] font-semibold text-[#60a5fa] no-underline border-b border-[#60a5fa]/70 transition-colors hover:text-blue-300";
+  `inline-flex items-center gap-1 align-[-0.2em] ${INTERNAL_PROSE_LINK_CLASS}`;
 const BYRDISPATCH_EXTERNAL_LINK_CLASS =
-  "inline-flex items-center gap-1 align-[-0.2em] font-semibold text-[#2aebbe] underline decoration-[#2aebbe] decoration-1 underline-offset-[3px] transition-colors hover:brightness-125";
+  `inline-flex items-center gap-1 align-[-0.2em] ${EXTERNAL_PROSE_LINK_CLASS}`;
 
 const STS1_SECTION_TITLES = new Set(["STS1 (전체)", "STS1 (all)", "STS1"]);
 const STS1_INLINE_LINKS: Record<string, { href: string; icon: string }> = {
@@ -392,7 +392,7 @@ function ServiceHeading({
   const titleClassName = section.isNotice
     ? "text-pink-100"
     : canLink
-      ? "font-semibold text-[#60a5fa] no-underline border-b border-[#60a5fa]/70 transition-colors hover:text-blue-300"
+      ? INTERNAL_PROSE_LINK_CLASS
       : SERVICE_ACCENT_CLASS;
   const content = (
     <>

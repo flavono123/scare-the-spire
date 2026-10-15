@@ -680,13 +680,13 @@ export function YoutubePlayerFigure({
   onAlign?: (align: MockAlign) => void;
 }) {
   const href = youtubeWatchUrl(videoId);
-  const aquaTitle = (
-    <span className="sts-text-aqua min-w-0 self-center break-words font-semibold">{title}</span>
+  const externalTitle = (
+    <span className="spire-blue min-w-0 self-center break-words font-semibold">{title}</span>
   );
   const inner = (
     <div className="flex min-w-0 max-w-full items-center gap-2">
       <YoutubeThumb videoId={videoId} title={title} />
-      {aquaTitle}
+      {externalTitle}
     </div>
   );
 
@@ -700,7 +700,7 @@ export function YoutubePlayerFigure({
           className="flex min-w-0 max-w-full items-center gap-2 no-underline"
         >
           <YoutubeThumb videoId={videoId} title={title} />
-          {aquaTitle}
+          {externalTitle}
         </a>
       </div>
     );
