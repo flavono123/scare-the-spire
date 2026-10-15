@@ -313,14 +313,19 @@ export function CompendiumDirectDetailPage({
 }: CompendiumDirectDetailPageProps) {
   const [payload, setPayload] = useState<CompendiumDetailPayload | null>(null);
   const [error, setError] = useState<Error | null>(null);
+  const [loadedPath, setLoadedPath] = useState(payloadPath);
   const urlVersion = useHydrationSafeSearchParam("version");
   const pathname = useHydrationSafePathname("/");
   const urlGameLocale = getGameLocaleFromPathname(pathname);
 
-  useEffect(() => {
-    let active = true;
+  if (loadedPath !== payloadPath) {
+    setLoadedPath(payloadPath);
     setPayload(null);
     setError(null);
+  }
+
+  useEffect(() => {
+    let active = true;
     fetchDetailPayload(payloadPath)
       .then((nextPayload) => {
         if (active) setPayload(nextPayload);
