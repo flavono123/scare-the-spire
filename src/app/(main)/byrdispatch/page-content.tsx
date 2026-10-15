@@ -98,6 +98,8 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   Pagestorm: { href: PAGESTORM_HREF, icon: PAGESTORM_TOKEN_SRC },
   "슬서운 이야기": { href: "/", icon: "/images/sts2/relics/bone_tea.webp" },
   "Stories": { href: "/", icon: "/images/sts2/relics/bone_tea.webp" },
+  "슬서운 이야기(특별 공지)": { href: null, icon: "/images/sts2/relics/bone_tea.webp" },
+  "Stories (special notice)": { href: null, icon: "/images/sts2/relics/bone_tea.webp" },
   "섀소식": { href: "/byrdispatch", icon: BYRDISPATCH_ICON },
   "byrdispatch": { href: "/byrdispatch", icon: BYRDISPATCH_ICON },
   "니오우스레터": { href: "/patches/neowsletters", icon: "/images/sts2/ancients/neow.webp" },
@@ -118,6 +120,11 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   카드: { href: "/compendium/cards", icon: "/images/sts2/nav/stats_cards.png" },
   "카드 모음집": { href: "/compendium/cards", icon: "/images/sts2/nav/stats_cards.png" },
   "Card Library": { href: "/compendium/cards", icon: "/images/sts2/nav/stats_cards.png" },
+  "STS2 카드": { href: "/compendium/cards", icon: "/images/sts2/nav/stats_cards.png" },
+  "STS2 Cards": { href: "/compendium/cards", icon: "/images/sts2/nav/stats_cards.png" },
+  "STS1 (전체)": { href: null, icon: "/images/sts1_app_icon.png" },
+  "STS1 (all)": { href: null, icon: "/images/sts1_app_icon.png" },
+  STS1: { href: null, icon: "/images/sts1_app_icon.png" },
   키워드: { href: "/compendium/keywords", icon: "/images/sts2/ui/topbar/submenu_history_icon.png" },
   Keywords: { href: "/compendium/keywords", icon: "/images/sts2/ui/topbar/submenu_history_icon.png" },
   유물: { href: "/compendium/relics", icon: "/images/sts2/relics/bing_bong.webp" },
@@ -226,6 +233,21 @@ const SERVICE_REFERENCE_LINKS: Record<string, string> = {
   Modifiers: "/compendium/modifiers",
 };
 
+const BYRDISPATCH_INTERNAL_LINK_CLASS =
+  "inline-flex items-center gap-1 align-[-0.2em] font-semibold text-[#60a5fa] no-underline border-b border-[#60a5fa]/70 transition-colors hover:text-blue-300";
+const BYRDISPATCH_EXTERNAL_LINK_CLASS =
+  "inline-flex items-center gap-1 align-[-0.2em] font-semibold text-[#2aebbe] underline decoration-[#2aebbe] decoration-1 underline-offset-[3px] transition-colors hover:brightness-125";
+
+const STS1_SECTION_TITLES = new Set(["STS1 (전체)", "STS1 (all)", "STS1"]);
+const STS1_INLINE_LINKS: Record<string, { href: string; icon: string }> = {
+  "유물 모음집": { href: "/relics", icon: "/images/sts2/relics/snecko_eye.webp" },
+  "Relic Collection": { href: "/relics", icon: "/images/sts2/relics/snecko_eye.webp" },
+  캐릭터: { href: "/compendium/sts1/characters", icon: "/images/sts1/characters/ironclad.webp" },
+  Characters: { href: "/compendium/sts1/characters", icon: "/images/sts1/characters/ironclad.webp" },
+  파워: { href: "/compendium/sts1/powers", icon: "/images/sts1/powers/hello.webp" },
+  Powers: { href: "/compendium/sts1/powers", icon: "/images/sts1/powers/hello.webp" },
+};
+
 const STORY_COMPOSER_ACTION_TOKEN = "[새 이야기 쓰기 버튼 노출/링크]";
 const KNOWLEDGE_DEMON_TOKEN = "{지식의악마토큰}";
 const OWN_POST_MARK_TOKEN_KO = "「내 글」";
@@ -246,6 +268,28 @@ const INLINE_ACTION_RE = new RegExp(
   `${escapeRegExp(STORY_COMPOSER_ACTION_TOKEN)}|${escapeRegExp(KNOWLEDGE_DEMON_TOKEN)}|${escapeRegExp(OWN_POST_MARK_TOKEN_KO)}|${escapeRegExp(OWN_POST_MARK_TOKEN_EN)}|${SERVICE_REFERENCE_RE.source}`,
   "g",
 );
+const MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]+)\)/g;
+
+function inlineActionPattern(extraLabels: readonly string[]): RegExp {
+  if (extraLabels.length === 0) return INLINE_ACTION_RE;
+  const labels = [...Object.keys(SERVICE_REFERENCE_LINKS), ...extraLabels]
+    .sort((a, b) => b.length - a.length)
+    .map(escapeRegExp)
+    .join("|");
+  return new RegExp(
+    `${escapeRegExp(STORY_COMPOSER_ACTION_TOKEN)}|${escapeRegExp(KNOWLEDGE_DEMON_TOKEN)}|${escapeRegExp(OWN_POST_MARK_TOKEN_KO)}|${escapeRegExp(OWN_POST_MARK_TOKEN_EN)}|(${labels})`,
+    "g",
+  );
+}
+
+function rangesOverlap(start: number, end: number, ranges: ReadonlyArray<readonly [number, number]>): boolean {
+  return ranges.some(([rangeStart, rangeEnd]) => start < rangeEnd && end > rangeStart);
+}
+
+function extraLinksForSection(title: string | undefined) {
+  if (!title || !STS1_SECTION_TITLES.has(title)) return undefined;
+  return STS1_INLINE_LINKS;
+}
 const PROFILE_SERVICE_TITLES = new Set(["프로필", "Profile"]);
 
 function normalizeServiceTitle(title: string): string {
@@ -348,7 +392,7 @@ function ServiceHeading({
   const titleClassName = section.isNotice
     ? "text-pink-100"
     : canLink
-      ? `${SERVICE_ACCENT_CLASS} transition-colors hover:brightness-125`
+      ? "font-semibold text-[#60a5fa] no-underline border-b border-[#60a5fa]/70 transition-colors hover:text-blue-300"
       : SERVICE_ACCENT_CLASS;
   const content = (
     <>
@@ -382,6 +426,52 @@ function ServiceHeading({
   return <h2 className={headingClassName}>{content}</h2>;
 }
 
+function ByrdispatchNamedLink({
+  href,
+  external,
+  icon,
+  label,
+  serviceLocale,
+  gameLocale,
+}: {
+  href: string;
+  external: boolean;
+  icon: string;
+  label: string;
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
+}) {
+  const className = external ? BYRDISPATCH_EXTERNAL_LINK_CLASS : BYRDISPATCH_INTERNAL_LINK_CLASS;
+  const token = PROFILE_SERVICE_TITLES.has(label) ? (
+    <ByrdispatchProfileIcon className="inline-block h-4 w-4 shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]" />
+  ) : (
+    <Image
+      src={icon}
+      alt=""
+      width={16}
+      height={16}
+      className="inline-block h-4 w-4 shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]"
+    />
+  );
+  if (external) {
+    return (
+      <a href={href} target="_blank" rel="noreferrer" className={className}>
+        {token}
+        <span>{label}</span>
+      </a>
+    );
+  }
+  return (
+    <Link
+      href={label === "byrdispatch" ? href : localizeHrefWithGameLocale(href, serviceLocale, gameLocale)}
+      className={className}
+    >
+      {token}
+      <span>{label}</span>
+    </Link>
+  );
+}
+
 export function ByrdispatchRichText({
   text,
   entities,
@@ -390,6 +480,7 @@ export function ByrdispatchRichText({
   gameLocale,
   storyPlaceholder,
   autoLinkEntities = false,
+  extraLinks,
 }: {
   text: string;
   entities: EntityInfo[];
@@ -398,6 +489,7 @@ export function ByrdispatchRichText({
   gameLocale: GameLocale;
   storyPlaceholder: string;
   autoLinkEntities?: boolean;
+  extraLinks?: Record<string, { href: string; icon: string }>;
 }) {
   const renderTextSegment = (segment: string, key: string) => {
     const leadingWhitespace = segment.match(/^\s+/)?.[0] ?? "";
@@ -422,63 +514,88 @@ export function ByrdispatchRichText({
   };
   const parts: ReactNode[] = [];
   const knowledgeDemon = entities.find((entity) => entity.type === "monster" && entity.id === "KNOWLEDGE_DEMON_BOSS");
-  let lastIndex = 0;
-  let matchIndex = 0;
+  const extraLabels = Object.keys(extraLinks ?? {});
+  const actionPattern = inlineActionPattern(extraLabels);
+  const occupied: Array<[number, number]> = [];
+  const hits: Array<{ index: number; length: number; node: ReactNode }> = [];
 
-  for (const match of text.matchAll(INLINE_ACTION_RE)) {
+  for (const match of text.matchAll(MARKDOWN_LINK_RE)) {
     const index = match.index ?? 0;
+    const label = match[1];
+    const href = match[2];
+    const extra = extraLinks?.[label];
+    const service = serviceIconFor(label);
+    const icon = extra?.icon ?? service?.icon;
+    if (!label || !href || !icon) continue;
+    if (!extra && !SERVICE_REFERENCE_LINKS[label] && !service) continue;
+    occupied.push([index, index + match[0].length]);
+    hits.push({
+      index,
+      length: match[0].length,
+      node: (
+        <ByrdispatchNamedLink
+          href={href}
+          external={/^https?:\/\//i.test(href)}
+          icon={icon}
+          label={label}
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+        />
+      ),
+    });
+  }
+
+  for (const match of text.matchAll(actionPattern)) {
+    const index = match.index ?? 0;
+    if (rangesOverlap(index, index + match[0].length, occupied)) continue;
     const isComposerAction = match[0] === STORY_COMPOSER_ACTION_TOKEN;
     const isKnowledgeDemonToken = match[0] === KNOWLEDGE_DEMON_TOKEN;
     const isOwnPostMark =
       match[0] === OWN_POST_MARK_TOKEN_KO || match[0] === OWN_POST_MARK_TOKEN_EN;
     const label = match[1];
-    const href = SERVICE_REFERENCE_LINKS[label];
+    const extra = label ? extraLinks?.[label] : undefined;
+    const href = extra?.href ?? (label ? SERVICE_REFERENCE_LINKS[label] : undefined);
     const service = label ? serviceIconFor(label) : null;
+    const icon = extra?.icon ?? service?.icon;
+    hits.push({
+      index,
+      length: match[0].length,
+      node: isComposerAction ? (
+        <ByrdispatchStoryComposerButton
+          serviceLocale={serviceLocale}
+          storyPlaceholder={storyPlaceholder}
+          entities={entities}
+        />
+      ) : isOwnPostMark ? (
+        <OwnPostMark className="mx-0.5 align-middle" />
+      ) : isKnowledgeDemonToken ? (
+        <TokenIcon
+          src={knowledgeDemon?.imageUrl ?? "/images/sts2/bosses/knowledge_demon_boss.webp"}
+          label={knowledgeDemon?.nameKo ?? ""}
+        />
+      ) : href && icon && label ? (
+        <ByrdispatchNamedLink
+          href={href}
+          external={false}
+          icon={icon}
+          label={label}
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+        />
+      ) : match[0],
+    });
+  }
 
-    if (index > lastIndex) {
-      parts.push(renderTextSegment(text.slice(lastIndex, index), `text-${matchIndex}`));
+  hits.sort((a, b) => a.index - b.index);
+  let lastIndex = 0;
+  let matchIndex = 0;
+  for (const hit of hits) {
+    if (hit.index < lastIndex) continue;
+    if (hit.index > lastIndex) {
+      parts.push(renderTextSegment(text.slice(lastIndex, hit.index), `text-${matchIndex}`));
     }
-
-    parts.push(isComposerAction ? (
-      <ByrdispatchStoryComposerButton
-        key={`story-composer-${matchIndex}`}
-        serviceLocale={serviceLocale}
-        storyPlaceholder={storyPlaceholder}
-        entities={entities}
-      />
-    ) : isOwnPostMark ? (
-      <OwnPostMark
-        key={`own-post-${matchIndex}`}
-        className="mx-0.5 align-middle"
-      />
-    ) : isKnowledgeDemonToken ? (
-      <TokenIcon
-        key={`knowledge-demon-${matchIndex}`}
-        src={knowledgeDemon?.imageUrl ?? "/images/sts2/bosses/knowledge_demon_boss.webp"}
-        label={knowledgeDemon?.nameKo ?? ""}
-      />
-    ) : href && service ? (
-      <Link
-        key={`service-${matchIndex}`}
-        href={label === "byrdispatch" ? href : localizeHrefWithGameLocale(href, serviceLocale, gameLocale)}
-        className={`inline-flex items-center gap-1 align-[-0.2em] font-semibold ${SERVICE_ACCENT_CLASS} transition-colors hover:brightness-125`}
-      >
-        {label && PROFILE_SERVICE_TITLES.has(label) ? (
-          <ByrdispatchProfileIcon className="inline-block h-4 w-4 shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]" />
-        ) : (
-          <Image
-            src={service.icon}
-            alt=""
-            width={16}
-            height={16}
-            className="inline-block h-4 w-4 shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]"
-          />
-        )}
-        <span>{match[0]}</span>
-      </Link>
-    ) : match[0]);
-
-    lastIndex = index + match[0].length;
+    parts.push(<Fragment key={`hit-${matchIndex}`}>{hit.node}</Fragment>);
+    lastIndex = hit.index + hit.length;
     matchIndex += 1;
   }
 
@@ -514,6 +631,7 @@ function ByrdispatchBulletLine({
   statusLabels,
   storyPlaceholder,
   autoLinkEntities = false,
+  sectionTitle,
 }: {
   bullet: ByrdispatchBullet;
   notice: boolean;
@@ -524,6 +642,7 @@ function ByrdispatchBulletLine({
   statusLabels: ByrdispatchStatusLabels;
   storyPlaceholder: string;
   autoLinkEntities?: boolean;
+  sectionTitle?: string;
 }) {
   const childBullet = bullet.depth > 0;
   const staged = childBullet ? stagedReleaseStatus(bullet.statuses) : null;
@@ -568,6 +687,7 @@ function ByrdispatchBulletLine({
           gameLocale={gameLocale}
           storyPlaceholder={storyPlaceholder}
           autoLinkEntities={autoLinkEntities}
+          extraLinks={extraLinksForSection(sectionTitle)}
         />
         <StatusTokens statuses={bullet.statuses} labels={statusLabels} />
       </div>
@@ -585,6 +705,7 @@ function ByrdispatchDetailsBlock({
   statusLabels,
   storyPlaceholder,
   characters,
+  sectionTitle,
 }: {
   details: ByrdispatchDetails;
   notice: boolean;
@@ -595,6 +716,7 @@ function ByrdispatchDetailsBlock({
   statusLabels: ByrdispatchStatusLabels;
   storyPlaceholder: string;
   characters: NonNullable<EntityInfo["characterData"]>[];
+  sectionTitle?: string;
 }) {
   if (!details.summary && details.items.length === 0) return null;
 
@@ -623,6 +745,7 @@ function ByrdispatchDetailsBlock({
                 storyPlaceholder={storyPlaceholder}
                 characters={characters}
                 autoLinkEntities
+                sectionTitle={sectionTitle}
               />
             ))}
           </ul>
@@ -689,6 +812,7 @@ function ByrdispatchSectionItemLine({
   storyPlaceholder,
   characters,
   autoLinkEntities = false,
+  sectionTitle,
 }: {
   item: ByrdispatchSectionItem;
   notice: boolean;
@@ -700,6 +824,7 @@ function ByrdispatchSectionItemLine({
   storyPlaceholder: string;
   characters: NonNullable<EntityInfo["characterData"]>[];
   autoLinkEntities?: boolean;
+  sectionTitle?: string;
 }) {
   if (item.type === "image") {
     return (
@@ -721,6 +846,7 @@ function ByrdispatchSectionItemLine({
         statusLabels={statusLabels}
         storyPlaceholder={storyPlaceholder}
         characters={characters}
+        sectionTitle={sectionTitle}
       />
     );
   }
@@ -746,6 +872,7 @@ function ByrdispatchSectionItemLine({
       statusLabels={statusLabels}
       storyPlaceholder={storyPlaceholder}
       autoLinkEntities={autoLinkEntities}
+      sectionTitle={sectionTitle}
     />
   );
 }
@@ -806,6 +933,7 @@ function ByrdispatchSectionList({
                     statusLabels={statusLabels}
                     storyPlaceholder={storyPlaceholder}
                     characters={characters}
+                    sectionTitle={section.title}
                   />
                 </Fragment>
               ))}
