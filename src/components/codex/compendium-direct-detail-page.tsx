@@ -16,7 +16,7 @@ import { PowerDetail } from "@/components/codex/power-detail";
 import { RelicDetail } from "@/components/codex/relic-detail";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
-import { versionCodexEntity, type CodexVersionContext } from "@/lib/codex-versioning";
+import { versionCodexEntities, versionCodexEntity, type CodexVersionContext } from "@/lib/codex-versioning";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import { latestPatchVersion, resolveKnownVersion } from "@/lib/entity-versioning";
 import type { EntityLifecycle } from "@/lib/entity-lifecycle";
@@ -376,7 +376,7 @@ export function CompendiumDirectDetailPage({
           serviceLocale={serviceLocale}
           gameUi={gameUi}
           card={card}
-          enchantments={resources.enchantments}
+          enchantments={versionCodexEntities(resources.enchantments, "enchantment", versionContext)}
           afflictions={resources.afflictions}
           relatedAncients={resources.ancients}
           relatedEvents={resources.events}

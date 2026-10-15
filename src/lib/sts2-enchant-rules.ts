@@ -178,8 +178,11 @@ export function getEnchantStatModifier(
 ): EnchantStatModifier {
   switch (normalizeId(enchant.id)) {
     // Damage additive
-    case "INKY":
-      return { damageAdd: 1 };       // CanonicalVars: DamageVar(1m)
+    case "INKY": {
+      // v0.111.0 removed Damage. Only historical versions still add it.
+      const damage = enchant.vars?.Damage;
+      return typeof damage === "number" && damage !== 0 ? { damageAdd: damage } : {};
+    }
     case "TEZCATARAS_EMBER":
       return { damageAdd: 3 };       // CanonicalVars: DamageVar(3m)
     case "SHARP":

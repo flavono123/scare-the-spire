@@ -8,6 +8,8 @@ import {
 } from "../src/lib/versioned-entity-api";
 import { normalizeVersionedEntityType } from "../src/lib/codex-versioning";
 import { latestPatchVersion } from "../src/lib/entity-versioning";
+import { getEnchantStatModifier } from "../src/lib/sts2-enchant-rules";
+import type { CodexEnchantment } from "../src/lib/codex-types";
 import { updateCompendiumResourceModalUrl } from "../src/lib/compendium-resource-links";
 import type { CodexCard } from "../src/lib/codex-types";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "../src/lib/types";
@@ -439,7 +441,27 @@ async function runTests() {
   });
   assert.match(spiteAfter.entity?.description ?? "", /2번 적중합니다/);
 
-  console.log("\n[Test 13] current version ignores steam build ids and date slugs");
+  console.log("\n[Test 13] INKY stops adding damage at v0.111.0");
+  const inkyBefore = await getVersionedEntity<CodexEnchantment>({
+    entityType: "enchantment",
+    entityId: "INKY",
+    version: "v0.110.0",
+    locale: "kor",
+  });
+  const inkyAfter = await getVersionedEntity<CodexEnchantment>({
+    entityType: "enchantment",
+    entityId: "INKY",
+    version: "v0.111.0",
+    locale: "kor",
+  });
+  assert.equal(inkyBefore.entity?.vars?.Damage, 1);
+  assert.equal(inkyAfter.entity?.vars?.Damage, undefined);
+  assert.equal(getEnchantStatModifier(inkyBefore.entity!, 1).damageAdd, 1);
+  assert.equal(getEnchantStatModifier(inkyAfter.entity!, 1).damageAdd, undefined);
+  assert.match(inkyBefore.entity?.description ?? "", /피해량이/);
+  assert.doesNotMatch(inkyAfter.entity?.description ?? "", /피해량이/);
+
+  console.log("\n[Test 14] current version ignores steam build ids and date slugs");
   assert.equal(latestPatchVersion([
     { version: "0.111.0" },
     { version: "23478716" },
