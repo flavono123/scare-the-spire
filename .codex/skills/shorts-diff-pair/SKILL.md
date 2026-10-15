@@ -16,7 +16,7 @@ Organic YouTube Shorts cover the top ~192 px, the bottom ~576 px, and the right 
 - Canvas 1080×1920, 30 fps.
 - Brand row: site favicon plus `슬서운이야기`. Font family `GyeonggiBatang` (경기천년바탕 Bold), installed in `~/Library/Fonts` from `public/fonts/GyeonggiCheonnyeonBatangBold.ttf`.
 - Under that: the version only. No element index.
-- Center: one still, then the next. Each holds 1.2 seconds. Within a pair the composition is Wipe. Between pairs it is Push Down. Both ship with Kdenlive; there is no paid set.
+- Center: one still, then the next. Each holds 1.2 seconds. Within a pair the composition is Wipe. Between pairs it is Push Left. Both ship with Kdenlive; there is no paid set.
 - Audio is the STS1 Act 2 `The City` bed at about -18 dB.
 
 The short itself is built in `/Users/flavono123/P/slseoun-shorts`. Use
