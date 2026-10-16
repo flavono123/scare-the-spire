@@ -51,7 +51,7 @@ function isDescriptionField(field: string): boolean {
   return field === "description" || field.startsWith("description.");
 }
 
-function varsForBake(
+export function varsForBake(
   entityType: VersionedEntityType,
   id: unknown,
   vars: unknown,
