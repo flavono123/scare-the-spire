@@ -2,6 +2,7 @@
  * List the elements a patch changed, with the Korean text before and after.
  * This is the approval list for a version short, plus ready capture targets.
  *
+ *   pnpm shorts:changes --versions     # versions the picker offers, with change counts
  *   pnpm shorts:changes 0.111.0
  *   pnpm shorts:changes 0.111.0 --json
  *
@@ -58,8 +59,8 @@ async function main() {
   const args = process.argv.slice(2).filter((arg) => arg !== "--");
   const json = args.includes("--json");
   const wanted = args.find((arg) => !arg.startsWith("--"))?.replace(/^v/, "");
-  if (!wanted) {
-    console.log("usage: pnpm shorts:changes <version> [--json]");
+  if (!wanted && !args.includes("--versions")) {
+    console.log("usage: pnpm shorts:changes <version> [--json]\n       pnpm shorts:changes --versions");
     process.exit(1);
   }
 
@@ -69,6 +70,23 @@ async function main() {
     getSTS2Changes(),
   ]);
   const versions = getVersionsWithDiffs(patches, versionDiffs);
+
+  if (!wanted) {
+    console.log("version   date        kind      changes by type");
+    for (const version of versions) {
+      const patch = patches.find((entry) => entry.version === version);
+      const counts = new Map<string, Set<string>>();
+      for (const change of changes) {
+        if (change.patch.replace(/^v/, "") !== version) continue;
+        const ids = counts.get(change.entityType) ?? new Set<string>();
+        ids.add(change.entityId);
+        counts.set(change.entityType, ids);
+      }
+      const summary = [...counts].map(([type, ids]) => `${type} ${ids.size}`).join(", ") || "-";
+      console.log(`${version.padEnd(9)} ${String(patch?.date ?? "").padEnd(11)} ${String(patch?.type ?? "").padEnd(9)} ${summary}`);
+    }
+    return;
+  }
   const previous = versions.find((version) => compareVersions(version, wanted) < 0);
   if (!previous) throw new Error(`no selectable version before ${wanted}`);
 
