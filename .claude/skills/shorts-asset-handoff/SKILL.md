@@ -16,6 +16,7 @@ This repo provides two commands for it:
 | --- | --- |
 | `pnpm shorts:changes --versions` | Versions the Compendium picker offers, with change counts by type |
 | `pnpm shorts:changes <version>` | Elements changed in that patch, Korean as-is and to-be text, capture targets |
+| `pnpm shorts:texts --batch shots.json` | Each shot's name and text in every game locale, for subtitles (`texts.json`) |
 | `pnpm shorts:capture --target cards/ID@version --out file.png` | The Compendium download-button render at fixed 3x, plus `file.png.json` |
 
 `shorts:capture` needs `pnpm dev` (or `pnpm dev:next`) on port 3000. It also
