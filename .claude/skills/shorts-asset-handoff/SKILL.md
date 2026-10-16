@@ -6,7 +6,7 @@ description: Route 슬서운이야기 쇼츠 work to the local slseoun-shorts re
 # Shorts asset handoff
 
 Shorts are made in `/Users/flavono123/P/slseoun-shorts`. It has no git remote.
-Do not create one. Its `docs/CONVENTIONS.md` and its `shorts-diff-pair` skill
+Do not create one. Its `docs/CONVENTIONS.md` and its `version-short` skill
 own the format. If the user starts a short here, say so and offer to continue
 in that repo.
 
@@ -14,6 +14,7 @@ This repo provides two commands for it:
 
 | Command | Output |
 | --- | --- |
+| `pnpm shorts:changes --versions` | Versions the Compendium picker offers, with change counts by type |
 | `pnpm shorts:changes <version>` | Elements changed in that patch, Korean as-is and to-be text, capture targets |
 | `pnpm shorts:capture --target cards/ID@version --out file.png` | The Compendium download-button render at fixed 3x, plus `file.png.json` |
 
