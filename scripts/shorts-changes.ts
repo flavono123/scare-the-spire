@@ -11,7 +11,7 @@
  * `same-tile`; a tile capture of them would look identical.
  */
 
-import { getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } from "../src/lib/data";
+import { getEntityVersionDiffs, getSTS2Changes, getSTS2PatchLines, getSTS2Patches } from "../src/lib/data";
 import { compareVersions, getVersionsWithDiffs } from "../src/lib/entity-versioning";
 import { getVersionedEntity } from "../src/lib/versioned-entity-api";
 import type { VersionedEntityType } from "../src/lib/types";
@@ -32,6 +32,8 @@ interface Row {
   id: string;
   name: string | null;
   summaryKo: string | null;
+  /** Korean patch-note lines about this element; they carry the 버프/너프/리워크 label. */
+  patchLines: string[];
   before: string | null;
   after: string | null;
   tileBefore: Record<string, unknown>;
@@ -64,10 +66,11 @@ async function main() {
     process.exit(1);
   }
 
-  const [patches, versionDiffs, changes] = await Promise.all([
+  const [patches, versionDiffs, changes, patchLines] = await Promise.all([
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getSTS2Changes(),
+    getSTS2PatchLines(),
   ]);
   const versions = getVersionsWithDiffs(patches, versionDiffs);
 
@@ -90,6 +93,15 @@ async function main() {
   const previous = versions.find((version) => compareVersions(version, wanted) < 0);
   if (!previous) throw new Error(`no selectable version before ${wanted}`);
 
+  const versionLines = patchLines.filter((line) => line.version.replace(/^v/, "") === wanted);
+  // Most lines carry no entity refs, so fall back to the Korean name at the start of the line.
+  const linesFor = (id: string, name: string | null) =>
+    versionLines
+      .filter((line) =>
+        line.entityRefs.some((ref) => ref.id.toLowerCase() === id.toLowerCase()) ||
+        (name !== null && line.textKo.startsWith(`${name} (`)))
+      .map((line) => line.textKo);
+
   const patchChanges = changes.filter((change) => change.patch.replace(/^v/, "") === wanted);
   const seen = new Set<string>();
   const rows: Row[] = [];
@@ -111,11 +123,14 @@ async function main() {
     const tileBefore = tileFields(asIs?.entity);
     const tileAfter = tileFields(toBe?.entity);
     const route = ROUTES[change.entityType];
+    const name = (toBe?.entity?.name ?? asIs?.entity?.name ?? null) as string | null;
     rows.push({
       type: change.entityType,
       id: change.entityId,
-      name: (toBe?.entity?.name ?? asIs?.entity?.name ?? null) as string | null,
-      summaryKo: change.summaryKo ?? null,
+      name,
+      // Older patches have only the English summary.
+      summaryKo: change.summaryKo ?? change.summary ?? null,
+      patchLines: linesFor(change.entityId, name),
       before,
       after,
       tileBefore,
@@ -136,6 +151,7 @@ async function main() {
   for (const row of rows) {
     const flag = row.sameTile ? "  [same-tile]" : "";
     console.log(`${row.type} ${row.id}  ${row.name ?? ""}${flag}`);
+    for (const line of row.patchLines) console.log(`  patch: ${line}`);
     if (row.summaryKo) console.log(`  note : ${row.summaryKo}`);
     const moved = TILE_FIELDS
       .filter((field) => JSON.stringify(row.tileBefore[field]) !== JSON.stringify(row.tileAfter[field]))
