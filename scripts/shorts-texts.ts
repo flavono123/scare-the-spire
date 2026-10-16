@@ -22,6 +22,12 @@ import { bakeDescription } from "../src/lib/codex-bake";
 import { getCodexMeta } from "../src/lib/data";
 import { varsForBake } from "../src/lib/entity-versioning";
 import { GAME_LOCALES, type GameLocale } from "../src/lib/i18n";
+import type { CodexCard } from "../src/lib/codex-types";
+import {
+  getCardDisplayKeywords,
+  getCardKeywordDisplayText,
+  splitCardDisplayKeywords,
+} from "../src/lib/sts2-card-keywords";
 import type { VersionedEntityType } from "../src/lib/types";
 import { getVersionedEntity } from "../src/lib/versioned-entity-api";
 
@@ -64,6 +70,17 @@ function plain(text: string): string {
     .trim();
 }
 
+/** Card tiles print keywords as "Keyword." lines before and after the text. */
+function withKeywords(type: VersionedEntityType, entity: Entity, description: string): string {
+  if (type !== "card" || !Array.isArray(entity.keywords)) return description;
+  const card = entity as unknown as CodexCard;
+  const { preDescriptionKeywords, postDescriptionKeywords } = splitCardDisplayKeywords(getCardDisplayKeywords(card));
+  const line = (keyword: string) => `${getCardKeywordDisplayText(card, keyword)}.`;
+  return [...preDescriptionKeywords.map(line), description, ...postDescriptionKeywords.map(line)]
+    .filter(Boolean)
+    .join("\n");
+}
+
 async function textFor(
   type: VersionedEntityType,
   id: string,
@@ -80,11 +97,12 @@ async function textFor(
 
   // A Korean string in another locale came from a reverted Korean diff.
   if (locale === "kor" || !HANGUL.test(description)) {
-    return { name, description: plain(description), source: "version" };
+    return { name, description: withKeywords(type, entity, plain(description)), source: "version" };
   }
   const raw = entity.descriptionRaw;
   if (typeof raw === "string" && raw === current?.descriptionRaw && !HANGUL.test(raw)) {
-    return { name, description: plain(bakeDescription(raw, varsForBake(type, id, entity.vars))), source: "rebaked" };
+    const baked = plain(bakeDescription(raw, varsForBake(type, id, entity.vars)));
+    return { name, description: withKeywords(type, entity, baked), source: "rebaked" };
   }
   return { name, description: null, source: "unavailable" };
 }
