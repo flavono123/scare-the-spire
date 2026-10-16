@@ -1,0 +1,526 @@
+{
+ "title": "중국 사일런트 69연승 티어표",
+ "note": "DC 슬더스갤 념글(no.500850) 티어표를 옮김. 출처: gall.dcinside.com/slay/489512",
+ "preset_key": "cards-silent",
+ "game_version": "0.111.0",
+ "rows": [
+  {
+   "id": "base",
+   "label": "기반",
+   "color": "purple"
+  },
+  {
+   "id": "s",
+   "label": "S",
+   "color": "gold"
+  },
+  {
+   "id": "a",
+   "label": "A",
+   "color": "green"
+  },
+  {
+   "id": "b",
+   "label": "B",
+   "color": "aqua"
+  },
+  {
+   "id": "c",
+   "label": "C",
+   "color": "orange"
+  },
+  {
+   "id": "d",
+   "label": "D",
+   "color": "red"
+  }
+ ],
+ "placements": [
+  {
+   "type": "card",
+   "id": "AFTERIMAGE",
+   "rowId": "base",
+   "sort": 0
+  },
+  {
+   "type": "card",
+   "id": "WELL_LAID_PLANS",
+   "rowId": "base",
+   "sort": 1
+  },
+  {
+   "type": "card",
+   "id": "FOOTWORK",
+   "rowId": "base",
+   "sort": 2
+  },
+  {
+   "type": "card",
+   "id": "ACCELERANT",
+   "rowId": "s",
+   "sort": 0
+  },
+  {
+   "type": "card",
+   "id": "ACCURACY",
+   "rowId": "s",
+   "sort": 1
+  },
+  {
+   "type": "card",
+   "id": "KNIFE_TRAP",
+   "rowId": "s",
+   "sort": 2
+  },
+  {
+   "type": "card",
+   "id": "PHANTOM_BLADES",
+   "rowId": "s",
+   "sort": 3
+  },
+  {
+   "type": "card",
+   "id": "INFINITE_BLADES",
+   "rowId": "s",
+   "sort": 4
+  },
+  {
+   "type": "card",
+   "id": "NOXIOUS_FUMES",
+   "rowId": "s",
+   "sort": 5
+  },
+  {
+   "type": "card",
+   "id": "ADRENALINE",
+   "rowId": "s",
+   "sort": 6
+  },
+  {
+   "type": "card",
+   "id": "BLADE_OF_INK",
+   "rowId": "s",
+   "sort": 7
+  },
+  {
+   "type": "card",
+   "id": "CLOAK_AND_DAGGER",
+   "rowId": "s",
+   "sort": 8
+  },
+  {
+   "type": "card",
+   "id": "TOOLS_OF_THE_TRADE",
+   "rowId": "s",
+   "sort": 9
+  },
+  {
+   "type": "card",
+   "id": "BACKFLIP",
+   "rowId": "s",
+   "sort": 10
+  },
+  {
+   "type": "card",
+   "id": "LEADING_STRIKE",
+   "rowId": "s",
+   "sort": 11
+  },
+  {
+   "type": "card",
+   "id": "MALAISE",
+   "rowId": "s",
+   "sort": 12
+  },
+  {
+   "type": "card",
+   "id": "BLADE_DANCE",
+   "rowId": "s",
+   "sort": 13
+  },
+  {
+   "type": "card",
+   "id": "CALCULATED_GAMBLE",
+   "rowId": "s",
+   "sort": 14
+  },
+  {
+   "type": "card",
+   "id": "EXPOSE",
+   "rowId": "s",
+   "sort": 15
+  },
+  {
+   "type": "card",
+   "id": "HIDDEN_DAGGERS",
+   "rowId": "s",
+   "sort": 16
+  },
+  {
+   "type": "card",
+   "id": "LEG_SWEEP",
+   "rowId": "s",
+   "sort": 17
+  },
+  {
+   "type": "card",
+   "id": "PIERCING_WAIL",
+   "rowId": "s",
+   "sort": 18
+  },
+  {
+   "type": "card",
+   "id": "BLUR",
+   "rowId": "s",
+   "sort": 19
+  },
+  {
+   "type": "card",
+   "id": "DEFLECT",
+   "rowId": "s",
+   "sort": 20
+  },
+  {
+   "type": "card",
+   "id": "ASSASSINATE",
+   "rowId": "a",
+   "sort": 0
+  },
+  {
+   "type": "card",
+   "id": "BACKSTAB",
+   "rowId": "a",
+   "sort": 1
+  },
+  {
+   "type": "card",
+   "id": "TRACKING",
+   "rowId": "a",
+   "sort": 2
+  },
+  {
+   "type": "card",
+   "id": "SERPENT_FORM",
+   "rowId": "a",
+   "sort": 3
+  },
+  {
+   "type": "card",
+   "id": "ABRASIVE",
+   "rowId": "a",
+   "sort": 4
+  },
+  {
+   "type": "card",
+   "id": "SNAKEBITE",
+   "rowId": "a",
+   "sort": 5
+  },
+  {
+   "type": "card",
+   "id": "ECHOING_SLASH",
+   "rowId": "a",
+   "sort": 6
+  },
+  {
+   "type": "card",
+   "id": "POUNCE",
+   "rowId": "a",
+   "sort": 7
+  },
+  {
+   "type": "card",
+   "id": "DODGE_AND_ROLL",
+   "rowId": "a",
+   "sort": 8
+  },
+  {
+   "type": "card",
+   "id": "ESCAPE_PLAN",
+   "rowId": "a",
+   "sort": 9
+  },
+  {
+   "type": "card",
+   "id": "SCARE",
+   "rowId": "a",
+   "sort": 10
+  },
+  {
+   "type": "card",
+   "id": "FAN_OF_KNIVES",
+   "rowId": "a",
+   "sort": 11
+  },
+  {
+   "type": "card",
+   "id": "THE_HUNT",
+   "rowId": "a",
+   "sort": 12
+  },
+  {
+   "type": "card",
+   "id": "SHADOWMELD",
+   "rowId": "a",
+   "sort": 13
+  },
+  {
+   "type": "card",
+   "id": "SHADOW_STEP",
+   "rowId": "a",
+   "sort": 14
+  },
+  {
+   "type": "card",
+   "id": "ENVENOM",
+   "rowId": "b",
+   "sort": 0
+  },
+  {
+   "type": "card",
+   "id": "DASH",
+   "rowId": "b",
+   "sort": 1
+  },
+  {
+   "type": "card",
+   "id": "PREDATOR",
+   "rowId": "b",
+   "sort": 2
+  },
+  {
+   "type": "card",
+   "id": "STRANGLE",
+   "rowId": "b",
+   "sort": 3
+  },
+  {
+   "type": "card",
+   "id": "PRECISE_CUT",
+   "rowId": "b",
+   "sort": 4
+  },
+  {
+   "type": "card",
+   "id": "SUCKER_PUNCH",
+   "rowId": "b",
+   "sort": 5
+  },
+  {
+   "type": "card",
+   "id": "BOUNCING_FLASK",
+   "rowId": "b",
+   "sort": 6
+  },
+  {
+   "type": "card",
+   "id": "DEADLY_POISON",
+   "rowId": "b",
+   "sort": 7
+  },
+  {
+   "type": "card",
+   "id": "MIRAGE",
+   "rowId": "b",
+   "sort": 8
+  },
+  {
+   "type": "card",
+   "id": "EXPERTISE",
+   "rowId": "b",
+   "sort": 9
+  },
+  {
+   "type": "card",
+   "id": "PREPARED",
+   "rowId": "b",
+   "sort": 10
+  },
+  {
+   "type": "card",
+   "id": "BUBBLE_BUBBLE",
+   "rowId": "c",
+   "sort": 0
+  },
+  {
+   "type": "card",
+   "id": "BULLET_TIME",
+   "rowId": "c",
+   "sort": 1
+  },
+  {
+   "type": "card",
+   "id": "FLECHETTES",
+   "rowId": "c",
+   "sort": 2
+  },
+  {
+   "type": "card",
+   "id": "OUTBREAK",
+   "rowId": "c",
+   "sort": 3
+  },
+  {
+   "type": "card",
+   "id": "ACROBATICS",
+   "rowId": "c",
+   "sort": 4
+  },
+  {
+   "type": "card",
+   "id": "TACTICIAN",
+   "rowId": "c",
+   "sort": 5
+  },
+  {
+   "type": "card",
+   "id": "REFLEX",
+   "rowId": "c",
+   "sort": 6
+  },
+  {
+   "type": "card",
+   "id": "BURST",
+   "rowId": "d",
+   "sort": 0
+  },
+  {
+   "type": "card",
+   "id": "HAZE",
+   "rowId": "d",
+   "sort": 1
+  },
+  {
+   "type": "card",
+   "id": "CORROSIVE_WAVE",
+   "rowId": "d",
+   "sort": 2
+  },
+  {
+   "type": "card",
+   "id": "FINISHER",
+   "rowId": "d",
+   "sort": 3
+  },
+  {
+   "type": "card",
+   "id": "DAGGER_SPRAY",
+   "rowId": "d",
+   "sort": 4
+  },
+  {
+   "type": "card",
+   "id": "HAND_TRICK",
+   "rowId": "d",
+   "sort": 5
+  },
+  {
+   "type": "card",
+   "id": "DAGGER_THROW",
+   "rowId": "d",
+   "sort": 6
+  },
+  {
+   "type": "card",
+   "id": "PINPOINT",
+   "rowId": "d",
+   "sort": 7
+  },
+  {
+   "type": "card",
+   "id": "GRAND_FINALE",
+   "rowId": "d",
+   "sort": 8
+  },
+  {
+   "type": "card",
+   "id": "ANTICIPATE",
+   "rowId": "d",
+   "sort": 9
+  },
+  {
+   "type": "card",
+   "id": "FLICK_FLACK",
+   "rowId": "d",
+   "sort": 10
+  },
+  {
+   "type": "card",
+   "id": "MASTER_PLANNER",
+   "rowId": "d",
+   "sort": 11
+  },
+  {
+   "type": "card",
+   "id": "MEMENTO_MORI",
+   "rowId": "d",
+   "sort": 12
+  },
+  {
+   "type": "card",
+   "id": "NIGHTMARE",
+   "rowId": "d",
+   "sort": 13
+  },
+  {
+   "type": "card",
+   "id": "POISONED_STAB",
+   "rowId": "d",
+   "sort": 14
+  },
+  {
+   "type": "card",
+   "id": "SPEEDSTER",
+   "rowId": "d",
+   "sort": 15
+  },
+  {
+   "type": "card",
+   "id": "RICOCHET",
+   "rowId": "d",
+   "sort": 16
+  },
+  {
+   "type": "card",
+   "id": "SKEWER",
+   "rowId": "d",
+   "sort": 17
+  },
+  {
+   "type": "card",
+   "id": "SLICE",
+   "rowId": "d",
+   "sort": 18
+  },
+  {
+   "type": "card",
+   "id": "STORM_OF_STEEL",
+   "rowId": "d",
+   "sort": 19
+  },
+  {
+   "type": "card",
+   "id": "UP_MY_SLEEVE",
+   "rowId": "d",
+   "sort": 20
+  },
+  {
+   "type": "card",
+   "id": "UNTOUCHABLE",
+   "rowId": "d",
+   "sort": 21
+  },
+  {
+   "type": "card",
+   "id": "MURDER",
+   "rowId": "d",
+   "sort": 22
+  }
+ ],
+ "extra_ids": [
+  {
+   "type": "card",
+   "id": "SCARE"
+  }
+ ]
+}
