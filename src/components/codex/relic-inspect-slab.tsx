@@ -29,6 +29,7 @@ export function RelicInspectSlab({
   className,
   titleAs: TitleTag = "h1",
   density = "detail",
+  captureSnapshot,
 }: {
   rarity: RelicRarityKo;
   rarityLabel: string;
@@ -39,6 +40,11 @@ export function RelicInspectSlab({
   className?: string;
   titleAs?: "h1" | "div";
   density?: "detail" | "hover";
+  /** Version and game locale this slab was rendered from. Image copy waits for these. */
+  captureSnapshot?: {
+    gameLocale: string;
+    version: string;
+  };
 }) {
   const rarityColor = RELIC_RARITY_COLORS[rarity];
   const inspectFrameUrl = relicInspectFrameUrl(rarity);
@@ -48,6 +54,8 @@ export function RelicInspectSlab({
     <div
       data-relic-inspect-slab
       data-relic-inspect-density={density}
+      data-game-locale={captureSnapshot?.gameLocale}
+      data-version={captureSnapshot?.version}
       className={cn("dark relative mx-auto w-full max-w-[28rem]", className)}
       style={{ aspectRatio: PANEL_ASPECT }}
     >

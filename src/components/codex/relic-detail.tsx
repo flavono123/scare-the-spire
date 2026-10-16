@@ -127,6 +127,11 @@ interface RelicDetailProps {
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
+  /** Version and game locale the slab is rendered from, stamped for image capture. */
+  captureSnapshot?: {
+    gameLocale: string;
+    version: string;
+  };
 }
 
 const RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
@@ -152,6 +157,7 @@ export function RelicDetail({
   patches,
   changes,
   versionDiffs,
+  captureSnapshot,
 }: RelicDetailProps) {
   const profile = useStoredUserProfile();
   const serviceText = getCodexServiceMessages(serviceLocale);
@@ -423,6 +429,7 @@ export function RelicDetail({
           >
             <div ref={assetCopyTargetRef}>
             <RelicInspectSlab
+              captureSnapshot={captureSnapshot}
               rarity={relic.rarity}
               rarityLabel={rarityLabel}
               title={relic.name}

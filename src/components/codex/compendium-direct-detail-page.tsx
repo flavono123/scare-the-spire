@@ -425,6 +425,7 @@ export function CompendiumDirectDetailPage({
           patches={patches}
           changes={changes}
           versionDiffs={versionDiffs}
+          captureSnapshot={{ gameLocale: payload.gameLocale, version: selectedVersion }}
         />
       );
     }
