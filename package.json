@@ -58,6 +58,7 @@
     "sts2:validate-ancients": "node scripts/validate-sts2-ancient-scenes.mjs",
     "sts2:validate-ancient-dialogue": "tsx scripts/validate-sts2-ancient-dialogue.ts",
     "i18n:sync": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/sync-game-localization.py",
+    "i18n:history": "tsx scripts/generate-localization-history.ts",
     "i18n:validate": "node scripts/ensure-lint-generated.mjs && PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate-i18n.py",
     "worldcup:seed": "tsx scripts/seed-favorite-tournament-builtins.ts",
     "prepare": "git config core.hooksPath .githooks 2>/dev/null || true",
