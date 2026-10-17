@@ -2,6 +2,8 @@ import fs from "fs/promises";
 import path from "path";
 import type { Card, Change, Story, Relic, Potion, CardClass, CardType, CharacterClass, PotionRarity, STS2Patch, STS2Change, STS2PatchLine, EntityVersionDiff, CodexMeta } from "./types";
 import { normalizeVersionedEntityType } from "./codex-versioning";
+import type { GameLocale } from "./i18n";
+import { localizeVersionDiffs, type LocalizationHistory } from "./localization-history";
 
 function toSlug(name: string, cardClass?: string): string {
   const base = name
@@ -147,8 +149,24 @@ export function deriveEntityVersionDiffs(changes: readonly STS2Change[]): Entity
   });
 }
 
-export async function getEntityVersionDiffs(): Promise<EntityVersionDiff[]> {
-  return deriveEntityVersionDiffs(await getSTS2Changes());
+let localizationHistory: Promise<LocalizationHistory> | null = null;
+
+export function getLocalizationHistory(): Promise<LocalizationHistory> {
+  localizationHistory ??= fs
+    .readFile(path.join(DATA_DIR, "sts2", "localization-history.json"), "utf-8")
+    .then((raw) => JSON.parse(raw) as LocalizationHistory);
+  return localizationHistory;
+}
+
+/**
+ * Version diffs for reconstructing older entities. With a game locale, text
+ * diffs follow that locale's pinned history (see localization-history.ts);
+ * without one they are the authored diffs, whose wording is Korean.
+ */
+export async function getEntityVersionDiffs(gameLocale?: GameLocale): Promise<EntityVersionDiff[]> {
+  const base = deriveEntityVersionDiffs(await getSTS2Changes());
+  if (!gameLocale) return base;
+  return localizeVersionDiffs(base, gameLocale, await getLocalizationHistory());
 }
 
 export async function getCodexMeta(): Promise<CodexMeta> {

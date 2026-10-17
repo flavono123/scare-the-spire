@@ -76,7 +76,7 @@ export default async function CodexPotionsPage({
     getCodexEnchantments({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
     getCodexEvents({ gameLocale }),

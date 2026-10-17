@@ -83,7 +83,7 @@ export default async function PotionDetailPage({
     getCodexEnchantments({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexGameUiLabels(gameLocale),
     getCodexEvents({ gameLocale }),
     getCodexPowers({ includeDeprecated: true, gameLocale }),

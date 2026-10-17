@@ -60,7 +60,7 @@ export default async function CodexEncountersPage({
     getCodexMonsters({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
   ]);

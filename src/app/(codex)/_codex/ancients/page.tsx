@@ -53,7 +53,7 @@ export default async function CodexAncientsPage({
     getCodexCharacters({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),

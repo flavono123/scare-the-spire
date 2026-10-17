@@ -97,7 +97,7 @@ export default async function CodexRelicsPage({
     getCodexPotions({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),

@@ -178,33 +178,36 @@ export function resolveVersionedEntity<T extends { id: string }>(
 
 let cachedPatches: STS2Patch[] | null = null;
 let cachedChanges: STS2Change[] | null = null;
-let cachedDiffs: EntityVersionDiff[] | null = null;
+const cachedDiffsByLocale = new Map<GameLocale, EntityVersionDiff[]>();
 let cachedMetaVersion: string | null = null;
 const cachedEntitiesByLocale = new Map<string, Record<string, unknown[]>>();
 
-async function getSharedMeta(): Promise<{
+async function getSharedMeta(locale: GameLocale = "kor"): Promise<{
   currentVersion: string;
   patches: STS2Patch[];
   changes: STS2Change[];
   versionDiffs: EntityVersionDiff[];
 }> {
-  if (!cachedPatches || !cachedChanges || !cachedDiffs || !cachedMetaVersion) {
-    const [meta, patches, changes, versionDiffs] = await Promise.all([
+  if (!cachedPatches || !cachedChanges || !cachedMetaVersion) {
+    const [meta, patches, changes] = await Promise.all([
       getCodexMeta(),
       getSTS2Patches(),
       getSTS2Changes(),
-      getEntityVersionDiffs(),
     ]);
     cachedMetaVersion = meta.version;
     cachedPatches = patches;
     cachedChanges = changes;
-    cachedDiffs = versionDiffs;
+  }
+  let versionDiffs = cachedDiffsByLocale.get(locale);
+  if (!versionDiffs) {
+    versionDiffs = await getEntityVersionDiffs(locale);
+    cachedDiffsByLocale.set(locale, versionDiffs);
   }
   return {
     currentVersion: cachedMetaVersion,
     patches: cachedPatches,
     changes: cachedChanges,
-    versionDiffs: cachedDiffs,
+    versionDiffs,
   };
 }
 
@@ -268,7 +271,7 @@ async function loadRawEntities(
 export async function getVersionedEntity<T extends { id: string } = Record<string, unknown> & { id: string }>(
   query: GetVersionedEntityQuery,
 ): Promise<VersionedEntityResult<T>> {
-  const { currentVersion, patches, changes, versionDiffs } = await getSharedMeta();
+  const { currentVersion, patches, changes, versionDiffs } = await getSharedMeta(query.locale);
   const entities = await loadRawEntities(query.entityType, query.locale);
   const found = entities.find((e) => e.id.toLowerCase() === query.entityId.toLowerCase());
 
@@ -301,7 +304,7 @@ export async function getVersionedEntity<T extends { id: string } = Record<strin
 export async function getVersionedEntities<T extends { id: string } = Record<string, unknown> & { id: string }>(
   query: GetVersionedEntitiesQuery,
 ): Promise<VersionedEntityResult<T>[]> {
-  const { currentVersion, patches, changes, versionDiffs } = await getSharedMeta();
+  const { currentVersion, patches, changes, versionDiffs } = await getSharedMeta(query.locale);
   const entities = await loadRawEntities(query.entityType, query.locale);
 
   const results = entities.map((entity) =>

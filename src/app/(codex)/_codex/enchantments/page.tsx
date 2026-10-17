@@ -65,7 +65,7 @@ export default async function CodexEnchantmentsPage({
     getCodexRelics({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),

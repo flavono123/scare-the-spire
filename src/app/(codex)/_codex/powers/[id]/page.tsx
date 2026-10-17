@@ -66,7 +66,7 @@ export default async function PowerDetailPage({
     loadAllEntities({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexGameUiLabels(gameLocale),
     loadCardSideTipCatalogSources(gameLocale),
   ]);

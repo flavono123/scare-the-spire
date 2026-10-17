@@ -105,7 +105,7 @@ export default async function RelicDetailPage({
     loadAllEntities({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexGameUiLabels(gameLocale),
     loadCardSideTipCatalogSources(gameLocale),
   ]);

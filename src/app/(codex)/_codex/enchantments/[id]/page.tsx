@@ -73,7 +73,7 @@ export default async function EnchantmentDetailPage({
     loadAllEntities({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexGameUiLabels(gameLocale),
     loadCardSideTipCatalogSources(gameLocale),
   ]);

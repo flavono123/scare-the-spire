@@ -67,7 +67,7 @@ export default async function CodexEventsPage({
     getMadScienceBaseCard({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
   ]);

@@ -74,7 +74,7 @@ export default async function CodexMonstersPage({
     getCodexPowers({ includeDeprecated: true, gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
   ]);

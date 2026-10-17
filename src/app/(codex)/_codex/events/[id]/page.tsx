@@ -71,7 +71,7 @@ export default async function EventDetailPage({
     getCodexPowers({ includeDeprecated: true, gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexGameUiLabels(gameLocale),
     getMadScienceBaseCard({ gameLocale }),
     getCodexPotions({ gameLocale }),

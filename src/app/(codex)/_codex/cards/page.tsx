@@ -65,7 +65,7 @@ export default async function CodexCardsPage({
     getCodexCharacters({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     getCodexEnchantments({ gameLocale }),
     getCodexAfflictions({ gameLocale }),

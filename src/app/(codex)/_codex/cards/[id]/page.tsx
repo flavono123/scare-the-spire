@@ -62,7 +62,7 @@ export default async function CardDetailPage({
     getCodexAfflictions({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexGameUiLabels(gameLocale),
     getCodexAncients({ gameLocale }),
     getCodexEvents({ gameLocale }),

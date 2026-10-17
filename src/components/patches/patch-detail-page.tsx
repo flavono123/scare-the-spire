@@ -940,7 +940,7 @@ export async function PatchDetailPage({
   }
 
   const [versionDiffs, codexMeta, codexCards, codexCharacters, codexRelics, codexPotions, codexPowers, codexKeywords, codexModifiers, codexAscensions, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder, patchStageCopy] = await Promise.all([
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexCharacters({ gameLocale }),

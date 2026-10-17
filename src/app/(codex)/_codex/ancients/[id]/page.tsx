@@ -52,7 +52,7 @@ export default async function AncientDetailPage({ params, searchParams }: Props)
     getCodexCharacters({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);

@@ -67,7 +67,7 @@ export async function buildCompendiumDetailPayload(
     getCodexGameUiLabels(gameLocale),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     loadCardSideTipCatalogSources(gameLocale),
   ]);
 

@@ -78,7 +78,7 @@ export default async function CharacterDetailPage({
     loadAllEntities({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
-    getEntityVersionDiffs(),
+    getEntityVersionDiffs(gameLocale),
     getCodexGameUiLabels(gameLocale),
   ]);
   const character = characters.find((item) => item.id.toLowerCase() === id.toLowerCase());
