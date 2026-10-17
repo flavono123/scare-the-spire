@@ -49,6 +49,35 @@ export function ColorfulPhilosophersDevPage() {
   const fetched = weekPosts.posts.find((post) => post.weekStart === weekStart && post.slot === slot);
   const justSaved = savedPost?.weekStart === weekStart && savedPost.slot === slot ? savedPost : null;
   const existing = justSaved ?? fetched;
+  const usage = useMemo(() => {
+    const posts = justSaved
+      ? [...weekPosts.posts.filter((post) => post.id !== justSaved.id), justSaved]
+      : weekPosts.posts;
+    const bySlot = new Map<string, Map<string, { post: ColorfulPhilosopherPost; weeks: string[] }>>();
+    for (const post of posts) {
+      const slotMap = bySlot.get(post.slot) ?? new Map();
+      const key = `${post.resourceType}:${post.resourceId}`;
+      const entry = slotMap.get(key) ?? { post, weeks: [] };
+      entry.weeks.push(post.weekStart);
+      slotMap.set(key, entry);
+      bySlot.set(post.slot, slotMap);
+    }
+    return bySlot;
+  }, [weekPosts.posts, justSaved]);
+
+  const pickRandom = (target: ColorfulPhilosopherSlot) => {
+    const candidates = target === "topic" ? entities : entities.filter((entity) => entity.type === target);
+    const used = usage.get(target);
+    const fresh = candidates.filter((entity) => !used?.has(`${entity.type}:${entity.id}`));
+    const from = fresh.length > 0 ? fresh : candidates;
+    if (from.length === 0) return;
+    const entity = from[Math.floor(Math.random() * from.length)];
+    setSlot(target);
+    setSelected(entity);
+    setQuery("");
+    setBodyTouched(false);
+    setError(null);
+  };
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reset the editor when the week slot changes
@@ -199,6 +228,46 @@ export function ColorfulPhilosophersDevPage() {
         이 주에 올리기
       </button>
       {error ? <p className="text-sm text-red-300">{error}</p> : null}
+      <section className="space-y-4 border-t border-white/10 pt-5">
+        <h2 className="font-service text-sm text-zinc-200">지난 토론 요소</h2>
+        {weekPosts.loading ? <p className="text-sm text-zinc-500">불러오는 중...</p> : null}
+        {COLORFUL_PHILOSOPHER_SLOTS.map((item) => {
+          const entries = Array.from(usage.get(item)?.values() ?? []).sort((a, b) =>
+            b.weeks.length - a.weeks.length || b.weeks[0].localeCompare(a.weeks[0]));
+          return (
+            <div key={item} className="space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <p className="font-service text-xs text-zinc-400">{`${copy.slots[item]} · ${entries.length}개`}</p>
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => pickRandom(item)}
+                  className="rounded-full border border-primary/40 bg-primary/15 px-3 py-1 text-xs text-primary disabled:opacity-40"
+                >
+                  안 쓴 요소 랜덤 픽
+                </button>
+              </div>
+              {entries.length === 0 ? (
+                <p className="text-xs text-zinc-500">아직 없습니다</p>
+              ) : (
+                <ul className="flex flex-wrap gap-2">
+                  {entries.map(({ post, weeks }) => (
+                    <li
+                      key={`${post.resourceType}:${post.resourceId}`}
+                      title={weeks.map((week) => week.slice(5)).join(", ")}
+                      className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-black/35 px-2 py-1 text-xs text-zinc-200"
+                    >
+                      {post.imageUrl ? <Image src={post.imageUrl} alt="" width={20} height={20} className="object-contain" /> : null}
+                      <span>{post.nameKo}</span>
+                      {weeks.length > 1 ? <span className="text-primary">{`×${weeks.length}`}</span> : null}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          );
+        })}
+      </section>
       {justSaved ? <p className="text-sm text-primary">이 주에 올렸습니다 — 위 카드가 인덱스에 보이는 모습입니다</p> : null}
     </div>
   );
