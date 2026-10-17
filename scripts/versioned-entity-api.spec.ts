@@ -325,7 +325,7 @@ async function runTests() {
         textField && typeof value === "string"
           ? value.replace(/\[\/?[a-z]+(?:[:=][^\]]*)?\]/gi, "").replace(/\s+/g, "")
           : value;
-      const mismatch = `Mismatch in ${change.patch} ${entityType}:${change.entityId} (${change.id}) .${fd.field}`;
+      const mismatch: string = `Mismatch in ${change.patch} ${entityType}:${change.entityId} (${change.id}) .${fd.field}`;
       // Before the pinned version, Korean wording rests on the pinned game
       // text plus authored diffs; a disagreement is an authored text error
       // or an unrecorded change, listed rather than failed.
