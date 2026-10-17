@@ -129,6 +129,14 @@ async function waitForStableCaptureSnapshot(): Promise<ImageCaptureSnapshot> {
   return previous;
 }
 
+const CAPTURE_NODE_SELECTOR = "[data-card-tile], [data-relic-inspect-slab]";
+
+/** A board of many tiles is captured whole; only a single-tile wrapper narrows to its tile. */
+function isTileCollection(target: HTMLElement): boolean {
+  return !target.matches(CAPTURE_NODE_SELECTOR)
+    && target.querySelectorAll(CAPTURE_NODE_SELECTOR).length > 1;
+}
+
 function stampedTiles(): HTMLElement[] {
   return Array.from(document.querySelectorAll<HTMLElement>("[data-card-tile][data-game-locale]"));
 }
@@ -137,6 +145,7 @@ async function waitForMatchingCaptureNode(
   target: HTMLElement,
   snapshot: ImageCaptureSnapshot,
 ): Promise<HTMLElement> {
+  if (isTileCollection(target)) return target;
   const started = performance.now();
   while (performance.now() - started < 4000) {
     const candidates = [captureNode(target), ...stampedTiles()];
@@ -155,8 +164,8 @@ async function waitForMatchingCaptureNode(
 }
 
 function captureNode(target: HTMLElement): HTMLElement {
-  if (target.matches("[data-card-tile], [data-relic-inspect-slab]")) return target;
-  return target.querySelector<HTMLElement>("[data-card-tile], [data-relic-inspect-slab]") ?? target;
+  if (target.matches(CAPTURE_NODE_SELECTOR) || isTileCollection(target)) return target;
+  return target.querySelector<HTMLElement>(CAPTURE_NODE_SELECTOR) ?? target;
 }
 
 function isCaptureChrome(node: Node): boolean {
