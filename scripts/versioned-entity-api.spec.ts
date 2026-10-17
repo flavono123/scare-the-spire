@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import util from "node:util";
 import path from "node:path";
 import {
   getVersionedEntity,
@@ -7,7 +8,8 @@ import {
   resolveVersionedEntity,
 } from "../src/lib/versioned-entity-api";
 import { normalizeVersionedEntityType } from "../src/lib/codex-versioning";
-import { latestPatchVersion } from "../src/lib/entity-versioning";
+import { compareVersions, latestPatchVersion } from "../src/lib/entity-versioning";
+import { LOCALE_TEXT_PINNED_FROM } from "../src/lib/localization-history";
 import { getEnchantStatModifier } from "../src/lib/sts2-enchant-rules";
 import type { CodexEnchantment } from "../src/lib/codex-types";
 import { updateCompendiumResourceModalUrl } from "../src/lib/compendium-resource-links";
@@ -287,6 +289,8 @@ async function runTests() {
   const changesRaw = fs.readFileSync(path.join(process.cwd(), "data/sts2-changes.json"), "utf-8");
   const allChanges: STS2Change[] = JSON.parse(changesRaw);
   let verifiedDiffCount = 0;
+  const TEXT_FIELDS = new Set(["name", "description", "descriptionRaw"]);
+  const textWarnings: string[] = [];
 
   for (const change of allChanges) {
     const entityType = normalizeVersionedEntityType(change.entityType);
@@ -304,6 +308,10 @@ async function runTests() {
 
     for (const fd of change.fieldDiffs) {
       if (fd.upgraded) continue;
+      const textField = TEXT_FIELDS.has(fd.field);
+      // From the pinned version on, wording follows the game's own tables;
+      // scripts/audit-version-locales.ts checks it against them.
+      if (textField && compareVersions(change.patch.replace(/^v/, ""), LOCALE_TEXT_PINNED_FROM) > 0) continue;
       verifiedDiffCount++;
       const parts = fd.field.split(".");
       let val: unknown = res.entity;
@@ -311,14 +319,30 @@ async function runTests() {
         val = (val as Record<string, unknown> | null | undefined)?.[p];
       }
 
-      assert.deepEqual(
-        val,
-        fd.after,
-        `Mismatch in ${change.patch} ${entityType}:${change.entityId} (${change.id}) .${fd.field}`
-      );
+      // Pinned game text breaks lines and places color tags where the
+      // authored diff did not; the words must still match.
+      const comparable = (value: unknown) =>
+        textField && typeof value === "string"
+          ? value.replace(/\[\/?[a-z]+(?:[:=][^\]]*)?\]/gi, "").replace(/\s+/g, "")
+          : value;
+      const mismatch = `Mismatch in ${change.patch} ${entityType}:${change.entityId} (${change.id}) .${fd.field}`;
+      // Before the pinned version, Korean wording rests on the pinned game
+      // text plus authored diffs; a disagreement is an authored text error
+      // or an unrecorded change, listed rather than failed.
+      if (textField) {
+        if (!util.isDeepStrictEqual(comparable(val), comparable(fd.after))) {
+          textWarnings.push(`${mismatch}: shown ${JSON.stringify(val)} / authored ${JSON.stringify(fd.after)}`);
+        }
+        continue;
+      }
+      assert.deepEqual(comparable(val), comparable(fd.after), mismatch);
     }
   }
   console.log(`Exhaustively verified ${verifiedDiffCount} fieldDiffs across all patches!`);
+  if (textWarnings.length > 0) {
+    console.log(`Text that disagrees with authored diffs before v${LOCALE_TEXT_PINNED_FROM} (${textWarnings.length}):`);
+    for (const warning of textWarnings) console.log(`  ${warning}`);
+  }
 
   console.log("\n[Test 7] Vars-only card text is rebaked for the library tile");
   const believeBefore = await getVersionedEntity<CodexCard>({

@@ -4346,13 +4346,8 @@
     "fieldDiffs": [
       {
         "field": "description",
-        "before": "피해를 7 줍니다.\n다음 3턴 동안 이 적을 대상으로 하는 [gold]취약[/gold]과 [gold]약화[/gold]의 효과가 2배가 됩니다.",
+        "before": "피해를 10 줍니다.\n다음 3턴 동안 이 적을 대상으로 하는 [gold]취약[/gold]과 [gold]약화[/gold]의 효과가 2배가 됩니다.",
         "after": "피해를 10 줍니다.\n다음 2턴 동안\n이 적을 대상으로 하는\n[gold]취약[/gold]과 [gold]약화[/gold]의 효과가\n2배가 됩니다."
-      },
-      {
-        "field": "damage",
-        "before": 7,
-        "after": 10
       },
       {
         "field": "vars.DebilitatePower",
@@ -6634,7 +6629,7 @@
       {
         "field": "description",
         "before": "[gold]단조[/gold] 12.",
-        "after": "카드를 2장 뽑습니다.\n[gold]단조[/gold] 5."
+        "after": "[gold]단조[/gold] 5.\n카드를 2장 뽑습니다."
       },
       {
         "field": "descriptionRaw",
@@ -13365,7 +13360,7 @@
     "fieldDiffs": [
       {
         "field": "description",
-        "before": "카드를 2장 뽑습니다.\n[gold]단조[/gold] 5.",
+        "before": "[gold]단조[/gold] 5.\n카드를 2장 뽑습니다.",
         "after": "[gold]단조[/gold] 6.\n카드를 2장 뽑습니다."
       },
       {

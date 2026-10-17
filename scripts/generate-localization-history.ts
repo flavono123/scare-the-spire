@@ -146,6 +146,13 @@ async function main() {
 
   // Authored diffs sometimes record a number change only inside the Korean
   // baked text. Recover it so baking the pinned template shows the old number.
+  // A variable recorded as vars.X in any of the element's changes is already
+  // tracked explicitly, so its baked text is not second-guessed.
+  const recordedVars = new Set(
+    changes.flatMap((change) => (change.fieldDiffs ?? [])
+      .filter((item) => item.field.startsWith("vars."))
+      .map((item) => `${change.entityType}:${change.entityId}:${item.field}`)),
+  );
   for (const change of changes) {
     const type = change.entityType as VersionedEntityType;
     const source = SOURCES.find((entry) => entry.type === type);
@@ -166,7 +173,7 @@ async function main() {
     const recorded = new Set((change.fieldDiffs ?? []).map((item) => item.field));
     for (const [name, value] of Object.entries(before)) {
       const field = `vars.${name}`;
-      if (after[name] === value || recorded.has(field)) continue;
+      if (after[name] === value || recorded.has(field) || recordedVars.has(`${type}:${change.entityId}:${field}`)) continue;
       history.varDiffs.push({ entityType: type, entityId: change.entityId, patch: change.patch, field, before: value, after: after[name] ?? null });
     }
   }
