@@ -14,11 +14,12 @@
 
 import { execFileSync } from "node:child_process";
 import { writeFileSync } from "node:fs";
-import { getSTS2Patches, getEntityVersionDiffs } from "../src/lib/data";
+import { getSTS2Changes, getSTS2Patches, getEntityVersionDiffs } from "../src/lib/data";
 import { compareVersions, getVersionsWithDiffs } from "../src/lib/entity-versioning";
 import { GAME_LOCALES, type GameLocale } from "../src/lib/i18n";
 import type { VersionedEntityType } from "../src/lib/types";
-import { getVersionedEntities } from "../src/lib/versioned-entity-api";
+import { getVersionedEntities, getVersionedEntity } from "../src/lib/versioned-entity-api";
+import { LOCALE_TEXT_PINNED_FROM } from "../src/lib/localization-history";
 import { getCodexMeta } from "../src/lib/data";
 
 const TABLES: [VersionedEntityType, string][] = [
@@ -194,6 +195,28 @@ async function main() {
   for (const f of korRows) {
     lines.push(`- v${f.version} ${f.type} ${f.id} ${f.field}: shown ${JSON.stringify(f.shown)} / game ${JSON.stringify(f.expected)}`);
   }
+
+  // Independent check: authored Korean diffs carry the baked text players saw,
+  // numbers included. The reconstructed Korean text should read the same.
+  const changes = await getSTS2Changes();
+  const authored: string[] = [];
+  let authoredSame = 0;
+  for (const change of changes) {
+    const patch = change.patch.replace(/^v/, "");
+    const diff = change.fieldDiffs?.find((item) => item.field === "description");
+    const type = change.entityType as VersionedEntityType;
+    if (!diff || typeof diff.before !== "string" || !TABLES.some(([t]) => t === type)) continue;
+    const previous = selectable.find((version) => compareVersions(version, patch) < 0);
+    if (!previous || compareVersions(previous, LOCALE_TEXT_PINNED_FROM) < 0) continue;
+    const result = await getVersionedEntity<Entity>({ entityType: type, entityId: change.entityId, version: previous, locale: "kor" });
+    const shown = norm(result.entity?.description);
+    if (shown.replace(/\s+/g, "") === diff.before.replace(/\s+/g, "")) {
+      authoredSame += 1;
+      continue;
+    }
+    authored.push(`- ${type} ${change.entityId} v${previous} (diff ${change.patch})\n  - shown:    ${JSON.stringify(shown)}\n  - authored: ${JSON.stringify(diff.before)}`);
+  }
+  lines.push("", `## Korean text vs authored diffs (${authoredSame} same, ${authored.length} differ)`, "", ...authored);
 
   const jsonAt = args.indexOf("--json");
   if (jsonAt >= 0) writeFileSync(args[jsonAt + 1], `${JSON.stringify(findings, null, 1)}\n`);

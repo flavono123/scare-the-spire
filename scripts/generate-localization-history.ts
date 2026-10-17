@@ -21,6 +21,7 @@ import {
   getCodexRelics,
 } from "../src/lib/codex-data";
 import { getCodexMeta, getSTS2Changes, getSTS2Patches, deriveEntityVersionDiffs } from "../src/lib/data";
+import { bakeDescription } from "../src/lib/codex-bake";
 import { compareVersions, getVersionsWithDiffs } from "../src/lib/entity-versioning";
 import { GAME_LOCALES, type GameLocale } from "../src/lib/i18n";
 import {
@@ -43,6 +44,53 @@ const FIELDS: [TrackedField, (id: string) => string][] = [
   ["descriptionRaw", (id) => `${id}.description`],
 ];
 
+const SENTINEL_BASE = 987650;
+
+/**
+ * Read the numbers a baked text was made with. Each variable in the template
+ * gets a sentinel value, the template is baked, and the sentinels become
+ * capture groups matched against the text. Whitespace is ignored.
+ */
+function extractVars(template: string, baked: string): Record<string, number> | null {
+  const names = [...new Set([...template.matchAll(/\{([A-Za-z_][A-Za-z0-9_]*)/g)].map((match) => match[1]))];
+  if (names.length === 0) return null;
+  if (names.length > 10) return null;
+  const sentinels = Object.fromEntries(names.map((name, index) => [name, SENTINEL_BASE + index]));
+  const probe = bakeDescription(template, sentinels).replace(/\s+/g, "");
+  const order: string[] = [];
+  const pattern = probe
+    .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    // Sentinels are 98765N, so N is the variable's index (at most ten variables).
+    .replace(new RegExp(`${String(SENTINEL_BASE).slice(0, -1)}(\\d)`, "g"), (_, digit: string) => {
+      order.push(names[Number(digit)]);
+      return "(-?\\d+)";
+    });
+  if (order.length === 0) return null;
+  const match = new RegExp(`^${pattern}$`).exec(baked.replace(/\s+/g, ""));
+  if (match) {
+    const values: Record<string, number> = {};
+    order.forEach((name, index) => {
+      values[name] = Number(match[index + 1]);
+    });
+    return values;
+  }
+  // The wording can drift while the numbers line up, as when an authored text
+  // mixes a later version's phrasing with its own numbers. Then read the
+  // numbers in order: fixed numbers must agree, sentinels take the value.
+  // Only with a single variable, since reordered wording would swap values.
+  if (order.length !== 1) return null;
+  const probeNumbers = [...probe.matchAll(/-?\d+/g)].map((item) => item[0]);
+  const bakedNumbers = [...baked.matchAll(/-?\d+/g)].map((item) => item[0]);
+  if (probeNumbers.length !== bakedNumbers.length) return null;
+  const values: Record<string, number> = {};
+  for (let index = 0; index < probeNumbers.length; index += 1) {
+    const sentinel = Number(probeNumbers[index]) - SENTINEL_BASE;
+    if (sentinel >= 0 && sentinel < names.length) values[names[sentinel]] = Number(bakedNumbers[index]);
+    else if (probeNumbers[index] !== bakedNumbers[index]) return null;
+  }
+  return Object.keys(values).length > 0 ? values : null;
+}
+
 function clean(value: unknown): string | undefined {
   return typeof value === "string" ? value.replace(/\r/g, "") : undefined;
 }
@@ -60,6 +108,7 @@ async function main() {
     pinnedFrom: LOCALE_TEXT_PINNED_FROM,
     snapshots: snapshots.map(({ version, commit }) => ({ version, commit: commit.slice(0, 12) })),
     text: {},
+    varDiffs: [],
     untracked: {},
   };
   let points = 0;
@@ -73,10 +122,10 @@ async function main() {
         for (const [field, keyOf] of FIELDS) {
           const key = keyOf(entity.id);
           const latest = clean(current[key]);
-          if (latest === undefined) continue;
-          // The site renders this field differently from the table, so the
-          // table's history cannot replace it.
-          if (clean(entity[field]) !== latest) {
+          if (latest === undefined && entity[field] === undefined) continue;
+          // The site renders this field from somewhere other than the table
+          // (or the table lacks it), so the table's history cannot replace it.
+          if (latest === undefined || clean(entity[field]) !== latest) {
             ((history.untracked[locale] ??= {})[source.type] ??= []).push(`${entity.id}.${field}`);
             continue;
           }
@@ -95,10 +144,37 @@ async function main() {
     }
   }
 
+  // Authored diffs sometimes record a number change only inside the Korean
+  // baked text. Recover it so baking the pinned template shows the old number.
+  for (const change of changes) {
+    const type = change.entityType as VersionedEntityType;
+    const source = SOURCES.find((entry) => entry.type === type);
+    const diff = change.fieldDiffs?.find((item) => item.field === "description");
+    if (!source || !diff || typeof diff.before !== "string" || typeof diff.after !== "string") continue;
+    const at = snapshots.findIndex(({ version }) => `v${version}` === change.patch);
+    if (at < 1) continue;
+    const key = `${change.entityId}.description`;
+    const beforeTemplate = clean(tableAt(snapshots[at - 1].commit, "kor", source.table)[key]);
+    const afterTemplate = clean(tableAt(snapshots[at].commit, "kor", source.table)[key]);
+    if (!beforeTemplate || !afterTemplate) continue;
+    // Reverting needs only the old value. The new one is kept when it reads
+    // cleanly; a rework can drop the variable, or a later edit can reword the
+    // authored after text.
+    const before = extractVars(beforeTemplate, diff.before);
+    if (!before) continue;
+    const after = extractVars(afterTemplate, diff.after) ?? {};
+    const recorded = new Set((change.fieldDiffs ?? []).map((item) => item.field));
+    for (const [name, value] of Object.entries(before)) {
+      const field = `vars.${name}`;
+      if (after[name] === value || recorded.has(field)) continue;
+      history.varDiffs.push({ entityType: type, entityId: change.entityId, patch: change.patch, field, before: value, after: after[name] ?? null });
+    }
+  }
+
   const out = path.resolve(__dirname, "..", "data", "sts2", "localization-history.json");
   writeFileSync(out, `${JSON.stringify(history)}\n`);
   const untracked = Object.values(history.untracked).flatMap((byType) => Object.values(byType ?? {}).flat()).length;
-  console.log(`${out}: ${snapshots.length} snapshots, ${points} text changes, ${untracked} untracked fields`);
+  console.log(`${out}: ${snapshots.length} snapshots, ${points} text changes, ${history.varDiffs.length} recovered numbers, ${untracked} untracked fields`);
 }
 
 main().catch((error: unknown) => {

@@ -12,6 +12,11 @@ export interface LocalizationHistory {
   snapshots: { version: string; commit: string }[];
   /** Change points per locale, type, id, and entity field: [version, value] oldest first. */
   text: Partial<Record<GameLocale, Partial<Record<VersionedEntityType, Record<string, Partial<Record<TrackedField, [string, string][]>>>>>>>;
+  /**
+   * Number changes the authored diffs recorded only inside the Korean baked
+   * text. Recovered against the Korean template so every locale bakes them.
+   */
+  varDiffs: { entityType: VersionedEntityType; entityId: string; patch: string; field: string; before: number; after: number | null }[];
   /** Fields the site renders differently from the raw table, so history cannot stand in for them. */
   untracked: Partial<Record<GameLocale, Partial<Record<VersionedEntityType, string[]>>>>;
 }
@@ -73,6 +78,10 @@ export function localizeVersionDiffs(
     }
     return { ...entry, diffs };
   });
+
+  for (const { entityType, entityId, patch, field, before, after } of history.varDiffs ?? []) {
+    localized.push({ entityType, entityId, patch, diffs: [{ field, before, after }] });
+  }
 
   for (const [type, ids] of Object.entries(localeText) as [VersionedEntityType, Record<string, Partial<Record<TrackedField, [string, string][]>>>][]) {
     for (const [id, fields] of Object.entries(ids)) {
