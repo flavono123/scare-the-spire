@@ -139,6 +139,76 @@ function isTileCollection(target: HTMLElement): boolean {
     && target.querySelectorAll(CAPTURE_NODE_SELECTOR).length > 1;
 }
 
+function cssUrls(value: string): string[] {
+  return Array.from(value.matchAll(/url\((?:"([^"]+)"|'([^']+)'|([^)]*))\)/g))
+    .map((match) => (match[1] ?? match[2] ?? match[3] ?? "").trim())
+    .filter((url) => url && !url.startsWith("data:"));
+}
+
+/**
+ * `document.fonts.ready` only covers faces the page already asked for, and an
+ * <img> or CSS background can still be in flight when the click lands. Ask for
+ * every face the target actually paints, then decode every image it shows, so
+ * the PNG is rendered from settled assets instead of fallbacks.
+ */
+const CAPTURE_ASSET_TIMEOUT_MS = 10_000;
+
+async function waitForCaptureAssets(target: HTMLElement): Promise<void> {
+  await Promise.race([settleCaptureAssets(target), delay(CAPTURE_ASSET_TIMEOUT_MS)]);
+}
+
+async function settleCaptureAssets(target: HTMLElement): Promise<void> {
+  const elements = [
+    target,
+    ...Array.from(target.querySelectorAll<HTMLElement>("*")),
+  ].filter((element) => !isCaptureChrome(element));
+
+  const faces = new Map<string, Set<string>>();
+  const imageUrls = new Set<string>();
+  const images: HTMLImageElement[] = [];
+  for (const element of elements) {
+    const style = getComputedStyle(element);
+    const text = Array.from(element.childNodes)
+      .filter((child) => child.nodeType === Node.TEXT_NODE)
+      .map((child) => child.textContent ?? "")
+      .join("")
+      .trim();
+    if (text) {
+      const font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+      const samples = faces.get(font) ?? new Set<string>();
+      samples.add(text);
+      faces.set(font, samples);
+    }
+    for (const url of cssUrls(style.backgroundImage)) imageUrls.add(url);
+    if (element instanceof HTMLImageElement) images.push(element);
+  }
+
+  await Promise.all([
+    ...Array.from(faces, ([font, samples]) => (
+      document.fonts.load(font, Array.from(samples).join("").slice(0, 2000)).catch(() => [])
+    )),
+    ...images.map((image) => {
+      if (image.complete && image.naturalWidth > 0) return Promise.resolve();
+      // A lazy image below the fold never starts loading on its own, so a bare
+      // decode() would wait forever.
+      image.loading = "eager";
+      return image.decode().catch(() => undefined);
+    }),
+    ...Array.from(imageUrls, (url) => new Promise<void>((resolve) => {
+      const image = new Image();
+      image.onload = () => resolve();
+      image.onerror = () => resolve();
+      image.src = url;
+    })),
+  ]);
+  await document.fonts?.ready;
+  // One paint after the last asset lands; a hidden tab never fires frames.
+  await Promise.race([
+    new Promise<void>((resolve) => requestAnimationFrame(() => resolve())),
+    delay(100),
+  ]);
+}
+
 function stampedTiles(): HTMLElement[] {
   return Array.from(document.querySelectorAll<HTMLElement>("[data-card-tile][data-game-locale]"));
 }
@@ -241,6 +311,7 @@ async function renderTargetPng(
     document.fonts?.ready ?? Promise.resolve(),
   ]);
   const node = await waitForMatchingCaptureNode(target, snapshot);
+  await waitForCaptureAssets(node);
   const previousOverflow = node.style.overflow;
   node.style.overflow = "visible";
   const restoreFrame = expandCaptureFrame(node);
