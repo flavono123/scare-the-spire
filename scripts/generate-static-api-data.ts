@@ -14,7 +14,7 @@ import { getSTS2PatchLines } from "../src/lib/data";
 import { GAME_LOCALES } from "../src/lib/i18n";
 import type { GameLocale } from "../src/lib/i18n";
 import { readGameLocalizationTable } from "../src/lib/game-localization";
-import { loadCompactThisOrThatEntities } from "../src/lib/this-or-that-data";
+import { loadCompactLegacyCards, loadCompactThisOrThatEntities } from "../src/lib/this-or-that-data";
 import {
   DECISIONS_DECISIONS_GAME_VERSION,
   stampAllPresetIds,
@@ -535,6 +535,10 @@ async function buildThisOrThatResourceTargets(): Promise<StaticJsonTarget[]> {
     targets.push({
       path: `generated/this-or-that-resources-${gameLocale}.json`,
       data: await loadCompactThisOrThatEntities({ gameLocale }),
+    });
+    targets.push({
+      path: `generated/decisions-decisions-legacy-cards-${gameLocale}.json`,
+      data: await loadCompactLegacyCards({ gameLocale }),
     });
   }
   return targets;

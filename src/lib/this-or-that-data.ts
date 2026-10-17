@@ -231,6 +231,27 @@ export async function loadThisOrThatEntities({
     .sort(compareThisOrThatEntities);
 }
 
+/**
+ * Cards removed from the game that 어려운 결정 posts may still reference. Kept
+ * out of the shared this-or-that list so other services and preset pools stay
+ * unchanged; decisions loads them as a separate, opt-in file.
+ */
+export async function loadCompactLegacyCards({
+  gameLocale,
+}: {
+  gameLocale?: GameLocale;
+} = {}): Promise<EntityInfo[]> {
+  const entities = await loadAllEntities({ gameLocale });
+  return entities
+    .filter((entity) => (
+      entity.type === "card"
+      && entity.cardData?.deprecated
+      && Boolean(getThisOrThatEntityHref(entity))
+    ))
+    .sort(compareThisOrThatEntities)
+    .map(compactThisOrThatEntity);
+}
+
 export async function loadCompactThisOrThatEntities({
   gameLocale,
 }: {

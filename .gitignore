@@ -72,6 +72,7 @@ playwright-report/
 /public/generated/search-index.json
 /public/generated/this-or-that-resources-*.json
 /public/generated/decisions-decisions-presets.json
+/public/generated/decisions-decisions-legacy-cards-*.json
 /public/generated/sts2-resource-patch-index.json
 /public/generated/sts2-resource-patch-index.json
 /public/generated/sts2-patch-lines.json

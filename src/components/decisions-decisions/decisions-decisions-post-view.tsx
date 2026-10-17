@@ -57,7 +57,7 @@ export function DecisionsDecisionsPostView({
   const router = useRouter();
   const { userId, ready, ensureUser } = useAuth();
   const { post, loading, unavailable, update, remove } = useDecisionsDecisionsPost(postId, userId);
-  const catalog = useDecisionsDecisionsCatalog(gameLocale);
+  const catalog = useDecisionsDecisionsCatalog(gameLocale, { includeLegacy: true });
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
     [copy.defaultNickname],

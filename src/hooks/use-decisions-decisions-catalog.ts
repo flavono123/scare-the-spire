@@ -25,13 +25,41 @@ const presetPromise = fetch(
   })
   .catch(() => null);
 
+const legacyPromises = new Map<GameLocale, Promise<EntityInfo[]>>();
+
+function loadLegacyCards(gameLocale: GameLocale): Promise<EntityInfo[]> {
+  const cached = legacyPromises.get(gameLocale);
+  if (cached) return cached;
+  const promise = fetch(
+    `/generated/decisions-decisions-legacy-cards-${gameLocale}.json?v=${STS2_IMAGE_CACHE_BUSTER}`,
+    { cache: "no-cache" },
+  )
+    .then((response) => (response.ok ? response.json() as Promise<EntityInfo[]> : []))
+    .catch(() => [] as EntityInfo[]);
+  legacyPromises.set(gameLocale, promise);
+  return promise;
+}
+
 export function useDecisionsDecisionsCatalog(
   gameLocale: GameLocale,
-  options?: { includeStamps?: boolean },
+  options?: { includeStamps?: boolean; includeLegacy?: boolean },
 ) {
   const resources = useThisOrThatEntities(gameLocale);
   const [stamps, setStamps] = useState<Record<string, DecisionsDecisionsResourceRef[]>>({});
   const includeStamps = options?.includeStamps !== false;
+  const includeLegacy = options?.includeLegacy === true;
+  const [legacyCards, setLegacyCards] = useState<EntityInfo[]>([]);
+
+  useEffect(() => {
+    if (!includeLegacy) return;
+    let disposed = false;
+    void loadLegacyCards(gameLocale).then((cards) => {
+      if (!disposed) setLegacyCards(cards);
+    });
+    return () => {
+      disposed = true;
+    };
+  }, [gameLocale, includeLegacy]);
 
   useEffect(() => {
     if (!includeStamps) return;
@@ -49,13 +77,17 @@ export function useDecisionsDecisionsCatalog(
     };
   }, [includeStamps, resources.entities]);
 
+  // Stamps/presets use `resources.entities` only; legacy cards are lookup + picker extras.
+  const entities = includeLegacy && legacyCards.length > 0
+    ? [...resources.entities, ...legacyCards]
+    : resources.entities;
   const entityMap = new Map<string, EntityInfo>();
-  for (const entity of resources.entities) {
+  for (const entity of entities) {
     entityMap.set(`${entity.type}:${entity.id}`, entity);
   }
 
   return {
-    entities: resources.entities,
+    entities,
     entityMap,
     stamps,
     loading: resources.loading,

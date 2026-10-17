@@ -43,7 +43,7 @@ export function DecisionsDecisionsClient({
   const { userId, ready, ensureUser } = useAuth();
   const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
   const [composerOpen, setComposerOpen] = useState(false);
-  const catalog = useDecisionsDecisionsCatalog(gameLocale);
+  const catalog = useDecisionsDecisionsCatalog(gameLocale, { includeLegacy: true });
   const {
     posts,
     likeCounts,

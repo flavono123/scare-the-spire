@@ -117,7 +117,7 @@ export function DefragmentWritePanel({
   const [totSubmitting, setTotSubmitting] = useState(false);
   const [pagestormTitle, setPagestormTitle] = useState("");
   const totResources = useThisOrThatEntities(gameLocale);
-  const decisionsCatalog = useDecisionsDecisionsCatalog(gameLocale);
+  const decisionsCatalog = useDecisionsDecisionsCatalog(gameLocale, { includeLegacy: true });
 
   const readNickname = useCallback(() => {
     return nicknameInputRef.current?.value.trim()

@@ -572,7 +572,7 @@ export function DecisionsDecisionsPoolPicker({
 
   const catalogItems = useMemo(() => {
     if (!showCatalog || !major) return [];
-    const listed = listPoolEntities(entities, major, dims);
+    const listed = listPoolEntities(entities, major, dims, { includeLegacyCards: true });
     const trimmed = query.trim();
     if (!trimmed) return listed;
     return matchEntities(trimmed, listed, listed.length);

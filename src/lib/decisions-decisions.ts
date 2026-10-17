@@ -1011,8 +1011,11 @@ function matchesFilter(
   major: DecisionsPoolMajor,
   dims: DecisionsFilterDims,
   encounterActs: Map<string, Set<string>>,
+  includeLegacyCards: boolean,
 ): boolean {
-  if (entity.type !== major || entityIsDeprecated(entity)) return false;
+  if (entity.type !== major) return false;
+  const legacyCard = includeLegacyCards && major === "card" && entity.cardData?.deprecated;
+  if (entityIsDeprecated(entity) && !legacyCard) return false;
   return matchesAffiliation(entity, major, dims.affiliation)
     && matchesKind(entity, major, dims.kind)
     && matchesRarity(entity, major, dims.rarity)
@@ -1032,10 +1035,14 @@ export function listPoolEntities(
   entities: EntityInfo[],
   major: DecisionsPoolMajor | null,
   dims: DecisionsFilterDims,
+  options?: { includeLegacyCards?: boolean },
 ): EntityInfo[] {
   if (!major) return [];
   const encounterActs = encounterActKeysByMonster(entities);
-  const matched = entities.filter((entity) => matchesFilter(entity, major, dims, encounterActs));
+  const includeLegacyCards = options?.includeLegacyCards === true;
+  const matched = entities.filter((entity) => (
+    matchesFilter(entity, major, dims, encounterActs, includeLegacyCards)
+  ));
   if (major !== "ascension") return matched;
   return [...matched].sort((left, right) => (
     (left.ascensionData?.level ?? 0) - (right.ascensionData?.level ?? 0)
