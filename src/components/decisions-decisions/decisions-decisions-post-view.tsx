@@ -1,11 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
@@ -15,8 +14,6 @@ import { PostDetailActions } from "@/components/post-detail-actions";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { TransfigureImageCopyButton } from "@/components/transfigure/transfigure-image-copy-button";
 import { useAuth } from "@/hooks/use-auth";
-import { useCommentEntities } from "@/hooks/use-comment-entities";
-import { fetchDefragmentBody, type DefragmentBody } from "@/hooks/use-defragment-bodies";
 import { useDecisionsDecisionsCatalog } from "@/hooks/use-decisions-decisions-catalog";
 import { useDecisionsDecisionsPost } from "@/hooks/use-decisions-decisions-posts";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -72,25 +69,6 @@ export function DecisionsDecisionsPostView({
   const isEmbed = variant === "embed";
   const indexHref = localizeHrefWithGameLocale(DECISIONS_DECISIONS_HREF, serviceLocale, gameLocale);
   const threadKey = buildDecisionsDecisionsCommentThreadKey(postId);
-  // The embed inside 조각모음 already renders this overlay above the post.
-  const [overlay, setOverlay] = useState<DefragmentBody | null>(null);
-  const { entities: commentEntities } = useCommentEntities();
-  const overlayEntityMap = useMemo(() => buildEntityMap(commentEntities), [commentEntities]);
-
-  useEffect(() => {
-    if (isEmbed) return;
-    let cancelled = false;
-    fetchDefragmentBody("decisions_decisions", postId)
-      .then((body) => {
-        if (!cancelled) setOverlay(body);
-      })
-      .catch(() => {
-        if (!cancelled) setOverlay(null);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [isEmbed, postId]);
 
   const pool = useMemo(() => {
     if (!post) return [];
@@ -171,17 +149,6 @@ export function DecisionsDecisionsPostView({
       </header>
 
       {post.note && <p className="text-sm text-zinc-300">{post.note}</p>}
-
-      {!isEmbed && overlay && overlay.content_text.trim().length > 0 && (
-        <article className="rounded-lg border border-border bg-card/20 px-4 py-3 text-sm leading-relaxed">
-          <PostRenderer
-            blocks={overlay.content}
-            entityMap={overlayEntityMap}
-            serviceLocale={serviceLocale}
-            gameLocale={gameLocale}
-          />
-        </article>
-      )}
 
       {editing && isAuthor && (
         <DecisionsDecisionsComposerModal
